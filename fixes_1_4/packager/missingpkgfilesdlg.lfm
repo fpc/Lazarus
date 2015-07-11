@@ -1,0 +1,37 @@
+object MissingPkgFilesDialog: TMissingPkgFilesDialog
+  Left = 300
+  Height = 382
+  Top = 281
+  Width = 477
+  Caption = 'MissingPkgFilesDialog'
+  ClientHeight = 382
+  ClientWidth = 477
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.31'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 342
+    Width = 465
+    OKButton.Name = 'OKButton'
+    OKButton.OnClick = ButtonPanel1Click
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Enabled = False
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object FilesTreeView: TTreeView
+    Left = 6
+    Height = 330
+    Top = 6
+    Width = 465
+    Align = alClient
+    BorderSpacing.Around = 6
+    DefaultItemHeight = 15
+    TabOrder = 1
+  end
+end

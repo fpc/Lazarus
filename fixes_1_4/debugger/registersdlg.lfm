@@ -1,0 +1,172 @@
+inherited RegistersDlg: TRegistersDlg
+  Left = 342
+  Height = 253
+  Top = 117
+  Width = 346
+  ActiveControl = lvRegisters
+  BorderStyle = bsSizeToolWin
+  Caption = 'Registers'
+  ClientHeight = 253
+  ClientWidth = 346
+  object lvRegisters: TListView[0]
+    Left = 0
+    Height = 227
+    Top = 26
+    Width = 346
+    Align = alClient
+    Columns = <    
+      item
+        Caption = 'Name'
+        Width = 150
+      end    
+      item
+        Caption = 'Value'
+      end>
+    MultiSelect = True
+    PopupMenu = PopupMenu1
+    RowSelect = True
+    SmallImages = ImageList1
+    SortType = stText
+    TabOrder = 0
+    ViewStyle = vsReport
+    OnSelectItem = lvRegistersSelectItem
+  end
+  object ToolBar1: TToolBar[1]
+    Left = 0
+    Height = 26
+    Top = 0
+    Width = 346
+    Caption = 'ToolBar1'
+    ShowCaptions = True
+    TabOrder = 1
+    object ToolButtonPower: TToolButton
+      Left = 1
+      Top = 2
+      Action = actPower
+      Down = True
+      ParentShowHint = False
+      ShowCaption = False
+      ShowHint = True
+      Style = tbsCheck
+    end
+    object ToolButton1: TToolButton
+      Left = 24
+      Top = 2
+      Width = 10
+      Caption = 'ToolButton1'
+      Style = tbsSeparator
+    end
+    object ToolButtonDispType: TToolButton
+      Left = 34
+      Top = 2
+      Caption = '...'
+      DropdownMenu = PopupDispType
+      OnClick = ToolButtonDispTypeClick
+      ParentShowHint = False
+      ShowHint = True
+      Style = tbsDropDown
+    end
+  end
+  object ImageList1: TImageList[2]
+    Height = 8
+    Width = 8
+    left = 112
+    top = 93
+    Bitmap = {
+      4C69010000000800000008000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000005CDD8AFF33D56FFF65DE
+      8FFF000000000000000000000000000000004FD374FF15C649FF17C64BFF14C6
+      49FF4FCD72FF00000000000000000000000019B73CFF0CB330FF0CB331FF0CB3
+      30FF15B038FF0000000000000000000000004EBC5DFF03A01AFF04A11CFF03A0
+      19FF50B95FFF000000000000000000000000000000004BB257FF169D27FF56B5
+      5FFF000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000
+    }
+  end
+  object ActionList1: TActionList[3]
+    left = 200
+    top = 112
+    object actPower: TAction
+      OnExecute = actPowerExecute
+    end
+    object actCopyName: TAction
+      Category = 'copy'
+      Caption = 'actCopyName'
+      OnExecute = actCopyNameExecute
+    end
+    object actCopyValue: TAction
+      Category = 'copy'
+      Caption = 'actCopyValue'
+      OnExecute = actCopyValueExecute
+    end
+  end
+  object PopupDispType: TPopupMenu[4]
+    left = 200
+    top = 176
+    object DispDefault: TMenuItem
+      Caption = 'New Item1'
+      OnClick = DispDefaultClick
+    end
+    object DispHex: TMenuItem
+      Caption = 'New Item2'
+      OnClick = DispDefaultClick
+    end
+    object DispBin: TMenuItem
+      Caption = 'New Item3'
+      OnClick = DispDefaultClick
+    end
+    object DispOct: TMenuItem
+      Caption = 'New Item4'
+      OnClick = DispDefaultClick
+    end
+    object DispDec: TMenuItem
+      Caption = 'New Item5'
+      OnClick = DispDefaultClick
+    end
+    object DispRaw: TMenuItem
+      Caption = 'New Item6'
+      OnClick = DispDefaultClick
+    end
+  end
+  object PopupMenu1: TPopupMenu[5]
+    left = 95
+    top = 178
+    object popFormat: TMenuItem
+      Caption = 'New Item1'
+      object PopDispDefault: TMenuItem
+        Caption = 'New Item1'
+        OnClick = DispDefaultClick
+      end
+      object PopDispHex: TMenuItem
+        Caption = 'New Item2'
+        OnClick = DispDefaultClick
+      end
+      object PopDispBin: TMenuItem
+        Caption = 'New Item3'
+        OnClick = DispDefaultClick
+      end
+      object PopDispOct: TMenuItem
+        Caption = 'New Item4'
+        OnClick = DispDefaultClick
+      end
+      object PopDispDec: TMenuItem
+        Caption = 'New Item5'
+        OnClick = DispDefaultClick
+      end
+      object PopDispRaw: TMenuItem
+        Caption = 'New Item6'
+        OnClick = DispDefaultClick
+      end
+    end
+    object popL1: TMenuItem
+      Caption = '-'
+    end
+    object popCopyName: TMenuItem
+      Action = actCopyName
+    end
+    object popCopyValue: TMenuItem
+      Action = actCopyValue
+    end
+  end
+end

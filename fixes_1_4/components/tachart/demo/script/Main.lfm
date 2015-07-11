@@ -1,0 +1,72 @@
+object Form1: TForm1
+  Left = 354
+  Height = 388
+  Top = 145
+  Width = 550
+  Caption = 'Form1'
+  ClientHeight = 388
+  ClientWidth = 550
+  LCLVersion = '1.1'
+  object Chart1: TChart
+    Left = 0
+    Height = 338
+    Top = 0
+    Width = 550
+    AxisList = <    
+      item
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+      end    
+      item
+        Alignment = calBottom
+        Minors = <>
+      end>
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+    ParentColor = False
+    object Chart1FuncSeries1: TFuncSeries
+      Active = False
+      Extent.UseXMax = True
+      Extent.UseXMin = True
+      Extent.XMax = 1
+      Extent.XMin = -1
+      OnCalculate = Chart1FuncSeries1Calculate
+      ExtentAutoY = True
+      Pen.Color = clGreen
+      Pen.Width = 2
+    end
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 50
+    Top = 338
+    Width = 550
+    Align = alBottom
+    ClientHeight = 50
+    ClientWidth = 550
+    TabOrder = 1
+    object edFormula: TEdit
+      Left = 18
+      Height = 27
+      Top = 12
+      Width = 414
+      TabOrder = 0
+      Text = 'sin(x*5) + x'
+    end
+    object btnRefresh: TButton
+      Left = 448
+      Height = 27
+      Top = 12
+      Width = 75
+      Caption = 'Refresh'
+      OnClick = btnRefreshClick
+      TabOrder = 1
+    end
+  end
+end

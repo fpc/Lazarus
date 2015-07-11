@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    LCLVersion
+  ====================================================================
+-->
+
+<module name="LCLVersion">
+<short>Contains the version number constants of the LCL.</short>
+<descr><p>The LCLVersion unit contains the version number constants of the LCL.
+They can be used at runtime to determine the LCL version, so LCL application 
+writers and component writers can offer different functionality or workarounds 
+for bugs and take the LCL version into account while choosing their algorithms
+at run-time.</p><p>Likewise, these version constants can be used at compile time in conditional
+expressions, such as <i>{$IF lcl_major&gt;0}</i>. These kinds of
+expressions are supported in <i>{$mode delphi}</i> and <i>{$mode objfpc}</i>.</p>
+      </descr>
+
+<!-- constant Visibility: default -->
+<element name="lcl_fullversion">
+<short>LCL full version</short>
+<descr><p>The lcl_fullversion constant contains all version numbers, formatted with 2 digits and conatenated (leading zeros are omitted).</p>
+<p>For example, if the LCL version is 1.2.4.6, lcl_fullversion will be 1020406</p>
+</descr>
+<seealso>lcl_version</seealso>
+</element>
+      
+<!-- constant Visibility: default -->
+<element name="lcl_major">
+<short>LCL major version</short>
+<descr>Given a complete version string like 0.9.25, the lcl_major constant
+contains the first number.
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="lcl_minor">
+<short>LCL minor version</short>
+<descr>Given a version string like 0.9.25, the lcl_minor constant
+contains the second number.</descr>
+<seealso>lcl_version</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="lcl_release">
+<short>LCL release number</short>
+<descr>Given a version string like 0.9.25, the lcl_release constant
+contains the third number.</descr>
+<seealso>lcl_version</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="lcl_patch">
+<short>LCL patch version</short>
+<descr>Given a complete version string like 0.9.24.1, the lcl_patch constant
+contains the last number. If there is no fourth number, for example when the 
+version string is 0.9.25, then lcl_patch is 0.
+</descr>
+<seealso>lcl_version</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="lcl_version">
+<short>LCL version string</short>
+<descr>Contains the LCL version string, e.g. 1.0.12.
+</descr>
+<seealso>
+</seealso>
+</element>
+
+</module> <!-- LCLVersion -->
+
+</package>
+</fpdoc-descriptions>

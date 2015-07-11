@@ -1,0 +1,39 @@
+  Examples: (tested with fpc 2.4.2 and 2.5.1 (Jan 2011) / gdb 7.0, gdb 7.2
+  (excluding the '~"type = '  and the '\n"')
+
+  * procedure x(ArgTFoo: TFoo; var VArgTFoo: TFoo); // TFoo = class end;
+  * procedure x(ArgPFoo: PFoo; var VArgPFoo: PFoo); // PFoo = ^TFoo;
+
+  "PType" Results (for the "???" part):
+    ptype Arg<YYY>       ~"type = <???> = class : public TOBJECT \n"   ## followed by lines of fields (exlude inherited)
+                       Normal          |                Param-by-ref
+                 Stabs    Dwarf        |               Stabs    Dwarf   Dwarf(fpc 2.6 up)
+    ArgTFoo      ^TFOO    ^TFOO        |  VArgTFoo     ^TFOO    &TFOO   ^TFOO
+    ArgTFoo^      TFOO     TFOO        |  VArgTFoo^    ^TFOO    ^TFOO    TFOO
+   @ArgTFoo      ^TFOO    ^TFOO        | @VArgTFoo     ^TFOO   ^&TFOO   ^TFOO
+
+    ArgPFoo      ^TFOO    ^TFOO        |  VArgPFoo     ^TFOO    &TFOO   ^TFOO
+    ArgPFoo^     ^TFOO    ^TFOO        |  VArgPFoo^    ^TFOO    ^TFOO   ^TFOO
+   @ArgPFoo      ^TFOO    ^TFOO        | @VArgPFoo     ^TFOO   ^&TFOO   ^TFOO
+
+                 Stabs    Dwarf
+    TFoo         TFOO     ^TFOO
+    PFoo         ^TFOO    ^TFOO
+
+  "WhatIs" Results:     Normal         |                Param-by-ref
+    - some "whatis" have a trailing "=class\n" (indicated by a "=" below
+                 Stabs    Dwarf        |               Stabs    Dwarf   Dwarf(fpc 2.6 up)
+    ArgTFoo      TFOO      TFOO        |  VArgTFoo     TFOO     &TFOO   TFOO
+    ArgTFoo^     TFOO      TFOO=       |  VArgTFoo^    TFOO      TFOO   TFOO=
+   @ArgTFoo      PFOO     ^TFOO        | @VArgTFoo     PFOO    ^&TFOO  ^TFOO    ## whatis @ArgTFoo  may be ^TFoo under Stabs if no named type PFoo exists
+
+    ArgPFoo      PFOO      PFOO        |  VArgPFoo     PFOO     &PFOO   PFOO
+    ArgPFoo^     TFOO      TFOO        |  VArgPFoo^    TFOO      PFOO   TFOO
+   @ArgPFoo      PPFOO    ^PFOO        | @VArgPFoo     PPFOO   ^&PFOO  ^PFOO    ## whatis @ArgPFoo  may be ^PFoo under Stabs if no named type PPFoo exists
+
+                 Stabs    Dwarf
+    TFoo         TFOO     ^TFOO = class
+    PFoo         PFOO     ^TFOO               ## requires gdb 7 (mayb 6.7)
+
+    ==> "ptype SomeVariable" does not differ between TFoo and PFoo
+    ==> dwarf ptype is the same for TFoo and PFoo (whatis can tell the diff)

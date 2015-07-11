@@ -1,0 +1,145 @@
+object LazConverterForm: TLazConverterForm
+  Left = 286
+  Height = 463
+  Top = 118
+  Width = 578
+  HorzScrollBar.Page = 577
+  VertScrollBar.Page = 462
+  Caption = 'Codepage LazConverter for PAS, LFM, LRS, LRT & INC files v0.0.6'
+  ClientHeight = 463
+  ClientWidth = 578
+  Constraints.MinHeight = 463
+  Constraints.MinWidth = 578
+  OnShow = Form1Show
+  Position = poScreenCenter
+  LCLVersion = '0.9.31'
+  object Panel1: TPanel
+    Left = 0
+    Height = 200
+    Top = 0
+    Width = 578
+    Align = alTop
+    ClientHeight = 200
+    ClientWidth = 578
+    FullRepaint = False
+    TabOrder = 0
+    object Label1: TLabel
+      Left = 8
+      Height = 14
+      Top = 16
+      Width = 102
+      Caption = 'Path to your project:'
+      ParentColor = False
+    end
+    object Label2: TLabel
+      Left = 8
+      Height = 14
+      Top = 64
+      Width = 71
+      Caption = 'Convert From:'
+      ParentColor = False
+    end
+    object Label3: TLabel
+      Left = 216
+      Height = 14
+      Top = 64
+      Width = 59
+      Caption = 'Convert To:'
+      ParentColor = False
+    end
+    object Label6: TLabel
+      Left = 8
+      Height = 14
+      Top = 149
+      Width = 559
+      Anchors = [akTop, akLeft, akRight]
+      Caption = 'Ready...'
+      ParentColor = False
+    end
+    object Edit1: TEdit
+      Left = 8
+      Height = 21
+      Top = 32
+      Width = 479
+      Anchors = [akTop, akLeft, akRight]
+      TabOrder = 0
+    end
+    object Button1: TButton
+      Left = 496
+      Height = 23
+      Top = 32
+      Width = 75
+      Anchors = [akTop, akRight]
+      Caption = 'Path'
+      OnClick = Button1Click
+      TabOrder = 1
+    end
+    object ComboBox1: TComboBox
+      Left = 8
+      Height = 21
+      Top = 80
+      Width = 200
+      ItemHeight = 13
+      TabOrder = 2
+    end
+    object ComboBox2: TComboBox
+      Left = 216
+      Height = 21
+      Top = 80
+      Width = 200
+      ItemHeight = 13
+      TabOrder = 5
+    end
+    object Button2: TButton
+      Left = 8
+      Height = 25
+      Top = 112
+      Width = 75
+      Caption = 'Search'
+      OnClick = Button2Click
+      TabOrder = 3
+    end
+    object Button3: TButton
+      Left = 88
+      Height = 25
+      Top = 112
+      Width = 123
+      Caption = 'Convert'
+      OnClick = Button3Click
+      TabOrder = 4
+    end
+    object ProgressBar1: TProgressBar
+      Left = 1
+      Height = 17
+      Top = 182
+      Width = 576
+      Align = alBottom
+      TabOrder = 6
+      TabStop = True
+    end
+  end
+  object FileListBox1: TFileListBox
+    Left = 0
+    Height = 263
+    Top = 200
+    Width = 578
+    Align = alClient
+    ItemHeight = 13
+    PopupMenu = PopupMenu1
+    TabOrder = 1
+  end
+  object SelectDirectoryDialog1: TSelectDirectoryDialog
+    Title = 'Select Directory'
+    FilterIndex = 0
+    left = 8
+    top = 480
+  end
+  object PopupMenu1: TPopupMenu
+    left = 272
+    top = 123
+    object MenuItem1: TMenuItem
+      Caption = 'Remove from conversion'
+      OnClick = MenuItem1Click
+    end
+  end
+end

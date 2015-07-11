@@ -1,0 +1,210 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="/"/>
+    <Version Value="6"/>
+    <General>
+      <MainUnit Value="0"/>
+      <IconPath Value="./"/>
+      <TargetFileExt Value=".exe"/>
+      <ActiveEditorIndexAtStart Value="0"/>
+    </General>
+    <VersionInfo>
+      <ProjectVersion Value=""/>
+      <Language Value=""/>
+      <CharSet Value=""/>
+    </VersionInfo>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="1">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+    </RequiredPackages>
+    <Units Count="20">
+      <Unit0>
+        <Filename Value="dropfiles.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="dropfiles"/>
+        <CursorPos X="28" Y="6"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="22"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="unit1.pas"/>
+        <ComponentName Value="Form1"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="unit1.lrs"/>
+        <UnitName Value="Unit1"/>
+        <CursorPos X="78" Y="8"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="22"/>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="../../lcl/forms.pp"/>
+        <UnitName Value="Forms"/>
+        <CursorPos X="3" Y="567"/>
+        <TopLine Value="627"/>
+        <UsageCount Value="10"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="unit2.pas"/>
+        <ComponentName Value="Form2"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="unit2.lrs"/>
+        <UnitName Value="Unit2"/>
+        <CursorPos X="19" Y="37"/>
+        <TopLine Value="20"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="22"/>
+        <Loaded Value="True"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="../../lcl/interfaces/gtk/gtkproc.pp"/>
+        <UnitName Value="GTKProc"/>
+        <CursorPos X="50" Y="266"/>
+        <TopLine Value="299"/>
+        <UsageCount Value="11"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="../../lcl/interfaces/gtk/gtkcallback.inc"/>
+        <CursorPos X="29" Y="3223"/>
+        <TopLine Value="3223"/>
+        <UsageCount Value="11"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="../../lcl/interfaces/gtk/gtkobject.inc"/>
+        <CursorPos X="61" Y="5188"/>
+        <TopLine Value="5177"/>
+        <UsageCount Value="11"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="../../lcl/interfaces/gtk/gtkint.pp"/>
+        <UnitName Value="GtkInt"/>
+        <CursorPos X="23" Y="317"/>
+        <TopLine Value="303"/>
+        <UsageCount Value="10"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="../../lcl/interfaces/gtk/gtkwscontrols.pp"/>
+        <UnitName Value="GtkWSControls"/>
+        <CursorPos X="40" Y="336"/>
+        <TopLine Value="316"/>
+        <UsageCount Value="10"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="../../../fpc/fpcsrc/packages/extra/gtk2/gtk+/gtk/gtkincludes.inc"/>
+        <CursorPos X="11" Y="166"/>
+        <TopLine Value="152"/>
+        <UsageCount Value="10"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="../../lcl/lmessages.pp"/>
+        <UnitName Value="LMessages"/>
+        <CursorPos X="3" Y="241"/>
+        <TopLine Value="227"/>
+        <UsageCount Value="10"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="../../lcl/interfaces/gtk/gtkwsstdctrls.pp"/>
+        <UnitName Value="GtkWSStdCtrls"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="296"/>
+        <UsageCount Value="10"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="../../lcl/interfaces/qt/qtwidgets.pas"/>
+        <UnitName Value="qtwidgets"/>
+        <CursorPos X="3" Y="853"/>
+        <TopLine Value="824"/>
+        <UsageCount Value="10"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="../../lcl/interfaces/gtk/gtkdragcallback.inc"/>
+        <CursorPos X="3" Y="29"/>
+        <TopLine Value="16"/>
+        <UsageCount Value="10"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="../../lcl/interfaces/gtk2/gtk2wsstdctrls.pp"/>
+        <UnitName Value="Gtk2WSStdCtrls"/>
+        <CursorPos X="71" Y="903"/>
+        <TopLine Value="887"/>
+        <UsageCount Value="10"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="../../lcl/interfaces/gtk/gtkwsforms.pp"/>
+        <UnitName Value="GtkWSForms"/>
+        <CursorPos X="28" Y="213"/>
+        <TopLine Value="201"/>
+        <UsageCount Value="10"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="../../lcl/interfaces/gtk/gtkdef.pp"/>
+        <UnitName Value="GTKDef"/>
+        <CursorPos X="45" Y="42"/>
+        <TopLine Value="36"/>
+        <UsageCount Value="10"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="../../lcl/interfaces/gtk2/gtk2wscustommemo.inc"/>
+        <CursorPos X="31" Y="131"/>
+        <TopLine Value="118"/>
+        <UsageCount Value="10"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="../../lcl/interfaces/gtk2/gtk2wsspin.pp"/>
+        <UnitName Value="Gtk2WSSpin"/>
+        <CursorPos X="19" Y="50"/>
+        <TopLine Value="41"/>
+        <UsageCount Value="10"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="../../lcl/interfaces/gtk/gtkwsspin.pp"/>
+        <UnitName Value="GtkWSSpin"/>
+        <CursorPos X="26" Y="163"/>
+        <TopLine Value="152"/>
+        <UsageCount Value="10"/>
+      </Unit19>
+    </Units>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="5"/>
+    <CodeGeneration>
+      <Generate Value="Faster"/>
+    </CodeGeneration>
+    <Linking>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions Count="2">
+      <Item1>
+        <Name Value="ECodetoolError"/>
+      </Item1>
+      <Item2>
+        <Name Value="EFOpenError"/>
+      </Item2>
+    </Exceptions>
+  </Debugging>
+</CONFIG>

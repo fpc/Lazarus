@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="ISO8859-1"?>
+<fpdoc-descriptions>
+<package name="gtk">
+
+<!--
+  ====================================================================
+    GtkWSDialogs
+  ====================================================================
+-->
+
+<module name="GtkWSDialogs">
+<short></short>
+<descr>
+</descr>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Gtk">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gdk">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Glib">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="SysUtils">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Classes">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Controls">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LMessages">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="InterfaceBase">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="graphics">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Dialogs">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="WSDialogs">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="WSLCLClasses">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gtkint">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gtkproc">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gtkwscontrols">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSCommonDialog">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkWSCommonDialog.CreateHandle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkWSCommonDialog.CreateHandle.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCommonDialog.CreateHandle.ACommonDialog">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCommonDialog.ShowModal">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCommonDialog.ShowModal.ACommonDialog">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCommonDialog.DestroyHandle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCommonDialog.DestroyHandle.ACommonDialog">
+<short></short>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSFileDialog">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSOpenDialog">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSSaveDialog">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSSelectDirectoryDialog">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSColorDialog">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSColorButton">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSFontDialog">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+</module> <!-- GtkWSDialogs -->
+</package>
+</fpdoc-descriptions>

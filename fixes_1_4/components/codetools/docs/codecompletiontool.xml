@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="CodeTools">
+    <module name="CodeCompletionTool">
+      <element name="TCodeCompletionCodeTool.UpdateProcBodySignatures">
+        <short>Guesses what method bodies belong to which definition and updates the body signatures</short>
+        <descr>ClassProcs and ProcBodyNodes are trees of TCodeTreeNodeExtension, created by GatherProcNodes</descr>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

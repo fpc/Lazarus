@@ -1,0 +1,54 @@
+object Form1: TForm1
+  Left = 545
+  Height = 239
+  Top = 193
+  Width = 359
+  Caption = 'Form1'
+  ClientHeight = 239
+  ClientWidth = 359
+  OnCreate = FormCreate
+  LCLVersion = '1.3'
+  object Edit1: TEdit
+    Left = 71
+    Height = 21
+    Top = 72
+    Width = 225
+    HelpType = htKeyword
+    HelpKeyword = 'example/MainPage.html'
+    TabOrder = 0
+    Text = 'Edit1'
+  end
+  object Edit2: TEdit
+    Left = 71
+    Height = 21
+    Top = 128
+    Width = 224
+    HelpType = htKeyword
+    HelpKeyword = 'example/SecondPage.html'
+    TabOrder = 1
+    Text = 'Edit2'
+  end
+  object ShowHelpButton: TButton
+    Left = 70
+    Height = 23
+    Top = 20
+    Width = 105
+    AutoSize = True
+    Caption = 'ShowHelpButton'
+    OnClick = ShowHelpButtonClick
+    TabOrder = 2
+  end
+  object CHMHelpDatabase1: TCHMHelpDatabase
+    AutoRegister = True
+    Filename = '../../../tools/chmmaker/example.chm'
+    KeywordPrefix = 'example'
+    left = 80
+    top = 168
+  end
+  object LHelpConnector1: TLHelpConnector
+    LHelpPath = '../lhelp/lhelp'
+    AutoRegister = True
+    left = 256
+    top = 168
+  end
+end

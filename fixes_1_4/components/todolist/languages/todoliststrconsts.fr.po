@@ -1,0 +1,97 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Yann Mérignac <yann.merignac@laposte.net>\n"
+"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"X-Generator: Poedit 1.7.5\n"
+
+#: todoliststrconsts.dlgfropts
+msgid "Options"
+msgstr "Options"
+
+#: todoliststrconsts.dlgunitdeprefresh
+msgid "Refresh"
+msgstr "Rafraîchir"
+
+#: todoliststrconsts.lisctinsertmacro
+msgid "Insert Macro"
+msgstr "Insérer une macro"
+
+#: todoliststrconsts.lispkgfiletypetext
+msgid "Text"
+msgstr "Texte"
+
+#: todoliststrconsts.lisprint
+msgid "Print"
+msgstr "Imprimer"
+
+#: todoliststrconsts.listddinserttodo
+msgid "Insert ToDo"
+msgstr "Insérer une note dans le pense-bête (\"ToDo\")"
+
+#: todoliststrconsts.listodoexport
+msgid "Export"
+msgstr "Exporter"
+
+#: todoliststrconsts.listodogoto
+msgid "Goto"
+msgstr "Aller"
+
+#: todoliststrconsts.listodoldescription
+msgid "Description"
+msgstr "Description"
+
+#: todoliststrconsts.listodoldone
+msgid "Done"
+msgstr "Fait"
+
+#: todoliststrconsts.listodolfile
+msgid "Module"
+msgstr "Module"
+
+#: todoliststrconsts.listodolist
+msgid "ToDo List"
+msgstr "Pense-bête"
+
+#: todoliststrconsts.listodolistgotoline
+msgid "Goto selected source line"
+msgstr "Aller à la ligne du code source sélectionné"
+
+#: todoliststrconsts.listodolistoptions
+msgid "ToDo options ..."
+msgstr "Options du pense-bête..."
+
+#: todoliststrconsts.listodolistprintlist
+msgid "Print todo items"
+msgstr "Imprimer le pense-bête"
+
+#: todoliststrconsts.listodolistrefresh
+msgid "Refresh todo items"
+msgstr "Rafraîchir le pense-bête"
+
+#: todoliststrconsts.listodolline
+msgid "Line"
+msgstr "Ligne"
+
+#: todoliststrconsts.listodolowner
+msgid "Owner"
+msgstr "Propriétaire"
+
+#: todoliststrconsts.listodolpriority
+msgid "Priority"
+msgstr "Priorité"
+
+#: todoliststrconsts.listtodolcategory
+msgid "Category"
+msgstr "Catégorie"
+
+#: todoliststrconsts.lisviewtodolist
+msgid "View ToDo List"
+msgstr "Afficher le pense-bête"
+

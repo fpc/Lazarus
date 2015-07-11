@@ -1,0 +1,22 @@
+#Lazarus uses the following third party libraries and tools
+
+
+#Component libraries:
+
+Windows XP Theme Manager 
+http://www.soft-gems.net/
+
+
+#Icon sets:
+
+Silk icon set 1.3 by Mark James 
+http://www.famfamfam.com/lab/icons/silk/
+
+Tango Icon Library 
+http://tango.freedesktop.org/Tango_Icon_Library
+
+
+#RemObjects Pascal Script 
+Created by Carlo Kok / RemObjects Software
+Fixed for Lazarus by Bogusіaw Brandys
+http://www.remobjects.com/ps.aspx

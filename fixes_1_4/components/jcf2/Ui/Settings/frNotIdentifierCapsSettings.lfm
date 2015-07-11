@@ -1,0 +1,53 @@
+inherited fNotIdentifierCapsSettings: TfNotIdentifierCapsSettings
+  Height = 232
+  Width = 396
+  ClientHeight = 232
+  ClientWidth = 396
+  OnResize = FrameResize
+  TabOrder = 0
+  DesignLeft = 689
+  DesignTop = 570
+  object Label1: TLabel[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Control = Owner
+    Left = 99
+    Height = 14
+    Top = 0
+    Width = 199
+    Caption = 'Set capitalisation on these non-identifiers'
+    ParentColor = False
+  end
+  object cbEnableAnyWords: TCheckBox[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 17
+    Top = 6
+    Width = 50
+    BorderSpacing.Around = 6
+    Caption = 'Enable'
+    Checked = True
+    OnClick = cbEnableAnyWordsClick
+    State = cbChecked
+    TabOrder = 0
+  end
+  object mWords: TMemo[2]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cbEnableAnyWords
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
+    Height = 197
+    Top = 29
+    Width = 384
+    Align = alBottom
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    ScrollBars = ssVertical
+    TabOrder = 1
+  end
+end

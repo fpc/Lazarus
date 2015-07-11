@@ -1,0 +1,11 @@
+  add_LCLBase(ADirectory+IncludeTrailingPathDelimiter('lcl'));
+  add_LazUtils(ADirectory+IncludeTrailingPathDelimiter('components')+IncludeTrailingPathDelimiter('lazutils'));
+  add_FCL(ADirectory+IncludeTrailingPathDelimiter('packager')+IncludeTrailingPathDelimiter('registration'));
+  add_LCL(ADirectory+IncludeTrailingPathDelimiter('lcl')+IncludeTrailingPathDelimiter('interfaces'));
+  add_LazControls(ADirectory+IncludeTrailingPathDelimiter('components')+IncludeTrailingPathDelimiter('lazcontrols'));
+  add_IDEIntf(ADirectory+IncludeTrailingPathDelimiter('components')+IncludeTrailingPathDelimiter('ideintf'));
+  add_CodeTools(ADirectory+IncludeTrailingPathDelimiter('components')+IncludeTrailingPathDelimiter('codetools'));
+  add_SynEdit(ADirectory+IncludeTrailingPathDelimiter('components')+IncludeTrailingPathDelimiter('synedit'));
+  add_DebuggerIntf(ADirectory+IncludeTrailingPathDelimiter('components')+IncludeTrailingPathDelimiter('debuggerintf'));
+  add_LazDebuggerGdbmi(ADirectory+IncludeTrailingPathDelimiter('components')+IncludeTrailingPathDelimiter('lazdebuggergdbmi'));
+  add_ide(ADirectory+IncludeTrailingPathDelimiter('ide'));

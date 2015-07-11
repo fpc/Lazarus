@@ -1,0 +1,41 @@
+# Valdas Jankūnas <zmuogs@gmail.com>, 2010.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: Valdas Jankūnas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2010-05-16 13:51+0300\n"
+"Project-Id-Version: \n"
+"Language-Team: Lietuvių <kde-i18n-lt@kde.org>\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.0\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: fpcunitlazideintf.sfpcunconsoletestapp
+msgid "FPCUnit Console Test Application"
+msgstr "FPCUnit testo pulte programa"
+
+#: fpcunitlazideintf.sfpcunconsoletestdesc
+msgid "FPCUnit Console Test Application%sAn application to run FPCUnit test cases in console mode.%sThe application source is automatically maintained by Lazarus."
+msgstr "FPCUnit testo pulte programa%sPrograma, kuri pulte vykdys FPCUnit testuojamus atvejus.%sLazarus automatiškai rūpinsis programos pirminiu kodu."
+
+#: fpcunitlazideintf.sfpcuntestapp
+msgid "FPCUnit Test Application"
+msgstr "FPCUnit testo programa"
+
+#: fpcunitlazideintf.sfpcuntestappdesc
+msgid "FPCUnit Test Application%sAn application to run FPCUnit test cases.%sThe application source is automatically maintained by Lazarus."
+msgstr "FPCUnit testo programa%sPrograma, vykdanti FPCUnit testuojamus atvejus.%sLazarus automatiškai rūpinsis programos pirminiu kodu."
+
+#: fpcunitlazideintf.sfpcuntestcase
+msgid "FPCUnit Test Case"
+msgstr "FPCUnit testavimo atvejis"
+
+#: fpcunitlazideintf.sfpcuntestcasedesc
+msgid "FPCUnit Test Case%sA unit containing a FPCUnit Test Case."
+msgstr "FPCUnit testavimo atvejis%sModulis, kuriame aprašytas FPCUnit testavimo atvejis."
+
+#: fpcunitlazideintf.swriteyourowntest
+msgid "Write your own test"
+msgstr "Sukurkite savo testavimą"
+

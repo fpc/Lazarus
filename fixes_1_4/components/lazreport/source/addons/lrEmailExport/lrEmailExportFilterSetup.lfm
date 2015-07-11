@@ -1,0 +1,406 @@
+object lrEmailExportFilterSetupForm: TlrEmailExportFilterSetupForm
+  Left = 652
+  Height = 477
+  Top = 228
+  Width = 457
+  Caption = 'Send to email...'
+  ClientHeight = 477
+  ClientWidth = 457
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.3'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 41
+    Top = 430
+    Width = 445
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 424
+    Top = 0
+    Width = 457
+    ActivePage = TabSheet1
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 0
+    object TabSheet1: TTabSheet
+      Caption = 'Email'
+      ClientHeight = 393
+      ClientWidth = 453
+      object DividerBevel1: TDividerBevel
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideTop.Control = TabSheet1
+        AnchorSideRight.Control = TabSheet1
+        AnchorSideRight.Side = asrBottom
+        Left = 0
+        Height = 21
+        Top = 0
+        Width = 453
+        Caption = 'Message'
+        Anchors = [akTop, akLeft, akRight]
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object DividerBevel2: TDividerBevel
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideRight.Control = TabSheet1
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = Label5
+        Left = 0
+        Height = 21
+        Top = 300
+        Width = 453
+        Caption = 'Attachment'
+        Anchors = [akLeft, akRight, akBottom]
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label2: TLabel
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideTop.Control = DividerBevel1
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 21
+        Top = 27
+        Width = 44
+        BorderSpacing.Around = 6
+        Caption = 'Adress'
+        ParentColor = False
+      end
+      object Label3: TLabel
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideTop.Control = cbEmailList
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 21
+        Top = 93
+        Width = 49
+        BorderSpacing.Around = 6
+        Caption = 'Subject'
+        ParentColor = False
+      end
+      object Label4: TLabel
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideTop.Control = cbSubject
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 21
+        Top = 159
+        Width = 30
+        BorderSpacing.Around = 6
+        Caption = 'Text'
+        ParentColor = False
+      end
+      object Label5: TLabel
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideBottom.Control = cbFilterList
+        Left = 6
+        Height = 21
+        Top = 327
+        Width = 46
+        Anchors = [akLeft, akBottom]
+        BorderSpacing.Around = 6
+        Caption = 'Format'
+        ParentColor = False
+      end
+      object cbFilterList: TComboBox
+        AnchorSideLeft.Control = Label5
+        AnchorSideRight.Control = TabSheet1
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = TabSheet1
+        AnchorSideBottom.Side = asrBottom
+        Left = 12
+        Height = 33
+        Top = 354
+        Width = 435
+        Anchors = [akLeft, akRight, akBottom]
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        Style = csDropDownList
+        TabOrder = 0
+      end
+      object cbEmailList: TComboBox
+        AnchorSideLeft.Control = Label2
+        AnchorSideTop.Control = Label2
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet1
+        AnchorSideRight.Side = asrBottom
+        Left = 12
+        Height = 33
+        Top = 54
+        Width = 435
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        TabOrder = 1
+      end
+      object cbSubject: TComboBox
+        AnchorSideLeft.Control = Label3
+        AnchorSideTop.Control = Label3
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet1
+        AnchorSideRight.Side = asrBottom
+        Left = 12
+        Height = 33
+        Top = 120
+        Width = 435
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        TabOrder = 2
+      end
+      object edtBoby: TMemo
+        AnchorSideLeft.Control = Label4
+        AnchorSideTop.Control = Label4
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet1
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = DividerBevel2
+        Left = 12
+        Height = 108
+        Top = 186
+        Width = 435
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Around = 6
+        TabOrder = 3
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'Acount'
+      ClientHeight = 393
+      ClientWidth = 453
+      object RadioButton1: TRadioButton
+        AnchorSideLeft.Control = TabSheet2
+        AnchorSideTop.Control = TabSheet2
+        Left = 6
+        Height = 23
+        Top = 6
+        Width = 135
+        BorderSpacing.Around = 6
+        Caption = 'Use mail program'
+        Checked = True
+        OnChange = RadioButton1Change
+        TabOrder = 0
+        TabStop = True
+      end
+      object Label1: TLabel
+        AnchorSideLeft.Control = TabSheet2
+        AnchorSideTop.Control = RadioButton1
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 21
+        Top = 35
+        Width = 110
+        BorderSpacing.Around = 6
+        Caption = 'Application name'
+        ParentColor = False
+      end
+      object cbAppName: TComboBox
+        AnchorSideLeft.Control = Label1
+        AnchorSideTop.Control = Label1
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet2
+        AnchorSideRight.Side = asrBottom
+        Left = 12
+        Height = 33
+        Top = 62
+        Width = 435
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        Style = csDropDownList
+        TabOrder = 1
+      end
+      object RadioButton2: TRadioButton
+        AnchorSideLeft.Control = TabSheet2
+        AnchorSideTop.Control = cbAppName
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 23
+        Top = 101
+        Width = 97
+        BorderSpacing.Around = 6
+        Caption = 'Direct send'
+        Enabled = False
+        OnChange = RadioButton1Change
+        TabOrder = 2
+      end
+      object Label6: TLabel
+        AnchorSideLeft.Control = TabSheet2
+        AnchorSideTop.Control = RadioButton2
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 21
+        Top = 130
+        Width = 72
+        BorderSpacing.Around = 6
+        Caption = 'From name'
+        ParentColor = False
+      end
+      object Label7: TLabel
+        AnchorSideLeft.Control = TabSheet2
+        AnchorSideTop.Control = edtFromName
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 21
+        Top = 194
+        Width = 79
+        BorderSpacing.Around = 6
+        Caption = 'From adress'
+        ParentColor = False
+      end
+      object Label8: TLabel
+        AnchorSideLeft.Control = TabSheet2
+        AnchorSideTop.Control = edtFromAdress
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 21
+        Top = 258
+        Width = 32
+        BorderSpacing.Around = 6
+        Caption = 'Host'
+        ParentColor = False
+      end
+      object Label9: TLabel
+        AnchorSideLeft.Control = Label12
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = edtFromAdress
+        AnchorSideTop.Side = asrBottom
+        Left = 233
+        Height = 21
+        Top = 258
+        Width = 28
+        BorderSpacing.Around = 6
+        Caption = 'Port'
+        ParentColor = False
+      end
+      object Label10: TLabel
+        AnchorSideLeft.Control = TabSheet2
+        AnchorSideTop.Control = Edit3
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 21
+        Top = 322
+        Width = 34
+        BorderSpacing.Around = 6
+        Caption = 'Login'
+        ParentColor = False
+      end
+      object Label11: TLabel
+        AnchorSideLeft.Control = Label12
+        AnchorSideTop.Control = Edit4
+        AnchorSideTop.Side = asrBottom
+        Left = 232
+        Height = 21
+        Top = 322
+        Width = 63
+        BorderSpacing.Around = 6
+        Caption = 'Password'
+        ParentColor = False
+      end
+      object edtFromName: TEdit
+        AnchorSideLeft.Control = Label6
+        AnchorSideTop.Control = Label6
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet2
+        AnchorSideRight.Side = asrBottom
+        Left = 12
+        Height = 31
+        Top = 157
+        Width = 435
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        TabOrder = 3
+      end
+      object edtFromAdress: TEdit
+        AnchorSideLeft.Control = Label7
+        AnchorSideTop.Control = Label7
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet2
+        AnchorSideRight.Side = asrBottom
+        Left = 12
+        Height = 31
+        Top = 221
+        Width = 435
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        TabOrder = 4
+      end
+      object Label12: TLabel
+        AnchorSideLeft.Control = TabSheet2
+        AnchorSideLeft.Side = asrCenter
+        AnchorSideTop.Control = TabSheet2
+        Left = 226
+        Height = 1
+        Top = 0
+        Width = 1
+        ParentColor = False
+      end
+      object Edit3: TEdit
+        AnchorSideLeft.Control = Label8
+        AnchorSideTop.Control = Label8
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = Label12
+        Left = 12
+        Height = 31
+        Top = 285
+        Width = 208
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        TabOrder = 5
+      end
+      object Edit4: TEdit
+        AnchorSideLeft.Control = Label9
+        AnchorSideTop.Control = Label9
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet2
+        AnchorSideRight.Side = asrBottom
+        Left = 239
+        Height = 31
+        Top = 285
+        Width = 208
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        TabOrder = 6
+      end
+      object Edit5: TEdit
+        AnchorSideLeft.Control = Label10
+        AnchorSideTop.Control = Label10
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = Label12
+        Left = 12
+        Height = 31
+        Top = 349
+        Width = 208
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        TabOrder = 7
+      end
+      object Edit6: TEdit
+        AnchorSideLeft.Control = Label11
+        AnchorSideTop.Control = Label11
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet2
+        AnchorSideRight.Side = asrBottom
+        Left = 238
+        Height = 31
+        Top = 349
+        Width = 209
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        TabOrder = 8
+      end
+    end
+  end
+end

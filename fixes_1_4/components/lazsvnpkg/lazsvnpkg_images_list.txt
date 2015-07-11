@@ -1,0 +1,6 @@
+images/menu_svn.png
+images/menu_svn_commit.png
+images/menu_svn_update.png
+images/menu_svn_diff.png
+images/menu_svn_log.png
+images/menu_svn_revert.png

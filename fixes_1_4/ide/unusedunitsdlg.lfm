@@ -1,0 +1,99 @@
+object UnusedUnitsDialog: TUnusedUnitsDialog
+  Left = 375
+  Height = 382
+  Top = 236
+  Width = 501
+  ActiveControl = UnitsTreeView
+  Caption = 'UnusedUnitsDialog'
+  ClientHeight = 382
+  ClientWidth = 501
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.5'
+  object UnitsTreeView: TTreeView
+    Left = 6
+    Height = 294
+    Top = 6
+    Width = 489
+    Align = alClient
+    BorderSpacing.Around = 6
+    DefaultItemHeight = 22
+    MultiSelect = True
+    ReadOnly = True
+    ScrollBars = ssAutoBoth
+    TabOrder = 0
+    OnSelectionChanged = UnitsTreeViewSelectionChanged
+    Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 76
+    Top = 306
+    Width = 501
+    Align = alBottom
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.HorizontalSpacing = 10
+    ClientHeight = 76
+    ClientWidth = 501
+    TabOrder = 1
+    object CancelBitBtn: TBitBtn
+      Left = 404
+      Height = 30
+      Top = 39
+      Width = 90
+      Anchors = [akRight, akBottom]
+      AutoSize = True
+      Cancel = True
+      Caption = 'Cancel'
+      Constraints.MinWidth = 75
+      Kind = bkCancel
+      ModalResult = 2
+      OnClick = CancelBitBtnClick
+      TabOrder = 0
+    end
+    object RemoveSelectedBitBtn: TBitBtn
+      AnchorSideRight.Control = CancelBitBtn
+      Left = 217
+      Height = 30
+      Top = 39
+      Width = 177
+      Anchors = [akRight, akBottom]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'RemoveSelectedBitBtn'
+      Constraints.MinWidth = 75
+      ModalResult = 1
+      OnClick = RemoveSelectedBitBtnClick
+      TabOrder = 1
+    end
+    object RemoveAllBitBtn: TBitBtn
+      AnchorSideRight.Control = RemoveSelectedBitBtn
+      Left = 69
+      Height = 30
+      Top = 39
+      Width = 138
+      Anchors = [akRight, akBottom]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'RemoveAllBitBtn'
+      Constraints.MinWidth = 75
+      ModalResult = 8
+      OnClick = RemoveAllBitBtnClick
+      TabOrder = 2
+    end
+    object ShowInitializationCheckBox: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 6
+      Width = 350
+      Caption = 'Show units with initialization/finalization sections'
+      Checked = True
+      OnClick = ShowInitializationCheckBoxClick
+      ParentShowHint = False
+      ShowHint = True
+      State = cbChecked
+      TabOrder = 3
+    end
+  end
+end

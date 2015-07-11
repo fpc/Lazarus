@@ -1,0 +1,170 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="/"/>
+    <Version Value="5"/>
+    <General>
+      <MainUnit Value="0"/>
+      <TargetFileExt Value=""/>
+      <ActiveEditorIndexAtStart Value="1"/>
+    </General>
+    <VersionInfo>
+      <ProjectVersion Value=""/>
+      <Language Value=""/>
+      <CharSet Value=""/>
+    </VersionInfo>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="1">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+    </RequiredPackages>
+    <Units Count="3">
+      <Unit0>
+        <Filename Value="testdatadict.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="testdatadict"/>
+        <UsageCount Value="20"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="frmconfdatadict.pp"/>
+        <ComponentName Value="ConfigureDataDictionaryForm"/>
+        <ResourceFilename Value="frmconfdatadict.lrs"/>
+        <UnitName Value="frmconfdatadict"/>
+        <CursorPos X="12" Y="18"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="idedatadict.pp"/>
+        <UnitName Value="idedatadict"/>
+        <CursorPos X="9" Y="116"/>
+        <TopLine Value="75"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit2>
+    </Units>
+    <JumpHistory Count="20" HistoryIndex="19">
+      <Position1>
+        <Filename Value="frmconfdatadict.pp"/>
+        <Caret Line="18" Column="14" TopLine="1"/>
+      </Position1>
+      <Position2>
+        <Filename Value="frmconfdatadict.pp"/>
+        <Caret Line="14" Column="3" TopLine="1"/>
+      </Position2>
+      <Position3>
+        <Filename Value="frmconfdatadict.pp"/>
+        <Caret Line="16" Column="26" TopLine="1"/>
+      </Position3>
+      <Position4>
+        <Filename Value="frmconfdatadict.pp"/>
+        <Caret Line="13" Column="33" TopLine="1"/>
+      </Position4>
+      <Position5>
+        <Filename Value="frmconfdatadict.pp"/>
+        <Caret Line="16" Column="22" TopLine="1"/>
+      </Position5>
+      <Position6>
+        <Filename Value="frmconfdatadict.pp"/>
+        <Caret Line="17" Column="12" TopLine="1"/>
+      </Position6>
+      <Position7>
+        <Filename Value="frmconfdatadict.pp"/>
+        <Caret Line="16" Column="8" TopLine="1"/>
+      </Position7>
+      <Position8>
+        <Filename Value="frmconfdatadict.pp"/>
+        <Caret Line="21" Column="26" TopLine="1"/>
+      </Position8>
+      <Position9>
+        <Filename Value="frmconfdatadict.pp"/>
+        <Caret Line="24" Column="32" TopLine="1"/>
+      </Position9>
+      <Position10>
+        <Filename Value="frmconfdatadict.pp"/>
+        <Caret Line="20" Column="30" TopLine="1"/>
+      </Position10>
+      <Position11>
+        <Filename Value="frmconfdatadict.pp"/>
+        <Caret Line="24" Column="32" TopLine="1"/>
+      </Position11>
+      <Position12>
+        <Filename Value="frmconfdatadict.pp"/>
+        <Caret Line="21" Column="26" TopLine="1"/>
+      </Position12>
+      <Position13>
+        <Filename Value="idedatadict.pp"/>
+        <Caret Line="21" Column="14" TopLine="1"/>
+      </Position13>
+      <Position14>
+        <Filename Value="idedatadict.pp"/>
+        <Caret Line="17" Column="1" TopLine="1"/>
+      </Position14>
+      <Position15>
+        <Filename Value="idedatadict.pp"/>
+        <Caret Line="13" Column="5" TopLine="1"/>
+      </Position15>
+      <Position16>
+        <Filename Value="idedatadict.pp"/>
+        <Caret Line="15" Column="1" TopLine="4"/>
+      </Position16>
+      <Position17>
+        <Filename Value="idedatadict.pp"/>
+        <Caret Line="14" Column="3" TopLine="11"/>
+      </Position17>
+      <Position18>
+        <Filename Value="idedatadict.pp"/>
+        <Caret Line="62" Column="3" TopLine="55"/>
+      </Position18>
+      <Position19>
+        <Filename Value="idedatadict.pp"/>
+        <Caret Line="5" Column="1" TopLine="1"/>
+      </Position19>
+      <Position20>
+        <Filename Value="idedatadict.pp"/>
+        <Caret Line="17" Column="3" TopLine="9"/>
+      </Position20>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="5"/>
+    <CodeGeneration>
+      <Generate Value="Faster"/>
+    </CodeGeneration>
+    <Linking>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions Count="2">
+      <Item1>
+        <Name Value="ECodetoolError"/>
+      </Item1>
+      <Item2>
+        <Name Value="EFOpenError"/>
+      </Item2>
+    </Exceptions>
+  </Debugging>
+</CONFIG>

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="ISO8859-1"?>
+<fpdoc-descriptions>
+<package name="gtk">
+
+<!--
+  ====================================================================
+    GtkWSCheckLst
+  ====================================================================
+-->
+
+<module name="GtkWSCheckLst">
+<short></short>
+<descr>
+</descr>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="CheckLst">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="WSCheckLst">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="WSLCLClasses">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="glib">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gdk">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gtk">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gdkpixbuf">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="GtkFontCache">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="GtkInt">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Classes">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="GTKWinApiWindow">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gtkglobals">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gtkproc">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSCustomCheckListBox">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkWSCustomCheckListBox.GetChecked">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkWSCustomCheckListBox.GetChecked.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomCheckListBox.GetChecked.ACheckListBox">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomCheckListBox.GetChecked.AIndex">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomCheckListBox.SetChecked">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomCheckListBox.SetChecked.ACheckListBox">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomCheckListBox.SetChecked.AIndex">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomCheckListBox.SetChecked.AChecked">
+<short></short>
+</element>
+</module> <!-- GtkWSCheckLst -->
+</package>
+</fpdoc-descriptions>

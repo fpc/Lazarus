@@ -1,0 +1,141 @@
+object ExternalToolDialog: TExternalToolDialog
+  Left = 334
+  Height = 347
+  Top = 226
+  Width = 451
+  ActiveControl = ListBox
+  BorderStyle = bsSizeToolWin
+  Caption = 'ExternalToolDialog'
+  ClientHeight = 347
+  ClientWidth = 451
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object ToolBar: TToolBar
+    Left = 0
+    Height = 48
+    Top = 0
+    Width = 451
+    AutoSize = True
+    ButtonHeight = 46
+    ButtonWidth = 47
+    Caption = 'ToolBar'
+    ParentShowHint = False
+    ShowCaptions = True
+    ShowHint = True
+    TabOrder = 0
+    object MoveDownButton: TToolButton
+      Left = 281
+      Top = 2
+      Caption = 'MoveDownButton'
+      ImageIndex = 4
+      OnClick = MoveDownButtonClick
+    end
+    object MoveUpButton: TToolButton
+      Left = 202
+      Top = 2
+      Caption = 'MoveUpButton'
+      ImageIndex = 3
+      OnClick = MoveUpButtonClick
+    end
+    object EditButton: TToolButton
+      Left = 139
+      Top = 2
+      Caption = 'EditButton'
+      ImageIndex = 2
+      OnClick = EditButtonClick
+    end
+    object RemoveButton: TToolButton
+      Left = 60
+      Top = 2
+      Caption = 'RemoveButton'
+      ImageIndex = 1
+      OnClick = RemoveButtonClick
+    end
+    object AddButton: TToolButton
+      Left = 1
+      Top = 2
+      Caption = 'AddButton'
+      ImageIndex = 0
+      OnClick = AddButtonClick
+    end
+    object tbSeparator: TToolButton
+      Left = 197
+      Top = 2
+      Width = 5
+      Caption = 'tbSeparator'
+      Style = tbsDivider
+    end
+    object tbSeparator2: TToolButton
+      Left = 374
+      Top = 2
+      Width = 5
+      Caption = 'tbSeparator2'
+      Style = tbsDivider
+    end
+    object ExtraButton: TToolButton
+      Left = 379
+      Top = 2
+      Caption = 'ExtraButton'
+      DropdownMenu = PopupDropdownMenu
+    end
+  end
+  object ListBox: TListBox
+    Left = 0
+    Height = 261
+    Top = 48
+    Width = 451
+    Align = alClient
+    BorderSpacing.Bottom = 6
+    ItemHeight = 0
+    OnClick = ListboxClick
+    TabOrder = 1
+  end
+  object ButtonPanel: TButtonPanel
+    Left = 6
+    Height = 26
+    Top = 315
+    Width = 439
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 2
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+    ShowBevel = False
+  end
+  object PopupDropdownMenu: TPopupMenu
+    left = 224
+    top = 48
+    object MenuItemClone: TMenuItem
+      Caption = 'MenuItemClone'
+      OnClick = MenuItemCloneClick
+    end
+    object MenuItemSeparator: TMenuItem
+      Caption = '-'
+    end
+    object MenuItemExport: TMenuItem
+      Caption = 'MenuItemExport'
+      OnClick = MenuItemExportClick
+    end
+    object MenuItemImport: TMenuItem
+      Caption = 'MenuItemImport'
+      OnClick = MenuItemImportClick
+    end
+  end
+  object SaveDialog1: TSaveDialog
+    Filter = 'XML configuration file (*.xml)|*.xml|All files (*.*)|*.*'
+    Options = [ofOverwritePrompt, ofPathMustExist, ofEnableSizing, ofViewDetail]
+    left = 312
+    top = 40
+  end
+  object OpenDialog1: TOpenDialog
+    Filter = 'XML configuration file (*.xml)|*.xml|All files (*.*)|*.*'
+    Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
+    left = 384
+    top = 48
+  end
+end

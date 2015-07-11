@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <Name Value="TurboPowerIPro"/>
+    <Author Value="Turbopower, portiert fuer Lazarus von Mattias Gaertner"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
+      </SearchPaths>
+      <Parsing>
+        <SyntaxOptions>
+          <UseAnsiStrings Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
+      <Other>
+        <Verbosity>
+          <ShowHints Value="False"/>
+        </Verbosity>
+      </Other>
+    </CompilerOptions>
+    <Description Value="Turbopower Internet Pro - Lazarus Package
+"/>
+    <License Value="MPL - Mozilla public license
+"/>
+    <Version Major="1"/>
+    <Files Count="16">
+      <Item1>
+        <Filename Value="ipanim.pas"/>
+        <UnitName Value="IpAnim"/>
+      </Item1>
+      <Item2>
+        <Filename Value="ipconst.pas"/>
+        <UnitName Value="IpConst"/>
+      </Item2>
+      <Item3>
+        <Filename Value="ipdefct.inc"/>
+        <Type Value="Include"/>
+      </Item3>
+      <Item4>
+        <Filename Value="ipdefine.inc"/>
+        <Type Value="Include"/>
+      </Item4>
+      <Item5>
+        <Filename Value="ipfilebroker.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="Ipfilebroker"/>
+      </Item5>
+      <Item6>
+        <Filename Value="iphtml.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="IpHtml"/>
+      </Item6>
+      <Item7>
+        <Filename Value="iphtmlpv.pas"/>
+        <UnitName Value="IpHtmlPv"/>
+      </Item7>
+      <Item8>
+        <Filename Value="ipmsg.pas"/>
+        <UnitName Value="IpMsg"/>
+      </Item8>
+      <Item9>
+        <Filename Value="ipstrms.pas"/>
+        <UnitName Value="IpStrms"/>
+      </Item9>
+      <Item10>
+        <Filename Value="iputils.pas"/>
+        <UnitName Value="IpUtils"/>
+      </Item10>
+      <Item11>
+        <Filename Value="ipcss.inc"/>
+        <Type Value="Include"/>
+      </Item11>
+      <Item12>
+        <Filename Value="iphtmltablist.pas"/>
+        <UnitName Value="IpHtmlTabList"/>
+      </Item12>
+      <Item13>
+        <Filename Value="iphtmlprop.pas"/>
+        <UnitName Value="iphtmlprop"/>
+      </Item13>
+      <Item14>
+        <Filename Value="iphtmlblocklayout.pas"/>
+        <UnitName Value="ipHtmlBlockLayout"/>
+      </Item14>
+      <Item15>
+        <Filename Value="iphtmltablelayout.pas"/>
+        <UnitName Value="ipHtmlTableLayout"/>
+      </Item15>
+      <Item16>
+        <Filename Value="iphtmlgenerated.inc"/>
+        <Type Value="Binary"/>
+      </Item16>
+    </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="1">
+      <Item1>
+        <PackageName Value="Printer4Lazarus"/>
+      </Item1>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

@@ -1,0 +1,114 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
+"Language-Team: Magyar (Hungarian)\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: messagecomposer.rscancel
+msgid "Cancel"
+msgstr "Mégsem"
+
+#: messagecomposer.rsok
+msgid "OK"
+msgstr "OK"
+
+#: messagecomposer.rstest
+msgid "Test"
+msgstr "Teszt"
+
+#: messagecomposer.sadd
+msgid "Add"
+msgstr "Hozzáadás"
+
+#: messagecomposer.sbuttonsarrayofconst
+msgid "Buttons (array of const)"
+msgstr "Gombok (array of const)"
+
+#: messagecomposer.sbuttonstmsgdlgbuttons
+msgid "Buttons (TMsgDlgButtons)"
+msgstr "Gombok (TMsgDlgButtons)"
+
+#: messagecomposer.scaseresult
+msgid "\"Case\" result"
+msgstr "\"Case\" eredmény"
+
+#: messagecomposer.sdefault
+msgid "Default"
+msgstr "Alapértelmezett"
+
+#: messagecomposer.sdelete
+msgid "Delete"
+msgstr "Törlés"
+
+#: messagecomposer.sdlgcaption
+msgid "Dialog caption"
+msgstr "Párbeszéd címe"
+
+#: messagecomposer.sdlgtype
+msgid "Dialog type"
+msgstr "Párbeszéd típusa"
+
+#: messagecomposer.shelpcontext
+msgid "Help context"
+msgstr "Súgó azonosító"
+
+#: messagecomposer.shelpfilename
+msgid "Help filename"
+msgstr "Súgó fájlnév"
+
+#: messagecomposer.shelpkeyword
+msgid "Help keyword"
+msgstr "Súgó kulcsszó"
+
+#: messagecomposer.sifresult
+msgid "\"If\" result"
+msgstr "\"If\" eredmény"
+
+#: messagecomposer.skindofmessage
+msgid "Kind of message"
+msgstr "Az üzenet típusa"
+
+#: messagecomposer.smaskinput
+msgid "Mask input"
+msgstr "Beviteli maszk"
+
+#: messagecomposer.smessagecomposercaption
+msgctxt "messagecomposer.smessagecomposercaption"
+msgid "Message Composer"
+msgstr "Üzenetszerkesztő"
+
+#: messagecomposer.smessagecomposermenucaption
+msgctxt "messagecomposer.smessagecomposermenucaption"
+msgid "Message Composer ..."
+msgstr "Üzenetszerkesztő ..."
+
+#: messagecomposer.smodalresult
+msgid "Modal result"
+msgstr "Visszatérési érték"
+
+#: messagecomposer.smsgcaption
+msgid "The message to be shown"
+msgstr "A megjelenítendő üzenet"
+
+#: messagecomposer.snotimplementedyet
+msgid "Not implemented yet"
+msgstr "Még nincs megvalósítva"
+
+#: messagecomposer.spromptcaption
+msgid "Text asking the user for input"
+msgstr "A felhasználót adatbevitelre kérő szöveg"
+
+#: messagecomposer.ssourcewrapper
+msgid "Source wrapper"
+msgstr "Forrás kialakítása"
+
+#: messagecomposer.svaluevar
+msgid "Value (var)"
+msgstr "Érték (var)"

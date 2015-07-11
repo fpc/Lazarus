@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    LazClasses
+  ====================================================================
+-->
+
+<module name="LazClasses">
+<short></short>
+<descr>
+</descr>
+
+<!-- class Visibility: default -->
+<element name="TFreeNotifyingObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeNotifyingObject.FFreeNotificationList">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TFreeNotifyingObject.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TFreeNotifyingObject.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TFreeNotifyingObject.AddFreeeNotification">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeNotifyingObject.AddFreeeNotification.ANotification">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TFreeNotifyingObject.RemoveFreeeNotification">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeNotifyingObject.RemoveFreeeNotification.ANotification">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TRefCountedObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TRefCountedObject.FRefCount">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TRefCountedObject.DoFree">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TRefCountedObject.RefCount">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TRefCountedObject.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TRefCountedObject.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TRefCountedObject.AddReference">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TRefCountedObject.ReleaseReference">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TRefCntObjList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TRefCntObjList.Notify">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRefCntObjList.Notify.Ptr">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRefCntObjList.Notify.Action">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="ReleaseRefAndNil">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ReleaseRefAndNil.ARefCountedObject">
+<short></short>
+</element>
+
+</module> <!-- LazClasses -->
+
+</package>
+</fpdoc-descriptions>

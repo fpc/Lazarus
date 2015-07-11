@@ -1,0 +1,784 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2012-08-07 01:00+0300\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.5\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Language: lt\n"
+
+#: lazdatadeskstr.eoaddterminator
+msgid "Add terminator"
+msgstr "Pridėti terminatorių"
+
+#: lazdatadeskstr.eoandtermsinbrackets
+msgid "Put brackets around AND Terms"
+msgstr "Apskliausti „AND“ termus"
+
+#: lazdatadeskstr.eolinefeedafterandterm
+msgid "Linefeed after AND terms"
+msgstr "Po „AND“ termų daryti eilutės patraukimą"
+
+#: lazdatadeskstr.eolinefeedafterfield
+msgid "Linefeed after each field"
+msgstr "Po kiekvieno laukelio daryti eilutės patraukimą"
+
+#: lazdatadeskstr.eoquotefieldnames
+msgid "Quote field names"
+msgstr "Laukelių pavadinimams uždėti kabutes"
+
+#: lazdatadeskstr.eoskipforeignkeys
+msgid "Skip foreign keys"
+msgstr "Praleisti svetimus raktus"
+
+#: lazdatadeskstr.eouseoldinwhereparams
+msgid "Use OLD prefix in where parameters"
+msgstr "„where“ parametrams naudoti prefiksą „OLD“"
+
+#: lazdatadeskstr.sclose
+msgid "Close result"
+msgstr "Užvėrimo rezultatas"
+
+#: lazdatadeskstr.scolfields
+msgctxt "lazdatadeskstr.scolfields"
+msgid "Fields"
+msgstr "Laukeliai"
+
+#: lazdatadeskstr.scolname
+msgctxt "lazdatadeskstr.scolname"
+msgid "Name"
+msgstr "Pavadinimas"
+
+#: lazdatadeskstr.scoloptions
+msgctxt "lazdatadeskstr.scoloptions"
+msgid "Options"
+msgstr "Parinktys"
+
+#: lazdatadeskstr.scolsize
+msgid "Size"
+msgstr "Dydis"
+
+#: lazdatadeskstr.scoltype
+msgid "Type"
+msgstr "Tipas"
+
+#: lazdatadeskstr.sconfirmclose
+msgid "Confirm close"
+msgstr "Patvirtinti užvėrimą"
+
+#: lazdatadeskstr.sconnectiondescription
+msgid "Enter a descriptive name for the connection"
+msgstr "Įveskite pavadinimą, kuris apibūdintų ryšį"
+
+#: lazdatadeskstr.sconnectionnameexists
+msgid ""
+"There is already a connection named \"%s\"\n"
+"Would you like to override the connection data ?\n"
+msgstr ""
+"Ryšys pavadinimu „%s“ jau egzistuoja.\n"
+"Ar nepaisyti ryšio duomenų?\n"
+
+#: lazdatadeskstr.screatecode
+msgid "Create code"
+msgstr "Kurti kodą"
+
+#: lazdatadeskstr.screateconnection
+msgid "Would you like to create a new connection for this database ?"
+msgstr "Ar sukurti šiai duomenų bazei skirtą ryšį?"
+
+#: lazdatadeskstr.sddmodified
+msgid ""
+"Data dictionary \"%s\" has changed.\n"
+"What do you want to do with the changes?\n"
+msgstr ""
+"Duomenų žodynas „%s“ yra pakeistas.\n"
+"Kaip elgsitės su pokyčiais?\n"
+
+#: lazdatadeskstr.sdeleteobject
+msgid "Delete this %s"
+msgstr "Ištrinti šį %s"
+
+#: lazdatadeskstr.sdescription
+msgctxt "lazdatadeskstr.sdescription"
+msgid "Description"
+msgstr "Aprašas"
+
+#: lazdatadeskstr.sdomain
+msgid "Domain"
+msgstr "Sritis"
+
+#: lazdatadeskstr.sdontclose
+msgid "Do not close editor"
+msgstr "Neužverti rengyklės"
+
+#: lazdatadeskstr.sdontsave
+msgid "Discard changes"
+msgstr "Neįrašyti pakitimų"
+
+#: lazdatadeskstr.senginetype
+msgid "Engine"
+msgstr "Variklis"
+
+#: lazdatadeskstr.serrnoengine
+msgid "No database engine !"
+msgstr "Nėra duomenų bazės variklio!"
+
+#: lazdatadeskstr.serrselectfields
+msgid "No fields selected. Please select some fields"
+msgstr "Nėra pažymėtų laukelių. Reiktų pažymėti nors vieną."
+
+#: lazdatadeskstr.serrselecttable
+msgid "No table selected. Please select a table"
+msgstr "Nėra pažymėtos lentelės. Pirma ją reiktų pažymėti."
+
+#: lazdatadeskstr.serrunknowntype
+msgid "Unknown object type: %d"
+msgstr "Nežinomas objekto tipas: %d"
+
+#: lazdatadeskstr.sexecute
+msgid "Execute SQL"
+msgstr "Vykdyti SQL"
+
+#: lazdatadeskstr.sexport
+msgid "Export data"
+msgstr "Eksportuoti duomenis"
+
+#: lazdatadeskstr.sfield
+msgid "Field"
+msgstr "Laukelis"
+
+#: lazdatadeskstr.sforeignkey
+msgid "Foreign key"
+msgstr "Svetimas raktas"
+
+#: lazdatadeskstr.shintclose
+msgid "Close query result data panel"
+msgstr "Užverti užklausos rezultato duomenų skydelį"
+
+#: lazdatadeskstr.shintcreatecode
+msgid "Create pascal code for this data"
+msgstr "Šiems duomenims sukurti paskalio kodą"
+
+#: lazdatadeskstr.shintexecute
+msgid "Execute SQL statement"
+msgstr "Vykdyti SQL sakinį"
+
+#: lazdatadeskstr.shintexport
+msgid "Export this data"
+msgstr "Eksportuoti šiuos duomenis"
+
+#: lazdatadeskstr.shintload
+msgid "Load SQL statement from file"
+msgstr "SQL sakinį įkelti iš failo"
+
+#: lazdatadeskstr.shintnext
+msgid "Next SQL statement"
+msgstr "Tolesnis SQL sakinys"
+
+#: lazdatadeskstr.shintprevious
+msgid "Previous SQL statement"
+msgstr "Ankstesnis SQL sakinys"
+
+#: lazdatadeskstr.shintsave
+msgid "Save SQL statement to file"
+msgstr "SQL sakinį įrašyti failan"
+
+#: lazdatadeskstr.simportdictinto
+msgid "Import datadictionary"
+msgstr "Importuoti duomenų žodyną"
+
+#: lazdatadeskstr.sindex
+msgid "Index"
+msgstr "Rodyklė"
+
+#: lazdatadeskstr.sld_actionadddomain
+msgid "New domain"
+msgstr "Nauja sritis"
+
+#: lazdatadeskstr.sld_actionadddomainh
+msgid "Add a domain to the data dictionary"
+msgstr "Duomenų žodyną papildyti sritimi"
+
+#: lazdatadeskstr.sld_actionaddforeignkey
+msgid "New Foreign Key"
+msgstr "Naujas svetimas raktas"
+
+#: lazdatadeskstr.sld_actionaddforeignkeyh
+msgid "Add a foreign key to the table"
+msgstr "Lentelę papildyti nauju svetimu raktu"
+
+#: lazdatadeskstr.sld_actionaddsequence
+msgid "New sequence"
+msgstr "Nauja seka"
+
+#: lazdatadeskstr.sld_actionaddsequenceh
+msgid "Add a sequence"
+msgstr "Pridėti seką"
+
+#: lazdatadeskstr.sld_actionclose
+msgid "&Close"
+msgstr "&Užverti"
+
+#: lazdatadeskstr.sld_actioncloseall
+msgid "Close &All"
+msgstr "Užverti &visus"
+
+#: lazdatadeskstr.sld_actioncloseallh
+msgid "Close all Data Dictionaries"
+msgstr "Užverti visus duomenų žodynus"
+
+#: lazdatadeskstr.sld_actioncloseh
+msgid "Close current Data Dictionary"
+msgstr "Užverti veikiamąjį duomenų žodyną"
+
+#: lazdatadeskstr.sld_actioncopy
+msgid "&Copy"
+msgstr "&Kopijuoti"
+
+#: lazdatadeskstr.sld_actioncopyconnection
+msgid "&Copy connection"
+msgstr "&Kopijuoti ryšį"
+
+#: lazdatadeskstr.sld_actioncopyh
+msgid "Copy"
+msgstr "Kopijuoti"
+
+#: lazdatadeskstr.sld_actioncreatecode
+msgid "Create &code"
+msgstr "Kurti &kodą"
+
+#: lazdatadeskstr.sld_actioncreatecodeh
+msgid "Create code from definition or data"
+msgstr "Pagal apibrėžtį arba duomenis kurti kodą"
+
+#: lazdatadeskstr.sld_actioncut
+msgid "Cu&t"
+msgstr "Iš&kirpti"
+
+#: lazdatadeskstr.sld_actioncuth
+msgid "Cut"
+msgstr "Iškirpti"
+
+#: lazdatadeskstr.sld_actiondeleteconnection
+msgid "&Delete connection"
+msgstr "Ša&linti ryšį"
+
+#: lazdatadeskstr.sld_actiondeleteobject
+msgid "Delete &Object"
+msgstr "Šalinti &objektą"
+
+#: lazdatadeskstr.sld_actiondeleteobjecth
+msgid "Delete the currently selected object"
+msgstr "Pašalinti šiuo metu pažymėtą objektą"
+
+#: lazdatadeskstr.sld_actiondeleterecentdatadict
+msgctxt "lazdatadeskstr.sld_actiondeleterecentdatadict"
+msgid "&Delete"
+msgstr "Paša&linti"
+
+#: lazdatadeskstr.sld_actionexit
+msgid "E&xit"
+msgstr "&Baigti darbą"
+
+#: lazdatadeskstr.sld_actionexith
+msgid "Quit this program"
+msgstr "Baigti darbą šia programa"
+
+#: lazdatadeskstr.sld_actiongeneratesql
+msgid "&Generate SQL"
+msgstr "Ku&rti SQL"
+
+#: lazdatadeskstr.sld_actiongeneratesqlh
+msgid "Generate SQL statements for the current table"
+msgstr "Pagal dabartinę lentelę kurti SQL sakinius"
+
+#: lazdatadeskstr.sld_actionnew
+msgid "&New"
+msgstr "&Naujas"
+
+#: lazdatadeskstr.sld_actionnewconnection
+msgid "&New connection"
+msgstr "&Naujas ryšys"
+
+#: lazdatadeskstr.sld_actionnewfield
+msgid "New &field"
+msgstr "Naujas lau&kelis"
+
+#: lazdatadeskstr.sld_actionnewfieldh
+msgid "Create a new field in the current table"
+msgstr "Veikiamąją lentelę papildyti nauju laukeliu"
+
+#: lazdatadeskstr.sld_actionnewh
+msgid "Create a new Data Dictionary"
+msgstr "Kurti naują duomenų žodyną"
+
+#: lazdatadeskstr.sld_actionnewindex
+msgid "New index"
+msgstr "Nauja rodyklė"
+
+#: lazdatadeskstr.sld_actionnewindexh
+msgid "Add new index to current table"
+msgstr "Į veikiamąją lentelę pridėti naują rodyklę"
+
+#: lazdatadeskstr.sld_actionnewtable
+msgid "New &table"
+msgstr "Nauja &lentelė"
+
+#: lazdatadeskstr.sld_actionnewtableh
+msgid "Create a new table"
+msgstr "Kurti naują lentelę"
+
+#: lazdatadeskstr.sld_actionopen
+msgid "&Open ..."
+msgstr "&Atverti…"
+
+#: lazdatadeskstr.sld_actionopenconnection
+msgid "&Open connection"
+msgstr "&Atverti ryšį"
+
+#: lazdatadeskstr.sld_actionopenconnectionh
+msgid "Open selected recent connection"
+msgstr "Atverti pažymėtąjį paskiausiai naudotą ryšį"
+
+#: lazdatadeskstr.sld_actionopenh
+msgid "Open a new Data Dictionary"
+msgstr "Atverti naują duomenų žodyną"
+
+#: lazdatadeskstr.sld_actionopenrecentdatadict
+msgid "Open"
+msgstr "Atverti"
+
+#: lazdatadeskstr.sld_actionopenrecentdatadicth
+msgid "Open selected recent datadictionary"
+msgstr "Atverti pažymėtąjį paskiausiai naudotą duomenų žodyną"
+
+#: lazdatadeskstr.sld_actionpaste
+msgid "&Paste"
+msgstr "Į&dėti"
+
+#: lazdatadeskstr.sld_actionpasteh
+msgid "Paste"
+msgstr "Įdėti"
+
+#: lazdatadeskstr.sld_actionsave
+msgid "&Save"
+msgstr "Į&rašyti"
+
+#: lazdatadeskstr.sld_actionsaveas
+msgid "Save &as"
+msgstr "Įrašyti &taip"
+
+#: lazdatadeskstr.sld_actionsaveash
+msgid "Save datadictionary as"
+msgstr "Duomenų žodyną įrašyti kitu pavadinimu"
+
+#: lazdatadeskstr.sld_actionsaveh
+msgid "Save Data Dictionary"
+msgstr "Įrašyti duomenų žodyną"
+
+#: lazdatadeskstr.sld_cancel
+msgid "&Cancel"
+msgstr "&Atsisakyti"
+
+#: lazdatadeskstr.sld_charset
+msgid "Charset"
+msgstr "Ženklų rinkinys"
+
+#: lazdatadeskstr.sld_connectionlv1
+msgctxt "lazdatadeskstr.sld_connectionlv1"
+msgid "Name"
+msgstr "Pavadinimas"
+
+#: lazdatadeskstr.sld_connectionlv2
+msgid "Driver"
+msgstr "Variklis"
+
+#: lazdatadeskstr.sld_connectionlv3
+msgid "Last used"
+msgstr "Paskiausiai naudotas"
+
+#: lazdatadeskstr.sld_connectionlv4
+msgctxt "lazdatadeskstr.sld_connectionlv4"
+msgid "Description"
+msgstr "Aprašas"
+
+#: lazdatadeskstr.sld_connections
+msgctxt "lazdatadeskstr.sld_connections"
+msgid "Connections"
+msgstr "Ryšiai"
+
+#: lazdatadeskstr.sld_connecttoadatabase
+msgid "Connect to a database"
+msgstr "Užmegzti ryšį su duomenų baze"
+
+#: lazdatadeskstr.sld_createfulltablecreationsql
+msgid "Create full table creation SQL"
+msgstr "Sukurti visos lentelės kūrinį SQL"
+
+#: lazdatadeskstr.sld_createtable
+msgid "Create table"
+msgstr "Kurti lentelę"
+
+#: lazdatadeskstr.sld_database
+msgctxt "lazdatadeskstr.sld_database"
+msgid "Database"
+msgstr "Duomenų bazė"
+
+#: lazdatadeskstr.sld_delete
+msgctxt "lazdatadeskstr.sld_delete"
+msgid "&Delete"
+msgstr "Paša&linti"
+
+#: lazdatadeskstr.sld_dictionaries
+msgid "Dictionaries"
+msgstr "Žodynai"
+
+#: lazdatadeskstr.sld_fromconnection
+msgid "From connection"
+msgstr "Iš ryšio"
+
+#: lazdatadeskstr.sld_generatesql
+msgid "Generate SQL"
+msgstr "Kurti SQL"
+
+#: lazdatadeskstr.sld_generatesqlstatements
+msgid "Generate SQL statements"
+msgstr "Kurti SQL sakinius"
+
+#: lazdatadeskstr.sld_host
+msgid "Host"
+msgstr "Serveris"
+
+#: lazdatadeskstr.sld_importupdatedatadictionary
+msgid "Import/Update datadictionary"
+msgstr "Importuoti/naujinti duomenų žodyną"
+
+#: lazdatadeskstr.sld_indent
+msgid "I&ndent"
+msgstr "Įt&rauka"
+
+#: lazdatadeskstr.sld_insert
+msgid "&Insert"
+msgstr "Į&terpti"
+
+#: lazdatadeskstr.sld_keyfields
+msgid "&Key fields"
+msgstr "&Raktų laukeliai"
+
+#: lazdatadeskstr.sld_lazarusdatabasedesktop
+msgid "Lazarus Database Desktop"
+msgstr "Lazarus duomenų bazės darbalaukis"
+
+#: lazdatadeskstr.sld_linelength
+msgid "Line Length"
+msgstr "Linijos ilgis"
+
+#: lazdatadeskstr.sld_menuconnections
+msgctxt "lazdatadeskstr.sld_menuconnections"
+msgid "Connections"
+msgstr "Ryšiai"
+
+#: lazdatadeskstr.sld_menudictionary
+msgid "&Dictionary"
+msgstr "Ž&odynas"
+
+#: lazdatadeskstr.sld_menudictionaryimport
+msgid "&Import"
+msgstr "&Importuoti"
+
+#: lazdatadeskstr.sld_menuedit
+msgid "&Edit"
+msgstr "&Taisa"
+
+#: lazdatadeskstr.sld_menufile
+msgid "&File"
+msgstr "&Failas"
+
+#: lazdatadeskstr.sld_ok
+msgid "&OK"
+msgstr "&Tinka"
+
+#: lazdatadeskstr.sld_opendatadictionaryfilter
+msgctxt "lazdatadeskstr.sld_opendatadictionaryfilter"
+msgid "Data dictionary files|*.fpd|Ini files|*.ini|All files|*.*"
+msgstr "Duomenų žodyno failai|*.fpd|„Ini“ failai|*.ini|Visi failai|*.*"
+
+#: lazdatadeskstr.sld_opendatadictionarytitle
+msgid "Open data dictionary"
+msgstr "Atverti duomenų žodyną"
+
+#: lazdatadeskstr.sld_options
+msgctxt "lazdatadeskstr.sld_options"
+msgid "Options"
+msgstr "Parinktys"
+
+#: lazdatadeskstr.sld_password
+msgid "Password"
+msgstr "Slaptažodis"
+
+#: lazdatadeskstr.sld_recentlv1
+msgctxt "lazdatadeskstr.sld_recentlv1"
+msgid "Name"
+msgstr "Pavadinimas"
+
+#: lazdatadeskstr.sld_recentlv2
+msgid "Filename"
+msgstr "Failo pavadinimas"
+
+#: lazdatadeskstr.sld_recentlv3
+msgid "Last used on"
+msgstr "Paskiausia naudota"
+
+#: lazdatadeskstr.sld_savefileasfilter
+msgctxt "lazdatadeskstr.sld_savefileasfilter"
+msgid "Data dictionary files|*.fpd|Ini files|*.ini|All files|*.*"
+msgstr "Duomenų žodyno failai|*.fpd|„Ini“ failai|*.ini|Visi failai|*.*"
+
+#: lazdatadeskstr.sld_savefileastitle
+msgid "Save file as"
+msgstr "Failą įrašyti kitu pavadinimu"
+
+#: lazdatadeskstr.sld_select
+msgid "&Select"
+msgstr "&Pažymėti"
+
+#: lazdatadeskstr.sld_selectaconnectiontype
+msgid "Select a conection type"
+msgstr "Pažymėti ryšio tipą"
+
+#: lazdatadeskstr.sld_selectall
+msgid "Select &all"
+msgstr "Pažymėti &viską"
+
+#: lazdatadeskstr.sld_selectnone
+msgid "Select &none"
+msgstr "Pa&naikinti žymėjimą"
+
+#: lazdatadeskstr.sld_selectupdateinsertfields
+msgid "Select/Update/Insert fields"
+msgstr "Pažymėti/naujinti/įterpti laukelius"
+
+#: lazdatadeskstr.sld_separator
+msgid "-"
+msgstr "-"
+
+#: lazdatadeskstr.sld_table
+msgid "Ta&ble"
+msgstr "&Lentelė"
+
+#: lazdatadeskstr.sld_tableandfields
+msgid "Tables and &Fields"
+msgstr "Lentelės ir lau&keliai"
+
+#: lazdatadeskstr.sld_update
+msgid "&Update"
+msgstr "&Naujinti"
+
+#: lazdatadeskstr.sld_updateexistingtables
+msgid "Update existing tables"
+msgstr "Naujinti egzistuojančias lenteles"
+
+#: lazdatadeskstr.sld_username
+msgid "Username"
+msgstr "Naudotojo vardas"
+
+#: lazdatadeskstr.sload
+msgid "Load SQL"
+msgstr "Įkelti SQL"
+
+#: lazdatadeskstr.snamefor
+msgid "Enter a name for the new %s"
+msgstr "%s, suteikite jam pavadinimą"
+
+#: lazdatadeskstr.snew
+msgid "New %s"
+msgstr "Naujas %s"
+
+#: lazdatadeskstr.snewconnection
+msgid "New connection"
+msgstr "Naujas ryšys"
+
+#: lazdatadeskstr.snewdictionary
+msgid "New database"
+msgstr "Nauja duomenų bazė"
+
+#: lazdatadeskstr.snewdomain
+msgid "Create new domain"
+msgstr "Kurti naują sritį"
+
+#: lazdatadeskstr.snewdomainname
+msgid "Enter a name for the new domain:"
+msgstr "Įveskite naujosios srities pavadinimą:"
+
+#: lazdatadeskstr.snewfield
+msgid "Create new field in table %s"
+msgstr "Lentelėje „%s“ sukurti naują laukelį"
+
+#: lazdatadeskstr.snewfieldname
+msgid "Enter a name for the new field:"
+msgstr "Įveskite naujojo laukelio pavadinimą:"
+
+#: lazdatadeskstr.snewforeignkey
+msgid "Create new foreign key in table %s"
+msgstr "Lentelėje „%s“ sukurti naują svetimą raktą"
+
+#: lazdatadeskstr.snewforeignkeyname
+msgid "Enter a name for the new foreign key:"
+msgstr "Įveskite naujojo svetimo rakto pavadinimą:"
+
+#: lazdatadeskstr.snewindex
+msgid "Create new index on table %s"
+msgstr "Kurti naują lentelės „%s“ rodyklę"
+
+#: lazdatadeskstr.snewindexname
+msgid "Enter a name for the new index:"
+msgstr "Įveskite naujosios rodyklės pavadinimą:"
+
+#: lazdatadeskstr.snewobject
+msgid "Create new %s"
+msgstr "Kurti naują %s"
+
+#: lazdatadeskstr.snewsequence
+msgid "Create new sequence"
+msgstr "Kurti naują seką"
+
+#: lazdatadeskstr.snewsequencename
+msgid "Enter a name for the new sequence:"
+msgstr "Įveskite naujosios sekos pavadinimą:"
+
+#: lazdatadeskstr.snewtable
+msgid "Create new table"
+msgstr "Kurti naują lentelę"
+
+#: lazdatadeskstr.snewtablename
+msgid "Enter a name for the new table:"
+msgstr "Įveskite naujosios lentelės pavadinimą:"
+
+#: lazdatadeskstr.snext
+msgid "Next"
+msgstr "Tolesnis"
+
+#: lazdatadeskstr.snodedatabase
+msgctxt "lazdatadeskstr.snodedatabase"
+msgid "Database"
+msgstr "Duomenų bazė"
+
+#: lazdatadeskstr.snodedatadictionary
+msgid "Datadictionary"
+msgstr "Duomenų žodynas"
+
+#: lazdatadeskstr.snodedomains
+msgid "Domains"
+msgstr "Sritys"
+
+#: lazdatadeskstr.snodefields
+msgctxt "lazdatadeskstr.snodefields"
+msgid "Fields"
+msgstr "Laukeliai"
+
+#: lazdatadeskstr.snodeforeignkeys
+msgid "Foreign keys"
+msgstr "Svetimi raktai"
+
+#: lazdatadeskstr.snodeindexes
+msgid "Indexes"
+msgstr "Rodyklės"
+
+#: lazdatadeskstr.snodeindexfields
+msgid "Index fields: "
+msgstr "Rodyklės laukeliai: "
+
+#: lazdatadeskstr.snodeindexoptions
+msgid "Index options: "
+msgstr "Rodyklės parinktys: "
+
+#: lazdatadeskstr.snodesequences
+msgid "Sequences"
+msgstr "Sekos"
+
+#: lazdatadeskstr.snodetabledata
+msgid "Table Data"
+msgstr "Lentelės duomenys"
+
+#: lazdatadeskstr.snodetables
+msgid "Tables"
+msgstr "Lentelės"
+
+#: lazdatadeskstr.sobject
+msgid "Object"
+msgstr "Objektas"
+
+#: lazdatadeskstr.sparameter
+msgid "Parameter"
+msgstr "Parametras"
+
+#: lazdatadeskstr.sprevious
+msgid "Previous"
+msgstr "Ankstesnis"
+
+#: lazdatadeskstr.squery
+msgid "Run query"
+msgstr "Vykdyti užklausą"
+
+#: lazdatadeskstr.srowsaffected
+#, fuzzy
+#| msgid "Query executed succesfully: %d rows affected."
+msgid "Query executed successfully: %d rows affected."
+msgstr "Užklausa įvykdyta sėkmingai. Paveikta eilučių: %d."
+
+#: lazdatadeskstr.ssave
+msgid "Save SQL"
+msgstr "Įrašyti SQL"
+
+#: lazdatadeskstr.ssavedata
+msgid "Save changes"
+msgstr "Įrašyti pakeitimus"
+
+#: lazdatadeskstr.sselectdbfdir
+msgid "Select a directory with DBF files"
+msgstr "Parinkite aplanką, kuriame yra „DBF“ failai"
+
+#: lazdatadeskstr.sselectedobject
+msgid "Selected object"
+msgstr "Pažymėti objektą"
+
+#: lazdatadeskstr.ssequence
+msgid "Sequence"
+msgstr "Seka"
+
+#: lazdatadeskstr.ssqlfilters
+msgid "SQL files|*.sql|All files|*.*"
+msgstr "SQL failai|*.sql|Visi failai|*.*"
+
+#: lazdatadeskstr.stable
+msgid "Table"
+msgstr "Lentelė"
+
+#: lazdatadeskstr.sunknownconnection
+msgid "Unknown connection: %s"
+msgstr "Nežinomas ryšys: %s"
+
+#: lazdatadeskstr.sunknowndictionary
+msgid "Unknown data dictionary: %s"
+msgstr "Nežinomas duomenų žodynas: %s"
+
+#: lazdatadeskstr.susecurrentdict
+msgid "Yes, use the active dictionary"
+msgstr "Taip, naudoti aktyvųjį žodyną"
+
+#: lazdatadeskstr.susenewdict
+msgid "No, import in a new dictionary"
+msgstr "Ne, importuoti į naują žodyną"
+
+#: lazdatadeskstr.svalue
+msgid "Value"
+msgstr "Vertė"
+
+#: lazdatadeskstr.swhichcurrentdicttouse
+msgid "A data dictionary is active.Would you like to import into this data dictionary ?"
+msgstr "Duomenų žodynas yra veikiamasis. Importuoti į šį žodyną?"
+

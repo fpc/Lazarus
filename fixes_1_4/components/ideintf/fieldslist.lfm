@@ -1,0 +1,49 @@
+object FieldsListFrm: TFieldsListFrm
+  Left = 358
+  Height = 271
+  Top = 99
+  Width = 173
+  ActiveControl = BitBtnOk
+  Caption = 'FieldsListFrm'
+  ClientHeight = 271
+  ClientWidth = 173
+  LCLVersion = '0.9.29'
+  object BitBtnOk: TBitBtn
+    Left = 9
+    Height = 25
+    Top = 241
+    Width = 75
+    Anchors = [akLeft, akBottom]
+    Caption = '&Create'
+    Default = True
+    Kind = bkOK
+    ModalResult = 1
+    NumGlyphs = 0
+    OnClick = BitBtnOkClick
+    TabOrder = 0
+  end
+  object BitBtnCancel: TBitBtn
+    Left = 89
+    Height = 25
+    Top = 241
+    Width = 75
+    Anchors = [akLeft, akBottom]
+    Cancel = True
+    Caption = 'Cancel'
+    Kind = bkCancel
+    ModalResult = 2
+    NumGlyphs = 0
+    TabOrder = 1
+  end
+  object ListBox1: TListBox
+    Left = 0
+    Height = 232
+    Top = 0
+    Width = 173
+    Align = alTop
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ItemHeight = 0
+    MultiSelect = True
+    TabOrder = 2
+  end
+end

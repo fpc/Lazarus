@@ -1,0 +1,23 @@
+object Form1: TForm1
+  Left = 361
+  Height = 387
+  Top = 162
+  Width = 455
+  Caption = 'SQLDB Tutorial3'
+  ClientHeight = 387
+  ClientWidth = 455
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '1.0.2.0'
+  object SalaryGrid: TStringGrid
+    Left = 8
+    Height = 104
+    Top = 48
+    Width = 432
+    ColCount = 4
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
+    RowCount = 4
+    TabOrder = 0
+    OnValidateEntry = SalaryGridValidateEntry
+  end
+end

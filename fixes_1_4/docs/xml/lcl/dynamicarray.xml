@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+  <package name="lcl">
+    <!--
+  ====================================================================
+    DynamicArray
+  ====================================================================
+-->  
+    <module name="DynamicArray">
+      <short>It implements a resizable 2d array containing pointers.</short>
+      <descr/>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="SysUtils">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="EArray">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure type Visibility: default -->
+      <element name="TOnNotifyItem">
+        <short>Type for event handling</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TOnNotifyItem.Sender">
+        <short>instance of the TArray that causes the event</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TOnNotifyItem.Col">
+        <short>The related Col of the event</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TOnNotifyItem.Row">
+        <short>The related Row of the event</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TOnNotifyItem.Item">
+        <short>The related Item of the event</short>
+      </element>
+      <!-- procedure type Visibility: default -->
+      <element name="TOnExchangeItem">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TOnExchangeItem.Sender">
+         <short>The instance of the TArray that causes the Exchange event</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TOnExchangeItem.Index">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TOnExchangeItem.WithIndex">
+        <short/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TArray">
+        <short>It implements a resizable 2d array.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TArray.FCols">
+        <short>It contains the first dimension of the array.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TArray.FOnDestroyItem">
+       <short>A user-defined function to be called when an item is destroyed.</short>
+        <descr>This can happen in ClearCol,Clear,SetLength</descr>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TArray.FOnNewItem">
+        <short>A user-defined function to be called when a new item is created.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TArray.Getarr">
+        <short>Returns the stored item(actually pointer) in array</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TArray.Getarr.Result">
+        <short>the stored item,pointer.</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TArray.Getarr.Col">
+        <short>the first dimension of the array.</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TArray.Getarr.Row">
+        <short>the second dimension of the array.</short>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TArray.Setarr">
+        <short>Sets an item in the array [col][row].</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TArray.Setarr.Col">
+         <short>the first dimension of the array.</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TArray.Setarr.Row">
+        <short>the second dimension of the array.</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TArray.Setarr.Avalue">
+        <short>the value to be stored.</short>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TArray.ClearCol">
+        <short>Clears the given TList</short>
+        <descr>The given TList is assumed to be the COL of the array.</descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TArray.ClearCol.L">
+        <short>Tlist to be cleared.</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TArray.ClearCol.Col">
+        <short>the first dimension of the array.</short>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TArray.Aumentar_Rows">
+         <short>Extends a row to its new size(Rows)</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TArray.Aumentar_Rows.col">
+        <short>current column</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TArray.Aumentar_Rows.Rows">
+        <short>new row size</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TArray.Aumentar_Rows.L">
+        <short>The row to be operated on.</short>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TArray.DestroyItem">
+        <short>event handler called when an item is destroyed.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TArray.DestroyItem.Col">
+        <short>the column of the destroyed item.</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TArray.DestroyItem.Row">
+        <short>the row of the destroyed item.</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TArray.DestroyItem.P">
+        <short>the item itself before it is unlinked.</short>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TArray.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+        <example file="dynamicarray/tarrayexample.pas"/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TArray.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+        <example file="dynamicarray/tarrayexample.pas"/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TArray.SetLength">
+        <short>Resizes the array.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+        <example file="dynamicarray/tarrayexample.pas"/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TArray.SetLength.Cols">
+        <short>new column size</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TArray.SetLength.Rows">
+        <short>new row size</short>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TArray.DeleteColRow">
+        <short>Deletes a column or a row of an array.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+        <example file="dynamicarray/tarrayexample.pas"/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TArray.DeleteColRow.IsColumn">
+        <short>Do you want to delete a column?</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TArray.DeleteColRow.Index">
+        <short>index of a row or a column</short>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TArray.MoveColRow">
+        <short>Moves a column to another column or a row to another row.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+        <example file="dynamicarray/tarrayexample.pas"/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TArray.MoveColRow.IsColumn">
+        <short>Do you want to move a column?</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TArray.MoveColRow.FromIndex">
+        <short>source</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TArray.MoveColRow.ToIndex">
+        <short>destination</short>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TArray.ExchangeColRow">
+        <short>Swaps two rows or two columns.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+        <example file="dynamicarray/tarrayexample.pas"/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TArray.ExchangeColRow.IsColumn">
+         <short>Do you want to move a column?</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TArray.ExchangeColRow.Index">
+        <short>index of row or column</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TArray.ExchangeColRow.WithIndex">
+        <short>index of row or column</short>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TArray.Clear">
+        <short>Removes all elements from the array.</short>
+        <descr/>
+        <errors/>
+        <example file="dynamicarray/tarrayexample.pas"/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TArray.Arr">
+        <short>Reads/Writes an element from the array.</short>
+        <descr/>
+        <seealso/>
+        <example file="dynamicarray/tarrayexample.pas"/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TArray.Arr.Col">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TArray.Arr.Row">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TArray.OnDestroyItem">
+        <short>User-defined function which is called when an item is destroyed.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TArray.OnNewItem">
+        <short>User-defined function which is called when an item is created.</short>
+        <descr/>
+        <descr/>
+        <seealso/>
+      </element>
+    </module>
+    <!-- DynamicArray -->
+  </package>
+</fpdoc-descriptions>

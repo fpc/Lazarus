@@ -1,0 +1,83 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Swen Heinig <swen@heinig.email>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: lremailexportfilter.saccount
+msgid "Account"
+msgstr "Konto"
+
+#: lremailexportfilter.sadress
+msgid "Adress"
+msgstr "Adresse"
+
+#: lremailexportfilter.sapplicationname
+msgid "Application name"
+msgstr "Programm-Name"
+
+#: lremailexportfilter.sattachment
+msgid "Attachment"
+msgstr "Anhang"
+
+#: lremailexportfilter.sdirectsend
+msgid "Direct send"
+msgstr "Direktes Versenden"
+
+#: lremailexportfilter.semail
+msgid "Email"
+msgstr "Email"
+
+#: lremailexportfilter.sformat
+msgid "Format"
+msgstr "Format"
+
+#: lremailexportfilter.sfromadress
+msgid "From adress"
+msgstr "Absender-Adresse"
+
+#: lremailexportfilter.sfromname
+msgid "From name"
+msgstr "Absender-Name"
+
+#: lremailexportfilter.shost
+msgid "Host"
+msgstr "Host"
+
+#: lremailexportfilter.slogin
+msgid "Login"
+msgstr "Benutzerkennung"
+
+#: lremailexportfilter.smessage
+msgid "Message"
+msgstr "Nachricht"
+
+#: lremailexportfilter.spassword
+msgid "Password"
+msgstr "Passwort"
+
+#: lremailexportfilter.sport
+msgid "Port"
+msgstr "Port"
+
+#: lremailexportfilter.ssendtoemail
+msgid "Send to email..."
+msgstr "per Email versenden..."
+
+#: lremailexportfilter.ssubject
+msgid "Subject"
+msgstr "Betreff"
+
+#: lremailexportfilter.stext
+msgid "Text"
+msgstr "Text"
+
+#: lremailexportfilter.susemailprogram
+msgid "Use mail program"
+msgstr "Email-Programm verwenden"

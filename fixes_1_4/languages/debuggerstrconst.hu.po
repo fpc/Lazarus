@@ -1,0 +1,155 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
+"Language-Team: Magyar (Hungarian)\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: debuggerstrconst.drsbreakpointcolwidthaction
+msgid "Action column"
+msgstr "Művelet oszlop"
+
+#: debuggerstrconst.drsbreakpointcolwidthcondition
+msgid "Condition column"
+msgstr "Feltétel oszlop"
+
+#: debuggerstrconst.drsbreakpointcolwidthfile
+msgid "File/address column"
+msgstr "Fájl/cím oszlop"
+
+#: debuggerstrconst.drsbreakpointcolwidthgroup
+msgid "Group column"
+msgstr "Csoport oszlop"
+
+#: debuggerstrconst.drsbreakpointcolwidthline
+msgctxt "debuggerstrconst.drsbreakpointcolwidthline"
+msgid "Line column"
+msgstr "Sor oszlop"
+
+#: debuggerstrconst.drsbreakpointcolwidthpasscount
+msgid "Pass-count column"
+msgstr "Áthaladás-szám oszlop"
+
+#: debuggerstrconst.drscolwidthbrkpointimg
+msgid "Break indication column"
+msgstr "Megszakítás jelzés oszlop"
+
+#: debuggerstrconst.drscolwidthexpression
+msgid "Expression column"
+msgstr "Kifejezés oszlop"
+
+#: debuggerstrconst.drscolwidthfunc
+msgid "Function name column"
+msgstr "Eljárásnév oszlop"
+
+#: debuggerstrconst.drscolwidthindex
+msgid "Index column"
+msgstr "Index oszlop"
+
+#: debuggerstrconst.drscolwidthline
+msgctxt "debuggerstrconst.drscolwidthline"
+msgid "Line column"
+msgstr "Sor oszlop"
+
+#: debuggerstrconst.drscolwidthname
+msgid "Name column"
+msgstr "Név oszlop"
+
+#: debuggerstrconst.drscolwidthsource
+msgid "Source column"
+msgstr "Forrás oszlop"
+
+#: debuggerstrconst.drscolwidthstate
+msgid "State column"
+msgstr "Állapot oszlop"
+
+#: debuggerstrconst.drscolwidthvalue
+msgid "Value column"
+msgstr "Érték oszlop"
+
+#: debuggerstrconst.drsevalhistorynone
+msgid "No history kept"
+msgstr "Nincs előzmény megjegyezve"
+
+#: debuggerstrconst.drshistorycolwidthcurrent
+msgid "Current column"
+msgstr "Aktuális oszlop"
+
+#: debuggerstrconst.drshistorycolwidthlocation
+msgid "Location column"
+msgstr "Hely oszlop"
+
+#: debuggerstrconst.drshistorycolwidthtime
+msgid "Time column"
+msgstr "Idő oszlop"
+
+#: debuggerstrconst.drsinspectcolwidthdataclass
+msgid "Data class column"
+msgstr "Adat osztálya oszlop"
+
+#: debuggerstrconst.drsinspectcolwidthdataname
+msgid "Data name column"
+msgstr "Adat neve oszlop"
+
+#: debuggerstrconst.drsinspectcolwidthdatatype
+msgid "Data type column"
+msgstr "Adat típusa oszlop"
+
+#: debuggerstrconst.drsinspectcolwidthdatavalue
+msgid "Data value column"
+msgstr "Adat értéke oszlop"
+
+#: debuggerstrconst.drsinspectcolwidthdatavisibility
+msgid "Data visibility column"
+msgstr "Adat láthatósága oszlop"
+
+#: debuggerstrconst.drsinspectcolwidthmethaddress
+msgid "Method address column"
+msgstr "Metódus címe oszlop"
+
+#: debuggerstrconst.drsinspectcolwidthmethname
+msgid "Method name column"
+msgstr "Metódus neve oszlop"
+
+#: debuggerstrconst.drsinspectcolwidthmethreturns
+msgid "Method returns column"
+msgstr "Metódus visszatérési érték oszlop"
+
+#: debuggerstrconst.drsinspectcolwidthmethtype
+msgid "Method type column"
+msgstr "Metódus típusa oszlop"
+
+#: debuggerstrconst.drslen
+msgid "Len=%d: "
+msgstr "Hossz=%d:"
+
+#: debuggerstrconst.drsuseinstanceclasstype
+msgid "Use Instance class type"
+msgstr "Osztálypéldány-típus használata"
+
+#: debuggerstrconst.drswatchsplitterinspect
+msgid "Inspect pane"
+msgstr "Ellenőrző tábla"
+
+#: debuggerstrconst.dsrevalhistorydown
+msgid "Append result at bottom of history"
+msgstr "Eredmények az előzmények aljára"
+
+#: debuggerstrconst.dsrevalhistoryup
+msgid "Insert result at top of history"
+msgstr "Eredmények az előzmények tetejére"
+
+#: debuggerstrconst.synfnewvalueisempty
+msgid "\"New value\" is empty."
+msgstr "Az \"Új érték\" üres."
+
+#: debuggerstrconst.synfthedebuggerwasnotabletomodifythevalue
+msgid "The debugger was not able to modify the value."
+msgstr "A hibakereső nem tudta megváltoztatni az értéket."
+

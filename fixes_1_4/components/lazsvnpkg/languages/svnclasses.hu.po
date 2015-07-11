@@ -1,0 +1,236 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
+"Language-Team: Magyar (Hungarian)\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: svnclasses.rsaction
+msgid "Action"
+msgstr "Művelet"
+
+#: svnclasses.rsadd
+msgid "Add to version control"
+msgstr "Változatkezelés alá helyezni"
+
+#: svnclasses.rsadded
+msgid "Added"
+msgstr "Hozzáadva"
+
+#: svnclasses.rsauthor
+msgid "Author"
+msgstr "Szerző"
+
+#: svnclasses.rscommit
+msgid "Commit"
+msgstr "Beküldés"
+
+#: svnclasses.rscommitmsg
+msgid "Commit Message"
+msgstr "Beküldési üzenet"
+
+#: svnclasses.rscommitmsghistory
+msgid "Commit Message History"
+msgstr "Beküldési üzenetek előzményei"
+
+#: svnclasses.rscommitrevision
+msgid "Commit revision"
+msgstr "Változat beküldése"
+
+#: svnclasses.rsconflict
+msgid "Conflict"
+msgstr "Ütközés"
+
+#: svnclasses.rscopyfrompath
+msgid "Copy from path"
+msgstr "Másolás útvonalról"
+
+#: svnclasses.rscreatepatchfile
+msgid "Create patch file"
+msgstr "Foltfájl (patch) létrehozása"
+
+#: svnclasses.rsdate
+msgid "Date"
+msgstr "Dátum"
+
+#: svnclasses.rsdelete
+msgid "Delete"
+msgstr "Törlés"
+
+#: svnclasses.rsdeleted
+msgid "Deleted"
+msgstr "Törölve"
+
+#: svnclasses.rsdiffactivefile
+msgid "Diff active file"
+msgstr "Aktív fájl eltérései"
+
+#: svnclasses.rsedit
+msgid "Edit"
+msgstr "Szerkesztés"
+
+#: svnclasses.rsextension
+msgid "Extension"
+msgstr "Kiterjesztés"
+
+#: svnclasses.rsfilenotinworkingcopyanymore
+msgid "File is not part of local working copy (anymore)"
+msgstr "A fájl nem része a helyi munkaváltozatnak (már)"
+
+#: svnclasses.rsfilestatus
+msgid "File status"
+msgstr "Fájl állapota"
+
+#: svnclasses.rsindexoutofboundsd
+msgid "Index out of bounds (%d)"
+msgstr "Az index tartományon kívül esik (%d)"
+
+#: svnclasses.rslazarussvncommit
+msgid "LazarusSVN Commit"
+msgstr "LazarusSVN beküldés"
+
+#: svnclasses.rslazarussvndiff
+msgid "%s - LazarusSVN Diff ..."
+msgstr "%s - LazarusSVN eltérések ..."
+
+#: svnclasses.rslazarussvnlog
+msgid "%s - LazarusSVN Log ..."
+msgstr "%s - LazarusSVN napló ..."
+
+#: svnclasses.rslazarussvnupdate
+msgid "%s - LazarusSVN Update ..."
+msgstr "%s - LazarusSVN frissítés ..."
+
+#: svnclasses.rsmerged
+msgid "Merged"
+msgstr "Összevonva"
+
+#: svnclasses.rsmessage
+msgid "Message"
+msgstr "Üzenet"
+
+#: svnclasses.rsnoauthor
+msgid "(no author)"
+msgstr "(nincs szerző)"
+
+#: svnclasses.rsonlymodifieditemscanbediffed
+msgid "Only modified (M) Items can be diffed"
+msgstr "Csak a módosított (M) elemek eltérései vizsgálhatók"
+
+#: svnclasses.rsopenfileineditor
+msgid "Open file in editor"
+msgstr "A fájl megnyitása szerkesztőben."
+
+#: svnclasses.rsopenpreviousrevisionineditor
+msgid "Open previous revision in editor"
+msgstr "Előző változat megnyitása szerkesztőben."
+
+#: svnclasses.rsopenthisrevisionineditor
+msgid "Open this revision in editor"
+msgstr "Ezen változat megnyitása szerkesztőben."
+
+#: svnclasses.rspath
+msgid "Path"
+msgstr "Útvonal"
+
+#: svnclasses.rsprojectfilename
+msgid "Project filename"
+msgstr "Projekt fájlnév"
+
+#: svnclasses.rsprojectisactive
+msgid "Project is active"
+msgstr "A projekt aktív"
+
+#: svnclasses.rsprojectisnotactiveinsvnsettingspleaseactivatefirst
+msgid "Project is not active in SVN settings, please activate first."
+msgstr "A projekt nem aktív az SVN beállításokban. Először aktiválni kell!"
+
+#: svnclasses.rsprojectname
+msgid "Project name"
+msgstr "Projekt neve"
+
+#: svnclasses.rsprojectoptions
+msgid "Project options"
+msgstr "Projekt beállítások"
+
+#: svnclasses.rspropertystatus
+msgid "Property status"
+msgstr "Tulajdonságok állapota"
+
+#: svnclasses.rsrefresh
+msgid "Refresh"
+msgstr "Frissítés"
+
+#: svnclasses.rsremove
+msgid "Remove from version control (keep local)"
+msgstr "Változatkezelés alól kivenni (helyben megmarad)"
+
+#: svnclasses.rsrepositorypath
+msgid "Repository path"
+msgstr "Tároló útvonala"
+
+#: svnclasses.rsrevert
+msgid "Revert"
+msgstr "Visszaállítás"
+
+#: svnclasses.rsrevision
+msgid "Revision"
+msgstr "Változat"
+
+#: svnclasses.rssave
+msgid "Save"
+msgstr "Mentés"
+
+#: svnclasses.rssettings
+msgid "Settings"
+msgstr "Beállítások"
+
+#: svnclasses.rsshowdiff
+msgid "Show diff"
+msgstr "Eltérések megjelenítése"
+
+#: svnclasses.rsshowdiffbase
+msgid "Show Diff of Local Changes"
+msgstr "Helyi változat eltéréseinek megjelenítése"
+
+#: svnclasses.rsshowdiffcountrev
+msgid "Show Last X Commits"
+msgstr "Utolsó X beküldés megjelenítése"
+
+#: svnclasses.rsshowdiffhead
+msgid "Show Diff Against HEAD"
+msgstr "Eltérések megjelenítése a HEAD-hez képest"
+
+#: svnclasses.rsshowdiffprev
+msgid "Show Diff Against Previous Version"
+msgstr "Eltérések megjelenítése az előző változathoz képest"
+
+#: svnclasses.rsshowlog
+msgid "Show log"
+msgstr "Napló megjelenítése"
+
+#: svnclasses.rssourcefiledoesnotbelongtotheprojectpleaseaddfirst
+msgid "Source file does not belong to the project. Please add first."
+msgstr "A forrásfájl nem tartozik a projekthez. Először hozzá kell adni!"
+
+#: svnclasses.rssvnsettings
+msgid "SVN settings"
+msgstr "SVN beállítások"
+
+#: svnclasses.rssvntools
+msgid "SVN tools"
+msgstr "SVN eszközök"
+
+#: svnclasses.rsupdate
+msgid "Update"
+msgstr "Frissítés"
+
+#: svnclasses.rsupdated
+msgid "Updated"
+msgstr "Frissítve"

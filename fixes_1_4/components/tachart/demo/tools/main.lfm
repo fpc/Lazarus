@@ -1,0 +1,240 @@
+object Form1: TForm1
+  Left = 292
+  Height = 518
+  Top = 152
+  Width = 554
+  Caption = 'Form1'
+  ClientHeight = 518
+  ClientWidth = 554
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object Chart1: TChart
+    Left = 0
+    Height = 374
+    Top = 0
+    Width = 554
+    AutoFocus = True
+    AxisList = <    
+      item
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+      end    
+      item
+        Alignment = calBottom
+        Minors = <>
+      end>
+    Extent.UseXMax = True
+    Extent.UseXMin = True
+    Extent.UseYMax = True
+    Extent.UseYMin = True
+    Extent.XMax = 3
+    Extent.XMin = -3
+    Extent.YMax = 2
+    Extent.YMin = -2
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    ReticuleMode = rmCross
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Toolset = ChartToolset1
+    Align = alClient
+    DoubleBuffered = True
+    ParentColor = False
+    object Chart1FuncSeries1: TFuncSeries
+      OnCalculate = Chart1FuncSeries1Calculate
+      Pen.Color = clMaroon
+    end
+    object Chart1BarSeries1: TBarSeries
+      BarBrush.Color = clRed
+      Source = RandomChartSource1
+      UseReticule = True
+    end
+    object ChartLine1: TConstantLine
+      LineStyle = lsVertical
+      Pen.Color = clLime
+      Pen.Style = psDash
+      Pen.Width = 2
+      Position = -1.5
+    end
+    object ChartLine2: TConstantLine
+      LineStyle = lsVertical
+      Pen.Color = clFuchsia
+      Pen.Style = psDash
+      Pen.Width = 2
+      Position = 1.5
+    end
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 126
+    Top = 374
+    Width = 554
+    Align = alBottom
+    ClientHeight = 126
+    ClientWidth = 554
+    TabOrder = 1
+    object rgZoom: TRadioGroup
+      Left = 1
+      Height = 124
+      Top = 1
+      Width = 255
+      Align = alLeft
+      AutoFill = True
+      Caption = ' Zooming '
+      ChildSizing.LeftRightSpacing = 6
+      ChildSizing.TopBottomSpacing = 6
+      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+      ChildSizing.EnlargeVertical = crsHomogenousChildResize
+      ChildSizing.ShrinkHorizontal = crsScaleChilds
+      ChildSizing.ShrinkVertical = crsScaleChilds
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 1
+      ClientHeight = 106
+      ClientWidth = 251
+      ItemIndex = 2
+      Items.Strings = (
+        'Drag to zoom'
+        'Drag to zoom proportionally'
+        'Click to zoom in, Shift+click to zoom out'
+        'Mouse wheel to zoom'
+      )
+      OnClick = rgZoomClick
+      TabOrder = 0
+      object cbFixedPoint: TCheckBox
+        Left = 6
+        Height = 16
+        Top = 68
+        Width = 239
+        Caption = 'Fixed point'
+        Checked = True
+        OnChange = cbFixedPointChange
+        State = cbChecked
+        TabOrder = 4
+      end
+      object cbAnimate: TCheckBox
+        Left = 6
+        Height = 16
+        Top = 84
+        Width = 239
+        Caption = 'Animate'
+        OnClick = cbAnimateClick
+        TabOrder = 5
+      end
+    end
+    object rgPan: TRadioGroup
+      Left = 256
+      Height = 124
+      Top = 1
+      Width = 292
+      Align = alLeft
+      AutoFill = True
+      Caption = 'Panning'
+      ChildSizing.LeftRightSpacing = 6
+      ChildSizing.TopBottomSpacing = 6
+      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+      ChildSizing.EnlargeVertical = crsHomogenousChildResize
+      ChildSizing.ShrinkHorizontal = crsScaleChilds
+      ChildSizing.ShrinkVertical = crsScaleChilds
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 1
+      ClientHeight = 106
+      ClientWidth = 288
+      ItemIndex = 0
+      Items.Strings = (
+        'Right-drag in any direction'
+        'Right-drag left/right, Shift+right-drag up/down'
+        'Right-click near the margin'
+        'Right-click near the margin and hold'
+        'Shift+mousewheel up/down'
+        'Shift+mousewheel right/left'
+      )
+      OnClick = rgPanClick
+      TabOrder = 1
+    end
+  end
+  object Panel2: TPanel
+    Left = 0
+    Height = 18
+    Top = 500
+    Width = 554
+    Align = alBottom
+    Caption = 'Press Ctrl to display crosshairs, Alt-drag to move vertical lines'
+    TabOrder = 2
+  end
+  object ChartToolset1: TChartToolset
+    left = 124
+    top = 75
+    object ChartToolset1ZoomOut: TZoomClickTool
+      Shift = [ssShift, ssLeft]
+      AnimationInterval = 100
+      ZoomFactor = 0.5
+    end
+    object ChartToolset1ZoomIn: TZoomClickTool
+      Shift = [ssLeft]
+      AnimationInterval = 100
+      ZoomFactor = 2
+    end
+    object ChartToolset1ZoomMouseWheelTool1: TZoomMouseWheelTool
+      Enabled = False
+      AnimationInterval = 100
+      ZoomFactor = 0.75
+    end
+    object ChartToolset1ZoomDragTool1: TZoomDragTool
+      Enabled = False
+      Shift = [ssLeft]
+      AnimationInterval = 100
+    end
+    object ChartToolset1PanAny: TPanDragTool
+      Shift = [ssRight]
+    end
+    object ChartToolset1PanHor: TPanDragTool
+      Enabled = False
+      Shift = [ssRight]
+      ActiveCursor = crSizeWE
+      Directions = [pdLeft, pdRight]
+    end
+    object ChartToolset1PanVert: TPanDragTool
+      Enabled = False
+      Shift = [ssShift, ssRight]
+      ActiveCursor = crSizeNS
+      Directions = [pdUp, pdDown]
+    end
+    object ChartToolset1PanClickTool1: TPanClickTool
+      Enabled = False
+      Shift = [ssRight]
+      Margins.Left = 30
+      Margins.Top = 30
+      Margins.Right = 30
+      Margins.Bottom = 30
+    end
+    object ChartToolset1PanMouseWheelTool1: TPanMouseWheelTool
+      Enabled = False
+      Shift = [ssShift]
+      Step = 20
+    end
+    object ChartToolset1DataPointDragTool1: TDataPointDragTool
+      Shift = [ssAlt, ssLeft]
+      OnBeforeMouseMove = ChartToolset1DataPointDragTool1BeforeMouseMove
+      AffectedSeries = '2,3'
+    end
+    object ChartToolset1DataPointCrosshairTool1: TDataPointCrosshairTool
+      Shift = [ssCtrl]
+      OnAfterKeyUp = ChartToolset1DataPointCrosshairTool1AfterKeyUp
+      GrabRadius = 200
+      OnDraw = ChartToolset1DataPointCrosshairTool1Draw
+    end
+  end
+  object RandomChartSource1: TRandomChartSource
+    PointsNumber = 10
+    RandSeed = 251061796
+    XMax = 9
+    XMin = 0
+    YMax = 10
+    YMin = 0
+    left = 124
+    top = 152
+  end
+end

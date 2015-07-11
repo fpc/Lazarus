@@ -1,0 +1,274 @@
+object MakeSkelForm: TMakeSkelForm
+  Left = 473
+  Height = 391
+  Top = 237
+  Width = 486
+  HorzScrollBar.Page = 412
+  VertScrollBar.Page = 276
+  ActiveControl = EPackage
+  Caption = 'Create new file from pascal source'
+  ClientHeight = 391
+  ClientWidth = 486
+  OnShow = CheckEnabled
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object Label1: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = EPackage
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 19
+    Top = 63
+    Width = 61
+    BorderSpacing.Around = 6
+    Caption = 'I&nput file'
+    Color = clBtnFace
+    FocusControl = FEinputFile
+    Layout = tlCenter
+    ParentColor = False
+    Transparent = False
+  end
+  object Label2: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = FEinputFile
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 19
+    Top = 120
+    Width = 74
+    BorderSpacing.Around = 6
+    Caption = 'O&utput file'
+    Color = clBtnFace
+    FocusControl = FEoutputFIle
+    Layout = tlCenter
+    ParentColor = False
+    Transparent = False
+  end
+  object LEPackage: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 19
+    Top = 6
+    Width = 102
+    BorderSpacing.Around = 6
+    Caption = 'Pac&kage name'
+    Color = clBtnFace
+    FocusControl = EPackage
+    Layout = tlCenter
+    ParentColor = False
+    Transparent = False
+  end
+  object Label3: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Panel1
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 19
+    Top = 277
+    Width = 91
+    BorderSpacing.Around = 6
+    Caption = 'E&xtra options'
+    Color = clBtnFace
+    FocusControl = EAdditionalOptions
+    Layout = tlCenter
+    ParentColor = False
+    Transparent = False
+  end
+  object FEinputFile: TFileNameEdit
+    AnchorSideLeft.Control = Label1
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrBottom
+    Left = 12
+    Height = 26
+    Top = 88
+    Width = 449
+    DialogOptions = []
+    Filter = 'Source file (*.pas)|*.pas|All files|*.*'
+    FilterIndex = 0
+    HideDirectories = False
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Flat = True
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    MaxLength = 0
+    TabOrder = 1
+    OnChange = CheckEnabled
+  end
+  object FEoutputFIle: TFileNameEdit
+    AnchorSideLeft.Control = Label1
+    AnchorSideTop.Control = Label2
+    AnchorSideTop.Side = asrBottom
+    Left = 12
+    Height = 26
+    Top = 145
+    Width = 449
+    DialogKind = dkSave
+    DialogTitle = 'Select file to save to'
+    DialogOptions = []
+    Filter = 'Skel file (*.xml)|*.xml|All files|*.*'
+    FilterIndex = 0
+    HideDirectories = False
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Flat = True
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    MaxLength = 0
+    TabOrder = 2
+    OnChange = CheckEnabled
+  end
+  object EPackage: TEdit
+    AnchorSideLeft.Control = LEPackage
+    AnchorSideTop.Control = LEPackage
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 12
+    Height = 26
+    Top = 31
+    Width = 468
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    OnChange = CheckEnabled
+    TabOrder = 0
+    Text = 'MyPackage'
+  end
+  object EAdditionalOptions: TEdit
+    AnchorSideLeft.Control = Label3
+    AnchorSideTop.Control = Label3
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 12
+    Height = 26
+    Top = 302
+    Width = 468
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    TabOrder = 5
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 36
+    Top = 349
+    Width = 474
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    OKButton.Enabled = False
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 6
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object Panel1: TGroupBox
+    AnchorSideLeft.Control = Label2
+    AnchorSideTop.Control = FEoutputFIle
+    AnchorSideTop.Side = asrBottom
+    Left = 12
+    Height = 94
+    Top = 177
+    Width = 200
+    AutoSize = True
+    BorderSpacing.Around = 6
+    ClientHeight = 90
+    ClientWidth = 196
+    TabOrder = 3
+    object CBDisableArguments: TCheckBox
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Panel1
+      Left = 6
+      Height = 22
+      Top = 6
+      Width = 184
+      BorderSpacing.Around = 6
+      Caption = 'No &arguments sections'
+      TabOrder = 0
+    end
+    object CBDisableResults: TCheckBox
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = CBDisableArguments
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 22
+      Top = 34
+      Width = 156
+      BorderSpacing.Around = 6
+      Caption = 'No &results sections'
+      TabOrder = 1
+    end
+    object CBDisableSeeAlso: TCheckBox
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = CBDisableResults
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 22
+      Top = 62
+      Width = 163
+      BorderSpacing.Around = 6
+      Caption = 'No &seealso sections'
+      TabOrder = 2
+    end
+  end
+  object Panel2: TGroupBox
+    AnchorSideLeft.Control = Panel1
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = FEoutputFIle
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 218
+    Height = 94
+    Top = 177
+    Width = 262
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    ClientHeight = 90
+    ClientWidth = 258
+    TabOrder = 4
+    object CBDisableProtected: TCheckBox
+      AnchorSideLeft.Control = Panel2
+      AnchorSideTop.Control = Panel2
+      Left = 6
+      Height = 22
+      Top = 6
+      Width = 180
+      BorderSpacing.Around = 6
+      Caption = 'No &protected methods'
+      TabOrder = 0
+    end
+    object CBDisablePrivate: TCheckBox
+      AnchorSideLeft.Control = Panel2
+      AnchorSideTop.Control = CBDisableProtected
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 22
+      Top = 34
+      Width = 158
+      BorderSpacing.Around = 6
+      Caption = 'No pr&ivate methods'
+      TabOrder = 1
+    end
+    object CBDisableErrors: TCheckBox
+      AnchorSideLeft.Control = Panel2
+      AnchorSideTop.Control = CBDisablePrivate
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 22
+      Top = 62
+      Width = 150
+      BorderSpacing.Around = 6
+      Caption = 'No &errors sections'
+      TabOrder = 2
+    end
+  end
+end

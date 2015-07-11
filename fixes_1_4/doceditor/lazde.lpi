@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="9"/>
+    <General>
+      <Flags>
+        <LRSInOutputDirectory Value="False"/>
+      </Flags>
+      <SessionStorage Value="InIDEConfig"/>
+      <MainUnit Value="0"/>
+      <Title Value="Lazarus documentation editor"/>
+      <ResourceType Value="res"/>
+      <UseXPManifest Value="True"/>
+      <Icon Value="0"/>
+    </General>
+    <i18n>
+      <OutDir Value="languages"/>
+    </i18n>
+    <VersionInfo>
+      <UseVersionInfo Value="True"/>
+      <MinorVersionNr Value="9"/>
+      <RevisionNr Value="29"/>
+      <StringTable CompanyName="Lazarus team" InternalName="LazDE" ProductVersion="" FileDescription="Lazarus documents editor" OriginalFilename="LazDE"/>
+    </VersionInfo>
+    <BuildModes Count="1">
+      <Item1 Name="default" Default="True"/>
+    </BuildModes>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <CommandLineParams Value="--element=system.writeln /home/michael/docs/system.xml"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="1">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+    </RequiredPackages>
+    <Units Count="17">
+      <Unit0>
+        <Filename Value="lazde.lpr"/>
+        <IsPartOfProject Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="freditor.pp"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ElemEditorFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="freditor"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="fpdeutil.pp"/>
+        <IsPartOfProject Value="True"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="frmabout.pp"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="AboutForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="frmbuild.pp"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="BuildForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="frmBuild"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="frmexample.pp"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ExampleForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="frmlink.pp"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="LinkForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="frmmain.pp"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MainForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="FrmMain"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="frmmakeskel.pp"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MakeSkelForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="frmnewnode.pp"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="NewNodeForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="frmoptions.pp"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="OptionsForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="frmsource.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="SourceForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="frmtable.pp"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="TableForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="lazdemsg.pp"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="LazDEMsg"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="lazdeopts.pp"/>
+        <IsPartOfProject Value="True"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="frpeditor.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="PackEditorFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="frmlists.pp"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ListForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="frmlists"/>
+      </Unit16>
+    </Units>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="11"/>
+    <Target>
+      <Filename Value="lazde"/>
+    </Target>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)"/>
+      <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)"/>
+    </SearchPaths>
+    <Linking>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+    <Other>
+      <ConfigFile>
+        <StopAfterErrCount Value="10"/>
+      </ConfigFile>
+    </Other>
+  </CompilerOptions>
+</CONFIG>

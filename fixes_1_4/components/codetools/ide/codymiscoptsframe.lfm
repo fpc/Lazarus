@@ -1,0 +1,88 @@
+inherited CodyMiscOptionsFrame: TCodyMiscOptionsFrame
+  Height = 336
+  Width = 558
+  ClientHeight = 336
+  ClientWidth = 558
+  TabOrder = 0
+  DesignLeft = 358
+  DesignTop = 166
+  object UDDividerBevel: TDividerBevel[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 16
+    Top = 0
+    Width = 558
+    Caption = 'UDDividerBevel'
+    Autosize = True
+    Anchors = [akTop, akLeft, akRight]
+  end
+  object UDLoadDelayLabel: TLabel[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = UDDividerBevel
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 17
+    Top = 22
+    Width = 118
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = 'UDLoadDelayLabel'
+    ParentColor = False
+  end
+  object UDLoadDelayTrackBar: TTrackBar[2]
+    AnchorSideLeft.Control = UDLoadDelayLabel
+    AnchorSideTop.Control = UDLoadDelayLabel
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 20
+    Top = 39
+    Width = 138
+    OnChange = UDLoadDelayTrackBarChange
+    Position = 0
+    TabOrder = 0
+  end
+  object UDSaveButton: TButton[3]
+    AnchorSideLeft.Control = UDLoadDelayLabel
+    AnchorSideTop.Control = UDSaveIntervalTrackBar
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 20
+    Top = 108
+    Width = 113
+    AutoSize = True
+    BorderSpacing.Top = 6
+    Caption = 'UDSaveButton'
+    OnClick = UDSaveButtonClick
+    TabOrder = 1
+  end
+  object UDSaveIntervalLabel: TLabel[4]
+    AnchorSideLeft.Control = UDLoadDelayLabel
+    AnchorSideTop.Control = UDLoadDelayTrackBar
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 17
+    Top = 65
+    Width = 128
+    BorderSpacing.Top = 6
+    Caption = 'UDSaveIntervalLabel'
+    ParentColor = False
+  end
+  object UDSaveIntervalTrackBar: TTrackBar[5]
+    AnchorSideLeft.Control = UDLoadDelayLabel
+    AnchorSideTop.Control = UDSaveIntervalLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = UDLoadDelayTrackBar
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 20
+    Top = 82
+    Width = 138
+    OnChange = UDSaveIntervalTrackBarChange
+    Position = 0
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 2
+  end
+end

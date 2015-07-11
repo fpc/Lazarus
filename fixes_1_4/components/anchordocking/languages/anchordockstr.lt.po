@@ -1,0 +1,313 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"PO-Revision-Date: 2013-02-11 00:50+0400\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Language: lt\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 1.4\n"
+"POT-Creation-Date: \n"
+
+#: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
+#, fuzzy
+#| msgid "A free side of a splitter must not be anchored: Node=%s%s%s Type=%s Anchors[%s]=%s%s%s"
+msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
+msgstr "Laisvoji skyriklio kraštinė neturi būti pririšta: mazgas = %s%s%s, tipas = %s, prieraišos[%s] = %s%s%s"
+
+#: anchordockstr.adrsallfiles
+msgid "All files"
+msgstr "Visi failai"
+
+#: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts
+msgid "Amount of pixel the mouse has to drag before drag starts"
+msgstr "Pelės judesio kelias pikseliais, po kurio pradedamas tempimo veiksmas"
+
+#: anchordockstr.adrsanchordockinglayout
+msgid "Anchor Docking Layout"
+msgstr "Prieraišų pritvirtinimų maketas"
+
+#: anchordockstr.adrsanchorisnotsplitternodeanchors
+#, fuzzy
+#| msgid "Anchor is not splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
+msgid "Anchor is not splitter: Node=\"%s\" Anchors[%s]=\"%s\""
+msgstr "Prieraiša nėra skyriklis: mazgas = %s%s%s, prieraišos[%s] = %s%s%s"
+
+#: anchordockstr.adrsanchornotfoundnodeanchors
+#, fuzzy
+#| msgid "Anchor not found: Node=%s%s%s Anchors[%s]=%s%s%s"
+msgid "Anchor not found: Node=\"%s\" Anchors[%s]=\"%s\""
+msgstr "Prieraiša nerasta: mazgas = %s%s%s, prieraišos[%s] = %s%s%s"
+
+#: anchordockstr.adrsanchortowrongsideofsplitternodeanchors
+#, fuzzy
+#| msgid "Anchor to wrong side of splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
+msgid "Anchor to wrong side of splitter: Node=\"%s\" Anchors[%s]=\"%s\""
+msgstr "Prieraiša netinka skyriklio kraštinei: mazgas = %s%s%s, prieraišos[%s]=%s%s%s"
+
+#: anchordockstr.adrsapagemustnotbeanchorednodeparentparenttypeanchors
+#, fuzzy
+#| msgid "A page must not be anchored: Node=%s%s%s Parent=%s ParentType=%s Anchors[%s]=%s%s%s"
+msgid "A page must not be anchored: Node=\"%s\" Parent=%s ParentType=%s Anchors[%s]=\"%s\""
+msgstr "Lapas turi būti be prieraišų: mazgas = %s%s%s, tėvas = %s, tėvo tipas = %s, prieraišos[%s] = %s%s%s"
+
+#: anchordockstr.adrsautomatically
+msgid "Automatically"
+msgstr "Automatiškai"
+
+#: anchordockstr.adrsbottom
+msgid "bottom"
+msgstr "apatinis"
+
+#: anchordockstr.adrsclose
+msgid "Close"
+msgstr "Užverti"
+
+#: anchordockstr.adrscontrolisalreadyadocksite
+msgid "control is already a docksite"
+msgstr "Valdiklis jau yra vieta pritvirtinimui"
+
+#: anchordockstr.adrscustomdocksitecanhaveonlyonesite
+#, fuzzy
+#| msgid "Custom dock site %s%s%s can have only one site."
+msgid "Custom dock site \"%s\" can have only one site."
+msgstr "Savoje pritvirtinimo vietoje %s%s%s gali būti tik viena vieta pritvirtinimui."
+
+#: anchordockstr.adrsdockinganchordocking
+msgid "Docking / Anchordocking"
+msgstr "Pritvirtinimas / Prieraišų pritvirtinimas"
+
+#: anchordockstr.adrsdockingoptions
+msgid "Docking options"
+msgstr "Pritvirtinimo parinktys"
+
+#: anchordockstr.adrsdraganddockc
+#| msgid "Use the mouse to drag and dock window \"%c\""
+msgid "Use the mouse to drag and dock window \"%s\""
+msgstr "Langas „%s“ tempiamas ir pritvirtinamas naudojant pelę"
+
+#: anchordockstr.adrsdragthreshold
+msgid "Drag threshold"
+msgstr "Tempimo pradžia"
+
+#: anchordockstr.adrsduplicatename
+msgid "Duplicate name: "
+msgstr "Pavadinimo dublikatas: "
+
+#: anchordockstr.adrseachdockedwindowhasaheaderthatallowsdragginghasaco
+msgid "Each docked window has a header that allows dragging, has a context menu with extra layout functions and shows the caption of the docked window"
+msgstr "Kiekvienas pritvirtintas langas turi antraštę tempimui, kurioje pateikiamas pritvirtinto lango pavadinimas, ir kurioje yra kontekstinis meniu su papildomomis išdėstymo funkcijomis"
+
+#: anchordockstr.adrsemptyname
+msgid "Empty name: "
+msgstr "Tuščias pavadinimas: "
+
+#: anchordockstr.adrsenlarge
+msgid "Enlarge"
+msgstr "Išdidinti"
+
+#: anchordockstr.adrsenlargeside
+msgid "Enlarge %s side"
+msgstr "Išdidinti kraštinę „%s“"
+
+#: anchordockstr.adrserror
+msgid "Error"
+msgstr "Klaida"
+
+#: anchordockstr.adrserrorloadingwindowlayoutfromfile
+msgid "Error loading window layout from file \"%s\"%s%s"
+msgstr "Iš failo „%s“ nepavyko įkelti lango maketo, nes:%s%s"
+
+#: anchordockstr.adrserrorwritingwindowlayouttofile
+msgid "Error writing window layout to file \"%s\"%s%s"
+msgstr "Lango maketo nepavyko įrašyti failan „%s“, nes:%s%s"
+
+#: anchordockstr.adrsfilledheaders
+msgid "Fill headers"
+msgstr ""
+
+#: anchordockstr.adrsfilledheadershint
+msgid "Fill headers of docked controls"
+msgstr ""
+
+#: anchordockstr.adrsflattenheaders
+msgid "Flatten headers"
+msgstr ""
+
+#: anchordockstr.adrsflattenheadershint
+msgid "Flatten headers of docked controls"
+msgstr ""
+
+#: anchordockstr.adrsgeneraldockingoptions
+msgid "General docking options"
+msgstr "Pagrindinės pritvirtinimo parinktys"
+
+#: anchordockstr.adrsheaderalignleft
+msgid "Header align left"
+msgstr "Antraštę lygiuoti kairėje"
+
+#: anchordockstr.adrsheaderaligntop
+msgid "Header align top"
+msgstr "Antraštę lygiuoti viršuje"
+
+#: anchordockstr.adrsheaderposition
+msgid "Header position"
+msgstr "Antraštės padėtis"
+
+#: anchordockstr.adrsheaderstyle
+msgid "Header Style:"
+msgstr ""
+
+#: anchordockstr.adrshideheadercaptionsforsiteswithonlyonedockedcontrol
+msgid "Hide header captions for sites with only one docked control, as that is already shown in the normal window title"
+msgstr "Slėpti antraštės pavadinimą pritvirtinimo vietose, kuriose pritvirtintas tik vienas valdiklis, nes pavadinimas ir taip jau rodomas įprasto lango antraštėje"
+
+#: anchordockstr.adrsleft
+msgid "left"
+msgstr "kairysis"
+
+#: anchordockstr.adrsloadwindowlayoutfromfile
+msgid "Load window layout from file ..."
+msgstr "Lango maketą įkelti iš failo…"
+
+#: anchordockstr.adrsloadwindowlayoutfromfilexml
+msgid "Load window layout from file (*.xml)"
+msgstr "Lango maketą įkelti iš failo (*.xml)"
+
+#: anchordockstr.adrslocked
+msgid "Locked"
+msgstr "Užrakintas"
+
+#: anchordockstr.adrsmerge
+msgid "Merge"
+msgstr "Sulieti"
+
+#: anchordockstr.adrsmissingcontrolname
+msgid "missing control name"
+msgstr "nėra valdiklio pavadinimo"
+
+#: anchordockstr.adrsmodalformscannotbemadedockable
+msgid "modal forms can not be made dockable"
+msgstr "modalinės formos negali būti pririšamos"
+
+#: anchordockstr.adrsmoveheadertoleftwhenwidthheight100headeralignleft
+msgid "Move header to left when (Width/Height)*100>=HeaderAlignLeft"
+msgstr "Antraštę perkelti kairėn kai (Width/Height) * 100 >= HeaderAlignLeft"
+
+#: anchordockstr.adrsmoveheadertotopwhenwidthheight100headeraligntop
+msgid "Move header to top when (Width/Height)*100<=HeaderAlignTop"
+msgstr "Antraštę perkelti viršun kai (Width/Height) * 100 <= HeaderAlignTop"
+
+#: anchordockstr.adrsmovepageleft
+msgid "Move page left"
+msgstr "Lapą perkelti kairėn"
+
+#: anchordockstr.adrsmovepageleftmost
+msgid "Move page leftmost"
+msgstr "Lapą perkelti į kairiausią"
+
+#: anchordockstr.adrsmovepageright
+msgid "Move page right"
+msgstr "Lapą perkelti dešinėn"
+
+#: anchordockstr.adrsmovepagerightmost
+msgid "Move page rightmost"
+msgstr "Lapą perkelti į dešiniausią"
+
+#: anchordockstr.adrsnocaptionsforfloatingsites
+msgid "No captions for floating sites"
+msgstr "Nerodyti antraščių plaukiojančioms vietoms pritvirtinimui"
+
+#: anchordockstr.adrsnochildrenallowedfornodetype
+#, fuzzy
+#| msgid "No children allowed for Node=%s%s%s Type=%s"
+msgid "No children allowed for Node=\"%s\" Type=%s"
+msgstr "Vaikai negalimi mazge = %s%s%s, tipas=%s"
+
+#: anchordockstr.adrsnotsupportedhasparent
+msgid "Not supported: %s has parent %s"
+msgstr "Nepalaikoma: %s turi tėvą %s"
+
+#: anchordockstr.adrsquit
+msgid "Quit %s"
+msgstr "Baigti „%s“ darbą"
+
+#: anchordockstr.adrsrequestedbutcreated
+msgid "%s requested, but %s created"
+msgstr "Pareikalauta „%s“, tačiau sukurta „%s“"
+
+#: anchordockstr.adrsrestoredefaultlayout
+msgid "Restore default layout"
+msgstr "Atstatyti numatytąjį maketą"
+
+#: anchordockstr.adrsright
+msgid "right"
+msgstr "dešinysis"
+
+#: anchordockstr.adrssavelayoutonclose
+msgid "Save layout on close"
+msgstr ""
+
+#: anchordockstr.adrssavewindowlayoutasdefault
+msgid "Save window layout as default"
+msgstr "Lango maketą įrašyti kaip numatytąjį"
+
+#: anchordockstr.adrssavewindowlayouttofile
+msgid "Save window layout to file ..."
+msgstr "Lango maketą įrašyti failan…"
+
+#: anchordockstr.adrssavewindowlayouttofilexml
+msgid "Save window layout to file (*.xml)"
+msgstr "Lango maketą įrašyti failan (*.xml)"
+
+#: anchordockstr.adrsscaleonresize
+msgid "Scale on resize"
+msgstr "Keisti visų dydį"
+
+#: anchordockstr.adrsscalesubsiteswhenasiteisresized
+msgid "Scale sub sites when a site is resized"
+msgstr "Keičiant vietos pritvirtinimui dydį, keisti ir vidinių vietų dydžius"
+
+#: anchordockstr.adrsshowcaptionsofdockedcontrolsintheheader
+msgid "Show captions of docked controls in the header"
+msgstr "Antraštėje pateikti pritvirtintų valdiklių pavadinimus"
+
+#: anchordockstr.adrsshowheadercaptions
+msgid "Show header captions"
+msgstr "Rodyti antraščių pavadinimus"
+
+#: anchordockstr.adrsshowheaders
+msgid "Show headers"
+msgstr "Rodyti antraštes"
+
+#: anchordockstr.adrssplitterthickness
+msgid "Splitter thickness"
+msgstr "Skyriklio storis"
+
+#: anchordockstr.adrssplitterwidth
+msgid "Splitter width"
+msgstr "Skyriklio plotis"
+
+#: anchordockstr.adrstabposition
+msgid "Tab position"
+msgstr "Ąselės vieta"
+
+#: anchordockstr.adrsthereisanotherdockmasterinstalledonlyonedockingpac
+msgid "There is another dock master installed. Only one docking package can be installed at a time. Please uninstall the other dock master %s and restart the IDE"
+msgstr "Kitokia pritvirtinimų valdyklė „%s“ jau yra įdiegta. Kadangi vienu metu gali būti įdiegta tik viena valdyklė, išdiekite esančia ir IKA startuokite iš naujo."
+
+#: anchordockstr.adrstop
+msgid "top"
+msgstr "viršutinis"
+
+#: anchordockstr.adrstouseanchordockingyoumustfirstuninstall
+msgid "To use anchordocking you must first uninstall %s"
+msgstr "Norint naudoti prieraišų pritvirtinimą, būtina išdiegti „%s“"
+
+#: anchordockstr.adrsundock
+msgid "Undock"
+msgstr "Naikinti pritvirtinimą"
+

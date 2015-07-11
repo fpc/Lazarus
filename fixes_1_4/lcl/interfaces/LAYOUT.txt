@@ -1,0 +1,54 @@
+Interfaces
+
+It is organized according to the following structure:
+
+interfaces
+  |
+  +--- carbon
+  |
+  +--- cocoa
+  |
+  +--- fpgui
+  |
+  +--- gtk
+  |
+  +--- gtk2
+  |
+  +--- nogui
+  |
+  +--- qt
+  |
+  +--- win32
+  |
+  +--- wince
+  |
+  +--- ...
+  |
+
+interfaces/carbon:
+  All Carbon (an older native MacOSX interface) specific code goes here.
+
+interfaces/cocoa:
+  All Cocoa (a newer native MacOSX interface) specific code goes here.
+
+interfaces/fpgui:
+  All fpgui (http://opensoft.homeip.net/fpgui/) specific code goes here.
+
+ interfaces/gtk:
+  All gtk 1.x specific code goes here. (With some specials for gtk2.x)
+
+interfaces/gtk2:
+  All gtk 2.x specific code goes here.
+  The gtk 2 interface inherits from the gtk 1 interface.
+
+interfaces/nogui:
+  All nogui (a "blank" interface) specific code goes here.
+
+interfaces/qt:
+  All QT (Trolltech, KDE) specific code goes here.
+
+interfaces/win32:
+  All win32 (native MS windows interface) specific code goes here.
+	
+interfaces/wince:
+  All Windows CE/Windows mobile specific code goes here.

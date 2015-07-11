@@ -1,0 +1,91 @@
+object ImportDDform: TImportDDform
+  Left = 368
+  Height = 375
+  Top = 279
+  Width = 508
+  ActiveControl = LBItems
+  Caption = 'Import/Update datadictionary'
+  ClientHeight = 375
+  ClientWidth = 508
+  OnCreate = FormCreate
+  OnShow = FormShow
+  LCLVersion = '0.9.27'
+  object LBItems: TCheckListBox
+    Left = 8
+    Height = 324
+    Top = 8
+    Width = 387
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ItemHeight = 0
+    TabOrder = 0
+  end
+  object BOK: TButton
+    Left = 403
+    Height = 25
+    Top = 338
+    Width = 98
+    Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 4
+    Caption = '&OK'
+    Default = True
+    ModalResult = 1
+    TabOrder = 1
+  end
+  object BCancel: TButton
+    Left = 403
+    Height = 25
+    Top = 307
+    Width = 101
+    Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 4
+    Cancel = True
+    Caption = '&Cancel'
+    ModalResult = 2
+    TabOrder = 2
+  end
+  object BSelectNone: TButton
+    Left = 403
+    Height = 25
+    Top = 40
+    Width = 98
+    Action = ASelectNone
+    Anchors = [akTop, akRight]
+    BorderSpacing.InnerBorder = 4
+    TabOrder = 3
+  end
+  object BSelectAll: TButton
+    Left = 403
+    Height = 25
+    Top = 8
+    Width = 98
+    Action = ASelectAll
+    Anchors = [akTop, akRight]
+    BorderSpacing.InnerBorder = 4
+    TabOrder = 4
+  end
+  object CBUpdateExisting: TCheckBox
+    Left = 8
+    Height = 21
+    Top = 338
+    Width = 155
+    Caption = 'Update existing tables'
+    Checked = True
+    State = cbChecked
+    TabOrder = 5
+  end
+  object ActionList1: TActionList
+    left = 440
+    top = 120
+    object ASelectNone: TAction
+      Caption = 'Select &none'
+      OnExecute = DoSelection
+      OnUpdate = HaveItems
+    end
+    object ASelectAll: TAction
+      Caption = 'Select &all'
+      OnExecute = DoSelection
+      OnUpdate = HaveItems
+      ShortCut = 16449
+    end
+  end
+end

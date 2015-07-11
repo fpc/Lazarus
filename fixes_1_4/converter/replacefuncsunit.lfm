@@ -1,0 +1,116 @@
+object ReplaceFuncsForm: TReplaceFuncsForm
+  Left = 374
+  Height = 626
+  Top = 49
+  Width = 928
+  Caption = 'Functions to replace'
+  ClientHeight = 626
+  ClientWidth = 928
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.31'
+  object ButtonPanel: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 586
+    Width = 916
+    OKButton.Name = 'OKButton'
+    OKButton.OnClick = OKButtonClick
+    HelpButton.Name = 'HelpButton'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object Grid: TStringGrid
+    AnchorSideLeft.Control = Splitter1
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel
+    Left = 162
+    Height = 580
+    Top = 0
+    Width = 766
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ColumnClickSorts = True
+    Columns = <    
+      item
+        Title.Caption = 'Category'
+        Width = 100
+      end    
+      item
+        Title.Caption = 'Delphi Function'
+        Width = 150
+      end    
+      item
+        Title.Caption = 'Replacement'
+        Width = 310
+      end    
+      item
+        Title.Caption = 'Package'
+        Width = 90
+      end    
+      item
+        Title.Caption = 'Unit'
+        Width = 90
+      end>
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goEditing, goAutoAddRows, goSmoothScroll]
+    PopupMenu = PopupMenu1
+    RowCount = 2
+    TabOrder = 1
+    OnPrepareCanvas = GridPrepareCanvas
+    ColWidths = (
+      100
+      150
+      310
+      90
+      90
+    )
+  end
+  object CategoryListBox: TCheckListBox
+    AnchorSideTop.Control = CategoriesLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Splitter1
+    AnchorSideBottom.Control = ButtonPanel
+    Left = 0
+    Height = 553
+    Top = 27
+    Width = 157
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 5
+    ItemHeight = 0
+    OnClickCheck = CategoryListBoxClickCheck
+    TabOrder = 2
+  end
+  object Splitter1: TSplitter
+    Left = 157
+    Height = 270
+    Top = 0
+    Width = 5
+    Align = alNone
+  end
+  object CategoriesLabel: TLabel
+    Left = 6
+    Height = 14
+    Top = 8
+    Width = 110
+    BorderSpacing.Right = 6
+    Caption = 'Categories to convert:'
+    ParentColor = False
+    ParentFont = False
+  end
+  object PopupMenu1: TPopupMenu
+    OnPopup = PopupMenu1Popup
+    left = 248
+    top = 152
+    object InsertRow1: TMenuItem
+      Caption = 'Insert Row'
+      OnClick = InsertRow1Click
+    end
+    object DeleteRow1: TMenuItem
+      Caption = 'Delete Row'
+      OnClick = DeleteRow1Click
+    end
+  end
+end

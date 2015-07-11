@@ -1,0 +1,41 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Last-Translator: Valdas Jankūnas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2010-05-16 16:20+0300\n"
+"Project-Id-Version: ideprinting\n"
+"Language-Team: Lietuvių <kde-i18n-lt@kde.org>\n"
+"X-Generator: Lokalize 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: ideprinting.sdescrformatting
+msgid "Formatting"
+msgstr "Formatavimas"
+
+#: ideprinting.sdescrpfselection
+#| msgid "Print..."
+msgid "Print ..."
+msgstr "Spausdinti..."
+
+#: ideprinting.spfselectioncmd
+msgid "Print"
+msgstr "Spausdinti"
+
+#: ideprinting.sprintfile
+msgid "Complete file"
+msgstr "Visą failą"
+
+#: ideprinting.sprintselection
+msgid "Selected text"
+msgstr "Pažymėtą tekstą"
+
+#: ideprinting.sprintsources
+msgid "Print sources"
+msgstr "Spausdinti šaltinius"
+
+#: ideprinting.sprintwhat
+msgid "What would you like to print ?"
+msgstr "Ką spausdinti?"
+

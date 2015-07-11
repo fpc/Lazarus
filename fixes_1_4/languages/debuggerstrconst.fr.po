@@ -1,0 +1,157 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2015-04-19 18:09+0100\n"
+"Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"X-Generator: Poedit 1.7.6\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: debuggerstrconst.drsbreakpointcolwidthaction
+msgid "Action column"
+msgstr "Colonne action"
+
+#: debuggerstrconst.drsbreakpointcolwidthcondition
+msgid "Condition column"
+msgstr "Colonne condition"
+
+#: debuggerstrconst.drsbreakpointcolwidthfile
+msgid "File/address column"
+msgstr "Colonne fichier/adresse"
+
+#: debuggerstrconst.drsbreakpointcolwidthgroup
+msgid "Group column"
+msgstr "Colonne groupe"
+
+#: debuggerstrconst.drsbreakpointcolwidthline
+msgctxt "debuggerstrconst.drsbreakpointcolwidthline"
+msgid "Line column"
+msgstr "Colonne ligne"
+
+#: debuggerstrconst.drsbreakpointcolwidthpasscount
+msgid "Pass-count column"
+msgstr "Colonne nombre de passages"
+
+#: debuggerstrconst.drscolwidthbrkpointimg
+msgid "Break indication column"
+msgstr "Colonne indication d'arrêt"
+
+#: debuggerstrconst.drscolwidthexpression
+msgid "Expression column"
+msgstr "Colonne expression"
+
+#: debuggerstrconst.drscolwidthfunc
+msgid "Function name column"
+msgstr "Colonne nom de fonction"
+
+#: debuggerstrconst.drscolwidthindex
+msgid "Index column"
+msgstr "Colonne index"
+
+#: debuggerstrconst.drscolwidthline
+msgctxt "debuggerstrconst.drscolwidthline"
+msgid "Line column"
+msgstr "Colonne ligne"
+
+#: debuggerstrconst.drscolwidthname
+msgid "Name column"
+msgstr "Colonne nom"
+
+#: debuggerstrconst.drscolwidthsource
+msgid "Source column"
+msgstr "Colonne source"
+
+#: debuggerstrconst.drscolwidthstate
+msgid "State column"
+msgstr "Colonne état"
+
+#: debuggerstrconst.drscolwidthvalue
+msgid "Value column"
+msgstr "Colonne valeur"
+
+#: debuggerstrconst.drsevalhistorynone
+msgid "No history kept"
+msgstr "Pas d'historique conservé"
+
+#: debuggerstrconst.drshistorycolwidthcurrent
+msgid "Current column"
+msgstr "Colonne en cours"
+
+#: debuggerstrconst.drshistorycolwidthlocation
+msgid "Location column"
+msgstr "Colonne emplacement"
+
+#: debuggerstrconst.drshistorycolwidthtime
+msgid "Time column"
+msgstr "Colonne heure"
+
+#: debuggerstrconst.drsinspectcolwidthdataclass
+msgid "Data class column"
+msgstr "Colonne classe de donnée"
+
+#: debuggerstrconst.drsinspectcolwidthdataname
+msgid "Data name column"
+msgstr "Colonne nom de donnée"
+
+#: debuggerstrconst.drsinspectcolwidthdatatype
+msgid "Data type column"
+msgstr "Colonne type de donnée"
+
+#: debuggerstrconst.drsinspectcolwidthdatavalue
+msgid "Data value column"
+msgstr "Colonne valeur de donnée"
+
+#: debuggerstrconst.drsinspectcolwidthdatavisibility
+msgid "Data visibility column"
+msgstr "Colonne visibilité de donnée"
+
+#: debuggerstrconst.drsinspectcolwidthmethaddress
+msgid "Method address column"
+msgstr "Colonne adresse de méthode"
+
+#: debuggerstrconst.drsinspectcolwidthmethname
+msgid "Method name column"
+msgstr "Colonne nom de méthode"
+
+#: debuggerstrconst.drsinspectcolwidthmethreturns
+msgid "Method returns column"
+msgstr "Colonne retours de méthode"
+
+#: debuggerstrconst.drsinspectcolwidthmethtype
+msgid "Method type column"
+msgstr "Colonne type de méthode"
+
+#: debuggerstrconst.drslen
+msgid "Len=%d: "
+msgstr "Longueur=%d : "
+
+#: debuggerstrconst.drsuseinstanceclasstype
+msgid "Use Instance class type"
+msgstr "Utiliser le type de classe instance"
+
+#: debuggerstrconst.drswatchsplitterinspect
+msgid "Inspect pane"
+msgstr "Panneau d'inspection"
+
+#: debuggerstrconst.dsrevalhistorydown
+msgid "Append result at bottom of history"
+msgstr "Ajouter le résultat en fin d'historique"
+
+#: debuggerstrconst.dsrevalhistoryup
+msgid "Insert result at top of history"
+msgstr "Insérer le résultat en début d'historique"
+
+#: debuggerstrconst.synfnewvalueisempty
+msgid "\"New value\" is empty."
+msgstr "\"Nouvelle valeur\" est vide."
+
+#: debuggerstrconst.synfthedebuggerwasnotabletomodifythevalue
+msgid "The debugger was not able to modify the value."
+msgstr "Le débogueur n'est pas parvenu à modifier la valeur."
+

@@ -1,0 +1,10 @@
+object CodeMacroPromptDlg: TCodeMacroPromptDlg
+  Left = 290
+  Height = 300
+  Top = 163
+  Width = 400
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 299
+  Caption = 'CodeMacroPromptDlg'
+  LCLVersion = '1.1'
+end

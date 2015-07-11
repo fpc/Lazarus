@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="\"/>
+    <Version Value="7"/>
+    <General>
+      <SessionStorage Value="InIDEConfig"/>
+      <MainUnit Value="0"/>
+      <AutoCreateForms Value="False"/>
+      <TargetFileExt Value=".exe"/>
+      <Title Value="MiniIDE2"/>
+      <UseXPManifest Value="True"/>
+    </General>
+    <LazDoc Paths="..\docs"/>
+    <VersionInfo>
+      <StringTable Comments="" CompanyName="" FileDescription="" FileVersion="0.0.0.0" InternalName="" LegalCopyright="" LegalTrademarks="" OriginalFilename="" ProductName="" ProductVersion=""/>
+    </VersionInfo>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="3">
+      <Item1>
+        <PackageName Value="SynEdit"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="EasyDockMgr"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="LCL"/>
+      </Item3>
+    </RequiredPackages>
+    <Units Count="4">
+      <Unit0>
+        <Filename Value="MiniIDE2.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="MiniIDE2"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="fminiide2.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MainBar"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fMiniIde2"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="feditbook2.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="EditBook"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fEditBook2"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="fclientform2.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ViewWindow"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fClientForm2"/>
+      </Unit3>
+    </Units>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="8"/>
+    <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="MiniIDE2"/>
+    </Target>
+    <SearchPaths>
+      <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+    </SearchPaths>
+    <Other>
+      <CompilerMessages>
+        <UseMsgFile Value="True"/>
+      </CompilerMessages>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+</CONFIG>

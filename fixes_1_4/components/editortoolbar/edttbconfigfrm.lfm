@@ -1,0 +1,416 @@
+object EdtTbConfigForm: TEdtTbConfigForm
+  Left = 375
+  Height = 457
+  Top = 200
+  Width = 772
+  Caption = 'EdtTbConfigForm'
+  ClientHeight = 457
+  ClientWidth = 772
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '1.5'
+  object lblMenuTree: TLabel
+    AnchorSideLeft.Control = TV
+    AnchorSideLeft.Side = asrCenter
+    Left = 170
+    Height = 17
+    Top = 14
+    Width = 73
+    Caption = 'lblMenuTree'
+    ParentColor = False
+  end
+  object lblToolbar: TLabel
+    AnchorSideLeft.Control = lvToolbar
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Control = lblMenuTree
+    Left = 573
+    Height = 17
+    Top = 14
+    Width = 58
+    Caption = 'lblToolbar'
+    ParentColor = False
+  end
+  object btnRemove: TSpeedButton
+    AnchorSideLeft.Control = btnAdd
+    AnchorSideTop.Control = btnAdd
+    AnchorSideTop.Side = asrBottom
+    Left = 415
+    Height = 26
+    Top = 118
+    Width = 22
+    BorderSpacing.Top = 1
+    Enabled = False
+    OnClick = btnRemoveClick
+    ShowHint = True
+    ParentShowHint = False
+  end
+  object btnAdd: TSpeedButton
+    AnchorSideLeft.Control = Splitter1
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = TV
+    Left = 415
+    Height = 26
+    Top = 91
+    Width = 22
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 25
+    Enabled = False
+    OnClick = btnAddClick
+    ShowHint = True
+    ParentShowHint = False
+  end
+  object btnMoveUp: TSpeedButton
+    AnchorSideLeft.Control = btnRemove
+    AnchorSideTop.Control = btnRemove
+    AnchorSideTop.Side = asrBottom
+    Left = 415
+    Height = 26
+    Top = 169
+    Width = 22
+    BorderSpacing.Top = 25
+    Enabled = False
+    OnClick = btnMoveUpClick
+    ShowHint = True
+    ParentShowHint = False
+  end
+  object btnMoveDown: TSpeedButton
+    AnchorSideLeft.Control = btnMoveUp
+    AnchorSideTop.Control = btnMoveUp
+    AnchorSideTop.Side = asrBottom
+    Left = 415
+    Height = 26
+    Top = 196
+    Width = 22
+    BorderSpacing.Top = 1
+    Enabled = False
+    OnClick = btnMoveDownClick
+    ShowHint = True
+    ParentShowHint = False
+  end
+  object pnlButtons: TPanel
+    Left = 0
+    Height = 42
+    Top = 415
+    Width = 772
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 42
+    ClientWidth = 772
+    Color = clGreen
+    ParentColor = False
+    TabOrder = 2
+    object Bevel1: TBevel
+      Left = 0
+      Height = 2
+      Top = 0
+      Width = 772
+      Align = alTop
+    end
+    object btnOK: TButton
+      AnchorSideRight.Control = btnCancel
+      AnchorSideBottom.Control = pnlButtons
+      AnchorSideBottom.Side = asrBottom
+      Left = 609
+      Height = 25
+      Top = 11
+      Width = 75
+      Anchors = [akRight, akBottom]
+      AutoSize = True
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      BorderSpacing.InnerBorder = 4
+      Caption = 'btnOK'
+      Constraints.MaxHeight = 25
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 75
+      ModalResult = 1
+      OnClick = btnOKClick
+      TabOrder = 0
+    end
+    object btnCancel: TButton
+      AnchorSideRight.Control = pnlButtons
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = pnlButtons
+      AnchorSideBottom.Side = asrBottom
+      Left = 690
+      Height = 25
+      Top = 11
+      Width = 76
+      Anchors = [akRight, akBottom]
+      AutoSize = True
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      BorderSpacing.InnerBorder = 4
+      Cancel = True
+      Caption = 'btnCancel'
+      Constraints.MaxHeight = 25
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 75
+      ModalResult = 2
+      TabOrder = 1
+    end
+    object btnHelp: TBitBtn
+      AnchorSideBottom.Control = pnlButtons
+      AnchorSideBottom.Side = asrBottom
+      Left = 16
+      Height = 25
+      Top = 11
+      Width = 75
+      Anchors = [akLeft, akBottom]
+      BorderSpacing.Bottom = 6
+      Caption = 'Help'
+      OnClick = btnHelpClick
+      TabOrder = 2
+    end
+    object cbProfile: TComboBox
+      AnchorSideLeft.Control = pnlButtons
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideBottom.Control = pnlButtons
+      AnchorSideBottom.Side = asrCenter
+      Left = 336
+      Height = 23
+      Top = 9
+      Width = 100
+      Anchors = [akLeft, akBottom]
+      BorderSpacing.Bottom = 6
+      ItemHeight = 17
+      ItemIndex = 0
+      Items.Strings = (
+        'All'
+        'Design'
+        'Debug'
+        'HTML'
+        'Custom'
+        ''
+      )
+      OnChange = cbProfileChange
+      TabOrder = 3
+      Text = 'All'
+    end
+    object lblProfile: TLabel
+      AnchorSideTop.Control = cbProfile
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = cbProfile
+      Left = 288
+      Height = 17
+      Top = 12
+      Width = 38
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 10
+      Caption = 'Profile'
+      ParentColor = False
+    end
+  end
+  object TV: TTreeView
+    AnchorSideLeft.Control = FilterEdit
+    AnchorSideTop.Control = FilterEdit
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Splitter1
+    AnchorSideBottom.Control = pnlButtons
+    Left = 16
+    Height = 343
+    Top = 66
+    Width = 381
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 3
+    BorderSpacing.Bottom = 6
+    ReadOnly = True
+    ScrollBars = ssAutoBoth
+    TabOrder = 1
+    OnSelectionChanged = TVSelectionChanged
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+  end
+  object FilterEdit: TTreeFilterEdit
+    AnchorSideTop.Side = asrBottom
+    Left = 16
+    Height = 23
+    Top = 37
+    Width = 192
+    UseFormActivate = True
+    ButtonWidth = 23
+    NumGlyphs = 1
+    BorderSpacing.Top = 6
+    MaxLength = 0
+    ParentFont = False
+    TabOrder = 0
+    FilteredTreeview = TV
+    ExpandAllInitially = True
+  end
+  object cbPos: TComboBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = lvToolbar
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = pnlButtons
+    Left = 661
+    Height = 23
+    Top = 386
+    Width = 100
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Bottom = 6
+    ItemHeight = 17
+    ItemIndex = 0
+    Items.Strings = (
+      'Top'
+      'Bottom'
+      'Right'
+      'Left'
+    )
+    OnChange = cbPosChange
+    TabOrder = 3
+    Text = 'Top'
+  end
+  object lblpos: TLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = cbPos
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = cbPos
+    Left = 620
+    Height = 17
+    Top = 389
+    Width = 35
+    Anchors = [akTop, akRight]
+    BorderSpacing.Right = 6
+    Caption = 'lblpos'
+    ParentColor = False
+  end
+  object Splitter1: TSplitter
+    AnchorSideLeft.Control = TV
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = TV
+    AnchorSideBottom.Control = TV
+    AnchorSideBottom.Side = asrBottom
+    Left = 400
+    Height = 343
+    Top = 66
+    Width = 9
+    Align = alNone
+    Anchors = [akTop, akBottom]
+  end
+  object lvToolbar: TListView
+    AnchorSideLeft.Control = btnAdd
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = TV
+    AnchorSideBottom.Control = pnlButtons
+    Left = 443
+    Height = 312
+    Top = 66
+    Width = 318
+    Anchors = [akTop, akLeft, akBottom]
+    BorderSpacing.Left = 6
+    BorderSpacing.Bottom = 37
+    Columns = <    
+      item
+        AutoSize = True
+        Caption = 'Name'
+        Width = 314
+      end    
+      item
+        AutoSize = True
+        Caption = 'Profile'
+        Visible = False
+        Width = 0
+      end>
+    HideSelection = False
+    PopupMenu = puMenuItems
+    ReadOnly = True
+    ScrollBars = ssAutoBoth
+    ShowColumnHeaders = False
+    TabOrder = 5
+    ViewStyle = vsReport
+    OnDrawItem = lvToolbarDrawItem
+    OnSelectItem = lvToolbarSelectItem
+  end
+  object sbAddDivider: TSpeedButton
+    AnchorSideLeft.Control = btnAdd
+    AnchorSideTop.Control = btnMoveDown
+    AnchorSideTop.Side = asrBottom
+    Left = 415
+    Height = 26
+    Top = 272
+    Width = 22
+    BorderSpacing.Top = 50
+    OnClick = btnAddDividerClick
+    ShowHint = True
+    ParentShowHint = False
+  end
+  object lbSelect: TLabel
+    AnchorSideLeft.Control = lvToolbar
+    AnchorSideTop.Control = FilterEdit
+    AnchorSideRight.Control = lvToolbar
+    AnchorSideRight.Side = asrBottom
+    Left = 715
+    Height = 17
+    Top = 37
+    Width = 46
+    Anchors = [akTop, akRight]
+    Caption = 'lbSelect'
+    ParentColor = False
+    Visible = False
+  end
+  object btnClear: TSpeedButton
+    AnchorSideLeft.Control = btnAdd
+    AnchorSideBottom.Control = lvToolbar
+    AnchorSideBottom.Side = asrBottom
+    Left = 415
+    Height = 26
+    Top = 352
+    Width = 23
+    Anchors = [akLeft, akBottom]
+    Enabled = False
+    OnClick = btnClearClick
+    ShowHint = True
+    ParentShowHint = False
+  end
+  object btnShow: TButton
+    Left = 443
+    Height = 25
+    Top = 384
+    Width = 50
+    Caption = 'Show'
+    OnClick = btnShowClick
+    TabOrder = 6
+    Visible = False
+  end
+  object btnHide: TButton
+    Left = 496
+    Height = 25
+    Top = 384
+    Width = 50
+    Caption = 'Hide'
+    OnClick = btnHideClick
+    TabOrder = 7
+    Visible = False
+  end
+  object puMenuItems: TPopupMenu
+    OnPopup = puMenuItemsPopup
+    left = 421
+    top = 16
+    object miAll: TMenuItem
+      AutoCheck = True
+      Caption = 'All'
+      OnClick = miAllClick
+    end
+    object miDesign: TMenuItem
+      AutoCheck = True
+      Caption = 'Design'
+      OnClick = miDesignClick
+    end
+    object miDebug: TMenuItem
+      AutoCheck = True
+      Caption = 'Debug'
+      OnClick = miDebugClick
+    end
+    object miHTML: TMenuItem
+      AutoCheck = True
+      Caption = 'HTML'
+      OnClick = miHTMLClick
+    end
+    object miCustom: TMenuItem
+      AutoCheck = True
+      Caption = 'Custom'
+      OnClick = miCustomClick
+    end
+  end
+end

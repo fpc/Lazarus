@@ -1,0 +1,114 @@
+object SearchProgressForm: TSearchProgressForm
+  Left = 384
+  Height = 167
+  Top = 387
+  Width = 700
+  Caption = 'Searching....'
+  ClientHeight = 167
+  ClientWidth = 700
+  Constraints.MinWidth = 700
+  OnClose = FormClose
+  OnCreate = SearchFormCREATE
+  OnDestroy = SearchFormDESTROY
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  Visible = True
+  object Panel2: TPanel
+    Left = 0
+    Height = 167
+    Top = 0
+    Width = 700
+    Align = alClient
+    BevelInner = bvLowered
+    ClientHeight = 167
+    ClientWidth = 700
+    FullRepaint = False
+    TabOrder = 0
+    TabStop = True
+    object lblMatches: TLabel
+      AnchorSideTop.Control = MatchesLabel
+      AnchorSideTop.Side = asrCenter
+      Left = 121
+      Height = 1
+      Top = 88
+      Width = 1
+      ParentColor = False
+      ShowAccelChar = False
+    end
+    object MatchesLabel: TLabel
+      AnchorSideTop.Control = SearchingLabel
+      AnchorSideTop.Side = asrBottom
+      Left = 16
+      Height = 13
+      Top = 82
+      Width = 40
+      BorderSpacing.Top = 18
+      Caption = 'Matches'
+      ParentColor = False
+    end
+    object lblProgress: TLabel
+      AnchorSideTop.Control = SearchingLabel
+      AnchorSideTop.Side = asrCenter
+      Left = 121
+      Height = 1
+      Top = 57
+      Width = 1
+      ParentColor = False
+      ShowAccelChar = False
+    end
+    object SearchingLabel: TLabel
+      AnchorSideTop.Control = SearchTextLabel
+      AnchorSideTop.Side = asrBottom
+      Left = 16
+      Height = 13
+      Top = 51
+      Width = 51
+      BorderSpacing.Top = 18
+      Caption = 'Searching:'
+      ParentColor = False
+    end
+    object SearchTextLabel: TLabel
+      AnchorSideTop.Control = Panel2
+      Left = 16
+      Height = 13
+      Top = 20
+      Width = 62
+      BorderSpacing.Top = 18
+      Caption = 'Search Text:'
+      ParentColor = False
+    end
+    object lblSearchText: TLabel
+      AnchorSideTop.Control = SearchTextLabel
+      AnchorSideTop.Side = asrCenter
+      Left = 121
+      Height = 1
+      Top = 26
+      Width = 1
+      ParentColor = False
+      ShowAccelChar = False
+    end
+    object btnCancel: TBitBtn
+      AnchorSideLeft.Control = Panel2
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = Panel2
+      AnchorSideBottom.Side = asrBottom
+      Left = 312
+      Height = 26
+      Top = 133
+      Width = 77
+      Anchors = [akLeft, akBottom]
+      AutoSize = True
+      BorderSpacing.Top = 12
+      BorderSpacing.Bottom = 6
+      Cancel = True
+      Caption = 'Cancel'
+      Kind = bkCancel
+      ModalResult = 2
+      OnClick = btnAbortCLICK
+      TabOrder = 0
+    end
+  end
+end

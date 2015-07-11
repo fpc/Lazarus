@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="9"/>
+    <PathDelim Value="\"/>
+    <General>
+      <SessionStorage Value="InIDEConfig"/>
+      <MainUnit Value="0"/>
+      <UseXPManifest Value="True"/>
+    </General>
+    <VersionInfo>
+      <Language Value=""/>
+      <CharSet Value=""/>
+      <StringTable ProductVersion=""/>
+    </VersionInfo>
+    <BuildModes Count="1">
+      <Item1 Name="default" Default="True"/>
+    </BuildModes>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="5">
+      <Item1>
+        <PackageName Value="SynEdit"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="CodeTools"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="FPCUnitTestRunner"/>
+      </Item3>
+      <Item4>
+        <PackageName Value="LCL"/>
+      </Item4>
+      <Item5>
+        <PackageName Value="FCL"/>
+      </Item5>
+    </RequiredPackages>
+    <Units Count="21">
+      <Unit0>
+        <Filename Value="SynTest.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="SynTest"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="testsynselection.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestSynSelection"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="testbase.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestBase"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="testsynbeautifier.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestSynBeautifier"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="testsyncroedit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestSyncroEdit"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="testtrimspace.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestTrimSpace"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="testhighlightxml.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestHighlightXml"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="testhighlightmulti.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestHighlightMulti"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="testbasicsynedit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestBasicSynEdit"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="testfoldedview.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestFoldedView"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="testhighlightpas.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestHighlightPas"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="testmarkupwordgroup.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestMarkupwordGroup"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="testbookmarks.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestBookMarks"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="testsynsharededits.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestSynSharedEdits"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="testblockindent.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestBlockIndent"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="testhighlighterlfm.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestHighlighterLfm"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="testhighlightfoldbase.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestHighlightFoldBase"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="testsyntextarea.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestSynTextArea"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="testnavigation.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestNavigation"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="testmarkupifdef.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestMarkupIfDef"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="testpaintcolormerging.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestPaintColorMerging"/>
+      </Unit20>
+    </Units>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="11"/>
+    <PathDelim Value="\"/>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)"/>
+      <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
+    </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <CPPInline Value="False"/>
+      </SyntaxOptions>
+    </Parsing>
+    <CodeGeneration>
+      <Checks>
+        <RangeChecks Value="True"/>
+        <OverflowChecks Value="True"/>
+        <StackChecks Value="True"/>
+      </Checks>
+    </CodeGeneration>
+    <Linking>
+      <Debugging>
+        <DebugInfoType Value="dsDwarf2Set"/>
+        <UseHeaptrc Value="True"/>
+      </Debugging>
+    </Linking>
+    <Other>
+      <CustomOptions Value="-gt
+-dWithSynBiDi"/>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions Count="3">
+      <Item1>
+        <Name Value="EAbort"/>
+      </Item1>
+      <Item2>
+        <Name Value="ECodetoolError"/>
+      </Item2>
+      <Item3>
+        <Name Value="EFOpenError"/>
+      </Item3>
+    </Exceptions>
+  </Debugging>
+</CONFIG>

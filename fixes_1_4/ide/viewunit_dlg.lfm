@@ -1,0 +1,123 @@
+object ViewUnitDialog: TViewUnitDialog
+  Left = 330
+  Height = 386
+  Top = 280
+  Width = 378
+  HorzScrollBar.Page = 377
+  HorzScrollBar.Range = 112
+  VertScrollBar.Page = 300
+  VertScrollBar.Range = 163
+  ActiveControl = FilterEdit
+  BorderIcons = [biSystemMenu]
+  Caption = 'View Project Units'
+  ClientHeight = 386
+  ClientWidth = 378
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  Position = poScreenCenter
+  LCLVersion = '1.3'
+  object Listbox: TListBox
+    Left = 6
+    Height = 278
+    Top = 34
+    Width = 366
+    Align = alClient
+    BorderSpacing.Around = 6
+    ClickOnSelChange = False
+    ItemHeight = 0
+    OnDblClick = OKButtonClick
+    OnDrawItem = ListboxDrawItem
+    OnKeyDown = ListboxKeyDown
+    PopupMenu = popListBox
+    ScrollWidth = 364
+    Style = lbOwnerDrawFixed
+    TabOrder = 0
+    TopIndex = -1
+  end
+  object ButtonPanel: TButtonPanel
+    Left = 6
+    Height = 36
+    Top = 344
+    Width = 366
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    OKButton.OnClick = OKButtonClick
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    HelpButton.OnClick = HelpButtonClick
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    CancelButton.OnClick = CancelButtonClick
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object BtnPanel: TPanel
+    Left = 0
+    Height = 28
+    Top = 0
+    Width = 378
+    Align = alTop
+    AutoSize = True
+    ClientHeight = 28
+    ClientWidth = 378
+    TabOrder = 2
+    object SortAlphabeticallySpeedButton: TSpeedButton
+      Left = 1
+      Height = 26
+      Top = 1
+      Width = 15
+      Align = alLeft
+      AllowAllUp = True
+      AutoSize = True
+      Constraints.MinHeight = 15
+      Constraints.MinWidth = 15
+      GroupIndex = 2
+      OnClick = SortAlphabeticallySpeedButtonClick
+      ShowHint = True
+      ParentShowHint = False
+    end
+    object FilterEdit: TListFilterEdit
+      AnchorSideLeft.Control = SortAlphabeticallySpeedButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = SortAlphabeticallySpeedButton
+      AnchorSideTop.Side = asrCenter
+      Left = 22
+      Height = 28
+      Top = 0
+      Width = 349
+      ButtonWidth = 23
+      NumGlyphs = 1
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Bottom = 6
+      MaxLength = 0
+      ParentFont = False
+      TabOrder = 0
+      FilteredListbox = Listbox
+    end
+  end
+  object ProgressBar1: TProgressBar
+    Left = 6
+    Height = 20
+    Top = 318
+    Width = 366
+    Align = alBottom
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    TabOrder = 3
+    Visible = False
+  end
+  object popListBox: TPopupMenu
+    left = 144
+    top = 112
+    object mniMultiSelect: TMenuItem
+      AutoCheck = True
+      Caption = 'Multi Select'
+      OnClick = MultiselectCheckBoxClick
+    end
+  end
+end

@@ -1,0 +1,91 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: weblazideintf.rsapachemodule
+msgid "Apache Module"
+msgstr ""
+
+#: weblazideintf.rsapachemodule2
+msgid "Apache module%sAn Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
+msgstr ""
+
+#: weblazideintf.rscgiapplicati
+msgid "CGI Application"
+msgstr ""
+
+#: weblazideintf.rscgiapplicati2
+msgid "CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
+msgstr ""
+
+#: weblazideintf.rscustomcgiapp
+msgid "Custom CGI Application"
+msgstr ""
+
+#: weblazideintf.rscustomcgiapp2
+msgid "Custom CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
+msgstr ""
+
+#: weblazideintf.rscustomfastcg
+msgid "Custom FastCGI Application"
+msgstr ""
+
+#: weblazideintf.rscustomfastcg2
+msgid "Custom FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
+msgstr ""
+
+#: weblazideintf.rsfastcgiappli
+msgid "FastCGI Application"
+msgstr ""
+
+#: weblazideintf.rsfastcgiappli2
+msgid "FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
+msgstr ""
+
+#: weblazideintf.rshtmlwebmodul
+msgid "HTML Web Module"
+msgstr ""
+
+#: weblazideintf.rshtmlwebmodul2
+msgid "HTML WEB Module%sA Web datamodule for producing strict HTML."
+msgstr ""
+
+#: weblazideintf.rshttpappli
+msgid "HTTP server Application"
+msgstr ""
+
+#: weblazideintf.rshttpappli2
+msgid "HTTP server Application. Complete HTTP Server program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
+msgstr ""
+
+#: weblazideintf.rswebdataprovi
+msgid "Web DataProvider Module"
+msgstr ""
+
+#: weblazideintf.rswebdataprovi2
+msgid "WEB DataProvider Module%sA datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
+msgstr ""
+
+#: weblazideintf.rswebextdirect
+msgid "Web Ext.Direct Module"
+msgstr ""
+
+#: weblazideintf.rswebextdirect2
+msgid "WEB Ext.Direct Module%sA datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
+msgstr ""
+
+#: weblazideintf.rswebjsonrpcmo
+msgid "Web JSON-RPC Module"
+msgstr ""
+
+#: weblazideintf.rswebjsonrpcmo2
+msgid "WEB JSON-RPC Module%sA datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
+msgstr ""
+
+#: weblazideintf.rswebmodule
+msgid "Web Module"
+msgstr ""
+
+#: weblazideintf.rswebmoduleada
+msgid "WEB Module%sA datamodule for WEB (HTTP) applications."
+msgstr ""
+

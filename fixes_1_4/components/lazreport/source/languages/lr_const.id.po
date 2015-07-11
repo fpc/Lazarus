@@ -1,0 +1,2651 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Lazarus 1.x\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2007-09-22 01:16+0700\n"
+"Last-Translator: Zaenal Mutaqin <ade999@gmail.com>\n"
+"Language-Team: Indonesian <ade999@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: lr_const.saboutformcapt
+msgid "About FastReport"
+msgstr "Tentang FastReport"
+
+#: lr_const.saggregatecategory
+msgid "Aggregate"
+msgstr "Agregat"
+
+#: lr_const.sallfiles
+msgid "All files"
+msgstr "Semua file"
+
+#: lr_const.sargument1
+msgid "Argument 1"
+msgstr ""
+
+#: lr_const.sargument2
+msgid "Argument 2"
+msgstr ""
+
+#: lr_const.sargument3
+msgid "Argument 3"
+msgstr ""
+
+#: lr_const.sarguments
+msgid "Arguments"
+msgstr ""
+
+#: lr_const.sautosize
+msgid "Auto size"
+msgstr "Ukur otomatis"
+
+#: lr_const.sband
+msgid "Band:"
+msgstr "Band:"
+
+#: lr_const.sband1
+msgid "Report title"
+msgstr "Judul laporan"
+
+#: lr_const.sband10
+msgid "Detail footer"
+msgstr "Detail footer"
+
+#: lr_const.sband11
+msgid "Subdetail header"
+msgstr "Header Subdetail"
+
+#: lr_const.sband12
+msgid "Subdetail data"
+msgstr "Data Subdetail"
+
+#: lr_const.sband13
+msgid "Subdetail footer"
+msgstr "Footer Subdetail"
+
+#: lr_const.sband14
+msgid "Overlay"
+msgstr "Overlay"
+
+#: lr_const.sband15
+msgid "Column header"
+msgstr "Header kolom"
+
+#: lr_const.sband16
+msgid "Column footer"
+msgstr "Footer kolom"
+
+#: lr_const.sband17
+msgid "Group header"
+msgstr "Header grup"
+
+#: lr_const.sband18
+msgid "Group footer"
+msgstr "Footer grup"
+
+#: lr_const.sband19
+msgid "Cross header"
+msgstr "Header silang"
+
+#: lr_const.sband2
+msgid "Report summary"
+msgstr "Ringkasan laporan"
+
+#: lr_const.sband20
+msgid "Cross data"
+msgstr "Data silang"
+
+#: lr_const.sband21
+msgid "Cross footer"
+msgstr "Footer silang"
+
+#: lr_const.sband22
+#, fuzzy
+#| msgid "None"
+msgctxt "lr_const.sband22"
+msgid "Child"
+msgstr "Tidak ada"
+
+#: lr_const.sband23
+#, fuzzy
+#| msgid "None"
+msgctxt "lr_const.sband23"
+msgid "None"
+msgstr "Tidak ada"
+
+#: lr_const.sband3
+msgid "Page header"
+msgstr "Header halaman"
+
+#: lr_const.sband4
+msgid "Page footer"
+msgstr "Footer halaman"
+
+#: lr_const.sband5
+msgid "Master header"
+msgstr "Header master"
+
+#: lr_const.sband6
+msgid "Master data"
+msgstr "Data master"
+
+#: lr_const.sband7
+msgid "Master footer"
+msgstr "Footer master"
+
+#: lr_const.sband8
+msgid "Detail header"
+msgstr "Detail header"
+
+#: lr_const.sband9
+msgid "Detail data"
+msgstr "Detail data"
+
+#: lr_const.sbandeditorformcapt
+msgid "Band data source"
+msgstr "Sumber data Band"
+
+#: lr_const.sbandeditorformdatasrc
+msgctxt "lr_const.sbandeditorformdatasrc"
+msgid "Data source"
+msgstr "Sumber data"
+
+#: lr_const.sbandeditorformreccount
+msgctxt "lr_const.sbandeditorformreccount"
+msgid "&Record count"
+msgstr "Jumlah &rekaman"
+
+#: lr_const.sbandtypesformbtype
+msgid "Band type"
+msgstr "Tipe band"
+
+#: lr_const.sbandtypesformcapt
+msgid "Insert new band"
+msgstr "Sisipkan band baru"
+
+#: lr_const.sbarcodeerror
+msgid "Error in barcode"
+msgstr "Kesalahan dalam barcode"
+
+#: lr_const.sbarcodeformchksum
+msgid "Check&sum"
+msgstr "Check&sum"
+
+#: lr_const.sbarcodeformcode
+msgid "&Code"
+msgstr "&Kode"
+
+#: lr_const.sbarcodeformdbfld
+msgctxt "lr_const.sbarcodeformdbfld"
+msgid "Insert DB field"
+msgstr ""
+
+#: lr_const.sbarcodeformopts
+msgctxt "lr_const.sbarcodeformopts"
+msgid "Options"
+msgstr ""
+
+#: lr_const.sbarcodeformreadable
+msgid "&Human readable"
+msgstr "Terbaca &manusia"
+
+#: lr_const.sbarcodeformrotate
+msgid "Rotation"
+msgstr "Rotasi"
+
+#: lr_const.sbarcodeformtitle
+msgid "Barcode editor"
+msgstr "Editor barcode"
+
+#: lr_const.sbarcodeformtype
+msgid "&Type of barcode"
+msgstr "&Tipe barcode"
+
+#: lr_const.sbarcodeformvar
+msgid "Insert variable"
+msgstr "Sisipkan obyek variabel"
+
+#: lr_const.sbarcodezoom
+msgid "Zoom"
+msgstr "Zoom"
+
+#: lr_const.sbmpfile
+msgid "Bitmap file"
+msgstr "File Bitmap"
+
+#: lr_const.sbreaked
+msgid "Breaked"
+msgstr "Dipisahkan"
+
+#: lr_const.scancel
+msgid "Cancel"
+msgstr "Batal"
+
+#: lr_const.scateg1
+msgctxt "lr_const.scateg1"
+msgid "Text"
+msgstr ""
+
+#: lr_const.scateg2
+msgid "Number"
+msgstr "Angka"
+
+#: lr_const.scateg3
+msgctxt "lr_const.scateg3"
+msgid "Date"
+msgstr ""
+
+#: lr_const.scateg4
+msgctxt "lr_const.scateg4"
+msgid "Time"
+msgstr ""
+
+#: lr_const.scateg5
+msgid "Boolean"
+msgstr "Boolean"
+
+#: lr_const.scharset
+msgid "0"
+msgstr "0"
+
+#: lr_const.sclassobjectnotfound
+msgid "Class Object \"%s\" not found"
+msgstr "Class Object \"%s\" tidak ditemukan"
+
+#: lr_const.sconfirm
+msgid "Confirm"
+msgstr "Konfirmasi"
+
+#: lr_const.scsvfile
+msgid "CSV File"
+msgstr "File CSV"
+
+#: lr_const.scurmemo
+msgid "Memo:"
+msgstr ""
+
+#: lr_const.sdateformat1
+msgid "mm.dd.yy"
+msgstr ""
+
+#: lr_const.sdateformat2
+msgid "mm.dd.yyyy"
+msgstr ""
+
+#: lr_const.sdateformat3
+msgid "d mmm yyyy"
+msgstr ""
+
+#: lr_const.sdateformat4
+msgid "d mmmm yyyy"
+msgstr ""
+
+#: lr_const.sdatetimecategory
+msgid "Date and time"
+msgstr "Tanggal dan jam"
+
+#: lr_const.sdbfield
+msgid "DB field"
+msgstr ""
+
+#: lr_const.sdefaultprinter
+msgid "Default printer"
+msgstr "Printer standar"
+
+#: lr_const.sdescriptionavg
+msgid "AVG(<Expression> [,BandName [,1]])/Calculates the average of <Expression> for [BandName] row given. If [1] parameter is used, calculates average for non-visible rows too."
+msgstr "AVG(<Expression> [,BandName [,1]])/Menghitung rata-rata <Expression> untuk [BandName] dari baris yang diberikan. Jika parameter [1] dipakai, menghitung rata-rata untuk baris yang tidak terlihat juga."
+
+#: lr_const.sdescriptioncopy
+msgid "COPY(<String>, <Position>, <Length>)/Returns <Length> characters from <String> starting at <Position>."
+msgstr ""
+
+#: lr_const.sdescriptioncount
+#, fuzzy
+#| msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
+msgid "COUNT(<BandName>)/Returns count of data rows given in the <BandName>. "
+msgstr "COUNT(<BandName>)/Mengembalikan jumlah baris-data yang diberikan dalam <BandName>. "
+
+#: lr_const.sdescriptiondayof
+msgid "DAYOF(<Date>)/Returns day number (1..31) of given <Date>."
+msgstr "DAYOF(<Date>)/Mengembalikan angka hari (1..31) dari tanggal <Date>."
+
+#: lr_const.sdescriptiondec
+msgid "DEC(<Value>)/Decrement <Value>."
+msgstr ""
+
+#: lr_const.sdescriptionformatdatetime
+msgid "FORMATDATETIME(<Fmt>, <DateTime>)/Converts a <DateTime> value to a string using mask in <Fmt>."
+msgstr "FORMATDATETIME(<Fmt>, <DateTime>)/Mengubah nilai <DateTime> ke string menggunakan mask dalam <Fmt>."
+
+#: lr_const.sdescriptionformatfloat
+msgid "FORMATFLOAT(<Fmt>, <Numeric>)/Converts a <Numeric> value to a string using mask in <Fmt>."
+msgstr "FORMATFLOAT(<Fmt>, <Numeric>)/Mengubah nilai <Numeric> ke string menggunakan mask dalam <Fmt>."
+
+#: lr_const.sdescriptionformattext
+msgid "FORMATTEXT(<Mask>, <String>)/Applies <Mask> to given <String> and returns formatted string."
+msgstr "FORMATTEXT(<Mask>, <String>)/Menerapkan <Mask> ke <String> dan mengembalikan string yang dibentuk."
+
+#: lr_const.sdescriptionfrac
+msgid "FRAC(<Value>)/Returns the fractional part of floating point <Value>."
+msgstr ""
+
+#: lr_const.sdescriptioninc
+msgid "INC(<Value>)/Increment <Value>."
+msgstr ""
+
+#: lr_const.sdescriptioninput
+#, fuzzy
+#| msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
+msgid "INPUT(<Caption> [,Default])/Shows dialog window with title <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
+msgstr "INPUT(<Caption> [,Default])/Menampilkan jendela dialog dengan headstring <Caption> dan kotak edit. Jika parameter [Default] disetel, menaruh string ini dalam kotak edit. Setelah pengguna mengklik OK, mengembalikan string input."
+
+#: lr_const.sdescriptionint
+msgid "INT(<Value>)/Returns the integer part of floating point <Value>."
+msgstr ""
+
+#: lr_const.sdescriptionlength
+msgid "LENGTH(<String>)/Returns length of <String>."
+msgstr ""
+
+#: lr_const.sdescriptionlowercase
+msgid "LOWERCASE(<String>)/Converts <String> symbols to lower case."
+msgstr "LOWERCASE(<String>)/Mengubah Simbol <String> ke huruf kecil."
+
+#: lr_const.sdescriptionmax
+msgid "MAX(<Expression> [,BandName [,1]])/Calculates the maximum of <Expression> for [BandName] row given. If [1] parameter is used, calculates maximum for non-visible rows too."
+msgstr "MAX(<Expression> [,BandName [,1]])/Menghitung maksimum <Expression> untuk [BandName] baris yang diberikan. Jika parameter [1] dipakai, menghitung maksimum untuk baris yang tidak terlihat juga."
+
+#: lr_const.sdescriptionmaxnum
+msgid "MAXNUM(<Value1>, <Value2>)/Returns max of given values."
+msgstr "MAXNUM(<Value1>, <Value2>)/Mengembalikan maks nilai yang diberikan."
+
+#: lr_const.sdescriptionmessagebox
+msgid "MESSAGEBOX(<Text>, <Title>, <Buttons>)/Shows standard dialog window with title, text and buttons."
+msgstr "MESSAGEBOX(<Text>, <Title>, <Buttons>)/Menampilkan jendela dialog standar dengan judul, teks, dan tombol."
+
+#: lr_const.sdescriptionmin
+msgid "MIN(<Expression> [,BandName [,1]])/Calculates the minimum of <Expression> for [BandName] row given. If [1] parameter is used, calculates minimum for non-visible rows too."
+msgstr "MIN(<Expression> [,BandName [,1]])/Menghitung minimum <Expression> untuk baris [BandName] yang diberikan. Jika parameter [1] dipakai, menghitung minimum untuk baris yang tidak terlihat juga."
+
+#: lr_const.sdescriptionminnum
+msgid "MINNUM(<Value1>, <Value2>)/Returns min of given values."
+msgstr "MINNUM(<Value1>, <Value2>)/Mengembalikan min nilai yang diberikan."
+
+#: lr_const.sdescriptionmonthof
+msgid "MONTHOF(<Date>)/Returns month number (1..12) of given <Date>."
+msgstr "MONTHOF(<Date>)/Mengembalikan angka bulan (1..12) dari tanggal <Date>."
+
+#: lr_const.sdescriptionnamecase
+msgid "NAMECASE(<String>)/Converts <String> symbols to lower case, and first symbol is in upper case."
+msgstr "NAMECASE(<String>)/Mengubah simbol <String> ke huruf kecil, dan simbol pertama dalam huruf besar."
+
+#: lr_const.sdescriptionnewcolumn
+msgid "NEWCOLUMN/Create new column on page for current report."
+msgstr ""
+
+#: lr_const.sdescriptionnewpage
+msgid "NEWPAGE/Create new page for current report."
+msgstr ""
+
+#: lr_const.sdescriptionpos
+msgid "POS(<SubString>, <String>)/Returns position of substring in given string."
+msgstr "POS(<SubString>, <String>)/Mengembalikan posisi substring dari string yang diberikan."
+
+#: lr_const.sdescriptionround
+msgid "ROUND(<Value>)/Rounds the floating point <Value> to nearest integer number."
+msgstr ""
+
+#: lr_const.sdescriptionshowband
+msgid "SHOWBAND(<BandName>)/Show <BandName> in report."
+msgstr ""
+
+#: lr_const.sdescriptionstopreport
+msgid "STOPREPORT/Terminate report creation."
+msgstr ""
+
+#: lr_const.sdescriptionstr
+msgid "STR(<Value>)/Converts the given (numeric) <Value> in string."
+msgstr ""
+
+#: lr_const.sdescriptionstrtodate
+msgid "STRTODATE(<String>)/Converts <String> to date."
+msgstr "STRTODATE(<String>)/Mengubah <String> ke tanggal."
+
+#: lr_const.sdescriptionstrtotime
+msgid "STRTOTIME(<String>)/Converts <String> to time."
+msgstr "STRTOTIME(<String>)/MEngubah <String> ke jam."
+
+#: lr_const.sdescriptionsum
+msgid "SUM(<Expression> [,BandName [,1]])/Calculates the sum of <Expression> for [BandName] row given. If [1] parameter is used, calculates sum for non-visible rows too."
+msgstr "SUM(<Expression> [,BandName [,1]])/Menghitung jumlah <Expression> untuk [BandName] baris yang diberikan. Jika parameter [1] dipakai, menghitung jumlah untuk baris yang tidak terlihat juga."
+
+#: lr_const.sdescriptiontrim
+msgid "TRIM(<String>)/Trims all heading and trailing spaces in <String> and returns resulting string."
+msgstr "TRIM(<String>)/Membuang semua heading dan spasi tersisa dalam <String> dan mengembalikan string hasil."
+
+#: lr_const.sdescriptionuppercase
+msgid "UPPERCASE(<String>)/Converts <String> symbols to upper case."
+msgstr "UPPERCASE(<String>)/Mengubah simbol <String> ke huruf besar."
+
+#: lr_const.sdescriptionyearof
+msgid "YEAROF(<Date>)/Returns year of given <Date>."
+msgstr ""
+
+#: lr_const.sdesignreport
+msgid "Design report"
+msgstr "Desain laporan"
+
+#: lr_const.sdesoptionsform18pix
+msgid "&18 pixels (5mm)"
+msgstr "&18 pixel (5mm)"
+
+#: lr_const.sdesoptionsform4pix
+msgid "&4 pixels"
+msgstr "&4 pixel"
+
+#: lr_const.sdesoptionsform8pix
+msgid "&8 pixels"
+msgstr "&8 pixel"
+
+#: lr_const.sdesoptionsformaligngrd
+msgid "Align to &grid"
+msgstr "Jajar ke &grid"
+
+#: lr_const.sdesoptionsformcoloredbutton
+msgid "Colored &buttons"
+msgstr "Tom&bol berwarna"
+
+#: lr_const.sdesoptionsformcontents
+msgid "&Contents"
+msgstr "&Konten"
+
+#: lr_const.sdesoptionsformdes
+msgctxt "lr_const.sdesoptionsformdes"
+msgid "Designer"
+msgstr "Desainer"
+
+#: lr_const.sdesoptionsformediting
+msgid "&Editing after insert"
+msgstr "Meng&edit setelah penyisipan"
+
+#: lr_const.sdesoptionsformgrdsize
+msgid "Grid size"
+msgstr "Ukuran grid"
+
+#: lr_const.sdesoptionsformgrid
+msgctxt "lr_const.sdesoptionsformgrid"
+msgid "Grid"
+msgstr "Grid"
+
+#: lr_const.sdesoptionsforminch
+msgid "&Inches"
+msgstr "&Inci"
+
+#: lr_const.sdesoptionsformmm
+msgid "&MM"
+msgstr "&MM"
+
+#: lr_const.sdesoptionsformobj
+msgid "Object moving"
+msgstr "Pemindahan obyek"
+
+#: lr_const.sdesoptionsformopt
+msgctxt "lr_const.sdesoptionsformopt"
+msgid "Options"
+msgstr ""
+
+#: lr_const.sdesoptionsformother
+msgctxt "lr_const.sdesoptionsformother"
+msgid "Other"
+msgstr "Lain-lain"
+
+#: lr_const.sdesoptionsformpix
+msgid "&Pixels"
+msgstr "&Pixel"
+
+#: lr_const.sdesoptionsformshape
+msgid "S&hape"
+msgstr "B&entuk"
+
+#: lr_const.sdesoptionsformshowband
+msgid "Show band &titles"
+msgstr "Tampilkan &judul band"
+
+#: lr_const.sdesoptionsformshowgrd
+msgid "&Show grid"
+msgstr "Tam&pilkan grid"
+
+#: lr_const.sdesoptionsformunits
+msgid "Report units"
+msgstr "Unit laporan"
+
+#: lr_const.sdoc
+msgid "Report:"
+msgstr "Laporan:"
+
+#: lr_const.sdocautor
+msgid "Author"
+msgstr ""
+
+#: lr_const.sdocbuild
+msgid "Build"
+msgstr ""
+
+#: lr_const.sdocmajor
+msgid "Major"
+msgstr ""
+
+#: lr_const.sdocminor
+msgid "Minor"
+msgstr ""
+
+#: lr_const.sdocoptform2pass
+msgid "&Two-pass report"
+msgstr "Dua-ka&li laporan "
+
+#: lr_const.sdocoptformcomments
+msgid "Comments"
+msgstr "Komentar"
+
+#: lr_const.sdocoptformkeywords
+#, fuzzy
+#| msgid "Keys words"
+msgid "Keywords"
+msgstr "Kata kunci"
+
+#: lr_const.sdocoptformopt
+msgid "Report options"
+msgstr "Opsi laporan"
+
+#: lr_const.sdocoptformother
+msgctxt "lr_const.sdocoptformother"
+msgid "Other"
+msgstr "Lain-lain"
+
+#: lr_const.sdocoptformprinter
+msgctxt "lr_const.sdocoptformprinter"
+msgid "Printer"
+msgstr "Printer"
+
+#: lr_const.sdocoptformselect
+msgid "&Select when report loaded"
+msgstr "Pilih &saat laporan diambil"
+
+#: lr_const.sdocoptformsubject
+msgid "Subject"
+msgstr "Subyek"
+
+#: lr_const.sdocoptformtitle
+msgid "Title"
+msgstr "Judul"
+
+#: lr_const.sdocrelease
+msgid "Release"
+msgstr ""
+
+#: lr_const.sdocversion
+msgid "Version"
+msgstr ""
+
+#: lr_const.sduplicatedobjectname
+msgid "An object named \"%s\" already exists"
+msgstr ""
+
+#: lr_const.seditor
+msgid "Editor"
+msgstr ""
+
+#: lr_const.seditorformbig
+msgid "&Big font"
+msgstr "Font &Besar"
+
+#: lr_const.seditorformcapt
+msgid "Text editor"
+msgstr "Editor teks"
+
+#: lr_const.seditorformfield
+msgid "&DB field"
+msgstr "&Field DB"
+
+#: lr_const.seditorformformat
+msgctxt "lr_const.seditorformformat"
+msgid "&Format"
+msgstr "&Format"
+
+#: lr_const.seditorformfunction
+msgid "Function"
+msgstr ""
+
+#: lr_const.seditorformmemo
+msgctxt "lr_const.seditorformmemo"
+msgid "&Memo"
+msgstr "&Memo"
+
+#: lr_const.seditorformscr
+msgid "S&cript"
+msgstr "&Naskah"
+
+#: lr_const.seditorformscript
+msgid "&Script"
+msgstr "&Naskah"
+
+#: lr_const.seditorformvar
+msgctxt "lr_const.seditorformvar"
+msgid "&Variable"
+msgstr "&Variabel"
+
+#: lr_const.seditorformword
+msgid "&Word wrap"
+msgstr "&Gulung"
+
+#: lr_const.serror
+msgid "Error"
+msgstr "Salah"
+
+#: lr_const.serroroccured
+#, fuzzy
+#| msgid "An error occured during calculating"
+msgid "An error occurred during calculation"
+msgstr "Kesalahan terjadi saat menghitung"
+
+#: lr_const.sevformcapt
+msgid "Variables editor"
+msgstr "Editor variabel"
+
+#: lr_const.sevformcopy
+msgid "Copy variables"
+msgstr "Copy variabel"
+
+#: lr_const.sevformexp
+msgid "&Expression"
+msgstr "&Ekspresi"
+
+#: lr_const.sevformpaste
+msgid "Paste variables"
+msgstr "Paste variabel"
+
+#: lr_const.sevformvalue
+msgid "Va&lue"
+msgstr "Ni&lai"
+
+#: lr_const.sevformvar
+msgctxt "lr_const.sevformvar"
+msgid "&Variable"
+msgstr "&Variabel"
+
+#: lr_const.sevformvars
+#, fuzzy
+#| msgid "Va&riables..."
+msgid "Va&riables ..."
+msgstr "Va&riabel..."
+
+#: lr_const.sexportfilterindexerror
+msgid "Export filter index out of range"
+msgstr ""
+
+#: lr_const.sfieldsformaviabledb
+msgid "&Available DB's"
+msgstr "DB Tersedi&a"
+
+#: lr_const.sfieldsforminsert
+msgctxt "lr_const.sfieldsforminsert"
+msgid "Insert DB field"
+msgstr "Sisipkan field DB"
+
+#: lr_const.sfilenotfound
+msgid "File not found"
+msgstr ""
+
+#: lr_const.sfilter
+msgid "Filter properties"
+msgstr "Properti filter"
+
+#: lr_const.sfilterparam
+msgid "Average font height:"
+msgstr "Rata-rata tinggi font:"
+
+#: lr_const.sfindtextcaption
+msgctxt "lr_const.sfindtextcaption"
+msgid "Find text"
+msgstr "Cari teks"
+
+#: lr_const.sfindtextcase
+msgid "&Case sensitive"
+msgstr "Sensitif &huruf"
+
+#: lr_const.sfindtextcurrentpg
+msgctxt "lr_const.sfindtextcurrentpg"
+msgid "Current &page"
+msgstr ""
+
+#: lr_const.sfindtextfirstpg
+msgid "&1st page"
+msgstr "Halaman &1"
+
+#: lr_const.sfindtextnotfound
+msgid "Search text not found."
+msgstr ""
+
+#: lr_const.sfindtextoptions
+msgctxt "lr_const.sfindtextoptions"
+msgid "Options"
+msgstr ""
+
+#: lr_const.sfindtextorg
+msgid "Origin"
+msgstr "Asal"
+
+#: lr_const.sfindtexttext
+msgid "Text to &find"
+msgstr "Teks yang di&cari"
+
+#: lr_const.sfirstpass
+msgid "Performing 1st pass:"
+msgstr "Melakukan pass 1:"
+
+#: lr_const.sfmtformdecid
+msgid "&Decimal digits"
+msgstr "&Digit desimal"
+
+#: lr_const.sfmtformfrac
+msgid "Fraction &symbol"
+msgstr "&Simbol fraksi"
+
+#: lr_const.sfmtformfrmt
+msgctxt "lr_const.sfmtformfrmt"
+msgid "&Format"
+msgstr "&Format"
+
+#: lr_const.sfmtformfrmtvar
+msgid "Variable formatting"
+msgstr "Format variabel"
+
+#: lr_const.sfmtformvarfmt
+msgid "Variable format"
+msgstr "Format variabel"
+
+#: lr_const.sfont
+#, fuzzy
+#| msgid "Font..."
+msgid "Font ..."
+msgstr "Font..."
+
+#: lr_const.sformat11
+msgctxt "lr_const.sformat11"
+msgid "[None]"
+msgstr ""
+
+#: lr_const.sformat21
+msgid "1234,5"
+msgstr "1234,5"
+
+#: lr_const.sformat22
+msgid "1234,50"
+msgstr "1234,50"
+
+#: lr_const.sformat23
+msgid "1 234,5"
+msgstr "1 234,5"
+
+#: lr_const.sformat24
+msgid "1 234,50"
+msgstr "1 234,50"
+
+#: lr_const.sformat25
+msgctxt "lr_const.sformat25"
+msgid "Custom"
+msgstr ""
+
+#: lr_const.sformat31
+msgid "11.15.98"
+msgstr "11.15.98"
+
+#: lr_const.sformat32
+msgid "11.15.1998"
+msgstr "11.15.1998"
+
+#: lr_const.sformat33
+msgid "15 nov 1998"
+msgstr "15 nov 1998"
+
+#: lr_const.sformat34
+msgid "15 november 1998"
+msgstr "15 november 1998"
+
+#: lr_const.sformat35
+msgctxt "lr_const.sformat35"
+msgid "Custom"
+msgstr ""
+
+#: lr_const.sformat41
+msgid "02:43:35"
+msgstr "02:43:35"
+
+#: lr_const.sformat42
+msgid "2:43:35"
+msgstr "2:43:35"
+
+#: lr_const.sformat43
+msgid "02:43"
+msgstr "02:43"
+
+#: lr_const.sformat44
+msgid "2:43"
+msgstr "2:43"
+
+#: lr_const.sformat45
+msgctxt "lr_const.sformat45"
+msgid "Custom"
+msgstr ""
+
+#: lr_const.sformat51
+msgid "0;1"
+msgstr "0;1"
+
+#: lr_const.sformat52
+msgid "No;Yes"
+msgstr "Tidak;Ya"
+
+#: lr_const.sformat53
+msgid "_;x"
+msgstr "_;x"
+
+#: lr_const.sformat54
+msgid "False;True"
+msgstr "False;True"
+
+#: lr_const.sformat55
+msgctxt "lr_const.sformat55"
+msgid "Custom"
+msgstr ""
+
+#: lr_const.sformfile
+msgid "FastReport form"
+msgstr "Formulir FastReport"
+
+#: lr_const.sformnewpage
+msgid "Force new page"
+msgstr "Paksa halaman baru"
+
+#: lr_const.sfrdesignerdatainsp
+msgid "Data inspector"
+msgstr ""
+
+#: lr_const.sfrdesignerexists
+msgid "You already have one TfrDesigner component"
+msgstr ""
+
+#: lr_const.sfrdesignerformaddpg
+msgctxt "lr_const.sfrdesignerformaddpg"
+msgid "Add page"
+msgstr "Tambah halaman"
+
+#: lr_const.sfrdesignerformalign
+msgid "Alignment"
+msgstr "Penjajaran"
+
+#: lr_const.sfrdesignerformalignbottoms
+msgid "Align bottoms"
+msgstr "Jajar bawah"
+
+#: lr_const.sfrdesignerformalignetop
+msgid "Align tops"
+msgstr "Jajar atas"
+
+#: lr_const.sfrdesignerformalignhorzcenter
+msgid "Align horizontal centers"
+msgstr "Jajar horisontal tengah"
+
+#: lr_const.sfrdesignerformalignleftedge
+msgid "Align left edges"
+msgstr "Jajar sisi kiri"
+
+#: lr_const.sfrdesignerformalignrightedge
+msgid "Align right edges"
+msgstr "Jajar sisi kanan"
+
+#: lr_const.sfrdesignerformalignvertcenter
+msgid "Align vertical centers"
+msgstr "Jajar vertikal tengah"
+
+#: lr_const.sfrdesignerformallframe
+msgid "All frame lines"
+msgstr "Semua garis bingkai"
+
+#: lr_const.sfrdesignerformback
+msgid "Send to back"
+msgstr "Kirim ke belakang"
+
+#: lr_const.sfrdesignerformbackcolor
+msgid "Background color"
+msgstr "Warna latar belakang"
+
+#: lr_const.sfrdesignerformbold
+msgid "Bold"
+msgstr "Tebal"
+
+#: lr_const.sfrdesignerformbottomalign
+msgid "Bottom align"
+msgstr "Pejajaran bawah"
+
+#: lr_const.sfrdesignerformbottomframe
+msgid "Bottom frame line"
+msgstr "Garis bingkai bawah"
+
+#: lr_const.sfrdesignerformbring
+msgid "Bring to front"
+msgstr "Bawa ke depan"
+
+#: lr_const.sfrdesignerformcapt
+msgctxt "lr_const.sfrdesignerformcapt"
+msgid "Designer"
+msgstr "Desainer"
+
+#: lr_const.sfrdesignerformceneralign
+msgid "Center align"
+msgstr "Jajar tengah"
+
+#: lr_const.sfrdesignerformcenterhwind
+msgid "Center horizontally in window"
+msgstr "Tangahkan secara horisontal dalam jendela"
+
+#: lr_const.sfrdesignerformcentervertwing
+msgid "Center vertically in window"
+msgstr "Tengahkan secara vertikal dalam jendela"
+
+#: lr_const.sfrdesignerformclose
+msgid "Close"
+msgstr "Tutup"
+
+#: lr_const.sfrdesignerformclosedesigner
+msgid "Close designer"
+msgstr "Tutup desainer"
+
+#: lr_const.sfrdesignerformcopy
+msgid "Copy"
+msgstr "Copy"
+
+#: lr_const.sfrdesignerformcut
+msgid "Cut"
+msgstr "Cut"
+
+#: lr_const.sfrdesignerformdrawline
+msgid "Draw lines"
+msgstr "Gambar garis"
+
+#: lr_const.sfrdesignerformfitgrid
+msgid "Fit to grid"
+msgstr "Cukupkan ke grid"
+
+#: lr_const.sfrdesignerformfont
+msgid "Font color"
+msgstr "Warna font"
+
+#: lr_const.sfrdesignerformfontname
+msgid "Font name"
+msgstr "Nama font"
+
+#: lr_const.sfrdesignerformfontsize
+msgid "Font size"
+msgstr "Ukuran font"
+
+#: lr_const.sfrdesignerformframecolor
+msgid "Frame color"
+msgstr "Warna bingkai"
+
+#: lr_const.sfrdesignerformframewidth
+msgid "Frame width"
+msgstr "Panjang bingkai"
+
+#: lr_const.sfrdesignerformgrid
+msgctxt "lr_const.sfrdesignerformgrid"
+msgid "Grid"
+msgstr "Grid"
+
+#: lr_const.sfrdesignerformgridalign
+msgid "Grid align"
+msgstr "Jajar grid"
+
+#: lr_const.sfrdesignerformhightlight
+msgctxt "lr_const.sfrdesignerformhightlight"
+msgid "Highlight attributes"
+msgstr ""
+
+#: lr_const.sfrdesignerforminsband
+msgid "Insert band"
+msgstr "Sisipkan band"
+
+#: lr_const.sfrdesignerforminspict
+msgid "Insert picture"
+msgstr "Sisipkan gambar"
+
+#: lr_const.sfrdesignerforminsrect
+msgid "Insert rectangle object"
+msgstr "Sisipkan obyek kotak"
+
+#: lr_const.sfrdesignerforminssub
+msgid "Insert subreport"
+msgstr "Sisipkan obyek sublaporan"
+
+#: lr_const.sfrdesignerformitalic
+msgid "Italic"
+msgstr "Miring"
+
+#: lr_const.sfrdesignerformleftalign
+msgid "Left align"
+msgstr "Jajar kiri"
+
+#: lr_const.sfrdesignerformleftframe
+msgid "Left frame line"
+msgstr "Garis bingkai kiri"
+
+#: lr_const.sfrdesignerformnewrp
+msgctxt "lr_const.sfrdesignerformnewrp"
+msgid "New report"
+msgstr ""
+
+#: lr_const.sfrdesignerformnoframe
+msgid "No frame"
+msgstr "Tanpa bingkai"
+
+#: lr_const.sfrdesignerformnormaltext
+msgid "Normal text / 90 degrees"
+msgstr "Teks normal / 90 derajat"
+
+#: lr_const.sfrdesignerformobj
+msgid "Objects"
+msgstr "Obyek"
+
+#: lr_const.sfrdesignerformopenrp
+msgctxt "lr_const.sfrdesignerformopenrp"
+msgid "Open report"
+msgstr "Buka laporan"
+
+#: lr_const.sfrdesignerformpast
+msgid "Paste"
+msgstr "Paste"
+
+#: lr_const.sfrdesignerformpgoption
+msgctxt "lr_const.sfrdesignerformpgoption"
+msgid "Page options"
+msgstr ""
+
+#: lr_const.sfrdesignerformpreview
+msgid "Preview report"
+msgstr "Tinjau laporan"
+
+#: lr_const.sfrdesignerformrect
+msgctxt "lr_const.sfrdesignerformrect"
+msgid "Rectangle"
+msgstr ""
+
+#: lr_const.sfrdesignerformredo
+msgid "Redo cancelled action"
+msgstr "Lakukan lagi aksi yang dibatalkan"
+
+#: lr_const.sfrdesignerformremovepg
+msgid "Remove page"
+msgstr "Hapus halaman"
+
+#: lr_const.sfrdesignerformrightalign
+msgid "Right align"
+msgstr "Jajar kanan"
+
+#: lr_const.sfrdesignerformrightframe
+msgid "Right frame line"
+msgstr "Garis bingkai kanan"
+
+#: lr_const.sfrdesignerformsaverp
+msgctxt "lr_const.sfrdesignerformsaverp"
+msgid "Save report"
+msgstr "Simpan laporan"
+
+#: lr_const.sfrdesignerformselectall
+msgid "Select all"
+msgstr "Pilih semua"
+
+#: lr_const.sfrdesignerformselectsameclass
+msgid "Select same class objects"
+msgstr ""
+
+#: lr_const.sfrdesignerformselobj
+msgid "Select object"
+msgstr "Pilih obyek"
+
+#: lr_const.sfrdesignerformspace
+msgid "Space equally, horizontally"
+msgstr "Spasi sama, secara horisontal"
+
+#: lr_const.sfrdesignerformspaceeqvert
+msgid "Space equally, vertically"
+msgstr "Spasi sama, secara vertikal"
+
+#: lr_const.sfrdesignerformstd
+msgid "Standard"
+msgstr "Standar"
+
+#: lr_const.sfrdesignerformtext
+msgctxt "lr_const.sfrdesignerformtext"
+msgid "Text"
+msgstr "Teks"
+
+#: lr_const.sfrdesignerformtools
+msgid "Tools"
+msgstr "Piranti"
+
+#: lr_const.sfrdesignerformtopalign
+msgid "Top align"
+msgstr "Jajar atas"
+
+#: lr_const.sfrdesignerformtopframe
+msgid "Top frame line"
+msgstr "Garis bingkai atas"
+
+#: lr_const.sfrdesignerformunabletocreatetemplatedir
+msgid "Unable to create template directory"
+msgstr ""
+
+#: lr_const.sfrdesignerformunderline
+msgid "Underline"
+msgstr "Garis bawah"
+
+#: lr_const.sfrdesignerformundo
+msgid "Undo last action"
+msgstr "Batalkan aksi terakhir"
+
+#: lr_const.sfrdesignerformvertcenter
+msgid "Vertical center"
+msgstr "Vertikal tengah"
+
+#: lr_const.sfrdesignerformwidthalign
+msgid "Width align"
+msgstr "Jajar panjang"
+
+#: lr_const.sfrdesignerform_about
+#, fuzzy
+#| msgid "&About..."
+msgid "&About ..."
+msgstr "Tent&ang..."
+
+#: lr_const.sfrdesignerform_addpg
+msgid "&Add page"
+msgstr "Tamb&ah halaman"
+
+#: lr_const.sfrdesignerform_alignpalette
+msgid "&Alignment palette"
+msgstr "J&ajarkan palet"
+
+#: lr_const.sfrdesignerform_back
+msgid "Send to &back"
+msgstr "Kirim ke &belakang"
+
+#: lr_const.sfrdesignerform_beforeprintscript
+msgid "&Before print script ..."
+msgstr ""
+
+#: lr_const.sfrdesignerform_bring
+msgid "Bring to &front"
+msgstr "Bawa ke &depan"
+
+#: lr_const.sfrdesignerform_copy
+msgid "&Copy"
+msgstr "&Duplikat"
+
+#: lr_const.sfrdesignerform_cut
+msgid "C&ut"
+msgstr "C&ut"
+
+#: lr_const.sfrdesignerform_datainsp
+msgid "&Data inspector"
+msgstr ""
+
+#: lr_const.sfrdesignerform_delete
+msgid "&Delete"
+msgstr "&Hapus"
+
+#: lr_const.sfrdesignerform_edit
+#, fuzzy
+#| msgid "&Edit..."
+msgctxt "lr_const.sfrdesignerform_edit"
+msgid "&Edit ..."
+msgstr "&Edit..."
+
+#: lr_const.sfrdesignerform_edit2
+msgid "&Edit"
+msgstr "&Edit"
+
+#: lr_const.sfrdesignerform_editp
+#, fuzzy
+#| msgid "&Edit..."
+msgctxt "lr_const.sfrdesignerform_editp"
+msgid "&Edit ..."
+msgstr "&Edit..."
+
+#: lr_const.sfrdesignerform_exit
+msgid "E&xit"
+msgstr "&Keluar"
+
+#: lr_const.sfrdesignerform_file
+msgid "&File"
+msgstr "&File"
+
+#: lr_const.sfrdesignerform_help1
+msgid "&Help contents"
+msgstr "Isi &Bantuan"
+
+#: lr_const.sfrdesignerform_help2
+msgid "Help &tool"
+msgstr "Piran&ti bantuan"
+
+#: lr_const.sfrdesignerform_insp
+msgid "Object &Inspector"
+msgstr "&Inspektor Obyek"
+
+#: lr_const.sfrdesignerform_line
+msgid "Line style"
+msgstr "Gaya garis"
+
+#: lr_const.sfrdesignerform_modified
+msgid "Modified"
+msgstr ""
+
+#: lr_const.sfrdesignerform_new
+#, fuzzy
+#| msgid "&New..."
+msgid "&New ..."
+msgstr "&Baru..."
+
+#: lr_const.sfrdesignerform_obj
+msgid "&Objects"
+msgstr "&Obyek"
+
+#: lr_const.sfrdesignerform_open
+#, fuzzy
+#| msgid "&Open..."
+msgid "&Open ..."
+msgstr "&Buka"
+
+#: lr_const.sfrdesignerform_opts
+#, fuzzy
+#| msgid "&Options..."
+msgid "&Options ..."
+msgstr "&Opsi..."
+
+#: lr_const.sfrdesignerform_paste
+msgid "&Paste"
+msgstr "&Paste"
+
+#: lr_const.sfrdesignerform_pgopt
+#, fuzzy
+#| msgid "&Page options..."
+msgid "&Page options ..."
+msgstr "Opsi &halaman..."
+
+#: lr_const.sfrdesignerform_preview
+msgid "Pre&view"
+msgstr "Tin&jau"
+
+#: lr_const.sfrdesignerform_rect
+msgid "&Rectangle"
+msgstr "&Kotak"
+
+#: lr_const.sfrdesignerform_redo
+msgid "&Redo"
+msgstr "&Redo"
+
+#: lr_const.sfrdesignerform_removepg
+msgid "&Remove page"
+msgstr "&Hapus halaman"
+
+#: lr_const.sfrdesignerform_rptopt
+#, fuzzy
+#| msgid "&Report options..."
+msgid "&Report options ..."
+msgstr "Opsi &laporan"
+
+#: lr_const.sfrdesignerform_save
+msgid "&Save"
+msgstr "&Simpan"
+
+#: lr_const.sfrdesignerform_saveas
+#, fuzzy
+#| msgid "Save &as..."
+msgid "Save &as ..."
+msgstr "Simpan seb&agai..."
+
+#: lr_const.sfrdesignerform_selectall
+msgid "Select &all"
+msgstr "Pilih semu&a"
+
+#: lr_const.sfrdesignerform_std
+msgid "&Standard"
+msgstr "&Standar"
+
+#: lr_const.sfrdesignerform_text
+msgid "&Text"
+msgstr "&Teks"
+
+#: lr_const.sfrdesignerform_toolbars
+msgid "&Toolbars"
+msgstr "&Toolbar"
+
+#: lr_const.sfrdesignerform_tools
+msgid "&Tools"
+msgstr "&Piranti"
+
+#: lr_const.sfrdesignerform_tools2
+msgctxt "lr_const.sfrdesignerform_tools2"
+msgid "Too&ls"
+msgstr "P&iranti"
+
+#: lr_const.sfrdesignerform_tools3
+msgctxt "lr_const.sfrdesignerform_tools3"
+msgid "Too&ls"
+msgstr "P&iranti"
+
+#: lr_const.sfrdesignerform_undo
+msgid "&Undo"
+msgstr "&Undo"
+
+#: lr_const.sfrdesignerform_var
+#, fuzzy
+#| msgid "Variables &list..."
+msgid "Variables &list ..."
+msgstr "Da&ftar variabel..."
+
+#: lr_const.sfrom
+msgid "from"
+msgstr "dari"
+
+#: lr_const.sfrvariables
+msgid "FR variables"
+msgstr "Variabel FR"
+
+#: lr_const.sfunctioneditor
+msgid "Function editor"
+msgstr ""
+
+#: lr_const.sfunctions
+msgid "Functions"
+msgstr ""
+
+#: lr_const.sgeditorformcapt
+msgid "Picture"
+msgstr "Gambar"
+
+#: lr_const.sgeditorformclear
+msgid "&Clear"
+msgstr "Be&rsihkan"
+
+#: lr_const.sgeditorformload
+#, fuzzy
+#| msgid "&Load..."
+msgid "&Load ..."
+msgstr "&Ambil..."
+
+#: lr_const.sgeditorformmemo
+msgctxt "lr_const.sgeditorformmemo"
+msgid "&Memo"
+msgstr "&Memo"
+
+#: lr_const.sgeditorformstretch
+msgid "&Stretch"
+msgstr "&Direntangkan"
+
+#: lr_const.sgroupeditorformadddbfield
+msgctxt "lr_const.sgroupeditorformadddbfield"
+msgid "Insert DB field"
+msgstr "Sisipkan field DB"
+
+#: lr_const.sgroupeditorformcapt
+msgid "Group"
+msgstr "Grup"
+
+#: lr_const.sgroupeditorformcond
+msgctxt "lr_const.sgroupeditorformcond"
+msgid "Condition"
+msgstr ""
+
+#: lr_const.shidezerovalues
+msgid "Hide zero values"
+msgstr ""
+
+#: lr_const.shilightformback
+msgid "Background"
+msgstr "Latar belakang"
+
+#: lr_const.shilightformbold
+msgid "&Bold"
+msgstr "Te&bal"
+
+#: lr_const.shilightformcolor
+#, fuzzy
+#| msgid "C&olor..."
+msgid "C&olor ..."
+msgstr "&Warna..."
+
+#: lr_const.shilightformcolor2
+#, fuzzy
+#| msgid "Co&lor..."
+msgid "Co&lor ..."
+msgstr "&Warna..."
+
+#: lr_const.shilightformcond
+msgctxt "lr_const.shilightformcond"
+msgid "Condition"
+msgstr "Kondisi"
+
+#: lr_const.shilightformfont
+msgid "Font"
+msgstr "Font"
+
+#: lr_const.shilightformhilitattr
+msgctxt "lr_const.shilightformhilitattr"
+msgid "Highlight attributes"
+msgstr "Atribut penerang"
+
+#: lr_const.shilightformitalic
+msgid "&Italic"
+msgstr "&Miring"
+
+#: lr_const.shilightformother
+msgid "Ot&her"
+msgstr "&Lain-lain"
+
+#: lr_const.shilightformtransp
+msgid "&Transparent"
+msgstr "&Transparan"
+
+#: lr_const.shilightformunder
+msgid "&Underline"
+msgstr "&Garis bawah"
+
+#: lr_const.shtmfile
+msgid "HTML file"
+msgstr "File HTML"
+
+#: lr_const.sinches
+msgid "Inches"
+msgstr "Inci"
+
+#: lr_const.sinsbarcode
+msgid "Insert Barcode object"
+msgstr "Sisipkan obyek Barcode"
+
+#: lr_const.sinschart
+msgid "Insert Chart object"
+msgstr "Sisipkan obyek Chart"
+
+#: lr_const.sinscheckbox
+msgid "Insert CheckBox object"
+msgstr "Sisipkan obyek KotakCentang"
+
+#: lr_const.sinsert
+msgid "Insert"
+msgstr ""
+
+#: lr_const.sinsertexpression
+msgid "Insert Expression"
+msgstr ""
+
+#: lr_const.sinsertfields
+msgid "Insert DB fields"
+msgstr "Sisipkan field DB"
+
+#: lr_const.sinsertfieldsformaviabledset
+msgid "&Available datasets"
+msgstr "D&ataset tersedia"
+
+#: lr_const.sinsertfieldsformband
+msgid "Include &bands"
+msgstr "Sertakan &band"
+
+#: lr_const.sinsertfieldsformcapt
+msgid "Insert fields"
+msgstr "Sisipkan field"
+
+#: lr_const.sinsertfieldsformheader
+msgid "&Include headers"
+msgstr "&Sertakan header"
+
+#: lr_const.sinsertfieldsformhorz
+msgid "&Horizontal"
+msgstr "&Horisontal"
+
+#: lr_const.sinsertfieldsformplace
+msgid "Placement"
+msgstr "Penempatan"
+
+#: lr_const.sinsertfieldsformvert
+msgid "&Vertical"
+msgstr "&Vertikal"
+
+#: lr_const.sinsroundrect
+#, fuzzy
+#| msgid "Insert an RoundRect with shadow area"
+msgid "Insert a RoundRect with shadow area"
+msgstr "Sisipkan KotakBulat dengan bayangan area"
+
+#: lr_const.sinsshape
+msgid "Insert Shape object"
+msgstr "Sisipkan obyek Bentuk"
+
+#: lr_const.sinterpretator
+msgid "Interpretator"
+msgstr ""
+
+#: lr_const.sinvalidfrfreport
+msgid "Invalid binary report"
+msgstr ""
+
+#: lr_const.sinvalidfrfversion
+msgid "Invalid report version"
+msgstr ""
+
+#: lr_const.sinvalidlrfreport
+msgid "Invalid report format"
+msgstr ""
+
+#: lr_const.sinvalidvariablename
+msgid "\"%s\" is not a valid variable name."
+msgstr ""
+
+#: lr_const.skeepaspectratio
+msgid "Keep aspect ratio"
+msgstr "Jaga raso aspek"
+
+#: lr_const.slazformfile
+msgid "LazReport form"
+msgstr "Formulir LazReport"
+
+#: lr_const.slaztemplatefile
+msgid "LazReport template"
+msgstr ""
+
+#: lr_const.smathcategory
+msgid "Math"
+msgstr "Matematika"
+
+#: lr_const.smemoeditor
+msgid "Memo editor"
+msgstr ""
+
+#: lr_const.smm
+msgid "MM"
+msgstr "MM"
+
+#: lr_const.snewtemplate
+msgid "New template"
+msgstr ""
+
+#: lr_const.sno
+msgid "No"
+msgstr "Tidak"
+
+#: lr_const.snotassigned
+msgctxt "lr_const.snotassigned"
+msgid "[None]"
+msgstr "[Tidak ada]"
+
+#: lr_const.sobjectinspector
+msgid "Object inspector"
+msgstr "Inspektor obyek"
+
+#: lr_const.sobjectnotfound
+msgid "Object \"%s\" not found"
+msgstr ""
+
+#: lr_const.sok
+msgid "Ok"
+msgstr "Ok"
+
+#: lr_const.sonfirstpage
+msgid "On first page"
+msgstr "Pada halaman pertama"
+
+#: lr_const.sonlastpage
+msgid "On last page"
+msgstr "Pada halaman terakhir"
+
+#: lr_const.sother
+#, fuzzy
+#| msgid "Other..."
+msgid "Other ..."
+msgstr "Lain-lain..."
+
+#: lr_const.sothercategory
+msgctxt "lr_const.sothercategory"
+msgid "Other"
+msgstr "Lain-lain"
+
+#: lr_const.spagepreparing
+msgid "Processing page:"
+msgstr "Memproses halaman:"
+
+#: lr_const.spageprinting
+msgid "Printing page:"
+msgstr "Mencetak halaman:"
+
+#: lr_const.spaper1
+msgid "Letter, 8 1/2 x 11\""
+msgstr "Letter, 8 1/2 x 11\""
+
+#: lr_const.spaper10
+msgid "A4 small sheet, 210 x 297 mm"
+msgstr "A4 small sheet, 210 x 297 mm"
+
+#: lr_const.spaper100
+msgid "DMPAPER_PENV_5 110X220"
+msgstr "DMPAPER_PENV_5 110X220"
+
+#: lr_const.spaper101
+msgid "DMPAPER_PENV_6 120X230"
+msgstr "DMPAPER_PENV_6 120X230"
+
+#: lr_const.spaper102
+msgid "DMPAPER_PENV_7 160X230"
+msgstr "DMPAPER_PENV_7 160X230"
+
+#: lr_const.spaper103
+msgid "DMPAPER_PENV_8 120X309"
+msgstr "DMPAPER_PENV_8 120X309"
+
+#: lr_const.spaper104
+msgid "DMPAPER_PENV_9 229X324"
+msgstr "DMPAPER_PENV_9 229X324"
+
+#: lr_const.spaper105
+msgid "DMPAPER_PENV_10 324X458"
+msgstr "DMPAPER_PENV_10 324X458"
+
+#: lr_const.spaper106
+msgid "DMPAPER_P16K_ROTATED 215X146"
+msgstr "DMPAPER_P16K_ROTATED 215X146"
+
+#: lr_const.spaper107
+msgid "DMPAPER_P32K_ROTATED 151X97"
+msgstr "DMPAPER_P32K_ROTATED 151X97"
+
+#: lr_const.spaper108
+msgid "DMPAPER_P32KBIG_ROTATED 151X97"
+msgstr "DMPAPER_P32KBIG_ROTATED 151X97"
+
+#: lr_const.spaper109
+msgid "DMPAPER_PENV_1_ROTATED 165X102"
+msgstr "DMPAPER_PENV_1_ROTATED 165X102"
+
+#: lr_const.spaper11
+msgid "A5 148 x 210 mm"
+msgstr "A5 148 x 210 mm"
+
+#: lr_const.spaper110
+msgid "DMPAPER_PENV_2_ROTATED 176X102"
+msgstr "DMPAPER_PENV_2_ROTATED 176X102"
+
+#: lr_const.spaper111
+msgid "DMPAPER_PENV_3_ROTATED 176X125"
+msgstr "DMPAPER_PENV_3_ROTATED 176X125"
+
+#: lr_const.spaper112
+msgid "DMPAPER_PENV_4_ROTATED 208X110"
+msgstr "DMPAPER_PENV_4_ROTATED 208X110"
+
+#: lr_const.spaper113
+msgid "DMPAPER_PENV_5_ROTATED 220X110"
+msgstr "DMPAPER_PENV_5_ROTATED 220X110"
+
+#: lr_const.spaper114
+msgid "DMPAPER_PENV_6_ROTATED 230X120"
+msgstr "DMPAPER_PENV_6_ROTATED 230X120"
+
+#: lr_const.spaper115
+msgid "DMPAPER_PENV_7_ROTATED 230X160"
+msgstr "DMPAPER_PENV_7_ROTATED 230X160"
+
+#: lr_const.spaper116
+msgid "DMPAPER_PENV_8_ROTATED 309X120"
+msgstr "DMPAPER_PENV_8_ROTATED 309X120"
+
+#: lr_const.spaper117
+msgid "DMPAPER_PENV_9_ROTATED 324X229"
+msgstr "DMPAPER_PENV_9_ROTATED 324X229"
+
+#: lr_const.spaper118
+msgid "DMPAPER_PENV_10_ROTATED 458X324"
+msgstr "DMPAPER_PENV_10_ROTATED 458X324"
+
+#: lr_const.spaper12
+msgid "B4 250 x 354 mm"
+msgstr "B4 250 x 354 mm"
+
+#: lr_const.spaper13
+msgid "B5 182 x 257 mm"
+msgstr "B5 182 x 257 mm"
+
+#: lr_const.spaper14
+msgid "Folio, 8 1/2 x 13\""
+msgstr "Folio, 8 1/2 x 13\""
+
+#: lr_const.spaper15
+msgid "Quarto Sheet, 215 x 275 mm"
+msgstr "Quarto Sheet, 215 x 275 mm"
+
+#: lr_const.spaper16
+msgid "10 x 14\""
+msgstr "10 x 14\""
+
+#: lr_const.spaper17
+msgid "11 x 17\""
+msgstr "11 x 17\""
+
+#: lr_const.spaper18
+msgid "Note, 8 1/2 x 11\""
+msgstr "Note, 8 1/2 x 11\""
+
+#: lr_const.spaper19
+msgid "9 Envelope, 3 7/8 x 8 7/8\""
+msgstr "9 Amplop, 3 7/8 x 8 7/8\""
+
+#: lr_const.spaper2
+msgid "Letter small, 8 1/2 x 11\""
+msgstr "Letter small, 8 1/2 x 11\""
+
+#: lr_const.spaper20
+msgid "#10 Envelope, 4 1/8  x 9 1/2\""
+msgstr "#10 Amplop, 4 1/8  x 9 1/2\""
+
+#: lr_const.spaper21
+msgid "#11 Envelope, 4 1/2 x 10 3/8\""
+msgstr "#11 Amplop, 4 1/2 x 10 3/8\""
+
+#: lr_const.spaper22
+msgid "#12 Envelope, 4 3/4 x 11\""
+msgstr "#12 Amplop, 4 3/4 x 11\""
+
+#: lr_const.spaper23
+msgid "#14 Envelope, 5 x 11 1/2\""
+msgstr "#14 Amplop, 5 x 11 1/2\""
+
+#: lr_const.spaper24
+msgid "C Sheet, 17 x 22\""
+msgstr "C Sheet, 17 x 22\""
+
+#: lr_const.spaper25
+msgid "D Sheet, 22 x 34\""
+msgstr "D Sheet, 22 x 34\""
+
+#: lr_const.spaper256
+msgctxt "lr_const.spaper256"
+msgid "Custom"
+msgstr "Kustom"
+
+#: lr_const.spaper26
+msgid "E Sheet, 34 x 44\""
+msgstr "E Sheet, 34 x 44\""
+
+#: lr_const.spaper27
+msgid "DL Envelope, 110 x 220 mm"
+msgstr "DL Envelope, 110 x 220 mm"
+
+#: lr_const.spaper28
+msgid "C5 Envelope, 162 x 229 mm"
+msgstr "C5 Amplop, 162 x 229 mm"
+
+#: lr_const.spaper29
+msgid "C3 Envelope,  324 x 458 mm"
+msgstr "C3 Amplop,  324 x 458 mm"
+
+#: lr_const.spaper3
+msgid "Tabloid, 11 x 17\""
+msgstr "Tabloid, 11 x 17\""
+
+#: lr_const.spaper30
+msgid "C4 Envelope,  229 x 324 mm"
+msgstr "C4 Amplop,  229 x 324 mm"
+
+#: lr_const.spaper31
+msgid "C6 Envelope,  114 x 162 mm"
+msgstr "C6 Amplop,  114 x 162 mm"
+
+#: lr_const.spaper32
+msgid "C65 Envelope, 114 x 229 mm"
+msgstr "C65 Amplop, 114 x 229 mm"
+
+#: lr_const.spaper33
+msgid "B4 Envelope,  250 x 353 mm"
+msgstr "B4 Envelope,  250 x 353 mm"
+
+#: lr_const.spaper34
+msgid "B5 Envelope,  176 x 250 mm"
+msgstr "B5 Amplop,  176 x 250 mm"
+
+#: lr_const.spaper35
+msgid "B6 Envelope,  176 x 125 mm"
+msgstr "B6 Amplop,  176 x 125 mm"
+
+#: lr_const.spaper36
+msgid "Italy Envelope, 110 x 230 mm"
+msgstr "Italy Envelope, 110 x 230 mm"
+
+#: lr_const.spaper37
+msgid "Monarch Envelope, 3 7/8 x 7 1/2\""
+msgstr "Monarch Envelope, 3 7/8 x 7 1/2\""
+
+#: lr_const.spaper38
+msgid "6 3/4 Envelope, 3 5/8 x 6 1/2\""
+msgstr "6 3/4 Amplop, 3 5/8 x 6 1/2\""
+
+#: lr_const.spaper39
+msgid "US Std Fanfold, 14 7/8 x 11\""
+msgstr "US Std Fanfold, 14 7/8 x 11\""
+
+#: lr_const.spaper4
+msgid "Ledger, 17 x 11\""
+msgstr "Ledger, 17 x 11\""
+
+#: lr_const.spaper40
+msgid "German Std Fanfold, 8 1/2 x 12\""
+msgstr "German Std Fanfold, 8 1/2 x 12\""
+
+#: lr_const.spaper41
+msgid "German Legal Fanfold, 8 1/2 x 13\""
+msgstr "German Legal Fanfold, 8 1/2 x 13\""
+
+#: lr_const.spaper42
+msgid "B4 (ISO) 250 x 353 mm"
+msgstr "B4 (ISO) 250 x 353 mm"
+
+#: lr_const.spaper43
+msgid "Japanese Postcard 100 x 148 mm"
+msgstr "Japanese Postcard 100 x 148 mm"
+
+#: lr_const.spaper44
+msgid "9 x 11\""
+msgstr "9 x 11\""
+
+#: lr_const.spaper45
+msgid "10 x 11\""
+msgstr "10 x 11\""
+
+#: lr_const.spaper46
+msgid "15 x 11\""
+msgstr "15 x 11\""
+
+#: lr_const.spaper47
+msgid "Envelope Invite 220 x 220 mm"
+msgstr "Envelope Invite 220 x 220 mm"
+
+#: lr_const.spaper5
+msgid "Legal, 8 1/2 x 14\""
+msgstr "Legal, 8 1/2 x 14\""
+
+#: lr_const.spaper50
+msgid "Letter Extra 9/275 x 12\""
+msgstr "Letter Extra 9/275 x 12\""
+
+#: lr_const.spaper51
+msgid "Legal Extra 9/275 x 15\""
+msgstr "Legal Extra 9/275 x 15\""
+
+#: lr_const.spaper52
+msgid "Tabloid Extra 11.69 x 18\""
+msgstr "Tabloid Extra 11.69 x 18\""
+
+#: lr_const.spaper53
+msgid "A4 Extra 9.27 x 12.69\""
+msgstr "A4 Extra 9.27 x 12.69\""
+
+#: lr_const.spaper54
+msgid "Letter Transverse 8/275 x 11\""
+msgstr "Letter Transverse 8/275 x 11\""
+
+#: lr_const.spaper55
+msgid "A4 Transverse 210 x 297 mm"
+msgstr "A4 Transverse 210 x 297 mm"
+
+#: lr_const.spaper56
+msgid "Letter Extra Transverse 9/275 x 12\""
+msgstr "Letter Extra Transverse 9/275 x 12\""
+
+#: lr_const.spaper57
+msgid "SuperASuperAA4 227 x 356 mm"
+msgstr "SuperASuperAA4 227 x 356 mm"
+
+#: lr_const.spaper58
+msgid "SuperBSuperBA3 305 x 487 mm"
+msgstr "SuperBSuperBA3 305 x 487 mm"
+
+#: lr_const.spaper59
+msgid "Letter Plus 8.5 x 12.69\""
+msgstr "Letter Plus 8.5 x 12.69\""
+
+#: lr_const.spaper6
+msgid "Statement, 5 1/2 x 8 1/2\""
+msgstr "Statement, 5 1/2 x 8 1/2\""
+
+#: lr_const.spaper60
+msgid "A4 Plus 210 x 330 mm"
+msgstr "A4 Plus 210 x 330 mm"
+
+#: lr_const.spaper61
+msgid "A5 Transverse 148 x 210 mm"
+msgstr "A5 Transverse 148 x 210 mm"
+
+#: lr_const.spaper62
+msgid "B5 (JIS) Transverse 182 x 257 mm"
+msgstr "B5 (JIS) Transverse 182 x 257 mm"
+
+#: lr_const.spaper63
+msgid "A3 Extra 322 x 445 mm"
+msgstr "A3 Extra 322 x 445 mm"
+
+#: lr_const.spaper64
+msgid "A5 Extra 174 x 235 mm"
+msgstr "A5 Ekstra 174 x 235 mm"
+
+#: lr_const.spaper65
+msgid "B5 (ISO) Extra 201 x 276 mm"
+msgstr "B5 (ISO) Extra 201 x 276 mm"
+
+#: lr_const.spaper66
+msgid "A2 420 x 594 mm"
+msgstr "A2 420 x 594 mm"
+
+#: lr_const.spaper67
+msgid "A3 Transverse 297 x 420 mm"
+msgstr "A3 Transverse 297 x 420 mm"
+
+#: lr_const.spaper68
+msgid "A3 Extra Transverse 322 x 445 mm"
+msgstr "A3 Extra Transverse 322 x 445 mm"
+
+#: lr_const.spaper69
+msgid "Double Japanese Postcard 200 x 148 mm"
+msgstr "Double Japanese Postcard 200 x 148 mm"
+
+#: lr_const.spaper7
+msgid "Executive, 7 1/4 x 10 1/2\""
+msgstr "Executive, 7 1/4 x 10 1/2\""
+
+#: lr_const.spaper70
+msgid "A6 105x148 mm"
+msgstr "A6 105x148 mm"
+
+#: lr_const.spaper71
+msgid "DMPAPER_JENV_KAKU2 240X132"
+msgstr "DMPAPER_JENV_KAKU2 240X132"
+
+#: lr_const.spaper72
+msgid "DMPAPER_JENV_KAKU3 216X277"
+msgstr "DMPAPER_JENV_KAKU3 216X277"
+
+#: lr_const.spaper73
+msgid "DMPAPER_JENV_CHOU3 120X235"
+msgstr "DMPAPER_JENV_CHOU3 120X235"
+
+#: lr_const.spaper74
+msgid "DMPAPER_JENV_CHOU4 90X205"
+msgstr "DMPAPER_JENV_CHOU4 90X205"
+
+#: lr_const.spaper75
+msgid "DMPAPER_LETTER_ROTATED 279.4x215.9"
+msgstr "DMPAPER_LETTER_ROTATED 279.4x215.9"
+
+#: lr_const.spaper76
+msgid "DMPAPER_A3_ROTATED 420x297"
+msgstr "DMPAPER_A3_ROTATED 420x297"
+
+#: lr_const.spaper77
+msgid "DMPAPER_A4_ROTATED 297X210"
+msgstr "DMPAPER_A4_ROTATED 297X210"
+
+#: lr_const.spaper78
+msgid "DMPAPER_A5_ROTATED 210X148"
+msgstr "DMPAPER_A5_ROTATED 210X148"
+
+#: lr_const.spaper79
+msgid "DMPAPER_B4_JIS_ROTATED 364X257"
+msgstr "DMPAPER_B4_JIS_ROTATED 364X257"
+
+#: lr_const.spaper8
+msgid "A3 297 x 420 mm"
+msgstr "A3 297 x 420 mm"
+
+#: lr_const.spaper80
+msgid "DMPAPER_B5_JIS_ROTATED 257X182"
+msgstr "DMPAPER_B5_JIS_ROTATED 257X182"
+
+#: lr_const.spaper81
+msgid "DMPAPER_JAPANESE_POSTCARD_ROTATED 148X100"
+msgstr "DMPAPER_JAPANESE_POSTCARD_ROTATED 148X100"
+
+#: lr_const.spaper82
+msgid "DMPAPER_DBL_JAPANESE_POSTCARD_ROTATED 148X200"
+msgstr "DMPAPER_DBL_JAPANESE_POSTCARD_ROTATED 148X200"
+
+#: lr_const.spaper83
+msgid "DMPAPER_A6_ROTATED 148X105"
+msgstr "DMPAPER_A6_ROTATED 148X105"
+
+#: lr_const.spaper84
+msgid "DMPAPER_JENV_KAKU2_ROTATED 332X240"
+msgstr "DMPAPER_JENV_KAKU2_ROTATED 332X240"
+
+#: lr_const.spaper85
+msgid "DMPAPER_JENV_KAKU3_ROTATED 277X216"
+msgstr "DMPAPER_JENV_KAKU3_ROTATED 277X216"
+
+#: lr_const.spaper86
+msgid "DMPAPER_JENV_CHOU3_ROTATED 235X120"
+msgstr "DMPAPER_JENV_CHOU3_ROTATED 235X120"
+
+#: lr_const.spaper87
+msgid "DMPAPER_JENV_CHOU4_ROTATED 205X90"
+msgstr "DMPAPER_JENV_CHOU4_ROTATED 205X90"
+
+#: lr_const.spaper88
+msgid "DMPAPER_B6_JIS 128X122"
+msgstr "DMPAPER_B6_JIS 128X122"
+
+#: lr_const.spaper89
+msgid "DMPAPER_B6_JIS_ROTATED 182X128"
+msgstr "DMPAPER_B6_JIS_ROTATED 182X128"
+
+#: lr_const.spaper9
+msgid "A4 210 x 297 mm"
+msgstr "A4 210 x 297 mm"
+
+#: lr_const.spaper90
+msgid "DMPAPER_12X11 304.8X279.4"
+msgstr "DMPAPER_12X11 304.8X279.4"
+
+#: lr_const.spaper91
+msgid "DMPAPER_JENV_YOU4 105X235"
+msgstr "DMPAPER_JENV_YOU4 105X235"
+
+#: lr_const.spaper92
+msgid "DMPAPER_JENV_YOU4_ROTATED 235X105"
+msgstr "DMPAPER_JENV_YOU4_ROTATED 235X105"
+
+#: lr_const.spaper93
+msgid "DMPAPER_P16K 146X215"
+msgstr "DMPAPER_P16K 146X215"
+
+#: lr_const.spaper94
+msgid "DMPAPER_P32K 97X151"
+msgstr "DMPAPER_P32K 97X151"
+
+#: lr_const.spaper95
+msgid "DMPAPER_P32KBIG 97X151"
+msgstr "DMPAPER_P32KBIG 97X151"
+
+#: lr_const.spaper96
+msgid "DMPAPER_PENV_1 102X165"
+msgstr "DMPAPER_PENV_1 102X165"
+
+#: lr_const.spaper97
+msgid "DMPAPER_PENV_2 102X176"
+msgstr "DMPAPER_PENV_2 102X176"
+
+#: lr_const.spaper98
+msgid "DMPAPER_PENV_3 125X176"
+msgstr "DMPAPER_PENV_3 125X176"
+
+#: lr_const.spaper99
+msgid "DMPAPER_PENV_4 110X208"
+msgstr "DMPAPER_PENV_4 110X208"
+
+#: lr_const.spg
+msgid "Page"
+msgstr "Halaman"
+
+#: lr_const.spgoptformbottom
+msgid "&Bottom, mm"
+msgstr "&Bawah, mm"
+
+#: lr_const.spgoptformbycolumns
+msgid "By Colum&ns"
+msgstr ""
+
+#: lr_const.spgoptformbyrows
+msgid "By Row&s"
+msgstr ""
+
+#: lr_const.spgoptformcapt
+msgctxt "lr_const.spgoptformcapt"
+msgid "Page options"
+msgstr "Opsi halaman"
+
+#: lr_const.spgoptformcolgap
+msgid "&Column gap, mm"
+msgstr "&Jarak kolom, mm"
+
+#: lr_const.spgoptformcolumn
+msgid "Columns"
+msgstr "Kolom"
+
+#: lr_const.spgoptformdontuse
+msgid "&Don't use"
+msgstr "Jan&gan pakai"
+
+#: lr_const.spgoptformheight
+msgid "&Height, mm"
+msgstr "&Tinggi, mm"
+
+#: lr_const.spgoptformland
+msgid "&Landscape"
+msgstr "Membentan&g"
+
+#: lr_const.spgoptformlayoutorder
+msgid "Layout Order"
+msgstr ""
+
+#: lr_const.spgoptformleft
+msgid "&Left, mm"
+msgstr "&Kiri, mm"
+
+#: lr_const.spgoptformmargins
+msgid "Margins"
+msgstr "Marjin"
+
+#: lr_const.spgoptformnumber
+msgid "&Number"
+msgstr "&Angka"
+
+#: lr_const.spgoptformoptions
+msgctxt "lr_const.spgoptformoptions"
+msgid "Options"
+msgstr "Opsi"
+
+#: lr_const.spgoptformor
+msgid "Orientation"
+msgstr "Orientasi"
+
+#: lr_const.spgoptformpaper
+msgid "Paper"
+msgstr "Kertas"
+
+#: lr_const.spgoptformpgmargins
+msgid "Page margins"
+msgstr "Marjin halaman"
+
+#: lr_const.spgoptformport
+msgid "&Portrait"
+msgstr "&Potret"
+
+#: lr_const.spgoptformprint
+msgid "&Print to previous page"
+msgstr "&Cetak ke halaman sebelumnya"
+
+#: lr_const.spgoptformright
+msgid "&Right, mm"
+msgstr "Ka&nan, mm"
+
+#: lr_const.spgoptformsize
+msgid "Size"
+msgstr "Ukuran"
+
+#: lr_const.spgoptformtop
+msgid "&Top, mm"
+msgstr "&Atas, mm"
+
+#: lr_const.spgoptformwidth
+msgid "&Width, mm"
+msgstr "&Panjang, mm"
+
+#: lr_const.spictfile
+msgid "Picture file"
+msgstr "File gambar"
+
+#: lr_const.spicture
+msgid "[Picture]"
+msgstr "[Gambar]"
+
+#: lr_const.spicturecenter
+msgid "Center picture"
+msgstr "Tengahkan gambar"
+
+#: lr_const.spixels
+msgid "Pixels"
+msgstr "Pixel"
+
+#: lr_const.spreview
+msgid "Preview"
+msgstr "Tinjau"
+
+#: lr_const.spreviewform2pg
+msgid "&Two pages"
+msgstr "&Dua halaman"
+
+#: lr_const.spreviewformadd
+msgctxt "lr_const.spreviewformadd"
+msgid "Add page"
+msgstr "Tambah halaman"
+
+#: lr_const.spreviewformclose
+msgid "Close preview"
+msgstr "Tutup tinjauan"
+
+#: lr_const.spreviewformdel
+msgid "Delete page"
+msgstr "Hapus halaman"
+
+#: lr_const.spreviewformedit
+msgid "Edit page"
+msgstr "Edit halaman"
+
+#: lr_const.spreviewformfind
+msgctxt "lr_const.spreviewformfind"
+msgid "Find text"
+msgstr "Cari teks"
+
+#: lr_const.spreviewformhelp
+msgid "Show help"
+msgstr "Tampilkan bantuan"
+
+#: lr_const.spreviewformopen
+msgctxt "lr_const.spreviewformopen"
+msgid "Open report"
+msgstr "Buka laporan"
+
+#: lr_const.spreviewformprint
+msgid "Print report"
+msgstr "Cetek laporan"
+
+#: lr_const.spreviewformpw
+msgid "&Page width"
+msgstr "&Panjang halaman"
+
+#: lr_const.spreviewformsave
+msgctxt "lr_const.spreviewformsave"
+msgid "Save report"
+msgstr "Simpan laporan"
+
+#: lr_const.spreviewformscale
+msgid "Scale"
+msgstr "Skala"
+
+#: lr_const.spreviewformwhole
+msgid "&Whole page"
+msgstr "&Seluruh halaman"
+
+#: lr_const.sprintchildifnotvisible
+msgid "Print child if not visible"
+msgstr ""
+
+#: lr_const.sprintererror
+#, fuzzy
+#| msgid "Printer selected is not valid"
+msgid "Selected printer is not valid"
+msgstr "Printer yang dipilih tidak benar"
+
+#: lr_const.sprintformall
+msgid "&All"
+msgstr "Semu&a"
+
+#: lr_const.sprintformcollate
+msgid "Collate"
+msgstr ""
+
+#: lr_const.sprintformcopy
+msgid "&Copies:"
+msgstr "&Duplikat:"
+
+#: lr_const.sprintformcurpg
+msgctxt "lr_const.sprintformcurpg"
+msgid "Current &page"
+msgstr "&Halaman saat ini"
+
+#: lr_const.sprintforminfo
+msgid "Enter page numbers and/or page ranges, separated by commas. For example, 1,3,5-12"
+msgstr "Masukan nomor halaman dan/atau jangkauan halaman, dipisahkan dengan koma. Contohnya, 1,3,5-12"
+
+#: lr_const.sprintformnumber
+msgid "&Numbers:"
+msgstr "&Angka"
+
+#: lr_const.sprintformpgrange
+msgid "Page range"
+msgstr "Jangkauan halaman"
+
+#: lr_const.sprintformprint
+msgid "Print"
+msgstr "Cetak"
+
+#: lr_const.sprintformprinter
+msgctxt "lr_const.sprintformprinter"
+msgid "Printer"
+msgstr "Printer"
+
+#: lr_const.sprintformprop
+msgid "Properties"
+msgstr "Properti"
+
+#: lr_const.sprintifsubsetempty
+msgid "Print if detail empty"
+msgstr "Cetak jika detail kosong"
+
+#: lr_const.sremovepg
+msgid "Remove this page?"
+msgstr "Hapus halaman ini?"
+
+#: lr_const.srepeatheader
+msgid "Show on all pages"
+msgstr "Tampilkan pada semua halaman"
+
+#: lr_const.srepfile
+msgid "Report file"
+msgstr "File laporan"
+
+#: lr_const.sreportcreatedate
+msgid "Report creation date"
+msgstr ""
+
+#: lr_const.sreportlastmodifydate
+msgid "Report last modification date"
+msgstr ""
+
+#: lr_const.sreportloadingerror
+msgid "Error while loading report"
+msgstr ""
+
+#: lr_const.sreportpreparing
+#, fuzzy
+#| msgid "Report preparing"
+msgid "Preparing report"
+msgstr "Menyiapkan laporan"
+
+#: lr_const.sroundrectformbegincolor
+msgid "Begin color"
+msgstr "Warna awal"
+
+#: lr_const.sroundrectformcaption
+msgid "Property editor"
+msgstr "Editor properti"
+
+#: lr_const.sroundrectformcolor
+msgid "Color"
+msgstr "Warna"
+
+#: lr_const.sroundrectformcurve
+msgid "Curve"
+msgstr "Kurva"
+
+#: lr_const.sroundrectformdata
+msgid "Data .."
+msgstr "Data .."
+
+#: lr_const.sroundrectformendcolor
+msgid "End Color"
+msgstr "Warna Akhir"
+
+#: lr_const.sroundrectformframed
+msgid "Framed zone"
+msgstr "Zona bingkai"
+
+#: lr_const.sroundrectformgradient
+msgid "Gradient"
+msgstr ""
+
+#: lr_const.sroundrectformhint
+#, fuzzy
+#| msgid "Click here to define the shadow color or gradian colors"
+msgid "Click here to define the shadow color or gradient colors"
+msgstr "Klik di sini untuk mendefinisikan warna bayangan atau warna gradien"
+
+#: lr_const.sroundrectformsample
+msgid "Sample :"
+msgstr "Contoh:"
+
+#: lr_const.sroundrectformshadow
+msgid "Shadow width"
+msgstr "Panjang bayangan"
+
+#: lr_const.sroundrectformstyle
+msgid "Style"
+msgstr "Gaya"
+
+#: lr_const.sroundrectformstyledif
+msgid "Vertical,Horizontal,Elliptic,Rectangle,Horiz._Center,Vert._Center"
+msgstr "Vertical,Horizontal,Elliptic,Rectangle,Horiz._Center,Vert._Center"
+
+#: lr_const.sroundrectformvar
+msgid "Variables ..."
+msgstr "Variabel ..."
+
+#: lr_const.sroundrectsqrcorners
+msgid "Squared corners"
+msgstr ""
+
+#: lr_const.srtffile
+msgid "Rich Text file"
+msgstr "File Rich Text"
+
+#: lr_const.ssavechanges
+msgid "Save changes"
+msgstr "Simpan perubahan"
+
+#: lr_const.sscripteditor
+msgid "Script editor"
+msgstr ""
+
+#: lr_const.sshape1
+msgctxt "lr_const.sshape1"
+msgid "Rectangle"
+msgstr "Kotak"
+
+#: lr_const.sshape2
+msgid "Rounded rectangle"
+msgstr "Kotak bulat"
+
+#: lr_const.sshape3
+msgid "Ellipse"
+msgstr "Elips"
+
+#: lr_const.sshape4
+msgid "Triangle"
+msgstr "Segi tiga"
+
+#: lr_const.sshape5
+msgid "Diagonal1"
+msgstr "Diagonal1"
+
+#: lr_const.sshape6
+msgid "Diagonal2"
+msgstr "Diagonal2"
+
+#: lr_const.sshapeformcaption
+msgid "Shape"
+msgstr "Bentuk"
+
+#: lr_const.sshapeformkind
+msgid "Shape kind"
+msgstr "Jenis bentuk"
+
+#: lr_const.sspecval
+msgctxt "lr_const.sspecval"
+msgid "Other"
+msgstr "Lain-lain"
+
+#: lr_const.sstretched
+msgid "Stretched"
+msgstr "Direntangkan"
+
+#: lr_const.sstringcategory
+msgid "String"
+msgstr "String"
+
+#: lr_const.ssubreportonpage
+msgid "SubReport on page"
+msgstr "SubLaporan pada halaman"
+
+#: lr_const.stemplemptydesc
+msgid "New report based on empty template"
+msgstr ""
+
+#: lr_const.stemplemtpyrp
+msgid "Empty template"
+msgstr ""
+
+#: lr_const.stemplfile
+msgid "FastReport template"
+msgstr "Template FastReport"
+
+#: lr_const.stemplformdesc
+msgid "Description"
+msgstr "Deskripsi"
+
+#: lr_const.stemplformnewrp
+msgctxt "lr_const.stemplformnewrp"
+msgid "New report"
+msgstr "Laporan baru"
+
+#: lr_const.stextfile
+msgid "ASCII Text file"
+msgstr "File Teks ASCII"
+
+#: lr_const.stimeformat1
+msgid "hh:nn:ss"
+msgstr ""
+
+#: lr_const.stimeformat2
+msgid "h:nn:ss"
+msgstr ""
+
+#: lr_const.stimeformat3
+msgid "hh:nn"
+msgstr ""
+
+#: lr_const.stimeformat4
+msgid "h:nn"
+msgstr ""
+
+#: lr_const.sto
+msgid "to"
+msgstr "ke"
+
+#: lr_const.stransparent
+msgid "Transparent"
+msgstr "Transparan"
+
+#: lr_const.sunabletoreadversion
+msgid "Unable to read report version"
+msgstr ""
+
+#: lr_const.suntitled
+msgid "Untitled"
+msgstr "Tidak berjudul"
+
+#: lr_const.susefixedfontsettings
+msgid "Use fixed font settings"
+msgstr ""
+
+#: lr_const.susememofontsettings
+msgid "Use Memo font settings"
+msgstr ""
+
+#: lr_const.susesyntaxhighlight
+msgid "Use syntax highlight"
+msgstr ""
+
+#: lr_const.svar1
+msgid "Page#"
+msgstr "Halaman#"
+
+#: lr_const.svar2
+msgid "Expression"
+msgstr "Ekspresi"
+
+#: lr_const.svar3
+msgctxt "lr_const.svar3"
+msgid "Date"
+msgstr "Tanggal"
+
+#: lr_const.svar4
+msgctxt "lr_const.svar4"
+msgid "Time"
+msgstr "Jam"
+
+#: lr_const.svar5
+msgid "Line#"
+msgstr "Baris#"
+
+#: lr_const.svar6
+msgid "Line through#"
+msgstr "Garis tercoret#"
+
+#: lr_const.svar7
+msgid "Column#"
+msgstr "Kolom#"
+
+#: lr_const.svar8
+msgid "Current line#"
+msgstr "Baris saat ini#"
+
+#: lr_const.svar9
+msgid "TotalPages"
+msgstr "TotalHalaman"
+
+#: lr_const.svaredformcapt
+msgid "Variables list"
+msgstr "Daftar variabel"
+
+#: lr_const.svaredformcat
+msgid "&Categories and variables"
+msgstr "&Kategori dan variabel"
+
+#: lr_const.svarformat
+#, fuzzy
+#| msgid "Variable format..."
+msgid "Variable format ..."
+msgstr "Format variabel..."
+
+#: lr_const.svarformcapt
+msgid "Variables"
+msgstr "Variabel"
+
+#: lr_const.svarformcat
+msgid "&Category:"
+msgstr "&Kategori:"
+
+#: lr_const.svariable
+msgid "Variable"
+msgstr ""
+
+#: lr_const.svbandeditorformbnd
+msgid "Bands"
+msgstr "Band:"
+
+#: lr_const.svbandeditorformcapt
+msgid "Band data sources"
+msgstr "Sumber data band"
+
+#: lr_const.svbandeditorformdatasource
+msgctxt "lr_const.svbandeditorformdatasource"
+msgid "Data source"
+msgstr "Sumber data"
+
+#: lr_const.svbandeditorformrecordcount
+msgctxt "lr_const.svbandeditorformrecordcount"
+msgid "&Record count"
+msgstr "Jumlah &rekaman"
+
+#: lr_const.svirtualdataset
+msgid "Virtual Dataset"
+msgstr "Virtual Dataset"
+
+#: lr_const.swordbreak
+msgid "Word break"
+msgstr "Pisah kata"
+
+#: lr_const.swordwrap
+msgid "Word wrap"
+msgstr "Gulung kata"
+
+#: lr_const.syes
+msgid "Yes"
+msgstr "Ya"
+

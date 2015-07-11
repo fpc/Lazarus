@@ -1,0 +1,203 @@
+object AddToProjectDialog: TAddToProjectDialog
+  Left = 323
+  Height = 339
+  Top = 250
+  Width = 598
+  ActiveControl = Notebook
+  BorderStyle = bsSizeToolWin
+  Caption = 'AddToProjectDialog'
+  ClientHeight = 339
+  ClientWidth = 598
+  OnClose = AddToProjectDialogClose
+  Position = poScreenCenter
+  LCLVersion = '1.3'
+  object Notebook: TPageControl
+    Left = 0
+    Height = 297
+    Top = 0
+    Width = 598
+    ActivePage = AddEditorFilePage
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 0
+    OnChange = NotebookChange
+    object AddEditorFilePage: TTabSheet
+      Caption = 'AddEditorFilePage'
+      ClientHeight = 264
+      ClientWidth = 590
+      object AddFileLabel: TLabel
+        Left = 6
+        Height = 20
+        Top = 6
+        Width = 578
+        Align = alTop
+        BorderSpacing.Around = 6
+        Caption = 'AddFileLabel'
+        ParentColor = False
+      end
+      object AddFileListView: TListView
+        Left = 6
+        Height = 224
+        Top = 32
+        Width = 578
+        Align = alTop
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        AutoWidthLastColumn = True
+        BorderSpacing.Around = 6
+        Columns = <>
+        MultiSelect = True
+        ReadOnly = True
+        RowSelect = True
+        SortType = stText
+        TabOrder = 0
+        ViewStyle = vsReport
+        OnSelectItem = AddFileListViewSelectItem
+      end
+    end
+    object NewDependPage: TTabSheet
+      Caption = 'NewDependPage'
+      ClientHeight = 256
+      ClientWidth = 594
+      object DependPkgNameLabel: TLabel
+        Left = 8
+        Height = 17
+        Top = 19
+        Width = 146
+        Caption = 'DependPkgNameLabel'
+        ParentColor = False
+      end
+      object DependMinVersionLabel: TLabel
+        Left = 8
+        Height = 17
+        Top = 47
+        Width = 153
+        Caption = 'DependMinVersionLabel'
+        ParentColor = False
+      end
+      object DependMaxVersionLabel: TLabel
+        Left = 8
+        Height = 17
+        Top = 76
+        Width = 157
+        Caption = 'DependMaxVersionLabel'
+        ParentColor = False
+      end
+      object DependPkgNameComboBox: TComboBox
+        Left = 218
+        Height = 28
+        Top = 14
+        Width = 370
+        Anchors = [akTop, akLeft, akRight]
+        AutoComplete = True
+        AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
+        ItemHeight = 20
+        OnChange = DependPkgNameComboBoxChange
+        TabOrder = 0
+        Text = 'DependPkgNameComboBox'
+      end
+      object DependMinVersionEdit: TEdit
+        Left = 218
+        Height = 25
+        Top = 44
+        Width = 370
+        Anchors = [akTop, akLeft, akRight]
+        TabOrder = 1
+        Text = 'DependMinVersionEdit'
+      end
+      object DependMaxVersionEdit: TEdit
+        Left = 218
+        Height = 25
+        Top = 73
+        Width = 370
+        Anchors = [akTop, akLeft, akRight]
+        TabOrder = 2
+        Text = 'DependMaxVersionEdit'
+      end
+    end
+    object AddFilesPage: TTabSheet
+      Caption = 'AddFilesPage'
+      ClientHeight = 264
+      ClientWidth = 590
+      object FilesListView: TListView
+        AnchorSideBottom.Control = FilesDirButton
+        Left = 6
+        Height = 216
+        Top = 6
+        Width = 578
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        AutoWidthLastColumn = True
+        BorderSpacing.Around = 6
+        Columns = <>
+        MultiSelect = True
+        ReadOnly = True
+        RowSelect = True
+        SortType = stText
+        TabOrder = 0
+        ViewStyle = vsReport
+        OnSelectItem = FilesListViewSelectItem
+      end
+      object FilesDirButton: TBitBtn
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideBottom.Control = AddFilesPage
+        AnchorSideBottom.Side = asrBottom
+        Left = 6
+        Height = 30
+        Top = 228
+        Width = 119
+        Anchors = [akLeft, akBottom]
+        AutoSize = True
+        BorderSpacing.Around = 6
+        Caption = 'FilesDirButton'
+        OnClick = FilesDirButtonClick
+        TabOrder = 1
+      end
+      object FilesShortenButton: TBitBtn
+        AnchorSideLeft.Control = FilesDirButton
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = FilesDirButton
+        AnchorSideTop.Side = asrCenter
+        Left = 131
+        Height = 30
+        Top = 228
+        Width = 150
+        AutoSize = True
+        BorderSpacing.Around = 6
+        Caption = 'FilesShortenButton'
+        OnClick = FilesShortenButtonClick
+        TabOrder = 2
+      end
+      object FilesDeleteButton: TBitBtn
+        AnchorSideLeft.Control = FilesShortenButton
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = FilesShortenButton
+        AnchorSideTop.Side = asrCenter
+        Left = 287
+        Height = 30
+        Top = 228
+        Width = 143
+        AutoSize = True
+        BorderSpacing.Around = 6
+        Caption = 'FilesDeleteButton'
+        OnClick = FilesDeleteButtonClick
+        TabOrder = 3
+      end
+    end
+  end
+  object ButtonPanel: TButtonPanel
+    Left = 6
+    Height = 30
+    Top = 303
+    Width = 586
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
+  end
+end

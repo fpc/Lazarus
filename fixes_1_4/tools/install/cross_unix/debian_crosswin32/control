@@ -1,0 +1,14 @@
+Package: fpc-crosswin32
+Version: FPCVERSION
+Section: devel
+Priority: optional
+Maintainer: Mattias Gaertner <mattias@cvs.freepascal.org>
+Architecture: i386
+Depends: fpc (>=FPCVERSION) | fp-compiler (>=FPCVERSION), fpc (>=FPCVERSION) | fp-ide (>=FPCVERSION), fpc (>=FPCVERSION) | fp-units-base (>=FPCVERSION), fpc (>=FPCVERSION) | fp-units-db (>=FPCVERSION), fpc (>=FPCVERSION) | fp-units-fcl (>=FPCVERSION), fpc (>=FPCVERSION) | fp-units-fv (>=FPCVERSION), fpc (>=FPCVERSION) | fp-units-gfx (>=FPCVERSION), fpc (>=FPCVERSION) | fp-units-gnome1 (>=FPCVERSION), fpc (>=FPCVERSION) | fp-units-gtk (>=FPCVERSION), fpc (>=FPCVERSION) | fp-units-gtk2 (>=FPCVERSION), fpc (>=FPCVERSION) | fp-units-misc (>=FPCVERSION), fpc (>=FPCVERSION) | fp-units-net (>=FPCVERSION), fpc (>=FPCVERSION) | fp-units-rtl (>=FPCVERSION), fpc (>=FPCVERSION) | fp-utils (>=FPCVERSION)
+Pre-Depends: binutils, libc6-dev
+Description: Free Pascal units cross compiled to win32 for linux
+  Units and binutils needed by Freepascal to cross compile to target win32.
+  This deb was built from sources built by the scripts of the lazarus project.
+  See http://www.lazarus.freepascal.org.
+  Download the lazarus sources and see <lazarusdir>/tools/install/cross_unix/
+

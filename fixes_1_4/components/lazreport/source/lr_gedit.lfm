@@ -1,0 +1,98 @@
+object frGEditorForm: TfrGEditorForm
+  Left = 555
+  Height = 267
+  Top = 129
+  Width = 346
+  HorzScrollBar.Page = 345
+  VertScrollBar.Page = 266
+  ActiveControl = Button3
+  BorderStyle = bsDialog
+  Caption = 'Picture'
+  ClientHeight = 267
+  ClientWidth = 346
+  Font.Color = clBlack
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object Bevel1: TBevel
+    Left = 4
+    Height = 241
+    Top = 8
+    Width = 246
+    Shape = bsFrame
+  end
+  object Image1: TImage
+    Left = 8
+    Height = 233
+    Top = 12
+    Width = 237
+    Stretch = True
+  end
+  object CB1: TCheckBox
+    Left = 256
+    Height = 17
+    Top = 232
+    Width = 53
+    HelpContext = 82
+    Caption = '&Stretch'
+    Checked = True
+    OnClick = CB1Click
+    State = cbChecked
+    TabOrder = 3
+  end
+  object Button1: TButton
+    Left = 256
+    Height = 25
+    Top = 96
+    Width = 75
+    HelpContext = 40
+    Caption = 'Ok'
+    Default = True
+    ModalResult = 1
+    TabOrder = 1
+  end
+  object Button2: TButton
+    Left = 256
+    Height = 25
+    Top = 124
+    Width = 75
+    HelpContext = 50
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 2
+  end
+  object Button3: TButton
+    Left = 256
+    Height = 25
+    Top = 8
+    Width = 75
+    HelpContext = 63
+    Caption = '&Load...'
+    OnClick = BitBtn1Click
+    TabOrder = 0
+  end
+  object Button4: TButton
+    Left = 256
+    Height = 25
+    Top = 36
+    Width = 75
+    HelpContext = 71
+    Caption = '&Clear'
+    OnClick = Button4Click
+    TabOrder = 4
+  end
+  object Button5: TButton
+    Left = 256
+    Height = 25
+    Top = 64
+    Width = 75
+    Caption = 'Memo'
+    OnClick = Button5Click
+    TabOrder = 5
+  end
+  object OpenDlg: TOpenPictureDialog
+    left = 120
+    top = 40
+  end
+end

@@ -1,0 +1,463 @@
+object InitialSetupDialog: TInitialSetupDialog
+  AnchorSideBottom.Side = asrBottom
+  Left = 319
+  Height = 385
+  Top = 238
+  Width = 620
+  Caption = 'InitialSetupDialog'
+  ClientHeight = 385
+  ClientWidth = 620
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object PropertiesTreeView: TTreeView
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = WelcomePaintBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Splitter1
+    AnchorSideBottom.Control = BtnPanel
+    Left = 6
+    Height = 285
+    Top = 54
+    Width = 159
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    DefaultItemHeight = 18
+    Images = ImageList1
+    ReadOnly = True
+    ScrollBars = ssNone
+    ShowButtons = False
+    ShowLines = False
+    ShowRoot = False
+    TabOrder = 0
+    OnSelectionChanged = PropertiesTreeViewSelectionChanged
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoToolTips, tvoThemedDraw]
+  end
+  object Splitter1: TSplitter
+    AnchorSideTop.Control = PropertiesTreeView
+    AnchorSideBottom.Control = PropertiesTreeView
+    AnchorSideBottom.Side = asrBottom
+    Left = 165
+    Height = 285
+    Top = 54
+    Width = 5
+    Align = alNone
+    Anchors = [akTop, akLeft, akBottom]
+  end
+  object BtnPanel: TPanel
+    Left = 10
+    Height = 26
+    Top = 349
+    Width = 600
+    Align = alBottom
+    AutoSize = True
+    BorderSpacing.Around = 10
+    BevelOuter = bvNone
+    ClientHeight = 26
+    ClientWidth = 600
+    TabOrder = 2
+    object StartIDEBitBtn: TBitBtn
+      Left = 498
+      Height = 26
+      Top = 0
+      Width = 102
+      Align = alRight
+      AutoSize = True
+      Caption = 'StartIDEBitBtn'
+      Constraints.MinWidth = 100
+      OnClick = StartIDEBitBtnClick
+      TabOrder = 0
+    end
+  end
+  object PropertiesPageControl: TPageControl
+    AnchorSideLeft.Control = Splitter1
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Splitter1
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Splitter1
+    AnchorSideBottom.Side = asrBottom
+    Left = 170
+    Height = 285
+    Top = 54
+    Width = 444
+    ActivePage = FPCSourcesTabSheet
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Right = 6
+    TabIndex = 2
+    TabOrder = 3
+    OnChange = PropertiesPageControlChange
+    Options = [nboHidePageListPopup]
+    object LazarusTabSheet: TTabSheet
+      Caption = 'LazarusTabSheet'
+      ChildSizing.LeftRightSpacing = 6
+      ChildSizing.TopBottomSpacing = 6
+      ChildSizing.HorizontalSpacing = 6
+      ChildSizing.VerticalSpacing = 6
+      ClientHeight = 251
+      ClientWidth = 440
+      object LazDirLabel: TLabel
+        Left = 6
+        Height = 17
+        Top = 6
+        Width = 428
+        Align = alTop
+        Caption = 'LazDirLabel'
+        ParentColor = False
+        WordWrap = True
+      end
+      object LazDirComboBox: TComboBox
+        AnchorSideLeft.Control = LazarusTabSheet
+        AnchorSideTop.Control = LazDirLabel
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = LazarusTabSheet
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 21
+        Top = 29
+        Width = 428
+        Anchors = [akTop, akLeft, akRight]
+        ItemHeight = 0
+        OnChange = LazDirComboBoxChange
+        TabOrder = 0
+        Text = 'LazDirComboBox'
+      end
+      object LazDirMemo: TMemo
+        AnchorSideTop.Control = LazDirBrowseButton
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 146
+        Top = 99
+        Width = 428
+        Align = alBottom
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        Lines.Strings = (
+          'LazDirMemo'
+          ''
+          ''
+          ''
+        )
+        ReadOnly = True
+        TabOrder = 1
+      end
+      object LazDirBrowseButton: TButton
+        AnchorSideLeft.Control = LazarusTabSheet
+        AnchorSideTop.Control = LazDirComboBox
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 29
+        Top = 64
+        Width = 151
+        AutoSize = True
+        Caption = 'LazDirBrowseButton'
+        OnClick = LazDirBrowseButtonClick
+        TabOrder = 2
+      end
+    end
+    object CompilerTabSheet: TTabSheet
+      Caption = 'CompilerTabSheet'
+      ChildSizing.LeftRightSpacing = 6
+      ChildSizing.TopBottomSpacing = 6
+      ChildSizing.HorizontalSpacing = 6
+      ChildSizing.VerticalSpacing = 6
+      ClientHeight = 251
+      ClientWidth = 440
+      object CompilerLabel: TLabel
+        Left = 6
+        Height = 17
+        Top = 6
+        Width = 428
+        Align = alTop
+        Caption = 'CompilerLabel'
+        ParentColor = False
+        WordWrap = True
+      end
+      object CompilerComboBox: TComboBox
+        AnchorSideLeft.Control = CompilerTabSheet
+        AnchorSideTop.Control = CompilerLabel
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = CompilerTabSheet
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 21
+        Top = 29
+        Width = 428
+        Anchors = [akTop, akLeft, akRight]
+        ItemHeight = 0
+        OnChange = CompilerComboBoxChange
+        TabOrder = 0
+        Text = 'CompilerComboBox'
+      end
+      object CompilerBrowseButton: TButton
+        AnchorSideLeft.Control = CompilerTabSheet
+        AnchorSideTop.Control = CompilerComboBox
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 29
+        Top = 64
+        Width = 170
+        AutoSize = True
+        Caption = 'CompilerBrowseButton'
+        OnClick = CompilerBrowseButtonClick
+        TabOrder = 1
+      end
+      object CompilerMemo: TMemo
+        AnchorSideLeft.Control = CompilerTabSheet
+        AnchorSideTop.Control = CompilerBrowseButton
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = CompilerTabSheet
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = CompilerTabSheet
+        AnchorSideBottom.Side = asrBottom
+        Left = 6
+        Height = 146
+        Top = 99
+        Width = 428
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        Lines.Strings = (
+          'CompilerMemo'
+          ''
+          ''
+        )
+        ReadOnly = True
+        TabOrder = 2
+      end
+    end
+    object FPCSourcesTabSheet: TTabSheet
+      Caption = 'FPCSourcesTabSheet'
+      ChildSizing.LeftRightSpacing = 6
+      ChildSizing.TopBottomSpacing = 6
+      ChildSizing.HorizontalSpacing = 6
+      ChildSizing.VerticalSpacing = 6
+      ClientHeight = 254
+      ClientWidth = 440
+      object FPCSrcDirLabel: TLabel
+        Left = 6
+        Height = 15
+        Top = 6
+        Width = 428
+        Align = alTop
+        Caption = 'FPCSrcDirLabel'
+        ParentColor = False
+        WordWrap = True
+      end
+      object FPCSrcDirComboBox: TComboBox
+        Left = 6
+        Height = 27
+        Top = 27
+        Width = 428
+        Align = alTop
+        ItemHeight = 0
+        OnChange = FPCSrcDirComboBoxChange
+        TabOrder = 0
+        Text = 'FPCSrcDirComboBox'
+      end
+      object FPCSrcDirBrowseButton: TButton
+        AnchorSideLeft.Control = FPCSourcesTabSheet
+        AnchorSideTop.Control = FPCSrcDirComboBox
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 25
+        Top = 60
+        Width = 161
+        AutoSize = True
+        Caption = 'FPCSrcDirBrowseButton'
+        OnClick = FPCSrcDirBrowseButtonClick
+        TabOrder = 1
+      end
+      object FPCSrcDirMemo: TMemo
+        AnchorSideTop.Control = FPCSrcDirBrowseButton
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 157
+        Top = 91
+        Width = 428
+        Align = alBottom
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        Lines.Strings = (
+          'FPCSrcDirMemo'
+          ''
+          ''
+        )
+        ReadOnly = True
+        TabOrder = 2
+      end
+      object ScanLabel: TLabel
+        AnchorSideLeft.Control = FPCSrcDirBrowseButton
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = FPCSrcDirBrowseButton
+        AnchorSideTop.Side = asrCenter
+        Left = 179
+        Height = 15
+        Top = 65
+        Width = 58
+        BorderSpacing.Left = 12
+        Caption = 'Scanning'
+        ParentColor = False
+      end
+      object ScanProgressBar: TProgressBar
+        AnchorSideLeft.Control = ScanLabel
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = ScanLabel
+        AnchorSideTop.Side = asrCenter
+        Left = 243
+        Height = 20
+        Top = 62
+        Width = 102
+        BorderSpacing.Left = 6
+        Style = pbstMarquee
+        TabOrder = 3
+      end
+      object StopScanButton: TBitBtn
+        AnchorSideLeft.Control = ScanProgressBar
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = ScanProgressBar
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = ScanProgressBar
+        AnchorSideRight.Side = asrBottom
+        Left = 351
+        Height = 25
+        Top = 60
+        Width = 78
+        Caption = 'Stop'
+        OnClick = StopScanButtonClick
+        TabOrder = 4
+      end
+    end
+    object MakeExeTabSheet: TTabSheet
+      Caption = 'MakeExeTabSheet'
+      ClientHeight = 254
+      ClientWidth = 440
+      object MakeExeComboBox: TComboBox
+        Left = 6
+        Height = 27
+        Top = 27
+        Width = 428
+        Align = alTop
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        OnChange = MakeExeComboBoxChange
+        TabOrder = 0
+        Text = 'MakeExeComboBox'
+      end
+      object MakeExeLabel: TLabel
+        Left = 6
+        Height = 15
+        Top = 6
+        Width = 428
+        Align = alTop
+        BorderSpacing.Around = 6
+        Caption = 'MakeExeLabel'
+        ParentColor = False
+        WordWrap = True
+      end
+      object MakeExeBrowseButton: TButton
+        AnchorSideLeft.Control = MakeExeTabSheet
+        AnchorSideTop.Control = MakeExeComboBox
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 25
+        Top = 60
+        Width = 156
+        AutoSize = True
+        BorderSpacing.Around = 6
+        Caption = 'MakeExeBrowseButton'
+        OnClick = MakeExeBrowseButtonClick
+        TabOrder = 1
+      end
+      object MakeExeMemo: TMemo
+        AnchorSideTop.Control = MakeExeBrowseButton
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 157
+        Top = 91
+        Width = 428
+        Align = alBottom
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Around = 6
+        Lines.Strings = (
+          'FPCSrcDirMemo'
+          ''
+          ''
+        )
+        ReadOnly = True
+        TabOrder = 2
+      end
+    end
+    object DebuggerTabSheet: TTabSheet
+      Caption = 'DebuggerTabSheet'
+      ClientHeight = 251
+      ClientWidth = 440
+      object DebuggerComboBox: TComboBox
+        Left = 6
+        Height = 21
+        Top = 29
+        Width = 428
+        Align = alTop
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        OnChange = DebuggerComboBoxChange
+        TabOrder = 0
+        Text = 'DebuggerComboBox'
+      end
+      object DebuggerLabel: TLabel
+        Left = 6
+        Height = 17
+        Top = 6
+        Width = 428
+        Align = alTop
+        BorderSpacing.Around = 6
+        Caption = 'DebuggerLabel'
+        ParentColor = False
+        WordWrap = True
+      end
+      object DebuggerBrowseButton: TButton
+        AnchorSideLeft.Control = DebuggerTabSheet
+        AnchorSideTop.Control = DebuggerComboBox
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 29
+        Top = 64
+        Width = 173
+        AutoSize = True
+        BorderSpacing.Around = 6
+        Caption = 'DebuggerBrowseButton'
+        OnClick = DebuggerBrowseButtonClick
+        TabOrder = 1
+      end
+      object DebuggerMemo: TMemo
+        AnchorSideTop.Control = DebuggerBrowseButton
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 146
+        Top = 99
+        Width = 428
+        Align = alBottom
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Around = 6
+        Lines.Strings = (
+          'FPCSrcDirMemo'
+          ''
+          ''
+        )
+        ReadOnly = True
+        TabOrder = 2
+      end
+    end
+  end
+  object WelcomePaintBox: TPaintBox
+    Left = 0
+    Height = 48
+    Top = 0
+    Width = 620
+    Align = alTop
+    OnPaint = WelcomePaintBoxPaint
+  end
+  object ImageList1: TImageList
+    left = 55
+    top = 145
+  end
+end

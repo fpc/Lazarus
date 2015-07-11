@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="4">
+    <Name Value="AnchorDocking"/>
+    <AddToProjectUsesSection Value="True"/>
+    <Author Value="Mattias Gaertner mattias@freepascal.org"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CompilerMessages>
+          <UseMsgFile Value="True"/>
+        </CompilerMessages>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="Docking manager for LCL aplications
+"/>
+    <License Value="modified LGPL-2 like LCL
+"/>
+    <Version Minor="6"/>
+    <Files Count="7">
+      <Item1>
+        <Filename Value="anchordockpkg.pas"/>
+        <Type Value="Main Unit"/>
+        <UnitName Value="anchordockpkg"/>
+      </Item1>
+      <Item2>
+        <Filename Value="anchordocking.pas"/>
+        <UnitName Value="AnchorDocking"/>
+      </Item2>
+      <Item3>
+        <Filename Value="anchordockstorage.pas"/>
+        <UnitName Value="AnchorDockStorage"/>
+      </Item3>
+      <Item4>
+        <Filename Value="anchordockstr.pas"/>
+        <UnitName Value="AnchorDockStr"/>
+      </Item4>
+      <Item5>
+        <Filename Value="README.txt"/>
+        <Type Value="Text"/>
+      </Item5>
+      <Item6>
+        <Filename Value="anchordockoptionsdlg.pas"/>
+        <UnitName Value="AnchorDockOptionsDlg"/>
+      </Item6>
+      <Item7>
+        <Filename Value="anchordockoptionsdlg.lfm"/>
+        <Type Value="LFM"/>
+      </Item7>
+    </Files>
+    <LazDoc Paths="doc"/>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="1">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+  <package name="lcl">
+    <!--
+  ====================================================================
+    CustomTimer
+  ====================================================================
+-->
+    <module name="CustomTimer">
+      <short>Contains definition of base class for <var>TTimer</var>
+      </short>
+      <descr/>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="SysUtils">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLStrConsts">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="InterfaceBase">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TCustomTimer">
+        <short>
+          <var>TCustomTimer</var> - base class for 
+          <var>TTimer</var>
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomTimer.FInterval">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomTimer.FOnStartTimer">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomTimer.FOnStopTimer">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomTimer.FTimerHandle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomTimer.FOnTimer">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomTimer.FEnabled">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomTimer.Timer">
+        <short>
+          <var>Timer</var> - procedure that is called when the timer has expired; calls user's 
+          <var>OnTimer </var>function.</short>
+        <descr>Is called when the timer has expired and calls users OnTimer function.</descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomTimer.SetEnabled">
+        <short>Sets the <var>Enabled</var> property to True or False</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTimer.SetEnabled.Value">
+        <short>Whether or not enabled</short>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomTimer.SetInterval">
+        <short>Sets the <var>Interval</var> property</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTimer.SetInterval.Value">
+        <short>The <var>Value</var> of the <var>Interval</var> to be set for the timer</short>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomTimer.SetOnTimer">
+        <short>Sets the <var>OnTimer</var> property</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTimer.SetOnTimer.Value">
+        <short>The <var>Value</var> of the <var>TNotifyEvent</var>
+        </short>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomTimer.DoOnTimer">
+        <short>
+          <var>DoOnTimer</var> - calls 
+          <var>OnTimer</var> event handler</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomTimer.UpdateTimer">
+        <short>Updates the Timer to refleect the current properties</short>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomTimer.KillTimer">
+        <short>
+          <var>KillTimer</var> - kills the current timer object</short>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomTimer.Loaded" link="#rtl.Classes.TComponent.Loaded"/>
+      <!-- constructor Visibility: public -->
+      <element name="TCustomTimer.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TCustomTimer</var>: calls inherited <var>Create</var>, sets up handle and initialises timer interval</short>
+        <descr/>
+        <errors/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Create"/>
+        </seealso>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTimer.Create.AOwner">
+        <short/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TCustomTimer.Destroy">
+        <short>
+          <var>Destroy</var>: destructor for <var>TCustomTimer</var>: disables and kills timer then calls inherited <var>Destroy</var>
+        </short>
+        <descr/>
+        <errors/>
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Destroy"/>
+        </seealso>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TCustomTimer.Enabled">
+        <short>
+          <var>Enabled</var> - if True, timer is ready to start</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TCustomTimer.Interval">
+        <short>The <var>Interval</var> (in milliseconds) for which the timer is to run</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TCustomTimer.OnTimer">
+        <short>
+          <var>OnTimer</var> - event handler for timer interval complete (expired)</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TCustomTimer.OnStartTimer">
+        <short>
+          <var>OnStartTimer</var> - event handler for starting the timer running</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TCustomTimer.OnStopTimer">
+        <short>
+          <var>OnStopTimer</var> - event handler for stopping the timer</short>
+        <descr/>
+        <seealso/>
+      </element>
+    </module>
+    <!-- CustomTimer -->
+  </package>
+</fpdoc-descriptions>

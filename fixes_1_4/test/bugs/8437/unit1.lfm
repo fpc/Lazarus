@@ -1,0 +1,64 @@
+object Form1: TForm1
+  Left = 290
+  Height = 300
+  Top = 175
+  Width = 400
+  Caption = 'Form1'
+  ClientHeight = 300
+  ClientWidth = 400
+  OnCreate = FormCreate
+  LCLVersion = '0.9.25'
+  object PairSplitter1: TPairSplitter
+    Left = 102
+    Height = 90
+    Top = 107
+    Width = 218
+    Position = 106
+    object PairSplitterSide1: TPairSplitterSide
+      Cursor = crArrow
+      Height = 90
+      Width = 106
+      ClientWidth = 106
+      ClientHeight = 90
+      object Button2: TButton
+        Left = 20
+        Height = 25
+        Top = 34
+        Width = 75
+        BorderSpacing.InnerBorder = 4
+        Caption = 'Button2'
+        OnClick = Button2Click
+        TabOrder = 0
+      end
+    end
+    object PairSplitterSide2: TPairSplitterSide
+      Cursor = crArrow
+      Left = 111
+      Height = 90
+      Width = 107
+      ClientWidth = 107
+      ClientHeight = 90
+      object Button3: TButton
+        Left = 27
+        Height = 25
+        Top = 39
+        Width = 75
+        BorderSpacing.InnerBorder = 4
+        Caption = 'Button3'
+        OnClick = Button3Click
+        TabOrder = 0
+      end
+    end
+  end
+  object ApplicationProperties1: TApplicationProperties
+    CaptureExceptions = True
+    HintColor = clInfoBk
+    HintHidePause = 2500
+    HintPause = 500
+    HintShortCuts = True
+    ShowHint = True
+    OnIdle = ApplicationProperties1Idle
+    left = 32
+    top = 10
+  end
+end

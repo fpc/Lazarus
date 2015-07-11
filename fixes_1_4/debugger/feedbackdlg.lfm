@@ -1,0 +1,71 @@
+object DbgFeedbackDlg: TDbgFeedbackDlg
+  Left = 480
+  Height = 212
+  Top = 140
+  Width = 605
+  AutoSize = True
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsSizeToolWin
+  Caption = 'DbgFeedbackDlg'
+  ClientHeight = 212
+  ClientWidth = 605
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 172
+    Width = 593
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    HelpButton.OnClick = HelpButtonClick
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+    ShowGlyphs = [pbOK, pbCancel]
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 166
+    Top = 0
+    Width = 605
+    Align = alClient
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 166
+    ClientWidth = 605
+    TabOrder = 1
+    object lblMsg: TLabel
+      Left = 5
+      Height = 15
+      Top = 5
+      Width = 595
+      Align = alTop
+      BorderSpacing.Around = 5
+      Caption = 'lblMsg'
+      ParentColor = False
+      WordWrap = True
+    end
+    object Memo1: TMemo
+      Left = 5
+      Height = 136
+      Top = 25
+      Width = 595
+      Align = alClient
+      BorderSpacing.Around = 5
+      Constraints.MinHeight = 100
+      Lines.Strings = (
+        'Memo1'
+      )
+      ReadOnly = True
+      TabOrder = 0
+      Visible = False
+    end
+  end
+end

@@ -1,0 +1,2 @@
+#!/bin/sh
+/usr/local/bin/ppcppc -FuUPInterfaces -FUupi -Mmacpas -Tdarwin -WC -Sg -Se3 -XX -Xs -B -v0i compile_upi.dpr

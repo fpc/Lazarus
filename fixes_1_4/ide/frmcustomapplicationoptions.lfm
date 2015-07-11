@@ -1,0 +1,116 @@
+object CustomApplicationOptionsForm: TCustomApplicationOptionsForm
+  Left = 386
+  Height = 290
+  Top = 242
+  Width = 460
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
+  Caption = 'New console application'
+  ClientHeight = 290
+  ClientWidth = 460
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object LEClassName: TLabel
+    AnchorSideTop.Control = EClassName
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = EClassName
+    Left = 127
+    Height = 14
+    Top = 9
+    Width = 108
+    Alignment = taRightJustify
+    Anchors = [akTop, akRight]
+    BorderSpacing.Right = 6
+    Caption = '&Application class name'
+    FocusControl = EClassName
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object LETitle: TLabel
+    AnchorSideTop.Control = ETitle
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = ETitle
+    Left = 213
+    Height = 14
+    Top = 42
+    Width = 21
+    Alignment = taRightJustify
+    Anchors = [akTop, akRight]
+    BorderSpacing.Right = 6
+    Caption = '&Title'
+    FocusControl = ETitle
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object EClassName: TEdit
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 241
+    Height = 21
+    Top = 6
+    Width = 213
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    OnKeyPress = EClassNameKeyPress
+    TabOrder = 0
+    Text = 'TMyApplication'
+  end
+  object CGOptions: TCheckGroup
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ETitle
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel
+    Left = 6
+    Height = 186
+    Top = 66
+    Width = 448
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoFill = True
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'Code generation options'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    TabOrder = 2
+  end
+  object ETitle: TEdit
+    AnchorSideTop.Control = EClassName
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 240
+    Height = 21
+    Top = 39
+    Width = 214
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    BorderSpacing.Around = 6
+    TabOrder = 1
+    Text = 'My Application'
+  end
+  object ButtonPanel: TButtonPanel
+    Left = 6
+    Height = 26
+    Top = 258
+    Width = 448
+    OKButton.Name = 'OKButton'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Enabled = False
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    TabOrder = 3
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
+  end
+end

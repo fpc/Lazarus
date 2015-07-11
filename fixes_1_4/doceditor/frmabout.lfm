@@ -1,0 +1,87 @@
+object AboutForm: TAboutForm
+  Left = 333
+  Height = 331
+  Top = 149
+  Width = 528
+  HorzScrollBar.Page = 528
+  VertScrollBar.Page = 298
+  ActiveControl = MCopyRight
+  BorderStyle = bsDialog
+  Caption = 'About this application'
+  ClientHeight = 331
+  ClientWidth = 528
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object LThisApplication: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 18
+    Top = 8
+    Width = 516
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    Caption = 'Lazarus Documentation Editor'
+    ParentColor = False
+  end
+  object LCopyRight1: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = LThisApplication
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 18
+    Top = 44
+    Width = 516
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 12
+    BorderSpacing.Around = 6
+    Caption = 'This application is (c) by Michael Van Canneyt and the Lazarus team'
+    ParentColor = False
+  end
+  object LCopyRight2: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = LCopyRight1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 18
+    Top = 68
+    Width = 516
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    Caption = 'It is released under the terms of the  GENERAL PUBLIC LICENSE:'
+    ParentColor = False
+  end
+  object MCopyRight: TMemo
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = LCopyRight2
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 6
+    Height = 187
+    Top = 92
+    Width = 516
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    ReadOnly = True
+    ScrollBars = ssBoth
+    TabOrder = 0
+    WordWrap = False
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 40
+    Top = 285
+    Width = 516
+    TabOrder = 1
+    ShowButtons = [pbClose, pbHelp]
+  end
+end

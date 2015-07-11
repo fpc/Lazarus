@@ -1,0 +1,67 @@
+object ReplaceForm: TReplaceForm
+  Height = 472
+  Left = 314
+  Top = 438
+  Width = 433
+  Caption = 'Properties and Types to replace'
+  ClientHeight = 472
+  ClientWidth = 433
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.31'
+  object Grid: TStringGrid
+    Left = 0
+    Height = 421
+    Top = 0
+    Width = 433
+    Align = alClient
+    AutoFillColumns = True
+    ColCount = 2
+    ColumnClickSorts = True
+    Columns = <    
+      item
+        Title.Caption = 'Delphi name'
+        Width = 214
+      end    
+      item
+        Title.Caption = 'New name'
+        Width = 215
+      end>
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goEditing, goAutoAddRows, goSmoothScroll]
+    PopupMenu = PopupMenu1
+    RowCount = 2
+    TabOrder = 0
+    ColWidths = (
+      214
+      215
+    )
+  end
+  object ButtonPanel: TButtonPanel
+    Left = 6
+    Height = 39
+    Top = 427
+    Width = 421
+    OKButton.Name = 'OKButton'
+    OKButton.OnClick = btnOKClick
+    HelpButton.Name = 'HelpButton'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object PopupMenu1: TPopupMenu
+    OnPopup = PopupMenu1Popup
+    left = 131
+    top = 91
+    object InsertRow1: TMenuItem
+      Caption = 'Insert Row'
+      OnClick = InsertRow1Click
+    end
+    object DeleteRow1: TMenuItem
+      Caption = 'Delete Row'
+      OnClick = DeleteRow1Click
+    end
+  end
+end

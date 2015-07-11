@@ -1,0 +1,41 @@
+object EncloseSelectionDialog: TEncloseSelectionDialog
+  Left = 319
+  Height = 244
+  Top = 231
+  Width = 331
+  Caption = 'Enclose Selection'
+  ClientHeight = 244
+  ClientWidth = 331
+  OnCreate = EncloseSelectionDialogCREATE
+  Position = poScreenCenter
+  LCLVersion = '0.9.27'
+  object TypeRadiogroup: TRadioGroup
+    Left = 6
+    Height = 200
+    Top = 6
+    Width = 319
+    Align = alClient
+    AutoFill = True
+    BorderSpacing.Around = 6
+    Caption = 'Type'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    TabOrder = 0
+    TabStop = True
+  end
+  object ButtonPanel: TButtonPanel
+    Left = 6
+    Height = 26
+    Top = 212
+    Width = 319
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
+  end
+end

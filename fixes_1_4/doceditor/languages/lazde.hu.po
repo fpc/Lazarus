@@ -1,0 +1,739 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
+"Language-Team: Magyar (Hungarian)\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: lazdemsg.saboutformcaption
+msgid "About this application"
+msgstr "Ezen alkalmazás névjegye"
+
+#: lazdemsg.sadd
+msgid "&Add"
+msgstr "&Hozzáadás"
+
+#: lazdemsg.saddall
+msgid "Add All"
+msgstr "Összes hozzáadása"
+
+#: lazdemsg.sadddescriptionfile
+msgid "Select a new description file"
+msgstr "Új leírásfájl választása"
+
+#: lazdemsg.sadditionalparams
+msgid "Additional parameters for fpdoc"
+msgstr "További paraméterek az fpdoc számára"
+
+#: lazdemsg.sbuild
+msgctxt "lazdemsg.sbuild"
+msgid "&Build"
+msgstr "Építés"
+
+#: lazdemsg.sbuilddocumentation
+msgid "Build documentation"
+msgstr "Dokumentáció építése"
+
+#: lazdemsg.sbuildok
+msgid "Documentation successfully built."
+msgstr "A dokumentáció építése sikerült."
+
+#: lazdemsg.sbuildoutput
+msgid "Build output"
+msgstr "Építési kimenet"
+
+#: lazdemsg.sclose
+msgctxt "lazdemsg.sclose"
+msgid "&Close"
+msgstr "Be&zárás"
+
+#: lazdemsg.scodeexample
+msgid "Example code File"
+msgstr "Példakód-fájl"
+
+#: lazdemsg.scopyright1
+msgid "This application is (c) by  Michael Van Canneyt and the Lazarus team"
+msgstr "Ez az alkalmazás szerzői jogvédelem alatt áll: (c) Michael Van Canneyt és a Lazarus csapat"
+
+#: lazdemsg.scopyright2
+msgid "It is released under the terms of the  GENERAL PUBLIC LICENSE:"
+msgstr "Kiadva a GENERAL PUBLIC LICENSE hatálya alatt:"
+
+#: lazdemsg.scpu
+msgid "CPU"
+msgstr "CPU"
+
+#: lazdemsg.screatecontentfile
+msgid "Create cont&ent file"
+msgstr "Tartalomfájl létrehozása"
+
+#: lazdemsg.sdataforelement
+msgid "Documentation for element \"%s\":"
+msgstr "A(z) \"%s\" elem dokumentációja:"
+
+#: lazdemsg.sdelete
+msgid "&Delete"
+msgstr "&Törlés"
+
+#: lazdemsg.sdeletemodule
+msgid "Are you sure you want to delete module \"%s\" ?"
+msgstr "Biztosan törölhető a következő modul: \"%s\"?"
+
+#: lazdemsg.sdeletepackage
+msgid "Are you sure you want to delete package \"%s\" ?"
+msgstr "Biztosan törölhető a következő csomag: \"%s\"?"
+
+#: lazdemsg.sdeletetopic
+msgid "Are you sure you want to delete topic \"%s\" ?"
+msgstr "Biztosan törölhető a következő téma: \"%s\"?"
+
+#: lazdemsg.sdescription
+msgid "Description"
+msgstr "Leírás"
+
+#: lazdemsg.sedit
+msgid "&Edit"
+msgstr "S&zerkesztés"
+
+#: lazdemsg.seditdescriptionfile
+msgid "Change description file"
+msgstr "A leírásfájl megváltoztatása"
+
+#: lazdemsg.serrfpdoc
+msgid "Building failed with exit code %d. Please check log."
+msgstr "Az építés sikertelen volt a következő kilépési kóddal: %d. Ellenőrizze a naplót!"
+
+#: lazdemsg.serrnomoduleforelement
+msgid "No module found to insert element \"%s\""
+msgstr "Nincs modul a(z) \"%s\" elem beszúrásához"
+
+#: lazdemsg.serrnonodeformodule
+msgid "No node found for module \"%s\""
+msgstr "Nincs csomópont a(z) \"%s\" modul számára"
+
+#: lazdemsg.serrnonodeforpackage
+msgid "No node found for package \"%s\""
+msgstr "Nincs csomópont a(z) \"%s\" csomag számára"
+
+#: lazdemsg.serrnonodefortopic
+msgid "No parent node found to insert topic \"%s\""
+msgstr "Nincs szülő csomópont a(z) \"%s\" téma beszúrásához"
+
+#: lazdemsg.serrnopackageformodule
+msgid "No package found to insert module \"%s\""
+msgstr "Nincs csomag a(z) \"%s\" modul beszúrásához"
+
+#: lazdemsg.serrors
+msgid "Errors"
+msgstr "Hibák"
+
+#: lazdemsg.serrunknowndomelement
+msgid "Unknwon DOM element as parent for selected element: \"%s\""
+msgstr "A kijelölt elem szülője ismeretlen DOM elem: \"%s\""
+
+#: lazdemsg.sfilemodified
+msgid "Document \"%s\" was modified, would you like to save it?"
+msgstr "A(z) \"%s\" dokumentum megváltozott. Szeretné menteni?"
+
+#: lazdemsg.sfilestructure
+msgid "Documentation structure"
+msgstr "Dokumentáció szerkezet"
+
+#: lazdemsg.sfiletemplate
+msgid "template.xml"
+msgstr "template.xml"
+
+#: lazdemsg.sforfile
+msgid " in file "
+msgstr " a fájlban "
+
+#: lazdemsg.sformat
+msgid "&Format"
+msgstr "&Formátum"
+
+#: lazdemsg.sformodule
+msgid " in module "
+msgstr " a modulban "
+
+#: lazdemsg.sforpackage
+msgid " in package "
+msgstr " a csomagban "
+
+#: lazdemsg.sfortopic
+msgid " in topic "
+msgstr " a témában: "
+
+#: lazdemsg.shideprotectedmethods
+msgid "&Hide protected methods"
+msgstr "Védett (protected) metódusok elrejtése"
+
+#: lazdemsg.shinteditelementlink
+msgid "Edit element link"
+msgstr "Elem hivatkozás szerkesztése"
+
+#: lazdemsg.shintfileclose
+msgid "Close current file"
+msgstr "Az aktuális fájl bezárása"
+
+#: lazdemsg.shintfileexit
+msgid "Close doc editor"
+msgstr "Dokumentációszerkesztő bezárása"
+
+#: lazdemsg.shintfilenew
+msgctxt "lazdemsg.shintfilenew"
+msgid "New file"
+msgstr "Új fájl"
+
+#: lazdemsg.shintfileopen
+msgid "Open file"
+msgstr "Fájl megnyitása"
+
+#: lazdemsg.shintfilesave
+msgid "Save file"
+msgstr "Fájl mentése"
+
+#: lazdemsg.shintfilesaveas
+msgid "Save file as"
+msgstr "Fájl mentése másként"
+
+#: lazdemsg.shintformatbold
+msgid "Bold"
+msgstr "Félkövér"
+
+#: lazdemsg.shintformatcode
+msgid "Code"
+msgstr "Kód"
+
+#: lazdemsg.shintformatfile
+msgid "File"
+msgstr "Fájl"
+
+#: lazdemsg.shintformatitalics
+msgid "Italic"
+msgstr "Dőlt"
+
+#: lazdemsg.shintformatremark
+msgid "Remark"
+msgstr "Megjegyzés"
+
+#: lazdemsg.shintformatunderline
+msgid "Underline"
+msgstr "Aláhúzás"
+
+#: lazdemsg.shintformatvariable
+msgid "Variable"
+msgstr "Változó"
+
+#: lazdemsg.shintinsertbulletedlist
+msgctxt "lazdemsg.shintinsertbulletedlist"
+msgid "Insert bulleted list"
+msgstr "Listajeles felsorolás beszúrása"
+
+#: lazdemsg.shintinsertelement
+msgctxt "lazdemsg.shintinsertelement"
+msgid "New element"
+msgstr "Új elem"
+
+#: lazdemsg.shintinsertlink
+msgctxt "lazdemsg.shintinsertlink"
+msgid "Insert link"
+msgstr "Link beszúrása"
+
+#: lazdemsg.shintinsertmodule
+msgctxt "lazdemsg.shintinsertmodule"
+msgid "New module"
+msgstr "Új modul"
+
+#: lazdemsg.shintinsertnumberedlist
+msgctxt "lazdemsg.shintinsertnumberedlist"
+msgid "Insert numbered list"
+msgstr "Számozott lista beszúrása"
+
+#: lazdemsg.shintinsertpackage
+msgctxt "lazdemsg.shintinsertpackage"
+msgid "New package"
+msgstr "Új csomag"
+
+#: lazdemsg.shintinsertprintshortlink
+msgid "Insert a short description link"
+msgstr "Egy rövid leírásra hivatkozás beszúrása"
+
+#: lazdemsg.shintinserttable
+msgctxt "lazdemsg.shintinserttable"
+msgid "Insert table"
+msgstr "Táblázat beszúrása"
+
+#: lazdemsg.shintinserttopic
+msgctxt "lazdemsg.shintinserttopic"
+msgid "New topic"
+msgstr "Új téma"
+
+#: lazdemsg.shintmenunewfromfile
+msgid "New from file ..."
+msgstr "Új létrehozása fájlból ..."
+
+#: lazdemsg.shinttoolbaradd
+msgid "Add"
+msgstr "Hozzáadás"
+
+#: lazdemsg.shinttoolbardelete
+msgctxt "lazdemsg.shinttoolbardelete"
+msgid "Delete"
+msgstr "Törlés"
+
+#: lazdemsg.shinttoolbaredit
+msgid "Edit"
+msgstr "Szerkesztés"
+
+#: lazdemsg.shmenuextraoptions
+msgid "Show options dialog"
+msgstr "Beállítások ablak megjelenítése"
+
+#: lazdemsg.shmenuhelpabout
+msgid "About this program"
+msgstr "E program névjegye"
+
+#: lazdemsg.simportcontentfile
+msgid "Import content file"
+msgstr "Tartalomfájl importálása"
+
+#: lazdemsg.sinsertbulletedlist
+msgctxt "lazdemsg.sinsertbulletedlist"
+msgid "Insert bulleted list"
+msgstr "Listajeles felsorolás beszúrása"
+
+#: lazdemsg.sinsertexamplecode
+msgid "Insert example code"
+msgstr "Példakód beszúrása"
+
+#: lazdemsg.sinsertlink
+msgctxt "lazdemsg.sinsertlink"
+msgid "Insert link"
+msgstr "Link beszúrása"
+
+#: lazdemsg.sinsertnumberedlist
+msgctxt "lazdemsg.sinsertnumberedlist"
+msgid "Insert numbered list"
+msgstr "Számozott lista beszúrása"
+
+#: lazdemsg.sinsertprintshortlink
+msgid "Insert short description link"
+msgstr "Rövid leírásra hivatkozás beszúrása"
+
+#: lazdemsg.sinserttable
+msgctxt "lazdemsg.sinserttable"
+msgid "Insert table"
+msgstr "Táblázat beszúrása"
+
+#: lazdemsg.sitemscount
+msgid "Items count"
+msgstr "Elemek száma"
+
+#: lazdemsg.slazdoceditor
+msgid "Lazarus Documentation Editor"
+msgstr "Lazarus Dokumentáció Szerkesztő"
+
+#: lazdemsg.slinksto
+msgid " links to "
+msgstr " erre hivatkozik: "
+
+#: lazdemsg.slinktarget
+msgid "Link target"
+msgstr "Hivatkozási cél"
+
+#: lazdemsg.slinktext
+msgid "Link text"
+msgstr "Hivatkozás szövege"
+
+#: lazdemsg.sload
+msgid "&Load"
+msgstr "Betö&ltés"
+
+#: lazdemsg.smakeskelfromsource
+msgid "Make new document from source file"
+msgstr "Új dokumentum létrehozása forrásfájlból"
+
+#: lazdemsg.smarkselection
+msgid "Mark selection %s"
+msgstr "Kiválasztás megjelölése: %s"
+
+#: lazdemsg.smenucollapseall
+msgid "Collapse All"
+msgstr "Mindet bezárja"
+
+#: lazdemsg.smenudelete
+msgctxt "lazdemsg.smenudelete"
+msgid "Delete"
+msgstr "Törlés"
+
+#: lazdemsg.smenuexpandall
+msgid "Expand All"
+msgstr "Mindet kinyitja"
+
+#: lazdemsg.smenuextra
+msgid "&Extra"
+msgstr "&Extra"
+
+#: lazdemsg.smenuextrabuild
+msgctxt "lazdemsg.smenuextrabuild"
+msgid "&Build"
+msgstr "Építés"
+
+#: lazdemsg.smenuextraoptions
+msgid "&Options"
+msgstr "Beállítás&ok"
+
+#: lazdemsg.smenufile
+msgctxt "lazdemsg.smenufile"
+msgid "&File"
+msgstr "&Fájl"
+
+#: lazdemsg.smenufileclose
+msgctxt "lazdemsg.smenufileclose"
+msgid "&Close"
+msgstr "Be&zárás"
+
+#: lazdemsg.smenufilenew
+msgid "&New"
+msgstr "&Új"
+
+#: lazdemsg.smenufilenewfromfile
+msgid "New from fi&le"
+msgstr "Új létrehozása fájlból ..."
+
+#: lazdemsg.smenufileopen
+msgid "&Open"
+msgstr "Meg&nyitás"
+
+#: lazdemsg.smenufilequit
+msgid "&Quit"
+msgstr "&Kilépés"
+
+#: lazdemsg.smenufilerecent
+msgid "&Recent"
+msgstr "Legutóbbi"
+
+#: lazdemsg.smenufilesave
+msgctxt "lazdemsg.smenufilesave"
+msgid "&Save"
+msgstr "&Mentés"
+
+#: lazdemsg.smenufilesaveas
+msgid "Save &as"
+msgstr "Mentés másként"
+
+#: lazdemsg.smenuformat
+msgid "Format"
+msgstr "Formátum"
+
+#: lazdemsg.smenuformatbold
+msgid "&Bold"
+msgstr "Félkövér"
+
+#: lazdemsg.smenuformatcode
+msgid "&Code"
+msgstr "Kód"
+
+#: lazdemsg.smenuformatfile
+msgctxt "lazdemsg.smenuformatfile"
+msgid "&File"
+msgstr "&Fájl"
+
+#: lazdemsg.smenuformatitalics
+msgid "&Italic"
+msgstr "Dőlt"
+
+#: lazdemsg.smenuformatparagraph
+msgid "&Paragraph"
+msgstr "Bekezdés"
+
+#: lazdemsg.smenuformatremark
+msgid "&Remark"
+msgstr "Megjegyzés"
+
+#: lazdemsg.smenuformatunderline
+msgid "&Underline"
+msgstr "Aláhúzott"
+
+#: lazdemsg.smenuformatvariable
+msgid "&Variable"
+msgstr "&Változó"
+
+#: lazdemsg.smenuhelp
+msgid "&Help"
+msgstr "&Súgó"
+
+#: lazdemsg.smenuhelpabout
+msgid "&About ..."
+msgstr "Névjegy ..."
+
+#: lazdemsg.smenuinsert
+msgid "&Insert"
+msgstr "&Beszúrás"
+
+#: lazdemsg.smenuinsertbulletedlist
+msgid "Bulleted list"
+msgstr "Listajeles felsorolás"
+
+#: lazdemsg.smenuinsertelement
+msgid "&Element"
+msgstr "Elem"
+
+#: lazdemsg.smenuinsertlink
+msgid "&Link"
+msgstr "Hivatkozás"
+
+#: lazdemsg.smenuinsertlist
+msgid "List"
+msgstr "Lista"
+
+#: lazdemsg.smenuinsertmodule
+msgid "&Module"
+msgstr "Modul"
+
+#: lazdemsg.smenuinsertnumberedlist
+msgid "Numbered list"
+msgstr "Számozott lista"
+
+#: lazdemsg.smenuinsertpackage
+msgctxt "lazdemsg.smenuinsertpackage"
+msgid "&Package"
+msgstr "Csomag"
+
+#: lazdemsg.smenuinsertprintshort
+msgid "Insert short desc link"
+msgstr "Rövid leírásra hivatkozás beszúrása"
+
+#: lazdemsg.smenuinsertquicklink
+msgid "&Quick Link"
+msgstr "Gyors hivatkozás"
+
+#: lazdemsg.smenuinsertshortdesclink
+msgid "&Short description link"
+msgstr "Rövid leírásra hivatkozás"
+
+#: lazdemsg.smenuinserttable
+msgid "&Table"
+msgstr "&Táblázat"
+
+#: lazdemsg.smenuinserttopic
+msgid "T&opic"
+msgstr "Téma"
+
+#: lazdemsg.smenurename
+msgid "Rename"
+msgstr "Átnevezés"
+
+#: lazdemsg.smoduleelements
+msgid "Elements for selected node"
+msgstr "A kiválasztott csomópont elemei"
+
+#: lazdemsg.snew
+msgid "New"
+msgstr "Új"
+
+#: lazdemsg.snewdocument
+msgid "New document"
+msgstr "Új dokumentum"
+
+#: lazdemsg.snewelement
+msgctxt "lazdemsg.snewelement"
+msgid "New element"
+msgstr "Új elem"
+
+#: lazdemsg.snewfile
+msgctxt "lazdemsg.snewfile"
+msgid "New file"
+msgstr "Új fájl"
+
+#: lazdemsg.snewmodule
+msgctxt "lazdemsg.snewmodule"
+msgid "New module"
+msgstr "Új modul"
+
+#: lazdemsg.snewpackage
+msgctxt "lazdemsg.snewpackage"
+msgid "New package"
+msgstr "Új csomag"
+
+#: lazdemsg.snewtopic
+msgctxt "lazdemsg.snewtopic"
+msgid "New topic"
+msgstr "Új téma"
+
+#: lazdemsg.snodename
+msgid "Node name"
+msgstr "Csomópont neve"
+
+#: lazdemsg.snoelement
+msgid "No element selected"
+msgstr "Nincs kiválasztott elem"
+
+#: lazdemsg.soptdlgbackupextension
+msgid "Backup extension"
+msgstr "Biztonsági mentések kiterjesztése"
+
+#: lazdemsg.soptdlgconfirmdeletes
+msgid "C&onfirm deletes"
+msgstr "Törlések jóváhagyása"
+
+#: lazdemsg.soptdlgcreatebackups
+msgid "Create &backups"
+msgstr "Biztonsági mentések készítése"
+
+#: lazdemsg.soptdlgdefaultextension
+msgid "Default extension"
+msgstr "Alapértelmezett kiterjesztés"
+
+#: lazdemsg.soptdlgdesktop
+msgid "Desktop"
+msgstr "Felület"
+
+#: lazdemsg.soptdlgfpdocprogram
+msgid "fpdoc program"
+msgstr "fpdoc program"
+
+#: lazdemsg.soptdlggeneral
+msgid "General"
+msgstr "Általános"
+
+#: lazdemsg.soptdlgmakeskelprogram
+msgid "makeskel program"
+msgstr "makeskel program"
+
+#: lazdemsg.soptdlgmaxrecentused
+msgid "Max. recent used"
+msgstr "Legutóbb használtak max."
+
+#: lazdemsg.soptdlgoptions
+msgid "Options"
+msgstr "Beállítások"
+
+#: lazdemsg.soptdlgreopenlastfile
+msgid "Reopen last file on startup"
+msgstr "A legutóbbi fájl megnyitása indításkor"
+
+#: lazdemsg.soptdlgshowhints
+msgid "Show hints"
+msgstr "Tippek megjelenítése"
+
+#: lazdemsg.soptdlgskipemptynodes
+msgid "&Skip empty nodes when saving"
+msgstr "Üres csomópontok kihagyása mentéskor"
+
+#: lazdemsg.soptdlgstartmaximized
+msgid "Start maximized"
+msgstr "Indítás nagy méretben"
+
+#: lazdemsg.sotheroptions
+msgid "Other options"
+msgstr "További beállítások"
+
+#: lazdemsg.soutput
+msgid "&Output"
+msgstr "Kimenet"
+
+#: lazdemsg.spackage
+msgctxt "lazdemsg.spackage"
+msgid "&Package"
+msgstr "Csomag"
+
+#: lazdemsg.spackages
+msgid "Packages"
+msgstr "Csomagok"
+
+#: lazdemsg.srenameelement
+msgid "Rename element"
+msgstr "Elem átnevezése"
+
+#: lazdemsg.srenamemodule
+msgid "Rename module"
+msgstr "Modul átnevezése"
+
+#: lazdemsg.srenamepackage
+msgid "Rename package"
+msgstr "Csomag átnevezése"
+
+#: lazdemsg.srenametopic
+msgid "Rename topic"
+msgstr "Téma átnevezése"
+
+#: lazdemsg.ssave
+msgctxt "lazdemsg.ssave"
+msgid "&Save"
+msgstr "&Mentés"
+
+#: lazdemsg.ssavebeforebuildquestion
+msgid "You have unsaved changes in \"%s\".%sThey should be saved in order to be visible in built documentation. Save them?"
+msgstr "Nem mentett változtatások ebben: \"%s\".%sMenteni kell őket, hogy láthatóak legyenek az épített dokumentációban. Mentés?"
+
+#: lazdemsg.sseealso
+msgid "See Also"
+msgstr "Lásd még"
+
+#: lazdemsg.sselectoutputdirectory
+msgid "Select output directory"
+msgstr "Kimeneti könyvtár választása"
+
+#: lazdemsg.sselectoutputfile
+msgid "Select output file name"
+msgstr "Kimeneti fájlnév választása"
+
+#: lazdemsg.sselectsometext
+msgid "Select some text."
+msgstr "Jelöljön ki szöveget!"
+
+#: lazdemsg.sshortdescription
+msgid "Short"
+msgstr "Röviden"
+
+#: lazdemsg.sshowprivatemethods
+msgid "Show p&rivate methods"
+msgstr "Privát metódusok megjelenítése"
+
+#: lazdemsg.sskelerrorwithfile
+msgid "makeskel reported an error (%d). Try to load produced file anyway ?"
+msgstr "A makeskel hibát jelzett (%d). Mindenképpen be legyen töltve a létrehozott fájl?"
+
+#: lazdemsg.sskelerrorwithoutfile
+msgid "makeskel reported an error (%d) and produced no file."
+msgstr "A makeskel hibát jelzett (%d) és nem hozott létre fájlt."
+
+#: lazdemsg.ssourcescapt
+msgid "Sources"
+msgstr "Források"
+
+#: lazdemsg.sstartnodenotfound
+msgid "Start element \"%s\" could not be found"
+msgstr "A kezdő elem nem található: \"%s\""
+
+#: lazdemsg.stablecols
+msgid "Columns"
+msgstr "Oszlopok"
+
+#: lazdemsg.stableheader
+msgid "Use header row"
+msgstr "Fejlécsor használata"
+
+#: lazdemsg.stablerows
+msgid "Rows"
+msgstr "Sorok"
+
+#: lazdemsg.stargetos
+msgid "Target OS"
+msgstr "Cél OS"
+
+#: lazdemsg.susingcommand
+msgid "Building docs using command: "
+msgstr "Dokumentáció építése a következő paranccsal:"
+
+#: lazdemsg.swarnifnodocumentationnodefound
+msgid "Warn if no documentation node found"
+msgstr "Figyelmeztetés ha nincs dokumentáció csomópont"
+

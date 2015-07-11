@@ -1,0 +1,75 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: heaptrcview.rsdtimes
+msgid " (%d times)"
+msgstr ""
+
+#: heaptrcview.rserrorparse
+msgid "Error while parsing trace file"
+msgstr ""
+
+#: heaptrcview.rsleakview
+msgid "Leaks and Traces"
+msgstr ""
+
+#: heaptrcview.sbtnclipbrd
+msgid "Paste Clipboard"
+msgstr ""
+
+#: heaptrcview.sbtnresolve
+msgid "Resolve"
+msgstr ""
+
+#: heaptrcview.sbtnupdate
+msgid "Update"
+msgstr ""
+
+#: heaptrcview.schkraw
+msgid "Raw leak data"
+msgstr ""
+
+#: heaptrcview.schktop
+msgid "Stay on top"
+msgstr ""
+
+#: heaptrcview.sfrmcap
+msgid "Leaks and Traces - HeapTrc and GDB backtrace output viewer"
+msgstr ""
+
+#: heaptrcview.sfrmselectfilewithdebuginfo
+msgid "Select File with debug info"
+msgstr ""
+
+#: heaptrcview.slbltrace
+msgid ".trc file"
+msgstr ""
+
+#: heaptrcview.stacklineformat
+msgid "%s"
+msgstr ""
+
+#: heaptrcview.stacklineformatwithfile
+msgid "%s file: %s : %d; "
+msgstr ""
+
+#: heaptrcview.stacktraceformat
+msgid "Leak: %d bytes x %d times"
+msgstr ""
+
+#: heaptrcview.stacktraceformatsingle
+msgid "Leak: %d bytes"
+msgstr ""
+
+#: heaptrcview.strleakingblockscount
+msgid "Leaking Blocks Count: %d"
+msgstr ""
+
+#: heaptrcview.strleakingmemsize
+msgid "Leaking Mem Size: %d"
+msgstr ""
+
+#: heaptrcview.strtotalmemalloc
+msgid "Total Mem allocated: %d"
+msgstr ""
+

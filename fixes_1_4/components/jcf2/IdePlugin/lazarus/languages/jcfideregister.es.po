@@ -1,0 +1,51 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: lainz <lainz007@hotmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: jcfideregister.format_about_menu
+msgid "&About"
+msgstr "Acerca &de"
+
+#: jcfideregister.format_category_idecmd
+msgctxt "jcfideregister.format_category_idecmd"
+msgid "JEDI Code Format"
+msgstr "JEDI Code Format"
+
+#: jcfideregister.format_current_idecmd
+msgid "Format code in current editor window"
+msgstr "Dar formato al código en la ventana actual del editor"
+
+#: jcfideregister.format_current_menu
+msgctxt "jcfideregister.format_current_menu"
+msgid "&Current Editor Window"
+msgstr "Ventana &Actual del Editor"
+
+#: jcfideregister.format_menu
+msgid "JEDI Code &Format"
+msgstr "JEDI Code &Format"
+
+#: jcfideregister.format_open_menu
+msgctxt "jcfideregister.format_open_menu"
+msgid "All &Open Windows"
+msgstr "&Todas las Ventanas Abiertas"
+
+#: jcfideregister.format_project_menu
+msgctxt "jcfideregister.format_project_menu"
+msgid "&All Files in Project"
+msgstr "Todos los Archivos en el &Proyecto"
+
+#: jcfideregister.format_reg_settings_menu
+msgid "&Registry Settings"
+msgstr "Configuración de &Registro"
+
+#: jcfideregister.format_settings_menu
+msgid "&Format Settings"
+msgstr "Configuración de &Formato"
+

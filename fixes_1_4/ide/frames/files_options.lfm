@@ -1,0 +1,367 @@
+object FilesOptionsFrame: TFilesOptionsFrame
+  Left = 0
+  Height = 460
+  Top = 0
+  Width = 569
+  ChildSizing.LeftRightSpacing = 2
+  ChildSizing.TopBottomSpacing = 2
+  ClientHeight = 460
+  ClientWidth = 569
+  TabOrder = 0
+  Visible = False
+  DesignLeft = 441
+  DesignTop = 249
+  object MaxRecentOpenFilesLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 2
+    Height = 15
+    Top = 2
+    Width = 145
+    Caption = 'MaxRecentOpenFilesLabel'
+    ParentColor = False
+  end
+  object MaxRecentProjectFilesLabel: TLabel
+    AnchorSideLeft.Control = lblCenter
+    AnchorSideTop.Control = Owner
+    Left = 287
+    Height = 15
+    Top = 2
+    Width = 155
+    BorderSpacing.Left = 3
+    Caption = 'MaxRecentProjectFilesLabel'
+    ParentColor = False
+  end
+  object OpenLastProjectAtStartCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = MaxRecentOpenFilesSpin
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 2
+    Height = 24
+    Top = 50
+    Width = 212
+    BorderSpacing.Top = 6
+    Caption = 'OpenLastProjectAtStartCheckBox'
+    TabOrder = 0
+  end
+  object ShowCompileDialogCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = OpenLastProjectAtStartCheckBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 2
+    Height = 24
+    Top = 74
+    Width = 188
+    Caption = 'ShowCompileDialogCheckBox'
+    OnChange = ShowCompileDialogCheckBoxChange
+    TabOrder = 1
+  end
+  object LazarusDirLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = AutoCloseCompileDialogCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 2
+    Height = 15
+    Top = 132
+    Width = 87
+    BorderSpacing.Top = 10
+    Caption = 'LazarusDirLabel'
+    ParentColor = False
+  end
+  object LazarusDirButton: TButton
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = LazarusDirComboBox
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = LazarusDirComboBox
+    AnchorSideBottom.Side = asrBottom
+    Left = 542
+    Height = 27
+    Top = 147
+    Width = 25
+    Anchors = [akTop, akRight, akBottom]
+    Caption = '...'
+    OnClick = DirectoriesButtonClick
+    TabOrder = 2
+  end
+  object LazarusDirComboBox: TComboBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = LazarusDirLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = LazarusDirButton
+    Left = 2
+    Height = 27
+    Top = 147
+    Width = 540
+    Anchors = [akTop, akLeft, akRight]
+    ItemHeight = 0
+    TabOrder = 3
+    Text = 'LazarusDirComboBox'
+  end
+  object CompilerPathComboBox: TComboBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = CompilerPathLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = CompilerPathButton
+    Left = 2
+    Height = 27
+    Top = 195
+    Width = 540
+    Anchors = [akTop, akLeft, akRight]
+    ItemHeight = 0
+    TabOrder = 4
+    Text = 'CompilerPathComboBox'
+  end
+  object CompilerPathButton: TButton
+    AnchorSideTop.Control = CompilerPathComboBox
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = CompilerPathComboBox
+    AnchorSideBottom.Side = asrBottom
+    Left = 542
+    Height = 27
+    Top = 195
+    Width = 25
+    Anchors = [akTop, akRight, akBottom]
+    Caption = '...'
+    OnClick = FilesButtonClick
+    TabOrder = 5
+  end
+  object CompilerPathLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = LazarusDirComboBox
+    AnchorSideTop.Side = asrBottom
+    Left = 2
+    Height = 15
+    Top = 180
+    Width = 103
+    BorderSpacing.Top = 6
+    Caption = 'CompilerPathLabel'
+    ParentColor = False
+  end
+  object FPCSourceDirComboBox: TComboBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = FPCSourceDirLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = FPCSourceDirButton
+    Left = 2
+    Height = 27
+    Top = 243
+    Width = 540
+    Anchors = [akTop, akLeft, akRight]
+    ItemHeight = 0
+    TabOrder = 6
+    Text = 'FPCSourceDirComboBox'
+  end
+  object FPCSourceDirButton: TButton
+    AnchorSideTop.Control = FPCSourceDirComboBox
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = FPCSourceDirComboBox
+    AnchorSideBottom.Side = asrBottom
+    Left = 542
+    Height = 27
+    Top = 243
+    Width = 25
+    Anchors = [akTop, akRight, akBottom]
+    Caption = '...'
+    OnClick = DirectoriesButtonClick
+    TabOrder = 7
+  end
+  object FPCSourceDirLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = CompilerPathComboBox
+    AnchorSideTop.Side = asrBottom
+    Left = 2
+    Height = 15
+    Top = 228
+    Width = 104
+    BorderSpacing.Top = 6
+    Caption = 'FPCSourceDirLabel'
+    ParentColor = False
+  end
+  object MakePathLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = FPCSourceDirComboBox
+    AnchorSideTop.Side = asrBottom
+    Left = 2
+    Height = 15
+    Top = 276
+    Width = 83
+    BorderSpacing.Top = 6
+    Caption = 'MakePathLabel'
+    ParentColor = False
+  end
+  object TestBuildDirLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = MakePathComboBox
+    AnchorSideTop.Side = asrBottom
+    Left = 2
+    Height = 15
+    Top = 324
+    Width = 97
+    BorderSpacing.Top = 6
+    Caption = 'TestBuildDirLabel'
+    ParentColor = False
+  end
+  object MakePathComboBox: TComboBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = MakePathLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = MakePathButton
+    Left = 2
+    Height = 27
+    Top = 291
+    Width = 540
+    Anchors = [akTop, akLeft, akRight]
+    ItemHeight = 0
+    TabOrder = 8
+    Text = 'MakePathComboBox'
+  end
+  object MakePathButton: TButton
+    AnchorSideTop.Control = MakePathComboBox
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = MakePathComboBox
+    AnchorSideBottom.Side = asrBottom
+    Left = 542
+    Height = 27
+    Top = 291
+    Width = 25
+    Anchors = [akTop, akRight, akBottom]
+    Caption = '...'
+    OnClick = FilesButtonClick
+    TabOrder = 9
+  end
+  object TestBuildDirComboBox: TComboBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = TestBuildDirLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = TestBuildDirButton
+    Left = 2
+    Height = 27
+    Top = 339
+    Width = 540
+    Anchors = [akTop, akLeft, akRight]
+    ItemHeight = 0
+    TabOrder = 10
+    Text = 'TestBuildDirComboBox'
+  end
+  object TestBuildDirButton: TButton
+    AnchorSideTop.Control = TestBuildDirComboBox
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = TestBuildDirComboBox
+    AnchorSideBottom.Side = asrBottom
+    Left = 542
+    Height = 27
+    Top = 339
+    Width = 25
+    Anchors = [akTop, akRight, akBottom]
+    Caption = '...'
+    OnClick = DirectoriesButtonClick
+    TabOrder = 11
+  end
+  object AutoCloseCompileDialogCheckBox: TCheckBox
+    AnchorSideLeft.Control = ShowCompileDialogCheckBox
+    AnchorSideTop.Control = ShowCompileDialogCheckBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 32
+    Height = 24
+    Top = 98
+    Width = 215
+    BorderSpacing.Left = 30
+    Caption = 'AutoCloseCompileDialogCheckBox'
+    TabOrder = 12
+  end
+  object CompilerTranslationFileLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = TestBuildDirComboBox
+    AnchorSideTop.Side = asrBottom
+    Left = 2
+    Height = 15
+    Top = 372
+    Width = 158
+    Alignment = taRightJustify
+    BorderSpacing.Top = 6
+    Caption = 'CompilerTranslationFileLabel'
+    ParentColor = False
+    ParentShowHint = False
+    ShowHint = True
+  end
+  object CompilerTranslationFileButton: TButton
+    AnchorSideTop.Control = CompilerTranslationFileComboBox
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = CompilerTranslationFileComboBox
+    AnchorSideBottom.Side = asrBottom
+    Left = 542
+    Height = 27
+    Top = 387
+    Width = 25
+    Anchors = [akTop, akRight, akBottom]
+    Caption = '...'
+    OnClick = CompilerTranslationFileButtonClick
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 13
+  end
+  object CompilerTranslationFileComboBox: TComboBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = CompilerTranslationFileLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = CompilerTranslationFileButton
+    Left = 2
+    Height = 27
+    Top = 387
+    Width = 540
+    Anchors = [akTop, akLeft, akRight]
+    ItemHeight = 0
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 14
+    Text = 'CompilerTranslationFileComboBox'
+  end
+  object lblCenter: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    Left = 284
+    Height = 1
+    Top = 105
+    Width = 1
+    ParentColor = False
+  end
+  object MaxRecentOpenFilesSpin: TSpinEdit
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = MaxRecentOpenFilesLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = lblCenter
+    AnchorSideRight.Side = asrBottom
+    Left = 2
+    Height = 25
+    Top = 19
+    Width = 278
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Right = 3
+    BorderSpacing.Around = 2
+    TabOrder = 15
+  end
+  object MaxRecentProjectFilesSpin: TSpinEdit
+    AnchorSideLeft.Control = lblCenter
+    AnchorSideTop.Control = MaxRecentProjectFilesLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 289
+    Height = 25
+    Top = 19
+    Width = 278
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 3
+    BorderSpacing.Around = 2
+    TabOrder = 16
+  end
+end

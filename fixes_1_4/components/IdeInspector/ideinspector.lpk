@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="3">
+    <PathDelim Value="\"/>
+    <Name Value="IdeInspector"/>
+    <Author Value="M Friebe"/>
+    <CompilerOptions>
+      <Version Value="9"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Linking>
+        <Debugging>
+          <GenerateDwarf Value="True"/>
+          <UseHeaptrc Value="True"/>
+        </Debugging>
+      </Linking>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="Inspect the internals of the IDE.
+&quot;Here be dragons&quot; Be careful and save your data first"/>
+    <License Value="LGPL, same as LCL"/>
+    <Version Minor="1"/>
+    <Files Count="2">
+      <Item1>
+        <Filename Value="maininspector.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="MainInspector"/>
+      </Item1>
+      <Item2>
+        <Filename Value="ideinspectkeygrapper.pas"/>
+        <UnitName Value="ideinspectkeygrapper"/>
+      </Item2>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="3">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="IDEIntf"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item3>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

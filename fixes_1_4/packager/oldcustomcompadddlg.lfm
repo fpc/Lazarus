@@ -1,0 +1,47 @@
+object FrmAddComponent: TFrmAddComponent
+  CAPTION = 'Select components to add'
+  CLIENTHEIGHT = 256
+  CLIENTWIDTH = 228
+  HORZSCROLLBAR.PAGE = 229
+  VERTSCROLLBAR.PAGE = 257
+  LEFT = 415
+  HEIGHT = 256
+  TOP = 176
+  WIDTH = 228
+  object ListCompAdd: TLISTBOX
+    ANCHORS = [aktop, akleft]
+    MULTISELECT = True
+    SORTED = True
+    TABSTOP = True
+    TOPINDEX = -1
+    HEIGHT = 216
+    WIDTH = 228
+  end
+  object Bitbtn1: TBITBTN
+    KIND = bkcancel
+    SPACING = 3
+    ANCHORS = [aktop, akleft]
+    MODALRESULT = 2
+    CAPTION = 'Cancel'
+    TABSTOP = True
+    TABORDER = 1
+    LEFT = 144
+    HEIGHT = 25
+    TOP = 224
+    WIDTH = 75
+  end
+  object Bitbtn2: TBITBTN
+    KIND = bkok
+    SPACING = 3
+    ANCHORS = [aktop, akleft]
+    DEFAULT = True
+    MODALRESULT = 1
+    CAPTION = '&OK'
+    TABSTOP = True
+    TABORDER = 2
+    LEFT = 56
+    HEIGHT = 25
+    TOP = 224
+    WIDTH = 75
+  end
+end

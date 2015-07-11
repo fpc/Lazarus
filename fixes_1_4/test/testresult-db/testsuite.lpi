@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="\"/>
+    <Version Value="6"/>
+    <General>
+      <Flags>
+        <MainUnitHasCreateFormStatements Value="False"/>
+        <MainUnitHasTitleStatement Value="False"/>
+      </Flags>
+      <SessionStorage Value="InIDEConfig"/>
+      <MainUnit Value="0"/>
+      <IconPath Value="./"/>
+      <TargetFileExt Value=""/>
+      <Title Value="testsuite"/>
+    </General>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+      <environment>
+        <UserOverrides Count="1">
+          <Variable0 Name="action" Value="2"/>
+        </UserOverrides>
+      </environment>
+    </RunParams>
+    <Units Count="2">
+      <Unit0>
+        <Filename Value="testsuite.pp"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="testsuite"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="utests.pp"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="utests"/>
+      </Unit1>
+    </Units>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="8"/>
+    <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="testsuite.cgi"/>
+    </Target>
+    <Other>
+      <CustomOptions Value="-XLAfreetype-6=freetype6"/>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+</CONFIG>

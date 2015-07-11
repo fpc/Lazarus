@@ -1,0 +1,153 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: debuggerstrconst.drsbreakpointcolwidthaction
+msgid "Action column"
+msgstr "Столбец действия"
+
+#: debuggerstrconst.drsbreakpointcolwidthcondition
+msgid "Condition column"
+msgstr "Столбец условия"
+
+#: debuggerstrconst.drsbreakpointcolwidthfile
+msgid "File/address column"
+msgstr "Столбец имени файла/адреса"
+
+#: debuggerstrconst.drsbreakpointcolwidthgroup
+msgid "Group column"
+msgstr "Столбец группы"
+
+#: debuggerstrconst.drsbreakpointcolwidthline
+msgctxt "debuggerstrconst.drsbreakpointcolwidthline"
+msgid "Line column"
+msgstr "Столбец строки"
+
+#: debuggerstrconst.drsbreakpointcolwidthpasscount
+msgid "Pass-count column"
+msgstr "Столбец числа проходов"
+
+#: debuggerstrconst.drscolwidthbrkpointimg
+msgid "Break indication column"
+msgstr "Столбец индикации останова"
+
+#: debuggerstrconst.drscolwidthexpression
+msgid "Expression column"
+msgstr "Столбец выражения"
+
+#: debuggerstrconst.drscolwidthfunc
+msgid "Function name column"
+msgstr "Столбец имени функции"
+
+#: debuggerstrconst.drscolwidthindex
+msgid "Index column"
+msgstr "Столбец индекса"
+
+#: debuggerstrconst.drscolwidthline
+msgctxt "debuggerstrconst.drscolwidthline"
+msgid "Line column"
+msgstr "Столбец строки"
+
+#: debuggerstrconst.drscolwidthname
+msgid "Name column"
+msgstr "Столбец имени"
+
+#: debuggerstrconst.drscolwidthsource
+msgid "Source column"
+msgstr "Столбец исходного кода"
+
+#: debuggerstrconst.drscolwidthstate
+msgid "State column"
+msgstr "Столбец состояния"
+
+#: debuggerstrconst.drscolwidthvalue
+msgid "Value column"
+msgstr "Столбец значения"
+
+#: debuggerstrconst.drsevalhistorynone
+msgid "No history kept"
+msgstr "Не сохранять историю"
+
+#: debuggerstrconst.drshistorycolwidthcurrent
+msgid "Current column"
+msgstr "Столбец текущего положения"
+
+#: debuggerstrconst.drshistorycolwidthlocation
+msgid "Location column"
+msgstr "Столбец расположения"
+
+#: debuggerstrconst.drshistorycolwidthtime
+msgid "Time column"
+msgstr "Столбец времени"
+
+#: debuggerstrconst.drsinspectcolwidthdataclass
+msgid "Data class column"
+msgstr "Столбец класса поля"
+
+#: debuggerstrconst.drsinspectcolwidthdataname
+msgid "Data name column"
+msgstr "Столбец имени поля"
+
+#: debuggerstrconst.drsinspectcolwidthdatatype
+msgid "Data type column"
+msgstr "Столбец типа поля"
+
+#: debuggerstrconst.drsinspectcolwidthdatavalue
+msgid "Data value column"
+msgstr "Столбец значения поля"
+
+#: debuggerstrconst.drsinspectcolwidthdatavisibility
+msgid "Data visibility column"
+msgstr "Столбец видимости поля"
+
+#: debuggerstrconst.drsinspectcolwidthmethaddress
+msgid "Method address column"
+msgstr "Столбец адреса метода"
+
+#: debuggerstrconst.drsinspectcolwidthmethname
+msgid "Method name column"
+msgstr "Столбец имени метода"
+
+#: debuggerstrconst.drsinspectcolwidthmethreturns
+msgid "Method returns column"
+msgstr "Столбец типа результата метода"
+
+#: debuggerstrconst.drsinspectcolwidthmethtype
+msgid "Method type column"
+msgstr "Столбец типа метода"
+
+#: debuggerstrconst.drslen
+msgid "Len=%d: "
+msgstr "Длина=%d: "
+
+#: debuggerstrconst.drsuseinstanceclasstype
+msgid "Use Instance class type"
+msgstr "Использовать тип экземпляра класса"
+
+#: debuggerstrconst.drswatchsplitterinspect
+msgid "Inspect pane"
+msgstr "Панель просмотра"
+
+#: debuggerstrconst.dsrevalhistorydown
+msgid "Append result at bottom of history"
+msgstr "Добавлять результат в историю снизу"
+
+#: debuggerstrconst.dsrevalhistoryup
+msgid "Insert result at top of history"
+msgstr "Добавлять результат в историю сверху"
+
+#: debuggerstrconst.synfnewvalueisempty
+msgid "\"New value\" is empty."
+msgstr "Поле \"Новое значение\" пусто."
+
+#: debuggerstrconst.synfthedebuggerwasnotabletomodifythevalue
+msgid "The debugger was not able to modify the value."
+msgstr "Отладчику не удалось изменить значение."
+

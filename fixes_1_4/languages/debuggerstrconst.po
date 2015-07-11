@@ -1,0 +1,145 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: debuggerstrconst.drsbreakpointcolwidthaction
+msgid "Action column"
+msgstr ""
+
+#: debuggerstrconst.drsbreakpointcolwidthcondition
+msgid "Condition column"
+msgstr ""
+
+#: debuggerstrconst.drsbreakpointcolwidthfile
+msgid "File/address column"
+msgstr ""
+
+#: debuggerstrconst.drsbreakpointcolwidthgroup
+msgid "Group column"
+msgstr ""
+
+#: debuggerstrconst.drsbreakpointcolwidthline
+msgctxt "debuggerstrconst.drsbreakpointcolwidthline"
+msgid "Line column"
+msgstr ""
+
+#: debuggerstrconst.drsbreakpointcolwidthpasscount
+msgid "Pass-count column"
+msgstr ""
+
+#: debuggerstrconst.drscolwidthbrkpointimg
+msgid "Break indication column"
+msgstr ""
+
+#: debuggerstrconst.drscolwidthexpression
+msgid "Expression column"
+msgstr ""
+
+#: debuggerstrconst.drscolwidthfunc
+msgid "Function name column"
+msgstr ""
+
+#: debuggerstrconst.drscolwidthindex
+msgid "Index column"
+msgstr ""
+
+#: debuggerstrconst.drscolwidthline
+msgctxt "debuggerstrconst.drscolwidthline"
+msgid "Line column"
+msgstr ""
+
+#: debuggerstrconst.drscolwidthname
+msgid "Name column"
+msgstr ""
+
+#: debuggerstrconst.drscolwidthsource
+msgid "Source column"
+msgstr ""
+
+#: debuggerstrconst.drscolwidthstate
+msgid "State column"
+msgstr ""
+
+#: debuggerstrconst.drscolwidthvalue
+msgid "Value column"
+msgstr ""
+
+#: debuggerstrconst.drsevalhistorynone
+msgid "No history kept"
+msgstr ""
+
+#: debuggerstrconst.drshistorycolwidthcurrent
+msgid "Current column"
+msgstr ""
+
+#: debuggerstrconst.drshistorycolwidthlocation
+msgid "Location column"
+msgstr ""
+
+#: debuggerstrconst.drshistorycolwidthtime
+msgid "Time column"
+msgstr ""
+
+#: debuggerstrconst.drsinspectcolwidthdataclass
+msgid "Data class column"
+msgstr ""
+
+#: debuggerstrconst.drsinspectcolwidthdataname
+msgid "Data name column"
+msgstr ""
+
+#: debuggerstrconst.drsinspectcolwidthdatatype
+msgid "Data type column"
+msgstr ""
+
+#: debuggerstrconst.drsinspectcolwidthdatavalue
+msgid "Data value column"
+msgstr ""
+
+#: debuggerstrconst.drsinspectcolwidthdatavisibility
+msgid "Data visibility column"
+msgstr ""
+
+#: debuggerstrconst.drsinspectcolwidthmethaddress
+msgid "Method address column"
+msgstr ""
+
+#: debuggerstrconst.drsinspectcolwidthmethname
+msgid "Method name column"
+msgstr ""
+
+#: debuggerstrconst.drsinspectcolwidthmethreturns
+msgid "Method returns column"
+msgstr ""
+
+#: debuggerstrconst.drsinspectcolwidthmethtype
+msgid "Method type column"
+msgstr ""
+
+#: debuggerstrconst.drslen
+msgid "Len=%d: "
+msgstr ""
+
+#: debuggerstrconst.drsuseinstanceclasstype
+msgid "Use Instance class type"
+msgstr ""
+
+#: debuggerstrconst.drswatchsplitterinspect
+msgid "Inspect pane"
+msgstr ""
+
+#: debuggerstrconst.dsrevalhistorydown
+msgid "Append result at bottom of history"
+msgstr ""
+
+#: debuggerstrconst.dsrevalhistoryup
+msgid "Insert result at top of history"
+msgstr ""
+
+#: debuggerstrconst.synfnewvalueisempty
+msgid "\"New value\" is empty."
+msgstr ""
+
+#: debuggerstrconst.synfthedebuggerwasnotabletomodifythevalue
+msgid "The debugger was not able to modify the value."
+msgstr ""
+

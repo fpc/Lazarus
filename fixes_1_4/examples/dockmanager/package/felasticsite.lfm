@@ -1,0 +1,88 @@
+object DockingSite: TDockingSite
+  Left = 509
+  Height = 163
+  Top = 268
+  Width = 255
+  AutoSize = True
+  Caption = 'Dock Site'
+  ClientHeight = 163
+  ClientWidth = 255
+  LCLVersion = '0.9.29'
+  Visible = True
+  object pnlLeft: TPanel
+    Left = 0
+    Height = 138
+    Top = 0
+    Width = 0
+    Align = alLeft
+    Caption = 'pnlLeft'
+    Color = clWhite
+    DockSite = True
+    ParentColor = False
+    TabOrder = 0
+    OnDockDrop = pnlLeftDockDrop
+    OnDockOver = pnlLeftDockOver
+    OnGetSiteInfo = pnlLeftGetSiteInfo
+    OnUnDock = pnlLeftUnDock
+  end
+  object splitLeft: TSplitter
+    Left = 0
+    Height = 138
+    Top = 0
+    Width = 4
+  end
+  object pnlRight: TPanel
+    Left = 255
+    Height = 138
+    Top = 0
+    Width = 0
+    Align = alRight
+    Caption = 'pnlRight'
+    Color = clAqua
+    DockSite = True
+    ParentColor = False
+    TabOrder = 2
+    OnDockDrop = pnlLeftDockDrop
+    OnDockOver = pnlLeftDockOver
+    OnGetSiteInfo = pnlLeftGetSiteInfo
+    OnUnDock = pnlLeftUnDock
+  end
+  object pnlBottom: TPanel
+    Left = 0
+    Height = 1
+    Top = 142
+    Width = 255
+    Align = alBottom
+    Caption = 'pnlBottom'
+    DockSite = True
+    TabOrder = 3
+    OnDockDrop = pnlLeftDockDrop
+    OnDockOver = pnlLeftDockOver
+    OnGetSiteInfo = pnlLeftGetSiteInfo
+    OnUnDock = pnlLeftUnDock
+  end
+  object splitRight: TSplitter
+    Left = 251
+    Height = 138
+    Top = 0
+    Width = 4
+    Align = alRight
+    ResizeAnchor = akRight
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Height = 20
+    Top = 143
+    Width = 255
+    Panels = <>
+  end
+  object splitBottom: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 4
+    Top = 138
+    Width = 255
+    Align = alBottom
+    ResizeAnchor = akBottom
+  end
+end

@@ -1,0 +1,1339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    HelpIntfs
+  ====================================================================
+-->
+
+<module name="HelpIntfs">
+<short/>
+<descr>
+</descr>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Classes">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="SysUtils">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="EHelpSystemException">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TShowHelpResult">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TShowHelpResult.shrNone">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TShowHelpResult.shrSuccess">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TShowHelpResult.shrCancel">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TShowHelpResult.shrDatabaseNotFound">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TShowHelpResult.shrContextNotFound">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TShowHelpResult.shrViewerNotFound">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TShowHelpResult.shrHelpNotFound">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TShowHelpResult.shrViewerError">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TShowHelpResult.shrSelectorError">
+<short/>
+</element>
+
+<!-- set type Visibility: default -->
+<element name="TShowHelpResults">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- alias type Visibility: default -->
+<element name="THelpDatabaseID">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="THelpQuery">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpQuery.FHelpDatabaseID">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="THelpQuery.Create">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpQuery.Create.TheHelpDatabaseID">
+<short/>
+</element>
+
+<!-- property Visibility: public -->
+<element name="THelpQuery.HelpDatabaseID">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="THelpQueryTOC">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="THelpQueryContext">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpQueryContext.FContext">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="THelpQueryContext.Create">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpQueryContext.Create.TheHelpDatabaseID">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpQueryContext.Create.TheContext">
+<short/>
+</element>
+
+<!-- property Visibility: public -->
+<element name="THelpQueryContext.Context">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="THelpQueryKeyword">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpQueryKeyword.FKeyword">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="THelpQueryKeyword.Create">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpQueryKeyword.Create.TheHelpDatabaseID">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpQueryKeyword.Create.TheKeyWord">
+<short/>
+</element>
+
+<!-- property Visibility: public -->
+<element name="THelpQueryKeyword.Keyword">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="THelpQuerySourcePosition">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpQuerySourcePosition.FFilename">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpQuerySourcePosition.FSourcePosition">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="THelpQuerySourcePosition.Create">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpQuerySourcePosition.Create.TheHelpDatabaseID">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpQuerySourcePosition.Create.TheFilename">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpQuerySourcePosition.Create.SrcPos">
+<short/>
+</element>
+
+<!-- property Visibility: public -->
+<element name="THelpQuerySourcePosition.Filename">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="THelpQuerySourcePosition.SourcePosition">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="THelpQueryPascalContexts">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpQueryPascalContexts.FContextLists">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="THelpQueryPascalContexts.Create">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpQueryPascalContexts.Create.TheHelpDatabaseID">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpQueryPascalContexts.Create.TheFilename">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpQueryPascalContexts.Create.SrcPos">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpQueryPascalContexts.Create.ContextLists">
+<short/>
+</element>
+
+<!-- property Visibility: public -->
+<element name="THelpQueryPascalContexts.ListOfPascalHelpContextList">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="THelpQueryMessage">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpQueryMessage.FMessageParts">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpQueryMessage.FWholeMessage">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="THelpQueryMessage.Create">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpQueryMessage.Create.TheHelpDatabaseID">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpQueryMessage.Create.TheMessage">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpQueryMessage.Create.TheMessageParts">
+<short/>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="THelpQueryMessage.Destroy">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="THelpQueryMessage.WholeMessage">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="THelpQueryMessage.MessageParts">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="THelpQueryClass">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpQueryClass.FTheClass">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="THelpQueryClass.Create">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpQueryClass.Create.TheHelpDatabaseID">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpQueryClass.Create.AClass">
+<short/>
+</element>
+
+<!-- property Visibility: public -->
+<element name="THelpQueryClass.TheClass">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="THelpManager">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpManager.DoHelpNotFound">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpManager.DoHelpNotFound.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpManager.DoHelpNotFound.ErrMsg">
+<short/>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpManager.ShowTableOfContents">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpManager.ShowTableOfContents.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpManager.ShowTableOfContents.ErrMsg">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THelpManager.ShowError">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpManager.ShowError.ShowResult">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpManager.ShowError.ErrMsg">
+<short/>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpManager.ShowHelpForQuery">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpManager.ShowHelpForQuery.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpManager.ShowHelpForQuery.Query">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpManager.ShowHelpForQuery.AutoFreeQuery">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpManager.ShowHelpForQuery.ErrMsg">
+<short/>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpManager.ShowHelpForContext">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpManager.ShowHelpForContext.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpManager.ShowHelpForContext.Query">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpManager.ShowHelpForContext.ErrMsg">
+<short/>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpManager.ShowHelpForKeyword">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpManager.ShowHelpForKeyword.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpManager.ShowHelpForKeyword.Query">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpManager.ShowHelpForKeyword.ErrMsg">
+<short/>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpManager.ShowHelpForPascalContexts">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpManager.ShowHelpForPascalContexts.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpManager.ShowHelpForPascalContexts.Query">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpManager.ShowHelpForPascalContexts.ErrMsg">
+<short/>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpManager.ShowHelpForSourcePosition">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpManager.ShowHelpForSourcePosition.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpManager.ShowHelpForSourcePosition.Query">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpManager.ShowHelpForSourcePosition.ErrMsg">
+<short/>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpManager.ShowHelpForMessageLine">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpManager.ShowHelpForMessageLine.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpManager.ShowHelpForMessageLine.Query">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpManager.ShowHelpForMessageLine.ErrMsg">
+<short/>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpManager.ShowHelpForClass">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpManager.ShowHelpForClass.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpManager.ShowHelpForClass.Query">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpManager.ShowHelpForClass.ErrMsg">
+<short/>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpManager.ShowHelpFile">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpManager.ShowHelpFile.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpManager.ShowHelpFile.Filename">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpManager.ShowHelpFile.Title">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpManager.ShowHelpFile.MimeType">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpManager.ShowHelpFile.ErrMsg">
+<short/>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpManager.ShowHelp">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpManager.ShowHelp.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpManager.ShowHelp.URL">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpManager.ShowHelp.Title">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpManager.ShowHelp.MimeType">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpManager.ShowHelp.ErrMsg">
+<short/>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="HelpManager">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ShowTableOfContents">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ShowTableOfContents.Result">
+<short/>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ShowTableOfContents">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ShowTableOfContents.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowTableOfContents.ErrMsg">
+<short/>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ShowHelpOrErrorForContext">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ShowHelpOrErrorForContext.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpOrErrorForContext.HelpDatabaseID">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpOrErrorForContext.HelpContext">
+<short/>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ShowHelpForContext">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ShowHelpForContext.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpForContext.HelpDatabaseID">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpForContext.HelpContext">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpForContext.ErrMsg">
+<short/>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ShowHelpForContext">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ShowHelpForContext.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpForContext.HelpContext">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpForContext.ErrMsg">
+<short/>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ShowHelpOrErrorForKeyword">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ShowHelpOrErrorForKeyword.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpOrErrorForKeyword.HelpDatabaseID">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpOrErrorForKeyword.HelpKeyword">
+<short/>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ShowHelpForKeyword">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ShowHelpForKeyword.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpForKeyword.HelpDatabaseID">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpForKeyword.HelpKeyword">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpForKeyword.ErrMsg">
+<short/>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ShowHelpForKeyword">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ShowHelpForKeyword.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpForKeyword.HelpKeyword">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpForKeyword.ErrMsg">
+<short/>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ShowHelpForPascalContexts">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ShowHelpForPascalContexts.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpForPascalContexts.Filename">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpForPascalContexts.SourcePosition">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpForPascalContexts.ListOfPascalHelpContextList">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpForPascalContexts.ErrMsg">
+<short/>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ShowHelpOrErrorForSourcePosition">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ShowHelpOrErrorForSourcePosition.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpOrErrorForSourcePosition.Filename">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpOrErrorForSourcePosition.SourcePosition">
+<short/>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ShowHelpForMessageLine">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ShowHelpForMessageLine.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpForMessageLine.MessageLine">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpForMessageLine.MessageParts">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpForMessageLine.ErrMsg">
+<short/>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ShowHelpOrErrorForMessageLine">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ShowHelpOrErrorForMessageLine.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpOrErrorForMessageLine.MessageLine">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpOrErrorForMessageLine.MessageParts">
+<short/>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ShowHelpFile">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ShowHelpFile.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpFile.Filename">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpFile.Title">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpFile.MimeType">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpFile.ErrMsg">
+<short/>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ShowHelpFileOrError">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ShowHelpFileOrError.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpFileOrError.Filename">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpFileOrError.Title">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpFileOrError.MimeType">
+<short/>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ShowHelp">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ShowHelp.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelp.URL">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelp.Title">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelp.MimeType">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelp.ErrMsg">
+<short/>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ShowHelpOrError">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ShowHelpOrError.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpOrError.URL">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpOrError.Title">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShowHelpOrError.MimeType">
+<short/>
+</element>
+</module> <!-- HelpIntfs -->
+</package>
+</fpdoc-descriptions>

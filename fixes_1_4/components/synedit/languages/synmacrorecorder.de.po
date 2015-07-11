@@ -1,0 +1,27 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2007-03-31 21:29+0100\n"
+"Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: synmacrorecorder.scannotpause
+msgid "Can only pause when recording"
+msgstr "Kann nur während der Aufnahme anhalten"
+
+#: synmacrorecorder.scannotplay
+msgid "Cannot playback macro when recording"
+msgstr "Kann Makro während der Aufnahme nicht abspielen"
+
+#: synmacrorecorder.scannotrecord
+msgid "Cannot record macro when recording"
+msgstr "Kann Makro während der Aufnahme nicht aufnehmen"
+
+#: synmacrorecorder.scannotresume
+msgid "Can only resume when paused"
+msgstr "Kann nur während der Pause wiederaufnehmen"
+

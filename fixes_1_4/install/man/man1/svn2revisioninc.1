@@ -1,0 +1,58 @@
+.TH "svn2revisioninc" "1" "07 December 2008" "Lazarus" "Utility to create revision.inc file from SVN repository"
+.SH "NAME"
+svn2revisioninc \- The Lazarus utility to create revision.inc file from SVN repository.
+
+.SH "SYNOPSIS"
+.B svn2revisioninc
+.br
+.B svn2revisioninc
+.I [Options] <repository path> <output file>
+.br
+.B svn2revisioninc
+.I <repository path> [Options] <output file>
+
+.SH "DESCRIPTION"
+.B svn2revisioninc
+is used by
+.B Lazarus
+build system to create revision.inc file from SVN repository.
+
+.SH "NOTES"
+.TP
+1st switchless parameter = <repository path> (default is current directory)
+.TP
+2nd switchless parameter = <output file> (default is default revision.inc)
+
+.SH "OPTIONS"
+.TP 
+.BI "\-h"
+Displays a short help message.
+.TP 
+.BI "\-\-o"
+Output file. This overrides <output file>
+.TP 
+.BI "\-\-c=<name>"
+Name of constant (default 
+.B "RevisionStr"
+).
+.TP 
+.BI "\-\-s"
+write revision to stdout, do not create inc file
+.TP 
+.BI "\-\-v"
+Be verbose
+
+.SH "SEE ALSO"
+.IP 
+.BR lazarus\-ide (1)
+.BR startlazarus (1)
+.BR lazbuild (1)
+.BR fpc (1)
+.BR ld (1)
+.BR fpcmake (1)
+.BR make (1)
+
+.SH "Websites"
+.IP 
+.BR  http://www.lazarus.freepascal.org
+

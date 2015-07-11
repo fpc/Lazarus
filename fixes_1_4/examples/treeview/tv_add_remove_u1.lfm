@@ -1,0 +1,45 @@
+object Form1: TForm1
+  Left = 570
+  Height = 427
+  Top = 249
+  Width = 455
+  ActiveControl = but_Add
+  Caption = 'TreeView Example 1'
+  ClientHeight = 427
+  ClientWidth = 455
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  LCLVersion = '0.9.27'
+  object tv_eg1: TTreeView
+    Left = 0
+    Height = 427
+    Top = 0
+    Width = 196
+    Align = alLeft
+    DefaultItemHeight = 14
+    HideSelection = False
+    Indent = 19
+    ParentCtl3D = False
+    ReadOnly = True
+    TabOrder = 0
+    Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+  end
+  object but_Add: TButton
+    Left = 208
+    Height = 25
+    Top = 8
+    Width = 75
+    Caption = 'Add'
+    OnClick = but_AddClick
+    TabOrder = 1
+  end
+  object but_Remove: TButton
+    Left = 208
+    Height = 25
+    Top = 40
+    Width = 75
+    Caption = 'Remove'
+    OnClick = but_RemoveClick
+    TabOrder = 2
+  end
+end

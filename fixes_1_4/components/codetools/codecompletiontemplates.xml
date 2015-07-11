@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+<!--
+The first of any duplicated templates is the one that will be used.
+This allows backups to be saved in this file.
+-->
+
+<template name="SetterMethod">
+procedure <ClassName/>.<AccessParam/>(<PropVarName/>: <PropType/>);<br/>
+begin<br/>
+<indent/>if <VarName/>=<PropVarName/> then Exit;<br/>
+<indent/><VarName/>:=<PropVarName/>;<br/>
+end;
+</template>
+
+<template name="AssignMethodDef">
+procedure <ProcName/>(<ParamName/>: <ParamType/>);<if var="Override"> override;</if>
+</template>
+
+<template name="AssignMethod">
+procedure <ClassName/>.<ProcName/>(<ParamName/>: <ParamType/>);<br/>
+<ifnot var="SameType">
+var<br/>
+<indent/><SrcVar/>: <ClassName/>;<br/>
+</ifnot>
+begin<br/>
+<if var="CallInherited0">
+<indent/>inherited <ProcName/>(<ParamName/>);<br/>
+</if>
+<ifnot var="SameType">
+<indent/>if <ParamName/> is <ClassName/> then<br/>
+<indent/>begin<br/>
+<indent/><indent/><SrcVar/> := <ClassName/>(<ParamName/>);<br/>
+</ifnot>
+<count var="NodeExt">
+<indent/><indent/><NodeExt/> := <SrcVar/>.<NodeExt/>;<br/>
+</count>
+<ifnot var="SameType">
+<if var="CallInherited1">
+<indent/>end<br/>
+<indent/>else<br/>
+<indent/><indent/>inherited <ProcName/>(<ParamName/>);<br/>
+</if>
+<else>
+<indent/>end;<br/>
+</else>
+</ifnot>
+end;
+</template>
+
+<template name="PrettyColon">: </template>
+
+</templates>
+

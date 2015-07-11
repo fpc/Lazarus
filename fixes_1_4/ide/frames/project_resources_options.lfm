@@ -1,0 +1,142 @@
+object ResourcesOptionsFrame: TResourcesOptionsFrame
+  Left = 0
+  Height = 330
+  Top = 0
+  Width = 742
+  ClientHeight = 330
+  ClientWidth = 742
+  TabOrder = 0
+  DesignLeft = 735
+  DesignTop = 393
+  object lbResources: TListView
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ToolBar1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = lblResourceName
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 304
+    Top = 26
+    Width = 610
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoWidthLastColumn = True
+    BorderSpacing.Right = 6
+    Columns = <    
+      item
+        Caption = 'FileName'
+        Width = 200
+      end    
+      item
+        Caption = 'Type'
+        Width = 80
+      end    
+      item
+        Caption = 'Resource'
+        Width = 326
+      end>
+    HideSelection = False
+    ReadOnly = True
+    RowSelect = True
+    TabOrder = 0
+    ViewStyle = vsReport
+    OnInsert = lbResourcesInsert
+    OnKeyDown = lbResourcesKeyDown
+    OnSelectItem = lbResourcesSelectItem
+  end
+  object ToolBar1: TToolBar
+    Left = 0
+    Height = 26
+    Top = 0
+    Width = 742
+    Caption = 'ToolBar1'
+    EdgeBorders = []
+    List = True
+    ShowCaptions = True
+    TabOrder = 1
+    object btnAdd: TToolButton
+      Left = 1
+      Top = 0
+      Caption = 'btnAdd'
+      OnClick = btnAddClick
+    end
+    object btnDelete: TToolButton
+      Left = 49
+      Top = 0
+      Caption = 'btnDelete'
+      Enabled = False
+      OnClick = btnDeleteClick
+    end
+    object btnClear: TToolButton
+      Left = 108
+      Top = 0
+      Caption = 'btnClear'
+      Enabled = False
+      OnClick = btnClearClick
+    end
+  end
+  object lblResourceName: TLabel
+    AnchorSideLeft.Control = edResourceName
+    AnchorSideTop.Control = lbResources
+    Left = 616
+    Height = 15
+    Top = 26
+    Width = 93
+    Caption = 'lblResourceName'
+    FocusControl = edResourceName
+    ParentColor = False
+  end
+  object edResourceName: TEdit
+    AnchorSideLeft.Control = lblResourceName
+    AnchorSideTop.Control = lblResourceName
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 616
+    Height = 23
+    Top = 47
+    Width = 126
+    Anchors = [akTop, akRight]
+    BorderSpacing.Top = 6
+    CharCase = ecUppercase
+    Enabled = False
+    OnEditingDone = edResourceNameEditingDone
+    OnKeyDown = edResourceNameKeyDown
+    TabOrder = 2
+  end
+  object lblResourceType: TLabel
+    AnchorSideLeft.Control = cbResourceType
+    AnchorSideTop.Control = edResourceName
+    AnchorSideTop.Side = asrBottom
+    Left = 616
+    Height = 15
+    Top = 76
+    Width = 87
+    BorderSpacing.Top = 6
+    Caption = 'lblResourceType'
+    ParentColor = False
+  end
+  object cbResourceType: TComboBox
+    AnchorSideLeft.Control = edResourceName
+    AnchorSideTop.Control = lblResourceType
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 616
+    Height = 23
+    Top = 97
+    Width = 126
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    Enabled = False
+    ItemHeight = 15
+    OnChange = cbResourceTypeChange
+    Style = csDropDownList
+    TabOrder = 3
+  end
+  object dlgOpen: TOpenDialog
+    Options = [ofAllowMultiSelect, ofEnableSizing, ofViewDetail]
+    left = 146
+    top = 93
+  end
+end

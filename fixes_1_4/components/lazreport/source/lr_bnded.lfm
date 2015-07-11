@@ -1,0 +1,88 @@
+object frBandEditorForm: TfrBandEditorForm
+  Left = 487
+  Height = 154
+  Top = 310
+  Width = 341
+  HorzScrollBar.Page = 224
+  VertScrollBar.Page = 125
+  ActiveControl = Edit1
+  BorderStyle = bsDialog
+  Caption = 'Band data source'
+  ClientHeight = 154
+  ClientWidth = 341
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object GB1: TGroupBox
+    Left = 0
+    Height = 104
+    Top = 0
+    Width = 341
+    Align = alClient
+    Caption = 'Data source'
+    ClientHeight = 88
+    ClientWidth = 339
+    TabOrder = 0
+    object Label2: TLabel
+      AnchorSideLeft.Control = GB1
+      AnchorSideBottom.Control = Edit1
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 16
+      Top = 46
+      Width = 84
+      Anchors = [akLeft, akBottom]
+      BorderSpacing.Left = 6
+      Caption = '&Record count'
+      FocusControl = Edit1
+      ParentColor = False
+    end
+    object CB1: TComboBox
+      AnchorSideLeft.Control = GB1
+      AnchorSideTop.Control = GB1
+      AnchorSideRight.Control = GB1
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 29
+      Top = 6
+      Width = 327
+      HelpContext = 88
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      ItemHeight = 0
+      OnChange = CB1Click
+      Style = csDropDownList
+      TabOrder = 0
+    end
+    object Edit1: TEdit
+      AnchorSideLeft.Control = Label2
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = CB1
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = GB1
+      AnchorSideRight.Side = asrBottom
+      Left = 96
+      Height = 21
+      Top = 41
+      Width = 237
+      HelpContext = 95
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      TabOrder = 1
+      Text = '1'
+    end
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 38
+    Top = 110
+    Width = 329
+    OKButton.Name = 'OKButton'
+    HelpButton.Name = 'HelpButton'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+end

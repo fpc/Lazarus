@@ -1,0 +1,456 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<title></title>
+	<meta name="generator" content="LibreOffice 4.2.7.2 (Linux)">
+	<meta name="author" content="Zoran Vučenović">
+	<meta name="created" content="20100120;12052000">
+	<meta name="changedby" content="Zoran ">
+	<meta name="changed" content="20141224;174332214315218">
+	<meta name="CHANGEDBY" content="Zoran ">
+	<style type="text/css">
+	<!--
+		@page { margin: 2.01cm }
+		p { margin-bottom: 0.2cm }
+		h4.cjk { font-family: "WenQuanYi Micro Hei" }
+		h4.ctl { font-family: "Mangal" }
+		a.cjk:link { so-language: zxx }
+		a.ctl:link { so-language: zxx }
+	-->
+	</style>
+</head>
+<body lang="en-GB" dir="ltr" style="background: transparent">
+<p align="center" style="margin-bottom: 0cm"><font face="Arial, sans-serif"><font size="4" style="font-size: 16pt"><b>DateTimeControls
+Package for Lazarus</b></font></font></p>
+<p align="center" style="margin-left: 1.47cm; margin-bottom: 0cm"><br>
+</p>
+<p align="center" style="margin-bottom: 0cm"><a class="western" href="http://wiki.lazarus.freepascal.org/ZVDateTimeControls_Package"><font face="Arial, sans-serif"><font size="3" style="font-size: 12pt"><span lang="en-GB"><span style="font-weight: normal">http://wiki.lazarus.freepascal.org/DateTimeControls_Package</span></span></font></font></a></p>
+<p align="left" style="margin-bottom: 0cm"><br>
+</p>
+<p align="center" style="margin-left: 1.47cm; margin-bottom: 0cm"><br>
+</p>
+<p align="left" style="margin-bottom: 0cm; font-weight: normal"><font face="Arial, sans-serif"><font size="4" style="font-size: 14pt">The
+DateTimeControls package contains two controls:</font></font></p>
+<p align="left" style="margin-bottom: 0cm"><br>
+</p>
+<p align="left" style="margin-left: 2.01cm; margin-bottom: 0cm"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAABa0lEQVR4nGNhoDFgoYsFtbXT/1PT0ObmTEYUC0CguDicZIN6e1ei6Lty5QbDzp0XUdSgBNG0aTMYXr16xSAmJkaQzsrKgOsTEJgBpo8ccYDSx/7b2FgxYlgA0nTlyjWGly9fMtjZ2eGlQepgoKHhFwM/Pz9WX2JEso6OFhjD2PjonTsvg4PFxcUNq+EoFoDCEwaYmV/i1IAKxDHCHKcFKSluDLETn0J52kRaAAH23FcZ3N318VsAAovzpUkyGAbmzLkKpmERi9OCXTe4Gdw0vpJM4wMYkQzShItOcZcAs1NArt75AkWeaAsIufTRw7sMcvJKQP49uPicI9TyAZAGGY5Nnio+AAULssvJ9gG+sEamFcTYGW69YyfdByCALazRaZDhakLvGA6RYgEkrP8DDUfwyXE5Xh/M2fkSh4uFwC6GuZxkC2DBg4uGGUqs4SgWzJmzi2hNpACwBaAqDlRJ0MwCEMBWUFHVAloBAEDJ8StCrYz2AAAAAElFTkSuQmCC" name="grafika2" align="bottom" width="24" height="24" border="0"><a class="western" href="#TDateTimePicker">
+</a><a class="western" href="#TDateTimePicker"><font face="Arial, sans-serif"><font size="3" style="font-size: 12pt"><span lang="en-GB"><span style="font-weight: normal">TDateTimePicker</span></span></font></font></a></p>
+<p align="left" style="margin-left: 2.01cm; margin-bottom: 0cm"><br>
+</p>
+<p align="left" style="margin-left: 2.01cm; margin-bottom: 0cm"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAACDElEQVR4nGNhoDFgQeasOfri/5zt97EqTPFUZAixlmAkywKYwSDcl67LoCnDzXD9yVeG1x9/AvFvhldAGiTnUXP8P6kWgS0AadZTEWRQEOMEGwoCyIa//vQLLP/lx18GXD7Ea4GSDB/DpTvvwViMXxFqAcLwr0CDQXIwtSRbAAKWOiIMonxsOF0IkgdZBPIFyRY8fPaZQVxAGCxQGaHGYKcthBEHIJ+AwL0nn0i3QF6Kl+HUtbcMf//9Z9CWUwNLLJ+1GEMxOxCbAqPXtHb6f0IGNzdnMsItAAEzLWFwELWvuMXQDjWoqSmDKFfW1c1gyM72g/OnTt3EsHnL7v++Pq6MOIOoru4CmG9uboXX8JMnj8HZsbHxDIsXL0SRxxlE2AwgBNANh1sAAtiCCOR1EGBi+sDAyPgTp8GMjHzgYMEG8AZRSoobw64b3AxuGl8J0nPm7GIwM1eBGwwKf7gFie4KDPN3PsAIIpBmUmhkg1F8ACtbQGUSchDhc7GcvDLYgDk7X0B8cAR78KGUpsiFGCit43NxCpI+ZB/gtQAd4A1zqMsZbjAQ7wN0AHMZKDhALgYZistHFPmAKB9R4gOYy0HBge5yBTF2hlvv2CnzATb61jshBjWhd2DDQfQhciwAZR4wDfU+Og0zFJfheC0AFbcfPgBddugsvGhmZMLnHBItAAEBASGwuaQbiwAAyLhEnc/pwSsAAAAASUVORK5CYII=" name="grafika5" align="bottom" width="24" height="24" border="0"><a class="western" href="#TDBDateTimePicker">
+</a><a class="western" href="#TDBDateTimePicker"><font face="Arial, sans-serif"><font size="3" style="font-size: 12pt"><span lang="en-GB"><span style="font-weight: normal">TDBDateTimePicker</span></span></font></font></a></p>
+<p align="left" style="margin-bottom: 0cm"><br>
+</p>
+<p align="left" style="margin-bottom: 0cm"><font face="Arial, sans-serif"><b>Author</b></font></p>
+<p style="margin-left: 1.47cm; margin-bottom: 0cm"><a class="western" href="http://wiki.lazarus.freepascal.org/User:Zoran"><font face="Arial, sans-serif"><span lang="en-GB"><span style="font-weight: normal">Zoran
+Vučenović</span></span></font></a></p>
+<p style="margin-left: 1.47cm; margin-bottom: 0cm"><br>
+</p>
+<p style="margin-bottom: 0cm"><font face="Arial, sans-serif"><b>License</b></font></p>
+<p style="margin-left: 1.47cm; margin-bottom: 0cm; font-weight: normal">
+<font face="Arial, sans-serif">Modified LGPL, same as Lazarus
+component library.</font></p>
+<p style="margin-left: 1.47cm; margin-bottom: 0cm"><br>
+</p>
+<p align="left" style="margin-bottom: 0cm"><font face="Arial, sans-serif"><b>Introduction</b></font></p>
+<p style="margin-left: 1.47cm; margin-bottom: 0cm"><font face="Arial, sans-serif"><span lang="en-GB">Delphi's
+VCL has <a class="western" href="http://docwiki.embarcadero.com/VCL/en/ComCtrls.TDateTimePicker">a
+control named TDateTimePicker</a>, which I find very useful for
+editing dates. LCL, however, does not have this control. Instead, for
+editing dates <a class="western" href="http://lazarus-ccr.sourceforge.net/docs/lcl/editbtn/tdateedit.html">LCL
+has a control named TDateEdit</a>, but I prefer the VCL's
+TDateTimePicker.</span></font></p>
+<p align="left" style="margin-left: 1.47cm; margin-bottom: 0cm"><br>
+</p>
+<p style="margin-left: 1.47cm; margin-bottom: 0cm"><font face="Arial, sans-serif">Therefore,
+I tried to create a cross-platform Lazarus control which would
+resemble VCL's TDateTimePicker as much as possible.</font></p>
+<p style="margin-left: 1.47cm; margin-bottom: 0cm"><br>
+</p>
+<p style="margin-left: 1.47cm; margin-bottom: 0cm"><font face="Arial, sans-serif"><span lang="en-GB">The
+TDateTimePicker control does not use <a class="western" href="http://msdn.microsoft.com/en-us/library/system.windows.forms.datetimepicker.aspx">native
+Win control</a>. It descends from LCL's TCustomControl to be
+cross-platform. It has been tested on Windows with win32/64 and qt
+widgetsets, as well as on Linux with qt and gtk2 widgetsets.</span></font></p>
+<p style="margin-left: 1.47cm; margin-bottom: 0cm"><br>
+</p>
+<p style="margin-left: 1.47cm; margin-bottom: 0cm"><font face="Arial, sans-serif">Note
+that the TDateTimePicker control does not descend from TEdit, so it
+does not have unnecessary caret. The VCL's control doesn't have caret
+either.</font></p>
+<p style="margin-bottom: 0cm"><br>
+</p>
+<p style="margin-bottom: 0cm"><a name="TDateTimePicker"></a><font face="Arial, sans-serif"><b>TDateTimePicker
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAABa0lEQVR4nGNhoDFgoYsFtbXT/1PT0ObmTEYUC0CguDicZIN6e1ei6Lty5QbDzp0XUdSgBNG0aTMYXr16xSAmJkaQzsrKgOsTEJgBpo8ccYDSx/7b2FgxYlgA0nTlyjWGly9fMtjZ2eGlQepgoKHhFwM/Pz9WX2JEso6OFhjD2PjonTsvg4PFxcUNq+EoFoDCEwaYmV/i1IAKxDHCHKcFKSluDLETn0J52kRaAAH23FcZ3N318VsAAovzpUkyGAbmzLkKpmERi9OCXTe4Gdw0vpJM4wMYkQzShItOcZcAs1NArt75AkWeaAsIufTRw7sMcvJKQP49uPicI9TyAZAGGY5Nnio+AAULssvJ9gG+sEamFcTYGW69YyfdByCALazRaZDhakLvGA6RYgEkrP8DDUfwyXE5Xh/M2fkSh4uFwC6GuZxkC2DBg4uGGUqs4SgWzJmzi2hNpACwBaAqDlRJ0MwCEMBWUFHVAloBAEDJ8StCrYz2AAAAAElFTkSuQmCC" name="grafika9" align="middle" width="24" height="24" border="0"></b></font></p>
+<p style="margin-left: 0.84cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><b>Properties:</b></font></p>
+<p style="margin-left: 1.47cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif">I'll explain some properties of
+TDateTimePicker control: </font>
+</p>
+<p style="margin-top: 0.18cm; margin-bottom: 0cm"><br>
+</p>
+<p style="margin-left: 1.47cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><b>DateTime: TDateTime (public)</b></font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><span lang="en-GB">The DateTime value
+displayed on the control. This property is not published in object
+inspector, but its value is actually the same as Date and Time
+properties composed in one value. This property is provided to allow
+setting or reading of both date and time value at once in program
+code. In design time, Date and Time can be set in object inspector.
+<a class="western" href="#DateTimePicker Editor">There is also
+component editor</a> which provides easy way of setting this property
+in design time.</span></font></p>
+<p style="margin-top: 0.18cm; margin-bottom: 0cm"><br>
+</p>
+<p style="margin-left: 1.47cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><b>Date: TDate</b></font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif">The date displayed on the control
+which the user can edit.</font></p>
+<p style="margin-top: 0.18cm; margin-bottom: 0cm"><br>
+</p>
+<p style="margin-left: 1.47cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><b>Time: TTime</b></font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif">The time displayed on the control
+which the user can edit.</font></p>
+<p style="margin-top: 0.18cm; margin-bottom: 0cm"><br>
+</p>
+<p style="margin-left: 1.47cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><b>MinDate: TDate</b></font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif">The minimal date user can enter.</font></p>
+<p style="margin-top: 0.18cm; margin-bottom: 0cm"><br>
+</p>
+<p style="margin-left: 1.47cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><b>MaxDate: TDate</b></font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif">The maximal date user can enter.</font></p>
+<p style="margin-top: 0.18cm; margin-bottom: 0cm"><br>
+</p>
+<p style="margin-left: 1.47cm; margin-top: 0.18cm; margin-bottom: 0cm"><a name="NullInputAllowed"></a>
+<font face="Arial, sans-serif"><b>NullInputAllowed: Boolean</b></font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif">When True, the user can set the date
+to NullDate constant by pressing N key.</font></p>
+<p style="margin-top: 0.18cm; margin-bottom: 0cm"><br>
+</p>
+<p style="margin-left: 1.47cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><b>CenturyFrom: Word</b></font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif">When user enters the year in two-digit
+format, then the CenturyFrom property is used to determine which
+century the year belongs to. The default is 1941, which means that
+when two digit years is entered, it falls in interval 1941 – 2040.
+Note that MinDate and MaxDate properties can also have influence on
+the decision – for example, if the CenturyFrom is set to 1941 and
+MaxDate to 31. 12. 2010, if user enters year 23, it will be set to
+1923, because it can’t be 2033, due to MaxDate limit.</font></p>
+<p style="margin-top: 0.18cm; margin-bottom: 0cm"><br>
+</p>
+<p style="margin-left: 1.47cm; margin-top: 0.18cm; margin-bottom: 0cm"><a name="Kind"></a>
+<font face="Arial, sans-serif"><b>Kind: TDateTimeKind</b></font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Courier New, monospace"><b>type</b> TDateTimeKind =
+(dtkDate, dtkTime, dtkDateTime);</font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif">The control displays only date, only
+time or both.</font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUwAAAAoCAIAAAAaHlTwAAAFX0lEQVR4nO2cTYwURRTHe3dmej8kOxBBEyICBwIkarwoiUgkeiFiPEGCqxLQA7iJgRgh6OrFLJv4sXE5aMQDRAQJIXjWC3LxK94wwqoRF9dNBNxkZ79mZ/rLmq6Zcranu7qrp6tn+vX7QTq91W/evHr1f13VXbDZqdu/KQiCwCXb6gAQBJELFjmCAAeLHEGAg0WOIMDBIkcQ4GCRIwhwsMgRBDhY5AgCHPci/+SriZjjaBMO7ljjawMsOSnsMjz4g+g5k7/54pMSgmlrhj+/HNASTHJS2GV4+A4izOW6YejlxaJhaJZl1beXS4vkqHZ10x87KnR2dmbU7p5MBkIqivOzhl4c/fLHt8/+4GqwekXv7m0bhl9+Kqcuy6ldMYeH8JGkWwjKbqSSKVvr578ZuzY57WXGFG8aKowiN01jy6ufnXx9l7nvGQ8T69ufxx8ZOPXLmSOxRoYEQJJuISi7EaJ1kqmxyflPj+ze+uA6L7Oxv24Pnbn84cXvj+3dEWN0ciHi2LL5Pl3XWIuqdpXLJfvU0jXtofv7OAJCWogk3cIscgK5F5IJ7bEH1jpWPvVsXLPy4LOPHvjg0uB+r3kvkZD1Hqlnet7Ts0yx67xYnCOp0PWSVi14pB2RoVuwRd44oTUAdlojlUwl0td3N2sk1V4o/KtrZV0vty40xAcZug1U5OQxv+relg77sb6RY+/aEsKeNDp+5PhUKosfk01oblimoZM/3gZBEQpMNDmi/pVax/P5VY72fH7lnVsTptVslxOqBy/ac/i84xXWrX+R14fIzjl5bLR39SBq71AS3yfFqqq5cmng6KmP33uJttNz8hEid9PUfTPARygw0eSE8L96Re/VX2+uvad3Yvx6/Wcr/TXNmempP/4pEJtwnfUKIBF68AovuB/Zw0eJXLf+RS56XxT1ENA/TajoN9PjwNHTSjVH+9n5R+/usw0i6J1vYBzZeU0XrN3hn58utbv3z3OHRy5c2XbsO1cDUt792zeNn3+NHzCHJOshpJ/Yho9Z0WNUuhV4JnfchESCdvEgejUE9MGG+Dxx/IVDg2eVSo5O00ukRdM0XdMJEX6jsnRQReeT5u210qKhFw3D5HxWMwyttKBYnU3ukydOD0Fo7fBRItdt0CJ33Jxc24N7EL0aFosdTxx//tDgOdpKzmv3wghmcgeiq9lqoLUlaDh7Rmz75MnUgz+tHT52nR0j0W3QF29NZrwlI+rI+OhQ/+G3viDHWrtp2UT+va2FvZ5V3SbqhfnZ5jcUEqqHpBC5bsVevHm1eDUGsZc3orbbJZ5Hh577v8V+E2UpvJVtVIROjpArBt0nLxbn6CY5Y2FhVtea3SdPrh5CE/PwRa5bsS00+hX85xbXq/x3D0H805b6FZHvsxN5dLHs1Nh2S7d57H0Ionhi49ntYAgF1njVtyNhOl7bJ5+ZmWJb5eRcq/Q3gn3yhOqB05f2Gr6odRvy7bpr/72u8j2E8M/5IIXuJF27Mbn+3rvI4qajYSfDvhuauqY1uZ8UIlQZ9g7qN1oLhTv5/CpyrCzzyAXDaHKfPIl64NBWwydJtzD/xVsmk931+IaRSz/t2bru4fXLGw0qd0rLunFr7uTXv+95YmP8EUqio26fnEnk75tjs9NTEd7XEElI0i3QIs+p77+yc+TClXcuXuX/b57+7ZuGDzwdZ2xSiWGfHJGHJN3CLPJsNqdkc2/s3Un+tjqWWEltx2EgafhgFjmCIAzPIg/+i4FSSAqTk8Iug8G9yIP8cr/UksLkpLDLkMDlOoIAB4scQYCDRY4gwMEiRxDgYJEjCHCwyBEEOFjkCAIcLHIEAQ4WOYIA5z9Ug7utBYCZCgAAAABJRU5ErkJggg==" name="grafika4" align="bottom" width="332" height="40" border="0"></p>
+<p style="margin-top: 0.18cm; margin-bottom: 0cm"><br>
+</p>
+<p style="margin-left: 1.47cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><b>DateMode: TDTDateMode</b></font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Courier New, monospace"><b>type</b> TDTDateMode =
+(dmComboBox, dmUpDown, dmNone);</font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><span lang="en-GB">When DateMode is
+set to dmComboBox, there is a button on the right side of the
+control. When user clicks the button, <a class="western" href="http://lazarus-ccr.sourceforge.net/docs/lcl/calendar/tcalendar.html">the
+calendar control</a> is shown, allowing the user to pick the date.
+When set to dmUpDown, then UpDown buttons are shown.</span></font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif">In my opinion the UpDown buttons
+aren't really useful in this control, they are provided for
+compatibility with Delphi's TDateTimePicker. Up and down keys can
+always serve for same purpose, so can mouse wheel.</font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif">In the next picture the first
+control's DateMode is set to dmComboBox and the second control's to
+dmUpDown.</font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJcAAABICAIAAAB0lfDUAAAFhUlEQVR4nO2cXWwUVRTHh+7u9EPSQkRNiAg8EDRR4ouSiESjL0SMTyVBVAL6ADYxEAIErb6Y0sSPxvKgsT5ARJAQgs/6grz4Fd8wQtUIxdpEwCbdlna7Ox/XO3PLuJ2598y9s7Od6c35QTbTM2fP3rv/mTtzuvtvcfzm7wayyClmPQAkBVBFHUAVdQBV1AFUUQdQRR1AFXWAo+KnX48u/DgQefZuWRWK8M/Ft155pvmDQZLQ/8WFaBBX1MxwHLs2W3EcixBSH69VZ+mj2drGflzi0dLSUjDb2gsFvl6oYmZ4EtqVwa9+OvPt8OWxCVHayuUd2zav63/tWdcxUcXc4boOlXB4bPqzQ9s2PbJGlDb8182+kxc+OvfDkZ1bRDmoYpbQs3DoYPcTD68OLar1rF+1Yu8Lj+/58Hzv7udFOahiltCFdOND99u2JU4htmVteKATWHINGRXptXWunn+8BD/WB4F8biRBPg2GfgRqAijVUZ1LgnG6rkt3isdLXMem/8QJHjEq1o8p2AbeuGg+t4JqfujQgWvC05GvozqXZOMkhCnk7eo5fPyT919lcbZNn+ISx3VteF4xKqoe6aoVJOuzd7DBkUjWAQ4L0fkaxEP15WbHckjP4RPGnHi7g+2P39vlJ8TUkb0uhg4rlVFyKqjubRL1b3qKc4kmA/XZRZHuPXb05X29pwxPvBNsF41YlmVbNgV+CSkVQ4cbNy5fQXVv81C9XkSfJZMfXBQEmSR4PHb0pX29p1mUbt85C9M4Fxt/i/MpYTJSH23o0Bns27H/7S/p4524S3zgIgp3N6KIKCiTn0MJE89FqVSAnzAvZ7Dvxf8j3u2NSwwXLqLQabCa8LWEuxe+4MvUZ5H6RS/x9Uy+TuK5KI2TXvaIr5mfN7+L89sM26rSHHheSe5RuRMW7YUrJKgPPDEW1cpKc1EdJxV45fKOy1fH1t53F103l/B6cdpN0q7/z3/KNFNUx8Df3WRIoVDsfnLdwPmft29a8+jaZdEE7xwl5OqN20Pf/LH9qfVAKVQxMwol84PXtw6cvfjuuUvwZxo7nn6wf89zQClUMTOKxZJRLL25cyv932ipVAaEZAtfRe7XApDcwlEx+uUcJOfgiqoDqKIOoIo6gCrqAKqoA6iiDqCKOoAq6gCqqAOoog6gijqAKuoAqqgD6AhfTIg+bkJH+KIB+NAXV9TMqExPMS/xO6d+5CYELuKSubRktgKlUMXMcF1n4xufDx3sdneJ7KXku19GHus5/uvJQ3ApVDFLoi5U02yt1ar+ppT/lIEqZozjWMH3+dvblxq+kJXKbUKIbVetOUVjQBUzhkrFvj/e2Xl3EKRylsv/2lbNtmsyRZQd4dwInG/EWVJi6ydwZotoxBGewA0fBEXjZI7wrq57QvGurhW3boy6JMYLzlB2hKu6qI3I5FXrJ3BmAy8XO1p4r6SFT8YUxnwal367vvrejtGRKyEfD1V3cmI81qHBUHbbJLC5ELEPe4Ftb0TCsa1qxgMEhkuZbR3XTu8fOHtx85HvuQnsu/0jZw7EjiGJI1xmiKooVUvsfBO9tHwdmdeVdM9b1VnaLzoO5E206M1PdcYgLSn0i7mS0IhbCVUJLX1ANe6VHn5ngHEuaL+YNwnzjOpcgn7R5J1qM9NT6fSLjTvC4bLZSpgHdzvrF2mDyJrFgJmZKdtKr1+M3g4ANwgyfm64frSCTESSBh3hsa+r5J5nBP3i5OR40DLSbcszgqfUL0reo6q6ooNIbDWlYcSiWrkZcwlR/xfEyuVbtHGkj96f1qA76J1PKv0i0jzq+8XA1P/39eGpiXEi7ehnoIqZkUG/iKQOOsKReaAjXAfQEa4DuKLqAKqoA6iiDqCKOoAq6gCqqAOoog78B/A7ybpFO77LAAAAAElFTkSuQmCC" name="grafika1" align="bottom" width="151" height="72" border="0"></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif">If DateMode is dmComboBox, when the
+user clicks on the button a calendar drops down, allowing the user to
+pick a date.</font></p>
+<p style="margin-top: 0.18cm; margin-bottom: 0cm"><br>
+</p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><b>Note:</b> if Kind property is set
+to dtkTime, the calendar control is pointless. Therefore, if DateMode
+is dmComboBox, the UpDown is shown instead.</font></p>
+<p style="margin-top: 0.18cm; margin-bottom: 0cm"><br>
+</p>
+<p style="margin-left: 1.47cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><b>ShowCheckBox: Boolean</b></font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif">When set, there is a check box on the
+left side of the control. When unchecked, the display appears grayed
+and user interaction with the date or time is not possible. (The
+control is still enabled, though, only in sense that the check box
+remains enabled).</font></p>
+<p style="margin-left: 2.01cm"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHQAAAAjCAIAAADKc7k/AAADpklEQVR4nO2ZXUgUURTHx511M4NICALJ0gexwEIilNK+H5KUCFJQK8l80HyxoCSzp1CjD1GhIntI6DvE6KGHfNl6EMSKCAORIoNCKCEoKPyYr87MHafZnfsxu3rT5P5XLsdzzxzu/Dhz7t3Z4Pfx95IQHwXnewGLWQIuRwm4HCXgcpSAy1HRcG88+zIv6/jfVVuY5nViKvfskd38F7Oo1HonjPWLthAhTVOnJyc0TTEMw+2fnpqEMbQkCf2bYCoQCMihpKWyTGQo4EbIJKtOdDwefPB8ZHjsByksNSW5dFtma/UeXQvFCTej7IKfBX162Oh15p0cZF442J7nJ/+/lK5rQHZk7PfN06X5G9JJYSOfx5tvh9t7Bs5UFlKyMSq3v60cGdZTEIBRlmXzeTBH08iuvhr7LSxoQc12nSrZmr02qjO4lZW2snZ/bs2V3qaqYkoqX22BRBYU89oXvKAb5K1fraoKOcRQFWXjmuWUvoHEhoslu/lp7tsDb8CgXOg89e4WAU5Sx4A9wl67q2TASaogb7yfDNiYKOm6DvOkWZjSNRU+5ABbDLgksjAFhrNQr9wQHZvSZN0IHJuS3xvvJwM2xivDQODM2bqGW9cvHUN+ZMNVuqHpukpamyMGXER2e3jXwN5+N1nJPo4Qbx5bnuCMaRNDyEhTs8xAvw6NdQ3dks20yrGvXTxqBbAXwK5cYArGlr6C18UvHbLvDg6hkx79coTSz8khblEKMG6hhgtpO1sO1zfdlUym3WgKPIqiqIoKYuZhwEXdANlesjDQL3e6ASe+PMhaMpyxs+VQfdM95AV7pmbnonJRn8XWLAxxPXFzJm5k7Z7jJO9orjhx7j6MM37dsMTM46dyzeKFs0HOk01RZH1uaBTFCsi9U3EiK9lYI5J3NJf/9Zg7mm5IOjMPs3Lt8ywY/slKkXuX+9ggEbi7d56ooxWJo3sBqJSYGbAxXkFLNSyUVmjEbRrWOUxVpiCGcvtI7LaAyCbMvKvwQxbJSxDLFGszPVg0MWXACu4rNSV5eHQsY9UyePgTPIc5q2p1+BLx8etPiKSkkphwF9+3W7pkOVhSkNnW+6osPz0nY4U3wKxowxj99qur70PZjix6Nhpc7BsZn1qAL2X8SE4MXT5e1PboxfmeIfpbsYqd61pr9tGziVeOEQoGE6VgYmNlEfzNQbbZpxAiCQOX9KOFUKyKhov9oU0oPom2wFECLkcJuBwl4HKUgMtRAi5HCbgc9QfVYsutUYIvnAAAAABJRU5ErkJggg==" name="grafika3" align="bottom" width="116" height="35" border="0"></p>
+<p><br><br>
+</p>
+<p style="margin-left: 1.47cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><b>Checked: Boolean</b></font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif">If ShowCheckBox is set to True, this
+property determines whether the check box is checked or not. If
+ShowCheckBox is False, this property has no purpose and is
+automatically set to True.</font></p>
+<p style="margin-top: 0.18cm; margin-bottom: 0cm"><br>
+</p>
+<p style="margin-left: 1.47cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><b>DateDisplayOrder: TDateDisplayOrder</b></font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Courier New, monospace"><b>type</b> TDateDisplayOrder =
+(ddoDMY, ddoMDY, ddoYMD, ddoTryDefault);</font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><span lang="en-GB">Defines the order
+for displaying day, month and year part of the date. When
+ddoTryDefault is set, then the controls tries to determine the order
+from <a class="western" href="http://lazarus-ccr.sourceforge.net/docs/rtl/sysutils/shortdateformat.html">ShortDateFormat
+global variable</a>.</span></font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><span lang="en-GB">This is similar to
+<a class="western" href="http://lazarus-ccr.sourceforge.net/docs/lcl/editbtn/tdateedit.dateorder.html">DateEdit's
+DateOrder</a> property.</span></font></p>
+<p style="margin-top: 0.18cm; margin-bottom: 0cm"><br>
+</p>
+<p style="margin-left: 1.47cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><b>DateSeparator: String</b></font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif">Defines the string used to separate
+date, month and year date parts. Setting this property automatically
+sets the UseDefaultSeparators property to False. To ensure that date
+and time separators are set to user's system defaults, set
+UseDefaultSeparators property to True.</font></p>
+<p style="margin-top: 0.18cm; margin-bottom: 0cm"><br>
+</p>
+<p style="margin-left: 1.47cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><b>TimeSeparator: String</b></font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif">Defines the string used to separate
+hour, minute, second and millisecond time parts. Setting this
+property automatically sets the UseDefaultSeparators property to
+False. To ensure that date and time separators are set to user's
+system defaults, set UseDefaultSeparators property to True.</font></p>
+<p style="margin-top: 0.18cm; margin-bottom: 0cm"><br>
+</p>
+<p style="margin-left: 1.47cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><b>UseDefaultSeparators: Boolean</b></font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><span lang="en-GB">When this property
+is set to True, then the DateSeparator and TimeSeparator properties
+will be set to <a class="western" href="http://lazarus-ccr.sourceforge.net/docs/rtl/sysutils/dateseparator.html">DateSeparator</a>
+and <a class="western" href="http://lazarus-ccr.sourceforge.net/docs/rtl/sysutils/timeseparator.html">TimeSeparator</a>
+global variables, which are set to user system defaults when
+application initializes.</span></font></p>
+<p style="margin-top: 0.18cm; margin-bottom: 0cm"><br>
+</p>
+<p style="margin-left: 1.47cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><b>TrailingSeparator: Boolean</b></font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif">When set to True, then the
+DateSeparator is shown once more, after the last date part. This
+property exists because in some languages the correct date format is
+<b>31. 1. 2010.</b> including the last point, after the year.</font></p>
+<p style="margin-top: 0.18cm; margin-bottom: 0cm"><br>
+</p>
+<p style="margin-left: 1.47cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><b>LeadingZeros: Boolean</b></font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif">Determines whether the date and time
+parts are displayed with or without leading zeros (this actually
+affects day, month and hour parts of date and time display).</font></p>
+<p style="margin-top: 0.18cm; margin-bottom: 0cm"><br>
+</p>
+<p style="margin-left: 1.47cm; margin-top: 0.18cm; margin-bottom: 0cm"><a name="TimeDisplay"></a>
+<font face="Arial, sans-serif"><b>TimeDisplay: TTimeDisplay</b></font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><font face="Courier New, monospace"><b>type</b></font>
+<font face="Courier New, monospace">TTimeDisplay = (tdHM, tdHMS,
+tdHMSMs);</font></font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif">If Kind is dtkTime or dtkDateTime,
+then TimeDisplay value of tdHM means that only hours and minutes are
+displayed, tdHMS adds displaying of seconds and value of tdHMSMs
+means that milliseconds are displayed too.</font></p>
+<p style="margin-top: 0.18cm; margin-bottom: 0cm"><br>
+</p>
+<p style="margin-left: 1.47cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><b>TimeFormat: TTimeFormat</b></font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Courier New, monospace"><b>type</b> TTimeFormat = (tf12,
+tf24);</font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif">The value of tf12 sets the display of
+time to 12 hours format, with AM/PM string and tf24 sets to 24 hours
+format.</font></p>
+<p style="margin-top: 0.18cm; margin-bottom: 0cm"><br>
+</p>
+<p style="margin-left: 1.47cm; margin-top: 0.18cm; margin-bottom: 0cm"><a name="TextForNullDate"></a>
+<font face="Arial, sans-serif"><b>TextForNullDate: String</b></font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><span lang="en-GB">Text which appears
+when the null date is set and control does not have focus. When
+control is focused, the text changes to defined format, but
+displaying zeros for date, and nines for time (for example
+&quot;00/00/0000 99:99:99&quot;), which is appropriate to user input.
+User can set the date to NullDate by pressing N key, provided
+<a class="western" href="#NullInputAllowed">NullInputAllowed</a>
+property is True.</span></font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif">When TextForNullDate is set to empty
+string, zeros/nines format is displayed even when control does not
+have focus. If you want empty display, this can be achieved by
+setting TextForNullDate to one or more space characters.</font></p>
+<p style="margin-top: 0.18cm; margin-bottom: 0cm"><br>
+</p>
+<p style="margin-left: 1.47cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><b>AutoAdvance: Boolean</b></font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif">When true, then when user is entering
+valid text, the selection automatically advances to next part of
+date/time. The default is False because of compatibility with
+previous version, but switching on this option makes user interaction
+easier, this is a useful option and I recommend setting this property
+to true.</font></p>
+<p style="margin-top: 0.18cm; margin-bottom: 0cm"><br>
+</p>
+<p style="margin-left: 1.47cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><b>Cascade: Boolean</b></font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif">When true, then when user is
+increasing or decreasing one date/time part (using up-down keys or
+mouse wheel), it can increase or decrease by one another date/time
+part. For example, when date is 31.08.2013. and user increases the
+day, the day becomes 1 and month increases by one and becomes 9, so
+the date becomes 01.09.2013. If Cascade were set to False, the month
+would not change and the date would become 01.08.2013.</font></p>
+<p style="margin-top: 0.18cm; margin-bottom: 0cm"><br>
+</p>
+<p style="margin-left: 1.47cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><b>AutoButtonSize: Boolean</b></font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif">When true, the width of the arrow
+button (or up-down control, if it is shown instead) is automatically
+adjusted proportionally to the height.</font></p>
+<p style="margin-top: 0.18cm; margin-bottom: 0cm"><br>
+</p>
+<p style="margin-left: 1.47cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><b>HideDateTimeParts: TDateTimeParts</b></font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Courier New, monospace"><b>type</b></font></p>
+<p style="margin-left: 2.49cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Courier New, monospace">TDateTimePart = (dtpDay,
+dtpMonth, dtpYear, dtpHour, dtpMinute, dtpSecond, dtpMiliSec,
+dtpAMPM);</font></p>
+<p style="margin-left: 2.49cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Courier New, monospace">TDateTimeParts = set of
+dtpDay..dtpMiliSec;</font></p>
+<p style="margin-left: 2.01cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><span lang="en-GB">Wit</span></font><font face="Arial, sans-serif"><span lang="en-GB"><span style="font-weight: normal">h
+HideDateTimeParts prope</span></span></font><font face="Arial, sans-serif"><span lang="en-GB">rty,
+you can chose which date/time parts will not be shown. Most of the
+time you do not need to use this property and you can get the format
+you want by using other properties (see <a class="western" href="#Kind">Kind</a>,
+<a class="western" href="#TimeDisplay">TimeDisplay</a>). However, if
+you need more control (for example, you might want to let user edit
+only days, months and hours), you can additionally hide any date/time
+parts with this control. Keep in mind that, with this property, you
+cannot show any date/time part which is hidden by another property
+(for example, if TimeDisplay is tdHM, the second part is not shown,
+regardless of this property).</span></font></p>
+<p style="margin-top: 0.18cm; margin-bottom: 0cm"><br>
+</p>
+<p style="margin-top: 0.18cm; margin-bottom: 0cm"><a name="TDBDateTimePicker"></a>
+<font face="Arial, sans-serif"><b>TDBDateTimePicker 
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAACDElEQVR4nGNhoDFgQeasOfri/5zt97EqTPFUZAixlmAkywKYwSDcl67LoCnDzXD9yVeG1x9/AvFvhldAGiTnUXP8P6kWgS0AadZTEWRQEOMEGwoCyIa//vQLLP/lx18GXD7Ea4GSDB/DpTvvwViMXxFqAcLwr0CDQXIwtSRbAAKWOiIMonxsOF0IkgdZBPIFyRY8fPaZQVxAGCxQGaHGYKcthBEHIJ+AwL0nn0i3QF6Kl+HUtbcMf//9Z9CWUwNLLJ+1GEMxOxCbAqPXtHb6f0IGNzdnMsItAAEzLWFwELWvuMXQDjWoqSmDKFfW1c1gyM72g/OnTt3EsHnL7v++Pq6MOIOoru4CmG9uboXX8JMnj8HZsbHxDIsXL0SRxxlE2AwgBNANh1sAAtiCCOR1EGBi+sDAyPgTp8GMjHzgYMEG8AZRSoobw64b3AxuGl8J0nPm7GIwM1eBGwwKf7gFie4KDPN3PsAIIpBmUmhkg1F8ACtbQGUSchDhc7GcvDLYgDk7X0B8cAR78KGUpsiFGCit43NxCpI+ZB/gtQAd4A1zqMsZbjAQ7wN0AHMZKDhALgYZistHFPmAKB9R4gOYy0HBge5yBTF2hlvv2CnzATb61jshBjWhd2DDQfQhciwAZR4wDfU+Og0zFJfheC0AFbcfPgBddugsvGhmZMLnHBItAAEBASGwuaQbiwAAyLhEnc/pwSsAAAAASUVORK5CYII=" name="grafika6" align="middle" width="24" height="24" border="0"></b></font></p>
+<p style="margin-left: 0.84cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif">TDBDateTimePicker is a data-aware
+version of TDateTimePicker, with nice way of handling null database
+values.</font></p>
+<p style="margin-top: 0.18cm; margin-bottom: 0cm"><br>
+</p>
+<h4 class="western" style="margin-left: 1.47cm; margin-top: 0.18cm; margin-bottom: 0.2cm">
+<font face="Arial, sans-serif"><b>Displaying null values </b></font>
+</h4>
+<dd style="margin-left: 2cm; margin-bottom: 0.51cm"><font face="Arial, sans-serif">When
+the underlying DB field has null value, then:</font></dd>
+<ul>
+	<ul><li><dd style="margin-bottom: 0.51cm">
+		<font face="Arial, sans-serif">When the control gets focus, the
+		text changes to defined format, but displaying zeros for date parts
+		and nines for time parts (for example &quot;00/00/0000 99:99:99&quot;),
+		which is appropriate to user input.</font></dd><li><dd style="margin-bottom: 0.51cm">
+		<font face="Arial, sans-serif"><span lang="en-GB">When the control
+		is not focused, then it displays the text defined in
+		<a class="western" href="#TextForNullDate">TextForNullDate</a>
+		property. The default is &quot;NULL&quot;.</span></font></dd></ul>
+</ul>
+<h4 class="western" style="margin-left: 1.47cm; margin-top: 0.18cm; margin-bottom: 0.2cm">
+<font face="Arial, sans-serif">Setting the field value to null </font>
+</h4>
+<dd style="margin-left: 2cm; margin-bottom: 0.51cm"><font face="Arial, sans-serif"><span lang="en-GB">If
+<a class="western" href="#NullInputAllowed">NullInputAllowed</a>
+property is True, the user can set the date and time to null, by
+pressing N key. </span></font>
+</dd><p style="margin-top: 0.18cm; margin-bottom: 0cm">
+<a name="DateTimePicker Editor"></a><font face="Arial, sans-serif"><b>DateTimePicker
+Editor</b></font></p>
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAaQAAADHCAIAAADZObAiAAAACXBIWXMAAA7DAAAOxAGILj6jAAAl6UlEQVR4nO2dDVxUVfrHzyCIikYuWSqi45CpZJHubq6FhWwYhrmika1l5kpYvPx9mdzK0kxdtl0aXz4wWAq1mbWVGa4b6i4tUn+yv25bka7vEKTgW2yitYC8zP+5987cuXNfYAYHRrm/78cPnnvOc5/7nHs4v3nOvZe5/jabzWAw0E/G2J133skAAODqp7q6uqmp6cSJE2KNv6B0JHPXXHPNypUrR4wYMXDgQB+GCAAAl09zc3Plf2qN9yU0lO47VVVFNf6C0s2cOXPatGk7v66p2P8fRv8AAODqZ8c77xw+dXZAaCjpnT9tU05HSrfr6/8YmMHXsQEAgNfY+9nxm8aaekTfS2V/Suu2bNnytwPfG/ygdACArsaxf36zeq116NChXGYXEhJiMNT6OiQAgO4IOH+26JWs6n8f8K7bgTePinkivfHa64XN5hbbwIEDObELDAz0MyCtAwB0NtuWP/fkU4+PHfu8d93u3Vu6fvlz96/LFTYb+Z/+wga0DgDQ+fxQ893tP7/lx0Nfe9ct+cys+U6UtUbuyTqH2HUP8PfuwQAAwB1szS0tLc12YbI5KvkMjH/8l79typddUzKDjdm4vWwGvsjspja7TyaRtZN8aidmdrLU7tPXxs/e5diIWLh7+bSwdnTj6zU3rvrApYZz9YtPls8oGPfu2/e253k+aWC3zxWcVL+l7ZDsraHtOZbLGYhbffw3P1dzy1o5NACgbVqam1hTk03cdqge1Xx45PQ/jp8Vqn954/WTh/dX1igd2gSfEllr4qTPIXZ+Bj9Xe7Iam/Ten+O4OVySFzXhwcpN7y+KUguVWq2hdks5ty0qf3+R0mbWipJZbZ0BLZyBnf7g12m/f3t09iP9Q1txSPbUZT/PbzVLz4C224HioVs7DwAALWzNzS1NjfaMjM/SREjX3n4zSyjPnJVOlkXf1EhrJplCGJNkfKJQNjcziaxdki5jlU/YGXhd5GvHJ21Z+W3iP75eND5SLVaJpSbu2LiJ6GrAtNT7VltLT80aMKBDDt36jspWL/YRAP3Q0tTccqnRZtcph9px61g2YUhfUrTNb6yjCvr5yOz59JMWvbRJZWq1NTXanItXJq59ySeTyFqTVOyYLLETK4X60LvvGL3088+XR97Ovl499MX3+coHNm1dxPLueHQHlROHbuQ2x7NTm5dNX/pvrnn2C3uW36rqjf1v3h3W0K3vxA3gC2sn71nA7XLf2m8mn3wo5eW9ZHHzU5+sEBbOqg79JAFzZdEhbZ/YlXrXxi+5FnI493apzaM71IPkdmcPsB3vj9COmUmDufmplUNcDp1aNV3rPIhhaB8FAH3TTImYzS5O0otvcYOvtdlaSNfeeG01VdLPZj5lm/2bRdGDg+8dci2JGnctz8Ak6aAkN3RM3kv8xT+tZSy37DMwcfXHb/KLwdvMlflmqvnf3HFZf/v1e49/ttkwLit063uTBvKV0z+8c2vlKirvW/b8B1W3TQ/T9MZtUmHvxjfuf+Wzyhv2LUuYP7TyqZL8z8IYV87bP31FpIpDp6szW607Rt//ykA/P6fDEztT7trzy5L8nDDXjlT9LfVRw7rK/NtVg+TCqDDyh3Y5A3s3Th+6kSvPXv6ZEMxS47rKVbfToR98grFkexfI/92K82C3ZNVvPj/9ob9x9apHAUDv1Bz+ujJ/s1ZrOGPf9zKSuq1bvUyomb9oRWRdVfiXnx77UtPnkO7dmUTWXO7Gqi6/DJJqAxs7aBC/uW/Z1P/5E183dp7DwG5ZVVHJ9hZMH7JB2OeBWINhsKo3yebYec8/2p8KY2Pj2eFB4wYb7OWsU9WG25jSIf23d4O95rEX/+/R/lKH1cV7vnzswfWDZZ3ZsyqK3VOyaixfrRIkF0aUcGgXxs7bumVSqGOLdhy9Km0sZ9X/gfT4l7MMsu67nIfHEnlLFvrogw88v6/KYAjVOgoAeqdb9x42R1rnlBxuw7YvMLQ0oH/mS89cunRJaKDy4mdeMvh3u72+mtlv2DpmoE2a4TkVx0XsFBfwycqPvwLPb538+NMvRz4YZvA7uWnJ/7AV+07cxip3PLFYSPaclpzrx1bsW3mbvC+u3pyb0nq1MlM6/MTAxj3xwXv3DVLzL9ykdklTqWkvM4w7UFnp5zfEXqHiUxqeaszCPQk+l1Pvguw8OMPgwpJ3FgBgx9Ctm3+vIEU1J3X/59fvK0PI71YsEpTuuWWrqUwF+kllP/+AX7Sc0/LJJLLW6Ho3Vi52TJiu3P+fvDLtOWP2yTFUrj5+YMxNC2jGVn1S8gUbzxlILMOGGtlz7219fMwDQ7S9STel9WrlUKVDmSvXytDo8WOU9uPGL9vy0J8HLdn66UtUrxJkqz7FStrxi5nb981+Yiw7/X72h4w96dIF+XnYt2/VmLGU5W167705Dy2WCDEyOwAkdOse6B/UW3iKziA+McfzRX3I8qXpjY3cY3LLV2b9zP8iaRzVcJtL06kmKqje/pCdeH+D3598MomsuYidQeWa3Wfrpw5az5XHpfylOl5Yzf0iOeW1cUk/X8LGzLl/DLeXwRA9bsbM58hyxjsFi6Of/EvGM7+6c/IfeGOu5i6HN8GYuW5K61XLSocyVzKHQydveOfkz+z291urnxhrbxq9+LPq5HGTCzPyNjzmtk/xDLBbnv7spcToJ61z4lMHfchtZtzP/uraBeV5GDTZfva2jpZ3EABgp1tgj4DefSQPkDhvUYw1NJCiCbVjezZEBdm6/ehSExDU2+VmrM2+riKfTCJrTfxPh9jJ8427n/zi1JMqgRkn556a7Fo1+ulTO552bITN+cMXcxR7kbe71Tal9RplhUNXV6r7SiMXmySRu+tTcQbGZez4IsNenjFHdui2zsPdakcBQO/49+wVENRHtWlCEJvAWhxbAfRPWeO6h134yCeTyJrwFF9rNygAAKCj6dazF3fNjn+ChElXsQbH6pR7dQSzOf8WjMlMxSeRxRyvmyB24l9QuN6N7fAuAQCAjD7X33Co/NQt9/zKu273HzxOnkVZg9gBAHzMfb99zvr7FT/UfOddt71Drot/dplE7LiS1t1YAADocEJvvS35zx+0bXd5NNtwzQ4AoAOa2/wLCgAA6AK0CGK3Z88eYftnYd19GQ4AAHQAn5+4RJkdCR2+oBgAoAsgdgAAXQCxAwDoAogdAEAXQOwAALoAYgcA0AUQOwCALoDYAQB0AcQOAKALIHYAAF0AsQMA6AKIHQBAF0DsAAC6AGIHANAFEDsAgC6A2AEAdAHEDgCgCyB2AABdALEDAOgCiJ1OKSre4+sQOo+Y6Dt8HYL3wQh6CsROv0ydEufrEDqDbdt3+TqEjgIj6BEQOwCALoDYgauMV199taqqqqGhQcsgMDAwNDR03rx5nRkVcB9fjSDEDlxNrF23LrB797S0tJCQEC2bmpqarVu3kuWC+fM7MzbgDj4cQYgduJr47ty5BQsWBAcH19XVadn07ds3MTFx7dq1nRkYcBMfjiDEDlxNNDY20kxoZZ4QtD4iG7LstKiA+/hwBCF2nUDR4uCEDcn5tZkx0tqK3PhIM7OUFiQxKuUnUMGovbtjI8qiaXcZlOdMCE8tpkLa321ZsUJdYbph4gFr2e4Uk8Jc3qS2u7oxt5HtbIvm6pljb0eFyelQxaONp/X+tGngCW0Nn9E9D46NDhlByXl1nrH2jKDyhIuuoxWD6FGNk04fQTsQu84hKuqgJbciRvJLXmQ1l1A9VzQmFdQmtb67Y4LQtIkMPiKfeKLPxcGW4Z5PpfKcuamj/m7bHcv9yqcX2rLCuV/9UWlpasY5EwyyJsXusdrGsVk2W5ZQpOmQMTKOpkE5k0+xwl0sz2YzCVMmfYpCQFtaWjzr4eXS6vC556FjRzB8of282s/YwmOejGArJ7wwnRNFW4qJG9y5OXG7U8raVSPT204fQQ6IXScREcHyP6pIEn+Li3ZuSE5O3nDQQzcxmaWWg5E7izJjVOdK+9i1pThtyW4qmOISo1O3F2Zlpey2pdDvefYBpbGiqVyxe2ysprGTwu3Z0YllypyDIzYlxV6YksYyjpWzWIkdfeaLU2Xh0s1rVj6iLHs9L/DS8LEOGkGTyXGCuDO2nSo8GcHWTvj27LQlnAqSxyVpqRm7yocdak9NSoqvR5BB7DqN4almFmktShI+0CtyLQctVvMR+2wRP8/5giXCbOYWPerrHeM9CVFmYa44V0fcIovZtyKDzcKai19olTiaY7SThkPF0SPz+JJp2Ci2RSYubVHWrt1lWpc90ZCtsuQpP3YgOnGhwpswVcwvvM34GWJ5caa07H7o7tPq8MkGwuS8KmE/564d6IARFCnPySCdyWp3PzVOOE/4yOjiQ2VL2lVDvxsuvjp/BBnErhOJmZScYP9Ar/gonyVYjeyIilmJ+Yi5ln7xuXkgzi4Nj5mcoaCVuakFmbX5zDkbihZzM662wMgV42kN1poAjRrmgbp5Y3ep1glZiHDdKDx9mHMNxa+PhQxBQnNz88WLF6mw/Kn7l7/8V+aYM0KN0BQUFNTuzmjQ2vDJBiKpIP9IMI3dpJ0JLL+W0zxNp14bQcdFN7Wrpm6jcsJHRmdn5CyMpY+gwjXkP21JeLtqXA7joxGE2HUiMakWSyp35afcao4w12rMgShLKq9vNLmYpbyCxRhVbIYLv4/OxCDKIjOpKD/ISjZQjiBsJk9iSZm1msJ5wMNs7nJ3V13DCkse0VVhejh3KVBt5oqLoGWL4lesLhDLHXolqLXhkw9ETGb+zuDgBMrHNE6510fQ8YlRmG4wbG+f4Kme8JQ865bwcEMqyajVGh3Nwk3tqpEfyycjCLHrRGj9wlI/KmL5tAbKbK8TSitKIsxG/nYglzjU8qudVDVTxR1EDUZGO0q0imGjpnimeuGe797a9Tq7p5wJE5n6nLXZbJQaiJvPzY/73bpd9FNa2RFXfDSHr+2BcKUDRtCJ2lVOd9A84Q4V5XPHUUs4t+2rceKrEYTYdSbGJHNEcII5ylJqbKcHWtqYI4R8ofxISdRwKxMmD0uQH8oUwcy0NHLeQdS+4hOXyMLXFKZkxTrvNajA3z1VeY7BpLa7ljEHd11JTesK0ydmR1vL+HuC4VsSy3ZrZieyz/9n0yd2yt09jeFTGYiixZyKUXa3uEiuVh0ygk5a+xzRHhSVEy4z5la4zFomsWhfjR2fjCDErnOhtVAUM3n8mFWJ2b6coYlWa9+bW1ZFctVRycn2RyC460oJjsvbmaWW+EjHKohqJml651YdE8INBuEOQaz0qStGaxHX2wbcgwuyJvnuTlSM+bu30Yl5DoeSY4kP2WVks2LGr4I4ZJehZHmBKh2S2TGN4ZMPBJewHbSUZpJcUUN8Ln+DomNH0HmeubPl8qCiGyMYt0v7hNOqWHh+z+HD+USfJzUu+GoEIXadQIzkWosxqSBTUa8syCpr1Va9Ko/nuZjK22PavuKjvikQmyVczlFpUtq7b6zcV/XoTjr9kdQ2h08xEI5NsaGjR9C9c6g5KK0Zi89FOuvbUeMCHioGoG0CAgLOnz8/YMCAqqoqLZvQ0FCyIcvODAy4iQ9HEGIHrib69eu3bdu2adOmOR+jVXDhwgWyIcvODAy4iQ9HEGIHribmz5+/Zs0aq9Xayl+JU0YQEhKycOHCzgwMuIkPRxBiB64yoGJXO74aQYgdAEAXQOz0Sxd+E41OwAh6BMROp3TJtwvqCoygp0DsAAC6AGIHANAFEDsAgC6A2AEAdAHEDgCgCyB2AABdALEDAOgCiB0AQBdA7AAAugBiBwDQBRA7AIAugNgBAHQBxA4AoAsgdgAAXQCxAwDoAogdAEAXQOwAALoAYgcA0AUQOwCALoDY6ZSi4j2+DgF4DbyPwh0gdvpl6pQ4X4cAvADeMeYmEDsAgC6A2AFwZfHqq69WVVU1NDRoGQQGBoaGhs6bN68zo+oCQOwAu+P1tm32zOn4OABja9etC+zePS0tLSQkRMumpqZm69atZLlg/vzOjO1qB2IHwBXEd+fOLViwIDg4uK6uTsumb9++iYmJa9eu7czAugAQOwCuIBobG0nLWlE6gla4ZEOWnRZV1wBi5ylFi4MTNjg2oiylBUlGrzneOak2M0blMOKx7vkoPjI/wXvHFElLYDOv5QqffswWlztqTWzP3eztbSz7e1frwnTDxAPWst0pJmG7PGdCeGox7+fvtqxYqamySayR2Modale2jssu3Ea2sy3a1ZUiMIm5di/EFtE6WhGhWpOyL9q9s/G03tE2DYASiF07ECWOFCky+Ei+qFCuUKtluLvCVJFrOWixZorbMZm1tZlKJ0kFtUmXF7waNN+K2R3f29Vtcjn7kK9OM7KTCtucCYbUUWlp0qrCXSzPZjMJEzh9ilQoFE3hOXNTR/3dtjuW04/0Qq6CdETmkKM8Z/uBaE86oQgsNstmy7KHkW7IGBnnoqSKwMIX2s0VvSiXxxxbmM4JlS3FxNXMzYlzETFZU9wueQfLNbrspKWlxZOuA7eA2F0OMZmlloORO4syY1TVzgMqPsqPMBcYvRFUOyhn2Y7Cp3czY1/GeOG7q5ZVKmxTdttSaEZnH3BWxaak2AtT0ljGsXIWa9JqKj+2pThtyW6qMMUlRqduL8zKUnFIFK7ZMjJxFNvififU/QjOtmdHJ5a5pFAqMTvauZrtUttd8pjZ9uy0JZxSMlPKkrTUjF3lKaLaqTTJAzO1EirjszZR7BYu3bxm5SPKMjK7dgCxuzyM9yREmQW1cy48kynXY/atyGBzMp/6VeTGR5pLHM0yceS0blKBG8cTEz2+kJ+Qn8D5JI+p5Xb3zpW17IjuJJp92ZDzLJdftKZFsk357O5bPTkb5ccORCcuVF112pvK1hRHj8zja0zDSMtclFFinZPBluwetj3Vk6NrItE6PsVzXc7KY6Zjk15lSYwPyWOeInEePjK6+FAZY2V2Y5Um95fhDgSxM7/wNuM1zvLiTGnZY3eAB2LnNaQLz9zUgszafOZUl6LF3LW2Wi53K1ocn1sR46I5RVZzxKRaTw9YYraQy1pO9xKCD1q4Iq+41qKkzBjlEd2YcmnRrLKUHWHc/JxZy+5g7G4P4uFXe0JWo9lUyNioYW1GUrgmddQUSl22t2XoFip5nTIw5rwwp7hip4iZVCw7I2dhLGkmhVrM0pY421ppcpPm5uaLFy9SYflT9y9/+a/MoXpCjdAUFBTksV/dA7G7fKKGCzPBmdpFWWQmFeUHWckGyvKEzeRJlBM6W4t2HrSkZjJPibJYecmMmZTMDg6/h3fIlS3lFSyGKY6YlFnb6mJ7cgwvcPzdCUrr3i72LJrC9HDuwlZsm00HNLI5EUqtDljzKLUq9CwCrcCkWhebJY3QNTBhdckndIbtnOA5jWUxm1LyrFvCww2UeKZZrdHRLJzq7MYqTZ4jLmOXLYpfsbpALONa3uUAsbs8aP1ZEmE28mvGBJZfW8uvV1VXXyqrV8FFruVggtXYAcFpHVGF4T9llILcUWTfHHItu3MqE9ZLVGDb2tidkqKJTJkQKZsoJxIbjh1go6aoqF7ZoeLibF4u+D0mMI9uyMrRzOs0Y1ZceVSL2S6MfDo4aonUvUm7yT1sNhsld+Lmc/PjfrduF/2UVuKaXTuA2F0OtFQ0R+TzCVP5kZKo4VYmyB9LkBkaTRHMTIvbGOUVsw66NaE8YivX7Ezs9cFsTr6zYrHjbyoy57BK/tGTmSqXuxxQgrQlsWx3rEuVYFwmazLFJbLwNYUpWbHl4mV/OeJdVO0jug13AU6qdaJLlZhFG4c8Ooy1Y+ZWwcxaFqsSrKTJc2QZ3LPpE5HTXT4Qu3ZQYrYvD6MspbV28YhJtVgiueqo5OQowYyWlAkJjhsUmaWW+EjHqlKScrl9a8JTFEecpGlKi1Z2LXvd8QdhLo/aKeCe8CjmS5R8cU+Sxe3KyGbFTEzFpJe8cpRNtMybEG4wCE+hxUqfd3M4bKe4KQIjP5w6RSfmKR0qAisbmeEIgwszxTVXk8XsfCRPGS+tgV2blB3kH0bR7rIss1MFmV07gNh5iuM+hByj8hE4F1OVdsbdmshPSG1N62Jcr7SJm9J6jbL8iDFa1+yy81m2eoszxXNe7rIv0pykKGpaMZYs81Q31Zy4h5ofhXOHSxXjWGVNlvxynrPB8QSfwljRpNJB7S5z4KHiDgJi51tiMgsu9xE90JUICAg4f/78gAEDqqqqtGxCQ0PJhiw7M7AuAMQOgCuIfv36bdu2bdq0aSaT5mr+woULZEOWnRlYFwBiB/D1TVcQ8+fPX7NmjdVqbeXv/CmnCwkJWbhwYWcG1gWA2AFwZQEV6yAgdgAAXQCx0y94UQvQFRA7nYKX7wG9AbEDAOgCiB0AQBdA7AAAugBiBwDQBRA74C7cNx8fMTu/hJnDm28csn8joMsXU3n0Ho9OppVoZWFr1TNlB6/kDl/tQOyAe1TkpnLvNaOJXSRqHCd/qbn3eHNqRkUdTFhc1Mr38HlRDVRdeeS/zWg9JiaztDzey+cUCEDsgFtUfJTPFF8xakwyJ5stH1UkeXFmJpgt+Rb599ZfsXRAtHRSI4KFr9YHXgViB9xBVeukcAkRS2YbNkRw6zr524Vk262+fMjETXaN3KZI+zVGSleKo7hUTNopc+Wx/zajbS+m4VEHua/W955HwAGxA+5QfqQkYpJRXluRa9kQlVBqry85OJx/6Y/Ku36s3Bc6i19mVeS6qSAmM3+nuoDEKF5j5PDEqVJ8rnT5KT+KLCpTgYsrz/23HW17MZoiSnaWu7ymBHgBiB1oB+J3NVO6I87xqAThpT/KtwvdMzxqQ0K8qCsm100VeAHhlnKtRsEdKNksqBm/onZRCNlRVN551Bat+/c0Wg9AatchQOxAO2jzJqxszRdTUJtEuVFwcAnfkOS6qeaA/5r7xUX5am3uYXQ9ikkZVZHmvp4ij5bUStLKiaZKXqyNeh4NLhOIHXAHT3INjbcLkfiUsvhUhxfZptJLktUSH5lQonwvpeuBhDeU8yvqZLMit5IcRfudR5fhXyNabiGa4Fja0nqa5NaD94yQOEYN9877wYEEiB1wB+M9CSzV3duuynf97HQ8mUcbRskLdvlNzWOSgORHmuXOFa8xCg7m6rlk0yVHlB/FqHznkdSVx/5bjdblFLjsKl4BENJjZY0RiV0HAbEDbiFRuxi1t227Virf9SN9SZHWO4sUnlVfUuTGa4w0jqIwVg3EXf9tRNt27IKZooZ7j7DF6rXrf0AEYgfcgzKXhPjIxSZvPkELFNhvABt9HUdXBGIH3IXLVXwdQ5eHy/18HUNXBWIHANAFEDsAgC6A2AEAdAHEDgCgCyB2AABdALEDAOgCiB0AQBdA7AAAugBiBwDQBRA7AIAugNgBAHQBxA4AoAsgdgAAXQCxAwDoAogdAEAXQOwAALoAYgcA0AUQOwCALoDYAQB0AcQOAKALIHYAAF0AsQMA6AKIHQBAF0DsAAC6AGIHANAFEDsAgC6A2AEAdAHEDgCgCyB2AABdALEDAOgCiB0AQBdA7AAAugBiBwDQBRA70AX5sLR659enqmvrfB2IdxgY3HPSrQMmRw50037z5s2nT59uaGjo0Kh8S2BgYP/+/R955BH3d4HYga7G9i+rNh35PvCOn/Xu3dPXsXiH8z/U/emf+1tabFNGh7ZpnJuX17NHj7S0tJCQkE6IzVfU1NRs3bqVOps0d66bu0DsQFdjx/5TgVE/v/HawJXX1fs6Fu+w9LvA47ffsqPkn+6I3X9qahYsWBAcHFxX10USW1X69u2bmJi4du1a93eB2IGuxpkL9b179ewySkesvO7Sw5d6Ur/cMW5sbCQh6NpKR9AinbpJnXV/F4gd6JrYbDZfh+AzbDyX6YTksmfPK/o6gKd9hNiBromexY653f1T1dWX6uqGhIfL6iuOHz/zVWmfoUMjfjqmA6LzDRA70AXxSmqj5JVt1h7dej12/xyve24TT7vjjj0p3Yi33iHL/dOnSvWOlG7Eq7kjArvvKSuvDL5msEIKr1IgdgC4xSv51jP9v21qanrzr2/Mun+20uAf//jH9OnThfIf//jH5ORkKnz//ffx8fF5eXkjR46sr69/+OGHw8LCPLqs3kEISscCuYXqqHe2HJiROORGTtQ4pVu/ods1ffyDg8edOFn8+eeDhg718/OT7S70hbpM5V/+8pdvvfVWjx49vBWb9KR5yyeD2IGuSktLixe9vboth5TuxjBTXd1/S+v3NX3QNHuqS35XVFSUlJT06aef0vxsaGggIaCM6fHHHxfCaOF5+umnJ06cKFZ2HHToNg/R9yc/ab50ya9bN0NwsK2xIeKNN/fPmkn1Ea9s9COl63NNw4kT/z19ZvTUqUxxMg8dOkRilJubu2XLFmHzX//617hx47wVv/SktWKGa3YAMBvz5jKWlO70DZU3Dgpvamk8WlleUfHtykdelvondcvJyaHJP2LECKrv3r37ihUrKLMTEz2q3LBhAxVIENsXGPXIM/u2jhIQEHBu0fyf/OFlf5K8a/vaLl2KyH2NNTb59ekT0KcPKd2PZ85cytvQ3d9f5oo6u3TpUurshAkThCbqtTtH9DR4r1+LgNiBroitnXPv89J/nq09e99d8WKNoHThYcZmW+O/jx6pOH5i0+x3SSmk/svLy0+fPh0ZGSlWDh06dNiwYVR5ww03MH6F+/HHH7/55pvtn70e7ufOgagXNb81913xO/+GBv++P+lG61DKpFqaeaU720BK59pNAWVnRRYtWrRp0yYqPProo6tXr6bV6K9+9asZM2a88MILVPnSSy+R1jNeLmfNmkW5MJUpNyTRPHz48OTJk8+fPx8aGlpcXOxRL9wHYge6IE3NzRcvXvR0r/2H9xfW/fXa63v/ecf5yeOnUM2fdubVDKoODxvSbGs+ePQoKZ112sYGHumOP/74o9FobGpqEg9aX19PU72srKx37940h2m2v/HGG5d42tujXu4bN3vS/coF6WEZf/Dv3Yd9W0l7skGh/z1z9tyalwMV3RRQdlbkRZ7a2tqHHnqIFrYk9NR3ErJvvvnmk08+efbZZ+Pi4gIDA+fNmxcTE5OXlyfsdfLkSRLBd99996abbiKzt956a+rUqbSApQO13ougoCA3+ygAsQOA419ff/5x09+HDOnfPaDn5z0+tX1sO19//rvQk0PDjE0tTQePHas8fjJnei7NVdXdKd8haZBepCeZ69+/PxWuueaaZ5555vnnn6elH83nTuqP25ytrjYaSCCbWGMjl9k1NXUzsLNVVWEmk9Yuys4KkFTNns3dugkODhZqqO+PPfYYFSgTpPKZM2e4I549O5W/FChAladOnbr33nuFzV//+tfe7J4EiB3ogrhzhV5GxLCbC8u3/+fHC6HX9RllGnH87IFuft0GXzeoydZ0+OiximMn1j+QR+s+VbdhYWHXX3/9V199NX78eKGmoqKC0rp+/fqRPQVDS9qVK1fStC8oKBCFwNMeeWTvZvdPfPPN2E2b/XoFsaZGNnAgrWFJ7AKDg29ZlVG65BlVvVN2VuDo0aMZGRlffPEFieBTTz0l3F4QBkJaZo7RESOkAn0q7N69WzwzlBvKbLwCxA50TTxVh+7du6cbn/7joRfr6usH9w8dMiD0Uktji63l0JHjlcdPrJ+eF6B2AUvcd86cObRM+/DDD2nG0lz9zW9+k5ycTLkMlQWbqKgoqlmwYMH69eu10kMv4k73Sel+sWlzt15BAX361FdX/3jurK2xqVfwtb0G9m9paBj1/Av7Vy5X6p3QWRLu119/XdC7Y8eO0XKVVu60bqWuVVZW7t+/XxqD9FbD4MGDyewvf/nLrFmzhBqSzgsXLkhrpDte7omQALEDXRAb8zizY/w0Xjxi2YrPl9TV1RvDBjW2tBw7WlZZ9m3OtDx/f//WHd55552rVq366U9/Kmzm5eWREIi5iVB4+OGHDx8+/MQTT4iXqzzqkQfGbiS2Jysqxm16q1uvXgF9guqrqn6sOXfa8jLVX/f4Ey31db3DBtkuXbr5t88ceCljkELvqLOUos6cOVOQcuppTk4OFV577bWbb76ZTkJ4eLis72KZPjMsFsuUKVNefPFF5jhRtMAnb0LNjBkzKDFkePQEALewtfM5O5qKz49ZteQTc319Q2NT47dlJ6wJuW0qnQBJAGmZuCns0qdPH8pZxE1hPrcnNg9TnDYP8cP339to0Wprqa869UPNuVMvZ3b359Tg7Ks5IY8+RkoXEBRk8PO7WFPTYjQqdyc527t3r6xy48aNshqx79LzQGVatEpDVXqTnjRvAbEDwAVaiGXcZVmwK6Xxx6b1idzqtc1dhAfNVJHK3xXFTZGRH9lsE97Z0vDDxVOrX6asVqinQs2mP7U8+FCPXr32mBcOd+SqXQCIHeiCXObzqDThV0/M9vPz81c8UqvKoUOHWomk3WG024+b3R8WGVnU0jIkIiLQ9XIk9/zdO29XHDgwfMyYK/n7FLCMBYDjMldAQqbT0X/X1XG4GfmNkZGqxqR3w0aPvnq7rwrEDnRBOuhbT3xIR2R2VzvI7IDeueGaHuf+W2/pdcNCv1O+jsU7rGkZwP5bT/1yx5iSsvPnzw8YMKCqqqqjA/MhoaGh1E13rqiKQOxAV+O+Wwa8/tXRb0fftLDnEF/H4iXqGmxfHaV+uWMbEhKybdu2adOmmbT/BKILcOHCBeqmRy8VgtiBrsaU0aHNNtvOfV+f+6GLvEuwX+/ASbcOcOdtO8TcuXM3btxotVo9ej/DVQfldH379n388cfd3wViB7ogCWMG0T9fR+EzPJIA/QCxAwDoAogdAEAXQOwAALoAYgcA0AUQOwCALoDYAQB0AcQOAKALIHYAAF0AsQMA6AKIHQBAFzjF7vMT7XyjJQAAXMmcNnDvn+XE7tb9XeSbcAAAQAtO7PbfOtDXYQAAQMfy/7KN+sOWF7l1AAAAAElFTkSuQmCC" name="Image1" align="left" width="420" height="199" border="0">
+<p style="margin-left: 0.84cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<br>
+</p>
+<p style="margin-left: 0.84cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif">DateTimePicker Editor is a dialog
+which provides easy way to set Date, Time, MinDate and MaxDate
+properties in design time. It is invoked when DateTimePicker control
+is double-clicked in form designer. It is also shown when the
+ellipsis (…) button, shown in Date, Time, MinDate and MaxDate
+properties in Object inspector, gets clicked.</font></p>
+<p style="margin-bottom: 0.51cm"><br><br>
+</p>
+<p style="margin-top: 0.18cm; margin-bottom: 0cm"><font face="Arial, sans-serif"><b>Tips</b></font></p>
+<p style="margin-left: 0.84cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><b>Q:</b> When the date/time value is
+null, how to display zeros/nines in user format, no matter whether
+the control is focused or not?</font></p>
+<p style="margin-left: 0.84cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><span lang="en-GB"><b>A:</b></span></font>
+<font face="Arial, sans-serif"><span lang="en-GB">Set <a class="western" href="#TextForNullDate">TextForNullDate</a>
+property to empty string. If TextForNullDate is set to empty string,
+then zeros/nines are displayed, same as when the control has focus.</span></font></p>
+<p style="margin-left: 0.84cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<br>
+</p>
+<p style="margin-left: 0.84cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><span lang="en-GB"><b>Q:</b></span></font>
+<font face="Arial, sans-serif"><span lang="en-GB">When the date/time
+value is null, If empty string in <a class="western" href="#TextForNullDate">TextForNullDate</a>
+property actually sets the display to zeros/nines format, how to set
+the control to display nothing?</span></font></p>
+<p style="margin-left: 0.84cm; margin-top: 0.18cm; margin-bottom: 0cm">
+<font face="Arial, sans-serif"><span lang="en-GB"><b>A:</b></span></font>
+<font face="Arial, sans-serif"><span lang="en-GB">Set <a class="western" href="#TextForNullDate">TextForNullDate</a>
+property to one space character, you will get the empty display.</span></font></p>
+</body>
+</html>

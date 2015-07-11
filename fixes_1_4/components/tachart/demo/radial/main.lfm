@@ -1,0 +1,229 @@
+object Form1: TForm1
+  Left = 459
+  Height = 433
+  Top = 346
+  Width = 566
+  Caption = 'Form1'
+  ClientHeight = 433
+  ClientWidth = 566
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 433
+    Top = 0
+    Width = 566
+    ActivePage = tsPie
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 0
+    object tsPie: TTabSheet
+      Caption = 'Pie'
+      ClientHeight = 407
+      ClientWidth = 558
+      object ChartPie: TChart
+        Left = 0
+        Height = 348
+        Top = 59
+        Width = 558
+        AxisList = <        
+          item
+            Visible = False
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+          end        
+          item
+            Visible = False
+            Alignment = calBottom
+            Minors = <>
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Toolset = ChartToolset1
+        Align = alClient
+        ParentColor = False
+        OnMouseDown = ChartPieMouseDown
+        object ChartPiePieSeries1: TPieSeries
+          Marks.Distance = 40
+          Marks.Format = '%2:s'
+          Marks.Style = smsLabel
+          Exploded = True
+          Source = ListChartSource1
+        end
+      end
+      object Panel1: TPanel
+        Left = 0
+        Height = 59
+        Top = 0
+        Width = 558
+        Align = alTop
+        Alignment = taLeftJustify
+        Caption = 'Click on the slice to explode/unexplode it'
+        ClientHeight = 59
+        ClientWidth = 558
+        TabOrder = 1
+        object seWords: TSpinEdit
+          Left = 488
+          Height = 21
+          Top = 6
+          Width = 58
+          Anchors = [akTop, akRight]
+          MaxValue = 10
+          OnChange = seWordsChange
+          TabOrder = 0
+        end
+        object lblWords: TLabel
+          Left = 425
+          Height = 13
+          Top = 10
+          Width = 57
+          Anchors = [akTop, akRight]
+          Caption = 'Label words'
+          ParentColor = False
+        end
+        object seLabelAngle: TSpinEdit
+          Left = 360
+          Height = 21
+          Top = 6
+          Width = 50
+          Anchors = [akTop, akRight]
+          Increment = 5
+          MaxValue = 360
+          MinValue = -360
+          OnChange = seLabelAngleChange
+          TabOrder = 1
+        end
+        object lblLabelAngle: TLabel
+          Left = 297
+          Height = 13
+          Top = 10
+          Width = 54
+          Anchors = [akTop, akRight]
+          Caption = 'Label angle'
+          ParentColor = False
+        end
+        object cbRotate: TCheckBox
+          Left = 463
+          Height = 17
+          Top = 30
+          Width = 83
+          Anchors = [akTop, akRight]
+          Caption = 'Rotate labels'
+          OnChange = cbRotateChange
+          TabOrder = 2
+        end
+        object cbMarkPositions: TComboBox
+          Left = 310
+          Height = 21
+          Top = 30
+          Width = 100
+          ItemHeight = 13
+          ItemIndex = 0
+          Items.Strings = (
+            'Around'
+            'Inside'
+            'Left / right'
+          )
+          OnChange = cbMarkPositionsChange
+          Style = csDropDownList
+          TabOrder = 3
+          Text = 'Around'
+        end
+      end
+    end
+    object tsPolar: TTabSheet
+      Caption = 'Polar'
+      ClientHeight = 407
+      ClientWidth = 558
+      object ChartPolar: TChart
+        Left = 0
+        Height = 407
+        Top = 0
+        Width = 448
+        AxisList = <        
+          item
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+          end        
+          item
+            Alignment = calBottom
+            Minors = <>
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        ParentColor = False
+        object ChartPolarSeries1: TPolarSeries
+          CloseCircle = True
+          OriginX = -5
+          Source = RandomChartSource1
+        end
+        object ChartPolarSeries2: TPolarSeries
+          LinePen.Color = clRed
+          OriginY = 5
+          Source = RandomChartSource1
+        end
+      end
+      object pnlPolar: TPanel
+        Left = 448
+        Height = 407
+        Top = 0
+        Width = 110
+        Align = alRight
+        ClientHeight = 407
+        ClientWidth = 110
+        TabOrder = 1
+        object cbCloseCircle: TCheckBox
+          Left = 14
+          Height = 17
+          Top = 12
+          Width = 52
+          Caption = 'Closed'
+          OnChange = cbCloseCircleChange
+          TabOrder = 0
+        end
+      end
+    end
+  end
+  object ListChartSource1: TListChartSource
+    DataPoints.Strings = (
+      '0|1|?|'
+      '0|2|?|'
+      '0|3|?|'
+      '0|1|?|'
+      '0|2|?|'
+      '0|3|?|'
+      '0|1|?|'
+      '0|2|?|'
+      '0|3|?|'
+      '0|5|?|'
+    )
+    left = 440
+    top = 136
+  end
+  object ChartToolset1: TChartToolset
+    left = 440
+    top = 80
+  end
+  object RandomChartSource1: TRandomChartSource
+    PointsNumber = 15
+    RandSeed = 1648434073
+    XMax = 6
+    XMin = 0
+    YCount = 2
+    YMax = 10
+    YMin = 2
+    left = 440
+    top = 196
+  end
+end

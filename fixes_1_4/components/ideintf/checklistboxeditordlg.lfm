@@ -1,0 +1,120 @@
+object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
+  Left = 316
+  Height = 294
+  Top = 154
+  Width = 445
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
+  Caption = 'CheckListBoxEditorDlg'
+  ClientHeight = 294
+  ClientWidth = 445
+  Constraints.MinHeight = 100
+  Constraints.MinWidth = 200
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object FCheck: TCheckListBox
+    Left = 0
+    Height = 232
+    Top = 24
+    Width = 445
+    Align = alClient
+    ItemHeight = 0
+    OnClick = FCheckClick
+    TabOrder = 0
+  end
+  object ToolBar: TToolBar
+    Left = 0
+    Height = 24
+    Top = 0
+    Width = 445
+    AutoSize = True
+    Caption = 'ToolBar'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 1
+    object tbAdd: TToolButton
+      Left = 1
+      Top = 2
+      Action = actAdd
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object tbDelete: TToolButton
+      Left = 24
+      Top = 2
+      Action = actDel
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object ToolButton3: TToolButton
+      Left = 47
+      Top = 2
+      Width = 4
+      Caption = 'ToolButton3'
+      Style = tbsDivider
+    end
+    object tbUp: TToolButton
+      Left = 51
+      Top = 2
+      Action = actMoveUp
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object tbDown: TToolButton
+      Left = 74
+      Top = 2
+      Action = actMoveDown
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object ToolButton6: TToolButton
+      Left = 97
+      Top = 2
+      Width = 4
+      Caption = 'ToolButton6'
+      Style = tbsDivider
+    end
+    object tbEdit: TToolButton
+      Left = 101
+      Top = 2
+      Action = actEdit
+      ParentShowHint = False
+      ShowHint = True
+    end
+  end
+  object BtnPanel: TButtonPanel
+    Left = 6
+    Height = 26
+    Top = 262
+    Width = 433
+    TabOrder = 2
+    ShowBevel = False
+  end
+  object ActionList1: TActionList
+    left = 128
+    top = 64
+    object actAdd: TAction
+      Caption = 'Add'
+      OnExecute = actAddExecute
+      ShortCut = 45
+    end
+    object actDel: TAction
+      Caption = 'actDel'
+      OnExecute = actDelExecute
+      ShortCut = 46
+    end
+    object actMoveUp: TAction
+      Caption = 'actMoveUp'
+      OnExecute = actMoveUpExecute
+    end
+    object actMoveDown: TAction
+      Caption = 'actMoveDown'
+      OnExecute = actMoveDownExecute
+    end
+    object actEdit: TAction
+      Caption = 'Edit'
+      OnExecute = actEditExecute
+    end
+  end
+end

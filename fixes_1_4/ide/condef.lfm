@@ -1,0 +1,248 @@
+object CondForm: TCondForm
+  Left = 305
+  Height = 326
+  Top = 265
+  Width = 356
+  ActiveControl = FirstTest
+  BorderIcons = [biSystemMenu]
+  Caption = 'Conditional Defines'
+  ClientHeight = 326
+  ClientWidth = 356
+  OnCreate = CondFormCREATE
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '1.5'
+  object NewTestGroupBox: TGroupBox
+    Left = 6
+    Height = 135
+    Top = 6
+    Width = 344
+    Align = alTop
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'NewTestGroupBox'
+    ClientHeight = 117
+    ClientWidth = 340
+    TabOrder = 0
+    object FirstLabel: TLabel
+      Left = 6
+      Height = 13
+      Top = 6
+      Width = 328
+      Align = alTop
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      Caption = '&First test'
+      ParentColor = False
+    end
+    object SecondLabel: TLabel
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 13
+      Top = 46
+      Width = 328
+      Align = alTop
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      Caption = '&Second test'
+      ParentColor = False
+    end
+    object FirstTest: TComboBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 21
+      Top = 19
+      Width = 328
+      Align = alTop
+      BorderSpacing.Left = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      ItemHeight = 13
+      ItemIndex = 0
+      Items.Strings = (
+        'MSWINDOWS'
+        'UNIX'
+        'LINUX'
+        'WIN32'
+        'CLX_'
+        'LCL_'
+        'VCL_'
+        'FPC'
+        'KYLIX'
+        'VER1_0'
+      )
+      OnChange = TestEditChange
+      TabOrder = 0
+      Text = 'MSWINDOWS'
+    end
+    object SecondTest: TComboBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 21
+      Top = 59
+      Width = 328
+      Align = alTop
+      BorderSpacing.Left = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      ItemHeight = 13
+      ItemIndex = 0
+      Items.Strings = (
+        'NONE'
+        'ELSE'
+      )
+      OnChange = TestEditChange
+      TabOrder = 1
+      Text = 'NONE'
+    end
+    object AddBtn: TBitBtn
+      AnchorSideTop.Control = SecondTest
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = AddInverse
+      Left = 87
+      Height = 25
+      Top = 86
+      Width = 75
+      Anchors = [akTop, akRight]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = '&Add'
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 75
+      OnClick = AddBtnClick
+      TabOrder = 2
+    end
+    object RemoveBtn: TBitBtn
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = SecondTest
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = NewTestGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 259
+      Height = 25
+      Top = 86
+      Width = 75
+      Anchors = [akTop, akRight]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = '&Remove'
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 75
+      OnClick = RemoveBtnClick
+      TabOrder = 3
+    end
+    object AddInverse: TBitBtn
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = SecondTest
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = RemoveBtn
+      Left = 168
+      Height = 25
+      Top = 86
+      Width = 85
+      HelpType = htKeyword
+      Anchors = [akTop, akRight]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'Add Inverse'
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 75
+      OnClick = AddInverseCLICK
+      TabOrder = 4
+    end
+  end
+  object ListBox: TListBox
+    Left = 6
+    Height = 127
+    Top = 147
+    Width = 344
+    Align = alClient
+    Anchors = [akTop, akBottom]
+    BorderSpacing.Around = 6
+    ItemHeight = 0
+    OnClick = ListBoxClick
+    OnDblClick = ListBoxDblClick
+    OnKeyDown = ListBoxKeyDown
+    TabOrder = 1
+  end
+  object ButtonPanel: TPanel
+    Left = 0
+    Height = 46
+    Top = 280
+    Width = 356
+    Align = alBottom
+    ClientHeight = 46
+    ClientWidth = 356
+    TabOrder = 2
+    object btnOk: TBitBtn
+      AnchorSideTop.Control = ButtonPanel
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = ButtonPanel
+      AnchorSideRight.Side = asrBottom
+      Left = 288
+      Height = 26
+      Top = 10
+      Width = 61
+      Anchors = [akTop, akRight]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Default = True
+      DefaultCaption = True
+      Kind = bkOK
+      ModalResult = 1
+      OnClick = OKButtonClick
+      TabOrder = 0
+    end
+    object btnSave: TBitBtn
+      AnchorSideTop.Control = btnOk
+      AnchorSideRight.Control = btnOk
+      AnchorSideBottom.Control = btnOk
+      AnchorSideBottom.Side = asrBottom
+      Left = 216
+      Height = 26
+      Top = 10
+      Width = 66
+      Anchors = [akTop, akRight, akBottom]
+      AutoSize = True
+      BorderSpacing.Right = 6
+      Caption = 'btnSave'
+      ModalResult = 6
+      OnClick = btnSaveClick
+      TabOrder = 1
+    end
+    object btmCancel: TBitBtn
+      AnchorSideTop.Control = btnSave
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = btnSave
+      Left = 126
+      Height = 26
+      Top = 10
+      Width = 84
+      Anchors = [akTop, akRight]
+      AutoSize = True
+      BorderSpacing.Right = 6
+      Cancel = True
+      DefaultCaption = True
+      Kind = bkCancel
+      ModalResult = 2
+      TabOrder = 2
+    end
+    object btnHelp: TBitBtn
+      AnchorSideLeft.Control = ButtonPanel
+      AnchorSideTop.Control = ButtonPanel
+      AnchorSideTop.Side = asrCenter
+      Left = 7
+      Height = 26
+      Top = 10
+      Width = 89
+      AutoSize = True
+      BorderSpacing.Around = 6
+      DefaultCaption = True
+      Kind = bkHelp
+      OnClick = HelpButtonClick
+      TabOrder = 3
+    end
+  end
+end

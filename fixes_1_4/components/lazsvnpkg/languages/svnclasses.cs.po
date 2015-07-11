@@ -1,0 +1,236 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Václav Valíček <Valicek1994@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: svnclasses.rsaction
+msgid "Action"
+msgstr "Akce"
+
+#: svnclasses.rsadd
+msgid "Add to version control"
+msgstr "Přidat do verzování"
+
+#: svnclasses.rsadded
+msgid "Added"
+msgstr "Přidáno"
+
+#: svnclasses.rsauthor
+msgid "Author"
+msgstr "Autor"
+
+#: svnclasses.rscommit
+msgid "Commit"
+msgstr "Commit"
+
+#: svnclasses.rscommitmsg
+msgid "Commit Message"
+msgstr "Zpráva commitu"
+
+#: svnclasses.rscommitmsghistory
+msgid "Commit Message History"
+msgstr "Historie zpráv commitů"
+
+#: svnclasses.rscommitrevision
+msgid "Commit revision"
+msgstr "Revize commitu"
+
+#: svnclasses.rsconflict
+msgid "Conflict"
+msgstr "Konflikt"
+
+#: svnclasses.rscopyfrompath
+msgid "Copy from path"
+msgstr "Kopírovat u cesty"
+
+#: svnclasses.rscreatepatchfile
+msgid "Create patch file"
+msgstr "Vytvořit patch soubor"
+
+#: svnclasses.rsdate
+msgid "Date"
+msgstr "Datum"
+
+#: svnclasses.rsdelete
+msgid "Delete"
+msgstr "Odstranit"
+
+#: svnclasses.rsdeleted
+msgid "Deleted"
+msgstr "Odstraněno"
+
+#: svnclasses.rsdiffactivefile
+msgid "Diff active file"
+msgstr "Diff aktivního souboru"
+
+#: svnclasses.rsedit
+msgid "Edit"
+msgstr "Upravit"
+
+#: svnclasses.rsextension
+msgid "Extension"
+msgstr "Přípona"
+
+#: svnclasses.rsfilenotinworkingcopyanymore
+msgid "File is not part of local working copy (anymore)"
+msgstr "Soubor není součásti lokální pracovní kopie (už)"
+
+#: svnclasses.rsfilestatus
+msgid "File status"
+msgstr "Stav souboru"
+
+#: svnclasses.rsindexoutofboundsd
+msgid "Index out of bounds (%d)"
+msgstr "Index je mimo rozsah (%d)"
+
+#: svnclasses.rslazarussvncommit
+msgid "LazarusSVN Commit"
+msgstr "LazarusSVN Commit"
+
+#: svnclasses.rslazarussvndiff
+msgid "%s - LazarusSVN Diff ..."
+msgstr "%s - LazarusSVN Diff ..."
+
+#: svnclasses.rslazarussvnlog
+msgid "%s - LazarusSVN Log ..."
+msgstr "%s - LazarusSVN Log..."
+
+#: svnclasses.rslazarussvnupdate
+msgid "%s - LazarusSVN Update ..."
+msgstr "%s - LazarusSVN Update ..."
+
+#: svnclasses.rsmerged
+msgid "Merged"
+msgstr "Sloučeno"
+
+#: svnclasses.rsmessage
+msgid "Message"
+msgstr "Zpráva"
+
+#: svnclasses.rsnoauthor
+msgid "(no author)"
+msgstr "(bez autora)"
+
+#: svnclasses.rsonlymodifieditemscanbediffed
+msgid "Only modified (M) Items can be diffed"
+msgstr "Pouze upraveno (M) Položky mohou být porovnány"
+
+#: svnclasses.rsopenfileineditor
+msgid "Open file in editor"
+msgstr "Otevřít soubor v editoru"
+
+#: svnclasses.rsopenpreviousrevisionineditor
+msgid "Open previous revision in editor"
+msgstr "Otevřít předchozí revizi v editoru"
+
+#: svnclasses.rsopenthisrevisionineditor
+msgid "Open this revision in editor"
+msgstr "Otevřít tuto revizi v editoru"
+
+#: svnclasses.rspath
+msgid "Path"
+msgstr "Cesta"
+
+#: svnclasses.rsprojectfilename
+msgid "Project filename"
+msgstr "Jméno souboru projektu"
+
+#: svnclasses.rsprojectisactive
+msgid "Project is active"
+msgstr "Projekt je aktivní"
+
+#: svnclasses.rsprojectisnotactiveinsvnsettingspleaseactivatefirst
+msgid "Project is not active in SVN settings, please activate first."
+msgstr "Projekt není aktivní v SVN nastavení, prosím aktivujte jej prvně."
+
+#: svnclasses.rsprojectname
+msgid "Project name"
+msgstr "Jméno projektu"
+
+#: svnclasses.rsprojectoptions
+msgid "Project options"
+msgstr "Volby projektu"
+
+#: svnclasses.rspropertystatus
+msgid "Property status"
+msgstr ""
+
+#: svnclasses.rsrefresh
+msgid "Refresh"
+msgstr ""
+
+#: svnclasses.rsremove
+msgid "Remove from version control (keep local)"
+msgstr "Odsranit z verzování (udržet lokálně)"
+
+#: svnclasses.rsrepositorypath
+msgid "Repository path"
+msgstr "Cesta repozitáře"
+
+#: svnclasses.rsrevert
+msgid "Revert"
+msgstr "Vrátit"
+
+#: svnclasses.rsrevision
+msgid "Revision"
+msgstr "Revize"
+
+#: svnclasses.rssave
+msgid "Save"
+msgstr "Uložiz"
+
+#: svnclasses.rssettings
+msgid "Settings"
+msgstr "Možnosti"
+
+#: svnclasses.rsshowdiff
+msgid "Show diff"
+msgstr "Ukaž rozdíl"
+
+#: svnclasses.rsshowdiffbase
+msgid "Show Diff of Local Changes"
+msgstr "Ukaž rozdíl místních změn"
+
+#: svnclasses.rsshowdiffcountrev
+msgid "Show Last X Commits"
+msgstr "Ukaž posledních X commitů"
+
+#: svnclasses.rsshowdiffhead
+msgid "Show Diff Against HEAD"
+msgstr "Ukaž rozdíl vůči hlavě /HEAD/"
+
+#: svnclasses.rsshowdiffprev
+msgid "Show Diff Against Previous Version"
+msgstr "Ukaž rozdíl vůči poslední verzi"
+
+#: svnclasses.rsshowlog
+msgid "Show log"
+msgstr "Ukaž log"
+
+#: svnclasses.rssourcefiledoesnotbelongtotheprojectpleaseaddfirst
+msgid "Source file does not belong to the project. Please add first."
+msgstr "Zdrojový soubor nepatří do projektu. Prosím přidejte ho nejdříve."
+
+#: svnclasses.rssvnsettings
+msgid "SVN settings"
+msgstr "Volvy SVN"
+
+#: svnclasses.rssvntools
+msgid "SVN tools"
+msgstr "Nástroje SVN"
+
+#: svnclasses.rsupdate
+msgid "Update"
+msgstr "Aktualizovat"
+
+#: svnclasses.rsupdated
+msgid "Updated"
+msgstr "Aktualizováno"
+

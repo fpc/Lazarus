@@ -1,0 +1,411 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2012-08-06 21:46+0300\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Language: lt\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 1.5\n"
+
+#: pocheckerconsts.rspochecker
+msgid "PO File Checker"
+msgstr "PO failų tikrintuvė"
+
+#: pocheckerconsts.rs_lang_af_za
+msgid "Afrikaans"
+msgstr ""
+
+#: pocheckerconsts.rs_lang_all
+msgid "All languages"
+msgstr ""
+
+#: pocheckerconsts.rs_lang_ar
+msgid "Arabic"
+msgstr ""
+
+#: pocheckerconsts.rs_lang_ca
+msgid "Catalan"
+msgstr ""
+
+#: pocheckerconsts.rs_lang_cs
+msgid "Czech"
+msgstr ""
+
+#: pocheckerconsts.rs_lang_de
+msgid "German"
+msgstr ""
+
+#: pocheckerconsts.rs_lang_en
+msgid "English"
+msgstr ""
+
+#: pocheckerconsts.rs_lang_es
+msgid "Spanish"
+msgstr ""
+
+#: pocheckerconsts.rs_lang_fi
+msgid "Finnish"
+msgstr ""
+
+#: pocheckerconsts.rs_lang_fr
+msgid "French"
+msgstr ""
+
+#: pocheckerconsts.rs_lang_he
+msgid "Hebrew"
+msgstr ""
+
+#: pocheckerconsts.rs_lang_hu
+msgid "Hungarian"
+msgstr ""
+
+#: pocheckerconsts.rs_lang_id
+msgid "Indonesian"
+msgstr ""
+
+#: pocheckerconsts.rs_lang_it
+msgid "Italian"
+msgstr ""
+
+#: pocheckerconsts.rs_lang_ja
+msgid "Japanese"
+msgstr ""
+
+#: pocheckerconsts.rs_lang_lt
+msgid "Lithuanian"
+msgstr ""
+
+#: pocheckerconsts.rs_lang_nl
+msgid "Dutch"
+msgstr ""
+
+#: pocheckerconsts.rs_lang_pl
+msgid "Polish"
+msgstr ""
+
+#: pocheckerconsts.rs_lang_pt_br
+msgid "Brazilian Portuguese"
+msgstr ""
+
+#: pocheckerconsts.rs_lang_ru
+msgid "Russian"
+msgstr ""
+
+#: pocheckerconsts.rs_lang_sk
+msgid "Slovak"
+msgstr ""
+
+#: pocheckerconsts.rs_lang_tr
+msgid "Turkish"
+msgstr ""
+
+#: pocheckerconsts.rs_lang_uk
+msgid "Ukrainian"
+msgstr ""
+
+#: pocheckerconsts.rs_lang_zh_cn
+msgid "Chinese, simplified"
+msgstr ""
+
+#: pocheckerconsts.salllanguages
+msgid "All Languages"
+msgstr ""
+
+#: pocheckerconsts.scannotfindmaster
+msgid ""
+"Cannot find master po file:\n"
+"%s\n"
+"for selected file\n"
+"%s\n"
+msgstr ""
+"Nepavyko rasti pagrindinio PO failo:\n"
+"%s\n"
+"parinktam failui\n"
+"%s\n"
+
+#: pocheckerconsts.scheckforduplicateuntranslatedvalues
+msgid "Check for duplicate untranslated values"
+msgstr "Ieškoti neverstų besidubliuojančių verčių"
+
+#: pocheckerconsts.scheckforincompatibleformatarguments
+msgid "Check for incompatible format arguments"
+msgstr "Ieškoti nesuderinamų formato argumentų"
+
+#: pocheckerconsts.scheckformismatchesinuntranslatedstrings
+msgid "Check for mismatches in untranslated strings"
+msgstr "Ieškoti neatitikčių neišverstose eilutėse"
+
+#: pocheckerconsts.scheckmissingidentifiers
+msgid "Check missing identifiers"
+msgstr "Tikrinti ar netrūksta identifikatorių"
+
+#: pocheckerconsts.schecknumberofitems
+msgid "Check number of items"
+msgstr "Tikrinti ar tinkamas elementų kiekis"
+
+#: pocheckerconsts.scheckstatistics
+msgid "Check percentage of (un)translated and fuzzy strings"
+msgstr ""
+
+#: pocheckerconsts.sclearlistbox
+msgid "Clear"
+msgstr ""
+
+#: pocheckerconsts.scopycaption
+msgid "Copy to clipboard"
+msgstr "Kopijuoti į iškarpinę"
+
+#: pocheckerconsts.screatingiconxofy
+msgid "Creating icon nr. %d of %d"
+msgstr ""
+
+#: pocheckerconsts.scurrenttest
+msgid "Test: %s on %s"
+msgstr ""
+
+#: pocheckerconsts.sduplicatelinenrwithvalue
+msgid "[Line %d] %s"
+msgstr "[Eilutė %d] %s"
+
+#: pocheckerconsts.sduplicateoriginals
+msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
+msgstr "Vertė (neversta) „%s“ panaudota daugiau nei viename įraše:"
+
+#: pocheckerconsts.serroroncleanup
+msgid ""
+"An unrecoverable error occurred\n"
+"%s\n"
+"Please close the program\n"
+msgstr ""
+"Įvyko neatstatoma klaida\n"
+"%s\n"
+"Baikite darbą programa\n"
+
+#: pocheckerconsts.serroroncreate
+msgid ""
+"Error creating an instance of TPoFamily:\n"
+"%s\n"
+msgstr ""
+"Kuriant TPoFamily egzempliorių įvyko klaida:\n"
+"%s\n"
+
+#: pocheckerconsts.serrorsbytest
+msgid "Errors / warnings reported by %s for:"
+msgstr "%s praneštos klaidos/perspėjimai apie:"
+
+#: pocheckerconsts.sfilesnotfoundandremoved
+msgid ""
+"The following non-existent files were removed from the list:\n"
+"%s\n"
+msgstr ""
+
+#: pocheckerconsts.sfuzzy
+msgid "Fuzzy"
+msgstr ""
+
+#: pocheckerconsts.sgrapstatformcaption
+msgid "Graphical summary"
+msgstr ""
+
+#: pocheckerconsts.sguipofilecheckingtool
+msgid "GUI Po-file checking tool"
+msgstr "Įrankio PO failų tikrinimui grafinė sąsaja"
+
+#: pocheckerconsts.sidentifiernotfoundin
+msgid "Identifier [%s] not found in %s"
+msgstr "Ieškota identifikatoriaus [%s], tačiau %s jo neturi"
+
+#: pocheckerconsts.signorefuzzytranslations
+msgid "Ignore translated strings marked as \"fuzzy\""
+msgstr ""
+
+#: pocheckerconsts.sincompatibleformatargs
+#, fuzzy
+#| msgid "[Line: %d] Incompatible format() arguments for:"
+msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
+msgstr "[Eilutė: %d] Nesuderinamų „format()“ argumentų turi:"
+
+#: pocheckerconsts.slineinfilename
+msgid "[Line %d] in %s:"
+msgstr "[Eilutė: %d] faile %s:"
+
+#: pocheckerconsts.slinenr
+msgid "[Line: %d]"
+msgstr "[Eilutė: %d]"
+
+#: pocheckerconsts.smissingmasteridentifier
+msgid "Identifier [%s] found in %s, but it does not exist in %s"
+msgstr "Identifikatorių [%s] turi „%s“, tačiau jo neturi „%s“"
+
+#: pocheckerconsts.snoerrorsfound
+msgid "No errors found"
+msgstr "Klaidų nerasta"
+
+#: pocheckerconsts.snofileslefttocheck
+msgid "There are no files left to check."
+msgstr ""
+
+#: pocheckerconsts.snotestselected
+msgid "There are no tests selected."
+msgstr "Būtina parinkti bent vieną testavimą."
+
+#: pocheckerconsts.snotetranslationisfuzzy
+msgid "Note: translation is fuzzy"
+msgstr ""
+
+#: pocheckerconsts.snrerrorsfound
+msgid "Found %d errors."
+msgstr "Rasta klaidų: %d."
+
+#: pocheckerconsts.snrofitemsmismatch
+msgid "Mismatch in number of items for master and child"
+msgstr "Elementų kiekiai pagrindiniame ir su juo siejamame faile skiriasi"
+
+#: pocheckerconsts.snrofitemsmismatchd
+msgid "%s: %d items"
+msgstr "%s: elementų - %d"
+
+#: pocheckerconsts.snrwarningsfound
+msgid "Found %d warnings."
+msgstr "Rasta perspėjimų: %d."
+
+#: pocheckerconsts.sopenapofile
+msgid "&Open a po-file"
+msgstr "At&verti PO failą"
+
+#: pocheckerconsts.sopenfail
+msgid ""
+"Unable to open file:\n"
+"\"%s\"\n"
+msgstr ""
+
+#: pocheckerconsts.sopenfailexternal
+msgid ""
+"Unable to open file\n"
+"\"%s\"\n"
+"in external editor\n"
+"\"%s\"\n"
+msgstr ""
+
+#: pocheckerconsts.sopenfile
+msgid "Open file %s in Ide Editor?"
+msgstr ""
+
+#: pocheckerconsts.sopenfileexternal
+msgid ""
+"Open file:\n"
+"\"%s\"\n"
+"in external editor:\n"
+"\"%s\"?\n"
+msgstr ""
+
+#: pocheckerconsts.soriginal
+msgid "Original"
+msgstr "Originalas"
+
+#: pocheckerconsts.spercfuzzy
+msgid "%s: %4.1f%% fuzzy strings."
+msgstr ""
+
+#: pocheckerconsts.sperctranslated
+msgid "%s: %4.1f%% translated strings."
+msgstr ""
+
+#: pocheckerconsts.spercuntranslated
+msgid "%s: %4.1f%% untranslated strings."
+msgstr ""
+
+#: pocheckerconsts.sresults
+msgid "Results"
+msgstr "Rezultatai"
+
+#: pocheckerconsts.srunselectedtests
+msgid "&Run Selected Tests"
+msgstr "&Vykdyti parinktus testavimus"
+
+#: pocheckerconsts.ssavecaption
+msgid "Save to file"
+msgstr "Įrašyti faile"
+
+#: pocheckerconsts.ssaveerror
+msgid ""
+"Error saving file:\n"
+"%s\n"
+msgstr ""
+"Rašant į failą įvyko klaida:\n"
+"%s\n"
+
+#: pocheckerconsts.sscandir
+msgid "Scan a folder"
+msgstr ""
+
+#: pocheckerconsts.sscanninginprogress
+msgid "Scanning in progress, please wait ..."
+msgstr ""
+
+#: pocheckerconsts.sselectalllistbox
+msgid "Select all files"
+msgstr ""
+
+#: pocheckerconsts.sselectalltests
+msgid "Select &All"
+msgstr ""
+
+#: pocheckerconsts.sselectbasictests
+msgid "Select &Basic"
+msgstr ""
+
+#: pocheckerconsts.sselecttesttypes
+msgid "Select test types"
+msgstr "Pažymėti testavimo tipus"
+
+#: pocheckerconsts.sshowstatgraph
+msgid "Show statistics graph"
+msgstr ""
+
+#: pocheckerconsts.sstathint
+msgid ""
+"%3d Translated (%3.1f%%)\n"
+"%3d UnTranslated (%3.1f%%)\n"
+"%3d Fuzzy (%3.1f%%)\n"
+"%d Error(s) in Selected Tests\n"
+msgstr ""
+
+#: pocheckerconsts.stotalerrors
+#, fuzzy
+#| msgid "Total errors / warnings found: %d"
+msgid "Total errors found: %d"
+msgstr "Viso rasta klaidų/perspėjimų: %d"
+
+#: pocheckerconsts.stotalwarnings
+msgid "Total warnings found: %d"
+msgstr "Viso rasta perspėjimų: %d"
+
+#: pocheckerconsts.stranslated
+msgid "Translated"
+msgstr ""
+
+#: pocheckerconsts.stranslation
+msgid "Translation"
+msgstr "Vertimas"
+
+#: pocheckerconsts.stranslationstatistics
+msgid "Translation statistics per language:"
+msgstr ""
+
+#: pocheckerconsts.sunselectalltests
+msgid "&Unselect All"
+msgstr ""
+
+#: pocheckerconsts.sunselectlistbox
+msgid "Unselect all files"
+msgstr ""
+
+#: pocheckerconsts.suntranslated
+msgid "Untranslated"
+msgstr ""
+

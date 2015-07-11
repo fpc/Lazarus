@@ -1,0 +1,270 @@
+object CompilerDebuggingOptionsFrame: TCompilerDebuggingOptionsFrame
+  Left = 0
+  Height = 552
+  Top = 0
+  Width = 701
+  ClientHeight = 552
+  ClientWidth = 701
+  TabOrder = 0
+  DesignLeft = 225
+  DesignTop = 275
+  object chkDebugGDB: TCheckBox
+    AnchorSideTop.Control = grpChecks
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 21
+    Top = 112
+    Width = 689
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    BorderSpacing.Around = 6
+    Caption = 'chkDebugGDB'
+    OnChange = chkDebugGDBChange
+    TabOrder = 0
+  end
+  object grpInfoForGDB: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = chkDebugGDB
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 125
+    Top = 139
+    Width = 701
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    Caption = 'grpInfoForGDB'
+    ClientHeight = 106
+    ClientWidth = 697
+    TabOrder = 1
+    object chkUseLineInfoUnit: TCheckBox
+      AnchorSideLeft.Control = grpInfoForGDB
+      AnchorSideTop.Control = dropDbgSymbolType
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = grpInfoForGDB
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 21
+      Top = 31
+      Width = 691
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      Caption = 'chkUseLineInfoUnit'
+      TabOrder = 1
+    end
+    object chkUseValgrind: TCheckBox
+      AnchorSideLeft.Control = chkUseLineInfoUnit
+      AnchorSideTop.Control = chkUseLineInfoUnit
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = grpInfoForGDB
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 21
+      Top = 55
+      Width = 691
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 3
+      Caption = 'chkUseValgrind'
+      TabOrder = 2
+    end
+    object chkUseExternalDbgSyms: TCheckBox
+      AnchorSideLeft.Control = chkUseValgrind
+      AnchorSideTop.Control = chkUseValgrind
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = grpInfoForGDB
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 21
+      Top = 79
+      Width = 691
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 3
+      BorderSpacing.Bottom = 6
+      Caption = 'chkUseExternalDbgSyms'
+      TabOrder = 3
+    end
+    object dropDbgSymbolType: TComboBox
+      AnchorSideLeft.Control = lblDbgSymbolType
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideRight.Control = grpInfoForGDB
+      AnchorSideRight.Side = asrBottom
+      Left = 122
+      Height = 25
+      Top = 3
+      Width = 572
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 3
+      ItemHeight = 0
+      Style = csDropDownList
+      TabOrder = 0
+    end
+    object lblDbgSymbolType: TLabel
+      AnchorSideLeft.Control = grpInfoForGDB
+      AnchorSideTop.Control = dropDbgSymbolType
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 15
+      Top = 8
+      Width = 110
+      BorderSpacing.Around = 6
+      Caption = 'lblDbgSymbolType'
+      ParentColor = False
+    end
+  end
+  object grpOtherDebuggingInfo: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = grpInfoForGDB
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 121
+    Top = 269
+    Width = 701
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 5
+    Caption = 'grpOtherDebuggingInfo'
+    ClientHeight = 102
+    ClientWidth = 697
+    TabOrder = 2
+    object chkUseHeaptrc: TCheckBox
+      Left = 6
+      Height = 21
+      Top = 3
+      Width = 691
+      Align = alTop
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 3
+      Caption = 'chkUseHeaptrc'
+      TabOrder = 0
+    end
+    object chkGenGProfCode: TCheckBox
+      AnchorSideLeft.Control = chkTrashVariables
+      AnchorSideTop.Control = chkTrashVariables
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = grpOtherDebuggingInfo
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 21
+      Top = 51
+      Width = 691
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 3
+      Caption = 'chkGenGProfCode'
+      TabOrder = 1
+    end
+    object chkSymbolsStrip: TCheckBox
+      AnchorSideLeft.Control = chkGenGProfCode
+      AnchorSideTop.Control = chkGenGProfCode
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = grpOtherDebuggingInfo
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 21
+      Top = 75
+      Width = 691
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 3
+      BorderSpacing.Bottom = 6
+      Caption = 'chkSymbolsStrip'
+      TabOrder = 2
+    end
+    object chkTrashVariables: TCheckBox
+      AnchorSideLeft.Control = chkUseHeaptrc
+      AnchorSideTop.Control = chkUseHeaptrc
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 21
+      Top = 27
+      Width = 136
+      BorderSpacing.Top = 3
+      Caption = 'chkTrashVariables'
+      TabOrder = 3
+    end
+  end
+  object grpChecks: TGroupBox
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 100
+    Top = 0
+    Width = 701
+    Align = alTop
+    Anchors = []
+    AutoSize = True
+    Caption = 'grpChecks'
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 81
+    ClientWidth = 697
+    TabOrder = 3
+    object chkChecksIO: TCheckBox
+      Left = 6
+      Height = 21
+      Top = 6
+      Width = 103
+      BorderSpacing.Left = 6
+      Caption = 'chkChecksIO'
+      TabOrder = 0
+    end
+    object chkChecksRange: TCheckBox
+      AnchorSideLeft.Control = chkChecksIO
+      AnchorSideTop.Control = chkChecksIO
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 21
+      Top = 30
+      Width = 131
+      BorderSpacing.Top = 3
+      Caption = 'chkChecksRange'
+      TabOrder = 1
+    end
+    object chkChecksOverflow: TCheckBox
+      AnchorSideLeft.Control = chkChecksRange
+      AnchorSideTop.Control = chkChecksRange
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 21
+      Top = 54
+      Width = 143
+      BorderSpacing.Top = 3
+      BorderSpacing.Bottom = 6
+      Caption = 'chkChecksOverflow'
+      TabOrder = 2
+    end
+    object chkChecksStack: TCheckBox
+      AnchorSideLeft.Control = chkChecksIO
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = chkChecksIO
+      Left = 179
+      Height = 21
+      Top = 6
+      Width = 126
+      BorderSpacing.Left = 70
+      Caption = 'chkChecksStack'
+      TabOrder = 3
+    end
+    object chkVerifyObjMethodCall: TCheckBox
+      AnchorSideLeft.Control = chkChecksStack
+      AnchorSideTop.Control = chkChecksRange
+      Left = 179
+      Height = 21
+      Top = 30
+      Width = 168
+      Caption = 'chkVerifyObjMethodCall'
+      TabOrder = 4
+    end
+    object chkAssertion: TCheckBox
+      AnchorSideLeft.Control = chkVerifyObjMethodCall
+      AnchorSideTop.Control = chkChecksOverflow
+      Left = 179
+      Height = 21
+      Top = 54
+      Width = 105
+      Caption = 'chkAssertion'
+      TabOrder = 5
+    end
+  end
+end

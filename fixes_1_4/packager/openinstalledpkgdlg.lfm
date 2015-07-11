@@ -1,0 +1,91 @@
+object OpenLoadedPackagesDlg: TOpenLoadedPackagesDlg
+  Left = 407
+  Height = 501
+  Top = 151
+  Width = 446
+  ActiveControl = FilterEdit
+  Caption = 'OpenLoadedPackagesDlg'
+  ClientHeight = 501
+  ClientWidth = 446
+  OnClose = FormClose
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.5'
+  object HintMemo: TMemo
+    Left = 3
+    Height = 121
+    Top = 332
+    Width = 440
+    Align = alBottom
+    BorderSpacing.Left = 3
+    BorderSpacing.Right = 3
+    Lines.Strings = (
+      'Memo1'
+    )
+    ReadOnly = True
+    ScrollBars = ssAutoBoth
+    TabOrder = 3
+  end
+  object PkgListView: TListView
+    AnchorSideTop.Control = FilterEdit
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Splitter1
+    Left = 3
+    Height = 300
+    Top = 27
+    Width = 440
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 3
+    BorderSpacing.Top = 3
+    BorderSpacing.Right = 3
+    Columns = <>
+    HideSelection = False
+    ReadOnly = True
+    RowSelect = True
+    SortType = stText
+    TabOrder = 1
+    ViewStyle = vsReport
+    OnDblClick = PkgListViewDblClick
+    OnSelectItem = PkgListViewSelectItem
+  end
+  object Splitter1: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 327
+    Width = 446
+    Align = alBottom
+    ResizeAnchor = akBottom
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 36
+    Top = 459
+    Width = 434
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    OKButton.OnClick = OpenButtonClick
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    HelpButton.OnClick = HelpButtonClick
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 4
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object FilterEdit: TListViewFilterEdit
+    Left = 3
+    Height = 21
+    Top = 3
+    Width = 147
+    ButtonWidth = 23
+    NumGlyphs = 1
+    MaxLength = 0
+    TabOrder = 0
+    FilteredListview = PkgListView
+  end
+end

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <Name Value="sqlitelaz"/>
+    <Type Value="RunAndDesignTime"/>
+    <AddToProjectUsesSection Value="True"/>
+    <Author Value="Luiz Américo Pereira Câmara"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
+      </SearchPaths>
+      <Parsing>
+        <SyntaxOptions>
+          <UseAnsiStrings Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
+    </CompilerOptions>
+    <Description Value="TSqliteDataset class package
+"/>
+    <License Value="Modified LGPL
+"/>
+    <Version Minor="4"/>
+    <Files Count="4">
+      <Item1>
+        <Filename Value="registersqlite.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="registersqlite"/>
+      </Item1>
+      <Item2>
+        <Filename Value="sqliteds.pas"/>
+        <Type Value="Virtual Unit"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="sqliteds"/>
+      </Item2>
+      <Item3>
+        <Filename Value="sqlitecomponenteditor.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="SqliteComponentEditor"/>
+      </Item3>
+      <Item4>
+        <Filename Value="sqlitecompstrings.pas"/>
+        <UnitName Value="sqlitecompstrings"/>
+      </Item4>
+    </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+      <EnableI18NForLFM Value="True"/>
+    </i18n>
+    <RequiredPkgs Count="2">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="IDEIntf"/>
+      </Item2>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    StringHashList
+  ====================================================================
+-->
+
+<module name="StringHashList">
+<short/>
+<descr>
+</descr>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Classes">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="SysUtils">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLStrConsts">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- pointer type Visibility: default -->
+<element name="PStringHashItem">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- record type Visibility: default -->
+<element name="TStringHashItem">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TStringHashItem.HashValue">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TStringHashItem.Key">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TStringHashItem.Data">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- pointer type Visibility: default -->
+<element name="PStringHashItemList">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TStringHashList">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TStringHashList.FList">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TStringHashList.FCount">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TStringHashList.fCaseSensitive">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TStringHashList.CompareString">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TStringHashList.CompareString.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.CompareString.Value1">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.CompareString.Value2">
+<short/>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TStringHashList.CompareValue">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TStringHashList.CompareValue.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.CompareValue.Value1">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.CompareValue.Value2">
+<short/>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TStringHashList.GetData">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TStringHashList.GetData.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.GetData.S">
+<short/>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TStringHashList.SetCaseSensitive">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.SetCaseSensitive.Value">
+<short/>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TStringHashList.Delete">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.Delete.Index">
+<short/>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TStringHashList.SetData">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.SetData.S">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.SetData.AValue">
+<short/>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TStringHashList.HashOf">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TStringHashList.HashOf.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.HashOf.Key">
+<short/>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TStringHashList.Insert">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.Insert.Index">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.Insert.Item">
+<short/>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TStringHashList.Create">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.Create.CaseSensitivity">
+<short/>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TStringHashList.Destroy">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TStringHashList.Add">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TStringHashList.Add.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.Add.S">
+<short/>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TStringHashList.Add">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TStringHashList.Add.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.Add.S">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.Add.ItemData">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TStringHashList.Clear">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TStringHashList.Find">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TStringHashList.Find.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.Find.S">
+<short/>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TStringHashList.Remove">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TStringHashList.Remove.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.Remove.S">
+<short/>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TStringHashList.CaseSensitive">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TStringHashList.Count">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TStringHashList.Data">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.Data.S">
+<short/>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TStringHashList.List">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+</module> <!-- StringHashList -->
+</package>
+</fpdoc-descriptions>

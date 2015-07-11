@@ -1,0 +1,98 @@
+ Valdas Jankunas <zmuogs@gmail.com>, 2012.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2012-08-06 22:19+0300\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Language: lt\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 1.5\n"
+
+#: todoliststrconsts.dlgfropts
+msgid "Options"
+msgstr "Parinktys"
+
+#: todoliststrconsts.dlgunitdeprefresh
+msgid "Refresh"
+msgstr "Atnaujinti"
+
+#: todoliststrconsts.lisctinsertmacro
+msgid "Insert Macro"
+msgstr "Įterpti makrokomandą"
+
+#: todoliststrconsts.lispkgfiletypetext
+msgid "Text"
+msgstr "Tekstas"
+
+#: todoliststrconsts.lisprint
+msgid "Print"
+msgstr "Spausdinti"
+
+#: todoliststrconsts.listddinserttodo
+msgid "Insert ToDo"
+msgstr "Įterpti ToDo"
+
+#: todoliststrconsts.listodoexport
+msgid "Export"
+msgstr "Eksportuoti"
+
+#: todoliststrconsts.listodogoto
+msgid "Goto"
+msgstr "Rodyk kur"
+
+#: todoliststrconsts.listodoldescription
+msgid "Description"
+msgstr "Aprašymas"
+
+#: todoliststrconsts.listodoldone
+msgid "Done"
+msgstr "Baigta"
+
+#: todoliststrconsts.listodolfile
+msgid "Module"
+msgstr "Modulis"
+
+#: todoliststrconsts.listodolist
+msgid "ToDo List"
+msgstr "ToDo sąrašas"
+
+#: todoliststrconsts.listodolistgotoline
+msgid "Goto selected source line"
+msgstr "Rodyti eilutę pirminiame kode"
+
+#: todoliststrconsts.listodolistoptions
+msgid "ToDo options ..."
+msgstr "ToDo parinktys…"
+
+#: todoliststrconsts.listodolistprintlist
+msgid "Print todo items"
+msgstr "Spausdinti ToDo sąrašą"
+
+#: todoliststrconsts.listodolistrefresh
+msgid "Refresh todo items"
+msgstr "Atnaujinti ToDo sąrašą"
+
+#: todoliststrconsts.listodolline
+msgid "Line"
+msgstr "Eilutė"
+
+#: todoliststrconsts.listodolowner
+msgid "Owner"
+msgstr "Savininkas"
+
+#: todoliststrconsts.listodolpriority
+msgid "Priority"
+msgstr "Prioritetas"
+
+#: todoliststrconsts.listtodolcategory
+msgid "Category"
+msgstr "Kategorija"
+
+#: todoliststrconsts.lisviewtodolist
+msgid "View ToDo List"
+msgstr "Rodyti ToDo sąrašą"
+

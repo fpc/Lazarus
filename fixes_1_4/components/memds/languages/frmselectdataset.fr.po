@@ -1,0 +1,49 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2015-04-13 13:58+0100\n"
+"Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr_FR\n"
+"X-Generator: Poedit 1.7.5\n"
+
+#: frmselectdataset.scancelbtn
+msgid "Cancel"
+msgstr "Annuler"
+
+#: frmselectdataset.scaption
+msgid "Select dataset to copy from"
+msgstr "Choisir l'ensemble de données depuis"
+
+#: frmselectdataset.scopymeta
+msgid "Copy only metadata"
+msgstr "Ne copier que les métadonnées"
+
+#: frmselectdataset.sdataset
+msgid "&Dataset to copy from:"
+msgstr "&Ensemble de données à copier depuis :"
+
+#: frmselectdataset.serrcomponentnotfound
+msgid "Error: Component \"%s\" not found"
+msgstr "Erreur : composant  \"%s\" introuvable"
+
+#: frmselectdataset.serrselectdataset
+msgid "Please select a dataset first"
+msgstr "Veuillez tout d'abord choisir un ensemble de données"
+
+#: frmselectdataset.smenucopydataset
+msgid "Copy data from Dataset"
+msgstr "Copier les données depuis l'ensemble de données"
+
+#: frmselectdataset.smenucreatedataset
+msgid "Create dataset"
+msgstr "Créer l'ensemble de données"
+
+#: frmselectdataset.sokbtn
+msgid "OK"
+msgstr "Ok"
+

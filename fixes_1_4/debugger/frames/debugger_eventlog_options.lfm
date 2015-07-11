@@ -1,0 +1,227 @@
+inherited DebuggerEventLogOptionsFrame: TDebuggerEventLogOptionsFrame
+  Height = 329
+  Width = 534
+  ClientHeight = 329
+  ClientWidth = 534
+  TabOrder = 0
+  Visible = False
+  DesignLeft = 536
+  DesignTop = 282
+  object gbGeneral: TGroupBox[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 0
+    Height = 151
+    Top = 0
+    Width = 128
+    AutoSize = True
+    Caption = 'General'
+    ClientHeight = 133
+    ClientWidth = 124
+    TabOrder = 0
+    object chkClearLogOnRun: TCheckBox
+      AnchorSideLeft.Control = gbGeneral
+      AnchorSideTop.Control = gbGeneral
+      Left = 6
+      Height = 17
+      Top = 6
+      Width = 94
+      BorderSpacing.Around = 6
+      Caption = 'Clear log on run'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+    end
+    object chkLimitLinecount: TCheckBox
+      AnchorSideLeft.Control = gbGeneral
+      AnchorSideTop.Control = chkClearLogOnRun
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 17
+      Top = 29
+      Width = 98
+      BorderSpacing.Around = 6
+      Caption = 'Limit linecount to'
+      OnChange = chkLimitLinecountChange
+      TabOrder = 1
+    end
+    object seLimitLinecount: TSpinEdit
+      AnchorSideLeft.Control = chkLimitLinecount
+      AnchorSideTop.Control = chkLimitLinecount
+      AnchorSideTop.Side = asrBottom
+      Left = 26
+      Height = 21
+      Top = 52
+      Width = 92
+      BorderSpacing.Left = 20
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 60
+      TabOrder = 2
+    end
+  end
+  object gbMessages: TGroupBox[1]
+    AnchorSideLeft.Control = gbGeneral
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = gbGeneral
+    AnchorSideBottom.Side = asrBottom
+    Left = 134
+    Height = 151
+    Top = 0
+    Width = 400
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 6
+    Caption = 'Messages'
+    ClientHeight = 133
+    ClientWidth = 396
+    TabOrder = 1
+    object cbMessages: TCheckListBox
+      AnchorSideLeft.Control = gbMessages
+      AnchorSideTop.Control = gbMessages
+      AnchorSideRight.Control = gbMessages
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = gbMessages
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 121
+      Top = 6
+      Width = 384
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Around = 6
+      ItemHeight = 0
+      TabOrder = 0
+    end
+  end
+  object gbColors: TGroupBox[2]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = gbGeneral
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 172
+    Top = 157
+    Width = 534
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 6
+    Caption = 'Colors'
+    ClientHeight = 154
+    ClientWidth = 530
+    TabOrder = 2
+    object ColorTree: TTreeView
+      AnchorSideLeft.Control = gbColors
+      AnchorSideTop.Control = chkUseEventLogColors
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = gbColors
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = gbColors
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 119
+      Top = 29
+      Width = 240
+      Anchors = [akTop, akLeft, akBottom]
+      AutoExpand = True
+      BorderSpacing.Around = 6
+      Constraints.MinWidth = 150
+      DefaultItemHeight = 15
+      ReadOnly = True
+      ScrollBars = ssAutoBoth
+      ShowButtons = False
+      ShowRoot = False
+      TabOrder = 0
+      OnAdvancedCustomDrawItem = ColorTreeAdvancedCustomDrawItem
+      OnChange = ColorTreeChange
+      OnClick = ColorTreeClick
+      Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowLines, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
+    end
+    object chkUseEventLogColors: TCheckBox
+      AnchorSideLeft.Control = gbColors
+      AnchorSideTop.Control = gbColors
+      Left = 6
+      Height = 17
+      Top = 6
+      Width = 127
+      BorderSpacing.Around = 6
+      Caption = 'chkUseEventLogColors'
+      OnChange = chkUseEventLogColorsChange
+      TabOrder = 1
+    end
+    object ForegroundColorBox: TColorBox
+      AnchorSideLeft.Control = ColorTree
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = ForeGroundLabel
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = gbColors
+      AnchorSideRight.Side = asrBottom
+      Left = 252
+      Height = 22
+      Top = 46
+      Width = 272
+      DefaultColorColor = clWhite
+      Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames, cbCustomColors]
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 3
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      ItemHeight = 16
+      OnChange = ForegroundColorBoxChange
+      TabOrder = 2
+    end
+    object BackGroundColorBox: TColorBox
+      AnchorSideLeft.Control = ColorTree
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = BackGroundLabel
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = gbColors
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Side = asrBottom
+      Left = 252
+      Height = 22
+      Top = 91
+      Width = 272
+      DefaultColorColor = clWhite
+      Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames, cbCustomColors]
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 3
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      ItemHeight = 16
+      OnChange = ForegroundColorBoxChange
+      TabOrder = 3
+    end
+    object ForeGroundLabel: TLabel
+      AnchorSideLeft.Control = ColorTree
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = ColorTree
+      Left = 252
+      Height = 14
+      Top = 29
+      Width = 83
+      BorderSpacing.Left = 6
+      Caption = 'ForeGroundLabel'
+      ParentColor = False
+    end
+    object BackGroundLabel: TLabel
+      AnchorSideLeft.Control = ColorTree
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = ForegroundColorBox
+      AnchorSideTop.Side = asrBottom
+      Left = 252
+      Height = 14
+      Top = 74
+      Width = 83
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      Caption = 'BackGroundLabel'
+      ParentColor = False
+    end
+  end
+end

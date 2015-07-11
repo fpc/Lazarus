@@ -1,0 +1,781 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: ezik shulamy <shulamy@regba.org.il>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: syneditstrconst.syns_attrannotation
+msgid "Annotation"
+msgstr ""
+
+#: syneditstrconst.syns_attrasp
+msgid "Asp"
+msgstr ""
+
+#: syneditstrconst.syns_attrassembler
+msgid "Assembler"
+msgstr "אסמבלר"
+
+#: syneditstrconst.syns_attrattributename
+msgid "Attribute Name"
+msgstr "שם המאפיין"
+
+#: syneditstrconst.syns_attrattributevalue
+msgid "Attribute Value"
+msgstr "ערך המאפיין"
+
+#: syneditstrconst.syns_attrblock
+msgid "Block"
+msgstr "בלוק"
+
+#: syneditstrconst.syns_attrbrackets
+msgid "Brackets"
+msgstr "סוגריים"
+
+#: syneditstrconst.syns_attrcaselabel
+msgid "Case label"
+msgstr "תוית ראשיות"
+
+#: syneditstrconst.syns_attrcdata
+msgid "CDATA"
+msgstr ""
+
+#: syneditstrconst.syns_attrcdatasection
+msgid "CDATA Section"
+msgstr "סעיף CDATA"
+
+#: syneditstrconst.syns_attrcharacter
+msgid "Character"
+msgstr "תו"
+
+#: syneditstrconst.syns_attrchunkmarker
+msgid "Diff Chunk Marker"
+msgstr ""
+
+#: syneditstrconst.syns_attrchunkmixed
+msgid "Diff Chunk Line Counts"
+msgstr ""
+
+#: syneditstrconst.syns_attrchunknew
+msgid "Diff Chunk New Line Count"
+msgstr ""
+
+#: syneditstrconst.syns_attrchunkorig
+msgid "Diff Chunk Original Line Count"
+msgstr ""
+
+#: syneditstrconst.syns_attrclass
+msgid "Class"
+msgstr "מחלקה"
+
+#: syneditstrconst.syns_attrcomment
+msgid "Comment"
+msgstr "הערה"
+
+#: syneditstrconst.syns_attrcondition
+msgid "Condition"
+msgstr "תנאי"
+
+#: syneditstrconst.syns_attrdatatype
+msgid "Data type"
+msgstr "סוג נתונים"
+
+#: syneditstrconst.syns_attrdefaultpackage
+msgid "Default packages"
+msgstr "חבילות ברירת מחדל"
+
+#: syneditstrconst.syns_attrdir
+msgid "Direction"
+msgstr "כיוון"
+
+#: syneditstrconst.syns_attrdirective
+msgid "Directive"
+msgstr "הוראה"
+
+#: syneditstrconst.syns_attrdoctype
+msgid "DOCTYPE"
+msgstr ""
+
+#: syneditstrconst.syns_attrdoctypesection
+msgid "DOCTYPE Section"
+msgstr "סעיף DOCTYPE"
+
+#: syneditstrconst.syns_attrdocumentation
+msgid "Documentation"
+msgstr "תיעוד"
+
+#: syneditstrconst.syns_attrelementname
+msgid "Element Name"
+msgstr "שם האלמנט"
+
+#: syneditstrconst.syns_attrembedsql
+msgid "Embedded SQL"
+msgstr "משובץ SQL"
+
+#: syneditstrconst.syns_attrembedtext
+msgid "Embedded text"
+msgstr "טקסט משובץ"
+
+#: syneditstrconst.syns_attrentityreference
+msgid "Entity Reference"
+msgstr "מראה מקום הישות"
+
+#: syneditstrconst.syns_attrescapeampersand
+msgid "Escape ampersand"
+msgstr ""
+
+#: syneditstrconst.syns_attrevent
+msgid "Event"
+msgstr "מאורע"
+
+#: syneditstrconst.syns_attrexception
+msgid "Exception"
+msgstr "חריגה"
+
+#: syneditstrconst.syns_attrflags
+msgid "Flags"
+msgstr ""
+
+#: syneditstrconst.syns_attrfloat
+msgid "Float"
+msgstr "צף"
+
+#: syneditstrconst.syns_attrform
+msgid "Form"
+msgstr "טופס"
+
+#: syneditstrconst.syns_attrfunction
+msgid "Function"
+msgstr "פונקציה"
+
+#: syneditstrconst.syns_attrhexadecimal
+msgid "Hexadecimal"
+msgstr "הקסה-דצימלי"
+
+#: syneditstrconst.syns_attricon
+msgid "Icon reference"
+msgstr "מראה מקום האיקון"
+
+#: syneditstrconst.syns_attridedirective
+msgid "IDE Directive"
+msgstr ""
+
+#: syneditstrconst.syns_attridentifier
+msgid "Identifier"
+msgstr "מזהה"
+
+#: syneditstrconst.syns_attrillegalchar
+msgid "Illegal char"
+msgstr "תו לא חוקי"
+
+#: syneditstrconst.syns_attrinclude
+msgid "Include"
+msgstr "כלול"
+
+#: syneditstrconst.syns_attrindirect
+msgid "Indirect"
+msgstr "עקיף"
+
+#: syneditstrconst.syns_attrinternalfunction
+msgid "Internal function"
+msgstr "פונקציה פנימית"
+
+#: syneditstrconst.syns_attrinvalidsymbol
+msgid "Invalid symbol"
+msgstr "סמל לא חוקי"
+
+#: syneditstrconst.syns_attrkey
+msgid "Key"
+msgstr "מקש"
+
+#: syneditstrconst.syns_attrlabel
+msgid "Label"
+msgstr "תוית"
+
+#: syneditstrconst.syns_attrlineadded
+msgid "Diff Added line"
+msgstr "השווה שורה שנוספה"
+
+#: syneditstrconst.syns_attrlinechanged
+msgid "Diff Changed Line"
+msgstr "השווה שורה ששונתה"
+
+#: syneditstrconst.syns_attrlinecontext
+msgid "Diff Context Line"
+msgstr "השווה שורת הקשר"
+
+#: syneditstrconst.syns_attrlineremoved
+msgid "Diff Removed Line"
+msgstr "השווה שורה שהוסרה"
+
+#: syneditstrconst.syns_attrmacro
+msgid "Macro"
+msgstr "מאקרו"
+
+#: syneditstrconst.syns_attrmarker
+msgid "Marker"
+msgstr "סמן (הדגשה)"
+
+#: syneditstrconst.syns_attrmathmode
+msgid "Math Mode"
+msgstr "מצב מתמטי"
+
+#: syneditstrconst.syns_attrmessage
+msgid "Message"
+msgstr "הודעה"
+
+#: syneditstrconst.syns_attrmiscellaneous
+msgid "Miscellaneous"
+msgstr "שונות"
+
+#: syneditstrconst.syns_attrnamespaceattrname
+msgid "Namespace Attribute Name"
+msgstr "שם של מאפיין מרחב-השמות"
+
+#: syneditstrconst.syns_attrnamespaceattrvalue
+msgid "Namespace Attribute Value"
+msgstr "ערך של מאפיין מרחב-השמות"
+
+#: syneditstrconst.syns_attrnewfile
+msgid "Diff New File"
+msgstr "השווה קובץ חדש"
+
+#: syneditstrconst.syns_attrnonreservedkeyword
+msgid "Non-reserved keyword"
+msgstr "מלת מפתח לא שמורה"
+
+#: syneditstrconst.syns_attrnull
+msgid "Null"
+msgstr "אפס"
+
+#: syneditstrconst.syns_attrnumber
+msgid "Number"
+msgstr "מספר"
+
+#: syneditstrconst.syns_attroctal
+msgid "Octal"
+msgstr "אוקטלי (בסיס 8)"
+
+#: syneditstrconst.syns_attroperator
+msgid "Operator"
+msgstr "אופרטור"
+
+#: syneditstrconst.syns_attrorigfile
+msgid "Diff Original File"
+msgstr "השווה קובץ מקורי"
+
+#: syneditstrconst.syns_attrplsql
+msgid "Reserved word (PL/SQL)"
+msgstr "מלה שמורה (PL/SQL)"
+
+#: syneditstrconst.syns_attrpragma
+msgid "Pragma"
+msgstr ""
+
+#: syneditstrconst.syns_attrpreprocessor
+msgid "Preprocessor"
+msgstr "קדם-מעבד"
+
+#: syneditstrconst.syns_attrprevvalue
+msgid "Previous value"
+msgstr ""
+
+#: syneditstrconst.syns_attrprocessinginstr
+msgid "Processing Instruction"
+msgstr "הוראות עיבוד"
+
+#: syneditstrconst.syns_attrqualifier
+msgid "Qualifier"
+msgstr "מסייג"
+
+#: syneditstrconst.syns_attrregister
+msgid "Register"
+msgstr "אוגר"
+
+#: syneditstrconst.syns_attrreservedword
+msgid "Reserved word"
+msgstr "מלה שמורה"
+
+#: syneditstrconst.syns_attrroundbracket
+msgid "Round Bracket"
+msgstr "סוגרים עגולים"
+
+#: syneditstrconst.syns_attrrpl
+msgid "Rpl"
+msgstr "Rpl"
+
+#: syneditstrconst.syns_attrrplcomment
+msgid "Rpl comment"
+msgstr "הערת Rpl "
+
+#: syneditstrconst.syns_attrrplkey
+msgid "Rpl key"
+msgstr "מקש Rpl "
+
+#: syneditstrconst.syns_attrsasm
+msgid "SASM"
+msgstr "SASM"
+
+#: syneditstrconst.syns_attrsasmcomment
+msgid "SASM Comment"
+msgstr "הערת SASM"
+
+#: syneditstrconst.syns_attrsasmkey
+msgid "SASM Key"
+msgstr "מקש SASM"
+
+#: syneditstrconst.syns_attrsecondreservedword
+msgid "Second reserved word"
+msgstr "מלה שמורה שניה"
+
+#: syneditstrconst.syns_attrsection
+msgid "Section"
+msgstr "סעיף"
+
+#: syneditstrconst.syns_attrspace
+msgid "Space"
+msgstr "רווח"
+
+#: syneditstrconst.syns_attrspecialvariable
+msgid "Special variable"
+msgstr "משתנה מיוחד"
+
+#: syneditstrconst.syns_attrsqlkey
+msgid "SQL keyword"
+msgstr "מלת מפתח של SQL"
+
+#: syneditstrconst.syns_attrsqlplus
+msgid "SQL*Plus command"
+msgstr "פקודת SQL*Plus"
+
+#: syneditstrconst.syns_attrsquarebracket
+msgid "Square Bracket"
+msgstr "סוגריים מרובעים"
+
+#: syneditstrconst.syns_attrstring
+msgid "String"
+msgstr "מחרוזת"
+
+#: syneditstrconst.syns_attrsymbol
+msgid "Symbol"
+msgstr "סמל"
+
+#: syneditstrconst.syns_attrsyntaxerror
+msgid "SyntaxError"
+msgstr "שגיאת תחביר"
+
+#: syneditstrconst.syns_attrsystem
+msgid "System functions and variables"
+msgstr "פונקציות ומשתני מערכת"
+
+#: syneditstrconst.syns_attrsystemvalue
+msgid "System value"
+msgstr "ערך מערכת"
+
+#: syneditstrconst.syns_attrtablename
+msgid "Table Name"
+msgstr "שם טבלה"
+
+#: syneditstrconst.syns_attrterminator
+msgid "Terminator"
+msgstr "הורס"
+
+#: syneditstrconst.syns_attrtexcommand
+msgid "TeX Command"
+msgstr "פקודת TeX "
+
+#: syneditstrconst.syns_attrtext
+msgid "Text"
+msgstr "טקסט"
+
+#: syneditstrconst.syns_attrtextmathmode
+msgid "Text in Math Mode"
+msgstr "טקסט במצב מתמטי"
+
+#: syneditstrconst.syns_attrunknownword
+msgid "Unknown word"
+msgstr "מילה לא ידועה"
+
+#: syneditstrconst.syns_attruser
+msgid "User functions and variables"
+msgstr "פונקציות ומשתני משתמש"
+
+#: syneditstrconst.syns_attruserfunction
+msgid "User functions"
+msgstr "פונקציות משתמש"
+
+#: syneditstrconst.syns_attrvalue
+msgid "Value"
+msgstr "ערך"
+
+#: syneditstrconst.syns_attrvariable
+msgid "Variable"
+msgstr "משתנה"
+
+#: syneditstrconst.syns_attrwhitespace
+msgid "Whitespace"
+msgstr "סימן \"לבן\""
+
+#: syneditstrconst.syns_duplicateshortcutmsg
+msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
+msgstr "ההקשה  \"%s\" כבר משוייכת לפקודת עורך אחרת.  (%s)"
+
+#: syneditstrconst.syns_eduplicateshortcut
+msgid "Mouse-Shortcut already exists"
+msgstr "קיצור דרך-עכבר כבר קיים"
+
+#: syneditstrconst.syns_emcbreakpointtoggle
+msgid "Toggle Breakpoint"
+msgstr "החלף (כן, לא) נקודת עצירה"
+
+#: syneditstrconst.syns_emccodefoldcollaps
+msgid "Fold Code"
+msgstr "קפל קוד"
+
+#: syneditstrconst.syns_emccodefoldcollaps_opt
+msgid "Nodes,One,All,\"At Caret\",\"Current Node\""
+msgstr ""
+
+#: syneditstrconst.syns_emccodefoldcontextmenu
+msgid "Fold Menu"
+msgstr "קפל תפריט"
+
+#: syneditstrconst.syns_emccodefoldexpand
+msgid "Unfold Code"
+msgstr "פרוש קוד"
+
+#: syneditstrconst.syns_emccodefoldexpand_opt
+msgid "Nodes,One,All"
+msgstr "צמתים , אחד, הכל"
+
+#: syneditstrconst.syns_emccontextmenu
+msgid "Popup Menu"
+msgstr "תפריט קופץ"
+
+#: syneditstrconst.syns_emccontextmenucaretmove_opt
+msgid "\"Move caret, when selection exists\", Never, \"Click outside\", Always"
+msgstr ""
+
+#: syneditstrconst.syns_emcmouselink
+msgid "Source Link"
+msgstr "קישור לקוד"
+
+#: syneditstrconst.syns_emcmouselink_opt
+msgid "Underline,yes, no"
+msgstr "\"קו תחתון\" , כן, לא"
+
+#: syneditstrconst.syns_emcnone
+msgid "No Action"
+msgstr "ללא פעולה"
+
+#: syneditstrconst.syns_emcpasteselection
+msgid "Quick Paste Selection"
+msgstr "העתקה מהירה של הבחירה"
+
+#: syneditstrconst.syns_emcselection_opt
+msgid "Mode,Begin,Continue"
+msgstr "מצב, התחלה, המשך"
+
+#: syneditstrconst.syns_emcselectline
+msgid "Select Line"
+msgstr "בחר שורה"
+
+#: syneditstrconst.syns_emcselectline_opt
+msgid "\"Include spaces\",no,yes"
+msgstr "\"כלול רווחים\" , לא, כן"
+
+#: syneditstrconst.syns_emcselectpara
+msgid "Select Paragraph"
+msgstr "בחר סעיף"
+
+#: syneditstrconst.syns_emcselectword
+msgid "Select Word"
+msgstr "בחר מילה"
+
+#: syneditstrconst.syns_emcstartcolumnselections
+msgid "Column Selection"
+msgstr "בחירת עמודה"
+
+#: syneditstrconst.syns_emcstartdragmove
+msgid "Drag Selection"
+msgstr "גרור את הבחירה"
+
+#: syneditstrconst.syns_emcstartlineselections
+msgid "Line Selection"
+msgstr "בחירת שורה"
+
+#: syneditstrconst.syns_emcstartselection
+msgid "Selection"
+msgstr "בחירה"
+
+#: syneditstrconst.syns_emcstartselectlines
+msgid "Selection (lines)"
+msgstr ""
+
+#: syneditstrconst.syns_emcstartselecttokens
+msgid "Selection (tokens) "
+msgstr ""
+
+#: syneditstrconst.syns_emcstartselectwords
+msgid "Selection (words)"
+msgstr ""
+
+#: syneditstrconst.syns_emcsyneditcommand
+msgid "IDE Command"
+msgstr "פקודת IDE"
+
+#: syneditstrconst.syns_emcwheelhorizscrolldown
+msgid "Wheel scroll down (Horizontal)"
+msgstr ""
+
+#: syneditstrconst.syns_emcwheelhorizscrollup
+msgid "Wheel scroll up (Horizontal)"
+msgstr ""
+
+#: syneditstrconst.syns_emcwheelscrolldown
+msgid "Wheel scroll down"
+msgstr ""
+
+#: syneditstrconst.syns_emcwheelscrollup
+msgid "Wheel scroll up"
+msgstr ""
+
+#: syneditstrconst.syns_emcwheelscroll_opt
+msgid "Speed,\"System settings\",Lines,Pages,\"Pages (less one line)\""
+msgstr ""
+
+#: syneditstrconst.syns_emcwheelvertscrolldown
+msgid "Wheel scroll down (Vertical)"
+msgstr ""
+
+#: syneditstrconst.syns_emcwheelvertscrollup
+msgid "Wheel scroll up (Vertical)"
+msgstr ""
+
+#: syneditstrconst.syns_emcwheelzoomin
+msgid "Wheel zoom in"
+msgstr ""
+
+#: syneditstrconst.syns_emcwheelzoomnorm
+msgid "Wheel zoom default"
+msgstr ""
+
+#: syneditstrconst.syns_emcwheelzoomout
+msgid "Wheel zoom out"
+msgstr ""
+
+#: syneditstrconst.syns_exporterformathtml
+msgid "HTML"
+msgstr "HTML"
+
+#: syneditstrconst.syns_exporterformatrtf
+msgid "RTF"
+msgstr "RTF"
+
+#: syneditstrconst.syns_filteradsp21xx
+msgid "DSP Files (*.dsp,*.inc)|*.DSP;*.INC"
+msgstr "קבצי DSP  (*.dsp,*.inc)|*.DSP;*.INC"
+
+#: syneditstrconst.syns_filterasm68hc11
+msgid "68HC11 Assembler Files (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
+msgstr "קבצי אסמבלר 68HC11  (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
+
+#: syneditstrconst.syns_filterawk
+msgid "AWK Script (*.awk)|*.awk"
+msgstr "תסריט AWK  (*.awk)|*.awk"
+
+#: syneditstrconst.syns_filterbaan
+msgid "Baan 4GL Files (*.cln)|*.cln"
+msgstr "קבצי Baan 4GL  (*.cln)|*.cln"
+
+#: syneditstrconst.syns_filterbatch
+msgid "MS-DOS Batch Files (*.bat;*.cmd)|*.bat;*.cmd"
+msgstr "קבצי MS-DOS Batch  (*.bat;*.cmd)|*.bat;*.cmd"
+
+#: syneditstrconst.syns_filtercache
+msgid "Cache Files (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
+msgstr "קבצי מטמון (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
+
+#: syneditstrconst.syns_filtercaclipper
+msgid "CA-Clipper Files (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc"
+msgstr "קבצי CA-Clippe (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc"
+
+#: syneditstrconst.syns_filtercorbaidl
+msgid "CORBA IDL files (*.idl)|*.idl"
+msgstr "קבצי  CORBA IDL (*.idl)|*.idl"
+
+#: syneditstrconst.syns_filtercpm
+msgid "CPM reports (*.rdf,*.rif,*.rmf,*.rxf)|*.rdf;*.rif;*.rmf;*.rxf"
+msgstr "דוחות CPM  (*.rdf,*.rif,*.rmf,*.rxf)|*.rdf;*.rif;*.rmf;*.rxf"
+
+#: syneditstrconst.syns_filtercpp
+msgid "C++ Files (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
+msgstr "קבצי  C++ (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
+
+#: syneditstrconst.syns_filtercss
+msgid "Cascading Stylesheets (*.css)|*.css"
+msgstr "Cascading Stylesheets (*.css)|*.css"
+
+#: syneditstrconst.syns_filterdfm
+msgid "Borland Form Files (*.dfm;*.xfm)|*.dfm;*.xfm"
+msgstr "קבצי טפסים של בורלנד (*.dfm;*.xfm)|*.dfm;*.xfm"
+
+#: syneditstrconst.syns_filterfortran
+msgid "Fortran Files (*.for)|*.for"
+msgstr "קבצי פורטרן  (*.for)|*.for"
+
+#: syneditstrconst.syns_filterfoxpro
+msgid "Foxpro Files (*.prg)|*.prg"
+msgstr "קבצי Foxpro (*.prg)|*.prg "
+
+#: syneditstrconst.syns_filtergalaxy
+msgid "Galaxy Files (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
+msgstr "קבצי גאלקסי  (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
+
+#: syneditstrconst.syns_filtergembase
+msgid "GEMBASE Files (*.dml,*.gem)|*.DML;*.GEM"
+msgstr "קבצי GEMBASE  (*.dml,*.gem)|*.DML;*.GEM"
+
+#: syneditstrconst.syns_filtergws
+msgid "GW-TEL Script Files (*.gws)|*.gws"
+msgstr "קבצי  GW-TEL Script  (*.gws)|*.gws"
+
+#: syneditstrconst.syns_filterhp48
+msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
+msgstr "HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
+
+#: syneditstrconst.syns_filterhtml
+msgid "HTML Document (*.htm,*.html)|*.htm;*.html"
+msgstr "מסמך HTML  (*.htm,*.html)|*.htm;*.html"
+
+#: syneditstrconst.syns_filterini
+msgid "INI Files (*.ini)|*.ini"
+msgstr "קבצי INI  (*.ini)|*.ini"
+
+#: syneditstrconst.syns_filterinno
+msgid "Inno Setup Script Files (*.iss)|*.iss"
+msgstr "קבצי  Inno Setup Script  (*.iss)|*.iss"
+
+#: syneditstrconst.syns_filterjava
+msgid "Java Files (*.java)|*.java"
+msgstr "קבצי ג'אוה   *.java)|*.java)"
+
+#: syneditstrconst.syns_filterjscript
+msgid "Javascript Files (*.js)|*.js"
+msgstr "קבצי ג'אוה-סקריפט (*.js)|*.js"
+
+#: syneditstrconst.syns_filterkix
+msgid "KiXtart scripts (*.kix)|*.kix"
+msgstr "תסריטי KiXtart  (*.kix)|*.kix"
+
+#: syneditstrconst.syns_filterlfm
+msgid "Lazarus Form Files (*.lfm)|*.lfm"
+msgstr "קבצי טפסים של לזארוס (*.lfm)|*.lfm"
+
+#: syneditstrconst.syns_filtermodelica
+msgid "Modelica Files (*.mo)|*.mo"
+msgstr "קבצי  Modelica (*.mo)|*.mo"
+
+#: syneditstrconst.syns_filtermodula3
+msgid "Modula-3 Files (*.m3)|*.m3"
+msgstr "קבצי  Modula-3  (*.m3)|*.m3"
+
+#: syneditstrconst.syns_filterpascal
+msgid "Pascal Files (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc"
+msgstr "קבצי פסקל (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc"
+
+#: syneditstrconst.syns_filterperl
+msgid "Perl Files (*.pl,*.pm,*.cgi)|*.pl;*.pm;*.cgi"
+msgstr "קבצי פרל  (*.pl,*.pm,*.cgi)|*.pl;*.pm;*.cgi"
+
+#: syneditstrconst.syns_filterphp
+msgid "PHP Files (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
+msgstr "קבצי PHP  (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
+
+#: syneditstrconst.syns_filterpo
+msgid "Po Files (*.po)|*.po"
+msgstr ""
+
+#: syneditstrconst.syns_filterprogress
+msgid "Progress Files (*.w,*.p,*.i)|*.w;*.p;*.i"
+msgstr "קבצי Progress (*.w,*.p,*.i)|*.w;*.p;*.i"
+
+#: syneditstrconst.syns_filterpython
+msgid "Python Files (*.py)|*.py"
+msgstr "קבצי פייתון (*.py)|*.py"
+
+#: syneditstrconst.syns_filterrtf
+msgid "Rich Text Format (*.rtf)|*.rtf"
+msgstr "פורמט \"טקסט עשיר\" (*.rtf)|*.rtf"
+
+#: syneditstrconst.syns_filtersdd
+msgid "Semanta DD files (*.sdd)|*.sdd"
+msgstr "קבצי  Semanta DD  (*.sdd)|*.sdd"
+
+#: syneditstrconst.syns_filtersml
+msgid "Standard ML Files (*.sml)|*.sml"
+msgstr "קבצי Standard ML (*.sml)|*.sml"
+
+#: syneditstrconst.syns_filtersql
+msgid "SQL Files (*.sql)|*.sql"
+msgstr "קבצי SQL  (*.sql)|*.sql"
+
+#: syneditstrconst.syns_filtersyngenmsgfiles
+msgid "Msg files (*.msg)|*.msg"
+msgstr "קבצי הודעות (*.msg)|*.msg"
+
+#: syneditstrconst.syns_filtertcltk
+msgid "Tcl/Tk Files (*.tcl)|*.tcl"
+msgstr "קבצי  Tcl/Tk  (*.tcl)|*.tcl"
+
+#: syneditstrconst.syns_filtertex
+msgid "TeX Files (*.tex)|*.tex"
+msgstr "קבצי TeX (*.tex)|*.tex"
+
+#: syneditstrconst.syns_filterunixshellscript
+msgid "UNIX Shell Scripts (*.sh)|*.sh"
+msgstr "תסריטי מעטפת של יוניקס (*.sh)|*.sh"
+
+#: syneditstrconst.syns_filtervbscript
+msgid "VBScript Files (*.vbs)|*.vbs"
+msgstr "קבצי VBScript  (*.vbs)|*.vbs"
+
+#: syneditstrconst.syns_filtervisualbasic
+msgid "Visual Basic Files (*.bas)|*.bas"
+msgstr "קבצי ויז'ואל בייסיק  (*.bas)|*.bas"
+
+#: syneditstrconst.syns_filterx86asm
+msgid "x86 Assembly Files (*.asm)|*.ASM"
+msgstr "קבצי אסמבלר x86  (*.asm)|*.ASM"
+
+#: syneditstrconst.syns_filterxml
+msgid "XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
+msgstr "מסמכי XML  (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
+
+#: syneditstrconst.syns_previewscrollinfofmt
+#, fuzzy,badformat
+msgid "Page: %d"
+msgstr "דף: d%"
+
+#: syneditstrconst.syns_scrollinfofmt
+msgid "%d - %d"
+msgstr "%d - %d"
+
+#: syneditstrconst.syns_scrollinfofmttop
+#, fuzzy,badformat
+msgid "Top Line: %d"
+msgstr "שורה עליונה: d%"
+
+#: syneditstrconst.syns_shortcutnone
+msgid "<none>"
+msgstr "<ללא>"
+
+#: syneditstrconst.syns_untitled
+msgid "Untitled"
+msgstr "ללא כותרת"
+

@@ -1,0 +1,13 @@
+Index: compiler/version.pas
+===================================================================
+--- compiler/version.pas	(revision 8199)
++++ compiler/version.pas	(working copy)
+@@ -30,7 +30,7 @@
+        version_nr = '2';
+        release_nr = '1';
+        patch_nr   = '5';
+-       minorpatch = '';
++       minorpatch = '-L';
+ 
+        { word version for ppu file }
+        wordversion = ((ord(version_nr)-ord('0')) shl 14)+

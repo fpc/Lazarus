@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="fpdocmanager">
+
+<!--
+  ====================================================================
+    fLogView
+  ====================================================================
+-->
+
+<module name="fLogView">
+<short></short>
+<descr>
+</descr>
+
+<!-- class Visibility: default -->
+<element name="TLogView">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TLogView.edLog">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TLogView.FormClose">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLogView.FormClose.Sender">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLogView.FormClose.CloseAction">
+<short></short>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="LogView">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+</module> <!-- fLogView -->
+
+</package>
+</fpdoc-descriptions>

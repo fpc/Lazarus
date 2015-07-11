@@ -1,0 +1,43 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: reglazdaemon.sdaemonappdescr
+msgid "Daemon (service) application is a non-gui application that runs in the background."
+msgstr "Програма-демон (служба) є програмою без графічного інтерфейсу, що працює в фоновому режимі"
+
+#: reglazdaemon.sdaemonappname
+msgid "Daemon (service) application"
+msgstr "Програма-демон (служба)"
+
+#: reglazdaemon.sdaemonapps
+msgid "Daemon (service) applications"
+msgstr "Програми-демони (служби)"
+
+#: reglazdaemon.sdaemondescr
+msgid "Daemon Module for inclusion in a daemon application"
+msgstr "Модуль демона для включення в програму-демон"
+
+#: reglazdaemon.sdaemonmapperdescr
+msgid ""
+"Daemon mapper for inclusion in a daemon application.\n"
+"Only one daemon mapper may exist in a daemon application.\n"
+msgstr ""
+"Засіб прив'язки демонів для включення в програму-демон.\n"
+"У програмі-демоні може бути лише один екземпляр засобу прив'язки демонів.\n"
+
+#: reglazdaemon.sdaemonmappername
+msgid "Daemon mapper"
+msgstr "Засіб прив'язки демонів"
+
+#: reglazdaemon.sdaemonname
+msgid "Daemon Module"
+msgstr "Модуль демона"
+

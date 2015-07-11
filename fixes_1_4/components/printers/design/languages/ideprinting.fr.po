@@ -1,0 +1,41 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2015-04-13 22:11+0100\n"
+"Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr_FR\n"
+"X-Generator: Poedit 1.7.5\n"
+
+#: ideprinting.sdescrformatting
+msgid "Formatting"
+msgstr "Formatage"
+
+#: ideprinting.sdescrpfselection
+msgid "Print ..."
+msgstr "Imprimer..."
+
+#: ideprinting.spfselectioncmd
+msgid "Print"
+msgstr "Imprimer"
+
+#: ideprinting.sprintfile
+msgid "Complete file"
+msgstr "Compléter le fichier"
+
+#: ideprinting.sprintselection
+msgid "Selected text"
+msgstr "Texte sélectionné"
+
+#: ideprinting.sprintsources
+msgid "Print sources"
+msgstr "Imprimer les codes sources"
+
+#: ideprinting.sprintwhat
+msgid "What would you like to print ?"
+msgstr "Que voulez-vous imprimer ?"
+

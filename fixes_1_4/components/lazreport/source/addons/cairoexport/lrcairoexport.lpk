@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="4">
+    <PathDelim Value="\"/>
+    <Name Value="lrcairoexport"/>
+    <AddToProjectUsesSection Value="True"/>
+    <Author Value="Jesús Reyes A."/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CompilerMessages>
+          <MsgFileName Value=""/>
+        </CompilerMessages>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="Lazreport Cairo exporter
+
+Export LazReport reports using cairo backend facilities"/>
+    <Version Minor="9"/>
+    <Files Count="2">
+      <Item1>
+        <Filename Value="lr_e_cairo.pas"/>
+        <UnitName Value="lr_e_cairo"/>
+      </Item1>
+      <Item2>
+        <Filename Value="lr_cairoexp_reg.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="lr_cairoexp_reg"/>
+      </Item2>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="3">
+      <Item1>
+        <PackageName Value="lazreport"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="FCL"/>
+      </Item3>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

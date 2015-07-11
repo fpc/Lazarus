@@ -1,0 +1,507 @@
+object ConvertSettingsForm: TConvertSettingsForm
+  Left = 315
+  Height = 415
+  Top = 127
+  Width = 655
+  Caption = 'Convert Delphi unit, project or package '
+  ClientHeight = 415
+  ClientWidth = 655
+  Constraints.MinHeight = 407
+  Constraints.MinWidth = 584
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  Position = poScreenCenter
+  LCLVersion = '1.3'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 375
+    Width = 643
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    CancelButton.OnClick = CancelButtonClick
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object UnitReplaceDivider: TDividerBevel
+    AnchorSideTop.Control = InputPathLabel
+    Left = 380
+    Height = 13
+    Top = 9
+    Width = 262
+    Caption = 'Unit Replacements'
+    Anchors = [akTop, akRight]
+    Font.Style = [fsBold]
+    LeftIndent = 30
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+  end
+  object UnknownPropsDivider: TDividerBevel
+    AnchorSideLeft.Control = UnitReplaceDivider
+    AnchorSideTop.Control = UnitReplaceDivider
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = UnitReplaceDivider
+    AnchorSideRight.Side = asrBottom
+    Left = 380
+    Height = 13
+    Top = 61
+    Width = 262
+    Caption = 'Unknown properties'
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 39
+    Font.Style = [fsBold]
+    LeftIndent = 30
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+  end
+  object UnitReplaceButton: TBitBtn
+    AnchorSideLeft.Control = UnitReplaceDivider
+    AnchorSideTop.Control = UnitReplaceDivider
+    AnchorSideTop.Side = asrBottom
+    Left = 381
+    Height = 25
+    Hint = 'Unit names in uses section of a source unit'
+    Top = 23
+    Width = 118
+    BorderSpacing.Left = 1
+    BorderSpacing.Top = 1
+    Caption = 'Edit'
+    OnClick = UnitReplaceButtonClick
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 1
+  end
+  object TypeReplaceDivider: TDividerBevel
+    AnchorSideLeft.Control = UnitReplaceDivider
+    AnchorSideTop.Control = UnknownPropsDivider
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = UnitReplaceDivider
+    AnchorSideRight.Side = asrBottom
+    Left = 380
+    Height = 13
+    Top = 113
+    Width = 262
+    Caption = 'Type Replacements'
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 39
+    Font.Style = [fsBold]
+    LeftIndent = 30
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+  end
+  object TypeReplaceButton: TBitBtn
+    AnchorSideLeft.Control = TypeReplaceDivider
+    AnchorSideTop.Control = TypeReplaceDivider
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = UnitReplaceButton
+    AnchorSideRight.Side = asrBottom
+    Left = 381
+    Height = 25
+    Hint = 'Unknown types in form file (DFM/LFM)'
+    Top = 127
+    Width = 118
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 1
+    BorderSpacing.Top = 1
+    Caption = 'Edit'
+    OnClick = TypeReplaceButtonClick
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 2
+  end
+  object FuncReplaceDivider: TDividerBevel
+    AnchorSideLeft.Control = UnitReplaceDivider
+    AnchorSideTop.Control = TypeReplaceDivider
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = UnitReplaceDivider
+    AnchorSideRight.Side = asrBottom
+    Left = 380
+    Height = 13
+    Top = 165
+    Width = 262
+    Caption = 'Function Replacements'
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 39
+    Font.Style = [fsBold]
+    LeftIndent = 30
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+  end
+  object CoordOffsDivider: TDividerBevel
+    AnchorSideLeft.Control = UnitReplaceDivider
+    AnchorSideTop.Control = FuncReplaceDivider
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = UnitReplaceDivider
+    AnchorSideRight.Side = asrBottom
+    Left = 380
+    Height = 13
+    Top = 233
+    Width = 262
+    Caption = 'Coordinate Offsets'
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 55
+    Font.Style = [fsBold]
+    LeftIndent = 30
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+  end
+  object FuncReplaceButton: TBitBtn
+    AnchorSideLeft.Control = FuncReplaceDivider
+    AnchorSideTop.Control = FuncReplaceDivider
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = UnitReplaceButton
+    AnchorSideRight.Side = asrBottom
+    Left = 381
+    Height = 25
+    Hint = 'Some Delphi functions can be replaced with a LCL function'
+    Top = 179
+    Width = 118
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 1
+    BorderSpacing.Top = 1
+    Caption = 'Edit'
+    OnClick = FuncReplaceButtonClick
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 3
+  end
+  object CoordOffsButton: TBitBtn
+    AnchorSideLeft.Control = CoordOffsDivider
+    AnchorSideTop.Control = CoordOffsDivider
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = UnitReplaceButton
+    AnchorSideRight.Side = asrBottom
+    Left = 381
+    Height = 25
+    Hint = 'Some Delphi functions can be replaced with a LCL function'
+    Top = 247
+    Width = 118
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 1
+    BorderSpacing.Top = 1
+    Caption = 'Edit'
+    OnClick = CoordOffsButtonClick
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 4
+  end
+  object TargetGroupBox: TGroupBox
+    AnchorSideLeft.Control = InputPathListBox
+    AnchorSideTop.Control = InputPathListBox
+    AnchorSideTop.Side = asrBottom
+    Left = 12
+    Height = 85
+    Hint = 'xxx'
+    Top = 107
+    Width = 165
+    Anchors = [akLeft, akBottom]
+    AutoSize = True
+    BorderSpacing.Top = 7
+    Caption = 'Target'
+    ClientHeight = 67
+    ClientWidth = 161
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 5
+    object SupportDelphiCheckBox: TCheckBox
+      AnchorSideLeft.Control = CrossPlatformCheckBox
+      AnchorSideTop.Control = CrossPlatformCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 17
+      Top = 25
+      Width = 88
+      BorderSpacing.Top = 3
+      BorderSpacing.Right = 6
+      Caption = 'Support Delphi'
+      OnChange = SupportDelphiCheckBoxChange
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 0
+    end
+    object SameDfmCheckBox: TCheckBox
+      AnchorSideLeft.Control = CrossPlatformCheckBox
+      AnchorSideTop.Control = SupportDelphiCheckBox
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 17
+      Top = 45
+      Width = 149
+      BorderSpacing.Top = 3
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 5
+      Caption = 'Use the same DFM form file'
+      OnChange = SameDfmCheckBoxChange
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 1
+    end
+    object CrossPlatformCheckBox: TCheckBox
+      AnchorSideLeft.Control = TargetGroupBox
+      AnchorSideTop.Control = TargetGroupBox
+      Left = 6
+      Height = 17
+      Top = 5
+      Width = 89
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 5
+      BorderSpacing.Right = 6
+      Caption = 'Cross-platform'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 2
+    end
+  end
+  object UnitReplaceComboBox: TComboBox
+    AnchorSideLeft.Control = UnitReplaceButton
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = UnitReplaceButton
+    AnchorSideTop.Side = asrCenter
+    Left = 514
+    Height = 21
+    Top = 25
+    Width = 129
+    BorderSpacing.Left = 15
+    ItemHeight = 13
+    Style = csDropDownList
+    TabOrder = 6
+  end
+  object UnknownPropsComboBox: TComboBox
+    AnchorSideLeft.Control = UnitReplaceComboBox
+    AnchorSideTop.Control = UnknownPropsDivider
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = UnitReplaceComboBox
+    AnchorSideRight.Side = asrBottom
+    Left = 514
+    Height = 21
+    Top = 76
+    Width = 129
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 2
+    ItemHeight = 13
+    Style = csDropDownList
+    TabOrder = 7
+  end
+  object FuncReplaceComboBox: TComboBox
+    AnchorSideLeft.Control = UnitReplaceComboBox
+    AnchorSideTop.Control = FuncReplaceButton
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = UnitReplaceComboBox
+    AnchorSideRight.Side = asrBottom
+    Left = 514
+    Height = 21
+    Top = 181
+    Width = 129
+    Anchors = [akTop, akLeft, akRight]
+    ItemHeight = 13
+    Style = csDropDownList
+    TabOrder = 8
+  end
+  object CoordOffsComboBox: TComboBox
+    AnchorSideLeft.Control = UnitReplaceComboBox
+    AnchorSideTop.Control = CoordOffsButton
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = UnitReplaceComboBox
+    AnchorSideRight.Side = asrBottom
+    Left = 514
+    Height = 21
+    Top = 249
+    Width = 129
+    Anchors = [akTop, akLeft, akRight]
+    ItemHeight = 13
+    Style = csDropDownList
+    TabOrder = 9
+  end
+  object TypeReplaceComboBox: TComboBox
+    AnchorSideLeft.Control = UnitReplaceComboBox
+    AnchorSideTop.Control = TypeReplaceButton
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = UnitReplaceComboBox
+    AnchorSideRight.Side = asrBottom
+    Left = 514
+    Height = 21
+    Top = 129
+    Width = 129
+    Anchors = [akTop, akLeft, akRight]
+    ItemHeight = 13
+    Style = csDropDownList
+    TabOrder = 10
+  end
+  object ScanProgressBar: TProgressBar
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = CoordOffsComboBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = CoordOffsComboBox
+    AnchorSideRight.Side = asrBottom
+    Left = 541
+    Height = 20
+    Top = 279
+    Width = 102
+    Anchors = [akTop, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 9
+    Style = pbstMarquee
+    TabOrder = 11
+  end
+  object ScanLabel: TLabel
+    AnchorSideTop.Control = ScanProgressBar
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = ScanProgressBar
+    Left = 411
+    Height = 13
+    Top = 283
+    Width = 124
+    Anchors = [akTop, akRight]
+    BorderSpacing.Right = 6
+    Caption = 'Scanning parent directory'
+    ParentColor = False
+  end
+  object StopScanButton: TBitBtn
+    AnchorSideLeft.Control = ScanProgressBar
+    AnchorSideTop.Control = ScanProgressBar
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = ScanProgressBar
+    AnchorSideRight.Side = asrBottom
+    Left = 541
+    Height = 25
+    Top = 300
+    Width = 102
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 1
+    Caption = 'Stop'
+    OnClick = StopScanButtonClick
+    TabOrder = 12
+  end
+  object FuncReplaceCommentCB: TCheckBox
+    AnchorSideLeft.Control = FuncReplaceButton
+    AnchorSideTop.Control = FuncReplaceButton
+    AnchorSideTop.Side = asrBottom
+    Left = 381
+    Height = 17
+    Top = 209
+    Width = 172
+    BorderSpacing.Top = 5
+    Caption = 'Add comment after replacement'
+    TabOrder = 13
+  end
+  object InputPathLabel: TLabel
+    Left = 12
+    Height = 13
+    Top = 9
+    Width = 73
+    Caption = 'InputPathLabel'
+    ParentColor = False
+  end
+  object InputPathListBox: TListBox
+    AnchorSideLeft.Control = InputPathLabel
+    AnchorSideTop.Control = InputPathLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = UnitReplaceDivider
+    AnchorSideBottom.Control = TargetGroupBox
+    Left = 12
+    Height = 77
+    Top = 23
+    Width = 359
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 1
+    BorderSpacing.Right = 9
+    BorderSpacing.Bottom = 1
+    ItemHeight = 0
+    TabOrder = 14
+  end
+  object OtherOptGroupBox: TGroupBox
+    AnchorSideLeft.Control = TargetGroupBox
+    AnchorSideTop.Control = TargetGroupBox
+    AnchorSideTop.Side = asrBottom
+    Left = 12
+    Height = 107
+    Top = 195
+    Width = 201
+    AutoSize = True
+    BorderSpacing.Top = 3
+    Caption = 'Other'
+    ClientHeight = 89
+    ClientWidth = 197
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 15
+    object DelphiDefineCheckBox: TCheckBox
+      AnchorSideLeft.Control = OtherOptGroupBox
+      AnchorSideTop.Control = OtherOptGroupBox
+      Left = 6
+      Height = 17
+      Top = 5
+      Width = 163
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 5
+      BorderSpacing.Right = 6
+      Caption = 'Add defines simulating Delphi7'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 0
+    end
+    object BackupCheckBox: TCheckBox
+      AnchorSideLeft.Control = DelphiDefineCheckBox
+      AnchorSideTop.Control = DelphiDefineCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 17
+      Top = 25
+      Width = 159
+      BorderSpacing.Top = 3
+      BorderSpacing.Right = 6
+      Caption = 'Make backup of changed files'
+      Checked = True
+      ParentShowHint = False
+      ShowHint = True
+      State = cbChecked
+      TabOrder = 1
+    end
+    object KeepFileOpenCheckBox: TCheckBox
+      AnchorSideLeft.Control = BackupCheckBox
+      AnchorSideTop.Control = BackupCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 17
+      Top = 45
+      Width = 185
+      BorderSpacing.Top = 3
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 5
+      Caption = 'Keep converted files open in editor'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 2
+    end
+    object ScanParentDirCheckBox: TCheckBox
+      AnchorSideLeft.Control = KeepFileOpenCheckBox
+      AnchorSideTop.Control = KeepFileOpenCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 17
+      Top = 67
+      Width = 155
+      BorderSpacing.Top = 3
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 5
+      Caption = 'Scan files in parent directory'
+      OnClick = ScanParentDirCheckBoxClick
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 3
+    end
+  end
+end

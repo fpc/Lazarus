@@ -1,0 +1,3735 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    Themes
+  ====================================================================
+-->
+
+<module name="Themes">
+<short>For manipulation of display Themes, mostly in a Windows XP (and later) environment</short>
+<descr>
+</descr>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Types">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Classes">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLType">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="TmSchema">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TThemedElement">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedElement.teButton">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedElement.teClock">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedElement.teComboBox">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedElement.teEdit">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedElement.teExplorerBar">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedElement.teHeader">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedElement.teListView">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedElement.teMenu">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedElement.tePage">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedElement.teProgress">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedElement.teRebar">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedElement.teScrollBar">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedElement.teSpin">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedElement.teStartPanel">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedElement.teStatus">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedElement.teTab">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedElement.teTaskBand">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedElement.teTaskBar">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedElement.teToolBar">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedElement.teToolTip">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedElement.teTrackBar">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedElement.teTrayNotify">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedElement.teTreeview">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedElement.teWindow">
+<short/>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TThemedButton">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedButton.tbButtonDontCare">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedButton.tbButtonRoot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedButton.tbPushButtonNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedButton.tbPushButtonHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedButton.tbPushButtonPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedButton.tbPushButtonDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedButton.tbPushButtonDefaulted">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedButton.tbRadioButtonUncheckedNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedButton.tbRadioButtonUncheckedHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedButton.tbRadioButtonUncheckedPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedButton.tbRadioButtonUncheckedDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedButton.tbRadioButtonCheckedNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedButton.tbRadioButtonCheckedHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedButton.tbRadioButtonCheckedPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedButton.tbRadioButtonCheckedDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedButton.tbCheckBoxUncheckedNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedButton.tbCheckBoxUncheckedHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedButton.tbCheckBoxUncheckedPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedButton.tbCheckBoxUncheckedDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedButton.tbCheckBoxCheckedNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedButton.tbCheckBoxCheckedHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedButton.tbCheckBoxCheckedPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedButton.tbCheckBoxCheckedDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedButton.tbCheckBoxMixedNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedButton.tbCheckBoxMixedHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedButton.tbCheckBoxMixedPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedButton.tbCheckBoxMixedDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedButton.tbGroupBoxNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedButton.tbGroupBoxDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedButton.tbUserButton">
+<short/>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TThemedClock">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedClock.tcClockDontCare">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedClock.tcClockRoot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedClock.tcTimeNormal">
+<short/>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TThemedComboBox">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedComboBox.tcComboBoxDontCare">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedComboBox.tcComboBoxRoot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedComboBox.tcDropDownButtonNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedComboBox.tcDropDownButtonHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedComboBox.tcDropDownButtonPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedComboBox.tcDropDownButtonDisabled">
+<short/>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TThemedEdit">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedEdit.teEditDontCare">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedEdit.teEditRoot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedEdit.teEditTextNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedEdit.teEditTextHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedEdit.teEditTextSelected">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedEdit.teEditTextDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedEdit.teEditTextFocused">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedEdit.teEditTextReadOnly">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedEdit.teEditTextAssist">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedEdit.teEditCaret">
+<short/>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TThemedExplorerBar">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedExplorerBar.tebExplorerBarDontCare">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedExplorerBar.tebExplorerBarRoot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedExplorerBar.tebHeaderBackgroundNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedExplorerBar.tebHeaderBackgroundHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedExplorerBar.tebHeaderBackgroundPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedExplorerBar.tebHeaderCloseNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedExplorerBar.tebHeaderCloseHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedExplorerBar.tebHeaderClosePressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedExplorerBar.tebHeaderPinNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedExplorerBar.tebHeaderPinHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedExplorerBar.tebHeaderPinPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedExplorerBar.tebHeaderPinSelectedNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedExplorerBar.tebHeaderPinSelectedHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedExplorerBar.tebHeaderPinSelectedPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedExplorerBar.tebIEBarMenuNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedExplorerBar.tebIEBarMenuHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedExplorerBar.tebIEBarMenuPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedExplorerBar.tebNormalGroupBackground">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedExplorerBar.tebNormalGroupCollapseNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedExplorerBar.tebNormalGroupCollapseHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedExplorerBar.tebNormalGroupCollapsePressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedExplorerBar.tebNormalGroupExpandNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedExplorerBar.tebNormalGroupExpandHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedExplorerBar.tebNormalGroupExpandPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedExplorerBar.tebNormalGroupHead">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedExplorerBar.tebSpecialGroupBackground">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedExplorerBar.tebSpecialGroupCollapseSpecial">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedExplorerBar.tebSpecialGroupCollapseHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedExplorerBar.tebSpecialGroupCollapsePressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedExplorerBar.tebSpecialGroupExpandSpecial">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedExplorerBar.tebSpecialGroupExpandHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedExplorerBar.tebSpecialGroupExpandPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedExplorerBar.tebSpecialGroupHead">
+<short/>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TThemedHeader">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedHeader.thHeaderDontCare">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedHeader.thHeaderRoot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedHeader.thHeaderItemNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedHeader.thHeaderItemHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedHeader.thHeaderItemPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedHeader.thHeaderItemLeftNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedHeader.thHeaderItemLeftHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedHeader.thHeaderItemLeftPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedHeader.thHeaderItemRightNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedHeader.thHeaderItemRightHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedHeader.thHeaderItemRightPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedHeader.thHeaderSortArrowSortedUp">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedHeader.thHeaderSortArrowSortedDown">
+<short/>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TThemedListview">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedListview.tlListviewDontCare">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedListview.tlListviewRoot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedListview.tlListItemNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedListview.tlListItemHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedListview.tlListItemSelected">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedListview.tlListItemDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedListview.tlListItemSelectedNotFocus">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedListview.tlListGroup">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedListview.tlListDetail">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedListview.tlListSortDetail">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedListview.tlEmptyText">
+<short/>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TThemedMenu">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedMenu.tmMenuDontCare">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedMenu.tmMenuRoot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedMenu.tmMenuItemNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedMenu.tmMenuItemSelected">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedMenu.tmMenuItemDemoted">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedMenu.tmMenuDropDown">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedMenu.tmMenuBarItem">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedMenu.tmMenuBarDropDown">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedMenu.tmChevron">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedMenu.tmSeparator">
+<short/>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TThemedPage">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedPage.tpPageDontCare">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedPage.tpPageRoot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedPage.tpUpNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedPage.tpUpHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedPage.tpUpPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedPage.tpUpDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedPage.tpDownNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedPage.tpDownHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedPage.tpDownPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedPage.tpDownDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedPage.tpUpHorzNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedPage.tpUpHorzHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedPage.tpUpHorzPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedPage.tpUpHorzDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedPage.tpDownHorzNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedPage.tpDownHorzHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedPage.tpDownHorzPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedPage.tpDownHorzDisabled">
+<short/>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TThemedProgress">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedProgress.tpProgressDontCare">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedProgress.tpProgressRoot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedProgress.tpBar">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedProgress.tpBarVert">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedProgress.tpChunk">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedProgress.tpChunkVert">
+<short/>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TThemedRebar">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedRebar.trRebarDontCare">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedRebar.trRebarRoot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedRebar.trGripper">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedRebar.trGripperVert">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedRebar.trBandNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedRebar.trBandHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedRebar.trBandPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedRebar.trBandDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedRebar.trBandChecked">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedRebar.trBandHotChecked">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedRebar.trChevronNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedRebar.trChevronHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedRebar.trChevronPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedRebar.trChevronDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedRebar.trChevronVertNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedRebar.trChevronVertHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedRebar.trChevronVertPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedRebar.trChevronVertDisabled">
+<short/>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TThemedScrollBar">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsScrollBarDontCare">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsScrollBarRoot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsArrowBtnUpNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsArrowBtnUpHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsArrowBtnUpPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsArrowBtnUpDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsArrowBtnDownNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsArrowBtnDownHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsArrowBtnDownPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsArrowBtnDownDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsArrowBtnLeftNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsArrowBtnLeftHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsArrowBtnLeftPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsArrowBtnLeftDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsArrowBtnRightNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsArrowBtnRightHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsArrowBtnRightPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsArrowBtnRightDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsThumbBtnHorzNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsThumbBtnHorzHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsThumbBtnHorzPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsThumbBtnHorzDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsThumbBtnVertNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsThumbBtnVertHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsThumbBtnVertPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsThumbBtnVertDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsLowerTrackHorzNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsLowerTrackHorzHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsLowerTrackHorzPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsLowerTrackHorzDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsUpperTrackHorzNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsUpperTrackHorzHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsUpperTrackHorzPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsUpperTrackHorzDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsLowerTrackVertNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsLowerTrackVertHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsLowerTrackVertPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsLowerTrackVertDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsUpperTrackVertNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsUpperTrackVertHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsUpperTrackVertPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsUpperTrackVertDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsGripperHorzNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsGripperHorzHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsGripperHorzPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsGripperHorzDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsGripperVertNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsGripperVertHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsGripperVertPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsGripperVertDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsSizeBoxRightAlign">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedScrollBar.tsSizeBoxLeftAlign">
+<short/>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TThemedSpin">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedSpin.tsSpinDontCare">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedSpin.tsSpinRoot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedSpin.tsUpNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedSpin.tsUpHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedSpin.tsUpPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedSpin.tsUpDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedSpin.tsDownNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedSpin.tsDownHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedSpin.tsDownPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedSpin.tsDownDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedSpin.tsUpHorzNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedSpin.tsUpHorzHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedSpin.tsUpHorzPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedSpin.tsUpHorzDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedSpin.tsDownHorzNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedSpin.tsDownHorzHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedSpin.tsDownHorzPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedSpin.tsDownHorzDisabled">
+<short/>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TThemedStartPanel">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedStartPanel.tspStartPanelDontCare">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedStartPanel.tspStartPanelRoot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedStartPanel.tspUserPane">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedStartPanel.tspMorePrograms">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedStartPanel.tspMoreProgramsArrowNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedStartPanel.tspMoreProgramsArrowHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedStartPanel.tspMoreProgramsArrowPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedStartPanel.tspProgList">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedStartPanel.tspProgListSeparator">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedStartPanel.tspPlacesList">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedStartPanel.tspPlacesListSeparator">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedStartPanel.tspLogOff">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedStartPanel.tspLogOffButtonsNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedStartPanel.tspLogOffButtonsHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedStartPanel.tspLogOffButtonsPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedStartPanel.tspUserPicture">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedStartPanel.tspPreview">
+<short/>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TThemedStatus">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedStatus.tsStatusDontCare">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedStatus.tsStatusRoot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedStatus.tsPane">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedStatus.tsGripperPane">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedStatus.tsGripper">
+<short/>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TThemedTab">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTabDontCare">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTabRoot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTabItemNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTabItemHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTabItemSelected">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTabItemDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTabItemFocused">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTabItemLeftEdgeNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTabItemLeftEdgeHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTabItemLeftEdgeSelected">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTabItemLeftEdgeDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTabItemLeftEdgeFocused">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTabItemRightEdgeNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTabItemRightEdgeHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTabItemRightEdgeSelected">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTabItemRightEdgeDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTabItemRightEdgeFocused">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTabItemBothEdgeNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTabItemBothEdgeHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTabItemBothEdgeSelected">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTabItemBothEdgeDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTabItemBothEdgeFocused">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTopTabItemNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTopTabItemHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTopTabItemSelected">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTopTabItemDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTopTabItemFocused">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTopTabItemLeftEdgeNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTopTabItemLeftEdgeHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTopTabItemLeftEdgeSelected">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTopTabItemLeftEdgeDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTopTabItemLeftEdgeFocused">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTopTabItemRightEdgeNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTopTabItemRightEdgeHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTopTabItemRightEdgeSelected">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTopTabItemRightEdgeDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTopTabItemRightEdgeFocused">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTopTabItemBothEdgeNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTopTabItemBothEdgeHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTopTabItemBothEdgeSelected">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTopTabItemBothEdgeDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttTopTabItemBothEdgeFocused">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttPane">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTab.ttBody">
+<short/>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TThemedTaskBand">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTaskBand.ttbTaskBandDontCare">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTaskBand.ttbTaskBandRoot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTaskBand.ttbGroupCount">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTaskBand.ttbFlashButton">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTaskBand.ttpFlashButtonGroupMenu">
+<short/>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TThemedTaskBar">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTaskBar.ttTaskBarDontCare">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTaskBar.ttTaskBarRoot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTaskBar.ttbTimeNormal">
+<short/>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TThemedToolBar">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbToolBarDontCare">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbToolBarRoot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbButtonNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbButtonHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbButtonPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbButtonDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbButtonChecked">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbButtonCheckedHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbDropDownButtonNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbDropDownButtonHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbDropDownButtonPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbDropDownButtonDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbDropDownButtonChecked">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbDropDownButtonCheckedHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbSplitButtonNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbSplitButtonHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbSplitButtonPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbSplitButtonDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbSplitButtonChecked">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbSplitButtonCheckedHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbSplitButtonDropDownNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbSplitButtonDropDownHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbSplitButtonDropDownPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbSplitButtonDropDownDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbSplitButtonDropDownChecked">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbSplitButtonDropDownCheckedHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbSeparatorNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbSeparatorHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbSeparatorPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbSeparatorDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbSeparatorChecked">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbSeparatorCheckedHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbSeparatorVertNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbSeparatorVertHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbSeparatorVertPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbSeparatorVertDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbSeparatorVertChecked">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolBar.ttbSeparatorVertCheckedHot">
+<short/>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TThemedToolTip">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolTip.tttToolTipDontCare">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolTip.tttToolTipRoot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolTip.tttStandardNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolTip.tttStandardLink">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolTip.tttStandardTitleNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolTip.tttStandardTitleLink">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolTip.tttBaloonNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolTip.tttBaloonLink">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolTip.tttBaloonTitleNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolTip.tttBaloonTitleLink">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolTip.tttCloseNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolTip.tttCloseHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedToolTip.tttClosePressed">
+<short/>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TThemedTrackBar">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbTrackBarDontCare">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbTrackBarRoot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbTrack">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbTrackVert">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbThumbNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbThumbHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbThumbPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbThumbFocused">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbThumbDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbThumbBottomNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbThumbBottomHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbThumbBottomPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbThumbBottomFocused">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbThumbBottomDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbThumbTopNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbThumbTopHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbThumbTopPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbThumbTopFocused">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbThumbTopDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbThumbVertNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbThumbVertHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbThumbVertPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbThumbVertFocused">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbThumbVertDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbThumbLeftNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbThumbLeftHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbThumbLeftPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbThumbLeftFocused">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbThumbLeftDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbThumbRightNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbThumbRightHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbThumbRightPressed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbThumbRightFocused">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbThumbRightDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbThumbTics">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrackBar.ttbThumbTicsVert">
+<short/>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TThemedTrayNotify">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrayNotify.ttnTrayNotifyDontCare">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrayNotify.ttnTrayNotifyRoot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrayNotify.ttnBackground">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTrayNotify.ttnAnimBackground">
+<short/>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TThemedTreeview">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTreeview.ttTreeviewDontCare">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTreeview.ttTreeviewRoot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTreeview.ttItemNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTreeview.ttItemHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTreeview.ttItemSelected">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTreeview.ttItemDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTreeview.ttItemSelectedNotFocus">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTreeview.ttGlyphClosed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTreeview.ttGlyphOpened">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedTreeview.ttBranch">
+<short/>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TThemedWindow">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twWindowDontCare">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twWindowRoot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twCaptionActive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twCaptionInactive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twCaptionDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twSmallCaptionActive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twSmallCaptionInactive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twSmallCaptionDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMinCaptionActive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMinCaptionInactive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMinCaptionDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twSmallMinCaptionActive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twSmallMinCaptionInactive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twSmallMinCaptionDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMaxCaptionActive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMaxCaptionInactive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMaxCaptionDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twSmallMaxCaptionActive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twSmallMaxCaptionInactive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twSmallMaxCaptionDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twFrameLeftActive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twFrameLeftInactive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twFrameRightActive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twFrameRightInactive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twFrameBottomActive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twFrameBottomInactive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twSmallFrameLeftActive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twSmallFrameLeftInactive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twSmallFrameRightActive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twSmallFrameRightInactive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twSmallFrameBottomActive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twSmallFrameBottomInactive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twSysButtonNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twSysButtonHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twSysButtonPushed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twSysButtonDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twSysButtonInactive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMDISysButtonNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMDISysButtonHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMDISysButtonPushed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMDISysButtonDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMDISysButtonInactive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMinButtonNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMinButtonHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMinButtonPushed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMinButtonDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMinButtonInactive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMDIMinButtonNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMDIMinButtonHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMDIMinButtonPushed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMDIMinButtonDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMDIMinButtonInactive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMaxButtonNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMaxButtonHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMaxButtonPushed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMaxButtonDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMaxButtonInactive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twCloseButtonNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twCloseButtonHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twCloseButtonPushed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twCloseButtonDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twCloseButtonInactive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twSmallCloseButtonNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twSmallCloseButtonHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twSmallCloseButtonPushed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twSmallCloseButtonDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twSmallCloseButtonInactive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMDICloseButtonNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMDICloseButtonHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMDICloseButtonPushed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMDICloseButtonDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMDICloseButtonInactive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twRestoreButtonNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twRestoreButtonHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twRestoreButtonPushed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twRestoreButtonDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twRestoreButtonInactive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMDIRestoreButtonNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMDIRestoreButtonHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMDIRestoreButtonPushed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMDIRestoreButtonDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMDIRestoreButtonInactive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twHelpButtonNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twHelpButtonHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twHelpButtonPushed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twHelpButtonDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twHelpButtonInactive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMDIHelpButtonNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMDIHelpButtonHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMDIHelpButtonPushed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMDIHelpButtonDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twMDIHelpButtonInactive">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twHorzScrollNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twHorzScrollHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twHorzScrollPushed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twHorzScrollDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twHorzThumbNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twHorzThumbHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twHorzThumbPushed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twHorzThumbDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twVertScrollNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twVertScrollHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twVertScrollPushed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twVertScrollDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twVertThumbNormal">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twVertThumbHot">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twVertThumbPushed">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twVertThumbDisabled">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twDialog">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twCaptionSizingTemplate">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twSmallCaptionSizingTemplate">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twFrameLeftSizingTemplate">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twSmallFrameLeftSizingTemplate">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twFrameRightSizingTemplate">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twSmallFrameRightSizingTemplate">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twFrameBottomSizingTemplate">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TThemedWindow.twSmallFrameBottomSizingTemplate">
+<short/>
+</element>
+
+<!-- pointer type Visibility: default -->
+<element name="PThemedElementDetails">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- record type Visibility: default -->
+<element name="TThemedElementDetails">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TThemedElementDetails.Element">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TThemedElementDetails.Part">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TThemedElementDetails.State">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TThemeServices">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TThemeServices.FThemesAvailable">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TThemeServices.FUseThemes">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TThemeServices.FThemedControlsEnabled">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TThemeServices.FOnThemeChange">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TThemeServices.GetThemesEnabled">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TThemeServices.GetThemesEnabled.Result">
+<short/>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TThemeServices.InitThemes">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TThemeServices.InitThemes.Result">
+<short/>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TThemeServices.UnloadThemeData">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TThemeServices.UseThemes">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TThemeServices.UseThemes.Result">
+<short/>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TThemeServices.ThemedControlsEnabled">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TThemeServices.ThemedControlsEnabled.Result">
+<short/>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TThemeServices.InternalColorToRGB">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TThemeServices.InternalColorToRGB.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.InternalColorToRGB.Details">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.InternalColorToRGB.Color">
+<short/>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TThemeServices.InternalDrawParentBackground">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.InternalDrawParentBackground.Window">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.InternalDrawParentBackground.Target">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.InternalDrawParentBackground.Bounds">
+<short/>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TThemeServices.IsDisabled">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TThemeServices.IsDisabled.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.IsDisabled.Details">
+<short/>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TThemeServices.IsPushed">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TThemeServices.IsPushed.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.IsPushed.Details">
+<short/>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TThemeServices.IsHot">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TThemeServices.IsHot.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.IsHot.Details">
+<short/>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TThemeServices.Create">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TThemeServices.Destroy">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TThemeServices.IntfDoOnThemeChange">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TThemeServices.GetElementDetails">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TThemeServices.GetElementDetails.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.GetElementDetails.Detail">
+<short/>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TThemeServices.GetDetailSize">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TThemeServices.GetDetailSize.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.GetDetailSize.Details">
+<short/>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TThemeServices.ColorToRGB">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TThemeServices.ColorToRGB.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.ColorToRGB.Color">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.ColorToRGB.Details">
+<short/>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TThemeServices.ContentRect">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TThemeServices.ContentRect.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.ContentRect.DC">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.ContentRect.Details">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.ContentRect.BoundingRect">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TThemeServices.DrawEdge">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.DrawEdge.DC">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.DrawEdge.Details">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.DrawEdge.R">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.DrawEdge.Edge">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.DrawEdge.Flags">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.DrawEdge.AContentRect">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TThemeServices.DrawElement">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.DrawElement.DC">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.DrawElement.Details">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.DrawElement.R">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.DrawElement.ClipRect">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TThemeServices.DrawIcon">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.DrawIcon.DC">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.DrawIcon.Details">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.DrawIcon.R">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.DrawIcon.himl">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.DrawIcon.Index">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TThemeServices.DrawParentBackground">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.DrawParentBackground.Window">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.DrawParentBackground.Target">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.DrawParentBackground.Details">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.DrawParentBackground.OnlyIfTransparent">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.DrawParentBackground.Bounds">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TThemeServices.DrawText">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.DrawText.DC">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.DrawText.Details">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.DrawText.S">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.DrawText.R">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.DrawText.Flags">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.DrawText.Flags2">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.DrawText.ACanvas">
+<short/>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TThemeServices.HasTransparentParts">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TThemeServices.HasTransparentParts.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.HasTransparentParts.Details">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TThemeServices.PaintBorder">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.PaintBorder.Control">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TThemeServices.PaintBorder.EraseLRCorner">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TThemeServices.UpdateThemes">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TThemeServices.ThemesAvailable">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TThemeServices.ThemesEnabled">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TThemeServices.OnThemeChange">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ThemeServices">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ThemeServices.Result">
+<short/>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ThemedElementDetailsEqual">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ThemedElementDetailsEqual.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ThemedElementDetailsEqual.D1">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ThemedElementDetailsEqual.D2">
+<short/>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="ThemeManagerCopyright">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+</module> <!-- Themes -->
+
+</package>
+</fpdoc-descriptions>

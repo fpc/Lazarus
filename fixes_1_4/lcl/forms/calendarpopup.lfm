@@ -1,0 +1,29 @@
+object CalendarPopupForm: TCalendarPopupForm
+  Left = 635
+  Height = 192
+  Top = 259
+  Width = 233
+  AutoSize = True
+  BorderIcons = [biMinimize, biMaximize]
+  BorderStyle = bsNone
+  Caption = 'CalendarPopupForm'
+  ClientHeight = 192
+  ClientWidth = 233
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnDeactivate = FormDeactivate
+  PopupMode = pmAuto
+  LCLVersion = '0.9.31'
+  object Calendar: TCalendar
+    Left = 1
+    Height = 176
+    Top = 1
+    Width = 177
+    AutoSize = True
+    BorderSpacing.Around = 1
+    DateTime = 38823
+    OnDblClick = CalendarDblClick
+    OnKeyDown = CalendarKeyDown
+    TabStop = True
+  end
+end

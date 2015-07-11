@@ -1,0 +1,332 @@
+{%MainUnit qtint.pp}
+
+function IsOldKDEInstallation: Boolean;
+var
+  Display: PDisplay;
+  i: longint;
+begin
+  //if we are under KDE4, it's already recent one.
+  Result := not ((GetEnvironmentVariable('KDE_SESSION_VERSION') = '4')
+    or QX11Info_isCompositingManagerRunning);
+  if Result then
+    exit;
+
+  //if we are under other WM KDE_SESSION_VERSION does not exist
+  //so we must check for XOrg version.
+  Display := QX11Info_display();
+  i := XVendorRelease(Display);
+
+  //X, XOrg between 5.0 - 7.04 are old ones and contains KDE-3.5
+  //Fedora marks XOrg 7.XX as 1.XX, so we have to check that too.
+  Result := ((i >= 50000000) and (i <= 70040000)) or
+    ((i > 0) and (i <= 10400000));
+end;
+
+function IsCurrentDesktop(AWidget: QWidgetH): Boolean;
+var
+  Display: PDisplay;
+  ScreenNum: Integer;
+  RootWin: TWindow;
+  WMAtom: TAtom;
+
+  typeReturned: TAtom;
+  formatReturned: Integer;
+  nitemsReturned: PtrInt;
+  unused: PtrInt;
+  WidgetIndex, DesktopIndex: Pointer;
+  WidgetWin: TWindow;
+begin
+  Result := True;
+  if AWidget = nil then
+    exit;
+  Display := QX11Info_display();
+  if Display = nil then
+    exit;
+  ScreenNum := QX11Info_appScreen();
+  RootWin := XRootWindow(Display, ScreenNum);
+  WMAtom := XInternAtom(Display,'_NET_WM_DESKTOP', True);
+  WidgetWin := TWindow(QWidget_winId(AWidget));
+
+  if (WMAtom > 0) and (WidgetWin <> 0) then
+  begin
+    WidgetIndex := nil;
+    DesktopIndex := nil;
+    // first get our desktop num (virtual desktop !)
+    if XGetWindowProperty(Display, WidgetWin, WMAtom, 0, 4, False, XA_CARDINAL,
+         @typeReturned, @formatReturned, @nitemsReturned,
+         @unused, @WidgetIndex) = Success then
+      begin
+        if (typeReturned = XA_CARDINAL) and (formatReturned = 32) and
+          (WidgetIndex <> nil) then
+        begin
+          // now get current active desktop index
+          WMAtom := XInternAtom(Display,'_NET_CURRENT_DESKTOP', True);
+          if XGetWindowProperty(Display, RootWin, WMAtom, 0, 4, False,
+            XA_CARDINAL, @typeReturned, @formatReturned, @nitemsReturned,
+            @unused, @DesktopIndex) = Success then
+          begin
+            if (typeReturned = XA_CARDINAL) and (formatReturned = 32) and
+              (DesktopIndex <> nil) then
+              Result := PtrUint(WidgetIndex^) = PtrUint(DesktopIndex^);
+          end;
+        end;
+
+        if WidgetIndex <> nil then
+          XFree(WidgetIndex);
+        if DesktopIndex <> nil then
+          XFree(DesktopIndex);
+        WidgetIndex := nil;
+        DesktopIndex := nil;
+    end;
+  end;
+end;
+
+function X11Raise(AHandle: HWND): boolean;
+var
+   Display: PDisplay;
+   RootWin: TWindow;
+   ScreenNum: Integer;
+   XClient: TXClientMessageEvent;
+   WMAtom: TAtom;
+begin
+  Result := False;
+  Display := QX11Info_display();
+
+  if Display = nil then
+    exit;
+
+  ScreenNum := QX11Info_appScreen();
+  RootWin := XRootWindow(Display, ScreenNum);
+
+  XClient._type := ClientMessage;
+  XClient.window := AHandle;
+  WMAtom := XInternAtom(Display,'_NET_ACTIVE_WINDOW', False);
+  XClient.message_type := WMATom;
+  XClient.format := 32;
+  XClient.data.l[0] := 1;
+  XClient.data.l[1] := CurrentTime; // _NET_WM_USER_TIME
+  XClient.data.l[2] := 0;
+  Result := XSendEvent(Display, RootWin, False,
+	      SubstructureRedirectMask or SubstructureNotifyMask,
+	      @XClient) <> Success;
+end;
+
+function X11GetActivewindow: QWidgetH;
+var
+  Display: PDisplay;
+  RootWin: TWindow;
+  ScreenNum: Integer;
+  WMAtom: TAtom;
+  ActualTypeReturn: TAtom;
+  ActualFormatReturn: LongInt;
+  NItemsReturn, BytesAfterReturn: Cardinal;
+  Ptr: Pointer;
+  Valid: Boolean;
+begin
+  Result := nil;
+  Display := QX11Info_display();
+
+  if Display = nil then
+    exit;
+  Ptr := nil;
+  ScreenNum := QX11Info_appScreen();
+  RootWin := XRootWindow(Display, ScreenNum);
+  WMAtom := XInternAtom(Display,'_NET_ACTIVE_WINDOW', False);
+  Valid := XGetWindowProperty(Display, RootWin, WMAtom, 0, 1, False,
+                                 AnyPropertyType, @ActualTypeReturn,
+                                 @ActualFormatReturn, @NItemsReturn,
+                                 @BytesAfterReturn, @Ptr) = Success;
+  if Valid and (Ptr <> nil) and (ActualTypeReturn = XA_WINDOW) and
+    (ActualFormatReturn = 32) then
+  begin
+    RootWin := TWindow(Ptr^);
+    try
+     Result := QWidget_find(RootWin);
+    finally
+      XFree(Ptr);
+    end;
+  end else
+  if Assigned(Ptr) then
+    XFree(Ptr);
+end;
+
+function GetWindowManager: String;
+{used to get window manager name, so we can handle different wm's behaviour
+ eg. kde vs. gnome}
+var
+  Display: PDisplay;
+  ScreenNum: Integer;
+  RootWin: TWindow;
+  WMAtom: TAtom;
+  WMWindow: TWindow;
+
+  typeReturned: TAtom;
+  formatReturned: Integer;
+  nitemsReturned: PtrInt;
+  unused: PtrInt;
+  data: Pointer;
+begin
+  Result := '';
+  Display := QX11Info_display();
+
+  if Display = nil then
+    exit;
+
+  ScreenNum := QX11Info_appScreen();
+  RootWin := XRootWindow(Display, ScreenNum);
+  WMAtom := XInternAtom(Display,'_NET_WM_DESKTOP', True);
+
+  if WMAtom > 0 then
+  begin
+    WMAtom := XInternAtom(Display,'_NET_SUPPORTING_WM_CHECK', False);
+    if WMAtom > 0 then
+    begin
+      data := nil;
+      WMWindow := 0;
+      if XGetWindowProperty(Display, RootWin, WMAtom, 0, 1024, False, XA_WINDOW,
+        @typeReturned, @formatReturned, @nitemsReturned,
+        @unused, @data) = Success then
+        begin
+          if (typeReturned = XA_WINDOW) and (formatReturned = 32) and
+            (Data <> nil) then
+          begin
+            // this is our window manager window
+            WMWindow := TWindow(Data^);
+            XFree(Data);
+            Data := nil;
+          end;
+          if WMWindow = 0 then
+            exit;
+          WMAtom := XInternAtom(Display,'UTF8_STRING', False);
+          if XGetWindowProperty(Display, WMWindow,
+            XInternAtom(Display,'_NET_WM_NAME', False), 0, 1024, False,
+            WMAtom, @typeReturned, @formatReturned, @nitemsReturned,
+            @unused, @data) = Success then
+          begin
+            if (typeReturned = WMAtom) and (formatReturned = 8) then
+              Result := StrPas(Data);
+            if Data <> nil then
+              XFree(Data);
+            Data := nil;
+          end;
+       end;
+    end;
+  end;
+end;
+
+procedure SetSkipX11Taskbar(Widget: QWidgetH; const ASkipTaskBar: Boolean);
+const
+  _NET_WM_STATE_REMOVE = 0;
+  _NET_WM_STATE_ADD = 1;
+  {_NET_WM_STATE_TOGGLE = 2;}
+var
+   Display: PDisplay;
+   RootWin: TWindow;
+   ScreenNum: Integer;
+   XClient: TXClientMessageEvent;
+   WMAtom: TAtom;
+begin
+  Display := QX11Info_display();
+
+  if Display = nil then
+    exit;
+  ScreenNum := QX11Info_appScreen();
+  RootWin := XRootWindow(Display, ScreenNum);
+
+  // _NET_WM_STATE_SKIP_TASKBAR
+  XClient.format := 0; // shutup compiler
+  FillChar(XClient, SizeOf(XClient), 0);
+  XClient._type := ClientMessage;
+  XClient.window := QWidget_winId(Widget);
+  WMAtom := XInternAtom(Display,'_NET_WM_STATE', False);
+  XClient.message_type := WMAtom;
+  XClient.format := 32;
+
+  if ASkipTaskBar then
+    Xclient.data.l[0] := _NET_WM_STATE_ADD
+  else
+    Xclient.data.l[0] := _NET_WM_STATE_REMOVE;
+  WMAtom := XInternAtom(Display,'_NET_WM_STATE_SKIP_TASKBAR', True);
+  Xclient.data.l[1] := WMAtom;
+  Xclient.data.l[2] := 0;
+  Xclient.data.l[3] := 0;
+  Xclient.data.l[4] := 0;
+  XSendEvent (Display, RootWin, False,
+	      SubstructureRedirectMask or SubstructureNotifyMask,
+	      @Xclient);
+end;
+
+function GetAlwaysOnTopX11(Widget: QWidgetH): boolean;
+var
+  Display: PDisplay;
+  X11Window: TWindow;
+  WMAtom: TAtom;
+  typeReturned: TAtom;
+  formatReturned: Integer;
+  nitemsReturned: PtrInt;
+  unused: PtrInt;
+  data: Pointer;
+begin
+  Result := False;
+  Display := QX11Info_display();
+
+  if Display = nil then
+    exit;
+
+  X11Window := TWindow(QWidget_winId(Widget));
+  if X11Window = 0 then
+    exit;
+
+  WMAtom := XInternAtom(Display,'_NET_WM_STATE', False);
+  if WMAtom > 0 then
+  begin
+    data := nil;
+    if XGetWindowProperty(Display, X11Window, WMAtom, 0, 1024, False, XA_ATOM,
+      @typeReturned, @formatReturned, @nitemsReturned,
+      @unused, @data) = Success then
+    begin
+      if (typeReturned = XA_ATOM) and (formatReturned = 32) and
+        (Data <> nil) then
+      begin
+        while nitemsReturned > 0 do
+        begin
+          // make happy ancient x11 or old kde ?
+          if XInternAtom(Display,'_NET_WM_STATE_STAYS_ON_TOP', False) = TAtom(Data^) then
+            Result := True
+          else
+          if XInternAtom(Display,'_NET_WM_STATE_ABOVE', False) = TAtom(Data^) then
+            Result := True;
+          dec(nItemsReturned);
+          if Result or (nItemsReturned = 0) then
+            break;
+          inc(Data);
+        end;
+        if nitemsReturned > 0 then
+          XFree(Data);
+        Data := nil;
+      end;
+    end;
+  end;
+end;
+
+function GetKeyLockState(const AKey: Byte): Boolean;
+var
+  Display: PDisplay;
+  n: Cardinal;
+begin
+  Result := False;
+  Display := QX11Info_display();
+
+  if (Display = nil) then
+    exit;
+
+  if (XkbGetIndicatorState(Display, XkbUseCoreKbd, @n) = Success) then
+  begin
+    if (AKey = VK_LCL_CAPSLOCK) then
+      Result := (n and $01) = 1
+    else
+    if (AKey = VK_NUMLOCK) then
+      Result := (n and $02) = 2;
+  end;
+end;
+

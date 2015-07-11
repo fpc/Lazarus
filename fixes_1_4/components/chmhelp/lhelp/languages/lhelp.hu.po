@@ -1,0 +1,184 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
+"Language-Team: Magyar (Hungarian)\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: lhelpstrconsts.slhelp_about
+msgid "About"
+msgstr "Névjegy"
+
+#: lhelpstrconsts.slhelp_about2
+msgid "&About ..."
+msgstr "&Névjegy ..."
+
+#: lhelpstrconsts.slhelp_cannothandlethistypeofcontentforurl
+msgid "Cannot handle this type of content. \"%s\" for url:%s%s"
+msgstr "Nem kezelhetők az ilyen típusú tartalmak. \"%s\" a következő url-en:%s%s"
+
+#: lhelpstrconsts.slhelp_cannothandlethistypeofsubcontentforurl
+msgid "Cannot handle this type of subcontent. \"%s\" for url:%s%s"
+msgstr "Nem kezelhetők az ilyen típusú altartalmak. \"%s\" a következő url-en:%s%s"
+
+#: lhelpstrconsts.slhelp_closeall
+msgid "&Close All"
+msgstr "Összes bezárása"
+
+#: lhelpstrconsts.slhelp_contents
+msgid "Contents"
+msgstr "Tartalom"
+
+#: lhelpstrconsts.slhelp_contextshowthehelpinformationrelatedtothiscontext
+msgid "    --context  :  Show the help information related to this context"
+msgstr "    --context  :  Megjeleníti az azonosítóhoz tartozó súgót"
+
+#: lhelpstrconsts.slhelp_copy
+msgid "Copy"
+msgstr "Másolás"
+
+#: lhelpstrconsts.slhelp_exit
+msgid "E&xit"
+msgstr "Kilé&pés"
+
+#: lhelpstrconsts.slhelp_file
+msgid "&File"
+msgstr "&Fájl"
+
+#: lhelpstrconsts.slhelp_find
+msgid "Find"
+msgstr "Keresés"
+
+#: lhelpstrconsts.slhelp_help
+msgid "&Help"
+msgstr "&Súgó"
+
+#: lhelpstrconsts.slhelp_helpfileschmchmallfiles
+msgid "Help files (*.chm)|*.chm|All files (*.*)|*"
+msgstr "Súgó fájlok (*.chm)|*.chm|Minden fájl (*.*)|*"
+
+#: lhelpstrconsts.slhelp_helpshowthisinformation
+msgid "    --help     :  Show this information"
+msgstr "    --help     :  Megjeleníti ezt a súgót"
+
+#: lhelpstrconsts.slhelp_hidestarthiddenbutacceptcommunicationsviaipc
+msgid "    --hide     :  Start hidden but accept communications via IPC"
+msgstr "    --hide     :  Rejtve indul, de fogadja az IPC kéréseket"
+
+#: lhelpstrconsts.slhelp_index
+msgid "Index"
+msgstr "Index"
+
+#: lhelpstrconsts.slhelp_indexloading
+msgid "Index Loading ..."
+msgstr "Index betöltése ..."
+
+#: lhelpstrconsts.slhelp_ipcnamethenameoftheipcservertolistenonforprogramsw
+msgid "    --ipcname  :  The name of the IPC server to listen on for%s              programs who wish to control the viewer"
+msgstr "    --ipcname  :  Az IPC kiszolgáló neve, amely a megjelenítőt%s              vezérelni szándékozó programok kéréseit várja"
+
+#: lhelpstrconsts.slhelp_keyword
+msgid "Keyword:"
+msgstr "Kulcsszó:"
+
+#: lhelpstrconsts.slhelp_lhelp
+msgid "LHelp"
+msgstr "LHelp"
+
+#: lhelpstrconsts.slhelp_lhelp2
+msgid "LHelp - %s"
+msgstr "LHelp - %s"
+
+#: lhelpstrconsts.slhelp_lhelpchmfileviewerversioncopyrightcandrewhaineslaz
+msgid "LHelp (CHM file viewer)%sVersion %s%sCopyright (C) Andrew Haines, %sLazarus contributors"
+msgstr "LHelp (CHM megjelenítő)%sVáltozat: %s%sCopyright (C) Andrew Haines, %sLazarus közreműködők"
+
+#: lhelpstrconsts.slhelp_lhelpoptions
+msgid "  LHelp options:"
+msgstr "  LHelp kapcsolók:"
+
+#: lhelpstrconsts.slhelp_loadedinms
+msgid "Loaded: %s in %sms"
+msgstr "Betöltve: %s (%s ms)"
+
+#: lhelpstrconsts.slhelp_loading
+msgid "Loading: %s"
+msgstr "Betöltés: %s"
+
+#: lhelpstrconsts.slhelp_noresults
+msgid "No Results"
+msgstr "Nincs találat."
+
+#: lhelpstrconsts.slhelp_notfound
+msgid "%s not found!"
+msgstr "A(z) %s nem található!"
+
+#: lhelpstrconsts.slhelp_ok
+msgid "Ok"
+msgstr "Ok"
+
+#: lhelpstrconsts.slhelp_open
+msgid "&Open ..."
+msgstr "&Megnyitás ..."
+
+#: lhelpstrconsts.slhelp_openexistingfile
+msgid "Open existing file"
+msgstr "Létező fájl megnyitása"
+
+#: lhelpstrconsts.slhelp_openrecent
+msgid "Open Recent"
+msgstr "Legutóbbi megynyitása"
+
+#: lhelpstrconsts.slhelp_openurl
+msgid "Open &URL ..."
+msgstr "&URL megnyitása ..."
+
+#: lhelpstrconsts.slhelp_pagecannotbefound
+msgid "Page cannot be found!"
+msgstr "Az oldal nem tölthető be!"
+
+#: lhelpstrconsts.slhelp_pleaseenteraurl
+msgid "Please enter a URL"
+msgstr "Adjon meg egy URL-t!"
+
+#: lhelpstrconsts.slhelp_search
+msgid "Search"
+msgstr "Keresés"
+
+#: lhelpstrconsts.slhelp_searchresults
+msgid "Search Results:"
+msgstr "Keresési eredmények:"
+
+#: lhelpstrconsts.slhelp_showcontents
+msgid "Show contents"
+msgstr "Tartalom megjelenítése"
+
+#: lhelpstrconsts.slhelp_supportedurltypes
+msgid "Supported URL type(s): (%s)"
+msgstr "Támogatott URL típus(ok): (%s)"
+
+#: lhelpstrconsts.slhelp_tableofcontentsloading
+msgid "Table of Contents Loading ..."
+msgstr "Tartalomjegyzék betöltése ..."
+
+#: lhelpstrconsts.slhelp_tableofcontentsloadingpleasewait
+msgid "Table of Contents Loading. Please Wait ..."
+msgstr "Tartalomjegyzék betöltése. Kis türelmet ..."
+
+#: lhelpstrconsts.slhelp_untitled
+msgid "untitled"
+msgstr "névtelen"
+
+#: lhelpstrconsts.slhelp_usagelhelpfilenamecontextidhideipcnamelhelpmyapp
+msgid "    Usage: lhelp [[filename] [--context id] [--hide] [--ipcname lhelp-myapp]]"
+msgstr "    Használat: lhelp [[fájlnév] [--context azonosító] [--hide] [--ipcname lhelp-alkalmazásom]]"
+
+#: lhelpstrconsts.slhelp_view
+msgid "&View"
+msgstr "&Nézet"

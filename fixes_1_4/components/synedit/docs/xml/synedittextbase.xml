@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="SynEdit">
+    <module name="SynEditTextBase">
+      <element name="TSynEditStorageMem">
+        <short>Baseclass for index based storage. Provides a block of memory per item (e.g. string pointer per line)</short>
+        <descr>Similar like TList, provides a definable amount of Memory for each Item.
+
+Each item will be given the same amount of Memory, 
+which can be used to store a record or any other form of fixed size data.
+
+Each subclass is responsible for defining the ItemSize. (May only be changed if list is empty).
+Subclasses must also manage count, capacity and trigger moving data on insert/delete.
+
+This class is only responsible for allocating and managing (execute moving) the required 
+memory
+
+The memory for all items is allocated as a single big block. This avoids having a list 
+of pointer to many small memory fragment
+
+This memory organiztion is not guranteed. Calling code must not relay on it. 
+It could be changed to allocate blocks of n items,  or implement gap-list like behavior..</descr>
+        <seealso>Derrived classes:
+TSynEditStringMemory
+TSynHighlighterRangeList</seealso>
+      </element>
+      <element name="TSynEditStorageMem.ItemSize">
+        <short>Size of each Item in Bytes. Must be constant or set while list is empty</short>
+        <descr>
+          <p>A block of ItemSize bytes will be allocated for each Item. 
+This is used by SetCapacity and ItemPointer.</p>
+          <p>This value must not be changed if any data is stored (Capacity &gt; 0),
+ since the data will not be remapped to the new Size.</p>
+        </descr>
+      </element>
+      <element name="TSynEditStorageMem.Mem"/>
+      <element name="TSynEditStorageMem.ItemPointer">
+        <short>Get a pointer to the Memory for the indexed item </short>
+      </element>
+      <element name="TSynEditStrings">
+        <descr>
+          <p>Defines an interface through which SynEdit does (should do) all it's access to the text.</p>
+          <p/>
+        </descr>
+        <short>Baseclass for Text-Storage and Virtual-Representation of Text (View)</short>
+      </element>
+      <topic name="TextBuffer and Views">
+        <short>TextBuffer and Views (Virtual Text Representation)</short>
+        <descr>
+          <p>SynEdit uses a concept of Text-Views. Those are virtual representations of the Text. A Text-View controls the way SynEdit sees the Text. Text-Views are sitting between the Textbuffer and SynEdit</p>
+          <p>For Example, a text document may contain tabs. The user wants them to be displayed as Spaces instead, but does not want the stored document to be changed. A Text-View can do that. Since every access to the TextBuffer goes through the View, if SynEdit request some Text, the View can modify the returned result and replace Tabs</p>
+          <p>Another Example would be a View modifying the data written to the Textbuffer. Such a View could replace Spaces that the User writes in SynEdit, and put appropriate Tabs into the Textbuffer</p>
+          <p/>
+          <p>SynEdit needs no special knowledge about the Views, all Views have the same interface as the Textbuffer. This interface is defined in <link id="TSynEditStrings">TSynEditStrings</link>. Since Views act the same as the Textbuffer they can also be stacked, each View acting on the input/output of the next View. If  a View does not need to modify a specific call to the textbuffer, it must simply forward it. A special base class provides the implementation: <link id="TSynEditStringsLinked">TSynEditStringsLinked</link>
+          </p>
+          <p>Views allow to implement certain Tasks in a single place, and often without the need of making any modification to the code in SynEdit.</p>
+          <p>In additon to the examples at the start of this doc, Views can also store additional data, which may not be needed (or wanted) to be written to the Textbuffer. An example for this is the trimming of trailing spaces. If the user inputs spaces at the end of line, they are treaded as uncommited text. They are stored in the View, untill they are either committed (along with other text entered after the spaces), or discarded (trimmed)</p>
+          <p/>
+          <p/>
+          <p>Todos:</p>
+          <p>Folding integration or generally integration of line-number remapping<br/>Highligher/Markup integration</p>
+          <p/>
+          <p>List of Views</p>
+          <p>
+            <link id="#SynEdit.SynEditTextTrimmer">TSynEditStringTrimmingList (trim trailing spaces)</link>
+          </p>
+          <p>
+            <link id="#SynEdit.SynEditTextTabExpander">TSynEditStringTabExpander</link>
+          </p>
+          <p>
+            <link id="#SynEdit.SynEditTextDoubleWidthChars">SynEditStringDoubleWidthChars</link>
+          </p>
+        </descr>
+      </topic>
+    </module>
+  </package>
+</fpdoc-descriptions>

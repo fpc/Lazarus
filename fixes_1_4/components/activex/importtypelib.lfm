@@ -1,0 +1,246 @@
+object FrmTL: TFrmTL
+  Left = 580
+  Height = 509
+  Top = 139
+  Width = 484
+  Anchors = []
+  BorderIcons = [biSystemMenu]
+  Caption = 'Import Type Library'
+  ClientHeight = 509
+  ClientWidth = 484
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  Position = poScreenCenter
+  LCLVersion = '1.3'
+  object FNETL: TFileNameEdit
+    AnchorSideLeft.Control = CBxTLActiveX
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = CBxTLActiveX
+    Left = 10
+    Height = 28
+    Top = 350
+    Width = 443
+    DialogOptions = []
+    Filter = 'Type library files (*.tlb;*.dll;*.exe;*.ocx;*.olb)|*.tlb;*.dll;*.exe;*.ocx;*.olb|All Files (*.*)|*.*'
+    FilterIndex = 0
+    HideDirectories = False
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Anchors = [akLeft, akRight, akBottom]
+    BorderSpacing.Bottom = 3
+    MaxLength = 0
+    TabOrder = 0
+  end
+  object Label1: TLabel
+    AnchorSideLeft.Control = FNETL
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = FNETL
+    Left = 10
+    Height = 20
+    Top = 329
+    Width = 179
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Bottom = 1
+    Caption = 'File containing type library:'
+    ParentColor = False
+  end
+  object CBxTLActiveX: TCheckBox
+    AnchorSideLeft.Control = CBxTLPackage
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = CBxTLPackage
+    Left = 10
+    Height = 24
+    Hint = 'CBxTLActiveX'
+    Top = 381
+    Width = 404
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Bottom = 3
+    Caption = 'Create visual component (TActiveXContainer descendant)'
+    OnChange = CBxTLActiveXChange
+    TabOrder = 1
+  end
+  object CBxTLPackage: TCheckBox
+    AnchorSideLeft.Control = CBxTLRecurse
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = CBxTLRecurse
+    Left = 10
+    Height = 24
+    Top = 408
+    Width = 127
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Bottom = 3
+    Caption = 'Create package'
+    OnChange = CBxTLPackageChange
+    TabOrder = 2
+  end
+  object CBxTLRecurse: TCheckBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel
+    Left = 10
+    Height = 24
+    Top = 435
+    Width = 207
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
+    Caption = 'Convert dependant typelibs'
+    TabOrder = 3
+  end
+  object ButtonPanel: TButtonPanel
+    AnchorSideTop.Control = CBxTLRecurse
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
+    Height = 38
+    Top = 465
+    Width = 472
+    Anchors = []
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 4
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object PageControl1: TPageControl
+    AnchorSideLeft.Control = Label1
+    AnchorSideBottom.Control = Label1
+    Left = 10
+    Height = 318
+    Top = 5
+    Width = 464
+    ActivePage = TabSheet1
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Bottom = 6
+    TabIndex = 0
+    TabOrder = 5
+    TabPosition = tpBottom
+    OnChange = PageControl1Change
+    object TabSheet1: TTabSheet
+      Caption = 'Visual Controls'
+      ClientHeight = 285
+      ClientWidth = 456
+      object lstControls: TListBox
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideTop.Control = TabSheet1
+        AnchorSideRight.Control = TabSheet1
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = TabSheet1
+        AnchorSideBottom.Side = asrBottom
+        Left = 10
+        Height = 215
+        Top = 10
+        Width = 436
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Left = 10
+        BorderSpacing.Top = 10
+        BorderSpacing.Right = 10
+        BorderSpacing.Bottom = 60
+        ItemHeight = 0
+        OnClick = lstControlsClick
+        Sorted = True
+        TabOrder = 0
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'ActiveX References'
+      ClientHeight = 285
+      ClientWidth = 456
+      object lstRefs: TListBox
+        AnchorSideLeft.Control = TabSheet2
+        AnchorSideTop.Control = TabSheet2
+        AnchorSideRight.Control = TabSheet2
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = TabSheet2
+        AnchorSideBottom.Side = asrBottom
+        Left = 10
+        Height = 215
+        Top = 10
+        Width = 436
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Left = 10
+        BorderSpacing.Top = 10
+        BorderSpacing.Right = 10
+        BorderSpacing.Bottom = 60
+        ItemHeight = 0
+        OnClick = lstRefsClick
+        Sorted = True
+        TabOrder = 0
+      end
+    end
+  end
+  object lstFiltered: TListBox
+    AnchorSideLeft.Control = PageControl1
+    AnchorSideTop.Control = PageControl1
+    AnchorSideRight.Control = PageControl1
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = PageControl1
+    AnchorSideBottom.Side = asrBottom
+    Left = 24
+    Height = 224
+    Top = 19
+    Width = 436
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 14
+    BorderSpacing.Top = 14
+    BorderSpacing.Right = 14
+    BorderSpacing.Bottom = 80
+    ItemHeight = 0
+    OnClick = lstFilteredClick
+    Sorted = True
+    TabOrder = 6
+    Visible = False
+  end
+  object GroupBox1: TGroupBox
+    AnchorSideLeft.Control = PageControl1
+    AnchorSideTop.Control = PageControl1
+    AnchorSideRight.Control = PageControl1
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = PageControl1
+    AnchorSideBottom.Side = asrBottom
+    Left = 24
+    Height = 42
+    Top = 249
+    Width = 436
+    Anchors = [akLeft, akRight, akBottom]
+    BorderSpacing.Left = 14
+    BorderSpacing.Right = 14
+    BorderSpacing.Bottom = 32
+    ClientHeight = 20
+    ClientWidth = 432
+    TabOrder = 7
+    object Label2: TLabel
+      Left = 7
+      Height = 20
+      Top = 2
+      Width = 44
+      Caption = 'Search'
+      ParentColor = False
+    end
+    object txtSearch: TEdit
+      AnchorSideLeft.Control = Label2
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideRight.Control = GroupBox1
+      AnchorSideRight.Side = asrBottom
+      Left = 57
+      Height = 28
+      Top = -4
+      Width = 367
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Right = 8
+      OnChange = txtSearchChange
+      TabOrder = 0
+    end
+  end
+  object SelectDirectoryDialog1: TSelectDirectoryDialog
+    left = 344
+    top = 416
+  end
+end

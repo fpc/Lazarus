@@ -1,0 +1,86 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: heaptrcview.rsdtimes
+msgid " (%d times)"
+msgstr " (%d раз)"
+
+#: heaptrcview.rserrorparse
+msgid "Error while parsing trace file"
+msgstr "Ошибка анализа файла стека вызовов"
+
+#: heaptrcview.rsleakview
+#| msgid "Find source lines for leak/stack-traces"
+msgid "Leaks and Traces"
+msgstr "Утечки памяти и стек вызовов"
+
+#: heaptrcview.sbtnclipbrd
+msgid "Paste Clipboard"
+msgstr "Вставить из буфера обмена"
+
+#: heaptrcview.sbtnresolve
+msgid "Resolve"
+msgstr "Уточнить"
+
+#: heaptrcview.sbtnupdate
+msgid "Update"
+msgstr "Обновить"
+
+#: heaptrcview.schkraw
+msgid "Raw leak data"
+msgstr "Необработанные данные об утечках"
+
+#: heaptrcview.schktop
+msgid "Stay on top"
+msgstr "Поверх других окон"
+
+#: heaptrcview.sfrmcap
+#| msgid "LeakView - HeapTrc output viewer"
+msgid "Leaks and Traces - HeapTrc and GDB backtrace output viewer"
+msgstr "Утечки памяти и стек вызовов - программа просмотра вывода HeapTrc и стека вызовов GDB"
+
+#: heaptrcview.sfrmselectfilewithdebuginfo
+msgid "Select File with debug info"
+msgstr "Выберите файл с отладочной информацией"
+
+#: heaptrcview.slbltrace
+msgid ".trc file"
+msgstr "Файл .trc"
+
+#: heaptrcview.stacklineformat
+msgid "%s"
+msgstr "%s"
+
+#: heaptrcview.stacklineformatwithfile
+msgid "%s file: %s : %d; "
+msgstr "файл %s: %s : %d; "
+
+#: heaptrcview.stacktraceformat
+msgid "Leak: %d bytes x %d times"
+msgstr "Утечка: %d байт x %d раз"
+
+#: heaptrcview.stacktraceformatsingle
+msgid "Leak: %d bytes"
+msgstr "Утечка: %d байт"
+
+#: heaptrcview.strleakingblockscount
+msgid "Leaking Blocks Count: %d"
+msgstr "Количество утерянных блоков памяти: %d"
+
+#: heaptrcview.strleakingmemsize
+msgid "Leaking Mem Size: %d"
+msgstr "Размер утерянной памяти: %d"
+
+#: heaptrcview.strtotalmemalloc
+#| msgid "Total Mem alloced: %d"
+msgid "Total Mem allocated: %d"
+msgstr "Размер выделенной памяти: %d"
+

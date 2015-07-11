@@ -1,0 +1,51 @@
+inherited fReplace: TfReplace
+  Height = 358
+  Width = 400
+  ClientHeight = 358
+  ClientWidth = 400
+  OnResize = FrameResize
+  TabOrder = 0
+  DesignLeft = 305
+  DesignTop = 198
+  object lblWordList: TLabel[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cbEnable
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 14
+    Top = 35
+    Width = 47
+    BorderSpacing.Top = 6
+    BorderSpacing.Around = 6
+    Caption = 'Word list:'
+    ParentColor = False
+  end
+  object cbEnable: TCheckBox[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 17
+    Top = 6
+    Width = 130
+    BorderSpacing.Around = 6
+    Caption = 'Enable find and replace'
+    OnClick = cbEnableClick
+    TabOrder = 0
+  end
+  object mWords: TMemo[2]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblWordList
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
+    Height = 297
+    Top = 55
+    Width = 388
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    TabOrder = 1
+  end
+end

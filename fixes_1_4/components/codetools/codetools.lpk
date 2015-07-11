@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <Name Value="CodeTools"/>
+    <Author Value="Mattias Gaertner"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Parsing>
+        <SyntaxOptions>
+          <AllowLabel Value="False"/>
+          <UseAnsiStrings Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
+      <Other>
+        <Verbosity>
+          <ShowHints Value="False"/>
+        </Verbosity>
+        <CompilerMessages>
+          <UseMsgFile Value="True"/>
+        </CompilerMessages>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="Tools and functions to parse, browse and edit pascal sources"/>
+    <License Value="GPL-2
+"/>
+    <Version Major="1" Release="1"/>
+    <Files Count="62">
+      <Item1>
+        <Filename Value="Makefile"/>
+        <Type Value="Text"/>
+      </Item1>
+      <Item2>
+        <Filename Value="Makefile.fpc"/>
+        <Type Value="Text"/>
+      </Item2>
+      <Item3>
+        <Filename Value="basiccodetools.pas"/>
+        <UnitName Value="BasicCodeTools"/>
+      </Item3>
+      <Item4>
+        <Filename Value="cachecodetools.pas"/>
+        <UnitName Value="CacheCodeTools"/>
+      </Item4>
+      <Item5>
+        <Filename Value="ccodeparsertool.pas"/>
+        <UnitName Value="CCodeParserTool"/>
+      </Item5>
+      <Item6>
+        <Filename Value="codeatom.pas"/>
+        <UnitName Value="CodeAtom"/>
+      </Item6>
+      <Item7>
+        <Filename Value="codebeautifier.pas"/>
+        <UnitName Value="CodeBeautifier"/>
+      </Item7>
+      <Item8>
+        <Filename Value="codecache.pas"/>
+        <UnitName Value="CodeCache"/>
+      </Item8>
+      <Item9>
+        <Filename Value="codecompletiontool.pas"/>
+        <UnitName Value="CodeCompletionTool"/>
+      </Item9>
+      <Item10>
+        <Filename Value="codegraph.pas"/>
+        <UnitName Value="CodeGraph"/>
+      </Item10>
+      <Item11>
+        <Filename Value="codeindex.pas"/>
+        <UnitName Value="CodeIndex"/>
+      </Item11>
+      <Item12>
+        <Filename Value="codetemplatestool.pas"/>
+        <UnitName Value="CodeTemplatesTool"/>
+      </Item12>
+      <Item13>
+        <Filename Value="codetoolmanager.pas"/>
+        <UnitName Value="CodeToolManager"/>
+      </Item13>
+      <Item14>
+        <Filename Value="codetoolmemmanager.pas"/>
+        <UnitName Value="CodeToolMemManager"/>
+      </Item14>
+      <Item15>
+        <Filename Value="codetools.inc"/>
+        <Type Value="Include"/>
+      </Item15>
+      <Item16>
+        <Filename Value="codetoolsconfig.pas"/>
+        <UnitName Value="CodeToolsConfig"/>
+      </Item16>
+      <Item17>
+        <Filename Value="codetoolsstrconsts.pas"/>
+        <UnitName Value="CodeToolsStrConsts"/>
+      </Item17>
+      <Item18>
+        <Filename Value="codetoolsstructs.pas"/>
+        <UnitName Value="CodeToolsStructs"/>
+      </Item18>
+      <Item19>
+        <Filename Value="codetree.pas"/>
+        <UnitName Value="CodeTree"/>
+      </Item19>
+      <Item20>
+        <Filename Value="customcodetool.pas"/>
+        <UnitName Value="CustomCodeTool"/>
+      </Item20>
+      <Item21>
+        <Filename Value="definetemplates.pas"/>
+        <UnitName Value="DefineTemplates"/>
+      </Item21>
+      <Item22>
+        <Filename Value="directivestree.pas"/>
+        <UnitName Value="DirectivesTree"/>
+      </Item22>
+      <Item23>
+        <Filename Value="directorycacher.pas"/>
+        <UnitName Value="DirectoryCacher"/>
+      </Item23>
+      <Item24>
+        <Filename Value="eventcodetool.pas"/>
+        <UnitName Value="EventCodeTool"/>
+      </Item24>
+      <Item25>
+        <Filename Value="expreval.pas"/>
+        <UnitName Value="ExprEval"/>
+      </Item25>
+      <Item26>
+        <Filename Value="extractproctool.pas"/>
+        <UnitName Value="ExtractProcTool"/>
+      </Item26>
+      <Item27>
+        <Filename Value="fileprocs.pas"/>
+        <UnitName Value="FileProcs"/>
+      </Item27>
+      <Item28>
+        <Filename Value="finddeclarationcache.pas"/>
+        <UnitName Value="FindDeclarationCache"/>
+      </Item28>
+      <Item29>
+        <Filename Value="finddeclarationtool.pas"/>
+        <UnitName Value="FindDeclarationTool"/>
+      </Item29>
+      <Item30>
+        <Filename Value="findoverloads.pas"/>
+        <UnitName Value="FindOverloads"/>
+      </Item30>
+      <Item31>
+        <Filename Value="fpc.errore.msg"/>
+        <Type Value="Text"/>
+      </Item31>
+      <Item32>
+        <Filename Value="h2pastool.pas"/>
+        <UnitName Value="H2PasTool"/>
+      </Item32>
+      <Item33>
+        <Filename Value="identcompletiontool.pas"/>
+        <UnitName Value="IdentCompletionTool"/>
+      </Item33>
+      <Item34>
+        <Filename Value="keywordfunclists.pas"/>
+        <UnitName Value="KeywordFuncLists"/>
+      </Item34>
+      <Item35>
+        <Filename Value="lfmtrees.pas"/>
+        <UnitName Value="LFMTrees"/>
+      </Item35>
+      <Item36>
+        <Filename Value="linkscanner.pas"/>
+        <UnitName Value="LinkScanner"/>
+      </Item36>
+      <Item37>
+        <Filename Value="memcheck.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="MemCheck"/>
+      </Item37>
+      <Item38>
+        <Filename Value="memcheck_laz.inc"/>
+        <Type Value="Include"/>
+      </Item38>
+      <Item39>
+        <Filename Value="methodjumptool.pas"/>
+        <UnitName Value="MethodJumpTool"/>
+      </Item39>
+      <Item40>
+        <Filename Value="multikeywordlisttool.pas"/>
+        <UnitName Value="MultiKeyWordListTool"/>
+      </Item40>
+      <Item41>
+        <Filename Value="nonpascalcodetools.pas"/>
+        <UnitName Value="NonPascalCodeTools"/>
+      </Item41>
+      <Item42>
+        <Filename Value="pascalparsertool.pas"/>
+        <UnitName Value="PascalParserTool"/>
+      </Item42>
+      <Item43>
+        <Filename Value="pascalreadertool.pas"/>
+        <UnitName Value="PascalReaderTool"/>
+      </Item43>
+      <Item44>
+        <Filename Value="ppucodetools.pas"/>
+        <UnitName Value="PPUCodeTools"/>
+      </Item44>
+      <Item45>
+        <Filename Value="ppugraph.pas"/>
+        <UnitName Value="PPUGraph"/>
+      </Item45>
+      <Item46>
+        <Filename Value="ppuparser.pas"/>
+        <UnitName Value="PPUParser"/>
+      </Item46>
+      <Item47>
+        <Filename Value="resourcecodetool.pas"/>
+        <UnitName Value="ResourceCodeTool"/>
+      </Item47>
+      <Item48>
+        <Filename Value="sourcechanger.pas"/>
+        <UnitName Value="SourceChanger"/>
+      </Item48>
+      <Item49>
+        <Filename Value="sourcelog.pas"/>
+        <UnitName Value="SourceLog"/>
+      </Item49>
+      <Item50>
+        <Filename Value="stdcodetools.pas"/>
+        <UnitName Value="StdCodeTools"/>
+      </Item50>
+      <Item51>
+        <Filename Value="otheridentifiertree.pas"/>
+        <UnitName Value="OtherIdentifierTree"/>
+      </Item51>
+      <Item52>
+        <Filename Value="fpcsrcrules.inc"/>
+        <Type Value="Include"/>
+      </Item52>
+      <Item53>
+        <Filename Value="codetoolscfgscript.pas"/>
+        <UnitName Value="CodeToolsCfgScript"/>
+      </Item53>
+      <Item54>
+        <Filename Value="ctxmlfixfragment.pas"/>
+        <UnitName Value="CTXMLFixFragment"/>
+      </Item54>
+      <Item55>
+        <Filename Value="ctunitgraph.pas"/>
+        <UnitName Value="CTUnitGraph"/>
+      </Item55>
+      <Item56>
+        <Filename Value="changedeclarationtool.pas"/>
+        <UnitName Value="ChangeDeclarationTool"/>
+      </Item56>
+      <Item57>
+        <Filename Value="codetoolsfpcmsgs.pas"/>
+        <UnitName Value="CodeToolsFPCMsgs"/>
+      </Item57>
+      <Item58>
+        <Filename Value="unitdictionary.pas"/>
+        <UnitName Value="UnitDictionary"/>
+      </Item58>
+      <Item59>
+        <Filename Value="ctloadlaz.pas"/>
+        <UnitName Value="ctloadlaz"/>
+      </Item59>
+      <Item60>
+        <Filename Value="ctunitgroupgraph.pas"/>
+        <UnitName Value="CTUnitGroupGraph"/>
+      </Item60>
+      <Item61>
+        <Filename Value="codecompletiontemplater.pas"/>
+        <UnitName Value="CodeCompletionTemplater"/>
+      </Item61>
+      <Item62>
+        <Filename Value="codetoolgdbtracer.pas"/>
+        <UnitName Value="codetoolgdbtracer"/>
+      </Item62>
+    </Files>
+    <LazDoc Paths="docs"/>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="1">
+      <Item1>
+        <PackageName Value="LazUtils"/>
+      </Item1>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

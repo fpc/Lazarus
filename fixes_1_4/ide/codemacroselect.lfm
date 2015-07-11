@@ -1,0 +1,86 @@
+object CodeMacroSelectDlg: TCodeMacroSelectDlg
+  Left = 318
+  Height = 319
+  Top = 200
+  Width = 561
+  ActiveControl = MacrosListBox
+  Caption = 'CodeMacroSelectDlg'
+  ClientHeight = 319
+  ClientWidth = 561
+  OnClose = FormClose
+  OnCreate = FormCreate
+  LCLVersion = '0.9.27'
+  object MacrosGroupBox: TGroupBox
+    Left = 10
+    Height = 210
+    Top = 10
+    Width = 170
+    Anchors = [akTop, akLeft, akBottom]
+    Caption = 'MacrosGroupBox'
+    ClientHeight = 192
+    ClientWidth = 166
+    TabOrder = 0
+    object MacrosListBox: TListBox
+      Left = 0
+      Height = 192
+      Top = 0
+      Width = 166
+      Align = alClient
+      ItemHeight = 0
+      OnSelectionChange = MacrosListBoxSelectionChange
+      TabOrder = 0
+    end
+  end
+  object DescriptionGroupBox: TGroupBox
+    Left = 190
+    Height = 210
+    Top = 10
+    Width = 361
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Caption = 'DescriptionGroupBox'
+    ClientHeight = 192
+    ClientWidth = 357
+    TabOrder = 1
+    object DescriptionMemo: TMemo
+      Left = 0
+      Height = 192
+      Top = 0
+      Width = 357
+      Align = alClient
+      Lines.Strings = (
+        'Memo1'
+      )
+      ReadOnly = True
+      TabOrder = 0
+    end
+  end
+  object ParameterGroupBox: TGroupBox
+    Left = 10
+    Height = 49
+    Top = 225
+    Width = 541
+    Anchors = [akLeft, akRight, akBottom]
+    Caption = 'ParameterGroupBox'
+    ClientHeight = 31
+    ClientWidth = 537
+    TabOrder = 2
+    object ParameterEdit: TEdit
+      Left = 0
+      Height = 23
+      Top = 0
+      Width = 537
+      Align = alTop
+      TabOrder = 0
+      Text = 'ParameterEdit'
+    end
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 26
+    Top = 287
+    Width = 549
+    TabOrder = 3
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
+  end
+end

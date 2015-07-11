@@ -1,0 +1,99 @@
+object FileBrowserForm: TFileBrowserForm
+  Left = 284
+  Height = 467
+  Top = 288
+  Width = 345
+  ActiveControl = Panel1
+  Caption = 'File Browser'
+  ClientHeight = 467
+  ClientWidth = 345
+  OnActivate = FormActivate
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnShow = FormShow
+  LCLVersion = '0.9.31'
+  object FileListBox: TFileListBox
+    Left = 0
+    Height = 207
+    Top = 260
+    Width = 345
+    Align = alClient
+    Directory = '/home/graemeg'
+    FileType = [ftArchive, ftNormal]
+    ItemHeight = 22
+    OnDblClick = FileListBoxDblClick
+    OnKeyPress = FileListBoxKeyPress
+    TabOrder = 0
+  end
+  object TV: TTreeView
+    Left = 0
+    Height = 185
+    Top = 42
+    Width = 345
+    Align = alTop
+    DefaultItemHeight = 18
+    ReadOnly = True
+    ScrollBars = ssAutoBoth
+    TabOrder = 1
+    OnExpanded = TVExpanded
+    OnSelectionChanged = TVSelectionChanged
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 42
+    Top = 0
+    Width = 345
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 42
+    ClientWidth = 345
+    TabOrder = 2
+    object cbHidden: TCheckBox
+      Left = 208
+      Height = 24
+      Top = 18
+      Width = 132
+      Caption = 'Show hidden files'
+      OnChange = cbHiddenChange
+      TabOrder = 0
+    end
+    object btnConfigure: TButton
+      Left = 8
+      Height = 28
+      Top = 7
+      Width = 90
+      Caption = 'Configure'
+      OnClick = btnConfigureClick
+      TabOrder = 1
+    end
+    object btnReload: TButton
+      Left = 104
+      Height = 28
+      Top = 7
+      Width = 90
+      Caption = 'Reload'
+      OnClick = btnReloadClick
+      TabOrder = 2
+    end
+  end
+  object Splitter1: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 227
+    Width = 345
+    Align = alTop
+    ResizeAnchor = akTop
+  end
+  object FilterComboBox: TFilterComboBox
+    Left = 0
+    Height = 28
+    Top = 232
+    Width = 345
+    Align = alTop
+    TabOrder = 4
+    OnChange = FilterComboBoxChange
+    OnSelect = FilterComboBoxSelect
+  end
+end

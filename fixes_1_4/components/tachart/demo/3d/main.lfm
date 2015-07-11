@@ -1,0 +1,126 @@
+object Form1: TForm1
+  Left = 318
+  Height = 347
+  Top = 150
+  Width = 560
+  Caption = 'Form1'
+  ClientHeight = 347
+  ClientWidth = 560
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '0.9.31'
+  object Chart1: TChart
+    Left = 0
+    Height = 297
+    Top = 0
+    Width = 560
+    AxisList = <    
+      item
+        Grid.Color = clGray
+        AxisPen.Visible = True
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+      end    
+      item
+        Grid.Color = clGray
+        Alignment = calBottom
+        AxisPen.Visible = True
+        Minors = <>
+      end>
+    BackColor = clSkyBlue
+    Depth = 50
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Margins.Bottom = 0
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+    Color = clWhite
+    ParentColor = False
+    object Chart1BarSeries1: TBarSeries
+      ZPosition = 10
+      BarBrush.Color = clTeal
+      BarWidthPercent = 50
+      Depth = 10
+      Source = RandomChartSource1
+    end
+    object Chart1BarSeries2: TBarSeries
+      ZPosition = 30
+      BarBrush.Color = clMaroon
+      BarWidthPercent = 50
+      Depth = 10
+      Source = RandomChartSource2
+    end
+    object Chart1LineSeries1: TLineSeries
+      ZPosition = 50
+      Depth = 10
+      LinePen.Color = clBlue
+      Source = RandomChartSource1
+    end
+  end
+  object pnControls: TPanel
+    Left = 0
+    Height = 50
+    Top = 297
+    Width = 560
+    Align = alBottom
+    ClientHeight = 50
+    ClientWidth = 560
+    TabOrder = 1
+    object seDepth: TSpinEdit
+      Left = 52
+      Height = 21
+      Top = 7
+      Width = 74
+      OnChange = seDepthChange
+      TabOrder = 0
+    end
+    object lblDepth: TLabel
+      Left = 8
+      Height = 14
+      Top = 11
+      Width = 34
+      Caption = 'Depth:'
+      ParentColor = False
+    end
+    object seAxisZ: TSpinEdit
+      Left = 196
+      Height = 21
+      Top = 7
+      Width = 74
+      OnChange = seAxisZChange
+      TabOrder = 1
+    end
+    object lblAxisZ: TLabel
+      Left = 152
+      Height = 14
+      Top = 11
+      Width = 34
+      Caption = 'Axis Z:'
+      ParentColor = False
+    end
+  end
+  object RandomChartSource1: TRandomChartSource
+    PointsNumber = 7
+    RandSeed = 545516281
+    XMax = 7
+    XMin = 1
+    YMax = 12
+    YMin = 4
+    left = 120
+    top = 52
+  end
+  object RandomChartSource2: TRandomChartSource
+    PointsNumber = 7
+    RandSeed = 87568756
+    XMax = 7
+    XMin = 1
+    YMax = 12
+    YMin = 1
+    left = 120
+    top = 100
+  end
+end

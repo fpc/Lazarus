@@ -1,0 +1,178 @@
+object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
+  Left = 277
+  Height = 381
+  Top = 147
+  Width = 436
+  ActiveControl = LoadButton
+  Caption = 'Load Image Dialog'
+  ClientHeight = 381
+  ClientWidth = 436
+  Constraints.MinHeight = 180
+  Constraints.MinWidth = 200
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.31'
+  object GroupBox1: TGroupBox
+    Left = 6
+    Height = 337
+    Top = 6
+    Width = 424
+    Align = alClient
+    BorderSpacing.Around = 6
+    Caption = 'Picture'
+    ClientHeight = 319
+    ClientWidth = 420
+    TabOrder = 0
+    object ScrollBox: TScrollBox
+      AnchorSideRight.Control = GroupBox1
+      AnchorSideBottom.Control = GroupBox1
+      Left = 6
+      Height = 307
+      Top = 6
+      Width = 322
+      HorzScrollBar.Page = 318
+      HorzScrollBar.Tracking = True
+      VertScrollBar.Page = 303
+      VertScrollBar.Tracking = True
+      Align = alClient
+      BorderSpacing.Around = 6
+      ClientHeight = 303
+      ClientWidth = 318
+      Color = clWindow
+      ParentColor = False
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 0
+      object ImagePreview: TImage
+        Left = 0
+        Height = 100
+        Top = 0
+        Width = 100
+        AutoSize = True
+        Center = True
+      end
+    end
+    object LoadSaveBtnPanel: TPanel
+      Left = 334
+      Height = 319
+      Top = 0
+      Width = 86
+      Align = alRight
+      BevelOuter = bvNone
+      ClientHeight = 319
+      ClientWidth = 86
+      TabOrder = 1
+      object LoadButton: TButton
+        Left = 6
+        Height = 25
+        Top = 6
+        Width = 74
+        Action = FileOpenAction
+        Align = alTop
+        BorderSpacing.Around = 6
+        TabOrder = 0
+      end
+      object SaveButton: TButton
+        Left = 6
+        Height = 25
+        Top = 37
+        Width = 74
+        Action = FileSaveAction
+        Align = alTop
+        BorderSpacing.Around = 6
+        TabOrder = 1
+      end
+      object ClearButton: TButton
+        Left = 6
+        Height = 25
+        Top = 68
+        Width = 74
+        Action = ClearAction
+        Align = alTop
+        BorderSpacing.Around = 6
+        TabOrder = 2
+      end
+      object CopyButton: TButton
+        Left = 6
+        Height = 25
+        Top = 112
+        Width = 74
+        Action = CopyAction
+        TabOrder = 3
+      end
+      object PasteButton: TButton
+        Left = 6
+        Height = 25
+        Top = 143
+        Width = 74
+        Action = PasteAction
+        TabOrder = 4
+      end
+    end
+  end
+  object OkCancelButtonPanel: TButtonPanel
+    Left = 6
+    Height = 26
+    Top = 349
+    Width = 424
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
+  end
+  object OpenDialog: TOpenPictureDialog
+    left = 138
+    top = 182
+  end
+  object SaveDialog: TSavePictureDialog
+    left = 186
+    top = 182
+  end
+  object ActionList: TActionList
+    left = 355
+    top = 244
+    object CopyAction: TEditCopy
+      Category = 'Edit'
+      Caption = '&Copy'
+      Hint = 'Copy'
+      OnExecute = CopyActionExecute
+      OnUpdate = CopyActionUpdate
+      ShortCut = 16451
+    end
+    object PasteAction: TEditPaste
+      Category = 'Edit'
+      Caption = '&Paste'
+      Hint = 'Paste'
+      OnExecute = PasteActionExecute
+      OnUpdate = PasteActionUpdate
+      ShortCut = 16470
+    end
+    object FileOpenAction: TAction
+      Category = 'File'
+      Caption = 'Load'
+      OnExecute = FileOpenActionExecute
+      ShortCut = 16463
+    end
+    object FileSaveAction: TAction
+      Category = 'File'
+      Caption = 'Save'
+      OnExecute = FileSaveActionExecute
+      OnUpdate = FileSaveActionUpdate
+      ShortCut = 16467
+    end
+    object ClearAction: TEditDelete
+      Category = 'Edit'
+      Caption = 'Clear'
+      Hint = 'Delete'
+      OnExecute = ClearActionExecute
+      ShortCut = 46
+    end
+  end
+end

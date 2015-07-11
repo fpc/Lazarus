@@ -1,0 +1,231 @@
+object CompilerPathOptionsFrame: TCompilerPathOptionsFrame
+  Left = 0
+  Height = 432
+  Top = 0
+  Width = 509
+  ClientHeight = 432
+  ClientWidth = 509
+  TabOrder = 0
+  DesignLeft = 346
+  DesignTop = 106
+  object OtherUnitsLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 15
+    Top = 0
+    Width = 100
+    Caption = 'OtherUnitsLabel'
+    ParentColor = False
+  end
+  object IncludeFilesLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = OtherUnitsEdit
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 15
+    Top = 46
+    Width = 105
+    BorderSpacing.Top = 6
+    Caption = 'IncludeFilesLabel'
+    ParentColor = False
+  end
+  object OtherSourcesLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ProjTargetApplyConventionsCheckBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 15
+    Top = 251
+    Width = 119
+    Caption = 'OtherSourcesLabel'
+    ParentColor = False
+  end
+  object LibrariesLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = IncludeFilesEdit
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 15
+    Top = 92
+    Width = 86
+    BorderSpacing.Top = 6
+    Caption = 'LibrariesLabel'
+    ParentColor = False
+  end
+  object UnitOutputDirLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = LibrariesEdit
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 15
+    Top = 138
+    Width = 118
+    BorderSpacing.Top = 6
+    Caption = 'UnitOutputDirLabel'
+    ParentColor = False
+  end
+  object DebugPathLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = OtherSourcesEdit
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 15
+    Top = 297
+    Width = 102
+    BorderSpacing.Top = 6
+    Caption = 'DebugPathLabel'
+    ParentColor = False
+  end
+  object OtherUnitsEdit: TEdit
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = OtherUnitsLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 28
+    Top = 20
+    Width = 509
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Bottom = 6
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 0
+    Text = 'OtherUnitsEdit'
+  end
+  object IncludeFilesEdit: TEdit
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = IncludeFilesLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 28
+    Top = 74
+    Width = 509
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Bottom = 6
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 1
+    Text = 'IncludeFilesEdit'
+  end
+  object OtherSourcesEdit: TEdit
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = OtherSourcesLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 28
+    Top = 314
+    Width = 509
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Bottom = 6
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 6
+    Text = 'OtherSourcesEdit'
+  end
+  object LibrariesEdit: TEdit
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = LibrariesLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 28
+    Top = 128
+    Width = 509
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Bottom = 6
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 2
+    Text = 'LibrariesEdit'
+  end
+  object UnitOutputDirEdit: TEdit
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = UnitOutputDirLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 28
+    Top = 182
+    Width = 509
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Bottom = 6
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 3
+    Text = 'UnitOutputDirEdit'
+  end
+  object DebugPathEdit: TEdit
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = DebugPathLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 28
+    Top = 368
+    Width = 509
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Bottom = 6
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 7
+    Text = 'DebugPathEdit'
+  end
+  object ProjTargetFileLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = UnitOutputDirEdit
+    AnchorSideTop.Side = asrBottom
+    Left = 0
+    Height = 15
+    Top = 184
+    Width = 116
+    Caption = 'ProjTargetFileLabel'
+    ParentColor = False
+  end
+  object ProjTargetFileEdit: TEdit
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ProjTargetFileLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 28
+    Top = 236
+    Width = 509
+    Anchors = [akTop, akLeft, akRight]
+    OnChange = ProjTargetFileEditChange
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 4
+    Text = 'ProjTargetFileEdit'
+  end
+  object ProjTargetApplyConventionsCheckBox: TCheckBox
+    AnchorSideLeft.Control = ProjTargetFileEdit
+    AnchorSideTop.Control = ProjTargetFileEdit
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 24
+    Top = 264
+    Width = 277
+    BorderSpacing.Bottom = 6
+    Caption = 'ProjTargetApplyConventionsCheckBox'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 5
+  end
+end

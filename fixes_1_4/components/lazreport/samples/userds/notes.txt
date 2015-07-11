@@ -1,0 +1,29 @@
+This sample demostrates several LazReport features: how to build a custom Crosstab report using TfrUserDatasets only, using format script to control color and text content of cell report, and also how to use runtime events to modify report item look.
+
+For this report we have a Master Dataset (MasterDS) which we use to provide information about rows, we make this dataset in such way that we have 41 rows, row 0 we use to output column headers. The Column Dataset (ColumnsDS) goes from column 1 to Column 9. We comunicate this values and state to LazReport Engine using TfrUserDataset events OnCheckEOF, OnFirst and OnNext.
+
+At runtime this sample shows three buttons: "Show Report" which shows a preview of generated report, "Design Report" to edit the current report and "Show Notes of this Sample" which shows this notes.
+
+In Report Designer, we find a Crosstab report layout with a Master Data band, a Crosstab Header Band and a Crosstab Data band, note how in intersection of Master Databand and Crosstab Data band we place a Memo object, is in this memo object where we put the script which controls the look and content of this object. We can access the object content by doubleclicking it. Then a "Text Editor" is shown. For this example we create dynamically the content of the control, so the memo property is really dummy and can be empty.
+
+When LazReport runs the script for each variable or function that doesn't know it triggers some events of TFrReport and in this way we can at runtime return custom values.
+
+In this sample we change column 2 color to blue using the script, but for make things a little more interesting, we also modify the object color at runtime, using TfrReport event OnEnterRect in such way that we change every fourth column color to yellow.
+
+More things to observe:
+
+* In intersection of Crosstab Header and Master Data bands we place the row header using a [S1] variable, look event handler OnGetValue how this "S1" variable and others are handled.
+
+* Changing the Master Data band height modify each report rows height.
+
+* Changing script at runtime in report designer takes inmediate effect preview report.
+
+* Distance between Cross Header and Cross Data bands have no effect.
+
+* Width of Cross Header Band or Object's width have no effect, this width is set in TfrReport Event handler to a fixed value of 60
+
+* If you want to see in action how LazReport works in each step of report construction enable define Debug in main unit ( and if in windows, check project->Compiler Options->Linking->Win32 Gui Application so it builds a console application) and run the sample in a command prompt with something like: project1 > log.txt and open log.txt in your favourite text viewer.
+
+* Note Column 3 Row 3 ...
+
+Jesus Reyes A.

@@ -1,0 +1,98 @@
+object LR_FunctEditorForm: TLR_FunctEditorForm
+  Left = 307
+  Height = 320
+  Top = 112
+  Width = 420
+  HorzScrollBar.Page = 419
+  VertScrollBar.Page = 319
+  ActiveControl = ListBox1
+  BorderIcons = [biSystemMenu, biHelp]
+  Caption = 'LR_FunctEditorForm'
+  ClientHeight = 320
+  ClientWidth = 420
+  OnClose = FormClose
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.3'
+  object ListBox1: TListBox
+    Left = 0
+    Height = 182
+    Top = 0
+    Width = 181
+    Align = alLeft
+    ItemHeight = 0
+    OnClick = ListBox1Click
+    ScrollWidth = 179
+    TabOrder = 0
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 92
+    Top = 182
+    Width = 420
+    Align = alBottom
+    BevelOuter = bvLowered
+    ClientHeight = 92
+    ClientWidth = 420
+    TabOrder = 1
+    object Label1: TLabel
+      Left = 1
+      Height = 13
+      Top = 1
+      Width = 418
+      Align = alTop
+      Caption = 'Label1'
+      Color = clWhite
+      ParentColor = False
+      Transparent = False
+    end
+    object Label2: TLabel
+      Left = 1
+      Height = 77
+      Top = 14
+      Width = 418
+      Align = alClient
+      Caption = 'Label2'
+      Color = clInfoBk
+      Font.Color = clInfoText
+      ParentColor = False
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+    end
+  end
+  object Splitter1: TSplitter
+    Left = 181
+    Height = 182
+    Top = 0
+    Width = 5
+  end
+  object ListBox2: TListBox
+    Left = 186
+    Height = 182
+    Top = 0
+    Width = 234
+    Align = alClient
+    ItemHeight = 0
+    OnClick = ListBox2Click
+    OnDblClick = ListBox2DblClick
+    ScrollWidth = 232
+    TabOrder = 2
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 280
+    Width = 408
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 4
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+end

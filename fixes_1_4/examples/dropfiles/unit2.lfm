@@ -1,0 +1,33 @@
+object Form2: TForm2
+  Left = 422
+  Height = 56
+  Top = 592
+  Width = 473
+  HorzScrollBar.Page = 472
+  VertScrollBar.Page = 55
+  ActiveControl = CheckBox1
+  AllowDropFiles = True
+  Caption = 'Form2'
+  ClientHeight = 56
+  ClientWidth = 473
+  OnDropFiles = FormDropFiles
+  object Label1: TLabel
+    Left = 15
+    Height = 14
+    Top = 12
+    Width = 296
+    Caption = 'Drag and drop files on this form and see the results in memo. '
+    ParentColor = False
+  end
+  object CheckBox1: TCheckBox
+    Left = 15
+    Height = 19
+    Top = 39
+    Width = 153
+    Caption = 'Allow drop files on this form'
+    Checked = True
+    OnChange = CheckBox1Change
+    State = cbChecked
+    TabOrder = 0
+  end
+end

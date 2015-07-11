@@ -1,0 +1,299 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: msgjsonviewer.sarray
+msgid "Array (%d elements)"
+msgstr ""
+
+#: msgjsonviewer.scancelclose
+msgid "Do not close the window"
+msgstr ""
+
+#: msgjsonviewer.scancelpaste
+msgid "Do not paste the new data"
+msgstr ""
+
+#: msgjsonviewer.scaption
+msgctxt "msgjsonviewer.scaption"
+msgid "JSON Viewer"
+msgstr ""
+
+#: msgjsonviewer.sdiscard
+msgid "Discard changes"
+msgstr ""
+
+#: msgjsonviewer.sdocumentmodified
+msgid "JSON document modified"
+msgstr ""
+
+#: msgjsonviewer.sdocumentmodifiedaction
+msgid ""
+"The JSON data was changed but not saved.\n"
+"What do want to do ?\n"
+msgstr ""
+
+#: msgjsonviewer.sduplicatemembername
+msgid "Duplicate member name \"%s\"."
+msgstr ""
+
+#: msgjsonviewer.selement
+msgid "Element nr. %d"
+msgstr ""
+
+#: msgjsonviewer.sempty
+msgid "Empty document"
+msgstr ""
+
+#: msgjsonviewer.serrcreatingconfigdir
+msgid "Could not create the configuration files directory \"%s\""
+msgstr ""
+
+#: msgjsonviewer.serrinvalidvalue
+msgid "Invalid value or wrong type: \"%s\""
+msgstr ""
+
+#: msgjsonviewer.serrnovalidjsonclipboard
+msgid "The clipboard does not contain valid JSON data"
+msgstr ""
+
+#: msgjsonviewer.snewmember
+msgid "New object member"
+msgstr ""
+
+#: msgjsonviewer.snewmembername
+msgid "Enter a name for the new member (type: %s)"
+msgstr ""
+
+#: msgjsonviewer.snomorematches
+msgid "No nodes match the criterium"
+msgstr ""
+
+#: msgjsonviewer.snull
+msgid "null"
+msgstr ""
+
+#: msgjsonviewer.sobject
+msgid "Object (%d members)"
+msgstr ""
+
+#: msgjsonviewer.ssavedata
+msgid "Save the changes"
+msgstr ""
+
+#: tmainform.acopy.caption
+msgid "&Copy"
+msgstr ""
+
+#: tmainform.acopy.hint
+msgid "Copy selected node to clipboard as JSON"
+msgstr ""
+
+#: tmainform.acut.caption
+msgid "C&ut"
+msgstr ""
+
+#: tmainform.acut.hint
+msgid "Cut selected node to clipboard as JSON"
+msgstr ""
+
+#: tmainform.adeletevalue.caption
+msgid "&Delete value"
+msgstr ""
+
+#: tmainform.adeletevalue.hint
+msgid "Delete the selected value"
+msgstr ""
+
+#: tmainform.aexpandall.caption
+msgid "E&xpand all nodes"
+msgstr ""
+
+#: tmainform.aexpandall.hint
+msgid "Expand all nodes in the document"
+msgstr ""
+
+#: tmainform.aexpandcurrentcontainer.caption
+msgid "Expand &current object/array"
+msgstr ""
+
+#: tmainform.aexpandcurrentcontainer.hint
+msgid "Expand all nodes in the current object/array"
+msgstr ""
+
+#: tmainform.afind.caption
+msgid "&Find"
+msgstr ""
+
+#: tmainform.afindnext.caption
+msgid "Find &next occurrence"
+msgstr ""
+
+#: tmainform.anew.caption
+msgid "&New"
+msgstr ""
+
+#: tmainform.anew.hint
+msgid "Create new JSON document"
+msgstr ""
+
+#: tmainform.anewarray.caption
+msgid "New &Array"
+msgstr ""
+
+#: tmainform.anewarray.hint
+msgid "Add a new JSON array"
+msgstr ""
+
+#: tmainform.anewbooleanvalue.caption
+msgid "New &boolean value"
+msgstr ""
+
+#: tmainform.anewbooleanvalue.hint
+msgid "Add a new boolean value"
+msgstr ""
+
+#: tmainform.anewnullvalue.caption
+msgid "New N&ull value"
+msgstr ""
+
+#: tmainform.anewnullvalue.hint
+msgid "Add a new null value"
+msgstr ""
+
+#: tmainform.anewnumbervalue.caption
+msgid "&New numerical Value"
+msgstr ""
+
+#: tmainform.anewnumbervalue.hint
+msgid "Add a new number value"
+msgstr ""
+
+#: tmainform.anewobject.caption
+msgid "New &Object"
+msgstr ""
+
+#: tmainform.anewobject.hint
+msgid "Add a new JSON object"
+msgstr ""
+
+#: tmainform.anewstringvalue.caption
+msgid "New &string value"
+msgstr ""
+
+#: tmainform.anewstringvalue.hint
+msgid "Add a new string value"
+msgstr ""
+
+#: tmainform.aopen.caption
+msgid "&Open"
+msgstr ""
+
+#: tmainform.aopen.hint
+msgid "Open JSON document from file"
+msgstr ""
+
+#: tmainform.apaste.caption
+msgid "&Paste"
+msgstr ""
+
+#: tmainform.apaste.hint
+msgid "Paste JSON data in clipboard as new member"
+msgstr ""
+
+#: tmainform.apasteasdocument.caption
+msgid "Paste as new document"
+msgstr ""
+
+#: tmainform.apasteasdocument.hint
+msgid "Paste JSON data in clipboard as new document"
+msgstr ""
+
+#: tmainform.aquit.caption
+msgid "&Quit"
+msgstr ""
+
+#: tmainform.aquit.hint
+msgid "Exit the program"
+msgstr ""
+
+#: tmainform.asave.caption
+msgid "&Save"
+msgstr ""
+
+#: tmainform.asave.hint
+msgid "Save the JSON document to file"
+msgstr ""
+
+#: tmainform.asaveas.caption
+msgid "Save &as"
+msgstr ""
+
+#: tmainform.asaveas.hint
+msgid "Save JSON document with a new name"
+msgstr ""
+
+#: tmainform.mainform.caption
+msgctxt "TMAINFORM.MAINFORM.CAPTION"
+msgid "JSON Viewer"
+msgstr ""
+
+#: tmainform.medit.caption
+msgid "&Edit"
+msgstr ""
+
+#: tmainform.menuitem1.caption
+msgctxt "TMAINFORM.MENUITEM1.CAPTION"
+msgid "-"
+msgstr ""
+
+#: tmainform.menuitem2.caption
+msgctxt "TMAINFORM.MENUITEM2.CAPTION"
+msgid "-"
+msgstr ""
+
+#: tmainform.menuitem3.caption
+msgctxt "TMAINFORM.MENUITEM3.CAPTION"
+msgid "-"
+msgstr ""
+
+#: tmainform.menuitem8.caption
+msgctxt "TMAINFORM.MENUITEM8.CAPTION"
+msgid "-"
+msgstr ""
+
+#: tmainform.mfile.caption
+msgid "&File"
+msgstr ""
+
+#: tmainform.midocument.caption
+msgid "&New document with object"
+msgstr ""
+
+#: tmainform.miinsert.caption
+msgid "&Values"
+msgstr ""
+
+#: tmainform.misortmembers.caption
+msgid "Sort object members"
+msgstr ""
+
+#: tmainform.mistrict.caption
+msgid "&Strict JSON"
+msgstr ""
+
+#: tmainform.moptions.caption
+msgid "&Options"
+msgstr ""
+
+#: tmainform.tbjson.caption
+msgid "TBJSON"
+msgstr ""
+
+#: tmainform.toolbutton1.caption
+msgid "ToolButton1"
+msgstr ""
+
+#: tmainform.toolbutton4.caption
+msgid "ToolButton4"
+msgstr ""
+

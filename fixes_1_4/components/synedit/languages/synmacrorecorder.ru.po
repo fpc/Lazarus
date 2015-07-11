@@ -1,0 +1,27 @@
+msgid ""
+msgstr ""
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Project-Id-Version: lazaruside\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2006-06-03 19:57+0300\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+
+#: synmacrorecorder.scannotpause
+msgid "Can only pause when recording"
+msgstr "Можно только временно приостановиться при записи"
+
+#: synmacrorecorder.scannotplay
+msgid "Cannot playback macro when recording"
+msgstr "Невозможно воспроизвести макрос во время записи"
+
+#: synmacrorecorder.scannotrecord
+msgid "Cannot record macro when recording"
+msgstr "Невозможно записать макрос во время записи"
+
+#: synmacrorecorder.scannotresume
+msgid "Can only resume when paused"
+msgstr "Можно только продолжить, если временно приостановлен"
+

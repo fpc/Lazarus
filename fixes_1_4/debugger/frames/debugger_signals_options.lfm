@@ -1,0 +1,126 @@
+object DebuggerSignalsOptions: TDebuggerSignalsOptions
+  Left = 0
+  Height = 431
+  Top = 0
+  Width = 450
+  ClientHeight = 431
+  ClientWidth = 450
+  TabOrder = 0
+  Visible = False
+  DesignLeft = 331
+  DesignTop = 147
+  object gbSignals: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 431
+    Top = 0
+    Width = 450
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Caption = 'Signals'
+    ClientHeight = 410
+    ClientWidth = 442
+    TabOrder = 0
+    object lvSignals: TListView
+      AnchorSideLeft.Control = gbSignals
+      AnchorSideTop.Control = gbSignals
+      AnchorSideRight.Control = gbSignals
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = cmdSignalAdd
+      Left = 6
+      Height = 364
+      Top = 6
+      Width = 430
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Around = 6
+      Columns = <      
+        item
+          Caption = 'Name'
+          Width = 200
+        end      
+        item
+          Caption = 'ID'
+        end      
+        item
+          Caption = 'Handled by'
+          Width = 75
+        end      
+        item
+          Caption = 'Resume'
+          Width = 107
+        end>
+      PopupMenu = popSignal
+      SortColumn = 0
+      SortType = stText
+      TabOrder = 0
+      ViewStyle = vsReport
+    end
+    object cmdSignalRemove: TBitBtn
+      AnchorSideRight.Control = gbSignals
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = gbSignals
+      AnchorSideBottom.Side = asrBottom
+      Left = 361
+      Height = 28
+      Top = 376
+      Width = 75
+      Anchors = [akRight, akBottom]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'Remove'
+      Constraints.MinWidth = 75
+      Enabled = False
+      TabOrder = 1
+    end
+    object cmdSignalAdd: TBitBtn
+      AnchorSideRight.Control = cmdSignalRemove
+      AnchorSideBottom.Control = gbSignals
+      AnchorSideBottom.Side = asrBottom
+      Left = 280
+      Height = 28
+      Top = 376
+      Width = 75
+      Anchors = [akRight, akBottom]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'Add'
+      Constraints.MinWidth = 75
+      TabOrder = 2
+    end
+  end
+  object popSignal: TPopupMenu
+    left = 36
+    top = 403
+    object mnuHandledByProgram: TMenuItem
+      AutoCheck = True
+      Caption = 'Handled by Program'
+      GroupIndex = 1
+      RadioItem = True
+    end
+    object mnuiHandledByDebugger: TMenuItem
+      AutoCheck = True
+      Caption = 'Handled by Debugger'
+      GroupIndex = 1
+      RadioItem = True
+    end
+    object N1: TMenuItem
+      Caption = '-'
+    end
+    object mnuResumeHandled: TMenuItem
+      AutoCheck = True
+      Caption = 'Resume Handled'
+      GroupIndex = 2
+      RadioItem = True
+    end
+    object mnuResumeUnhandled: TMenuItem
+      AutoCheck = True
+      Caption = 'Resume Unhandled'
+      GroupIndex = 2
+      RadioItem = True
+    end
+  end
+end

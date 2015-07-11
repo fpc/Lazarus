@@ -1,0 +1,124 @@
+object TodoDialog: TTodoDialog
+  Left = 342
+  Height = 266
+  Top = 202
+  Width = 482
+  ActiveControl = TodoMemo
+  Caption = 'Insert Todo'
+  ClientHeight = 266
+  ClientWidth = 482
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.3'
+  object TodoLabel: TLabel
+    Left = 8
+    Height = 15
+    Top = 8
+    Width = 28
+    Caption = 'Text:'
+    FocusControl = TodoMemo
+    ParentColor = False
+  end
+  object PriorityLabel: TLabel
+    AnchorSideLeft.Control = TodoLabel
+    AnchorSideTop.Side = asrBottom
+    Left = 8
+    Height = 15
+    Top = 181
+    Width = 44
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Bottom = 2
+    Caption = 'Priority'
+    ParentColor = False
+  end
+  object OwnerLabel: TLabel
+    AnchorSideTop.Control = PriorityLabel
+    Left = 77
+    Height = 15
+    Top = 181
+    Width = 39
+    Caption = 'Owner'
+    ParentColor = False
+  end
+  object CategoryLabel: TLabel
+    AnchorSideTop.Control = PriorityLabel
+    Left = 248
+    Height = 15
+    Top = 181
+    Width = 57
+    Caption = 'Category'
+    ParentColor = False
+  end
+  object TodoMemo: TMemo
+    AnchorSideLeft.Control = TodoLabel
+    AnchorSideTop.Control = TodoLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = PriorityLabel
+    Left = 8
+    Height = 150
+    Top = 25
+    Width = 468
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 2
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
+    ScrollBars = ssAutoBoth
+    TabOrder = 0
+  end
+  object OwnerEdit: TEdit
+    AnchorSideLeft.Control = OwnerLabel
+    AnchorSideTop.Control = OwnerLabel
+    AnchorSideTop.Side = asrBottom
+    Left = 77
+    Height = 25
+    Top = 198
+    Width = 162
+    BorderSpacing.Top = 2
+    TabOrder = 2
+  end
+  object CategoryEdit: TEdit
+    AnchorSideLeft.Control = CategoryLabel
+    AnchorSideTop.Control = CategoryLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 248
+    Height = 25
+    Top = 198
+    Width = 228
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 2
+    BorderSpacing.Right = 6
+    TabOrder = 3
+  end
+  object BtnPanel: TButtonPanel
+    Left = 6
+    Height = 33
+    Top = 227
+    Width = 470
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 4
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
+  end
+  object PriorityEdit: TSpinEdit
+    AnchorSideLeft.Control = PriorityLabel
+    AnchorSideTop.Control = PriorityLabel
+    AnchorSideTop.Side = asrBottom
+    Left = 8
+    Height = 25
+    Top = 198
+    Width = 58
+    BorderSpacing.Top = 2
+    BorderSpacing.Bottom = 6
+    TabOrder = 1
+  end
+end

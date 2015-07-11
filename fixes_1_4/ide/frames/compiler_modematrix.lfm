@@ -1,0 +1,134 @@
+object CompOptModeMatrixFrame: TCompOptModeMatrixFrame
+  Left = 0
+  Height = 429
+  Top = 0
+  Width = 550
+  ClientHeight = 429
+  ClientWidth = 550
+  TabOrder = 0
+  DesignLeft = 414
+  DesignTop = 101
+  object BMMatrixToolBar: TToolBar
+    Left = 0
+    Height = 26
+    Top = 0
+    Width = 550
+    ButtonHeight = 25
+    Caption = 'BMMatrixToolBar'
+    EdgeBorders = []
+    List = True
+    ShowCaptions = True
+    TabOrder = 0
+    object BMMMoveUpButton: TToolButton
+      Left = 1
+      Top = 0
+      Caption = 'Up'
+      OnClick = BMMMoveUpButtonClick
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object BMMMoveDownButton: TToolButton
+      Left = 24
+      Top = 0
+      Caption = 'Down'
+      OnClick = BMMMoveDownButtonClick
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object BMMUndoButton: TToolButton
+      Left = 74
+      Top = 0
+      Caption = 'Undo'
+      OnClick = BMMUndoButtonClick
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object BMMRedoToolButton: TToolButton
+      Left = 111
+      Top = 0
+      Caption = 'Redo'
+      OnClick = BMMRedoToolButtonClick
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object BMMDeleteButton: TToolButton
+      Left = 385
+      Top = 0
+      Caption = 'Delete'
+      OnClick = BMMDeleteButtonClick
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object MoveSepToolButton: TToolButton
+      Left = 64
+      Top = 0
+      Width = 10
+      Caption = 'MoveSepToolButton'
+      Style = tbsSeparator
+    end
+    object DoSepToolButton: TToolButton
+      Left = 148
+      Top = 0
+      Width = 10
+      Caption = 'DoSepToolButton'
+      Style = tbsSeparator
+    end
+    object AddOtherSepToolButton: TToolButton
+      Left = 375
+      Top = 0
+      Width = 10
+      Caption = 'AddOtherSepToolButton'
+      Style = tbsSeparator
+    end
+    object BMMAddOtherButton: TToolButton
+      Left = 297
+      Top = 0
+      Caption = 'Add Other'
+      DropdownMenu = BMMAddOtherPopupMenu
+      OnClick = BMMAddOtherButtonClick
+      Style = tbsDropDown
+    end
+    object BMMAddLclWidgetButton: TToolButton
+      Left = 158
+      Top = 0
+      Caption = 'Add LCLWidgetType'
+      OnClick = BMMAddLclWidgetButtonClick
+      Style = tbsDropDown
+    end
+    object LCLMacroSepToolButton: TToolButton
+      Left = 287
+      Top = 0
+      Width = 10
+      Caption = 'LCLMacroSepToolButton'
+      Style = tbsSeparator
+    end
+  end
+  object BMMAddOtherPopupMenu: TPopupMenu
+    left = 240
+    top = 117
+    object BMMNewCustomOptionMenuItem: TMenuItem
+      Caption = 'New Custom Option'
+      OnClick = BMMNewCustomOptionMenuItemClick
+    end
+    object BMMNewIDEMacroMenuItem: TMenuItem
+      Caption = 'New IDE Macro'
+      OnClick = BMMNewIDEMacroMenuItemClick
+    end
+    object BMMNewOutDirMenuItem: TMenuItem
+      Caption = 'New Output Directory'
+      OnClick = BMMNewOutDirMenuItemClick
+    end
+    object BMMNewTargetMenuItem: TMenuItem
+      Caption = 'New Target'
+      OnClick = BMMNewTargetMenuItemClick
+    end
+  end
+  object BMMAddLclWidgetPopupMenu: TPopupMenu
+    left = 240
+    top = 64
+    object BMMLCLWidgetTypeMenuItem: TMenuItem
+      Caption = 'Set LCLWidgetType'
+      OnClick = BMMNewTargetMenuItemClick
+    end
+  end
+end

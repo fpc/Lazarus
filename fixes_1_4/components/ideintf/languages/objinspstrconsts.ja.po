@@ -1,0 +1,1575 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2013-12-09 22:08+0900\n"
+"Project-Id-Version: objinspstrconsts.ja\n"
+"Last-Translator: Yuichiro Takahashi <yuichiro@pop07.odn.ne.jp>\n"
+"Language-Team: Japanese Lazarus ML\n"
+"Language: ja\n"
+
+#: objinspstrconsts.cactionlisteditorallcategory
+msgid "(All)"
+msgstr "(すべて)"
+
+#: objinspstrconsts.cactionlisteditordatabasecategory
+msgid "Database"
+msgstr "データベース"
+
+#: objinspstrconsts.cactionlisteditordeleteaction
+msgctxt "objinspstrconsts.cactionlisteditordeleteaction"
+msgid "Delete"
+msgstr "削除"
+
+#: objinspstrconsts.cactionlisteditordeleteactionhint
+msgid "Delete Action"
+msgstr "アクションを削除"
+
+#: objinspstrconsts.cactionlisteditordialogcategory
+msgctxt "objinspstrconsts.cactionlisteditordialogcategory"
+msgid "Dialog"
+msgstr "ダイアログ"
+
+#: objinspstrconsts.cactionlisteditoreditcategory
+msgctxt "objinspstrconsts.cactionlisteditoreditcategory"
+msgid "Edit"
+msgstr "編集"
+
+#: objinspstrconsts.cactionlisteditorfilecategory
+msgid "File"
+msgstr "ファイル"
+
+#: objinspstrconsts.cactionlisteditorhelpcategory
+msgctxt "objinspstrconsts.cactionlisteditorhelpcategory"
+msgid "Help"
+msgstr "ヘルプ"
+
+#: objinspstrconsts.cactionlisteditormovedownaction
+msgctxt "objinspstrconsts.cactionlisteditormovedownaction"
+msgid "Move Down"
+msgstr "下に移動"
+
+#: objinspstrconsts.cactionlisteditormoveupaction
+msgctxt "objinspstrconsts.cactionlisteditormoveupaction"
+msgid "Move Up"
+msgstr "上に移動"
+
+#: objinspstrconsts.cactionlisteditornewaction
+msgid "New Action"
+msgstr "新規アクション"
+
+#: objinspstrconsts.cactionlisteditornewstdaction
+msgid "New Standard Action"
+msgstr "新規標準アクション"
+
+#: objinspstrconsts.cactionlisteditorpaneldescrriptions
+msgid "Panel Descriptions"
+msgstr "パネルの説明を表示"
+
+#: objinspstrconsts.cactionlisteditorpaneltoolbar
+msgid "Toolbar"
+msgstr "ツールバー"
+
+#: objinspstrconsts.cactionlisteditorsearchcategory
+msgid "Search"
+msgstr "検索"
+
+#: objinspstrconsts.cactionlisteditorunknowncategory
+msgid "(Unknown)"
+msgstr "(カテゴリなし)"
+
+#: objinspstrconsts.cgcheckduplicate
+msgid "On Add, Check for Duplicate in Items"
+msgstr "追加時に重複チェックをする"
+
+#: objinspstrconsts.cgcheckduplicatemsg
+msgid "The \"%s\" Item is already listed. Add it anyway?"
+msgstr "アイテム \"%s\" は、既にリストにあります。どうしても追加しますか。"
+
+#: objinspstrconsts.cgcheckgroupeditor
+msgid "CheckGroup Editor"
+msgstr "チェックグループエディタ"
+
+#: objinspstrconsts.cgcolumns
+msgid "Columns:"
+msgstr "列数"
+
+#: objinspstrconsts.cgdisable
+msgid "Popup to disable/enable items"
+msgstr "ポップアップ(右クリック)でアイテムのdisable/enableの変更"
+
+#: objinspstrconsts.clbadd
+msgid "Add new Item"
+msgstr "新規アイテムの追加"
+
+#: objinspstrconsts.clbchecklistboxeditor
+msgid "CheckListBox Editor"
+msgstr "チェックリストボックスエディタ"
+
+#: objinspstrconsts.clbdeletehint
+msgid "Delete the Item"
+msgstr "アイテムを削除"
+
+#: objinspstrconsts.clbdeletequest
+msgid "Delete the Item %d \"%s\"?"
+msgstr "アイテム %d \"%s\" を削除しますか。"
+
+#: objinspstrconsts.clbdown
+msgctxt "objinspstrconsts.clbdown"
+msgid "Down"
+msgstr "下へ"
+
+#: objinspstrconsts.clbmodify
+msgid "Modify the Item"
+msgstr "アイテムを変更する"
+
+#: objinspstrconsts.clbup
+msgctxt "objinspstrconsts.clbup"
+msgid "Up"
+msgstr "上へ"
+
+#: objinspstrconsts.dceaddfields
+msgid "Add Fields"
+msgstr ""
+
+#: objinspstrconsts.dcecolumneditor
+msgid "DBGrid Columns Editor"
+msgstr ""
+
+#: objinspstrconsts.dcedeleteall
+msgid "Delete All"
+msgstr ""
+
+#: objinspstrconsts.dcefetchlabels
+msgid "Fetch Labels"
+msgstr ""
+
+#: objinspstrconsts.dceoktodelete
+msgid "This will delete all columns. Continue?"
+msgstr ""
+
+#: objinspstrconsts.dcewillreplacecontinue
+msgid "This will replace all captions from dataset. Continue?"
+msgstr ""
+
+#: objinspstrconsts.dpeunabletoretrievefieldsdefinitions
+msgid "Unable to retrieve fields definition from dataset."
+msgstr ""
+
+#: objinspstrconsts.fescalculated
+msgid "&Calculated"
+msgstr "計算済み(&C)"
+
+#: objinspstrconsts.fescancelbtn
+msgctxt "objinspstrconsts.fescancelbtn"
+msgid "Cancel"
+msgstr "キャンセル"
+
+#: objinspstrconsts.fescheckdset
+msgid "Check dataset settings"
+msgstr "データセットの設定を調べてください"
+
+#: objinspstrconsts.fesdata
+msgid "&Data"
+msgstr "データ(&D)"
+
+#: objinspstrconsts.fesdataset
+msgid "&Dataset:"
+msgstr "データセット(&D)"
+
+#: objinspstrconsts.fesfetitle
+msgid "Edit Fields ..."
+msgstr "フィールドを編集 ..."
+
+#: objinspstrconsts.fesfieldcantbec
+msgid "Field %s cannot be created!"
+msgstr "フィールド%sを作成できません！"
+
+#: objinspstrconsts.fesfieldprops
+msgid "Field properties"
+msgstr "フィールドプロパティ"
+
+#: objinspstrconsts.fesfieldtype
+msgid "Field Type"
+msgstr "フィールド型"
+
+#: objinspstrconsts.fesfltitle
+msgid "FieldDefs"
+msgstr "FieldDefs"
+
+#: objinspstrconsts.fesformcaption
+msgctxt "objinspstrconsts.fesformcaption"
+msgid "New field"
+msgstr "新規フィールド"
+
+#: objinspstrconsts.feskeyfield
+msgid "&Key fields:"
+msgstr "キーフィールド(&K):"
+
+#: objinspstrconsts.feslookup
+msgid "&Lookup"
+msgstr "参照(&L)"
+
+#: objinspstrconsts.feslookupdef
+msgid "Lookup definition"
+msgstr "定義を参照"
+
+#: objinspstrconsts.feslookupkeys
+msgid "L&ookup keys:"
+msgstr "キーを参照(&o)"
+
+#: objinspstrconsts.fesname
+msgid "&Name:"
+msgstr "名前(&N)"
+
+#: objinspstrconsts.fesnofields
+msgid "It was not possible to get the dataset field's list"
+msgstr "データセットのフィールドリストを取得することができません。"
+
+#: objinspstrconsts.fesnofieldsnote
+msgid "Field's list is not available, can't check for duplicates"
+msgstr "フィールドのリストが利用できません。重複を調べることができません"
+
+#: objinspstrconsts.fesokbtn
+msgctxt "objinspstrconsts.fesokbtn"
+msgid "OK"
+msgstr "OK"
+
+#: objinspstrconsts.fespersistentcompname
+msgid "Co&mponent Name:"
+msgstr "コンポーネント名(&m)"
+
+#: objinspstrconsts.fesresultfield
+msgid "&Result Fields:"
+msgstr "結果フィールド(&R)"
+
+#: objinspstrconsts.fessize
+msgid "&Size:"
+msgstr "サイズ(&S)："
+
+#: objinspstrconsts.festype
+msgid "&Type:"
+msgstr "&Type:"
+
+#: objinspstrconsts.ilesadd
+msgctxt "objinspstrconsts.ilesadd"
+msgid "Add"
+msgstr "追加"
+
+#: objinspstrconsts.itcssearchandreplace
+msgid "Search and replace"
+msgstr ""
+
+#: objinspstrconsts.liisaddvalue
+msgid "Add value"
+msgstr "値を追加"
+
+#: objinspstrconsts.liiselse
+msgid "Else"
+msgstr "Else"
+
+#: objinspstrconsts.liiselseif
+msgid "ElseIf"
+msgstr "ElseIf"
+
+#: objinspstrconsts.liisif
+msgid "If"
+msgstr "If"
+
+#: objinspstrconsts.liisifdef
+msgid "IfDef"
+msgstr "IfDef"
+
+#: objinspstrconsts.liisifndef
+msgid "IfNDef"
+msgstr "IfNDef"
+
+#: objinspstrconsts.liissetvalue
+msgid "Set value"
+msgstr "値を設定"
+
+#: objinspstrconsts.lisunabletofindparserfortool
+msgid "Unable to find parser for tool \"%s\""
+msgstr ""
+
+#: objinspstrconsts.nbcesaddpage
+msgid "Add Page"
+msgstr "ページを追加"
+
+#: objinspstrconsts.nbcesdeletepage
+msgid "Delete Page"
+msgstr "ページを削除"
+
+#: objinspstrconsts.nbcesinsertpage
+msgid "Insert Page"
+msgstr "ページを挿入"
+
+#: objinspstrconsts.nbcesmovepageleft
+msgid "Move Page Left"
+msgstr "ページを左に移動"
+
+#: objinspstrconsts.nbcesmovepageright
+msgid "Move Page Right"
+msgstr "ページを右に移動"
+
+#: objinspstrconsts.nbcesshowpage
+msgid "Show Page"
+msgstr "ページを表示する"
+
+#: objinspstrconsts.oicoleditadd
+msgctxt "objinspstrconsts.oicoleditadd"
+msgid "Add"
+msgstr "追加"
+
+#: objinspstrconsts.oicoleditdelete
+msgctxt "objinspstrconsts.oicoleditdelete"
+msgid "Delete"
+msgstr "削除"
+
+#: objinspstrconsts.oicoleditdown
+msgctxt "objinspstrconsts.oicoleditdown"
+msgid "Down"
+msgstr "下"
+
+#: objinspstrconsts.oicoleditediting
+msgid "Editing"
+msgstr "編集中"
+
+#: objinspstrconsts.oicoleditup
+msgctxt "objinspstrconsts.oicoleditup"
+msgid "Up"
+msgstr "上"
+
+#: objinspstrconsts.ois0lines0chars
+msgid "0 lines, 0 chars"
+msgstr "0 行、 0 文字"
+
+#: objinspstrconsts.ois1linedchars
+msgid "1 line, %d chars"
+msgstr "1 行、 %d 文字"
+
+#: objinspstrconsts.oisaction
+msgid "Action"
+msgstr "アクション"
+
+#: objinspstrconsts.oisactionlistcomponenteditor
+msgid "Action&List Editor ..."
+msgstr "アクションリスト エディタ(&L) ..."
+
+#: objinspstrconsts.oisactionlisteditor
+msgid "ActionList Editor"
+msgstr "アクションリスト エディタ"
+
+#: objinspstrconsts.oisaddcollectionitem
+msgid "&Add Item"
+msgstr "アイテムを追加(&A)"
+
+#: objinspstrconsts.oisaddfields
+msgid "&Add fields"
+msgstr "フィールドを追加(&A)"
+
+#: objinspstrconsts.oisaddfieldsfromfielddefs
+msgid "Add fields from FieldDefs"
+msgstr "FieldDefsからフィールドを追加"
+
+#: objinspstrconsts.oisaddtofavorites
+msgid "Add to Favorites"
+msgstr "お気に入りに追加"
+
+#: objinspstrconsts.oisallfiles
+msgid "All files"
+msgstr "すべてのファイル"
+
+#: objinspstrconsts.oisarray
+msgid "Array"
+msgstr "配列"
+
+#: objinspstrconsts.oisboolean
+msgid "Boolean"
+msgstr "Boolean"
+
+#: objinspstrconsts.oisbtncomponents
+msgid "Co&mponents"
+msgstr "コンポーネント(&m)"
+
+#: objinspstrconsts.oisbtnproperties
+msgid "&Properties"
+msgstr "プロパティ(&P)"
+
+#: objinspstrconsts.oiscadd
+msgid "&Add"
+msgstr "追加(&A)"
+
+#: objinspstrconsts.oiscancel
+msgctxt "objinspstrconsts.oiscancel"
+msgid "Cancel"
+msgstr "キャンセル"
+
+#: objinspstrconsts.oiscategory
+msgid "Category"
+msgstr "カテゴリ"
+
+#: objinspstrconsts.oiscdelete
+msgid "Delete?"
+msgstr "削除？"
+
+#: objinspstrconsts.oischar
+msgid "Char"
+msgstr "Char"
+
+#: objinspstrconsts.oischaractersforblanks
+msgid "Characters for Blanks"
+msgstr "空白文字の指定"
+
+#: objinspstrconsts.oisclass
+msgid "Class"
+msgstr "クラス"
+
+#: objinspstrconsts.oisclear
+msgid "C&lear"
+msgstr "クリア(&l)"
+
+#: objinspstrconsts.oisclearpicture
+msgid "Clear picture"
+msgstr "画像をクリア"
+
+#: objinspstrconsts.oiscomponentnameisnotavalididentifier
+#, fuzzy,badformat
+#| msgid "Component name %s%s%s is not a valid identifier"
+msgid "Component name \"%s\" is not a valid identifier"
+msgstr "コンポーネント名 %s%s%s は、有効な識別子ではありません"
+
+#: objinspstrconsts.oiscomponentrestrictions
+msgid "Component restrictions: "
+msgstr "コンポーネントの制限"
+
+#: objinspstrconsts.oisconfirmdelete
+msgid "Confirm delete"
+msgstr "削除の確認"
+
+#: objinspstrconsts.oiscopycomponents
+msgctxt "objinspstrconsts.oiscopycomponents"
+msgid "&Copy"
+msgstr "コピー(&C)"
+
+#: objinspstrconsts.oiscreateanewpascalunit
+msgid "Create a new pascal unit."
+msgstr "新しく Pascal ユニットを作成します。"
+
+#: objinspstrconsts.oiscreatedefaultevent
+msgid "Create default event"
+msgstr "デフォルトイベントの作成"
+
+#: objinspstrconsts.oiscreatenewfieldandadditatcurrentposition
+msgid "Create new field and add it at current position"
+msgstr "新しいフィールドを作成し、それを現在の位置に加える"
+
+#: objinspstrconsts.oiscutcomponents
+msgctxt "objinspstrconsts.oiscutcomponents"
+msgid "Cu&t"
+msgstr "切り取り(&T)"
+
+#: objinspstrconsts.oisdelete
+msgctxt "objinspstrconsts.oisdelete"
+msgid "Delete"
+msgstr "削除"
+
+#: objinspstrconsts.oisdeletecomponents
+msgctxt "objinspstrconsts.oisdeletecomponents"
+msgid "&Delete"
+msgstr "削除(&D)"
+
+#: objinspstrconsts.oisdeleteitem
+#, fuzzy,badformat
+#| msgid "Delete item %s%s%s?"
+msgid "Delete item \"%s\"?"
+msgstr "アイテム %s%s%s を削除しますか。"
+
+#: objinspstrconsts.oisdeleteselectedfields
+msgid "Delete selected field(s)"
+msgstr "選択したフィールドを削除"
+
+#: objinspstrconsts.oisdlinesdchars
+msgid "%d lines, %d chars"
+msgstr "%d 行, %d 文字"
+
+#: objinspstrconsts.oisenumeration
+msgid "Enumeration"
+msgstr "一覧"
+
+#: objinspstrconsts.oiserror
+msgid "Error"
+msgstr "エラー"
+
+#: objinspstrconsts.oiserrordeletingaction
+msgid "Error deleting action"
+msgstr "アクションの削除中にエラー"
+
+#: objinspstrconsts.oiserrorloadingimage
+msgid "Error loading image"
+msgstr "イメージの読み込み中にエラー"
+
+#: objinspstrconsts.oiserrorloadingimage2
+#, fuzzy,badformat
+#| msgid "Error loading image %s%s%s:%s%s"
+msgid "Error loading image \"%s\":%s%s"
+msgstr "イメージの読み込み中にエラー %s%s%s:%s%s"
+
+#: objinspstrconsts.oiserrorwhiledeletingaction
+msgid "Error while deleting action:%s%s"
+msgstr "アクションの削除している間にエラー:%s%s"
+
+#: objinspstrconsts.oisevents
+msgid "Events"
+msgstr "イベント"
+
+#: objinspstrconsts.oisfavorites
+msgid "Favorites"
+msgstr "お気に入り"
+
+#: objinspstrconsts.oisfinddeclaration
+msgid "Jump to declaration"
+msgstr "宣言にジャンプする"
+
+#: objinspstrconsts.oisfloat
+msgid "Float"
+msgstr "浮動"
+
+#: objinspstrconsts.oishelp
+msgid "&Help"
+msgstr "ヘルプ(&H)"
+
+#: objinspstrconsts.oisimagelistcomponenteditor
+msgid "I&mageList Editor ..."
+msgstr "イメージリストエディタ(&m) ..."
+
+#: objinspstrconsts.oisincompatibleidentifier
+msgid "Incompatible Identifier"
+msgstr "互換性のない識別子"
+
+#: objinspstrconsts.oisincompatiblemethod
+msgid "Incompatible Method"
+msgstr "互換性のないメソッド"
+
+#: objinspstrconsts.oisinputmask
+msgid "Input Mask:"
+msgstr "入力マスク"
+
+#: objinspstrconsts.oisint64
+msgid "Int64"
+msgstr "Int64"
+
+#: objinspstrconsts.oisinteger
+msgid "Integer"
+msgstr "整数"
+
+#: objinspstrconsts.oisinterface
+msgid "Interface"
+msgstr "インターフェース"
+
+#: objinspstrconsts.oisinvalidpropertyvalue
+msgid "Invalid property value"
+msgstr "無効なプロパティ値"
+
+#: objinspstrconsts.oisisnotavalidmethodname
+#, fuzzy,badformat
+#| msgid "%s%s%s is not a valid method name."
+msgid "\"%s\" is not a valid method name."
+msgstr "%s%s%sは有効なメソッド名ではありません。"
+
+#: objinspstrconsts.oisitemsselected
+msgid "%u items selected"
+msgstr "%u アイテム 選択されました"
+
+#: objinspstrconsts.oisjumptodeclarationof
+msgid "Jump to declaration of %s"
+msgstr "%sの宣言に移動"
+
+#: objinspstrconsts.oisload
+msgid "&Load"
+msgstr "読み込み(&L)"
+
+#: objinspstrconsts.oisloadimagedialog
+msgid "Load Image Dialog"
+msgstr "イメージ読み込みダイアログ"
+
+#: objinspstrconsts.oisloadpicture
+msgid "Load picture"
+msgstr "画像の読み込み"
+
+#: objinspstrconsts.oismasks
+msgid "Masks ..."
+msgstr "マスク ..."
+
+#: objinspstrconsts.oismethod
+msgid "Method"
+msgstr "メソッド"
+
+#: objinspstrconsts.oismixed
+msgid "(Mixed)"
+msgstr ""
+
+#: objinspstrconsts.oismovedown
+msgid "Move &Down"
+msgstr "下に移動(&D)"
+
+#: objinspstrconsts.oismovedownhint
+msgid "Move field down"
+msgstr "フィールドを下に移動"
+
+#: objinspstrconsts.oismoveup
+msgctxt "objinspstrconsts.oismoveup"
+msgid "Move &Up"
+msgstr "上に移動(&U)"
+
+#: objinspstrconsts.oismoveuphint
+msgid "Move field up"
+msgstr "フィールドを上に移動"
+
+#: objinspstrconsts.oisnew
+msgid "&New"
+msgstr "新規(&N)"
+
+#: objinspstrconsts.oisnone
+msgid "(none)"
+msgstr "(なし)"
+
+#: objinspstrconsts.oisobject
+msgid "Object"
+msgstr "オブジェクト"
+
+#: objinspstrconsts.oisobjectinspector
+msgid "Object Inspector"
+msgstr "オブジェクトインスペクタ"
+
+#: objinspstrconsts.oisok
+msgid "&OK"
+msgstr "OK(&O)"
+
+#: objinspstrconsts.oisok2
+msgid "Ok"
+msgstr "Ok"
+
+#: objinspstrconsts.oisopenmaskfile
+msgid "Open masks file (*.dem)"
+msgstr "マスクファイルを開く(*.dem)"
+
+#: objinspstrconsts.oisoptions
+msgid "Options"
+msgstr "オプション"
+
+#: objinspstrconsts.oisorderbackone
+msgid "Back One"
+msgstr "一つ後ろに"
+
+#: objinspstrconsts.oisorderforwardone
+msgid "Forward One"
+msgstr "一つ前に"
+
+#: objinspstrconsts.oisordermovetoback
+msgid "Move to Back"
+msgstr "後ろに移動"
+
+#: objinspstrconsts.oisordermovetofront
+msgid "Move to Front"
+msgstr "前に移動"
+
+#: objinspstrconsts.oispastecomponents
+msgctxt "objinspstrconsts.oispastecomponents"
+msgid "&Paste"
+msgstr "貼り付け(&P)"
+
+#: objinspstrconsts.oispeopenimagefile
+msgid "Open image file"
+msgstr "イメージファイルを開く"
+
+#: objinspstrconsts.oispepicture
+msgid "Picture"
+msgstr "画像"
+
+#: objinspstrconsts.oispesaveimageas
+msgid "Save image as"
+msgstr "イメージを名前をつけて保存"
+
+#: objinspstrconsts.oispressakey
+msgid "Press a key ..."
+msgstr ""
+
+#: objinspstrconsts.oisproperties
+msgid "Properties"
+msgstr "プロパティ"
+
+#: objinspstrconsts.oispropertiesof
+msgid "Properties of %s"
+msgstr "%sのプロパティ"
+
+#: objinspstrconsts.oisrecord
+msgid "Record"
+msgstr "レコード"
+
+#: objinspstrconsts.oisremovefromfavorites
+msgid "Remove from Favorites"
+msgstr "お気に入りから削除"
+
+#: objinspstrconsts.oisrestricted
+msgid "Restricted"
+msgstr "制限"
+
+#: objinspstrconsts.oissamplemasks
+msgid "Sample Masks:"
+msgstr "サンプルマスク:"
+
+#: objinspstrconsts.oissave
+msgid "&Save"
+msgstr "保存(&S)"
+
+#: objinspstrconsts.oissaveliteralcharacters
+msgid "Save Literal Characters"
+msgstr "文字列として保存"
+
+#: objinspstrconsts.oissavepicture
+msgid "Save picture"
+msgstr "画像を保存"
+
+#: objinspstrconsts.oisselectafile
+msgid "Select a file"
+msgstr "ファイルを選択"
+
+#: objinspstrconsts.oisselectall
+msgid "&Select all"
+msgstr "すべて選択(&S)"
+
+#: objinspstrconsts.oisselectallhint
+msgid "Select All Fields"
+msgstr "すべてのフィールドを選択"
+
+#: objinspstrconsts.oisselectedproperties
+msgid "&Selected Properties"
+msgstr "選択されたプロパティ(&S)"
+
+#: objinspstrconsts.oisselectshortcut
+msgid "Select short cut"
+msgstr "ショートカットを選択"
+
+#: objinspstrconsts.oisset
+msgid "Set"
+msgstr "設定"
+
+#: objinspstrconsts.oissetmaxconstraints
+msgid "Set MaxHeight=%d, MaxWidth=%d"
+msgstr "MaxHeight=%d, MaxWidth=%d にセット"
+
+#: objinspstrconsts.oissetmaxconstraintshint
+msgid "Use current size as Max Constraints"
+msgstr "現在のサイズを Max Constraints として使用"
+
+#: objinspstrconsts.oissetminconstraints
+msgid "Set MinHeight=%d, MinWidth=%d"
+msgstr "MinHeight=%d, MinWidth=%d にセット"
+
+#: objinspstrconsts.oissetminconstraintshint
+msgid "Use current size as Min Constraints"
+msgstr "現在のサイズを Min Constraints として使用"
+
+#: objinspstrconsts.oissettodefault
+msgid "Set to default: %s"
+msgstr "デフォルトに設定: %s"
+
+#: objinspstrconsts.oissettodefaulthint
+msgid "Set property value to Default"
+msgstr "プロパティ値を既定値に設定"
+
+#: objinspstrconsts.oisshowcomponenttree
+msgid "Show Component Tree"
+msgstr "コンポーネントツリーを表示"
+
+#: objinspstrconsts.oisshowhints
+msgid "Show Hints"
+msgstr "ヒントを表示"
+
+#: objinspstrconsts.oisshowinfobox
+msgid "Show Information Box"
+msgstr "情報箱を表示"
+
+#: objinspstrconsts.oisshowstatusbar
+msgid "Show Status Bar"
+msgstr "ステータスバーを表示"
+
+#: objinspstrconsts.oissort
+msgid "Sort"
+msgstr "ソート"
+
+#: objinspstrconsts.oisstdactionlisteditor
+msgid "Standard Action Classes"
+msgstr "標準アクションクラス"
+
+#: objinspstrconsts.oisstdactionlisteditorclass
+msgid "Available Action Classes:"
+msgstr "利用可能なアクションクラス:"
+
+#: objinspstrconsts.oisstring
+msgid "String"
+msgstr "文字列"
+
+#: objinspstrconsts.oisstringseditordialog
+msgid "Strings Editor Dialog"
+msgstr "Strings エディタダイアログ"
+
+#: objinspstrconsts.oistdactcolorselect1headline
+msgid "Select &Color ..."
+msgstr "色を選択(&C) ..."
+
+#: objinspstrconsts.oistdactcolorselecthint
+msgid "Color Select"
+msgstr "色の選択"
+
+#: objinspstrconsts.oistdactdatasetcancel1hint
+msgctxt "objinspstrconsts.oistdactdatasetcancel1hint"
+msgid "Cancel"
+msgstr "キャンセル"
+
+#: objinspstrconsts.oistdactdatasetcancelheadline
+msgctxt "objinspstrconsts.oistdactdatasetcancelheadline"
+msgid "&Cancel"
+msgstr "キャンセル(&C)"
+
+#: objinspstrconsts.oistdactdatasetdeleteheadline
+msgctxt "objinspstrconsts.oistdactdatasetdeleteheadline"
+msgid "&Delete"
+msgstr "削除(&D)"
+
+#: objinspstrconsts.oistdactdatasetdeletehint
+msgctxt "objinspstrconsts.oistdactdatasetdeletehint"
+msgid "Delete"
+msgstr "削除"
+
+#: objinspstrconsts.oistdactdataseteditheadline
+msgid "&Edit"
+msgstr "編集(&E)"
+
+#: objinspstrconsts.oistdactdatasetedithint
+msgctxt "objinspstrconsts.oistdactdatasetedithint"
+msgid "Edit"
+msgstr "編集"
+
+#: objinspstrconsts.oistdactdatasetfirstheadline
+msgid "&First"
+msgstr "最初のレコード(&F)"
+
+#: objinspstrconsts.oistdactdatasetfirsthint
+msgid "First"
+msgstr "最初のレコード"
+
+#: objinspstrconsts.oistdactdatasetinsertheadline
+msgid "&Insert"
+msgstr "挿入(&I)"
+
+#: objinspstrconsts.oistdactdatasetinserthint
+msgctxt "objinspstrconsts.oistdactdatasetinserthint"
+msgid "Insert"
+msgstr "挿入"
+
+#: objinspstrconsts.oistdactdatasetlastheadline
+msgid "&Last"
+msgstr "最後のレコード(&L)"
+
+#: objinspstrconsts.oistdactdatasetlasthint
+msgid "Last"
+msgstr "最後のレコード"
+
+#: objinspstrconsts.oistdactdatasetnextheadline
+msgid "&Next"
+msgstr "次のレコード(&N)"
+
+#: objinspstrconsts.oistdactdatasetnexthint
+msgctxt "objinspstrconsts.oistdactdatasetnexthint"
+msgid "Next"
+msgstr "次のレコード"
+
+#: objinspstrconsts.oistdactdatasetpostheadline
+msgid "P&ost"
+msgstr "レコードの登録(&o)"
+
+#: objinspstrconsts.oistdactdatasetposthint
+msgid "Post"
+msgstr "レコードの登録"
+
+#: objinspstrconsts.oistdactdatasetpriorheadline
+msgid "&Prior"
+msgstr "前のレコード(&P)"
+
+#: objinspstrconsts.oistdactdatasetpriorhint
+msgctxt "objinspstrconsts.oistdactdatasetpriorhint"
+msgid "Prior"
+msgstr "前のレコード"
+
+#: objinspstrconsts.oistdactdatasetrefreshheadline
+msgid "&Refresh"
+msgstr "データ更新(&R)"
+
+#: objinspstrconsts.oistdactdatasetrefreshhint
+msgid "Refresh"
+msgstr "データ更新"
+
+#: objinspstrconsts.oistdacteditcopyheadline
+msgctxt "objinspstrconsts.oistdacteditcopyheadline"
+msgid "&Copy"
+msgstr "コピー(&C)"
+
+#: objinspstrconsts.oistdacteditcopyshortcut
+msgid "Ctrl+C"
+msgstr "Ctrl+C"
+
+#: objinspstrconsts.oistdacteditcopyshorthint
+msgid "Copy"
+msgstr "コピー"
+
+#: objinspstrconsts.oistdacteditcutheadline
+msgctxt "objinspstrconsts.oistdacteditcutheadline"
+msgid "Cu&t"
+msgstr "切り取り(&T)"
+
+#: objinspstrconsts.oistdacteditcutshortcut
+msgid "Ctrl+X"
+msgstr "Ctrl+X"
+
+#: objinspstrconsts.oistdacteditcutshorthint
+msgid "Cut"
+msgstr "切り取り"
+
+#: objinspstrconsts.oistdacteditdeleteheadline
+msgctxt "objinspstrconsts.oistdacteditdeleteheadline"
+msgid "&Delete"
+msgstr "削除(&D)"
+
+#: objinspstrconsts.oistdacteditdeleteshortcut
+msgid "Del"
+msgstr "Del"
+
+#: objinspstrconsts.oistdacteditdeleteshorthint
+msgctxt "objinspstrconsts.oistdacteditdeleteshorthint"
+msgid "Delete"
+msgstr "削除"
+
+#: objinspstrconsts.oistdacteditpasteheadline
+msgctxt "objinspstrconsts.oistdacteditpasteheadline"
+msgid "&Paste"
+msgstr "貼り付け(&P)"
+
+#: objinspstrconsts.oistdacteditpasteshortcut
+msgid "Ctrl+V"
+msgstr "Ctrl+V"
+
+#: objinspstrconsts.oistdacteditpasteshorthint
+msgid "Paste"
+msgstr "貼り付け"
+
+#: objinspstrconsts.oistdacteditselectallheadline
+msgid "Select &All"
+msgstr "すべて選択(&A)"
+
+#: objinspstrconsts.oistdacteditselectallshortcut
+msgid "Ctrl+A"
+msgstr "Ctrl+A"
+
+#: objinspstrconsts.oistdacteditselectallshorthint
+msgid "Select All"
+msgstr "すべて選択"
+
+#: objinspstrconsts.oistdacteditundoheadline
+msgid "&Undo"
+msgstr "元に戻す(&U)"
+
+#: objinspstrconsts.oistdacteditundoshortcut
+msgid "Ctrl+Z"
+msgstr "Ctrl+Z"
+
+#: objinspstrconsts.oistdacteditundoshorthint
+msgctxt "objinspstrconsts.oistdacteditundoshorthint"
+msgid "Undo"
+msgstr "元に戻す"
+
+#: objinspstrconsts.oistdactfileexitheadline
+msgid "E&xit"
+msgstr "終了(&X)"
+
+#: objinspstrconsts.oistdactfileexithint
+msgid "Exit"
+msgstr "終了"
+
+#: objinspstrconsts.oistdactfileopenheadline
+msgid "&Open ..."
+msgstr "開く(&O) ..."
+
+#: objinspstrconsts.oistdactfileopenhint
+msgctxt "objinspstrconsts.oistdactfileopenhint"
+msgid "Open"
+msgstr "開く"
+
+#: objinspstrconsts.oistdactfileopenshortcut
+msgid "Ctrl+O"
+msgstr "Ctrl+O"
+
+#: objinspstrconsts.oistdactfileopenwithheadline
+msgid "Open with ..."
+msgstr "開く ..."
+
+#: objinspstrconsts.oistdactfileopenwithhint
+msgid "Open with"
+msgstr "開く"
+
+#: objinspstrconsts.oistdactfilesaveasheadline
+msgid "Save &As ..."
+msgstr "名前を付けて保存(&A) ..."
+
+#: objinspstrconsts.oistdactfilesaveashint
+msgid "Save As"
+msgstr "名前を付けて保存"
+
+#: objinspstrconsts.oistdactfonteditheadline
+msgid "Select &Font ..."
+msgstr "フォントの選択(&F) ..."
+
+#: objinspstrconsts.oistdactfontedithint
+msgid "Font Select"
+msgstr "フォントの選択"
+
+#: objinspstrconsts.oistdacthelpcontentsheadline
+msgid "&Contents"
+msgstr "コンテンツ(&C)"
+
+#: objinspstrconsts.oistdacthelpcontentshint
+msgid "Help Contents"
+msgstr "ヘルプコンテンツ"
+
+#: objinspstrconsts.oistdacthelphelphelpheadline
+msgid "&Help on Help"
+msgstr "ヘルプの使い方(&H)"
+
+#: objinspstrconsts.oistdacthelphelphelphint
+msgid "Help on help"
+msgstr "ヘルプの使い方"
+
+#: objinspstrconsts.oistdacthelptopicsearchheadline
+msgid "&Topic Search"
+msgstr "トピックを検索(&T)"
+
+#: objinspstrconsts.oistdacthelptopicsearchhint
+msgid "Topic Search"
+msgstr "トピックを検索"
+
+#: objinspstrconsts.oistdactsearchfindfirstheadline
+msgid "F&ind First"
+msgstr "先頭から検索(&i)"
+
+#: objinspstrconsts.oistdactsearchfindfirsthint
+msgid "Find first"
+msgstr "先頭から検索"
+
+#: objinspstrconsts.oistdactsearchfindheadline
+msgid "&Find ..."
+msgstr "検索(&F) ..."
+
+#: objinspstrconsts.oistdactsearchfindhint
+msgid "Find"
+msgstr "検索"
+
+#: objinspstrconsts.oistdactsearchfindnextheadline
+msgid "Find &Next"
+msgstr "次を検索(&N)"
+
+#: objinspstrconsts.oistdactsearchfindnexthint
+msgid "Find next"
+msgstr "次を検索"
+
+#: objinspstrconsts.oistdactsearchfindnextshortcut
+msgid "F3"
+msgstr "F3"
+
+#: objinspstrconsts.oistdactsearchfindshortcut
+msgid "Ctrl+F"
+msgstr "Ctrl+F"
+
+#: objinspstrconsts.oistdactsearchreplaceheadline
+msgid "&Replace"
+msgstr "置換(&R)"
+
+#: objinspstrconsts.oistdactsearchreplacehint
+msgid "Replace"
+msgstr "置換"
+
+#: objinspstrconsts.oistestdialog
+msgid "Test dialog ..."
+msgstr "ダイアログをテスト ..."
+
+#: objinspstrconsts.oistestinput
+msgid "Test Input"
+msgstr "入力テスト"
+
+#: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
+#, fuzzy,badformat
+#| msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
+msgid "The identifier \"%s\" is not a method.%sPress Cancel to undo,%spress Ignore to force it."
+msgstr "識別子 %s%s%s は、methodではありません。%s元に戻すに場合は、「キャンセル」を、%s強制する場合は、「無視」を押してください。"
+
+#: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
+#, fuzzy,badformat
+#| msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
+msgid "The method \"%s\" is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
+msgstr "method %s%s%s は、このイベント(%s)と互換性がありません。%s元に戻すに場合は、「キャンセル」を、%s強制する場合は、「無視」を押してください。"
+
+#: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
+#, fuzzy,badformat
+#| msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
+msgid "The method \"%s\" is not published.%sPress Cancel to undo,%spress Ignore to force it."
+msgstr "method %s%s%s は publishedではありません。%s元に戻すに場合は、「キャンセル」を、%s強制する場合は、「無視」を押してください。"
+
+#: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
+#, fuzzy,badformat
+#| msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
+msgid "Unable to change parent of control \"%s\" to new parent \"%s\".%s%s"
+msgstr "%s%s%s から 新しい親 %s%s%s に親コントロールを変更出来ません。%s%s"
+
+#: objinspstrconsts.oisundo
+msgctxt "objinspstrconsts.oisundo"
+msgid "Undo"
+msgstr "元に戻す"
+
+#: objinspstrconsts.oisunknown
+msgctxt "objinspstrconsts.oisunknown"
+msgid "Unknown"
+msgstr "不明"
+
+#: objinspstrconsts.oisunselectall
+msgid "&Unselect all"
+msgstr "すべての選択を解除(&U)"
+
+#: objinspstrconsts.oisunselectallhint
+msgid "Unselect All"
+msgstr "すべての選択を解除"
+
+#: objinspstrconsts.oisvalue
+msgid "Value:"
+msgstr "値："
+
+#: objinspstrconsts.oisvariant
+msgid "Variant"
+msgstr "変数"
+
+#: objinspstrconsts.oisviewrestrictedproperties
+msgid "View restricted properties"
+msgstr "制限されたプロパティを見る（制限ブラウザを表示）"
+
+#: objinspstrconsts.oiswidgetsetrestrictions
+msgid "General widget set restrictions: "
+msgstr "General widget setの制限: "
+
+#: objinspstrconsts.oisword
+msgid "Word"
+msgstr "Word"
+
+#: objinspstrconsts.oiszorder
+msgid "Z-order"
+msgstr "Z 順序"
+
+#: objinspstrconsts.pefilter
+msgid "Filter"
+msgstr "フィルター"
+
+#: objinspstrconsts.pefiltereditor
+msgid "Filter editor"
+msgstr "フィルターエディタ"
+
+#: objinspstrconsts.pefiltername
+msgid "Filter name"
+msgstr "フィルター名"
+
+#: objinspstrconsts.pirsunit
+msgid "Pascal unit"
+msgstr "Pascalユニット"
+
+#: objinspstrconsts.rscdalignment
+msgid "Alignment"
+msgstr "整列"
+
+#: objinspstrconsts.rscdautosize
+msgid "Auto Size"
+msgstr "自動サイズ"
+
+#: objinspstrconsts.rscdcaption
+msgid "Caption"
+msgstr "Caption"
+
+#: objinspstrconsts.rscdcolumneditor
+msgid "Column Editor"
+msgstr "列エディタ"
+
+#: objinspstrconsts.rscdinvalidnumericvalue
+msgid "Invalid numeric Value"
+msgstr "無効な数値"
+
+#: objinspstrconsts.rscdleft
+msgctxt "objinspstrconsts.rscdleft"
+msgid "Left"
+msgstr "左"
+
+#: objinspstrconsts.rscdmovedown
+msgid "Move down"
+msgstr "下に移動"
+
+#: objinspstrconsts.rscdmoveup
+msgid "Move up"
+msgstr "上に移動"
+
+#: objinspstrconsts.rscdok
+msgctxt "objinspstrconsts.rscdok"
+msgid "OK"
+msgstr "OK"
+
+#: objinspstrconsts.rscdright
+msgctxt "objinspstrconsts.rscdright"
+msgid "Right"
+msgstr "右"
+
+#: objinspstrconsts.rscdvisible
+msgid "Visible"
+msgstr "可視"
+
+#: objinspstrconsts.rscdwidth
+msgid "Width"
+msgstr "幅"
+
+#: objinspstrconsts.sccshceditsections
+msgid "Sections Editor ..."
+msgstr "Sections エディタ ..."
+
+#: objinspstrconsts.sccsiledtadd
+msgid "&Add ..."
+msgstr "追加(&A) ..."
+
+#: objinspstrconsts.sccsiledtadjustment
+msgid "Adjustment"
+msgstr "位置合わせ"
+
+#: objinspstrconsts.sccsiledtapply
+msgctxt "objinspstrconsts.sccsiledtapply"
+msgid "&Apply"
+msgstr "適用(&A)"
+
+#: objinspstrconsts.sccsiledtcaption
+msgid "ImageList Editor"
+msgstr "イメージリストエディタ"
+
+#: objinspstrconsts.sccsiledtcenter
+msgid "Center"
+msgstr "中央"
+
+#: objinspstrconsts.sccsiledtclear
+msgctxt "objinspstrconsts.sccsiledtclear"
+msgid "&Clear"
+msgstr "クリア(全消去)(&C)"
+
+#: objinspstrconsts.sccsiledtcrop
+msgid "Crop"
+msgstr "トリミング"
+
+#: objinspstrconsts.sccsiledtdelete
+msgctxt "objinspstrconsts.sccsiledtdelete"
+msgid "&Delete"
+msgstr "削除(&D)"
+
+#: objinspstrconsts.sccsiledtgrplcaption
+msgid "Images"
+msgstr "イメージ"
+
+#: objinspstrconsts.sccsiledtgrprcaption
+msgid "Selected Image"
+msgstr "選択したイメージ"
+
+#: objinspstrconsts.sccsiledtmovedown
+msgctxt "objinspstrconsts.sccsiledtmovedown"
+msgid "Move D&own"
+msgstr "下に移動(&o)"
+
+#: objinspstrconsts.sccsiledtmoveup
+msgctxt "objinspstrconsts.sccsiledtmoveup"
+msgid "Move &Up"
+msgstr "上に移動(&U)"
+
+#: objinspstrconsts.sccsiledtnone
+msgid "None"
+msgstr "そのまま"
+
+#: objinspstrconsts.sccsiledtopendialog
+msgid "Add Images"
+msgstr "イメージを追加"
+
+#: objinspstrconsts.sccsiledtransparentcolor
+msgid "Transparent Color:"
+msgstr "透明色"
+
+#: objinspstrconsts.sccsiledtsave
+msgctxt "objinspstrconsts.sccsiledtsave"
+msgid "&Save ..."
+msgstr "保存(&S) ..."
+
+#: objinspstrconsts.sccsiledtsaveall
+msgid "Save All ..."
+msgstr "すべて保存 ..."
+
+#: objinspstrconsts.sccsiledtsavedialog
+msgid "Save Image"
+msgstr "イメージを保存する"
+
+#: objinspstrconsts.sccsiledtstretch
+msgid "Stretch"
+msgstr "引き伸ばし"
+
+#: objinspstrconsts.sccslvcoledt
+msgid "Edit Columns ..."
+msgstr "列を編集..."
+
+#: objinspstrconsts.sccslvedt
+msgctxt "objinspstrconsts.sccslvedt"
+msgid "Edit Items ..."
+msgstr "アイテムを編集 ..."
+
+#: objinspstrconsts.sccslvedtapply
+msgctxt "objinspstrconsts.sccslvedtapply"
+msgid "Apply"
+msgstr "適用"
+
+#: objinspstrconsts.sccslvedtcaption
+msgid "ListView Items Editor"
+msgstr "リストビューアイテムエディタ"
+
+#: objinspstrconsts.sccslvedtdelete
+msgctxt "objinspstrconsts.sccslvedtdelete"
+msgid "Delete"
+msgstr "削除"
+
+#: objinspstrconsts.sccslvedtgrplcaption
+msgctxt "objinspstrconsts.sccslvedtgrplcaption"
+msgid "Items"
+msgstr "項目"
+
+#: objinspstrconsts.sccslvedtgrprcaption
+msgctxt "objinspstrconsts.sccslvedtgrprcaption"
+msgid "Item Properties"
+msgstr "項目のプロパティ"
+
+#: objinspstrconsts.sccslvedtitem
+msgctxt "objinspstrconsts.sccslvedtitem"
+msgid "Item"
+msgstr "項目"
+
+#: objinspstrconsts.sccslvedtlabelcaption
+msgid "Caption:"
+msgstr "Caption:"
+
+#: objinspstrconsts.sccslvedtlabelimageindex
+msgctxt "objinspstrconsts.sccslvedtlabelimageindex"
+msgid "Image Index:"
+msgstr "イメージのインデックス:"
+
+#: objinspstrconsts.sccslvedtlabelstateindex
+msgctxt "objinspstrconsts.sccslvedtlabelstateindex"
+msgid "State Index:"
+msgstr "ステートのインデックス:"
+
+#: objinspstrconsts.sccslvedtnewitem
+msgctxt "objinspstrconsts.sccslvedtnewitem"
+msgid "New Item"
+msgstr "新規項目"
+
+#: objinspstrconsts.sccslvedtnewsubitem
+msgctxt "objinspstrconsts.sccslvedtnewsubitem"
+msgid "New SubItem"
+msgstr "新規サブ項目"
+
+#: objinspstrconsts.sccsmaskeditor
+msgid "Edit Mask Editor ..."
+msgstr "編集(マスクエディタ) ..."
+
+#: objinspstrconsts.sccssbeditpanels
+msgid "Panels Editor ..."
+msgstr "パネルエディタ ..."
+
+#: objinspstrconsts.sccssgedt
+msgid "Edit StringGrid ..."
+msgstr "文字列グリッドを編集 ..."
+
+#: objinspstrconsts.sccssgedtapply
+msgctxt "objinspstrconsts.sccssgedtapply"
+msgid "Apply"
+msgstr "適用"
+
+#: objinspstrconsts.sccssgedtcaption
+msgid "StringGrid Editor"
+msgstr "文字列グリッドエディタ"
+
+#: objinspstrconsts.sccssgedtclean
+msgid "Clean"
+msgstr "掃除する"
+
+#: objinspstrconsts.sccssgedtgrp
+msgid "String Grid"
+msgstr "文字列グリッド"
+
+#: objinspstrconsts.sccssgedtload
+msgid "Load ..."
+msgstr "読み込み ..."
+
+#: objinspstrconsts.sccssgedtmoverowscols
+msgid "Move Rows/Cols"
+msgstr "行/列を移動"
+
+#: objinspstrconsts.sccssgedtopendialog
+msgctxt "objinspstrconsts.sccssgedtopendialog"
+msgid "Open"
+msgstr "開く"
+
+#: objinspstrconsts.sccssgedtsave
+msgctxt "objinspstrconsts.sccssgedtsave"
+msgid "Save ..."
+msgstr "保存 ..."
+
+#: objinspstrconsts.sccssgedtsavedialog
+msgctxt "objinspstrconsts.sccssgedtsavedialog"
+msgid "Save"
+msgstr "保存"
+
+#: objinspstrconsts.sccstredt
+msgctxt "objinspstrconsts.sccstredt"
+msgid "Edit Items ..."
+msgstr "アイテムを編集 ..."
+
+#: objinspstrconsts.sccstredtapply
+msgctxt "objinspstrconsts.sccstredtapply"
+msgid "Apply"
+msgstr "適用"
+
+#: objinspstrconsts.sccstredtcaption
+msgid "TreeView Items Editor"
+msgstr "ツリービューアイテムエディタ"
+
+#: objinspstrconsts.sccstredtdelete
+msgctxt "objinspstrconsts.sccstredtdelete"
+msgid "Delete"
+msgstr "削除"
+
+#: objinspstrconsts.sccstredtgrplcaption
+msgctxt "objinspstrconsts.sccstredtgrplcaption"
+msgid "Items"
+msgstr "項目"
+
+#: objinspstrconsts.sccstredtgrprcaption
+msgctxt "objinspstrconsts.sccstredtgrprcaption"
+msgid "Item Properties"
+msgstr "項目のプロパティ"
+
+#: objinspstrconsts.sccstredtitem
+msgctxt "objinspstrconsts.sccstredtitem"
+msgid "Item"
+msgstr "項目"
+
+#: objinspstrconsts.sccstredtlabelimageindex
+msgctxt "objinspstrconsts.sccstredtlabelimageindex"
+msgid "Image Index:"
+msgstr "イメージのインデックス:"
+
+#: objinspstrconsts.sccstredtlabelselindex
+msgid "Selected Index:"
+msgstr "選択時のインデックス:"
+
+#: objinspstrconsts.sccstredtlabelstateindex
+msgctxt "objinspstrconsts.sccstredtlabelstateindex"
+msgid "State Index:"
+msgstr "ステートのインデックス:"
+
+#: objinspstrconsts.sccstredtlabeltext
+msgid "Text:"
+msgstr "テキスト:"
+
+#: objinspstrconsts.sccstredtload
+msgid "Load"
+msgstr "読み込み"
+
+#: objinspstrconsts.sccstredtnewitem
+msgctxt "objinspstrconsts.sccstredtnewitem"
+msgid "New Item"
+msgstr "新規アイテム"
+
+#: objinspstrconsts.sccstredtnewsubitem
+msgctxt "objinspstrconsts.sccstredtnewsubitem"
+msgid "New SubItem"
+msgstr "新規サブアイテム"
+
+#: objinspstrconsts.sccstredtopendialog
+msgctxt "objinspstrconsts.sccstredtopendialog"
+msgid "Open"
+msgstr "開く"
+
+#: objinspstrconsts.sccstredtsave
+msgctxt "objinspstrconsts.sccstredtsave"
+msgid "Save"
+msgstr "保存"
+
+#: objinspstrconsts.sccstredtsavedialog
+msgctxt "objinspstrconsts.sccstredtsavedialog"
+msgid "Save"
+msgstr "保存"
+
+#: objinspstrconsts.srgrabkey
+msgid "Grab key"
+msgstr "キーを掴む"
+
+#: objinspstrconsts.s_addassingle
+msgid "Add as single"
+msgstr "singleとして追加"
+
+#: objinspstrconsts.s_splitimage
+msgid "Split image"
+msgstr "イメージを分割"
+
+#: objinspstrconsts.s_suggestsplitimage
+msgid "Do you want to split the image?"
+msgstr "イメージを分割しますか。"
+
+#: objinspstrconsts.tbcenewbutton
+msgid "New Button"
+msgstr "新しいボタン"
+
+#: objinspstrconsts.tbcenewcheckbutton
+msgid "New CheckButton"
+msgstr "新しいチェックボタン"
+
+#: objinspstrconsts.tbcenewdivider
+msgid "New Divider"
+msgstr "新しい区切り"
+
+#: objinspstrconsts.tbcenewseparator
+msgid "New Separator"
+msgstr "新しい仕切り"
+
+#: objinspstrconsts.tccesaddtab
+msgid "Add tab"
+msgstr "タブを追加"
+
+#: objinspstrconsts.tccesdeletetab
+msgid "Delete tab"
+msgstr "タブを削除"
+
+#: objinspstrconsts.tccesinserttab
+msgid "Insert tab"
+msgstr "タブを挿入"
+
+#: objinspstrconsts.tccesmovetableft
+msgid "Move tab left"
+msgstr "タブを左に移動"
+
+#: objinspstrconsts.tccesmovetabright
+msgid "Move tab right"
+msgstr "タブを右に移動"
+

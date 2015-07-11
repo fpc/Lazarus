@@ -1,0 +1,41 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcelo Borges de Paula\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: fpcunitlazideintf.sfpcunconsoletestapp
+msgid "FPCUnit Console Test Application"
+msgstr "Aplicação Console Teste \"FPCUnit\""
+
+#: fpcunitlazideintf.sfpcunconsoletestdesc
+#| msgid "FPCUnit Console Test Application%sAn application to run fpcunit test cases in console mode.%sThe application source is automatically maintained by Lazarus."
+msgid "FPCUnit Console Test Application%sAn application to run FPCUnit test cases in console mode.%sThe application source is automatically maintained by Lazarus."
+msgstr "Aplicação Console Teste \"FPCUnit\"%sUma aplicação para executar testes unitários \"FPCUnit\" em modo console.%sO fonte do programa é mantido automaticamente pelo Lazarus."
+
+#: fpcunitlazideintf.sfpcuntestapp
+msgid "FPCUnit Test Application"
+msgstr "Aplicação Teste \"FPCUnit\""
+
+#: fpcunitlazideintf.sfpcuntestappdesc
+#| msgid "FPCUnit Test Application%sAn application to run fpcunit test cases.%sThe program file is automatically maintained by Lazarus."
+msgid "FPCUnit Test Application%sAn application to run FPCUnit test cases.%sThe application source is automatically maintained by Lazarus."
+msgstr "Aplicação Teste \"FPCUnit\"%sUma aplicação para executar testes unitários \"FPCUnit\".%sO fonte do programa é mantido automaticamente pelo Lazarus."
+
+#: fpcunitlazideintf.sfpcuntestcase
+msgid "FPCUnit Test Case"
+msgstr "Testes Unitários \"FPCUnit\""
+
+#: fpcunitlazideintf.sfpcuntestcasedesc
+msgid "FPCUnit Test Case%sA unit containing a FPCUnit Test Case."
+msgstr "Testes Unitários \"FPCUnit\"%sUma unidade contendo um teste unitário \"FPCUnit\""
+
+#: fpcunitlazideintf.swriteyourowntest
+msgid "Write your own test"
+msgstr "Escreva seu próprio teste"
+

@@ -1,0 +1,85 @@
+object Form1: TForm1
+  Left = 429
+  Height = 331
+  Top = 216
+  Width = 528
+  Caption = 'Form1'
+  ClientHeight = 331
+  ClientWidth = 528
+  OnCreate = FormCreate
+  LCLVersion = '1.1'
+  object Chart1: TChart
+    Left = 0
+    Height = 296
+    Top = 0
+    Width = 528
+    AxisList = <    
+      item
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+      end    
+      item
+        Alignment = calBottom
+        Marks.Format = '%4:.9g'
+        Marks.Source = ListChartSource1
+        Marks.Style = smsXValue
+        Minors = <>
+      end>
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+    ParentColor = False
+    object Chart1BarSeries1: TBarSeries
+      BarBrush.Color = clRed
+      Source = ListChartSource1
+    end
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 35
+    Top = 296
+    Width = 528
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 35
+    ClientWidth = 528
+    TabOrder = 1
+    object btnShowReport: TButton
+      Left = 4
+      Height = 25
+      Top = 4
+      Width = 75
+      Caption = 'Show report'
+      OnClick = btnShowReportClick
+      TabOrder = 0
+    end
+  end
+  object frReport1: TfrReport
+    InitialZoom = pzDefault
+    Options = []
+    PreviewButtons = [pbZoom, pbLoad, pbSave, pbPrint, pbFind, pbHelp, pbExit]
+    DataType = dtDataSet
+    OnEnterRect = frReport1EnterRect
+    left = 72
+    top = 80
+    ReportForm = {
+      19000000
+    }
+  end
+  object ListChartSource1: TListChartSource
+    DataPoints.Strings = (
+      '1|5|$008000|'
+      '2|7|$0080FF|'
+      '3|6|$FF00FF|'
+      '4|3|$40FF00|'
+      '5|8|$8000FF|'
+    )
+    left = 72
+    top = 124
+  end
+end

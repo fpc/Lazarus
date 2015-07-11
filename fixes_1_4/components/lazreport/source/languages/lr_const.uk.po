@@ -1,0 +1,2622 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2012-04-23 10:24+0300\n"
+"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"Language-Team: \n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Virtaal 0.7.1\n"
+
+#: lr_const.saboutformcapt
+msgid "About FastReport"
+msgstr "Про FastReport"
+
+#: lr_const.saggregatecategory
+msgid "Aggregate"
+msgstr "Агрегатні"
+
+#: lr_const.sallfiles
+msgid "All files"
+msgstr "Всі файли"
+
+#: lr_const.sargument1
+msgid "Argument 1"
+msgstr ""
+
+#: lr_const.sargument2
+msgid "Argument 2"
+msgstr ""
+
+#: lr_const.sargument3
+msgid "Argument 3"
+msgstr ""
+
+#: lr_const.sarguments
+msgid "Arguments"
+msgstr ""
+
+#: lr_const.sautosize
+msgid "Auto size"
+msgstr "Автоматичний розмір"
+
+#: lr_const.sband
+msgid "Band:"
+msgstr "Поле:"
+
+#: lr_const.sband1
+msgid "Report title"
+msgstr "Заголовок звіту"
+
+#: lr_const.sband10
+msgid "Detail footer"
+msgstr "Детальний нижній колонтитул"
+
+#: lr_const.sband11
+msgid "Subdetail header"
+msgstr "Верхній колонтитул Subdetail"
+
+#: lr_const.sband12
+msgid "Subdetail data"
+msgstr "Дані Subdetail"
+
+#: lr_const.sband13
+msgid "Subdetail footer"
+msgstr "Нижній колонтитул Subdetail"
+
+#: lr_const.sband14
+msgid "Overlay"
+msgstr "Перекриття"
+
+#: lr_const.sband15
+msgid "Column header"
+msgstr "Заголовок стовпця"
+
+#: lr_const.sband16
+msgid "Column footer"
+msgstr "Нижній колонтитул стовпця"
+
+#: lr_const.sband17
+msgid "Group header"
+msgstr "Заголовок групи"
+
+#: lr_const.sband18
+msgid "Group footer"
+msgstr "Нижній колонтитул групи"
+
+#: lr_const.sband19
+msgid "Cross header"
+msgstr "Перехресний верхній колонтитул"
+
+#: lr_const.sband2
+msgid "Report summary"
+msgstr "Підсумок звіту"
+
+#: lr_const.sband20
+msgid "Cross data"
+msgstr "Перехресні дані"
+
+#: lr_const.sband21
+msgid "Cross footer"
+msgstr "Перехресний нижній колонтитул"
+
+#: lr_const.sband22
+#, fuzzy
+#| msgid "None"
+msgctxt "lr_const.sband22"
+msgid "Child"
+msgstr "Немає"
+
+#: lr_const.sband23
+#, fuzzy
+#| msgid "None"
+msgctxt "lr_const.sband23"
+msgid "None"
+msgstr "Немає"
+
+#: lr_const.sband3
+msgid "Page header"
+msgstr "Верхній колонтитул сторінки"
+
+#: lr_const.sband4
+msgid "Page footer"
+msgstr "Нижній колонтитул сторінки"
+
+#: lr_const.sband5
+msgid "Master header"
+msgstr "Основний верхній колонтитул"
+
+#: lr_const.sband6
+msgid "Master data"
+msgstr "Основні дані"
+
+#: lr_const.sband7
+msgid "Master footer"
+msgstr "Основний нижній колонтитул"
+
+#: lr_const.sband8
+msgid "Detail header"
+msgstr "Детальний верхній колонтитул"
+
+#: lr_const.sband9
+msgid "Detail data"
+msgstr "Детальні дані"
+
+#: lr_const.sbandeditorformcapt
+msgid "Band data source"
+msgstr "Джерело даних для поля"
+
+#: lr_const.sbandeditorformdatasrc
+msgctxt "lr_const.sbandeditorformdatasrc"
+msgid "Data source"
+msgstr "Джерело даних"
+
+#: lr_const.sbandeditorformreccount
+msgctxt "lr_const.sbandeditorformreccount"
+msgid "&Record count"
+msgstr "&Кількість записів"
+
+#: lr_const.sbandtypesformbtype
+msgid "Band type"
+msgstr "Тип поля"
+
+#: lr_const.sbandtypesformcapt
+msgid "Insert new band"
+msgstr "Вставити нове поле"
+
+#: lr_const.sbarcodeerror
+msgid "Error in barcode"
+msgstr "Помилка в штрих-коді"
+
+#: lr_const.sbarcodeformchksum
+msgid "Check&sum"
+msgstr "Контрольна &сума"
+
+#: lr_const.sbarcodeformcode
+msgid "&Code"
+msgstr "&Код"
+
+#: lr_const.sbarcodeformdbfld
+msgctxt "lr_const.sbarcodeformdbfld"
+msgid "Insert DB field"
+msgstr "Вставити поле БД"
+
+#: lr_const.sbarcodeformopts
+msgctxt "lr_const.sbarcodeformopts"
+msgid "Options"
+msgstr "Параметри"
+
+#: lr_const.sbarcodeformreadable
+msgid "&Human readable"
+msgstr "Зручний для &читання"
+
+#: lr_const.sbarcodeformrotate
+msgid "Rotation"
+msgstr "Поворот"
+
+#: lr_const.sbarcodeformtitle
+msgid "Barcode editor"
+msgstr "Редактор штрих-коду"
+
+#: lr_const.sbarcodeformtype
+msgid "&Type of barcode"
+msgstr "&Тип штрих-коду"
+
+#: lr_const.sbarcodeformvar
+msgid "Insert variable"
+msgstr "Вставити змінну"
+
+#: lr_const.sbarcodezoom
+msgid "Zoom"
+msgstr "Масштаб"
+
+#: lr_const.sbmpfile
+msgid "Bitmap file"
+msgstr "Файл зображення"
+
+#: lr_const.sbreaked
+msgid "Breaked"
+msgstr "Розірваний"
+
+#: lr_const.scancel
+msgid "Cancel"
+msgstr "Скасувати"
+
+#: lr_const.scateg1
+msgctxt "lr_const.scateg1"
+msgid "Text"
+msgstr "Текст"
+
+#: lr_const.scateg2
+msgid "Number"
+msgstr "Число"
+
+#: lr_const.scateg3
+msgctxt "lr_const.scateg3"
+msgid "Date"
+msgstr "Дата"
+
+#: lr_const.scateg4
+msgctxt "lr_const.scateg4"
+msgid "Time"
+msgstr "Час"
+
+#: lr_const.scateg5
+msgid "Boolean"
+msgstr "Логічний"
+
+#: lr_const.scharset
+msgid "0"
+msgstr "0"
+
+#: lr_const.sclassobjectnotfound
+msgid "Class Object \"%s\" not found"
+msgstr "Об'єкт \"%s\" класу не знайдений"
+
+#: lr_const.sconfirm
+msgid "Confirm"
+msgstr "Піідтвердити"
+
+#: lr_const.scsvfile
+msgid "CSV File"
+msgstr "Файл CSV"
+
+#: lr_const.scurmemo
+msgid "Memo:"
+msgstr ""
+
+#: lr_const.sdateformat1
+msgid "mm.dd.yy"
+msgstr ""
+
+#: lr_const.sdateformat2
+msgid "mm.dd.yyyy"
+msgstr ""
+
+#: lr_const.sdateformat3
+msgid "d mmm yyyy"
+msgstr ""
+
+#: lr_const.sdateformat4
+msgid "d mmmm yyyy"
+msgstr ""
+
+#: lr_const.sdatetimecategory
+msgid "Date and time"
+msgstr "Дата та час"
+
+#: lr_const.sdbfield
+msgid "DB field"
+msgstr ""
+
+#: lr_const.sdefaultprinter
+msgid "Default printer"
+msgstr "Принтер за замовчуванням"
+
+#: lr_const.sdescriptionavg
+msgid "AVG(<Expression> [,BandName [,1]])/Calculates the average of <Expression> for [BandName] row given. If [1] parameter is used, calculates average for non-visible rows too."
+msgstr "AVG(<Expression> [,BandName [,1]])/Обчислює середнє арифметичне виразу <Expression> для заданого рядка [BandName]. Якщо використовується параметр [1], в обчислення також включаються невидимі рядки."
+
+#: lr_const.sdescriptioncopy
+msgid "COPY(<String>, <Position>, <Length>)/Returns <Length> characters from <String> starting at <Position>."
+msgstr "COPY(<String>, <Position>, <Length>)/Повертає <Length> символів з рядка <String>, починаючи з <Position>."
+
+#: lr_const.sdescriptioncount
+#, fuzzy
+#| msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
+msgid "COUNT(<BandName>)/Returns count of data rows given in the <BandName>. "
+msgstr "COUNT(<BandName>)/Повертає кількість рядків даних у <BandName>."
+
+#: lr_const.sdescriptiondayof
+msgid "DAYOF(<Date>)/Returns day number (1..31) of given <Date>."
+msgstr "DAYOF(<Date>)/Повертає номер дня (1..31) для заданої <Date>."
+
+#: lr_const.sdescriptiondec
+msgid "DEC(<Value>)/Decrement <Value>."
+msgstr ""
+
+#: lr_const.sdescriptionformatdatetime
+msgid "FORMATDATETIME(<Fmt>, <DateTime>)/Converts a <DateTime> value to a string using mask in <Fmt>."
+msgstr "FORMATDATETIME(<Fmt>, <DateTime>)/Перетворює значення <DateTime> в рядок, використовуючи маску <Fmt>."
+
+#: lr_const.sdescriptionformatfloat
+msgid "FORMATFLOAT(<Fmt>, <Numeric>)/Converts a <Numeric> value to a string using mask in <Fmt>."
+msgstr "FORMATFLOAT(<Fmt>, <Numeric>)/Перетворює значення <Numeric> в рядок, використовуючи маску <Fmt>."
+
+#: lr_const.sdescriptionformattext
+msgid "FORMATTEXT(<Mask>, <String>)/Applies <Mask> to given <String> and returns formatted string."
+msgstr "FORMATTEXT(<Mask>, <String>)/Застосовує маску <Mask> до заданого рядка <String> і повертає форматований рядок."
+
+#: lr_const.sdescriptionfrac
+msgid "FRAC(<Value>)/Returns the fractional part of floating point <Value>."
+msgstr "FRAC(<Value>)/Повертає дробову частину дійсного значення <Value>."
+
+#: lr_const.sdescriptioninc
+msgid "INC(<Value>)/Increment <Value>."
+msgstr ""
+
+#: lr_const.sdescriptioninput
+#, fuzzy
+#| msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
+msgid "INPUT(<Caption> [,Default])/Shows dialog window with title <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
+msgstr "INPUT(<Caption> [,Default])/Виводить діалогове вікно з заголовком <Caption> і полем введення. Якщо задано параметр [Default], поміщає цей рядок у полі введення. Після натискання користувачем кнопки OK повертає введений рядок."
+
+#: lr_const.sdescriptionint
+msgid "INT(<Value>)/Returns the integer part of floating point <Value>."
+msgstr "INT(<Value>)/Повертає цілу частину дійсного значення <Value>."
+
+#: lr_const.sdescriptionlength
+msgid "LENGTH(<String>)/Returns length of <String>."
+msgstr "LENGTH(<String>)/Повертає довжину рядка <String>."
+
+#: lr_const.sdescriptionlowercase
+msgid "LOWERCASE(<String>)/Converts <String> symbols to lower case."
+msgstr "LOWERCASE(<String>)/Перетворює символи рядка <String> в нижній регістр."
+
+#: lr_const.sdescriptionmax
+msgid "MAX(<Expression> [,BandName [,1]])/Calculates the maximum of <Expression> for [BandName] row given. If [1] parameter is used, calculates maximum for non-visible rows too."
+msgstr "MAX(<Expression> [,BandName [,1]])/Обчислює максимум виразу <Expression> для заданого рядка [BandName]. Якщо використовується параметр [1], в обчислення включаються і невидимі рядки."
+
+#: lr_const.sdescriptionmaxnum
+msgid "MAXNUM(<Value1>, <Value2>)/Returns max of given values."
+msgstr "MAXNUM(<Value1>, <Value2>)/Повертає більше з заданих значень."
+
+#: lr_const.sdescriptionmessagebox
+msgid "MESSAGEBOX(<Text>, <Title>, <Buttons>)/Shows standard dialog window with title, text and buttons."
+msgstr "MESSAGEBOX(<Text>, <Title>, <Buttons>)/Виводить стандартне діалогове вікно з заголовком <Title>, текстом <Text> і кнопками <Buttons>."
+
+#: lr_const.sdescriptionmin
+msgid "MIN(<Expression> [,BandName [,1]])/Calculates the minimum of <Expression> for [BandName] row given. If [1] parameter is used, calculates minimum for non-visible rows too."
+msgstr "MIN(<Expression> [,BandName [,1]])/Обчислює мінімум виразу <Expression> для заданого рядка [BandName]. Якщо використовується параметр [1], в обчислення включаються і невидимі рядки."
+
+#: lr_const.sdescriptionminnum
+msgid "MINNUM(<Value1>, <Value2>)/Returns min of given values."
+msgstr "MINNUM(<Value1>, <Value2>)/Повертає менше з заданих значень."
+
+#: lr_const.sdescriptionmonthof
+msgid "MONTHOF(<Date>)/Returns month number (1..12) of given <Date>."
+msgstr "MONTHOF(<Date>)/Повертає номер місяця (1..12) для заданої дати <Date>."
+
+#: lr_const.sdescriptionnamecase
+msgid "NAMECASE(<String>)/Converts <String> symbols to lower case, and first symbol is in upper case."
+msgstr "NAMECASE(<String>)/Перетворює символи рядка <String> в нижній регістр, а перший символ - у верхній регістр."
+
+#: lr_const.sdescriptionnewcolumn
+msgid "NEWCOLUMN/Create new column on page for current report."
+msgstr ""
+
+#: lr_const.sdescriptionnewpage
+msgid "NEWPAGE/Create new page for current report."
+msgstr ""
+
+#: lr_const.sdescriptionpos
+msgid "POS(<SubString>, <String>)/Returns position of substring in given string."
+msgstr "POS(<SubString>, <String>)/Повертає позицію підрядка <SubString> в рядку <String>."
+
+#: lr_const.sdescriptionround
+msgid "ROUND(<Value>)/Rounds the floating point <Value> to nearest integer number."
+msgstr "ROUND(<Value>)/Округлює дійсне значення <Value> до найближчого цілого числа."
+
+#: lr_const.sdescriptionshowband
+msgid "SHOWBAND(<BandName>)/Show <BandName> in report."
+msgstr ""
+
+#: lr_const.sdescriptionstopreport
+msgid "STOPREPORT/Terminate report creation."
+msgstr ""
+
+#: lr_const.sdescriptionstr
+msgid "STR(<Value>)/Converts the given (numeric) <Value> in string."
+msgstr "STR(<Value>)/Перетворює задане числове значення <Value> в рядок."
+
+#: lr_const.sdescriptionstrtodate
+msgid "STRTODATE(<String>)/Converts <String> to date."
+msgstr "STRTODATE(<String>)/Перетворює рядок <String> в дату."
+
+#: lr_const.sdescriptionstrtotime
+msgid "STRTOTIME(<String>)/Converts <String> to time."
+msgstr "STRTOTIME(<String>)/Перетворює рядок <String> в час."
+
+#: lr_const.sdescriptionsum
+msgid "SUM(<Expression> [,BandName [,1]])/Calculates the sum of <Expression> for [BandName] row given. If [1] parameter is used, calculates sum for non-visible rows too."
+msgstr "SUM(<Expression> [,BandName [,1]])/Обчислює суму виразу <Expression> для заданого рядка [BandName]. Якщо використовується параметр [1], в обчислення включаються і невидимі рядки."
+
+#: lr_const.sdescriptiontrim
+msgid "TRIM(<String>)/Trims all heading and trailing spaces in <String> and returns resulting string."
+msgstr "TRIM(<String>)/Видаляє пробіли на початку і в кінці рядка <String> і повертає результат."
+
+#: lr_const.sdescriptionuppercase
+msgid "UPPERCASE(<String>)/Converts <String> symbols to upper case."
+msgstr "UPPERCASE(<String>)/Змінює регістр символів у <String> на верхній."
+
+#: lr_const.sdescriptionyearof
+msgid "YEAROF(<Date>)/Returns year of given <Date>."
+msgstr "YEAROF(<Date>)/Повертає рік для заданої дати <Date>."
+
+#: lr_const.sdesignreport
+msgid "Design report"
+msgstr "Скласти звіт"
+
+#: lr_const.sdesoptionsform18pix
+msgid "&18 pixels (5mm)"
+msgstr "&18 пікселів (5мм)"
+
+#: lr_const.sdesoptionsform4pix
+msgid "&4 pixels"
+msgstr "&4 пікселі"
+
+#: lr_const.sdesoptionsform8pix
+msgid "&8 pixels"
+msgstr "&8 пікселів"
+
+#: lr_const.sdesoptionsformaligngrd
+msgid "Align to &grid"
+msgstr "Вирівнювати по &сітці"
+
+#: lr_const.sdesoptionsformcoloredbutton
+msgid "Colored &buttons"
+msgstr "Кольорові &кнопки"
+
+#: lr_const.sdesoptionsformcontents
+msgid "&Contents"
+msgstr "&Вміст"
+
+#: lr_const.sdesoptionsformdes
+msgctxt "lr_const.sdesoptionsformdes"
+msgid "Designer"
+msgstr "Дизайнер"
+
+#: lr_const.sdesoptionsformediting
+msgid "&Editing after insert"
+msgstr "&Редагування після вставки"
+
+#: lr_const.sdesoptionsformgrdsize
+msgid "Grid size"
+msgstr "Крок сітки"
+
+#: lr_const.sdesoptionsformgrid
+msgctxt "lr_const.sdesoptionsformgrid"
+msgid "Grid"
+msgstr "Сітка"
+
+#: lr_const.sdesoptionsforminch
+msgid "&Inches"
+msgstr "&Дюйми"
+
+#: lr_const.sdesoptionsformmm
+msgid "&MM"
+msgstr "&ММ"
+
+#: lr_const.sdesoptionsformobj
+msgid "Object moving"
+msgstr "Переміщення об'єктів"
+
+#: lr_const.sdesoptionsformopt
+msgctxt "lr_const.sdesoptionsformopt"
+msgid "Options"
+msgstr "Параметри"
+
+#: lr_const.sdesoptionsformother
+msgctxt "lr_const.sdesoptionsformother"
+msgid "Other"
+msgstr "Інші"
+
+#: lr_const.sdesoptionsformpix
+msgid "&Pixels"
+msgstr "&Пікселі"
+
+#: lr_const.sdesoptionsformshape
+msgid "S&hape"
+msgstr "Ко&нтур"
+
+#: lr_const.sdesoptionsformshowband
+msgid "Show band &titles"
+msgstr "Показувати &заголовки полів"
+
+#: lr_const.sdesoptionsformshowgrd
+msgid "&Show grid"
+msgstr "Пок&азувати сітку"
+
+#: lr_const.sdesoptionsformunits
+msgid "Report units"
+msgstr "Одиниці вимірювання"
+
+#: lr_const.sdoc
+msgid "Report:"
+msgstr "Звіт:"
+
+#: lr_const.sdocautor
+#, fuzzy
+#| msgid "Autor"
+msgid "Author"
+msgstr "Автор"
+
+#: lr_const.sdocbuild
+msgid "Build"
+msgstr "Збірка"
+
+#: lr_const.sdocmajor
+msgid "Major"
+msgstr "Старша"
+
+#: lr_const.sdocminor
+msgid "Minor"
+msgstr "Молодша"
+
+#: lr_const.sdocoptform2pass
+msgid "&Two-pass report"
+msgstr "&Двопрохідний звіт"
+
+#: lr_const.sdocoptformcomments
+msgid "Comments"
+msgstr "Коментарі"
+
+#: lr_const.sdocoptformkeywords
+#, fuzzy
+#| msgid "Keys words"
+msgid "Keywords"
+msgstr "Ключові слова"
+
+#: lr_const.sdocoptformopt
+msgid "Report options"
+msgstr "Параметри звіту"
+
+#: lr_const.sdocoptformother
+msgctxt "lr_const.sdocoptformother"
+msgid "Other"
+msgstr "Інші"
+
+#: lr_const.sdocoptformprinter
+msgctxt "lr_const.sdocoptformprinter"
+msgid "Printer"
+msgstr "Принтер"
+
+#: lr_const.sdocoptformselect
+msgid "&Select when report loaded"
+msgstr "&Вибирати при завантаженні звіту"
+
+#: lr_const.sdocoptformsubject
+msgid "Subject"
+msgstr "Тема"
+
+#: lr_const.sdocoptformtitle
+msgid "Title"
+msgstr "Заголовок"
+
+#: lr_const.sdocrelease
+msgid "Release"
+msgstr "Випуск"
+
+#: lr_const.sdocversion
+msgid "Version"
+msgstr "Версія"
+
+#: lr_const.sduplicatedobjectname
+msgid "An object named \"%s\" already exists"
+msgstr "Об'єкт з іменем \"%s\" вже існує"
+
+#: lr_const.seditor
+msgid "Editor"
+msgstr ""
+
+#: lr_const.seditorformbig
+msgid "&Big font"
+msgstr "Ве&ликий шрифт"
+
+#: lr_const.seditorformcapt
+msgid "Text editor"
+msgstr "Редактор тексту"
+
+#: lr_const.seditorformfield
+msgid "&DB field"
+msgstr "Поле &БД"
+
+#: lr_const.seditorformformat
+msgctxt "lr_const.seditorformformat"
+msgid "&Format"
+msgstr "&Формат"
+
+#: lr_const.seditorformfunction
+msgid "Function"
+msgstr "Функція"
+
+#: lr_const.seditorformmemo
+msgctxt "lr_const.seditorformmemo"
+msgid "&Memo"
+msgstr "За&мітка"
+
+#: lr_const.seditorformscr
+msgid "S&cript"
+msgstr "С&ценарій"
+
+#: lr_const.seditorformscript
+msgid "&Script"
+msgstr "&Сценарій"
+
+#: lr_const.seditorformvar
+msgctxt "lr_const.seditorformvar"
+msgid "&Variable"
+msgstr "&Змінна"
+
+#: lr_const.seditorformword
+msgid "&Word wrap"
+msgstr "&Перенесення слів"
+
+#: lr_const.serror
+msgid "Error"
+msgstr "Помилка"
+
+#: lr_const.serroroccured
+#, fuzzy
+#| msgid "An error occured during calculating"
+msgid "An error occurred during calculation"
+msgstr "Під час обчислення сталася помилка"
+
+#: lr_const.sevformcapt
+msgid "Variables editor"
+msgstr "Редактор змінних"
+
+#: lr_const.sevformcopy
+msgid "Copy variables"
+msgstr "Копіювати змінні"
+
+#: lr_const.sevformexp
+msgid "&Expression"
+msgstr "Ви&раз"
+
+#: lr_const.sevformpaste
+msgid "Paste variables"
+msgstr "Вставити змінні"
+
+#: lr_const.sevformvalue
+msgid "Va&lue"
+msgstr "З&начення"
+
+#: lr_const.sevformvar
+msgctxt "lr_const.sevformvar"
+msgid "&Variable"
+msgstr "&Змінна"
+
+#: lr_const.sevformvars
+msgid "Va&riables ..."
+msgstr "З&мінні ..."
+
+#: lr_const.sexportfilterindexerror
+msgid "Export filter index out of range"
+msgstr "Індекс фільтру експорту має неприпустиме значення"
+
+#: lr_const.sfieldsformaviabledb
+msgid "&Available DB's"
+msgstr "&Доступні Бази Даних"
+
+#: lr_const.sfieldsforminsert
+msgctxt "lr_const.sfieldsforminsert"
+msgid "Insert DB field"
+msgstr "Вставити поле БД"
+
+#: lr_const.sfilenotfound
+msgid "File not found"
+msgstr ""
+
+#: lr_const.sfilter
+msgid "Filter properties"
+msgstr "Фільтр властивостей"
+
+#: lr_const.sfilterparam
+msgid "Average font height:"
+msgstr "Середня висота шрифта:"
+
+#: lr_const.sfindtextcaption
+msgctxt "lr_const.sfindtextcaption"
+msgid "Find text"
+msgstr "Знайти текст"
+
+#: lr_const.sfindtextcase
+msgid "&Case sensitive"
+msgstr "&Чутливий до регістру"
+
+#: lr_const.sfindtextcurrentpg
+msgctxt "lr_const.sfindtextcurrentpg"
+msgid "Current &page"
+msgstr "Пото&чна сторінка"
+
+#: lr_const.sfindtextfirstpg
+msgid "&1st page"
+msgstr "&1-ша сторінка"
+
+#: lr_const.sfindtextnotfound
+msgid "Search text not found."
+msgstr ""
+
+#: lr_const.sfindtextoptions
+msgctxt "lr_const.sfindtextoptions"
+msgid "Options"
+msgstr "Параметри"
+
+#: lr_const.sfindtextorg
+msgid "Origin"
+msgstr "Точка відліку"
+
+#: lr_const.sfindtexttext
+msgid "Text to &find"
+msgstr "&Текст для пошуку"
+
+#: lr_const.sfirstpass
+msgid "Performing 1st pass:"
+msgstr "Здійснюється 1-ший прохід:"
+
+#: lr_const.sfmtformdecid
+msgid "&Decimal digits"
+msgstr "&К-сть знаків після коми"
+
+#: lr_const.sfmtformfrac
+msgid "Fraction &symbol"
+msgstr "&Роздільник"
+
+#: lr_const.sfmtformfrmt
+msgctxt "lr_const.sfmtformfrmt"
+msgid "&Format"
+msgstr "&Формат"
+
+#: lr_const.sfmtformfrmtvar
+msgid "Variable formatting"
+msgstr "Форматування змінної"
+
+#: lr_const.sfmtformvarfmt
+msgid "Variable format"
+msgstr "Формат змінної"
+
+#: lr_const.sfont
+msgid "Font ..."
+msgstr "Шрифт ..."
+
+#: lr_const.sformat11
+msgctxt "lr_const.sformat11"
+msgid "[None]"
+msgstr "[Немає]"
+
+#: lr_const.sformat21
+msgid "1234,5"
+msgstr "1234,5"
+
+#: lr_const.sformat22
+msgid "1234,50"
+msgstr "1234,50"
+
+#: lr_const.sformat23
+msgid "1 234,5"
+msgstr "1 234,5"
+
+#: lr_const.sformat24
+msgid "1 234,50"
+msgstr "1 234,50"
+
+#: lr_const.sformat25
+msgctxt "lr_const.sformat25"
+msgid "Custom"
+msgstr "Користувацький"
+
+#: lr_const.sformat31
+msgid "11.15.98"
+msgstr "11.15.98"
+
+#: lr_const.sformat32
+msgid "11.15.1998"
+msgstr "11.15.1998"
+
+#: lr_const.sformat33
+msgid "15 nov 1998"
+msgstr "15 лист 1998"
+
+#: lr_const.sformat34
+msgid "15 november 1998"
+msgstr "15 листопада 1998"
+
+#: lr_const.sformat35
+msgctxt "lr_const.sformat35"
+msgid "Custom"
+msgstr "Користувацький"
+
+#: lr_const.sformat41
+msgid "02:43:35"
+msgstr "02:43:35"
+
+#: lr_const.sformat42
+msgid "2:43:35"
+msgstr "2:43:35"
+
+#: lr_const.sformat43
+msgid "02:43"
+msgstr "02:43"
+
+#: lr_const.sformat44
+msgid "2:43"
+msgstr "2:43"
+
+#: lr_const.sformat45
+msgctxt "lr_const.sformat45"
+msgid "Custom"
+msgstr "Користувацький"
+
+#: lr_const.sformat51
+msgid "0;1"
+msgstr "0;1"
+
+#: lr_const.sformat52
+msgid "No;Yes"
+msgstr "Ні;Так"
+
+#: lr_const.sformat53
+msgid "_;x"
+msgstr "_;x"
+
+#: lr_const.sformat54
+msgid "False;True"
+msgstr "False;True"
+
+#: lr_const.sformat55
+msgctxt "lr_const.sformat55"
+msgid "Custom"
+msgstr "Користувацький"
+
+#: lr_const.sformfile
+msgid "FastReport form"
+msgstr "Форма FastReport"
+
+#: lr_const.sformnewpage
+msgid "Force new page"
+msgstr "З нової сторінки"
+
+#: lr_const.sfrdesignerdatainsp
+msgid "Data inspector"
+msgstr ""
+
+#: lr_const.sfrdesignerexists
+msgid "You already have one TfrDesigner component"
+msgstr ""
+
+#: lr_const.sfrdesignerformaddpg
+msgctxt "lr_const.sfrdesignerformaddpg"
+msgid "Add page"
+msgstr "Додати сторінку"
+
+#: lr_const.sfrdesignerformalign
+msgid "Alignment"
+msgstr "Вирівнювання"
+
+#: lr_const.sfrdesignerformalignbottoms
+msgid "Align bottoms"
+msgstr "Вирівняти по нижніх краях"
+
+#: lr_const.sfrdesignerformalignetop
+msgid "Align tops"
+msgstr "Вирівняти по верхніх краях"
+
+#: lr_const.sfrdesignerformalignhorzcenter
+msgid "Align horizontal centers"
+msgstr "Вирівняти по центрах горизонталей"
+
+#: lr_const.sfrdesignerformalignleftedge
+msgid "Align left edges"
+msgstr "Вирівняти по лівих краях"
+
+#: lr_const.sfrdesignerformalignrightedge
+msgid "Align right edges"
+msgstr "Вирівняти по правих краях"
+
+#: lr_const.sfrdesignerformalignvertcenter
+msgid "Align vertical centers"
+msgstr "Вирівняти по центрах вертикалей"
+
+#: lr_const.sfrdesignerformallframe
+msgid "All frame lines"
+msgstr "Всі лінії фрейму"
+
+#: lr_const.sfrdesignerformback
+msgid "Send to back"
+msgstr "Відіслати назад"
+
+#: lr_const.sfrdesignerformbackcolor
+msgid "Background color"
+msgstr "Колір тла"
+
+#: lr_const.sfrdesignerformbold
+msgid "Bold"
+msgstr "Жирний"
+
+#: lr_const.sfrdesignerformbottomalign
+msgid "Bottom align"
+msgstr "Вирівнювання по нижньому краю"
+
+#: lr_const.sfrdesignerformbottomframe
+msgid "Bottom frame line"
+msgstr "Нижня лінія фрейму"
+
+#: lr_const.sfrdesignerformbring
+msgid "Bring to front"
+msgstr "Перенести наперед"
+
+#: lr_const.sfrdesignerformcapt
+msgctxt "lr_const.sfrdesignerformcapt"
+msgid "Designer"
+msgstr "Дизайнер"
+
+#: lr_const.sfrdesignerformceneralign
+msgid "Center align"
+msgstr "Вирівнювання по центру"
+
+#: lr_const.sfrdesignerformcenterhwind
+msgid "Center horizontally in window"
+msgstr "Центрувати по горизонталі в вікні"
+
+#: lr_const.sfrdesignerformcentervertwing
+msgid "Center vertically in window"
+msgstr "Центрувати по вертикалі в вікні"
+
+#: lr_const.sfrdesignerformclose
+msgid "Close"
+msgstr "Закрити"
+
+#: lr_const.sfrdesignerformclosedesigner
+msgid "Close designer"
+msgstr "Закрити дизайнер"
+
+#: lr_const.sfrdesignerformcopy
+msgid "Copy"
+msgstr "Копіювати"
+
+#: lr_const.sfrdesignerformcut
+msgid "Cut"
+msgstr "Вирізати"
+
+#: lr_const.sfrdesignerformdrawline
+msgid "Draw lines"
+msgstr "Малювати лінії"
+
+#: lr_const.sfrdesignerformfitgrid
+msgid "Fit to grid"
+msgstr "Вмістити в сітку"
+
+#: lr_const.sfrdesignerformfont
+msgid "Font color"
+msgstr "Колір шрифту"
+
+#: lr_const.sfrdesignerformfontname
+msgid "Font name"
+msgstr "Ім'я шрифту"
+
+#: lr_const.sfrdesignerformfontsize
+msgid "Font size"
+msgstr "Розмір шрифту"
+
+#: lr_const.sfrdesignerformframecolor
+msgid "Frame color"
+msgstr "Колір фрейму"
+
+#: lr_const.sfrdesignerformframewidth
+msgid "Frame width"
+msgstr "Ширина фрейму"
+
+#: lr_const.sfrdesignerformgrid
+msgctxt "lr_const.sfrdesignerformgrid"
+msgid "Grid"
+msgstr "Сітка"
+
+#: lr_const.sfrdesignerformgridalign
+msgid "Grid align"
+msgstr "Вирівнювати по сітці"
+
+#: lr_const.sfrdesignerformhightlight
+msgctxt "lr_const.sfrdesignerformhightlight"
+msgid "Highlight attributes"
+msgstr "Підсвітити атрибути"
+
+#: lr_const.sfrdesignerforminsband
+msgid "Insert band"
+msgstr "Вставити поле"
+
+#: lr_const.sfrdesignerforminspict
+msgid "Insert picture"
+msgstr "Вставити зображення"
+
+#: lr_const.sfrdesignerforminsrect
+msgid "Insert rectangle object"
+msgstr "Вставити об'єкт-прямокутник"
+
+#: lr_const.sfrdesignerforminssub
+msgid "Insert subreport"
+msgstr "Вставити підзвіт"
+
+#: lr_const.sfrdesignerformitalic
+msgid "Italic"
+msgstr "Курсив"
+
+#: lr_const.sfrdesignerformleftalign
+msgid "Left align"
+msgstr "Вирівнювання по лівому краю"
+
+#: lr_const.sfrdesignerformleftframe
+msgid "Left frame line"
+msgstr "Ліва лінія фрейму"
+
+#: lr_const.sfrdesignerformnewrp
+msgctxt "lr_const.sfrdesignerformnewrp"
+msgid "New report"
+msgstr "Новий звіт"
+
+#: lr_const.sfrdesignerformnoframe
+msgid "No frame"
+msgstr "Немає фрейму"
+
+#: lr_const.sfrdesignerformnormaltext
+msgid "Normal text / 90 degrees"
+msgstr "Нормальний текст / 90 градусів"
+
+#: lr_const.sfrdesignerformobj
+msgid "Objects"
+msgstr "Об'єкти"
+
+#: lr_const.sfrdesignerformopenrp
+msgctxt "lr_const.sfrdesignerformopenrp"
+msgid "Open report"
+msgstr "Відкрити звіт"
+
+#: lr_const.sfrdesignerformpast
+msgid "Paste"
+msgstr "Вставити"
+
+#: lr_const.sfrdesignerformpgoption
+msgctxt "lr_const.sfrdesignerformpgoption"
+msgid "Page options"
+msgstr "Параметри сторінки"
+
+#: lr_const.sfrdesignerformpreview
+msgid "Preview report"
+msgstr "Попередній перегляд звіту"
+
+#: lr_const.sfrdesignerformrect
+msgctxt "lr_const.sfrdesignerformrect"
+msgid "Rectangle"
+msgstr "Прямокутник"
+
+#: lr_const.sfrdesignerformredo
+msgid "Redo cancelled action"
+msgstr "Повторити скасовану дію"
+
+#: lr_const.sfrdesignerformremovepg
+msgid "Remove page"
+msgstr "Видалити сторінку"
+
+#: lr_const.sfrdesignerformrightalign
+msgid "Right align"
+msgstr "Вирівнювання по правому краю"
+
+#: lr_const.sfrdesignerformrightframe
+msgid "Right frame line"
+msgstr "Права лінія фрейму"
+
+#: lr_const.sfrdesignerformsaverp
+msgctxt "lr_const.sfrdesignerformsaverp"
+msgid "Save report"
+msgstr "Зберегти звіт"
+
+#: lr_const.sfrdesignerformselectall
+msgid "Select all"
+msgstr "Вибрати все"
+
+#: lr_const.sfrdesignerformselectsameclass
+msgid "Select same class objects"
+msgstr "Вибрати об'єкти того ж класу"
+
+#: lr_const.sfrdesignerformselobj
+msgid "Select object"
+msgstr "Вибрати об'єкт"
+
+#: lr_const.sfrdesignerformspace
+msgid "Space equally, horizontally"
+msgstr "Розташувати рівномірно по горизонталі"
+
+#: lr_const.sfrdesignerformspaceeqvert
+msgid "Space equally, vertically"
+msgstr "Розташувати рівномірно по вертикалі"
+
+#: lr_const.sfrdesignerformstd
+msgid "Standard"
+msgstr "Стандартна"
+
+#: lr_const.sfrdesignerformtext
+msgctxt "lr_const.sfrdesignerformtext"
+msgid "Text"
+msgstr "Текст"
+
+#: lr_const.sfrdesignerformtools
+msgid "Tools"
+msgstr "Інструменти"
+
+#: lr_const.sfrdesignerformtopalign
+msgid "Top align"
+msgstr "Вирівнювання по верхньому краю"
+
+#: lr_const.sfrdesignerformtopframe
+msgid "Top frame line"
+msgstr "Верхня лінія фрейму"
+
+#: lr_const.sfrdesignerformunabletocreatetemplatedir
+msgid "Unable to create template directory"
+msgstr ""
+
+#: lr_const.sfrdesignerformunderline
+msgid "Underline"
+msgstr "Підкреслений"
+
+#: lr_const.sfrdesignerformundo
+msgid "Undo last action"
+msgstr "Скасувати останню дію"
+
+#: lr_const.sfrdesignerformvertcenter
+msgid "Vertical center"
+msgstr "Центрувати по вертикалі"
+
+#: lr_const.sfrdesignerformwidthalign
+msgid "Width align"
+msgstr "Вирівнювання по ширині"
+
+#: lr_const.sfrdesignerform_about
+msgid "&About ..."
+msgstr "&Про програму ..."
+
+#: lr_const.sfrdesignerform_addpg
+msgid "&Add page"
+msgstr "&Додати сторінку"
+
+#: lr_const.sfrdesignerform_alignpalette
+msgid "&Alignment palette"
+msgstr "П&анель вирівнювання"
+
+#: lr_const.sfrdesignerform_back
+msgid "Send to &back"
+msgstr "Відіслати &назад"
+
+#: lr_const.sfrdesignerform_beforeprintscript
+msgid "&Before print script ..."
+msgstr ""
+
+#: lr_const.sfrdesignerform_bring
+msgid "Bring to &front"
+msgstr "Перенести на&перед"
+
+#: lr_const.sfrdesignerform_copy
+msgid "&Copy"
+msgstr "&Копіювати"
+
+#: lr_const.sfrdesignerform_cut
+msgid "C&ut"
+msgstr "Ви&різати"
+
+#: lr_const.sfrdesignerform_datainsp
+msgid "&Data inspector"
+msgstr ""
+
+#: lr_const.sfrdesignerform_delete
+msgid "&Delete"
+msgstr "Ви&далити"
+
+#: lr_const.sfrdesignerform_edit
+msgctxt "lr_const.sfrdesignerform_edit"
+msgid "&Edit ..."
+msgstr "&Редагувати ..."
+
+#: lr_const.sfrdesignerform_edit2
+msgid "&Edit"
+msgstr "&Редагувати"
+
+#: lr_const.sfrdesignerform_editp
+msgctxt "lr_const.sfrdesignerform_editp"
+msgid "&Edit ..."
+msgstr "&Редагувати ..."
+
+#: lr_const.sfrdesignerform_exit
+msgid "E&xit"
+msgstr "Ви&хід"
+
+#: lr_const.sfrdesignerform_file
+msgid "&File"
+msgstr "&Файл"
+
+#: lr_const.sfrdesignerform_help1
+msgid "&Help contents"
+msgstr "&Вміст Довідки"
+
+#: lr_const.sfrdesignerform_help2
+msgid "Help &tool"
+msgstr "Інструмент &допомоги"
+
+#: lr_const.sfrdesignerform_insp
+msgid "Object &Inspector"
+msgstr "&Інспектор Об'єктів"
+
+#: lr_const.sfrdesignerform_line
+msgid "Line style"
+msgstr "Стиль лінії"
+
+#: lr_const.sfrdesignerform_modified
+msgid "Modified"
+msgstr ""
+
+#: lr_const.sfrdesignerform_new
+msgid "&New ..."
+msgstr "&Створити ..."
+
+#: lr_const.sfrdesignerform_obj
+msgid "&Objects"
+msgstr "&Об'єкти"
+
+#: lr_const.sfrdesignerform_open
+msgid "&Open ..."
+msgstr "В&ідкрити ..."
+
+#: lr_const.sfrdesignerform_opts
+msgid "&Options ..."
+msgstr "&Параметри ..."
+
+#: lr_const.sfrdesignerform_paste
+msgid "&Paste"
+msgstr "Вс&тавити"
+
+#: lr_const.sfrdesignerform_pgopt
+msgid "&Page options ..."
+msgstr "Параметри с&торінки ..."
+
+#: lr_const.sfrdesignerform_preview
+msgid "Pre&view"
+msgstr "П&опередній Перегляд"
+
+#: lr_const.sfrdesignerform_rect
+msgid "&Rectangle"
+msgstr "&Прямокутник"
+
+#: lr_const.sfrdesignerform_redo
+msgid "&Redo"
+msgstr "&Повторити"
+
+#: lr_const.sfrdesignerform_removepg
+msgid "&Remove page"
+msgstr "Ви&далити сторінку"
+
+#: lr_const.sfrdesignerform_rptopt
+msgid "&Report options ..."
+msgstr "Параметри &звіту ..."
+
+#: lr_const.sfrdesignerform_save
+msgid "&Save"
+msgstr "&Зберегти"
+
+#: lr_const.sfrdesignerform_saveas
+msgid "Save &as ..."
+msgstr "Зберегти &як ..."
+
+#: lr_const.sfrdesignerform_selectall
+msgid "Select &all"
+msgstr "Вибрати &все"
+
+#: lr_const.sfrdesignerform_std
+msgid "&Standard"
+msgstr "&Стандартна"
+
+#: lr_const.sfrdesignerform_text
+msgid "&Text"
+msgstr "&Текст"
+
+#: lr_const.sfrdesignerform_toolbars
+msgid "&Toolbars"
+msgstr "&Панелі Інструментів"
+
+#: lr_const.sfrdesignerform_tools
+msgid "&Tools"
+msgstr "&Інструменти"
+
+#: lr_const.sfrdesignerform_tools2
+msgctxt "lr_const.sfrdesignerform_tools2"
+msgid "Too&ls"
+msgstr "Інстр&ументи"
+
+#: lr_const.sfrdesignerform_tools3
+msgctxt "lr_const.sfrdesignerform_tools3"
+msgid "Too&ls"
+msgstr "Інстр&ументи"
+
+#: lr_const.sfrdesignerform_undo
+msgid "&Undo"
+msgstr "&Повернути"
+
+#: lr_const.sfrdesignerform_var
+msgid "Variables &list ..."
+msgstr "Список &змінних ..."
+
+#: lr_const.sfrom
+msgid "from"
+msgstr "з"
+
+#: lr_const.sfrvariables
+msgid "FR variables"
+msgstr "Змінні FR"
+
+#: lr_const.sfunctioneditor
+msgid "Function editor"
+msgstr ""
+
+#: lr_const.sfunctions
+msgid "Functions"
+msgstr ""
+
+#: lr_const.sgeditorformcapt
+msgid "Picture"
+msgstr "Зображення"
+
+#: lr_const.sgeditorformclear
+msgid "&Clear"
+msgstr "&Очистити"
+
+#: lr_const.sgeditorformload
+msgid "&Load ..."
+msgstr "&Завантажити ..."
+
+#: lr_const.sgeditorformmemo
+msgctxt "lr_const.sgeditorformmemo"
+msgid "&Memo"
+msgstr "&Замітка"
+
+#: lr_const.sgeditorformstretch
+msgid "&Stretch"
+msgstr "&Розтягнути"
+
+#: lr_const.sgroupeditorformadddbfield
+msgctxt "lr_const.sgroupeditorformadddbfield"
+msgid "Insert DB field"
+msgstr "Вставити поле БД"
+
+#: lr_const.sgroupeditorformcapt
+msgid "Group"
+msgstr "Група"
+
+#: lr_const.sgroupeditorformcond
+msgctxt "lr_const.sgroupeditorformcond"
+msgid "Condition"
+msgstr "Умова"
+
+#: lr_const.shidezerovalues
+msgid "Hide zero values"
+msgstr ""
+
+#: lr_const.shilightformback
+msgid "Background"
+msgstr "Тло"
+
+#: lr_const.shilightformbold
+msgid "&Bold"
+msgstr "&Жирний"
+
+#: lr_const.shilightformcolor
+msgid "C&olor ..."
+msgstr "К&олір ..."
+
+#: lr_const.shilightformcolor2
+msgid "Co&lor ..."
+msgstr "Ко&лір ..."
+
+#: lr_const.shilightformcond
+msgctxt "lr_const.shilightformcond"
+msgid "Condition"
+msgstr "Умова"
+
+#: lr_const.shilightformfont
+msgid "Font"
+msgstr "Шрифт"
+
+#: lr_const.shilightformhilitattr
+msgctxt "lr_const.shilightformhilitattr"
+msgid "Highlight attributes"
+msgstr "Підсвітити атрибути"
+
+#: lr_const.shilightformitalic
+msgid "&Italic"
+msgstr "&Курсив"
+
+#: lr_const.shilightformother
+msgid "Ot&her"
+msgstr "Ін&ше"
+
+#: lr_const.shilightformtransp
+msgid "&Transparent"
+msgstr "&прозорий"
+
+#: lr_const.shilightformunder
+msgid "&Underline"
+msgstr "&Підкреслений"
+
+#: lr_const.shtmfile
+msgid "HTML file"
+msgstr "Файл HTML"
+
+#: lr_const.sinches
+msgid "Inches"
+msgstr "Дюйми"
+
+#: lr_const.sinsbarcode
+msgid "Insert Barcode object"
+msgstr "Вставити об'єкт Штрих-код"
+
+#: lr_const.sinschart
+msgid "Insert Chart object"
+msgstr "Вставити об'єкт Chart"
+
+#: lr_const.sinscheckbox
+msgid "Insert CheckBox object"
+msgstr "Вставити об'єкт CheckBox"
+
+#: lr_const.sinsert
+msgid "Insert"
+msgstr ""
+
+#: lr_const.sinsertexpression
+msgid "Insert Expression"
+msgstr ""
+
+#: lr_const.sinsertfields
+msgid "Insert DB fields"
+msgstr "Вставити поля БД"
+
+#: lr_const.sinsertfieldsformaviabledset
+msgid "&Available datasets"
+msgstr "&Доступні набори даних"
+
+#: lr_const.sinsertfieldsformband
+msgid "Include &bands"
+msgstr "Включити &поля"
+
+#: lr_const.sinsertfieldsformcapt
+msgid "Insert fields"
+msgstr "Вставити поля"
+
+#: lr_const.sinsertfieldsformheader
+msgid "&Include headers"
+msgstr "Включити за&головки"
+
+#: lr_const.sinsertfieldsformhorz
+msgid "&Horizontal"
+msgstr "&Горизонтально"
+
+#: lr_const.sinsertfieldsformplace
+msgid "Placement"
+msgstr "Розміщення"
+
+#: lr_const.sinsertfieldsformvert
+msgid "&Vertical"
+msgstr "&Вертикально"
+
+#: lr_const.sinsroundrect
+#, fuzzy
+#| msgid "Insert an RoundRect with shadow area"
+msgid "Insert a RoundRect with shadow area"
+msgstr "Вставити заокруглений прямокутних з областю тіні"
+
+#: lr_const.sinsshape
+msgid "Insert Shape object"
+msgstr "Вставити об'єкт-фігуру"
+
+#: lr_const.sinterpretator
+msgid "Interpretator"
+msgstr ""
+
+#: lr_const.sinvalidfrfreport
+msgid "Invalid binary report"
+msgstr ""
+
+#: lr_const.sinvalidfrfversion
+msgid "Invalid report version"
+msgstr ""
+
+#: lr_const.sinvalidlrfreport
+msgid "Invalid report format"
+msgstr ""
+
+#: lr_const.sinvalidvariablename
+msgid "\"%s\" is not a valid variable name."
+msgstr ""
+
+#: lr_const.skeepaspectratio
+msgid "Keep aspect ratio"
+msgstr "Зберегти пропорції"
+
+#: lr_const.slazformfile
+msgid "LazReport form"
+msgstr "Форма LazReport"
+
+#: lr_const.slaztemplatefile
+msgid "LazReport template"
+msgstr ""
+
+#: lr_const.smathcategory
+msgid "Math"
+msgstr "Математичні"
+
+#: lr_const.smemoeditor
+msgid "Memo editor"
+msgstr ""
+
+#: lr_const.smm
+msgid "MM"
+msgstr "ММ"
+
+#: lr_const.snewtemplate
+msgid "New template"
+msgstr "Новий шаблон"
+
+#: lr_const.sno
+msgid "No"
+msgstr "Ні"
+
+#: lr_const.snotassigned
+msgctxt "lr_const.snotassigned"
+msgid "[None]"
+msgstr "[Немає]"
+
+#: lr_const.sobjectinspector
+msgid "Object inspector"
+msgstr "Інспектор Об'єктів"
+
+#: lr_const.sobjectnotfound
+msgid "Object \"%s\" not found"
+msgstr "Об'єкт \"%s\" не знайдено"
+
+#: lr_const.sok
+msgid "Ok"
+msgstr "Гаразд"
+
+#: lr_const.sonfirstpage
+msgid "On first page"
+msgstr "На першій сторінці"
+
+#: lr_const.sonlastpage
+msgid "On last page"
+msgstr "На останній сторінці"
+
+#: lr_const.sother
+msgid "Other ..."
+msgstr "Інші ..."
+
+#: lr_const.sothercategory
+msgctxt "lr_const.sothercategory"
+msgid "Other"
+msgstr "Інші"
+
+#: lr_const.spagepreparing
+msgid "Processing page:"
+msgstr "Обробка сторінки:"
+
+#: lr_const.spageprinting
+msgid "Printing page:"
+msgstr "Друк сторінки:"
+
+#: lr_const.spaper1
+msgid "Letter, 8 1/2 x 11\""
+msgstr "Letter, 8 1/2 x 11\""
+
+#: lr_const.spaper10
+msgid "A4 small sheet, 210 x 297 mm"
+msgstr "A4 малий аркуш, 210 x 297 мм"
+
+#: lr_const.spaper100
+msgid "DMPAPER_PENV_5 110X220"
+msgstr "DMPAPER_PENV_5 110X220"
+
+#: lr_const.spaper101
+msgid "DMPAPER_PENV_6 120X230"
+msgstr "DMPAPER_PENV_6 120X230"
+
+#: lr_const.spaper102
+msgid "DMPAPER_PENV_7 160X230"
+msgstr "DMPAPER_PENV_7 160X230"
+
+#: lr_const.spaper103
+msgid "DMPAPER_PENV_8 120X309"
+msgstr "DMPAPER_PENV_8 120X309"
+
+#: lr_const.spaper104
+msgid "DMPAPER_PENV_9 229X324"
+msgstr "DMPAPER_PENV_9 229X324"
+
+#: lr_const.spaper105
+msgid "DMPAPER_PENV_10 324X458"
+msgstr "DMPAPER_PENV_10 324X458"
+
+#: lr_const.spaper106
+msgid "DMPAPER_P16K_ROTATED 215X146"
+msgstr "DMPAPER_P16K_ROTATED 215X146"
+
+#: lr_const.spaper107
+msgid "DMPAPER_P32K_ROTATED 151X97"
+msgstr "DMPAPER_P32K_ROTATED 151X97"
+
+#: lr_const.spaper108
+msgid "DMPAPER_P32KBIG_ROTATED 151X97"
+msgstr "DMPAPER_P32KBIG_ROTATED 151X97"
+
+#: lr_const.spaper109
+msgid "DMPAPER_PENV_1_ROTATED 165X102"
+msgstr "DMPAPER_PENV_1_ROTATED 165X102"
+
+#: lr_const.spaper11
+msgid "A5 148 x 210 mm"
+msgstr "A5 148 x 210 мм"
+
+#: lr_const.spaper110
+msgid "DMPAPER_PENV_2_ROTATED 176X102"
+msgstr "DMPAPER_PENV_2_ROTATED 176X102"
+
+#: lr_const.spaper111
+msgid "DMPAPER_PENV_3_ROTATED 176X125"
+msgstr "DMPAPER_PENV_3_ROTATED 176X125"
+
+#: lr_const.spaper112
+msgid "DMPAPER_PENV_4_ROTATED 208X110"
+msgstr "DMPAPER_PENV_4_ROTATED 208X110"
+
+#: lr_const.spaper113
+msgid "DMPAPER_PENV_5_ROTATED 220X110"
+msgstr "DMPAPER_PENV_5_ROTATED 220X110"
+
+#: lr_const.spaper114
+msgid "DMPAPER_PENV_6_ROTATED 230X120"
+msgstr "DMPAPER_PENV_6_ROTATED 230X120"
+
+#: lr_const.spaper115
+msgid "DMPAPER_PENV_7_ROTATED 230X160"
+msgstr "DMPAPER_PENV_7_ROTATED 230X160"
+
+#: lr_const.spaper116
+msgid "DMPAPER_PENV_8_ROTATED 309X120"
+msgstr "DMPAPER_PENV_8_ROTATED 309X120"
+
+#: lr_const.spaper117
+msgid "DMPAPER_PENV_9_ROTATED 324X229"
+msgstr "DMPAPER_PENV_9_ROTATED 324X229"
+
+#: lr_const.spaper118
+msgid "DMPAPER_PENV_10_ROTATED 458X324"
+msgstr "DMPAPER_PENV_10_ROTATED 458X324"
+
+#: lr_const.spaper12
+msgid "B4 250 x 354 mm"
+msgstr "B4 250 x 354 мм"
+
+#: lr_const.spaper13
+msgid "B5 182 x 257 mm"
+msgstr "B5 182 x 257 мм"
+
+#: lr_const.spaper14
+msgid "Folio, 8 1/2 x 13\""
+msgstr "Folio, 8 1/2 x 13\""
+
+#: lr_const.spaper15
+msgid "Quarto Sheet, 215 x 275 mm"
+msgstr "Чверть Аркуша, 215 x 275 мм"
+
+#: lr_const.spaper16
+msgid "10 x 14\""
+msgstr "10 x 14\""
+
+#: lr_const.spaper17
+msgid "11 x 17\""
+msgstr "11 x 17\""
+
+#: lr_const.spaper18
+msgid "Note, 8 1/2 x 11\""
+msgstr "Записка, 8 1/2 x 11\""
+
+#: lr_const.spaper19
+msgid "9 Envelope, 3 7/8 x 8 7/8\""
+msgstr "9 Конверт, 3 7/8 x 8 7/8\""
+
+#: lr_const.spaper2
+msgid "Letter small, 8 1/2 x 11\""
+msgstr "Letter малий, 8 1/2 x 11\""
+
+#: lr_const.spaper20
+msgid "#10 Envelope, 4 1/8  x 9 1/2\""
+msgstr "#10 Конверт, 4 1/8  x 9 1/2\""
+
+#: lr_const.spaper21
+msgid "#11 Envelope, 4 1/2 x 10 3/8\""
+msgstr "#11 Конверт, 4 1/2 x 10 3/8\""
+
+#: lr_const.spaper22
+msgid "#12 Envelope, 4 3/4 x 11\""
+msgstr "#12 Конверт, 4 3/4 x 11\""
+
+#: lr_const.spaper23
+msgid "#14 Envelope, 5 x 11 1/2\""
+msgstr "#14 Конверт, 5 x 11 1/2\""
+
+#: lr_const.spaper24
+msgid "C Sheet, 17 x 22\""
+msgstr "C Аркуш, 17 x 22\""
+
+#: lr_const.spaper25
+msgid "D Sheet, 22 x 34\""
+msgstr "D Аркуш, 22 x 34\""
+
+#: lr_const.spaper256
+msgctxt "lr_const.spaper256"
+msgid "Custom"
+msgstr "Користувацький"
+
+#: lr_const.spaper26
+msgid "E Sheet, 34 x 44\""
+msgstr "E Аркуш, 34 x 44\""
+
+#: lr_const.spaper27
+msgid "DL Envelope, 110 x 220 mm"
+msgstr "DL Конверт, 110 x 220 мм"
+
+#: lr_const.spaper28
+msgid "C5 Envelope, 162 x 229 mm"
+msgstr "C5 Конверт, 162 x 229 мм"
+
+#: lr_const.spaper29
+msgid "C3 Envelope,  324 x 458 mm"
+msgstr "C3 Конверт,  324 x 458 мм"
+
+#: lr_const.spaper3
+msgid "Tabloid, 11 x 17\""
+msgstr "Tabloid, 11 x 17\""
+
+#: lr_const.spaper30
+msgid "C4 Envelope,  229 x 324 mm"
+msgstr "C4 Конверт,  229 x 324 мм"
+
+#: lr_const.spaper31
+msgid "C6 Envelope,  114 x 162 mm"
+msgstr "C6 Конверт,  114 x 162 мм"
+
+#: lr_const.spaper32
+msgid "C65 Envelope, 114 x 229 mm"
+msgstr "C65 Конверт, 114 x 229 мм"
+
+#: lr_const.spaper33
+msgid "B4 Envelope,  250 x 353 mm"
+msgstr "B4 Конверт,  250 x 353 мм"
+
+#: lr_const.spaper34
+msgid "B5 Envelope,  176 x 250 mm"
+msgstr "B5 Конверт,  176 x 250 мм"
+
+#: lr_const.spaper35
+msgid "B6 Envelope,  176 x 125 mm"
+msgstr "B6 Конверт,  176 x 125 мм"
+
+#: lr_const.spaper36
+msgid "Italy Envelope, 110 x 230 mm"
+msgstr "Італійський Конверт, 110 x 230 мм"
+
+#: lr_const.spaper37
+msgid "Monarch Envelope, 3 7/8 x 7 1/2\""
+msgstr "Monarch Конверт, 3 7/8 x 7 1/2\""
+
+#: lr_const.spaper38
+msgid "6 3/4 Envelope, 3 5/8 x 6 1/2\""
+msgstr "6 3/4 Конверт, 3 5/8 x 6 1/2\""
+
+#: lr_const.spaper39
+msgid "US Std Fanfold, 14 7/8 x 11\""
+msgstr "US Std Fanfold, 14 7/8 x 11\""
+
+#: lr_const.spaper4
+msgid "Ledger, 17 x 11\""
+msgstr "Ledger, 17 x 11\""
+
+#: lr_const.spaper40
+msgid "German Std Fanfold, 8 1/2 x 12\""
+msgstr "Німецький Std Fanfold, 8 1/2 x 12\""
+
+#: lr_const.spaper41
+msgid "German Legal Fanfold, 8 1/2 x 13\""
+msgstr "Німецький Legal Fanfold, 8 1/2 x 13\""
+
+#: lr_const.spaper42
+msgid "B4 (ISO) 250 x 353 mm"
+msgstr "B4 (ISO) 250 x 353 мм"
+
+#: lr_const.spaper43
+msgid "Japanese Postcard 100 x 148 mm"
+msgstr "Японська Листівка 100 x 148 мм"
+
+#: lr_const.spaper44
+msgid "9 x 11\""
+msgstr "9 x 11\""
+
+#: lr_const.spaper45
+msgid "10 x 11\""
+msgstr "10 x 11\""
+
+#: lr_const.spaper46
+msgid "15 x 11\""
+msgstr "15 x 11\""
+
+#: lr_const.spaper47
+msgid "Envelope Invite 220 x 220 mm"
+msgstr "Конверт Запрошення 220 x 220 мм"
+
+#: lr_const.spaper5
+msgid "Legal, 8 1/2 x 14\""
+msgstr "Legal, 8 1/2 x 14\""
+
+#: lr_const.spaper50
+msgid "Letter Extra 9/275 x 12\""
+msgstr "Letter Екстра 9/275 x 12\""
+
+#: lr_const.spaper51
+msgid "Legal Extra 9/275 x 15\""
+msgstr "Legal Екстра 9/275 x 15\""
+
+#: lr_const.spaper52
+msgid "Tabloid Extra 11.69 x 18\""
+msgstr "Tabloid Екстра 11.69 x 18\""
+
+#: lr_const.spaper53
+msgid "A4 Extra 9.27 x 12.69\""
+msgstr "A4 Екстра 9.27 x 12.69\""
+
+#: lr_const.spaper54
+msgid "Letter Transverse 8/275 x 11\""
+msgstr "Letter Поперечний 8/275 x 11\""
+
+#: lr_const.spaper55
+msgid "A4 Transverse 210 x 297 mm"
+msgstr "A4 Поперечний 210 x 297 мм"
+
+#: lr_const.spaper56
+msgid "Letter Extra Transverse 9/275 x 12\""
+msgstr "Letter Екстра Поперечний 9/275 x 12\""
+
+#: lr_const.spaper57
+msgid "SuperASuperAA4 227 x 356 mm"
+msgstr "SuperASuperAA4 227 x 356 мм"
+
+#: lr_const.spaper58
+msgid "SuperBSuperBA3 305 x 487 mm"
+msgstr "SuperBSuperBA3 305 x 487 мм"
+
+#: lr_const.spaper59
+msgid "Letter Plus 8.5 x 12.69\""
+msgstr "Letter Плюс 8.5 x 12.69\""
+
+#: lr_const.spaper6
+msgid "Statement, 5 1/2 x 8 1/2\""
+msgstr "Statement, 5 1/2 x 8 1/2\""
+
+#: lr_const.spaper60
+msgid "A4 Plus 210 x 330 mm"
+msgstr "A4 Плюс 210 x 330 мм"
+
+#: lr_const.spaper61
+msgid "A5 Transverse 148 x 210 mm"
+msgstr "A5 Поперечний 148 x 210 мм"
+
+#: lr_const.spaper62
+msgid "B5 (JIS) Transverse 182 x 257 mm"
+msgstr "B5 (JIS) Поперечний 182 x 257 мм"
+
+#: lr_const.spaper63
+msgid "A3 Extra 322 x 445 mm"
+msgstr "A3 Екстра 322 x 445 мм"
+
+#: lr_const.spaper64
+msgid "A5 Extra 174 x 235 mm"
+msgstr "A5 Екстра 174 x 235 мм"
+
+#: lr_const.spaper65
+msgid "B5 (ISO) Extra 201 x 276 mm"
+msgstr "B5 (ISO) Екстра 201 x 276 мм"
+
+#: lr_const.spaper66
+msgid "A2 420 x 594 mm"
+msgstr "A2 420 x 594 мм"
+
+#: lr_const.spaper67
+msgid "A3 Transverse 297 x 420 mm"
+msgstr "A3 Поперечний 297 x 420 мм"
+
+#: lr_const.spaper68
+msgid "A3 Extra Transverse 322 x 445 mm"
+msgstr "A3 Екстра Поперечний 322 x 445 мм"
+
+#: lr_const.spaper69
+msgid "Double Japanese Postcard 200 x 148 mm"
+msgstr "Подвійна Японська Листівка 200 x 148 мм"
+
+#: lr_const.spaper7
+msgid "Executive, 7 1/4 x 10 1/2\""
+msgstr "Executive, 7 1/4 x 10 1/2\""
+
+#: lr_const.spaper70
+msgid "A6 105x148 mm"
+msgstr "A6 105x148 мм"
+
+#: lr_const.spaper71
+msgid "DMPAPER_JENV_KAKU2 240X132"
+msgstr "DMPAPER_JENV_KAKU2 240X132"
+
+#: lr_const.spaper72
+msgid "DMPAPER_JENV_KAKU3 216X277"
+msgstr "DMPAPER_JENV_KAKU3 216X277"
+
+#: lr_const.spaper73
+msgid "DMPAPER_JENV_CHOU3 120X235"
+msgstr "DMPAPER_JENV_CHOU3 120X235"
+
+#: lr_const.spaper74
+msgid "DMPAPER_JENV_CHOU4 90X205"
+msgstr "DMPAPER_JENV_CHOU4 90X205"
+
+#: lr_const.spaper75
+msgid "DMPAPER_LETTER_ROTATED 279.4x215.9"
+msgstr "DMPAPER_LETTER_ROTATED 279.4x215.9"
+
+#: lr_const.spaper76
+msgid "DMPAPER_A3_ROTATED 420x297"
+msgstr "DMPAPER_A3_ROTATED 420x297"
+
+#: lr_const.spaper77
+msgid "DMPAPER_A4_ROTATED 297X210"
+msgstr "DMPAPER_A4_ROTATED 297X210"
+
+#: lr_const.spaper78
+msgid "DMPAPER_A5_ROTATED 210X148"
+msgstr "DMPAPER_A5_ROTATED 210X148"
+
+#: lr_const.spaper79
+msgid "DMPAPER_B4_JIS_ROTATED 364X257"
+msgstr "DMPAPER_B4_JIS_ROTATED 364X257"
+
+#: lr_const.spaper8
+msgid "A3 297 x 420 mm"
+msgstr "A3 297 x 420 мм"
+
+#: lr_const.spaper80
+msgid "DMPAPER_B5_JIS_ROTATED 257X182"
+msgstr "DMPAPER_B5_JIS_ROTATED 257X182"
+
+#: lr_const.spaper81
+msgid "DMPAPER_JAPANESE_POSTCARD_ROTATED 148X100"
+msgstr "DMPAPER_JAPANESE_POSTCARD_ROTATED 148X100"
+
+#: lr_const.spaper82
+msgid "DMPAPER_DBL_JAPANESE_POSTCARD_ROTATED 148X200"
+msgstr "DMPAPER_DBL_JAPANESE_POSTCARD_ROTATED 148X200"
+
+#: lr_const.spaper83
+msgid "DMPAPER_A6_ROTATED 148X105"
+msgstr "DMPAPER_A6_ROTATED 148X105"
+
+#: lr_const.spaper84
+msgid "DMPAPER_JENV_KAKU2_ROTATED 332X240"
+msgstr "DMPAPER_JENV_KAKU2_ROTATED 332X240"
+
+#: lr_const.spaper85
+msgid "DMPAPER_JENV_KAKU3_ROTATED 277X216"
+msgstr "DMPAPER_JENV_KAKU3_ROTATED 277X216"
+
+#: lr_const.spaper86
+msgid "DMPAPER_JENV_CHOU3_ROTATED 235X120"
+msgstr "DMPAPER_JENV_CHOU3_ROTATED 235X120"
+
+#: lr_const.spaper87
+msgid "DMPAPER_JENV_CHOU4_ROTATED 205X90"
+msgstr "DMPAPER_JENV_CHOU4_ROTATED 205X90"
+
+#: lr_const.spaper88
+msgid "DMPAPER_B6_JIS 128X122"
+msgstr "DMPAPER_B6_JIS 128X122"
+
+#: lr_const.spaper89
+msgid "DMPAPER_B6_JIS_ROTATED 182X128"
+msgstr "DMPAPER_B6_JIS_ROTATED 182X128"
+
+#: lr_const.spaper9
+msgid "A4 210 x 297 mm"
+msgstr "A4 210 x 297 мм"
+
+#: lr_const.spaper90
+msgid "DMPAPER_12X11 304.8X279.4"
+msgstr "DMPAPER_12X11 304.8X279.4"
+
+#: lr_const.spaper91
+msgid "DMPAPER_JENV_YOU4 105X235"
+msgstr "DMPAPER_JENV_YOU4 105X235"
+
+#: lr_const.spaper92
+msgid "DMPAPER_JENV_YOU4_ROTATED 235X105"
+msgstr "DMPAPER_JENV_YOU4_ROTATED 235X105"
+
+#: lr_const.spaper93
+msgid "DMPAPER_P16K 146X215"
+msgstr "DMPAPER_P16K 146X215"
+
+#: lr_const.spaper94
+msgid "DMPAPER_P32K 97X151"
+msgstr "DMPAPER_P32K 97X151"
+
+#: lr_const.spaper95
+msgid "DMPAPER_P32KBIG 97X151"
+msgstr "DMPAPER_P32KBIG 97X151"
+
+#: lr_const.spaper96
+msgid "DMPAPER_PENV_1 102X165"
+msgstr "DMPAPER_PENV_1 102X165"
+
+#: lr_const.spaper97
+msgid "DMPAPER_PENV_2 102X176"
+msgstr "DMPAPER_PENV_2 102X176"
+
+#: lr_const.spaper98
+msgid "DMPAPER_PENV_3 125X176"
+msgstr "DMPAPER_PENV_3 125X176"
+
+#: lr_const.spaper99
+msgid "DMPAPER_PENV_4 110X208"
+msgstr "DMPAPER_PENV_4 110X208"
+
+#: lr_const.spg
+msgid "Page"
+msgstr "Сторінка"
+
+#: lr_const.spgoptformbottom
+msgid "&Bottom, mm"
+msgstr "&Нижнє, мм"
+
+#: lr_const.spgoptformbycolumns
+msgid "By Colum&ns"
+msgstr "По С&товпцях"
+
+#: lr_const.spgoptformbyrows
+msgid "By Row&s"
+msgstr "По &Рядках"
+
+#: lr_const.spgoptformcapt
+msgctxt "lr_const.spgoptformcapt"
+msgid "Page options"
+msgstr "Параметри сторінки"
+
+#: lr_const.spgoptformcolgap
+msgid "&Column gap, mm"
+msgstr "&Зазор стовпців, мм"
+
+#: lr_const.spgoptformcolumn
+msgid "Columns"
+msgstr "Колонки"
+
+#: lr_const.spgoptformdontuse
+msgid "&Don't use"
+msgstr "Н&е використовувати"
+
+#: lr_const.spgoptformheight
+msgid "&Height, mm"
+msgstr "Ви&сота, мм"
+
+#: lr_const.spgoptformland
+msgid "&Landscape"
+msgstr "&Альбомна"
+
+#: lr_const.spgoptformlayoutorder
+msgid "Layout Order"
+msgstr "Порядок розміщення"
+
+#: lr_const.spgoptformleft
+msgid "&Left, mm"
+msgstr "&Ліве, мм"
+
+#: lr_const.spgoptformmargins
+msgid "Margins"
+msgstr "Поля"
+
+#: lr_const.spgoptformnumber
+msgid "&Number"
+msgstr "&Кількість"
+
+#: lr_const.spgoptformoptions
+msgctxt "lr_const.spgoptformoptions"
+msgid "Options"
+msgstr "Параметри"
+
+#: lr_const.spgoptformor
+msgid "Orientation"
+msgstr "Орієнтація"
+
+#: lr_const.spgoptformpaper
+msgid "Paper"
+msgstr "Папір"
+
+#: lr_const.spgoptformpgmargins
+msgid "Page margins"
+msgstr "Поля сторінки"
+
+#: lr_const.spgoptformport
+msgid "&Portrait"
+msgstr "&Портретна"
+
+#: lr_const.spgoptformprint
+msgid "&Print to previous page"
+msgstr "&Друк на попередній сторінці"
+
+#: lr_const.spgoptformright
+msgid "&Right, mm"
+msgstr "&Праве, мм"
+
+#: lr_const.spgoptformsize
+msgid "Size"
+msgstr "Розмір"
+
+#: lr_const.spgoptformtop
+msgid "&Top, mm"
+msgstr "&Верхнє, мм"
+
+#: lr_const.spgoptformwidth
+msgid "&Width, mm"
+msgstr "&Ширина, мм"
+
+#: lr_const.spictfile
+msgid "Picture file"
+msgstr "Файл зображення"
+
+#: lr_const.spicture
+msgid "[Picture]"
+msgstr "[Зображення]"
+
+#: lr_const.spicturecenter
+msgid "Center picture"
+msgstr "Центрувати зображення"
+
+#: lr_const.spixels
+msgid "Pixels"
+msgstr "Пікселі"
+
+#: lr_const.spreview
+msgid "Preview"
+msgstr "Попередній перегляд"
+
+#: lr_const.spreviewform2pg
+msgid "&Two pages"
+msgstr "&Дві сторінки"
+
+#: lr_const.spreviewformadd
+msgctxt "lr_const.spreviewformadd"
+msgid "Add page"
+msgstr "Додати сторінку"
+
+#: lr_const.spreviewformclose
+msgid "Close preview"
+msgstr "Закрити попередній перегляд"
+
+#: lr_const.spreviewformdel
+msgid "Delete page"
+msgstr "Видалити сторінку"
+
+#: lr_const.spreviewformedit
+msgid "Edit page"
+msgstr "Редагувати сторінку"
+
+#: lr_const.spreviewformfind
+msgctxt "lr_const.spreviewformfind"
+msgid "Find text"
+msgstr "Знайти текст"
+
+#: lr_const.spreviewformhelp
+msgid "Show help"
+msgstr "Показати довідку"
+
+#: lr_const.spreviewformopen
+msgctxt "lr_const.spreviewformopen"
+msgid "Open report"
+msgstr "Відкрити звіт"
+
+#: lr_const.spreviewformprint
+msgid "Print report"
+msgstr "Друкувати звіт"
+
+#: lr_const.spreviewformpw
+msgid "&Page width"
+msgstr "&Ширина сторінки"
+
+#: lr_const.spreviewformsave
+msgctxt "lr_const.spreviewformsave"
+msgid "Save report"
+msgstr "Зберегти звіт"
+
+#: lr_const.spreviewformscale
+msgid "Scale"
+msgstr "Масштаб"
+
+#: lr_const.spreviewformwhole
+msgid "&Whole page"
+msgstr "Сторінка &повністю"
+
+#: lr_const.sprintchildifnotvisible
+msgid "Print child if not visible"
+msgstr ""
+
+#: lr_const.sprintererror
+#, fuzzy
+#| msgid "Printer selected is not valid"
+msgid "Selected printer is not valid"
+msgstr "Вибраний невірний принтер"
+
+#: lr_const.sprintformall
+msgid "&All"
+msgstr "&Всі"
+
+#: lr_const.sprintformcollate
+msgid "Collate"
+msgstr ""
+
+#: lr_const.sprintformcopy
+msgid "&Copies:"
+msgstr "&Копії:"
+
+#: lr_const.sprintformcurpg
+msgctxt "lr_const.sprintformcurpg"
+msgid "Current &page"
+msgstr "Поточна с&торінка"
+
+#: lr_const.sprintforminfo
+msgid "Enter page numbers and/or page ranges, separated by commas. For example, 1,3,5-12"
+msgstr "Введіть номери і/або діапазони сторінок, розділені комами. Наприклад, 1,3,5-12"
+
+#: lr_const.sprintformnumber
+msgid "&Numbers:"
+msgstr "&Номери:"
+
+#: lr_const.sprintformpgrange
+msgid "Page range"
+msgstr "Діапазон сторінок"
+
+#: lr_const.sprintformprint
+msgid "Print"
+msgstr "Друк"
+
+#: lr_const.sprintformprinter
+msgctxt "lr_const.sprintformprinter"
+msgid "Printer"
+msgstr "Принтер"
+
+#: lr_const.sprintformprop
+msgid "Properties"
+msgstr "Властивості"
+
+#: lr_const.sprintifsubsetempty
+msgid "Print if detail empty"
+msgstr "Друкувати якщо підлеглий звіт порожній"
+
+#: lr_const.sremovepg
+msgid "Remove this page?"
+msgstr "Видалити цю сторінку?"
+
+#: lr_const.srepeatheader
+msgid "Show on all pages"
+msgstr "Показувати на всіх сторінках"
+
+#: lr_const.srepfile
+msgid "Report file"
+msgstr "Файл звіту"
+
+#: lr_const.sreportcreatedate
+msgid "Report creation date"
+msgstr ""
+
+#: lr_const.sreportlastmodifydate
+msgid "Report last modification date"
+msgstr ""
+
+#: lr_const.sreportloadingerror
+msgid "Error while loading report"
+msgstr ""
+
+#: lr_const.sreportpreparing
+#, fuzzy
+#| msgid "Report preparing"
+msgid "Preparing report"
+msgstr "Підготовка звіту"
+
+#: lr_const.sroundrectformbegincolor
+msgid "Begin color"
+msgstr "Початковий колір"
+
+#: lr_const.sroundrectformcaption
+msgid "Property editor"
+msgstr "Редактор властивостей"
+
+#: lr_const.sroundrectformcolor
+msgid "Color"
+msgstr "Колір"
+
+#: lr_const.sroundrectformcurve
+msgid "Curve"
+msgstr "Крива"
+
+#: lr_const.sroundrectformdata
+msgid "Data .."
+msgstr "Дані .."
+
+#: lr_const.sroundrectformendcolor
+msgid "End Color"
+msgstr "Кінцевий колір"
+
+#: lr_const.sroundrectformframed
+msgid "Framed zone"
+msgstr "Зона фрейма"
+
+#: lr_const.sroundrectformgradient
+msgid "Gradient"
+msgstr ""
+
+#: lr_const.sroundrectformhint
+#, fuzzy
+#| msgid "Click here to define the shadow color or gradian colors"
+msgid "Click here to define the shadow color or gradient colors"
+msgstr "Клацніть тут щоб задати колір тіні або кольори градієнта"
+
+#: lr_const.sroundrectformsample
+msgid "Sample :"
+msgstr "Зразок :"
+
+#: lr_const.sroundrectformshadow
+msgid "Shadow width"
+msgstr "Ширина тіні"
+
+#: lr_const.sroundrectformstyle
+msgid "Style"
+msgstr "Стиль"
+
+#: lr_const.sroundrectformstyledif
+msgid "Vertical,Horizontal,Elliptic,Rectangle,Horiz._Center,Vert._Center"
+msgstr "Вертикальний, Горизонтальний, Еліптичний, Прямокутник, Гориз._Центр, Верт._Центр"
+
+#: lr_const.sroundrectformvar
+msgid "Variables ..."
+msgstr "Змінні ..."
+
+#: lr_const.sroundrectsqrcorners
+msgid "Squared corners"
+msgstr "Прямі кути"
+
+#: lr_const.srtffile
+msgid "Rich Text file"
+msgstr "Файл Rich Text"
+
+#: lr_const.ssavechanges
+msgid "Save changes"
+msgstr "Зберегти зміни"
+
+#: lr_const.sscripteditor
+msgid "Script editor"
+msgstr ""
+
+#: lr_const.sshape1
+msgctxt "lr_const.sshape1"
+msgid "Rectangle"
+msgstr "Прямокутник"
+
+#: lr_const.sshape2
+msgid "Rounded rectangle"
+msgstr "Заокруглений прямокутник"
+
+#: lr_const.sshape3
+msgid "Ellipse"
+msgstr "Еліпс"
+
+#: lr_const.sshape4
+msgid "Triangle"
+msgstr "Трикутник"
+
+#: lr_const.sshape5
+msgid "Diagonal1"
+msgstr "Діагональ1"
+
+#: lr_const.sshape6
+msgid "Diagonal2"
+msgstr "Діагональ2"
+
+#: lr_const.sshapeformcaption
+msgid "Shape"
+msgstr "Контур"
+
+#: lr_const.sshapeformkind
+msgid "Shape kind"
+msgstr "Тип фігури"
+
+#: lr_const.sspecval
+msgctxt "lr_const.sspecval"
+msgid "Other"
+msgstr "Інші"
+
+#: lr_const.sstretched
+msgid "Stretched"
+msgstr "Розтягнутий"
+
+#: lr_const.sstringcategory
+msgid "String"
+msgstr "Рядковий"
+
+#: lr_const.ssubreportonpage
+msgid "SubReport on page"
+msgstr "ПідЗвіт на сторінці"
+
+#: lr_const.stemplemptydesc
+msgid "New report based on empty template"
+msgstr ""
+
+#: lr_const.stemplemtpyrp
+msgid "Empty template"
+msgstr ""
+
+#: lr_const.stemplfile
+msgid "FastReport template"
+msgstr "Шаблон FastReport"
+
+#: lr_const.stemplformdesc
+msgid "Description"
+msgstr "Опис"
+
+#: lr_const.stemplformnewrp
+msgctxt "lr_const.stemplformnewrp"
+msgid "New report"
+msgstr "Новий звіт"
+
+#: lr_const.stextfile
+msgid "ASCII Text file"
+msgstr "Текстовий файл ASCII"
+
+#: lr_const.stimeformat1
+msgid "hh:nn:ss"
+msgstr ""
+
+#: lr_const.stimeformat2
+msgid "h:nn:ss"
+msgstr ""
+
+#: lr_const.stimeformat3
+msgid "hh:nn"
+msgstr ""
+
+#: lr_const.stimeformat4
+msgid "h:nn"
+msgstr ""
+
+#: lr_const.sto
+msgid "to"
+msgstr "до"
+
+#: lr_const.stransparent
+msgid "Transparent"
+msgstr "Прозорий"
+
+#: lr_const.sunabletoreadversion
+msgid "Unable to read report version"
+msgstr ""
+
+#: lr_const.suntitled
+msgid "Untitled"
+msgstr "Без_назви"
+
+#: lr_const.susefixedfontsettings
+msgid "Use fixed font settings"
+msgstr ""
+
+#: lr_const.susememofontsettings
+msgid "Use Memo font settings"
+msgstr ""
+
+#: lr_const.susesyntaxhighlight
+msgid "Use syntax highlight"
+msgstr ""
+
+#: lr_const.svar1
+msgid "Page#"
+msgstr "Сторінка#"
+
+#: lr_const.svar2
+msgid "Expression"
+msgstr "Вираз"
+
+#: lr_const.svar3
+msgctxt "lr_const.svar3"
+msgid "Date"
+msgstr "Дата"
+
+#: lr_const.svar4
+msgctxt "lr_const.svar4"
+msgid "Time"
+msgstr "Час"
+
+#: lr_const.svar5
+msgid "Line#"
+msgstr "Рядок#"
+
+#: lr_const.svar6
+msgid "Line through#"
+msgstr "Рядок по#"
+
+#: lr_const.svar7
+msgid "Column#"
+msgstr "Стовпчик#"
+
+#: lr_const.svar8
+msgid "Current line#"
+msgstr "Поточний рядок#"
+
+#: lr_const.svar9
+msgid "TotalPages"
+msgstr "СторінокЗагалом"
+
+#: lr_const.svaredformcapt
+msgid "Variables list"
+msgstr "Список змінних"
+
+#: lr_const.svaredformcat
+msgid "&Categories and variables"
+msgstr "&Категорії та змінні"
+
+#: lr_const.svarformat
+msgid "Variable format ..."
+msgstr "Формат змінної ..."
+
+#: lr_const.svarformcapt
+msgid "Variables"
+msgstr "Змінні"
+
+#: lr_const.svarformcat
+msgid "&Category:"
+msgstr "&Категорія:"
+
+#: lr_const.svariable
+msgid "Variable"
+msgstr ""
+
+#: lr_const.svbandeditorformbnd
+msgid "Bands"
+msgstr "Поля"
+
+#: lr_const.svbandeditorformcapt
+msgid "Band data sources"
+msgstr "Джерела даних для поля"
+
+#: lr_const.svbandeditorformdatasource
+msgctxt "lr_const.svbandeditorformdatasource"
+msgid "Data source"
+msgstr "Джерело даних"
+
+#: lr_const.svbandeditorformrecordcount
+msgctxt "lr_const.svbandeditorformrecordcount"
+msgid "&Record count"
+msgstr "&Кількість записів"
+
+#: lr_const.svirtualdataset
+msgid "Virtual Dataset"
+msgstr "Віртуальний набір даних"
+
+#: lr_const.swordbreak
+msgid "Word break"
+msgstr "Розрив слова"
+
+#: lr_const.swordwrap
+msgid "Word wrap"
+msgstr "Перенесення слів"
+
+#: lr_const.syes
+msgid "Yes"
+msgstr "Так"
+

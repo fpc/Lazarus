@@ -1,0 +1,82 @@
+object SourceForm: TSourceForm
+  Left = 327
+  Height = 180
+  Top = 260
+  Width = 456
+  HorzScrollBar.Page = 395
+  VertScrollBar.Page = 84
+  ActiveControl = FESource
+  Caption = 'Source file properties'
+  ClientHeight = 180
+  ClientWidth = 456
+  LCLVersion = '0.9.29'
+  object LFESource: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 18
+    Top = 6
+    Width = 62
+    Alignment = taRightJustify
+    BorderSpacing.Around = 6
+    Caption = '&Source'
+    FocusControl = FESource
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object LEOptions: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = FESource
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 18
+    Top = 65
+    Width = 67
+    Alignment = taRightJustify
+    BorderSpacing.Around = 6
+    Caption = 'Op&tions'
+    FocusControl = EOptions
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object FESource: TFileNameEdit
+    AnchorSideLeft.Control = LFESource
+    AnchorSideTop.Control = LFESource
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 29
+    Top = 30
+    Width = 417
+    DialogOptions = []
+    Filter = 'Pascal files (*.pas,*.pp)|*.pas;*.pp|All files|*.*'	
+    FilterIndex = 0
+    HideDirectories = False
+    Hint = 'Pascal sources documented by the XML description files'	
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    MaxLength = 0
+    TabOrder = 0
+  end
+  object EOptions: TEdit
+    AnchorSideLeft.Control = LEOptions
+    AnchorSideTop.Control = LEOptions
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 29
+    Top = 89
+    Width = 450
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 1
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 40
+    Top = 134
+    Width = 444
+    TabOrder = 2
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+end

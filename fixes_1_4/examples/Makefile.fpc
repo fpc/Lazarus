@@ -1,0 +1,126 @@
+#
+#   Makefile.fpc for LCL Examples for Free Pascal
+#
+
+[package]
+name=lazarus-examples
+version=1.0
+
+[target]
+units=hello \
+  bitbutton \
+  checkbox \
+  combobox \
+  comdialogs \
+  edittest \
+  groupbox \
+  groupboxnested \
+  listboxtest \
+  listviewtest \
+  loadpicture \
+  memotest \
+  messagedialogs \
+  notebk \
+  notebooktest \
+  progressbar \
+  scrollbar \
+  speedtest \
+  synedit1 \
+  taborder \
+  testall \
+  toolbar \
+  trackbar
+
+[require]
+libc=y
+packages=regexpr
+
+[clean]
+files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) \
+  $(wildcard units/$(CPU_TARGET)-$(OS_TARGET)/*$(OEXT)) \
+  $(wildcard units/$(CPU_TARGET)-$(OS_TARGET)/*$(PPUEXT)) \
+  $(wildcard trayicon/*$(OEXT)) $(wildcard trayicon/*$(PPUEXT)) \
+  $(wildcard units/$(CPU_TARGET)-$(OS_TARGET)/*.or) \
+  hello \
+  bitbutton \
+  checkbox \
+  combobox \
+  comdialogs \
+  edittest \
+  groupbox \
+  groupboxnested \
+  listboxtest \
+  listviewtest \
+  loadpicture \
+  memotest \
+  messagedialogs \
+  notebk \
+  notebooktest \
+  progressbar \
+  scrollbar \
+  speedtest \
+  synedit1 \
+  taborder \
+  testall \
+  toolbar \
+  trackbar
+
+[default]
+            
+[compiler]
+options=-gl  
+unitdir=../lcl/units/$(CPU_TARGET)-$(OS_TARGET) \
+        ../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
+        ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) \
+        ../components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) \
+        ../components/synedit/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
+        .
+units=allexamples
+
+
+[prerules]
+ifndef LCL_PLATFORM
+ifneq ($(findstring $(OS_TARGET),win32 win64),)
+LCL_PLATFORM=win32
+else
+ifeq ($(OS_TARGET),wince)
+LCL_PLATFORM=wince
+else
+ifeq ($(OS_TARGET),darwin)
+LCL_PLATFORM=carbon
+else
+LCL_PLATFORM=gtk2
+endif
+endif
+endif
+export LCL_PLATFORM
+endif
+
+#
+# apptype gui
+ifeq ($(OS_TARGET),win32)
+LAZARUS_OPT+= -WG
+endif
+
+#-----------------------------------------------------------------------------
+[rules]
+.PHONY: help cleanall clean
+
+#-----------------------------------------------------------------------------
+help:
+	@$(ECHO)
+	@$(ECHO) " Targets"
+	@$(ECHO) "   all    build all simple examples"
+	@$(ECHO) "          Requires LCL and basecomponents, see make help of main directory"
+	@$(ECHO) "          Note: There are more complex examples in the sub directories."
+	@$(ECHO) "   clean  deletes files that 'all' creates"
+	@$(ECHO)
+	@$(ECHO) Clean up:
+	@$(ECHO) "  There is no command to clean up a svn repository completely, but"
+	@$(ECHO) "  you can use the following command under Linux/OS X:"
+	@$(ECHO) "  svn status | grep '\?' | sed -e 's/\? *//' | xargs rm -r"
+	@$(ECHO)
+	@exit
+
+
+cleanall: clean

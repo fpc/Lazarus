@@ -1,0 +1,398 @@
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2014-10-03 17:49+0100\n"
+"Last-Translator: Giuliano Colla <giuliano.colla@fastwebnet.it>\n"
+"Language-Team: PincoPallo Team\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.5.1\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+
+#: fpwebstrconsts.scssfile
+msgid "CSS file"
+msgstr "file CSS"
+
+#: fpwebstrconsts.scssfiledesc
+msgid "Create new CSS file ..."
+msgstr "Crea un nuovo file CSS ..."
+
+#: fpwebstrconsts.scsssource
+msgid "Enter your classes/style definitions here"
+msgstr "Scrivi qui le tue definizioni di classi e stili"
+
+#: fpwebstrconsts.sdocumentlocation
+msgid "&Location"
+msgstr "&Posizione:"
+
+#: fpwebstrconsts.sdocumentroot
+msgid "&Directory"
+msgstr "&Cartella"
+
+#: fpwebstrconsts.senteryoutext
+msgid "Enter your text ..."
+msgstr "Inserisci il tuo testo ..."
+
+#: fpwebstrconsts.shtmlautor
+msgid "Html &author - <meta name=\"author\">"
+msgstr "&Autore html - <meta name=\"autore\">"
+
+#: fpwebstrconsts.shtmlcharset
+msgid "HTML chars&et"
+msgstr "Chars&et HTML"
+
+#: fpwebstrconsts.shtmlcopyright
+msgid "Html cop&yright - meta name=\"copyright\">"
+msgstr "Co&yright html - <meta name=\"copyright\">"
+
+#: fpwebstrconsts.shtmlcssfile
+msgid "&CSS file"
+msgstr "File &CSS"
+
+#: fpwebstrconsts.shtmldesign
+msgid "HTML design"
+msgstr "Design HTML"
+
+#: fpwebstrconsts.shtmlfile
+msgid "HTML file"
+msgstr "File HTML"
+
+#: fpwebstrconsts.shtmlfiledesc
+msgid "Create new HTML file ..."
+msgstr "Crea un nuovo file HTML ..."
+
+#: fpwebstrconsts.shtmlinputformaccesskey
+msgid "Access key"
+msgstr "Chiave di accesso"
+
+#: fpwebstrconsts.shtmlinputformalign
+msgid "Align"
+msgstr "Allineamento"
+
+#: fpwebstrconsts.shtmlinputformalt
+msgid "Alt"
+msgstr "Alternato"
+
+#: fpwebstrconsts.shtmlinputformcaption
+msgid "Tag property: INPUT"
+msgstr "Proprietà tag: INPUT"
+
+#: fpwebstrconsts.shtmlinputformimagesrc
+msgid "Image src"
+msgstr "Sorgente immagine"
+
+#: fpwebstrconsts.shtmlinputformmaxlen
+msgid "Max length"
+msgstr "Lungh. max"
+
+#: fpwebstrconsts.shtmlinputformname
+msgid "Name"
+msgstr "Nome"
+
+#: fpwebstrconsts.shtmlinputformsize
+msgid "Size"
+msgstr "Dimensione"
+
+#: fpwebstrconsts.shtmlinputformtabindex
+msgid "Tab Index"
+msgstr "Indice tab"
+
+#: fpwebstrconsts.shtmlinputformtype
+msgid "Type"
+msgstr "Tipo"
+
+#: fpwebstrconsts.shtmlinputformvalue
+msgid "Value"
+msgstr "Valore"
+
+#: fpwebstrconsts.shtmljsfile
+msgid "&Javascript file"
+msgstr "File &javascript"
+
+#: fpwebstrconsts.shtmltableformborderwidth
+msgid "Border width"
+msgstr "Spessore bordo"
+
+#: fpwebstrconsts.shtmltableformcaption
+msgid "New HTML table ..."
+msgstr "Nuova tabella HTML ..."
+
+#: fpwebstrconsts.shtmltableformcellpadding
+msgid "Cell padding"
+msgstr "Distanza celle"
+
+#: fpwebstrconsts.shtmltableformcellspacing
+msgid "Cell spacing"
+msgstr "Spaziatura celle"
+
+#: fpwebstrconsts.shtmltableformcolumncount
+msgid "Column count"
+msgstr "Numero colonne"
+
+#: fpwebstrconsts.shtmltableformheaderbgcolor
+msgid "Header bg color"
+msgstr "Colore sfondo header"
+
+#: fpwebstrconsts.shtmltableformrowcount
+msgid "Row count"
+msgstr "Numero righe"
+
+#: fpwebstrconsts.shtmltableformuseheader
+msgid "Use header row"
+msgstr "Usa titolo riga"
+
+#: fpwebstrconsts.shtmltableformwidth
+msgid "Width"
+msgstr "Larghezza"
+
+#: fpwebstrconsts.shtmltagcaptionreset
+msgid "Reset"
+msgstr "Ripristina"
+
+#: fpwebstrconsts.shtmltagcaptionsubmit
+msgid "Submit"
+msgstr "Invia"
+
+#: fpwebstrconsts.shtmltagproperty
+msgid "Tag property: %s"
+msgstr "Proprietà tag: %s"
+
+#: fpwebstrconsts.shtmltitle
+msgid "Html &title - <title>"
+msgstr "&Titolo HTML - <title>"
+
+#: fpwebstrconsts.shttpport
+msgid "&Port to listen for requests:"
+msgstr "&Porta da ascoltare per le richieste:"
+
+#: fpwebstrconsts.sjsfile
+msgid "Javascript file"
+msgstr "File javascript"
+
+#: fpwebstrconsts.sjsfiledesc
+msgid "Create new javascript file ..."
+msgstr "Crea un nuovo file javascript."
+
+#: fpwebstrconsts.sjssource
+msgid "Enter your javascript code here"
+msgstr "Scrivi qui il tuo codice javascript"
+
+#: fpwebstrconsts.smihtmleditor
+msgid "HTML Editor"
+msgstr "Editor HTML"
+
+#: fpwebstrconsts.smihtmlformbuttton
+msgid "Insert Button control"
+msgstr "Inserisci controllo Button"
+
+#: fpwebstrconsts.smihtmlformcheckbox
+msgid "Insert CheckBox control"
+msgstr "Inserisci controllo CheckBox"
+
+#: fpwebstrconsts.smihtmlformfieldset
+msgid "Insert HTML FIELDSET tag"
+msgstr "Inserisci tag FIELDSET HTML"
+
+#: fpwebstrconsts.smihtmlformlegend
+msgid "Insert HTML LEGEND tag"
+msgstr "Inserisci tag HTML LEGEND"
+
+#: fpwebstrconsts.smihtmlformradiobtn
+msgid "Insert RadioBtn control"
+msgstr "Inserisci controllo RadioBtn"
+
+#: fpwebstrconsts.smihtmlforms
+msgid "Forms"
+msgstr "Moduli"
+
+#: fpwebstrconsts.smihtmlformselect
+msgid "Insert Select control"
+msgstr "Inserisci controllo Select"
+
+#: fpwebstrconsts.smihtmlformselectopt
+msgid "Insert Select options"
+msgstr "Inserisci opzioni Select"
+
+#: fpwebstrconsts.smihtmlformselectoptwd
+msgid "Insert Select options with dialog"
+msgstr "Inserisci opzioni Select con dialog"
+
+#: fpwebstrconsts.smihtmlinsertbr
+msgid "Insert new line"
+msgstr "Inserisci nuova riga"
+
+#: fpwebstrconsts.smihtmlinsertcolor
+msgid "Insert HTML color value"
+msgstr "Inserisci valore colore HTML"
+
+#: fpwebstrconsts.smihtmlinsertcomment
+msgid "Insert HTML comment"
+msgstr "Inserisci commento HTML"
+
+#: fpwebstrconsts.smihtmlinsertdivblock
+msgid "Insert HTML DIV tag"
+msgstr "Inserisci tag DIV HTML"
+
+#: fpwebstrconsts.smihtmlinsertform
+msgid "Insert HTML Form"
+msgstr "Inserisci Form HTML"
+
+#: fpwebstrconsts.smihtmlinsertheader1level
+msgid "Insert HTML level 1 header"
+msgstr "Inserisci header HTML livello 1"
+
+#: fpwebstrconsts.smihtmlinsertheader2level
+msgid "Insert HTML level 2 header"
+msgstr "Inserisci header HTML livello 2"
+
+#: fpwebstrconsts.smihtmlinsertheader3level
+msgid "Insert HTML level 3 header"
+msgstr "Inserisci header HTML livello 3"
+
+#: fpwebstrconsts.smihtmlinsertheader4level
+msgid "Insert HTML level 4 header"
+msgstr "Inserisci header HTML livello 4"
+
+#: fpwebstrconsts.smihtmlinsertheader5level
+msgid "Insert HTML level 5 header"
+msgstr "Inserisci header HTML livello 5"
+
+#: fpwebstrconsts.smihtmlinserthr
+msgid "Insert horizontal line"
+msgstr "Inserisci riga orizzontale"
+
+#: fpwebstrconsts.smihtmlinsertimg
+msgid "Insert image"
+msgstr "Inserisci immagine"
+
+#: fpwebstrconsts.smihtmlinsertinput
+msgid "Insert HTML INPUT tag"
+msgstr "Inserisci tag INPUT HTML"
+
+#: fpwebstrconsts.smihtmlinsertinputreset
+msgid "Insert \"Reset\" button"
+msgstr "Inserisci bottone \"Reset\""
+
+#: fpwebstrconsts.smihtmlinsertinputsubmit
+msgid "Insert \"Submit\" button "
+msgstr "Inserisci bottone \"Submit\""
+
+#: fpwebstrconsts.smihtmlinsertlink
+msgid "Insert link (HREF)"
+msgstr "Inserisci link (HREF)"
+
+#: fpwebstrconsts.smihtmlinsertlist
+msgid "Insert HTML list"
+msgstr "Inserisci lista HTML"
+
+#: fpwebstrconsts.smihtmlinsertnbsp
+msgid "Insert Non Breaking Space"
+msgstr "Inserisci spazio non-breaking"
+
+#: fpwebstrconsts.smihtmlinsertpre
+msgid "Insert HTML PRE tag"
+msgstr "Inserisci tag HTML PRE"
+
+#: fpwebstrconsts.smihtmlinsertspantext
+msgid "Insert HTML SPAN tag"
+msgstr "Inserisci tag HTML SPAN"
+
+#: fpwebstrconsts.smihtmlinsertsub
+msgid "Insert Subscript"
+msgstr "Inserisci pedici"
+
+#: fpwebstrconsts.smihtmlinsertsuper
+msgid "Insert Superscript"
+msgstr "Inserisci apici"
+
+#: fpwebstrconsts.smihtmlinserttable
+msgid "Insert HTML table"
+msgstr "Inserisci tabella HTML"
+
+#: fpwebstrconsts.smihtmlinserttabledata
+msgid "Insert HTML table data"
+msgstr "Inserisci dati tabella HTML"
+
+#: fpwebstrconsts.smihtmlinserttabledatawd
+msgid "Insert HTML table data with dialog"
+msgstr "Inserisci tabella HTML con dialog"
+
+#: fpwebstrconsts.smihtmlinserttablerow
+msgid "Insert HTML table row"
+msgstr "Inserisci riga di tabella HTML"
+
+#: fpwebstrconsts.smihtmlinserttablerowwd
+msgid "Insert HTML table row with dialog"
+msgstr "Inserisci riga di tabella HTML con dialog"
+
+#: fpwebstrconsts.smihtmllists
+msgid "Lists"
+msgstr "Liste"
+
+#: fpwebstrconsts.smihtmlother
+msgid "Other"
+msgstr "Altro"
+
+#: fpwebstrconsts.smihtmlstandart
+msgid "Standard"
+msgstr "Standard"
+
+#: fpwebstrconsts.smihtmlstyle
+msgid "Styles"
+msgstr "Stili"
+
+#: fpwebstrconsts.smihtmltables
+msgid "Tables"
+msgstr "Tabelle"
+
+#: fpwebstrconsts.smihtmltextaligncenter
+msgid "Text align center"
+msgstr "Allinea testo al centro"
+
+#: fpwebstrconsts.smihtmltextalignjustify
+msgid "Text align justify"
+msgstr "Allinea testo giustificato"
+
+#: fpwebstrconsts.smihtmltextalignleft
+msgid "Text align left"
+msgstr "Allinea testo a sinistra"
+
+#: fpwebstrconsts.smihtmltextalignright
+msgid "Text align right"
+msgstr "Allinea testo a destra"
+
+#: fpwebstrconsts.smihtmltextbold
+msgid "Bold"
+msgstr "Grassetto"
+
+#: fpwebstrconsts.smihtmltextitalic
+msgid "Italic"
+msgstr "Corsivo"
+
+#: fpwebstrconsts.smihtmltextunderline
+msgid "Underline"
+msgstr "Sottolineato"
+
+#: fpwebstrconsts.smiotherinsertfn
+msgid "Insert file name"
+msgstr "Inserisci nome di file"
+
+#: fpwebstrconsts.snewhtmlfileprops
+msgid "New Html file properties"
+msgstr "Proprietà del nuovo file HTML"
+
+#: fpwebstrconsts.snewhttpapp
+msgid "New HTTP application"
+msgstr "Nuova applicazione HTTP"
+
+#: fpwebstrconsts.sregisterfiles
+msgid "&Register location to serve files from"
+msgstr "&Registra la locazione da cui servire i file"
+
+#: fpwebstrconsts.susethreads
+msgid "Use &threads to serve requests in"
+msgstr "Usare &threads per servire richieste in"
+

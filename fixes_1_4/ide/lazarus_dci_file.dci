@@ -1,0 +1,241 @@
+[arrayd | array declaration (var)]
+$(AttributesStart)
+EnableMakros=true
+RemoveChar=true
+$(AttributesEnd)
+$Param(VariableName): array[0..$Param(HighNumber)] of $Param(Type);
+|
+[arrayc | array declaration (const)]
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
+array[$param(0)..$param(1)] of $param(Type) = (|);
+[cases | case statement]
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
+case $param(var) of
+  : |;
+  : ;
+end;
+[be | begin end else begin end]
+begin
+  |
+end else
+begin
+
+end;
+[casee | case statement (with else)]
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
+case $param(var) of
+  : |;
+  : ;
+else ;
+end;
+[classf | class declaration (all parts)]
+$(AttributesStart)
+EnableMakros=true
+RemoveChar=true
+$(AttributesEnd)
+$Param(ClassName) = class($Param(InheritedClass))
+private
+
+public
+  |
+  constructor Create;
+  destructor Destroy; override;
+end;
+[classd | class declaration (no parts)]
+$(AttributesStart)
+EnableMakros=true
+RemoveChar=true
+$(AttributesEnd)
+$Param(ClassName) = class($Param(InheritedClass))
+|
+end;
+[classc | class declaration (with Create/Destroy overrides)]
+$(AttributesStart)
+EnableMakros=true
+RemoveChar=true
+$(AttributesEnd)
+$Param(ClassName) = class($Param(InheritedClass))
+private
+
+protected
+
+public
+  |
+  constructor Create; override;
+  destructor Destroy; override;
+published
+end;
+[d | debugln]
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
+debugln(['$ProcedureName() '|]);
+[fors | for (no begin/end)]
+$(AttributesStart)
+EnableMakros=true
+RemoveChar=true
+$(AttributesEnd)
+for $Param(CounterVar) := $Param(0) to Pred($Param(Count)) do
+  |
+[forb | for statement]
+$(AttributesStart)
+EnableMakros=true
+RemoveChar=true
+$(AttributesEnd)
+for $Param(CounterVar) := $Param(0) to Pred($Param(Count)) do
+begin
+  |
+end;
+[function | function declaration]
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
+function $param(Name)($param( )): $param(Type);
+begin
+  |
+end;
+[hexc | HexStr(Cardinal(),8)]
+HexStr(PtrUInt(|),8)
+[ifs | if (no begin/end)]
+if $Param(Conditional) then
+  |
+[ifb | if statement]
+$(AttributesStart)
+EnableMakros=true
+RemoveChar=true
+$(AttributesEnd)
+if $Param(Conditional) then
+begin
+  |
+end;
+[ife | if then (no begin/end) else (no begin/end)]
+$(AttributesStart)
+EnableMakros=true
+RemoveChar=true
+$(AttributesEnd)
+if $Param(Conditional) then
+  |
+else
+[ifeb | if then else]
+$(AttributesStart)
+EnableMakros=true
+RemoveChar=true
+$(AttributesEnd)
+if $Param(Conditional) then
+begin
+  |
+end
+else begin
+
+end;
+[procedure | procedure declaration]
+procedure $Param(ProcName)|($Param());
+begin
+  |
+end;
+[ofall | case of all enums]
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
+of
+|$OfAll()end;
+[trye | try except]
+try
+  | 
+except
+
+end;
+[tryf | try finally]
+$(AttributesStart)
+EnableMakros=true
+RemoveChar=true
+$(AttributesEnd)
+try
+  |
+finally
+  $Param(FreeStatement,default)
+end;
+[trycf | try finally (with Create/Free)]
+$(AttributesStart)
+EnableMakros=true
+RemoveChar=true
+$(AttributesEnd)
+$Param(VarName) := $Param(TMyClassName).Create;
+try
+  |
+finally
+  $Param(VarName,Sync=1).Free;
+end;
+[whileb | while statement]
+$(AttributesStart)
+EnableMakros=true
+RemoveChar=true
+$(AttributesEnd)
+while $Param(LoopCondition) do
+begin
+  |
+end;
+[whiles | while (no begin)]
+while $Param(LoopCondition) do
+  |
+[withb | with statement]
+$(AttributesStart)
+EnableMakros=true
+RemoveChar=true
+$(AttributesEnd)
+with $Param(Object) do
+begin
+  |
+end;
+[b | begin end]
+begin
+  |
+end;
+[withs | with (no begin)]
+$(AttributesStart)
+EnableMakros=true
+RemoveChar=true
+$(AttributesEnd)
+with $Param(Object) do
+  |
+[withc | with for components]
+$(AttributesStart)
+EnableMakros=true
+RemoveChar=true
+$(AttributesEnd)
+with $Param(Object) do
+begin
+  Name:='$Param(NameText)';
+  Parent:=Self;
+  Left:=$Param(0);
+  Top:=$Param(0);
+  Width:=$Param(0);
+  Height:=$Param(0);
+  Caption:='$Param(CaptionText)';
+end;
+|
+[fpc | Conditional FPC Mode]
+$(AttributesStart)
+RemoveChar=true
+$(AttributesEnd)
+{$IFDEF FPC}
+  {$mode objfpc}{$H+}
+{$ENDIF}
+|
+[todo | ToDo item creator]
+$(AttributesStart)
+EnableMakros=true
+RemoveChar=true
+$(AttributesEnd)
+{ TODO -o$Param(Author) : $Param(Note) } |
+[w | writeln]
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
+writeln('$ProcedureName() '|);

@@ -1,0 +1,32 @@
+object PackageProvidesOptionsFrame: TPackageProvidesOptionsFrame
+  Left = 0
+  Height = 358
+  Top = 0
+  Width = 480
+  ClientHeight = 358
+  ClientWidth = 480
+  TabOrder = 0
+  DesignLeft = 245
+  DesignTop = 173
+  object ProvidesGroupBox: TGroupBox
+    Left = 0
+    Height = 358
+    Top = 0
+    Width = 480
+    Align = alClient
+    Caption = 'This package provides the same as the following packages:'
+    ClientHeight = 341
+    ClientWidth = 476
+    TabOrder = 0
+    object ProvidesMemo: TMemo
+      Left = 6
+      Height = 329
+      Top = 6
+      Width = 464
+      Align = alClient
+      BorderSpacing.Around = 6
+      ScrollBars = ssAutoVertical
+      TabOrder = 0
+    end
+  end
+end

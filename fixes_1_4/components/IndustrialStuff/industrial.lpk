@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="4">
+    <PathDelim Value="\"/>
+    <Name Value="industrial"/>
+    <Author Value="Jurassic Pork"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <IncludeFiles Value="source"/>
+        <OtherUnitFiles Value="source"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <CodeGeneration>
+        <SmartLinkUnit Value="True"/>
+        <Optimizations>
+          <OptimizationLevel Value="2"/>
+        </Optimizations>
+      </CodeGeneration>
+      <Linking>
+        <Debugging>
+          <GenerateDebugInfo Value="False"/>
+        </Debugging>
+      </Linking>
+      <Other>
+        <CompilerMessages>
+          <MsgFileName Value=""/>
+        </CompilerMessages>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="Industrial-themed (IPV/PCV) components and gauges (e.g. LEDs)."/>
+    <License Value="MPL  + GPL "/>
+    <Version Minor="1"/>
+    <Files Count="10">
+      <Item1>
+        <Filename Value="source\indled.pas"/>
+        <UnitName Value="IndLed"/>
+      </Item1>
+      <Item2>
+        <Filename Value="source\sensors.pas"/>
+        <UnitName Value="Sensors"/>
+      </Item2>
+      <Item3>
+        <Filename Value="source\AllIndustrialRegister.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="AllIndustrialRegister"/>
+      </Item3>
+      <Item4>
+        <Filename Value="source\lednumber.pas"/>
+        <UnitName Value="LedNumber"/>
+      </Item4>
+      <Item5>
+        <Filename Value="source\indgnoumeter.pas"/>
+        <UnitName Value="IndGnouMeter"/>
+      </Item5>
+      <Item6>
+        <Filename Value="source\AdvLed.pas"/>
+        <UnitName Value="AdvLed"/>
+      </Item6>
+      <Item7>
+        <Filename Value="source\indcyBaseLed.pas"/>
+        <UnitName Value="indcyBaseLed"/>
+      </Item7>
+      <Item8>
+        <Filename Value="source\indcyClasses.pas"/>
+        <UnitName Value="indcyClasses"/>
+      </Item8>
+      <Item9>
+        <Filename Value="source\indcyGraphics.pas"/>
+        <UnitName Value="indcyGraphics"/>
+      </Item9>
+      <Item10>
+        <Filename Value="source\indcyTypes.pas"/>
+        <UnitName Value="indcyTypes"/>
+      </Item10>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="1">
+      <Item1>
+        <PackageName Value="IDEIntf"/>
+      </Item1>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count"/>
+    </CustomOptions>
+  </Package>
+</CONFIG>

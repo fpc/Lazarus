@@ -1,0 +1,50 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2010-11-28 17:20+0100\n"
+"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
+"Language-Team: Deutsch <lazarus@miraclec.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-Country: GERMANY\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: frmselectdataset.scancelbtn
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: frmselectdataset.scaption
+msgid "Select dataset to copy from"
+msgstr ""
+
+#: frmselectdataset.scopymeta
+msgid "Copy only metadata"
+msgstr "Nur Metadaten kopieren"
+
+#: frmselectdataset.sdataset
+msgid "&Dataset to copy from:"
+msgstr ""
+
+#: frmselectdataset.serrcomponentnotfound
+msgid "Error: Component \"%s\" not found"
+msgstr "Fehler: Komponente »%s« nicht gefunden"
+
+#: frmselectdataset.serrselectdataset
+msgid "Please select a dataset first"
+msgstr "Bitte wählen Sie zuerst ein Dataset"
+
+#: frmselectdataset.smenucopydataset
+msgid "Copy data from Dataset"
+msgstr "Daten aus Dataset kopieren"
+
+#: frmselectdataset.smenucreatedataset
+msgid "Create dataset"
+msgstr "Dataset erzeugen"
+
+#: frmselectdataset.sokbtn
+msgid "OK"
+msgstr "OK"
+

@@ -1,0 +1,586 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    customdrawn_android
+  ====================================================================
+-->
+
+<module name="customdrawn_android">
+<short></short>
+<descr>
+</descr>
+
+<!-- class Visibility: default -->
+<element name="TCDDrawerAndroid">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCDDrawerAndroid.bmpCheckbox">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCDDrawerAndroid.bmpCheckboxChecked">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCDDrawerAndroid.DrawCheckBoxBitmap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawCheckBoxBitmap.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawCheckBoxBitmap.ADestPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawCheckBoxBitmap.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawCheckBoxBitmap.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawCheckBoxBitmap.ABackgroundColor">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCDDrawerAndroid.DrawTransparentRoundCorners">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawTransparentRoundCorners.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawTransparentRoundCorners.ADestPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawTransparentRoundCorners.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawTransparentRoundCorners.AColor">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCDDrawerAndroid.DrawVerticalLineWithFirstLast">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawVerticalLineWithFirstLast.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawVerticalLineWithFirstLast.X">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawVerticalLineWithFirstLast.Y1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawVerticalLineWithFirstLast.Y2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawVerticalLineWithFirstLast.AColorTop">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawVerticalLineWithFirstLast.AColorMiddle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawVerticalLineWithFirstLast.AColorEnd">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCDDrawerAndroid.DrawAndroidAlternatedHorzLine">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawAndroidAlternatedHorzLine.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawAndroidAlternatedHorzLine.X1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawAndroidAlternatedHorzLine.X2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawAndroidAlternatedHorzLine.Y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawAndroidAlternatedHorzLine.AColor1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawAndroidAlternatedHorzLine.AColor2">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCDDrawerAndroid.DrawAndroidMixedVertGradientFill">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawAndroidMixedVertGradientFill.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawAndroidMixedVertGradientFill.ARect">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawAndroidMixedVertGradientFill.AStart1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawAndroidMixedVertGradientFill.AStop1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawAndroidMixedVertGradientFill.AStart2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawAndroidMixedVertGradientFill.AStop2">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCDDrawerAndroid.DrawAndroidMixedFill">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawAndroidMixedFill.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawAndroidMixedFill.ARect">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawAndroidMixedFill.AColor1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawAndroidMixedFill.AColor2">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCDDrawerAndroid.DrawAndroidGradientCircle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawAndroidGradientCircle.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawAndroidGradientCircle.ADestPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawAndroidGradientCircle.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawAndroidGradientCircle.ABorderColor">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawAndroidGradientCircle.ATopColor">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawAndroidGradientCircle.ABottomColor">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerAndroid.CreateResources">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerAndroid.LoadResources">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerAndroid.FreeResources">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TCDDrawerAndroid.GetDrawStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCDDrawerAndroid.GetDrawStyle.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TCDDrawerAndroid.GetMeasures">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCDDrawerAndroid.GetMeasures.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.GetMeasures.AMeasureID">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerAndroid.DrawTickmark">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawTickmark.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawTickmark.ADestPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawTickmark.AState">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerAndroid.DrawButton">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawButton.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawButton.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawButton.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawButton.AStateEx">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerAndroid.DrawEditBackground">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawEditBackground.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawEditBackground.ADestPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawEditBackground.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawEditBackground.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawEditBackground.AStateEx">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerAndroid.DrawEditFrame">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawEditFrame.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawEditFrame.ADestPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawEditFrame.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawEditFrame.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawEditFrame.AStateEx">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerAndroid.DrawCheckBoxSquare">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawCheckBoxSquare.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawCheckBoxSquare.ADestPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawCheckBoxSquare.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawCheckBoxSquare.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawCheckBoxSquare.AStateEx">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerAndroid.DrawRadioButtonCircle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawRadioButtonCircle.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawRadioButtonCircle.ADestPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawRadioButtonCircle.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawRadioButtonCircle.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerAndroid.DrawRadioButtonCircle.AStateEx">
+<short></short>
+</element>
+
+</module> <!-- customdrawn_android -->
+
+</package>
+</fpdoc-descriptions>

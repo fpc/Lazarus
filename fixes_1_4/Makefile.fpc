@@ -1,0 +1,444 @@
+#
+#   Makefile.fpc for Lazarus for Free Pascal
+#
+
+[package]
+name=lazarus
+version=$(IDEVERSION)
+
+[require]
+packages=regexpr
+
+[target]
+programs=lazarus startlazarus lazbuild
+dirs=
+
+[compiler]
+
+[clean]
+files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT)) $(wildcard *.lfm)
+
+[install]
+fpcpackage=n
+basedir=share/lazarus
+
+[dist]
+destdir=$(BASEDIR)/dist
+
+[prerules]
+RCPP?=$(strip $(firstword cpp$(SRCEXEEXT)))
+#
+LAZARUS_INSTALL_DIR=$(INSTALL_PREFIX)/share/lazarus
+INSTALL_MAN_DIR=$(INSTALL_PREFIX)/share/man
+ifneq ($(findstring $(OS_TARGET),win32 win64),)
+LAZARUS_INSTALL_DIR=C:\lazarus
+endif
+ifneq ($(findstring $(OS_TARGET),freebsd),)
+LAZARUS_INSTALL_DIR=/usr/local/lazarus
+endif
+ifneq ($(findstring $(OS_TARGET),win32 win64),)
+IDEVERSION=$(shell .\tools\install\get_lazarus_version.bat)
+else
+IDEVERSION=$(shell ./tools/install/get_lazarus_version.sh)
+endif
+
+#-----------------------------------------------------------------------------
+[rules]
+.PHONY: help registration lazutils codetools tools lcl basecomponents bigidecomponents lazbuild ide idepkg idebig cleanide bigide useride starter lhelp all clean purge distclean install
+
+#-----------------------------------------------------------------------------
+help:
+	@$(ECHO)
+	@$(ECHO) " Main targets"
+	@$(ECHO) "                  Without any target, target 'all' will be invoked."
+	@$(ECHO) "   all            build minimal IDE, lazbuild, startlazarus."
+	@$(ECHO) "   clean          deletes files that 'all' creates. It does not clean up all possible"
+	@$(ECHO) "                  targets. Clean other target: make clean LCL_PLATFORM=qt"
+	@$(ECHO) "   distclean      Clean all targets and common leftovers."
+	@$(ECHO) "   lazbuild       build lazbuild and lcl with nogui widgetset"
+	@$(ECHO) "   bigide         as all, except that the IDE is built with a lot of extra packages"
+	@$(ECHO) "   useride        calls lazbuild to build an IDE with your active profile, requires lazbuild"
+	@$(ECHO) "   install        installs Lazarus under $(LAZARUS_INSTALL_DIR)"
+	@$(ECHO) "                  You can change the directory by appending INSTALL_PREFIX=/some/path"
+	@$(ECHO)
+	@$(ECHO) " Sub targets"
+	@$(ECHO) "   registration   build package FCL"
+	@$(ECHO) "   lazutils       build package LazUtils, requires registration"
+	@$(ECHO) "   codetools      build package CodeTools, requires lazutils"
+	@$(ECHO) "   lcl            build package LCL, requires lazutils"
+	@$(ECHO) "   tools          build lazres, svn2revisioninc, updatepofiles, lrstolfm,"
+	@$(ECHO) "                  requires LCL with nogui widgetset"
+	@$(ECHO) "   basecomponents build debuggerintf, lazdebuggergdbmi, lazcontrols, synedit, ideintf"
+       	@$(ECHO) "                  for the LCL_PLATFORM, requires lcl"
+	@$(ECHO) "   bigidecomponents build many extra packages for the LCL_PLATFORM, requires basecomponents"
+	@$(ECHO) "   lhelp          build lhelp, requires bigidecomponents"
+	@$(ECHO) "   starter        build startlazarus, requires basecomponents"
+	@$(ECHO) "   examples       build basic examples, requires basecomponents"
+	@$(ECHO) "                  Note: There are more examples having their own directory"
+	@$(ECHO)
+	@$(ECHO) " Usage examples:"
+	@$(ECHO)
+	@$(ECHO) " Updating svn and build a minimal IDE, startlazarus and lazbuild:"
+	@$(ECHO) "   make clean"
+	@$(ECHO) "   svn up"
+	@$(ECHO) "   make clean all"
+	@$(ECHO)
+	@$(ECHO) " Note: You can start lazarus with 'startlazarus'"
+	@$(ECHO) " Note: Use the IDE or lazbuild to compile your projects/packages."
+	@$(ECHO)
+	@$(ECHO) " Updating svn and build an IDE with your last set of packages:"
+	@$(ECHO) "   make clean"
+	@$(ECHO) "   svn up"
+	@$(ECHO) "   make clean lazbuild useride"
+	@$(ECHO)
+	@$(ECHO) " Clean up:"
+	@$(ECHO) "  There is no command to clean up a svn repository completely, but"
+	@$(ECHO) "  you can use the following command under Linux/OS X:"
+	@$(ECHO) "  svn status | grep '\?' | sed -e 's/\? *//' | xargs rm -r"
+	@$(ECHO)
+	@$(ECHO) "  Another possibility is to create a clean copy via the "svn export" command."
+	@$(ECHO)
+	@$(ECHO) " Install:"
+	@$(ECHO) "   Note: You can use Lazarus without installing. Just start the lazarus executable."
+	@$(ECHO) "   1. Build Lazarus as normal user with one of the above commands."
+	@$(ECHO) "   2. Install as root into /usr"
+	@$(ECHO) "          sudo make install"
+	@$(ECHO) "      This installs startlazarus, lazarus-ide, lazbuild under /usr/bin"
+	@$(ECHO) "      and copies the whole lazarus source directory to /usr/share/lazarus"
+	@$(ECHO)
+	@exit
+
+#-----------------------------------------------------------------------------
+# build package FCL (shared by all LCL_PLATFORMs)
+registration:
+	$(MAKE) -C packager/registration
+
+#-----------------------------------------------------------------------------
+# build package LazUtils, requires registration (shared by all LCL_PLATFORMs)
+lazutils:
+	$(MAKE) -C components/lazutils
+
+#-----------------------------------------------------------------------------
+# build package CodeTools, requires lazutils (shared by all LCL_PLATFORMs)
+codetools:
+	$(MAKE) -C components/codetools
+
+#-----------------------------------------------------------------------------
+# build package LCLBase and LCL for LCL_PLATFORM
+# requires lazutils
+lcl:
+	$(MAKE) -C lcl
+
+#-----------------------------------------------------------------------------
+# build lazcontrols, synedit, ideintf for the LCL_PLATFORM
+# (Note: lazutils and codetools are shared on all LCL platforms)
+# requires lcl
+basecomponents:
+	$(MAKE) -C components/debuggerintf
+	$(MAKE) -C components/lazcontrols
+	$(MAKE) -C components/synedit
+	$(MAKE) -C components/ideintf
+	$(MAKE) -C components/lazdebuggergdbmi
+
+#-----------------------------------------------------------------------------
+# build a lot of extra packages for the LCL_PLATFORM
+# requires basecomponents
+bigidecomponents:
+	$(MAKE) -C components bigide
+
+#-----------------------------------------------------------------------------
+# build lazres, svn2revisioninc, updatepofiles, lrstolfm
+# requires codetools and LCL with nogui widgetset
+tools:
+	$(MAKE) -C tools
+
+#-----------------------------------------------------------------------------
+# create/update ide/revision.inc
+# requires tools
+revisioninc:
+	$(MAKE) -C ide revisioninc
+
+#-----------------------------------------------------------------------------
+# build lazarus exe with minimum of packages for the LCL_PLATFORM
+# requires basecomponents and tools
+ide:
+	$(MAKE) -C ide ide
+
+#-----------------------------------------------------------------------------
+# build lazarus exe with bigide packages for the LCL_PLATFORM
+# requires bigidecomponents and tools
+idebig:
+	$(MAKE) -C ide bigide
+
+#-----------------------------------------------------------------------------
+# build lazarus exe with user's packages for the LCL_PLATFORM
+# requires user's packages, idemake.cfg and staticpackages.inc
+# called by the IDE/lazbuild
+# the idemake.cfg and staticpackages.inc are created by the IDE or by lazbuild
+idepkg:
+	$(MAKE) -C ide idepkg
+
+#-----------------------------------------------------------------------------
+# calls lazbuild to build lazarus and packages with user's settings
+# requires lazbuild
+# ignores LCL_PLATFORM and OPTS
+useride: 
+	./lazbuild$(SRCEXEEXT) --lazarusdir=. --build-ide=
+
+#-----------------------------------------------------------------------------
+starter:
+	$(MAKE) -C ide starter
+
+#-----------------------------------------------------------------------------
+lazbuild: registration lazutils codetools
+	$(MAKE) -C lcl LCL_PLATFORM=nogui
+	$(MAKE) -C tools
+	$(MAKE) -C components/debuggerintf LCL_PLATFORM=nogui
+	$(MAKE) -C components/lazcontrols LCL_PLATFORM=nogui
+	$(MAKE) -C components/synedit LCL_PLATFORM=nogui
+	$(MAKE) -C components/ideintf LCL_PLATFORM=nogui
+	$(MAKE) -C components/lazdebuggergdbmi LCL_PLATFORM=nogui
+	$(MAKE) -C ide lazbuilder LCL_PLATFORM=nogui
+
+#-----------------------------------------------------------------------------
+# build lhelp
+# requires bigidecomponents
+lhelp:
+	$(MAKE) -C components/chmhelp/lhelp
+
+#-----------------------------------------------------------------------------
+# build examples for the LCL_PLATFORM
+# requires basecomponents
+examples:
+	$(MAKE) -C examples
+
+#-----------------------------------------------------------------------------
+# build lazarus,lcl,lazbuild,startlazarus with base packages for the LCL_PLATFORM
+all: lazbuild lcl basecomponents ide starter
+
+#-----------------------------------------------------------------------------
+# build lazarus,lcl,lazbuild,startlazarus,lhelp with bigide packages for the LCL_PLATFORM
+bigide: lazbuild lcl basecomponents bigidecomponents idebig starter lhelp
+
+#-----------------------------------------------------------------------------
+cleanide:
+	$(MAKE) -C ide cleanide
+
+cleanlaz: cleanide
+	$(MAKE) -C packager/registration clean
+	$(MAKE) -C lcl cleanall
+	$(MAKE) -C components clean
+
+clean: cleanlaz
+	$(MAKE) -C . cleanlaz LCL_PLATFORM=nogui
+	$(MAKE) -C tools clean
+	$(MAKE) -C components/chmhelp/lhelp clean
+
+cleanbigide: clean
+
+purge:
+	$(MAKE) -C ide distclean
+	$(MAKE) -C packager/registration distclean
+	$(MAKE) -C lcl distclean
+	$(MAKE) -C components distclean
+	$(MAKE) -C tools distclean
+	$(MAKE) -C components/chmhelp/lhelp distclean
+
+	$(MAKE) -C examples clean
+#	$(MAKE) -C doceditor clean
+
+cleanall: purge
+
+distclean: purge
+
+# create dirs
+installbase:
+ifneq ($(findstring $(OS_TARGET),win32 win64),)
+
+else
+	$(MKDIR) $(INSTALL_PREFIX)/share
+	$(MKDIR) $(INSTALL_PREFIX)/share/lazarus
+	$(MKDIR) $(INSTALL_PREFIX)/share/applications
+	$(MKDIR) $(INSTALL_PREFIX)/share/pixmaps
+	$(MKDIR) $(INSTALL_PREFIX)/share/mime/packages
+	$(MKDIR) $(INSTALL_PREFIX)/share/icons/hicolor/48x48/mimetypes
+	$(MKDIR) $(INSTALL_BINDIR)
+	$(MKDIR) $(INSTALL_MAN_DIR)
+	$(MKDIR) $(INSTALL_MAN_DIR)/man1
+endif
+#-----------------------------------------------------------------------------
+# Most "make" users expect 'make install' to copy the binaries to somewhere
+# Copy the lazarus tree to the install directory and set some links
+# Copy everything except for 'debian' to avoid recursion and other platform files
+install: installbase
+	$(COPYTREE) packager debugger designer converter ide images languages lazarus.app units $(LAZARUS_INSTALL_DIR)
+	$(COPYTREE) components docs doceditor examples lcl test tools $(LAZARUS_INSTALL_DIR)
+	$(COPYTREE) Makefile* *.txt $(LAZARUS_INSTALL_DIR)
+ifneq ($(findstring $(OS_TARGET),win32 win64),)
+	$(COPYTREE) lazarus startlazarus lazbuild $(LAZARUS_INSTALL_DIR)
+else
+	$(INSTALLEXE) lazarus startlazarus lazbuild $(LAZARUS_INSTALL_DIR)
+
+	# symlinks (they must be relative!)
+	ln -sf ../$(INSTALL_BASEDIR)/lazarus $(INSTALL_PREFIX)/bin/lazarus-ide
+	ln -sf ../$(INSTALL_BASEDIR)/startlazarus $(INSTALL_PREFIX)/bin/startlazarus
+	ln -sf ../$(INSTALL_BASEDIR)/lazbuild $(INSTALL_PREFIX)/bin/lazbuild
+	ln -sf ../$(INSTALL_BASEDIR)/tools/lazres $(INSTALL_PREFIX)/bin/lazres
+	ln -sf ../$(INSTALL_BASEDIR)/tools/lrstolfm $(INSTALL_PREFIX)/bin/lrstolfm
+	ln -sf ../$(INSTALL_BASEDIR)/tools/updatepofiles $(INSTALL_PREFIX)/bin/updatepofiles
+
+	# man pages
+	$(MAKE) -C install/man install PREFIX=$(INSTALL_PREFIX) GINSTALL=$(GINSTALL)
+
+	# start menu item
+	$(INSTALL) install/lazarus.desktop $(INSTALL_PREFIX)/share/applications/lazarus.desktop
+	$(INSTALL) images/icons/lazarus128x128.png $(INSTALL_PREFIX)/share/pixmaps/lazarus.png
+
+	# mime types and icons
+	$(INSTALL) install/lazarus-mime.xml $(INSTALL_PREFIX)/share/mime/packages/lazarus.xml
+	$(INSTALL) images/mimetypes/*.png $(INSTALL_PREFIX)/share/icons/hicolor/48x48/mimetypes/
+
+	# create missing directories (needed when rebuilding IDE without write permission)
+	$(MKDIR) $(LAZARUS_INSTALL_DIR)/units/$(FULL_TARGET)/nogui
+	$(MKDIR) $(LAZARUS_INSTALL_DIR)/units/$(FULL_TARGET)/gtk
+	$(MKDIR) $(LAZARUS_INSTALL_DIR)/units/$(FULL_TARGET)/gtk2
+	$(MKDIR) $(LAZARUS_INSTALL_DIR)/units/$(FULL_TARGET)/qt
+	$(MKDIR) $(LAZARUS_INSTALL_DIR)/components/synedit/design/languages
+endif
+
+
+##########################################################################
+# Debian
+##########################################################################
+
+# Build dir
+ifndef BUILDDIR
+BUILDDIR=$(BASEDIR)/build
+endif
+
+ifeq ($(OS_TARGET),linux)
+
+ifndef DEBDIR
+DEBDIR=debian
+endif
+
+# Link Tree
+ifdef LINKISCOPY
+ifndef LINKTREE
+LINKTREE:=$(CPPROG) -Rfpl
+endif
+else
+ifndef LINKTREE
+LINKTREE:=$(CPPROG) -Rfpl
+endif
+endif
+
+ifneq ($(wildcard ${DEBDIR}/changelog),)
+
+.PHONY: debcopy deb
+
+DEBPACKAGEVERSION:=$(shell head -n 1 ${DEBDIR}/changelog | awk '{ print $$2 }' | tr -d '[()]')
+DEBVERSION=$(firstword $(subst -, ,${DEBPACKAGEVERSION}))
+DEBBUILD=$(lastword $(subst -, ,${DEBPACKAGEVERSION}))
+DEBSRC=${PACKAGE_NAME}-${DEBVERSION}
+DEBSRCDIR=${BUILDDIR}/${DEBSRC}
+DEBSRC_ORIG=${PACKAGE_NAME}_${DEBVERSION}.orig
+BUILDDATE=$(shell /bin/date --utc +%Y%m%d)
+ifdef MENTORS
+DEB_BUILDPKG_OPT=-sa
+else
+DEB_BUILDPKG_OPT=
+endif
+ifeq (${DEBBUILD},0)
+DEBUSESVN=1
+endif
+ifeq (${DEBBUILD},1)
+DEBUSESVN=1
+endif
+ifdef SNAPSHOT
+DEBUSESVN=1
+endif
+ifndef SIGN
+DEB_BUILDPKG_OPT+= -us -uc
+endif
+
+debcheck:
+ifneq ($(DEBVERSION),$(PACKAGE_VERSION))
+	! ${ECHO} "Debian version ($(DEBVERSION)) is not correct, expect $(PACKAGE_VERSION)"
+endif
+ifeq ($(wildcard ${DEBSRC_ORIG}.tar.gz),)
+ifndef DEBUSESVN
+	! ${ECHO} 'Need "${DEBSRC_ORIG}.tar.gz" to build for DEBBUILD = "${DEBBUILD}" > 1'
+endif
+endif
+
+debcopy: distclean
+	${DELTREE} ${BUILDDIR}
+	${MKDIRTREE} ${DEBSRCDIR}
+ifdef DEBUSESVN
+	$(LINKTREE) -t $(DEBSRCDIR) \
+		Makefile.fpc COPYING.* README.txt \
+		components \
+		converter \
+		debugger \
+		designer \
+		doceditor \
+		docs \
+		install \
+		examples \
+		ide \
+		images \
+		languages \
+		lazarus.app \
+		lcl \
+		packager \
+		test \
+		tools
+	# add ide/revision.inc
+	echo "const RevisionStr = '${SVNVERSION}';" > $(DEBSRCDIR)/ide/revision.inc
+else
+	tar -C ${BUILDDIR} -zxf ${DEBSRC_ORIG}.tar.gz ${DEBSRC}
+	${DELTREE} $(DEBSRCDIR)/debian
+endif
+
+debsetup:
+	$(COPYTREE) ${DEBDIR} $(DEBSRCDIR)/debian
+ifdef SNAPSHOT
+	sed -e 's/${DEBPACKAGEVERSION}/${DEBPACKAGEVERSION}~${BUILDDATE}/' -i $(DEBSRCDIR)/debian/changelog
+endif
+	chmod 755 $(DEBSRCDIR)/debian/rules
+	find $(DEBSRCDIR) -name '.svn' | xargs ${DELTREE}
+
+debbuild:
+	cd ${DEBSRCDIR} ; dpkg-buildpackage ${DEB_BUILDPKG_OPT}
+
+debcheckpolicy:
+ifdef LINTIAN
+	cd ${DEBSRCDIR} ; lintian -I -i ../*.changes
+endif
+
+debclean:
+ifndef DEBUSESVN
+	${DEL} ${BUILDDIR}/${DEBSRC_ORIG}.tar.gz
+endif
+	mv -v -t . \
+	$(DEBSRCDIR)/../*.changes \
+	$(DEBSRCDIR)/../*.deb \
+	$(DEBSRCDIR)/../*.dsc \
+	$(DEBSRCDIR)/../*.gz
+	${DELTREE} $(DEBSRCDIR)
+	rmdir $(BUILDDIR)
+
+deb: debcheck debcopy deborigtargz debsetup debbuild debcheckpolicy debclean
+
+deborigtargz:
+ifdef DEBUSESVN
+	#$(MAKE) fpc_zipinstall USETAR=y ZIPTARGET=debcopy PACKDIR=$(DEBSRCDIR) FULLZIPNAME=${DEBSRC_ORIG}
+	tar -C ${BUILDDIR} -zcf ${BUILDDIR}/${DEBSRC_ORIG}.tar.gz --exclude-vcs ${DEBSRC}
+else
+	${LINKTREE} ${DEBSRC_ORIG}.tar.gz ${BUILDDIR}/${DEBSRC_ORIG}.tar.gz
+endif
+
+endif   # changelog found
+
+endif

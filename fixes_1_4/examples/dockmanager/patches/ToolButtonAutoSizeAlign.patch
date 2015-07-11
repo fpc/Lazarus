@@ -1,0 +1,28 @@
+Index: toolbutton.inc
+===================================================================
+--- toolbutton.inc	(revision 20785)
++++ toolbutton.inc	(working copy)
+@@ -853,7 +853,7 @@
+   FToolBar:=nil;
+   if AParent is TToolBar then
+   begin
+-    if Style in [tbsButton,tbsDropDown,tbsCheck] then
++    if (Style in [tbsButton,tbsDropDown,tbsCheck]) and not AutoSize then
+       NewWidth:=TToolBar(AParent).ButtonWidth
+     else
+       NewWidth:=Width;
+@@ -869,8 +869,13 @@
+   begin
+     FToolBar:=TToolBar(Parent);
+     i := Index;
+-    if i < 0 then
++    if i < 0 then begin
++    //move button last
++      i := FToolBar.ButtonCount - 1;
++      if i >= 0 then
++        Left := FToolBar.Buttons[i].Left + FToolBar.Buttons[i].Width;
+       FToolBar.AddButton(Self);
++    end;
+     UpdateVisibleToolbar;
+   end;
+   //DebugLn(['TToolButton.SetParent A ',Name,' NewIndex=',Index]);

@@ -1,0 +1,117 @@
+# Massimo Soricetti <notturno@quipo.it>, 2011.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2014-10-03 18:48+0100\n"
+"Last-Translator: Giuliano Colla <giuliano.colla@fastwebnet.it>\n"
+"Language-Team: PincoPallo Team\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.5.1\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+
+#: messagecomposer.rscancel
+msgid "Cancel"
+msgstr "Annulla"
+
+#: messagecomposer.rsok
+msgid "OK"
+msgstr "OK"
+
+#: messagecomposer.rstest
+msgid "Test"
+msgstr "Test"
+
+#: messagecomposer.sadd
+msgid "Add"
+msgstr "Aggiungi"
+
+#: messagecomposer.sbuttonsarrayofconst
+msgid "Buttons (array of const)"
+msgstr "Bottoni (array di const)"
+
+#: messagecomposer.sbuttonstmsgdlgbuttons
+msgid "Buttons (TMsgDlgButtons)"
+msgstr "Bottoni (TMsgDlgButtons)"
+
+#: messagecomposer.scaseresult
+msgid "\"Case\" result"
+msgstr "risultato \"Case\""
+
+#: messagecomposer.sdefault
+msgid "Default"
+msgstr "Default"
+
+#: messagecomposer.sdelete
+msgid "Delete"
+msgstr "Cancella"
+
+#: messagecomposer.sdlgcaption
+msgid "Dialog caption"
+msgstr "Titolo della dialog"
+
+#: messagecomposer.sdlgtype
+msgid "Dialog type"
+msgstr "Tipo della dialog"
+
+#: messagecomposer.shelpcontext
+msgid "Help context"
+msgstr "Contesto di aiuto"
+
+#: messagecomposer.shelpfilename
+msgid "Help filename"
+msgstr "Nome del file di help"
+
+#: messagecomposer.shelpkeyword
+msgid "Help keyword"
+msgstr "Parola chiave di help"
+
+#: messagecomposer.sifresult
+msgid "\"If\" result"
+msgstr "Risultato \"if\""
+
+#: messagecomposer.skindofmessage
+msgid "Kind of message"
+msgstr "Tipo di messaggio"
+
+#: messagecomposer.smaskinput
+msgid "Mask input"
+msgstr "Maschera di input"
+
+#: messagecomposer.smessagecomposercaption
+msgctxt "messagecomposer.smessagecomposercaption"
+msgid "Message Composer"
+msgstr "Compositore di messaggi"
+
+#: messagecomposer.smessagecomposermenucaption
+msgctxt "messagecomposer.smessagecomposermenucaption"
+msgid "Message Composer ..."
+msgstr "Compositore di messaggi..."
+
+#: messagecomposer.smodalresult
+msgid "Modal result"
+msgstr "Risultato modale"
+
+#: messagecomposer.smsgcaption
+msgid "The message to be shown"
+msgstr "Il messaggio da mostrare"
+
+#: messagecomposer.snotimplementedyet
+msgid "Not implemented yet"
+msgstr "Non ancora implementato"
+
+#: messagecomposer.spromptcaption
+msgid "Text asking the user for input"
+msgstr "Testo che chiede l'input all'utente"
+
+#: messagecomposer.ssourcewrapper
+msgid "Source wrapper"
+msgstr "Interfaccia del sorgente"
+
+#: messagecomposer.svaluevar
+msgid "Value (var)"
+msgstr "Valore (var)"
+

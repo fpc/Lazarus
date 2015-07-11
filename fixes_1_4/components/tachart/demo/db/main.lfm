@@ -1,0 +1,102 @@
+object Form1: TForm1
+  Left = 329
+  Height = 300
+  Top = 190
+  Width = 547
+  Caption = 'Form1'
+  ClientHeight = 300
+  ClientWidth = 547
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object Chart1: TChart
+    Left = 0
+    Height = 274
+    Top = 26
+    Width = 347
+    AxisList = <    
+      item
+        Title.LabelFont.Orientation = 900
+      end    
+      item
+        Alignment = calBottom
+      end>
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Margins.Left = 8
+    Margins.Top = 8
+    Margins.Right = 8
+    Margins.Bottom = 0
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+    ParentColor = False
+    object Chart1LineSeries1: TLineSeries
+      ZPosition = 1
+      LinePen.Color = clTeal
+      LinePen.Width = 3
+      Source = DbChartSource1
+    end
+    object Chart1BarSeries1: TBarSeries
+      BarBrush.Color = clRed
+    end
+  end
+  object DBGrid1: TDBGrid
+    Left = 347
+    Height = 274
+    Top = 26
+    Width = 200
+    Align = alRight
+    Columns = <>
+    DataSource = Datasource1
+    Scrollbars = ssAutoBoth
+    TabOrder = 1
+  end
+  object ToolBar1: TToolBar
+    Left = 0
+    Height = 26
+    Top = 0
+    Width = 547
+    Caption = 'ToolBar1'
+    ShowCaptions = True
+    TabOrder = 2
+    object tbCopy: TToolButton
+      Left = 1
+      Top = 2
+      Caption = 'Copy db to list'
+      OnClick = tbCopyClick
+    end
+  end
+  object MemDataset1: TMemDataset
+    Active = True
+    FieldDefs = <    
+      item
+        Name = 'X'
+        DataType = ftFloat
+        Precision = 0
+        Size = 0
+      end    
+      item
+        Name = 'Y'
+        DataType = ftFloat
+        Precision = 0
+        Size = 0
+      end>
+    left = 271
+    top = 60
+  end
+  object Datasource1: TDatasource
+    DataSet = MemDataset1
+    left = 271
+    top = 108
+  end
+  object DbChartSource1: TDbChartSource
+    DataSource = Datasource1
+    FieldX = 'X'
+    FieldY = 'Y,Y'
+    left = 271
+    top = 156
+  end
+end

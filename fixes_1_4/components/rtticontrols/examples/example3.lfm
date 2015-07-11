@@ -1,0 +1,61 @@
+object Form1: TForm1
+  ActiveControl = XTIEdit
+  Caption = 'Form1'
+  ClientHeight = 300
+  ClientWidth = 400
+  OnCreate = Form1Create
+  OnDestroy = Form1Destroy
+  OnPaint = Form1Paint
+  PixelsPerInch = 90
+  HorzScrollBar.Page = 401
+  VertScrollBar.Page = 301
+  Left = 290
+  Height = 300
+  Top = 163
+  Width = 400
+  object XTIEdit: TTIEdit
+    TabStop = True
+    TabOrder = 0
+    Left = 80
+    Height = 23
+    Top = 56
+    Width = 80
+  end
+  object YTIEdit: TTIEdit
+    TabStop = True
+    TabOrder = 1
+    Left = 80
+    Height = 23
+    Top = 99
+    Width = 80
+  end
+  object XLabel: TLabel
+    Caption = 'X:'
+    Left = 9
+    Height = 17
+    Top = 62
+    Width = 65
+  end
+  object YLabel: TLabel
+    Caption = 'Y:'
+    Left = 9
+    Height = 17
+    Top = 105
+    Width = 65
+  end
+  object SizeLabel: TLabel
+    Caption = 'Size:'
+    Left = 9
+    Height = 17
+    Top = 148
+    Width = 65
+  end
+  object SizeTIEdit: TTIEdit
+    TabStop = True
+    TabOrder = 5
+    Left = 80
+    Height = 23
+    Top = 142
+    Width = 80
+  end
+end

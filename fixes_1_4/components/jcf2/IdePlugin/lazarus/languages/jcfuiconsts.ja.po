@@ -1,0 +1,905 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: jcfuiconsts.ja\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Yuichiro Takahashi <yuichiro@pop07.odn.ne.jp>\n"
+"Language-Team: Japanese Lazarus ML\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
+"X-Generator: Poedit 1.5.7\n"
+
+#: jcfuiconsts.lisaboutaboutjedicodeformat
+msgid "About JEDI Code Format"
+msgstr "JEDI コード整形について"
+
+#: jcfuiconsts.lisaboutfindmoreinformationonthewebat
+msgid "Find more information on the web at: %s"
+msgstr "詳細な情報は以下のウェブで： %s"
+
+#: jcfuiconsts.lisaboutthisprogramisopensource
+msgid "This program is open source software. It is released under the Mozilla Public Licence (MPL).  http://www.mozilla.org/MPL"
+msgstr "このプログラムオープンソースソフトウェアです。Mozilla Public Licence (MPL) の下に公開されています。 http://www.mozilla.org/MPL"
+
+#: jcfuiconsts.lisaboutthisprogramisstillunderdevelopment
+msgid "This program is still under development. In spite of thorough testing and removal of reported bugs, no guarantees are given. Please make backups, or better yet use a source control system."
+msgstr "このプログラムはまだ開発中です。厳しいテストを通り報告されているバグが取り除けたとしても、まだ保証はできません。バックアップを作っておくか、使われていないソースコードを対象にするようにしてください。"
+
+#: jcfuiconsts.lisaboutversion
+msgid "Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make readable the layout of any Delphi Object-Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
+msgstr "バージョン $VERSION$%s$DATE$%s%sこのプログラムは標準化への推進と Delphi／Object Pascal のソースコードを読みやすい配置へとするものです。%s%sCopyright Anthony Steele 1999-2008"
+
+#: jcfuiconsts.lisalignalign
+msgid "Align"
+msgstr "整列"
+
+#: jcfuiconsts.lisalignassign
+msgid "Assign"
+msgstr "代入"
+
+#: jcfuiconsts.lisalignclassandrecordfields
+msgid "Class and record fields"
+msgstr "クラスとレコードのフィールド変数"
+
+#: jcfuiconsts.lisaligncomments
+msgid "Comments"
+msgstr "コメント"
+
+#: jcfuiconsts.lisalignconst
+msgid "Const"
+msgstr "定数"
+
+#: jcfuiconsts.lisaligninterfaceonly
+msgid "Interface Only"
+msgstr "宣言部のみ"
+
+#: jcfuiconsts.lisalignmaxcolumn
+msgid "Max Column"
+msgstr "最大列数"
+
+#: jcfuiconsts.lisalignmaxunaligned
+msgid "Max unaligned"
+msgstr "最大未整列数"
+
+#: jcfuiconsts.lisalignmaxvariance
+msgid "Max Variance"
+msgstr "最大変更量"
+
+#: jcfuiconsts.lisalignmaxvarianceinterface
+msgid "Max Variance Interface"
+msgstr "宣言部における最大変更量"
+
+#: jcfuiconsts.lisalignmincolumn
+msgid "Min Column"
+msgstr "最小列数"
+
+#: jcfuiconsts.lisaligntypedefs
+msgid "Type defs"
+msgstr "型定義"
+
+#: jcfuiconsts.lisalignvardeclarations
+msgid "Var declarations"
+msgstr "変数宣言"
+
+#: jcfuiconsts.lisalignwhattoalign
+msgid "What to Align"
+msgstr "整列箇所"
+
+#: jcfuiconsts.lisasmasm
+msgid "Asm"
+msgstr "アセンブラ"
+
+#: jcfuiconsts.lisasmbreaksafterlabel
+msgid "&Breaks after label"
+msgstr "ラベルの後で改行(&B)"
+
+#: jcfuiconsts.lisasmcapitalization
+msgid "&Capitalization"
+msgstr "大文字小文字(&C)"
+
+#: jcfuiconsts.lisasmenabled
+msgid "&Enabled"
+msgstr "有効(&E)"
+
+#: jcfuiconsts.lisasmenabled2
+msgid "E&nabled"
+msgstr "有効(&n)"
+
+#: jcfuiconsts.lisasmenabled3
+msgid "En&abled"
+msgstr "有効(&a)"
+
+#: jcfuiconsts.lisasmindent
+msgid "Indent"
+msgstr "インデント"
+
+#: jcfuiconsts.lisasmnumberofbreaks
+msgid "N&umber of breaks"
+msgstr "改行数(&u)"
+
+#: jcfuiconsts.lisasmparamsindents
+msgid "&Params Indents"
+msgstr "パラメータのインデント(&P)"
+
+#: jcfuiconsts.lisasmstatementindents
+msgid "&Statement Indents"
+msgstr "ステートメントのインデント(&S)"
+
+#: jcfuiconsts.lisblafterprocedureheader
+msgid "After procedure header"
+msgstr "手続きヘッダの後"
+
+#: jcfuiconsts.lisblatstartandendofbeginendblock
+msgid "At start and end of Begin...End block"
+msgstr "begin...end ブロックの始めと終わりの箇所"
+
+#: jcfuiconsts.lisblblanklines
+msgid "Blank Lines"
+msgstr "空行"
+
+#: jcfuiconsts.lisblinprocedurevarsection
+msgid "In procedure var section"
+msgstr "手続きの引数内"
+
+#: jcfuiconsts.lisbllinesbeforeprocedure
+msgid "Lines before procedure"
+msgstr "手続きの前の行数"
+
+#: jcfuiconsts.lisblmaxconsecutiveblanklinesanywhere
+msgid "Max consecutive blank lines anywhere"
+msgstr "連続する空行の最大数"
+
+#: jcfuiconsts.lisblmaxconsecutiveblanklinesbeforeremoval
+msgid "Max consecutive blank lines before removal"
+msgstr "削除処理をする空行の最大連続数"
+
+#: jcfuiconsts.lisblnumberofreturnsaftertheunitsfinalend
+msgid "Number of returns after the unit's final End."
+msgstr "ユニットの最後にある end. の後ろの改行数"
+
+#: jcfuiconsts.lisblocksbetweenelseandif
+msgid "Between else and if"
+msgstr "else と if の間"
+
+#: jcfuiconsts.lisblocksbetweenendandelse
+msgid "Between end and else"
+msgstr "end と else の間"
+
+#: jcfuiconsts.lisblocksblocks
+msgid "Blocks"
+msgstr "ブロック"
+
+#: jcfuiconsts.lisblocksblockwithbegin
+msgid "Block with begin"
+msgstr "begin があるブロック"
+
+#: jcfuiconsts.lisblocksblockwithoutbegin
+msgid "Block without begin"
+msgstr "begin がないブロック"
+
+#: jcfuiconsts.lisblockselsebegin
+msgid "Else begin"
+msgstr "else と begin の間"
+
+#: jcfuiconsts.lisblocksuseanewlineinblocksat
+msgid "Use a new line in blocks at:"
+msgstr "ブロックに使用する改行"
+
+#: jcfuiconsts.lisblremoveblanklines
+msgid "Remove blank lines"
+msgstr "空行を削除する"
+
+#: jcfuiconsts.lisblremoveconsecutiveblanklines
+msgid "Remove consecutive blank lines"
+msgstr "連続した空行を削除する"
+
+#: jcfuiconsts.liscapsanywordanyword
+msgid "Any Word"
+msgstr "単語"
+
+#: jcfuiconsts.liscapsanywordenable
+msgid "Enable"
+msgstr "有効"
+
+#: jcfuiconsts.liscapsanywordsetcapitalisationonthesewords
+msgid "Set capitalisation on these words:"
+msgstr "大文字小文字で整える単語"
+
+#: jcfuiconsts.liscapscapitalisation
+msgid "Capitalisation"
+msgstr "大文字小文字"
+
+#: jcfuiconsts.liscapsconstants
+msgid "Constants"
+msgstr "定数"
+
+#: jcfuiconsts.liscapsdirectives
+msgid "Directives"
+msgstr "指令"
+
+#: jcfuiconsts.liscapsenablecapitalisationfixing
+msgid "Enable capitalisation fixing"
+msgstr "大文字小文字で整える"
+
+#: jcfuiconsts.liscapsidentifiersidentifiers
+msgid "Identifiers"
+msgstr "識別子"
+
+#: jcfuiconsts.liscapsidentifierssetcapitalisationontheseidentifiers
+msgid "Set capitalisation on these identifiers:"
+msgstr "大文字小文字で整える識別子"
+
+#: jcfuiconsts.liscapsnotidentifiersnotidentifiers
+msgid "Non-identifiers"
+msgstr "識別子以外"
+
+#: jcfuiconsts.liscapsnotidentifierssetcapitalisationonthesenonidentifiers
+msgid "Set capitalisation on these non-identifiers:"
+msgstr "識別子以外で大文字小文字で整えるもの"
+
+#: jcfuiconsts.liscapsoperators
+msgid "Operators"
+msgstr "演算子"
+
+#: jcfuiconsts.liscapsreservedwords
+msgid "Reserved words"
+msgstr "予約語"
+
+#: jcfuiconsts.liscapstypes
+msgid "Types"
+msgstr "型"
+
+#: jcfuiconsts.liscapsunitnamessetcapitalisationontheseunitnames
+msgid "Set capitalisation on these unit names:"
+msgstr "大文字小文字で整えるユニット名"
+
+#: jcfuiconsts.liscapsunitnamesunitnames
+msgid "Unit Names"
+msgstr "ユニット名"
+
+#: jcfuiconsts.liscaseblocksalways
+msgctxt "jcfuiconsts.liscaseblocksalways"
+msgid "Always"
+msgstr "常に行う"
+
+#: jcfuiconsts.liscaseblockscaseblocks
+msgid "Case Blocks"
+msgstr "case ブロック"
+
+#: jcfuiconsts.liscaseblockscasewithbegin
+msgid "Case with begin"
+msgstr "begin がある case"
+
+#: jcfuiconsts.liscaseblockscasewithoutbegin
+msgid "Case without begin"
+msgstr "begin がない case"
+
+#: jcfuiconsts.liscaseblockselsecasewithbegin
+msgid "Else case with begin"
+msgstr "begin がある else case"
+
+#: jcfuiconsts.liscaseblockselsecasewithoutbegin
+msgid "Else case without begin"
+msgstr "begin がない else case"
+
+#: jcfuiconsts.liscaseblockslabelwithbegin
+msgid "Label with begin"
+msgstr "begin があるラベル"
+
+#: jcfuiconsts.liscaseblockslabelwithoutbegin
+msgid "Label without begin"
+msgstr "begin がないラベル"
+
+#: jcfuiconsts.liscaseblocksleaveasis
+msgctxt "jcfuiconsts.liscaseblocksleaveasis"
+msgid "Leave as is"
+msgstr "そのまま"
+
+#: jcfuiconsts.liscaseblocksnever
+msgctxt "jcfuiconsts.liscaseblocksnever"
+msgid "Never"
+msgstr "なくす"
+
+#: jcfuiconsts.liscaseblocksuseanewlineincaseblocksat
+msgid "Use a new line in Case blocks at:"
+msgstr "case ブロックに使用する改行"
+
+#: jcfuiconsts.liscdcompilerdirectives
+msgid "Compiler Directives"
+msgstr "コンパイラ指令"
+
+#: jcfuiconsts.liscdotherplaces
+msgid "Other places"
+msgstr "その他の場所"
+
+#: jcfuiconsts.liscdstatements
+msgid "Statements"
+msgstr "ステートメント"
+
+#: jcfuiconsts.liscduseanewlineaftercompilerdirectives
+msgid "Use a new line after compiler directives:"
+msgstr "コンパイラ指令の後ろに行う改行"
+
+#: jcfuiconsts.liscduseanewlinebeforecompilerdirectives
+msgid "Use a new line before compiler directives:"
+msgstr "コンパイラ指令の前に行う改行"
+
+#: jcfuiconsts.liscdusesclause
+msgid "Uses clause"
+msgstr "uses 節"
+
+#: jcfuiconsts.lisclarifyclarify
+msgid "Clarify"
+msgstr "明瞭化"
+
+#: jcfuiconsts.lisclarifydonotrun
+msgid "Do &not run"
+msgstr "埋め込まない(&n)"
+
+#: jcfuiconsts.lisclarifydorun
+msgid "Do &run"
+msgstr "埋め込む(&r)"
+
+#: jcfuiconsts.lisclarifyfileextensionstoformat
+msgid "File extensions to format:"
+msgstr "整形するファイルの拡張子："
+
+#: jcfuiconsts.lisclarifyrunonceoffs
+msgid "Run once-offs"
+msgstr "整形済みコメント"
+
+#: jcfuiconsts.lisclarifyrunonlythese
+msgid "Run &only these"
+msgstr "コメントのみ埋め込む(&o)"
+
+#: jcfuiconsts.liscommentsremoveemptycurlybracescomments
+msgid "Remove empty '{ }' comments"
+msgstr "空の '{ }' コメントを除去する"
+
+#: jcfuiconsts.liscommentsremoveemptyslashcomments
+msgid "Remove empty '//' comments"
+msgstr "空の '//' コメントを除去する"
+
+#: jcfuiconsts.lisedatlinecol
+msgid "%sAt line %s col %s"
+msgstr "%s（行 %s、列 %s）"
+
+#: jcfuiconsts.lisederror
+msgid "Error"
+msgstr "エラー"
+
+#: jcfuiconsts.lisedexception
+msgid "Exception %s"
+msgstr "例外 %s"
+
+#: jcfuiconsts.lisedin
+msgid "%s in %s"
+msgstr "%s（%s 内）"
+
+#: jcfuiconsts.lisedjcfparseerror
+msgid "JCF Parse error"
+msgstr "JCF パーサエラー"
+
+#: jcfuiconsts.lisednear
+msgid "%s near %s"
+msgstr "%s（%s の近辺）"
+
+#: jcfuiconsts.lisedtype
+msgid "Type: %s%s"
+msgstr "型名：%s%s"
+
+#: jcfuiconsts.liserrorwritingsettingsexception
+msgid "Error writing settings file %s:%s%s"
+msgstr "設定ファイル %s の書き込みエラー：%s%s"
+
+#: jcfuiconsts.liserrorwritingsettingsfilereadonly
+msgid "Error writing settings file: %s is read only"
+msgstr "設定ファイル書き込みエラー：%s は読み取り専用です"
+
+#: jcfuiconsts.lisfindreplaceenablefindandreplace
+msgid "Enable find and replace"
+msgstr "検索と置換を有効にする"
+
+#: jcfuiconsts.lisfindreplacefindandreplace
+msgid "Find and Replace"
+msgstr "検索と置換"
+
+#: jcfuiconsts.lisfindreplacewordlist
+msgid "Word list:"
+msgstr "単語一覧："
+
+#: jcfuiconsts.lisfrfilesdatefilewritten
+msgid "Date file written: %s"
+msgstr "ファイルの更新日時：%s"
+
+#: jcfuiconsts.lisfrfilesdescription
+msgid "Description:"
+msgstr "説明："
+
+#: jcfuiconsts.lisfrfilesfileisreadonly
+msgid "File is read only"
+msgstr "読み取り専用ファイルです"
+
+#: jcfuiconsts.lisfrfilesfileiswritable
+msgid "File is writable"
+msgstr "書き込み可能ファイルです"
+
+#: jcfuiconsts.lisfrfilesfilenotfound
+msgid "File not found"
+msgstr "ファイルがありません"
+
+#: jcfuiconsts.lisfrfilesformatfile
+msgid "Format File"
+msgstr "整形設定ファイル"
+
+#: jcfuiconsts.lisfrfilesformatfileis
+msgid "Format file is %s"
+msgstr "整形設定ファイル：%s"
+
+#: jcfuiconsts.lisfrfilesversionthatwrotethisfile
+msgid "Version that wrote this file: %s"
+msgstr "このファイルが書かれたバージョン：%s"
+
+#: jcfuiconsts.lisindentblockindentationspaces
+msgid "Block indentation spaces"
+msgstr "ブロックインデントの空白数"
+
+#: jcfuiconsts.lisindentdifferentindentforfirstlevel
+msgid "Different indent for first level"
+msgstr "最初のレベルとは異なるインデント"
+
+#: jcfuiconsts.lisindentextraindentforbeginend
+msgid "Extra indent for begin/end inside procedures"
+msgstr "手続き内での begin/end にインデントを追加する"
+
+#: jcfuiconsts.lisindentextraindentforcaseelseblocks
+msgid "Extra Indent for Case...Else blocks"
+msgstr "case...else ブロックにインデントを追加する"
+
+#: jcfuiconsts.lisindentextraindentforifelseblocks
+msgid "Extra Indent for If...Else blocks"
+msgstr "if...else ブロックにインデントを追加する"
+
+#: jcfuiconsts.lisindentindentation
+msgid "Indentation"
+msgstr "インデント"
+
+#: jcfuiconsts.lisindentindentforprocedurebody
+msgid "Indent for procedure body"
+msgstr "手続き本体にインデント"
+
+#: jcfuiconsts.lisindentindentforproceduresinlibrary
+msgid "Indent for procedures in library"
+msgstr "ライブラリ（プロジェクトソース）の手続きにインデント"
+
+#: jcfuiconsts.lisindentindentnestedtypes
+msgid "Indent nested types"
+msgstr "入れ子の型宣言にインデント"
+
+#: jcfuiconsts.lisindentindentvarandconstinclass
+msgid "Indent var and const in class"
+msgstr "クラス内の変数と定数にインデント"
+
+#: jcfuiconsts.lisindentkeepsinglelinecommentswithcodeelsewhere
+msgid "Keep single-line comments with code elsewhere"
+msgstr "その他の場所の 1 行コメントをコードに合わせる"
+
+#: jcfuiconsts.lisindentkeepsinglelinecommentswithcodeinclassdefs
+msgid "Keep single-line comments with code in class definitions"
+msgstr "クラス定義内の 1 行コメントをコードに合わせる"
+
+#: jcfuiconsts.lisindentkeepsinglelinecommentswithcodeinglobals
+msgid "Keep single-line comments with code in globals"
+msgstr "グローバル内の 1 行コメントをコードに合わせる"
+
+#: jcfuiconsts.lisindentkeepsinglelinecommentswithcodeinprocs
+msgid "Keep single-line comments with code in procedures"
+msgstr "手続き内の 1 行コメントをコードに合わせる"
+
+#: jcfuiconsts.lisindentoptions
+msgid "Options"
+msgstr "オプション"
+
+#: jcfuiconsts.lisjcfformatsettings
+msgid "JCF Format Settings"
+msgstr "JCF 整形設定"
+
+#: jcfuiconsts.lisjedicodeformatofareyousurethatyouwanttoformatallfi
+msgid "JEDI Code Format of %sAre you sure that you want to format all %s files in the project?"
+msgstr "JEDI コード形成対象：%sプロジェクト内の全 %s ファイルを形成処理をしてもよろしいですか？"
+
+#: jcfuiconsts.lisjedicodeformatofstartformatting
+msgid "JEDI Code Format of %sStart formatting?"
+msgstr "JEDI コード形成対象：%s形成を始めてもいいですか？"
+
+#: jcfuiconsts.lislbbreaklinesthatarelongerthanmaxlinelength
+msgid "&Break lines that are longer than max line length"
+msgstr "最大字数より長い行の改行(&B)"
+
+#: jcfuiconsts.lislblinebreaking
+msgid "Line Breaking"
+msgstr "改行"
+
+#: jcfuiconsts.lislbmaxlinelength
+msgid "Max line length"
+msgstr "行の最大字数"
+
+#: jcfuiconsts.lislbnever
+msgid "&Never"
+msgstr "しない(&N)"
+
+#: jcfuiconsts.lislbsometimesifagoodplacetobreakisfound
+msgid "&Sometimes, if a good place to break is found"
+msgstr "改行にふさわしい所があったら行う(&S)"
+
+#: jcfuiconsts.lislbusuallyunlessthereisnoacceptableplacetobreak
+msgid "&Usually, unless there is no acceptable place to break"
+msgstr "改行できない所でない限りは行う(&U)"
+
+#: jcfuiconsts.lisnosettingsfound
+msgid "No settings found"
+msgstr "設定が見つかりません"
+
+#: jcfuiconsts.lisobfsallcapitals
+msgid "ALL CAPITALS"
+msgstr "すべて大文字"
+
+#: jcfuiconsts.lisobfsalllowercase
+msgid "all lowercase"
+msgstr "すべて小文字"
+
+#: jcfuiconsts.lisobfsleavealone
+msgid "Leave alone"
+msgstr "変更しない"
+
+#: jcfuiconsts.lisobfsmixedcase
+msgid "Mixed Case"
+msgstr "大文字小文字混在"
+
+#: jcfuiconsts.lisobfsobfuscate
+msgid "Obfuscate"
+msgstr "難読化"
+
+#: jcfuiconsts.lisobfsobfuscatemode
+msgid "&Obfuscate mode"
+msgstr "難読化モード(&O)"
+
+#: jcfuiconsts.lisobfsobfuscatewordcaps
+msgid "Obfuscate word &caps"
+msgstr "単語の大文字小文字による難読化"
+
+#: jcfuiconsts.lisobfsrebreaklines
+msgid "Rebreak &lines"
+msgstr "再改行を行う(&l)"
+
+#: jcfuiconsts.lisobfsremovecomments
+msgid "Remove c&omments"
+msgstr "コメントを削除する(&o)"
+
+#: jcfuiconsts.lisobfsremoveindent
+msgid "Remove &indent"
+msgstr "インデントを削除する(&i)"
+
+#: jcfuiconsts.lisobfsremovewhitespace
+msgctxt "jcfuiconsts.lisobfsremovewhitespace"
+msgid "Remove &white space"
+msgstr "ホワイトスペースを削除する(&w)"
+
+#: jcfuiconsts.lisprpcompileroptionsdefinedforconditionalcompilation
+msgid "Compiler options defined for conditional compilation:"
+msgstr "条件コンパイルとして定義されているコンパイラオプション"
+
+#: jcfuiconsts.lisprpenablepreprocessorparsing
+msgid "Enable preprocessor parsing"
+msgstr "プリプロセッサパースを有効にする"
+
+#: jcfuiconsts.lisprppreprocessor
+msgid "PreProcessor"
+msgstr "プリプロセッサ"
+
+#: jcfuiconsts.lisprpsymbolsdefinedforconditionalcompilation
+msgid "Symbols defined for conditional compilation:"
+msgstr "条件コンパイルとして定義されているシンボル"
+
+#: jcfuiconsts.lisreturnsafteruses
+msgid "After uses"
+msgstr "uses の後ろ"
+
+#: jcfuiconsts.lisreturnsconverttocarriagereturn
+msgid "Convert to Carriage Return (UNIX)"
+msgstr "CR に変換する (UNIX)"
+
+#: jcfuiconsts.lisreturnsconverttocarriagereturnlinefeed
+msgid "Convert to Carriage Return + Linefeed (DOS/Windows)"
+msgstr "CR+LF に変換する (DOS/Windows)"
+
+#: jcfuiconsts.lisreturnsinexpressions
+msgid "In expressions"
+msgstr "式の途中"
+
+#: jcfuiconsts.lisreturnsinmiscbadplaces
+msgid "In misc. bad places"
+msgstr "他のふさわしくないところ"
+
+#: jcfuiconsts.lisreturnsinmiscgoodplaces
+msgid "In misc. good places"
+msgstr "他のふさわしいところ"
+
+#: jcfuiconsts.lisreturnsinproceduredefinitions
+msgid "In procedure definitions"
+msgstr "手続きの定義内"
+
+#: jcfuiconsts.lisreturnsinproperties
+msgid "In properties"
+msgstr "プロパティ内"
+
+#: jcfuiconsts.lisreturnsinsertreturns
+msgid "Insert returns"
+msgstr "改行を挿入する"
+
+#: jcfuiconsts.lisreturnsinvariabledeclarations
+msgid "In variable declarations"
+msgstr "変数定義内"
+
+#: jcfuiconsts.lisreturnsleaveasis
+msgctxt "jcfuiconsts.lisreturnsleaveasis"
+msgid "Leave as is"
+msgstr "そのまま"
+
+#: jcfuiconsts.lisreturnsoneusesclauseitemperline
+msgid "One uses clause item per line"
+msgstr "uses 節の項目は 1 行に 1 つ"
+
+#: jcfuiconsts.lisreturnsremovereturns
+msgid "Remove returns"
+msgstr "改行を除去する"
+
+#: jcfuiconsts.lisreturnsreturnchars
+msgid "Return chars"
+msgstr "改行文字"
+
+#: jcfuiconsts.lisreturnsreturns
+msgid "Returns"
+msgstr "改行"
+
+#: jcfuiconsts.lisspacesafteropen
+msgid "After open"
+msgstr "左括弧"
+
+#: jcfuiconsts.lisspacesalways
+msgctxt "jcfuiconsts.lisspacesalways"
+msgid "Always"
+msgstr "常に挿入"
+
+#: jcfuiconsts.lisspacesbeforeend
+msgid "Before end"
+msgstr "右括弧"
+
+#: jcfuiconsts.lisspacesbeforeinexpression
+msgid "Before [ in expression"
+msgstr "式の [ の前"
+
+#: jcfuiconsts.lisspacescaselabel
+msgid "Case l&abel"
+msgstr "case ラベル(&a)"
+
+#: jcfuiconsts.lisspacesclassvariables
+msgid "&Class variables"
+msgstr "クラス変数(&C)"
+
+#: jcfuiconsts.lisspacesconstdeclarations
+msgid "C&onst declarations"
+msgstr "定数宣言(&o)"
+
+#: jcfuiconsts.lisspacesfixspacing
+msgid "Fix &spacing"
+msgstr "空白調整をする(&s)"
+
+#: jcfuiconsts.lisspacesfunctionreturntypes
+msgid "&Function return types"
+msgstr "関数の戻り値型(&F)"
+
+#: jcfuiconsts.lisspacesinfunctioncall
+msgid "In function &call"
+msgstr "関数呼び出し(&c)"
+
+#: jcfuiconsts.lisspacesinfunctiondeclaration
+msgid "In function &declaration"
+msgstr "関数定義(&D)"
+
+#: jcfuiconsts.lisspacesingeneric
+msgid "In &generic"
+msgstr "ジェネリックス内(&g)"
+
+#: jcfuiconsts.lisspacesinsertspacebeforebracket
+msgid "&Insert space before bracket"
+msgstr "括弧の前に空白を挿入する(&I)"
+
+#: jcfuiconsts.lisspacesinsertspaceinsidebrackets
+msgid "Insert space inside brackets"
+msgstr "括弧の内側に空白を挿入する"
+
+#: jcfuiconsts.lisspaceslabel
+msgid "&Label"
+msgstr "ラベル(&L)"
+
+#: jcfuiconsts.lisspacesleaveasis
+msgctxt "jcfuiconsts.lisspacesleaveasis"
+msgid "Leave as is"
+msgstr "そのまま"
+
+#: jcfuiconsts.lisspacesmaxspacesincode
+msgid "&Max spaces in code"
+msgstr "コード内の最大空白数"
+
+#: jcfuiconsts.lisspacesmovespacestobeforecolon
+msgid "Move spaces to before colon"
+msgstr "コロンの後ろではなく前に空白を置く"
+
+#: jcfuiconsts.lisspacesnever
+msgctxt "jcfuiconsts.lisspacesnever"
+msgid "Never"
+msgstr "なくす"
+
+#: jcfuiconsts.lisspacesprocedureparameters
+msgid "&Procedure parameters"
+msgstr "手続きのパラメータ(&P)"
+
+#: jcfuiconsts.lisspacesrecordfields
+msgid "&Record fields"
+msgstr "レコード型のフィールド(&R)"
+
+#: jcfuiconsts.lisspacesspacebeforeclassheritage
+msgid "Space before class &heritage"
+msgstr "クラス継承の前に空白"
+
+#: jcfuiconsts.lisspacesspaces
+msgid "Spaces"
+msgstr "空白"
+
+#: jcfuiconsts.lisspacesspacesaroundoperators
+msgid "Spaces around &operators"
+msgstr "演算子前後の空白(&o)"
+
+#: jcfuiconsts.lisspacesspacesbeforecolonin
+msgid "Spaces &before colon in"
+msgstr "以下の場所におけるコロンの前の空白(&b)"
+
+#: jcfuiconsts.lisspacesspacesfortab
+msgid "Spaces for tab"
+msgstr "タブに対応する空白数"
+
+#: jcfuiconsts.lisspacesspacespertab
+msgid "Spaces per tab"
+msgstr "タブ当たりの空白数"
+
+#: jcfuiconsts.lisspacestabcharacters
+msgid "&Tab characters"
+msgstr "タブ文字(&T)"
+
+#: jcfuiconsts.lisspacesturnspacestotabs
+msgid "Turn spaces to tabs"
+msgstr "空白をタブに変換"
+
+#: jcfuiconsts.lisspacesturntabstospaces
+msgid "Turn tabs to spaces"
+msgstr "タブを空白に変換"
+
+#: jcfuiconsts.lisspacesvardeclarations
+msgid "&Var declarations"
+msgstr "変数宣言(&V)"
+
+#: jcfuiconsts.listhesettingsfiledoesnotexist
+msgid "The settings file \"%s\" does not exist.%sThe formatter will work better if it is configured to use a valid settings file"
+msgstr "設定ファイル \"%s\" が存在しません。%s適切な設定ファイルを使用するほうが、良い動作をするでしょう。"
+
+#: jcfuiconsts.listransformaddbeginandendtosinglestatements
+msgid "Add begin and end to single statements"
+msgstr "単一ステートメントに begin と end を付加する"
+
+#: jcfuiconsts.listransformaddorremovebeginandendfromsinglestatements
+msgid "Add or Remove &begin and end from single statements"
+msgstr "単一ステートメントに対する begin と end の追加ないし削除(&b)"
+
+#: jcfuiconsts.listransformalphabetic
+msgid "Alphabetic"
+msgstr "アルファベット順"
+
+#: jcfuiconsts.listransformbreakoncomment
+msgid "Break on &comment"
+msgstr "コメントで分けて処理(&c)"
+
+#: jcfuiconsts.listransformbreakonreturn
+msgid "Break on &return"
+msgstr "改行で分けて処理(&r)"
+
+#: jcfuiconsts.listransformleavebeginandendasis
+msgid "Leave begin and end as is"
+msgstr "begin と end はそのままにする"
+
+#: jcfuiconsts.listransformlongesttoshortest
+msgid "Longest to shortest"
+msgstr "長い順"
+
+#: jcfuiconsts.listransformonlywithnocomments
+msgid "Only with no comments"
+msgstr "コメント無しだけ対象"
+
+#: jcfuiconsts.listransformputsemicolonsafterlaststatementinablock
+msgid "Put &semicolons after last statement in a block"
+msgstr "ブロック内の最後のステートメントにセミコロンを置く(&s)"
+
+#: jcfuiconsts.listransformremovebeginandendfromaroundsinglestatements
+msgid "Remove begin and end from around single statements"
+msgstr "単一ステートメント前後の begin と end を除去する"
+
+#: jcfuiconsts.listransformreversealphabetic
+msgid "Reverse Alphabetic"
+msgstr "アルファベット逆順"
+
+#: jcfuiconsts.listransformshortesttolongest
+msgid "Shortest to longest"
+msgstr "短い順"
+
+#: jcfuiconsts.listransformsortimplementationuses
+msgid "Sort i&mplementation uses"
+msgstr "実装部 uses の並べ替え(&m)"
+
+#: jcfuiconsts.listransformsortinterfaceuses
+msgid "Sort i&nterface uses"
+msgstr "宣言部 uses の並べ替え(&n)"
+
+#: jcfuiconsts.listransformsortprogramuses
+msgid "Sort &program uses"
+msgstr "プログラム（プロジェクトソース）の uses の並べ替え(&p)"
+
+#: jcfuiconsts.listransformsortusesclauses
+msgid "Sort &uses clauses"
+msgstr "uses 節の並べ替え(&u)"
+
+#: jcfuiconsts.listransformtransform
+msgid "Transform"
+msgstr "変形"
+
+#: jcfuiconsts.listransformusessortorder
+msgid "Uses sort &order"
+msgstr "uses の並び順(&o)"
+
+#: jcfuiconsts.lisusesinsertintoimplementation
+msgid "Insert into Implementation"
+msgstr "実装部への挿入"
+
+#: jcfuiconsts.lisusesinsertintointerface
+msgid "Insert into Interface"
+msgstr "宣言部への挿入"
+
+#: jcfuiconsts.lisusesremove
+msgid "Remove"
+msgstr "削除"
+
+#: jcfuiconsts.lisusesreplace
+msgid "Replace"
+msgstr "置換"
+
+#: jcfuiconsts.lisusesuses
+msgid "Uses"
+msgstr "uses 節"
+
+#: jcfuiconsts.liswarningsignoreunusedparametersnamed
+msgid "&Ignore unused parameters named:"
+msgstr "無視する未使用パラメータ名(&I)："
+
+#: jcfuiconsts.liswarningswarnaboutunusedparameters
+msgid "Warn about &unused parameters"
+msgstr "未使用パラメータに対する警告(&u)"
+
+#: jcfuiconsts.liswarningswarnings
+msgid "Warnings"
+msgstr "警告"
+
+#: jcfuiconsts.liswarningswarningson
+msgid "&Warnings On"
+msgstr "警告を有効にする(&W)"
+

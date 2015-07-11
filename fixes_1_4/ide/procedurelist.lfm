@@ -1,0 +1,240 @@
+object ProcedureListForm: TProcedureListForm
+  Left = 289
+  Height = 688
+  Top = 140
+  Width = 952
+  ActiveControl = cbObjects
+  Caption = 'Procedure List - '
+  ClientHeight = 688
+  ClientWidth = 952
+  OnCreate = FormCreate
+  OnKeyPress = FormKeyPress
+  OnResize = FormResize
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object StatusBar: TStatusBar
+    Left = 0
+    Height = 22
+    Top = 666
+    Width = 952
+    Panels = <    
+      item
+        Width = 400
+      end    
+      item
+        Width = 50
+      end>
+    SimplePanel = False
+  end
+  object TB: TToolBar
+    Left = 0
+    Height = 26
+    Top = 0
+    Width = 952
+    Caption = 'TB'
+    TabOrder = 1
+    object tbAbout: TToolButton
+      Left = 136
+      Hint = 'About'
+      Top = 2
+      Caption = 'tbAbout'
+      ImageIndex = 9
+      OnClick = tbAboutClick
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object ToolButton2: TToolButton
+      Left = 131
+      Top = 2
+      Width = 5
+      Caption = 'ToolButton2'
+      Style = tbsDivider
+    end
+    object tbJumpTo: TToolButton
+      Left = 108
+      Hint = 'Jump To Selection'
+      Top = 2
+      Caption = 'Goto'
+      ImageIndex = 5
+      OnClick = LVDblClick
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object ToolButton4: TToolButton
+      Left = 103
+      Top = 2
+      Width = 5
+      Caption = 'ToolButton4'
+      Style = tbsDivider
+    end
+    object tbFilterAny: TToolButton
+      Left = 80
+      Hint = 'Filter by matching any part of method'
+      Top = 2
+      Caption = 'tbFilterAny'
+      Down = True
+      Grouped = True
+      ImageIndex = 8
+      ParentShowHint = False
+      ShowHint = True
+      Style = tbsCheck
+    end
+    object tbFilterStart: TToolButton
+      Left = 57
+      Hint = 'Filter by matching with start of method'
+      Top = 2
+      Caption = 'tbFilterStart'
+      Grouped = True
+      ImageIndex = 7
+      ParentShowHint = False
+      ShowHint = True
+      Style = tbsCheck
+    end
+    object ToolButton7: TToolButton
+      Left = 52
+      Top = 2
+      Width = 5
+      Caption = 'ToolButton7'
+      Style = tbsDivider
+    end
+    object tbChangeFont: TToolButton
+      Left = 29
+      Hint = 'Change Font'
+      Top = 2
+      Caption = 'tbChangeFont'
+      ImageIndex = 4
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object ToolButton9: TToolButton
+      Left = 24
+      Top = 2
+      Width = 5
+      Caption = 'ToolButton9'
+      Style = tbsDivider
+    end
+    object tbCopy: TToolButton
+      Left = 1
+      Hint = 'Copy method name to the clipboard'
+      Top = 2
+      Caption = 'tbCopy'
+      ImageIndex = 6
+      OnClick = tbCopyClick
+      ParentShowHint = False
+      ShowHint = True
+    end
+  end
+  object pnlHeader: TPanel
+    Left = 0
+    Height = 41
+    Top = 26
+    Width = 952
+    Align = alTop
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 41
+    ClientWidth = 952
+    ParentColor = False
+    TabOrder = 2
+    object lblSearch: TLabel
+      AnchorSideTop.Control = pnlHeader
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 17
+      Top = 12
+      Width = 45
+      BorderSpacing.Around = 6
+      Caption = '&Search'
+      ParentColor = False
+    end
+    object lblObjects: TLabel
+      AnchorSideLeft.Control = edMethods
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = pnlHeader
+      AnchorSideTop.Side = asrCenter
+      Left = 581
+      Height = 17
+      Top = 12
+      Width = 48
+      BorderSpacing.Left = 12
+      BorderSpacing.Around = 6
+      Caption = '&Objects'
+      ParentColor = False
+    end
+    object edMethods: TEdit
+      AnchorSideLeft.Control = lblSearch
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = pnlHeader
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = cbObjects
+      AnchorSideBottom.Side = asrBottom
+      Left = 57
+      Height = 29
+      Top = 6
+      Width = 506
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      OnChange = edMethodsChange
+      OnKeyDown = edMethodsKeyDown
+      OnKeyPress = edMethodsKeyPress
+      TabOrder = 0
+    end
+    object cbObjects: TComboBox
+      AnchorSideLeft.Control = lblObjects
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = pnlHeader
+      AnchorSideRight.Control = pnlHeader
+      AnchorSideRight.Side = asrBottom
+      Left = 635
+      Height = 29
+      Top = 6
+      Width = 311
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      ItemHeight = 0
+      OnChange = cbObjectsChange
+      Sorted = True
+      Style = csDropDownList
+      TabOrder = 1
+    end
+  end
+  object LV: TListView
+    Left = 0
+    Height = 599
+    Top = 67
+    Width = 952
+    Align = alClient
+    Columns = <    
+      item
+      end    
+      item
+        Caption = 'Procedure'
+        Width = 300
+      end    
+      item
+        Caption = 'Type'
+      end    
+      item
+        Caption = 'Line'
+        Width = 238
+      end>
+    HideSelection = False
+    Items.LazData = {
+      4C0000000100000000000000FFFFFFFFFFFFFFFF03000000000000000E000000
+      54466F726D2E54657374466F75720800000046756E6374696F6E020000003234
+      FFFFFFFFFFFFFFFFFFFFFFFF
+    }
+    ReadOnly = True
+    RowSelect = True
+    ScrollBars = ssAutoBoth
+    SortType = stText
+    TabOrder = 0
+    ViewStyle = vsReport
+    OnDblClick = LVDblClick
+    OnKeyPress = edMethodsKeyPress
+    OnSelectItem = LVSelectItem
+  end
+end

@@ -1,0 +1,89 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcelo B Paula\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: heaptrcview.rsdtimes
+msgid " (%d times)"
+msgstr " (%d vezes)"
+
+#: heaptrcview.rserrorparse
+msgid "Error while parsing trace file"
+msgstr "Erro ao analisar arquivo de rastreamento"
+
+#: heaptrcview.rsleakview
+#, fuzzy
+#| msgid "Find source lines for leak/stack-traces"
+msgid "Leaks and Traces"
+msgstr "Exibir Vazamentos de Memória"
+
+#: heaptrcview.sbtnclipbrd
+msgid "Paste Clipboard"
+msgstr "Colar Área Transf."
+
+#: heaptrcview.sbtnresolve
+msgid "Resolve"
+msgstr "Resolver"
+
+#: heaptrcview.sbtnupdate
+msgid "Update"
+msgstr "Atualizar"
+
+#: heaptrcview.schkraw
+msgid "Raw leak data"
+msgstr "Dados não preparados"
+
+#: heaptrcview.schktop
+msgid "Stay on top"
+msgstr "Permanecer no topo"
+
+#: heaptrcview.sfrmcap
+#, fuzzy
+#| msgid "LeakView - HeapTrc output viewer"
+msgid "Leaks and Traces - HeapTrc and GDB backtrace output viewer"
+msgstr "Exibição Rastreamento Pilha"
+
+#: heaptrcview.sfrmselectfilewithdebuginfo
+msgid "Select File with debug info"
+msgstr "Selecionar arquivo com informações de depuração"
+
+#: heaptrcview.slbltrace
+msgid ".trc file"
+msgstr "arquivo .trc"
+
+#: heaptrcview.stacklineformat
+msgid "%s"
+msgstr "%s"
+
+#: heaptrcview.stacklineformatwithfile
+msgid "%s file: %s : %d; "
+msgstr "%s arquivo: %s : %d; "
+
+#: heaptrcview.stacktraceformat
+msgid "Leak: %d bytes x %d times"
+msgstr "Vazamento: %d bytes x %d vezes"
+
+#: heaptrcview.stacktraceformatsingle
+msgid "Leak: %d bytes"
+msgstr "Vazamento: %d bytes"
+
+#: heaptrcview.strleakingblockscount
+msgid "Leaking Blocks Count: %d"
+msgstr "Contagem Blocos Vazando: %d"
+
+#: heaptrcview.strleakingmemsize
+msgid "Leaking Mem Size: %d"
+msgstr "Tamanho Mem Vazando: %d"
+
+#: heaptrcview.strtotalmemalloc
+#, fuzzy
+#| msgid "Total Mem alloced: %d"
+msgid "Total Mem allocated: %d"
+msgstr "Total Mem alocada: %d"
+

@@ -1,0 +1,341 @@
+object GenerateSQLForm: TGenerateSQLForm
+  Left = 364
+  Height = 395
+  Top = 295
+  Width = 812
+  ActiveControl = PCSQL
+  Caption = 'Generate SQL statements'
+  ClientHeight = 395
+  ClientWidth = 812
+  OnCreate = FormCreate
+  LCLVersion = '1.1'
+  object PCSQL: TPageControl
+    Left = 0
+    Height = 359
+    Top = 0
+    Width = 812
+    ActivePage = TSFields
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 0
+    object TSFields: TTabSheet
+      Caption = 'Table and &Fields'
+      ChildSizing.EnlargeHorizontal = crsScaleChilds
+      ChildSizing.EnlargeVertical = crsScaleChilds
+      ChildSizing.ShrinkHorizontal = crsScaleChilds
+      ChildSizing.ShrinkVertical = crsScaleChilds
+      ChildSizing.ControlsPerLine = 3
+      ClientHeight = 325
+      ClientWidth = 804
+      OnResize = TSResize
+      object POptions: TPanel
+        Left = 0
+        Height = 325
+        Top = 0
+        Width = 254
+        Align = alLeft
+        BevelOuter = bvNone
+        ClientHeight = 325
+        ClientWidth = 254
+        Constraints.MinWidth = 180
+        TabOrder = 0
+        object LCBTables: TLabel
+          Left = 4
+          Height = 16
+          Top = 5
+          Width = 238
+          Anchors = [akTop, akLeft, akRight]
+          AutoSize = False
+          Caption = 'Ta&ble'
+          FocusControl = CBTables
+          ParentColor = False
+        end
+        object LSEIndent: TLabel
+          Left = 40
+          Height = 20
+          Top = 205
+          Width = 150
+          Alignment = taRightJustify
+          Anchors = [akTop, akLeft, akRight]
+          AutoSize = False
+          Caption = 'I&ndent'
+          Layout = tlCenter
+          ParentColor = False
+        end
+        object LSELineLength: TLabel
+          Left = 36
+          Height = 20
+          Top = 234
+          Width = 154
+          Alignment = taRightJustify
+          Anchors = [akTop, akLeft, akRight]
+          AutoSize = False
+          Caption = 'Line Length'
+          Layout = tlCenter
+          ParentColor = False
+        end
+        object CBTables: TComboBox
+          Left = 4
+          Height = 24
+          Top = 26
+          Width = 238
+          Anchors = [akTop, akLeft, akRight]
+          ItemHeight = 0
+          OnChange = CBTablesChange
+          Sorted = True
+          Style = csDropDownList
+          TabOrder = 0
+        end
+        object BGenerate: TButton
+          Left = 4
+          Height = 25
+          Top = 296
+          Width = 238
+          Anchors = [akLeft, akRight, akBottom]
+          BorderSpacing.InnerBorder = 4
+          Caption = '&Generate SQL'
+          Default = True
+          OnClick = BGenerateClick
+          TabOrder = 1
+        end
+        object SEindent: TTISpinEdit
+          Left = 204
+          Height = 18
+          Top = 202
+          Width = 34
+          Anchors = [akTop, akRight]
+          Link.TIPropertyName = 'Indent'
+          TabOrder = 2
+        end
+        object SELineLength: TTISpinEdit
+          Left = 205
+          Height = 18
+          Top = 231
+          Width = 34
+          Anchors = [akTop, akRight]
+          Link.TIPropertyName = 'LineLength'
+          TabOrder = 3
+        end
+        object CLBOptions: TTICheckGroup
+          Left = 6
+          Height = 144
+          Top = 50
+          Width = 234
+          Anchors = [akTop, akLeft, akRight]
+          Caption = 'Options'
+          Link.TIPropertyName = 'Options'
+          Link.AliasValuesStrings = (
+            'eoLineFeedAfterField=Linefeed after each field'
+            'eoUseOldInWhereParams=Use OLD prefix in where parameters'
+            'eoAndTermsInBrackets=Put brackets around AND Terms'
+            'eoQuoteFieldNames=Quote field names'
+            'eoLineFeedAfterAndTerm=Linefeed after AND terms'
+            'eoAddTerminator=Add terminator'
+          )
+        end
+        object CBIgnoreSelection: TCheckBox
+          Left = 6
+          Height = 26
+          Top = 257
+          Width = 170
+          Caption = 'Create full table creation SQL'
+          TabOrder = 5
+        end
+      end
+      object PKeyFields: TPanel
+        AnchorSideLeft.Control = POptions
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideRight.Control = PSelectFields
+        Left = 254
+        Height = 325
+        Top = 0
+        Width = 262
+        Align = alClient
+        BevelOuter = bvNone
+        ClientHeight = 325
+        ClientWidth = 262
+        TabOrder = 1
+        object LLBKeyFields: TLabel
+          Left = 0
+          Height = 26
+          Top = 0
+          Width = 262
+          Align = alTop
+          Alignment = taCenter
+          AutoSize = False
+          Caption = '&Key fields'
+          Layout = tlCenter
+          ParentColor = False
+        end
+        object LBKeyFields: TListBox
+          Left = 2
+          Height = 280
+          Top = 34
+          Width = 256
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          ItemHeight = 0
+          MultiSelect = True
+          ScrollWidth = 252
+          Sorted = True
+          TabOrder = 0
+          TopIndex = -1
+        end
+      end
+      object PSelectFields: TPanel
+        Left = 516
+        Height = 325
+        Top = 0
+        Width = 288
+        Align = alRight
+        BevelOuter = bvNone
+        ClientHeight = 325
+        ClientWidth = 288
+        TabOrder = 2
+        object Label2: TLabel
+          Left = 0
+          Height = 26
+          Top = 0
+          Width = 288
+          Align = alTop
+          Alignment = taCenter
+          AutoSize = False
+          Caption = 'Select/Update/Insert fields'
+          Layout = tlCenter
+          ParentColor = False
+        end
+        object LBFields: TListBox
+          Left = 12
+          Height = 280
+          Top = 34
+          Width = 266
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          ItemHeight = 0
+          MultiSelect = True
+          ScrollWidth = 262
+          Sorted = True
+          TabOrder = 0
+          TopIndex = -1
+        end
+      end
+    end
+    object TSSelect: TTabSheet
+      Caption = '&Select'
+      ClientHeight = 325
+      ClientWidth = 804
+      object MSelect: TMemo
+        Left = 8
+        Height = 317
+        Top = 8
+        Width = 788
+        Align = alClient
+        BorderSpacing.Around = 8
+        Lines.Strings = (
+          ''
+        )
+        TabOrder = 0
+      end
+    end
+    object TSInsert: TTabSheet
+      Caption = '&Insert'
+      ClientHeight = 325
+      ClientWidth = 804
+      object MInsert: TMemo
+        Left = 8
+        Height = 317
+        Top = 8
+        Width = 788
+        Align = alClient
+        BorderSpacing.Around = 8
+        Lines.Strings = (
+          ''
+        )
+        TabOrder = 0
+      end
+    end
+    object TSUpdate: TTabSheet
+      Caption = '&Update'
+      ClientHeight = 325
+      ClientWidth = 804
+      object MUpdate: TMemo
+        Left = 8
+        Height = 317
+        Top = 8
+        Width = 788
+        Align = alClient
+        BorderSpacing.Around = 8
+        Lines.Strings = (
+          ''
+        )
+        TabOrder = 0
+      end
+    end
+    object TSDelete: TTabSheet
+      Caption = '&Delete'
+      ClientHeight = 325
+      ClientWidth = 804
+      object MDelete: TMemo
+        Left = 8
+        Height = 317
+        Top = 8
+        Width = 788
+        Align = alClient
+        BorderSpacing.Around = 8
+        Lines.Strings = (
+          ''
+        )
+        TabOrder = 0
+      end
+    end
+    object TSCreate: TTabSheet
+      Caption = 'Create table'
+      ClientHeight = 325
+      ClientWidth = 804
+      object MCreate: TMemo
+        Left = 8
+        Height = 317
+        Top = 8
+        Width = 788
+        Align = alClient
+        BorderSpacing.Around = 8
+        Lines.Strings = (
+          ''
+        )
+        TabOrder = 0
+      end
+    end
+  end
+  object PButtons: TPanel
+    Left = 0
+    Height = 36
+    Top = 359
+    Width = 812
+    Align = alBottom
+    BevelOuter = bvLowered
+    ClientHeight = 36
+    ClientWidth = 812
+    TabOrder = 1
+    object BOK: TButton
+      Left = 722
+      Height = 25
+      Top = 6
+      Width = 83
+      Anchors = [akTop, akRight]
+      BorderSpacing.InnerBorder = 4
+      Caption = '&Ok'
+      ModalResult = 1
+      TabOrder = 0
+    end
+    object BCancel: TButton
+      Left = 634
+      Height = 25
+      Top = 6
+      Width = 83
+      Anchors = [akTop, akRight]
+      BorderSpacing.InnerBorder = 4
+      Cancel = True
+      Caption = '&Cancel'
+      ModalResult = 2
+      TabOrder = 1
+    end
+  end
+end

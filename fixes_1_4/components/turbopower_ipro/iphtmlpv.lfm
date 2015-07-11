@@ -1,0 +1,256 @@
+object IpHTMLPreview: TIpHTMLPreview
+  Left = 274
+  Height = 372
+  Top = 141
+  Width = 645
+  Caption = 'Print preview'
+  ClientHeight = 372
+  ClientWidth = 645
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnResize = FormResize
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object Panel1: TPanel
+    Left = 0
+    Height = 33
+    Top = 0
+    Width = 645
+    Align = alTop
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 33
+    ClientWidth = 645
+    TabOrder = 0
+    object Label1: TLabel
+      AnchorSideLeft.Control = btnPrev
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 398
+      Height = 14
+      Top = 9
+      Width = 29
+      BorderSpacing.Around = 5
+      Caption = 'Page:'
+      ParentColor = False
+    end
+    object Label2: TLabel
+      AnchorSideLeft.Control = edtPage
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 469
+      Height = 14
+      Top = 9
+      Width = 10
+      BorderSpacing.Around = 5
+      Caption = 'of'
+      ParentColor = False
+    end
+    object lblMaxPage: TLabel
+      AnchorSideLeft.Control = Label2
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 484
+      Height = 1
+      Top = 16
+      Width = 1
+      BorderSpacing.Around = 5
+      ParentColor = False
+    end
+    object Label3: TLabel
+      AnchorSideLeft.Control = btnSelectPrinter
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 159
+      Height = 14
+      Top = 9
+      Width = 31
+      BorderSpacing.Around = 5
+      Caption = 'Zoom:'
+      ParentColor = False
+    end
+    object btnPrint: TButton
+      Left = 5
+      Height = 23
+      Top = 5
+      Width = 47
+      AutoSize = True
+      BorderSpacing.Around = 5
+      Caption = 'Print'
+      Default = True
+      OnClick = btnPrintClick
+      TabOrder = 0
+    end
+    object btnFirst: TButton
+      AnchorSideLeft.Control = btnClose
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 318
+      Height = 23
+      Top = 5
+      Width = 38
+      AutoSize = True
+      BorderSpacing.Around = 5
+      Caption = '<<'
+      OnClick = btnFirstClick
+      TabOrder = 1
+    end
+    object btnPrev: TButton
+      AnchorSideLeft.Control = btnFirst
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 361
+      Height = 23
+      Top = 5
+      Width = 32
+      AutoSize = True
+      BorderSpacing.Around = 5
+      Caption = '<'
+      OnClick = btnPrevClick
+      TabOrder = 2
+    end
+    object btnNext: TButton
+      AnchorSideLeft.Control = lblMaxPage
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 490
+      Height = 23
+      Top = 5
+      Width = 32
+      AutoSize = True
+      BorderSpacing.Around = 5
+      Caption = '>'
+      OnClick = btnNextClick
+      TabOrder = 4
+    end
+    object btnLast: TButton
+      AnchorSideLeft.Control = btnNext
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 527
+      Height = 23
+      Top = 5
+      Width = 38
+      AutoSize = True
+      BorderSpacing.Around = 5
+      Caption = '>>'
+      OnClick = btnLastClick
+      TabOrder = 5
+    end
+    object btnClose: TButton
+      AnchorSideLeft.Control = ZoomCombo
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 261
+      Height = 23
+      Top = 5
+      Width = 52
+      AutoSize = True
+      BorderSpacing.Around = 5
+      Cancel = True
+      Caption = 'Close'
+      ModalResult = 2
+      TabOrder = 6
+    end
+    object edtPage: TEdit
+      AnchorSideLeft.Control = Label1
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 432
+      Height = 21
+      Top = 6
+      Width = 32
+      BorderSpacing.Around = 5
+      OnChange = edtPageChange
+      TabOrder = 3
+      Text = '1'
+    end
+    object ZoomCombo: TComboBox
+      AnchorSideLeft.Control = Label3
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 195
+      Height = 21
+      Top = 6
+      Width = 61
+      BorderSpacing.Around = 5
+      ItemHeight = 13
+      Items.Strings = (
+        '10%'
+        '25%'
+        '50%'
+        '75%'
+        '100%'
+        '150%'
+        '200%'
+        '300%'
+        '400%'
+      )
+      OnChange = ZoomComboChange
+      Style = csDropDownList
+      TabOrder = 7
+    end
+    object btnSelectPrinter: TButton
+      AnchorSideLeft.Control = btnPrint
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 57
+      Height = 23
+      Top = 5
+      Width = 97
+      AutoSize = True
+      BorderSpacing.Around = 5
+      Caption = 'Select printer...'
+      OnClick = btnSelectPrinterClick
+      TabOrder = 8
+    end
+  end
+  object ScrollBox1: TScrollBox
+    Left = 0
+    Height = 339
+    Top = 33
+    Width = 645
+    Align = alClient
+    ClientHeight = 335
+    ClientWidth = 641
+    Color = clBtnFace
+    ParentColor = False
+    TabOrder = 1
+    object PaperPanel: TPanel
+      Left = 0
+      Height = 125
+      Top = 0
+      Width = 158
+      BevelOuter = bvNone
+      ClientHeight = 125
+      ClientWidth = 158
+      Color = clWhite
+      ParentColor = False
+      TabOrder = 0
+      object PaintBox1: TPaintBox
+        AnchorSideLeft.Side = asrCenter
+        AnchorSideTop.Side = asrCenter
+        Left = 0
+        Height = 113
+        Top = 0
+        Width = 145
+        OnPaint = PaintBox1Paint
+      end
+    end
+  end
+end

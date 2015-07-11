@@ -1,0 +1,141 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="IDEIntf">
+    <module name="ProjectIntf">
+      <element name="TLazProject.MainFileID">
+        <short>The index of the file with the main source, for example the lpr file</short>
+      </element>
+      <element name="TLazProject.Files">
+        <short>All files of project plus files in source editor plus closed files once open in the source editor</short>
+        <descr>The index runs from 0..FileCount</descr>
+      </element>
+      <element name="TLazProject.FileCount">
+        <short>Files has 0..FileCount-1 items</short>
+      </element>
+      <element name="TLazProject.MainFile">
+        <short>The main source file, can be nil, otherwise equivalent to Files[MainFileID]</short>
+      </element>
+      <element name="TLazProject.Title">
+        <short>The project title, used for Application.Title statement</short>
+      </element>
+      <element name="TLazProject.IsVirtual">
+        <short>True if project has not yet a full file name, i.e. it was not yet saved</short>
+      </element>
+      <element name="TLazProject.CreateProjectFile">
+        <short>Create a new file, which is not yet added to the project Files</short>
+        <descr>Use AddFile when the new file is done.</descr>
+      </element>
+      <element name="TLazProject.AddFile">
+        <short>Add a file to the project</short>
+      </element>
+      <element name="TLazProject.RemoveUnit">
+        <short>Removes and frees a file.</short>
+      </element>
+      <element name="TLazProject.GetFileCount"/>
+      <element name="TProjectFlag.pfSaveClosedUnits">
+        <short>save metadata of closed files in the lpi</short>
+      </element>
+      <element name="TProjectFlag.pfSaveOnlyProjectUnits">
+        <short>Do not save metdata of foreign files in the lpi (i.e. files with IsPartOfProject=false)</short>
+      </element>
+      <element name="TProjectFlag.pfMainUnitIsPascalSource">
+        <short>Main unit is pascal, IDE can check it for common mistakes</short>
+      </element>
+      <element name="TProjectFlag.pfMainUnitHasUsesSectionForAllUnits">
+        <short>IDE updates the uses section of the main file if units are added, removed or renamed</short>
+      </element>
+      <element name="TProjectFlag.pfMainUnitHasCreateFormStatements">
+        <short>Automatically add/remove/update Application.CreateForm statements for forms and datamodules</short>
+      </element>
+      <element name="TProjectFlag.pfRunnable">
+        <short>Project can be executed</short>
+      </element>
+      <element name="TProjectFlag.pfUseDesignTimePackages">
+        <short>Compile designtime packages into project</short>
+        <descr>Designtime packages are only needed for designing the project forms, because they contain component and property editors. Only runtime packages contain code. If you want to test a designtime package you can create a project with this flag. Then the IDE will add the unit paths to the designtime packages too.</descr>
+      </element>
+      <element name="TProjectFlag.pfLRSFilesInOutputDirectory">
+        <short>Set this flag to tell the IDE to store .lrs files in the unit output directory instead of the directory where the lfm is.</short>
+      </element>
+      <element name="TProjectFlag.pfUseDefaultCompilerOptions">
+        <short>After creating the new project the IDE applies the users build modes and compiler options.</short>
+      </element>
+      <element name="TLazProject.ExecutableType"/>
+      <element name="TLazProject.LazCompilerOptions">
+        <short>The active compiler options of the project. Each build mode has its own set of compiler options.</short>
+        <descr>Do not store a reference to this.</descr>
+      </element>
+      <element name="TLazProject.ProjectInfoFile">
+        <short>The file path of the lpi</short>
+      </element>
+      <element name="TLazProject.ProjectSessionFile">
+        <short>The file path of the lps</short>
+      </element>
+      <element name="TLazProject.SessionStorage">
+        <short>Where to store the project session</short>
+      </element>
+      <element name="TLazProject.Modified">
+        <short>Set to true by project properties. Set it to false to clear all modified flags, excluding session flags</short>
+        <descr>Units and build modes have their own Modified.</descr>
+      </element>
+      <element name="TLazProject.SessionModified">
+        <short>Set to true if some session data has changed. Set this to false to set all session flags to false.</short>
+      </element>
+      <element name="TLazProject.FPDocPaths">
+        <short>Search path for fpdoc files. Multiple directories are separated by semicolon. Macros are allowed.</short>
+      </element>
+      <element name="TLazProject.FPDocPackageName">
+        <short>The fpdoc "package name". Leave empty to use project name.</short>
+      </element>
+      <element name="TLazProject.CleanOutputFileMask">
+        <short>File mask for the manual clean of the output directory. Default: all files</short>
+      </element>
+      <element name="TLazProject.CleanSourcesFileMask">
+        <short>File mask for the source directories on a manual clean up. Default: ppu and o files</short>
+      </element>
+      <element name="TLazProject.CustomData">
+        <short>Name value pairs for designtime packages.</short>
+        <descr>Every designtime package can store arbitrary data in each project. Use this property alone. All other unknown data will be purged from the lpi. It's recommended to use long and unique names like PackageName_MyPath.</descr>
+      </element>
+      <element name="TLazProject.CustomSessionData">
+        <short>As CustomData but stored in the lps</short>
+      </element>
+      <element name="TLazProject.UseAppBundle">
+        <short>On OS X applications need a .app directory called an "Application Bundle".</short>
+      </element>
+      <element name="TProjectDescriptor.GetLocalizedName">
+        <short>Name shown in the "New Project" dialog. Should return a resourcestring.</short>
+      </element>
+      <element name="TProjectDescriptor.GetLocalizedDescription">
+        <short>The description shown in the "New project" dialog. Should return a resourcestring.</short>
+      </element>
+      <element name="TProjectDescriptor.InitDescriptor">
+        <short>Called after user choose this project type to create.</short>
+        <descr>The current project still exists.
+It can start a dialog to ask some settings. Return mrOk to continue.</descr>
+      </element>
+      <element name="TProjectDescriptor.InitProject">
+        <short>Called after the old project was closed and the new was created.</short>
+        <descr>Set global flags. Do not create files at this point.
+Return mrOk to continue.
+After this the IDE loads user settings and sets up according to the current settings.</descr>
+      </element>
+      <element name="TProjectDescriptor.CreateStartFiles">
+        <short>Called after the global flags of the project are completed.</short>
+        <descr>You can now create or open files. For example: 
+Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,-1,
+                                      [ofProjectLoading,ofRegularFile]);</descr>
+      </element>
+      <element name="TProjectDescriptor.Name">
+        <short>The internal registration name.</short>
+        <descr>This name must be unique. It can be used by other packages to use your descriptor.</descr>
+      </element>
+      <element name="TProjectDescriptor.VisibleInNewDialog">
+        <short>If you want to create the new project via some other ways than the "New project" dialog set this to false.</short>
+      </element>
+      <element name="TProjectDescriptor.DefaultExt">
+        <short>The default file extension for creating new source files. Default is .pas</short>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

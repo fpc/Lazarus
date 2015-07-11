@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+  <package name="lazutils">
+    <!--
+  ====================================================================
+    Masks
+  ====================================================================
+-->
+    <module name="Masks">
+      <short>This unit contains classes for mask matching.</short>
+      <descr/>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="SysUtils">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Contnrs">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TMaskCharType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TMaskCharType.mcChar"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TMaskCharType.mcCharSet"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TMaskCharType.mcAnyChar"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TMaskCharType.mcAnyText"><short/></element>
+      <!-- set type Visibility: default -->
+      <element name="TCharSet">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PCharSet">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TMaskChar">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMaskChar.CharValue">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMaskChar.Negative">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMaskChar.SetValue">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TMaskString">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMaskString.MinLength">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMaskString.MaxLength">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMaskString.Chars">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TMask">
+        <short>The TMask class represents a mask.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMask.FMask">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TMask.Create">
+        <short>Creates new mask for matching.</short>
+        <descr>
+          <p>Creates new mask for matching. Matching is case-insensitive. The mask consist of literal elements such as:</p>
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMask.Create.AValue"><short/></element>
+      <!-- destructor Visibility: public -->
+      <element name="TMask.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TMask.Matches">
+        <short>If the file name matches the mask.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMask.Matches.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TMask.Matches.AFileName"><short/></element>
+      <!-- object Visibility: default -->
+      <element name="TParseStringList">
+        <short>The TParseStringList class is used to parse text into the list of strings.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TParseStringList.Create">
+        <short>Creates new string list by parsing passed text according to separators.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TParseStringList.Create.AText"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TParseStringList.Create.ASeparators"><short/></element>
+      <!-- object Visibility: default -->
+      <element name="TMaskList">
+        <short>The TMaskList class represents a list of masks.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMaskList.FMasks">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TMaskList.GetCount">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMaskList.GetCount.Result"><short/></element>
+      <!-- function Visibility: private -->
+      <element name="TMaskList.GetItem">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMaskList.GetItem.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TMaskList.GetItem.Index"><short/></element>
+      <!-- constructor Visibility: public -->
+      <element name="TMaskList.Create">
+        <short>Creates new list of masks from passed value, each item is seperated by separator.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMaskList.Create.AValue"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TMaskList.Create.ASeparator"><short/></element>
+      <!-- destructor Visibility: public -->
+      <element name="TMaskList.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TMaskList.Matches">
+        <short>If the file name matches at least one of mask list items.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMaskList.Matches.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TMaskList.Matches.AFileName"><short/></element>
+      <!-- property Visibility: public -->
+      <element name="TMaskList.Count">
+        <short>The count of mask list items.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TMaskList.Items">
+        <short>The items of mask list.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMaskList.Items.Index"><short/></element>
+      <!-- function Visibility: default -->
+      <element name="MatchesMask">
+        <short>If the file name matches the passed mask.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="MatchesMask.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="MatchesMask.FileName"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="MatchesMask.Mask"><short/></element>
+      <!-- function Visibility: default -->
+      <element name="MatchesMaskList">
+        <short>If the file name matches at least one of passed masks sepearated by separator.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="MatchesMaskList.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="MatchesMaskList.FileName"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="MatchesMaskList.Mask"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="MatchesMaskList.Separator"><short/></element>
+    </module>
+    <!-- Masks -->
+  </package>
+</fpdoc-descriptions>

@@ -1,0 +1,654 @@
+object EditorMarkupUserDefinedFrame: TEditorMarkupUserDefinedFrame
+  Left = 0
+  Height = 369
+  Top = 0
+  Width = 507
+  ClientHeight = 369
+  ClientWidth = 507
+  TabOrder = 0
+  DesignLeft = 432
+  DesignTop = 323
+  object ToolBar1: TToolBar
+    Left = 0
+    Height = 24
+    Top = 0
+    Width = 507
+    AutoSize = True
+    Caption = 'ToolBar1'
+    EdgeBorders = [ebBottom]
+    ParentShowHint = False
+    ShowCaptions = True
+    ShowHint = True
+    TabOrder = 0
+    object tbSelectList: TToolButton
+      Left = 1
+      Top = 0
+      Caption = 'tbSelectList'
+      DropdownMenu = ListMenu
+      OnClick = tbSelectListClick
+      Style = tbsDropDown
+    end
+    object tbNewList: TToolButton
+      Left = 81
+      Top = 0
+      Caption = 'tbNewList'
+      OnClick = tbNewListClick
+    end
+    object tbDeleteList: TToolButton
+      Left = 142
+      Top = 0
+      Caption = 'tbDeleteList'
+      OnClick = tbDeleteListClick
+    end
+    object ToolButton2: TToolButton
+      Left = 212
+      Top = 0
+      Width = 5
+      Caption = 'ToolButton2'
+      Style = tbsDivider
+    end
+    object tbMainPage: TToolButton
+      Left = 217
+      Top = 0
+      AllowAllUp = True
+      Caption = 'tbMainPage'
+      Down = True
+      Grouped = True
+      OnClick = tbSelectPageClicked
+      Style = tbsCheck
+    end
+    object tbKeyPage: TToolButton
+      Left = 289
+      Top = 0
+      AllowAllUp = True
+      Caption = 'tbKeyPage'
+      Grouped = True
+      OnClick = tbSelectPageClicked
+      Style = tbsCheck
+    end
+  end
+  object MainPanel: TPanel
+    Left = 0
+    Height = 345
+    Top = 24
+    Width = 507
+    Align = alClient
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 345
+    ClientWidth = 507
+    TabOrder = 1
+    inline SynColorAttrEditor1: TSynColorAttrEditor
+      Height = 146
+      Top = 217
+      Width = 507
+      Align = alTop
+      ClientHeight = 146
+      ClientWidth = 507
+      TabOrder = 1
+      inherited ForeGroundUseDefaultCheckBox: TCheckBox
+        AnchorSideLeft.Control = SynColorAttrEditor1
+      end
+      inherited ForegroundColorBox: TColorBox
+        AnchorSideTop.Control = SynColorAttrEditor1
+        AnchorSideRight.Control = SynColorAttrEditor1
+      end
+      inherited BackGroundColorBox: TColorBox
+        AnchorSideRight.Control = SynColorAttrEditor1
+      end
+      inherited FrameColorBox: TColorBox
+        AnchorSideRight.Control = SynColorAttrEditor1
+      end
+    end
+    object Notebook1: TNotebook
+      Left = 0
+      Height = 217
+      Top = 0
+      Width = 507
+      PageIndex = 1
+      Align = alTop
+      AutoSize = True
+      Constraints.MinHeight = 195
+      TabOrder = 0
+      TabStop = True
+      object PageMain: TPage
+        object HCenter: TLabel
+          AnchorSideLeft.Control = PageMain
+          AnchorSideLeft.Side = asrCenter
+          AnchorSideTop.Control = PageMain
+          Left = 253
+          Height = 1
+          Top = 0
+          Width = 1
+          ParentColor = False
+        end
+        object edListName: TEdit
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = PageMain
+          AnchorSideRight.Control = HCenter
+          Left = 84
+          Height = 23
+          Top = 6
+          Width = 143
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Right = 20
+          BorderSpacing.Around = 6
+          OnEditingDone = edListNameEditingDone
+          OnKeyPress = edListNameKeyPress
+          TabOrder = 0
+          Text = 'edListName'
+        end
+        object lbListName: TLabel
+          AnchorSideLeft.Control = PageMain
+          AnchorSideTop.Control = edListName
+          AnchorSideTop.Side = asrCenter
+          Left = 6
+          Height = 15
+          Top = 10
+          Width = 60
+          BorderSpacing.Around = 6
+          Caption = 'lbListName'
+          ParentColor = False
+        end
+        object WordList: TColorStringGrid
+          AnchorSideLeft.Control = HCenter
+          AnchorSideTop.Control = PageMain
+          AnchorSideRight.Control = PageMain
+          AnchorSideRight.Side = asrBottom
+          AnchorSideBottom.Control = PageMain
+          AnchorSideBottom.Side = asrBottom
+          Left = 259
+          Height = 183
+          Top = 6
+          Width = 242
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          AutoAdvance = aaDown
+          AutoFillColumns = True
+          BorderSpacing.Around = 6
+          ColCount = 1
+          Columns = <          
+            item
+              Title.Caption = 'Title'
+              Width = 238
+            end>
+          FixedCols = 0
+          FixedRows = 0
+          Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goDrawFocusSelected, goEditing, goAutoAddRows, goThumbTracking, goSmoothScroll]
+          RowCount = 1
+          TabOrder = 4
+          OnColRowDeleted = WordListColRowDeleted
+          OnEditingDone = WordListEditingDone
+          OnExit = WordListExit
+          OnKeyUp = WordListKeyUp
+          OnSelection = WordListSelection
+          ColWidths = (
+            238
+          )
+        end
+        object cbCaseSense: TCheckBox
+          AnchorSideLeft.Control = PageMain
+          AnchorSideTop.Control = edListName
+          Left = 6
+          Height = 19
+          Top = 42
+          Width = 88
+          BorderSpacing.Top = 30
+          BorderSpacing.Around = 6
+          Caption = 'cbCaseSense'
+          OnChange = GeneralCheckBoxChange
+          TabOrder = 1
+        end
+        object cbMatchStartBound: TCheckBox
+          AnchorSideLeft.Control = PageMain
+          AnchorSideTop.Control = cbCaseSense
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 19
+          Top = 67
+          Width = 126
+          BorderSpacing.Around = 6
+          Caption = 'cbMatchStartBound'
+          OnChange = GeneralCheckBoxChange
+          TabOrder = 2
+        end
+        object cbMatchEndBound: TCheckBox
+          AnchorSideLeft.Control = PageMain
+          AnchorSideTop.Control = cbMatchStartBound
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 19
+          Top = 92
+          Width = 122
+          BorderSpacing.Around = 6
+          Caption = 'cbMatchEndBound'
+          OnChange = GeneralCheckBoxChange
+          TabOrder = 3
+        end
+      end
+      object PageKeys: TPage
+        object cbKeyCase: TCheckBox
+          AnchorSideLeft.Control = PageKeys
+          AnchorSideTop.Control = lbNewKeyOptions
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = HCenterKey
+          AnchorSideRight.Side = asrBottom
+          Left = 6
+          Height = 19
+          Top = 26
+          Width = 228
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 5
+          BorderSpacing.Right = 20
+          Caption = 'cbKeyCase'
+          OnChange = GeneralCheckBoxChange
+          TabOrder = 0
+        end
+        object lbNewKeyOptions: TLabel
+          AnchorSideLeft.Control = PageKeys
+          AnchorSideTop.Control = PageKeys
+          AnchorSideRight.Control = HCenterKey
+          AnchorSideRight.Side = asrBottom
+          Left = 6
+          Height = 15
+          Top = 6
+          Width = 242
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 6
+          BorderSpacing.Right = 6
+          Caption = 'lbNewKeyOptions'
+          ParentColor = False
+          WordWrap = True
+        end
+        object Panel1: TPanel
+          AnchorSideLeft.Control = HCenterKey
+          AnchorSideTop.Control = PageKeys
+          AnchorSideRight.Control = PageKeys
+          AnchorSideRight.Side = asrBottom
+          AnchorSideBottom.Control = PageKeys
+          AnchorSideBottom.Side = asrBottom
+          Left = 253
+          Height = 217
+          Top = 0
+          Width = 254
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          BevelOuter = bvNone
+          ClientHeight = 217
+          ClientWidth = 254
+          TabOrder = 1
+          object divKeyAdd: TDividerBevel
+            Left = 6
+            Height = 17
+            Top = 0
+            Width = 242
+            Caption = 'divKeyAdd'
+            Align = alTop
+            BorderSpacing.Left = 6
+            BorderSpacing.Right = 6
+            Font.Style = [fsBold]
+            ParentFont = False
+            LeftIndent = 30
+          end
+          object btnKeyAdd: TSpeedButton
+            AnchorSideLeft.Control = Panel1
+            AnchorSideTop.Control = divKeyAdd
+            AnchorSideTop.Side = asrBottom
+            Left = 6
+            Height = 22
+            Top = 17
+            Width = 23
+            BorderSpacing.Left = 6
+            Caption = '...'
+            OnClick = KeyEditClicked
+          end
+          object lbKeyAdd1: TLabel
+            AnchorSideLeft.Control = btnKeyAdd
+            AnchorSideLeft.Side = asrBottom
+            AnchorSideTop.Control = btnKeyAdd
+            AnchorSideRight.Control = Panel1
+            AnchorSideRight.Side = asrBottom
+            Left = 35
+            Height = 15
+            Top = 17
+            Width = 213
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Left = 6
+            BorderSpacing.Right = 6
+            Caption = 'lbKeyAdd1'
+            ParentColor = False
+          end
+          object lbKeyAdd2: TLabel
+            AnchorSideLeft.Control = lbKeyAdd1
+            AnchorSideTop.Control = lbKeyAdd1
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = Panel1
+            AnchorSideRight.Side = asrBottom
+            Left = 35
+            Height = 15
+            Top = 38
+            Width = 219
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Top = 6
+            Caption = 'lbKeyAdd2'
+            ParentColor = False
+          end
+          object divKeyRemove: TDividerBevel
+            AnchorSideLeft.Control = Panel1
+            AnchorSideTop.Control = lbKeyAdd2
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = Panel1
+            AnchorSideRight.Side = asrBottom
+            Left = 6
+            Height = 17
+            Top = 59
+            Width = 242
+            Caption = 'divKeyRemove'
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Left = 6
+            BorderSpacing.Top = 6
+            BorderSpacing.Right = 6
+            Font.Style = [fsBold]
+            ParentFont = False
+            LeftIndent = 30
+          end
+          object divKeyToggle: TDividerBevel
+            AnchorSideLeft.Control = Panel1
+            AnchorSideTop.Control = lbKeyRemove2
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = Panel1
+            AnchorSideRight.Side = asrBottom
+            Left = 6
+            Height = 17
+            Top = 118
+            Width = 242
+            Caption = 'divKeyToggle'
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Left = 6
+            BorderSpacing.Top = 6
+            BorderSpacing.Right = 6
+            Font.Style = [fsBold]
+            ParentFont = False
+            LeftIndent = 30
+          end
+          object btnKeyRemove: TSpeedButton
+            AnchorSideLeft.Control = Panel1
+            AnchorSideTop.Control = divKeyRemove
+            AnchorSideTop.Side = asrBottom
+            Left = 6
+            Height = 22
+            Top = 76
+            Width = 23
+            BorderSpacing.Left = 6
+            Caption = '...'
+            OnClick = KeyEditClicked
+          end
+          object btnKeyToggle: TSpeedButton
+            AnchorSideLeft.Control = Panel1
+            AnchorSideTop.Control = divKeyToggle
+            AnchorSideTop.Side = asrBottom
+            Left = 6
+            Height = 22
+            Top = 135
+            Width = 23
+            BorderSpacing.Left = 6
+            Caption = '...'
+            OnClick = KeyEditClicked
+          end
+          object lbKeyRemove1: TLabel
+            AnchorSideLeft.Control = btnKeyRemove
+            AnchorSideLeft.Side = asrBottom
+            AnchorSideTop.Control = btnKeyRemove
+            AnchorSideRight.Control = Panel1
+            AnchorSideRight.Side = asrBottom
+            Left = 35
+            Height = 15
+            Top = 76
+            Width = 213
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Left = 6
+            BorderSpacing.Right = 6
+            Caption = 'lbKeyRemove1'
+            ParentColor = False
+          end
+          object lbKeyRemove2: TLabel
+            AnchorSideLeft.Control = lbKeyRemove1
+            AnchorSideTop.Control = lbKeyRemove1
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = Panel1
+            AnchorSideRight.Side = asrBottom
+            Left = 35
+            Height = 15
+            Top = 97
+            Width = 213
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Top = 6
+            BorderSpacing.Right = 6
+            Caption = 'lbKeyRemove2'
+            ParentColor = False
+          end
+          object lbKeyToggle1: TLabel
+            AnchorSideLeft.Control = btnKeyToggle
+            AnchorSideLeft.Side = asrBottom
+            AnchorSideTop.Control = btnKeyToggle
+            AnchorSideRight.Control = Panel1
+            AnchorSideRight.Side = asrBottom
+            Left = 35
+            Height = 15
+            Top = 135
+            Width = 213
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Left = 6
+            BorderSpacing.Right = 6
+            Caption = 'lbKeyToggle1'
+            ParentColor = False
+          end
+          object lbKeyToggle2: TLabel
+            AnchorSideLeft.Control = lbKeyToggle1
+            AnchorSideTop.Control = lbKeyToggle1
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = Panel1
+            AnchorSideRight.Side = asrBottom
+            Left = 35
+            Height = 15
+            Top = 156
+            Width = 213
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Top = 6
+            BorderSpacing.Right = 6
+            BorderSpacing.Bottom = 6
+            Caption = 'lbKeyToggle2'
+            ParentColor = False
+          end
+        end
+        object HCenterKey: TLabel
+          AnchorSideLeft.Control = PageKeys
+          AnchorSideLeft.Side = asrCenter
+          AnchorSideTop.Control = PageKeys
+          Left = 253
+          Height = 1
+          Top = 0
+          Width = 1
+          ParentColor = False
+        end
+        object cbKeyBoundStart: TCheckBox
+          AnchorSideLeft.Control = PageKeys
+          AnchorSideTop.Control = cbKeyCase
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = HCenterKey
+          AnchorSideRight.Side = asrBottom
+          Left = 6
+          Height = 19
+          Top = 50
+          Width = 228
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 5
+          BorderSpacing.Right = 20
+          Caption = 'cbKeyBoundStart'
+          OnChange = GeneralCheckBoxChange
+          TabOrder = 2
+        end
+        object cbKeyBoundEnd: TCheckBox
+          AnchorSideLeft.Control = PageKeys
+          AnchorSideTop.Control = cbKeyBoundStart
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = HCenterKey
+          AnchorSideRight.Side = asrBottom
+          Left = 6
+          Height = 19
+          Top = 74
+          Width = 228
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 5
+          BorderSpacing.Right = 20
+          Caption = 'cbKeyBoundEnd'
+          OnChange = GeneralCheckBoxChange
+          TabOrder = 3
+        end
+        object lbKeyBoundMinLen: TLabel
+          AnchorSideLeft.Control = PageKeys
+          AnchorSideTop.Control = cbKeyBoundEnd
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = HCenterKey
+          Left = 6
+          Height = 15
+          Top = 101
+          Width = 241
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 8
+          BorderSpacing.Right = 6
+          Caption = 'lbKeyBoundMinLen'
+          ParentColor = False
+          WordWrap = True
+        end
+        object lbWordMin: TLabel
+          AnchorSideLeft.Control = PageKeys
+          AnchorSideTop.Control = lbKeyBoundMinLen
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = HQuarter
+          AnchorSideRight.Side = asrBottom
+          Left = 6
+          Height = 15
+          Top = 119
+          Width = 116
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 3
+          BorderSpacing.Right = 6
+          Caption = 'lbWordMin'
+          ParentColor = False
+          WordWrap = True
+        end
+        object lbSelectMin: TLabel
+          AnchorSideLeft.Control = HQuarter
+          AnchorSideTop.Control = lbWordMin
+          AnchorSideRight.Control = HCenterKey
+          AnchorSideRight.Side = asrBottom
+          Left = 133
+          Height = 15
+          Top = 119
+          Width = 115
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Left = 6
+          BorderSpacing.Right = 6
+          Caption = 'lbSelectMin'
+          ParentColor = False
+          WordWrap = True
+        end
+        object edWordMin: TSpinEdit
+          AnchorSideLeft.Control = PageKeys
+          AnchorSideTop.Control = lbWordMin
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = HQuarter
+          AnchorSideRight.Side = asrBottom
+          Left = 6
+          Height = 23
+          Top = 138
+          Width = 70
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 4
+          BorderSpacing.Right = 6
+          Constraints.MaxWidth = 70
+          MaxValue = 9999
+          OnChange = GeneralCheckBoxChange
+          TabOrder = 4
+        end
+        object edSelectMin: TSpinEdit
+          AnchorSideLeft.Control = HQuarter
+          AnchorSideTop.Control = lbSelectMin
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = HCenterKey
+          AnchorSideRight.Side = asrBottom
+          Left = 133
+          Height = 23
+          Top = 138
+          Width = 70
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 4
+          BorderSpacing.Right = 6
+          Constraints.MaxWidth = 70
+          MaxValue = 9999
+          OnChange = GeneralCheckBoxChange
+          TabOrder = 5
+        end
+        object HQuarter: TLabel
+          AnchorSideLeft.Control = lbNewKeyOptions
+          AnchorSideLeft.Side = asrCenter
+          AnchorSideTop.Control = PageKeys
+          Left = 127
+          Height = 1
+          Top = 0
+          Width = 1
+          ParentColor = False
+        end
+        object cbSmartSelectBound: TCheckBox
+          AnchorSideLeft.Control = PageKeys
+          AnchorSideTop.Control = edWordMin
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = HCenterKey
+          AnchorSideRight.Side = asrBottom
+          Left = 6
+          Height = 19
+          Top = 167
+          Width = 228
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 6
+          BorderSpacing.Right = 20
+          BorderSpacing.Bottom = 6
+          Caption = 'cbSmartSelectBound'
+          OnChange = GeneralCheckBoxChange
+          TabOrder = 6
+        end
+        object cbGlobalList: TCheckBox
+          AnchorSideLeft.Control = PageKeys
+          AnchorSideTop.Control = cbSmartSelectBound
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = HCenterKey
+          AnchorSideRight.Side = asrBottom
+          Left = 6
+          Height = 19
+          Top = 192
+          Width = 228
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 6
+          BorderSpacing.Right = 20
+          BorderSpacing.Bottom = 6
+          Caption = 'cbGlobalList'
+          OnChange = GeneralCheckBoxChange
+          TabOrder = 7
+        end
+      end
+    end
+  end
+  object ListMenu: TPopupMenu
+    left = 456
+    top = 65528
+  end
+end

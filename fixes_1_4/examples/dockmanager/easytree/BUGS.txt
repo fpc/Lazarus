@@ -1,0 +1,106 @@
+Please check the following list of possible bugs or inconsistencies,
+using the widgets at the top of the EasyDocking application main window
+- with various widgetsets and
+- various settings of the $defines in fMain.
+
+Forms not dockable with some widgetsets?
+========================================
+With dragForm defined, a form is created on an click on the colored shapes.
+This form is not dockable at least with gtk.
+[acknowledged by Paul]
+
+With dragForm undefined, a shape control is created and floated manually.
+In this case the shape seems to be dockable (also try docking the label).
+
+Edit control not dockable
+=========================
+The edit control doesn't honor the DragMode and DragKind?
+This behaviour may apply to all windowed controls (see Forms above)
+A label control seems to be dockable in DragMode=dmAutomatic.
+
+Inconsistent DockRect
+=====================
+1. The DockRect should be drawn as an outline, as is on Windows.
+Using gtk, a filled rectangle is drawn instead.
+[fixed]
+
+2. The DockRect should reflect the possible placement of the dragged control on a
+dock site, as is on Windows.
+On some platforms or widgetsets the rectangle always covers the entire dock site.
+This seems to be related to the wrong setting of the drop alignment.
+A docking manager, if used, should have full control over the drop alignment.
+[fixed, in EasyDockSite]
+
+3. A floating form or dock site in floating state (no DragTarget) should set
+the DragRect to the form extent, not to the client extent.
+LCL bug: forms use ClientRect for BoundsRect.
+[acknowledged by Paul]
+
+Undocking
+=========
+1. Undocked controls always should be dockable (DragMode=dmAutomatic).
+
+2. A control never should be undocked on a single click on it.
+The default mode (DragImediate=True) is inappropriate.
+The following bugs are related to this setting.
+[partially fixed]
+
+3. When a floating control is only clicked, it never should change
+it's size or position on the screen.
+[fixed, in EasyDockSite]
+
+4. When a docked control is only clicked, it never should change
+it's size or position in the dock site.
+[fixed, in Controls.DragManagerDefault]
+
+5. When the header of a docked control is only clicked, the control never should
+change it's size or position in the dock site.
+[fixed, in EasyDockSite]
+
+6. Docked controls should be undockable by default.
+
+7. Floating controls should be dockable by default.
+
+8. Docked controls should retain their undocked extent.
+When a control is undocked into floating state, it retains its size.
+When docked and floated again, it has the docked size,
+not the original (undocked) size.
+
+Title text
+==========
+On Windows, the floating forms and dockzones have some text in their title bar.
+On gtk no such text is shown.
+(Problem with default names for dynamically created controls.
+Form title still has to be fixed)
+[fixed in Controls]
+
+Resize
+======
+1. A docksite can be resized by resizing the parent form. The dock manager should
+receive an according notification, so that it can resize the docked controls.
+[fixed in Controls]
+
+2. Docked controls can be resized with embedded sliders. Some widgetsets seem
+not to resize the affected controls, even after an explicit Invalidate.
+[fixed in EasyDockSite]
+
+Keyboard
+========
+1. The DragManager doesn't receive KeyUp and KeyDown notifications.
+[fixed]
+
+2. Handle CTRL key, for inhibit dock/drop.
+
+TPageControl
+============
+Controls can be docked into a notebook (with tabs).
+
+1. A docked TPageControl rejects an initial placement (set BoundsRect).
+[fixed]
+
+2. TPageControl does not always allow to undock individual pages.
+TControls can be undocked, but not forms.
+
+3. A TPageControl does not resize properly (retains initial place).
+(Okay when wrapped into a form, and the form is docked)
+[fixed]

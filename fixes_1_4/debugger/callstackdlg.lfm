@@ -1,0 +1,268 @@
+inherited CallStackDlg: TCallStackDlg
+  Left = 306
+  Height = 246
+  Top = 130
+  Width = 562
+  BorderStyle = bsSizeToolWin
+  Caption = 'CallStack'
+  ClientHeight = 246
+  ClientWidth = 562
+  OnCreate = FormCreate
+  Visible = True
+  object lvCallStack: TListView[0]
+    Left = 0
+    Height = 166
+    Top = 80
+    Width = 562
+    Align = alClient
+    Columns = <    
+      item
+        Width = 20
+      end    
+      item
+        AutoSize = True
+        Caption = 'Index'
+        Width = 538
+      end    
+      item
+        Caption = 'Source'
+        Width = 150
+      end    
+      item
+        Caption = 'Line'
+      end    
+      item
+        Caption = 'Function'
+        Width = 280
+      end>
+    HideSelection = False
+    PopupMenu = mnuPopup
+    ReadOnly = True
+    RowSelect = True
+    TabOrder = 0
+    ViewStyle = vsReport
+    OnClick = lvCallStackClick
+    OnDblClick = lvCallStackDBLCLICK
+  end
+  object ToolBar1: TToolBar[1]
+    Left = 0
+    Height = 80
+    Top = 0
+    Width = 562
+    AutoSize = True
+    ButtonHeight = 40
+    ButtonWidth = 50
+    Caption = 'tbButtons'
+    EdgeBorders = []
+    ParentShowHint = False
+    ShowCaptions = True
+    ShowHint = True
+    TabOrder = 1
+    object ToolButtonShow: TToolButton
+      Left = 112
+      Top = 0
+      Action = actShow
+      ImageIndex = 0
+    end
+    object ToolButtonCurrent: TToolButton
+      Left = 162
+      Top = 0
+      Action = actSetCurrent
+    end
+    object ToolButton4: TToolButton
+      Left = 212
+      Top = 0
+      Width = 10
+      Caption = 'ToolButton4'
+      Style = tbsSeparator
+    end
+    object ToolButtonMore: TToolButton
+      Left = 284
+      Top = 0
+      Action = actViewMore
+      ImageIndex = 1
+    end
+    object ToolButtonMax: TToolButton
+      Left = 222
+      Top = 0
+      Action = actViewLimit
+      Caption = 'Max 10'
+      DropdownMenu = mnuLimit
+      Style = tbsDropDown
+    end
+    object ToolButtonGoto: TToolButton
+      Left = 494
+      Top = 0
+      Action = actViewGoto
+      ImageIndex = 4
+    end
+    object ToolButtonCopyAll: TToolButton
+      Left = 1
+      Top = 40
+      Action = actCopyAll
+      ImageIndex = 5
+    end
+    object ToolButton8: TToolButton
+      Left = 102
+      Top = 0
+      Width = 10
+      Caption = 'ToolButton8'
+      Style = tbsSeparator
+    end
+    object ToolButton9: TToolButton
+      Left = 334
+      Top = 0
+      Width = 10
+      Caption = 'ToolButton9'
+      Style = tbsSeparator
+    end
+    object ToolButtonTop: TToolButton
+      Left = 344
+      Top = 0
+      Action = actViewTop
+      ImageIndex = 2
+    end
+    object ToolButtonBottom: TToolButton
+      Left = 394
+      Top = 0
+      Action = actViewBottom
+      ImageIndex = 3
+    end
+    object Panel1: TPanel
+      Left = 444
+      Height = 40
+      Top = 0
+      Width = 50
+      BevelOuter = bvNone
+      ClientHeight = 40
+      ClientWidth = 50
+      TabOrder = 0
+      object txtGoto: TEdit
+        Left = 2
+        Height = 23
+        Top = 8
+        Width = 46
+        OnKeyPress = txtGotoKeyPress
+        TabOrder = 0
+        Text = '0'
+      end
+    end
+    object ToolButtonPower: TToolButton
+      Left = 1
+      Top = 0
+      AllowAllUp = True
+      AutoSize = True
+      Caption = 'ToolButtonPower'
+      Down = True
+      OnClick = ToolButtonPowerClick
+      Style = tbsCheck
+    end
+    object ToolButton2: TToolButton
+      Left = 544
+      Top = 0
+      Width = 10
+      Caption = 'ToolButton2'
+      Style = tbsSeparator
+    end
+  end
+  object mnuPopup: TPopupMenu[2]
+    left = 224
+    top = 80
+    object popShow: TMenuItem
+      Action = actShow
+      Default = True
+      OnClick = actShowClick
+    end
+    object popShowDisass: TMenuItem
+      Action = actShowDisass
+    end
+    object popToggle: TMenuItem
+      Action = actToggleBreakPoint
+      OnClick = actToggleBreakPointExecute
+    end
+    object N1: TMenuItem
+      Caption = '-'
+    end
+    object popSetAsCurrent: TMenuItem
+      Action = actSetCurrent
+      OnClick = actSetAsCurrentClick
+    end
+    object popCopyAll: TMenuItem
+      Action = actCopyAll
+      OnClick = actCopyAllClick
+    end
+  end
+  object aclActions: TActionList[3]
+    left = 48
+    top = 80
+    object actShow: TAction
+      Caption = 'Show'
+      OnExecute = actShowClick
+      SecondaryShortCuts.Strings = (
+        'enter'
+      )
+      ShortCut = 16470
+    end
+    object actSetCurrent: TAction
+      Caption = 'Current'
+      OnExecute = actSetAsCurrentClick
+    end
+    object actCopyAll: TAction
+      Caption = 'Copy All'
+      OnExecute = actCopyAllClick
+    end
+    object actViewMore: TAction
+      Category = 'View'
+      Caption = 'More'
+      OnExecute = actViewMoreExecute
+    end
+    object actViewGoto: TAction
+      Category = 'View'
+      Caption = 'Goto'
+      OnExecute = actViewGotoExecute
+    end
+    object actViewLimit: TAction
+      Category = 'View'
+      Caption = '10'
+      OnExecute = actViewLimitExecute
+    end
+    object actViewTop: TAction
+      Category = 'View'
+      Caption = 'Top'
+      OnExecute = actViewTopExecute
+    end
+    object actViewBottom: TAction
+      Category = 'View'
+      Caption = 'Bottom'
+      OnExecute = actViewBottomExecute
+    end
+    object actToggleBreakPoint: TAction
+      Caption = 'Toggle Breakpoint'
+      OnExecute = actToggleBreakPointExecute
+      ShortCut = 116
+    end
+    object actShowDisass: TAction
+      Caption = 'actShowDisass'
+      OnExecute = actShowDisassExecute
+    end
+  end
+  object mnuLimit: TPopupMenu[4]
+    left = 136
+    top = 80
+    object popLimit10: TMenuItem
+      Tag = 10
+      Caption = 'Max 10'
+      OnClick = popCountClick
+    end
+    object popLimit25: TMenuItem
+      Tag = 25
+      Caption = 'Max 25'
+      OnClick = popCountClick
+    end
+    object popLimit50: TMenuItem
+      Tag = 50
+      Caption = 'Max 50'
+      OnClick = popCountClick
+    end
+  end
+end

@@ -1,0 +1,502 @@
+object frDesOptionsForm: TfrDesOptionsForm
+  Left = 399
+  Height = 428
+  Top = 216
+  Width = 422
+  ActiveControl = PageControl1
+  Caption = 'Options'
+  ClientHeight = 428
+  ClientWidth = 422
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.3'
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 375
+    Top = 0
+    Width = 422
+    ActivePage = TabSheet1
+    Align = alClient
+    TabIndex = 1
+    TabOrder = 0
+    object Tab1: TTabSheet
+      Caption = 'Designer'
+      ClientHeight = 344
+      ClientWidth = 418
+      object GroupBox1: TGroupBox
+        AnchorSideLeft.Control = Tab1
+        AnchorSideTop.Control = Tab1
+        AnchorSideRight.Control = Label5
+        Left = 6
+        Height = 87
+        Top = 6
+        Width = 197
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
+        BorderSpacing.Around = 6
+        Caption = 'Grid'
+        ClientHeight = 64
+        ClientWidth = 193
+        TabOrder = 0
+        object CB1: TCheckBox
+          AnchorSideLeft.Control = GroupBox1
+          AnchorSideTop.Control = GroupBox1
+          Left = 6
+          Height = 23
+          Top = 6
+          Width = 88
+          HelpContext = 66
+          BorderSpacing.Around = 6
+          Caption = '&Show grid'
+          TabOrder = 0
+        end
+        object CB2: TCheckBox
+          AnchorSideLeft.Control = GroupBox1
+          AnchorSideTop.Control = CB1
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 23
+          Top = 35
+          Width = 101
+          HelpContext = 75
+          BorderSpacing.Around = 6
+          Caption = 'Align to &grid'
+          TabOrder = 1
+        end
+      end
+      object GroupBox2: TGroupBox
+        AnchorSideLeft.Control = Label5
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = Tab1
+        AnchorSideRight.Control = Tab1
+        AnchorSideRight.Side = asrBottom
+        Left = 216
+        Height = 87
+        Top = 6
+        Width = 196
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
+        BorderSpacing.Around = 6
+        Caption = 'Object moving'
+        ClientHeight = 64
+        ClientWidth = 192
+        TabOrder = 1
+        object RB4: TRadioButton
+          AnchorSideLeft.Control = GroupBox2
+          AnchorSideTop.Control = GroupBox2
+          Left = 6
+          Height = 23
+          Top = 6
+          Width = 63
+          HelpContext = 84
+          BorderSpacing.Around = 6
+          Caption = 'S&hape'
+          Checked = True
+          TabOrder = 0
+          TabStop = True
+        end
+        object RB5: TRadioButton
+          AnchorSideLeft.Control = GroupBox2
+          AnchorSideTop.Control = RB4
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 23
+          Top = 35
+          Width = 84
+          HelpContext = 94
+          BorderSpacing.Around = 6
+          Caption = '&Contents'
+          TabOrder = 1
+        end
+      end
+      object GroupBox3: TGroupBox
+        AnchorSideLeft.Control = Label5
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = GroupBox2
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = Tab1
+        AnchorSideRight.Side = asrBottom
+        Left = 216
+        Height = 116
+        Top = 99
+        Width = 196
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
+        BorderSpacing.Around = 6
+        Caption = 'Report units'
+        ClientHeight = 93
+        ClientWidth = 192
+        TabOrder = 2
+        object RB6: TRadioButton
+          AnchorSideLeft.Control = GroupBox3
+          AnchorSideTop.Control = GroupBox3
+          Left = 6
+          Height = 23
+          Top = 6
+          Width = 62
+          HelpContext = 102
+          BorderSpacing.Around = 6
+          Caption = '&Pixels'
+          Checked = True
+          TabOrder = 0
+          TabStop = True
+        end
+        object RB7: TRadioButton
+          AnchorSideLeft.Control = GroupBox3
+          AnchorSideTop.Control = RB6
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 23
+          Top = 35
+          Width = 47
+          HelpContext = 112
+          BorderSpacing.Around = 6
+          Caption = '&MM'
+          TabOrder = 1
+        end
+        object RB8: TRadioButton
+          AnchorSideLeft.Control = GroupBox3
+          AnchorSideTop.Control = RB7
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 23
+          Top = 64
+          Width = 65
+          HelpContext = 121
+          BorderSpacing.Around = 6
+          Caption = '&Inches'
+          TabOrder = 2
+        end
+      end
+      object GroupBox4: TGroupBox
+        AnchorSideLeft.Control = GroupBox1
+        AnchorSideTop.Control = GroupBox1
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = Label5
+        Left = 12
+        Height = 116
+        Top = 99
+        Width = 191
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
+        BorderSpacing.Around = 6
+        Caption = 'Grid size'
+        ClientHeight = 93
+        ClientWidth = 187
+        TabOrder = 3
+        object RB1: TRadioButton
+          AnchorSideLeft.Control = GroupBox4
+          AnchorSideTop.Control = GroupBox4
+          Left = 6
+          Height = 23
+          Top = 6
+          Width = 74
+          HelpContext = 131
+          BorderSpacing.Around = 6
+          Caption = '&4 pixels'
+          Checked = True
+          TabOrder = 0
+          TabStop = True
+        end
+        object RB2: TRadioButton
+          AnchorSideLeft.Control = GroupBox4
+          AnchorSideTop.Control = RB1
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 23
+          Top = 35
+          Width = 74
+          HelpContext = 141
+          BorderSpacing.Around = 6
+          Caption = '&8 pixels'
+          TabOrder = 1
+        end
+        object RB3: TRadioButton
+          AnchorSideLeft.Control = GroupBox4
+          AnchorSideTop.Control = RB2
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 23
+          Top = 64
+          Width = 130
+          HelpContext = 151
+          BorderSpacing.Around = 6
+          Caption = '&18 pixels (5mm)'
+          TabOrder = 2
+        end
+      end
+      object GroupBox5: TGroupBox
+        AnchorSideLeft.Control = Tab1
+        AnchorSideTop.Control = GroupBox4
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = Tab1
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 116
+        Top = 221
+        Width = 406
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
+        BorderSpacing.Around = 6
+        Caption = 'Other'
+        ClientHeight = 93
+        ClientWidth = 402
+        TabOrder = 4
+        object CB3: TCheckBox
+          AnchorSideLeft.Control = GroupBox5
+          AnchorSideTop.Control = GroupBox5
+          Left = 6
+          Height = 23
+          Top = 6
+          Width = 129
+          HelpContext = 161
+          BorderSpacing.Around = 6
+          Caption = 'Colored &buttons'
+          Enabled = False
+          TabOrder = 0
+        end
+        object CB4: TCheckBox
+          AnchorSideLeft.Control = GroupBox5
+          AnchorSideTop.Control = CB3
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 23
+          Top = 35
+          Width = 143
+          HelpContext = 171
+          BorderSpacing.Around = 6
+          Caption = '&Editing after insert'
+          TabOrder = 1
+        end
+        object CB5: TCheckBox
+          AnchorSideLeft.Control = GroupBox5
+          AnchorSideTop.Control = CB4
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 23
+          Top = 64
+          Width = 133
+          BorderSpacing.Around = 6
+          Caption = 'Show band &titles'
+          TabOrder = 2
+        end
+      end
+      object Label5: TLabel
+        AnchorSideLeft.Control = Tab1
+        AnchorSideLeft.Side = asrCenter
+        AnchorSideTop.Control = Tab1
+        Left = 209
+        Height = 1
+        Top = 0
+        Width = 1
+        ParentColor = False
+      end
+    end
+    object TabSheet1: TTabSheet
+      Caption = 'Editor'
+      ClientHeight = 344
+      ClientWidth = 418
+      object GroupBox6: TGroupBox
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideTop.Control = TabSheet1
+        AnchorSideRight.Control = TabSheet1
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 153
+        Top = 6
+        Width = 406
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
+        BorderSpacing.Around = 6
+        Caption = 'Memo editor'
+        ClientHeight = 130
+        ClientWidth = 402
+        TabOrder = 0
+        object RadioButton1: TRadioButton
+          AnchorSideLeft.Control = GroupBox6
+          AnchorSideTop.Control = GroupBox6
+          Left = 6
+          Height = 23
+          Top = 6
+          Width = 180
+          BorderSpacing.Around = 6
+          Caption = 'Use Memo font settings'
+          Checked = True
+          OnClick = RadioButton1Change
+          TabOrder = 0
+          TabStop = True
+        end
+        object RadioButton2: TRadioButton
+          AnchorSideLeft.Control = GroupBox6
+          AnchorSideTop.Control = RadioButton1
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 23
+          Top = 35
+          Width = 171
+          BorderSpacing.Around = 6
+          Caption = 'Use fixed font settings'
+          OnClick = RadioButton1Change
+          TabOrder = 1
+        end
+        object ComboBox1: TComboBox
+          AnchorSideLeft.Control = Label1
+          AnchorSideTop.Control = Label1
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = SpinEdit1
+          Left = 6
+          Height = 33
+          Top = 91
+          Width = 282
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Top = 6
+          BorderSpacing.Right = 6
+          BorderSpacing.Bottom = 6
+          ItemHeight = 0
+          TabOrder = 2
+          Text = 'ComboBox1'
+        end
+        object Label1: TLabel
+          AnchorSideLeft.Control = GroupBox6
+          AnchorSideTop.Control = RadioButton2
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 21
+          Top = 64
+          Width = 69
+          BorderSpacing.Around = 6
+          Caption = 'Font name'
+          ParentColor = False
+        end
+        object Label2: TLabel
+          AnchorSideLeft.Control = SpinEdit1
+          AnchorSideTop.Control = RadioButton2
+          AnchorSideTop.Side = asrBottom
+          Left = 300
+          Height = 21
+          Top = 64
+          Width = 59
+          BorderSpacing.Around = 6
+          Caption = 'Font size'
+          ParentColor = False
+        end
+        object SpinEdit1: TSpinEdit
+          AnchorSideTop.Control = Label2
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = GroupBox6
+          AnchorSideRight.Side = asrBottom
+          Left = 294
+          Height = 31
+          Top = 91
+          Width = 102
+          Anchors = [akTop, akRight]
+          BorderSpacing.Top = 6
+          BorderSpacing.Right = 6
+          TabOrder = 3
+          Value = 4
+        end
+      end
+      object GroupBox7: TGroupBox
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideTop.Control = GroupBox6
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet1
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 95
+        Top = 165
+        Width = 406
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
+        BorderSpacing.Around = 6
+        Caption = 'Script editor'
+        ClientHeight = 72
+        ClientWidth = 402
+        TabOrder = 1
+        object Label3: TLabel
+          AnchorSideLeft.Control = GroupBox7
+          AnchorSideTop.Control = GroupBox7
+          Left = 6
+          Height = 21
+          Top = 6
+          Width = 69
+          BorderSpacing.Around = 6
+          Caption = 'Font name'
+          ParentColor = False
+        end
+        object ComboBox2: TComboBox
+          AnchorSideLeft.Control = Label3
+          AnchorSideTop.Control = Label3
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = SpinEdit2
+          Left = 6
+          Height = 33
+          Top = 33
+          Width = 282
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Top = 6
+          BorderSpacing.Right = 6
+          BorderSpacing.Bottom = 6
+          ItemHeight = 0
+          TabOrder = 0
+          Text = 'ComboBox2'
+        end
+        object Label4: TLabel
+          AnchorSideLeft.Control = SpinEdit2
+          AnchorSideTop.Control = GroupBox7
+          Left = 300
+          Height = 21
+          Top = 6
+          Width = 59
+          BorderSpacing.Around = 6
+          Caption = 'Font size'
+          ParentColor = False
+        end
+        object SpinEdit2: TSpinEdit
+          AnchorSideTop.Control = Label4
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = GroupBox7
+          AnchorSideRight.Side = asrBottom
+          Left = 294
+          Height = 31
+          Top = 33
+          Width = 102
+          Anchors = [akTop, akRight]
+          BorderSpacing.Top = 6
+          BorderSpacing.Right = 6
+          TabOrder = 1
+          Value = 4
+        end
+      end
+      object CheckBox1: TCheckBox
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideTop.Control = GroupBox7
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 23
+        Top = 266
+        Width = 156
+        BorderSpacing.Around = 6
+        Caption = 'Use syntax highlight'
+        TabOrder = 2
+      end
+    end
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 41
+    Top = 381
+    Width = 410
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+end

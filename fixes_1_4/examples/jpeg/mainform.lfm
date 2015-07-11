@@ -1,0 +1,78 @@
+object JPEGExampleForm: TJPEGExampleForm
+  Left = 291
+  Height = 416
+  Top = 163
+  Width = 425
+  HorzScrollBar.Page = 424
+  VertScrollBar.Page = 415
+  Caption = 'Example for JPEG for Lazarus'
+  ClientHeight = 416
+  ClientWidth = 425
+  object ImageGroupBox: TGroupBox
+    Height = 336
+    Width = 425
+    Align = alTop
+    Anchors = [akTop, akLeft, akBottom]
+    Caption = '...'
+    ClientHeight = 318
+    ClientWidth = 421
+    ParentCtl3D = False
+    TabOrder = 0
+    object Image1: TImage
+      Height = 318
+      Width = 421
+      Align = alClient
+      Proportional = True
+      Transparent = False
+    end
+  end
+  object LoadJPEGButton: TButton
+    Left = 229
+    Height = 25
+    Top = 346
+    Width = 173
+    Anchors = [akLeft, akBottom]
+    Caption = 'Load JPEG from file'
+    OnClick = LoadJPEGButtonClick
+    TabOrder = 1
+  end
+  object SaveJPEGButton: TButton
+    Left = 229
+    Height = 25
+    Top = 380
+    Width = 173
+    Anchors = [akLeft, akBottom]
+    Caption = 'Save as JPEG to file'
+    OnClick = SaveJPEGButtonClick
+    TabOrder = 2
+  end
+  object LoadImageButton: TButton
+    Left = 24
+    Height = 25
+    Top = 346
+    Width = 163
+    Anchors = [akLeft, akBottom]
+    Caption = 'Load Image'
+    OnClick = LoadImageButtonClick
+    TabOrder = 3
+  end
+  object SaveImageButton: TButton
+    Left = 24
+    Height = 25
+    Top = 380
+    Width = 163
+    Anchors = [akLeft, akBottom]
+    Caption = 'Save Image'
+    OnClick = SaveImageButtonClick
+    TabOrder = 4
+  end
+  object OpenPictureDialog1: TOpenPictureDialog
+    left = 117
+    top = 112
+  end
+  object SavePictureDialog1: TSavePictureDialog
+    Filter = 'Graphic (*.jpg;*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp)|*.jpg;*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp|Joint Picture Expert Group (*.jpg)|*.jpg|Icon (*.ico)|*.ico|Portable PixMap (*.ppm)|*.ppm|Portable GrayMap (*.pgm)|*.pgm|Portable BitMap (*.pbm)|*.pb'
+    left = 146
+    top = 112
+  end
+end

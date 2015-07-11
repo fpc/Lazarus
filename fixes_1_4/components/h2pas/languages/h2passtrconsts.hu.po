@@ -1,0 +1,624 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
+"Language-Team: Magyar (Hungarian)\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: h2passtrconsts.h2padd
+msgid "&Add"
+msgstr "&Hozzáadás"
+
+#: h2passtrconsts.h2paddacopy
+msgid "Add a copy"
+msgstr "Másolat hozzáadása"
+
+#: h2passtrconsts.h2paddfromclipboard
+msgid "Add from clipboard"
+msgstr "Hozzáadás a vágólapról"
+
+#: h2passtrconsts.h2paddhfiles
+msgid "Add .h files ..."
+msgstr ".h fájlok hozzáadása ..."
+
+#: h2passtrconsts.h2paddhfiles2
+msgid "Add *.h files ..."
+msgstr "*.h fájlok hozzáadása ..."
+
+#: h2passtrconsts.h2paddhfiles3
+msgid "Add .h files?"
+msgstr ".h fájlok hozzáadása?"
+
+#: h2passtrconsts.h2paddincludedhfiles
+msgid "Add included .h files"
+msgstr "Beemelt .h fájl hozzáadása"
+
+#: h2passtrconsts.h2paddmissingbracketsaroundmacrovalues
+msgid "Add missing brackets around macro values"
+msgstr "Hiányzó zárójelek hozzáadása a makrók értékéhez"
+
+#: h2passtrconsts.h2paddmissingh2pasifdefsforfunctionbodies
+msgid "Add missing h2pas IFDEFs for function bodies"
+msgstr "Hiányzó H2Pas IFDEF-ek hozzáadása az eljárás testéhez"
+
+#: h2passtrconsts.h2paddmissingpointertypeslikepppchar
+msgid "Add missing pointer types like PPPChar"
+msgstr "Hiányzó mutatótípusok hozzáadása így: PPPChar"
+
+#: h2passtrconsts.h2paddnewtool
+msgid "Add new tool"
+msgstr "Új eszköz hozzáadása"
+
+#: h2passtrconsts.h2paddsearchandreplacetoolbeforeh2pas
+msgid "Add \"search and replace\" tool before h2pas"
+msgstr "\"Keresés és csere\" eszköz a H2Pas előtt"
+
+#: h2passtrconsts.h2paddthesehfilestoh2pasproject
+msgid "Add these .h files to h2pas project?%s%s%s"
+msgstr "Ezen .h fájlok hozzáadása a H2Pas projekthez?%s%s%s"
+
+#: h2passtrconsts.h2paddunitstousessection
+msgid "Add units to uses section"
+msgstr "Unit-ok hozzáadása a uses szakaszhoz"
+
+#: h2passtrconsts.h2pafterh2pas
+msgid "After h2pas"
+msgstr "H2Pas után"
+
+#: h2passtrconsts.h2pambiguousmerges
+msgid "Ambiguous merges:%s%s"
+msgstr "Zavaros összeolvasztás:%s%s"
+
+#: h2passtrconsts.h2pbeforeh2pas
+msgid "Before h2pas"
+msgstr "H2Pas előtt"
+
+#: h2passtrconsts.h2pcancel
+msgid "Cancel"
+msgstr "Mégse"
+
+#: h2passtrconsts.h2pcancel2
+msgid "&Cancel"
+msgstr "&Mégse"
+
+#: h2passtrconsts.h2pccompactoutputmodelessspacesandemptylines
+msgid "-c  Compact outputmode, less spaces and empty lines"
+msgstr "-c  Tömör kimenet, kevesebb szóköz és üres sor"
+
+#: h2passtrconsts.h2pcheaderfileconverter
+msgid "C header file converter"
+msgstr "C Fejlécfájl Átalakító"
+
+#: h2passtrconsts.h2pcheaderfilehhallfiles
+msgid "C header file (*.h)|*.h|All files (*.*)|%s"
+msgstr "C fejlécfájlok (*.h)|*.h|Minden fájl (*.*)|%s"
+
+#: h2passtrconsts.h2pcheaderfilenotfound
+msgid "C header file \"%s\" not found"
+msgstr "A C fejlécfájl nem található: \"%s\""
+
+#: h2passtrconsts.h2pcheaderfiles
+msgid "C header files"
+msgstr "C fejlécfájlok"
+
+#: h2passtrconsts.h2pclose
+msgid "&Close"
+msgstr "Be&zárás"
+
+#: h2passtrconsts.h2pcommentfunctionsthataretoocomplexforh2pas
+msgid "Comment functions that are too complex for h2pas"
+msgstr "Kerüljenek megjegyzésbe a H2Pas számára túl bonyolult eljárások"
+
+#: h2passtrconsts.h2pcommentmacrosthataretoocomplexforh2pas
+msgid "Comment macros that are too complex for h2pas"
+msgstr "Kerüljenek megjegyzésbe a H2Pas számára túl bonyolult makrók"
+
+#: h2passtrconsts.h2pconfirmdelete
+msgid "Confirm delete"
+msgstr "Törlés jóváhagyása"
+
+#: h2passtrconsts.h2pconfirmremoval
+msgid "Confirm removal"
+msgstr "Eltávolítás jóváhagyása"
+
+#: h2passtrconsts.h2pconversionsafterrunningh2pas
+msgid "Conversions after running h2pas"
+msgstr "Átalakítások a H2Pas futtatása után"
+
+#: h2passtrconsts.h2pconversionsbeforerunningh2pas
+msgid "Conversions before running h2pas"
+msgstr "Átalakítások a H2Pas futtatása előtt"
+
+#: h2passtrconsts.h2pconvertfunctiontypestopointers
+msgid "Convert function types to pointers"
+msgstr "A függvények típusainak átalakítása mutatókká"
+
+#: h2passtrconsts.h2pcopyingfilefailed
+msgid "Copying file failed"
+msgstr "A fájl másolása nem sikerült"
+
+#: h2passtrconsts.h2pcopytooltoclipboard
+msgid "Copy tool to clipboard"
+msgstr "Eszköz másolása a vágólapra"
+
+#: h2passtrconsts.h2pcreateunitsfromcheaderfiles
+msgid "Create units from C header files"
+msgstr "Unit-ok létrehozása C fejlécfájlokból"
+
+#: h2passtrconsts.h2pcusetypesinctypesunit
+msgid "-C  Use types in ctypes unit"
+msgstr "-C  Használja a ctypes unit-ban található típusokat"
+
+#: h2passtrconsts.h2pdelete
+msgid "Delete"
+msgstr "Törlés"
+
+#: h2passtrconsts.h2pdeleteselectedhfiles
+msgid "Delete selected .h files"
+msgstr "A kijelölt .h fájlok törlése"
+
+#: h2passtrconsts.h2pdeletethesehfilesfromlist
+msgid "Delete these .h files from list?%s%s%s"
+msgstr "Ezen .h fájlok törlése a listából?%s%s%s"
+
+#: h2passtrconsts.h2pdeletetool
+msgid "Delete tool"
+msgstr "Eszköz törlése"
+
+#: h2passtrconsts.h2pdeletionoffailed
+msgid "deletion of \"%s\" failed"
+msgstr "nem sikerült törölni ezt: \"%s\""
+
+#: h2passtrconsts.h2pdisableallhfiles
+msgid "Disable all .h files"
+msgstr "Minden .h fájl letiltása"
+
+#: h2passtrconsts.h2pdiscardchangesandexit
+msgid "Discard changes and exit"
+msgstr "Változtatások eldobása és kilépés"
+
+#: h2passtrconsts.h2pdonotexit
+msgid "Do not exit"
+msgstr "Nem lép ki"
+
+#: h2passtrconsts.h2pdoyoureallywanttodelete
+msgid "Do you really want to delete \"%s\"?"
+msgstr "Biztosan törölni szeretné ezt: \"%s\"?"
+
+#: h2passtrconsts.h2pduseexternalforallprocedures
+msgid "-d  Use external; for all procedures"
+msgstr "-d  Használja az \"external;\" kiegészítést minden eljáráshoz"
+
+#: h2passtrconsts.h2pduseexternallibnamenamefunc__nameforfunctions
+msgid "-D  Use external libname name \"func__name\" for functions"
+msgstr "-D  Használja az \"external libname name 'func__name'\" kiegészítést a függvényekhez"
+
+#: h2passtrconsts.h2peconstantsinsteadofenumerationtypeforcenums
+msgid "-e  constants instead of enumeration type for C enums"
+msgstr "-e  A C felsorolások helyett konstansok legyenek"
+
+#: h2passtrconsts.h2penableallhfiles
+msgid "Enable all .h files"
+msgstr "Minden .h fájl engedélyezése"
+
+#: h2passtrconsts.h2perror
+msgid "Error"
+msgstr "Hiba"
+
+#: h2passtrconsts.h2perrorconvertingclipboardtexttotexttool
+msgid "Error converting clipboard text to text tool:%s%s"
+msgstr "Hiba a vágólap szövegének szövegeszközzé alakítása közben:%s%s"
+
+#: h2passtrconsts.h2perrorconvertingputtingtoolontoclipboard
+msgid "Error converting putting tool onto clipboard:%s%s"
+msgstr "Hiba az eszköz vágólapra helyezése közben:%s%s"
+
+#: h2passtrconsts.h2perrorfilenotfound2
+msgid "ERROR: file not found"
+msgstr "HIBA: a fájl nem található"
+
+#: h2passtrconsts.h2perrorreadingglobalconfig
+msgid "Error reading global config:%s%s"
+msgstr "Hiba a globális beállítások olvasása közben:%s%s"
+
+#: h2passtrconsts.h2perrorreadingprojectfromfile
+msgid "Error reading project from file%s%s%s%s%s"
+msgstr "Hiba a projekt fájlból történő olvasása közben%s%s%s%s%s"
+
+#: h2passtrconsts.h2perrorwritingglobalconfig
+msgid "Error writing global config:%s%s"
+msgstr "Hiba a globális beállítások írása közben:%s%s"
+
+#: h2passtrconsts.h2pfile
+msgid "File: %s"
+msgstr "Fájl: %s"
+
+#: h2passtrconsts.h2pfileinformation
+msgid "File information"
+msgstr "Fájl információ"
+
+#: h2passtrconsts.h2pfilenameofh2pasprogram
+msgid "Filename of h2pas program"
+msgstr "A H2Pas program fájlneve"
+
+#: h2passtrconsts.h2pfilenotfound
+msgid "File not found"
+msgstr "A fájl nem található"
+
+#: h2passtrconsts.h2pfilenotfound2
+msgid "File not found: \"%s\""
+msgstr "A fájl nem található: \"%s\""
+
+#: h2passtrconsts.h2pfindexplicittypesfailedreadingconstsection
+msgid "FindExplicitTypes FAILED reading const section"
+msgstr "FindExplicitTypes: SIKERTELEN a konstans szakasz olvasása"
+
+#: h2passtrconsts.h2pfindexplicittypesfailedreadingtypedefinition
+msgid "FindExplicitTypes FAILED reading type definition %s"
+msgstr "FindExplicitTypes: SIKERTELEN a típusmeghatározás olvasása: %s"
+
+#: h2passtrconsts.h2pfindexplicittypesfailedrereadingtypedefinition
+msgid "FindExplicitTypes FAILED Rereading type definition %s"
+msgstr "FindExplicitTypes: SIKERTELEN a típusmeghatározás újraolvasása: %s"
+
+#: h2passtrconsts.h2pfixessectiontypeofaliasdefinitionsinpascalunitchec
+msgid "Fixes section type of alias definitions in pascal unit%sChecks all alias definitions of the form%sconst LeftSide = RightSide;%slooks up RightSide in the unit and if RightSide is a type or var, changes the section accordingly"
+msgstr "Álnév definíciók szakasztípusának javítása a pascal unit-ban%sEllenőrzi az form-hoz tartozó álnevek definícióit%sconst BalOldal = JobbOldal;%smegkeresi a JobbOldal-t a unit-ban és ha a JobbOldal egy típus vagy változó akkor ennek megfelelően változtatja meg az adott szakaszt"
+
+#: h2passtrconsts.h2pfixforwarddefinitionsbyreordering
+msgid "Fix forward definitions by reordering"
+msgstr "Az előzetes definíciók javítása átrendezéssel"
+
+#: h2passtrconsts.h2pfixopenarraysreplacearrayofwitharrayofconst
+msgid "Fix open arrays%sReplace \"array of )\" with \"array of const)\""
+msgstr "Nyitott tömbök javítása%sAz \"array of )\" kifejezések cseréje erre: \"array of const )\" "
+
+#: h2passtrconsts.h2pgiveanoymouscenumsatypedefname
+msgid "Give anoymous c enums a typedef name"
+msgstr "A évtelen C felsorolásoknak adjon egy \"typedef\" nevet"
+
+#: h2passtrconsts.h2ph2pas
+msgid "H2Pas ..."
+msgstr "H2Pas ..."
+
+#: h2passtrconsts.h2ph2pasoptions
+msgid "h2pas Options"
+msgstr "H2Pas beállítások"
+
+#: h2passtrconsts.h2ph2pasprogrampath
+msgid "h2pas program path"
+msgstr "H2Pas program útvonala"
+
+#: h2passtrconsts.h2ph2pasproject
+msgid "h2pas project"
+msgstr "H2Pas projekt"
+
+#: h2passtrconsts.h2ph2pasprojecth2ph2pallfiles
+msgid "h2pas project (*.h2p)|*.h2p|All files (*.*)|%s"
+msgstr "H2Pas projekt (*.h2p)|*.h2p|Minden fájl (*.*)|%s"
+
+#: h2passtrconsts.h2ph2pastool
+msgid "H2PasTool"
+msgstr "H2PasTool"
+
+#: h2passtrconsts.h2picreateanincludefileinsteadofaunit
+msgid "-i  Create an include file instead of a unit"
+msgstr "-i  Beemelhető fájl létrehozása unit helyett"
+
+#: h2passtrconsts.h2pincludedby
+msgid "Included by:"
+msgstr "Mellékelte:"
+
+#: h2passtrconsts.h2pincludedby2
+msgid "%s (included by %s)"
+msgstr "%s (használat ebben: %s)"
+
+#: h2passtrconsts.h2pincludes
+msgid "Includes:"
+msgstr "Beágyazások:"
+
+#: h2passtrconsts.h2pinvalidclass
+msgid "Invalid class"
+msgstr "Érvénytelen osztály"
+
+#: h2passtrconsts.h2pllibraryname
+msgid "-l Library name"
+msgstr "-l Függvénytár neve"
+
+#: h2passtrconsts.h2pmergeallbutthis
+msgid "Merge all but this"
+msgstr "Minden összeolvasztása kivéve ezt"
+
+#: h2passtrconsts.h2pmergedinto
+msgid "Merged into: %s"
+msgstr "Beolvasztva ebbe: %s"
+
+#: h2passtrconsts.h2pmergefile
+msgid "Merge file"
+msgstr "Fájl beolvasztása"
+
+#: h2passtrconsts.h2pmovedown
+msgid "Move down"
+msgstr "Mozgatás le"
+
+#: h2passtrconsts.h2pmovefiledown
+msgid "Move file down"
+msgstr "Fájl mozgatása lefelé"
+
+#: h2passtrconsts.h2pmovefileup
+msgid "Move file up"
+msgstr "Fájl mozgatása lefelé"
+
+#: h2passtrconsts.h2pmoveup
+msgid "Move up"
+msgstr "Mozgatás fel"
+
+#: h2passtrconsts.h2pnewclearsettings
+msgid "New/Clear settings"
+msgstr "Új/tiszta beállítások"
+
+#: h2passtrconsts.h2pnofileselected
+msgid "No file selected."
+msgstr "Nincs kijelölve fájl."
+
+#: h2passtrconsts.h2pnotatcustomtextconvertertool
+msgid "not a TCustomTextConverterTool"
+msgstr "nem TCustomTextConverterTool"
+
+#: h2passtrconsts.h2pnothingtodo
+msgid "Nothing to do"
+msgstr "Nincs mit tenni"
+
+#: h2passtrconsts.h2popenlastsettingsonstart
+msgid "Open last settings on start"
+msgstr "Legutóbbi beállítások megnyitása indításkor"
+
+#: h2passtrconsts.h2popenprojecth2p
+msgid "Open project (*.h2p) ..."
+msgstr "Projekt megnyitása (*.h2p) ..."
+
+#: h2passtrconsts.h2popensettings
+msgid "&Open Settings"
+msgstr "Beállítások megnyitása"
+
+#: h2passtrconsts.h2poptions
+msgid "Options"
+msgstr "Beállítások"
+
+#: h2passtrconsts.h2poutput
+msgid "Output: %s"
+msgstr "Kimenet: %s"
+
+#: h2passtrconsts.h2poutputdirectory
+msgid "Output directory"
+msgstr "Kimeneti könyvtár"
+
+#: h2passtrconsts.h2poutputextensionofnewfile
+msgid "Output extension of new file"
+msgstr "Az új kimeneti fájl kiterjesztése"
+
+#: h2passtrconsts.h2poverwrite
+msgid "Overwrite"
+msgstr "Felülírás"
+
+#: h2passtrconsts.h2ppleaseenableatleastonecheaderfilethatisnotmerged
+msgid "Please enable at least one c header file that is not merged."
+msgstr "Legalább egy be nem olvasztott C fejlécfájlt engedélyezni kell."
+
+#: h2passtrconsts.h2pposth2pasasetofcommontoolstorunafterh2pasphreplace
+msgid "Post H2Pas - a set of common tools to run after h2pas%sphReplaceUnitFilenameWithUnitName - Replace \"unit filename;\" with \"unit name;\"%sphRemoveIncludeDirectives - Remove include directivesphRemoveSystemTypes - Remove type redefinitons like PLongint%sphFixH2PasMissingIFDEFsInUnit - add missing IFDEFs for function bodies%sphReduceCompilerDirectivesInUnit - removes unneeded directives%sphRemoveRedefinedPointerTypes - Remove redefined pointer types%sphRemoveEmptyTypeVarConstSections - Remove empty type/var/const sections%sphReplaceImplicitTypes - Search implicit types in parameters and add types for them%sphFixArrayOfParameterType - Replace \"array of )\" with \"array of const)\"%sphRemoveRedefinitionsInUnit - Removes redefinitions of types, variables, constants and resourcestrings%sphFixAliasDefinitionsInUnit - fix section type of alias definitions%sphReplaceConstFunctionsInUnit - replace simple assignment functions with constants%sphReplaceTypeCastFunctionsInUnit - replace simple type cast functions with types%sphFixForwardDefinitions - fix forward definitions by reordering%sphAddUnitsToUsesSection - add units to uses section%s"
+msgstr "H2Pas után - általános eszközök a H2Pas utáni futtatásra%sphReplaceUnitFilenameWithUnitName - A \"unit fájlnév;\" cseréje \"unit név;\" kifejezésre%sphRemoveIncludeDirectives - Include direktívák eltávolításaphRemoveSystemTypes - A PLongint szerű típus újradefiniálások eltávolítása%sphFixH2PasMissingIFDEFsInUnit - Hiányzó IFDEF-ek hozzáadása az eljárás testéhez%sphReduceCompilerDirectivesInUnit - szükségtelen direktívák eltávolítása%sphRemoveRedefinedPointerTypes - Újradefiniált mutató-típusok eltávolítása%sphRemoveEmptyTypeVarConstSections - Üres type/var/const szakaszok eltávolítása%sphReplaceImplicitTypes - Közvetlen típusmeghatározások cseréje és típussá alakítása%sphFixArrayOfParameterType - Az \"array of )\" kifejezések cseréje erre: \"array of const)\"%sphRemoveRedefinitionsInUnit - A típus, változó, konstans és erőforrásszöveg újradefiniálások eltávolítása%sphFixAliasDefinitionsInUnit - A típusálnevek definícióinak javítása%sphReplaceConstFunctionsInUnit - Az egyszerű függvények cseréje konstansokra értékadásokban%sphReplaceTypeCastFunctionsInUnit - Az egyszerű függvények cseréje típuskényszerítésre%sphFixForwardDefinitions - Az előzetes definíciók javítása átrendezéssel%sphAddUnitsToUsesSection - Uni-ok hozzáadása a uses szakaszhoz%s"
+
+#: h2passtrconsts.h2ppreh2pasasetofcommontoolstorunbeforeh2pasphremovec
+msgid "Pre H2Pas - a set of common tools to run before h2pas%sphRemoveCPlusPlusExternCTool - Remove C++ 'extern \"C\"' lines%sphRemoveEmptyCMacrosTool - Remove empty C macros%sphReplaceEdgedBracketPairWithStar - Replace [] with *%sphReplace0PointerWithNULL - Replace macro values 0 pointer like (char *)0%sphConvertFunctionTypesToPointers - Convert function types to pointers%sphConvertEnumsToTypeDef - Convert anonymous enums to typedef enums%sphCommentComplexCMacros - Comment macros too complex for h2pas%sphCommentComplexCFunctions - Comment functions too complex for h2pas%s"
+msgstr "H2Pas előtt - általános eszközök a H2Pas előtti futtatásra%sphRemoveCPlusPlusExternCTool - A C++ 'extern \"C\"' sorok eltávolítása%sphRemoveEmptyCMacrosTool - Üres C makrók eltávolítása%sphReplaceEdgedBracketPairWithStar - [] cseréje * jelre%sphReplace0PointerWithNULL - A 0 mutató értékű makrók, mint a (char *)0 cseréje%sphConvertFunctionTypesToPointers - A függvények típusainak átalakítása mutatókká%sphConvertEnumsToTypeDef - A névtelen felsorolások \"typedef\" felsorolásokká alakítása%sphCommentComplexCMacros - Megjegyzésbe a H2Pas számára túl bonyolult makrók%sphCommentComplexCFunctions - Megjegyzésbe a H2Pas számára túl bonyolult eljárások%s"
+
+#: h2passtrconsts.h2pprpackallrecords1bytealignment
+msgid "-pr Pack all records (1 byte alignment)"
+msgstr "-pr Minden rekord tömörítése (1 bájt-os igazítás)"
+
+#: h2passtrconsts.h2ppuseletterpforpointertypesinsteadof
+msgid "-p  Use letter P for pointer types instead of \"^\""
+msgstr "-p  P betű használata a mutató típusokhoz \"^\" helyett"
+
+#: h2passtrconsts.h2ppuseprocvarsforimports
+msgid "-P  use proc. vars for imports"
+msgstr "-P  Eljárás típusú változók használata az importáláshoz"
+
+#: h2passtrconsts.h2preaderror
+msgid "Read error"
+msgstr "Olvasási hiba"
+
+#: h2passtrconsts.h2preducecompilerdirectivesinpascalfileshortensexpres
+msgid "Reduce compiler directives in pascal file%sShortens expressions in $IF directives%sand removes unneeded $IFDEF and $DEFINE directives."
+msgstr "Fordító direktíváinak egyszerűsítése a pascal fájlban%sLerövidíti a kifejezéseket a $IF direktívában%sés eltávolítja a szükségtelen $IFDEF és $DEFINE direktívákat."
+
+#: h2passtrconsts.h2premoveallfiles
+msgid "Remove all files"
+msgstr "Minden fájl eltávolítása"
+
+#: h2passtrconsts.h2premoveallincludedirectives
+msgid "Remove all include directives"
+msgstr "Minden beemelési utasítás eltávolítása"
+
+#: h2passtrconsts.h2premovecexternclines
+msgid "Remove C++ 'extern \"C\"' lines"
+msgstr "A C++ 'extern \"C\"' sorok eltávolítása"
+
+#: h2passtrconsts.h2premovedoublesemicolons
+msgid "Remove double semicolons"
+msgstr "Ismétlődő pontosvesszők eltávolítása"
+
+#: h2passtrconsts.h2premoveemptycmacros
+msgid "Remove empty C macros"
+msgstr "Üres C makrók eltávolítása"
+
+#: h2passtrconsts.h2premoveemptytypevarconstsections
+msgid "Remove empty type/var/const sections"
+msgstr "Üres type/var/const szakaszok eltávolítása"
+
+#: h2passtrconsts.h2premoveredefinedpointertypes
+msgid "Remove redefined pointer types"
+msgstr "Újradefiniált mutató-típusok eltávolítása"
+
+#: h2passtrconsts.h2premoveredefinitionsinpascalunit
+msgid "Remove redefinitions in pascal unit"
+msgstr "Újradefiniálások eltávolítása a pascal unit-ból"
+
+#: h2passtrconsts.h2premovetyperedefinitionslikeplongint
+msgid "Remove type redefinitions like PLongint"
+msgstr "A PLongint szerű típus újradefiniálások eltávolítása"
+
+#: h2passtrconsts.h2preplacefile
+msgid "Replace file?"
+msgstr "Fájl cseréje?"
+
+#: h2passtrconsts.h2preplaceimplicittypesforexampleprocedureprocnameaar
+msgid "Replace implicit types%sFor example:%s    procedure ProcName(a: array[0..2] of char)%s  is replaced with%s    procedure ProcName(a: Tarray_0to2_of_char)%s  and a new type is added%s    Tarray_0to2_of_char = array[0..2] of char"
+msgstr "A közvetlen típusmeghatározások cseréje%sPéldául:%s  procedure ProcName(a: array[0..2] of char)%s  helyett a következő lesz:%s    procedure ProcName(a: Tarray_0to2_of_char)%s  az új típus meghatározásával kiegészítve:%s    Tarray_0to2_of_char = array[0..2] of char"
+
+#: h2passtrconsts.h2preplacemacrovalues0pointerlikechar0withnull
+msgid "Replace macro values 0 pointer like (char *)0 with NULL"
+msgstr "A 0 mutató értékű makrók, mint a (char *)0 cseréje NULL-ra "
+
+#: h2passtrconsts.h2preplacesimplefunctionswithconstants
+msgid "Replace simple functions with constants"
+msgstr "Az egyszerű függvények cseréje konstansokra"
+
+#: h2passtrconsts.h2preplacesimplefunctionswithtypecasts
+msgid "Replace simple functions with type casts"
+msgstr "Az egyszerű függvények cseréje típuskényszerítésre"
+
+#: h2passtrconsts.h2preplaceunitfilenamewithunitname
+msgid "Replace \"unit filename;\" with \"unit name;\""
+msgstr "A \"unit fájlnév;\" cseréje \"unit név;\" kifejezésre"
+
+#: h2passtrconsts.h2preplacewith
+msgid "Replace [] with *"
+msgstr "[] cseréje * jelre"
+
+#: h2passtrconsts.h2preplacingofnullwithnilfailed
+msgid "replacing of NULL with nil failed"
+msgstr "a NULL cseréje nil-re nem sikerült"
+
+#: h2passtrconsts.h2prunh2pas
+msgid "Run h2pas"
+msgstr "H2Pas futtatása"
+
+#: h2passtrconsts.h2prunh2pasandcompile
+msgid "Run h2pas and compile"
+msgstr "H2Pas futtatása és fordítás"
+
+#: h2passtrconsts.h2psaveandexit
+msgid "Save and exit"
+msgstr "Mentés és kilépés"
+
+#: h2passtrconsts.h2psavechanges
+msgid "Save changes?"
+msgstr "Változások mentése?"
+
+#: h2passtrconsts.h2psaveprojectash2p
+msgid "Save project as ... (*.h2p)"
+msgstr "Projekt mentése másként ... (*.h2p)"
+
+#: h2passtrconsts.h2psavesettings
+msgid "&Save Settings"
+msgstr "Beállítások mentése"
+
+#: h2passtrconsts.h2psavesettings2
+msgid "Save settings?"
+msgstr "Beállítások mentése?"
+
+#: h2passtrconsts.h2psavesettingsas
+msgid "Save settings as ..."
+msgstr "Beállítások mentése másként ..."
+
+#: h2passtrconsts.h2pselectaclass
+msgid "&Select a class"
+msgstr "Osztály választása"
+
+#: h2passtrconsts.h2psettings
+msgid "Settings"
+msgstr "Beállítások"
+
+#: h2passtrconsts.h2psstripcomments
+msgid "-s  Strip comments"
+msgstr "-s  Megjegyzések eltávolítása"
+
+#: h2passtrconsts.h2psstripcommentsandinfo
+msgid "-S  Strip comments and info"
+msgstr "-S  Megjegyzések és infók eltávolítása"
+
+#: h2passtrconsts.h2ptaddtousessectionexecutefileisnotpascal
+msgid "TAddToUsesSection.Execute file is not pascal: "
+msgstr "TAddToUsesSection.Execute: Nem pascal fájl: "
+
+#: h2passtrconsts.h2ptaddtousessectionexecuteinvalidunitname
+msgid "TAddToUsesSection.Execute invalid unitname \"%s\""
+msgstr "TAddToUsesSection.Execute: Érvénytelen unit név \"%s\""
+
+#: h2passtrconsts.h2ptextconversiontoolseditor
+msgid "Text conversion tools editor"
+msgstr "Szövegátalakító eszközök szerkesztője"
+
+#: h2passtrconsts.h2pth2pasdialogh2pasoptionscheckgroupitemclickunknown
+msgid "TH2PasDialog.h2pasOptionsCheckGroupItemClick: Unknown option %s"
+msgstr "TH2PasDialog.h2pasOptionsCheckGroupItemClick: Ismeretlen beállítás %s"
+
+#: h2passtrconsts.h2pthefilealreadyexists
+msgid "The file \"%s\"%salready exists."
+msgstr "A fájl már létezik: \"%s\"%s"
+
+#: h2passtrconsts.h2ptools
+msgid "Tools:"
+msgstr "Eszközök:"
+
+#: h2passtrconsts.h2ptposth2pastoolsexecuteaddtousessectioninvalidunitn
+msgid "TPostH2PasTools.Execute.AddToUsesSection invalid unitname \"%s\""
+msgstr "TPostH2PasTools.Execute.AddToUsesSection érvénytelen unit név \"%s\""
+
+#: h2passtrconsts.h2ptprependtypedeftypeswitht
+msgid "-t  Prepend  typedef  types with T"
+msgstr "-t  A \"typedef\" típusok elé kerüljön T"
+
+#: h2passtrconsts.h2ptprependtypedeftypeswithtandremove__
+msgid "-T  Prepend  typedef  types with T, and remove __"
+msgstr "-T  A \"typedef\" típusok elé kerüljön T és ne legyen __"
+
+#: h2passtrconsts.h2punabletocopyfileto
+msgid "Unable to copy file \"%s\"%sto \"%s\""
+msgstr "Nem sikerölt másolni a fájlt: \"%s\"%side: \"%s\""
+
+#: h2passtrconsts.h2punabletomergefileinto
+msgid "Unable to merge file \"%s\" into \"%s\""
+msgstr "A(z) \"%s\" fájl nem olvasztható be ebbe: \"%s\""
+
+#: h2passtrconsts.h2pvreplacepointerparametersbyvar
+msgid "-v  Replace pointer parameters by  var"
+msgstr "-v  A mutató paraméterek cseréje \"var\"-ra"
+
+#: h2passtrconsts.h2pwarning
+msgid "Warning"
+msgstr "Figyelmeztetés"
+
+#: h2passtrconsts.h2pwarningthefilewillbemergedintomultiplefiles
+msgid "%sWarning: the file \"%s\"%swill be merged into multiple files:%s"
+msgstr "%sFigyelem: a(z) \"%s\" fájl%stöbb fájlba is be lesz olvasztva:%s"
+
+#: h2passtrconsts.h2pwhandlespecialwin32macros
+msgid "-w  Handle special win32 macros"
+msgstr "-w  Speciális win32 makrók kezelése"
+
+#: h2passtrconsts.h2pwriteerror
+msgid "Write error"
+msgstr "Írási hiba"
+
+#: h2passtrconsts.h2pxhandlesys__trapofthepalmosheaderfiles
+msgid "-x  Handle SYS__TRAP of the PalmOS header files"
+msgstr "-x  A SYS__TRAP kezelése PalmOS fejlécfájlokban"

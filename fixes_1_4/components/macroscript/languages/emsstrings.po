@@ -1,0 +1,43 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: emsstrings.emsactive
+msgid "Scripting active."
+msgstr ""
+
+#: emsstrings.emsbtntestagain
+msgid "Test again"
+msgstr ""
+
+#: emsstrings.emseditormacrotitle
+msgid "Editor Macro Script"
+msgstr ""
+
+#: emsstrings.emsnotactive
+msgid "Scripting not active. Selftest failed."
+msgstr ""
+
+#: emsstrings.emsnotsupported
+msgid "Scripting not active. Not supported on this platform or CPU."
+msgstr ""
+
+#: emsstrings.emspending
+msgid "Scripting not active. Selftest will run next time the IDE is started."
+msgstr ""
+
+#: emsstrings.emsselftesterrcaption
+msgid "Error in EditorMacroScript"
+msgstr ""
+
+#: emsstrings.emsselftestfailed
+msgid "The package EditorMacroScript (pascalscript macros) has detected a problem and was deactivated.%0:sThe package failed its selftest with the message:%0:s\"%1:s\""
+msgstr ""
+
+#: emsstrings.emsselftestfailedlasttime
+msgid "The package EditorMacroScript (pascalscript macros) has detected a problem and was deactivated.%0:sThe package selftest was not completed during the last start of the IDE."
+msgstr ""
+
+#: emsstrings.emsstatustitle
+msgid "Status"
+msgstr ""
+

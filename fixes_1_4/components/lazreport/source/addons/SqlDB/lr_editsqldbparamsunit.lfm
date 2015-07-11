@@ -1,0 +1,151 @@
+object lr_EditSQLDBParamsForm: Tlr_EditSQLDBParamsForm
+  Left = 592
+  Height = 358
+  Top = 442
+  Width = 622
+  Caption = 'Edit query param list'
+  ClientHeight = 358
+  ClientWidth = 622
+  OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  Position = poScreenCenter
+  LCLVersion = '1.3'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 41
+    Top = 311
+    Width = 610
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object GroupBox1: TGroupBox
+    Left = 0
+    Height = 305
+    Top = 0
+    Width = 239
+    Align = alLeft
+    Caption = 'Param values'
+    ClientHeight = 282
+    ClientWidth = 235
+    TabOrder = 1
+    object ListBox1: TListBox
+      Left = 0
+      Height = 282
+      Top = 0
+      Width = 235
+      Align = alClient
+      ItemHeight = 0
+      OnClick = ListBox1Click
+      ScrollWidth = 233
+      TabOrder = 0
+      TopIndex = -1
+    end
+  end
+  object GroupBox2: TGroupBox
+    Left = 244
+    Height = 305
+    Top = 0
+    Width = 378
+    Align = alClient
+    Caption = 'Param value'
+    ClientHeight = 282
+    ClientWidth = 374
+    TabOrder = 2
+    object Label1: TLabel
+      AnchorSideLeft.Control = GroupBox2
+      AnchorSideTop.Control = GroupBox2
+      Left = 6
+      Height = 21
+      Top = 6
+      Width = 74
+      BorderSpacing.Around = 6
+      Caption = 'Param type'
+      ParentColor = False
+    end
+    object ComboBox1: TComboBox
+      AnchorSideLeft.Control = Label1
+      AnchorSideTop.Control = Label1
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = GroupBox2
+      AnchorSideRight.Side = asrBottom
+      Left = 12
+      Height = 29
+      Top = 33
+      Width = 356
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      ItemHeight = 0
+      ItemIndex = 0
+      Items.Strings = (
+        'String'
+        'Integer'
+        'Float'
+        'DateTime'
+      )
+      Style = csDropDownList
+      TabOrder = 0
+      Text = 'String'
+    end
+    object Label2: TLabel
+      AnchorSideLeft.Control = GroupBox2
+      AnchorSideTop.Control = ComboBox1
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 21
+      Top = 68
+      Width = 78
+      BorderSpacing.Around = 6
+      Caption = 'Param value'
+      ParentColor = False
+    end
+    object Memo1: TMemo
+      AnchorSideLeft.Control = Label2
+      AnchorSideTop.Control = Label2
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = GroupBox2
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = BitBtn1
+      Left = 12
+      Height = 142
+      Top = 95
+      Width = 356
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Around = 6
+      Lines.Strings = (
+        'Memo1'
+      )
+      TabOrder = 1
+    end
+    object BitBtn1: TBitBtn
+      AnchorSideRight.Control = GroupBox2
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = GroupBox2
+      AnchorSideBottom.Side = asrBottom
+      Left = 247
+      Height = 33
+      Top = 243
+      Width = 121
+      Anchors = [akRight, akBottom]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'Select expresion'
+      OnClick = BitBtn1Click
+      TabOrder = 2
+    end
+  end
+  object Splitter1: TSplitter
+    Left = 239
+    Height = 305
+    Top = 0
+    Width = 5
+  end
+end

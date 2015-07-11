@@ -1,0 +1,292 @@
+object PPUListDialog: TPPUListDialog
+  Left = 276
+  Height = 531
+  Top = 249
+  Width = 740
+  Caption = 'PPUListDialog'
+  ClientHeight = 531
+  ClientWidth = 740
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  Position = poScreenCenter
+  LCLVersion = '0.9.31'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 483
+    Width = 728
+    OKButton.Name = 'OKButton'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.OnClick = HelpButtonClick
+    CloseButton.Name = 'CloseButton'
+    CancelButton.Name = 'CancelButton'
+    TabOrder = 0
+    ShowButtons = [pbClose, pbHelp]
+  end
+  object ScopeLabel: TLabel
+    Left = 6
+    Height = 18
+    Top = 6
+    Width = 728
+    Align = alTop
+    BorderSpacing.Around = 6
+    Caption = 'ScopeLabel'
+    ParentColor = False
+  end
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 447
+    Top = 30
+    Width = 740
+    ActivePage = UnitsTabSheet
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 1
+    object UnitsTabSheet: TTabSheet
+      Caption = 'UnitsTabSheet'
+      ClientHeight = 414
+      ClientWidth = 736
+      object UnitsStringGrid: TStringGrid
+        Left = 6
+        Height = 209
+        Top = 6
+        Width = 724
+        Align = alTop
+        AutoFillColumns = True
+        BorderSpacing.Around = 6
+        ColCount = 6
+        Columns = <        
+          item
+            SizePriority = 10
+            Title.Caption = 'Unit'
+            Width = 120
+          end        
+          item
+            SizePriority = 10
+            Title.Caption = 'Size of .ppu file'
+            Width = 120
+          end        
+          item
+            SizePriority = 10
+            Title.Caption = 'Size of .o file'
+            Width = 120
+          end        
+          item
+            SizePriority = 5
+            Title.Caption = 'Uses'
+            Width = 120
+          end        
+          item
+            SizePriority = 5
+            Title.Caption = 'Used by'
+            Width = 120
+          end        
+          item
+            Title.Caption = 'Package'
+            Width = 122
+          end>
+        DefaultColWidth = 150
+        FixedCols = 0
+        FixedRows = 2
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goColSizing, goThumbTracking, goColSpanning, goDblClickAutoSize, goSmoothScroll]
+        TabOrder = 0
+        OnMouseDown = UnitsStringGridMouseDown
+        OnSelectCell = UnitsStringGridSelectCell
+        ColWidths = (
+          120
+          120
+          120
+          120
+          120
+          122
+        )
+      end
+      object Splitter1: TSplitter
+        Cursor = crVSplit
+        Left = 0
+        Height = 5
+        Top = 221
+        Width = 736
+        Align = alTop
+        ResizeAnchor = akTop
+      end
+      object UnitGroupBox: TGroupBox
+        Left = 6
+        Height = 176
+        Top = 232
+        Width = 724
+        Align = alClient
+        BorderSpacing.Around = 6
+        Caption = 'UnitGroupBox'
+        ClientHeight = 155
+        ClientWidth = 716
+        TabOrder = 2
+        object UnitPageControl: TPageControl
+          Left = 0
+          Height = 155
+          Top = 0
+          Width = 716
+          ActivePage = UnitLinkedFilesTabSheet
+          Align = alClient
+          TabIndex = 4
+          TabOrder = 0
+          object InfoTabSheet: TTabSheet
+            Caption = 'InfoTabSheet'
+            ClientHeight = 128
+            ClientWidth = 712
+            object SourceFileLabel: TLabel
+              Left = 9
+              Height = 18
+              Top = 14
+              Width = 109
+              Caption = 'SourceFileLabel'
+              ParentColor = False
+            end
+            object PPUFileLabel: TLabel
+              AnchorSideTop.Control = SourceFileLabel
+              AnchorSideTop.Side = asrBottom
+              Left = 9
+              Height = 18
+              Top = 38
+              Width = 91
+              BorderSpacing.Top = 6
+              Caption = 'PPUFileLabel'
+              ParentColor = False
+            end
+          end
+          object UsesTabSheet: TTabSheet
+            Caption = 'UsesTabSheet'
+            ClientHeight = 128
+            ClientWidth = 712
+            object UsesStringGrid: TStringGrid
+              Left = 0
+              Height = 128
+              Top = 0
+              Width = 712
+              Align = alClient
+              AutoFillColumns = True
+              ColCount = 1
+              Columns = <              
+                item
+                  Title.Caption = 'Unit'
+                  Width = 710
+                end>
+              FixedCols = 0
+              Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goThumbTracking, goSmoothScroll]
+              TabOrder = 0
+              OnMouseDown = UnitStringGridMouseDown
+              ColWidths = (
+                710
+              )
+            end
+          end
+          object UsedByTabSheet: TTabSheet
+            Caption = 'UsedByTabSheet'
+            ClientHeight = 128
+            ClientWidth = 712
+            object UsedByStringGrid: TStringGrid
+              Left = 0
+              Height = 128
+              Top = 0
+              Width = 712
+              Align = alClient
+              AutoFillColumns = True
+              ColCount = 1
+              Columns = <              
+                item
+                  Title.Caption = 'Unit'
+                  Width = 710
+                end>
+              FixedCols = 0
+              Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goThumbTracking, goSmoothScroll]
+              TabOrder = 0
+              OnMouseDown = UnitStringGridMouseDown
+              ColWidths = (
+                710
+              )
+            end
+          end
+          object UsesPathTabSheet: TTabSheet
+            Caption = 'UsesPathTabSheet'
+            ClientHeight = 128
+            ClientWidth = 712
+            object UsesPathStringGrid: TStringGrid
+              Left = 0
+              Height = 128
+              Top = 0
+              Width = 712
+              Align = alClient
+              AutoFillColumns = True
+              ColCount = 1
+              Columns = <              
+                item
+                  Title.Caption = 'Unit'
+                  Width = 710
+                end>
+              FixedCols = 0
+              Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goSmoothScroll]
+              TabOrder = 0
+              OnMouseDown = UnitStringGridMouseDown
+              ColWidths = (
+                710
+              )
+            end
+          end
+          object UnitLinkedFilesTabSheet: TTabSheet
+            Caption = 'UnitLinkedFilesTabSheet'
+            ClientHeight = 122
+            ClientWidth = 712
+            object UnitLinkedFilesStringGrid: TStringGrid
+              Left = 0
+              Height = 122
+              Top = 0
+              Width = 712
+              Align = alClient
+              AutoFillColumns = True
+              ColCount = 3
+              Columns = <              
+                item
+                  Title.Caption = 'Type'
+                  Width = 236
+                end              
+                item
+                  Title.Caption = 'File'
+                  Width = 236
+                end              
+                item
+                  Title.Caption = 'Flags'
+                  Width = 238
+                end>
+              FixedCols = 0
+              Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goColSizing, goThumbTracking, goColSpanning, goSmoothScroll]
+              TabOrder = 0
+              ColWidths = (
+                236
+                236
+                238
+              )
+            end
+          end
+        end
+      end
+    end
+    object LinkedFilesTabSheet: TTabSheet
+      Caption = 'LinkedFilesTabSheet'
+      ClientHeight = 414
+      ClientWidth = 736
+      object LinkedFilesTreeView: TTreeView
+        Left = 0
+        Height = 414
+        Top = 0
+        Width = 736
+        Align = alClient
+        DefaultItemHeight = 19
+        ReadOnly = True
+        TabOrder = 0
+        OnDblClick = LinkedFilesTreeViewDblClick
+        Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+      end
+    end
+  end
+end

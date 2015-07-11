@@ -1,0 +1,106 @@
+ Valdas Jankunas <zmuogs@gmail.com>, 2012.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2012-08-06 13:21+0300\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Language: lt\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 1.5\n"
+
+#: externhelpfrm.ehrsaddnewitem
+msgid "Add new item"
+msgstr "Pridėti naują elementą"
+
+#: externhelpfrm.ehrsbrowse
+msgid "Browse ..."
+msgstr "Naršyti…"
+
+#: externhelpfrm.ehrsbrowseforpath
+msgid "Browse for path"
+msgstr "Naršyti kelio"
+
+#: externhelpfrm.ehrschooseapascalunit
+msgid "Choose a pascal unit"
+msgstr "Nurodykite paskalio modulį"
+
+#: externhelpfrm.ehrsdeleteitem
+msgid "Delete item"
+msgstr "Pašalinti elementą"
+
+#: externhelpfrm.ehrsdirectorynotfound
+msgid "Directory not found: %s"
+msgstr "Aplankas nerastas: %s"
+
+#: externhelpfrm.ehrseditorfile
+msgid "Editor file ..."
+msgstr "Rengyklės failas…"
+
+#: externhelpfrm.ehrsexternal
+msgid "External"
+msgstr "Išorės"
+
+#: externhelpfrm.ehrsfilenotfound
+msgid "File not found: %s"
+msgstr "Failas nerastas: %s"
+
+#: externhelpfrm.ehrsgeneral
+msgid "General"
+msgstr "Pagrindinis"
+
+#: externhelpfrm.ehrsgrouptitle
+msgid "Extern help"
+msgstr "Išorės žinynas"
+
+#: externhelpfrm.ehrshelp
+msgid "Help"
+msgstr "Žinynas"
+
+#: externhelpfrm.ehrsincludesubdirectories
+msgid "Include sub directories"
+msgstr "Įtraukti poaplankius"
+
+#: externhelpfrm.ehrsmacrofy
+msgid "Use macros"
+msgstr "Įgalinti makrokomandas"
+
+#: externhelpfrm.ehrsmysettings
+msgid "My settings (default)"
+msgstr "Mano nuostatos (numatytosios)"
+
+#: externhelpfrm.ehrsname
+msgid "Name"
+msgstr "Pavadinimas"
+
+#: externhelpfrm.ehrsreplacecommondirectorieswithmacros
+msgid "Replace common directories with macros"
+msgstr "Įprastus aplankus pakeisti makrokomandomis"
+
+#: externhelpfrm.ehrsselectafilefromthesourceeditor
+msgid "Select a file from the source editor"
+msgstr "Parinkite pirminio kodo rengyklės failą"
+
+#: externhelpfrm.ehrsselectfile
+msgid "Select file"
+msgstr "Išrinkite failą"
+
+#: externhelpfrm.ehrsstorethisurlin
+msgid "Store this URL in"
+msgstr "Šį URL padėti į"
+
+#: externhelpfrm.ehrsunitfileorunitdirectory
+msgid "Unit file or unit directory"
+msgstr "Modulio failas arba aplankas"
+
+#: externhelpfrm.ehrsurl
+msgid "URL"
+msgstr "URL"
+
+#: externhelpfrm.ehrswarning
+msgid "Warning"
+msgstr "Perspėjimas"
+

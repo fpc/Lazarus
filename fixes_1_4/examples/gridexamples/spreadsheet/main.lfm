@@ -1,0 +1,421 @@
+object Form1: TForm1
+  Left = 104
+  Height = 370
+  Top = 193
+  Width = 550
+  HelpContext = 0
+  ActiveControl = grid
+  Align = alNone
+  AllowDropFiles = False
+  AutoScroll = True
+  AutoSize = False
+  BorderIcons = [biSystemMenu, biMinimize, biMaximize]
+  BorderStyle = bsSizeable
+  Caption = 'Spreadsheet example'
+  ChildSizing.LeftRightSpacing = 0
+  ChildSizing.TopBottomSpacing = 0
+  ChildSizing.HorizontalSpacing = 0
+  ChildSizing.VerticalSpacing = 0
+  ChildSizing.ControlsPerLine = 0
+  ClientHeight = 370
+  ClientWidth = 550
+  DockSite = False
+  DragKind = dkDrag
+  DragMode = dmManual
+  Enabled = True
+  Font.Height = 0
+  Font.Style = []
+  FormStyle = fsNormal
+  ParentBiDiMode = True
+  ParentFont = False
+  Position = poDesigned
+  ShowInTaskBar = stDefault
+  UseDockManager = False
+  LCLVersion = '0.9.27'
+  WindowState = wsNormal
+  object grid: TStringGrid
+    Left = 0
+    Height = 312
+    Top = 58
+    Width = 550
+    HelpContext = 0
+    Align = alClient
+    AutoAdvance = aaRight
+    AutoEdit = True
+    AutoFillColumns = False
+    BorderSpacing.Left = 0
+    BorderSpacing.Top = 0
+    BorderSpacing.Right = 0
+    BorderSpacing.Bottom = 0
+    BorderSpacing.Around = 0
+    BorderSpacing.CellAlignHorizontal = ccaFill
+    BorderSpacing.CellAlignVertical = ccaFill
+    BorderStyle = bsSingle
+    ColCount = 257
+    DefaultColWidth = 90
+    DefaultDrawing = True
+    DragCursor = crDrag
+    DragKind = dkDrag
+    DragMode = dmManual
+    Enabled = True
+    ExtendedSelect = True
+    FixedColor = clBtnFace
+    FixedCols = 1
+    FixedRows = 1
+    Flat = False
+    GridLineWidth = 1
+    HeaderHotZones = [gzFixedCols]
+    HeaderPushZones = [gzFixedCols]
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing]
+    ParentColor = False
+    ParentFont = True
+    ParentShowHint = True
+    RowCount = 1000
+    ScrollBars = ssAutoBoth
+    TabOrder = 0
+    TabStop = True
+    TitleFont.Height = 0
+    TitleFont.Style = []
+    TitleStyle = tsLazarus
+    UseXORFeatures = False
+    Visible = True
+    OnBeforeSelection = gridBeforeSelection
+    OnDrawCell = gridDrawCell
+    OnPrepareCanvas = gridPrepareCanvas
+    ColWidths = (
+      43
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+    )
+  end
+  object ToolBar1: TToolBar
+    Left = 0
+    Height = 58
+    Top = 0
+    Width = 550
+    HelpContext = 0
+    AutoSize = False
+    BorderSpacing.Left = 0
+    BorderSpacing.Top = 0
+    BorderSpacing.Right = 0
+    BorderSpacing.Bottom = 0
+    BorderSpacing.Around = 0
+    BorderSpacing.CellAlignHorizontal = ccaFill
+    BorderSpacing.CellAlignVertical = ccaFill
+    BorderWidth = 0
+    ButtonHeight = 44
+    ButtonWidth = 44
+    Caption = 'ToolBar1'
+    ChildSizing.LeftRightSpacing = 0
+    ChildSizing.TopBottomSpacing = 0
+    ChildSizing.HorizontalSpacing = 0
+    ChildSizing.VerticalSpacing = 0
+    ChildSizing.ControlsPerLine = 0
+    Ctl3D = False
+    DragCursor = crDrag
+    DragKind = dkDrag
+    DragMode = dmManual
+    EdgeInner = esRaised
+    EdgeOuter = esLowered
+    Enabled = True
+    ParentColor = True
+    ParentFont = True
+    ParentShowHint = True
+    ShowCaptions = True
+    TabOrder = 1
+    TabStop = False
+    Visible = True
+    object SaveButton: TToolButton
+      Left = 1
+      Top = 2
+      HelpContext = 0
+      Caption = 'Save'
+      DragCursor = crDrag
+      DragKind = dkDrag
+      DragMode = dmManual
+      Enabled = True
+      ParentShowHint = True
+      Visible = True
+      OnClick = SaveButtonClick
+    end
+    object LoadButton: TToolButton
+      Left = 45
+      Top = 2
+      HelpContext = 0
+      Caption = 'Load'
+      DragCursor = crDrag
+      DragKind = dkDrag
+      DragMode = dmManual
+      Enabled = True
+      ParentShowHint = True
+      Visible = True
+      OnClick = LoadButtonClick
+    end
+  end
+  object OpenDialog1: TOpenDialog
+    Width = 0
+    Height = 0
+    left = 42
+    top = 83
+  end
+  object SaveDialog1: TSaveDialog
+    Width = 0
+    Height = 0
+    left = 82
+    top = 85
+  end
+end

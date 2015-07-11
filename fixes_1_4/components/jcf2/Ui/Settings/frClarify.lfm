@@ -1,0 +1,64 @@
+inherited fClarify: TfClarify
+  Height = 292
+  Width = 426
+  ClientHeight = 292
+  ClientWidth = 426
+  TabOrder = 0
+  DesignLeft = 130
+  DesignTop = 131
+  object Label1: TLabel[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 14
+    Top = 6
+    Width = 124
+    BorderSpacing.Around = 6
+    Caption = 'File extensions to format:'
+    ParentColor = False
+  end
+  object rgRunOnceOffs: TRadioGroup[1]
+    AnchorSideLeft.Control = mFileExtensions
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = mFileExtensions
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 166
+    Height = 81
+    Top = 26
+    Width = 254
+    Anchors = [akTop, akLeft, akRight]
+    AutoFill = True
+    AutoSize = True
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    Caption = 'Run once-offs'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 63
+    ClientWidth = 250
+    Items.Strings = (
+      'Do &not run'
+      'Do &run'
+      'Run &only these'
+    )
+    TabOrder = 0
+  end
+  object mFileExtensions: TMemo[2]
+    AnchorSideLeft.Control = Label1
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 127
+    Top = 26
+    Width = 154
+    BorderSpacing.Top = 6
+    TabOrder = 1
+  end
+end

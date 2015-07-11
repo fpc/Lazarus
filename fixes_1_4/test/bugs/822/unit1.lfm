@@ -1,0 +1,38 @@
+object Form1: TForm1
+  Left = 290
+  Height = 300
+  Top = 175
+  Width = 400
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 299
+  ActiveControl = ScrollBar1
+  Caption = 'Form1'
+  object Label1: TLabel
+    Left = 21
+    Height = 14
+    Top = 9
+    Width = 32
+    Caption = 'Label1'
+    Color = clNone
+    ParentColor = False
+  end
+  object ScrollBar1: TScrollBar
+    Left = 160
+    Height = 201
+    Top = 40
+    Width = 17
+    Kind = sbVertical
+    TabOrder = 0
+  end
+  object ApplicationProperties1: TApplicationProperties
+    CaptureExceptions = True
+    HintColor = clInfoBk
+    HintHidePause = 2500
+    HintPause = 500
+    HintShortCuts = True
+    ShowHint = True
+    OnIdle = ApplicationProperties1Idle
+    left = 24
+    top = 72
+  end
+end

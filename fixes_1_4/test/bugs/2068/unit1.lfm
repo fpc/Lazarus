@@ -1,0 +1,46 @@
+object Form1: TForm1
+  Left = 290
+  Height = 300
+  Top = 157
+  Width = 400
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 299
+  Caption = 'Form1'
+  OnCreate = FormCreate
+  OnShow = FormShow
+  object Edit1: TEdit
+    Left = 12
+    Height = 27
+    Top = 13
+    Width = 370
+    OnClick = Memo1Change
+    TabOrder = 0
+  end
+  object Memo1: TMemo
+    Left = 12
+    Height = 70
+    Top = 50
+    Width = 370
+    OnChange = Memo1Change
+    TabOrder = 1
+  end
+  object Debugger: TMemo
+    Left = 12
+    Height = 152
+    Top = 136
+    Width = 370
+    ScrollBars = ssAutoVertical
+    TabOrder = 2
+  end
+  object ApplicationProperties1: TApplicationProperties
+    CaptureExceptions = True
+    HintColor = clInfoBk
+    HintHidePause = 2500
+    HintPause = 500
+    HintShortCuts = True
+    ShowHint = True
+    OnIdle = ApplicationProperties1Idle
+    left = 16
+    top = 264
+  end
+end

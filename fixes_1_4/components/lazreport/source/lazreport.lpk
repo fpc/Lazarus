@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <PathDelim Value="\"/>
+    <Name Value="lazreport"/>
+    <Author Value="Olivier Guilbaud, Jesus Reyes A. "/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Parsing>
+        <SyntaxOptions>
+          <CStyleOperator Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
+    </CompilerOptions>
+    <Description Value="LazReport is a report designer tool for Lazarus consisting of a Report Engine, Designer and Previewer. LazReport was forked from FreeReport v2.32.
+FreeReport is Copyright (c) 1998-99 by Tzyganenko A.
+Lazarus Port: Olivier Guilbaud, Jesus Reyes A. 
+"/>
+    <License Value="Modified LGPL
+See license.txt and license-lazreport.txt for details.
+"/>
+    <Version Minor="9" Release="9"/>
+    <Files Count="70">
+      <Item1>
+        <Filename Value="lr_about.pas"/>
+        <UnitName Value="LR_About"/>
+      </Item1>
+      <Item2>
+        <Filename Value="lr_about.lfm"/>
+        <Type Value="LFM"/>
+      </Item2>
+      <Item3>
+        <Filename Value="lr_barc.pas"/>
+        <UnitName Value="LR_BarC"/>
+      </Item3>
+      <Item4>
+        <Filename Value="lr_barc.lfm"/>
+        <Type Value="LFM"/>
+      </Item4>
+      <Item5>
+        <Filename Value="lr_bnded.pas"/>
+        <UnitName Value="LR_BndEd"/>
+      </Item5>
+      <Item6>
+        <Filename Value="lr_bnded.lfm"/>
+        <Type Value="LFM"/>
+      </Item6>
+      <Item7>
+        <Filename Value="lr_class.pas"/>
+        <UnitName Value="LR_Class"/>
+      </Item7>
+      <Item8>
+        <Filename Value="lr_const.pas"/>
+        <UnitName Value="LR_Const"/>
+      </Item8>
+      <Item9>
+        <Filename Value="lr_dbset.pas"/>
+        <UnitName Value="LR_DBSet"/>
+      </Item9>
+      <Item10>
+        <Filename Value="lr_desgn.pas"/>
+        <UnitName Value="LR_Desgn"/>
+      </Item10>
+      <Item11>
+        <Filename Value="lr_desgn.lfm"/>
+        <Type Value="LFM"/>
+      </Item11>
+      <Item12>
+        <Filename Value="lr_dopt.pas"/>
+        <UnitName Value="LR_Dopt"/>
+      </Item12>
+      <Item13>
+        <Filename Value="lr_dopt.lfm"/>
+        <Type Value="LFM"/>
+      </Item13>
+      <Item14>
+        <Filename Value="lr_e_csv.pas"/>
+        <UnitName Value="LR_E_CSV"/>
+      </Item14>
+      <Item15>
+        <Filename Value="lr_e_gen.pas"/>
+        <UnitName Value="lr_e_gen"/>
+      </Item15>
+      <Item16>
+        <Filename Value="lr_e_htm.pas"/>
+        <UnitName Value="LR_E_HTM"/>
+      </Item16>
+      <Item17>
+        <Filename Value="lr_e_txt.pas"/>
+        <UnitName Value="LR_E_TXT"/>
+      </Item17>
+      <Item18>
+        <Filename Value="lr_edit.pas"/>
+        <UnitName Value="LR_Edit"/>
+      </Item18>
+      <Item19>
+        <Filename Value="lr_edit.lfm"/>
+        <Type Value="LFM"/>
+      </Item19>
+      <Item20>
+        <Filename Value="lr_ev_ed.pas"/>
+        <UnitName Value="LR_Ev_ed"/>
+      </Item20>
+      <Item21>
+        <Filename Value="lr_ev_ed.lfm"/>
+        <Type Value="LFM"/>
+      </Item21>
+      <Item22>
+        <Filename Value="lr_expres.pas"/>
+        <UnitName Value="lr_expres"/>
+      </Item22>
+      <Item23>
+        <Filename Value="lr_expres.lfm"/>
+        <Type Value="LFM"/>
+      </Item23>
+      <Item24>
+        <Filename Value="lr_flds.pas"/>
+        <UnitName Value="LR_Flds"/>
+      </Item24>
+      <Item25>
+        <Filename Value="lr_flds.lfm"/>
+        <Type Value="LFM"/>
+      </Item25>
+      <Item26>
+        <Filename Value="lr_fmted.pas"/>
+        <UnitName Value="LR_fmted"/>
+      </Item26>
+      <Item27>
+        <Filename Value="lr_fmted.lfm"/>
+        <Type Value="LFM"/>
+      </Item27>
+      <Item28>
+        <Filename Value="lr_funct_editor_unit.pas"/>
+        <UnitName Value="lr_funct_editor_unit"/>
+      </Item28>
+      <Item29>
+        <Filename Value="lr_funct_editor_unit1.pas"/>
+        <UnitName Value="lr_funct_editor_unit1"/>
+      </Item29>
+      <Item30>
+        <Filename Value="lr_gedit.pas"/>
+        <UnitName Value="LR_GEdit"/>
+      </Item30>
+      <Item31>
+        <Filename Value="lr_gedit.lfm"/>
+        <Type Value="LFM"/>
+      </Item31>
+      <Item32>
+        <Filename Value="lr_grped.pas"/>
+        <UnitName Value="LR_GrpEd"/>
+      </Item32>
+      <Item33>
+        <Filename Value="lr_grped.lfm"/>
+        <Type Value="LFM"/>
+      </Item33>
+      <Item34>
+        <Filename Value="lr_iflds.pas"/>
+        <UnitName Value="LR_IFlds"/>
+      </Item34>
+      <Item35>
+        <Filename Value="lr_iflds.lfm"/>
+        <Type Value="LFM"/>
+      </Item35>
+      <Item36>
+        <Filename Value="lr_pars.pas"/>
+        <UnitName Value="LR_Pars"/>
+      </Item36>
+      <Item37>
+        <Filename Value="lr_pgopt.pas"/>
+        <UnitName Value="LR_pgopt"/>
+      </Item37>
+      <Item38>
+        <Filename Value="lr_pgopt.lfm"/>
+        <Type Value="LFM"/>
+      </Item38>
+      <Item39>
+        <Filename Value="lr_pgrid.pas"/>
+        <UnitName Value="LR_PGrid"/>
+      </Item39>
+      <Item40>
+        <Filename Value="lr_prdlg.pas"/>
+        <UnitName Value="LR_PrDlg"/>
+      </Item40>
+      <Item41>
+        <Filename Value="lr_prdlg.lfm"/>
+        <Type Value="LFM"/>
+      </Item41>
+      <Item42>
+        <Filename Value="lr_prntr.pas"/>
+        <UnitName Value="LR_Prntr"/>
+      </Item42>
+      <Item43>
+        <Filename Value="lr_progr.pas"/>
+        <UnitName Value="LR_progr"/>
+      </Item43>
+      <Item44>
+        <Filename Value="lr_progr.lfm"/>
+        <Type Value="LFM"/>
+      </Item44>
+      <Item45>
+        <Filename Value="lr_propedit.pas"/>
+        <UnitName Value="lr_propedit"/>
+      </Item45>
+      <Item46>
+        <Filename Value="lr_register.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="LR_Register"/>
+      </Item46>
+      <Item47>
+        <Filename Value="lr_rrect.pas"/>
+        <UnitName Value="LR_RRect"/>
+      </Item47>
+      <Item48>
+        <Filename Value="lr_rrect.lfm"/>
+        <Type Value="LFM"/>
+      </Item48>
+      <Item49>
+        <Filename Value="lr_shape.pas"/>
+        <UnitName Value="LR_Shape"/>
+      </Item49>
+      <Item50>
+        <Filename Value="lr_shape.lfm"/>
+        <Type Value="LFM"/>
+      </Item50>
+      <Item51>
+        <Filename Value="lr_utils.pas"/>
+        <UnitName Value="LR_Utils"/>
+      </Item51>
+      <Item52>
+        <Filename Value="lr_var.pas"/>
+        <UnitName Value="LR_Var"/>
+      </Item52>
+      <Item53>
+        <Filename Value="lr_var.lfm"/>
+        <Type Value="LFM"/>
+      </Item53>
+      <Item54>
+        <Filename Value="lr_vared.pas"/>
+        <UnitName Value="LR_Vared"/>
+      </Item54>
+      <Item55>
+        <Filename Value="lr_vared.lfm"/>
+        <Type Value="LFM"/>
+      </Item55>
+      <Item56>
+        <Filename Value="lr_view.pas"/>
+        <UnitName Value="LR_View"/>
+      </Item56>
+      <Item57>
+        <Filename Value="lr_view.lfm"/>
+        <Type Value="LFM"/>
+      </Item57>
+      <Item58>
+        <Filename Value="lr_newrp.pas"/>
+        <UnitName Value="LR_Newrp"/>
+      </Item58>
+      <Item59>
+        <Filename Value="barcode.pas"/>
+        <UnitName Value="Barcode"/>
+      </Item59>
+      <Item60>
+        <Filename Value="lr_dbrel.pas"/>
+        <UnitName Value="LR_DBRel"/>
+      </Item60>
+      <Item61>
+        <Filename Value="lr_dbcomponent.pas"/>
+        <UnitName Value="LR_DBComponent"/>
+      </Item61>
+      <Item62>
+        <Filename Value="lr_hyphen.pas"/>
+        <UnitName Value="lr_hyphen"/>
+      </Item62>
+      <Item63>
+        <Filename Value="lr_intrp.pas"/>
+        <UnitName Value="LR_Intrp"/>
+      </Item63>
+      <Item64>
+        <Filename Value="fr3tolrf.pas"/>
+        <UnitName Value="fr3tolrf"/>
+      </Item64>
+      <Item65>
+        <Filename Value="lr_design_ins_filed.lfm"/>
+        <Type Value="LFM"/>
+      </Item65>
+      <Item66>
+        <Filename Value="lr_design_ins_filed.pas"/>
+        <UnitName Value="lr_design_ins_filed"/>
+      </Item66>
+      <Item67>
+        <Filename Value="lr_previewtoolsabstract.pas"/>
+        <UnitName Value="lr_previewtoolsabstract"/>
+      </Item67>
+      <Item68>
+        <Filename Value="lr_crossarray.pas"/>
+        <UnitName Value="lr_CrossArray"/>
+      </Item68>
+      <Item69>
+        <Filename Value="lr_crosstab.pas"/>
+        <UnitName Value="lr_CrossTab"/>
+      </Item69>
+      <Item70>
+        <Filename Value="lr_crosstabeditor.pas"/>
+        <UnitName Value="lr_crosstabeditor"/>
+      </Item70>
+    </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="5">
+      <Item1>
+        <PackageName Value="SynEdit"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="printer4lazarus"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="LCL"/>
+      </Item3>
+      <Item4>
+        <PackageName Value="IDEIntf"/>
+      </Item4>
+      <Item5>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item5>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

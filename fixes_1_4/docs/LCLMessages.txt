@@ -1,0 +1,38 @@
+LCL Messages
+
+This document is for Lazarus developers
+
+
+Thumb rules:
+
+Messages exists for VCL compatibility.
+Messages look like win32 messages, but only those parameters and flags are
+supported, that are commonly used by existing VCL controls (including third
+part controls).
+Every supported flag, that is not commonly used, makes implementing the
+interfaces more difficult. So, think twice, before adding a message.
+Many messages uses hard to read constants and small values (smallint) which
+limits the interfaces and windows does not define the exact ordering of
+messages. Therefore the goal is that every message can be substituted by a
+method. For example: A control can use DoOnChangeBounds instead of WMSize to
+react.
+
+The LCL should send messages to the interface only in rare cases. In fact, only
+when it is common usage in VCL controls.
+
+At the moment the interfaces send many messages to the LCL. This amount should
+be reduced in future. Better create a procedure in the LCL, that will send the
+message. This way the parameters are well defined and all interfaces creates
+the messages the same way.
+
+
+The messages:
+
+Interface -> LCL
+
+WMSize, WMMove - Send from the interface to tell the LCL control to update its
+  bounds. Because of the auto aligning/sizing features of the LCL and some
+  interfaces, these messages are not sent everytime a HandleObject is resized.
+  So, either trust the LCL bounds OR the interface bounds, but don't mix.
+  
+  

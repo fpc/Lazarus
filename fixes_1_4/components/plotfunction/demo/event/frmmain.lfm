@@ -1,0 +1,34 @@
+object MainForm: TMainForm
+  Left = 401
+  Height = 300
+  Top = 309
+  Width = 400
+  HelpContext = 0
+  Align = alNone
+  AllowDropFiles = False
+  AutoScroll = True
+  AutoSize = False
+  BorderIcons = [biSystemMenu, biMinimize, biMaximize]
+  BorderStyle = bsSizeable
+  Caption = 'Event-driven plotting demo'
+  ChildSizing.LeftRightSpacing = 0
+  ChildSizing.TopBottomSpacing = 0
+  ChildSizing.HorizontalSpacing = 0
+  ChildSizing.VerticalSpacing = 0
+  ChildSizing.ControlsPerLine = 0
+  DockSite = False
+  DragKind = dkDrag
+  DragMode = dmManual
+  Enabled = True
+  Font.Height = 0
+  Font.Style = []
+  FormStyle = fsNormal
+  OnCreate = CreatePlotter
+  ParentBiDiMode = True
+  ParentFont = False
+  Position = poDesigned
+  ShowInTaskBar = stDefault
+  UseDockManager = False
+  LCLVersion = '0.9.27'
+  WindowState = wsNormal
+end

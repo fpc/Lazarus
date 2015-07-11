@@ -1,0 +1,204 @@
+object MaskEditorForm: TMaskEditorForm
+  Left = 458
+  Height = 287
+  Top = 248
+  Width = 507
+  ActiveControl = InputMaskEdit
+  AutoSize = True
+  BorderStyle = bsDialog
+  Caption = 'Input Mask Editor'
+  ClientHeight = 287
+  ClientWidth = 507
+  OnCreate = MaskEditorFormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object InputMaskLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 14
+    Top = 6
+    Width = 58
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = '&Input Mask:'
+    FocusControl = InputMaskEdit
+    ParentColor = False
+  end
+  object SampleMasksLabel: TLabel
+    AnchorSideLeft.Control = SampleMasksListBox
+    AnchorSideTop.Control = Owner
+    Left = 201
+    Height = 14
+    Top = 6
+    Width = 71
+    BorderSpacing.Top = 6
+    Caption = '&Sample Masks:'
+    ParentColor = False
+  end
+  object CharactersForBlanksLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = InputMaskEdit
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 14
+    Top = 50
+    Width = 103
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = 'Character for Blanks:'
+    FocusControl = CharactersForBlanksEdit
+    ParentColor = False
+  end
+  object InputMaskEdit: TEdit
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = InputMaskLabel
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 21
+    Top = 23
+    Width = 189
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 3
+    OnChange = InputMaskEditChange
+    TabOrder = 0
+  end
+  object SampleMasksListBox: TListBox
+    AnchorSideLeft.Control = InputMaskEdit
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = SampleMasksLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = LoadSampleMasksButton
+    AnchorSideBottom.Side = asrBottom
+    Left = 201
+    Height = 191
+    Top = 23
+    Width = 300
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 3
+    BorderSpacing.Right = 6
+    ItemHeight = 0
+    OnClick = SampleMasksListBoxClick
+    OnDrawItem = SampleMasksListBoxDrawItem
+    Style = lbOwnerDrawFixed
+    TabOrder = 4
+  end
+  object LoadSampleMasksButton: TButton
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = TestInputPanel
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 25
+    Top = 189
+    Width = 75
+    BorderSpacing.Around = 6
+    Caption = '&Masks...'
+    OnClick = LoadSampleMasksButtonClick
+    TabOrder = 5
+  end
+  object CharactersForBlanksEdit: TEdit
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = CharactersForBlanksLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = InputMaskEdit
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 21
+    Top = 67
+    Width = 189
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 3
+    MaxLength = 1
+    OnChange = CharactersForBlankEditChange
+    TabOrder = 1
+  end
+  object SaveLiteralCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = CharactersForBlanksEdit
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 17
+    Top = 94
+    Width = 130
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = 'Save &Literal Characters'
+    OnClick = SaveLiteralCheckBoxClick
+    TabOrder = 2
+  end
+  object TestInputPanel: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = SaveLiteralCheckBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = InputMaskEdit
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 66
+    Top = 117
+    Width = 189
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BevelInner = bvRaised
+    BevelOuter = bvLowered
+    ClientHeight = 66
+    ClientWidth = 189
+    FullRepaint = False
+    TabOrder = 3
+    object TestInputLabel: TLabel
+      AnchorSideLeft.Control = TestInputPanel
+      AnchorSideTop.Control = TestInputPanel
+      Left = 6
+      Height = 14
+      Top = 6
+      Width = 55
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      Caption = '&Test Input:'
+      ParentColor = False
+    end
+    object TestMaskEdit: TMaskEdit
+      AnchorSideLeft.Control = TestInputPanel
+      AnchorSideTop.Control = TestInputLabel
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = TestInputPanel
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 21
+      Top = 23
+      Width = 177
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 3
+      BorderSpacing.Right = 6
+      CharCase = ecNormal
+      MaxLength = 0
+      TabOrder = 0
+      SpaceChar = '_'
+    end
+  end
+  object ButtonPanel1: TButtonPanel
+    AnchorSideTop.Control = LoadSampleMasksButton
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 61
+    Top = 220
+    Width = 495
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    TabOrder = 6
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object OpenDialog1: TOpenDialog
+    Title = 'Open mask file (*.dem)'
+    DefaultExt = '.dem'
+    Filter = 'Edit Masks (*.dem)|*.dem|All Files (*.*)|*.*'
+    FilterIndex = 0
+    Options = [ofNoChangeDir, ofEnableSizing, ofViewDetail]
+    left = 152
+    top = 96
+  end
+end

@@ -1,0 +1,35 @@
+object Form1: TForm1
+  Left = 610
+  Height = 300
+  Top = 247
+  Width = 400
+  ActiveControl = Button1
+  Caption = 'Form1'
+  ClientHeight = 300
+  ClientWidth = 400
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '1.3'
+  object Label1: TLabel
+    Left = 93
+    Height = 20
+    Top = 73
+    Width = 110
+    Caption = 'Response is here'
+    ParentColor = False
+  end
+  object Button1: TButton
+    Left = 36
+    Height = 25
+    Top = 20
+    Width = 284
+    Caption = 'Click to load a chm'
+    OnClick = Button1Click
+    TabOrder = 0
+  end
+  object OpenDialog1: TOpenDialog
+    FilterIndex = 0
+    left = 28
+    top = 127
+  end
+end

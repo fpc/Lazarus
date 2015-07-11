@@ -1,0 +1,55 @@
+Name:           fpc_crosswin32
+Version:        FPCVERSION
+Release:        FPCRELEASE
+Summary:        Free Pascal Compiler cross binaries for win32
+
+Group:          Development/Languages
+License:        GPL and modified LGPL
+URL:            http://www.freepascal.org/
+Source0:        ftp://ftp.freepascal.org/pub/fpc/dist/source-%{version}/%{name}-%{version}-%{release}.tar.gz
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+
+Requires:       glibc, binutils, fpc
+BuildRequires:  binutils, glibc-devel
+
+# rpm should not even try to strip
+%define __strip /bin/true
+
+%description
+
+Units and binutils needed by Freepascal to cross compile to target win32.
+This rpm was built from sources built by the scripts of the lazarus project.
+See http://www.lazarus.freepascal.org.
+Download the lazarus sources and see <lazarusdir>/tools/install/cross_unix/
+
+%prep
+%setup -c
+
+%build
+
+%install
+[ %{buildroot} != "/" ] && ( rm -rf %{buildroot} )
+mkdir -p %{buildroot}%{_bindir}
+mkdir -p %{buildroot}%{_libdir}/fpc/%{version}/units/
+cp -a usr/bin/* %{buildroot}%{_bindir}/
+cp -a lib/fpc/%{version}/units/* %{buildroot}%{_libdir}/fpc/%{version}/units/
+
+%clean
+[ %{buildroot} != "/" ] && ( rm -rf %{buildroot} )
+
+%post
+# add -FD and -XP entry for cross compiling
+echo '# set binutils paths for crosscompiling # fpc_crosswin32' >> /etc/fpc.cfg
+echo '#IFDEF FPC_CROSSCOMPILING               # fpc_crosswin32' >> /etc/fpc.cfg
+echo '  -XPfpc-i386-win32-' >> /etc/fpc.cfg
+echo '#ENDIF                                  # fpc_crosswin32' >> /etc/fpc.cfg
+
+%postun
+cat /etc/fpc.cfg | egrep -v '# fpc_crosswin32|-XPfpc-i386-win32-' > /etc/fpc.cfg.rpmtemp
+mv /etc/fpc.cfg.rpmtemp /etc/fpc.cfg
+
+%files
+%defattr(-,root,root,-)
+%{_libdir}/fpc
+%{_bindir}/*
+

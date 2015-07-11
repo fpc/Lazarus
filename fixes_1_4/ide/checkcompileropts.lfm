@@ -1,0 +1,98 @@
+object CheckCompilerOptsDlg: TCheckCompilerOptsDlg
+  Left = 322
+  Height = 307
+  Top = 220
+  Width = 624
+  BorderIcons = [biSystemMenu]
+  Caption = 'CheckCompilerOptsDlg'
+  ClientHeight = 307
+  ClientWidth = 624
+  Position = poScreenCenter
+  LCLVersion = '0.9.31'
+  object OutputGroupBox: TGroupBox
+    Left = 6
+    Height = 145
+    Top = 116
+    Width = 612
+    Align = alClient
+    Anchors = [akBottom]
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
+    Caption = 'Output'
+    ClientHeight = 129
+    ClientWidth = 608
+    TabOrder = 0
+    object OutputTreeView: TTreeView
+      Left = 0
+      Height = 129
+      Top = 0
+      Width = 608
+      Align = alClient
+      DefaultItemHeight = 16
+      PopupMenu = OutputPopupMenu
+      ReadOnly = True
+      TabOrder = 0
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+    end
+  end
+  object TestGroupbox: TGroupBox
+    Left = 6
+    Height = 105
+    Top = 6
+    Width = 612
+    Align = alTop
+    Anchors = [akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    Caption = 'Test'
+    ClientHeight = 89
+    ClientWidth = 608
+    TabOrder = 1
+    object TestMemo: TMemo
+      Left = 6
+      Height = 77
+      Top = 6
+      Width = 596
+      Align = alClient
+      BorderSpacing.Around = 6
+      ScrollBars = ssAutoBoth
+      TabOrder = 0
+    end
+  end
+  object Splitter1: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 111
+    Width = 624
+    Align = alTop
+    ResizeAnchor = akTop
+  end
+  object ButtonPanel: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 267
+    Width = 612
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 3
+    ShowButtons = [pbClose]
+    ShowBevel = False
+  end
+  object OutputPopupMenu: TPopupMenu
+    left = 160
+    top = 175
+    object CopyOutputMenuItem: TMenuItem
+      Caption = 'CopyOutputMenuItem'
+      OnClick = CopyOutputMenuItemClick
+    end
+  end
+end

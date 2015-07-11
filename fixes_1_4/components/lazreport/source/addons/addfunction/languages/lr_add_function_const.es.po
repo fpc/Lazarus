@@ -1,0 +1,218 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: LazReport additional functions\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Jesus Reyes Aguilar <jesusrmx@yahoo.com.mx>\n"
+"Language-Team: LazReport Team <jesusrmx@yahoo.com.mx>\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: lr_add_function_const.sdatecategory
+msgid "Date"
+msgstr "Fecha"
+
+#: lr_add_function_const.sdescriptionabs
+msgid "ABS(<Number>)/Returns absolute value <Number>"
+msgstr "ABS(<Número>)/Devuelve el valor absoluto de <Número>"
+
+#: lr_add_function_const.sdescriptionchr
+msgid "CHR(<Code>)/Returns symbol of ASCII code <Code>."
+msgstr "CHR(<Código>)/Devuelve el símbolo ASCII correspondiente al código <Código>."
+
+#: lr_add_function_const.sdescriptioncomparestr
+msgid "COMPARESTR(<String1>,<String2>)/Compares two strings. Returns the position where begins the difference between the strings or 0 if strings are equivalent."
+msgstr "COMPARESTR(<Cadena1>,<Cadena2>)/Compara dos cadenas. Devuelve la posición donde comienzan las diferencias entre las cadenas o 0 si las cadenas son equivalentes."
+
+#: lr_add_function_const.sdescriptioncreatedate
+msgid "CREATEDATE(<String>)/Converts <String> string to string that contains date to use it in SQL clause. To use this function put the string with desired date format to TfrAddFunctionLibrary.FormatDate property."
+msgstr "CREATEDATE(<String>)/Convierte <String> cadena a cadena que contiene fecha para utilizarla en una clúsula SQL. Para utilizar esta función pon la cadena con el formato de fecha deseado en la propiedad TfrAddFunctionLibrary.FormatDate."
+
+#: lr_add_function_const.sdescriptioncreatenum
+msgid "CREATENUM(<String>)/Converts <String> string to string that contains numeric value to use it in SQL clause."
+msgstr "CREATENUM(<String>)/Convierte <String> de cadena a cadena que contiene un valor numérico para ser utilizado en una claúsula SQL."
+
+#: lr_add_function_const.sdescriptioncreatestr
+msgid "CREATESTR(<String>)/Adds quotes to the <String> string to use it in SQL clause."
+msgstr "CREATESTR(<String>)/Añade acotaciones a <String> la cadena para ser usadas en una claúsula SQL."
+
+#: lr_add_function_const.sdescriptiondatediff
+msgid "DATEDIFF(<Date1>,<Date2>,<var String>)/Returns the difference between two dates <Date1> and <Date2>. Result is in the string <String> in format \"days;months;years\"."
+msgstr "DATEDIFF(<Date1>,<Date2>,<var String>)/Retorna la diferencia entre dos fechas <Date1> y <Date2>. El resultado se encuentra en la cadena <String> en formato \"days;months;years\"."
+
+#: lr_add_function_const.sdescriptiondatetostr
+msgid "DATETOSTR(<Date>)/Converts date <Date> to string and returns the result."
+msgstr "DATETOSTR(<Date>)/Convierte la fecha <Date> a una cadena y retorna el resultado."
+
+#: lr_add_function_const.sdescriptiondayspermonth
+msgid "DAYSPERMONTH(<Year>,<Month>)/Returns days in the given month <Month> of the year <Year>."
+msgstr "DAYSPERMONTH(<Year>,<Month>)/Retorna los días que tiene un mes dado <Month> del añor <Year>."
+
+#: lr_add_function_const.sdescriptiondelete
+msgid "DELETE(<String>,<DelFrom>,<DelCount>)/Deletes <DelCount> symbols starting at position <DelFrom> in the given string <String> and returns the result."
+msgstr "DELETE(<String>,<DelFrom>,<DelCount>)/Borra <DelCount> símbolos comenzando en la posición <DelFrom> en la cadena dada <String> y retorna el resultado."
+
+#: lr_add_function_const.sdescriptionendpos
+msgid "ENDPOS(<String>,<SubStr>)/Returns position of substring <SubStr> in the string <String> starting at the end of the string."
+msgstr "ENDPOS(<String>,<SubStr>)/Retorna posiciones de una subcadena <SubStr> en la cadena <String> comenzando al final de la cadena."
+
+#: lr_add_function_const.sdescriptionextractword
+msgid "EXTRACTWORD(<WordNo>,<String>,<Delimiters>)/Returns word number <WordNo> from the string <String>.<Delimiters> is the list of word delimiters."
+msgstr "EXTRACTWORD(<WordNo>,<String>,<Delimiters>)/Retorna el número de palabras <WordNo> de la cadena <String>.<Delimiters> es el listado de delimitadores de palabra."
+
+#: lr_add_function_const.sdescriptionfirstdayofnextmonth
+msgid "FIRSTDAYOFNEXTMONTH(<Date>)/Returns the date of first day of the next month of date <Date>."
+msgstr "FIRSTDAYOFNEXTMONTH(<Date>)/Retorna el primer día del siguiente mes de la fecha <Date>."
+
+#: lr_add_function_const.sdescriptionfirstdayofprevmonth
+msgid "FIRSTDAYOFPREVMONTH(<Date>)/Returns the date of first day of the previous month of date <Date>."
+msgstr "FIRSTDAYOFPREVMONTH(<Date>)/Retorna la fecha del primer día del mes previo de la fecha <Date>."
+
+#: lr_add_function_const.sdescriptionincdate
+msgid "INCDATE(<Date>,<String>)/Increments the date <Date> by given number of days, months and years passed in the <String> parameter in format \"days;months;years\". Returns the result date."
+msgstr "INCDATE(<Date>,<String>)/Incrementa la fecha <Date> en el número de días, meses y años dados en la cadena <String> de parámetros en formato \"days;months;years\". Retorna la fecha resultante."
+
+#: lr_add_function_const.sdescriptionincday
+msgid "INCDAY(<Date>,<Number>)/Increments the date <Date> by given number of days <Number> and returns the result date."
+msgstr "INCDAY(<Date>,<Number>)/Incrementa la fecha <Date> un número dado de días <Number> y retorna la fecha resultante."
+
+#: lr_add_function_const.sdescriptionincmonth
+msgid "INCMONTH(<Date>,<Number>)/Increments the date <Date> by given number of months <Number> and returns the result date."
+msgstr "INCMONTH(<Date>,<Number>)/Incrementa la fecha <Date> un número dado de meses <Number> y retorna la fecha resultante."
+
+#: lr_add_function_const.sdescriptioninctime
+msgid "INCTIME(<Time>,<String>)/Increments the time <Time> by given number of hours, minutes, seconds and milliseconds passed in the <String> parameter in format \"h;min;sec;msec\". Returns the result time."
+msgstr "INCTIME(<Time>,<String>)/Incrementa la hora <Time> en un número dado de horas (hours), minutos (minutes), segundos (seconds) y milisegundos (milliseconds) pasados en el parámetro <String> en formato \"h;min;sec;msec\". Retorna la hora resultante."
+
+#: lr_add_function_const.sdescriptionincyear
+msgid "INCYEAR(<Date>,<Number>)/Increments the date <Date> by given number of years <Number> and returns the result date."
+msgstr "INCYEAR(<Date>,<Number>)/Incrementa la fecha <Date> en un número dado de años <Number> y retorna la fecha resultante."
+
+#: lr_add_function_const.sdescriptioninsert
+msgid "INSERT(<SubStr>,<String>,<InsertFrom>)/Inserts <SubStr> substring into <String> string starting at position <InsertFrom> and returns the result."
+msgstr "INSERT(<SubStr>,<String>,<InsertFrom>)/Inserta una subcadena <SubStr> dentro de una cadena <String> comenzando en la posición <InsertFrom> y retornando el resultado."
+
+#: lr_add_function_const.sdescriptionisleapyear
+msgid "ISLEAPYEAR(<Year>)/Returns True if <Year> year is leap year."
+msgstr "ISLEAPYEAR(<Year>)/Retorna True si el año <Year> es un año bisiesto."
+
+#: lr_add_function_const.sdescriptionisrangedate
+msgid "ISRANGEDATE(<Date1>,<Date2>,<Date3>)/Returns True if date <Date3> is between <Date1> and <Date2>."
+msgstr "ISRANGEDATE(<Date1>,<Date2>,<Date3>)/Retorna True si la fecha <Date3> se encuentra entre <Date1> y <Date2>."
+
+#: lr_add_function_const.sdescriptionisrangenum
+msgid "ISRANGENUM(<Number1>,<Number2>,<Number3>)/Returns True if <Number3> is between <Number1> and <Number2>."
+msgstr "ISRANGENUM(<Number1>,<Number2>,<Number3>)/Retorna True si <Number3> se encuentra entre el <Number1> y el <Number2>."
+
+#: lr_add_function_const.sdescriptioniswordpresent
+msgid "ISWORDPRESENT(<Word>,<String>,<Delimiters>)/Determines if word <Word> is present in the string <String>.<Delimiters> is the list of word delimiters."
+msgstr "ISWORDPRESENT(<Word>,<String>,<Delimiters>)/Determina si una palabra <Word> esta presente en la cadena <String>. <Delimiters> es la lista de separadores de palabras"
+
+#: lr_add_function_const.sdescriptionlastdayofprevmonth
+msgid "LASTDAYOFPREVMONTH(<Date>)/Returns the date of last day of the previous month of date <Date>."
+msgstr "LASTDAYOFPREVMONTH(<Date>)/Retorna la fecha del último día del mes previo de la fecha <Date>."
+
+#: lr_add_function_const.sdescriptionleftcopy
+msgid "LEFTCOPY(<String>,<Count>)/Copies number of symbols <Count> from the string <String> starting at the begin of the string."
+msgstr "LEFTCOPY(<String>,<Count>)/Copia un número de símbolos <Count> de la cadena <String> comenzando al principio de la cadena."
+
+#: lr_add_function_const.sdescriptionnpos
+msgid "NPOS(<SubStr>,<String>,<SubStrNo>)/Returns position of <SubStrNo>-th substring <SubStr> inclusion in the string <String>."
+msgstr "NPOS(<SubStr>,<String>,<SubStrNo>)/Retorna la posición <SubStrNo>-dentro de la subcadena  <SubStr> incluyéndolo en la cadena <String>."
+
+#: lr_add_function_const.sdescriptionpadcenter
+msgid "PADCENTER(<String>,<Length>,<Symbol>)/Adds symbols <Symbol> to begin and end of the string <String> to make it as long as stated in the <Length> parameter and returns result string."
+msgstr "PADCENTER(<String>,<Length>,<Symbol>)/Añade símbolos <Symbol> al comienzo y final de la cadena <String> para hacerla tan larga como se establece en el parámetro <Length> y retorna la cadena resultante."
+
+#: lr_add_function_const.sdescriptionpadleft
+msgid "PADLEFT(<String>,<Length>,<Symbol>)/Adds symbols <Symbol> to begin of the string <String> to make it as long as stated in the <Length> parameter and returns result string."
+msgstr "PADLEFT(<String>,<Length>,<Symbol>)/Añade símbolos <Symbol> al comienzo de la cadena <String> para hacerla tan larga como se establece en el parámetro <Length> y retorna la cadena resultante."
+
+#: lr_add_function_const.sdescriptionpadright
+msgid "PADRIGHT(<String>,<Length>,<Symbol>)/Adds symbols <Symbol> to end of the string <String> to make it as long as stated in the <Length> parameter and returns result string."
+msgstr "PADRIGHT(<String>,<Length>,<Symbol>)/Añade símbolos <Symbol> al final de la cadena <String> para hacerla tan larga como se establece en el parámetro <Length> y retorna la cadena resultante."
+
+#: lr_add_function_const.sdescriptionreplacestr
+msgid "REPLACESTR(<String>,<SubStr1>,<SubStr2>)/Replaces all inclusions of <SubStr1> string to the <SubStr2> string in the string <String> and returns the result."
+msgstr "REPLACESTR(<String>,<SubStr1>,<SubStr2>)/Reemplaza todas las inclusiones de la cadena <SubStr1> a la cadena <SubStr2> en la cadena <String> y retorna el resultado."
+
+#: lr_add_function_const.sdescriptionreplicate
+msgid "REPLICATE(<Symbol>,<Length>)/Returns the string with length <Length> that consists of symbols <Symbol>."
+msgstr "REPLICATE(<Symbol>,<Length>)/Retorna la cadena con longitud <Length> que consiste en símbolos <Symbol>."
+
+#: lr_add_function_const.sdescriptionrightcopy
+msgid "RIGHTCOPY(<String>,<Count>)/Copies number of symbols <Count> from the string <String> starting at the end of the string."
+msgstr "RIGHTCOPY(<String>,<Count>)/Copia un número de símbolos <Count> de la cadena <String> comenzando alfinal de la cadena."
+
+#: lr_add_function_const.sdescriptionstrtodatedef
+msgid "STRTODATEDEF(<String>,<DefDate>)/Converts <String> string to date. If conversion fails, returns default value <DefDate>."
+msgstr "STRTODATEDEF(<String>,<DefDate>)/Convierte una cadena <String> a fecha. Sifalla la conversión, retorna el valor por defecto <DefDate>."
+
+#: lr_add_function_const.sdescriptionstrtofloat
+msgid "STRTOFLOAT(<String>)/Converts <String> string to the float value."
+msgstr "STRTOFLOAT(<String>)/Convierte una cadena <String> a un valor float."
+
+#: lr_add_function_const.sdescriptionstrtofloatdef
+msgid "STRTOFLOATDEF(<String>,<DefValue>)/Converts <String> string to float value. If conversion fails, returns default value <DefValue>."
+msgstr "STRTOFLOATDEF(<String>,<DefValue>)/Convierte una cadena <String> a un valor float. Si falla la conversión, retorna el valor por defecto <DefValue>."
+
+#: lr_add_function_const.sdescriptionstrtoint
+msgid "STRTOINT(<String>)/Converts <String> string to the integer value."
+msgstr "STRTOINT(<String>)/Convierte una cadena <String> a un valor entero (integer)."
+
+#: lr_add_function_const.sdescriptionstrtointdef
+msgid "STRTOINTDEF(<String>,<DefValue>)/Converts <String> string to integer value. If conversion fails, returns default value <DefValue>."
+msgstr "STRTOINTDEF(<String>,<DefValue>)/Convierte una cadena <String> a un valor entero. Si falla la conversión, retorna el valor por defecto <DefValue>."
+
+#: lr_add_function_const.sdescriptionswap
+msgid "SWAP(<var var1>,<var var2>)/Swaps the variables var1 and var2."
+msgstr "SWAP(<var var1>,<var var2>)/Intercambia las variables var1 y var2."
+
+#: lr_add_function_const.sdescriptiontimetostr
+msgid "TIMETOSTR(<Time>)/Converts time <Time> to string and returns the result."
+msgstr "TIMETOSTR(<Time>)/Convierte la hora <Time> a cadena y retorna el resultado."
+
+#: lr_add_function_const.sdescriptiontrimleft
+msgid "TRIMLEFT(<String>)/Trims all left spaces from the string <String> and returns the result."
+msgstr "TRIMLEFT(<String>)/Suprime todos los espacios a la izquierda de la cadena <String> y retorna el resultado."
+
+#: lr_add_function_const.sdescriptiontrimright
+msgid "TRIMRIGHT(<String>)/Trims all right spaces from the string <String> and returns the result."
+msgstr "TRIMRIGHT(<String>)/Suprime todos los espacios a la derecha de la cadena <String> y retorna el resultado."
+
+#: lr_add_function_const.sdescriptionvaliddate
+msgid "VALIDDATE(<String>)/Returns True if <String> string is valid date."
+msgstr "VALIDDATE(<String>)/Retorna True si <String> la cadena es una fecha válida."
+
+#: lr_add_function_const.sdescriptionvalidfloat
+msgid "VALIDFLOAT(<String>)/Returns True if <String> is valid float value."
+msgstr "VALIDFLOAT(<String>)/Retorna True si <String> es un valor float válido."
+
+#: lr_add_function_const.sdescriptionvalidint
+msgid "VALIDINT(<String>)/Returns True if <String> is valid integer value."
+msgstr "VALIDINT(<String>)/Retorna True si <String> es un valor entero (integer) válido."
+
+#: lr_add_function_const.sdescriptionwordcount
+msgid "WORDCOUNT(<String>,<Delimiters>)/Returns number of words in the string <String>.<Delimiters> is the list of word delimiters."
+msgstr "WORDCOUNT(<String>,<Delimiters>)/Retorna el número de palabras en la cadena <String>.<Delimiters> es el listado de delimitadores de palabra."
+
+#: lr_add_function_const.sdescriptionwordposition
+msgid "WORDPOSITION(<WordNo>,<String>,<Delimiters>)/Returns position of word number <WordNo> in the string <String>.<Delimiters> is the list of word delimiters."
+msgstr "WORDPOSITION(<WordNo>,<String>,<Delimiters>)/Retorna la posición de un numero de palabras  <WordNo> en la cadena <String>.<Delimiters> es el listado de delimitadores de palabra."
+
+#: lr_add_function_const.smathcategory
+msgid "Math"
+msgstr "Matemáticas"
+
+#: lr_add_function_const.sothercategory
+msgid "Other"
+msgstr "Otro"
+
+#: lr_add_function_const.sstringcategory
+msgid "String"
+msgstr "Cadena"
+

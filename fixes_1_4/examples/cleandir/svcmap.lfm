@@ -1,0 +1,18 @@
+object CleanDirServiceMapper: TCleanDirServiceMapper
+  DaemonDefs = <  
+    item
+      DaemonClassName = 'TCleanDirsDaemon'
+      Name = 'CleanDirs'
+      DisplayName = 'Clean directories service'
+      Options = [doAllowPause]
+      WinBindings.Dependencies = <>
+      WinBindings.StartType = stAuto
+      WinBindings.WaitHint = 0
+      WinBindings.IDTag = 0
+      WinBindings.ServiceType = stWin32
+      WinBindings.ErrorSeverity = esIgnore
+      LogStatusReport = False
+    end>
+  left = 426
+  top = 183
+end

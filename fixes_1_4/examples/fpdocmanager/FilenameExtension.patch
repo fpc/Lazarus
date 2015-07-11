@@ -1,0 +1,173 @@
+Index: dw_ipflin.pas
+===================================================================
+--- dw_ipflin.pas	(revision 20081)
++++ dw_ipflin.pas	(working copy)
+@@ -89,7 +89,6 @@
+     procedure EndOverview; override;
+     procedure WriteOverviewMember(const ALabel,AName,Access,ADescr : String); override;
+     procedure WriteOverviewMember(const ALabel,AName,ADescr : String); override;
+-    class function FileNameExtension: string; override;
+     procedure DescrBeginURL(const AURL: DOMString); override;
+     procedure DescrEndURL; override;
+     // Description node conversion. Overrides for TFPDocWriter.
+@@ -141,6 +140,7 @@
+     // TFPDocWriter class methods
+   public
+     constructor Create(APackage: TPasPackage; AEngine: TFPDocEngine); override;
++    class function FileNameExtension: string; override;
+   end;
+ 
+ 
+Index: dw_latex.pp
+===================================================================
+--- dw_latex.pp	(revision 20081)
++++ dw_latex.pp	(working copy)
+@@ -79,7 +79,6 @@
+     procedure EndOverview; override;
+     procedure WriteOverviewMember(const ALabel,AName,Access,ADescr : String); override;
+     procedure WriteOverviewMember(const ALabel,AName,ADescr : String); override;
+-    Class Function FileNameExtension : String; override;
+     // Description node conversion
+     procedure DescrBeginBold; override;
+     procedure DescrEndBold; override;
+@@ -131,6 +130,8 @@
+     // TFPDocWriter class methods
+     Function InterPretOption(Const Cmd,Arg : String) : boolean; override;
+     Property ImageDir : String Read FImageDir Write FImageDir;
++  public
++    Class Function FileNameExtension : String; override;
+   end;
+ 
+ 
+Index: dw_linrtf.pp
+===================================================================
+--- dw_linrtf.pp	(revision 20081)
++++ dw_linrtf.pp	(working copy)
+@@ -114,7 +114,6 @@
+     procedure WriteOverviewMember(const ALabel,AName,Access,ADescr : String); override;
+     procedure WriteOverviewMember(const ALabel,AName,ADescr : String); override;
+     procedure EndOverview; override;
+-    Class Function FileNameExtension : String; override;
+     // Description node conversion
+     procedure DescrBeginBold; override;
+     procedure DescrEndBold; override;
+@@ -162,6 +161,8 @@
+     procedure DescrEndTableCell; override;
+     // TFPDocWriter class methods
+     Function InterPretOption(Const Cmd,Arg : String) : boolean; override;
++  public
++    Class Function FileNameExtension : String; override;
+   end;
+ 
+ 
+Index: dw_lintmpl.pp
+===================================================================
+--- dw_lintmpl.pp	(revision 20081)
++++ dw_lintmpl.pp	(working copy)
+@@ -91,7 +91,6 @@
+     procedure EndOverview; override;
+     procedure WriteOverviewMember(const ALabel,AName,Access,ADescr : String); override;
+     procedure WriteOverviewMember(const ALabel,AName,ADescr : String); override;
+-    Class Function FileNameExtension : String; override;
+     // Description node conversion. Overrides for TFPDocWriter.
+     procedure DescrBeginBold; override;
+     procedure DescrEndBold; override;
+@@ -139,6 +138,8 @@
+     procedure DescrEndTableCell; override;
+     // TFPDocWriter class methods
+     Function InterPretOption(Const Cmd,Arg : String) : boolean; override;
++  public
++    Class Function FileNameExtension : String; override;
+     Class procedure Usage(List: TStrings); override;
+   end;
+ 
+Index: dw_man.pp
+===================================================================
+--- dw_man.pp	(revision 20081)
++++ dw_man.pp	(working copy)
+@@ -97,7 +97,6 @@
+     procedure WriteCommentLine;
+     procedure WriteComment(Comment : String);
+     Procedure WriteExampleFile(FN : String); virtual;
+-    Class Function FileNameExtension : String;virtual;
+     procedure WriteExample(ADocNode: TDocNode);
+     procedure WriteSeeAlso(ADocNode: TDocNode; Comma : Boolean);
+   Public
+@@ -178,6 +177,7 @@
+     procedure DescrBeginTableCell; override;
+     procedure DescrEndTableCell; override;
+     Function InterPretOption(Const Cmd,Arg : String) : boolean; override;
++    Class Function FileNameExtension : String; override;
+     Class procedure Usage(List: TStrings); override;
+   end;
+ 
+Index: dw_template.pp
+===================================================================
+--- dw_template.pp	(revision 20081)
++++ dw_template.pp	(working copy)
+@@ -161,7 +161,7 @@
+     // Provide feedback about usage of this backend.
+     Class procedure Usage(List: TStrings); override;
+     // For info only. See linear writer for an example.
+-    Class Function FileNameExtension : String;virtual;
++    Class Function FileNameExtension : String; override;
+   end;
+ 
+ implementation
+Index: dw_txt.pp
+===================================================================
+--- dw_txt.pp	(revision 20081)
++++ dw_txt.pp	(working copy)
+@@ -82,7 +82,6 @@
+     procedure EndOverview; override;
+     procedure WriteOverviewMember(const ALabel,AName,Access,ADescr : String); override;
+     procedure WriteOverviewMember(const ALabel,AName,ADescr : String); override;
+-    Class Function FileNameExtension : String; override;
+     // Description node conversion
+     procedure DescrBeginBold; override;
+     procedure DescrEndBold; override;
+@@ -130,6 +129,7 @@
+     procedure DescrEndTableCell; override;
+   Public
+     Constructor Create(APackage: TPasPackage; AEngine: TFPDocEngine); override;
++    Class Function FileNameExtension : String; override;
+     Class Procedure Usage(List : TStrings) ; override;
+     Function InterpretOption(Const Cmd,Arg : String) : Boolean; override;
+   end;
+Index: dwlinear.pp
+===================================================================
+--- dwlinear.pp	(revision 20081)
++++ dwlinear.pp	(working copy)
+@@ -85,7 +85,6 @@
+     procedure StartUnitOverview(AModuleName,AModuleLabel : String);virtual; Abstract;
+     procedure WriteUnitEntry(UnitRef : TPasType);virtual; Abstract;
+     procedure EndUnitOverview; virtual; Abstract;
+-    Class Function FileNameExtension : String;virtual; Abstract;
+     Property LastURL : DomString Read FLastURL Write FLastURL;
+   Public
+     Constructor Create(APackage: TPasPackage; AEngine: TFPDocEngine); override;
+Index: dwriter.pp
+===================================================================
+--- dwriter.pp	(revision 20081)
++++ dwriter.pp	(working copy)
+@@ -160,6 +160,7 @@
+     Property ImageExtension : String Read FImgExt Write FImgExt;
+     // Should return True if option was succesfully interpreted.
+     Function InterpretOption(Const Cmd,Arg : String) : Boolean; Virtual;
++    Class Function FileNameExtension : String; virtual;
+     Class Procedure Usage(List : TStrings); virtual;
+     procedure WriteDoc; virtual; Abstract;
+     Function WriteDescr(Element: TPasElement) : TDocNode;
+@@ -350,6 +351,12 @@
+   Result:=False;
+ end;
+ 
++class function TFPDocWriter.FileNameExtension: String;
++begin
++//Override in linear writers with the expected extension.
++  Result := ''; //Output must not contain an extension.
++end;
++
+ Class procedure TFPDocWriter.Usage(List: TStrings);
+ begin
+   // Do nothing.

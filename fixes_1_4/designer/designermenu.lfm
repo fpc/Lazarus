@@ -1,0 +1,106 @@
+object TemplateMenuForm: TTemplateMenuForm
+  Left = 537
+  Height = 244
+  Top = 199
+  Width = 520
+  Caption = 'TemplateMenuForm'
+  ClientHeight = 244
+  ClientWidth = 520
+  Constraints.MinHeight = 100
+  Constraints.MinWidth = 350
+  OnCreate = FormCreate
+  OnResize = FormResize
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object Label_template_description: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 15
+    Top = 6
+    Width = 139
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = 'Label_template_description'
+    ParentColor = False
+  end
+  object Label_template_view: TLabel
+    AnchorSideLeft.Control = ListBoxView
+    AnchorSideTop.Control = Owner
+    Left = 262
+    Height = 15
+    Top = 6
+    Width = 107
+    BorderSpacing.Top = 6
+    Caption = 'Label_template_view'
+    ParentColor = False
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 33
+    Top = 205
+    Width = 508
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 3
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
+  end
+  object TemplatesListBox: TListBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Label_template_description
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = ListBoxView
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
+    Height = 172
+    Top = 27
+    Width = 244
+    Anchors = [akTop, akLeft, akBottom]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    ItemHeight = 0
+    OnClick = TemplatesListBoxClick
+    TabOrder = 0
+  end
+  object ListBoxView: TListBox
+    AnchorSideLeft.Control = TemplatesListBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Label_template_view
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 262
+    Height = 172
+    Top = 27
+    Width = 252
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 6
+    BorderSpacing.Around = 6
+    ItemHeight = 0
+    TabOrder = 1
+  end
+  object Edit_template_description: TEdit
+    AnchorSideLeft.Control = TemplatesListBox
+    AnchorSideTop.Control = TemplatesListBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = TemplatesListBox
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 24
+    Top = 205
+    Width = 244
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    TabOrder = 2
+    Text = 'Edit_template_description'
+    Visible = False
+  end
+end

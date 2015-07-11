@@ -1,0 +1,184 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="IDEIntf">
+    <!--
+  ====================================================================
+    IDEImagesIntf
+  ====================================================================
+-->
+    <module name="IDEImagesIntf">
+      <short/>
+      <descr/>
+      <!-- class Visibility: default -->
+      <element name="TIDEImages">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TIDEImages.FImages_12">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TIDEImages.FImages_16">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TIDEImages.FImages_24">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TIDEImages.FImageNames_12">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TIDEImages.FImageNames_16">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TIDEImages.FImageNames_24">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TIDEImages.GetImages_12">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TIDEImages.GetImages_12.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TIDEImages.GetImages_16">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TIDEImages.GetImages_16.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TIDEImages.GetImages_24">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TIDEImages.GetImages_24.Result">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TIDEImages.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TIDEImages.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TIDEImages.GetImageIndex">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TIDEImages.GetImageIndex.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TIDEImages.GetImageIndex.ImageSize">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TIDEImages.GetImageIndex.ImageName">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TIDEImages.LoadImage">
+        <short>
+          <var>LoadImage</var> - loads images into ImageList if it is not already present there and returns it index</short>
+        <descr>Use <var>LoadImage</var> each time you need to get an ImageList index. Functions perform a check if an image is already loaded into the list and loads it if it is not so. If image is already present in the list function only returns it index.</descr>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TIDEImages.LoadImage.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TIDEImages.LoadImage.ImageSize">
+        <short>
+          <var>ImageSize: Integer</var> - size of image (width and height). Use only 12 or 16 or 24 values.</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TIDEImages.LoadImage.ImageName">
+        <short>
+          <var>ImageName: String;</var> - name of image resource to load</short>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TIDEImages.Images_12">
+        <short>
+          <var>Images_12</var> - ImageList with 12 x 12 images</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TIDEImages.Images_16">
+        <short>
+          <var>Images_16</var> - ImageList with 16 x 16 images</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TIDEImages.Images_24">
+        <short>
+          <var>Images_24</var> - ImageList with 24 x 24 images</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="IDEImages">
+        <short>
+          <var>IDEImages</var> - function which returns an instance of IDEImages interface class</short>
+        <descr>Use <var>IDEImages</var> when you need to request some image which IDE knows. 
+
+<var>IDEImages</var> has 3 imagelists (number in the name means imagelist width and height):
+<var>Images_12</var>, 
+<var>Images_16</var>, 
+<var>Images_24</var>
+
+To get ImageList index use method <var>LoadImage</var>.</descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="IDEImages.Result">
+        <short/>
+      </element>
+    </module>
+    <!-- IDEImagesIntf -->
+  </package>
+</fpdoc-descriptions>

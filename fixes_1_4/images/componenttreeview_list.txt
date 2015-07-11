@@ -1,0 +1,6 @@
+componenttreeview/oi_box.png
+componenttreeview/oi_comp.png
+componenttreeview/oi_control.png
+componenttreeview/oi_form.png
+componenttreeview/oi_collection.png
+componenttreeview/oi_item.png

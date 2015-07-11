@@ -1,0 +1,971 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: shulamy <shulamy@regba.org.il>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: codetoolsstrconsts.crsbracketnotfound
+msgid "bracket ) not found"
+msgstr ""
+
+#: codetoolsstrconsts.crsbracketnotfound2
+msgid "bracket ] not found"
+msgstr ""
+
+#: codetoolsstrconsts.crsclosingbracketnotfound
+msgid "closing bracket not found"
+msgstr ""
+
+#: codetoolsstrconsts.crsfoundunexpectedat
+msgid "%s, found unexpected %s at %s"
+msgstr ""
+
+#: codetoolsstrconsts.crsrecordendnotfound
+msgid "record end not found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsaddsdirtoincludepath
+msgid "adds %s to IncPath"
+msgstr "מוסיף את  s% ל IncPath"
+
+#: codetoolsstrconsts.ctsaddsdirtosourcepath
+msgid "adds %s to SrcPath"
+msgstr "מוסיף s% ל SrcPath"
+
+#: codetoolsstrconsts.ctsancestorisnotproperty
+msgid "ancestor of untyped property is not a property"
+msgstr "האב של תכונה לא מסווגת אינו תכונה"
+
+#: codetoolsstrconsts.ctsanlclproject
+msgid "an LCL project"
+msgstr "פרוייקט של LCL"
+
+#: codetoolsstrconsts.ctsanonymdefinitionsarenotallowed
+msgid "Anonymous %s definitions are not allowed"
+msgstr "הגדרות אנונימיות s% אסורות"
+
+#: codetoolsstrconsts.ctsawithoutb
+msgid "%s without %s"
+msgstr "ללא"
+
+#: codetoolsstrconsts.ctsbasetypeofnotfound
+msgid "base type of \"%s\" not found"
+msgstr "הסוג הבסיסי של \"%s\" לא נמצא"
+
+#: codetoolsstrconsts.ctsbeginatwithoutend
+msgid "begin at %s without end"
+msgstr "התחלה ב %s ללא סוף"
+
+#: codetoolsstrconsts.ctsbinaryoperator
+msgid "binary operator"
+msgstr "אופרטור בינארי"
+
+#: codetoolsstrconsts.ctsbracketcloseexpectedbutatomfound
+msgid "bracket close expected, but %s found"
+msgstr "צפויה סגירת סוגריים, אבל s% נמצא"
+
+#: codetoolsstrconsts.ctsbracketnotfound
+msgid "bracket %s not found"
+msgstr "סוגר s% לא נמצא"
+
+#: codetoolsstrconsts.ctsbracketopenexpectedbutatomfound
+msgid "bracket open expected, but %s found"
+msgstr "צפויה פתיחת סוגריים, אבל s% נמצא"
+
+#: codetoolsstrconsts.ctscharacterconstantoutofrange
+msgid "character constant out of range"
+msgstr "קבוע תו מחוץ לתחום"
+
+#: codetoolsstrconsts.ctscircleindefinitions
+msgid "circle in definitions"
+msgstr "מעגליות בהגדרות"
+
+#: codetoolsstrconsts.ctsclassidentifierexpected
+msgid "class identifier expected"
+msgstr "צפוי מזהה מחלקה"
+
+#: codetoolsstrconsts.ctsclassnodewithoutparentnode
+msgid "class node without parent node"
+msgstr "צומת של מחלקה ללא הורה"
+
+#: codetoolsstrconsts.ctsclassnotfound
+#, fuzzy
+#| msgid "class %s%s%s not found"
+msgid "class \"%s\" not found"
+msgstr "המחלקה %s%s%s לא נמצאה"
+
+#: codetoolsstrconsts.ctsclassofdefinitionnotresolved
+msgid "\"class of\" definition not resolved: %s"
+msgstr "ההגדרות של \"class of\" לא פוענחו: s%"
+
+#: codetoolsstrconsts.ctsclasssnotfound
+msgid "Class %s not found"
+msgstr "המחלקה s% לא נמצאה"
+
+#: codetoolsstrconsts.ctsclasswithoutname
+msgid "class without name"
+msgstr "מחלקה ללא שם"
+
+#: codetoolsstrconsts.ctscommandlineparameters
+msgid "Command line parameters"
+msgstr "פרמטרים של שורת הפקודה"
+
+#: codetoolsstrconsts.ctscommentendnotfound
+msgid "Comment end not found"
+msgstr "סוף ההערה לא נמצא"
+
+#: codetoolsstrconsts.ctscompiledsrcpath
+msgid "Compiled SrcPath"
+msgstr "נתיב לקוד מהודר"
+
+#: codetoolsstrconsts.ctscompiler
+msgid "Compiler"
+msgstr "מהדר"
+
+#: codetoolsstrconsts.ctscomponentsdirectory
+msgid "Components Directory"
+msgstr "תיקיית הרכיבים"
+
+#: codetoolsstrconsts.ctsconstant
+msgid "constant"
+msgstr "קבוע"
+
+#: codetoolsstrconsts.ctsconverterdirectory
+msgid "Converter Directory"
+msgstr "תיקיית הממיר"
+
+#: codetoolsstrconsts.ctscpudirectory
+msgid "CPU directory"
+msgstr "תיקיית המעבדים"
+
+#: codetoolsstrconsts.ctscursorposoutsideofcode
+msgid "cursor pos outside of code"
+msgstr "מקום הסמן מחוץ לקוד"
+
+#: codetoolsstrconsts.ctscustomcomponentsdirectory
+msgid "Custom Components Directory"
+msgstr "תיקיית הרכיבים מותאמת אישית"
+
+#: codetoolsstrconsts.ctsdebuggerdirectory
+msgid "Debugger Directory"
+msgstr "תיקיית מנפה השגיאות"
+
+#: codetoolsstrconsts.ctsdefaultancestornotfound
+msgid "default ancestor %s not found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdefaultclassancestortobjectnotfound
+msgid "default class ancestor TObject not found"
+msgstr "אכ ברירת המחדל TObject לא נמצא"
+
+#: codetoolsstrconsts.ctsdefaultdispinterfaceancestoridispatchnotfound
+msgid "default dispinterface ancestor IDispatch not found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdefaultfpcsource2operatingsystem
+msgid "Default fpc source Operating System 2"
+msgstr "מערכת ההפעלה שהיא מקור ברירת המחדל השניה של fpc"
+
+#: codetoolsstrconsts.ctsdefaultfpcsourceoperatingsystem
+msgid "Default fpc source Operating System"
+msgstr "מערכת ההפעלה שהיא מקור ברירת המחדל של fpc"
+
+#: codetoolsstrconsts.ctsdefaultfpcsymbol
+msgid "Default fpc symbol"
+msgstr "סמל ברירת מחדל של fpc"
+
+#: codetoolsstrconsts.ctsdefaultfpctargetoperatingsystem
+msgid "Default fpc target Operating System"
+msgstr "מערכת ההפעלה שהיא יעד ברירת המחדל של fpc"
+
+#: codetoolsstrconsts.ctsdefaultfpctargetprocessor
+msgid "Default fpc target processor"
+msgstr "המעבד שהוא יעד ברירת המחדל של fpc"
+
+#: codetoolsstrconsts.ctsdefaultinterfaceancestoriinterfacenotfound
+msgid "default interface ancestor IInterface not found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdefaultjavaclassancestorjlobjectnotfound
+msgid "default java class ancestor JLObject not found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdefaultparameterexpectedbutatomfound
+msgid "default parameter expected, but %s found"
+msgstr "צפוי פרמטר ברירת המחדל, אבל נמצא s%"
+
+#: codetoolsstrconsts.ctsdefaultpropertynotfound
+msgid "default property not found"
+msgstr "תכונת ברירת המחדל לא נמצאה"
+
+#: codetoolsstrconsts.ctsdefaultspecifierredefined
+msgid "default specifier redefined"
+msgstr "מציין ברירת המחדל הוגדר מחדש"
+
+#: codetoolsstrconsts.ctsdefine
+msgid "Define "
+msgstr "הגדר"
+
+#: codetoolsstrconsts.ctsdefinelcl
+msgid "Define LCL"
+msgstr "הגדרת LCL"
+
+#: codetoolsstrconsts.ctsdefinelclwidgetset
+msgid "Define LCLwidgetset, e.g. LCLgtk"
+msgstr "הגדרת LCLwidgetset, למשל LCLgtk"
+
+#: codetoolsstrconsts.ctsdefinemacrocarbon1
+msgid "Define macro carbon1"
+msgstr "הגדר מאקרו carbon1"
+
+#: codetoolsstrconsts.ctsdefinemacrogtk1
+msgid "Define macro gtk1"
+msgstr "הגדר מאקרו gtk1"
+
+#: codetoolsstrconsts.ctsdefinemacrogtk2
+msgid "Define macro gtk2"
+msgstr "הגדר מאקרו gtk2"
+
+#: codetoolsstrconsts.ctsdefinemacroname
+msgid "Define Macro %s"
+msgstr "הגדר מאקרו s%"
+
+#: codetoolsstrconsts.ctsdefinemacroqt1
+msgid "Define macro qt1"
+msgstr "הגדר מאקרו qt1"
+
+#: codetoolsstrconsts.ctsdefinemacrowince1
+msgid "Define macro wince1"
+msgstr "הגדר מאקרו wince1"
+
+#: codetoolsstrconsts.ctsdefineprocessortype
+msgid "Define processor type"
+msgstr "הגדר סוג מעבד"
+
+#: codetoolsstrconsts.ctsdefsforlazarussources
+msgid "Definitions for the Lazarus Sources"
+msgstr "הגדרות עבור הקוד של לזארוס"
+
+#: codetoolsstrconsts.ctsdesignerdirectory
+msgid "Designer Directory"
+msgstr "תיקיית המעצב"
+
+#: codetoolsstrconsts.ctsdesignerunitsdirectory
+msgid "Designer Units"
+msgstr "יחידות המעצב"
+
+#: codetoolsstrconsts.ctsdircomponentdoesnotexistsorisdanglingsymlink
+msgid "a directory component in %s does not exist or is a dangling symlink"
+msgstr "רכיב בתיקייה s% אינו קיים או שהוא קישור סימבולי מפוקפק"
+
+#: codetoolsstrconsts.ctsdircomponentisnotdir
+msgid "a directory component in %s is not a directory"
+msgstr "רכיב של תיקייה ב s% אינו תיקייה"
+
+#: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
+msgid "dispid parameter expected, but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdispidspecifierredefined
+msgid "dispid specifier redefined"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdoceditordirectory
+msgid "Doc Editor Directory"
+msgstr "תיקיית עורך המסמכים"
+
+#: codetoolsstrconsts.ctsduplicateidentifier
+msgid "duplicate identifier: %s"
+msgstr "מזהה כפול: s%"
+
+#: codetoolsstrconsts.ctselse
+msgid "else"
+msgstr "אחרת"
+
+#: codetoolsstrconsts.ctsendforclassnotfound
+msgid "\"end\" for class/object not found"
+msgstr "לא נמצא end למחלקה/לאובייקט"
+
+#: codetoolsstrconsts.ctsendforrecordnotfound
+msgid "end for record not found"
+msgstr "סוף הרשומה לא נמצא"
+
+#: codetoolsstrconsts.ctsendoffile
+msgid "end of file"
+msgstr ""
+
+#: codetoolsstrconsts.ctsendofsourceexpectedbutatomfound
+msgid "expected end., but %s found"
+msgstr "צפוי .end אבל s% נמצא"
+
+#: codetoolsstrconsts.ctsendofsourcenotfound
+#, fuzzy
+#| msgid "End of source not found"
+msgid "End of source not found."
+msgstr "סוף הקוד לא נמצא"
+
+#: codetoolsstrconsts.ctsenumerationtype
+msgid "enumeration type"
+msgstr "סוג enumeration"
+
+#: codetoolsstrconsts.ctserrorduringcreationofnewprocbodies
+msgid "error during creation of new proc bodies"
+msgstr "שגיאה בזמן יצירה של גופי פרוצדורות חדשים"
+
+#: codetoolsstrconsts.ctserrorduringinsertingnewclassparts
+msgid "error during inserting new class parts"
+msgstr "שגיאה בזמן הכנסת חלקי מחלקה חדשים"
+
+#: codetoolsstrconsts.ctserrorduringinsertingnewusessection
+msgid "error during inserting new units to the main uses section"
+msgstr "שגיאה בזמן הכנסה של יחידות חדשות לקטע הראשי של \"משתמש ב \""
+
+#: codetoolsstrconsts.ctserrorindirectiveexpression
+msgid "error in directive expression"
+msgstr "שגיאה בביטוי הוראה"
+
+#: codetoolsstrconsts.ctserrorinparamlist
+msgid "error in paramlist"
+msgstr "שגיאה ברשימת הפרמטרים"
+
+#: codetoolsstrconsts.ctsexecuteaccessdeniedforfile
+msgid "execute access denied for %s"
+msgstr "הרשאת ריצה הוגדרה עבור s%"
+
+#: codetoolsstrconsts.ctsexpected
+msgid "\"%s\" expected"
+msgstr ""
+
+#: codetoolsstrconsts.ctsexpectedamethodtypebutfound
+msgid "expected a method type, but found %s"
+msgstr ""
+
+#: codetoolsstrconsts.ctsexpectedbutfound
+msgid "expected (, but found %s"
+msgstr "מחכה ל ), אבל נמצא %s"
+
+#: codetoolsstrconsts.ctsexpectedbutfound2
+msgid "expected ), but found %s"
+msgstr "מחכה ל (, אבל נמצא %s"
+
+#: codetoolsstrconsts.ctsexpectedbutfound3
+msgid "expected :=, but %s found"
+msgstr "מחכה ל =:, אבל נמצא %s"
+
+#: codetoolsstrconsts.ctsexpectedidentifierbutfound
+msgid "expected identifier, but found %s"
+msgstr "מחכה למזהה, אבל נמצא %s"
+
+#: codetoolsstrconsts.ctsexpectedsemicolonofstatementbutfound
+msgid "expected ; of statement, but found %s"
+msgstr ""
+
+#: codetoolsstrconsts.ctsexportsclauseonlyallowedinlibraries
+msgid "exports clause only allowed in libraries"
+msgstr "סעיף ייצוא מותר רק בספריות"
+
+#: codetoolsstrconsts.ctsexprtypemustbeclassorrecord
+msgid "expression type must be class or record type"
+msgstr "סוג הביטוי חייב להיות מחלקה מסוג רשומה"
+
+#: codetoolsstrconsts.ctsfilehascircularsymlink
+msgid "%s has a circular symbolic link"
+msgstr "יש ל s% קישור סימבולי מעגלי"
+
+#: codetoolsstrconsts.ctsfileisreadonly
+msgid "file is read only"
+msgstr "הקובץ לקריאה בלבד"
+
+#: codetoolsstrconsts.ctsforward
+msgid "Forward"
+msgstr "קדימה"
+
+#: codetoolsstrconsts.ctsforwardclassdefinitionnotresolved
+msgid "Forward class definition not resolved: %s"
+msgstr "ההגדרות של המחלקה הבאה לא פוענחו: s%"
+
+#: codetoolsstrconsts.ctsfpdocsystemon
+msgid "enable FPDocSystem"
+msgstr "אפשר FPDocSystem"
+
+#: codetoolsstrconsts.ctsfreepascalcompilerinitialmacros
+msgid "Free Pascal Compiler initial macros"
+msgstr "מאקרו איתחול של fpc"
+
+#: codetoolsstrconsts.ctsfreepascalcomponentlibrary
+msgid "Free Pascal Component Library"
+msgstr "תיקיית רכיבים של fpc"
+
+#: codetoolsstrconsts.ctsfreepascalsourcedir
+msgid "Free Pascal Source Directory"
+msgstr "תיקיית הקוד של fpc"
+
+#: codetoolsstrconsts.ctsfreepascalsourcesplusdesc
+msgid "Free Pascal Sources, %s"
+msgstr "מקורות של fpc   "
+
+#: codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass
+msgctxt "codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass"
+msgid "function GetEnumerator not found in this class"
+msgstr "הפונקציה GetEnumerator אינה נמצאת במחלקה זאת"
+
+#: codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass2
+msgctxt "codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass2"
+msgid "function GetEnumerator not found in this class"
+msgstr "הפונקציה GetEnumerator אינה נמצאת במחלקה זאת"
+
+#: codetoolsstrconsts.ctsgenericidentifier
+msgid "generic identifier"
+msgstr "מזהה כללי"
+
+#: codetoolsstrconsts.ctsgtk2intfdirectory
+msgid "gtk2 interface directory"
+msgstr "תיקיית הממשק של gtk2"
+
+#: codetoolsstrconsts.ctshaserror
+msgid "HasError"
+msgstr "יש בו שגיאה"
+
+#: codetoolsstrconsts.ctsidedirectory
+msgid "IDE Directory"
+msgstr "תיקיית ה IDE "
+
+#: codetoolsstrconsts.ctsideintfdirectory
+msgid "IDEIntf Directory"
+msgstr "תיקיית IDEIntf"
+
+#: codetoolsstrconsts.ctsidentexpectedbutatomfound
+msgid "identifier expected, but %s found"
+msgstr "מצפה למזהה, אבל נמצא s%"
+
+#: codetoolsstrconsts.ctsidentexpectedbuteoffound
+msgid "unexpected end of file (identifier expected)"
+msgstr "סוף קובץ לא צפוי (צפוי מזהה)"
+
+#: codetoolsstrconsts.ctsidentexpectedbutkeywordfound
+msgid "identifier expected, but keyword %s found"
+msgstr "מצפה למזהה, אבלמלת מפתח  s% נמצאה"
+
+#: codetoolsstrconsts.ctsidentifier
+msgid "identifier"
+msgstr "מזהה"
+
+#: codetoolsstrconsts.ctsidentifieralreadydefined
+msgid "Identifier %s already defined"
+msgstr "מזהה s% כבר הוגדר"
+
+#: codetoolsstrconsts.ctsidentifiernotfound
+msgid "identifier not found: %s"
+msgstr "מזהה לא נמצא: יחידה s%"
+
+#: codetoolsstrconsts.ctsifdefdarwin
+msgid "IfDef Darwin"
+msgstr ""
+
+#: codetoolsstrconsts.ctsifdeflinux
+msgid "IfDef Linux"
+msgstr "אם מוגדר לינוקס"
+
+#: codetoolsstrconsts.ctsifdefwindows
+msgid "IfDef Windows"
+msgstr "אם מוגדר ווינדוס"
+
+#: codetoolsstrconsts.ctsiflclwidgettypeequalsgtk2
+msgid "If LCLWidgetType=gtk2 then"
+msgstr "אם LCLWidgetType=gtk2 אז"
+
+#: codetoolsstrconsts.ctsiftargetosisnotsrcos
+msgid "If TargetOS<>SrcOS"
+msgstr "אם  TargetOS<>SrcOS"
+
+#: codetoolsstrconsts.ctsiftargetosisnotsrcos2
+msgid "If TargetOS<>SrcOS2"
+msgstr "אם  TargetOS<>SrcOS2"
+
+#: codetoolsstrconsts.ctsiftargetosisnotwin32
+msgid "If TargetOS<>win32 then"
+msgstr "אם TargetOS<>win32  אז"
+
+#: codetoolsstrconsts.ctsillegalcircleinusedunits
+msgid "illegal circle using unit: %s"
+msgstr "מעגל לא חוקי בשימוש ביחדה: s%"
+
+#: codetoolsstrconsts.ctsillegalqualifier
+msgid "illegal qualifier %s found"
+msgstr "מסייג לא חוקי s% נמצא"
+
+#: codetoolsstrconsts.ctsimplementationnodenotfound
+msgid "implementation node not found"
+msgstr "מימוש הצומת לא נמצא"
+
+#: codetoolsstrconsts.ctsincludecircledetected
+msgid "Include circle detected"
+msgstr "התגלה מעגל \"כלול\""
+
+#: codetoolsstrconsts.ctsincludedirectoriesplusdirs
+msgid "include directories: %s"
+msgstr "תיקיות \"כלול\": s%"
+
+#: codetoolsstrconsts.ctsincludefilenotfound
+msgid "include file not found \"%s\""
+msgstr "קובץ \"כלול\" לא נמצא \"%s\""
+
+#: codetoolsstrconsts.ctsincompatibletypesgotexpected
+msgid "incompatibles types: expected \"%s\" but got \"%s\""
+msgstr "סוגים לא תואמים: צפוי \"%s\" אבל התקבל \"%s\""
+
+#: codetoolsstrconsts.ctsindexparameterexpectedbutatomfound
+msgid "index parameter expected, but %s found"
+msgstr "צפוי פרמטר אינדקס, אבל נמצא s%"
+
+#: codetoolsstrconsts.ctsindexspecifierredefined
+msgid "index specifier redefined"
+msgstr "מציין אינדקס הוגדר מחדש"
+
+#: codetoolsstrconsts.ctsinheritedkeywordonlyallowedinmethods
+msgid "inherited keyword only allowed in methods"
+msgstr "מלות מפתח מורשות מותרות רק במתודות"
+
+#: codetoolsstrconsts.ctsinstalldirectory
+msgid "Install Directory"
+msgstr "תיקיית ההתקנות"
+
+#: codetoolsstrconsts.ctsinstallerdirectories
+msgid "Installer directories"
+msgstr "תיקייות של תכנת ההתקנה"
+
+#: codetoolsstrconsts.ctsinsufficientmemory
+msgid "insufficient memory"
+msgstr "זיכרון לא מספיק"
+
+#: codetoolsstrconsts.ctsinterfacesectionnotfound
+msgid "interface section not found"
+msgstr "קטע הממשק לא נמצא"
+
+#: codetoolsstrconsts.ctsintfdirectory
+msgid "interface directory"
+msgstr "תיקיית הממשק"
+
+#: codetoolsstrconsts.ctsinvalidclassname
+#, fuzzy
+#| msgid "invalid class name=%s%s%s"
+msgid "invalid class name=\"%s\""
+msgstr "שם מחלקה לא חוקי = %s%s%s"
+
+#: codetoolsstrconsts.ctsinvalidclassname2
+#, fuzzy
+#| msgid "invalid class name %s%s%s"
+msgid "invalid class name \"%s\""
+msgstr "שם מחלקה לא חוקי %s%s%s"
+
+#: codetoolsstrconsts.ctsinvalidflagvaluefordirective
+msgid "invalid flag value \"%s\" for directive %s"
+msgstr "ערך דגל לא חוקי \"%s\" עבור הוראה s%"
+
+#: codetoolsstrconsts.ctsinvalidmode
+msgid "invalid mode \"%s\""
+msgstr "מצב לא חוקי  \"%s\""
+
+#: codetoolsstrconsts.ctsinvalidmodeswitch
+msgid "invalid mode switch \"%s\""
+msgstr "מתג מצב לא חוקי  \"%s\""
+
+#: codetoolsstrconsts.ctsinvalidoperator
+msgid "invalid operator %s"
+msgstr "אופרטור לא חוקי %s"
+
+#: codetoolsstrconsts.ctsinvalidsubrange
+msgid "invalid subrange"
+msgstr "תת תחום לא חוקי"
+
+#: codetoolsstrconsts.ctsinvalidtype
+msgid "invalid type"
+msgstr "סוג לא חוקי"
+
+#: codetoolsstrconsts.ctsinvalidvariablename
+#, fuzzy
+#| msgid "invalid variable name %s%s%s"
+msgid "invalid variable name \"%s\""
+msgstr "שם משתנה לא חוקי %s%s%s"
+
+#: codetoolsstrconsts.ctsinvalidvariabletype
+#, fuzzy
+#| msgid "invalid variable type %s%s%s"
+msgid "invalid variable type \"%s\""
+msgstr "סוג משתנה לא חוקי %s%s%s"
+
+#: codetoolsstrconsts.ctsjitformdirectory
+msgid "JITForm Directory"
+msgstr "תיקיית IDEIntf"
+
+#: codetoolsstrconsts.ctskeyword
+msgid "keyword"
+msgstr "מלת מפתח"
+
+#: codetoolsstrconsts.ctskeywordexampleexpectedbutatomfound
+msgid "keyword (e.g. %s) expected, but %s found"
+msgstr "צפויה מלת מפתח (למשל s%) אבל נמצא s%"
+
+#: codetoolsstrconsts.ctskeywordin
+msgid "keyword \"in\""
+msgstr "מלת מפתח \"in\""
+
+#: codetoolsstrconsts.ctslazarusmaindirectory
+msgid "lazarus main directory"
+msgstr "התיקייה הראשית של לזארוס"
+
+#: codetoolsstrconsts.ctslazarussources
+msgid "Lazarus Sources"
+msgstr "הקוד של לזארוס"
+
+#: codetoolsstrconsts.ctsmethodname
+msgid "method name"
+msgstr "שם מתודה"
+
+#: codetoolsstrconsts.ctsmethodsignaturesnotfoundinclass
+msgid "Method signature %s not found in class"
+msgstr ""
+
+#: codetoolsstrconsts.ctsmethodtypedefinitionnotfound
+msgid "method type definition not found"
+msgstr "ההגדרה של סוג המתודה לא נמצאה"
+
+#: codetoolsstrconsts.ctsmissing
+msgid "missing :="
+msgstr "חסר =:"
+
+#: codetoolsstrconsts.ctsmissingenumlist
+msgid "missing enum list"
+msgstr "חסרה רשימה של משתנה מסוג enum"
+
+#: codetoolsstrconsts.ctsmissingpointafterend
+msgid "missing . after end"
+msgstr "נקודה חסרה אחרי end"
+
+#: codetoolsstrconsts.ctsmissingtypeidentifier
+msgid "missing type identifier"
+msgstr "מזהה סוג חסר"
+
+#: codetoolsstrconsts.ctsnameddirectory
+msgid "%s Directory"
+msgstr "תיקייה s%"
+
+#: codetoolsstrconsts.ctsnamedproject
+msgid "%s Project"
+msgstr "פרוייקט s%"
+
+#: codetoolsstrconsts.ctsneededbymode
+msgid " (needed by mode \"%s\")"
+msgstr ""
+
+#: codetoolsstrconsts.ctsnesteddefinitionsarenotallowed
+msgid "Nested %s definitions are not allowed"
+msgstr "הגדרות מקוננות s% אסורות"
+
+#: codetoolsstrconsts.ctsnewprocbodynotfound
+msgid "new proc body not found"
+msgstr "גוף של פרוצדורה חדשה לא נמצא"
+
+#: codetoolsstrconsts.ctsnocontextnodefoundatcursor
+msgid "no context node found at cursor"
+msgstr "לא נמצאה צומת הקשר במיקום הסמן"
+
+#: codetoolsstrconsts.ctsnodefaultspecifierdefinedtwice
+msgid "nodefault specifier defined twice"
+msgstr "מציין שאינו ברירת המחדל הוגדר פעמיים"
+
+#: codetoolsstrconsts.ctsnopascalcodefound
+msgid "no pascal code found (first token is %s)"
+msgstr "לא נמצא קוד של פסקל (הסימן הראשון הוא s%)"
+
+#: codetoolsstrconsts.ctsnoscanneravailable
+msgid "No scanner available"
+msgstr "אין סורק זמין"
+
+#: codetoolsstrconsts.ctsnoscannerfound
+msgid "No scanner found for \"%s\". If this is an include file, please open the main source first."
+msgstr "לא נמצא סורק עבור \"%s\". אם זה קובץ \"כלול\", פתח קודם את קובץ הקוד הראשי."
+
+#: codetoolsstrconsts.ctsnotenoughgenparams
+msgid "Not enough actual generic parameters"
+msgstr ""
+
+#: codetoolsstrconsts.ctsoldmethodnotfound
+msgid "old method not found: %s"
+msgstr "מתודה ישנה לא נמצאה: s%"
+
+#: codetoolsstrconsts.ctsoperandexpectedbutfound
+msgid "operand expected but %s found"
+msgstr "מחכה לאופרנד אבל נמצא %s"
+
+#: codetoolsstrconsts.ctsoperandexpectedbutfound2
+msgid "operand expected, but %s found"
+msgstr "מחכה לאופרנד, אבל נמצא %s"
+
+#: codetoolsstrconsts.ctsoperatorexpectedbutatomfound
+msgctxt "codetoolsstrconsts.ctsoperatorexpectedbutatomfound"
+msgid "operator expected, but %s found"
+msgstr "מחכה לאופרטור, אבל נמצא %s"
+
+#: codetoolsstrconsts.ctsoperatorexpectedbuteoffound
+msgid "unexpected end of file (operator expected)"
+msgstr ""
+
+#: codetoolsstrconsts.ctsoperatorexpectedbutfound
+msgid "operator expected but %s found"
+msgstr "מחכה לאופרטור, אבל נמצא %s"
+
+#: codetoolsstrconsts.ctsoperatorexpectedbutfound2
+msgctxt "codetoolsstrconsts.ctsoperatorexpectedbutfound2"
+msgid "operator expected, but %s found"
+msgstr "מחכה לאופרטור, אבל נמצא %s"
+
+#: codetoolsstrconsts.ctsothercompilerdefines
+msgid "%s Compiler Defines"
+msgstr "הגדרת המהדר s%"
+
+#: codetoolsstrconsts.ctspackagedirectories
+msgid "Package directories"
+msgstr "תיקיות של חבילות"
+
+#: codetoolsstrconsts.ctspackagerdirectory
+msgid "Packager Directory"
+msgstr "תיקיית אורז החבילות"
+
+#: codetoolsstrconsts.ctspackagerregistrationdirectory
+msgid "Packager Registration Directory"
+msgstr "תיקיית הרשום של  אורז החבילות"
+
+#: codetoolsstrconsts.ctspackagerunitsdirectory
+msgid "Packager Units Directory"
+msgstr "תיקיית היחידות של אורז החבילות"
+
+#: codetoolsstrconsts.ctspointhintprocstartat
+msgid ".  Hint: proc start at "
+msgstr "טיפ: הפרוצדורה מתחילה ב"
+
+#: codetoolsstrconsts.ctspointstartat
+msgid ". start at "
+msgstr "התחל ב "
+
+#: codetoolsstrconsts.ctspositionnotinsource
+msgid "Position not in source"
+msgstr "המיקום לא נמצא בקוד"
+
+#: codetoolsstrconsts.ctsprocedureorfunctionorconstructorordestructor
+msgid "procedure or function or constructor or destructor"
+msgstr "פרוצדורה או פונקציה או מקים או הורס"
+
+#: codetoolsstrconsts.ctsprocessorspecific
+msgid "processor specific"
+msgstr "יחודי למעבד"
+
+#: codetoolsstrconsts.ctsproperttypeexpectedbutatomfound
+msgid "property type expected, but %s found"
+msgstr "צפוי סוג התכונה, אבל נמצא s%"
+
+#: codetoolsstrconsts.ctspropertycurrentnotfound
+msgid "property Current not found"
+msgstr "התכונה נוכחי לא נמצאה"
+
+#: codetoolsstrconsts.ctspropertyspecifieralreadydefined
+msgid "property specifier already defined: %s"
+msgstr "מציין התכונה כבר מוגדר: s%"
+
+#: codetoolsstrconsts.ctsqualifierexpectedbutatomfound
+msgid "qualifier expected but %s found"
+msgstr "צפוי מסייג אבל s% נמצא"
+
+#: codetoolsstrconsts.ctsresetalldefines
+msgid "Reset all defines"
+msgstr "אתחל את כל ההגדרות"
+
+#: codetoolsstrconsts.ctsresulttypeoffunctiongetenumeratornotfound
+msgid "result type of function GetEnumerator not found"
+msgstr "סוג הערך המוחזר של הפונקציה GetEnumerator לא נמצא"
+
+#: codetoolsstrconsts.ctsruntimelibrary
+msgid "Runtime library"
+msgstr "תיקיית זמן ריצה"
+
+#: codetoolsstrconsts.ctsscannedfiles
+msgid "Scanned files: %s"
+msgstr "קבצים סרוקים: %s"
+
+#: codetoolsstrconsts.ctssemicolonafterpropspecmissing
+msgid "; expected after \"%s\" property specifier, but %s found"
+msgstr "צפוי נקודה פסיק אחרי מציין תכונה s%, אבל נמצא s%"
+
+#: codetoolsstrconsts.ctssemicolonnotfound
+msgid "semicolon not found"
+msgstr "נקודה פסיק לא נמצא"
+
+#: codetoolsstrconsts.ctssetsincpathto
+msgid "sets IncPath to %s"
+msgstr "קובע את  s% כ  IncPath "
+
+#: codetoolsstrconsts.ctssetssrcpathto
+msgid "sets SrcPath to %s"
+msgstr "קובע את   IncPath ל  s% "
+
+#: codetoolsstrconsts.ctssourcefilenamesforstandardfpcunits
+msgid "Source filenames for the standard fpc units"
+msgstr "שם קובץ הקוד של יחידות fpc סטנדרטיות"
+
+#: codetoolsstrconsts.ctssourceisnotunit
+msgid "source is not unit"
+msgstr "הקוד אינו יחידה"
+
+#: codetoolsstrconsts.ctssourcenotfoundunit
+#, fuzzy
+#| msgid "source not found: unit %s"
+msgid "source not found: unit %s. Check your FPC source directory."
+msgstr "הקוד לא נמצא: יחידה s%"
+
+#: codetoolsstrconsts.ctssrcpathforcompiledunits
+msgid "src path for compiled units"
+msgstr "נתיב המקור עבור יחידות מהודרות"
+
+#: codetoolsstrconsts.ctssrcpathinitialization
+msgid "SrcPath Initialization"
+msgstr "איתחול של SrcPath"
+
+#: codetoolsstrconsts.ctsstrexpectedbutatomfound
+#, fuzzy
+#| msgid "%s expected, but %s found"
+msgid "expected %s, but %s found"
+msgstr "מצפה ל s%  אבל נמצא s%"
+
+#: codetoolsstrconsts.ctsstringconstant
+msgid "string constant"
+msgstr "קבוע מסוג מחרוזת"
+
+#: codetoolsstrconsts.ctssyntaxerrorinexpr
+msgid "Syntax Error in expression \"%s\""
+msgstr "שגיאת תחביר בביטוי \"%s\""
+
+#: codetoolsstrconsts.ctstcodetoolmanagerconsistencycheck
+msgid "TCodeToolManager.ConsistencyCheck=%d"
+msgstr "TCodeToolManager.ConsistencyCheck=%d"
+
+#: codetoolsstrconsts.ctstermnotsimple
+msgid "Term has no simple type"
+msgstr "לביטוי אין סוג פשוט"
+
+#: codetoolsstrconsts.ctsthenexpectedbutfound
+msgid "then expected, but %s found"
+msgstr "מחכה ל then, אבל נמצא %s"
+
+#: codetoolsstrconsts.ctstoolsdirectory
+msgid "Tools Directory"
+msgstr "תיקיית הכלים"
+
+#: codetoolsstrconsts.ctstype
+msgid "type"
+msgstr "סוג"
+
+#: codetoolsstrconsts.ctstypeidentifier
+msgid "type identifier"
+msgstr "מזהה סוג"
+
+#: codetoolsstrconsts.ctstypeisonlyallowedingenericsendofclassnotfound
+msgid "type is only allowed in generics, end of class not found"
+msgstr "הסעיף type מותר רק במחלקות גנריות, סוף המחלקה לא נמצא"
+
+#: codetoolsstrconsts.ctstypesectionofclassnotfound
+msgid "type section of class not found"
+msgstr "קטע \"סוג\" של המחלקה לא נמצא"
+
+#: codetoolsstrconsts.ctsunabletoapplychanges
+msgid "unable to apply changes"
+msgstr "לא יכול לבצע את השינויים"
+
+#: codetoolsstrconsts.ctsunabletocompleteproperty
+msgid "unable to complete property"
+msgstr "לא יכול להשלים את התכונה"
+
+#: codetoolsstrconsts.ctsundefine
+msgid "Undefine "
+msgstr "בטל הגדרה"
+
+#: codetoolsstrconsts.ctsunexpectedendofsource
+msgid "unexpected end of source"
+msgstr "סוף לא צפוי של הקוד"
+
+#: codetoolsstrconsts.ctsunexpectedkeyword
+msgid "unexpected keyword \"%s\""
+msgstr "מלת מפתח לא צפויה \"%s\""
+
+#: codetoolsstrconsts.ctsunexpectedkeyword2
+msgid "unexpected keyword %s"
+msgstr "מלה שמורה לא צפוייה %s"
+
+#: codetoolsstrconsts.ctsunexpectedkeywordinasmblock
+msgid "unexpected keyword \"%s\" in asm block found"
+msgstr "מלת מפתח לא צפויה \"%s\" נמצאה בבלוק asm"
+
+#: codetoolsstrconsts.ctsunexpectedkeywordinbeginendblock
+msgid "unexpected keyword \"%s\" in begin..end found"
+msgstr "מלת מפתח לא צפויה \"%s\" נמצאה בתוך בלוק \"התחלה-סיום\""
+
+#: codetoolsstrconsts.ctsunexpectedkeywordwhilereadingbackwards
+msgid "unexpected keyword \"%s\" found while reading blocks backwards"
+msgstr "מלת מפתח לא צפויה \"%s\" נמצאה בזמן קריאת בלוקים מהסוף להתחלה"
+
+#: codetoolsstrconsts.ctsunexpectedsubrangeoperatorfound
+msgid "unexpected subrange operator '..' found"
+msgstr "אופרטור בלתי צפוי של תת תחום  '..' נמצא"
+
+#: codetoolsstrconsts.ctsunitnotfound
+msgid "unit not found: %s"
+msgstr "יחידה לא נמצאה s%"
+
+#: codetoolsstrconsts.ctsunitpathinitialization
+msgid "UnitPath Initialization"
+msgstr "איתחול של UnitPath"
+
+#: codetoolsstrconsts.ctsunknownfunction
+msgid "Unknown function %s"
+msgstr "פונקציה לא ידועה s%"
+
+#: codetoolsstrconsts.ctsunknownmainfilename
+msgid "(unknown mainfilename)"
+msgstr "(שם קובץ ראשי לא ידוע)"
+
+#: codetoolsstrconsts.ctsunknownsectionkeyword
+msgid "unknown section keyword %s found"
+msgstr "מלת מפתח s% לא ידוע באזור נמצאה"
+
+#: codetoolsstrconsts.ctsunknownsubdescriptor
+msgid "(unknown subdescriptor %s)"
+msgstr "(תת-מאפיין לא מוכר s%)"
+
+#: codetoolsstrconsts.ctsunparsed
+msgid "Unparsed"
+msgstr "לא מפורש"
+
+#: codetoolsstrconsts.ctsusedunitisnotapascalunit
+msgid "used unit is not a pascal unit"
+msgstr "היחידה שמשתמשים בה אינה יחידת פסקל"
+
+#: codetoolsstrconsts.ctsutilsdirectories
+msgid "Utils directories"
+msgstr "תיקיות של יחידות"
+
+#: codetoolsstrconsts.ctsvarisonlyallowedingenericsendofclassnotfound
+msgid "var is only allowed in generics, end of class not found"
+msgstr "הסעיף var מותר רק במחלקות גנריות, סוף המחלקה לא נמצא"
+
+#: codetoolsstrconsts.ctswidgetdirectory
+msgid "Widget Directory"
+msgstr "תיקיית העצמים"
+
+#: codetoolsstrconsts.ctswordnotfound
+msgid "\"%s\" not found"
+msgstr "לא נמצא  \"%s\" "
+

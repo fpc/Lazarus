@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <PathDelim Value="\"/>
+    <Name Value="LazDebuggerFpGdbmi"/>
+    <Author Value="Martin Friebe"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CompilerMessages>
+          <MsgFileName Value=""/>
+        </CompilerMessages>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="Debugger for the Lazarus IDE
+A debugger based on FPDebug and GDB"/>
+    <License Value="GPL"/>
+    <Version Minor="1"/>
+    <Files Count="1">
+      <Item1>
+        <Filename Value="fpgdbmidebugger.pp"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="FpGdbmiDebugger"/>
+      </Item1>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="4">
+      <Item1>
+        <PackageName Value="fpdebug"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LazDebuggerGdbmi"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="DebuggerIntf"/>
+      </Item3>
+      <Item4>
+        <PackageName Value="FCL"/>
+      </Item4>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

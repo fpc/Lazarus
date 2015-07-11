@@ -1,0 +1,131 @@
+//*****************************************************
+// Resource file necessary for menu support
+//*****************************************************
+//
+// The MENU resource data has the following format:
+//
+// MENU_ID MENU DISCARDABLE
+// BEGIN
+//   MENUITEM Caption, MENUITEM_ID
+// END
+//
+// POPUP menus in this structure can't have a MENU_ID
+//
+// The RCDATA after that is the Toolbar information:
+//
+// MENU_ID, Number of menu items,
+// Image, MENUITEM_ID, Toolbar state, Toolbar Style, ?, 0, either NOMENU (popup) or 0 (menuitem)
+//
+// NOMENU = 0xFFFF
+//
+
+// 2 simple menu items
+20000 MENU DISCARDABLE
+BEGIN
+  MENUITEM " ", 1001
+  MENUITEM " ", 1002
+END
+
+20000 RCDATA DISCARDABLE
+BEGIN
+    20000, 2,
+    -2, 1001, 8, 0x10, 0, 0, 0xFFFF,
+    -2, 1002, 8, 0x10, 0, 0, 0xFFFF
+END
+
+// popup and simple menu item
+20001 MENU DISCARDABLE
+BEGIN
+  POPUP " "
+  BEGIN
+    MENUITEM " ", 1001
+  END
+  MENUITEM " ", 1002
+END
+
+20001 RCDATA DISCARDABLE
+BEGIN
+    20001, 2,
+    -2, 1001, 4, 0x18, 0, 0, 0,
+    -2, 1002, 4, 0x10, 0, 0, 0xFFFF
+END
+
+// simple item and popup menu
+20002 MENU DISCARDABLE
+BEGIN
+  MENUITEM " ", 1001
+  POPUP " "
+  BEGIN
+    MENUITEM " ", 1002
+  END
+END
+
+20002 RCDATA DISCARDABLE
+BEGIN
+    20002, 2,
+    -2, 1001, 4, 0x10, 0, 0, 0xFFFF,
+    -2, 1002, 4, 0x18, 0, 0, 1
+END
+
+// 2 popup menus
+20003 MENU DISCARDABLE
+BEGIN
+  POPUP "POPUP1"
+  BEGIN
+    MENUITEM "SUB1", 1001
+  END
+  POPUP "POPUP2"
+  BEGIN
+    MENUITEM "SUB2", 1002
+  END
+END
+
+20003 RCDATA DISCARDABLE
+BEGIN
+    20003, 2,
+    -2, 1001, 4, 0x18, 0, 0, 0,
+    -2, 1002, 4, 0x18, 0, 0, 1
+END
+
+// only 1 top-level item
+20004 MENU DISCARDABLE
+BEGIN
+  MENUITEM " ", 1001
+END
+
+20004 RCDATA DISCARDABLE
+BEGIN
+    20004, 1,
+    -2, 1001, 8, 0x10, 0, 0, 0xFFFF
+END
+
+// only 1 popup
+20005 MENU DISCARDABLE
+BEGIN
+  POPUP "POPUP1"
+  BEGIN
+    MENUITEM "SUB1", 1001
+  END
+END
+
+20005 RCDATA DISCARDABLE
+BEGIN
+    20005, 1,
+    -2, 1001, 4, 0x18, 0, 0, 0
+END
+
+// no menu
+20006 MENU DISCARDABLE
+BEGIN
+END
+
+20006 RCDATA DISCARDABLE
+BEGIN
+    20006, 0
+END
+
+//*****************************************************
+// Uncomment the line below to run application in real VGA mode
+// HI_RES_AWARE CEUX {1}
+//*****************************************************
+

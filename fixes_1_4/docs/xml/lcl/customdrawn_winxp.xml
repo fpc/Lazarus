@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    customdrawn_winxp
+  ====================================================================
+-->
+
+<module name="customdrawn_winxp">
+<short></short>
+<descr>
+</descr>
+
+<!-- class Visibility: default -->
+<element name="TCDDrawerWinXP">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TCDDrawerWinXP.GetMeasures">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCDDrawerWinXP.GetMeasures.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerWinXP.GetMeasures.AMeasureID">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TCDDrawerWinXP.GetDrawStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCDDrawerWinXP.GetDrawStyle.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerWinXP.LoadFallbackPaletteColors">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerWinXP.DrawTickmark">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerWinXP.DrawTickmark.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerWinXP.DrawTickmark.ADestPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerWinXP.DrawTickmark.AState">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerWinXP.DrawButton">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerWinXP.DrawButton.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerWinXP.DrawButton.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerWinXP.DrawButton.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerWinXP.DrawButton.AStateEx">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerWinXP.DrawEditFrame">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerWinXP.DrawEditFrame.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerWinXP.DrawEditFrame.ADestPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerWinXP.DrawEditFrame.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerWinXP.DrawEditFrame.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerWinXP.DrawEditFrame.AStateEx">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerWinXP.DrawCheckBoxSquare">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerWinXP.DrawCheckBoxSquare.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerWinXP.DrawCheckBoxSquare.ADestPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerWinXP.DrawCheckBoxSquare.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerWinXP.DrawCheckBoxSquare.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerWinXP.DrawCheckBoxSquare.AStateEx">
+<short></short>
+</element>
+
+</module> <!-- customdrawn_winxp -->
+
+</package>
+</fpdoc-descriptions>

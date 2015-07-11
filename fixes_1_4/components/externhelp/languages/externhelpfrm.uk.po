@@ -1,0 +1,108 @@
+ Igor Paliychuk <mansonigor@gmail.com>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2012-04-23 10:10+0300\n"
+"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"Language-Team: \n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Virtaal 0.7.1\n"
+
+#: externhelpfrm.ehrsaddnewitem
+msgid "Add new item"
+msgstr "Додати новий елемент"
+
+#: externhelpfrm.ehrsbrowse
+msgid "Browse ..."
+msgstr "Огляд ..."
+
+#: externhelpfrm.ehrsbrowseforpath
+msgid "Browse for path"
+msgstr "Вибрати шлях"
+
+#: externhelpfrm.ehrschooseapascalunit
+msgid "Choose a pascal unit"
+msgstr "Виберіть модуль Паскаля"
+
+#: externhelpfrm.ehrsdeleteitem
+msgid "Delete item"
+msgstr "Видалити елемент"
+
+#: externhelpfrm.ehrsdirectorynotfound
+msgid "Directory not found: %s"
+msgstr "Директорія не знайдена: %s"
+
+#: externhelpfrm.ehrseditorfile
+msgid "Editor file ..."
+msgstr "Файл редактора ..."
+
+#: externhelpfrm.ehrsexternal
+msgid "External"
+msgstr "Зовнішні"
+
+#: externhelpfrm.ehrsfilenotfound
+msgid "File not found: %s"
+msgstr "Файл не знайдено: %s"
+
+#: externhelpfrm.ehrsgeneral
+msgid "General"
+msgstr "Загальні"
+
+#: externhelpfrm.ehrsgrouptitle
+msgid "Extern help"
+msgstr "Зовнішня довідка"
+
+#: externhelpfrm.ehrshelp
+msgid "Help"
+msgstr "Довідка"
+
+#: externhelpfrm.ehrsincludesubdirectories
+msgid "Include sub directories"
+msgstr "Включити підтеки"
+
+#: externhelpfrm.ehrsmacrofy
+#| msgid "Macrofy"
+msgid "Use macros"
+msgstr "Використати макрос"
+
+#: externhelpfrm.ehrsmysettings
+msgid "My settings (default)"
+msgstr "Мої налаштування (за замовчуванням)"
+
+#: externhelpfrm.ehrsname
+msgid "Name"
+msgstr "Ім'я"
+
+#: externhelpfrm.ehrsreplacecommondirectorieswithmacros
+msgid "Replace common directories with macros"
+msgstr "Замінити стандартні каталоги макросами"
+
+#: externhelpfrm.ehrsselectafilefromthesourceeditor
+msgid "Select a file from the source editor"
+msgstr "Вибрати файл з редактора початкового коду"
+
+#: externhelpfrm.ehrsselectfile
+msgid "Select file"
+msgstr "Виберіть файл"
+
+#: externhelpfrm.ehrsstorethisurlin
+msgid "Store this URL in"
+msgstr "Місце збереження адреси"
+
+#: externhelpfrm.ehrsunitfileorunitdirectory
+msgid "Unit file or unit directory"
+msgstr "Файл модуля або каталог модулів"
+
+#: externhelpfrm.ehrsurl
+msgid "URL"
+msgstr "Адреса"
+
+#: externhelpfrm.ehrswarning
+msgid "Warning"
+msgstr "Попередження"
+

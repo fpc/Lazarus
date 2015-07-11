@@ -1,0 +1,25 @@
+inherited EasyDockBook: TEasyDockBook
+  Left = 263
+  Height = 300
+  Top = 146
+  Width = 400
+  Caption = 'EasyDockBook'
+  ClientHeight = 300
+  ClientWidth = 400
+  DockSite = True
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnDockDrop = FormDockDrop
+  OnDockOver = FormDockOver
+  OnGetSiteInfo = FormGetSiteInfo
+  OnUnDock = FormUnDock
+  object pnlDock: TPanel[0]
+    Left = 0
+    Height = 300
+    Top = 0
+    Width = 400
+    Align = alClient
+    TabOrder = 0
+    UseDockManager = False
+  end
+end

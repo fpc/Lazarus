@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+  <package name="lcl">
+    <!--
+  ====================================================================
+    GraphUtil
+  ====================================================================
+-->
+    <module name="GraphUtil">
+      <short/>
+      <descr/>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Types">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Graphics">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Math">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="ColorToGray">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="ColorToGray.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ColorToGray.AColor">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="ColorToHLS">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ColorToHLS.AColor">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ColorToHLS.H">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ColorToHLS.L">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ColorToHLS.S">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="RGBtoHLS">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="RGBtoHLS.R">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="RGBtoHLS.G">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="RGBtoHLS.B">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="RGBtoHLS.H">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="RGBtoHLS.L">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="RGBtoHLS.S">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="HLStoColor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="HLStoColor.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="HLStoColor.H">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="HLStoColor.L">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="HLStoColor.S">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="HLStoRGB">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="HLStoRGB.H">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="HLStoRGB.L">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="HLStoRGB.S">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="HLStoRGB.R">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="HLStoRGB.G">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="HLStoRGB.B">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="DrawVerticalGradient">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="DrawVerticalGradient.Canvas">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="DrawVerticalGradient.ARect">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="DrawVerticalGradient.TopColor">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="DrawVerticalGradient.BottomColor">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="DrawGradientWindow">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="DrawGradientWindow.Canvas">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="DrawGradientWindow.WindowRect">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="DrawGradientWindow.TitleHeight">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="DrawGradientWindow.BaseColor">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="ColorRGBToHLS">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ColorRGBToHLS.clrRGB">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ColorRGBToHLS.Hue">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ColorRGBToHLS.Luminance">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ColorRGBToHLS.Saturation">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="ColorHLSToRGB">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="ColorHLSToRGB.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ColorHLSToRGB.Hue">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ColorHLSToRGB.Luminance">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ColorHLSToRGB.Saturation">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="ColorAdjustLuma">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="ColorAdjustLuma.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ColorAdjustLuma.clrRGB">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ColorAdjustLuma.n">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ColorAdjustLuma.fScale">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="GetHighLightColor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="GetHighLightColor.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="GetHighLightColor.Color">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="GetHighLightColor.Luminance">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="GetShadowColor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="GetShadowColor.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="GetShadowColor.Color">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="GetShadowColor.Luminance">
+        <short/>
+      </element>
+      <element name="TScrollDirection">
+        <short/>
+      </element>
+      <element name="TArrowType">
+        <short/>
+      </element>
+      <element name="NiceArrowAngle">
+        <short/>
+      </element>
+      <element name="DrawArrow"/>
+    </module>
+    <!-- GraphUtil -->
+  </package>
+</fpdoc-descriptions>

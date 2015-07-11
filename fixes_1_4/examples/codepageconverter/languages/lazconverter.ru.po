@@ -1,0 +1,52 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: tlazconverterform.button1.caption
+msgid "Path"
+msgstr "Путь"
+
+#: tlazconverterform.button2.caption
+msgid "Search"
+msgstr "Найти"
+
+#: tlazconverterform.button3.caption
+msgid "Convert"
+msgstr "Преобразовать"
+
+#: tlazconverterform.caption
+msgctxt "TLAZCONVERTERFORM.CAPTION"
+msgid "Codepage LazConverter for PAS, LFM, LRS, LRT & INC files v0.0.6"
+msgstr "Перекодировщик LazConverter для файлов PAS, LFM, LRS, LRT и INC v0.0.6"
+
+#: tlazconverterform.label1.caption
+msgid "Path to your project:"
+msgstr "Путь к вашему проекту:"
+
+#: tlazconverterform.label2.caption
+msgid "Convert From:"
+msgstr "Преобразовать из:"
+
+#: tlazconverterform.label3.caption
+msgid "Convert To:"
+msgstr "Преобразовать в:"
+
+#: tlazconverterform.label6.caption
+msgid "Ready..."
+msgstr "Готов..."
+
+#: tlazconverterform.menuitem1.caption
+msgid "Remove from conversion"
+msgstr "Исключить из преобразования"
+
+#: tlazconverterform.selectdirectorydialog1.title
+msgid "Select Directory"
+msgstr "Выберите каталог"
+

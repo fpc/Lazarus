@@ -1,0 +1,50 @@
+object frProgressForm: TfrProgressForm
+  Left = 235
+  Height = 106
+  Top = 137
+  Width = 278
+  ActiveControl = Button1
+  BorderStyle = bsDialog
+  Caption = 'frProgressForm'
+  ClientHeight = 106
+  ClientWidth = 278
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object Label1: TLabel
+    Left = 20
+    Height = 16
+    Top = 32
+    Width = 9
+    Alignment = taCenter
+    Caption = '1'
+    ParentColor = False
+  end
+  object Button1: TButton
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Control = Owner
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 107
+    Height = 37
+    Top = 63
+    Width = 65
+    Anchors = [akLeft, akBottom]
+    AutoSize = True
+    BorderSpacing.Bottom = 6
+    BorderSpacing.InnerBorder = 4
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    OnClick = Button1Click
+    TabOrder = 0
+  end
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 10
+    OnTimer = Timer1Timer
+    left = 224
+    top = 24
+  end
+end

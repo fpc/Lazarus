@@ -1,0 +1,122 @@
+object SizeComponentsDialog: TSizeComponentsDialog
+  Left = 668
+  Height = 190
+  Top = 400
+  Width = 380
+  BorderStyle = bsSizeToolWin
+  Caption = 'SizeComponentsDialog'
+  ClientHeight = 190
+  ClientWidth = 380
+  OnClose = FormClose
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object PosLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Control = Owner
+    Left = 190
+    Height = 1
+    Top = 0
+    Width = 1
+    ParentColor = False
+  end
+  object WidthRadioGroup: TRadioGroup
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = PosLabel
+    AnchorSideBottom.Control = HeightRadioGroup
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
+    Height = 141
+    Top = 6
+    Width = 181
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoFill = True
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 3
+    Caption = 'WidthRadioGroup'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 122
+    ClientWidth = 173
+    TabOrder = 0
+    object WidthEdit: TEdit
+      AnchorSideBottom.Control = WidthRadioGroup
+      AnchorSideBottom.Side = asrBottom
+      Left = 82
+      Height = 23
+      Top = 93
+      Width = 80
+      Anchors = [akRight, akBottom]
+      BorderSpacing.Around = 6
+      OnChange = WidthEditChange
+      TabOrder = 0
+      Text = 'WidthEdit'
+    end
+  end
+  object HeightRadioGroup: TRadioGroup
+    AnchorSideLeft.Control = PosLabel
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 193
+    Height = 141
+    Top = 6
+    Width = 181
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoFill = True
+    BorderSpacing.Left = 3
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    Caption = 'HeightRadioGroup'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 122
+    ClientWidth = 173
+    TabOrder = 1
+    object HeightEdit: TEdit
+      AnchorSideBottom.Control = HeightRadioGroup
+      AnchorSideBottom.Side = asrBottom
+      Left = 83
+      Height = 23
+      Top = 93
+      Width = 80
+      Anchors = [akRight, akBottom]
+      BorderSpacing.Around = 6
+      OnChange = HeightEditChange
+      TabOrder = 0
+      Text = 'HeightEdit'
+    end
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 31
+    Top = 153
+    Width = 368
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 2
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
+  end
+end

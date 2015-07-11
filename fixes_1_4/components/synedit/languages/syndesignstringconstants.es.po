@@ -1,0 +1,39 @@
+msgid ""
+msgstr ""
+"Last-Translator: Lucas Martín <codedeep@hotmail.com>\n"
+"PO-Revision-Date: \n"
+"Project-Id-Version: syndesign\n"
+"Language-Team: Español\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: \n"
+"MIME-Version: 1.0\n"
+
+#: syndesignstringconstants.syndsbookmarks
+msgid "Bookmarks"
+msgstr "Marcadores"
+
+#: syndesignstringconstants.syndschangemarker
+msgid "Change Marker"
+msgstr "Marcador de cambio"
+
+#: syndesignstringconstants.syndscodefolding
+msgid "Code Folding"
+msgstr "Código plegable"
+
+#: syndesignstringconstants.syndslinenumbers
+msgid "Line Numbers"
+msgstr "Numeros de Linea"
+
+#: syndesignstringconstants.syndslineoverview
+msgid "Line Overview"
+msgstr "Resumen de la línea"
+
+#: syndesignstringconstants.syndsresetmouseactions
+msgid "Reset mouse actions"
+msgstr "Restablecer las acciones del ratón"
+
+#: syndesignstringconstants.syndsseparator
+msgid "Separator"
+msgstr "Separador"
+

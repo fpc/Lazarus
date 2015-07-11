@@ -1,0 +1,211 @@
+object SQLConnectionForm: TSQLConnectionForm
+  Left = 394
+  Height = 196
+  Top = 397
+  Width = 470
+  ActiveControl = EHostName
+  AutoSize = True
+  BorderIcons = [biSystemMenu]
+  Caption = 'Connect to a database'
+  ClientHeight = 196
+  ClientWidth = 470
+  Constraints.MinWidth = 470
+  OnCreate = FormCreate
+  LCLVersion = '1.5'
+  object LEHostName: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = EHostName
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 23
+    Top = 5
+    Width = 122
+    Alignment = taRightJustify
+    AutoSize = False
+    BorderSpacing.Left = 6
+    Caption = '&Host'
+    FocusControl = EHostName
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object LEDatabaseName: TLabel
+    AnchorSideLeft.Control = LEHostName
+    AnchorSideTop.Control = EDatabaseName
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = LEHostName
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 23
+    Top = 32
+    Width = 122
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = False
+    Caption = '&Database'
+    FocusControl = EDatabaseName
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object LEUserName: TLabel
+    AnchorSideLeft.Control = LEHostName
+    AnchorSideTop.Control = EUserName
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = LEHostName
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 23
+    Top = 59
+    Width = 122
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = False
+    Caption = '&Username'
+    FocusControl = EUserName
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object LEPassword: TLabel
+    AnchorSideLeft.Control = LEHostName
+    AnchorSideTop.Control = EPassword
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = LEHostName
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 23
+    Top = 86
+    Width = 122
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = False
+    Caption = '&Password'
+    FocusControl = EPassword
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object LCharset: TLabel
+    AnchorSideLeft.Control = LEHostName
+    AnchorSideTop.Control = ECharset
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = LEHostName
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 21
+    Top = 114
+    Width = 122
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = False
+    Caption = '&Charset'
+    FocusControl = ECharset
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object EHostName: TEdit
+    AnchorSideLeft.Control = LEHostName
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 134
+    Height = 21
+    Top = 6
+    Width = 330
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    TabOrder = 0
+  end
+  object EDatabaseName: TEdit
+    AnchorSideLeft.Control = LEHostName
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = EHostName
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 134
+    Height = 21
+    Top = 33
+    Width = 330
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    TabOrder = 1
+  end
+  object EUserName: TEdit
+    AnchorSideLeft.Control = LEHostName
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = EDatabaseName
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 134
+    Height = 21
+    Top = 60
+    Width = 330
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    TabOrder = 2
+  end
+  object EPassword: TEdit
+    AnchorSideLeft.Control = LEHostName
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = EUserName
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 134
+    Height = 21
+    Top = 87
+    Width = 330
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    EchoMode = emPassword
+    PasswordChar = '*'
+    TabOrder = 3
+  end
+  object BPButtons: TButtonPanel
+    AnchorSideTop.Control = ECharset
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
+    Height = 49
+    Top = 141
+    Width = 458
+    Anchors = [akTop, akLeft, akRight]
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 4
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object ECharset: TEdit
+    AnchorSideLeft.Control = LEHostName
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = EPassword
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = BPButtons
+    Left = 134
+    Height = 21
+    Top = 114
+    Width = 330
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    TabOrder = 5
+  end
+end

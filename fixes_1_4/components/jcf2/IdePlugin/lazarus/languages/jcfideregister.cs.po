@@ -1,0 +1,43 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: jcfideregister.format_about_menu
+msgid "&About"
+msgstr "O Jedi Code Format"
+
+#: jcfideregister.format_category_idecmd
+msgctxt "jcfideregister.format_category_idecmd"
+msgid "JEDI Code Format"
+msgstr "JEDI Code Format"
+
+#: jcfideregister.format_current_idecmd
+msgid "Format code in current editor window"
+msgstr "Formátovat kód v aktuálním okně editoru"
+
+#: jcfideregister.format_current_menu
+msgctxt "jcfideregister.format_current_menu"
+msgid "&Current Editor Window"
+msgstr "&Aktuální okno editoru"
+
+#: jcfideregister.format_menu
+msgid "JEDI Code &Format"
+msgstr "JEDI Code &Format"
+
+#: jcfideregister.format_open_menu
+msgctxt "jcfideregister.format_open_menu"
+msgid "All &Open Windows"
+msgstr "Všechna &Otevřená okna"
+
+#: jcfideregister.format_project_menu
+msgctxt "jcfideregister.format_project_menu"
+msgid "&All Files in Project"
+msgstr "&Všechny soubory v Projektu"
+
+#: jcfideregister.format_reg_settings_menu
+msgid "&Registry Settings"
+msgstr "Nastavení - &Registry"
+
+#: jcfideregister.format_settings_menu
+msgid "&Format Settings"
+msgstr "Nastavení &Formátu"
+

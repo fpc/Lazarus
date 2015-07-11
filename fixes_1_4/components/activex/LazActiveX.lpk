@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <PathDelim Value="\"/>
+    <Name Value="LazActiveX"/>
+    <Author Value="Ludo Brands"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CompilerMessages>
+          <UseMsgFile Value="True"/>
+        </CompilerMessages>
+        <CustomOptions Value="-Ur"/>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="Type Library importer and visual ActiveX container"/>
+    <License Value="modified LGPL-2"/>
+    <Version Minor="1"/>
+    <Files Count="5">
+      <Item1>
+        <Filename Value="activexcontainer.pas"/>
+        <UnitName Value="activexcontainer"/>
+      </Item1>
+      <Item2>
+        <Filename Value="lazactivexreg.pas"/>
+        <HasRegisterProc Value="True"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="lazactivexreg"/>
+      </Item2>
+      <Item3>
+        <Filename Value="importtypelib.lfm"/>
+        <Type Value="LFM"/>
+      </Item3>
+      <Item4>
+        <Filename Value="importtypelib.pas"/>
+        <UnitName Value="ImportTypelib"/>
+      </Item4>
+      <Item5>
+        <Filename Value="activexstrconsts.pas"/>
+        <UnitName Value="activexstrconsts"/>
+      </Item5>
+    </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="1">
+      <Item1>
+        <PackageName Value="IDEIntf"/>
+      </Item1>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

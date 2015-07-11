@@ -1,0 +1,177 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2012-08-06 23:39+0300\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Language: lt\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 1.5\n"
+
+#: gdbmistringconstants.dlggroupdebugger
+msgid "Debugger"
+msgstr ""
+
+#: gdbmistringconstants.gdbmibreakpointerroronruncommand
+msgctxt "gdbmistringconstants.gdbmibreakpointerroronruncommand"
+msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
+msgstr "Derintuvei vykdant programą ar darant joje žingsnį įvyko klaida:%0:s%0:s%1:s%0:s%0:sPaspaudus „Tinka“ bus pašalinti stabdos taškai ir tęsiamas derinimas (pristabdytas), tai leis pašalinti problemą arba pasirinkti alternatyvią vykdymo komandą.0:sPaspaudus „Stabdyti“ derinimo seansas bus baigtas."
+
+#: gdbmistringconstants.gdbmicommandstartmainbreakerror
+msgctxt "gdbmistringconstants.gdbmicommandstartmainbreakerror"
+msgid "The debugger could not set a breakpoint on the application's entry point.%0:sThis may be caused by missing debug info."
+msgstr "Derintuvei nepavyko stabdos tašką padėti programos įėjimo taške.%0:sTikėtina to priežastis – nėra derinimo informacijos."
+
+#: gdbmistringconstants.gdbmicommandstartmainrunerror
+msgctxt "gdbmistringconstants.gdbmicommandstartmainrunerror"
+msgid "The debugger could not run the application.%0:sThis may be caused by missing debug info."
+msgstr "Derintuvei nepavyko paleisti programos.%0:sTikėtina to priežastis – nėra derinimo informacijos."
+
+#: gdbmistringconstants.gdbmicommandstartmainrunnopiderror
+msgctxt "gdbmistringconstants.gdbmicommandstartmainrunnopiderror"
+msgid "The debugger failed to get the application's PID.%0:sThis may be caused by missing debug info."
+msgstr "Derintuvei nepavyko gauti programos PID.%0:sTikėtina to priežastis – nėra derinimo informacijos."
+
+#: gdbmistringconstants.gdbmicommandstartmainruntostoperror
+msgctxt "gdbmistringconstants.gdbmicommandstartmainruntostoperror"
+msgid "The debugger was unable to initialize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
+msgstr "Derintuvei nepavyko savęs inicializuoti.%0:sPrograma startavo (ir baigė darbą) dar prieš derintuvei dedant stabdos taškus.%0:sTikėtina to priežastis – nėra derinimo informacijos."
+
+#: gdbmistringconstants.gdbmierroronruncommand
+msgctxt "gdbmistringconstants.gdbmierroronruncommand"
+msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
+msgstr "Derintuvei vykdant programą ar darant joje žingsnį įvyko klaida:%0:s%0:s%1:s%0:s%0:sPaspaudus „Tinka“ bus tęsiamas derinimas (pristabdytas), tai leis pašalinti problemą arba pasirinkti alternatyvią vykdymo komandą.0:sPaspaudus „Stabdyti“ derinimo seansas bus baigtas."
+
+#: gdbmistringconstants.gdbmierroronruncommandwithwarning
+msgctxt "gdbmistringconstants.gdbmierroronruncommandwithwarning"
+msgid "%0:s%0:sIn addition to the error the following warning was encountered:%0:s%0:s%1:s"
+msgstr "%0:s%0:sBe klaidos dar buvo duotas šis perspėjimas:%0:s%0:s%1:s"
+
+#: gdbmistringconstants.gdbmierrorstategenericinfo
+msgctxt "gdbmistringconstants.gdbmierrorstategenericinfo"
+msgid "Error in: %1:s %0:s"
+msgstr "Klaida yra čia: %1:s %0:s"
+
+#: gdbmistringconstants.gdbmierrorstateinfocommanderror
+msgctxt "gdbmistringconstants.gdbmierrorstateinfocommanderror"
+msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sreturned the error:%0:s\"%2:s\"%0:s"
+msgstr "%0:sGDB komanda:%0:s„%1:s“%0:sgrąžino klaidą:%0:s„%2:s“%0:s"
+
+#: gdbmistringconstants.gdbmierrorstateinfocommandnoresult
+msgctxt "gdbmistringconstants.gdbmierrorstateinfocommandnoresult"
+msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sdid not return any result.%0:s"
+msgstr "%0:sGDB komanda:%0:s„%1:s“%0:srezultato negrąžino.%0:s"
+
+#: gdbmistringconstants.gdbmierrorstateinfofailedread
+msgctxt "gdbmistringconstants.gdbmierrorstateinfofailedread"
+msgid "%0:sCould not read output from GDB.%0:s"
+msgstr "%0:sNeina skaityti iš GDB išvesties.%0:s"
+
+#: gdbmistringconstants.gdbmierrorstateinfofailedwrite
+msgctxt "gdbmistringconstants.gdbmierrorstateinfofailedwrite"
+msgid "%0:sCould not send a command to GDB.%0:s"
+msgstr "%0:sNeina siųsti komandos GDB programai.%0:s"
+
+#: gdbmistringconstants.gdbmierrorstateinfogdbgone
+msgctxt "gdbmistringconstants.gdbmierrorstateinfogdbgone"
+msgid "%0:sThe GDB process is no longer running.%0:s"
+msgstr "%0:sGDB nebėra vykdomas.%0:s"
+
+#: gdbmistringconstants.gdbmieventlogdebugoutput
+msgctxt "gdbmistringconstants.gdbmieventlogdebugoutput"
+msgid "Debug Output: %s"
+msgstr ""
+
+#: gdbmistringconstants.gdbmieventloggdbinternalerror
+msgctxt "gdbmistringconstants.gdbmieventloggdbinternalerror"
+msgid "GDB has encountered an internal error: %s"
+msgstr ""
+
+#: gdbmistringconstants.gdbmieventlognosymbols
+msgctxt "gdbmistringconstants.gdbmieventlognosymbols"
+msgid "File '%s' has no debug symbols"
+msgstr ""
+
+#: gdbmistringconstants.gdbmieventlogprocessexitcode
+msgctxt "gdbmistringconstants.gdbmieventlogprocessexitcode"
+msgid "Process Exit: %s"
+msgstr ""
+
+#: gdbmistringconstants.gdbmieventlogprocessexitnormally
+msgctxt "gdbmistringconstants.gdbmieventlogprocessexitnormally"
+msgid "Process Exit: normally"
+msgstr ""
+
+#: gdbmistringconstants.gdbmieventlogprocessstart
+msgctxt "gdbmistringconstants.gdbmieventlogprocessstart"
+msgid "Process Start: %s"
+msgstr ""
+
+#: gdbmistringconstants.gdbmifailedtolaunchexternaldbg
+msgid "Failed to create process for GDB"
+msgstr ""
+
+#: gdbmistringconstants.gdbmifailedtoterminategdb
+msgctxt "gdbmistringconstants.gdbmifailedtoterminategdb"
+msgid "The IDE was unable to terminate the GDB process. This process may be left running outside the control of IDE.%0:sTo ensure the process is not affecting your System, you should locate and terminate it yourself."
+msgstr ""
+
+#: gdbmistringconstants.gdbmifailedtoterminategdbtitle
+msgctxt "gdbmistringconstants.gdbmifailedtoterminategdbtitle"
+msgid "GDB did not terminate"
+msgstr ""
+
+#: gdbmistringconstants.gdbmifatalerroroccurred
+msgctxt "gdbmistringconstants.gdbmifatalerroroccurred"
+msgid "Unrecoverable error: \"%s\""
+msgstr "Neatstatoma klaida: „%s“"
+
+#: gdbmistringconstants.gdbmigdbinternalerror
+msgctxt "gdbmistringconstants.gdbmigdbinternalerror"
+msgid "GDB has encountered an internal error: %0:sPress \"Ok\" to continue debugging. This may NOT be safe.%0:sPress \"Stop\" to end the debug session."
+msgstr ""
+
+#: gdbmistringconstants.gdbmigdbinternalerrorinfo
+msgctxt "gdbmistringconstants.gdbmigdbinternalerrorinfo"
+msgid "While executing the command: %0:s\"%2:s\"%0:sgdb reported:%0:s\"%1:s\"%0:s"
+msgstr ""
+
+#: gdbmistringconstants.gdbmipressignoretocontinuedebuggingthismaynotbesafepres
+msgctxt "gdbmistringconstants.gdbmipressignoretocontinuedebuggingthismaynotbesafepres"
+msgid "Press \"Ignore\" to continue debugging. This may NOT be safe. Press \"Abort\" to stop the debugger.%0:sException: %1:s with message \"%2:s\"%0:sContext: %4:s. State: %5:s %0:s%0:s%3:s"
+msgstr "Paspaudus „Ignoruoti“ derinimas bus tęsiamas. Tai gali būti NESAUGU. Paspaudus „Nutraukti“ derinimas bus baigtas.%0:sIšimtinė situacija: %1:s, kurios pranešimas „%2:s“%0:sKontekstas %4:s. Būsena: %5:s %0:s%0:s%3:s"
+
+#: gdbmistringconstants.gdbmithedebuggerexperiencedanunknowncondition
+msgctxt "gdbmistringconstants.gdbmithedebuggerexperiencedanunknowncondition"
+msgid "The debugger experienced an unknown condition"
+msgstr "Nežinoma situacija derintuvės darbe"
+
+#: gdbmistringconstants.gdbmitimeoutforcmd
+msgctxt "gdbmistringconstants.gdbmitimeoutforcmd"
+msgid "Time-out for command: \"%s\""
+msgstr "Galiojimo laikas komandai: „%s“"
+
+#: gdbmistringconstants.gdbmiwarningunknowbreakpoint
+msgctxt "gdbmistringconstants.gdbmiwarningunknowbreakpoint"
+msgid "The debugger reached an unexpected %1:s%0:s%0:sPress \"Ok\" to continue debugging (paused).%0:sPress \"Stop\" to end the debug session."
+msgstr "Derintuvės darbe įvyko netikėtas %1:s%0:s%0:sPaspaudus „Tinka“ derinimas bus tęsiamas (pristabdytas).%0:sPaspaudus „Stabdyti“ derinimo seansas bus baigtas."
+
+#: gdbmistringconstants.lisnewthegnudebuggerthroughsshallowstoremotedebugviaassh
+msgid "The GNU debugger through SSH allows to remote debug via a SSH connection. See docs/RemoteDebugging.txt for details. The path must contain the SSH client. Use SSH_Startup_Options for the hostname and optional username. Use Remote_GDB_Exe for the filename of GDB on the remote computer."
+msgstr ""
+
+#: gdbmistringconstants.lisresponsecontinue
+msgid "Response: %sContinue ?"
+msgstr ""
+
+#: gdbmistringconstants.lisunexpectedresultthedebuggerwillterminate
+msgid "Unexpected result:%sThe debugger will terminate"
+msgstr ""
+
+#: gdbmistringconstants.synffailedtoloadapplicationexecutable
+msgid "Failed to load application executable"
+msgstr ""
+

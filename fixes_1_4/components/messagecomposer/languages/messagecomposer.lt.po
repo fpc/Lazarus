@@ -1,0 +1,122 @@
+# Valdas Jankūnas <zmuogs@gmail.com>, 2010.
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Last-Translator: Valdas Jankūnas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2010-05-16 16:20+0300\n"
+"Project-Id-Version: messagecomposer\n"
+"Language-Team: Lietuvių <kde-i18n-lt@kde.org>\n"
+"X-Generator: Lokalize 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: messagecomposer.rscancel
+msgid "Cancel"
+msgstr "Atsisakyti"
+
+#: messagecomposer.rsok
+#| msgid "Ok"
+msgid "OK"
+msgstr "Tinka"
+
+#: messagecomposer.rstest
+msgid "Test"
+msgstr "Testas"
+
+#: messagecomposer.sadd
+msgid "Add"
+msgstr "Pridėti"
+
+#: messagecomposer.sbuttonsarrayofconst
+msgid "Buttons (array of const)"
+msgstr "Mygtukai (konstantų masyvas)"
+
+#: messagecomposer.sbuttonstmsgdlgbuttons
+msgid "Buttons (TMsgDlgButtons)"
+msgstr "Mygtukai (TMsgDlgButtons)"
+
+#: messagecomposer.scaseresult
+msgid "\"Case\" result"
+msgstr "„Case“ rezultatas"
+
+#: messagecomposer.sdefault
+msgid "Default"
+msgstr "Numatytasis"
+
+#: messagecomposer.sdelete
+msgid "Delete"
+msgstr "Šalinti"
+
+#: messagecomposer.sdlgcaption
+msgid "Dialog caption"
+msgstr "Dialogo antraštė"
+
+#: messagecomposer.sdlgtype
+msgid "Dialog type"
+msgstr "Dialogo tipas"
+
+#: messagecomposer.shelpcontext
+msgid "Help context"
+msgstr "Žinyno kontekstas"
+
+#: messagecomposer.shelpfilename
+msgid "Help filename"
+msgstr "Žinyno failo pavadinimas"
+
+#: messagecomposer.shelpkeyword
+msgid "Help keyword"
+msgstr "Žinyno raktinis žodis"
+
+#: messagecomposer.sifresult
+msgid "\"If\" result"
+msgstr "„If“ rezultatas"
+
+#: messagecomposer.skindofmessage
+#| msgid "KIND OF MESSAGE"
+msgid "Kind of message"
+msgstr "Pranešimo tipas"
+
+#: messagecomposer.smaskinput
+#| msgid "Mask Input"
+msgid "Mask input"
+msgstr "Įvestis pagal kaukę"
+
+#: messagecomposer.smessagecomposercaption
+#| msgid "Message Composer ..."
+msgctxt "messagecomposer.smessagecomposercaption"
+msgid "Message Composer"
+msgstr "Pranešimų rengyklė"
+
+#: messagecomposer.smessagecomposermenucaption
+#| msgid "Message Composer ..."
+msgctxt "messagecomposer.smessagecomposermenucaption"
+msgid "Message Composer ..."
+msgstr "Pranešimų rengyklė ..."
+
+#: messagecomposer.smodalresult
+msgid "Modal result"
+msgstr "Modalinis rezultatas"
+
+#: messagecomposer.smsgcaption
+msgid "The message to be shown"
+msgstr "Rodomas pranešimas"
+
+#: messagecomposer.snotimplementedyet
+#| msgid "Not Implemented Yet"
+msgid "Not implemented yet"
+msgstr "Dar neįgyvendinta"
+
+#: messagecomposer.spromptcaption
+msgid "Text asking the user for input"
+msgstr "Tekstas, kviečiantis įvesti"
+
+#: messagecomposer.ssourcewrapper
+#| msgid "SOURCE WRAPPER"
+msgid "Source wrapper"
+msgstr "Pirminio kodo formuotojas"
+
+#: messagecomposer.svaluevar
+msgid "Value (var)"
+msgstr "Vertė (kintamasis)"
+

@@ -1,0 +1,8558 @@
+<?xml version="1.0" encoding="ISO8859-1"?>
+<fpdoc-descriptions>
+<package name="gtk">
+
+<!--
+  ====================================================================
+    GTKProc
+  ====================================================================
+-->
+
+<module name="GTKProc">
+<short></short>
+<descr>
+</descr>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="SysUtils">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Classes">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="FPCAdds">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="InterfaceBase">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="glib">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gdk">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gtk">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gdkpixbuf">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="GtkFontCache">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LMessages">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLProc">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLStrConsts">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLIntf">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLType">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="DynHashArray">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="GraphType">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="GraphMath">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Graphics">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="GTKWinApiWindow">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LResources">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Controls">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Forms">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Buttons">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Menus">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="StdCtrls">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="ComCtrls">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="CommCtrl">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="ExtCtrls">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Dialogs">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="ExtDlgs">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="FileUtil">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="ImgList">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="GTKGlobals">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gtkDef">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTK_TYPE_WIDGET">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTK_TYPE_WIDGET.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTK_TYPE_CONTAINER">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTK_TYPE_CONTAINER.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTK_TYPE_BIN">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTK_TYPE_BIN.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTK_TYPE_HBOX">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTK_TYPE_HBOX.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTK_TYPE_SCROLLED_WINDOW">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTK_TYPE_SCROLLED_WINDOW.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTK_TYPE_COMBO">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTK_TYPE_COMBO.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTK_TYPE_WINDOW">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTK_TYPE_WINDOW.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTK_TYPE_MENU">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTK_TYPE_MENU.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTK_TYPE_MENU_ITEM">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTK_TYPE_MENU_ITEM.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTK_TYPE_MENU_BAR">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTK_TYPE_MENU_BAR.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTK_TYPE_RADIO_MENU_ITEM">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTK_TYPE_RADIO_MENU_ITEM.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTK_TYPE_CHECK_MENU_ITEM">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTK_TYPE_CHECK_MENU_ITEM.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTK_TYPE_TEXT">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTK_TYPE_TEXT.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTK_TYPE_ENTRY">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTK_TYPE_ENTRY.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTK_TYPE_RANGE">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTK_TYPE_RANGE.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTK_TYPE_SCROLLBAR">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTK_TYPE_SCROLLBAR.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTK_TYPE_HSCROLLBAR">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTK_TYPE_HSCROLLBAR.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTK_TYPE_VSCROLLBAR">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTK_TYPE_VSCROLLBAR.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTK_TYPE_LIST_ITEM">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTK_TYPE_LIST_ITEM.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="laz_gdk_gc_set_dashes">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="laz_gdk_gc_set_dashes.gc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="laz_gdk_gc_set_dashes.dash_offset">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="laz_gdk_gc_set_dashes.dashlist">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="laz_gdk_gc_set_dashes.n">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="EventTrace">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="EventTrace.TheMessage">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="EventTrace.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkNoteBookCloseBtnClicked">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkNoteBookCloseBtnClicked.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkNoteBookCloseBtnClicked.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkNoteBookCloseBtnClicked.Data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkRealizeCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkRealizeCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkRealizeCB.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkRealizeCB.Data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkRealizeAfterCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkRealizeAfterCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkRealizeAfterCB.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkRealizeAfterCB.Data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkshowCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkshowCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkshowCB.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkshowCB.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkHideCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkHideCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkHideCB.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkHideCB.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkactivateCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkactivateCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkactivateCB.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkactivateCB.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkchangedCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkchangedCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkchangedCB.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkchangedCB.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkchanged_editbox">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkchanged_editbox.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkchanged_editbox.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkchanged_editbox.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkdaychanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkdaychanged.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkdaychanged.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkdaychanged.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtktoggledCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtktoggledCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtktoggledCB.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtktoggledCB.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkDrawAfter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkDrawAfter.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkDrawAfter.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkDrawAfter.area">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkDrawAfter.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkExposeEventAfter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkExposeEventAfter.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkExposeEventAfter.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkExposeEventAfter.Event">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkExposeEventAfter.Data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkfrmactivateAfter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkfrmactivateAfter.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkfrmactivateAfter.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkfrmactivateAfter.Event">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkfrmactivateAfter.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkfrmdeactivateAfter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkfrmdeactivateAfter.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkfrmdeactivateAfter.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkfrmdeactivateAfter.Event">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkfrmdeactivateAfter.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTKMap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTKMap.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKMap.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKMap.Data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTKKeyUpDown">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTKKeyUpDown.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKKeyUpDown.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKKeyUpDown.Event">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKKeyUpDown.Data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTKKeyUpDownAfter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTKKeyUpDownAfter.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKKeyUpDownAfter.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKKeyUpDownAfter.Event">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKKeyUpDownAfter.Data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTKFocusCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTKFocusCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKFocusCB.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKFocusCB.event">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKFocusCB.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTKFocusCBAfter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTKFocusCBAfter.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKFocusCBAfter.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKFocusCBAfter.event">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKFocusCBAfter.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTKKillFocusCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTKKillFocusCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKKillFocusCB.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKKillFocusCB.event">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKKillFocusCB.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTKKillFocusCBAfter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTKKillFocusCBAfter.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKKillFocusCBAfter.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKKillFocusCBAfter.event">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKKillFocusCBAfter.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkdestroyCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkdestroyCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkdestroyCB.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkdestroyCB.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkdeleteCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkdeleteCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkdeleteCB.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkdeleteCB.event">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkdeleteCB.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkresizeCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkresizeCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkresizeCB.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkresizeCB.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkMonthChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkMonthChanged.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkMonthChanged.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkMonthChanged.data">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="DeliverMouseMoveMessage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DeliverMouseMoveMessage.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DeliverMouseMoveMessage.Event">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DeliverMouseMoveMessage.AWinControl">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ControlGetsMouseMoveBefore">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ControlGetsMouseMoveBefore.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ControlGetsMouseMoveBefore.AControl">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkMotionNotify">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkMotionNotify.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkMotionNotify.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkMotionNotify.Event">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkMotionNotify.Data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTKMotionNotifyAfter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTKMotionNotifyAfter.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKMotionNotifyAfter.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKMotionNotifyAfter.event">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKMotionNotifyAfter.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ControlGetsMouseDownBefore">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ControlGetsMouseDownBefore.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ControlGetsMouseDownBefore.AControl">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="DeliverMouseDownMessage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DeliverMouseDownMessage.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DeliverMouseDownMessage.event">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DeliverMouseDownMessage.AWinControl">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkMouseBtnPress">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkMouseBtnPress.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkMouseBtnPress.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkMouseBtnPress.event">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkMouseBtnPress.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkMouseBtnPressAfter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkMouseBtnPressAfter.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkMouseBtnPressAfter.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkMouseBtnPressAfter.event">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkMouseBtnPressAfter.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ControlGetsMouseUpBefore">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ControlGetsMouseUpBefore.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ControlGetsMouseUpBefore.AControl">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="DeliverMouseUpMessage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DeliverMouseUpMessage.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DeliverMouseUpMessage.event">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DeliverMouseUpMessage.AWinControl">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkMouseBtnRelease">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkMouseBtnRelease.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkMouseBtnRelease.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkMouseBtnRelease.event">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkMouseBtnRelease.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkMouseBtnReleaseAfter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkMouseBtnReleaseAfter.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkMouseBtnReleaseAfter.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkMouseBtnReleaseAfter.event">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkMouseBtnReleaseAfter.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkclickedCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkclickedCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkclickedCB.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkclickedCB.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkOpenDialogRowSelectCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkOpenDialogRowSelectCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkOpenDialogRowSelectCB.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkOpenDialogRowSelectCB.row">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkOpenDialogRowSelectCB.column">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkOpenDialogRowSelectCB.event">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkOpenDialogRowSelectCB.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkDialogOKclickedCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkDialogOKclickedCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkDialogOKclickedCB.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkDialogOKclickedCB.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkDialogCancelclickedCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkDialogCancelclickedCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkDialogCancelclickedCB.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkDialogCancelclickedCB.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkDialogHelpclickedCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkDialogHelpclickedCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkDialogHelpclickedCB.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkDialogHelpclickedCB.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkDialogApplyclickedCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkDialogApplyclickedCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkDialogApplyclickedCB.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkDialogApplyclickedCB.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkDialogCloseQueryCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkDialogCloseQueryCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkDialogCloseQueryCB.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkDialogCloseQueryCB.data">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="UpdateDetailView">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UpdateDetailView.OpenDialog">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTKDialogKeyUpDownCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTKDialogKeyUpDownCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKDialogKeyUpDownCB.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKDialogKeyUpDownCB.Event">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKDialogKeyUpDownCB.Data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTKDialogRealizeCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTKDialogRealizeCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKDialogRealizeCB.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKDialogRealizeCB.Data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTKDialogFocusInCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTKDialogFocusInCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKDialogFocusInCB.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKDialogFocusInCB.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTKDialogSelectRowCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTKDialogSelectRowCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKDialogSelectRowCB.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKDialogSelectRowCB.Row">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKDialogSelectRowCB.Column">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKDialogSelectRowCB.bevent">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKDialogSelectRowCB.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTKDialogMenuActivateCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTKDialogMenuActivateCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKDialogMenuActivateCB.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKDialogMenuActivateCB.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkDialogDestroyCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkDialogDestroyCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkDialogDestroyCB.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkDialogDestroyCB.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkPressedCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkPressedCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkPressedCB.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkPressedCB.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkEnterCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkEnterCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkEnterCB.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkEnterCB.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkLeaveCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkLeaveCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLeaveCB.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLeaveCB.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkMoveCursorCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkMoveCursorCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkMoveCursorCB.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkMoveCursorCB.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtksize_allocateCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtksize_allocateCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtksize_allocateCB.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtksize_allocateCB.size">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtksize_allocateCB.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtksize_allocate_client">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtksize_allocate_client.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtksize_allocate_client.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtksize_allocate_client.size">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtksize_allocate_client.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkswitchpage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkswitchpage.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkswitchpage.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkswitchpage.page">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkswitchpage.pagenum">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkswitchpage.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkconfigureevent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkconfigureevent.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkconfigureevent.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkconfigureevent.event">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkconfigureevent.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkreleasedCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkreleasedCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkreleasedCB.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkreleasedCB.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkInsertText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkInsertText.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkInsertText.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkInsertText.char">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkInsertText.NewTextLength">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkInsertText.Position">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkInsertText.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkDeleteText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkDeleteText.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkDeleteText.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkDeleteText.Startpos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkDeleteText.EndPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkDeleteText.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkSetEditable">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkSetEditable.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkSetEditable.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkSetEditable.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkMoveWord">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkMoveWord.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkMoveWord.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkMoveWord.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkMovePage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkMovePage.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkMovePage.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkMovePage.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkMoveToRow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkMoveToRow.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkMoveToRow.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkMoveToRow.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkMoveToColumn">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkMoveToColumn.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkMoveToColumn.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkMoveToColumn.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkKillChar">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkKillChar.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkKillChar.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkKillChar.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkKillWord">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkKillWord.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkKillWord.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkKillWord.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkKillLine">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkKillLine.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkKillLine.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkKillLine.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkCutToClip">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkCutToClip.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkCutToClip.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkCutToClip.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkCopyToClip">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkCopyToClip.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkCopyToClip.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkCopyToClip.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkPasteFromClip">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkPasteFromClip.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkPasteFromClip.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkPasteFromClip.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkValueChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkValueChanged.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkValueChanged.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkValueChanged.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkTimerCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkTimerCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkTimerCB.Data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkFocusInNotifyCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkFocusInNotifyCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkFocusInNotifyCB.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkFocusInNotifyCB.event">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkFocusInNotifyCB.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkFocusOutNotifyCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkFocusOutNotifyCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkFocusOutNotifyCB.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkFocusOutNotifyCB.event">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkFocusOutNotifyCB.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTKHScrollCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTKHScrollCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKHScrollCB.Adjustment">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKHScrollCB.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTKVScrollCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTKVScrollCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKVScrollCB.Adjustment">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKVScrollCB.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTKCheckMenuToggeledCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTKCheckMenuToggeledCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKCheckMenuToggeledCB.AMenuItem">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKCheckMenuToggeledCB.AData">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTKKeySnooper">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GTKKeySnooper.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKKeySnooper.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKKeySnooper.Event">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKKeySnooper.FuncData">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkYearChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkYearChanged.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkYearChanged.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkYearChanged.data">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="ClipboardSelectionReceivedHandler">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ClipboardSelectionReceivedHandler.TargetWidget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ClipboardSelectionReceivedHandler.SelectionData">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ClipboardSelectionReceivedHandler.TimeID">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ClipboardSelectionReceivedHandler.Data">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="ClipboardSelectionRequestHandler">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ClipboardSelectionRequestHandler.TargetWidget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ClipboardSelectionRequestHandler.SelectionData">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ClipboardSelectionRequestHandler.Info">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ClipboardSelectionRequestHandler.TimeID">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ClipboardSelectionRequestHandler.Data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ClipboardSelectionLostOwnershipHandler">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ClipboardSelectionLostOwnershipHandler.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ClipboardSelectionLostOwnershipHandler.TargetWidget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ClipboardSelectionLostOwnershipHandler.EventSelection">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ClipboardSelectionLostOwnershipHandler.Data">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="GTKStyleChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKStyleChanged.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKStyleChanged.previous_style">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKStyleChanged.Data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkListBoxSelectionChangedCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkListBoxSelectionChangedCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkListBoxSelectionChangedCB.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkListBoxSelectionChangedCB.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="edit_drag_data_received">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="edit_drag_data_received.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="edit_drag_data_received.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="edit_drag_data_received.Context">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="edit_drag_data_received.X">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="edit_drag_data_received.Y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="edit_drag_data_received.seldata">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="edit_drag_data_received.info">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="edit_drag_data_received.time">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="edit_drag_data_received.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="edit_source_drag_data_get">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="edit_source_drag_data_get.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="edit_source_drag_data_get.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="edit_source_drag_data_get.Context">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="edit_source_drag_data_get.Selection_data">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="edit_source_drag_data_get.info">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="edit_source_drag_data_get.time">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="edit_source_drag_data_get.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Edit_source_drag_data_delete">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Edit_source_drag_data_delete.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Edit_source_drag_data_delete.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Edit_source_drag_data_delete.context">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Edit_source_drag_data_delete.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkLVHScroll">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkLVHScroll.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVHScroll.AList">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVHScroll.AData">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkLVVScroll">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkLVVScroll.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVVScroll.AList">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVVScroll.AData">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkLVAbortColumnResize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkLVAbortColumnResize.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVAbortColumnResize.AList">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVAbortColumnResize.AData">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkLVResizeColumn">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkLVResizeColumn.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVResizeColumn.AList">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVResizeColumn.AColumn">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVResizeColumn.AWidth">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVResizeColumn.AData">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkLVClickColumn">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkLVClickColumn.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVClickColumn.AList">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVClickColumn.AColumn">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVClickColumn.AData">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkLVRowMove">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkLVRowMove.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVRowMove.AList">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVRowMove.AnOldIdx">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVRowMove.ANewIdx">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVRowMove.AData">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkLVSelectRow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkLVSelectRow.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVSelectRow.AList">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVSelectRow.ARow">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVSelectRow.AColumn">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVSelectRow.AEvent">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVSelectRow.AData">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkLVUnSelectRow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkLVUnSelectRow.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVUnSelectRow.AList">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVUnSelectRow.ARow">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVUnSelectRow.AColumn">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVUnSelectRow.AEvent">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVUnSelectRow.AData">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkLVToggleFocusRow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkLVToggleFocusRow.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVToggleFocusRow.AList">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVToggleFocusRow.AData">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkLVSelectAll">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkLVSelectAll.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVSelectAll.AList">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVSelectAll.AData">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkLVUnSelectAll">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkLVUnSelectAll.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVUnSelectAll.AList">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVUnSelectAll.AData">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkLVEndSelection">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkLVEndSelection.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVEndSelection.AList">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkLVEndSelection.AData">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkComboBoxShowCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkComboBoxShowCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkComboBoxShowCB.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkComboBoxShowCB.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtkComboBoxHideCB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtkComboBoxHideCB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkComboBoxHideCB.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtkComboBoxHideCB.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="PageIconWidgetExposeAfter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="PageIconWidgetExposeAfter.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PageIconWidgetExposeAfter.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PageIconWidgetExposeAfter.Event">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PageIconWidgetExposeAfter.Data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="PageIconWidgetDrawAfter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="PageIconWidgetDrawAfter.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PageIconWidgetDrawAfter.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PageIconWidgetDrawAfter.area">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PageIconWidgetDrawAfter.data">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="DrawMenuItemIcon">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DrawMenuItemIcon.MenuItem">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DrawMenuItemIcon.Area">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="MenuSizeRequest">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="MenuSizeRequest.widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="MenuSizeRequest.requisition">
+<short></short>
+</element>
+
+<!-- procedure type Visibility: default -->
+<element name="TDestroyConnectedWidgetCB">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDestroyConnectedWidgetCB.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDestroyConnectedWidgetCB.CheckIfDestroying">
+<short></short>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="DestroyConnectedWidgetCB">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="RaiseException">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RaiseException.Msg">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GtkWidgetIsA">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GtkWidgetIsA.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GtkWidgetIsA.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GtkWidgetIsA.AType">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetWidgetClassName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetWidgetClassName.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetWidgetClassName.Widget">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetWidgetDebugReport">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetWidgetDebugReport.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetWidgetDebugReport.Widget">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetWindowDebugReport">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetWindowDebugReport.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetWindowDebugReport.AWindow">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetStyleDebugReport">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetStyleDebugReport.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetStyleDebugReport.AStyle">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetRCStyleDebugReport">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetRCStyleDebugReport.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetRCStyleDebugReport.AStyle">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="WidgetFlagsToString">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="WidgetFlagsToString.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="WidgetFlagsToString.Widget">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GdkColorToStr">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GdkColorToStr.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GdkColorToStr.Color">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetWidgetStyleReport">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetWidgetStyleReport.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetWidgetStyleReport.Widget">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="Set_RC_Name">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Set_RC_Name.Sender">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Set_RC_Name.AWidget">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="DeliverPostMessage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="DeliverPostMessage.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DeliverPostMessage.Target">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DeliverPostMessage.TheMessage">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="DeliverMessage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="DeliverMessage.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DeliverMessage.Target">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DeliverMessage.AMessage">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="CreatePChar">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="CreatePChar.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreatePChar.s">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ComparePChar">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ComparePChar.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ComparePChar.P1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ComparePChar.P2">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="FindChar">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="FindChar.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FindChar.c">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FindChar.p">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FindChar.Max">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="WidgetIsDestroyingHandle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="WidgetIsDestroyingHandle.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="WidgetIsDestroyingHandle.Widget">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="SetWidgetIsDestroyingHandle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetWidgetIsDestroyingHandle.Widget">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ComponentIsDestroyingHandle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ComponentIsDestroyingHandle.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ComponentIsDestroyingHandle.AWinControl">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LockOnChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LockOnChange.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LockOnChange.GtkObject">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LockOnChange.LockOffset">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="MoveGListLinkBehind">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="MoveGListLinkBehind.First">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="MoveGListLinkBehind.Item">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="MoveGListLinkBehind.After">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="MoveGListLink">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="MoveGListLink.First">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="MoveGListLink.FromIndex">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="MoveGListLink.ToIndex">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ObjectToGTKObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ObjectToGTKObject.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ObjectToGTKObject.AnObject">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetMainWidget">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetMainWidget.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetMainWidget.Widget">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="SetMainWidget">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetMainWidget.ParentWidget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetMainWidget.ChildWidget">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetFixedWidget">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetFixedWidget.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetFixedWidget.Widget">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="SetFixedWidget">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetFixedWidget.ParentWidget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetFixedWidget.FixedWidget">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetControlWindow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetControlWindow.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetControlWindow.Widget">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="CreateWidgetInfo">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="CreateWidgetInfo.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateWidgetInfo.AWidget">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="CreateWidgetInfo">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="CreateWidgetInfo.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateWidgetInfo.AWidget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateWidgetInfo.AObject">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateWidgetInfo.AParams">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetWidgetInfo">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetWidgetInfo.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetWidgetInfo.AWidget">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetWidgetInfo">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetWidgetInfo.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetWidgetInfo.AWidget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetWidgetInfo.ACreate">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="FreeWidgetInfo">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FreeWidgetInfo.AWidget">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="DestroyWidget">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DestroyWidget.Widget">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="SetLCLObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetLCLObject.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetLCLObject.AnObject">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetLCLObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetLCLObject.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetLCLObject.Widget">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetNearestLCLObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetNearestLCLObject.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetNearestLCLObject.Widget">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="SetHiddenLCLObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetHiddenLCLObject.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetHiddenLCLObject.AnObject">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetHiddenLCLObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetHiddenLCLObject.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetHiddenLCLObject.Widget">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetWinControlWidget">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetWinControlWidget.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetWinControlWidget.Child">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetWinControlFixedWidget">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetWinControlFixedWidget.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetWinControlFixedWidget.Child">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="FindFixedChildListItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="FindFixedChildListItem.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FindFixedChildListItem.ParentFixed">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FindFixedChildListItem.Child">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="FindFixedLastChildListItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="FindFixedLastChildListItem.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FindFixedLastChildListItem.ParentFixed">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetFixedChildListWidget">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetFixedChildListWidget.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetFixedChildListWidget.Item">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="FixedMoveControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FixedMoveControl.Parent">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FixedMoveControl.Child">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FixedMoveControl.Left">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FixedMoveControl.Top">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="FixedPutControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FixedPutControl.Parent">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FixedPutControl.Child">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FixedPutControl.Left">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FixedPutControl.Top">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="HideCaretOfWidgetGroup">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="HideCaretOfWidgetGroup.ChildWidget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="HideCaretOfWidgetGroup.MainWidget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="HideCaretOfWidgetGroup.CaretWasVisible">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="SetComboBoxText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetComboBoxText.ComboWidget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetComboBoxText.NewText">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetComboBoxText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetComboBoxText.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetComboBoxText.ComboWidget">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetComboBoxItemIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetComboBoxItemIndex.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetComboBoxItemIndex.ComboBox">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="SetComboBoxItemIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetComboBoxItemIndex.ComboBox">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetComboBoxItemIndex.Index">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="SetLabelAlignment">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetLabelAlignment.LabelWidget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetLabelAlignment.NewAlignment">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetLabelAlignment.NewLayout">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GtkPaintMessageToPaintMessage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GtkPaintMessageToPaintMessage.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GtkPaintMessageToPaintMessage.GtkPaintMsg">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GtkPaintMessageToPaintMessage.FreeGtkPaintMsg">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="FinalizePaintMessage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FinalizePaintMessage.Msg">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="FinalizePaintTagMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FinalizePaintTagMsg.Msg">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetDCOffset">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetDCOffset.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetDCOffset.DC">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="CopyDCData">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="CopyDCData.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CopyDCData.DestinationDC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CopyDCData.SourceDC">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="RegionType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="RegionType.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RegionType.RGN">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="SelectGDIRegion">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SelectGDIRegion.DC">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="CreateRectGDKRegion">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="CreateRectGDKRegion.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateRectGDKRegion.ARect">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GDKRegionAsString">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GDKRegionAsString.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GDKRegionAsString.RGN">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="FreeGDIColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FreeGDIColor.GDIColor">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="AllocGDIColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="AllocGDIColor.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="AllocGDIColor.GDIColor">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="BuildColorRefFromGDKColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="BuildColorRefFromGDKColor.GDIColor">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="SetGDIColorRef">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetGDIColorRef.GDIColor">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetGDIColorRef.NewColorRef">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="EnsureGCColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="EnsureGCColor.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="EnsureGCColor.ColorType">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="EnsureGCColor.IsSolidBrush">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="EnsureGCColor.AsBackground">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="CopyGDIColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CopyGDIColor.SourceGDIColor">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CopyGDIColor.DestGDIColor">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="AllocGDKColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="AllocGDKColor.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="AllocGDKColor.AColor">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TGDKColorToTColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGDKColorToTColor.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGDKColorToTColor.value">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TColortoTGDKColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TColortoTGDKColor.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TColortoTGDKColor.value">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="UpdateSysColorMap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UpdateSysColorMap.Widget">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="IsBackgroundColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="IsBackgroundColor.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="IsBackgroundColor.Color">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="RealizeGDKColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RealizeGDKColor.ColorMap">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RealizeGDKColor.Color">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="RealizeGtkStyleColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RealizeGtkStyleColor.Style">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RealizeGtkStyleColor.Color">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetSysGCValues">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetSysGCValues.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetSysGCValues.Color">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetSysGCValues.ThemeWidget">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GDKPixel2GDIRGB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GDKPixel2GDIRGB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GDKPixel2GDIRGB.Pixel">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GDKPixel2GDIRGB.Visual">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GDKPixel2GDIRGB.Colormap">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="CompareGDIColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="CompareGDIColor.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CompareGDIColor.Color1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CompareGDIColor.Color2">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="CompareGDIFill">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="CompareGDIFill.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CompareGDIFill.Fill1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CompareGDIFill.Fill2">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="CompareGDIBrushes">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="CompareGDIBrushes.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CompareGDIBrushes.Brush1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CompareGDIBrushes.Brush2">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="PaletteIndexExists">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="PaletteIndexExists.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaletteIndexExists.Pal">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaletteIndexExists.I">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="PaletteRGBExists">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="PaletteRGBExists.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaletteRGBExists.Pal">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaletteRGBExists.RGB">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="PaletteAddIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="PaletteAddIndex.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaletteAddIndex.Pal">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaletteAddIndex.I">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaletteAddIndex.RGB">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="PaletteDeleteIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="PaletteDeleteIndex.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaletteDeleteIndex.Pal">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaletteDeleteIndex.I">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="PaletteIndexToRGB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="PaletteIndexToRGB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaletteIndexToRGB.Pal">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaletteIndexToRGB.I">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="PaletteRGBToIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="PaletteRGBToIndex.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaletteRGBToIndex.Pal">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaletteRGBToIndex.RGB">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="InitializePalette">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="InitializePalette.Pal">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="InitializePalette.Entries">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="InitializePalette.RGBCount">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetIndexAsKey">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetIndexAsKey.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetIndexAsKey.p">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetRGBAsKey">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetRGBAsKey.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetRGBAsKey.p">
+<short></short>
+</element>
+
+<!-- record type Visibility: default -->
+<element name="TVKeyInfo">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TVKeyInfo.KeyCode">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TVKeyInfo.KeySym">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TVKeyInfo.KeyChar">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="InitKeyboardTables">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="DoneKeyboardTables">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="CharToVKandFlags">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="CharToVKandFlags.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CharToVKandFlags.AChar">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetVKeyInfo">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetVKeyInfo.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetVKeyInfo.AVKey">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="IsToggleKey">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="IsToggleKey.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="IsToggleKey.AVKey">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="gdk_event_key_get_string">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gdk_event_key_get_string.Event">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gdk_event_key_get_string.theString">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="gdk_event_key_set_string">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gdk_event_key_set_string.Event">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gdk_event_key_set_string.NewString">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gdk_event_get_type">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gdk_event_get_type.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gdk_event_get_type.Event">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="RememberKeyEventWasHandledByLCL">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RememberKeyEventWasHandledByLCL.Event">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RememberKeyEventWasHandledByLCL.BeforeEvent">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="KeyEventWasHandledByLCL">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="KeyEventWasHandledByLCL.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="KeyEventWasHandledByLCL.Event">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="KeyEventWasHandledByLCL.BeforeEvent">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="HandleGTKKeyUpDown">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="HandleGTKKeyUpDown.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="HandleGTKKeyUpDown.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="HandleGTKKeyUpDown.Event">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="HandleGTKKeyUpDown.Data">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="HandleGTKKeyUpDown.BeforeEvent">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="StoreCommonDialogSetup">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="StoreCommonDialogSetup.ADialog">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="DestroyCommonDialogAddOns">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DestroyCommonDialogAddOns.ADialog">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetGtkNoteBookDummyPage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetGtkNoteBookDummyPage.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetGtkNoteBookDummyPage.ANoteBookWidget">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="SetGtkNoteBookDummyPage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetGtkNoteBookDummyPage.ANoteBookWidget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetGtkNoteBookDummyPage.DummyWidget">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="UpdateNoteBookClientWidget">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UpdateNoteBookClientWidget.ANoteBook">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetGtkNoteBookPageCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetGtkNoteBookPageCount.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetGtkNoteBookPageCount.ANoteBookWidget">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="RemoveDummyNoteBookPage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RemoveDummyNoteBookPage.NoteBookWidget">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="UpdateNotebookPageTab">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UpdateNotebookPageTab.ANoteBook">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UpdateNotebookPageTab.APage">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetWidgetOrigin">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetWidgetOrigin.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetWidgetOrigin.TheWidget">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetWidgetClientOrigin">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetWidgetClientOrigin.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetWidgetClientOrigin.TheWidget">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TranslateGdkPointToClientArea">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TranslateGdkPointToClientArea.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TranslateGdkPointToClientArea.SourceWindow">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TranslateGdkPointToClientArea.SourcePos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TranslateGdkPointToClientArea.DestinationWidget">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="SetCursor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetCursor.AWinControl">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetCursor.ACursor">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="CaptureMouseForWidget">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CaptureMouseForWidget.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CaptureMouseForWidget.Owner">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetDefaultMouseCaptureWidget">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetDefaultMouseCaptureWidget.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetDefaultMouseCaptureWidget.Widget">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="ReleaseMouseCapture">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="UpdateMouseCaptureControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="X11Display">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="X11Display.Result">
+<short></short>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TConnectSignalFlag">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TConnectSignalFlag.csfAfter">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TConnectSignalFlag.csfConnectRealize">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TConnectSignalFlag.csfUpdateSignalMask">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TConnectSignalFlag.csfDesignOnly">
+<short></short>
+</element>
+
+<!-- set type Visibility: default -->
+<element name="TConnectSignalFlags">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TDesignSignalType">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TDesignSignalType.dstUnknown">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TDesignSignalType.dstMousePress">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TDesignSignalType.dstMouseMotion">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TDesignSignalType.dstMouseRelease">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TDesignSignalType.dstExposeAfter">
+<short></short>
+</element>
+
+<!-- set type Visibility: default -->
+<element name="TDesignSignalTypes">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- alias type Visibility: default -->
+<element name="TDesignSignalMask">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="DesignSignalBefore">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="DesignSignalAfter">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="DesignSignalNames">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="DesignSignalFuncs">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="DesignSignalMasks">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="InitDesignSignalMasks">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="DesignSignalNameToType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="DesignSignalNameToType.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DesignSignalNameToType.Name">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DesignSignalNameToType.After">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetDesignSignalMask">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetDesignSignalMask.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetDesignSignalMask.Widget">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="SetDesignSignalMask">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetDesignSignalMask.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetDesignSignalMask.NewMask">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetDesignOnlySignalFlag">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetDesignOnlySignalFlag.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetDesignOnlySignalFlag.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetDesignOnlySignalFlag.DesignSignalType">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="SignalConnect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SignalConnect.AWidget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SignalConnect.ASignal">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SignalConnect.AProc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SignalConnect.AInfo">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="SignalConnectAfter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SignalConnectAfter.AWidget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SignalConnectAfter.ASignal">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SignalConnectAfter.AProc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SignalConnectAfter.AInfo">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="ConnectSignal">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConnectSignal.AnObject">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConnectSignal.ASignal">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConnectSignal.ACallBackProc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConnectSignal.ALCLObject">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConnectSignal.AReqSignalMask">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConnectSignal.ASFlags">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="ConnectSignal">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConnectSignal.AnObject">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConnectSignal.ASignal">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConnectSignal.ACallBackProc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConnectSignal.ALCLObject">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConnectSignal.AReqSignalMask">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="ConnectSignalAfter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConnectSignalAfter.AnObject">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConnectSignalAfter.ASignal">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConnectSignalAfter.ACallBackProc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConnectSignalAfter.ALCLObject">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConnectSignalAfter.AReqSignalMask">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="ConnectSignal">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConnectSignal.AnObject">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConnectSignal.ASignal">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConnectSignal.ACallBackProc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConnectSignal.ALCLObject">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="ConnectSignalAfter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConnectSignalAfter.AnObject">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConnectSignalAfter.ASignal">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConnectSignalAfter.ACallBackProc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConnectSignalAfter.ALCLObject">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="ConnectInternalWidgetsSignals">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConnectInternalWidgetsSignals.AWidget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConnectInternalWidgetsSignals.AWinControl">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="DeleteAmpersands">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="DeleteAmpersands.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DeleteAmpersands.Str">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Ampersands2Underscore">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Ampersands2Underscore.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Ampersands2Underscore.Src">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Ampersands2Underscore">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Ampersands2Underscore.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Ampersands2Underscore.ASource">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="RemoveAmpersands">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="RemoveAmpersands.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RemoveAmpersands.Src">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RemoveAmpersands.LineLength">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="RemoveAmpersands">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="RemoveAmpersands.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RemoveAmpersands.ASource">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="LabelFromAmpersands">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LabelFromAmpersands.AText">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LabelFromAmpersands.APattern">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LabelFromAmpersands.AAccelChar">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetAccelGroup">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetAccelGroup.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetAccelGroup.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetAccelGroup.CreateIfNotExists">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="SetAccelGroup">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetAccelGroup.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetAccelGroup.AnAccelGroup">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="FreeAccelGroup">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FreeAccelGroup.Widget">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="RegroupAccelerator">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RegroupAccelerator.Widget">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="ClearAccelKey">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ClearAccelKey.Widget">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="Accelerate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Accelerate.Component">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Accelerate.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Accelerate.Key">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Accelerate.Mods">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Accelerate.Signal">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="Accelerate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Accelerate.Component">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Accelerate.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Accelerate.NewShortCut">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Accelerate.Signal">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="ShareWindowAccelGroups">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ShareWindowAccelGroups.AWindow">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="UnshareWindowAccelGroups">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UnshareWindowAccelGroups.AWindow">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="LoadPixbufFromLazResource">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LoadPixbufFromLazResource.ResourceName">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LoadPixbufFromLazResource.Pixbuf">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="LoadXPMFromLazResource">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LoadXPMFromLazResource.ResourceName">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LoadXPMFromLazResource.Window">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LoadXPMFromLazResource.PixmapImg">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LoadXPMFromLazResource.PixmapMask">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="GetGdkPixmapFromGraphic">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetGdkPixmapFromGraphic.LCLGraphic">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetGdkPixmapFromGraphic.IconImg">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetGdkPixmapFromGraphic.IconMask">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetGdkPixmapFromGraphic.Width">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetGdkPixmapFromGraphic.Height">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="SetGCRasterOperation">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetGCRasterOperation.TheGC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetGCRasterOperation.Rop">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="MergeClipping">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="MergeClipping.DestinationDC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="MergeClipping.DestinationGC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="MergeClipping.X">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="MergeClipping.Y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="MergeClipping.Width">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="MergeClipping.Height">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="MergeClipping.ClipMergeMask">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="MergeClipping.ClipMergeMaskX">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="MergeClipping.ClipMergeMaskY">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="MergeClipping.NewClipMask">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="ResetGCClipping">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ResetGCClipping.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ResetGCClipping.GC">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ScalePixmap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ScalePixmap.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ScalePixmap.ScaleGC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ScalePixmap.SrcPixmap">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ScalePixmap.SrcX">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ScalePixmap.SrcY">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ScalePixmap.SrcWidth">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ScalePixmap.SrcHeight">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ScalePixmap.SrcColorMap">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ScalePixmap.NewWidth">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ScalePixmap.NewHeight">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ScalePixmap.NewPixmap">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="DrawImageListIconOnWidget">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DrawImageListIconOnWidget.ImgList">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DrawImageListIconOnWidget.Index">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DrawImageListIconOnWidget.DestWidget">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="DrawImageListIconOnWidget">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DrawImageListIconOnWidget.ImgList">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DrawImageListIconOnWidget.Index">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DrawImageListIconOnWidget.DestWidget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DrawImageListIconOnWidget.CenterHorizontally">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DrawImageListIconOnWidget.CenterVertically">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DrawImageListIconOnWidget.DestLeft">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DrawImageListIconOnWidget.DestTop">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="CreateGdkBitmap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="CreateGdkBitmap.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateGdkBitmap.Window">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateGdkBitmap.Width">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateGdkBitmap.Height">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ExtractGdkBitmap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ExtractGdkBitmap.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ExtractGdkBitmap.Bitmap">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ExtractGdkBitmap.SrcRect">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="MENU_ITEM_CLASS">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="MENU_ITEM_CLASS.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="MENU_ITEM_CLASS.widget">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="CHECK_MENU_ITEM_CLASS">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="CHECK_MENU_ITEM_CLASS.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CHECK_MENU_ITEM_CLASS.widget">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetRadioMenuItemGroup">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetRadioMenuItemGroup.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetRadioMenuItemGroup.LCLMenuItem">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetRadioMenuItemGroup">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetRadioMenuItemGroup.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetRadioMenuItemGroup.MenuItem">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="LockRadioGroupOnChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LockRadioGroupOnChange.RadioGroup">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LockRadioGroupOnChange.ADelta">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="UpdateRadioGroupChecks">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UpdateRadioGroupChecks.RadioGroup">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="UpdateInnerMenuItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UpdateInnerMenuItem.LCLMenuItem">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UpdateInnerMenuItem.MenuItemWidget">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="CreateMenuItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="CreateMenuItem.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateMenuItem.LCLMenuItem">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="GetGdkPixmapFromMenuItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetGdkPixmapFromMenuItem.LCLMenuItem">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetGdkPixmapFromMenuItem.IconImg">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetGdkPixmapFromMenuItem.IconMask">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetGdkPixmapFromMenuItem.Width">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetGdkPixmapFromMenuItem.Height">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="CreateStatusBarPanel">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="CreateStatusBarPanel.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateStatusBarPanel.StatusBar">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateStatusBarPanel.Index">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="UpdateStatusBarPanels">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UpdateStatusBarPanels.StatusBar">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UpdateStatusBarPanels.StatusBarWidget">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="UpdateStatusBarPanel">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UpdateStatusBarPanel.StatusBar">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UpdateStatusBarPanel.Index">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UpdateStatusBarPanel.StatusPanelWidget">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="SaveSizeNotification">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SaveSizeNotification.Widget">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="SaveClientSizeNotification">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SaveClientSizeNotification.FixWidget">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="CreateTopologicalSortedWidgets">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="CreateTopologicalSortedWidgets.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateTopologicalSortedWidgets.HashArray">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="GetGTKDefaultWidgetSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetGTKDefaultWidgetSize.AWinControl">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetGTKDefaultWidgetSize.PreferredWidth">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetGTKDefaultWidgetSize.PreferredHeight">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="ReportNotObsolete">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ReportNotObsolete.Texts">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="WaitForClipboardAnswer">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="WaitForClipboardAnswer.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="WaitForClipboardAnswer.c">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="RequestSelectionData">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="RequestSelectionData.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RequestSelectionData.ClipboardWidget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RequestSelectionData.ClipboardType">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RequestSelectionData.FormatID">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="FreeClipboardTargetEntries">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FreeClipboardTargetEntries.ClipboardType">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="CreateFormContents">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="CreateFormContents.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateFormContents.AForm">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateFormContents.FormWidget">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="IndexOfStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="IndexOfStyle.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="IndexOfStyle.aStyle">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="IndexOfStyleWithName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="IndexOfStyleWithName.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="IndexOfStyleWithName.WName">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="ReleaseAllStyles">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="ReleaseStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ReleaseStyle.aStyle">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="ReleaseStyleWithName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ReleaseStyleWithName.WName">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetStyle.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetStyle.aStyle">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetStyleWithName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetStyleWithName.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetStyleWithName.WName">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetStyleWidget">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetStyleWidget.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetStyleWidget.aStyle">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetStyleWidgetWithName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetStyleWidgetWithName.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetStyleWidgetWithName.WName">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="StyleFillRectangle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="StyleFillRectangle.drawable">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="StyleFillRectangle.GC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="StyleFillRectangle.Color">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="StyleFillRectangle.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="StyleFillRectangle.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="StyleFillRectangle.width">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="StyleFillRectangle.height">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="StyleForegroundColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="StyleForegroundColor.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="StyleForegroundColor.Color">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="StyleForegroundColor.DefaultColor">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="UpdateWidgetStyleOfControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UpdateWidgetStyleOfControl.AWinControl">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="FontIsDoubleByteCharsFont">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="FontIsDoubleByteCharsFont.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FontIsDoubleByteCharsFont.TheFont">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetDefaultFontName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetDefaultFontName.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="FillScreenFonts">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FillScreenFonts.ScreenFonts">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetTextHeight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetTextHeight.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetTextHeight.DCTextMetric">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetWindowDecorations">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetWindowDecorations.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetWindowDecorations.AForm">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetWindowFunction">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetWindowFunction.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetWindowFunction.AForm">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetGDKMouseCursor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetGDKMouseCursor.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetGDKMouseCursor.Cursor">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="FreeGDKCursors">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtk_widget_get_xthickness">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtk_widget_get_xthickness.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtk_widget_get_xthickness.Style">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtk_widget_get_ythickness">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtk_widget_get_ythickness.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtk_widget_get_ythickness.Style">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtk_widget_get_xthickness">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtk_widget_get_xthickness.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtk_widget_get_xthickness.Style">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="gtk_widget_get_ythickness">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="gtk_widget_get_ythickness.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="gtk_widget_get_ythickness.Style">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="BeginGDKErrorTrap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="EndGDKErrorTrap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+</module> <!-- GTKProc -->
+</package>
+</fpdoc-descriptions>

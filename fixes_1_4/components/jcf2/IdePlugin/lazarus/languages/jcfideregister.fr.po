@@ -1,0 +1,52 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"X-Generator: Poedit 1.7.5\n"
+
+#: jcfideregister.format_about_menu
+msgid "&About"
+msgstr "&À propos"
+
+#: jcfideregister.format_category_idecmd
+msgctxt "jcfideregister.format_category_idecmd"
+msgid "JEDI Code Format"
+msgstr "Formatage de code \"JEDI\""
+
+#: jcfideregister.format_current_idecmd
+msgid "Format code in current editor window"
+msgstr "Formater le code dans la fenêtre d'édition en cours"
+
+#: jcfideregister.format_current_menu
+msgctxt "jcfideregister.format_current_menu"
+msgid "&Current Editor Window"
+msgstr "Fenêtre de l'éditeur en &cours"
+
+#: jcfideregister.format_menu
+msgid "JEDI Code &Format"
+msgstr "&Formatage de code \"JEDI\""
+
+#: jcfideregister.format_open_menu
+msgctxt "jcfideregister.format_open_menu"
+msgid "All &Open Windows"
+msgstr "Toutes les fenêtres &ouvertes"
+
+#: jcfideregister.format_project_menu
+msgctxt "jcfideregister.format_project_menu"
+msgid "&All Files in Project"
+msgstr "Tous les fichiers d&ans le projet"
+
+#: jcfideregister.format_reg_settings_menu
+msgid "&Registry Settings"
+msgstr "Paramètres du &registre"
+
+#: jcfideregister.format_settings_menu
+msgid "&Format Settings"
+msgstr "Paramètres de &formatage"

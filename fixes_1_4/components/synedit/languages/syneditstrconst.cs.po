@@ -1,0 +1,781 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2013-01-09 11:53+0100\n"
+"Last-Translator: Václav Valíček <Valicek1994@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: syneditstrconst.syns_attrannotation
+msgid "Annotation"
+msgstr ""
+
+#: syneditstrconst.syns_attrasp
+msgid "Asp"
+msgstr "Asp"
+
+#: syneditstrconst.syns_attrassembler
+msgid "Assembler"
+msgstr "Assembler"
+
+#: syneditstrconst.syns_attrattributename
+msgid "Attribute Name"
+msgstr "Jméno atributu"
+
+#: syneditstrconst.syns_attrattributevalue
+msgid "Attribute Value"
+msgstr "Hodnota atributu"
+
+#: syneditstrconst.syns_attrblock
+msgid "Block"
+msgstr "Blok"
+
+#: syneditstrconst.syns_attrbrackets
+msgid "Brackets"
+msgstr "Závorky"
+
+#: syneditstrconst.syns_attrcaselabel
+msgid "Case label"
+msgstr ""
+
+#: syneditstrconst.syns_attrcdata
+msgid "CDATA"
+msgstr "CDATA"
+
+#: syneditstrconst.syns_attrcdatasection
+msgid "CDATA Section"
+msgstr "Sekce CDATA"
+
+#: syneditstrconst.syns_attrcharacter
+msgid "Character"
+msgstr "Znak"
+
+#: syneditstrconst.syns_attrchunkmarker
+msgid "Diff Chunk Marker"
+msgstr "Porovnat zvýrazňovač úseku"
+
+#: syneditstrconst.syns_attrchunkmixed
+msgid "Diff Chunk Line Counts"
+msgstr "Porovnat počet řádek úseku"
+
+#: syneditstrconst.syns_attrchunknew
+msgid "Diff Chunk New Line Count"
+msgstr "Porovnat nový počet řádek úseku"
+
+#: syneditstrconst.syns_attrchunkorig
+msgid "Diff Chunk Original Line Count"
+msgstr "Porovnat původní počet řádků úseku"
+
+#: syneditstrconst.syns_attrclass
+msgid "Class"
+msgstr "Třída"
+
+#: syneditstrconst.syns_attrcomment
+msgid "Comment"
+msgstr "Komentář"
+
+#: syneditstrconst.syns_attrcondition
+msgid "Condition"
+msgstr "Podmínka"
+
+#: syneditstrconst.syns_attrdatatype
+msgid "Data type"
+msgstr "Datový typ"
+
+#: syneditstrconst.syns_attrdefaultpackage
+msgid "Default packages"
+msgstr "Výchozí balíčky"
+
+#: syneditstrconst.syns_attrdir
+msgid "Direction"
+msgstr "Směr"
+
+#: syneditstrconst.syns_attrdirective
+msgid "Directive"
+msgstr "Směrnice"
+
+#: syneditstrconst.syns_attrdoctype
+msgid "DOCTYPE"
+msgstr "DOCTYPE"
+
+#: syneditstrconst.syns_attrdoctypesection
+msgid "DOCTYPE Section"
+msgstr "Sekce DOCTYPE"
+
+#: syneditstrconst.syns_attrdocumentation
+msgid "Documentation"
+msgstr "Dokumentace"
+
+#: syneditstrconst.syns_attrelementname
+msgid "Element Name"
+msgstr "Jméno prvku"
+
+#: syneditstrconst.syns_attrembedsql
+msgid "Embedded SQL"
+msgstr "Vestavěné SQL"
+
+#: syneditstrconst.syns_attrembedtext
+msgid "Embedded text"
+msgstr "Vestavěný text"
+
+#: syneditstrconst.syns_attrentityreference
+msgid "Entity Reference"
+msgstr "Odkaz na entitu"
+
+#: syneditstrconst.syns_attrescapeampersand
+msgid "Escape ampersand"
+msgstr "Escapovat ampersandy (&amp;)"
+
+#: syneditstrconst.syns_attrevent
+msgid "Event"
+msgstr "Událost"
+
+#: syneditstrconst.syns_attrexception
+msgid "Exception"
+msgstr "Vyjímka"
+
+#: syneditstrconst.syns_attrflags
+msgid "Flags"
+msgstr "Příznaky"
+
+#: syneditstrconst.syns_attrfloat
+msgid "Float"
+msgstr "Plovoucí"
+
+#: syneditstrconst.syns_attrform
+msgid "Form"
+msgstr "Formulář"
+
+#: syneditstrconst.syns_attrfunction
+msgid "Function"
+msgstr "Funkce"
+
+#: syneditstrconst.syns_attrhexadecimal
+msgid "Hexadecimal"
+msgstr "Hexadecimální"
+
+#: syneditstrconst.syns_attricon
+msgid "Icon reference"
+msgstr "Ikonový odkaz"
+
+#: syneditstrconst.syns_attridedirective
+msgid "IDE Directive"
+msgstr "Direktivy IDE"
+
+#: syneditstrconst.syns_attridentifier
+msgid "Identifier"
+msgstr "Identifikátor"
+
+#: syneditstrconst.syns_attrillegalchar
+msgid "Illegal char"
+msgstr "Neplatný znak"
+
+#: syneditstrconst.syns_attrinclude
+msgid "Include"
+msgstr "Zahrnutí"
+
+#: syneditstrconst.syns_attrindirect
+msgid "Indirect"
+msgstr "Nepřímý"
+
+#: syneditstrconst.syns_attrinternalfunction
+msgid "Internal function"
+msgstr "Vnitřní funkce"
+
+#: syneditstrconst.syns_attrinvalidsymbol
+msgid "Invalid symbol"
+msgstr "Neplatný symbol"
+
+#: syneditstrconst.syns_attrkey
+msgid "Key"
+msgstr "Klávesa"
+
+#: syneditstrconst.syns_attrlabel
+msgid "Label"
+msgstr "Štítek"
+
+#: syneditstrconst.syns_attrlineadded
+msgid "Diff Added line"
+msgstr "Porovnat přidaný řádek"
+
+#: syneditstrconst.syns_attrlinechanged
+msgid "Diff Changed Line"
+msgstr "Porovnat změněný řádek"
+
+#: syneditstrconst.syns_attrlinecontext
+msgid "Diff Context Line"
+msgstr "Porovnat Kontextový řádek"
+
+#: syneditstrconst.syns_attrlineremoved
+msgid "Diff Removed Line"
+msgstr "Porovnat odstraněný řádek"
+
+#: syneditstrconst.syns_attrmacro
+msgid "Macro"
+msgstr "Makro"
+
+#: syneditstrconst.syns_attrmarker
+msgid "Marker"
+msgstr "Značkovač"
+
+#: syneditstrconst.syns_attrmathmode
+msgid "Math Mode"
+msgstr "Matematický režim"
+
+#: syneditstrconst.syns_attrmessage
+msgid "Message"
+msgstr "Zpráva"
+
+#: syneditstrconst.syns_attrmiscellaneous
+msgid "Miscellaneous"
+msgstr "Různé"
+
+#: syneditstrconst.syns_attrnamespaceattrname
+msgid "Namespace Attribute Name"
+msgstr "Jméno atributu jmenného prostoru"
+
+#: syneditstrconst.syns_attrnamespaceattrvalue
+msgid "Namespace Attribute Value"
+msgstr "Hodnota atributu jmenného prostoru"
+
+#: syneditstrconst.syns_attrnewfile
+msgid "Diff New File"
+msgstr "Porovnat nový soubor"
+
+#: syneditstrconst.syns_attrnonreservedkeyword
+msgid "Non-reserved keyword"
+msgstr "Nevyhrazené slovo"
+
+#: syneditstrconst.syns_attrnull
+msgid "Null"
+msgstr "Nulový"
+
+#: syneditstrconst.syns_attrnumber
+msgid "Number"
+msgstr "Číslo"
+
+#: syneditstrconst.syns_attroctal
+msgid "Octal"
+msgstr "Osmičkový"
+
+#: syneditstrconst.syns_attroperator
+msgid "Operator"
+msgstr "Operátor"
+
+#: syneditstrconst.syns_attrorigfile
+msgid "Diff Original File"
+msgstr "Porovnat původní soubor"
+
+#: syneditstrconst.syns_attrplsql
+msgid "Reserved word (PL/SQL)"
+msgstr "Vyhrazené slovo (PL/SQL)"
+
+#: syneditstrconst.syns_attrpragma
+msgid "Pragma"
+msgstr "Pragma"
+
+#: syneditstrconst.syns_attrpreprocessor
+msgid "Preprocessor"
+msgstr "Předzpracovač"
+
+#: syneditstrconst.syns_attrprevvalue
+msgid "Previous value"
+msgstr "Předchozí hodnota"
+
+#: syneditstrconst.syns_attrprocessinginstr
+msgid "Processing Instruction"
+msgstr "Instrukce zpracování"
+
+#: syneditstrconst.syns_attrqualifier
+msgid "Qualifier"
+msgstr "Ohodnocovač"
+
+#: syneditstrconst.syns_attrregister
+msgid "Register"
+msgstr "Registrovat"
+
+#: syneditstrconst.syns_attrreservedword
+msgid "Reserved word"
+msgstr "Vyhrazené slovo"
+
+#: syneditstrconst.syns_attrroundbracket
+msgid "Round Bracket"
+msgstr "Kulaté závorky"
+
+#: syneditstrconst.syns_attrrpl
+msgid "Rpl"
+msgstr "Rpl"
+
+#: syneditstrconst.syns_attrrplcomment
+msgid "Rpl comment"
+msgstr "Komentář Rpl"
+
+#: syneditstrconst.syns_attrrplkey
+msgid "Rpl key"
+msgstr "Klávesa Rpl"
+
+#: syneditstrconst.syns_attrsasm
+msgid "SASM"
+msgstr "SASM"
+
+#: syneditstrconst.syns_attrsasmcomment
+msgid "SASM Comment"
+msgstr "Komentář SASM"
+
+#: syneditstrconst.syns_attrsasmkey
+msgid "SASM Key"
+msgstr "Klávesa SASM"
+
+#: syneditstrconst.syns_attrsecondreservedword
+msgid "Second reserved word"
+msgstr "Druhé vyhrazené slovo"
+
+#: syneditstrconst.syns_attrsection
+msgid "Section"
+msgstr "Sekce"
+
+#: syneditstrconst.syns_attrspace
+msgid "Space"
+msgstr "Mezerník"
+
+#: syneditstrconst.syns_attrspecialvariable
+msgid "Special variable"
+msgstr "Speciální proměnná"
+
+#: syneditstrconst.syns_attrsqlkey
+msgid "SQL keyword"
+msgstr "Klíčové slovo SQL"
+
+#: syneditstrconst.syns_attrsqlplus
+msgid "SQL*Plus command"
+msgstr "Příkaz SQL*Plus"
+
+#: syneditstrconst.syns_attrsquarebracket
+msgid "Square Bracket"
+msgstr "Hranaté závorky"
+
+#: syneditstrconst.syns_attrstring
+msgid "String"
+msgstr "Řetězec"
+
+#: syneditstrconst.syns_attrsymbol
+msgid "Symbol"
+msgstr "Symbol"
+
+#: syneditstrconst.syns_attrsyntaxerror
+msgid "SyntaxError"
+msgstr "ChybaSyntaxe"
+
+#: syneditstrconst.syns_attrsystem
+msgid "System functions and variables"
+msgstr "Systémové funkce a proměnné"
+
+#: syneditstrconst.syns_attrsystemvalue
+msgid "System value"
+msgstr "Systémová hodnota"
+
+#: syneditstrconst.syns_attrtablename
+msgid "Table Name"
+msgstr "Jméno tabulky"
+
+#: syneditstrconst.syns_attrterminator
+msgid "Terminator"
+msgstr "Ukončovač"
+
+#: syneditstrconst.syns_attrtexcommand
+msgid "TeX Command"
+msgstr "Příkaz TeX"
+
+#: syneditstrconst.syns_attrtext
+msgid "Text"
+msgstr "Text"
+
+#: syneditstrconst.syns_attrtextmathmode
+msgid "Text in Math Mode"
+msgstr "Text v Matematickém režimu"
+
+#: syneditstrconst.syns_attrunknownword
+msgid "Unknown word"
+msgstr "Neznámé slovo"
+
+#: syneditstrconst.syns_attruser
+msgid "User functions and variables"
+msgstr "Uživatelské funkce a proměnné"
+
+#: syneditstrconst.syns_attruserfunction
+msgid "User functions"
+msgstr "Uživatelská funkce"
+
+#: syneditstrconst.syns_attrvalue
+msgid "Value"
+msgstr "Hodnota"
+
+#: syneditstrconst.syns_attrvariable
+msgid "Variable"
+msgstr "Proměnná"
+
+#: syneditstrconst.syns_attrwhitespace
+msgid "Whitespace"
+msgstr "Bílé místo"
+
+#: syneditstrconst.syns_duplicateshortcutmsg
+msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
+msgstr "Klávesová zkratka \"%s\" je již přiřazena jinému příkazu editoru. (%s)"
+
+#: syneditstrconst.syns_eduplicateshortcut
+msgid "Mouse-Shortcut already exists"
+msgstr "Zkratka myši již existuje"
+
+#: syneditstrconst.syns_emcbreakpointtoggle
+msgid "Toggle Breakpoint"
+msgstr "Přepnout bod zastavení"
+
+#: syneditstrconst.syns_emccodefoldcollaps
+msgid "Fold Code"
+msgstr "Skrýt kód"
+
+#: syneditstrconst.syns_emccodefoldcollaps_opt
+msgid "Nodes,One,All,\"At Caret\",\"Current Node\""
+msgstr "Uzly,Jeden,Všechny,\"u ukazatele\",\"Aktuální režim\""
+
+#: syneditstrconst.syns_emccodefoldcontextmenu
+msgid "Fold Menu"
+msgstr "Skrýt menu"
+
+#: syneditstrconst.syns_emccodefoldexpand
+msgid "Unfold Code"
+msgstr "Rozkrýt kód"
+
+#: syneditstrconst.syns_emccodefoldexpand_opt
+msgid "Nodes,One,All"
+msgstr "Prvky, Jeden, Všechny"
+
+#: syneditstrconst.syns_emccontextmenu
+msgid "Popup Menu"
+msgstr "Kontextové menu"
+
+#: syneditstrconst.syns_emccontextmenucaretmove_opt
+msgid "\"Move caret, when selection exists\", Never, \"Click outside\", Always"
+msgstr "\"Přesunout ukazatel, když existuje výběr\", Nikdy, \"Kliknout vně\", Vždy"
+
+#: syneditstrconst.syns_emcmouselink
+msgid "Source Link"
+msgstr "Zdrojový odkaz"
+
+#: syneditstrconst.syns_emcmouselink_opt
+msgid "Underline,yes, no"
+msgstr "Podtržené,ano, ne"
+
+#: syneditstrconst.syns_emcnone
+msgid "No Action"
+msgstr "Žádná akce"
+
+#: syneditstrconst.syns_emcpasteselection
+msgid "Quick Paste Selection"
+msgstr "Rychle vložit výběr"
+
+#: syneditstrconst.syns_emcselection_opt
+msgid "Mode,Begin,Continue"
+msgstr "Režim,Začít,Pokračovat"
+
+#: syneditstrconst.syns_emcselectline
+msgid "Select Line"
+msgstr "Vybrat řádek"
+
+#: syneditstrconst.syns_emcselectline_opt
+msgid "\"Include spaces\",no,yes"
+msgstr "\"Včetně mezer\",ne,ano"
+
+#: syneditstrconst.syns_emcselectpara
+msgid "Select Paragraph"
+msgstr "Vybrat odstavec"
+
+#: syneditstrconst.syns_emcselectword
+msgid "Select Word"
+msgstr "Vybrat slovo"
+
+#: syneditstrconst.syns_emcstartcolumnselections
+msgid "Column Selection"
+msgstr "Výběr sloupce"
+
+#: syneditstrconst.syns_emcstartdragmove
+msgid "Drag Selection"
+msgstr "Uchop výběr"
+
+#: syneditstrconst.syns_emcstartlineselections
+msgid "Line Selection"
+msgstr "Výběr řádky"
+
+#: syneditstrconst.syns_emcstartselection
+msgid "Selection"
+msgstr "Výběr"
+
+#: syneditstrconst.syns_emcstartselectlines
+msgid "Selection (lines)"
+msgstr ""
+
+#: syneditstrconst.syns_emcstartselecttokens
+msgid "Selection (tokens) "
+msgstr ""
+
+#: syneditstrconst.syns_emcstartselectwords
+msgid "Selection (words)"
+msgstr ""
+
+#: syneditstrconst.syns_emcsyneditcommand
+msgid "IDE Command"
+msgstr "Příkaz IDE"
+
+#: syneditstrconst.syns_emcwheelhorizscrolldown
+msgid "Wheel scroll down (Horizontal)"
+msgstr "Scrollování dolů (horizontální)"
+
+#: syneditstrconst.syns_emcwheelhorizscrollup
+msgid "Wheel scroll up (Horizontal)"
+msgstr "Scrollování nahoru (horizontální)"
+
+#: syneditstrconst.syns_emcwheelscrolldown
+msgid "Wheel scroll down"
+msgstr "Scrollování dolů"
+
+#: syneditstrconst.syns_emcwheelscrollup
+msgid "Wheel scroll up"
+msgstr "Scrollování nahoru"
+
+#: syneditstrconst.syns_emcwheelscroll_opt
+msgid "Speed,\"System settings\",Lines,Pages,\"Pages (less one line)\""
+msgstr "Rychlost,\"Sytémová nastavnení\",Řádky,Stránky,\"Stránky (měně než jeden řádek)\""
+
+#: syneditstrconst.syns_emcwheelvertscrolldown
+msgid "Wheel scroll down (Vertical)"
+msgstr "Scrollování dolů (vertikální)"
+
+#: syneditstrconst.syns_emcwheelvertscrollup
+msgid "Wheel scroll up (Vertical)"
+msgstr "Scrollování nahoru (vertikální)"
+
+#: syneditstrconst.syns_emcwheelzoomin
+msgid "Wheel zoom in"
+msgstr "Zoomování myší"
+
+#: syneditstrconst.syns_emcwheelzoomnorm
+msgid "Wheel zoom default"
+msgstr "Výchozí zoom myši"
+
+#: syneditstrconst.syns_emcwheelzoomout
+msgid "Wheel zoom out"
+msgstr "Odzoomování myší"
+
+#: syneditstrconst.syns_exporterformathtml
+msgid "HTML"
+msgstr "HTML"
+
+#: syneditstrconst.syns_exporterformatrtf
+msgid "RTF"
+msgstr "RTF"
+
+#: syneditstrconst.syns_filteradsp21xx
+msgid "DSP Files (*.dsp,*.inc)|*.DSP;*.INC"
+msgstr "Soubory DSP (*.dsp,*.inc)|*.DSP;*.INC"
+
+#: syneditstrconst.syns_filterasm68hc11
+msgid "68HC11 Assembler Files (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
+msgstr "Soubory assembleru 68HC11 (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
+
+#: syneditstrconst.syns_filterawk
+msgid "AWK Script (*.awk)|*.awk"
+msgstr "Skript AWK (*.awk)|*.awk"
+
+#: syneditstrconst.syns_filterbaan
+msgid "Baan 4GL Files (*.cln)|*.cln"
+msgstr "Soubory Baan 4GL (*.cln)|*.cln"
+
+#: syneditstrconst.syns_filterbatch
+msgid "MS-DOS Batch Files (*.bat;*.cmd)|*.bat;*.cmd"
+msgstr "Dávkové soubory MS-DOS (*.bat;*.cmd)|*.bat;*.cmd"
+
+#: syneditstrconst.syns_filtercache
+msgid "Cache Files (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
+msgstr "Cache soubory (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
+
+#: syneditstrconst.syns_filtercaclipper
+msgid "CA-Clipper Files (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc"
+msgstr "Soubory CA-Clipper (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc"
+
+#: syneditstrconst.syns_filtercorbaidl
+msgid "CORBA IDL files (*.idl)|*.idl"
+msgstr "Soubory CORBA IDL (*.idl)|*.idl"
+
+#: syneditstrconst.syns_filtercpm
+msgid "CPM reports (*.rdf,*.rif,*.rmf,*.rxf)|*.rdf;*.rif;*.rmf;*.rxf"
+msgstr "Soubory sestav CPM (*.rdf,*.rif,*.rmf,*.rxf)|*.rdf;*.rif;*.rmf;*.rxf"
+
+#: syneditstrconst.syns_filtercpp
+msgid "C++ Files (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
+msgstr "Soubory C++ (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
+
+#: syneditstrconst.syns_filtercss
+msgid "Cascading Stylesheets (*.css)|*.css"
+msgstr "Kaskádové styly (*.css)|*.css"
+
+#: syneditstrconst.syns_filterdfm
+msgid "Borland Form Files (*.dfm;*.xfm)|*.dfm;*.xfm"
+msgstr "Formulářové soubory Borlandu (*.dfm;*.xfm)|*.dfm;*.xfm"
+
+#: syneditstrconst.syns_filterfortran
+msgid "Fortran Files (*.for)|*.for"
+msgstr "Soubory Fortranu (*.for)|*.for"
+
+#: syneditstrconst.syns_filterfoxpro
+msgid "Foxpro Files (*.prg)|*.prg"
+msgstr "Soubory Foxpro (*.prg)|*.prg"
+
+#: syneditstrconst.syns_filtergalaxy
+msgid "Galaxy Files (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
+msgstr "Soubory Galaxy (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
+
+#: syneditstrconst.syns_filtergembase
+msgid "GEMBASE Files (*.dml,*.gem)|*.DML;*.GEM"
+msgstr "Soubory GEMBASE (*.dml,*.gem)|*.DML;*.GEM"
+
+#: syneditstrconst.syns_filtergws
+msgid "GW-TEL Script Files (*.gws)|*.gws"
+msgstr "Soubory GW-TEL Script (*.gws)|*.gws"
+
+#: syneditstrconst.syns_filterhp48
+msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
+msgstr "Soubory HP48 (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
+
+#: syneditstrconst.syns_filterhtml
+msgid "HTML Document (*.htm,*.html)|*.htm;*.html"
+msgstr "HTML Dokument (*.htm,*.html)|*.htm;*.html"
+
+#: syneditstrconst.syns_filterini
+msgid "INI Files (*.ini)|*.ini"
+msgstr "Soubory INI (*.ini)|*.ini"
+
+#: syneditstrconst.syns_filterinno
+msgid "Inno Setup Script Files (*.iss)|*.iss"
+msgstr "Soubory Inno Setup Script (*.iss)|*.iss"
+
+#: syneditstrconst.syns_filterjava
+msgid "Java Files (*.java)|*.java"
+msgstr "Soubory Java (*.java)|*.java"
+
+#: syneditstrconst.syns_filterjscript
+msgid "Javascript Files (*.js)|*.js"
+msgstr "Soubory Javascript (*.js)|*.js"
+
+#: syneditstrconst.syns_filterkix
+msgid "KiXtart scripts (*.kix)|*.kix"
+msgstr "KiXtart scripty (*.kix)|*.kix"
+
+#: syneditstrconst.syns_filterlfm
+msgid "Lazarus Form Files (*.lfm)|*.lfm"
+msgstr "Soubory formulářů Lazarusu (*.lfm)|*.lfm"
+
+#: syneditstrconst.syns_filtermodelica
+msgid "Modelica Files (*.mo)|*.mo"
+msgstr "Soubory Modelica (*.mo)|*.mo"
+
+#: syneditstrconst.syns_filtermodula3
+msgid "Modula-3 Files (*.m3)|*.m3"
+msgstr "Soubory Modula-3 (*.m3)|*.m3"
+
+#: syneditstrconst.syns_filterpascal
+msgid "Pascal Files (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc"
+msgstr "Soubory Pascal (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc"
+
+#: syneditstrconst.syns_filterperl
+msgid "Perl Files (*.pl,*.pm,*.cgi)|*.pl;*.pm;*.cgi"
+msgstr "Soubory Perl (*.pl,*.pm,*.cgi)|*.pl;*.pm;*.cgi"
+
+#: syneditstrconst.syns_filterphp
+msgid "PHP Files (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
+msgstr "Soubory PHP (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
+
+#: syneditstrconst.syns_filterpo
+msgid "Po Files (*.po)|*.po"
+msgstr "PO soubory (*.po)|*.po"
+
+#: syneditstrconst.syns_filterprogress
+msgid "Progress Files (*.w,*.p,*.i)|*.w;*.p;*.i"
+msgstr "Soubory Progress (*.w,*.p,*.i)|*.w;*.p;*.i"
+
+#: syneditstrconst.syns_filterpython
+msgid "Python Files (*.py)|*.py"
+msgstr "Soubory Python (*.py)|*.py"
+
+#: syneditstrconst.syns_filterrtf
+msgid "Rich Text Format (*.rtf)|*.rtf"
+msgstr "Rich Text Format (*.rtf)|*.rtf"
+
+#: syneditstrconst.syns_filtersdd
+msgid "Semanta DD files (*.sdd)|*.sdd"
+msgstr "Soubory Semanta DD (*.sdd)|*.sdd"
+
+#: syneditstrconst.syns_filtersml
+msgid "Standard ML Files (*.sml)|*.sml"
+msgstr "Soubory Standard ML (*.sml)|*.sml"
+
+#: syneditstrconst.syns_filtersql
+msgid "SQL Files (*.sql)|*.sql"
+msgstr "Soubory SQL (*.sql)|*.sql"
+
+#: syneditstrconst.syns_filtersyngenmsgfiles
+msgid "Msg files (*.msg)|*.msg"
+msgstr "Soubory Msg (*.msg)|*.msg"
+
+#: syneditstrconst.syns_filtertcltk
+msgid "Tcl/Tk Files (*.tcl)|*.tcl"
+msgstr "Soubory Tcl/Tk (*.tcl)|*.tcl"
+
+#: syneditstrconst.syns_filtertex
+msgid "TeX Files (*.tex)|*.tex"
+msgstr "Soubory TeX (*.tex)|*.tex"
+
+#: syneditstrconst.syns_filterunixshellscript
+msgid "UNIX Shell Scripts (*.sh)|*.sh"
+msgstr "Soubory UNIXového prostředí (*.sh)|*.sh"
+
+#: syneditstrconst.syns_filtervbscript
+msgid "VBScript Files (*.vbs)|*.vbs"
+msgstr "Soubory VBScript (*.vbs)|*.vbs"
+
+#: syneditstrconst.syns_filtervisualbasic
+msgid "Visual Basic Files (*.bas)|*.bas"
+msgstr "Soubory Visual Basic (*.bas)|*.bas"
+
+#: syneditstrconst.syns_filterx86asm
+msgid "x86 Assembly Files (*.asm)|*.ASM"
+msgstr "Soubory assembleru x86 (*.asm)|*.ASM"
+
+#: syneditstrconst.syns_filterxml
+msgid "XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
+msgstr "XML Dokument (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
+
+#: syneditstrconst.syns_previewscrollinfofmt
+msgid "Page: %d"
+msgstr "Stránka: %d"
+
+#: syneditstrconst.syns_scrollinfofmt
+msgid "%d - %d"
+msgstr "%d - %d"
+
+#: syneditstrconst.syns_scrollinfofmttop
+msgid "Top Line: %d"
+msgstr "Vrchní řádek: %d"
+
+#: syneditstrconst.syns_shortcutnone
+msgid "<none>"
+msgstr "<žádné>"
+
+#: syneditstrconst.syns_untitled
+msgid "Untitled"
+msgstr "Nepojmenovaný"
+

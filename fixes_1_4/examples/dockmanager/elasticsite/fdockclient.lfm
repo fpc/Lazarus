@@ -1,0 +1,23 @@
+object DockingClient: TDockingClient
+  Left = 425
+  Height = 159
+  Top = 369
+  Width = 232
+  Caption = 'Dock Client'
+  ClientHeight = 159
+  ClientWidth = 232
+  Color = clForm
+  LCLVersion = '0.9.27'
+  Visible = True
+  object Shape1: TShape
+    Left = 0
+    Height = 159
+    Top = 0
+    Width = 232
+    Align = alClient
+    Brush.Color = clLime
+    DragKind = dkDock
+    DragMode = dmAutomatic
+    OnStartDock = Shape1StartDock
+  end
+end

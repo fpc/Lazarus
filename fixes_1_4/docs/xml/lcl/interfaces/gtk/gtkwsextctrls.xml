@@ -1,0 +1,539 @@
+<?xml version="1.0" encoding="ISO8859-1"?>
+<fpdoc-descriptions>
+<package name="gtk">
+
+<!--
+  ====================================================================
+    GtkWSExtCtrls
+  ====================================================================
+-->
+
+<module name="GtkWSExtCtrls">
+<short></short>
+<descr>
+</descr>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLProc">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Controls">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gtk">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gdk">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="GtkGlobals">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="GtkProc">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="ExtCtrls">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Classes">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="WSExtCtrls">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="WSLCLClasses">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gtkint">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="interfacebase">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSCustomPage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomPage.UpdateProperties">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomPage.UpdateProperties.ACustomPage">
+<short></short>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSCustomNotebook">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomNotebook.AddPage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomNotebook.AddPage.ANotebook">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomNotebook.AddPage.AChild">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomNotebook.AddPage.AIndex">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomNotebook.MovePage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomNotebook.MovePage.ANotebook">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomNotebook.MovePage.AChild">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomNotebook.MovePage.NewIndex">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomNotebook.RemovePage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomNotebook.RemovePage.ANotebook">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomNotebook.RemovePage.AIndex">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkWSCustomNotebook.GetNotebookMinTabHeight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkWSCustomNotebook.GetNotebookMinTabHeight.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomNotebook.GetNotebookMinTabHeight.AWinControl">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkWSCustomNotebook.GetNotebookMinTabWidth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkWSCustomNotebook.GetNotebookMinTabWidth.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomNotebook.GetNotebookMinTabWidth.AWinControl">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomNotebook.SetPageIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomNotebook.SetPageIndex.ANotebook">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomNotebook.SetPageIndex.AIndex">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomNotebook.SetTabPosition">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomNotebook.SetTabPosition.ANotebook">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomNotebook.SetTabPosition.ATabPosition">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomNotebook.ShowTabs">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomNotebook.ShowTabs.ANotebook">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomNotebook.ShowTabs.AShowTabs">
+<short></short>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSPage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSNotebook">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSShape">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSCustomSplitter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSSplitter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSPaintBox">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSCustomImage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSImage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSBevel">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSCustomRadioGroup">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSRadioGroup">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSCustomCheckGroup">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSCheckGroup">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSBoundLabel">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSCustomLabeledEdit">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSLabeledEdit">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSCustomPanel">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSPanel">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+</module> <!-- GtkWSExtCtrls -->
+</package>
+</fpdoc-descriptions>

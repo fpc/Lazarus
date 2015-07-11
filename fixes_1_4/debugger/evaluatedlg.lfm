@@ -1,0 +1,209 @@
+inherited EvaluateDlg: TEvaluateDlg
+  Left = 470
+  Height = 290
+  Top = 393
+  Width = 400
+  ActiveControl = cmbExpression
+  BorderStyle = bsSizeToolWin
+  Caption = 'Evaluate/Modify'
+  ClientHeight = 290
+  ClientWidth = 400
+  Constraints.MinHeight = 200
+  Constraints.MinWidth = 300
+  KeyPreview = True
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
+  object Label1: TLabel[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ToolBar1
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 14
+    Top = 47
+    Width = 57
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 3
+    Caption = '&Expression:'
+    FocusControl = cmbExpression
+    ParentColor = False
+  end
+  object Label2: TLabel[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cmbExpression
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 14
+    Top = 91
+    Width = 35
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = '&Result:'
+    FocusControl = txtResult
+    ParentColor = False
+  end
+  object lblNewValue: TLabel[2]
+    AnchorSideLeft.Control = Owner
+    AnchorSideBottom.Control = cmbNewValue
+    Left = 6
+    Height = 14
+    Top = 246
+    Width = 55
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Left = 6
+    BorderSpacing.Bottom = 3
+    Caption = '&New value:'
+    FocusControl = cmbNewValue
+    ParentColor = False
+  end
+  object ToolBar1: TToolBar[3]
+    Left = 0
+    Height = 44
+    Top = 0
+    Width = 400
+    AutoSize = True
+    ButtonHeight = 40
+    ButtonWidth = 50
+    Caption = 'ToolBar1'
+    EdgeBorders = [ebTop, ebBottom]
+    Indent = 2
+    ShowCaptions = True
+    TabOrder = 0
+    TabStop = True
+    object tbInspect: TToolButton
+      Left = 152
+      Top = 2
+      Caption = '&Inspect'
+      Enabled = False
+      ImageIndex = 3
+      OnClick = tbInspectClick
+    end
+    object tbWatch: TToolButton
+      Left = 102
+      Top = 2
+      AllowAllUp = True
+      Caption = '&Watch'
+      Enabled = False
+      ImageIndex = 2
+      OnClick = tbWatchClick
+    end
+    object tbModify: TToolButton
+      Left = 52
+      Top = 2
+      Caption = '&Modify'
+      Enabled = False
+      ImageIndex = 1
+      OnClick = tbModifyClick
+    end
+    object tbEvaluate: TToolButton
+      Left = 2
+      Top = 2
+      Caption = 'E&valuate'
+      Enabled = False
+      ImageIndex = 0
+      OnClick = tbEvaluateClick
+    end
+    object ToolButton1: TToolButton
+      Left = 202
+      Top = 2
+      Width = 10
+      Caption = 'ToolButton1'
+      Style = tbsSeparator
+    end
+    object tbHistory: TToolButton
+      Left = 212
+      Top = 2
+      Caption = 'History'
+      DropdownMenu = mnuHistory
+      Style = tbsDropDown
+    end
+  end
+  object cmbExpression: TComboBox[4]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 21
+    Top = 64
+    Width = 388
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 3
+    BorderSpacing.Right = 6
+    ItemHeight = 13
+    OnChange = cmbExpressionChange
+    OnKeyDown = cmbExpressionKeyDown
+    TabOrder = 2
+  end
+  object txtResult: TMemo[5]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Label2
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = lblNewValue
+    Left = 6
+    Height = 132
+    Top = 108
+    Width = 388
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 3
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
+    ScrollBars = ssAutoVertical
+    TabOrder = 3
+  end
+  object cmbNewValue: TComboBox[6]
+    AnchorSideLeft.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
+    Height = 21
+    Top = 263
+    Width = 388
+    Anchors = [akLeft, akRight, akBottom]
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
+    ItemHeight = 13
+    OnKeyDown = cmbNewValueKeyDown
+    TabOrder = 4
+  end
+  object chkTypeCast: TCheckBox[7]
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 312
+    Height = 17
+    Top = 46
+    Width = 82
+    Anchors = [akTop, akRight]
+    BorderSpacing.Right = 6
+    Caption = 'chkTypeCast'
+    Checked = True
+    State = cbChecked
+    TabOrder = 1
+  end
+  object mnuHistory: TPopupMenu[8]
+    left = 72
+    top = 136
+    object MenuItem1: TMenuItem
+      Caption = 'None'
+      OnClick = MenuItem1Click
+    end
+    object MenuItem2: TMenuItem
+      Caption = 'Up'
+      OnClick = MenuItem2Click
+    end
+    object MenuItem3: TMenuItem
+      Caption = 'Down'
+      OnClick = MenuItem3Click
+    end
+  end
+end

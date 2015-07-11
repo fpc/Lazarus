@@ -1,0 +1,30 @@
+object Form1: TForm1
+  Left = 290
+  Height = 50
+  Top = 159
+  Width = 212
+  HorzScrollBar.Page = 211
+  VertScrollBar.Page = 49
+  Caption = 'Form1'
+  object ComboBox1: TComboBox
+    Left = 32
+    Height = 21
+    Top = 8
+    Width = 100
+    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+    MaxLength = 0
+    TabOrder = 0
+    Text = 'ComboBox1'
+  end
+  object ApplicationProperties1: TApplicationProperties
+    CaptureExceptions = True
+    HintColor = clInfoBk
+    HintHidePause = 2500
+    HintPause = 500
+    HintShortCuts = True
+    ShowHint = True
+    OnIdle = ApplicationProperties1Idle
+    left = 156
+    top = 9
+  end
+end

@@ -1,0 +1,19 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: reglazthread.sthreaddescription
+msgid "A Pascal unit with a subclass of TThread class."
+msgstr "Модуль Паскаля с потомком класса TThread."
+
+#: reglazthread.sthreadname
+msgid "Thread Object"
+msgstr "Объект потока исполнения"
+

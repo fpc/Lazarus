@@ -1,0 +1,98 @@
+object CodyDeclareVarDialog: TCodyDeclareVarDialog
+  Left = 291
+  Height = 331
+  Top = 243
+  Width = 410
+  Caption = 'CodyDeclareVarDialog'
+  ClientHeight = 331
+  ClientWidth = 410
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  Position = poScreenCenter
+  LCLVersion = '0.9.31'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 283
+    Width = 398
+    OKButton.Name = 'OKButton'
+    HelpButton.Name = 'HelpButton'
+    CloseButton.Name = 'CloseButton'
+    CancelButton.Name = 'CancelButton'
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 277
+    Top = 0
+    Width = 410
+    Align = alClient
+    BevelOuter = bvNone
+    ClientHeight = 277
+    ClientWidth = 410
+    TabOrder = 1
+    object TypeLabel: TLabel
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = TypeEdit
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 18
+      Top = 254
+      Width = 71
+      BorderSpacing.Left = 6
+      BorderSpacing.Right = 6
+      Caption = 'TypeLabel'
+      ParentColor = False
+    end
+    object TypeEdit: TEdit
+      AnchorSideLeft.Control = TypeLabel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = Panel1
+      AnchorSideBottom.Side = asrBottom
+      Left = 83
+      Height = 27
+      Top = 250
+      Width = 321
+      Anchors = [akLeft, akRight, akBottom]
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      TabOrder = 0
+      Text = 'TypeEdit'
+    end
+    object WhereRadioGroup: TRadioGroup
+      AnchorSideBottom.Control = TypeEdit
+      Left = 6
+      Height = 214
+      Top = 30
+      Width = 398
+      Align = alTop
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      AutoFill = True
+      BorderSpacing.Around = 6
+      Caption = 'WhereRadioGroup'
+      ChildSizing.LeftRightSpacing = 6
+      ChildSizing.TopBottomSpacing = 6
+      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+      ChildSizing.EnlargeVertical = crsHomogenousChildResize
+      ChildSizing.ShrinkHorizontal = crsScaleChilds
+      ChildSizing.ShrinkVertical = crsScaleChilds
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 1
+      TabOrder = 1
+    end
+    object RedefineLabel: TLabel
+      Left = 6
+      Height = 18
+      Top = 6
+      Width = 398
+      Align = alTop
+      BorderSpacing.Around = 6
+      Caption = 'RedefineLabel'
+      ParentColor = False
+    end
+  end
+end

@@ -1,0 +1,250 @@
+inherited EditorDividerDrawOptionsFrame: TEditorDividerDrawOptionsFrame
+  Height = 334
+  Width = 521
+  Anchors = [akTop]
+  ClientHeight = 334
+  ClientWidth = 521
+  TabOrder = 0
+  Visible = False
+  DesignLeft = 207
+  DesignTop = 207
+  object LanguageLabel: TLabel[0]
+    AnchorSideLeft.Control = LanguageComboBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = LanguageComboBox
+    AnchorSideTop.Side = asrCenter
+    Left = 206
+    Height = 18
+    Top = 12
+    Width = 98
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    Caption = 'LanguageLabel'
+    ParentColor = False
+  end
+  object DividerConfPanel: TPanel[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = LanguageComboBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 291
+    Top = 43
+    Width = 521
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 6
+    BevelOuter = bvNone
+    ClientHeight = 291
+    ClientWidth = 521
+    TabOrder = 1
+    object DividerSpinPanel: TPanel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = DividerConfPanel
+      AnchorSideRight.Control = DividerConfPanel
+      AnchorSideRight.Side = asrBottom
+      Left = 206
+      Height = 27
+      Top = 0
+      Width = 315
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BorderSpacing.Left = 6
+      BevelOuter = bvNone
+      ClientHeight = 27
+      ClientWidth = 315
+      TabOrder = 1
+      object DividerSpinLabel: TLabel
+        AnchorSideLeft.Control = DividerSpinEdit
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = DividerSpinEdit
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = DividerSpinPanel
+        AnchorSideRight.Side = asrBottom
+        Left = 53
+        Height = 18
+        Top = 4
+        Width = 262
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 3
+        Caption = 'DividerSpinLabel'
+        ParentColor = False
+      end
+      object DividerSpinEdit: TSpinEdit
+        AnchorSideLeft.Control = DividerSpinPanel
+        AnchorSideTop.Control = DividerSpinPanel
+        Left = 0
+        Height = 27
+        Top = 0
+        Width = 50
+        OnChange = DividerSpinEditChange
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 0
+      end
+    end
+    object NestLvlPanel: TPanel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = TopLvlPanel
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = DividerConfPanel
+      AnchorSideRight.Side = asrBottom
+      Left = 206
+      Height = 55
+      Top = 94
+      Width = 315
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BevelOuter = bvNone
+      ClientHeight = 55
+      ClientWidth = 315
+      TabOrder = 2
+      Visible = False
+      object NestLvlColorLabel: TLabel
+        AnchorSideLeft.Control = NestLvlPanel
+        AnchorSideTop.Control = NestLvlPanel
+        Left = 0
+        Height = 18
+        Top = 0
+        Width = 115
+        Caption = 'NestLvlColorLabel'
+        ParentColor = False
+      end
+      object NestLvlColorBox: TColorBox
+        AnchorSideLeft.Control = NestLvlPanel
+        AnchorSideTop.Control = NestLvlColorLabel
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = NestLvlColorCheckBox
+        Left = 0
+        Height = 31
+        Top = 24
+        Width = 136
+        DefaultColorColor = clWhite
+        Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames]
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 6
+        ItemHeight = 16
+        OnChange = NestLvlColorBoxChange
+        TabOrder = 0
+      end
+      object NestLvlColorCheckBox: TCheckBox
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = NestLvlColorBox
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = NestLvlPanel
+        AnchorSideRight.Side = asrBottom
+        Left = 142
+        Height = 22
+        Top = 28
+        Width = 167
+        Anchors = [akTop, akRight]
+        BorderSpacing.Right = 6
+        Caption = 'NestLvlColorCheckBox'
+        OnChange = NestLvlColorCheckBoxChange
+        TabOrder = 1
+      end
+    end
+    object TopLvlPanel: TPanel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = DividerSpinPanel
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = DividerConfPanel
+      AnchorSideRight.Side = asrBottom
+      Left = 206
+      Height = 55
+      Top = 33
+      Width = 315
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BevelOuter = bvNone
+      ClientHeight = 55
+      ClientWidth = 315
+      TabOrder = 3
+      object TopLvlColorLabel: TLabel
+        AnchorSideLeft.Control = TopLvlPanel
+        AnchorSideTop.Control = TopLvlPanel
+        Left = 0
+        Height = 18
+        Top = 0
+        Width = 106
+        Caption = 'TopLvlColorLabel'
+        ParentColor = False
+      end
+      object TopLvlColorBox: TColorBox
+        AnchorSideLeft.Control = TopLvlPanel
+        AnchorSideTop.Control = TopLvlColorLabel
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TopLvlColorCheckBox
+        Left = 0
+        Height = 31
+        Top = 24
+        Width = 145
+        DefaultColorColor = clWhite
+        Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames]
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 6
+        ItemHeight = 16
+        OnChange = TopLvlColorBoxChange
+        TabOrder = 0
+      end
+      object TopLvlColorCheckBox: TCheckBox
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = TopLvlColorBox
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = TopLvlPanel
+        AnchorSideRight.Side = asrBottom
+        Left = 151
+        Height = 22
+        Top = 28
+        Width = 158
+        Anchors = [akTop, akRight]
+        BorderSpacing.Right = 6
+        Caption = 'TopLvlColorCheckBox'
+        OnChange = TopLvlColorCheckBoxChange
+        TabOrder = 1
+      end
+    end
+    object DividerConfigListBox: TCheckListBox
+      AnchorSideLeft.Control = DividerConfPanel
+      AnchorSideTop.Control = DividerConfPanel
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = DividerConfPanel
+      AnchorSideBottom.Side = asrBottom
+      Left = 0
+      Height = 291
+      Top = 0
+      Width = 200
+      Anchors = [akTop, akLeft, akBottom]
+      ExtendedSelect = False
+      ItemHeight = 0
+      OnClick = DividerConfigListBoxClick
+      OnExit = DividerConfigListBoxClick
+      OnKeyUp = DividerConfigListBoxKeyUp
+      TabOrder = 0
+      TopIndex = -1
+    end
+  end
+  object LanguageComboBox: TComboBox[2]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 0
+    Height = 31
+    Top = 6
+    Width = 200
+    BorderSpacing.Top = 6
+    ItemHeight = 0
+    OnChange = LanguageComboBoxChange
+    OnExit = LanguageComboBoxExit
+    OnKeyDown = LanguageComboBoxKeyDown
+    Style = csDropDownList
+    TabOrder = 0
+  end
+end

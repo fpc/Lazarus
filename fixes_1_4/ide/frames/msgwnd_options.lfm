@@ -1,0 +1,200 @@
+object MsgWndOptionsFrame: TMsgWndOptionsFrame
+  Left = 0
+  Height = 355
+  Top = 0
+  Width = 495
+  ClientHeight = 355
+  ClientWidth = 495
+  TabOrder = 0
+  DesignLeft = 386
+  DesignTop = 221
+  object MWColorsGroupBox: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 172
+    Top = 0
+    Width = 495
+    Anchors = [akTop, akLeft, akRight]
+    Caption = 'MWColorsGroupBox'
+    ClientHeight = 147
+    ClientWidth = 491
+    TabOrder = 0
+    object MWColorListBox: TColorListBox
+      AnchorSideLeft.Control = MWColorsGroupBox
+      AnchorSideTop.Control = MWColorsGroupBox
+      AnchorSideRight.Control = MWSpeedSetColorsGroupBox
+      AnchorSideBottom.Control = MWColorBox
+      Left = 6
+      Height = 103
+      Top = 6
+      Width = 303
+      Style = [cbCustomColors]
+      OnGetColors = MWColorListBoxGetColors
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Around = 6
+      ItemHeight = 0
+      OnSelectionChange = MWColorListBoxSelectionChange
+      TabOrder = 0
+    end
+    object MWColorBox: TColorBox
+      AnchorSideLeft.Control = MWColorsGroupBox
+      AnchorSideRight.Control = MWSpeedSetColorsGroupBox
+      AnchorSideBottom.Control = MWColorsGroupBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 26
+      Top = 115
+      Width = 303
+      Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbCustomColor, cbPrettyNames]
+      Anchors = [akLeft, akRight, akBottom]
+      BorderSpacing.Around = 6
+      ItemHeight = 20
+      OnChange = MWColorBoxChange
+      TabOrder = 1
+    end
+    object MWSpeedSetColorsGroupBox: TGroupBox
+      Left = 315
+      Height = 135
+      Top = 6
+      Width = 170
+      Align = alRight
+      BorderSpacing.Around = 6
+      Caption = 'MWSpeedSetColorsGroupBox'
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 1
+      ClientHeight = 110
+      ClientWidth = 166
+      TabOrder = 2
+      object MWSetEditorColorsButton: TButton
+        Left = 0
+        Height = 30
+        Top = 0
+        Width = 209
+        AutoSize = True
+        Caption = 'MWSetEditorColorsButton'
+        OnClick = MWSetEditorColorsButtonClick
+        TabOrder = 0
+      end
+      object MWSetDefaultColorsButton: TButton
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Side = asrBottom
+        Left = 0
+        Height = 30
+        Top = 36
+        Width = 209
+        AutoSize = True
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 6
+        Caption = 'MWSetDefaultColorsButton'
+        OnClick = MWSetDefaultColorsButtonClick
+        TabOrder = 1
+      end
+    end
+  end
+  object MWOptionsLabel: TLabel
+    AnchorSideLeft.Control = MWOptsLeftBevel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = MWColorsGroupBox
+    AnchorSideTop.Side = asrBottom
+    Left = 70
+    Height = 20
+    Top = 178
+    Width = 115
+    BorderSpacing.Left = 10
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 10
+    BorderSpacing.Bottom = 6
+    Caption = 'MWOptionsLabel'
+    ParentColor = False
+  end
+  object MWOptsLeftBevel: TBevel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = MWOptionsLabel
+    AnchorSideTop.Side = asrCenter
+    Left = 0
+    Height = 3
+    Top = 187
+    Width = 60
+  end
+  object MWOptsRightBevel: TBevel
+    AnchorSideLeft.Control = MWOptionsLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = MWOptionsLabel
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 195
+    Height = 3
+    Top = 187
+    Width = 300
+    Anchors = [akTop, akLeft, akRight]
+  end
+  object MWShowIconsCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = MWOptionsLabel
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 24
+    Top = 204
+    Width = 185
+    BorderSpacing.Left = 6
+    Caption = 'MWShowIconsCheckBox'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 1
+  end
+  object MWFocusCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = MWAlwaysDrawFocusedCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 24
+    Top = 252
+    Width = 152
+    BorderSpacing.Left = 6
+    Caption = 'MWFocusCheckBox'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 2
+  end
+  object MWAlwaysDrawFocusedCheckBox: TCheckBox
+    AnchorSideLeft.Control = MWShowIconsCheckBox
+    AnchorSideTop.Control = MWShowIconsCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 24
+    Top = 228
+    Width = 250
+    Caption = 'MWAlwaysDrawFocusedCheckBox'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 3
+  end
+  object MWMaxProcsSpinEdit: TSpinEdit
+    AnchorSideLeft.Control = MWMaxProcsLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = MWFocusCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 134
+    Height = 28
+    Top = 276
+    Width = 50
+    BorderSpacing.Left = 2
+    TabOrder = 4
+  end
+  object MWMaxProcsLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = MWMaxProcsSpinEdit
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 20
+    Top = 280
+    Width = 126
+    BorderSpacing.Left = 6
+    Caption = 'MWMaxProcsLabel'
+    ParentColor = False
+  end
+end

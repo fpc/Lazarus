@@ -1,0 +1,155 @@
+object frFmtForm: TfrFmtForm
+  Left = 348
+  Height = 170
+  Top = 173
+  Width = 378
+  HorzScrollBar.Page = 315
+  VertScrollBar.Page = 130
+  ActiveControl = Panel1
+  BorderStyle = bsDialog
+  Caption = 'Variable formatting'
+  ClientHeight = 170
+  ClientWidth = 378
+  OnCreate = FormCreate
+  OnShow = frFmtFormShow
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object GroupBox2: TGroupBox
+    Left = 0
+    Height = 120
+    Top = 0
+    Width = 378
+    Align = alClient
+    Caption = 'Variable format'
+    ClientHeight = 104
+    ClientWidth = 376
+    TabOrder = 0
+    object ComboBox1: TComboBox
+      AnchorSideLeft.Control = GroupBox2
+      AnchorSideTop.Control = GroupBox2
+      Left = 6
+      Height = 29
+      Top = 6
+      Width = 109
+      HelpContext = 21
+      BorderSpacing.Around = 6
+      ItemHeight = 0
+      OnChange = ComboBox1Change
+      Style = csDropDownList
+      TabOrder = 0
+    end
+    object ComboBox2: TComboBox
+      AnchorSideLeft.Control = ComboBox1
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = GroupBox2
+      AnchorSideRight.Control = GroupBox2
+      AnchorSideRight.Side = asrBottom
+      Left = 121
+      Height = 29
+      Top = 6
+      Width = 249
+      HelpContext = 31
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      ItemHeight = 0
+      OnSelect = ComboBox2Select
+      Style = csDropDownList
+      TabOrder = 1
+    end
+    object Panel1: TPanel
+      Left = 8
+      Height = 33
+      Top = 47
+      Width = 278
+      BevelOuter = bvNone
+      ClientHeight = 33
+      ClientWidth = 278
+      FullRepaint = False
+      TabOrder = 2
+      Visible = False
+      object Label5: TLabel
+        Left = 0
+        Height = 16
+        Top = 8
+        Width = 91
+        Caption = '&Decimal digits'
+        FocusControl = Edit3
+        ParentColor = False
+      end
+      object Label6: TLabel
+        Left = 134
+        Height = 16
+        Top = 5
+        Width = 101
+        Caption = 'Fraction &symbol'
+        FocusControl = SplEdit
+        ParentColor = False
+      end
+      object SplEdit: TEdit
+        Left = 238
+        Height = 21
+        Top = 4
+        Width = 25
+        HelpContext = 41
+        MaxLength = 1
+        OnEnter = SplEditEnter
+        TabOrder = 0
+        Text = ','
+      end
+      object Edit3: TEdit
+        Left = 94
+        Height = 21
+        Top = 4
+        Width = 25
+        HelpContext = 51
+        TabOrder = 1
+        Text = '0'
+      end
+    end
+    object Panel2: TPanel
+      Left = 36
+      Height = 33
+      Top = 47
+      Width = 281
+      BevelOuter = bvNone
+      ClientHeight = 33
+      ClientWidth = 281
+      FullRepaint = False
+      TabOrder = 3
+      object Label1: TLabel
+        AnchorSideTop.Side = asrBottom
+        Left = 58
+        Height = 16
+        Top = 8
+        Width = 47
+        BorderSpacing.Around = 6
+        Caption = '&Format'
+        FocusControl = Edit1
+        ParentColor = False
+      end
+      object Edit1: TEdit
+        AnchorSideTop.Side = asrBottom
+        Left = 126
+        Height = 21
+        Top = 0
+        Width = 142
+        HelpContext = 61
+        BorderSpacing.Around = 6
+        TabOrder = 0
+      end
+    end
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 38
+    Top = 126
+    Width = 366
+    OKButton.Name = 'OKButton'
+    HelpButton.Name = 'HelpButton'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+end

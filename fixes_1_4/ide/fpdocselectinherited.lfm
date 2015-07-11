@@ -1,0 +1,32 @@
+object FPDocSelectInheritedDlg: TFPDocSelectInheritedDlg
+  Left = 282
+  Height = 75
+  Top = 158
+  Width = 330
+  Caption = 'FPDocSelectInheritedDlg'
+  ClientHeight = 75
+  ClientWidth = 330
+  OnCreate = FormCreate
+  LCLVersion = '0.9.27'
+  object InheritedComboBox: TComboBox
+    Left = 8
+    Height = 21
+    Top = 8
+    Width = 312
+    Anchors = [akTop, akLeft, akRight]
+    AutoComplete = False
+    ItemHeight = 13
+    ItemWidth = 0
+    TabOrder = 0
+    Text = 'InheritedComboBox'
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 26
+    Top = 43
+    Width = 318
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
+  end
+end

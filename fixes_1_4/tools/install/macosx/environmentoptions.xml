@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <EnvironmentOptions>
+    <Version Value="107" Lazarus="1.4.2"/>
+    <LazarusDirectory Value="/Developer/lazarus/">
+      <History Count="1">
+        <Item1 Value="/Developer/lazarus/"/>
+      </History>
+    </LazarusDirectory>
+    <CompilerFilename Value="/usr/local/bin/_PPCARCH_">
+      <History Count="3">
+        <Item1 Value="/usr/local/bin/_PPCARCH_"/>
+        <Item2 Value="/usr/bin/_PPCARCH_"/>
+        <Item3 Value="/opt/fpc/_PPCARCH_"/>
+      </History>
+    </CompilerFilename>
+    <FPCSourceDirectory Value="/usr/local/share/fpcsrc/">
+      <History Count="1">
+        <Item1 Value="/usr/local/share/fpcsrc/"/>
+      </History>
+    </FPCSourceDirectory>
+    <MakeFilename>
+      <History Count="1">
+        <Item1 Value="/usr/bin/make"/>
+      </History>
+    </MakeFilename>
+    <TestBuildDirectory Value="~/tmp/">
+      <History Count="3">
+        <Item1 Value="/tmp/"/>
+        <Item2 Value="/var/tmp/"/>
+        <Item3 Value="$ENV(TMPDIR)"/>
+      </History>
+    </TestBuildDirectory>
+    <Debugger Class="TGDBMIDebugger"/>
+    <DebuggerFilename Value="/usr/bin/gdb"/>
+  </EnvironmentOptions>
+</CONFIG>

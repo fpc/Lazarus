@@ -1,0 +1,19 @@
+object UpdateView: TUpdateView
+  Left = 369
+  Height = 273
+  Top = 480
+  Width = 421
+  Caption = 'UpdateView'
+  ClientHeight = 273
+  ClientWidth = 421
+  LCLVersion = '0.9.31'
+  object edUpdate: TMemo
+    Left = 0
+    Height = 273
+    Top = 0
+    Width = 421
+    Align = alClient
+    ScrollBars = ssAutoBoth
+    TabOrder = 0
+  end
+end

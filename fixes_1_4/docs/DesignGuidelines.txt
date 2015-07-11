@@ -1,0 +1,40 @@
+This is for Lazarus developers:
+
+Coding style:
+- Since one style is easier to read, Lazarus follows the Borland Coding style
+  guidelines. Of course, almost anyone will find some points there, that are
+  arguably less readable than other styles. That's OK, just try to follow at
+  least 90%.
+- Try to avoid unit circles. This makes it easier to navigate and allows to
+  split the unit when it is growing.
+- Minimize the number of calls from Interfaces to LCL, when performing an
+  action requested by the LCL. The interfaces only notify the LCL, never forces
+  something. The LCL decides.
+  Naming convention:
+    Notifications for TControl decendants should be named CNxxx.
+- All code must work with all checks (range, io, overflow, stack) on. Beside
+  that this helps debugging, some users put these checks into their fpc.cfg, so
+  they are applied to whole Lazarus. Including packages and examples.
+
+
+New files:
+- Every file should start with a header containing the license and a few lines
+  describing the content.
+- Pascal sources should have lowercase filenames (.pas, .pp, .inc, .lfm, .lrs)
+
+Include files:
+- should start with the {%MainUnit } directive
+
+Packages:
+- should have an .lpl entry in packager/globallinks/
+  You can use "./tools/lplupdate -c" to find missing/outdated lpl files.
+- must have all fields in "Description"
+
+Dialogs (modal forms):
+- Close on Escape (if key not used otherwise)
+- Define default button and Return activates it (if key not used)
+- Medium to complex dialogs should be resizable and size is stored
+
+Main Menu Items:
+- Should have a key in keymapping.pp
+

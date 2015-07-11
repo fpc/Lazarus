@@ -1,0 +1,74 @@
+object frVarForm: TfrVarForm
+  Left = 555
+  Height = 343
+  Top = 187
+  Width = 297
+  HorzScrollBar.Page = 216
+  VertScrollBar.Page = 316
+  ActiveControl = ValList
+  BorderStyle = bsDialog
+  Caption = 'Variables'
+  ClientHeight = 343
+  ClientWidth = 297
+  Font.Color = clBlack
+  OnActivate = FormActivate
+  OnCreate = FormCreate
+  OnDeactivate = FormDeactivate
+  OnKeyDown = FormKeyDown
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object Label1: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 18
+    Top = 6
+    Width = 62
+    BorderSpacing.Around = 6
+    Caption = '&Category:'
+    FocusControl = ValCombo
+    ParentColor = False
+  end
+  object ValList: TListBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ValCombo
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
+    Height = 270
+    Top = 67
+    Width = 285
+    HelpContext = 22
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    ClickOnSelChange = False
+    IntegralHeight = True
+    ItemHeight = 0
+    OnDblClick = ValListDblClick
+    OnKeyDown = ValListKeyDown
+    ParentFont = False
+    TabOrder = 0
+    TopIndex = -1
+  end
+  object ValCombo: TComboBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 31
+    Top = 30
+    Width = 285
+    HelpContext = 32
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    ItemHeight = 0
+    OnChange = ValComboClick
+    Style = csDropDownList
+    TabOrder = 1
+  end
+end

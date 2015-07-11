@@ -1,0 +1,2571 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2014-11-21 04:02+0300\n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+
+#: ipconst.cacheadding
+msgid "Caching item (%s = %s)"
+msgstr "Кэшируется элемент (%s = %s)"
+
+#: ipconst.cachecheckfreshness
+msgid "Checking Freshness (%s)"
+msgstr "Проверка новизны (%s)"
+
+#: ipconst.cachedirnotexist
+msgid "Cache directory %s does not exist."
+msgstr "Каталог кэша %s не существует."
+
+#: ipconst.cacheretrieving
+msgid "Loading from Cache (%s = %s)"
+msgstr "Загрузка из кэша (%s = %s)"
+
+#: ipconst.httpcantloadgraphic
+msgid "Unable to load graphic %s"
+msgstr "Невозможно загрузить изображение %s"
+
+#: ipconst.httpconnect
+msgid "Connected: (%s)"
+msgstr "Соединено: (%s)"
+
+#: ipconst.httpdisconnect
+msgid "Disconnected: (%s), %s Total bytes received"
+msgstr "Разъединено: (%s), всего получено %s байт"
+
+#: ipconst.httpdownload
+msgid "Download: (%s), Error downloading"
+msgstr "Загрузка: (%s), ошибка загрузки"
+
+#: ipconst.httpget
+msgid "GET: (%s)"
+msgstr "GET: (%s)"
+
+#: ipconst.httpgeterror
+msgid "GET: (%s) FAILED"
+msgstr "GET: (%s) - неудачно"
+
+#: ipconst.httpgotheader
+msgid "Download: (%s), Got Header Data"
+msgstr "Загрузка: (%s), получены данные заголовка"
+
+#: ipconst.httphead
+msgid "HEAD: (%s)"
+msgstr "HEAD: (%s)"
+
+#: ipconst.httpheaderror
+msgid "HEAD: (%s) FAILED"
+msgstr "HEAD: (%s) - неудачно"
+
+#: ipconst.httpnoheaderdata
+msgid "No Header Data for Entity"
+msgstr "Для сущности отсутствуют данные заголовка"
+
+#: ipconst.httppost
+msgid "POST: (%s)"
+msgstr "POST: (%s)"
+
+#: ipconst.httpposterror
+msgid "POST: (%s) FAILED"
+msgstr "POST: (%s) передать не удалось"
+
+#: ipconst.httpprogress
+msgid "Progress Made: (%s), %s bytes received"
+msgstr "Прогресс: (%s), получено %s байт"
+
+#: ipconst.httpsizemismatch
+msgid "Download: (%s), Size Mismatch expecting %s , got %s"
+msgstr "Загрузка: (%s), несоответствие размера: ожидалось %s, получено %s"
+
+#: ipconst.providerunknownformat
+msgid "Don't know how to handle %s"
+msgstr "Неизвестно, как обработать %s"
+
+#: ipconst.providerunknownpicture
+msgid "Invalid picture format"
+msgstr "Неверный формат изображения"
+
+#: ipconst.providerunknownrequest
+msgid "Unknown request type \"%s\""
+msgstr "Неизвестный тип запроса  \"%s\""
+
+#: ipconst.saccessprocerr
+msgid "Win32 error loading '%s' pointer: %s"
+msgstr "Ошибка Win32 при загрузке указателя '%s: %s"
+
+#: ipconst.sactiveerr
+msgid "Cannot set property on an active socket"
+msgstr "Установка свойства активного сокета невозможна"
+
+#: ipconst.sattemptingtoread
+msgid "Attempting to read "
+msgstr "Попытка чтения"
+
+#: ipconst.sattemptingtowrite
+msgid "Attempting to write "
+msgstr "Попытка записи"
+
+#: ipconst.sbadframelistobject
+msgid "Unrecognized object of class %s in GIF Frame List"
+msgstr "Неопознанный объект класса %s в списке фреймов GIF"
+
+#: ipconst.sbadimagelibfileformat
+msgid "Unrecognized file format"
+msgstr "Неопознанный формат файла"
+
+#: ipconst.sbadimagelibstream
+msgid "ImageLib must use TMemoryStreams"
+msgstr "ImageLib должен  использовать TMemoryStream'ы"
+
+#: ipconst.sbadlinelength
+msgid "Invalid line length"
+msgstr "Неверная длина строки"
+
+#: ipconst.sbadlineterminator
+msgid "Invalid line terminator"
+msgstr "Неверный признак конца строки"
+
+#: ipconst.sbadoffset
+msgid "Invalid stream offset"
+msgstr "Неверное смещение в потоке (stream)"
+
+#: ipconst.sbadpath
+msgid "Path does not exist"
+msgstr "Путь не существует"
+
+#: ipconst.sbadseekorigin
+msgid "Invalid seek origin"
+msgstr "Неверное место начала поиска"
+
+#: ipconst.sbibuffernotassigned
+msgid "Buffer not assigned"
+msgstr "Буфер не назначен"
+
+#: ipconst.sbinhexbadchar
+msgid "Invalid BinHex character"
+msgstr "Неверный символ BinHex"
+
+#: ipconst.sbinhexbaddatacrc
+msgctxt "ipconst.sbinhexbaddatacrc"
+msgid "Bad header CRC"
+msgstr "Не сходится CRC заголовка"
+
+#: ipconst.sbinhexbadformat
+msgid "Invalid BinHex format"
+msgstr "Неверный формат BinHex"
+
+#: ipconst.sbinhexbadheadercrc
+msgctxt "ipconst.sbinhexbadheadercrc"
+msgid "Bad header CRC"
+msgstr "Не сходится CRC заголовка"
+
+#: ipconst.sbinhexcolonexpected
+msgid "\":\" expected"
+msgstr "ожидается \":\""
+
+#: ipconst.sbinhexlengtherr
+msgid "Invalid data length"
+msgstr "Неверная длина данных"
+
+#: ipconst.sbinhexoddchar
+msgid "One odd character"
+msgstr "Один нечетный символ"
+
+#: ipconst.sbinhexresourceforkerr
+msgid "Resource fork present"
+msgstr "Имеется ресурс-форк"
+
+#: ipconst.sbrokerdownloadreq
+msgid "Download %s?"
+msgstr "Загрузить %s?"
+
+#: ipconst.sbrokerdownloadtitle
+msgid "Download?"
+msgstr "Загрузить?"
+
+#: ipconst.sbytesfromstream
+msgid " bytes from stream"
+msgstr " байт из потока"
+
+#: ipconst.sbytesreadfromstream
+msgid " bytes read from stream"
+msgstr " байт прочитано из потока"
+
+#: ipconst.sbytestostream
+msgid " bytes to stream"
+msgstr " байт в поток"
+
+#: ipconst.sbyteswrittentostream
+msgid " bytes written to stream"
+msgstr " байт записано в поток"
+
+#: ipconst.scannotwritetostream
+msgid "Cannot write to stream"
+msgstr "Невозможно записать в поток"
+
+#: ipconst.scounttoosmall
+msgid "%s: new count too small"
+msgstr "%s: новое количество слишком мало"
+
+#: ipconst.sdestroying
+msgid "Destroying"
+msgstr "Уничтожение"
+
+#: ipconst.seventconnect
+msgid "Connect: Loc: %s Rem: %s"
+msgstr "Соединение: Loc: %s Rem: %s"
+
+#: ipconst.seventdisconnect
+#| msgid "Close:   Loc: %s Rem: %s"
+msgid "Close: Loc: %s Rem: %s"
+msgstr "Завершение: Loc: %s Rem: %s"
+
+#: ipconst.sfilename
+msgid " Filename: "
+msgstr " Имя файла: "
+
+#: ipconst.sftpbytestransferred
+msgid " bytes Transferred"
+msgstr " байт передано"
+
+#: ipconst.sftpclose
+msgctxt "ipconst.sftpclose"
+msgid "Disconnected"
+msgstr "Разъединено"
+
+#: ipconst.sftpcomplete
+msgid "Transfer complete. "
+msgstr "Передача завершена."
+
+#: ipconst.sftpdelete
+msgid "Deleting "
+msgstr "Удаление"
+
+#: ipconst.sftplogin
+msgid " logged in"
+msgstr " вход выполнен"
+
+#: ipconst.sftplogout
+msgid " logged out"
+msgstr " вы не вошли"
+
+#: ipconst.sftpopen
+msgid "Connected to "
+msgstr "Соединено с"
+
+#: ipconst.sftprename
+msgid "Renaming "
+msgstr "Переименование"
+
+#: ipconst.sftprestart
+msgid "Attempting to re-start transfer of "
+msgstr "Попытка заново начать передачу"
+
+#: ipconst.sftpretrieve
+msgid "Retrieving "
+msgstr "Загрузка"
+
+#: ipconst.sftpstore
+msgid "Storing "
+msgstr "Помещение"
+
+#: ipconst.sftptimeout
+msgid "Transfer timed out"
+msgstr "Передача прекращена по тайм-ауту"
+
+#: ipconst.sftpuserabort
+msgid "Transfer aborted by user"
+msgstr "Передача прервана пользователем"
+
+#: ipconst.shtmlcharstackoverfl
+msgid "Character stack overflow"
+msgstr "Переполнение стека символов"
+
+#: ipconst.shtmldashexp
+msgid "- expected"
+msgstr "- ожидается"
+
+#: ipconst.shtmldefbrowsecaption
+#| msgid "Browse..."
+msgid "Browse ..."
+msgstr "Обзор ..."
+
+#: ipconst.shtmldefresetcaption
+msgid "Reset"
+msgstr "Сброс"
+
+#: ipconst.shtmldefsubmitcaption
+msgid "Submit"
+msgstr "Отправить"
+
+#: ipconst.shtmlencnotsupported
+msgid " encoding not supported"
+msgstr " кодировка не поддерживается"
+
+#: ipconst.shtmlexp
+msgid " expected"
+msgstr " ожидается"
+
+#: ipconst.shtmlinternal
+msgid "Internal error"
+msgstr "Внутренняя ошибка"
+
+#: ipconst.shtmlinvalign
+msgid "Invalid alignment specified"
+msgstr "Задано неверное выравнивание"
+
+#: ipconst.shtmlinvcolor
+msgid "Invalid color constant:"
+msgstr "Неверная цветовая константа:"
+
+#: ipconst.shtmlinvdir
+msgid "Invalid dir value specified"
+msgstr "Указано неверное имя каталога"
+
+#: ipconst.shtmlinvframe
+msgid "Invalid frame specified"
+msgstr "Указан неверный фрейм"
+
+#: ipconst.shtmlinvgraphic
+msgid "Invalid graphic returned"
+msgstr "Возвращена неверная графика"
+
+#: ipconst.shtmlinvint
+msgid "Invalid integer constant"
+msgstr "Неверная целая константа"
+
+#: ipconst.shtmlinvmethod
+msgid "Invalid method specified"
+msgstr "Указан неверный метод"
+
+#: ipconst.shtmlinvpicture
+msgid "Invalid picture returned"
+msgstr "Возвращено неверное изображение"
+
+#: ipconst.shtmlinvrule
+msgid "Invalid rule specified"
+msgstr "Задано неверное правило"
+
+#: ipconst.shtmlinvscope
+msgid "Invalid scope specified"
+msgstr "Задана неверная область действия"
+
+#: ipconst.shtmlinvscroll
+msgid "Invalid scrolling specified"
+msgstr "Задана неверный шаг прокрутки"
+
+#: ipconst.shtmlinvshape
+msgid "Invalid shape specified"
+msgstr "Задан неверный шаблон"
+
+#: ipconst.shtmlinvtype
+msgid "Invalid type specified"
+msgstr "Задан неверный тип"
+
+#: ipconst.shtmlinvvaltype
+msgid "Invalid value type specified"
+msgstr "Указан неверный тип значения"
+
+#: ipconst.shtmllineerror
+msgid "Error \"%s\" at line %d, position %d"
+msgstr "Ошибка \"%s\" на строке %d, позиция %d"
+
+#: ipconst.shtmlnodataprovider
+msgid "No data provider assigned"
+msgstr "Не назначен провайдер данных"
+
+#: ipconst.shtmlnogetimage
+msgid "No OnGetImage event handler assigned"
+msgstr "Не назначен обработчик события OnGetImage"
+
+#: ipconst.shtmlnographic
+msgid "Picture object contains no graphic object"
+msgstr "Объект изображения не содержит графического объекта"
+
+#: ipconst.shtmlnotcontainer
+msgid "Parent is not a container"
+msgstr "Родитель не является контейнером"
+
+#: ipconst.shtmlresunavail
+msgid "Resource unavailable:"
+msgstr "Ресурс недоступен:"
+
+#: ipconst.shtmltokenstackoverfl
+msgid "Token stack overflow"
+msgstr "Переполнение стека элементов"
+
+#: ipconst.shtmlunknowntok
+msgid "Unknown token"
+msgstr "Неизвестный элемент"
+
+#: ipconst.shtmlunsupprotocol
+msgid "Unsupported protocol in URL:%s"
+msgstr "Неподдерживаемый протокол в URL:%s"
+
+#: ipconst.sicmpecho
+msgid ""
+"Echo reply (Hop number: %d)\n"
+"             Status = %d\n"
+"             RTTime = %d\n"
+"             Ttl = %d\n"
+"             Tos = %d\n"
+"             IpFlags = %d\n"
+msgstr ""
+"Эхо-ответ (Число хопов: %d)\n"
+"             Статус = %d\n"
+"             RTTime = %d\n"
+"             Ttl = %d\n"
+"             Tos = %d\n"
+"             Флаги IP = %d\n"
+
+#: ipconst.sicmpechostring
+msgid "Echo string: %s"
+msgstr "Эхо-строка: %s"
+
+#: ipconst.sicmppingstart
+msgid "Pinging %s with %d bytes data"
+msgstr "Пинг %s %d байтами данных"
+
+#: ipconst.sicmpthreadexecute
+msgid "Thread %d executing (Hop number = %d)"
+msgstr "Выполнение потока %d (номер хопа = %d)"
+
+#: ipconst.sicmpthreadterminate
+msgid "Thread %d terminating (Hop number = %d)"
+msgstr "Завершение потока исполнения %d (номер хопа = %d)"
+
+#: ipconst.sicmptracecomplete
+msgid "Trace complete (%s), %d hops"
+msgstr "Трассировка завершена (%s), %d хопов"
+
+#: ipconst.sicmptracestart
+msgid "Trace to %s started"
+msgstr "Начата трассировка %s"
+
+#: ipconst.sindexerr
+msgid "Index out of range"
+msgstr "Индекс вне границ диапазона"
+
+#: ipconst.sinvalrespcode
+msgid "Invalid response code"
+msgstr "Неверный код ответа"
+
+#: ipconst.sinvitemsize
+msgid "TIpTerminalArray.GetItemPtr: invalid item size"
+msgstr "TIpTerminalArray.GetItemPtr: неверный размер элемента"
+
+#: ipconst.sinvscrollrow
+msgid "TIpTerminalBuffer.SetScrollRegion: invalid row number(s)"
+msgstr "TIpTerminalBuffer.SetScrollRegion: неверный номер строки"
+
+#: ipconst.sipicmp_bad_destination
+msgid "Bad destination"
+msgstr "Неверное направление"
+
+#: ipconst.sipicmp_bad_option
+msgid "Bad option"
+msgstr "Неверный параметр"
+
+#: ipconst.sipicmp_bad_req
+msgid "Bad request"
+msgstr "Неверный запрос"
+
+#: ipconst.sipicmp_bad_route
+msgid "Bad route"
+msgstr "Неверный маршрут"
+
+#: ipconst.sipicmp_buf_too_small
+msgid "Buffer too small"
+msgstr "Буфер слишком мал"
+
+#: ipconst.sipicmp_dest_host_unreachable
+msgid "Destination host unreachable"
+msgstr "Целевая машина недоступна"
+
+#: ipconst.sipicmp_dest_net_unreachable
+msgid "Destination network unreachable"
+msgstr "Целевая сеть недоступна"
+
+#: ipconst.sipicmp_dest_port_unreachable
+msgid "Destination port unreachable"
+msgstr "Порт целевой машины недоступен"
+
+#: ipconst.sipicmp_dest_prot_unreachable
+msgid "Destination protocol unreachable"
+msgstr "Протокол целевой машины недоступен"
+
+#: ipconst.sipicmp_hw_error
+msgid "Hardware error"
+msgstr "Аппаратная ошибка"
+
+#: ipconst.sipicmp_no_resources
+msgid "Destination does not have resources to complete"
+msgstr "Целевая машина не имеет ресурсов для завершения операции"
+
+#: ipconst.sipicmp_option_too_big
+msgid "Option too large"
+msgstr "Параметр слишком велик"
+
+#: ipconst.sipicmp_packet_too_big
+msgid "Packet too large"
+msgstr "Слишком большой пакет"
+
+#: ipconst.sipicmp_param_problem
+msgid "Parameter problem"
+msgstr "Ошибка параметра"
+
+#: ipconst.sipicmp_req_timed_out
+msgid "Request timed out"
+msgstr "Время запроса истекло"
+
+#: ipconst.sipicmp_source_quench
+msgid "Destination is busy"
+msgstr "Целевая машина занята"
+
+#: ipconst.sipicmp_success
+msgid "Successful"
+msgstr "Успешно"
+
+#: ipconst.sipicmp_ttl_expired_reassem
+msgid "Time to live expired during reassembly"
+msgstr "Время жизни истекло во время пересборки"
+
+#: ipconst.sipicmp_ttl_expired_transit
+msgid "Time to live expired during transmit"
+msgstr "Время жизни истекло во время передачи"
+
+#: ipconst.sipicmp_unknown
+msgid "Unknown status"
+msgstr "Неизвестный статус"
+
+#: ipconst.slesszero
+msgid "%s: new col count %d is less than zero"
+msgstr "%s: новое число столбцов %d меньше нуля"
+
+#: ipconst.slinelengtherr
+msgid "Invalid line length for encoded text"
+msgstr "Неверная длина строки для закодированного текста"
+
+#: ipconst.slistnotassigned
+msgid "List not assigned"
+msgstr "Список не назначен"
+
+#: ipconst.slogarticle
+msgid "Generating OnArticle event"
+msgstr "Создание события OnArticle"
+
+#: ipconst.slogauthlogin
+msgid " (ssAuthLogin)"
+msgstr " (ssAuthLogin)"
+
+#: ipconst.slogauthpass
+msgid " (ssAuthPass)"
+msgstr " (ssAuthPass)"
+
+#: ipconst.slogauthuser
+msgid " (ssAuthUser)"
+msgstr " (ssAuthUser)"
+
+#: ipconst.slogdata
+msgid " (ssData)"
+msgstr " (ssData)"
+
+#: ipconst.slogehlo
+msgid " (ssEhlo)"
+msgstr " (ssEhlo)"
+
+#: ipconst.slogencodeactionstart
+msgid "Generating OnEncodeAction(Start)"
+msgstr "Создание OnEncodeAction(Start)"
+
+#: ipconst.slogencodeactionstop
+msgid "Generating OnEncodeAction(Stop)"
+msgstr "Создание OnEncodeAction(Stop)"
+
+#: ipconst.slogexpand
+msgid " (ssExpand)"
+msgstr " (ssExpand)"
+
+#: ipconst.sloghelo
+msgid " (ssHelo)"
+msgstr " (ssHelo)"
+
+#: ipconst.sloghelp
+msgid " (ssHelp)"
+msgstr " (ssHelp)"
+
+#: ipconst.slogicmpclass
+msgid "[ICMP] "
+msgstr "[ICMP] "
+
+#: ipconst.slogmailfrom
+msgid " (ssMailFrom)"
+msgstr " (ssMailFrom)"
+
+#: ipconst.slogmultiline
+msgid "Generating OnMultiLineResponse event"
+msgstr "Создание события OnMultiLineResponse"
+
+#: ipconst.slognextmessagenotready
+msgid "Next message not ready"
+msgstr "Следующее сообщение не готово"
+
+#: ipconst.slognextmessageready
+msgid "Next message ready"
+msgstr "Следующее сообщение готово"
+
+#: ipconst.slognntpclass
+msgid "[NNTP] "
+msgstr "[NNTP] "
+
+#: ipconst.slognsarticle
+msgid " (nsArticle)"
+msgstr " (nsArticle)"
+
+#: ipconst.slognsauthpass
+msgid " (nsAuthPass)"
+msgstr " (nsAuthPass)"
+
+#: ipconst.slognsauthuser
+msgid " (nsAuthUser)"
+msgstr " (nsAuthUser)"
+
+#: ipconst.slognsbody
+msgid " (nsBody)"
+msgstr " (nsBody)"
+
+#: ipconst.slognsconnect
+msgid " (nsConnect)"
+msgstr " (nsConnect)"
+
+#: ipconst.slognsdate
+msgid " (nsDate)"
+msgstr " (nsDate)"
+
+#: ipconst.slognsgroup
+msgid " (nsGroup)"
+msgstr " (nsGroup)"
+
+#: ipconst.slognshead
+msgid " (nsHead)"
+msgstr " (nsHead)"
+
+#: ipconst.slognshelp
+msgid " (nsHelp)"
+msgstr " (nsHelp)"
+
+#: ipconst.slognslast
+msgid " (nsLast)"
+msgstr " (nsLast)"
+
+#: ipconst.slognslist
+msgid " (nsList)"
+msgstr " (nsList)"
+
+#: ipconst.slognslistactivetimes
+msgid " (nsListActiveTimes)"
+msgstr " (nsListActiveTimes)"
+
+#: ipconst.slognslistdistribpats
+msgid " (nsListDistribPats)"
+msgstr " (nsListDistribPats)"
+
+#: ipconst.slognslistdistributions
+msgid " (nsListDistributions)"
+msgstr " (nsListDistributions)"
+
+#: ipconst.slognslistext
+msgid " (nsListExt)"
+msgstr " (nsListExt)"
+
+#: ipconst.slognslistgroup
+msgid " (nsListGroup)"
+msgstr " (nsListGroup)"
+
+#: ipconst.slognslistnewsgroups
+msgid " (nsListNewsGroups)"
+msgstr " (nsListNewsGroups)"
+
+#: ipconst.slognslistoverviewfmt
+msgid " (nsListOverviewFmt)"
+msgstr " (nsListOverviewFmt)"
+
+#: ipconst.slognsnewgroups
+msgid " (nsNewGroups)"
+msgstr " (nsNewGroups)"
+
+#: ipconst.slognsnewnews
+msgid " (nsNewNews)"
+msgstr " (nsNewNews)"
+
+#: ipconst.slognsnext
+msgid " (nsNext)"
+msgstr " (nsNext)"
+
+#: ipconst.slognsnoop
+msgid " (nsNoOp)"
+msgstr " (nsNoOp)"
+
+#: ipconst.slognsover
+msgid " (nsOver)"
+msgstr " (nsOver)"
+
+#: ipconst.slognspat
+msgid " (nsPat)"
+msgstr " (nsPat)"
+
+#: ipconst.slognspost
+msgid " (nsPost)"
+msgstr " (nsPost)"
+
+#: ipconst.slognsprepost
+msgid " (nsPrePost)"
+msgstr " (nsPrePost)"
+
+#: ipconst.slognsquit
+msgid " (nsQuit)"
+msgstr " (nsQuit)"
+
+#: ipconst.slognsspecial
+msgid " (nsSpecial)"
+msgstr " (nsSpecial)"
+
+#: ipconst.slognsstat
+msgid " (nsStat)"
+msgstr " (nsStat)"
+
+#: ipconst.slogntauthenticate
+msgid " (ntAuthenticate)"
+msgstr " (ntAuthenticate)"
+
+#: ipconst.slogntnewnews
+msgid " (ntNewNews)"
+msgstr " (ntNewNews)"
+
+#: ipconst.slogntnotask
+msgid " (ntNoTask)"
+msgstr " (ntNoTask)"
+
+#: ipconst.slogntpostto
+msgid " (ntPostTo)"
+msgstr " (ntPostTo)"
+
+#: ipconst.slogntselectgroup
+msgid " (ntSelectGroup)"
+msgstr " (ntSelectGroup)"
+
+#: ipconst.slogoslist
+msgid " (psList)"
+msgstr " (psList)"
+
+#: ipconst.slogpop3class
+msgid "[POP3] "
+msgstr "[POP3] "
+
+#: ipconst.slogpop3message
+msgid "Generating OnMessage event"
+msgstr "Создание события OnMessage"
+
+#: ipconst.slogpop3top
+msgid "Generating OnTop event"
+msgstr "Создание события OnTop"
+
+#: ipconst.slogpsapop
+msgid " (psApop)"
+msgstr " (psApop)"
+
+#: ipconst.slogpsconnect
+msgid " (psConnect)"
+msgstr " (psConnect)"
+
+#: ipconst.slogpsdele
+msgid " (psDele)"
+msgstr " (psDele)"
+
+#: ipconst.slogpsnoop
+msgid " {psNoOp)"
+msgstr " (psNoOp)"
+
+#: ipconst.slogpspass
+msgid " (psPass)"
+msgstr " (psPass)"
+
+#: ipconst.slogpsquit
+msgid " (psQuit)"
+msgstr " (psQuit)"
+
+#: ipconst.slogpsretr
+msgid " (psRetr)"
+msgstr " (psRetr)"
+
+#: ipconst.slogpsrset
+msgid " (psRSet)"
+msgstr " (psRSet)"
+
+#: ipconst.slogpsspecial
+msgid " (psSpecial)"
+msgstr " (psSpecial)"
+
+#: ipconst.slogpsstat
+msgid " (psStat)"
+msgstr " (psStat)"
+
+#: ipconst.slogpstop
+msgid " (psTop)"
+msgstr " (psTop)"
+
+#: ipconst.slogpsuidl
+msgid " (psUidl)"
+msgstr " (psUidl)"
+
+#: ipconst.slogpsuser
+msgid " (psUser)"
+msgstr " (psUser)"
+
+#: ipconst.slogptlist
+msgid " (ptList)"
+msgstr " (ptList)"
+
+#: ipconst.slogptlogon
+msgid " (ptLogon)"
+msgstr " (ptLogon)"
+
+#: ipconst.slogptnone
+msgid " (ptNone)"
+msgstr " (ptNone)"
+
+#: ipconst.slogptuidl
+msgid " (ptUIDL)"
+msgstr " (ptUIDL)"
+
+#: ipconst.slogquit
+msgid " (ssQuit)"
+msgstr " (ssQuit)"
+
+#: ipconst.slogrcptbcc
+msgid " (ssRcptBcc)"
+msgstr " (ssRcptBcc)"
+
+#: ipconst.slogrcptcc
+msgid " (ssRcptCc)"
+msgstr " (ssRcptCc)"
+
+#: ipconst.slogrcptto
+msgid " (ssRcptTo)"
+msgstr " (ssRcptTo)"
+
+#: ipconst.slogresponse
+msgid "Generating OnResponse event, Code = "
+msgstr "Создание события OnResponse, код = "
+
+#: ipconst.slogrset
+msgid " (ssRSet)"
+msgstr " (ssRSet)"
+
+#: ipconst.slogsaml
+msgid " (ssSaml)"
+msgstr " (ssSaml)"
+
+#: ipconst.slogsend
+msgid " (ssSend)"
+msgstr " (ssSend)"
+
+#: ipconst.slogsendenvelope
+msgid " (ssSendEnvelope)"
+msgstr " (ssSendEnvelope)"
+
+#: ipconst.slogsendmessage
+msgid " (ssSendMessage)"
+msgstr " (ssSendMessage)"
+
+#: ipconst.slogsmtpclass
+msgid "[SMTP] "
+msgstr "[SMTP] "
+
+#: ipconst.slogsmtpnextmessage
+msgid "Generating OnNextMessage event"
+msgstr "Создание события OnNextMessage"
+
+#: ipconst.slogsoml
+msgid " (ssSoml)"
+msgstr " (ssSoml)"
+
+#: ipconst.slogspecial
+msgid " (ssSpecial)"
+msgstr " (ssSpecial)"
+
+#: ipconst.slogssconnect
+msgid " (ssConnect)"
+msgstr " (ssConnect)"
+
+#: ipconst.slogssnoop
+msgid " (ssNoOp)"
+msgstr " (ssNoOp)"
+
+#: ipconst.slogstate
+msgid "State change: "
+msgstr "Изменение состояния: "
+
+#: ipconst.slogstlogon
+msgid " (stLogon)"
+msgstr " (stLogon)"
+
+#: ipconst.slogstnotask
+msgid " (stNoTask)"
+msgstr " (stNoTask)"
+
+#: ipconst.slogstsendmail
+msgid " (stSendMail)"
+msgstr " (stSendMail)"
+
+#: ipconst.slogtaskcomplete
+msgid "Generating OnTaskComplete event "
+msgstr "Создание события OnTaskComplete"
+
+#: ipconst.slogtaskstart
+msgid "Starting task: "
+msgstr "Запуск задачи:"
+
+#: ipconst.slogturn
+msgid " (ssTurn)"
+msgstr " (ssTurn)"
+
+#: ipconst.slogverify
+msgid " (ssVerify)"
+msgstr " (ssVerify)"
+
+#: ipconst.smemmapfilenamerequired
+msgid "You must specify a file name for TIpMemMapStream"
+msgstr "Вы должны указать имя файла для TIpMemMapStream"
+
+#: ipconst.smemmapmustbeclosed
+msgid "The %s method requires the TIpMemMapStream instance to be closed"
+msgstr "Метод %s требует закрытия экземпляра TIpMemMapStream"
+
+#: ipconst.smemmapmustbeopen
+msgid "The %s method requires the TIpMemMapStream instance to be opened"
+msgstr "Метод %s требует открытия экземпляра TIpMemMapStream"
+
+#: ipconst.snntpcmdarticle
+msgid "ARTICLE"
+msgstr "ARTICLE"
+
+#: ipconst.snntpcmdauthpass
+msgid "AUTHINFO PASS"
+msgstr "AUTHINFO PASS"
+
+#: ipconst.snntpcmdauthuser
+msgid "AUTHINFO USER"
+msgstr "AUTHINFO USER"
+
+#: ipconst.snntpcmdbody
+msgid "BODY"
+msgstr "BODY"
+
+#: ipconst.snntpcmddate
+msgid "DATE"
+msgstr "DATE"
+
+#: ipconst.snntpcmdgroup
+msgid "GROUP"
+msgstr "GROUP"
+
+#: ipconst.snntpcmdhead
+msgid "HEAD"
+msgstr "HEAD"
+
+#: ipconst.snntpcmdhelp
+msgid "HELP"
+msgstr "HELP"
+
+#: ipconst.snntpcmdlast
+msgid "LAST"
+msgstr "LAST"
+
+#: ipconst.snntpcmdlist
+msgctxt "ipconst.snntpcmdlist"
+msgid "LIST"
+msgstr "LIST"
+
+#: ipconst.snntpcmdlistacttimes
+msgid "LIST ACTIVE.TIMES"
+msgstr "LIST ACTIVE.TIMES"
+
+#: ipconst.snntpcmdlistdistrib
+msgid "LIST DISTRIBUTIONS"
+msgstr "LIST DISTRIBUTIONS"
+
+#: ipconst.snntpcmdlistdistribpats
+msgid "LIST DISTRIB.PATS"
+msgstr "LIST DISTRIB.PATS"
+
+#: ipconst.snntpcmdlistext
+msgid "LIST EXTENSIONS"
+msgstr "LIST EXTENSIONS"
+
+#: ipconst.snntpcmdlistgroup
+msgid "LISTGROUP"
+msgstr "LISTGROUP"
+
+#: ipconst.snntpcmdlistnewsgroups
+msgid "LIST NEWSGROUPS"
+msgstr "LIST NEWSGROUPS"
+
+#: ipconst.snntpcmdlistoverfmt
+msgid "LIST OVERVIEW.FMT"
+msgstr "LIST OVERVIEW.FMT"
+
+#: ipconst.snntpcmdnewgroups
+msgid "NEWGROUPS"
+msgstr "NEWGROUPS"
+
+#: ipconst.snntpcmdnewnews
+msgid "NEWNEWS"
+msgstr "NEWNEWS"
+
+#: ipconst.snntpcmdnext
+msgid "NEXT"
+msgstr "NEXT"
+
+#: ipconst.snntpcmdpat
+msgid "PAT"
+msgstr "PAT"
+
+#: ipconst.snntpcmdpost
+msgid "POST"
+msgstr "POST"
+
+#: ipconst.snntpcmdquit
+msgctxt "ipconst.snntpcmdquit"
+msgid "QUIT"
+msgstr "QUIT"
+
+#: ipconst.snntpcmdstat
+msgctxt "ipconst.snntpcmdstat"
+msgid "STAT"
+msgstr "STAT"
+
+#: ipconst.snntpcmdxover
+msgid "XOVER"
+msgstr "XOVER"
+
+#: ipconst.snoboundary
+msgid "No Mime boundary"
+msgstr "Нет границы Mime"
+
+#: ipconst.snomemorystreamerr
+msgid "No Memory Stream assigned"
+msgstr "Не назначен поток для записи в память"
+
+#: ipconst.snorecipients
+msgid "No recipients specified"
+msgstr "Получатели не указаны"
+
+#: ipconst.snoseekforread
+msgid "No seek for read"
+msgstr "Поиск для чтения не производился"
+
+#: ipconst.snoseekforwrite
+msgid "No seek for write"
+msgstr "Поиск для записи не производился"
+
+#: ipconst.snosockerr
+msgid "Socket not assigned"
+msgstr "Сокет не назначен"
+
+#: ipconst.snostreamerr
+msgid "Stream not assigned"
+msgstr "Поток не назначен"
+
+#: ipconst.snotenoughdata
+msgid "Not enough data in queue (%s bytes) to satisfy read request (%s bytes)"
+msgstr "Недостаточно данных в очереди (%s байт) для выполнения запроса на чтение (%s байт)"
+
+#: ipconst.snotimererr
+msgid "Not enough system timers available"
+msgstr "Недостаточно системных таймеров"
+
+#: ipconst.snowinsock2err
+msgid "%s requires WinSock 2, and this system only has WinSock 1"
+msgstr "%s требует WinSock 2, а данная система имеет только WinSock 1"
+
+#: ipconst.snsarticle
+msgid "Retrieving article"
+msgstr "Загрузка статьи"
+
+#: ipconst.snsauthpass
+msgid "Authorizing password"
+msgstr "Авторизация пароля"
+
+#: ipconst.snsauthuser
+msgid "Authorizing user"
+msgstr "Авторизация пользователя"
+
+#: ipconst.snsbody
+msgid "Retrieving body"
+msgstr "Загрузка тела"
+
+#: ipconst.snsconnect
+msgctxt "ipconst.snsconnect"
+msgid "Connecting"
+msgstr "Подсоединение"
+
+#: ipconst.snsdate
+msgid "Retrieving server date"
+msgstr "Извлечение даты сервера"
+
+#: ipconst.snsgroup
+msgid "Selecting group"
+msgstr "Выбор группы"
+
+#: ipconst.snshead
+msgid "Retrieving heading"
+msgstr "Извлечение заголовка"
+
+#: ipconst.snshelp
+msgid "Retrieving help"
+msgstr "Извлечение справки"
+
+#: ipconst.snslast
+msgid "Selecting previous article"
+msgstr "Выбор предыдущей статьи"
+
+#: ipconst.snslist
+msgid "Retrieving list"
+msgstr "Извлечение списка"
+
+#: ipconst.snslistactivetimes
+msgid "Retrieving active times"
+msgstr "Извлечение времён активности"
+
+#: ipconst.snslistdistribpats
+msgid "Retrieving distribution patterns"
+msgstr "Извлечение схемы распространения"
+
+#: ipconst.snslistdistributions
+msgid "Retrieving list of distributions"
+msgstr "Извлечение списка распространений"
+
+#: ipconst.snslistext
+msgid "Retrieving list of extended commands"
+msgstr "Извлечение списка расширенных команд"
+
+#: ipconst.snslistgroup
+msgid "Retrieving article numbers"
+msgstr "Загрузка номеров статей"
+
+#: ipconst.snslistnewsgroups
+msgid "Retrieving list of available news groups"
+msgstr "Извлечение списка доступных новостных групп"
+
+#: ipconst.snslistoverviewfmt
+msgid "Retrieving overview format"
+msgstr "Извлечение формата обзора"
+
+#: ipconst.snsnewgroups
+msgid "Getting new news groups"
+msgstr "Получение новостных групп"
+
+#: ipconst.snsnewnews
+msgid "Getting new articles"
+msgstr "Получение новых статей"
+
+#: ipconst.snsnext
+msgid "Selecting next article"
+msgstr "Выбор следующей статьи"
+
+#: ipconst.snsnoop
+msgctxt "ipconst.snsnoop"
+msgid "No operation"
+msgstr "Нет текущих операций"
+
+#: ipconst.snsover
+msgid "Retrieving overview"
+msgstr "Извлечение обзора"
+
+#: ipconst.snspat
+msgid "Retrieving patterns"
+msgstr "Извлечение схем"
+
+#: ipconst.snspost
+msgctxt "ipconst.snspost"
+msgid "Posting article"
+msgstr "Отправка статьи"
+
+#: ipconst.snsprepost
+msgid "Preparing to post article"
+msgstr "Подготовка к отправке статьи"
+
+#: ipconst.snsquit
+msgctxt "ipconst.snsquit"
+msgid "Disconnecting"
+msgstr "Разъединение"
+
+#: ipconst.snsspecial
+msgctxt "ipconst.snsspecial"
+msgid "Sending special command"
+msgstr "Отправка специальной команды"
+
+#: ipconst.snsstat
+msgid "Retrieving status"
+msgstr "Извлечение состояния"
+
+#: ipconst.sntauthenticate
+msgid "Authenticating"
+msgstr "Проверка подлинности"
+
+#: ipconst.sntnewnews
+msgid "Retrieving new news"
+msgstr "Извлечение свежих новостей"
+
+#: ipconst.sntnotask
+msgctxt "ipconst.sntnotask"
+msgid "No task"
+msgstr "Нет задачи"
+
+#: ipconst.sntpostto
+msgctxt "ipconst.sntpostto"
+msgid "Posting article"
+msgstr "Отправка статьи"
+
+#: ipconst.sntselectgroup
+msgid "Selecting Group"
+msgstr "Выбор группы"
+
+#: ipconst.soriginfrombegin
+msgid "When origin is soFromBeginning, Offset must be >= 0"
+msgstr "Когда начальной точкой является soFromBeginning, смещение должно быть >= 0"
+
+#: ipconst.soriginfromend
+msgid "When origin is soFromEnd, Offset must be <= 0"
+msgstr "Когда начальной точкой является soFromEnd, смещение должно быть <= 0"
+
+#: ipconst.spngbadbitdepth
+msgid "Unsupported Bit Depth of %d"
+msgstr "Неподдерживаемая битовая глубина %d"
+
+#: ipconst.spngbadchunktype
+msgid "Unrecognized Chunk Type: %s"
+msgstr "Неопознанный тип последовательности: %s"
+
+#: ipconst.spngbadcolortype
+msgid "Unrecognized color type of %d"
+msgstr "Неопознанный тип цвета %d"
+
+#: ipconst.spngbadinterlacemethod
+msgid "Unrecognized Interlace Method"
+msgstr "Неопознанный чересстрочный метод"
+
+#: ipconst.spngbadmodificationtime
+msgid "Invalid Modification Time"
+msgstr "Неверное время модификации"
+
+#: ipconst.spngbadpalettelength
+msgid "Invalid Palette Length"
+msgstr "Неверная длина палитры"
+
+#: ipconst.spngbadpixeldepth
+msgid "Unrecognized pixel depth of %d"
+msgstr "Неподдерживаемая глубина пиксела %d"
+
+#: ipconst.spngbadsignature
+msgid "Invalid PNG Signature"
+msgstr "Неверная сигнатура PNG"
+
+#: ipconst.spngbitdepth
+msgid "Bit Depth: %d"
+msgstr "Глубина: %d"
+
+#: ipconst.spngbuffertoosmall
+msgid "PNG Buffer too small."
+msgstr "Буфер PNG слишком мал."
+
+#: ipconst.spngcannotsave
+msgid "PNG Saving is not supported"
+msgstr "Сохранение PNG не поддерживается"
+
+#: ipconst.spngchunkidandlength
+msgid "PNG Chunk: %s  Length: %d"
+msgstr "Последовательность PNG: %s Длина: %d"
+
+#: ipconst.spngcolortype
+msgid "Color Type: %d"
+msgstr "Тип цвета: %d"
+
+#: ipconst.spngcompressionmethod
+msgid "Compression Method: %d"
+msgstr "Метод сжатия: %d"
+
+#: ipconst.spngdefilterpass
+msgid "Unfiltering Pass %d  Size: %dx%d  From: %dx%d"
+msgstr "Проход дефильтрации %d  Размер:  %dx%d  От: %dx%d "
+
+#: ipconst.spngeffectivefilter
+msgid "Effective filter is %s"
+msgstr "Действующим фильтром является %s"
+
+#: ipconst.spngerrorconstant
+msgid "**** ERROR ****"
+msgstr "**** ОШИБКА ****"
+
+#: ipconst.spngfilterchange
+msgid "Filter changed on Row %d to %x"
+msgstr "Фильтр в строке %d изменился на %x"
+
+#: ipconst.spngfiltermethod
+msgid "Filter Method: %d"
+msgstr "Метод фильтрации: %d"
+
+#: ipconst.spnggamatoolong
+msgid "gAMA chunk is long"
+msgstr "Последовательность gAMA - длинная."
+
+#: ipconst.spnggamatooshort
+msgid "gAMA chunk is short"
+msgstr "Последовательность gAMA - короткая."
+
+#: ipconst.spnggammacorrection
+msgid "Gamma Correction: %f"
+msgstr "Гамма-коррекция: %f"
+
+#: ipconst.spngihdrtoolong
+msgid "IHDR chunk is long."
+msgstr "Последовательность IHDR - длинная."
+
+#: ipconst.spngihdrtooshort
+msgid "IHDR chunk is short."
+msgstr "Последовательность IHDR - короткая."
+
+#: ipconst.spngimagesize
+msgid "Image size is %dx%d pixels"
+msgstr "Размер изображения - %dx%d пикселов"
+
+#: ipconst.spnginterlacemethod
+msgid "Interlace Method: %d"
+msgstr "Чересстрочный метод: %d"
+
+#: ipconst.spngmemoryrequired
+msgid "Memory required for image: %d bytes"
+msgstr "Требуемая память для изображения: %d  байт"
+
+#: ipconst.spngmissingiend
+msgid "End of PNG found with no IEND chunk"
+msgstr "Обнаружен конец файла PNG без последовательности IEND"
+
+#: ipconst.spngmissingihdr
+msgid "IHDR Chunk is missing"
+msgstr "Отсутствует последовательность IHDR"
+
+#: ipconst.spngmodificationdate
+msgid "Modification Date: %s"
+msgstr "Дата модификации: %s"
+
+#: ipconst.spngnoclipboard
+msgid "PNG Clipboard support is not supported."
+msgstr "Буфер обмена PNG не поддерживается."
+
+#: ipconst.spngpaletteentry
+msgid "Palette Entry %d - Red: %d   Green: %d   Blue: %d"
+msgstr "Элемент палитры %d - Красный: %d   Зеленый: %d   Синий: %d"
+
+#: ipconst.spngpalettetoolong
+msgid "Too many palette entries"
+msgstr "Слишком много элементов в палитре"
+
+#: ipconst.spngpalettetransparency
+msgid "Palette Transparency: %d  Alpha %d"
+msgstr "Прозрачность палитры: %d  Альфа %d"
+
+#: ipconst.spngtimetoolong
+msgid "tIME chunk is long."
+msgstr "Последовательность tIME - длинная."
+
+#: ipconst.spngtimetooshort
+msgid "tIME chunk is short."
+msgstr "Последовательность tIME - короткая."
+
+#: ipconst.spngtransparentcolor
+msgid "Transparent Color: %x"
+msgstr "Прозрачный цвет: %x"
+
+#: ipconst.spngtruncatedcrc
+msgid "CRC Code is truncated"
+msgstr "Сумма CRC отрезана"
+
+#: ipconst.spngtruncateddata
+msgid "Chunk data is truncated"
+msgstr "Данные последовательности обрезаны"
+
+#: ipconst.spngunsupportedfeature
+msgid "A %s chunk was found in the PNG File. This feature is not supported in this version of the PNG decoder"
+msgstr "В файле PNG была найдена последовательность %s. Эта возможность не поддерживается данной версией декодера PNG"
+
+#: ipconst.spngwarningconstant
+msgid "**** WARNING ****"
+msgstr "**** ПРЕДУПРЕЖДЕНИЕ ****"
+
+#: ipconst.spop3cmdapop
+msgid "APOP"
+msgstr "APOP"
+
+#: ipconst.spop3cmddele
+msgid "DELE"
+msgstr "DELE"
+
+#: ipconst.spop3cmdlist
+msgctxt "ipconst.spop3cmdlist"
+msgid "LIST"
+msgstr "LIST"
+
+#: ipconst.spop3cmdnoop
+msgid "NOOP"
+msgstr "NOOP"
+
+#: ipconst.spop3cmdpass
+msgid "PASS"
+msgstr "PASS"
+
+#: ipconst.spop3cmdquit
+msgctxt "ipconst.spop3cmdquit"
+msgid "QUIT"
+msgstr "QUIT"
+
+#: ipconst.spop3cmdretr
+msgid "RETR"
+msgstr "RETR"
+
+#: ipconst.spop3cmdrset
+msgid "RSET"
+msgstr "RSET"
+
+#: ipconst.spop3cmdstat
+msgctxt "ipconst.spop3cmdstat"
+msgid "STAT"
+msgstr "STAT"
+
+#: ipconst.spop3cmdtop
+msgid "TOP"
+msgstr "TOP"
+
+#: ipconst.spop3cmduidl
+msgid "UIDL"
+msgstr "UIDL"
+
+#: ipconst.spop3cmduser
+msgid "USER"
+msgstr "USER"
+
+#: ipconst.spop3errresp
+msgid "-ERR"
+msgstr "-ERR"
+
+#: ipconst.spop3notauthenticating
+msgid "%s can not be called in transaction state"
+msgstr "%s нельзя вызвать во время транзакции"
+
+#: ipconst.spop3nottransacting
+msgid "%s can not be called in authentication state"
+msgstr "%s нельзя вызвать во время проверки подлинности"
+
+#: ipconst.spop3okresp
+msgid "+OK"
+msgstr "+OK"
+
+#: ipconst.sposreqd
+msgid "%s: count must be positive"
+msgstr "%s: число должно быть положительным"
+
+#: ipconst.spsapop
+msgid "Logging on with APOP"
+msgstr "Вход с APOP"
+
+#: ipconst.spsconnect
+msgid "Connecting to server"
+msgstr "Подсоединение к серверу"
+
+#: ipconst.spsdele
+msgid "Marking message for deletion"
+msgstr "Помечание сообщения на удаление"
+
+#: ipconst.spslist
+msgctxt "ipconst.spslist"
+msgid "Retrieving mailbox list"
+msgstr "Извлечение списка почтовых ящиков"
+
+#: ipconst.spsnoop
+msgctxt "ipconst.spsnoop"
+msgid "No operation"
+msgstr "Нет текущих операций"
+
+#: ipconst.spspass
+msgid "Logging on with Password"
+msgstr "Вход с паролем"
+
+#: ipconst.spsquit
+msgctxt "ipconst.spsquit"
+msgid "Disconnecting"
+msgstr "Разъединение"
+
+#: ipconst.spsretr
+msgid "Retrieving message"
+msgstr "Извлечение сообщения"
+
+#: ipconst.spsrset
+msgid "Resetting messages"
+msgstr "Сброс сообщений"
+
+#: ipconst.spsspecial
+msgid "Special command"
+msgstr "Специальная команда"
+
+#: ipconst.spsstat
+msgid "Retrieving mailbox status"
+msgstr "Извлечение статуса почтового ящика"
+
+#: ipconst.spstop
+msgid "Retrieving top of message"
+msgstr "Извлечение заголовков сообщения"
+
+#: ipconst.spsuidl
+msgctxt "ipconst.spsuidl"
+msgid "Retrieving mailbox UID list"
+msgstr "Извлечение списка UID почтовых ящиков"
+
+#: ipconst.spsunknown
+msgid "Unknown state"
+msgstr "Неизвестное состояние"
+
+#: ipconst.spsuser
+msgid "Logging on with User"
+msgstr "Вход под именем пользователя"
+
+#: ipconst.spterror
+#| msgid "An error occured with the last task."
+msgid "An error occurred with the last task."
+msgstr "Во время выполнения последней задачи произошла ошибка."
+
+#: ipconst.sptlist
+msgctxt "ipconst.sptlist"
+msgid "Retrieving mailbox list"
+msgstr "Извлечение списка почтовых ящиков"
+
+#: ipconst.sptlogon
+msgctxt "ipconst.sptlogon"
+msgid "Logging on"
+msgstr "Вход"
+
+#: ipconst.sptnone
+msgctxt "ipconst.sptnone"
+msgid "No task"
+msgstr "Нет задачи"
+
+#: ipconst.sptuidl
+msgctxt "ipconst.sptuidl"
+msgid "Retrieving mailbox UID list"
+msgstr "Извлечение списка UID почтовых ящиков"
+
+#: ipconst.sptunknown
+msgid "Unknown task"
+msgstr "Неизвестная задача"
+
+#: ipconst.srasalldevicesconnected
+msgid "All devices connected"
+msgstr "Все устройства подсоединены"
+
+#: ipconst.srasauthack
+msgid "Authenticate acknowledged"
+msgstr "Проверка подлинности успешно выполнена"
+
+#: ipconst.srasauthcallback
+msgid "Authenticate callback"
+msgstr "Внешний обработчик проверки подлинности"
+
+#: ipconst.srasauthchangepassword
+msgid "Authenticate change password"
+msgstr "Проверить на подлинность смену пароля"
+
+#: ipconst.srasauthenticate
+msgid "Authenticate"
+msgstr "Выполнить проверку подлинности"
+
+#: ipconst.srasauthenticated
+msgid "Authenticated"
+msgstr "Проверен"
+
+#: ipconst.srasauthlinkspeed
+msgid "Authenticate link speed"
+msgstr "Проверить скорость соединения"
+
+#: ipconst.srasauthnotify
+msgid "Authenticate notify"
+msgstr "Уведомление о проверке на подлинность"
+
+#: ipconst.srasauthproject
+msgid "Authenticate project"
+msgstr "Проверка подлинности проекта"
+
+#: ipconst.srasauthretry
+msgid "Authenticate retry"
+msgstr "Повторить проверку подлинности"
+
+#: ipconst.srascallbackcomplete
+msgid "Callback complete"
+msgstr "Пользовательская процедура выполнена"
+
+#: ipconst.srascallbacksetbycaller
+msgid "Callback set by caller"
+msgstr "Пользовательская процедура установлена вызывающим."
+
+#: ipconst.srasconnectdevice
+msgid "Connect device"
+msgstr "Подключить устройство"
+
+#: ipconst.srasconnected
+msgid "Connected"
+msgstr "Соединено"
+
+#: ipconst.srasdeviceconnected
+msgid "Device connected"
+msgstr "Устройство подсоединено"
+
+#: ipconst.srasdisconnected
+msgctxt "ipconst.srasdisconnected"
+msgid "Disconnected"
+msgstr "Разъединено"
+
+#: ipconst.sraserr
+msgid "Ras Error (%d): on API '%s'"
+msgstr "Ошибка Ras  (%d): в API '%s'"
+
+#: ipconst.srasinteractive
+msgid "Interactive"
+msgstr "Интерактивный"
+
+#: ipconst.sraslogonnetwork
+msgid "Logon network"
+msgstr "Войти в сеть"
+
+#: ipconst.srasopenport
+msgid "Open port"
+msgstr "Открыть порт"
+
+#: ipconst.sraspasswordexpired
+msgid "Password expired"
+msgstr "Пароль истек"
+
+#: ipconst.sraspaused
+msgid "Paused"
+msgstr "Приостановлено"
+
+#: ipconst.srasportopened
+msgid "Port opened"
+msgstr "Порт открыт"
+
+#: ipconst.srasprepareforcallback
+msgid "Prepare for callback"
+msgstr "Подготовка в вызлву пользовательской процедуры"
+
+#: ipconst.srasprojected
+msgid "Projected"
+msgstr "Намечено"
+
+#: ipconst.srasreauthenticate
+msgid "Re-authenticate"
+msgstr "Перепроверить подлинность"
+
+#: ipconst.srasretryauthentication
+msgid "Retry authentication"
+msgstr "Повторить проверку подлинности"
+
+#: ipconst.srasstartauthentication
+msgid "Start authentication"
+msgstr "Начать проверку подлинности"
+
+#: ipconst.srassubentryconnected
+msgid "Sub-entry connected"
+msgstr "Подэлемент соединен"
+
+#: ipconst.srassubentrydisconnected
+msgid "Sub-entry disconnected"
+msgstr "Подэлемент разъединен"
+
+#: ipconst.sraswaitforcallback
+msgid "Wait for callback"
+msgstr "Ожидание пользовательской процедуры"
+
+#: ipconst.sraswaitformodemreset
+msgid "Wait for modem reset"
+msgstr "Ожидание сброса модема"
+
+#: ipconst.sreadlineerr
+msgid "Received line too long, exceeds MaxLineBuf"
+msgstr "Получена слишком длинная строка, превышающая MaxLineBuf"
+
+#: ipconst.srenameddiskfileto
+msgid "Renamed disk file to "
+msgstr "Файл на диске переименован в "
+
+#: ipconst.srowcoloor
+msgid "%s: either row %d or col %d is out of range"
+msgstr "%s: строка %d либо столбец %d вышли за границы диапазона"
+
+#: ipconst.srowoor
+msgid "%s: row number is out of range"
+msgstr "%s: число строк вне границ диапазона"
+
+#: ipconst.srowrowoor
+msgid "TIpTerminalArray.ScrollRows: either start row %d or end row %d is out of range"
+msgstr "TIpTerminalArray.ScrollRows: начальная строка %d либо конечная строка %d находятся вне границ диапазона"
+
+#: ipconst.sseekingdiskfileto
+msgid "Seeking disk file to "
+msgstr "Просмотр файла надиске до "
+
+#: ipconst.sslnopremastersecret
+msgid "No pre-master secret."
+msgstr "Отсутствует pre-master ключ."
+
+#: ipconst.ssmtpresponse02
+msgid "Success, "
+msgstr "Успех, "
+
+#: ipconst.ssmtpresponse04
+msgid "Transient, "
+msgstr "Переход, "
+
+#: ipconst.ssmtpresponse05
+msgid "Persistent, "
+msgstr "Постоянное, "
+
+#: ipconst.ssmtpresponse10
+msgid "Other address status"
+msgstr "Статус другого адреса"
+
+#: ipconst.ssmtpresponse11
+msgid "Bad destination mailbox address"
+msgstr "Неверный адрес почтового ящика получателя"
+
+#: ipconst.ssmtpresponse12
+msgid "Bad destination system address"
+msgstr "Неверный адрес целевой системы"
+
+#: ipconst.ssmtpresponse13
+msgid "Bad destination mailbox address syntax"
+msgstr "Неверный формат адреса почтового ящика получателя"
+
+#: ipconst.ssmtpresponse14
+msgid "Destination mailbox address ambiguous"
+msgstr "Адрес целевого почтового ящика неоднозначен"
+
+#: ipconst.ssmtpresponse15
+msgid "Destination mailbox address valid"
+msgstr "Адрес целевого почтового ящика верен"
+
+#: ipconst.ssmtpresponse16
+msgid "Mailbox has moved"
+msgstr "Почтовый ящик был перемещён"
+
+#: ipconst.ssmtpresponse17
+msgid "Bad sender's mailbox address syntax"
+msgstr "Неверный формат адреса почтового ящика отправителя"
+
+#: ipconst.ssmtpresponse18
+msgid "Bad sender's system address"
+msgstr "Неверный адрес системы отправителя"
+
+#: ipconst.ssmtpresponse20
+msgid "Other or undefined mailbox status"
+msgstr "Другое или неопределенное состояние почтового ящика"
+
+#: ipconst.ssmtpresponse21
+msgid "Mailbox disabled, not accepting messages"
+msgstr "Почтовый ящик отключён и не принимает сообщения"
+
+#: ipconst.ssmtpresponse22
+msgid "Mailbox full"
+msgstr "Почтовый ящик переполнен"
+
+#: ipconst.ssmtpresponse23
+msgid "Message length exceeds administrative limit."
+msgstr "Длина сообщения больше разрешенного лимита"
+
+#: ipconst.ssmtpresponse24
+msgid "Mailing list expansion problem"
+msgstr "Ошибка раскрытия списка рассылки"
+
+#: ipconst.ssmtpresponse30
+msgid "Other or undefined mail system status"
+msgstr "Другое или неопределенное состояние почтовой системы"
+
+#: ipconst.ssmtpresponse31
+msgid "Mail system full"
+msgstr "Почтовая система перегружена"
+
+#: ipconst.ssmtpresponse32
+msgid "System not accepting network messages"
+msgstr "Система не принимает сетевые сообщения"
+
+#: ipconst.ssmtpresponse33
+msgid "System not capable of selected features"
+msgstr "Система не поддерживает выбранные возможности"
+
+#: ipconst.ssmtpresponse34
+msgid "Message too big for system"
+msgstr "Слишком большое сообщение для системы"
+
+#: ipconst.ssmtpresponse40
+msgid "Other or undefined network or routing status"
+msgstr "Другое или неопределенное состояние сети или маршрутизации"
+
+#: ipconst.ssmtpresponse41
+msgid "No answer from host"
+msgstr "Не получен ответ от хоста"
+
+#: ipconst.ssmtpresponse42
+msgid "Bad connection"
+msgstr "Неверное соединение"
+
+#: ipconst.ssmtpresponse43
+msgid "Routing server failure"
+msgstr "Ошибка сервера маршрутизации"
+
+#: ipconst.ssmtpresponse44
+msgid "Unable to route"
+msgstr "Невозможно найти маршрут"
+
+#: ipconst.ssmtpresponse45
+msgid "Network congestion"
+msgstr "Перегрузка сети"
+
+#: ipconst.ssmtpresponse46
+msgid "Routing loop detected"
+msgstr "Обнаружен цикл маршрутов"
+
+#: ipconst.ssmtpresponse47
+msgid "Delivery time expired"
+msgstr "Время доставки истекло"
+
+#: ipconst.ssmtpresponse50
+msgid "Other or undefined protocol status"
+msgstr "Другое или неопределенное состояние протокола"
+
+#: ipconst.ssmtpresponse51
+msgid "Invalid command"
+msgstr "Неверная команда"
+
+#: ipconst.ssmtpresponse52
+msgid "Syntax error"
+msgstr "Синтаксическая ошибка"
+
+#: ipconst.ssmtpresponse53
+msgid "Too many recipients"
+msgstr "Слишком много получателей"
+
+#: ipconst.ssmtpresponse54
+msgid "Invalid command arguments"
+msgstr "Неверные аргументы команды"
+
+#: ipconst.ssmtpresponse55
+msgid "Wrong protocol version"
+msgstr "Неверная версия протокола"
+
+#: ipconst.ssmtpresponse60
+msgid "Other or undefined media error"
+msgstr "Другая или неопределенная ошибка носителя"
+
+#: ipconst.ssmtpresponse61
+msgid "Media not supported"
+msgstr "Носитель не поддерживается"
+
+#: ipconst.ssmtpresponse62
+msgid "Conversion required and prohibited"
+msgstr "Преобразование затребовано и запрещено"
+
+#: ipconst.ssmtpresponse63
+msgid "Conversion required but not supported"
+msgstr "Преобразование затребовано, но не поддерживается"
+
+#: ipconst.ssmtpresponse64
+msgid "Conversion with loss performed"
+msgstr "Произведено преобразование с потерями"
+
+#: ipconst.ssmtpresponse65
+msgid "Conversion failed"
+msgstr "Ошибка преобразования"
+
+#: ipconst.ssmtpresponse70
+msgid "Other or undefined security status"
+msgstr "Другое или неопределенное состояние безопасности"
+
+#: ipconst.ssmtpresponse71
+msgid "Delivery not authorized, message refused"
+msgstr "Доставка не разрешена, сообщение отклонено"
+
+#: ipconst.ssmtpresponse72
+msgid "Mailing list expansion prohibited"
+msgstr "Раскрытие списка рассылки запрещено"
+
+#: ipconst.ssmtpresponse73
+msgid "Security conversion required but not possible"
+msgstr "Требуемое преобразование безопасности невозможно"
+
+#: ipconst.ssmtpresponse74
+msgid "Security features not supported"
+msgstr "Функции безопасности не поддерживаются"
+
+#: ipconst.ssmtpresponse75
+msgid "Cryptographic failure"
+msgstr "Криптографическая ошибка"
+
+#: ipconst.ssmtpresponse76
+msgid "Cryptographic algorithm not supported"
+msgstr "Криптографический алгоритм не поддерживается"
+
+#: ipconst.ssmtpresponse77
+msgid "Message integrity failure"
+msgstr "Ошибка целостности сообщения"
+
+#: ipconst.ssmtpresponsesubunknown
+msgid "Unknown subcode"
+msgstr "Неизвестный субкод"
+
+#: ipconst.ssmtpresponseunknown
+msgid "Unknown response code"
+msgstr "Неизвестный ответный код"
+
+#: ipconst.ssockserr
+msgid "SOCKS request refused - %d"
+msgstr "Запрос SOCKS отклонен - %d"
+
+#: ipconst.sssauthlogin
+msgid "Requesting authentication"
+msgstr "Запрос проверки подлинности"
+
+#: ipconst.sssauthpass
+msgid "Authenticating password"
+msgstr "Проверка подлинности пароля"
+
+#: ipconst.sssauthuser
+msgid "Authenticating username"
+msgstr "Проверка подлинности имени пользователя"
+
+#: ipconst.sssconnect
+msgctxt "ipconst.sssconnect"
+msgid "Connecting"
+msgstr "Подсоединение"
+
+#: ipconst.sssdata
+msgid "Sending Data"
+msgstr "Отправка данных"
+
+#: ipconst.sssehlo
+msgid "Logging on with EHLO"
+msgstr "Вход с EHLO"
+
+#: ipconst.sssexpand
+msgid "Expanding"
+msgstr "Раскрытие"
+
+#: ipconst.ssshelo
+msgid "Logging on with HELO"
+msgstr "Вход с HELO"
+
+#: ipconst.ssshelp
+msgid "Help"
+msgstr "Справка"
+
+#: ipconst.ssslbadcertificate
+msgid "Bad certificate."
+msgstr "Неверный сертификат"
+
+#: ipconst.ssslbadcerttype
+msgid "Cert type not found"
+msgstr "Тип сертификата не найден"
+
+#: ipconst.ssslbadcompressionvalue
+msgid "Compression value is wrong."
+msgstr "Неверное значение сжатия."
+
+#: ipconst.ssslbadkeyexchangetype
+msgid "Key exchange message expected but not received"
+msgstr "Ожидалось сообщение для обмена ключами, но не было получено"
+
+#: ipconst.ssslbadmac
+msgid "MAC did not match."
+msgstr "MAC не совпадает."
+
+#: ipconst.ssslbadmd5hash
+msgid "MD5 hash did not match."
+msgstr "Хэш MD5 не совпадает."
+
+#: ipconst.ssslbadpublicencoding
+msgid "Bad public encoding type."
+msgstr "Неверный тип кодировки (public encoding)."
+
+#: ipconst.ssslbadrecordmac
+msgid "Server received a bad record MAC."
+msgstr "Сервер получил неверную запись MAC."
+
+#: ipconst.ssslbadsha1hash
+msgid "SHA1 hash did not match."
+msgstr "Хэш SHA1 не совпадает."
+
+#: ipconst.ssslblocksizeerror
+msgid "Block size error"
+msgstr "Ошибка в размере блока"
+
+#: ipconst.ssslbufferoverflow
+msgid "Buffer overflow error."
+msgstr "Ошибка переполнения буфера."
+
+#: ipconst.ssslbuffersizemissmatch
+msgid "Buffer size miss-match."
+msgstr "Несоответствие размеров буфера."
+
+#: ipconst.ssslclosenotify
+msgid "Server sent close notify."
+msgstr "Сервер выслал уведомление о завершении."
+
+#: ipconst.ssslcompressionfailure
+msgid "Compression failure."
+msgstr "Ошибка при сжатии."
+
+#: ipconst.ssslconnectchange
+msgid "Can not change SSL status while connected."
+msgstr "Невозможно изменить статус SSL при активном подключении."
+
+#: ipconst.ssslencryptbuf2small
+msgid "Encrypt buffer to small."
+msgstr "Буфер шифрования слишком мал."
+
+#: ipconst.ssslencryptiontype
+msgid "Encryption type not defined."
+msgstr "Тип шифрования не задан."
+
+#: ipconst.ssslexpiredcertificate
+msgid "Expired Certificate."
+msgstr "Истекший сертификат."
+
+#: ipconst.ssslfailedhelloparse
+msgid "Did not parse server hello correctly."
+msgstr "Не удалось корректно проанализировать hello сервера."
+
+#: ipconst.ssslhandshakefailure
+msgid "Handshake failure."
+msgstr "Ошибка инициализации соединения."
+
+#: ipconst.ssslillegalparameter
+msgid "Illegal Parameter."
+msgstr "Неверный параметр."
+
+#: ipconst.ssslinvalidcipher
+msgid "Invalid cipher."
+msgstr "Неверный шифр."
+
+#: ipconst.ssslnocertificate
+msgid "Certificate is not available."
+msgstr "Сертификат недоступен."
+
+#: ipconst.ssslnohashtype
+msgid "No hash type selected."
+msgstr "Не выбран тип хэша"
+
+#: ipconst.ssslnomessageencslected
+msgid "No message encoding type selected."
+msgstr "Не выбрана кодировка сообщения."
+
+#: ipconst.ssslnoroom
+msgid "Not enough memory available to read SSL record."
+msgstr "Недостаточно памяти для чтения записи SSL."
+
+#: ipconst.ssslnotenoughkeymaterail
+msgid "Not enough key material."
+msgstr "Недостаточно ключевого материала."
+
+#: ipconst.ssslpaddingerror
+msgid "Padding error."
+msgstr "Ошибка дополнения."
+
+#: ipconst.ssslparsererror
+msgid "Parsing error."
+msgstr "Ошибка анализа."
+
+#: ipconst.ssslpointernotassigned
+msgid "Pointer not assigned."
+msgstr "Указатель не назначен."
+
+#: ipconst.ssslreaderror
+msgid "Read error."
+msgstr "Ошибка чтения."
+
+#: ipconst.ssslreadsizemissmatch
+msgid "Read size miss-match."
+msgstr "Несоответствие размера прочитанного."
+
+#: ipconst.ssslrevokedcertificate
+msgid "Revoked Certificate."
+msgstr "Отозванный сертификат."
+
+#: ipconst.ssslservernohandshake
+#| msgid "Server cid not return a handshake message."
+msgid "Server did not return a handshake message."
+msgstr "Сервер не возвратил инициализационное (handshake) сообщение."
+
+#: ipconst.ssslservernoserverhello
+#| msgid "Server cid not return a server hello message."
+msgid "Server did not return a server hello message."
+msgstr "Сервер не возвратил сообщение server hello."
+
+#: ipconst.ssslsessidtolong
+msgid "Session ID is longer than 32 bytes."
+msgstr "Номер сессии длиннее 32 байт."
+
+#: ipconst.ssslshabuf2small
+msgid "SHA1 buffer to small."
+msgstr "Буфер SHA1 слишком мал."
+
+#: ipconst.ssslunexpectedmessage
+msgid "Server received an unexpected message."
+msgstr "Сервер получил неожиданное сообщение."
+
+#: ipconst.ssslunknowncertificate
+msgid "Unknown Certificate."
+msgstr "Неизвестный сертификат"
+
+#: ipconst.ssslunprocesseddata
+msgid "SSL data processing error."
+msgstr "Ошибка обработки данных SSL"
+
+#: ipconst.ssslunsupportedcertificate
+msgid "Unsupported Certificate."
+msgstr "Неподдерживаемый сертификат."
+
+#: ipconst.ssslunsupportedchiper
+msgid "Unsupported cipher chosen."
+msgstr "Выбран неподдерживаемый шифр."
+
+#: ipconst.ssslunsupportedencoding
+msgid "Unsupported public encoding."
+msgstr "Неподдерживаемая кодировка (public encoding)."
+
+#: ipconst.sssmailfrom
+msgid "Sending sender's info"
+msgstr "Отправка информации об отправителе"
+
+#: ipconst.sssnoop
+msgctxt "ipconst.sssnoop"
+msgid "No operation"
+msgstr "Нет текущих операций"
+
+#: ipconst.sssquit
+msgid "Quit"
+msgstr "Выход"
+
+#: ipconst.sssrcptbcc
+msgid "Sending BCC info"
+msgstr "Отправка информации BCC"
+
+#: ipconst.sssrcptcc
+msgid "Sending CC info"
+msgstr "Отправка информации CC"
+
+#: ipconst.sssrcptto
+msgid "Sending MailTo info"
+msgstr "Отправка информации MailTo"
+
+#: ipconst.sssrset
+msgid "Resetting server"
+msgstr "Сброс сервера"
+
+#: ipconst.ssssaml
+msgid "ssSaml"
+msgstr "ssSaml"
+
+#: ipconst.ssssend
+msgid "ssSend"
+msgstr "ssSend"
+
+#: ipconst.ssssendenvelope
+msgid "Sending Envelope"
+msgstr "Отпрака конверта"
+
+#: ipconst.ssssendmessage
+msgid "Sending Message"
+msgstr "Отправка сообщения"
+
+#: ipconst.ssssoml
+msgid "ssSoml"
+msgstr "ssSoml"
+
+#: ipconst.sssspecial
+msgctxt "ipconst.sssspecial"
+msgid "Sending special command"
+msgstr "Отправка специальной команды"
+
+#: ipconst.sssturn
+msgid "ssTurn"
+msgstr "ssTurn"
+
+#: ipconst.sssverify
+msgid "Verifying"
+msgstr "Проверка"
+
+#: ipconst.ssterror
+#| msgid "An error has occured during this task."
+msgid "An error has occurred during this task."
+msgstr "Во время выполнения этой задачи произошла ошибка."
+
+#: ipconst.sstlogon
+msgctxt "ipconst.sstlogon"
+msgid "Logging on"
+msgstr "Вход"
+
+#: ipconst.sstnotask
+msgid "None"
+msgstr "Нет"
+
+#: ipconst.sstreamcreated
+msgid "Successfully created "
+msgstr "Успешно создано"
+
+#: ipconst.sstreamcreateerror
+msgid "Stream create error "
+msgstr "Ошибка создания потока"
+
+#: ipconst.sstsendmail
+msgid "Sending mail"
+msgstr "Отправка почты"
+
+#: ipconst.sunsupportedencoding
+msgid "Encoding method not supported"
+msgstr "Метод кодирования не поддерживается"
+
+#: ipconst.suuencodecounterr
+msgid "Count <> Len or Count > 63"
+msgstr "Count <> Len или Count > 63"
+
+#: ipconst.swebimagecannotload
+msgid "Cannot load %s"
+msgstr "Невозможно загрузить %s"
+
+#: ipconst.swebimagenotfound
+msgid "%s was not found"
+msgstr "%s не найден"
+
+#: ipconst.swebimagestreambad
+msgid "Cannot load image from stream"
+msgstr "Невозможно загрузить изображение из потока"
+
+#: ipconst.swinsockerr
+msgid "WinSock Error (%d): %s, on API '%s'"
+msgstr "Ошибка WinSock (%d): %s, в API '%s'"
+
+#: ipconst.swriteafterrename
+msgid "***Write after rename"
+msgstr "***Записать после переименования"
+
+#: ipconst.swrongstateerr
+msgid "Can not comply, wrong state"
+msgstr "Невозможно выполнить, неверное состояние"
+
+#: ipconst.swsaeacces
+msgid "Permission denied"
+msgstr "Отказано"
+
+#: ipconst.swsaeaddrinuse
+msgid "Address already in use"
+msgstr "Адрес уже используется"
+
+#: ipconst.swsaeaddrnotavail
+msgid "Cannot assign requested address"
+msgstr "Невозможно назначить запрашиваемый адрес"
+
+#: ipconst.swsaeafnosupport
+msgid "Address family not supported by protocol family"
+msgstr "Семейство адресов не поддерживается семейством протоколов"
+
+#: ipconst.swsaealready
+msgid "Operation already in progress"
+msgstr "Операция уже выполняется"
+
+#: ipconst.swsaebadf
+msgid "Bad file descriptor"
+msgstr "Неверный дескриптор файла"
+
+#: ipconst.swsaecancelled
+msgid "Cancelled"
+msgstr "Отменено"
+
+#: ipconst.swsaeconnaborted
+msgid "Software caused connection abort"
+msgstr "Программа вызвала разрыв соединения"
+
+#: ipconst.swsaeconnrefused
+msgid "Connection refused"
+msgstr "В подсоединении отказано"
+
+#: ipconst.swsaeconnreset
+msgid "Connection reset by peer"
+msgstr "Соединение разорвано другой стороной"
+
+#: ipconst.swsaedestaddrreq
+msgid "Destination address required"
+msgstr "Требуется адрес целевой машины"
+
+#: ipconst.swsaediscon
+msgid "Graceful shutdown in progress"
+msgstr "Идет корректное завершение"
+
+#: ipconst.swsaedquot
+msgid "Disk quota exceeded"
+msgstr "Превышена квота на диске"
+
+#: ipconst.swsaefault
+msgid "Bad address"
+msgstr "Неверный адрес"
+
+#: ipconst.swsaehostdown
+msgid "Host is down"
+msgstr "Удалённый компьютер не отвечает"
+
+#: ipconst.swsaehostunreach
+msgid "No route to host"
+msgstr "Маршрут к хосту отсутствует"
+
+#: ipconst.swsaeinprogress
+msgid "Operation now in progress"
+msgstr "Операция выполняется"
+
+#: ipconst.swsaeintr
+msgid "Interrupted function call"
+msgstr "Прерванный вызов функции"
+
+#: ipconst.swsaeinval
+msgid "Invalid argument"
+msgstr "Неверный аргумент"
+
+#: ipconst.swsaeinvalidproctable
+msgid "Invalid procedure table from service provider"
+msgstr "Неверная таблица процедур сервис-провайдера"
+
+#: ipconst.swsaeinvalidprovider
+msgid "Invalid service provider version number"
+msgstr "Неверный номер версии сервис-провайдера"
+
+#: ipconst.swsaeisconn
+msgid "Socket is already connected"
+msgstr "Сокет уже подсоединён"
+
+#: ipconst.swsaeloop
+msgid "Too many levels of symbolic links"
+msgstr "Слишком много уровней символических ссылок"
+
+#: ipconst.swsaemfile
+msgid "Too many open files"
+msgstr "Слишком много открытых файлов"
+
+#: ipconst.swsaemsgsize
+msgid "Message too long"
+msgstr "Сообщение слишком длинное"
+
+#: ipconst.swsaenametoolong
+msgid "File name too long"
+msgstr "Слишком длинное имя файла"
+
+#: ipconst.swsaenetdown
+msgid "Network is down"
+msgstr "Сеть не работает"
+
+#: ipconst.swsaenetreset
+msgid "Network dropped connection on reset"
+msgstr "Сеть сбросила соединение при reset"
+
+#: ipconst.swsaenetunreach
+msgid "Network is unreachable"
+msgstr "Сеть недоступна"
+
+#: ipconst.swsaenobufs
+msgid "No buffer space available"
+msgstr "Нет места в буфере"
+
+#: ipconst.swsaenomore
+msgctxt "ipconst.swsaenomore"
+msgid "No more data available"
+msgstr "Больше нет данных"
+
+#: ipconst.swsaenoprotoopt
+msgid "Bad protocol option"
+msgstr "Неверный параметр протокола"
+
+#: ipconst.swsaenotconn
+msgid "Socket is not connected"
+msgstr "Сокет не подключён"
+
+#: ipconst.swsaenotempty
+msgid "Directory not empty"
+msgstr "Каталог не пустой"
+
+#: ipconst.swsaenotsock
+#| msgid "Socket operation on nonsocket"
+msgid "Socket operation on non socket"
+msgstr "Сокет-операция над не-сокетом"
+
+#: ipconst.swsaeopnotsupp
+msgid "Operation not supported"
+msgstr "Операция не поддерживается"
+
+#: ipconst.swsaepfnosupport
+msgid "Protocol family not supported"
+msgstr "Семейство протоколов не поддерживается"
+
+#: ipconst.swsaeproclim
+msgid "Too many processes"
+msgstr "Слишком много процессов"
+
+#: ipconst.swsaeprotonosupport
+msgid "Protocol not supported"
+msgstr "Протокол не поддерживается"
+
+#: ipconst.swsaeprototype
+msgid "Protocol wrong type for socket"
+msgstr "Неверный тип протокола для сокета"
+
+#: ipconst.swsaeproviderfailedinit
+msgid "Unable to initialize a service provider"
+msgstr "Невозможно инициализировать сервис-провайдера"
+
+#: ipconst.swsaerefused
+msgid "Refused"
+msgstr "Отказано"
+
+#: ipconst.swsaeremote
+msgid "Too many levels of remote in path"
+msgstr "Слишком много уровней удаленности в пути"
+
+#: ipconst.swsaeshutdown
+msgid "Cannot send after socket shutdown"
+msgstr "Отправка после закрытия сокета невозможна"
+
+#: ipconst.swsaesocktnosupport
+msgid "Socket type not supported"
+msgstr "Тип сокета не поддерживается"
+
+#: ipconst.swsaestale
+msgid "Stale NFS file handle"
+msgstr "Устаревший дескриптор файла NFS"
+
+#: ipconst.swsaetimedout
+msgid "Connection timed out"
+msgstr "Соединение превысило таймаут"
+
+#: ipconst.swsaetoomanyrefs
+msgid "Too many references; cannot splice"
+msgstr "Слишком много ссылок; невозможно склеить"
+
+#: ipconst.swsaeusers
+msgid "Too many users"
+msgstr "Слишком много пользователей"
+
+#: ipconst.swsaewouldblock
+msgid "Resource temporarily unavailable"
+msgstr "Ресурс временно недоступен"
+
+#: ipconst.swsahost_not_found
+msgid "Host not found"
+msgstr "Удалённый компьютер не найден"
+
+#: ipconst.swsanotinitialised
+msgid "Successful WSAStartup not yet performed"
+msgstr "Успешный WSAStartup еще не произведен"
+
+#: ipconst.swsano_data
+msgid "Valid name, no data record of requested type"
+msgstr "Верное имя, но отсутствует запись данных запрошенного типа"
+
+#: ipconst.swsano_recovery
+msgid "This is a nonrecoverable error"
+msgstr "Безвозвратная ошибка"
+
+#: ipconst.swsaservice_not_found
+msgid "Service not found"
+msgstr "Служба не найдена"
+
+#: ipconst.swsasyscallfailure
+msgid "System call failure"
+msgstr "Ошибка системного вызова"
+
+#: ipconst.swsasysnotready
+msgid "Network subsystem is unavailable"
+msgstr "Сетевая подсистема недоступна"
+
+#: ipconst.swsatry_again
+#| msgid "Nonauthoritative host not found"
+msgid "Non-authoritative host not found"
+msgstr "Неполномочный хост не найден"
+
+#: ipconst.swsatype_not_found
+msgid "Type not found"
+msgstr "Тип не найден"
+
+#: ipconst.swsavernotsupported
+msgid "WinSock DLL version not supported"
+msgstr "Версия DLL Winsock не поддерживается"
+
+#: ipconst.swsa_e_cancelled
+msgid "Lookup cancelled"
+msgstr "Просмотр отменен"
+
+#: ipconst.swsa_e_no_more
+msgctxt "ipconst.swsa_e_no_more"
+msgid "No more data available"
+msgstr "Больше нет данных"
+
+#: ipconst.swsa_qos_admission_failure
+msgid "Error due to lack of resources"
+msgstr "Ошибка из-за отсутствия ресурсов"
+
+#: ipconst.swsa_qos_bad_object
+#| msgid "Problem filterspec or providerspecific buffer"
+msgid "Problem filterspec or provider specific buffer"
+msgstr "Ошибка буфера провайдера либо фильтра"
+
+#: ipconst.swsa_qos_bad_style
+msgid "Unknown or conflicting style"
+msgstr "Неизвестный или конфликтующий стиль"
+
+#: ipconst.swsa_qos_generic_error
+msgid "General error"
+msgstr "Общая ошибка"
+
+#: ipconst.swsa_qos_no_receivers
+msgid "There are no receivers"
+msgstr "Нет принимающих"
+
+#: ipconst.swsa_qos_no_senders
+msgid "There are no senders"
+msgstr "Нет отправителей"
+
+#: ipconst.swsa_qos_policy_failure
+msgid "Rejected for administrative reasons - bad credentials"
+msgstr "Отклонено по административным причинам - неверные параметры доступа"
+
+#: ipconst.swsa_qos_receivers
+msgid "At least one Reserve has arrived"
+msgstr "Прибыл по крайней мере один резерв"
+
+#: ipconst.swsa_qos_request_confirmed
+msgid "Reserve has been confirmed"
+msgstr "Резервирование было подтверждено"
+
+#: ipconst.swsa_qos_senders
+msgid "At least one Path has arrived"
+msgstr "Прибыл по крайней мере один путь"
+
+#: ipconst.swsa_qos_traffic_ctrl_error
+msgid "Problem with some part of the flowspec"
+msgstr "Ошибка в одной из частей flowspec"
+

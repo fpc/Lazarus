@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <Name Value="weblaz"/>
+    <Author Value="Michael Van Canneyt"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Parsing>
+        <SyntaxOptions>
+          <UseAnsiStrings Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
+      <Other>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="Web functionality for Lazarus"/>
+    <License Value="LGPL with static linking exception, see Copying.fcl in FCL"/>
+    <Version Major="1"/>
+    <Files Count="61">
+      <Item1>
+        <Filename Value="custcgi.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="custcgi"/>
+      </Item1>
+      <Item2>
+        <Filename Value="extjsjson.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="extjsjson"/>
+      </Item2>
+      <Item3>
+        <Filename Value="extjsxml.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="extjsxml"/>
+      </Item3>
+      <Item4>
+        <Filename Value="fpapache.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="fpapache"/>
+      </Item4>
+      <Item5>
+        <Filename Value="fpcgi.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="fpcgi"/>
+      </Item5>
+      <Item6>
+        <Filename Value="fpdatasetform.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="fpdatasetform"/>
+      </Item6>
+      <Item7>
+        <Filename Value="fpextdirect.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="fpextdirect"/>
+      </Item7>
+      <Item8>
+        <Filename Value="fpextjs.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="fpextjs"/>
+      </Item8>
+      <Item9>
+        <Filename Value="fphtml.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="fphtml"/>
+      </Item9>
+      <Item10>
+        <Filename Value="fphttp.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="fphttp"/>
+      </Item10>
+      <Item11>
+        <Filename Value="fpideexteditorinsertfilenameunit.pas"/>
+        <UnitName Value="fpIDEExtEditorInsertFileNameUnit"/>
+      </Item11>
+      <Item12>
+        <Filename Value="fpideexteditorinsertfilenameunit.lfm"/>
+        <Type Value="LFM"/>
+      </Item12>
+      <Item13>
+        <Filename Value="fpjsonrpc.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="fpjsonrpc"/>
+      </Item13>
+      <Item14>
+        <Filename Value="fptemplate.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="fpTemplate"/>
+      </Item14>
+      <Item15>
+        <Filename Value="fpweb.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="fpWeb"/>
+      </Item15>
+      <Item16>
+        <Filename Value="fpweb_images.inc"/>
+        <Type Value="Include"/>
+      </Item16>
+      <Item17>
+        <Filename Value="fpwebdata.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="fpwebdata"/>
+      </Item17>
+      <Item18>
+        <Filename Value="fpwebfieldsettagunit.pas"/>
+        <UnitName Value="fpWebFieldSetTagUnit"/>
+      </Item18>
+      <Item19>
+        <Filename Value="fpwebfieldsettagunit.lfm"/>
+        <Type Value="LFM"/>
+      </Item19>
+      <Item20>
+        <Filename Value="fpwebhrefeditunit.pas"/>
+        <UnitName Value="fpWebHREFEditUnit"/>
+      </Item20>
+      <Item21>
+        <Filename Value="fpwebhrefeditunit.lfm"/>
+        <Type Value="LFM"/>
+      </Item21>
+      <Item22>
+        <Filename Value="fpwebhtmltaglegendunit.pas"/>
+        <UnitName Value="fpWebHtmlTagLegendUnit"/>
+      </Item22>
+      <Item23>
+        <Filename Value="fpwebhtmltaglegendunit.lfm"/>
+        <Type Value="LFM"/>
+      </Item23>
+      <Item24>
+        <Filename Value="fpwebnewhtmlfileunit.pas"/>
+        <UnitName Value="fpWebNewHTMLFileUnit"/>
+      </Item24>
+      <Item25>
+        <Filename Value="fpwebnewhtmlfileunit.lfm"/>
+        <Type Value="LFM"/>
+      </Item25>
+      <Item26>
+        <Filename Value="fpwebnewhtmlformunit.pas"/>
+        <UnitName Value="fpwebNewHTMLFormUnit"/>
+      </Item26>
+      <Item27>
+        <Filename Value="fpwebnewhtmlformunit.lfm"/>
+        <Type Value="LFM"/>
+      </Item27>
+      <Item28>
+        <Filename Value="fpwebnewhtmlimgunit.pas"/>
+        <UnitName Value="fpwebNewHTMLImgUnit"/>
+      </Item28>
+      <Item29>
+        <Filename Value="fpwebnewhtmlimgunit.lfm"/>
+        <Type Value="LFM"/>
+      </Item29>
+      <Item30>
+        <Filename Value="fpwebnewhtmlinputunit.pas"/>
+        <UnitName Value="fpwebNewHTMLInputUnit"/>
+      </Item30>
+      <Item31>
+        <Filename Value="fpwebnewhtmlinputunit.lfm"/>
+        <Type Value="LFM"/>
+      </Item31>
+      <Item32>
+        <Filename Value="fpwebnewhtmllistunit.pas"/>
+        <UnitName Value="fpwebNewHTMLListUnit"/>
+      </Item32>
+      <Item33>
+        <Filename Value="fpwebnewhtmllistunit.lfm"/>
+        <Type Value="LFM"/>
+      </Item33>
+      <Item34>
+        <Filename Value="fpwebnewhtmltableunit.pas"/>
+        <UnitName Value="fpWebNewHtmlTableUnit"/>
+      </Item34>
+      <Item35>
+        <Filename Value="fpwebnewhtmltableunit.lfm"/>
+        <Type Value="LFM"/>
+      </Item35>
+      <Item36>
+        <Filename Value="fpwebnewhtmltagpreunit.pas"/>
+        <UnitName Value="fpWebNewHtmlTagPreUnit"/>
+      </Item36>
+      <Item37>
+        <Filename Value="fpwebnewhtmltagpreunit.lfm"/>
+        <Type Value="LFM"/>
+      </Item37>
+      <Item38>
+        <Filename Value="fpwebnewhtmltagtdunit.pas"/>
+        <UnitName Value="fpwebNewHtmlTagTDUnit"/>
+      </Item38>
+      <Item39>
+        <Filename Value="fpwebnewhtmltagtdunit.lfm"/>
+        <Type Value="LFM"/>
+      </Item39>
+      <Item40>
+        <Filename Value="fpwebnewhtmltagtrunit.pas"/>
+        <UnitName Value="fpwebNewHtmlTagTRUnit"/>
+      </Item40>
+      <Item41>
+        <Filename Value="fpwebnewhtmltagtrunit.lfm"/>
+        <Type Value="LFM"/>
+      </Item41>
+      <Item42>
+        <Filename Value="fpwebselectoptionsunit.pas"/>
+        <UnitName Value="fpWebSelectOptionsUnit"/>
+      </Item42>
+      <Item43>
+        <Filename Value="fpwebselectoptionsunit.lfm"/>
+        <Type Value="LFM"/>
+      </Item43>
+      <Item44>
+        <Filename Value="fpwebselecttagunit.pas"/>
+        <UnitName Value="fpWebSelectTagUnit"/>
+      </Item44>
+      <Item45>
+        <Filename Value="fpwebselecttagunit.lfm"/>
+        <Type Value="LFM"/>
+      </Item45>
+      <Item46>
+        <Filename Value="fpwebstrconsts.pas"/>
+        <UnitName Value="fpWebStrConsts"/>
+      </Item46>
+      <Item47>
+        <Filename Value="fpwebtoolsunit.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="fpWebToolsUnit"/>
+      </Item47>
+      <Item48>
+        <Filename Value="frmnewhttpapp.pp"/>
+        <UnitName Value="frmnewhttpapp"/>
+      </Item48>
+      <Item49>
+        <Filename Value="frmnewhttpapp.lfm"/>
+        <Type Value="LFM"/>
+      </Item49>
+      <Item50>
+        <Filename Value="htmldefs.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="HTMLDefs"/>
+      </Item50>
+      <Item51>
+        <Filename Value="htmlelements.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="htmlelements"/>
+      </Item51>
+      <Item52>
+        <Filename Value="htmlwriter.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="htmlwriter"/>
+      </Item52>
+      <Item53>
+        <Filename Value="httpdefs.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="HTTPDefs"/>
+      </Item53>
+      <Item54>
+        <Filename Value="lazweb.pp"/>
+        <UnitName Value="lazweb"/>
+      </Item54>
+      <Item55>
+        <Filename Value="sqldbwebdata.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="sqldbwebdata"/>
+      </Item55>
+      <Item56>
+        <Filename Value="webjsonrpc.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="webjsonrpc"/>
+      </Item56>
+      <Item57>
+        <Filename Value="weblazideintf.pp"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="WebLazIDEIntf"/>
+      </Item57>
+      <Item58>
+        <Filename Value="websession.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="websession"/>
+      </Item58>
+      <Item59>
+        <Filename Value="webutil.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="webutil"/>
+      </Item59>
+      <Item60>
+        <Filename Value="frmrpcmoduleoptions.lfm"/>
+        <Type Value="LFM"/>
+      </Item60>
+      <Item61>
+        <Filename Value="frmrpcmoduleoptions.pp"/>
+        <UnitName Value="frmrpcmoduleoptions"/>
+      </Item61>
+    </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="2">
+      <Item1>
+        <PackageName Value="SQLDBLaz"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="IDEIntf"/>
+      </Item2>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count"/>
+    </CustomOptions>
+  </Package>
+</CONFIG>

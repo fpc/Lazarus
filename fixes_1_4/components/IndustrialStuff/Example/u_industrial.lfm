@@ -1,0 +1,134 @@
+object Form1: TForm1
+  Left = 123
+  Height = 166
+  Top = 95
+  Width = 568
+  Caption = 'IndustrialStuff Example'
+  ClientHeight = 166
+  ClientWidth = 568
+  LCLVersion = '1.1'
+  object indLed1: TindLed
+    Left = 200
+    Height = 35
+    Top = 33
+    Width = 34
+    LedValue = False
+    Bevels = <    
+      item
+        HighlightColor = clBlack
+        ShadowColor = clBlack
+      end    
+      item
+        Width = 3
+      end    
+      item
+        Style = bcLowered
+      end    
+      item
+        HighlightColor = clBlack
+        ShadowColor = clBlack
+      end>
+    LedColorOn = clLime
+    LedColorOff = clGreen
+    LedColorDisabled = 22963
+    ShapeLedColorOn = clGreen
+    ShapeLedColorOff = 16384
+    ShapeLedColorDisabled = 13416
+  end
+  object StopLightSensor1: TStopLightSensor
+    Left = 96
+    Height = 59
+    Top = 24
+    Width = 25
+    Center = True
+    Picture.Data = {
+      1754506F727461626C654E6574776F726B47726170686963EF00000089504E47
+      0D0A1A0A0000000D49484452000000150000002B08020000001805541C000000
+      B649444154789CED94010E84200C04FBF47B9A3FE304142AB5AD5B721763DCA0
+      21C1D9D6BA919639D17A7DA24A296D3CE15AC11FF3ADCF089F5F8FA8AED3072C
+      9EC39A85CA77389FAB161E5F15E7C5FA173F3B3F69017FBF6611CF8FABFBE7BF
+      DCFB1EE08FF0B985959F8A9523D5C2E22B9C7F6FAC0B8017CDE3F5A505967F1B
+      76F8C1E2CD3FCEEFD363FBEB3C87350B277F54226C58983CCB7FB3C0F2CF2B47
+      EA4B0B2CFF36ECF083C5F3F3BF84B4F169427D48317D01F81FF539473C105700
+      00000049454E44AE426082
+    }
+    State = slRED
+  end
+  object LEDNumber1: TLEDNumber
+    Left = 32
+    Height = 28
+    Top = 116
+    Width = 177
+    Caption = 'Lazarus'
+    OffColor = 930866
+    OnColor = clLime
+  end
+  object AnalogSensor1: TAnalogSensor
+    Left = 256
+    Height = 136
+    Top = 8
+    Width = 153
+    BorderWidth = 2
+    BorderStyle = bsSingle
+    Caption = 'level : '
+    ClientHeight = 132
+    ClientWidth = 149
+    Font.Height = -16
+    Font.Name = 'Arial'
+    ParentColor = False
+    ParentFont = False
+    TabOrder = 0
+    ShowText = True
+    ShowLevel = True
+    ColorFore = clLime
+    ColorBack = clBlack
+    Value = 20
+    ValueMin = 0
+    ValueMax = 100
+    ValueRed = 30
+    ValueYellow = 60
+    AnalogKind = akVertical
+  end
+  object indGnouMeter1: TindGnouMeter
+    Left = 424
+    Height = 129
+    Top = 17
+    Width = 120
+    Caption = 'indGnouMeter1'
+    Value = 70
+    Color = clPurple
+    ParentColor = False
+    ColorFore = clRed
+    ColorBack = clInactiveCaption
+    SignalUnit = 'Units'
+    ValueMin = 0
+    ValueMax = 100
+    Digits = 0
+    Increment = 10
+    ShowIncrements = True
+    Transparent = True
+    GapTop = 20
+    GapBottom = 10
+    BarThickness = 5
+    MarkerColor = clBlue
+    ShowMarker = True
+  end
+  object Arrow1: TArrow
+    Left = 48
+    Height = 20
+    Top = 41
+    Width = 20
+    Constraints.MinHeight = 8
+    Constraints.MinWidth = 8
+  end
+  object AdvLed1: TAdvLed
+    Left = 152
+    Height = 24
+    Top = 40
+    Width = 24
+    Kind = lkYellowLight
+    State = lsOn
+    Blink = False
+    AutoSize = True
+  end
+end

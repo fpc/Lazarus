@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <PathDelim Value="\"/>
+    <Name Value="Printer4Lazarus"/>
+    <AddToProjectUsesSection Value="True"/>
+    <Author Value="Olivier Guilbaud"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <IncludeFiles Value="unix;win32;carbon;qt"/>
+        <OtherUnitFiles Value="unix;win32;carbon;qt"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)"/>
+      </SearchPaths>
+      <Parsing>
+        <SyntaxOptions>
+          <UseAnsiStrings Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
+      <Other>
+        <CustomOptions Value="-dUseCache
+-dNativePrint
+-dUSEUNICODE"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="Printer implementation for Lazarus
+"/>
+    <License Value="LGPL
+"/>
+    <Version Minor="5"/>
+    <Files Count="33">
+      <Item1>
+        <Filename Value="printersdlgs.pp"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="PrintersDlgs"/>
+      </Item1>
+      <Item2>
+        <Filename Value="osprinters.pas"/>
+        <UnitName Value="OSPrinters"/>
+      </Item2>
+      <Item3>
+        <Filename Value="readme.txt"/>
+        <Type Value="Text"/>
+      </Item3>
+      <Item4>
+        <Filename Value="unix\udlgselectprinter.lfm"/>
+        <Type Value="LFM"/>
+      </Item4>
+      <Item5>
+        <Filename Value="unix\udlgselectprinter.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="uDlgSelectPrinter"/>
+      </Item5>
+      <Item6>
+        <Filename Value="unix\cupsdyn.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="cupsdyn"/>
+      </Item6>
+      <Item7>
+        <Filename Value="unix\cupsprinters.inc"/>
+        <Type Value="Include"/>
+      </Item7>
+      <Item8>
+        <Filename Value="unix\cupsprinters_h.inc"/>
+        <Type Value="Include"/>
+      </Item8>
+      <Item9>
+        <Filename Value="unix\udlgprintersjobs.lfm"/>
+        <Type Value="LFM"/>
+      </Item9>
+      <Item10>
+        <Filename Value="unix\udlgprintersjobs.pp"/>
+        <Type Value="Text"/>
+        <UnitName Value="udlgPrintersJobs"/>
+      </Item10>
+      <Item11>
+        <Filename Value="unix\udlgpropertiesprinter.lfm"/>
+        <Type Value="LFM"/>
+      </Item11>
+      <Item12>
+        <Filename Value="unix\udlgpropertiesprinter.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="uDlgPropertiesPrinter"/>
+      </Item12>
+      <Item13>
+        <Filename Value="win32\winprinters.inc"/>
+        <Type Value="Include"/>
+      </Item13>
+      <Item14>
+        <Filename Value="win32\winutilprnconst.inc"/>
+        <Type Value="Include"/>
+      </Item14>
+      <Item15>
+        <Filename Value="win32\winprinters_h.inc"/>
+        <Type Value="Include"/>
+      </Item15>
+      <Item16>
+        <Filename Value="win32\winprndialogs.inc"/>
+        <Type Value="Include"/>
+      </Item16>
+      <Item17>
+        <Filename Value="unix\cupsprndialogs.inc"/>
+        <Type Value="Include"/>
+      </Item17>
+      <Item18>
+        <Filename Value="carbon\carbonprinters.inc"/>
+        <Type Value="Include"/>
+      </Item18>
+      <Item19>
+        <Filename Value="carbon\carbonprinters_h.inc"/>
+        <Type Value="Include"/>
+      </Item19>
+      <Item20>
+        <Filename Value="carbon\carbonprndialogs.inc"/>
+        <Type Value="Include"/>
+      </Item20>
+      <Item21>
+        <Filename Value="carbon\carbonprinting.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonPrinting"/>
+      </Item21>
+      <Item22>
+        <Filename Value="qt\qtprndialogs.inc"/>
+        <Type Value="Include"/>
+      </Item22>
+      <Item23>
+        <Filename Value="qt\qtprinters_h.inc"/>
+        <Type Value="Include"/>
+      </Item23>
+      <Item24>
+        <Filename Value="qt\qtprinters.inc"/>
+        <Type Value="Include"/>
+      </Item24>
+      <Item25>
+        <Filename Value="carbon\issues.xml"/>
+        <Type Value="Issues"/>
+      </Item25>
+      <Item26>
+        <Filename Value="unix\udlgpagesetup.lfm"/>
+        <Type Value="LFM"/>
+      </Item26>
+      <Item27>
+        <Filename Value="unix\udlgpagesetup.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="udlgpagesetup"/>
+      </Item27>
+      <Item28>
+        <Filename Value="unix\framepagesetup.lfm"/>
+        <Type Value="LFM"/>
+      </Item28>
+      <Item29>
+        <Filename Value="unix\framepagesetup.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="framePageSetup"/>
+      </Item29>
+      <Item30>
+        <Filename Value="unix\frameprinterselector.lfm"/>
+        <Type Value="LFM"/>
+      </Item30>
+      <Item31>
+        <Filename Value="unix\frameprinterselector.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="frameprinterselector"/>
+      </Item31>
+      <Item32>
+        <Filename Value="unix\udlgprintersetup.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="udlgprintersetup"/>
+      </Item32>
+      <Item33>
+        <Filename Value="unix\cupslcl.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="cupslcl"/>
+      </Item33>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="1">
+      <Item1>
+        <PackageName Value="cairocanvas_pkg"/>
+      </Item1>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <CommandAfter Value="tar czf $MakeFile($(ProjPublishDir)).tgz $(ProjPublishDir)"/>
+    </PublishOptions>
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count"/>
+    </CustomOptions>
+  </Package>
+</CONFIG>

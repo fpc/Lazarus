@@ -1,0 +1,155 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2012-08-06 22:54+0300\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Language: lt\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 1.5\n"
+
+#: debuggerstrconst.drsbreakpointcolwidthaction
+msgid "Action column"
+msgstr "Veiksmo stulpelis"
+
+#: debuggerstrconst.drsbreakpointcolwidthcondition
+msgid "Condition column"
+msgstr "Sąlygos stulpelis"
+
+#: debuggerstrconst.drsbreakpointcolwidthfile
+msgid "File/address column"
+msgstr "Failo/adreso stulpelis"
+
+#: debuggerstrconst.drsbreakpointcolwidthgroup
+msgid "Group column"
+msgstr "Grupės stulpelis"
+
+#: debuggerstrconst.drsbreakpointcolwidthline
+msgctxt "debuggerstrconst.drsbreakpointcolwidthline"
+msgid "Line column"
+msgstr "Eilutės stulpelis"
+
+#: debuggerstrconst.drsbreakpointcolwidthpasscount
+msgid "Pass-count column"
+msgstr "Praėjimų skaičiaus stulpelis"
+
+#: debuggerstrconst.drscolwidthbrkpointimg
+msgid "Break indication column"
+msgstr "Stabdos indikatoriaus stulpelis"
+
+#: debuggerstrconst.drscolwidthexpression
+msgid "Expression column"
+msgstr "Išraiškos stulpelis"
+
+#: debuggerstrconst.drscolwidthfunc
+msgid "Function name column"
+msgstr "Funkcijos pavadinimo stulpelis"
+
+#: debuggerstrconst.drscolwidthindex
+msgid "Index column"
+msgstr "Indekso stulpelis"
+
+#: debuggerstrconst.drscolwidthline
+msgctxt "debuggerstrconst.drscolwidthline"
+msgid "Line column"
+msgstr "Eilutės stulpelis"
+
+#: debuggerstrconst.drscolwidthname
+msgid "Name column"
+msgstr "Pavadinimo stulpelis"
+
+#: debuggerstrconst.drscolwidthsource
+msgid "Source column"
+msgstr "Šaltinio stulpelis"
+
+#: debuggerstrconst.drscolwidthstate
+msgid "State column"
+msgstr "Būsenos stulpelis"
+
+#: debuggerstrconst.drscolwidthvalue
+msgid "Value column"
+msgstr "Vertės stulpelis"
+
+#: debuggerstrconst.drsevalhistorynone
+msgid "No history kept"
+msgstr "Istorija nevedama"
+
+#: debuggerstrconst.drshistorycolwidthcurrent
+msgid "Current column"
+msgstr "Veikiamasis stulpelis"
+
+#: debuggerstrconst.drshistorycolwidthlocation
+msgid "Location column"
+msgstr "Vietos stulpelis"
+
+#: debuggerstrconst.drshistorycolwidthtime
+msgid "Time column"
+msgstr "Laiko stulpelis"
+
+#: debuggerstrconst.drsinspectcolwidthdataclass
+msgid "Data class column"
+msgstr ""
+
+#: debuggerstrconst.drsinspectcolwidthdataname
+msgid "Data name column"
+msgstr "Duomenų pavadinimo stulpelis"
+
+#: debuggerstrconst.drsinspectcolwidthdatatype
+msgid "Data type column"
+msgstr "Duomenų tipo stulpelis"
+
+#: debuggerstrconst.drsinspectcolwidthdatavalue
+msgid "Data value column"
+msgstr "Duomenų vertės stulpelis"
+
+#: debuggerstrconst.drsinspectcolwidthdatavisibility
+msgid "Data visibility column"
+msgstr ""
+
+#: debuggerstrconst.drsinspectcolwidthmethaddress
+msgid "Method address column"
+msgstr "Metodo adreso stulpelis"
+
+#: debuggerstrconst.drsinspectcolwidthmethname
+msgid "Method name column"
+msgstr "Metodo pavadinimo stulpelis"
+
+#: debuggerstrconst.drsinspectcolwidthmethreturns
+msgid "Method returns column"
+msgstr "Metodo grąžos stulpelis"
+
+#: debuggerstrconst.drsinspectcolwidthmethtype
+msgid "Method type column"
+msgstr "Metodo tipo stulpelis"
+
+#: debuggerstrconst.drslen
+msgid "Len=%d: "
+msgstr "Ilgis = %d: "
+
+#: debuggerstrconst.drsuseinstanceclasstype
+msgid "Use Instance class type"
+msgstr "Naudoti egzemplioriaus klasės tipą"
+
+#: debuggerstrconst.drswatchsplitterinspect
+msgid "Inspect pane"
+msgstr "Inspektavimo polangis"
+
+#: debuggerstrconst.dsrevalhistorydown
+msgid "Append result at bottom of history"
+msgstr "Rezultatą pridėti istorijos apačioje"
+
+#: debuggerstrconst.dsrevalhistoryup
+msgid "Insert result at top of history"
+msgstr "Rezultatą pridėti istorijos viršuje"
+
+#: debuggerstrconst.synfnewvalueisempty
+msgid "\"New value\" is empty."
+msgstr ""
+
+#: debuggerstrconst.synfthedebuggerwasnotabletomodifythevalue
+msgid "The debugger was not able to modify the value."
+msgstr ""
+

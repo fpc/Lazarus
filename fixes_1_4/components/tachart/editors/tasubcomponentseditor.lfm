@@ -1,0 +1,64 @@
+object ComponentListEditorForm: TComponentListEditorForm
+  Left = 346
+  Height = 240
+  Top = 283
+  Width = 320
+  Caption = 'ComponentListEditorForm'
+  ClientHeight = 240
+  ClientWidth = 320
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object ChildrenListBox: TListBox
+    Left = 0
+    Height = 198
+    Top = 42
+    Width = 320
+    Align = alClient
+    ItemHeight = 0
+    MultiSelect = True
+    OnClick = ChildrenListBoxClick
+    TabOrder = 0
+  end
+  object tbCommands: TToolBar
+    Left = 0
+    Height = 42
+    Top = 0
+    Width = 320
+    AutoSize = True
+    ButtonHeight = 40
+    ButtonWidth = 44
+    ShowCaptions = True
+    TabOrder = 1
+    object tbAdd: TToolButton
+      Left = 1
+      Top = 2
+      Caption = 'Add'
+      DropdownMenu = menuAddItem
+    end
+    object tbDelete: TToolButton
+      Left = 45
+      Top = 2
+      Caption = 'Delete'
+      OnClick = tbDeleteClick
+    end
+    object tbMoveUp: TToolButton
+      Left = 89
+      Top = 2
+      Caption = 'Up'
+      OnClick = tbMoveUpClick
+    end
+    object tbMoveDown: TToolButton
+      Left = 133
+      Top = 2
+      Caption = 'Down'
+      OnClick = tbMoveDownClick
+    end
+  end
+  object menuAddItem: TPopupMenu
+    left = 88
+    top = 96
+  end
+end

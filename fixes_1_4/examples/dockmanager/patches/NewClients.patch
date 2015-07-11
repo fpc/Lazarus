@@ -1,0 +1,111 @@
+Index: controls.pp
+===================================================================
+--- controls.pp	(revision 20785)
++++ controls.pp	(working copy)
+@@ -1585,7 +1585,8 @@
+     FOnGetDockCaption: TGetDockCaptionEvent;
+     FWinControls: TFPList; // the child controls (only TWinControl, no TControl)
+     FDefWndProc: Pointer;
+-    FDockClients: TFPList;
++    //FDockClients: TFPList;
++    FNewDockClients: TFPList;
+     FClientWidth: Integer;
+     FClientHeight: Integer;
+     FDockManager: TDockManager;
+@@ -1618,6 +1619,7 @@
+     function GetControlCount: Integer;
+     function GetDockClientCount: Integer;
+     function GetDockClients(Index: Integer): TControl;
++    function GetDockClientList: TFPList; virtual;
+     function GetHandle: HWND;
+     function GetIsResizing: boolean;
+     function GetTabOrder: TTabOrder;
+@@ -1727,6 +1729,7 @@
+     procedure SetDockManager(AMgr: TDockManager);
+     procedure DoFloatMsg(ADockSource: TDragDockObject); override;//CM_FLOAT
+     procedure DoGetDockCaption(AControl: TControl; var ACaption: String); virtual;
++    property FDockClients: TFPList read GetDockClientList;
+   protected
+     // mouse and keyboard
+     procedure DoEnter; dynamic;
+Index: include/wincontrol.inc
+===================================================================
+--- include/wincontrol.inc	(revision 20785)
++++ include/wincontrol.inc	(working copy)
+@@ -5935,6 +5935,26 @@
+     Result := 0;
+ end;
+ 
++{------------------------------------------------------------------------------
++  function TWinControl.GetVisibleDockClientCount: Integer;
++ ------------------------------------------------------------------------------}
++function TWinControl.GetVisibleDockClientCount: Integer;
++var
++  i: integer;
++  lst: TFPList;
++begin
++  Result := 0;
++  lst := FDockClients;
++  if lst=nil then exit;
++  for i:=lst.Count-1 downto 0 do
++    if TControl(lst[I]).Visible then inc(Result);
++end;
++
++function TWinControl.GetDockClientList: TFPList;
++begin
++  Result := FNewDockClients;
++end;
++
+ function TWinControl.GetDockClients(Index: Integer): TControl;
+ begin
+   if FDockClients<>nil then
+@@ -6054,7 +6074,8 @@
+       FreeThenNil(FDockManager)
+     else
+       FDockManager:=nil;
+-  FreeThenNil(FDockClients);
++  //FreeThenNil(FDockClients);
++  FreeThenNil(FNewDockClients);
+   FreeThenNil(FTabList);
+   //DebugLn('[TWinControl.Destroy] D  ',Name,':',ClassName);
+   inherited Destroy;
+@@ -7133,19 +7154,6 @@
+ end;
+ 
+ {------------------------------------------------------------------------------
+-  function TWinControl.GetVisibleDockClientCount: Integer;
+- ------------------------------------------------------------------------------}
+-function TWinControl.GetVisibleDockClientCount: Integer;
+-var
+-  i: integer;
+-begin
+-  Result := 0;
+-  if FDockClients=nil then exit;
+-  for i:=FDockClients.Count-1 downto 0 do
+-    if TControl(FDockClients[I]).Visible then inc(Result);
+-end;
+-
+-{------------------------------------------------------------------------------
+   procedure TWinControl.SetChildSizing(const AValue: TControlChildSizing);
+  ------------------------------------------------------------------------------}
+ procedure TWinControl.SetChildSizing(const AValue: TControlChildSizing);
+@@ -7165,14 +7173,10 @@
+   FDockSite := NewDockSite;
+   if not (csDesigning in ComponentState) then begin
+     DragManager.RegisterDockSite(Self,NewDockSite);
+-    if not NewDockSite then begin
+-      FreeAndNil(FDockClients);
+-      FDockClients := nil;
+-      DockManager := nil;
+-    end
+-    else begin
+-      if FDockClients = nil then FDockClients := TFPList.Create;
+-      DockManager := CreateDockManager;
++    if NewDockSite then begin
++      if FDockClients = nil then FNewDockClients := TFPList.Create;
++      if UseDockManager then
++        DockManager := CreateDockManager;
+     end;
+   end;
+ end;
+tc········

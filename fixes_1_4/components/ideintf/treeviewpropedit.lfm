@@ -1,0 +1,368 @@
+object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
+  Left = 329
+  Height = 321
+  Top = 230
+  Width = 635
+  ActiveControl = BtnNewItem
+  BorderIcons = [biSystemMenu, biHelp]
+  Caption = 'TreeView Items Editor'
+  ClientHeight = 321
+  ClientWidth = 635
+  Constraints.MinHeight = 240
+  Constraints.MinWidth = 400
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object GroupBox1: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideBottom.Control = BtnOK
+    Left = 6
+    Height = 273
+    Top = 6
+    Width = 420
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'Items'
+    ClientHeight = 253
+    ClientWidth = 416
+    TabOrder = 0
+    object TreeView1: TTreeView
+      AnchorSideLeft.Control = GroupBox1
+      AnchorSideTop.Control = GroupBox1
+      AnchorSideBottom.Control = GroupBox1
+      AnchorSideBottom.Side = asrBottom
+      Left = 5
+      Height = 243
+      Top = 5
+      Width = 240
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Left = 5
+      BorderSpacing.Top = 5
+      BorderSpacing.Bottom = 5
+      HideSelection = False
+      ReadOnly = True
+      TabOrder = 0
+      OnSelectionChanged = TreeView1SelectionChanged
+      Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+    end
+    object BtnNewItem: TButton
+      Tag = 1
+      AnchorSideLeft.Control = MoveUpBtn
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = GroupBox1
+      AnchorSideRight.Control = GroupBox1
+      AnchorSideRight.Side = asrBottom
+      Left = 282
+      Height = 25
+      Top = 6
+      Width = 128
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 3
+      BorderSpacing.Around = 6
+      Caption = '&New Item'
+      Default = True
+      OnClick = BtnNewItemClick
+      TabOrder = 1
+    end
+    object BtnNewSubItem: TButton
+      AnchorSideLeft.Control = BtnNewItem
+      AnchorSideTop.Control = BtnNewItem
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = BtnNewItem
+      AnchorSideRight.Side = asrBottom
+      Left = 282
+      Height = 25
+      Top = 37
+      Width = 128
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 6
+      Caption = 'N&ew SubItem'
+      OnClick = BtnNewItemClick
+      TabOrder = 2
+    end
+    object BtnDelete: TButton
+      AnchorSideLeft.Control = BtnNewSubItem
+      AnchorSideTop.Control = BtnNewSubItem
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = BtnNewSubItem
+      AnchorSideRight.Side = asrBottom
+      Left = 282
+      Height = 25
+      Top = 68
+      Width = 128
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 6
+      Caption = '&Delete'
+      OnClick = btnDeleteClick
+      TabOrder = 3
+    end
+    object BtnLoad: TButton
+      AnchorSideLeft.Control = BtnDelete
+      AnchorSideTop.Control = BtnDelete
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = BtnDelete
+      AnchorSideRight.Side = asrBottom
+      Left = 282
+      Height = 25
+      Top = 99
+      Width = 128
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 6
+      Caption = '&Load'
+      OnClick = btnLoadClick
+      TabOrder = 4
+    end
+    object BtnSave: TButton
+      AnchorSideLeft.Control = BtnLoad
+      AnchorSideTop.Control = BtnLoad
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = BtnLoad
+      AnchorSideRight.Side = asrBottom
+      Left = 282
+      Height = 25
+      Top = 130
+      Width = 128
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 6
+      Caption = '&Save'
+      OnClick = btnSaveClick
+      TabOrder = 5
+    end
+    object MoveUpBtn: TSpeedButton
+      AnchorSideLeft.Control = TreeView1
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Side = asrBottom
+      Left = 251
+      Height = 26
+      Top = 78
+      Width = 22
+      BorderSpacing.Around = 6
+      Enabled = False
+      OnClick = MoveUpBtnClick
+      ShowHint = True
+      ParentShowHint = False
+    end
+    object MoveDownBtn: TSpeedButton
+      AnchorSideLeft.Control = MoveUpBtn
+      AnchorSideTop.Control = MoveUpBtn
+      AnchorSideTop.Side = asrBottom
+      Left = 251
+      Height = 26
+      Top = 111
+      Width = 22
+      BorderSpacing.Top = 7
+      Enabled = False
+      OnClick = MoveDownBtnClick
+      ShowHint = True
+      ParentShowHint = False
+    end
+  end
+  object GroupBox2: TGroupBox
+    AnchorSideLeft.Control = GroupBox1
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = BtnOK
+    Left = 432
+    Height = 273
+    Top = 6
+    Width = 197
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'Item Properties'
+    ClientHeight = 253
+    ClientWidth = 193
+    TabOrder = 1
+    object LabelText: TLabel
+      AnchorSideLeft.Control = GroupBox2
+      AnchorSideTop.Control = GroupBox2
+      Left = 6
+      Height = 18
+      Top = 6
+      Width = 37
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      Caption = 'Text:'
+      FocusControl = edtText
+      ParentColor = False
+    end
+    object LabelImageIndex: TLabel
+      AnchorSideLeft.Control = LabelText
+      AnchorSideTop.Control = edtText
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 18
+      Top = 58
+      Width = 95
+      BorderSpacing.Top = 6
+      Caption = 'Image Index:'
+      FocusControl = edtIndexImg
+      ParentColor = False
+    end
+    object LabelSelectedIndex: TLabel
+      AnchorSideLeft.Control = LabelImageIndex
+      AnchorSideTop.Control = edtIndexImg
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 18
+      Top = 110
+      Width = 113
+      BorderSpacing.Top = 6
+      Caption = 'Selected index:'
+      FocusControl = edtIndexSel
+      ParentColor = False
+    end
+    object LabelStateIndex: TLabel
+      AnchorSideLeft.Control = LabelSelectedIndex
+      AnchorSideTop.Control = edtIndexSel
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 18
+      Top = 162
+      Width = 90
+      BorderSpacing.Top = 6
+      Caption = 'State Index:'
+      FocusControl = edtIndexState
+      ParentColor = False
+    end
+    object edtText: TEdit
+      AnchorSideLeft.Control = LabelText
+      AnchorSideTop.Control = LabelText
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = GroupBox2
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 26
+      Top = 26
+      Width = 182
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 2
+      BorderSpacing.Right = 5
+      OnChange = Edit1Change
+      TabOrder = 0
+    end
+    object edtIndexImg: TEdit
+      AnchorSideLeft.Control = LabelImageIndex
+      AnchorSideTop.Control = LabelImageIndex
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 26
+      Top = 78
+      Width = 48
+      BorderSpacing.Top = 2
+      OnEditingDone = edtIndexStateEditingDone
+      TabOrder = 1
+    end
+    object edtIndexSel: TEdit
+      AnchorSideLeft.Control = LabelSelectedIndex
+      AnchorSideTop.Control = LabelSelectedIndex
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 26
+      Top = 130
+      Width = 48
+      BorderSpacing.Top = 2
+      OnEditingDone = edtIndexStateEditingDone
+      TabOrder = 2
+    end
+    object edtIndexState: TEdit
+      AnchorSideLeft.Control = LabelStateIndex
+      AnchorSideTop.Control = LabelStateIndex
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 26
+      Top = 182
+      Width = 48
+      BorderSpacing.Top = 2
+      OnEditingDone = edtIndexStateEditingDone
+      TabOrder = 3
+    end
+  end
+  object BtnOK: TBitBtn
+    AnchorSideRight.Control = BtnCancel
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 304
+    Height = 30
+    Top = 285
+    Width = 75
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = '&OK'
+    Constraints.MinHeight = 25
+    Constraints.MinWidth = 75
+    Kind = bkOK
+    ModalResult = 1
+    TabOrder = 2
+  end
+  object BtnCancel: TBitBtn
+    AnchorSideRight.Control = BtnApply
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 385
+    Height = 30
+    Top = 285
+    Width = 82
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Cancel = True
+    Caption = 'Cancel'
+    Constraints.MinHeight = 25
+    Constraints.MinWidth = 75
+    Kind = bkCancel
+    ModalResult = 2
+    TabOrder = 3
+  end
+  object BtnApply: TBitBtn
+    AnchorSideRight.Control = BtnHelp
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 473
+    Height = 28
+    Top = 287
+    Width = 75
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = '&Apply'
+    Constraints.MinHeight = 25
+    Constraints.MinWidth = 75
+    OnClick = btnApplyClick
+    TabOrder = 4
+  end
+  object BtnHelp: TBitBtn
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 554
+    Height = 32
+    Top = 283
+    Width = 75
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = '&Help'
+    Constraints.MinHeight = 25
+    Constraints.MinWidth = 75
+    Kind = bkHelp
+    TabOrder = 5
+  end
+  object OpenDialog1: TOpenDialog
+    Title = 'Open'
+    FilterIndex = 0
+    left = 296
+    top = 208
+  end
+  object SaveDialog1: TSaveDialog
+    Title = 'Save'
+    FilterIndex = 0
+    left = 368
+    top = 232
+  end
+end

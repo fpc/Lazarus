@@ -1,0 +1,847 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+  <package name="lcl">
+    <!--
+  ====================================================================
+    GraphMath
+  ====================================================================
+-->
+    <module name="GraphMath">
+      <short>A Set of Mathematical Helper routines to simply Cross-Platfrom Canvas drawing etc</short>
+      <descr/>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="SysUtils">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Math">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLProc">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TFloatPoint">
+        <short>
+          <var>TFloatPoint</var> - an extended precision record specifying the X and Y coordinates of a point in a graphic environment</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFloatPoint.X">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFloatPoint.Y">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- array type Visibility: default -->
+      <element name="TBezier">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PPoint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="Angles2Coords">
+        <short>
+          <var>Angles2Coords</var> - convert an Eccentric Angle and an Angle-Length, into the coords for Start and End Radial-Points</short>
+        <descr>
+          <p>Method:   <var>Angles2Coords</var>
+          </p>
+          <pre>Params:   x,y,width,height,angle1,angle2, sx, sy, ex, ey
+  Returns:  Nothing
+
+  Use Angles2Coords to convert an Eccentric(aka Radial) Angle and an
+  Angle-Length, such as are used in X-Windows and GTK, into the coords,
+  for Start and End Radial-Points, such as are used in the Windows API Arc
+  Pie and Chord routines. The angles are 1/16th of a degree. For example, a
+  full circle equals 5760 (16*360). Positive values of Angle and AngleLength
+  mean counter-clockwise while negative values mean clockwise direction. 
+  Zero degrees is at the 3 o'clock position.</pre>
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Angles2Coords.X">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Angles2Coords.Y">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Angles2Coords.Width">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Angles2Coords.Height">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Angles2Coords.Angle1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Angles2Coords.Angle2">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Angles2Coords.SX">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Angles2Coords.SY">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Angles2Coords.EX">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Angles2Coords.EY">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="Arc2Bezier">
+        <short>
+          <var>Arc2Bezier</var> - convert an Arc and ArcLength into a Bezier Aproximation of the Arc.</short>
+        <descr>
+          <p>Method:   <var>Arc2Bezier</var>
+          </p>
+          <pre>Params:   X, Y, Width, Height, Angle1, Angle2, Rotation, Points, Count
+  Returns:  Nothing
+
+  Use Arc2Bezier to convert an Arc and ArcLength into a Bezier Aproximation
+  of the Arc. The Rotation parameter accepts a Rotation-Angle for a rotated
+  Ellipse'- for a non-rotated ellipse this value would be 0, or 360. If the
+  AngleLength is greater than 90 degrees, or is equal to 0, it automatically
+  exits, as Bezier cannot accurately aproximate any angle greater then 90
+  degrees, and in fact for best result no angle greater than 45 should be
+  converted, instead an array of Bezier's should be created, each Bezier
+  descibing a portion of the total arc no greater than 45 degrees. The angles
+  are 1/16th of a degree. For example, a full circle equals 5760 (16*360).
+  Positive values of Angle and AngleLength mean counter-clockwise while
+  negative values mean clockwise direction. Zero degrees is at the 3 o'clock
+  position.</pre>
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Arc2Bezier.X">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Arc2Bezier.Y">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Arc2Bezier.Width">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Arc2Bezier.Height">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Arc2Bezier.Angle1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Arc2Bezier.Angle2">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Arc2Bezier.Rotation">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Arc2Bezier.Points">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="Bezier">
+        <short>
+          <var>Bezier</var> - function to get a Bezierfigure from the given points</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="Bezier.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Bezier.C1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Bezier.C2">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Bezier.C3">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Bezier.C4">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="Bezier">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="Bezier.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Bezier.C1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Bezier.C2">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Bezier.C3">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Bezier.C4">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="Bezier2Polyline">
+        <short>
+          <var>Bezier2Polyline</var> - convert a 4-Point Bezier into a Pointer Array of TPoint and a Count variable</short>
+        <descr>
+          <p>Method:   <var>Bezier2Polyline</var>
+          </p>
+          <pre>Params:   Bezier, Points, Count
+  Returns:  Nothing
+
+  Use BezierToPolyline to convert a 4-Point Bezier into a Pointer Array of
+  TPoint and a Count variable which can then be used within either a Polyline,
+  or Polygon routine. It is primarily for use within PolyBezier2Polyline. If
+  Points is not initialized or Count is less then 0, it is set to nil and
+  the array starts at 0, otherwise it tries to append points
+  to the array starting at Count. Points should ALWAYS be Freed when done
+  by calling to ReallocMem(Points, 0) or FreeMem.
+</pre>
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Bezier2Polyline.Bezier">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Bezier2Polyline.Points">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Bezier2Polyline.Count">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="BezierArcPoints">
+        <short>
+          <var>BezierArcPoints</var> - convert an Arc and ArcLength into a Pointer Array of TPoints for use with Polyline or Polygon</short>
+        <descr>
+          <p>Method:   <var>BezierArcPoints</var>
+          </p>
+          <pre>Params:   X, Y, Width, Height, Angle1, Angle2, Rotation, Points, Count
+  Returns:  Nothing
+
+  Use BezierArcPoints to convert an Arc and ArcLength into a Pointer Array
+  of TPoints for use with Polyline or Polygon. The Rotation parameter accepts
+  a Rotation-Angle for a rotated Ellipse'- for a non-rotated ellipse this
+  value would be 0, or 360. The result is an Aproximation based on 1 or more
+  Beziers. If the AngleLength is greater than 90 degrees, it calls
+  PolyBezierArcPoints, otherwise it Converts the angles into a Bezier by
+  calling to Arc2Bezier, and then converts the Bezier into an array of Points
+  by calling to Bezier2Polyline. The angles are 1/16th of a degree. For example,
+  a full circle equals 5760 (16*360). Positive values of Angle and AngleLength
+  mean counter-clockwise while negative values mean clockwise direction. Zero
+  degrees is at the 3'o clock position. If Points is not initialized or Count
+  is less then 0, it is set to nil and the array starts at 0,
+  otherwise it tries to append points to the array starting at Count. Points
+  should ALWAYS be Freed when done by calling ReallocMem(Points, 0) or FreeMem.
+</pre>
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="BezierArcPoints.X">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="BezierArcPoints.Y">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="BezierArcPoints.Width">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="BezierArcPoints.Height">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="BezierArcPoints.Angle1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="BezierArcPoints.Angle2">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="BezierArcPoints.Rotation">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="BezierArcPoints.Points">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="BezierArcPoints.Count">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="BezierMidPoint">
+        <short>
+          <var>BezierMidPoint</var> - get the Mid-Point of any 4-Point Bezier. It is  primarily for use in SplitBezier.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="BezierMidPoint.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="BezierMidPoint.Bezier">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CenterPoint">
+        <short>
+          <var>CenterPoint</var> - get the Center-Point of any rectangle. It is primarily for use with, and in, other routines such as Quadrant, and RadialPoint</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="CenterPoint.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CenterPoint.Rect">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="Coords2Angles">
+        <short>
+          <var>Coords2Angles</var> - convert the coords for Start and End Radial-Points into an Eccentric counter clockwise Angle and an Angle-Length</short>
+        <descr>
+          <p>Method:   <var>Coords2Angles</var>
+          </p>
+          <pre>Params:   x,y,width,height,sx,sy,ex,ey, angle1,angle2
+  Returns:  Nothing
+
+  Use Coords2Angles to convert the coords for Start and End Radial-Points, such
+  as are used in the Windows API Arc Pie and Chord routines, into an Eccentric
+  (aka Radial) counter clockwise Angle and an Angle-Length, such as are used in
+  X-Windows and GTK. The angles angle1 and angle2 are returned in 1/16th of a
+  degree. For example, a full circle equals 5760 (16*360). Zero degrees is at
+  the 3 o'clock position.</pre>
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Coords2Angles.X">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Coords2Angles.Y">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Coords2Angles.Width">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Coords2Angles.Height">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Coords2Angles.SX">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Coords2Angles.SY">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Coords2Angles.EX">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Coords2Angles.EY">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Coords2Angles.Angle1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Coords2Angles.Angle2">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="Distance">
+        <short>Get the <var>Distance</var> between any two Points. It is primarily for use in other routines such as EccentricAngle</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="Distance.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Distance.PT1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Distance.Pt2">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="Distance">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="Distance.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Distance.Pt">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Distance.SP">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Distance.EP">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="EccentricAngle">
+        <short>
+          <var>EccentricAngle</var> - get the Eccentric Angle of a given point on any non-rotated ellipse</short>
+        <descr>
+          <p>Method:   <var>EccentricAngle</var>
+          </p>
+          <pre>Params:   Pt, Rect
+  Returns:  Extended
+
+  Use EccentricAngle to get the Eccentric( aka Radial ) Angle of a given
+  point on any non-rotated ellipse. It is primarily for use in Coords2Angles.
+  The result is in 1/16th of a degree. For example, a full circle equals
+  5760 (16*360).  Zero degrees is at the 3 o'clock position.</pre>
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="EccentricAngle.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="EccentricAngle.PT">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="EccentricAngle.Rect">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="EllipseRadialLength">
+        <short>
+          <var>EllipseRadialLength</var> - Radial-Length of non-rotated ellipse at any given Eccentric Angle</short>
+        <descr>
+          <p>Method:   <var>EllipseRadialLength</var>
+          </p>
+          <pre>Params:   Rect, EccentricAngle
+  Returns:  Longint
+
+  Use EllipseRadialLength to get the Radial-Length of non-rotated ellipse at
+  any given Eccentric( aka Radial ) Angle. It is primarily for use in other
+  routines such as RadialPoint. The Eccentric angle is in 1/16th of a degree.
+  For example, a full circle equals 5760 (16*360).  Zero degrees is at the
+  3 o'clock position.
+</pre>
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="EllipseRadialLength.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="EllipseRadialLength.Rect">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="EllipseRadialLength.EccentricAngle">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="FloatPoint">
+        <short>
+          <var>FloatPoint</var> - it is essentialy like Classes.Point in use, except that it accepts Extended Parameters. It is Primarily for use with and in Bezier routines.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="FloatPoint.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FloatPoint.AX">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FloatPoint.AY">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="LineEndPoint">
+        <short>
+          <var>LineEndPoint</var> - get the End-Point of a line of any given Length at any given angle with any given Start-Point</short>
+        <descr>
+          <p>Method:   <var>LineEndPoint</var>
+          </p>
+          <pre>Params:   StartPoint, Angle, Length
+  Returns:  TPoint
+
+  Use LineEndPoint to get the End-Point of a line of any given Length at
+  any given angle with any given Start-Point. It is primarily for use in
+  other routines such as RadialPoint. The angle is in 1/16th of a degree.
+  For example, a full circle equals 5760 (16*360).  Zero degrees is at the
+  3 o'clock position.
+</pre>
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="LineEndPoint.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="LineEndPoint.StartPoint">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="LineEndPoint.Angle">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="LineEndPoint.Length">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="PolyBezier2Polyline">
+        <short>
+          <var>PolyBezier2Polyline</var> - convert an array of 4-Point Bezier into a Pointer Array of TPoint and a Count variable</short>
+        <descr>
+          <p>Method:   <var>PolyBezier2Polyline</var>
+          </p>
+          <pre>Params:   Beziers, Points, Count
+  Returns:  Nothing
+
+  Use BezierToPolyline to convert an array of 4-Point Bezier into a Pointer
+  Array of TPoint and a Count variable which can then be used within either a
+  Polyline, or Polygon routine. Points is automatically initialized, so any
+  existing information is lost, and the array starts at 0. Points should ALWAYS
+  be Freed when done by calling to ReallocMem(Points, 0).
+</pre>
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="PolyBezier2Polyline.Beziers">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="PolyBezier2Polyline.Points">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="PolyBezier2Polyline.Count">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="PolyBezier2Polyline">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="PolyBezier2Polyline.Beziers">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="PolyBezier2Polyline.Points">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="PolyBezier2Polyline.Count">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="PolyBezier2Polyline.Continuous">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="PolyBezier2Polyline">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="PolyBezier2Polyline.Beziers">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="PolyBezier2Polyline.BCount">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="PolyBezier2Polyline.Points">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="PolyBezier2Polyline.Count">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="PolyBezier2Polyline.Continuous">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="PolyBezierArcPoints">
+        <short>
+          <var>PolyBezierArcPoints</var> - convert an Arc and ArcLength into a Pointer Array of TPoints for use with Polyline or Polygon</short>
+        <descr>
+          <p>Method:   <var>PolyBezierArcPoints</var>
+          </p>
+          <pre>Params:   X, Y, Width, Height, Angle1, Angle2, Rotation, Points, Count
+  Returns:  Nothing
+
+  Use PolyBezierArcPoints to convert an Arc and ArcLength into a Pointer Array
+  of TPoints for use with Polyline or Polygon. The Rotation parameter accepts
+  a Rotation-Angle for a rotated Ellipse'- for a non-rotated ellipse this
+  value would be 0, or 360. The result is an Aproximation based on 1 or more
+  Beziers. If the AngleLength is greater than 45 degrees, it recursively breaks
+  the Arc into Arcs of 45 degrees or less, and converts them into Beziers with
+  BezierArcPoints. The angles are 1/16th of a degree. For example, a full circle
+  equals 5760 (16*360). Positive values of Angle and AngleLength mean
+  counter-clockwise while negative values mean clockwise direction. Zero
+  degrees is at the 3'o clock position. Points is automatically initialized,
+  so any existing information is lost, and the array starts at 0. Points
+  should ALWAYS be Freed when done by calling to ReallocMem(Points, 0).
+</pre>
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="PolyBezierArcPoints.X">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="PolyBezierArcPoints.Y">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="PolyBezierArcPoints.Width">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="PolyBezierArcPoints.Height">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="PolyBezierArcPoints.Angle1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="PolyBezierArcPoints.Angle2">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="PolyBezierArcPoints.Rotation">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="PolyBezierArcPoints.Points">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="PolyBezierArcPoints.Count">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="Quadrant">
+        <short>Determine the <var>Quadrant</var>  of any point, given the Center</short>
+        <descr>
+          <p>Method:   <var>Quadrant</var>
+          </p>
+          <pre>Params:   PT, Center
+  Returns:  Integer
+
+  Use Quadrant to determine the Quadrant of any point, given the Center.
+  It is primarily for use in other routines such as EccentricAngle. A result
+  of 1-4 represents the primary 4 quardants. A result of 5-8 means the point
+  lies on one of the Axis', 5 = -Y Axis, 6 = +X Axis, 7 = +Y Axis, and
+  8 = -X Axis. A result of -1 means that it does not fall in any quadrant,
+  that is, it is the Center.
+</pre>
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="Quadrant.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Quadrant.PT">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Quadrant.Center">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="RadialPoint">
+        <short>Get the <var>RadialPoint</var> at any given Eccentric angle on any non-rotated ellipse</short>
+        <descr>
+          <p>Method:   <var>RadialPoint</var>
+          </p>
+          <pre>Params:   EccentricAngle, Rect
+  Returns:  TPoint
+
+  Use RadialPoint to get the Radial-Point at any given Eccentric( aka Radial )
+  angle on any non-rotated ellipse. It is primarily for use in Angles2Coords.
+  The EccentricAngle is in 1/16th of a degree. For example, a full circle
+  equals 5760 (16*360).  Zero degrees is at the 3 o'clock position.
+</pre>
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="RadialPoint.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="RadialPoint.EccentricAngle">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="RadialPoint.Rect">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="SplitBezier">
+        <short>
+          <var>SplitBezier</var> - split any 4-Point Bezier into two 4-Point Beziers: a 'Left' and a 'Right'</short>
+        <descr>
+          <p>Method:   <var>SplitBezier</var>
+          </p>
+          <pre>Params:   Bezier, Left, Right
+  Returns:  Nothing
+
+  Use SplitBezier to split any 4-Point Bezier into two 4-Point Beziers:
+  a 'Left' and a 'Right'. It is primarily for use in Bezier2Polyline.
+</pre>
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="SplitBezier.Bezier">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="SplitBezier.Left">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="SplitBezier.Right">
+        <short/>
+      </element>
+      <topic name="GraphMath Operators">
+        <short>
+          <b>GraphMath Operators</b>
+        </short>
+        <descr>
+          <p>This Unit contains a number of routines for calculating and converting series of graphic points from one coordinate system to another.</p>
+          <p>A fundamental type is introduced, called TFloatPoint. It is an extended precision record containg an X and a Y coordinate for a graphic point. Its structure is as follows:</p>
+          <pre>Type
+  TFloatPoint = Record
+    X, Y : Extended;
+  end;
+
+</pre>
+          <p>The Unit contains definitions for mathematical operators which extend the normal definitions of addition, subtraction, multiplication, division and comparison to cover manipulations with TFloatPoints, allowing, for example, addition or multiplication of two TFloatPoints, a TFloatPoint and a TPoint, or a TFloatPoint and an Extended Precision number. </p>
+        </descr>
+      </topic>
+    </module>
+    <!-- GraphMath -->
+  </package>
+</fpdoc-descriptions>

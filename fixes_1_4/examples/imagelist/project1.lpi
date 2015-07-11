@@ -1,0 +1,309 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="8"/>
+    <General>
+      <Flags>
+        <LRSInOutputDirectory Value="False"/>
+      </Flags>
+      <MainUnit Value="0"/>
+      <TargetFileExt Value=".exe"/>
+      <UseXPManifest Value="True"/>
+      <ActiveWindowIndexAtStart Value="0"/>
+    </General>
+    <VersionInfo>
+      <Language Value=""/>
+      <CharSet Value=""/>
+      <StringTable Comments="" CompanyName="" FileDescription="" FileVersion="0.0.0.0" InternalName="" LegalCopyright="" LegalTrademarks="" OriginalFilename="" ProductName="" ProductVersion=""/>
+    </VersionInfo>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="1">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+    </RequiredPackages>
+    <Units Count="3">
+      <Unit0>
+        <Filename Value="project1.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="project1"/>
+        <EditorIndex Value="1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="unit1.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form1"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="Unit1"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="0"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="29"/>
+        <CursorPos X="47" Y="55"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="../../lcl/graphics.pp"/>
+        <UnitName Value="Graphics"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1476"/>
+        <CursorPos X="1" Y="1497"/>
+        <UsageCount Value="10"/>
+      </Unit2>
+    </Units>
+    <JumpHistory Count="30" HistoryIndex="29">
+      <Position1>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="19" Column="20" TopLine="15"/>
+      </Position1>
+      <Position2>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="18" Column="28" TopLine="15"/>
+      </Position2>
+      <Position3>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="17" Column="26" TopLine="15"/>
+      </Position3>
+      <Position4>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="18" Column="26" TopLine="15"/>
+      </Position4>
+      <Position5>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="19" Column="26" TopLine="15"/>
+      </Position5>
+      <Position6>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="30" Column="71" TopLine="29"/>
+      </Position6>
+      <Position7>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="78" Column="3" TopLine="64"/>
+      </Position7>
+      <Position8>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="62" Column="1" TopLine="60"/>
+      </Position8>
+      <Position9>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="60" Column="1" TopLine="44"/>
+      </Position9>
+      <Position10>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="28" Column="5" TopLine="22"/>
+      </Position10>
+      <Position11>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="88" Column="14" TopLine="60"/>
+      </Position11>
+      <Position12>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="27" Column="30" TopLine="26"/>
+      </Position12>
+      <Position13>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="26" Column="24" TopLine="26"/>
+      </Position13>
+      <Position14>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="27" Column="44" TopLine="9"/>
+      </Position14>
+      <Position15>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="67" Column="35" TopLine="37"/>
+      </Position15>
+      <Position16>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="89" Column="30" TopLine="73"/>
+      </Position16>
+      <Position17>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="46" Column="56" TopLine="33"/>
+      </Position17>
+      <Position18>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="131" Column="5" TopLine="91"/>
+      </Position18>
+      <Position19>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="87" Column="8" TopLine="78"/>
+      </Position19>
+      <Position20>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="67" Column="1" TopLine="66"/>
+      </Position20>
+      <Position21>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="121" Column="28" TopLine="91"/>
+      </Position21>
+      <Position22>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="120" Column="1" TopLine="91"/>
+      </Position22>
+      <Position23>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="118" Column="1" TopLine="93"/>
+      </Position23>
+      <Position24>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="119" Column="1" TopLine="93"/>
+      </Position24>
+      <Position25>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="121" Column="1" TopLine="93"/>
+      </Position25>
+      <Position26>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="118" Column="1" TopLine="93"/>
+      </Position26>
+      <Position27>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="113" Column="48" TopLine="93"/>
+      </Position27>
+      <Position28>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="57" Column="43" TopLine="38"/>
+      </Position28>
+      <Position29>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="9" Column="22" TopLine="16"/>
+      </Position29>
+      <Position30>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="130" Column="1" TopLine="104"/>
+      </Position30>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="9"/>
+    <Parsing>
+      <SyntaxOptions>
+        <UseAnsiStrings Value="False"/>
+      </SyntaxOptions>
+    </Parsing>
+    <Linking>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+    <Other>
+      <CompilerMessages>
+        <UseMsgFile Value="True"/>
+      </CompilerMessages>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <BreakPoints Count="15">
+      <Item1>
+        <Source Value="../../../laz_svn/win32/RnQ/RnQ.005/viewinfoDlg.pas"/>
+        <Line Value="238"/>
+      </Item1>
+      <Item2>
+        <Source Value="../../../laz_svn/win32/fpc/2.1.3/source/rtl/inc/wstrings.inc"/>
+        <Line Value="62"/>
+      </Item2>
+      <Item3>
+        <Source Value="../../../laz_svn/win32/fpc/2.1.3/source/rtl/inc/wstrings.inc"/>
+        <Line Value="885"/>
+      </Item3>
+      <Item4>
+        <Source Value="../../../laz_svn/win32/RnQ/RnQ.005/ICQv9.pas"/>
+        <Line Value="2361"/>
+      </Item4>
+      <Item5>
+        <Source Value="../../../laz_svn/win32/RnQ/RnQ.005/RnQ.lpr"/>
+        <Line Value="116"/>
+      </Item5>
+      <Item6>
+        <Source Value="../../../laz_svn/win32/RnQ/RnQ.005/prefDlg.pas"/>
+        <Line Value="367"/>
+      </Item6>
+      <Item7>
+        <Source Value="../../../laz_svn/win32/RnQ/For.rnq/RnQGraphics.pas"/>
+        <Line Value="563"/>
+      </Item7>
+      <Item8>
+        <Source Value="../../../laz_svn/win32/RnQ/For.rnq/RQMenuItem.pas"/>
+        <Line Value="52"/>
+      </Item8>
+      <Item9>
+        <Source Value="../../../laz_svn/win32/RnQ/For.rnq/RQMenuItem.pas"/>
+        <Line Value="64"/>
+      </Item9>
+      <Item10>
+        <Source Value="../../../laz_svn/win32/RnQ/For.rnq/RQMenuItem.pas"/>
+        <Line Value="108"/>
+      </Item10>
+      <Item11>
+        <Source Value="../../../laz_svn/win32/RnQ/RnQ.005/outboxDlg.pas"/>
+        <Line Value="153"/>
+      </Item11>
+      <Item12>
+        <Source Value="../../../laz_svn/win32/RnQ/RnQ.005/tcpclient.pas"/>
+        <Line Value="376"/>
+      </Item12>
+      <Item13>
+        <Source Value="../../../laz_svn/win32/RnQ/RnQ.005/chatDlg.pas"/>
+        <Line Value="550"/>
+      </Item13>
+      <Item14>
+        <Source Value="../../../laz_svn/win32/RnQ/INDY/lazarus/IdThread.pas"/>
+        <Line Value="584"/>
+      </Item14>
+      <Item15>
+        <Source Value="../../../laz_svn/win32/RnQ/RnQ.005/chatDlg.pas"/>
+        <Line Value="476"/>
+      </Item15>
+    </BreakPoints>
+    <Watches Count="9">
+      <Item1>
+        <Expression Value="Procs"/>
+      </Item1>
+      <Item2>
+        <Expression Value="fn"/>
+      </Item2>
+      <Item3>
+        <Expression Value="ts"/>
+      </Item3>
+      <Item4>
+        <Expression Value="ts.path"/>
+      </Item4>
+      <Item5>
+        <Expression Value="pt.path"/>
+      </Item5>
+      <Item6>
+        <Expression Value="s"/>
+      </Item6>
+      <Item7>
+        <Expression Value="l"/>
+      </Item7>
+      <Item8>
+        <Expression Value="FAddr"/>
+      </Item8>
+      <Item9>
+        <Expression Value="FPort"/>
+      </Item9>
+    </Watches>
+  </Debugging>
+</CONFIG>

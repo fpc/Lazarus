@@ -1,0 +1,240 @@
+object Form1: TForm1
+  Left = 584
+  Height = 439
+  Top = 275
+  Width = 515
+  Caption = 'Report list'
+  ClientHeight = 439
+  ClientWidth = 515
+  OnCreate = FormCreate
+  LCLVersion = '1.1'
+  object ListBox1: TListBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Button1
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
+    Height = 427
+    Top = 6
+    Width = 386
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    ItemHeight = 0
+    ScrollWidth = 384
+    TabOrder = 0
+    TopIndex = -1
+  end
+  object Button1: TButton
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 398
+    Height = 27
+    Top = 6
+    Width = 111
+    Anchors = [akTop, akRight]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'Refresh reports'
+    OnClick = Button1Click
+    TabOrder = 1
+  end
+  object Button2: TButton
+    AnchorSideLeft.Control = Button1
+    AnchorSideTop.Control = Button1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Button1
+    AnchorSideRight.Side = asrBottom
+    Left = 398
+    Height = 27
+    Top = 39
+    Width = 111
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 6
+    Caption = 'Show report'
+    OnClick = Button2Click
+    TabOrder = 2
+  end
+  object Button3: TButton
+    AnchorSideLeft.Control = Button1
+    AnchorSideTop.Control = Button2
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Button1
+    AnchorSideRight.Side = asrBottom
+    Left = 398
+    Height = 27
+    Top = 72
+    Width = 111
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 6
+    Caption = 'Design report'
+    OnClick = Button3Click
+    TabOrder = 3
+  end
+  object SQLTransaction1: TSQLTransaction
+    Active = False
+    Action = caNone
+    Database = IBConnection1
+    left = 56
+    top = 15
+  end
+  object IBConnection1: TIBConnection
+    Connected = False
+    LoginPrompt = False
+    DatabaseName = 'employee.fdb'
+    KeepConnection = False
+    Password = 'masterkey'
+    Transaction = SQLTransaction1
+    UserName = 'sysdba'
+    HostName = '172.16.1.1'
+    LogEvents = []
+    left = 24
+    top = 15
+  end
+  object LR_IBConnection1: TLR_IBConnection
+    left = 24
+    top = 87
+  end
+  object LRDialogControls1: TLRDialogControls
+    left = 56
+    top = 87
+  end
+  object frReport1: TfrReport
+    InitialZoom = pzDefault
+    Options = []
+    PreviewButtons = [pbZoom, pbLoad, pbSave, pbPrint, pbFind, pbHelp, pbExit]
+    DataType = dtDataSet
+    left = 136
+    top = 88
+    ReportForm = {
+      19000000
+    }
+  end
+  object frDesigner1: TfrDesigner
+    left = 176
+    top = 87
+  end
+end
+object Form1: TForm1
+  Left = 584
+  Height = 439
+  Top = 275
+  Width = 515
+  Caption = 'Report list'
+  ClientHeight = 439
+  ClientWidth = 515
+  OnCreate = FormCreate
+  LCLVersion = '1.1'
+  object ListBox1: TListBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Button1
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
+    Height = 427
+    Top = 6
+    Width = 386
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    ItemHeight = 0
+    ScrollWidth = 384
+    TabOrder = 0
+    TopIndex = -1
+  end
+  object Button1: TButton
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 398
+    Height = 27
+    Top = 6
+    Width = 111
+    Anchors = [akTop, akRight]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'Refresh reports'
+    OnClick = Button1Click
+    TabOrder = 1
+  end
+  object Button2: TButton
+    AnchorSideLeft.Control = Button1
+    AnchorSideTop.Control = Button1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Button1
+    AnchorSideRight.Side = asrBottom
+    Left = 398
+    Height = 27
+    Top = 39
+    Width = 111
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 6
+    Caption = 'Show report'
+    OnClick = Button2Click
+    TabOrder = 2
+  end
+  object Button3: TButton
+    AnchorSideLeft.Control = Button1
+    AnchorSideTop.Control = Button2
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Button1
+    AnchorSideRight.Side = asrBottom
+    Left = 398
+    Height = 27
+    Top = 72
+    Width = 111
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 6
+    Caption = 'Design report'
+    OnClick = Button3Click
+    TabOrder = 3
+  end
+  object SQLTransaction1: TSQLTransaction
+    Active = False
+    Action = caNone
+    Database = IBConnection1
+    left = 56
+    top = 15
+  end
+  object IBConnection1: TIBConnection
+    Connected = False
+    LoginPrompt = False
+    DatabaseName = 'employee.fdb'
+    KeepConnection = False
+    Password = 'masterkey'
+    Transaction = SQLTransaction1
+    UserName = 'sysdba'
+    HostName = '172.16.1.1'
+    LogEvents = []
+    left = 24
+    top = 15
+  end
+  object LR_IBConnection1: TLR_IBConnection
+    left = 24
+    top = 87
+  end
+  object LRDialogControls1: TLRDialogControls
+    left = 56
+    top = 87
+  end
+  object frReport1: TfrReport
+    InitialZoom = pzDefault
+    Options = []
+    PreviewButtons = [pbZoom, pbLoad, pbSave, pbPrint, pbFind, pbHelp, pbExit]
+    DataType = dtDataSet
+    left = 136
+    top = 88
+    ReportForm = {
+      19000000
+    }
+  end
+  object frDesigner1: TfrDesigner
+    left = 176
+    top = 87
+  end
+end

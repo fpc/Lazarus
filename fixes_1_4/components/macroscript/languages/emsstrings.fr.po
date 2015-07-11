@@ -1,0 +1,53 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr_FR\n"
+"X-Generator: Poedit 1.7.5\n"
+
+#: emsstrings.emsactive
+msgid "Scripting active."
+msgstr "Script actif."
+
+#: emsstrings.emsbtntestagain
+msgid "Test again"
+msgstr "Tester à nouveau"
+
+#: emsstrings.emseditormacrotitle
+msgid "Editor Macro Script"
+msgstr "Script de macro de l'éditeur"
+
+#: emsstrings.emsnotactive
+msgid "Scripting not active. Selftest failed."
+msgstr "Script inactif. L'autotest a échoué."
+
+#: emsstrings.emsnotsupported
+msgid "Scripting not active. Not supported on this platform or CPU."
+msgstr "Script inactif. Non supporté par cette plateforme ou ce CPU."
+
+#: emsstrings.emspending
+msgid "Scripting not active. Selftest will run next time the IDE is started."
+msgstr "Script inactif. L'autotest s'exécutera au prochain démarrage de l'EDI."
+
+#: emsstrings.emsselftesterrcaption
+msgid "Error in EditorMacroScript"
+msgstr "Erreur dans \"EditorMacroScript\""
+
+#: emsstrings.emsselftestfailed
+msgid "The package EditorMacroScript (pascalscript macros) has detected a problem and was deactivated.%0:sThe package failed its selftest with the message:%0:s\"%1:s\""
+msgstr "Le paquet \"EditorMacroScript\" (macros \"pascalscript\") a détecté un problème et a été désactivé.%0:sLe paquet a échoué lors de son autotest avec le message : %0:s\"%1:s\""
+
+#: emsstrings.emsselftestfailedlasttime
+msgid "The package EditorMacroScript (pascalscript macros) has detected a problem and was deactivated.%0:sThe package selftest was not completed during the last start of the IDE."
+msgstr "Le paquet \"EditorMacroScript\" (macros \"pascalscript\") a détecté un problème et a été désactivé.%0:sL'autotest du paquet n'était pas terminé lors du dernier démarrage de l'EDI."
+
+#: emsstrings.emsstatustitle
+msgid "Status"
+msgstr "État"

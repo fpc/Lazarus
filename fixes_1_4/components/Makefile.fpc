@@ -1,0 +1,136 @@
+#   $Id$
+#
+#   Makefile.fpc for Lazarus for Free Pascal
+#
+
+[target]
+dirs=
+
+[clean]
+files=$(wildcard ./units/*$(OEXT)) \
+      $(wildcard ./units/*$(PPUEXT)) \
+      $(wildcard ./units/*$(RSTEXT)) \
+      $(wildcard ./units/$(CPU_TARGET)-$(OS_TARGET)/*$(OEXT)) \
+      $(wildcard ./units/$(CPU_TARGET)-$(OS_TARGET)/*$(PPUEXT)) \
+      $(wildcard ./units/$(CPU_TARGET)-$(OS_TARGET)/*$(RSTEXT)) \
+      $(wildcard ./custom/*$(OEXT)) \
+      $(wildcard ./custom/*$(PPUEXT)) \
+      $(wildcard ./custom/*$(RSTEXT))
+
+[rules]
+.PHONY: help clean cleanall base bigide all
+
+#-----------------------------------------------------------------------------
+help:
+	@$(ECHO)
+	@$(ECHO) " Targets"
+	@$(ECHO) "   all         same as bigide"
+	@$(ECHO) "               lazutils, codetools, lazcontrols, synedit,
+	@$(ECHO) "               and ideintf are build separately"
+	@$(ECHO) "   clean       deletes output files of base and bigide components"
+	@$(ECHO) "   bigide      build the extra packages for the bigide"
+
+#-----------------------------------------------------------------------------
+# build the extra packages needed by the bigide
+bigide:
+	$(MAKE) -C synedit/design
+	$(MAKE) -C rtticontrols
+	$(MAKE) -C cairocanvas
+	$(MAKE) -C printers
+	$(MAKE) -C printers/design
+	$(MAKE) -C turbopower_ipro
+	$(MAKE) -C turbopower_ipro/design
+	$(MAKE) -C fpcunit
+	$(MAKE) -C fpcunit/ide
+	$(MAKE) -C projecttemplates
+	$(MAKE) -C leakview
+	$(MAKE) -C memds
+	$(MAKE) -C sdf
+	$(MAKE) -C tachart
+	$(MAKE) -C todolist
+	$(MAKE) -C editortoolbar
+	$(MAKE) -C datetimectrls
+	$(MAKE) -C jcf2/IdePlugin/lazarus
+	$(MAKE) -C chmhelp/packages/help
+	$(MAKE) -C chmhelp/packages/idehelp
+	$(MAKE) -C instantfpc
+	$(MAKE) -C externhelp
+	$(MAKE) -C tdbf
+	$(MAKE) -C sqldb
+	$(MAKE) -C PascalScript/Source
+	$(MAKE) -C macroscript
+
+all: bigide
+
+clean:
+	$(MAKE) -C lazutils clean
+	$(MAKE) -C codetools clean
+	$(MAKE) -C debuggerintf clean
+	$(MAKE) -C lazdebuggergdbmi clean
+	$(MAKE) -C lazcontrols clean
+	$(MAKE) -C ideintf clean
+	$(MAKE) -C synedit clean
+	$(MAKE) -C synedit/design clean
+	$(MAKE) -C rtticontrols clean
+	$(MAKE) -C cairocanvas clean
+	$(MAKE) -C printers clean
+	$(MAKE) -C printers/design clean
+	$(MAKE) -C turbopower_ipro clean
+	$(MAKE) -C turbopower_ipro/design clean
+	$(MAKE) -C fpcunit clean
+	$(MAKE) -C fpcunit/ide clean
+	$(MAKE) -C projecttemplates clean
+	$(MAKE) -C leakview clean
+	$(MAKE) -C memds clean
+	$(MAKE) -C sdf clean
+	$(MAKE) -C tachart clean
+	$(MAKE) -C todolist clean
+	$(MAKE) -C editortoolbar clean
+	$(MAKE) -C datetimectrls clean
+	$(MAKE) -C jcf2/IdePlugin/lazarus clean
+	$(MAKE) -C chmhelp/packages/help clean
+	$(MAKE) -C chmhelp/packages/idehelp clean
+	$(MAKE) -C instantfpc clean
+	$(MAKE) -C externhelp clean
+	$(MAKE) -C tdbf clean
+	$(MAKE) -C sqldb clean
+	$(MAKE) -C PascalScript/Source clean
+	$(MAKE) -C macroscript clean
+
+cleanall: clean
+
+distclean:
+	$(MAKE) -C lazutils distclean
+	$(MAKE) -C codetools distclean
+	$(MAKE) -C debuggerintf distclean
+	$(MAKE) -C lazdebuggergdbmi distclean
+	$(MAKE) -C lazcontrols distclean
+	$(MAKE) -C ideintf distclean
+	$(MAKE) -C synedit distclean
+	$(MAKE) -C synedit/design distclean
+	$(MAKE) -C rtticontrols distclean
+	$(MAKE) -C cairocanvas distclean
+	$(MAKE) -C printers distclean
+	$(MAKE) -C printers/design distclean
+	$(MAKE) -C turbopower_ipro distclean
+	$(MAKE) -C turbopower_ipro/design distclean
+	$(MAKE) -C fpcunit distclean
+	$(MAKE) -C fpcunit/ide distclean
+	$(MAKE) -C projecttemplates distclean
+	$(MAKE) -C leakview distclean
+	$(MAKE) -C memds distclean
+	$(MAKE) -C sdf distclean
+	$(MAKE) -C tachart distclean
+	$(MAKE) -C todolist distclean
+	$(MAKE) -C editortoolbar distclean
+	$(MAKE) -C datetimectrls distclean
+	$(MAKE) -C jcf2/IdePlugin/lazarus distclean
+	$(MAKE) -C chmhelp/packages/help distclean
+	$(MAKE) -C chmhelp/packages/idehelp distclean
+	$(MAKE) -C instantfpc distclean
+	$(MAKE) -C externhelp distclean
+	$(MAKE) -C tdbf distclean
+	$(MAKE) -C sqldb distclean
+	$(MAKE) -C PascalScript/Source distclean
+	$(MAKE) -C macroscript distclean
+

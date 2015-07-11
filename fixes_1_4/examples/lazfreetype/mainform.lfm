@@ -1,0 +1,81 @@
+object Form1: TForm1
+  Left = 362
+  Height = 240
+  Top = 172
+  Width = 441
+  Align = alBottom
+  Caption = 'Test LazFreeType'
+  ClientHeight = 240
+  ClientWidth = 441
+  KeyPreview = True
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnMouseMove = FormMouseMove
+  OnPaint = FormPaint
+  OnShow = FormShow
+  Position = poDefault
+  LCLVersion = '1.1'
+  object Panel_Option: TPanel
+    Left = 0
+    Height = 40
+    Top = 200
+    Width = 441
+    Align = alBottom
+    ClientHeight = 40
+    ClientWidth = 441
+    TabOrder = 0
+    object TrackBar_Size: TTrackBar
+      Left = 96
+      Height = 25
+      Top = 8
+      Width = 243
+      Frequency = 0
+      Max = 300
+      Min = 1
+      OnChange = TrackBar_SizeChange
+      Position = 30
+      Anchors = [akTop, akLeft, akRight]
+      TabOrder = 0
+    end
+    object LFontSize: TLabel
+      Left = 336
+      Height = 16
+      Top = 12
+      Width = 51
+      Alignment = taCenter
+      Anchors = [akTop, akRight]
+      AutoSize = False
+      Caption = 'LFontSize'
+      ParentColor = False
+    end
+    object Label1: TLabel
+      Left = 6
+      Height = 13
+      Top = 12
+      Width = 26
+      Caption = 'Zoom'
+      ParentColor = False
+    end
+    object SpinEdit_Zoom: TSpinEdit
+      Left = 48
+      Height = 21
+      Top = 8
+      Width = 40
+      MaxValue = 9
+      MinValue = 1
+      OnChange = SpinEdit_ZoomChange
+      TabOrder = 1
+      Value = 1
+    end
+    object CheckBox_Rect: TCheckBox
+      Left = 393
+      Height = 17
+      Top = 10
+      Width = 42
+      Anchors = [akTop, akRight]
+      Caption = 'Rect'
+      OnChange = CheckBox_RectChange
+      TabOrder = 2
+    end
+  end
+end

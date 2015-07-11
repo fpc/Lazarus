@@ -1,0 +1,573 @@
+object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
+  Left = 378
+  Height = 480
+  Top = 195
+  Width = 700
+  VertScrollBar.Visible = False
+  BorderIcons = [biSystemMenu]
+  Caption = 'ConfigureBuildLazarusDlg'
+  ClientHeight = 480
+  ClientWidth = 700
+  Constraints.MinHeight = 440
+  Constraints.MinWidth = 550
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnResize = FormResize
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '1.3'
+  object CBLDBtnPanel: TPanel
+    AnchorSideTop.Side = asrBottom
+    Left = 0
+    Height = 38
+    Top = 442
+    Width = 700
+    Align = alBottom
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 38
+    ClientWidth = 700
+    TabOrder = 0
+    object CancelButton: TBitBtn
+      Left = 612
+      Height = 26
+      Top = 6
+      Width = 82
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Cancel = True
+      Caption = 'Cancel'
+      Kind = bkCancel
+      ModalResult = 2
+      TabOrder = 4
+    end
+    object SaveSettingsButton: TBitBtn
+      Left = 512
+      Height = 26
+      Top = 6
+      Width = 94
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'Save settings'
+      OnClick = SaveSettingsButtonClick
+      TabOrder = 3
+    end
+    object CompileButton: TBitBtn
+      Left = 302
+      Height = 26
+      Top = 6
+      Width = 71
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'Compile'
+      OnClick = CompileButtonClick
+      TabOrder = 1
+    end
+    object HelpButton: TBitBtn
+      Left = 6
+      Height = 26
+      Top = 6
+      Width = 71
+      Align = alLeft
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = '&Help'
+      Kind = bkHelp
+      OnClick = HelpButtonClick
+      TabOrder = 0
+    end
+    object CompileAdvancedButton: TBitBtn
+      Left = 379
+      Height = 26
+      Top = 6
+      Width = 127
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'Compile Advanced'
+      OnClick = CompileAdvancedButtonClick
+      TabOrder = 2
+    end
+  end
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 442
+    Top = 0
+    Width = 700
+    ActivePage = BuildTabSheet
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 1
+    object BuildTabSheet: TTabSheet
+      Caption = 'BuildTabSheet'
+      ClientHeight = 414
+      ClientWidth = 692
+      object DetailsPanel: TPanel
+        Left = 0
+        Height = 414
+        Top = 0
+        Width = 692
+        Align = alClient
+        AutoSize = True
+        BevelOuter = bvNone
+        ClientHeight = 414
+        ClientWidth = 692
+        TabOrder = 0
+        object BuildProfileLabel: TLabel
+          AnchorSideLeft.Control = DetailsPanel
+          AnchorSideTop.Control = BuildProfileComboBox
+          AnchorSideTop.Side = asrCenter
+          Left = 6
+          Height = 15
+          Top = 10
+          Width = 83
+          BorderSpacing.Top = 5
+          BorderSpacing.Around = 6
+          Caption = 'Profile to Build'
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+        end
+        object BuildProfileComboBox: TComboBox
+          AnchorSideLeft.Control = BuildProfileLabel
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = BuildProfileButton
+          Left = 95
+          Height = 23
+          Hint = 'Name of the active profile.'
+          Top = 6
+          Width = 550
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Left = 6
+          BorderSpacing.Right = 6
+          ItemHeight = 15
+          OnSelect = BuildProfileComboBoxSelect
+          ParentShowHint = False
+          ShowHint = True
+          Style = csDropDownList
+          TabOrder = 0
+        end
+        object BuildProfileButton: TButton
+          AnchorSideTop.Control = BuildProfileComboBox
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = DetailsPanel
+          AnchorSideRight.Side = asrBottom
+          AnchorSideBottom.Side = asrBottom
+          Left = 651
+          Height = 25
+          Hint = 'Manage profiles'
+          Top = 5
+          Width = 35
+          Anchors = [akTop, akRight]
+          AutoSize = True
+          BorderSpacing.Left = 6
+          BorderSpacing.Right = 6
+          Caption = '...'
+          OnClick = BuildProfileButtonClick
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 1
+        end
+        object OptionsLabel: TLabel
+          AnchorSideLeft.Control = LCLWidgetTypeLabel
+          AnchorSideTop.Control = LCLWidgetTypeComboBox
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 15
+          Top = 79
+          Width = 42
+          Alignment = taRightJustify
+          BorderSpacing.Top = 6
+          Caption = 'Options'
+          Layout = tlBottom
+          ParentColor = False
+        end
+        object OptionsMemo: TMemo
+          AnchorSideLeft.Control = OptionsLabel
+          AnchorSideTop.Control = OptionsLabel
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = BuildProfileButton
+          AnchorSideRight.Side = asrBottom
+          Left = 6
+          Height = 56
+          Hint = 'Options passed to compiler'
+          Top = 94
+          Width = 680
+          Anchors = [akTop, akLeft, akRight]
+          Lines.Strings = (
+            ''
+          )
+          PopupMenu = OptionsPopupMenu
+          ParentShowHint = False
+          ScrollBars = ssAutoBoth
+          ShowHint = True
+          TabOrder = 4
+        end
+        object DefinesLabel: TLabel
+          AnchorSideLeft.Control = DetailsPanel
+          AnchorSideTop.Control = TargetDirectoryComboBox
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 15
+          Top = 200
+          Width = 39
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 6
+          Caption = 'Defines'
+          ParentColor = False
+        end
+        object DefinesListBox: TCheckListBox
+          AnchorSideLeft.Control = OptionsMemo
+          AnchorSideTop.Control = DefinesLabel
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = CleanUpGroupBox
+          AnchorSideBottom.Control = CommonsDividerBevel
+          Left = 6
+          Height = 134
+          Hint = 'Defines without -d'
+          Top = 215
+          Width = 491
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          ItemHeight = 0
+          ParentShowHint = False
+          PopupMenu = OptionsPopupMenu
+          ShowHint = True
+          TabOrder = 2
+        end
+        object LCLWidgetTypeLabel: TLabel
+          AnchorSideLeft.Control = BuildProfileLabel
+          AnchorSideTop.Control = BuildProfileComboBox
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 15
+          Top = 35
+          Width = 90
+          BorderSpacing.Top = 6
+          Caption = 'LCL Widget Type'
+          ParentColor = False
+        end
+        object LCLWidgetTypeComboBox: TComboBox
+          AnchorSideLeft.Control = LCLWidgetTypeLabel
+          AnchorSideTop.Control = LCLWidgetTypeLabel
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Side = asrBottom
+          Left = 6
+          Height = 23
+          Top = 50
+          Width = 209
+          ItemHeight = 15
+          Style = csDropDownList
+          TabOrder = 3
+        end
+        object TargetDirectoryLabel: TLabel
+          AnchorSideLeft.Control = LCLWidgetTypeLabel
+          AnchorSideTop.Control = OptionsMemo
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 15
+          Top = 156
+          Width = 85
+          Alignment = taRightJustify
+          BorderSpacing.Top = 6
+          Caption = 'Target Directory'
+          ParentColor = False
+        end
+        object TargetDirectoryComboBox: TComboBox
+          AnchorSideLeft.Control = TargetDirectoryLabel
+          AnchorSideTop.Control = TargetDirectoryLabel
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = TargetDirectoryButton
+          Left = 6
+          Height = 23
+          Top = 171
+          Width = 639
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Right = 6
+          ItemHeight = 15
+          TabOrder = 5
+        end
+        object TargetOSLabel: TLabel
+          AnchorSideLeft.Control = LCLWidgetTypeComboBox
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = BuildProfileComboBox
+          AnchorSideTop.Side = asrBottom
+          Left = 221
+          Height = 15
+          Top = 35
+          Width = 52
+          Alignment = taRightJustify
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 6
+          Caption = 'Target OS'
+          ParentColor = False
+        end
+        object TargetCPULabel: TLabel
+          AnchorSideLeft.Control = TargetOSComboBox
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = BuildProfileComboBox
+          AnchorSideTop.Side = asrBottom
+          Left = 451
+          Height = 15
+          Top = 35
+          Width = 60
+          Alignment = taRightJustify
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 6
+          Caption = 'Target CPU'
+          ParentColor = False
+        end
+        object UpdateRevisionIncCheckBox: TCheckBox
+          AnchorSideLeft.Control = ConfirmBuildCheckBox
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = ConfirmBuildCheckBox
+          AnchorSideBottom.Side = asrBottom
+          Left = 434
+          Height = 19
+          Hint = 'Increment revision? (ToDo: get a better hint)'
+          Top = 373
+          Width = 170
+          BorderSpacing.Left = 12
+          Caption = 'UpdateRevisionIncCheckBox'
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 9
+        end
+        object TargetCPUComboBox: TComboBox
+          AnchorSideLeft.Control = TargetCPULabel
+          AnchorSideTop.Control = TargetCPULabel
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = OptionsMemo
+          AnchorSideRight.Side = asrBottom
+          Left = 451
+          Height = 23
+          Top = 50
+          Width = 235
+          Anchors = [akTop, akLeft, akRight]
+          ItemHeight = 15
+          TabOrder = 8
+        end
+        object CommonsDividerBevel: TDividerBevel
+          AnchorSideLeft.Control = DetailsPanel
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = DetailsPanel
+          AnchorSideRight.Side = asrBottom
+          Left = 6
+          Height = 15
+          Top = 349
+          Width = 680
+          Caption = 'CommonsDividerBevel'
+          Anchors = [akLeft, akRight, akBottom]
+          BorderSpacing.Left = 6
+          BorderSpacing.Right = 6
+          BorderSpacing.Bottom = 6
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+        object RestartAfterBuildCheckBox: TCheckBox
+          AnchorSideLeft.Control = DefinesButton
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = DefinesButton
+          AnchorSideTop.Side = asrCenter
+          AnchorSideBottom.Side = asrBottom
+          Left = 106
+          Height = 19
+          Hint = 'Restart Lazarus automatically after building the IDE. Has no effect when building other parts'
+          Top = 373
+          Width = 161
+          BorderSpacing.Left = 12
+          BorderSpacing.Top = 7
+          Caption = 'RestartAfterBuildCheckBox'
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 10
+        end
+        object ConfirmBuildCheckBox: TCheckBox
+          AnchorSideLeft.Control = RestartAfterBuildCheckBox
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = RestartAfterBuildCheckBox
+          Left = 279
+          Height = 19
+          Hint = 'Show confirmation dialog when building directly from Tools menu'
+          Top = 373
+          Width = 143
+          BorderSpacing.Left = 12
+          Caption = 'ConfirmBuildCheckBox'
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 11
+        end
+        object DefinesButton: TButton
+          AnchorSideLeft.Control = CommonsDividerBevel
+          AnchorSideTop.Control = CommonsDividerBevel
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Side = asrBottom
+          AnchorSideBottom.Side = asrBottom
+          Left = 6
+          Height = 25
+          Hint = 'Edit list of defines which can be used by any profile'
+          Top = 370
+          Width = 88
+          AutoSize = True
+          BorderSpacing.Right = 6
+          Caption = 'Edit Defines'
+          OnClick = DefinesButtonClick
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 12
+        end
+        object TargetDirectoryButton: TButton
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = TargetDirectoryComboBox
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = DetailsPanel
+          AnchorSideRight.Side = asrBottom
+          AnchorSideBottom.Side = asrBottom
+          Left = 651
+          Height = 25
+          Top = 170
+          Width = 35
+          Anchors = [akTop, akRight]
+          AutoSize = True
+          BorderSpacing.Left = 6
+          BorderSpacing.Right = 6
+          Caption = '...'
+          OnClick = TargetDirectoryButtonClick
+          TabOrder = 6
+        end
+        object TargetOSComboBox: TComboBox
+          AnchorSideLeft.Control = TargetOSLabel
+          AnchorSideTop.Control = TargetOSLabel
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = LCLWidgetTypeComboBox
+          AnchorSideRight.Side = asrBottom
+          Left = 221
+          Height = 23
+          Top = 50
+          Width = 224
+          ItemHeight = 15
+          TabOrder = 7
+        end
+        object CleanUpGroupBox: TGroupBox
+          AnchorSideLeft.Control = DefinesListBox
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = TargetDirectoryComboBox
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = DetailsPanel
+          AnchorSideRight.Side = asrBottom
+          AnchorSideBottom.Control = CommonsDividerBevel
+          Left = 503
+          Height = 149
+          Top = 200
+          Width = 183
+          Anchors = [akTop, akRight, akBottom]
+          AutoSize = True
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 6
+          BorderSpacing.Right = 6
+          Caption = 'Clean up'
+          ChildSizing.LeftRightSpacing = 6
+          ChildSizing.TopBottomSpacing = 6
+          ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+          ChildSizing.ShrinkHorizontal = crsScaleChilds
+          ChildSizing.ShrinkVertical = crsScaleChilds
+          ChildSizing.Layout = cclLeftToRightThenTopToBottom
+          ChildSizing.ControlsPerLine = 1
+          ClientHeight = 129
+          ClientWidth = 179
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 13
+          object CleanAutoRadioButton: TRadioButton
+            AnchorSideTop.Control = CleanCommonCheckBox
+            AnchorSideTop.Side = asrBottom
+            Left = 6
+            Height = 19
+            Top = 31
+            Width = 142
+            BorderSpacing.Top = 6
+            Caption = 'CleanAutoRadioButton'
+            Checked = True
+            OnClick = CleanRadioButtonClick
+            TabOrder = 0
+            TabStop = True
+          end
+          object CleanCommonRadioButton: TRadioButton
+            AnchorSideTop.Control = CleanAutoRadioButton
+            AnchorSideTop.Side = asrBottom
+            Left = 6
+            Height = 19
+            Top = 56
+            Width = 167
+            BorderSpacing.Top = 6
+            Caption = 'CleanCommonRadioButton'
+            OnClick = CleanRadioButtonClick
+            TabOrder = 1
+          end
+          object CleanAllRadioButton: TRadioButton
+            AnchorSideTop.Control = CleanCommonRadioButton
+            AnchorSideTop.Side = asrBottom
+            Left = 6
+            Height = 19
+            Top = 81
+            Width = 130
+            BorderSpacing.Top = 6
+            Caption = 'CleanAllRadioButton'
+            OnClick = CleanRadioButtonClick
+            TabOrder = 2
+          end
+          object CleanOnceCheckBox: TCheckBox
+            AnchorSideTop.Control = CleanAllRadioButton
+            AnchorSideTop.Side = asrBottom
+            Left = 6
+            Height = 19
+            Top = 106
+            Width = 130
+            BorderSpacing.Top = 6
+            Caption = 'CleanOnceCheckBox'
+            TabOrder = 3
+          end
+          object CleanCommonCheckBox: TCheckBox
+            AnchorSideTop.Control = CleanUpGroupBox
+            Left = 6
+            Height = 19
+            Top = 6
+            Width = 153
+            BorderSpacing.Top = 6
+            Caption = 'CleanCommonCheckBox'
+            OnClick = CleanCommonCheckBoxClick
+            TabOrder = 4
+            Visible = False
+          end
+        end
+      end
+    end
+    object InfoTabSheet: TTabSheet
+      Caption = 'InfoTabSheet'
+      ClientHeight = 410
+      ClientWidth = 696
+      object InhTreeView: TTreeView
+        Left = 0
+        Height = 410
+        Top = 0
+        Width = 696
+        Align = alClient
+        DefaultItemHeight = 18
+        ReadOnly = True
+        TabOrder = 0
+        Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+      end
+    end
+  end
+  object OptionsPopupMenu: TPopupMenu
+    left = 320
+    top = 592
+    object ShowOptsMenuItem: TMenuItem
+      Caption = 'Show options and defines for cmd line'
+      OnClick = ShowOptsMenuItemClick
+    end
+  end
+end

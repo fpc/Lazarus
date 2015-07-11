@@ -1,0 +1,199 @@
+Name:           fpc
+Version:        1.2.3
+Release:        1
+Summary:        Free Pascal Compiler
+
+# Because this rpm is used on different systems, with different names
+# of packages/dependencies. Do not add dependencies automatically.
+AutoReqProv: no
+
+Group:          Development/Languages
+License:        GPL and modified LGPL
+URL:            http://www.freepascal.org/
+Source0:        ftp://ftp.freepascal.org/pub/fpc/dist/source-%{version}/%{name}-%{version}-%{release}.source.tar.gz
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+
+Requires:       glibc, binutils
+BuildRequires:  binutils, glibc-devel
+
+%define _source_payload w9.bzdio
+%define _binary_payload w9.bzdio
+
+%description
+
+Freepascal is a free 32/64bit Pascal Compiler. It comes with a run-time
+library fully compatible with Turbo Pascal 7.0 and nearly Delphi compatible.
+Some extensions are added to the language, like function overloading. Shared
+libraries can be linked. This package contains commandline compiler and
+utils. Provided units are the runtime library (RTL), free component library
+(FCL) and bindings for among others gtk1, gtk2, ncurses, zlib, mysql, postgres
+and ibase.
+
+#%package doc
+#Summary:        Free Pascal Compiler - documentation and examples
+#Group:          Development/Languages
+#
+#%description doc
+#
+#The fpc-doc package contains the documentation (in pdf format) and examples
+#of Freepascal.
+#The fpc-doc package contains the sources of Freepascal, for documentation or
+#automatical-code generation purposes.
+
+%package src
+Summary:        Free Pascal Compiler - sources
+Group:          Development/Languages
+
+%description src
+The sources of FPC - the Free Pascal Compiler and its packages.
+
+%ifarch ppc
+%define ppcname ppcppc
+%else
+%ifarch x86_64
+%define ppcname ppcx64
+%else
+%ifarch amd64
+%define ppcname amd64
+%else
+%define ppcname ppc386
+%endif
+%endif
+%endif
+
+
+%prep
+#%setup -q -a0 -n %{name}
+%setup -q -n %{name}
+
+%build
+# The source-files:
+mkdir -p fpcsrc
+cp -a rtl fpcsrc/
+cp -a packages fpcsrc/
+rm -rf packages/extra/amunits
+rm -rf packages/extra/winunits
+
+if [ -z "$STARTPP" ]; then
+  STARTPP=`which %{ppcname}`
+fi
+NEWPP=`pwd`/compiler/%{ppcname}
+NEWFPDOC=`pwd`/utils/fpdoc/fpdoc
+DATA2INC=`pwd`/utils/data2inc
+make distclean all FPC=${STARTPP}
+
+# disable the debuginfo package
+%define debug_package %{nil}
+%define __spec_install_post /usr/lib/rpm/brp-compress
+
+%install 
+rm -rf %{buildroot}
+FPCMAKE=`pwd`/utils/fpcm/fpcmake
+DATA2INC=`pwd`/utils/data2inc
+NEWPP=`pwd`/compiler/%{ppcname}
+FPCVERSION=`${NEWPP} -iV`
+FPCFULLVERSION=`${NEWPP} -iW`
+INSTALLOPTS="FPC=${NEWPP} FPCMAKE=${FPCMAKE} DATA2INC=${DATA2INC} \
+                INSTALL_PREFIX=%{buildroot}%{_prefix} \
+                INSTALL_LIBDIR=%{buildroot}%{_libdir} \
+                INSTALL_BASEDIR=%{buildroot}%{_libdir}/%{name}/${FPCVERSION} \
+                CODPATH=%{buildroot}%{_libdir}/%{name}/lexyacc \
+                INSTALL_DOCDIR=%{buildroot}%{_defaultdocdir}/%{name}-${FPCVERSION} \
+                INSTALL_BINDIR=%{buildroot}%{_bindir}
+                INSTALL_EXAMPLEDIR=%{buildroot}%{_defaultdocdir}/%{name}-${FPCVERSION}/examples"
+make compiler_install ${INSTALLOPTS}
+make rtl_install ${INSTALLOPTS}
+make packages_install ${INSTALLOPTS}
+#make fv_install ${INSTALLOPTS}
+#make ide_install ${INSTALLOPTS}
+make utils_install ${INSTALLOPTS}
+
+#make doc_install ${INSTALLOPTS}
+#make -C docs pdfinstall ${INSTALLOPTS}
+#make man_install ${INSTALLOPTS} INSTALL_MANDIR=%{buildroot}%{_mandir}
+
+# create link
+ln -sf ../%{_lib}/%{name}/${FPCVERSION}/%{ppcname} %{buildroot}%{_bindir}/%{ppcname}
+
+# Include the COPYING-information in the documentation
+#cd fpcsrc
+#cp -a compiler/COPYING %{buildroot}%{_defaultdocdir}/%{name}-${FPCVERSION}/COPYING
+#cp -a rtl/COPYING %{buildroot}%{_defaultdocdir}/%{name}-${FPCVERSION}/COPYING.rtl
+#cp -a fcl/COPYING %{buildroot}%{_defaultdocdir}/%{name}-${FPCVERSION}/COPYING.fcl
+#cp -a rtl/COPYING.FPC %{buildroot}%{_defaultdocdir}/%{name}-${FPCVERSION}/COPYING.FPC
+#cd -
+
+# The source-files:
+mkdir -p %{buildroot}%{_datadir}/fpcsrc
+cp -a fpcsrc/* %{buildroot}%{_datadir}/fpcsrc/
+
+# Workaround:
+# newer rpm versions do not allow garbage
+# delete lexyacc
+rm -rf %{buildroot}%{_libdir}/%{name}/lexyacc
+rm -rf %{buildroot}%{_defaultdocdir}/fpc-libc-*
+rm -rf %{buildroot}%{_defaultdocdir}/fpc-symbolic-*
+# 2.7.1 ignores the INSTALL_DOC variable and writes some files directly to /usr/share/doc
+rm -rf %{buildroot}/usr/share/doc/fpc-symbolic-*
+
+%clean
+rm -rf %{buildroot}
+
+%post
+# Create a version independent config
+%define fpcversion 1.2.3
+%{_libdir}/%{name}/%{fpcversion}/samplecfg %{_libdir}/%{name}/%{fpcversion} > /dev/null
+
+%files
+%defattr(-,root,root,-)
+%{_bindir}/*
+%{_libdir}/%{name}
+# Note: 2.6.1 does not create /usr/share/doc the defaultdocdir
+#%dir %{_defaultdocdir}
+#%doc %{_defaultdocdir}/%{name}-${FPCVERSION}/NEWS
+#%doc %{_defaultdocdir}/%{name}-${FPCVERSION}/README
+#%doc %{_defaultdocdir}/%{name}-${FPCVERSION}/readme.ide
+#%doc %{_defaultdocdir}/%{name}-${FPCVERSION}/faq*
+#%doc %{_defaultdocdir}/%{name}-${FPCVERSION}/COPYING*
+#%{_mandir}/*/*
+
+#%files doc
+#%defattr(-,root,root,-)
+#%doc %{_defaultdocdir}/%{name}-${FPCVERSION}/*.pdf
+#%doc %{_defaultdocdir}/%{name}-${FPCVERSION}/examples
+
+%files src
+%defattr(-,root,root,-)
+%{_datadir}/fpcsrc
+
+%changelog
+* Tue Jul 28 2005 Joost van der Sluis <joost@cnoc.nl> 2.0.0-1
+- Added some requirements
+- Added COPYING-info to %%doc
+
+* Tue Jun 28 2005 Joost van der Sluis <joost@cnoc.nl> 2.0.0-0.6
+- Only rtl, fcl and packages are added to src-subpackage
+- Silenced post-script
+- disabled the debuginfo-package
+
+* Sat Jun 5 2005 Joost van der Sluis <joost@cnoc.nl> 2.0.0-0.5
+- Added doc-subpackage
+- Added src-subpackage
+
+* Fri Jun 3 2005 Joost van der Sluis <joost@cnoc.nl> 2.0.0-0.4
+- New fix for lib64 on x86_64
+- small patches from Jens Petersen <petersen@redhat.com>
+
+* Thu May 26 2005 Joost van der Sluis <joost@cnoc.nl> 2.0.0-0.3
+- replaced 'lib' and 'lib64' by %%{_lib}
+
+* Tue May 24 2005 Joost van der Sluis <joost@cnoc.nl> 2.0.0-0.2
+- Fixed for lib64 on x86_64
+- Changed summary, description and license
+- Removed examples from installation
+- Make clean removed from clean-section
+- Clean-up
+- replaced $RPM_BUILD_ROOT by %%{buildroot}
+
+* Mon May 23 2005 Joost van der Sluis <joost@cnoc.nl> 2.0.0-0.1
+- Initial build.

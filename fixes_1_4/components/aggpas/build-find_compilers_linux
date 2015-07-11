@@ -1,0 +1,3 @@
+#!/bin/sh
+ppc386 -Fu"src;src/ctrl;src/platform/linux;src/util" -Fisrc -FU_debug -Mdelphi -Tlinux -WC -Sg -Se3 -XX -Xs -B -v0i find_compilers_linux.dpr
+

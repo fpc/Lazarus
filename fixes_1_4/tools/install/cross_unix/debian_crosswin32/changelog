@@ -1,0 +1,11 @@
+fpc-crosswin32 (2.2.2)
+
+    * Tools are now installed without prefix fpc-.
+      For example i386-win32-windres.
+
+fpc-crosswin32 (2.0.4)
+
+	  * Started package
+
+	 -- Mattias Gaertner <mattias@cvs.freepascal.org>  09/10/2006
+

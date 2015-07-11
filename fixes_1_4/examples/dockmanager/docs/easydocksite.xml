@@ -1,0 +1,121 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="EasyDockMgr">
+    <module name="EasyDockSite">
+      <element name="TEasyDockManager">
+        <short>A docking manager base class, implementing some default functionality.</short>
+      </element>
+      <element name="TCustomDockMaster">
+        <short>The DockMaster base class, managing docking and screen layout issues in an application.</short>
+        <descr>
+          <p>The global DockLoader variable represents the installed DockMaster singleton.</p>
+          <p>It provides means to make forms dockable on all platforms (MakeDockable), and to save and reload screen layouts.</p>
+        </descr>
+      </element>
+      <element name="TCustomDockMaster.TryCreateControls">
+        <short>Indicates whether the DockMaster should try to create docked controls himself, when a layout is restored.</short>
+      </element>
+      <element name="TCustomDockMaster.MakeDockable">
+        <short>Makes a form dockable, on all platforms.</short>
+        <descr>
+          <p>All docking-related properties of the given form are set to appropriate values.</p>
+          <p>fWrap indicates whether the form shall be wrapped into a FloatHost site. The Result is that FloatHost form, always Nil in the default implementation.</p>
+          <p>fVisible indicates whether the form shall be made visible immediately. Leave the form invisible when otherwise further customization would cause the form to flicker.</p>
+        </descr>
+      </element>
+      <element name="TCustomDockMaster.SaveControl">
+        <short>Returns an string, containing all required information for reloading the control later.</short>
+        <descr>
+          <p>The content of the string is not restricted in any way, it only must be understood by ReloadControl.</p>
+          <p>
+            <ol>
+              <li>When the control is a TCustomDockSite, its SaveSite method can provide the string;</li>
+              <li>else an installed AppLoadStore callback can provide the string;</li>
+              <li>else an OnSave handler can provide the string.</li>
+              <li>When no string has been provided so far, a default control-descriptor string is created.</li>
+            </ol>
+          </p>
+        </descr>
+      </element>
+      <element name="TCustomDockMaster.ReloadControl">
+        <short>Provides a docked control when a layout is restored.</short>
+        <descr>
+          <p>The descriptor string is parsed into ControlDescriptor, accessible to the subsequently called procedures.</p>
+          <p>
+            <ol>
+              <li>When the string begins with a CustomDockSiteID, it is passed to TCustomDockSite.ReloadSite.</li>
+              <li>Else an AppLoadStore or OnRestore handler is invoked, if installed.</li>
+              <li>When no control has been provided, FindOwnedComponent is invoked.</li>
+              <li>When TryCreateControls is True, the control is created from its registered ClassName.</li>
+              <li>As a last resort the site.ReloadDockedControl is invoked.</li>
+            </ol>
+          </p>
+        </descr>
+      </element>
+      <element name="TCustomDockMaster.OnSave">
+        <short>Application handler for SaveControl.</short>
+      </element>
+      <element name="TCustomDockMaster.OnRestore">
+        <short>Application handler for ReloadControl.</short>
+      </element>
+      <element name="TCustomDockMaster.ControlDescriptor">
+        <short>Descriptor of the control, that currently shall be restored.</short>
+      </element>
+      <element name="TCustomDockSite">
+        <short>A general persistent docksite.</short>
+      </element>
+      <element name="TCustomDockSite.ReloadSite">
+        <short>Restores a docksite from its description.</short>
+        <descr>This is a class function, because it will create and return a new docksite.</descr>
+      </element>
+      <element name="TCustomDockSite.SaveSite">
+        <short>Returns the docksite descriptor as a string.</short>
+        <descr>The string begins with the CustomDockSiteID, to distinguish a docksite from any other docked control. The rest is added by SaveToStream.</descr>
+      </element>
+      <element name="TCustomDockSite.LoadFromStream">
+        <short>Reloads the docked controls from a stream.</short>
+        <descr>
+          <p>The DockManager is asked to restore the docked controls.</p>
+          <p>Unmanaged docksites must overwrite this method, to process their own descriptor string.</p>
+        </descr>
+      </element>
+      <element name="TCustomDockSite.SaveToStream">
+        <short>Saves the docksite description to the stream.</short>
+        <descr>
+          <p>The description actually is saved by the DockManager.</p>
+          <p>Unmanaged docksites must overwrite this method, to provide their own descriptor string.</p>
+        </descr>
+      </element>
+      <element name="CustomDockSiteID">
+        <short>The marker for an docksite layout descriptor.</short>
+        <descr>
+          <p>This marker is used in layout descriptor strings, to distinguish docksites from other controls.</p>
+          <p>Default descriptor strings start with the control name, so that values in the range 2..32 can be used as markers for special docksites, like custom docksites (1) or notebooks (2). These non-standard markers must be handled by application specific loaders, e.g. DockMaster.OnRestore handlers.</p>
+        </descr>
+      </element>
+      <element name="TOnReloadControl">
+        <short>Event handler type for the DockMaster OnReload event.</short>
+        <descr>
+          <p>The handler creates the docked control from the descriptor in AName.</p>
+          <p>AOwner is the default owner for the new control.</p>
+          <p>When the handler returns Nil, the DockMaster tries to create the control by default procedures. I.e. an application specific handler must only handle non-standard situations.</p>
+        </descr>
+      </element>
+      <element name="TOnSaveControl">
+        <short>Event handler type for the DockMaster OnSave event.</short>
+        <descr>
+          <p>The handler must handle all non-standard situations, when a specific control requires special construction or configuration. When an empty string is returned, the DockMaster creates an standard descriptor for the control.</p>
+          <p>The result is a descriptor string, that is passed to the OnReload handler when the layout is restored later. It's suggested to prefix the string with a special marker byte, in the range 3..32.</p>
+        </descr>
+        <seealso>
+          <link id="CustomDockSiteID"/>
+          <link id="TOnReloadControl"/>
+        </seealso>
+      </element>
+      <element name="TDockSiteClass">
+        <short>Class type of a persistent docksite.</short>
+        <descr>Docksites derived from this type are handled automatically be the DockMaster, when a docking layout is saved and reloaded.</descr>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

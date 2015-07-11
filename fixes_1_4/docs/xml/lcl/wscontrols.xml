@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+  <package name="LCL">
+    <module name="WSControls">
+      <element name="TWSWinControl.GetPreferredSize">
+        <short>Returns the preferred size of a widget, independent of current Width, Height, child controls and scrollbars</short>
+        <descr>Values &lt;=0 mean there is no preferred size. If the control.ControlStyle has flag csAutoSize0x0 then 0 is allowed for this control. At the moment only TPanel has this flag.
+The values must be independent of the current Width/Height, because the LCL resizes them depending on these values (circle).
+The values must be independent of the child controls, because the LCL moves and resizes them depending on these values (circle).
+The values must be independent of scrollbars, because the LCL hides them depending on these values (circle).
+The values are only taken if no other constraint/anchor was applied.
+If the widgetset does not support some sizes, then it should set interface constraints.</descr>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

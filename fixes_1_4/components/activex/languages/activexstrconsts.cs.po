@@ -1,0 +1,49 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: Lazarus Activex Component\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Václav Valíček <valicek1994@gmail.com>\n"
+"Language-Team: Czech <vaclav@valicek.name>\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: activexstrconsts.axconvertdependanttypelibs
+msgid "Convert dependant typelibs"
+msgstr "Převect závislé typové knihovny"
+
+#: activexstrconsts.axcreatepackage
+msgid "Create package"
+msgstr "Vytvořit balíček"
+
+#: activexstrconsts.axcreatevisualcomponenttactivexcontainerdescendant
+msgid "Create visual component (TActiveXContainer descendant)"
+msgstr "Vytvořit vizuální komponentu (potomka TActiveXContainer)"
+
+#: activexstrconsts.axfilecontainingtypelibrary
+msgid "File containing type library:"
+msgstr "Soubor obsahující typovou knihovnu:"
+
+#: activexstrconsts.aximporttypelibrary
+msgid "Import Type Library"
+msgstr "Importovat typovou knihovnu"
+
+#: activexstrconsts.aximporttypelibrarymenu
+msgid "Import Type Library ..."
+msgstr "Importovat typovou knihovnu ..."
+
+#: activexstrconsts.axselectdirectorytostorepackageplpk
+msgid "Select directory to store package %sP.lpk"
+msgstr "Vyberte složku k uchování balíčku %sP.lpk"
+
+#: activexstrconsts.axtypelibraryfilestlbdllexeocxolbtlbdllexeocxolballf
+msgid ""
+"Type library files (*.tlb;*.dll;*.exe;*.ocx;*.olb)|*.tlb;*.dll;*.exe;*.ocx;*."
+"olb|All Files (*.*)|*.*"
+msgstr ""
+"Soubory typových knihoven (*.tlb;*.dll;*.exe;*.ocx;*.olb)|*.tlb;*.dll;*.exe;"
+"*.ocx;*.olb|All Files (*.*)|*.*"

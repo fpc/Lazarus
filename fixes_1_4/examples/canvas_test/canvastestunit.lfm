@@ -1,0 +1,111 @@
+object frmCanvasTest: TfrmCanvasTest
+  Left = 290
+  Height = 460
+  Top = 171
+  Width = 233
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
+  Caption = 'Canvas Test Program'
+  ClientHeight = 460
+  ClientWidth = 233
+  LCLVersion = '1.3'
+  object btnBrush: TButton
+    Left = 19
+    Height = 25
+    Top = 56
+    Width = 194
+    Caption = 'Show Brushes Dialog'
+    OnClick = btnBrushClick
+    TabOrder = 0
+  end
+  object btnPen: TButton
+    Left = 19
+    Height = 25
+    Top = 96
+    Width = 194
+    Caption = 'Show Pens Dialog'
+    OnClick = btnPenClick
+    TabOrder = 1
+  end
+  object btnFont: TButton
+    Left = 19
+    Height = 25
+    Top = 136
+    Width = 194
+    Caption = 'Show Fonts Dialog'
+    OnClick = btnFontClick
+    TabOrder = 2
+  end
+  object btnClose: TButton
+    Left = 19
+    Height = 25
+    Top = 424
+    Width = 194
+    Caption = 'Close'
+    OnClick = btnCloseClick
+    TabOrder = 3
+  end
+  object btnRectangles: TButton
+    Left = 19
+    Height = 25
+    Top = 16
+    Width = 194
+    Caption = 'Show Rectangles Dialog'
+    OnClick = btnRectanglesClick
+    TabOrder = 4
+  end
+  object btnShapedWindow: TButton
+    Left = 19
+    Height = 25
+    Top = 176
+    Width = 194
+    Caption = 'Show Shaped Window'
+    OnClick = btnShapedWindowClick
+    TabOrder = 5
+  end
+  object btnEllipse: TButton
+    Left = 19
+    Height = 25
+    Top = 216
+    Width = 194
+    Caption = 'Show Ellipse Dialog'
+    OnClick = btnEllipseClick
+    TabOrder = 6
+  end
+  object btnScreenshot: TButton
+    Left = 19
+    Height = 25
+    Top = 256
+    Width = 194
+    Caption = 'Show Screenshot Dialog'
+    OnClick = btnScreenshotClick
+    TabOrder = 7
+  end
+  object btnDraw: TButton
+    Left = 19
+    Height = 25
+    Top = 296
+    Width = 194
+    Caption = 'Show Draw Dialog'
+    OnClick = btnDrawClick
+    TabOrder = 8
+  end
+  object btnImage: TButton
+    Left = 19
+    Height = 25
+    Top = 336
+    Width = 194
+    Caption = 'Show Image Dialog'
+    OnClick = btnImageClick
+    TabOrder = 9
+  end
+  object btnSystemColors: TButton
+    Left = 19
+    Height = 25
+    Top = 376
+    Width = 194
+    Caption = 'Show System Colors'
+    OnClick = btnSystemColorsClick
+    TabOrder = 10
+  end
+end

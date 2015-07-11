@@ -1,0 +1,107 @@
+object CleanPkgDepsDlg: TCleanPkgDepsDlg
+  Left = 270
+  Height = 380
+  Top = 176
+  Width = 522
+  Caption = 'CleanPkgDepsDlg'
+  ClientHeight = 380
+  ClientWidth = 522
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object TransitivityGroupBox: TGroupBox
+    Left = 0
+    Height = 338
+    Top = 0
+    Width = 522
+    Align = alClient
+    Caption = 'TransitivityGroupBox'
+    ClientHeight = 321
+    ClientWidth = 518
+    TabOrder = 0
+    object TransitivityTreeView: TTreeView
+      Left = 0
+      Height = 306
+      Top = 15
+      Width = 518
+      Align = alClient
+      DefaultItemHeight = 18
+      ReadOnly = True
+      TabOrder = 0
+      OnMouseDown = TransitivityTreeViewMouseDown
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+    end
+    object TransitivityLabel: TLabel
+      Left = 0
+      Height = 15
+      Top = 0
+      Width = 518
+      Align = alTop
+      Caption = 'TransitivityLabel'
+      ParentColor = False
+      WordWrap = True
+    end
+  end
+  object BtnPanel: TPanel
+    Left = 0
+    Height = 42
+    Top = 338
+    Width = 522
+    Align = alBottom
+    AutoSize = True
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.HorizontalSpacing = 6
+    ClientHeight = 42
+    ClientWidth = 522
+    TabOrder = 1
+    object DeleteSelectedBitBtn: TBitBtn
+      Left = 308
+      Height = 28
+      Top = 7
+      Width = 134
+      Align = alRight
+      AutoSize = True
+      Caption = 'DeleteSelectedBitBtn'
+      ModalResult = 1
+      TabOrder = 0
+    end
+    object CancelBitBtn: TBitBtn
+      Left = 448
+      Height = 28
+      Top = 7
+      Width = 67
+      Align = alRight
+      AutoSize = True
+      Cancel = True
+      Default = True
+      DefaultCaption = True
+      Kind = bkCancel
+      ModalResult = 2
+      TabOrder = 1
+    end
+    object SelectAllBitBtn: TBitBtn
+      Left = 125
+      Height = 28
+      Top = 7
+      Width = 96
+      Align = alLeft
+      AutoSize = True
+      Caption = 'SelectAllBitBtn'
+      OnClick = SelectAllBitBtnClick
+      TabOrder = 2
+    end
+    object SelectNoneBitBtn: TBitBtn
+      Left = 7
+      Height = 28
+      Top = 7
+      Width = 112
+      Align = alLeft
+      AutoSize = True
+      Caption = 'SelectNoneBitBtn'
+      OnClick = SelectNoneBitBtnClick
+      TabOrder = 3
+    end
+  end
+end

@@ -1,0 +1,138 @@
+inherited fUses: TfUses
+  Height = 317
+  Width = 419
+  ClientHeight = 317
+  ClientWidth = 419
+  OnResize = FrameResize
+  TabOrder = 0
+  DesignLeft = 389
+  DesignTop = 253
+  object cbRemoveEnabled: TCheckBox[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 17
+    Top = 6
+    Width = 57
+    BorderSpacing.Around = 6
+    Caption = 'Remove'
+    OnClick = cbRemoveEnabledClick
+    TabOrder = 0
+  end
+  object cbInsertInterface: TCheckBox[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = mRemove
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 17
+    Top = 111
+    Width = 116
+    BorderSpacing.Top = 6
+    BorderSpacing.Around = 6
+    Caption = 'Insert into Interface'
+    OnClick = cbInsertInterfaceClick
+    TabOrder = 2
+  end
+  object cbInsertImplementation: TCheckBox[2]
+    AnchorSideLeft.Control = mInsertImplementation
+    AnchorSideTop.Control = cbInsertInterface
+    AnchorSideTop.Side = asrCenter
+    Left = 208
+    Height = 17
+    Top = 111
+    Width = 145
+    Caption = 'Insert into Implementation'
+    OnClick = cbInsertImplementationClick
+    TabOrder = 4
+  end
+  object cbFindReplace: TCheckBox[3]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = mInsertInterface
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 17
+    Top = 216
+    Width = 56
+    BorderSpacing.Top = 6
+    BorderSpacing.Around = 6
+    Caption = 'Replace'
+    OnClick = cbFindReplaceClick
+    TabOrder = 6
+  end
+  object mRemove: TMemo[4]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cbRemoveEnabled
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = mInsertImplementation
+    Left = 6
+    Height = 70
+    Top = 29
+    Width = 190
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Right = 6
+    BorderSpacing.Around = 6
+    TabOrder = 1
+  end
+  object mInsertInterface: TMemo[5]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cbInsertInterface
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = mInsertImplementation
+    Left = 6
+    Height = 70
+    Top = 134
+    Width = 190
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Right = 6
+    BorderSpacing.Around = 6
+    TabOrder = 3
+  end
+  object mFind: TMemo[6]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cbFindReplace
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = mInsertImplementation
+    Left = 6
+    Height = 70
+    Top = 239
+    Width = 190
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Right = 6
+    BorderSpacing.Around = 6
+    TabOrder = 7
+  end
+  object mInsertImplementation: TMemo[7]
+    AnchorSideTop.Control = cbInsertImplementation
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = mInsertInterface
+    AnchorSideBottom.Side = asrBottom
+    Left = 208
+    Height = 70
+    Top = 134
+    Width = 205
+    Anchors = [akTop, akRight, akBottom]
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    Lines.Strings = (
+      ''
+    )
+    TabOrder = 5
+  end
+  object mReplace: TMemo[8]
+    AnchorSideLeft.Control = mInsertImplementation
+    AnchorSideTop.Control = mFind
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = mFind
+    AnchorSideBottom.Side = asrBottom
+    Left = 208
+    Height = 70
+    Top = 239
+    Width = 205
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Right = 6
+    TabOrder = 8
+  end
+end

@@ -1,0 +1,53 @@
+object Form1: TForm1
+  Left = 936
+  Height = 240
+  Top = 324
+  Width = 320
+  Caption = 'Form1'
+  ClientHeight = 240
+  ClientWidth = 320
+  OnCreate = FormCreate
+  LCLVersion = '1.1'
+  object Button1: TButton
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    Left = 118
+    Height = 27
+    Top = 96
+    Width = 85
+    AutoSize = True
+    Caption = 'Show Demo'
+    OnClick = Button1Click
+    TabOrder = 0
+  end
+  object Button2: TButton
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    Left = 123
+    Height = 27
+    Top = 136
+    Width = 74
+    AutoSize = True
+    Caption = 'Edit Demo'
+    OnClick = Button2Click
+    TabOrder = 1
+  end
+  object frReport1: TfrReport
+    DefaultCopies = 0
+    InitialZoom = pzDefault
+    Options = []
+    PreviewButtons = [pbZoom, pbLoad, pbSave, pbPrint, pbFind, pbHelp, pbExit]
+    DataType = dtDataSet
+    OnObjectClick = frReport1ObjectClick
+    OnMouseOverObject = frReport1MouseOverObject
+    left = 24
+    top = 17
+    ReportForm = {
+      1A000000
+    }
+  end
+  object frDesigner1: TfrDesigner
+    left = 72
+    top = 17
+  end
+end

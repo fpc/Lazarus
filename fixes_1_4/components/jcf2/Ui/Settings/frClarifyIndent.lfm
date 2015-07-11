@@ -1,0 +1,259 @@
+inherited fClarifyIndent: TfClarifyIndent
+  Height = 347
+  Width = 430
+  ClientHeight = 347
+  ClientWidth = 430
+  TabOrder = 0
+  DesignLeft = 737
+  DesignTop = 299
+  object Label2: TLabel[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtIndentSpaces
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 14
+    Top = 9
+    Width = 118
+    BorderSpacing.Left = 6
+    Caption = 'Block indentation spaces'
+    ParentColor = False
+  end
+  object edtIndentSpaces: TSpinEdit[1]
+    AnchorSideLeft.Control = Label2
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    Left = 130
+    Height = 21
+    Top = 6
+    Width = 50
+    BorderSpacing.Around = 6
+    MaxValue = 12
+    TabOrder = 0
+  end
+  object gbOptions: TGroupBox[2]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtIndentSpaces
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
+    Height = 308
+    Top = 33
+    Width = 418
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'Options'
+    ClientHeight = 308
+    ClientWidth = 418
+    TabOrder = 1
+    object cbIndentBeginEnd: TCheckBox
+      AnchorSideLeft.Control = gbOptions
+      AnchorSideTop.Control = eIndentBeginEndSpaces
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 17
+      Top = 8
+      Width = 232
+      BorderSpacing.Left = 6
+      BorderSpacing.Bottom = 6
+      Caption = 'Extra indent for begin/end inside procedures'
+      OnClick = cbIndentBeginEndClick
+      TabOrder = 0
+    end
+    object eIndentBeginEndSpaces: TSpinEdit
+      AnchorSideTop.Control = gbOptions
+      AnchorSideRight.Control = gbOptions
+      AnchorSideRight.Side = asrBottom
+      Left = 348
+      Height = 21
+      Top = 6
+      Width = 50
+      Anchors = [akTop, akRight]
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 20
+      MaxValue = 10
+      MinValue = -10
+      TabOrder = 1
+    end
+    object cbHasFirstLevelIndent: TCheckBox
+      AnchorSideLeft.Control = gbOptions
+      AnchorSideTop.Control = eFirstLevelIndent
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 17
+      Top = 35
+      Width = 158
+      BorderSpacing.Left = 6
+      BorderSpacing.Bottom = 6
+      Caption = 'Different indent for first level'
+      OnClick = cbHasFirstLevelIndentClick
+      TabOrder = 2
+    end
+    object eFirstLevelIndent: TSpinEdit
+      AnchorSideTop.Control = eIndentBeginEndSpaces
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = gbOptions
+      AnchorSideRight.Side = asrBottom
+      Left = 348
+      Height = 21
+      Top = 33
+      Width = 50
+      Anchors = [akTop, akRight]
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 20
+      TabOrder = 3
+    end
+    object cbKeepWithInProc: TCheckBox
+      AnchorSideLeft.Control = gbOptions
+      AnchorSideTop.Control = cbHasFirstLevelIndent
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 17
+      Top = 58
+      Width = 260
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      Caption = 'Keep single-line comments with code in procedures'
+      TabOrder = 4
+    end
+    object cbKeepWithInGlobals: TCheckBox
+      AnchorSideLeft.Control = gbOptions
+      AnchorSideTop.Control = cbKeepWithInProc
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 17
+      Top = 81
+      Width = 239
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      Caption = 'Keep single-line comments with code in globals'
+      TabOrder = 5
+    end
+    object cbKeepWithInClassDef: TCheckBox
+      AnchorSideLeft.Control = gbOptions
+      AnchorSideTop.Control = cbKeepWithInGlobals
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 17
+      Top = 104
+      Width = 281
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      Caption = 'Keep single-line comments with code in class definitions'
+      TabOrder = 6
+    end
+    object cbKeepWithElsewhere: TCheckBox
+      AnchorSideLeft.Control = gbOptions
+      AnchorSideTop.Control = cbKeepWithInClassDef
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 17
+      Top = 127
+      Width = 244
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      Caption = 'Keep single-line comments with code elsewhere'
+      TabOrder = 7
+    end
+    object cbIndentIfElse: TCheckBox
+      AnchorSideLeft.Control = gbOptions
+      AnchorSideTop.Control = cbKeepWithElsewhere
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 17
+      Top = 150
+      Width = 170
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      Caption = 'Extra Indent for If...Else blocks'
+      TabOrder = 8
+    end
+    object cbIndentCaseElse: TCheckBox
+      AnchorSideLeft.Control = gbOptions
+      AnchorSideTop.Control = cbIndentIfElse
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 17
+      Top = 173
+      Width = 186
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      Caption = 'Extra Indent for Case...Else blocks'
+      TabOrder = 9
+    end
+    object cbIndentLibraryProcs: TCheckBox
+      AnchorSideLeft.Control = gbOptions
+      AnchorSideTop.Control = cbIndentCaseElse
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 17
+      Top = 196
+      Width = 168
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      Caption = 'Indent for procedures in library'
+      TabOrder = 10
+    end
+    object cbIndentProcedureBody: TCheckBox
+      AnchorSideLeft.Control = gbOptions
+      AnchorSideTop.Control = cbIndentLibraryProcs
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 17
+      Top = 219
+      Width = 146
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      Caption = 'Indent for procedure body'
+      TabOrder = 11
+    end
+    object cbIndentNestedTypes: TCheckBox
+      AnchorSideLeft.Control = gbOptions
+      AnchorSideTop.Control = cbIndentProcedureBody
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 17
+      Top = 242
+      Width = 116
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      Caption = 'Indent nested types'
+      TabOrder = 12
+    end
+    object cbIndentVarAndConstInClass: TCheckBox
+      AnchorSideLeft.Control = gbOptions
+      AnchorSideTop.Control = cbIndentNestedTypes
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 17
+      Top = 265
+      Width = 156
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      Caption = 'Indent var and const in class'
+      TabOrder = 13
+    end
+  end
+end

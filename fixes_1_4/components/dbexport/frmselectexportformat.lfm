@@ -1,0 +1,49 @@
+object SelectExportFormatForm: TSelectExportFormatForm
+  Left = 608
+  Height = 295
+  Top = 254
+  Width = 400
+  ActiveControl = BPButtons.CancelButton
+  Caption = 'Select data export Format'
+  ClientHeight = 295
+  ClientWidth = 400
+  OnCreate = FormCreate
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object RGFormats: TRadioGroup
+    Left = 8
+    Height = 224
+    Top = 8
+    Width = 376
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoFill = True
+    Caption = 'Available export formats:'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    TabOrder = 0
+  end
+  object BPButtons: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 255
+    Width = 388
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel]
+    ShowGlyphs = [pbOK, pbCancel]
+  end
+end

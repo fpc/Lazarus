@@ -1,0 +1,18 @@
+inherited PseudoConsoleDlg: TPseudoConsoleDlg
+  Left = 1261
+  Top = 344
+  Caption = 'Console'
+  DockSite = True
+  object Memo1: TMemo[0]
+    Left = 0
+    Height = 240
+    Top = 0
+    Width = 320
+    Align = alClient
+    OnUTF8KeyPress = Memo1UTF8KeyPress
+    ReadOnly = True
+    ScrollBars = ssAutoBoth
+    TabOrder = 0
+    WantTabs = True
+  end
+end

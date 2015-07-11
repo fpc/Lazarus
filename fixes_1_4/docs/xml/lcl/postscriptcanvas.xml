@@ -1,0 +1,1542 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    PostscriptCanvas
+  ====================================================================
+-->
+
+<module name="PostscriptCanvas">
+<short/>
+<descr>
+</descr>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Classes">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="SysUtils">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Math">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Graphics">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Forms">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="GraphMath">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="GraphType">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="FPImage">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="IntfGraphics">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Printers">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLType">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLIntf">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TPostscriptPrinterCanvas">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TPostscriptPrinterCanvas.fHeader">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TPostscriptPrinterCanvas.fDocument">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TPostscriptPrinterCanvas.fFileName">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TPostscriptPrinterCanvas.fBuffer">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TPostscriptPrinterCanvas.fcBrushStyle">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TPostscriptPrinterCanvas.fcPenColor">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TPostscriptPrinterCanvas.fcPenWidth">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TPostscriptPrinterCanvas.fcPenStyle">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TPostscriptPrinterCanvas.fcLastFont">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TPostscriptPrinterCanvas.fPenPos">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TPostscriptPrinterCanvas.FirstUpdatefont">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TPostscriptPrinterCanvas.WriteHeader">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.WriteHeader.St">
+<short/>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TPostscriptPrinterCanvas.Write">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Write.St">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Write.Lst">
+<short/>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TPostscriptPrinterCanvas.WriteB">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.WriteB.St">
+<short/>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TPostscriptPrinterCanvas.ClearBuffer">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TPostscriptPrinterCanvas.Write">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Write.Lst">
+<short/>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TPostscriptPrinterCanvas.WriteComment">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.WriteComment.St">
+<short/>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TPostscriptPrinterCanvas.TranslateCoord">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.TranslateCoord.X">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.TranslateCoord.Y">
+<short/>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TPostscriptPrinterCanvas.SetPosition">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.SetPosition.X">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.SetPosition.Y">
+<short/>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TPostscriptPrinterCanvas.UpdateLineWidth">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TPostscriptPrinterCanvas.UpdateLineColor">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.UpdateLineColor.aColor">
+<short/>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TPostscriptPrinterCanvas.UpdateLineStyle">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TPostscriptPrinterCanvas.UpdateFillColor">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TPostscriptPrinterCanvas.UpdateFont">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TPostscriptPrinterCanvas.MappedFontName">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TPostscriptPrinterCanvas.MappedFontName.Result">
+<short/>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TPostscriptPrinterCanvas.MapedString">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TPostscriptPrinterCanvas.MapedString.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.MapedString.St">
+<short/>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TPostscriptPrinterCanvas.MoveToLastPos">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TPostscriptPrinterCanvas.SetBrushFillPattern">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.SetBrushFillPattern.Lst">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.SetBrushFillPattern.SetBorder">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.SetBrushFillPattern.SetFill">
+<short/>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TPostscriptPrinterCanvas.SetBrushFillPattern">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.SetBrushFillPattern.SetBorder">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.SetBrushFillPattern.SetFill">
+<short/>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TPostscriptPrinterCanvas.GetRGBImage">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.GetRGBImage.SrcGraph">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.GetRGBImage.Lst">
+<short/>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TPostscriptPrinterCanvas.CreateHandle">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TPostscriptPrinterCanvas.BeginDoc">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TPostscriptPrinterCanvas.EndDoc">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TPostscriptPrinterCanvas.NewPage">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TPostscriptPrinterCanvas.Create">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Create.APrinter">
+<short/>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TPostscriptPrinterCanvas.Destroy">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPostscriptPrinterCanvas.SaveToFile">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.SaveToFile.aFileName">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPostscriptPrinterCanvas.MoveTo">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.MoveTo.X1">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.MoveTo.Y1">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPostscriptPrinterCanvas.LineTo">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.LineTo.X1">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.LineTo.Y1">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPostscriptPrinterCanvas.Polyline">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Polyline.Points">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Polyline.NumPts">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPostscriptPrinterCanvas.PolyBezier">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.PolyBezier.Points">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.PolyBezier.NumPts">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.PolyBezier.Filled">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.PolyBezier.Continuous">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPostscriptPrinterCanvas.Rectangle">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Rectangle.X1">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Rectangle.Y1">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Rectangle.X2">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Rectangle.Y2">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPostscriptPrinterCanvas.Frame">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Frame.ARect">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPostscriptPrinterCanvas.FrameRect">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.FrameRect.ARect">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPostscriptPrinterCanvas.FillRect">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.FillRect.ARect">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPostscriptPrinterCanvas.RoundRect">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.RoundRect.X1">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.RoundRect.Y1">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.RoundRect.X2">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.RoundRect.Y2">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.RoundRect.RX">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.RoundRect.RY">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPostscriptPrinterCanvas.Polygon">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Polygon.Points">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Polygon.NumPts">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Polygon.Winding">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPostscriptPrinterCanvas.Ellipse">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Ellipse.x1">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Ellipse.y1">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Ellipse.x2">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Ellipse.y2">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPostscriptPrinterCanvas.Arc">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Arc.x">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Arc.y">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Arc.width">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Arc.height">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Arc.angle1">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Arc.angle2">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPostscriptPrinterCanvas.RadialPie">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.RadialPie.x">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.RadialPie.y">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.RadialPie.width">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.RadialPie.height">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.RadialPie.angle1">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.RadialPie.angle2">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPostscriptPrinterCanvas.Chord">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Chord.x">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Chord.y">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Chord.width">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Chord.height">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Chord.angle1">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Chord.angle2">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPostscriptPrinterCanvas.TextOut">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.TextOut.X">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.TextOut.Y">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.TextOut.Text">
+<short/>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TPostscriptPrinterCanvas.TextExtent">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TPostscriptPrinterCanvas.TextExtent.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.TextExtent.Text">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPostscriptPrinterCanvas.Draw">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Draw.X">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Draw.Y">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Draw.SrcGraphic">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPostscriptPrinterCanvas.StretchDraw">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.StretchDraw.DestRect">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.StretchDraw.SrcGraphic">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPostscriptPrinterCanvas.FloodFill">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.FloodFill.X">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.FloodFill.Y">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.FloodFill.FillColor">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.FloodFill.FillStyle">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPostscriptPrinterCanvas.CopyRect">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.CopyRect.Dest">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.CopyRect.SrcCanvas">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.CopyRect.Source">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPostscriptPrinterCanvas.BrushCopy">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.BrushCopy.Dest">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.BrushCopy.InternalImages">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.BrushCopy.Src">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.BrushCopy.TransparentColor">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPostscriptPrinterCanvas.Arc">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Arc.x">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Arc.y">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Arc.width">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Arc.height">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Arc.SX">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Arc.SY">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Arc.EX">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Arc.EY">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPostscriptPrinterCanvas.Chord">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Chord.x">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Chord.y">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Chord.width">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Chord.height">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Chord.SX">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Chord.SY">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Chord.EX">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Chord.EY">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPostscriptPrinterCanvas.Frame3d">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Frame3d.ARect">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Frame3d.FrameWidth">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Frame3d.Style">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPostscriptPrinterCanvas.RadialPie">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.RadialPie.x">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.RadialPie.y">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.RadialPie.width">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.RadialPie.height">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.RadialPie.sx">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.RadialPie.sy">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.RadialPie.ex">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.RadialPie.ey">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPostscriptPrinterCanvas.Pie">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Pie.EllipseX1">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Pie.EllipseY1">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Pie.EllipseX2">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Pie.EllipseY2">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Pie.StartX">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Pie.StartY">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Pie.EndX">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.Pie.EndY">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPostscriptPrinterCanvas.TextRect">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.TextRect.ARect">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.TextRect.X">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.TextRect.Y">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.TextRect.Text">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPostscriptPrinterCanvas.TextRect.Style">
+<short/>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TPostscriptPrinterCanvas.OutPutFileName">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TPostscriptCanvas">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TPostscriptCanvas.Create">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPostscriptCanvas.BeginDoc">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPostscriptCanvas.EndDoc">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPostscriptCanvas.NewPage">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+</module> <!-- PostscriptCanvas -->
+</package>
+</fpdoc-descriptions>

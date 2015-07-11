@@ -1,0 +1,1641 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+  <package name="lcl">
+    <!--
+  ====================================================================
+    CommCtrl
+  ====================================================================
+-->
+    <module name="CommCtrl">
+      <short/>
+      <descr/>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="lMessages">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="NM_FIRST">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="NM_LAST">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="LVN_FIRST">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="LVN_LAST">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="HDN_FIRST">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="HDN_LAST">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TVN_FIRST">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TVN_LAST">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TTN_FIRST">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TTN_LAST">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TCN_FIRST">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TCN_LAST">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBN_First">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBN_Last">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="CCS_TOP">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="CCS_NOMOVEY">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="CCS_BOTTOM">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="CCS_NORESIZE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="CCS_NOPARENTALIGN">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="CCS_ADJUSTABLE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="CCS_NODIVIDER">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="CCS_VERT">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="CCS_LEFT">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="CCS_RIGHT">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="CCS_NOMOVEX">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ICC_LISTVIEW_CLASSES">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ICC_TREEVIEW_CLASSES">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ICC_BAR_CLASSES">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ICC_TAB_CLASSES">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ICC_UPDOWN_CLASS">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ICC_PROGRESS_CLASS">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ICC_HOTKEY_CLASS">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ICC_ANIMATE_CLASS">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ICC_WIN95_CLASSES">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ICC_DATE_CLASSES">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ICC_USEREX_CLASSES">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ICC_COOL_CLASSES">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ICC_INTERNET_CLASSES">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ICC_PAGESCROLLER_CLASS">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ICC_NATIVEFNTCTL_CLASS">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBN_BEGINDRAG">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBN_ENDDRAG">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBN_BEGINADJUST">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBN_ENDADJUST">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBN_RESET">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBN_QUERYINSERT">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBN_QUERYDELETE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBN_TOOLBARCHANGE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBN_CUSTHELP">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBN_DROPDOWN">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBN_CLOSEUP">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBN_GETOBJECT">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBIF_IMAGE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBIF_TEXT">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBIF_STATE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBIF_STYLE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBIF_LPARAM">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBIF_COMMAND">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBIF_SIZE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_ENABLEBUTTON">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_CHECKBUTTON">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_PRESSBUTTON">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_HIDEBUTTON">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_INDETERMINATE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_MARKBUTTON">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_ISBUTTONENABLED">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_ISBUTTONCHECKED">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_ISBUTTONPRESSED">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_ISBUTTONHIDDEN">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_ISBUTTONINDETERMINATE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_ISBUTTONHIGHLIGHTED">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_SETSTATE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_GETSTATE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_ADDBITMAP">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_INSERTBUTTONA">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_DELETEBUTTON">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_GETBUTTON">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_BUTTONCOUNT">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_CUSTOMIZE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_ADDSTRINGA">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_GETITEMRECT">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_BUTTONSTRUCTSIZE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_SETBUTTONSIZE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_SETBITMAPSIZE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_AUTOSIZE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_GETTOOLTIPS">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_SETTOOLTIPS">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_SETPARENT">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_SETROWS">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_GETROWS">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_SETCMDID">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_CHANGEBITMAP">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_GETBITMAP">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_REPLACEBITMAP">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_SETINDENT">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_SETIMAGELIST">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_GETIMAGELIST">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_LOADIMAGES">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_GETRECT">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_SETHOTIMAGELIST">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_GETHOTIMAGELIST">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_SETDISABLEDIMAGELIST">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_GETDISABLEDIMAGELIST">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_SETSTYLE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_GETSTYLE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_GETBUTTONSIZE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_SETBUTTONWIDTH">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_SETMAXTEXTROWS">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_GETTEXTROWS">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_GETBUTTONINFOW">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_SETBUTTONINFOW">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_GETBUTTONINFOA">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_SETBUTTONINFOA">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_GETHOTITEM">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_SETHOTITEM">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_ADDSTRINGW">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_INSERTBUTTON">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_ADDSTRING">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_GETBUTTONINFO">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TB_SETBUTTONINFO">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBSTATE_CHECKED">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBSTATE_PRESSED">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBSTATE_ENABLED">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBSTATE_HIDDEN">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBSTATE_INDETERMINATE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBSTATE_WRAP">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBSTATE_ELLIPSES">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBSTATE_MARKED">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBSTYLE_BUTTON">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBSTYLE_SEP">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBSTYLE_CHECK">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBSTYLE_GROUP">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBSTYLE_CHECKGROUP">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBSTYLE_DROPDOWN">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBSTYLE_AUTOSIZE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBSTYLE_NOPREFIX">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBSTYLE_TOOLTIPS">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBSTYLE_WRAPABLE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBSTYLE_ALTDRAG">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBSTYLE_FLAT">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBSTYLE_LIST">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBSTYLE_CUSTOMERASE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBSTYLE_REGISTERDROP">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBSTYLE_TRANSPARENT">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBSTYLE_EX_DRAWDDARROWS">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBCDRF_NOEDGES">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBCDRF_HILITEHOTTRACK">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBCDRF_NOOFFSET">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBCDRF_NOMARK">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TBCDRF_NOETCHEDEFFECT">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ToolBarClassName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PTBButton">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="_TBBUTTON">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="_TBBUTTON.iBitmap">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="_TBBUTTON.idCommand">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="_TBBUTTON.fsState">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="_TBBUTTON.fsStyle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="_TBBUTTON.bReserved">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="_TBBUTTON.dwData">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="_TBBUTTON.iString">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="TTBButton">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TBBUTTONINFOA">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TBBUTTONINFOA.cbSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TBBUTTONINFOA.dwMask">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TBBUTTONINFOA.idCommand">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TBBUTTONINFOA.iImage">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TBBUTTONINFOA.fsState">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TBBUTTONINFOA.fsStyle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TBBUTTONINFOA.cx">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TBBUTTONINFOA.lParam">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TBBUTTONINFOA.pszText">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TBBUTTONINFOA.cchText">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TBBUTTONINFOW">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TBBUTTONINFOW.cbSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TBBUTTONINFOW.dwMask">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TBBUTTONINFOW.idCommand">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TBBUTTONINFOW.iImage">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TBBUTTONINFOW.fsState">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TBBUTTONINFOW.fsStyle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TBBUTTONINFOW.cx">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TBBUTTONINFOW.lParam">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TBBUTTONINFOW.pszText">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TBBUTTONINFOW.cchText">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="TBBUTTONINFO">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PTBButtonInfoA">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PTBButtonInfoW">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="PTBButtonInfo">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="TTBButtonInfoA">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="TTBButtonInfoW">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="TTBButtonInfo">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PTBAddBitmap">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="tagTBADDBITMAP">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="tagTBADDBITMAP.hInst">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="tagTBADDBITMAP.nID">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="TTBAddBitmap">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="TBADDBITMAP">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TBREPLACEBITMAP">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TBREPLACEBITMAP.hInstOld">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TBREPLACEBITMAP.nIDOld">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TBREPLACEBITMAP.hInstNew">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TBREPLACEBITMAP.nIDNew">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TBREPLACEBITMAP.nButtons">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PTBReplaceBitmap">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="TTBReplaceBitmap">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="tagNMTOOLBARA">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="tagNMTOOLBARA.hdr">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="tagNMTOOLBARA.iItem">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="tagNMTOOLBARA.tbButton">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="tagNMTOOLBARA.cchText">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="tagNMTOOLBARA.pszText">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="tagNMTOOLBARW">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="tagNMTOOLBARW.hdr">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="tagNMTOOLBARW.iItem">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="tagNMTOOLBARW.tbButton">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="tagNMTOOLBARW.cchText">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="tagNMTOOLBARW.pszText">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="tagNMTOOLBAR">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PNMToolBarA">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PNMToolBarW">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="PNMToolBar">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="TNMToolBarA">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="TNMToolBarW">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="TNMToolBar">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="HDN_ITEMCHANGING">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="HDN_ITEMCHANGED">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="HDN_ITEMCLICK">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="HDN_ITEMDBLCLICK">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="HDN_DIVIDERDBLCLICK">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="HDN_BEGINTRACK">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="HDN_ENDTRACK">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="HDN_TRACK">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="HDN_GETDISPINFO">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="HDN_BEGINDRAG">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="HDN_ENDDRAG">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="LVN_ITEMCHANGING">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="LVN_ITEMCHANGED">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="LVN_INSERTITEM">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="LVN_DELETEITEM">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="LVN_DELETEALLITEMS">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="LVN_COLUMNCLICK">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="LVN_BEGINDRAG">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="LVN_BEGINRDRAG">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="LVIF_TEXT">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="LVIF_IMAGE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="LVIF_PARAM">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="LVIF_STATE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="LVIF_INDENT">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="LVIF_NORECOMPUTE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="LVIS_FOCUSED">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="LVIS_SELECTED">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="LVIS_CUT">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="LVIS_DROPHILITED">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="LVIS_ACTIVATING">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="LVIS_OVERLAYMASK">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="LVIS_STATEIMAGEMASK">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PNMListView">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TNMListView">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TNMListView.hdr">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TNMListView.iItem">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TNMListView.iSubItem">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TNMListView.uNewState">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TNMListView.uOldState">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TNMListView.uChanged">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TNMListView.ptAction">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TNMListView.lParam">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="_NM_LISTVIEW">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="NM_LISTVIEW">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="tagNMLISTVIEW">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+    </module>
+    <!-- CommCtrl -->
+  </package>
+</fpdoc-descriptions>

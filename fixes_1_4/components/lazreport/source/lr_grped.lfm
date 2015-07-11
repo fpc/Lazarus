@@ -1,0 +1,73 @@
+object frGroupEditorForm: TfrGroupEditorForm
+  Left = 289
+  Height = 119
+  Top = 281
+  Width = 505
+  HorzScrollBar.Page = 492
+  VertScrollBar.Page = 117
+  ActiveControl = Edit1
+  BorderIcons = [biSystemMenu, biHelp]
+  Caption = 'Group'
+  ClientHeight = 119
+  ClientWidth = 505
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  ShowHint = True
+  LCLVersion = '0.9.29'
+  object GB1: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 6
+    Height = 63
+    Top = 6
+    Width = 493
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'Condition'
+    ClientHeight = 47
+    ClientWidth = 491
+    TabOrder = 0
+    object Edit1: TEditButton
+      AnchorSideLeft.Control = GB1
+      AnchorSideTop.Control = GB1
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 21
+      Top = 6
+      Width = 449
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Bottom = 6
+      ButtonWidth = 23
+      CharCase = ecNormal
+      Glyph.Data = {
+        96000000424D960000000000000076000000280000000A000000040000000100
+        04000000000020000000CE0E0000C40E00001000000000000000000000000000
+        80000080000000808000800000008000800080800000C0C0C000808080000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00777777777700
+        0000700700700700000070070070070000007777777777000000
+      }
+      MaxLength = 0
+      NumGlyphs = 1
+      OnButtonClick = frSpeedButton1Click
+      TabOrder = 0
+    end
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 38
+    Top = 75
+    Width = 493
+    OKButton.Name = 'OKButton'
+    HelpButton.Name = 'HelpButton'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+end

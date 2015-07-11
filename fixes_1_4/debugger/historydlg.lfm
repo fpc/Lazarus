@@ -1,0 +1,147 @@
+object HistoryDialog: THistoryDialog
+  Left = 1060
+  Height = 240
+  Top = 216
+  Width = 422
+  BorderStyle = bsSizeToolWin
+  Caption = 'HistoryDialog'
+  ClientHeight = 240
+  ClientWidth = 422
+  LCLVersion = '1.1'
+  object lvHistory: TListView
+    Left = 0
+    Height = 214
+    Top = 26
+    Width = 422
+    Align = alClient
+    Columns = <    
+      item
+        Width = 25
+      end    
+      item
+        Width = 120
+      end    
+      item
+        Width = 250
+      end>
+    ReadOnly = True
+    RowSelect = True
+    TabOrder = 0
+    ViewStyle = vsReport
+    OnDblClick = lvHistoryDblClick
+    OnSelectItem = lvHistorySelectItem
+  end
+  object ToolBar1: TToolBar
+    Left = 0
+    Height = 26
+    Top = 0
+    Width = 422
+    Caption = 'ToolBar1'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 1
+    Wrapable = False
+    object tbHistorySelected: TToolButton
+      Left = 24
+      Top = 2
+      AllowAllUp = True
+      Caption = 'tbHistorySelected'
+      OnClick = tbHistorySelectedClick
+      Style = tbsCheck
+    end
+    object tbPower: TToolButton
+      Left = 1
+      Top = 2
+      AllowAllUp = True
+      Caption = 'tbPower'
+      Down = True
+      OnClick = tbPowerClick
+      Style = tbsCheck
+    end
+    object tbClear: TToolButton
+      Left = 159
+      Top = 2
+      Caption = 'tbClear'
+      OnClick = tbClearClick
+    end
+    object ToolButton1: TToolButton
+      Left = 47
+      Top = 2
+      Width = 10
+      Caption = 'ToolButton1'
+      Style = tbsSeparator
+    end
+    object tbHist: TToolButton
+      Tag = 1
+      Left = 57
+      Top = 2
+      Caption = 'tbHist'
+      Down = True
+      Grouped = True
+      OnClick = tbHistClick
+      Style = tbsCheck
+    end
+    object tbSnap: TToolButton
+      Tag = 1
+      Left = 80
+      Top = 2
+      Caption = 'tbSnap'
+      Grouped = True
+      OnClick = tbHistClick
+      Style = tbsCheck
+    end
+    object ToolButton4: TToolButton
+      Left = 103
+      Top = 2
+      Width = 10
+      Caption = 'ToolButton4'
+      Style = tbsSeparator
+    end
+    object tbMakeSnap: TToolButton
+      Left = 113
+      Top = 2
+      Caption = 'tbMakeSnap'
+      OnClick = tbMakeSnapClick
+    end
+    object tbRemove: TToolButton
+      Left = 136
+      Top = 2
+      Caption = 'tbRemove'
+      OnClick = tbRemoveClick
+    end
+    object ToolButton2: TToolButton
+      Left = 182
+      Top = 2
+      Width = 10
+      Caption = 'ToolButton2'
+      Style = tbsSeparator
+    end
+    object tbExport: TToolButton
+      Left = 215
+      Top = 2
+      Caption = 'tbExport'
+      OnClick = tbExportClick
+    end
+    object tbImport: TToolButton
+      Left = 192
+      Top = 2
+      Caption = 'tbImport'
+      OnClick = tbImportClick
+    end
+  end
+  object OpenDialog1: TOpenDialog
+    Title = 'Import from'
+    DefaultExt = '.xml'
+    Filter = 'xml|*.xml|all|*.*'
+    Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
+    left = 49
+    top = 106
+  end
+  object SaveDialog1: TSaveDialog
+    Title = 'Export to'
+    DefaultExt = '.xml'
+    Filter = 'xml|*.xml|all|*.*'
+    left = 128
+    top = 104
+  end
+end

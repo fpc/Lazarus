@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+  <package name="Lazarus">
+    <module name="AboutFrm">
+      <element name="LazarusVersionStr">
+        <short>Current version in format x.y.z</short>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

@@ -1,0 +1,214 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2012-08-06 12:37+0300\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.5\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Language: lt\n"
+
+#: ldd_consts.ldd_availablecodegenerators
+msgid "Available code generators"
+msgstr "Esami kodo generatoriai"
+
+#: ldd_consts.ldd_cancel
+msgid "&Cancel"
+msgstr "&Atsisakyti"
+
+#: ldd_consts.ldd_close
+msgid "&Close"
+msgstr "&Užverti"
+
+#: ldd_consts.ldd_configuredatadictionary
+msgid "Configure Data Dictionary"
+msgstr "Konfigūruoti duomenų žodyną"
+
+#: ldd_consts.ldd_configuregeneratedcode
+msgid "Configure generated code"
+msgstr "Konfigūruoti generuojamą kodą"
+
+#: ldd_consts.ldd_databasedesktopapplication
+msgid "Database desktop application"
+msgstr "Database Desktop programa"
+
+#: ldd_consts.ldd_datadictionary
+msgid "Data dictionary &file:"
+msgstr "Duomenų žodyno &failas"
+
+#: ldd_consts.ldd_defaultdatadictdirectory
+msgid "Default data dictionary directory"
+msgstr "Numatytasis duomenų žodyno aplankas"
+
+#: ldd_consts.ldd_fields
+msgid "Fields"
+msgstr "Laukai"
+
+#: ldd_consts.ldd_fieldstogeneratecodefor
+msgid "Fields to generate code for"
+msgstr "Laukai, kuriems generuojamas kodas"
+
+#: ldd_consts.ldd_filenameapplicationsfilter
+msgid "Applications|*.exe|Any file|*.*"
+msgstr "Programos|*.exe|Bet koks failas|*.*"
+
+#: ldd_consts.ldd_filenameedit
+msgid "Data dictionary|*.fdd|Any file|*.*"
+msgstr "Duomenų žodynas|*.fdd|Bet koks failas|*.*"
+
+#: ldd_consts.ldd_generatedcode
+msgid "Generated code"
+msgstr "Sugeneruotas kodas"
+
+#: ldd_consts.ldd_knowndatadictionary
+msgid "Known data dictionary"
+msgstr "Žinomas duomenų žodynas"
+
+#: ldd_consts.ldd_ok
+msgid "&OK"
+msgstr "&Tinka"
+
+#: ldd_consts.ldd_openexistingfile
+msgid "Open existing file"
+msgstr "Atverti egzistuojantį failą"
+
+#: ldd_consts.ldd_options
+msgid "Options"
+msgstr "Parinktys"
+
+#: ldd_consts.ldd_propertiesforselected
+msgid "Properties for selected fields"
+msgstr "Pažymėtų laukų savybės"
+
+#: ldd_consts.ldd_save
+msgid "&Save"
+msgstr "Į&rašyti"
+
+#: ldd_consts.ldd_saveto
+msgid "Save to"
+msgstr "Įrašyti į"
+
+#: ldd_consts.ldd_sdcodefilter
+msgid "Pascal files|*.pp;*.pas;*.inc|All files|*.*"
+msgstr "Paskalio failai|*.pp;*.pas;*.inc|Bet koks failas|*.*"
+
+#: ldd_consts.ldd_sdcodetitle
+msgid "Save file as"
+msgstr "Įrašyti failą taip"
+
+#: ldd_consts.ldd_selectcodetobegenerated
+msgid "Select code to be generated"
+msgstr "Išrinkite generuotiną kodą"
+
+#: ldd_consts.ldd_setprojectdatadictionary
+msgid "Set project Data Dictionary"
+msgstr "Nustatyti Data Dictionary projektą"
+
+#: ldd_consts.ldd_showgeneratedcode
+msgid "Show generated code"
+msgstr "Rodyti sugeneruotą kodą"
+
+#: ldd_consts.ldd_usedatadictionary
+msgid "&Use Data dictionary for this project"
+msgstr "Šame projekte &naudoti duomenų žodyną"
+
+#: ldd_consts.sapplicationfilter
+msgid "Applications|*"
+msgstr "Programos|*"
+
+#: ldd_consts.sapplyingddtodataset
+msgid "Applying data dictionary to dataset %s"
+msgstr "Duomenų žodynas pritaikomas duomenims %s"
+
+#: ldd_consts.sapplyingddtofield
+msgid "Applying data dictionary to field %s"
+msgstr "Duomenų žodynas pritaikomas laukui %s"
+
+#: ldd_consts.serrnodatadesktopdoselect
+msgid ""
+"Could not locate the database desktop application.\n"
+"Would you like to select it ?\n"
+msgstr ""
+"Nepavyko rasti Database Desktop programos.\n"
+"Norite ją surasti pats?\n"
+
+#: ldd_consts.serrnodatadictactive
+msgid ""
+"No datadictionary active.\n"
+"Please set a data dictionary for the project\n"
+msgstr ""
+"Nėra aktyvaus duomenų žodyno.\n"
+"Projektui parinkite duomenų žodyną\n"
+
+#: ldd_consts.serrselectdd
+msgid "Please select a known data dictionary"
+msgstr "Parinkite žinomą duomenų žodyną"
+
+#: ldd_consts.serrselectdir
+msgid "Please select an existing directory"
+msgstr "Parinkite egzistuojantį aplanką"
+
+#: ldd_consts.serrselectexe
+msgid "Please select an existing database desktop application"
+msgstr "Parinkite egzistuojančią Database Desktop programą"
+
+#: ldd_consts.serrselectfile
+msgid "Please select an existing data dictionary file"
+msgstr "Parinkite egzistuojantį duomenų žodyno failą"
+
+#: ldd_consts.sfromfile
+msgid "from file: "
+msgstr "iš failo: "
+
+#: ldd_consts.sloadingdatadict
+msgid "Loading data dictionary "
+msgstr "Įkeliamas duomenų žodynas "
+
+#: ldd_consts.smenuconfdatadict
+msgid "Configuration"
+msgstr "Sąranka"
+
+#: ldd_consts.smenuconfprojdatadict
+#| msgid "Set..."
+msgid "Set ..."
+msgstr "Nustatyti…"
+
+#: ldd_consts.smenudatadesktop
+msgid "Database Desktop"
+msgstr "Database Desktop"
+
+#: ldd_consts.smenudatadict
+msgid "Data dictionary"
+msgstr "Duomenų žodynas"
+
+#: ldd_consts.smenudatadictapply
+msgid "Apply"
+msgstr "Pritaikyti"
+
+#: ldd_consts.smenudatadictcreatecode
+msgid "Create code from dataset"
+msgstr "Pagal duomenis kurti kodą"
+
+#: ldd_consts.smenudatadictdesignsql
+msgid "Design SQL"
+msgstr "Projektuoti SQL"
+
+#: ldd_consts.smenuopendatadict
+msgid "Open"
+msgstr "Atverti"
+
+#: ldd_consts.snotyetimplemted
+msgid "Not yet implemented"
+msgstr "Dar neįgyvendinta"
+
+#: ldd_consts.swarningnoddforfield
+msgid "Warning: No definition in data dictionary for field %s"
+msgstr "Įspėjimas: duomenų žodyno laukas %s nėra apibrėžtas"
+
+#: ldd_consts.swrongselection
+msgid "Wrong selection count : %d"
+msgstr "Netinkamas išrinktųjų kiekis: %d"
+

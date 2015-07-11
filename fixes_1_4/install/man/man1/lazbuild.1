@@ -1,0 +1,87 @@
+.TH "lazbuild" "1" "19 April 2008" "Lazarus" "Lazarus Projects Builder"
+.SH "NAME"
+lazbuild \- The Lazarus project and package build program.
+
+.SH "SYNOPSIS"
+.B lazbuild
+.I "[options] filename..."
+
+.SH "DESCRIPTION"
+.B lazbuild
+builds a Lazarus project or package. It compiles projects (.lpi) and packages
+(.lpk). It checks and automatically compiles required packages.
+
+.SH "USAGE"
+.B lazbuild
+is a command\-line tool that builds Lazarus projects and packages. It
+checks recursively all dependencies and compiles needed packages first. It uses
+the
+.B Free Pascal compiler (fpc)
+to compile.
+
+.SH "OPTIONS"
+.TP 
+.BI "\-h, \-\-help"
+Displays a short help message.
+.TP 
+.BI "\-B, \-\-build\-all"
+build all files of project/package. Has the same effect as option
+.BI \-B
+of
+.BR fpc (1).
+.TP 
+.BI "\-r, \-\-recursive"
+apply build flags (\-B) to dependencies too.
+.TP 
+.BI "\-d, \-\-skip\-dependencies"
+do not compile dependencies
+.TP 
+.BI "\-\-build\-ide=<options>"
+Compile the IDE (i.e. the lazarus executable). The list of installation packages
+is read from the config directory. The <options> can be empty.
+.TP 
+.BI "\-v, \-\-version"
+show version and exit
+.TP 
+.BI " \-\-pcp=<path>, \-\-primary\-config\-path=<path>"
+primary config directory, where Lazarus stores its config files. Default is /home/mazen/.lazarus
+.TP 
+.BI "\-\-scp=<path>, \-\-secondary\-config\-path=<path>"
+secondary config directory, where Lazarus searches for config template files. Default is /etc/lazarus
+.TP 
+.BI "\-\-os=<operating\-system>, \-\-operating\-system=<operating\-system>"
+override the project operating system. e.g. win32 or linux.
+.TP 
+.BI "\-\-ws=<widgetset>, \-\-widgetset=<widgetset>"
+override the project widgetset. e.g. gtk, gtk2, qt, win32 or carbon.
+.TP 
+.BI "\-\-cpu=<cpu>"
+override the project cpu. e.g. i386, x86_64, powerpc, powerpc_64 etc.
+.TP 
+.BI "\-\-build\-mode=<project build mode>, \-\-bm=<project build mode>"
+override the project build mode.
+.TP 
+.BI "\-\-compiler=<ppcXXX>"
+override the default compiler. e.g. ppc386, ppcx64, ppcppc etc.
+.TP 
+.BI "\-\-language=<lang>"
+Override language. For example \-\-language=de. For  possible values see files in the lazarus languages directory.
+
+.SH ".lpi and .lpk files"
+The .lpi and .lpk files are best created and edited with the Lazarus IDE.
+The files are in xml. There is no reason to edit them manually, except for
+very rare cases like renaming hundreds of files.
+
+.SH "SEE ALSO"
+.IP 
+.BR lazarus\-ide (1)
+.BR startlazarus (1)
+.BR fpc (1)
+.BR ld (1)
+.BR fpcmake (1)
+.BR make (1)
+
+.SH "Websites"
+.IP 
+.BR  http://www.lazarus.freepascal.org
+

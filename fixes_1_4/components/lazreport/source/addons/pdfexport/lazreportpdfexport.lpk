@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="4">
+    <PathDelim Value="\"/>
+    <Name Value="lazreportpdfexport"/>
+    <AddToProjectUsesSection Value="True"/>
+    <Author Value="Jesus Reyes A."/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Parsing>
+        <SyntaxOptions>
+          <CStyleOperator Value="False"/>
+          <UseAnsiStrings Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="LazReport PDF exporter"/>
+    <Version Minor="8"/>
+    <Files Count="2">
+      <Item1>
+        <Filename Value="lr_e_pdf.pas"/>
+        <UnitName Value="lr_e_pdf"/>
+      </Item1>
+      <Item2>
+        <Filename Value="lr_pdfexp_reg.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="lr_pdfexp_reg"/>
+      </Item2>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="5">
+      <Item1>
+        <PackageName Value="IDEIntf"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="pack_powerpdf"/>
+        <MinVersion Minor="9" Release="10" Valid="True"/>
+      </Item3>
+      <Item4>
+        <PackageName Value="lazreport"/>
+      </Item4>
+      <Item5>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item5>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

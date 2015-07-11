@@ -1,0 +1,156 @@
+object Form1: TForm1
+  Left = 100
+  Height = 552
+  Top = 77
+  Width = 628
+  Caption = 'Form1'
+  ClientHeight = 552
+  ClientWidth = 628
+  OnPaint = FormPaint
+  LCLVersion = '1.3'
+  object Button1: TButton
+    Left = 548
+    Height = 25
+    Top = 4
+    Width = 75
+    Caption = 'Do It'
+    OnClick = Button1Click
+    TabOrder = 0
+  end
+  object btn24217: TButton
+    Left = 548
+    Height = 25
+    Top = 32
+    Width = 75
+    Caption = 'btn24217'
+    OnClick = btn24217Click
+    TabOrder = 1
+  end
+  object btn19435: TButton
+    Left = 548
+    Height = 25
+    Top = 64
+    Width = 75
+    Caption = 'btn19435'
+    OnClick = btn19435Click
+    TabOrder = 2
+  end
+  object chkTests: TCheckGroup
+    Left = 520
+    Height = 88
+    Top = 144
+    Width = 103
+    AutoFill = True
+    Caption = 'Paint or Print'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 65
+    ClientWidth = 99
+    Items.Strings = (
+      '24217'
+      '19435'
+      'Other'
+      'Underline'
+    )
+    OnItemClick = chkTestsItemClick
+    TabOrder = 3
+    Data = {
+      0400000002020202
+    }
+  end
+  object btnPrintAll: TButton
+    Left = 546
+    Height = 25
+    Top = 236
+    Width = 75
+    Caption = 'btnPrintAll'
+    OnClick = btnPrintAllClick
+    TabOrder = 4
+  end
+  object btnOther: TButton
+    Left = 548
+    Height = 25
+    Top = 96
+    Width = 75
+    Caption = 'btnOther'
+    OnClick = btnOtherClick
+    TabOrder = 5
+  end
+  object radOtherAlign: TRadioGroup
+    Left = 544
+    Height = 76
+    Top = 272
+    Width = 68
+    AutoFill = True
+    Caption = 'radOtherAlign'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 3
+    ClientHeight = 53
+    ClientWidth = 64
+    Columns = 3
+    ItemIndex = 0
+    Items.Strings = (
+      ' '
+      ' '
+      ' '
+      ' '
+      ' '
+      ' '
+      ' '
+      ' '
+      ' '
+    )
+    TabOrder = 6
+  end
+  object radOtherAngle: TRadioGroup
+    Left = 544
+    Height = 100
+    Top = 352
+    Width = 68
+    AutoFill = True
+    Caption = 'radOtherAngle'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 77
+    ClientWidth = 64
+    ItemIndex = 0
+    Items.Strings = (
+      '0'
+      '90'
+      '180'
+      '270'
+    )
+    TabOrder = 7
+  end
+  object btnUnderline: TButton
+    Left = 548
+    Height = 25
+    Top = 124
+    Width = 75
+    Caption = 'btnUnderline'
+    OnClick = btnUnderlineClick
+    TabOrder = 8
+  end
+  object PrintDialog1: TPrintDialog
+    left = 129
+    top = 28
+  end
+end

@@ -1,0 +1,13 @@
+Index: customdockform.inc
+===================================================================
+--- customdockform.inc	(revision 20785)
++++ customdockform.inc	(working copy)
+@@ -58,6 +58,8 @@
+   BorderStyle := bsSizeToolWin;
+   DockSite := True;
+   FormStyle := fsStayOnTop;
++  DragMode := dmAutomatic;
++  DragKind := dkDock;
+ end;
+ 
+ // included by forms.pp

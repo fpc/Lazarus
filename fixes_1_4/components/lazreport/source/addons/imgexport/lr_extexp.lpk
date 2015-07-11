@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="4">
+    <PathDelim Value="\"/>
+    <Name Value="lr_extexp"/>
+    <Author Value="Michal Gawrycki"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CompilerMessages>
+          <MsgFileName Value=""/>
+        </CompilerMessages>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="LazReport additional exporter formats:
+TfrImageExport - export report to image file set (bmp, jpg, png)
+TfrHtmDivExport - export report to html file with images"/>
+    <Files Count="3">
+      <Item1>
+        <Filename Value="lr_e_img.pas"/>
+        <UnitName Value="LR_e_img"/>
+      </Item1>
+      <Item2>
+        <Filename Value="lr_e_htmldiv.pas"/>
+        <UnitName Value="LR_e_htmldiv"/>
+      </Item2>
+      <Item3>
+        <Filename Value="lr_e_extreg.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="LR_e_extreg"/>
+      </Item3>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="2">
+      <Item1>
+        <PackageName Value="lazreport"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="FCL"/>
+      </Item2>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

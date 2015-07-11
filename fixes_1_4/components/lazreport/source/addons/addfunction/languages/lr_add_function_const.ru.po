@@ -1,0 +1,215 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: lr_add_function_const.sdatecategory
+msgid "Date"
+msgstr "Дата"
+
+#: lr_add_function_const.sdescriptionabs
+msgid "ABS(<Number>)/Returns absolute value <Number>"
+msgstr "ABS(<Number>)/Возвращает модуль значения <Number>."
+
+#: lr_add_function_const.sdescriptionchr
+msgid "CHR(<Code>)/Returns symbol of ASCII code <Code>."
+msgstr "CHR(<Code>)/Возвращает символ кода ASCII <Code>."
+
+#: lr_add_function_const.sdescriptioncomparestr
+msgid "COMPARESTR(<String1>,<String2>)/Compares two strings. Returns the position where begins the difference between the strings or 0 if strings are equivalent."
+msgstr "COMPARESTR(<String1>,<String2>)/Сравнивает две строки. Возвращает позицию начала различий между строками либо 0, если строки равны."
+
+#: lr_add_function_const.sdescriptioncreatedate
+msgid "CREATEDATE(<String>)/Converts <String> string to string that contains date to use it in SQL clause. To use this function put the string with desired date format to TfrAddFunctionLibrary.FormatDate property."
+msgstr "CREATEDATE(<String>)/Преобразует <String> в строку с датой для использования в выражении SQL. Для использования этой функции следует поместить строку с желаемым форматом даты в свойство TfrAddFunctionLibrary.FormatDate."
+
+#: lr_add_function_const.sdescriptioncreatenum
+msgid "CREATENUM(<String>)/Converts <String> string to string that contains numeric value to use it in SQL clause."
+msgstr "CREATENUM(<String>)/Преобразует <String> в строку с числовым значением для использования в выражении SQL."
+
+#: lr_add_function_const.sdescriptioncreatestr
+msgid "CREATESTR(<String>)/Adds quotes to the <String> string to use it in SQL clause."
+msgstr "CREATESTR(<String>)/Добавляет кавычки в <String> для использования в выражении SQL."
+
+#: lr_add_function_const.sdescriptiondatediff
+msgid "DATEDIFF(<Date1>,<Date2>,<var String>)/Returns the difference between two dates <Date1> and <Date2>. Result is in the string <String> in format \"days;months;years\"."
+msgstr "DATEDIFF(<Date1>,<Date2>,<var String>)/Возвращает разницу между датами <Date1> и <Date2>. Результатом является строка <String> в формате \"дни;месяцы;годы\"."
+
+#: lr_add_function_const.sdescriptiondatetostr
+msgid "DATETOSTR(<Date>)/Converts date <Date> to string and returns the result."
+msgstr "DATETOSTR(<Date>)/Преобразует дату <Date> в строку и возвращает результат."
+
+#: lr_add_function_const.sdescriptiondayspermonth
+msgid "DAYSPERMONTH(<Year>,<Month>)/Returns days in the given month <Month> of the year <Year>."
+msgstr "DAYSPERMONTH(<Year>,<Month>)/Возвращает количество дней в заданном месяце <Month> года <Year>."
+
+#: lr_add_function_const.sdescriptiondelete
+msgid "DELETE(<String>,<DelFrom>,<DelCount>)/Deletes <DelCount> symbols starting at position <DelFrom> in the given string <String> and returns the result."
+msgstr "DELETE(<String>,<DelFrom>,<DelCount>)/Удаляет в заданной строке <String> <DelCount> символов, начиная с позиции <DelFrom>, и возвращает результат."
+
+#: lr_add_function_const.sdescriptionendpos
+msgid "ENDPOS(<String>,<SubStr>)/Returns position of substring <SubStr> in the string <String> starting at the end of the string."
+msgstr "ENDPOS(<String>,<SubStr>)/Возвращает позицию подстроки <SubStr> в строке <String>, начиная с конца строки."
+
+#: lr_add_function_const.sdescriptionextractword
+msgid "EXTRACTWORD(<WordNo>,<String>,<Delimiters>)/Returns word number <WordNo> from the string <String>.<Delimiters> is the list of word delimiters."
+msgstr "EXTRACTWORD(<WordNo>,<String>,<Delimiters>)/Возвращает слово номер <WordNo> из строки <String>. <Delimiters> содержит список разделителей слов."
+
+#: lr_add_function_const.sdescriptionfirstdayofnextmonth
+msgid "FIRSTDAYOFNEXTMONTH(<Date>)/Returns the date of first day of the next month of date <Date>."
+msgstr "FIRSTDAYOFNEXTMONTH(<Date>)/Возвращает дату первого дня следующего месяца для даты <Date>."
+
+#: lr_add_function_const.sdescriptionfirstdayofprevmonth
+msgid "FIRSTDAYOFPREVMONTH(<Date>)/Returns the date of first day of the previous month of date <Date>."
+msgstr "FIRSTDAYOFPREVMONTH(<Date>)/Возвращает дату первого дня предыдущего месяца для даты <Date>."
+
+#: lr_add_function_const.sdescriptionincdate
+msgid "INCDATE(<Date>,<String>)/Increments the date <Date> by given number of days, months and years passed in the <String> parameter in format \"days;months;years\". Returns the result date."
+msgstr "INCDATE(<Date>,<String>)/Увеличивает дату <Date> на заданное количество дней, месяцев и лет, переданное в параметре <String> в формате \"дни;месяцы;годы\". Возвращает результирующую дату."
+
+#: lr_add_function_const.sdescriptionincday
+msgid "INCDAY(<Date>,<Number>)/Increments the date <Date> by given number of days <Number> and returns the result date."
+msgstr "INCDAY(<Date>,<Number>)/Увеличивает дату <Date> на количество <Number> дней и возвращает результирующую дату."
+
+#: lr_add_function_const.sdescriptionincmonth
+msgid "INCMONTH(<Date>,<Number>)/Increments the date <Date> by given number of months <Number> and returns the result date."
+msgstr "INCMONTH(<Date>,<Number>)/Увеличивает дату <Date> на количество <Number> месяцев и возвращает результирующую дату."
+
+#: lr_add_function_const.sdescriptioninctime
+msgid "INCTIME(<Time>,<String>)/Increments the time <Time> by given number of hours, minutes, seconds and milliseconds passed in the <String> parameter in format \"h;min;sec;msec\". Returns the result time."
+msgstr "INCTIME(<Time>,<String>)/Увеличивает время <Time> на заданное количество часов, минут, секунд и миллисекунд, переданное в параметре <String> в формате \"часы;минуты;секунды;миллисекунды\". Возвращает результирующее время."
+
+#: lr_add_function_const.sdescriptionincyear
+msgid "INCYEAR(<Date>,<Number>)/Increments the date <Date> by given number of years <Number> and returns the result date."
+msgstr "INCYEAR(<Date>,<Number>)/Увеличивает дату <Date> на количество <Number> лет и возвращает результирующую дату."
+
+#: lr_add_function_const.sdescriptioninsert
+msgid "INSERT(<SubStr>,<String>,<InsertFrom>)/Inserts <SubStr> substring into <String> string starting at position <InsertFrom> and returns the result."
+msgstr "INSERT(<SubStr>,<String>,<InsertFrom>)/Вставляет подстроку <SubStr> в строку <String>, начиная с позиции <InsertFrom>, и возвращает результат."
+
+#: lr_add_function_const.sdescriptionisleapyear
+msgid "ISLEAPYEAR(<Year>)/Returns True if <Year> year is leap year."
+msgstr "ISLEAPYEAR(<Year>)/Возвращает True, если год <Year> является високосным."
+
+#: lr_add_function_const.sdescriptionisrangedate
+msgid "ISRANGEDATE(<Date1>,<Date2>,<Date3>)/Returns True if date <Date3> is between <Date1> and <Date2>."
+msgstr "ISRANGEDATE(<Date1>,<Date2>,<Date3>)/Возвращает True, если дата <Date3> находится между датами <Date1> и <Date2>."
+
+#: lr_add_function_const.sdescriptionisrangenum
+msgid "ISRANGENUM(<Number1>,<Number2>,<Number3>)/Returns True if <Number3> is between <Number1> and <Number2>."
+msgstr "ISRANGENUM(<Number1>,<Number2>,<Number3>)/Возвращает True, если число <Number3> находится между числами <Number1> и <Number2>."
+
+#: lr_add_function_const.sdescriptioniswordpresent
+msgid "ISWORDPRESENT(<Word>,<String>,<Delimiters>)/Determines if word <Word> is present in the string <String>.<Delimiters> is the list of word delimiters."
+msgstr "ISWORDPRESENT(<Word>,<String>,<Delimiters>)/Определяет, имеется ли слово <Word> в строке <String>. <Delimiters> содержит список разделителей слов."
+
+#: lr_add_function_const.sdescriptionlastdayofprevmonth
+msgid "LASTDAYOFPREVMONTH(<Date>)/Returns the date of last day of the previous month of date <Date>."
+msgstr "LASTDAYOFPREVMONTH(<Date>)/Возвращает дату последнего дня предыдущего месяца для даты <Date>."
+
+#: lr_add_function_const.sdescriptionleftcopy
+msgid "LEFTCOPY(<String>,<Count>)/Copies number of symbols <Count> from the string <String> starting at the begin of the string."
+msgstr "LEFTCOPY(<String>,<Count>)/Копирует количество <Count> символов из строки <String>, начиная с её начала."
+
+#: lr_add_function_const.sdescriptionnpos
+msgid "NPOS(<SubStr>,<String>,<SubStrNo>)/Returns position of <SubStrNo>-th substring <SubStr> inclusion in the string <String>."
+msgstr "NPOS(<SubStr>,<String>,<SubStrNo>)/Возвращает позицию <SubStrNo>-го вхождения подстроки <SubStr> в строке <String>."
+
+#: lr_add_function_const.sdescriptionpadcenter
+msgid "PADCENTER(<String>,<Length>,<Symbol>)/Adds symbols <Symbol> to begin and end of the string <String> to make it as long as stated in the <Length> parameter and returns result string."
+msgstr "PADCENTER(<String>,<Length>,<Symbol>)/Добавляет символы <Symbol> в начало и конец строки <String>, увеличивая её длину до <Length>, и возвращает результат."
+
+#: lr_add_function_const.sdescriptionpadleft
+msgid "PADLEFT(<String>,<Length>,<Symbol>)/Adds symbols <Symbol> to begin of the string <String> to make it as long as stated in the <Length> parameter and returns result string."
+msgstr "PADLEFT(<String>,<Length>,<Symbol>)/Добавляет символы <Symbol> в начало строки <String>, увеличивая её длину до <Length>, и возвращает результат."
+
+#: lr_add_function_const.sdescriptionpadright
+msgid "PADRIGHT(<String>,<Length>,<Symbol>)/Adds symbols <Symbol> to end of the string <String> to make it as long as stated in the <Length> parameter and returns result string."
+msgstr "PADRIGHT(<String>,<Length>,<Symbol>)/Добавляет символы <Symbol> в конец строки <String>, увеличивая её длину до <Length>, и возвращает результат."
+
+#: lr_add_function_const.sdescriptionreplacestr
+msgid "REPLACESTR(<String>,<SubStr1>,<SubStr2>)/Replaces all inclusions of <SubStr1> string to the <SubStr2> string in the string <String> and returns the result."
+msgstr "REPLACESTR(<String>,<SubStr1>,<SubStr2>)/Заменяет в строке <String> все вхождения подстроки <SubStr1> на <SubStr2> и возвращает результат."
+
+#: lr_add_function_const.sdescriptionreplicate
+msgid "REPLICATE(<Symbol>,<Length>)/Returns the string with length <Length> that consists of symbols <Symbol>."
+msgstr "REPLICATE(<Symbol>,<Length>)/Возвращает строку длиной <Length>, состоящую из символов <Symbol>."
+
+#: lr_add_function_const.sdescriptionrightcopy
+msgid "RIGHTCOPY(<String>,<Count>)/Copies number of symbols <Count> from the string <String> starting at the end of the string."
+msgstr "RIGHTCOPY(<String>,<Count>)/Копирует количество <Count> символов из строки <String>, начиная с её конца."
+
+#: lr_add_function_const.sdescriptionstrtodatedef
+msgid "STRTODATEDEF(<String>,<DefDate>)/Converts <String> string to date. If conversion fails, returns default value <DefDate>."
+msgstr "STRTODATEDEF(<String>,<DefDate>)/Преобразует строку <String> в дату. Если преобразование не удалось, возвращает значение по умолчанию <DefDate>."
+
+#: lr_add_function_const.sdescriptionstrtofloat
+msgid "STRTOFLOAT(<String>)/Converts <String> string to the float value."
+msgstr "STRTOFLOAT(<String>)/Преобразует строку <String> в вещественное число."
+
+#: lr_add_function_const.sdescriptionstrtofloatdef
+msgid "STRTOFLOATDEF(<String>,<DefValue>)/Converts <String> string to float value. If conversion fails, returns default value <DefValue>."
+msgstr "STRTOFLOATDEF(<String>,<DefValue>)/Преобразует строку <String> в вещественное число. Если преобразование не удалось, возвращает значение по умолчанию <DefValue>."
+
+#: lr_add_function_const.sdescriptionstrtoint
+msgid "STRTOINT(<String>)/Converts <String> string to the integer value."
+msgstr "STRTOINT(<String>)/Преобразует строку <String> в целое число."
+
+#: lr_add_function_const.sdescriptionstrtointdef
+msgid "STRTOINTDEF(<String>,<DefValue>)/Converts <String> string to integer value. If conversion fails, returns default value <DefValue>."
+msgstr "STRTOINTDEF(<String>,<DefValue>)/Преобразует строку <String> в целое число. Если преобразование не удалось, возвращает значение по умолчанию <DefValue>."
+
+#: lr_add_function_const.sdescriptionswap
+msgid "SWAP(<var var1>,<var var2>)/Swaps the variables var1 and var2."
+msgstr "SWAP(<var var1>,<var var2>)/Обменивает значения переменных var1 и var2."
+
+#: lr_add_function_const.sdescriptiontimetostr
+msgid "TIMETOSTR(<Time>)/Converts time <Time> to string and returns the result."
+msgstr "TIMETOSTR(<Time>)/Преобразует время <Time> в строку и возвращает результат."
+
+#: lr_add_function_const.sdescriptiontrimleft
+msgid "TRIMLEFT(<String>)/Trims all left spaces from the string <String> and returns the result."
+msgstr "TRIMLEFT(<String>)/Обрезает все пробелы слева в строке <String> и возвращает результат."
+
+#: lr_add_function_const.sdescriptiontrimright
+msgid "TRIMRIGHT(<String>)/Trims all right spaces from the string <String> and returns the result."
+msgstr "TRIMRIGHT(<String>)/Обрезает все пробелы справа в строке <String> и возвращает результат."
+
+#: lr_add_function_const.sdescriptionvaliddate
+msgid "VALIDDATE(<String>)/Returns True if <String> string is valid date."
+msgstr "VALIDDATE(<String>)/Возвращает True, если строка <String> является корректной датой."
+
+#: lr_add_function_const.sdescriptionvalidfloat
+msgid "VALIDFLOAT(<String>)/Returns True if <String> is valid float value."
+msgstr "VALIDFLOAT(<String>)/Возвращает True, если строка <String> является корректным вещественным значением."
+
+#: lr_add_function_const.sdescriptionvalidint
+msgid "VALIDINT(<String>)/Returns True if <String> is valid integer value."
+msgstr "VALIDINT(<String>)/Возвращает True, если строка <String> является корректным целым значением."
+
+#: lr_add_function_const.sdescriptionwordcount
+msgid "WORDCOUNT(<String>,<Delimiters>)/Returns number of words in the string <String>.<Delimiters> is the list of word delimiters."
+msgstr "WORDCOUNT(<String>,<Delimiters>)/Возвращает количество слов в строке <String>. <Delimiters> содержит список разделителей слов."
+
+#: lr_add_function_const.sdescriptionwordposition
+msgid "WORDPOSITION(<WordNo>,<String>,<Delimiters>)/Returns position of word number <WordNo> in the string <String>.<Delimiters> is the list of word delimiters."
+msgstr "WORDPOSITION(<WordNo>,<String>,<Delimiters>)/Возвращает позицию слова номер <WordNo> в строке <String>. <Delimiters> содержит список разделителей слов."
+
+#: lr_add_function_const.smathcategory
+msgid "Math"
+msgstr "Математические"
+
+#: lr_add_function_const.sothercategory
+msgid "Other"
+msgstr "Прочие"
+
+#: lr_add_function_const.sstringcategory
+msgid "String"
+msgstr "Строковые"
+

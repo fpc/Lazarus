@@ -1,0 +1,62 @@
+object IDETextConvListAddDlg: TIDETextConvListAddDlg
+  Left = 290
+  Height = 122
+  Top = 202
+  Width = 301
+  HorzScrollBar.Page = 300
+  VertScrollBar.Page = 121
+  ActiveControl = AddButton
+  Caption = 'IDETextConvListAddDlg'
+  ClientHeight = 122
+  ClientWidth = 301
+  OnCreate = FormCreate
+  object ClassLabel: TLabel
+    Left = 8
+    Height = 20
+    Top = 8
+    Width = 69
+    Caption = 'ClassLabel'
+    FocusControl = ClassComboBox
+    ParentColor = False
+  end
+  object AddButton: TButton
+    AnchorSideRight.Control = CancelButton
+    Left = 76
+    Height = 37
+    Top = 74
+    Width = 88
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Right = 10
+    BorderSpacing.InnerBorder = 4
+    Caption = 'AddButton'
+    Default = True
+    OnClick = AddButtonClick
+    TabOrder = 0
+  end
+  object CancelButton: TButton
+    Left = 174
+    Height = 37
+    Top = 74
+    Width = 106
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.InnerBorder = 4
+    Cancel = True
+    Caption = 'CancelButton'
+    ModalResult = 2
+    TabOrder = 1
+  end
+  object ClassComboBox: TComboBox
+    Left = 8
+    Height = 25
+    Top = 32
+    Width = 282
+    Anchors = [akTop, akLeft, akRight]
+    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+    MaxLength = 0
+    OnEditingDone = ClassComboBoxEditingDone
+    TabOrder = 2
+    Text = 'ClassComboBox'
+  end
+end

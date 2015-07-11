@@ -1,0 +1,123 @@
+object Form1: TForm1
+  Left = 564
+  Height = 387
+  Top = 423
+  Width = 308
+  Caption = 'Icon example'
+  ClientHeight = 387
+  ClientWidth = 308
+  Position = poScreenCenter
+  LCLVersion = '0.9.25'
+  object Image1: TImage
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 5
+    Height = 210
+    Top = 5
+    Width = 298
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 5
+    BorderSpacing.Top = 5
+    BorderSpacing.Right = 5
+    Transparent = True
+  end
+  object Bevel1: TBevel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = TrackBar1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Side = asrBottom
+    Left = 4
+    Height = 6
+    Top = 253
+    Width = 300
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 4
+    BorderSpacing.Top = 5
+    BorderSpacing.Right = 4
+  end
+  object Button1: TButton
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Bevel1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 5
+    Height = 32
+    Top = 264
+    Width = 298
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 5
+    BorderSpacing.Top = 5
+    BorderSpacing.Right = 5
+    Caption = 'Load from Windows icon file'
+    OnClick = Button1Click
+    TabOrder = 0
+  end
+  object TrackBar1: TTrackBar
+    AnchorSideLeft.Control = Image1
+    AnchorSideTop.Control = Image1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Image1
+    AnchorSideRight.Side = asrBottom
+    Left = 5
+    Height = 28
+    Top = 220
+    Width = 298
+    OnChange = TrackBar1Change
+    PageSize = 1
+    ScalePos = trTop
+    TickStyle = tsManual
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 5
+    Enabled = False
+    TabOrder = 1
+  end
+  object Button2: TButton
+    AnchorSideLeft.Control = Button1
+    AnchorSideTop.Control = Button1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Button1
+    AnchorSideRight.Side = asrBottom
+    Left = 5
+    Height = 32
+    Top = 301
+    Width = 298
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 5
+    Caption = 'Load from OSX icon file'
+    OnClick = Button2Click
+    TabOrder = 2
+  end
+  object Button3: TButton
+    AnchorSideLeft.Control = Bevel1
+    AnchorSideTop.Control = Button2
+    AnchorSideTop.Side = asrBottom
+    Left = 4
+    Height = 32
+    Top = 338
+    Width = 150
+    BorderSpacing.Top = 5
+    Caption = 'Set as Form icon'
+    OnClick = Button3Click
+    TabOrder = 3
+  end
+  object Button4: TButton
+    AnchorSideTop.Control = Button2
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Button2
+    AnchorSideRight.Side = asrBottom
+    Left = 160
+    Height = 32
+    Top = 338
+    Width = 143
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 5
+    Caption = 'Set as Application icon'
+    OnClick = Button4Click
+    TabOrder = 4
+  end
+end

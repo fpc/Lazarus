@@ -1,0 +1,105 @@
+object FPDocLinkEditorDlg: TFPDocLinkEditorDlg
+  Left = 362
+  Height = 282
+  Top = 304
+  Width = 408
+  ActiveControl = TitleEdit
+  Caption = 'FPDocLinkEditorDlg'
+  ClientHeight = 282
+  ClientWidth = 408
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '0.9.27'
+  object LinkLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = TitleEdit
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 18
+    Top = 69
+    Width = 396
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    BorderSpacing.Around = 6
+    Caption = 'LinkLabel'
+    ParentColor = False
+    WordWrap = True
+  end
+  object TitleLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 18
+    Top = 6
+    Width = 396
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    Caption = 'TitleLabel'
+    ParentColor = False
+    WordWrap = True
+  end
+  object CompletionBox: TPaintBox
+    AnchorSideTop.Control = LinkEdit
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 106
+    Top = 120
+    Width = 396
+    Align = alBottom
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
+    OnMouseDown = CompletionBoxMouseDown
+    OnPaint = CompletionBoxPaint
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 44
+    Top = 232
+    Width = 396
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object LinkEdit: TEdit
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = LinkLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 27
+    Top = 93
+    Width = 396
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    OnChange = LinkEditChange
+    OnKeyDown = LinkEditKeyDown
+    OnUTF8KeyPress = LinkEditUTF8KeyPress
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 1
+    Text = 'LinkEdit'
+  end
+  object TitleEdit: TEdit
+    AnchorSideTop.Control = TitleLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 27
+    Top = 30
+    Width = 396
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    TabOrder = 2
+    Text = 'TitleEdit'
+  end
+end

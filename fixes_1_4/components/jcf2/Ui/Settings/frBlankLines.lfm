@@ -1,0 +1,171 @@
+inherited fBlankLines: TfBlankLines
+  Height = 280
+  Width = 380
+  ClientHeight = 280
+  ClientWidth = 380
+  TabOrder = 0
+  DesignLeft = 452
+  DesignTop = 192
+  object Label1: TLabel[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = eNumReturnsAfterFinalEnd
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 14
+    Top = 135
+    Width = 211
+    BorderSpacing.Left = 6
+    Caption = 'Number of returns after the unit''s final end.'
+    ParentColor = False
+  end
+  object Label2: TLabel[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtMaxConsecutiveBlankLines
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 14
+    Top = 185
+    Width = 178
+    BorderSpacing.Left = 6
+    Caption = 'Max consecutive blank lines anwhere'
+    ParentColor = False
+  end
+  object Label3: TLabel[2]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtLinesBeforeProcedure
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 14
+    Top = 212
+    Width = 112
+    BorderSpacing.Left = 6
+    Caption = 'Lines before procedure'
+    ParentColor = False
+  end
+  object eNumReturnsAfterFinalEnd: TSpinEdit[3]
+    AnchorSideTop.Control = gbRemoveBlankLines
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 272
+    Height = 21
+    Top = 132
+    Width = 49
+    Anchors = [akTop, akRight]
+    MaxValue = 255
+    TabOrder = 1
+  end
+  object cbRemoveConsecutiveBlankLines: TCheckBox[4]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = eNumReturnsAfterFinalEnd
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 17
+    Top = 159
+    Width = 169
+    BorderSpacing.Around = 6
+    Caption = 'Remove consecutive blank lines'
+    TabOrder = 2
+  end
+  object edtMaxConsecutiveBlankLines: TSpinEdit[5]
+    AnchorSideTop.Control = cbRemoveConsecutiveBlankLines
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 272
+    Height = 21
+    Top = 182
+    Width = 49
+    Anchors = [akTop, akRight]
+    MaxValue = 99
+    TabOrder = 3
+  end
+  object gbRemoveBlankLines: TGroupBox[6]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 120
+    Top = 6
+    Width = 368
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'Remove blank lines'
+    ClientHeight = 102
+    ClientWidth = 364
+    TabOrder = 0
+    object Label4: TLabel
+      AnchorSideLeft.Control = gbRemoveBlankLines
+      AnchorSideTop.Control = edtMaxBlankLinesInSection
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 14
+      Top = 78
+      Width = 209
+      BorderSpacing.Left = 6
+      Caption = 'Max consecutive blank lines before removal'
+      ParentColor = False
+    end
+    object cbRemoveBlockBlankLines: TCheckBox
+      AnchorSideLeft.Control = gbRemoveBlankLines
+      AnchorSideTop.Control = cbRemoveBlankLinesAfterProcHeader
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 17
+      Top = 52
+      Width = 192
+      BorderSpacing.Around = 6
+      Caption = 'At start and end of begin..end block'
+      TabOrder = 2
+    end
+    object cbRemoveBlankLinesAfterProcHeader: TCheckBox
+      AnchorSideLeft.Control = gbRemoveBlankLines
+      AnchorSideTop.Control = cbRemoveVarBlankLines
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 17
+      Top = 29
+      Width = 132
+      BorderSpacing.Around = 6
+      Caption = 'After procedure header'
+      TabOrder = 1
+    end
+    object cbRemoveVarBlankLines: TCheckBox
+      AnchorSideLeft.Control = gbRemoveBlankLines
+      AnchorSideTop.Control = gbRemoveBlankLines
+      Left = 6
+      Height = 17
+      Top = 6
+      Width = 136
+      BorderSpacing.Around = 6
+      Caption = 'In procedure var section'
+      TabOrder = 0
+    end
+    object edtMaxBlankLinesInSection: TSpinEdit
+      AnchorSideLeft.Control = Label4
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = cbRemoveBlockBlankLines
+      AnchorSideTop.Side = asrBottom
+      Left = 221
+      Height = 21
+      Top = 75
+      Width = 49
+      BorderSpacing.Around = 6
+      MaxValue = 99
+      TabOrder = 3
+    end
+  end
+  object edtLinesBeforeProcedure: TSpinEdit[7]
+    AnchorSideTop.Control = edtMaxConsecutiveBlankLines
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 272
+    Height = 21
+    Top = 209
+    Width = 49
+    Anchors = [akTop, akRight]
+    BorderSpacing.Around = 6
+    MaxValue = 9
+    TabOrder = 4
+  end
+end

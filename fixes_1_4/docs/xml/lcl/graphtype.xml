@@ -1,0 +1,1063 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+  <package name="lcl">
+    <!--
+  ====================================================================
+    GraphType
+  ====================================================================
+-->
+    <module name="GraphType">
+      <short>Definitions of several special types (including Raw Image) to be used for graphics</short>
+      <descr/>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="SysUtils">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLProc">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- range type Visibility: default -->
+      <element name="TGraphicsColor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TGraphicsFillStyle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TGraphicsFillStyle.fsSurface">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TGraphicsFillStyle.fsBorder">
+        <short/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TGraphicsBevelCut">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TGraphicsBevelCut.bvNone">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TGraphicsBevelCut.bvLowered">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TGraphicsBevelCut.bvRaised">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TGraphicsBevelCut.bvSpace">
+        <short/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TRawImageColorFormat">
+        <short>A raw image can contain RGBA or monochrome pixels.</short>
+        <descr>ricfNone indicates an uninitialized image.</descr>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TRawImageColorFormat.ricfRGBA">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TRawImageColorFormat.ricfGray">
+        <short/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TRawImageByteOrder">
+        <short>The LSB/MSB-first byte order of pixel data.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TRawImageByteOrder.riboLSBFirst">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TRawImageByteOrder.riboMSBFirst">
+        <short/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TRawImageBitOrder">
+        <short>The first pixel in a raw image line can be the left or right pixel of the displaye image.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TRawImageBitOrder.riboBitsInOrder">
+        <short>Bit 0 represents first pixel</short>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TRawImageBitOrder.riboReversedBits">
+        <short>Bit 0 represents highest pixel</short>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TRawImageLineEnd">
+        <short>The alignment of raw image scanlines.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TRawImageLineEnd.rileTight">
+        <short>Scanlines can begin inside a byte.</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TRawImageLineEnd.rileByteBoundary">
+        <short>Scanlines start at a byte boundary.</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TRawImageLineEnd.rileWordBoundary">
+        <short>Scanlines start at a 16 bit boundary.</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TRawImageLineEnd.rileDWordBoundary">
+        <short>Scanlines start at a 32 bit (DWORD) boundary.</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TRawImageLineEnd.rileQWordBoundary">
+        <short>Scanlines start at a 64 bit (QWORD) boundary.</short>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TRawImageLineOrder">
+        <short>The first stored line of pixels can represent the logical top or bottom of the displayed image.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TRawImageLineOrder.riloTopToBottom">
+        <short>First scanline at the top</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TRawImageLineOrder.riloBottomToTop">
+        <short>First scanline at the bottom</short>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TRawImageDescription">
+        <short>Descriptor object for the image format of devices and raw (uncompressed) image data</short>
+        <descr>This effectivley is a record with some attached methods. More related procedures exist outside the object.
+
+The object describes the presence and exact storage of the RGBA image and mask pixels, of a device or image. The color information is stored in aligned scanlines.
+
+Note: palettes, BitOrder and ByteOrder seem not to be implemented yet. The meaning of the PaletteXXX values and of BitOrder is undefined, so far.
+
+xxxBitsPerPixel and xxxPrecisionMask applies to color data. For masked images, the pixels and the mask are two different arrays, containing different elements.</descr>
+        <seealso>
+          <link id="TRawImage"/>
+        </seealso>
+      <notes><note>where?</note>
+        </notes>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImageDescription.Format">
+        <short>An initialized image can contain color (RGBA) or monochrome pixels.</short>
+        <descr>
+          <var>ricfNone</var> indicates an uninitialized image.</descr>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImageDescription.HasPalette">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImageDescription.Depth">
+        <short>Number of used bits per pixel</short>
+        <descr>The color and pixel storage can be subject to alignment, so that the logical color Depth can be less than the physical BitsPerPixel.</descr>
+        <seealso/>
+      <notes><note>What if a palette is used?</note>
+        </notes>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImageDescription.Width">
+        <short>Width of the image in pixels</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImageDescription.Height">
+        <short>Height of the image in pixels.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImageDescription.PaletteColorCount">
+        <short>Number of entries in the color palette. 0 when no palette is present.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImageDescription.BitOrder">
+        <short>[unusable by definition]</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImageDescription.ByteOrder">
+        <short>The LSB/MSB-first byte order of color data.</short>
+        <descr/>
+        <seealso/>
+        <errors>[Not yet implemented]</errors>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImageDescription.LineOrder">
+        <short>The first stored line of pixels can represent the logical top or bottom of the displayed image.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImageDescription.ColorCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImageDescription.BitsPerPixel">
+        <short>Number of bits stored per pixel</short>
+        <descr>
+          <var>BitsPerPixel</var> can be greater than the logical (used) <var>Depth</var>.</descr>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImageDescription.LineEnd">
+        <short>Alignment of the scanlines.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImageDescription.RedPrec">
+        <short>Bits per pixel in the Red channel</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImageDescription.RedShift">
+        <short>Bit offset of the Red channel in color data.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImageDescription.GreenPrec">
+        <short>Bits per pixel in the Green channel</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImageDescription.GreenShift">
+        <short>Bit offset of the Green channel in color data.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImageDescription.BluePrec">
+        <short>Bits per pixel in the Blue channel</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImageDescription.BlueShift">
+        <short>Bit offset of the Blue channel in color data.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImageDescription.AlphaPrec">
+        <short>Bits per pixel in the Alpha channel</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImageDescription.AlphaShift">
+        <short>Bit offset of the Alpha channel in color data.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImageDescription.AlphaSeparate">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImageDescription.AlphaBitsPerPixel">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImageDescription.AlphaLineEnd">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImageDescription.AlphaBitOrder">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImageDescription.AlphaByteOrder">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PRawImageDescription">
+        <short>Pointer to <link id="TRawImageDescription"/>
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TRawImage">
+        <short>An uncompressed graphics image (bitmap)</short>
+        <descr>This object hold the pixels, mask and color palette of the image, as well as a detailed <link id="TRawImageDescription">description</link> of the storage format of these parts.
+
+This object currently is subject to refactoring, don't use it in application code.</descr>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImage.Description">
+        <short>
+          <var>Description</var> record for the Raw Image</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImage.Data">
+        <short>
+          <var>Data</var> - a pointer to the actual data of the image</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImage.DataSize">
+        <short>
+          <var>DataSize</var> - pointer to the size of the image</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImage.Mask">
+        <short>
+          <var>Mask</var> - pointer to the Mask for use with the image</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImage.MaskSize">
+        <short>
+          <var>MaskSize</var> - pointer to the size of the mask</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImage.Palette">
+        <short>
+          <var>Palette</var> - pointer to the palette of colours for this image</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImage.PaletteSize">
+        <short>
+          <var>PaletteSize</var> - pointer to the size of the palette</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PRawImage">
+        <short>
+          <var>PRawImage</var> - pointer to a <var>TRawImage</var>
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TRawImagePosition">
+        <short>Record describing a position in Raw Image data</short>
+        <descr>Byte is the byte offset, Bit the bit number/offset in that byte.</descr>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImagePosition.Byte">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRawImagePosition.Bit">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PRawImagePosition">
+        <short>
+          <var>PRawImagePosition</var> - pointer to a <var>TRawImagePosition</var>
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="RawImageColorFormatNames">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="RawImageByteOrderNames">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="RawImageBitOrderNames">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="RawImageLineEndNames">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="RawImageLineOrderNames">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="DefaultByteOrder">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="RawImageMaskIsEmpty">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="RawImageMaskIsEmpty.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="RawImageMaskIsEmpty.RawImage">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="RawImageMaskIsEmpty.TestPixels">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="RawImageDescriptionAsString">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="RawImageDescriptionAsString.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="RawImageDescriptionAsString.Desc">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FreeRawImageData">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FreeRawImageData.RawImage">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="ReleaseRawImageData">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ReleaseRawImageData.RawImage">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="CreateRawImageData">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CreateRawImageData.Width">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CreateRawImageData.Height">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CreateRawImageData.BitsPerPixel">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CreateRawImageData.LineEnd">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CreateRawImageData.Data">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CreateRawImageData.DataSize">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="CreateRawImageLineStarts">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CreateRawImageLineStarts.Width">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CreateRawImageLineStarts.Height">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CreateRawImageLineStarts.BitsPerPixel">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CreateRawImageLineStarts.LineEnd">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CreateRawImageLineStarts.LineStarts">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="CreateRawImageDescFromMask">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CreateRawImageDescFromMask.SrcRawImageDesc">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CreateRawImageDescFromMask.DestRawImageDesc">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="GetRawImageXYPosition">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="GetRawImageXYPosition.RawImageDesc">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="GetRawImageXYPosition.LineStarts">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="GetRawImageXYPosition.x">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="GetRawImageXYPosition.y">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="GetRawImageXYPosition.Position">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="ExtractRawImageRect">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ExtractRawImageRect.SrcRawImage">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ExtractRawImageRect.SrcRect">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ExtractRawImageRect.DestRawImage">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="ExtractRawImageDataRect">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ExtractRawImageDataRect.SrcRawImageDesc">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ExtractRawImageDataRect.SrcRect">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ExtractRawImageDataRect.SrcData">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ExtractRawImageDataRect.DestRawImageDesc">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ExtractRawImageDataRect.DestData">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ExtractRawImageDataRect.DestDataSize">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="GetBitsPerLine">
+        <short>
+          <var>GetBitsPerLine</var> - returns the number of bits per line (as a pointer)</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="GetBitsPerLine.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="GetBitsPerLine.Width">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="GetBitsPerLine.BitsPerPixel">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="GetBitsPerLine.LineEnd">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="ReadRawImageBits">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ReadRawImageBits.TheData">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ReadRawImageBits.Position">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ReadRawImageBits.BitsPerPixel">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ReadRawImageBits.Prec">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ReadRawImageBits.Shift">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ReadRawImageBits.BitOrder">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ReadRawImageBits.Bits">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="WriteRawImageBits">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="WriteRawImageBits.TheData">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="WriteRawImageBits.Position">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="WriteRawImageBits.BitsPerPixel">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="WriteRawImageBits.Prec">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="WriteRawImageBits.Shift">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="WriteRawImageBits.BitOrder">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="WriteRawImageBits.Bits">
+        <short/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="MissingBits">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TRawImageDescription.MaskBitsPerPixel">
+        <short>Bits per mask pixel, 0 when no mask is present.</short>
+        <descr>A pixel Mask (currently) has a logical depth of 1 bit per pixel, but a pixel can occupy an entire byte.
+As opposed to the Alpha (transparency) channel, a Mask is stored in its own array.
+A Mask value of 1 means that the pixel is masked (transparent); a value of 0 means the pixel value is shown (opaque).</descr>
+      <notes><note>?</note><note>of bits or bytes?</note>
+        </notes>
+      </element>
+      <element name="TRawImageDescription.MaskShift">
+        <short>The bit offset of the mask bit</short>
+      <notes><note>if stored in a byte?</note>
+        </notes>
+      </element>
+      <element name="TRawImageDescription.MaskLineEnd">
+        <short>Alignment of Mask lines.</short>
+      </element>
+      <element name="TRawImageDescription.MaskBitOrder">
+        <short>Bit order of the Mask.</short>
+      </element>
+      <element name="TRawImageDescription.PaletteBitsPerIndex">
+        <short>Bits per palette index, stored in the pixel data</short>
+        <descr>When a palette is used, the color description fields apply to the
+        palette colors, while pixel data contains the palette index. Then Depth
+        applies to the size of the palette colors, and the pixel data is described
+        by PaletteBitsPerIndex and PaletteShift</descr>
+        <errors>[palettes are not yet implemented]</errors>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="TRawImageDescription.PaletteShift">
+        <short/>
+      </element>
+      <element name="TRawImageDescription.PaletteLineEnd">
+        <short/>
+        <descr/>
+      <notes><note>what?</note>
+        </notes>
+      </element>
+      <element name="TRawImageDescription.PaletteBitOrder">
+        <short>Bit order of the palette indices</short>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="TRawImageDescription.PaletteByteOrder">
+        <short>Byte order of the palette indices</short>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="TRawImageDescription.Init">
+        <short>Initialize the image descriptor to all zeroes.</short>
+        <descr>A constructor cannot be used here, it would break compatibility with a record.</descr>
+      </element>
+      <element name="TRawImageDescription.Init_BPP24_B8G8R8_BIO_TTB">
+        <short>Init for an unmasked 24 bit RGB image (LSB Blue).</short>
+        <descr>
+          <p>Init_BPP24_B8G8R8_BIO_TTB - initiator for specified format</p>
+          <pre>{ pf24bit:
+ Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
+ BitOrder=riboBitsInOrder ByteOrder=DefaultByteOrder
+ LineOrder=riloTopToBottom
+ BitsPerPixel=24 LineEnd=rileDWordBoundary
+ RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
+} </pre>
+        </descr>
+      </element>
+      <element name="TRawImageDescription.Init_BPP24_B8G8R8_M1_BIO_TTB">
+        <short>Init for a masked 24 bit RGB image (LSB Blue)</short>
+        <descr>
+          <p>Init_BPP24_B8G8R8_M1_BIO_TTB - initiator for specfied format</p>
+          <pre>{ pf24bit:
+
+ Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
+ BitOrder=riboBitsInOrder ByteOrder=DefaultByteOrder
+ LineOrder=riloTopToBottom
+ BitsPerPixel=24 LineEnd=rileDWordBoundary
+ RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
+ Masked
+}</pre>
+        </descr>
+      </element>
+      <element name="TRawImageDescription.Init_BPP32_B8G8R8_BIO_TTB">
+        <short>Init for an unmasked 32 bit RGB image (LSB blue)</short>
+        <descr>
+          <p>
+            <var>Init_BPP32_B8G8R8_BIO_TTB</var> - initiator for specified format</p>
+          <pre>{ pf32bit:
+
+ Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
+ BitOrder=riboBitsInOrder ByteOrder=DefaultByteOrder
+ LineOrder=riloTopToBottom
+ BitsPerPixel=32 LineEnd=rileDWordBoundary
+ RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
+ No alpha
+ No mask
+} </pre>
+        </descr>
+      </element>
+      <element name="TRawImageDescription.Init_BPP32_B8G8R8_M1_BIO_TTB">
+        <short>Init for a masked 32 bit RGB image (LSB blue)</short>
+        <descr>
+          <p>
+            <var>Init_BPP32_B8G8R8_M1_BIO_TTB</var> - initiator for specified format</p>
+          <pre>{ pf32bit:
+
+ Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
+ BitOrder=riboBitsInOrder ByteOrder=DefaultByteOrder
+ LineOrder=riloTopToBottom
+ BitsPerPixel=32 LineEnd=rileDWordBoundary
+ RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
+ no alpha
+ with mask
+}
+</pre>
+        </descr>
+      </element>
+      <element name="TRawImageDescription.Init_BPP32_B8G8R8A8_BIO_TTB">
+        <short>Init for an unmasked 32 bit RGBA image (LSB blue)</short>
+        <descr>
+          <p>
+            <var>Init_BPP32_B8G8R8A8_BIO_TTB</var> - initiator for specified format</p>
+          <pre>{ pf32bit:
+
+ Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+ BitOrder=riboBitsInOrder ByteOrder=DefaultByteOrder
+ LineOrder=riloTopToBottom
+ BitsPerPixel=32 LineEnd=rileDWordBoundary
+ RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
+ alpha
+ no mask
+}
+</pre>
+        </descr>
+      </element>
+      <element name="TRawImageDescription.Init_BPP32_B8G8R8A8_M1_BIO_TTB">
+        <short>Init for a masked 32 bit RGBA image (LSB blue)</short>
+        <descr>
+          <p>
+            <var>Init_BPP32_B8G8R8A8_M1_BIO_TTB</var> - initiator for specified format</p>
+          <pre>{ pf32bit:
+
+ Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+ BitOrder=riboBitsInOrder ByteOrder=DefaultByteOrder
+ LineOrder=riloTopToBottom
+ BitsPerPixel=32 LineEnd=rileDWordBoundary
+ RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
+ alpha
+ masked
+}
+</pre>
+        </descr>
+      </element>
+      <element name="TRawImageDescription.GetDescriptionFromMask">
+        <short>Returns an monochrome image descriptor constructed from the Mask</short>
+      </element>
+      <element name="TRawImageDescription.GetDescriptionFromAlpha">
+        <short>Returns an monochrome image descriptor constructed from the Alpha channel</short>
+      </element>
+      <element name="TRawImageDescription.BytesPerLine">
+        <short>The number of bytes per scanline.</short>
+      </element>
+      <element name="TRawImageDescription.BitsPerLine">
+        <short>The number of bits per scanline.</short>
+      </element>
+      <element name="TRawImageDescription.MaskBytesPerLine">
+        <short>The number of bytes per Mask scanline.</short>
+      </element>
+      <element name="TRawImageDescription.MaskBitsPerLine">
+        <short>The number of bits per Mask scanline.</short>
+      </element>
+      <element name="TRawImageDescription.AsString">
+        <short>The image descriptor as a string.</short>
+      </element>
+      <element name="TRawImageDescription.IsEqual">
+        <short>Compares with the given description, returns True if it's equal.</short>
+      </element>
+      <element name="TRawImage.Init">
+        <short>
+          <var>Init</var> - initiator for the object. Don't use a contructor here, it will break compatibility with a record</short>
+      </element>
+      <element name="TRawImage.CreateData">
+        <short>
+          <var>CreateData</var> - method to create the data for the record</short>
+      </element>
+      <element name="TRawImage.FreeData">
+        <short>Destroys the allocated Data, Mask and Palette arrays.</short>
+      </element>
+      <element name="TRawImage.ReleaseData">
+        <short>
+          <var>ReleaseData</var> - frees the resources when finished with th edata</short>
+      </element>
+      <element name="TRawImage.ExtractRect">
+        <short>
+          <var>ExtractRect</var> - find the position of the bounding rectangle from the raw data</short>
+      </element>
+      <element name="TRawImage.PerformEffect">
+        <short>
+          <var>PerformEffect</var> - applies a specified special effect to the data of the Raw Image</short>
+      </element>
+      <element name="TRawImage.ReadBits">
+        <short>
+          <var>ReadBits</var> - reads the bit values for the raw image data at a given position</short>
+      </element>
+      <element name="TRawImage.ReadChannels">
+        <short>Reads the R, G, B and Alpha channel values at a given position in pixel data.</short>
+      </element>
+      <element name="TRawImage.ReadMask">
+        <short>Read the Mask value at the given position in the image data. Returns AMask=True if the pixel is transparent.</short>
+        <descr>The position in the Mask data typically differs from the position in the color data.</descr>
+      </element>
+      <element name="TRawImage.WriteBits">
+        <short>Writes ABits into Data at the given position.</short>
+      </element>
+      <element name="TRawImage.WriteChannels">
+        <short>
+          <var>WriteChannels</var> - writes the specified channel values at the nominated position</short>
+      </element>
+      <element name="TRawImage.IsMasked">
+        <short>
+          <var>IsMasked</var> - returns True if the specified pixels are masked</short>
+      </element>
+      <element name="TRawImage.IsTransparent">
+        <short>
+          <var>IsTransparent</var> - returns True if the specified pixels are transparent</short>
+      </element>
+      <element name="TRawImage.IsEqual">
+        <short>
+          <var>IsEqual</var> - returns True if the current and specified images are equal</short>
+      </element>
+      <element name="TRawImageLineStarts">
+        <short>
+          <var>TRawImageLineStarts</var> - contains a list of the start positions of the lines in the Raw Image</short>
+      </element>
+      <element name="TRawImageLineStarts.Positions">
+        <short>
+          <var>Positions</var> - the array of start positions</short>
+      </element>
+      <element name="TRawImageLineStarts.Init">
+        <short>
+          <var>Init</var> - initiator for the object. Don't use a constructor here, it will break compatibility with a record</short>
+      </element>
+      <element name="TRawImageLineStarts.GetPosition">
+        <short>
+          <var>GetPosition</var> - returns the position specified by x, y coordinates as a <var>TRawImagePosition</var>
+        </short>
+      </element>
+      <element name="PRawImageLineStarts">
+        <short>
+          <var>PRawImageLineStarts</var> - pointer to <var>TRawImageLineStarts</var>
+        </short>
+      </element>
+      <element name="GetBytesPerLine">
+        <short>
+          <var>GetBytesPerLine</var> - returns the number of bytes per line (as a pointer)</short>
+      </element>
+      <element name="CopyImageData">
+        <short>
+          <var>CopyImageData</var> - copies data from <var>ASource</var> to <var>ADestination</var>, returning True if successful</short>
+      </element>
+      <element name="TRawImageLineEnd.rileDQWordBoundary">
+        <short>Scanlines start at a 128 bit boundary.</short>
+      </element>
+      <element name="TRawImageQueryFlag">
+        <short>Image formats supported by a device, or present in image data</short>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="RawImage_ReadBits">
+        <short>Read color bits.</short>
+        <descr>AData is the pointer to the pixel data.
+APosition is the position of a pixel within AData.
+ABitsPerPixel is the size of a stored pixel.
+APrec and AShift select the field (color channel or palette index).
+
+The bits are extracted into the low order bits of the result (ABits).</descr>
+        <seealso>
+          <link id="RawImage_WriteBits"/>
+        </seealso>
+      </element>
+      <element name="RawImage_WriteBits">
+        <short>Write color or mask data, from the high bits of ABits.</short>
+        <errors>ReadBits returns the value in the low order bits</errors>
+        <seealso>
+          <link id="RawImage_ReadBits"/>
+        </seealso>
+      </element>
+    </module>
+    <!-- GraphType -->
+  </package>
+</fpdoc-descriptions>

@@ -1,0 +1,137 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: stringsunit.rsbeer
+msgctxt "stringsunit.rsbeer"
+msgid "Beer"
+msgstr ""
+
+#: stringsunit.rseight
+msgid "Eight"
+msgstr ""
+
+#: stringsunit.rsfive
+msgid "Five"
+msgstr ""
+
+#: stringsunit.rsfour
+msgid "Four"
+msgstr ""
+
+#: stringsunit.rsnine
+msgid "Nine"
+msgstr ""
+
+#: stringsunit.rsone
+msgid "One"
+msgstr ""
+
+#: stringsunit.rsseven
+msgid "Seven"
+msgstr ""
+
+#: stringsunit.rssix
+msgid "Six"
+msgstr ""
+
+#: stringsunit.rssumofselectednumbers
+msgid "Sum of selected numbers: %s"
+msgstr ""
+
+#: stringsunit.rsthree
+msgid "Three"
+msgstr ""
+
+#: stringsunit.rstodayis
+msgctxt "stringsunit.rstodayis"
+msgid "Today is %s"
+msgstr ""
+
+#: stringsunit.rstwo
+msgid "Two"
+msgstr ""
+
+#: stringsunit.rswater
+msgctxt "stringsunit.rswater"
+msgid "Water"
+msgstr ""
+
+#: stringsunit.rswine
+msgctxt "stringsunit.rswine"
+msgid "Wine"
+msgstr ""
+
+#: stringsunit.rsyouselected
+msgctxt "stringsunit.rsyouselected"
+msgid "You selected %s."
+msgstr ""
+
+#: stringsunit.rsyouselectedat
+msgctxt "stringsunit.rsyouselectedat"
+msgid "You selected %0:s at %1:s."
+msgstr ""
+
+#: tform2.caption
+msgid "Second Form"
+msgstr ""
+
+#: tform2.checkgroup.caption
+msgctxt "TFORM2.CHECKGROUP.CAPTION"
+msgid "Several items"
+msgstr ""
+
+#: tform2.groupbox1.caption
+msgid "Please select"
+msgstr ""
+
+#: tform2.lblmoney.caption
+msgid "LblMoney"
+msgstr ""
+
+#: tform2.lblsum.caption
+msgid "LblSum"
+msgstr ""
+
+#: tform2.lbltodayis.caption
+msgid "LblTodayIs"
+msgstr ""
+
+#: tform2.radiogroup.caption
+msgctxt "TFORM2.RADIOGROUP.CAPTION"
+msgid "Single item"
+msgstr ""
+
+#: tlocalizedform.caption
+msgid "LocalizedForm"
+msgstr ""
+
+#: tmainform.button1.caption
+msgctxt "TMAINFORM.BUTTON1.CAPTION"
+msgid "Open second form"
+msgstr ""
+
+#: tmainform.button2.caption
+msgctxt "TMAINFORM.BUTTON2.CAPTION"
+msgid "What did you select?"
+msgstr ""
+
+#: tmainform.caption
+msgctxt "TMAINFORM.CAPTION"
+msgid "Translation demo"
+msgstr ""
+
+#: tmainform.label1.caption
+msgctxt "TMAINFORM.LABEL1.CAPTION"
+msgid "Select language"
+msgstr ""
+
+#: tmainform.lblcurrentselection.caption
+msgctxt "TMAINFORM.LBLCURRENTSELECTION.CAPTION"
+msgid "No drink selected."
+msgstr ""
+
+#: tmainform.rgdrinks.caption
+msgctxt "TMAINFORM.RGDRINKS.CAPTION"
+msgid "Please select a drink"
+msgstr ""
+

@@ -1,0 +1,1 @@
+This is a helper to modify the Makefile.compiled for cross compiler builds (adding the -T... -P... flags)

@@ -1,0 +1,88 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2012-08-06 12:38+0300\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.5\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Language: lt\n"
+
+#: sdb_consts.scancelrecordsexported
+msgid "Exported %d before user canceled."
+msgstr "Prieš naudotojui nutraukiant, eksportuota: %d."
+
+#: sdb_consts.sdb_availableexportformats
+msgid "Available export formats:"
+msgstr "Galimi eksportavimo formatai:"
+
+#: sdb_consts.sdb_cancel
+msgid "&Cancel"
+msgstr "&Atsisakyti"
+
+#: sdb_consts.sdb_configuredataexport
+msgid "Configure data export"
+msgstr "Konfigūruoti duomenų eksportavimą"
+
+#: sdb_consts.sdb_exportprogress
+msgid "Export progress"
+msgstr "Eksportavimo eiga"
+
+#: sdb_consts.sdb_fields
+msgid "Fields"
+msgstr "Laukai"
+
+#: sdb_consts.sdb_filename
+msgid "Filename:"
+msgstr "Failo pavadinimas:"
+
+#: sdb_consts.sdb_formatting
+msgid "Formatting"
+msgstr "Formatas"
+
+#: sdb_consts.sdb_moveselectedfielddown
+msgid "Move selected field down"
+msgstr "Pažymėtus laukus perkelti žemyn"
+
+#: sdb_consts.sdb_moveselectedfieldup
+msgid "Move selected field up"
+msgstr "Pažymėtus laukus perkelti aukštyn"
+
+#: sdb_consts.sdb_propertiesforselectedfield
+msgid "Properties for selected field:"
+msgstr "Pažymėtojo lauko savybės:"
+
+#: sdb_consts.sdb_selectdataexportformat
+msgid "Select data export Format"
+msgstr "Parinkite duomenų eksportavimo formatą"
+
+#: sdb_consts.sdb_selectfieldstoexport
+msgid "Select fi&elds to export"
+msgstr "Parinkite kuriuos &laukus eksportuoti"
+
+#: sdb_consts.serrnodatasetassigned
+msgid "DataExporter has no Dataset assigned."
+msgstr "DataExporter neturi priskirto Dataset."
+
+#: sdb_consts.serropeningdataset
+msgid "Could not open dataset for exporting: %s"
+msgstr "Eksportuojant nepavyko atverti duomenų: %s"
+
+#: sdb_consts.sexecute
+#| msgid "Execute..."
+msgid "Execute ..."
+msgstr "Vykdyti…"
+
+#: sdb_consts.snrecordsexported
+#, fuzzy
+#| msgid "Succesfully exported %d records."
+msgid "Successfully exported %d records."
+msgstr "Sėkmingai eksportuota laukų: %s."
+
+#: sdb_consts.sprogress
+msgid "Exporting %d records"
+msgstr "Eksportuojama įrašų: %s"
+

@@ -1,0 +1,603 @@
+object Form1: TForm1
+  Left = 394
+  Height = 492
+  Top = 225
+  Width = 881
+  Caption = 'Form1'
+  ClientHeight = 492
+  ClientWidth = 881
+  OnCreate = FormCreate
+  LCLVersion = '1.5'
+  object Panel1: TPanel
+    Left = 0
+    Height = 492
+    Top = 0
+    Width = 160
+    Align = alLeft
+    ClientHeight = 492
+    ClientWidth = 160
+    TabOrder = 0
+    object CbLineAtDataOnly: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 10
+      Width = 107
+      Caption = 'Line at data only'
+      Checked = True
+      OnChange = CbLineAtDataOnlyChange
+      State = cbChecked
+      TabOrder = 0
+    end
+    object CbShowHorGrid: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 184
+      Width = 62
+      Caption = 'hor grid'
+      OnChange = CbShowGridChange
+      TabOrder = 1
+    end
+    object CbShowArrow: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 112
+      Width = 52
+      Caption = 'Arrow'
+      OnChange = CbShowArrowChange
+      TabOrder = 2
+    end
+    object CbInverted: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 136
+      Width = 63
+      Caption = 'Inverted'
+      OnChange = CbInvertedChange
+      TabOrder = 3
+    end
+    object CbBiDiMode: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 160
+      Width = 83
+      Caption = 'right-to-left'
+      OnChange = CbBiDiModeChange
+      TabOrder = 4
+    end
+    object CbMarksAtDataOnly: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 37
+      Width = 117
+      Caption = 'Marks at data only'
+      Checked = True
+      OnChange = CbMarksAtDataOnlyChange
+      State = cbChecked
+      TabOrder = 5
+    end
+    object Label1: TLabel
+      Left = 12
+      Height = 15
+      Top = 256
+      Width = 36
+      Caption = 'Range:'
+      ParentColor = False
+    end
+    object CbUseMax: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 272
+      Width = 61
+      Caption = 'UseMax'
+      OnChange = CbUseMaxChange
+      TabOrder = 6
+    end
+    object CbUseMin: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 296
+      Width = 60
+      Caption = 'UseMin'
+      OnChange = CbUseMinChange
+      TabOrder = 7
+    end
+    object CbGrouped: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 64
+      Width = 66
+      Caption = 'Grouped'
+      OnChange = CbGroupedChange
+      TabOrder = 8
+    end
+    object CbShowFrame: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 88
+      Width = 53
+      Caption = 'Frame'
+      Checked = True
+      OnChange = CbShowFrameChange
+      State = cbChecked
+      TabOrder = 9
+    end
+    object CbShowVertGrid: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 208
+      Width = 64
+      Caption = 'vert grid'
+      OnChange = CbShowGridChange
+      TabOrder = 10
+    end
+    object Label2: TLabel
+      Left = 12
+      Height = 51
+      Top = 424
+      Width = 135
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = False
+      Caption = 'Drag the dashed lines...'
+      ParentColor = False
+      WordWrap = True
+    end
+    object CheckBox1: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 336
+      Width = 132
+      Caption = 'TFuncSeries in center'
+      OnChange = CheckBox1Change
+      TabOrder = 11
+    end
+    object LblXExtentIgnored: TLabel
+      Left = 12
+      Height = 52
+      Top = 356
+      Width = 140
+      AutoSize = False
+      Caption = '(x extent ignored - see docs)'
+      ParentColor = False
+      WordWrap = True
+    end
+  end
+  object PageControl1: TPageControl
+    Left = 160
+    Height = 492
+    Top = 0
+    Width = 721
+    ActivePage = TabSheet1
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 1
+    OnChange = PageControl1Change
+    OnChanging = PageControl1Changing
+    object TabSheet1: TTabSheet
+      Caption = 'Horizontal panes'
+      ClientHeight = 464
+      ClientWidth = 713
+      object Chart1: TChart
+        Left = 0
+        Height = 464
+        Top = 0
+        Width = 713
+        AxisList = <        
+          item
+            Grid.Color = clGray
+            Grid.Visible = False
+            Alignment = calBottom
+            AxisPen.Visible = True
+            Minors = <>
+            Title.Visible = True
+            Title.Caption = 'x axis'
+          end        
+          item
+            Grid.Color = clGray
+            Grid.Visible = False
+            Intervals.MaxLength = 40
+            TickColor = clBlue
+            AtDataOnly = True
+            AxisPen.Color = clBlue
+            AxisPen.Visible = True
+            Marks.LabelFont.Color = clBlue
+            Marks.AtDataOnly = True
+            Minors = <>
+            Range.Max = 5
+            Range.Min = -5
+            Title.LabelFont.Color = clBlue
+            Title.LabelFont.Orientation = 900
+            Title.Visible = True
+            Title.Caption = 'y1 axis'
+            Title.PositionOnMarks = True
+            Transformations = ChartAxisTransformations1
+          end        
+          item
+            Grid.Color = clGray
+            Grid.Visible = False
+            TickColor = clRed
+            AtDataOnly = True
+            AxisPen.Color = clRed
+            AxisPen.Visible = True
+            Marks.LabelFont.Color = clRed
+            Marks.AtDataOnly = True
+            Minors = <>
+            Range.Max = 20
+            Title.LabelFont.Color = clRed
+            Title.LabelFont.Orientation = 900
+            Title.Visible = True
+            Title.Caption = 'y2 axis'
+            Title.PositionOnMarks = True
+            Transformations = ChartAxisTransformations2
+          end        
+          item
+            Grid.Color = clGray
+            Grid.Visible = False
+            AtDataOnly = True
+            AxisPen.Color = clFuchsia
+            AxisPen.Visible = True
+            Marks.LabelFont.Color = clFuchsia
+            Marks.AtDataOnly = True
+            Minors = <>
+            Range.Max = 100
+            Range.Min = -100
+            Title.LabelFont.Color = clFuchsia
+            Title.LabelFont.Orientation = 900
+            Title.Visible = True
+            Title.Caption = 'y3 axis'
+            Title.PositionOnMarks = True
+            Transformations = ChartAxisTransformations3
+          end>
+        BackColor = clNone
+        Extent.UseYMax = True
+        Extent.UseYMin = True
+        Extent.YMax = 10
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Toolset = ChartToolset1
+        Align = alClient
+        Color = clNone
+        ParentColor = False
+        object Chart1LineSeries1: TLineSeries
+          AxisIndexX = 0
+          AxisIndexY = 1
+          LinePen.Color = clBlue
+          Source = RandomChartSource11
+        end
+        object Chart1LineSeries2: TLineSeries
+          AxisIndexX = 0
+          AxisIndexY = 2
+          LinePen.Color = clRed
+          Source = RandomChartSource12
+        end
+        object Chart1LineSeries3: TLineSeries
+          AxisIndexX = 0
+          AxisIndexY = 3
+          LinePen.Color = clFuchsia
+          Source = RandomChartSource13
+        end
+        object Chart1LineSeries4: TLineSeries
+          AxisIndexX = 0
+          AxisIndexY = 3
+          LinePen.Color = clFuchsia
+          LinePen.Style = psDot
+          Source = RandomChartSource14
+        end
+        object Chart1ConstantLine1: TConstantLine
+          Pen.Color = clBlue
+          Pen.Style = psDash
+          Position = 2
+        end
+        object Chart1ConstantLine2: TConstantLine
+          Pen.Color = clRed
+          Pen.Style = psDash
+          Position = 3
+        end
+        object Chart1ConstantLine3: TConstantLine
+          Pen.Color = clRed
+          Pen.Style = psDash
+          Position = 5
+        end
+        object Chart1ConstantLine4: TConstantLine
+          Pen.Color = clFuchsia
+          Pen.Style = psDash
+          Position = 6
+        end
+        object Chart1FuncSeries2: TFuncSeries
+          Active = False
+          Extent.UseYMax = True
+          Extent.UseYMin = True
+          Extent.YMax = 1
+          Extent.YMin = -1
+          AxisIndexX = 0
+          AxisIndexY = 2
+          OnCalculate = Chart1FuncSeries2Calculate
+          ExtentAutoY = True
+          Pen.Color = clRed
+          Step = 1
+        end
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'Vertical panes'
+      ClientHeight = 464
+      ClientWidth = 713
+      object Chart2: TChart
+        Left = 0
+        Height = 464
+        Top = 0
+        Width = 713
+        AxisList = <        
+          item
+            Grid.Color = clGray
+            Grid.Visible = False
+            AxisPen.Visible = True
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+            Title.Visible = True
+            Title.Caption = 'y axis'
+          end        
+          item
+            Grid.Color = clGray
+            Grid.Visible = False
+            TickColor = clBlue
+            Alignment = calBottom
+            AtDataOnly = True
+            AxisPen.Color = clBlue
+            AxisPen.Visible = True
+            Marks.LabelFont.Color = clBlue
+            Marks.AtDataOnly = True
+            Minors = <>
+            Range.Max = 5
+            Range.Min = -5
+            Title.LabelFont.Color = clBlue
+            Title.Visible = True
+            Title.Caption = 'x1 axis'
+            Title.PositionOnMarks = True
+            Transformations = ChartAxisTransformations1
+          end        
+          item
+            Grid.Color = clGray
+            Grid.Visible = False
+            TickColor = clRed
+            Alignment = calBottom
+            AtDataOnly = True
+            AxisPen.Color = clRed
+            AxisPen.Visible = True
+            Marks.LabelFont.Color = clRed
+            Marks.AtDataOnly = True
+            Minors = <>
+            Range.Max = 20
+            Title.LabelFont.Color = clRed
+            Title.Visible = True
+            Title.Caption = 'x2 axis'
+            Title.PositionOnMarks = True
+            Transformations = ChartAxisTransformations2
+          end        
+          item
+            Grid.Color = clGray
+            Grid.Visible = False
+            Alignment = calBottom
+            AtDataOnly = True
+            AxisPen.Color = clFuchsia
+            AxisPen.Visible = True
+            Marks.LabelFont.Color = clFuchsia
+            Marks.AtDataOnly = True
+            Minors = <>
+            Range.Max = 100
+            Range.Min = -100
+            Title.LabelFont.Color = clFuchsia
+            Title.Visible = True
+            Title.Caption = 'x3 axis'
+            Title.PositionOnMarks = True
+            Transformations = ChartAxisTransformations3
+          end>
+        BackColor = clNone
+        Extent.UseXMax = True
+        Extent.UseXMin = True
+        Extent.XMax = 10
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Toolset = ChartToolset2
+        Align = alClient
+        Color = clNone
+        ParentColor = False
+        object Chart2LineSeries1: TLineSeries
+          AxisIndexX = 1
+          AxisIndexY = 0
+          LinePen.Color = clBlue
+          Source = RandomChartSource21
+        end
+        object Chart2LineSeries2: TLineSeries
+          AxisIndexX = 2
+          AxisIndexY = 0
+          LinePen.Color = clRed
+          Source = RandomChartSource22
+        end
+        object Chart2LineSeries3: TLineSeries
+          AxisIndexX = 3
+          AxisIndexY = 0
+          LinePen.Color = clFuchsia
+          Source = RandomChartSource23
+        end
+        object Chart2LineSeries4: TLineSeries
+          AxisIndexX = 3
+          AxisIndexY = 0
+          LinePen.Color = clFuchsia
+          LinePen.Style = psDot
+          Source = RandomChartSource24
+        end
+        object Chart2ConstantLine1: TConstantLine
+          LineStyle = lsVertical
+          Pen.Color = clBlue
+          Pen.Style = psDash
+          Position = 2
+        end
+        object Chart2ConstantLine2: TConstantLine
+          LineStyle = lsVertical
+          Pen.Color = clRed
+          Pen.Style = psDash
+          Position = 3
+        end
+        object Chart2ConstantLine3: TConstantLine
+          LineStyle = lsVertical
+          Pen.Color = clRed
+          Pen.Style = psDash
+          Position = 5
+        end
+        object Chart2ConstantLine4: TConstantLine
+          LineStyle = lsVertical
+          Pen.Color = clFuchsia
+          Pen.Style = psDash
+          Position = 6
+        end
+        object Chart2FuncSeries2: TFuncSeries
+          Active = False
+          Extent.UseXMax = True
+          Extent.UseXMin = True
+          Extent.UseYMax = True
+          Extent.UseYMin = True
+          Extent.XMax = 1
+          Extent.YMax = 1
+          AxisIndexX = 2
+          AxisIndexY = 0
+          OnCalculate = Chart2FuncSeries2Calculate
+          Pen.Color = clRed
+          Step = 1
+        end
+      end
+    end
+  end
+  object RandomChartSource11: TRandomChartSource
+    PointsNumber = 10
+    RandSeed = 2088531169
+    XMax = 1
+    XMin = 0
+    YMax = 1
+    YMin = 0
+    left = 200
+    top = 48
+  end
+  object RandomChartSource12: TRandomChartSource
+    PointsNumber = 10
+    RandSeed = 2088635735
+    XMax = 1
+    XMin = 0
+    YMax = 10
+    YMin = 0
+    left = 200
+    top = 115
+  end
+  object RandomChartSource13: TRandomChartSource
+    PointsNumber = 10
+    RandSeed = 2088693796
+    XMax = 1
+    XMin = 0
+    YMax = 10
+    YMin = 0
+    left = 200
+    top = 188
+  end
+  object ChartAxisTransformations1: TChartAxisTransformations
+    left = 776
+    top = 48
+    object ChartAxisTransformations1AutoScaleAxisTransform1: TAutoScaleAxisTransform
+      MaxValue = 2
+    end
+  end
+  object ChartAxisTransformations2: TChartAxisTransformations
+    left = 776
+    top = 115
+    object ChartAxisTransformations2AutoScaleAxisTransform1: TAutoScaleAxisTransform
+      MaxValue = 5
+      MinValue = 3
+    end
+  end
+  object ChartAxisTransformations3: TChartAxisTransformations
+    left = 776
+    top = 188
+    object ChartAxisTransformations3AutoScaleAxisTransform1: TAutoScaleAxisTransform
+      MaxValue = 10
+      MinValue = 6
+    end
+  end
+  object RandomChartSource14: TRandomChartSource
+    PointsNumber = 5
+    RandSeed = 999856828
+    XMax = 1
+    XMin = 0
+    YMax = 100
+    YMin = 0
+    left = 200
+    top = 256
+  end
+  object RandomChartSource21: TRandomChartSource
+    PointsNumber = 10
+    RandSeed = 2088531169
+    XMax = 1
+    XMin = 0
+    YMax = 1
+    YMin = 0
+    left = 336
+    top = 48
+  end
+  object RandomChartSource22: TRandomChartSource
+    PointsNumber = 10
+    RandSeed = 2088635735
+    XMax = 10
+    XMin = 0
+    YMax = 1
+    YMin = 0
+    left = 336
+    top = 115
+  end
+  object RandomChartSource23: TRandomChartSource
+    PointsNumber = 10
+    RandSeed = 2088693796
+    XMax = 10
+    XMin = 0
+    YMax = 1
+    YMin = 0
+    left = 336
+    top = 188
+  end
+  object RandomChartSource24: TRandomChartSource
+    PointsNumber = 5
+    RandSeed = 999856828
+    XMax = 100
+    XMin = 0
+    YMax = 1
+    YMin = 0
+    left = 336
+    top = 256
+  end
+  object ChartToolset1: TChartToolset
+    left = 200
+    top = 392
+    object ChartToolset1DataPointDragTool1: TDataPointDragTool
+      Shift = [ssLeft]
+      OnAfterMouseMove = DataPointDragTool_AfterMouseMove
+      AffectedSeries = '4,5,6,7'
+      ActiveCursor = crSizeNS
+    end
+  end
+  object ChartToolset2: TChartToolset
+    left = 336
+    top = 392
+    object ChartToolset2DataPointDragTool1: TDataPointDragTool
+      Shift = [ssLeft]
+      OnAfterMouseMove = DataPointDragTool_AfterMouseMove
+      AffectedSeries = '4,5,6,7'
+      ActiveCursor = crSizeWE
+    end
+  end
+end

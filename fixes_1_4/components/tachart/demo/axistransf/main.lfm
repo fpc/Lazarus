@@ -1,0 +1,668 @@
+object Form1: TForm1
+  Left = 1345
+  Height = 434
+  Top = 166
+  Width = 533
+  Caption = 'TAChart axis transformation demo'
+  ClientHeight = 434
+  ClientWidth = 533
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 434
+    Top = 0
+    Width = 533
+    ActivePage = tsLinear
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 0
+    object tsLinear: TTabSheet
+      Caption = 'Linear'
+      ClientHeight = 408
+      ClientWidth = 525
+      object ChartT: TChart
+        Left = 0
+        Height = 379
+        Top = 0
+        Width = 525
+        AxisList = <        
+          item
+            Grid.Visible = False
+            TickColor = clRed
+            Marks.LabelFont.Color = clRed
+            Marks.AtDataOnly = True
+            Minors = <>
+            Title.LabelFont.Color = clRed
+            Title.LabelFont.Orientation = 900
+            Title.Visible = True
+            Title.Caption = 'Summer temperature, °C'
+            Transformations = catTAuto
+          end        
+          item
+            Intervals.MaxLength = 100
+            Intervals.MinLength = 20
+            Alignment = calBottom
+            Minors = <>
+            Title.Visible = True
+            Title.Caption = 'Year'
+          end        
+          item
+            Grid.Visible = False
+            TickColor = clBlue
+            Alignment = calRight
+            Marks.Distance = 4
+            Marks.LabelFont.Color = clBlue
+            Marks.AtDataOnly = True
+            Minors = <>
+            Title.LabelFont.Color = clBlue
+            Title.LabelFont.Orientation = 900
+            Title.Visible = True
+            Title.Caption = 'Winter temperature, °F'
+            Transformations = catT
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Frame.Visible = False
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        ParentColor = False
+        object ChartTSummer: TLineSeries
+          AxisIndexY = 0
+          LinePen.Color = clRed
+          LinePen.Width = 2
+          Source = rcsTSummer
+        end
+        object ChartTWinterLine: TLineSeries
+          AxisIndexY = 2
+          LinePen.Color = clBlue
+          LinePen.Width = 2
+          Source = rcsTWinter
+        end
+        object ChartTWinterBar: TBarSeries
+          AxisIndexY = 2
+          BarBrush.Color = clBlue
+          BarBrush.Style = bsDiagCross
+          Source = rcsTWinter
+        end
+      end
+      object pnlAutoControls: TPanel
+        Left = 0
+        Height = 29
+        Top = 379
+        Width = 525
+        Align = alBottom
+        ClientHeight = 29
+        ClientWidth = 525
+        TabOrder = 1
+        object cbAuto: TCheckBox
+          Left = 4
+          Height = 17
+          Top = 5
+          Width = 70
+          Caption = 'Auto scale'
+          OnChange = cbAutoChange
+          TabOrder = 0
+        end
+      end
+    end
+    object tsIndependent: TTabSheet
+      Caption = 'Independent scale'
+      ClientHeight = 408
+      ClientWidth = 525
+      object ChartIndependent: TChart
+        Left = 0
+        Height = 366
+        Top = 0
+        Width = 525
+        AxisList = <        
+          item
+            Grid.Visible = False
+            Intervals.Tolerance = 1
+            TickColor = clNavy
+            Marks.LabelFont.Color = clNavy
+            Marks.LabelFont.Style = [fsBold]
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+            Transformations = catIndependent1
+          end        
+          item
+            Grid.Visible = False
+            Alignment = calBottom
+            Marks.Visible = False
+            Minors = <>
+          end        
+          item
+            Grid.Visible = False
+            Intervals.Tolerance = 1
+            TickColor = clGreen
+            Alignment = calRight
+            Marks.LabelFont.Color = clGreen
+            Marks.LabelFont.Style = [fsBold]
+            Minors = <>
+            Transformations = catIndependent2
+          end>
+        BackColor = clWhite
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        Color = clWhite
+        ParentColor = False
+        object ChartIndependentLineSeries1: TLineSeries
+          AxisIndexY = 0
+          LinePen.Color = clNavy
+          LinePen.Width = 2
+        end
+        object ChartIndependentLineSeries2: TLineSeries
+          AxisIndexY = 2
+          LinePen.Color = clGreen
+          LinePen.Width = 2
+        end
+      end
+      object pnlIndependentControls: TPanel
+        Left = 0
+        Height = 42
+        Top = 366
+        Width = 525
+        Align = alBottom
+        ClientHeight = 42
+        ClientWidth = 525
+        TabOrder = 1
+        object fseIndependent1: TFloatSpinEdit
+          Left = 60
+          Height = 21
+          Top = 9
+          Width = 70
+          Increment = 0.1
+          MaxValue = 10
+          MinValue = 0.1
+          OnChange = fseIndependent1Change
+          TabOrder = 0
+          Value = 1
+        end
+        object fseIndependent2: TFloatSpinEdit
+          Left = 188
+          Height = 21
+          Top = 9
+          Width = 70
+          Increment = 0.1
+          MaxValue = 10
+          MinValue = 0.1
+          OnChange = fseIndependent2Change
+          TabOrder = 1
+          Value = 1
+        end
+        object lblIndependentScale1: TLabel
+          Left = 16
+          Height = 13
+          Top = 13
+          Width = 40
+          Caption = 'Scale 1'
+          Font.Color = clNavy
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+        end
+        object lblIndependentScale2: TLabel
+          Left = 144
+          Height = 13
+          Top = 13
+          Width = 40
+          Caption = 'Scale 2'
+          Font.Color = clGreen
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+        end
+        object rgSyncAxisMarks: TRadioGroup
+          Left = 308
+          Height = 40
+          Top = 1
+          Width = 216
+          Align = alRight
+          AutoFill = True
+          Caption = ' Synchronize marks '
+          ChildSizing.LeftRightSpacing = 6
+          ChildSizing.TopBottomSpacing = 6
+          ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+          ChildSizing.EnlargeVertical = crsHomogenousChildResize
+          ChildSizing.ShrinkHorizontal = crsScaleChilds
+          ChildSizing.ShrinkVertical = crsScaleChilds
+          ChildSizing.Layout = cclLeftToRightThenTopToBottom
+          ChildSizing.ControlsPerLine = 3
+          ClientHeight = 22
+          ClientWidth = 212
+          Columns = 3
+          ItemIndex = 1
+          Items.Strings = (
+            'Left'
+            'None'
+            'Right'
+          )
+          OnClick = rgSyncAxisMarksClick
+          TabOrder = 2
+        end
+      end
+    end
+    object tsLog: TTabSheet
+      Caption = 'Logarithm'
+      ClientHeight = 408
+      ClientWidth = 525
+      object ChartLog: TChart
+        Left = 0
+        Height = 378
+        Top = 0
+        Width = 525
+        AxisList = <        
+          item
+            Intervals.Count = 10
+            Intervals.Options = [aipGraphCoords, aipUseCount, aipUseMinLength, aipUseNiceSteps]
+            Intervals.Tolerance = 5
+            Marks.Stripes = csStripes
+            Minors = <            
+              item
+                Grid.Visible = False
+                Intervals.Count = 9
+                Intervals.MinLength = 5
+                Intervals.Options = [aipUseCount, aipUseMaxLength, aipUseMinLength, aipUseNiceSteps]
+              end>
+            Title.LabelFont.Orientation = 900
+            Title.Visible = True
+            Title.Caption = 'Left'
+            Transformations = catLog
+          end        
+          item
+            Grid.Visible = False
+            Alignment = calBottom
+            Minors = <>
+            Title.Distance = 0
+            Title.Visible = True
+            Title.Caption = 'Bottom'
+          end        
+          item
+            Grid.Visible = False
+            Alignment = calRight
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+            Title.Visible = True
+            Title.Caption = 'Right 1'
+          end        
+          item
+            Grid.Visible = False
+            Alignment = calTop
+            Inverted = True
+            Minors = <>
+            Title.Caption = 'Top'
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        ParentColor = False
+        object clsLogPoints: TLineSeries
+          AxisIndexY = 0
+          LineType = ltNone
+          Pointer.Brush.Color = clMaroon
+          ShowPoints = True
+        end
+        object cfsLog: TFuncSeries
+          Extent.UseXMax = True
+          Extent.UseXMin = True
+          Extent.XMax = 3
+          Extent.XMin = -1
+          AxisIndexY = 0
+          OnCalculate = ChartLogFuncSeries1Calculate
+        end
+      end
+      object pnlLogControls: TPanel
+        Left = 0
+        Height = 30
+        Top = 378
+        Width = 525
+        Align = alBottom
+        ClientHeight = 30
+        ClientWidth = 525
+        TabOrder = 1
+        object cbLog: TCheckBox
+          Left = 4
+          Height = 17
+          Top = 5
+          Width = 64
+          Caption = 'Log scale'
+          Checked = True
+          OnChange = cbLogChange
+          State = cbChecked
+          TabOrder = 0
+        end
+        object seTolerance: TSpinEdit
+          Left = 140
+          Height = 21
+          Top = 5
+          Width = 50
+          OnChange = seToleranceChange
+          TabOrder = 1
+        end
+        object lblTolerance: TLabel
+          Left = 88
+          Height = 13
+          Top = 8
+          Width = 47
+          Caption = 'Tolerance'
+          ParentColor = False
+        end
+      end
+    end
+    object tsCumulNormDistr: TTabSheet
+      Caption = 'Normal distribution'
+      ClientHeight = 408
+      ClientWidth = 525
+      object ChartCumulNormDistr: TChart
+        Left = 0
+        Height = 342
+        Top = 66
+        Width = 525
+        AxisList = <        
+          item
+            Grid.Color = clSilver
+            Grid.Visible = False
+            Intervals.Count = 30
+            Intervals.Options = [aipUseCount, aipUseNiceSteps]
+            Intervals.Tolerance = 1
+            Marks.OverlapPolicy = opHideNeighbour
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+            Title.LabelFont.Style = [fsBold]
+            Title.Visible = True
+            Title.Caption = 'Cumulative probability'
+            Transformations = catCumulNormDistr
+          end        
+          item
+            Grid.Color = clSilver
+            Grid.Visible = False
+            Alignment = calBottom
+            Minors = <>
+            Title.LabelFont.Style = [fsBold]
+            Title.Visible = True
+            Title.Caption = 'Random number'
+          end>
+        BackColor = clWhite
+        Extent.XMax = 3
+        Extent.XMin = -3
+        Extent.YMax = 3
+        Extent.YMin = -3
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        MarginsExternal.Left = 8
+        MarginsExternal.Right = 12
+        MarginsExternal.Bottom = 8
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        ParentColor = False
+        object ChartCumulNormDistrLineSeries1: TLineSeries
+          AxisIndexX = 1
+          AxisIndexY = 0
+          Pointer.Brush.Color = clBlue
+          Pointer.HorizSize = 2
+          Pointer.Pen.Color = clBlue
+          Pointer.Style = psCircle
+          Pointer.VertSize = 2
+          ShowPoints = True
+        end
+      end
+      object pnCumulNormDistr: TPanel
+        Left = 0
+        Height = 66
+        Top = 0
+        Width = 525
+        Align = alTop
+        BevelOuter = bvNone
+        ClientHeight = 66
+        ClientWidth = 525
+        TabOrder = 1
+        object rgRandDistr: TRadioGroup
+          Left = 0
+          Height = 66
+          Top = 0
+          Width = 185
+          Align = alLeft
+          AutoFill = True
+          Caption = ' Random number generation '
+          ChildSizing.LeftRightSpacing = 6
+          ChildSizing.TopBottomSpacing = 6
+          ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+          ChildSizing.EnlargeVertical = crsHomogenousChildResize
+          ChildSizing.ShrinkHorizontal = crsScaleChilds
+          ChildSizing.ShrinkVertical = crsScaleChilds
+          ChildSizing.Layout = cclLeftToRightThenTopToBottom
+          ChildSizing.ControlsPerLine = 1
+          ClientHeight = 48
+          ClientWidth = 181
+          ItemIndex = 1
+          Items.Strings = (
+            'uniform distribution'
+            'normal distribution'
+          )
+          OnClick = rgRandDistrClick
+          ParentFont = False
+          TabOrder = 0
+        end
+        object cbPercent: TCheckBox
+          Left = 192
+          Height = 17
+          Top = 43
+          Width = 57
+          Caption = 'Percent'
+          OnChange = cbPercentChange
+          TabOrder = 1
+        end
+        object cbUseAxisTransform: TCheckBox
+          Left = 280
+          Height = 17
+          Top = 43
+          Width = 110
+          Caption = 'Use AxisTransform'
+          OnChange = cbUseAxisTransformChange
+          TabOrder = 2
+        end
+        object edDataCount: TSpinEdit
+          Left = 281
+          Height = 21
+          Top = 10
+          Width = 82
+          Increment = 50
+          MaxValue = 1000000
+          OnChange = edDataCountChange
+          TabOrder = 3
+          Value = 300
+        end
+        object lblDataCount: TLabel
+          Left = 194
+          Height = 13
+          Top = 14
+          Width = 57
+          Caption = 'Data count:'
+          ParentColor = False
+        end
+      end
+    end
+    object tsUser: TTabSheet
+      Caption = 'User defined'
+      ClientHeight = 408
+      ClientWidth = 525
+      object ChartUser: TChart
+        Left = 0
+        Height = 408
+        Top = 0
+        Width = 525
+        AxisList = <        
+          item
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+          end        
+          item
+            Grid.Visible = False
+            Intervals.Count = 20
+            Intervals.MinLength = 20
+            Intervals.NiceSteps = '0.2|0.25|0.4|0.5|1.0'
+            Intervals.Options = [aipGraphCoords, aipUseCount, aipUseMaxLength, aipUseMinLength, aipUseNiceSteps]
+            Alignment = calBottom
+            Minors = <>
+            Transformations = catUser
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'Drag purple line to locally zoom in various axis segments'
+        )
+        Title.Visible = True
+        Toolset = ChartToolset1
+        Align = alClient
+        ParentColor = False
+        object ChartUserLineSeries1: TLineSeries
+          AxisIndexX = 1
+          Source = rcsUser
+        end
+        object ChartUserConstantLine1: TConstantLine
+          AxisIndexX = 1
+          LineStyle = lsVertical
+          Pen.Color = clFuchsia
+          Pen.Width = 2
+          Position = 20
+        end
+      end
+    end
+  end
+  object catLog: TChartAxisTransformations
+    left = 216
+    top = 60
+    object ChartAxisTransformations1LinearAxisTransform2: TLinearAxisTransform
+      Scale = 2
+    end
+    object ChartAxisTransformations1LogarithmAxisTransform1: TLogarithmAxisTransform
+      Base = 10
+    end
+  end
+  object catT: TChartAxisTransformations
+    left = 352
+    top = 60
+    object catTFahrToCel: TLinearAxisTransform
+      Offset = -17.777777777
+      Scale = 0.5555555555
+    end
+    object catTAutoScaleAxisTransform1: TAutoScaleAxisTransform
+      Enabled = False
+    end
+  end
+  object rcsTSummer: TRandomChartSource
+    PointsNumber = 20
+    RandSeed = 114536250
+    XMax = 2009
+    XMin = 1990
+    YMax = 25
+    YMin = 0
+    left = 87
+    top = 106
+  end
+  object rcsTWinter: TRandomChartSource
+    PointsNumber = 20
+    RandSeed = 23453245
+    XMax = 2009
+    XMin = 1990
+    YMax = 20
+    YMin = -15
+    left = 87
+    top = 156
+  end
+  object catTAuto: TChartAxisTransformations
+    left = 352
+    top = 112
+    object catTAutoAutoScaleAxisTransform1: TAutoScaleAxisTransform
+      Enabled = False
+    end
+  end
+  object csStripes: TChartStyles
+    Styles = <    
+      item
+        Brush.Color = 16631498
+        UsePen = False
+      end    
+      item
+        Brush.Color = 12319483
+        UsePen = False
+      end>
+    left = 352
+    top = 176
+  end
+  object rcsUser: TRandomChartSource
+    PointsNumber = 100
+    RandSeed = 1999979507
+    XMax = 50
+    XMin = 0
+    YMax = 20
+    YMin = 10
+    left = 87
+    top = 208
+  end
+  object catUser: TChartAxisTransformations
+    left = 352
+    top = 236
+    object catUserUserDefinedAxisTransform1: TUserDefinedAxisTransform
+      OnAxisToGraph = catUserUserDefinedAxisTransform1AxisToGraph
+    end
+  end
+  object ChartToolset1: TChartToolset
+    left = 216
+    top = 116
+    object ChartToolset1DataPointDragTool1: TDataPointDragTool
+      Shift = [ssLeft]
+      AffectedSeries = '1'
+    end
+  end
+  object catIndependent1: TChartAxisTransformations
+    left = 220
+    top = 176
+    object catIndependent1Zoom: TLinearAxisTransform
+    end
+  end
+  object catIndependent2: TChartAxisTransformations
+    left = 220
+    top = 236
+    object catIndependent2Zoom: TLinearAxisTransform
+    end
+  end
+  object AxLabelSource: TListChartSource
+    left = 311
+    top = 305
+  end
+  object catCumulNormDistr: TChartAxisTransformations
+    left = 310
+    top = 305
+    object catCumulNormDistrLinearAxisTransform1: TLinearAxisTransform
+      Enabled = False
+      Scale = 0.01
+    end
+    object catCumulNormDistrCumulNormDistrAxisTransform1: TCumulNormDistrAxisTransform
+      Enabled = False
+    end
+  end
+end

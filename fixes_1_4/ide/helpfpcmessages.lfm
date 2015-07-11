@@ -1,0 +1,354 @@
+object EditIDEMsgHelpDialog: TEditIDEMsgHelpDialog
+  Left = 330
+  Height = 522
+  Top = 280
+  Width = 649
+  Caption = 'EditIDEMsgHelpDialog'
+  ClientHeight = 522
+  ClientWidth = 649
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  Position = poScreenCenter
+  LCLVersion = '1.3'
+  object CurMsgGroupBox: TGroupBox
+    Left = 6
+    Height = 105
+    Top = 87
+    Width = 637
+    Align = alTop
+    BorderSpacing.Around = 6
+    Caption = 'CurMsgGroupBox'
+    ClientHeight = 88
+    ClientWidth = 633
+    TabOrder = 0
+    object CurMsgMemo: TMemo
+      Left = 0
+      Height = 88
+      Top = 0
+      Width = 633
+      Align = alClient
+      Lines.Strings = (
+        'CurMsgMemo'
+      )
+      ReadOnly = True
+      ScrollBars = ssAutoBoth
+      TabOrder = 0
+    end
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 36
+    Top = 480
+    Width = 637
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 1
+    OnClick = ButtonPanel1Click
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object AllGroupBox: TGroupBox
+    Left = 6
+    Height = 276
+    Top = 198
+    Width = 277
+    Align = alLeft
+    BorderSpacing.Around = 6
+    Caption = 'AllGroupBox'
+    ClientHeight = 259
+    ClientWidth = 273
+    TabOrder = 2
+    object AllListBox: TListBox
+      Left = 0
+      Height = 232
+      Top = 0
+      Width = 273
+      Align = alClient
+      ItemHeight = 0
+      OnSelectionChange = AllListBoxSelectionChange
+      ScrollWidth = 271
+      TabOrder = 0
+      TopIndex = -1
+    end
+    object AddButton: TButton
+      Left = 0
+      Height = 27
+      Top = 232
+      Width = 273
+      Align = alBottom
+      AutoSize = True
+      Caption = 'AddButton'
+      OnClick = AddButtonClick
+      TabOrder = 1
+    end
+  end
+  object CurGroupBox: TGroupBox
+    Left = 300
+    Height = 276
+    Top = 198
+    Width = 343
+    Align = alClient
+    BorderSpacing.Around = 6
+    Caption = 'CurGroupBox'
+    ClientHeight = 259
+    ClientWidth = 339
+    TabOrder = 3
+    object DeleteButton: TButton
+      AnchorSideLeft.Control = TestURLButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = URLEdit
+      AnchorSideTop.Side = asrBottom
+      Left = 108
+      Height = 27
+      Top = 196
+      Width = 89
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'DeleteButton'
+      OnClick = DeleteButtonClick
+      TabOrder = 0
+    end
+    object NameLabel: TLabel
+      AnchorSideLeft.Control = CurGroupBox
+      AnchorSideTop.Control = NameEdit
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 15
+      Top = 11
+      Width = 61
+      BorderSpacing.Around = 6
+      Caption = 'NameLabel'
+      ParentColor = False
+    end
+    object NameEdit: TEdit
+      AnchorSideLeft.Control = NameLabel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = CurGroupBox
+      AnchorSideRight.Control = CurGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 73
+      Height = 25
+      Top = 6
+      Width = 260
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      OnChange = NameEditChange
+      TabOrder = 1
+      Text = 'NameEdit'
+    end
+    object URLLabel: TLabel
+      AnchorSideLeft.Control = CurGroupBox
+      AnchorSideTop.Control = AdditionFitsMsgLabel
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = CurGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 15
+      Top = 150
+      Width = 327
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      Caption = 'URLLabel'
+      ParentColor = False
+      WordWrap = True
+    end
+    object URLEdit: TEdit
+      AnchorSideLeft.Control = CurGroupBox
+      AnchorSideTop.Control = URLLabel
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = CurGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 25
+      Top = 165
+      Width = 327
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      OnChange = URLEditChange
+      TabOrder = 2
+      Text = 'URLEdit'
+    end
+    object OnlyFPCMsgIDsLabel: TLabel
+      AnchorSideLeft.Control = CurGroupBox
+      AnchorSideTop.Control = NameEdit
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = CurGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 15
+      Top = 37
+      Width = 327
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      Caption = 'OnlyFPCMsgIDsLabel'
+      ParentColor = False
+      WordWrap = True
+    end
+    object OnlyFPCMsgIDsEdit: TEdit
+      AnchorSideLeft.Control = CurGroupBox
+      AnchorSideTop.Control = OnlyFPCMsgIDsLabel
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = CurGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 25
+      Top = 52
+      Width = 327
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      OnChange = OnlyFPCMsgIDsEditChange
+      TabOrder = 3
+      Text = 'OnlyFPCMsgIDsEdit'
+    end
+    object OnlyRegExLabel: TLabel
+      AnchorSideLeft.Control = CurGroupBox
+      AnchorSideTop.Control = OnlyFPCMsgIDsEdit
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = CurGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 15
+      Top = 83
+      Width = 327
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      Caption = 'OnlyRegExLabel'
+      ParentColor = False
+      WordWrap = True
+    end
+    object OnlyRegExEdit: TEdit
+      AnchorSideLeft.Control = CurGroupBox
+      AnchorSideTop.Control = OnlyRegExLabel
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = CurGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 25
+      Top = 98
+      Width = 327
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      OnChange = OnlyRegExEditChange
+      TabOrder = 4
+      Text = 'OnlyRegExEdit'
+    end
+    object AdditionFitsMsgLabel: TLabel
+      AnchorSideLeft.Control = CurGroupBox
+      AnchorSideTop.Control = OnlyRegExEdit
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 15
+      Top = 129
+      Width = 117
+      BorderSpacing.Around = 6
+      Caption = 'AdditionFitsMsgLabel'
+      ParentColor = False
+      WordWrap = True
+    end
+    object TestURLButton: TButton
+      AnchorSideLeft.Control = CurGroupBox
+      AnchorSideTop.Control = URLEdit
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 27
+      Top = 196
+      Width = 96
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'TestURLButton'
+      OnClick = TestURLButtonClick
+      TabOrder = 5
+    end
+  end
+  object Splitter1: TSplitter
+    Left = 289
+    Height = 276
+    Top = 198
+    Width = 5
+  end
+  object GlobalOptionsGroupBox: TGroupBox
+    Left = 6
+    Height = 75
+    Top = 6
+    Width = 637
+    Align = alTop
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'GlobalOptionsGroupBox'
+    ClientHeight = 58
+    ClientWidth = 633
+    TabOrder = 5
+    object FPCMsgFileLabel: TLabel
+      AnchorSideLeft.Control = GlobalOptionsGroupBox
+      AnchorSideTop.Control = FPCMsgFileValueLabel
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 15
+      Top = 6
+      Width = 90
+      BorderSpacing.Left = 6
+      Caption = 'FPCMsgFileLabel'
+      ParentColor = False
+    end
+    object AdditionsFileLabel: TLabel
+      AnchorSideLeft.Control = GlobalOptionsGroupBox
+      AnchorSideTop.Control = AdditionsFileEdit
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 15
+      Top = 32
+      Width = 100
+      BorderSpacing.Around = 6
+      Caption = 'AdditionsFileLabel'
+      ParentColor = False
+    end
+    object AdditionsFileEdit: TEdit
+      AnchorSideLeft.Control = AdditionsFileLabel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = FPCMsgFileValueLabel
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = GlobalOptionsGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 112
+      Height = 25
+      Top = 27
+      Width = 515
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      TabOrder = 0
+      Text = 'AdditionsFileEdit'
+    end
+    object FPCMsgFileValueLabel: TLabel
+      AnchorSideLeft.Control = FPCMsgFileLabel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = GlobalOptionsGroupBox
+      AnchorSideRight.Control = GlobalOptionsGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 102
+      Height = 15
+      Top = 6
+      Width = 525
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      Caption = 'FPCMsgFileValueLabel'
+      ParentColor = False
+    end
+  end
+end

@@ -1,0 +1,188 @@
+object MissingUnitsDialog: TMissingUnitsDialog
+  Left = 280
+  Height = 261
+  Top = 211
+  Width = 732
+  HorzScrollBar.Page = 411
+  VertScrollBar.Page = 342
+  Caption = 'Units not Found'
+  ClientHeight = 261
+  ClientWidth = 732
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object ButtonPanel: TPanel
+    Left = 0
+    Height = 35
+    Top = 226
+    Width = 732
+    Align = alBottom
+    AutoSize = True
+    ClientHeight = 35
+    ClientWidth = 732
+    TabOrder = 0
+    object CommentButton: TBitBtn
+      AnchorSideLeft.Control = ButtonPanel
+      AnchorSideTop.Control = AbortButton
+      AnchorSideTop.Side = asrCenter
+      Left = 12
+      Height = 26
+      Top = 4
+      Width = 73
+      AutoSize = True
+      BorderSpacing.Left = 11
+      Caption = 'Comment'
+      Default = True
+      ModalResult = 1
+      TabOrder = 0
+    end
+    object SearchButton: TBitBtn
+      AnchorSideLeft.Control = CommentButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = CommentButton
+      AnchorSideTop.Side = asrCenter
+      Left = 96
+      Height = 26
+      Top = 4
+      Width = 58
+      AutoSize = True
+      BorderSpacing.Left = 11
+      Caption = 'Search'
+      ModalResult = 6
+      TabOrder = 1
+    end
+    object SkipButton: TBitBtn
+      AnchorSideLeft.Control = SearchButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = SearchButton
+      AnchorSideTop.Side = asrCenter
+      Left = 165
+      Height = 26
+      Top = 4
+      Width = 40
+      AutoSize = True
+      BorderSpacing.Left = 11
+      Caption = 'Skip'
+      ModalResult = 5
+      TabOrder = 2
+    end
+    object AbortButton: TBitBtn
+      AnchorSideRight.Control = ButtonPanel
+      AnchorSideRight.Side = asrBottom
+      Left = 638
+      Height = 33
+      Top = 1
+      Width = 82
+      Anchors = [akTop, akRight]
+      AutoSize = True
+      BorderSpacing.Right = 11
+      DefaultCaption = True
+      Kind = bkAbort
+      ModalResult = 3
+      TabOrder = 3
+    end
+  end
+  object MissingUnitsGroupBox: TGroupBox
+    Left = 0
+    Height = 223
+    Top = 0
+    Width = 233
+    Align = alLeft
+    BorderSpacing.Bottom = 3
+    Caption = 'Missing Units Info'
+    ClientHeight = 204
+    ClientWidth = 229
+    TabOrder = 1
+    object MissingUnitsCheckListBox: TCheckListBox
+      Left = 0
+      Height = 204
+      Top = 0
+      Width = 229
+      Align = alClient
+      ItemHeight = 0
+      PopupMenu = PopupMenu1
+      TabOrder = 0
+    end
+  end
+  object Splitter1: TSplitter
+    Left = 233
+    Height = 226
+    Top = 0
+    Width = 5
+  end
+  object InfoPanel: TPanel
+    Left = 238
+    Height = 217
+    Top = 9
+    Width = 494
+    Align = alClient
+    BorderSpacing.Top = 9
+    BevelOuter = bvNone
+    ClientHeight = 217
+    ClientWidth = 494
+    TabOrder = 3
+    object ChoicesLabel: TLabel
+      AnchorSideLeft.Side = asrBottom
+      Left = 8
+      Height = 15
+      Top = 16
+      Width = 53
+      BorderSpacing.Left = 16
+      BorderSpacing.Top = 23
+      Caption = 'Choices:'
+      ParentColor = False
+    end
+    object Info1Label: TLabel
+      AnchorSideLeft.Control = ChoicesLabel
+      AnchorSideTop.Control = ChoicesLabel
+      Left = 8
+      Height = 15
+      Top = 39
+      Width = 31
+      BorderSpacing.Top = 23
+      Caption = 'Info1'
+      ParentColor = False
+    end
+    object Info2Label: TLabel
+      AnchorSideLeft.Control = ChoicesLabel
+      AnchorSideTop.Control = Info1Label
+      Left = 8
+      Height = 15
+      Top = 62
+      Width = 31
+      BorderSpacing.Top = 23
+      Caption = 'Info2'
+      ParentColor = False
+    end
+    object Info3Label: TLabel
+      AnchorSideLeft.Control = ChoicesLabel
+      AnchorSideTop.Control = Info2Label
+      Left = 8
+      Height = 15
+      Top = 85
+      Width = 31
+      BorderSpacing.Top = 23
+      Caption = 'Info3'
+      ParentColor = False
+    end
+  end
+  object PopupMenu1: TPopupMenu
+    left = 336
+    top = 48
+    object SelectMenuItem: TMenuItem
+      Caption = '&Select all'
+      OnClick = SelectMenuItemClick
+    end
+    object UnselectMenuItem: TMenuItem
+      Caption = '&Unselect all'
+      OnClick = UnselectMenuItemClick
+    end
+    object SaveMenuItem: TMenuItem
+      Caption = 'Save to &File...'
+      OnClick = SaveMenuItemClick
+    end
+  end
+  object SaveDialog1: TSaveDialog
+    left = 424
+    top = 48
+  end
+end

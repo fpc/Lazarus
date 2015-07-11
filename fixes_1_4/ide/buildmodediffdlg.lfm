@@ -1,0 +1,82 @@
+object BuildModeDiffDialog: TBuildModeDiffDialog
+  Left = 453
+  Height = 316
+  Top = 261
+  Width = 493
+  Caption = 'BuildModeDiffDialog'
+  ClientHeight = 316
+  ClientWidth = 493
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object ButtonPanel: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 276
+    Width = 481
+    OKButton.Name = 'OKButton'
+    OKButton.Enabled = False
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Enabled = False
+    CloseButton.Name = 'CloseButton'
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Enabled = False
+    TabOrder = 0
+    ShowButtons = [pbClose]
+    ShowBevel = False
+  end
+  object ModeLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ModeComboBox
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 14
+    Top = 9
+    Width = 52
+    BorderSpacing.Left = 6
+    Caption = 'ModeLabel'
+    ParentColor = False
+  end
+  object ModeComboBox: TComboBox
+    AnchorSideLeft.Control = ModeLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 64
+    Height = 21
+    Top = 6
+    Width = 423
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    ItemHeight = 13
+    OnChange = ModeComboBoxChange
+    TabOrder = 1
+    Text = 'ModeComboBox'
+  end
+  object DiffsGroupBox: TGroupBox
+    AnchorSideTop.Control = ModeComboBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 237
+    Top = 33
+    Width = 481
+    Align = alBottom
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'DiffsGroupBox'
+    ClientHeight = 219
+    ClientWidth = 477
+    TabOrder = 2
+    object DiffTreeView: TTreeView
+      Left = 6
+      Height = 207
+      Top = 6
+      Width = 465
+      Align = alClient
+      BorderSpacing.Around = 6
+      DefaultItemHeight = 15
+      TabOrder = 0
+    end
+  end
+end

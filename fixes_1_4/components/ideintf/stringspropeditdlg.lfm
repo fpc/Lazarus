@@ -1,0 +1,85 @@
+object StringsPropEditorFrm: TStringsPropEditorFrm
+  Left = 311
+  Height = 302
+  Top = 158
+  Width = 400
+  ActiveControl = Memo
+  Caption = 'StringsPropEditorFrm'
+  ClientHeight = 302
+  ClientWidth = 400
+  Constraints.MinHeight = 160
+  Constraints.MinWidth = 180
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.27'
+  object TextGroupBox: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = BtnPanel
+    Left = 6
+    Height = 258
+    Top = 6
+    Width = 388
+    Align = alTop
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    ClientHeight = 240
+    ClientWidth = 384
+    TabOrder = 0
+    object StatusLabel: TLabel
+      AnchorSideBottom.Control = TextGroupBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 9
+      Height = 14
+      Top = 220
+      Width = 57
+      Anchors = [akLeft, akBottom]
+      BorderSpacing.Around = 6
+      Caption = 'StatusLabel'
+      ParentColor = False
+    end
+    object Memo: TMemo
+      AnchorSideLeft.Control = TextGroupBox
+      AnchorSideRight.Control = SortButton
+      AnchorSideBottom.Control = StatusLabel
+      Left = 6
+      Height = 208
+      Top = 6
+      Width = 291
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Around = 6
+      OnChange = MemoChange
+      ScrollBars = ssAutoBoth
+      TabOrder = 0
+      WordWrap = False
+    end
+    object SortButton: TButton
+      AnchorSideLeft.Control = Memo
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideRight.Control = TextGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 303
+      Height = 23
+      Top = 6
+      Width = 75
+      Anchors = [akTop, akRight]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'Sort'
+      Constraints.MinWidth = 75
+      OnClick = SortButtonClick
+      TabOrder = 1
+    end
+  end
+  object BtnPanel: TButtonPanel
+    Left = 6
+    Height = 26
+    Top = 270
+    Width = 388
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
+  end
+end

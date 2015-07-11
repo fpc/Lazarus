@@ -1,0 +1,64 @@
+inherited fWarnings: TfWarnings
+  Height = 255
+  ClientHeight = 255
+  OnResize = FrameResize
+  TabOrder = 0
+  DesignLeft = 254
+  DesignTop = 175
+  object Label1: TLabel[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cbWarnUnusedParams
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 14
+    Top = 58
+    Width = 168
+    BorderSpacing.Top = 6
+    BorderSpacing.Around = 6
+    Caption = '&Ignore unused parameters named:'
+    FocusControl = mIgnoreUnusedParams
+    ParentColor = False
+  end
+  object cbWarningsOn: TCheckBox[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 17
+    Top = 6
+    Width = 80
+    BorderSpacing.Around = 6
+    Caption = '&Warnings On'
+    OnChange = cbWarningsOnChange
+    TabOrder = 0
+  end
+  object cbWarnUnusedParams: TCheckBox[2]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cbWarningsOn
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 17
+    Top = 29
+    Width = 140
+    BorderSpacing.Around = 6
+    Caption = 'Warn &unused parameters'
+    OnChange = cbWarnUnusedParamsChange
+    TabOrder = 1
+  end
+  object mIgnoreUnusedParams: TMemo[3]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
+    Height = 171
+    Top = 78
+    Width = 308
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    ScrollBars = ssVertical
+    TabOrder = 2
+  end
+end

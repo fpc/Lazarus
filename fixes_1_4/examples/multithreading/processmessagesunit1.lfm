@@ -1,0 +1,36 @@
+object Form1: TForm1
+  Left = 286
+  Height = 142
+  Top = 202
+  Width = 303
+  HorzScrollBar.Page = 302
+  VertScrollBar.Page = 141
+  ActiveControl = StartStopButton
+  Caption = 'Form1'
+  ClientHeight = 142
+  ClientWidth = 303
+  OnCreate = FormCreate
+  LCLVersion = '1.1'
+  object StartStopButton: TButton
+    Left = 72
+    Height = 25
+    Top = 40
+    Width = 158
+    Anchors = [akTop]
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Start'
+    OnClick = StartStopButtonClick
+    TabOrder = 0
+  end
+  object ProgressBar1: TProgressBar
+    Left = 32
+    Height = 20
+    Top = 88
+    Width = 244
+    Anchors = [akTop, akLeft, akRight]
+    Max = 1000
+    Smooth = True
+    Step = 1
+    TabOrder = 1
+  end
+end

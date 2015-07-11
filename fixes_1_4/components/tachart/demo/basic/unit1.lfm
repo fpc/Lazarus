@@ -1,0 +1,336 @@
+object Form1: TForm1
+  Left = 341
+  Height = 494
+  Top = 225
+  Width = 585
+  Caption = 'Form1'
+  ClientHeight = 494
+  ClientWidth = 585
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object Chart1: TChart
+    Left = 0
+    Height = 392
+    Top = 0
+    Width = 585
+    AntialiasingMode = amOn
+    AxisList = <    
+      item
+        Grid.Color = clGray
+        Minors = <>
+        Title.LabelFont.Height = -11
+        Title.LabelFont.Name = 'MS Sans Serif'
+      end    
+      item
+        Grid.Color = clGray
+        Alignment = calBottom
+        Minors = <>
+        Title.LabelFont.Height = -11
+        Title.LabelFont.Name = 'MS Sans Serif'
+      end>
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clRed
+    Foot.Font.Height = -13
+    Foot.Font.Name = 'MS Sans Serif'
+    Foot.Font.Style = [fsBold]
+    Foot.Text.Strings = (
+      'This a LeftAligned Footer'
+    )
+    Legend.Font.Height = -11
+    Legend.Font.Name = 'MS Sans Serif'
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Font.Height = -11
+    Title.Font.Name = 'MS Sans Serif'
+    Title.Margin = 8
+    Title.Text.Strings = (
+      'Centered Chart Title'
+    )
+    Title.Visible = True
+    Align = alClient
+    ParentColor = False
+    object Chart1LineHor: TConstantLine
+      Legend.Visible = False
+      Pen.Style = psDash
+      Position = 0
+    end
+    object Chart1LineVert: TConstantLine
+      Legend.Visible = False
+      LineStyle = lsVertical
+      Pen.Style = psDash
+      Position = 0
+    end
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 102
+    Top = 392
+    Width = 585
+    Align = alBottom
+    ClientHeight = 102
+    ClientWidth = 585
+    TabOrder = 0
+    object lblAdd: TLabel
+      Left = 13
+      Height = 13
+      Top = 10
+      Width = 23
+      Caption = 'Add:'
+      ParentColor = False
+    end
+    object lblClear: TLabel
+      Left = 13
+      Height = 13
+      Top = 40
+      Width = 29
+      Caption = 'Clear:'
+      ParentColor = False
+    end
+    object lblAddCount: TLabel
+      Left = 288
+      Height = 13
+      Top = 8
+      Width = 57
+      Caption = 'Multiple add'
+      ParentColor = False
+    end
+    object lblMarkStyle: TLabel
+      Left = 48
+      Height = 13
+      Top = 80
+      Width = 77
+      Caption = 'Add with marks:'
+      ParentColor = False
+    end
+    object lblReticule: TLabel
+      Left = 360
+      Height = 13
+      Top = 80
+      Width = 42
+      Caption = 'Reticule:'
+      ParentColor = False
+    end
+    object btnAddPie: TButton
+      Left = 48
+      Height = 24
+      Top = 8
+      Width = 40
+      BorderSpacing.InnerBorder = 4
+      Caption = 'Pie'
+      OnClick = btnAddPieClick
+      TabOrder = 0
+    end
+    object btnAddLine: TButton
+      Left = 192
+      Height = 24
+      Top = 8
+      Width = 40
+      BorderSpacing.InnerBorder = 4
+      Caption = 'Line'
+      OnClick = btnAddLineClick
+      TabOrder = 1
+    end
+    object btnAddArea: TButton
+      Left = 96
+      Height = 24
+      Top = 8
+      Width = 40
+      BorderSpacing.InnerBorder = 4
+      Caption = 'Area'
+      OnClick = btnAddAreaClick
+      TabOrder = 2
+    end
+    object btnAddBar: TButton
+      Left = 144
+      Height = 24
+      Top = 8
+      Width = 40
+      BorderSpacing.InnerBorder = 4
+      Caption = 'Bar'
+      OnClick = btnAddBarClick
+      TabOrder = 3
+    end
+    object cbLegend: TCheckBox
+      Left = 384
+      Height = 17
+      Top = 8
+      Width = 55
+      Caption = 'Legend'
+      OnChange = cbLegendChange
+      TabOrder = 4
+    end
+    object cbBottomAxis: TCheckBox
+      Left = 384
+      Height = 17
+      Top = 24
+      Width = 77
+      Caption = 'Bottom Axis'
+      Checked = True
+      OnChange = cbBottomAxisChange
+      State = cbChecked
+      TabOrder = 5
+    end
+    object cbLeftAxis: TCheckBox
+      Left = 384
+      Height = 17
+      Top = 40
+      Width = 62
+      Caption = 'Left Axis'
+      Checked = True
+      OnChange = cbLeftAxisChange
+      State = cbChecked
+      TabOrder = 6
+    end
+    object cbTitle: TCheckBox
+      Left = 496
+      Height = 17
+      Top = 8
+      Width = 40
+      Caption = 'Title'
+      Checked = True
+      OnChange = cbTitleChange
+      State = cbChecked
+      TabOrder = 7
+    end
+    object cbFooter: TCheckBox
+      Left = 496
+      Height = 17
+      Top = 24
+      Width = 52
+      Caption = 'Footer'
+      OnChange = cbFooterChange
+      TabOrder = 8
+    end
+    object cbInverted: TCheckBox
+      Left = 496
+      Height = 17
+      Top = 40
+      Width = 62
+      Caption = 'Inverted'
+      OnChange = cbInvertedChange
+      TabOrder = 9
+    end
+    object btnClearBar: TButton
+      Left = 144
+      Height = 24
+      Top = 38
+      Width = 40
+      BorderSpacing.InnerBorder = 4
+      Caption = 'Bar'
+      OnClick = btnClearBarClick
+      TabOrder = 10
+    end
+    object btnClearArea: TButton
+      Left = 96
+      Height = 24
+      Top = 38
+      Width = 40
+      BorderSpacing.InnerBorder = 4
+      Caption = 'Area'
+      OnClick = btnClearAreaClick
+      TabOrder = 11
+    end
+    object btnClearLine: TButton
+      Left = 192
+      Height = 24
+      Top = 38
+      Width = 40
+      BorderSpacing.InnerBorder = 4
+      Caption = 'Line'
+      OnClick = btnClearLineClick
+      TabOrder = 12
+    end
+    object btnClearPie: TButton
+      Left = 48
+      Height = 24
+      Top = 38
+      Width = 40
+      BorderSpacing.InnerBorder = 4
+      Caption = 'Pie'
+      OnClick = btnClearPieClick
+      TabOrder = 13
+    end
+    object edAddCount: TSpinEdit
+      Left = 288
+      Height = 21
+      Top = 24
+      Width = 90
+      MaxValue = 1000000
+      MinValue = 1
+      TabOrder = 14
+      Value = 1
+    end
+    object cbShowGridCheckBox: TCheckBox
+      Left = 384
+      Height = 17
+      Top = 56
+      Width = 70
+      Caption = 'Show grid '
+      Checked = True
+      OnChange = cbShowGridCheckBoxChange
+      State = cbChecked
+      TabOrder = 15
+    end
+    object cbShowAxisTitles: TCheckBox
+      Left = 496
+      Height = 17
+      Top = 56
+      Width = 66
+      Caption = 'Axis titles'
+      OnChange = cbShowAxisTitlesChange
+      TabOrder = 16
+    end
+    object cbMarkStyle: TComboBox
+      Left = 132
+      Height = 21
+      Top = 76
+      Width = 136
+      ItemHeight = 13
+      ItemIndex = 5
+      Items.Strings = (
+        'smsCustom'
+        'smsNone'
+        'smsValue'
+        'smsPercent'
+        'smsLabel'
+        'smsLabelPercent'
+        'smsLabelValue'
+        'smsLegend'
+        'smsPercentTotal'
+        'smsLabelPercentTotal'
+        'smsXValue'
+      )
+      Style = csDropDownList
+      TabOrder = 17
+      Text = 'smsLabelPercent'
+    end
+    object cbReticule: TComboBox
+      Left = 416
+      Height = 21
+      Top = 76
+      Width = 136
+      ItemHeight = 13
+      ItemIndex = 0
+      Items.Strings = (
+        'rmNone'
+        'rmVertical'
+        'rmHorizontal'
+        'rmCross'
+      )
+      OnChange = cbReticuleChange
+      Style = csDropDownList
+      TabOrder = 18
+      Text = 'rmNone'
+    end
+    object btnClearAll: TButton
+      Left = 240
+      Height = 24
+      Top = 38
+      Width = 40
+      BorderSpacing.InnerBorder = 4
+      Caption = 'All'
+      OnClick = btnClearAllClick
+      TabOrder = 19
+    end
+  end
+end

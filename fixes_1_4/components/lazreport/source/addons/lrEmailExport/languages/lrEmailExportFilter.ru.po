@@ -1,0 +1,83 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: lremailexportfilter.saccount
+msgid "Account"
+msgstr "Параметры почты"
+
+#: lremailexportfilter.sadress
+msgid "Adress"
+msgstr "Электронный адрес"
+
+#: lremailexportfilter.sapplicationname
+msgid "Application name"
+msgstr "Имя почтовой программы"
+
+#: lremailexportfilter.sattachment
+msgid "Attachment"
+msgstr "Вложение"
+
+#: lremailexportfilter.sdirectsend
+msgid "Direct send"
+msgstr "Прямая отправка"
+
+#: lremailexportfilter.semail
+msgid "Email"
+msgstr "Электронное сообщение"
+
+#: lremailexportfilter.sformat
+msgid "Format"
+msgstr "Формат вложения"
+
+#: lremailexportfilter.sfromadress
+msgid "From adress"
+msgstr "Обратный адрес"
+
+#: lremailexportfilter.sfromname
+msgid "From name"
+msgstr "Отправитель"
+
+#: lremailexportfilter.shost
+msgid "Host"
+msgstr "Адрес почтового сервера"
+
+#: lremailexportfilter.slogin
+msgid "Login"
+msgstr "Имя пользователя"
+
+#: lremailexportfilter.smessage
+msgid "Message"
+msgstr "Сообщение"
+
+#: lremailexportfilter.spassword
+msgid "Password"
+msgstr "Пароль"
+
+#: lremailexportfilter.sport
+msgid "Port"
+msgstr "Порт"
+
+#: lremailexportfilter.ssendtoemail
+msgid "Send to email..."
+msgstr "Отправить сообщение на EMail..."
+
+#: lremailexportfilter.ssubject
+msgid "Subject"
+msgstr "Тема сообщения"
+
+#: lremailexportfilter.stext
+msgid "Text"
+msgstr "Текст сообщения"
+
+#: lremailexportfilter.susemailprogram
+msgid "Use mail program"
+msgstr "Использовать почтовую программу"
+

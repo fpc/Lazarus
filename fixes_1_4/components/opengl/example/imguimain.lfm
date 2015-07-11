@@ -1,0 +1,32 @@
+object Form1: TForm1
+  Left = 2223
+  Height = 480
+  Top = 247
+  Width = 640
+  Caption = 'IMGUI demo'
+  ClientHeight = 480
+  ClientWidth = 640
+  OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
+  OnKeyPress = FormKeyPress
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object OpenGLControl1: TOpenGLControl
+    Left = 0
+    Height = 480
+    Top = 0
+    Width = 640
+    Align = alClient
+    MultiSampling = 4
+    OnMouseDown = OpenGLControl1MouseDown
+    OnMouseMove = OpenGLControl1MouseMove
+    OnMouseUp = OpenGLControl1MouseUp
+    OnPaint = OpenGLControl1Paint
+  end
+  object Timer1: TTimer
+    Interval = 1
+    OnTimer = Timer1Timer
+    left = 16
+    top = 19
+  end
+end

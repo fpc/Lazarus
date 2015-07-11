@@ -1,0 +1,9 @@
+Properties on 'testsvnclasses.pas':
+  svn:mime-type : text/plain
+  svn:eol-style : native
+Properties on 'testsvncommand.pas':
+  svn:mime-type : text/plain
+  svn:eol-style : native
+Properties on 'fpcunitsvnpkg.lpi':
+  svn:mime-type : text/plain
+  svn:eol-style : native

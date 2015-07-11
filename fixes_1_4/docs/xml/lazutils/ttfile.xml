@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    TTFile
+  ====================================================================
+-->
+
+<module name="TTFile">
+<short></short>
+<descr>
+</descr>
+
+<!-- function Visibility: default -->
+<element name="TTFile_Init">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TTFile_Init.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TTFile_Done">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Open_Stream">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Open_Stream.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Open_Stream.name">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Open_Stream.stream">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TT_Close_Stream">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Close_Stream.stream">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Use_Stream">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Use_Stream.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Use_Stream.org_stream">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Use_Stream.stream">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TT_Flush_Stream">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Flush_Stream.stream">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TT_Done_Stream">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Done_Stream.stream">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Read_File">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Read_File.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Read_File.ABuff">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Read_File.ACount">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Seek_File">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Seek_File.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Seek_File.APos">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Skip_File">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Skip_File.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Skip_File.ADist">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Read_At_File">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Read_At_File.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Read_At_File.APos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Read_At_File.ABuff">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Read_At_File.ACount">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_File_Size">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_File_Size.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_File_Pos">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_File_Pos.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Stream_Size">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Stream_Size.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Stream_Size.stream">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Access_Frame">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Access_Frame.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Access_Frame.aSize">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Check_And_Access_Frame">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Check_And_Access_Frame.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Check_And_Access_Frame.aSize">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Forget_Frame">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Forget_Frame.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GET_Byte">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GET_Byte.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GET_Char">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GET_Char.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GET_Short">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GET_Short.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GET_UShort">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GET_UShort.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GET_Long">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GET_Long.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GET_ULong">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GET_ULong.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GET_Tag4">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GET_Tag4.Result">
+<short></short>
+</element>
+
+</module> <!-- TTFile -->
+
+</package>
+</fpdoc-descriptions>

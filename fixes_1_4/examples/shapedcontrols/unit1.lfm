@@ -1,0 +1,23 @@
+object Form1: TForm1
+  Left = 460
+  Height = 146
+  Top = 327
+  Width = 300
+  HorzScrollBar.Page = 299
+  VertScrollBar.Page = 145
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
+  Caption = 'Form1'
+  ClientHeight = 146
+  ClientWidth = 300
+  OnCreate = FormCreate
+  object Button1: TButton
+    Left = 24
+    Height = 57
+    Top = 40
+    Width = 248
+    Caption = 'Shaped button. Press to make window shaped.'
+    OnClick = Button1Click
+    TabOrder = 0
+  end
+end

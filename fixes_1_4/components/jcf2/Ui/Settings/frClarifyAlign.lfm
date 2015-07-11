@@ -1,0 +1,242 @@
+inherited fClarifyAlign: TfClarifyAlign
+  Height = 367
+  Width = 330
+  ClientHeight = 367
+  ClientWidth = 330
+  TabOrder = 0
+  DesignLeft = 719
+  DesignTop = 331
+  object Label6: TLabel[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtMaxVariance
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 14
+    Top = 254
+    Width = 65
+    BorderSpacing.Left = 6
+    Caption = 'Max Variance'
+    ParentColor = False
+  end
+  object Label4: TLabel[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtMaxColumn
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 14
+    Top = 227
+    Width = 59
+    BorderSpacing.Left = 6
+    Caption = 'Max Column'
+    ParentColor = False
+  end
+  object Label5: TLabel[2]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtMinColumn
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 14
+    Top = 200
+    Width = 55
+    BorderSpacing.Left = 6
+    Caption = 'Min Column'
+    ParentColor = False
+  end
+  object Label1: TLabel[3]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = eMaxUnaligned
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 14
+    Top = 308
+    Width = 70
+    BorderSpacing.Left = 6
+    Caption = 'Max unaligned'
+    ParentColor = False
+  end
+  object Label2: TLabel[4]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtMaxVarianceInterface
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 14
+    Top = 281
+    Width = 113
+    BorderSpacing.Left = 6
+    Caption = 'Max Variance Interface'
+    ParentColor = False
+  end
+  object cbInterfaceOnly: TCheckBox[5]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 17
+    Top = 6
+    Width = 88
+    BorderSpacing.Around = 6
+    Caption = 'Interface Only'
+    TabOrder = 0
+  end
+  object edtMaxVariance: TSpinEdit[6]
+    AnchorSideTop.Control = edtMaxColumn
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 176
+    Height = 21
+    Top = 251
+    Width = 57
+    Anchors = [akTop, akRight]
+    BorderSpacing.Around = 6
+    MaxValue = 999
+    MinValue = 1
+    OnExit = edtMaxColumnExit
+    TabOrder = 4
+    Value = 1
+  end
+  object edtMaxColumn: TSpinEdit[7]
+    AnchorSideTop.Control = edtMinColumn
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 176
+    Height = 21
+    Top = 224
+    Width = 57
+    Anchors = [akTop, akRight]
+    BorderSpacing.Around = 6
+    MaxValue = 150
+    OnExit = edtMaxColumnExit
+    TabOrder = 3
+  end
+  object edtMinColumn: TSpinEdit[8]
+    AnchorSideTop.Control = gbWhat
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 176
+    Height = 21
+    Top = 197
+    Width = 57
+    Anchors = [akTop, akRight]
+    BorderSpacing.Around = 6
+    MaxValue = 150
+    OnExit = edtMinColumnExit
+    TabOrder = 2
+  end
+  object gbWhat: TGroupBox[9]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cbInterfaceOnly
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 162
+    Top = 29
+    Width = 318
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'What to Align'
+    ClientHeight = 144
+    ClientWidth = 314
+    TabOrder = 1
+    object cbAlignAsign: TCheckBox
+      AnchorSideLeft.Control = gbWhat
+      AnchorSideTop.Control = gbWhat
+      Left = 6
+      Height = 17
+      Top = 6
+      Width = 49
+      BorderSpacing.Around = 6
+      Caption = 'Assign'
+      TabOrder = 0
+    end
+    object cbAlignConst: TCheckBox
+      AnchorSideLeft.Control = gbWhat
+      AnchorSideTop.Control = cbAlignAsign
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 17
+      Top = 29
+      Width = 46
+      BorderSpacing.Around = 6
+      Caption = 'Const'
+      TabOrder = 1
+    end
+    object cbAlignVar: TCheckBox
+      AnchorSideLeft.Control = gbWhat
+      AnchorSideTop.Control = cbAlignConst
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 17
+      Top = 52
+      Width = 95
+      BorderSpacing.Around = 6
+      Caption = 'Var declarations'
+      TabOrder = 2
+    end
+    object cbAlignTypedef: TCheckBox
+      AnchorSideLeft.Control = gbWhat
+      AnchorSideTop.Control = cbAlignField
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 17
+      Top = 98
+      Width = 66
+      BorderSpacing.Around = 6
+      Caption = 'Type defs'
+      TabOrder = 3
+    end
+    object cbAlignComment: TCheckBox
+      AnchorSideLeft.Control = gbWhat
+      AnchorSideTop.Control = cbAlignTypedef
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 17
+      Top = 121
+      Width = 63
+      BorderSpacing.Around = 6
+      Caption = 'Comment'
+      TabOrder = 4
+    end
+    object cbAlignField: TCheckBox
+      AnchorSideLeft.Control = gbWhat
+      AnchorSideTop.Control = cbAlignVar
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 17
+      Top = 75
+      Width = 121
+      BorderSpacing.Around = 6
+      Caption = 'Class and record field'
+      TabOrder = 5
+    end
+  end
+  object eMaxUnaligned: TSpinEdit[10]
+    AnchorSideTop.Control = edtMaxVarianceInterface
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 176
+    Height = 21
+    Top = 305
+    Width = 57
+    Anchors = [akTop, akRight]
+    BorderSpacing.Around = 6
+    MaxValue = 999
+    TabOrder = 5
+  end
+  object edtMaxVarianceInterface: TSpinEdit[11]
+    AnchorSideTop.Control = edtMaxVariance
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 176
+    Height = 21
+    Top = 278
+    Width = 57
+    Anchors = [akTop, akRight]
+    BorderSpacing.Around = 6
+    MaxValue = 999
+    MinValue = 1
+    OnExit = edtMaxColumnExit
+    TabOrder = 6
+    Value = 1
+  end
+end

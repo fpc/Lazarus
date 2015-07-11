@@ -1,0 +1,102 @@
+ Igor Paliychuk <mansonigor@gmail.com>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2012-04-23 10:42+0300\n"
+"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"Language-Team: \n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Virtaal 0.7.1\n"
+
+#: todoliststrconsts.dlgfropts
+msgid "Options"
+msgstr "Параметри"
+
+#: todoliststrconsts.dlgunitdeprefresh
+msgid "Refresh"
+msgstr "Оновити"
+
+#: todoliststrconsts.lisctinsertmacro
+msgid "Insert Macro"
+msgstr "Вставити Макрос"
+
+#: todoliststrconsts.lispkgfiletypetext
+msgid "Text"
+msgstr "Текст"
+
+#: todoliststrconsts.lisprint
+msgid "Print"
+msgstr "Друк"
+
+#: todoliststrconsts.listddinserttodo
+msgid "Insert ToDo"
+msgstr "Вставити ToDo"
+
+#: todoliststrconsts.listodoexport
+msgid "Export"
+msgstr "Експорт"
+
+#: todoliststrconsts.listodogoto
+msgid "Goto"
+msgstr "ЙтиДо"
+
+#: todoliststrconsts.listodoldescription
+msgid "Description"
+msgstr "Опис"
+
+#: todoliststrconsts.listodoldone
+msgid "Done"
+msgstr "Готово"
+
+#: todoliststrconsts.listodolfile
+msgid "Module"
+msgstr "Модуль"
+
+#: todoliststrconsts.listodolist
+#| msgid "ToDo list"
+msgid "ToDo List"
+msgstr "Список ToDo"
+
+#: todoliststrconsts.listodolistgotoline
+msgid "Goto selected source line"
+msgstr "Перейти до вибраного рядка поч. коду"
+
+#: todoliststrconsts.listodolistoptions
+#| msgid "ToDo options..."
+msgid "ToDo options ..."
+msgstr "Параметри ToDo ..."
+
+#: todoliststrconsts.listodolistprintlist
+msgid "Print todo items"
+msgstr "Друкувати елементи todo"
+
+#: todoliststrconsts.listodolistrefresh
+msgid "Refresh todo items"
+msgstr "Оновити елементи todo"
+
+#: todoliststrconsts.listodolline
+msgid "Line"
+msgstr "Рядок"
+
+#: todoliststrconsts.listodolowner
+msgid "Owner"
+msgstr "Власник"
+
+#: todoliststrconsts.listodolpriority
+msgid "Priority"
+msgstr "Пріоритет"
+
+#: todoliststrconsts.listtodolcategory
+msgid "Category"
+msgstr "Категорія"
+
+#: todoliststrconsts.lisviewtodolist
+#| msgid "View ToDo list"
+msgid "View ToDo List"
+msgstr "Перегляд списку ToDo"
+

@@ -1,0 +1,168 @@
+object Form1: TForm1
+  Left = 404
+  Height = 550
+  Top = 180
+  Width = 539
+  Caption = 'Form1'
+  ClientHeight = 550
+  ClientWidth = 539
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 550
+    Top = 0
+    Width = 539
+    ActivePage = tsPoints
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 0
+    object tsPoints: TTabSheet
+      Caption = 'Points'
+      ClientHeight = 524
+      ClientWidth = 531
+      object chPoints: TChart
+        Left = 0
+        Height = 490
+        Top = 34
+        Width = 531
+        AutoFocus = True
+        AxisList = <        
+          item
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+          end        
+          item
+            Alignment = calBottom
+            Minors = <>
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Margins.Left = 8
+        Margins.Top = 8
+        Margins.Right = 8
+        Margins.Bottom = 8
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'Drag data points while holding Shift key'
+          'Change point color by right-click'
+          'Show hint while holding ctrl key'
+        )
+        Title.Visible = True
+        Toolset = ctPoints
+        Align = alClient
+        DoubleBuffered = True
+        ParentColor = False
+        object chPointsLineSeries1: TLineSeries
+          Marks.Clipped = False
+          Marks.Format = '%0:.9g'
+          Marks.Style = smsValue
+          OnGetMark = chPointsLineSeries1GetMark
+          Pointer.Brush.Color = clPurple
+          Pointer.HorizSize = 6
+          Pointer.Style = psDiamond
+          Pointer.VertSize = 6
+          ShowPoints = True
+        end
+      end
+      object Panel1: TPanel
+        Left = 0
+        Height = 34
+        Top = 0
+        Width = 531
+        Align = alTop
+        ClientHeight = 34
+        ClientWidth = 531
+        TabOrder = 1
+        object cbSorted: TCheckBox
+          Left = 12
+          Height = 17
+          Top = 8
+          Width = 52
+          Caption = 'Sorted'
+          OnChange = cbSortedChange
+          TabOrder = 0
+        end
+      end
+    end
+    object tsBars: TTabSheet
+      Caption = 'Bars'
+      ClientHeight = 524
+      ClientWidth = 531
+      object chBars: TChart
+        Left = 0
+        Height = 524
+        Top = 0
+        Width = 531
+        AxisList = <        
+          item
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+          end        
+          item
+            Alignment = calBottom
+            Minors = <>
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Toolset = ctBars
+        Align = alClient
+        DoubleBuffered = True
+        ParentColor = False
+        object chBarsBarSeries1: TBarSeries
+          BarBrush.Color = clRed
+        end
+      end
+    end
+  end
+  object ctPoints: TChartToolset
+    left = 127
+    top = 157
+    object ctPointsDataPointDragTool1: TDataPointDragTool
+      Shift = [ssShift, ssLeft]
+      GrabRadius = 10
+      ActiveCursor = crDrag
+    end
+    object ctPointsDataPointClickTool1: TDataPointClickTool
+      Shift = [ssRight]
+      GrabRadius = 10
+      ActiveCursor = crHandPoint
+      OnPointClick = ctPointsDataPointClickTool1PointClick
+    end
+    object ctPointsDataPointHintTool1: TDataPointHintTool
+      Shift = [ssCtrl]
+      GrabRadius = 10
+      ActiveCursor = crHandPoint
+      OnHint = ctPointsDataPointHintTool1Hint
+      UseDefaultHintText = False
+    end
+  end
+  object ctBars: TChartToolset
+    left = 127
+    top = 224
+    object ctBarsDataPointDragTool1: TDataPointDragTool
+      Shift = [ssLeft]
+      OnBeforeKeyDown = ctBarsDataPointDragTool1BeforeKeyDown
+      GrabRadius = 30
+      OnDrag = ctBarsDataPointDragTool1Drag
+      OnDragStart = ctBarsDataPointDragTool1DragStart
+    end
+  end
+  object RandomChartSource1: TRandomChartSource
+    PointsNumber = 6
+    RandSeed = 71866733
+    XMax = 10
+    XMin = 0
+    YMax = 1
+    YMin = 0
+    left = 128
+    top = 104
+  end
+end

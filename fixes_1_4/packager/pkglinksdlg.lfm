@@ -1,0 +1,227 @@
+object PackageLinksDialog: TPackageLinksDialog
+  Left = 290
+  Height = 451
+  Top = 189
+  Width = 659
+  Caption = 'PackageLinksDialog'
+  ClientHeight = 451
+  ClientWidth = 659
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  Position = poScreenCenter
+  LCLVersion = '1.5'
+  object ScopeGroupBox: TGroupBox
+    Left = 0
+    Height = 120
+    Top = 0
+    Width = 659
+    Align = alTop
+    AutoSize = True
+    Caption = 'ScopeGroupBox'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.HorizontalSpacing = 6
+    ChildSizing.VerticalSpacing = 6
+    ClientHeight = 102
+    ClientWidth = 655
+    TabOrder = 0
+    object ShowGlobalLinksCheckBox: TCheckBox
+      AnchorSideLeft.Control = ScopeGroupBox
+      AnchorSideTop.Control = ScopeGroupBox
+      Left = 6
+      Height = 17
+      Top = 6
+      Width = 143
+      Caption = 'ShowGlobalLinksCheckBox'
+      Checked = True
+      OnChange = ShowGlobalLinksCheckBoxChange
+      State = cbChecked
+      TabOrder = 0
+    end
+    object ShowUserLinksCheckBox: TCheckBox
+      AnchorSideLeft.Control = ScopeGroupBox
+      AnchorSideTop.Control = ShowGlobalLinksCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 17
+      Top = 29
+      Width = 136
+      Caption = 'ShowUserLinksCheckBox'
+      Checked = True
+      OnChange = ShowUserLinksCheckBoxChange
+      State = cbChecked
+      TabOrder = 1
+    end
+    object LPKFileValidCheckBox: TCheckBox
+      AnchorSideLeft.Control = ScopeGroupBox
+      AnchorSideTop.Control = ShowUserLinksCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 17
+      Top = 52
+      Width = 120
+      Caption = 'LPKFileValidCheckBox'
+      Checked = True
+      OnChange = LPKFileValidCheckBoxChange
+      State = cbChecked
+      TabOrder = 2
+    end
+    object LPKFileInvalidCheckBox: TCheckBox
+      AnchorSideLeft.Control = LPKFileValidCheckBox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = LPKFileValidCheckBox
+      AnchorSideTop.Side = asrCenter
+      Left = 141
+      Height = 17
+      Top = 52
+      Width = 130
+      BorderSpacing.Left = 15
+      Caption = 'LPKFileInvalidCheckBox'
+      Checked = True
+      OnChange = LPKFileInvalidCheckBoxChange
+      State = cbChecked
+      TabOrder = 3
+    end
+    object FilterEdit: TEdit
+      AnchorSideLeft.Control = ScopeGroupBox
+      AnchorSideTop.Control = LPKFileValidCheckBox
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = ScopeGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 21
+      Top = 75
+      Width = 643
+      Anchors = [akTop, akLeft, akRight]
+      OnChange = FilterEditChange
+      OnEnter = FilterEditEnter
+      OnExit = FilterEditExit
+      TabOrder = 4
+      Text = 'FilterEdit'
+    end
+  end
+  object PkgStringGrid: TStringGrid
+    AnchorSideBottom.Control = BtnPanel
+    Left = 0
+    Height = 291
+    Top = 120
+    Width = 659
+    Align = alTop
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ColCount = 7
+    ColumnClickSorts = True
+    Columns = <    
+      item
+        ButtonStyle = cbsCheckboxColumn
+        Title.Caption = 'Select'
+      end    
+      item
+        ReadOnly = True
+        Title.Caption = 'Name'
+      end    
+      item
+        ReadOnly = True
+        Title.Caption = 'Version'
+      end    
+      item
+        ReadOnly = True
+        Title.Caption = 'Group'
+      end    
+      item
+        ReadOnly = True
+        Title.Caption = 'State'
+      end    
+      item
+        ReadOnly = True
+        Title.Caption = 'Filename'
+      end    
+      item
+        Title.Caption = 'Last Opened'
+      end>
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing, goTabs, goColSpanning, goDblClickAutoSize, goSmoothScroll]
+    PopupMenu = GridPopupMenu
+    TabOrder = 1
+  end
+  object BtnPanel: TPanel
+    Left = 0
+    Height = 40
+    Top = 411
+    Width = 659
+    Align = alBottom
+    AutoSize = True
+    ClientHeight = 40
+    ClientWidth = 659
+    TabOrder = 2
+    object CloseBitBtn: TBitBtn
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = BtnPanel
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = BtnPanel
+      AnchorSideBottom.Side = asrBottom
+      Left = 580
+      Height = 26
+      Top = 7
+      Width = 72
+      Anchors = [akRight, akBottom]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Cancel = True
+      Caption = '&Close'
+      Default = True
+      Kind = bkClose
+      ModalResult = 1
+      TabOrder = 0
+    end
+    object UpdateGlobalLinksButton: TButton
+      AnchorSideLeft.Control = DeleteSelectedButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = CloseBitBtn
+      AnchorSideTop.Side = asrCenter
+      Left = 143
+      Height = 23
+      Top = 9
+      Width = 145
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'UpdateGlobalLinksButton'
+      OnClick = UpdateGlobalLinksButtonClick
+      TabOrder = 1
+    end
+    object DeleteSelectedButton: TButton
+      AnchorSideLeft.Control = BtnPanel
+      AnchorSideTop.Control = CloseBitBtn
+      AnchorSideTop.Side = asrCenter
+      Left = 7
+      Height = 23
+      Top = 9
+      Width = 130
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'DeleteSelectedButton'
+      OnClick = DeleteSelectedButtonClick
+      TabOrder = 2
+    end
+  end
+  object ProgressBar1: TProgressBar
+    Left = 0
+    Height = 20
+    Top = 391
+    Width = 659
+    Align = alBottom
+    TabOrder = 3
+  end
+  object LPKParsingTimer: TTimer
+    OnTimer = LPKParsingTimerTimer
+    left = 355
+    top = 190
+  end
+  object GridPopupMenu: TPopupMenu
+    left = 206
+    top = 288
+    object CopyCellToClipboardMenuItem: TMenuItem
+      Caption = 'CopyCellToClipboard'
+      OnClick = CopyCellToClipboardMenuItemClick
+    end
+  end
+end

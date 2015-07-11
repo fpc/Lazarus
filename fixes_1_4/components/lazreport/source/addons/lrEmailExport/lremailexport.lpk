@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <Name Value="lrEmailExport"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+    </CompilerOptions>
+    <Files Count="6">
+      <Item1>
+        <Filename Value="lrEmailExportFilter.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="lrEmailExportFilter"/>
+      </Item1>
+      <Item2>
+        <Filename Value="lrEmailExportFilterSetup.lfm"/>
+        <Type Value="LFM"/>
+      </Item2>
+      <Item3>
+        <Filename Value="lrEmailExportFilterSetup.pas"/>
+        <UnitName Value="lrEmailExportFilterSetup"/>
+      </Item3>
+      <Item4>
+        <Filename Value="lremailappthebat.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="lrEmailAppTheBat"/>
+      </Item4>
+      <Item5>
+        <Filename Value="lremailappfreesoft.pas"/>
+        <UnitName Value="lrEmailAppFreeSoft"/>
+      </Item5>
+      <Item6>
+        <Filename Value="lremailappms.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="lrEmailAppMS"/>
+      </Item6>
+    </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="3">
+      <Item1>
+        <PackageName Value="lazreport"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="FCL"/>
+      </Item3>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

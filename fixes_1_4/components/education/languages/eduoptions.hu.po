@@ -1,0 +1,214 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
+"Language-Team: Magyar (Hungarian)\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: eduoptions.edurseducation
+msgid "Education"
+msgstr "Oktatás"
+
+#: eduoptions.ersaddanentrytothenewdialogtocreateanewprogram
+msgid "Add an entry to the %sNew ...%s dialog to create a new program"
+msgstr "Elem hozzáadása az %sÚj ...%s párbeszédhez új program létrehozására"
+
+#: eduoptions.ersaddanidemenuitemtocreateanewprogram
+msgid "Add an IDE menu item to create a new program"
+msgstr "IDE menüelem hozzáadása új program létrehozására"
+
+#: eduoptions.ersaddaspeedbuttontotheidetoolbartocreateanewprogram
+msgid "Add a speed button to the IDE toolbar to create a new program"
+msgstr "Gyorsgomb hozzáadása az IDE eszköztárához új program létrehozására "
+
+#: eduoptions.ersaddicon
+msgid "Add icon"
+msgstr "Ikon hozzáadása"
+
+#: eduoptions.ersaddmenuitem
+msgid "Add menu item"
+msgstr "Menüelem hozzáadása"
+
+#: eduoptions.ersaddtonewdialog
+msgid "Add to %sNew ...%s dialog"
+msgstr "Hozzáadás az %sÚj ...%s párbeszédhez"
+
+#: eduoptions.ersasimpleprogramonlyonefileiscreatedandaddedtothecur
+msgid "A simple program. Only one file is created and added to the current project."
+msgstr "Egy egyszerű program. Csak egyetlen fájl lezs létrehozva és a projekthez adva."
+
+#: eduoptions.erseducomppalettetitle
+msgid "Component palette"
+msgstr "Komponens paletta"
+
+#: eduoptions.erseduenvoptsframetitle
+msgid "General"
+msgstr "Általános"
+
+#: eduoptions.ersedumenutitle
+msgid "Menus"
+msgstr "Menük"
+
+#: eduoptions.ersedunewprogramtitle
+msgctxt "eduoptions.ersedunewprogramtitle"
+msgid "New program"
+msgstr "Új program"
+
+#: eduoptions.erseduoipages
+msgid "Object Inspector"
+msgstr "Objektum felügyelő"
+
+#: eduoptions.ersedupropseventstitle
+msgid "Properties and Events"
+msgstr "Tulajdonságok és események"
+
+#: eduoptions.ersedusbtitle
+msgid "Speed Buttons"
+msgstr "Gyorsgombok"
+
+#: eduoptions.ersenableeducheckboxcaption
+msgid "Enable education settings"
+msgstr "Oktatási beállítások engedéylezése"
+
+#: eduoptions.ersgrpboxeventsext
+msgid "Events: Extended Configuration"
+msgstr "Események: Bővített beállítások"
+
+#: eduoptions.ersgrpboxeventsfull
+msgid "Events: Full Configuration"
+msgstr "Események: Minden beállítás"
+
+#: eduoptions.ersgrpboxeventsmin
+msgid "Events: Minimal Configuration"
+msgstr "Események: Minimális beállítások"
+
+#: eduoptions.ersgrpboxpropsext
+msgid "Properties: Extended Configuration"
+msgstr "Tulajdonságok: Bővített beállítások"
+
+#: eduoptions.ersgrpboxpropsfull
+msgid "Properties: Full Configuration"
+msgstr "Tulajdonságok: Minden beállítás"
+
+#: eduoptions.ersgrpboxpropsmin
+msgid "Properties: Minimal Configuration"
+msgstr "Tulajdonságok: Minimális beállítások"
+
+#: eduoptions.ershideall
+msgid "Hide all"
+msgstr "Összes elrejtése"
+
+#: eduoptions.ersidemenuitems
+msgid "IDE menu items"
+msgstr "IDE menüelemek"
+
+#: eduoptions.ersloaddefaultcode
+msgid "Load default code?"
+msgstr "Alapértelmezett kód betöltése?"
+
+#: eduoptions.ersloadsourcefromfile
+msgid "Load source from file"
+msgstr "Forrás betöltése fájlból"
+
+#: eduoptions.ersnewprogram
+msgctxt "eduoptions.ersnewprogram"
+msgid "New program"
+msgstr "Új program"
+
+#: eduoptions.ersnewsinglefileeducationprogram
+msgid "New single file education program"
+msgstr "Új egy fájlból álló oktató program"
+
+#: eduoptions.ersnewsinglefileprogram
+msgid "New single file program"
+msgstr "Új egy fájlból álló program"
+
+#: eduoptions.ersrdbtnfull
+msgid "Show All"
+msgstr "Összes megjelenítése"
+
+#: eduoptions.ersrdgrpeventscaption
+msgid "Events"
+msgstr "Események"
+
+#: eduoptions.ersrdgrppropscaption
+msgid "Properties"
+msgstr "Tulajdonságok"
+
+#: eduoptions.ersreplacecurrentsourcewithdefaultsourcecode
+msgid "Replace current source with default source code"
+msgstr "Jelenlegi forrás cseréje az alapértelmezett forráskódra"
+
+#: eduoptions.ersreplacecurrentwithdefaultsourcecode
+msgid "Replace current with default source code?"
+msgstr "Jelenlegi cseréje az alapértelmezett forráskódra?"
+
+#: eduoptions.ersshowall
+msgid "Show all"
+msgstr "Összes megjelenítése"
+
+#: eduoptions.ersshowallchilds
+msgid "Show all children"
+msgstr "Minden gyermek megjeléenítése"
+
+#: eduoptions.ersshowextended
+msgid "Show Extended"
+msgstr "Bővített megjelenítés"
+
+#: eduoptions.ersshowminimal
+msgid "Show Minimal"
+msgstr "Minimalista megjelenítés"
+
+#: eduoptions.ersshowoipages
+msgid "Show Object Inspector Pages"
+msgstr "Objektumfelügyelő-lapok megjelenítése"
+
+#: eduoptions.ersshowselection
+msgid "Show Selection"
+msgstr "Kijelölés megjelenítése"
+
+#: eduoptions.erssinglefileprogram
+msgid "Single file program"
+msgstr "Egy fájlból álló program"
+
+#: eduoptions.erssource
+msgid "Source"
+msgstr "Forrás"
+
+#: eduoptions.erssttexteventsext
+msgid "OnClick, OnChange, OnMouseMove, OnDblClick, OnCreate, OnKeyPress, OnFormCreate"
+msgstr "OnClick, OnChange, OnMouseMove, OnDblClick, OnCreate, OnKeyPress, OnFormCreate"
+
+#: eduoptions.erssttexteventsfull
+msgid "All Events available"
+msgstr "Minden esemény elérhető"
+
+#: eduoptions.erssttexteventsmin
+msgid "OnClick, OnChange, OnMouseMove"
+msgstr "OnClick, OnChange, OnMouseMove"
+
+#: eduoptions.erssttextpropsext
+msgid "Align, Left, Top, Hint, ShowHint, ParentFont, TabOrder, ParentShowHint, WordWrap, FixedCols, FixedRows, DefaultColWidth, DefaultRowHeight, ColCount, RowCount, Borderstyle, Glyph, State, Interval, DataSource, DataField + DB-Properties"
+msgstr "Align, Left, Top, Hint, ShowHint, ParentFont, TabOrder, ParentShowHint, WordWrap, FixedCols, FixedRows, DefaultColWidth, DefaultRowHeight, ColCount, RowCount, Borderstyle, Glyph, State, Interval, DataSource, DataField + DB-Properties"
+
+#: eduoptions.erssttextpropsfull
+msgid "All Properties available"
+msgstr "Minden tulajdonság elérhető"
+
+#: eduoptions.erssttextpropsmin
+msgid "Name, Caption, Visible, Text, Checked, Items, Font, Color, Enabled, Height, Width, MaxLength, Picture, Columns"
+msgstr "Name, Caption, Visible, Text, Checked, Items, Font, Color, Enabled, Height, Width, MaxLength, Picture, Columns"
+
+#: eduoptions.ersvisiblecomponents
+msgid "Visible components"
+msgstr "Látható komponensek"
+
+#: eduoptions.ersvisiblespeedbuttons
+msgid "Visible SpeedButtons"
+msgstr "Látható gyorsgombok"

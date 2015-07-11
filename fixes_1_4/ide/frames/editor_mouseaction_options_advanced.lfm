@@ -1,0 +1,206 @@
+object EditorMouseOptionsAdvFrame: TEditorMouseOptionsAdvFrame
+  Left = 0
+  Height = 420
+  Top = 0
+  Width = 610
+  Anchors = [akTop]
+  ClientHeight = 420
+  ClientWidth = 610
+  TabOrder = 0
+  Visible = False
+  DesignLeft = 246
+  DesignTop = 209
+  object ActionGrid: TStringGrid
+    Left = 135
+    Height = 243
+    Top = 46
+    Width = 475
+    Align = alClient
+    AutoEdit = False
+    ColCount = 10
+    ExtendedSelect = False
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowSelect, goSmoothScroll, goHeaderHotTracking]
+    RowCount = 1
+    ScrollBars = ssAutoVertical
+    TabOrder = 0
+    TitleStyle = tsNative
+    OnCompareCells = ActionGridCompareCells
+    OnDblClick = UpdateButtonClick
+    OnHeaderClick = ActionGridHeaderClick
+    OnHeaderSized = ActionGridHeaderSized
+    OnMouseDown = ActionGridMouseDown
+    OnMouseMove = ActionGridMouseMove
+    OnMouseUp = ActionGridMouseUp
+    OnResize = ActionGridResize
+    OnSelection = ActionGridSelection
+  end
+  object ContextTree: TTreeView
+    Left = 0
+    Height = 243
+    Top = 46
+    Width = 130
+    Align = alLeft
+    AutoExpand = True
+    Constraints.MinWidth = 50
+    DefaultItemHeight = 18
+    ReadOnly = True
+    ShowButtons = False
+    ShowRoot = False
+    TabOrder = 1
+    OnChange = ContextTreeChange
+    Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowLines, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
+  end
+  object Splitter1: TSplitter
+    Left = 130
+    Height = 243
+    Top = 46
+    Width = 5
+    AutoSnap = False
+  end
+  object ToolBar1: TToolBar
+    Left = 0
+    Height = 46
+    Top = 0
+    Width = 610
+    AutoSize = True
+    ButtonHeight = 46
+    Caption = 'ToolBar1'
+    EdgeBorders = []
+    ShowCaptions = True
+    TabOrder = 3
+    object BtnImport: TToolButton
+      Left = 1
+      Top = 0
+      Caption = 'BtnImport'
+      OnClick = BtnImportClick
+    end
+    object BtnExport: TToolButton
+      Left = 70
+      Top = 0
+      Caption = 'BtnExport'
+      OnClick = BtnExportClick
+    end
+    object ToolButton3: TToolButton
+      Left = 139
+      Top = 0
+      Width = 5
+      Caption = 'ToolButton3'
+      Style = tbsDivider
+    end
+    object UpdateButton: TToolButton
+      Left = 144
+      Top = 0
+      Caption = 'UpdateButton'
+      OnClick = UpdateButtonClick
+    end
+    object AddNewButton: TToolButton
+      Left = 240
+      Top = 0
+      Caption = 'AddNewButton'
+      OnClick = AddNewButtonClick
+    end
+    object DelButton: TToolButton
+      Left = 340
+      Top = 0
+      Caption = 'DelButton'
+      OnClick = DelButtonClick
+    end
+  end
+  object OtherActionPanel: TPanel
+    Left = 0
+    Height = 126
+    Top = 294
+    Width = 610
+    Align = alBottom
+    ClientHeight = 126
+    ClientWidth = 610
+    TabOrder = 4
+    object Panel1: TPanel
+      Left = 1
+      Height = 26
+      Top = 1
+      Width = 608
+      Align = alTop
+      AutoSize = True
+      ClientHeight = 26
+      ClientWidth = 608
+      TabOrder = 0
+      object OtherActionLabel: TLabel
+        Left = 1
+        Height = 24
+        Top = 1
+        Width = 107
+        Align = alLeft
+        Caption = 'OtherActionLabel'
+        ParentColor = False
+        ParentShowHint = False
+        ShowHint = True
+      end
+      object OtherActToggleBox: TToggleBox
+        AnchorSideRight.Control = Panel1
+        AnchorSideRight.Side = asrBottom
+        Left = 477
+        Height = 24
+        Top = 0
+        Width = 130
+        Anchors = [akTop, akRight]
+        AutoSize = True
+        Caption = 'OtherActToggleBox'
+        Checked = True
+        OnChange = OtherActToggleBoxChange
+        State = cbChecked
+        TabOrder = 0
+      end
+    end
+    object OtherActionGrid: TStringGrid
+      Left = 1
+      Height = 98
+      Top = 27
+      Width = 608
+      Align = alClient
+      AutoEdit = False
+      ColCount = 12
+      Constraints.MinHeight = 40
+      ExtendedSelect = False
+      FixedCols = 0
+      MouseWheelOption = mwGrid
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goRowSelect, goSmoothScroll, goHeaderHotTracking]
+      RowCount = 1
+      ScrollBars = ssAutoVertical
+      TabOrder = 1
+      TitleStyle = tsNative
+      OnCompareCells = ActionGridCompareCells
+      OnHeaderClick = OtherActionGridHeaderClick
+      OnHeaderSized = OtherActionGridHeaderSized
+      OnMouseDown = OtherActionGridMouseDown
+      OnMouseMove = OtherActionGridMouseMove
+      OnMouseUp = OtherActionGridMouseUp
+      OnResize = OtherActionGridResize
+      OnSelectCell = OtherActionGridSelectCell
+    end
+  end
+  object Splitter2: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 289
+    Width = 610
+    Align = alBottom
+    MinSize = 40
+    ResizeAnchor = akBottom
+  end
+  object SaveDialog1: TSaveDialog
+    DefaultExt = '.xml'
+    Filter = 'xml|*.xml|any|*.*'
+    Options = [ofOverwritePrompt, ofPathMustExist, ofEnableSizing, ofViewDetail]
+    left = 24
+    top = 184
+  end
+  object OpenDialog1: TOpenDialog
+    DefaultExt = '.xml'
+    Options = [ofPathMustExist, ofFileMustExist, ofEnableSizing, ofViewDetail]
+    left = 72
+    top = 184
+  end
+end

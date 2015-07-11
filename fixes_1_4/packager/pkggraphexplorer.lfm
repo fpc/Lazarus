@@ -1,0 +1,99 @@
+object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
+  Left = 369
+  Height = 441
+  Top = 239
+  Width = 567
+  Caption = 'PkgGraphExplorerDlg'
+  ClientHeight = 441
+  ClientWidth = 567
+  KeyPreview = True
+  OnShow = PkgGraphExplorerShow
+  Position = poScreenCenter
+  LCLVersion = '1.3'
+  object InfoMemo: TMemo
+    Left = 0
+    Height = 144
+    Top = 297
+    Width = 567
+    Align = alBottom
+    Lines.Strings = (
+      'InfoMemo'
+    )
+    OnKeyDown = InfoMemoKeyDown
+    ReadOnly = True
+    TabOrder = 0
+  end
+  object VerticalSplitter: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 292
+    Width = 567
+    Align = alBottom
+    ResizeAnchor = akBottom
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 292
+    Top = 0
+    Width = 567
+    Align = alClient
+    Caption = 'Panel1'
+    ClientHeight = 292
+    ClientWidth = 567
+    TabOrder = 2
+    object LvlGraphControl1: TLvlGraphControl
+      Left = 200
+      Height = 290
+      Top = 1
+      Width = 366
+      Align = alClient
+      NodeStyle.Shape = lgnsNone
+      NodeStyle.GapTop = 2
+      NodeStyle.GapBottom = 6
+      NodeStyle.DefaultImageIndex = -1
+      NodeStyle.Coloring = lgncRGB
+      OnDblClick = LvlGraphControl1DblClick
+      OnSelectionChanged = LvlGraphControl1SelectionChanged
+      ParentColor = True
+      ParentShowHint = False
+      PopupMenu = PkgPopupMenu
+      TabOrder = 0
+      TabStop = False
+    end
+    object PkgTreeView: TTreeView
+      Left = 1
+      Height = 290
+      Top = 1
+      Width = 194
+      Align = alLeft
+      DefaultItemHeight = 18
+      PopupMenu = PkgPopupMenu
+      ReadOnly = True
+      TabOrder = 1
+      OnDblClick = PkgTreeViewDblClick
+      OnExpanding = PkgTreeViewExpanding
+      OnSelectionChanged = PkgTreeViewSelectionChanged
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+    end
+    object Splitter1: TSplitter
+      Left = 195
+      Height = 290
+      Top = 1
+      Width = 5
+    end
+  end
+  object PkgPopupMenu: TPopupMenu
+    OnPopup = PkgPopupMenuPopup
+    left = 32
+    top = 40
+    object UninstallMenuItem: TMenuItem
+      Caption = 'Uninstall'
+      OnClick = UninstallMenuItemClick
+    end
+    object CleanPkgDepsMenuItem: TMenuItem
+      Caption = 'Unneeded dependencies'
+      OnClick = CleanPkgDepsMenuItemClick
+    end
+  end
+end

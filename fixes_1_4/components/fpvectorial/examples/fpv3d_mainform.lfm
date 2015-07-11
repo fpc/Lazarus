@@ -1,0 +1,128 @@
+object formFPV3D: TformFPV3D
+  Left = 336
+  Height = 470
+  Top = 171
+  Width = 542
+  Caption = 'formFPV3D'
+  ClientHeight = 470
+  ClientWidth = 542
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '0.9.31'
+  object editFileName: TFileNameEdit
+    Left = 12
+    Height = 21
+    Top = 8
+    Width = 496
+    DialogOptions = []
+    FilterIndex = 0
+    HideDirectories = False
+    ButtonWidth = 23
+    NumGlyphs = 0
+    MaxLength = 0
+    TabOrder = 0
+  end
+  object buttonLoad: TButton
+    Left = 12
+    Height = 25
+    Top = 40
+    Width = 75
+    Caption = 'Load file'
+    OnClick = buttonLoadClick
+    TabOrder = 1
+  end
+  object glControl: TOpenGLControl
+    AnchorSideLeft.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 5
+    Height = 337
+    Top = 128
+    Width = 532
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 5
+    BorderSpacing.Right = 5
+    BorderSpacing.Bottom = 5
+    OnPaint = glControlPaint
+  end
+  object Button1: TButton
+    Left = 96
+    Height = 25
+    Top = 40
+    Width = 75
+    Caption = 'Refresh'
+    OnClick = Button1Click
+    TabOrder = 3
+  end
+  object buttonZoomIn: TButton
+    Left = 178
+    Height = 25
+    Top = 38
+    Width = 75
+    Caption = 'Zoom In'
+    OnClick = buttonZoomInClick
+    TabOrder = 4
+  end
+  object buttonZoomOut: TButton
+    Left = 261
+    Height = 25
+    Top = 38
+    Width = 75
+    Caption = 'Zoom Out'
+    OnClick = buttonZoomOutClick
+    TabOrder = 5
+  end
+  object buttonRotZ: TButton
+    Left = 345
+    Height = 25
+    Top = 38
+    Width = 103
+    Caption = 'Rot Around Z'
+    OnClick = buttonRotZClick
+    TabOrder = 6
+  end
+  object buttonCutFile: TButton
+    Left = 12
+    Height = 25
+    Top = 72
+    Width = 159
+    Caption = 'Cut File to make it smaller'
+    OnClick = buttonCutFileClick
+    TabOrder = 7
+  end
+  object btnConvert3DPointArrayToHeightMap: TButton
+    Left = 178
+    Height = 25
+    Top = 72
+    Width = 270
+    Caption = 'Convert 3D point array to height map'
+    OnClick = btnConvert3DPointArrayToHeightMapClick
+    TabOrder = 8
+  end
+  object progressBar: TProgressBar
+    Left = 112
+    Height = 20
+    Top = 104
+    Width = 220
+    TabOrder = 9
+  end
+  object labelStatus: TLabel
+    Left = 12
+    Height = 14
+    Top = 104
+    Width = 81
+    Caption = 'Please load a file'
+    ParentColor = False
+  end
+  object btnRotY: TButton
+    Left = 456
+    Height = 25
+    Top = 38
+    Width = 81
+    Caption = 'Rot Around Y'
+    OnClick = btnRotYClick
+    TabOrder = 10
+  end
+end

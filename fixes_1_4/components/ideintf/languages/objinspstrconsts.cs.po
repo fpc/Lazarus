@@ -1,0 +1,1577 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2013-01-09 16:21+0100\n"
+"Last-Translator: Václav Valíček <Valicek1994@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: objinspstrconsts.cactionlisteditorallcategory
+msgid "(All)"
+msgstr "(Vše)"
+
+#: objinspstrconsts.cactionlisteditordatabasecategory
+msgid "Database"
+msgstr "Databáze"
+
+#: objinspstrconsts.cactionlisteditordeleteaction
+msgctxt "objinspstrconsts.cactionlisteditordeleteaction"
+msgid "Delete"
+msgstr "Smazat"
+
+#: objinspstrconsts.cactionlisteditordeleteactionhint
+msgid "Delete Action"
+msgstr "Smazat akci"
+
+#: objinspstrconsts.cactionlisteditordialogcategory
+msgctxt "objinspstrconsts.cactionlisteditordialogcategory"
+msgid "Dialog"
+msgstr "Dialog"
+
+#: objinspstrconsts.cactionlisteditoreditcategory
+msgctxt "objinspstrconsts.cactionlisteditoreditcategory"
+msgid "Edit"
+msgstr "Upravit"
+
+#: objinspstrconsts.cactionlisteditorfilecategory
+msgid "File"
+msgstr "Soubor"
+
+#: objinspstrconsts.cactionlisteditorhelpcategory
+msgctxt "objinspstrconsts.cactionlisteditorhelpcategory"
+msgid "Help"
+msgstr "Nápověda"
+
+#: objinspstrconsts.cactionlisteditormovedownaction
+msgctxt "objinspstrconsts.cactionlisteditormovedownaction"
+msgid "Move Down"
+msgstr "Přesunout dolů"
+
+#: objinspstrconsts.cactionlisteditormoveupaction
+msgctxt "objinspstrconsts.cactionlisteditormoveupaction"
+msgid "Move Up"
+msgstr "Přesunout nahoru"
+
+#: objinspstrconsts.cactionlisteditornewaction
+msgid "New Action"
+msgstr "Nová akce"
+
+#: objinspstrconsts.cactionlisteditornewstdaction
+msgid "New Standard Action"
+msgstr "Nová standardní akce"
+
+#: objinspstrconsts.cactionlisteditorpaneldescrriptions
+msgid "Panel Descriptions"
+msgstr "Popisy panelu"
+
+#: objinspstrconsts.cactionlisteditorpaneltoolbar
+msgid "Toolbar"
+msgstr "Nástroje"
+
+#: objinspstrconsts.cactionlisteditorsearchcategory
+msgid "Search"
+msgstr "Hledání"
+
+#: objinspstrconsts.cactionlisteditorunknowncategory
+msgid "(Unknown)"
+msgstr "(Neznámý)"
+
+#: objinspstrconsts.cgcheckduplicate
+msgid "On Add, Check for Duplicate in Items"
+msgstr "Při přidání zkontrolovat zdvojené položky"
+
+#: objinspstrconsts.cgcheckduplicatemsg
+msgid "The \"%s\" Item is already listed. Add it anyway?"
+msgstr "Položka \"%s\" již je v seznamu. Přesto přidat?"
+
+#: objinspstrconsts.cgcheckgroupeditor
+msgid "CheckGroup Editor"
+msgstr "Editor CheckGroup"
+
+#: objinspstrconsts.cgcolumns
+msgid "Columns:"
+msgstr "Sloupce:"
+
+#: objinspstrconsts.cgdisable
+msgid "Popup to disable/enable items"
+msgstr "Vyvolat k zakázání/povolení položek"
+
+#: objinspstrconsts.clbadd
+msgid "Add new Item"
+msgstr "Přidat novou položku"
+
+#: objinspstrconsts.clbchecklistboxeditor
+msgid "CheckListBox Editor"
+msgstr "Editor CheckListBox"
+
+#: objinspstrconsts.clbdeletehint
+msgid "Delete the Item"
+msgstr "Smazat položku"
+
+#: objinspstrconsts.clbdeletequest
+msgid "Delete the Item %d \"%s\"?"
+msgstr "Smazat položku %d \"%s\"?"
+
+#: objinspstrconsts.clbdown
+msgctxt "objinspstrconsts.clbdown"
+msgid "Down"
+msgstr "Dolů"
+
+#: objinspstrconsts.clbmodify
+msgid "Modify the Item"
+msgstr "Změnit položku"
+
+#: objinspstrconsts.clbup
+msgctxt "objinspstrconsts.clbup"
+msgid "Up"
+msgstr "Nahoru"
+
+#: objinspstrconsts.dceaddfields
+msgid "Add Fields"
+msgstr ""
+
+#: objinspstrconsts.dcecolumneditor
+msgid "DBGrid Columns Editor"
+msgstr ""
+
+#: objinspstrconsts.dcedeleteall
+msgid "Delete All"
+msgstr ""
+
+#: objinspstrconsts.dcefetchlabels
+msgid "Fetch Labels"
+msgstr ""
+
+#: objinspstrconsts.dceoktodelete
+msgid "This will delete all columns. Continue?"
+msgstr ""
+
+#: objinspstrconsts.dcewillreplacecontinue
+msgid "This will replace all captions from dataset. Continue?"
+msgstr ""
+
+#: objinspstrconsts.dpeunabletoretrievefieldsdefinitions
+msgid "Unable to retrieve fields definition from dataset."
+msgstr ""
+
+#: objinspstrconsts.fescalculated
+msgid "&Calculated"
+msgstr "&Spočítáno"
+
+#: objinspstrconsts.fescancelbtn
+msgctxt "objinspstrconsts.fescancelbtn"
+msgid "Cancel"
+msgstr "Zrušit"
+
+#: objinspstrconsts.fescheckdset
+msgid "Check dataset settings"
+msgstr "Zkontrolujte nastavení datové sady"
+
+#: objinspstrconsts.fesdata
+msgid "&Data"
+msgstr "&Data"
+
+#: objinspstrconsts.fesdataset
+msgid "&Dataset:"
+msgstr "&Datová sada"
+
+#: objinspstrconsts.fesfetitle
+msgid "Edit Fields ..."
+msgstr "Upravit pole ..."
+
+#: objinspstrconsts.fesfieldcantbec
+msgid "Field %s cannot be created!"
+msgstr "Pole %s nemůže být vytvořeno!"
+
+#: objinspstrconsts.fesfieldprops
+msgid "Field properties"
+msgstr "Vlastnosti pole"
+
+#: objinspstrconsts.fesfieldtype
+msgid "Field Type"
+msgstr "Typ pole"
+
+#: objinspstrconsts.fesfltitle
+msgid "FieldDefs"
+msgstr "FieldDefs"
+
+#: objinspstrconsts.fesformcaption
+msgctxt "objinspstrconsts.fesformcaption"
+msgid "New field"
+msgstr "Nové pole"
+
+#: objinspstrconsts.feskeyfield
+msgid "&Key fields:"
+msgstr "&Klíčová pole:"
+
+#: objinspstrconsts.feslookup
+msgid "&Lookup"
+msgstr "&Vyhledat"
+
+#: objinspstrconsts.feslookupdef
+msgid "Lookup definition"
+msgstr "Vyhledat definici"
+
+#: objinspstrconsts.feslookupkeys
+msgid "L&ookup keys:"
+msgstr "&Hledané klíče:"
+
+#: objinspstrconsts.fesname
+msgid "&Name:"
+msgstr "&Jméno:"
+
+#: objinspstrconsts.fesnofields
+msgid "It was not possible to get the dataset field's list"
+msgstr "Nebylo možné získat seznam polí datové sady"
+
+#: objinspstrconsts.fesnofieldsnote
+msgid "Field's list is not available, can't check for duplicates"
+msgstr "Nelze kontrolovat duplikáty, protože seznam polí není dostupný"
+
+#: objinspstrconsts.fesokbtn
+msgctxt "objinspstrconsts.fesokbtn"
+msgid "OK"
+msgstr "OK"
+
+#: objinspstrconsts.fespersistentcompname
+msgid "Co&mponent Name:"
+msgstr "Jméno ko&mponenty"
+
+#: objinspstrconsts.fesresultfield
+msgid "&Result Fields:"
+msgstr "&Výsledné pole:"
+
+#: objinspstrconsts.fessize
+msgid "&Size:"
+msgstr "&Velikost:"
+
+#: objinspstrconsts.festype
+msgid "&Type:"
+msgstr "Typ:"
+
+#: objinspstrconsts.ilesadd
+msgctxt "objinspstrconsts.ilesadd"
+msgid "Add"
+msgstr "Přidat"
+
+#: objinspstrconsts.itcssearchandreplace
+msgid "Search and replace"
+msgstr ""
+
+#: objinspstrconsts.liisaddvalue
+msgid "Add value"
+msgstr "Přidat hodnotu"
+
+#: objinspstrconsts.liiselse
+msgid "Else"
+msgstr "Else"
+
+#: objinspstrconsts.liiselseif
+msgid "ElseIf"
+msgstr "ElseIf"
+
+#: objinspstrconsts.liisif
+msgid "If"
+msgstr "If"
+
+#: objinspstrconsts.liisifdef
+msgid "IfDef"
+msgstr "IfDef"
+
+#: objinspstrconsts.liisifndef
+msgid "IfNDef"
+msgstr "IfNDef"
+
+#: objinspstrconsts.liissetvalue
+msgid "Set value"
+msgstr "Nastavit hodnotu"
+
+#: objinspstrconsts.lisunabletofindparserfortool
+msgid "Unable to find parser for tool \"%s\""
+msgstr ""
+
+#: objinspstrconsts.nbcesaddpage
+msgid "Add Page"
+msgstr "Přidat stránku"
+
+#: objinspstrconsts.nbcesdeletepage
+msgid "Delete Page"
+msgstr "Smazat stránku"
+
+#: objinspstrconsts.nbcesinsertpage
+msgid "Insert Page"
+msgstr "Vložit stránku"
+
+#: objinspstrconsts.nbcesmovepageleft
+msgid "Move Page Left"
+msgstr "Přesunout stránku vlevo"
+
+#: objinspstrconsts.nbcesmovepageright
+msgid "Move Page Right"
+msgstr "Přesunout stránku vpravo"
+
+#: objinspstrconsts.nbcesshowpage
+msgid "Show Page"
+msgstr "Ukázat stránku"
+
+#: objinspstrconsts.oicoleditadd
+msgctxt "objinspstrconsts.oicoleditadd"
+msgid "Add"
+msgstr "Přidat"
+
+#: objinspstrconsts.oicoleditdelete
+msgctxt "objinspstrconsts.oicoleditdelete"
+msgid "Delete"
+msgstr "Smazat"
+
+#: objinspstrconsts.oicoleditdown
+msgctxt "objinspstrconsts.oicoleditdown"
+msgid "Down"
+msgstr "Dolů"
+
+#: objinspstrconsts.oicoleditediting
+msgid "Editing"
+msgstr "Editace"
+
+#: objinspstrconsts.oicoleditup
+msgctxt "objinspstrconsts.oicoleditup"
+msgid "Up"
+msgstr "Nahoru"
+
+#: objinspstrconsts.ois0lines0chars
+msgid "0 lines, 0 chars"
+msgstr "0 řádků, 0 znaků"
+
+#: objinspstrconsts.ois1linedchars
+msgid "1 line, %d chars"
+msgstr "1 řádek, %d znaků"
+
+#: objinspstrconsts.oisaction
+msgid "Action"
+msgstr "Akce"
+
+#: objinspstrconsts.oisactionlistcomponenteditor
+msgid "Action&List Editor ..."
+msgstr "Editor &ActionList ..."
+
+#: objinspstrconsts.oisactionlisteditor
+msgid "ActionList Editor"
+msgstr "Editor ActionList"
+
+#: objinspstrconsts.oisaddcollectionitem
+msgid "&Add Item"
+msgstr "&Přidat položku"
+
+#: objinspstrconsts.oisaddfields
+msgid "&Add fields"
+msgstr "&Přidat pole"
+
+#: objinspstrconsts.oisaddfieldsfromfielddefs
+msgid "Add fields from FieldDefs"
+msgstr "Přidat položky z FieldDefs"
+
+#: objinspstrconsts.oisaddtofavorites
+msgid "Add to Favorites"
+msgstr "Přidat do oblíbených"
+
+#: objinspstrconsts.oisallfiles
+msgid "All files"
+msgstr "Všechny soubory"
+
+#: objinspstrconsts.oisarray
+msgid "Array"
+msgstr "Pole"
+
+#: objinspstrconsts.oisboolean
+msgid "Boolean"
+msgstr "Logická hodnota"
+
+#: objinspstrconsts.oisbtncomponents
+msgid "Co&mponents"
+msgstr ""
+
+#: objinspstrconsts.oisbtnproperties
+msgid "&Properties"
+msgstr ""
+
+#: objinspstrconsts.oiscadd
+msgid "&Add"
+msgstr "&Přidat"
+
+#: objinspstrconsts.oiscancel
+msgctxt "objinspstrconsts.oiscancel"
+msgid "Cancel"
+msgstr "&Zrušit"
+
+#: objinspstrconsts.oiscategory
+msgid "Category"
+msgstr "Kategorie"
+
+#: objinspstrconsts.oiscdelete
+msgid "Delete?"
+msgstr "Odstranit?"
+
+#: objinspstrconsts.oischar
+msgid "Char"
+msgstr "Znak"
+
+#: objinspstrconsts.oischaractersforblanks
+msgid "Characters for Blanks"
+msgstr "Znaky pro prázdná místa"
+
+#: objinspstrconsts.oisclass
+msgid "Class"
+msgstr "Třída"
+
+#: objinspstrconsts.oisclear
+msgid "C&lear"
+msgstr "&Vyčistit"
+
+#: objinspstrconsts.oisclearpicture
+msgid "Clear picture"
+msgstr "Vyčistit obrázek"
+
+#: objinspstrconsts.oiscomponentnameisnotavalididentifier
+#, fuzzy,badformat
+#| msgid "Component name %s%s%s is not a valid identifier"
+msgid "Component name \"%s\" is not a valid identifier"
+msgstr "Jméno komponenty %s%s%s není platný identifikátor"
+
+#: objinspstrconsts.oiscomponentrestrictions
+msgid "Component restrictions: "
+msgstr "Omezení komponent:"
+
+#: objinspstrconsts.oisconfirmdelete
+msgid "Confirm delete"
+msgstr "Potvrdit smazání"
+
+#: objinspstrconsts.oiscopycomponents
+msgctxt "objinspstrconsts.oiscopycomponents"
+msgid "&Copy"
+msgstr "&Kopírovat"
+
+#: objinspstrconsts.oiscreateanewpascalunit
+msgid "Create a new pascal unit."
+msgstr "Vytvořit novou pascalovskou jednotku."
+
+#: objinspstrconsts.oiscreatedefaultevent
+msgid "Create default event"
+msgstr "Vytvořit výchozí událost"
+
+#: objinspstrconsts.oiscreatenewfieldandadditatcurrentposition
+msgid "Create new field and add it at current position"
+msgstr "Vytvořit nové pole a přidat je na aktuální pozici"
+
+#: objinspstrconsts.oiscutcomponents
+msgctxt "objinspstrconsts.oiscutcomponents"
+msgid "Cu&t"
+msgstr "&Vyjmout"
+
+#: objinspstrconsts.oisdelete
+msgctxt "objinspstrconsts.oisdelete"
+msgid "Delete"
+msgstr "Smazat"
+
+#: objinspstrconsts.oisdeletecomponents
+msgctxt "objinspstrconsts.oisdeletecomponents"
+msgid "&Delete"
+msgstr "&Smazat"
+
+#: objinspstrconsts.oisdeleteitem
+#, fuzzy,badformat
+#| msgid "Delete item %s%s%s?"
+msgid "Delete item \"%s\"?"
+msgstr "Smazat položku %s%s%s?"
+
+#: objinspstrconsts.oisdeleteselectedfields
+msgid "Delete selected field(s)"
+msgstr "Smazat označené položky"
+
+#: objinspstrconsts.oisdlinesdchars
+msgid "%d lines, %d chars"
+msgstr "%d řádků, %d znaků"
+
+#: objinspstrconsts.oisenumeration
+msgid "Enumeration"
+msgstr "Výčet"
+
+#: objinspstrconsts.oiserror
+msgid "Error"
+msgstr "Chyba"
+
+#: objinspstrconsts.oiserrordeletingaction
+msgid "Error deleting action"
+msgstr "Chyba odstranění akce"
+
+#: objinspstrconsts.oiserrorloadingimage
+msgid "Error loading image"
+msgstr "Chyba načítání obrázku"
+
+#: objinspstrconsts.oiserrorloadingimage2
+#, fuzzy,badformat
+#| msgid "Error loading image %s%s%s:%s%s"
+msgid "Error loading image \"%s\":%s%s"
+msgstr "Chyba načítání obrázku %s%s%s:%s%s"
+
+#: objinspstrconsts.oiserrorwhiledeletingaction
+msgid "Error while deleting action:%s%s"
+msgstr "Chyba při akci mazání: %s%s"
+
+#: objinspstrconsts.oisevents
+msgid "Events"
+msgstr "Události"
+
+#: objinspstrconsts.oisfavorites
+msgid "Favorites"
+msgstr "Oblíbené"
+
+#: objinspstrconsts.oisfinddeclaration
+msgid "Jump to declaration"
+msgstr "Skok na deklaraci"
+
+#: objinspstrconsts.oisfloat
+msgid "Float"
+msgstr "Desetinné číslo"
+
+#: objinspstrconsts.oishelp
+msgid "&Help"
+msgstr "&Pomoc"
+
+#: objinspstrconsts.oisimagelistcomponenteditor
+msgid "I&mageList Editor ..."
+msgstr "Editor I&mageList ..."
+
+#: objinspstrconsts.oisincompatibleidentifier
+msgid "Incompatible Identifier"
+msgstr "Nekompatibilní identifikátor"
+
+#: objinspstrconsts.oisincompatiblemethod
+msgid "Incompatible Method"
+msgstr "Nekompatibilní metoda"
+
+#: objinspstrconsts.oisinputmask
+msgid "Input Mask:"
+msgstr "Vstupní maska:"
+
+#: objinspstrconsts.oisint64
+msgid "Int64"
+msgstr "64-bit číslo"
+
+#: objinspstrconsts.oisinteger
+msgid "Integer"
+msgstr "Číslo"
+
+#: objinspstrconsts.oisinterface
+msgid "Interface"
+msgstr "Rozhraní"
+
+#: objinspstrconsts.oisinvalidpropertyvalue
+msgid "Invalid property value"
+msgstr "Neplatná hodnota vlastnosti"
+
+#: objinspstrconsts.oisisnotavalidmethodname
+#, fuzzy,badformat
+#| msgid "%s%s%s is not a valid method name."
+msgid "\"%s\" is not a valid method name."
+msgstr "%s%s%s není platné jméno metody"
+
+#: objinspstrconsts.oisitemsselected
+msgid "%u items selected"
+msgstr "%u položek vybráno"
+
+#: objinspstrconsts.oisjumptodeclarationof
+msgid "Jump to declaration of %s"
+msgstr "Skok na deklaraci %s"
+
+#: objinspstrconsts.oisload
+msgid "&Load"
+msgstr "&Načíst"
+
+#: objinspstrconsts.oisloadimagedialog
+msgid "Load Image Dialog"
+msgstr "Dialog načtení obrázku"
+
+#: objinspstrconsts.oisloadpicture
+msgid "Load picture"
+msgstr "Načíst obrázek"
+
+#: objinspstrconsts.oismasks
+msgid "Masks ..."
+msgstr "Masky ..."
+
+#: objinspstrconsts.oismethod
+msgid "Method"
+msgstr "Metoda"
+
+#: objinspstrconsts.oismixed
+msgid "(Mixed)"
+msgstr ""
+
+#: objinspstrconsts.oismovedown
+msgid "Move &Down"
+msgstr "Přesunout &dolů"
+
+#: objinspstrconsts.oismovedownhint
+msgid "Move field down"
+msgstr "Posunoud pole níže"
+
+#: objinspstrconsts.oismoveup
+msgctxt "objinspstrconsts.oismoveup"
+msgid "Move &Up"
+msgstr "Přesunout &nahoru"
+
+#: objinspstrconsts.oismoveuphint
+msgid "Move field up"
+msgstr "Posunout pole výše"
+
+#: objinspstrconsts.oisnew
+msgid "&New"
+msgstr "&Nový"
+
+#: objinspstrconsts.oisnone
+msgid "(none)"
+msgstr "(žádný)"
+
+#: objinspstrconsts.oisobject
+msgid "Object"
+msgstr "Objekt"
+
+#: objinspstrconsts.oisobjectinspector
+msgid "Object Inspector"
+msgstr "Inspektor objektů"
+
+#: objinspstrconsts.oisok
+msgid "&OK"
+msgstr "&OK"
+
+#: objinspstrconsts.oisok2
+msgid "Ok"
+msgstr "Ok"
+
+#: objinspstrconsts.oisopenmaskfile
+msgid "Open masks file (*.dem)"
+msgstr "Otevřít soubor masek (*.dem)"
+
+#: objinspstrconsts.oisoptions
+msgid "Options"
+msgstr "Nastavení"
+
+#: objinspstrconsts.oisorderbackone
+msgid "Back One"
+msgstr "Zpět o jedno"
+
+#: objinspstrconsts.oisorderforwardone
+msgid "Forward One"
+msgstr "Dopředu o jedno"
+
+#: objinspstrconsts.oisordermovetoback
+msgid "Move to Back"
+msgstr "Přesunout zpět"
+
+#: objinspstrconsts.oisordermovetofront
+msgid "Move to Front"
+msgstr "Přesunout dopředu"
+
+#: objinspstrconsts.oispastecomponents
+msgctxt "objinspstrconsts.oispastecomponents"
+msgid "&Paste"
+msgstr "V&ložit"
+
+#: objinspstrconsts.oispeopenimagefile
+msgid "Open image file"
+msgstr "Otevřít obrázkový soubor"
+
+#: objinspstrconsts.oispepicture
+msgid "Picture"
+msgstr "Obrázek"
+
+#: objinspstrconsts.oispesaveimageas
+msgid "Save image as"
+msgstr "Uložit obrázek jako"
+
+#: objinspstrconsts.oispressakey
+msgid "Press a key ..."
+msgstr ""
+
+#: objinspstrconsts.oisproperties
+msgid "Properties"
+msgstr "Vlastnosti"
+
+#: objinspstrconsts.oispropertiesof
+msgid "Properties of %s"
+msgstr "Vlastnosti %s"
+
+#: objinspstrconsts.oisrecord
+msgid "Record"
+msgstr "Záznam"
+
+#: objinspstrconsts.oisremovefromfavorites
+msgid "Remove from Favorites"
+msgstr "Odebrat z oblíbených"
+
+#: objinspstrconsts.oisrestricted
+msgid "Restricted"
+msgstr "Omezené"
+
+#: objinspstrconsts.oissamplemasks
+msgid "Sample Masks:"
+msgstr "Ukázková maska:"
+
+#: objinspstrconsts.oissave
+msgid "&Save"
+msgstr "&Uložit"
+
+#: objinspstrconsts.oissaveliteralcharacters
+msgid "Save Literal Characters"
+msgstr "Uložit přesné znaky"
+
+#: objinspstrconsts.oissavepicture
+msgid "Save picture"
+msgstr "Uložit obrázek"
+
+#: objinspstrconsts.oisselectafile
+msgid "Select a file"
+msgstr "Vybrat soubor"
+
+#: objinspstrconsts.oisselectall
+msgid "&Select all"
+msgstr "Vybrat vše"
+
+#: objinspstrconsts.oisselectallhint
+msgid "Select All Fields"
+msgstr "Vybrat všechna pole"
+
+#: objinspstrconsts.oisselectedproperties
+msgid "&Selected Properties"
+msgstr ""
+
+#: objinspstrconsts.oisselectshortcut
+msgid "Select short cut"
+msgstr "Vybrat zkratku"
+
+#: objinspstrconsts.oisset
+msgid "Set"
+msgstr "Množina"
+
+#: objinspstrconsts.oissetmaxconstraints
+msgid "Set MaxHeight=%d, MaxWidth=%d"
+msgstr "MaxHeight=%d, MaxWidth=%d"
+
+#: objinspstrconsts.oissetmaxconstraintshint
+msgid "Use current size as Max Constraints"
+msgstr "Použít aktuální velikost jako Maximální rozměry"
+
+#: objinspstrconsts.oissetminconstraints
+msgid "Set MinHeight=%d, MinWidth=%d"
+msgstr "MinHeight=%d, MinWidth=%d"
+
+#: objinspstrconsts.oissetminconstraintshint
+msgid "Use current size as Min Constraints"
+msgstr "Použít aktuální velikost jako Minimální rozměry"
+
+#: objinspstrconsts.oissettodefault
+msgid "Set to default: %s"
+msgstr "Nastavit na výchozí: %s"
+
+#: objinspstrconsts.oissettodefaulthint
+msgid "Set property value to Default"
+msgstr "Natavit hodnotu vlastnosti jako Výchozí"
+
+#: objinspstrconsts.oisshowcomponenttree
+msgid "Show Component Tree"
+msgstr "Ukázat strom komponent"
+
+#: objinspstrconsts.oisshowhints
+msgid "Show Hints"
+msgstr "Ukázat pokyny"
+
+#: objinspstrconsts.oisshowinfobox
+msgid "Show Information Box"
+msgstr ""
+
+#: objinspstrconsts.oisshowstatusbar
+msgid "Show Status Bar"
+msgstr ""
+
+#: objinspstrconsts.oissort
+msgid "Sort"
+msgstr "Seřadit"
+
+#: objinspstrconsts.oisstdactionlisteditor
+msgid "Standard Action Classes"
+msgstr "Třídy standardních akcí"
+
+#: objinspstrconsts.oisstdactionlisteditorclass
+msgid "Available Action Classes:"
+msgstr "Třídy dostupných akcí"
+
+#: objinspstrconsts.oisstring
+msgid "String"
+msgstr "Řetězec"
+
+#: objinspstrconsts.oisstringseditordialog
+msgid "Strings Editor Dialog"
+msgstr "Dialog editoru řetězců"
+
+#: objinspstrconsts.oistdactcolorselect1headline
+msgid "Select &Color ..."
+msgstr "Vybrat barvu ..."
+
+#: objinspstrconsts.oistdactcolorselecthint
+msgid "Color Select"
+msgstr "Výběr barvy"
+
+#: objinspstrconsts.oistdactdatasetcancel1hint
+msgctxt "objinspstrconsts.oistdactdatasetcancel1hint"
+msgid "Cancel"
+msgstr "Zrušit"
+
+#: objinspstrconsts.oistdactdatasetcancelheadline
+msgctxt "objinspstrconsts.oistdactdatasetcancelheadline"
+msgid "&Cancel"
+msgstr "&Zrušit"
+
+#: objinspstrconsts.oistdactdatasetdeleteheadline
+msgctxt "objinspstrconsts.oistdactdatasetdeleteheadline"
+msgid "&Delete"
+msgstr "&Smazat"
+
+#: objinspstrconsts.oistdactdatasetdeletehint
+msgctxt "objinspstrconsts.oistdactdatasetdeletehint"
+msgid "Delete"
+msgstr "Smazat"
+
+#: objinspstrconsts.oistdactdataseteditheadline
+msgid "&Edit"
+msgstr "&Upravit"
+
+#: objinspstrconsts.oistdactdatasetedithint
+msgctxt "objinspstrconsts.oistdactdatasetedithint"
+msgid "Edit"
+msgstr "Upravit"
+
+#: objinspstrconsts.oistdactdatasetfirstheadline
+msgid "&First"
+msgstr "&První"
+
+#: objinspstrconsts.oistdactdatasetfirsthint
+msgid "First"
+msgstr "První"
+
+#: objinspstrconsts.oistdactdatasetinsertheadline
+msgid "&Insert"
+msgstr "&Vložit"
+
+#: objinspstrconsts.oistdactdatasetinserthint
+msgctxt "objinspstrconsts.oistdactdatasetinserthint"
+msgid "Insert"
+msgstr "Vložit"
+
+#: objinspstrconsts.oistdactdatasetlastheadline
+msgid "&Last"
+msgstr "&Poslední"
+
+#: objinspstrconsts.oistdactdatasetlasthint
+msgid "Last"
+msgstr "Poslední"
+
+#: objinspstrconsts.oistdactdatasetnextheadline
+msgid "&Next"
+msgstr "&Další"
+
+#: objinspstrconsts.oistdactdatasetnexthint
+msgctxt "objinspstrconsts.oistdactdatasetnexthint"
+msgid "Next"
+msgstr "Další"
+
+#: objinspstrconsts.oistdactdatasetpostheadline
+msgid "P&ost"
+msgstr "&Následující"
+
+#: objinspstrconsts.oistdactdatasetposthint
+msgid "Post"
+msgstr "Následující"
+
+#: objinspstrconsts.oistdactdatasetpriorheadline
+msgid "&Prior"
+msgstr "&Předchozí"
+
+#: objinspstrconsts.oistdactdatasetpriorhint
+msgctxt "objinspstrconsts.oistdactdatasetpriorhint"
+msgid "Prior"
+msgstr "Předchozí"
+
+#: objinspstrconsts.oistdactdatasetrefreshheadline
+msgid "&Refresh"
+msgstr "&Obnovit"
+
+#: objinspstrconsts.oistdactdatasetrefreshhint
+msgid "Refresh"
+msgstr "Obnovit"
+
+#: objinspstrconsts.oistdacteditcopyheadline
+msgctxt "objinspstrconsts.oistdacteditcopyheadline"
+msgid "&Copy"
+msgstr "&Kopírovat"
+
+#: objinspstrconsts.oistdacteditcopyshortcut
+msgid "Ctrl+C"
+msgstr "Ctrl+C"
+
+#: objinspstrconsts.oistdacteditcopyshorthint
+msgid "Copy"
+msgstr "Kopírovat"
+
+#: objinspstrconsts.oistdacteditcutheadline
+msgctxt "objinspstrconsts.oistdacteditcutheadline"
+msgid "Cu&t"
+msgstr "&Vyjmout"
+
+#: objinspstrconsts.oistdacteditcutshortcut
+msgid "Ctrl+X"
+msgstr "Ctrl+X"
+
+#: objinspstrconsts.oistdacteditcutshorthint
+msgid "Cut"
+msgstr "Vyjmout"
+
+#: objinspstrconsts.oistdacteditdeleteheadline
+msgctxt "objinspstrconsts.oistdacteditdeleteheadline"
+msgid "&Delete"
+msgstr "&Smazat"
+
+#: objinspstrconsts.oistdacteditdeleteshortcut
+msgid "Del"
+msgstr "Smazat"
+
+#: objinspstrconsts.oistdacteditdeleteshorthint
+msgctxt "objinspstrconsts.oistdacteditdeleteshorthint"
+msgid "Delete"
+msgstr "Smazat"
+
+#: objinspstrconsts.oistdacteditpasteheadline
+msgctxt "objinspstrconsts.oistdacteditpasteheadline"
+msgid "&Paste"
+msgstr "V&ložit"
+
+#: objinspstrconsts.oistdacteditpasteshortcut
+msgid "Ctrl+V"
+msgstr "Ctrl+V"
+
+#: objinspstrconsts.oistdacteditpasteshorthint
+msgid "Paste"
+msgstr "Vložit"
+
+#: objinspstrconsts.oistdacteditselectallheadline
+msgid "Select &All"
+msgstr "Vybrat &vše"
+
+#: objinspstrconsts.oistdacteditselectallshortcut
+msgid "Ctrl+A"
+msgstr "Ctrl+A"
+
+#: objinspstrconsts.oistdacteditselectallshorthint
+msgid "Select All"
+msgstr "Vybrat vše"
+
+#: objinspstrconsts.oistdacteditundoheadline
+msgid "&Undo"
+msgstr "&Zpět"
+
+#: objinspstrconsts.oistdacteditundoshortcut
+msgid "Ctrl+Z"
+msgstr "Ctrl+Z"
+
+#: objinspstrconsts.oistdacteditundoshorthint
+msgctxt "objinspstrconsts.oistdacteditundoshorthint"
+msgid "Undo"
+msgstr "Zpět"
+
+#: objinspstrconsts.oistdactfileexitheadline
+msgid "E&xit"
+msgstr "&Upravit"
+
+#: objinspstrconsts.oistdactfileexithint
+msgid "Exit"
+msgstr "Odejít"
+
+#: objinspstrconsts.oistdactfileopenheadline
+msgid "&Open ..."
+msgstr "&Otevřít ..."
+
+#: objinspstrconsts.oistdactfileopenhint
+msgctxt "objinspstrconsts.oistdactfileopenhint"
+msgid "Open"
+msgstr "Otevřít"
+
+#: objinspstrconsts.oistdactfileopenshortcut
+msgid "Ctrl+O"
+msgstr "Ctrl+O"
+
+#: objinspstrconsts.oistdactfileopenwithheadline
+msgid "Open with ..."
+msgstr "Otevřít s ..."
+
+#: objinspstrconsts.oistdactfileopenwithhint
+msgid "Open with"
+msgstr "Otevřít s"
+
+#: objinspstrconsts.oistdactfilesaveasheadline
+msgid "Save &As ..."
+msgstr "Uložit jako ..."
+
+#: objinspstrconsts.oistdactfilesaveashint
+msgid "Save As"
+msgstr "Uložit jako"
+
+#: objinspstrconsts.oistdactfonteditheadline
+msgid "Select &Font ..."
+msgstr "Vybrat &písmo ..."
+
+#: objinspstrconsts.oistdactfontedithint
+msgid "Font Select"
+msgstr "Výběr písma"
+
+#: objinspstrconsts.oistdacthelpcontentsheadline
+msgid "&Contents"
+msgstr "&Obsah"
+
+#: objinspstrconsts.oistdacthelpcontentshint
+msgid "Help Contents"
+msgstr "Obsah nápovědy"
+
+#: objinspstrconsts.oistdacthelphelphelpheadline
+msgid "&Help on Help"
+msgstr "&Nápověda v nápovědě"
+
+#: objinspstrconsts.oistdacthelphelphelphint
+msgid "Help on help"
+msgstr "Nápověda v nápovědě"
+
+#: objinspstrconsts.oistdacthelptopicsearchheadline
+msgid "&Topic Search"
+msgstr "Hl&edání tématu"
+
+#: objinspstrconsts.oistdacthelptopicsearchhint
+msgid "Topic Search"
+msgstr "Hledání tématu"
+
+#: objinspstrconsts.oistdactsearchfindfirstheadline
+msgid "F&ind First"
+msgstr "Na&jít první"
+
+#: objinspstrconsts.oistdactsearchfindfirsthint
+msgid "Find first"
+msgstr "Hledat první"
+
+#: objinspstrconsts.oistdactsearchfindheadline
+msgid "&Find ..."
+msgstr "&Hledat ..."
+
+#: objinspstrconsts.oistdactsearchfindhint
+msgid "Find"
+msgstr "Hledat"
+
+#: objinspstrconsts.oistdactsearchfindnextheadline
+msgid "Find &Next"
+msgstr "Najít &další"
+
+#: objinspstrconsts.oistdactsearchfindnexthint
+msgid "Find next"
+msgstr "Hledat další"
+
+#: objinspstrconsts.oistdactsearchfindnextshortcut
+msgid "F3"
+msgstr "F3"
+
+#: objinspstrconsts.oistdactsearchfindshortcut
+msgid "Ctrl+F"
+msgstr "Ctrl+F"
+
+#: objinspstrconsts.oistdactsearchreplaceheadline
+msgid "&Replace"
+msgstr "&Nahradit"
+
+#: objinspstrconsts.oistdactsearchreplacehint
+msgid "Replace"
+msgstr "Nahradit"
+
+#: objinspstrconsts.oistestdialog
+msgid "Test dialog ..."
+msgstr "Zkušební dialog ..."
+
+#: objinspstrconsts.oistestinput
+msgid "Test Input"
+msgstr "Zkušební vstup"
+
+#: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
+#, fuzzy,badformat
+#| msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
+msgid "The identifier \"%s\" is not a method.%sPress Cancel to undo,%spress Ignore to force it."
+msgstr "Identifikátor %s%s%s není metoda.%sStiskněte Zrušit k návratu zpět,%sstiskněte Ignorovat k vynucení."
+
+#: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
+#, fuzzy,badformat
+#| msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
+msgid "The method \"%s\" is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
+msgstr "Metoda %s%s%s není kompatibilní s touto událostí (%s).%sStiskněte Zrušit pro návrat zpět, %sstiskněte Ignorovat pro vynucení."
+
+#: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
+#, fuzzy,badformat
+#| msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
+msgid "The method \"%s\" is not published.%sPress Cancel to undo,%spress Ignore to force it."
+msgstr "Metoda %s%s%s není zveřejněná.%sStiskněte Zrušit pro návrat zpět,%sstiskněte Ignorovat pro vynucení."
+
+#: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
+#, fuzzy,badformat
+#| msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
+msgid "Unable to change parent of control \"%s\" to new parent \"%s\".%s%s"
+msgstr "Nelze změnit rodiče ovládacího prvku %s%s%s na nového rodiče %s%s%s.%s%s"
+
+#: objinspstrconsts.oisundo
+msgctxt "objinspstrconsts.oisundo"
+msgid "Undo"
+msgstr "Zpět"
+
+#: objinspstrconsts.oisunknown
+msgctxt "objinspstrconsts.oisunknown"
+msgid "Unknown"
+msgstr "Neznámý"
+
+#: objinspstrconsts.oisunselectall
+msgid "&Unselect all"
+msgstr "&Nevybrat nic"
+
+#: objinspstrconsts.oisunselectallhint
+msgid "Unselect All"
+msgstr "Odznač vše"
+
+#: objinspstrconsts.oisvalue
+msgid "Value:"
+msgstr "Hodnota:"
+
+#: objinspstrconsts.oisvariant
+msgid "Variant"
+msgstr "Proměnlivý typ"
+
+#: objinspstrconsts.oisviewrestrictedproperties
+msgid "View restricted properties"
+msgstr "Zobrazit omezené vlastnosti"
+
+#: objinspstrconsts.oiswidgetsetrestrictions
+msgid "General widget set restrictions: "
+msgstr "Omezení pro obecné widgety:"
+
+#: objinspstrconsts.oisword
+msgid "Word"
+msgstr "Word"
+
+#: objinspstrconsts.oiszorder
+msgid "Z-order"
+msgstr "Z-pořadí"
+
+#: objinspstrconsts.pefilter
+msgid "Filter"
+msgstr "Filtr"
+
+#: objinspstrconsts.pefiltereditor
+msgid "Filter editor"
+msgstr "Editor filtru"
+
+#: objinspstrconsts.pefiltername
+msgid "Filter name"
+msgstr "Jméno filtru"
+
+#: objinspstrconsts.pirsunit
+msgid "Pascal unit"
+msgstr "Jednotka pascal"
+
+#: objinspstrconsts.rscdalignment
+msgid "Alignment"
+msgstr "Zarovnání"
+
+#: objinspstrconsts.rscdautosize
+msgid "Auto Size"
+msgstr "Automatická velikost"
+
+#: objinspstrconsts.rscdcaption
+msgid "Caption"
+msgstr "Titulek"
+
+#: objinspstrconsts.rscdcolumneditor
+msgid "Column Editor"
+msgstr "Editor sloupce"
+
+#: objinspstrconsts.rscdinvalidnumericvalue
+msgid "Invalid numeric Value"
+msgstr "Neplatná číselná hodnota"
+
+#: objinspstrconsts.rscdleft
+msgctxt "objinspstrconsts.rscdleft"
+msgid "Left"
+msgstr "Vlevo"
+
+#: objinspstrconsts.rscdmovedown
+msgid "Move down"
+msgstr "Přesunout dolů"
+
+#: objinspstrconsts.rscdmoveup
+msgid "Move up"
+msgstr "Přesunout nahoru"
+
+#: objinspstrconsts.rscdok
+msgctxt "objinspstrconsts.rscdok"
+msgid "OK"
+msgstr "OK"
+
+#: objinspstrconsts.rscdright
+msgctxt "objinspstrconsts.rscdright"
+msgid "Right"
+msgstr "Vpravo"
+
+#: objinspstrconsts.rscdvisible
+msgid "Visible"
+msgstr "Viditelný"
+
+#: objinspstrconsts.rscdwidth
+msgid "Width"
+msgstr "Délka"
+
+#: objinspstrconsts.sccshceditsections
+msgid "Sections Editor ..."
+msgstr "Editor výběru..."
+
+#: objinspstrconsts.sccsiledtadd
+msgid "&Add ..."
+msgstr "Přidat ..."
+
+#: objinspstrconsts.sccsiledtadjustment
+msgid "Adjustment"
+msgstr "Seřízení"
+
+#: objinspstrconsts.sccsiledtapply
+msgctxt "objinspstrconsts.sccsiledtapply"
+msgid "&Apply"
+msgstr "Použít"
+
+#: objinspstrconsts.sccsiledtcaption
+msgid "ImageList Editor"
+msgstr "Editor ImageList"
+
+#: objinspstrconsts.sccsiledtcenter
+msgid "Center"
+msgstr "Vystředit"
+
+#: objinspstrconsts.sccsiledtclear
+msgctxt "objinspstrconsts.sccsiledtclear"
+msgid "&Clear"
+msgstr "Vyčistit"
+
+#: objinspstrconsts.sccsiledtcrop
+msgid "Crop"
+msgstr "Oříznout"
+
+#: objinspstrconsts.sccsiledtdelete
+msgctxt "objinspstrconsts.sccsiledtdelete"
+msgid "&Delete"
+msgstr "Odstranit"
+
+#: objinspstrconsts.sccsiledtgrplcaption
+msgid "Images"
+msgstr "Obrázky"
+
+#: objinspstrconsts.sccsiledtgrprcaption
+msgid "Selected Image"
+msgstr "Vybraný obrázek"
+
+#: objinspstrconsts.sccsiledtmovedown
+msgctxt "objinspstrconsts.sccsiledtmovedown"
+msgid "Move D&own"
+msgstr "Přesunout d&olů"
+
+#: objinspstrconsts.sccsiledtmoveup
+msgctxt "objinspstrconsts.sccsiledtmoveup"
+msgid "Move &Up"
+msgstr "Přesunout nahor&u"
+
+#: objinspstrconsts.sccsiledtnone
+msgid "None"
+msgstr "Žádný"
+
+#: objinspstrconsts.sccsiledtopendialog
+msgid "Add Images"
+msgstr "Přidat obrázky"
+
+#: objinspstrconsts.sccsiledtransparentcolor
+msgid "Transparent Color:"
+msgstr "Průhledná barva:"
+
+#: objinspstrconsts.sccsiledtsave
+msgctxt "objinspstrconsts.sccsiledtsave"
+msgid "&Save ..."
+msgstr "&Uložit ..."
+
+#: objinspstrconsts.sccsiledtsaveall
+msgid "Save All ..."
+msgstr "Uložit vše ..."
+
+#: objinspstrconsts.sccsiledtsavedialog
+msgid "Save Image"
+msgstr "Uložit obrázek"
+
+#: objinspstrconsts.sccsiledtstretch
+msgid "Stretch"
+msgstr "Roztáhnout"
+
+#: objinspstrconsts.sccslvcoledt
+msgid "Edit Columns ..."
+msgstr "Editovat sloupce..."
+
+#: objinspstrconsts.sccslvedt
+msgctxt "objinspstrconsts.sccslvedt"
+msgid "Edit Items ..."
+msgstr "Upravit položky ..."
+
+#: objinspstrconsts.sccslvedtapply
+msgctxt "objinspstrconsts.sccslvedtapply"
+msgid "Apply"
+msgstr "Použít"
+
+#: objinspstrconsts.sccslvedtcaption
+msgid "ListView Items Editor"
+msgstr "Editor položek ListView"
+
+#: objinspstrconsts.sccslvedtdelete
+msgctxt "objinspstrconsts.sccslvedtdelete"
+msgid "Delete"
+msgstr "Smazat"
+
+#: objinspstrconsts.sccslvedtgrplcaption
+msgctxt "objinspstrconsts.sccslvedtgrplcaption"
+msgid "Items"
+msgstr "Položky"
+
+#: objinspstrconsts.sccslvedtgrprcaption
+msgctxt "objinspstrconsts.sccslvedtgrprcaption"
+msgid "Item Properties"
+msgstr "Vlastnosti položek"
+
+#: objinspstrconsts.sccslvedtitem
+msgctxt "objinspstrconsts.sccslvedtitem"
+msgid "Item"
+msgstr "Položka"
+
+#: objinspstrconsts.sccslvedtlabelcaption
+msgid "Caption:"
+msgstr "Titulek:"
+
+#: objinspstrconsts.sccslvedtlabelimageindex
+msgctxt "objinspstrconsts.sccslvedtlabelimageindex"
+msgid "Image Index:"
+msgstr "Index obrázku:"
+
+#: objinspstrconsts.sccslvedtlabelstateindex
+msgctxt "objinspstrconsts.sccslvedtlabelstateindex"
+msgid "State Index:"
+msgstr "Stavový index:"
+
+#: objinspstrconsts.sccslvedtnewitem
+msgctxt "objinspstrconsts.sccslvedtnewitem"
+msgid "New Item"
+msgstr "Nová položka"
+
+#: objinspstrconsts.sccslvedtnewsubitem
+msgctxt "objinspstrconsts.sccslvedtnewsubitem"
+msgid "New SubItem"
+msgstr "Nová podpoložka"
+
+#: objinspstrconsts.sccsmaskeditor
+msgid "Edit Mask Editor ..."
+msgstr "Upravit editor masky ..."
+
+#: objinspstrconsts.sccssbeditpanels
+msgid "Panels Editor ..."
+msgstr "Editor panelů..."
+
+#: objinspstrconsts.sccssgedt
+msgid "Edit StringGrid ..."
+msgstr "Editovat StringGrid ..."
+
+#: objinspstrconsts.sccssgedtapply
+msgctxt "objinspstrconsts.sccssgedtapply"
+msgid "Apply"
+msgstr "Použít"
+
+#: objinspstrconsts.sccssgedtcaption
+msgid "StringGrid Editor"
+msgstr "Editor StringGrid"
+
+#: objinspstrconsts.sccssgedtclean
+msgid "Clean"
+msgstr "Vyčistit"
+
+#: objinspstrconsts.sccssgedtgrp
+msgid "String Grid"
+msgstr "Řetězcová mřížka"
+
+#: objinspstrconsts.sccssgedtload
+msgid "Load ..."
+msgstr "Načít ..."
+
+#: objinspstrconsts.sccssgedtmoverowscols
+msgid "Move Rows/Cols"
+msgstr "Přesunout řádky/sloupce"
+
+#: objinspstrconsts.sccssgedtopendialog
+msgctxt "objinspstrconsts.sccssgedtopendialog"
+msgid "Open"
+msgstr "Otevřít"
+
+#: objinspstrconsts.sccssgedtsave
+msgctxt "objinspstrconsts.sccssgedtsave"
+msgid "Save ..."
+msgstr "Uložit ..."
+
+#: objinspstrconsts.sccssgedtsavedialog
+msgctxt "objinspstrconsts.sccssgedtsavedialog"
+msgid "Save"
+msgstr "Uložit"
+
+#: objinspstrconsts.sccstredt
+msgctxt "objinspstrconsts.sccstredt"
+msgid "Edit Items ..."
+msgstr "Upravit položky ..."
+
+#: objinspstrconsts.sccstredtapply
+msgctxt "objinspstrconsts.sccstredtapply"
+msgid "Apply"
+msgstr "Použít"
+
+#: objinspstrconsts.sccstredtcaption
+msgid "TreeView Items Editor"
+msgstr "Editor položek TreeView"
+
+#: objinspstrconsts.sccstredtdelete
+msgctxt "objinspstrconsts.sccstredtdelete"
+msgid "Delete"
+msgstr "Smazat"
+
+#: objinspstrconsts.sccstredtgrplcaption
+msgctxt "objinspstrconsts.sccstredtgrplcaption"
+msgid "Items"
+msgstr "Položky"
+
+#: objinspstrconsts.sccstredtgrprcaption
+msgctxt "objinspstrconsts.sccstredtgrprcaption"
+msgid "Item Properties"
+msgstr "Vlastnosti položky"
+
+#: objinspstrconsts.sccstredtitem
+msgctxt "objinspstrconsts.sccstredtitem"
+msgid "Item"
+msgstr "Položka"
+
+#: objinspstrconsts.sccstredtlabelimageindex
+msgctxt "objinspstrconsts.sccstredtlabelimageindex"
+msgid "Image Index:"
+msgstr "Index obrázku:"
+
+#: objinspstrconsts.sccstredtlabelselindex
+msgid "Selected Index:"
+msgstr "Vybraný index:"
+
+#: objinspstrconsts.sccstredtlabelstateindex
+msgctxt "objinspstrconsts.sccstredtlabelstateindex"
+msgid "State Index:"
+msgstr "Stavový index:"
+
+#: objinspstrconsts.sccstredtlabeltext
+msgid "Text:"
+msgstr "Text:"
+
+#: objinspstrconsts.sccstredtload
+msgid "Load"
+msgstr "Načíst"
+
+#: objinspstrconsts.sccstredtnewitem
+msgctxt "objinspstrconsts.sccstredtnewitem"
+msgid "New Item"
+msgstr "Nová položka"
+
+#: objinspstrconsts.sccstredtnewsubitem
+msgctxt "objinspstrconsts.sccstredtnewsubitem"
+msgid "New SubItem"
+msgstr "Nová podpoložka"
+
+#: objinspstrconsts.sccstredtopendialog
+msgctxt "objinspstrconsts.sccstredtopendialog"
+msgid "Open"
+msgstr "Otevřít"
+
+#: objinspstrconsts.sccstredtsave
+msgctxt "objinspstrconsts.sccstredtsave"
+msgid "Save"
+msgstr "Uložit"
+
+#: objinspstrconsts.sccstredtsavedialog
+msgctxt "objinspstrconsts.sccstredtsavedialog"
+msgid "Save"
+msgstr "Uložit"
+
+#: objinspstrconsts.srgrabkey
+msgid "Grab key"
+msgstr "Sejmout klávesu"
+
+#: objinspstrconsts.s_addassingle
+msgid "Add as single"
+msgstr "Přidat jako samostatný"
+
+#: objinspstrconsts.s_splitimage
+msgid "Split image"
+msgstr "Rozdělit obrázek"
+
+#: objinspstrconsts.s_suggestsplitimage
+msgid "Do you want to split the image?"
+msgstr "Chcete rozdělit obrázek?"
+
+#: objinspstrconsts.tbcenewbutton
+msgid "New Button"
+msgstr "Nový Button"
+
+#: objinspstrconsts.tbcenewcheckbutton
+msgid "New CheckButton"
+msgstr "Nový CheckButton"
+
+#: objinspstrconsts.tbcenewdivider
+msgid "New Divider"
+msgstr "Nový Divider (rozdělovník)"
+
+#: objinspstrconsts.tbcenewseparator
+msgid "New Separator"
+msgstr "Nový Separator"
+
+#: objinspstrconsts.tccesaddtab
+msgid "Add tab"
+msgstr "Přidat záložku"
+
+#: objinspstrconsts.tccesdeletetab
+msgid "Delete tab"
+msgstr "Smazat záložku"
+
+#: objinspstrconsts.tccesinserttab
+msgid "Insert tab"
+msgstr "Vložit záložku"
+
+#: objinspstrconsts.tccesmovetableft
+msgid "Move tab left"
+msgstr "Přesunout záložku vlevo"
+
+#: objinspstrconsts.tccesmovetabright
+msgid "Move tab right"
+msgstr "Přesunou záložku vpravo"
+

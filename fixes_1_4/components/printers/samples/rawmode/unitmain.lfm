@@ -1,0 +1,81 @@
+object Form1: TForm1
+  Left = 265
+  Height = 369
+  Top = 181
+  Width = 452
+  HorzScrollBar.Page = 427
+  VertScrollBar.Page = 301
+  ActiveControl = ListBox1
+  Caption = 'RawMode Print Test'
+  ClientHeight = 369
+  ClientWidth = 452
+  Constraints.MaxHeight = 400
+  Constraints.MinHeight = 240
+  OnCreate = FormCreate
+  LCLVersion = '0.9.29'
+  object Label1: TLabel
+    Left = 12
+    Height = 16
+    Top = 8
+    Width = 80
+    Caption = 'Printers List:'
+    ParentColor = False
+  end
+  object Label2: TLabel
+    Left = 11
+    Height = 16
+    Top = 144
+    Width = 80
+    Caption = 'Text to print:'
+    ParentColor = False
+  end
+  object Label3: TLabel
+    Left = 96
+    Height = 71
+    Top = 292
+    Width = 344
+    Anchors = [akLeft, akRight, akBottom]
+    AutoSize = False
+    Caption = 'NOTE: This sample is meant to sent an alphanumeric string to a Dot-Matrix class printer which doesn''t need special codes to start printing. Label, LaserJet or DeskJet printers might need'#10'some special prefix codes to work correctly.'
+    ParentColor = False
+    WordWrap = True
+  end
+  object ListBox1: TListBox
+    Left = 11
+    Height = 115
+    Top = 25
+    Width = 430
+    Anchors = [akTop, akLeft, akRight]
+    ItemHeight = 0
+    TabOrder = 0
+    TopIndex = -1
+  end
+  object Button1: TButton
+    Left = 11
+    Height = 25
+    Top = 334
+    Width = 75
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Print'
+    OnClick = Button1Click
+    TabOrder = 1
+  end
+  object Memo1: TMemo
+    Left = 11
+    Height = 125
+    Top = 162
+    Width = 430
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Lines.Strings = (
+      ''
+      'H E L L O'
+      ''
+      'Sending raw data to attached printer'
+      'is very easy with Printer.RawMode'
+      ''
+      'And it''s portable!'
+    )
+    TabOrder = 2
+  end
+end

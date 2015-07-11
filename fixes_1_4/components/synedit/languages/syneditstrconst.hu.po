@@ -1,0 +1,781 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
+"Language-Team: Magyar (Hungarian)\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: syneditstrconst.syns_attrannotation
+msgid "Annotation"
+msgstr "Magyarázat"
+
+#: syneditstrconst.syns_attrasp
+msgid "Asp"
+msgstr "ASP"
+
+#: syneditstrconst.syns_attrassembler
+msgid "Assembler"
+msgstr "Assembler"
+
+#: syneditstrconst.syns_attrattributename
+msgid "Attribute Name"
+msgstr "Tulajdonság név"
+
+#: syneditstrconst.syns_attrattributevalue
+msgid "Attribute Value"
+msgstr "Tulajdonság érték"
+
+#: syneditstrconst.syns_attrblock
+msgid "Block"
+msgstr "Blokk"
+
+#: syneditstrconst.syns_attrbrackets
+msgid "Brackets"
+msgstr "Kapcsos zárójelek"
+
+#: syneditstrconst.syns_attrcaselabel
+msgid "Case label"
+msgstr "Case cimke"
+
+#: syneditstrconst.syns_attrcdata
+msgid "CDATA"
+msgstr "CDATA"
+
+#: syneditstrconst.syns_attrcdatasection
+msgid "CDATA Section"
+msgstr "CDATA szakasz"
+
+#: syneditstrconst.syns_attrcharacter
+msgid "Character"
+msgstr "Karakter"
+
+#: syneditstrconst.syns_attrchunkmarker
+msgid "Diff Chunk Marker"
+msgstr "Diff - adatblokk jelző"
+
+#: syneditstrconst.syns_attrchunkmixed
+msgid "Diff Chunk Line Counts"
+msgstr "Diff - adatblokk sorainak száma"
+
+#: syneditstrconst.syns_attrchunknew
+msgid "Diff Chunk New Line Count"
+msgstr "Diff - adatblokk új sorainak száma"
+
+#: syneditstrconst.syns_attrchunkorig
+msgid "Diff Chunk Original Line Count"
+msgstr "Diff - adatblokk eredeti sorainak száma"
+
+#: syneditstrconst.syns_attrclass
+msgid "Class"
+msgstr "Osztály"
+
+#: syneditstrconst.syns_attrcomment
+msgid "Comment"
+msgstr "Megjegyzés"
+
+#: syneditstrconst.syns_attrcondition
+msgid "Condition"
+msgstr "Feltétel"
+
+#: syneditstrconst.syns_attrdatatype
+msgid "Data type"
+msgstr "Adattípus"
+
+#: syneditstrconst.syns_attrdefaultpackage
+msgid "Default packages"
+msgstr "Alapértelmezett csomagok"
+
+#: syneditstrconst.syns_attrdir
+msgid "Direction"
+msgstr "Irány"
+
+#: syneditstrconst.syns_attrdirective
+msgid "Directive"
+msgstr "Direktíva"
+
+#: syneditstrconst.syns_attrdoctype
+msgid "DOCTYPE"
+msgstr "DOCTYPE"
+
+#: syneditstrconst.syns_attrdoctypesection
+msgid "DOCTYPE Section"
+msgstr "DOCTYPE szakasz"
+
+#: syneditstrconst.syns_attrdocumentation
+msgid "Documentation"
+msgstr "Dokumentáció"
+
+#: syneditstrconst.syns_attrelementname
+msgid "Element Name"
+msgstr "Elemnév"
+
+#: syneditstrconst.syns_attrembedsql
+msgid "Embedded SQL"
+msgstr "Beágyazott SQL"
+
+#: syneditstrconst.syns_attrembedtext
+msgid "Embedded text"
+msgstr "Beágyazott szöveg"
+
+#: syneditstrconst.syns_attrentityreference
+msgid "Entity Reference"
+msgstr "Egyedhivatkozás"
+
+#: syneditstrconst.syns_attrescapeampersand
+msgid "Escape ampersand"
+msgstr "Karakterhelyettesítő"
+
+#: syneditstrconst.syns_attrevent
+msgid "Event"
+msgstr "Esemény"
+
+#: syneditstrconst.syns_attrexception
+msgid "Exception"
+msgstr "Kivétel"
+
+#: syneditstrconst.syns_attrflags
+msgid "Flags"
+msgstr "Jelzők"
+
+#: syneditstrconst.syns_attrfloat
+msgid "Float"
+msgstr "Lebegőpontos"
+
+#: syneditstrconst.syns_attrform
+msgid "Form"
+msgstr "Form"
+
+#: syneditstrconst.syns_attrfunction
+msgid "Function"
+msgstr "Függvény"
+
+#: syneditstrconst.syns_attrhexadecimal
+msgid "Hexadecimal"
+msgstr "Hexadecimális"
+
+#: syneditstrconst.syns_attricon
+msgid "Icon reference"
+msgstr "Ikon hivatkozás"
+
+#: syneditstrconst.syns_attridedirective
+msgid "IDE Directive"
+msgstr "IDE direktíva"
+
+#: syneditstrconst.syns_attridentifier
+msgid "Identifier"
+msgstr "Azonosító"
+
+#: syneditstrconst.syns_attrillegalchar
+msgid "Illegal char"
+msgstr "Érvénytelen karakter"
+
+#: syneditstrconst.syns_attrinclude
+msgid "Include"
+msgstr "Beemelés"
+
+#: syneditstrconst.syns_attrindirect
+msgid "Indirect"
+msgstr "Közvetett"
+
+#: syneditstrconst.syns_attrinternalfunction
+msgid "Internal function"
+msgstr "Belső funkció"
+
+#: syneditstrconst.syns_attrinvalidsymbol
+msgid "Invalid symbol"
+msgstr "Érvénytelen szimbólum"
+
+#: syneditstrconst.syns_attrkey
+msgid "Key"
+msgstr "Billentyű"
+
+#: syneditstrconst.syns_attrlabel
+msgid "Label"
+msgstr "Címke"
+
+#: syneditstrconst.syns_attrlineadded
+msgid "Diff Added line"
+msgstr "Diff - hozzáadott sor"
+
+#: syneditstrconst.syns_attrlinechanged
+msgid "Diff Changed Line"
+msgstr "Diff - megváltozott sor"
+
+#: syneditstrconst.syns_attrlinecontext
+msgid "Diff Context Line"
+msgstr "Diff - szövegkörnyezet sor"
+
+#: syneditstrconst.syns_attrlineremoved
+msgid "Diff Removed Line"
+msgstr "Diff - eltávolított sor"
+
+#: syneditstrconst.syns_attrmacro
+msgid "Macro"
+msgstr "Makró"
+
+#: syneditstrconst.syns_attrmarker
+msgid "Marker"
+msgstr "Jelölő"
+
+#: syneditstrconst.syns_attrmathmode
+msgid "Math Mode"
+msgstr "Matematikai mód"
+
+#: syneditstrconst.syns_attrmessage
+msgid "Message"
+msgstr "Üzenet"
+
+#: syneditstrconst.syns_attrmiscellaneous
+msgid "Miscellaneous"
+msgstr "Vegyes"
+
+#: syneditstrconst.syns_attrnamespaceattrname
+msgid "Namespace Attribute Name"
+msgstr "Névtér tulajdonság neve"
+
+#: syneditstrconst.syns_attrnamespaceattrvalue
+msgid "Namespace Attribute Value"
+msgstr "Névtér tulajdonság értéke"
+
+#: syneditstrconst.syns_attrnewfile
+msgid "Diff New File"
+msgstr "Diff - új fájl"
+
+#: syneditstrconst.syns_attrnonreservedkeyword
+msgid "Non-reserved keyword"
+msgstr "Nem-védett kulcsszó"
+
+#: syneditstrconst.syns_attrnull
+msgid "Null"
+msgstr "NULL"
+
+#: syneditstrconst.syns_attrnumber
+msgid "Number"
+msgstr "Szám"
+
+#: syneditstrconst.syns_attroctal
+msgid "Octal"
+msgstr "Oktális"
+
+#: syneditstrconst.syns_attroperator
+msgid "Operator"
+msgstr "Operátor"
+
+#: syneditstrconst.syns_attrorigfile
+msgid "Diff Original File"
+msgstr "Diff - eredeti fájl"
+
+#: syneditstrconst.syns_attrplsql
+msgid "Reserved word (PL/SQL)"
+msgstr "Védett szó (PL/SQL)"
+
+#: syneditstrconst.syns_attrpragma
+msgid "Pragma"
+msgstr "Irányelv"
+
+#: syneditstrconst.syns_attrpreprocessor
+msgid "Preprocessor"
+msgstr "Előfeldolgozó"
+
+#: syneditstrconst.syns_attrprevvalue
+msgid "Previous value"
+msgstr "Előző érték"
+
+#: syneditstrconst.syns_attrprocessinginstr
+msgid "Processing Instruction"
+msgstr "Feldolgozási utasítások"
+
+#: syneditstrconst.syns_attrqualifier
+msgid "Qualifier"
+msgstr "Leíró"
+
+#: syneditstrconst.syns_attrregister
+msgid "Register"
+msgstr "Regisztrálás"
+
+#: syneditstrconst.syns_attrreservedword
+msgid "Reserved word"
+msgstr "Védett szó"
+
+#: syneditstrconst.syns_attrroundbracket
+msgid "Round Bracket"
+msgstr "Kerek zárójel"
+
+#: syneditstrconst.syns_attrrpl
+msgid "Rpl"
+msgstr "Rpl"
+
+#: syneditstrconst.syns_attrrplcomment
+msgid "Rpl comment"
+msgstr "Rpl megjegyzés"
+
+#: syneditstrconst.syns_attrrplkey
+msgid "Rpl key"
+msgstr "Rpl kulcs"
+
+#: syneditstrconst.syns_attrsasm
+msgid "SASM"
+msgstr "SASM"
+
+#: syneditstrconst.syns_attrsasmcomment
+msgid "SASM Comment"
+msgstr "SASM megjegyzés"
+
+#: syneditstrconst.syns_attrsasmkey
+msgid "SASM Key"
+msgstr "SASM kulcs"
+
+#: syneditstrconst.syns_attrsecondreservedword
+msgid "Second reserved word"
+msgstr "Második védett szó"
+
+#: syneditstrconst.syns_attrsection
+msgid "Section"
+msgstr "Szakasz"
+
+#: syneditstrconst.syns_attrspace
+msgid "Space"
+msgstr "Szóköz"
+
+#: syneditstrconst.syns_attrspecialvariable
+msgid "Special variable"
+msgstr "Különleges változó"
+
+#: syneditstrconst.syns_attrsqlkey
+msgid "SQL keyword"
+msgstr "SQL kulcsszó"
+
+#: syneditstrconst.syns_attrsqlplus
+msgid "SQL*Plus command"
+msgstr "SQL*Plus parancs"
+
+#: syneditstrconst.syns_attrsquarebracket
+msgid "Square Bracket"
+msgstr "Szögletes zárójel"
+
+#: syneditstrconst.syns_attrstring
+msgid "String"
+msgstr "Karakterlánc"
+
+#: syneditstrconst.syns_attrsymbol
+msgid "Symbol"
+msgstr "Jel"
+
+#: syneditstrconst.syns_attrsyntaxerror
+msgid "SyntaxError"
+msgstr "szintaktikai hiba"
+
+#: syneditstrconst.syns_attrsystem
+msgid "System functions and variables"
+msgstr "Rendszereljárások és -változók"
+
+#: syneditstrconst.syns_attrsystemvalue
+msgid "System value"
+msgstr "Rendszer érték"
+
+#: syneditstrconst.syns_attrtablename
+msgid "Table Name"
+msgstr "Táblanév"
+
+#: syneditstrconst.syns_attrterminator
+msgid "Terminator"
+msgstr "Lezáró"
+
+#: syneditstrconst.syns_attrtexcommand
+msgid "TeX Command"
+msgstr "TeX parancs"
+
+#: syneditstrconst.syns_attrtext
+msgid "Text"
+msgstr "Szöveg"
+
+#: syneditstrconst.syns_attrtextmathmode
+msgid "Text in Math Mode"
+msgstr "Szöveg matematikai módban"
+
+#: syneditstrconst.syns_attrunknownword
+msgid "Unknown word"
+msgstr "Ismeretlen szó"
+
+#: syneditstrconst.syns_attruser
+msgid "User functions and variables"
+msgstr "Felhasználói eljárások és változók"
+
+#: syneditstrconst.syns_attruserfunction
+msgid "User functions"
+msgstr "Felhasználói eljárások"
+
+#: syneditstrconst.syns_attrvalue
+msgid "Value"
+msgstr "Érték"
+
+#: syneditstrconst.syns_attrvariable
+msgid "Variable"
+msgstr "Változó"
+
+#: syneditstrconst.syns_attrwhitespace
+msgid "Whitespace"
+msgstr "Szóközök"
+
+#: syneditstrconst.syns_duplicateshortcutmsg
+msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
+msgstr "A(z) \"%s\" billentyűleütés már egy másik szerkesztőhöz van társítva. (%s)"
+
+#: syneditstrconst.syns_eduplicateshortcut
+msgid "Mouse-Shortcut already exists"
+msgstr "Az egérparancs már létezik"
+
+#: syneditstrconst.syns_emcbreakpointtoggle
+msgid "Toggle Breakpoint"
+msgstr "Töréspont ki/be"
+
+#: syneditstrconst.syns_emccodefoldcollaps
+msgid "Fold Code"
+msgstr "Kód összecsukása"
+
+#: syneditstrconst.syns_emccodefoldcollaps_opt
+msgid "Nodes,One,All,\"At Caret\",\"Current Node\""
+msgstr "Csomópontok,Egy,Mind,\"Kurzor alatt\",\"Aktuális csomópont\""
+
+#: syneditstrconst.syns_emccodefoldcontextmenu
+msgid "Fold Menu"
+msgstr "Összecsukás menü"
+
+#: syneditstrconst.syns_emccodefoldexpand
+msgid "Unfold Code"
+msgstr "Kód kinyitása"
+
+#: syneditstrconst.syns_emccodefoldexpand_opt
+msgid "Nodes,One,All"
+msgstr "Csomópontok,Egy,Mind"
+
+#: syneditstrconst.syns_emccontextmenu
+msgid "Popup Menu"
+msgstr "Helyi menü"
+
+#: syneditstrconst.syns_emccontextmenucaretmove_opt
+msgid "\"Move caret, when selection exists\", Never, \"Click outside\", Always"
+msgstr "\"Kurzor mozgatása kijelölés létezésekor\", Soha, \"Kattintás kívülre\", Mindig"
+
+#: syneditstrconst.syns_emcmouselink
+msgid "Source Link"
+msgstr "Forrás-hivatkozás"
+
+#: syneditstrconst.syns_emcmouselink_opt
+msgid "Underline,yes, no"
+msgstr "Aláhúzás,igen,nem"
+
+#: syneditstrconst.syns_emcnone
+msgid "No Action"
+msgstr "Nincs művelet"
+
+#: syneditstrconst.syns_emcpasteselection
+msgid "Quick Paste Selection"
+msgstr "Kijelölés gyors beillesztése"
+
+#: syneditstrconst.syns_emcselection_opt
+msgid "Mode,Begin,Continue"
+msgstr "Mód,Kezdés,Folytatás"
+
+#: syneditstrconst.syns_emcselectline
+msgid "Select Line"
+msgstr "Sor kijelölése"
+
+#: syneditstrconst.syns_emcselectline_opt
+msgid "\"Include spaces\",no,yes"
+msgstr "\"Szóközök beleszámítva\",Nem,Igen"
+
+#: syneditstrconst.syns_emcselectpara
+msgid "Select Paragraph"
+msgstr "Bekezdés kijelölése"
+
+#: syneditstrconst.syns_emcselectword
+msgid "Select Word"
+msgstr "Szó kijelölése"
+
+#: syneditstrconst.syns_emcstartcolumnselections
+msgid "Column Selection"
+msgstr "Oszlop kijelölés"
+
+#: syneditstrconst.syns_emcstartdragmove
+msgid "Drag Selection"
+msgstr "Kijelölés húzása"
+
+#: syneditstrconst.syns_emcstartlineselections
+msgid "Line Selection"
+msgstr "Sor kijelölés"
+
+#: syneditstrconst.syns_emcstartselection
+msgid "Selection"
+msgstr "Kijelölés"
+
+#: syneditstrconst.syns_emcstartselectlines
+msgid "Selection (lines)"
+msgstr "Kijelölés (sor)"
+
+#: syneditstrconst.syns_emcstartselecttokens
+msgid "Selection (tokens) "
+msgstr "Kijelölés (szimbólumok)"
+
+#: syneditstrconst.syns_emcstartselectwords
+msgid "Selection (words)"
+msgstr "Kijelölés (szavak)"
+
+#: syneditstrconst.syns_emcsyneditcommand
+msgid "IDE Command"
+msgstr "IDE parancs"
+
+#: syneditstrconst.syns_emcwheelhorizscrolldown
+msgid "Wheel scroll down (Horizontal)"
+msgstr "Kerék görgetése le (Vízszintes)"
+
+#: syneditstrconst.syns_emcwheelhorizscrollup
+msgid "Wheel scroll up (Horizontal)"
+msgstr "Kerék görgetése fel (Vízszintes)"
+
+#: syneditstrconst.syns_emcwheelscrolldown
+msgid "Wheel scroll down"
+msgstr "Kerék görgetése le"
+
+#: syneditstrconst.syns_emcwheelscrollup
+msgid "Wheel scroll up"
+msgstr "Kerék görgetése fel"
+
+#: syneditstrconst.syns_emcwheelscroll_opt
+msgid "Speed,\"System settings\",Lines,Pages,\"Pages (less one line)\""
+msgstr "Sebesség,Rendszerbeállítás,Sorok,Oldalak,\"Oldalak (legalább egy sor)\""
+
+#: syneditstrconst.syns_emcwheelvertscrolldown
+msgid "Wheel scroll down (Vertical)"
+msgstr "Kerék görgetése le (Függőleges)"
+
+#: syneditstrconst.syns_emcwheelvertscrollup
+msgid "Wheel scroll up (Vertical)"
+msgstr "Kerék görgetése fel (Függőleges)"
+
+#: syneditstrconst.syns_emcwheelzoomin
+msgid "Wheel zoom in"
+msgstr "Kerék kicsinyít"
+
+#: syneditstrconst.syns_emcwheelzoomnorm
+msgid "Wheel zoom default"
+msgstr "Kerék alapértelmezettre nagyít"
+
+#: syneditstrconst.syns_emcwheelzoomout
+msgid "Wheel zoom out"
+msgstr "Kerék nagyít"
+
+#: syneditstrconst.syns_exporterformathtml
+msgid "HTML"
+msgstr "HTML"
+
+#: syneditstrconst.syns_exporterformatrtf
+msgid "RTF"
+msgstr "RTF"
+
+#: syneditstrconst.syns_filteradsp21xx
+msgid "DSP Files (*.dsp,*.inc)|*.DSP;*.INC"
+msgstr "DSP fájlok (*.dsp,*.inc)|*.DSP;*.INC"
+
+#: syneditstrconst.syns_filterasm68hc11
+msgid "68HC11 Assembler Files (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
+msgstr "68HC11 Assembler fájlok (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
+
+#: syneditstrconst.syns_filterawk
+msgid "AWK Script (*.awk)|*.awk"
+msgstr "AWK parancsfájl (*.awk)|*.awk"
+
+#: syneditstrconst.syns_filterbaan
+msgid "Baan 4GL Files (*.cln)|*.cln"
+msgstr "Baan 4GL fájlok (*.cln)|*.cln"
+
+#: syneditstrconst.syns_filterbatch
+msgid "MS-DOS Batch Files (*.bat;*.cmd)|*.bat;*.cmd"
+msgstr "MS-DOS Batch fájlok (*.bat;*.cmd)|*.bat;*.cmd"
+
+#: syneditstrconst.syns_filtercache
+msgid "Cache Files (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
+msgstr "Cache fájlok (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
+
+#: syneditstrconst.syns_filtercaclipper
+msgid "CA-Clipper Files (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc"
+msgstr "CA-Clipper fájlok (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc"
+
+#: syneditstrconst.syns_filtercorbaidl
+msgid "CORBA IDL files (*.idl)|*.idl"
+msgstr "CORBA IDL fájlok (*.idl)|*.idl"
+
+#: syneditstrconst.syns_filtercpm
+msgid "CPM reports (*.rdf,*.rif,*.rmf,*.rxf)|*.rdf;*.rif;*.rmf;*.rxf"
+msgstr "CPM jelentések (*.rdf,*.rif,*.rmf,*.rxf)|*.rdf;*.rif;*.rmf;*.rxf"
+
+#: syneditstrconst.syns_filtercpp
+msgid "C++ Files (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
+msgstr "C++ fájlok (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
+
+#: syneditstrconst.syns_filtercss
+msgid "Cascading Stylesheets (*.css)|*.css"
+msgstr "Cascading Stylesheets (*.css)|*.css"
+
+#: syneditstrconst.syns_filterdfm
+msgid "Borland Form Files (*.dfm;*.xfm)|*.dfm;*.xfm"
+msgstr "Borland Form fájlok (*.dfm;*.xfm)|*.dfm;*.xfm"
+
+#: syneditstrconst.syns_filterfortran
+msgid "Fortran Files (*.for)|*.for"
+msgstr "Fortran fájlok (*.for)|*.for"
+
+#: syneditstrconst.syns_filterfoxpro
+msgid "Foxpro Files (*.prg)|*.prg"
+msgstr "Foxpro fájlok (*.prg)|*.prg"
+
+#: syneditstrconst.syns_filtergalaxy
+msgid "Galaxy Files (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
+msgstr "Galaxy fájlok (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
+
+#: syneditstrconst.syns_filtergembase
+msgid "GEMBASE Files (*.dml,*.gem)|*.DML;*.GEM"
+msgstr "GEMBASE fájlok (*.dml,*.gem)|*.DML;*.GEM"
+
+#: syneditstrconst.syns_filtergws
+msgid "GW-TEL Script Files (*.gws)|*.gws"
+msgstr "GW-TEL parancsfájlok (*.gws)|*.gws"
+
+#: syneditstrconst.syns_filterhp48
+msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
+msgstr "HP48 fájlok (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
+
+#: syneditstrconst.syns_filterhtml
+msgid "HTML Document (*.htm,*.html)|*.htm;*.html"
+msgstr "HTML dokumentumok (*.htm,*.html)|*.htm;*.html"
+
+#: syneditstrconst.syns_filterini
+msgid "INI Files (*.ini)|*.ini"
+msgstr "INI-fájlok (*.ini)|*.ini"
+
+#: syneditstrconst.syns_filterinno
+msgid "Inno Setup Script Files (*.iss)|*.iss"
+msgstr "Inno Setup parancsfájlok (*.iss)|*.iss"
+
+#: syneditstrconst.syns_filterjava
+msgid "Java Files (*.java)|*.java"
+msgstr "Java fájlok (*.java)|*.java"
+
+#: syneditstrconst.syns_filterjscript
+msgid "Javascript Files (*.js)|*.js"
+msgstr "Javascript fájlok (*.js)|*.js"
+
+#: syneditstrconst.syns_filterkix
+msgid "KiXtart scripts (*.kix)|*.kix"
+msgstr "KiXtart parancsfájlok (*.kix)|*.kix"
+
+#: syneditstrconst.syns_filterlfm
+msgid "Lazarus Form Files (*.lfm)|*.lfm"
+msgstr "Lazarus Form fájlok (*.lfm)|*.lfm"
+
+#: syneditstrconst.syns_filtermodelica
+msgid "Modelica Files (*.mo)|*.mo"
+msgstr "Modelica fájlok (*.mo)|*.mo"
+
+#: syneditstrconst.syns_filtermodula3
+msgid "Modula-3 Files (*.m3)|*.m3"
+msgstr "Modula-3 fájlok (*.m3)|*.m3"
+
+#: syneditstrconst.syns_filterpascal
+msgid "Pascal Files (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc"
+msgstr "Pascal fájlok (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc"
+
+#: syneditstrconst.syns_filterperl
+msgid "Perl Files (*.pl,*.pm,*.cgi)|*.pl;*.pm;*.cgi"
+msgstr "Perl fájlok (*.pl,*.pm,*.cgi)|*.pl;*.pm;*.cgi"
+
+#: syneditstrconst.syns_filterphp
+msgid "PHP Files (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
+msgstr "PHP fájlok (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
+
+#: syneditstrconst.syns_filterpo
+msgid "Po Files (*.po)|*.po"
+msgstr "Po fájlok (*.po)|*.po"
+
+#: syneditstrconst.syns_filterprogress
+msgid "Progress Files (*.w,*.p,*.i)|*.w;*.p;*.i"
+msgstr "Progress fájlok (*.w,*.p,*.i)|*.w;*.p;*.i"
+
+#: syneditstrconst.syns_filterpython
+msgid "Python Files (*.py)|*.py"
+msgstr "Python fájlok (*.py)|*.py"
+
+#: syneditstrconst.syns_filterrtf
+msgid "Rich Text Format (*.rtf)|*.rtf"
+msgstr "Rich Text Format (*.rtf)|*.rtf"
+
+#: syneditstrconst.syns_filtersdd
+msgid "Semanta DD files (*.sdd)|*.sdd"
+msgstr "Semanta DD fájlok (*.sdd)|*.sdd"
+
+#: syneditstrconst.syns_filtersml
+msgid "Standard ML Files (*.sml)|*.sml"
+msgstr "Standard ML fájlok (*.sml)|*.sml"
+
+#: syneditstrconst.syns_filtersql
+msgid "SQL Files (*.sql)|*.sql"
+msgstr "SQL fájlok (*.sql)|*.sql"
+
+#: syneditstrconst.syns_filtersyngenmsgfiles
+msgid "Msg files (*.msg)|*.msg"
+msgstr "Msg fájlok (*.msg)|*.msg"
+
+#: syneditstrconst.syns_filtertcltk
+msgid "Tcl/Tk Files (*.tcl)|*.tcl"
+msgstr "Tcl/Tk fájlok (*.tcl)|*.tcl"
+
+#: syneditstrconst.syns_filtertex
+msgid "TeX Files (*.tex)|*.tex"
+msgstr "TeX fájlok (*.tex)|*.tex"
+
+#: syneditstrconst.syns_filterunixshellscript
+msgid "UNIX Shell Scripts (*.sh)|*.sh"
+msgstr "UNIX Shell parancsfájlok (*.sh)|*.sh"
+
+#: syneditstrconst.syns_filtervbscript
+msgid "VBScript Files (*.vbs)|*.vbs"
+msgstr "VBScript fájlok (*.vbs)|*.vbs"
+
+#: syneditstrconst.syns_filtervisualbasic
+msgid "Visual Basic Files (*.bas)|*.bas"
+msgstr "Visual Basic fájlok (*.bas)|*.bas"
+
+#: syneditstrconst.syns_filterx86asm
+msgid "x86 Assembly Files (*.asm)|*.ASM"
+msgstr "x86 Assembly fájlok(*.asm)|*.ASM"
+
+#: syneditstrconst.syns_filterxml
+msgid "XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
+msgstr "XML dokumentumok (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
+
+#: syneditstrconst.syns_previewscrollinfofmt
+msgid "Page: %d"
+msgstr "Oldal: %d"
+
+#: syneditstrconst.syns_scrollinfofmt
+msgid "%d - %d"
+msgstr "%d - %d"
+
+#: syneditstrconst.syns_scrollinfofmttop
+msgid "Top Line: %d"
+msgstr "Felső sor: %d"
+
+#: syneditstrconst.syns_shortcutnone
+msgid "<none>"
+msgstr "<nincs>"
+
+#: syneditstrconst.syns_untitled
+msgid "Untitled"
+msgstr "Névtelen"
+

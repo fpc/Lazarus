@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="4">
+    <Name Value="lazsvnpkg"/>
+    <Author Value="Darius Blaszyk"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Parsing>
+        <SyntaxOptions>
+          <CStyleOperator Value="False"/>
+          <UseAnsiStrings Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="A Lazarus SVN IDE plugin"/>
+    <License Value="GPL"/>
+    <Version Release="1"/>
+    <Files Count="14">
+      <Item1>
+        <Filename Value="svnlogform.lfm"/>
+        <Type Value="LFM"/>
+      </Item1>
+      <Item2>
+        <Filename Value="svnlogform.pas"/>
+        <UnitName Value="SVNLogForm"/>
+      </Item2>
+      <Item3>
+        <Filename Value="svnupdateform.lfm"/>
+        <Type Value="LFM"/>
+      </Item3>
+      <Item4>
+        <Filename Value="svnupdateform.pas"/>
+        <UnitName Value="SVNUpdateForm"/>
+      </Item4>
+      <Item5>
+        <Filename Value="svndiffform.lfm"/>
+        <Type Value="LFM"/>
+      </Item5>
+      <Item6>
+        <Filename Value="svndiffform.pas"/>
+        <UnitName Value="SVNDiffForm"/>
+      </Item6>
+      <Item7>
+        <Filename Value="svnclasses.pas"/>
+        <UnitName Value="SVNClasses"/>
+      </Item7>
+      <Item8>
+        <Filename Value="svnstatusform.lfm"/>
+        <Type Value="LFM"/>
+      </Item8>
+      <Item9>
+        <Filename Value="svnstatusform.pas"/>
+        <UnitName Value="SVNStatusForm"/>
+      </Item9>
+      <Item10>
+        <Filename Value="svncommitform.lfm"/>
+        <Type Value="LFM"/>
+      </Item10>
+      <Item11>
+        <Filename Value="svncommitform.pas"/>
+        <UnitName Value="SVNCommitForm"/>
+      </Item11>
+      <Item12>
+        <Filename Value="lazsvnintf.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="LazSVNIntf"/>
+      </Item12>
+      <Item13>
+        <Filename Value="svnaddprojectform.lfm"/>
+        <Type Value="LFM"/>
+      </Item13>
+      <Item14>
+        <Filename Value="svnaddprojectform.pas"/>
+        <UnitName Value="SVNAddProjectForm"/>
+      </Item14>
+    </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
+    <Type Value="DesignTime"/>
+    <RequiredPkgs Count="3">
+      <Item1>
+        <PackageName Value="IDEIntf"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="SynEdit"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="CodeTools"/>
+      </Item3>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

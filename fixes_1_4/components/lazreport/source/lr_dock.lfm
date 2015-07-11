@@ -1,0 +1,15 @@
+object frFloatWindow: TfrFloatWindow
+  Left = 362
+  Height = 61
+  Top = 195
+  Width = 213
+  HorzScrollBar.Page = 212
+  VertScrollBar.Page = 60
+  BorderStyle = bsToolWindow
+  Caption = 'frFloatWindow'
+  FormStyle = fsStayOnTop
+  OnDestroy = FormDestroy
+  OnShow = FormShow
+  ShowHint = True
+  LCLVersion = '0.9.29'
+end

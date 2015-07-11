@@ -1,0 +1,119 @@
+# Giuliano Colla <giuliano.colla@fastwebnet.it>, 2014.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2014-11-11 17:24+0200\n"
+"Last-Translator: Giuliano Colla <giuliano.colla@fastwebnet.it>\n"
+"Language-Team: Lazarus\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.6.1\n"
+
+#: reconstsunit.sabout
+msgid "About ..."
+msgstr "Informazioni ..."
+
+#: reconstsunit.sallfilesexcutablefilesexeexedlldlldll
+msgid "All files (*.*)|*.*|Excutable files (*.exe)|*.exe|DLL (*.dll)|*.dll"
+msgstr "Tutti i file (*.*)|*.*|File eseguibili (*.exe)|*.exe|DLL (*.dll)|*.dll"
+
+#: reconstsunit.sallfilessharedlibsoso
+msgid "All files (*)|*|Shared libraries (*.so)|*.so"
+msgstr "Tutti i file (*)|*|Librerie condivise (*.so)|*.so"
+
+#: reconstsunit.sbuilddate
+msgid "Build date: "
+msgstr "Data di compilazione:"
+
+#: reconstsunit.scarbonwidgetset
+msgid "Carbon widget set"
+msgstr "Set di widget Carbon"
+
+#: reconstsunit.sexit
+msgid "Exit"
+msgstr "Esci"
+
+#: reconstsunit.sfile
+msgid "File"
+msgstr "File"
+
+#: reconstsunit.sfpcversion
+msgid "FPC version: "
+msgstr "Versione FPC: "
+
+#: reconstsunit.sfpguiwidgetset
+msgid "FpGUI widget set"
+msgstr "Set di widget FpGUI"
+
+#: reconstsunit.sgtk2widgetset
+msgid "GTK 2 widget set"
+msgstr "Set di widget GTK 2"
+
+#: reconstsunit.sgtkwidgetset
+msgid "GTK widget set"
+msgstr "Set di widget GTK"
+
+#: reconstsunit.shelp
+msgid "Help"
+msgstr "Aiuto"
+
+#: reconstsunit.simage
+msgid "Image"
+msgstr "Immagine"
+
+#: reconstsunit.slclversion
+msgid "LCL Version: "
+msgstr "Versione LCL: "
+
+#: reconstsunit.slicense
+msgid "This program is free software under GNU GPL 2 license, see COPYING file"
+msgstr "Questo programma è software libero distribuito sotto la licenza GNU GPL 2, vedi file COPYING"
+
+#: reconstsunit.sopen
+msgid "Open ..."
+msgstr "Apri ..."
+
+#: reconstsunit.sotherguiwidgetset
+msgid "Other gui"
+msgstr "Altre gui"
+
+#: reconstsunit.sqtwidgetset
+msgid "QT widget set"
+msgstr "Set di widget QT"
+
+#: reconstsunit.sresourceexplorer
+msgid "Resource explorer"
+msgstr "Esploratore di risorse"
+
+#: reconstsunit.sresources
+msgid "Resources"
+msgstr "Risorse"
+
+#: reconstsunit.ssaveresource
+msgid "Save resource ..."
+msgstr "Salva risorse ..."
+
+#: reconstsunit.sstrings
+msgid "Strings"
+msgstr "Stringhe"
+
+#: reconstsunit.stargetcpu
+msgid "Target CPU: "
+msgstr "CPU di riferimento: "
+
+#: reconstsunit.stargetos
+msgid "Target OS: "
+msgstr "SO di riferimento: "
+
+#: reconstsunit.swin32_64widgetset
+msgid "Win32/Win64 widget set"
+msgstr "Set di widget Win32/Win64"
+
+#: reconstsunit.swincewidgetset
+msgid "WinCE widget set"
+msgstr "Set di widget WinCE"
+

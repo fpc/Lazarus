@@ -1,0 +1,352 @@
+object Form1: TForm1
+  Left = 529
+  Height = 511
+  Top = 174
+  Width = 590
+  Caption = 'Form1'
+  ClientHeight = 511
+  ClientWidth = 590
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  Position = poScreenCenter
+  LCLVersion = '1.3'
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 511
+    Top = 0
+    Width = 590
+    ActivePage = TabSheet1
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 0
+    object TabSheet1: TTabSheet
+      Caption = 'Basic'
+      ClientHeight = 483
+      ClientWidth = 582
+      object pnControls: TPanel
+        Left = 0
+        Height = 134
+        Top = 349
+        Width = 582
+        Align = alBottom
+        ClientHeight = 134
+        ClientWidth = 582
+        TabOrder = 0
+        object lblMarginY: TLabel
+          Left = 8
+          Height = 15
+          Top = 33
+          Width = 48
+          Caption = 'Y margin'
+          ParentColor = False
+        end
+        object seMarginY: TSpinEdit
+          Left = 68
+          Height = 23
+          Top = 33
+          Width = 54
+          MaxValue = 20
+          OnChange = seMarginYChange
+          TabOrder = 0
+          Value = 4
+        end
+        object seSymbolWidth: TSpinEdit
+          Left = 212
+          Height = 23
+          Top = 8
+          Width = 54
+          MaxValue = 50
+          OnChange = seSymbolWidthChange
+          TabOrder = 1
+          Value = 20
+        end
+        object lblSymbolWidth: TLabel
+          Left = 128
+          Height = 15
+          Top = 8
+          Width = 73
+          Caption = 'Symbol width'
+          ParentColor = False
+        end
+        object rgAlignment: TRadioGroup
+          Left = 283
+          Height = 132
+          Top = 1
+          Width = 298
+          Align = alRight
+          AutoFill = True
+          Caption = ' Alignment '
+          ChildSizing.LeftRightSpacing = 6
+          ChildSizing.TopBottomSpacing = 6
+          ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+          ChildSizing.EnlargeVertical = crsHomogenousChildResize
+          ChildSizing.ShrinkHorizontal = crsScaleChilds
+          ChildSizing.ShrinkVertical = crsScaleChilds
+          ChildSizing.Layout = cclTopToBottomThenLeftToRight
+          ChildSizing.ControlsPerLine = 3
+          ClientHeight = 114
+          ClientWidth = 294
+          Columns = 3
+          ItemIndex = 6
+          Items.Strings = (
+            'TopLeft'
+            'CenterLeft'
+            'BottomLeft'
+            'TopCenter'
+            ''
+            'BottomCenter'
+            'TopRight'
+            'CenterRight'
+            'BottomRight'
+          )
+          OnClick = rgAlignmentClick
+          TabOrder = 2
+        end
+        object cbUseSidebar: TCheckBox
+          Left = 8
+          Height = 19
+          Top = 60
+          Width = 59
+          Caption = 'Sidebar'
+          Checked = True
+          OnChange = cbUseSidebarChange
+          State = cbChecked
+          TabOrder = 3
+        end
+        object lblSpacing: TLabel
+          Left = 128
+          Height = 15
+          Top = 33
+          Width = 42
+          Caption = 'Spacing'
+          ParentColor = False
+        end
+        object seSpacing: TSpinEdit
+          Left = 212
+          Height = 23
+          Top = 33
+          Width = 54
+          MaxValue = 20
+          OnChange = seSpacingChange
+          TabOrder = 4
+          Value = 4
+        end
+        object lblMarginX: TLabel
+          Left = 8
+          Height = 15
+          Top = 8
+          Width = 48
+          Caption = 'X margin'
+          ParentColor = False
+        end
+        object seMarginX: TSpinEdit
+          Left = 68
+          Height = 23
+          Top = 8
+          Width = 54
+          MaxValue = 20
+          OnChange = seMarginXChange
+          TabOrder = 5
+          Value = 4
+        end
+        object cbSeries: TComboBox
+          Left = 102
+          Height = 22
+          Top = 91
+          Width = 164
+          ItemHeight = 16
+          OnDrawItem = cbSeriesDrawItem
+          ReadOnly = True
+          Style = csOwnerDrawFixed
+          TabOrder = 6
+        end
+        object lblColumnCount: TLabel
+          Left = 128
+          Height = 15
+          Top = 60
+          Width = 48
+          Caption = 'Columns'
+          ParentColor = False
+        end
+        object seColumnCount: TSpinEdit
+          Left = 212
+          Height = 23
+          Top = 60
+          Width = 54
+          MinValue = 1
+          OnChange = seColumnCountChange
+          TabOrder = 7
+          Value = 1
+        end
+        object cbByRows: TCheckBox
+          Left = 8
+          Height = 19
+          Top = 84
+          Width = 61
+          Caption = 'By rows'
+          OnChange = cbByRowsChange
+          TabOrder = 8
+        end
+        object cbGrid: TCheckBox
+          Left = 8
+          Height = 19
+          Top = 108
+          Width = 42
+          Caption = 'Grid'
+          OnChange = cbGridChange
+          TabOrder = 9
+        end
+      end
+      object Chart1: TChart
+        Left = 0
+        Height = 349
+        Top = 0
+        Width = 582
+        AxisList = <        
+          item
+            Visible = False
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+          end        
+          item
+            Visible = False
+            Alignment = calBottom
+            Minors = <>
+          end>
+        BackColor = clSkyBlue
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Legend.BackgroundBrush.Color = clMoneyGreen
+        Legend.GridHorizontal.Style = psDot
+        Legend.GridVertical.Style = psDot
+        Legend.GroupFont.Style = [fsBold]
+        Legend.GroupTitles.Strings = (
+          'Pie'
+        )
+        Legend.Visible = True
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        Color = clOlive
+        ParentColor = False
+        object Chart1LineSeries1: TLineSeries
+          Title = 'Line'
+          LinePen.Color = clRed
+          Pointer.Brush.Color = clRed
+          ShowPoints = True
+        end
+        object Chart1AreaSeries1: TAreaSeries
+          Title = 'Area'
+          AreaBrush.Color = clGreen
+          AreaBrush.Style = bsCross
+          Source = RandomChartSource1
+        end
+        object Chart1PieSeries1: TPieSeries
+          Legend.Format = '%2:s %1:.2f%%'
+          Legend.GroupIndex = 0
+          Legend.Multiplicity = lmPoint
+          Marks.Format = '%2:s'
+          Marks.Style = smsLabel
+          Title = 'Pie'
+          Exploded = True
+          Source = ListChartSource2
+        end
+        object Chart1FuncSeries1: TFuncSeries
+          Legend.Order = 1
+          Legend.UserItemsCount = 2
+          Legend.OnDraw = Chart1FuncSeries1DrawLegend
+          Extent.UseXMax = True
+          Extent.UseXMin = True
+          Extent.XMax = 5
+          Title = 'Function'
+          OnCalculate = Chart1FuncSeries1Calculate
+          Pen.Color = clPurple
+          Pen.Width = 2
+        end
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'OwnerDraw'
+      ClientHeight = 483
+      ClientWidth = 582
+      object Chart2: TChart
+        Left = 0
+        Height = 483
+        Top = 0
+        Width = 582
+        AxisList = <        
+          item
+            Grid.Color = clSilver
+            Minors = <>
+            Title.LabelFont.Height = -16
+            Title.LabelFont.Orientation = 900
+            Title.LabelFont.Style = [fsBold]
+            Title.Visible = True
+            Title.Caption = 'y axis'
+          end        
+          item
+            Grid.Visible = False
+            Alignment = calBottom
+            Minors = <>
+            Title.LabelFont.Height = -16
+            Title.LabelFont.Style = [fsBold]
+            Title.Visible = True
+            Title.Caption = 'x axis'
+          end>
+        BackColor = clWhite
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Legend.Visible = True
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        OnDrawLegend = Chart2DrawLegend
+        Align = alClient
+        ParentColor = False
+        object GradientLineSeries: TLineSeries
+          Title = '1.0'
+          LineType = ltNone
+          Pointer.Style = psCircle
+          ShowPoints = True
+        end
+      end
+    end
+  end
+  object RandomChartSource1: TRandomChartSource
+    PointsNumber = 7
+    RandSeed = 104675296
+    XMax = 10
+    XMin = 1
+    YMax = 10
+    YMin = 1
+    left = 380
+    top = 112
+  end
+  object ListChartSource1: TListChartSource
+    DataPoints.Strings = (
+      '0|0|?|'
+      '1|2|$00FF00|'
+      '2|5|?|'
+      '3|1|?|'
+      '4|6|?|'
+    )
+    left = 380
+    top = 168
+  end
+  object ListChartSource2: TListChartSource
+    DataPoints.Strings = (
+      '0|5|?|abcc'
+      '0|6|?|def'
+      '0.20000000000000001|4|?|пример'
+      '0|7|?|ещё'
+      '0|2|?|два слова'
+    )
+    left = 380
+    top = 228
+  end
+end

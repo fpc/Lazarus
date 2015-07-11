@@ -1,0 +1,122 @@
+object TestCaseOptionsForm: TTestCaseOptionsForm
+  Left = 607
+  Height = 245
+  Top = 370
+  Width = 284
+  HorzScrollBar.Page = 265
+  VertScrollBar.Page = 247
+  BorderIcons = [biSystemMenu]
+  Caption = 'TestCase Options'
+  ClientHeight = 245
+  ClientWidth = 284
+  Constraints.MinHeight = 240
+  Constraints.MinWidth = 280
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object gbNames: TGroupBox
+    Left = 6
+    Height = 77
+    Top = 6
+    Width = 272
+    Align = alTop
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'Names'
+    ClientHeight = 59
+    ClientWidth = 268
+    TabOrder = 0
+    object Label1: TLabel
+      AnchorSideLeft.Control = edDefaultName
+      AnchorSideTop.Control = gbNames
+      Left = 6
+      Height = 14
+      Top = 12
+      Width = 90
+      BorderSpacing.Top = 12
+      Caption = 'Default Test Name'
+      FocusControl = edDefaultName
+      ParentColor = False
+    end
+    object edDefaultName: TEdit
+      AnchorSideLeft.Control = gbNames
+      AnchorSideTop.Control = Label1
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = gbNames
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 21
+      Top = 26
+      Width = 256
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 12
+      MaxLength = 30
+      TabOrder = 0
+      Text = 'TTestCase1'
+    end
+  end
+  object btnAccept: TButton
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrCenter
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 102
+    Height = 23
+    Top = 216
+    Width = 80
+    Anchors = [akLeft, akBottom]
+    AutoSize = True
+    BorderSpacing.Bottom = 6
+    Caption = 'Create unit'
+    OnClick = btnAcceptClick
+    TabOrder = 2
+  end
+  object gbFixture: TGroupBox
+    AnchorSideTop.Control = gbNames
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = btnAccept
+    Left = 6
+    Height = 121
+    Top = 89
+    Width = 272
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'Fixture'
+    ClientHeight = 103
+    ClientWidth = 268
+    TabOrder = 1
+    object cbSetup: TCheckBox
+      AnchorSideLeft.Control = gbFixture
+      AnchorSideTop.Control = gbFixture
+      Left = 6
+      Height = 17
+      Top = 12
+      Width = 121
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 12
+      Caption = 'Create Setup Method'
+      TabOrder = 0
+    end
+    object cbTeardown: TCheckBox
+      AnchorSideLeft.Control = gbFixture
+      AnchorSideTop.Control = cbSetup
+      AnchorSideTop.Side = asrBottom
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 17
+      Top = 41
+      Width = 142
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 12
+      BorderSpacing.Bottom = 12
+      Caption = 'Create TearDown method'
+      TabOrder = 1
+    end
+  end
+end

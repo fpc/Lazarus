@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="4">
+    <PathDelim Value="\"/>
+    <Name Value="LazarusPackageManager"/>
+    <AddToProjectUsesSection Value="True"/>
+    <Author Value="Darius Blaszyk"/>
+    <CompilerOptions>
+      <Version Value="10"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <OtherUnitFiles Value="..\src"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CompilerMessages>
+          <UseMsgFile Value="True"/>
+        </CompilerMessages>
+        <CustomOptions Value="-dLazarusIDEPackage"/>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="A lazarus packagemanager based on FPC's fppkg"/>
+    <License Value="GPL"/>
+    <Version Release="1"/>
+    <Files Count="11">
+      <Item1>
+        <Filename Value="lazpackagemanagerintf.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="LazPackageManagerIntf"/>
+      </Item1>
+      <Item2>
+        <Filename Value="fppkg_const.pas"/>
+        <UnitName Value="fppkg_const"/>
+      </Item2>
+      <Item3>
+        <Filename Value="fppkg_details.lfm"/>
+        <Type Value="LFM"/>
+      </Item3>
+      <Item4>
+        <Filename Value="fppkg_details.pas"/>
+        <UnitName Value="fppkg_details"/>
+      </Item4>
+      <Item5>
+        <Filename Value="fppkg_mainfrm.lfm"/>
+        <Type Value="LFM"/>
+      </Item5>
+      <Item6>
+        <Filename Value="fppkg_mainfrm.pas"/>
+        <UnitName Value="fppkg_mainfrm"/>
+      </Item6>
+      <Item7>
+        <Filename Value="fppkg_optionsfrm.lfm"/>
+        <Type Value="LFM"/>
+      </Item7>
+      <Item8>
+        <Filename Value="fppkg_optionsfrm.pas"/>
+        <UnitName Value="fppkg_optionsfrm"/>
+      </Item8>
+      <Item9>
+        <Filename Value="laz_pkgcommands.pas"/>
+        <UnitName Value="laz_pkgcommands"/>
+      </Item9>
+      <Item10>
+        <Filename Value="laz_pkghandler.pas"/>
+        <UnitName Value="laz_pkghandler"/>
+      </Item10>
+      <Item11>
+        <Filename Value="laz_pkgrepos.pas"/>
+        <UnitName Value="laz_pkgrepos"/>
+      </Item11>
+    </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="..\languages"/>
+    </i18n>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="3">
+      <Item1>
+        <PackageName Value="IDEIntf"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True" Release="1"/>
+      </Item3>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count"/>
+    </CustomOptions>
+  </Package>
+</CONFIG>

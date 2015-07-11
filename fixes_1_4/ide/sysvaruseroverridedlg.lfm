@@ -1,0 +1,67 @@
+object SysVarUserOverrideDialog: TSysVarUserOverrideDialog
+  Left = 348
+  Height = 161
+  Top = 397
+  Width = 400
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 146
+  ActiveControl = VariableEdit
+  Align = alTop
+  AutoSize = True
+  Caption = 'SysVarUserOverrideDialog'
+  ClientHeight = 161
+  ClientWidth = 400
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object VariableLabel: TLabel
+    Left = 6
+    Height = 18
+    Top = 6
+    Width = 388
+    Align = alTop
+    BorderSpacing.Around = 6
+    Caption = 'VariableLabel'
+    ParentColor = False
+  end
+  object ValueLabel: TLabel
+    Left = 6
+    Height = 18
+    Top = 63
+    Width = 388
+    Align = alTop
+    BorderSpacing.Around = 6
+    Caption = 'ValueLabel'
+    ParentColor = False
+  end
+  object ValueEdit: TEdit
+    Left = 6
+    Height = 27
+    Top = 87
+    Width = 388
+    Align = alTop
+    BorderSpacing.Around = 6
+    TabOrder = 1
+    Text = 'ValueEdit'
+  end
+  object VariableEdit: TEdit
+    Left = 6
+    Height = 27
+    Top = 30
+    Width = 388
+    Align = alTop
+    BorderSpacing.Around = 6
+    TabOrder = 0
+    Text = 'VariableEdit'
+  end
+  object ButtonPanel: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 120
+    Width = 388
+    Align = alTop
+    TabOrder = 2
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
+  end
+end

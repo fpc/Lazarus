@@ -1,0 +1,145 @@
+object AddFileToAPackageDialog: TAddFileToAPackageDialog
+  Left = 347
+  Height = 424
+  Top = 221
+  Width = 469
+  ActiveControl = FileNameEdit
+  Caption = 'AddFileToAPackageDialog'
+  ClientHeight = 424
+  ClientWidth = 469
+  OnClose = AddFileToAPackageDlgClose
+  Position = poScreenCenter
+  ShowHint = True
+  LCLVersion = '0.9.29'
+  object FileGroupBox: TGroupBox
+    Left = 6
+    Height = 148
+    Top = 6
+    Width = 457
+    Align = alTop
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'FileGroupBox'
+    ClientHeight = 130
+    ClientWidth = 453
+    TabOrder = 0
+    object UnitNameLabel: TLabel
+      AnchorSideTop.Control = FileNameEdit
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 14
+      Top = 33
+      Width = 439
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      Caption = 'UnitNameLabel'
+      ParentColor = False
+    end
+    object FileTypeRadioGroup: TRadioGroup
+      AnchorSideTop.Control = HasRegisterProcCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 25
+      Top = 99
+      Width = 439
+      Anchors = [akTop, akLeft, akRight]
+      AutoFill = True
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'FileTypeRadioGroup'
+      ChildSizing.LeftRightSpacing = 6
+      ChildSizing.TopBottomSpacing = 6
+      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+      ChildSizing.EnlargeVertical = crsHomogenousChildResize
+      ChildSizing.ShrinkHorizontal = crsScaleChilds
+      ChildSizing.ShrinkVertical = crsScaleChilds
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 1
+      Constraints.MinHeight = 25
+      TabOrder = 3
+      TabStop = True
+    end
+    object FileNameEdit: TEdit
+      Left = 6
+      Height = 21
+      Top = 6
+      Width = 439
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      ReadOnly = True
+      TabOrder = 0
+      Text = 'FileNameEdit'
+    end
+    object UnitNameEdit: TEdit
+      AnchorSideTop.Control = UnitNameLabel
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 21
+      Top = 49
+      Width = 439
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 2
+      TabOrder = 1
+      Text = 'UnitNameEdit'
+    end
+    object HasRegisterProcCheckBox: TCheckBox
+      AnchorSideTop.Control = UnitNameEdit
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 17
+      Top = 76
+      Width = 439
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 6
+      Caption = 'HasRegisterProcCheckBox'
+      TabOrder = 2
+    end
+  end
+  object PackagesGroupBox: TGroupBox
+    Left = 6
+    Height = 74
+    Top = 160
+    Width = 457
+    Align = alTop
+    Anchors = [akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'PackagesGroupBox'
+    ClientHeight = 56
+    ClientWidth = 453
+    TabOrder = 1
+    object PackagesComboBox: TComboBox
+      Left = 6
+      Height = 21
+      Top = 6
+      Width = 441
+      Align = alTop
+      BorderSpacing.Around = 6
+      ItemHeight = 13
+      TabOrder = 0
+      Text = 'PackagesComboBox'
+    end
+    object ShowAllCheckBox: TCheckBox
+      Left = 6
+      Height = 17
+      Top = 33
+      Width = 441
+      Align = alTop
+      BorderSpacing.Around = 6
+      Caption = 'ShowAllCheckBox'
+      OnClick = ShowAllCheckBoxClick
+      TabOrder = 1
+    end
+  end
+  object BtnPanel: TButtonPanel
+    Left = 6
+    Height = 26
+    Top = 392
+    Width = 457
+    TabOrder = 2
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+    ShowBevel = False
+  end
+end

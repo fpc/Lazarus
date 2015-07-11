@@ -1,0 +1,147 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: Translation_Demo\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.6.3\n"
+"Language: fr\n"
+
+#: stringsunit.rsbeer
+msgctxt "stringsunit.rsbeer"
+msgid "Beer"
+msgstr "bière"
+
+#: stringsunit.rseight
+msgid "Eight"
+msgstr "huit"
+
+#: stringsunit.rsfive
+msgid "Five"
+msgstr "cinq"
+
+#: stringsunit.rsfour
+msgid "Four"
+msgstr "quatre"
+
+#: stringsunit.rsnine
+msgid "Nine"
+msgstr "neuf"
+
+#: stringsunit.rsone
+msgid "One"
+msgstr "un"
+
+#: stringsunit.rsseven
+msgid "Seven"
+msgstr "sept"
+
+#: stringsunit.rssix
+msgid "Six"
+msgstr "six"
+
+#: stringsunit.rssumofselectednumbers
+msgid "Sum of selected numbers: %s"
+msgstr "Somme des nombres choisis: %s"
+
+#: stringsunit.rsthree
+msgid "Three"
+msgstr "trois"
+
+#: stringsunit.rstodayis
+msgctxt "stringsunit.rstodayis"
+msgid "Today is %s"
+msgstr "Aujourd'hui est %s."
+
+#: stringsunit.rstwo
+msgid "Two"
+msgstr "deux"
+
+#: stringsunit.rswater
+msgctxt "stringsunit.rswater"
+msgid "Water"
+msgstr "eau"
+
+#: stringsunit.rswine
+msgctxt "stringsunit.rswine"
+msgid "Wine"
+msgstr "vin"
+
+#: stringsunit.rsyouselected
+msgctxt "stringsunit.rsyouselected"
+msgid "You selected %s."
+msgstr "Vous avez choisi %s."
+
+#: stringsunit.rsyouselectedat
+msgctxt "stringsunit.rsyouselectedat"
+msgid "You selected %0:s at %1:s."
+msgstr "A %1:s, vous avez choisi %0:s."
+
+#: tform2.caption
+msgid "Second Form"
+msgstr "Deuxième forme"
+
+#: tform2.checkgroup.caption
+msgctxt "tform2.checkgroup.caption"
+msgid "Several items"
+msgstr "Plusieurs articles"
+
+#: tform2.groupbox1.caption
+msgid "Please select"
+msgstr "S'il vous plaît sélectionnez"
+
+#: tform2.lblmoney.caption
+msgid "LblMoney"
+msgstr ""
+
+#: tform2.lblsum.caption
+msgid "LblSum"
+msgstr ""
+
+#: tform2.lbltodayis.caption
+msgid "LblTodayIs"
+msgstr ""
+
+#: tform2.radiogroup.caption
+msgctxt "tform2.radiogroup.caption"
+msgid "Single item"
+msgstr "Un seul article"
+
+#: tlocalizedform.caption
+msgid "LocalizedForm"
+msgstr ""
+
+#: tmainform.button1.caption
+msgctxt "tmainform.button1.caption"
+msgid "Open second form"
+msgstr "Ouverte deuxième forme "
+
+#: tmainform.button2.caption
+msgctxt "tmainform.button2.caption"
+msgid "What did you select?"
+msgstr "Qu'avez-vous choisi?"
+
+#: tmainform.caption
+msgctxt "tmainform.caption"
+msgid "Translation demo"
+msgstr "Démo de traduction"
+
+#: tmainform.label1.caption
+msgctxt "tmainform.label1.caption"
+msgid "Select language"
+msgstr "Choisir la langue"
+
+#: tmainform.lblcurrentselection.caption
+msgctxt "tmainform.lblcurrentselection.caption"
+msgid "No drink selected."
+msgstr "Aucune boisson est sélectionné."
+
+#: tmainform.rgdrinks.caption
+msgctxt "tmainform.rgdrinks.caption"
+msgid "Please select a drink"
+msgstr "S'il vous plaît sélectionner un verre"
+

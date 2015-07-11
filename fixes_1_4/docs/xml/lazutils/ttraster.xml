@@ -1,0 +1,1304 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    TTRASTER
+  ====================================================================
+-->
+
+<module name="TTRASTER">
+<short></short>
+<descr>
+</descr>
+
+<!-- procedure type Visibility: default -->
+<element name="Function_Sweep_Init">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Function_Sweep_Init.min">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Function_Sweep_Init.max">
+<short></short>
+</element>
+
+<!-- procedure type Visibility: default -->
+<element name="Function_Sweep_Span">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Function_Sweep_Span.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Function_Sweep_Span.x1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Function_Sweep_Span.x2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Function_Sweep_Span.Left">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Function_Sweep_Span.Right">
+<short></short>
+</element>
+
+<!-- procedure type Visibility: default -->
+<element name="Function_Sweep_Step">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TFreeTypeRasterizer">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.Precision_Bits">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.Precision">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.Precision_Half">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.Precision_Step">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.Precision_Shift">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.Precision_Mask">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.Precision_Jitter">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.Pool">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.Cible">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.BWidth">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.BCible">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.GCible">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.TraceBOfs">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.TraceBIncr">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.TraceGOfs">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.TraceGIncr">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.gray_min_x">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.gray_max_x">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.Proc_Sweep_Init">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.Proc_Sweep_Span">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.Proc_Sweep_Drop">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.Proc_Sweep_Step">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.Proc_Sweep_Direct">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.Direct_X">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.Direct_Y">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.Direct_TX">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.Points">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.Flags">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.Outs">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.nContours">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.DropOutControl">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.Grays">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.BGray_Data">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.BGray_Incr">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.BGray_End">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.BGray_Capacity">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeRasterizer.Second_Pass">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TFreeTypeRasterizer.BGray_NeedCapacity">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.BGray_NeedCapacity.c">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TFreeTypeRasterizer.Draw_Sweep">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFreeTypeRasterizer.Draw_Sweep.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Draw_Sweep.MinY">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Draw_Sweep.MaxY">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Draw_Sweep.PixelGrain">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TFreeTypeRasterizer.Horizontal_Gray_Sweep_Drop">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Horizontal_Gray_Sweep_Drop.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Horizontal_Gray_Sweep_Drop.x1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Horizontal_Gray_Sweep_Drop.x2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Horizontal_Gray_Sweep_Drop.Left">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Horizontal_Gray_Sweep_Drop.Right">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TFreeTypeRasterizer.Horizontal_Gray_Sweep_Span">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Horizontal_Gray_Sweep_Span.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Horizontal_Gray_Sweep_Span.x1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Horizontal_Gray_Sweep_Span.x2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Horizontal_Gray_Sweep_Span.Left">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Horizontal_Gray_Sweep_Span.Right">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TFreeTypeRasterizer.Horizontal_Sweep_Drop">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Horizontal_Sweep_Drop.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Horizontal_Sweep_Drop.x1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Horizontal_Sweep_Drop.x2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Horizontal_Sweep_Drop.Left">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Horizontal_Sweep_Drop.Right">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TFreeTypeRasterizer.Horizontal_Sweep_Init">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Horizontal_Sweep_Init.min">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Horizontal_Sweep_Init.max">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TFreeTypeRasterizer.Horizontal_Sweep_Span">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Horizontal_Sweep_Span.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Horizontal_Sweep_Span.x1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Horizontal_Sweep_Span.x2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Horizontal_Sweep_Span.Left">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Horizontal_Sweep_Span.Right">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TFreeTypeRasterizer.Horizontal_Sweep_Step">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TFreeTypeRasterizer.ProcessCoordinate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFreeTypeRasterizer.ProcessCoordinate.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.ProcessCoordinate.List">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TFreeTypeRasterizer.Raster_Object_Init">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TFreeTypeRasterizer.Raster_Object_Done">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TFreeTypeRasterizer.Render_Single_Pass">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFreeTypeRasterizer.Render_Single_Pass.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Render_Single_Pass.vertical">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Render_Single_Pass.OutputMinY">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Render_Single_Pass.OutputMaxY">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Render_Single_Pass.PixelGrain">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TFreeTypeRasterizer.Set_High_Precision">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Set_High_Precision.High">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TFreeTypeRasterizer.Set_Second_Pass">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Set_Second_Pass.Pass">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TFreeTypeRasterizer.Vertical_Gray_Sweep_Init">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Vertical_Gray_Sweep_Init.min">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Vertical_Gray_Sweep_Init.max">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TFreeTypeRasterizer.Vertical_Gray_Sweep_Init_Direct">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Vertical_Gray_Sweep_Init_Direct.min">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Vertical_Gray_Sweep_Init_Direct.max">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TFreeTypeRasterizer.Vertical_Gray_Sweep_Init_Direct_HQ">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Vertical_Gray_Sweep_Init_Direct_HQ.min">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Vertical_Gray_Sweep_Init_Direct_HQ.max">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TFreeTypeRasterizer.Vertical_Gray_Sweep_Init_HQ">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Vertical_Gray_Sweep_Init_HQ.min">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Vertical_Gray_Sweep_Init_HQ.max">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TFreeTypeRasterizer.Vertical_Gray_Sweep_Step">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TFreeTypeRasterizer.Vertical_Gray_Sweep_Step_Direct">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TFreeTypeRasterizer.Vertical_Gray_Sweep_Step_Direct_HQ">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TFreeTypeRasterizer.Vertical_Gray_Sweep_Step_HQ">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TFreeTypeRasterizer.Vertical_Sweep_Drop">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Vertical_Sweep_Drop.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Vertical_Sweep_Drop.x1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Vertical_Sweep_Drop.x2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Vertical_Sweep_Drop.Left">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Vertical_Sweep_Drop.Right">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TFreeTypeRasterizer.Vertical_Sweep_Init">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Vertical_Sweep_Init.min">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Vertical_Sweep_Init.max">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TFreeTypeRasterizer.Vertical_Sweep_Span">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Vertical_Sweep_Span.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Vertical_Sweep_Span.x1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Vertical_Sweep_Span.x2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Vertical_Sweep_Span.Left">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Vertical_Sweep_Span.Right">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TFreeTypeRasterizer.Vertical_Sweep_Step">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TFreeTypeRasterizer.Render_Glyph">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFreeTypeRasterizer.Render_Glyph.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Render_Glyph.glyph">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Render_Glyph.target">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TFreeTypeRasterizer.Render_Gray_Glyph">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFreeTypeRasterizer.Render_Gray_Glyph.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Render_Gray_Glyph.glyph">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Render_Gray_Glyph.target">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Render_Gray_Glyph.palette">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TFreeTypeRasterizer.Render_Gray_Glyph_HQ">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFreeTypeRasterizer.Render_Gray_Glyph_HQ.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Render_Gray_Glyph_HQ.glyph">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Render_Gray_Glyph_HQ.target">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TFreeTypeRasterizer.Render_Directly_Gray_Glyph">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFreeTypeRasterizer.Render_Directly_Gray_Glyph.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Render_Directly_Gray_Glyph.glyph">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Render_Directly_Gray_Glyph.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Render_Directly_Gray_Glyph.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Render_Directly_Gray_Glyph.tx">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Render_Directly_Gray_Glyph.ty">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Render_Directly_Gray_Glyph.OnRender">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Render_Directly_Gray_Glyph.palette">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TFreeTypeRasterizer.Render_Directly_Gray_Glyph_HQ">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFreeTypeRasterizer.Render_Directly_Gray_Glyph_HQ.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Render_Directly_Gray_Glyph_HQ.glyph">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Render_Directly_Gray_Glyph_HQ.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Render_Directly_Gray_Glyph_HQ.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Render_Directly_Gray_Glyph_HQ.tx">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Render_Directly_Gray_Glyph_HQ.ty">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Render_Directly_Gray_Glyph_HQ.OnRender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TFreeTypeRasterizer.Set_Raster_Palette">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeRasterizer.Set_Raster_Palette.palette">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TFreeTypeRasterizer.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TFreeTypeRasterizer.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="IncludeFullGrainMin">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="IncludeFullGrainMin.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="IncludeFullGrainMin.minValue">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="IncludeFullGrainMin.Grain">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="IncludeFullGrainMax">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="IncludeFullGrainMax.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="IncludeFullGrainMax.maxValue">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="IncludeFullGrainMax.Grain">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TTRaster_Init">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TTRaster_Init.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TTRaster_Done">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TTGetDefaultRasterizer">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TTGetDefaultRasterizer.Result">
+<short></short>
+</element>
+
+</module> <!-- TTRASTER -->
+
+</package>
+</fpdoc-descriptions>

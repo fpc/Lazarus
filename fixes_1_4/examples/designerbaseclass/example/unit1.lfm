@@ -1,0 +1,10 @@
+object MyComponent1: TMyComponent1
+  left = 302
+  top = 594
+  object OpenDialog1: TOpenDialog
+    Title = 'Open existing file'
+    FilterIndex = 0
+    left = 91
+    top = 87
+  end
+end

@@ -1,0 +1,8498 @@
+<?xml version="1.0" encoding="ISO8859-1"?>
+<fpdoc-descriptions>
+<package name="gtk">
+
+<!--
+  ====================================================================
+    GtkInt
+  ====================================================================
+-->
+
+<module name="GtkInt">
+<short></short>
+<descr>
+</descr>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Classes">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="SysUtils">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="FPCAdds">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="InterfaceBase">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="glib">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gdk">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gtk">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gdkpixbuf">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="GtkFontCache">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="x">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="xlib">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="ExtDlgs">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Dialogs">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Controls">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Forms">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLStrConsts">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LMessages">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLProc">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLIntf">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLType">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gtkDef">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="DynHashArray">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gtkMsgQueue">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="GraphType">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="GraphMath">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Graphics">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Menus">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGTKWidgetSet">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TGTKWidgetSet.FKeyStateList_">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TGTKWidgetSet.FDeviceContexts">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TGTKWidgetSet.FGDIObjects">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TGTKWidgetSet.FMessageQueue">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TGTKWidgetSet.WaitingForMessages">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TGTKWidgetSet.FRCFilename">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TGTKWidgetSet.FRCFileParsed">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TGTKWidgetSet.FRCFileAge">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TGTKWidgetSet.FWidgetsWithResizeRequest">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TGTKWidgetSet.FGTKToolTips">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TGTKWidgetSet.FLogHandlerID">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TGTKWidgetSet.FStockNullBrush">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TGTKWidgetSet.FStockBlackBrush">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TGTKWidgetSet.FStockLtGrayBrush">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TGTKWidgetSet.FStockGrayBrush">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TGTKWidgetSet.FStockDkGrayBrush">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TGTKWidgetSet.FStockWhiteBrush">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TGTKWidgetSet.FStockNullPen">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TGTKWidgetSet.FStockBlackPen">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TGTKWidgetSet.FStockWhitePen">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TGTKWidgetSet.FDefaultFont">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TGTKWidgetSet.FStockSystemFont">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TGTKWidgetSet.FExtUTF8OutCache">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TGTKWidgetSet.FExtUTF8OutCacheSize">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGTKWidgetSet.CreateSystemFont">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.CreateSystemFont.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.InitStockItems">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.FreeStockItems">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.PassCmdLineOptions">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.FreeAllStyles">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGTKWidgetSet.GetCompStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetCompStyle.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetCompStyle.Sender">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGTKWidgetSet.CreateComboBox">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.CreateComboBox.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateComboBox.ComboBoxObject">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGTKWidgetSet.CreateAPIWidget">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.CreateAPIWidget.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateAPIWidget.AWinControl">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGTKWidgetSet.CreateForm">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.CreateForm.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateForm.ACustomForm">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGTKWidgetSet.CreateListView">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.CreateListView.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateListView.ListViewObject">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGTKWidgetSet.CreatePairSplitter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.CreatePairSplitter.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreatePairSplitter.PairSplitterObject">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGTKWidgetSet.CreateStatusBar">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.CreateStatusBar.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateStatusBar.StatusBar">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGTKWidgetSet.OldCreateStatusBarPanel">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.OldCreateStatusBarPanel.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.OldCreateStatusBarPanel.StatusBar">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.OldCreateStatusBarPanel.Index">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGTKWidgetSet.CreateSimpleClientAreaWidget">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.CreateSimpleClientAreaWidget.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateSimpleClientAreaWidget.Sender">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateSimpleClientAreaWidget.NotOnParentsClientArea">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGTKWidgetSet.CreateToolBar">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.CreateToolBar.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateToolBar.ToolBarObject">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.DestroyEmptySubmenu">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DestroyEmptySubmenu.Sender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.DestroyConnectedWidget">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DestroyConnectedWidget.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DestroyConnectedWidget.CheckIfDestroying">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGTKWidgetSet.RecreateWnd">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.RecreateWnd.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RecreateWnd.Sender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.AssignSelf">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.AssignSelf.Child">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.AssignSelf.Data">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.SetClipboardWidget">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetClipboardWidget.TargetWidget">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGTKWidgetSet.IsValidDC">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.IsValidDC.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.IsValidDC.DC">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGTKWidgetSet.NewDC">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.NewDC.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.DisposeDC">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DisposeDC.aDC">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGTKWidgetSet.CreateDCForWidget">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.CreateDCForWidget.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateDCForWidget.TheWidget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateDCForWidget.TheWindow">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateDCForWidget.WithChildWindows">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGTKWidgetSet.GetDoubleBufferedDC">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetDoubleBufferedDC.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetDoubleBufferedDC.Handle">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGTKWidgetSet.IsValidGDIObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.IsValidGDIObject.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.IsValidGDIObject.GDIObject">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGTKWidgetSet.IsValidGDIObjectType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.IsValidGDIObjectType.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.IsValidGDIObjectType.GDIObject">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.IsValidGDIObjectType.GDIType">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGTKWidgetSet.NewGDIObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.NewGDIObject.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.NewGDIObject.GDIType">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.DisposeGDIObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DisposeGDIObject.GdiObject">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.SelectGDKBrushProps">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SelectGDKBrushProps.DC">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.SelectGDKTextProps">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SelectGDKTextProps.DC">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.SelectGDKPenProps">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SelectGDKPenProps.DC">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGTKWidgetSet.CreateDefaultBrush">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.CreateDefaultBrush.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGTKWidgetSet.CreateDefaultFont">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.CreateDefaultFont.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGTKWidgetSet.CreateDefaultPen">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.CreateDefaultPen.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.UpdateDCTextMetric">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.UpdateDCTextMetric.DC">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGTKWidgetSet.GetDefaultFont">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetDefaultFont.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetDefaultFont.IncreaseReferenceCount">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGTKWidgetSet.CreateRegionCopy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.CreateRegionCopy.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateRegionCopy.SrcRGN">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGTKWidgetSet.DCClipRegionValid">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.DCClipRegionValid.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DCClipRegionValid.DC">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGTKWidgetSet.CreateEmptyRegion">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.CreateEmptyRegion.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.LoadPixbufFromLazResource">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.LoadPixbufFromLazResource.ResourceName">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.LoadPixbufFromLazResource.Pixbuf">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.LoadFromXPMFile">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.LoadFromXPMFile.Bitmap">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.LoadFromXPMFile.Filename">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.LoadFromPixbufFile">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.LoadFromPixbufFile.Bitmap">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.LoadFromPixbufFile.Filename">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.LoadFromPixbufData">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.LoadFromPixbufData.Bitmap">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.LoadFromPixbufData.Data">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGTKWidgetSet.InternalGetDIBits">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.InternalGetDIBits.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.InternalGetDIBits.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.InternalGetDIBits.Bitmap">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.InternalGetDIBits.StartScan">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.InternalGetDIBits.NumScans">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.InternalGetDIBits.BitSize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.InternalGetDIBits.Bits">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.InternalGetDIBits.BitInfo">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.InternalGetDIBits.Usage">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.InternalGetDIBits.DIB">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGTKWidgetSet.GetWindowRawImageDescription">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetWindowRawImageDescription.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetWindowRawImageDescription.GDKWindow">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetWindowRawImageDescription.Desc">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGTKWidgetSet.GetRawImageFromGdkWindow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetRawImageFromGdkWindow.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetRawImageFromGdkWindow.GDKWindow">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetRawImageFromGdkWindow.MaskBitmap">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetRawImageFromGdkWindow.SrcRect">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetRawImageFromGdkWindow.NewRawImage">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGTKWidgetSet.GetRawImageMaskFromGdkBitmap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetRawImageMaskFromGdkBitmap.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetRawImageMaskFromGdkBitmap.MaskBitmap">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetRawImageMaskFromGdkBitmap.SrcRect">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetRawImageMaskFromGdkBitmap.RawImage">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGTKWidgetSet.StretchCopyArea">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.StretchCopyArea.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchCopyArea.DestDC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchCopyArea.X">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchCopyArea.Y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchCopyArea.Width">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchCopyArea.Height">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchCopyArea.SrcDC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchCopyArea.XSrc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchCopyArea.YSrc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchCopyArea.SrcWidth">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchCopyArea.SrcHeight">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchCopyArea.Mask">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchCopyArea.XMask">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchCopyArea.YMask">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchCopyArea.Rop">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.SetRCFilename">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetRCFilename.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.CheckRCFilename">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.ParseRCFile">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.AddDummyNoteBookPage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.AddDummyNoteBookPage.NoteBookWidget">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.BringFormToFront">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.BringFormToFront.Sender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.SetWindowSizeAndPosition">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetWindowSizeAndPosition.Window">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetWindowSizeAndPosition.AWinControl">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.UntransientWindow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.UntransientWindow.GtkWindow">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.InitializeFileDialog">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.InitializeFileDialog.FileDialog">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.InitializeFileDialog.SelWidget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.InitializeFileDialog.Title">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.InitializeFontDialog">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.InitializeFontDialog.FontDialog">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.InitializeFontDialog.SelWidget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.InitializeFontDialog.Title">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.InitializeCommonDialog">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.InitializeCommonDialog.ADialog">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.InitializeCommonDialog.AWindow">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.CreateOpenDialogFilter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateOpenDialogFilter.OpenDialog">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateOpenDialogFilter.SelWidget">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.CreatePreviewDialogControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreatePreviewDialogControl.PreviewDialog">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreatePreviewDialogControl.SelWidget">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.InitializeOpenDialog">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.InitializeOpenDialog.OpenDialog">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.InitializeOpenDialog.SelWidget">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGTKWidgetSet.GetCaption">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetCaption.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetCaption.Sender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.WordWrap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.WordWrap.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.WordWrap.AText">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.WordWrap.MaxWidthInPixel">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.WordWrap.Lines">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.WordWrap.LineCount">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.OldUpdateStatusBarPanels">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.OldUpdateStatusBarPanels.StatusBar">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.OldUpdateStatusBarPanels.StatusBarWidget">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.OldUpdateStatusBarPanel">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.OldUpdateStatusBarPanel.StatusBar">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.OldUpdateStatusBarPanel.Index">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.OldUpdateStatusBarPanel.StatusPanelWidget">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.ResizeChild">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ResizeChild.Sender">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ResizeChild.Left">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ResizeChild.Top">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ResizeChild.Width">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ResizeChild.Height">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGTKWidgetSet.RemoveCallbacks">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RemoveCallbacks.Widget">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGTKWidgetSet.SetLabelCaption">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetLabelCaption.ALabel">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetLabelCaption.ACaption">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetLabelCaption.AComponent">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetLabelCaption.ASignalWidget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetLabelCaption.ASignal">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGTKWidgetSet.SetCallback">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetCallback.AMsg">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetCallback.AGTKObject">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetCallback.ALCLObject">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGTKWidgetSet.SendPaintMessagesForInternalWidgets">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SendPaintMessagesForInternalWidgets.AWinControl">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.LCLtoGtkMessagePending">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.LCLtoGtkMessagePending.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGTKWidgetSet.SendCachedGtkMessages">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGTKWidgetSet.RealizeWidgetSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RealizeWidgetSize.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RealizeWidgetSize.NewWidth">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RealizeWidgetSize.NewHeight">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGTKWidgetSet.FinishComponentCreate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.FinishComponentCreate.ALCLObject">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.FinishComponentCreate.AGTKObject">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.FinishComponentCreate.ASetupProps">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGTKWidgetSet.ShowHide">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ShowHide.Sender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGTKWidgetSet.HookSignals">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.HookSignals.AGTKObject">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.HookSignals.ALCLObject">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TGTKWidgetSet.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TGTKWidgetSet.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGTKWidgetSet.HandleEvents">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGTKWidgetSet.WaitMessage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGTKWidgetSet.SendCachedLCLMessages">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGTKWidgetSet.AppTerminate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGTKWidgetSet.AppInit">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.AppInit.ScreenInfo">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGTKWidgetSet.AppMinimize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGTKWidgetSet.AppBringToFront">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.DCGetPixel">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.DCGetPixel.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DCGetPixel.CanvasHandle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DCGetPixel.X">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DCGetPixel.Y">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGTKWidgetSet.DCSetPixel">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DCSetPixel.CanvasHandle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DCSetPixel.X">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DCSetPixel.Y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DCSetPixel.AColor">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGTKWidgetSet.DCRedraw">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DCRedraw.CanvasHandle">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGTKWidgetSet.SetDesigning">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetDesigning.AComponent">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGTKWidgetSet.UnsetResizeRequest">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.UnsetResizeRequest.Widget">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGTKWidgetSet.SetResizeRequest">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetResizeRequest.Widget">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGTKWidgetSet.UpdateTransientWindows">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGTKWidgetSet.SetSelectionMode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetSelectionMode.Sender">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetSelectionMode.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetSelectionMode.MultiSelect">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetSelectionMode.ExtendedSelect">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.ForceLineBreaks">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.ForceLineBreaks.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ForceLineBreaks.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ForceLineBreaks.Src">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ForceLineBreaks.MaxWidthInPixels">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ForceLineBreaks.ProcessAmpersands">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.CreateComponent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.CreateComponent.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateComponent.Sender">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.CreateTimer">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.CreateTimer.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateTimer.Interval">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateTimer.TimerFunc">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.DestroyTimer">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.DestroyTimer.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DestroyTimer.TimerHandle">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGTKWidgetSet.DestroyLCLComponent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DestroyLCLComponent.Sender">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.Arc">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.Arc.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.Arc.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.Arc.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.Arc.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.Arc.width">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.Arc.height">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.Arc.angle1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.Arc.angle2">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.AngleChord">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.AngleChord.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.AngleChord.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.AngleChord.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.AngleChord.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.AngleChord.width">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.AngleChord.height">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.AngleChord.angle1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.AngleChord.angle2">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.BeginPaint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.BeginPaint.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.BeginPaint.Handle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.BeginPaint.PS">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.BitBlt">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.BitBlt.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.BitBlt.DestDC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.BitBlt.X">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.BitBlt.Y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.BitBlt.Width">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.BitBlt.Height">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.BitBlt.SrcDC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.BitBlt.XSrc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.BitBlt.YSrc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.BitBlt.Rop">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.BringWindowToTop">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.BringWindowToTop.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.BringWindowToTop.hWnd">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.CallNextHookEx">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.CallNextHookEx.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CallNextHookEx.hHk">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CallNextHookEx.ncode">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CallNextHookEx.wParam">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CallNextHookEx.lParam">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.CallWindowProc">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.CallWindowProc.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CallWindowProc.lpPrevWndFunc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CallWindowProc.Handle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CallWindowProc.Msg">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CallWindowProc.wParam">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CallWindowProc.lParam">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.ClientToScreen">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.ClientToScreen.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ClientToScreen.Handle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ClientToScreen.P">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.ClipboardFormatToMimeType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.ClipboardFormatToMimeType.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ClipboardFormatToMimeType.FormatID">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.ClipboardGetData">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.ClipboardGetData.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ClipboardGetData.ClipboardType">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ClipboardGetData.FormatID">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ClipboardGetData.Stream">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.ClipboardGetFormats">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.ClipboardGetFormats.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ClipboardGetFormats.ClipboardType">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ClipboardGetFormats.Count">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ClipboardGetFormats.List">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.ClipboardGetOwnerShip">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.ClipboardGetOwnerShip.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ClipboardGetOwnerShip.ClipboardType">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ClipboardGetOwnerShip.OnRequestProc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ClipboardGetOwnerShip.FormatCount">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ClipboardGetOwnerShip.Formats">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.ClipboardRegisterFormat">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.ClipboardRegisterFormat.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ClipboardRegisterFormat.AMimeType">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.CombineRgn">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.CombineRgn.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CombineRgn.Dest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CombineRgn.Src1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CombineRgn.Src2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CombineRgn.fnCombineMode">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.ComboBoxDropDown">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.ComboBoxDropDown.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ComboBoxDropDown.Handle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ComboBoxDropDown.DropDown">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.CreateBitmap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.CreateBitmap.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateBitmap.Width">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateBitmap.Height">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateBitmap.Planes">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateBitmap.BitCount">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateBitmap.BitmapBits">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.CreateBitmapFromRawImage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.CreateBitmapFromRawImage.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateBitmapFromRawImage.RawImage">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateBitmapFromRawImage.Bitmap">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateBitmapFromRawImage.MaskBitmap">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateBitmapFromRawImage.AlwaysCreateMask">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.CreateBrushIndirect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.CreateBrushIndirect.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateBrushIndirect.LogBrush">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.CreateCaret">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.CreateCaret.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateCaret.Handle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateCaret.Bitmap">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateCaret.width">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateCaret.Height">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.CreateCompatibleBitmap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.CreateCompatibleBitmap.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateCompatibleBitmap.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateCompatibleBitmap.Width">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateCompatibleBitmap.Height">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.CreateCompatibleDC">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.CreateCompatibleDC.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateCompatibleDC.DC">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.CreateFontIndirect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.CreateFontIndirect.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateFontIndirect.LogFont">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.CreateFontIndirectEx">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.CreateFontIndirectEx.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateFontIndirectEx.LogFont">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateFontIndirectEx.LongFontName">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.CreatePalette">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.CreatePalette.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreatePalette.LogPalette">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.CreatePenIndirect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.CreatePenIndirect.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreatePenIndirect.LogPen">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.CreatePixmapIndirect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.CreatePixmapIndirect.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreatePixmapIndirect.Data">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreatePixmapIndirect.TransColor">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.CreatePolygonRgn">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.CreatePolygonRgn.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreatePolygonRgn.Points">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreatePolygonRgn.NumPts">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreatePolygonRgn.FillMode">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.CreateRectRgn">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.CreateRectRgn.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateRectRgn.X1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateRectRgn.Y1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateRectRgn.X2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.CreateRectRgn.Y2">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGTKWidgetSet.DeleteCriticalSection">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DeleteCriticalSection.CritSection">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.DeleteDC">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.DeleteDC.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DeleteDC.hDC">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.DeleteObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.DeleteObject.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DeleteObject.GDIObject">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.DestroyCaret">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.DestroyCaret.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DestroyCaret.Handle">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.DrawFrameControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.DrawFrameControl.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DrawFrameControl.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DrawFrameControl.Rect">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DrawFrameControl.uType">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DrawFrameControl.uState">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.DrawEdge">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.DrawEdge.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DrawEdge.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DrawEdge.ARect">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DrawEdge.Edge">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DrawEdge.grfFlags">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.DrawText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.DrawText.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DrawText.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DrawText.Str">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DrawText.Count">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DrawText.Rect">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DrawText.Flags">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.Ellipse">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.Ellipse.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.Ellipse.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.Ellipse.x1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.Ellipse.y1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.Ellipse.x2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.Ellipse.y2">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.EnableScrollBar">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.EnableScrollBar.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.EnableScrollBar.Wnd">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.EnableScrollBar.wSBflags">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.EnableScrollBar.wArrows">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.EnableWindow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.EnableWindow.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.EnableWindow.hWnd">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.EnableWindow.bEnable">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.EndPaint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.EndPaint.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.EndPaint.Handle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.EndPaint.PS">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGTKWidgetSet.EnterCriticalSection">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.EnterCriticalSection.CritSection">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.ExcludeClipRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.ExcludeClipRect.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ExcludeClipRect.dc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ExcludeClipRect.Left">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ExcludeClipRect.Top">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ExcludeClipRect.Right">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ExcludeClipRect.Bottom">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.ExtTextOut">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.ExtTextOut.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ExtTextOut.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ExtTextOut.X">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ExtTextOut.Y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ExtTextOut.Options">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ExtTextOut.Rect">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ExtTextOut.Str">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ExtTextOut.Count">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ExtTextOut.Dx">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.ExtSelectClipRGN">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.ExtSelectClipRGN.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ExtSelectClipRGN.dc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ExtSelectClipRGN.rgn">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ExtSelectClipRGN.Mode">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.FillRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.FillRect.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.FillRect.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.FillRect.Rect">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.FillRect.Brush">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.Frame">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.Frame.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.Frame.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.Frame.ARect">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.Frame3d">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.Frame3d.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.Frame3d.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.Frame3d.ARect">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.Frame3d.FrameWidth">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.Frame3d.Style">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.FrameRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.FrameRect.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.FrameRect.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.FrameRect.ARect">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.FrameRect.hBr">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetActiveWindow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetActiveWindow.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetBitmapBits">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetBitmapBits.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetBitmapBits.Bitmap">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetBitmapBits.Count">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetBitmapBits.Bits">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetBitmapRawImageDescription">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetBitmapRawImageDescription.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetBitmapRawImageDescription.Bitmap">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetBitmapRawImageDescription.Desc">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetCapture">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetCapture.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetCaretPos">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetCaretPos.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetCaretPos.lpPoint">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetCaretRespondToFocus">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetCaretRespondToFocus.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetCaretRespondToFocus.handle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetCaretRespondToFocus.ShowHideOnFocus">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetCharABCWidths">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetCharABCWidths.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetCharABCWidths.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetCharABCWidths.p2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetCharABCWidths.p3">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetCharABCWidths.ABCStructs">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetClientBounds">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetClientBounds.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetClientBounds.handle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetClientBounds.ARect">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetClientRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetClientRect.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetClientRect.handle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetClientRect.ARect">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetClipBox">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetClipBox.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetClipBox.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetClipBox.lpRect">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetClipRGN">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetClipRGN.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetClipRGN.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetClipRGN.RGN">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetCmdLineParamDescForInterface">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetCmdLineParamDescForInterface.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetCursorPos">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetCursorPos.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetCursorPos.lpPoint">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetDC">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetDC.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetDC.hWnd">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetDCOriginRelativeToWindow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetDCOriginRelativeToWindow.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetDCOriginRelativeToWindow.PaintDC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetDCOriginRelativeToWindow.WindowHandle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetDCOriginRelativeToWindow.OriginDiff">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetDesignerDC">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetDesignerDC.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetDesignerDC.WindowHandle">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetDeviceCaps">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetDeviceCaps.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetDeviceCaps.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetDeviceCaps.Index">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetDeviceRawImageDescription">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetDeviceRawImageDescription.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetDeviceRawImageDescription.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetDeviceRawImageDescription.Desc">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetDeviceSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetDeviceSize.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetDeviceSize.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetDeviceSize.p">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetDIBits">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetDIBits.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetDIBits.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetDIBits.Bitmap">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetDIBits.StartScan">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetDIBits.NumScans">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetDIBits.Bits">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetDIBits.BitInfo">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetDIBits.Usage">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetFocus">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetFocus.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetFontLanguageInfo">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetFontLanguageInfo.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetFontLanguageInfo.DC">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetKeyState">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetKeyState.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetKeyState.nVirtKey">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetObject.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetObject.GDIObj">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetObject.BufSize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetObject.Buf">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetParent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetParent.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetParent.Handle">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetProp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetProp.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetProp.Handle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetProp.Str">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetRawImageFromDevice">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetRawImageFromDevice.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetRawImageFromDevice.SrcDC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetRawImageFromDevice.SrcRect">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetRawImageFromDevice.NewRawImage">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetRawImageFromBitmap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetRawImageFromBitmap.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetRawImageFromBitmap.SrcBitmap">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetRawImageFromBitmap.SrcMaskBitmap">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetRawImageFromBitmap.SrcRect">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetRawImageFromBitmap.NewRawImage">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetRgnBox">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetRgnBox.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetRgnBox.RGN">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetRgnBox.lpRect">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetScrollBarSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetScrollBarSize.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetScrollBarSize.Handle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetScrollBarSize.BarKind">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetScrollbarVisible">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetScrollbarVisible.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetScrollbarVisible.Handle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetScrollbarVisible.SBStyle">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetScrollInfo">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetScrollInfo.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetScrollInfo.Handle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetScrollInfo.SBStyle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetScrollInfo.ScrollInfo">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetStockObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetStockObject.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetStockObject.Value">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetSysColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetSysColor.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetSysColor.nIndex">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetSystemMetrics">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetSystemMetrics.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetSystemMetrics.nIndex">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetTextColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetTextColor.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetTextColor.DC">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetTextExtentPoint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetTextExtentPoint.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetTextExtentPoint.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetTextExtentPoint.Str">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetTextExtentPoint.Count">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetTextExtentPoint.Size">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetTextMetrics">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetTextMetrics.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetTextMetrics.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetTextMetrics.TM">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetWindowLong">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetWindowLong.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetWindowLong.Handle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetWindowLong.int">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetWindowOrgEx">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetWindowOrgEx.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetWindowOrgEx.dc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetWindowOrgEx.P">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetWindowRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetWindowRect.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetWindowRect.Handle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetWindowRect.ARect">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetWindowRelativePosition">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetWindowRelativePosition.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetWindowRelativePosition.Handle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetWindowRelativePosition.Left">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetWindowRelativePosition.Top">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetWindowSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetWindowSize.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetWindowSize.Handle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetWindowSize.Width">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetWindowSize.Height">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GradientFill">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GradientFill.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GradientFill.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GradientFill.Vertices">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GradientFill.NumVertices">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GradientFill.Meshes">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GradientFill.NumMeshes">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GradientFill.Mode">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.HideCaret">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.HideCaret.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.HideCaret.hWnd">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGTKWidgetSet.InitializeCriticalSection">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.InitializeCriticalSection.CritSection">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.IntersectClipRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.IntersectClipRect.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.IntersectClipRect.dc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.IntersectClipRect.Left">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.IntersectClipRect.Top">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.IntersectClipRect.Right">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.IntersectClipRect.Bottom">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.InvalidateRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.InvalidateRect.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.InvalidateRect.aHandle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.InvalidateRect.Rect">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.InvalidateRect.bErase">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.IsWindowVisible">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.IsWindowVisible.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.IsWindowVisible.handle">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGTKWidgetSet.LeaveCriticalSection">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.LeaveCriticalSection.CritSection">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.LineTo">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.LineTo.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.LineTo.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.LineTo.X">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.LineTo.Y">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.MessageBox">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.MessageBox.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.MessageBox.hWnd">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.MessageBox.lpText">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.MessageBox.lpCaption">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.MessageBox.uType">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.MoveToEx">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.MoveToEx.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.MoveToEx.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.MoveToEx.X">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.MoveToEx.Y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.MoveToEx.OldPoint">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.MoveWindowOrgEx">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.MoveWindowOrgEx.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.MoveWindowOrgEx.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.MoveWindowOrgEx.dX">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.MoveWindowOrgEx.dY">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.PairSplitterAddSide">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.PairSplitterAddSide.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.PairSplitterAddSide.SplitterHandle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.PairSplitterAddSide.SideHandle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.PairSplitterAddSide.Side">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.PairSplitterGetInterfaceInfo">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.PairSplitterGetInterfaceInfo.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.PairSplitterRemoveSide">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.PairSplitterRemoveSide.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.PairSplitterRemoveSide.SplitterHandle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.PairSplitterRemoveSide.SideHandle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.PairSplitterRemoveSide.Side">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.PairSplitterSetPosition">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.PairSplitterSetPosition.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.PairSplitterSetPosition.SplitterHandle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.PairSplitterSetPosition.NewPosition">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.PeekMessage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.PeekMessage.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.PeekMessage.lpMsg">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.PeekMessage.Handle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.PeekMessage.wMsgFilterMin">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.PeekMessage.wMsgFilterMax">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.PeekMessage.wRemoveMsg">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.PolyBezier">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.PolyBezier.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.PolyBezier.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.PolyBezier.Points">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.PolyBezier.NumPts">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.PolyBezier.Filled">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.PolyBezier.Continuous">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.Polygon">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.Polygon.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.Polygon.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.Polygon.Points">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.Polygon.NumPts">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.Polygon.Winding">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.Polyline">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.Polyline.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.Polyline.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.Polyline.Points">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.Polyline.NumPts">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.PostMessage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.PostMessage.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.PostMessage.Handle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.PostMessage.Msg">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.PostMessage.wParam">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.PostMessage.lParam">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.RadialArc">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.RadialArc.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RadialArc.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RadialArc.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RadialArc.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RadialArc.width">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RadialArc.height">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RadialArc.sx">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RadialArc.sy">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RadialArc.ex">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RadialArc.ey">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.RadialChord">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.RadialChord.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RadialChord.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RadialChord.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RadialChord.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RadialChord.width">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RadialChord.height">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RadialChord.sx">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RadialChord.sy">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RadialChord.ex">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RadialChord.ey">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.RadialPie">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.RadialPie.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RadialPie.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RadialPie.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RadialPie.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RadialPie.width">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RadialPie.height">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RadialPie.sx">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RadialPie.sy">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RadialPie.ex">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RadialPie.ey">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.RadioMenuItemGroup">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.RadioMenuItemGroup.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RadioMenuItemGroup.hndMenu">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RadioMenuItemGroup.bRadio">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.RealizePalette">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.RealizePalette.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RealizePalette.DC">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.Rectangle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.Rectangle.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.Rectangle.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.Rectangle.X1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.Rectangle.Y1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.Rectangle.X2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.Rectangle.Y2">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.RectVisible">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.RectVisible.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RectVisible.dc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RectVisible.ARect">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.RegroupMenuItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.RegroupMenuItem.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RegroupMenuItem.hndMenu">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RegroupMenuItem.GroupIndex">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.ReleaseCapture">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.ReleaseCapture.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.ReleaseDC">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.ReleaseDC.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ReleaseDC.hWnd">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ReleaseDC.DC">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.RestoreDC">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.RestoreDC.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RestoreDC.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RestoreDC.SavedDC">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.RightJustifyMenuItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.RightJustifyMenuItem.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RightJustifyMenuItem.HndMenu">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RightJustifyMenuItem.bRightJustify">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.RoundRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.RoundRect.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RoundRect.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RoundRect.X1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RoundRect.Y1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RoundRect.X2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RoundRect.Y2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RoundRect.RX">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.RoundRect.RY">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.SaveDC">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.SaveDC.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SaveDC.DC">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.ScreenToClient">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.ScreenToClient.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ScreenToClient.Handle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ScreenToClient.P">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.ScrollWindowEx">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.ScrollWindowEx.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ScrollWindowEx.hWnd">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ScrollWindowEx.dx">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ScrollWindowEx.dy">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ScrollWindowEx.prcScroll">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ScrollWindowEx.prcClip">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ScrollWindowEx.hrgnUpdate">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ScrollWindowEx.prcUpdate">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ScrollWindowEx.flags">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.SelectClipRGN">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.SelectClipRGN.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SelectClipRGN.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SelectClipRGN.RGN">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.SelectObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.SelectObject.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SelectObject.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SelectObject.GDIObj">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.SelectPalette">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.SelectPalette.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SelectPalette.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SelectPalette.Palette">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SelectPalette.ForceBackground">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.SendMessage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.SendMessage.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SendMessage.HandleWnd">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SendMessage.Msg">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SendMessage.wParam">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SendMessage.lParam">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.SetActiveWindow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.SetActiveWindow.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetActiveWindow.Handle">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.SetBkColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.SetBkColor.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetBkColor.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetBkColor.Color">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.SetBkMode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.SetBkMode.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetBkMode.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetBkMode.bkMode">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.SetComboMinDropDownSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.SetComboMinDropDownSize.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetComboMinDropDownSize.Handle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetComboMinDropDownSize.MinItemsWidth">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetComboMinDropDownSize.MinItemsHeight">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetComboMinDropDownSize.MinItemCount">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.SetCapture">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.SetCapture.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetCapture.Value">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.SetCaretPos">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.SetCaretPos.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetCaretPos.X">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetCaretPos.Y">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.SetCaretPosEx">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.SetCaretPosEx.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetCaretPosEx.Handle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetCaretPosEx.X">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetCaretPosEx.Y">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.SetCaretRespondToFocus">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.SetCaretRespondToFocus.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetCaretRespondToFocus.handle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetCaretRespondToFocus.ShowHideOnFocus">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.SetFocus">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.SetFocus.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetFocus.hWnd">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.SetProp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.SetProp.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetProp.Handle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetProp.Str">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetProp.Data">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.SetScrollInfo">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.SetScrollInfo.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetScrollInfo.Handle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetScrollInfo.SBStyle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetScrollInfo.ScrollInfo">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetScrollInfo.bRedraw">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.SetSysColors">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.SetSysColors.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetSysColors.cElements">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetSysColors.lpaElements">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetSysColors.lpaRgbValues">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.SetTextCharacterExtra">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.SetTextCharacterExtra.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetTextCharacterExtra._hdc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetTextCharacterExtra.nCharExtra">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.SetTextColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.SetTextColor.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetTextColor.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetTextColor.Color">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.SetWindowLong">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.SetWindowLong.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetWindowLong.Handle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetWindowLong.Idx">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetWindowLong.NewLong">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.SetWindowOrgEx">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.SetWindowOrgEx.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetWindowOrgEx.dc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetWindowOrgEx.NewX">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetWindowOrgEx.NewY">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetWindowOrgEx.OldPoint">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.SetWindowPos">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.SetWindowPos.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetWindowPos.hWnd">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetWindowPos.hWndInsertAfter">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetWindowPos.X">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetWindowPos.Y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetWindowPos.cx">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetWindowPos.cy">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.SetWindowPos.uFlags">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.ShowCaret">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.ShowCaret.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ShowCaret.hWnd">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.ShowScrollBar">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.ShowScrollBar.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ShowScrollBar.Handle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ShowScrollBar.wBar">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ShowScrollBar.bShow">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.ShowWindow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.ShowWindow.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ShowWindow.hWnd">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ShowWindow.nCmdShow">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.StretchBlt">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.StretchBlt.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchBlt.DestDC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchBlt.X">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchBlt.Y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchBlt.Width">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchBlt.Height">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchBlt.SrcDC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchBlt.XSrc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchBlt.YSrc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchBlt.SrcWidth">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchBlt.SrcHeight">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchBlt.ROp">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.StretchMaskBlt">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.StretchMaskBlt.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchMaskBlt.DestDC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchMaskBlt.X">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchMaskBlt.Y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchMaskBlt.Width">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchMaskBlt.Height">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchMaskBlt.SrcDC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchMaskBlt.XSrc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchMaskBlt.YSrc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchMaskBlt.SrcWidth">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchMaskBlt.SrcHeight">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchMaskBlt.Mask">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchMaskBlt.XMask">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchMaskBlt.YMask">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.StretchMaskBlt.Rop">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.TextOut">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.TextOut.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.TextOut.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.TextOut.X">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.TextOut.Y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.TextOut.Str">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.TextOut.Count">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.VkKeyScan">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.VkKeyScan.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.VkKeyScan.AChar">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.WindowFromPoint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.WindowFromPoint.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.WindowFromPoint.Point">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.DrawSplitter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.DrawSplitter.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DrawSplitter.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DrawSplitter.ARect">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.DrawSplitter.Horizontal">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.ExtUTF8Out">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.ExtUTF8Out.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ExtUTF8Out.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ExtUTF8Out.X">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ExtUTF8Out.Y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ExtUTF8Out.Options">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ExtUTF8Out.Rect">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ExtUTF8Out.Str">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ExtUTF8Out.Count">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ExtUTF8Out.Dx">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.FontCanUTF8">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.FontCanUTF8.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.FontCanUTF8.Font">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetAcceleratorString">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetAcceleratorString.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetAcceleratorString.AVKey">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetAcceleratorString.AShiftState">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetControlConstraints">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetControlConstraints.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetControlConstraints.Constraints">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetLCLOwnerObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetLCLOwnerObject.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetLCLOwnerObject.Handle">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetListBoxIndexAtY">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetListBoxIndexAtY.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetListBoxIndexAtY.ListBox">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetListBoxIndexAtY.y">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetListBoxItemRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetListBoxItemRect.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetListBoxItemRect.ListBox">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetListBoxItemRect.Index">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetListBoxItemRect.ARect">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.GetNotebookTabIndexAtPos">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.GetNotebookTabIndexAtPos.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetNotebookTabIndexAtPos.Handle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.GetNotebookTabIndexAtPos.ClientPos">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.IntfSendsUTF8KeyPress">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.IntfSendsUTF8KeyPress.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.MenuItemSetCheck">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.MenuItemSetCheck.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.MenuItemSetCheck.BaseMenuItem">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.MenuItemSetEnable">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.MenuItemSetEnable.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.MenuItemSetEnable.BaseMenuItem">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGTKWidgetSet.ReplaceBitmapMask">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGTKWidgetSet.ReplaceBitmapMask.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ReplaceBitmapMask.Image">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ReplaceBitmapMask.Mask">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGTKWidgetSet.ReplaceBitmapMask.NewMask">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TGTKWidgetSet.RCFilename">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TGtkListStringsState">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TGtkListStringsState.glsItemCacheNeedsUpdate">
+<short></short>
+</element>
+
+<!-- set type Visibility: default -->
+<element name="TGtkListStringsStates">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- pointer type Visibility: default -->
+<element name="PPGtkListItem">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkListStringList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TGtkListStringList.FGtkList">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TGtkListStringList.FOwner">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TGtkListStringList.FSorted">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TGtkListStringList.FStates">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TGtkListStringList.FCachedCount">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TGtkListStringList.FCachedCapacity">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TGtkListStringList.FCachedItems">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TGtkListStringList.FUpdateCount">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TGtkListStringList.FWithCheckBox">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGtkListStringList.GetListItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkListStringList.GetListItem.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkListStringList.GetListItem.Index">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGtkListStringList.GetLabel">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkListStringList.GetLabel.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkListStringList.GetLabel.Index">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGtkListStringList.GetCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkListStringList.GetCount.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGtkListStringList.Get">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkListStringList.Get.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkListStringList.Get.Index">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGtkListStringList.GetObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkListStringList.GetObject.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkListStringList.GetObject.Index">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGtkListStringList.Put">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkListStringList.Put.Index">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkListStringList.Put.S">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGtkListStringList.PutObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkListStringList.PutObject.Index">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkListStringList.PutObject.AnObject">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGtkListStringList.SetSorted">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkListStringList.SetSorted.Val">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGtkListStringList.ConnectItemCallbacks">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkListStringList.ConnectItemCallbacks.Index">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGtkListStringList.ConnectItemCallbacks">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkListStringList.ConnectItemCallbacks.Li">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGtkListStringList.ConnectAllCallbacks">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGtkListStringList.RemoveItemCallbacks">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkListStringList.RemoveItemCallbacks.Index">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGtkListStringList.RemoveAllCallbacks">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGtkListStringList.UpdateItemCache">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGtkListStringList.CacheValid">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkListStringList.CacheValid.Result">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TGtkListStringList.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkListStringList.Create.List">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkListStringList.Create.TheOwner">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkListStringList.Create.AWithCheckBox">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TGtkListStringList.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkListStringList.Add">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkListStringList.Add.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkListStringList.Add.S">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkListStringList.Assign">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkListStringList.Assign.Source">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkListStringList.Clear">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkListStringList.Delete">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkListStringList.Delete.Index">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkListStringList.IndexOf">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkListStringList.IndexOf.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkListStringList.IndexOf.S">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkListStringList.Insert">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkListStringList.Insert.Index">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkListStringList.Insert.S">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkListStringList.GetInsertPosition">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkListStringList.GetInsertPosition.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkListStringList.GetInsertPosition.S">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkListStringList.Move">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkListStringList.Move.FromIndex">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkListStringList.Move.ToIndex">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkListStringList.Sort">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkListStringList.IsEqual">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkListStringList.IsEqual.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkListStringList.IsEqual.List">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkListStringList.IsEqual.CompareObjects">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkListStringList.BeginUpdate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkListStringList.EndUpdate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkListStringList.ConsistencyCheck">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TGtkListStringList.Sorted">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TGtkListStringList.Owner">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkCListStringList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TGtkCListStringList.FGtkCList">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TGtkCListStringList.FSorted">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGtkCListStringList.Get">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkCListStringList.Get.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkCListStringList.Get.Index">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGtkCListStringList.GetCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkCListStringList.GetCount.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGtkCListStringList.GetObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkCListStringList.GetObject.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkCListStringList.GetObject.Index">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGtkCListStringList.PutObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkCListStringList.PutObject.Index">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkCListStringList.PutObject.AObject">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGtkCListStringList.SetSorted">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkCListStringList.SetSorted.Val">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TGtkCListStringList.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkCListStringList.Create.List">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkCListStringList.Assign">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkCListStringList.Assign.Source">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkCListStringList.Clear">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkCListStringList.Delete">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkCListStringList.Delete.Index">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkCListStringList.Insert">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkCListStringList.Insert.Index">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkCListStringList.Insert.S">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkCListStringList.Sort">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TGtkCListStringList.Sorted">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="GTKWidgetSet">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+</module> <!-- GtkInt -->
+</package>
+</fpdoc-descriptions>

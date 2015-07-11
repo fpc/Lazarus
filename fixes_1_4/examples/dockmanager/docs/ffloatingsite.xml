@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="EasyDockMgr">
+    <module name="fFloatingSite">
+      <element name="TFloatingSite">
+        <short>The default floathost site, used by the DockMaster.</short>
+      </element>
+      <element name="TFloatingSite.FormClose">
+        <short>When the form is closed, all docked clients are undocked and hidden.</short>
+      </element>
+      <element name="TFloatingSite.FormDockDrop">
+        <short>When a control is docked, the Caption is updated accordingly.</short>
+      </element>
+      <element name="TFloatingSite.FormUnDock">
+        <short>Destroys the form on undock of the last client.</short>
+      </element>
+      <element name="TFloatingSite.Loaded">
+        <short>Installs and configures the DockManager.</short>
+        <descr>
+          <p>Unless configured otherwise, an EasyTree dockmanager is installed.</p>
+          <p>HideSingleHeader determines whether a dockheader for a single docked control is shown.</p>
+          <p>HeaderStyle determines the dockheader style.</p>
+        </descr>
+      </element>
+      <element name="TFloatingSite.UpdateCaption">
+        <short>Shows the DockCaptions of all the docked controls.</short>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

@@ -1,0 +1,41 @@
+# Massimo Soricetti <notturno@quipo.it>, 2011.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2011-04-22 02:01+0200\n"
+"Last-Translator: Massimo Soricetti <notturno@quipo.it>\n"
+"Language-Team: PincoPallo Team\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.5.1\n"
+
+#: strtestcaseopts.sbtncreate
+msgid "Create unit"
+msgstr "Crea unit"
+
+#: strtestcaseopts.schksetup
+msgid "Create Setup Method"
+msgstr "Crea metodo di setup"
+
+#: strtestcaseopts.schktear
+msgid "Create TearDown method"
+msgstr "Crea metodo TearDown"
+
+#: strtestcaseopts.sfrmtest
+msgid "TestCase Options"
+msgstr "Opzioni TestCase"
+
+#: strtestcaseopts.sgrpfixture
+msgid "Fixture"
+msgstr "Fissaggio"
+
+#: strtestcaseopts.sgrpnames
+msgid "Names"
+msgstr "Nomi"
+
+#: strtestcaseopts.slbldefault
+msgid "Default Test Name"
+msgstr "Nome del Test di Default"
+

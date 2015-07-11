@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package name="printer4lazarus">
+	<widgetset name="carbon">
+		<issue name="TPrinterSetupDialog">
+			<short>TPrinterSetupDialog is not supported.</short>
+		</issue>
+	</widgetset>
+</package>

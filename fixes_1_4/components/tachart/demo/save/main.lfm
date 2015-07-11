@@ -1,0 +1,109 @@
+object Form1: TForm1
+  Left = 350
+  Height = 299
+  Top = 151
+  Width = 538
+  Caption = 'Form1'
+  ClientHeight = 299
+  ClientWidth = 538
+  OnCreate = FormCreate
+  LCLVersion = '1.5'
+  object Chart1: TChart
+    Left = 0
+    Height = 275
+    Top = 24
+    Width = 538
+    AxisList = <    
+      item
+        Minors = <>
+        Title.LabelFont.CharSet = ANSI_CHARSET
+        Title.LabelFont.Color = clRed
+        Title.LabelFont.Height = -19
+        Title.LabelFont.Name = 'Times New Roman'
+        Title.LabelFont.Orientation = 900
+        Title.LabelFont.Pitch = fpVariable
+        Title.LabelFont.Quality = fqDraft
+        Title.LabelFont.Style = [fsItalic]
+        Title.Visible = True
+        Title.Caption = 'y axis'
+      end    
+      item
+        Alignment = calBottom
+        Minors = <>
+        Title.LabelFont.CharSet = ANSI_CHARSET
+        Title.LabelFont.Color = clBlue
+        Title.LabelFont.Height = -19
+        Title.LabelFont.Name = 'Times New Roman'
+        Title.LabelFont.Pitch = fpVariable
+        Title.LabelFont.Quality = fqDraft
+        Title.LabelFont.Style = [fsItalic]
+        Title.Visible = True
+        Title.Caption = 'x axis'
+      end>
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+    ParentColor = False
+    object Chart1BarSeries1: TBarSeries
+      Marks.Format = '%0:.9g'
+      Marks.Style = smsValue
+      BarBrush.Color = clOlive
+    end
+    object Chart1FuncSeries1: TFuncSeries
+      ZPosition = 1
+      OnCalculate = Chart1FuncSeries1Calculate
+      Pen.Color = clRed
+      Pen.Width = 2
+    end
+  end
+  object ToolBar1: TToolBar
+    Left = 0
+    Height = 24
+    Top = 0
+    Width = 538
+    ButtonWidth = 100
+    Caption = 'ToolBar1'
+    Flat = False
+    ShowCaptions = True
+    TabOrder = 1
+    object tbSaveAsBMP: TToolButton
+      Left = 1
+      Top = 2
+      Caption = 'Save as BMP'
+      OnClick = tbSaveAsBMPClick
+    end
+    object tbSaveAsPNG: TToolButton
+      Left = 101
+      Top = 2
+      Caption = 'Save as PNG'
+      OnClick = tbSaveAsPNGClick
+    end
+    object tbCopyToClipboard: TToolButton
+      Left = 401
+      Top = 2
+      Caption = 'Copy to clipboard'
+      OnClick = tbCopyToClipboardClick
+    end
+    object tbSaveAsJPEG: TToolButton
+      Left = 201
+      Top = 2
+      Caption = 'Save as JPEG'
+      OnClick = tbSaveAsJPEGClick
+    end
+    object tbSaveAsSVG: TToolButton
+      Left = 301
+      Top = 2
+      Caption = 'Save as SVG'
+      OnClick = tbSaveAsSVGClick
+    end
+  end
+  object SaveDialog1: TSaveDialog
+    left = 120
+    top = 56
+  end
+end

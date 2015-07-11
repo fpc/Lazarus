@@ -1,0 +1,33 @@
+inherited DbgOutputForm: TDbgOutputForm
+  Left = 108
+  Height = 200
+  Top = 140
+  Width = 400
+  BorderStyle = bsSizeToolWin
+  Caption = 'Debug output'
+  ClientHeight = 200
+  ClientWidth = 400
+  OnClose = FormClose
+  OnCreate = FormCreate
+  object txtOutput: TMemo[0]
+    Left = 0
+    Height = 200
+    Top = 0
+    Width = 400
+    Align = alClient
+    PopupMenu = mnuPopup
+    TabOrder = 0
+  end
+  object mnuPopup: TPopupMenu[1]
+    left = 336
+    top = 96
+    object popClear: TMenuItem
+      Caption = '&Clear'
+      OnClick = popClearClick
+    end
+    object popCopyAll: TMenuItem
+      Caption = 'Copy all output to clipboard'
+      OnClick = popCopyAllClick
+    end
+  end
+end

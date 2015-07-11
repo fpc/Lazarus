@@ -1,0 +1,53 @@
+
+   frAddFunctionLibrary это набор функций и процедур для генератора 
+отчетов FastReport 2.4 (www.fastreport.ru).
+
+  Часть функций взята из библиотеки RxLib (www.rxlib.com), часть взята из 
+Delphi, часть взята из библиотеки StLib.
+  Функции находящиеся в этой библиотеки делятся на пять частей:
+  - строковые функции;
+  - функции даты и времени;
+  - числовые функции;
+  - арифметические функции;
+  - SQL функции.
+
+Немного о функциях SQL:
+  Эти функции предназначены для формирования условий в динамических
+SQL командах. То есть вместо того что бы путаться в кавычках, просто
+используем функцию, которая к тому же осуществляет проверку на пустоту, 
+и в случае таковой возвращает значение 'null'. Я подобными функциями
+пользуюсь уже около трех лет.
+  Все они довольно просты, кроме CreateDate. Для ее использования
+надо сначала установить свойство frAddFunctionLibrary.FormatDate.
+  FormatDate устанавливаем в тот формат даты который понимает
+ваш SQL сервер, например для SQL AnyWhere 5.5.05 я делаю 
+FormatDate := 'yyyy.mm.dd'.
+
+Например вместо того что бы писать
+Query.SQL.Add('select * from MYTABLE where CSTRING='+''''+Edit1.Text+'''');
+Query.SQL.Add('select * from MYTABLE where CDATE='+''''+FormatDate('yyyy.mm.dd',DateEdit1.Date)+'''');
+Query.SQL.Add('select * from MYTABLE where CNUM='+Edit1.Text);
+Query.SQL.Add('select * from MYTABLE where CFLOAT='+Edit1.Text);
+
+мы делаем
+Query.SQL.Add('select * from MYTABLE where CSTRING='+CreateStr(Edit1.Text));
+Query.SQL.Add('select * from MYTABLE where CDATE='+CreateDate(DateEdit1.Text));
+Query.SQL.Add('select * from MYTABLE where CNUM='+CreateNum(Edit1.Text));
+Query.SQL.Add('select * from MYTABLE where CFLOAT='+CreateFloat(Edit1.Text));
+
+ИМНО это гораздо удобнее.
+
+  В архиве присутствует файл test.frf где есть примеры работы со всеми
+функциями библиотеки. Описания всех функций вы можете посмотреть или
+в исходных текстах функций или в менеджере функций FastReport`a.
+
+  Если у вас есть какие либо универсальные функции, которые могут быть
+полезны большому числу людей, то присылайте их мне и возможно они 
+будут включены в следующие версии библиотеки.
+
+Ну вот вроде бы пока и все. Если найдете какие либо ошибки или есть 
+предложения пишите:
+
+stalker@miac.dp.ua
+Толик Гусин
+Copyright (c) 2001 by Stalker SoftWare

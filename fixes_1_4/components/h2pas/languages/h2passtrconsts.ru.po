@@ -1,0 +1,623 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2015-01-16 23:53+0300\n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: h2passtrconsts.h2padd
+msgid "&Add"
+msgstr "&Добавить"
+
+#: h2passtrconsts.h2paddacopy
+msgid "Add a copy"
+msgstr "Добавить копию"
+
+#: h2passtrconsts.h2paddfromclipboard
+msgid "Add from clipboard"
+msgstr "Добавить из буфера обмена"
+
+#: h2passtrconsts.h2paddhfiles
+msgid "Add .h files ..."
+msgstr "Добавить файлы .h ..."
+
+#: h2passtrconsts.h2paddhfiles2
+msgid "Add *.h files ..."
+msgstr "Добавить файлы *.h ..."
+
+#: h2passtrconsts.h2paddhfiles3
+msgid "Add .h files?"
+msgstr "Добавить файлы .h?"
+
+#: h2passtrconsts.h2paddincludedhfiles
+msgid "Add included .h files"
+msgstr "Добавить используемые файлы .h"
+
+#: h2passtrconsts.h2paddmissingbracketsaroundmacrovalues
+msgid "Add missing brackets around macro values"
+msgstr "Добавить отсутствующие скобки вокруг значений макросов"
+
+#: h2passtrconsts.h2paddmissingh2pasifdefsforfunctionbodies
+msgid "Add missing h2pas IFDEFs for function bodies"
+msgstr "Добавить отсутствующие IFDEF h2pas для тел функций"
+
+#: h2passtrconsts.h2paddmissingpointertypeslikepppchar
+msgid "Add missing pointer types like PPPChar"
+msgstr "Добавить отсутствующие типы указателей, например, PPPChar"
+
+#: h2passtrconsts.h2paddnewtool
+msgid "Add new tool"
+msgstr "Добавить новое средство"
+
+#: h2passtrconsts.h2paddsearchandreplacetoolbeforeh2pas
+msgid "Add \"search and replace\" tool before h2pas"
+msgstr "Добавить средство \"Найти и заменить\" до вызова h2pas"
+
+#: h2passtrconsts.h2paddthesehfilestoh2pasproject
+msgid "Add these .h files to h2pas project?%s%s%s"
+msgstr "Добавить эти файлы .h в проект h2pas?%s%s%s"
+
+#: h2passtrconsts.h2paddunitstousessection
+msgid "Add units to uses section"
+msgstr "Добавить модули в выражение Uses"
+
+#: h2passtrconsts.h2pafterh2pas
+msgid "After h2pas"
+msgstr "После h2pas"
+
+#: h2passtrconsts.h2pambiguousmerges
+msgid "Ambiguous merges:%s%s"
+msgstr "Неоднозначные попытки слияния:%s%s"
+
+#: h2passtrconsts.h2pbeforeh2pas
+msgid "Before h2pas"
+msgstr "До h2pas"
+
+#: h2passtrconsts.h2pcancel
+msgid "Cancel"
+msgstr "Отмена"
+
+#: h2passtrconsts.h2pcancel2
+msgid "&Cancel"
+msgstr "О&тмена"
+
+#: h2passtrconsts.h2pccompactoutputmodelessspacesandemptylines
+msgid "-c  Compact outputmode, less spaces and empty lines"
+msgstr "-c  Компактный режим вывода, меньше пробелов и пустых строк"
+
+#: h2passtrconsts.h2pcheaderfileconverter
+msgid "C header file converter"
+msgstr "Конвертер файлов заголовков C"
+
+#: h2passtrconsts.h2pcheaderfilehhallfiles
+msgid "C header file (*.h)|*.h|All files (*.*)|%s"
+msgstr "Файл заголовков C (*.h)|*.h|Все файлы (*.*)|%s"
+
+#: h2passtrconsts.h2pcheaderfilenotfound
+msgid "C header file \"%s\" not found"
+msgstr "Файл заголовков C \"%s\" не найден"
+
+#: h2passtrconsts.h2pcheaderfiles
+msgid "C header files"
+msgstr "Файлы заголовков C"
+
+#: h2passtrconsts.h2pclose
+msgid "&Close"
+msgstr "&Закрыть"
+
+#: h2passtrconsts.h2pcommentfunctionsthataretoocomplexforh2pas
+msgid "Comment functions that are too complex for h2pas"
+msgstr "Закомментировать слишком сложные для h2pas функции"
+
+#: h2passtrconsts.h2pcommentmacrosthataretoocomplexforh2pas
+msgid "Comment macros that are too complex for h2pas"
+msgstr "Закомментировать слишком сложные для h2pas макросы"
+
+#: h2passtrconsts.h2pconfirmdelete
+msgid "Confirm delete"
+msgstr "Подтвердите удаление"
+
+#: h2passtrconsts.h2pconfirmremoval
+msgid "Confirm removal"
+msgstr "Подтвердите удаление"
+
+#: h2passtrconsts.h2pconversionsafterrunningh2pas
+msgid "Conversions after running h2pas"
+msgstr "Преобразования после запуска h2pas"
+
+#: h2passtrconsts.h2pconversionsbeforerunningh2pas
+msgid "Conversions before running h2pas"
+msgstr "Преобразования до запуска h2pas"
+
+#: h2passtrconsts.h2pconvertfunctiontypestopointers
+msgid "Convert function types to pointers"
+msgstr "Преобразовать типы функций в указатели"
+
+#: h2passtrconsts.h2pcopyingfilefailed
+msgid "Copying file failed"
+msgstr "Не удалось скопировать файл"
+
+#: h2passtrconsts.h2pcopytooltoclipboard
+msgid "Copy tool to clipboard"
+msgstr "Копировать в буфер обмена"
+
+#: h2passtrconsts.h2pcreateunitsfromcheaderfiles
+msgid "Create units from C header files"
+msgstr "Создать модули из файлов заголовков C"
+
+#: h2passtrconsts.h2pcusetypesinctypesunit
+msgid "-C  Use types in ctypes unit"
+msgstr "-C  Использовать типы из модуля ctypes"
+
+#: h2passtrconsts.h2pdelete
+msgid "Delete"
+msgstr "Удалить"
+
+#: h2passtrconsts.h2pdeleteselectedhfiles
+msgid "Delete selected .h files"
+msgstr "Удалить выбранные файлы .h"
+
+#: h2passtrconsts.h2pdeletethesehfilesfromlist
+msgid "Delete these .h files from list?%s%s%s"
+msgstr "Удалить эти файлы .h из списка?%s%s%s"
+
+#: h2passtrconsts.h2pdeletetool
+msgid "Delete tool"
+msgstr "Удалить средство"
+
+#: h2passtrconsts.h2pdeletionoffailed
+msgid "deletion of \"%s\" failed"
+msgstr "удаление \"%s\" невозможно"
+
+#: h2passtrconsts.h2pdisableallhfiles
+msgid "Disable all .h files"
+msgstr "Отключить все файлы .h"
+
+#: h2passtrconsts.h2pdiscardchangesandexit
+msgid "Discard changes and exit"
+msgstr "Отбросить изменения и выйти"
+
+#: h2passtrconsts.h2pdonotexit
+msgid "Do not exit"
+msgstr "Не выходить"
+
+#: h2passtrconsts.h2pdoyoureallywanttodelete
+msgid "Do you really want to delete \"%s\"?"
+msgstr "Вы действительно хотите удалить \"%s\"?"
+
+#: h2passtrconsts.h2pduseexternalforallprocedures
+msgid "-d  Use external; for all procedures"
+msgstr "-d  Использовать external; для всех процедур"
+
+#: h2passtrconsts.h2pduseexternallibnamenamefunc__nameforfunctions
+msgid "-D  Use external libname name \"func__name\" for functions"
+msgstr "-D  Использовать имя внешней библиотеки \"func__name\" для функций"
+
+#: h2passtrconsts.h2peconstantsinsteadofenumerationtypeforcenums
+msgid "-e  constants instead of enumeration type for C enums"
+msgstr "-e  константы вместо типов перечисления для enum языка C"
+
+#: h2passtrconsts.h2penableallhfiles
+msgid "Enable all .h files"
+msgstr "Включить все файлы .h"
+
+#: h2passtrconsts.h2perror
+msgid "Error"
+msgstr "Ошибка"
+
+#: h2passtrconsts.h2perrorconvertingclipboardtexttotexttool
+msgid "Error converting clipboard text to text tool:%s%s"
+msgstr "Ошибка преобразования текста в буфере обмена в средство:%s%s"
+
+#: h2passtrconsts.h2perrorconvertingputtingtoolontoclipboard
+msgid "Error converting putting tool onto clipboard:%s%s"
+msgstr "Ошибка помещения средства в буфер обмена:%s%s"
+
+#: h2passtrconsts.h2perrorfilenotfound2
+msgid "ERROR: file not found"
+msgstr "ОШИБКА: файл не найден"
+
+#: h2passtrconsts.h2perrorreadingglobalconfig
+msgid "Error reading global config:%s%s"
+msgstr "Ошибка чтения глобального файла настройки:%s%s"
+
+#: h2passtrconsts.h2perrorreadingprojectfromfile
+msgid "Error reading project from file%s%s%s%s%s"
+msgstr "Ошибка чтения проекта из файла%s%s%s%s%s"
+
+#: h2passtrconsts.h2perrorwritingglobalconfig
+msgid "Error writing global config:%s%s"
+msgstr "Ошибка записи глобального файла настройки:%s%s"
+
+#: h2passtrconsts.h2pfile
+msgid "File: %s"
+msgstr "Файл: %s"
+
+#: h2passtrconsts.h2pfileinformation
+msgid "File information"
+msgstr "Сведения о файле"
+
+#: h2passtrconsts.h2pfilenameofh2pasprogram
+msgid "Filename of h2pas program"
+msgstr "Имя файла программы h2pas"
+
+#: h2passtrconsts.h2pfilenotfound
+msgid "File not found"
+msgstr "Файл не найден"
+
+#: h2passtrconsts.h2pfilenotfound2
+msgid "File not found: \"%s\""
+msgstr "Файл не найден: \"%s\""
+
+#: h2passtrconsts.h2pfindexplicittypesfailedreadingconstsection
+msgid "FindExplicitTypes FAILED reading const section"
+msgstr "FindExplicitTypes НЕ УДАЛОСЬ прочитать выражение const"
+
+#: h2passtrconsts.h2pfindexplicittypesfailedreadingtypedefinition
+msgid "FindExplicitTypes FAILED reading type definition %s"
+msgstr "FindExplicitTypes НЕ УДАЛОСЬ прочитать определение типа %s"
+
+#: h2passtrconsts.h2pfindexplicittypesfailedrereadingtypedefinition
+msgid "FindExplicitTypes FAILED Rereading type definition %s"
+msgstr "FindExplicitTypes НЕ УДАЛОСЬ перечитать определение типа %s"
+
+#: h2passtrconsts.h2pfixessectiontypeofaliasdefinitionsinpascalunitchec
+msgid "Fixes section type of alias definitions in pascal unit%sChecks all alias definitions of the form%sconst LeftSide = RightSide;%slooks up RightSide in the unit and if RightSide is a type or var, changes the section accordingly"
+msgstr "Исправить тип выражения для объявлений псевдонимов в модуле Паскаля%sПроверяет все объявления вида%sconst LeftSide = RightSide;%sищет RightSide в модуле, и, если RightSide является типом или переменной, меняет тип выражения соответственно"
+
+#: h2passtrconsts.h2pfixforwarddefinitionsbyreordering
+msgid "Fix forward definitions by reordering"
+msgstr "Исправить предваряющие объявления переупорядочиванием"
+
+#: h2passtrconsts.h2pfixopenarraysreplacearrayofwitharrayofconst
+msgid "Fix open arrays%sReplace \"array of )\" with \"array of const)\""
+msgstr "Исправить открытые массивы%sЗаменить \"array of )\" на \"array of const)\""
+
+#: h2passtrconsts.h2pgiveanoymouscenumsatypedefname
+msgid "Give anoymous c enums a typedef name"
+msgstr "Именовать анонимные перечисления C"
+
+#: h2passtrconsts.h2ph2pas
+msgid "H2Pas ..."
+msgstr "H2Pas ..."
+
+#: h2passtrconsts.h2ph2pasoptions
+msgid "h2pas Options"
+msgstr "Параметры h2pas"
+
+#: h2passtrconsts.h2ph2pasprogrampath
+msgid "h2pas program path"
+msgstr "Путь к программе h2pas"
+
+#: h2passtrconsts.h2ph2pasproject
+msgid "h2pas project"
+msgstr "Проект h2pas"
+
+#: h2passtrconsts.h2ph2pasprojecth2ph2pallfiles
+msgid "h2pas project (*.h2p)|*.h2p|All files (*.*)|%s"
+msgstr "Проект h2pas (*.h2p)|*.h2p|Все файлы (*.*)|%s"
+
+#: h2passtrconsts.h2ph2pastool
+msgid "H2PasTool"
+msgstr "H2PasTool"
+
+#: h2passtrconsts.h2picreateanincludefileinsteadofaunit
+msgid "-i  Create an include file instead of a unit"
+msgstr "-i  Создавать включаемый файл вместо модуля"
+
+#: h2passtrconsts.h2pincludedby
+msgid "Included by:"
+msgstr "Используется в:"
+
+#: h2passtrconsts.h2pincludedby2
+msgid "%s (included by %s)"
+msgstr "%s (число использующих: %s)"
+
+#: h2passtrconsts.h2pincludes
+msgid "Includes:"
+msgstr "Использует:"
+
+#: h2passtrconsts.h2pinvalidclass
+msgid "Invalid class"
+msgstr "Некорректный класс"
+
+#: h2passtrconsts.h2pllibraryname
+msgid "-l Library name"
+msgstr "-l  Имя библиотеки"
+
+#: h2passtrconsts.h2pmergeallbutthis
+msgid "Merge all but this"
+msgstr "Слить все остальные"
+
+#: h2passtrconsts.h2pmergedinto
+msgid "Merged into: %s"
+msgstr "Слито в: %s"
+
+#: h2passtrconsts.h2pmergefile
+msgid "Merge file"
+msgstr "Слить файлы"
+
+#: h2passtrconsts.h2pmovedown
+msgid "Move down"
+msgstr "Переместить вниз"
+
+#: h2passtrconsts.h2pmovefiledown
+msgid "Move file down"
+msgstr "Переместить файл вниз"
+
+#: h2passtrconsts.h2pmovefileup
+msgid "Move file up"
+msgstr "Переместить файл вверх"
+
+#: h2passtrconsts.h2pmoveup
+msgid "Move up"
+msgstr "Переместить вверх"
+
+#: h2passtrconsts.h2pnewclearsettings
+msgid "New/Clear settings"
+msgstr "Сбросить параметры"
+
+#: h2passtrconsts.h2pnofileselected
+msgid "No file selected."
+msgstr "Файлов не выбрано."
+
+#: h2passtrconsts.h2pnotatcustomtextconvertertool
+msgid "not a TCustomTextConverterTool"
+msgstr "не TCustomTextConverterTool"
+
+#: h2passtrconsts.h2pnothingtodo
+msgid "Nothing to do"
+msgstr "Нечего выполнять"
+
+#: h2passtrconsts.h2popenlastsettingsonstart
+msgid "Open last settings on start"
+msgstr "Загружать параметры прошлого сеанса при запуске"
+
+#: h2passtrconsts.h2popenprojecth2p
+msgid "Open project (*.h2p) ..."
+msgstr "Открыть проект (*.h2p) ..."
+
+#: h2passtrconsts.h2popensettings
+msgid "&Open Settings"
+msgstr "Загрузить &параметры"
+
+#: h2passtrconsts.h2poptions
+msgid "Options"
+msgstr "Параметры"
+
+#: h2passtrconsts.h2poutput
+msgid "Output: %s"
+msgstr "Выходной файл: %s"
+
+#: h2passtrconsts.h2poutputdirectory
+msgid "Output directory"
+msgstr "Каталог вывода"
+
+#: h2passtrconsts.h2poutputextensionofnewfile
+msgid "Output extension of new file"
+msgstr "Расширение выходного файла"
+
+#: h2passtrconsts.h2poverwrite
+msgid "Overwrite"
+msgstr "Перезаписать"
+
+#: h2passtrconsts.h2ppleaseenableatleastonecheaderfilethatisnotmerged
+msgid "Please enable at least one c header file that is not merged."
+msgstr "Выберите хотя бы один ещё не слитый заголовочный файл C."
+
+#: h2passtrconsts.h2pposth2pasasetofcommontoolstorunafterh2pasphreplace
+msgid "Post H2Pas - a set of common tools to run after h2pas%sphReplaceUnitFilenameWithUnitName - Replace \"unit filename;\" with \"unit name;\"%sphRemoveIncludeDirectives - Remove include directivesphRemoveSystemTypes - Remove type redefinitons like PLongint%sphFixH2PasMissingIFDEFsInUnit - add missing IFDEFs for function bodies%sphReduceCompilerDirectivesInUnit - removes unneeded directives%sphRemoveRedefinedPointerTypes - Remove redefined pointer types%sphRemoveEmptyTypeVarConstSections - Remove empty type/var/const sections%sphReplaceImplicitTypes - Search implicit types in parameters and add types for them%sphFixArrayOfParameterType - Replace \"array of )\" with \"array of const)\"%sphRemoveRedefinitionsInUnit - Removes redefinitions of types, variables, constants and resourcestrings%sphFixAliasDefinitionsInUnit - fix section type of alias definitions%sphReplaceConstFunctionsInUnit - replace simple assignment functions with constants%sphReplaceTypeCastFunctionsInUnit - replace simple type cast functions with types%sphFixForwardDefinitions - fix forward definitions by reordering%sphAddUnitsToUsesSection - add units to uses section%s"
+msgstr "Пост-H2Pas - набор средств для запуска после h2pas%sphReplaceUnitFilenameWithUnitName - Заменить \"unit <имя файла>;\" на \"unit <имя>;\"%sphRemoveIncludeDirectives - Удалить директивы включенияphRemoveSystemTypes - Удалить переопределения типов, например PLongint%sphFixH2PasMissingIFDEFsInUnit - Добавить отсутствующие IFDEF в тела функций%sphReduceCompilerDirectivesInUnit - удалить лишние директивы%sphRemoveRedefinedPointerTypes - Удалить переопределённые типы указателей%sphRemoveEmptyTypeVarConstSections - Удалить пустые выражения type/var/const%sphReplaceImplicitTypes - Искать неявные типы параметров и добавлять их объявления%sphFixArrayOfParameterType - Заменить \"array of )\" на \"array of const)\"%sphRemoveRedefinitionsInUnit - Удалить повторные объявления типов, переменных, констант и строк ресурсов%sphFixAliasDefinitionsInUnit - Исправить тип выражения для объявлений псевдонимов%sphReplaceConstFunctionsInUnit - Заменить простые функции присваивания константами%sphReplaceTypeCastFunctionsInUnit - Заменить простые функции приведения типов собственно типами%sphFixForwardDefinitions - Исправить предваряющие объявления переупорядочиванием%sphAddUnitsToUsesSection - Добавить модули в выражение Uses%s"
+
+#: h2passtrconsts.h2ppreh2pasasetofcommontoolstorunbeforeh2pasphremovec
+msgid "Pre H2Pas - a set of common tools to run before h2pas%sphRemoveCPlusPlusExternCTool - Remove C++ 'extern \"C\"' lines%sphRemoveEmptyCMacrosTool - Remove empty C macros%sphReplaceEdgedBracketPairWithStar - Replace [] with *%sphReplace0PointerWithNULL - Replace macro values 0 pointer like (char *)0%sphConvertFunctionTypesToPointers - Convert function types to pointers%sphConvertEnumsToTypeDef - Convert anonymous enums to typedef enums%sphCommentComplexCMacros - Comment macros too complex for h2pas%sphCommentComplexCFunctions - Comment functions too complex for h2pas%s"
+msgstr "Пред-H2Pas - набор средств для запуска перед h2pas%sphRemoveCPlusPlusExternCTool - Удалить строки 'extern \"C\"' языка C++%sphRemoveEmptyCMacrosTool - Удалить пустые макросы C%sphReplaceEdgedBracketPairWithStar - Заменить [] на *%sphReplace0PointerWithNULL - Заменить значения макросов с указателями на ноль, подобные (char *)0%sphConvertFunctionTypesToPointers - Преобразовывать типы функций в указатели%sphConvertEnumsToTypeDef - Именовать анонимные перечисления%sphCommentComplexCMacros - Закомментировать сложные для h2pas макросы%sphCommentComplexCFunctions - Закомментировать сложные для h2pas функции%s"
+
+#: h2passtrconsts.h2pprpackallrecords1bytealignment
+msgid "-pr Pack all records (1 byte alignment)"
+msgstr "-pr Упаковывать все записи (однобайтовое выравнивание)"
+
+#: h2passtrconsts.h2ppuseletterpforpointertypesinsteadof
+msgid "-p  Use letter P for pointer types instead of \"^\""
+msgstr "-p  Использовать символ P для указателей вместо \"^\""
+
+#: h2passtrconsts.h2ppuseprocvarsforimports
+msgid "-P  use proc. vars for imports"
+msgstr "-P  Использовать процедурные переменные"
+
+#: h2passtrconsts.h2preaderror
+msgid "Read error"
+msgstr "Ошибка чтения"
+
+#: h2passtrconsts.h2preducecompilerdirectivesinpascalfileshortensexpres
+msgid "Reduce compiler directives in pascal file%sShortens expressions in $IF directives%sand removes unneeded $IFDEF and $DEFINE directives."
+msgstr "Уменьшить количество директив компилятора в файле Паскаля%sУкорачивает выражения в директивах $IF%sи удаляет лишние директивы $IFDEF и $DEFINE."
+
+#: h2passtrconsts.h2premoveallfiles
+msgid "Remove all files"
+msgstr "Удалить все файлы"
+
+#: h2passtrconsts.h2premoveallincludedirectives
+msgid "Remove all include directives"
+msgstr "Удалить все директивы включения"
+
+#: h2passtrconsts.h2premovecexternclines
+msgid "Remove C++ 'extern \"C\"' lines"
+msgstr "Удалить строки 'extern \"C\"' языка C++"
+
+#: h2passtrconsts.h2premovedoublesemicolons
+msgid "Remove double semicolons"
+msgstr "Удалить дублирующиеся точки с запятой"
+
+#: h2passtrconsts.h2premoveemptycmacros
+msgid "Remove empty C macros"
+msgstr "Удалить пустые макросы C"
+
+#: h2passtrconsts.h2premoveemptytypevarconstsections
+msgid "Remove empty type/var/const sections"
+msgstr "Удалить пустые выражения type/var/const"
+
+#: h2passtrconsts.h2premoveredefinedpointertypes
+msgid "Remove redefined pointer types"
+msgstr "Удалить переопределённые типы указателей"
+
+#: h2passtrconsts.h2premoveredefinitionsinpascalunit
+msgid "Remove redefinitions in pascal unit"
+msgstr "Удалить переопределения в модуле Паскаля"
+
+#: h2passtrconsts.h2premovetyperedefinitionslikeplongint
+msgid "Remove type redefinitions like PLongint"
+msgstr "Удалить переопределения типов, подобные PLongint"
+
+#: h2passtrconsts.h2preplacefile
+msgid "Replace file?"
+msgstr "Заменить файл?"
+
+#: h2passtrconsts.h2preplaceimplicittypesforexampleprocedureprocnameaar
+msgid "Replace implicit types%sFor example:%s    procedure ProcName(a: array[0..2] of char)%s  is replaced with%s    procedure ProcName(a: Tarray_0to2_of_char)%s  and a new type is added%s    Tarray_0to2_of_char = array[0..2] of char"
+msgstr "Заменить неявные типы%sНапример:%s    procedure ProcName(a: array[0..2] of char)%s  заменяется на%s    procedure ProcName(a: Tarray_0to2_of_char)%s  и добавляется новый тип%s    Tarray_0to2_of_char = array[0..2] of char"
+
+#: h2passtrconsts.h2preplacemacrovalues0pointerlikechar0withnull
+msgid "Replace macro values 0 pointer like (char *)0 with NULL"
+msgstr "Заменить значения макросов с указателями на ноль, подобные (char *)0, значением NULL"
+
+#: h2passtrconsts.h2preplacesimplefunctionswithconstants
+msgid "Replace simple functions with constants"
+msgstr "Заменить простые функции константами"
+
+#: h2passtrconsts.h2preplacesimplefunctionswithtypecasts
+msgid "Replace simple functions with type casts"
+msgstr "Заменить простые функции приведением типов"
+
+#: h2passtrconsts.h2preplaceunitfilenamewithunitname
+msgid "Replace \"unit filename;\" with \"unit name;\""
+msgstr "Заменить \"unit <имя файла>;\" на \"unit <имя>;\""
+
+#: h2passtrconsts.h2preplacewith
+msgid "Replace [] with *"
+msgstr "Заменить [] на *"
+
+#: h2passtrconsts.h2preplacingofnullwithnilfailed
+msgid "replacing of NULL with nil failed"
+msgstr "замена NULL на nil не удалась"
+
+#: h2passtrconsts.h2prunh2pas
+msgid "Run h2pas"
+msgstr "Запустить h2pas"
+
+#: h2passtrconsts.h2prunh2pasandcompile
+msgid "Run h2pas and compile"
+msgstr "Запустить h2pas и собрать"
+
+#: h2passtrconsts.h2psaveandexit
+msgid "Save and exit"
+msgstr "Сохранить и выйти"
+
+#: h2passtrconsts.h2psavechanges
+msgid "Save changes?"
+msgstr "Сохранить изменения?"
+
+#: h2passtrconsts.h2psaveprojectash2p
+msgid "Save project as ... (*.h2p)"
+msgstr "Сохранить проект как ... (*.h2p)"
+
+#: h2passtrconsts.h2psavesettings
+msgid "&Save Settings"
+msgstr "Со&хранить параметры"
+
+#: h2passtrconsts.h2psavesettings2
+msgid "Save settings?"
+msgstr "Сохранить параметры?"
+
+#: h2passtrconsts.h2psavesettingsas
+msgid "Save settings as ..."
+msgstr "Сохранить параметры как ..."
+
+#: h2passtrconsts.h2pselectaclass
+msgid "&Select a class"
+msgstr "Выберите &класс"
+
+#: h2passtrconsts.h2psettings
+msgid "Settings"
+msgstr "Параметры"
+
+#: h2passtrconsts.h2psstripcomments
+msgid "-s  Strip comments"
+msgstr "-s  Удалять комментарии"
+
+#: h2passtrconsts.h2psstripcommentsandinfo
+msgid "-S  Strip comments and info"
+msgstr "-S  Удалять комментарии и сведения"
+
+#: h2passtrconsts.h2ptaddtousessectionexecutefileisnotpascal
+msgid "TAddToUsesSection.Execute file is not pascal: "
+msgstr "TAddToUsesSection.Execute: Файл не является модулем Паскаля: "
+
+#: h2passtrconsts.h2ptaddtousessectionexecuteinvalidunitname
+msgid "TAddToUsesSection.Execute invalid unitname \"%s\""
+msgstr "TAddToUsesSection.Execute: Неверное имя модуля \"%s\""
+
+#: h2passtrconsts.h2ptextconversiontoolseditor
+msgid "Text conversion tools editor"
+msgstr "Редактор средств преобразования кода"
+
+#: h2passtrconsts.h2pth2pasdialogh2pasoptionscheckgroupitemclickunknown
+msgid "TH2PasDialog.h2pasOptionsCheckGroupItemClick: Unknown option %s"
+msgstr "TH2PasDialog.h2pasOptionsCheckGroupItemClick: Неизвестный параметр %s"
+
+#: h2passtrconsts.h2pthefilealreadyexists
+msgid "The file \"%s\"%salready exists."
+msgstr "Файл \"%s\"%s уже существует."
+
+#: h2passtrconsts.h2ptools
+msgid "Tools:"
+msgstr "Средства:"
+
+#: h2passtrconsts.h2ptposth2pastoolsexecuteaddtousessectioninvalidunitn
+msgid "TPostH2PasTools.Execute.AddToUsesSection invalid unitname \"%s\""
+msgstr "TPostH2PasTools.Execute.AddToUsesSection: Неверное имя модуля \"%s\""
+
+#: h2passtrconsts.h2ptprependtypedeftypeswitht
+msgid "-t  Prepend  typedef  types with T"
+msgstr "-t  Добавлять префикс T к имени типа"
+
+#: h2passtrconsts.h2ptprependtypedeftypeswithtandremove__
+msgid "-T  Prepend  typedef  types with T, and remove __"
+msgstr "-T  Добавлять префикс T к имени типа и удалять __"
+
+#: h2passtrconsts.h2punabletocopyfileto
+msgid "Unable to copy file \"%s\"%sto \"%s\""
+msgstr "Невозможно скопировать файл \"%s\"%sв \"%s\""
+
+#: h2passtrconsts.h2punabletomergefileinto
+msgid "Unable to merge file \"%s\" into \"%s\""
+msgstr "Невозможно слить файл \"%s\" с \"%s\""
+
+#: h2passtrconsts.h2pvreplacepointerparametersbyvar
+msgid "-v  Replace pointer parameters by  var"
+msgstr "-v  заменять параметры-указатели на var"
+
+#: h2passtrconsts.h2pwarning
+msgid "Warning"
+msgstr "Предупреждение"
+
+#: h2passtrconsts.h2pwarningthefilewillbemergedintomultiplefiles
+msgid "%sWarning: the file \"%s\"%swill be merged into multiple files:%s"
+msgstr "%sПредупреждение: файл \"%s\"%sбудет слит с несколькими файлами:%s"
+
+#: h2passtrconsts.h2pwhandlespecialwin32macros
+msgid "-w  Handle special win32 macros"
+msgstr "-w  Обрабатывать специальные макросы win32"
+
+#: h2passtrconsts.h2pwriteerror
+msgid "Write error"
+msgstr "Ошибка записи"
+
+#: h2passtrconsts.h2pxhandlesys__trapofthepalmosheaderfiles
+msgid "-x  Handle SYS__TRAP of the PalmOS header files"
+msgstr "-x  Обрабатывать SYS__TRAP в заголовочных файлах PalmOS"
+

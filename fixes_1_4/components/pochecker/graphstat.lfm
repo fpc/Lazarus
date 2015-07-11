@@ -1,0 +1,100 @@
+object GraphStatForm: TGraphStatForm
+  Left = 652
+  Height = 544
+  Top = 116
+  Width = 637
+  Caption = 'Graphical summary'
+  ClientHeight = 544
+  ClientWidth = 637
+  OnActivate = FormActivate
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnShow = FormShow
+  LCLVersion = '1.3'
+  object LegendPanel: TPanel
+    Left = 0
+    Height = 80
+    Top = 464
+    Width = 637
+    Align = alBottom
+    ClientHeight = 80
+    ClientWidth = 637
+    TabOrder = 0
+    object TranslatedShape: TShape
+      Left = 24
+      Height = 16
+      Top = 16
+      Width = 65
+    end
+    object UnTranslatedShape: TShape
+      Left = 24
+      Height = 16
+      Top = 35
+      Width = 65
+    end
+    object FuzzyShape: TShape
+      Left = 24
+      Height = 16
+      Top = 54
+      Width = 65
+    end
+    object TranslatedLabel: TLabel
+      Left = 104
+      Height = 15
+      Top = 17
+      Width = 83
+      Caption = 'TranslatedLabel'
+      ParentColor = False
+    end
+    object UnTranslatedLabel: TLabel
+      Left = 104
+      Height = 15
+      Top = 36
+      Width = 98
+      Caption = 'UnTranslatedLabel'
+      ParentColor = False
+    end
+    object FuzzyLabel: TLabel
+      Left = 104
+      Height = 15
+      Top = 55
+      Width = 57
+      Caption = 'FuzzyLabel'
+      ParentColor = False
+    end
+    object StatusLabel: TLabel
+      AnchorSideRight.Control = LegendPanel
+      AnchorSideRight.Side = asrBottom
+      Left = 404
+      Height = 25
+      Top = 17
+      Width = 222
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 10
+      Caption = 'Creating icon nr %d of %d'
+      Font.Color = clRed
+      Font.Height = -19
+      ParentColor = False
+      ParentFont = False
+      Visible = False
+    end
+  end
+  object ListView: TListView
+    Left = 40
+    Height = 150
+    Top = 32
+    Width = 250
+    AutoSort = False
+    Columns = <>
+    IconOptions.AutoArrange = True
+    ParentShowHint = False
+    ReadOnly = True
+    ScrollBars = ssAutoBoth
+    ShowHint = True
+    TabOrder = 1
+    ViewStyle = vsIcon
+    OnMouseMove = ListViewMouseMove
+    OnMouseUp = ListViewMouseUp
+  end
+end

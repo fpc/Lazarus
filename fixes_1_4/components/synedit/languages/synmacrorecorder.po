@@ -1,0 +1,22 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: synmacrorecorder.scannotpause
+msgid "Can only pause when recording"
+msgstr ""
+
+#: synmacrorecorder.scannotplay
+msgid "Cannot playback macro when recording"
+msgstr ""
+
+#: synmacrorecorder.scannotrecord
+msgid "Cannot record macro when recording"
+msgstr ""
+
+#: synmacrorecorder.scannotresume
+msgid "Can only resume when paused"
+msgstr ""
+

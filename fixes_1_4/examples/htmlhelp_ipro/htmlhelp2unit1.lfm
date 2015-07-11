@@ -1,0 +1,48 @@
+object Form1: TForm1
+  Left = 290
+  Height = 300
+  Top = 163
+  Width = 400
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 299
+  ActiveControl = Edit1
+  Caption = 'Form1'
+  OnCreate = FormCreate
+  object Edit1: TEdit
+    Left = 60
+    Height = 23
+    Top = 40
+    Width = 207
+    HelpType = htKeyword
+    HelpKeyword = 'HTML/edit1.html'
+    TabOrder = 0
+    Text = 'Edit1 - Press F1 for help'
+  end
+  object Edit2: TEdit
+    Left = 60
+    Height = 23
+    Top = 95
+    Width = 207
+    HelpType = htKeyword
+    HelpKeyword = 'HTML/edit2.html'
+    TabOrder = 1
+    Text = 'Edit2 - Press F1 for help'
+  end
+  object HelpButton: TButton
+    Left = 60
+    Height = 25
+    Top = 155
+    Width = 98
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Help'
+    OnClick = HelpButtonClick
+    TabOrder = 2
+  end
+  object HTMLHelpDatabase1: THTMLHelpDatabase
+    BaseURL = 'file://../helphtml/html/'
+    AutoRegister = True
+    KeywordPrefix = 'HTML/'
+    left = 200
+    top = 110
+  end
+end

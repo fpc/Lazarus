@@ -1,0 +1,9 @@
+object frmFont: TfrmFont
+  Left = 290
+  Height = 600
+  Top = 171
+  Width = 600
+  Caption = 'Fonts Test'
+  OnPaint = FormPaint
+  LCLVersion = '0.9.29'
+end

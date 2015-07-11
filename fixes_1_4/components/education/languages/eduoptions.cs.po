@@ -1,0 +1,231 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2013-03-09 22:03+0100\n"
+"Last-Translator: Václav Valíček <Valicek1994@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.5\n"
+
+#: eduoptions.edurseducation
+msgid "Education"
+msgstr "Výuka"
+
+#: eduoptions.ersaddanentrytothenewdialogtocreateanewprogram
+msgid "Add an entry to the %sNew ...%s dialog to create a new program"
+msgstr "Přidat fci. Nový program do dialogu %sNový ...%s"
+
+#: eduoptions.ersaddanidemenuitemtocreateanewprogram
+msgid "Add an IDE menu item to create a new program"
+msgstr "Přidat položku Nový program do menu IDE"
+
+#: eduoptions.ersaddaspeedbuttontotheidetoolbartocreateanewprogram
+msgid "Add a speed button to the IDE toolbar to create a new program"
+msgstr "Přidat tlačítko Nový program na panel IDE"
+
+#: eduoptions.ersaddicon
+msgid "Add icon"
+msgstr "Přidat ikonu"
+
+#: eduoptions.ersaddmenuitem
+msgid "Add menu item"
+msgstr "Přidat položku menu"
+
+#: eduoptions.ersaddtonewdialog
+msgid "Add to %sNew ...%s dialog"
+msgstr "Přidat do dialogu %sNový ...%s"
+
+#: eduoptions.ersasimpleprogramonlyonefileiscreatedandaddedtothecur
+msgid ""
+"A simple program. Only one file is created and added to the current project."
+msgstr ""
+"Jednoduchý program. Pouze jeden soubor je vytvořen a přidán do projektu."
+
+#: eduoptions.erseducomppalettetitle
+msgid "Component palette"
+msgstr "Paleta komponent"
+
+#: eduoptions.erseduenvoptsframetitle
+msgid "General"
+msgstr "Hlavní"
+
+#: eduoptions.ersedumenutitle
+msgid "Menus"
+msgstr "Nabídky (menu)"
+
+#: eduoptions.ersedunewprogramtitle
+msgctxt "eduoptions.ersedunewprogramtitle"
+msgid "New program"
+msgstr "Nový jedno-souborový program"
+
+#: eduoptions.erseduoipages
+msgid "Object Inspector"
+msgstr "Inspektor objektů"
+
+#: eduoptions.ersedupropseventstitle
+msgid "Properties and Events"
+msgstr "Vlastnosti a události"
+
+#: eduoptions.ersedusbtitle
+msgid "Speed Buttons"
+msgstr "Rychlá tlačítka IDE"
+
+#: eduoptions.ersenableeducheckboxcaption
+msgid "Enable education settings"
+msgstr "Aktivovat nastavení výuky"
+
+#: eduoptions.ersgrpboxeventsext
+msgid "Events: Extended Configuration"
+msgstr "Události: Rozšířená konfigurace"
+
+#: eduoptions.ersgrpboxeventsfull
+msgid "Events: Full Configuration"
+msgstr "Události: Plná konfigurace"
+
+#: eduoptions.ersgrpboxeventsmin
+msgid "Events: Minimal Configuration"
+msgstr "Události: Minimální Konfigurace"
+
+#: eduoptions.ersgrpboxpropsext
+msgid "Properties: Extended Configuration"
+msgstr "Vlastnosti: Rozšířená konfigurace"
+
+#: eduoptions.ersgrpboxpropsfull
+msgid "Properties: Full Configuration"
+msgstr "Vlastnosti: Plná konfigurace"
+
+#: eduoptions.ersgrpboxpropsmin
+msgid "Properties: Minimal Configuration"
+msgstr "Vlastnosti: Minimální konfigurace"
+
+#: eduoptions.ershideall
+msgid "Hide all"
+msgstr "Skrýt vše"
+
+#: eduoptions.ersidemenuitems
+msgid "IDE menu items"
+msgstr "Položky menu IDE"
+
+#: eduoptions.ersloaddefaultcode
+msgid "Load default code?"
+msgstr "Načíst výchozí kód?"
+
+#: eduoptions.ersloadsourcefromfile
+msgid "Load source from file"
+msgstr "Načíst kód ze souboru"
+
+#: eduoptions.ersnewprogram
+msgctxt "eduoptions.ersnewprogram"
+msgid "New program"
+msgstr "Nový jedno-souborový program ..."
+
+#: eduoptions.ersnewsinglefileeducationprogram
+msgid "New single file education program"
+msgstr "Nový jedno-souborový výukový program"
+
+#: eduoptions.ersnewsinglefileprogram
+msgid "New single file program"
+msgstr "Nový jedno-souborový program"
+
+#: eduoptions.ersrdbtnfull
+msgid "Show All"
+msgstr "Zobrazit vše"
+
+#: eduoptions.ersrdgrpeventscaption
+msgid "Events"
+msgstr "Události"
+
+#: eduoptions.ersrdgrppropscaption
+msgid "Properties"
+msgstr "Vlastnosti"
+
+#: eduoptions.ersreplacecurrentsourcewithdefaultsourcecode
+msgid "Replace current source with default source code"
+msgstr "Nahradí aktuální zdroj výchozím"
+
+#: eduoptions.ersreplacecurrentwithdefaultsourcecode
+msgid "Replace current with default source code?"
+msgstr "Nahradit aktuální zdroj výchozím?"
+
+#: eduoptions.ersshowall
+msgid "Show all"
+msgstr "Zobrazit vše"
+
+#: eduoptions.ersshowallchilds
+msgid "Show all children"
+msgstr "Zobrazit všechny podnabídky"
+
+#: eduoptions.ersshowextended
+msgid "Show Extended"
+msgstr "Zobrazit rozšířené"
+
+#: eduoptions.ersshowminimal
+msgid "Show Minimal"
+msgstr "Zobrazit minimální"
+
+#: eduoptions.ersshowoipages
+msgid "Show Object Inspector Pages"
+msgstr "Ukázat stránky Inspektora objektů"
+
+#: eduoptions.ersshowselection
+msgid "Show Selection"
+msgstr "Zobrazit výběr"
+
+#: eduoptions.erssinglefileprogram
+msgid "Single file program"
+msgstr "Jedno-souborový program"
+
+#: eduoptions.erssource
+msgid "Source"
+msgstr "Zdrojový kód"
+
+#: eduoptions.erssttexteventsext
+msgid ""
+"OnClick, OnChange, OnMouseMove, OnDblClick, OnCreate, OnKeyPress, "
+"OnFormCreate"
+msgstr ""
+"OnClick, OnChange, OnMouseMove, OnDblClick, OnCreate, OnKeyPress, "
+"OnFormCreate"
+
+#: eduoptions.erssttexteventsfull
+msgid "All Events available"
+msgstr "Všechny dostupné události"
+
+#: eduoptions.erssttexteventsmin
+msgid "OnClick, OnChange, OnMouseMove"
+msgstr "OnClick, OnChange, OnMouseMove"
+
+#: eduoptions.erssttextpropsext
+msgid ""
+"Align, Left, Top, Hint, ShowHint, ParentFont, TabOrder, ParentShowHint, "
+"WordWrap, FixedCols, FixedRows, DefaultColWidth, DefaultRowHeight, ColCount, "
+"RowCount, Borderstyle, Glyph, State, Interval, DataSource, DataField + DB-"
+"Properties"
+msgstr ""
+"Align, Left, Top, Hint, ShowHint, ParentFont, TabOrder, ParentShowHint, "
+"WordWrap, FixedCols, FixedRows, DefaultColWidth, DefaultRowHeight, ColCount, "
+"RowCount, Borderstyle, Glyph, State, Interval, DataSource, DataField + DB-"
+"Properties"
+
+#: eduoptions.erssttextpropsfull
+msgid "All Properties available"
+msgstr "Všechny dostupné vlastnosti."
+
+#: eduoptions.erssttextpropsmin
+msgid ""
+"Name, Caption, Visible, Text, Checked, Items, Font, Color, Enabled, Height, "
+"Width, MaxLength, Picture, Columns"
+msgstr ""
+"Name, Caption, Visible, Text, Checked, Items, Font, Color, Enabled, Height, "
+"Width, MaxLength, Picture, Columns"
+
+#: eduoptions.ersvisiblecomponents
+msgid "Visible components"
+msgstr "Viditelné komponenty"
+
+#: eduoptions.ersvisiblespeedbuttons
+msgid "Visible SpeedButtons"
+msgstr "Viditelné SpeedButtony"

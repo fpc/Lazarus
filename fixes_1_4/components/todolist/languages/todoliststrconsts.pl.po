@@ -1,0 +1,104 @@
+msgid ""
+msgstr ""
+"Last-Translator: Tomasz Wieckowski <tomek@ump.edu.pl>\n"
+"PO-Revision-Date: 2011-01-29 22:22+0100\n"
+"Project-Id-Version: todolist\n"
+"Language-Team: \n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: \n"
+"MIME-Version: 1.0\n"
+"X-Poedit-Language: Polish\n"
+"X-Poedit-Country: POLAND\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: todoliststrconsts.dlgfropts
+msgid "Options"
+msgstr "Opcje"
+
+#: todoliststrconsts.dlgunitdeprefresh
+msgid "Refresh"
+msgstr "Odśwież"
+
+#: todoliststrconsts.lisctinsertmacro
+msgid "Insert Macro"
+msgstr "Wstaw Makro"
+
+#: todoliststrconsts.lispkgfiletypetext
+msgid "Text"
+msgstr "Tekst"
+
+#: todoliststrconsts.lisprint
+msgid "Print"
+msgstr "Drukuj"
+
+#: todoliststrconsts.listddinserttodo
+msgid "Insert ToDo"
+msgstr "Wstaw \"Do zrobienia\""
+
+#: todoliststrconsts.listodoexport
+msgid "Export"
+msgstr "Eksport"
+
+#: todoliststrconsts.listodogoto
+msgid "Goto"
+msgstr "Idź do"
+
+#: todoliststrconsts.listodoldescription
+msgid "Description"
+msgstr "Opis"
+
+#: todoliststrconsts.listodoldone
+msgid "Done"
+msgstr "Zrobione"
+
+#: todoliststrconsts.listodolfile
+msgid "Module"
+msgstr "Moduł"
+
+#: todoliststrconsts.listodolist
+#, fuzzy
+#| msgid "ToDo list"
+msgid "ToDo List"
+msgstr "Lista \"Do zrobienia\""
+
+#: todoliststrconsts.listodolistgotoline
+msgid "Goto selected source line"
+msgstr "Idź do wybranej linii źródła"
+
+#: todoliststrconsts.listodolistoptions
+#, fuzzy
+#| msgid "ToDo options..."
+msgid "ToDo options ..."
+msgstr "Opcje..."
+
+#: todoliststrconsts.listodolistprintlist
+msgid "Print todo items"
+msgstr "Drukuj elementy listy"
+
+#: todoliststrconsts.listodolistrefresh
+msgid "Refresh todo items"
+msgstr "Odśwież elementy listy"
+
+#: todoliststrconsts.listodolline
+msgid "Line"
+msgstr "Wiersz"
+
+#: todoliststrconsts.listodolowner
+msgid "Owner"
+msgstr "Właściciel"
+
+#: todoliststrconsts.listodolpriority
+msgid "Priority"
+msgstr "Priorytet"
+
+#: todoliststrconsts.listtodolcategory
+msgid "Category"
+msgstr "Kategoria"
+
+#: todoliststrconsts.lisviewtodolist
+#, fuzzy
+#| msgid "View ToDo list"
+msgid "View ToDo List"
+msgstr "Pokaż listę"
+

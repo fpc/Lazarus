@@ -1,0 +1,52 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcelo B Paula\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: tlazconverterform.button1.caption
+msgid "Path"
+msgstr "Caminho"
+
+#: tlazconverterform.button2.caption
+msgid "Search"
+msgstr "Localizar"
+
+#: tlazconverterform.button3.caption
+msgid "Convert"
+msgstr "Converter"
+
+#: tlazconverterform.caption
+msgctxt "TLAZCONVERTERFORM.CAPTION"
+msgid "Codepage LazConverter for PAS, LFM, LRS, LRT & INC files v0.0.6"
+msgstr "LazConverter para arquivos de código de página PAS, LFM, LRS, LRT e INC v0.0.6"
+
+#: tlazconverterform.label1.caption
+msgid "Path to your project:"
+msgstr "Caminho para o seu projeto:"
+
+#: tlazconverterform.label2.caption
+msgid "Convert From:"
+msgstr "Converter de:"
+
+#: tlazconverterform.label3.caption
+msgid "Convert To:"
+msgstr "Converter para:"
+
+#: tlazconverterform.label6.caption
+msgid "Ready..."
+msgstr "Pronto..."
+
+#: tlazconverterform.menuitem1.caption
+msgid "Remove from conversion"
+msgstr "Remover da conversão"
+
+#: tlazconverterform.selectdirectorydialog1.title
+msgid "Select Directory"
+msgstr "Selecionar Diretório"
+

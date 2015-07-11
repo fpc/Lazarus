@@ -1,0 +1,64 @@
+inherited fClarifyLongLineBreaker: TfClarifyLongLineBreaker
+  Height = 194
+  Width = 437
+  ClientHeight = 194
+  ClientWidth = 437
+  TabOrder = 0
+  object Label3: TLabel[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtMaxLineLength
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 14
+    Top = 9
+    Width = 73
+    BorderSpacing.Left = 6
+    Caption = 'Max line length'
+    ParentColor = False
+  end
+  object edtMaxLineLength: TSpinEdit[1]
+    AnchorSideLeft.Control = Label3
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    Left = 85
+    Height = 21
+    Top = 6
+    Width = 49
+    BorderSpacing.Around = 6
+    MaxValue = 999
+    TabOrder = 0
+  end
+  object rgRebreakLongLines: TRadioGroup[2]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtMaxLineLength
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 81
+    Top = 33
+    Width = 425
+    Anchors = [akTop, akLeft, akRight]
+    AutoFill = True
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = '&Break lines that are longer than max line length'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 63
+    ClientWidth = 421
+    ItemIndex = 1
+    Items.Strings = (
+      '&Never'
+      '&Sometimes, if a good place to break is found'
+      '&Usually, unless there is no acceptable place to break'
+    )
+    TabOrder = 1
+  end
+end

@@ -1,0 +1,115 @@
+object DataPointsEditorForm: TDataPointsEditorForm
+  Left = 418
+  Height = 303
+  Top = 235
+  Width = 357
+  Caption = 'DataPoints editor'
+  ClientHeight = 303
+  ClientWidth = 357
+  LCLVersion = '0.9.31'
+  object sgData: TStringGrid
+    Left = 0
+    Height = 257
+    Top = 0
+    Width = 357
+    Align = alClient
+    AutoFillColumns = True
+    Columns = <    
+      item
+        Alignment = taRightJustify
+        Title.Alignment = taCenter
+        Title.Caption = 'X'
+        Title.Font.Style = [fsBold]
+        Title.PrefixOption = poNone
+        Width = 80
+      end    
+      item
+        Alignment = taRightJustify
+        Title.Alignment = taCenter
+        Title.Caption = 'Y'
+        Title.Font.Style = [fsBold]
+        Title.PrefixOption = poNone
+        Width = 80
+      end    
+      item
+        ButtonStyle = cbsEllipsis
+        Title.Alignment = taCenter
+        Title.Caption = 'Color'
+        Title.Font.Style = [fsBold]
+        Title.PrefixOption = poNone
+        Width = 80
+      end    
+      item
+        Title.Alignment = taCenter
+        Title.Caption = 'Text'
+        Title.Font.Style = [fsBold]
+        Title.PrefixOption = poNone
+        Width = 81
+      end>
+    DefaultColWidth = 32
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowMoving, goEditing, goAutoAddRows, goRowSelect, goAlwaysShowEditor, goSmoothScroll, goFixedRowNumbering]
+    PopupMenu = pmRows
+    TabOrder = 0
+    OnDrawCell = sgDataDrawCell
+    OnButtonClick = sgDataButtonClick
+    ColWidths = (
+      32
+      80
+      80
+      80
+      81
+    )
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 263
+    Width = 345
+    OKButton.Name = 'OKButton'
+    HelpButton.Name = 'HelpButton'
+    CloseButton.Name = 'CloseButton'
+    CancelButton.Name = 'CancelButton'
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object pmRows: TPopupMenu
+    OnPopup = pmRowsPopup
+    left = 193
+    top = 124
+    object miInsertRow: TMenuItem
+      Caption = 'Insert row'
+      OnClick = miInsertRowClick
+    end
+    object miDeleteRow: TMenuItem
+      Caption = 'Delete row'
+      OnClick = miDeleteRowClick
+    end
+  end
+  object cdItemColor: TColorDialog
+    Color = clBlack
+    CustomColors.Strings = (
+      'ColorA=000000'
+      'ColorB=000080'
+      'ColorC=008000'
+      'ColorD=008080'
+      'ColorE=800000'
+      'ColorF=800080'
+      'ColorG=808000'
+      'ColorH=808080'
+      'ColorI=C0C0C0'
+      'ColorJ=0000FF'
+      'ColorK=00FF00'
+      'ColorL=00FFFF'
+      'ColorM=FF0000'
+      'ColorN=FF00FF'
+      'ColorO=FFFF00'
+      'ColorP=FFFFFF'
+      'ColorQ=C0DCC0'
+      'ColorR=F0CAA6'
+      'ColorS=F0FBFF'
+      'ColorT=A4A0A0'
+    )
+    left = 128
+    top = 124
+  end
+end

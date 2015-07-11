@@ -1,0 +1,396 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Václav Valíček <Valicek1994@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: fpwebstrconsts.scssfile
+msgid "CSS file"
+msgstr "CSS soubor"
+
+#: fpwebstrconsts.scssfiledesc
+msgid "Create new CSS file ..."
+msgstr "Vytvořit nový CSS soubor ..."
+
+#: fpwebstrconsts.scsssource
+msgid "Enter your classes/style definitions here"
+msgstr "Vložte své třídy/dinice stylů sem"
+
+#: fpwebstrconsts.sdocumentlocation
+msgid "&Location"
+msgstr "Umístění"
+
+#: fpwebstrconsts.sdocumentroot
+msgid "&Directory"
+msgstr "&Složka"
+
+#: fpwebstrconsts.senteryoutext
+msgid "Enter your text ..."
+msgstr "Vložte svůj text ..."
+
+#: fpwebstrconsts.shtmlautor
+msgid "Html &author - <meta name=\"author\">"
+msgstr "Html &autor - <meta name=\"author\">"
+
+#: fpwebstrconsts.shtmlcharset
+msgid "HTML chars&et"
+msgstr "HTML Charset"
+
+#: fpwebstrconsts.shtmlcopyright
+msgid "Html cop&yright - meta name=\"copyright\">"
+msgstr "Html cop&yright - meta name=\"copyright\">"
+
+#: fpwebstrconsts.shtmlcssfile
+msgid "&CSS file"
+msgstr "&CSS soubor"
+
+#: fpwebstrconsts.shtmldesign
+msgid "HTML design"
+msgstr "HTML design"
+
+#: fpwebstrconsts.shtmlfile
+msgid "HTML file"
+msgstr "HTML soubor"
+
+#: fpwebstrconsts.shtmlfiledesc
+msgid "Create new HTML file ..."
+msgstr "Vytvořit nový HTML soubor ..."
+
+#: fpwebstrconsts.shtmlinputformaccesskey
+msgid "Access key"
+msgstr "Přístupový klíč"
+
+#: fpwebstrconsts.shtmlinputformalign
+msgid "Align"
+msgstr "Align"
+
+#: fpwebstrconsts.shtmlinputformalt
+msgid "Alt"
+msgstr "Alt"
+
+#: fpwebstrconsts.shtmlinputformcaption
+msgid "Tag property: INPUT"
+msgstr "Vlastnost tagu: INPUT"
+
+#: fpwebstrconsts.shtmlinputformimagesrc
+msgid "Image src"
+msgstr "Zdroj obrázku (src)"
+
+#: fpwebstrconsts.shtmlinputformmaxlen
+msgid "Max length"
+msgstr "Maximální délka"
+
+#: fpwebstrconsts.shtmlinputformname
+msgid "Name"
+msgstr "Jméno (Name)"
+
+#: fpwebstrconsts.shtmlinputformsize
+msgid "Size"
+msgstr "Velikost (Size)"
+
+#: fpwebstrconsts.shtmlinputformtabindex
+msgid "Tab Index"
+msgstr "Tab Index"
+
+#: fpwebstrconsts.shtmlinputformtype
+msgid "Type"
+msgstr "Druh (Type)"
+
+#: fpwebstrconsts.shtmlinputformvalue
+msgid "Value"
+msgstr "Hodnota (Value)"
+
+#: fpwebstrconsts.shtmljsfile
+msgid "&Javascript file"
+msgstr "Soubor &Javascriptu"
+
+#: fpwebstrconsts.shtmltableformborderwidth
+msgid "Border width"
+msgstr "Tlošťka ohraničení"
+
+#: fpwebstrconsts.shtmltableformcaption
+msgid "New HTML table ..."
+msgstr "Nová HTML Tabulka"
+
+#: fpwebstrconsts.shtmltableformcellpadding
+msgid "Cell padding"
+msgstr "Obalení obsahu buňky (cell padding)"
+
+#: fpwebstrconsts.shtmltableformcellspacing
+msgid "Cell spacing"
+msgstr "Rozteč buněk (cell spacing)"
+
+#: fpwebstrconsts.shtmltableformcolumncount
+msgid "Column count"
+msgstr "Počet sloupců"
+
+#: fpwebstrconsts.shtmltableformheaderbgcolor
+msgid "Header bg color"
+msgstr "Barva pozadí hlavičky"
+
+#: fpwebstrconsts.shtmltableformrowcount
+msgid "Row count"
+msgstr "Počet řádků"
+
+#: fpwebstrconsts.shtmltableformuseheader
+msgid "Use header row"
+msgstr "Použít řádek hlavičky"
+
+#: fpwebstrconsts.shtmltableformwidth
+msgid "Width"
+msgstr "Šířka"
+
+#: fpwebstrconsts.shtmltagcaptionreset
+msgid "Reset"
+msgstr "Reset"
+
+#: fpwebstrconsts.shtmltagcaptionsubmit
+msgid "Submit"
+msgstr "Odeslat"
+
+#: fpwebstrconsts.shtmltagproperty
+msgid "Tag property: %s"
+msgstr "Vlastost tagu: %s"
+
+#: fpwebstrconsts.shtmltitle
+msgid "Html &title - <title>"
+msgstr "HTML &titulek - <title>"
+
+#: fpwebstrconsts.shttpport
+msgid "&Port to listen for requests:"
+msgstr "&Port na odposlouchání žádostí:"
+
+#: fpwebstrconsts.sjsfile
+msgid "Javascript file"
+msgstr "Soubor Javascriptu"
+
+#: fpwebstrconsts.sjsfiledesc
+msgid "Create new javascript file ..."
+msgstr "Vytvořit nový soubor javasriptu ..."
+
+#: fpwebstrconsts.sjssource
+msgid "Enter your javascript code here"
+msgstr "Vložte svůj kód javascriptu zde"
+
+#: fpwebstrconsts.smihtmleditor
+msgid "HTML Editor"
+msgstr "HTML Editor"
+
+#: fpwebstrconsts.smihtmlformbuttton
+msgid "Insert Button control"
+msgstr "Vložit Tlačítko"
+
+#: fpwebstrconsts.smihtmlformcheckbox
+msgid "Insert CheckBox control"
+msgstr "Vložit ChecBox (zaškrtávací)"
+
+#: fpwebstrconsts.smihtmlformfieldset
+msgid "Insert HTML FIELDSET tag"
+msgstr "Vložit HTML <fieldsed>"
+
+#: fpwebstrconsts.smihtmlformlegend
+msgid "Insert HTML LEGEND tag"
+msgstr "Vložit HTMl <legend>"
+
+#: fpwebstrconsts.smihtmlformradiobtn
+msgid "Insert RadioBtn control"
+msgstr "Vložit RadioBtn (přepínač)"
+
+#: fpwebstrconsts.smihtmlforms
+msgid "Forms"
+msgstr "Formuláře"
+
+#: fpwebstrconsts.smihtmlformselect
+msgid "Insert Select control"
+msgstr "Vložit select (vysouvací)"
+
+#: fpwebstrconsts.smihtmlformselectopt
+msgid "Insert Select options"
+msgstr "Vložit select (volby)"
+
+#: fpwebstrconsts.smihtmlformselectoptwd
+msgid "Insert Select options with dialog"
+msgstr "Vložit select (volby s dialogem)"
+
+#: fpwebstrconsts.smihtmlinsertbr
+msgid "Insert new line"
+msgstr "Vložit nový řádek"
+
+#: fpwebstrconsts.smihtmlinsertcolor
+msgid "Insert HTML color value"
+msgstr "Vložit HTML barvu"
+
+#: fpwebstrconsts.smihtmlinsertcomment
+msgid "Insert HTML comment"
+msgstr "Vložit HTML komentář"
+
+#: fpwebstrconsts.smihtmlinsertdivblock
+msgid "Insert HTML DIV tag"
+msgstr "Vložit HTML <div>"
+
+#: fpwebstrconsts.smihtmlinsertform
+msgid "Insert HTML Form"
+msgstr "Vložit HTML <form>"
+
+#: fpwebstrconsts.smihtmlinsertheader1level
+msgid "Insert HTML level 1 header"
+msgstr "Vložit HTML <h1>"
+
+#: fpwebstrconsts.smihtmlinsertheader2level
+msgid "Insert HTML level 2 header"
+msgstr "Vložit HTML <h2>"
+
+#: fpwebstrconsts.smihtmlinsertheader3level
+msgid "Insert HTML level 3 header"
+msgstr "Vložit HTML <h3>"
+
+#: fpwebstrconsts.smihtmlinsertheader4level
+msgid "Insert HTML level 4 header"
+msgstr "Vložit HTML <h4>"
+
+#: fpwebstrconsts.smihtmlinsertheader5level
+msgid "Insert HTML level 5 header"
+msgstr "Vložit HTML <h5>"
+
+#: fpwebstrconsts.smihtmlinserthr
+msgid "Insert horizontal line"
+msgstr "Vložit vodorovnou linku"
+
+#: fpwebstrconsts.smihtmlinsertimg
+msgid "Insert image"
+msgstr "Vložit obrázek"
+
+#: fpwebstrconsts.smihtmlinsertinput
+msgid "Insert HTML INPUT tag"
+msgstr "Vložit HTML <input>"
+
+#: fpwebstrconsts.smihtmlinsertinputreset
+msgid "Insert \"Reset\" button"
+msgstr "Vložit tlačítko \"Reset\""
+
+#: fpwebstrconsts.smihtmlinsertinputsubmit
+msgid "Insert \"Submit\" button "
+msgstr "Vložit tlačítko \"Submit\""
+
+#: fpwebstrconsts.smihtmlinsertlink
+msgid "Insert link (HREF)"
+msgstr "Vložit odkaz (HREF)"
+
+#: fpwebstrconsts.smihtmlinsertlist
+msgid "Insert HTML list"
+msgstr "Vložit HTML seznam"
+
+#: fpwebstrconsts.smihtmlinsertnbsp
+msgid "Insert Non Breaking Space"
+msgstr "Vložit nezalomitelnou mezeru"
+
+#: fpwebstrconsts.smihtmlinsertpre
+msgid "Insert HTML PRE tag"
+msgstr "Vložit HTML <pre>"
+
+#: fpwebstrconsts.smihtmlinsertspantext
+msgid "Insert HTML SPAN tag"
+msgstr "Vložit HTML <span>"
+
+#: fpwebstrconsts.smihtmlinsertsub
+msgid "Insert Subscript"
+msgstr "Vložit Subskript"
+
+#: fpwebstrconsts.smihtmlinsertsuper
+msgid "Insert Superscript"
+msgstr "Vložit Superskript"
+
+#: fpwebstrconsts.smihtmlinserttable
+msgid "Insert HTML table"
+msgstr "Vložit HTML <table>"
+
+#: fpwebstrconsts.smihtmlinserttabledata
+msgid "Insert HTML table data"
+msgstr "Vložit obsah HTML tabulky"
+
+#: fpwebstrconsts.smihtmlinserttabledatawd
+msgid "Insert HTML table data with dialog"
+msgstr "Vložit obsah HTML tabulky (s dialogem)"
+
+#: fpwebstrconsts.smihtmlinserttablerow
+msgid "Insert HTML table row"
+msgstr "Vložit řádek HTML tabulky"
+
+#: fpwebstrconsts.smihtmlinserttablerowwd
+msgid "Insert HTML table row with dialog"
+msgstr "Vložit řádek HTML tabulky (s dialogem)"
+
+#: fpwebstrconsts.smihtmllists
+msgid "Lists"
+msgstr "Seznamy"
+
+#: fpwebstrconsts.smihtmlother
+msgid "Other"
+msgstr "Ostatní"
+
+#: fpwebstrconsts.smihtmlstandart
+msgid "Standard"
+msgstr "Standardní"
+
+#: fpwebstrconsts.smihtmlstyle
+msgid "Styles"
+msgstr "Styly"
+
+#: fpwebstrconsts.smihtmltables
+msgid "Tables"
+msgstr "Tabulky"
+
+#: fpwebstrconsts.smihtmltextaligncenter
+msgid "Text align center"
+msgstr "Zarovnání textu na střed"
+
+#: fpwebstrconsts.smihtmltextalignjustify
+msgid "Text align justify"
+msgstr "Zarovnání textu do bloku"
+
+#: fpwebstrconsts.smihtmltextalignleft
+msgid "Text align left"
+msgstr "Zarovnání textu vlevo"
+
+#: fpwebstrconsts.smihtmltextalignright
+msgid "Text align right"
+msgstr "Zarovnání textu vpravo"
+
+#: fpwebstrconsts.smihtmltextbold
+msgid "Bold"
+msgstr "Tučné"
+
+#: fpwebstrconsts.smihtmltextitalic
+msgid "Italic"
+msgstr "Italic"
+
+#: fpwebstrconsts.smihtmltextunderline
+msgid "Underline"
+msgstr "Podtřžené"
+
+#: fpwebstrconsts.smiotherinsertfn
+msgid "Insert file name"
+msgstr "Vložit název souboru"
+
+#: fpwebstrconsts.snewhtmlfileprops
+msgid "New Html file properties"
+msgstr "Nové vlastnosti HTML souboru"
+
+#: fpwebstrconsts.snewhttpapp
+msgid "New HTTP application"
+msgstr "Nová HTTP aplikace"
+
+#: fpwebstrconsts.sregisterfiles
+msgid "&Register location to serve files from"
+msgstr "&Registrovat umístění, odkud se budou souvory \"servírovat\""
+
+#: fpwebstrconsts.susethreads
+msgid "Use &threads to serve requests in"
+msgstr "Použít vlákna k řešení požadavků"
+

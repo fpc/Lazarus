@@ -1,0 +1,676 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+  <package name="lcl">
+    <!--
+  ====================================================================
+    Spin
+  ====================================================================
+-->
+    <module name="Spin">
+      <short>This unit contains classes for spin edit controls.</short>
+      <descr/>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Controls">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="SysUtils">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLProc">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LMessages">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="ClipBrd">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="StdCtrls">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TCustomFloatSpinEdit">
+        <short>The base class for the float-based spin control</short>
+        <descr><p>The base class for the float-based spin edit control.</p>
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomFloatSpinEdit.FIncrement">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomFloatSpinEdit.FDecimals">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomFloatSpinEdit.FMaxValue">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomFloatSpinEdit.FMinValue">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomFloatSpinEdit.FValue">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomFloatSpinEdit.FValueEmpty">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomFloatSpinEdit.FUpdatePending">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomFloatSpinEdit.FValueChanged">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomFloatSpinEdit.SetMaxValue">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomFloatSpinEdit.SetMaxValue.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomFloatSpinEdit.SetMinValue">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomFloatSpinEdit.SetMinValue.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomFloatSpinEdit.SetValueEmpty">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomFloatSpinEdit.SetValueEmpty.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomFloatSpinEdit.UpdateControl">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TCustomFloatSpinEdit.IsStored">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomFloatSpinEdit.IsStored.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomFloatSpinEdit.RealGetText">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomFloatSpinEdit.RealGetText.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomFloatSpinEdit.TextChanged">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomFloatSpinEdit.SetDecimals">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomFloatSpinEdit.SetDecimals.ADecimals">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomFloatSpinEdit.GetValue">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomFloatSpinEdit.GetValue.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomFloatSpinEdit.SetValue">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomFloatSpinEdit.SetValue.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomFloatSpinEdit.SetIncrement">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomFloatSpinEdit.SetIncrement.AIncrement">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomFloatSpinEdit.InitializeWnd">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomFloatSpinEdit.FinalizeWnd">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomFloatSpinEdit.Loaded">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TCustomFloatSpinEdit.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomFloatSpinEdit.Create.TheOwner">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TCustomFloatSpinEdit.GetLimitedValue">
+        <short>Limits the passed value according to spin edit minimum and maximum.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomFloatSpinEdit.GetLimitedValue.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomFloatSpinEdit.GetLimitedValue.AValue">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TCustomFloatSpinEdit.ValueToStr">
+        <short>Converts the passed value to string according to spin edit settings.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomFloatSpinEdit.ValueToStr.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomFloatSpinEdit.ValueToStr.AValue">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TCustomFloatSpinEdit.StrToValue">
+        <short>Converts the passed string to value according to spin edit settings.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomFloatSpinEdit.StrToValue.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomFloatSpinEdit.StrToValue.S">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomFloatSpinEdit.DecimalPlaces">
+        <short>Number of the decimal places shown in spin edit.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomFloatSpinEdit.Increment">
+        <short>An amount to be incremented/decremented to the value when spin edit up/down arrow button is pushed.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomFloatSpinEdit.MinValue">
+        <short>Minimal value allowed for the spin edit.</short>
+        <descr>
+          <p>Minimal value allowed for the spin edit. Set the MinValue property equal to MaxValue to allow any number to be selected.</p>
+        </descr>
+        <seealso>
+          <link id="TCustomFloatSpinEdit.MaxValue"/>
+          <link id="TCustomFloatSpinEdit.Value"/>
+          <link id="TCustomFloatSpinEdit.Increment"/>
+        </seealso>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomFloatSpinEdit.MaxValue">
+        <short>Maximal value allowed for the spin edit.</short>
+        <descr>
+          <p>Maximal value allowed for the spin edit. Set the MinValue property equal to MaxValue to allow any number to be selected.</p>
+        </descr>
+        <seealso>
+          <link id="TCustomFloatSpinEdit.MinValue"/>
+          <link id="TCustomFloatSpinEdit.Value"/>
+          <link id="TCustomFloatSpinEdit.Increment"/>
+        </seealso>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomFloatSpinEdit.Value">
+        <short>The value of spin control.</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomFloatSpinEdit.MinValue"/>
+          <link id="TCustomFloatSpinEdit.MaxValue"/>
+          <link id="TCustomFloatSpinEdit.Increment"/>
+        </seealso>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomFloatSpinEdit.ValueEmpty">
+        <short>If the Value property is assigned.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TFloatSpinEdit">
+        <short>The main class for the float-based spin control</short>
+        <descr><p>The main class for the float-based spin edit control. Use TFloatSpinEdit to allow user to pick float value.</p>
+        </descr>
+        <errors/>
+        <seealso>
+          <link id="TSpinEdit"/>
+        </seealso>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFloatSpinEdit.AutoSelected">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFloatSpinEdit.Align" link="#LCL.Controls.TControl.Align"/>
+      <element name="TFloatSpinEdit.Anchors" link="#LCL.Controls.TControl.Anchors"/>
+      <!-- property Visibility: published -->
+      <element name="TFloatSpinEdit.AutoSelect">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFloatSpinEdit.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
+      <element name="TFloatSpinEdit.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing"/>
+      <element name="TFloatSpinEdit.Constraints" link="#LCL.Controls.TControl.Constraints"/>
+      <!-- property Visibility: published -->
+      <element name="TFloatSpinEdit.DecimalPlaces">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFloatSpinEdit.Enabled" link="#LCL.Controls.TControl.Enabled"/>
+      <!-- property Visibility: published -->
+      <element name="TFloatSpinEdit.Increment" link="#LCL.Spin.TCustomFloatSpinEdit.Increment"/>
+      <element name="TFloatSpinEdit.MaxValue" link="#LCL.Spin.TCustomFloatSpinEdit.MaxValue"/>
+      <element name="TFloatSpinEdit.MinValue" link="#LCL.Spin.TCustomFloatSpinEdit.MinValue"/>
+      <!-- property Visibility: published -->
+      <element name="TFloatSpinEdit.OnChange">
+        <short>The OnChange event is fired when spin edit value has changed.</short>
+        <descr>This OnChange event is based on <var>TCustomEdit.OnChange</var>, so it is fired both on changes made by the user and also for changes made by code. A change is defined as a modification which will cause the text displayed on the screen by the control to change. This corresponds to a change in the property Value of the control. The event is called after the change takes place, so the Value property will contain the new value.</descr>
+        <seealso>
+          <link id="#LCL.StdCtrls.TCustomEdit.OnChange">TCustomEdit.OnChange</link>
+          <link id="#LCL.Spin.TSpinEdit.OnChange">TSpinEdit.OnChange</link>
+        </seealso>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFloatSpinEdit.OnChangeBounds">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFloatSpinEdit.OnClick">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFloatSpinEdit.OnEditingDone">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFloatSpinEdit.OnEnter" link="#LCL.Controls.TWinControl.OnEnter"/>
+      <element name="TFloatSpinEdit.OnExit" link="#LCL.Controls.TWinControl.OnExit"/>
+      <element name="TFloatSpinEdit.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown"/>
+      <element name="TFloatSpinEdit.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress"/>
+      <element name="TFloatSpinEdit.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp"/>
+      <element name="TFloatSpinEdit.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TFloatSpinEdit.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown"/>
+      <element name="TFloatSpinEdit.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove"/>
+      <element name="TFloatSpinEdit.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp"/>
+      <element name="TFloatSpinEdit.OnResize" link="#LCL.Controls.TControl.OnResize"/>
+      <element name="TFloatSpinEdit.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
+      <element name="TFloatSpinEdit.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
+      <!-- property Visibility: published -->
+      <element name="TFloatSpinEdit.ReadOnly">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFloatSpinEdit.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
+      <element name="TFloatSpinEdit.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
+      <!-- property Visibility: published -->
+      <element name="TFloatSpinEdit.Value" link="#LCL.Spin.TCustomFloatSpinEdit.Value"/>
+      <!-- property Visibility: published -->
+      <element name="TFloatSpinEdit.Visible" link="#LCL.Controls.TControl.Visible"/>
+      <!-- object Visibility: default -->
+      <element name="TCustomSpinEdit">
+        <short>The base class for the integer-based spin control</short>
+        <descr>A control which can increment and decrement an integer value. It has arrows to allow the user to increment/decrement the value and an edit box for typing it directly.</descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TCustomSpinEdit.GetIncrement">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomSpinEdit.GetIncrement.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TCustomSpinEdit.GetMaxValue">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomSpinEdit.GetMaxValue.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TCustomSpinEdit.GetMinValue">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomSpinEdit.GetMinValue.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TCustomSpinEdit.GetValue">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomSpinEdit.GetValue.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomSpinEdit.SetIncrement">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomSpinEdit.SetIncrement.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomSpinEdit.SetMaxValue">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomSpinEdit.SetMaxValue.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomSpinEdit.SetMinValue">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomSpinEdit.SetMinValue.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomSpinEdit.SetValue">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomSpinEdit.SetValue.AValue">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TCustomSpinEdit.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomSpinEdit.Create.TheOwner">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomSpinEdit.Value">
+        <short>The value of spin control.</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomSpinEdit.MinValue"/>
+          <link id="TCustomSpinEdit.MaxValue"/>
+          <link id="TCustomSpinEdit.Increment"/>
+        </seealso>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomSpinEdit.MinValue">
+        <short>Minimal value allowed for the spin edit.</short>
+        <descr>
+          <p>Minimal value allowed for the spin edit. Set the MinValue property equal to MaxValue to allow any number to be selected.</p>
+        </descr>
+        <seealso>
+          <link id="TCustomSpinEdit.MaxValue"/>
+          <link id="TCustomSpinEdit.Value"/>
+          <link id="TCustomSpinEdit.Increment"/>
+        </seealso>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomSpinEdit.MaxValue">
+        <short>Maximal valueallowed for the spin edit.</short>
+        <descr>
+          <p>Maximal value allowed for the spin edit. Set the MinValue property equal to MaxValue to allow any number to be selected.</p>
+        </descr>
+        <seealso>
+          <link id="TCustomSpinEdit.MinValue"/>
+          <link id="TCustomSpinEdit.Value"/>
+          <link id="TCustomSpinEdit.Increment"/>
+        </seealso>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomSpinEdit.Increment">
+        <short>The value by which the value of the control should be increased/decresed when the user clicks one of the arrows or one of the keyboard up/down arrows</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomSpinEdit.MinValue"/>
+          <link id="TCustomSpinEdit.MaxValue"/>
+          <link id="TCustomSpinEdit.Value"/>
+        </seealso>
+      </element>
+
+      <!-- object Visibility: default -->
+      <element name="TSpinEdit">
+        <short>The main class for the integer-based spin control</short>
+        <descr><p>The main class for the integer-based spin edit control. Use TSpinEdit to allow user to pick integer value.</p>
+        </descr>
+        <errors/>
+        <seealso>
+          <link id="TFloatSpinEdit"/>
+        </seealso>
+      </element>
+
+      <!-- property Visibility: public -->
+      <element name="TSpinEdit.AutoSelected" link="#LCL.StdCtrls.TCustomEdit.AutoSelected"/>
+      <!-- property Visibility: published -->
+      <element name="TSpinEdit.Align" link="#LCL.Controls.TControl.Align"/>
+      <element name="TSpinEdit.Anchors" link="#LCL.Controls.TControl.Anchors"/>
+      <!-- property Visibility: published -->
+      <element name="TSpinEdit.AutoSelect" link="#LCL.StdCtrls.TCustomEdit.AutoSelect"/>
+      <!-- property Visibility: published -->
+      <element name="TSpinEdit.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
+      <element name="TSpinEdit.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing"/>
+      <element name="TSpinEdit.Constraints" link="#LCL.Controls.TControl.Constraints"/>
+      <element name="TSpinEdit.Enabled" link="#LCL.Controls.TControl.Enabled"/>
+      <element name="TSpinEdit.Increment" link="#LCL.Spin.TCustomSpinEdit.Increment"/>
+      <element name="TSpinEdit.MaxValue" link="#LCL.Spin.TCustomSpinEdit.MaxValue"/>
+      <element name="TSpinEdit.MinValue" link="#LCL.Spin.TCustomSpinEdit.MinValue"/>
+      <!-- property Visibility: published -->
+      <element name="TSpinEdit.OnChange">
+        <short>The OnChange event is fired when the spin edit value has changed.</short>
+        <descr>This OnChange event is based on <var>TCustomEdit.OnChange</var>, so it is fired both on changes made by the user and also for changes made by code. A change is defined as a modification which will cause the text displayed on the screen by the control to change. This corresponds to a change in the property Value of the control. The event is called after the change takes place, so the Value property will contain the new value.</descr>
+        <seealso>
+          <link id="#LCL.StdCtrls.TCustomEdit.OnChange">TCustomEdit.OnChange</link>
+          <link id="#LCL.Spin.TFloatSpinEdit.OnChange">TFloatSpinEdit.OnChange</link>
+        </seealso>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TSpinEdit.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds"/>
+      <element name="TSpinEdit.OnClick" link="#LCL.Controls.TControl.OnClick"/>
+      <!-- property Visibility: published -->
+      <element name="TSpinEdit.OnEditingDone" link="#LCL.StdCtrls.TCustomEdit.OnEditingDone"/>
+      <!-- property Visibility: published -->
+      <element name="TSpinEdit.OnEnter" link="#LCL.Controls.TWinControl.OnEnter"/>
+      <element name="TSpinEdit.OnExit" link="#LCL.Controls.TWinControl.OnExit"/>
+      <element name="TSpinEdit.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown"/>
+      <element name="TSpinEdit.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress"/>
+      <element name="TSpinEdit.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp"/>
+      <element name="TSpinEdit.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TSpinEdit.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown"/>
+      <element name="TSpinEdit.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove"/>
+      <element name="TSpinEdit.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp"/>
+      <element name="TSpinEdit.OnResize" link="#LCL.Controls.TControl.OnResize"/>
+      <element name="TSpinEdit.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
+      <element name="TSpinEdit.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
+      <!-- property Visibility: published -->
+      <element name="TSpinEdit.ReadOnly" link="#LCL.StdCtrls.TCustomEdit.ReadOnly"/>
+      <!-- property Visibility: published -->
+      <element name="TSpinEdit.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
+      <element name="TSpinEdit.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
+      <element name="TSpinEdit.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
+      <element name="TSpinEdit.Value" link="#LCL.Spin.TCustomSpinEdit.Value"/>
+      <element name="TSpinEdit.Visible" link="#LCL.Controls.TControl.Visible"/>
+
+      <!-- procedure Visibility: default -->
+      <element name="Register">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TCustomFloatSpinEdit.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+    </module>
+    <!-- Spin -->
+  </package>
+</fpdoc-descriptions>

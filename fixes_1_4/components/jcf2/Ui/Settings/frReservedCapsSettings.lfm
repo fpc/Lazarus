@@ -1,0 +1,190 @@
+inherited frReservedCapsSettings: TfrReservedCapsSettings
+  Height = 359
+  Width = 325
+  ClientHeight = 359
+  ClientWidth = 325
+  OnResize = FrameResize
+  TabOrder = 0
+  DesignLeft = 222
+  DesignTop = 200
+  object cbEnable: TCheckBox[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 17
+    Top = 6
+    Width = 130
+    BorderSpacing.Around = 6
+    Caption = 'Enable fix capitalisation'
+    Checked = True
+    OnClick = cbEnableClick
+    State = cbChecked
+    TabOrder = 0
+  end
+  object rgReservedWords: TRadioGroup[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cbEnable
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = rgOperators
+    Left = 6
+    Height = 98
+    Top = 29
+    Width = 152
+    Anchors = [akTop, akLeft, akRight]
+    AutoFill = True
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'Reserved words'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 80
+    ClientWidth = 148
+    ItemIndex = 1
+    Items.Strings = (
+      'ALL CAPITALS'
+      'all lowercase'
+      'Mixed Case'
+      'Leave alone'
+    )
+    TabOrder = 1
+  end
+  object rgOperators: TRadioGroup[2]
+    AnchorSideTop.Control = rgReservedWords
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = rgReservedWords
+    AnchorSideBottom.Side = asrBottom
+    Left = 164
+    Height = 98
+    Top = 29
+    Width = 155
+    Anchors = [akTop, akRight, akBottom]
+    AutoFill = True
+    BorderSpacing.Right = 6
+    Caption = 'Operators'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 80
+    ClientWidth = 151
+    ItemIndex = 1
+    Items.Strings = (
+      'ALL CAPITALS'
+      'all lowercase'
+      'Mixed Case'
+      'Leave alone'
+    )
+    TabOrder = 2
+  end
+  object rgTypes: TRadioGroup[3]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = rgDirectives
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = rgOperators
+    Left = 6
+    Height = 98
+    Top = 237
+    Width = 152
+    Anchors = [akTop, akLeft, akRight]
+    AutoFill = True
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'Types'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 80
+    ClientWidth = 148
+    ItemIndex = 1
+    Items.Strings = (
+      'ALL CAPITALS'
+      'all lowercase'
+      'Mixed Case'
+      'Leave alone'
+    )
+    TabOrder = 5
+  end
+  object rgConstants: TRadioGroup[4]
+    AnchorSideLeft.Control = rgOperators
+    AnchorSideTop.Control = rgDirectives
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = rgDirectives
+    AnchorSideBottom.Side = asrBottom
+    Left = 164
+    Height = 98
+    Top = 133
+    Width = 155
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoFill = True
+    BorderSpacing.Right = 6
+    Caption = 'Constants'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 80
+    ClientWidth = 151
+    ItemIndex = 1
+    Items.Strings = (
+      'ALL CAPITALS'
+      'all lowercase'
+      'Mixed Case'
+      'Leave alone'
+    )
+    TabOrder = 4
+  end
+  object rgDirectives: TRadioGroup[5]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = rgReservedWords
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = rgOperators
+    Left = 6
+    Height = 98
+    Top = 133
+    Width = 152
+    Anchors = [akTop, akLeft, akRight]
+    AutoFill = True
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'Directives'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 80
+    ClientWidth = 148
+    ItemIndex = 1
+    Items.Strings = (
+      'ALL CAPITALS'
+      'all lowercase'
+      'Mixed Case'
+      'Leave alone'
+    )
+    TabOrder = 3
+  end
+end

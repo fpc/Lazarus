@@ -1,0 +1,897 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="lcl">
+    <!--
+  ====================================================================
+    Clipbrd
+  ====================================================================
+-->
+    <module name="Clipbrd">
+      <short>Definitions for the Clipboard to hold Cut or Copied data for Pasting</short>
+      <descr/>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="SysUtils">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="FPCAdds">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LResources">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLIntf">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="GraphType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Graphics">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CF_Text">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="CF_Text.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CF_Bitmap">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="CF_Bitmap.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CF_Picture">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="CF_Picture.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CF_MetaFilePict">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="CF_MetaFilePict.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CF_Object">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="CF_Object.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CF_Component">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="CF_Component.Result">
+        <short/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TClipboardData">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TClipboardData.FormatID">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TClipboardData.Stream">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TClipboard">
+        <short>
+          <var>TClipboard</var> - area for holding information that has been cut or copied, ready for pasting</short>
+        <descr>
+          <p>
+            <var>TClipboard</var> - area for holding information that has been cut or copied, ready for pasting</p>
+          <p>The clipboard object encapsulates the Windows clipboard and the three standard Gtk selections. For each of the three clipboards/selections there is an object: <link id="PrimarySelection"/>, <link id="SecondarySelection"/> and <link id="Clipboard"/>. There is no difference between the three objects except their type.</p>
+          <p>A lot of information about Clipboard Formats, including pre-defined formats for Delphi/Kylix compatibility, is found in the LCLType unit, at
+&#x9;&#x9;  <link id="#lcl.lcltype.TClipboardFormat">TClipboardFormat</link>, 
+&#x9;&#x9;  <link id="#lcl.lcltype.TClipboardType">TClipboardType</link>, 
+&#x9;&#x9;  <link id="#lcl.lcltype.ClipboardTypeName">ClipboardTypeName</link>,
+&#x9;&#x9;  <link id="#lcl.lcltype.TPredefinedClipboardFormat">TPredefinedClipboardFormat</link>,
+&#x9;&#x9;  <link id="#lcl.lcltype.PredefinedClipboardMimeTypes">PredefinedClipboardMimeTypes</link>
+          </p>
+        </descr>
+        <errors/>
+        <seealso>
+          <link id="#lcl.lcltype.TClipboardFormat">TClipboardFormat</link>, 
+&#x9;&#x9;<link id="#lcl.lcltype.TClipboardType">TClipboardType</link>, 
+&#x9;&#x9;<link id="#lcl.lcltype.ClipboardTypeName">ClipboardTypeName</link>,
+&#x9;&#x9;<link id="#lcl.lcltype.TPredefinedClipboardFormat">TPredefinedClipboardFormat</link>,
+&#x9;&#x9;<link id="#lcl.lcltype.PredefinedClipboardMimeTypes">PredefinedClipboardMimeTypes</link>
+        </seealso>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TClipboard.FAllocated">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TClipboard.FClipboardType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TClipboard.FCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TClipboard.FData">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TClipboard.FSupportedFormatsChanged">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TClipboard.FOnRequest">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TClipboard.FOpenRefCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TClipboard.AssignGraphic">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.AssignGraphic.Source">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TClipboard.AssignGraphic">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.AssignGraphic.Source">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.AssignGraphic.FormatID">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TClipboard.AssignPicture">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.AssignPicture.Source">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TClipboard.AssignToGraphic">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TClipboard.AssignToGraphic.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.AssignToGraphic.Dest">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TClipboard.AssignToGraphic">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TClipboard.AssignToGraphic.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.AssignToGraphic.Dest">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.AssignToGraphic.FormatID">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TClipboard.AssignToPicture">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.AssignToPicture.Dest">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TClipboard.GetAsText">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TClipboard.GetAsText.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TClipboard.GetFormatCount">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TClipboard.GetFormatCount.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TClipboard.GetFormats">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TClipboard.GetFormats.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.GetFormats.Index">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TClipboard.GetOwnerShip">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TClipboard.GetOwnerShip.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TClipboard.IndexOfCachedFormatID">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TClipboard.IndexOfCachedFormatID.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.IndexOfCachedFormatID.FormatID">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.IndexOfCachedFormatID.CreateIfNotExists">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TClipboard.InternalOnRequest">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.InternalOnRequest.RequestedFormatID">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.InternalOnRequest.AStream">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TClipboard.SetAsText">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.SetAsText.Value">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TClipboard.SetBuffer">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.SetBuffer.FormatID">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.SetBuffer.Buffer">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.SetBuffer.Size">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TClipboard.SetOnRequest">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.SetOnRequest.AnOnRequest">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TClipboard.AddFormat">
+        <descr>If not already done this functions aquires ownership of the clipboard. Aquiring ownership clears the clipbaord.
+If the format already exists it replaces the old content otherwise it is added.
+The format CF_TEXT is handled by AsText and SetTextBuf. Use those functions instead.</descr>
+        <errors/>
+        <seealso/>
+      <short>Aquires ownership of the Clipboard and adds a format</short>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TClipboard.AddFormat.Result">
+        <short>True if format added correctly</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.AddFormat.FormatID">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.AddFormat.Stream">
+        <short/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TClipboard.AddFormat.Result">
+        <short>True if format added correctly</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.AddFormat.FormatID">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.AddFormat.Buffer">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.AddFormat.Size">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TClipboard.Assign" link="#rtl.Classes.TPersistent.Assign">
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.Assign.Source">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TClipboard.AssignTo" link="#rtl.Classes.TPersistent.AssignTo">
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.AssignTo.Dest">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TClipboard.Clear">
+        <short>
+          <var>Clear</var> the clipboard</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TClipboard.Close">
+        <short>
+          <var>Close</var> down the clipboard</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TClipboard.Create">
+        <short>
+          <var>Create</var> - Constructor: make a new instance of a clipboard</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TClipboard.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.Create.AClipboardType">
+        <short>
+          <var>AClipboardType</var> - optional argument specifying type of clipboard to be created</short>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TClipboard.Destroy" link="#rtl.Classes.TPersistent.Destroy">
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TClipboard.FindPictureFormatID">
+        <short>
+          <var>FindPictureFormatID</var> - search for the first format ID that is a graphic</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TClipboard.FindPictureFormatID.Result">
+        <short>Returns a Clipboard format</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TClipboard.FindFormatID">
+        <short>
+          <var>FindFormatID</var> - find a Format ID that has the specified name</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TClipboard.FindFormatID.Result">
+        <short>Returns a Clipboard format</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.FindFormatID.FormatName">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TClipboard.GetComponent">
+        <short>
+          <var>GetComponent</var> - read a component from the clipboard</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TClipboard.GetComponent.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.GetComponent.Owner">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.GetComponent.Parent">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TClipboard.GetFormat">
+        <short>
+          <var>GetFormat</var> - read information on format from the clipboard</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TClipboard.GetFormat.Result">
+        <short>True if Format found</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.GetFormat.FormatID">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.GetFormat.Stream">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TClipboard.SupportedFormats">
+        <short>
+          <var>SupportedFormats</var> - fills a stringlist with the names of the supported MIME types</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.SupportedFormats.List">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TClipboard.SupportedFormats">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.SupportedFormats.AFormatCount">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.SupportedFormats.FormatList">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TClipboard.GetTextBuf">
+        <short>
+          <var>GetTextBuf</var> - reads text from the clipboard and returns the number of characters</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TClipboard.GetTextBuf.Result">
+        <short>Number of characters in text buffer</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.GetTextBuf.Buffer">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.GetTextBuf.BufSize">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TClipboard.HasFormat">
+        <short>
+          <var>HasFormat</var> - look up the list to see if the format is supported. If a <var>TPicture</var> format is specified, all graphic formats are searched.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TClipboard.HasFormat.Result">
+        <short>True if format is supported</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.HasFormat.FormatID">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TClipboard.HasFormatName">
+        <short>
+          <var>HasFormatName</var> - checks if data have format with specified name</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TClipboard.HasFormatName.Result">
+        <short>True if named format found</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.HasFormatName.FormatName">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TClipboard.HasPictureFormat">
+        <short>
+          <var>HasPictureFormat</var> - checks whether data are formatted as a picture</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TClipboard.HasPictureFormat.Result">
+        <short>True if formatted as picture</short>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TClipboard.Open">
+        <short>
+          <var>Open</var> the clipboard to receive and transmit data</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TClipboard.SetComponent">
+        <short>Write specified component to the Clipboard</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.SetComponent.Component">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TClipboard.SetFormat">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.SetFormat.FormatID">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.SetFormat.Stream">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TClipboard.SetSupportedFormats">
+        <short>
+          <var>SetSupportedFormats</var> - set all supported formats at once</short>
+        <descr>
+          <p>
+            <var>SetSupportedFormats</var> - set all supported formats at once </p>
+          <p>All data will be empty.</p>
+          <p>This procedure is useful if setting the <var>OnRequest</var> event to put the data on the fly.</p>
+          <p>Example: Using the PrimarySelection from synedit.pp</p>
+          <code>procedure TCustomSynEdit.AquirePrimarySelection;
+      var
+        FormatList: TClipboardFormat;
+      begin
+        if (not SelAvail) 
+        or (PrimarySelection.OnRequest=@PrimarySelectionRequest) then exit;
+        FormatList:=CF_TEXT;
+        PrimarySelection.SetSupportedFormats(1,@FormatList);
+        PrimarySelection.OnRequest:=@PrimarySelectionRequest;
+      end;
+</code>
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.SetSupportedFormats.AFormatCount">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.SetSupportedFormats.FormatList">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TClipboard.SetTextBuf" link="#rtl.System.SetTextBuf">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.SetTextBuf.Buffer">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TClipboard.AsText">
+        <short>
+          <var>AsText</var> - holds the textual data in the clipboard as a string</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TClipboard.ClipboardType">
+        <short>
+          <var>ClipboardType</var> - ctPrimarySelection, ctSecondarySelection, ctClipboard</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TClipboard.FormatCount">
+        <short>
+          <var>FormatCount</var> - the number of formats available</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TClipboard.Formats">
+        <short>
+          <var>Formats</var> - the formats being used in the current clipboard</short>
+        <descr>
+          <p>
+            <var>Formats</var> - the formats being used in the current clipboard</p>
+          <p>You can read the formats with this property one by one. But this will result in many requests, which can be very slow (especially on terminals).</p>
+          <p>Better use "SupportedFormats". </p>
+        </descr>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.Formats.Index">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TClipboard.OnRequest">
+        <short>
+          <var>OnRequest</var> - event handler for a request for clipboard data</short>
+        <descr>
+          <p>
+            <var>OnRequest</var> - event handler for a request for clipboard data</p>
+          <p>If the clipboard has the ownership,  this event will be called each time data are requested from the clipboard by the application or another application. </p>
+          <p>There is one special case: </p>
+          <p>If the clipboard loses ownership the <var>OnRequest</var> event will be called with FormatID=0. This event will be erased on lost of ownership.</p>
+          <p>If the <var>OnRequest</var> event was already set before, the prior method will be called with FormatID=0 to be notified of the loss.</p>
+        </descr>
+        <seealso/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="PrimarySelection">
+        <short>
+          <var>PrimarySelection</var> - the first selection if multiple clipboards exist</short>
+        <descr>The PrimarySelection is available on platforms like X. Normally when the user selects some text with the mouse the primary selection is set and when the user clicks the middle mouse button the text is copied to the mouse position. On platforms without multiple clipboards, the PrimarySelection still works in the LCL application, but does not communicate with other applications.</descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="PrimarySelection.Result">
+        <short>Returns a variable of type TClipboard</short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="SecondarySelection">
+        <short>
+          <var>SecondarySelection</var> - the second selection if multiple clipboards exist</short>
+        <descr>The SecondarySelection is available on platforms like X. See PrimarySelection for more details. There is no standard how to use the secondary selection, so it is free to use. X supports a dozen more selections, but they are not supported by the LCL.</descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="SecondarySelection.Result">
+        <short>Returns a variable of type TClipboard</short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="Clipboard">
+        <short>
+          <var>Clipboard</var> the function called to access the clipboard with an optional type specifier</short>
+        <descr>The Clipboard is available on most platforms and normally used by Copy/Paste.</descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="Clipboard.Result">
+        <short>Returns a variable of type TClipboard</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Clipboard.ClipboardType">
+        <short>
+          <var>ClipboardType</var> - optional argument to specify type of clipboard</short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="SetClipboard">
+        <short>
+          <var>SetClipboard</var> - sets up and returns a <var>NewClipboard</var>, with an optional type specifier</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="SetClipboard.Result">
+        <short>Returns a variable of type TClipboard</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="SetClipboard.ClipboardType">
+        <short>
+          <var>ClipboardType</var> - optional argument to specify type of clipboard</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="SetClipboard.NewClipboard">
+        <short>
+          <var>NewClipboard</var> - the new clipboard to be set up</short>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FreeAllClipboards">
+        <short>
+          <var>FreeAllClipboards</var> - frees all existing clipboards, releasing their resources</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="RegisterClipboardFormat">
+        <short>
+          <var>RegisterClipboardFormat</var> add the supplied format name to the register of clipboard formats</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="RegisterClipboardFormat.Result">
+        <short>Returns the registered clipoard format</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="RegisterClipboardFormat.Format">
+        <short>The name of the required format as a string</short>
+      </element>
+      <element name="TClipboard.GetComponentAsText">
+        <short>
+          <var>GetComponentAsText</var> - read the component as text, if supported</short>
+      </element>
+    </module>
+    <!-- Clipbrd -->
+  </package>
+</fpdoc-descriptions>

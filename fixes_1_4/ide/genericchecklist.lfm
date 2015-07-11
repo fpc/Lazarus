@@ -1,0 +1,54 @@
+object GenericCheckListForm: TGenericCheckListForm
+  Left = 389
+  Height = 277
+  Top = 544
+  Width = 343
+  ActiveControl = CheckListBox1
+  Caption = 'GenericCheckListForm'
+  ClientHeight = 277
+  ClientWidth = 343
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '1.3'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 33
+    Top = 238
+    Width = 331
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    HelpButton.Enabled = False
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
+  end
+  object CheckListBox1: TCheckListBox
+    AnchorSideTop.Control = InfoLabel
+    AnchorSideTop.Side = asrBottom
+    Left = 0
+    Height = 216
+    Top = 15
+    Width = 343
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ItemHeight = 0
+    OnItemClick = CheckListBox1ItemClick
+    TabOrder = 1
+  end
+  object InfoLabel: TLabel
+    Left = 0
+    Height = 15
+    Top = 0
+    Width = 343
+    Align = alTop
+    Caption = 'InfoLabel'
+    ParentColor = False
+    WordWrap = True
+  end
+end

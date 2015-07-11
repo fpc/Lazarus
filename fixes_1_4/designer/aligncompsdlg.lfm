@@ -1,0 +1,84 @@
+object AlignComponentsDialog: TAlignComponentsDialog
+  Left = 362
+  Height = 238
+  Top = 325
+  Width = 400
+  BorderStyle = bsSizeToolWin
+  Caption = 'AlignComponentsDialog'
+  ClientHeight = 238
+  ClientWidth = 400
+  Position = poScreenCenter
+  LCLVersion = '0.9.27'
+  object PosLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Control = Owner
+    Left = 200
+    Height = 14
+    Top = 0
+    Width = 1
+    ParentColor = False
+  end
+  object HorizontalRadioGroup: TRadioGroup
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = PosLabel
+    AnchorSideBottom.Control = BtnPanel
+    Left = 6
+    Height = 194
+    Top = 6
+    Width = 191
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoFill = True
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 3
+    BorderSpacing.Bottom = 6
+    Caption = 'HorizontalRadioGroup'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    TabOrder = 0
+  end
+  object VerticalRadioGroup: TRadioGroup
+    AnchorSideLeft.Control = PosLabel
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = BtnPanel
+    Left = 203
+    Height = 194
+    Top = 6
+    Width = 191
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoFill = True
+    BorderSpacing.Left = 3
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
+    Caption = 'VerticalRadioGroup'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    TabOrder = 1
+  end
+  object BtnPanel: TButtonPanel
+    Left = 6
+    Height = 26
+    Top = 206
+    Width = 388
+    TabOrder = 2
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
+  end
+end

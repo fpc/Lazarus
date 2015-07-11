@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    LazLoggerProfiling
+  ====================================================================
+-->
+
+<module name="LazLoggerProfiling">
+<short></short>
+<descr>
+</descr>
+
+<!-- class Visibility: default -->
+<element name="TLazLoggerBlockTimer">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazLoggerBlockTimer.FMaxDepth">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazLoggerBlockTimer.FTimes">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazLoggerBlockTimer.FNested">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TLazLoggerBlockTimer.GetNested">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: private -->
+<element name="TLazLoggerBlockTimer.GetNested.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: private -->
+<element name="TLazLoggerBlockTimer.GetNested.ALevel">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TLazLoggerBlockTimer.GetTimeDiff">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: private -->
+<element name="TLazLoggerBlockTimer.GetTimeDiff.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: private -->
+<element name="TLazLoggerBlockTimer.GetTimeDiff.ALevel">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TLazLoggerBlockTimer.SetMaxDepth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: private -->
+<element name="TLazLoggerBlockTimer.SetMaxDepth.AValue">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TLazLoggerBlockTimer.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazLoggerBlockTimer.EnterBlock">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TLazLoggerBlockTimer.EnterBlock.Sender">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TLazLoggerBlockTimer.EnterBlock.Level">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazLoggerBlockTimer.ExitBlock">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TLazLoggerBlockTimer.ExitBlock.Sender">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TLazLoggerBlockTimer.ExitBlock.Level">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TLazLoggerBlockTimer.MaxDepth">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TLazLoggerBlockTimer.TimeDiff">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TLazLoggerBlockTimer.TimeDiff.ALevel">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TLazLoggerBlockTimer.Nested">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TLazLoggerBlockTimer.Nested.ALevel">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TLazLoggerBlockMemWatch">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazLoggerBlockMemWatch.FMaxDepth">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazLoggerBlockMemWatch.FMem">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazLoggerBlockMemWatch.FNested">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TLazLoggerBlockMemWatch.GetMemDiff">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: private -->
+<element name="TLazLoggerBlockMemWatch.GetMemDiff.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: private -->
+<element name="TLazLoggerBlockMemWatch.GetMemDiff.ALevel">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TLazLoggerBlockMemWatch.GetNested">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: private -->
+<element name="TLazLoggerBlockMemWatch.GetNested.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: private -->
+<element name="TLazLoggerBlockMemWatch.GetNested.ALevel">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TLazLoggerBlockMemWatch.SetMaxDepth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: private -->
+<element name="TLazLoggerBlockMemWatch.SetMaxDepth.AValue">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TLazLoggerBlockMemWatch.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazLoggerBlockMemWatch.EnterBlock">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TLazLoggerBlockMemWatch.EnterBlock.Sender">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TLazLoggerBlockMemWatch.EnterBlock.Level">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazLoggerBlockMemWatch.ExitBlock">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TLazLoggerBlockMemWatch.ExitBlock.Sender">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TLazLoggerBlockMemWatch.ExitBlock.Level">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TLazLoggerBlockMemWatch.MaxDepth">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TLazLoggerBlockMemWatch.MemDiff">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TLazLoggerBlockMemWatch.MemDiff.ALevel">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TLazLoggerBlockMemWatch.Nested">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TLazLoggerBlockMemWatch.Nested.ALevel">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="DbgsMemUsed">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="DbgsMemUsed.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgsMemUsed.AFormat">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="DbgsTimeUsed">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="DbgsTimeUsed.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgsTimeUsed.AFormat">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="DbgStartTimer">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgStartTimer.AName">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="DbgStopTimer">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgStopTimer.AName">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="DbgStartMemWatch">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgStartMemWatch.AName">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="DbgStopMemWatch">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgStopMemWatch.AName">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgsMemUsed.AName">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgsTimeUsed.AName">
+<short></short>
+</element>
+
+</module> <!-- LazLoggerProfiling -->
+
+</package>
+</fpdoc-descriptions>

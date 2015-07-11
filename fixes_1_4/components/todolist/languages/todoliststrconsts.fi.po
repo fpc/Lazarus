@@ -1,0 +1,87 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: todoliststrconsts.dlgfropts
+msgid "Options"
+msgstr "Asetukset"
+
+#: todoliststrconsts.dlgunitdeprefresh
+msgid "Refresh"
+msgstr "Päivitä"
+
+#: todoliststrconsts.lisctinsertmacro
+msgid "Insert Macro"
+msgstr "Lisää Makro"
+
+#: todoliststrconsts.lispkgfiletypetext
+msgid "Text"
+msgstr "Teksti"
+
+#: todoliststrconsts.lisprint
+msgid "Print"
+msgstr "Tulosta"
+
+#: todoliststrconsts.listddinserttodo
+msgid "Insert ToDo"
+msgstr "Lisää ToDo-merkintä"
+
+#: todoliststrconsts.listodoexport
+msgid "Export"
+msgstr "Vie"
+
+#: todoliststrconsts.listodogoto
+msgid "Goto"
+msgstr "Mene"
+
+#: todoliststrconsts.listodoldescription
+msgid "Description"
+msgstr "Selitys"
+
+#: todoliststrconsts.listodoldone
+msgid "Done"
+msgstr "Tehty"
+
+#: todoliststrconsts.listodolfile
+msgid "Module"
+msgstr "Moduuli"
+
+#: todoliststrconsts.listodolist
+msgid "ToDo List"
+msgstr "ToDo luettelo"
+
+#: todoliststrconsts.listodolistgotoline
+msgid "Goto selected source line"
+msgstr "Mene valitulle lähderiville"
+
+#: todoliststrconsts.listodolistoptions
+msgid "ToDo options ..."
+msgstr "ToDo asetukset ..."
+
+#: todoliststrconsts.listodolistprintlist
+msgid "Print todo items"
+msgstr "Tulosta todo kohdat"
+
+#: todoliststrconsts.listodolistrefresh
+msgid "Refresh todo items"
+msgstr "Virkistä todo kohdat"
+
+#: todoliststrconsts.listodolline
+msgid "Line"
+msgstr "Rivinumero"
+
+#: todoliststrconsts.listodolowner
+msgid "Owner"
+msgstr "Omistaja"
+
+#: todoliststrconsts.listodolpriority
+msgid "Priority"
+msgstr "Tärkeys"
+
+#: todoliststrconsts.listtodolcategory
+msgid "Category"
+msgstr "Luokka"
+
+#: todoliststrconsts.lisviewtodolist
+msgid "View ToDo List"
+msgstr "Näytä ToDo-luettelo"
+

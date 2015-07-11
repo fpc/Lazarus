@@ -1,0 +1,149 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: guitestrunner.rsalltests
+msgid "All Tests"
+msgstr "Все тесты"
+
+#: guitestrunner.rserrors
+msgid "%s    Errors: %s"
+msgstr "%s    Ошибок: %s"
+
+#: guitestrunner.rsexception
+msgid "Exception: %s"
+msgstr "Исключение: %s"
+
+#: guitestrunner.rsexceptioncla
+msgid "Exception class: %s"
+msgstr "Класс исключения: %s"
+
+#: guitestrunner.rsexceptionmes
+msgid "Exception message: %s"
+msgstr "Сообщение исключения: %s"
+
+#: guitestrunner.rsfailures
+msgid "%s     Failures: %s"
+msgstr "%s     Неудач: %s"
+
+#: guitestrunner.rslinenumber
+msgid "Line number: %s"
+msgstr "Номер строки: %s"
+
+#: guitestrunner.rsmessage
+msgid "Message: %s"
+msgstr "Сообщение: %s"
+
+#: guitestrunner.rsmethodname
+msgid "Method name: %s"
+msgstr "Имя метода: %s"
+
+#: guitestrunner.rsnumberofexec
+msgid "Number of executed tests: %s  Time elapsed: %s"
+msgstr "Количество выполненных тестов: %s  Прошедшее время: %s"
+
+#: guitestrunner.rsrun
+msgid "Run "
+msgstr "Запустить "
+
+#: guitestrunner.rsrunning
+msgid "Running %s"
+msgstr "Запущены тесты: %s"
+
+#: guitestrunner.rsruns
+msgid "Runs: %s/%s"
+msgstr "Запусков: %s/%s"
+
+#: guitestrunner.rsunitname
+msgid "Unit name: %s"
+msgstr "Имя модуля: %s"
+
+#: guitestrunner.sactcheckall
+msgid "Check all Tests"
+msgstr "Отметить все тесты"
+
+#: guitestrunner.sactcheckcurrentsuite
+msgid "Check the Current Suite"
+msgstr "Отметить текущий набор"
+
+#: guitestrunner.sactcloseform
+msgid "Quit"
+msgstr "Выйти"
+
+#: guitestrunner.sactcloseformh
+msgid "Quit Testting"
+msgstr "Завершить тестирование"
+
+#: guitestrunner.sactrunaction
+msgid "&Run"
+msgstr "&Запустить"
+
+#: guitestrunner.sactrunactionh
+msgid "Run all checked test(s)"
+msgstr "Запустить все отмеченные тесты"
+
+#: guitestrunner.sactrunhighlightedtest
+msgctxt "guitestrunner.sactrunhighlightedtest"
+msgid "Run highlighted test"
+msgstr "Запустить выделенный тест"
+
+#: guitestrunner.sactuncheckall
+msgid "Uncheck all tests"
+msgstr "Снять отметку со всех тестов"
+
+#: guitestrunner.sactuncheckcurrentsuite
+msgid "Uncheck the Current Suite"
+msgstr "Снять отметку с текущего набора"
+
+#: guitestrunner.sbtnclose
+msgid "Close"
+msgstr "Закрыть"
+
+#: guitestrunner.sbtnrun
+msgid "Run"
+msgstr "Запустить"
+
+#: guitestrunner.sbtnrunh
+msgctxt "guitestrunner.sbtnrunh"
+msgid "Run highlighted test"
+msgstr "Запустить выделенный тест"
+
+#: guitestrunner.sfrmguitest
+msgid "FPCUnit - run unit test"
+msgstr "FPCUnit - модульное тестирование"
+
+#: guitestrunner.smicopy
+msgid "&Copy"
+msgstr "&Копировать"
+
+#: guitestrunner.smicopyclipbrd
+msgid "Copy to clipboard"
+msgstr "Копировать в буфер обмена"
+
+#: guitestrunner.smicut
+msgid "C&ut"
+msgstr "&Вырезать"
+
+#: guitestrunner.smiruntest
+msgid "  &Run all selected (checked) tests"
+msgstr " Запустить все выбранные (&отмеченные) тесты"
+
+#: guitestrunner.smishowfail
+msgid "Copy message to clipboard"
+msgstr "Копировать сообщение в буфер обмена"
+
+#: guitestrunner.stshresults
+msgid "Results XML"
+msgstr "Результаты в виде XML"
+
+#: guitestrunner.stshtree
+msgid "Testcase tree"
+msgstr "Дерево тестов"
+

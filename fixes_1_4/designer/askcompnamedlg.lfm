@@ -1,0 +1,58 @@
+object AskCompNameDialog: TAskCompNameDialog
+  Left = 299
+  Height = 91
+  Top = 177
+  Width = 366
+  Caption = 'AskCompNameDialog'
+  ClientHeight = 91
+  ClientWidth = 366
+  OnCreate = FormCreate
+  Position = poDesktopCenter
+  LCLVersion = '0.9.29'
+  object Label1: TLabel
+    Left = 6
+    Height = 18
+    Top = 6
+    Width = 300
+    Align = alTop
+    BorderSpacing.Around = 6
+    Caption = 'Label1'
+    Constraints.MaxWidth = 300
+    Constraints.MinWidth = 300
+    ParentColor = False
+    WordWrap = True
+  end
+  object NameEdit: TEdit
+    Left = 6
+    Height = 22
+    Top = 30
+    Width = 354
+    Align = alTop
+    BorderSpacing.Around = 6
+    OnChange = NameEditChange
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 0
+    Text = 'NameEdit'
+  end
+  object OkButton: TButton
+    AnchorSideTop.Control = NameEdit
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 276
+    Height = 20
+    Top = 58
+    Width = 84
+    Anchors = [akTop, akRight]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'OkButton'
+    Constraints.MinWidth = 75
+    Default = True
+    OnClick = OkButtonClick
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 1
+  end
+end

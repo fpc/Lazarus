@@ -1,0 +1,94 @@
+inherited ProjectI18NOptionsFrame: TProjectI18NOptionsFrame
+  Height = 242
+  Width = 438
+  ClientHeight = 242
+  ClientWidth = 438
+  OnClick = FrameClick
+  TabOrder = 0
+  DesignLeft = 467
+  DesignTop = 355
+  object EnableI18NCheckBox: TCheckBox[0]
+    Left = 0
+    Height = 22
+    Top = 0
+    Width = 438
+    Align = alTop
+    Caption = 'Enable i18n'
+    OnChange = EnableI18NCheckBoxChange
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 0
+  end
+  object I18NGroupBox: TGroupBox[1]
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 112
+    Top = 28
+    Width = 438
+    Align = alTop
+    AutoSize = True
+    BorderSpacing.Top = 6
+    Caption = 'i18n Options'
+    ClientHeight = 94
+    ClientWidth = 430
+    TabOrder = 1
+    object PoOutDirLabel: TLabel
+      Left = 6
+      Height = 18
+      Top = 6
+      Width = 134
+      BorderSpacing.Around = 6
+      Caption = 'PO Output Directory:'
+      ParentColor = False
+    end
+    object POOutDirEdit: TEdit
+      AnchorSideLeft.Control = I18NGroupBox
+      AnchorSideTop.Control = PoOutDirLabel
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = POOutDirButton
+      Left = 6
+      Height = 27
+      Top = 30
+      Width = 394
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Bottom = 6
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 0
+      Text = 'POOutDirEdit'
+    end
+    object POOutDirButton: TButton
+      AnchorSideTop.Control = POOutDirEdit
+      AnchorSideRight.Control = I18NGroupBox
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = POOutDirEdit
+      AnchorSideBottom.Side = asrBottom
+      Left = 400
+      Height = 27
+      Top = 30
+      Width = 24
+      Anchors = [akTop, akRight, akBottom]
+      BorderSpacing.Right = 6
+      Caption = '...'
+      OnClick = POOutDirButtonClick
+      TabOrder = 1
+    end
+    object PoForFormsCheckBox: TCheckBox
+      AnchorSideLeft.Control = PoOutDirLabel
+      AnchorSideTop.Control = POOutDirEdit
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 22
+      Top = 72
+      Width = 171
+      BorderSpacing.Top = 15
+      Caption = 'PoForFormsCheckBox'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 2
+    end
+  end
+end

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions><package name="IDEIntf"><module name="ObjectInspector"><element name="TOICustomPropertyGrid.OnEditorFilter"><short>Event for filtering root properties</short><descr>Set <var>aShow</var> to <b>false</b> to not show property.
+For example:
+<p><code>if aEditor.GetName='Visible' then aShow:=false;</code>
+          </p>
+        </descr>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

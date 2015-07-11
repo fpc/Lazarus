@@ -1,0 +1,224 @@
+object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
+  Left = 0
+  Height = 424
+  Top = 0
+  Width = 459
+  ClientHeight = 424
+  ClientWidth = 459
+  TabOrder = 0
+  Visible = False
+  DesignLeft = 312
+  DesignTop = 191
+  object FilterEdit: TTreeFilterEdit
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = FindKeyButton
+    Left = 0
+    Height = 22
+    Top = 6
+    Width = 257
+    OnFilterItem = FilterEditFilterItem
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    MaxLength = 0
+    ParentFont = False
+    TabOrder = 0
+    OnKeyPress = FilterEditKeyPress
+    FilteredTreeview = TreeView
+    ExpandAllInitially = True
+  end
+  object FindKeyButton: TBitBtn
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = FilterEdit
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = ResetKeyFilterBtn
+    Left = 307
+    Height = 22
+    Top = 6
+    Width = 115
+    Anchors = [akTop, akRight]
+    AutoSize = True
+    BorderSpacing.Left = 19
+    BorderSpacing.Right = 2
+    Caption = 'FindKeyButton'
+    OnClick = FindKeyButtonClick
+    TabOrder = 1
+  end
+  object ResetKeyFilterBtn: TSpeedButton
+    AnchorSideTop.Control = FindKeyButton
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = FindKeyButton
+    AnchorSideBottom.Side = asrBottom
+    Left = 424
+    Height = 22
+    Top = 6
+    Width = 29
+    Anchors = [akTop, akRight, akBottom]
+    BorderSpacing.Right = 6
+    OnClick = ResetKeyFilterBtnClick
+  end
+  object KeyMapTreePanel: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = FindKeyButton
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 394
+    Top = 28
+    Width = 459
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Bottom = 2
+    BevelOuter = bvNone
+    ClientHeight = 394
+    ClientWidth = 459
+    TabOrder = 2
+    object ConflictsTreeView: TTreeView
+      Left = 0
+      Height = 141
+      Top = 253
+      Width = 459
+      Align = alBottom
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderWidth = 1
+      DefaultItemHeight = 18
+      PopupMenu = PopupMenu1
+      ReadOnly = True
+      RightClickSelect = True
+      RowSelect = True
+      ScrollBars = ssAutoBoth
+      TabOrder = 0
+      OnMouseDown = ConflictsTreeViewMouseDown
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+    end
+    object KeyMapSplitter: TSplitter
+      Cursor = crVSplit
+      Left = 0
+      Height = 5
+      Top = 248
+      Width = 459
+      Align = alBottom
+      ResizeAnchor = akBottom
+    end
+    object TreeView: TTreeView
+      Left = 0
+      Height = 192
+      Top = 3
+      Width = 459
+      Align = alClient
+      BorderSpacing.Top = 3
+      BorderWidth = 1
+      DefaultItemHeight = 18
+      PopupMenu = PopupMenu1
+      ReadOnly = True
+      RightClickSelect = True
+      RowSelect = True
+      ScrollBars = ssAutoBoth
+      TabOrder = 2
+      OnDblClick = TreeViewDblClick
+      OnKeyPress = TreeViewKeyPress
+      OnSelectionChanged = TreeViewSelectionChanged
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+    end
+    object BtnPanel: TPanel
+      Left = 0
+      Height = 53
+      Top = 195
+      Width = 459
+      Align = alBottom
+      AutoSize = True
+      BevelOuter = bvNone
+      ClientHeight = 53
+      ClientWidth = 459
+      TabOrder = 3
+      object ChooseSchemeButton: TBitBtn
+        AnchorSideLeft.Control = BtnPanel
+        AnchorSideTop.Control = EditButton
+        AnchorSideTop.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 0
+        Height = 22
+        Top = 28
+        Width = 161
+        AutoSize = True
+        Caption = 'ChooseSchemeButton'
+        OnClick = ChooseSchemeButtonClick
+        TabOrder = 0
+      end
+      object SchemeLabel: TLabel
+        AnchorSideLeft.Control = ChooseSchemeButton
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = ChooseSchemeButton
+        AnchorSideTop.Side = asrCenter
+        Left = 167
+        Height = 16
+        Top = 31
+        Width = 82
+        BorderSpacing.Around = 6
+        Caption = 'SchemeLabel'
+        ParentColor = False
+      end
+      object ClearButton: TBitBtn
+        AnchorSideTop.Control = BtnPanel
+        AnchorSideRight.Control = BtnPanel
+        AnchorSideRight.Side = asrBottom
+        Left = 361
+        Height = 22
+        Top = 0
+        Width = 98
+        Anchors = [akTop, akRight]
+        AutoSize = True
+        BorderSpacing.Bottom = 6
+        Caption = 'ClearButton'
+        OnClick = ClearButtonClick
+        TabOrder = 1
+      end
+      object EditButton: TBitBtn
+        AnchorSideTop.Control = BtnPanel
+        AnchorSideRight.Control = ClearButton
+        Left = 265
+        Height = 22
+        Top = 0
+        Width = 90
+        Anchors = [akTop, akRight]
+        AutoSize = True
+        BorderSpacing.Right = 6
+        BorderSpacing.Bottom = 6
+        Caption = 'EditButton'
+        OnClick = EditButtonClick
+        TabOrder = 2
+      end
+      object CommandLabel: TLabel
+        AnchorSideTop.Control = EditButton
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = EditButton
+        Left = 161
+        Height = 16
+        Top = 3
+        Width = 98
+        Anchors = [akTop, akRight]
+        BorderSpacing.Right = 6
+        Caption = 'CommandLabel'
+        ParentColor = False
+      end
+    end
+  end
+  object PopupMenu1: TPopupMenu
+    OnPopup = PopupMenu1Popup
+    left = 352
+    top = 48
+    object EditMenuItem: TMenuItem
+      Caption = 'Edit Key Mapping'
+      OnClick = EditMenuItemClick
+    end
+    object ClearMenuItem: TMenuItem
+      Caption = 'Clear Key Mapping'
+      OnClick = ClearMenuItemClick
+    end
+  end
+end

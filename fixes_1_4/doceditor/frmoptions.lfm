@@ -1,0 +1,302 @@
+object OptionsForm: TOptionsForm
+  Left = 350
+  Height = 367
+  Top = 262
+  Width = 548
+  HorzScrollBar.Page = 397
+  VertScrollBar.Page = 336
+  ActiveControl = PageControl1
+  Caption = 'Options'
+  ClientHeight = 367
+  ClientWidth = 548
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnShow = OptionsFormShow
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 313
+    Top = 0
+    Width = 548
+    ActivePage = tabGeneral
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 0
+    object tabGeneral: TTabSheet
+      Caption = 'General'
+      ClientHeight = 282
+      ClientWidth = 544
+      object LEBackupExtension: TLabel
+        AnchorSideLeft.Control = LEDefaultExtension
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = GroupBox1
+        AnchorSideTop.Side = asrBottom
+        Left = 158
+        Height = 18
+        Top = 106
+        Width = 125
+        Alignment = taRightJustify
+        BorderSpacing.Left = 24
+        BorderSpacing.Around = 6
+        Caption = 'Backup extension'
+        FocusControl = EBackupExtension
+        Layout = tlCenter
+        ParentColor = False
+      end
+      object LEMaxMRU: TLabel
+        AnchorSideLeft.Control = LEBackupExtension
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = GroupBox1
+        AnchorSideTop.Side = asrBottom
+        Left = 313
+        Height = 18
+        Top = 106
+        Width = 120
+        Alignment = taRightJustify
+        BorderSpacing.Left = 24
+        BorderSpacing.Around = 6
+        Caption = 'Max. recent used'
+        Layout = tlCenter
+        ParentColor = False
+      end
+      object LEDefaultExtension: TLabel
+        AnchorSideLeft.Control = tabGeneral
+        AnchorSideTop.Control = GroupBox1
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 18
+        Top = 106
+        Width = 122
+        Alignment = taRightJustify
+        BorderSpacing.Around = 6
+        Caption = 'Default extension'
+        Layout = tlCenter
+        ParentColor = False
+      end
+      object LFEMakeskel: TLabel
+        AnchorSideLeft.Control = tabGeneral
+        AnchorSideTop.Control = EDefaultExtension
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 18
+        Top = 163
+        Width = 129
+        Alignment = taRightJustify
+        BorderSpacing.Around = 6
+        Caption = 'makeskel program'
+        FocusControl = FEMakeSkel
+        Layout = tlCenter
+        ParentColor = False
+      end
+      object LFEfpdoc: TLabel
+        AnchorSideLeft.Control = tabGeneral
+        AnchorSideTop.Control = FEMakeSkel
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 18
+        Top = 220
+        Width = 102
+        Alignment = taRightJustify
+        BorderSpacing.Around = 6
+        Caption = 'fpdoc program'
+        Layout = tlCenter
+        ParentColor = False
+      end
+      object EBackupExtension: TEdit
+        AnchorSideLeft.Control = LEBackupExtension
+        AnchorSideTop.Control = LEBackupExtension
+        AnchorSideTop.Side = asrBottom
+        Left = 164
+        Height = 27
+        Top = 130
+        Width = 119
+        BorderSpacing.Around = 6
+        TabOrder = 0
+      end
+      object SEMaxRecentUsed: TSpinEdit
+        AnchorSideLeft.Control = LEMaxMRU
+        AnchorSideTop.Control = LEMaxMRU
+        AnchorSideTop.Side = asrBottom
+        Left = 319
+        Height = 27
+        Top = 130
+        Width = 116
+        BorderSpacing.Around = 6
+        TabOrder = 1
+      end
+      object EDefaultExtension: TEdit
+        AnchorSideLeft.Control = LEDefaultExtension
+        AnchorSideTop.Control = LEDefaultExtension
+        AnchorSideTop.Side = asrBottom
+        Left = 12
+        Height = 27
+        Top = 130
+        Width = 116
+        BorderSpacing.Around = 6
+        TabOrder = 4
+      end
+      object FEMakeSkel: TFileNameEdit
+        AnchorSideLeft.Control = LFEMakeskel
+        AnchorSideTop.Control = LFEMakeskel
+        AnchorSideTop.Side = asrBottom
+        Left = 12
+        Height = 27
+        Top = 187
+        Width = 506
+        DialogTitle = 'Select skeleton generator'
+        DialogOptions = []
+        FilterIndex = 0
+        HideDirectories = False
+        Hint = 'FPC''s makeskel program, e.g. c:\lazarus\fpc\2.6.1\bin\i386-win32\makeskel.exe'		
+        ButtonWidth = 23
+        NumGlyphs = 1
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        MaxLength = 0
+        TabOrder = 2
+      end
+      object FEfpdoc: TFileNameEdit
+        AnchorSideLeft.Control = LFEfpdoc
+        AnchorSideTop.Control = LFEfpdoc
+        AnchorSideTop.Side = asrBottom
+        Left = 12
+        Height = 27
+        Top = 244
+        Width = 506
+        DialogTitle = 'Select documentation generator'
+        DialogOptions = []
+        FilterIndex = 0
+        HideDirectories = False
+        Hint = 'FPC''s fpdoc program, e.g. C:\Lazarus\fpc\2.6.1\bin\i386-win32\fpdoc.exe'
+        ButtonWidth = 23
+        NumGlyphs = 1
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        MaxLength = 0
+        TabOrder = 3
+      end
+      object GroupBox1: TGroupBox
+        AnchorSideLeft.Control = tabGeneral
+        AnchorSideTop.Control = tabGeneral
+        Left = 6
+        Height = 94
+        Top = 6
+        Width = 254
+        AutoSize = True
+        BorderSpacing.Around = 6
+        ClientHeight = 90
+        ClientWidth = 250
+        TabOrder = 5
+        object CBSkipEmptyNodes: TCheckBox
+          AnchorSideLeft.Control = GroupBox1
+          AnchorSideTop.Control = CBCreateBackup
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 22
+          Top = 62
+          Width = 238
+          AllowGrayed = True
+          BorderSpacing.Around = 6
+          Caption = '&Skip empty nodes when saving'
+          TabOrder = 0
+        end
+        object CBCreateBackup: TCheckBox
+          AnchorSideLeft.Control = GroupBox1
+          AnchorSideTop.Control = CBConfirmDelete
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 22
+          Top = 34
+          Width = 133
+          AllowGrayed = True
+          BorderSpacing.Around = 6
+          Caption = 'Create &backups'
+          TabOrder = 1
+        end
+        object CBConfirmDelete: TCheckBox
+          AnchorSideLeft.Control = GroupBox1
+          AnchorSideTop.Control = GroupBox1
+          Left = 6
+          Height = 22
+          Top = 6
+          Width = 135
+          AllowGrayed = True
+          BorderSpacing.Around = 6
+          Caption = 'C&onfirm deletes'
+          TabOrder = 2
+        end
+      end
+      object GroupBox2: TGroupBox
+        AnchorSideLeft.Control = GroupBox1
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = tabGeneral
+        AnchorSideRight.Control = tabGeneral
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = GroupBox1
+        AnchorSideBottom.Side = asrBottom
+        Left = 266
+        Height = 94
+        Top = 6
+        Width = 272
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        AutoSize = True
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 6
+        ClientHeight = 90
+        ClientWidth = 268
+        TabOrder = 6
+        object CBReopenLast: TCheckBox
+          AnchorSideLeft.Control = GroupBox2
+          AnchorSideTop.Control = CBStartMaximized
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 22
+          Top = 34
+          Width = 206
+          BorderSpacing.Around = 6
+          Caption = 'Reopen last file on startup'
+          TabOrder = 0
+        end
+        object CBStartMaximized: TCheckBox
+          AnchorSideLeft.Control = GroupBox2
+          AnchorSideTop.Control = GroupBox2
+          Left = 6
+          Height = 22
+          Top = 6
+          Width = 133
+          BorderSpacing.Around = 6
+          Caption = 'Start maximized'
+          TabOrder = 1
+        end
+      end
+    end
+    object tabDesktop: TTabSheet
+      Caption = 'Desktop'
+      ClientHeight = 282
+      ClientWidth = 544
+      object CBShowHints: TCheckBox
+        AnchorSideLeft.Control = tabDesktop
+        AnchorSideTop.Control = tabDesktop
+        Left = 6
+        Height = 22
+        Top = 6
+        Width = 101
+        BorderSpacing.Around = 6
+        Caption = 'Show Hints'
+        TabOrder = 0
+      end
+    end
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 319
+    Width = 536
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+end

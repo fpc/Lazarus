@@ -1,0 +1,47 @@
+The package was originally put together by:
+  Mattias Gaertner <mattias@freepascal.org>
+
+From sources obtained from:
+  CVSROOT=:pserver:cvs@cvs.freepascal.org:/FPC/CVS
+
+The Lazarus sources consists of several parts and each part has its own
+license. Three licenses are in use. The GPL 2, a modified LGPL and the MPL. In
+general, each file contains a header, describing the license of the file.
+
+The license directory tree:
+
+<lazarus>/
+ |
+ +- ide             (mostly GPL2, but with a few files under modified LGPL)
+ |
+ +- designer        (mostly GPL2, but with a few files under modified LGPL)
+ |
+ +- debugger        (GPL2)
+ |
+ +- packager        (GPL2)
+ |
+ +- tools           (GPL2)
+ |
+ +- examples        (GPL2)
+ |
+ +- lcl             (modified LGPL, see there)
+ |
+ +- components/
+    |
+    +- synedit      (MPL - Mozilla public license)
+    |
+    +- codetools    (GPL 2)
+    |
+    +- gtk
+    |  |
+    |  +- gtkglarea (modified LGPL, with one exception: nvgl.pp)
+    |
+    +- xxx There are various packages under various licenses. Mostly the
+           modified LGPL. See the license in the package files for details.
+           
+
+The IDE files are the files in the <lazarus>, designer, packager and debugger
+directory. They are under the GPL 2, with the following exceptions:
+transfermacros.pp, wordcompletion.pp, patheditordlg.pas, outputfilter.pas,
+inputfiledialog.pas, findreplacedialog.pp, findinfilesdlg.pas
+These files are under the modified LGPL as described in COPYING.modifiedLGPL.

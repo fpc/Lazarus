@@ -1,0 +1,78 @@
+object MainForm: TMainForm
+  Left = 430
+  Height = 535
+  Top = 226
+  Width = 790
+  HorzScrollBar.Page = 789
+  VertScrollBar.Page = 534
+  Caption = 'Paradox test program'
+  ClientHeight = 535
+  ClientWidth = 790
+  object Label1: TLabel
+    Left = 8
+    Height = 13
+    Top = 18
+    Width = 72
+    Caption = 'Paradox File'
+    ParentColor = False
+  end
+  object FEPX: TFileNameEdit
+    Left = 88
+    Height = 23
+    Top = 10
+    Width = 582
+    DialogTitle = 'Select paradox file to open'
+    Filter = 'Paradox files|*.db|All files|*.*'
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    ParentColor = False
+    TabOrder = 0
+  end
+  object Button1: TButton
+    Left = 702
+    Height = 25
+    Top = 8
+    Width = 75
+    Anchors = [akTop, akRight]
+    Caption = '&Open'
+    OnClick = Button1Click
+    TabOrder = 1
+  end
+  object DBNavigator1: TDBNavigator
+    Left = 8
+    Height = 25
+    Top = 40
+    Width = 241
+    BevelOuter = bvNone
+    ClientHeight = 25
+    ClientWidth = 241
+    DataSource = DSPDX
+  end
+  object DBGrid1: TDBGrid
+    Left = 8
+    Height = 461
+    Top = 72
+    Width = 769
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    DataSource = DSPDX
+    FixedColor = clBtnFace
+    FixedHotColor = cl3DLight
+    Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
+    OptionsExtra = [dgeAutoColumns, dgeCheckboxColumn]
+    ParentColor = False
+    TabOrder = 2
+    TabStop = True
+  end
+  object DSPDX: TDatasource
+    DataSet = PDX
+    left = 264
+    top = 40
+  end
+  object PDX: TParadox
+    PXLibrary = 'libpx.so.0'
+    FieldDefs = <>
+    left = 304
+    top = 40
+  end
+end

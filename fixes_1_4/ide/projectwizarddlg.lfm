@@ -1,0 +1,127 @@
+object ProjectWizardDialog: TProjectWizardDialog
+  Left = 298
+  Height = 294
+  Top = 322
+  Width = 382
+  ActiveControl = btnNewProject
+  BorderIcons = [biSystemMenu]
+  Caption = 'Project Wizard '
+  ClientHeight = 294
+  ClientWidth = 382
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object btnNewProject: TBitBtn
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 7
+    Height = 25
+    Top = 11
+    Width = 368
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Around = 11
+    Caption = 'New Project'
+    ModalResult = 1
+    NumGlyphs = 0
+    OnClick = btnNewProjectClick
+    TabOrder = 0
+  end
+  object btnOpenProject: TBitBtn
+    AnchorSideTop.Control = gbRecent
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 7
+    Height = 25
+    Top = 126
+    Width = 368
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Around = 11
+    Caption = 'Open Project'
+    ModalResult = 1
+    NumGlyphs = 0
+    OnClick = btnOpenProjectClick
+    TabOrder = 2
+  end
+  object btnConvertProject: TBitBtn
+    AnchorSideTop.Control = btnExamples
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 7
+    Height = 25
+    Top = 198
+    Width = 368
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Around = 11
+    Caption = 'Convert Delphi Project'
+    ModalResult = 1
+    NumGlyphs = 0
+    OnClick = btnConvertProjectClick
+    TabOrder = 4
+  end
+  object btnCloseIDE: TBitBtn
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 7
+    Height = 25
+    Top = 258
+    Width = 368
+    Anchors = [akLeft, akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 11
+    Caption = 'Close Lazarus'
+    ModalResult = 1
+    NumGlyphs = 0
+    OnClick = btnCloseIDEClick
+    TabOrder = 5
+  end
+  object gbRecent: TGroupBox
+    AnchorSideTop.Control = btnNewProject
+    Left = 7
+    Height = 56
+    Top = 53
+    Width = 368
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 25
+    BorderSpacing.Around = 17
+    Caption = 'Open Recent Project'
+    ClientHeight = 38
+    ClientWidth = 364
+    TabOrder = 1
+    object cbRecentProjects: TComboBox
+      AnchorSideLeft.Control = gbRecent
+      AnchorSideTop.Control = gbRecent
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = gbRecent
+      AnchorSideRight.Side = asrBottom
+      Left = 1
+      Height = 24
+      Top = 10
+      Width = 362
+      Anchors = [akLeft, akRight]
+      BorderSpacing.Around = 1
+      ItemHeight = 0
+      OnSelect = cbRecentProjectsSelect
+      TabOrder = 0
+    end
+  end
+  object btnExamples: TBitBtn
+    AnchorSideTop.Control = btnOpenProject
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 8
+    Height = 25
+    Top = 162
+    Width = 368
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Around = 11
+    Caption = 'View Example Projects'
+    ModalResult = 1
+    NumGlyphs = 0
+    OnClick = btnExamplesClick
+    TabOrder = 3
+  end
+end

@@ -1,0 +1,41 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2015-04-12 08:27+0100\n"
+"PO-Revision-Date: 2015-04-12 08:27+0100\n"
+"Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr_FR\n"
+"X-Generator: Poedit 1.7.5\n"
+
+#: syndesignstringconstants.syndsbookmarks
+msgid "Bookmarks"
+msgstr "Signets"
+
+#: syndesignstringconstants.syndschangemarker
+msgid "Change Marker"
+msgstr "Modifier le marqueur"
+
+#: syndesignstringconstants.syndscodefolding
+msgid "Code Folding"
+msgstr "Pliage de code"
+
+#: syndesignstringconstants.syndslinenumbers
+msgid "Line Numbers"
+msgstr "Numéros de lignes"
+
+#: syndesignstringconstants.syndslineoverview
+msgid "Line Overview"
+msgstr "Vue d'ensemble de la ligne"
+
+#: syndesignstringconstants.syndsresetmouseactions
+msgid "Reset mouse actions"
+msgstr "Réinitialiser les actions de la souris"
+
+#: syndesignstringconstants.syndsseparator
+msgid "Separator"
+msgstr "Séparateur"
+

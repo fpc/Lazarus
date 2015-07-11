@@ -1,0 +1,7 @@
+Extending the IDE (Overview)
+============================
+
+See the online pages:
+http://wiki.lazarus.freepascal.org/Extending_the_IDE
+
+

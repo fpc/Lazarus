@@ -1,0 +1,10 @@
+object Form1: TForm1
+  Left = 419
+  Height = 300
+  Top = 287
+  Width = 400
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 299
+  Caption = 'Form1'
+  OnCreate = FormCreate
+end

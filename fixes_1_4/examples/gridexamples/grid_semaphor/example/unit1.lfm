@@ -1,0 +1,349 @@
+object Form1: TForm1
+  Left = 183
+  Height = 423
+  Top = 115
+  Width = 590
+  HorzScrollBar.Page = 589
+  VertScrollBar.Page = 422
+  ActiveControl = SemaphorGrid1
+  Caption = 'Try SemaphorGrid'
+  OnCreate = Form1Create
+  object Button1: TButton
+    Left = 8
+    Height = 25
+    Top = 232
+    Width = 144
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Toggle Semaphor'
+    OnClick = Button1Click
+    TabOrder = 1
+  end
+  object Button2: TButton
+    Left = 155
+    Height = 25
+    Top = 232
+    Width = 163
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Next Semafore Style'
+    OnClick = Button2Click
+    TabOrder = 2
+  end
+  object Button3: TButton
+    Left = 8
+    Height = 25
+    Top = 264
+    Width = 124
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Next Alignment'
+    OnClick = Button3Click
+    TabOrder = 3
+  end
+  object Button4: TButton
+    Left = 464
+    Height = 25
+    Top = 70
+    Width = 111
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Close'
+    OnClick = Button4Click
+    TabOrder = 4
+  end
+  object Button5: TButton
+    Left = 464
+    Height = 25
+    Top = 16
+    Width = 111
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Save to File'
+    OnClick = Button5Click
+    TabOrder = 5
+  end
+  object Button6: TButton
+    Left = 464
+    Height = 25
+    Top = 43
+    Width = 111
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Load from File'
+    OnClick = Button6Click
+    TabOrder = 6
+  end
+  object Button7: TButton
+    Left = 327
+    Height = 24
+    Top = 232
+    Width = 87
+    BorderSpacing.InnerBorder = 4
+    Caption = 'AutoWidth'
+    OnClick = Button7Click
+    TabOrder = 7
+  end
+  object Button8: TButton
+    Left = 417
+    Height = 24
+    Top = 232
+    Width = 90
+    BorderSpacing.InnerBorder = 4
+    Caption = 'AutoHeight'
+    OnClick = Button8Click
+    TabOrder = 8
+  end
+  object Button9: TButton
+    Left = 176
+    Height = 26
+    Top = 165
+    Width = 100
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Sort Cols[4]'
+    OnClick = Button9Click
+    TabOrder = 9
+  end
+  object RadioButton1: TRadioButton
+    Left = 286
+    Height = 20
+    Top = 165
+    Width = 84
+    Caption = 'Ascending'
+    Checked = True
+    State = cbChecked
+    TabOrder = 10
+  end
+  object RadioButton2: TRadioButton
+    Left = 286
+    Height = 20
+    Top = 196
+    Width = 91
+    Caption = 'Descending'
+    TabOrder = 11
+  end
+  object Button10: TButton
+    Left = 8
+    Height = 26
+    Top = 165
+    Width = 144
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Hide/Show Cols[1]'
+    OnClick = Button10Click
+    TabOrder = 12
+  end
+  object Button11: TButton
+    Left = 8
+    Height = 25
+    Top = 196
+    Width = 47
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Clear'
+    OnClick = Button11Click
+    TabOrder = 13
+  end
+  object CheckBox1: TCheckBox
+    Left = 60
+    Height = 20
+    Top = 196
+    Width = 84
+    Caption = 'OnlyValue'
+    TabOrder = 14
+  end
+  object Button12: TButton
+    Left = 176
+    Height = 23
+    Top = 196
+    Width = 100
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Sort Cols[1]'
+    OnClick = Button12Click
+    TabOrder = 15
+  end
+  object ToggleBox1: TToggleBox
+    Left = 429
+    Height = 26
+    Top = 165
+    Width = 102
+    Caption = 'UnEditable'
+    OnClick = ToggleBox1Click
+    TabOrder = 16
+  end
+  object CheckBox2: TCheckBox
+    Left = 428
+    Height = 20
+    Top = 196
+    Width = 83
+    Caption = 'Only Float'
+    OnClick = CheckBox2Click
+    TabOrder = 17
+  end
+  object Button13: TButton
+    Left = 510
+    Height = 24
+    Top = 232
+    Width = 71
+    BorderSpacing.InnerBorder = 4
+    Caption = 'AutoFit'
+    OnClick = Button13Click
+    TabOrder = 18
+  end
+  object SemaphorGrid1: TSemaphorGrid
+    Left = 8
+    Height = 152
+    Top = 4
+    Width = 350
+    Color = clWhite
+    ColCount = 5
+    DefaultRowHeight = 24
+    FixedColor = clBtnFace
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goSmoothScroll]
+    RowCount = 5
+    ScrollBars = ssAutoBoth
+    TabOrder = 0
+    TabStop = True
+    Constraints.MaxHeight = 160
+    Constraints.MaxWidth = 350
+    Alignment = taCenter
+    Semaphor = True
+    StringRed = 'no'
+    StringYellow = 'maybe'
+    StringGreen = 'yes'
+    SemaphorShape = ssDisk
+    Cells = (
+      24
+      0
+      0
+      'a\n'
+      0
+      1
+      'a'
+      0
+      2
+      'b'
+      0
+      3
+      'c'
+      0
+      4
+      'd'
+      1
+      0
+      '1'
+      1
+      1
+      'no'
+      1
+      2
+      'alpha'
+      1
+      3
+      'zed'
+      1
+      4
+      'maybe'
+      2
+      0
+      '2'
+      2
+      1
+      'yes'
+      2
+      2
+      'Semaphor'
+      2
+      3
+      '0.9877'
+      2
+      4
+      'yes'
+      3
+      0
+      '3'
+      3
+      2
+      'no'
+      3
+      3
+      'Grid'
+      3
+      4
+      'maybe'
+      4
+      0
+      '4'
+      4
+      1
+      '5'
+      4
+      2
+      '12'
+      4
+      3
+      '-1'
+      4
+      4
+      '2'
+    )
+  end
+  object SemaphorGrid2: TSemaphorGrid
+    Height = 111
+    Top = 305
+    Width = 288
+    ColCount = 5
+    FixedColor = clBtnFace
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goSmoothScroll]
+    RowCount = 5
+    ScrollBars = ssAutoBoth
+    TabOrder = 21
+    TabStop = True
+    StringRed = 'no'
+    StringYellow = 'maybe'
+    StringGreen = 'yes'
+    SemaphorShape = ssDisk
+  end
+  object SemaphorGrid3: TSemaphorGrid
+    Left = 296
+    Height = 112
+    Top = 304
+    Width = 279
+    ColCount = 5
+    FixedColor = clBtnFace
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goSmoothScroll]
+    RowCount = 5
+    ScrollBars = ssAutoBoth
+    TabOrder = 22
+    TabStop = True
+    Semaphor = True
+    StringRed = 'no'
+    StringYellow = 'maybe'
+    StringGreen = 'yes'
+    SemaphorShape = ssDisk
+  end
+  object Button14: TButton
+    Left = 327
+    Height = 25
+    Top = 264
+    Width = 87
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Assign'
+    OnClick = Button14Click
+    TabOrder = 19
+  end
+  object Button15: TButton
+    Left = 417
+    Height = 25
+    Top = 264
+    Width = 114
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Show Content'
+    OnClick = Button15Click
+    TabOrder = 20
+  end
+  object SaveDialog1: TSaveDialog
+    Title = 'Save file as'
+    FilterIndex = 0
+    left = 40
+    top = 376
+  end
+  object OpenDialog1: TOpenDialog
+    Title = 'Open existing file'
+    FilterIndex = 0
+    left = 8
+    top = 376
+  end
+end

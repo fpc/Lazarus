@@ -1,0 +1,170 @@
+object frmShowParseTree: TfrmShowParseTree
+  Left = 319
+  Height = 555
+  Top = 116
+  Width = 581
+  ActiveControl = pcPages
+  BorderIcons = [biSystemMenu, biMaximize]
+  Caption = 'JCF Parse Tree'
+  ClientHeight = 555
+  ClientWidth = 581
+  Font.CharSet = ANSI_CHARSET
+  Font.Height = -15
+  Font.Name = 'Segoe UI'
+  KeyPreview = True
+  OnCreate = FormCreate
+  OnKeyUp = FormKeyUp
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object StatusBar1: TStatusBar
+    Left = 0
+    Height = 23
+    Top = 532
+    Width = 581
+    Panels = <>
+  end
+  object pnlTop: TPanel
+    Left = 0
+    Height = 85
+    Top = 0
+    Width = 581
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 85
+    ClientWidth = 581
+    Constraints.MinHeight = 67
+    Constraints.MinWidth = 67
+    TabOrder = 1
+    object lblTreeCount: TLabel
+      Left = 11
+      Height = 18
+      Top = 31
+      Width = 124
+      Caption = 'Tree has ? nodes'
+      ParentColor = False
+    end
+    object lblTreeDepth: TLabel
+      Left = 11
+      Height = 18
+      Top = 55
+      Width = 188
+      Caption = 'Tree has max depth of ??'
+      ParentColor = False
+    end
+    object cbShowWhiteSpace: TCheckBox
+      Left = 11
+      Height = 23
+      Top = 5
+      Width = 156
+      Caption = 'Show whitespace'
+      OnClick = cbShowWhiteSpaceClick
+      TabOrder = 0
+    end
+  end
+  object pnlBottom: TPanel
+    Left = 0
+    Height = 50
+    Top = 482
+    Width = 581
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 50
+    ClientWidth = 581
+    TabOrder = 2
+    object lblCurrent: TLabel
+      Left = 11
+      Height = 18
+      Top = 2
+      Width = 60
+      Caption = 'Current:'
+      ParentColor = False
+    end
+    object lblDepth: TLabel
+      Left = 11
+      Height = 18
+      Top = 26
+      Width = 49
+      Caption = 'Depth:'
+      ParentColor = False
+    end
+    object lblTotalNodeCount: TLabel
+      Left = 271
+      Height = 18
+      Top = 26
+      Width = 125
+      Caption = 'Total node count:'
+      ParentColor = False
+    end
+    object lblImmediateChildCount: TLabel
+      Left = 271
+      Height = 18
+      Top = 2
+      Width = 166
+      Caption = 'Immediate child count:'
+      ParentColor = False
+    end
+  end
+  object pcPages: TPageControl
+    Left = 0
+    Height = 397
+    Top = 85
+    Width = 581
+    ActivePage = tsTokens
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 3
+    object tsTokens: TTabSheet
+      Caption = 'Tokens'
+      ClientHeight = 363
+      ClientWidth = 577
+      object lvTokens: TListView
+        Left = 0
+        Height = 363
+        Top = 0
+        Width = 577
+        Align = alClient
+        Columns = <        
+          item
+            Caption = 'Index'
+            Width = 63
+          end        
+          item
+            Caption = 'Type'
+            Width = 185
+          end        
+          item
+            Caption = 'Text'
+            Width = 271
+          end>
+        ReadOnly = True
+        RowSelect = True
+        SortType = stText
+        TabOrder = 0
+        ViewStyle = vsReport
+        OnDblClick = lvTokensDblClick
+        OnSelectItem = lvTokensSelectItem
+      end
+    end
+    object tsTree: TTabSheet
+      Caption = 'Tree'
+      ClientHeight = 363
+      ClientWidth = 577
+      ImageIndex = 1
+      object tvParseTree: TTreeView
+        Left = 0
+        Height = 363
+        Top = 0
+        Width = 577
+        Align = alClient
+        HideSelection = False
+        Indent = 22
+        RightClickSelect = True
+        TabOrder = 0
+        OnChange = tvParseTreeChange
+        OnDblClick = tvParseTreeDblClick
+        Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+      end
+    end
+  end
+end

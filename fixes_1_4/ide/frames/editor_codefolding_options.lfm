@@ -1,0 +1,158 @@
+object EditorCodefoldingOptionsFrame: TEditorCodefoldingOptionsFrame
+  Left = 0
+  Height = 352
+  Top = 0
+  Width = 511
+  Anchors = [akTop]
+  ClientHeight = 352
+  ClientWidth = 511
+  TabOrder = 0
+  Visible = False
+  DesignLeft = 346
+  DesignTop = 366
+  object Bevel1: TBevel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = chkCodeFoldingEnabled
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 2
+    Top = 25
+    Width = 511
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+  end
+  object LanguageLabel: TLabel
+    AnchorSideLeft.Control = LanguageComboBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = LanguageComboBox
+    AnchorSideTop.Side = asrCenter
+    Left = 206
+    Height = 15
+    Top = 35
+    Width = 80
+    BorderSpacing.Left = 6
+    Caption = 'LanguageLabel'
+    ParentColor = False
+  end
+  object chkCodeFoldingEnabled: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 0
+    Height = 19
+    Top = 0
+    Width = 149
+    Caption = 'chkCodeFoldingEnabled'
+    OnChange = chkCodeFoldingEnabledChange
+    TabOrder = 0
+  end
+  object LanguageComboBox: TComboBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Bevel1
+    Left = 0
+    Height = 23
+    Top = 31
+    Width = 200
+    BorderSpacing.Top = 6
+    ItemHeight = 15
+    OnChange = LanguageComboBoxChange
+    OnExit = LanguageComboBoxExit
+    OnKeyDown = LanguageComboBoxKeyDown
+    Style = csDropDownList
+    TabOrder = 1
+  end
+  object FoldConfPanel: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = LanguageComboBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 292
+    Top = 60
+    Width = 511
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 6
+    BevelOuter = bvNone
+    ClientHeight = 292
+    ClientWidth = 511
+    TabOrder = 2
+    object FoldConfigCheckListBox: TCheckListBox
+      AnchorSideLeft.Control = FoldConfPanel
+      AnchorSideTop.Control = FoldConfPanel
+      AnchorSideBottom.Control = FoldConfPanel
+      AnchorSideBottom.Side = asrBottom
+      Left = 0
+      Height = 292
+      Top = 0
+      Width = 200
+      Anchors = [akTop, akLeft, akBottom]
+      ExtendedSelect = False
+      ItemHeight = 0
+      OnClick = FoldConfigCheckListBoxClick
+      OnClickCheck = FoldConfigCheckListBoxClickCheck
+      OnExit = FoldConfigCheckListBoxClickCheck
+      OnKeyUp = FoldConfigCheckListBoxKeyUp
+      TabOrder = 0
+    end
+    object pnlFoldHide: TPanel
+      AnchorSideLeft.Control = FoldConfigCheckListBox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = FoldConfPanel
+      Left = 206
+      Height = 57
+      Top = 0
+      Width = 64
+      AutoSize = True
+      BorderSpacing.Left = 6
+      BevelOuter = bvNone
+      ChildSizing.Layout = cclTopToBottomThenLeftToRight
+      ChildSizing.ControlsPerLine = 3
+      ClientHeight = 57
+      ClientWidth = 64
+      TabOrder = 1
+      object chkFold: TRadioButton
+        Left = 0
+        Height = 19
+        Top = 0
+        Width = 64
+        Caption = 'chkFold'
+        OnChange = chkFoldChange
+        TabOrder = 0
+      end
+      object chkHide: TRadioButton
+        Left = 0
+        Height = 19
+        Top = 19
+        Width = 64
+        Caption = 'chkHide'
+        OnChange = chkFoldChange
+        TabOrder = 1
+      end
+      object chkBoth: TRadioButton
+        Left = 0
+        Height = 19
+        Top = 38
+        Width = 64
+        Caption = 'chkBoth'
+        OnChange = chkFoldChange
+        TabOrder = 2
+      end
+    end
+  end
+  object chkPopOrder: TCheckBox
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 421
+    Height = 19
+    Top = 0
+    Width = 90
+    Anchors = [akTop, akRight]
+    Caption = 'chkPopOrder'
+    TabOrder = 3
+  end
+end

@@ -1,0 +1,24 @@
+object frmShapedWindow: TfrmShapedWindow
+  Left = 290
+  Height = 200
+  Top = 171
+  Width = 200
+  BorderIcons = []
+  BorderStyle = bsNone
+  Caption = 'frmShapedWindow'
+  ClientHeight = 200
+  ClientWidth = 200
+  Color = clRed
+  OnShow = FormShow
+  LCLVersion = '1.1'
+  object btnClose: TButton
+    Left = 50
+    Height = 32
+    Top = 88
+    Width = 100
+    Caption = 'Close'
+    ModalResult = 1
+    OnClick = btnCloseClick
+    TabOrder = 0
+  end
+end

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    TTMemory
+  ====================================================================
+-->
+
+<module name="TTMemory">
+<short></short>
+<descr>
+</descr>
+
+<!-- record type Visibility: default -->
+<element name="TMarkRecord">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TMarkRecord.Magic">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TMarkRecord.Top">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="Font_Pool_Allocated">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Alloc">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Alloc.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Alloc.P">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Alloc.size">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="Free">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Free.P">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TTMemory_Init">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TTMemory_Init.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TTMemory_Done">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+</module> <!-- TTMemory -->
+
+</package>
+</fpdoc-descriptions>

@@ -1,0 +1,58 @@
+object NewNodeForm: TNewNodeForm
+  Left = 390
+  Height = 120
+  Top = 205
+  Width = 408
+  HorzScrollBar.Page = 395
+  VertScrollBar.Page = 70
+  Caption = 'Create new node'
+  ClientHeight = 120
+  ClientWidth = 408
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object ENodeName: TEdit
+    AnchorSideLeft.Control = LENodeName
+    AnchorSideTop.Control = LENodeName
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 12
+    Height = 21
+    Top = 25
+    Width = 390
+    Anchors = [akTop, akLeft, akRight]
+    AutoSelect = False
+    BorderSpacing.Around = 6
+    TabOrder = 0
+  end
+  object LENodeName: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 13
+    Top = 6
+    Width = 54
+    Alignment = taRightJustify
+    BorderSpacing.Around = 6
+    Caption = 'Node &name'
+    FocusControl = ENodeName
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 80
+    Width = 396
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+end

@@ -1,0 +1,2468 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    LazLoggerBase
+  ====================================================================
+-->
+
+<module name="LazLoggerBase">
+<short></short>
+<descr>
+</descr>
+
+<!-- enumeration type Visibility: default -->
+<element name="TLazLoggerLogGroupFlag">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TLazLoggerLogGroupFlag.lgfAddedByParamParser">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TLazLoggerLogGroupFlag.lgfNoDefaultEnabledSpecified">
+<short></short>
+</element>
+
+<!-- set type Visibility: default -->
+<element name="TLazLoggerLogGroupFlags">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- record type Visibility: default -->
+<element name="TLazLoggerLogGroup">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TLazLoggerLogGroup.ConfigName">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TLazLoggerLogGroup.Enabled">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TLazLoggerLogGroup.Flags">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TLazLoggerLogGroup.FOpenedIndents">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- pointer type Visibility: default -->
+<element name="PLazLoggerLogGroup">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TLazLoggerWriteTarget">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TLazLoggerWriteTarget.lwtNone">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TLazLoggerWriteTarget.lwtStdOut">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TLazLoggerWriteTarget.lwtStdErr">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TLazLoggerWriteTarget.lwtTextFile">
+<short></short>
+</element>
+
+<!-- procedure type Visibility: default -->
+<element name="TLazLoggerWriteEvent">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLoggerWriteEvent.Sender">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLoggerWriteEvent.S">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLoggerWriteEvent.Handled">
+<short></short>
+</element>
+
+<!-- procedure type Visibility: default -->
+<element name="TLazLoggerWidgetSetWriteEvent">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLoggerWidgetSetWriteEvent.Sender">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLoggerWidgetSetWriteEvent.S">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLoggerWidgetSetWriteEvent.Handled">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLoggerWidgetSetWriteEvent.Target">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLoggerWidgetSetWriteEvent.Data">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TLazLoggerLogGroupList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazLoggerLogGroupList.FList">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TLazLoggerLogGroupList.Clear">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TLazLoggerLogGroupList.GetItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLazLoggerLogGroupList.GetItem.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLoggerLogGroupList.GetItem.Index">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TLazLoggerLogGroupList.NewItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLazLoggerLogGroupList.NewItem.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLoggerLogGroupList.NewItem.AConfigName">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLoggerLogGroupList.NewItem.ADefaulEnabled">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TLazLoggerLogGroupList.Add">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLazLoggerLogGroupList.Add.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLoggerLogGroupList.Add.AConfigName">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLoggerLogGroupList.Add.ADefaulEnabled">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TLazLoggerLogGroupList.FindOrAdd">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLazLoggerLogGroupList.FindOrAdd.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLoggerLogGroupList.FindOrAdd.AConfigName">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLoggerLogGroupList.FindOrAdd.ADefaulEnabled">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TLazLoggerLogGroupList.Remove">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLoggerLogGroupList.Remove.AConfigName">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLoggerLogGroupList.Remove.AnEntry">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TLazLoggerLogGroupList.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TLazLoggerLogGroupList.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazLoggerLogGroupList.Assign">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLoggerLogGroupList.Assign.Src">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TLazLoggerLogGroupList.IndexOf">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLazLoggerLogGroupList.IndexOf.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLoggerLogGroupList.IndexOf.AConfigName">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLoggerLogGroupList.IndexOf.AnEntry">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TLazLoggerLogGroupList.Find">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLazLoggerLogGroupList.Find.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLoggerLogGroupList.Find.AConfigName">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TLazLoggerLogGroupList.Count">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLazLoggerLogGroupList.Count.Result">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TLazLoggerLogGroupList.Item">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLoggerLogGroupList.Item.Index">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TLazLogger">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazLogger.FIsInitialized">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazLogger.FMaxNestPrefixLen">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazLogger.FNestLvlIndent">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazLogger.FLogGroupList">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazLogger.FUseGlobalLogGroupList">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TLazLogger.SetMaxNestPrefixLen">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.SetMaxNestPrefixLen.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TLazLogger.SetNestLvlIndent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.SetNestLvlIndent.AValue">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TLazLogger.GetLogGroupList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLazLogger.GetLogGroupList.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TLazLogger.SetUseGlobalLogGroupList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.SetUseGlobalLogGroupList.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TLazLogger.DoInit">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TLazLogger.DoFinsh">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TLazLogger.IncreaseIndent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TLazLogger.DecreaseIndent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.IncreaseIndent.LogGroup">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DecreaseIndent.LogGroup">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TLazLogger.IndentChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TLazLogger.DoDbgOut">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DoDbgOut.s">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TLazLogger.DoDebugLn">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DoDebugLn.s">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TLazLogger.DoDebuglnStack">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DoDebuglnStack.s">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TLazLogger.ArgsToString">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLazLogger.ArgsToString.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.ArgsToString.Args">
+<short></short>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TLazLogger.IsInitialized">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TLazLogger.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TLazLogger.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazLogger.Assign">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.Assign.Src">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazLogger.Init">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazLogger.Finish">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TLazLogger.NestLvlIndent">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TLazLogger.MaxNestPrefixLen">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TLazLogger.RegisterLogGroup">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLazLogger.RegisterLogGroup.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.RegisterLogGroup.AConfigName">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.RegisterLogGroup.ADefaulEnabled">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TLazLogger.FindOrRegisterLogGroup">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLazLogger.FindOrRegisterLogGroup.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.FindOrRegisterLogGroup.AConfigName">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.FindOrRegisterLogGroup.ADefaulEnabled">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TLazLogger.LogGroupList">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TLazLogger.UseGlobalLogGroupList">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazLogger.DebuglnStack">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebuglnStack.s">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazLogger.DbgOut">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DbgOut.s">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DbgOut.Args">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DbgOut.s1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DbgOut.s2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DbgOut.s3">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DbgOut.s4">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DbgOut.s5">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DbgOut.s6">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DbgOut.s7">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DbgOut.s8">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DbgOut.s9">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DbgOut.s10">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DbgOut.s11">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DbgOut.s12">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DbgOut.s13">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DbgOut.s14">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DbgOut.s15">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DbgOut.s16">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DbgOut.s17">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DbgOut.s18">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazLogger.DebugLn">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLn.s">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLn.Args">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLn.s1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLn.s2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLn.s3">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLn.s4">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLn.s5">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLn.s6">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLn.s7">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLn.s8">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLn.s9">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLn.s10">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLn.s11">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLn.s12">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLn.s13">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLn.s14">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLn.s15">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLn.s16">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLn.s17">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLn.s18">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazLogger.DebugLnEnter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnEnter.s">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnEnter.Args">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnEnter.s1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnEnter.s2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnEnter.s3">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnEnter.s4">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnEnter.s5">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnEnter.s6">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnEnter.s7">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnEnter.s8">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnEnter.s9">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnEnter.s10">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnEnter.s11">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnEnter.s12">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnEnter.s13">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnEnter.s14">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnEnter.s15">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnEnter.s16">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnEnter.s17">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnEnter.s18">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazLogger.DebugLnExit">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnExit.s">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnExit.Args">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnExit.s1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnExit.s2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnExit.s3">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnExit.s4">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnExit.s5">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnExit.s6">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnExit.s7">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnExit.s8">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnExit.s9">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnExit.s10">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnExit.s11">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnExit.s12">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnExit.s13">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnExit.s14">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnExit.s15">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnExit.s16">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnExit.s17">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnExit.s18">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebuglnStack.LogGroup">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DbgOut.LogGroup">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLn.LogGroup">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnEnter.LogGroup">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLogger.DebugLnExit.LogGroup">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TLazLoggerWithGroupParam">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazLoggerWithGroupParam.FLogAllDefaultDisabled">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazLoggerWithGroupParam.FLogDefaultEnabled">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazLoggerWithGroupParam.FLogParamParsed">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazLoggerWithGroupParam.FParamForEnabledLogGroups">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TLazLoggerWithGroupParam.SetParamForEnabledLogGroups">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLoggerWithGroupParam.SetParamForEnabledLogGroups.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TLazLoggerWithGroupParam.ParseParamForEnabledLogGroups">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TLazLoggerWithGroupParam.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazLoggerWithGroupParam.Assign">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLoggerWithGroupParam.Assign.Src">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TLazLoggerWithGroupParam.RegisterLogGroup">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLazLoggerWithGroupParam.RegisterLogGroup.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLoggerWithGroupParam.RegisterLogGroup.AConfigName">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLoggerWithGroupParam.RegisterLogGroup.ADefaulEnabled">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TLazLoggerWithGroupParam.FindOrRegisterLogGroup">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLazLoggerWithGroupParam.FindOrRegisterLogGroup.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLoggerWithGroupParam.FindOrRegisterLogGroup.AConfigName">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazLoggerWithGroupParam.FindOrRegisterLogGroup.ADefaulEnabled">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TLazLoggerWithGroupParam.ParamForEnabledLogGroups">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TLazLoggerNoOutput">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="DebuglnStack">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebuglnStack.s">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="DbgOut">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgOut.s">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgOut.Args">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgOut.s1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgOut.s2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgOut.s3">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgOut.s4">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgOut.s5">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgOut.s6">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgOut.s7">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgOut.s8">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgOut.s9">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgOut.s10">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgOut.s11">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgOut.s12">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgOut.s13">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgOut.s14">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgOut.s15">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgOut.s16">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgOut.s17">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgOut.s18">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="DebugLn">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLn.s">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLn.Args">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLn.s1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLn.s2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLn.s3">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLn.s4">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLn.s5">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLn.s6">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLn.s7">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLn.s8">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLn.s9">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLn.s10">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLn.s11">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLn.s12">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLn.s13">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLn.s14">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLn.s15">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLn.s16">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLn.s17">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLn.s18">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="DebugLnEnter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnEnter.s">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnEnter.Args">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnEnter.s1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnEnter.s2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnEnter.s3">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnEnter.s4">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnEnter.s5">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnEnter.s6">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnEnter.s7">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnEnter.s8">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnEnter.s9">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnEnter.s10">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnEnter.s11">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnEnter.s12">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnEnter.s13">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnEnter.s14">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnEnter.s15">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnEnter.s16">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnEnter.s17">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnEnter.s18">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="DebugLnExit">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnExit.s">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnExit.Args">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnExit.s1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnExit.s2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnExit.s3">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnExit.s4">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnExit.s5">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnExit.s6">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnExit.s7">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnExit.s8">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnExit.s9">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnExit.s10">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnExit.s11">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnExit.s12">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnExit.s13">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnExit.s14">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnExit.s15">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnExit.s16">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnExit.s17">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnExit.s18">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebuglnStack.LogGroup">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgOut.LogGroup">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLn.LogGroup">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnEnter.LogGroup">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DebugLnExit.LogGroup">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="DbgS">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="DbgS.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgS.c">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgS.i">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgS.q">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgS.r">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgS.p">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgS.e">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgS.MaxDecimals">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgS.b">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgS.m">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgS.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgS.s">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgS.i1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgS.i2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgS.i3">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgS.i4">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgS.Shift">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="DbgSJoin">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="DbgSJoin.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgSJoin.s1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgSJoin.s2">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="DbgSName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="DbgSName.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DbgSName.p">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="dbgObjMem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="dbgObjMem.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="dbgObjMem.AnObject">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="dbghex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="dbghex.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="dbghex.i">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="dbgMemRange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="dbgMemRange.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="dbgMemRange.P">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="dbgMemRange.Count">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="dbgMemRange.Width">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="dbgMemStream">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="dbgMemStream.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="dbgMemStream.MemStream">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="dbgMemStream.Count">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ConvertLineEndings">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ConvertLineEndings.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ConvertLineEndings.s">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetParamByNameCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetParamByNameCount.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetParamByNameCount.AName">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetParamByName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetParamByName.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetParamByName.AName">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetParamByName.AnIndex">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetDebugLoggerGroups">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetDebugLoggerGroups.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="SetDebugLoggerGroups">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetDebugLoggerGroups.ALogGroups">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetDebugLogger">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetDebugLogger.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetExistingDebugLogger">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetExistingDebugLogger.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="SetDebugLogger">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetDebugLogger.ALogger">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="RecreateDebugLogger">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: default -->
+<element name="DebugLogger">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: default -->
+<element name="DebugLoggerGroups">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function type Visibility: default -->
+<element name="TLazDebugLoggerCreator">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLazDebugLoggerCreator.Result">
+<short></short>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="LazDebugLoggerCreator">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="OnWidgetSetDebugLn">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="OnWidgetSetDbgOut">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+</module> <!-- LazLoggerBase -->
+
+</package>
+</fpdoc-descriptions>

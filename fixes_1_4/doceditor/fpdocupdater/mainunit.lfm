@@ -1,0 +1,292 @@
+object FormMain: TFormMain
+  Left = 253
+  Height = 528
+  Top = 138
+  Width = 598
+  HorzScrollBar.Page = 597
+  VertScrollBar.Page = 527
+  ActiveControl = EditDocs
+  Caption = 'FPDoc Updater'
+  ClientHeight = 528
+  ClientWidth = 598
+  Constraints.MinHeight = 525
+  Constraints.MinWidth = 300
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnShow = FormShow
+  LCLVersion = '1.3'
+  object LabelDocs: TLabel
+    AnchorSideTop.Control = EditDocs
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = EditDocs
+    Left = 72
+    Height = 15
+    Top = 15
+    Width = 101
+    Anchors = [akTop, akRight]
+    BorderSpacing.Right = 7
+    Caption = 'FPDoc files path:'
+    ParentColor = False
+  end
+  object LabelUnits: TLabel
+    AnchorSideTop.Control = EditUnits
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = EditUnits
+    Left = 107
+    Height = 15
+    Top = 49
+    Width = 66
+    Anchors = [akTop, akRight]
+    BorderSpacing.Right = 7
+    Caption = 'Units path:'
+    ParentColor = False
+  end
+  object LabelBackup: TLabel
+    AnchorSideLeft.Control = ListBox
+    AnchorSideLeft.Side = asrBottom
+    Left = 426
+    Height = 15
+    Top = 252
+    Width = 111
+    BorderSpacing.Left = 6
+    Caption = 'Backup extension:'
+    ParentColor = False
+  end
+  object LabelPackage: TLabel
+    AnchorSideLeft.Control = ListBox
+    AnchorSideLeft.Side = asrBottom
+    Left = 426
+    Height = 15
+    Top = 161
+    Width = 54
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    Caption = 'Package:'
+    ParentColor = False
+  end
+  object LabelMakeSkel: TLabel
+    AnchorSideTop.Control = EditMakeSkel
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = EditMakeSkel
+    Left = 54
+    Height = 15
+    Top = 114
+    Width = 119
+    Anchors = [akTop, akRight]
+    BorderSpacing.Right = 7
+    Caption = 'MakeSkel tool path:'
+    ParentColor = False
+  end
+  object LabelInclude: TLabel
+    AnchorSideTop.Control = EditInclude
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = EditInclude
+    Left = 65
+    Height = 15
+    Top = 83
+    Width = 108
+    Anchors = [akTop, akRight]
+    BorderSpacing.Right = 7
+    Caption = 'Include files path:'
+    ParentColor = False
+  end
+  object EditDocs: TDirectoryEdit
+    Left = 180
+    Height = 21
+    Top = 12
+    Width = 368
+    ShowHidden = False
+    ButtonWidth = 45
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    MaxLength = 0
+    TabOrder = 0
+    OnChange = EditDocsChange
+  end
+  object EditUnits: TDirectoryEdit
+    AnchorSideLeft.Control = EditDocs
+    AnchorSideTop.Control = EditDocs
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = EditDocs
+    AnchorSideRight.Side = asrBottom
+    Left = 180
+    Height = 21
+    Top = 46
+    Width = 368
+    ShowHidden = False
+    ButtonWidth = 45
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 13
+    MaxLength = 0
+    TabOrder = 1
+    OnChange = EditUnitsChange
+  end
+  object ButtonUpdate: TButton
+    AnchorSideLeft.Control = ButtonRefresh
+    Left = 426
+    Height = 25
+    Top = 396
+    Width = 122
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Update'
+    OnClick = ButtonUpdateClick
+    TabOrder = 2
+  end
+  object ButtonUpdateAll: TButton
+    AnchorSideLeft.Control = ButtonUpdateNew
+    Left = 426
+    Height = 25
+    Top = 468
+    Width = 122
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Update All'
+    OnClick = ButtonUpdateAllClick
+    TabOrder = 3
+  end
+  object ButtonUpdateNew: TButton
+    AnchorSideLeft.Control = ButtonUpdate
+    Left = 426
+    Height = 25
+    Top = 432
+    Width = 122
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Update New'
+    Font.Color = clRed
+    OnClick = ButtonUpdateNewClick
+    ParentFont = False
+    TabOrder = 4
+  end
+  object ButtonRefresh: TButton
+    AnchorSideLeft.Control = ListBox
+    AnchorSideLeft.Side = asrBottom
+    Left = 426
+    Height = 25
+    Top = 354
+    Width = 122
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Refresh'
+    OnClick = ButtonRefreshClick
+    TabOrder = 5
+  end
+  object ListBox: TListBox
+    Left = 11
+    Height = 339
+    Top = 156
+    Width = 409
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ItemHeight = 0
+    MultiSelect = True
+    OnDrawItem = ListBoxDrawItem
+    Style = lbOwnerDrawFixed
+    TabOrder = 6
+  end
+  object CheckBoxBackup: TCheckBox
+    AnchorSideLeft.Control = ListBox
+    AnchorSideLeft.Side = asrBottom
+    Left = 426
+    Height = 20
+    Top = 222
+    Width = 139
+    BorderSpacing.Left = 6
+    Caption = 'Backup FPDoc files'
+    Checked = True
+    State = cbChecked
+    TabOrder = 7
+  end
+  object EditBackup: TEdit
+    AnchorSideLeft.Control = ListBox
+    AnchorSideLeft.Side = asrBottom
+    Left = 444
+    Height = 21
+    Top = 276
+    Width = 80
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 24
+    TabOrder = 8
+    Text = 'bak'
+  end
+  object EditPackage: TEdit
+    AnchorSideLeft.Control = ListBox
+    AnchorSideLeft.Side = asrBottom
+    Left = 444
+    Height = 21
+    Top = 186
+    Width = 80
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 24
+    TabOrder = 9
+    Text = 'lcl'
+  end
+  object EditMakeSkel: TFileNameEdit
+    AnchorSideLeft.Control = EditInclude
+    AnchorSideTop.Control = LabelInclude
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = EditInclude
+    AnchorSideRight.Side = asrBottom
+    Left = 180
+    Height = 21
+    Top = 111
+    Width = 368
+    DialogOptions = []
+    FilterIndex = 0
+    HideDirectories = False
+    ButtonWidth = 45
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 13
+    MaxLength = 0
+    TabOrder = 10
+  end
+  object EditInclude: TDirectoryEdit
+    AnchorSideLeft.Control = EditUnits
+    AnchorSideTop.Control = EditUnits
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = EditUnits
+    AnchorSideRight.Side = asrBottom
+    Left = 180
+    Height = 21
+    Top = 80
+    Width = 368
+    ShowHidden = False
+    ButtonWidth = 45
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 13
+    MaxLength = 0
+    TabOrder = 11
+  end
+  object StatusBar: TStatusBar
+    Left = 0
+    Height = 20
+    Top = 508
+    Width = 598
+    Panels = <>
+  end
+  object CheckBoxShowSummary: TCheckBox
+    AnchorSideLeft.Control = ListBox
+    AnchorSideLeft.Side = asrBottom
+    Left = 426
+    Height = 20
+    Top = 312
+    Width = 118
+    BorderSpacing.Left = 6
+    Caption = 'Show summary'
+    Checked = True
+    State = cbChecked
+    TabOrder = 12
+  end
+  object OpenDialog: TOpenDialog
+    Title = 'Open FPDoc file'
+    DefaultExt = '.xml'
+    Filter = 'FPDoc file (*.xml)|*.xml|All files|*.*'
+    Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
+    left = 24
+    top = 168
+  end
+end

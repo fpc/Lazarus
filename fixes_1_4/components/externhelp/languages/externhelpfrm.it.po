@@ -1,0 +1,106 @@
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2014-10-03 17:44+0100\n"
+"Last-Translator: Giuliano Colla <giuliano.colla@fastwebnet.it>\n"
+"Language-Team: PincoPallo Team\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.5.1\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+
+#: externhelpfrm.ehrsaddnewitem
+msgid "Add new item"
+msgstr "Aggiungi nuovo elemento"
+
+#: externhelpfrm.ehrsbrowse
+msgid "Browse ..."
+msgstr "Naviga..."
+
+#: externhelpfrm.ehrsbrowseforpath
+msgid "Browse for path"
+msgstr "Cerca il cammino"
+
+#: externhelpfrm.ehrschooseapascalunit
+msgid "Choose a pascal unit"
+msgstr "Scegli una unit pascal"
+
+#: externhelpfrm.ehrsdeleteitem
+msgid "Delete item"
+msgstr "Cancella elemento"
+
+#: externhelpfrm.ehrsdirectorynotfound
+msgid "Directory not found: %s"
+msgstr "Cartella non trovata: %s"
+
+#: externhelpfrm.ehrseditorfile
+msgid "Editor file ..."
+msgstr "File editor..."
+
+#: externhelpfrm.ehrsexternal
+msgid "External"
+msgstr "Esterno"
+
+#: externhelpfrm.ehrsfilenotfound
+msgid "File not found: %s"
+msgstr "File non trovato: %s"
+
+#: externhelpfrm.ehrsgeneral
+msgid "General"
+msgstr "Generale"
+
+#: externhelpfrm.ehrsgrouptitle
+msgid "Extern help"
+msgstr "Help esterno"
+
+#: externhelpfrm.ehrshelp
+msgid "Help"
+msgstr "Aiuto"
+
+#: externhelpfrm.ehrsincludesubdirectories
+msgid "Include sub directories"
+msgstr "Includi sottocartelle"
+
+#: externhelpfrm.ehrsmacrofy
+msgid "Use macros"
+msgstr "Usa macro"
+
+#: externhelpfrm.ehrsmysettings
+msgid "My settings (default)"
+msgstr "Mie impostazioni (default)"
+
+#: externhelpfrm.ehrsname
+msgid "Name"
+msgstr "Nome"
+
+#: externhelpfrm.ehrsreplacecommondirectorieswithmacros
+msgid "Replace common directories with macros"
+msgstr "Sostituisci cartelle comuni con macro"
+
+#: externhelpfrm.ehrsselectafilefromthesourceeditor
+msgid "Select a file from the source editor"
+msgstr "Scegli un file dall'editor sorgenti"
+
+#: externhelpfrm.ehrsselectfile
+msgid "Select file"
+msgstr "Seleziona file"
+
+#: externhelpfrm.ehrsstorethisurlin
+msgid "Store this URL in"
+msgstr "Salva questa URL in"
+
+#: externhelpfrm.ehrsunitfileorunitdirectory
+msgid "Unit file or unit directory"
+msgstr "Flie o cartella delle unit"
+
+#: externhelpfrm.ehrsurl
+msgid "URL"
+msgstr "URL"
+
+#: externhelpfrm.ehrswarning
+msgid "Warning"
+msgstr "Attenzione"
+

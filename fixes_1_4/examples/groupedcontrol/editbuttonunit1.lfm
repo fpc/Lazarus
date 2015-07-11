@@ -1,0 +1,100 @@
+object Form1: TForm1
+  Left = 295
+  Height = 482
+  Top = 218
+  Width = 507
+  Caption = 'Form1'
+  ClientHeight = 482
+  ClientWidth = 507
+  OnCreate = FormCreate
+  LCLVersion = '1.1'
+  object EditBtnGrpGroupBox: TGroupBox
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 470
+    Top = 6
+    Width = 239
+    Align = alLeft
+    BorderSpacing.Around = 6
+    Caption = 'Edit and Button grouped'
+    ClientHeight = 454
+    ClientWidth = 235
+    TabOrder = 0
+    object GrpTIPropertyGrid1: TTIPropertyGrid
+      Left = 0
+      Height = 342
+      Top = 112
+      Width = 235
+      Align = alClient
+      DefaultValueFont.Color = clWindowText
+      Filter = [tkInteger, tkChar, tkEnumeration, tkFloat, tkSet, tkMethod, tkSString, tkLString, tkAString, tkWString, tkVariant, tkArray, tkRecord, tkInterface, tkClass, tkObject, tkWChar, tkBool, tkInt64, tkQWord, tkDynArray, tkInterfaceRaw, tkProcVar, tkUString, tkUChar, tkHelper]
+      Indent = 14
+      NameFont.Color = clWindowText
+      ValueFont.Color = clMaroon
+    end
+    object GrpParentGroupBox: TGroupBox
+      Left = 6
+      Height = 100
+      Top = 6
+      Width = 223
+      Align = alTop
+      BorderSpacing.Around = 6
+      Caption = 'Test'
+      TabOrder = 1
+    end
+  end
+  object EditBtnSatGroupBox: TGroupBox
+    Left = 262
+    Height = 470
+    Top = 6
+    Width = 239
+    Align = alClient
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    Caption = 'Edit with a Button as satellite'
+    ClientHeight = 454
+    ClientWidth = 235
+    TabOrder = 1
+    object SatTIPropertyGrid: TTIPropertyGrid
+      Left = 0
+      Height = 342
+      Top = 112
+      Width = 235
+      Align = alClient
+      DefaultValueFont.Color = clWindowText
+      Filter = [tkInteger, tkChar, tkEnumeration, tkFloat, tkSet, tkMethod, tkSString, tkLString, tkAString, tkWString, tkVariant, tkArray, tkRecord, tkInterface, tkClass, tkObject, tkWChar, tkBool, tkInt64, tkQWord, tkDynArray, tkInterfaceRaw, tkProcVar, tkUString, tkUChar, tkHelper]
+      Indent = 14
+      NameFont.Color = clWindowText
+      ValueFont.Color = clMaroon
+    end
+    object SatParentGroupBox: TGroupBox
+      Left = 6
+      Height = 100
+      Top = 6
+      Width = 223
+      Align = alTop
+      BorderSpacing.Around = 6
+      Caption = 'Test'
+      ClientHeight = 84
+      ClientWidth = 219
+      TabOrder = 1
+      object EditButton1: TEditButton
+        Left = 16
+        Height = 24
+        Top = 21
+        Width = 80
+        ButtonWidth = 23
+        CharCase = ecNormal
+        MaxLength = 0
+        NumGlyphs = 1
+        TabOrder = 0
+      end
+    end
+  end
+  object Splitter1: TSplitter
+    Left = 251
+    Height = 482
+    Top = 0
+    Width = 5
+  end
+end

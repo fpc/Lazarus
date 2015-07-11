@@ -1,0 +1,135 @@
+object EasyDockMain: TEasyDockMain
+  Left = 280
+  Height = 285
+  Top = 123
+  Width = 510
+  ActiveControl = buDump
+  Caption = 'EasyDockMain'
+  ClientHeight = 285
+  ClientWidth = 510
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnCreate = FormCreate
+  ShowHint = True
+  LCLVersion = '0.9.29'
+  object sb: TStatusBar
+    Left = 0
+    Height = 20
+    Top = 265
+    Width = 510
+    Panels = <>
+  end
+  object ToolBar1: TToolBar
+    Left = 0
+    Height = 29
+    Top = 0
+    Width = 510
+    Caption = 'ToolBar1'
+    TabOrder = 1
+    object Shape1: TShape
+      Left = 1
+      Height = 22
+      Hint = 'Click to create a floating window'
+      Top = 2
+      Width = 21
+      Brush.Color = clRed
+      OnMouseUp = Shape1MouseUp
+    end
+    object Shape2: TShape
+      Left = 22
+      Height = 22
+      Hint = 'Click to create a floating window'
+      Top = 2
+      Width = 24
+      Brush.Color = clLime
+      OnMouseUp = Shape1MouseUp
+    end
+    object Shape4: TShape
+      Left = 46
+      Height = 22
+      Hint = 'Click to create a floating window'
+      Top = 2
+      Width = 24
+      Brush.Color = clYellow
+      OnMouseUp = Shape1MouseUp
+    end
+    object Shape3: TShape
+      Left = 70
+      Height = 22
+      Hint = 'Click to create a floating window'
+      Top = 2
+      Width = 24
+      Brush.Color = clBlue
+      OnMouseUp = Shape1MouseUp
+    end
+    object lbDock: TLabel
+      Left = 213
+      Height = 22
+      Top = 2
+      Width = 97
+      Alignment = taCenter
+      AutoSize = False
+      Caption = 'Drag Me!'
+      DragKind = dkDock
+      DragMode = dmAutomatic
+      ParentColor = False
+    end
+    object buDump: TButton
+      Left = 155
+      Height = 22
+      Top = 2
+      Width = 58
+      Caption = 'Dump'
+      OnClick = buDumpClick
+      TabOrder = 0
+    end
+    object edDock: TEdit
+      Left = 327
+      Height = 21
+      Top = 2
+      Width = 56
+      DragKind = dkDock
+      TabOrder = 1
+      Text = 'Drag Me!'
+    end
+    object buManDock: TButton
+      Left = 383
+      Height = 22
+      Top = 2
+      Width = 75
+      Caption = 'buManDock'
+      OnClick = buManDockClick
+      TabOrder = 2
+    end
+    object swCaptions: TCheckBox
+      Left = 94
+      Height = 17
+      Hint = 'Show zone names?'
+      Top = 2
+      Width = 61
+      Caption = 'Captions'
+      OnChange = swCaptionsChange
+      TabOrder = 3
+    end
+    object buDockEdit: TButton
+      Left = 310
+      Height = 22
+      Top = 2
+      Width = 17
+      Caption = '->'
+      OnMouseDown = buDockEditMouseDown
+      TabOrder = 4
+    end
+  end
+  object pnlDocker: TPanel
+    Left = 0
+    Height = 236
+    Top = 29
+    Width = 510
+    Align = alClient
+    Caption = 'Dock here!'
+    TabOrder = 2
+    UseDockManager = False
+    OnDockOver = DockerDockOver
+  end
+end

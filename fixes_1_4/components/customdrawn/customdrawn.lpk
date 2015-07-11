@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="4">
+    <PathDelim Value="\"/>
+    <Name Value="customdrawn"/>
+    <AddToProjectUsesSection Value="True"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CompilerMessages>
+          <UseMsgFile Value="True"/>
+        </CompilerMessages>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Files Count="8">
+      <Item1>
+        <Filename Value="customdrawnextras.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="customdrawnextras"/>
+      </Item1>
+      <Item2>
+        <Filename Value="customdrawn_wince.pas"/>
+        <UnitName Value="customdrawn_wince"/>
+      </Item2>
+      <Item3>
+        <Filename Value="customdrawn_win2000.pas"/>
+        <UnitName Value="customdrawn_win2000"/>
+      </Item3>
+      <Item4>
+        <Filename Value="customdrawn_extra1.pas"/>
+        <UnitName Value="customdrawn_extra1"/>
+      </Item4>
+      <Item5>
+        <Filename Value="customdrawn_kde.pas"/>
+        <UnitName Value="customdrawn_kde"/>
+      </Item5>
+      <Item6>
+        <Filename Value="customdrawn_gnome.pas"/>
+        <UnitName Value="customdrawn_gnome"/>
+      </Item6>
+      <Item7>
+        <Filename Value="customdrawnlcldrawers.pas"/>
+        <UnitName Value="customdrawnlcldrawers"/>
+      </Item7>
+      <Item8>
+        <Filename Value="customdrawn_windows7.pas"/>
+        <UnitName Value="customdrawn_windows7"/>
+      </Item8>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="3">
+      <Item1>
+        <PackageName Value="IDEIntf"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item3>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

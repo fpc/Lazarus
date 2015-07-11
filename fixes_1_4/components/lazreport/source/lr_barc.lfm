@@ -1,0 +1,262 @@
+object frBarCodeForm: TfrBarCodeForm
+  Left = 376
+  Height = 337
+  Top = 242
+  Width = 380
+  HorzScrollBar.Page = 292
+  VertScrollBar.Page = 285
+  ActiveControl = Panel1
+  BorderStyle = bsDialog
+  Caption = 'Barcode editor'
+  ClientHeight = 337
+  ClientWidth = 380
+  Constraints.MinWidth = 380
+  Font.Color = clBlack
+  OnActivate = FormActivate
+  OnClose = FormClose
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  ShowHint = True
+  LCLVersion = '1.1'
+  object Label1: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 14
+    Top = 6
+    Width = 26
+    BorderSpacing.Around = 6
+    Caption = 'Code'
+    ParentColor = False
+  end
+  object Label2: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = M1
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 14
+    Top = 53
+    Width = 57
+    BorderSpacing.Around = 6
+    Caption = 'Type of bar'
+    ParentColor = False
+  end
+  object Image1: TImage
+    Left = 264
+    Height = 16
+    Top = 0
+    Width = 16
+    AutoSize = True
+    Picture.Data = {
+      07544269746D6170F6000000424DF60000000000000076000000280000001000
+      0000100000000100040000000000800000000000000000000000100000000000
+      000000000000000080000080000000808000800000008000800080800000C0C0
+      C000808080000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFF
+      FF0077788888888888777700000000000877770FFFFFFFFF0877770F0F80F80F
+      0877770F0F80F80F0877770F0F80F80F0877770F0F80F80F0877770F0F80F80F
+      0877770FFFFFFFFF0877770BBBBBBBBB07777770BBBBBBB0777777770BB0BB07
+      7777777770000077777777777707707777777777770007777777777777777777
+      7777
+    }
+    Visible = False
+  end
+  object M1: TEdit
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 21
+    Top = 26
+    Width = 368
+    HelpContext = 260
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    TabOrder = 0
+  end
+  object cbType: TComboBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Label2
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 21
+    Top = 73
+    Width = 368
+    HelpContext = 261
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    ItemHeight = 13
+    Style = csDropDownList
+    TabOrder = 1
+  end
+  object Panel1: TPanel
+    AnchorSideTop.Control = M1
+    AnchorSideRight.Control = M1
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = M1
+    Left = 340
+    Height = 17
+    Top = 3
+    Width = 34
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Bottom = 6
+    BevelOuter = bvNone
+    ClientHeight = 17
+    ClientWidth = 34
+    FullRepaint = False
+    TabOrder = 2
+    object DBBtn: TSpeedButton
+      Left = 0
+      Height = 17
+      Top = 0
+      Width = 17
+      Caption = 'D'
+      Margin = 4
+      NumGlyphs = 0
+      OnClick = DBBtnClick
+    end
+    object VarBtn: TSpeedButton
+      Left = 16
+      Height = 17
+      Top = 0
+      Width = 17
+      Caption = 'V'
+      NumGlyphs = 0
+      OnClick = VarBtnClick
+    end
+  end
+  object GroupBox1: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cbType
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 71
+    Top = 100
+    Width = 368
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'Options'
+    ClientHeight = 53
+    ClientWidth = 364
+    TabOrder = 3
+    object labZoom: TLabel
+      AnchorSideLeft.Control = GroupBox1
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideTop.Control = GroupBox1
+      Left = 169
+      Height = 14
+      Top = 6
+      Width = 27
+      BorderSpacing.Around = 6
+      Caption = 'Zoom'
+      ParentColor = False
+    end
+    object ckCheckSum: TCheckBox
+      AnchorSideLeft.Control = GroupBox1
+      AnchorSideTop.Control = GroupBox1
+      Left = 6
+      Height = 17
+      Top = 6
+      Width = 69
+      HelpContext = 262
+      BorderSpacing.Around = 6
+      Caption = 'Checksum '
+      TabOrder = 0
+    end
+    object ckViewText: TCheckBox
+      AnchorSideLeft.Control = GroupBox1
+      AnchorSideTop.Control = ckCheckSum
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 17
+      Top = 29
+      Width = 96
+      HelpContext = 263
+      BorderSpacing.Around = 6
+      Caption = 'Human readable'
+      TabOrder = 1
+    end
+    object edZoom: TEdit
+      AnchorSideLeft.Control = labZoom
+      AnchorSideTop.Control = labZoom
+      AnchorSideTop.Side = asrBottom
+      Left = 175
+      Height = 21
+      Top = 26
+      Width = 77
+      BorderSpacing.Around = 6
+      OnKeyPress = edZoomKeyPress
+      TabOrder = 2
+      Text = '1'
+    end
+  end
+  object GroupBox2: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = GroupBox1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 65
+    Top = 177
+    Width = 368
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    Caption = 'Orientation'
+    ClientHeight = 47
+    ClientWidth = 364
+    TabOrder = 4
+    object RB1: TRadioButton
+      Left = 8
+      Height = 17
+      Top = 16
+      Width = 27
+      HelpContext = 264
+      Caption = '0 '
+      Checked = True
+      TabOrder = 0
+      TabStop = True
+    end
+    object RB2: TRadioButton
+      Left = 72
+      Height = 17
+      Top = 16
+      Width = 33
+      HelpContext = 264
+      Caption = '90 '
+      TabOrder = 1
+    end
+    object RB3: TRadioButton
+      Left = 136
+      Height = 17
+      Top = 16
+      Width = 39
+      HelpContext = 264
+      Caption = '180 '
+      TabOrder = 2
+    end
+    object RB4: TRadioButton
+      Left = 200
+      Height = 17
+      Top = 16
+      Width = 39
+      HelpContext = 264
+      Caption = '270 '
+      TabOrder = 3
+    end
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 297
+    Width = 368
+    TabOrder = 5
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+end

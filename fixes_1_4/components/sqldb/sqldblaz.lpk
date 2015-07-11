@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <Name Value="SQLDBLaz"/>
+    <Type Value="RunAndDesignTime"/>
+    <Author Value="Joost van der Sluis"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
+      </SearchPaths>
+      <Parsing>
+        <SyntaxOptions>
+          <UseAnsiStrings Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
+      <Other>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="Lazarus package for the FCL SQLdb components.
+"/>
+    <License Value="Modified LGPL-2
+
+With the exception of the unit registersqldb, which is GPL-2. This unit contains code for the IDE and is usually not used by programs."/>
+    <Version Major="1" Release="2"/>
+    <Files Count="4">
+      <Item1>
+        <Filename Value="registersqldb.pas"/>
+        <HasRegisterProc Value="True"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="registersqldb"/>
+      </Item1>
+      <Item2>
+        <Filename Value="sqldb.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="sqldb"/>
+      </Item2>
+      <Item3>
+        <Filename Value="sqlstringspropertyeditordlg.lfm"/>
+        <Type Value="LFM"/>
+      </Item3>
+      <Item4>
+        <Filename Value="sqlstringspropertyeditordlg.pas"/>
+        <UnitName Value="SQLStringsPropertyEditorDlg"/>
+      </Item4>
+    </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
+    <RequiredPkgs Count="3">
+      <Item1>
+        <PackageName Value="CodeTools"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="SynEdit"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="IDEIntf"/>
+      </Item3>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

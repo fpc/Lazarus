@@ -1,0 +1,744 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
+"Language-Team: Magyar (Hungarian)\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: codystrconsts.crsaddassignmethod
+msgid "Add Assign Method"
+msgstr "Assign metódus hozzáadása"
+
+#: codystrconsts.crsaddassignmethod2
+msgid "Add Assign Method ..."
+msgstr "Assign metódus hozzáadása ..."
+
+#: codystrconsts.crsaddawithblock
+msgid "Add a \"With\" Block"
+msgstr "\"With\" blokk hozzáadása"
+
+#: codystrconsts.crsaddunittoimplementationusessection
+msgctxt "codystrconsts.crsaddunittoimplementationusessection"
+msgid "Add unit to implementation uses section"
+msgstr "Unit hozzáadása a kidolgozás uses szakaszához"
+
+#: codystrconsts.crsaddwithblock
+msgid "Add \"With\" Block"
+msgstr "\"With\" blokk hozzáadása"
+
+#: codystrconsts.crsalreadydefined
+msgid "Already defined"
+msgstr "Már definiálva van"
+
+#: codystrconsts.crsalreadydefinedat
+msgid "Already defined at %s"
+msgstr "Már definiálva van itt: %s"
+
+#: codystrconsts.crsandmoreidentifiers
+msgid "... and %s more identifiers"
+msgstr "... és további %s azonosító"
+
+#: codystrconsts.crsawindowforthelazarusideitcanbedockedlikethecodeexp
+msgid "A window for the Lazarus IDE. It can be docked like the Code Explorer or the FPDoc Editor. This also creates a menu item in the View menu and a short cut."
+msgstr "Egy ablak a Lazarus IDE számára. Dokkolható mint a Kódböngésző vagy az FPDoc Szerkesztő. Létrehoz egy menüelemet a Nézet menüben és egy gyorsbillentyűt is."
+
+#: codystrconsts.crsbtncancel
+msgid "Cancel"
+msgstr "Mégsem"
+
+#: codystrconsts.crsbtnok
+msgid "&OK"
+msgstr "&OK"
+
+#: codystrconsts.crsbyfpccfg
+msgid "by fpc.cfg"
+msgstr "az fpc.cfg-ben"
+
+#: codystrconsts.crscamaddassignmethodtoclass
+msgid "Add Assign method to class %s"
+msgstr "Assign metódus hozzáadása a(z) %s osztályhoz"
+
+#: codystrconsts.crscamcallinherited
+msgid "Call inherited"
+msgstr "Öröklött hívása"
+
+#: codystrconsts.crscamcallinheritedonlyifwrongclass
+msgid "Call inherited only if wrong class"
+msgstr "Öröklött hívása csak nem megfelelő osztály esetén"
+
+#: codystrconsts.crscamcursorisnotinapascalclassdeclaration
+msgid "cursor is not in a pascal class declaration"
+msgstr "a kurzor nem egy pascal osztály leírásában van"
+
+#: codystrconsts.crscamexistsalready
+msgid "exists already"
+msgstr "már létezik"
+
+#: codystrconsts.crscaminherited
+msgid "Inherited:"
+msgstr "Örökölve:"
+
+#: codystrconsts.crscaminvalididentifier
+msgid "invalid identifier"
+msgstr "érvénytelen azonosító"
+
+#: codystrconsts.crscammethod
+msgid "Method:"
+msgstr "Metódus: "
+
+#: codystrconsts.crscammethodname
+msgid "Method name:"
+msgstr "Metódus neve:"
+
+#: codystrconsts.crscamnewmethod
+msgid "New method:"
+msgstr "Új metódus:"
+
+#: codystrconsts.crscamoverride
+msgid "Override"
+msgstr "Felülbírálás"
+
+#: codystrconsts.crscamparametername
+msgid "Parameter name:"
+msgstr "Paraméter neve:"
+
+#: codystrconsts.crscamparametertype
+msgid "Parameter type:"
+msgstr "Paraméter típusa:"
+
+#: codystrconsts.crscampleasepositionthecursorofthesourceeditorinapascalc
+msgid "Please position the cursor of the source editor in a pascal class declaration before invoking \"Add Assign method\"."
+msgstr "Helyezze a forráskódszerkesztő kurzorát egy pascal osztály deklarációjának belsejébe az \"Assign metódus hozzáadása\" előtt!"
+
+#: codystrconsts.crscamprivate
+msgid "private"
+msgstr "private"
+
+#: codystrconsts.crscamproperty
+msgid "%s property"
+msgstr "%s tulajdonság"
+
+#: codystrconsts.crscamprotected
+msgid "protected"
+msgstr "protected"
+
+#: codystrconsts.crscampublic
+msgid "public"
+msgstr "public"
+
+#: codystrconsts.crscampublished
+msgid "published"
+msgstr "published"
+
+#: codystrconsts.crscamselectmemberstoassign
+msgid "Select members to assign:"
+msgstr "Tagok kiválasztása értékadáshoz"
+
+#: codystrconsts.crscamthereisnoinheritedmethod
+msgid "There is no inherited method."
+msgstr "Nincs örökölt metódus."
+
+#: codystrconsts.crscamvar
+msgid "%s var"
+msgstr "%s változó"
+
+#: codystrconsts.crscamvisibility
+msgid "?visibility?"
+msgstr "?láthatóság?"
+
+#: codystrconsts.crscamwrittenbyproperty
+msgid "%s, written by property %s"
+msgstr "%s, a(z) %s tulajdonság által írva"
+
+#: codystrconsts.crscheetaheditor
+msgid "Cheetah Editor"
+msgstr "Gepárd szerkesztő"
+
+#: codystrconsts.crsclose
+msgid "&Close"
+msgstr "Be&zárás"
+
+#: codystrconsts.crscloseotherpackageandopennew
+msgid "Close other package and open new"
+msgstr "Másik csomag bezárása és új megnyitása"
+
+#: codystrconsts.crscodebuffers
+msgid "CodeBuffers"
+msgstr "Kódpufferek"
+
+#: codystrconsts.crscodenodeinformation
+msgid "Code Node Information"
+msgstr "Kód-csomópont információ"
+
+#: codystrconsts.crscodyidentifierdictionary
+msgid "Identifier Dictionary"
+msgstr "Azonosítók szótára"
+
+#: codystrconsts.crscogeneral
+msgctxt "codystrconsts.crscogeneral"
+msgid "General"
+msgstr "Általános"
+
+#: codystrconsts.crsconfigurenewidewindow
+msgid "Configure new IDE window"
+msgstr "Új IDE ablak beállítása"
+
+#: codystrconsts.crscontains
+msgid "Contains"
+msgstr "Tartalmazza"
+
+#: codystrconsts.crscontinue
+msgid "Continue"
+msgstr "Folytatás"
+
+#: codystrconsts.crscopydeclarationtoclipboard
+msgid "Copy declaration to Clipboard"
+msgstr "Deklaráció másolása a vágólapra"
+
+#: codystrconsts.crscount
+msgid "Count"
+msgstr "Szám"
+
+#: codystrconsts.crscousespath
+msgctxt "codystrconsts.crscousespath"
+msgid "Uses path"
+msgstr "Használat útvonala"
+
+#: codystrconsts.crscuallfiles
+msgid "%s|All files (%s)|%s"
+msgstr "%s|Minden fájl (%s)|%s"
+
+#: codystrconsts.crscupascalpaspppaspp
+msgid "Pascal (*.pas;*.pp)|*.pas;*.pp"
+msgstr "Pascal (*.pas;*.pp)|*.pas;*.pp"
+
+#: codystrconsts.crscupleaseplacethecursorofthesourceeditorinanimplement
+msgid "Please place the cursor of the source editor in an implementation of an overridden method."
+msgstr "Helyezze a forráskódszerkesztő kurzorát egy felülbírált eljárás kidolgozásába!"
+
+#: codystrconsts.crscuselectfiletoinsertatcursor
+msgid "Select file to insert at cursor"
+msgstr "Fájl kiválasztása a beszúráshoz a kurzornál"
+
+#: codystrconsts.crscutdeclarationtoclipboard
+msgid "Cut declaration to Clipboard"
+msgstr "Deklaráció kivágása a vágólapra"
+
+#: codystrconsts.crscuthefileseemstobeabinaryproceed
+msgid "The file seems to be a binary. Proceed?"
+msgstr "A fájl binárisnak tűnik. Folytatás?"
+
+#: codystrconsts.crscuunabletoloadfile
+msgid "Unable to load file \"%s\"%s%s"
+msgstr "Fájl betöltése nem lehetséges: \"%s\"%s%s"
+
+#: codystrconsts.crscuwarning
+msgid "Warning"
+msgstr "Figyelmeztetés"
+
+#: codystrconsts.crscwerror
+msgid "Error"
+msgstr "Hiba"
+
+#: codystrconsts.crscwpleaseplacethecursorofthesourceeditoronawithvariab
+msgid "Please place the cursor of the source editor on a With variable."
+msgstr "Helyezze a forráskódszerkesztő kurzorát egy \"With\" változóra!"
+
+#: codystrconsts.crsdeclarevariable
+msgid "Declare Variable"
+msgstr "Változó deklarálása"
+
+#: codystrconsts.crsdeclarevariable2
+msgid "Declare Variable ..."
+msgstr "Változó deklarálása ..."
+
+#: codystrconsts.crsdeclarevariable3
+msgid "Declare variable \"%s\""
+msgstr "Változó deklarálása: \"%s\""
+
+#: codystrconsts.crsdeletepackage
+msgid "Delete package?"
+msgstr "Csomag törlése?"
+
+#: codystrconsts.crsdeleteunit
+msgid "Delete unit?"
+msgstr "Unit törlése?"
+
+#: codystrconsts.crsdvisakeyword
+msgid "\"%s\" is a keyword."
+msgstr "A(z) \"%s\" egy kulcsszó."
+
+#: codystrconsts.crserror
+msgid "Error: %s"
+msgstr "Hiba: %s"
+
+#: codystrconsts.crsexplodeawithblock
+msgid "Explode a \"With\" Block"
+msgstr "\"With\" blokk megszüntetése"
+
+#: codystrconsts.crsexpression
+msgid "Expression"
+msgstr "Kifejezés"
+
+#: codystrconsts.crsextendunitpath
+msgid "Extend unit path"
+msgstr "Unit útvonal kibővítése"
+
+#: codystrconsts.crsfile
+msgid "File"
+msgstr "Fájl"
+
+#: codystrconsts.crsfiledoesnotexistanymore
+msgid "File \"%s\" does not exist anymore."
+msgstr "Az \"%s\" fájl már nem létezik."
+
+#: codystrconsts.crsfilenotfound
+msgid "File not found"
+msgstr "A fájl nem található"
+
+#: codystrconsts.crsfilereaderror
+msgid "File read error"
+msgstr "Fájl olvasási hiba"
+
+#: codystrconsts.crsfilter
+msgid "(Filter)"
+msgstr "(Szűrő)"
+
+#: codystrconsts.crsfindgdbbacktraceline
+msgid "Find GDB backtrace line"
+msgstr "A GDB visszakövetés sorának megkeresése"
+
+#: codystrconsts.crsfindsourceofgdbbacktrace
+msgid "Find source of GDB backtrace"
+msgstr "A GDB visszakövetés forrásának megkeresése"
+
+#: codystrconsts.crsflags
+msgid "Flags"
+msgstr "Jelzők"
+
+#: codystrconsts.crsfpcunitwithoutppu
+msgid "FPC unit without ppu"
+msgstr "FPC unit ppu nélkül"
+
+#: codystrconsts.crsframeworks
+msgid "Frameworks"
+msgstr "Keretrendszerek"
+
+#: codystrconsts.crsgbytes
+msgid "Gbytes"
+msgstr "Gbájt"
+
+#: codystrconsts.crshelp
+msgid "&Help"
+msgstr "&Súgó"
+
+#: codystrconsts.crshideunitsofotherprojects
+msgid "Hide units of other projects"
+msgstr "Más projektek unit-jainak elrejtése"
+
+#: codystrconsts.crsideintegration
+msgid "IDE Integration"
+msgstr "Beépülés az IDE-be"
+
+#: codystrconsts.crsidentifiernotfound
+msgid "Identifier not found"
+msgstr "Azonosító nem található"
+
+#: codystrconsts.crsidentifiernotfoundinunit
+msgid "Identifier \"%s\" not found in unit \"%s\". Maybe the identifier does not exist for this platform or maybe the identifier was deleted/renamed."
+msgstr "A(z) \"%s\" azonosító nem található a(z) \"%s\" unit-ban. Lehetséges, hogy az azonosító nem létezik ezen a platformon vagy esetleg törölték/átnevezték."
+
+#: codystrconsts.crsidewindowdockable
+msgid "IDE window, dockable"
+msgstr "IDE ablak, dokkolható"
+
+#: codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne
+msgctxt "codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne"
+msgid "If identifier is added to the implementation section and needed unit needs to be added, add to the uses section of the implementation"
+msgstr "Ha az azonosító a kidolgozás szakaszhoz lett adva és a szükséges unit-ot hozzá kell adni, akkor az a kidolgozás uses szakaszába kerül."
+
+#: codystrconsts.crsimpossibledependency
+msgid "Impossible dependency"
+msgstr "Lehetetlen függőség"
+
+#: codystrconsts.crsin
+msgid "in \"%s\""
+msgstr "itt: \"%s\""
+
+#: codystrconsts.crsinimplementation
+msgid "In implementation"
+msgstr "A kidolgozásban"
+
+#: codystrconsts.crsininterface
+msgid "In interface"
+msgstr "A felületen"
+
+#: codystrconsts.crsinsertcallinherited
+msgid "Insert Call Inherited"
+msgstr "Öröklött hívásának beszúrása"
+
+#: codystrconsts.crsinsertfileatcursor
+msgid "Insert File Contents at Cursor ..."
+msgstr "Fájl tartalmának beszúrása a kurzornál ..."
+
+#: codystrconsts.crsjump
+msgid "Jump"
+msgstr "Ugrás"
+
+#: codystrconsts.crsjumpto
+msgid "&Jump to"
+msgstr "Ugrás ide"
+
+#: codystrconsts.crskbytes
+msgid "kbytes"
+msgstr "kbájt"
+
+#: codystrconsts.crslinkedfiles
+msgid "Linked files"
+msgstr "Összefűzött fájlok"
+
+#: codystrconsts.crslinks
+msgid "Links"
+msgstr "Hivatkozások"
+
+#: codystrconsts.crsloaddictionaryafter
+msgid "Load dictionary after %s"
+msgstr "Szótár betöltése ennyi idő után: %s"
+
+#: codystrconsts.crslocalvariableof
+msgid "Local variable of %s"
+msgstr "%s helyi változója"
+
+#: codystrconsts.crsmainsourcefile
+msgid "Main source file: %s"
+msgstr "Fő-forrásfájl: %s"
+
+#: codystrconsts.crsmbytes
+msgid "Mbytes"
+msgstr "Mbájt"
+
+#: codystrconsts.crsmemberof
+msgid "%s member of %s %s"
+msgstr "%s tagja ennek: %s %s"
+
+#: codystrconsts.crsmenuitemcaption
+msgid "Menu item caption:"
+msgstr "Menüelem szövege:"
+
+#: codystrconsts.crsminutes
+msgid "%s minutes"
+msgstr "%s perc"
+
+#: codystrconsts.crsmissing
+msgid "missing ..."
+msgstr "hiányzik ..."
+
+#: codystrconsts.crsnoneselected
+msgid "none selected"
+msgstr "semmi nincs kijelölve"
+
+#: codystrconsts.crsnoproject
+msgid "No project"
+msgstr "<nincs projekt>"
+
+#: codystrconsts.crsnotethenameoftheformmustbeavalidpascalidentifieran
+msgid "Note: The name of the form must be a valid pascal identifier and unique across the whole IDE, which includes all packages. Prepend the name with an abbreviation of your package. The prefixes \"IDE\", \"Laz\", \"Pkg\" are already used by the IDE itself."
+msgstr "Megjegszés: A form nevének érvényes pascal azonosítónak kell lennie valamint egyedinek az egész IDE tekintetében, beleértve a csomagokat is. A név elején használja a csomag nevének rövidítését. Az \"IDE\", \"Laz\", \"Pkg\" előtagokat már az IDE használja."
+
+#: codystrconsts.crsnounitselected
+msgid "No unit selected"
+msgstr "Nincs unit kiválasztva"
+
+#: codystrconsts.crsonclipboard
+msgid "On clipboard"
+msgstr "A vágólapon"
+
+#: codystrconsts.crsoptions
+msgid "Options"
+msgstr "Beállítások"
+
+#: codystrconsts.crsotherobjectfiles
+msgid "Other object files"
+msgstr "Egyéb objektum fájlok"
+
+#: codystrconsts.crsothersharedlibraries
+msgid "Other shared libraries"
+msgstr "Egyéb megosztott függvénytárak"
+
+#: codystrconsts.crsotherstaticlibraries
+msgid "Other static libraries"
+msgstr "Egyéb statikus függvénytárak"
+
+#: codystrconsts.crspackage
+msgid "Package"
+msgstr "Csomag"
+
+#: codystrconsts.crspackage2
+msgid "Package: %s"
+msgstr "Csomag: %s"
+
+#: codystrconsts.crspackagenotfound
+msgid "Package not found"
+msgstr "Csomag nem található"
+
+#: codystrconsts.crspackagenotfounditshouldbein
+msgid "Package \"%s\" not found. It should be in \"%s\"."
+msgstr "A(z) \"%s\" csomag nem található. Itt kellene lennie: \"%s\""
+
+#: codystrconsts.crspackagesunitsidentifiersfile
+msgid "Packages: %s, Units: %s, Identifiers: %s%sDatabase: %s"
+msgstr "Csomagok: %s, Unit-ok: %s, Azonosítók: %s%sAdatbázisok: %s"
+
+#: codystrconsts.crspackagewithsamename
+msgid "Package with same name"
+msgstr "Azonos nevű csomag"
+
+#: codystrconsts.crspastelinesofagdbbacktrace
+msgid "Paste lines of a gdb backtrace:"
+msgstr "A GDB visszakövetés sorainak beillesztése:"
+
+#: codystrconsts.crspleaseopenaprojectfirst
+msgid "Please open a project first."
+msgstr "Előbb meg kell nyitni egy projektet!"
+
+#: codystrconsts.crspleaseplacethecursorofthesourceeditoratanidentifie
+msgid "Please place the cursor of the source editor at an identifier in a statement.%sFor example:%sMyVar:=3;"
+msgstr "Helyezze a forráskódszerkesztő kurzorát egy azonosítóra valamelyik állományban!%sPéldául:%sMyVar:=3;"
+
+#: codystrconsts.crspleaseplacethecursorofthesourceeditoronanidentifie
+msgid "Please place the cursor of the source editor on an identifier of a declaration."
+msgstr "Helyezze a forráskódszerkesztő kurzorát egy deklaráció azonosítójára!"
+
+#: codystrconsts.crspleaseselectsomecodeinthesourceeditor
+msgid "Please select some code in the Source Editor."
+msgstr "Jelöljön ki kódot a forráskódszerkesztőben!"
+
+#: codystrconsts.crspleaseselectsomecodeinthesourceeditorforanewwithbl
+msgid "Please select some code in the Source Editor for a new \"With\" block. No candidate for a with expression was found."
+msgstr "Jelöljön ki kódot a \"With\" blokk számára a forráskódszerkesztőben. Nem található a \"With\" kifejezés számára megfelelőnek tűnő kód."
+
+#: codystrconsts.crspleasespecifyalocation
+msgid "Please specify a location"
+msgstr "Adjon meg egy helyet!"
+
+#: codystrconsts.crspleasespecifyatype
+msgid "Please specify a type"
+msgstr "Adjon meg egy típust!"
+
+#: codystrconsts.crsppu
+msgid "PPU: %s"
+msgstr "PPU: %s"
+
+#: codystrconsts.crsppufilesofproject
+msgid "PPU files of project \"%s\""
+msgstr "A(z) \"%s\" projekt PPU fájljai"
+
+#: codystrconsts.crsprivate
+msgid "Private"
+msgstr "Private"
+
+#: codystrconsts.crsprojecthasnomainsourcefile
+msgid "Project has no main source file."
+msgstr "A projektnek nincs fő forrásfájlja."
+
+#: codystrconsts.crsprojectoutput
+msgid "Project Output"
+msgstr "Projekt kimenete"
+
+#: codystrconsts.crsprotected
+msgid "Protected"
+msgstr "Protected"
+
+#: codystrconsts.crspublic
+msgid "Public"
+msgstr "Public"
+
+#: codystrconsts.crspublished
+msgid "Published"
+msgstr "Published"
+
+#: codystrconsts.crsreallydeletethepackagefromthedatabasenotethisdoe
+msgid "Really delete the package from the database?%sNote: This does not change the source or any configuration.%s%s\"%s\""
+msgstr "Valóban törölhető a csomag az adatbázisból?%sMegjegyzés: Ez nem változtatja meg a forrást vagy a beállításokat.%s%s\"%s\""
+
+#: codystrconsts.crsreallydeletetheunitfromthedatabasenotethisdoesno
+msgid "Really delete the unit from the database?%sNote: This does not change the source or any configuration.%s%sunit: \"%s\""
+msgstr "Valóban törölhető a unit az adatbázisból?%sMegjegyzés: Ez nem változtatja meg a forrást vagy a beállításokat.%s%sUnit: \"%s\""
+
+#: codystrconsts.crsrefresh
+msgid "Refresh"
+msgstr "Frissítés"
+
+#: codystrconsts.crsreport
+msgid "Report"
+msgstr "Jelentés"
+
+#: codystrconsts.crssavedictionaryevery
+msgid "Save dictionary every %s"
+msgstr "Szótár mentése ennyi időnként: %s"
+
+#: codystrconsts.crssavedictionarynow
+msgid "Save dictionary now"
+msgstr "Szótár mentése most"
+
+#: codystrconsts.crssavetofile
+msgid "Save to file %s"
+msgstr "Mentés fájlba: %s"
+
+#: codystrconsts.crssearching
+msgid "searching ..."
+msgstr "keresés ..."
+
+#: codystrconsts.crsseconds
+msgid "%s seconds"
+msgstr "%s másodperc"
+
+#: codystrconsts.crsselectexpression
+msgid "Select expression"
+msgstr "Kifejezés kiválasztása"
+
+#: codystrconsts.crsshowcodetoolsnodeinfo
+msgid "Show CodeTools Node Info ..."
+msgstr "CodeTools csomópont-információk megjelenítése ..."
+
+#: codystrconsts.crsshowcodydict
+msgid "Show Cody Dictionary for \"%s\""
+msgstr "Cody szótár megjelenítése ehhez: \"%s\""
+
+#: codystrconsts.crsshowonlyidentifierscontainingfiltertext
+msgid "Show only identifiers containing filter text"
+msgstr "Csak a szűrőszöveget tartalmazó azonosítók megjelenítése"
+
+#: codystrconsts.crsshowonlyidentifiersstartingwithfiltertext
+msgid "Show only identifiers starting with filter text"
+msgstr "Csak a szűrőszöveggel kezdődő azonosítók megjelenítése"
+
+#: codystrconsts.crsshowunitidentifierdictionary
+msgid "Show Unit / Identifier Dictionary ..."
+msgstr "Unit / Azonosítók szótárának megjelenítése ..."
+
+#: codystrconsts.crsshowusedppufiles
+msgid "Show Used .ppu Files ..."
+msgstr "A használt .ppu fájlok megjelenítése ..."
+
+#: codystrconsts.crssizeofofile
+msgid "Size of .o file"
+msgstr "Az .o fájl mérete"
+
+#: codystrconsts.crssizeofppufile
+msgid "Size of .ppu file"
+msgstr "A .ppu fájl mérete"
+
+#: codystrconsts.crssource
+msgid "Source: %s"
+msgstr "Forrás: %s"
+
+#: codystrconsts.crsstarts
+msgid "Starts"
+msgstr "Kezdődik"
+
+#: codystrconsts.crsthedictionaryisloadedondemandorafterthistime
+msgid "The dictionary is loaded on demand or after this time"
+msgstr "A szótár be lesz töltve szükség esetén vagy ennyi idő elteltével"
+
+#: codystrconsts.crsthedictionaryissavedinintervals
+msgid "The dictionary is saved in intervals"
+msgstr "A szótár megadott időközönként lesz mentve"
+
+#: codystrconsts.crstheidentifierisalreadydefined
+msgid "The identifier \"%s\" is already defined."
+msgstr "A(z) \"%s\" azonosító már létezik."
+
+#: codystrconsts.crsthereisalreadyanotherpackageloadedwiththesamenameo
+msgid "There is already another package loaded with the same name.%sOpen package: %s%sNew package: %s%sOnly one package can be loaded at a time."
+msgstr "Már be van töltve egy csomag azonos névvel.%sNyitott csomag: %s%sÚj csomag: %s%sCsak egy csomag tölthető be egyidőben."
+
+#: codystrconsts.crsthetargetunithasthesamenameasthecurrentunitfreepas
+msgid "The target unit has the same name as the current unit.%s Free Pascal does not support that."
+msgstr "A cél-unit neve megegyezik az aktuális unit nevével.%sA Free Pascal nem támogatja ezt."
+
+#: codystrconsts.crstheunitispartofitcannotuseanotherpackagewiththesam
+msgid "The unit \"%s\"%sis part of \"%s\".%sIt can not use another package with the same name:%s\"%s\""
+msgstr "A(z) \"%s\" unit%s a(z) \"%s\" része.%sNem használhat másik csomagot azonos névvel:%s\"%s\""
+
+#: codystrconsts.crsthisunitislocatedinthefreepascalsourcesbutnoppufil
+msgid "This unit is located in the Free Pascal sources, but no ppu file is installed. Maybe this unit is not available for this target platform."
+msgstr "Ez a unit a Free Pascal forrásai között található, de nincs ppu fájl telepítve. Lehet, hogy ez a unit nem érhető el ezen a célplatformon."
+
+#: codystrconsts.crstotal
+msgid "Total"
+msgstr "Összesen"
+
+#: codystrconsts.crstype
+msgid "Type"
+msgstr "Típus"
+
+#: codystrconsts.crsunabletodelete
+msgid "Unable to delete \"%s\""
+msgstr "Nem törölhető: \"%s\""
+
+#: codystrconsts.crsunabletoreadfile
+msgid "Unable to read file \"%s\"."
+msgstr "Nem olvasható a fájl: \"%s\""
+
+#: codystrconsts.crsunabletorenameto
+msgid "unable to rename \"%s\" to \"%s\""
+msgstr "\"%s\" nem nevezhető át erre: \"%s\""
+
+#: codystrconsts.crsunit
+msgid "Unit"
+msgstr "Unit"
+
+#: codystrconsts.crsunit2
+msgid "Unit: %s"
+msgstr "Unit: %s"
+
+#: codystrconsts.crsunitidentifierdictionary
+msgid "Unit / Identifier Dictionary"
+msgstr "Unit / Azonosítók szótára"
+
+#: codystrconsts.crsunitnameclash
+msgid "Unit name clash"
+msgstr "Ütköző unit-név"
+
+#: codystrconsts.crsunitobjectfiles
+msgid "Unit object files"
+msgstr "Unit objektum fájljai"
+
+#: codystrconsts.crsunits
+msgid "Units"
+msgstr "Unit-ok"
+
+#: codystrconsts.crsunitsharedlibraries
+msgid "Unit shared libraries"
+msgstr "Unit megosztott függvénytárai"
+
+#: codystrconsts.crsunitstaticlibraries
+msgid "Unit static libraries"
+msgstr "Unit statikus függvénytárai"
+
+#: codystrconsts.crsusedby
+msgid "Used by"
+msgstr "Használat helye"
+
+#: codystrconsts.crsuseidentifier
+msgid "&Use identifier"
+msgstr "Azonosító használata"
+
+#: codystrconsts.crsuses
+msgid "Uses"
+msgstr "Használt unit-ok"
+
+#: codystrconsts.crsvirtualunit
+msgid "Virtual Unit"
+msgstr "Virtuális unit"
+
+#: codystrconsts.crswhere
+msgid "Where"
+msgstr "Hely"

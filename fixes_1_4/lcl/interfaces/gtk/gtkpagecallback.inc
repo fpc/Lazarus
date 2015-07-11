@@ -1,0 +1,65 @@
+// included by gtkcallback.pp
+
+{
+ *****************************************************************************
+  This file is part of the Lazarus Component Library (LCL)
+
+  See the file COPYING.modifiedLGPL.txt, included in this distribution,
+  for details about the license.
+ *****************************************************************************
+}
+
+procedure DrawNotebookPageIcon(Page: TCustomPage; Widget: PGtkWidget);
+var
+  NoteBook: TCustomTabControl;
+  NoteBookWidget: PGtkWidget;
+  PageWidget: PGtkWidget;
+  TabWidget: PGtkWidget;
+  ImageIndex: Integer;
+begin
+  NoteBook := Page.Parent as TCustomTabControl;
+  ImageIndex := NoteBook.GetImageIndex(Page.PageIndex);
+  if (NoteBook.Images = nil) or (ImageIndex < 0)
+  or (Page.ImageIndex >= NoteBook.Images.Count)
+  or (not NoteBook.HandleAllocated)
+  or (not Page.HandleAllocated)
+  then exit;
+  NoteBookWidget := PGtkWidget(NoteBook.Handle);
+  PageWidget := PGtkWidget(Page.Handle);
+
+  // get the tab container and the tab icon widget
+  TabWidget := gtk_notebook_get_tab_label(PGtkNoteBook(NotebookWidget),
+                                        PageWidget);
+  if TabWidget = nil then exit;
+  {$IFDEF VerboseGtkToDos}{$note reimplement}{$ENDIF}
+  DrawImageListIconOnWidget(NoteBook.Images, ImageIndex, Widget);
+end;
+
+function PageIconWidgetExposeAfter(Widget: PGtkWidget; Event: PGDKEventExpose;
+  Data: gPointer): GBoolean; cdecl;
+var
+  ThePage: TCustomPage;
+begin
+  Result := false;
+  //DebugLn('PageIconWidgetExposeAfter ',DbgS(Widget));
+  EventTrace('PageIconWidgetExposeAfter', Data);
+  if (Event^.Count > 0) then exit;
+  ThePage := TObject(Data) as TCustomPage;
+  DrawNotebookPageIcon(ThePage, Widget);
+end;
+
+{$IFNDEF GTK2}
+function PageIconWidgetDrawAfter(Widget: PGtkWidget; area: PGDKRectangle;
+  data: gPointer) : GBoolean; cdecl;
+var
+  ThePage: TCustomPage;
+begin
+  Result := false;
+  //DebugLn('PageIconWidgetDrawAfter ',DbgS(Widget),' ',Area^.x,',',Area^.y);
+  EventTrace('PageIconWidgetDrawAfter', Data);
+  ThePage:=TObject(Data) as TCustomPage;
+  DrawNotebookPageIcon(ThePage, Widget);
+end;
+{$ENDIF}
+
+// included by gtkcallback.pp

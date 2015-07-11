@@ -1,0 +1,122 @@
+object FPDocFileSearchDialog: TFPDocFileSearchDialog
+  Left = 239
+  Height = 483
+  Top = 201
+  Width = 647
+  Caption = 'FPDocFileSearchDialog'
+  ClientHeight = 483
+  ClientWidth = 647
+  KeyPreview = True
+  OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
+  LCLVersion = '0.9.31'
+  object SearchTextLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = SearchTextComboBox
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 15
+    Top = 12
+    Width = 91
+    BorderSpacing.Left = 6
+    Caption = 'SearchTextLabel'
+    ParentColor = False
+  end
+  object SearchTextComboBox: TComboBox
+    AnchorSideLeft.Control = SearchTextLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = CloseBitBtn
+    Left = 103
+    Height = 27
+    Top = 6
+    Width = 457
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    ItemHeight = 0
+    TabOrder = 0
+    Text = 'SearchTextComboBox'
+  end
+  object ScopeGroupBox: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = SearchTextComboBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
+    Height = 438
+    Top = 39
+    Width = 145
+    Anchors = [akTop, akLeft, akBottom]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Bottom = 6
+    Caption = 'ScopeGroupBox'
+    ClientHeight = 422
+    ClientWidth = 141
+    TabOrder = 1
+    object ScopeTreeView: TTreeView
+      Left = 0
+      Height = 422
+      Top = 0
+      Width = 141
+      Align = alClient
+      DefaultItemHeight = 16
+      TabOrder = 0
+    end
+  end
+  object CloseBitBtn: TBitBtn
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 566
+    Height = 26
+    Top = 6
+    Width = 75
+    Anchors = [akTop, akRight]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'CloseBitBtn'
+    ModalResult = 11
+    TabOrder = 2
+  end
+  object Splitter1: TSplitter
+    AnchorSideLeft.Control = ScopeGroupBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = ScopeGroupBox
+    AnchorSideBottom.Control = ScopeGroupBox
+    AnchorSideBottom.Side = asrBottom
+    Left = 151
+    Height = 438
+    Top = 39
+    Width = 5
+    Align = alNone
+    Anchors = [akTop, akLeft, akBottom]
+  end
+  object ResultsMemo: TMemo
+    AnchorSideLeft.Control = Splitter1
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Splitter1
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 156
+    Height = 432
+    Top = 45
+    Width = 485
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
+    Lines.Strings = (
+      'ResultsMemo'
+    )
+    ReadOnly = True
+    ScrollBars = ssAutoBoth
+    TabOrder = 4
+  end
+end

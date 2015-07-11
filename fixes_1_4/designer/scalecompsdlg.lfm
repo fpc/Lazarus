@@ -1,0 +1,65 @@
+object ScaleComponentsDialog: TScaleComponentsDialog
+  Left = 642
+  Height = 87
+  Top = 378
+  Width = 256
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsToolWindow
+  Caption = 'ScaleComponentsDialog'
+  ClientHeight = 87
+  ClientWidth = 256
+  Position = poScreenCenter
+  LCLVersion = '0.9.27'
+  object PercentLabel: TLabel
+    AnchorSideTop.Control = PercentEdit
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 187
+    Height = 14
+    Top = 10
+    Width = 63
+    Anchors = [akTop, akRight]
+    BorderSpacing.Right = 6
+    Caption = 'PercentLabel'
+    ParentColor = False
+  end
+  object ScaleLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = PercentEdit
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 14
+    Top = 10
+    Width = 51
+    BorderSpacing.Left = 6
+    Caption = 'ScaleLabel'
+    ParentColor = False
+  end
+  object PercentEdit: TEdit
+    AnchorSideLeft.Control = ScaleLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = PercentLabel
+    Left = 63
+    Height = 23
+    Top = 6
+    Width = 118
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    TabOrder = 0
+    Text = 'PercentEdit'
+  end
+  object ButtonPanel1: TButtonPanel
+    AnchorSideTop.Control = PercentEdit
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 34
+    Top = 47
+    Width = 244
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel]
+  end
+end

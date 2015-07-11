@@ -1,0 +1,312 @@
+<?xml version="1.0"?>
+<status>
+<target
+   path="DevWork">
+<entry
+   path="DevWork/ProcessingForm.lrs">
+<wc-status
+   props="none"
+   item="normal"
+   revision="12">
+<commit
+   revision="11">
+<author>skalogryz</author>
+<date>2009-03-27T14:47:59.748249Z</date>
+</commit>
+</wc-status>
+</entry>
+<entry
+   path="DevWork/DevWork.app">
+<wc-status
+   props="none"
+   item="unversioned">
+</wc-status>
+</entry>
+<entry
+   path="DevWork/ProcessingForm.ppu">
+<wc-status
+   props="none"
+   item="unversioned">
+</wc-status>
+</entry>
+<entry
+   path="DevWork/DevWork.lpi">
+<wc-status
+   props="none"
+   item="normal"
+   revision="12">
+<commit
+   revision="11">
+<author>skalogryz</author>
+<date>2009-03-27T14:47:59.748249Z</date>
+</commit>
+</wc-status>
+</entry>
+<entry
+   path="DevWork/mainform.lrs">
+<wc-status
+   props="none"
+   item="normal"
+   revision="12">
+<commit
+   revision="11">
+<author>skalogryz</author>
+<date>2009-03-27T14:47:59.748249Z</date>
+</commit>
+</wc-status>
+</entry>
+<entry
+   path="DevWork/Initial.pas">
+<wc-status
+   props="none"
+   item="normal"
+   revision="12">
+<commit
+   revision="4">
+<author>skalogryz</author>
+<date>2009-03-10T07:26:05.645361Z</date>
+</commit>
+</wc-status>
+</entry>
+<entry
+   path="DevWork/mainform.ppu">
+<wc-status
+   props="none"
+   item="unversioned">
+</wc-status>
+</entry>
+<entry
+   path="DevWork/DevWork.lpr">
+<wc-status
+   props="none"
+   item="normal"
+   revision="12">
+<commit
+   revision="10">
+<author>skalogryz</author>
+<date>2009-03-23T13:47:56.231453Z</date>
+</commit>
+</wc-status>
+</entry>
+<entry
+   path="DevWork/svnexec.ppu">
+<wc-status
+   props="none"
+   item="unversioned">
+</wc-status>
+</entry>
+<entry
+   path="DevWork/DevWork.lrs">
+<wc-status
+   props="none"
+   item="normal"
+   revision="12">
+<commit
+   revision="11">
+<author>skalogryz</author>
+<date>2009-03-27T14:47:59.748249Z</date>
+</commit>
+</wc-status>
+</entry>
+<entry
+   path="DevWork/svnVersionControl.ppu">
+<wc-status
+   props="none"
+   item="unversioned">
+</wc-status>
+</entry>
+<entry
+   path="DevWork/DevWork">
+<wc-status
+   props="none"
+   item="unversioned">
+</wc-status>
+</entry>
+<entry
+   path="DevWork/ProcessingForm.pas">
+<wc-status
+   props="none"
+   item="normal"
+   revision="12">
+<commit
+   revision="10">
+<author>skalogryz</author>
+<date>2009-03-23T13:47:56.231453Z</date>
+</commit>
+</wc-status>
+</entry>
+<entry
+   path="DevWork/mainform.pas">
+<wc-status
+   props="none"
+   item="modified"
+   revision="12">
+<commit
+   revision="11">
+<author>skalogryz</author>
+<date>2009-03-27T14:47:59.748249Z</date>
+</commit>
+</wc-status>
+</entry>
+<entry
+   path="DevWork/DevWork.ico">
+<wc-status
+   props="none"
+   item="unversioned">
+</wc-status>
+</entry>
+<entry
+   path="DevWork/icons.PNG">
+<wc-status
+   props="normal"
+   item="normal"
+   revision="12">
+<commit
+   revision="10">
+<author>skalogryz</author>
+<date>2009-03-23T13:47:56.231453Z</date>
+</commit>
+</wc-status>
+</entry>
+<entry
+   path="DevWork/backup">
+<wc-status
+   props="none"
+   item="unversioned">
+</wc-status>
+</entry>
+<entry
+   path="DevWork/DevWork.compiled">
+<wc-status
+   props="none"
+   item="unversioned">
+</wc-status>
+</entry>
+<entry
+   path="DevWork/ProcessingForm.lfm">
+<wc-status
+   props="none"
+   item="normal"
+   revision="12">
+<commit
+   revision="11">
+<author>skalogryz</author>
+<date>2009-03-27T14:47:59.748249Z</date>
+</commit>
+</wc-status>
+</entry>
+<entry
+   path="DevWork/VersionControlTypes.ppu">
+<wc-status
+   props="none"
+   item="unversioned">
+</wc-status>
+</entry>
+<entry
+   path="DevWork/DevWork.rc">
+<wc-status
+   props="none"
+   item="unversioned">
+</wc-status>
+</entry>
+<entry
+   path="DevWork/mainform.lfm">
+<wc-status
+   props="none"
+   item="normal"
+   revision="12">
+<commit
+   revision="11">
+<author>skalogryz</author>
+<date>2009-03-27T14:47:59.748249Z</date>
+</commit>
+</wc-status>
+</entry>
+<entry
+   path="DevWork/DevWork.manifest">
+<wc-status
+   props="none"
+   item="unversioned">
+</wc-status>
+</entry>
+<entry
+   path="DevWork/Initial.ppu">
+<wc-status
+   props="none"
+   item="unversioned">
+</wc-status>
+</entry>
+<entry
+   path="DevWork">
+<wc-status
+   props="none"
+   item="normal"
+   revision="12">
+<commit
+   revision="11">
+<author>skalogryz</author>
+<date>2009-03-27T14:47:59.748249Z</date>
+</commit>
+</wc-status>
+</entry>
+<against
+   revision="12"/>
+</target>
+<target
+   path="VersionControl">
+<entry
+   path="VersionControl/svnexec.pas">
+<wc-status
+   props="none"
+   item="normal"
+   revision="12">
+<commit
+   revision="3">
+<author>skalogryz</author>
+<date>2009-03-10T07:24:53.791474Z</date>
+</commit>
+</wc-status>
+</entry>
+<entry
+   path="VersionControl/VersionControlTypes.pas">
+<wc-status
+   props="none"
+   item="normal"
+   revision="12">
+<commit
+   revision="3">
+<author>skalogryz</author>
+<date>2009-03-10T07:24:53.791474Z</date>
+</commit>
+</wc-status>
+</entry>
+<entry
+   path="VersionControl/svnVersionControl.pas">
+<wc-status
+   props="none"
+   item="normal"
+   revision="12">
+<commit
+   revision="12">
+<author>skalogryz</author>
+<date>2009-03-28T10:12:28.820488Z</date>
+</commit>
+</wc-status>
+</entry>
+<entry
+   path="VersionControl">
+<wc-status
+   props="none"
+   item="normal"
+   revision="12">
+<commit
+   revision="12">
+<author>skalogryz</author>
+<date>2009-03-28T10:12:28.820488Z</date>
+</commit>
+</wc-status>
+</entry>
+<against
+   revision="12"/>
+</target>
+</status>

@@ -1,0 +1,171 @@
+object Form1: TForm1
+  Left = 370
+  Height = 255
+  Top = 229
+  Width = 400
+  Caption = 'Stock Icons Tester'
+  ClientHeight = 255
+  ClientWidth = 400
+  OnCreate = FormCreate
+  LCLVersion = '1.3'
+  object Label1: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Control = Owner
+    Left = 200
+    Height = 1
+    Top = 0
+    Width = 1
+    ParentColor = False
+  end
+  object GroupBox1: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Label1
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = BitBtn1
+    Left = 6
+    Height = 211
+    Top = 6
+    Width = 192
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 3
+    Caption = 'Dialog Icons:'
+    ClientHeight = 193
+    ClientWidth = 188
+    TabOrder = 0
+    object DialogImage: TImage
+      AnchorSideLeft.Control = GroupBox1
+      AnchorSideTop.Control = DialogCaptionLbl
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = GroupBox1
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = DialogTrack
+      Left = 6
+      Height = 113
+      Top = 27
+      Width = 176
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Around = 6
+      Center = True
+    end
+    object DialogCaptionLbl: TLabel
+      AnchorSideLeft.Control = GroupBox1
+      AnchorSideTop.Control = GroupBox1
+      AnchorSideRight.Control = GroupBox1
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 15
+      Top = 6
+      Width = 176
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      Caption = 'DialogCaptionLbl'
+      ParentColor = False
+    end
+    object DialogTrack: TTrackBar
+      AnchorSideLeft.Control = GroupBox1
+      AnchorSideRight.Control = GroupBox1
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = GroupBox1
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 41
+      Top = 146
+      Width = 176
+      OnChange = DialogTrackChange
+      Position = 0
+      Anchors = [akLeft, akRight, akBottom]
+      BorderSpacing.Around = 6
+      TabOrder = 0
+    end
+  end
+  object GroupBox2: TGroupBox
+    AnchorSideLeft.Control = Label1
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = GroupBox1
+    AnchorSideBottom.Side = asrBottom
+    Left = 203
+    Height = 211
+    Top = 6
+    Width = 191
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 3
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    Caption = 'Button Icons:'
+    ClientHeight = 193
+    ClientWidth = 187
+    TabOrder = 1
+    object ButtonImage: TImage
+      AnchorSideLeft.Control = GroupBox2
+      AnchorSideTop.Control = ButtonCaptionLbl
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = GroupBox2
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = ButtonTrack
+      Left = 6
+      Height = 113
+      Top = 27
+      Width = 175
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Around = 6
+      Center = True
+    end
+    object ButtonCaptionLbl: TLabel
+      AnchorSideLeft.Control = GroupBox2
+      AnchorSideTop.Control = GroupBox2
+      AnchorSideRight.Control = GroupBox2
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 15
+      Top = 6
+      Width = 175
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      Caption = 'ButtonCaptionLbl'
+      ParentColor = False
+    end
+    object ButtonTrack: TTrackBar
+      AnchorSideLeft.Control = GroupBox2
+      AnchorSideRight.Control = GroupBox2
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = GroupBox2
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 41
+      Top = 146
+      Width = 175
+      OnChange = ButtonTrackChange
+      Position = 0
+      Anchors = [akLeft, akRight, akBottom]
+      BorderSpacing.Around = 6
+      TabOrder = 0
+    end
+  end
+  object BitBtn1: TBitBtn
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 319
+    Height = 26
+    Top = 223
+    Width = 75
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = '&Close'
+    Constraints.MinWidth = 75
+    Kind = bkClose
+    TabOrder = 2
+  end
+end

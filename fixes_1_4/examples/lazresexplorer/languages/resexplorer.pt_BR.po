@@ -1,0 +1,129 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcelo Borges de Paula\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: reconstsunit.sabout
+#, fuzzy
+#| msgid "About..."
+msgid "About ..."
+msgstr "Sobre..."
+
+#: reconstsunit.sallfilesexcutablefilesexeexedlldlldll
+msgid "All files (*.*)|*.*|Excutable files (*.exe)|*.exe|DLL (*.dll)|*.dll"
+msgstr ""
+
+#: reconstsunit.sallfilessharedlibsoso
+msgid "All files (*)|*|Shared libraries (*.so)|*.so"
+msgstr ""
+
+#: reconstsunit.sbuilddate
+#, fuzzy
+#| msgid "Build date : "
+msgid "Build date: "
+msgstr "Data Construção:"
+
+#: reconstsunit.scarbonwidgetset
+msgid "Carbon widget set"
+msgstr "Conjunto \"widget\" Carbon"
+
+#: reconstsunit.sexit
+msgid "Exit"
+msgstr "Sair"
+
+#: reconstsunit.sfile
+msgid "File"
+msgstr "Arquivo"
+
+#: reconstsunit.sfpcversion
+#, fuzzy
+#| msgid "FPC version : "
+msgid "FPC version: "
+msgstr "Versão FPC :"
+
+#: reconstsunit.sfpguiwidgetset
+msgid "FpGUI widget set"
+msgstr "Conjunto \"widget\" FpGUI"
+
+#: reconstsunit.sgtk2widgetset
+msgid "GTK 2 widget set"
+msgstr "Conjunto \"widget\" GTK2"
+
+#: reconstsunit.sgtkwidgetset
+msgid "GTK widget set"
+msgstr "Conjunto \"widget\" GTK"
+
+#: reconstsunit.shelp
+msgid "Help"
+msgstr "Ajuda"
+
+#: reconstsunit.simage
+msgid "Image"
+msgstr "Imagem"
+
+#: reconstsunit.slclversion
+msgid "LCL Version: "
+msgstr "Versão LCL:"
+
+#: reconstsunit.slicense
+msgid "This program is free software under GNU GPL 2 license, see COPYING file"
+msgstr "Este programa é \"software\" livre sob a licença GNU GPL 2, veja arquivo \"COPYING\""
+
+#: reconstsunit.sopen
+#, fuzzy
+#| msgid "Open..."
+msgid "Open ..."
+msgstr "Abrir..."
+
+#: reconstsunit.sotherguiwidgetset
+msgid "Other gui"
+msgstr "Outro \"gui\""
+
+#: reconstsunit.sqtwidgetset
+msgid "QT widget set"
+msgstr "Conjunto \"widget\" QT"
+
+#: reconstsunit.sresourceexplorer
+msgid "Resource explorer"
+msgstr "Explorador Recursos"
+
+#: reconstsunit.sresources
+msgid "Resources"
+msgstr ""
+
+#: reconstsunit.ssaveresource
+#, fuzzy
+#| msgid "Save resource..."
+msgid "Save resource ..."
+msgstr "Salvar recurso..."
+
+#: reconstsunit.sstrings
+msgid "Strings"
+msgstr "Strings"
+
+#: reconstsunit.stargetcpu
+#, fuzzy
+#| msgid "Target CPU : "
+msgid "Target CPU: "
+msgstr "CPU Alvo :"
+
+#: reconstsunit.stargetos
+#, fuzzy
+#| msgid "Target OS : "
+msgid "Target OS: "
+msgstr "SO Alvo :"
+
+#: reconstsunit.swin32_64widgetset
+msgid "Win32/Win64 widget set"
+msgstr "Conjunto \"widget\" Win32/Win64"
+
+#: reconstsunit.swincewidgetset
+msgid "WinCE widget set"
+msgstr "Conjunto \"widget\" WinCE"
+

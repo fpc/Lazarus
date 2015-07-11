@@ -1,0 +1,182 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcelo B Paula\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: gdbmistringconstants.dlggroupdebugger
+msgid "Debugger"
+msgstr ""
+
+#: gdbmistringconstants.gdbmibreakpointerroronruncommand
+#, fuzzy
+#| msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command%0:sPress \"Stop\" to end the debug sessionThe debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
+msgctxt "gdbmistringconstants.gdbmibreakpointerroronruncommand"
+msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
+msgstr "O depurador encontrou um erro ao tentar executar/passo a passo a aplicação:%0:s%0:s%1:s%0:s%0:sPressione \"Ok\" para remover os pontos de parada e continuar depurando (pausado), e corrigir o problema, ou escolha um comando alternativo para executar%0:sPressione \"Parar\" para encerrar a sessão de depuração."
+
+#: gdbmistringconstants.gdbmicommandstartmainbreakerror
+msgctxt "gdbmistringconstants.gdbmicommandstartmainbreakerror"
+msgid "The debugger could not set a breakpoint on the application's entry point.%0:sThis may be caused by missing debug info."
+msgstr "O depurador não pode ajustar um ponto-de-parada no ponto de entrada da aplicação.%0:sIsto pode ter sido causado por falta de informações de depuração."
+
+#: gdbmistringconstants.gdbmicommandstartmainrunerror
+msgctxt "gdbmistringconstants.gdbmicommandstartmainrunerror"
+msgid "The debugger could not run the application.%0:sThis may be caused by missing debug info."
+msgstr "O depurador não pode rodar a aplicação.%0:sIsto pode ter sido causado por falta de informações de depuração."
+
+#: gdbmistringconstants.gdbmicommandstartmainrunnopiderror
+msgctxt "gdbmistringconstants.gdbmicommandstartmainrunnopiderror"
+msgid "The debugger failed to get the application's PID.%0:sThis may be caused by missing debug info."
+msgstr "O depurador falhou ao obter o PID da aplicação.%0:sIsto pode ter sido causado por falta de informações de depuração."
+
+#: gdbmistringconstants.gdbmicommandstartmainruntostoperror
+msgctxt "gdbmistringconstants.gdbmicommandstartmainruntostoperror"
+msgid "The debugger was unable to initialize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
+msgstr "O depurador foi incapaz de se inicializar.%0:sA aplicação rodou (e terminou) antes que o depurador pudesse ajustar qualquer ponto-de-parada. %0:sIsto pode ter sido causado por falta de informações de depuração."
+
+#: gdbmistringconstants.gdbmierroronruncommand
+#, fuzzy
+#| msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command%0:sPress \"Stop\" to end the debug sessionThe debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
+msgctxt "gdbmistringconstants.gdbmierroronruncommand"
+msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
+msgstr "O depurador encontrou um erro ao tentar executar/passo a passo a aplicação:%0:s%0:s%1:s%0:s%0:sPressione \"Ok\" para continuar depurando (pausado), e corrigir o problema, ou escolha um comando alternativo para executar%0:sPressione \"Parar\" para encerrar a sessão de depuração."
+
+#: gdbmistringconstants.gdbmierroronruncommandwithwarning
+#, fuzzy
+#| msgid "%0:s%0:sIn addition to the Error the following warning was encountered:%0:s%0:s%1:s%0:s%0:sIn addition to the error the following warning was encountered:%0:s%0:s%1:s"
+msgctxt "gdbmistringconstants.gdbmierroronruncommandwithwarning"
+msgid "%0:s%0:sIn addition to the error the following warning was encountered:%0:s%0:s%1:s"
+msgstr "%0:s%0:sAlém do Erro, o seguinte aviso foi encontrado:%0:s%0:s%1:s"
+
+#: gdbmistringconstants.gdbmierrorstategenericinfo
+msgctxt "gdbmistringconstants.gdbmierrorstategenericinfo"
+msgid "Error in: %1:s %0:s"
+msgstr "Erro em: %1:s %0:s"
+
+#: gdbmistringconstants.gdbmierrorstateinfocommanderror
+msgctxt "gdbmistringconstants.gdbmierrorstateinfocommanderror"
+msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sreturned the error:%0:s\"%2:s\"%0:s"
+msgstr "%0:sO comando GDB:%0:s\"%1:s\"%0:sretornou o erro:%0:s\"%2:s\"%0:s"
+
+#: gdbmistringconstants.gdbmierrorstateinfocommandnoresult
+msgctxt "gdbmistringconstants.gdbmierrorstateinfocommandnoresult"
+msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sdid not return any result.%0:s"
+msgstr "%0:sO comando GDB:%0:s\"%1:s\"%0:snão retornou nenhum resultado.%0:s"
+
+#: gdbmistringconstants.gdbmierrorstateinfofailedread
+msgctxt "gdbmistringconstants.gdbmierrorstateinfofailedread"
+msgid "%0:sCould not read output from GDB.%0:s"
+msgstr "%0:sImpossível ler a saída do GDB.%0:s"
+
+#: gdbmistringconstants.gdbmierrorstateinfofailedwrite
+msgctxt "gdbmistringconstants.gdbmierrorstateinfofailedwrite"
+msgid "%0:sCould not send a command to GDB.%0:s"
+msgstr "%0:sImpossível enviar um comando ao GDB.%0:s"
+
+#: gdbmistringconstants.gdbmierrorstateinfogdbgone
+msgctxt "gdbmistringconstants.gdbmierrorstateinfogdbgone"
+msgid "%0:sThe GDB process is no longer running.%0:s"
+msgstr "%0:sO processo GDB não está em execução.%0:s"
+
+#: gdbmistringconstants.gdbmieventlogdebugoutput
+msgctxt "gdbmistringconstants.gdbmieventlogdebugoutput"
+msgid "Debug Output: %s"
+msgstr "Saída da Depuração: %s"
+
+#: gdbmistringconstants.gdbmieventloggdbinternalerror
+msgctxt "gdbmistringconstants.gdbmieventloggdbinternalerror"
+msgid "GDB has encountered an internal error: %s"
+msgstr "GDB encontrou um erro interno: %s"
+
+#: gdbmistringconstants.gdbmieventlognosymbols
+msgctxt "gdbmistringconstants.gdbmieventlognosymbols"
+msgid "File '%s' has no debug symbols"
+msgstr "Arquivo '%s' não tem símbolos de depuração"
+
+#: gdbmistringconstants.gdbmieventlogprocessexitcode
+msgctxt "gdbmistringconstants.gdbmieventlogprocessexitcode"
+msgid "Process Exit: %s"
+msgstr "Término do Processo: %s"
+
+#: gdbmistringconstants.gdbmieventlogprocessexitnormally
+msgctxt "gdbmistringconstants.gdbmieventlogprocessexitnormally"
+msgid "Process Exit: normally"
+msgstr "Término do Processo: normal"
+
+#: gdbmistringconstants.gdbmieventlogprocessstart
+msgctxt "gdbmistringconstants.gdbmieventlogprocessstart"
+msgid "Process Start: %s"
+msgstr "Início do Processo: %s"
+
+#: gdbmistringconstants.gdbmifailedtolaunchexternaldbg
+msgid "Failed to create process for GDB"
+msgstr ""
+
+#: gdbmistringconstants.gdbmifailedtoterminategdb
+msgctxt "gdbmistringconstants.gdbmifailedtoterminategdb"
+msgid "The IDE was unable to terminate the GDB process. This process may be left running outside the control of IDE.%0:sTo ensure the process is not affecting your System, you should locate and terminate it yourself."
+msgstr ""
+
+#: gdbmistringconstants.gdbmifailedtoterminategdbtitle
+msgctxt "gdbmistringconstants.gdbmifailedtoterminategdbtitle"
+msgid "GDB did not terminate"
+msgstr ""
+
+#: gdbmistringconstants.gdbmifatalerroroccurred
+msgctxt "gdbmistringconstants.gdbmifatalerroroccurred"
+msgid "Unrecoverable error: \"%s\""
+msgstr "Erro irrecuperável: \"%s\""
+
+#: gdbmistringconstants.gdbmigdbinternalerror
+msgctxt "gdbmistringconstants.gdbmigdbinternalerror"
+msgid "GDB has encountered an internal error: %0:sPress \"Ok\" to continue debugging. This may NOT be safe.%0:sPress \"Stop\" to end the debug session."
+msgstr "GDB encontrou um erro interno: %0:sPressione \"Ok\" para continuar depurando. Isto pode NÃO ser seguro.%0:sPressione \"Parar\" para encerrar a sessão de depuração."
+
+#: gdbmistringconstants.gdbmigdbinternalerrorinfo
+msgctxt "gdbmistringconstants.gdbmigdbinternalerrorinfo"
+msgid "While executing the command: %0:s\"%2:s\"%0:sgdb reported:%0:s\"%1:s\"%0:s"
+msgstr "Ao executar o comando: %0:s\"%2:s\"%0:sgdb reportou:%0:s\"%1:s\"%0:s"
+
+#: gdbmistringconstants.gdbmipressignoretocontinuedebuggingthismaynotbesafepres
+msgctxt "gdbmistringconstants.gdbmipressignoretocontinuedebuggingthismaynotbesafepres"
+msgid "Press \"Ignore\" to continue debugging. This may NOT be safe. Press \"Abort\" to stop the debugger.%0:sException: %1:s with message \"%2:s\"%0:sContext: %4:s. State: %5:s %0:s%0:s%3:s"
+msgstr "Pressione \"Ignorar\" para continuar depurando. Isto pode não ser seguro. Pressione \"Abortar\" para parar o depurador.%0:sExceção: %1:s com a mensagem \"%2:s\"%0:sContexto: %4:s. Estado: %5:s %0:s%0:s%3:s"
+
+#: gdbmistringconstants.gdbmithedebuggerexperiencedanunknowncondition
+msgctxt "gdbmistringconstants.gdbmithedebuggerexperiencedanunknowncondition"
+msgid "The debugger experienced an unknown condition"
+msgstr "O depurador experimentou uma condição desconhecida"
+
+#: gdbmistringconstants.gdbmitimeoutforcmd
+msgctxt "gdbmistringconstants.gdbmitimeoutforcmd"
+msgid "Time-out for command: \"%s\""
+msgstr "Tempo expirado para o comando: \"%s\""
+
+#: gdbmistringconstants.gdbmiwarningunknowbreakpoint
+msgctxt "gdbmistringconstants.gdbmiwarningunknowbreakpoint"
+msgid "The debugger reached an unexpected %1:s%0:s%0:sPress \"Ok\" to continue debugging (paused).%0:sPress \"Stop\" to end the debug session."
+msgstr "O depurador encontrou um inesperado %1:s%0:s%0:sPressione \"Ok\" para continuar depurando (pausado).%0:sPressione \"Parar\" para encerrar a sessão de depuração."
+
+#: gdbmistringconstants.lisnewthegnudebuggerthroughsshallowstoremotedebugviaassh
+msgid "The GNU debugger through SSH allows to remote debug via a SSH connection. See docs/RemoteDebugging.txt for details. The path must contain the SSH client. Use SSH_Startup_Options for the hostname and optional username. Use Remote_GDB_Exe for the filename of GDB on the remote computer."
+msgstr ""
+
+#: gdbmistringconstants.lisresponsecontinue
+msgid "Response: %sContinue ?"
+msgstr ""
+
+#: gdbmistringconstants.lisunexpectedresultthedebuggerwillterminate
+msgid "Unexpected result:%sThe debugger will terminate"
+msgstr ""
+
+#: gdbmistringconstants.synffailedtoloadapplicationexecutable
+msgid "Failed to load application executable"
+msgstr ""
+

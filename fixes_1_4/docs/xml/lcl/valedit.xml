@@ -1,0 +1,1711 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    ValEdit
+  ====================================================================
+-->
+
+<module name="ValEdit">
+<short/>
+<descr>
+</descr>
+
+<!-- enumeration type Visibility: default -->
+<element name="TDisplayOption">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TDisplayOption.doColumnTitles">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TDisplayOption.doAutoColResize">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TDisplayOption.doKeyColFixed">
+<short/>
+</element>
+
+<!-- set type Visibility: default -->
+<element name="TDisplayOptions">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TKeyOption">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TKeyOption.keyEdit">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TKeyOption.keyAdd">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TKeyOption.keyDelete">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TKeyOption.keyUnique">
+<short/>
+</element>
+
+<!-- set type Visibility: default -->
+<element name="TKeyOptions">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure type Visibility: default -->
+<element name="TGetPickListEvent">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGetPickListEvent.Sender">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGetPickListEvent.KeyName">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGetPickListEvent.Values">
+<short/>
+</element>
+
+<!-- procedure type Visibility: default -->
+<element name="TOnValidateEvent">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TOnValidateEvent.Sender">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TOnValidateEvent.ACol">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TOnValidateEvent.ARow">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TOnValidateEvent.KeyName">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TOnValidateEvent.KeyValue">
+<short/>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TValueListEditor">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TValueListEditor.FTitleCaptions">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TValueListEditor.FStrings">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TValueListEditor.FKeyOptions">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TValueListEditor.FDisplayOptions">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TValueListEditor.FDropDownRows">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TValueListEditor.FOnGetPickList">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TValueListEditor.FOnEditButtonClick">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TValueListEditor.FOnValidate">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TValueListEditor.GetOnStringsChange">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TValueListEditor.GetOnStringsChange.Result">
+<short/>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TValueListEditor.GetOnStringsChanging">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TValueListEditor.GetOnStringsChanging.Result">
+<short/>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TValueListEditor.GetOptions">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TValueListEditor.GetOptions.Result">
+<short/>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TValueListEditor.GetKey">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TValueListEditor.GetKey.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TValueListEditor.GetKey.Index">
+<short/>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TValueListEditor.GetValue">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TValueListEditor.GetValue.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TValueListEditor.GetValue.Key">
+<short/>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TValueListEditor.SetDisplayOptions">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TValueListEditor.SetDisplayOptions.AValue">
+<short/>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TValueListEditor.SetDropDownRows">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TValueListEditor.SetDropDownRows.AValue">
+<short/>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TValueListEditor.SetKeyOptions">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TValueListEditor.SetKeyOptions.AValue">
+<short/>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TValueListEditor.SetKey">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TValueListEditor.SetKey.Index">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TValueListEditor.SetKey.Value">
+<short/>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TValueListEditor.SetValue">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TValueListEditor.SetValue.Key">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TValueListEditor.SetValue.Value">
+<short/>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TValueListEditor.SetOnEditButtonClick">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TValueListEditor.SetOnEditButtonClick.AValue">
+<short/>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TValueListEditor.SetOnStringsChange">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TValueListEditor.SetOnStringsChange.AValue">
+<short/>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TValueListEditor.SetOnStringsChanging">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TValueListEditor.SetOnStringsChanging.AValue">
+<short/>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TValueListEditor.SetOptions">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TValueListEditor.SetOptions.AValue">
+<short/>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TValueListEditor.SetStrings">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TValueListEditor.SetStrings.AValue">
+<short/>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TValueListEditor.SetTitleCaptions">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TValueListEditor.SetTitleCaptions.AValue">
+<short/>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TValueListEditor.WSRegisterClass">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TValueListEditor.ShowColumnTitles">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TValueListEditor.AdjustColumnWidths">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TValueListEditor.AdjustRowCount">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TValueListEditor.ColWidthsChanged">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TValueListEditor.GetEditText">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TValueListEditor.GetEditText.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TValueListEditor.GetEditText.ACol">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TValueListEditor.GetEditText.ARow">
+<short/>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TValueListEditor.GetCells">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TValueListEditor.GetCells.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TValueListEditor.GetCells.ACol">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TValueListEditor.GetCells.ARow">
+<short/>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TValueListEditor.SetCells">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TValueListEditor.SetCells.ACol">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TValueListEditor.SetCells.ARow">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TValueListEditor.SetCells.AValue">
+<short/>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TValueListEditor.SetEditText">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TValueListEditor.SetEditText.ACol">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TValueListEditor.SetEditText.ARow">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TValueListEditor.SetEditText.Value">
+<short/>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TValueListEditor.TitlesChanged">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TValueListEditor.TitlesChanged.Sender">
+<short/>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TValueListEditor.Create">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TValueListEditor.Create.AOwner">
+<short/>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TValueListEditor.Destroy">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TValueListEditor.Modified">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TValueListEditor.Keys">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TValueListEditor.Keys.Index">
+<short/>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TValueListEditor.Values">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TValueListEditor.Values.Key">
+<short/>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.Align">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.AlternateColor">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.Anchors">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.AutoAdvance">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.AutoEdit">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.AutoFillColumns">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.BiDiMode">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.BorderSpacing">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.BorderStyle">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.Color">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.Constraints">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.DefaultColWidth">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.DefaultDrawing">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.DefaultRowHeight">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.DragCursor">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.DragKind">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.DragMode">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.Enabled">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.ExtendedSelect">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.FixedColor">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.FixedCols">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.FixedRows">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.Flat">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.Font">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.GridLineWidth">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.HeaderHotZones">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.HeaderPushZones">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.MouseWheelOption">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.ParentBiDiMode">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.ParentColor">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.ParentFont">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.ParentShowHint">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.PopupMenu">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.RowCount">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.ScrollBars">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.ShowHint">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.TabOrder">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.TabStop">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.TitleFont">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.TitleImageList">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.TitleStyle">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.UseXORFeatures">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.Visible">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.VisibleColCount">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.VisibleRowCount">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnBeforeSelection">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnChangeBounds">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnCheckboxToggled">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnClick">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnColRowDeleted">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnColRowExchanged">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnColRowInserted">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnColRowMoved">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnCompareCells">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnContextPopup">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnDragDrop">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnDragOver">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnDblClick">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnDrawCell">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnEditingDone">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnEndDock">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnEndDrag">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnEnter">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnExit">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnGetEditMask">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnGetEditText">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnHeaderClick">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnHeaderSized">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnHeaderSizing">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnKeyDown">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnKeyPress">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnKeyUp">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnMouseDown">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnMouseMove">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnMouseUp">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnMouseWheel">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnMouseWheelDown">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnMouseWheelUp">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnPickListSelect">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnPrepareCanvas">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnResize">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnSelectEditor">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnSelection">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnSelectCell">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnSetEditText">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnShowHint">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnStartDock">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnStartDrag">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnTopLeftChanged">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnUserCheckboxBitmap">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnUTF8KeyPress">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnValidateEntry">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.DisplayOptions">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.DoubleBuffered">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.DropDownRows">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.KeyOptions">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.Options">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.Strings">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.TitleCaptions">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnEditButtonClick">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnGetPickList">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnMouseEnter">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnMouseLeave">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnStringsChange">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnStringsChanging">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TValueListEditor.OnValidate">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="Register">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+</module> <!-- ValEdit -->
+
+</package>
+</fpdoc-descriptions>

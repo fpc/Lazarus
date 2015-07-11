@@ -1,0 +1,904 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: paul <lesudiste11@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"X-Generator: Poedit 1.7.5\n"
+
+#: jcfuiconsts.lisaboutaboutjedicodeformat
+msgid "About JEDI Code Format"
+msgstr "À propos de \"JEDI Code Format\""
+
+#: jcfuiconsts.lisaboutfindmoreinformationonthewebat
+msgid "Find more information on the web at: %s"
+msgstr "Trouvez plus d'information sur le Web à l'adresse : %s"
+
+#: jcfuiconsts.lisaboutthisprogramisopensource
+msgid "This program is open source software. It is released under the Mozilla Public Licence (MPL).  http://www.mozilla.org/MPL"
+msgstr "Ce programme est un logiciel \"open source\". Il est réalisé sous la licence Mozilla Public (MPL).  http://www.mozilla.org/MPL"
+
+#: jcfuiconsts.lisaboutthisprogramisstillunderdevelopment
+msgid "This program is still under development. In spite of thorough testing and removal of reported bugs, no guarantees are given. Please make backups, or better yet use a source control system."
+msgstr "Ce programme est encore en développement. En dépit de tests approfondis et de l'élimination des bogues rapportés, aucune garantie n'est donnée. Veuillez faire des sauvegardes, ou mieux encore utiliser un système de contrôle de code source."
+
+#: jcfuiconsts.lisaboutversion
+msgid "Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make readable the layout of any Delphi Object-Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
+msgstr "Version $VERSION$%s$DATE$%s%sCe programme tente d'uniformiser et de rendre lisible la disposition de tout code source Delphi Object-Pascal.%s%sCopyright Anthony Steele 1999-2008"
+
+#: jcfuiconsts.lisalignalign
+msgid "Align"
+msgstr "Alignement"
+
+#: jcfuiconsts.lisalignassign
+msgid "Assign"
+msgstr "Affectation"
+
+#: jcfuiconsts.lisalignclassandrecordfields
+msgid "Class and record fields"
+msgstr "Champs d'enregistrements et de classes"
+
+#: jcfuiconsts.lisaligncomments
+msgid "Comments"
+msgstr "Commentaires"
+
+#: jcfuiconsts.lisalignconst
+msgid "Const"
+msgstr "Constante"
+
+#: jcfuiconsts.lisaligninterfaceonly
+msgid "Interface Only"
+msgstr "Interface seulement"
+
+#: jcfuiconsts.lisalignmaxcolumn
+msgid "Max Column"
+msgstr "Colonne maxi"
+
+#: jcfuiconsts.lisalignmaxunaligned
+msgid "Max unaligned"
+msgstr "Non alignement maximum"
+
+#: jcfuiconsts.lisalignmaxvariance
+msgid "Max Variance"
+msgstr "Écart maximal"
+
+#: jcfuiconsts.lisalignmaxvarianceinterface
+msgid "Max Variance Interface"
+msgstr "Écart maximal de l'interface"
+
+#: jcfuiconsts.lisalignmincolumn
+msgid "Min Column"
+msgstr "Colonne mini"
+
+#: jcfuiconsts.lisaligntypedefs
+msgid "Type defs"
+msgstr "Définitions de types"
+
+#: jcfuiconsts.lisalignvardeclarations
+msgid "Var declarations"
+msgstr "Déclarations de variables"
+
+#: jcfuiconsts.lisalignwhattoalign
+msgid "What to Align"
+msgstr "Quoi aligner"
+
+#: jcfuiconsts.lisasmasm
+msgid "Asm"
+msgstr "Asm"
+
+#: jcfuiconsts.lisasmbreaksafterlabel
+msgid "&Breaks after label"
+msgstr "Co&upures après étiquette"
+
+#: jcfuiconsts.lisasmcapitalization
+msgid "&Capitalization"
+msgstr "&Mise en majuscules"
+
+#: jcfuiconsts.lisasmenabled
+msgid "&Enabled"
+msgstr "&Activé"
+
+#: jcfuiconsts.lisasmenabled2
+msgid "E&nabled"
+msgstr "Activé"
+
+#: jcfuiconsts.lisasmenabled3
+msgid "En&abled"
+msgstr "&Activé"
+
+#: jcfuiconsts.lisasmindent
+msgid "Indent"
+msgstr "Indentation"
+
+#: jcfuiconsts.lisasmnumberofbreaks
+msgid "N&umber of breaks"
+msgstr "Nombre de co&upures"
+
+#: jcfuiconsts.lisasmparamsindents
+msgid "&Params Indents"
+msgstr "Indentation des &paramètres"
+
+#: jcfuiconsts.lisasmstatementindents
+msgid "&Statement Indents"
+msgstr "Indentation des in&structions"
+
+#: jcfuiconsts.lisblafterprocedureheader
+msgid "After procedure header"
+msgstr "Après l'en-tête de procédure"
+
+#: jcfuiconsts.lisblatstartandendofbeginendblock
+msgid "At start and end of Begin...End block"
+msgstr "Au début et à la fin du bloc \"begin...end\""
+
+#: jcfuiconsts.lisblblanklines
+msgid "Blank Lines"
+msgstr "Lignes blanches"
+
+#: jcfuiconsts.lisblinprocedurevarsection
+msgid "In procedure var section"
+msgstr "dans la section \"var\" de la procédure"
+
+#: jcfuiconsts.lisbllinesbeforeprocedure
+msgid "Lines before procedure"
+msgstr "Lignes avant la procédure"
+
+#: jcfuiconsts.lisblmaxconsecutiveblanklinesanywhere
+msgid "Max consecutive blank lines anywhere"
+msgstr "Nombre maximum de lignes blanches n'importe où"
+
+#: jcfuiconsts.lisblmaxconsecutiveblanklinesbeforeremoval
+msgid "Max consecutive blank lines before removal"
+msgstr "Nombre maximum de lignes blanches consécutives avant la suppression"
+
+#: jcfuiconsts.lisblnumberofreturnsaftertheunitsfinalend
+msgid "Number of returns after the unit's final End."
+msgstr "Nombre de retours chariot après le \"end\" final de l'unité."
+
+#: jcfuiconsts.lisblocksbetweenelseandif
+msgid "Between else and if"
+msgstr "Entre else et if"
+
+#: jcfuiconsts.lisblocksbetweenendandelse
+msgid "Between end and else"
+msgstr "Entre \"end\" et \"else\""
+
+#: jcfuiconsts.lisblocksblocks
+msgid "Blocks"
+msgstr "Blocs"
+
+#: jcfuiconsts.lisblocksblockwithbegin
+msgid "Block with begin"
+msgstr "Bloc avec \"begin\""
+
+#: jcfuiconsts.lisblocksblockwithoutbegin
+msgid "Block without begin"
+msgstr "Bloc sans \"begin\""
+
+#: jcfuiconsts.lisblockselsebegin
+msgid "Else begin"
+msgstr "\"Else begin\""
+
+#: jcfuiconsts.lisblocksuseanewlineinblocksat
+msgid "Use a new line in blocks at:"
+msgstr "Insérer une nouvelle ligne dans les blocs en :"
+
+#: jcfuiconsts.lisblremoveblanklines
+msgid "Remove blank lines"
+msgstr "Supprimer les lignes blanches"
+
+#: jcfuiconsts.lisblremoveconsecutiveblanklines
+msgid "Remove consecutive blank lines"
+msgstr "Supprimer les lignes blanches consécutives"
+
+#: jcfuiconsts.liscapsanywordanyword
+msgid "Any Word"
+msgstr "N'importe quel mot"
+
+#: jcfuiconsts.liscapsanywordenable
+msgid "Enable"
+msgstr "Activer"
+
+#: jcfuiconsts.liscapsanywordsetcapitalisationonthesewords
+msgid "Set capitalisation on these words:"
+msgstr "Définir la mise en majuscules de ces mots :"
+
+#: jcfuiconsts.liscapscapitalisation
+msgid "Capitalisation"
+msgstr "Mise en majuscules"
+
+#: jcfuiconsts.liscapsconstants
+msgid "Constants"
+msgstr "Constantes"
+
+#: jcfuiconsts.liscapsdirectives
+msgid "Directives"
+msgstr "Directives"
+
+#: jcfuiconsts.liscapsenablecapitalisationfixing
+msgid "Enable capitalisation fixing"
+msgstr "Autoriser la correction de la mise en majuscules"
+
+#: jcfuiconsts.liscapsidentifiersidentifiers
+msgid "Identifiers"
+msgstr "Identificateurs"
+
+#: jcfuiconsts.liscapsidentifierssetcapitalisationontheseidentifiers
+msgid "Set capitalisation on these identifiers:"
+msgstr "Définir la mise en majuscules de ces identificateurs:"
+
+#: jcfuiconsts.liscapsnotidentifiersnotidentifiers
+msgid "Non-identifiers"
+msgstr "non identificateurs"
+
+#: jcfuiconsts.liscapsnotidentifierssetcapitalisationonthesenonidentifiers
+msgid "Set capitalisation on these non-identifiers:"
+msgstr "Définir la mise en majuscules sur ces non identificateurs :"
+
+#: jcfuiconsts.liscapsoperators
+msgid "Operators"
+msgstr "Opérateurs"
+
+#: jcfuiconsts.liscapsreservedwords
+msgid "Reserved words"
+msgstr "Mots réservés"
+
+#: jcfuiconsts.liscapstypes
+msgid "Types"
+msgstr "Types"
+
+#: jcfuiconsts.liscapsunitnamessetcapitalisationontheseunitnames
+msgid "Set capitalisation on these unit names:"
+msgstr "Définir la mise en majuscules de ces noms d'unités :"
+
+#: jcfuiconsts.liscapsunitnamesunitnames
+msgid "Unit Names"
+msgstr "Noms d'unité"
+
+#: jcfuiconsts.liscaseblocksalways
+msgctxt "jcfuiconsts.liscaseblocksalways"
+msgid "Always"
+msgstr "Toujours"
+
+#: jcfuiconsts.liscaseblockscaseblocks
+msgid "Case Blocks"
+msgstr "Blocs \"Case\""
+
+#: jcfuiconsts.liscaseblockscasewithbegin
+msgid "Case with begin"
+msgstr "\"Case\" avec \"begin\""
+
+#: jcfuiconsts.liscaseblockscasewithoutbegin
+msgid "Case without begin"
+msgstr "\"Case\" sans \"begin\""
+
+#: jcfuiconsts.liscaseblockselsecasewithbegin
+msgid "Else case with begin"
+msgstr "\"Else\" de \"case\" avec \"begin\""
+
+#: jcfuiconsts.liscaseblockselsecasewithoutbegin
+msgid "Else case without begin"
+msgstr "\"Else\" de \"case\" sans \"begin\""
+
+#: jcfuiconsts.liscaseblockslabelwithbegin
+msgid "Label with begin"
+msgstr "Étiquette avec \"begin\""
+
+#: jcfuiconsts.liscaseblockslabelwithoutbegin
+msgid "Label without begin"
+msgstr "Étiquette sans \"begin\""
+
+#: jcfuiconsts.liscaseblocksleaveasis
+msgctxt "jcfuiconsts.liscaseblocksleaveasis"
+msgid "Leave as is"
+msgstr "Laisser tel quel"
+
+#: jcfuiconsts.liscaseblocksnever
+msgctxt "jcfuiconsts.liscaseblocksnever"
+msgid "Never"
+msgstr "Jamais"
+
+#: jcfuiconsts.liscaseblocksuseanewlineincaseblocksat
+msgid "Use a new line in Case blocks at:"
+msgstr "Insérer une nouvelle ligne dans les blocs \"Case\" :"
+
+#: jcfuiconsts.liscdcompilerdirectives
+msgid "Compiler Directives"
+msgstr "Directives du compilateur"
+
+#: jcfuiconsts.liscdotherplaces
+msgid "Other places"
+msgstr "Autres endroits"
+
+#: jcfuiconsts.liscdstatements
+msgid "Statements"
+msgstr "Instructions"
+
+#: jcfuiconsts.liscduseanewlineaftercompilerdirectives
+msgid "Use a new line after compiler directives:"
+msgstr "Insérer une nouvelle ligne après les directives de compilation :"
+
+#: jcfuiconsts.liscduseanewlinebeforecompilerdirectives
+msgid "Use a new line before compiler directives:"
+msgstr "Insérer une nouvelle ligne avant les directives de compilation :"
+
+#: jcfuiconsts.liscdusesclause
+msgid "Uses clause"
+msgstr "Clause \"Uses\""
+
+#: jcfuiconsts.lisclarifyclarify
+msgid "Clarify"
+msgstr "Clarifier"
+
+#: jcfuiconsts.lisclarifydonotrun
+msgid "Do &not run"
+msgstr "&Ne pas exécuter"
+
+#: jcfuiconsts.lisclarifydorun
+msgid "Do &run"
+msgstr "&Exécuter"
+
+#: jcfuiconsts.lisclarifyfileextensionstoformat
+msgid "File extensions to format:"
+msgstr "Extensions de fichier à formater :"
+
+#: jcfuiconsts.lisclarifyrunonceoffs
+msgid "Run once-offs"
+msgstr "Exécuter une seule fois"
+
+#: jcfuiconsts.lisclarifyrunonlythese
+msgid "Run &only these"
+msgstr "N'exécuter que ceux-ci"
+
+#: jcfuiconsts.liscommentsremoveemptycurlybracescomments
+msgid "Remove empty '{ }' comments"
+msgstr "Supprimer les commentaires vides  \"{ }\""
+
+#: jcfuiconsts.liscommentsremoveemptyslashcomments
+msgid "Remove empty '//' comments"
+msgstr "Supprimer les commentaires vides \"//\""
+
+#: jcfuiconsts.lisedatlinecol
+msgid "%sAt line %s col %s"
+msgstr "%sÀ la ligne %s colonne %s"
+
+#: jcfuiconsts.lisederror
+msgid "Error"
+msgstr "Erreur"
+
+#: jcfuiconsts.lisedexception
+msgid "Exception %s"
+msgstr "Exception %s"
+
+#: jcfuiconsts.lisedin
+msgid "%s in %s"
+msgstr "%s dans %s"
+
+#: jcfuiconsts.lisedjcfparseerror
+msgid "JCF Parse error"
+msgstr "Erreur d'analyse de JCF"
+
+#: jcfuiconsts.lisednear
+msgid "%s near %s"
+msgstr "%s près de %s"
+
+#: jcfuiconsts.lisedtype
+msgid "Type: %s%s"
+msgstr "Type : %s%s"
+
+#: jcfuiconsts.liserrorwritingsettingsexception
+msgid "Error writing settings file %s:%s%s"
+msgstr "Erreur pendant l'écriture du fichier de paramètres %s :%s%s"
+
+#: jcfuiconsts.liserrorwritingsettingsfilereadonly
+msgid "Error writing settings file: %s is read only"
+msgstr "Erreur pendant l'écriture du fichier de paramètres : %s est en lecture seule"
+
+#: jcfuiconsts.lisfindreplaceenablefindandreplace
+msgid "Enable find and replace"
+msgstr "Autoriser la recherche et le remplacement"
+
+#: jcfuiconsts.lisfindreplacefindandreplace
+msgid "Find and Replace"
+msgstr "Trouver et remplacer"
+
+#: jcfuiconsts.lisfindreplacewordlist
+msgid "Word list:"
+msgstr "Liste de mots :"
+
+#: jcfuiconsts.lisfrfilesdatefilewritten
+msgid "Date file written: %s"
+msgstr "Date d'écriture du fichier : %s"
+
+#: jcfuiconsts.lisfrfilesdescription
+msgid "Description:"
+msgstr "Description :"
+
+#: jcfuiconsts.lisfrfilesfileisreadonly
+msgid "File is read only"
+msgstr "Le fichier est en lecture seule"
+
+#: jcfuiconsts.lisfrfilesfileiswritable
+msgid "File is writable"
+msgstr "Le fichier est accessible en écriture"
+
+#: jcfuiconsts.lisfrfilesfilenotfound
+msgid "File not found"
+msgstr "Fichier non trouvé"
+
+#: jcfuiconsts.lisfrfilesformatfile
+msgid "Format File"
+msgstr "Fichier de formatage"
+
+#: jcfuiconsts.lisfrfilesformatfileis
+msgid "Format file is %s"
+msgstr "Le fichier de formatage est %s"
+
+#: jcfuiconsts.lisfrfilesversionthatwrotethisfile
+msgid "Version that wrote this file: %s"
+msgstr "Version d'écriture de ce fichier : %s"
+
+#: jcfuiconsts.lisindentblockindentationspaces
+msgid "Block indentation spaces"
+msgstr "Espaces de retrait de bloc"
+
+#: jcfuiconsts.lisindentdifferentindentforfirstlevel
+msgid "Different indent for first level"
+msgstr "Retrait différent pour le premier niveau"
+
+#: jcfuiconsts.lisindentextraindentforbeginend
+msgid "Extra indent for begin/end inside procedures"
+msgstr "Retrait supplémentaire pour \"begin/end\" dans les procédures"
+
+#: jcfuiconsts.lisindentextraindentforcaseelseblocks
+msgid "Extra Indent for Case...Else blocks"
+msgstr "Retrait supplémentaire dans les blocs \"Case...Else\""
+
+#: jcfuiconsts.lisindentextraindentforifelseblocks
+msgid "Extra Indent for If...Else blocks"
+msgstr "Retrait supplémentaire pour les blocs \"If...Else\""
+
+#: jcfuiconsts.lisindentindentation
+msgid "Indentation"
+msgstr "Indentation"
+
+#: jcfuiconsts.lisindentindentforprocedurebody
+msgid "Indent for procedure body"
+msgstr "Indenter le corps des procédures"
+
+#: jcfuiconsts.lisindentindentforproceduresinlibrary
+msgid "Indent for procedures in library"
+msgstr "Indenter les procédures dans les bibliothèques"
+
+#: jcfuiconsts.lisindentindentnestedtypes
+msgid "Indent nested types"
+msgstr "Indenter les types imbriqués"
+
+#: jcfuiconsts.lisindentindentvarandconstinclass
+msgid "Indent var and const in class"
+msgstr "Indenter  \"var\" et \"const\" dans les classes"
+
+#: jcfuiconsts.lisindentkeepsinglelinecommentswithcodeelsewhere
+msgid "Keep single-line comments with code elsewhere"
+msgstr "Conserver une seule ligne de commentaire avec le code ailleurs"
+
+#: jcfuiconsts.lisindentkeepsinglelinecommentswithcodeinclassdefs
+msgid "Keep single-line comments with code in class definitions"
+msgstr "Conserver une seule ligne de commentaires avec le code dans les définitions de classe"
+
+#: jcfuiconsts.lisindentkeepsinglelinecommentswithcodeinglobals
+msgid "Keep single-line comments with code in globals"
+msgstr "Conserver une seule ligne de commentaires avec le code"
+
+#: jcfuiconsts.lisindentkeepsinglelinecommentswithcodeinprocs
+msgid "Keep single-line comments with code in procedures"
+msgstr "Garder une seule ligne de commentaires avec le code dans les procédures"
+
+#: jcfuiconsts.lisindentoptions
+msgid "Options"
+msgstr "Options"
+
+#: jcfuiconsts.lisjcfformatsettings
+msgid "JCF Format Settings"
+msgstr "Paramètres de formatage de JCF"
+
+#: jcfuiconsts.lisjedicodeformatofareyousurethatyouwanttoformatallfi
+msgid "JEDI Code Format of %sAre you sure that you want to format all %s files in the project?"
+msgstr "JEDI Code Format of %sVoulez-vous vraiment formater les %s fichiers du projet ?"
+
+#: jcfuiconsts.lisjedicodeformatofstartformatting
+msgid "JEDI Code Format of %sStart formatting?"
+msgstr "JEDI Code Format de %sFaut-il commencer le formatage ?"
+
+#: jcfuiconsts.lislbbreaklinesthatarelongerthanmaxlinelength
+msgid "&Break lines that are longer than max line length"
+msgstr "Couper les lignes qui sont plus longues que la longueur maximale de ligne"
+
+#: jcfuiconsts.lislblinebreaking
+msgid "Line Breaking"
+msgstr "Saut de ligne"
+
+#: jcfuiconsts.lislbmaxlinelength
+msgid "Max line length"
+msgstr "Longueur de ligne maximale"
+
+#: jcfuiconsts.lislbnever
+msgid "&Never"
+msgstr "Jamais"
+
+#: jcfuiconsts.lislbsometimesifagoodplacetobreakisfound
+msgid "&Sometimes, if a good place to break is found"
+msgstr "Parfois (si une bonne position pour couper est trouvée)"
+
+#: jcfuiconsts.lislbusuallyunlessthereisnoacceptableplacetobreak
+msgid "&Usually, unless there is no acceptable place to break"
+msgstr "&Généralement (à moins qu'il n'y ait pas de position acceptable pour couper)"
+
+#: jcfuiconsts.lisnosettingsfound
+msgid "No settings found"
+msgstr "Aucun paramètre trouvé"
+
+#: jcfuiconsts.lisobfsallcapitals
+msgid "ALL CAPITALS"
+msgstr "TOUT EN MAJUSCULES"
+
+#: jcfuiconsts.lisobfsalllowercase
+msgid "all lowercase"
+msgstr "toutes en minuscules"
+
+#: jcfuiconsts.lisobfsleavealone
+msgid "Leave alone"
+msgstr "Laisser seul"
+
+#: jcfuiconsts.lisobfsmixedcase
+msgid "Mixed Case"
+msgstr "Casses mixtes "
+
+#: jcfuiconsts.lisobfsobfuscate
+msgid "Obfuscate"
+msgstr "Obscurcissement"
+
+#: jcfuiconsts.lisobfsobfuscatemode
+msgid "&Obfuscate mode"
+msgstr "Mode &obscurcissement"
+
+#: jcfuiconsts.lisobfsobfuscatewordcaps
+msgid "Obfuscate word &caps"
+msgstr "Obscurcir les majuscules des mots"
+
+#: jcfuiconsts.lisobfsrebreaklines
+msgid "Rebreak &lines"
+msgstr "Recouper les &lignes"
+
+#: jcfuiconsts.lisobfsremovecomments
+msgid "Remove c&omments"
+msgstr "Enlever les c&ommentaires"
+
+#: jcfuiconsts.lisobfsremoveindent
+msgid "Remove &indent"
+msgstr "Enlever l'indentation"
+
+#: jcfuiconsts.lisobfsremovewhitespace
+msgctxt "jcfuiconsts.lisobfsremovewhitespace"
+msgid "Remove &white space"
+msgstr "Enlever l'espace &blanc"
+
+#: jcfuiconsts.lisprpcompileroptionsdefinedforconditionalcompilation
+msgid "Compiler options defined for conditional compilation:"
+msgstr "Options du compilateur définies pour la compilation conditionnelle :"
+
+#: jcfuiconsts.lisprpenablepreprocessorparsing
+msgid "Enable preprocessor parsing"
+msgstr "Autoriser l'analyse par préprocesseur"
+
+#: jcfuiconsts.lisprppreprocessor
+msgid "PreProcessor"
+msgstr "Préprocesseur"
+
+#: jcfuiconsts.lisprpsymbolsdefinedforconditionalcompilation
+msgid "Symbols defined for conditional compilation:"
+msgstr "Symboles définis pour la compilation conditionnelle :"
+
+#: jcfuiconsts.lisreturnsafteruses
+msgid "After uses"
+msgstr "Après \"uses\""
+
+#: jcfuiconsts.lisreturnsconverttocarriagereturn
+msgid "Convert to Carriage Return (UNIX)"
+msgstr "Convertir en retour chariot  (UNIX)"
+
+#: jcfuiconsts.lisreturnsconverttocarriagereturnlinefeed
+msgid "Convert to Carriage Return + Linefeed (DOS/Windows)"
+msgstr "Convertir en retour chariot + saut de ligne (DOS/Windows)"
+
+#: jcfuiconsts.lisreturnsinexpressions
+msgid "In expressions"
+msgstr "Dans les expressions"
+
+#: jcfuiconsts.lisreturnsinmiscbadplaces
+msgid "In misc. bad places"
+msgstr "En divers mauvais endroits"
+
+#: jcfuiconsts.lisreturnsinmiscgoodplaces
+msgid "In misc. good places"
+msgstr "En divers bons endroits"
+
+#: jcfuiconsts.lisreturnsinproceduredefinitions
+msgid "In procedure definitions"
+msgstr "Dans les définitions de procédure"
+
+#: jcfuiconsts.lisreturnsinproperties
+msgid "In properties"
+msgstr "Dans les propriétés"
+
+#: jcfuiconsts.lisreturnsinsertreturns
+msgid "Insert returns"
+msgstr "Insérer un retour chariot"
+
+#: jcfuiconsts.lisreturnsinvariabledeclarations
+msgid "In variable declarations"
+msgstr "Dans les déclarations de variable"
+
+#: jcfuiconsts.lisreturnsleaveasis
+msgctxt "jcfuiconsts.lisreturnsleaveasis"
+msgid "Leave as is"
+msgstr "Laisser tel quel"
+
+#: jcfuiconsts.lisreturnsoneusesclauseitemperline
+msgid "One uses clause item per line"
+msgstr "Une clause \"uses\" par ligne"
+
+#: jcfuiconsts.lisreturnsremovereturns
+msgid "Remove returns"
+msgstr "Retirer un retour chariot"
+
+#: jcfuiconsts.lisreturnsreturnchars
+msgid "Return chars"
+msgstr "Caractères en retour"
+
+#: jcfuiconsts.lisreturnsreturns
+msgid "Returns"
+msgstr "Retour chariot"
+
+#: jcfuiconsts.lisspacesafteropen
+msgid "After open"
+msgstr "Après l'ouverture de la parenthèse"
+
+#: jcfuiconsts.lisspacesalways
+msgctxt "jcfuiconsts.lisspacesalways"
+msgid "Always"
+msgstr "Toujours"
+
+#: jcfuiconsts.lisspacesbeforeend
+msgid "Before end"
+msgstr "Avant la fermeture de la parenthèse"
+
+#: jcfuiconsts.lisspacesbeforeinexpression
+msgid "Before [ in expression"
+msgstr "Avant [ dans l'expression"
+
+#: jcfuiconsts.lisspacescaselabel
+msgid "Case l&abel"
+msgstr "Étiquette de la casse"
+
+#: jcfuiconsts.lisspacesclassvariables
+msgid "&Class variables"
+msgstr "Variables  de&Classe"
+
+#: jcfuiconsts.lisspacesconstdeclarations
+msgid "C&onst declarations"
+msgstr "Déclarations \"C&onst\""
+
+#: jcfuiconsts.lisspacesfixspacing
+msgid "Fix &spacing"
+msgstr "Espacement &fixe"
+
+#: jcfuiconsts.lisspacesfunctionreturntypes
+msgid "&Function return types"
+msgstr "Types retournés par \"&function\""
+
+#: jcfuiconsts.lisspacesinfunctioncall
+msgid "In function &call"
+msgstr "Dans l'appel de la fonction"
+
+#: jcfuiconsts.lisspacesinfunctiondeclaration
+msgid "In function &declaration"
+msgstr "Dans la &déclaration de la fonction"
+
+#: jcfuiconsts.lisspacesingeneric
+msgid "In &generic"
+msgstr "Dans générique"
+
+#: jcfuiconsts.lisspacesinsertspacebeforebracket
+msgid "&Insert space before bracket"
+msgstr "&Insérer un espace avant la parenthèse"
+
+#: jcfuiconsts.lisspacesinsertspaceinsidebrackets
+msgid "Insert space inside brackets"
+msgstr "Insérer un espace dans les parenthèses"
+
+#: jcfuiconsts.lisspaceslabel
+msgid "&Label"
+msgstr "&Étiquette"
+
+#: jcfuiconsts.lisspacesleaveasis
+msgctxt "jcfuiconsts.lisspacesleaveasis"
+msgid "Leave as is"
+msgstr "Laisser tel quel"
+
+#: jcfuiconsts.lisspacesmaxspacesincode
+msgid "&Max spaces in code"
+msgstr "&Maximum d'espaces dans le code"
+
+#: jcfuiconsts.lisspacesmovespacestobeforecolon
+msgid "Move spaces to before colon"
+msgstr "Déplacer les espaces avant les deux points"
+
+#: jcfuiconsts.lisspacesnever
+msgctxt "jcfuiconsts.lisspacesnever"
+msgid "Never"
+msgstr "Jamais"
+
+#: jcfuiconsts.lisspacesprocedureparameters
+msgid "&Procedure parameters"
+msgstr "Paramètres de &Procédure"
+
+#: jcfuiconsts.lisspacesrecordfields
+msgid "&Record fields"
+msgstr "Champs d'&enregistrement"
+
+#: jcfuiconsts.lisspacesspacebeforeclassheritage
+msgid "Space before class &heritage"
+msgstr "Espace avant un &héritage de classe"
+
+#: jcfuiconsts.lisspacesspaces
+msgid "Spaces"
+msgstr "Espaces"
+
+#: jcfuiconsts.lisspacesspacesaroundoperators
+msgid "Spaces around &operators"
+msgstr "Espaces autour des &opérateurs"
+
+#: jcfuiconsts.lisspacesspacesbeforecolonin
+msgid "Spaces &before colon in"
+msgstr "Espaces &avant la colonne dans"
+
+#: jcfuiconsts.lisspacesspacesfortab
+msgid "Spaces for tab"
+msgstr "Espaces pour la tabulation"
+
+#: jcfuiconsts.lisspacesspacespertab
+msgid "Spaces per tab"
+msgstr "Espaces par tabulation"
+
+#: jcfuiconsts.lisspacestabcharacters
+msgid "&Tab characters"
+msgstr "Caractères de &Tabulation"
+
+#: jcfuiconsts.lisspacesturnspacestotabs
+msgid "Turn spaces to tabs"
+msgstr "Convertir les espaces en tabulations"
+
+#: jcfuiconsts.lisspacesturntabstospaces
+msgid "Turn tabs to spaces"
+msgstr "Convertir les tabulations en espaces"
+
+#: jcfuiconsts.lisspacesvardeclarations
+msgid "&Var declarations"
+msgstr "Déclarations de &Variables"
+
+#: jcfuiconsts.listhesettingsfiledoesnotexist
+msgid "The settings file \"%s\" does not exist.%sThe formatter will work better if it is configured to use a valid settings file"
+msgstr "Le fichier de paramètres \"%s\" n'existe pas.%sLe formateur travaillera mieux s'il est configuré pour utiliser un fichier de paramètres correct"
+
+#: jcfuiconsts.listransformaddbeginandendtosinglestatements
+msgid "Add begin and end to single statements"
+msgstr "Ajouter \"begin\" et \"end\" aux instructions uniques"
+
+#: jcfuiconsts.listransformaddorremovebeginandendfromsinglestatements
+msgid "Add or Remove &begin and end from single statements"
+msgstr "Ajouter ou enlèver \"&begin\" et \"end\" des instructions uniques"
+
+#: jcfuiconsts.listransformalphabetic
+msgid "Alphabetic"
+msgstr "Alphabetique"
+
+#: jcfuiconsts.listransformbreakoncomment
+msgid "Break on &comment"
+msgstr "Couper sur un &commentaire"
+
+#: jcfuiconsts.listransformbreakonreturn
+msgid "Break on &return"
+msgstr "Couper sur \"&return\""
+
+#: jcfuiconsts.listransformleavebeginandendasis
+msgid "Leave begin and end as is"
+msgstr "Laisser \"begin\" et \"end\" tels quels"
+
+#: jcfuiconsts.listransformlongesttoshortest
+msgid "Longest to shortest"
+msgstr "Du plus long au plus court"
+
+#: jcfuiconsts.listransformonlywithnocomments
+msgid "Only with no comments"
+msgstr "Seulement sans commentaire"
+
+#: jcfuiconsts.listransformputsemicolonsafterlaststatementinablock
+msgid "Put &semicolons after last statement in a block"
+msgstr "Mettre des &points-virgules après la dernière instruction dans un bloc"
+
+#: jcfuiconsts.listransformremovebeginandendfromaroundsinglestatements
+msgid "Remove begin and end from around single statements"
+msgstr "Enlever \"begin\" et \"end\"  autour des instructions uniques"
+
+#: jcfuiconsts.listransformreversealphabetic
+msgid "Reverse Alphabetic"
+msgstr "Alphabet inversé"
+
+#: jcfuiconsts.listransformshortesttolongest
+msgid "Shortest to longest"
+msgstr "Du plus court au plus long"
+
+#: jcfuiconsts.listransformsortimplementationuses
+msgid "Sort i&mplementation uses"
+msgstr "Trier les \"uses\" de l'implémentation"
+
+#: jcfuiconsts.listransformsortinterfaceuses
+msgid "Sort i&nterface uses"
+msgstr "Tri les \"uses\" de l'interface"
+
+#: jcfuiconsts.listransformsortprogramuses
+msgid "Sort &program uses"
+msgstr "Tri les \"uses\" du programme"
+
+#: jcfuiconsts.listransformsortusesclauses
+msgid "Sort &uses clauses"
+msgstr "Trier les clauses \"&uses\""
+
+#: jcfuiconsts.listransformtransform
+msgid "Transform"
+msgstr "Transformer"
+
+#: jcfuiconsts.listransformusessortorder
+msgid "Uses sort &order"
+msgstr "&Ordre de tri de \"uses\""
+
+#: jcfuiconsts.lisusesinsertintoimplementation
+msgid "Insert into Implementation"
+msgstr "Insérer dans l'implémentation"
+
+#: jcfuiconsts.lisusesinsertintointerface
+msgid "Insert into Interface"
+msgstr "Insérer dans l'interface"
+
+#: jcfuiconsts.lisusesremove
+msgid "Remove"
+msgstr "Retirer"
+
+#: jcfuiconsts.lisusesreplace
+msgid "Replace"
+msgstr "Remplacer"
+
+#: jcfuiconsts.lisusesuses
+msgid "Uses"
+msgstr "\"Uses\""
+
+#: jcfuiconsts.liswarningsignoreunusedparametersnamed
+msgid "&Ignore unused parameters named:"
+msgstr "&Ignorer les paramètres non utilisés nommés :"
+
+#: jcfuiconsts.liswarningswarnaboutunusedparameters
+msgid "Warn about &unused parameters"
+msgstr "Alerte pour les paramètres non &utilisés"
+
+#: jcfuiconsts.liswarningswarnings
+msgid "Warnings"
+msgstr "Avertissements"
+
+#: jcfuiconsts.liswarningswarningson
+msgid "&Warnings On"
+msgstr "&Avertissements actifs"

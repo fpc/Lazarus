@@ -1,0 +1,153 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Giuliano Colla <giuliano.colla@fastwebnet.it>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: debuggerstrconst.drsbreakpointcolwidthaction
+msgid "Action column"
+msgstr "Colonna Azioni"
+
+#: debuggerstrconst.drsbreakpointcolwidthcondition
+msgid "Condition column"
+msgstr "Colonna Condizioni"
+
+#: debuggerstrconst.drsbreakpointcolwidthfile
+msgid "File/address column"
+msgstr "Colonna File/Indirizzo"
+
+#: debuggerstrconst.drsbreakpointcolwidthgroup
+msgid "Group column"
+msgstr "Colonna Gruppo"
+
+#: debuggerstrconst.drsbreakpointcolwidthline
+msgctxt "debuggerstrconst.drsbreakpointcolwidthline"
+msgid "Line column"
+msgstr "Colonna Riga"
+
+#: debuggerstrconst.drsbreakpointcolwidthpasscount
+msgid "Pass-count column"
+msgstr "Colonna Numero-passi"
+
+#: debuggerstrconst.drscolwidthbrkpointimg
+msgid "Break indication column"
+msgstr "Colonna indicazione Break"
+
+#: debuggerstrconst.drscolwidthexpression
+msgid "Expression column"
+msgstr "Colonna Espressione"
+
+#: debuggerstrconst.drscolwidthfunc
+msgid "Function name column"
+msgstr "Colonna Nome Funzione"
+
+#: debuggerstrconst.drscolwidthindex
+msgid "Index column"
+msgstr "Colonna Indice"
+
+#: debuggerstrconst.drscolwidthline
+msgctxt "debuggerstrconst.drscolwidthline"
+msgid "Line column"
+msgstr "Colonna Riga"
+
+#: debuggerstrconst.drscolwidthname
+msgid "Name column"
+msgstr "Colonna Nome"
+
+#: debuggerstrconst.drscolwidthsource
+msgid "Source column"
+msgstr "Colonna Sorgente"
+
+#: debuggerstrconst.drscolwidthstate
+msgid "State column"
+msgstr "Colonna Stato"
+
+#: debuggerstrconst.drscolwidthvalue
+msgid "Value column"
+msgstr "Colonna Valore"
+
+#: debuggerstrconst.drsevalhistorynone
+msgid "No history kept"
+msgstr "Storico non presente"
+
+#: debuggerstrconst.drshistorycolwidthcurrent
+msgid "Current column"
+msgstr "Colonna corrente"
+
+#: debuggerstrconst.drshistorycolwidthlocation
+msgid "Location column"
+msgstr "Colonna posizione"
+
+#: debuggerstrconst.drshistorycolwidthtime
+msgid "Time column"
+msgstr "Colonna Tempo"
+
+#: debuggerstrconst.drsinspectcolwidthdataclass
+msgid "Data class column"
+msgstr "Colonna classe dati"
+
+#: debuggerstrconst.drsinspectcolwidthdataname
+msgid "Data name column"
+msgstr "Colonna nome dati"
+
+#: debuggerstrconst.drsinspectcolwidthdatatype
+msgid "Data type column"
+msgstr "Colonna tipo dati"
+
+#: debuggerstrconst.drsinspectcolwidthdatavalue
+msgid "Data value column"
+msgstr "Colonna valore dati"
+
+#: debuggerstrconst.drsinspectcolwidthdatavisibility
+msgid "Data visibility column"
+msgstr "Colonna visibilità dati"
+
+#: debuggerstrconst.drsinspectcolwidthmethaddress
+msgid "Method address column"
+msgstr "Colonna indirizzo metodo"
+
+#: debuggerstrconst.drsinspectcolwidthmethname
+msgid "Method name column"
+msgstr "Colonna nome metodo"
+
+#: debuggerstrconst.drsinspectcolwidthmethreturns
+msgid "Method returns column"
+msgstr "Colonna risultato metodo"
+
+#: debuggerstrconst.drsinspectcolwidthmethtype
+msgid "Method type column"
+msgstr "Colonna tipo metodo"
+
+#: debuggerstrconst.drslen
+msgid "Len=%d: "
+msgstr "Lung=%d"
+
+#: debuggerstrconst.drsuseinstanceclasstype
+msgid "Use Instance class type"
+msgstr "Usa tipo istanza di classe"
+
+#: debuggerstrconst.drswatchsplitterinspect
+msgid "Inspect pane"
+msgstr "Pannello di ispezione"
+
+#: debuggerstrconst.dsrevalhistorydown
+msgid "Append result at bottom of history"
+msgstr "Accodare il risultato in fondo allo storico"
+
+#: debuggerstrconst.dsrevalhistoryup
+msgid "Insert result at top of history"
+msgstr "Inserire risultato in testa allo storico"
+
+#: debuggerstrconst.synfnewvalueisempty
+msgid "\"New value\" is empty."
+msgstr ""
+
+#: debuggerstrconst.synfthedebuggerwasnotabletomodifythevalue
+msgid "The debugger was not able to modify the value."
+msgstr ""
+

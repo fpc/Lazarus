@@ -1,0 +1,311 @@
+object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
+  Left = 0
+  Height = 411
+  Top = 0
+  Width = 511
+  ClientHeight = 411
+  ClientWidth = 511
+  TabOrder = 0
+  Visible = False
+  DesignLeft = 494
+  DesignTop = 307
+  object PagesGroupBox: TGroupBox
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 411
+    Top = 0
+    Width = 227
+    Align = alLeft
+    Anchors = []
+    Caption = 'PagesGroupBox'
+    ClientHeight = 393
+    ClientWidth = 223
+    TabOrder = 0
+    object PagesListBox: TListBox
+      AnchorSideLeft.Control = PagesGroupBox
+      AnchorSideTop.Control = PagesGroupBox
+      AnchorSideRight.Control = PageMoveUpBtn
+      AnchorSideBottom.Control = AddPageButton
+      Left = 1
+      Height = 284
+      Top = 0
+      Width = 188
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Left = 1
+      BorderSpacing.Right = 6
+      DragMode = dmAutomatic
+      ItemHeight = 0
+      OnDragDrop = PagesListBoxDragDrop
+      OnDragOver = PagesListBoxDragOver
+      OnKeyDown = PagesListBoxKeyDown
+      OnSelectionChange = PagesListBoxSelectionChange
+      PopupMenu = PagesPopupMenu
+      TabOrder = 0
+    end
+    object AddPageButton: TBitBtn
+      AnchorSideLeft.Control = PagesListBox
+      AnchorSideTop.Side = asrBottom
+      AnchorSideBottom.Control = ImportDividerBevel
+      Left = 1
+      Height = 23
+      Top = 290
+      Width = 60
+      Anchors = [akLeft, akBottom]
+      AutoSize = True
+      BorderSpacing.Top = 6
+      BorderSpacing.Bottom = 6
+      Caption = '&Add ...'
+      OnClick = AddPageButtonClick
+      TabOrder = 1
+    end
+    object RestoreButton: TBitBtn
+      AnchorSideLeft.Control = AddPageButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = AddPageButton
+      AnchorSideBottom.Side = asrBottom
+      Left = 70
+      Height = 23
+      Top = 290
+      Width = 101
+      AutoSize = True
+      BorderSpacing.Left = 9
+      BorderSpacing.Bottom = 6
+      Caption = '&Restore default'
+      OnClick = RestoreButtonClick
+      TabOrder = 2
+    end
+    object PageMoveDownBtn: TSpeedButton
+      AnchorSideLeft.Control = PageMoveUpBtn
+      AnchorSideTop.Control = PageMoveUpBtn
+      AnchorSideTop.Side = asrBottom
+      Left = 195
+      Height = 26
+      Top = 135
+      Width = 22
+      BorderSpacing.Top = 7
+      Enabled = False
+      OnClick = PageMoveDownBtnClick
+      ShowHint = True
+      ParentShowHint = False
+    end
+    object PageMoveUpBtn: TSpeedButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = PagesGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 195
+      Height = 26
+      Top = 102
+      Width = 22
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 6
+      Enabled = False
+      OnClick = PageMoveUpBtnClick
+      ShowHint = True
+      ParentShowHint = False
+    end
+    object ImportDividerBevel: TDividerBevel
+      AnchorSideLeft.Control = ImportButton
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = PagesGroupBox
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = ImportButton
+      Left = 1
+      Height = 13
+      Top = 319
+      Width = 222
+      Caption = 'Import / Export'
+      Anchors = [akLeft, akRight, akBottom]
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object RecentButton: TButton
+      AnchorSideLeft.Control = RecentLabel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = RecentLabel
+      AnchorSideTop.Side = asrCenter
+      Left = 128
+      Height = 25
+      Hint = 'Recent files'
+      Top = 334
+      Width = 35
+      BorderSpacing.Around = 6
+      Caption = '>>'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 3
+      Visible = False
+    end
+    object RecentLabel: TLabel
+      AnchorSideLeft.Control = ImportButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = ImportButton
+      AnchorSideTop.Side = asrCenter
+      Left = 88
+      Height = 13
+      Top = 340
+      Width = 34
+      BorderSpacing.Left = 14
+      Caption = 'Recent'
+      ParentColor = False
+      Visible = False
+    end
+    object ImportButton: TBitBtn
+      AnchorSideLeft.Control = ExportButton
+      AnchorSideTop.Side = asrBottom
+      AnchorSideBottom.Control = ExportButton
+      Left = 1
+      Height = 23
+      Top = 335
+      Width = 73
+      Anchors = [akLeft, akBottom]
+      AutoSize = True
+      BorderSpacing.Top = 3
+      BorderSpacing.Bottom = 6
+      Caption = 'Import ...'
+      OnClick = ImportButtonClick
+      TabOrder = 4
+    end
+    object ExportButton: TBitBtn
+      AnchorSideLeft.Control = PagesGroupBox
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = PagesGroupBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 1
+      Height = 23
+      Top = 364
+      Width = 73
+      Anchors = [akLeft, akBottom]
+      AutoSize = True
+      BorderSpacing.Left = 1
+      BorderSpacing.Top = 6
+      BorderSpacing.Bottom = 6
+      Caption = 'Export ...'
+      OnClick = ExportButtonClick
+      TabOrder = 5
+    end
+  end
+  object ComponentsGroupBox: TGroupBox
+    Left = 232
+    Height = 411
+    Top = 0
+    Width = 279
+    Align = alClient
+    Anchors = []
+    Caption = 'ComponentsGroupBox'
+    ClientHeight = 393
+    ClientWidth = 275
+    TabOrder = 1
+    object ComponentsListView: TListView
+      AnchorSideLeft.Control = ComponentsGroupBox
+      AnchorSideTop.Control = ComponentsGroupBox
+      AnchorSideRight.Control = CompMoveUpBtn
+      AnchorSideBottom.Control = ComponentsGroupBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 1
+      Height = 391
+      Top = 1
+      Width = 240
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Right = 5
+      BorderSpacing.Around = 1
+      Columns = <      
+        item
+          Width = 35
+        end      
+        item
+          Caption = 'Name'
+          MinWidth = 50
+          Width = 145
+        end      
+        item
+          Caption = 'Page'
+          MinWidth = 50
+          Width = 201
+        end      
+        item
+          Caption = 'Unit'
+          MinWidth = 50
+          Width = 301
+        end>
+      DragMode = dmAutomatic
+      Items.LazData = {
+        4F00000001000000FFFFFFFFFFFFFFFFFFFFFFFF030000000000000008000000
+        54657374436F6D700800000054657374506167650B000000546573745061636B
+        616765FFFFFFFFFFFFFFFFFFFFFFFF
+      }
+      ReadOnly = True
+      RowSelect = True
+      ScrollBars = ssAutoBoth
+      TabOrder = 0
+      ViewStyle = vsReport
+      OnChange = ComponentsListViewChange
+      OnClick = ComponentsListViewClick
+      OnCustomDraw = ComponentsListViewCustomDraw
+      OnCustomDrawItem = ComponentsListViewCustomDrawItem
+      OnDragDrop = ComponentsListViewDragDrop
+      OnDragOver = ComponentsListViewDragOver
+      OnItemChecked = ComponentsListViewItemChecked
+      OnKeyDown = ComponentsListViewKeyDown
+    end
+    object CompMoveUpBtn: TSpeedButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = ComponentsGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 247
+      Height = 26
+      Top = 102
+      Width = 22
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 6
+      Enabled = False
+      OnClick = CompMoveUpBtnClick
+      ShowHint = True
+      ParentShowHint = False
+    end
+    object CompMoveDownBtn: TSpeedButton
+      AnchorSideLeft.Control = CompMoveUpBtn
+      AnchorSideTop.Control = CompMoveUpBtn
+      AnchorSideTop.Side = asrBottom
+      Left = 247
+      Height = 26
+      Top = 135
+      Width = 22
+      BorderSpacing.Top = 7
+      Enabled = False
+      OnClick = CompMoveDownBtnClick
+      ShowHint = True
+      ParentShowHint = False
+    end
+  end
+  object Splitter1: TSplitter
+    Left = 227
+    Height = 411
+    Top = 0
+    Width = 5
+    Anchors = [akLeft]
+  end
+  object ImportDialog: TOpenDialog
+    left = 152
+    top = 376
+  end
+  object ExportDialog: TSaveDialog
+    left = 192
+    top = 376
+  end
+  object PagesPopupMenu: TPopupMenu
+    OnPopup = PagesPopupMenuPopup
+    left = 192
+    top = 40
+    object RenameMenuItem: TMenuItem
+      Caption = 'Rename'
+      OnClick = RenameMenuItemClick
+    end
+    object DeleteMenuItem: TMenuItem
+      Caption = 'Delete'
+      OnClick = DeleteMenuItemClick
+    end
+  end
+end

@@ -1,0 +1,54 @@
+object frInspForm: TfrInspForm
+  Left = 433
+  Height = 176
+  Top = 215
+  Width = 132
+  HorzScrollBar.Page = 131
+  VertScrollBar.Page = 175
+  ActiveControl = Edit1
+  BorderStyle = bsSizeToolWin
+  Caption = 'Object inspector'
+  ClientHeight = 176
+  ClientWidth = 132
+  OnCreate = FormCreate
+  OnDeactivate = FormDeactivate
+  OnDestroy = FormDestroy
+  OnResize = FormResize
+  OnShow = FormShow
+  LCLVersion = '0.9.29'
+  object PaintBox1: TPaintBox
+    Left = 0
+    Height = 136
+    Top = 0
+    Width = 132
+    Align = alTop
+    OnMouseDown = PaintBox1MouseDown
+    OnPaint = PaintBox1Paint
+  end
+  object SpeedButton1: TSpeedButton
+    Left = 12
+    Height = 16
+    Top = 76
+    Width = 17
+    Caption = '...'
+    Color = clBtnFace
+    Glyph.Data = {
+      96000000424D960000000000000076000000280000000A000000040000000100
+      04000000000020000000CE0E0000C40E00001000000000000000000000000000
+      80000080000000808000800000008000800080800000C0C0C000808080000000
+      FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00777777777700
+      0000700700700700000070070070070000007777777777000000
+    }
+    Margin = 1
+    NumGlyphs = 0
+    OnClick = SpeedButton1Click
+  end
+  object Edit1: TEdit
+    Left = 24
+    Height = 23
+    Top = 16
+    Width = 80
+    TabOrder = 0
+    Text = 'Edit1'
+  end
+end

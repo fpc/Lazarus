@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    IndustrialBase
+  ====================================================================
+-->
+
+<module name="IndustrialBase">
+<short></short>
+<descr>
+</descr>
+
+<!-- class Visibility: default -->
+<element name="TIndustrialBase">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TIndustrialBase.FAntiAliasingMode">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TIndustrialBase.SetAntiAliasingMode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIndustrialBase.SetAntiAliasingMode.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TIndustrialBase.GraphicChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TIndustrialBase.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TIndustrialBase.Create.aOwner">
+<short></short>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TIndustrialBase.AntiAliasingMode">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+</module> <!-- IndustrialBase -->
+
+</package>
+</fpdoc-descriptions>

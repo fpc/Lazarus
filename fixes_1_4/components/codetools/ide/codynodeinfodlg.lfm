@@ -1,0 +1,100 @@
+object CodyNodeInfoDialog: TCodyNodeInfoDialog
+  Left = 275
+  Height = 467
+  Top = 250
+  Width = 581
+  Caption = 'CodyNodeInfoDialog'
+  ClientHeight = 467
+  ClientWidth = 581
+  OnCreate = FormCreate
+  LCLVersion = '1.1'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 36
+    Top = 425
+    Width = 569
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbClose]
+  end
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 419
+    Top = 0
+    Width = 581
+    ActivePage = CodeBuffersTabSheet
+    Align = alClient
+    TabIndex = 1
+    TabOrder = 1
+    object ReportTabSheet: TTabSheet
+      Caption = 'ReportTabSheet'
+      ClientHeight = 390
+      ClientWidth = 577
+      object ReportMemo: TMemo
+        Left = 0
+        Height = 390
+        Top = 0
+        Width = 577
+        Align = alClient
+        Lines.Strings = (
+          'ReportMemo'
+        )
+        ReadOnly = True
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+      end
+    end
+    object CodeBuffersTabSheet: TTabSheet
+      Caption = 'CodeBuffersTabSheet'
+      ClientHeight = 390
+      ClientWidth = 577
+      object CodeBuffersComboBox: TComboBox
+        Left = 0
+        Height = 27
+        Top = 0
+        Width = 577
+        Align = alTop
+        ItemHeight = 0
+        OnSelect = CodeBuffersComboBoxSelect
+        TabOrder = 0
+        Text = 'CodeBuffersComboBox'
+      end
+      object CodeBufferMemo: TMemo
+        Left = 0
+        Height = 363
+        Top = 27
+        Width = 577
+        Align = alClient
+        Lines.Strings = (
+          'CodeBufferMemo'
+        )
+        ScrollBars = ssBoth
+        TabOrder = 1
+      end
+    end
+    object LinksTabSheet: TTabSheet
+      Caption = 'LinksTabSheet'
+      ClientHeight = 390
+      ClientWidth = 577
+      object LinksMemo: TMemo
+        Left = 0
+        Height = 390
+        Top = 0
+        Width = 577
+        Align = alClient
+        Lines.Strings = (
+          'LinksMemo'
+        )
+        ScrollBars = ssBoth
+        TabOrder = 0
+      end
+    end
+  end
+end

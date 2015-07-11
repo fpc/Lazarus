@@ -1,0 +1,220 @@
+#The following people contributed to Lazarus:
+
+A. J. Venter
+Aleksey Lagunov
+Alexander Grau
+Alexander S. Klenin
+Alexander Shiyan
+Alexandr Gridnev
+Alexandre Leclerc
+Alexandru Alexandrov
+Andreas Hausladen
+Andreas Schneider
+Andrew Haines
+Andrew Johnson
+Anton A. Panferov
+Anton Kavalenka
+Antonio Galvao
+Arnold Bosch
+Attila Tamás - Hungarian translation
+August Klein
+Babak Mahmoudabadi
+Balazs Szekely
+Bald Zhang
+Bart Broersma
+Benito van der Zander
+Bent Normann Olsen
+Bernd Engelhardt
+Bernd Kreuss
+Bernd Mueller
+Bob Wingard
+Boguslaw Brandys
+Boian Mitov
+Boris Arko
+Boris Glavin
+Boris Popov
+Brad Campbell
+Bruce Tulloch
+Chris Rorden
+Christian Budde
+Christian Iversen
+Christian Ulrich
+Christopher Kirkpatrick
+Cliff Baeseman
+Colin Western
+Curtis White
+Daniel Oom
+Daniel Simões de Almeida
+Darek Mazur
+Darius Blaszijk
+Dávid Fehér - Hungarian translation
+David Guadagnini
+David Jenkins
+David Pethes
+David Zimmer
+Dean Zobec
+Denis Golovan
+Denis Volodarsky
+Derit Agustin
+Diogo Picarra
+Dirk Schiphorst
+Dmitry Boyarintsev
+Dominique Louis
+Ere Maijala
+Eric Chapman
+Erivelton Silva
+Erwin van den Bosch
+Eugene Kryukov
+Evgen A. Palamarchuck
+Ezik Shlomi
+Fabrizio Fellini
+Fathony Luthfillah (x2nie)
+Felipe Monteiro de Carvalho
+Flavio Etrusco
+Florian Koeberle
+Francisco Manuel
+Gerard Visent
+Gilles Vasseur - French translation
+Giuliano Colla
+Giulio Bernardi
+GongYu
+Graeme Geldenhuys
+Grzegorz Zakrzewski
+Hakan Kizilhan
+Hans-Joachim Ott
+Hans-Peter Diettrich
+Haruyuki Fujimaki
+Henry Vermaak
+Hwang Weng Sun
+Ido Kanner
+Igor Paliychuk
+James Chandler Jr.
+Jan Adamec
+Jan Foster
+Janusz Tomczak
+Jarto Tarpio
+Jason King
+Jeffrey A. Wormsley
+Jeroen van Idekinge
+Jesus Reyes
+JiXian Yang
+Joerg Braun - German translation
+Johannes Muller
+Jonas Maebe
+Joost van der Sluis
+Jose Alonso Cardenas M.
+José Martínez - Spanish translation
+Jose Mejuto
+Jouke Rensma
+Juan Salvador Perez García
+Juha Manninen
+Junior Goncalves
+Justin Smyth
+Karl Brandt
+Keith Bowes
+Khaled Shagrouni
+Kostas Michalopoulos
+Krzysztof Dibowski
+Ladislav Michl
+Laurent Jacques
+Leslie Kaye
+Louis Hoefler
+Luca Olivetti
+Lucas Martin
+Ludo Brands
+Luis R. Hilario B.
+Luis Rodrigues made TChart and misc patches
+Luiz Americo
+Marc Fokker
+Marc Geldon
+Marc Weustink
+Marcelo Borges de Paula
+Mario Bonati
+Mario Ray Mahardhika
+Marius Ellen
+Mark Bravington
+Markus Muller
+Martin Friebe
+Martin Patik
+Martin Smat
+Marton Papp
+Martyn Ranyard
+Massimo Magnano
+Massimo Soricetti
+Matthijs Willemstein
+Mattias Gaertner
+Mattias Hansson
+Maxim Ganetsky
+Mazen Neifer
+Micha Nelissen
+Michael A. Hess
+Michal Bukovjan
+Michalis Kamburelis
+Mike Sapsard
+Mike Thompson
+Nikolay Ermolov
+Olivier Guilbaud
+Patrick Chevalley
+Paul Ishenin
+Paul Michell
+Pawel Trochimczuk
+Peter Dyson
+Péter Gábor
+Petr Kristan
+Philip J. Hess
+Philippe Picard
+Pierre Gillmann
+Przemyslaw Nagay
+Radek Cervinka
+Raul Moratalla
+Razvan Adrian Bogdan
+Reimar Grabowski
+Reinier Olislagers
+Roozbeh GHolizadeh
+Rostislav Okulov
+Salvatore Coppola
+Samuel Herzog
+Samuel Liddicott
+Sandro Cumerlato
+Sean McIlwain
+Sebastian Gasiorek
+Seppo Suutarla - Finnish translation
+Sergio Marcelo
+Shane Miller
+Sileno Goedicke
+Silvio Clecio
+Slavko Fedorik
+Stefan Hille
+Takeda Matsuki
+Tamás Kálcza - Hungarian translation
+Taras Boychuk
+Theo Lustenberger
+Tim P. Launchbury
+Tobias Giesen
+Tom Lisjac
+Tomas Gregorovic
+Tomasz Wieckowski
+Tony Maro
+Vaclav Valicek
+Valdas Jankunas
+Valdinilson Lourenço da Cunha
+Vasily I. Volchenko
+Vincent Beuselinck
+Vincent Snijders
+Vladimir Serotyukov
+Vladimir Zhirov
+Vojtech Cihak
+Wanderlan Santos dos Anjos
+Werner Pamler
+Wojciech Malinowski
+Yauheni Nazimau
+Yuichiro Takahashi
+Yuriy Yeroshkin
+Yury Sidorov
+Zaenal Mutaqin
+Zaher Dirkey
+Zdravko Gabrovski
+Zeljan Rikalo
+Zilvinas Ledas
+
+#and special thanks to the FPC team.

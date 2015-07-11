@@ -1,0 +1,2651 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Václav Valíček <Valicek1994@gmail.com>\n"
+"Language-Team: \n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: lr_const.saboutformcapt
+msgid "About FastReport"
+msgstr "O FastReportu"
+
+#: lr_const.saggregatecategory
+msgid "Aggregate"
+msgstr "Souhrn"
+
+#: lr_const.sallfiles
+msgid "All files"
+msgstr "Všechny soubory"
+
+#: lr_const.sargument1
+msgid "Argument 1"
+msgstr ""
+
+#: lr_const.sargument2
+msgid "Argument 2"
+msgstr ""
+
+#: lr_const.sargument3
+msgid "Argument 3"
+msgstr ""
+
+#: lr_const.sarguments
+msgid "Arguments"
+msgstr ""
+
+#: lr_const.sautosize
+msgid "Auto size"
+msgstr "Automatická velikost"
+
+#: lr_const.sband
+msgid "Band:"
+msgstr "Skupina:"
+
+#: lr_const.sband1
+msgid "Report title"
+msgstr "Titulek reportu:"
+
+#: lr_const.sband10
+msgid "Detail footer"
+msgstr "Detail zápatí"
+
+#: lr_const.sband11
+msgid "Subdetail header"
+msgstr "Subdetail záhlaví"
+
+#: lr_const.sband12
+msgid "Subdetail data"
+msgstr "Subdetail data"
+
+#: lr_const.sband13
+msgid "Subdetail footer"
+msgstr "Subdetail patička"
+
+#: lr_const.sband14
+msgid "Overlay"
+msgstr "Překrytí"
+
+#: lr_const.sband15
+msgid "Column header"
+msgstr "Hlavička sloupce"
+
+#: lr_const.sband16
+msgid "Column footer"
+msgstr "Patička sloupce"
+
+#: lr_const.sband17
+msgid "Group header"
+msgstr "Hlavička skupiny"
+
+#: lr_const.sband18
+msgid "Group footer"
+msgstr "Patička skupiny"
+
+#: lr_const.sband19
+msgid "Cross header"
+msgstr "Křižení záhlaví"
+
+#: lr_const.sband2
+msgid "Report summary"
+msgstr "Shrnutí reportu"
+
+#: lr_const.sband20
+msgid "Cross data"
+msgstr "Křížení dat"
+
+#: lr_const.sband21
+msgid "Cross footer"
+msgstr "Křížení patičky"
+
+#: lr_const.sband22
+#, fuzzy
+#| msgid "None"
+msgctxt "lr_const.sband22"
+msgid "Child"
+msgstr "Není"
+
+#: lr_const.sband23
+#, fuzzy
+#| msgid "None"
+msgctxt "lr_const.sband23"
+msgid "None"
+msgstr "Není"
+
+#: lr_const.sband3
+msgid "Page header"
+msgstr "Hlavička stránky"
+
+#: lr_const.sband4
+msgid "Page footer"
+msgstr "Patička stránky"
+
+#: lr_const.sband5
+msgid "Master header"
+msgstr "Hlavní hlavička"
+
+#: lr_const.sband6
+msgid "Master data"
+msgstr "Hlavní data"
+
+#: lr_const.sband7
+msgid "Master footer"
+msgstr "Hlavní patička"
+
+#: lr_const.sband8
+msgid "Detail header"
+msgstr "Hlavička detailu"
+
+#: lr_const.sband9
+msgid "Detail data"
+msgstr "Data detailu"
+
+#: lr_const.sbandeditorformcapt
+msgid "Band data source"
+msgstr "Skupina dat. zdrojů"
+
+#: lr_const.sbandeditorformdatasrc
+msgctxt "lr_const.sbandeditorformdatasrc"
+msgid "Data source"
+msgstr "Zdroj at"
+
+#: lr_const.sbandeditorformreccount
+msgctxt "lr_const.sbandeditorformreccount"
+msgid "&Record count"
+msgstr "Počet záznamů"
+
+#: lr_const.sbandtypesformbtype
+msgid "Band type"
+msgstr "Skupina typu"
+
+#: lr_const.sbandtypesformcapt
+msgid "Insert new band"
+msgstr "Vložit novou skupinu"
+
+#: lr_const.sbarcodeerror
+msgid "Error in barcode"
+msgstr "Chyba v čárovém kódu"
+
+#: lr_const.sbarcodeformchksum
+msgid "Check&sum"
+msgstr "Kontrolní součet"
+
+#: lr_const.sbarcodeformcode
+msgid "&Code"
+msgstr "&Kód"
+
+#: lr_const.sbarcodeformdbfld
+msgctxt "lr_const.sbarcodeformdbfld"
+msgid "Insert DB field"
+msgstr "Vložit DB pole"
+
+#: lr_const.sbarcodeformopts
+msgctxt "lr_const.sbarcodeformopts"
+msgid "Options"
+msgstr "Možnosti"
+
+#: lr_const.sbarcodeformreadable
+msgid "&Human readable"
+msgstr "Čitelné člověkem"
+
+#: lr_const.sbarcodeformrotate
+msgid "Rotation"
+msgstr "Rotace"
+
+#: lr_const.sbarcodeformtitle
+msgid "Barcode editor"
+msgstr "Editor čárových kódů"
+
+#: lr_const.sbarcodeformtype
+msgid "&Type of barcode"
+msgstr "&Druh čárového kódu"
+
+#: lr_const.sbarcodeformvar
+msgid "Insert variable"
+msgstr "Vložit proměnnou"
+
+#: lr_const.sbarcodezoom
+msgid "Zoom"
+msgstr "Zoom"
+
+#: lr_const.sbmpfile
+msgid "Bitmap file"
+msgstr "Soubor Bitmapy"
+
+#: lr_const.sbreaked
+msgid "Breaked"
+msgstr "Zalomené"
+
+#: lr_const.scancel
+msgid "Cancel"
+msgstr "Zrušit"
+
+#: lr_const.scateg1
+msgctxt "lr_const.scateg1"
+msgid "Text"
+msgstr "Text"
+
+#: lr_const.scateg2
+msgid "Number"
+msgstr "Číslo"
+
+#: lr_const.scateg3
+msgctxt "lr_const.scateg3"
+msgid "Date"
+msgstr "Datum"
+
+#: lr_const.scateg4
+msgctxt "lr_const.scateg4"
+msgid "Time"
+msgstr "Čas"
+
+#: lr_const.scateg5
+msgid "Boolean"
+msgstr "Ano/Ne"
+
+#: lr_const.scharset
+msgid "0"
+msgstr "0"
+
+#: lr_const.sclassobjectnotfound
+msgid "Class Object \"%s\" not found"
+msgstr "Třída Objektu \"%s\" nenalezena"
+
+#: lr_const.sconfirm
+msgid "Confirm"
+msgstr "Potvrdit"
+
+#: lr_const.scsvfile
+msgid "CSV File"
+msgstr "CSV Soubor"
+
+#: lr_const.scurmemo
+msgid "Memo:"
+msgstr "Memo: (text)"
+
+#: lr_const.sdateformat1
+msgid "mm.dd.yy"
+msgstr ""
+
+#: lr_const.sdateformat2
+msgid "mm.dd.yyyy"
+msgstr ""
+
+#: lr_const.sdateformat3
+msgid "d mmm yyyy"
+msgstr ""
+
+#: lr_const.sdateformat4
+msgid "d mmmm yyyy"
+msgstr ""
+
+#: lr_const.sdatetimecategory
+msgid "Date and time"
+msgstr "Datum a čas:"
+
+#: lr_const.sdbfield
+msgid "DB field"
+msgstr ""
+
+#: lr_const.sdefaultprinter
+msgid "Default printer"
+msgstr "Výchozí tiskárna"
+
+#: lr_const.sdescriptionavg
+#, fuzzy
+msgid "AVG(<Expression> [,BandName [,1]])/Calculates the average of <Expression> for [BandName] row given. If [1] parameter is used, calculates average for non-visible rows too."
+msgstr "AVG(<Expression> [,BandName [,1]])/Calculates the average of <Expression> for [BandName] row given. If [1] parameter is used, calculates average for non-visible rows too."
+
+#: lr_const.sdescriptioncopy
+#, fuzzy
+msgid "COPY(<String>, <Position>, <Length>)/Returns <Length> characters from <String> starting at <Position>."
+msgstr "COPY(<String>, <Position>, <Length>)/Returns <Length> characters from <String> starting at <Position>."
+
+#: lr_const.sdescriptioncount
+#, fuzzy
+#| msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
+msgid "COUNT(<BandName>)/Returns count of data rows given in the <BandName>. "
+msgstr "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
+
+#: lr_const.sdescriptiondayof
+#, fuzzy
+msgid "DAYOF(<Date>)/Returns day number (1..31) of given <Date>."
+msgstr "DAYOF(<Date>)/Returns day number (1..31) of given <Date>."
+
+#: lr_const.sdescriptiondec
+msgid "DEC(<Value>)/Decrement <Value>."
+msgstr ""
+
+#: lr_const.sdescriptionformatdatetime
+#, fuzzy
+msgid "FORMATDATETIME(<Fmt>, <DateTime>)/Converts a <DateTime> value to a string using mask in <Fmt>."
+msgstr "FORMATDATETIME(<Fmt>, <DateTime>)/Converts a <DateTime> value to a string using mask in <Fmt>."
+
+#: lr_const.sdescriptionformatfloat
+#, fuzzy
+msgid "FORMATFLOAT(<Fmt>, <Numeric>)/Converts a <Numeric> value to a string using mask in <Fmt>."
+msgstr "FORMATFLOAT(<Fmt>, <Numeric>)/Converts a <Numeric> value to a string using mask in <Fmt>."
+
+#: lr_const.sdescriptionformattext
+#, fuzzy
+msgid "FORMATTEXT(<Mask>, <String>)/Applies <Mask> to given <String> and returns formatted string."
+msgstr "FORMATTEXT(<Mask>, <String>)/Applies <Mask> to given <String> and returns formatted string."
+
+#: lr_const.sdescriptionfrac
+#, fuzzy
+msgid "FRAC(<Value>)/Returns the fractional part of floating point <Value>."
+msgstr "FRAC(<Value>)/Returns the fractional part of floating point <Value>."
+
+#: lr_const.sdescriptioninc
+msgid "INC(<Value>)/Increment <Value>."
+msgstr ""
+
+#: lr_const.sdescriptioninput
+#, fuzzy
+#| msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
+msgid "INPUT(<Caption> [,Default])/Shows dialog window with title <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
+msgstr "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
+
+#: lr_const.sdescriptionint
+#, fuzzy
+msgid "INT(<Value>)/Returns the integer part of floating point <Value>."
+msgstr "INT(<Value>)/Returns the integer part of floating point <Value>."
+
+#: lr_const.sdescriptionlength
+#, fuzzy
+msgid "LENGTH(<String>)/Returns length of <String>."
+msgstr "LENGTH(<String>)/Returns length of <String>."
+
+#: lr_const.sdescriptionlowercase
+#, fuzzy
+msgid "LOWERCASE(<String>)/Converts <String> symbols to lower case."
+msgstr "LOWERCASE(<String>)/Converts <String> symbols to lower case."
+
+#: lr_const.sdescriptionmax
+#, fuzzy
+msgid "MAX(<Expression> [,BandName [,1]])/Calculates the maximum of <Expression> for [BandName] row given. If [1] parameter is used, calculates maximum for non-visible rows too."
+msgstr "MAX(<Expression> [,BandName [,1]])/Calculates the maximum of <Expression> for [BandName] row given. If [1] parameter is used, calculates maximum for non-visible rows too."
+
+#: lr_const.sdescriptionmaxnum
+#, fuzzy
+msgid "MAXNUM(<Value1>, <Value2>)/Returns max of given values."
+msgstr "MAXNUM(<Value1>, <Value2>)/Returns max of given values."
+
+#: lr_const.sdescriptionmessagebox
+#, fuzzy
+msgid "MESSAGEBOX(<Text>, <Title>, <Buttons>)/Shows standard dialog window with title, text and buttons."
+msgstr "MESSAGEBOX(<Text>, <Title>, <Buttons>)/Shows standard dialog window with title, text and buttons."
+
+#: lr_const.sdescriptionmin
+#, fuzzy
+msgid "MIN(<Expression> [,BandName [,1]])/Calculates the minimum of <Expression> for [BandName] row given. If [1] parameter is used, calculates minimum for non-visible rows too."
+msgstr "MIN(<Expression> [,BandName [,1]])/Calculates the minimum of <Expression> for [BandName] row given. If [1] parameter is used, calculates minimum for non-visible rows too."
+
+#: lr_const.sdescriptionminnum
+#, fuzzy
+msgid "MINNUM(<Value1>, <Value2>)/Returns min of given values."
+msgstr "MINNUM(<Value1>, <Value2>)/Returns min of given values."
+
+#: lr_const.sdescriptionmonthof
+#, fuzzy
+msgid "MONTHOF(<Date>)/Returns month number (1..12) of given <Date>."
+msgstr "MONTHOF(<Date>)/Returns month number (1..12) of given <Date>."
+
+#: lr_const.sdescriptionnamecase
+#, fuzzy
+msgid "NAMECASE(<String>)/Converts <String> symbols to lower case, and first symbol is in upper case."
+msgstr "NAMECASE(<String>)/Converts <String> symbols to lower case, and first symbol is in upper case."
+
+#: lr_const.sdescriptionnewcolumn
+msgid "NEWCOLUMN/Create new column on page for current report."
+msgstr ""
+
+#: lr_const.sdescriptionnewpage
+msgid "NEWPAGE/Create new page for current report."
+msgstr ""
+
+#: lr_const.sdescriptionpos
+#, fuzzy
+msgid "POS(<SubString>, <String>)/Returns position of substring in given string."
+msgstr "POS(<SubString>, <String>)/Returns position of substring in given string."
+
+#: lr_const.sdescriptionround
+#, fuzzy
+msgid "ROUND(<Value>)/Rounds the floating point <Value> to nearest integer number."
+msgstr "ROUND(<Value>)/Rounds the floating point <Value> to nearest integer number."
+
+#: lr_const.sdescriptionshowband
+msgid "SHOWBAND(<BandName>)/Show <BandName> in report."
+msgstr ""
+
+#: lr_const.sdescriptionstopreport
+msgid "STOPREPORT/Terminate report creation."
+msgstr ""
+
+#: lr_const.sdescriptionstr
+#, fuzzy
+msgid "STR(<Value>)/Converts the given (numeric) <Value> in string."
+msgstr "STR(<Value>)/Converts the given (numeric) <Value> in string."
+
+#: lr_const.sdescriptionstrtodate
+#, fuzzy
+msgid "STRTODATE(<String>)/Converts <String> to date."
+msgstr "STRTODATE(<String>)/Converts <String> to date."
+
+#: lr_const.sdescriptionstrtotime
+#, fuzzy
+msgid "STRTOTIME(<String>)/Converts <String> to time."
+msgstr "STRTOTIME(<String>)/Converts <String> to time."
+
+#: lr_const.sdescriptionsum
+#, fuzzy
+msgid "SUM(<Expression> [,BandName [,1]])/Calculates the sum of <Expression> for [BandName] row given. If [1] parameter is used, calculates sum for non-visible rows too."
+msgstr "SUM(<Expression> [,BandName [,1]])/Calculates the sum of <Expression> for [BandName] row given. If [1] parameter is used, calculates sum for non-visible rows too."
+
+#: lr_const.sdescriptiontrim
+#, fuzzy
+msgid "TRIM(<String>)/Trims all heading and trailing spaces in <String> and returns resulting string."
+msgstr "TRIM(<String>)/Trims all heading and trailing spaces in <String> and returns resulting string."
+
+#: lr_const.sdescriptionuppercase
+#, fuzzy
+msgid "UPPERCASE(<String>)/Converts <String> symbols to upper case."
+msgstr "UPPERCASE(<String>)/Converts <String> symbols to upper case."
+
+#: lr_const.sdescriptionyearof
+#, fuzzy
+msgid "YEAROF(<Date>)/Returns year of given <Date>."
+msgstr "YEAROF(<Date>)/Returns year of given <Date>."
+
+#: lr_const.sdesignreport
+msgid "Design report"
+msgstr "Navrhnout report"
+
+#: lr_const.sdesoptionsform18pix
+msgid "&18 pixels (5mm)"
+msgstr "&18 pixelů (5mm)"
+
+#: lr_const.sdesoptionsform4pix
+msgid "&4 pixels"
+msgstr "&4 pixely"
+
+#: lr_const.sdesoptionsform8pix
+msgid "&8 pixels"
+msgstr "&8 pixelů"
+
+#: lr_const.sdesoptionsformaligngrd
+msgid "Align to &grid"
+msgstr "Zarovnat k mřížce"
+
+#: lr_const.sdesoptionsformcoloredbutton
+msgid "Colored &buttons"
+msgstr "Barevná tlačítka"
+
+#: lr_const.sdesoptionsformcontents
+msgid "&Contents"
+msgstr "&Obsah"
+
+#: lr_const.sdesoptionsformdes
+msgctxt "lr_const.sdesoptionsformdes"
+msgid "Designer"
+msgstr "Návrhář"
+
+#: lr_const.sdesoptionsformediting
+msgid "&Editing after insert"
+msgstr "Upravování po vložení"
+
+#: lr_const.sdesoptionsformgrdsize
+msgid "Grid size"
+msgstr "Velikost mřížky"
+
+#: lr_const.sdesoptionsformgrid
+msgctxt "lr_const.sdesoptionsformgrid"
+msgid "Grid"
+msgstr "Mřížka"
+
+#: lr_const.sdesoptionsforminch
+msgid "&Inches"
+msgstr "Palce"
+
+#: lr_const.sdesoptionsformmm
+msgid "&MM"
+msgstr "&MM"
+
+#: lr_const.sdesoptionsformobj
+msgid "Object moving"
+msgstr "Pohybování objektů"
+
+#: lr_const.sdesoptionsformopt
+msgctxt "lr_const.sdesoptionsformopt"
+msgid "Options"
+msgstr "Volby"
+
+#: lr_const.sdesoptionsformother
+msgctxt "lr_const.sdesoptionsformother"
+msgid "Other"
+msgstr "Ostatní"
+
+#: lr_const.sdesoptionsformpix
+msgid "&Pixels"
+msgstr "&Pixely"
+
+#: lr_const.sdesoptionsformshape
+msgid "S&hape"
+msgstr "Tvar"
+
+#: lr_const.sdesoptionsformshowband
+msgid "Show band &titles"
+msgstr "Ukázat titulky skupin"
+
+#: lr_const.sdesoptionsformshowgrd
+msgid "&Show grid"
+msgstr "Ukázat mřížku"
+
+#: lr_const.sdesoptionsformunits
+msgid "Report units"
+msgstr "Report unit"
+
+#: lr_const.sdoc
+msgid "Report:"
+msgstr "Report:"
+
+#: lr_const.sdocautor
+#, fuzzy
+#| msgid "Autor"
+msgid "Author"
+msgstr "Autor"
+
+#: lr_const.sdocbuild
+msgid "Build"
+msgstr "Sestávaní"
+
+#: lr_const.sdocmajor
+msgid "Major"
+msgstr "Hlavní"
+
+#: lr_const.sdocminor
+msgid "Minor"
+msgstr "Vedlejší"
+
+#: lr_const.sdocoptform2pass
+msgid "&Two-pass report"
+msgstr "Dvouprůběhový report"
+
+#: lr_const.sdocoptformcomments
+msgid "Comments"
+msgstr "Komentáře"
+
+#: lr_const.sdocoptformkeywords
+#, fuzzy
+#| msgid "Keys words"
+msgid "Keywords"
+msgstr "Klíčová slova"
+
+#: lr_const.sdocoptformopt
+msgid "Report options"
+msgstr "Volby reportu"
+
+#: lr_const.sdocoptformother
+msgctxt "lr_const.sdocoptformother"
+msgid "Other"
+msgstr "Ostatní"
+
+#: lr_const.sdocoptformprinter
+msgctxt "lr_const.sdocoptformprinter"
+msgid "Printer"
+msgstr "Tiskárna"
+
+#: lr_const.sdocoptformselect
+msgid "&Select when report loaded"
+msgstr "Vybrat když se report načte"
+
+#: lr_const.sdocoptformsubject
+msgid "Subject"
+msgstr "Předmět"
+
+#: lr_const.sdocoptformtitle
+msgid "Title"
+msgstr "Titulek"
+
+#: lr_const.sdocrelease
+msgid "Release"
+msgstr "Vydání"
+
+#: lr_const.sdocversion
+msgid "Version"
+msgstr "Verze"
+
+#: lr_const.sduplicatedobjectname
+msgid "An object named \"%s\" already exists"
+msgstr "Objekt pojmenovaný \"%s\" už existuje"
+
+#: lr_const.seditor
+msgid "Editor"
+msgstr ""
+
+#: lr_const.seditorformbig
+msgid "&Big font"
+msgstr "Velký font"
+
+#: lr_const.seditorformcapt
+msgid "Text editor"
+msgstr "Editor textu"
+
+#: lr_const.seditorformfield
+msgid "&DB field"
+msgstr "Políčko &DB"
+
+#: lr_const.seditorformformat
+msgctxt "lr_const.seditorformformat"
+msgid "&Format"
+msgstr "&Formát"
+
+#: lr_const.seditorformfunction
+msgid "Function"
+msgstr "Funkce"
+
+#: lr_const.seditorformmemo
+msgctxt "lr_const.seditorformmemo"
+msgid "&Memo"
+msgstr "&Memo"
+
+#: lr_const.seditorformscr
+msgid "S&cript"
+msgstr "S&cript"
+
+#: lr_const.seditorformscript
+msgid "&Script"
+msgstr "&Script"
+
+#: lr_const.seditorformvar
+msgctxt "lr_const.seditorformvar"
+msgid "&Variable"
+msgstr "Proměnná"
+
+#: lr_const.seditorformword
+msgid "&Word wrap"
+msgstr "Zalamování řádků"
+
+#: lr_const.serror
+msgid "Error"
+msgstr "Error"
+
+#: lr_const.serroroccured
+#, fuzzy
+#| msgid "An error occured during calculating"
+msgid "An error occurred during calculation"
+msgstr "Během počítání výsledků se stala chyba"
+
+#: lr_const.sevformcapt
+msgid "Variables editor"
+msgstr "Editor proměnných"
+
+#: lr_const.sevformcopy
+msgid "Copy variables"
+msgstr "Kopírovat proměnné"
+
+#: lr_const.sevformexp
+msgid "&Expression"
+msgstr "Výraz"
+
+#: lr_const.sevformpaste
+msgid "Paste variables"
+msgstr "Vložit proměnné"
+
+#: lr_const.sevformvalue
+msgid "Va&lue"
+msgstr "Hodnota"
+
+#: lr_const.sevformvar
+msgctxt "lr_const.sevformvar"
+msgid "&Variable"
+msgstr "Proměnná"
+
+#: lr_const.sevformvars
+msgid "Va&riables ..."
+msgstr "Proměnné"
+
+#: lr_const.sexportfilterindexerror
+msgid "Export filter index out of range"
+msgstr "Exportní filtr je mimo rozsah"
+
+#: lr_const.sfieldsformaviabledb
+msgid "&Available DB's"
+msgstr "Dostupné DB"
+
+#: lr_const.sfieldsforminsert
+msgctxt "lr_const.sfieldsforminsert"
+msgid "Insert DB field"
+msgstr "Vložit DB Pole"
+
+#: lr_const.sfilenotfound
+msgid "File not found"
+msgstr ""
+
+#: lr_const.sfilter
+msgid "Filter properties"
+msgstr "Volby Filtru"
+
+#: lr_const.sfilterparam
+msgid "Average font height:"
+msgstr "Průměrná výška fontu:"
+
+#: lr_const.sfindtextcaption
+msgctxt "lr_const.sfindtextcaption"
+msgid "Find text"
+msgstr "Najít text"
+
+#: lr_const.sfindtextcase
+msgid "&Case sensitive"
+msgstr "Rozlišovat velikost písmen"
+
+#: lr_const.sfindtextcurrentpg
+msgctxt "lr_const.sfindtextcurrentpg"
+msgid "Current &page"
+msgstr "Aktuální stránka"
+
+#: lr_const.sfindtextfirstpg
+msgid "&1st page"
+msgstr "1 strana"
+
+#: lr_const.sfindtextnotfound
+msgid "Search text not found."
+msgstr "Hledaný text nenalezen"
+
+#: lr_const.sfindtextoptions
+msgctxt "lr_const.sfindtextoptions"
+msgid "Options"
+msgstr "Volby"
+
+#: lr_const.sfindtextorg
+msgid "Origin"
+msgstr "Původ"
+
+#: lr_const.sfindtexttext
+msgid "Text to &find"
+msgstr "Text ke hledání"
+
+#: lr_const.sfirstpass
+msgid "Performing 1st pass:"
+msgstr "Provádění 1. průběhu:"
+
+#: lr_const.sfmtformdecid
+msgid "&Decimal digits"
+msgstr "&Desetinná čísla"
+
+#: lr_const.sfmtformfrac
+msgid "Fraction &symbol"
+msgstr "Zlomkový &symbol"
+
+#: lr_const.sfmtformfrmt
+msgctxt "lr_const.sfmtformfrmt"
+msgid "&Format"
+msgstr "&Format"
+
+#: lr_const.sfmtformfrmtvar
+msgid "Variable formatting"
+msgstr "Formátování proměnných"
+
+#: lr_const.sfmtformvarfmt
+msgid "Variable format"
+msgstr "Formát proměnné"
+
+#: lr_const.sfont
+msgid "Font ..."
+msgstr "Font ..."
+
+#: lr_const.sformat11
+msgctxt "lr_const.sformat11"
+msgid "[None]"
+msgstr "[žádný]"
+
+#: lr_const.sformat21
+msgid "1234,5"
+msgstr "1234,5"
+
+#: lr_const.sformat22
+msgid "1234,50"
+msgstr "1234,50"
+
+#: lr_const.sformat23
+msgid "1 234,5"
+msgstr "1 234,5"
+
+#: lr_const.sformat24
+msgid "1 234,50"
+msgstr "1 234,50"
+
+#: lr_const.sformat25
+msgctxt "lr_const.sformat25"
+msgid "Custom"
+msgstr "Vlastní"
+
+#: lr_const.sformat31
+msgid "11.15.98"
+msgstr "11.15.98"
+
+#: lr_const.sformat32
+msgid "11.15.1998"
+msgstr "11.15.1998"
+
+#: lr_const.sformat33
+msgid "15 nov 1998"
+msgstr "15 Lis 1998"
+
+#: lr_const.sformat34
+msgid "15 november 1998"
+msgstr "15 listopad 1998"
+
+#: lr_const.sformat35
+msgctxt "lr_const.sformat35"
+msgid "Custom"
+msgstr "Vlastní"
+
+#: lr_const.sformat41
+msgid "02:43:35"
+msgstr "02:43:35"
+
+#: lr_const.sformat42
+msgid "2:43:35"
+msgstr "2:43:35"
+
+#: lr_const.sformat43
+msgid "02:43"
+msgstr "02:43"
+
+#: lr_const.sformat44
+msgid "2:43"
+msgstr "2:43"
+
+#: lr_const.sformat45
+msgctxt "lr_const.sformat45"
+msgid "Custom"
+msgstr "Vlastní"
+
+#: lr_const.sformat51
+msgid "0;1"
+msgstr "0;1"
+
+#: lr_const.sformat52
+msgid "No;Yes"
+msgstr "Ne;Ano"
+
+#: lr_const.sformat53
+msgid "_;x"
+msgstr "_;x"
+
+#: lr_const.sformat54
+msgid "False;True"
+msgstr "False;True"
+
+#: lr_const.sformat55
+msgctxt "lr_const.sformat55"
+msgid "Custom"
+msgstr "Vlastní"
+
+#: lr_const.sformfile
+msgid "FastReport form"
+msgstr "Formulář FastReportu"
+
+#: lr_const.sformnewpage
+msgid "Force new page"
+msgstr "Vynutit novou stránku"
+
+#: lr_const.sfrdesignerdatainsp
+msgid "Data inspector"
+msgstr ""
+
+#: lr_const.sfrdesignerexists
+msgid "You already have one TfrDesigner component"
+msgstr ""
+
+#: lr_const.sfrdesignerformaddpg
+msgctxt "lr_const.sfrdesignerformaddpg"
+msgid "Add page"
+msgstr "Přidat stránku"
+
+#: lr_const.sfrdesignerformalign
+msgid "Alignment"
+msgstr "Zarovnání"
+
+#: lr_const.sfrdesignerformalignbottoms
+msgid "Align bottoms"
+msgstr "Zarovnat spodky"
+
+#: lr_const.sfrdesignerformalignetop
+msgid "Align tops"
+msgstr "Zarovnat vršky"
+
+#: lr_const.sfrdesignerformalignhorzcenter
+msgid "Align horizontal centers"
+msgstr "Zarovnat horizontálně na střed"
+
+#: lr_const.sfrdesignerformalignleftedge
+msgid "Align left edges"
+msgstr "Zarovnat leve hrany"
+
+#: lr_const.sfrdesignerformalignrightedge
+msgid "Align right edges"
+msgstr "Zarovnat ptavé hrany"
+
+#: lr_const.sfrdesignerformalignvertcenter
+msgid "Align vertical centers"
+msgstr "Zarovnat vertikální středy"
+
+#: lr_const.sfrdesignerformallframe
+msgid "All frame lines"
+msgstr "Všechny linky rámu"
+
+#: lr_const.sfrdesignerformback
+msgid "Send to back"
+msgstr "Poslat dozadu"
+
+#: lr_const.sfrdesignerformbackcolor
+msgid "Background color"
+msgstr "Barva pozadí"
+
+#: lr_const.sfrdesignerformbold
+msgid "Bold"
+msgstr "Bold"
+
+#: lr_const.sfrdesignerformbottomalign
+msgid "Bottom align"
+msgstr "Zarovnat dolů"
+
+#: lr_const.sfrdesignerformbottomframe
+msgid "Bottom frame line"
+msgstr "Spodní linka rámce"
+
+#: lr_const.sfrdesignerformbring
+msgid "Bring to front"
+msgstr "Přenést do popředí"
+
+#: lr_const.sfrdesignerformcapt
+msgctxt "lr_const.sfrdesignerformcapt"
+msgid "Designer"
+msgstr "Návrhář"
+
+#: lr_const.sfrdesignerformceneralign
+msgid "Center align"
+msgstr "Zarovnání na střed"
+
+#: lr_const.sfrdesignerformcenterhwind
+msgid "Center horizontally in window"
+msgstr "Centrovat horizontálně v okně"
+
+#: lr_const.sfrdesignerformcentervertwing
+msgid "Center vertically in window"
+msgstr "Centrovat vertikálně v okně"
+
+#: lr_const.sfrdesignerformclose
+msgid "Close"
+msgstr "Zavřít"
+
+#: lr_const.sfrdesignerformclosedesigner
+msgid "Close designer"
+msgstr "Zavřít návrháře"
+
+#: lr_const.sfrdesignerformcopy
+msgid "Copy"
+msgstr "Kopírovat"
+
+#: lr_const.sfrdesignerformcut
+msgid "Cut"
+msgstr "Vyjmout"
+
+#: lr_const.sfrdesignerformdrawline
+msgid "Draw lines"
+msgstr "Nakreslit řádky"
+
+#: lr_const.sfrdesignerformfitgrid
+msgid "Fit to grid"
+msgstr "Přichytit k mřížce"
+
+#: lr_const.sfrdesignerformfont
+msgid "Font color"
+msgstr "Barva fontu"
+
+#: lr_const.sfrdesignerformfontname
+msgid "Font name"
+msgstr "Jméno fontu"
+
+#: lr_const.sfrdesignerformfontsize
+msgid "Font size"
+msgstr "Velikost fontu"
+
+#: lr_const.sfrdesignerformframecolor
+msgid "Frame color"
+msgstr "Barva rámce"
+
+#: lr_const.sfrdesignerformframewidth
+msgid "Frame width"
+msgstr "Šířka rámce"
+
+#: lr_const.sfrdesignerformgrid
+msgctxt "lr_const.sfrdesignerformgrid"
+msgid "Grid"
+msgstr "Mřížka"
+
+#: lr_const.sfrdesignerformgridalign
+msgid "Grid align"
+msgstr "Zarovnání mřížky"
+
+#: lr_const.sfrdesignerformhightlight
+msgctxt "lr_const.sfrdesignerformhightlight"
+msgid "Highlight attributes"
+msgstr "Zvýraznit atributy"
+
+#: lr_const.sfrdesignerforminsband
+msgid "Insert band"
+msgstr "Vložit skupinu"
+
+#: lr_const.sfrdesignerforminspict
+msgid "Insert picture"
+msgstr "Vložit obrázek"
+
+#: lr_const.sfrdesignerforminsrect
+msgid "Insert rectangle object"
+msgstr "Vložit obdélníkový objekt"
+
+#: lr_const.sfrdesignerforminssub
+msgid "Insert subreport"
+msgstr "Vložit subreport"
+
+#: lr_const.sfrdesignerformitalic
+msgid "Italic"
+msgstr "Italic"
+
+#: lr_const.sfrdesignerformleftalign
+msgid "Left align"
+msgstr "Zarovnání vlevo"
+
+#: lr_const.sfrdesignerformleftframe
+msgid "Left frame line"
+msgstr "Levá linka řádku"
+
+#: lr_const.sfrdesignerformnewrp
+msgctxt "lr_const.sfrdesignerformnewrp"
+msgid "New report"
+msgstr "Nový report"
+
+#: lr_const.sfrdesignerformnoframe
+msgid "No frame"
+msgstr "Bez rámce"
+
+#: lr_const.sfrdesignerformnormaltext
+msgid "Normal text / 90 degrees"
+msgstr "Normální text / 90°"
+
+#: lr_const.sfrdesignerformobj
+msgid "Objects"
+msgstr "Objekty"
+
+#: lr_const.sfrdesignerformopenrp
+msgctxt "lr_const.sfrdesignerformopenrp"
+msgid "Open report"
+msgstr "Otevřít report"
+
+#: lr_const.sfrdesignerformpast
+msgid "Paste"
+msgstr "Vložit"
+
+#: lr_const.sfrdesignerformpgoption
+msgctxt "lr_const.sfrdesignerformpgoption"
+msgid "Page options"
+msgstr "Volby stránky"
+
+#: lr_const.sfrdesignerformpreview
+msgid "Preview report"
+msgstr "Náhled reportu"
+
+#: lr_const.sfrdesignerformrect
+msgctxt "lr_const.sfrdesignerformrect"
+msgid "Rectangle"
+msgstr "Obdélník"
+
+#: lr_const.sfrdesignerformredo
+msgid "Redo cancelled action"
+msgstr "Provéct znovu zrušenou akci"
+
+#: lr_const.sfrdesignerformremovepg
+msgid "Remove page"
+msgstr "Odstranit stránku"
+
+#: lr_const.sfrdesignerformrightalign
+msgid "Right align"
+msgstr "Zarovnání vpravo"
+
+#: lr_const.sfrdesignerformrightframe
+msgid "Right frame line"
+msgstr "Pravá linka rámu"
+
+#: lr_const.sfrdesignerformsaverp
+msgctxt "lr_const.sfrdesignerformsaverp"
+msgid "Save report"
+msgstr "Uložit report"
+
+#: lr_const.sfrdesignerformselectall
+msgid "Select all"
+msgstr "Vybrat vše"
+
+#: lr_const.sfrdesignerformselectsameclass
+msgid "Select same class objects"
+msgstr "Vybrat stejnou třídu objektů"
+
+#: lr_const.sfrdesignerformselobj
+msgid "Select object"
+msgstr "Vybrat objekt"
+
+#: lr_const.sfrdesignerformspace
+msgid "Space equally, horizontally"
+msgstr "Stejné horizontální mezery"
+
+#: lr_const.sfrdesignerformspaceeqvert
+msgid "Space equally, vertically"
+msgstr "Stejné vertikální mezery"
+
+#: lr_const.sfrdesignerformstd
+msgid "Standard"
+msgstr "Standard"
+
+#: lr_const.sfrdesignerformtext
+msgctxt "lr_const.sfrdesignerformtext"
+msgid "Text"
+msgstr "Text"
+
+#: lr_const.sfrdesignerformtools
+msgid "Tools"
+msgstr "Nástroje"
+
+#: lr_const.sfrdesignerformtopalign
+msgid "Top align"
+msgstr "Zarovnání nahoru"
+
+#: lr_const.sfrdesignerformtopframe
+msgid "Top frame line"
+msgstr "Horní linka řádku"
+
+#: lr_const.sfrdesignerformunabletocreatetemplatedir
+msgid "Unable to create template directory"
+msgstr ""
+
+#: lr_const.sfrdesignerformunderline
+msgid "Underline"
+msgstr "Podtrhnout"
+
+#: lr_const.sfrdesignerformundo
+msgid "Undo last action"
+msgstr "Vrátit poslední akci"
+
+#: lr_const.sfrdesignerformvertcenter
+msgid "Vertical center"
+msgstr "Vertikální centrování"
+
+#: lr_const.sfrdesignerformwidthalign
+#, fuzzy
+msgid "Width align"
+msgstr "Šířka zarovnání"
+
+#: lr_const.sfrdesignerform_about
+msgid "&About ..."
+msgstr "O FastReportu"
+
+#: lr_const.sfrdesignerform_addpg
+msgid "&Add page"
+msgstr "Přidat stránku"
+
+#: lr_const.sfrdesignerform_alignpalette
+msgid "&Alignment palette"
+msgstr "Paleta zarovnání"
+
+#: lr_const.sfrdesignerform_back
+msgid "Send to &back"
+msgstr "Poslat na pozadí"
+
+#: lr_const.sfrdesignerform_beforeprintscript
+msgid "&Before print script ..."
+msgstr ""
+
+#: lr_const.sfrdesignerform_bring
+msgid "Bring to &front"
+msgstr "Přenést do popředí"
+
+#: lr_const.sfrdesignerform_copy
+msgid "&Copy"
+msgstr "Kopírovat"
+
+#: lr_const.sfrdesignerform_cut
+msgid "C&ut"
+msgstr "Vyjmout"
+
+#: lr_const.sfrdesignerform_datainsp
+msgid "&Data inspector"
+msgstr ""
+
+#: lr_const.sfrdesignerform_delete
+msgid "&Delete"
+msgstr "Odstranit"
+
+#: lr_const.sfrdesignerform_edit
+msgctxt "lr_const.sfrdesignerform_edit"
+msgid "&Edit ..."
+msgstr "Upravit ..."
+
+#: lr_const.sfrdesignerform_edit2
+msgid "&Edit"
+msgstr "Upravit"
+
+#: lr_const.sfrdesignerform_editp
+msgctxt "lr_const.sfrdesignerform_editp"
+msgid "&Edit ..."
+msgstr "Upravit ..."
+
+#: lr_const.sfrdesignerform_exit
+msgid "E&xit"
+msgstr "Ukončit"
+
+#: lr_const.sfrdesignerform_file
+msgid "&File"
+msgstr "Soubor"
+
+#: lr_const.sfrdesignerform_help1
+msgid "&Help contents"
+msgstr "Obsah nápovědy"
+
+#: lr_const.sfrdesignerform_help2
+msgid "Help &tool"
+msgstr "Nástroj nápovědy"
+
+#: lr_const.sfrdesignerform_insp
+msgid "Object &Inspector"
+msgstr "Inspektor objektů"
+
+#: lr_const.sfrdesignerform_line
+msgid "Line style"
+msgstr "Styl linky"
+
+#: lr_const.sfrdesignerform_modified
+msgid "Modified"
+msgstr "Upraveno"
+
+#: lr_const.sfrdesignerform_new
+msgid "&New ..."
+msgstr "Nový ..."
+
+#: lr_const.sfrdesignerform_obj
+msgid "&Objects"
+msgstr "Objekty"
+
+#: lr_const.sfrdesignerform_open
+msgid "&Open ..."
+msgstr "Otevřít ...."
+
+#: lr_const.sfrdesignerform_opts
+msgid "&Options ..."
+msgstr "Volby ..."
+
+#: lr_const.sfrdesignerform_paste
+msgid "&Paste"
+msgstr "Vložit"
+
+#: lr_const.sfrdesignerform_pgopt
+msgid "&Page options ..."
+msgstr "Volby stránky ..."
+
+#: lr_const.sfrdesignerform_preview
+msgid "Pre&view"
+msgstr "Náhled"
+
+#: lr_const.sfrdesignerform_rect
+msgid "&Rectangle"
+msgstr "Obdélnák"
+
+#: lr_const.sfrdesignerform_redo
+msgid "&Redo"
+msgstr "Vpřed"
+
+#: lr_const.sfrdesignerform_removepg
+msgid "&Remove page"
+msgstr "Odstranit stránku"
+
+#: lr_const.sfrdesignerform_rptopt
+msgid "&Report options ..."
+msgstr "Volby reportu ..."
+
+#: lr_const.sfrdesignerform_save
+msgid "&Save"
+msgstr "Uložiz"
+
+#: lr_const.sfrdesignerform_saveas
+msgid "Save &as ..."
+msgstr "Uložit jako"
+
+#: lr_const.sfrdesignerform_selectall
+msgid "Select &all"
+msgstr "Vybrat vše"
+
+#: lr_const.sfrdesignerform_std
+msgid "&Standard"
+msgstr "Standardní"
+
+#: lr_const.sfrdesignerform_text
+msgid "&Text"
+msgstr "Text"
+
+#: lr_const.sfrdesignerform_toolbars
+msgid "&Toolbars"
+msgstr "Panely nástrojů"
+
+#: lr_const.sfrdesignerform_tools
+msgid "&Tools"
+msgstr "Nástroje"
+
+#: lr_const.sfrdesignerform_tools2
+msgctxt "lr_const.sfrdesignerform_tools2"
+msgid "Too&ls"
+msgstr "Nástroje"
+
+#: lr_const.sfrdesignerform_tools3
+msgctxt "lr_const.sfrdesignerform_tools3"
+msgid "Too&ls"
+msgstr "Nástroje"
+
+#: lr_const.sfrdesignerform_undo
+msgid "&Undo"
+msgstr "Zpět"
+
+#: lr_const.sfrdesignerform_var
+msgid "Variables &list ..."
+msgstr "Seznam proměnných ..."
+
+#: lr_const.sfrom
+msgid "from"
+msgstr "z"
+
+#: lr_const.sfrvariables
+msgid "FR variables"
+msgstr "FR proměnné"
+
+#: lr_const.sfunctioneditor
+msgid "Function editor"
+msgstr ""
+
+#: lr_const.sfunctions
+msgid "Functions"
+msgstr ""
+
+#: lr_const.sgeditorformcapt
+msgid "Picture"
+msgstr "Obrázek"
+
+#: lr_const.sgeditorformclear
+msgid "&Clear"
+msgstr "Vyčistit"
+
+#: lr_const.sgeditorformload
+msgid "&Load ..."
+msgstr "Načíst ..."
+
+#: lr_const.sgeditorformmemo
+msgctxt "lr_const.sgeditorformmemo"
+msgid "&Memo"
+msgstr "Memo"
+
+#: lr_const.sgeditorformstretch
+msgid "&Stretch"
+msgstr "Natáhnout"
+
+#: lr_const.sgroupeditorformadddbfield
+msgctxt "lr_const.sgroupeditorformadddbfield"
+msgid "Insert DB field"
+msgstr "Vložit DB Pole"
+
+#: lr_const.sgroupeditorformcapt
+msgid "Group"
+msgstr "Skupina"
+
+#: lr_const.sgroupeditorformcond
+msgctxt "lr_const.sgroupeditorformcond"
+msgid "Condition"
+msgstr "Podmínka"
+
+#: lr_const.shidezerovalues
+msgid "Hide zero values"
+msgstr "Skrýt nulové hodnoty"
+
+#: lr_const.shilightformback
+msgid "Background"
+msgstr "Pozadí"
+
+#: lr_const.shilightformbold
+msgid "&Bold"
+msgstr "Bold"
+
+#: lr_const.shilightformcolor
+msgid "C&olor ..."
+msgstr "Barva ..."
+
+#: lr_const.shilightformcolor2
+msgid "Co&lor ..."
+msgstr "Barva ..."
+
+#: lr_const.shilightformcond
+msgctxt "lr_const.shilightformcond"
+msgid "Condition"
+msgstr "Podmínka"
+
+#: lr_const.shilightformfont
+msgid "Font"
+msgstr "Font"
+
+#: lr_const.shilightformhilitattr
+msgctxt "lr_const.shilightformhilitattr"
+msgid "Highlight attributes"
+msgstr "Zvýrazněné atributy"
+
+#: lr_const.shilightformitalic
+msgid "&Italic"
+msgstr "Italic"
+
+#: lr_const.shilightformother
+msgid "Ot&her"
+msgstr "Ostatní"
+
+#: lr_const.shilightformtransp
+msgid "&Transparent"
+msgstr "Průhledné"
+
+#: lr_const.shilightformunder
+msgid "&Underline"
+msgstr "Podtržené"
+
+#: lr_const.shtmfile
+msgid "HTML file"
+msgstr "HTML soubor"
+
+#: lr_const.sinches
+msgid "Inches"
+msgstr "Palce"
+
+#: lr_const.sinsbarcode
+msgid "Insert Barcode object"
+msgstr "Vložit objekt čárového kódu"
+
+#: lr_const.sinschart
+msgid "Insert Chart object"
+msgstr "Vložit objekt grafu"
+
+#: lr_const.sinscheckbox
+msgid "Insert CheckBox object"
+msgstr "Vložit objekt zaškrtávacího pole"
+
+#: lr_const.sinsert
+msgid "Insert"
+msgstr ""
+
+#: lr_const.sinsertexpression
+msgid "Insert Expression"
+msgstr ""
+
+#: lr_const.sinsertfields
+msgid "Insert DB fields"
+msgstr "Vložit DB pole"
+
+#: lr_const.sinsertfieldsformaviabledset
+msgid "&Available datasets"
+msgstr "Dostupné datasety"
+
+#: lr_const.sinsertfieldsformband
+msgid "Include &bands"
+msgstr "Zahrnout skupiny"
+
+#: lr_const.sinsertfieldsformcapt
+msgid "Insert fields"
+msgstr "Zahrnout pole"
+
+#: lr_const.sinsertfieldsformheader
+msgid "&Include headers"
+msgstr "Zahrnout hlavičky"
+
+#: lr_const.sinsertfieldsformhorz
+msgid "&Horizontal"
+msgstr "Horizontální"
+
+#: lr_const.sinsertfieldsformplace
+msgid "Placement"
+msgstr "Umístění"
+
+#: lr_const.sinsertfieldsformvert
+msgid "&Vertical"
+msgstr "Vertikální"
+
+#: lr_const.sinsroundrect
+#, fuzzy
+#| msgid "Insert an RoundRect with shadow area"
+msgid "Insert a RoundRect with shadow area"
+msgstr "Vložit zakulacený obdélník se stínovanou oblastí"
+
+#: lr_const.sinsshape
+msgid "Insert Shape object"
+msgstr "Vložit tvarovaný objekt"
+
+#: lr_const.sinterpretator
+msgid "Interpretator"
+msgstr ""
+
+#: lr_const.sinvalidfrfreport
+msgid "Invalid binary report"
+msgstr ""
+
+#: lr_const.sinvalidfrfversion
+msgid "Invalid report version"
+msgstr ""
+
+#: lr_const.sinvalidlrfreport
+msgid "Invalid report format"
+msgstr ""
+
+#: lr_const.sinvalidvariablename
+msgid "\"%s\" is not a valid variable name."
+msgstr ""
+
+#: lr_const.skeepaspectratio
+msgid "Keep aspect ratio"
+msgstr "Dodržet poměr stran"
+
+#: lr_const.slazformfile
+msgid "LazReport form"
+msgstr "LazReport form"
+
+#: lr_const.slaztemplatefile
+msgid "LazReport template"
+msgstr "LazReport šablona"
+
+#: lr_const.smathcategory
+msgid "Math"
+msgstr "Matematika"
+
+#: lr_const.smemoeditor
+msgid "Memo editor"
+msgstr ""
+
+#: lr_const.smm
+msgid "MM"
+msgstr "MM"
+
+#: lr_const.snewtemplate
+msgid "New template"
+msgstr "Nová šablona"
+
+#: lr_const.sno
+msgid "No"
+msgstr "Ne"
+
+#: lr_const.snotassigned
+msgctxt "lr_const.snotassigned"
+msgid "[None]"
+msgstr "[žádný]"
+
+#: lr_const.sobjectinspector
+msgid "Object inspector"
+msgstr "Inspektor objektů"
+
+#: lr_const.sobjectnotfound
+msgid "Object \"%s\" not found"
+msgstr "Objekt \"%s\" nenalezen"
+
+#: lr_const.sok
+msgid "Ok"
+msgstr "Ok"
+
+#: lr_const.sonfirstpage
+msgid "On first page"
+msgstr "Na první stránce"
+
+#: lr_const.sonlastpage
+msgid "On last page"
+msgstr "Na poslední stránce"
+
+#: lr_const.sother
+msgid "Other ..."
+msgstr "Ostatní .."
+
+#: lr_const.sothercategory
+msgctxt "lr_const.sothercategory"
+msgid "Other"
+msgstr "Ostatní"
+
+#: lr_const.spagepreparing
+msgid "Processing page:"
+msgstr "Zpracování stránky:"
+
+#: lr_const.spageprinting
+msgid "Printing page:"
+msgstr "Tisknutí stránky:"
+
+#: lr_const.spaper1
+msgid "Letter, 8 1/2 x 11\""
+msgstr "Letter, 8 1/2 x 11\""
+
+#: lr_const.spaper10
+msgid "A4 small sheet, 210 x 297 mm"
+msgstr "A4 malá stránka, 210 x 297 mm"
+
+#: lr_const.spaper100
+msgid "DMPAPER_PENV_5 110X220"
+msgstr "DMPAPER_PENV_5 110X220"
+
+#: lr_const.spaper101
+msgid "DMPAPER_PENV_6 120X230"
+msgstr "DMPAPER_PENV_6 120X230"
+
+#: lr_const.spaper102
+msgid "DMPAPER_PENV_7 160X230"
+msgstr "DMPAPER_PENV_7 160X230"
+
+#: lr_const.spaper103
+msgid "DMPAPER_PENV_8 120X309"
+msgstr "DMPAPER_PENV_8 120X309"
+
+#: lr_const.spaper104
+msgid "DMPAPER_PENV_9 229X324"
+msgstr "DMPAPER_PENV_9 229X324"
+
+#: lr_const.spaper105
+msgid "DMPAPER_PENV_10 324X458"
+msgstr "DMPAPER_PENV_10 324X458"
+
+#: lr_const.spaper106
+msgid "DMPAPER_P16K_ROTATED 215X146"
+msgstr "DMPAPER_P16K_ROTATED 215X146"
+
+#: lr_const.spaper107
+msgid "DMPAPER_P32K_ROTATED 151X97"
+msgstr "DMPAPER_P32K_ROTATED 151X97"
+
+#: lr_const.spaper108
+msgid "DMPAPER_P32KBIG_ROTATED 151X97"
+msgstr "DMPAPER_P32KBIG_ROTATED 151X97"
+
+#: lr_const.spaper109
+msgid "DMPAPER_PENV_1_ROTATED 165X102"
+msgstr "DMPAPER_PENV_1_ROTATED 165X102"
+
+#: lr_const.spaper11
+msgid "A5 148 x 210 mm"
+msgstr "A5 148 x 210 mm"
+
+#: lr_const.spaper110
+msgid "DMPAPER_PENV_2_ROTATED 176X102"
+msgstr "DMPAPER_PENV_2_ROTATED 176X102"
+
+#: lr_const.spaper111
+msgid "DMPAPER_PENV_3_ROTATED 176X125"
+msgstr "DMPAPER_PENV_3_ROTATED 176X125"
+
+#: lr_const.spaper112
+msgid "DMPAPER_PENV_4_ROTATED 208X110"
+msgstr "DMPAPER_PENV_4_ROTATED 208X110"
+
+#: lr_const.spaper113
+msgid "DMPAPER_PENV_5_ROTATED 220X110"
+msgstr "DMPAPER_PENV_5_ROTATED 220X110"
+
+#: lr_const.spaper114
+msgid "DMPAPER_PENV_6_ROTATED 230X120"
+msgstr "DMPAPER_PENV_6_ROTATED 230X120"
+
+#: lr_const.spaper115
+msgid "DMPAPER_PENV_7_ROTATED 230X160"
+msgstr "DMPAPER_PENV_7_ROTATED 230X160"
+
+#: lr_const.spaper116
+msgid "DMPAPER_PENV_8_ROTATED 309X120"
+msgstr "DMPAPER_PENV_8_ROTATED 309X120"
+
+#: lr_const.spaper117
+msgid "DMPAPER_PENV_9_ROTATED 324X229"
+msgstr "DMPAPER_PENV_9_ROTATED 324X229"
+
+#: lr_const.spaper118
+msgid "DMPAPER_PENV_10_ROTATED 458X324"
+msgstr "DMPAPER_PENV_10_ROTATED 458X324"
+
+#: lr_const.spaper12
+msgid "B4 250 x 354 mm"
+msgstr "B4 250 x 354 mm"
+
+#: lr_const.spaper13
+msgid "B5 182 x 257 mm"
+msgstr "B5 182 x 257 mm"
+
+#: lr_const.spaper14
+msgid "Folio, 8 1/2 x 13\""
+msgstr "Folio, 8 1/2 x 13\""
+
+#: lr_const.spaper15
+msgid "Quarto Sheet, 215 x 275 mm"
+msgstr "Quarto Sheet, 215 x 275 mm"
+
+#: lr_const.spaper16
+msgid "10 x 14\""
+msgstr "10 x 14\""
+
+#: lr_const.spaper17
+msgid "11 x 17\""
+msgstr "11 x 17\""
+
+#: lr_const.spaper18
+msgid "Note, 8 1/2 x 11\""
+msgstr "Note, 8 1/2 x 11\""
+
+#: lr_const.spaper19
+msgid "9 Envelope, 3 7/8 x 8 7/8\""
+msgstr "9 Envelope, 3 7/8 x 8 7/8\""
+
+#: lr_const.spaper2
+msgid "Letter small, 8 1/2 x 11\""
+msgstr "Letter small, 8 1/2 x 11\""
+
+#: lr_const.spaper20
+msgid "#10 Envelope, 4 1/8  x 9 1/2\""
+msgstr "#10 Envelope, 4 1/8  x 9 1/2\""
+
+#: lr_const.spaper21
+msgid "#11 Envelope, 4 1/2 x 10 3/8\""
+msgstr "#11 Envelope, 4 1/2 x 10 3/8\""
+
+#: lr_const.spaper22
+msgid "#12 Envelope, 4 3/4 x 11\""
+msgstr "#12 Envelope, 4 3/4 x 11\""
+
+#: lr_const.spaper23
+msgid "#14 Envelope, 5 x 11 1/2\""
+msgstr "#14 Envelope, 5 x 11 1/2\""
+
+#: lr_const.spaper24
+msgid "C Sheet, 17 x 22\""
+msgstr "C Sheet, 17 x 22\""
+
+#: lr_const.spaper25
+msgid "D Sheet, 22 x 34\""
+msgstr "D Sheet, 22 x 34\""
+
+#: lr_const.spaper256
+msgctxt "lr_const.spaper256"
+msgid "Custom"
+msgstr "Vlastní"
+
+#: lr_const.spaper26
+msgid "E Sheet, 34 x 44\""
+msgstr "E Sheet, 34 x 44\""
+
+#: lr_const.spaper27
+msgid "DL Envelope, 110 x 220 mm"
+msgstr "DL Envelope, 110 x 220 mm"
+
+#: lr_const.spaper28
+msgid "C5 Envelope, 162 x 229 mm"
+msgstr "C5 Envelope, 162 x 229 mm"
+
+#: lr_const.spaper29
+msgid "C3 Envelope,  324 x 458 mm"
+msgstr "C3 Envelope,  324 x 458 mm"
+
+#: lr_const.spaper3
+msgid "Tabloid, 11 x 17\""
+msgstr "Tabloid, 11 x 17\""
+
+#: lr_const.spaper30
+msgid "C4 Envelope,  229 x 324 mm"
+msgstr "C4 Envelope,  229 x 324 mm"
+
+#: lr_const.spaper31
+msgid "C6 Envelope,  114 x 162 mm"
+msgstr "C6 Envelope,  114 x 162 mm"
+
+#: lr_const.spaper32
+msgid "C65 Envelope, 114 x 229 mm"
+msgstr "C65 Envelope, 114 x 229 mm"
+
+#: lr_const.spaper33
+msgid "B4 Envelope,  250 x 353 mm"
+msgstr "B4 Envelope,  250 x 353 mm"
+
+#: lr_const.spaper34
+msgid "B5 Envelope,  176 x 250 mm"
+msgstr "B5 Envelope,  176 x 250 mm"
+
+#: lr_const.spaper35
+msgid "B6 Envelope,  176 x 125 mm"
+msgstr "B6 Envelope,  176 x 125 mm"
+
+#: lr_const.spaper36
+msgid "Italy Envelope, 110 x 230 mm"
+msgstr "Italy Envelope, 110 x 230 mm"
+
+#: lr_const.spaper37
+msgid "Monarch Envelope, 3 7/8 x 7 1/2\""
+msgstr "Monarch Envelope, 3 7/8 x 7 1/2\""
+
+#: lr_const.spaper38
+msgid "6 3/4 Envelope, 3 5/8 x 6 1/2\""
+msgstr "6 3/4 Envelope, 3 5/8 x 6 1/2\""
+
+#: lr_const.spaper39
+msgid "US Std Fanfold, 14 7/8 x 11\""
+msgstr "US Std Fanfold, 14 7/8 x 11\""
+
+#: lr_const.spaper4
+msgid "Ledger, 17 x 11\""
+msgstr "Ledger, 17 x 11\""
+
+#: lr_const.spaper40
+msgid "German Std Fanfold, 8 1/2 x 12\""
+msgstr "German Std Fanfold, 8 1/2 x 12\""
+
+#: lr_const.spaper41
+msgid "German Legal Fanfold, 8 1/2 x 13\""
+msgstr "German Legal Fanfold, 8 1/2 x 13\""
+
+#: lr_const.spaper42
+msgid "B4 (ISO) 250 x 353 mm"
+msgstr "B4 (ISO) 250 x 353 mm"
+
+#: lr_const.spaper43
+msgid "Japanese Postcard 100 x 148 mm"
+msgstr "Japanese Postcard 100 x 148 mm"
+
+#: lr_const.spaper44
+msgid "9 x 11\""
+msgstr "9 x 11\""
+
+#: lr_const.spaper45
+msgid "10 x 11\""
+msgstr "10 x 11\""
+
+#: lr_const.spaper46
+msgid "15 x 11\""
+msgstr "15 x 11\""
+
+#: lr_const.spaper47
+msgid "Envelope Invite 220 x 220 mm"
+msgstr "Envelope Invite 220 x 220 mm"
+
+#: lr_const.spaper5
+msgid "Legal, 8 1/2 x 14\""
+msgstr "Legal, 8 1/2 x 14\""
+
+#: lr_const.spaper50
+msgid "Letter Extra 9/275 x 12\""
+msgstr "Letter Extra 9/275 x 12\""
+
+#: lr_const.spaper51
+msgid "Legal Extra 9/275 x 15\""
+msgstr "Legal Extra 9/275 x 15\""
+
+#: lr_const.spaper52
+msgid "Tabloid Extra 11.69 x 18\""
+msgstr "Tabloid Extra 11.69 x 18\""
+
+#: lr_const.spaper53
+msgid "A4 Extra 9.27 x 12.69\""
+msgstr "A4 Extra 9.27 x 12.69\""
+
+#: lr_const.spaper54
+msgid "Letter Transverse 8/275 x 11\""
+msgstr "Letter Transverse 8/275 x 11\""
+
+#: lr_const.spaper55
+msgid "A4 Transverse 210 x 297 mm"
+msgstr "A4 Transverse 210 x 297 mm"
+
+#: lr_const.spaper56
+msgid "Letter Extra Transverse 9/275 x 12\""
+msgstr "Letter Extra Transverse 9/275 x 12\""
+
+#: lr_const.spaper57
+msgid "SuperASuperAA4 227 x 356 mm"
+msgstr "SuperASuperAA4 227 x 356 mm"
+
+#: lr_const.spaper58
+msgid "SuperBSuperBA3 305 x 487 mm"
+msgstr "SuperBSuperBA3 305 x 487 mm"
+
+#: lr_const.spaper59
+msgid "Letter Plus 8.5 x 12.69\""
+msgstr "Letter Plus 8.5 x 12.69\""
+
+#: lr_const.spaper6
+msgid "Statement, 5 1/2 x 8 1/2\""
+msgstr "Statement, 5 1/2 x 8 1/2\""
+
+#: lr_const.spaper60
+msgid "A4 Plus 210 x 330 mm"
+msgstr "A4 Plus 210 x 330 mm"
+
+#: lr_const.spaper61
+msgid "A5 Transverse 148 x 210 mm"
+msgstr "A5 Transverse 148 x 210 mm"
+
+#: lr_const.spaper62
+msgid "B5 (JIS) Transverse 182 x 257 mm"
+msgstr "B5 (JIS) Transverse 182 x 257 mm"
+
+#: lr_const.spaper63
+msgid "A3 Extra 322 x 445 mm"
+msgstr "A3 Extra 322 x 445 mm"
+
+#: lr_const.spaper64
+msgid "A5 Extra 174 x 235 mm"
+msgstr "A5 Extra 174 x 235 mm"
+
+#: lr_const.spaper65
+msgid "B5 (ISO) Extra 201 x 276 mm"
+msgstr "B5 (ISO) Extra 201 x 276 mm"
+
+#: lr_const.spaper66
+msgid "A2 420 x 594 mm"
+msgstr "A2 420 x 594 mm"
+
+#: lr_const.spaper67
+msgid "A3 Transverse 297 x 420 mm"
+msgstr "A3 Transverse 297 x 420 mm"
+
+#: lr_const.spaper68
+msgid "A3 Extra Transverse 322 x 445 mm"
+msgstr "A3 Extra Transverse 322 x 445 mm"
+
+#: lr_const.spaper69
+msgid "Double Japanese Postcard 200 x 148 mm"
+msgstr "Double Japanese Postcard 200 x 148 mm"
+
+#: lr_const.spaper7
+msgid "Executive, 7 1/4 x 10 1/2\""
+msgstr "Executive, 7 1/4 x 10 1/2\""
+
+#: lr_const.spaper70
+msgid "A6 105x148 mm"
+msgstr "A6 105x148 mm"
+
+#: lr_const.spaper71
+msgid "DMPAPER_JENV_KAKU2 240X132"
+msgstr "DMPAPER_JENV_KAKU2 240X132"
+
+#: lr_const.spaper72
+msgid "DMPAPER_JENV_KAKU3 216X277"
+msgstr "DMPAPER_JENV_KAKU3 216X277"
+
+#: lr_const.spaper73
+msgid "DMPAPER_JENV_CHOU3 120X235"
+msgstr "DMPAPER_JENV_CHOU3 120X235"
+
+#: lr_const.spaper74
+msgid "DMPAPER_JENV_CHOU4 90X205"
+msgstr "DMPAPER_JENV_CHOU4 90X205"
+
+#: lr_const.spaper75
+msgid "DMPAPER_LETTER_ROTATED 279.4x215.9"
+msgstr "DMPAPER_LETTER_ROTATED 279.4x215.9"
+
+#: lr_const.spaper76
+msgid "DMPAPER_A3_ROTATED 420x297"
+msgstr "DMPAPER_A3_ROTATED 420x297"
+
+#: lr_const.spaper77
+msgid "DMPAPER_A4_ROTATED 297X210"
+msgstr "DMPAPER_A4_ROTATED 297X210"
+
+#: lr_const.spaper78
+msgid "DMPAPER_A5_ROTATED 210X148"
+msgstr "DMPAPER_A5_ROTATED 210X148"
+
+#: lr_const.spaper79
+msgid "DMPAPER_B4_JIS_ROTATED 364X257"
+msgstr "DMPAPER_B4_JIS_ROTATED 364X257"
+
+#: lr_const.spaper8
+msgid "A3 297 x 420 mm"
+msgstr "A3 297 x 420 mm"
+
+#: lr_const.spaper80
+msgid "DMPAPER_B5_JIS_ROTATED 257X182"
+msgstr "DMPAPER_B5_JIS_ROTATED 257X182"
+
+#: lr_const.spaper81
+msgid "DMPAPER_JAPANESE_POSTCARD_ROTATED 148X100"
+msgstr "DMPAPER_JAPANESE_POSTCARD_ROTATED 148X100"
+
+#: lr_const.spaper82
+msgid "DMPAPER_DBL_JAPANESE_POSTCARD_ROTATED 148X200"
+msgstr "DMPAPER_DBL_JAPANESE_POSTCARD_ROTATED 148X200"
+
+#: lr_const.spaper83
+msgid "DMPAPER_A6_ROTATED 148X105"
+msgstr "DMPAPER_A6_ROTATED 148X105"
+
+#: lr_const.spaper84
+msgid "DMPAPER_JENV_KAKU2_ROTATED 332X240"
+msgstr "DMPAPER_JENV_KAKU2_ROTATED 332X240"
+
+#: lr_const.spaper85
+msgid "DMPAPER_JENV_KAKU3_ROTATED 277X216"
+msgstr "DMPAPER_JENV_KAKU3_ROTATED 277X216"
+
+#: lr_const.spaper86
+msgid "DMPAPER_JENV_CHOU3_ROTATED 235X120"
+msgstr "DMPAPER_JENV_CHOU3_ROTATED 235X120"
+
+#: lr_const.spaper87
+msgid "DMPAPER_JENV_CHOU4_ROTATED 205X90"
+msgstr "DMPAPER_JENV_CHOU4_ROTATED 205X90"
+
+#: lr_const.spaper88
+msgid "DMPAPER_B6_JIS 128X122"
+msgstr "DMPAPER_B6_JIS 128X122"
+
+#: lr_const.spaper89
+msgid "DMPAPER_B6_JIS_ROTATED 182X128"
+msgstr "DMPAPER_B6_JIS_ROTATED 182X128"
+
+#: lr_const.spaper9
+msgid "A4 210 x 297 mm"
+msgstr "A4 210 x 297 mm"
+
+#: lr_const.spaper90
+msgid "DMPAPER_12X11 304.8X279.4"
+msgstr "DMPAPER_12X11 304.8X279.4"
+
+#: lr_const.spaper91
+msgid "DMPAPER_JENV_YOU4 105X235"
+msgstr "DMPAPER_JENV_YOU4 105X235"
+
+#: lr_const.spaper92
+msgid "DMPAPER_JENV_YOU4_ROTATED 235X105"
+msgstr "DMPAPER_JENV_YOU4_ROTATED 235X105"
+
+#: lr_const.spaper93
+msgid "DMPAPER_P16K 146X215"
+msgstr "DMPAPER_P16K 146X215"
+
+#: lr_const.spaper94
+msgid "DMPAPER_P32K 97X151"
+msgstr "DMPAPER_P32K 97X151"
+
+#: lr_const.spaper95
+msgid "DMPAPER_P32KBIG 97X151"
+msgstr "DMPAPER_P32KBIG 97X151"
+
+#: lr_const.spaper96
+msgid "DMPAPER_PENV_1 102X165"
+msgstr "DMPAPER_PENV_1 102X165"
+
+#: lr_const.spaper97
+msgid "DMPAPER_PENV_2 102X176"
+msgstr "DMPAPER_PENV_2 102X176"
+
+#: lr_const.spaper98
+msgid "DMPAPER_PENV_3 125X176"
+msgstr "DMPAPER_PENV_3 125X176"
+
+#: lr_const.spaper99
+msgid "DMPAPER_PENV_4 110X208"
+msgstr "DMPAPER_PENV_4 110X208"
+
+#: lr_const.spg
+msgid "Page"
+msgstr "Strana"
+
+#: lr_const.spgoptformbottom
+msgid "&Bottom, mm"
+msgstr "Dolní, mm"
+
+#: lr_const.spgoptformbycolumns
+msgid "By Colum&ns"
+msgstr "Podle sloupců"
+
+#: lr_const.spgoptformbyrows
+msgid "By Row&s"
+msgstr "Podle řádků"
+
+#: lr_const.spgoptformcapt
+msgctxt "lr_const.spgoptformcapt"
+msgid "Page options"
+msgstr "Volby strábjy"
+
+#: lr_const.spgoptformcolgap
+msgid "&Column gap, mm"
+msgstr "Mezera mezi sloupci, mm"
+
+#: lr_const.spgoptformcolumn
+msgid "Columns"
+msgstr "Sloupce"
+
+#: lr_const.spgoptformdontuse
+msgid "&Don't use"
+msgstr "Nepoužívat"
+
+#: lr_const.spgoptformheight
+msgid "&Height, mm"
+msgstr "Výška, mm"
+
+#: lr_const.spgoptformland
+msgid "&Landscape"
+msgstr "Na šířku"
+
+#: lr_const.spgoptformlayoutorder
+msgid "Layout Order"
+msgstr "Pořadí rozložení"
+
+#: lr_const.spgoptformleft
+msgid "&Left, mm"
+msgstr "Levý, mm"
+
+#: lr_const.spgoptformmargins
+msgid "Margins"
+msgstr "Okraje"
+
+#: lr_const.spgoptformnumber
+msgid "&Number"
+msgstr "Číslo"
+
+#: lr_const.spgoptformoptions
+msgctxt "lr_const.spgoptformoptions"
+msgid "Options"
+msgstr "Volby"
+
+#: lr_const.spgoptformor
+msgid "Orientation"
+msgstr "Orientace"
+
+#: lr_const.spgoptformpaper
+msgid "Paper"
+msgstr "Papír"
+
+#: lr_const.spgoptformpgmargins
+msgid "Page margins"
+msgstr "Okraje stránky"
+
+#: lr_const.spgoptformport
+msgid "&Portrait"
+msgstr "Portrét"
+
+#: lr_const.spgoptformprint
+msgid "&Print to previous page"
+msgstr "Tisknout na předchozí stránku"
+
+#: lr_const.spgoptformright
+msgid "&Right, mm"
+msgstr "Pravý, mm"
+
+#: lr_const.spgoptformsize
+msgid "Size"
+msgstr "Velikost"
+
+#: lr_const.spgoptformtop
+msgid "&Top, mm"
+msgstr "Horní, mm"
+
+#: lr_const.spgoptformwidth
+msgid "&Width, mm"
+msgstr "Šířka, mm"
+
+#: lr_const.spictfile
+msgid "Picture file"
+msgstr "Soubor obrázku"
+
+#: lr_const.spicture
+msgid "[Picture]"
+msgstr "[Obrázek]"
+
+#: lr_const.spicturecenter
+msgid "Center picture"
+msgstr "Centrovat obrázek"
+
+#: lr_const.spixels
+msgid "Pixels"
+msgstr "Pixely"
+
+#: lr_const.spreview
+msgid "Preview"
+msgstr "Náhled"
+
+#: lr_const.spreviewform2pg
+msgid "&Two pages"
+msgstr "Dvě stránky"
+
+#: lr_const.spreviewformadd
+msgctxt "lr_const.spreviewformadd"
+msgid "Add page"
+msgstr "Přidat stránku"
+
+#: lr_const.spreviewformclose
+msgid "Close preview"
+msgstr "Zavřít náhled"
+
+#: lr_const.spreviewformdel
+msgid "Delete page"
+msgstr "Odstanit stránku"
+
+#: lr_const.spreviewformedit
+msgid "Edit page"
+msgstr "Upravit stránku"
+
+#: lr_const.spreviewformfind
+msgctxt "lr_const.spreviewformfind"
+msgid "Find text"
+msgstr "Najít text"
+
+#: lr_const.spreviewformhelp
+msgid "Show help"
+msgstr "Ukázat nápovědu"
+
+#: lr_const.spreviewformopen
+msgctxt "lr_const.spreviewformopen"
+msgid "Open report"
+msgstr "Otevřít report"
+
+#: lr_const.spreviewformprint
+msgid "Print report"
+msgstr "Tisknout report"
+
+#: lr_const.spreviewformpw
+msgid "&Page width"
+msgstr "Šířka stránky"
+
+#: lr_const.spreviewformsave
+msgctxt "lr_const.spreviewformsave"
+msgid "Save report"
+msgstr "Uložit report"
+
+#: lr_const.spreviewformscale
+msgid "Scale"
+msgstr "Měřítko"
+
+#: lr_const.spreviewformwhole
+msgid "&Whole page"
+msgstr "Celá stránka"
+
+#: lr_const.sprintchildifnotvisible
+msgid "Print child if not visible"
+msgstr ""
+
+#: lr_const.sprintererror
+#, fuzzy
+#| msgid "Printer selected is not valid"
+msgid "Selected printer is not valid"
+msgstr "Zvolená tiskárna není validní"
+
+#: lr_const.sprintformall
+msgid "&All"
+msgstr "Vše"
+
+#: lr_const.sprintformcollate
+msgid "Collate"
+msgstr ""
+
+#: lr_const.sprintformcopy
+msgid "&Copies:"
+msgstr "Kopie:"
+
+#: lr_const.sprintformcurpg
+msgctxt "lr_const.sprintformcurpg"
+msgid "Current &page"
+msgstr "Aktuální stránka"
+
+#: lr_const.sprintforminfo
+msgid "Enter page numbers and/or page ranges, separated by commas. For example, 1,3,5-12"
+msgstr "Vložte čísla stránek a/nebo rozsahy. Užíjte čárku (,) a pomlčku (-). Příklad: 1,3,5-12"
+
+#: lr_const.sprintformnumber
+msgid "&Numbers:"
+msgstr "Čísla"
+
+#: lr_const.sprintformpgrange
+msgid "Page range"
+msgstr "Rozsah stránek"
+
+#: lr_const.sprintformprint
+msgid "Print"
+msgstr "Tisk"
+
+#: lr_const.sprintformprinter
+msgctxt "lr_const.sprintformprinter"
+msgid "Printer"
+msgstr "Tiskárna"
+
+#: lr_const.sprintformprop
+msgid "Properties"
+msgstr "Vlastnosti"
+
+#: lr_const.sprintifsubsetempty
+msgid "Print if detail empty"
+msgstr "Tisknout pokud je detail prázdný"
+
+#: lr_const.sremovepg
+msgid "Remove this page?"
+msgstr "Odstranit tuto stránku?"
+
+#: lr_const.srepeatheader
+msgid "Show on all pages"
+msgstr "Ukázat na všech stránkách"
+
+#: lr_const.srepfile
+msgid "Report file"
+msgstr "Soubor reportu"
+
+#: lr_const.sreportcreatedate
+#, fuzzy
+#| msgid "Report create date"
+msgid "Report creation date"
+msgstr "Datum vytvoření reportu"
+
+#: lr_const.sreportlastmodifydate
+#, fuzzy
+#| msgid "Report last modify date"
+msgid "Report last modification date"
+msgstr "Poslední úprava reportu"
+
+#: lr_const.sreportloadingerror
+msgid "Error while loading report"
+msgstr ""
+
+#: lr_const.sreportpreparing
+#, fuzzy
+#| msgid "Report preparing"
+msgid "Preparing report"
+msgstr "Příprava reportu"
+
+#: lr_const.sroundrectformbegincolor
+msgid "Begin color"
+msgstr "Barva začátku"
+
+#: lr_const.sroundrectformcaption
+msgid "Property editor"
+msgstr "Editor vlastnosti"
+
+#: lr_const.sroundrectformcolor
+msgid "Color"
+msgstr "Barva"
+
+#: lr_const.sroundrectformcurve
+msgid "Curve"
+msgstr "Křivka"
+
+#: lr_const.sroundrectformdata
+msgid "Data .."
+msgstr "Data ..."
+
+#: lr_const.sroundrectformendcolor
+msgid "End Color"
+msgstr "Barva konce"
+
+#: lr_const.sroundrectformframed
+msgid "Framed zone"
+msgstr "Rámovaná oblast"
+
+#: lr_const.sroundrectformgradient
+msgid "Gradient"
+msgstr ""
+
+#: lr_const.sroundrectformhint
+#, fuzzy
+#| msgid "Click here to define the shadow color or gradian colors"
+msgid "Click here to define the shadow color or gradient colors"
+msgstr "Klikni zde pro definování barvy stínu nebo barev gradiánu"
+
+#: lr_const.sroundrectformsample
+msgid "Sample :"
+msgstr "Příklad :"
+
+#: lr_const.sroundrectformshadow
+msgid "Shadow width"
+msgstr "Šářka stínu"
+
+#: lr_const.sroundrectformstyle
+msgid "Style"
+msgstr "Styl"
+
+#: lr_const.sroundrectformstyledif
+msgid "Vertical,Horizontal,Elliptic,Rectangle,Horiz._Center,Vert._Center"
+msgstr "Vertikální,Horizontální,Eliptický,Obdélníkový,Horiz._Centr,Vert.Centr"
+
+#: lr_const.sroundrectformvar
+msgid "Variables ..."
+msgstr "Proměnné ..."
+
+#: lr_const.sroundrectsqrcorners
+msgid "Squared corners"
+msgstr "Hranaté rohy"
+
+#: lr_const.srtffile
+msgid "Rich Text file"
+msgstr "RTF Soubor"
+
+#: lr_const.ssavechanges
+msgid "Save changes"
+msgstr "Uložit změny"
+
+#: lr_const.sscripteditor
+msgid "Script editor"
+msgstr ""
+
+#: lr_const.sshape1
+msgctxt "lr_const.sshape1"
+msgid "Rectangle"
+msgstr "Obdélník"
+
+#: lr_const.sshape2
+msgid "Rounded rectangle"
+msgstr "Zaoblený obdélník"
+
+#: lr_const.sshape3
+msgid "Ellipse"
+msgstr "Elipsa"
+
+#: lr_const.sshape4
+msgid "Triangle"
+msgstr "Trojúhelník"
+
+#: lr_const.sshape5
+msgid "Diagonal1"
+msgstr "Diagonál1"
+
+#: lr_const.sshape6
+msgid "Diagonal2"
+msgstr "Diagonál2"
+
+#: lr_const.sshapeformcaption
+msgid "Shape"
+msgstr "Tvar"
+
+#: lr_const.sshapeformkind
+msgid "Shape kind"
+msgstr "Druh tvaru"
+
+#: lr_const.sspecval
+msgctxt "lr_const.sspecval"
+msgid "Other"
+msgstr "Ostatní"
+
+#: lr_const.sstretched
+msgid "Stretched"
+msgstr "Roztežené"
+
+#: lr_const.sstringcategory
+msgid "String"
+msgstr "Řetězec"
+
+#: lr_const.ssubreportonpage
+msgid "SubReport on page"
+msgstr "SubReport na stránce"
+
+#: lr_const.stemplemptydesc
+msgid "New report based on empty template"
+msgstr "Nový report založený na prázdné šabloně"
+
+#: lr_const.stemplemtpyrp
+msgid "Empty template"
+msgstr "Prázdná šablona"
+
+#: lr_const.stemplfile
+msgid "FastReport template"
+msgstr "FastReport šablona"
+
+#: lr_const.stemplformdesc
+msgid "Description"
+msgstr "Popis"
+
+#: lr_const.stemplformnewrp
+msgctxt "lr_const.stemplformnewrp"
+msgid "New report"
+msgstr "Nový report"
+
+#: lr_const.stextfile
+msgid "ASCII Text file"
+msgstr "ASCII Textový soubor"
+
+#: lr_const.stimeformat1
+msgid "hh:nn:ss"
+msgstr ""
+
+#: lr_const.stimeformat2
+msgid "h:nn:ss"
+msgstr ""
+
+#: lr_const.stimeformat3
+msgid "hh:nn"
+msgstr ""
+
+#: lr_const.stimeformat4
+msgid "h:nn"
+msgstr ""
+
+#: lr_const.sto
+msgid "to"
+msgstr "do"
+
+#: lr_const.stransparent
+msgid "Transparent"
+msgstr "Průhledný"
+
+#: lr_const.sunabletoreadversion
+msgid "Unable to read report version"
+msgstr ""
+
+#: lr_const.suntitled
+msgid "Untitled"
+msgstr "Bez titulku"
+
+#: lr_const.susefixedfontsettings
+msgid "Use fixed font settings"
+msgstr ""
+
+#: lr_const.susememofontsettings
+msgid "Use Memo font settings"
+msgstr ""
+
+#: lr_const.susesyntaxhighlight
+msgid "Use syntax highlight"
+msgstr ""
+
+#: lr_const.svar1
+msgid "Page#"
+msgstr "Stránka #"
+
+#: lr_const.svar2
+msgid "Expression"
+msgstr "Výraz"
+
+#: lr_const.svar3
+msgctxt "lr_const.svar3"
+msgid "Date"
+msgstr "Datum"
+
+#: lr_const.svar4
+msgctxt "lr_const.svar4"
+msgid "Time"
+msgstr "Čas"
+
+#: lr_const.svar5
+msgid "Line#"
+msgstr "Řádek #"
+
+#: lr_const.svar6
+msgid "Line through#"
+msgstr "Překrtnutý řádek #"
+
+#: lr_const.svar7
+msgid "Column#"
+msgstr "Sloupec #"
+
+#: lr_const.svar8
+msgid "Current line#"
+msgstr "Aktuální řádek #"
+
+#: lr_const.svar9
+msgid "TotalPages"
+msgstr "Celkem stránek"
+
+#: lr_const.svaredformcapt
+msgid "Variables list"
+msgstr "Seznam proměnných"
+
+#: lr_const.svaredformcat
+msgid "&Categories and variables"
+msgstr "Kategorie a proměnné"
+
+#: lr_const.svarformat
+msgid "Variable format ..."
+msgstr "Formát proměnné ..."
+
+#: lr_const.svarformcapt
+msgid "Variables"
+msgstr "Proměnné"
+
+#: lr_const.svarformcat
+msgid "&Category:"
+msgstr "Katorgorie:"
+
+#: lr_const.svariable
+msgid "Variable"
+msgstr ""
+
+#: lr_const.svbandeditorformbnd
+msgid "Bands"
+msgstr "Skupiny"
+
+#: lr_const.svbandeditorformcapt
+msgid "Band data sources"
+msgstr "Datové zdroje skupin"
+
+#: lr_const.svbandeditorformdatasource
+msgctxt "lr_const.svbandeditorformdatasource"
+msgid "Data source"
+msgstr "Zdroj dat"
+
+#: lr_const.svbandeditorformrecordcount
+msgctxt "lr_const.svbandeditorformrecordcount"
+msgid "&Record count"
+msgstr "Počet záznamů"
+
+#: lr_const.svirtualdataset
+msgid "Virtual Dataset"
+msgstr "Virtuální Dataset"
+
+#: lr_const.swordbreak
+msgid "Word break"
+msgstr "Zalamování slov"
+
+#: lr_const.swordwrap
+msgid "Word wrap"
+msgstr "Zalamování řádků"
+
+#: lr_const.syes
+msgid "Yes"
+msgstr "Ano"
+

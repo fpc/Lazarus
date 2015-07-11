@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    TTDebug
+  ====================================================================
+-->
+
+<module name="TTDebug">
+<short></short>
+<descr>
+</descr>
+
+<!-- alias type Visibility: default -->
+<element name="ByteHexStr">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- alias type Visibility: default -->
+<element name="ShortHexStr">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- alias type Visibility: default -->
+<element name="LongHexStr">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- alias type Visibility: default -->
+<element name="DebugStr">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- pointer type Visibility: default -->
+<element name="PBreakPoint">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- record type Visibility: default -->
+<element name="TBreakPoint">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TBreakPoint.Next">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TBreakPoint.Range">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TBreakPoint.Address">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- pointer type Visibility: default -->
+<element name="PRangeRec">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- record type Visibility: default -->
+<element name="TRangeRec">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TRangeRec.Code">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TRangeRec.Size">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TRangeRec.index">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TRangeRec.NLines">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TRangeRec.Disassembled">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TRangeRec.Breaks">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="Generate_Range">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Generate_Range.CR">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Generate_Range.index">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Generate_Range.RR">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="Throw_Range">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Throw_Range.RR">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="Toggle_Break">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Toggle_Break.Head">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Toggle_Break.Range">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Toggle_Break.Adr">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="Set_Break">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Set_Break.Head">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Set_Break.Range">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Set_Break.Adr">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="Clear_Break">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Clear_Break.Head">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Clear_Break.Bp">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="Clear_All_Breaks">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Clear_All_Breaks.Head">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Find_BreakPoint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Find_BreakPoint.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Find_BreakPoint.Head">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Find_BreakPoint.Range">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Find_BreakPoint.IP">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Cur_U_Line">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Cur_U_Line.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Cur_U_Line.Code">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Cur_U_Line.IP">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Get_Length">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Get_Length.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Get_Length.Code">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Get_Length.IP">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Get_Dis_Line">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Get_Dis_Line.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Get_Dis_Line.cr">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Get_Dis_Line.addr">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Hex8">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Hex8.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Hex8.B">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Hex16">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Hex16.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Hex16.W">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Hex32">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Hex32.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Hex32.L">
+<short></short>
+</element>
+
+</module> <!-- TTDebug -->
+
+</package>
+</fpdoc-descriptions>

@@ -1,0 +1,175 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: lhelpstrconsts.slhelp_about
+msgid "About"
+msgstr "Tietoja"
+
+#: lhelpstrconsts.slhelp_about2
+msgid "&About ..."
+msgstr "Tietoja..."
+
+#: lhelpstrconsts.slhelp_cannothandlethistypeofcontentforurl
+msgid "Cannot handle this type of content. \"%s\" for url:%s%s"
+msgstr "Ei pysty hallitsemaan tämän tyyppistä sisältöä. \"%s\" url:%s%s"
+
+#: lhelpstrconsts.slhelp_cannothandlethistypeofsubcontentforurl
+msgid "Cannot handle this type of subcontent. \"%s\" for url:%s%s"
+msgstr "Ei pysty hallitsemaan tämän tyyppistä sisältöä. \"%s\" url:%s%s"
+
+#: lhelpstrconsts.slhelp_closeall
+msgid "&Close All"
+msgstr "Sulje kaikki"
+
+#: lhelpstrconsts.slhelp_contents
+msgid "Contents"
+msgstr "Sisältö"
+
+#: lhelpstrconsts.slhelp_contextshowthehelpinformationrelatedtothiscontext
+msgid "    --context  :  Show the help information related to this context"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_copy
+msgid "Copy"
+msgstr "Kopio"
+
+#: lhelpstrconsts.slhelp_exit
+msgid "E&xit"
+msgstr "Poistu"
+
+#: lhelpstrconsts.slhelp_file
+msgid "&File"
+msgstr "Tiedosto"
+
+#: lhelpstrconsts.slhelp_find
+msgid "Find"
+msgstr "Hae"
+
+#: lhelpstrconsts.slhelp_help
+msgid "&Help"
+msgstr "Ohje"
+
+#: lhelpstrconsts.slhelp_helpfileschmchmallfiles
+msgid "Help files (*.chm)|*.chm|All files (*.*)|*"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_helpshowthisinformation
+msgid "    --help     :  Show this information"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_hidestarthiddenbutacceptcommunicationsviaipc
+msgid "    --hide     :  Start hidden but accept communications via IPC"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_index
+msgid "Index"
+msgstr "Hakemisto"
+
+#: lhelpstrconsts.slhelp_indexloading
+msgid "Index Loading ..."
+msgstr ""
+
+#: lhelpstrconsts.slhelp_ipcnamethenameoftheipcservertolistenonforprogramsw
+msgid "    --ipcname  :  The name of the IPC server to listen on for%s              programs who wish to control the viewer"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_keyword
+msgid "Keyword:"
+msgstr "Avainsana:"
+
+#: lhelpstrconsts.slhelp_lhelp
+msgid "LHelp"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_lhelp2
+msgid "LHelp - %s"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_lhelpchmfileviewerversioncopyrightcandrewhaineslaz
+msgid "LHelp (CHM file viewer)%sVersion %s%sCopyright (C) Andrew Haines, %sLazarus contributors"
+msgstr "LHelp (CHM tiedoston näyttäjä)%sVersion %s%sCopyright (C) Andrew Haines, %sLazarus contributors"
+
+#: lhelpstrconsts.slhelp_lhelpoptions
+msgid "  LHelp options:"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_loadedinms
+msgid "Loaded: %s in %sms"
+msgstr "Ladattu: %s  %s ms"
+
+#: lhelpstrconsts.slhelp_loading
+msgid "Loading: %s"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_noresults
+msgid "No Results"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_notfound
+msgid "%s not found!"
+msgstr "%s ei löytynyt!"
+
+#: lhelpstrconsts.slhelp_ok
+msgid "Ok"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_open
+msgid "&Open ..."
+msgstr "Avaa..."
+
+#: lhelpstrconsts.slhelp_openexistingfile
+msgid "Open existing file"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_openrecent
+msgid "Open Recent"
+msgstr "Avaa viimeksi käytetty"
+
+#: lhelpstrconsts.slhelp_openurl
+msgid "Open &URL ..."
+msgstr "Avaa URL ..."
+
+#: lhelpstrconsts.slhelp_pagecannotbefound
+msgid "Page cannot be found!"
+msgstr "Sivua ei löytynyt!"
+
+#: lhelpstrconsts.slhelp_pleaseenteraurl
+msgid "Please enter a URL"
+msgstr "Ole hyvä ja anna URL"
+
+#: lhelpstrconsts.slhelp_search
+msgid "Search"
+msgstr "Haku"
+
+#: lhelpstrconsts.slhelp_searchresults
+msgid "Search Results:"
+msgstr "Haun tulokset:"
+
+#: lhelpstrconsts.slhelp_showcontents
+msgid "Show contents"
+msgstr "Näytä sisältö"
+
+#: lhelpstrconsts.slhelp_supportedurltypes
+msgid "Supported URL type(s): (%s)"
+msgstr "Tuetut URL tyyppi(/tyypit): (%s)"
+
+#: lhelpstrconsts.slhelp_tableofcontentsloading
+msgid "Table of Contents Loading ..."
+msgstr ""
+
+#: lhelpstrconsts.slhelp_tableofcontentsloadingpleasewait
+msgid "Table of Contents Loading. Please Wait ..."
+msgstr ""
+
+#: lhelpstrconsts.slhelp_untitled
+msgid "untitled"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_usagelhelpfilenamecontextidhideipcnamelhelpmyapp
+msgid "    Usage: lhelp [[filename] [--context id] [--hide] [--ipcname lhelp-myapp]]"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_view
+msgid "&View"
+msgstr "Näytä"
+

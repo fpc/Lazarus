@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    IcnsTypes
+  ====================================================================
+-->
+
+<module name="IcnsTypes">
+<short/>
+<descr>
+</descr>
+
+<!-- array type Visibility: default -->
+<element name="FourCharCode">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- record type Visibility: default -->
+<element name="TIconFamilyElement">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TIconFamilyElement.elementType">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TIconFamilyElement.elementSize">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- record type Visibility: default -->
+<element name="TIconFamilyResource">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TIconFamilyResource.resourceType">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TIconFamilyResource.resourceSize">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="kIconFamilyType">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="kIconServices512PixelDataARGB">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="kIconServices256PixelDataARGB">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="kThumbnail32BitData">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="kThumbnail8BitMask">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="kHuge1BitMask">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="kHuge4BitData">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="kHuge8BitData">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="kHuge32BitData">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="kHuge8BitMask">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="kLarge1BitMask">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="kLarge4BitData">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="kLarge8BitData">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="kLarge32BitData">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="kLarge8BitMask">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="kSmall1BitMask">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="kSmall4BitData">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="kSmall8BitData">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="kSmall32BitData">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="kSmall8BitMask">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="kMini1BitMask">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="kMini4BitData">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="kMini8BitData">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TicnsIconType">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TicnsIconType.iitNone">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TicnsIconType.iitMini4BitData">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TicnsIconType.iitMini8BitData">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TicnsIconType.iitSmall4BitData">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TicnsIconType.iitSmall8BitData">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TicnsIconType.iitSmall32BitData">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TicnsIconType.iitLarge4BitData">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TicnsIconType.iitLarge8BitData">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TicnsIconType.iitLarge32BitData">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TicnsIconType.iitHuge4BitData">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TicnsIconType.iitHuge8BitData">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TicnsIconType.iitHuge32BitData">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TicnsIconType.iitThumbnail32BitData">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TicnsIconType.iitMini1BitMask">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TicnsIconType.iitSmall1BitMask">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TicnsIconType.iitSmall8BitMask">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TicnsIconType.iitLarge1BitMask">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TicnsIconType.iitLarge8BitMask">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TicnsIconType.iitHuge1BitMask">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TicnsIconType.iitHuge8BitMask">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TicnsIconType.iitThumbnail8BitMask">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TicnsIconType.iit256PixelDataARGB">
+<short/>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TicnsIconType.iit512PixelDataARGB">
+<short/>
+</element>
+
+<!-- set type Visibility: default -->
+<element name="TicnsIconTypes">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- record type Visibility: default -->
+<element name="TicnsIconInfo">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TicnsIconInfo.Width">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TicnsIconInfo.Height">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TicnsIconInfo.Depth">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="icnsDataTypes">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="icnsMaskTypes">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="icnsRGB">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="icnsWithAlpha">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="icnsIconTypeInfo">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="icnsMaskToImageMap">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetIcnsIconType">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetIcnsIconType.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetIcnsIconType.StrIconType">
+<short/>
+</element>
+
+</module> <!-- IcnsTypes -->
+
+</package>
+</fpdoc-descriptions>

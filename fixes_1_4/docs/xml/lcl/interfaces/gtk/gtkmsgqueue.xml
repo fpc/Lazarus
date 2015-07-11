@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="ISO8859-1"?>
+<fpdoc-descriptions>
+<package name="gtk">
+
+<!--
+  ====================================================================
+    GtkMsgQueue
+  ====================================================================
+-->
+
+<module name="GtkMsgQueue">
+<short></short>
+<descr>
+</descr>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LazLinkedList">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLType">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LMessages">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="GtkGlobals">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="DynHashArray">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="GtkProc">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TFinalPaintMessageFlag">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TFinalPaintMessageFlag.FPMF_None">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TFinalPaintMessageFlag.FPMF_Internal">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TFinalPaintMessageFlag.FPMF_All">
+<short></short>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkMessageQueueItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TGtkMessageQueueItem.fMsg">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TGtkMessageQueueItem.Msg">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkMessageQueueItem.IsPaintMessage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkMessageQueueItem.IsPaintMessage.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkMessageQueueItem.DestroyMessage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkMessageQueueItem.DestroyMessage.ParFinalInternalOnly">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkMessageQueueItem.DestroyMessage.DisposeMessage">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TGtkMessageQueueItem.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkMessageQueue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TGtkMessageQueue.FPaintMessages">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGtkMessageQueue.CreateItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkMessageQueue.CreateItem.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGtkMessageQueue.CalculateHash">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkMessageQueue.CalculateHash.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkMessageQueue.CalculateHash.ParWnd">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TGtkMessageQueue.HashPaintMessage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkMessageQueue.HashPaintMessage.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkMessageQueue.HashPaintMessage.p">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TGtkMessageQueue.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TGtkMessageQueue.destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkMessageQueue.FirstMessageItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkMessageQueue.FirstMessageItem.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkMessageQueue.LastMessageItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkMessageQueue.LastMessageItem.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkMessageQueue.FirstMessage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkMessageQueue.FirstMessage.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkMessageQueue.LastMessage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkMessageQueue.LastMessage.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkMessageQueue.AddMessage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkMessageQueue.AddMessage.ParMsg">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkMessageQueue.RemoveMessage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkMessageQueue.RemoveMessage.ParItem">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkMessageQueue.RemoveMessage.ParFinalOnlyInternal">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkMessageQueue.RemoveMessage.DisposeMessage">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkMessageQueue.FindPaintMessage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkMessageQueue.FindPaintMessage.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkMessageQueue.FindPaintMessage.HandleWnd">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkMessageQueue.HasPaintMessages">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkMessageQueue.HasPaintMessages.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkMessageQueue.HasNonPaintMessages">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkMessageQueue.HasNonPaintMessages.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkMessageQueue.NumberOfPaintMessages">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkMessageQueue.NumberOfPaintMessages.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkMessageQueue.PopFirstMessage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkMessageQueue.PopFirstMessage.Result">
+<short></short>
+</element>
+</module> <!-- GtkMsgQueue -->
+</package>
+</fpdoc-descriptions>

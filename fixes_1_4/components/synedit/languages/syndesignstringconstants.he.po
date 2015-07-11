@@ -1,0 +1,41 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: shulamy <shulamy@regba.org.il>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: syndesignstringconstants.syndsbookmarks
+msgid "Bookmarks"
+msgstr "סימניות"
+
+#: syndesignstringconstants.syndschangemarker
+msgid "Change Marker"
+msgstr "שנה את הסמן"
+
+#: syndesignstringconstants.syndscodefolding
+#, fuzzy
+#| msgid "Code fFolding"
+msgid "Code Folding"
+msgstr "קיפול קוד"
+
+#: syndesignstringconstants.syndslinenumbers
+msgid "Line Numbers"
+msgstr "מספרי שורות"
+
+#: syndesignstringconstants.syndslineoverview
+msgid "Line Overview"
+msgstr "סקירה של כל השורה"
+
+#: syndesignstringconstants.syndsresetmouseactions
+msgid "Reset mouse actions"
+msgstr ""
+
+#: syndesignstringconstants.syndsseparator
+msgid "Separator"
+msgstr "מפריד"
+

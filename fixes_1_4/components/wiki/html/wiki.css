@@ -1,0 +1,192 @@
+body {
+        margin:0;
+        color:#111111;
+        background-color:#FFFFFF;
+        font-family:"Trebuchet MS", Arial, Verdana, sans-serif;
+        text-align:left;
+        margin-right:10.2em;
+        padding:0.7em;
+}
+
+/* Bi-Directional support */
+*[lang="he"], *[lang="ar"] /* not supported by IE */
+{
+  direction : rtl;
+  text-align : right;
+}
+
+body[lang="he"], body[lang="ar"]
+{
+        margin:0;
+        color:#111111;
+        background-color:#FFFFFF;
+        font-family:"Trebuchet MS", Arial, Verdana, sans-serif;
+        text-align : right;
+        direction : rtl;
+        margin-right:10.2em;
+        padding-right:0.7em;
+}
+
+p {
+        line-height: 1.5em;
+        margin: 0.4em 0 0.5em;
+}
+
+a {
+        color:#4D87CE;
+        text-decoration:none;
+}
+a:hover {
+        color:#2a65ad;
+}
+
+ul li {
+        list-style-image:url(../pic/backgrounds/li.gif);
+        line-height:20px;
+        text-align:left;
+}
+
+#logoheader {
+        width:80%;
+        margin:0 auto 0 auto;
+        text-align:right;
+}
+
+#content {
+        margin:0 40px;
+        padding:0;
+        text-align:left;
+}
+
+h1 {
+        font-family:"Century Gothic", "Trebuchet MS", "Arial Narrow", Arial, sans-serif;
+        font-size:150%;
+        text-transform:uppercase;
+        font-weight:normal;
+        border-bottom:1px solid #eeeeee;
+        color:#253183;
+        margin-top: 10px;
+}
+
+#content h1{
+        font-family:"Century Gothic", "Trebuchet MS", "Arial Narrow", Arial, sans-serif;
+        font-size:150%;
+        margin-bottom: 0.6em;
+}
+h2{
+        font-family:"Century Gothic", "Trebuchet MS", "Arial Narrow", Arial, sans-serif;
+        font-size:130%;
+        margin-bottom: 0.3em;
+}
+h3{
+        font-family: sans-serif;
+        font-size:120%;
+        margin-bottom: 0.3em;
+}
+h4, h5, h6, .subTitle{
+        font-family: sans-serif;
+        font-size:100%;
+        font-weight:bold;
+        margin-bottom: 0.3em;
+}
+
+pre, .pascal {
+    background-color: #F9F9F9;
+    border: 1px dashed #2F6FAB;
+    color: black;
+    padding: 1em;
+}
+
+.num {
+   color: #0000DD;
+}
+
+.string {
+   color: #0000DD;
+}
+
+.var {
+   color: #000000;
+}
+
+.key {
+   font-weight:bold;
+}
+
+.sym {
+   color: red;
+}
+
+.cmt {
+   color: blue;
+}
+
+ul li p {
+        margin: 0;
+}
+
+blockquote {
+        margin: 0 3%;
+}
+
+/* roadmap.css */
+
+td.working {
+    background-color: #88FF88;
+    padding: 3px;
+    text-align: center;
+}
+td.unknown {
+    background-color: #FFFFFF;
+    padding: 3px;
+    text-align: center;
+}
+td.partial {
+    background-color: #FFFF88;
+    padding: 3px;
+    text-align: center;
+}
+td.not {
+    background-color: #FF8888;
+    padding: 3px;
+    text-align: center;
+}
+td.progress {
+    background-color: #8888FF;
+    padding: 3px;
+    text-align: center;
+}
+tr.working {
+    background-color: #88FF88;
+    padding: 3px;
+    text-align: center;
+}
+tr.unknown {
+    background-color: #FFFFFF;
+    padding: 3px;
+    text-align: center;
+}
+tr.partial {
+    background-color: #FFFF88;
+    padding: 3px;
+    text-align: center;
+}
+tr.not {
+    background-color: #FF8888;
+    padding: 3px;
+    text-align: center;
+}
+tr.progress {
+    background-color: #8888FF;
+    padding: 3px;
+    text-align: center;
+}
+
+span.keypress {
+    border: 0.2em outset #cecbc7;
+    background: #f0ece8;
+    padding: 0.1em 0.4em;
+    font-size: 0.8em;
+    white-space: nowrap;
+}
+

@@ -1,0 +1,182 @@
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2014-10-03 14:11+0100\n"
+"Last-Translator: Giuliano Colla <giuliano.colla@fastwebnet.it>\n"
+"Language-Team: PincoPallo Team\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.5.1\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+
+#: editortoolbar_str.rsadddivider
+msgid "Add Divider"
+msgstr "Aggiungi divisore"
+
+#: editortoolbar_str.rsaddselected
+msgid "Add selected item to toolbar"
+msgstr "Aggiungere alla barra degli strumenti"
+
+#: editortoolbar_str.rsall
+msgid "All"
+msgstr "Tutti"
+
+#: editortoolbar_str.rsbottom
+msgid "Bottom"
+msgstr "Basso"
+
+#: editortoolbar_str.rscancel
+msgid "Cancel"
+msgstr "Annulla"
+
+#: editortoolbar_str.rsclearselection
+msgid "Clear selection"
+msgstr "Annulla selezione"
+
+#: editortoolbar_str.rscodeexplorer
+msgid "Code Explorer"
+msgstr "Esplora codice"
+
+#: editortoolbar_str.rscodetemplates
+msgid "Code Templates"
+msgstr "Modelli di codice"
+
+#: editortoolbar_str.rsconfiguretoo
+msgid "Configure Toolbar"
+msgstr "Configura la toolbar"
+
+#: editortoolbar_str.rscustom
+msgid "Custom"
+msgstr "Personale"
+
+#: editortoolbar_str.rsdebug
+msgid "Debug"
+msgstr "Debug"
+
+#: editortoolbar_str.rsdesign
+msgid "Design"
+msgstr "Progetto"
+
+#: editortoolbar_str.rsdesigner
+msgid "Designer"
+msgstr "Progettazione"
+
+#: editortoolbar_str.rseditortoolbar
+msgid "Editor ToolBar"
+msgstr "Barra strumenti dell'editor"
+
+#: editortoolbar_str.rseditortoolbarconfigform
+msgid "Editor Toolbar Configuration"
+msgstr "Editor di configurazione toolbar"
+
+#: editortoolbar_str.rshelp
+msgid "Help"
+msgstr ""
+
+#: editortoolbar_str.rshelp1
+msgid "The \"Add\" button inserts a Menu Item before the selected Item of the Toolbar."
+msgstr "Il bottone \"Aggiungi\" inserisce una voce prima di quella selezionata nella Barra Strumenti."
+
+#: editortoolbar_str.rshelp2
+msgid "If none is selected, the Item will be appended at the end of the Toolbar."
+msgstr "Se nessuna è selezionata, la voce sarà aggiunta alla fine."
+
+#: editortoolbar_str.rshelp3
+msgid "You may rearrange Toolbar Items with \"Move Up\" and \"Move Down\" buttons."
+msgstr "Potete riposizionare le voci della barra con i bottoni \"Sposta su\" e \"Sposta giù\"."
+
+#: editortoolbar_str.rshelp4
+msgid "Hint: to append an Item at the end, use \"Clear selection\""
+msgstr "Consiglio: per aggiungere una voce in fondo, usa \"Annulla selezione\""
+
+#: editortoolbar_str.rshint
+msgid "You may add here your favorite commands"
+msgstr "Potete aggiungere qui i vostri comandi preferiti"
+
+#: editortoolbar_str.rshtml
+msgid "HTML"
+msgstr "HTML"
+
+#: editortoolbar_str.rsidemainmenu
+msgid "IDE Main Menu"
+msgstr "Menu principale"
+
+#: editortoolbar_str.rsjumpto
+msgid "Jump To"
+msgstr "Salta a"
+
+#: editortoolbar_str.rsleft
+msgid "Left"
+msgstr "Sinistra"
+
+#: editortoolbar_str.rsmenutree
+msgid "Available Menu Items"
+msgstr "Voci disponibili"
+
+#: editortoolbar_str.rsmenuview
+msgid "View"
+msgstr "Visualizza"
+
+#: editortoolbar_str.rsmessages
+msgid "Messages"
+msgstr "Messaggi"
+
+#: editortoolbar_str.rsmoveselecteddown
+msgid "Move selected toolbar item down"
+msgstr "Spostare in giù"
+
+#: editortoolbar_str.rsmoveselectedup
+msgid "Move selected toolbar item up"
+msgstr "Spostare in su"
+
+#: editortoolbar_str.rsok
+msgid "OK"
+msgstr "OK"
+
+#: editortoolbar_str.rspackageeditor
+msgid "Package Editor"
+msgstr "Editor Pacchetti"
+
+#: editortoolbar_str.rspackageeditorfiles
+msgid "Package Editor Files"
+msgstr "File di editor pacchetti"
+
+#: editortoolbar_str.rsposition
+msgid "Position"
+msgstr "Posizione"
+
+#: editortoolbar_str.rsprofile
+msgid "Profile"
+msgstr "Profilo"
+
+#: editortoolbar_str.rsremoveselected
+msgid "Remove selected item from toolbar"
+msgstr "Rimuovere dalla barra degli strumenti"
+
+#: editortoolbar_str.rsright
+msgid "Right"
+msgstr "Destra"
+
+#: editortoolbar_str.rssourceeditor
+msgid "Source Editor"
+msgstr "Editor sorgente"
+
+#: editortoolbar_str.rssourcetab
+msgid "Source Tab"
+msgstr "Linguette editor sorgente"
+
+#: editortoolbar_str.rstoolbar
+msgid "Toolbar Items"
+msgstr "Contenuto della barra"
+
+#: editortoolbar_str.rstop
+msgid "Top"
+msgstr "Alto"
+
+#: editortoolbar_str.serrcouldnotfind
+msgid "Could not find <%s>"
+msgstr "Impossibile trovare <%s>"
+

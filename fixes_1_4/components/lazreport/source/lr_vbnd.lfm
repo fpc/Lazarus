@@ -1,0 +1,120 @@
+object frVBandEditorForm: TfrVBandEditorForm
+  Left = 515
+  Height = 195
+  Top = 286
+  Width = 477
+  HorzScrollBar.Page = 398
+  VertScrollBar.Page = 125
+  ActiveControl = edtRecCount
+  Caption = 'Band data sources'
+  ClientHeight = 195
+  ClientWidth = 477
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object GroupBox1: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = GroupBox2
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 6
+    Height = 139
+    Top = 6
+    Width = 257
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'Bands'
+    ClientHeight = 123
+    ClientWidth = 255
+    TabOrder = 0
+    object LB1: TListBox
+      Left = 0
+      Height = 123
+      Top = 0
+      Width = 255
+      HelpContext = 105
+      Align = alClient
+      ClickOnSelChange = False
+      ItemHeight = 0
+      OnClick = LB1Click
+      TabOrder = 0
+      TopIndex = -1
+    end
+  end
+  object GroupBox2: TGroupBox
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 269
+    Height = 84
+    Top = 0
+    Width = 208
+    Anchors = [akTop, akRight]
+    AutoSize = True
+    Caption = 'Data source'
+    ClientHeight = 68
+    ClientWidth = 206
+    TabOrder = 1
+    object Label1: TLabel
+      AnchorSideLeft.Control = GroupBox2
+      AnchorSideTop.Control = CB1
+      AnchorSideTop.Side = asrBottom
+      AnchorSideBottom.Control = edtRecCount
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 16
+      Top = 46
+      Width = 84
+      Anchors = [akLeft, akBottom]
+      BorderSpacing.Left = 6
+      Caption = '&Record count'
+      ParentColor = False
+    end
+    object CB1: TComboBox
+      AnchorSideLeft.Control = GroupBox2
+      AnchorSideTop.Control = GroupBox2
+      Left = 6
+      Height = 29
+      Top = 6
+      Width = 194
+      HelpContext = 88
+      BorderSpacing.Around = 6
+      ItemHeight = 0
+      OnChange = CB1Click
+      OnExit = CB1Exit
+      Style = csDropDownList
+      TabOrder = 0
+    end
+    object edtRecCount: TSpinEdit
+      AnchorSideLeft.Control = Label1
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = CB1
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = GroupBox2
+      AnchorSideRight.Side = asrBottom
+      Left = 96
+      Height = 21
+      Top = 41
+      Width = 104
+      HelpContext = 95
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      OnExit = CB1Exit
+      TabOrder = 1
+      Value = 1
+    end
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 38
+    Top = 151
+    Width = 465
+    OKButton.Name = 'OKButton'
+    HelpButton.Name = 'HelpButton'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    TabOrder = 2
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+end

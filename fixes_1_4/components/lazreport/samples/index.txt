@@ -1,0 +1,8 @@
+This file list all aviable samples  :
+
+./editor/calleditorwithpkg.lpi
+   This sample show how to call a LazReport editor with Pakage LazReport and DBF Datas.
+   
+./userds/project1.lpi
+   Crosstab Report using, using User Dataset, scripts and events at runtime See notes.txt 
+   or run sample and click Show Notes button.

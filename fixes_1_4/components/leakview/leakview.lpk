@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <PathDelim Value="\"/>
+    <Name Value="leakview"/>
+    <AddToProjectUsesSection Value="True"/>
+    <Author Value="Dmitry 'skalogryz' Boyarintsev"/>
+    <CompilerOptions>
+      <Version Value="12"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)"/>
+      </SearchPaths>
+      <Parsing>
+        <SyntaxOptions>
+          <CStyleOperator Value="False"/>
+          <UseAnsiStrings Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
+      <Linking>
+        <Debugging>
+          <GenerateDebugInfo Value="False"/>
+          <UseLineInfoUnit Value="False"/>
+        </Debugging>
+      </Linking>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="Leak View. allows fast navigation trough HeapTrc (and other?) leaks."/>
+    <Version Major="1"/>
+    <Files Count="4">
+      <Item1>
+        <Filename Value="heaptrcview.lfm"/>
+        <Type Value="LFM"/>
+      </Item1>
+      <Item2>
+        <Filename Value="heaptrcview.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="HeapTrcView"/>
+      </Item2>
+      <Item3>
+        <Filename Value="leakinfo.pas"/>
+        <UnitName Value="leakinfo"/>
+      </Item3>
+      <Item4>
+        <Filename Value="dbginforeader.pas"/>
+        <UnitName Value="DbgInfoReader"/>
+      </Item4>
+    </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="2">
+      <Item1>
+        <PackageName Value="CodeTools"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="IDEIntf"/>
+      </Item2>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)\"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

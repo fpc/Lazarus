@@ -1,0 +1,41 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2012-08-06 13:28+0300\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Language: lt\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 1.5\n"
+
+#: strtestcaseopts.sbtncreate
+msgid "Create unit"
+msgstr "Kurti modulį"
+
+#: strtestcaseopts.schksetup
+msgid "Create Setup Method"
+msgstr "Kurti sąrankos metodą"
+
+#: strtestcaseopts.schktear
+msgid "Create TearDown method"
+msgstr "Kurti „TearDown“ metodą"
+
+#: strtestcaseopts.sfrmtest
+msgid "TestCase Options"
+msgstr "„TestCase“ parinktys"
+
+#: strtestcaseopts.sgrpfixture
+msgid "Fixture"
+msgstr "Turinys"
+
+#: strtestcaseopts.sgrpnames
+msgid "Names"
+msgstr "Pavadinimai"
+
+#: strtestcaseopts.slbldefault
+msgid "Default Test Name"
+msgstr "Numatytas testavimo pavadinimas"
+

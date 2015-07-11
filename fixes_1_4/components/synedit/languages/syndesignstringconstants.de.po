@@ -1,0 +1,40 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Swen Heinig <swen@heinig.email>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: syndesignstringconstants.syndsbookmarks
+msgid "Bookmarks"
+msgstr "Lesezeichen"
+
+#: syndesignstringconstants.syndschangemarker
+msgid "Change Marker"
+msgstr "Änderungskennzeichen"
+
+#: syndesignstringconstants.syndscodefolding
+msgid "Code Folding"
+msgstr "Codefaltung"
+
+#: syndesignstringconstants.syndslinenumbers
+msgid "Line Numbers"
+msgstr "Zeilennummern"
+
+#: syndesignstringconstants.syndslineoverview
+msgid "Line Overview"
+msgstr "Zeilenübersicht"
+
+#: syndesignstringconstants.syndsresetmouseactions
+msgid "Reset mouse actions"
+msgstr "Mausaktionen zurücksetzen"
+
+#: syndesignstringconstants.syndsseparator
+msgid "Separator"
+msgstr "Trennzeichen"
+

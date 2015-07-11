@@ -1,0 +1,52 @@
+object MasterSite: TMasterSite
+  Left = 97
+  Height = 118
+  Top = 107
+  Width = 400
+  Caption = 'MasterSite'
+  ClientHeight = 118
+  ClientWidth = 400
+  OnCreate = FormCreate
+  LCLVersion = '0.9.29'
+  Visible = True
+  object buDump: TButton
+    Left = 144
+    Height = 23
+    Top = 10
+    Width = 53
+    AutoSize = True
+    Caption = 'Dump'
+    OnClick = buDumpClick
+    TabOrder = 0
+  end
+  object buCreateForm: TButton
+    Left = 10
+    Height = 23
+    Top = 10
+    Width = 86
+    AutoSize = True
+    Caption = 'Create Form'
+    OnClick = buCreateFormClick
+    TabOrder = 1
+  end
+  object buSave: TButton
+    Left = 8
+    Height = 23
+    Top = 48
+    Width = 50
+    AutoSize = True
+    Caption = 'Save'
+    OnClick = buSaveClick
+    TabOrder = 2
+  end
+  object buRestore: TButton
+    Left = 96
+    Height = 23
+    Top = 48
+    Width = 64
+    AutoSize = True
+    Caption = 'Restore'
+    OnClick = buRestoreClick
+    TabOrder = 3
+  end
+end

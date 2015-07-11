@@ -1,0 +1,75 @@
+object TabOrderDialog: TTabOrderDialog
+  Left = 349
+  Height = 374
+  Top = 112
+  Width = 310
+  ActiveControl = ItemTreeview
+  Caption = 'TabOrderDialog'
+  ClientHeight = 374
+  ClientWidth = 310
+  OnCreate = TabOrderDialogCREATE
+  OnShow = FormShow
+  LCLVersion = '0.9.31'
+  Visible = True
+  object ArrowUp: TSpeedButton
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 279
+    Height = 25
+    Top = 120
+    Width = 25
+    Anchors = [akTop, akRight]
+    BorderSpacing.Around = 6
+    NumGlyphs = 0
+    OnClick = UpSpeedbuttonCLICK
+    ShowHint = True
+    ParentShowHint = False
+  end
+  object ArrowDown: TSpeedButton
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 279
+    Height = 25
+    Top = 176
+    Width = 25
+    Anchors = [akTop, akRight]
+    BorderSpacing.Around = 6
+    NumGlyphs = 0
+    OnClick = DownSpeedbuttonCLICK
+    ShowHint = True
+    ParentShowHint = False
+  end
+  object ItemTreeview: TTreeView
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 357
+    Top = 6
+    Width = 267
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    DefaultItemHeight = 16
+    HideSelection = False
+    ReadOnly = True
+    RightClickSelect = True
+    TabOrder = 0
+    OnClick = ItemTreeviewClick
+    OnKeyDown = ItemTreeviewKeyDown
+    Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+  end
+  object SortByPositionButton: TBitBtn
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 279
+    Height = 25
+    Top = 232
+    Width = 25
+    Anchors = [akTop, akRight]
+    BorderSpacing.Around = 6
+    GlyphShowMode = gsmAlways
+    OnClick = SortByPositionButtonClick
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 1
+  end
+end

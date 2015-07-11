@@ -1,0 +1,1 @@
+..\..\..\tools\lazres ..\..\lcl_dock_images.res @lcl_dock_images_list.txt

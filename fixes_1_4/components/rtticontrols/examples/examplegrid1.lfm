@@ -1,0 +1,41 @@
+object Form1: TForm1
+  Caption = 'Form1'
+  ClientHeight = 300
+  ClientWidth = 400
+  OnCreate = Form1Create
+  OnDestroy = Form1Destroy
+  PixelsPerInch = 112
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 299
+  Left = 290
+  Height = 300
+  Top = 163
+  Width = 400
+  object TIGrid1: TTIGrid
+    BorderSpacing.OnChange = nil
+    BorderStyle = bsSingle
+    Color = clWhite
+    DefaultRowHeight = 24
+    Filter = [tkInteger, tkChar, tkEnumeration, tkFloat, tkSString, tkLString, tkAString, tkWString, tkVariant, tkWChar, tkBool, tkInt64, tkQWord]
+    FixedColor = clBtnFace
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goAlwaysShowEditor, goSmoothScroll]
+    Left = 32
+    Height = 166
+    Top = 16
+    Width = 316
+  end
+  object TICheckBox1: TTICheckBox
+    AutoSize = True
+    BorderSpacing.OnChange = nil
+    Caption = 'goColSizing'
+    Link.TIObject = TIGrid1
+    Link.TIPropertyName = 'Options'
+    Link.TIElementName = 'goColSizing'
+    TabOrder = 0
+    TabStop = True
+    Left = 34
+    Height = 23
+    Top = 216
+    Width = 90
+  end
+end

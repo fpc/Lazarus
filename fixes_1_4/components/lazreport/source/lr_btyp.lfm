@@ -1,0 +1,51 @@
+object frBandTypesForm: TfrBandTypesForm
+  Left = 374
+  Height = 361
+  Top = 112
+  Width = 422
+  HorzScrollBar.Page = 335
+  VertScrollBar.Page = 357
+  ActiveControl = ButtonPanel1
+  AutoSize = True
+  BorderIcons = []
+  BorderStyle = bsDialog
+  Caption = 'Insert new band'
+  ClientHeight = 361
+  ClientWidth = 422
+  OnCreate = FormCreate
+  OnShow = FormShow
+  Position = poOwnerFormCenter
+  LCLVersion = '0.9.29'
+  object GB1: TGroupBox
+    Left = 0
+    Height = 311
+    Top = 0
+    Width = 422
+    HelpContext = 89
+    Align = alClient
+    AutoSize = True
+    Caption = 'Band type'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.HorizontalSpacing = 3
+    ChildSizing.VerticalSpacing = 3
+    ChildSizing.EnlargeVertical = crsHomogenousSpaceResize
+    ChildSizing.ShrinkVertical = crsHomogenousSpaceResize
+    ChildSizing.Layout = cclTopToBottomThenLeftToRight
+    ChildSizing.ControlsPerLine = 11
+    TabOrder = 0
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 38
+    Top = 317
+    Width = 410
+    OKButton.Name = 'OKButton'
+    HelpButton.Name = 'HelpButton'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+end

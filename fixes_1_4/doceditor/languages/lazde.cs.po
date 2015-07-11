@@ -1,0 +1,744 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: Lazarus Doc Editor\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Václav Valíček <valicek1994@gmail.com>\n"
+"Language-Team: Václav Valíček <vaclav@valicek.name>\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+"Language: cs\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: lazdemsg.saboutformcaption
+msgid "About this application"
+msgstr "O této aplikaci"
+
+#: lazdemsg.sadd
+msgid "&Add"
+msgstr "Přidat"
+
+#: lazdemsg.saddall
+msgid "Add All"
+msgstr "Přidat vše"
+
+#: lazdemsg.sadddescriptionfile
+msgid "Select a new description file"
+msgstr "Vybrat nový popisující soubor"
+
+#: lazdemsg.sadditionalparams
+msgid "Additional parameters for fpdoc"
+msgstr ""
+
+#: lazdemsg.sbuild
+msgctxt "lazdemsg.sbuild"
+msgid "&Build"
+msgstr "&Sestavit"
+
+#: lazdemsg.sbuilddocumentation
+msgid "Build documentation"
+msgstr "Sestavit dokumentaci"
+
+#: lazdemsg.sbuildok
+msgid "Documentation successfully built."
+msgstr "Dokumentace úspěšně sestavena."
+
+#: lazdemsg.sbuildoutput
+msgid "Build output"
+msgstr "Výstup sestavení"
+
+#: lazdemsg.sclose
+msgctxt "lazdemsg.sclose"
+msgid "&Close"
+msgstr "&Zavřít"
+
+#: lazdemsg.scodeexample
+msgid "Example code File"
+msgstr "Ukázkový soubor s kódem"
+
+#: lazdemsg.scopyright1
+msgid "This application is (c) by  Michael Van Canneyt and the Lazarus team"
+msgstr "(c) Michael Van Canneyt a Lazarus team"
+
+#: lazdemsg.scopyright2
+msgid "It is released under the terms of the  GENERAL PUBLIC LICENSE:"
+msgstr "Aplikace je uvolněna pod GENERAL PUBLIC LICENSE:"
+
+#: lazdemsg.scpu
+msgid "CPU"
+msgstr "CPU"
+
+#: lazdemsg.screatecontentfile
+msgid "Create cont&ent file"
+msgstr "Vytvořit soubor s obsahem"
+
+#: lazdemsg.sdataforelement
+msgid "Documentation for element \"%s\":"
+msgstr "Dokumentace pro element \"%s\":"
+
+#: lazdemsg.sdelete
+msgid "&Delete"
+msgstr "Odstranit"
+
+#: lazdemsg.sdeletemodule
+msgid "Are you sure you want to delete module \"%s\" ?"
+msgstr "Opravdu chcete odstranit modul \"%s\"?"
+
+#: lazdemsg.sdeletepackage
+msgid "Are you sure you want to delete package \"%s\" ?"
+msgstr "Opravdu chcete odstranit balíček \"%s\"?"
+
+#: lazdemsg.sdeletetopic
+msgid "Are you sure you want to delete topic \"%s\" ?"
+msgstr "Opravdu chcete odstranit téma \"%s\"?"
+
+#: lazdemsg.sdescription
+msgid "Description"
+msgstr "Popis"
+
+#: lazdemsg.sedit
+msgid "&Edit"
+msgstr "Upravit"
+
+#: lazdemsg.seditdescriptionfile
+msgid "Change description file"
+msgstr "Změnit popisný soubor"
+
+#: lazdemsg.serrfpdoc
+msgid "Building failed with exit code %d. Please check log."
+msgstr "Sestavování selhalo s exit-kódem %d. Prosím, zkontrolujte log."
+
+#: lazdemsg.serrnomoduleforelement
+msgid "No module found to insert element \"%s\""
+msgstr "Nebyl nalezen modul pro vložení elementu \"%s\""
+
+#: lazdemsg.serrnonodeformodule
+msgid "No node found for module \"%s\""
+msgstr "Nebyl nalezen uzel pro modul \"%s\""
+
+#: lazdemsg.serrnonodeforpackage
+msgid "No node found for package \"%s\""
+msgstr "Nebyl nalezen uzel pro balík \"%s\""
+
+#: lazdemsg.serrnonodefortopic
+msgid "No parent node found to insert topic \"%s\""
+msgstr "Nenalezen rodičovský uzel k vložení titulku \"%s\""
+
+#: lazdemsg.serrnopackageformodule
+msgid "No package found to insert module \"%s\""
+msgstr "Nenalezen balíček k vložení modulu \"%s\""
+
+#: lazdemsg.serrors
+msgid "Errors"
+msgstr "Chyby"
+
+#: lazdemsg.serrunknowndomelement
+msgid "Unknwon DOM element as parent for selected element: \"%s\""
+msgstr "Neznámý DOM element jako rodič pro vybraný element \"%s\""
+
+#: lazdemsg.sfilemodified
+msgid "Document \"%s\" was modified, would you like to save it?"
+msgstr "Dokument \"%s\" byl upraven, přejete si uložit jej?"
+
+#: lazdemsg.sfilestructure
+msgid "Documentation structure"
+msgstr "Struktura dokumentace"
+
+#: lazdemsg.sfiletemplate
+msgid "template.xml"
+msgstr "template.xml"
+
+#: lazdemsg.sforfile
+msgid " in file "
+msgstr "v souboru"
+
+#: lazdemsg.sformat
+msgid "&Format"
+msgstr "&Formát"
+
+#: lazdemsg.sformodule
+msgid " in module "
+msgstr "v modulu"
+
+#: lazdemsg.sforpackage
+msgid " in package "
+msgstr "v balíčku"
+
+#: lazdemsg.sfortopic
+#, fuzzy
+#| msgid " in topic"
+msgid " in topic "
+msgstr "v titulku"
+
+#: lazdemsg.shideprotectedmethods
+msgid "&Hide protected methods"
+msgstr "Srýt chráněné metody"
+
+#: lazdemsg.shinteditelementlink
+msgid "Edit element link"
+msgstr "Upravit odkaz elementu"
+
+#: lazdemsg.shintfileclose
+msgid "Close current file"
+msgstr "Zavřít aktuální soubor"
+
+#: lazdemsg.shintfileexit
+msgid "Close doc editor"
+msgstr "Vybrat doc editor"
+
+#: lazdemsg.shintfilenew
+msgctxt "lazdemsg.shintfilenew"
+msgid "New file"
+msgstr "Nový soubor"
+
+#: lazdemsg.shintfileopen
+msgid "Open file"
+msgstr "Otevřít soubor"
+
+#: lazdemsg.shintfilesave
+msgid "Save file"
+msgstr "Uložit soubor"
+
+#: lazdemsg.shintfilesaveas
+msgid "Save file as"
+msgstr "Uložit soubor jako"
+
+#: lazdemsg.shintformatbold
+msgid "Bold"
+msgstr "Tučné"
+
+#: lazdemsg.shintformatcode
+msgid "Code"
+msgstr "Kód"
+
+#: lazdemsg.shintformatfile
+msgid "File"
+msgstr "Soubor"
+
+#: lazdemsg.shintformatitalics
+msgid "Italic"
+msgstr "Italic"
+
+#: lazdemsg.shintformatremark
+msgid "Remark"
+msgstr "Poznámka"
+
+#: lazdemsg.shintformatunderline
+msgid "Underline"
+msgstr "Podtržené"
+
+#: lazdemsg.shintformatvariable
+msgid "Variable"
+msgstr "Proměnná"
+
+#: lazdemsg.shintinsertbulletedlist
+msgctxt "lazdemsg.shintinsertbulletedlist"
+msgid "Insert bulleted list"
+msgstr ""
+
+#: lazdemsg.shintinsertelement
+msgctxt "lazdemsg.shintinsertelement"
+msgid "New element"
+msgstr "Nový element"
+
+#: lazdemsg.shintinsertlink
+msgctxt "lazdemsg.shintinsertlink"
+msgid "Insert link"
+msgstr "Vložit odkaz"
+
+#: lazdemsg.shintinsertmodule
+msgctxt "lazdemsg.shintinsertmodule"
+msgid "New module"
+msgstr "Nový modul"
+
+#: lazdemsg.shintinsertnumberedlist
+msgctxt "lazdemsg.shintinsertnumberedlist"
+msgid "Insert numbered list"
+msgstr ""
+
+#: lazdemsg.shintinsertpackage
+msgctxt "lazdemsg.shintinsertpackage"
+msgid "New package"
+msgstr "Nový balíček"
+
+#: lazdemsg.shintinsertprintshortlink
+msgid "Insert a short description link"
+msgstr "Vložit krátký popisný odkaz"
+
+#: lazdemsg.shintinserttable
+msgctxt "lazdemsg.shintinserttable"
+msgid "Insert table"
+msgstr "Vložit tabulku"
+
+#: lazdemsg.shintinserttopic
+msgctxt "lazdemsg.shintinserttopic"
+msgid "New topic"
+msgstr "Nové téma"
+
+#: lazdemsg.shintmenunewfromfile
+msgid "New from file ..."
+msgstr "Nový ze souboru ..."
+
+#: lazdemsg.shinttoolbaradd
+msgid "Add"
+msgstr "Přidat"
+
+#: lazdemsg.shinttoolbardelete
+msgctxt "lazdemsg.shinttoolbardelete"
+msgid "Delete"
+msgstr "Odstranit"
+
+#: lazdemsg.shinttoolbaredit
+msgid "Edit"
+msgstr "Upravit"
+
+#: lazdemsg.shmenuextraoptions
+msgid "Show options dialog"
+msgstr "Zobrazit dialog voleb"
+
+#: lazdemsg.shmenuhelpabout
+msgid "About this program"
+msgstr "O aplikaci"
+
+#: lazdemsg.simportcontentfile
+msgid "Import content file"
+msgstr "Importovat soubor s obsahem"
+
+#: lazdemsg.sinsertbulletedlist
+msgctxt "lazdemsg.sinsertbulletedlist"
+msgid "Insert bulleted list"
+msgstr ""
+
+#: lazdemsg.sinsertexamplecode
+msgid "Insert example code"
+msgstr ""
+
+#: lazdemsg.sinsertlink
+msgctxt "lazdemsg.sinsertlink"
+msgid "Insert link"
+msgstr "Vložit odkaz"
+
+#: lazdemsg.sinsertnumberedlist
+msgctxt "lazdemsg.sinsertnumberedlist"
+msgid "Insert numbered list"
+msgstr ""
+
+#: lazdemsg.sinsertprintshortlink
+msgid "Insert short description link"
+msgstr "Vložit krátký popisný link"
+
+#: lazdemsg.sinserttable
+msgctxt "lazdemsg.sinserttable"
+msgid "Insert table"
+msgstr "Vložit tabulku"
+
+#: lazdemsg.sitemscount
+msgid "Items count"
+msgstr ""
+
+#: lazdemsg.slazdoceditor
+msgid "Lazarus Documentation Editor"
+msgstr "Editor dokumentace pro Lazarus"
+
+#: lazdemsg.slinksto
+msgid " links to "
+msgstr " odkazy na"
+
+#: lazdemsg.slinktarget
+msgid "Link target"
+msgstr ""
+
+#: lazdemsg.slinktext
+msgid "Link text"
+msgstr ""
+
+#: lazdemsg.sload
+msgid "&Load"
+msgstr "Načíst"
+
+#: lazdemsg.smakeskelfromsource
+msgid "Make new document from source file"
+msgstr "Vytvořit nový dokumen ze zdrojového souboru"
+
+#: lazdemsg.smarkselection
+msgid "Mark selection %s"
+msgstr "Označit výběr %s"
+
+#: lazdemsg.smenucollapseall
+msgid "Collapse All"
+msgstr "Sbalit všechny"
+
+#: lazdemsg.smenudelete
+msgctxt "lazdemsg.smenudelete"
+msgid "Delete"
+msgstr "Odstranit"
+
+#: lazdemsg.smenuexpandall
+msgid "Expand All"
+msgstr "Rozbalit vše"
+
+#: lazdemsg.smenuextra
+msgid "&Extra"
+msgstr "&Extra"
+
+#: lazdemsg.smenuextrabuild
+msgctxt "lazdemsg.smenuextrabuild"
+msgid "&Build"
+msgstr "&Sestavit"
+
+#: lazdemsg.smenuextraoptions
+msgid "&Options"
+msgstr "&Volby"
+
+#: lazdemsg.smenufile
+msgctxt "lazdemsg.smenufile"
+msgid "&File"
+msgstr "&Soubor"
+
+#: lazdemsg.smenufileclose
+msgctxt "lazdemsg.smenufileclose"
+msgid "&Close"
+msgstr "&Zavřít"
+
+#: lazdemsg.smenufilenew
+msgid "&New"
+msgstr "&Nový"
+
+#: lazdemsg.smenufilenewfromfile
+msgid "New from fi&le"
+msgstr "Nový ze sou&boru"
+
+#: lazdemsg.smenufileopen
+msgid "&Open"
+msgstr "&Otevřít"
+
+#: lazdemsg.smenufilequit
+msgid "&Quit"
+msgstr "&Konec"
+
+#: lazdemsg.smenufilerecent
+msgid "&Recent"
+msgstr "&Poslední"
+
+#: lazdemsg.smenufilesave
+msgctxt "lazdemsg.smenufilesave"
+msgid "&Save"
+msgstr "&Uložit"
+
+#: lazdemsg.smenufilesaveas
+msgid "Save &as"
+msgstr "Uložit &jako"
+
+#: lazdemsg.smenuformat
+msgid "Format"
+msgstr "Formát"
+
+#: lazdemsg.smenuformatbold
+msgid "&Bold"
+msgstr "Tučný"
+
+#: lazdemsg.smenuformatcode
+msgid "&Code"
+msgstr "&Kód"
+
+#: lazdemsg.smenuformatfile
+msgctxt "lazdemsg.smenuformatfile"
+msgid "&File"
+msgstr "&Soubor"
+
+#: lazdemsg.smenuformatitalics
+msgid "&Italic"
+msgstr "&Italic"
+
+#: lazdemsg.smenuformatparagraph
+msgid "&Paragraph"
+msgstr "Odstavec"
+
+#: lazdemsg.smenuformatremark
+msgid "&Remark"
+msgstr "Poznámka"
+
+#: lazdemsg.smenuformatunderline
+msgid "&Underline"
+msgstr "Podtržené"
+
+#: lazdemsg.smenuformatvariable
+msgid "&Variable"
+msgstr "Proměnná"
+
+#: lazdemsg.smenuhelp
+msgid "&Help"
+msgstr "Nápověda"
+
+#: lazdemsg.smenuhelpabout
+msgid "&About ..."
+msgstr "O &Aplikaci ..."
+
+#: lazdemsg.smenuinsert
+msgid "&Insert"
+msgstr "Vložit"
+
+#: lazdemsg.smenuinsertbulletedlist
+msgid "Bulleted list"
+msgstr ""
+
+#: lazdemsg.smenuinsertelement
+msgid "&Element"
+msgstr "Elemet"
+
+#: lazdemsg.smenuinsertlink
+msgid "&Link"
+msgstr "Odkaz"
+
+#: lazdemsg.smenuinsertlist
+msgid "List"
+msgstr ""
+
+#: lazdemsg.smenuinsertmodule
+msgid "&Module"
+msgstr "Modul"
+
+#: lazdemsg.smenuinsertnumberedlist
+msgid "Numbered list"
+msgstr ""
+
+#: lazdemsg.smenuinsertpackage
+msgctxt "lazdemsg.smenuinsertpackage"
+msgid "&Package"
+msgstr "Balíček"
+
+#: lazdemsg.smenuinsertprintshort
+msgid "Insert short desc link"
+msgstr "Vložit krátký popisný odkaz"
+
+#: lazdemsg.smenuinsertquicklink
+msgid "&Quick Link"
+msgstr "Rychlý link"
+
+#: lazdemsg.smenuinsertshortdesclink
+msgid "&Short description link"
+msgstr "Krátký popisný link"
+
+#: lazdemsg.smenuinserttable
+msgid "&Table"
+msgstr "Tabulka"
+
+#: lazdemsg.smenuinserttopic
+msgid "T&opic"
+msgstr "Téma"
+
+#: lazdemsg.smenurename
+msgid "Rename"
+msgstr "Přejmenovat"
+
+#: lazdemsg.smoduleelements
+msgid "Elements for selected node"
+msgstr "Elementy pro vybraný uzel"
+
+#: lazdemsg.snew
+msgid "New"
+msgstr "Nový"
+
+#: lazdemsg.snewdocument
+msgid "New document"
+msgstr "Nový dokument"
+
+#: lazdemsg.snewelement
+msgctxt "lazdemsg.snewelement"
+msgid "New element"
+msgstr "Nový element"
+
+#: lazdemsg.snewfile
+msgctxt "lazdemsg.snewfile"
+msgid "New file"
+msgstr "Nový soubor"
+
+#: lazdemsg.snewmodule
+msgctxt "lazdemsg.snewmodule"
+msgid "New module"
+msgstr "Nový modul"
+
+#: lazdemsg.snewpackage
+msgctxt "lazdemsg.snewpackage"
+msgid "New package"
+msgstr "Nový balíček"
+
+#: lazdemsg.snewtopic
+msgctxt "lazdemsg.snewtopic"
+msgid "New topic"
+msgstr "Nové téma"
+
+#: lazdemsg.snodename
+msgid "Node name"
+msgstr ""
+
+#: lazdemsg.snoelement
+msgid "No element selected"
+msgstr "Nebyl zvolen žádný element"
+
+#: lazdemsg.soptdlgbackupextension
+msgid "Backup extension"
+msgstr "Přípona zálohy"
+
+#: lazdemsg.soptdlgconfirmdeletes
+msgid "C&onfirm deletes"
+msgstr "Potvrdit odstranění"
+
+#: lazdemsg.soptdlgcreatebackups
+msgid "Create &backups"
+msgstr "Vytvářet zálohy"
+
+#: lazdemsg.soptdlgdefaultextension
+msgid "Default extension"
+msgstr "Výchozí přípona"
+
+#: lazdemsg.soptdlgdesktop
+msgid "Desktop"
+msgstr "Plocha"
+
+#: lazdemsg.soptdlgfpdocprogram
+msgid "fpdoc program"
+msgstr "fpdoc program"
+
+#: lazdemsg.soptdlggeneral
+msgid "General"
+msgstr "Obecné"
+
+#: lazdemsg.soptdlgmakeskelprogram
+msgid "makeskel program"
+msgstr "makeskel program"
+
+#: lazdemsg.soptdlgmaxrecentused
+msgid "Max. recent used"
+msgstr "Historie otevř.:"
+
+#: lazdemsg.soptdlgoptions
+msgid "Options"
+msgstr "Volby"
+
+#: lazdemsg.soptdlgreopenlastfile
+msgid "Reopen last file on startup"
+msgstr "Znovuotevřít poslední soubor po startu"
+
+#: lazdemsg.soptdlgshowhints
+msgid "Show hints"
+msgstr "Ukazovat nápovědy po najetí na soubor"
+
+#: lazdemsg.soptdlgskipemptynodes
+msgid "&Skip empty nodes when saving"
+msgstr "Přeskočit prázdné uzly během ukládání"
+
+#: lazdemsg.soptdlgstartmaximized
+msgid "Start maximized"
+msgstr "Spustit maximalizované"
+
+#: lazdemsg.sotheroptions
+msgid "Other options"
+msgstr "Ostatní volby"
+
+#: lazdemsg.soutput
+msgid "&Output"
+msgstr "Výstup"
+
+#: lazdemsg.spackage
+msgctxt "lazdemsg.spackage"
+msgid "&Package"
+msgstr "Balík"
+
+#: lazdemsg.spackages
+msgid "Packages"
+msgstr "Balíky"
+
+#: lazdemsg.srenameelement
+msgid "Rename element"
+msgstr "Přejmenovat elemetn"
+
+#: lazdemsg.srenamemodule
+msgid "Rename module"
+msgstr "Přejmenovat modul"
+
+#: lazdemsg.srenamepackage
+msgid "Rename package"
+msgstr "Přejmenovat balíček"
+
+#: lazdemsg.srenametopic
+msgid "Rename topic"
+msgstr "Přejmenovat téma"
+
+#: lazdemsg.ssave
+msgctxt "lazdemsg.ssave"
+msgid "&Save"
+msgstr "Uložit"
+
+#: lazdemsg.ssavebeforebuildquestion
+msgid "You have unsaved changes in \"%s\".%sThey should be saved in order to be visible in built documentation. Save them?"
+msgstr ""
+
+#: lazdemsg.sseealso
+msgid "See Also"
+msgstr "Podívejte se také na"
+
+#: lazdemsg.sselectoutputdirectory
+msgid "Select output directory"
+msgstr "Vybrat výstupní složku"
+
+#: lazdemsg.sselectoutputfile
+msgid "Select output file name"
+msgstr "Zvolit jméno výstupního souboru"
+
+#: lazdemsg.sselectsometext
+#, fuzzy
+#| msgid "Select some text"
+msgid "Select some text."
+msgstr "Vyberte nějaký text"
+
+#: lazdemsg.sshortdescription
+msgid "Short"
+msgstr "Krátké"
+
+#: lazdemsg.sshowprivatemethods
+msgid "Show p&rivate methods"
+msgstr "Zobrazit privátní metody"
+
+#: lazdemsg.sskelerrorwithfile
+msgid "makeskel reported an error (%d). Try to load produced file anyway ?"
+msgstr "makeskel nahlásil error (%d). Pokusit se o načtení vyprodukovaného souboru?"
+
+#: lazdemsg.sskelerrorwithoutfile
+msgid "makeskel reported an error (%d) and produced no file."
+msgstr "makeskel nahlásil error (%d) a nevyprodukoval žádný soubor."
+
+#: lazdemsg.ssourcescapt
+msgid "Sources"
+msgstr "Zdroje"
+
+#: lazdemsg.sstartnodenotfound
+msgid "Start element \"%s\" could not be found"
+msgstr "Úvodní element \"%s\" nebyl nalezen"
+
+#: lazdemsg.stablecols
+msgid "Columns"
+msgstr ""
+
+#: lazdemsg.stableheader
+msgid "Use header row"
+msgstr ""
+
+#: lazdemsg.stablerows
+msgid "Rows"
+msgstr ""
+
+#: lazdemsg.stargetos
+msgid "Target OS"
+msgstr "Cílový OS"
+
+#: lazdemsg.susingcommand
+msgid "Building docs using command: "
+msgstr "Sestavuji dokumentaci za užití příkazu:"
+
+#: lazdemsg.swarnifnodocumentationnodefound
+msgid "Warn if no documentation node found"
+msgstr "Varovat, pokud není nalezen žádný dokumentační uzel"
+

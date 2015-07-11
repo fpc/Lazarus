@@ -1,0 +1,55 @@
+object ListForm: TListForm
+  Left = 506
+  Height = 81
+  Top = 302
+  Width = 233
+  AutoSize = True
+  BorderStyle = bsDialog
+  Caption = 'Insert new list'
+  ClientHeight = 81
+  ClientWidth = 233
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object ButtonPanel1: TButtonPanel
+    AnchorSideTop.Control = speItemsCount
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 42
+    Top = 33
+    Width = 221
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object speItemsCount: TSpinEdit
+    AnchorSideLeft.Control = lblItemsCount
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    Left = 69
+    Height = 21
+    Top = 6
+    Width = 99
+    BorderSpacing.Around = 6
+    TabOrder = 1
+  end
+  object lblItemsCount: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = speItemsCount
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 13
+    Top = 10
+    Width = 57
+    BorderSpacing.Around = 6
+    Caption = 'Items count'
+    ParentColor = False
+  end
+end

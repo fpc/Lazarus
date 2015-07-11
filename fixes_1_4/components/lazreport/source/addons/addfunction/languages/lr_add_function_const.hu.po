@@ -1,0 +1,217 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
+"Language-Team: Magyar (Hungarian)\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: lr_add_function_const.sdatecategory
+msgid "Date"
+msgstr "Dátum"
+
+#: lr_add_function_const.sdescriptionabs
+msgid "ABS(<Number>)/Returns absolute value <Number>"
+msgstr "ABS(<Szám>)/A <Szám> abszolút értékét adja vissza"
+
+#: lr_add_function_const.sdescriptionchr
+msgid "CHR(<Code>)/Returns symbol of ASCII code <Code>."
+msgstr "CHR(<Kód>)/Az ASCII <Kód> jelét adja vissza."
+
+#: lr_add_function_const.sdescriptioncomparestr
+msgid "COMPARESTR(<String1>,<String2>)/Compares two strings. Returns the position where begins the difference between the strings or 0 if strings are equivalent."
+msgstr "COMPARESTR(<Karakterlánc1>, <Karakterlánc2>)/Összehasonlítja a két karakterláncot. A visszaadott érték a két karakterlánc közötti az első eltérés helye vagy 0 ha azonosak."
+
+#: lr_add_function_const.sdescriptioncreatedate
+msgid "CREATEDATE(<String>)/Converts <String> string to string that contains date to use it in SQL clause. To use this function put the string with desired date format to TfrAddFunctionLibrary.FormatDate property."
+msgstr "CREATEDATE(<Karakterlánc>)/Átalakítja a <Karakterlánc>-ot egy dátumot tartalmazó karakterlánccá SQL-ben történő használatra. E függvény használatához a kívánt dátumformátumot a TfrAddFunctionLibrary.FormatDate tulajdonságban kell megadni."
+
+#: lr_add_function_const.sdescriptioncreatenum
+msgid "CREATENUM(<String>)/Converts <String> string to string that contains numeric value to use it in SQL clause."
+msgstr "CREATENUM(<Karakterlánc>)/Átalakítja a <Karakterlánc>-ot egy számértéket tartalmazó karakterlánccá SQL-ben történő használatra."
+
+#: lr_add_function_const.sdescriptioncreatestr
+msgid "CREATESTR(<String>)/Adds quotes to the <String> string to use it in SQL clause."
+msgstr "CREATESTR(<Karakterlánc>)/Idézőjeleket ad a <Karakterlánc>-hoz SQL-ben történő használatra."
+
+#: lr_add_function_const.sdescriptiondatediff
+msgid "DATEDIFF(<Date1>,<Date2>,<var String>)/Returns the difference between two dates <Date1> and <Date2>. Result is in the string <String> in format \"days;months;years\"."
+msgstr "DATEDIFF(<Dátum1>, <Dátum2>, <var Karakterlánc>)/Visszaadja a <Dátum1> és a <Dátum2> közötti különbséget. Az eredmény a <Karakterlánc>-ba kerül a következő formában: \"days;months;years\"."
+
+#: lr_add_function_const.sdescriptiondatetostr
+msgid "DATETOSTR(<Date>)/Converts date <Date> to string and returns the result."
+msgstr "DATETOSTR(<Dátum>)/A <Dátum>-ot karakterlánccá alakítja és az eredményt adja vissza."
+
+#: lr_add_function_const.sdescriptiondayspermonth
+msgid "DAYSPERMONTH(<Year>,<Month>)/Returns days in the given month <Month> of the year <Year>."
+msgstr "DAYSPERMONTH(<Év>, <Hónap>)/Az adott <Év> adott <Hónap>-jában lévő napok számát adja vissza."
+
+#: lr_add_function_const.sdescriptiondelete
+msgid "DELETE(<String>,<DelFrom>,<DelCount>)/Deletes <DelCount> symbols starting at position <DelFrom> in the given string <String> and returns the result."
+msgstr "DELETE(<Karakterlánc>, <TörlésKezdete>, <TörlendőMennyiség>)/Törli a <Karakterlánc>-ból a <TörlésKezdete>-től számolva a <TörlendőMennyiség>-ű karaktert és visszaadja az eredményt."
+
+#: lr_add_function_const.sdescriptionendpos
+msgid "ENDPOS(<String>,<SubStr>)/Returns position of substring <SubStr> in the string <String> starting at the end of the string."
+msgstr "ENDPOS(<Karakterlánc>, <Keresendő>)/Visszaadja a <Keresendő> helyét a <Karakterlánc>-ban, a karakterlánc végétől kezdve."
+
+#: lr_add_function_const.sdescriptionextractword
+msgid "EXTRACTWORD(<WordNo>,<String>,<Delimiters>)/Returns word number <WordNo> from the string <String>.<Delimiters> is the list of word delimiters."
+msgstr "EXTRACTWORD(<Sorszám>, <Karakterlánc>, <Elválasztó>)/Visszaadja az adott <Sorszám>-ú szót a <Karakterlánc>-ból. A szavakat az <Elválasztó> választja el."
+
+#: lr_add_function_const.sdescriptionfirstdayofnextmonth
+msgid "FIRSTDAYOFNEXTMONTH(<Date>)/Returns the date of first day of the next month of date <Date>."
+msgstr "FIRSTDAYOFNEXTMONTH(<Dátum>)/A <Dátum>-ot követő hónap első napjának dátumát adja vissza."
+
+#: lr_add_function_const.sdescriptionfirstdayofprevmonth
+msgid "FIRSTDAYOFPREVMONTH(<Date>)/Returns the date of first day of the previous month of date <Date>."
+msgstr "FIRSTDAYOFPREVMONTH(<Dátum>)/A <Dátum>-ot megelőző hónap első napjának dátumát adja vissza."
+
+#: lr_add_function_const.sdescriptionincdate
+msgid "INCDATE(<Date>,<String>)/Increments the date <Date> by given number of days, months and years passed in the <String> parameter in format \"days;months;years\". Returns the result date."
+msgstr "INCDATE(<Dátum>, <Karakterlánc>)/Hozzáadja a <Dátum>-hoz az adott számú napot, hónapot és évet, melyet a <Karakterlánc>-ban kell megadni, a következő formában: \"days;months;years\". Az így kapott dátumot adja vissza."
+
+#: lr_add_function_const.sdescriptionincday
+msgid "INCDAY(<Date>,<Number>)/Increments the date <Date> by given number of days <Number> and returns the result date."
+msgstr "INCDAY(<Dátum>, <Szám>)/Hozzáadja az adott <Szám>-ú napot a <Dátum>-hoz és az eredményt adja vissza."
+
+#: lr_add_function_const.sdescriptionincmonth
+msgid "INCMONTH(<Date>,<Number>)/Increments the date <Date> by given number of months <Number> and returns the result date."
+msgstr "INCMONTH(<Dátum>, <Szám>)/Hozzáadja az adott <Szám>-ú hónapot a <Dátum>-hoz és az eredményt adja vissza."
+
+#: lr_add_function_const.sdescriptioninctime
+msgid "INCTIME(<Time>,<String>)/Increments the time <Time> by given number of hours, minutes, seconds and milliseconds passed in the <String> parameter in format \"h;min;sec;msec\". Returns the result time."
+msgstr "INCTIME(<Időpont>, <Karakterlánc>)/Hozzáadja a <Időpont>-hoz az adott számú órát, percet, másodpercet és ezredmásodpercet, melyet a <Karakterlánc>-ban kell megadni, a következő formában: \"h;min;sec;msec\". Az így kapott időpontot adja vissza."
+
+#: lr_add_function_const.sdescriptionincyear
+msgid "INCYEAR(<Date>,<Number>)/Increments the date <Date> by given number of years <Number> and returns the result date."
+msgstr "INCYEAR(<Dátum>, <Szám>)/Hozzáadja az adott <Szám>-ú évet a <Dátum>-hoz és az eredményt adja vissza."
+
+#: lr_add_function_const.sdescriptioninsert
+msgid "INSERT(<SubStr>,<String>,<InsertFrom>)/Inserts <SubStr> substring into <String> string starting at position <InsertFrom> and returns the result."
+msgstr "INSERT(<Beszúrandó>, <Karakterlánc>, <BeszúrásKezdete>)/Beszúrja a <Beszúrandó> karaktereket a <Karakterlánc>-ba a <BeszúrásKezdete>-hez és az eredményt adja vissza."
+
+#: lr_add_function_const.sdescriptionisleapyear
+msgid "ISLEAPYEAR(<Year>)/Returns True if <Year> year is leap year."
+msgstr "ISLEAPYEAR(<Év>)/Igaz értéket ad vissza ha az <Év> egy szökőév."
+
+#: lr_add_function_const.sdescriptionisrangedate
+msgid "ISRANGEDATE(<Date1>,<Date2>,<Date3>)/Returns True if date <Date3> is between <Date1> and <Date2>."
+msgstr "ISRANGEDATE(<Dátum1>, <Dátum2>, <Dátum3>)/Igaz értéket ad vissza ha a <Dátum3> a <Dátum1> és a <Dátum2> közé esik."
+
+#: lr_add_function_const.sdescriptionisrangenum
+msgid "ISRANGENUM(<Number1>,<Number2>,<Number3>)/Returns True if <Number3> is between <Number1> and <Number2>."
+msgstr "ISRANGENUM(<Szám1>, <Szám2>, <Szám3>)/Igaz értéket ad vissza ha a <Szám3> a <Szám1> és a <Number2> közé esik."
+
+#: lr_add_function_const.sdescriptioniswordpresent
+msgid "ISWORDPRESENT(<Word>,<String>,<Delimiters>)/Determines if word <Word> is present in the string <String>.<Delimiters> is the list of word delimiters."
+msgstr "ISWORDPRESENT(<Szó>, <Karakterlánc>, <Elválasztó>)/Ellenőrzzi, hogy a <Szó> előfordul-e a <Karakterlánc>-ban. A szavakat az <Elválasztó> választja el."
+
+#: lr_add_function_const.sdescriptionlastdayofprevmonth
+msgid "LASTDAYOFPREVMONTH(<Date>)/Returns the date of last day of the previous month of date <Date>."
+msgstr "LASTDAYOFPREVMONTH(<Dátum>)/A <Dátum>-ot megelőző hónap utolsó napjának dátumát adja vissza."
+
+#: lr_add_function_const.sdescriptionleftcopy
+msgid "LEFTCOPY(<String>,<Count>)/Copies number of symbols <Count> from the string <String> starting at the begin of the string."
+msgstr "LEFTCOPY(<Karakterlánc>, <Szám>)/Adott <Szám>-ú karaktert másol a <Karakterlánc>-ból, a karakterlánc elejétől kezdve."
+
+#: lr_add_function_const.sdescriptionnpos
+msgid "NPOS(<SubStr>,<String>,<SubStrNo>)/Returns position of <SubStrNo>-th substring <SubStr> inclusion in the string <String>."
+msgstr "NPOS(<Keresendő>, <Karakterlánc>, <Sorszám>)/Visszaadja az adott <Sorszám>-ú <Keresendő> helyét a <Karakterlánc>-ban."
+
+#: lr_add_function_const.sdescriptionpadcenter
+msgid "PADCENTER(<String>,<Length>,<Symbol>)/Adds symbols <Symbol> to begin and end of the string <String> to make it as long as stated in the <Length> parameter and returns result string."
+msgstr "PADCENTER(<Karakterlánc>, <Hosszúság>, <Karakter>)/A <Karakterlánc> elejéhez és végéhez ad annyi <Karakter>-t, hogy az a megadott <Hosszúság>-ú legyen. Az így kapott eredményt adja vissza."
+
+#: lr_add_function_const.sdescriptionpadleft
+msgid "PADLEFT(<String>,<Length>,<Symbol>)/Adds symbols <Symbol> to begin of the string <String> to make it as long as stated in the <Length> parameter and returns result string."
+msgstr "PADLEFT(<Karakterlánc>, <Hosszúság>, <Karakter>)/A <Karakterlánc> elejéhez ad annyi <Karakter>-t, hogy az a megadott <Hosszúság>-ú legyen és z eredményt adja vissza."
+
+#: lr_add_function_const.sdescriptionpadright
+msgid "PADRIGHT(<String>,<Length>,<Symbol>)/Adds symbols <Symbol> to end of the string <String> to make it as long as stated in the <Length> parameter and returns result string."
+msgstr "PADRIGHT(<Karakterlánc>, <Hosszúság>, <Karakter>)/A <Karakterlánc> végéhez ad annyi <Karakter>-t, hogy az a megadott <Hosszúság>-ú legyen és z eredményt adja vissza."
+
+#: lr_add_function_const.sdescriptionreplacestr
+msgid "REPLACESTR(<String>,<SubStr1>,<SubStr2>)/Replaces all inclusions of <SubStr1> string to the <SubStr2> string in the string <String> and returns the result."
+msgstr "REPLACESTR(<Karakterlánc>, <Régi>, <Új>)/Kicseréli a <Régi> szöveg összes előfordulását az <Új> szövegre a <Karakterlánc>-ban és az eredményt adja vissza."
+
+#: lr_add_function_const.sdescriptionreplicate
+msgid "REPLICATE(<Symbol>,<Length>)/Returns the string with length <Length> that consists of symbols <Symbol>."
+msgstr "REPLICATE(<Karakter>, <Mennyiség>)/Az adott <Mennyiség>-ű és adott <Karakter>-ből álló karakterláncot ad vissza."
+
+#: lr_add_function_const.sdescriptionrightcopy
+msgid "RIGHTCOPY(<String>,<Count>)/Copies number of symbols <Count> from the string <String> starting at the end of the string."
+msgstr "RIGHTCOPY(<Karakterlánc>, <Szám>)/Adott <Szám>-ú karaktert másol a <Karakterlánc>-ból, a karakterlánc végétől kezdve."
+
+#: lr_add_function_const.sdescriptionstrtodatedef
+msgid "STRTODATEDEF(<String>,<DefDate>)/Converts <String> string to date. If conversion fails, returns default value <DefDate>."
+msgstr "STRTODATEDEF(<Karakterlánc>, <Alapértelmezett>)/Átalakítja a <Karakterlánc>-ot dátummá. Ha az átalakítás sikertelen, az <Alapértelmezett> értéket adja vissza."
+
+#: lr_add_function_const.sdescriptionstrtofloat
+msgid "STRTOFLOAT(<String>)/Converts <String> string to the float value."
+msgstr "STRTOFLOAT(<Karakterlánc>)/Átalakítja a <Karakterlánc>-ot lebegőpontos számértékké."
+
+#: lr_add_function_const.sdescriptionstrtofloatdef
+msgid "STRTOFLOATDEF(<String>,<DefValue>)/Converts <String> string to float value. If conversion fails, returns default value <DefValue>."
+msgstr "STRTOFLOATDEF(<Karakterlánc>, <Alapértelmezett>)/Átalakítja a <Karakterlánc>-ot lebegőpontos számértékké. Ha az átalakítás sikertelen, az <Alapértelmezett> értéket adja vissza."
+
+#: lr_add_function_const.sdescriptionstrtoint
+msgid "STRTOINT(<String>)/Converts <String> string to the integer value."
+msgstr "STRTOINT(<Karakterlánc>)/Átalakítja a <Karakterlánc>-ot egész számértékké."
+
+#: lr_add_function_const.sdescriptionstrtointdef
+msgid "STRTOINTDEF(<String>,<DefValue>)/Converts <String> string to integer value. If conversion fails, returns default value <DefValue>."
+msgstr "STRTOINTDEF(<Karakterlánc>, <Alapértelmezett>)/Átalakítja a <Karakterlánc>-ot egész számértékké. Ha az átalakítás sikertelen, az <Alapértelmezett> értéket adja vissza."
+
+#: lr_add_function_const.sdescriptionswap
+msgid "SWAP(<var var1>,<var var2>)/Swaps the variables var1 and var2."
+msgstr "SWAP(<var Változó1>, <var Változó2>)/Felcseréli a két változót."
+
+#: lr_add_function_const.sdescriptiontimetostr
+msgid "TIMETOSTR(<Time>)/Converts time <Time> to string and returns the result."
+msgstr "TIMETOSTR(<Idő>)/Az <Idő>-t karakterlánccá alakítja és az eredményt adja vissza."
+
+#: lr_add_function_const.sdescriptiontrimleft
+msgid "TRIMLEFT(<String>)/Trims all left spaces from the string <String> and returns the result."
+msgstr "TRIMLEFT(<String>)/Eltávolítja az összes bal oldali szóközt a <Karakterlánc>-ból és az eredményt adja vissza."
+
+#: lr_add_function_const.sdescriptiontrimright
+msgid "TRIMRIGHT(<String>)/Trims all right spaces from the string <String> and returns the result."
+msgstr "TRIMRIGHT(<Karakterlánc>)/Eltávolítja az összes jobb oldali szóközt a <Karakterlánc>-ból és az eredményt adja vissza."
+
+#: lr_add_function_const.sdescriptionvaliddate
+msgid "VALIDDATE(<String>)/Returns True if <String> string is valid date."
+msgstr "VALIDDATE(<Karakterlánc>)/Igaz értéket ad vissza ha a <Karakterlánc> egy érvényes dátum."
+
+#: lr_add_function_const.sdescriptionvalidfloat
+msgid "VALIDFLOAT(<String>)/Returns True if <String> is valid float value."
+msgstr "VALIDFLOAT(<Karakterlánc>)/Igaz értéket ad vissza ha a <Karakterlánc> egy érvényes lebegőpontos szám."
+
+#: lr_add_function_const.sdescriptionvalidint
+msgid "VALIDINT(<String>)/Returns True if <String> is valid integer value."
+msgstr "VALIDINT(<Karakterlánc>)/Igaz értéket ad vissza ha a <Karakterlánc> egy érvényes egész szám."
+
+#: lr_add_function_const.sdescriptionwordcount
+msgid "WORDCOUNT(<String>,<Delimiters>)/Returns number of words in the string <String>.<Delimiters> is the list of word delimiters."
+msgstr "WORDCOUNT(<Karakterlánc>, <Elválasztó>)/Visszadja a szavak számát a <Karakterlánc>-ban. A szavakat az <Elválasztó> választja el."
+
+#: lr_add_function_const.sdescriptionwordposition
+msgid "WORDPOSITION(<WordNo>,<String>,<Delimiters>)/Returns position of word number <WordNo> in the string <String>.<Delimiters> is the list of word delimiters."
+msgstr "WORDPOSITION(<Sorszám>, <Karakterlánc>, <Elválasztó>)/Visszaadja az adott <Sorszám>-ú szó helyét a <Karakterlánc>-ban. A szavakat az <Elválasztó> választja el."
+
+#: lr_add_function_const.smathcategory
+msgid "Math"
+msgstr "Matematika"
+
+#: lr_add_function_const.sothercategory
+msgid "Other"
+msgstr "Egyéb"
+
+#: lr_add_function_const.sstringcategory
+msgid "String"
+msgstr "Karakterlánc"
+

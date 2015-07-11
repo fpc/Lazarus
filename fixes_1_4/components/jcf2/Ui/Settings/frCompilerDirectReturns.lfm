@@ -1,0 +1,218 @@
+inherited fCompilerDirectReturns: TfCompilerDirectReturns
+  Height = 261
+  Width = 399
+  ClientHeight = 261
+  ClientWidth = 399
+  OnResize = FrameResize
+  TabOrder = 0
+  DesignLeft = 395
+  DesignTop = 293
+  object Label1: TLabel[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 14
+    Top = 6
+    Width = 200
+    BorderSpacing.Around = 6
+    Caption = 'Use a new line before compiler directives:'
+    ParentColor = False
+  end
+  object Label2: TLabel[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = rgBeforeUses
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 14
+    Top = 119
+    Width = 192
+    BorderSpacing.Top = 6
+    BorderSpacing.Around = 6
+    Caption = 'Use a new line after compiler directives:'
+    ParentColor = False
+  end
+  object rgBeforeUses: TRadioGroup[2]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = rgBeforeStatements
+    Left = 6
+    Height = 81
+    Top = 26
+    Width = 115
+    Anchors = [akTop, akLeft, akRight]
+    AutoFill = True
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'Uses clause'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 63
+    ClientWidth = 111
+    Items.Strings = (
+      'Always'
+      'Leave as is'
+      'Never'
+    )
+    TabOrder = 0
+  end
+  object rgBeforeStatements: TRadioGroup[3]
+    AnchorSideTop.Control = rgBeforeUses
+    AnchorSideRight.Control = rgBeforeGeneral
+    AnchorSideBottom.Control = rgBeforeUses
+    AnchorSideBottom.Side = asrBottom
+    Left = 127
+    Height = 81
+    Top = 26
+    Width = 127
+    Anchors = [akTop, akRight, akBottom]
+    AutoFill = True
+    BorderSpacing.Right = 6
+    Caption = 'Statements'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 63
+    ClientWidth = 123
+    Items.Strings = (
+      'Always'
+      'Leave as is'
+      'Never'
+    )
+    TabOrder = 1
+  end
+  object rgBeforeGeneral: TRadioGroup[4]
+    AnchorSideTop.Control = rgBeforeUses
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = rgBeforeUses
+    AnchorSideBottom.Side = asrBottom
+    Left = 260
+    Height = 81
+    Top = 26
+    Width = 133
+    Anchors = [akTop, akRight, akBottom]
+    AutoFill = True
+    BorderSpacing.Right = 6
+    Caption = 'Other places'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 63
+    ClientWidth = 129
+    Items.Strings = (
+      'Always'
+      'Leave as is'
+      'Never'
+    )
+    TabOrder = 2
+  end
+  object rgAfterGeneral: TRadioGroup[5]
+    AnchorSideTop.Control = rgAfterUses
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = rgAfterUses
+    AnchorSideBottom.Side = asrBottom
+    Left = 260
+    Height = 81
+    Top = 139
+    Width = 133
+    Anchors = [akTop, akRight, akBottom]
+    AutoFill = True
+    BorderSpacing.Right = 6
+    Caption = 'Other places'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 63
+    ClientWidth = 129
+    Items.Strings = (
+      'Always'
+      'Leave as is'
+      'Never'
+    )
+    TabOrder = 3
+  end
+  object rgAfterStatements: TRadioGroup[6]
+    AnchorSideTop.Control = rgAfterUses
+    AnchorSideRight.Control = rgAfterGeneral
+    AnchorSideBottom.Control = rgAfterUses
+    AnchorSideBottom.Side = asrBottom
+    Left = 127
+    Height = 81
+    Top = 139
+    Width = 127
+    Anchors = [akTop, akRight, akBottom]
+    AutoFill = True
+    BorderSpacing.Right = 6
+    Caption = 'Statements'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 63
+    ClientWidth = 123
+    Items.Strings = (
+      'Always'
+      'Leave as is'
+      'Never'
+    )
+    TabOrder = 4
+  end
+  object rgAfterUses: TRadioGroup[7]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Label2
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = rgAfterStatements
+    Left = 6
+    Height = 81
+    Top = 139
+    Width = 115
+    Anchors = [akTop, akLeft, akRight]
+    AutoFill = True
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'Uses clause'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 63
+    ClientWidth = 111
+    Items.Strings = (
+      'Always'
+      'Leave as is'
+      'Never'
+    )
+    TabOrder = 5
+  end
+end

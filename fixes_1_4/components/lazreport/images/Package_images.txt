@@ -1,0 +1,15 @@
+bitmaps/tfrbarcodeobject.png
+bitmaps/tfrcheckboxobject.png
+bitmaps/tfrcompositereport.png
+bitmaps/tfrcsvexport.png
+bitmaps/tfrdbdataset.png
+bitmaps/tfrhtmexport.png
+bitmaps/tfrprintgrid.png
+bitmaps/tfrreport.png
+bitmaps/tfrroundrectobject.png
+bitmaps/tfrshapeobject.png
+bitmaps/tfrtextexport.png
+bitmaps/tfruserdataset.png
+bitmaps/tfrdesigner.png
+bitmaps/tfrpreview.png
+bitmaps/tlrcrossobject.png

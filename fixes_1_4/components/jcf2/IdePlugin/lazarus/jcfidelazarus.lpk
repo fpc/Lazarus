@@ -1,0 +1,737 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <PathDelim Value="\"/>
+    <Name Value="jcfidelazarus"/>
+    <AddToProjectUsesSection Value="True"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <IncludeFiles Value="..\..\Include;..\..\Ui\Settings"/>
+        <OtherUnitFiles Value="..\..;..\..\Parse;..\..\Parse\PreProcessor;..\..\Parse\UI;..\..\Process;..\..\Process\Align;..\..\Process\Capitalisation;..\..\Process\Indent;..\..\Process\Info;..\..\Process\Obfuscate;..\..\Process\Onceoffs;..\..\Process\Returns;..\..\Process\Spacing;..\..\Process\Transform;..\..\Process\Warnings;..\..\ReadWrite;..\..\Settings;..\..\Settings\Streams;..\..\Ui;..\..\Ui\Settings;..\..\Utils;..\..\Utils\DragDrop"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)"/>
+      </SearchPaths>
+      <Parsing>
+        <SyntaxOptions>
+          <CStyleOperator Value="False"/>
+          <UseAnsiStrings Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
+      <Other>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="JEDI Code Format IDE Plugin for Lazarus"/>
+    <Version Major="2"/>
+    <Files Count="171">
+      <Item1>
+        <Filename Value="jcfidemain.pas"/>
+        <UnitName Value="JcfIdeMain"/>
+      </Item1>
+      <Item2>
+        <Filename Value="jcfideregister.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="JcfIdeRegister"/>
+      </Item2>
+      <Item3>
+        <Filename Value="..\..\Parse\AsmKeywords.pas"/>
+        <UnitName Value="AsmKeywords"/>
+      </Item3>
+      <Item4>
+        <Filename Value="..\..\Parse\BuildParseTree.pas"/>
+        <UnitName Value="BuildParseTree"/>
+      </Item4>
+      <Item5>
+        <Filename Value="..\..\Parse\BuildTokenList.pas"/>
+        <UnitName Value="BuildTokenList"/>
+      </Item5>
+      <Item6>
+        <Filename Value="..\..\Parse\ParseError.pas"/>
+        <UnitName Value="ParseError"/>
+      </Item6>
+      <Item7>
+        <Filename Value="..\..\Parse\ParseTreeNode.pas"/>
+        <UnitName Value="ParseTreeNode"/>
+      </Item7>
+      <Item8>
+        <Filename Value="..\..\Parse\ParseTreeNodeType.pas"/>
+        <UnitName Value="ParseTreeNodeType"/>
+      </Item8>
+      <Item9>
+        <Filename Value="..\..\Parse\PreProcessor\PreProcessorExpressionParser.pas"/>
+        <UnitName Value="PreProcessorExpressionParser"/>
+      </Item9>
+      <Item10>
+        <Filename Value="..\..\Parse\PreProcessor\PreProcessorExpressionTokenise.pas"/>
+        <UnitName Value="PreProcessorExpressionTokenise"/>
+      </Item10>
+      <Item11>
+        <Filename Value="..\..\Parse\PreProcessor\PreProcessorExpressionTokens.pas"/>
+        <UnitName Value="PreProcessorExpressionTokens"/>
+      </Item11>
+      <Item12>
+        <Filename Value="..\..\Parse\PreProcessor\PreProcessorParseTree.pas"/>
+        <UnitName Value="PreProcessorParseTree"/>
+      </Item12>
+      <Item13>
+        <Filename Value="..\..\Parse\SourceToken.pas"/>
+        <UnitName Value="SourceToken"/>
+      </Item13>
+      <Item14>
+        <Filename Value="..\..\Parse\SourceTokenList.pas"/>
+        <UnitName Value="SourceTokenList"/>
+      </Item14>
+      <Item15>
+        <Filename Value="..\..\Parse\Tokens.pas"/>
+        <UnitName Value="Tokens"/>
+      </Item15>
+      <Item16>
+        <Filename Value="..\..\Parse\TokenUtils.pas"/>
+        <UnitName Value="TokenUtils"/>
+      </Item16>
+      <Item17>
+        <Filename Value="..\..\Parse\UI\fShowParseTree.pas"/>
+        <UnitName Value="fShowParseTree"/>
+      </Item17>
+      <Item18>
+        <Filename Value="..\..\Process\Align\AlignAssign.pas"/>
+        <UnitName Value="AlignAssign"/>
+      </Item18>
+      <Item19>
+        <Filename Value="..\..\Process\Align\AlignBase.pas"/>
+        <UnitName Value="AlignBase"/>
+      </Item19>
+      <Item20>
+        <Filename Value="..\..\Process\Align\AlignComment.pas"/>
+        <UnitName Value="AlignComment"/>
+      </Item20>
+      <Item21>
+        <Filename Value="..\..\Process\Align\AlignConst.pas"/>
+        <UnitName Value="AlignConst"/>
+      </Item21>
+      <Item22>
+        <Filename Value="..\..\Process\Align\AlignField.pas"/>
+        <UnitName Value="AlignField"/>
+      </Item22>
+      <Item23>
+        <Filename Value="..\..\Process\Align\AlignTypedef.pas"/>
+        <UnitName Value="AlignTypedef"/>
+      </Item23>
+      <Item24>
+        <Filename Value="..\..\Process\Align\AlignVars.pas"/>
+        <UnitName Value="AlignVars"/>
+      </Item24>
+      <Item25>
+        <Filename Value="..\..\Process\AllProcesses.pas"/>
+        <UnitName Value="AllProcesses"/>
+      </Item25>
+      <Item26>
+        <Filename Value="..\..\Process\BaseVisitor.pas"/>
+        <UnitName Value="BaseVisitor"/>
+      </Item26>
+      <Item27>
+        <Filename Value="..\..\Process\Capitalisation\Capitalisation.pas"/>
+        <UnitName Value="Capitalisation"/>
+      </Item27>
+      <Item28>
+        <Filename Value="..\..\Process\Capitalisation\IdentifierCaps.pas"/>
+        <UnitName Value="IdentifierCaps"/>
+      </Item28>
+      <Item29>
+        <Filename Value="..\..\Process\Capitalisation\SpecificWordCaps.pas"/>
+        <UnitName Value="SpecificWordCaps"/>
+      </Item29>
+      <Item30>
+        <Filename Value="..\..\Process\Capitalisation\UnitNameCaps.pas"/>
+        <UnitName Value="UnitNameCaps"/>
+      </Item30>
+      <Item31>
+        <Filename Value="..\..\Process\FormatFlags.pas"/>
+        <UnitName Value="FormatFlags"/>
+      </Item31>
+      <Item32>
+        <Filename Value="..\..\Process\Indent\IndentAsmParam.pas"/>
+        <UnitName Value="IndentAsmParam"/>
+      </Item32>
+      <Item33>
+        <Filename Value="..\..\Process\Indent\Indenter.pas"/>
+        <UnitName Value="Indenter"/>
+      </Item33>
+      <Item34>
+        <Filename Value="..\..\Process\Info\BasicStats.pas"/>
+        <UnitName Value="BasicStats"/>
+      </Item34>
+      <Item35>
+        <Filename Value="..\..\Process\Nesting.pas"/>
+        <UnitName Value="Nesting"/>
+      </Item35>
+      <Item36>
+        <Filename Value="..\..\Process\Obfuscate\FixCase.pas"/>
+        <UnitName Value="FixCase"/>
+      </Item36>
+      <Item37>
+        <Filename Value="..\..\Process\Obfuscate\RebreakLines.pas"/>
+        <UnitName Value="RebreakLines"/>
+      </Item37>
+      <Item38>
+        <Filename Value="..\..\Process\Obfuscate\ReduceWhiteSpace.pas"/>
+        <UnitName Value="ReduceWhiteSpace"/>
+      </Item38>
+      <Item39>
+        <Filename Value="..\..\Process\Obfuscate\RemoveBlankLine.pas"/>
+        <UnitName Value="RemoveBlankLine"/>
+      </Item39>
+      <Item40>
+        <Filename Value="..\..\Process\Obfuscate\RemoveComment.pas"/>
+        <UnitName Value="RemoveComment"/>
+      </Item40>
+      <Item41>
+        <Filename Value="..\..\Process\Obfuscate\RemoveConsecutiveWhiteSpace.pas"/>
+        <UnitName Value="RemoveConsecutiveWhiteSpace"/>
+      </Item41>
+      <Item42>
+        <Filename Value="..\..\Process\Obfuscate\RemoveReturn.pas"/>
+        <UnitName Value="RemoveReturn"/>
+      </Item42>
+      <Item43>
+        <Filename Value="..\..\Process\Obfuscate\RemoveUnneededWhiteSpace.pas"/>
+        <UnitName Value="RemoveUnneededWhiteSpace"/>
+      </Item43>
+      <Item44>
+        <Filename Value="..\..\Process\Onceoffs\MozComment.pas"/>
+        <UnitName Value="MozComment"/>
+      </Item44>
+      <Item45>
+        <Filename Value="..\..\Process\RemoveEmptyComment.pas"/>
+        <UnitName Value="RemoveEmptyComment"/>
+      </Item45>
+      <Item46>
+        <Filename Value="..\..\Process\Returns\BlockStyles.pas"/>
+        <UnitName Value="BlockStyles"/>
+      </Item46>
+      <Item47>
+        <Filename Value="..\..\Process\Returns\LongLineBreaker.pas"/>
+        <UnitName Value="LongLineBreaker"/>
+      </Item47>
+      <Item48>
+        <Filename Value="..\..\Process\Returns\NoReturnAfter.pas"/>
+        <UnitName Value="NoReturnAfter"/>
+      </Item48>
+      <Item49>
+        <Filename Value="..\..\Process\Returns\NoReturnBefore.pas"/>
+        <UnitName Value="NoReturnBefore"/>
+      </Item49>
+      <Item50>
+        <Filename Value="..\..\Process\Returns\PropertyOnOneLine.pas"/>
+        <UnitName Value="PropertyOnOneLine"/>
+      </Item50>
+      <Item51>
+        <Filename Value="..\..\Process\Returns\RemoveBlankLinesAfterProcHeader.pas"/>
+        <UnitName Value="RemoveBlankLinesAfterProcHeader"/>
+      </Item51>
+      <Item52>
+        <Filename Value="..\..\Process\Returns\RemoveBlankLinesInVars.pas"/>
+        <UnitName Value="RemoveBlankLinesInVars"/>
+      </Item52>
+      <Item53>
+        <Filename Value="..\..\Process\Returns\RemoveConsecutiveReturns.pas"/>
+        <UnitName Value="RemoveConsecutiveReturns"/>
+      </Item53>
+      <Item54>
+        <Filename Value="..\..\Process\Returns\RemoveReturnsAfter.pas"/>
+        <UnitName Value="RemoveReturnsAfter"/>
+      </Item54>
+      <Item55>
+        <Filename Value="..\..\Process\Returns\RemoveReturnsAfterBegin.pas"/>
+        <UnitName Value="RemoveReturnsAfterBegin"/>
+      </Item55>
+      <Item56>
+        <Filename Value="..\..\Process\Returns\RemoveReturnsBeforeEnd.pas"/>
+        <UnitName Value="RemoveReturnsBeforeEnd"/>
+      </Item56>
+      <Item57>
+        <Filename Value="..\..\Process\Returns\ReturnAfter.pas"/>
+        <UnitName Value="ReturnAfter"/>
+      </Item57>
+      <Item58>
+        <Filename Value="..\..\Process\Returns\ReturnBefore.pas"/>
+        <UnitName Value="ReturnBefore"/>
+      </Item58>
+      <Item59>
+        <Filename Value="..\..\Process\Returns\ReturnChars.pas"/>
+        <UnitName Value="ReturnChars"/>
+      </Item59>
+      <Item60>
+        <Filename Value="..\..\Process\Returns\ReturnsAfterFinalEnd.pas"/>
+        <UnitName Value="ReturnsAfterFinalEnd"/>
+      </Item60>
+      <Item61>
+        <Filename Value="..\..\Process\Spacing\MaxSpaces.pas"/>
+        <UnitName Value="MaxSpaces"/>
+      </Item61>
+      <Item62>
+        <Filename Value="..\..\Process\Spacing\NoSpaceAfter.pas"/>
+        <UnitName Value="NoSpaceAfter"/>
+      </Item62>
+      <Item63>
+        <Filename Value="..\..\Process\Spacing\NoSpaceBefore.pas"/>
+        <UnitName Value="NoSpaceBefore"/>
+      </Item63>
+      <Item64>
+        <Filename Value="..\..\Process\Spacing\RemoveSpaceAtLineEnd.pas"/>
+        <UnitName Value="RemoveSpaceAtLineEnd"/>
+      </Item64>
+      <Item65>
+        <Filename Value="..\..\Process\Spacing\SingleSpaceAfter.pas"/>
+        <UnitName Value="SingleSpaceAfter"/>
+      </Item65>
+      <Item66>
+        <Filename Value="..\..\Process\Spacing\SingleSpaceBefore.pas"/>
+        <UnitName Value="SingleSpaceBefore"/>
+      </Item66>
+      <Item67>
+        <Filename Value="..\..\Process\Spacing\SpaceBeforeColon.pas"/>
+        <UnitName Value="SpaceBeforeColon"/>
+      </Item67>
+      <Item68>
+        <Filename Value="..\..\Process\Spacing\SpaceToTab.pas"/>
+        <UnitName Value="SpaceToTab"/>
+      </Item68>
+      <Item69>
+        <Filename Value="..\..\Process\Spacing\TabToSpace.pas"/>
+        <UnitName Value="TabToSpace"/>
+      </Item69>
+      <Item70>
+        <Filename Value="..\..\Process\SwitchableVisitor.pas"/>
+        <UnitName Value="SwitchableVisitor"/>
+      </Item70>
+      <Item71>
+        <Filename Value="..\..\Process\Transform\AddBeginEnd.pas"/>
+        <UnitName Value="AddBeginEnd"/>
+      </Item71>
+      <Item72>
+        <Filename Value="..\..\Process\Transform\AddBlockEndSemicolon.pas"/>
+        <UnitName Value="AddBlockEndSemicolon"/>
+      </Item72>
+      <Item73>
+        <Filename Value="..\..\Process\Transform\FindReplace.pas"/>
+        <UnitName Value="FindReplace"/>
+      </Item73>
+      <Item74>
+        <Filename Value="..\..\Process\Transform\SortUses.pas"/>
+        <UnitName Value="SortUses"/>
+      </Item74>
+      <Item75>
+        <Filename Value="..\..\Process\Transform\SortUsesData.pas"/>
+        <UnitName Value="SortUsesData"/>
+      </Item75>
+      <Item76>
+        <Filename Value="..\..\Process\Transform\UsesClauseFindReplace.pas"/>
+        <UnitName Value="UsesClauseFindReplace"/>
+      </Item76>
+      <Item77>
+        <Filename Value="..\..\Process\Transform\UsesClauseInsert.pas"/>
+        <UnitName Value="UsesClauseInsert"/>
+      </Item77>
+      <Item78>
+        <Filename Value="..\..\Process\Transform\UsesClauseRemove.pas"/>
+        <UnitName Value="UsesClauseRemove"/>
+      </Item78>
+      <Item79>
+        <Filename Value="..\..\Process\TreeWalker.pas"/>
+        <UnitName Value="TreeWalker"/>
+      </Item79>
+      <Item80>
+        <Filename Value="..\..\Process\VisitSetNesting.pas"/>
+        <UnitName Value="VisitSetNesting"/>
+      </Item80>
+      <Item81>
+        <Filename Value="..\..\Process\VisitSetXY.pas"/>
+        <UnitName Value="VisitSetXY"/>
+      </Item81>
+      <Item82>
+        <Filename Value="..\..\Process\VisitStripEmptySpace.pas"/>
+        <UnitName Value="VisitStripEmptySpace"/>
+      </Item82>
+      <Item83>
+        <Filename Value="..\..\Process\Warnings\WarnAssignToFunctionName.pas"/>
+        <UnitName Value="WarnAssignToFunctionName"/>
+      </Item83>
+      <Item84>
+        <Filename Value="..\..\Process\Warnings\WarnCaseNoElse.pas"/>
+        <UnitName Value="WarnCaseNoElse"/>
+      </Item84>
+      <Item85>
+        <Filename Value="..\..\Process\Warnings\WarnDestroy.pas"/>
+        <UnitName Value="WarnDestroy"/>
+      </Item85>
+      <Item86>
+        <Filename Value="..\..\Process\Warnings\WarnEmptyBlock.pas"/>
+        <UnitName Value="WarnEmptyBlock"/>
+      </Item86>
+      <Item87>
+        <Filename Value="..\..\Process\Warnings\Warning.pas"/>
+        <UnitName Value="Warning"/>
+      </Item87>
+      <Item88>
+        <Filename Value="..\..\Process\Warnings\WarnRealType.pas"/>
+        <UnitName Value="WarnRealType"/>
+      </Item88>
+      <Item89>
+        <Filename Value="..\..\Process\Warnings\WarnUnusedParam.pas"/>
+        <UnitName Value="WarnUnusedParam"/>
+      </Item89>
+      <Item90>
+        <Filename Value="..\..\ReadWrite\Converter.pas"/>
+        <UnitName Value="Converter"/>
+      </Item90>
+      <Item91>
+        <Filename Value="..\..\ReadWrite\ConvertTypes.pas"/>
+        <UnitName Value="ConvertTypes"/>
+      </Item91>
+      <Item92>
+        <Filename Value="..\..\ReadWrite\EditorConverter.pas"/>
+        <UnitName Value="EditorConverter"/>
+      </Item92>
+      <Item93>
+        <Filename Value="..\..\ReadWrite\FileConverter.pas"/>
+        <UnitName Value="FileConverter"/>
+      </Item93>
+      <Item94>
+        <Filename Value="..\..\Settings\JcfRegistrySettings.pas"/>
+        <UnitName Value="JcfRegistrySettings"/>
+      </Item94>
+      <Item95>
+        <Filename Value="..\..\Settings\JcfSetBase.pas"/>
+        <UnitName Value="JcfSetBase"/>
+      </Item95>
+      <Item96>
+        <Filename Value="..\..\Settings\JcfSettings.pas"/>
+        <UnitName Value="JcfSettings"/>
+      </Item96>
+      <Item97>
+        <Filename Value="..\..\Settings\SetAlign.pas"/>
+        <UnitName Value="SetAlign"/>
+      </Item97>
+      <Item98>
+        <Filename Value="..\..\Settings\SetAsm.pas"/>
+        <UnitName Value="SetAsm"/>
+      </Item98>
+      <Item99>
+        <Filename Value="..\..\Settings\SetCaps.pas"/>
+        <UnitName Value="SetCaps"/>
+      </Item99>
+      <Item100>
+        <Filename Value="..\..\Settings\SetClarify.pas"/>
+        <UnitName Value="SetClarify"/>
+      </Item100>
+      <Item101>
+        <Filename Value="..\..\Settings\SetComments.pas"/>
+        <UnitName Value="SetComments"/>
+      </Item101>
+      <Item102>
+        <Filename Value="..\..\Settings\SetIndent.pas"/>
+        <UnitName Value="SetIndent"/>
+      </Item102>
+      <Item103>
+        <Filename Value="..\..\Settings\SetObfuscate.pas"/>
+        <UnitName Value="SetObfuscate"/>
+      </Item103>
+      <Item104>
+        <Filename Value="..\..\Settings\SetPreProcessor.pas"/>
+        <UnitName Value="SetPreProcessor"/>
+      </Item104>
+      <Item105>
+        <Filename Value="..\..\Settings\SetReplace.pas"/>
+        <UnitName Value="SetReplace"/>
+      </Item105>
+      <Item106>
+        <Filename Value="..\..\Settings\SetReturns.pas"/>
+        <UnitName Value="SetReturns"/>
+      </Item106>
+      <Item107>
+        <Filename Value="..\..\Settings\SetSpaces.pas"/>
+        <UnitName Value="SetSpaces"/>
+      </Item107>
+      <Item108>
+        <Filename Value="..\..\Settings\SettingsTypes.pas"/>
+        <UnitName Value="SettingsTypes"/>
+      </Item108>
+      <Item109>
+        <Filename Value="..\..\Settings\SetTransform.pas"/>
+        <UnitName Value="SetTransform"/>
+      </Item109>
+      <Item110>
+        <Filename Value="..\..\Settings\SetUses.pas"/>
+        <UnitName Value="SetUses"/>
+      </Item110>
+      <Item111>
+        <Filename Value="..\..\Settings\SetWordList.pas"/>
+        <UnitName Value="SetWordList"/>
+      </Item111>
+      <Item112>
+        <Filename Value="..\..\Settings\Streams\SettingsStream.pas"/>
+        <UnitName Value="SettingsStream"/>
+      </Item112>
+      <Item113>
+        <Filename Value="..\..\Ui\fJcfErrorDisplay.pas"/>
+        <UnitName Value="fJcfErrorDisplay"/>
+      </Item113>
+      <Item114>
+        <Filename Value="..\..\Utils\Delay.pas"/>
+        <UnitName Value="Delay"/>
+      </Item114>
+      <Item115>
+        <Filename Value="..\..\Utils\IntList.pas"/>
+        <UnitName Value="IntList"/>
+      </Item115>
+      <Item116>
+        <Filename Value="..\..\Utils\JcfFontSetFunctions.pas"/>
+        <UnitName Value="JcfFontSetFunctions"/>
+      </Item116>
+      <Item117>
+        <Filename Value="..\..\Utils\JcfHelp.pas"/>
+        <UnitName Value="JcfHelp"/>
+      </Item117>
+      <Item118>
+        <Filename Value="..\..\Utils\JcfLog.pas"/>
+        <UnitName Value="JcfLog"/>
+      </Item118>
+      <Item119>
+        <Filename Value="..\..\Utils\JcfMiscFunctions.pas"/>
+        <UnitName Value="JcfMiscFunctions"/>
+      </Item119>
+      <Item120>
+        <Filename Value="..\..\Ui\fAbout.lfm"/>
+        <Type Value="LFM"/>
+      </Item120>
+      <Item121>
+        <Filename Value="..\..\Ui\fAbout.pas"/>
+        <UnitName Value="fAbout"/>
+      </Item121>
+      <Item122>
+        <Filename Value="..\..\JcfVersionConsts.pas"/>
+        <UnitName Value="JcfVersionConsts"/>
+      </Item122>
+      <Item123>
+        <Filename Value="..\..\Ui\Settings\frFiles.lfm"/>
+        <Type Value="LFM"/>
+      </Item123>
+      <Item124>
+        <Filename Value="..\..\Ui\Settings\frFiles.pas"/>
+        <UnitName Value="frFiles"/>
+      </Item124>
+      <Item125>
+        <Filename Value="..\..\Ui\Settings\frObfuscateSettings.lfm"/>
+        <Type Value="LFM"/>
+      </Item125>
+      <Item126>
+        <Filename Value="..\..\Ui\Settings\frObfuscateSettings.pas"/>
+        <UnitName Value="frObfuscateSettings"/>
+      </Item126>
+      <Item127>
+        <Filename Value="..\..\Ui\Settings\frClarify.lfm"/>
+        <Type Value="LFM"/>
+      </Item127>
+      <Item128>
+        <Filename Value="..\..\Ui\Settings\frClarify.pas"/>
+        <UnitName Value="frClarify"/>
+      </Item128>
+      <Item129>
+        <Filename Value="..\..\Ui\Settings\frClarifySpaces.lfm"/>
+        <Type Value="LFM"/>
+      </Item129>
+      <Item130>
+        <Filename Value="..\..\Ui\Settings\frClarifySpaces.pas"/>
+        <UnitName Value="frClarifySpaces"/>
+      </Item130>
+      <Item131>
+        <Filename Value="..\..\Ui\Settings\frClarifyIndent.lfm"/>
+        <Type Value="LFM"/>
+      </Item131>
+      <Item132>
+        <Filename Value="..\..\Ui\Settings\frClarifyIndent.pas"/>
+        <UnitName Value="frClarifyIndent"/>
+      </Item132>
+      <Item133>
+        <Filename Value="..\..\Ui\Settings\frBlankLines.lfm"/>
+        <Type Value="LFM"/>
+      </Item133>
+      <Item134>
+        <Filename Value="..\..\Ui\Settings\frBlankLines.pas"/>
+        <UnitName Value="frBlankLines"/>
+      </Item134>
+      <Item135>
+        <Filename Value="..\..\Ui\Settings\frClarifyAlign.lfm"/>
+        <Type Value="LFM"/>
+      </Item135>
+      <Item136>
+        <Filename Value="..\..\Ui\Settings\frClarifyAlign.pas"/>
+        <UnitName Value="frClarifyAlign"/>
+      </Item136>
+      <Item137>
+        <Filename Value="..\..\Ui\Settings\frClarifyLongLineBreaker.lfm"/>
+        <Type Value="LFM"/>
+      </Item137>
+      <Item138>
+        <Filename Value="..\..\Ui\Settings\frClarifyLongLineBreaker.pas"/>
+        <UnitName Value="frClarifyLongLineBreaker"/>
+      </Item138>
+      <Item139>
+        <Filename Value="..\..\Ui\Settings\frClarifyReturns.lfm"/>
+        <Type Value="LFM"/>
+      </Item139>
+      <Item140>
+        <Filename Value="..\..\Ui\Settings\frClarifyReturns.pas"/>
+        <UnitName Value="frClarifyReturns"/>
+      </Item140>
+      <Item141>
+        <Filename Value="..\..\Ui\Settings\frCompilerDirectReturns.lfm"/>
+        <Type Value="LFM"/>
+      </Item141>
+      <Item142>
+        <Filename Value="..\..\Ui\Settings\frCompilerDirectReturns.pas"/>
+        <UnitName Value="frCompilerDirectReturns"/>
+      </Item142>
+      <Item143>
+        <Filename Value="..\..\Ui\Settings\frClarifyBlocks.lfm"/>
+        <Type Value="LFM"/>
+      </Item143>
+      <Item144>
+        <Filename Value="..\..\Ui\Settings\frClarifyBlocks.pas"/>
+        <UnitName Value="frClarifyBlocks"/>
+      </Item144>
+      <Item145>
+        <Filename Value="..\..\Ui\Settings\frClarifyCaseBlocks.lfm"/>
+        <Type Value="LFM"/>
+      </Item145>
+      <Item146>
+        <Filename Value="..\..\Ui\Settings\frClarifyCaseBlocks.pas"/>
+        <UnitName Value="frClarifyCaseBlocks"/>
+      </Item146>
+      <Item147>
+        <Filename Value="..\..\Ui\Settings\frComments.lfm"/>
+        <Type Value="LFM"/>
+      </Item147>
+      <Item148>
+        <Filename Value="..\..\Ui\Settings\frComments.pas"/>
+        <UnitName Value="frComments"/>
+      </Item148>
+      <Item149>
+        <Filename Value="..\..\Ui\Settings\frWarnings.lfm"/>
+        <Type Value="LFM"/>
+      </Item149>
+      <Item150>
+        <Filename Value="..\..\Ui\Settings\frWarnings.pas"/>
+        <UnitName Value="frWarnings"/>
+      </Item150>
+      <Item151>
+        <Filename Value="..\..\Ui\Settings\frReservedCapsSettings.lfm"/>
+        <Type Value="LFM"/>
+      </Item151>
+      <Item152>
+        <Filename Value="..\..\Ui\Settings\frReservedCapsSettings.pas"/>
+        <UnitName Value="frReservedCapsSettings"/>
+      </Item152>
+      <Item153>
+        <Filename Value="..\..\Ui\Settings\frAnyCapsSettings.lfm"/>
+        <Type Value="LFM"/>
+      </Item153>
+      <Item154>
+        <Filename Value="..\..\Ui\Settings\frAnyCapsSettings.pas"/>
+        <UnitName Value="frAnyCapsSettings"/>
+      </Item154>
+      <Item155>
+        <Filename Value="..\..\Ui\Settings\frIdentifierCapsSettings.lfm"/>
+        <Type Value="LFM"/>
+      </Item155>
+      <Item156>
+        <Filename Value="..\..\Ui\Settings\frIdentifierCapsSettings.pas"/>
+        <UnitName Value="frIdentifierCapsSettings"/>
+      </Item156>
+      <Item157>
+        <Filename Value="..\..\Ui\Settings\frNotIdentifierCapsSettings.lfm"/>
+        <Type Value="LFM"/>
+      </Item157>
+      <Item158>
+        <Filename Value="..\..\Ui\Settings\frNotIdentifierCapsSettings.pas"/>
+        <UnitName Value="frNotIdentifierCapsSettings"/>
+      </Item158>
+      <Item159>
+        <Filename Value="..\..\Ui\Settings\frUnitCaps.lfm"/>
+        <Type Value="LFM"/>
+      </Item159>
+      <Item160>
+        <Filename Value="..\..\Ui\Settings\frUnitCaps.pas"/>
+        <UnitName Value="frUnitCaps"/>
+      </Item160>
+      <Item161>
+        <Filename Value="..\..\Ui\Settings\frReplace.lfm"/>
+        <Type Value="LFM"/>
+      </Item161>
+      <Item162>
+        <Filename Value="..\..\Ui\Settings\frReplace.pas"/>
+        <UnitName Value="frReplace"/>
+      </Item162>
+      <Item163>
+        <Filename Value="..\..\Ui\Settings\frUses.lfm"/>
+        <Type Value="LFM"/>
+      </Item163>
+      <Item164>
+        <Filename Value="..\..\Ui\Settings\frUses.pas"/>
+        <UnitName Value="frUses"/>
+      </Item164>
+      <Item165>
+        <Filename Value="..\..\Ui\Settings\frTransform.lfm"/>
+        <Type Value="LFM"/>
+      </Item165>
+      <Item166>
+        <Filename Value="..\..\Ui\Settings\frTransform.pas"/>
+        <UnitName Value="frTransform"/>
+      </Item166>
+      <Item167>
+        <Filename Value="..\..\Ui\Settings\frAsm.lfm"/>
+        <Type Value="LFM"/>
+      </Item167>
+      <Item168>
+        <Filename Value="..\..\Ui\Settings\frAsm.pas"/>
+        <UnitName Value="frAsm"/>
+      </Item168>
+      <Item169>
+        <Filename Value="..\..\Ui\Settings\frPreProcessor.lfm"/>
+        <Type Value="LFM"/>
+      </Item169>
+      <Item170>
+        <Filename Value="..\..\Ui\Settings\frPreProcessor.pas"/>
+        <UnitName Value="frPreProcessor"/>
+      </Item170>
+      <Item171>
+        <Filename Value="jcfuiconsts.pas"/>
+        <UnitName Value="jcfuiconsts"/>
+      </Item171>
+    </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="2">
+      <Item1>
+        <PackageName Value="IDEIntf"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item2>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

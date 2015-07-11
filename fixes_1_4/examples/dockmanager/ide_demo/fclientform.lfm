@@ -1,0 +1,23 @@
+object ViewWindow: TViewWindow
+  Left = 369
+  Height = 300
+  Top = 369
+  Width = 400
+  Caption = 'ViewWindow'
+  ClientHeight = 300
+  ClientWidth = 400
+  DragKind = dkDock
+  DragMode = dmAutomatic
+  OnEndDock = FormEndDock
+  LCLVersion = '0.9.29'
+  Visible = True
+  object Label1: TLabel
+    Left = 16
+    Height = 14
+    Top = 8
+    Width = 142
+    AutoSize = False
+    Caption = 'Label1'
+    ParentColor = False
+  end
+end

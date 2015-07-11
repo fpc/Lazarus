@@ -1,0 +1,920 @@
+object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
+  Left = 0
+  Height = 499
+  Top = 0
+  Width = 433
+  ClientHeight = 499
+  ClientWidth = 433
+  TabOrder = 0
+  Visible = False
+  DesignLeft = 664
+  DesignTop = 211
+  object BlockIndentLabel: TLabel
+    AnchorSideLeft.Control = BlockIndentComboBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = BlockIndentComboBox
+    AnchorSideTop.Side = asrCenter
+    Left = 322
+    Height = 15
+    Top = 137
+    Width = 91
+    BorderSpacing.Around = 6
+    Caption = 'BlockIndentLabel'
+    ParentColor = False
+  end
+  object TabWidthsLabel: TLabel
+    AnchorSideLeft.Control = TabWidthsComboBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = TabWidthsComboBox
+    AnchorSideTop.Side = asrCenter
+    Left = 322
+    Height = 15
+    Top = 31
+    Width = 85
+    BorderSpacing.Around = 6
+    Caption = 'TabWidthsLabel'
+    ParentColor = False
+  end
+  object AutoIndentTypeLabel: TLabel
+    AnchorSideLeft.Control = BlockIndentTypeComboBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = BlockIndentTypeComboBox
+    AnchorSideTop.Side = asrCenter
+    Left = 322
+    Height = 15
+    Top = 90
+    Width = 114
+    BorderSpacing.Around = 6
+    Caption = 'AutoIndentTypeLabel'
+    ParentColor = False
+  end
+  object BlockIndentComboBox: TComboBox
+    AnchorSideLeft.Control = CenterLabel1
+    AnchorSideTop.Control = lblBlockIndentKeys
+    AnchorSideBottom.Control = TabWidthsComboBox
+    Left = 216
+    Height = 23
+    Top = 133
+    Width = 100
+    BorderSpacing.Top = 3
+    ItemHeight = 15
+    Items.Strings = (
+      '0'
+      '1'
+      '2'
+      '4'
+      '8'
+    )
+    OnChange = ComboboxOnChange
+    OnExit = ComboBoxOnExit
+    OnKeyDown = ComboboxOnKeyDown
+    TabOrder = 6
+  end
+  object TabWidthsComboBox: TComboBox
+    AnchorSideLeft.Control = CenterLabel1
+    AnchorSideTop.Control = TabsGroupDivider
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 216
+    Height = 23
+    Top = 27
+    Width = 100
+    BorderSpacing.Top = 6
+    ItemHeight = 15
+    Items.Strings = (
+      '1'
+      '2'
+      '4'
+      '8'
+    )
+    OnChange = ComboboxOnChange
+    OnExit = ComboBoxOnExit
+    OnKeyDown = ComboboxOnKeyDown
+    TabOrder = 1
+  end
+  object AutoIndentCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = IndentsGroupDivider
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = CenterLabel1
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 19
+    Top = 86
+    Width = 201
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 10
+    Caption = 'AutoIndentCheckBox'
+    OnChange = AutoIndentCheckBoxChange
+    TabOrder = 3
+  end
+  object TabIndentBlocksCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblBlockIndentShortcut
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = CenterLabel1
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 19
+    Top = 166
+    Width = 201
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 3
+    BorderSpacing.Right = 10
+    Caption = 'TabIndentBlocksCheckBox'
+    OnChange = TabIndentBlocksCheckBoxChange
+    TabOrder = 7
+  end
+  object SmartTabsCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = TabsToSpacesCheckBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = CenterLabel1
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 19
+    Top = 46
+    Width = 201
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 10
+    Caption = 'SmartTabsCheckBox'
+    OnChange = SmartTabsCheckBoxChange
+    TabOrder = 2
+  end
+  object TabsToSpacesCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = TabsGroupDivider
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = CenterLabel1
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 19
+    Top = 27
+    Width = 201
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 10
+    Caption = 'TabsToSpacesCheckBox'
+    OnChange = TabsToSpacesCheckBoxChange
+    TabOrder = 0
+  end
+  object BlockIndentTypeComboBox: TComboBox
+    AnchorSideLeft.Control = CenterLabel1
+    AnchorSideTop.Control = AutoIndentCheckBox
+    AnchorSideBottom.Control = TabWidthsComboBox
+    Left = 216
+    Height = 23
+    Top = 86
+    Width = 100
+    ItemHeight = 15
+    ItemWidth = 200
+    OnChange = ComboboxOnChange
+    OnExit = ComboBoxOnExit
+    OnKeyDown = ComboboxOnKeyDown
+    Style = csDropDownList
+    TabOrder = 4
+  end
+  object AutoIndentLink: TLabel
+    AnchorSideLeft.Control = AutoIndentCheckBox
+    AnchorSideTop.Control = AutoIndentCheckBox
+    AnchorSideTop.Side = asrBottom
+    Cursor = crHandPoint
+    Left = 24
+    Height = 15
+    Top = 105
+    Width = 82
+    BorderSpacing.Left = 18
+    Caption = 'AutoIndentLink'
+    Font.Color = clBlue
+    ParentColor = False
+    ParentFont = False
+    OnClick = AutoIndentLinkClick
+    OnMouseEnter = AutoIndentLinkMouseEnter
+    OnMouseLeave = AutoIndentLinkMouseLeave
+  end
+  object CenterLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    Left = 216
+    Height = 1
+    Top = -513
+    Width = 1
+    ParentColor = False
+  end
+  object TabsGroupDivider: TDividerBevel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 15
+    Top = 6
+    Width = 433
+    Caption = 'TabsGroupDivider'
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object BlockTabIndentComboBox: TComboBox
+    AnchorSideLeft.Control = CenterLabel1
+    AnchorSideTop.Control = BlockIndentComboBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = TabWidthsComboBox
+    Left = 216
+    Height = 23
+    Top = 159
+    Width = 100
+    BorderSpacing.Top = 3
+    ItemHeight = 15
+    Items.Strings = (
+      '0'
+      '1'
+      '2'
+    )
+    OnChange = ComboboxOnChange
+    OnExit = ComboBoxOnExit
+    OnKeyDown = ComboboxOnKeyDown
+    TabOrder = 5
+  end
+  object BlockTabIndentLabel: TLabel
+    AnchorSideLeft.Control = BlockTabIndentComboBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = BlockTabIndentComboBox
+    AnchorSideTop.Side = asrCenter
+    Left = 322
+    Height = 15
+    Top = 163
+    Width = 91
+    BorderSpacing.Around = 6
+    Caption = 'BlockIndentLabel'
+    ParentColor = False
+  end
+  object BlockIndentLink: TLabel
+    AnchorSideLeft.Control = lblBlockIndentKeys
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = lblBlockIndentKeys
+    Cursor = crHandPoint
+    Left = 112
+    Height = 15
+    Top = 130
+    Width = 85
+    BorderSpacing.Left = 6
+    Caption = 'BlockIndentLink'
+    Font.Color = clBlue
+    ParentColor = False
+    ParentFont = False
+    OnClick = BlockIndentLinkClick
+    OnMouseEnter = AutoIndentLinkMouseEnter
+    OnMouseLeave = AutoIndentLinkMouseLeave
+  end
+  object lblBlockIndentKeys: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = AutoIndentLink
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 15
+    Top = 130
+    Width = 100
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 10
+    Caption = 'lblBlockIndentKeys'
+    ParentColor = False
+  end
+  object IndentsGroupDivider: TDividerBevel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = SmartTabsCheckBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 15
+    Top = 71
+    Width = 433
+    Caption = 'IndentsGroupDivider'
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object lblBlockIndentShortcut: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblBlockIndentKeys
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 15
+    Top = 148
+    Width = 121
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 3
+    Caption = 'lblBlockIndentShortcut'
+    ParentColor = False
+  end
+  object CommentsGroupDivider: TDividerBevel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = TabIndentBlocksCheckBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 15
+    Top = 191
+    Width = 433
+    Caption = 'CommentsGroupDivider'
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object ToolBar1: TToolBar
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = CommentsGroupDivider
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 25
+    Top = 206
+    Width = 433
+    Align = alNone
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    Caption = 'ToolBar1'
+    EdgeBorders = [ebBottom]
+    ShowCaptions = True
+    TabOrder = 8
+    object tbAnsi: TToolButton
+      Left = 1
+      Top = 0
+      AutoSize = True
+      Caption = 'tbAnsi'
+      Down = True
+      Grouped = True
+      OnClick = tbAnsiClick
+      Style = tbsCheck
+    end
+    object tbCurly: TToolButton
+      Tag = 1
+      Left = 43
+      Top = 0
+      AutoSize = True
+      Caption = 'tbCurly'
+      Grouped = True
+      OnClick = tbAnsiClick
+      Style = tbsCheck
+    end
+    object tbShlash: TToolButton
+      Tag = 2
+      Left = 90
+      Top = 0
+      AutoSize = True
+      Caption = 'tbShlash'
+      Grouped = True
+      OnClick = tbAnsiClick
+      Style = tbsCheck
+    end
+    object tbString: TToolButton
+      Tag = 3
+      Left = 143
+      Top = 0
+      AutoSize = True
+      Caption = 'tbString'
+      Grouped = True
+      OnClick = tbAnsiClick
+      Style = tbsCheck
+    end
+  end
+  object CenterLabel1: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    Left = 216
+    Height = 1
+    Top = 0
+    Width = 1
+    ParentColor = False
+  end
+  object Notebook1: TNotebook
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ToolBar1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 203
+    Top = 231
+    Width = 433
+    PageIndex = 0
+    AutoSize = True
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 9
+    TabStop = True
+    object AnsiPage: TPage
+      object cbAnsiEnableAutoContinue: TCheckBox
+        AnchorSideLeft.Control = AnsiPage
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 19
+        Top = 3
+        Width = 166
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 3
+        Caption = 'cbAnsiEnableAutoContinue'
+        OnChange = cbAnsiEnableAutoContinueChange
+        TabOrder = 0
+      end
+      object lbAnsiMatch: TLabel
+        AnchorSideLeft.Control = AnsiPage
+        AnchorSideTop.Control = edAnsiMatch
+        AnchorSideTop.Side = asrCenter
+        Left = 6
+        Height = 15
+        Top = 36
+        Width = 67
+        BorderSpacing.Left = 6
+        Caption = 'lbAnsiMatch'
+        ParentColor = False
+      end
+      object edAnsiMatch: TEdit
+        AnchorSideLeft.Control = lbAnsiMatch
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = cbAnsiEnableAutoContinue
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = AnsiPage
+        AnchorSideRight.Side = asrBottom
+        Left = 79
+        Height = 23
+        Top = 32
+        Width = 344
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 10
+        BorderSpacing.Right = 10
+        Constraints.MinWidth = 50
+        TabOrder = 1
+      end
+      object lbAnsiPrefix: TLabel
+        AnchorSideLeft.Control = AnsiPage
+        AnchorSideTop.Control = edAnsiPrefix
+        AnchorSideTop.Side = asrCenter
+        Left = 6
+        Height = 15
+        Top = 104
+        Width = 62
+        BorderSpacing.Left = 6
+        Caption = 'lbAnsiPrefix'
+        ParentColor = False
+      end
+      object edAnsiPrefix: TEdit
+        AnchorSideLeft.Control = lbAnsiPrefix
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = cbAnsiMatchMode
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = AnsiPage
+        AnchorSideRight.Side = asrBottom
+        Left = 74
+        Height = 23
+        Top = 100
+        Width = 349
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 16
+        BorderSpacing.Right = 10
+        Constraints.MinWidth = 50
+        TabOrder = 2
+      end
+      object cbAnsiMatchMode: TComboBox
+        AnchorSideLeft.Control = edAnsiMatch
+        AnchorSideTop.Control = edAnsiMatch
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = AnsiPage
+        AnchorSideRight.Side = asrBottom
+        Left = 79
+        Height = 23
+        Top = 61
+        Width = 344
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 10
+        ItemHeight = 15
+        Style = csDropDownList
+        TabOrder = 3
+      end
+      object cbAnsiIndentMode: TComboBox
+        AnchorSideLeft.Control = edAnsiPrefix
+        AnchorSideTop.Control = edAnsiPrefix
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = AnsiPage
+        AnchorSideRight.Side = asrBottom
+        Left = 74
+        Height = 23
+        Top = 129
+        Width = 349
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 10
+        ItemHeight = 15
+        OnChange = cbAnsiIndentModeChange
+        Style = csDropDownList
+        TabOrder = 4
+      end
+      object edAnsiAlignMax: TSpinEdit
+        AnchorSideLeft.Control = AnsiPage
+        AnchorSideTop.Control = lbAnsiAlignMax
+        AnchorSideTop.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 6
+        Height = 23
+        Top = 180
+        Width = 100
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 3
+        MaxValue = 999
+        TabOrder = 5
+      end
+      object lbAnsiAlignMax: TLabel
+        AnchorSideLeft.Control = AnsiPage
+        AnchorSideTop.Control = cbAnsiIndentMode
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 15
+        Top = 162
+        Width = 83
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 10
+        Caption = 'lbAnsiAlignMax'
+        ParentColor = False
+        WordWrap = True
+      end
+    end
+    object CurlyPage: TPage
+      object cbCurlyEnableAutoContinue: TCheckBox
+        AnchorSideLeft.Control = CurlyPage
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 17
+        Top = 3
+        Width = 152
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 3
+        Caption = 'cbCurlyEnableAutoContinue'
+        OnChange = cbCurlyEnableAutoContinueChange
+        TabOrder = 0
+      end
+      object lbCurlyMatch: TLabel
+        AnchorSideLeft.Control = CurlyPage
+        AnchorSideTop.Control = edCurlyMatch
+        AnchorSideTop.Side = asrCenter
+        Left = 6
+        Height = 13
+        Top = 34
+        Width = 62
+        BorderSpacing.Left = 6
+        Caption = 'lbCurlyMatch'
+        ParentColor = False
+      end
+      object edCurlyMatch: TEdit
+        AnchorSideLeft.Control = lbCurlyMatch
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = cbCurlyEnableAutoContinue
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = CurlyPage
+        AnchorSideRight.Side = asrBottom
+        Left = 74
+        Height = 21
+        Top = 30
+        Width = 349
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 10
+        BorderSpacing.Right = 10
+        TabOrder = 1
+      end
+      object lbCurlyPrefix: TLabel
+        AnchorSideLeft.Control = CurlyPage
+        AnchorSideTop.Control = edCurlyPrefix
+        AnchorSideTop.Side = asrCenter
+        Left = 6
+        Height = 13
+        Top = 98
+        Width = 61
+        BorderSpacing.Left = 6
+        Caption = 'lbCurlyPrefix'
+        ParentColor = False
+      end
+      object edCurlyPrefix: TEdit
+        AnchorSideLeft.Control = lbCurlyPrefix
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = cbCurlyMatchMode
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = CurlyPage
+        AnchorSideRight.Side = asrBottom
+        Left = 73
+        Height = 21
+        Top = 94
+        Width = 350
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 16
+        BorderSpacing.Right = 10
+        TabOrder = 2
+      end
+      object cbCurlyMatchMode: TComboBox
+        AnchorSideLeft.Control = edCurlyMatch
+        AnchorSideTop.Control = edCurlyMatch
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = CurlyPage
+        AnchorSideRight.Side = asrBottom
+        Left = 74
+        Height = 21
+        Top = 57
+        Width = 349
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 10
+        ItemHeight = 13
+        Style = csDropDownList
+        TabOrder = 3
+      end
+      object cbCurlyIndentMode: TComboBox
+        AnchorSideLeft.Control = edCurlyPrefix
+        AnchorSideTop.Control = edCurlyPrefix
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = CurlyPage
+        AnchorSideRight.Side = asrBottom
+        Left = 73
+        Height = 21
+        Top = 121
+        Width = 350
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 10
+        ItemHeight = 13
+        OnChange = cbCurlyIndentModeChange
+        Style = csDropDownList
+        TabOrder = 4
+      end
+      object edCurlyAlignMax: TSpinEdit
+        AnchorSideLeft.Control = CurlyPage
+        AnchorSideTop.Control = lbCurlyAlignMax
+        AnchorSideTop.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 6
+        Height = 21
+        Top = 168
+        Width = 100
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 3
+        MaxValue = 999
+        TabOrder = 5
+      end
+      object lbCurlyAlignMax: TLabel
+        AnchorSideLeft.Control = CurlyPage
+        AnchorSideTop.Control = cbCurlyIndentMode
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 13
+        Top = 152
+        Width = 76
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 10
+        Caption = 'lbCurlyAlignMax'
+        ParentColor = False
+        WordWrap = True
+      end
+    end
+    object SlashPage: TPage
+      object cbSlashEnableAutoContinue: TCheckBox
+        AnchorSideLeft.Control = SlashPage
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 17
+        Top = 3
+        Width = 152
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 3
+        Caption = 'cbSlashEnableAutoContinue'
+        OnChange = cbSlashEnableAutoContinueChange
+        TabOrder = 0
+      end
+      object lbSlashMatch: TLabel
+        AnchorSideLeft.Control = SlashPage
+        AnchorSideTop.Control = edSlashMatch
+        AnchorSideTop.Side = asrCenter
+        Left = 6
+        Height = 13
+        Top = 64
+        Width = 62
+        BorderSpacing.Left = 6
+        Caption = 'lbSlashMatch'
+        ParentColor = False
+      end
+      object edSlashMatch: TEdit
+        AnchorSideLeft.Control = lbSlashMatch
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = cbSlashExtend
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = SlashPage
+        AnchorSideRight.Side = asrBottom
+        Left = 74
+        Height = 21
+        Top = 60
+        Width = 349
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 16
+        BorderSpacing.Right = 10
+        TabOrder = 1
+      end
+      object lbSlashPrefix: TLabel
+        AnchorSideLeft.Control = SlashPage
+        AnchorSideTop.Control = edSlashPrefix
+        AnchorSideTop.Side = asrCenter
+        Left = 6
+        Height = 13
+        Top = 128
+        Width = 61
+        BorderSpacing.Left = 6
+        Caption = 'lbSlashPrefix'
+        ParentColor = False
+      end
+      object edSlashPrefix: TEdit
+        AnchorSideLeft.Control = lbSlashPrefix
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = cbSlashMatchMode
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = SlashPage
+        AnchorSideRight.Side = asrBottom
+        Left = 73
+        Height = 21
+        Top = 124
+        Width = 350
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 16
+        BorderSpacing.Right = 10
+        TabOrder = 2
+      end
+      object cbSlashMatchMode: TComboBox
+        AnchorSideLeft.Control = edSlashMatch
+        AnchorSideTop.Control = edSlashMatch
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = SlashPage
+        AnchorSideRight.Side = asrBottom
+        Left = 74
+        Height = 21
+        Top = 87
+        Width = 349
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 10
+        ItemHeight = 13
+        Style = csDropDownList
+        TabOrder = 3
+      end
+      object cbSlashIndentMode: TComboBox
+        AnchorSideLeft.Control = edSlashPrefix
+        AnchorSideTop.Control = edSlashPrefix
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = SlashPage
+        AnchorSideRight.Side = asrBottom
+        Left = 73
+        Height = 21
+        Top = 151
+        Width = 350
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 10
+        ItemHeight = 13
+        OnChange = cbSlashIndentModeChange
+        Style = csDropDownList
+        TabOrder = 4
+      end
+      object cbSlashExtend: TComboBox
+        AnchorSideLeft.Control = cbSlashEnableAutoContinue
+        AnchorSideTop.Control = cbSlashEnableAutoContinue
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = SlashPage
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 21
+        Top = 23
+        Width = 417
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 3
+        BorderSpacing.Right = 10
+        ItemHeight = 13
+        Style = csDropDownList
+        TabOrder = 6
+      end
+      object edSlashAlignMax: TSpinEdit
+        AnchorSideLeft.Control = SlashPage
+        AnchorSideTop.Control = lbSlashAlignMax
+        AnchorSideTop.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 6
+        Height = 21
+        Top = 198
+        Width = 100
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 3
+        MaxValue = 999
+        TabOrder = 5
+      end
+      object lbSlashAlignMax: TLabel
+        AnchorSideLeft.Control = SlashPage
+        AnchorSideTop.Control = cbSlashIndentMode
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 13
+        Top = 182
+        Width = 76
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 10
+        Caption = 'lbSlashAlignMax'
+        ParentColor = False
+        WordWrap = True
+      end
+    end
+    object StringPage: TPage
+      object cbStringEnableAutoContinue: TCheckBox
+        AnchorSideLeft.Control = StringPage
+        AnchorSideTop.Control = StringPage
+        Left = 6
+        Height = 19
+        Top = 3
+        Width = 174
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 3
+        Caption = 'cbStringEnableAutoContinue'
+        OnChange = cbStringEnableAutoContinueChange
+        TabOrder = 0
+      end
+      object lbStringAutoAppend: TLabel
+        AnchorSideLeft.Control = StringPage
+        AnchorSideTop.Control = edStringAutoAppend
+        AnchorSideTop.Side = asrCenter
+        Left = 6
+        Height = 15
+        Top = 32
+        Width = 109
+        BorderSpacing.Left = 6
+        Caption = 'lbStringAutoAppend'
+        ParentColor = False
+      end
+      object lbStringAutoPrefix: TLabel
+        AnchorSideLeft.Control = StringPage
+        AnchorSideTop.Control = edStringAutoPrefix
+        AnchorSideTop.Side = asrCenter
+        Left = 6
+        Height = 15
+        Top = 61
+        Width = 96
+        BorderSpacing.Left = 6
+        Caption = 'lbStringAutoPrefix'
+        ParentColor = False
+      end
+      object edStringAutoAppend: TEdit
+        AnchorSideLeft.Control = lbStringAutoAppend
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = cbStringEnableAutoContinue
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = StringPage
+        AnchorSideRight.Side = asrBottom
+        Left = 121
+        Height = 23
+        Top = 28
+        Width = 306
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 6
+        TabOrder = 1
+      end
+      object edStringAutoPrefix: TEdit
+        AnchorSideLeft.Control = lbStringAutoPrefix
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = edStringAutoAppend
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = StringPage
+        AnchorSideRight.Side = asrBottom
+        Left = 108
+        Height = 23
+        Top = 57
+        Width = 319
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 6
+        TabOrder = 2
+      end
+    end
+  end
+end

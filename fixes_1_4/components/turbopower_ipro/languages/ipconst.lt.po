@@ -1,0 +1,2581 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2012-08-06 22:19+0300\n"
+"Project-Id-Version: ipconst\n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"X-Generator: Lokalize 1.5\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Language: lt\n"
+
+#: ipconst.cacheadding
+msgid "Caching item (%s = %s)"
+msgstr "Elementas dedamas į podėlį (%s = %s)"
+
+#: ipconst.cachecheckfreshness
+msgid "Checking Freshness (%s)"
+msgstr "Tikrinamas naujumas (%s)"
+
+#: ipconst.cachedirnotexist
+msgid "Cache directory %s does not exist."
+msgstr "Podėlio aplankas %s neegzistuoja."
+
+#: ipconst.cacheretrieving
+msgid "Loading from Cache (%s = %s)"
+msgstr "Įkeliama iš podėlio (%s = %s)"
+
+#: ipconst.httpcantloadgraphic
+msgid "Unable to load graphic %s"
+msgstr "Neina įkelti grafiką %s"
+
+#: ipconst.httpconnect
+msgid "Connected: (%s)"
+msgstr "Prijungta: (%s)"
+
+#: ipconst.httpdisconnect
+msgid "Disconnected: (%s), %s Total bytes received"
+msgstr "Atsijungta: (%s), viso %s bitų priimta"
+
+#: ipconst.httpdownload
+msgid "Download: (%s), Error downloading"
+msgstr "Atsiųsti: (%s), klaida atsiunčiant"
+
+#: ipconst.httpget
+msgid "GET: (%s)"
+msgstr "GET: (%s)"
+
+#: ipconst.httpgeterror
+msgid "GET: (%s) FAILED"
+msgstr "GET: (%s) NEPAVYKO"
+
+#: ipconst.httpgotheader
+msgid "Download: (%s), Got Header Data"
+msgstr "Atsiųsti: (%s), gauti antraštės duomenys"
+
+#: ipconst.httphead
+msgid "HEAD: (%s)"
+msgstr "HEAD: (%s)"
+
+#: ipconst.httpheaderror
+msgid "HEAD: (%s) FAILED"
+msgstr "HEAD: (%s) NEPAVYKO"
+
+#: ipconst.httpnoheaderdata
+msgid "No Header Data for Entity"
+msgstr "Esybėje nėra antraštės duomenų"
+
+#: ipconst.httppost
+msgid "POST: (%s)"
+msgstr "POST: (%s)"
+
+#: ipconst.httpposterror
+msgid "POST: (%s) FAILED"
+msgstr "POST: (%s) NEPAVYKO"
+
+#: ipconst.httpprogress
+msgid "Progress Made: (%s), %s bytes received"
+msgstr "Eiga: (%s), %s baitų parsiųsta"
+
+#: ipconst.httpsizemismatch
+msgid "Download: (%s), Size Mismatch expecting %s , got %s"
+msgstr "Atsiųsti: (%s), neatitinka dydis, tikėtasi %s, gauta %s"
+
+#: ipconst.providerunknownformat
+msgid "Don't know how to handle %s"
+msgstr "Nežinau kaip atdoroti %s"
+
+#: ipconst.providerunknownpicture
+msgid "Invalid picture format"
+msgstr "Klaidingas paveikslo formatas"
+
+#: ipconst.providerunknownrequest
+msgid "Unknown request type \"%s\""
+msgstr "Nežinomas užklausos tipas „%s“"
+
+#: ipconst.saccessprocerr
+msgid "Win32 error loading '%s' pointer: %s"
+msgstr "Įkeliant „%s“ įvyko Win32 klaida: %s"
+
+#: ipconst.sactiveerr
+msgid "Cannot set property on an active socket"
+msgstr "Neina keisti aktyvios jungties savybę"
+
+#: ipconst.sattemptingtoread
+msgid "Attempting to read "
+msgstr "Mėginama skaityti "
+
+#: ipconst.sattemptingtowrite
+msgid "Attempting to write "
+msgstr "Mėginama rašyti "
+
+#: ipconst.sbadframelistobject
+msgid "Unrecognized object of class %s in GIF Frame List"
+msgstr "GIF kadrų sąraše neatpažintas %s klasės objektas"
+
+#: ipconst.sbadimagelibfileformat
+msgid "Unrecognized file format"
+msgstr "Neatpažintas failo formatas"
+
+#: ipconst.sbadimagelibstream
+msgid "ImageLib must use TMemoryStreams"
+msgstr "„ImageLib“ turi naudoti „TMemoryStreams“"
+
+#: ipconst.sbadlinelength
+msgid "Invalid line length"
+msgstr "Klaidingas eilutės ilgis"
+
+#: ipconst.sbadlineterminator
+msgid "Invalid line terminator"
+msgstr "Klaidingas eilutės terminatorius"
+
+#: ipconst.sbadoffset
+msgid "Invalid stream offset"
+msgstr "Klaidingas srauto poslinkis"
+
+#: ipconst.sbadpath
+msgid "Path does not exist"
+msgstr "Kelias neegzistuoja"
+
+#: ipconst.sbadseekorigin
+msgid "Invalid seek origin"
+msgstr "Klaidinga peršokimo atskaita"
+
+#: ipconst.sbibuffernotassigned
+msgid "Buffer not assigned"
+msgstr "Buferis nepriskirtas"
+
+#: ipconst.sbinhexbadchar
+msgid "Invalid BinHex character"
+msgstr "Klaidingas BinHex simbolis"
+
+#: ipconst.sbinhexbaddatacrc
+msgctxt "ipconst.sbinhexbaddatacrc"
+msgid "Bad header CRC"
+msgstr "Blogas antraštės CRC"
+
+#: ipconst.sbinhexbadformat
+msgid "Invalid BinHex format"
+msgstr "Klaidingas BinHex formatas"
+
+#: ipconst.sbinhexbadheadercrc
+msgctxt "ipconst.sbinhexbadheadercrc"
+msgid "Bad header CRC"
+msgstr "Blogas antraštės CRC"
+
+#: ipconst.sbinhexcolonexpected
+msgid "\":\" expected"
+msgstr "„:“ tikėtasi"
+
+#: ipconst.sbinhexlengtherr
+msgid "Invalid data length"
+msgstr "Klaidingas duomenų ilgis"
+
+#: ipconst.sbinhexoddchar
+msgid "One odd character"
+msgstr "Vienas nelyginis simbolis"
+
+#: ipconst.sbinhexresourceforkerr
+msgid "Resource fork present"
+msgstr "Resursų šakos dovanėlė"
+
+#: ipconst.sbrokerdownloadreq
+msgid "Download %s?"
+msgstr "Atsiųsti %s?"
+
+#: ipconst.sbrokerdownloadtitle
+msgid "Download?"
+msgstr "Atsiųsti?"
+
+#: ipconst.sbytesfromstream
+msgid " bytes from stream"
+msgstr " baitų iš srauto"
+
+#: ipconst.sbytesreadfromstream
+msgid " bytes read from stream"
+msgstr " baitų skaityta iš srauto"
+
+#: ipconst.sbytestostream
+msgid " bytes to stream"
+msgstr " baitų į srautą"
+
+#: ipconst.sbyteswrittentostream
+msgid " bytes written to stream"
+msgstr " baitų rašyta į srautą"
+
+#: ipconst.scannotwritetostream
+msgid "Cannot write to stream"
+msgstr "Neina rašyti srautan"
+
+#: ipconst.scounttoosmall
+msgid "%s: new count too small"
+msgstr "%s: naujasis kiekis permažas"
+
+#: ipconst.sdestroying
+msgid "Destroying"
+msgstr "Naikinama"
+
+#: ipconst.seventconnect
+msgid "Connect: Loc: %s Rem: %s"
+msgstr "Prijungti: Loc: %s Rem: %s"
+
+#: ipconst.seventdisconnect
+#, fuzzy
+#| msgid "Close:   Loc: %s Rem: %s"
+msgid "Close: Loc: %s Rem: %s"
+msgstr "Užverti:   Loc: %s Rem: %s"
+
+#: ipconst.sfilename
+msgid " Filename: "
+msgstr " Failo pavadinimas: "
+
+#: ipconst.sftpbytestransferred
+msgid " bytes Transferred"
+msgstr "baitų persiųsta"
+
+#: ipconst.sftpclose
+msgctxt "ipconst.sftpclose"
+msgid "Disconnected"
+msgstr "Ryšys nutrauktas"
+
+#: ipconst.sftpcomplete
+msgid "Transfer complete. "
+msgstr "Siuntimas baigtas. "
+
+#: ipconst.sftpdelete
+msgid "Deleting "
+msgstr "Šalinama "
+
+#: ipconst.sftplogin
+msgid " logged in"
+msgstr " prisiregistravęs"
+
+#: ipconst.sftplogout
+msgid " logged out"
+msgstr " išsiregistravęs"
+
+#: ipconst.sftpopen
+msgid "Connected to "
+msgstr "Projungta prie"
+
+#: ipconst.sftprename
+msgid "Renaming "
+msgstr "Pervardijama "
+
+#: ipconst.sftprestart
+msgid "Attempting to re-start transfer of "
+msgstr "Mėginama pakartotinai siųsti "
+
+#: ipconst.sftpretrieve
+msgid "Retrieving "
+msgstr "Gaunama "
+
+#: ipconst.sftpstore
+msgid "Storing "
+msgstr "Kaupiama "
+
+#: ipconst.sftptimeout
+msgid "Transfer timed out"
+msgstr "Siuntimo laikas baigėsi"
+
+#: ipconst.sftpuserabort
+msgid "Transfer aborted by user"
+msgstr "Siuntimą nutraukė naudotojas"
+
+#: ipconst.shtmlcharstackoverfl
+msgid "Character stack overflow"
+msgstr "Simbolių dėklo perpilda"
+
+#: ipconst.shtmldashexp
+msgid "- expected"
+msgstr "- tikėtasi"
+
+#: ipconst.shtmldefbrowsecaption
+#| msgid "Browse..."
+msgid "Browse ..."
+msgstr "Naršyti…"
+
+#: ipconst.shtmldefresetcaption
+msgid "Reset"
+msgstr "Perkrauti"
+
+#: ipconst.shtmldefsubmitcaption
+msgid "Submit"
+msgstr "Išsiųsti"
+
+#: ipconst.shtmlencnotsupported
+msgid " encoding not supported"
+msgstr " koduotė nepalaikoma"
+
+#: ipconst.shtmlexp
+msgid " expected"
+msgstr " tikėtasi"
+
+#: ipconst.shtmlinternal
+msgid "Internal error"
+msgstr "Vidinė klaida"
+
+#: ipconst.shtmlinvalign
+msgid "Invalid alignment specified"
+msgstr "Nurodyta klaidinga lygiuotė"
+
+#: ipconst.shtmlinvcolor
+msgid "Invalid color constant:"
+msgstr "Klaidinga spalvos konstanta:"
+
+#: ipconst.shtmlinvdir
+msgid "Invalid dir value specified"
+msgstr "Nurodyta klaidinga dir reikšmė"
+
+#: ipconst.shtmlinvframe
+msgid "Invalid frame specified"
+msgstr "Nurodytas klaidingas kadras"
+
+#: ipconst.shtmlinvgraphic
+msgid "Invalid graphic returned"
+msgstr "Grąžinta klaidinga grafika"
+
+#: ipconst.shtmlinvint
+msgid "Invalid integer constant"
+msgstr "Klaidinga sveikojo skaičiaus konstanta"
+
+#: ipconst.shtmlinvmethod
+msgid "Invalid method specified"
+msgstr "Nurodytas klaidingas metodas"
+
+#: ipconst.shtmlinvpicture
+msgid "Invalid picture returned"
+msgstr "Grąžintas klaidingas paveikslas"
+
+#: ipconst.shtmlinvrule
+msgid "Invalid rule specified"
+msgstr "Nurodyta klaidinga taisyklė"
+
+#: ipconst.shtmlinvscope
+msgid "Invalid scope specified"
+msgstr "Nurodyta klaidinga sritis"
+
+#: ipconst.shtmlinvscroll
+msgid "Invalid scrolling specified"
+msgstr "Nurodyta klaidinga slinktis"
+
+#: ipconst.shtmlinvshape
+msgid "Invalid shape specified"
+msgstr "Nurodytas klaidingas pavidalas"
+
+#: ipconst.shtmlinvtype
+msgid "Invalid type specified"
+msgstr "Nurodytas klaidingas tipas"
+
+#: ipconst.shtmlinvvaltype
+msgid "Invalid value type specified"
+msgstr "Nurodytas klaidingas reikšmės tipas"
+
+#: ipconst.shtmllineerror
+msgid "Error \"%s\" at line %d, position %d"
+msgstr "Klaida „%s“ eilutėje %d, pozicijoje %d"
+
+#: ipconst.shtmlnodataprovider
+msgid "No data provider assigned"
+msgstr "Nepriskirtas duomenų teikėjas"
+
+#: ipconst.shtmlnogetimage
+msgid "No OnGetImage event handler assigned"
+msgstr "Nepriskirta OnGetImage įvykio tvarkyklė"
+
+#: ipconst.shtmlnographic
+msgid "Picture object contains no graphic object"
+msgstr "Paveikslo objekte nėra grafinio objektio"
+
+#: ipconst.shtmlnotcontainer
+msgid "Parent is not a container"
+msgstr "Tėvas nėra sudėtinis rodinys"
+
+#: ipconst.shtmlresunavail
+msgid "Resource unavailable:"
+msgstr "Resurso nėra:"
+
+#: ipconst.shtmltokenstackoverfl
+msgid "Token stack overflow"
+msgstr "Leksemų dėklo perpilda"
+
+#: ipconst.shtmlunknowntok
+msgid "Unknown token"
+msgstr "Nežinoma leksema"
+
+#: ipconst.shtmlunsupprotocol
+msgid "Unsupported protocol in URL:%s"
+msgstr "URL nurodytas nepalaikomas protokolas:%s"
+
+#: ipconst.sicmpecho
+msgid ""
+"Echo reply (Hop number: %d)\n"
+"             Status = %d\n"
+"             RTTime = %d\n"
+"             Ttl = %d\n"
+"             Tos = %d\n"
+"             IpFlags = %d\n"
+msgstr ""
+"Echo atsakas (Hop numeris: %d)015\n"
+"             Statusas = %d015\n"
+"             RTTime = %d015\n"
+"             Ttl = %d015\n"
+"             Tos = %d015\n"
+"             IpFlags = %d\n"
+
+#: ipconst.sicmpechostring
+msgid "Echo string: %s"
+msgstr "Aido eilutė: %s"
+
+#: ipconst.sicmppingstart
+msgid "Pinging %s with %d bytes data"
+msgstr "Skimbetelėjamas %s su %d baitų duomenų"
+
+#: ipconst.sicmpthreadexecute
+msgid "Thread %d executing (Hop number = %d)"
+msgstr "Gija %d vykdoma (Hop numeris = %d)"
+
+#: ipconst.sicmpthreadterminate
+msgid "Thread %d terminating (Hop number = %d)"
+msgstr "Gija %d baigia darbą (Hop numeris = %d)"
+
+#: ipconst.sicmptracecomplete
+msgid "Trace complete (%s), %d hops"
+msgstr "Sekimas baigtas (%s), %s Hop'sų"
+
+#: ipconst.sicmptracestart
+msgid "Trace to %s started"
+msgstr "Pradėtas %s sekimas"
+
+#: ipconst.sindexerr
+msgid "Index out of range"
+msgstr "Indeksas peržengia ribas"
+
+#: ipconst.sinvalrespcode
+msgid "Invalid response code"
+msgstr "Klaidingas atsako kodas"
+
+#: ipconst.sinvitemsize
+msgid "TIpTerminalArray.GetItemPtr: invalid item size"
+msgstr "TIpTerminalArray.GetItemPtr: klaidingas elemento dydis"
+
+#: ipconst.sinvscrollrow
+msgid "TIpTerminalBuffer.SetScrollRegion: invalid row number(s)"
+msgstr "TIpTerminalBuffer.SetScrollRegion: klaidingas eilutės numerias(-iai)"
+
+#: ipconst.sipicmp_bad_destination
+msgid "Bad destination"
+msgstr "Bloga paskirtis"
+
+#: ipconst.sipicmp_bad_option
+msgid "Bad option"
+msgstr "Bloga parinktis"
+
+#: ipconst.sipicmp_bad_req
+msgid "Bad request"
+msgstr "Bloga užklausa"
+
+#: ipconst.sipicmp_bad_route
+msgid "Bad route"
+msgstr "Blogas maršrutas"
+
+#: ipconst.sipicmp_buf_too_small
+msgid "Buffer too small"
+msgstr "Buferis permažas"
+
+#: ipconst.sipicmp_dest_host_unreachable
+msgid "Destination host unreachable"
+msgstr "Paskirties mazgas nepasiekiamas"
+
+#: ipconst.sipicmp_dest_net_unreachable
+msgid "Destination network unreachable"
+msgstr "Paskirties tinklas nepasiekiamas"
+
+#: ipconst.sipicmp_dest_port_unreachable
+msgid "Destination port unreachable"
+msgstr "Paskirites prievadas nepasiekiamas"
+
+#: ipconst.sipicmp_dest_prot_unreachable
+msgid "Destination protocol unreachable"
+msgstr "Paskirties protokolas nepasiekiamas"
+
+#: ipconst.sipicmp_hw_error
+msgid "Hardware error"
+msgstr "Aparatūros klaida"
+
+#: ipconst.sipicmp_no_resources
+msgid "Destination does not have resources to complete"
+msgstr "Paskirtis negali baigti dėl resursų trūkumo"
+
+#: ipconst.sipicmp_option_too_big
+msgid "Option too large"
+msgstr "Parinktis perdidelė"
+
+#: ipconst.sipicmp_packet_too_big
+msgid "Packet too large"
+msgstr "Paketas perdidelis"
+
+#: ipconst.sipicmp_param_problem
+msgid "Parameter problem"
+msgstr "Parametro problema"
+
+#: ipconst.sipicmp_req_timed_out
+msgid "Request timed out"
+msgstr "Baigėsi užklausos laikas"
+
+#: ipconst.sipicmp_source_quench
+msgid "Destination is busy"
+msgstr "Paskirtis užimta"
+
+#: ipconst.sipicmp_success
+msgid "Successful"
+msgstr "Sėkmingas"
+
+#: ipconst.sipicmp_ttl_expired_reassem
+msgid "Time to live expired during reassembly"
+msgstr "Surenkant pakartotinai, gyvavimo laikas baigėsi"
+
+#: ipconst.sipicmp_ttl_expired_transit
+msgid "Time to live expired during transmit"
+msgstr "Siuntimo metu baigėsi „Time to live“ laikotarpis"
+
+#: ipconst.sipicmp_unknown
+msgid "Unknown status"
+msgstr "Nežinomas statusas"
+
+#: ipconst.slesszero
+msgid "%s: new col count %d is less than zero"
+msgstr "%s: naujasis stulpelių kiekis %d mažesnis nei nulis"
+
+#: ipconst.slinelengtherr
+msgid "Invalid line length for encoded text"
+msgstr "Eilutės, skirtos užkoduotam tekstui, ilgis klaidingas"
+
+#: ipconst.slistnotassigned
+msgid "List not assigned"
+msgstr "Sąrašas nepriskirtas"
+
+#: ipconst.slogarticle
+msgid "Generating OnArticle event"
+msgstr "Generuojamas OnArticle įvykis"
+
+#: ipconst.slogauthlogin
+msgid " (ssAuthLogin)"
+msgstr " (ssAuthLogin)"
+
+#: ipconst.slogauthpass
+msgid " (ssAuthPass)"
+msgstr " (ssAuthPass)"
+
+#: ipconst.slogauthuser
+msgid " (ssAuthUser)"
+msgstr " (ssAuthUser)"
+
+#: ipconst.slogdata
+msgid " (ssData)"
+msgstr " (ssData)"
+
+#: ipconst.slogehlo
+msgid " (ssEhlo)"
+msgstr " (ssEhlo)"
+
+#: ipconst.slogencodeactionstart
+msgid "Generating OnEncodeAction(Start)"
+msgstr "Generuojamas OnEncodeAction(Start) įvykis"
+
+#: ipconst.slogencodeactionstop
+msgid "Generating OnEncodeAction(Stop)"
+msgstr "Generuojamas OnEncodeAction(Stop) įvykis"
+
+#: ipconst.slogexpand
+msgid " (ssExpand)"
+msgstr " (ssExpand)"
+
+#: ipconst.sloghelo
+msgid " (ssHelo)"
+msgstr " (ssHelo)"
+
+#: ipconst.sloghelp
+msgid " (ssHelp)"
+msgstr " (ssHelp)"
+
+#: ipconst.slogicmpclass
+msgid "[ICMP] "
+msgstr "[ICMP] "
+
+#: ipconst.slogmailfrom
+msgid " (ssMailFrom)"
+msgstr " (ssMailFrom)"
+
+#: ipconst.slogmultiline
+msgid "Generating OnMultiLineResponse event"
+msgstr "Generuojamas OnMultiLineResponse įvykis"
+
+#: ipconst.slognextmessagenotready
+msgid "Next message not ready"
+msgstr "Tolesnis pranešimas neparengtas"
+
+#: ipconst.slognextmessageready
+msgid "Next message ready"
+msgstr "Tolesnis pranešimas neparengtas"
+
+#: ipconst.slognntpclass
+msgid "[NNTP] "
+msgstr "[NNTP] "
+
+#: ipconst.slognsarticle
+msgid " (nsArticle)"
+msgstr " (nsArticle)"
+
+#: ipconst.slognsauthpass
+msgid " (nsAuthPass)"
+msgstr " (nsAuthPass)"
+
+#: ipconst.slognsauthuser
+msgid " (nsAuthUser)"
+msgstr " (nsAuthUser)"
+
+#: ipconst.slognsbody
+msgid " (nsBody)"
+msgstr " (nsBody)"
+
+#: ipconst.slognsconnect
+msgid " (nsConnect)"
+msgstr " (nsConnect)"
+
+#: ipconst.slognsdate
+msgid " (nsDate)"
+msgstr " (nsDate)"
+
+#: ipconst.slognsgroup
+msgid " (nsGroup)"
+msgstr " (nsGroup)"
+
+#: ipconst.slognshead
+msgid " (nsHead)"
+msgstr " (nsHead)"
+
+#: ipconst.slognshelp
+msgid " (nsHelp)"
+msgstr " (nsHelp)"
+
+#: ipconst.slognslast
+msgid " (nsLast)"
+msgstr " (nsLast)"
+
+#: ipconst.slognslist
+msgid " (nsList)"
+msgstr " (nsList)"
+
+#: ipconst.slognslistactivetimes
+msgid " (nsListActiveTimes)"
+msgstr " (nsListActiveTimes)"
+
+#: ipconst.slognslistdistribpats
+msgid " (nsListDistribPats)"
+msgstr " (nsListDistribPats)"
+
+#: ipconst.slognslistdistributions
+msgid " (nsListDistributions)"
+msgstr " (nsListDistributions)"
+
+#: ipconst.slognslistext
+msgid " (nsListExt)"
+msgstr " (nsListExt)"
+
+#: ipconst.slognslistgroup
+msgid " (nsListGroup)"
+msgstr " (nsListGroup)"
+
+#: ipconst.slognslistnewsgroups
+msgid " (nsListNewsGroups)"
+msgstr " (nsListNewsGroups)"
+
+#: ipconst.slognslistoverviewfmt
+msgid " (nsListOverviewFmt)"
+msgstr " (nsListOverviewFmt)"
+
+#: ipconst.slognsnewgroups
+msgid " (nsNewGroups)"
+msgstr " (nsNewGroups)"
+
+#: ipconst.slognsnewnews
+msgid " (nsNewNews)"
+msgstr " (nsNewNews)"
+
+#: ipconst.slognsnext
+msgid " (nsNext)"
+msgstr " (nsNext)"
+
+#: ipconst.slognsnoop
+msgid " (nsNoOp)"
+msgstr " (nsNoOp)"
+
+#: ipconst.slognsover
+msgid " (nsOver)"
+msgstr " (nsOver)"
+
+#: ipconst.slognspat
+msgid " (nsPat)"
+msgstr " (nsPat)"
+
+#: ipconst.slognspost
+msgid " (nsPost)"
+msgstr " (nsPost)"
+
+#: ipconst.slognsprepost
+msgid " (nsPrePost)"
+msgstr " (nsPrePost)"
+
+#: ipconst.slognsquit
+msgid " (nsQuit)"
+msgstr " (nsQuit)"
+
+#: ipconst.slognsspecial
+msgid " (nsSpecial)"
+msgstr " (nsSpecial)"
+
+#: ipconst.slognsstat
+msgid " (nsStat)"
+msgstr " (nsStat)"
+
+#: ipconst.slogntauthenticate
+msgid " (ntAuthenticate)"
+msgstr " (ntAuthenticate)"
+
+#: ipconst.slogntnewnews
+msgid " (ntNewNews)"
+msgstr " (ntNewNews)"
+
+#: ipconst.slogntnotask
+msgid " (ntNoTask)"
+msgstr " (ntNoTask)"
+
+#: ipconst.slogntpostto
+msgid " (ntPostTo)"
+msgstr " (ntPostTo)"
+
+#: ipconst.slogntselectgroup
+msgid " (ntSelectGroup)"
+msgstr " (ntSelectGroup)"
+
+#: ipconst.slogoslist
+msgid " (psList)"
+msgstr " (psList)"
+
+#: ipconst.slogpop3class
+msgid "[POP3] "
+msgstr "[POP3] "
+
+#: ipconst.slogpop3message
+msgid "Generating OnMessage event"
+msgstr "Generuojamas OnMessage įvykis"
+
+#: ipconst.slogpop3top
+msgid "Generating OnTop event"
+msgstr "Generuojamas OnTop įvykis"
+
+#: ipconst.slogpsapop
+msgid " (psApop)"
+msgstr " (psApop)"
+
+#: ipconst.slogpsconnect
+msgid " (psConnect)"
+msgstr " (psConnect)"
+
+#: ipconst.slogpsdele
+msgid " (psDele)"
+msgstr " (psDele)"
+
+#: ipconst.slogpsnoop
+msgid " {psNoOp)"
+msgstr " {psNoOp)"
+
+#: ipconst.slogpspass
+msgid " (psPass)"
+msgstr " (psPass)"
+
+#: ipconst.slogpsquit
+msgid " (psQuit)"
+msgstr " (psQuit)"
+
+#: ipconst.slogpsretr
+msgid " (psRetr)"
+msgstr " (psRetr)"
+
+#: ipconst.slogpsrset
+msgid " (psRSet)"
+msgstr " (psRSet)"
+
+#: ipconst.slogpsspecial
+msgid " (psSpecial)"
+msgstr " (psSpecial)"
+
+#: ipconst.slogpsstat
+msgid " (psStat)"
+msgstr " (psStat)"
+
+#: ipconst.slogpstop
+msgid " (psTop)"
+msgstr " (psTop)"
+
+#: ipconst.slogpsuidl
+msgid " (psUidl)"
+msgstr " (psUidl)"
+
+#: ipconst.slogpsuser
+msgid " (psUser)"
+msgstr " (psUser)"
+
+#: ipconst.slogptlist
+msgid " (ptList)"
+msgstr " (ptList)"
+
+#: ipconst.slogptlogon
+msgid " (ptLogon)"
+msgstr " (ptLogon)"
+
+#: ipconst.slogptnone
+msgid " (ptNone)"
+msgstr " (ptNone)"
+
+#: ipconst.slogptuidl
+msgid " (ptUIDL)"
+msgstr " (ptUIDL)"
+
+#: ipconst.slogquit
+msgid " (ssQuit)"
+msgstr " (ssQuit)"
+
+#: ipconst.slogrcptbcc
+msgid " (ssRcptBcc)"
+msgstr " (ssRcptBcc)"
+
+#: ipconst.slogrcptcc
+msgid " (ssRcptCc)"
+msgstr " (ssRcptCc)"
+
+#: ipconst.slogrcptto
+msgid " (ssRcptTo)"
+msgstr " (ssRcptTo)"
+
+#: ipconst.slogresponse
+msgid "Generating OnResponse event, Code = "
+msgstr "Generating OnResponse event, kodas = "
+
+#: ipconst.slogrset
+msgid " (ssRSet)"
+msgstr " (ssRSet)"
+
+#: ipconst.slogsaml
+msgid " (ssSaml)"
+msgstr " (ssSaml)"
+
+#: ipconst.slogsend
+msgid " (ssSend)"
+msgstr " (ssSend)"
+
+#: ipconst.slogsendenvelope
+msgid " (ssSendEnvelope)"
+msgstr " (ssSendEnvelope)"
+
+#: ipconst.slogsendmessage
+msgid " (ssSendMessage)"
+msgstr " (ssSendMessage)"
+
+#: ipconst.slogsmtpclass
+msgid "[SMTP] "
+msgstr "[SMTP] "
+
+#: ipconst.slogsmtpnextmessage
+msgid "Generating OnNextMessage event"
+msgstr "Generuojamas OnNextMessage įvykis"
+
+#: ipconst.slogsoml
+msgid " (ssSoml)"
+msgstr " (ssSoml)"
+
+#: ipconst.slogspecial
+msgid " (ssSpecial)"
+msgstr " (ssSpecial)"
+
+#: ipconst.slogssconnect
+msgid " (ssConnect)"
+msgstr " (ssConnect)"
+
+#: ipconst.slogssnoop
+msgid " (ssNoOp)"
+msgstr " (ssNoOp)"
+
+#: ipconst.slogstate
+msgid "State change: "
+msgstr "Būsenos keitimas: "
+
+#: ipconst.slogstlogon
+msgid " (stLogon)"
+msgstr " (stLogon)"
+
+#: ipconst.slogstnotask
+msgid " (stNoTask)"
+msgstr " (stNoTask)"
+
+#: ipconst.slogstsendmail
+msgid " (stSendMail)"
+msgstr " (stSendMail)"
+
+#: ipconst.slogtaskcomplete
+msgid "Generating OnTaskComplete event "
+msgstr "Generuojamas OnTaskComplete įvykis"
+
+#: ipconst.slogtaskstart
+msgid "Starting task: "
+msgstr "Startuojama užduotis: "
+
+#: ipconst.slogturn
+msgid " (ssTurn)"
+msgstr " (ssTurn)"
+
+#: ipconst.slogverify
+msgid " (ssVerify)"
+msgstr " (ssVerify)"
+
+#: ipconst.smemmapfilenamerequired
+msgid "You must specify a file name for TIpMemMapStream"
+msgstr "„TIpMemMapStream“ reikalauja kad nurodytumėt failo pavadinimą"
+
+#: ipconst.smemmapmustbeclosed
+msgid "The %s method requires the TIpMemMapStream instance to be closed"
+msgstr "%s metodas reikalauja kad TIpMemMapStream objektas būtų užvertas"
+
+#: ipconst.smemmapmustbeopen
+msgid "The %s method requires the TIpMemMapStream instance to be opened"
+msgstr "%s metodas reikalauja kad TIpMemMapStream objektas būtų atvertas"
+
+#: ipconst.snntpcmdarticle
+msgid "ARTICLE"
+msgstr "ARTICLE"
+
+#: ipconst.snntpcmdauthpass
+msgid "AUTHINFO PASS"
+msgstr "AUTHINFO PASS"
+
+#: ipconst.snntpcmdauthuser
+msgid "AUTHINFO USER"
+msgstr "AUTHINFO USER"
+
+#: ipconst.snntpcmdbody
+msgid "BODY"
+msgstr "BODY"
+
+#: ipconst.snntpcmddate
+msgid "DATE"
+msgstr "DATE"
+
+#: ipconst.snntpcmdgroup
+msgid "GROUP"
+msgstr "GROUP"
+
+#: ipconst.snntpcmdhead
+msgid "HEAD"
+msgstr "HEAD"
+
+#: ipconst.snntpcmdhelp
+msgid "HELP"
+msgstr "HELP"
+
+#: ipconst.snntpcmdlast
+msgid "LAST"
+msgstr "LAST"
+
+#: ipconst.snntpcmdlist
+msgctxt "ipconst.snntpcmdlist"
+msgid "LIST"
+msgstr "LIST"
+
+#: ipconst.snntpcmdlistacttimes
+msgid "LIST ACTIVE.TIMES"
+msgstr "LIST ACTIVE.TIMES"
+
+#: ipconst.snntpcmdlistdistrib
+msgid "LIST DISTRIBUTIONS"
+msgstr "LIST DISTRIBUTIONS"
+
+#: ipconst.snntpcmdlistdistribpats
+msgid "LIST DISTRIB.PATS"
+msgstr "LIST DISTRIB.PATS"
+
+#: ipconst.snntpcmdlistext
+msgid "LIST EXTENSIONS"
+msgstr "LIST EXTENSIONS"
+
+#: ipconst.snntpcmdlistgroup
+msgid "LISTGROUP"
+msgstr "LISTGROUP"
+
+#: ipconst.snntpcmdlistnewsgroups
+msgid "LIST NEWSGROUPS"
+msgstr "LIST NEWSGROUPS"
+
+#: ipconst.snntpcmdlistoverfmt
+msgid "LIST OVERVIEW.FMT"
+msgstr "LIST OVERVIEW.FMT"
+
+#: ipconst.snntpcmdnewgroups
+msgid "NEWGROUPS"
+msgstr "NEWGROUPS"
+
+#: ipconst.snntpcmdnewnews
+msgid "NEWNEWS"
+msgstr "NEWNEWS"
+
+#: ipconst.snntpcmdnext
+msgid "NEXT"
+msgstr "NEXT"
+
+#: ipconst.snntpcmdpat
+msgid "PAT"
+msgstr "PAT"
+
+#: ipconst.snntpcmdpost
+msgid "POST"
+msgstr "POST"
+
+#: ipconst.snntpcmdquit
+msgctxt "ipconst.snntpcmdquit"
+msgid "QUIT"
+msgstr "QUIT"
+
+#: ipconst.snntpcmdstat
+msgctxt "ipconst.snntpcmdstat"
+msgid "STAT"
+msgstr "STAT"
+
+#: ipconst.snntpcmdxover
+msgid "XOVER"
+msgstr "XOVER"
+
+#: ipconst.snoboundary
+msgid "No Mime boundary"
+msgstr "Nėra MIME rėžio"
+
+#: ipconst.snomemorystreamerr
+msgid "No Memory Stream assigned"
+msgstr "Nepriskirtas atminties srautas"
+
+#: ipconst.snorecipients
+msgid "No recipients specified"
+msgstr "Nenurodyti gavėjai"
+
+#: ipconst.snoseekforread
+msgid "No seek for read"
+msgstr "Nei peršokimų, nei skaitymų"
+
+#: ipconst.snoseekforwrite
+msgid "No seek for write"
+msgstr "Nei peršokimų, nei rašymų"
+
+#: ipconst.snosockerr
+msgid "Socket not assigned"
+msgstr "Jungtis nepriskirta"
+
+#: ipconst.snostreamerr
+msgid "Stream not assigned"
+msgstr "Srautas nepriskirtas"
+
+#: ipconst.snotenoughdata
+msgid "Not enough data in queue (%s bytes) to satisfy read request (%s bytes)"
+msgstr "Eilėje (%s baitų) trūksta duomenų skaitymo užklausų (%s baitų) įvykdymui"
+
+#: ipconst.snotimererr
+msgid "Not enough system timers available"
+msgstr "Permažai sisteminių laikmačių"
+
+#: ipconst.snowinsock2err
+msgid "%s requires WinSock 2, and this system only has WinSock 1"
+msgstr "%s reikalauja WinSock2, tačiau šioje sistemoje yra tik WinSock1"
+
+#: ipconst.snsarticle
+msgid "Retrieving article"
+msgstr "Gaunamas straipsnis"
+
+#: ipconst.snsauthpass
+msgid "Authorizing password"
+msgstr "Suteikiamas įgaliojimas slaptažodžiui"
+
+#: ipconst.snsauthuser
+msgid "Authorizing user"
+msgstr "Suteikiamas įgaliojimas naudotojo vardui"
+
+#: ipconst.snsbody
+msgid "Retrieving body"
+msgstr "Gaunama pagrindinė dalis"
+
+#: ipconst.snsconnect
+msgctxt "ipconst.snsconnect"
+msgid "Connecting"
+msgstr "Užmezgamas ryšys"
+
+#: ipconst.snsdate
+msgid "Retrieving server date"
+msgstr "Gaunama serverio data"
+
+#: ipconst.snsgroup
+msgid "Selecting group"
+msgstr "Žymima grupė"
+
+#: ipconst.snshead
+msgid "Retrieving heading"
+msgstr "Gaunama antraštė"
+
+#: ipconst.snshelp
+msgid "Retrieving help"
+msgstr "Gaunamas žinynas"
+
+#: ipconst.snslast
+msgid "Selecting previous article"
+msgstr "Žymimas ankstesnis straipsnis"
+
+#: ipconst.snslist
+msgid "Retrieving list"
+msgstr "Gaunamas sąrašas"
+
+#: ipconst.snslistactivetimes
+msgid "Retrieving active times"
+msgstr "Gaunami aktyvūs laikai"
+
+#: ipconst.snslistdistribpats
+msgid "Retrieving distribution patterns"
+msgstr "Gaunamas pasiskirstymo deriniai"
+
+#: ipconst.snslistdistributions
+msgid "Retrieving list of distributions"
+msgstr "Ganamas platinamųjų sąrašas"
+
+#: ipconst.snslistext
+msgid "Retrieving list of extended commands"
+msgstr "Gaunamas indeksuotų komandų sąrašas"
+
+#: ipconst.snslistgroup
+msgid "Retrieving article numbers"
+msgstr "Gaunami straipsnio numeriai"
+
+#: ipconst.snslistnewsgroups
+msgid "Retrieving list of available news groups"
+msgstr "Gaunamas esamų naujienų grupių sąrašas"
+
+#: ipconst.snslistoverviewfmt
+msgid "Retrieving overview format"
+msgstr "Ganamas apžvalgos formatas"
+
+#: ipconst.snsnewgroups
+msgid "Getting new news groups"
+msgstr "Gaunamos naujos naujienų grupės"
+
+#: ipconst.snsnewnews
+msgid "Getting new articles"
+msgstr "Gaunami nauji straipsniai"
+
+#: ipconst.snsnext
+msgid "Selecting next article"
+msgstr "Žymimas tolesnis straipsnis"
+
+#: ipconst.snsnoop
+msgctxt "ipconst.snsnoop"
+msgid "No operation"
+msgstr "Operacijos nėra"
+
+#: ipconst.snsover
+msgid "Retrieving overview"
+msgstr "Gaunama apžvalga"
+
+#: ipconst.snspat
+msgid "Retrieving patterns"
+msgstr "Gaunamas deriniai"
+
+#: ipconst.snspost
+msgctxt "ipconst.snspost"
+msgid "Posting article"
+msgstr "Starpsnis siunčiamas"
+
+#: ipconst.snsprepost
+msgid "Preparing to post article"
+msgstr "Ruošiamasi siųsti straipstį"
+
+#: ipconst.snsquit
+msgctxt "ipconst.snsquit"
+msgid "Disconnecting"
+msgstr "Ryšys nutraukiamas"
+
+#: ipconst.snsspecial
+msgctxt "ipconst.snsspecial"
+msgid "Sending special command"
+msgstr "Siunčiama speciali komanda"
+
+#: ipconst.snsstat
+msgid "Retrieving status"
+msgstr "Gaunama būsena"
+
+#: ipconst.sntauthenticate
+msgid "Authenticating"
+msgstr "Nustatoma tapatybė"
+
+#: ipconst.sntnewnews
+msgid "Retrieving new news"
+msgstr "Gaunamos naujos naujienos"
+
+#: ipconst.sntnotask
+msgctxt "ipconst.sntnotask"
+msgid "No task"
+msgstr "Užduoties nėra"
+
+#: ipconst.sntpostto
+msgctxt "ipconst.sntpostto"
+msgid "Posting article"
+msgstr "Starpsnis siunčiamas"
+
+#: ipconst.sntselectgroup
+msgid "Selecting Group"
+msgstr "Žymima grupė"
+
+#: ipconst.soriginfrombegin
+msgid "When origin is soFromBeginning, Offset must be >= 0"
+msgstr "Kai pradžia yra soFromBeginning, Offset turi būti >= 0"
+
+#: ipconst.soriginfromend
+msgid "When origin is soFromEnd, Offset must be <= 0"
+msgstr "Kai pradžia yra soFromEnd, Offset turi būti <= 0"
+
+#: ipconst.spngbadbitdepth
+msgid "Unsupported Bit Depth of %d"
+msgstr "Nepalaikomas %d bitų gylis"
+
+#: ipconst.spngbadchunktype
+msgid "Unrecognized Chunk Type: %s"
+msgstr "Neatpažintas dalies tipas: %s"
+
+#: ipconst.spngbadcolortype
+msgid "Unrecognized color type of %d"
+msgstr "Neatpažintas %d spalvos tipas"
+
+#: ipconst.spngbadinterlacemethod
+msgid "Unrecognized Interlace Method"
+msgstr "Neatpažintas progresinis metodas"
+
+#: ipconst.spngbadmodificationtime
+msgid "Invalid Modification Time"
+msgstr "Klaidingas modifikavimo laikas"
+
+#: ipconst.spngbadpalettelength
+msgid "Invalid Palette Length"
+msgstr "Klaidingas paletės ilgis"
+
+#: ipconst.spngbadpixeldepth
+msgid "Unrecognized pixel depth of %d"
+msgstr "Neatpažintas %d pikselių gylis"
+
+#: ipconst.spngbadsignature
+msgid "Invalid PNG Signature"
+msgstr "Klaidingas PNG parašas"
+
+#: ipconst.spngbitdepth
+msgid "Bit Depth: %d"
+msgstr "Gylis bitais: %d"
+
+#: ipconst.spngbuffertoosmall
+msgid "PNG Buffer too small."
+msgstr "PNG buferis permažas."
+
+#: ipconst.spngcannotsave
+msgid "PNG Saving is not supported"
+msgstr "PNG išsaugojimas nepalaikomas"
+
+#: ipconst.spngchunkidandlength
+msgid "PNG Chunk: %s  Length: %d"
+msgstr "PNG dalis: %s  ilgis: %d"
+
+#: ipconst.spngcolortype
+msgid "Color Type: %d"
+msgstr "Spalvos tipas: %d"
+
+#: ipconst.spngcompressionmethod
+msgid "Compression Method: %d"
+msgstr "Glaudinimo metodas: %d"
+
+#: ipconst.spngdefilterpass
+msgid "Unfiltering Pass %d  Size: %dx%d  From: %dx%d"
+msgstr "Pass nefiltruojamas %d  Dydis: %dx%d  Nuo: %dx%d"
+
+#: ipconst.spngeffectivefilter
+msgid "Effective filter is %s"
+msgstr "Efektyvus filtras yra %s"
+
+#: ipconst.spngerrorconstant
+msgid "**** ERROR ****"
+msgstr "**** KLAIDA ****"
+
+#: ipconst.spngfilterchange
+msgid "Filter changed on Row %d to %x"
+msgstr "%d eilutėje esantis filtras pakeistas į %x"
+
+#: ipconst.spngfiltermethod
+msgid "Filter Method: %d"
+msgstr "Filtro metodas: %d"
+
+#: ipconst.spnggamatoolong
+msgid "gAMA chunk is long"
+msgstr "Perilga gAMA dalis"
+
+#: ipconst.spnggamatooshort
+msgid "gAMA chunk is short"
+msgstr "Pertrumpa gAMA dalis"
+
+#: ipconst.spnggammacorrection
+msgid "Gamma Correction: %f"
+msgstr "Gama korekcija: %f"
+
+#: ipconst.spngihdrtoolong
+msgid "IHDR chunk is long."
+msgstr "Perilga IHDR dalis."
+
+#: ipconst.spngihdrtooshort
+msgid "IHDR chunk is short."
+msgstr "Pertrumpa IHDR dalis."
+
+#: ipconst.spngimagesize
+msgid "Image size is %dx%d pixels"
+msgstr "Paveikslo dydis pikseliais yra %dx%d"
+
+#: ipconst.spnginterlacemethod
+msgid "Interlace Method: %d"
+msgstr "Progresinis metodas: %d"
+
+#: ipconst.spngmemoryrequired
+msgid "Memory required for image: %d bytes"
+msgstr "Paveikslui reikia atminties: %d baitų"
+
+#: ipconst.spngmissingiend
+msgid "End of PNG found with no IEND chunk"
+msgstr "PNG gale nerasta IEND dalis"
+
+#: ipconst.spngmissingihdr
+msgid "IHDR Chunk is missing"
+msgstr "Nėra IHDR dalies"
+
+#: ipconst.spngmodificationdate
+msgid "Modification Date: %s"
+msgstr "Modifikavimo data: %s"
+
+#: ipconst.spngnoclipboard
+msgid "PNG Clipboard support is not supported."
+msgstr "Iškarpinė nepalaiko PNG."
+
+#: ipconst.spngpaletteentry
+msgid "Palette Entry %d - Red: %d   Green: %d   Blue: %d"
+msgstr "Paletės %d įrašas: Raudona = %d, Žalia = %d, Mėlyna = %d"
+
+#: ipconst.spngpalettetoolong
+msgid "Too many palette entries"
+msgstr "Perdaug paletės įrašų"
+
+#: ipconst.spngpalettetransparency
+msgid "Palette Transparency: %d  Alpha %d"
+msgstr "Paletės skaidrumas: %d  alfa %d"
+
+#: ipconst.spngtimetoolong
+msgid "tIME chunk is long."
+msgstr "tIME dalis ilga."
+
+#: ipconst.spngtimetooshort
+msgid "tIME chunk is short."
+msgstr "tIME dalis trumpa."
+
+#: ipconst.spngtransparentcolor
+msgid "Transparent Color: %x"
+msgstr "Permatoma spalva: %x"
+
+#: ipconst.spngtruncatedcrc
+msgid "CRC Code is truncated"
+msgstr "CRC kodas nukirstas"
+
+#: ipconst.spngtruncateddata
+msgid "Chunk data is truncated"
+msgstr "Dalies duomenys nukirsti"
+
+#: ipconst.spngunsupportedfeature
+msgid "A %s chunk was found in the PNG File. This feature is not supported in this version of the PNG decoder"
+msgstr "PNG faile rasta %s dalis. Esamos versijos PNG dekoderis nepalaiko šios savybės"
+
+#: ipconst.spngwarningconstant
+msgid "**** WARNING ****"
+msgstr "**** PERSPĖJIMAS ****"
+
+#: ipconst.spop3cmdapop
+msgid "APOP"
+msgstr "APOP"
+
+#: ipconst.spop3cmddele
+msgid "DELE"
+msgstr "DELE"
+
+#: ipconst.spop3cmdlist
+msgctxt "ipconst.spop3cmdlist"
+msgid "LIST"
+msgstr "LIST"
+
+#: ipconst.spop3cmdnoop
+msgid "NOOP"
+msgstr "NOOP"
+
+#: ipconst.spop3cmdpass
+msgid "PASS"
+msgstr "PASS"
+
+#: ipconst.spop3cmdquit
+msgctxt "ipconst.spop3cmdquit"
+msgid "QUIT"
+msgstr "QUIT"
+
+#: ipconst.spop3cmdretr
+msgid "RETR"
+msgstr "RETR"
+
+#: ipconst.spop3cmdrset
+msgid "RSET"
+msgstr "RSET"
+
+#: ipconst.spop3cmdstat
+msgctxt "ipconst.spop3cmdstat"
+msgid "STAT"
+msgstr "STAT"
+
+#: ipconst.spop3cmdtop
+msgid "TOP"
+msgstr "TOP"
+
+#: ipconst.spop3cmduidl
+msgid "UIDL"
+msgstr "UIDL"
+
+#: ipconst.spop3cmduser
+msgid "USER"
+msgstr "USER"
+
+#: ipconst.spop3errresp
+msgid "-ERR"
+msgstr "-ERR"
+
+#: ipconst.spop3notauthenticating
+msgid "%s can not be called in transaction state"
+msgstr "Esant transakcijos veiksenai, %s vykdyti negalima"
+
+#: ipconst.spop3nottransacting
+msgid "%s can not be called in authentication state"
+msgstr "Esant tapatumo nustatymo veiksenai, %s vykdyti negalima"
+
+#: ipconst.spop3okresp
+msgid "+OK"
+msgstr "+ OK"
+
+#: ipconst.sposreqd
+msgid "%s: count must be positive"
+msgstr "%s: kiekis turi būti teigiamas"
+
+#: ipconst.spsapop
+msgid "Logging on with APOP"
+msgstr "Registruojamasi su APOP"
+
+#: ipconst.spsconnect
+msgid "Connecting to server"
+msgstr "Jungiama prie serverio"
+
+#: ipconst.spsdele
+msgid "Marking message for deletion"
+msgstr "Pranešimai žymimi trynimui"
+
+#: ipconst.spslist
+msgctxt "ipconst.spslist"
+msgid "Retrieving mailbox list"
+msgstr "Gaunamas pašto dėžutės sąrašas"
+
+#: ipconst.spsnoop
+msgctxt "ipconst.spsnoop"
+msgid "No operation"
+msgstr "Operacijos nėra"
+
+#: ipconst.spspass
+msgid "Logging on with Password"
+msgstr "Registruojamasi su slaptažodžiu"
+
+#: ipconst.spsquit
+msgctxt "ipconst.spsquit"
+msgid "Disconnecting"
+msgstr "Atsijungiama"
+
+#: ipconst.spsretr
+msgid "Retrieving message"
+msgstr "Gaunamas pranešimas"
+
+#: ipconst.spsrset
+msgid "Resetting messages"
+msgstr "Perkraunami pranešimai"
+
+#: ipconst.spsspecial
+msgid "Special command"
+msgstr "Speciali komanda"
+
+#: ipconst.spsstat
+msgid "Retrieving mailbox status"
+msgstr "Gaunama pašto dėžutės būsena"
+
+#: ipconst.spstop
+msgid "Retrieving top of message"
+msgstr "Gaunamas pranešimo viršus"
+
+#: ipconst.spsuidl
+msgctxt "ipconst.spsuidl"
+msgid "Retrieving mailbox UID list"
+msgstr "Gaunamas pašto dėžutės UID sąrašas"
+
+#: ipconst.spsunknown
+msgid "Unknown state"
+msgstr "Nežinoma būsena"
+
+#: ipconst.spsuser
+msgid "Logging on with User"
+msgstr "Registruojamasi su naudotoju"
+
+#: ipconst.spterror
+#, fuzzy
+#| msgid "An error occured with the last task."
+msgid "An error occurred with the last task."
+msgstr "Vykdant paskutinę užduotį įvyko klaida."
+
+#: ipconst.sptlist
+msgctxt "ipconst.sptlist"
+msgid "Retrieving mailbox list"
+msgstr "Gaunamas pašto dėžutės sąrašas"
+
+#: ipconst.sptlogon
+msgctxt "ipconst.sptlogon"
+msgid "Logging on"
+msgstr "Registruojamasi"
+
+#: ipconst.sptnone
+msgctxt "ipconst.sptnone"
+msgid "No task"
+msgstr "Nėra užduočių"
+
+#: ipconst.sptuidl
+msgctxt "ipconst.sptuidl"
+msgid "Retrieving mailbox UID list"
+msgstr "Gaunamas pašto dėžutės UID sąrašas"
+
+#: ipconst.sptunknown
+msgid "Unknown task"
+msgstr "Nežinoma užduotis"
+
+#: ipconst.srasalldevicesconnected
+msgid "All devices connected"
+msgstr "Visi įrenginiai prisijungę"
+
+#: ipconst.srasauthack
+msgid "Authenticate acknowledged"
+msgstr "Nustatyti tapatybė - patvirtinta"
+
+#: ipconst.srasauthcallback
+msgid "Authenticate callback"
+msgstr "Nustatyti tapatybė - atgalinis skambinimas"
+
+#: ipconst.srasauthchangepassword
+msgid "Authenticate change password"
+msgstr "Nustatyti tapatybė - keisti slaptažodį"
+
+#: ipconst.srasauthenticate
+msgid "Authenticate"
+msgstr "Nustatyti tapatybė"
+
+#: ipconst.srasauthenticated
+msgid "Authenticated"
+msgstr "Tapatybė nustatyta"
+
+#: ipconst.srasauthlinkspeed
+msgid "Authenticate link speed"
+msgstr "Nustatyti tapatybė - saito sparta"
+
+#: ipconst.srasauthnotify
+msgid "Authenticate notify"
+msgstr "Nustatyti tapatybė - pranešti"
+
+#: ipconst.srasauthproject
+msgid "Authenticate project"
+msgstr "Nustatyti tapatybė - projektas"
+
+#: ipconst.srasauthretry
+msgid "Authenticate retry"
+msgstr "Nustatyti tapatybė - kartoti"
+
+#: ipconst.srascallbackcomplete
+msgid "Callback complete"
+msgstr "Atgalinis skambinimas baigtas"
+
+#: ipconst.srascallbacksetbycaller
+msgid "Callback set by caller"
+msgstr "Atgalinį skambinimą parinko skambintojas"
+
+#: ipconst.srasconnectdevice
+msgid "Connect device"
+msgstr "Prijungti įrenginį"
+
+#: ipconst.srasconnected
+msgid "Connected"
+msgstr "Prijungta"
+
+#: ipconst.srasdeviceconnected
+msgid "Device connected"
+msgstr "Įrenginys prijungtas"
+
+#: ipconst.srasdisconnected
+msgctxt "ipconst.srasdisconnected"
+msgid "Disconnected"
+msgstr "Atsijungta"
+
+#: ipconst.sraserr
+msgid "Ras Error (%d): on API '%s'"
+msgstr "„Ras“ klaida (%d): iššaukė API „%s“"
+
+#: ipconst.srasinteractive
+msgid "Interactive"
+msgstr "Interaktyvus"
+
+#: ipconst.sraslogonnetwork
+msgid "Logon network"
+msgstr "Registravimosi tinklas"
+
+#: ipconst.srasopenport
+msgid "Open port"
+msgstr "Vienas prievadas"
+
+#: ipconst.sraspasswordexpired
+msgid "Password expired"
+msgstr "Slaptažodis nebegalioja"
+
+#: ipconst.sraspaused
+msgid "Paused"
+msgstr "Pristabdyta"
+
+#: ipconst.srasportopened
+msgid "Port opened"
+msgstr "Prievadas atvertas"
+
+#: ipconst.srasprepareforcallback
+msgid "Prepare for callback"
+msgstr "Ruošiamasi atgaliniam skambučiui"
+
+#: ipconst.srasprojected
+msgid "Projected"
+msgstr "Suprojektuota"
+
+#: ipconst.srasreauthenticate
+msgid "Re-authenticate"
+msgstr "Vėl nustatyti tapatybę"
+
+#: ipconst.srasretryauthentication
+msgid "Retry authentication"
+msgstr "Kartojamas tapatybės nustatymas"
+
+#: ipconst.srasstartauthentication
+msgid "Start authentication"
+msgstr "Pradėti tapatybės nustatymą"
+
+#: ipconst.srassubentryconnected
+msgid "Sub-entry connected"
+msgstr "Poelementis prijungtas"
+
+#: ipconst.srassubentrydisconnected
+msgid "Sub-entry disconnected"
+msgstr "Polelementis atjungtas"
+
+#: ipconst.sraswaitforcallback
+msgid "Wait for callback"
+msgstr "Lauk atgalinio skambučio"
+
+#: ipconst.sraswaitformodemreset
+msgid "Wait for modem reset"
+msgstr "Lauk kol modemas startuos išnaujo"
+
+#: ipconst.sreadlineerr
+msgid "Received line too long, exceeds MaxLineBuf"
+msgstr "Priimta eilutė perilga, ilgis viršija MaxLineBuf"
+
+#: ipconst.srenameddiskfileto
+msgid "Renamed disk file to "
+msgstr "Diske failas pervardytas į "
+
+#: ipconst.srowcoloor
+msgid "%s: either row %d or col %d is out of range"
+msgstr "%s: eilutė %d arba stulpelis %d peržengia ribas"
+
+#: ipconst.srowoor
+msgid "%s: row number is out of range"
+msgstr "%s: eilutės skaičius peržengia ribas"
+
+#: ipconst.srowrowoor
+msgid "TIpTerminalArray.ScrollRows: either start row %d or end row %d is out of range"
+msgstr "TIpTerminalArray.ScrollRows: pradžios eilutė %d arba galo eilutė %d peržengia ribas"
+
+#: ipconst.sseekingdiskfileto
+msgid "Seeking disk file to "
+msgstr "Disko faile peršokama į "
+
+#: ipconst.sslnopremastersecret
+msgid "No pre-master secret."
+msgstr "Nėra „pre-master secret“."
+
+#: ipconst.ssmtpresponse02
+msgid "Success, "
+msgstr "Sėkmė, "
+
+#: ipconst.ssmtpresponse04
+msgid "Transient, "
+msgstr "Trumpalaikis, "
+
+#: ipconst.ssmtpresponse05
+msgid "Persistent, "
+msgstr "Nuolatinis, "
+
+#: ipconst.ssmtpresponse10
+msgid "Other address status"
+msgstr "Kita adreso būsena"
+
+#: ipconst.ssmtpresponse11
+msgid "Bad destination mailbox address"
+msgstr "Blogas paskirties pašto dėžutės adresas"
+
+#: ipconst.ssmtpresponse12
+msgid "Bad destination system address"
+msgstr "Blogas paskirties sistemos adresas"
+
+#: ipconst.ssmtpresponse13
+msgid "Bad destination mailbox address syntax"
+msgstr "Bloga paskirties pašto dėžutės adreso sintaksė"
+
+#: ipconst.ssmtpresponse14
+msgid "Destination mailbox address ambiguous"
+msgstr "Neaiškus paskirties pašto dėžutės adresas"
+
+#: ipconst.ssmtpresponse15
+msgid "Destination mailbox address valid"
+msgstr "Paskirties pašto dėžutės adresas geras"
+
+#: ipconst.ssmtpresponse16
+msgid "Mailbox has moved"
+msgstr "Pašto dėžutė persikėlusi"
+
+#: ipconst.ssmtpresponse17
+msgid "Bad sender's mailbox address syntax"
+msgstr "Bloga siuntėjo pašto dėžutės adreso sintaksė"
+
+#: ipconst.ssmtpresponse18
+msgid "Bad sender's system address"
+msgstr "Blogas siuntėjo sistemos adresas"
+
+#: ipconst.ssmtpresponse20
+msgid "Other or undefined mailbox status"
+msgstr "Kita arba neapibrėžta pašto dėžutės būsena"
+
+#: ipconst.ssmtpresponse21
+msgid "Mailbox disabled, not accepting messages"
+msgstr "Pašto dėžutė neveiksni, pranešimai nepriimami"
+
+#: ipconst.ssmtpresponse22
+msgid "Mailbox full"
+msgstr "Pašto dėžutė pilna"
+
+#: ipconst.ssmtpresponse23
+msgid "Message length exceeds administrative limit."
+msgstr "Pranešimas ilgesnis nei nustatytas administratoriaus."
+
+#: ipconst.ssmtpresponse24
+msgid "Mailing list expansion problem"
+msgstr "Adresatų sąrašo išplėtimo problema"
+
+#: ipconst.ssmtpresponse30
+msgid "Other or undefined mail system status"
+msgstr "Kita arba neapibrėžta pašto sistemos būsena"
+
+#: ipconst.ssmtpresponse31
+msgid "Mail system full"
+msgstr "Pašto sistema pilna"
+
+#: ipconst.ssmtpresponse32
+msgid "System not accepting network messages"
+msgstr "Sistema nepriima tinklo pranešimų"
+
+#: ipconst.ssmtpresponse33
+msgid "System not capable of selected features"
+msgstr "Sistema nesugeba pažymėtųjų funkcijų"
+
+#: ipconst.ssmtpresponse34
+msgid "Message too big for system"
+msgstr "Pranešimas perdidelis sistemai"
+
+#: ipconst.ssmtpresponse40
+msgid "Other or undefined network or routing status"
+msgstr "Kita arba neapibrėžta tinklo ar maršruto parinkimo būsena"
+
+#: ipconst.ssmtpresponse41
+msgid "No answer from host"
+msgstr "Mazgo atsakymas negautas"
+
+#: ipconst.ssmtpresponse42
+msgid "Bad connection"
+msgstr "Blogas ryšys"
+
+#: ipconst.ssmtpresponse43
+msgid "Routing server failure"
+msgstr "Maršruto parinkimo serverio gedimas"
+
+#: ipconst.ssmtpresponse44
+msgid "Unable to route"
+msgstr "Neina parinkti maršrutą"
+
+#: ipconst.ssmtpresponse45
+msgid "Network congestion"
+msgstr "Tinklas užkimštas"
+
+#: ipconst.ssmtpresponse46
+msgid "Routing loop detected"
+msgstr "Aptiktas uždaras maršrutas"
+
+#: ipconst.ssmtpresponse47
+msgid "Delivery time expired"
+msgstr "Siuntimo laikas baigėsi"
+
+#: ipconst.ssmtpresponse50
+msgid "Other or undefined protocol status"
+msgstr "Kita arba neapibrėžta protokolo būsena"
+
+#: ipconst.ssmtpresponse51
+msgid "Invalid command"
+msgstr "Klaidinga komanda"
+
+#: ipconst.ssmtpresponse52
+msgid "Syntax error"
+msgstr "Sintaksės klaida"
+
+#: ipconst.ssmtpresponse53
+msgid "Too many recipients"
+msgstr "Perdaug gavėjų"
+
+#: ipconst.ssmtpresponse54
+msgid "Invalid command arguments"
+msgstr "Klaidingi komandos argumentai"
+
+#: ipconst.ssmtpresponse55
+msgid "Wrong protocol version"
+msgstr "Klaidinga protokolo versija"
+
+#: ipconst.ssmtpresponse60
+msgid "Other or undefined media error"
+msgstr "Kita arba neapibrėžta medijos klaida"
+
+#: ipconst.ssmtpresponse61
+msgid "Media not supported"
+msgstr "Medija nepalaikoma"
+
+#: ipconst.ssmtpresponse62
+msgid "Conversion required and prohibited"
+msgstr "Konversija, reikalinga ir uždrausta"
+
+#: ipconst.ssmtpresponse63
+msgid "Conversion required but not supported"
+msgstr "Konversija reikalinga, bet nepalaikoma"
+
+#: ipconst.ssmtpresponse64
+msgid "Conversion with loss performed"
+msgstr "Atlikta koversija su praradimais"
+
+#: ipconst.ssmtpresponse65
+msgid "Conversion failed"
+msgstr "Konversija nepavyko"
+
+#: ipconst.ssmtpresponse70
+msgid "Other or undefined security status"
+msgstr "Kita arba neapibrėžta saugumo būsena"
+
+#: ipconst.ssmtpresponse71
+msgid "Delivery not authorized, message refused"
+msgstr "Nėra įgaliojimų siuntimui, pranešimo atsisakyta"
+
+#: ipconst.ssmtpresponse72
+msgid "Mailing list expansion prohibited"
+msgstr "Uždrausta plėsti adresatų sąrašą"
+
+#: ipconst.ssmtpresponse73
+msgid "Security conversion required but not possible"
+msgstr "Būtinas saugumo konvertavimas, tačiau neįmanomas"
+
+#: ipconst.ssmtpresponse74
+msgid "Security features not supported"
+msgstr "Saugumo funkcijos nepalaikomos"
+
+#: ipconst.ssmtpresponse75
+msgid "Cryptographic failure"
+msgstr "Kriptografija nepavyko"
+
+#: ipconst.ssmtpresponse76
+msgid "Cryptographic algorithm not supported"
+msgstr "Kriptografijos arlgoritmas nepalaikomas"
+
+#: ipconst.ssmtpresponse77
+msgid "Message integrity failure"
+msgstr "Pranešimas prarado vientisumą"
+
+#: ipconst.ssmtpresponsesubunknown
+msgid "Unknown subcode"
+msgstr "Nežinoma kodo dalis"
+
+#: ipconst.ssmtpresponseunknown
+msgid "Unknown response code"
+msgstr "Nežinomas atsako kodas"
+
+#: ipconst.ssockserr
+msgid "SOCKS request refused - %d"
+msgstr "Atsisakyta SOCKS užklausos - %d"
+
+#: ipconst.sssauthlogin
+msgid "Requesting authentication"
+msgstr "Reikalaujama nustatyti tapatumą"
+
+#: ipconst.sssauthpass
+msgid "Authenticating password"
+msgstr "Nustatoma slaptažodžio tapatybė"
+
+#: ipconst.sssauthuser
+msgid "Authenticating username"
+msgstr "Nustatoma naudotojo vardo tapatybė"
+
+#: ipconst.sssconnect
+msgctxt "ipconst.sssconnect"
+msgid "Connecting"
+msgstr "Jungiama"
+
+#: ipconst.sssdata
+msgid "Sending Data"
+msgstr "Siunčiami duomenys"
+
+#: ipconst.sssehlo
+msgid "Logging on with EHLO"
+msgstr "Registruojamasi su EHLO"
+
+#: ipconst.sssexpand
+msgid "Expanding"
+msgstr "Plečiama"
+
+#: ipconst.ssshelo
+msgid "Logging on with HELO"
+msgstr "Registruojamasi su HELO"
+
+#: ipconst.ssshelp
+msgid "Help"
+msgstr "Žinynas"
+
+#: ipconst.ssslbadcertificate
+msgid "Bad certificate."
+msgstr "Blogas sertifikatas."
+
+#: ipconst.ssslbadcerttype
+msgid "Cert type not found"
+msgstr "Nerastas sertifikato tipas"
+
+#: ipconst.ssslbadcompressionvalue
+msgid "Compression value is wrong."
+msgstr "Klaidinga glaudinimo reikšmė."
+
+#: ipconst.ssslbadkeyexchangetype
+msgid "Key exchange message expected but not received"
+msgstr "Tikėtasi klavišo mainų pranešimo, tačiau jis negautas"
+
+#: ipconst.ssslbadmac
+msgid "MAC did not match."
+msgstr "Neatitinka MAC"
+
+#: ipconst.ssslbadmd5hash
+msgid "MD5 hash did not match."
+msgstr "Neatitinka MD5 maišos reikšmė."
+
+#: ipconst.ssslbadpublicencoding
+msgid "Bad public encoding type."
+msgstr "Blogas viešos koduotės tipas."
+
+#: ipconst.ssslbadrecordmac
+msgid "Server received a bad record MAC."
+msgstr "Serveris gavo bloga įrašo MAC."
+
+#: ipconst.ssslbadsha1hash
+msgid "SHA1 hash did not match."
+msgstr "Neatitinka SHA1 maišos reikšmė."
+
+#: ipconst.ssslblocksizeerror
+msgid "Block size error"
+msgstr "Klaidingas bloko dydis"
+
+#: ipconst.ssslbufferoverflow
+msgid "Buffer overflow error."
+msgstr "Buferio perpildos klaida."
+
+#: ipconst.ssslbuffersizemissmatch
+msgid "Buffer size miss-match."
+msgstr "Buferio dydis nesiderina."
+
+#: ipconst.ssslclosenotify
+msgid "Server sent close notify."
+msgstr "Serveris nusiuntė pranešimą apie užvėrimą."
+
+#: ipconst.ssslcompressionfailure
+msgid "Compression failure."
+msgstr "Suglaudinti nepavyko."
+
+#: ipconst.ssslconnectchange
+msgid "Can not change SSL status while connected."
+msgstr "Prisijungus negalima keisti SSL būseną."
+
+#: ipconst.ssslencryptbuf2small
+msgid "Encrypt buffer to small."
+msgstr "Šifravimo buferis permažas."
+
+#: ipconst.ssslencryptiontype
+msgid "Encryption type not defined."
+msgstr "Nenurodytas šifravimo tipas."
+
+#: ipconst.ssslexpiredcertificate
+msgid "Expired Certificate."
+msgstr "Sertifikatas nebegalioja."
+
+#: ipconst.ssslfailedhelloparse
+msgid "Did not parse server hello correctly."
+msgstr "Klaidingai išnagrinėjau serverio hello."
+
+#: ipconst.ssslhandshakefailure
+msgid "Handshake failure."
+msgstr "Nepavyko patrvirtinti ryšio užmezgimo."
+
+#: ipconst.ssslillegalparameter
+msgid "Illegal Parameter."
+msgstr "Neleistinas parametras."
+
+#: ipconst.ssslinvalidcipher
+msgid "Invalid cipher."
+msgstr "Klaidingas šifras."
+
+#: ipconst.ssslnocertificate
+msgid "Certificate is not available."
+msgstr "Sertifikato nėra."
+
+#: ipconst.ssslnohashtype
+msgid "No hash type selected."
+msgstr "Nenurodytas maišos tipas."
+
+#: ipconst.ssslnomessageencslected
+msgid "No message encoding type selected."
+msgstr "Nenurodytas pranešimo koduotės tipas."
+
+#: ipconst.ssslnoroom
+msgid "Not enough memory available to read SSL record."
+msgstr "Norint nuskaityti SSL įrašą, reikia daugiau atminties."
+
+#: ipconst.ssslnotenoughkeymaterail
+msgid "Not enough key material."
+msgstr "Nepakanka rakto medžiagos."
+
+#: ipconst.ssslpaddingerror
+msgid "Padding error."
+msgstr "Užpildymo klaida."
+
+#: ipconst.ssslparsererror
+msgid "Parsing error."
+msgstr "Analizės klaida."
+
+#: ipconst.ssslpointernotassigned
+msgid "Pointer not assigned."
+msgstr "Rodyklė nepriskirta."
+
+#: ipconst.ssslreaderror
+msgid "Read error."
+msgstr "Klaida skaitant."
+
+#: ipconst.ssslreadsizemissmatch
+msgid "Read size miss-match."
+msgstr "Perskaitytas kiekis nesiderina."
+
+#: ipconst.ssslrevokedcertificate
+msgid "Revoked Certificate."
+msgstr "Panaikintas sertifikatas."
+
+#: ipconst.ssslservernohandshake
+#, fuzzy
+#| msgid "Server cid not return a handshake message."
+msgid "Server did not return a handshake message."
+msgstr "Serveris negrąžino pranešimo apie užmegztą ryšį."
+
+#: ipconst.ssslservernoserverhello
+#, fuzzy
+#| msgid "Server cid not return a server hello message."
+msgid "Server did not return a server hello message."
+msgstr "serverio „cid“ negrąžino serverio hello pranešimo."
+
+#: ipconst.ssslsessidtolong
+msgid "Session ID is longer than 32 bytes."
+msgstr "Seanso ID ilgesnis nei 32 baitai."
+
+#: ipconst.ssslshabuf2small
+msgid "SHA1 buffer to small."
+msgstr "Permažas SHA1 buferis."
+
+#: ipconst.ssslunexpectedmessage
+msgid "Server received an unexpected message."
+msgstr "Serveris gavo nelauktą pranešimą."
+
+#: ipconst.ssslunknowncertificate
+msgid "Unknown Certificate."
+msgstr "Nežinomas sertifikatas."
+
+#: ipconst.ssslunprocesseddata
+msgid "SSL data processing error."
+msgstr "SSL duomenų apdorojimo klaida."
+
+#: ipconst.ssslunsupportedcertificate
+msgid "Unsupported Certificate."
+msgstr "Nepalaikomas sertifikatas."
+
+#: ipconst.ssslunsupportedchiper
+msgid "Unsupported cipher chosen."
+msgstr "Nurodytas nepalaikomas šifras."
+
+#: ipconst.ssslunsupportedencoding
+msgid "Unsupported public encoding."
+msgstr "Nepalaikoma vieša koduotė."
+
+#: ipconst.sssmailfrom
+msgid "Sending sender's info"
+msgstr "Siunčiama informacija apie siuntėją"
+
+#: ipconst.sssnoop
+msgctxt "ipconst.sssnoop"
+msgid "No operation"
+msgstr "Nėra operacijos"
+
+#: ipconst.sssquit
+msgid "Quit"
+msgstr "Baigti"
+
+#: ipconst.sssrcptbcc
+msgid "Sending BCC info"
+msgstr "Siunčiama BCC informacija"
+
+#: ipconst.sssrcptcc
+msgid "Sending CC info"
+msgstr "Siunčiama CC informacija"
+
+#: ipconst.sssrcptto
+msgid "Sending MailTo info"
+msgstr "Siunčiama MailTo informacija"
+
+#: ipconst.sssrset
+msgid "Resetting server"
+msgstr "Perkraunamas serveris"
+
+#: ipconst.ssssaml
+msgid "ssSaml"
+msgstr "ssSaml"
+
+#: ipconst.ssssend
+msgid "ssSend"
+msgstr "ssSend"
+
+#: ipconst.ssssendenvelope
+msgid "Sending Envelope"
+msgstr "Siunčiamas vokas"
+
+#: ipconst.ssssendmessage
+msgid "Sending Message"
+msgstr "Siunčiamas pranešimas"
+
+#: ipconst.ssssoml
+msgid "ssSoml"
+msgstr "ssSoml"
+
+#: ipconst.sssspecial
+msgctxt "ipconst.sssspecial"
+msgid "Sending special command"
+msgstr "Siunčiama speciali komanda"
+
+#: ipconst.sssturn
+msgid "ssTurn"
+msgstr "ssTurn"
+
+#: ipconst.sssverify
+msgid "Verifying"
+msgstr "Tikrinama"
+
+#: ipconst.ssterror
+#, fuzzy
+#| msgid "An error has occured during this task."
+msgid "An error has occurred during this task."
+msgstr "Vykdant šią užduotį įvyko klaida."
+
+#: ipconst.sstlogon
+msgctxt "ipconst.sstlogon"
+msgid "Logging on"
+msgstr "Registruojamasi"
+
+#: ipconst.sstnotask
+msgid "None"
+msgstr "Joks"
+
+#: ipconst.sstreamcreated
+msgid "Successfully created "
+msgstr "Sėkmingai sukurta "
+
+#: ipconst.sstreamcreateerror
+msgid "Stream create error "
+msgstr "Klaida kuriant srautą "
+
+#: ipconst.sstsendmail
+msgid "Sending mail"
+msgstr "Siunčiamas laiškas"
+
+#: ipconst.sunsupportedencoding
+msgid "Encoding method not supported"
+msgstr "Kodavimo metodas nepalaikomas"
+
+#: ipconst.suuencodecounterr
+msgid "Count <> Len or Count > 63"
+msgstr "Kiekis <> Ilgis arba Kiekis > 63"
+
+#: ipconst.swebimagecannotload
+msgid "Cannot load %s"
+msgstr "Neina įkelti %s"
+
+#: ipconst.swebimagenotfound
+msgid "%s was not found"
+msgstr "%s nerastas"
+
+#: ipconst.swebimagestreambad
+msgid "Cannot load image from stream"
+msgstr "Neina įkelti paveikslas iš srauto"
+
+#: ipconst.swinsockerr
+msgid "WinSock Error (%d): %s, on API '%s'"
+msgstr "WinSock klaida (%d): %s, iššaukta API „%s“"
+
+#: ipconst.swriteafterrename
+msgid "***Write after rename"
+msgstr "***Rašymas po pervardijimo"
+
+#: ipconst.swrongstateerr
+msgid "Can not comply, wrong state"
+msgstr "Įvykdyti negalima, klaidinga būsena"
+
+#: ipconst.swsaeacces
+msgid "Permission denied"
+msgstr "Neleidžiama"
+
+#: ipconst.swsaeaddrinuse
+msgid "Address already in use"
+msgstr "Adresas jau naudojamas"
+
+#: ipconst.swsaeaddrnotavail
+msgid "Cannot assign requested address"
+msgstr "Neina priskirti reikalaujamą adresą"
+
+#: ipconst.swsaeafnosupport
+msgid "Address family not supported by protocol family"
+msgstr "Protokolo šeima nepalaiko adreso šeimos"
+
+#: ipconst.swsaealready
+msgid "Operation already in progress"
+msgstr "Operacija jau yra vykdoma"
+
+#: ipconst.swsaebadf
+msgid "Bad file descriptor"
+msgstr "Blogas failo deskriptorius"
+
+#: ipconst.swsaecancelled
+msgid "Cancelled"
+msgstr "Atsisakyta"
+
+#: ipconst.swsaeconnaborted
+msgid "Software caused connection abort"
+msgstr "Programa nutraukė ryšį"
+
+#: ipconst.swsaeconnrefused
+msgid "Connection refused"
+msgstr "Prisijungimo atsisakyta"
+
+#: ipconst.swsaeconnreset
+msgid "Connection reset by peer"
+msgstr "Klientas ryšį atstatė į pradinę būseną"
+
+#: ipconst.swsaedestaddrreq
+msgid "Destination address required"
+msgstr "Reikalingas paskirties adresas"
+
+#: ipconst.swsaediscon
+msgid "Graceful shutdown in progress"
+msgstr "Vyksta grakštus išjungimas"
+
+#: ipconst.swsaedquot
+msgid "Disk quota exceeded"
+msgstr "Viršyta disko kvota"
+
+#: ipconst.swsaefault
+msgid "Bad address"
+msgstr "Blogas adresas"
+
+#: ipconst.swsaehostdown
+msgid "Host is down"
+msgstr "Mazgas nusprogo"
+
+#: ipconst.swsaehostunreach
+msgid "No route to host"
+msgstr "Nėra maršruto iki mazgo"
+
+#: ipconst.swsaeinprogress
+msgid "Operation now in progress"
+msgstr "Operacija vykdoma dabar"
+
+#: ipconst.swsaeintr
+msgid "Interrupted function call"
+msgstr "Pertrauktas kreipimasis į funkciją"
+
+#: ipconst.swsaeinval
+msgid "Invalid argument"
+msgstr "Klaidingas argumentas"
+
+#: ipconst.swsaeinvalidproctable
+msgid "Invalid procedure table from service provider"
+msgstr "Klaidinga paslaugos teikėjo procedurų lentelė"
+
+#: ipconst.swsaeinvalidprovider
+msgid "Invalid service provider version number"
+msgstr "Klaidingas paslaugos teikėjo versijos numeris"
+
+#: ipconst.swsaeisconn
+msgid "Socket is already connected"
+msgstr "Jungtis jau yra prijungta"
+
+#: ipconst.swsaeloop
+msgid "Too many levels of symbolic links"
+msgstr "Perdaug simbolinių saitų"
+
+#: ipconst.swsaemfile
+msgid "Too many open files"
+msgstr "Perdaug atvertų failų"
+
+#: ipconst.swsaemsgsize
+msgid "Message too long"
+msgstr "Pranešimas perilgas"
+
+#: ipconst.swsaenametoolong
+msgid "File name too long"
+msgstr "Failo pavadinimas perilgas"
+
+#: ipconst.swsaenetdown
+msgid "Network is down"
+msgstr "Tinklas nusprogo"
+
+#: ipconst.swsaenetreset
+msgid "Network dropped connection on reset"
+msgstr "Tinklas, pasileisdamas iš naujo, nutraukė ryšį"
+
+#: ipconst.swsaenetunreach
+msgid "Network is unreachable"
+msgstr "Tinklas nepasiekiamas"
+
+#: ipconst.swsaenobufs
+msgid "No buffer space available"
+msgstr "Buferyje nebėra vietos"
+
+#: ipconst.swsaenomore
+msgctxt "ipconst.swsaenomore"
+msgid "No more data available"
+msgstr "Duomenys baigėsi"
+
+#: ipconst.swsaenoprotoopt
+msgid "Bad protocol option"
+msgstr "Bloga protokolo parinktis"
+
+#: ipconst.swsaenotconn
+msgid "Socket is not connected"
+msgstr "Jungtis neprijungta"
+
+#: ipconst.swsaenotempty
+msgid "Directory not empty"
+msgstr "Aplankas nėra tuščias"
+
+#: ipconst.swsaenotsock
+#, fuzzy
+#| msgid "Socket operation on nonsocket"
+msgid "Socket operation on non socket"
+msgstr "Jungties operacija pritaikyta ne jungčiai"
+
+#: ipconst.swsaeopnotsupp
+msgid "Operation not supported"
+msgstr "Operacija nepalaikoma"
+
+#: ipconst.swsaepfnosupport
+msgid "Protocol family not supported"
+msgstr "Protokolo šeima nepalaikoma"
+
+#: ipconst.swsaeproclim
+msgid "Too many processes"
+msgstr "Perdaug procesų"
+
+#: ipconst.swsaeprotonosupport
+msgid "Protocol not supported"
+msgstr "Protokolas nepalaikomas"
+
+#: ipconst.swsaeprototype
+msgid "Protocol wrong type for socket"
+msgstr "Protokolo tipas netinka jungčiai"
+
+#: ipconst.swsaeproviderfailedinit
+msgid "Unable to initialize a service provider"
+msgstr "Neina inicializuoti paslaugos teikėjo"
+
+#: ipconst.swsaerefused
+msgid "Refused"
+msgstr "Atsisakyta"
+
+#: ipconst.swsaeremote
+msgid "Too many levels of remote in path"
+msgstr "Kelyje perdaug nuotolinio lygių"
+
+#: ipconst.swsaeshutdown
+msgid "Cannot send after socket shutdown"
+msgstr "Išjungus jungtį, siųsti neis"
+
+#: ipconst.swsaesocktnosupport
+msgid "Socket type not supported"
+msgstr "Jungties tipas nepalaikomas"
+
+#: ipconst.swsaestale
+msgid "Stale NFS file handle"
+msgstr "Pasenusi NFS failo rodyklė"
+
+#: ipconst.swsaetimedout
+msgid "Connection timed out"
+msgstr "Ryšio laikas baigėsi"
+
+#: ipconst.swsaetoomanyrefs
+msgid "Too many references; cannot splice"
+msgstr "Perdaug atskaitų; neina sujungti"
+
+#: ipconst.swsaeusers
+msgid "Too many users"
+msgstr "Perdaug naudotojų"
+
+#: ipconst.swsaewouldblock
+msgid "Resource temporarily unavailable"
+msgstr "Resursas laikinai neprieinamas"
+
+#: ipconst.swsahost_not_found
+msgid "Host not found"
+msgstr "Mazgas nerastas"
+
+#: ipconst.swsanotinitialised
+msgid "Successful WSAStartup not yet performed"
+msgstr "Sėkmingas WSAStartup dar neįvykdytas"
+
+#: ipconst.swsano_data
+msgid "Valid name, no data record of requested type"
+msgstr "Teisingas pavadinimas, užklaustojo tipo duomenų įrašo nėra"
+
+#: ipconst.swsano_recovery
+msgid "This is a nonrecoverable error"
+msgstr "Tai neatkuriama klaida"
+
+#: ipconst.swsaservice_not_found
+msgid "Service not found"
+msgstr "Paslauga nerasta"
+
+#: ipconst.swsasyscallfailure
+msgid "System call failure"
+msgstr "Nepavyko kreiptis į sistemą"
+
+#: ipconst.swsasysnotready
+msgid "Network subsystem is unavailable"
+msgstr "Nėra tinklo posistemės"
+
+#: ipconst.swsatry_again
+#, fuzzy
+#| msgid "Nonauthoritative host not found"
+msgid "Non-authoritative host not found"
+msgstr "Nepatikimų mazgų nerasta"
+
+#: ipconst.swsatype_not_found
+msgid "Type not found"
+msgstr "Tipas nerastas"
+
+#: ipconst.swsavernotsupported
+msgid "WinSock DLL version not supported"
+msgstr "Nepalaikoma WinSock DLL versija"
+
+#: ipconst.swsa_e_cancelled
+msgid "Lookup cancelled"
+msgstr "Paieška nutraukta"
+
+#: ipconst.swsa_e_no_more
+msgctxt "ipconst.swsa_e_no_more"
+msgid "No more data available"
+msgstr "Duomenys baigėsi"
+
+#: ipconst.swsa_qos_admission_failure
+msgid "Error due to lack of resources"
+msgstr "Dėl resursų trūkumo įvyko klaida"
+
+#: ipconst.swsa_qos_bad_object
+#, fuzzy
+#| msgid "Problem filterspec or providerspecific buffer"
+msgid "Problem filterspec or provider specific buffer"
+msgstr "„filterspec“ arba specifinio tiekėjo buferio problema"
+
+#: ipconst.swsa_qos_bad_style
+msgid "Unknown or conflicting style"
+msgstr "Nežinomas arba konfliktinis stilius"
+
+#: ipconst.swsa_qos_generic_error
+msgid "General error"
+msgstr "Bendra klaida"
+
+#: ipconst.swsa_qos_no_receivers
+msgid "There are no receivers"
+msgstr "Imtuvų nėra"
+
+#: ipconst.swsa_qos_no_senders
+msgid "There are no senders"
+msgstr "Siųstuvų nėra"
+
+#: ipconst.swsa_qos_policy_failure
+msgid "Rejected for administrative reasons - bad credentials"
+msgstr "Atmesta dėl administravimo priežasčių - blogi įgaliojamieji raštai"
+
+#: ipconst.swsa_qos_receivers
+msgid "At least one Reserve has arrived"
+msgstr "Atėjo bent vienas „Reserve“"
+
+#: ipconst.swsa_qos_request_confirmed
+msgid "Reserve has been confirmed"
+msgstr "„Reserve“ patvirtintas"
+
+#: ipconst.swsa_qos_senders
+msgid "At least one Path has arrived"
+msgstr "Atėjo bent vienas „Path“"
+
+#: ipconst.swsa_qos_traffic_ctrl_error
+msgid "Problem with some part of the flowspec"
+msgstr "Kažkurios „flowspec“ dalies problema"
+

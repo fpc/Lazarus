@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="RunTimeTypeInfoControls">
+    <module name="RTTICtrls">
+      <element name="TPropertyLinkOption">
+        <short>Optional flags for TPropertyLink</short>
+      </element>
+      <element name="TCustomPropertyLink.TIElementName">
+        <short>If the property is a set then the name of the enum can be given here</short>
+      </element>
+      <element name="TCustomPropertyLink.TIObject">
+        <short>The object of the property</short>
+      </element>
+      <element name="TCustomPropertyLink.TIPropertyName">
+        <short>The name of the property</short>
+      </element>
+      <element name="TCustomPropertyLink.SaveEnabled">
+        <short>Enable to automatically save changes</short>
+      </element>
+      <element name="TCustomPropertyLink.Owner">
+        <short>The RTTI control using the link.</short>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

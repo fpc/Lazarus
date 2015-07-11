@@ -1,0 +1,112 @@
+<?xml version="1.0" ?>
+<CONFIG>
+    <Version
+        Lazarus="0.9.31"
+        FPC_Release="2.6.0"
+        FPC_Fixes="2.6.1"
+        FPC_Devel="2.7.1"
+    />
+    <Server Type="ftp" Name="Snapshot on scenergy">
+        <File
+            Mask="lazarus-$LAZVER-*-src.zip"
+            Description="Lazarus source zip"
+        />
+        <File
+            Mask="lazarus-$LAZVER-*-src.tar.bz2"
+            Description="Lazarus source bzip2"
+        />
+        <File
+            Mask="Lazarus-$LAZVER-?????-fpc-$FPCRELEASEVER-????????-win32.exe"
+            Description="Lazarus win32 with fpc release ($FPCRELEASEVER)"
+        />
+        <File
+            Mask="Lazarus-$LAZVER-?????-fpc-$FPCRELEASEVER-????????-cross-arm-wince-win32.exe"
+            Description="Lazarus win32 cross arm-wince with fpc release ($FPCRELEASEVER)"
+        />
+        <File
+            Mask="Lazarus-$LAZVER-?????-fpc-$FPCFIXESVER-????????-win32.exe"
+            Description="Lazarus win32 with fpc fixes branch ($FPCFIXESVER)"
+        />
+        <File
+            Mask="Lazarus-$LAZVER-?????-fpc-$FPCFIXESVER-????????-cross-arm-wince-win32.exe"
+            Description="Lazarus win32 cross arm-wince with fpc fixes branch ($FPCFIXESVER)"
+        />
+        <File
+            Mask="Lazarus-$LAZVER-?????-fpc-$FPCDEVELVER-????????-win32.exe"
+            Description="Lazarus win32 with fpc development branch ($FPCDEVELVER)"
+        />
+        <File
+            Mask="Lazarus-$LAZVER-?????-fpc-$FPCRELEASEVER-*-win64.exe"
+            Description="Lazarus win64 with fpc release ($FPCRELEASEVER)"
+        />
+        <File
+            Mask="Lazarus-$LAZVER-?????-fpc-$FPCFIXESVER-*-win64.exe"
+            Description="Lazarus win64 with fpc fixes branch ($FPCFIXESVER)"
+        />
+        <File
+            Mask="Lazarus-$LAZVER-?????-fpc-$FPCDEVELVER-*-win64.exe"
+            Description="Lazarus win64 with fpc development branch ($FPCDEVELVER)"
+        />
+        <File
+            Mask="fpc-$FPCRELEASEVER.powerpc-macosx.dmg"
+            Description="fpc $FPCRELEASEVER Mac OS X powerpc"
+            Updated="false"
+        />
+        <File
+            Mask="fpcsrc-$FPCRELEASEVER.powerpc-macosx.dmg"
+            Description="fpc source $FPCRELEASEVER Mac OS X powerpc"
+            Updated="false"
+        />
+        <File
+            Mask="lazarus-$LAZVER.?????-*-powerpc-macosx.dmg"
+            Description="lazarus Mac OS X powerpc"
+        />
+        <File
+            Mask="fpc-$FPCRELEASEVER.intel-macosx.dmg"
+            Description="fpc $FPCRELEASEVER Mac OS X i386"
+            Updated="false"
+        />
+        <File
+            Mask="fpcsrc-$FPCRELEASEVER.intel-macosx.dmg"
+            Description="fpc source $FPCRELEASEVER Mac OS X i386"
+            Updated="false"
+        />
+        <File
+            Mask="lazarus-$LAZVER.*-i386-macosx.dmg"
+            Description="lazarus $LAZVER Mac OS X i386"
+        />
+        <File
+            Mask="fpc-$FPCRELEASEVER-*.src.rpm"
+            Description="fpc $FPCRELEASEVER source rpm"
+            Updated="false"
+        />
+        <File
+            Mask="fpc-$FPCRELEASEVER-*.i686.rpm"
+            Description="fpc $FPCRELEASEVER i686 rpm"
+            Updated="false"
+        />
+        <File
+            Mask="fpc-src-$FPCRELEASEVER-*.i686.rpm"
+            Description="fpc source $FPCRELEASEVER i686 rpm"
+            Updated="false"
+        />
+        <File
+            Mask="lazarus-$LAZVER*.i686.rpm"
+            Description="lazarus $LAZVER i686 rpm"
+        />
+        <File
+            Mask="fpc-$FPCRELEASEVER-*.x86_64.rpm"
+            Description="fpc $FPCRELEASEVER x86_64 rpm"
+            Updated="false"
+        />
+        <File
+            Mask="fpc-src-$FPCRELEASEVER-*.x86_64.rpm"
+            Description="fpc source $FPCRELEASEVER x86_64 rpm"
+            Updated="false"
+        />
+        <File
+            Mask="lazarus-$LAZVER*.x86_64.rpm"
+            Description="lazarus $LAZVER x86_64 rpm"
+        />
+    </Server>
+</CONFIG>

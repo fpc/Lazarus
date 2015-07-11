@@ -1,0 +1,197 @@
+<?xml version="1.0"?>
+<CONFIG Name="IDE windows and dialogs" Path="IDE_Window:_" ChildCount="71">
+  <Node1 Name="TObjectInspector" Path="Object_Inspector" HasHelp="True"/>
+  <Node2 Name="TfrmCompilerOptions" Path="Compiler_Options" HasHelp="True" IsRoot="True" ChildCount="1">
+    <Node1 Name="MainNotebook" ChildCount="7">
+      <Node1 Name="PathsPage" Path="#Paths" HasHelp="True"/>
+      <Node2 Name="ParsingPage" Path="#Parsing" HasHelp="True"/>
+      <Node3 Name="CodePage" Path="#Code" HasHelp="True"/>
+      <Node4 Name="LinkingPage" Path="#Linking" HasHelp="True"/>
+      <Node5 Name="MessagesPage" Path="#Messages" HasHelp="True"/>
+      <Node6 Name="OtherPage" Path="#Other" HasHelp="True"/>
+      <Node7 Name="CompilationPage" Path="#Compilation" HasHelp="True"/>
+    </Node1>
+  </Node2>
+  <Node3 Name="TProjectOptionsDialog" Path="Project_Options" HasHelp="True" ChildCount="1">
+    <Node1 Name="Notebook" ChildCount="5">
+      <Node1 Name="ApplicationPage" Path="#Application" HasHelp="True"/>
+      <Node2 Name="FormsPage" Path="#Forms" HasHelp="True"/>
+      <Node3 Name="MiscPage" Path="#Misc" HasHelp="True"/>
+      <Node4 Name="LazDocPage" Path="#LazDoc" HasHelp="True"/>
+      <Node5 Name="SavePage" Path="#Session" HasHelp="True"/>
+    </Node1>
+  </Node3>
+  <Node4 Name="TEnvironmentOptionsDialog" Path="Environment_Options" HasHelp="True" ChildCount="1">
+    <Node1 Name="Notebook" ChildCount="8">
+      <Node1 Name="FilesPage" Path="#Files" HasHelp="True"/>
+      <Node2 Name="DesktopPage" Path="#Desktop" HasHelp="True"/>
+      <Node3 Name="WindowsPage" Path="#Windows" HasHelp="True"/>
+      <Node4 Name="FormEditorPage" Path="#Form_Editor" HasHelp="True"/>
+      <Node5 Name="ObjectInspectorPage" Path="#Object_Inspector" HasHelp="True"/>
+      <Node6 Name="BackupPage" Path="#Backup" HasHelp="True"/>
+      <Node7 Name="NamingPage" Path="#Naming" HasHelp="True"/>
+      <Node8 Name="LazDocPage" Path="#LazDoc" HasHelp="True"/>
+    </Node1>
+  </Node4>
+  <Node5 Name="TEditorOptionsForm" Path="Editor_Options" HasHelp="True" ChildCount="1">
+    <Node1 Name="MainNotebook" ChildCount="5">
+      <Node1 Name="ColorPage" Path="#Color" HasHelp="True"/>
+      <Node2 Name="GeneralPage" Path="#General" HasHelp="True"/>
+      <Node3 Name="DisplayPage" Path="#Display" HasHelp="True"/>
+      <Node4 Name="KeymappingPage" Path="#Key_Mappings" HasHelp="True"/>
+      <Node5 Name="CodetoolsPage" Path="#Codetools" HasHelp="True"/>
+    </Node1>
+  </Node5>
+  <Node6 Name="TCodeTemplateDialog" Path="Code_Templates" HasHelp="True"/>
+  <Node7 Name="TCleanDirectoryDialog" Path="Clean_Directory" HasHelp="True"/>
+  <Node8 Name="TCondForm" Path="Conditional_Defines" HasHelp="True"/>
+  <Node9 Name="TSortSelectionDialog" Path="Sort_selection" HasHelp="True"/>
+  <Node10 Name="TCharacterMapDialog" Path="Character_Map" HasHelp="True"/>
+  <Node11 Name="TExtractProcDialog" Path="Extract_Procedure" HasHelp="True"/>
+  <Node12 Name="TLazFindReplaceDialog" Path="Find" HasHelp="True"/>
+  <Node13 Name="TLazFindInFilesDialog" Path="Find_in_files" HasHelp="True"/>
+  <Node14 Name="TFindRenameIdentifierDialog" Path="Find_or_Rename_identifier" HasHelp="True"/>
+  <Node15 Name="TCodeExplorerView" Path="Code_Explorer" HasHelp="True"/>
+  <Node16 Name="TLazDocForm" Path="LazDoc_Editor" HasHelp="True" ChildCount="1">
+    <Node1 Name="PageControl" Path="PageControl" ChildCount="1">
+      <Node1 Name="ShortTabSheet" Path="ShortTabSheet" ChildCount="1">
+        <Node1 Name="ShortEdit" Path="LazDoc_Editor" HasHelp="True"/>
+      </Node1>
+    </Node1>
+  </Node16>
+  <Node17 Name="TViewUnitDialog" Path="View_project_forms_units" HasHelp="True"/>
+  <Node18 Name="TUnitDependenciesView" Path="Unit_dependencies" HasHelp="True"/>
+  <Node19 Name="TUnitInfoDialog" Path="Unit_info" HasHelp="True"/>
+  <Node20 Name="TCodeToolsDefinesDialog" Path="Codetools_Directory_Values" HasHelp="True"/>
+  <Node21 Name="TAnchorDesigner" Path="Anchor_Editor" HasHelp="True"/>
+  <Node22 Name="TMessagesView" Path="Messages" HasHelp="True"/>
+  <Node23 Name="TSearchResultsView" Path="Search_Results" HasHelp="True"/>
+  <Node24 Name="TWatchesDlg" Path="Watch_list" HasHelp="True"/>
+  <Node25 Name="TBreakPointsDlg" Path="Break_Points" HasHelp="True"/>
+  <Node26 Name="TLocalsDlg" Path="Local_Variables" HasHelp="True"/>
+  <Node27 Name="TCallStackDlg" Path="Call_Stack" HasHelp="True"/>
+  <Node28 Name="TDbgOutputForm" Path="Debug_Output" HasHelp="True"/>
+  <Node29 Name="TPublishProjectDialog" Path="Publish_Project_Package" HasHelp="True"/>
+  <Node30 Name="TProjectInspectorForm" Path="Project_Inspector" HasHelp="True"/>
+  <Node31 Name="TfrmTodo" Path="ToDo_List" HasHelp="True"/>
+  <Node32 Name="TRunParamsOptsDlg" Path="Run_parameters" HasHelp="True"/>
+  <Node33 Name="TBuildFileDialog" Path="Configure_Build_file" HasHelp="True"/>
+  <Node34 Name="TPackageEditorForm" Path="Package_Editor" HasHelp="True"/>
+  <Node35 Name="TAddToPackageDlg" Path="Add_to_Package" HasHelp="True"/>
+  <Node36 Name="TPackageOptionsDialog" Path="Package_Options" HasHelp="True"/>
+  <Node37 Name="TPkgGraphExplorerDlg" Path="Package_Graph" HasHelp="True"/>
+  <Node38 Name="TInstallPkgSetDialog" Path="Installed_Packages" HasHelp="True"/>
+  <Node39 Name="TExternalToolDialog" Path="External_Tools" HasHelp="True"/>
+  <Node40 Name="TExternalToolOptionDlg" Path="External_Tool" HasHelp="True"/>
+  <Node41 Name="TMakeResStrDialog" Path="Make_ResourceString" HasHelp="True"/>
+  <Node42 Name="TDiffDlg" Path="Diff" HasHelp="True"/>
+  <Node43 Name="TConfigureBuildLazarusDlg" Path="Configure_Build_Lazarus" HasHelp="True"/>
+  <Node44 Name="TDebuggerOptionsForm" Path="Debugger_Options" HasHelp="True"/>
+  <Node45 Name="TCodeToolsOptsDlg" Path="Codetools_Options" HasHelp="True"/>
+  <Node46 Name="TCodeToolsDefinesEditor" Path="Codetools_Defines_Editor" HasHelp="True"/>
+  <Node47 Name="THelpOptionsDialog" Path="Help_Options" HasHelp="True"/>
+  <Node48 Name="TWatchPropertyDlg" Path="Watch_list#Watch_Properties" HasHelp="True" IsRoot="True"/>
+  <Node49 Name="TNewOtherDialog" Path="New_Item" HasHelp="True"/>
+  <Node50 Name="TObjectInspectorDlg" Path="TObjectInspectorDlg" HasHelp="True"/>
+  <Node51 Name="TFPDocEditor" Path="FPDoc_Editor" HasHelp="True"/>
+  <Node52 Name="TAddDirToPkgDialog" Path="Add_directory_to_package" HasHelp="True"/>
+  <Node53 Name="TChgEncodingDialog" Path="Change_Encoding_Dialog" HasHelp="True"/>
+  <Node54 Name="TChooseKeySchemeDlg" Path="Choose_Key_Scheme" HasHelp="True"/>
+  <Node55 Name="TIDEOptionsDialog" Path="IDE_Options_Dialog" HasHelp="True" ChildCount="52">
+    <Node1 Name="EditorGeneralOptionsFrame" Path="Editor_Options_General" HasHelp="True" IsRoot="True"/>
+    <Node2 Name="FilesOptionsFrame" Path="Environment_Options" HasHelp="True" IsRoot="True"/>
+    <Node3 Name="DesktopOptionsFrame" Path="Environment_Options" HasHelp="True" IsRoot="True"/>
+    <Node4 Name="WindowOptionsFrame" Path="Environment_Options" HasHelp="True" IsRoot="True"/>
+    <Node5 Name="FormEditorOptionsFrame" Path="Environment_Options" HasHelp="True" IsRoot="True"/>
+    <Node6 Name="OIOptionsFrame" Path="Environment_Options" HasHelp="True" IsRoot="True"/>
+    <Node7 Name="BackupOptionsFrame" Path="Environment_Options" HasHelp="True" IsRoot="True"/>
+    <Node8 Name="NamingOptionsFrame" Path="Environment_Options" HasHelp="True" IsRoot="True"/>
+    <Node9 Name="FpDocOptionsFrame" Path="Environment_Options" HasHelp="True" IsRoot="True"/>
+    <Node10 Name="EditorDisplayOptionsFrame" Path="Editor_Options_Display" HasHelp="True" IsRoot="True"/>
+    <Node11 Name="EditorKeymappingOptionsFrame" Path="Editor_Options_Keymap" HasHelp="True" IsRoot="True"/>
+    <Node12 Name="EditorColorOptionsFrame" Path="Editor_Options_HighlightColors" HasHelp="True" IsRoot="True"/>
+    <Node13 Name="EditorCodetoolsOptionsFrame" Path="Editor_Options_Completion_Hints" HasHelp="True" IsRoot="True"/>
+    <Node14 Name="EditorCodefoldingOptionsFrame" Path="Editor_Options_Code_Folding" HasHelp="True" IsRoot="True"/>
+    <Node15 Name="CodetoolsGeneralOptionsFrame" Path="Codetools_Options" HasHelp="True" IsRoot="True"/>
+    <Node16 Name="CodetoolsCodeCreationOptionsFrame" Path="Codetools_Options" HasHelp="True" IsRoot="True"/>
+    <Node17 Name="CodetoolsWordPolicyOptionsFrame" Path="Codetools_Options" HasHelp="True" IsRoot="True"/>
+    <Node18 Name="CodetoolsLineSplittingOptionsFrame" Path="Codetools_Options" HasHelp="True" IsRoot="True"/>
+    <Node19 Name="CodetoolsSpaceOptionsFrame" Path="Codetools_Options" HasHelp="True" IsRoot="True"/>
+    <Node20 Name="CodetoolsIndentifierComplietionOptionsFrame" Path="Codetools_Options" HasHelp="True" IsRoot="True"/>
+    <Node21 Name="DebuggerGeneralOptionsFrame" Path="Debugger_Options" HasHelp="True" IsRoot="True"/>
+    <Node22 Name="DebuggerEventLogOptionsFrame" Path="Debugger_Options" HasHelp="True" IsRoot="True"/>
+    <Node23 Name="DebuggerLanguageExceptionsOptions" Path="Debugger_Options" HasHelp="True" IsRoot="True"/>
+    <Node24 Name="DebuggerSignalsOptions" Path="Debugger_Options" HasHelp="True" IsRoot="True"/>
+    <Node25 Name="CategoryTree" Path="IDE_Options_Dialog" HasHelp="True" IsRoot="True"/>
+    <Node26 Name="CodeExplorerUpdateOptionsFrame" Path="Code_Explorer_Options" HasHelp="True" IsRoot="True"/>
+    <Node27 Name="EditorDividerDrawOptionsFrame" Path="Divider_Drawing_Divider_Draw" HasHelp="True" IsRoot="True"/>
+    <Node28 Name="CodeObserverOptionsFrame" Path="CodeObserver" HasHelp="True" IsRoot="True"/>
+    <Node29 Name="EditorMouseOptionsFrame" Path="_Editor_Options_Mouse" HasHelp="True" IsRoot="True"/>
+    <Node30 Name="EditorMouseOptionsAdvFrame" Path="EditorMouseOptionsAdvanced" HasHelp="True" IsRoot="True"/>
+    <Node31 Name="ProjectApplicationOptionsFrame" Path="Project_Options" HasHelp="True" IsRoot="True"/>
+    <Node32 Name="EditorMultiWindowOptionsFrame" Path="_Editor_Options_MultiWindow" HasHelp="True" IsRoot="True"/>
+    <Node33 Name="CompilerPathOptionsFrame" Path="Compiler_Options#Paths" HasHelp="True" IsRoot="True"/>
+    <Node34 Name="BuildModesEditorFrame" Path="Compiler_Options#Build_modes" HasHelp="True" IsRoot="True"/>
+    <Node35 Name="CompilerParsingOptionsFrame" Path="Compiler_Options#Parsing" HasHelp="True" IsRoot="True"/>
+    <Node36 Name="CompilerCodegenOptionsFrame" Path="Compiler_Options#Code" HasHelp="True" IsRoot="True"/>
+    <Node37 Name="CompilerLinkingOptionsFrame" Path="Compiler_Options#Linking" HasHelp="True" IsRoot="True"/>
+    <Node38 Name="CompilerVerbosityOptionsFrame" Path="Compiler_Options#Verbosity" HasHelp="True" IsRoot="True"/>
+    <Node39 Name="CompilerMessagesOptionsFrame" Path="Compiler_Options#Messages" HasHelp="True" IsRoot="True"/>
+    <Node40 Name="CompilerOtherOptionsFrame" Path="Compiler_Options#Other" HasHelp="True" IsRoot="True"/>
+    <Node41 Name="CompOptBuildMacrosFrame" Path="Compiler_Options#IDE_Macros" HasHelp="True" IsRoot="True"/>
+    <Node42 Name="CompilerInheritedOptionsFrame" Path="Compiler_Options#Inherited" HasHelp="True" IsRoot="True"/>
+    <Node43 Name="CompilerCompilationOptionsFrame" Path="Compiler_Options#Compilation" HasHelp="True" IsRoot="True"/>
+    <Node44 Name="EditorMarkupOptionsFrame" Path="Editor_Options_Markup" HasHelp="True" IsRoot="True"/>
+    <Node45 Name="EditorGeneralMiscOptionsFrame" Path="Editor_Options_General_Misc" HasHelp="True" IsRoot="True"/>
+    <Node46 Name="ProjectSaveOptionsFrame" Path="Project_Options" HasHelp="True" IsRoot="True"/>
+    <Node47 Name="PackageUsageOptionsFrame" Path="Package_Options" HasHelp="True" IsRoot="True"/>
+    <Node48 Name="PackageI18NOptionsFrame" Path="Package_Options" HasHelp="True" IsRoot="True"/>
+    <Node49 Name="PackageDescriptionOptionsFrame" Path="Package_Options" HasHelp="True" IsRoot="True"/>
+    <Node50 Name="PackageIntegrationOptionsFrame" Path="Package_Options" HasHelp="True" IsRoot="True"/>
+    <Node51 Name="EditorsPanel" Path="EditorsPanel" ChildCount="17">
+      <Node1 Name="EditorMarkupUserDefinedFrame" Path="Editor_User_Defined_Words" HasHelp="True" IsRoot="True"/>
+      <Node2 Name="CompOptModeMatrixFrame" Path="_Compiler_Options#Additions_and_Overrides" HasHelp="True" IsRoot="True"/>
+      <Node3 Name="CompilerOtherOptionsFrame" Path="_Compiler_Options#Other" HasHelp="True" IsRoot="True"/>
+      <Node4 Name="CompilerMessagesOptionsFrame" Path="_Compiler_Options#Messages" HasHelp="True" IsRoot="True"/>
+      <Node5 Name="CompilerCompilationOptionsFrame" Path="_Compiler_Options#Compilation" HasHelp="True" IsRoot="True"/>
+      <Node6 Name="CompilerVerbosityOptionsFrame" Path="_Compiler_Options#Verbosity" HasHelp="True" IsRoot="True"/>
+      <Node7 Name="CompilerLinkingOptionsFrame" Path="_Compiler_Options#Linking" HasHelp="True" IsRoot="True"/>
+      <Node8 Name="CompilerCodegenOptionsFrame" Path="_Compiler_Options#Code" HasHelp="True" IsRoot="True"/>
+      <Node9 Name="CompilerParsingOptionsFrame" Path="_Compiler_Options#Parsing" HasHelp="True" IsRoot="True"/>
+      <Node10 Name="CompilerPathOptionsFrame" Path="_Compiler_Options#Paths" HasHelp="True" IsRoot="True"/>
+      <Node11 Name="ProjectApplicationOptionsFrame" Path="_Project_Options#Application" HasHelp="True" IsRoot="True"/>
+      <Node12 Name="ProjectFormsOptionsFrame" Path="_Project_Options#Forms" HasHelp="True" IsRoot="True"/>
+      <Node13 Name="ProjectFPDocOptionsFrame" Path="_Project_Options#FPDoc_editor" HasHelp="True" IsRoot="True"/>
+      <Node14 Name="ProjectSaveOptionsFrame" Path="_Project_Options#Session" HasHelp="True" IsRoot="True"/>
+      <Node15 Name="ProjectVersionInfoOptionsFrame" Path="_Project_Options#Version_Info" HasHelp="True" IsRoot="True"/>
+      <Node16 Name="ProjectI18NOptionsFrame" Path="_Project_Options#i18n" HasHelp="True" IsRoot="True"/>
+      <Node17 Name="ProjectMiscOptionsFrame" Path="_Project_Options#Miscellaneous" HasHelp="True" IsRoot="True"/>
+    </Node51>
+    <Node52 Name="BuildModeSelectPanel" Path="_Project_Options#Build_modes" HasHelp="True" IsRoot="True"/>
+  </Node55>
+  <Node56 Name="UnusedUnitsDialog" Path="Find_Unused_Units" HasHelp="True"/>
+  <Node57 Name="TUnusedUnitsDialog" Path="Find_Unused_Units" HasHelp="True"/>
+  <Node58 Name="TMouseaActionDialog" Path="Editor_Options_Mouse" HasHelp="True" IsRoot="True" ChildCount="8">
+    <Node1 Name="ActionBox" Path="#ActionHelp" HasHelp="True"/>
+    <Node2 Name="CaretCheck" Path="#ActionHelp" HasHelp="True"/>
+    <Node3 Name="BtnDefault" Path="#ModKeys" HasHelp="True"/>
+    <Node4 Name="ShiftCheck" Path="#ModKeys" HasHelp="True"/>
+    <Node5 Name="AltCheck" Path="#ModKeys" HasHelp="True"/>
+    <Node6 Name="CtrlCheck" Path="#ModKeys" HasHelp="True"/>
+    <Node7 Name="ClickBox" Path="#ClickType" HasHelp="True"/>
+    <Node8 Name="DirCheck" Path="#ClickDir" HasHelp="True"/>
+  </Node58>
+  <Node59 Name="TCleanBuildProjectDialog" Path="Clean_up_build_files_dialog" HasHelp="True" IsRoot="True"/>
+  <Node60 Name="TNewPkgComponentDialog" Path="Create_new_package_component" HasHelp="True" IsRoot="True"/>
+  <Node61 Name="TEditorFileManagerForm" Path="Editor_Window_Manager" HasHelp="True" IsRoot="True"/>
+  <Node62 Name="TBreakPropertyDlg" Path="Break_Points#Breakpoint_properties" HasHelp="True" IsRoot="True"/>
+  <Node63 Name="TEvaluateDlg" Path="Evaluate/Modify" HasHelp="True" IsRoot="True"/>
+  <Node64 Name="TIDEInspectDlg" Path="Variable_Inspector" HasHelp="True" IsRoot="True"/>
+  <Node65 Name="TAssemblerDlg" Path="Assembler" HasHelp="True" IsRoot="True"/>
+  <Node66 Name="TThreadsDlg" Path="Threads" HasHelp="True" IsRoot="True"/>
+  <Node67 Name="TRegistersDlg" Path="Registers" HasHelp="True" IsRoot="True"/>
+  <Node68 Name="TDbgEventsForm" Path="Event_Log" HasHelp="True" IsRoot="True"/>
+  <Node69 Name="THistoryDialog" Path="Debug History" HasHelp="True" IsRoot="True"/>
+  <Node70 Name="TMacroListView" Path="Editor Macros" HasHelp="True" IsRoot="True"/>
+  <Node71 Name="TShowCompilerOptionsDlg" Path="Show_Compiler_Options" HasHelp="True" IsRoot="True"/>
+</CONFIG>

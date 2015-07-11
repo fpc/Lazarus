@@ -1,0 +1,161 @@
+object Form1: TForm1
+  Left = 835
+  Height = 510
+  Top = 263
+  Width = 739
+  AutoScroll = True
+  Caption = 'Form1'
+  ClientHeight = 510
+  ClientWidth = 739
+  Position = poScreenCenter
+  LCLVersion = '0.9.31'
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 510
+    Top = 0
+    Width = 739
+    ActivePage = tsSeries
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 0
+    object tsSeries: TTabSheet
+      Caption = 'Series'
+      ClientHeight = 484
+      ClientWidth = 731
+      object ChartSeries: TChart
+        Left = 0
+        Height = 444
+        Top = 0
+        Width = 731
+        AxisList = <        
+          item
+            Title.LabelFont.Orientation = 900
+          end        
+          item
+            Alignment = calBottom
+          end>
+        Depth = 30
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        ParentColor = False
+        object ChartSeriesLineSeries1: TLineSeries
+          Marks.Format = 'X'
+          Marks.Style = smsCustom
+          LinePen.Color = clPurple
+          LinePen.Style = psDot
+          LinePen.Width = 4
+          Source = RandomChartSource1
+        end
+        object ChartSeriesBarSeries1: TBarSeries
+          BarBrush.Color = clRed
+          BarWidthPercent = 15
+          Source = RandomChartSource1
+        end
+      end
+      object Panel1: TPanel
+        Left = 0
+        Height = 40
+        Top = 444
+        Width = 731
+        Align = alBottom
+        ClientHeight = 40
+        ClientWidth = 731
+        TabOrder = 1
+        object btnLine: TButton
+          Left = 4
+          Height = 25
+          Top = 6
+          Width = 75
+          Caption = 'Line'
+          OnClick = btnLineClick
+          TabOrder = 0
+        end
+        object btnBar: TButton
+          Left = 88
+          Height = 25
+          Top = 6
+          Width = 75
+          Caption = 'Bar'
+          OnClick = btnBarClick
+          TabOrder = 1
+        end
+      end
+    end
+    object tsCharts: TTabSheet
+      Caption = 'Charts'
+      ClientHeight = 484
+      ClientWidth = 731
+      object Chart1: TChart
+        Left = 0
+        Height = 128
+        Top = 0
+        Width = 731
+        AxisList = <        
+          item
+            Alignment = calRight
+            Grid.Visible = False
+            Inverted = True
+            Title.LabelFont.Orientation = 900
+          end        
+          item
+            Alignment = calBottom
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alTop
+        ParentColor = False
+        object Chart1AreaSeries1: TAreaSeries
+          Marks.Clipped = False
+          Marks.Format = '%0:.1g'
+          Marks.Style = smsCustom
+          AreaBrush.Color = clOlive
+          AreaBrush.Style = bsDiagCross
+          AreaContourPen.Color = clMaroon
+          AreaContourPen.Width = 2
+          AreaLinesPen.Style = psClear
+          Source = RandomChartSource1
+        end
+      end
+      object Panel2: TPanel
+        Left = 0
+        Height = 40
+        Top = 444
+        Width = 731
+        Align = alBottom
+        ClientHeight = 40
+        ClientWidth = 731
+        TabOrder = 1
+        object btnClone: TButton
+          Left = 4
+          Height = 25
+          Top = 6
+          Width = 75
+          Caption = 'Clone'
+          OnClick = btnCloneClick
+          TabOrder = 0
+        end
+      end
+    end
+  end
+  object RandomChartSource1: TRandomChartSource
+    PointsNumber = 20
+    RandSeed = 1451691538
+    XMax = 20
+    XMin = 1
+    YMax = 10
+    YMin = 5
+    left = 549
+    top = 102
+  end
+end

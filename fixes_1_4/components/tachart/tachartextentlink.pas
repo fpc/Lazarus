@@ -1,0 +1,180 @@
+unit TAChartExtentLink;
+
+{$H+}
+
+interface
+
+uses
+  Classes, TAChartUtils, TAGraph;
+
+type
+  TLinkedChart = class(TCollectionItem)
+  strict private
+    FChart: TChart;
+    FListener: TListener;
+    procedure OnExtentChanged(ASender: TObject);
+    procedure SetChart(AValue: TChart);
+  protected
+    function GetDisplayName: String; override;
+  public
+    constructor Create(ACollection: TCollection); override;
+    destructor Destroy; override;
+  published
+    property Chart: TChart read FChart write SetChart;
+  end;
+
+  TLinkedCharts = class(TCollection)
+  strict private
+    FOwner: TComponent;
+  protected
+    function GetOwner: TPersistent; override;
+  public
+    constructor Create(AOwner: TComponent);
+    function Add: TLinkedChart; // Should be inline, but FPC 2.6 miscompiles it.
+  end;
+
+  TChartExtendLinkMode = (elmXY, elmOnlyX, elmOnlyY);
+
+  TChartExtentLink = class(TComponent)
+  strict private
+    FEnabled: Boolean;
+    FLinkedCharts: TLinkedCharts;
+    FMode: TChartExtendLinkMode;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+    procedure AddChart(AChart: TChart);
+    procedure SyncWith(AChart: TChart);
+  published
+    property Enabled: Boolean read FEnabled write FEnabled default true;
+    property LinkedCharts: TLinkedCharts read FLinkedCharts write FLinkedCharts;
+    property Mode: TChartExtendLinkMode read FMode write FMode default elmXY;
+  end;
+
+procedure Register;
+
+implementation
+
+uses
+  SysUtils, TAGeometry;
+
+procedure Register;
+begin
+  RegisterComponents(CHART_COMPONENT_IDE_PAGE, [TChartExtentLink]);
+end;
+
+{ TLinkedCharts }
+
+function TLinkedCharts.Add: TLinkedChart;
+begin
+  Result := TLinkedChart(inherited Add);
+end;
+
+constructor TLinkedCharts.Create(AOwner: TComponent);
+begin
+  inherited Create(TLinkedChart);
+  FOwner := AOwner;
+end;
+
+function TLinkedCharts.GetOwner: TPersistent;
+begin
+  Result := FOwner;
+end;
+
+{ TLinkedChart }
+
+constructor TLinkedChart.Create(ACollection: TCollection);
+begin
+  inherited Create(ACollection);
+  FListener := TListener.Create(@FChart, @OnExtentChanged);
+end;
+
+destructor TLinkedChart.Destroy;
+begin
+  FreeAndNil(FListener);
+  inherited;
+end;
+
+function TLinkedChart.GetDisplayName: String;
+begin
+  Result := inherited GetDisplayName;
+  if Chart <> nil then
+    Result += ' -> ' + Chart.Name;
+end;
+
+procedure TLinkedChart.OnExtentChanged(ASender: TObject);
+begin
+  Unused(ASender);
+  (Collection.Owner as TChartExtentLink).SyncWith(Chart);
+end;
+
+procedure TLinkedChart.SetChart(AValue: TChart);
+begin
+  if FChart = AValue then exit;
+  if Chart <> nil then
+    Chart.ExtentBroadcaster.Unsubscribe(FListener);
+  FChart := AValue;
+  if Chart <> nil then
+    Chart.ExtentBroadcaster.Subscribe(FListener);
+end;
+
+{ TChartExtentLink }
+
+procedure TChartExtentLink.AddChart(AChart: TChart);
+var
+  i: TCollectionItem;
+begin
+  for i in LinkedCharts do
+    if TLinkedChart(i).Chart = AChart then exit;
+  LinkedCharts.Add.Chart := AChart;
+end;
+
+constructor TChartExtentLink.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FEnabled := true;
+  FLinkedCharts := TLinkedCharts.Create(Self);
+end;
+
+destructor TChartExtentLink.Destroy;
+begin
+  FreeAndNil(FLinkedCharts);
+  inherited;
+end;
+
+procedure TChartExtentLink.SyncWith(AChart: TChart);
+
+  function CombineXY(const AX, AY: TDoubleRect): TDoubleRect;
+  begin
+    Result.a := DoublePoint(AX.a.X, AY.a.Y);
+    Result.b := DoublePoint(AX.b.X, AY.b.Y);
+  end;
+
+var
+  c: TCollectionItem;
+  ch: TChart;
+begin
+  if not FEnabled or (AChart = nil) then exit;
+  for c in LinkedCharts do begin
+    ch := TLinkedChart(c).Chart;
+    // Do not sync if the chart was never drawn yet.
+    if (ch = nil) or (ch.LogicalExtent = EmptyExtent) then continue;
+    // ZoomFull is lazy by default, so full extent may be not recalculated yet.
+    if not ch.IsZoomed and (ch <> AChart) then
+      ch.LogicalExtent := ch.GetFullExtent;
+    // An event loop will be broken since setting LogicalExtent to
+    // the same value does not initiale the extent broadcast.
+    case Mode of
+      elmXY:
+        ch.LogicalExtent := AChart.LogicalExtent;
+      elmOnlyX:
+        ch.LogicalExtent := CombineXY(AChart.LogicalExtent, ch.LogicalExtent);
+      elmOnlyY:
+        ch.LogicalExtent := CombineXY(ch.LogicalExtent, AChart.LogicalExtent);
+    end;
+  end;
+end;
+
+end.
+

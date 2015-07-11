@@ -1,0 +1,203 @@
+inherited fAsm: TfAsm
+  Height = 250
+  Width = 375
+  ClientHeight = 250
+  ClientWidth = 375
+  OnResize = FrameResize
+  TabOrder = 0
+  DesignLeft = 598
+  DesignTop = 337
+  object rgCaps: TRadioGroup[0]
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = gbBreaksAfterLabel
+    AnchorSideBottom.Side = asrBottom
+    Left = 192
+    Height = 234
+    Top = 6
+    Width = 177
+    Anchors = [akTop, akRight, akBottom]
+    AutoFill = True
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    Caption = '&Capitalization'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 216
+    ClientWidth = 173
+    ItemIndex = 1
+    Items.Strings = (
+      'ALL CAPITALS'
+      'all lowercase'
+      'Mixed Case'
+      'Leave alone'
+    )
+    TabOrder = 1
+  end
+  object gbStatementIndent: TGroupBox[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = rgCaps
+    Left = 6
+    Height = 74
+    Top = 6
+    Width = 180
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = '&Statement Indents'
+    ClientHeight = 56
+    ClientWidth = 176
+    TabOrder = 0
+    object Label1: TLabel
+      AnchorSideLeft.Control = gbStatementIndent
+      AnchorSideTop.Control = edtStatementIndent
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 14
+      Top = 32
+      Width = 33
+      BorderSpacing.Left = 6
+      Caption = 'Indent'
+      ParentColor = False
+    end
+    object edtStatementIndent: TSpinEdit
+      AnchorSideLeft.Control = Label1
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = cbStatementIndent
+      AnchorSideTop.Side = asrBottom
+      Left = 45
+      Height = 21
+      Top = 29
+      Width = 49
+      BorderSpacing.Around = 6
+      MaxValue = 99
+      TabOrder = 1
+    end
+    object cbStatementIndent: TCheckBox
+      AnchorSideLeft.Control = gbStatementIndent
+      AnchorSideTop.Control = gbStatementIndent
+      Left = 6
+      Height = 17
+      Top = 6
+      Width = 56
+      BorderSpacing.Around = 6
+      Caption = '&Enabled'
+      TabOrder = 0
+    end
+  end
+  object gbBreaksAfterLabel: TGroupBox[2]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = gbParamsIndent
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = rgCaps
+    Left = 6
+    Height = 74
+    Top = 166
+    Width = 180
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = '&Breaks after label'
+    ClientHeight = 56
+    ClientWidth = 176
+    TabOrder = 2
+    object Label7: TLabel
+      AnchorSideLeft.Control = gbBreaksAfterLabel
+      AnchorSideTop.Control = edtBreaksAfterLabel
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 14
+      Top = 32
+      Width = 86
+      BorderSpacing.Left = 6
+      Caption = '&Number of breaks'
+      FocusControl = edtBreaksAfterLabel
+      ParentColor = False
+    end
+    object cbBreaksAfterLabelEnabled: TCheckBox
+      AnchorSideLeft.Control = gbBreaksAfterLabel
+      AnchorSideTop.Control = gbBreaksAfterLabel
+      Left = 6
+      Height = 17
+      Top = 6
+      Width = 56
+      BorderSpacing.Around = 6
+      Caption = 'En&abled'
+      TabOrder = 0
+    end
+    object edtBreaksAfterLabel: TSpinEdit
+      AnchorSideLeft.Control = Label7
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = cbBreaksAfterLabelEnabled
+      AnchorSideTop.Side = asrBottom
+      Left = 98
+      Height = 21
+      Top = 29
+      Width = 49
+      BorderSpacing.Around = 6
+      MaxValue = 9
+      TabOrder = 1
+    end
+  end
+  object gbParamsIndent: TGroupBox[3]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = gbStatementIndent
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = rgCaps
+    Left = 6
+    Height = 74
+    Top = 86
+    Width = 180
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = '&Params Indents'
+    ClientHeight = 56
+    ClientWidth = 176
+    TabOrder = 3
+    object Label2: TLabel
+      AnchorSideLeft.Control = gbParamsIndent
+      AnchorSideTop.Control = edtParamsIndent
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 14
+      Top = 32
+      Width = 33
+      BorderSpacing.Left = 6
+      Caption = 'Indent'
+      ParentColor = False
+    end
+    object edtParamsIndent: TSpinEdit
+      AnchorSideLeft.Control = Label2
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = cbParamsIndent
+      AnchorSideTop.Side = asrBottom
+      Left = 45
+      Height = 21
+      Top = 29
+      Width = 49
+      BorderSpacing.Around = 6
+      MaxValue = 99
+      TabOrder = 1
+    end
+    object cbParamsIndent: TCheckBox
+      AnchorSideLeft.Control = gbParamsIndent
+      AnchorSideTop.Control = gbParamsIndent
+      Left = 6
+      Height = 17
+      Top = 6
+      Width = 56
+      BorderSpacing.Around = 6
+      Caption = '&Enabled'
+      TabOrder = 0
+    end
+  end
+end

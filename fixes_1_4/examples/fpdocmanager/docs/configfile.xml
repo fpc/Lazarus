@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="FPDocManager">
+    <module name="ConfigFile">
+      <short>A simple INI file implementation.</short>
+      <descr>The standard TIniFile has several flaw, so I provided my own implementation.</descr>
+      <element name="TConfigFile">
+        <short>An INI file implementation.</short>
+        <descr>Implemented as a list of Sections, each containing lines of key=value.
+Entire sections can read or written without any interpretation.</descr>
+      </element>
+      <element name="TConfigFile.Create">
+        <short>Loads the given file, if it exists.</short>
+      </element>
+      <element name="TConfigFile.ReadString">
+        <short>Reads an string value.</short>
+      </element>
+      <element name="TConfigFile.WriteSection">
+        <short>Writes an entire section. Sets Dirty when the strings are different from the current section values.</short>
+      </element>
+      <element name="TConfigFile.WriteSectionValues">
+        <short>Writes an entire section. Sets Dirty when the strings are different from the current section values.</short>
+      </element>
+      <element name="TConfigFile.FindSection">
+        <short>Returns a Section object, specified as name or [name]. Nil if not found.</short>
+      </element>
+      <element name="TConfigFile.SectionExists">
+        <short>Checks for a Section specified as name or [name].</short>
+      </element>
+      <element name="TConfigFile.Sections">
+        <short>The list of all Sections.</short>
+      </element>
+      <element name="TConfigFile.Destroy">
+        <short>Saves the values if Dirty.</short>
+      </element>
+      <element name="TConfigFile.Flush">
+        <short>Saves the values if Dirty, and if FileName is not empty.</short>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

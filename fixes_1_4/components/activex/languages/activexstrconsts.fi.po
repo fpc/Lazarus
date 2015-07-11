@@ -1,0 +1,42 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: activexstrconsts.axconvertdependanttypelibs
+msgid "Convert dependant typelibs"
+msgstr "Muunna riippuvaiset tyyppikirjastot"
+
+#: activexstrconsts.axcreatepackage
+msgid "Create package"
+msgstr "Luo paketti"
+
+#: activexstrconsts.axcreatevisualcomponenttactivexcontainerdescendant
+msgid "Create visual component (TActiveXContainer descendant)"
+msgstr "Luo visuaalinen komponentti (periytyy TActiveXContainerista)"
+
+#: activexstrconsts.axfilecontainingtypelibrary
+msgid "File containing type library:"
+msgstr "Tyyppikirjaston sisältävä tiedosto:"
+
+#: activexstrconsts.aximporttypelibrary
+msgid "Import Type Library"
+msgstr "Tuo tyyppikirjasto"
+
+#: activexstrconsts.aximporttypelibrarymenu
+msgid "Import Type Library ..."
+msgstr "Tuo tyyppikirjasto ..."
+
+#: activexstrconsts.axselectdirectorytostorepackageplpk
+msgid "Select directory to store package %sP.lpk"
+msgstr "Valitse kansio tallennettavalle paketille %sP.lpk"
+
+#: activexstrconsts.axtypelibraryfilestlbdllexeocxolbtlbdllexeocxolballf
+msgid "Type library files (*.tlb;*.dll;*.exe;*.ocx;*.olb)|*.tlb;*.dll;*.exe;*.ocx;*.olb|All Files (*.*)|*.*"
+msgstr "Tyyppikirjasto tiedostot (*.tlb;*.dll;*.exe;*.ocx;*.olb)|*.tlb;*.dll;*.exe;*.ocx;*.olb|All Files (*.*)|*.*"

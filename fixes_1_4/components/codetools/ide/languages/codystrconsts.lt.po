@@ -1,0 +1,745 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2012-08-03 23:32+0300\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Language: lt\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 1.4\n"
+
+#: codystrconsts.crsaddassignmethod
+msgid "Add Assign Method"
+msgstr "Pridėti metodą „Assign“"
+
+#: codystrconsts.crsaddassignmethod2
+msgid "Add Assign Method ..."
+msgstr "Pridėti metodą „Assign“…"
+
+#: codystrconsts.crsaddawithblock
+msgid "Add a \"With\" Block"
+msgstr "Pridėti bloką „With“"
+
+#: codystrconsts.crsaddunittoimplementationusessection
+msgctxt "codystrconsts.crsaddunittoimplementationusessection"
+msgid "Add unit to implementation uses section"
+msgstr "Modulį pridėti prie skiltyje „Implementation“ naudojamų modulių"
+
+#: codystrconsts.crsaddwithblock
+msgid "Add \"With\" Block"
+msgstr "Pridėti bloką „With“"
+
+#: codystrconsts.crsalreadydefined
+msgid "Already defined"
+msgstr "Jau įgyvendinta"
+
+#: codystrconsts.crsalreadydefinedat
+msgid "Already defined at %s"
+msgstr "Jau įgyvendinta ties %s"
+
+#: codystrconsts.crsandmoreidentifiers
+msgid "... and %s more identifiers"
+msgstr "… dar liko identifikatorių: %s"
+
+#: codystrconsts.crsawindowforthelazarusideitcanbedockedlikethecodeexp
+msgid "A window for the Lazarus IDE. It can be docked like the Code Explorer or the FPDoc Editor. This also creates a menu item in the View menu and a short cut."
+msgstr "Langas, skirta Lazarus IKA. Jis gali būti pritvirtintas kaip ir „Kodo tyrinėtojas“ arba „FPDoc rengyklė“. Šiam langui bus sukurtas menių „Rodymas“ papunktis ir sparčiųjų klavišų derinys."
+
+#: codystrconsts.crsbtncancel
+msgid "Cancel"
+msgstr "Atsisakyti"
+
+#: codystrconsts.crsbtnok
+msgid "&OK"
+msgstr "&Tinka"
+
+#: codystrconsts.crsbyfpccfg
+msgid "by fpc.cfg"
+msgstr "pagal „fpc.cfg“"
+
+#: codystrconsts.crscamaddassignmethodtoclass
+msgid "Add Assign method to class %s"
+msgstr "Klasei „%s“ pridėti metodą „Assign“"
+
+#: codystrconsts.crscamcallinherited
+msgid "Call inherited"
+msgstr "Kreiptis į „inherited“"
+
+#: codystrconsts.crscamcallinheritedonlyifwrongclass
+msgid "Call inherited only if wrong class"
+msgstr "Į „inherited“ kreiptis tik jei ne ta klasė"
+
+#: codystrconsts.crscamcursorisnotinapascalclassdeclaration
+msgid "cursor is not in a pascal class declaration"
+msgstr "žymeklis ne paskalio klasės aprašo bloke"
+
+#: codystrconsts.crscamexistsalready
+msgid "exists already"
+msgstr "jau egzistuoja"
+
+#: codystrconsts.crscaminherited
+msgid "Inherited:"
+msgstr "Paveldėta:"
+
+#: codystrconsts.crscaminvalididentifier
+msgid "invalid identifier"
+msgstr "klaidingas identifikatorius"
+
+#: codystrconsts.crscammethod
+msgid "Method:"
+msgstr "Metodas:"
+
+#: codystrconsts.crscammethodname
+msgid "Method name:"
+msgstr "Metodo pavadinimas:"
+
+#: codystrconsts.crscamnewmethod
+msgid "New method:"
+msgstr "Naujas metodas:"
+
+#: codystrconsts.crscamoverride
+msgid "Override"
+msgstr "Įgyvendinimas"
+
+#: codystrconsts.crscamparametername
+msgid "Parameter name:"
+msgstr "Parametro pavadinimas:"
+
+#: codystrconsts.crscamparametertype
+msgid "Parameter type:"
+msgstr "Parametro tipas:"
+
+#: codystrconsts.crscampleasepositionthecursorofthesourceeditorinapascalc
+msgid "Please position the cursor of the source editor in a pascal class declaration before invoking \"Add Assign method\"."
+msgstr "Prieš liepiant vykdyti „Pridėti metodą „Assign““ teksto žymeklį pirminio kodo rengyklėje reikia padėti paskalio klasės aprašo bloke."
+
+#: codystrconsts.crscamprivate
+msgid "private"
+msgstr "private"
+
+#: codystrconsts.crscamproperty
+msgid "%s property"
+msgstr "%s savybė"
+
+#: codystrconsts.crscamprotected
+msgid "protected"
+msgstr "protected"
+
+#: codystrconsts.crscampublic
+msgid "public"
+msgstr "public"
+
+#: codystrconsts.crscampublished
+msgid "published"
+msgstr "published"
+
+#: codystrconsts.crscamselectmemberstoassign
+msgid "Select members to assign:"
+msgstr "Pažymėkit priskirtinus narius:"
+
+#: codystrconsts.crscamthereisnoinheritedmethod
+msgid "There is no inherited method."
+msgstr "Čia nėra metodo „inherited“."
+
+#: codystrconsts.crscamvar
+msgid "%s var"
+msgstr "%s kintamasis"
+
+#: codystrconsts.crscamvisibility
+msgid "?visibility?"
+msgstr "?matomumas?"
+
+#: codystrconsts.crscamwrittenbyproperty
+msgid "%s, written by property %s"
+msgstr "%s, įrašė savybė „%s“"
+
+#: codystrconsts.crscheetaheditor
+msgid "Cheetah Editor"
+msgstr "Gepardo rengyklė"
+
+#: codystrconsts.crsclose
+msgid "&Close"
+msgstr "&Užverti"
+
+#: codystrconsts.crscloseotherpackageandopennew
+msgid "Close other package and open new"
+msgstr "Užverti kitą paketą ir atverti naują"
+
+#: codystrconsts.crscodebuffers
+msgid "CodeBuffers"
+msgstr "CodeBuffers"
+
+#: codystrconsts.crscodenodeinformation
+msgid "Code Node Information"
+msgstr "Informacija apie kodo mazgą"
+
+#: codystrconsts.crscodyidentifierdictionary
+msgid "Identifier Dictionary"
+msgstr "Identifikatorių žodynas"
+
+#: codystrconsts.crscogeneral
+msgctxt "codystrconsts.crscogeneral"
+msgid "General"
+msgstr "Pagrindinis"
+
+#: codystrconsts.crsconfigurenewidewindow
+msgid "Configure new IDE window"
+msgstr "Derinti naują IKA langą"
+
+#: codystrconsts.crscontains
+msgid "Contains"
+msgstr "Turi"
+
+#: codystrconsts.crscontinue
+msgid "Continue"
+msgstr "Tęsti"
+
+#: codystrconsts.crscopydeclarationtoclipboard
+msgid "Copy declaration to Clipboard"
+msgstr "Aprašą kopijuoti į iškarpinę"
+
+#: codystrconsts.crscount
+msgid "Count"
+msgstr "Kiekis"
+
+#: codystrconsts.crscousespath
+msgctxt "codystrconsts.crscousespath"
+msgid "Uses path"
+msgstr "Kelias iki naudojamų"
+
+#: codystrconsts.crscuallfiles
+msgid "%s|All files (%s)|%s"
+msgstr "%s|Visi failai (%s)|%s"
+
+#: codystrconsts.crscupascalpaspppaspp
+msgid "Pascal (*.pas;*.pp)|*.pas;*.pp"
+msgstr "Paskalio failai (*.pas,*.pp)|*.pas;*.pp"
+
+#: codystrconsts.crscupleaseplacethecursorofthesourceeditorinanimplement
+msgid "Please place the cursor of the source editor in an implementation of an overridden method."
+msgstr "Teksto žymeklį pirminio kodo rengyklėje reikia padėti metodo, kuris įgyvendinamas, bloke."
+
+#: codystrconsts.crscuselectfiletoinsertatcursor
+msgid "Select file to insert at cursor"
+msgstr "Nurodykite ties žymekliu įterptiną failą"
+
+#: codystrconsts.crscutdeclarationtoclipboard
+msgid "Cut declaration to Clipboard"
+msgstr "Aprašą kopijuoti į iškarpinę"
+
+#: codystrconsts.crscuthefileseemstobeabinaryproceed
+msgid "The file seems to be a binary. Proceed?"
+msgstr "Panašu kad tai dvejetainis failas. Tęsti?"
+
+#: codystrconsts.crscuunabletoloadfile
+msgid "Unable to load file \"%s\"%s%s"
+msgstr "Nepavyko įkelti failą „%s“, nes:%s%s"
+
+#: codystrconsts.crscuwarning
+msgid "Warning"
+msgstr "Perspėjimas"
+
+#: codystrconsts.crscwerror
+msgid "Error"
+msgstr "Klaida"
+
+#: codystrconsts.crscwpleaseplacethecursorofthesourceeditoronawithvariab
+msgid "Please place the cursor of the source editor on a With variable."
+msgstr "Teksto žymeklį pirminio kodo rengyklėje reikia padėti ties su „with“ siejamu kintamuoju."
+
+#: codystrconsts.crsdeclarevariable
+msgid "Declare Variable"
+msgstr "Aprašyti kintamąjį"
+
+#: codystrconsts.crsdeclarevariable2
+msgid "Declare Variable ..."
+msgstr "Aprašyti kintamąjį…"
+
+#: codystrconsts.crsdeclarevariable3
+msgid "Declare variable \"%s\""
+msgstr "Aprašyti kintamąjį „%s“"
+
+#: codystrconsts.crsdeletepackage
+msgid "Delete package?"
+msgstr ""
+
+#: codystrconsts.crsdeleteunit
+msgid "Delete unit?"
+msgstr ""
+
+#: codystrconsts.crsdvisakeyword
+msgid "\"%s\" is a keyword."
+msgstr "„%s“ yra bazinis žodis."
+
+#: codystrconsts.crserror
+msgid "Error: %s"
+msgstr "Klaida: %s"
+
+#: codystrconsts.crsexplodeawithblock
+msgid "Explode a \"With\" Block"
+msgstr "Detalizuoti bloką „with“"
+
+#: codystrconsts.crsexpression
+msgid "Expression"
+msgstr "Išraiška"
+
+#: codystrconsts.crsextendunitpath
+msgid "Extend unit path"
+msgstr "Išplėsti modulių kelią"
+
+#: codystrconsts.crsfile
+msgid "File"
+msgstr "Failas"
+
+#: codystrconsts.crsfiledoesnotexistanymore
+msgid "File \"%s\" does not exist anymore."
+msgstr "Failas „%s“ daugiau nebeegzistuoja."
+
+#: codystrconsts.crsfilenotfound
+msgid "File not found"
+msgstr "Failas nerastas"
+
+#: codystrconsts.crsfilereaderror
+msgid "File read error"
+msgstr "Klaida skaitant failą"
+
+#: codystrconsts.crsfilter
+msgid "(Filter)"
+msgstr "(Filtras)"
+
+#: codystrconsts.crsfindgdbbacktraceline
+msgid "Find GDB backtrace line"
+msgstr ""
+
+#: codystrconsts.crsfindsourceofgdbbacktrace
+msgid "Find source of GDB backtrace"
+msgstr ""
+
+#: codystrconsts.crsflags
+msgid "Flags"
+msgstr "Žymės"
+
+#: codystrconsts.crsfpcunitwithoutppu
+msgid "FPC unit without ppu"
+msgstr "FPC modulis be ppu"
+
+#: codystrconsts.crsframeworks
+msgid "Frameworks"
+msgstr "Karkasai"
+
+#: codystrconsts.crsgbytes
+msgid "Gbytes"
+msgstr "GiB"
+
+#: codystrconsts.crshelp
+msgid "&Help"
+msgstr "Žin&ynas"
+
+#: codystrconsts.crshideunitsofotherprojects
+msgid "Hide units of other projects"
+msgstr "Slėpti kitų projektų modulius"
+
+#: codystrconsts.crsideintegration
+msgid "IDE Integration"
+msgstr "IKA integravimas"
+
+#: codystrconsts.crsidentifiernotfound
+msgid "Identifier not found"
+msgstr "Identifikatorius nerastas"
+
+#: codystrconsts.crsidentifiernotfoundinunit
+msgid "Identifier \"%s\" not found in unit \"%s\". Maybe the identifier does not exist for this platform or maybe the identifier was deleted/renamed."
+msgstr "Modulyje „%s“ nėra identifikatoriaus „%s“. Galbūt to identifikatoriaus nėra šiai platformai, arba jis tiesiog pašalintas/pervadintas."
+
+#: codystrconsts.crsidewindowdockable
+msgid "IDE window, dockable"
+msgstr "IKA langas, pritvirtinamas"
+
+#: codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne
+msgctxt "codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne"
+msgid "If identifier is added to the implementation section and needed unit needs to be added, add to the uses section of the implementation"
+msgstr "Pridėti prie skiltyje „Implementation“ naudojamų modulių, kai identifikatorius yra įdėtas „Implementation“ sekcijoje ir būtina pridėti reikiamą modulį."
+
+#: codystrconsts.crsimpossibledependency
+msgid "Impossible dependency"
+msgstr "Neįmanoma priklausomybė"
+
+#: codystrconsts.crsin
+msgid "in \"%s\""
+msgstr ""
+
+#: codystrconsts.crsinimplementation
+msgid "In implementation"
+msgstr "„Implementation“ skiltyje"
+
+#: codystrconsts.crsininterface
+msgid "In interface"
+msgstr "„Interface“ skiltyje"
+
+#: codystrconsts.crsinsertcallinherited
+msgid "Insert Call Inherited"
+msgstr "Įterpti kreiptį į „inherited“"
+
+#: codystrconsts.crsinsertfileatcursor
+msgid "Insert File Contents at Cursor ..."
+msgstr "Žymekliu įterpti failo turinį…"
+
+#: codystrconsts.crsjump
+msgid "Jump"
+msgstr ""
+
+#: codystrconsts.crsjumpto
+msgid "&Jump to"
+msgstr "&Šokti į"
+
+#: codystrconsts.crskbytes
+msgid "kbytes"
+msgstr "kiB"
+
+#: codystrconsts.crslinkedfiles
+msgid "Linked files"
+msgstr "Saistyti failai"
+
+#: codystrconsts.crslinks
+msgid "Links"
+msgstr ""
+
+#: codystrconsts.crsloaddictionaryafter
+msgid "Load dictionary after %s"
+msgstr "Žodyną įkelti po %s"
+
+#: codystrconsts.crslocalvariableof
+msgid "Local variable of %s"
+msgstr "„%s“ lokalus kintamasis"
+
+#: codystrconsts.crsmainsourcefile
+msgid "Main source file: %s"
+msgstr "Pagrindinis pirminio kodo failas: %s"
+
+#: codystrconsts.crsmbytes
+msgid "Mbytes"
+msgstr "MiB"
+
+#: codystrconsts.crsmemberof
+msgid "%s member of %s %s"
+msgstr "„%s“ yra „%s“ „%s“ narys"
+
+#: codystrconsts.crsmenuitemcaption
+msgid "Menu item caption:"
+msgstr "Meniu punkto pavadinimas:"
+
+#: codystrconsts.crsminutes
+msgid "%s minutes"
+msgstr "%s min."
+
+#: codystrconsts.crsmissing
+msgid "missing ..."
+msgstr "trūksta…"
+
+#: codystrconsts.crsnoneselected
+msgid "none selected"
+msgstr "nepažymėta"
+
+#: codystrconsts.crsnoproject
+msgid "No project"
+msgstr "Be projekto"
+
+#: codystrconsts.crsnotethenameoftheformmustbeavalidpascalidentifieran
+msgid "Note: The name of the form must be a valid pascal identifier and unique across the whole IDE, which includes all packages. Prepend the name with an abbreviation of your package. The prefixes \"IDE\", \"Laz\", \"Pkg\" are already used by the IDE itself."
+msgstr "Pastaba: formos pavadinimas turi būti teisingas paskalio identifikatorius ir unikalus visame IKA (su visais paketais) turinyje. Pavadinimo pradžioje pridėkite paketo pavadinimo santrumpą. Priešdėliai „IDE“, „Laz“ ir „Pkg“ jau naudojami IKA."
+
+#: codystrconsts.crsnounitselected
+msgid "No unit selected"
+msgstr "Nėra pažymėtų modulių"
+
+#: codystrconsts.crsonclipboard
+msgid "On clipboard"
+msgstr "Iškarpinėje"
+
+#: codystrconsts.crsoptions
+msgid "Options"
+msgstr "Parinktys"
+
+#: codystrconsts.crsotherobjectfiles
+msgid "Other object files"
+msgstr "Kiti objektiniai failai"
+
+#: codystrconsts.crsothersharedlibraries
+msgid "Other shared libraries"
+msgstr "Kitos bendrosios bibliotekos"
+
+#: codystrconsts.crsotherstaticlibraries
+msgid "Other static libraries"
+msgstr "Kitos statinės bibliotekos"
+
+#: codystrconsts.crspackage
+msgid "Package"
+msgstr "Paketas"
+
+#: codystrconsts.crspackage2
+msgid "Package: %s"
+msgstr "Paketas: %s"
+
+#: codystrconsts.crspackagenotfound
+msgid "Package not found"
+msgstr "Paketas nerastas"
+
+#: codystrconsts.crspackagenotfounditshouldbein
+msgid "Package \"%s\" not found. It should be in \"%s\"."
+msgstr "Paketas „%s“ nerastas. Jis turi rastis kelyje „%s“."
+
+#: codystrconsts.crspackagesunitsidentifiersfile
+msgid "Packages: %s, Units: %s, Identifiers: %s%sDatabase: %s"
+msgstr "Paketai: %s; Moduliai: %s; Identifikatoriai: %s%sDuomenų bazė: %s"
+
+#: codystrconsts.crspackagewithsamename
+msgid "Package with same name"
+msgstr "Paketas tuo pačiu pavadinimu"
+
+#: codystrconsts.crspastelinesofagdbbacktrace
+msgid "Paste lines of a gdb backtrace:"
+msgstr ""
+
+#: codystrconsts.crspleaseopenaprojectfirst
+msgid "Please open a project first."
+msgstr "Pirma atverkite projektą."
+
+#: codystrconsts.crspleaseplacethecursorofthesourceeditoratanidentifie
+msgid "Please place the cursor of the source editor at an identifier in a statement.%sFor example:%sMyVar:=3;"
+msgstr "Teksto žymeklį pirminio kodo rengyklėje reikia padėti ties sakinio identifikatoriumi.%sPavyzdžiui:%sManoKintamasis := 3;"
+
+#: codystrconsts.crspleaseplacethecursorofthesourceeditoronanidentifie
+msgid "Please place the cursor of the source editor on an identifier of a declaration."
+msgstr "Teksto žymeklį pirminio kodo rengyklėje reikia padėti ties aprašo identifikatoriumi."
+
+#: codystrconsts.crspleaseselectsomecodeinthesourceeditor
+msgid "Please select some code in the Source Editor."
+msgstr "Pirminio kodo rengyklėje reikia pažymėti kažkiek kodo."
+
+#: codystrconsts.crspleaseselectsomecodeinthesourceeditorforanewwithbl
+msgid "Please select some code in the Source Editor for a new \"With\" block. No candidate for a with expression was found."
+msgstr "Kuriamam „with“ blokui pirminio kodo rengyklėje reikia pažymėti kažkiek kodo, nes dabar nerasta kandidatūros  būsimam „with“ reiškiniui."
+
+#: codystrconsts.crspleasespecifyalocation
+msgid "Please specify a location"
+msgstr "Nurodykite poziciją"
+
+#: codystrconsts.crspleasespecifyatype
+msgid "Please specify a type"
+msgstr "Nurodykite tipą"
+
+#: codystrconsts.crsppu
+msgid "PPU: %s"
+msgstr "PPU: %s"
+
+#: codystrconsts.crsppufilesofproject
+msgid "PPU files of project \"%s\""
+msgstr "„%s“ projekto PPU failai"
+
+#: codystrconsts.crsprivate
+msgid "Private"
+msgstr "Private"
+
+#: codystrconsts.crsprojecthasnomainsourcefile
+msgid "Project has no main source file."
+msgstr "Projektas neturi pagrindinio pirminio kodo."
+
+#: codystrconsts.crsprojectoutput
+msgid "Project Output"
+msgstr "Projekto išvestis"
+
+#: codystrconsts.crsprotected
+msgid "Protected"
+msgstr "Protected"
+
+#: codystrconsts.crspublic
+msgid "Public"
+msgstr "Public"
+
+#: codystrconsts.crspublished
+msgid "Published"
+msgstr "Published"
+
+#: codystrconsts.crsreallydeletethepackagefromthedatabasenotethisdoe
+msgid "Really delete the package from the database?%sNote: This does not change the source or any configuration.%s%s\"%s\""
+msgstr ""
+
+#: codystrconsts.crsreallydeletetheunitfromthedatabasenotethisdoesno
+msgid "Really delete the unit from the database?%sNote: This does not change the source or any configuration.%s%sunit: \"%s\""
+msgstr ""
+
+#: codystrconsts.crsrefresh
+msgid "Refresh"
+msgstr "Atnaujinti"
+
+#: codystrconsts.crsreport
+msgid "Report"
+msgstr "Ataskaita"
+
+#: codystrconsts.crssavedictionaryevery
+msgid "Save dictionary every %s"
+msgstr "Žodyną įrašyti kas %s"
+
+#: codystrconsts.crssavedictionarynow
+msgid "Save dictionary now"
+msgstr "Žodyną įrašyti dabar"
+
+#: codystrconsts.crssavetofile
+msgid "Save to file %s"
+msgstr "Įrašyti į failą „%s“"
+
+#: codystrconsts.crssearching
+msgid "searching ..."
+msgstr "ieškoma…"
+
+#: codystrconsts.crsseconds
+msgid "%s seconds"
+msgstr "%s sek."
+
+#: codystrconsts.crsselectexpression
+msgid "Select expression"
+msgstr "Pažymėkite reiškinį"
+
+#: codystrconsts.crsshowcodetoolsnodeinfo
+msgid "Show CodeTools Node Info ..."
+msgstr "Rodyti informaciją apie CodeTools mazgą…"
+
+#: codystrconsts.crsshowcodydict
+msgid "Show Cody Dictionary for \"%s\""
+msgstr ""
+
+#: codystrconsts.crsshowonlyidentifierscontainingfiltertext
+msgid "Show only identifiers containing filter text"
+msgstr "Rodyti tik tuos identifikatorius, kuriuose yra filtro tekstas"
+
+#: codystrconsts.crsshowonlyidentifiersstartingwithfiltertext
+msgid "Show only identifiers starting with filter text"
+msgstr "Rodyti tik tuos identifikatorius, kurie prasideda filtro tekstu"
+
+#: codystrconsts.crsshowunitidentifierdictionary
+msgid "Show Unit / Identifier Dictionary ..."
+msgstr "Rodyti modulių/identifikatorių žodyną…"
+
+#: codystrconsts.crsshowusedppufiles
+msgid "Show Used .ppu Files ..."
+msgstr "Rodyti naudojamus „.ppu“ failus…"
+
+#: codystrconsts.crssizeofofile
+msgid "Size of .o file"
+msgstr "„.o“ failo dydis"
+
+#: codystrconsts.crssizeofppufile
+msgid "Size of .ppu file"
+msgstr "„.ppu“ failo dydis"
+
+#: codystrconsts.crssource
+msgid "Source: %s"
+msgstr "Šaltinis: %s"
+
+#: codystrconsts.crsstarts
+msgid "Starts"
+msgstr "Prasideda"
+
+#: codystrconsts.crsthedictionaryisloadedondemandorafterthistime
+msgid "The dictionary is loaded on demand or after this time"
+msgstr "Žodynas įkeliamas esant poreikiui arba po šio laikotarpio"
+
+#: codystrconsts.crsthedictionaryissavedinintervals
+msgid "The dictionary is saved in intervals"
+msgstr "Žodynas įrašomas laiko intervalais"
+
+#: codystrconsts.crstheidentifierisalreadydefined
+msgid "The identifier \"%s\" is already defined."
+msgstr "Identifikatorius „%s“ jau apibrėžtas."
+
+#: codystrconsts.crsthereisalreadyanotherpackageloadedwiththesamenameo
+msgid "There is already another package loaded with the same name.%sOpen package: %s%sNew package: %s%sOnly one package can be loaded at a time."
+msgstr "Paketas tokiu pat pavadinimu jau yra įkeltas.%sAtverti paketą: %s%sNaujas paketas: %s%sTuo pat metu gali būti įkeltas tik vienas paketas."
+
+#: codystrconsts.crsthetargetunithasthesamenameasthecurrentunitfreepas
+msgid "The target unit has the same name as the current unit.%s Free Pascal does not support that."
+msgstr "Paskirties modulio pavadinimas toks pat kaip ir veikiamojo modulio.%sFree Paskalyje tai neleistina."
+
+#: codystrconsts.crstheunitispartofitcannotuseanotherpackagewiththesam
+msgid "The unit \"%s\"%sis part of \"%s\".%sIt can not use another package with the same name:%s\"%s\""
+msgstr "Modulis „%s“%syra „%s“ dalis.%sJis neturi naudoti kito paketo tuo pat pavadinimu:%s„%s“"
+
+#: codystrconsts.crsthisunitislocatedinthefreepascalsourcesbutnoppufil
+msgid "This unit is located in the Free Pascal sources, but no ppu file is installed. Maybe this unit is not available for this target platform."
+msgstr "Šis failas randasi tarp Free Pascal pirminio kodo failų, tačiau „.ppu“ failas nėra įdiegtas. Ko gero šis modulis neprieinamas šiai paskirties platformai."
+
+#: codystrconsts.crstotal
+msgid "Total"
+msgstr "Viso"
+
+#: codystrconsts.crstype
+msgid "Type"
+msgstr "Tipas"
+
+#: codystrconsts.crsunabletodelete
+msgid "Unable to delete \"%s\""
+msgstr "„%s“ ištrinti nepavyko"
+
+#: codystrconsts.crsunabletoreadfile
+msgid "Unable to read file \"%s\"."
+msgstr "Nepavyko skaityti iš failo „%s“."
+
+#: codystrconsts.crsunabletorenameto
+msgid "unable to rename \"%s\" to \"%s\""
+msgstr "Nepavyko „%s“ pervadinti į „%s“"
+
+#: codystrconsts.crsunit
+msgid "Unit"
+msgstr "Modulis"
+
+#: codystrconsts.crsunit2
+msgid "Unit: %s"
+msgstr "Modulis: %s"
+
+#: codystrconsts.crsunitidentifierdictionary
+msgid "Unit / Identifier Dictionary"
+msgstr "Modulių/identifikatorių žodynas"
+
+#: codystrconsts.crsunitnameclash
+msgid "Unit name clash"
+msgstr "Modulio pavadinimo sutapimas"
+
+#: codystrconsts.crsunitobjectfiles
+msgid "Unit object files"
+msgstr "Modulio objektiniai failai"
+
+#: codystrconsts.crsunits
+msgid "Units"
+msgstr "Moduliai"
+
+#: codystrconsts.crsunitsharedlibraries
+msgid "Unit shared libraries"
+msgstr "Modulio bendrosios bibliotekos"
+
+#: codystrconsts.crsunitstaticlibraries
+msgid "Unit static libraries"
+msgstr "Modulio statinės bibliotekos"
+
+#: codystrconsts.crsusedby
+msgid "Used by"
+msgstr "Naudoja"
+
+#: codystrconsts.crsuseidentifier
+msgid "&Use identifier"
+msgstr "Naudoti &identifikatorių"
+
+#: codystrconsts.crsuses
+msgid "Uses"
+msgstr "Naudojamieji"
+
+#: codystrconsts.crsvirtualunit
+msgid "Virtual Unit"
+msgstr "Virtualus modulis"
+
+#: codystrconsts.crswhere
+msgid "Where"
+msgstr "Kur"
+

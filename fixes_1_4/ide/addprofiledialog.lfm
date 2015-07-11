@@ -1,0 +1,59 @@
+object AddProfileForm: TAddProfileForm
+  Left = 279
+  Height = 110
+  Top = 246
+  Width = 443
+  AutoSize = True
+  Caption = 'Add New Profile'
+  ClientHeight = 110
+  ClientWidth = 443
+  Constraints.MinWidth = 400
+  OnCreate = FormCreate
+  LCLVersion = '0.9.29'
+  object NameEdit: TEdit
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel
+    Left = 12
+    Height = 21
+    Top = 51
+    Width = 419
+    Anchors = [akLeft, akRight, akBottom]
+    BorderSpacing.Left = 12
+    BorderSpacing.Right = 12
+    BorderSpacing.Bottom = 6
+    TabOrder = 0
+  end
+  object ProfileHeaderLabel: TLabel
+    AnchorSideLeft.Control = NameEdit
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = NameEdit
+    Left = 12
+    Height = 14
+    Top = 31
+    Width = 64
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 12
+    BorderSpacing.Bottom = 6
+    Caption = 'Profile name:'
+    ParentColor = False
+  end
+  object ButtonPanel: TButtonPanel
+    Left = 6
+    Height = 26
+    Top = 78
+    Width = 431
+    OKButton.Name = 'OKButton'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Enabled = False
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
+  end
+end

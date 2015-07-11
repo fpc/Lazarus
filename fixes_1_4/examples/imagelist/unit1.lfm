@@ -1,0 +1,177 @@
+object Form1: TForm1
+  Left = 265
+  Height = 334
+  Top = 150
+  Width = 781
+  HorzScrollBar.Page = 780
+  VertScrollBar.Page = 333
+  ActiveControl = ListBox1
+  Caption = 'Form1'
+  ClientHeight = 334
+  ClientWidth = 781
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.25'
+  object ListBox1: TListBox
+    AnchorSideLeft.Control = GroupBox1
+    AnchorSideTop.Control = GroupBox1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = GroupBox5
+    AnchorSideRight.Side = asrBottom
+    Left = 20
+    Height = 120
+    Top = 166
+    Width = 740
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 10
+    OnSelectionChange = ListBox1SelectionChange
+    TabOrder = 0
+  end
+  object GroupBox1: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 20
+    Height = 146
+    Top = 10
+    Width = 132
+    AutoSize = True
+    BorderSpacing.Left = 20
+    BorderSpacing.Top = 10
+    Caption = 'Normal'
+    ClientHeight = 128
+    ClientWidth = 128
+    Color = clWhite
+    ParentColor = False
+    TabOrder = 1
+    object Image1: TImage
+      AnchorSideTop.Side = asrBottom
+      Height = 128
+      Width = 128
+      Center = True
+      Transparent = False
+    end
+  end
+  object GroupBox2: TGroupBox
+    AnchorSideLeft.Control = GroupBox1
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    Left = 172
+    Height = 146
+    Top = 10
+    Width = 132
+    AutoSize = True
+    BorderSpacing.Left = 20
+    BorderSpacing.Top = 10
+    Caption = 'Disabled'
+    ClientHeight = 128
+    ClientWidth = 128
+    Color = clWhite
+    ParentColor = False
+    TabOrder = 2
+    object Image2: TImage
+      AnchorSideTop.Side = asrBottom
+      Height = 128
+      Width = 128
+      Center = True
+      Transparent = False
+    end
+  end
+  object GroupBox3: TGroupBox
+    AnchorSideLeft.Control = GroupBox2
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    Left = 324
+    Height = 146
+    Top = 10
+    Width = 132
+    AutoSize = True
+    BorderSpacing.Left = 20
+    BorderSpacing.Top = 10
+    Caption = 'Highlighted'
+    ClientHeight = 128
+    ClientWidth = 128
+    Color = clWhite
+    ParentColor = False
+    TabOrder = 3
+    object Image3: TImage
+      AnchorSideTop.Side = asrBottom
+      Height = 128
+      Width = 128
+      Center = True
+      Transparent = False
+    end
+  end
+  object GroupBox4: TGroupBox
+    AnchorSideLeft.Control = GroupBox3
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    Left = 476
+    Height = 146
+    Top = 10
+    Width = 132
+    AutoSize = True
+    BorderSpacing.Left = 20
+    BorderSpacing.Top = 10
+    Caption = 'Shadowed'
+    ClientHeight = 128
+    ClientWidth = 128
+    Color = clWhite
+    ParentColor = False
+    TabOrder = 4
+    object Image4: TImage
+      AnchorSideTop.Side = asrBottom
+      Height = 128
+      Width = 128
+      Center = True
+      Transparent = False
+    end
+  end
+  object Button1: TButton
+    AnchorSideTop.Control = ListBox1
+    AnchorSideTop.Side = asrBottom
+    Left = 20
+    Height = 25
+    Top = 296
+    Width = 75
+    BorderSpacing.Top = 10
+    Caption = 'Add ...'
+    OnClick = Button1Click
+    TabOrder = 5
+  end
+  object GroupBox5: TGroupBox
+    AnchorSideLeft.Control = GroupBox4
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    Left = 628
+    Height = 146
+    Top = 10
+    Width = 132
+    AutoSize = True
+    BorderSpacing.Left = 20
+    BorderSpacing.Top = 10
+    Caption = '1 Bit'
+    ClientHeight = 128
+    ClientWidth = 128
+    Color = clWhite
+    ParentColor = False
+    TabOrder = 6
+    object Image5: TImage
+      AnchorSideTop.Side = asrBottom
+      Height = 128
+      Width = 128
+      Center = True
+      Transparent = False
+    end
+  end
+  object ImageList1: TImageList
+    Height = 128
+    Width = 128
+    left = 384
+    top = 192
+  end
+  object OpenPictureDialog1: TOpenPictureDialog
+    Filter = 'Graphic (*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp)|*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp|Icon (*.ico)|*.ico|Portable PixMap (*.ppm)|*.ppm|Portable GrayMap (*.pgm)|*.pgm|Portable BitMap (*.pbm)|*.pbm|Portable Network Graphic (*.png)|*.png|Pixmap (*.xp'
+    left = 416
+    top = 192
+  end
+end

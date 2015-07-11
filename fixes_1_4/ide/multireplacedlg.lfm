@@ -1,0 +1,221 @@
+object MultiReplaceDialog: TMultiReplaceDialog
+  Left = 362
+  Height = 419
+  Top = 230
+  Width = 609
+  HorzScrollBar.Page = 610
+  VertScrollBar.Page = 420
+  Caption = 'Multiple Replace'
+  ClientHeight = 419
+  ClientWidth = 609
+  LCLVersion = '1.1'
+  object ReplaceButton: TButton
+    Left = 144
+    Height = 25
+    Top = 384
+    Width = 107
+    Caption = 'Replace'
+    TabOrder = 0
+  end
+  object CancelButton: TButton
+    Left = 280
+    Height = 25
+    Top = 384
+    Width = 96
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 1
+  end
+  object OptionsGroupbox: TGroupBox
+    Left = 8
+    Height = 83
+    Top = 8
+    Width = 504
+    Caption = 'Options'
+    ClientHeight = 62
+    ClientWidth = 496
+    TabOrder = 2
+    object ScopeRadiogroup: TRadioGroup
+      Left = 7
+      Height = 63
+      Top = 0
+      Width = 152
+      AutoFill = True
+      Caption = 'Scope'
+      ChildSizing.LeftRightSpacing = 6
+      ChildSizing.TopBottomSpacing = 6
+      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+      ChildSizing.EnlargeVertical = crsHomogenousChildResize
+      ChildSizing.ShrinkHorizontal = crsScaleChilds
+      ChildSizing.ShrinkVertical = crsScaleChilds
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 1
+      ClientHeight = 42
+      ClientWidth = 144
+      ItemIndex = 0
+      Items.Strings = (
+        'Entire Text'
+        'Selected Text'
+      )
+      TabOrder = 0
+    end
+    object OriginRadiogroup: TRadioGroup
+      Left = 175
+      Height = 63
+      Top = 0
+      Width = 162
+      AutoFill = True
+      Caption = 'Origin'
+      ChildSizing.LeftRightSpacing = 6
+      ChildSizing.TopBottomSpacing = 6
+      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+      ChildSizing.EnlargeVertical = crsHomogenousChildResize
+      ChildSizing.ShrinkHorizontal = crsScaleChilds
+      ChildSizing.ShrinkVertical = crsScaleChilds
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 1
+      ClientHeight = 42
+      ClientWidth = 154
+      ItemIndex = 0
+      Items.Strings = (
+        'Entire Scope'
+        'From Cursor'
+      )
+      TabOrder = 1
+    end
+    object DirectionRadiogroup: TRadioGroup
+      Left = 351
+      Height = 63
+      Top = 0
+      Width = 138
+      AutoFill = True
+      Caption = 'Direction'
+      ChildSizing.LeftRightSpacing = 6
+      ChildSizing.TopBottomSpacing = 6
+      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+      ChildSizing.EnlargeVertical = crsHomogenousChildResize
+      ChildSizing.ShrinkHorizontal = crsScaleChilds
+      ChildSizing.ShrinkVertical = crsScaleChilds
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 1
+      ClientHeight = 42
+      ClientWidth = 130
+      ItemIndex = 1
+      Items.Strings = (
+        'Up'
+        'Down'
+      )
+      TabOrder = 2
+    end
+  end
+  object ItemsGroupbox: TGroupBox
+    Left = 8
+    Height = 277
+    Top = 99
+    Width = 597
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Caption = 'Items'
+    ClientHeight = 256
+    ClientWidth = 589
+    TabOrder = 3
+    object PropertiesGroupbox: TGroupBox
+      Left = 0
+      Height = 150
+      Top = 106
+      Width = 589
+      Align = alBottom
+      Caption = 'Properties'
+      ClientHeight = 129
+      ClientWidth = 581
+      TabOrder = 0
+      object Edit1: TEdit
+        Left = 108
+        Height = 25
+        Top = 1
+        Width = 466
+        Anchors = [akTop, akLeft, akRight]
+        TabOrder = 0
+        Text = 'FindTextEdit'
+      end
+      object FindTextLabel: TLabel
+        Left = 8
+        Height = 17
+        Top = 4
+        Width = 54
+        Caption = 'Find Text'
+        ParentColor = False
+      end
+      object ReplaceWithLabel: TLabel
+        Left = 8
+        Height = 17
+        Top = 34
+        Width = 80
+        Caption = 'Replace With'
+        ParentColor = False
+      end
+      object Edit2: TEdit
+        Left = 108
+        Height = 25
+        Top = 33
+        Width = 466
+        Anchors = [akTop, akLeft, akRight]
+        TabOrder = 1
+        Text = 'ReplaceWithEdit'
+      end
+      object ItemOptionsCheckgroup: TCheckGroup
+        Left = 0
+        Height = 70
+        Top = 59
+        Width = 581
+        Align = alBottom
+        AutoFill = True
+        Caption = 'Options for this item'
+        ChildSizing.LeftRightSpacing = 6
+        ChildSizing.TopBottomSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
+        ChildSizing.Layout = cclLeftToRightThenTopToBottom
+        ChildSizing.ControlsPerLine = 3
+        ClientHeight = 49
+        ClientWidth = 573
+        Columns = 3
+        Items.Strings = (
+          'Case Sensitive'
+          'Whole Words Only'
+          'Regular Expressions'
+          'Multi Line'
+          'Prompt On Replace'
+          'Active'
+        )
+        TabOrder = 2
+        Data = {
+          06000000020202020202
+        }
+      end
+    end
+    object ItemsListview: TListView
+      Left = 0
+      Height = 106
+      Top = 0
+      Width = 589
+      Align = alClient
+      Columns = <      
+        item
+          Caption = 'Find Text'
+          Width = 250
+        end      
+        item
+          Caption = 'Replace With'
+          Width = 150
+        end      
+        item
+          Caption = 'Options'
+        end>
+      SortType = stText
+      TabOrder = 1
+      ViewStyle = vsReport
+    end
+  end
+end

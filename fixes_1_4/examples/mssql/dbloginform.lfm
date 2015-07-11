@@ -1,0 +1,153 @@
+object LoginForm: TLoginForm
+  Left = 371
+  Height = 335
+  Top = 215
+  Width = 542
+  Caption = 'LoginForm'
+  ClientHeight = 335
+  ClientWidth = 542
+  LCLVersion = '0.9.31'
+  object User: TEdit
+    Left = 116
+    Height = 23
+    Hint = 'Username needed to log in to the database'
+    Top = 72
+    Width = 80
+    TabOrder = 0
+    Text = 'sa'
+  end
+  object Server: TEdit
+    Left = 116
+    Height = 23
+    Hint = 'Database serverr/machine'
+    Top = 136
+    Width = 80
+    TabOrder = 1
+    Text = '127.0.0.1'
+  end
+  object Port: TEdit
+    Left = 116
+    Height = 23
+    Hint = 'If connecting using TCP/IP: the port of the server where the database listens'
+    Top = 168
+    Width = 80
+    TabOrder = 2
+    Text = '1433'
+  end
+  object Database: TEdit
+    Left = 116
+    Height = 23
+    Hint = 'Name of the database, if required/useful'
+    Top = 200
+    Width = 80
+    TabOrder = 3
+    Text = 'master'
+  end
+  object UserLabel: TLabel
+    Left = 32
+    Height = 16
+    Top = 72
+    Width = 24
+    Caption = 'User'
+    ParentColor = False
+  end
+  object PasswordLabel: TLabel
+    Left = 32
+    Height = 16
+    Top = 104
+    Width = 51
+    Caption = 'Password'
+    ParentColor = False
+  end
+  object Label3: TLabel
+    Left = 32
+    Height = 16
+    Top = 136
+    Width = 33
+    Caption = 'Server'
+    ParentColor = False
+  end
+  object Label4: TLabel
+    Left = 32
+    Height = 16
+    Top = 168
+    Width = 23
+    Caption = 'Port'
+    ParentColor = False
+  end
+  object Label5: TLabel
+    Left = 32
+    Height = 16
+    Top = 200
+    Width = 49
+    Caption = 'Database'
+    ParentColor = False
+  end
+  object OKButton: TButton
+    Left = 440
+    Height = 25
+    Top = 272
+    Width = 75
+    Caption = '&OK'
+    ModalResult = 1
+    TabOrder = 6
+  end
+  object CancelButton: TButton
+    Left = 344
+    Height = 25
+    Top = 272
+    Width = 75
+    Caption = '&Cancel'
+    ModalResult = 2
+    TabOrder = 5
+  end
+  object LocalMachine: TButton
+    Left = 212
+    Height = 25
+    Top = 136
+    Width = 112
+    Caption = 'Local machine'
+    OnClick = LocalMachineClick
+    TabOrder = 4
+  end
+  object DatabaseType: TComboBox
+    Left = 116
+    Height = 23
+    Hint = 'Type of server you want to connect to'
+    Top = 28
+    Width = 124
+    ItemHeight = 15
+    ItemIndex = 0
+    Items.Strings = (
+      'MS SQL Server'
+      'Sybase ASE'
+    )
+    TabOrder = 7
+    Text = 'MS SQL Server'
+  end
+  object Label6: TLabel
+    Left = 32
+    Height = 16
+    Top = 28
+    Width = 27
+    Caption = 'Type'
+    ParentColor = False
+  end
+  object Password: TEdit
+    Left = 116
+    Height = 23
+    Hint = 'Password that matches username'
+    Top = 104
+    Width = 80
+    TabOrder = 8
+  end
+  object OSAuthentication: TCheckBox
+    Left = 224
+    Height = 19
+    Top = 72
+    Width = 117
+    Caption = 'OS authentication'
+    OnChange = OSAuthenticationChange
+    TabOrder = 9
+  end
+end

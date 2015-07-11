@@ -1,0 +1,3 @@
+/etc/lazarus-${VERSION}
+/usr/lib/lazarus/${VERSION}/lazbuild
+/usr/lib/lazarus/${VERSION}/tools

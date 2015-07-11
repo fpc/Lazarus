@@ -1,0 +1,522 @@
+<?xml version="1.0" encoding="ISO8859-1"?>
+<fpdoc-descriptions>
+<package name="gtk">
+
+<!--
+  ====================================================================
+    GtkWSControls
+  ====================================================================
+-->
+
+<module name="GtkWSControls">
+<short></short>
+<descr>
+</descr>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Gtk">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Glib">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Gdk">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="SysUtils">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Classes">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Controls">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LMessages">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="InterfaceBase">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="WSControls">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="WSLCLClasses">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Graphics">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="ComCtrls">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSDragImageList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSWinControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSWinControl.SetCallbacks">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSWinControl.SetCallbacks.AGTKObject">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSWinControl.SetCallbacks.AComponent">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSWinControl.AddControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSWinControl.AddControl.AControl">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkWSWinControl.GetText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkWSWinControl.GetText.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSWinControl.GetText.AWinControl">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSWinControl.GetText.AText">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSWinControl.SetBorderStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSWinControl.SetBorderStyle.AWinControl">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSWinControl.SetBorderStyle.ABorderStyle">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSWinControl.SetBounds">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSWinControl.SetBounds.AWinControl">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSWinControl.SetBounds.ALeft">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSWinControl.SetBounds.ATop">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSWinControl.SetBounds.AWidth">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSWinControl.SetBounds.AHeight">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSWinControl.SetFont">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSWinControl.SetFont.AWinControl">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSWinControl.SetFont.AFont">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSWinControl.SetSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSWinControl.SetSize.AWinControl">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSWinControl.SetSize.AWidth">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSWinControl.SetSize.AHeight">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSWinControl.SetPos">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSWinControl.SetPos.AWinControl">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSWinControl.SetPos.ALeft">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSWinControl.SetPos.ATop">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSWinControl.SetCursor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSWinControl.SetCursor.AControl">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSWinControl.SetCursor.ACursor">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSWinControl.SetColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSWinControl.SetColor.AWinControl">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSWinControl.SetText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSWinControl.SetText.AWinControl">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSWinControl.SetText.AText">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSWinControl.ConstraintsChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSWinControl.ConstraintsChange.AWinControl">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSWinControl.DestroyHandle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSWinControl.DestroyHandle.AWinControl">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSWinControl.Invalidate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSWinControl.Invalidate.AWinControl">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSWinControl.ShowHide">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSWinControl.ShowHide.AWinControl">
+<short></short>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSGraphicControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSCustomControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSImageList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="GtkWindowShowModal">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GtkWindowShowModal.GtkWindow">
+<short></short>
+</element>
+</module> <!-- GtkWSControls -->
+</package>
+</fpdoc-descriptions>

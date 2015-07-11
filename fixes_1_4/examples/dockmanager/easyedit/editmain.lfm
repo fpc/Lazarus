@@ -1,0 +1,32 @@
+object MainForm: TMainForm
+  Left = 9
+  Height = 43
+  Top = 103
+  Width = 400
+  Caption = 'MainForm'
+  Menu = MainMenu1
+  OnCreate = FormCreate
+  LCLVersion = '0.9.29'
+  object MainMenu1: TMainMenu
+    left = 10
+    top = 10
+    object mnuFile: TMenuItem
+      Caption = '&File'
+      object mnOpen: TMenuItem
+        Caption = '&Open...'
+        OnClick = mnOpenClick
+      end
+      object MenuItem1: TMenuItem
+        Caption = '-'
+      end
+      object mnClose: TMenuItem
+        Caption = 'E&xit'
+        OnClick = mnCloseClick
+      end
+    end
+  end
+  object OpenDialog1: TOpenDialog
+    left = 39
+    top = 10
+  end
+end

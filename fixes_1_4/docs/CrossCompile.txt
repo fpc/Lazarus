@@ -1,0 +1,320 @@
+Hints to cross compile under Linux/xxxBSD
+=========================================
+
+
+Thanks to Vincent Snijders for the hints.
+
+================================================================================
+
+A.
+For FPC 2.0 and up. On Linux and BSD to other platforms.
+(Note: not necessary for cross-compiling to Windows as FPC has had an internal 
+linker for this platform).s
+
+Abstract:
+  The following describes how to setup the binutils, FPC and Lazarus for
+  crosscompiling to other targets. Once you have these cross files you can
+  switch easily in the Lazarus IDE between any of the target platforms.
+
+IMPORTANT: The FPC units must have the same date/version for all platforms,
+  because you will use only one compiler. That means:
+  Whenever you update your FPC, you must update all other cross FPC units too.
+  The scripts will help you to do this.
+
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+A.1
+
+Requirements:
+  An installed and working fpc. Preferably the latest stable release.
+  A good internet connection or manually downloaded FPC sources and binutils.
+
+The following steps don't need the root user. They can be done as normal user.
+
+There are some scripts in <lazarusdir>/tools/install/cross_unix/.
+The script "update_cross_fpc.sh" compiles and setups everything in the home
+directory of the current user. Therefore it does not need a root account.
+Th script "build_linux_cross_win32_rpm.sh" creates the rpm fpc_crosswin32.
+
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Quick start:
+If you have a good internet connection, then you can just type
+
+[]$ cd <lazarusdir>/tools/install/cross_unix/
+[]$ ./update_cross_fpc.sh all installasdefault
+
+This will download the needed sources, compile them for your platform plus
+i386-win32.
+
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+What needs to be downloaded:
+
+For cross compilation you need a cross compiler, cross linker, cross assembler,
+... . FPC is already a cross compiler for all supported targets. The rest is
+provided by the binutils, which will be compiled for every needed target system.
+
+The script needs the binutils sources and the FPC sources. By default it will do
+
+  []$ mkdir -p ~/freepascal/download
+  []$ cd ~/freepascal/download
+  []$ wget http://ftp.gnu.org/gnu/binutils/binutils-2.16.tar.gz
+
+If you don't have a good internet connection, you can download it manually.
+
+And by default the script will download the FPC SVN source tree via
+
+  []$ svn co http://svn.freepascal.org/svn/fpc/branches/fixes_2_0 ~/freepascal/fpc
+  []$ svn co http://svn.freepascal.org/svn/fpcbuild/branches/fixes_2_0/install ~/freepascal/install
+
+This requires an installed 'svn' package.
+
+If you don't have a good internet connection, you can download them manually
+from http://www.freepascal.org/develop.html#sourcesv20. Unpack the fpc sources
+to ~/freepascal/fpc, that means there should be a directory
+~/freepascal/fpc/compiler/.
+TODO: write, where you can get the fpc 'install' directory sources.
+
+
+================================================================================
+
+What the Lazarus scripts do / Doing it by hand:
+
+
+1. Download the FPC sources
+
+  IMPORTANT: Your current FPC must be the same version/date as the FPC sources.
+  If your installed FPC is different, you can compile a new FPC from the
+  sources.
+
+
+  The binaries are not enough.
+  See www.freepascal.org. You can use the svn or a daily snapshot.
+
+  For example:
+
+  []$ mkdir ~/freepascal/
+  []$ cd ~/freepascal/
+  []$ svn co http://svn.freepascal.org/svn/fpc/branches/fixes_2_0 fpc
+  []$ svn co http://svn.freepascal.org/svn/fpcbuild/branches/fixes_2_0/install install
+  
+  If you want the unstable development version use:
+  
+  []$ svn co http://svn.freepascal.org/svn/fpc/trunk fpc
+  []$ svn co http://svn.freepascal.org/svn/fpcbuild/trunk/install install
+  
+  Keep in mind that the development version has a lot more features, but often
+  some serious bugs.
+
+  For the following examples the fpc sources were downloaded
+  to ~/freepascal/fpc.
+  
+
+2. Download the binutils.
+  For example binutils-2.14.tar.gz downloaded to
+  ~/download/binutils-2.14.tar.gz.
+
+  Homepage:
+    http://www.gnu.org/software/binutils/
+  Download
+    http://ftp.gnu.org/gnu/binutils/
+  At the time of writing the version was binutils-2.16.tar.gz.
+  
+  For example:
+  
+  []$ cd ~/download
+  []$ wget http://ftp.gnu.org/gnu/binutils/binutils-2.16.tar.gz
+
+
+3. Cross build binutils
+
+  In the FPC source directory there is a script to build the binutils for all
+  cross platforms: install/cross/buildcrossbinutils
+  Create a copy of the script:
+
+  []$ cd ~/freepascal/install/cross/
+  []$ cp buildcrossbinutils buildcrossbinutils.sh
+
+  Edit the variables at the start of the new script:
+
+  The BASE variable points to a building and installation directory. So, it
+  should be an empty directory. For example:
+  
+  BASE=~/freepascal/binutils
+
+  Now the download file. If you downloaded ~/download/binutils-2.14.tar.gz then
+  set
+  BINUTILSPATH=~/download/
+  BINUTILSBASE=binutils
+  BINUTILSVERSION=2.14
+  BINUTILS_GZIP=yes
+
+  The script will automatically combine this to ~/download/binutils-2.14.tar.gz.
+  The other variables define what target platforms you have. The default is to
+  build quite a lot, so compilation will take some time (hours).
+  For cross compile to Windows, you need only
+
+  TARGETS_WIN="mingw32"
+  
+  and to comment all other:
+  
+  #BSD="freebsd netbsd openbsd"
+  #TARGETS_WIN="cygwin mingw32 msdosdjgpp"
+  #TARGETS_I386="${BSD} linux solaris darwin"
+  #TARGETS_POWERPC="${BSD} linux darwin"
+  #TARGETS_SPARC="${BSD} linux solaris"
+  #TARGETS_M68k=
+
+
+  Then run the script:
+
+  []$ cd ~/freepascal/install/cross/
+  []$ sh buildcrossbinutils.sh
+  
+  The script creates a subdirectory 'logs' full of log files. If something goes
+  wrong, start there. The scripts should end with a message 'Failed targets: '
+  without failed targets.
+
+
+4. Cross build FPC
+
+  In the FPC source directory there is a script to build the FPC snapshot for
+  all cross platforms: install/cross/buildcrosssnapshot
+  Create a copy of the script:
+
+  []$ cd ~/freepascal/install/cross/
+  []$ cp buildcrosssnapshot buildcrosssnapshot.sh
+
+  Edit the variables at the start of the new script.
+
+  Normally you will change at least CROSSTOOLSROOT, FPCCVS, TARGETS_OS
+  and TARGETS_CPU. For example:
+  
+  CROSSTOOLSROOT=~/freepascal/binutils/cross
+  FPCCVS=~/freepascal/fpc
+  TARGETS_OS="win32"
+  TARGETS_CPU="i386"
+  
+  And fix the line
+    MOS=cygwin
+  to
+    MOS=mingw32
+
+
+  Then run the script:
+
+  []$ sh buildcrosssnapshot.sh
+
+  This will create the FPC binaries under
+  ~/freepascal/binutils/cross/destination/.
+
+
+
+
+
+================================================================================
+
+Obsolete:
+
+B.
+For fpc 1.0.x:
+
+Hints to cross compile win32 binaries under linux
+
+1. Download the GNU binutils - Binary Utility Development Utilities.
+Many packages (RPM, DEB, TGZ) are outdated or not compatible. So, here is a link
+that worked for me:
+  http://jrfonseca.dyndns.org/projects/gnu-win32/documentation/cross/
+Download all files into a directory of your choice. The directory should have
+at least 250mb space which will be needed for building.
+There is a small bug in xmingw32.mak. Open the file, search for '#$(GCC' and
+remove the '#' character to uncomment.
+Then do as root 'make -f xmingw.mak'. This will download the binutils, the gcc
+and the mingw32 files and will compile them. Then it installs them under
+/usr/local/xmingw32/. You can change the target directory and compile as
+normal user by changing the script.
+
+
+2. The cross tools needed by FPC
+FPC needs four files: asw, ldw, windres and dltool. You can
+- link the following files:
+
+[]$ ln -s /usr/local/xmingw32/bin/mingw32-as /usr/bin/asw
+[]$ ln -s /usr/local/xmingw32/bin/mingw32-ld /usr/bin/ldw
+[]$ ln -s /usr/local/xmingw32/bin/mingw32-windres /usr/bin/windres
+[]$ ln -s /usr/local/xmingw32/bin/mingw32-dlltool /usr/bin/dlltool
+
+You can link them as normal user somewhere in your home. But then you have to
+add this directory to your PATH or add -FD/your/directory everytime you cross
+compile with fpc.
+
+
+2. Download or compile the win32 units (ppw,ow files for rtl, fcl). These files
+must be compatible (depending on the compiler probably 1.0.10 as of now).
+Install them next to the linux units in /usr/lib/fpc/1.0.x/units.
+See (a) or (b).
+
+
+(a) Download the win32 units: Currently you can download the win32 snapshots at
+ftp://ftp.freepascal.org/pub/fpc/snapshot/v10/win32-i386/
+and unzip them into $UsrLib/fpc/$FPCVersion/units/win32. $UsrLib is the place
+where fpc is installed. Probably /usr/lib/ or /usr/local/lib.
+
+
+(b) Compile the win32 units:
+Download the fpc sources, compile them and install them. This makes sure your
+compiler is compatible to the source. The same source directory can be used for
+win32, because the output files have different names (.ppu <> .ppw, .o <> .ow).
+Then compile the win32 units (.ppw, .pw):
+
+[]$ make clean OS_TARGET=win32
+[]$ make -C compiler cycle OS_TARGET=win32
+[]$ make fcl packages OS_TARGET=win32
+
+Install the units:
+
+[]$ make -C rtl install OS_TARGET=win32
+[]$ make -C fcl install OS_TARGET=win32
+[]$ make -C packages install OS_TARGET=win32
+
+This will create the correct directory structure, but probably in the wrong
+directory. Move the /usr/local/lib/fpc/<version>/i386-win32/units directory to
+your fpc install directory. For example if your linux units (e.g. classes.ppu)
+is located in /usr/lib/fpc/1.0.10/units/linux/ then do
+[]$ rm -rf /usr/lib/fpc/<version>/units/win32
+[]$ mv /usr/local/lib/fpc/<version>/cross/i386-win32/units /usr/lib/fpc/<version>/units/win32
+
+
+3. Making /etc/fpc.cfg target independent:
+Make sure that your /etc/fpc.cfg contains target independent paths:
+-Fu/usr/lib/fpc/$version/units/$target
+-Fu/usr/lib/fpc/$version/units/$target/*
+-Fu/usr/lib/fpc/$version/units/$target/rtl
+You should now be able to cross compile simple pascal programs with
+'ppc386 -Twin32 pascalfile.pas'
+Or if you did not link the four files (asw, ldw, ...) to /usr/bin:
+'ppc386 -FD/your/directory -Twin32 pascalfile.pas'
+
+
+================================================================================
+
+4. Cross compiling the LCL
+4.1 Command line: cd lazarus/lcl; make OS_TARGET=win32
+4.2 In the IDE: Set LCL to Clean+Build, set LCL interface to win32 and
+    set 'Target OS' to win32. Then 'build lazarus'.
+
+
+5. Cross compiling a project
+Set in Run->Compiler Options->Code the Target OS to 'win32' and in Paths the
+'LCL Widget Type' to win32. That's all. The next time you build, you will
+create a win32 executable.
+The IDE will rescan for win32 units, so that 'Find declaration' and code
+completion features will now work with the win32 rtl instead of the linux rtl.
+When you open another project or reopen this project the IDE will automatically
+switch.
+
+
+================================================================================
+
+

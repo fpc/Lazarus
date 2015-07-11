@@ -1,0 +1,28 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2008-06-12 21:46+0300\n"
+"Project-Id-Version: synmacrorecorder\n"
+"Language-Team: Lithuanian\n"
+"X-Generator: KBabel 1.11.4\n"
+"MIME-Version: 1.0\n"
+"Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: synmacrorecorder.scannotpause
+msgid "Can only pause when recording"
+msgstr "Įrašinėjant galima tik pristabdyti"
+
+#: synmacrorecorder.scannotplay
+msgid "Cannot playback macro when recording"
+msgstr "Neina paleisti makrokomandos įrašą kai įrašinėjama"
+
+#: synmacrorecorder.scannotrecord
+msgid "Cannot record macro when recording"
+msgstr "Neina įrašyti makrokomandą kai įrašinėjama"
+
+#: synmacrorecorder.scannotresume
+msgid "Can only resume when paused"
+msgstr "Pristabdžius galima tik tęsti"
+

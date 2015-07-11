@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="9"/>
+    <PathDelim Value="\"/>
+    <General>
+      <Flags>
+        <LRSInOutputDirectory Value="False"/>
+      </Flags>
+      <SessionStorage Value="InIDEConfig"/>
+      <MainUnit Value="0"/>
+      <Title Value="Lazarus snapshots monitor"/>
+    </General>
+    <VersionInfo>
+      <StringTable ProductVersion=""/>
+    </VersionInfo>
+    <BuildModes Count="1">
+      <Item1 Name="default" Default="True"/>
+    </BuildModes>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <CommandLineParams Value="-a -p"/>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="4">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="lnetbase"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="FPCUnitConsoleRunner"/>
+      </Item3>
+      <Item4>
+        <PackageName Value="FCL"/>
+      </Item4>
+    </RequiredPackages>
+    <Units Count="7">
+      <Unit0>
+        <Filename Value="checksnapshots.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="checksnapshots"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="snapshotsuptodate.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="SnapshotsUptodate"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="ftplister.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ftplister"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="ftplistertest.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ftplistertest"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="monitorcfg.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="MonitorCfg"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="testmonitorcfg.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestMonitorCfg"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="runchecksnapshots.bat"/>
+        <IsPartOfProject Value="True"/>
+      </Unit6>
+    </Units>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="11"/>
+    <PathDelim Value="\"/>
+    <Parsing>
+      <SyntaxOptions>
+        <UseAnsiStrings Value="False"/>
+      </SyntaxOptions>
+    </Parsing>
+    <Linking>
+      <LinkSmart Value="True"/>
+    </Linking>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+</CONFIG>

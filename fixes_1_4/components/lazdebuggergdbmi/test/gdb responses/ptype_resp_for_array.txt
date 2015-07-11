@@ -1,0 +1,103 @@
+Sample / Abstract of results for "ptype SomeArray"  
+
+The "&" is only present with FPC 2.4 DWARF. (indicates param by ref)
+It must be deref-ed once, to yield "normal" results
+
+&xxx
+  => Deref to "xxx" 
+  => Deref to "^xxx"                   // maybe dyn array
+  => Deref to "array [3..5] of xxx"    // static array to NONE pointer
+  X> Deref to "^array [3..5] of xxx"   // POINTER
+&^xxx
+  => Deref to "^^xxx"                   // maybe dyn array
+  => Deref to "array [3..5] of ^xxx"    // static array to POINTER
+&^(array of xxx)
+  => Deref to "array [3..5] of ^(array of xxx)"
+&^(array [0..-1] of xxx)
+  => Deref to "^^(array [0..-1] of xxx)"
+  
+  
+
+
+^xxx
+   all GDB, DWARF: DynArray or pointer
+   => "array [0..-1] of xxx"   DYN-ARRAY (gdb 6.7) or STABS
+   => "array of xxx"           DYN-ARRAY
+   X> "array [3..5] of xxx"    POINTER to array
+   X> "^(array ... )"          POINTER  also "^array [] .."
+
+^^xxx  (Stabs + dwarf / any GDB)
+  => "array [0..-1] of ^xxx"     DynArray to pointer (DWARF only)
+  => "array of ^xxx"             DynArray to pointer (DWARF only
+  X> "^(array [0..-1] of ^xxx)"  pointer 
+  X> "array [3..5] of ^xxx"    POINTER to array
+   
+   
+^array [3..5] of ^xxx  (Stabs + dwarf / any GDB)
+^array [3..5] of xxx    (Stabs + dwarf / any GDB)
+   => "array [0..-1] of array [3..5] of ^xxx      // Dyn Array of stat array (dwarf only)
+   X> "^array ..."   POINTER
+   X> "^(array ..."  POINTER
+   
+
+^(array of xxx)            DWARF only (GDB 7.x)
+^(array of ^xxx)           DWARF only (GDB 7.x)
+^(array [0..-1] of xxx)    STABS / DWARF only GDB 6.x
+^(array [0..-1] of ^xxx)   STABS / DWARF only GDB 6.x
+  DYN ARRAY   
+  => array of xxx
+  => array [0..-1] of xxx
+
+
+^^(array of xxx)
+^^(array of ^xxx)
+^^(array [0..-1] of xxx)
+^^(array [0..-1] of ^xxx)
+  STABS => POINTER
+  DWARF   (GDB 6.x has [0..-1)
+  => "array of ^(array of xxx))  // dyn array of dyn array
+  
+array of xxx
+array of ^xxx
+array [0..-1] of xxx
+array [0..-1] of ^xxx
+  ONLY as result of DEREF   
+
+array [3..5] of xxx
+array [3..5] of ^xxx
+  STATIC ARRAY				   
+
+^(array [3..5] of xxx)
+^(array [3..5] of ^xxx)
+^^(array [3..5] of xxx)
+^^(array [3..5] of ^xxx)
+  NOT EXISTENT
+
+  
+var a: Array of Array of Pxxx;
+STABS: type = ^(array [0..-1] of ^(array [0..-1] of ^TRECFORARRAY1))\n
+DWARF: type = ^^(array [0..-1] of ^TRECFORARRAY1)\n
+with more levels:
+  type = ^(array of ^(array of ^(array of TRECFORARRAY1)))\n
+  type = ^(array [0..-1] of ^(array [0..-1] of ^(array [0..-1] of ^(array [0..-1] of TRECFORARRAY1))))\n
+
+
+var a: Array of Array of xxx;
+STABS: type = ^(array [0..-1] of ^(array [0..-1] of TRECFORARRAY1))\n
+DWARF: type = ^^(array [0..-1] of TRECFORARRAY1)\n
+
+var a: Array of Array [3..5] of xxx;
+STABS: type = ^(array [0..-1] of array [3..5] of TRECFORARRAY1)\n
+DWARF: type = ^array [3..5] of TRECFORARRAY1\n
+
+var a: Array [3..5] of Array of xxx;       / dwarf with gdb 6.x returns like stabs
+STABS: type = array [3..5] of ^(array [0..-1] of TRECFORARRAY1)\n
+DWARF: type = array [3..5] of ^(array of TRECFORARRAY1)\n
+
+
+var a: Array [3..5] of Array [3..5] of xxx;
+STABS: type = array [3..5] of array [3..5] of TRECFORARRAY1\n
+DWARF: type = array [3..5] of array [3..5] of TRECFORARRAY1\n
+
+
+

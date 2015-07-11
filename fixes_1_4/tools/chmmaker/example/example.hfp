@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CONFIG>
+  <Files>
+    <Count Value="3"/>
+    <FileName0 Value="AboutLazarus.html" ContextName="" ContextNumber="0"/>
+    <FileName1 Value="MainPage.html" ContextName="" ContextNumber="0"/>
+    <FileName2 Value="SecondPage.html" ContextName="" ContextNumber="0"/>
+  </Files>
+  <OtherFiles>
+    <Count Value="0"/>
+  </OtherFiles>
+  <Windows>
+    <Count Value="0"/>
+  </Windows>
+  <MergeFiles>
+    <Count Value="0"/>
+  </MergeFiles>
+  <Settings>
+    <IndexFile Value="_index.hhk"/>
+    <TOCFile Value="_table_of_contents.hhc"/>
+    <MakeBinaryTOC Value="True"/>
+    <MakeBinaryIndex Value="False"/>
+    <AutoFollowLinks Value="False"/>
+    <MakeSearchable Value="True"/>
+    <DefaultPage Value="MainPage.html"/>
+    <Title Value=""/>
+    <OutputFileName Value="example.chm"/>
+    <DefaultFont Value=""/>
+    <DefaultWindow Value=""/>
+    <ScanHtmlContents Value="False"/>
+  </Settings>
+</CONFIG>

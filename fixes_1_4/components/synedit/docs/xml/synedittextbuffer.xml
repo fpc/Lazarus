@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="SynEdit">
+    <module name="SynEditTextBuffer">
+      <element name="TSynEditStringMemory.RangeList">
+        <short>Add, Change or Remove managed Sub-StorageMemory</short>
+        <descr>
+          <p>Allows other Classes to store per-line data. 
+</p>
+          <p>Managed lists can be registered by any other class. A managed list must be a subclass of <link id="synedittextbase.TSynEditStorageMem">TSynEditStorageMem</link>. The class that wants to store a list, should use it's own class-type as index. 
+</p>
+          <p>The entry is created automitacally, on the first write assignment. It is removed automatically when set to nil.
+</p>
+          <p>The amount and position of items in the managed lists are kept in syncronization with the master. If new items are inserted or deleted to the master, then the same insert or delete is executed on the managed lists. However no explicit initalization is done for new entries, this could be done by providing an inherited class as managed list.
+</p>
+          <p>The name is for historical reasons. Originally this was used by Highlighter, for storing the <link id="synedithighlighter.TSynHighlighterRangeList.Range">Ranges</link>
+          </p>
+        </descr>
+      </element>
+      <element name="TSynEditStringMemory.Strings">
+        <short>Access to the Strings representing each line of the text</short>
+      </element>
+      <element name="TSynEditStringMemory.Objects">
+        <short>Access to Objects that can be stored with each line of text, not used by SynEdit</short>
+        <descr>This is not used by SynEdit itself. However SynEdit provides a TStrings interface for external access to the text. This does allow others to store Objects with the text.</descr>
+      </element>
+      <element name="TSynEditStringList">
+        <short>Textbuffer for SynEdit. Stores and Modifies the Text</short>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

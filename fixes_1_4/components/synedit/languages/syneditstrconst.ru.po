@@ -1,0 +1,779 @@
+msgid ""
+msgstr ""
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Project-Id-Version: lazaruside\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2013-09-04 23:26+0400\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+
+#: syneditstrconst.syns_attrannotation
+msgid "Annotation"
+msgstr "Аннотация"
+
+#: syneditstrconst.syns_attrasp
+msgid "Asp"
+msgstr "ASP"
+
+#: syneditstrconst.syns_attrassembler
+msgid "Assembler"
+msgstr "Ассемблер"
+
+#: syneditstrconst.syns_attrattributename
+msgid "Attribute Name"
+msgstr "Имя атрибута"
+
+#: syneditstrconst.syns_attrattributevalue
+msgid "Attribute Value"
+msgstr "Значение атрибута"
+
+#: syneditstrconst.syns_attrblock
+msgid "Block"
+msgstr "Блок"
+
+#: syneditstrconst.syns_attrbrackets
+msgid "Brackets"
+msgstr "Скобки"
+
+#: syneditstrconst.syns_attrcaselabel
+msgid "Case label"
+msgstr "Метка Case"
+
+#: syneditstrconst.syns_attrcdata
+msgid "CDATA"
+msgstr "CDATA"
+
+#: syneditstrconst.syns_attrcdatasection
+msgid "CDATA Section"
+msgstr "Секция CDATA"
+
+#: syneditstrconst.syns_attrcharacter
+msgid "Character"
+msgstr "Символ"
+
+#: syneditstrconst.syns_attrchunkmarker
+msgid "Diff Chunk Marker"
+msgstr "Маркер последовательности Diff"
+
+#: syneditstrconst.syns_attrchunkmixed
+msgid "Diff Chunk Line Counts"
+msgstr "Счётчики строк Diff"
+
+#: syneditstrconst.syns_attrchunknew
+msgid "Diff Chunk New Line Count"
+msgstr "Число новых строк последовательности Diff"
+
+#: syneditstrconst.syns_attrchunkorig
+msgid "Diff Chunk Original Line Count"
+msgstr "Число исходных строк последовательности Diff"
+
+#: syneditstrconst.syns_attrclass
+msgid "Class"
+msgstr "Класс"
+
+#: syneditstrconst.syns_attrcomment
+msgid "Comment"
+msgstr "Комментарий"
+
+#: syneditstrconst.syns_attrcondition
+msgid "Condition"
+msgstr "Условие"
+
+#: syneditstrconst.syns_attrdatatype
+msgid "Data type"
+msgstr "Тип данных"
+
+#: syneditstrconst.syns_attrdefaultpackage
+msgid "Default packages"
+msgstr "Пакеты по умолчанию"
+
+#: syneditstrconst.syns_attrdir
+msgid "Direction"
+msgstr "Направление"
+
+#: syneditstrconst.syns_attrdirective
+msgid "Directive"
+msgstr "Директива"
+
+#: syneditstrconst.syns_attrdoctype
+msgid "DOCTYPE"
+msgstr "DOCTYPE"
+
+#: syneditstrconst.syns_attrdoctypesection
+msgid "DOCTYPE Section"
+msgstr "Секция DOCTYPE"
+
+#: syneditstrconst.syns_attrdocumentation
+msgid "Documentation"
+msgstr "Документация"
+
+#: syneditstrconst.syns_attrelementname
+msgid "Element Name"
+msgstr "Имя элемента"
+
+#: syneditstrconst.syns_attrembedsql
+msgid "Embedded SQL"
+msgstr "Внедрённый код SQL"
+
+#: syneditstrconst.syns_attrembedtext
+msgid "Embedded text"
+msgstr "Внедрённый текст"
+
+#: syneditstrconst.syns_attrentityreference
+msgid "Entity Reference"
+msgstr "Ссылка на сущность"
+
+#: syneditstrconst.syns_attrescapeampersand
+msgid "Escape ampersand"
+msgstr "Экранирующий символ"
+
+#: syneditstrconst.syns_attrevent
+msgid "Event"
+msgstr "Событие"
+
+#: syneditstrconst.syns_attrexception
+msgid "Exception"
+msgstr "Исключение"
+
+#: syneditstrconst.syns_attrflags
+msgid "Flags"
+msgstr "Флаги"
+
+#: syneditstrconst.syns_attrfloat
+msgid "Float"
+msgstr "Вещественное число"
+
+#: syneditstrconst.syns_attrform
+msgid "Form"
+msgstr "Форма"
+
+#: syneditstrconst.syns_attrfunction
+msgid "Function"
+msgstr "Функция"
+
+#: syneditstrconst.syns_attrhexadecimal
+msgid "Hexadecimal"
+msgstr "Шестнадцатеричное число"
+
+#: syneditstrconst.syns_attricon
+msgid "Icon reference"
+msgstr "Ссылка на значок"
+
+#: syneditstrconst.syns_attridedirective
+msgid "IDE Directive"
+msgstr "Директива IDE"
+
+#: syneditstrconst.syns_attridentifier
+msgid "Identifier"
+msgstr "Идентификатор"
+
+#: syneditstrconst.syns_attrillegalchar
+msgid "Illegal char"
+msgstr "Неверный символ"
+
+#: syneditstrconst.syns_attrinclude
+msgid "Include"
+msgstr "Включаемый"
+
+#: syneditstrconst.syns_attrindirect
+msgid "Indirect"
+msgstr "Косвенный"
+
+#: syneditstrconst.syns_attrinternalfunction
+msgid "Internal function"
+msgstr "Внутренняя функция"
+
+#: syneditstrconst.syns_attrinvalidsymbol
+msgid "Invalid symbol"
+msgstr "Неверный языковой символ"
+
+#: syneditstrconst.syns_attrkey
+msgid "Key"
+msgstr "Ключевое слово"
+
+#: syneditstrconst.syns_attrlabel
+msgid "Label"
+msgstr "Метка"
+
+#: syneditstrconst.syns_attrlineadded
+msgid "Diff Added line"
+msgstr "Добавленная строка Diff"
+
+#: syneditstrconst.syns_attrlinechanged
+msgid "Diff Changed Line"
+msgstr "Изменённая строка Diff"
+
+#: syneditstrconst.syns_attrlinecontext
+msgid "Diff Context Line"
+msgstr "Строка контекста Diff"
+
+#: syneditstrconst.syns_attrlineremoved
+msgid "Diff Removed Line"
+msgstr "Удалённая строка Diff"
+
+#: syneditstrconst.syns_attrmacro
+msgid "Macro"
+msgstr "Макрос"
+
+#: syneditstrconst.syns_attrmarker
+msgid "Marker"
+msgstr "Маркер"
+
+#: syneditstrconst.syns_attrmathmode
+msgid "Math Mode"
+msgstr "Математический режим"
+
+#: syneditstrconst.syns_attrmessage
+msgid "Message"
+msgstr "Сообщение"
+
+#: syneditstrconst.syns_attrmiscellaneous
+msgid "Miscellaneous"
+msgstr "Разное"
+
+#: syneditstrconst.syns_attrnamespaceattrname
+msgid "Namespace Attribute Name"
+msgstr "Имя атрибута пространства имён"
+
+#: syneditstrconst.syns_attrnamespaceattrvalue
+msgid "Namespace Attribute Value"
+msgstr "Значение атрибута пространства имён"
+
+#: syneditstrconst.syns_attrnewfile
+msgid "Diff New File"
+msgstr "Новый файл Diff"
+
+#: syneditstrconst.syns_attrnonreservedkeyword
+msgid "Non-reserved keyword"
+msgstr "Незарезервированное ключевое слово"
+
+#: syneditstrconst.syns_attrnull
+msgid "Null"
+msgstr "Пустое значение"
+
+#: syneditstrconst.syns_attrnumber
+msgid "Number"
+msgstr "Число"
+
+#: syneditstrconst.syns_attroctal
+msgid "Octal"
+msgstr "Восьмеричное число"
+
+#: syneditstrconst.syns_attroperator
+msgid "Operator"
+msgstr "Оператор"
+
+#: syneditstrconst.syns_attrorigfile
+msgid "Diff Original File"
+msgstr "Исходный файл Diff"
+
+#: syneditstrconst.syns_attrplsql
+msgid "Reserved word (PL/SQL)"
+msgstr "Зарезервированное слово (PL/SQL)"
+
+#: syneditstrconst.syns_attrpragma
+msgid "Pragma"
+msgstr "Директива"
+
+#: syneditstrconst.syns_attrpreprocessor
+msgid "Preprocessor"
+msgstr "Команда препроцессора"
+
+#: syneditstrconst.syns_attrprevvalue
+msgid "Previous value"
+msgstr "Предыдущее значение"
+
+#: syneditstrconst.syns_attrprocessinginstr
+msgid "Processing Instruction"
+msgstr "Инструкция обработки"
+
+#: syneditstrconst.syns_attrqualifier
+msgid "Qualifier"
+msgstr "Описатель"
+
+#: syneditstrconst.syns_attrregister
+msgid "Register"
+msgstr "Регистр"
+
+#: syneditstrconst.syns_attrreservedword
+msgid "Reserved word"
+msgstr "Зарезервированное слово"
+
+#: syneditstrconst.syns_attrroundbracket
+msgid "Round Bracket"
+msgstr "Круглая скобка"
+
+#: syneditstrconst.syns_attrrpl
+msgid "Rpl"
+msgstr "RPL"
+
+#: syneditstrconst.syns_attrrplcomment
+msgid "Rpl comment"
+msgstr "Комментарий RPL"
+
+#: syneditstrconst.syns_attrrplkey
+msgid "Rpl key"
+msgstr "Ключевое слово RPL"
+
+#: syneditstrconst.syns_attrsasm
+msgid "SASM"
+msgstr "SASM"
+
+#: syneditstrconst.syns_attrsasmcomment
+msgid "SASM Comment"
+msgstr "Комментарий SASM"
+
+#: syneditstrconst.syns_attrsasmkey
+msgid "SASM Key"
+msgstr "Ключевое слово SASM"
+
+#: syneditstrconst.syns_attrsecondreservedword
+msgid "Second reserved word"
+msgstr "Второе зарезервированное слово"
+
+#: syneditstrconst.syns_attrsection
+msgid "Section"
+msgstr "Секция"
+
+#: syneditstrconst.syns_attrspace
+msgid "Space"
+msgstr "Фон"
+
+#: syneditstrconst.syns_attrspecialvariable
+msgid "Special variable"
+msgstr "Специальная переменная"
+
+#: syneditstrconst.syns_attrsqlkey
+msgid "SQL keyword"
+msgstr "Ключевое слово SQL"
+
+#: syneditstrconst.syns_attrsqlplus
+msgid "SQL*Plus command"
+msgstr "Команда SQL*Plus"
+
+#: syneditstrconst.syns_attrsquarebracket
+msgid "Square Bracket"
+msgstr "Квадратная скобка"
+
+#: syneditstrconst.syns_attrstring
+msgid "String"
+msgstr "Строка"
+
+#: syneditstrconst.syns_attrsymbol
+msgid "Symbol"
+msgstr "Языковой символ"
+
+#: syneditstrconst.syns_attrsyntaxerror
+msgid "SyntaxError"
+msgstr "Синтаксическая ошибка"
+
+#: syneditstrconst.syns_attrsystem
+msgid "System functions and variables"
+msgstr "Системные функции и переменные"
+
+#: syneditstrconst.syns_attrsystemvalue
+msgid "System value"
+msgstr "Системное значение"
+
+#: syneditstrconst.syns_attrtablename
+msgid "Table Name"
+msgstr "Имя таблицы"
+
+#: syneditstrconst.syns_attrterminator
+msgid "Terminator"
+msgstr "Ограничитель"
+
+#: syneditstrconst.syns_attrtexcommand
+msgid "TeX Command"
+msgstr "Команда TeX"
+
+#: syneditstrconst.syns_attrtext
+msgid "Text"
+msgstr "Текст"
+
+#: syneditstrconst.syns_attrtextmathmode
+msgid "Text in Math Mode"
+msgstr "Текст в математическом режиме"
+
+#: syneditstrconst.syns_attrunknownword
+msgid "Unknown word"
+msgstr "Неизвестное слово"
+
+#: syneditstrconst.syns_attruser
+msgid "User functions and variables"
+msgstr "Пользовательские функции и переменные"
+
+#: syneditstrconst.syns_attruserfunction
+msgid "User functions"
+msgstr "Пользовательские функции"
+
+#: syneditstrconst.syns_attrvalue
+msgid "Value"
+msgstr "Значение"
+
+#: syneditstrconst.syns_attrvariable
+msgid "Variable"
+msgstr "Переменная"
+
+#: syneditstrconst.syns_attrwhitespace
+msgid "Whitespace"
+msgstr "Пробел"
+
+#: syneditstrconst.syns_duplicateshortcutmsg
+msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
+msgstr "Комбинация \"%s\" уже присвоена другой команде редактора. (%s)"
+
+#: syneditstrconst.syns_eduplicateshortcut
+msgid "Mouse-Shortcut already exists"
+msgstr "Комбинация уже существует"
+
+#: syneditstrconst.syns_emcbreakpointtoggle
+msgid "Toggle Breakpoint"
+msgstr "Переключение точки останова"
+
+#: syneditstrconst.syns_emccodefoldcollaps
+msgid "Fold Code"
+msgstr "Сворачивание кода"
+
+#: syneditstrconst.syns_emccodefoldcollaps_opt
+msgid "Nodes,One,All,\"At Caret\",\"Current Node\""
+msgstr "Элементы,Один,Все,\"Под курсором\",\"Текущий элемент\""
+
+#: syneditstrconst.syns_emccodefoldcontextmenu
+msgid "Fold Menu"
+msgstr "Меню сворачиваний"
+
+#: syneditstrconst.syns_emccodefoldexpand
+msgid "Unfold Code"
+msgstr "Разворачивание кода"
+
+#: syneditstrconst.syns_emccodefoldexpand_opt
+msgid "Nodes,One,All"
+msgstr "Элементы,Один,Все"
+
+#: syneditstrconst.syns_emccontextmenu
+msgid "Popup Menu"
+msgstr "Всплывающее меню"
+
+#: syneditstrconst.syns_emccontextmenucaretmove_opt
+msgid "\"Move caret, when selection exists\", Never, \"Click outside\", Always"
+msgstr "\"Перемещать курсор, если имеется выделение\", Никогда, \"При щелчке вне области выделения\", Всегда"
+
+#: syneditstrconst.syns_emcmouselink
+msgid "Source Link"
+msgstr "Ссылка в исходном коде"
+
+#: syneditstrconst.syns_emcmouselink_opt
+msgid "Underline,yes, no"
+msgstr "Подчёркивание,да,нет"
+
+#: syneditstrconst.syns_emcnone
+msgid "No Action"
+msgstr "Нет действия"
+
+#: syneditstrconst.syns_emcpasteselection
+msgid "Quick Paste Selection"
+msgstr "Быстрая вставка выделенного"
+
+#: syneditstrconst.syns_emcselection_opt
+msgid "Mode,Begin,Continue"
+msgstr "Режим,Начать,Продолжить"
+
+#: syneditstrconst.syns_emcselectline
+msgid "Select Line"
+msgstr "Выделение строки"
+
+#: syneditstrconst.syns_emcselectline_opt
+msgid "\"Include spaces\",no,yes"
+msgstr "\"Включение пробелов\",нет,да"
+
+#: syneditstrconst.syns_emcselectpara
+msgid "Select Paragraph"
+msgstr "Выделение абзаца"
+
+#: syneditstrconst.syns_emcselectword
+msgid "Select Word"
+msgstr "Выделение слова"
+
+#: syneditstrconst.syns_emcstartcolumnselections
+msgid "Column Selection"
+msgstr "Выделение столбца"
+
+#: syneditstrconst.syns_emcstartdragmove
+msgid "Drag Selection"
+msgstr "Перетаскивание выделенного"
+
+#: syneditstrconst.syns_emcstartlineselections
+msgid "Line Selection"
+msgstr "Выбор строки"
+
+#: syneditstrconst.syns_emcstartselection
+msgid "Selection"
+msgstr "Выделение"
+
+#: syneditstrconst.syns_emcstartselectlines
+msgid "Selection (lines)"
+msgstr "Выделение (строки)"
+
+#: syneditstrconst.syns_emcstartselecttokens
+msgid "Selection (tokens) "
+msgstr "Выделение (элементы)"
+
+#: syneditstrconst.syns_emcstartselectwords
+msgid "Selection (words)"
+msgstr "Выделение (слова)"
+
+#: syneditstrconst.syns_emcsyneditcommand
+msgid "IDE Command"
+msgstr "Команда IDE"
+
+#: syneditstrconst.syns_emcwheelhorizscrolldown
+msgid "Wheel scroll down (Horizontal)"
+msgstr "Прокрутка колёсиком назад (горизонтальная)"
+
+#: syneditstrconst.syns_emcwheelhorizscrollup
+msgid "Wheel scroll up (Horizontal)"
+msgstr "Прокрутка колёсиком вперёд (горизонтальная)"
+
+#: syneditstrconst.syns_emcwheelscrolldown
+msgid "Wheel scroll down"
+msgstr "Прокрутка колёсиком назад"
+
+#: syneditstrconst.syns_emcwheelscrollup
+msgid "Wheel scroll up"
+msgstr "Прокрутка колёсиком вперёд"
+
+#: syneditstrconst.syns_emcwheelscroll_opt
+msgid "Speed,\"System settings\",Lines,Pages,\"Pages (less one line)\""
+msgstr "Скорость,\"Системные параметры\",Строки,Страницы,\"Страницы (минус одна строка)\""
+
+#: syneditstrconst.syns_emcwheelvertscrolldown
+msgid "Wheel scroll down (Vertical)"
+msgstr "Прокрутка колёсиком назад (вертикальная)"
+
+#: syneditstrconst.syns_emcwheelvertscrollup
+msgid "Wheel scroll up (Vertical)"
+msgstr "Прокрутка колёсиком вперёд (вертикальная)"
+
+#: syneditstrconst.syns_emcwheelzoomin
+msgid "Wheel zoom in"
+msgstr "Увеличение масштаба колёсиком"
+
+#: syneditstrconst.syns_emcwheelzoomnorm
+msgid "Wheel zoom default"
+msgstr "Установка масштаба по умолчанию колёсиком"
+
+#: syneditstrconst.syns_emcwheelzoomout
+msgid "Wheel zoom out"
+msgstr "Уменьшение масштаба колёсиком"
+
+#: syneditstrconst.syns_exporterformathtml
+msgid "HTML"
+msgstr "HTML"
+
+#: syneditstrconst.syns_exporterformatrtf
+msgid "RTF"
+msgstr "RTF"
+
+#: syneditstrconst.syns_filteradsp21xx
+msgid "DSP Files (*.dsp,*.inc)|*.DSP;*.INC"
+msgstr "Файлы DSP (*.dsp,*.inc)|*.DSP;*.INC"
+
+#: syneditstrconst.syns_filterasm68hc11
+msgid "68HC11 Assembler Files (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
+msgstr "Файлы ассемблера 68HC11 (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
+
+#: syneditstrconst.syns_filterawk
+msgid "AWK Script (*.awk)|*.awk"
+msgstr "Сценарии AWK (*.awk)|*.awk"
+
+#: syneditstrconst.syns_filterbaan
+msgid "Baan 4GL Files (*.cln)|*.cln"
+msgstr "Файлы Baan 4GL (*.cln)|*.cln"
+
+#: syneditstrconst.syns_filterbatch
+msgid "MS-DOS Batch Files (*.bat;*.cmd)|*.bat;*.cmd"
+msgstr "Пакетные файлы MS-DOS (*.bat;*.cmd)|*.bat;*.cmd"
+
+#: syneditstrconst.syns_filtercache
+msgid "Cache Files (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
+msgstr "Файлы кэша (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
+
+#: syneditstrconst.syns_filtercaclipper
+msgid "CA-Clipper Files (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc"
+msgstr "Файлы CA-Clipper (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc"
+
+#: syneditstrconst.syns_filtercorbaidl
+msgid "CORBA IDL files (*.idl)|*.idl"
+msgstr "Файлы CORBA IDL (*.idl)|*.idl"
+
+#: syneditstrconst.syns_filtercpm
+msgid "CPM reports (*.rdf,*.rif,*.rmf,*.rxf)|*.rdf;*.rif;*.rmf;*.rxf"
+msgstr "Отчёты CPM (*.rdf,*.rif,*.rmf,*.rxf)|*.rdf;*.rif;*.rmf;*.rxf"
+
+#: syneditstrconst.syns_filtercpp
+msgid "C++ Files (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
+msgstr "Файлы C++ (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
+
+#: syneditstrconst.syns_filtercss
+msgid "Cascading Stylesheets (*.css)|*.css"
+msgstr "Каскадированные таблицы стилей (*.css)|*.css"
+
+#: syneditstrconst.syns_filterdfm
+msgid "Borland Form Files (*.dfm;*.xfm)|*.dfm;*.xfm"
+msgstr "Файлы форм Borland (*.dfm;*.xfm)|*.dfm;*.xfm"
+
+#: syneditstrconst.syns_filterfortran
+msgid "Fortran Files (*.for)|*.for"
+msgstr "Файлы фортрана (*.for)|*.for"
+
+#: syneditstrconst.syns_filterfoxpro
+msgid "Foxpro Files (*.prg)|*.prg"
+msgstr "Файлы Foxpro (*.prg)|*.prg"
+
+#: syneditstrconst.syns_filtergalaxy
+msgid "Galaxy Files (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
+msgstr "Файлы Galaxy (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
+
+#: syneditstrconst.syns_filtergembase
+msgid "GEMBASE Files (*.dml,*.gem)|*.DML;*.GEM"
+msgstr "Файлы GEMBASE (*.dml,*.gem)|*.DML;*.GEM"
+
+#: syneditstrconst.syns_filtergws
+msgid "GW-TEL Script Files (*.gws)|*.gws"
+msgstr "Сценарии GW-TEL (*.gws)|*.gws"
+
+#: syneditstrconst.syns_filterhp48
+msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
+msgstr "Файлы HP48 (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
+
+#: syneditstrconst.syns_filterhtml
+msgid "HTML Document (*.htm,*.html)|*.htm;*.html"
+msgstr "Документ HTML (*.htm,*.html)|*.htm;*.html"
+
+#: syneditstrconst.syns_filterini
+msgid "INI Files (*.ini)|*.ini"
+msgstr "Файлы INI (*.ini)|*.ini"
+
+#: syneditstrconst.syns_filterinno
+msgid "Inno Setup Script Files (*.iss)|*.iss"
+msgstr "Установочные сценарии Inno (*.iss)|*.iss"
+
+#: syneditstrconst.syns_filterjava
+msgid "Java Files (*.java)|*.java"
+msgstr "Файлы Java (*.java)|*.java"
+
+#: syneditstrconst.syns_filterjscript
+msgid "Javascript Files (*.js)|*.js"
+msgstr "Файлы Javascript (*.js)|*.js"
+
+#: syneditstrconst.syns_filterkix
+msgid "KiXtart scripts (*.kix)|*.kix"
+msgstr "Сценарии KiXtart (*.kix)|*.kix"
+
+#: syneditstrconst.syns_filterlfm
+msgid "Lazarus Form Files (*.lfm)|*.lfm"
+msgstr "Файлы форм Lazarus (*.lfm)|*.lfm"
+
+#: syneditstrconst.syns_filtermodelica
+msgid "Modelica Files (*.mo)|*.mo"
+msgstr "Файлы Modelica (*.mo)|*.mo"
+
+#: syneditstrconst.syns_filtermodula3
+msgid "Modula-3 Files (*.m3)|*.m3"
+msgstr "Файлы Modula-3 (*.m3)|*.m3"
+
+#: syneditstrconst.syns_filterpascal
+msgid "Pascal Files (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc"
+msgstr "Файлы Паскаля (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc"
+
+#: syneditstrconst.syns_filterperl
+msgid "Perl Files (*.pl,*.pm,*.cgi)|*.pl;*.pm;*.cgi"
+msgstr "Файлы Perl (*.pl,*.pm,*.cgi)|*.pl;*.pm;*.cgi"
+
+#: syneditstrconst.syns_filterphp
+msgid "PHP Files (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
+msgstr "Файлы PHP (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
+
+#: syneditstrconst.syns_filterpo
+msgid "Po Files (*.po)|*.po"
+msgstr "Файлы PO (*.po)|*.po"
+
+#: syneditstrconst.syns_filterprogress
+msgid "Progress Files (*.w,*.p,*.i)|*.w;*.p;*.i"
+msgstr "Файлы Progress (*.w,*.p,*.i)|*.w;*.p;*.i"
+
+#: syneditstrconst.syns_filterpython
+msgid "Python Files (*.py)|*.py"
+msgstr "Файлы Python (*.py)|*.py"
+
+#: syneditstrconst.syns_filterrtf
+msgid "Rich Text Format (*.rtf)|*.rtf"
+msgstr "Текст в формате RTF (*.rtf)|*.rtf"
+
+#: syneditstrconst.syns_filtersdd
+msgid "Semanta DD files (*.sdd)|*.sdd"
+msgstr "Файлы Semanta DD (*.sdd)|*.sdd"
+
+#: syneditstrconst.syns_filtersml
+msgid "Standard ML Files (*.sml)|*.sml"
+msgstr "Standard ML Files (*.sml)|*.sml"
+
+#: syneditstrconst.syns_filtersql
+msgid "SQL Files (*.sql)|*.sql"
+msgstr "Файлы SQL (*.sql)|*.sql"
+
+#: syneditstrconst.syns_filtersyngenmsgfiles
+msgid "Msg files (*.msg)|*.msg"
+msgstr "Файлы Msg (*.msg)|*.msg"
+
+#: syneditstrconst.syns_filtertcltk
+msgid "Tcl/Tk Files (*.tcl)|*.tcl"
+msgstr "Файлы Tcl/Tk (*.tcl)|*.tcl"
+
+#: syneditstrconst.syns_filtertex
+msgid "TeX Files (*.tex)|*.tex"
+msgstr "Файлы TeX (*.tex)|*.tex"
+
+#: syneditstrconst.syns_filterunixshellscript
+msgid "UNIX Shell Scripts (*.sh)|*.sh"
+msgstr "Сценарии UNIX Shell (*.sh)|*.sh"
+
+#: syneditstrconst.syns_filtervbscript
+msgid "VBScript Files (*.vbs)|*.vbs"
+msgstr "Файлы VBScript (*.vbs)|*.vbs"
+
+#: syneditstrconst.syns_filtervisualbasic
+msgid "Visual Basic Files (*.bas)|*.bas"
+msgstr "Файлы Visual Basic (*.bas)|*.bas"
+
+#: syneditstrconst.syns_filterx86asm
+msgid "x86 Assembly Files (*.asm)|*.ASM"
+msgstr "Файлы ассемблера x86 (*.asm)|*.ASM"
+
+#: syneditstrconst.syns_filterxml
+msgid "XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
+msgstr "Документ XML (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
+
+#: syneditstrconst.syns_previewscrollinfofmt
+msgid "Page: %d"
+msgstr "Страница: %d"
+
+#: syneditstrconst.syns_scrollinfofmt
+msgid "%d - %d"
+msgstr "%d - %d"
+
+#: syneditstrconst.syns_scrollinfofmttop
+msgid "Top Line: %d"
+msgstr "Верхняя строка: %d"
+
+#: syneditstrconst.syns_shortcutnone
+msgid "<none>"
+msgstr "<нет>"
+
+#: syneditstrconst.syns_untitled
+msgid "Untitled"
+msgstr "Без имени"
+

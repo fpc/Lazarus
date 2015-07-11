@@ -1,0 +1,31 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: registersqldb.sfirebirddatabases
+msgid "Firebird databases"
+msgstr ""
+
+#: registersqldb.sinterbasedatabases
+msgid "Interbase databases"
+msgstr ""
+
+#: registersqldb.slibraries
+msgid "Shared libraries"
+msgstr ""
+
+#: registersqldb.ssqlscript
+msgid "SQL Script file"
+msgstr ""
+
+#: registersqldb.ssqlscriptdesc
+msgid "Create a new SQL Script file"
+msgstr ""
+
+#: registersqldb.ssqlsource
+msgid "Insert your SQL statements here"
+msgstr ""
+
+#: registersqldb.ssqlstringspropertyeditordlgtitle
+msgid "Editing %s"
+msgstr ""
+

@@ -1,0 +1,721 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+  <package name="lcl">
+    <!--
+  ====================================================================
+    LCLResCache
+  ====================================================================
+-->
+    <module name="LCLResCache">
+      <short>Types and methods to cache interface resources</short>
+      <descr/>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="SysUtils">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="FPCAdds">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLProc">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="AvgLvlTree">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TResourceCacheItem">
+        <short>
+          <var>TResourceCacheItem</var> - an item in a list (<var>TResourceCache</var>)</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TResourceCacheItem.FDestroying">
+        <short>
+          <var>FDestroying</var> - local boolean variable to store Destroying status</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TResourceCacheItem.FReferenceCount">
+        <short>
+          <var>FReferenceCount</var> - local variable to store Reference Count</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TResourceCacheItem.Handle">
+        <short>
+          <var>Handle</var> for Cache Item - use <var>TLCLHandle</var> instead of THandle since THandle = longint under 64bit linux</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TResourceCacheItem.Cache">
+        <short>The Resource <var>Cache</var> to which this Cache Item belongs</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TResourceCacheItem.FirstDescriptor">
+        <short>
+          <var>FirstDescriptor</var> - the descriptor for the first item in the list</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TResourceCacheItem.LastDescriptor">
+        <short>
+          <var>LastDescriptor</var> - the descriptor for the last item in the list</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TResourceCacheItem.Next">
+        <short>The <var>Next</var> item in the list</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TResourceCacheItem.Prev">
+        <short>
+          <var>Prev</var> - the previous item in the list</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TResourceCacheItem.Create" link="#rtl.System.TObject.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TResourceCacheItem.Create.TheCache">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TResourceCacheItem.Create.TheHandle">
+        <short/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TResourceCacheItem.Destroy" link="#rtl.System.TObject.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TResourceCacheItem.IncreaseRefCount">
+        <short>
+          <var>IncreaseRefCount</var> - increment the reference count</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TResourceCacheItem.DecreaseRefCount">
+        <short>
+          <var>DecreaseRefCount</var> - decrement the reference count</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TResourceCacheItem.AddToList">
+        <short>
+          <var>AddToList</var> - add an item to the cache list specified by <var>First</var>, <var>Last</var>
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TResourceCacheItem.AddToList.First">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TResourceCacheItem.AddToList.Last">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TResourceCacheItem.RemoveFromList">
+        <short>
+          <var>RemoveFromList</var> - remove an item from the cache list specified by <var>First</var>, <var>Last</var>
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TResourceCacheItem.RemoveFromList.First">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TResourceCacheItem.RemoveFromList.Last">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TResourceCacheItem.WarnReferenceHigh">
+        <short>
+          <var>WarnReferenceHigh</var> - issue a warning if the number of references gets too high</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TResourceCacheItem.ReferenceCount">
+        <short>
+          <var>ReferenceCount</var> - the number of references to this Item</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- "class of" type Visibility: default -->
+      <element name="TResourceCacheItemClass">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TResourceCacheDescriptor">
+        <short>
+          <var>TResourceCacheDescriptor</var> - a class of descriptors for ResourceCache Items</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TResourceCacheDescriptor.FDestroying">
+        <short>
+          <var>FDestroying</var> - local boolean variable to store Destroying status</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TResourceCacheDescriptor.Item">
+        <short>
+          <var>Item</var> - the Resource Cache Item to which this descriptor refers</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TResourceCacheDescriptor.Cache">
+        <short>
+          <var>Cache</var> - the resource Cache to which this Item belongs</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TResourceCacheDescriptor.Next">
+        <short>The <var>Next</var> descriptor in the list</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TResourceCacheDescriptor.Prev">
+        <short>
+          <var>Prev</var> - the Previous descriptor in the list</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TResourceCacheDescriptor.Create" link="#rtl.System.TObject.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TResourceCacheDescriptor.Create.TheCache">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TResourceCacheDescriptor.Create.TheItem">
+        <short/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TResourceCacheDescriptor.Destroy" link="#rtl.System.TObject.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TResourceCacheDescriptor.AddToList">
+        <short>
+          <var>AddToList</var> - add a descriptor to the list specified by <var>First</var>, <var>Last</var>
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TResourceCacheDescriptor.AddToList.First">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TResourceCacheDescriptor.AddToList.Last">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TResourceCacheDescriptor.RemoveFromList">
+        <short>
+          <var>RemoveFromList</var> - remove a descriptor from the list specified by <var>First</var>, <var>Last</var>
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TResourceCacheDescriptor.RemoveFromList.First">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TResourceCacheDescriptor.RemoveFromList.Last">
+        <short/>
+      </element>
+      <!-- "class of" type Visibility: default -->
+      <element name="TResourceCacheDescriptorClass">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TResourceCache">
+        <short>
+          <var>TResourceCache</var> - a cache (linked list) for storing Resources</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TResourceCache.FItems">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TResourceCache.FDescriptors">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TResourceCache.FDestroying">
+        <short>
+          <var>FDestroying</var> - local boolean variable to store Destroying status</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TResourceCache.FResourceCacheDescriptorClass">
+        <short>
+          <var>FResourceCacheDescriptorClass</var> - local variable for holding the class of the current descriptor</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TResourceCache.FResourceCacheItemClass">
+        <short>
+          <var>FResourceCacheItemClass</var> - local variable for holding the class of the current cache item</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TResourceCache.FMaxUnusedItem">
+        <short>
+          <var>FMaxUnusedItem</var> - how many freed resources to keep</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TResourceCache.FFirstUnusedItem">
+        <short>
+          <var>FFirstUnusedItem</var> - local variable storing location of first free item</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TResourceCache.FLastUnusedItem">
+        <short>
+          <var>FLastUnusedItem</var> - ocal variable storing location of last free item</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TResourceCache.FUnUsedItemCount">
+        <short>
+          <var>FUnUsedItemCount</var> - local variable with count of free items</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TResourceCache.RemoveItem">
+        <short>
+          <var>RemoveItem</var> from CacheItem list</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TResourceCache.RemoveItem.Item">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TResourceCache.RemoveDescriptor">
+        <short>
+          <var>RemoveDescriptor</var> from Cache Descriptor list</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TResourceCache.RemoveDescriptor.Desc">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TResourceCache.ItemUsed">
+        <short>
+          <var>ItemUsed</var> - method for signalling that the specified <var>Item</var> is being used</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TResourceCache.ItemUsed.Item">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TResourceCache.ItemUnused">
+        <short>
+          <var>ItemUnused</var> - method for signalling that the specified <var>Item</var> is unused</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TResourceCache.ItemUnused.Item">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TResourceCache.ItemIsUsed">
+        <short>
+          <var>ItemIsUsed</var> - returns True if specified Item is being used</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TResourceCache.ItemIsUsed.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TResourceCache.ItemIsUsed.Item">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TResourceCache.Create" link="#rtl.System.TObject.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TResourceCache.Destroy" link="#rtl.System.TObject.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TResourceCache.CompareItems">
+        <short>
+          <var>CompareItems</var> - returns 0 if items are equal, -1 if Item1 is less, 1 if Item1 is greater</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TResourceCache.CompareItems.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TResourceCache.CompareItems.Tree">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TResourceCache.CompareItems.Item1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TResourceCache.CompareItems.Item2">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TResourceCache.CompareDescriptors">
+        <short>
+          <var>CompareDescriptors</var> - returns 0 if descriptors are equal, -1 if Desc1 is less, 1 if Desc1 is greater</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TResourceCache.CompareDescriptors.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TResourceCache.CompareDescriptors.Tree">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TResourceCache.CompareDescriptors.Desc1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TResourceCache.CompareDescriptors.Desc2">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TResourceCache.ConsistencyCheck">
+        <short>
+          <var>ConsistencyCheck</var> - checks that Items have valid descriptors</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TResourceCache.MaxUnusedItem">
+        <short>
+          <var>MaxUnusedItem</var> - the largest permitted number of unused items</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TResourceCache.ResourceCacheItemClass">
+        <short>
+          <var>ResourceCacheItemClass</var> - the Class of the current Cache Item</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TResourceCache.ResourceCacheDescriptorClass">
+        <short>
+          <var>ResourceCacheDescriptorClass</var> - the class of the current cache item descriptor</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="THandleResourceCache">
+        <short>
+          <var>THandleResourceCache</var> - a Resource Cache for Handles</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="THandleResourceCache.FindItem">
+        <short>
+          <var>FindItem</var> - locate the item with the specified Handle</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="THandleResourceCache.FindItem.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="THandleResourceCache.FindItem.Handle">
+        <short/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TBlockResourceCacheDescriptor">
+        <short>
+          <var>TBlockResourceCacheDescriptor</var> - descriptor for a Block Resource Cache</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TBlockResourceCacheDescriptor.Data">
+        <short>Pointer to the <var>Data</var>
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TBlockResourceCacheDescriptor.Destroy" link="#rtl.System.TObject.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TBlockResourceCache">
+        <short>
+          <var>TBlockResourceCache</var> - a cache for Block resources</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TBlockResourceCache.FDataSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TBlockResourceCache.FOnCompareDescPtrWithDescriptor">
+        <short>
+          <var>FOnCompareDescPtrWithDescriptor</var> - local variable to hold the result of a comparison between a descriptor pointer and the descriptor itself</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TBlockResourceCache.Create" link="#rtl.System.TObject.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TBlockResourceCache.Create.TheDataSize">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TBlockResourceCache.FindDescriptor">
+        <short>
+          <var>FindDescriptor</var> - returns the descriptor whose pointer is given</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TBlockResourceCache.FindDescriptor.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TBlockResourceCache.FindDescriptor.DescPtr">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TBlockResourceCache.AddResource">
+        <short>
+          <var>AddResource</var> - inserts a Block resource into the list, referenced by a handle and a descriptor pointer, and returns the Block Resource Cache descriptor</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TBlockResourceCache.AddResource.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TBlockResourceCache.AddResource.Handle">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TBlockResourceCache.AddResource.DescPtr">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TBlockResourceCache.CompareDescriptors" link="#LCL.LCLResCache.TResourceCache.CompareDescriptors">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TBlockResourceCache.CompareDescriptors.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TBlockResourceCache.CompareDescriptors.Tree">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TBlockResourceCache.CompareDescriptors.Desc1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TBlockResourceCache.CompareDescriptors.Desc2">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TBlockResourceCache.DataSize">
+        <short>
+          <var>DataSize</var> - thetotal size of the data in the Block Resource</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TBlockResourceCache.OnCompareDescPtrWithDescriptor">
+        <short>
+          <var>OnCompareDescPtrWithDescriptor</var> - the result of a comparison between a descriptor pointer and the descriptor itself</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="ComparePHandleWithResourceCacheItem">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="ComparePHandleWithResourceCacheItem.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ComparePHandleWithResourceCacheItem.HandlePtr">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ComparePHandleWithResourceCacheItem.Item">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CompareDescPtrWithBlockResDesc">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="CompareDescPtrWithBlockResDesc.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CompareDescPtrWithBlockResDesc.DescPtr">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CompareDescPtrWithBlockResDesc.Item">
+        <short/>
+      </element>
+      <element name="TResourceCache.Clear">
+        <short>
+          <var>Clear</var> the current Resource Cache</short>
+      </element>
+    </module>
+    <!-- LCLResCache -->
+  </package>
+</fpdoc-descriptions>

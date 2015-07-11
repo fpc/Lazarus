@@ -1,0 +1,39 @@
+[package]
+main=lazarus/lcl
+
+[require]
+packages=rtl
+
+[target]
+units=lcl.pas
+
+[compiler]
+options=-gl -Sc
+unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) \
+    ../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) \
+    ../../../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) \
+    .. .
+unittargetdir=../../units/$(CPU_TARGET)-$(OS_TARGET)/win32
+
+[clean]
+files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(STATICLIBEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) \
+      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+
+[rules]
+.PHONY: cleartarget compiled all
+
+cleartarget:
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/lcl$(PPUEXT) \
+                $(COMPILER_UNITTARGETDIR)/lcl$(OEXT)
+
+compiled:
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/LCL.compiled
+
+all: cleartarget $(COMPILER_UNITTARGETDIR) ../lcl$(PPUEXT) compiled
+

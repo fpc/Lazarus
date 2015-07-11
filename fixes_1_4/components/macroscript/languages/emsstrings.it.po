@@ -1,0 +1,52 @@
+# Giuliano Colla <giuliano.colla@fastwebnet.it>, 2014.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2014-10-17 18:57+0200\n"
+"Last-Translator: Giuliano Colla <giuliano.colla@fastwebnet.it>\n"
+"Language-Team: Lazarus\n"
+"Language: it\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.6.1\n"
+
+#: emsstrings.emsactive
+msgid "Scripting active."
+msgstr "Lo scripting è attivo."
+
+#: emsstrings.emsbtntestagain
+msgid "Test again"
+msgstr "Provare ancora"
+
+#: emsstrings.emseditormacrotitle
+msgid "Editor Macro Script"
+msgstr "Editor di Macro Script"
+
+#: emsstrings.emsnotactive
+msgid "Scripting not active. Selftest failed."
+msgstr "Lo scripting non è attivo. L'autotest è fallito."
+
+#: emsstrings.emsnotsupported
+msgid "Scripting not active. Not supported on this platform or CPU."
+msgstr "Lo scripting non è attivo. Non supportato su questa piattaforma o CPU."
+
+#: emsstrings.emspending
+msgid "Scripting not active. Selftest will run next time the IDE is started."
+msgstr "Lo scripting non è attivo. L'autotest sarà eseguito alla prossima partenza dell'IDE."
+
+#: emsstrings.emsselftesterrcaption
+msgid "Error in EditorMacroScript"
+msgstr "Errore nell'EditorMacroScript"
+
+#: emsstrings.emsselftestfailed
+msgid "The package EditorMacroScript (pascalscript macros) has detected a problem and was deactivated.%0:sThe package failed its selftest with the message:%0:s\"%1:s\""
+msgstr "Il pacchetto EditorMacroScript (macro pascalscript) ha rilevato un problema ed è stato disattivato.%0:sIl pacchetto ha fallito l'autotest con il messaggio %0:s\"%1:s\""
+
+#: emsstrings.emsselftestfailedlasttime
+msgid "The package EditorMacroScript (pascalscript macros) has detected a problem and was deactivated.%0:sThe package selftest was not completed during the last start of the IDE."
+msgstr "Il pacchetto EditorMacroScript (macro pascalscript) ha rilevato un problema ed è stato disattivato.%0:sL'autotest non è giunto a buon fine all'ultima partenza dell'IDE."
+
+#: emsstrings.emsstatustitle
+msgid "Status"
+msgstr "Stato"
+

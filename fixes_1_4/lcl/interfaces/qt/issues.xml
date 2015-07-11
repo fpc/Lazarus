@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package name="lcl">
+	<widgetset name="qt">
+		<issue name="TCheckBox.Alignment">
+			<short>CheckBox Alignment property is not supported</short>
+		</issue>
+		<issue name="TEdit.HideSelection">
+			<short>HideSelection property is not supported</short>
+		</issue>
+		<issue name="TListView.HideSelection">
+			<short>HideSelection property is not supported</short>
+		</issue>		
+		<issue name="TMemo.HideSelection">
+			<short>HideSelection property is not supported</short>
+		</issue>
+		<issue name="TMenuItem.RightJustify">
+			<short>RightJustify property is not supported</short>
+		</issue>		
+		<issue name="TPageControl.MultiLine">
+			<short>MultiLine property is not supported</short>
+		</issue>
+		<issue name="TTabControl.MultiLine">
+			<short>MultiLine property is not supported</short>
+		</issue>
+		<issue name="TListBox.Columns">
+			<short>Multiple columns is not supported</short>
+		</issue>
+		<issue name="TCheckListBox.Columns">
+			<short>Multiple columns is not supported</short>
+		</issue>
+	</widgetset>
+</package>

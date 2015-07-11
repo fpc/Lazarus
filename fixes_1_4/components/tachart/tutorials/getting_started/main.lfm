@@ -1,0 +1,61 @@
+object Form1: TForm1
+  Left = 14
+  Height = 244
+  Top = 137
+  Width = 402
+  Caption = 'Form1'
+  ClientHeight = 244
+  ClientWidth = 402
+  OnCreate = FormCreate
+  LCLVersion = '1.0.2.0'
+  object Chart1: TChart
+    Left = 0
+    Height = 244
+    Top = 0
+    Width = 402
+    AxisList = <    
+      item
+        Grid.Color = clSilver
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelFont.Style = [fsBold]
+        Title.Visible = True
+        Title.Caption = 'y axis'
+      end    
+      item
+        Grid.Color = clSilver
+        Alignment = calBottom
+        Minors = <>
+        Title.LabelFont.Style = [fsBold]
+        Title.Visible = True
+        Title.Caption = 'x axis'
+      end>
+    BackColor = clWhite
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Legend.Alignment = laBottomCenter
+    Legend.ColumnCount = 3
+    Legend.Visible = True
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Font.Style = [fsBold]
+    Title.Text.Strings = (
+      'My first chart'
+    )
+    Title.Visible = True
+    Align = alClient
+    ParentColor = False
+    object SinSeries: TLineSeries
+      Title = 'y=sin(x)'
+      LinePen.Color = clRed
+    end
+    object CosSeries: TLineSeries
+      Title = 'y=cos(x)'
+      LinePen.Color = clBlue
+    end
+    object SinCosSeries: TLineSeries
+      Title = 'y=sin(x)*cos(x)'
+      LinePen.Color = clGreen
+    end
+  end
+end

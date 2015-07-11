@@ -1,0 +1,47 @@
+object Form1: TForm1
+  Left = 291
+  Height = 541
+  Top = 163
+  Width = 498
+  ActiveControl = Button1
+  Caption = 'Fade in - Example for TLazIntfImage'
+  ClientHeight = 541
+  ClientWidth = 498
+  OnCreate = Form1Create
+  OnDestroy = Form1Destroy
+  OnPaint = FormPaint
+  LCLVersion = '0.9.31'
+  object Button1: TButton
+    Left = 85
+    Height = 25
+    Top = 466
+    Width = 328
+    Anchors = [akBottom]
+    Caption = 'Fade in'
+    OnClick = Button1Click
+    TabOrder = 0
+  end
+  object Button2: TButton
+    Left = 87
+    Height = 25
+    Top = 498
+    Width = 324
+    Anchors = [akBottom]
+    Caption = 'Rotate by >>'
+    OnClick = Button2Click
+    TabOrder = 1
+  end
+  object Edit1: TEdit
+    AnchorSideLeft.Control = Button2
+    AnchorSideTop.Control = Button2
+    AnchorSideTop.Side = asrCenter
+    Left = 97
+    Height = 23
+    Top = 499
+    Width = 32
+    BorderSpacing.Left = 5
+    BorderSpacing.Around = 5
+    TabOrder = 2
+    Text = '90'
+  end
+end

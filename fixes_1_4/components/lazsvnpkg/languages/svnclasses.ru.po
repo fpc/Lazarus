@@ -1,0 +1,242 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: svnclasses.rsaction
+msgid "Action"
+msgstr "Действие"
+
+#: svnclasses.rsadd
+msgid "Add to version control"
+msgstr "Добавить под управление версиями"
+
+#: svnclasses.rsadded
+msgid "Added"
+msgstr "Добавлено"
+
+#: svnclasses.rsauthor
+msgid "Author"
+msgstr "Автор"
+
+#: svnclasses.rscommit
+msgid "Commit"
+msgstr "Фиксировать"
+
+#: svnclasses.rscommitmsg
+msgid "Commit Message"
+msgstr "Сообщение ревизии"
+
+#: svnclasses.rscommitmsghistory
+msgid "Commit Message History"
+msgstr "История сообщений ревизий"
+
+#: svnclasses.rscommitrevision
+msgid "Commit revision"
+msgstr "Ревизия с изменениями"
+
+#: svnclasses.rsconflict
+msgid "Conflict"
+msgstr "Конфликт"
+
+#: svnclasses.rscopyfrompath
+msgid "Copy from path"
+msgstr "Копия из пути"
+
+#: svnclasses.rscreatepatchfile
+msgid "Create patch file"
+msgstr "Создать файл patch"
+
+#: svnclasses.rsdate
+msgid "Date"
+msgstr "Дата"
+
+#: svnclasses.rsdelete
+msgid "Delete"
+msgstr "Удалить"
+
+#: svnclasses.rsdeleted
+msgid "Deleted"
+msgstr "Удалено"
+
+#: svnclasses.rsdiffactivefile
+msgid "Diff active file"
+msgstr "Разница Diff текущего файла"
+
+#: svnclasses.rsedit
+msgid "Edit"
+msgstr "Редактировать"
+
+#: svnclasses.rsextension
+msgid "Extension"
+msgstr "Расширение"
+
+#: svnclasses.rsfilenotinworkingcopyanymore
+msgid "File is not part of local working copy (anymore)"
+msgstr "Файл (больше) не принадлежит локальной рабочей копии"
+
+#: svnclasses.rsfilestatus
+msgid "File status"
+msgstr "Статус файла"
+
+#: svnclasses.rsindexoutofboundsd
+msgid "Index out of bounds (%d)"
+msgstr "Индекс за границами диапазона (%d)"
+
+#: svnclasses.rslazarussvncommit
+msgid "LazarusSVN Commit"
+msgstr "Фиксация изменений / LazarusSVN"
+
+#: svnclasses.rslazarussvndiff
+#| msgid "%s - LazarusSVN Diff..."
+msgid "%s - LazarusSVN Diff ..."
+msgstr "%s - разница Diff / LazarusSVN ..."
+
+#: svnclasses.rslazarussvnlog
+#| msgid "%s - LazarusSVN Log..."
+msgid "%s - LazarusSVN Log ..."
+msgstr "%s - журнал / LazarusSVN ..."
+
+#: svnclasses.rslazarussvnupdate
+#| msgid "%s - LazarusSVN Update..."
+msgid "%s - LazarusSVN Update ..."
+msgstr "%s - обновление / LazarusSVN ..."
+
+#: svnclasses.rsmerged
+msgid "Merged"
+msgstr "Слито"
+
+#: svnclasses.rsmessage
+msgid "Message"
+msgstr "Сообщение"
+
+#: svnclasses.rsnoauthor
+msgid "(no author)"
+msgstr "(нет)"
+
+#: svnclasses.rsonlymodifieditemscanbediffed
+msgid "Only modified (M) Items can be diffed"
+msgstr "Разница Diff может быть выведена только для изменённых (M) файлов"
+
+#: svnclasses.rsopenfileineditor
+msgid "Open file in editor"
+msgstr "Открыть файл в редакторе"
+
+#: svnclasses.rsopenpreviousrevisionineditor
+msgid "Open previous revision in editor"
+msgstr "Открыть предыдущую ревизию в редакторе"
+
+#: svnclasses.rsopenthisrevisionineditor
+msgid "Open this revision in editor"
+msgstr "Открыть эту ревизию в редакторе"
+
+#: svnclasses.rspath
+msgid "Path"
+msgstr "Путь"
+
+#: svnclasses.rsprojectfilename
+msgid "Project filename"
+msgstr "Имя файла проекта"
+
+#: svnclasses.rsprojectisactive
+msgid "Project is active"
+msgstr "Проект активен"
+
+#: svnclasses.rsprojectisnotactiveinsvnsettingspleaseactivatefirst
+msgid "Project is not active in SVN settings, please activate first."
+msgstr "Проект неактивен. Сначала активируйте его в диалоге настройки параметров SVN."
+
+#: svnclasses.rsprojectname
+msgid "Project name"
+msgstr "Имя проекта"
+
+#: svnclasses.rsprojectoptions
+msgid "Project options"
+msgstr "Параметры проекта"
+
+#: svnclasses.rspropertystatus
+msgid "Property status"
+msgstr "Статус свойства"
+
+#: svnclasses.rsrefresh
+msgid "Refresh"
+msgstr "Обновить"
+
+#: svnclasses.rsremove
+msgid "Remove from version control (keep local)"
+msgstr "Вывести из-под управления версиями"
+
+#: svnclasses.rsrepositorypath
+msgid "Repository path"
+msgstr "Путь к репозиторию"
+
+#: svnclasses.rsrevert
+msgid "Revert"
+msgstr "Убрать изменения"
+
+#: svnclasses.rsrevision
+msgid "Revision"
+msgstr "Ревизия"
+
+#: svnclasses.rssave
+msgid "Save"
+msgstr "Сохранить"
+
+#: svnclasses.rssettings
+msgid "Settings"
+msgstr "Параметры"
+
+#: svnclasses.rsshowdiff
+msgid "Show diff"
+msgstr "Показать разницу Diff"
+
+#: svnclasses.rsshowdiffbase
+#| msgid "Show diff of local changes"
+msgid "Show Diff of Local Changes"
+msgstr "Показать разницу Diff локальных изменений"
+
+#: svnclasses.rsshowdiffcountrev
+#| msgid "Show last X commits"
+msgid "Show Last X Commits"
+msgstr "Показать последние X ревизий"
+
+#: svnclasses.rsshowdiffhead
+#| msgid "Show diff against HEAD"
+msgid "Show Diff Against HEAD"
+msgstr "Показать разницу Diff относительно HEAD"
+
+#: svnclasses.rsshowdiffprev
+#| msgid "Show diff against previous version"
+msgid "Show Diff Against Previous Version"
+msgstr "Показать разницу Diff относительно предыдущей ревизии"
+
+#: svnclasses.rsshowlog
+msgid "Show log"
+msgstr "Показать журнал"
+
+#: svnclasses.rssourcefiledoesnotbelongtotheprojectpleaseaddfirst
+msgid "Source file does not belong to the project. Please add first."
+msgstr "Файл исходного кода не включён в проект. Добавьте его сначала."
+
+#: svnclasses.rssvnsettings
+msgid "SVN settings"
+msgstr "Параметры SVN"
+
+#: svnclasses.rssvntools
+msgid "SVN tools"
+msgstr "Средства SVN"
+
+#: svnclasses.rsupdate
+msgid "Update"
+msgstr "Обновить"
+
+#: svnclasses.rsupdated
+msgid "Updated"
+msgstr "Обновлено"
+

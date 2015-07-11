@@ -1,0 +1,763 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: lazdemsg.saboutformcaption
+msgid "About this application"
+msgstr "Об этой программе"
+
+#: lazdemsg.sadd
+msgctxt "lazdemsg.sadd"
+msgid "&Add"
+msgstr "&Добавить"
+
+#: lazdemsg.saddall
+msgctxt "lazdemsg.saddall"
+msgid "Add All"
+msgstr "Добавить все"
+
+#: lazdemsg.sadddescriptionfile
+msgctxt "lazdemsg.sadddescriptionfile"
+msgid "Select a new description file"
+msgstr "Выберите новый файл описания"
+
+#: lazdemsg.sadditionalparams
+msgid "Additional parameters for fpdoc"
+msgstr "Дополнительные параметры FPDoc"
+
+#: lazdemsg.sbuild
+msgctxt "lazdemsg.sbuild"
+msgid "&Build"
+msgstr "&Собрать"
+
+#: lazdemsg.sbuilddocumentation
+msgctxt "lazdemsg.sbuilddocumentation"
+msgid "Build documentation"
+msgstr "Сборка документации"
+
+#: lazdemsg.sbuildok
+msgctxt "lazdemsg.sbuildok"
+msgid "Documentation successfully built."
+msgstr "Документация успешно собрана."
+
+#: lazdemsg.sbuildoutput
+msgctxt "lazdemsg.sbuildoutput"
+msgid "Build output"
+msgstr "Вывод сборки"
+
+#: lazdemsg.sclose
+msgctxt "lazdemsg.sclose"
+msgid "&Close"
+msgstr "&Закрыть"
+
+#: lazdemsg.scodeexample
+msgid "Example code File"
+msgstr "Файл образца кода"
+
+#: lazdemsg.scopyright1
+msgid "This application is (c) by  Michael Van Canneyt and the Lazarus team"
+msgstr "(c) Michael Van Canneyt и команда разработчиков Lazarus"
+
+#: lazdemsg.scopyright2
+msgid "It is released under the terms of the  GENERAL PUBLIC LICENSE:"
+msgstr "Распространяется на условиях GNU GENERAL PUBLIC LICENSE:"
+
+#: lazdemsg.scpu
+msgctxt "lazdemsg.scpu"
+msgid "CPU"
+msgstr "Процессор"
+
+#: lazdemsg.screatecontentfile
+msgctxt "lazdemsg.screatecontentfile"
+msgid "Create cont&ent file"
+msgstr "Создать файл содержимого"
+
+#: lazdemsg.sdataforelement
+msgid "Documentation for element \"%s\":"
+msgstr "Документация для элемента \"%s\":"
+
+#: lazdemsg.sdelete
+msgctxt "lazdemsg.sdelete"
+msgid "&Delete"
+msgstr "&Удалить"
+
+#: lazdemsg.sdeletemodule
+msgid "Are you sure you want to delete module \"%s\" ?"
+msgstr "Вы действительно хотите удалить модуль \"%s\"?"
+
+#: lazdemsg.sdeletepackage
+msgid "Are you sure you want to delete package \"%s\" ?"
+msgstr "Вы действительно хотите удалить пакет \"%s\"?"
+
+#: lazdemsg.sdeletetopic
+msgid "Are you sure you want to delete topic \"%s\" ?"
+msgstr "Вы действительно хотите удалить тему \"%s\"?"
+
+#: lazdemsg.sdescription
+msgctxt "lazdemsg.sdescription"
+msgid "Description"
+msgstr "Описание"
+
+#: lazdemsg.sedit
+msgctxt "lazdemsg.sedit"
+msgid "&Edit"
+msgstr "&Редактировать"
+
+#: lazdemsg.seditdescriptionfile
+msgctxt "lazdemsg.seditdescriptionfile"
+msgid "Change description file"
+msgstr "Изменить файл описания"
+
+#: lazdemsg.serrfpdoc
+msgctxt "lazdemsg.serrfpdoc"
+msgid "Building failed with exit code %d. Please check log."
+msgstr "Сборка не удалась (код %d). Проверьте журнал."
+
+#: lazdemsg.serrnomoduleforelement
+msgid "No module found to insert element \"%s\""
+msgstr "Модуль для вставки элемента \"%s\" не найден"
+
+#: lazdemsg.serrnonodeformodule
+msgid "No node found for module \"%s\""
+msgstr "Элемент для модуля \"%s\" не найден"
+
+#: lazdemsg.serrnonodeforpackage
+msgid "No node found for package \"%s\""
+msgstr "Элемент для пакета \"%s\" не найден"
+
+#: lazdemsg.serrnonodefortopic
+msgid "No parent node found to insert topic \"%s\""
+msgstr "Элемент-родитель для вставки темы \"%s\" не найден"
+
+#: lazdemsg.serrnopackageformodule
+msgid "No package found to insert module \"%s\""
+msgstr "Пакет для вставки модуля \"%s\" не найден"
+
+#: lazdemsg.serrors
+msgid "Errors"
+msgstr "Ошибки"
+
+#: lazdemsg.serrunknowndomelement
+msgid "Unknwon DOM element as parent for selected element: \"%s\""
+msgstr "У выбранного элемента \"%s\" родителем является неизвестный элемент DOM"
+
+#: lazdemsg.sfilemodified
+msgid "Document \"%s\" was modified, would you like to save it?"
+msgstr "Документ \"%s\" был изменён. Хотите сохранить его?"
+
+#: lazdemsg.sfilestructure
+msgid "Documentation structure"
+msgstr "Структура документации"
+
+#: lazdemsg.sfiletemplate
+msgid "template.xml"
+msgstr "template.xml"
+
+#: lazdemsg.sforfile
+msgid " in file "
+msgstr " в файле "
+
+#: lazdemsg.sformat
+msgctxt "lazdemsg.sformat"
+msgid "&Format"
+msgstr "&Формат"
+
+#: lazdemsg.sformodule
+msgid " in module "
+msgstr " в модуле "
+
+#: lazdemsg.sforpackage
+msgid " in package "
+msgstr " в пакете "
+
+#: lazdemsg.sfortopic
+msgid " in topic "
+msgstr " в теме "
+
+#: lazdemsg.shideprotectedmethods
+msgctxt "lazdemsg.shideprotectedmethods"
+msgid "&Hide protected methods"
+msgstr "Скрывать &protected-методы"
+
+#: lazdemsg.shinteditelementlink
+msgid "Edit element link"
+msgstr "Редактировать ссылку на элемент"
+
+#: lazdemsg.shintfileclose
+msgid "Close current file"
+msgstr "Закрыть текущий файл"
+
+#: lazdemsg.shintfileexit
+msgid "Close doc editor"
+msgstr "Закрыть редактор"
+
+#: lazdemsg.shintfilenew
+msgctxt "lazdemsg.shintfilenew"
+msgid "New file"
+msgstr "Новый файл"
+
+#: lazdemsg.shintfileopen
+msgid "Open file"
+msgstr "Открыть файл"
+
+#: lazdemsg.shintfilesave
+msgid "Save file"
+msgstr "Сохранить файл"
+
+#: lazdemsg.shintfilesaveas
+msgid "Save file as"
+msgstr "Сохранить файл как"
+
+#: lazdemsg.shintformatbold
+msgid "Bold"
+msgstr "Полужирный"
+
+#: lazdemsg.shintformatcode
+msgid "Code"
+msgstr "Код"
+
+#: lazdemsg.shintformatfile
+msgid "File"
+msgstr "Файл"
+
+#: lazdemsg.shintformatitalics
+msgid "Italic"
+msgstr "Курсив"
+
+#: lazdemsg.shintformatremark
+msgid "Remark"
+msgstr "Примечание"
+
+#: lazdemsg.shintformatunderline
+msgid "Underline"
+msgstr "Подчёркнутый"
+
+#: lazdemsg.shintformatvariable
+msgid "Variable"
+msgstr "Переменная"
+
+#: lazdemsg.shintinsertbulletedlist
+msgctxt "lazdemsg.shintinsertbulletedlist"
+msgid "Insert bulleted list"
+msgstr "Вставить маркированный список"
+
+#: lazdemsg.shintinsertelement
+msgctxt "lazdemsg.shintinsertelement"
+msgid "New element"
+msgstr "Новый элемент"
+
+#: lazdemsg.shintinsertlink
+msgctxt "lazdemsg.shintinsertlink"
+msgid "Insert link"
+msgstr "Вставить ссылку"
+
+#: lazdemsg.shintinsertmodule
+msgctxt "lazdemsg.shintinsertmodule"
+msgid "New module"
+msgstr "Новый модуль"
+
+#: lazdemsg.shintinsertnumberedlist
+msgctxt "lazdemsg.shintinsertnumberedlist"
+msgid "Insert numbered list"
+msgstr "Вставить нумерованный список"
+
+#: lazdemsg.shintinsertpackage
+msgctxt "lazdemsg.shintinsertpackage"
+msgid "New package"
+msgstr "Новый пакет"
+
+#: lazdemsg.shintinsertprintshortlink
+msgid "Insert a short description link"
+msgstr "Вставить ссылку на краткое описание"
+
+#: lazdemsg.shintinserttable
+msgctxt "lazdemsg.shintinserttable"
+msgid "Insert table"
+msgstr "Вставить таблицу"
+
+#: lazdemsg.shintinserttopic
+msgctxt "lazdemsg.shintinserttopic"
+msgid "New topic"
+msgstr "Новая тема"
+
+#: lazdemsg.shintmenunewfromfile
+msgid "New from file ..."
+msgstr "Новый из файла ..."
+
+#: lazdemsg.shinttoolbaradd
+msgid "Add"
+msgstr "Добавить"
+
+#: lazdemsg.shinttoolbardelete
+msgctxt "lazdemsg.shinttoolbardelete"
+msgid "Delete"
+msgstr "Удалить"
+
+#: lazdemsg.shinttoolbaredit
+msgid "Edit"
+msgstr "Редактировать"
+
+#: lazdemsg.shmenuextraoptions
+msgid "Show options dialog"
+msgstr "Показать диалог параметров"
+
+#: lazdemsg.shmenuhelpabout
+msgid "About this program"
+msgstr "Об этой программе"
+
+#: lazdemsg.simportcontentfile
+msgctxt "lazdemsg.simportcontentfile"
+msgid "Import content file"
+msgstr "Импортировать файл содержимого"
+
+#: lazdemsg.sinsertbulletedlist
+msgctxt "lazdemsg.sinsertbulletedlist"
+msgid "Insert bulleted list"
+msgstr "Вставить маркированный список"
+
+#: lazdemsg.sinsertexamplecode
+msgid "Insert example code"
+msgstr "Вставить образец кода"
+
+#: lazdemsg.sinsertlink
+msgctxt "lazdemsg.sinsertlink"
+msgid "Insert link"
+msgstr "Вставить ссылку"
+
+#: lazdemsg.sinsertnumberedlist
+msgctxt "lazdemsg.sinsertnumberedlist"
+msgid "Insert numbered list"
+msgstr "Вставить нумерованный список"
+
+#: lazdemsg.sinsertprintshortlink
+msgid "Insert short description link"
+msgstr "Вставить ссылку на краткое описание"
+
+#: lazdemsg.sinserttable
+msgctxt "lazdemsg.sinserttable"
+msgid "Insert table"
+msgstr "Вставить таблицу"
+
+#: lazdemsg.sitemscount
+msgid "Items count"
+msgstr "Число элементов"
+
+#: lazdemsg.slazdoceditor
+msgid "Lazarus Documentation Editor"
+msgstr "Редактор документации Lazarus"
+
+#: lazdemsg.slinksto
+msgid " links to "
+msgstr " ссылается на "
+
+#: lazdemsg.slinktarget
+msgid "Link target"
+msgstr "Объект ссылки"
+
+#: lazdemsg.slinktext
+msgid "Link text"
+msgstr "Текст ссылки"
+
+#: lazdemsg.sload
+msgctxt "lazdemsg.sload"
+msgid "&Load"
+msgstr "З&агрузить"
+
+#: lazdemsg.smakeskelfromsource
+msgid "Make new document from source file"
+msgstr "Сгенерировать новый документ из файла исходного кода"
+
+#: lazdemsg.smarkselection
+msgid "Mark selection %s"
+msgstr "Отметить выделенное: %s"
+
+#: lazdemsg.smenucollapseall
+msgid "Collapse All"
+msgstr "Свернуть все"
+
+#: lazdemsg.smenudelete
+msgctxt "lazdemsg.smenudelete"
+msgid "Delete"
+msgstr "Удалить"
+
+#: lazdemsg.smenuexpandall
+msgid "Expand All"
+msgstr "Развернуть все"
+
+#: lazdemsg.smenuextra
+msgid "&Extra"
+msgstr "С&ервис"
+
+#: lazdemsg.smenuextrabuild
+msgctxt "lazdemsg.smenuextrabuild"
+msgid "&Build"
+msgstr "&Собрать"
+
+#: lazdemsg.smenuextraoptions
+msgid "&Options"
+msgstr "&Параметры"
+
+#: lazdemsg.smenufile
+msgctxt "lazdemsg.smenufile"
+msgid "&File"
+msgstr "&Файл"
+
+#: lazdemsg.smenufileclose
+msgctxt "lazdemsg.smenufileclose"
+msgid "&Close"
+msgstr "&Закрыть"
+
+#: lazdemsg.smenufilenew
+msgid "&New"
+msgstr "&Новый"
+
+#: lazdemsg.smenufilenewfromfile
+msgid "New from fi&le"
+msgstr "Новый из &файла"
+
+#: lazdemsg.smenufileopen
+msgid "&Open"
+msgstr "&Открыть"
+
+#: lazdemsg.smenufilequit
+msgid "&Quit"
+msgstr "В&ыход"
+
+#: lazdemsg.smenufilerecent
+msgid "&Recent"
+msgstr "Не&давний"
+
+#: lazdemsg.smenufilesave
+msgctxt "lazdemsg.smenufilesave"
+msgid "&Save"
+msgstr "Со&хранить"
+
+#: lazdemsg.smenufilesaveas
+msgid "Save &as"
+msgstr "Сохранить &как"
+
+#: lazdemsg.smenuformat
+msgid "Format"
+msgstr "Формат"
+
+#: lazdemsg.smenuformatbold
+msgid "&Bold"
+msgstr "Полу&жирный"
+
+#: lazdemsg.smenuformatcode
+msgid "&Code"
+msgstr "&Код"
+
+#: lazdemsg.smenuformatfile
+msgctxt "lazdemsg.smenuformatfile"
+msgid "&File"
+msgstr "&Файл"
+
+#: lazdemsg.smenuformatitalics
+msgid "&Italic"
+msgstr "К&урсив"
+
+#: lazdemsg.smenuformatparagraph
+msgid "&Paragraph"
+msgstr "&Абзац"
+
+#: lazdemsg.smenuformatremark
+msgid "&Remark"
+msgstr "&Примечание"
+
+#: lazdemsg.smenuformatunderline
+msgid "&Underline"
+msgstr "П&одчёркнутый"
+
+#: lazdemsg.smenuformatvariable
+msgid "&Variable"
+msgstr "П&еременная"
+
+#: lazdemsg.smenuhelp
+msgid "&Help"
+msgstr "&Справка"
+
+#: lazdemsg.smenuhelpabout
+msgid "&About ..."
+msgstr "&О программе ..."
+
+#: lazdemsg.smenuinsert
+msgid "&Insert"
+msgstr "&Вставка"
+
+#: lazdemsg.smenuinsertbulletedlist
+msgid "Bulleted list"
+msgstr "Маркированный список"
+
+#: lazdemsg.smenuinsertelement
+msgid "&Element"
+msgstr "&Элемент"
+
+#: lazdemsg.smenuinsertlink
+msgid "&Link"
+msgstr "&Ссылка"
+
+#: lazdemsg.smenuinsertlist
+msgid "List"
+msgstr "Список"
+
+#: lazdemsg.smenuinsertmodule
+msgid "&Module"
+msgstr "&Модуль"
+
+#: lazdemsg.smenuinsertnumberedlist
+msgid "Numbered list"
+msgstr "Нумерованный список"
+
+#: lazdemsg.smenuinsertpackage
+msgctxt "lazdemsg.smenuinsertpackage"
+msgid "&Package"
+msgstr "&Пакет"
+
+#: lazdemsg.smenuinsertprintshort
+msgid "Insert short desc link"
+msgstr "Вставить ссылку на краткое описание"
+
+#: lazdemsg.smenuinsertquicklink
+msgid "&Quick Link"
+msgstr "&Быстрая ссылка"
+
+#: lazdemsg.smenuinsertshortdesclink
+msgid "&Short description link"
+msgstr "Ссылка на &краткое описание"
+
+#: lazdemsg.smenuinserttable
+msgid "&Table"
+msgstr "&Таблица"
+
+#: lazdemsg.smenuinserttopic
+msgid "T&opic"
+msgstr "Т&ема"
+
+#: lazdemsg.smenurename
+msgid "Rename"
+msgstr "Переименовать"
+
+#: lazdemsg.smoduleelements
+msgid "Elements for selected node"
+msgstr "Части выбранного элемента"
+
+#: lazdemsg.snew
+msgid "New"
+msgstr "Новый"
+
+#: lazdemsg.snewdocument
+msgid "New document"
+msgstr "Новый документ"
+
+#: lazdemsg.snewelement
+msgctxt "lazdemsg.snewelement"
+msgid "New element"
+msgstr "Новый элемент"
+
+#: lazdemsg.snewfile
+msgctxt "lazdemsg.snewfile"
+msgid "New file"
+msgstr "Новый файл"
+
+#: lazdemsg.snewmodule
+msgctxt "lazdemsg.snewmodule"
+msgid "New module"
+msgstr "Новый модуль"
+
+#: lazdemsg.snewpackage
+msgctxt "lazdemsg.snewpackage"
+msgid "New package"
+msgstr "Новый пакет"
+
+#: lazdemsg.snewtopic
+msgctxt "lazdemsg.snewtopic"
+msgid "New topic"
+msgstr "Новая тема"
+
+#: lazdemsg.snodename
+msgid "Node name"
+msgstr "Имя элемента"
+
+#: lazdemsg.snoelement
+msgid "No element selected"
+msgstr "Элемент не выбран"
+
+#: lazdemsg.soptdlgbackupextension
+msgid "Backup extension"
+msgstr "Расширение резервной копии"
+
+#: lazdemsg.soptdlgconfirmdeletes
+msgid "C&onfirm deletes"
+msgstr "&Подтверждать удаления"
+
+#: lazdemsg.soptdlgcreatebackups
+msgid "Create &backups"
+msgstr "&Создавать резервные копии"
+
+#: lazdemsg.soptdlgdefaultextension
+msgid "Default extension"
+msgstr "Расширение по умолчанию"
+
+#: lazdemsg.soptdlgdesktop
+msgid "Desktop"
+msgstr "Рабочий стол"
+
+#: lazdemsg.soptdlgfpdocprogram
+msgid "fpdoc program"
+msgstr "Программа fpdoc"
+
+#: lazdemsg.soptdlggeneral
+msgid "General"
+msgstr "Общие"
+
+#: lazdemsg.soptdlgmakeskelprogram
+msgid "makeskel program"
+msgstr "Программа makeskel"
+
+#: lazdemsg.soptdlgmaxrecentused
+msgid "Max. recent used"
+msgstr "Количество недавних"
+
+#: lazdemsg.soptdlgoptions
+msgid "Options"
+msgstr "Параметры"
+
+#: lazdemsg.soptdlgreopenlastfile
+msgid "Reopen last file on startup"
+msgstr "Открывать последний файл при запуске"
+
+#: lazdemsg.soptdlgshowhints
+msgid "Show hints"
+msgstr "Выводить всплывающие подсказки"
+
+#: lazdemsg.soptdlgskipemptynodes
+msgid "&Skip empty nodes when saving"
+msgstr "&Не сохранять пустые элементы"
+
+#: lazdemsg.soptdlgstartmaximized
+msgid "Start maximized"
+msgstr "Запускать в развёрнутом виде"
+
+#: lazdemsg.sotheroptions
+msgctxt "lazdemsg.sotheroptions"
+msgid "Other options"
+msgstr "Прочие параметры"
+
+#: lazdemsg.soutput
+msgctxt "lazdemsg.soutput"
+msgid "&Output"
+msgstr "&Вывод"
+
+#: lazdemsg.spackage
+msgctxt "lazdemsg.spackage"
+msgid "&Package"
+msgstr "&Пакет"
+
+#: lazdemsg.spackages
+msgid "Packages"
+msgstr "Пакеты"
+
+#: lazdemsg.srenameelement
+msgid "Rename element"
+msgstr "Переименовать элемент"
+
+#: lazdemsg.srenamemodule
+msgid "Rename module"
+msgstr "Переименовать модуль"
+
+#: lazdemsg.srenamepackage
+msgid "Rename package"
+msgstr "Переименовать пакет"
+
+#: lazdemsg.srenametopic
+msgid "Rename topic"
+msgstr "Переименовать тему"
+
+#: lazdemsg.ssave
+msgctxt "lazdemsg.ssave"
+msgid "&Save"
+msgstr "Со&хранить"
+
+#: lazdemsg.ssavebeforebuildquestion
+msgid "You have unsaved changes in \"%s\".%sThey should be saved in order to be visible in built documentation. Save them?"
+msgstr "В \"%s\" имеются несохранённые изменения.%sСохранить их, чтобы они отображались в собранной документации?"
+
+#: lazdemsg.sseealso
+msgid "See Also"
+msgstr "Секция \"Смотрите также\""
+
+#: lazdemsg.sselectoutputdirectory
+msgctxt "lazdemsg.sselectoutputdirectory"
+msgid "Select output directory"
+msgstr "Выберите каталог вывода"
+
+#: lazdemsg.sselectoutputfile
+msgctxt "lazdemsg.sselectoutputfile"
+msgid "Select output file name"
+msgstr "Выберите имя файла вывода"
+
+#: lazdemsg.sselectsometext
+msgid "Select some text."
+msgstr "Выделите какую-нибудь часть текста."
+
+#: lazdemsg.sshortdescription
+msgid "Short"
+msgstr "Краткое описание"
+
+#: lazdemsg.sshowprivatemethods
+msgctxt "lazdemsg.sshowprivatemethods"
+msgid "Show p&rivate methods"
+msgstr "Показывать p&rivate-методы"
+
+#: lazdemsg.sskelerrorwithfile
+msgid "makeskel reported an error (%d). Try to load produced file anyway ?"
+msgstr "Makeskel сообщила об ошибке (%d). Попытаться загрузить сгенерированный файл несмотря на это?"
+
+#: lazdemsg.sskelerrorwithoutfile
+msgid "makeskel reported an error (%d) and produced no file."
+msgstr "Makeskel сообщила об ошибке (%d) и не сгенерировала файл."
+
+#: lazdemsg.ssourcescapt
+msgctxt "lazdemsg.ssourcescapt"
+msgid "Sources"
+msgstr "Исходный код"
+
+#: lazdemsg.sstartnodenotfound
+msgid "Start element \"%s\" could not be found"
+msgstr "Начальный элемент \"%s\" не найден"
+
+#: lazdemsg.stablecols
+msgid "Columns"
+msgstr "Столбцы"
+
+#: lazdemsg.stableheader
+msgid "Use header row"
+msgstr "Использовать строку заголовка"
+
+#: lazdemsg.stablerows
+msgid "Rows"
+msgstr "Строки"
+
+#: lazdemsg.stargetos
+msgctxt "lazdemsg.stargetos"
+msgid "Target OS"
+msgstr "Целевая ОС"
+
+#: lazdemsg.susingcommand
+msgctxt "lazdemsg.susingcommand"
+msgid "Building docs using command: "
+msgstr "Сборка документации с использованием команды: "
+
+#: lazdemsg.swarnifnodocumentationnodefound
+msgctxt "lazdemsg.swarnifnodocumentationnodefound"
+msgid "Warn if no documentation node found"
+msgstr "Предупреждать, если не найдено элемента документации"
+

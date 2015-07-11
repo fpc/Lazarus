@@ -1,0 +1,253 @@
+object StringGridEditorDlg: TStringGridEditorDlg
+  Left = 256
+  Height = 326
+  Top = 163
+  Width = 520
+  Caption = 'StringGridEditorDlg'
+  ClientHeight = 326
+  ClientWidth = 520
+  Constraints.MinHeight = 270
+  Constraints.MinWidth = 340
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object GroupBox: TGroupBox
+    AnchorSideBottom.Control = BtnOK
+    Left = 6
+    Height = 276
+    Top = 6
+    Width = 508
+    Align = alClient
+    Anchors = [akRight]
+    BorderSpacing.Around = 6
+    Caption = 'String Grid'
+    ClientHeight = 258
+    ClientWidth = 504
+    TabOrder = 0
+    object LabelMove: TLabel
+      AnchorSideLeft.Control = StringGrid
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = ArrowDown
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = GroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 417
+      Height = 14
+      Top = 181
+      Width = 87
+      Alignment = taCenter
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      Caption = 'Move Cols/Rows'
+      ParentColor = False
+      WordWrap = True
+    end
+    object ArrowLeft: TArrow
+      AnchorSideTop.Control = ArrowRight
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = ArrowUp
+      Left = 421
+      Height = 26
+      Top = 129
+      Width = 26
+      Anchors = [akTop, akRight]
+      OnClick = SwapRowCol
+    end
+    object ArrowRight: TArrow
+      AnchorSideLeft.Control = ArrowUp
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = ArrowUp
+      AnchorSideTop.Side = asrBottom
+      Left = 473
+      Height = 26
+      Top = 129
+      Width = 26
+      ArrowType = atRight
+      OnClick = SwapRowCol
+    end
+    object ArrowDown: TArrow
+      AnchorSideLeft.Control = ArrowLeft
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = ArrowLeft
+      AnchorSideTop.Side = asrBottom
+      Left = 447
+      Height = 26
+      Top = 155
+      Width = 26
+      ArrowType = atDown
+      OnClick = SwapRowCol
+    end
+    object ArrowUp: TArrow
+      AnchorSideLeft.Control = LoadSavePanel
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideTop.Control = LoadSavePanel
+      AnchorSideTop.Side = asrBottom
+      Left = 447
+      Height = 26
+      Top = 103
+      Width = 26
+      ArrowType = atUp
+      BorderSpacing.Top = 10
+      OnClick = SwapRowCol
+    end
+    object StringGrid: TStringGrid
+      AnchorSideRight.Control = LoadSavePanel
+      Left = 6
+      Height = 246
+      Top = 6
+      Width = 405
+      Align = alLeft
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Around = 6
+      FixedCols = 0
+      FixedRows = 0
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRowSizing, goColSizing, goRowMoving, goColMoving, goEditing, goSmoothScroll]
+      TabOrder = 0
+      OnPrepareCanvas = StringGridPrepareCanvas
+    end
+    object LoadSavePanel: TPanel
+      AnchorSideTop.Control = GroupBox
+      AnchorSideRight.Control = GroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 417
+      Height = 93
+      Top = 0
+      Width = 87
+      Anchors = [akTop, akRight]
+      AutoSize = True
+      BevelOuter = bvNone
+      ClientHeight = 93
+      ClientWidth = 87
+      TabOrder = 5
+      object BtnLoad: TButton
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 23
+        Top = 6
+        Width = 75
+        Align = alTop
+        AutoSize = True
+        BorderSpacing.Around = 6
+        Caption = 'Load...'
+        Constraints.MinWidth = 75
+        OnClick = BtnLoadClick
+        TabOrder = 0
+      end
+      object BtnSave: TButton
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 23
+        Top = 35
+        Width = 75
+        Align = alTop
+        AutoSize = True
+        BorderSpacing.Around = 6
+        Caption = 'BtnSave'
+        OnClick = BtnSaveClick
+        TabOrder = 1
+      end
+      object BtnClean: TButton
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 23
+        Top = 64
+        Width = 75
+        Align = alTop
+        AutoSize = True
+        BorderSpacing.Around = 6
+        Caption = 'BtnClean'
+        OnClick = BtnCleanClick
+        TabOrder = 2
+      end
+    end
+  end
+  object BtnPanel: TPanel
+    Left = 0
+    Height = 38
+    Top = 288
+    Width = 520
+    Align = alBottom
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 38
+    ClientWidth = 520
+    TabOrder = 1
+    object BtnHelp: TBitBtn
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Side = asrBottom
+      Left = 439
+      Height = 26
+      Top = 6
+      Width = 75
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = '&Help'
+      Constraints.MinWidth = 75
+      Kind = bkHelp
+      NumGlyphs = 0
+      TabOrder = 0
+    end
+    object BtnApply: TBitBtn
+      AnchorSideBottom.Side = asrBottom
+      Left = 358
+      Height = 26
+      Top = 6
+      Width = 75
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = '&Apply'
+      Constraints.MinWidth = 75
+      NumGlyphs = 0
+      OnClick = BtnApplyClick
+      TabOrder = 1
+    end
+    object BtnCancel: TBitBtn
+      AnchorSideBottom.Side = asrBottom
+      Left = 275
+      Height = 26
+      Top = 6
+      Width = 77
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'Cancel'
+      Constraints.MinWidth = 75
+      Kind = bkCancel
+      ModalResult = 2
+      NumGlyphs = 0
+      TabOrder = 2
+    end
+    object BtnOK: TBitBtn
+      AnchorSideBottom.Side = asrBottom
+      Left = 194
+      Height = 26
+      Top = 6
+      Width = 75
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = '&OK'
+      Constraints.MinWidth = 75
+      Default = True
+      Kind = bkOK
+      ModalResult = 1
+      NumGlyphs = 0
+      TabOrder = 3
+    end
+  end
+  object OpenDialog: TOpenDialog
+    Title = 'Open'
+    FilterIndex = 0
+    left = 135
+    top = 243
+  end
+  object SaveDialog: TSaveDialog
+    Title = 'Save'
+    FilterIndex = 0
+    left = 168
+    top = 243
+  end
+end

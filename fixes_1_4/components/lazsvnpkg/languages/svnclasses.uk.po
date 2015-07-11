@@ -1,0 +1,245 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2012-04-23 10:26+0300\n"
+"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"Language-Team: \n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Virtaal 0.7.1\n"
+
+#: svnclasses.rsaction
+msgid "Action"
+msgstr "Дія"
+
+#: svnclasses.rsadd
+msgid "Add to version control"
+msgstr "Додати під керування версіями"
+
+#: svnclasses.rsadded
+msgid "Added"
+msgstr "Додано"
+
+#: svnclasses.rsauthor
+msgid "Author"
+msgstr "Автор"
+
+#: svnclasses.rscommit
+msgid "Commit"
+msgstr "Фіксувати зміни"
+
+#: svnclasses.rscommitmsg
+msgid "Commit Message"
+msgstr "Повідомлення комміту"
+
+#: svnclasses.rscommitmsghistory
+msgid "Commit Message History"
+msgstr "Історія Повідомлень"
+
+#: svnclasses.rscommitrevision
+msgid "Commit revision"
+msgstr "Ревізія зі змінами"
+
+#: svnclasses.rsconflict
+msgid "Conflict"
+msgstr "Конфлікт"
+
+#: svnclasses.rscopyfrompath
+msgid "Copy from path"
+msgstr "Копія зі шляху"
+
+#: svnclasses.rscreatepatchfile
+msgid "Create patch file"
+msgstr "Створити патч файл (patch)"
+
+#: svnclasses.rsdate
+msgid "Date"
+msgstr "Дата"
+
+#: svnclasses.rsdelete
+msgid "Delete"
+msgstr "Видалити"
+
+#: svnclasses.rsdeleted
+msgid "Deleted"
+msgstr "Видалено"
+
+#: svnclasses.rsdiffactivefile
+msgid "Diff active file"
+msgstr "Відмінності активного файлу"
+
+#: svnclasses.rsedit
+msgid "Edit"
+msgstr "Редагувати"
+
+#: svnclasses.rsextension
+msgid "Extension"
+msgstr "Розширення"
+
+#: svnclasses.rsfilenotinworkingcopyanymore
+msgid "File is not part of local working copy (anymore)"
+msgstr "Файл (більше) не належить до локальної робочої копії"
+
+#: svnclasses.rsfilestatus
+msgid "File status"
+msgstr "Статус файлу"
+
+#: svnclasses.rsindexoutofboundsd
+msgid "Index out of bounds (%d)"
+msgstr "Індекс за межами діапазону (%d)"
+
+#: svnclasses.rslazarussvncommit
+msgid "LazarusSVN Commit"
+msgstr "Фіксація змін LazarusSVN"
+
+#: svnclasses.rslazarussvndiff
+#| msgid "%s - LazarusSVN Diff..."
+msgid "%s - LazarusSVN Diff ..."
+msgstr "%s - Відмінності Diff LazarusSVN ..."
+
+#: svnclasses.rslazarussvnlog
+#| msgid "%s - LazarusSVN Log..."
+msgid "%s - LazarusSVN Log ..."
+msgstr "%s - Журнал LazarusSVN ..."
+
+#: svnclasses.rslazarussvnupdate
+#| msgid "%s - LazarusSVN Update..."
+msgid "%s - LazarusSVN Update ..."
+msgstr "%s - Оновлення LazarusSVN ..."
+
+#: svnclasses.rsmerged
+msgid "Merged"
+msgstr "Злито"
+
+#: svnclasses.rsmessage
+msgid "Message"
+msgstr "Повідомлення"
+
+#: svnclasses.rsnoauthor
+msgid "(no author)"
+msgstr "(без автора)"
+
+#: svnclasses.rsonlymodifieditemscanbediffed
+msgid "Only modified (M) Items can be diffed"
+msgstr "Лише для змінених (M) файлів можуть бути знайдені відмінності"
+
+#: svnclasses.rsopenfileineditor
+msgid "Open file in editor"
+msgstr "Відкрити файл в редакторі"
+
+#: svnclasses.rsopenpreviousrevisionineditor
+msgid "Open previous revision in editor"
+msgstr "Відкрити попередню ревізію в редакторі"
+
+#: svnclasses.rsopenthisrevisionineditor
+msgid "Open this revision in editor"
+msgstr "Відкрити цю ревізію в редакторі"
+
+#: svnclasses.rspath
+msgid "Path"
+msgstr "Шлях"
+
+#: svnclasses.rsprojectfilename
+msgid "Project filename"
+msgstr "Ім'я файлу проекту"
+
+#: svnclasses.rsprojectisactive
+msgid "Project is active"
+msgstr "Проект активний"
+
+#: svnclasses.rsprojectisnotactiveinsvnsettingspleaseactivatefirst
+msgid "Project is not active in SVN settings, please activate first."
+msgstr "Проект неактивний. Спочатку активуйте його в параметрах SVN."
+
+#: svnclasses.rsprojectname
+msgid "Project name"
+msgstr "Назва проекту"
+
+#: svnclasses.rsprojectoptions
+msgid "Project options"
+msgstr "Параметри проекту"
+
+#: svnclasses.rspropertystatus
+msgid "Property status"
+msgstr "Статус властивості"
+
+#: svnclasses.rsrefresh
+msgid "Refresh"
+msgstr ""
+
+#: svnclasses.rsremove
+msgid "Remove from version control (keep local)"
+msgstr "Вивести з-під керування версіями (залишити локально)"
+
+#: svnclasses.rsrepositorypath
+msgid "Repository path"
+msgstr "Шлях до репозиторію"
+
+#: svnclasses.rsrevert
+msgid "Revert"
+msgstr "Скасувати зміни"
+
+#: svnclasses.rsrevision
+msgid "Revision"
+msgstr "Ревізія"
+
+#: svnclasses.rssave
+msgid "Save"
+msgstr "Зберегти"
+
+#: svnclasses.rssettings
+msgid "Settings"
+msgstr "Параметри"
+
+#: svnclasses.rsshowdiff
+msgid "Show diff"
+msgstr "Показати відмінності"
+
+#: svnclasses.rsshowdiffbase
+#| msgid "Show diff of local changes"
+msgid "Show Diff of Local Changes"
+msgstr "Показати відмінності локальних змін"
+
+#: svnclasses.rsshowdiffcountrev
+#| msgid "Show last X commits"
+msgid "Show Last X Commits"
+msgstr "Показати X останніх ревізій"
+
+#: svnclasses.rsshowdiffhead
+#| msgid "Show diff against HEAD"
+msgid "Show Diff Against HEAD"
+msgstr "Показати відмінності відносно HEAD"
+
+#: svnclasses.rsshowdiffprev
+#| msgid "Show diff against previous version"
+msgid "Show Diff Against Previous Version"
+msgstr "Показати відмінності відносно попередньої версії"
+
+#: svnclasses.rsshowlog
+msgid "Show log"
+msgstr "Показати журнал"
+
+#: svnclasses.rssourcefiledoesnotbelongtotheprojectpleaseaddfirst
+msgid "Source file does not belong to the project. Please add first."
+msgstr "Файл початкового коду не включений в проект. Спершу додайте його."
+
+#: svnclasses.rssvnsettings
+msgid "SVN settings"
+msgstr "Параметри SVN"
+
+#: svnclasses.rssvntools
+msgid "SVN tools"
+msgstr "Інструменти SVN"
+
+#: svnclasses.rsupdate
+msgid "Update"
+msgstr "Оновити"
+
+#: svnclasses.rsupdated
+msgid "Updated"
+msgstr "Оновлено"
+

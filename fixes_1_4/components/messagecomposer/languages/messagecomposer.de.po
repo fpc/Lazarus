@@ -1,0 +1,126 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
+"Language-Team: Deutsch <lazarus@miraclec.com>\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-Country: GERMANY\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: messagecomposer.rscancel
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: messagecomposer.rsok
+#| msgid "Ok"
+msgid "OK"
+msgstr "OK"
+
+#: messagecomposer.rstest
+msgid "Test"
+msgstr "Test"
+
+#: messagecomposer.sadd
+msgid "Add"
+msgstr "Hinzufügen"
+
+#: messagecomposer.sbuttonsarrayofconst
+msgid "Buttons (array of const)"
+msgstr ""
+
+#: messagecomposer.sbuttonstmsgdlgbuttons
+msgid "Buttons (TMsgDlgButtons)"
+msgstr ""
+
+#: messagecomposer.scaseresult
+msgid "\"Case\" result"
+msgstr "\"Case\" Ergebnis"
+
+#: messagecomposer.sdefault
+msgid "Default"
+msgstr "Vorgabe"
+
+#: messagecomposer.sdelete
+msgid "Delete"
+msgstr "Löschen"
+
+#: messagecomposer.sdlgcaption
+msgid "Dialog caption"
+msgstr "Dialogtitel"
+
+#: messagecomposer.sdlgtype
+msgid "Dialog type"
+msgstr "Dialogtyp"
+
+#: messagecomposer.shelpcontext
+msgid "Help context"
+msgstr "Hilfe-Kontext"
+
+#: messagecomposer.shelpfilename
+msgid "Help filename"
+msgstr "Hilfe-Dateiname"
+
+#: messagecomposer.shelpkeyword
+msgid "Help keyword"
+msgstr "Hilfe-Schlüsselwort"
+
+#: messagecomposer.sifresult
+msgid "\"If\" result"
+msgstr "\"If\" Ergebnis"
+
+#: messagecomposer.skindofmessage
+#| msgid "KIND OF MESSAGE"
+msgid "Kind of message"
+msgstr "Art der Meldung"
+
+#: messagecomposer.smaskinput
+#, fuzzy
+#| msgid "Mask Input"
+msgid "Mask input"
+msgstr "Maskeneingabe"
+
+#: messagecomposer.smessagecomposercaption
+#| msgid "Message Composer ..."
+msgctxt "messagecomposer.smessagecomposercaption"
+msgid "Message Composer"
+msgstr "Message-Composer"
+
+#: messagecomposer.smessagecomposermenucaption
+#, fuzzy
+#| msgid "Message Composer ..."
+msgctxt "messagecomposer.smessagecomposermenucaption"
+msgid "Message Composer ..."
+msgstr "Message-Composer ..."
+
+#: messagecomposer.smodalresult
+msgid "Modal result"
+msgstr ""
+
+#: messagecomposer.smsgcaption
+msgid "The message to be shown"
+msgstr "Die anzuzeigende Meldung"
+
+#: messagecomposer.snotimplementedyet
+#| msgid "Not Implemented Yet"
+msgid "Not implemented yet"
+msgstr "Noch nicht implementiert"
+
+#: messagecomposer.spromptcaption
+msgid "Text asking the user for input"
+msgstr "Text um nach einer Eingabe zu fragen"
+
+#: messagecomposer.ssourcewrapper
+#, fuzzy
+#| msgid "SOURCE WRAPPER"
+msgid "Source wrapper"
+msgstr "QUELL-MANTEL"
+
+#: messagecomposer.svaluevar
+msgid "Value (var)"
+msgstr ""
+

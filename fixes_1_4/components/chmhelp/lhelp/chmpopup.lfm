@@ -1,0 +1,24 @@
+object HelpPopupForm: THelpPopupForm
+  Caption = 'HelpPopupForm'
+  ClientHeight = 313
+  ClientWidth = 200
+  PixelsPerInch = 90
+  Position = poDefault
+  HorzScrollBar.Page = 199
+  VertScrollBar.Page = 312
+  Left = 673
+  Height = 313
+  Top = 388
+  Width = 200
+  object IpHtmlPanel1: TIpHtmlPanel
+    Align = alClient
+    FixedTypeface = 'Courier New'
+    DefaultTypeFace = 'default'
+    PrintSettings.MarginLeft = 0.5
+    PrintSettings.MarginTop = 0.5
+    PrintSettings.MarginRight = 0.5
+    PrintSettings.MarginBottom = 0.5
+    Height = 313
+    Width = 200
+  end
+end

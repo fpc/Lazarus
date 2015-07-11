@@ -1,0 +1,19 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: instantfpcregisterlaz.rsinstantfpcpr
+msgid "InstantFPC program"
+msgstr "InstantFPC program"
+
+#: instantfpcregisterlaz.rsinstantfpcsc
+msgid "InstantFPC script"
+msgstr "InstantFPC script"
+
+#: instantfpcregisterlaz.rssinglefilefr
+msgid "%s%sSingle file Free Pascal program executed by InstantFPC"
+msgstr "%s%sJednosouborový program Free Pascalu  spouštěný pomocí InstantFPC"
+
+#: instantfpcregisterlaz.rssinglefilepr
+msgid "%s%sSingle file program using InstantFPC to compile and execute"
+msgstr "%s%sJednosouborový program využívající InsfantFPC ke kompilaci a běhu."
+

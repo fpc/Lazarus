@@ -1,0 +1,131 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2012-08-06 22:23+0300\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.5\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Language: lt\n"
+
+#: reconstsunit.sabout
+#, fuzzy
+#| msgid "About..."
+msgid "About ..."
+msgstr "Apie…"
+
+#: reconstsunit.sallfilesexcutablefilesexeexedlldlldll
+msgid "All files (*.*)|*.*|Excutable files (*.exe)|*.exe|DLL (*.dll)|*.dll"
+msgstr ""
+
+#: reconstsunit.sallfilessharedlibsoso
+msgid "All files (*)|*|Shared libraries (*.so)|*.so"
+msgstr ""
+
+#: reconstsunit.sbuilddate
+#, fuzzy
+#| msgid "Build date : "
+msgid "Build date: "
+msgstr "Sukūrimo data: "
+
+#: reconstsunit.scarbonwidgetset
+msgid "Carbon widget set"
+msgstr "Valdikliai „Carbon“"
+
+#: reconstsunit.sexit
+msgid "Exit"
+msgstr "Baigti darbą"
+
+#: reconstsunit.sfile
+msgid "File"
+msgstr "Failas"
+
+#: reconstsunit.sfpcversion
+#, fuzzy
+#| msgid "FPC version : "
+msgid "FPC version: "
+msgstr "FPC laida: "
+
+#: reconstsunit.sfpguiwidgetset
+msgid "FpGUI widget set"
+msgstr "Valdikliai „FpGUI“"
+
+#: reconstsunit.sgtk2widgetset
+msgid "GTK 2 widget set"
+msgstr "Valdikliai „GTK2“"
+
+#: reconstsunit.sgtkwidgetset
+msgid "GTK widget set"
+msgstr "Valdikliai „GTK“"
+
+#: reconstsunit.shelp
+msgid "Help"
+msgstr "Žinynas"
+
+#: reconstsunit.simage
+msgid "Image"
+msgstr "Paveikslas"
+
+#: reconstsunit.slclversion
+msgid "LCL Version: "
+msgstr "LCL laida: "
+
+#: reconstsunit.slicense
+msgid "This program is free software under GNU GPL 2 license, see COPYING file"
+msgstr "Tai laisvoji programinė įranga, kuriai taikoma GNU GPL 2 licencija (žvilgtelėkite į COPYING failą)"
+
+#: reconstsunit.sopen
+#, fuzzy
+#| msgid "Open..."
+msgid "Open ..."
+msgstr "Atverti…"
+
+#: reconstsunit.sotherguiwidgetset
+msgid "Other gui"
+msgstr "Kita grafinė sąsaja"
+
+#: reconstsunit.sqtwidgetset
+msgid "QT widget set"
+msgstr "Valdikliai „QT“"
+
+#: reconstsunit.sresourceexplorer
+msgid "Resource explorer"
+msgstr "Išteklių naršyklė"
+
+#: reconstsunit.sresources
+msgid "Resources"
+msgstr ""
+
+#: reconstsunit.ssaveresource
+#, fuzzy
+#| msgid "Save resource..."
+msgid "Save resource ..."
+msgstr "Įrašyti išteklius…"
+
+#: reconstsunit.sstrings
+msgid "Strings"
+msgstr "Tekstas"
+
+#: reconstsunit.stargetcpu
+#, fuzzy
+#| msgid "Target CPU : "
+msgid "Target CPU: "
+msgstr "Paskirties procesorius: "
+
+#: reconstsunit.stargetos
+#, fuzzy
+#| msgid "Target OS : "
+msgid "Target OS: "
+msgstr "Paskirties OS: "
+
+#: reconstsunit.swin32_64widgetset
+msgid "Win32/Win64 widget set"
+msgstr "Valdikliai „Win32/Win64“"
+
+#: reconstsunit.swincewidgetset
+msgid "WinCE widget set"
+msgstr "Valdikliai „WinCE“"
+

@@ -1,0 +1,396 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
+"Language-Team: Magyar (Hungarian)\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: fpwebstrconsts.scssfile
+msgid "CSS file"
+msgstr "CSS fájl"
+
+#: fpwebstrconsts.scssfiledesc
+msgid "Create new CSS file ..."
+msgstr "Új CSS fájl létrehozása ..."
+
+#: fpwebstrconsts.scsssource
+msgid "Enter your classes/style definitions here"
+msgstr "Írja ide az osztály/stílus meghatározásokat"
+
+#: fpwebstrconsts.sdocumentlocation
+msgid "&Location"
+msgstr "&Hely"
+
+#: fpwebstrconsts.sdocumentroot
+msgid "&Directory"
+msgstr "&Könyvtár"
+
+#: fpwebstrconsts.senteryoutext
+msgid "Enter your text ..."
+msgstr "Írja be a szöveget ..."
+
+#: fpwebstrconsts.shtmlautor
+msgid "Html &author - <meta name=\"author\">"
+msgstr "HTML &szerző - <meta name=\"author\">"
+
+#: fpwebstrconsts.shtmlcharset
+msgid "HTML chars&et"
+msgstr "HTML &karakterkészlet"
+
+#: fpwebstrconsts.shtmlcopyright
+msgid "Html cop&yright - meta name=\"copyright\">"
+msgstr "HTML sze&rzői jog - meta name=\"copyright\">"
+
+#: fpwebstrconsts.shtmlcssfile
+msgid "&CSS file"
+msgstr "&CSS fájl"
+
+#: fpwebstrconsts.shtmldesign
+msgid "HTML design"
+msgstr "HTML tervezés"
+
+#: fpwebstrconsts.shtmlfile
+msgid "HTML file"
+msgstr "HTML fájl"
+
+#: fpwebstrconsts.shtmlfiledesc
+msgid "Create new HTML file ..."
+msgstr "Új HTML fájl létrehozása ..."
+
+#: fpwebstrconsts.shtmlinputformaccesskey
+msgid "Access key"
+msgstr "Hozzáférési billentyű"
+
+#: fpwebstrconsts.shtmlinputformalign
+msgid "Align"
+msgstr "Igazítás"
+
+#: fpwebstrconsts.shtmlinputformalt
+msgid "Alt"
+msgstr "Alt"
+
+#: fpwebstrconsts.shtmlinputformcaption
+msgid "Tag property: INPUT"
+msgstr "Cimke tulajdonság: INPUT"
+
+#: fpwebstrconsts.shtmlinputformimagesrc
+msgid "Image src"
+msgstr "Kép forrás"
+
+#: fpwebstrconsts.shtmlinputformmaxlen
+msgid "Max length"
+msgstr "Maximális hossz"
+
+#: fpwebstrconsts.shtmlinputformname
+msgid "Name"
+msgstr "Név"
+
+#: fpwebstrconsts.shtmlinputformsize
+msgid "Size"
+msgstr "Méret"
+
+#: fpwebstrconsts.shtmlinputformtabindex
+msgid "Tab Index"
+msgstr "Tab sorszám"
+
+#: fpwebstrconsts.shtmlinputformtype
+msgid "Type"
+msgstr "Típus"
+
+#: fpwebstrconsts.shtmlinputformvalue
+msgid "Value"
+msgstr "Érték"
+
+#: fpwebstrconsts.shtmljsfile
+msgid "&Javascript file"
+msgstr "&Javascript fájl"
+
+#: fpwebstrconsts.shtmltableformborderwidth
+msgid "Border width"
+msgstr "Szegély szélessége"
+
+#: fpwebstrconsts.shtmltableformcaption
+msgid "New HTML table ..."
+msgstr "Új HTML táblázat ..."
+
+#: fpwebstrconsts.shtmltableformcellpadding
+msgid "Cell padding"
+msgstr "Cellamargó"
+
+#: fpwebstrconsts.shtmltableformcellspacing
+msgid "Cell spacing"
+msgstr "Cellatávolság"
+
+#: fpwebstrconsts.shtmltableformcolumncount
+msgid "Column count"
+msgstr "Oszlopszám"
+
+#: fpwebstrconsts.shtmltableformheaderbgcolor
+msgid "Header bg color"
+msgstr "Fejléc háttérszíne"
+
+#: fpwebstrconsts.shtmltableformrowcount
+msgid "Row count"
+msgstr "Sorszám"
+
+#: fpwebstrconsts.shtmltableformuseheader
+msgid "Use header row"
+msgstr "Fejlécsor használata"
+
+#: fpwebstrconsts.shtmltableformwidth
+msgid "Width"
+msgstr "Szélesség"
+
+#: fpwebstrconsts.shtmltagcaptionreset
+msgid "Reset"
+msgstr "Alaphelyzet"
+
+#: fpwebstrconsts.shtmltagcaptionsubmit
+msgid "Submit"
+msgstr "Küldés"
+
+#: fpwebstrconsts.shtmltagproperty
+msgid "Tag property: %s"
+msgstr "Cimke tulajdonság: %s"
+
+#: fpwebstrconsts.shtmltitle
+msgid "Html &title - <title>"
+msgstr "Html &cím - <title>"
+
+#: fpwebstrconsts.shttpport
+msgid "&Port to listen for requests:"
+msgstr "A kérések figyelésére használt &port:"
+
+#: fpwebstrconsts.sjsfile
+msgid "Javascript file"
+msgstr "Javascript fájl"
+
+#: fpwebstrconsts.sjsfiledesc
+msgid "Create new javascript file ..."
+msgstr "Új javascript fájl létrehozása ..."
+
+#: fpwebstrconsts.sjssource
+msgid "Enter your javascript code here"
+msgstr "Írja ide a javascript kódot"
+
+#: fpwebstrconsts.smihtmleditor
+msgid "HTML Editor"
+msgstr "HTML-szerkesztő"
+
+#: fpwebstrconsts.smihtmlformbuttton
+msgid "Insert Button control"
+msgstr "Gomb beszúrása"
+
+#: fpwebstrconsts.smihtmlformcheckbox
+msgid "Insert CheckBox control"
+msgstr "Jelölőnégyzet beszúrása"
+
+#: fpwebstrconsts.smihtmlformfieldset
+msgid "Insert HTML FIELDSET tag"
+msgstr "HTML FIELDSET címke beszúrása"
+
+#: fpwebstrconsts.smihtmlformlegend
+msgid "Insert HTML LEGEND tag"
+msgstr "HTML LEGEND címke beszúrása"
+
+#: fpwebstrconsts.smihtmlformradiobtn
+msgid "Insert RadioBtn control"
+msgstr "Rádiógomb beszúrása"
+
+#: fpwebstrconsts.smihtmlforms
+msgid "Forms"
+msgstr "Űrlapok"
+
+#: fpwebstrconsts.smihtmlformselect
+msgid "Insert Select control"
+msgstr "Választólista beszúrása"
+
+#: fpwebstrconsts.smihtmlformselectopt
+msgid "Insert Select options"
+msgstr "Választási lehetőség beszúrása"
+
+#: fpwebstrconsts.smihtmlformselectoptwd
+msgid "Insert Select options with dialog"
+msgstr "Választási lehetőség beszúrása párbeszéddel"
+
+#: fpwebstrconsts.smihtmlinsertbr
+msgid "Insert new line"
+msgstr "Új sor beszúrása"
+
+#: fpwebstrconsts.smihtmlinsertcolor
+msgid "Insert HTML color value"
+msgstr "HTML színérték beszúrása"
+
+#: fpwebstrconsts.smihtmlinsertcomment
+msgid "Insert HTML comment"
+msgstr "HTML megjegyzés beszúrása"
+
+#: fpwebstrconsts.smihtmlinsertdivblock
+msgid "Insert HTML DIV tag"
+msgstr "HTML DIV címke beszúrása"
+
+#: fpwebstrconsts.smihtmlinsertform
+msgid "Insert HTML Form"
+msgstr "HTML FORM beszúrása"
+
+#: fpwebstrconsts.smihtmlinsertheader1level
+msgid "Insert HTML level 1 header"
+msgstr "HTML 1. szintű fejléc beszúrása"
+
+#: fpwebstrconsts.smihtmlinsertheader2level
+msgid "Insert HTML level 2 header"
+msgstr "HTML 2. szintű fejléc beszúrása"
+
+#: fpwebstrconsts.smihtmlinsertheader3level
+msgid "Insert HTML level 3 header"
+msgstr "HTML 3. szintű fejléc beszúrása"
+
+#: fpwebstrconsts.smihtmlinsertheader4level
+msgid "Insert HTML level 4 header"
+msgstr "HTML 4. szintű fejléc beszúrása"
+
+#: fpwebstrconsts.smihtmlinsertheader5level
+msgid "Insert HTML level 5 header"
+msgstr "HTML 5. szintű fejléc beszúrása"
+
+#: fpwebstrconsts.smihtmlinserthr
+msgid "Insert horizontal line"
+msgstr "Vízszintes vonal beszúrása"
+
+#: fpwebstrconsts.smihtmlinsertimg
+msgid "Insert image"
+msgstr "Kép beszúrása"
+
+#: fpwebstrconsts.smihtmlinsertinput
+msgid "Insert HTML INPUT tag"
+msgstr "HTML INPUT címke beszúrása"
+
+#: fpwebstrconsts.smihtmlinsertinputreset
+msgid "Insert \"Reset\" button"
+msgstr "\"Alaphelyzet\" gomb beszúrása"
+
+#: fpwebstrconsts.smihtmlinsertinputsubmit
+msgid "Insert \"Submit\" button "
+msgstr "\"Küldés\" gomb beszúrása"
+
+#: fpwebstrconsts.smihtmlinsertlink
+msgid "Insert link (HREF)"
+msgstr "Hivatkozás beszúrása (HREF)"
+
+#: fpwebstrconsts.smihtmlinsertlist
+msgid "Insert HTML list"
+msgstr "HTML lista beszúrása"
+
+#: fpwebstrconsts.smihtmlinsertnbsp
+msgid "Insert Non Breaking Space"
+msgstr "Nem tördelhető szóköz beillesztése"
+
+#: fpwebstrconsts.smihtmlinsertpre
+msgid "Insert HTML PRE tag"
+msgstr "HTML PRE címke beszúrása"
+
+#: fpwebstrconsts.smihtmlinsertspantext
+msgid "Insert HTML SPAN tag"
+msgstr "HTML SPAN címke beszúrása"
+
+#: fpwebstrconsts.smihtmlinsertsub
+msgid "Insert Subscript"
+msgstr "Alsó index beszúrása"
+
+#: fpwebstrconsts.smihtmlinsertsuper
+msgid "Insert Superscript"
+msgstr "Felső index beszúrása"
+
+#: fpwebstrconsts.smihtmlinserttable
+msgid "Insert HTML table"
+msgstr "HTML táblázat beszúrása"
+
+#: fpwebstrconsts.smihtmlinserttabledata
+msgid "Insert HTML table data"
+msgstr "HTML táblázatadat beszúrása"
+
+#: fpwebstrconsts.smihtmlinserttabledatawd
+msgid "Insert HTML table data with dialog"
+msgstr "HTML táblázatadat beszúrása párbeszéddel"
+
+#: fpwebstrconsts.smihtmlinserttablerow
+msgid "Insert HTML table row"
+msgstr "HTML táblázatsor beszúrása"
+
+#: fpwebstrconsts.smihtmlinserttablerowwd
+msgid "Insert HTML table row with dialog"
+msgstr "HTML táblázatsor beszúrása párbeszéddel"
+
+#: fpwebstrconsts.smihtmllists
+msgid "Lists"
+msgstr "Listák"
+
+#: fpwebstrconsts.smihtmlother
+msgid "Other"
+msgstr "Egyéb"
+
+#: fpwebstrconsts.smihtmlstandart
+msgid "Standard"
+msgstr "Alapvető"
+
+#: fpwebstrconsts.smihtmlstyle
+msgid "Styles"
+msgstr "Stílusok"
+
+#: fpwebstrconsts.smihtmltables
+msgid "Tables"
+msgstr "Táblázatok"
+
+#: fpwebstrconsts.smihtmltextaligncenter
+msgid "Text align center"
+msgstr "Szöveg igazítása középre"
+
+#: fpwebstrconsts.smihtmltextalignjustify
+msgid "Text align justify"
+msgstr "Szöveg igazítása egyenletesen (sorkizárt)"
+
+#: fpwebstrconsts.smihtmltextalignleft
+msgid "Text align left"
+msgstr "Szöveg igazítása balra"
+
+#: fpwebstrconsts.smihtmltextalignright
+msgid "Text align right"
+msgstr "Szöveg igazítása jobbra"
+
+#: fpwebstrconsts.smihtmltextbold
+msgid "Bold"
+msgstr "Félkövér"
+
+#: fpwebstrconsts.smihtmltextitalic
+msgid "Italic"
+msgstr "Dőlt"
+
+#: fpwebstrconsts.smihtmltextunderline
+msgid "Underline"
+msgstr "Aláhúzott"
+
+#: fpwebstrconsts.smiotherinsertfn
+msgid "Insert file name"
+msgstr "Fájlnév beszúrása"
+
+#: fpwebstrconsts.snewhtmlfileprops
+msgid "New Html file properties"
+msgstr "Új HTML fájl tulajdonságok"
+
+#: fpwebstrconsts.snewhttpapp
+msgid "New HTTP application"
+msgstr "Új HTTP alkalmazás"
+
+#: fpwebstrconsts.sregisterfiles
+msgid "&Register location to serve files from"
+msgstr "Hely &bejegyzése a fájlok kiszolgálására"
+
+#: fpwebstrconsts.susethreads
+msgid "Use &threads to serve requests in"
+msgstr "Szá&lak használata a kérések kiszolgálására"

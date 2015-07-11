@@ -1,0 +1,103 @@
+object dlgPageSetup: TdlgPageSetup
+  Left = 275
+  Height = 449
+  Top = 125
+  Width = 408
+  ActiveControl = frmPageSetup.panPreview
+  Caption = 'dlgPageSetup'
+  ClientHeight = 449
+  ClientWidth = 408
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.27'
+  inline frmPageSetup: TframePageSetup
+    Height = 408
+    Width = 408
+    Align = alClient
+    ClientHeight = 404
+    ClientWidth = 404
+    TabOrder = 1
+    inherited panSetup: TPanel
+      Top = 193
+      Width = 404
+      ClientWidth = 404
+      inherited gpPaper: TGroupBox
+        Width = 392
+        ClientWidth = 388
+        inherited cbPaper: TComboBox
+          Width = 303
+        end
+        inherited cbSource: TComboBox
+          Width = 303
+        end
+      end
+      inherited gpMargins: TGroupBox
+        Width = 266
+        ClientWidth = 262
+        inherited panMargins: TPanel
+          Left = 7
+          TabOrder = 4
+        end
+      end
+    end
+    inherited panPreview: TPanel
+      Height = 193
+      Width = 404
+      ClientHeight = 193
+      ClientWidth = 404
+      Constraints.MinHeight = 0
+      inherited pbPreview: TPaintBox
+        Left = 152
+        Top = 31
+      end
+    end
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 41
+    Top = 408
+    Width = 408
+    Align = alBottom
+    Anchors = [akLeft, akBottom]
+    BevelOuter = bvNone
+    ClientHeight = 41
+    ClientWidth = 408
+    FullRepaint = False
+    TabOrder = 0
+    TabStop = True
+    object btnCancel1: TButton
+      Left = 201
+      Height = 25
+      Top = 8
+      Width = 91
+      Anchors = [akTop, akRight]
+      BorderSpacing.InnerBorder = 4
+      Caption = 'Cancel'
+      ModalResult = 2
+      TabOrder = 0
+    end
+    object btnOk: TButton
+      Left = 104
+      Height = 25
+      Top = 8
+      Width = 91
+      Anchors = [akTop, akRight]
+      BorderSpacing.InnerBorder = 4
+      Caption = 'Ok'
+      Default = True
+      ModalResult = 1
+      TabOrder = 1
+    end
+    object btnPrinter: TButton
+      Left = 304
+      Height = 25
+      Top = 8
+      Width = 91
+      Anchors = [akTop, akRight]
+      BorderSpacing.InnerBorder = 4
+      Caption = 'Printer ...'
+      ModalResult = 2
+      TabOrder = 2
+    end
+  end
+end

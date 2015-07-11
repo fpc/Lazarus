@@ -1,0 +1,71 @@
+object Form1: TForm1
+  Left = 615
+  Height = 127
+  Top = 326
+  Width = 218
+  HorzScrollBar.Page = 217
+  VertScrollBar.Page = 126
+  ActiveControl = FloatSpinEdit1
+  Caption = 'Form1'
+  OnCreate = FormCreate
+  object Label1: TLabel
+    Left = 16
+    Height = 14
+    Top = 17
+    Width = 32
+    Caption = 'Label1'
+    Color = clNone
+    ParentColor = False
+  end
+  object Label2: TLabel
+    Left = 16
+    Height = 14
+    Top = 48
+    Width = 32
+    Caption = 'Label2'
+    Color = clNone
+    ParentColor = False
+  end
+  object FloatSpinEdit1: TFloatSpinEdit
+    Left = 72
+    Height = 23
+    Top = 8
+    Width = 130
+    Increment = 1
+    MaxValue = 100
+    TabOrder = 0
+    Value = 42.4199981689453
+  end
+  object CloseButton: TButton
+    Left = 72
+    Height = 25
+    Top = 88
+    Width = 75
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Close'
+    OnClick = CloseButtonClick
+    TabOrder = 1
+  end
+  object FloatSpinEdit2: TFloatSpinEdit
+    Left = 72
+    Height = 23
+    Top = 40
+    Width = 130
+    DecimalPlaces = 3
+    Increment = 1
+    MaxValue = 200
+    TabOrder = 2
+    Value = 1.13100004196167
+  end
+  object ApplicationProperties1: TApplicationProperties
+    CaptureExceptions = True
+    HintColor = clInfoBk
+    HintHidePause = 2500
+    HintPause = 500
+    HintShortCuts = True
+    ShowHint = True
+    OnIdle = ApplicationProperties1Idle
+    left = 8
+    top = 88
+  end
+end

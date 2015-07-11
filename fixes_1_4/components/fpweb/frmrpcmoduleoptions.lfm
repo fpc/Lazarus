@@ -1,0 +1,77 @@
+object JSONRPCModuleOptionsForm: TJSONRPCModuleOptionsForm
+  Left = 370
+  Height = 219
+  Top = 500
+  Width = 439
+  ActiveControl = CBRegisterHandlers
+  Caption = 'Create a new JSON-RPC module'
+  ClientHeight = 219
+  ClientWidth = 439
+  LCLVersion = '0.9.29'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 35
+    Top = 178
+    Width = 427
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object CBRegisterHandlers: TCheckBox
+    Left = 24
+    Height = 21
+    Top = 24
+    Width = 336
+    AutoSize = False
+    Caption = 'Register JSON-RPC handlers in factory'
+    OnChange = CBRegisterHandlersChange
+    TabOrder = 1
+  end
+  object CBRegisterModule: TCheckBox
+    Left = 24
+    Height = 21
+    Top = 104
+    Width = 248
+    AutoSize = False
+    Caption = 'Register web module'
+    Checked = True
+    OnChange = CBRegisterModuleChange
+    State = cbChecked
+    TabOrder = 2
+  end
+  object ERegModuleClassName: TEdit
+    Left = 144
+    Height = 25
+    Top = 56
+    Width = 254
+    TabOrder = 3
+  end
+  object ERegModuleName: TEdit
+    Left = 144
+    Height = 25
+    Top = 140
+    Width = 248
+    TabOrder = 4
+  end
+  object Label1: TLabel
+    Left = 23
+    Height = 25
+    Top = 56
+    Width = 107
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = 'JSON-RPC class'
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object Label2: TLabel
+    Left = 56
+    Height = 25
+    Top = 140
+    Width = 72
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = 'HTTP Path'
+    Layout = tlCenter
+    ParentColor = False
+  end
+end

@@ -1,0 +1,42 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.9.27 beta\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2009-04-24 19:20+0800\n"
+"Last-Translator: XY.Chen <chenxinyv@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Chinese\n"
+"X-Poedit-Country: CHINA\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: registersqldb.sfirebirddatabases
+msgid "Firebird databases"
+msgstr "Firebird数据库"
+
+#: registersqldb.sinterbasedatabases
+msgid "Interbase databases"
+msgstr "Interbase数据库"
+
+#: registersqldb.slibraries
+msgid "Shared libraries"
+msgstr ""
+
+#: registersqldb.ssqlscript
+msgid "SQL Script file"
+msgstr ""
+
+#: registersqldb.ssqlscriptdesc
+msgid "Create a new SQL Script file"
+msgstr ""
+
+#: registersqldb.ssqlsource
+msgid "Insert your SQL statements here"
+msgstr ""
+
+#: registersqldb.ssqlstringspropertyeditordlgtitle
+msgid "Editing %s"
+msgstr "编辑 %s"
+

@@ -1,0 +1,303 @@
+inherited WatchesDlg: TWatchesDlg
+  Left = 321
+  Height = 200
+  Top = 437
+  Width = 500
+  HorzScrollBar.Page = 499
+  VertScrollBar.Page = 199
+  ActiveControl = lvWatches
+  BorderStyle = bsSizeToolWin
+  Caption = 'Watch list'
+  ClientHeight = 200
+  ClientWidth = 500
+  KeyPreview = True
+  OnDestroy = FormDestroy
+  OnKeyDown = FormKeyDown
+  OnShow = FormShow
+  object lvWatches: TListView[0]
+    Left = 0
+    Height = 174
+    Top = 26
+    Width = 295
+    Align = alClient
+    Columns = <    
+      item
+        Caption = 'Expression'
+        Width = 10
+      end    
+      item
+        Caption = 'Value'
+        Width = 10
+      end>
+    MultiSelect = True
+    PopupMenu = mnuPopup
+    ReadOnly = True
+    RowSelect = True
+    ScrollBars = ssAutoBoth
+    SortType = stText
+    TabOrder = 0
+    ViewStyle = vsReport
+    OnDblClick = lvWatchesDblClick
+    OnSelectItem = lvWatchesSelectItem
+  end
+  object ToolBar1: TToolBar[1]
+    Left = 0
+    Height = 26
+    Top = 0
+    Width = 500
+    Caption = 'ToolBar1'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 1
+    object ToolButtonPower: TToolButton
+      Left = 1
+      Top = 2
+      Action = actPower
+      AllowAllUp = True
+      Style = tbsCheck
+    end
+    object ToolButton2: TToolButton
+      Left = 24
+      Top = 2
+      Width = 5
+      Caption = 'ToolButton2'
+      Style = tbsDivider
+    end
+    object ToolButtonEnable: TToolButton
+      Left = 52
+      Top = 2
+      Action = actEnableSelected
+    end
+    object ToolButtonDisable: TToolButton
+      Left = 75
+      Top = 2
+      Action = actDisableSelected
+    end
+    object ToolButtonTrash: TToolButton
+      Left = 98
+      Top = 2
+      Action = actDeleteSelected
+    end
+    object ToolButton6: TToolButton
+      Left = 121
+      Top = 2
+      Width = 5
+      Caption = 'ToolButton6'
+      Style = tbsDivider
+    end
+    object ToolButtonEnableAll: TToolButton
+      Left = 126
+      Top = 2
+      Action = actEnableAll
+    end
+    object ToolButtonDisableAll: TToolButton
+      Left = 149
+      Top = 2
+      Action = actDisableAll
+    end
+    object ToolButtonTrashAll: TToolButton
+      Left = 172
+      Top = 2
+      Action = actDeleteAll
+    end
+    object ToolButton10: TToolButton
+      Left = 195
+      Top = 2
+      Width = 5
+      Caption = 'ToolButton10'
+      Style = tbsDivider
+    end
+    object ToolButtonAdd: TToolButton
+      Left = 29
+      Top = 2
+      Action = actAddWatch
+    end
+    object ToolButtonProperties: TToolButton
+      Left = 223
+      Top = 2
+      Action = actProperties
+    end
+    object ToolButtonInspectView: TToolButton
+      Left = 200
+      Top = 2
+      Action = actToggleInspectSite
+      Style = tbsCheck
+    end
+  end
+  object InspectSplitter: TSplitter[2]
+    Left = 295
+    Height = 174
+    Top = 26
+    Width = 5
+    Align = alRight
+    ResizeAnchor = akRight
+    Visible = False
+  end
+  object nbInspect: TNotebook[3]
+    Left = 300
+    Height = 174
+    Top = 26
+    Width = 200
+    PageIndex = 0
+    Align = alRight
+    TabOrder = 3
+    TabStop = True
+    object Page1: TPage
+      object InspectMemo: TMemo
+        Left = 0
+        Height = 159
+        Top = 15
+        Width = 200
+        Align = alClient
+        ReadOnly = True
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+        WantReturns = False
+      end
+      object InspectLabel: TLabel
+        Left = 0
+        Height = 15
+        Top = 0
+        Width = 200
+        Align = alTop
+        Caption = '...'
+        ParentColor = False
+      end
+    end
+  end
+  object mnuPopup: TPopupMenu[4]
+    left = 100
+    top = 96
+    object popAdd: TMenuItem
+      Action = actAddWatch
+    end
+    object N1: TMenuItem
+      Caption = '-'
+    end
+    object popProperties: TMenuItem
+      Action = actProperties
+    end
+    object popEnabled: TMenuItem
+      Action = actToggleCurrentEnable
+    end
+    object popDelete: TMenuItem
+      Action = actDeleteSelected
+    end
+    object N2: TMenuItem
+      Caption = '-'
+    end
+    object popDisableAll: TMenuItem
+      Action = actDisableAll
+    end
+    object popEnableAll: TMenuItem
+      Action = actEnableAll
+    end
+    object popDeleteAll: TMenuItem
+      Action = actDeleteAll
+    end
+    object N3: TMenuItem
+      Caption = '-'
+    end
+    object popInspect: TMenuItem
+      Action = actInspect
+    end
+    object popEvaluate: TMenuItem
+      Action = actEvaluate
+    end
+    object popAddWatchPoint: TMenuItem
+      Action = actAddWatchPoint
+    end
+    object MenuItem1: TMenuItem
+      Caption = '-'
+    end
+    object popCopyName: TMenuItem
+      Action = actCopyName
+    end
+    object popCopyValue: TMenuItem
+      Action = actCopyValue
+    end
+  end
+  object ActionList1: TActionList[5]
+    left = 184
+    top = 88
+    object actPower: TAction
+      Caption = 'actPower'
+      Checked = True
+      OnExecute = actPowerExecute
+    end
+    object actToggleCurrentEnable: TAction
+      Caption = 'actToggleCurrentEnable'
+      OnExecute = popEnabledClick
+    end
+    object actAddWatch: TAction
+      Caption = 'actAddWatch'
+      OnExecute = popAddClick
+      SecondaryShortCuts.Strings = (
+        'ins'
+      )
+      ShortCut = 16449
+    end
+    object actEnableSelected: TAction
+      Caption = 'actEnableSelected'
+      OnExecute = actEnableSelectedExecute
+    end
+    object actDisableSelected: TAction
+      Caption = 'actDisableSelected'
+      OnExecute = actDisableSelectedExecute
+    end
+    object actDeleteSelected: TAction
+      Caption = 'actDeleteSelected'
+      OnExecute = popDeleteClick
+      SecondaryShortCuts.Strings = (
+        'del'
+      )
+      ShortCut = 16452
+    end
+    object actEnableAll: TAction
+      Caption = 'actEnableAll'
+      OnExecute = popEnableAllClick
+    end
+    object actDisableAll: TAction
+      Caption = 'actDisableAll'
+      OnExecute = popDisableAllClick
+    end
+    object actDeleteAll: TAction
+      Caption = 'actDeleteAll'
+      OnExecute = popDeleteAllClick
+    end
+    object actProperties: TAction
+      Caption = 'actProperties'
+      OnExecute = popPropertiesClick
+      SecondaryShortCuts.Strings = (
+        'enter'
+      )
+      ShortCut = 16453
+    end
+    object actCopyName: TAction
+      Category = 'copy'
+      Caption = 'actCopyName'
+      OnExecute = actCopyNameExecute
+    end
+    object actCopyValue: TAction
+      Category = 'copy'
+      Caption = 'actCopyValue'
+      OnExecute = actCopyValueExecute
+    end
+    object actAddWatchPoint: TAction
+      Caption = 'actAddWatchPoint'
+      OnExecute = actAddWatchPointExecute
+    end
+    object actInspect: TAction
+      Caption = 'actInspect'
+      OnExecute = actInspectExecute
+    end
+    object actEvaluate: TAction
+      Caption = 'actEvaluate'
+      OnExecute = actEvaluateExecute
+    end
+    object actToggleInspectSite: TAction
+      Caption = 'actToggleInspectSite'
+      OnExecute = actToggleInspectSiteExecute
+    end
+  end
+end

@@ -1,0 +1,117 @@
+object Form1: TForm1
+  Left = 412
+  Height = 255
+  Top = 299
+  Width = 297
+  ActiveControl = Button1
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsToolWindow
+  Caption = 'Cursor test'
+  ClientHeight = 255
+  ClientWidth = 297
+  OnCreate = FormCreate
+  LCLVersion = '0.9.25'
+  object Label1: TLabel
+    Cursor = crHelp
+    Left = 16
+    Height = 18
+    Top = 7
+    Width = 182
+    Caption = 'Move mouse at this buttons:'
+    ParentColor = False
+  end
+  object Bevel1: TBevel
+    Left = 8
+    Height = 3
+    Top = 136
+    Width = 279
+  end
+  object Label2: TLabel
+    Cursor = crHelp
+    Left = 16
+    Height = 18
+    Top = 144
+    Width = 245
+    Caption = 'Drag cursor test: drag buttons into list'
+    ParentColor = False
+  end
+  object Button1: TButton
+    Cursor = crNoDrop
+    Left = 16
+    Height = 25
+    Top = 32
+    Width = 75
+    BorderSpacing.InnerBorder = 4
+    Caption = 'crNoDrop'
+    TabOrder = 0
+  end
+  object Button2: TButton
+    Cursor = crDrag
+    Left = 16
+    Height = 25
+    Top = 64
+    Width = 75
+    BorderSpacing.InnerBorder = 4
+    Caption = 'crDrag'
+    TabOrder = 1
+  end
+  object Button3: TButton
+    Cursor = crSQLWait
+    Left = 16
+    Height = 25
+    Top = 96
+    Width = 75
+    BorderSpacing.InnerBorder = 4
+    Caption = 'crSQLWait'
+    TabOrder = 2
+  end
+  object Panel1: TPanel
+    Left = 167
+    Height = 72
+    Top = 168
+    Width = 122
+    Caption = 'Drag here'
+    Color = clWhite
+    ParentColor = False
+    TabOrder = 3
+    OnDragDrop = Panel1DragDrop
+    OnDragOver = Panel1DragOver
+  end
+  object Panel2: TPanel
+    Left = 9
+    Height = 21
+    Top = 184
+    Width = 145
+    Caption = 'Can be accepted'
+    DragMode = dmAutomatic
+    TabOrder = 4
+  end
+  object Panel3: TPanel
+    Left = 9
+    Height = 21
+    Top = 213
+    Width = 145
+    Caption = 'Can not be accepted'
+    DragMode = dmAutomatic
+    TabOrder = 5
+  end
+  object Button4: TButton
+    Left = 155
+    Height = 25
+    Top = 96
+    Width = 132
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Set Screen.Cursor'
+    OnClick = Button4Click
+    TabOrder = 6
+  end
+  object Button5: TButton
+    Left = 155
+    Height = 25
+    Top = 32
+    Width = 132
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Custom cursor'
+    TabOrder = 7
+  end
+end

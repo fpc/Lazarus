@@ -1,0 +1,50 @@
+object Form1: TForm1
+  Left = 302
+  Height = 300
+  Top = 168
+  Width = 439
+  Caption = 'Form1'
+  ClientHeight = 300
+  ClientWidth = 439
+  OnCreate = FormCreate
+  LCLVersion = '0.9.25'
+  object OpenLazarusButton: TButton
+    Left = 190
+    Height = 29
+    Top = 80
+    Width = 221
+    AutoSize = True
+    Caption = 'Open www.lazarus.freepascal.org'
+    OnClick = OpenLazarusButtonClick
+    TabOrder = 0
+  end
+  object BrowserRadioGroup: TRadioGroup
+    Left = 25
+    Height = 267
+    Top = 10
+    Width = 150
+    AutoFill = True
+    Caption = 'Browser'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 248
+    ClientWidth = 146
+    ItemIndex = 4
+    Items.Strings = (
+      'xdg-open'
+      'Firefox'
+      'Galeon'
+      'Konqueror'
+      'Mozilla'
+      'Netscape'
+      'Opera'
+    )
+    TabOrder = 1
+  end
+end

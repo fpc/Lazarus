@@ -1,0 +1,81 @@
+object Form1: TForm1
+  Left = 291
+  Height = 353
+  Top = 215
+  Width = 535
+  BorderStyle = bsSingle
+  Caption = 'TDictionaryStringList Demo'
+  ClientHeight = 353
+  ClientWidth = 535
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object btnDedupeMemo: TButton
+    Left = 346
+    Height = 25
+    Top = 8
+    Width = 183
+    Anchors = [akTop, akRight]
+    Caption = 'Dedupe Memo'
+    OnClick = btnDedupeMemoClick
+    TabOrder = 0
+  end
+  object Memo: TMemo
+    Left = 0
+    Height = 281
+    Top = 72
+    Width = 535
+    Align = alBottom
+    ScrollBars = ssAutoBoth
+    TabOrder = 1
+  end
+  object lblTime: TLabel
+    Left = 16
+    Height = 15
+    Top = 48
+    Width = 33
+    Caption = 'Time:'
+    ParentColor = False
+  end
+  object lblLines: TLabel
+    Left = 130
+    Height = 15
+    Top = 48
+    Width = 107
+    Caption = 'Duplicated Lines:'
+    ParentColor = False
+  end
+  object SpinEdit1: TSpinEdit
+    Left = 8
+    Height = 23
+    Top = 8
+    Width = 94
+    Increment = 1000
+    MaxValue = 1000000000
+    TabOrder = 2
+  end
+  object btnGenerate: TButton
+    Left = 112
+    Height = 25
+    Top = 8
+    Width = 125
+    Caption = 'Generate Data'
+    OnClick = btnGenerateClick
+    TabOrder = 3
+  end
+  object btnDedupeFile: TButton
+    AnchorSideLeft.Control = btnDedupeMemo
+    AnchorSideRight.Control = btnDedupeMemo
+    AnchorSideRight.Side = asrBottom
+    Left = 346
+    Height = 25
+    Top = 38
+    Width = 183
+    Anchors = [akTop, akLeft, akRight]
+    Caption = 'Create File and Dedupe it'
+    OnClick = btnDedupeFileClick
+    TabOrder = 4
+  end
+end

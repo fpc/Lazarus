@@ -1,0 +1,193 @@
+object CodyIdentifiersDlg: TCodyIdentifiersDlg
+  Left = 250
+  Height = 324
+  Top = 250
+  Width = 552
+  ActiveControl = FilterEdit
+  Caption = 'CodyIdentifiersDlg'
+  ClientHeight = 324
+  ClientWidth = 552
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 36
+    Top = 282
+    Width = 540
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object InfoLabel: TLabel
+    Left = 8
+    Height = 15
+    Top = 8
+    Width = 51
+    Caption = 'InfoLabel'
+    ParentColor = False
+    WordWrap = True
+  end
+  object FilterEdit: TEdit
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = HideOtherProjectsCheckBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = StartsSpeedButton
+    Left = 6
+    Height = 25
+    Top = 63
+    Width = 426
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 10
+    OnChange = FilterEditChange
+    OnExit = FilterEditExit
+    OnKeyDown = FilterEditKeyDown
+    TabOrder = 1
+    Text = 'FilterEdit'
+  end
+  object ItemsListBox: TListBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = FilterEdit
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = UnitLabel
+    Left = 6
+    Height = 129
+    Top = 88
+    Width = 540
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 1
+    ItemHeight = 0
+    OnClick = ItemsListBoxClick
+    OnSelectionChange = ItemsListBoxSelectionChange
+    PopupMenu = PopupMenu1
+    ScrollWidth = 538
+    TabOrder = 2
+    TopIndex = -1
+  end
+  object UnitLabel: TLabel
+    AnchorSideLeft.Control = InfoLabel
+    AnchorSideBottom.Control = PackageLabel
+    Left = 8
+    Height = 15
+    Top = 218
+    Width = 52
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Bottom = 1
+    Caption = 'UnitLabel'
+    ParentColor = False
+  end
+  object PackageLabel: TLabel
+    AnchorSideLeft.Control = InfoLabel
+    AnchorSideBottom.Control = AddToImplementationUsesCheckBox
+    Left = 8
+    Height = 15
+    Top = 234
+    Width = 74
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Bottom = 1
+    Caption = 'PackageLabel'
+    ParentColor = False
+  end
+  object HideOtherProjectsCheckBox: TCheckBox
+    AnchorSideLeft.Control = InfoLabel
+    AnchorSideTop.Control = InfoLabel
+    AnchorSideTop.Side = asrBottom
+    Left = 8
+    Height = 24
+    Top = 29
+    Width = 183
+    BorderSpacing.Top = 6
+    Caption = 'HideOtherProjectsCheckBox'
+    OnChange = HideOtherProjectsCheckBoxChange
+    TabOrder = 3
+  end
+  object AddToImplementationUsesCheckBox: TCheckBox
+    AnchorSideLeft.Control = PackageLabel
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 8
+    Height = 24
+    Top = 252
+    Width = 227
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Top = 3
+    BorderSpacing.Bottom = 3
+    Caption = 'AddToImplementationUsesCheckBox'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 4
+  end
+  object StartsSpeedButton: TSpeedButton
+    AnchorSideTop.Control = FilterEdit
+    AnchorSideRight.Control = ContainsSpeedButton
+    AnchorSideBottom.Control = FilterEdit
+    AnchorSideBottom.Side = asrBottom
+    Left = 432
+    Height = 25
+    Top = 63
+    Width = 63
+    Anchors = [akTop, akRight, akBottom]
+    AutoSize = True
+    Caption = 'Starts with'
+    GroupIndex = 1
+    OnClick = StartsSpeedButtonClick
+    ShowHint = True
+    ParentShowHint = False
+  end
+  object ContainsSpeedButton: TSpeedButton
+    AnchorSideTop.Control = FilterEdit
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = FilterEdit
+    AnchorSideBottom.Side = asrBottom
+    Left = 495
+    Height = 25
+    Top = 63
+    Width = 51
+    Anchors = [akTop, akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Right = 6
+    Caption = 'Contains'
+    GroupIndex = 1
+    OnClick = ContainsSpeedButtonClick
+    ShowHint = True
+    ParentShowHint = False
+  end
+  object PopupMenu1: TPopupMenu
+    OnPopup = PopupMenu1Popup
+    left = 177
+    top = 133
+    object JumpMenuItem: TMenuItem
+      Caption = 'JumpMenuItem'
+      OnClick = JumpButtonClick
+    end
+    object UseMenuItem: TMenuItem
+      Caption = 'UseMenuItem'
+      OnClick = UseIdentifierClick
+    end
+    object DeleteSeparatorMenuItem: TMenuItem
+      Caption = '-'
+    end
+    object DeleteUnitMenuItem: TMenuItem
+      Caption = 'DeleteUnitMenuItem'
+      OnClick = DeleteUnitClick
+    end
+    object DeletePackageMenuItem: TMenuItem
+      Caption = 'DeletePackageMenuItem'
+      OnClick = DeletePackageClick
+    end
+  end
+end

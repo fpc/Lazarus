@@ -1,0 +1,1167 @@
+object EditorColorOptionsFrame: TEditorColorOptionsFrame
+  Left = 0
+  Height = 443
+  Top = 0
+  Width = 640
+  ClientHeight = 443
+  ClientWidth = 640
+  TabOrder = 0
+  Visible = False
+  DesignLeft = 401
+  DesignTop = 103
+  object pnlElementAttributes: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = PnlTop2
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 192
+    Top = 251
+    Width = 640
+    Anchors = [akLeft, akRight, akBottom]
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 192
+    ClientWidth = 640
+    Constraints.MinHeight = 192
+    TabOrder = 1
+    object bvlAttributeSection: TDividerBevel
+      Left = 0
+      Height = 17
+      Top = 0
+      Width = 640
+      Caption = 'bvlAttributeSection'
+      Align = alTop
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object ToolBar1: TToolBar
+      Left = 3
+      Height = 24
+      Top = 17
+      Width = 634
+      AutoSize = True
+      BorderSpacing.Left = 3
+      BorderSpacing.Right = 3
+      Caption = 'ToolBar1'
+      EdgeBorders = [ebBottom]
+      ParentShowHint = False
+      ShowCaptions = True
+      ShowHint = True
+      TabOrder = 0
+      object tbtnGlobal: TToolButton
+        Tag = 1
+        Left = 1
+        Top = 0
+        AutoSize = True
+        Caption = 'tbtnGlobal'
+        Down = True
+        Grouped = True
+        OnClick = tglGlobalChange
+        Style = tbsCheck
+      end
+      object tbtnLocal: TToolButton
+        Tag = 1
+        Left = 65
+        Top = 0
+        AutoSize = True
+        Caption = 'tbtnLocal'
+        Grouped = True
+        OnClick = tglGlobalChange
+        Style = tbsCheck
+      end
+      object SetAttributeToDefaultButton: TToolButton
+        Left = 249
+        Top = 0
+        OnClick = SetAttributeToDefaultButtonClick
+        ShowCaption = False
+      end
+      object ToolButton3: TToolButton
+        Left = 239
+        Top = 0
+        Width = 10
+        Caption = 'ToolButton3'
+        Style = tbsSeparator
+      end
+      object ToolButton1: TToolButton
+        Left = 123
+        Top = 0
+        Width = 10
+        Caption = 'ToolButton1'
+        Style = tbsSeparator
+      end
+      object tbnColor: TToolButton
+        Left = 133
+        Top = 0
+        AutoSize = True
+        Caption = 'tbnColor'
+        Down = True
+        Grouped = True
+        OnClick = tbnColorClick
+        Style = tbsCheck
+      end
+      object tbnPrior: TToolButton
+        Left = 188
+        Top = 0
+        AutoSize = True
+        Caption = 'tbnPrior'
+        Grouped = True
+        OnClick = tbnColorClick
+        Style = tbsCheck
+      end
+    end
+    inline SynColorAttrEditor1: TSynColorAttrEditor
+      AnchorSideLeft.Control = pnlElementAttributes
+      AnchorSideTop.Control = ToolBar1
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = bvlAttributeSection
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = pnlElementAttributes
+      AnchorSideBottom.Side = asrBottom
+      Height = 151
+      Top = 41
+      Width = 640
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      ClientHeight = 151
+      ClientWidth = 640
+      TabOrder = 1
+      inherited ForeGroundUseDefaultCheckBox: TCheckBox
+        AnchorSideLeft.Control = SynColorAttrEditor1
+      end
+      inherited ForegroundColorBox: TColorBox
+        AnchorSideTop.Control = SynColorAttrEditor1
+        AnchorSideRight.Control = SynColorAttrEditor1
+        Width = 200
+      end
+      inherited BackGroundColorBox: TColorBox
+        AnchorSideRight.Control = SynColorAttrEditor1
+        Width = 200
+      end
+      inherited BackGroundUseDefaultCheckBox: TCheckBox
+        AnchorSideLeft.Control = SynColorAttrEditor1
+      end
+      inherited FrameColorBox: TColorBox
+        AnchorSideRight.Control = SynColorAttrEditor1
+        Width = 200
+      end
+      inherited FrameColorUseDefaultCheckBox: TCheckBox
+        AnchorSideLeft.Control = SynColorAttrEditor1
+      end
+      inherited pnlUnderline: TPanel
+        AnchorSideLeft.Control = SynColorAttrEditor1
+      end
+      inherited ForeAlphaLabel: TLabel
+        Left = 414
+      end
+      inherited BackAlphaLabel: TLabel
+        Left = 414
+      end
+      inherited FrameAlphaLabel: TLabel
+        Left = 414
+      end
+      inherited ForeAlphaSpin: TSpinEdit
+        Left = 502
+      end
+      inherited BackAlphaSpin: TSpinEdit
+        Left = 504
+      end
+      inherited FrameAlphaSpin: TSpinEdit
+        Left = 512
+      end
+      inherited ForePriorLabel: TLabel
+        Left = 567
+      end
+      inherited BackPriorLabel: TLabel
+        Left = 569
+      end
+      inherited FramePriorLabel: TLabel
+        Left = 577
+      end
+      inherited ForePriorSpin: TSpinEdit
+        Left = 649
+      end
+      inherited BackPriorSpin: TSpinEdit
+        Left = 653
+      end
+      inherited FramePriorSpin: TSpinEdit
+        Left = 669
+      end
+    end
+    object PriorityEditor: TPanel
+      AnchorSideLeft.Control = pnlElementAttributes
+      AnchorSideTop.Control = ToolBar1
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = pnlElementAttributes
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = pnlElementAttributes
+      AnchorSideBottom.Side = asrBottom
+      Left = 0
+      Height = 151
+      Top = 41
+      Width = 640
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      ClientHeight = 151
+      ClientWidth = 640
+      Constraints.MinHeight = 140
+      TabOrder = 2
+      object ForePriorPanel: TPanel
+        Left = 1
+        Height = 149
+        Top = 1
+        Width = 170
+        Align = alLeft
+        ClientHeight = 149
+        ClientWidth = 170
+        TabOrder = 0
+        object ForePriorLabel: TLabel
+          Left = 1
+          Height = 15
+          Top = 1
+          Width = 168
+          Align = alTop
+          Caption = 'ForePriorLabel'
+          ParentColor = False
+        end
+        object ForePriorList: TTreeView
+          Left = 1
+          Height = 108
+          Top = 16
+          Width = 168
+          Align = alClient
+          AutoExpand = True
+          DefaultItemHeight = 18
+          ReadOnly = True
+          ScrollBars = ssAutoVertical
+          ShowButtons = False
+          ShowLines = False
+          ShowRoot = False
+          SortType = stData
+          TabOrder = 0
+          OnAdvancedCustomDrawItem = ColorElementTreeAdvancedCustomDrawItem
+          OnClick = ForePriorListClick
+          OnCompare = ForePriorListCompare
+          Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
+          TreeLinePenStyle = psClear
+        end
+        object ForePriorValPanel: TPanel
+          Left = 1
+          Height = 23
+          Top = 125
+          Width = 168
+          Align = alBottom
+          AutoSize = True
+          BorderSpacing.Top = 1
+          BevelOuter = bvNone
+          ClientHeight = 23
+          ClientWidth = 168
+          TabOrder = 1
+          object ForePriorEdit: TEdit
+            AnchorSideRight.Control = ForePriorUpDown
+            Left = 1
+            Height = 23
+            Top = 1
+            Width = 147
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Right = 3
+            OnEditingDone = ForePriorEditChange
+            OnKeyPress = ForePriorEditKeyPress
+            TabOrder = 0
+            Text = '0'
+          end
+          object ForePriorUpDown: TUpDown
+            AnchorSideTop.Control = ForePriorValPanel
+            AnchorSideRight.Control = ForePriorValPanel
+            AnchorSideRight.Side = asrBottom
+            AnchorSideBottom.Control = ForePriorValPanel
+            AnchorSideBottom.Side = asrBottom
+            Left = 151
+            Height = 23
+            Top = 0
+            Width = 17
+            Anchors = [akTop, akRight, akBottom]
+            Min = 0
+            Position = 0
+            TabOrder = 1
+            Wrap = False
+            OnClick = ForePriorUpDownClick
+          end
+        end
+      end
+      object BackPriorPanel: TPanel
+        Left = 177
+        Height = 149
+        Top = 1
+        Width = 170
+        Align = alLeft
+        BorderSpacing.Left = 6
+        ClientHeight = 149
+        ClientWidth = 170
+        TabOrder = 1
+        object BackPriorLabel: TLabel
+          Left = 1
+          Height = 15
+          Top = 1
+          Width = 168
+          Align = alTop
+          Caption = 'Label1'
+          ParentColor = False
+        end
+        object BackPriorList: TTreeView
+          Left = 1
+          Height = 108
+          Top = 16
+          Width = 168
+          Align = alClient
+          AutoExpand = True
+          DefaultItemHeight = 18
+          ReadOnly = True
+          ScrollBars = ssAutoVertical
+          ShowButtons = False
+          ShowLines = False
+          ShowRoot = False
+          SortType = stData
+          TabOrder = 0
+          OnAdvancedCustomDrawItem = ColorElementTreeAdvancedCustomDrawItem
+          OnClick = ForePriorListClick
+          OnCompare = ForePriorListCompare
+          Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
+          TreeLinePenStyle = psClear
+        end
+        object BackPriorValPanel: TPanel
+          Left = 1
+          Height = 23
+          Top = 125
+          Width = 168
+          Align = alBottom
+          AutoSize = True
+          BorderSpacing.Top = 1
+          BevelOuter = bvNone
+          ClientHeight = 23
+          ClientWidth = 168
+          TabOrder = 1
+          object BackPriorEdit: TEdit
+            AnchorSideRight.Control = BackPriorUpDown
+            Left = 0
+            Height = 23
+            Top = 0
+            Width = 148
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Right = 3
+            OnEditingDone = ForePriorEditChange
+            OnKeyPress = ForePriorEditKeyPress
+            TabOrder = 0
+            Text = '0'
+          end
+          object BackPriorUpDown: TUpDown
+            AnchorSideTop.Control = BackPriorValPanel
+            AnchorSideRight.Control = BackPriorValPanel
+            AnchorSideRight.Side = asrBottom
+            AnchorSideBottom.Control = BackPriorValPanel
+            AnchorSideBottom.Side = asrBottom
+            Left = 151
+            Height = 23
+            Top = 0
+            Width = 17
+            Anchors = [akTop, akRight, akBottom]
+            Min = 0
+            Position = 0
+            TabOrder = 1
+            Wrap = False
+            OnClick = ForePriorUpDownClick
+          end
+        end
+      end
+      object FramePriorPanel: TPanel
+        Left = 353
+        Height = 149
+        Top = 1
+        Width = 170
+        Align = alLeft
+        BorderSpacing.Left = 6
+        ClientHeight = 149
+        ClientWidth = 170
+        TabOrder = 2
+        object FramePriorLabel: TLabel
+          Left = 1
+          Height = 15
+          Top = 1
+          Width = 168
+          Align = alTop
+          Caption = 'Label1'
+          ParentColor = False
+        end
+        object FramePriorList: TTreeView
+          Left = 1
+          Height = 108
+          Top = 16
+          Width = 168
+          Align = alClient
+          AutoExpand = True
+          DefaultItemHeight = 18
+          ReadOnly = True
+          ScrollBars = ssAutoVertical
+          ShowButtons = False
+          ShowLines = False
+          ShowRoot = False
+          SortType = stData
+          TabOrder = 0
+          OnAdvancedCustomDrawItem = ColorElementTreeAdvancedCustomDrawItem
+          OnClick = ForePriorListClick
+          OnCompare = ForePriorListCompare
+          Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
+          TreeLinePenStyle = psClear
+        end
+        object FramePriorValPanel: TPanel
+          Left = 1
+          Height = 23
+          Top = 125
+          Width = 168
+          Align = alBottom
+          AutoSize = True
+          BorderSpacing.Top = 1
+          BevelOuter = bvNone
+          ClientHeight = 23
+          ClientWidth = 168
+          TabOrder = 1
+          object FramePriorEdit: TEdit
+            AnchorSideRight.Control = FramePriorUpDown
+            Left = 0
+            Height = 23
+            Top = 0
+            Width = 148
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Right = 3
+            OnEditingDone = ForePriorEditChange
+            OnKeyPress = ForePriorEditKeyPress
+            TabOrder = 0
+            Text = '0'
+          end
+          object FramePriorUpDown: TUpDown
+            AnchorSideTop.Control = FramePriorValPanel
+            AnchorSideRight.Control = FramePriorValPanel
+            AnchorSideRight.Side = asrBottom
+            AnchorSideBottom.Control = FramePriorValPanel
+            AnchorSideBottom.Side = asrBottom
+            Left = 151
+            Height = 23
+            Top = 0
+            Width = 17
+            Anchors = [akTop, akRight, akBottom]
+            Min = 0
+            Position = 0
+            TabOrder = 1
+            Wrap = False
+            OnClick = ForePriorUpDownClick
+          end
+        end
+      end
+    end
+  end
+  object pnlTop: TPanel
+    Left = 0
+    Height = 0
+    Top = 25
+    Width = 640
+    Align = alTop
+    AutoSize = True
+    BevelOuter = bvNone
+    ChildSizing.HorizontalSpacing = 3
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsHomogenousChildResize
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 4
+    Constraints.MaxWidth = 1000
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 0
+  end
+  object PnlTop2: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = pnlTop
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = pnlElementAttributes
+    Left = 0
+    Height = 226
+    Top = 25
+    Width = 640
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BevelOuter = bvNone
+    ClientHeight = 226
+    ClientWidth = 640
+    TabOrder = 2
+    object ColorElementTree: TTreeView
+      Left = 0
+      Height = 220
+      Top = 6
+      Width = 200
+      Align = alLeft
+      AutoExpand = True
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 1
+      Constraints.MinWidth = 150
+      DefaultItemHeight = 18
+      ReadOnly = True
+      ScrollBars = ssAutoBoth
+      ShowButtons = False
+      ShowRoot = False
+      TabOrder = 0
+      OnAdvancedCustomDrawItem = ColorElementTreeAdvancedCustomDrawItem
+      OnChange = ColorElementTreeChange
+      OnClick = ColorElementTreeClick
+      OnKeyDown = ColorElementTreeKeyDown
+      Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowLines, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
+    end
+    inline ColorPreview: TSynEdit
+      AnchorSideLeft.Control = Splitter1
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = PnlTop2
+      AnchorSideRight.Control = PnlTop2
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = ColorElementTree
+      AnchorSideBottom.Side = asrBottom
+      Left = 207
+      Height = 220
+      Top = 6
+      Width = 433
+      BorderSpacing.Left = 1
+      BorderSpacing.Top = 6
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      Font.Height = -16
+      Font.Name = 'courier'
+      Font.Pitch = fpFixed
+      Font.Quality = fqNonAntialiased
+      ParentColor = False
+      ParentFont = False
+      TabOrder = 1
+      TabStop = False
+      OnMouseUp = ColorPreviewMouseUp
+      BookMarkOptions.Xoffset = 30
+      Gutter.Width = 59
+      Gutter.MouseActions = <      
+        item
+          ClickCount = ccAny
+          ClickDir = cdDown
+          Command = emcOnMainGutterClick
+        end      
+        item
+          Button = mbRight
+          Command = emcContextMenu
+        end>
+      RightGutter.Width = 0
+      RightGutter.MouseActions = <      
+        item
+          ClickCount = ccAny
+          ClickDir = cdDown
+          Command = emcOnMainGutterClick
+        end      
+        item
+          Button = mbRight
+          Command = emcContextMenu
+        end>
+      Keystrokes = <      
+        item
+          Command = ecUp
+          ShortCut = 38
+        end      
+        item
+          Command = ecSelUp
+          ShortCut = 8230
+        end      
+        item
+          Command = ecScrollUp
+          ShortCut = 16422
+        end      
+        item
+          Command = ecDown
+          ShortCut = 40
+        end      
+        item
+          Command = ecSelDown
+          ShortCut = 8232
+        end      
+        item
+          Command = ecScrollDown
+          ShortCut = 16424
+        end      
+        item
+          Command = ecLeft
+          ShortCut = 37
+        end      
+        item
+          Command = ecSelLeft
+          ShortCut = 8229
+        end      
+        item
+          Command = ecWordLeft
+          ShortCut = 16421
+        end      
+        item
+          Command = ecSelWordLeft
+          ShortCut = 24613
+        end      
+        item
+          Command = ecRight
+          ShortCut = 39
+        end      
+        item
+          Command = ecSelRight
+          ShortCut = 8231
+        end      
+        item
+          Command = ecWordRight
+          ShortCut = 16423
+        end      
+        item
+          Command = ecSelWordRight
+          ShortCut = 24615
+        end      
+        item
+          Command = ecPageDown
+          ShortCut = 34
+        end      
+        item
+          Command = ecSelPageDown
+          ShortCut = 8226
+        end      
+        item
+          Command = ecPageBottom
+          ShortCut = 16418
+        end      
+        item
+          Command = ecSelPageBottom
+          ShortCut = 24610
+        end      
+        item
+          Command = ecPageUp
+          ShortCut = 33
+        end      
+        item
+          Command = ecSelPageUp
+          ShortCut = 8225
+        end      
+        item
+          Command = ecPageTop
+          ShortCut = 16417
+        end      
+        item
+          Command = ecSelPageTop
+          ShortCut = 24609
+        end      
+        item
+          Command = ecLineStart
+          ShortCut = 36
+        end      
+        item
+          Command = ecSelLineStart
+          ShortCut = 8228
+        end      
+        item
+          Command = ecEditorTop
+          ShortCut = 16420
+        end      
+        item
+          Command = ecSelEditorTop
+          ShortCut = 24612
+        end      
+        item
+          Command = ecLineEnd
+          ShortCut = 35
+        end      
+        item
+          Command = ecSelLineEnd
+          ShortCut = 8227
+        end      
+        item
+          Command = ecEditorBottom
+          ShortCut = 16419
+        end      
+        item
+          Command = ecSelEditorBottom
+          ShortCut = 24611
+        end      
+        item
+          Command = ecToggleMode
+          ShortCut = 45
+        end      
+        item
+          Command = ecCopy
+          ShortCut = 16429
+        end      
+        item
+          Command = ecPaste
+          ShortCut = 8237
+        end      
+        item
+          Command = ecDeleteChar
+          ShortCut = 46
+        end      
+        item
+          Command = ecCut
+          ShortCut = 8238
+        end      
+        item
+          Command = ecDeleteLastChar
+          ShortCut = 8
+        end      
+        item
+          Command = ecDeleteLastChar
+          ShortCut = 8200
+        end      
+        item
+          Command = ecDeleteLastWord
+          ShortCut = 16392
+        end      
+        item
+          Command = ecUndo
+          ShortCut = 32776
+        end      
+        item
+          Command = ecRedo
+          ShortCut = 40968
+        end      
+        item
+          Command = ecLineBreak
+          ShortCut = 13
+        end      
+        item
+          Command = ecSelectAll
+          ShortCut = 16449
+        end      
+        item
+          Command = ecCopy
+          ShortCut = 16451
+        end      
+        item
+          Command = ecBlockIndent
+          ShortCut = 24649
+        end      
+        item
+          Command = ecLineBreak
+          ShortCut = 16461
+        end      
+        item
+          Command = ecInsertLine
+          ShortCut = 16462
+        end      
+        item
+          Command = ecDeleteWord
+          ShortCut = 16468
+        end      
+        item
+          Command = ecBlockUnindent
+          ShortCut = 24661
+        end      
+        item
+          Command = ecPaste
+          ShortCut = 16470
+        end      
+        item
+          Command = ecCut
+          ShortCut = 16472
+        end      
+        item
+          Command = ecDeleteLine
+          ShortCut = 16473
+        end      
+        item
+          Command = ecDeleteEOL
+          ShortCut = 24665
+        end      
+        item
+          Command = ecUndo
+          ShortCut = 16474
+        end      
+        item
+          Command = ecRedo
+          ShortCut = 24666
+        end      
+        item
+          Command = ecGotoMarker0
+          ShortCut = 16432
+        end      
+        item
+          Command = ecGotoMarker1
+          ShortCut = 16433
+        end      
+        item
+          Command = ecGotoMarker2
+          ShortCut = 16434
+        end      
+        item
+          Command = ecGotoMarker3
+          ShortCut = 16435
+        end      
+        item
+          Command = ecGotoMarker4
+          ShortCut = 16436
+        end      
+        item
+          Command = ecGotoMarker5
+          ShortCut = 16437
+        end      
+        item
+          Command = ecGotoMarker6
+          ShortCut = 16438
+        end      
+        item
+          Command = ecGotoMarker7
+          ShortCut = 16439
+        end      
+        item
+          Command = ecGotoMarker8
+          ShortCut = 16440
+        end      
+        item
+          Command = ecGotoMarker9
+          ShortCut = 16441
+        end      
+        item
+          Command = ecSetMarker0
+          ShortCut = 24624
+        end      
+        item
+          Command = ecSetMarker1
+          ShortCut = 24625
+        end      
+        item
+          Command = ecSetMarker2
+          ShortCut = 24626
+        end      
+        item
+          Command = ecSetMarker3
+          ShortCut = 24627
+        end      
+        item
+          Command = ecSetMarker4
+          ShortCut = 24628
+        end      
+        item
+          Command = ecSetMarker5
+          ShortCut = 24629
+        end      
+        item
+          Command = ecSetMarker6
+          ShortCut = 24630
+        end      
+        item
+          Command = ecSetMarker7
+          ShortCut = 24631
+        end      
+        item
+          Command = ecSetMarker8
+          ShortCut = 24632
+        end      
+        item
+          Command = ecSetMarker9
+          ShortCut = 24633
+        end      
+        item
+          Command = ecNormalSelect
+          ShortCut = 24654
+        end      
+        item
+          Command = ecColumnSelect
+          ShortCut = 24643
+        end      
+        item
+          Command = ecLineSelect
+          ShortCut = 24652
+        end      
+        item
+          Command = ecTab
+          ShortCut = 9
+        end      
+        item
+          Command = ecShiftTab
+          ShortCut = 8201
+        end      
+        item
+          Command = ecMatchBracket
+          ShortCut = 24642
+        end>
+      MouseActions = <      
+        item
+          ShiftMask = [ssShift, ssAlt]
+          ClickDir = cdDown
+          Command = emcStartSelections
+          MoveCaret = True
+        end      
+        item
+          Shift = [ssShift]
+          ShiftMask = [ssShift, ssAlt]
+          ClickDir = cdDown
+          Command = emcStartSelections
+          MoveCaret = True
+          Option = 1
+        end      
+        item
+          Shift = [ssAlt]
+          ShiftMask = [ssShift, ssAlt]
+          ClickDir = cdDown
+          Command = emcStartColumnSelections
+          MoveCaret = True
+        end      
+        item
+          Shift = [ssShift, ssAlt]
+          ShiftMask = [ssShift, ssAlt]
+          ClickDir = cdDown
+          Command = emcStartColumnSelections
+          MoveCaret = True
+          Option = 1
+        end      
+        item
+          Button = mbRight
+          Command = emcContextMenu
+        end      
+        item
+          ClickCount = ccDouble
+          ClickDir = cdDown
+          Command = emcSelectWord
+          MoveCaret = True
+        end      
+        item
+          ClickCount = ccTriple
+          ClickDir = cdDown
+          Command = emcSelectLine
+          MoveCaret = True
+        end      
+        item
+          ClickCount = ccQuad
+          ClickDir = cdDown
+          Command = emcSelectPara
+          MoveCaret = True
+        end      
+        item
+          Button = mbMiddle
+          ClickDir = cdDown
+          Command = emcPasteSelection
+          MoveCaret = True
+        end      
+        item
+          Shift = [ssCtrl]
+          ShiftMask = [ssShift, ssAlt, ssCtrl]
+          Command = emcMouseLink
+        end>
+      MouseSelActions = <      
+        item
+          ClickDir = cdDown
+          Command = emcStartDragMove
+        end>
+      Lines.Strings = (
+        'ColorPreview'
+      )
+      VisibleSpecialChars = [vscSpace, vscTabAtLast]
+      SelectedColor.FrameEdges = sfeAround
+      SelectedColor.BackPriority = 50
+      SelectedColor.ForePriority = 50
+      SelectedColor.FramePriority = 50
+      SelectedColor.BoldPriority = 50
+      SelectedColor.ItalicPriority = 50
+      SelectedColor.UnderlinePriority = 50
+      SelectedColor.StrikeOutPriority = 50
+      IncrementColor.FrameEdges = sfeAround
+      HighlightAllColor.FrameEdges = sfeAround
+      BracketHighlightStyle = sbhsBoth
+      BracketMatchColor.Background = clNone
+      BracketMatchColor.Foreground = clNone
+      BracketMatchColor.FrameEdges = sfeAround
+      BracketMatchColor.Style = [fsBold]
+      FoldedCodeColor.Background = clNone
+      FoldedCodeColor.Foreground = clGray
+      FoldedCodeColor.FrameColor = clGray
+      FoldedCodeColor.FrameEdges = sfeAround
+      MouseLinkColor.Background = clNone
+      MouseLinkColor.Foreground = clBlue
+      MouseLinkColor.FrameEdges = sfeAround
+      LineHighlightColor.Background = clNone
+      LineHighlightColor.Foreground = clNone
+      LineHighlightColor.FrameEdges = sfeAround
+      inline TSynGutterPartList
+        object TSynGutterMarks
+          Width = 24
+          MouseActions = <>
+        end
+        object TSynGutterLineNumber
+          Width = 19
+          MouseActions = <>
+          MarkupInfo.Background = clBtnFace
+          MarkupInfo.Foreground = clNone
+          MarkupInfo.FrameEdges = sfeAround
+          DigitCount = 2
+          ShowOnlyLineNumbersMultiplesOf = 1
+          ZeroStart = False
+          LeadingZeros = False
+        end
+        object TSynGutterChanges
+          Width = 4
+          MouseActions = <>
+          ModifiedColor = 59900
+          SavedColor = clGreen
+        end
+        object TSynGutterSeparator
+          Width = 2
+          MouseActions = <>
+          MarkupInfo.Background = clWhite
+          MarkupInfo.Foreground = clGray
+          MarkupInfo.FrameEdges = sfeAround
+        end
+        object TSynGutterCodeFolding
+          MouseActions = <          
+            item
+              Button = mbRight
+              Command = emcCodeFoldContextMenu
+            end          
+            item
+              ShiftMask = [ssShift]
+              Button = mbMiddle
+              ClickCount = ccAny
+              ClickDir = cdDown
+              Command = emcCodeFoldCollaps
+            end          
+            item
+              Shift = [ssShift]
+              ShiftMask = [ssShift]
+              Button = mbMiddle
+              ClickCount = ccAny
+              ClickDir = cdDown
+              Command = emcCodeFoldCollaps
+              Option = 1
+            end          
+            item
+              ClickCount = ccAny
+              ClickDir = cdDown
+              Command = emcNone
+            end>
+          MarkupInfo.Background = clNone
+          MarkupInfo.Foreground = clGray
+          MarkupInfo.FrameEdges = sfeAround
+          MouseActionsExpanded = <          
+            item
+              ClickCount = ccAny
+              ClickDir = cdDown
+              Command = emcCodeFoldCollaps
+            end>
+          MouseActionsCollapsed = <          
+            item
+              Shift = [ssCtrl]
+              ShiftMask = [ssCtrl]
+              ClickCount = ccAny
+              ClickDir = cdDown
+              Command = emcCodeFoldExpand
+            end          
+            item
+              ShiftMask = [ssCtrl]
+              ClickCount = ccAny
+              ClickDir = cdDown
+              Command = emcCodeFoldExpand
+              Option = 1
+            end>
+        end
+      end
+    end
+    object Splitter1: TSplitter
+      Left = 201
+      Height = 226
+      Top = 0
+      Width = 5
+    end
+  end
+  object ToolBar: TToolBar
+    Left = 0
+    Height = 25
+    Top = 0
+    Width = 640
+    AutoSize = True
+    Caption = 'ToolBar'
+    EdgeBorders = [ebBottom]
+    ParentShowHint = False
+    ShowCaptions = True
+    ShowHint = True
+    TabOrder = 3
+    object UseSyntaxHighlightCheckBox: TToolButton
+      Left = 1
+      Top = 0
+      OnClick = GeneralCheckBoxOnChange
+      ShowCaption = False
+      Style = tbsCheck
+    end
+    object ToolButton2: TToolButton
+      Left = 24
+      Top = 0
+      Width = 5
+      Caption = 'ToolButton2'
+      Style = tbsDivider
+    end
+    object LanguageButton: TToolButton
+      Left = 29
+      Top = 0
+      DropdownMenu = LanguageMenu
+      OnClick = LanguageButtonClick
+      Style = tbsDropDown
+    end
+    object ColorSchemeButton: TToolButton
+      Left = 64
+      Top = 0
+      DropdownMenu = ColorSchemeMenu
+      OnClick = ColorSchemeButtonClick
+      Style = tbsDropDown
+    end
+    object FileExtensionsComboBox: TComboBox
+      AnchorSideTop.Side = asrBottom
+      Left = 99
+      Height = 23
+      Top = 0
+      Width = 139
+      BorderSpacing.Top = 3
+      ItemHeight = 15
+      Items.Strings = (
+        'pp;pas;inc;lpr;lrs;dpr;dpk'
+        'pp;pas;inc;lpr;lrs'
+        'pp;pas;inc'
+      )
+      OnChange = ComboBoxOnChange
+      OnExit = ComboBoxOnExit
+      OnKeyDown = ComboBoxOnKeyDown
+      TabOrder = 0
+    end
+    object ToolButton5: TToolButton
+      Left = 238
+      Top = 0
+      Width = 5
+      Caption = 'ToolButton5'
+      Style = tbsDivider
+    end
+    object btnExport: TToolButton
+      Left = 243
+      Top = 0
+      OnClick = btnExportClick
+      ShowCaption = False
+    end
+    object SetAllAttributesToDefaultButton: TToolButton
+      Left = 266
+      Top = 0
+      OnClick = SetAllAttributesToDefaultButtonClick
+      ShowCaption = False
+    end
+  end
+  object ExportSaveDialog: TSaveDialog
+    DefaultExt = '.xml'
+    Filter = 'xml|*.xml'
+    Options = [ofOverwritePrompt, ofPathMustExist, ofEnableSizing, ofViewDetail]
+    left = 568
+    top = 56
+  end
+  object LanguageMenu: TPopupMenu
+    left = 568
+    top = 104
+  end
+  object ColorSchemeMenu: TPopupMenu
+    left = 568
+    top = 160
+  end
+end

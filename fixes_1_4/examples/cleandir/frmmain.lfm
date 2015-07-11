@@ -1,0 +1,1273 @@
+object MainForm: TMainForm
+  Left = 407
+  Height = 442
+  Top = 133
+  Width = 576
+  HorzScrollBar.Page = 570
+  VertScrollBar.Page = 405
+  Caption = 'Configure Directory Cleaner'
+  ClientHeight = 417
+  ClientWidth = 576
+  Menu = MMMain
+  OnCloseQuery = FormCloseQuery
+  OnShow = FormShow
+  LCLVersion = '1.3'
+  object TBMain: TToolBar
+    Left = 0
+    Height = 26
+    Top = 0
+    Width = 576
+    Caption = 'TBMain'
+    Images = ILMain
+    TabOrder = 0
+    object TBQuit: TToolButton
+      Left = 1
+      Top = 2
+      Action = AQuit
+    end
+    object ToolButton2: TToolButton
+      Left = 24
+      Height = 22
+      Top = 2
+      Width = 10
+      Caption = 'ToolButton2'
+      Style = tbsSeparator
+    end
+    object TBNew: TToolButton
+      Left = 34
+      Top = 2
+      Action = ANew
+    end
+    object TBOpen: TToolButton
+      Left = 57
+      Top = 2
+      Action = AOpen
+    end
+    object TBSave: TToolButton
+      Left = 80
+      Top = 2
+      Action = ASave
+    end
+    object ToolButton1: TToolButton
+      Left = 103
+      Height = 22
+      Top = 2
+      Width = 10
+      Caption = 'ToolButton1'
+      Style = tbsSeparator
+    end
+    object TBNewItem: TToolButton
+      Left = 113
+      Top = 2
+      Action = ANewItem
+    end
+    object TBDeleteItem: TToolButton
+      Left = 136
+      Top = 2
+      Action = ADeleteItem
+    end
+  end
+  object PCConfig: TPageControl
+    Left = 0
+    Height = 391
+    Top = 26
+    Width = 576
+    ActivePage = TSOptions
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 1
+    OnChange = PCConfigChange
+    object TSOptions: TTabSheet
+      Caption = 'Options'
+      ClientHeight = 366
+      ClientWidth = 572
+      object LVDirectories: TListView
+        Left = 0
+        Height = 200
+        Top = 50
+        Width = 572
+        Align = alClient
+        Columns = <        
+          item
+            Caption = 'Enabled'
+          end        
+          item
+            Caption = 'Recurse'
+          end        
+          item
+            Caption = 'Name'
+            Width = 120
+          end        
+          item
+            Caption = 'Path'
+          end>
+        ReadOnly = True
+        RowSelect = True
+        TabOrder = 0
+        ViewStyle = vsReport
+        OnSelectItem = LVDirectoriesSelectItem
+      end
+      object PDirectories: TPanel
+        Left = 0
+        Height = 116
+        Top = 250
+        Width = 572
+        Align = alBottom
+        BevelOuter = bvLowered
+        ClientHeight = 116
+        ClientWidth = 572
+        TabOrder = 1
+        object Label1: TLabel
+          AnchorSideTop.Control = EDirName
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = EDirName
+          Left = 51
+          Height = 15
+          Top = 11
+          Width = 37
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 6
+          Caption = '&Name'
+          FocusControl = EDirName
+          Layout = tlCenter
+          ParentColor = False
+        end
+        object Label2: TLabel
+          AnchorSideTop.Control = EDirPath
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = EDirPath
+          Left = 62
+          Height = 15
+          Top = 43
+          Width = 26
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 6
+          Caption = '&Path'
+          FocusControl = EDirPath
+          Layout = tlCenter
+          ParentColor = False
+        end
+        object SBDirPath: TSpeedButton
+          Left = 534
+          Height = 22
+          Top = 41
+          Width = 23
+          Anchors = [akTop, akRight]
+          Glyph.Data = {
+            36040000424D3604000000000000360000002800000010000000100000000100
+            2000000000000004000064000000640000000000000000000000000000002D88
+            D8FF2D87D8FF2D88D8FF2D88D8FF2D88D8FF2D88D8FF2D88D8FF2D88D8FF2D88
+            D8FF2D88D8FF2D87D8FF2D88D8FF2C86D8FF0000000000000000338ED9FFDCF0
+            FAFFA7DDF4FF9EDBF4FF96DAF3FF8ED8F3FF86D7F3FF7FD4F2FF79D3F2FF72D2
+            F1FF6CD0F1FF69CFF1FFC2EAF8FF338ED9FF00000000000000003594DAFFEFFA
+            FEFFA1E9F9FF91E5F8FF81E1F7FF72DEF6FF63DAF5FF54D7F4FF47D3F3FF39D0
+            F2FF2ECDF1FF26CBF0FFCAF2FBFF3594DAFF0000000000000000369ADAFFF2FA
+            FDFFB3EDFAFFA4E9F9FF95E6F8FF85E2F7FF81E1F7FF7AE0F7FF6FDDF6FF62DA
+            F5FF54D6F3FF47D3F2FFE8F9FDFF3594DAFF000000000000000036A1DAFFF6FC
+            FEFFC8F2FCFFB9EFFBFFACECFAFF8CE4F8FF8AE3F8FF82E1F7FF79DFF7FF6DDD
+            F6FF61DAF5FF57D7F4FFE7F8FDFF3594DAFF000000000000000037A6DAFFFEFF
+            FFFFF8FDFFFFF6FDFFFFF5FCFFFFE8FAFEFFAFECFAFF8EE4F8FF87E3F8FF7DE0
+            F7FF72DDF6FF68DBF5FFE9F9FDFF3594DAFF000000000000000035ABDAFFE8F6
+            FBFF7EC5EAFF5BAEE3FF51A8E1FF60AFE4FFEBFAFDFFECFAFEFFE5F5FCFFE5F6
+            FCFFE4F5FCFFE4F5FCFFFEFFFFFF3594DAFF000000000000000036AADAFFF1FA
+            FDFF94DEF5FF93DCF4FF81D5F2FF60C0E9FF4FAEE1FF3594DAFF3594DAFF3594
+            DAFF3594DAFF3594DAFF3594DAFF3594DAFF151311FF040403FF35AFDAFFF7FC
+            FEFF8EE4F8FF91DEF5FF9FE0F5FFACE1F6FFEFFBFEFF635B54FFA79A8DFF7067
+            5EFF44403BFFA3AAACFF5C554EFF968A7FFF665E56FF161413FF36B3DAFFFDFE
+            FEFFFEFFFFFFFEFEFFFFFDFEFFFFFEFFFFFFEAF7FBFF71685FFFC1B6ABFF7970
+            66FF4A5454FF5C95A6FF6E665DFFBDB1A5FF7E746AFF201D1BFF34B4D9FF5EC2
+            E1FF60C3E2FF60C3E2FF60C3E2FF5FC3E2FF3CB6DBFF756C63FFC4B9AFFFA79A
+            8DFF474540FF00000000635B55FFBBAFA4FFA6988BFF272421FF000000000000
+            00000000000000000000000000000000000000000000665E56FF696158FF564F
+            48FF322F2CFF0000000034302DFF46423CFF3D3833FF0A0908FF000000000000
+            000000000000000000000000000000000000000000003E3934FF5B544DFFB0A0
+            90FF695D51FF867465FF63584EFFAA9888FF5A514AFF161311FF000000000000
+            0000000000000000000000000000000000000000000000000000665E56FF8578
+            6FFF483F39FF8B7D71FF564A40FF928374FF4F4740FF00000000000000000000
+            0000000000000000000000000000000000000000000000000000988C80FF9C8F
+            83FF453F3AFF00000000544D47FF8A7F74FF3B3732FF00000000000000000000
+            000000000000000000000000000000000000000000000000000000000000756C
+            63FF685F57FF000000006C635BFF453F3AFF0000000000000000
+          }
+          OnClick = SBDirPathClick
+        end
+        object CBDirEnabled: TTICheckBox
+          Left = 94
+          Height = 20
+          Top = 70
+          Width = 73
+          AutoSize = True
+          Caption = '&Enabled'
+          Link.TIPropertyName = 'Enabled'
+          OnChange = DirectoryChanged
+          PropertyNameAsCaption = False
+          TabOrder = 0
+        end
+        object CBDirRecurse: TTICheckBox
+          Left = 94
+          Height = 20
+          Top = 90
+          Width = 73
+          AutoSize = True
+          Caption = '&Recurse'
+          Link.TIPropertyName = 'Recurse'
+          OnChange = DirectoryChanged
+          PropertyNameAsCaption = False
+          TabOrder = 1
+        end
+        object EDirName: TTIEdit
+          Left = 94
+          Height = 21
+          Top = 8
+          Width = 200
+          Link.TIPropertyName = 'Name'
+          OnEditingDone = DirectoryChanged
+          TabOrder = 2
+        end
+        object EDirPath: TTIEdit
+          Left = 94
+          Height = 21
+          Top = 40
+          Width = 438
+          Anchors = [akTop, akLeft, akRight]
+          Link.TIPropertyName = 'Path'
+          OnEditingDone = DirectoryChanged
+          TabOrder = 3
+        end
+      end
+      object POptions: TPanel
+        Left = 0
+        Height = 50
+        Top = 0
+        Width = 572
+        Align = alTop
+        BevelOuter = bvNone
+        ClientHeight = 50
+        ClientWidth = 572
+        TabOrder = 2
+        object Label3: TLabel
+          Left = 0
+          Height = 24
+          Top = 26
+          Width = 572
+          Align = alBottom
+          Alignment = taCenter
+          AutoSize = False
+          Caption = 'Directories to clean:'
+          Layout = tlCenter
+          ParentColor = False
+        end
+        object CBStopOnError: TTICheckBox
+          Left = 14
+          Height = 20
+          Top = 2
+          Width = 103
+          Caption = 'Stop on errors'
+          Link.TIPropertyName = 'StopOnError'
+          OnChange = OptionsChanged
+          PropertyNameAsCaption = False
+          TabOrder = 0
+        end
+        object CBAllFileActions: TTICheckBox
+          Left = 190
+          Height = 20
+          Top = 2
+          Width = 184
+          Caption = 'Execute all matching actions'
+          Link.TIPropertyName = 'AllFileActions'
+          OnChange = OptionsChanged
+          PropertyNameAsCaption = False
+          TabOrder = 1
+        end
+        object CBLogAllFiles: TTICheckBox
+          Left = 406
+          Height = 20
+          Top = 2
+          Width = 88
+          Caption = 'Log all files'
+          Link.TIPropertyName = 'LogAllFiles'
+          OnChange = OptionsChanged
+          PropertyNameAsCaption = False
+          TabOrder = 2
+        end
+      end
+    end
+    object TSLocations: TTabSheet
+      Caption = 'Locations'
+      ClientHeight = 366
+      ClientWidth = 572
+      object PLocation: TPanel
+        Left = 0
+        Height = 188
+        Top = 178
+        Width = 572
+        Align = alBottom
+        BevelOuter = bvLowered
+        ClientHeight = 188
+        ClientWidth = 572
+        TabOrder = 0
+        object LELocationName: TLabel
+          AnchorSideTop.Control = ELocationName
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = ELocationName
+          Left = 43
+          Height = 15
+          Top = 16
+          Width = 37
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 6
+          Caption = '&Name'
+          Layout = tlCenter
+          ParentColor = False
+        end
+        object Label4: TLabel
+          AnchorSideTop.Control = ELocationBaseDir
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = ELocationBaseDir
+          Left = 54
+          Height = 15
+          Top = 51
+          Width = 26
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 6
+          Caption = '&Path'
+          Layout = tlCenter
+          ParentColor = False
+        end
+        object SBLocationPath: TSpeedButton
+          Left = 525
+          Height = 22
+          Top = 49
+          Width = 23
+          Anchors = [akTop, akRight]
+          Glyph.Data = {
+            36040000424D3604000000000000360000002800000010000000100000000100
+            2000000000000004000064000000640000000000000000000000000000002D88
+            D8FF2D87D8FF2D88D8FF2D88D8FF2D88D8FF2D88D8FF2D88D8FF2D88D8FF2D88
+            D8FF2D88D8FF2D87D8FF2D88D8FF2C86D8FF0000000000000000338ED9FFDCF0
+            FAFFA7DDF4FF9EDBF4FF96DAF3FF8ED8F3FF86D7F3FF7FD4F2FF79D3F2FF72D2
+            F1FF6CD0F1FF69CFF1FFC2EAF8FF338ED9FF00000000000000003594DAFFEFFA
+            FEFFA1E9F9FF91E5F8FF81E1F7FF72DEF6FF63DAF5FF54D7F4FF47D3F3FF39D0
+            F2FF2ECDF1FF26CBF0FFCAF2FBFF3594DAFF0000000000000000369ADAFFF2FA
+            FDFFB3EDFAFFA4E9F9FF95E6F8FF85E2F7FF81E1F7FF7AE0F7FF6FDDF6FF62DA
+            F5FF54D6F3FF47D3F2FFE8F9FDFF3594DAFF000000000000000036A1DAFFF6FC
+            FEFFC8F2FCFFB9EFFBFFACECFAFF8CE4F8FF8AE3F8FF82E1F7FF79DFF7FF6DDD
+            F6FF61DAF5FF57D7F4FFE7F8FDFF3594DAFF000000000000000037A6DAFFFEFF
+            FFFFF8FDFFFFF6FDFFFFF5FCFFFFE8FAFEFFAFECFAFF8EE4F8FF87E3F8FF7DE0
+            F7FF72DDF6FF68DBF5FFE9F9FDFF3594DAFF000000000000000035ABDAFFE8F6
+            FBFF7EC5EAFF5BAEE3FF51A8E1FF60AFE4FFEBFAFDFFECFAFEFFE5F5FCFFE5F6
+            FCFFE4F5FCFFE4F5FCFFFEFFFFFF3594DAFF000000000000000036AADAFFF1FA
+            FDFF94DEF5FF93DCF4FF81D5F2FF60C0E9FF4FAEE1FF3594DAFF3594DAFF3594
+            DAFF3594DAFF3594DAFF3594DAFF3594DAFF151311FF040403FF35AFDAFFF7FC
+            FEFF8EE4F8FF91DEF5FF9FE0F5FFACE1F6FFEFFBFEFF635B54FFA79A8DFF7067
+            5EFF44403BFFA3AAACFF5C554EFF968A7FFF665E56FF161413FF36B3DAFFFDFE
+            FEFFFEFFFFFFFEFEFFFFFDFEFFFFFEFFFFFFEAF7FBFF71685FFFC1B6ABFF7970
+            66FF4A5454FF5C95A6FF6E665DFFBDB1A5FF7E746AFF201D1BFF34B4D9FF5EC2
+            E1FF60C3E2FF60C3E2FF60C3E2FF5FC3E2FF3CB6DBFF756C63FFC4B9AFFFA79A
+            8DFF474540FF00000000635B55FFBBAFA4FFA6988BFF272421FF000000000000
+            00000000000000000000000000000000000000000000665E56FF696158FF564F
+            48FF322F2CFF0000000034302DFF46423CFF3D3833FF0A0908FF000000000000
+            000000000000000000000000000000000000000000003E3934FF5B544DFFB0A0
+            90FF695D51FF867465FF63584EFFAA9888FF5A514AFF161311FF000000000000
+            0000000000000000000000000000000000000000000000000000665E56FF8578
+            6FFF483F39FF8B7D71FF564A40FF928374FF4F4740FF00000000000000000000
+            0000000000000000000000000000000000000000000000000000988C80FF9C8F
+            83FF453F3AFF00000000544D47FF8A7F74FF3B3732FF00000000000000000000
+            000000000000000000000000000000000000000000000000000000000000756C
+            63FF685F57FF000000006C635BFF453F3AFF0000000000000000
+          }
+          OnClick = SBLocationPathClick
+        end
+        object ELocationBaseDir: TTIEdit
+          Left = 86
+          Height = 21
+          Top = 48
+          Width = 432
+          Link.TIPropertyName = 'BasePath'
+          OnEditingDone = LocationChanged
+          TabOrder = 1
+        end
+        object ELocationName: TTIEdit
+          Left = 86
+          Height = 21
+          Top = 13
+          Width = 184
+          Link.TIPropertyName = 'Name'
+          OnEditingDone = LocationChanged
+          TabOrder = 0
+        end
+        object CGLocationSubdirs: TTICheckGroup
+          Left = 86
+          Height = 100
+          Top = 80
+          Width = 344
+          Caption = 'Create subdirectories from'
+          ColumnLayout = clVerticalThenHorizontal
+          Columns = 2
+          Link.TIPropertyName = 'SubDirs'
+          Link.AliasValuesStrings = (
+            'sdExtension=Extension'
+            'sdYear=Year'
+            'sdMonth=Month'
+            'sdDay=Day'
+            'sdDate=Date'
+            'sdHour=Hour'
+            'sdMin=Min'
+            'sdTime=Time'
+          )
+          OnItemClick = LocationSubdirsItemClick
+        end
+      end
+      object LVLocations: TListView
+        Left = 0
+        Height = 178
+        Top = 0
+        Width = 572
+        Align = alClient
+        Columns = <        
+          item
+            Caption = 'Name'
+            Width = 120
+          end        
+          item
+            Caption = 'Path'
+            Width = 200
+          end        
+          item
+            Caption = 'Subdirs'
+          end>
+        ReadOnly = True
+        RowSelect = True
+        TabOrder = 1
+        ViewStyle = vsReport
+        OnSelectItem = LVLocationsSelectItem
+      end
+    end
+    object TSFileActions: TTabSheet
+      Caption = 'Actions'
+      ClientHeight = 366
+      ClientWidth = 572
+      object LVFileActions: TListView
+        Left = 0
+        Height = 202
+        Top = 0
+        Width = 572
+        Align = alClient
+        Columns = <        
+          item
+            Caption = 'Name'
+            Width = 100
+          end        
+          item
+            Caption = 'Extensions'
+            Width = 100
+          end        
+          item
+            Caption = 'Location'
+          end        
+          item
+            Caption = 'Delete'
+          end        
+          item
+            Caption = 'Compress'
+          end        
+          item
+            Caption = 'MinCompressSize'
+          end        
+          item
+            Caption = 'Case sensitive'
+          end>
+        ReadOnly = True
+        RowSelect = True
+        TabOrder = 0
+        ViewStyle = vsReport
+        OnSelectItem = LVFileActionsSelectItem
+      end
+      object PFileAction: TPanel
+        Left = 0
+        Height = 164
+        Top = 202
+        Width = 572
+        Align = alBottom
+        BevelOuter = bvLowered
+        ClientHeight = 164
+        ClientWidth = 572
+        TabOrder = 1
+        object LSEFileActionMinCompressSize: TLabel
+          AnchorSideTop.Control = SEFileActionMinCompressSize
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = SEFileActionMinCompressSize
+          Left = 212
+          Height = 15
+          Top = 128
+          Width = 84
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 6
+          Caption = '&Minimum size'
+          FocusControl = SEFileActionMinCompressSize
+          Layout = tlCenter
+          ParentColor = False
+        end
+        object Label5: TLabel
+          AnchorSideTop.Control = EFileActionName
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = EFileActionName
+          Left = 49
+          Height = 15
+          Top = 11
+          Width = 37
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 6
+          Caption = '&Name'
+          Layout = tlCenter
+          ParentColor = False
+        end
+        object Label6: TLabel
+          AnchorSideTop.Control = EFileActionExtensions
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = EFileActionExtensions
+          Left = 19
+          Height = 15
+          Top = 43
+          Width = 67
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 6
+          Caption = '&Extensions'
+          Layout = tlCenter
+          ParentColor = False
+        end
+        object Label7: TLabel
+          AnchorSideTop.Control = CBFileActionLocationName
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = CBFileActionLocationName
+          Left = 35
+          Height = 15
+          Top = 75
+          Width = 51
+          Alignment = taRightJustify
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 6
+          Caption = 'Location'
+          Layout = tlCenter
+          ParentColor = False
+        end
+        object EFileActionName: TTIEdit
+          Left = 92
+          Height = 21
+          Top = 8
+          Width = 178
+          Link.TIPropertyName = 'Name'
+          OnEditingDone = ActionChanged
+          TabOrder = 0
+        end
+        object EFileActionExtensions: TTIEdit
+          Left = 92
+          Height = 21
+          Top = 40
+          Width = 178
+          Link.TIPropertyName = 'Extensions'
+          OnEditingDone = ActionChanged
+          TabOrder = 1
+        end
+        object CBFileActionDelete: TTICheckBox
+          Left = 92
+          Height = 20
+          Top = 102
+          Width = 65
+          AutoSize = True
+          Caption = '&Delete'
+          Link.TIPropertyName = 'Delete'
+          OnChange = ActionChanged
+          PropertyNameAsCaption = False
+          TabOrder = 2
+        end
+        object CBFileActionCompress: TTICheckBox
+          Left = 92
+          Height = 20
+          Top = 125
+          Width = 85
+          AutoSize = True
+          Caption = '&Compress'
+          Link.TIPropertyName = 'Compress'
+          OnChange = CBFileActionCompressChange
+          PropertyNameAsCaption = False
+          TabOrder = 3
+        end
+        object SEFileActionMinCompressSize: TTISpinEdit
+          AnchorSideTop.Control = CBFileActionCompress
+          AnchorSideTop.Side = asrCenter
+          Left = 302
+          Height = 21
+          Top = 125
+          Width = 50
+          Link.TIElementName = 'MinCompressSize'
+          MaxValue = 10000
+          OnEditingDone = ActionChanged
+          TabOrder = 4
+          UseRTTIMinMax = False
+        end
+        object CBFileActionLocationName: TTIComboBox
+          Left = 92
+          Height = 21
+          Top = 72
+          Width = 100
+          AutoDropDown = True
+          HistoryCaseSensitive = False
+          Link.TIPropertyName = 'LocationName'
+          MaxHistoryCount = 0
+          OnEditingDone = ActionChanged
+          Sorted = True
+          Style = csDropDownList
+          TabOrder = 5
+        end
+      end
+    end
+    object TSScheduling: TTabSheet
+      Caption = 'Scheduling'
+      ClientHeight = 366
+      ClientWidth = 572
+      object LEDailyAt: TLabel
+        AnchorSideTop.Control = EDailyAt
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = EDailyAt
+        Left = 32
+        Height = 15
+        Top = 133
+        Width = 48
+        Anchors = [akTop, akRight]
+        BorderSpacing.Right = 6
+        Caption = 'Daily at'
+        Layout = tlCenter
+        ParentColor = False
+      end
+      object LSEHourlyAt: TLabel
+        AnchorSideTop.Control = SEHourlyAt
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = SEHourlyAt
+        Left = 23
+        Height = 15
+        Top = 173
+        Width = 57
+        Anchors = [akTop, akRight]
+        BorderSpacing.Right = 6
+        Caption = 'Hourly at'
+        Layout = tlCenter
+        ParentColor = False
+      end
+      object RGScheduleMode: TTIRadioGroup
+        Left = 14
+        Height = 108
+        Top = 10
+        Width = 168
+        Caption = 'Schedule service'
+        ChildSizing.LeftRightSpacing = 6
+        ChildSizing.TopBottomSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
+        ChildSizing.Layout = cclLeftToRightThenTopToBottom
+        ChildSizing.ControlsPerLine = 1
+        Link.TIPropertyName = 'ScheduleMode'
+        Link.AliasValuesStrings = (
+          'smDaily=Daily'
+          'smHourly=Hourly'
+        )
+        OnEditingDone = ScheduleModeChanged
+      end
+      object EDailyAt: TTIEdit
+        Left = 86
+        Height = 21
+        Top = 130
+        Width = 80
+        Link.TIPropertyName = 'DailyAt'
+        OnEditingDone = OptionsChanged
+        TabOrder = 1
+      end
+      object SEHourlyAt: TTISpinEdit
+        Left = 86
+        Height = 21
+        Top = 170
+        Width = 50
+        Link.TIPropertyName = 'HourlyAt'
+        MaxValue = 59
+        OnEditingDone = OptionsChanged
+        TabOrder = 2
+      end
+      object CGScheduleDays: TTICheckGroup
+        Left = 198
+        Height = 108
+        Top = 10
+        Width = 312
+        Caption = 'Days of week to run service'
+        ColumnLayout = clVerticalThenHorizontal
+        Columns = 2
+        Link.TIPropertyName = 'ScheduleDays'
+        Link.AliasValuesStrings = (
+          'sdMonday=Monday'
+          'sdTuesday=Tuesday'
+          'sdWednesday=Wednesday'
+          'sdThursday=Thursday'
+          'sdFriday=Friday'
+          'sdSaturday=Saturday'
+          'sdSunday=Sunday'
+        )
+        OnEditingDone = OptionsChanged
+      end
+    end
+  end
+  object MMMain: TMainMenu
+    Images = ILMain
+    left = 382
+    object MFile: TMenuItem
+      Caption = '&File'
+      object MNew: TMenuItem
+        Action = ANew
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          0000BA6530FFBB6631FFBA6630FFBA6630FFBA6630FFBA6530FFBA652FFFB965
+          2EFFB9652EFFB9642EFFB9642EFFB7622CFF000000000000000000000000BC69
+          33FFF8F1EAFFF7ECDFFFF6EBDEFFF6EADEFFF6EADCFFF6EADCFFFAF3EBFFFAF3
+          EBFFFAF2EAFFFCF7F3FFFCF8F4FFFEFEFDFFB7602AFF0000000000000000BF71
+          38FFF5EBDFFFFDBF68FFFCBD67FFFBBE65FFFCBE64FFFCBE64FFFCBD62FFFBBD
+          63FFFBBC61FFFCBE60FFFCBC62FFFDFBF8FFB9642DFF0000000000000000C178
+          3CFFF7EDE3FFFDC26EFFFFD8A0FFFFD79EFFFFD69BFFFFD798FFFFD696FFFFD6
+          95FFFFD594FFFFD493FFFBBE65FFFBF7F4FFBB6731FF0000000000000000C47C
+          40FFF7F0E6FFF8B455FFF7B456FFF7B554FFF8B453FFF8B253FFF7B352FFF7B3
+          52FFF7B251FFF7B24FFFF7B24FFFFCF9F5FFBF6F36FF0000000000000000C580
+          42FFF8F1E8FFFEE5D5FFFDE5D3FFFDE5D3FFFCE5D3FFFCE5D3FFFCE4D1FFFCE2
+          CEFFFCE2CCFFFBE0C9FFFBE1C8FFFDFAF7FFC1763BFF0000000000000000C582
+          45FFF8F2EBFFFEE7D6FFFDE7D6FFFDE7D6FFFDE7D6FFFDE6D5FFFDE5D3FFFCE4
+          D1FFFCE2CDFFFBE1CBFFFBE1C9FFFBF7F2FFC57C3FFF0000000000000000C684
+          47FFF9F3ECFFFEE8D6FFFEE8D7FFFDE7D6FFFDE7D6FFFDE7D5FFFDE5D3FFFBE4
+          D0FFFBE3CCFFFADFC7FFFADFC6FFFAF2EAFFC68042FF0000000000000000C688
+          49FFF9F4EDFFFEE8D8FFFEE8D8FFFEE8D7FFFEE7D6FFFDE5D3FFFCE4D1FFFBE1
+          CCFFFAE0C7FFF9DDC3FFF8DCC2FFFAF4EDFFC68245FF0000000000000000C688
+          4AFFF9F4EFFFFEE7D7FFFDE7D6FFFDE7D5FFFDE6D4FFFCE6D2FFFBE1CCFFFADF
+          C7FFF8DCC2FFF6DABDFFF6D8BBFFFAF4EFFFC68346FF0000000000000000C689
+          4BFFF9F4F0FFFCE6D3FFFCE6D4FFFDE7D3FFFCE4D1FFFBE3CDFFFAE0C8FFF8DC
+          C2FFF5D6BBFFF3D4B5FFF1D2B3FFF8F4F0FFC48246FF0000000000000000C689
+          4BFFF9F5F1FFFCE3CFFFFBE4D0FFFCE4CFFFFCE3CDFFFAE1CAFFF9DDC4FFF6D9
+          BCFFF4E9DFFFF7F2ECFFFBF7F3FFF5EFE9FFC27E45FF0000000000000000C689
+          4CFFF9F5F1FFFCE3CDFFFBE3CEFFFBE3CDFFFBE2CBFFF9E0C8FFF8DCC2FFF5D6
+          BAFFFDFBF8FFFCE6CDFFFAE5C9FFE2B684FFBF7942FF0000000000000000C588
+          4BFFFAF6F2FFFAE0C7FFFBE1C9FFFBE2C9FFFBE0C8FFF9DFC5FFF8DBC1FFF4D6
+          B8FFFFFBF8FFF6D8B4FFE1B07DFFDB9264FF000000000000000000000000C485
+          49FFF7F2ECFFF8F4EEFFF8F4EDFFF8F3EDFFF8F3EDFFF8F3EDFFF8F2ECFFF7F2
+          ECFFF2E6D7FFE2B27DFFDB9465FF000000000000000000000000000000000000
+          0000C88B4DFFC88C4FFFC88C4FFFC88C4FFFC88C4FFFC88D4FFFC98C4FFFC78B
+          4FFFC5894BFFC4763BFF00000000000000000000000000000000
+        }
+        OnClick = ANewExecute
+      end
+      object MIOpen: TMenuItem
+        Action = AOpen
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          20000000000000040000640000006400000000000000000000002C86D8FF2D88
+          D8FF2D87D8FF2D88D8FF2D88D8FF2D88D8FF2D88D8FF2D88D8FF2D88D8FF2D88
+          D8FF2D88D8FF2D87D8FF2D88D8FF2C86D8FF0000000000000000338ED9FFDCF0
+          FAFF98E1F6FF95E0F6FF92DFF6FF8EDEF5FF89DCF5FF85DAF4FF80D9F4FF7AD7
+          F3FF74D5F3FF70D3F2FFC2EAF8FF3594DAFF00000000000000003594DAFFEFFA
+          FEFF93E5F8FF8FE4F8FF89E3F8FF82E1F7FF7ADFF7FF71DEF6FF67DBF5FF5BD8
+          F4FF4DD4F3FF40D1F2FFCAF2FBFF3594DAFF0000000000000000369ADAFFF2FA
+          FDFF94E6F8FF92E5F8FF90E5F8FF8BE3F8FF86E2F7FF7FE1F7FF77DEF6FF6CDC
+          F6FF5ED9F4FF4FD5F3FFCCF2FBFF3594DAFF000000000000000036A1DAFFF6FC
+          FEFF94E5F8FF93E5F8FF93E5F8FF91E5F8FF93DBE9FF93D7E3FF93D2DCFF90CE
+          D7FF8CC8CFFF86C1C6FFC9D8D6FF3594DAFFC57444FFCA7F53FF37A6DAFFFEFF
+          FFFFF8FDFFFFF6FDFFFFF5FCFFFFF3FCFEFF9AE4F4FF9AE6F7FF9BE6F6FF9DE5
+          F5FF9EE5F5FF9FE5F4FFDAF3F8FF3594DAFFFDF4EEFFCA8054FF35ABDAFFE8F6
+          FBFF70BCE7FF55AAE2FF4DA5E0FF91C9EBFFFAF3EFFFFDFEFDFFFFFDFCFFFFFD
+          FCFFFEFDFCFFFEFCFBFFFEFEFDFF3594DAFFEFF2E8FFCE8156FF36AADAFFF1FA
+          FDFF94DEF5FF93DCF4FF64BCE9FF3594DAFF3594DAFF3594DAFF3594DAFF3594
+          DAFF3594DAFF3594DAFF3594DAFF3594DAFFFBF6EFFFCC8355FF35AFDAFFF7FC
+          FEFF8EE4F8FF91DEF5FF9FE0F5FFACE1F6FFCA8452FFFFF7F1FFFFE9D9FFFFEA
+          DBFFFFE9D9FFFFE7D7FFFFE5D2FFFFE2CBFFFFF7F1FFCB8555FF36B3DAFFFDFE
+          FEFFFEFFFFFFFEFEFFFFFDFEFFFFFEFFFFFFE4BA91FFFFF7F0FFFFE7D5FFFDE7
+          D6FFFDE6D4FFFCE4D0FFFBE3CBFFFADCC2FFFEF3E8FFCC8656FF34B4D9FF5EC2
+          E1FF60C3E2FF60C3E2FF60C3E2FF5FC3E2FFE4BB91FFFFF7F2FFFEE7D5FFFEE7
+          D5FFFDE5D1FFFAE0CAFFF9DEC4FFF7D9BCFFFDF2E7FFCC8757FF000000000000
+          000000000000000000000000000000000000E4BB92FFFEF7F1FFFCE5D2FFFCE4
+          D1FFFBE2CCFFF9DDC4FFF6D7BBFFF3D1AFFFFAEFE4FFCC8758FF000000000000
+          000000000000000000000000000000000000E4BB92FFFEF6F0FFFCE2CDFFFCE3
+          CDFFFADFC8FFF7D9BCFFF5E9DDFFFAF3EBFFFBF8F3FFCA8353FF000000000000
+          000000000000000000000000000000000000E4BB93FFFEF5EDFFFCDEC5FFFBE0
+          C7FFF9DCC2FFF5D3B4FFFEF9F3FFFAE2C4FFECC193FFC37D48FF000000000000
+          000000000000000000000000000000000000E5BE96FFFFFFFEFFFDF3E9FFFDF3
+          EAFFFCF2E8FFFAEFE3FFFAF2E7FFEABB88FFCF8555FF00000000000000000000
+          000000000000000000000000000000000000EAC39DFFE6BF96FFE4BB92FFE4BB
+          92FFD1A06CFFD09E6DFFCC965FFF000000000000000000000000
+        }
+        OnClick = AOpenExecute
+      end
+      object MISave: TMenuItem
+        Action = ASave
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000BA6A36FFB969
+          35FFB86935FFB76835FFB56835FFB46734FFB26634FFB06533FFAE6433FFAC63
+          32FFAA6232FFA96132FFA86031FFA76031FFA66031FFA86131FFBA6A35FFEBC6
+          ADFFEAC5ADFFFEFBF8FFFEFBF8FFFEFBF8FFFEFBF8FFFEFBF8FFFEFBF8FFFEFB
+          F8FFFEFBF8FFFEFBF8FFFEFBF8FFC89A7CFFC79879FFA76031FFBA6B37FFEDCA
+          B3FFE0A27AFFFEFAF7FF62C088FF62C088FF62C088FF62C088FF62C088FF62C0
+          88FF62C088FF62C088FFFDF9F6FFCA8D65FFC99B7CFFA76031FFBB6C38FFEECC
+          B6FFE1A27AFFFEFAF7FFBFDCC2FFBFDCC2FFBFDCC2FFBFDCC2FFBFDCC2FFBFDC
+          C2FFBFDCC2FFBFDCC2FFFDF9F6FFCD9068FFCC9E81FFA86132FFBB6B38FFEFCE
+          B8FFE1A279FFFEFAF7FF62C088FF62C088FF62C088FF62C088FF62C088FF62C0
+          88FF62C088FF62C088FFFDF9F6FFCF936AFFCEA384FFAA6132FFBA6A36FFEFD0
+          BBFFE2A27AFFFEFBF8FFFEFBF8FFFEFBF8FFFEFBF8FFFEFBF8FFFEFBF8FFFEFB
+          F8FFFEFBF8FFFEFBF8FFFEFBF8FFD3966DFFD2A78AFFAB6232FFBB6A36FFF0D2
+          BEFFE2A37AFFE2A37AFFE1A37AFFE2A37BFFE1A37BFFE0A178FFDE9F77FFDD9F
+          76FFDC9D74FFD99B72FFD89971FFD69970FFD5AB8EFFAD6333FFBB6A36FFF2D5
+          C2FFE3A37AFFE3A37AFFE2A37BFFE2A37BFFE2A47BFFE1A279FFE0A178FFDEA0
+          77FFDE9E75FFDC9D74FFDA9B73FFD99B73FFDAB095FFAF6433FFBB6A36FFF2D8
+          C5FFE3A47BFFE3A37AFFE3A47AFFE2A47BFFE2A37BFFE1A37BFFE1A279FFDFA0
+          77FFDE9F76FFDD9E74FFDB9C72FFDC9D74FFDDB59AFFB16534FFBB6B36FFF4D9
+          C7FFE6A67DFFC88C64FFC98D65FFC98E67FFCB926CFFCB926DFFCA9069FFC88C
+          65FFC88C64FFC88C64FFC88C64FFDA9C74FFE1BA9FFFB36634FFBB6B36FFF4DC
+          C9FFE7A77DFFF9ECE1FFF9ECE1FFF9EDE3FFFCF4EEFFFDFAF7FFFDF7F3FFFAED
+          E5FFF7E7DBFFF7E5D9FFF6E5D8FFDEA077FFE4BEA4FFB46734FFBC6B36FFF5DD
+          CCFFE7A87EFFFAF0E8FFFAF0E8FFC98D66FFFAF0E9FFFDF8F3FFFEFAF8FFFCF4
+          EFFFF9E9DFFFF7E7DBFFF7E5D9FFE0A278FFE7C2A9FFB66835FFBC6B36FFF6DF
+          D0FFE8A87EFFFCF6F1FFFCF6F1FFC88C64FFFAF1E9FFFBF4EEFFFDFAF7FFFDF9
+          F6FFFAF0E8FFF8E8DDFFF7E6DBFFE1A37AFFEFD5C3FFB76935FFBC6B36FFF6DF
+          D1FFE9AA80FFFEFAF6FFFDFAF6FFC88C64FFFBF3EEFFFBF1EAFFFCF6F2FFFEFB
+          F8FFFCF6F1FFF9ECE2FFF8E7DBFFEED0BAFFECD0BDFFBB703EFFBC6B36FFF6E0
+          D1FFF7E0D1FFFEFBF8FFFEFBF7FFFDF9F6FFFCF5F0FFFAF0EAFFFBF2EDFFFDF9
+          F6FFFDFAF7FFFBF1EBFFF8E9DFFFECD0BDFFC9895EFF0000000000000000BC6B
+          36FFBC6B36FFBC6B36FFBC6B36FFBB6B36FFBB6B36FFBB6A36FFBB6A36FFBC6C
+          39FFBD6E3BFFBB6D3AFFBB6B38FFBB703EFF0000000000000000
+        }
+        OnClick = ASaveExecute
+      end
+      object MISaveAs: TMenuItem
+        Action = ASaveAs
+        OnClick = ASaveAsExecute
+      end
+      object MISep1: TMenuItem
+        Caption = '-'
+      end
+      object MIQuit: TMenuItem
+        Action = AQuit
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          00000000000000000000105A92FF0D5890FF135C92FF0C578FFF999999FF7171
+          71FF545454FF515151FF4F4F4FFF4C4C4CFF4A4A4AFF474747FF454545FF2567
+          9DFF3274A8FF3D7CAFFF4784B5FF4E8ABAFF3E7EADFF0C578FFF000000000000
+          0000585858FFA2A2A2FFA2A2A2FFA3A3A3FFA4A4A4FFA4A4A4FFA5A5A5FF2F6F
+          A5FF78ABD2FF78ABD3FF73A7D1FF69A0CDFF407FAEFF0F5991FF000000000000
+          00005C5C5CFFA1A1A1FF3C7340FFA0A1A1FFA3A3A3FFA3A3A3FFA4A4A4FF3674
+          AAFF7DAFD4FF5B9AC9FF5495C7FF5896C8FF4180AEFF135C94FF000000000000
+          0000606060FFA0A0A0FF3D7641FF367139FFA2A2A2FFA2A2A2FFA3A3A3FF3D79
+          B0FF82B3D7FF629FCCFF5A9AC9FF5E9BCAFF4381AFFF196098FF37823EFF347E
+          3BFF317937FF2E7534FF499150FF468F4CFF39733DFFA1A1A1FFA2A2A2FF457E
+          B4FF88B7D9FF67A3CFFF619ECCFF639FCCFF4583B1FF1F649CFF3B8742FF89CB
+          92FF84C88DFF80C688FF7BC383FF77C17FFF478F4DFF3B743FFFA1A1A1FF4C84
+          BAFF8DBBDBFF6EA8D1FF66A6D1FF5FB4DFFF4785B1FF2569A1FF3E8B46FF8FCE
+          99FF7DC687FF78C381FF73C07CFF74C07CFF79C281FF49904FFF547F57FF5489
+          BFFF94BFDDFF75ADD4FF63B8E1FF4BD4FFFF428BB8FF2C6EA6FF41904AFF94D2
+          9FFF91D09AFF8DCD96FF89CB92FF84C88DFF519858FF417C46FF9F9F9FFF5A8E
+          C4FF98C3E0FF7CB3D7FF74AFD6FF5EC4EDFF4B88B3FF3473ABFF44944DFF4291
+          4BFF3F8D48FF3D8945FF5DA465FF5AA061FF45834BFF9E9E9EFF9E9E9EFF6092
+          C9FF9EC7E2FF83B8DAFF7DB4D7FF7EB3D7FF4F89B4FF3B79B1FF000000000000
+          0000777777FF9A9A9AFF3D8A45FF498A4FFF9C9C9CFF9D9D9DFF9D9D9DFF6696
+          CCFFA2CBE3FF89BDDCFF83B9DAFF84B9DAFF518BB5FF437EB6FF000000000000
+          00007A7A7AFF999999FF529159FF999A99FF9B9B9BFF9C9C9CFF9C9C9CFF6C9A
+          D0FFA7CEE5FF8FC1DFFF89BDDCFF8BBDDCFF538DB6FF4B84BCFF000000000000
+          00007D7D7DFF999999FF999999FF9A9A9AFF9A9A9AFF9B9B9BFF9B9B9BFF6F9D
+          D3FFAAD1E7FFABD1E7FF98C7E1FF91C2DEFF568FB7FF5289C1FF000000000000
+          0000808080FF7E7E7EFF7C7C7CFF7A7A7AFF777777FF757575FF727272FF719E
+          D4FF6F9ED6FF87B2DCFFABD3E8FFA9D0E6FF5890B8FF598EC6FF000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          000000000000709ED6FF6D9CD4FF85B1DAFF5A91B9FF6093CBFF000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          00000000000000000000000000006D9CD4FF6A9AD2FF6697CFFF
+        }
+        OnClick = AQuitExecute
+      end
+    end
+    object MItems: TMenuItem
+      Caption = '&Items'
+      object MINewItem: TMenuItem
+        Action = ANewItem
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000F0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF006000FF006000FF0060
+          00FF000000FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF006000FF006000FF008000FF0060
+          00FF000000FF004000FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFF006000FF008000FF008000FF00A000FF00A0
+          00FF006000FF006000FF000000FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFF008000FF008000FF00A000FF00A000FF00C000FF00A0
+          00FF008000FF006000FF006000FF000000FFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFF000000FF008000FF00A000FF00C000FF80E040FF00C0
+          00FF00A000FF008000FF006000FF000000FFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFF00FFFFFF00A000FF00C000FF80E040FF00FF00FF00A0
+          00FF00A000FF00A000FF008000FF006000FFF0FBFFFFF0FBFFFFF0FBFFFF0000
+          00FFF0FBFFFFF0FBFFFF000000FF00C000FF80E040FF000000FF80E040FF80E0
+          40FF00A000FF00A000FF00A000FF008000FFF0FBFFFFF0FBFFFFF0FBFFFF00FF
+          FFFF000000FFF0FBFFFF00FFFFFF00A000FF000000FF00FFFFFF80E040FF80E0
+          40FF80E040FF80E040FF00A000FF00A000FFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFF00FFFFFF000000FF000000FF000000FF00FFFFFF80E040FF80E040FF80E0
+          40FF80E040FF80E040FF80E040FF40E000FFF0FBFFFFF0FBFFFFF0FBFFFF0000
+          00FFF0FBFFFF00FFFFFF00FFFFFF00FFFFFF40E000FF000000FF000000FF0000
+          00FF40E020FF80E020FF80E020FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF00FF
+          FFFFF0FBFFFF00FFFFFF00FFFFFF00FFFFFF80E020FF00FFFFFF00FFFFFF00FF
+          FFFF00FF00FF40E020FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFF000000FF00FFFFFF00FFFFFF00FFFFFF000000FFF0FBFFFF80E020FF80E0
+          20FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF0000
+          00FF00FFFFFFF0FBFFFF000000FFF0FBFFFF00FFFFFF000000FFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF00FF
+          FFFFF0FBFFFFF0FBFFFF00FFFFFFF0FBFFFFF0FBFFFF00FFFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF
+        }
+        OnClick = ANewItemExecute
+      end
+      object MIDeleteItem: TMenuItem
+        Action = ADeleteItem
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000F0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFF0000FFFF0000FFFF000080FF002040FF000000FFF0FBFFFFF0FBFFFFF0FB
+          FFFF000000FF0000FFFF0000FFFF000000FFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFF0000FFFF0000FFFF0000FFFF000080FF000000FFF0FBFFFF0000
+          00FF0020A0FF0000FFFF000000FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFF0000FFFF0000FFFF0000FFFF000080FF000000FF0000
+          FFFF0000FFFF404060FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFF406080FF0000FFFF0000FFFF0000FFFF0000
+          FFFF404080FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFF406080FF000000FF0000FFFF0000FFFF0000FFFF0000
+          FFFF000000FF404040FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFF4060A0FF000000FF0000FFFF0000FFFF004040FF4080C0FF0000
+          FFFF0000FFFF000000FF402020FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFF000000FF0000FFFF0000FFFF4080E0FF80E0E0FF4080E0FF4060
+          C0FF0000FFFF0000FFFF000000FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFF000000FF0000FFFF0000FFFF4080E0FF80E0E0FF40A0E0FF4080C0FF4080
+          C0FF4060C0FF0000FFFF0000FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFF0000FFFF0000FFFF4080E0FF80E0E0FF4080E0FF80E0E0FF80E0E0FF4080
+          C0FF4060C0FF4080C0FF0000FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFF4060A0FF4060A0FF40A0E0FF80E0E0FF80E0E0FF80E0E0FF80E0
+          E0FF80E0E0FF4060C0FF4080C0FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFF40A0E0FF80E0E0FF80E0E0FF80E0E0FF80E0E0FF80E0E0FF80E0
+          E0FF80E0E0FF80E0E0FF40A0E0FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFF40A0E0FF40A0E0FF40C0E0FF40C0E0FF40C0E0FF40C0
+          E0FF40C0E0FF40C0E0FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFF40C0E0FF40C0E0FF40A0E0FF40A0E0FF40A0
+          E0FF40C0E0FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF40C0E0FF40C0E0FFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF
+        }
+        OnClick = ADeleteItemExecute
+      end
+    end
+    object MRun: TMenuItem
+      Caption = '&Run'
+      object MITest: TMenuItem
+        Action = ATest
+        OnClick = ATestExecute
+      end
+      object MIRun: TMenuItem
+        Action = AExecute
+        OnClick = ATestExecute
+      end
+    end
+  end
+  object ALMain: TActionList
+    Images = ILMain
+    left = 382
+    top = 32
+    object ANew: TAction
+      Category = 'File'
+      Caption = '&New'
+      ImageIndex = 0
+      OnExecute = ANewExecute
+      ShortCut = 16462
+    end
+    object AOpen: TAction
+      Category = 'File'
+      Caption = '&Open'
+      ImageIndex = 1
+      OnExecute = AOpenExecute
+      ShortCut = 16463
+    end
+    object ASave: TAction
+      Category = 'File'
+      Caption = '&Save'
+      ImageIndex = 2
+      OnExecute = ASaveExecute
+      OnUpdate = ASaveUpdate
+      ShortCut = 16467
+    end
+    object ASaveAs: TAction
+      Category = 'File'
+      Caption = 'Save &as'
+      OnExecute = ASaveAsExecute
+    end
+    object AQuit: TAction
+      Category = 'File'
+      Caption = '&Quit'
+      ImageIndex = 3
+      OnExecute = AQuitExecute
+      ShortCut = 16465
+    end
+    object ANewItem: TAction
+      Category = 'Items'
+      Caption = '&New'
+      ImageIndex = 4
+      OnExecute = ANewItemExecute
+      ShortCut = 16449
+    end
+    object ADeleteItem: TAction
+      Category = 'Items'
+      Caption = '&Delete'
+      ImageIndex = 5
+      OnExecute = ADeleteItemExecute
+      OnUpdate = ADeleteItemUpdate
+      ShortCut = 16452
+    end
+    object ATest: TAction
+      Category = 'Execute'
+      Caption = '&Test configuration'
+      OnExecute = ATestExecute
+      ShortCut = 16468
+    end
+    object AExecute: TAction
+      Category = 'Execute'
+      Caption = '&Run with configuration'
+      OnExecute = ATestExecute
+      OnUpdate = AExecuteUpdate
+      ShortCut = 16453
+    end
+  end
+  object SDConfig: TSaveDialog
+    Title = 'Save configuration file as'
+    Filter = 'Configuration files|*.cfg|All files|*.*'
+    FilterIndex = 0
+    Options = [ofOverwritePrompt, ofPathMustExist, ofEnableSizing, ofViewDetail]
+    left = 422
+  end
+  object ODConfig: TOpenDialog
+    Title = 'Open existing configuration file'
+    Filter = 'Configuration files|*.cfg|All files|*'
+    FilterIndex = 0
+    Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
+    left = 422
+    top = 32
+  end
+  object ILMain: TImageList
+    left = 344
+    top = 2
+    Bitmap = {
+      4C690600000010000000100000000000000000000000C88B4DFFC88C4FFFC88C
+      4FFFC88C4FFFC88C4FFFC88D4FFFC98C4FFFC78B4FFFC5894BFFC4763BFF0000
+      000000000000000000000000000000000000C48549FFF7F2ECFFF8F4EEFFF8F4
+      EDFFF8F3EDFFF8F3EDFFF8F3EDFFF8F2ECFFF7F2ECFFF2E6D7FFE2B27DFFDB94
+      65FF00000000000000000000000000000000C5884BFFFAF6F2FFFAE0C7FFFBE1
+      C9FFFBE2C9FFFBE0C8FFF9DFC5FFF8DBC1FFF4D6B8FFFFFBF8FFF6D8B4FFE1B0
+      7DFFDB9264FF000000000000000000000000C6894CFFF9F5F1FFFCE3CDFFFBE3
+      CEFFFBE3CDFFFBE2CBFFF9E0C8FFF8DCC2FFF5D6BAFFFDFBF8FFFCE6CDFFFAE5
+      C9FFE2B684FFBF7942FF0000000000000000C6894BFFF9F5F1FFFCE3CFFFFBE4
+      D0FFFCE4CFFFFCE3CDFFFAE1CAFFF9DDC4FFF6D9BCFFF4E9DFFFF7F2ECFFFBF7
+      F3FFF5EFE9FFC27E45FF0000000000000000C6894BFFF9F4F0FFFCE6D3FFFCE6
+      D4FFFDE7D3FFFCE4D1FFFBE3CDFFFAE0C8FFF8DCC2FFF5D6BBFFF3D4B5FFF1D2
+      B3FFF8F4F0FFC48246FF0000000000000000C6884AFFF9F4EFFFFEE7D7FFFDE7
+      D6FFFDE7D5FFFDE6D4FFFCE6D2FFFBE1CCFFFADFC7FFF8DCC2FFF6DABDFFF6D8
+      BBFFFAF4EFFFC68346FF0000000000000000C68849FFF9F4EDFFFEE8D8FFFEE8
+      D8FFFEE8D7FFFEE7D6FFFDE5D3FFFCE4D1FFFBE1CCFFFAE0C7FFF9DDC3FFF8DC
+      C2FFFAF4EDFFC68245FF0000000000000000C68447FFF9F3ECFFFEE8D6FFFEE8
+      D7FFFDE7D6FFFDE7D6FFFDE7D5FFFDE5D3FFFBE4D0FFFBE3CCFFFADFC7FFFADF
+      C6FFFAF2EAFFC68042FF0000000000000000C58245FFF8F2EBFFFEE7D6FFFDE7
+      D6FFFDE7D6FFFDE7D6FFFDE6D5FFFDE5D3FFFCE4D1FFFCE2CDFFFBE1CBFFFBE1
+      C9FFFBF7F2FFC57C3FFF0000000000000000C58042FFF8F1E8FFFEE5D5FFFDE5
+      D3FFFDE5D3FFFCE5D3FFFCE5D3FFFCE4D1FFFCE2CEFFFCE2CCFFFBE0C9FFFBE1
+      C8FFFDFAF7FFC1763BFF0000000000000000C47C40FFF7F0E6FFF8B455FFF7B4
+      56FFF7B554FFF8B453FFF8B253FFF7B352FFF7B352FFF7B251FFF7B24FFFF7B2
+      4FFFFCF9F5FFBF6F36FF0000000000000000C1783CFFF7EDE3FFFDC26EFFFFD8
+      A0FFFFD79EFFFFD69BFFFFD798FFFFD696FFFFD695FFFFD594FFFFD493FFFBBE
+      65FFFBF7F4FFBB6731FF0000000000000000BF7138FFF5EBDFFFFDBF68FFFCBD
+      67FFFBBE65FFFCBE64FFFCBE64FFFCBD62FFFBBD63FFFBBC61FFFCBE60FFFCBC
+      62FFFDFBF8FFB9642DFF0000000000000000BC6933FFF8F1EAFFF7ECDFFFF6EB
+      DEFFF6EADEFFF6EADCFFF6EADCFFFAF3EBFFFAF3EBFFFAF2EAFFFCF7F3FFFCF8
+      F4FFFEFEFDFFB7602AFF000000000000000000000000BA6530FFBB6631FFBA66
+      30FFBA6630FFBA6630FFBA6530FFBA652FFFB9652EFFB9652EFFB9642EFFB964
+      2EFFB7622CFF0000000000000000000000000000000000000000000000000000
+      000000000000EAC39DFFE6BF96FFE4BB92FFE4BB92FFD1A06CFFD09E6DFFCC96
+      5FFF000000000000000000000000000000000000000000000000000000000000
+      000000000000E5BE96FFFFFFFEFFFDF3E9FFFDF3EAFFFCF2E8FFFAEFE3FFFAF2
+      E7FFEABB88FFCF8555FF00000000000000000000000000000000000000000000
+      000000000000E4BB93FFFEF5EDFFFCDEC5FFFBE0C7FFF9DCC2FFF5D3B4FFFEF9
+      F3FFFAE2C4FFECC193FFC37D48FF000000000000000000000000000000000000
+      000000000000E4BB92FFFEF6F0FFFCE2CDFFFCE3CDFFFADFC8FFF7D9BCFFF5E9
+      DDFFFAF3EBFFFBF8F3FFCA8353FF000000000000000000000000000000000000
+      000000000000E4BB92FFFEF7F1FFFCE5D2FFFCE4D1FFFBE2CCFFF9DDC4FFF6D7
+      BBFFF3D1AFFFFAEFE4FFCC8758FF34B4D9FF5EC2E1FF60C3E2FF60C3E2FF60C3
+      E2FF5FC3E2FFE4BB91FFFFF7F2FFFEE7D5FFFEE7D5FFFDE5D1FFFAE0CAFFF9DE
+      C4FFF7D9BCFFFDF2E7FFCC8757FF36B3DAFFFDFEFEFFFEFFFFFFFEFEFFFFFDFE
+      FFFFFEFFFFFFE4BA91FFFFF7F0FFFFE7D5FFFDE7D6FFFDE6D4FFFCE4D0FFFBE3
+      CBFFFADCC2FFFEF3E8FFCC8656FF35AFDAFFF7FCFEFF8EE4F8FF91DEF5FF9FE0
+      F5FFACE1F6FFCA8452FFFFF7F1FFFFE9D9FFFFEADBFFFFE9D9FFFFE7D7FFFFE5
+      D2FFFFE2CBFFFFF7F1FFCB8555FF36AADAFFF1FAFDFF94DEF5FF93DCF4FF64BC
+      E9FF3594DAFF3594DAFF3594DAFF3594DAFF3594DAFF3594DAFF3594DAFF3594
+      DAFF3594DAFFFBF6EFFFCC8355FF35ABDAFFE8F6FBFF70BCE7FF55AAE2FF4DA5
+      E0FF91C9EBFFFAF3EFFFFDFEFDFFFFFDFCFFFFFDFCFFFEFDFCFFFEFCFBFFFEFE
+      FDFF3594DAFFEFF2E8FFCE8156FF37A6DAFFFEFFFFFFF8FDFFFFF6FDFFFFF5FC
+      FFFFF3FCFEFF9AE4F4FF9AE6F7FF9BE6F6FF9DE5F5FF9EE5F5FF9FE5F4FFDAF3
+      F8FF3594DAFFFDF4EEFFCA8054FF36A1DAFFF6FCFEFF94E5F8FF93E5F8FF93E5
+      F8FF91E5F8FF93DBE9FF93D7E3FF93D2DCFF90CED7FF8CC8CFFF86C1C6FFC9D8
+      D6FF3594DAFFC57444FFCA7F53FF369ADAFFF2FAFDFF94E6F8FF92E5F8FF90E5
+      F8FF8BE3F8FF86E2F7FF7FE1F7FF77DEF6FF6CDCF6FF5ED9F4FF4FD5F3FFCCF2
+      FBFF3594DAFF00000000000000003594DAFFEFFAFEFF93E5F8FF8FE4F8FF89E3
+      F8FF82E1F7FF7ADFF7FF71DEF6FF67DBF5FF5BD8F4FF4DD4F3FF40D1F2FFCAF2
+      FBFF3594DAFF0000000000000000338ED9FFDCF0FAFF98E1F6FF95E0F6FF92DF
+      F6FF8EDEF5FF89DCF5FF85DAF4FF80D9F4FF7AD7F3FF74D5F3FF70D3F2FFC2EA
+      F8FF3594DAFF00000000000000002C86D8FF2D88D8FF2D87D8FF2D88D8FF2D88
+      D8FF2D88D8FF2D88D8FF2D88D8FF2D88D8FF2D88D8FF2D88D8FF2D87D8FF2D88
+      D8FF2C86D8FF000000000000000000000000BC6B36FFBC6B36FFBC6B36FFBC6B
+      36FFBB6B36FFBB6B36FFBB6A36FFBB6A36FFBC6C39FFBD6E3BFFBB6D3AFFBB6B
+      38FFBB703EFF0000000000000000BC6B36FFF6E0D1FFF7E0D1FFFEFBF8FFFEFB
+      F7FFFDF9F6FFFCF5F0FFFAF0EAFFFBF2EDFFFDF9F6FFFDFAF7FFFBF1EBFFF8E9
+      DFFFECD0BDFFC9895EFF00000000BC6B36FFF6DFD1FFE9AA80FFFEFAF6FFFDFA
+      F6FFC88C64FFFBF3EEFFFBF1EAFFFCF6F2FFFEFBF8FFFCF6F1FFF9ECE2FFF8E7
+      DBFFEED0BAFFECD0BDFFBB703EFFBC6B36FFF6DFD0FFE8A87EFFFCF6F1FFFCF6
+      F1FFC88C64FFFAF1E9FFFBF4EEFFFDFAF7FFFDF9F6FFFAF0E8FFF8E8DDFFF7E6
+      DBFFE1A37AFFEFD5C3FFB76935FFBC6B36FFF5DDCCFFE7A87EFFFAF0E8FFFAF0
+      E8FFC98D66FFFAF0E9FFFDF8F3FFFEFAF8FFFCF4EFFFF9E9DFFFF7E7DBFFF7E5
+      D9FFE0A278FFE7C2A9FFB66835FFBB6B36FFF4DCC9FFE7A77DFFF9ECE1FFF9EC
+      E1FFF9EDE3FFFCF4EEFFFDFAF7FFFDF7F3FFFAEDE5FFF7E7DBFFF7E5D9FFF6E5
+      D8FFDEA077FFE4BEA4FFB46734FFBB6B36FFF4D9C7FFE6A67DFFC88C64FFC98D
+      65FFC98E67FFCB926CFFCB926DFFCA9069FFC88C65FFC88C64FFC88C64FFC88C
+      64FFDA9C74FFE1BA9FFFB36634FFBB6A36FFF2D8C5FFE3A47BFFE3A37AFFE3A4
+      7AFFE2A47BFFE2A37BFFE1A37BFFE1A279FFDFA077FFDE9F76FFDD9E74FFDB9C
+      72FFDC9D74FFDDB59AFFB16534FFBB6A36FFF2D5C2FFE3A37AFFE3A37AFFE2A3
+      7BFFE2A37BFFE2A47BFFE1A279FFE0A178FFDEA077FFDE9E75FFDC9D74FFDA9B
+      73FFD99B73FFDAB095FFAF6433FFBB6A36FFF0D2BEFFE2A37AFFE2A37AFFE1A3
+      7AFFE2A37BFFE1A37BFFE0A178FFDE9F77FFDD9F76FFDC9D74FFD99B72FFD899
+      71FFD69970FFD5AB8EFFAD6333FFBA6A36FFEFD0BBFFE2A27AFFFEFBF8FFFEFB
+      F8FFFEFBF8FFFEFBF8FFFEFBF8FFFEFBF8FFFEFBF8FFFEFBF8FFFEFBF8FFFEFB
+      F8FFD3966DFFD2A78AFFAB6232FFBB6B38FFEFCEB8FFE1A279FFFEFAF7FF62C0
+      88FF62C088FF62C088FF62C088FF62C088FF62C088FF62C088FF62C088FFFDF9
+      F6FFCF936AFFCEA384FFAA6132FFBB6C38FFEECCB6FFE1A27AFFFEFAF7FFBFDC
+      C2FFBFDCC2FFBFDCC2FFBFDCC2FFBFDCC2FFBFDCC2FFBFDCC2FFBFDCC2FFFDF9
+      F6FFCD9068FFCC9E81FFA86132FFBA6B37FFEDCAB3FFE0A27AFFFEFAF7FF62C0
+      88FF62C088FF62C088FF62C088FF62C088FF62C088FF62C088FF62C088FFFDF9
+      F6FFCA8D65FFC99B7CFFA76031FFBA6A35FFEBC6ADFFEAC5ADFFFEFBF8FFFEFB
+      F8FFFEFBF8FFFEFBF8FFFEFBF8FFFEFBF8FFFEFBF8FFFEFBF8FFFEFBF8FFFEFB
+      F8FFC89A7CFFC79879FFA76031FFBA6A36FFB96935FFB86935FFB76835FFB568
+      35FFB46734FFB26634FFB06533FFAE6433FFAC6332FFAA6232FFA96132FFA860
+      31FFA76031FFA66031FFA86131FF000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00006D9CD4FF6A9AD2FF6697CFFF000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000709ED6FF6D9C
+      D4FF85B1DAFF5A91B9FF6093CBFF0000000000000000808080FF7E7E7EFF7C7C
+      7CFF7A7A7AFF777777FF757575FF727272FF719ED4FF6F9ED6FF87B2DCFFABD3
+      E8FFA9D0E6FF5890B8FF598EC6FF00000000000000007D7D7DFF999999FF9999
+      99FF9A9A9AFF9A9A9AFF9B9B9BFF9B9B9BFF6F9DD3FFAAD1E7FFABD1E7FF98C7
+      E1FF91C2DEFF568FB7FF5289C1FF00000000000000007A7A7AFF999999FF5291
+      59FF999A99FF9B9B9BFF9C9C9CFF9C9C9CFF6C9AD0FFA7CEE5FF8FC1DFFF89BD
+      DCFF8BBDDCFF538DB6FF4B84BCFF0000000000000000777777FF9A9A9AFF3D8A
+      45FF498A4FFF9C9C9CFF9D9D9DFF9D9D9DFF6696CCFFA2CBE3FF89BDDCFF83B9
+      DAFF84B9DAFF518BB5FF437EB6FF44944DFF42914BFF3F8D48FF3D8945FF5DA4
+      65FF5AA061FF45834BFF9E9E9EFF9E9E9EFF6092C9FF9EC7E2FF83B8DAFF7DB4
+      D7FF7EB3D7FF4F89B4FF3B79B1FF41904AFF94D29FFF91D09AFF8DCD96FF89CB
+      92FF84C88DFF519858FF417C46FF9F9F9FFF5A8EC4FF98C3E0FF7CB3D7FF74AF
+      D6FF5EC4EDFF4B88B3FF3473ABFF3E8B46FF8FCE99FF7DC687FF78C381FF73C0
+      7CFF74C07CFF79C281FF49904FFF547F57FF5489BFFF94BFDDFF75ADD4FF63B8
+      E1FF4BD4FFFF428BB8FF2C6EA6FF3B8742FF89CB92FF84C88DFF80C688FF7BC3
+      83FF77C17FFF478F4DFF3B743FFFA1A1A1FF4C84BAFF8DBBDBFF6EA8D1FF66A6
+      D1FF5FB4DFFF4785B1FF2569A1FF37823EFF347E3BFF317937FF2E7534FF4991
+      50FF468F4CFF39733DFFA1A1A1FFA2A2A2FF457EB4FF88B7D9FF67A3CFFF619E
+      CCFF639FCCFF4583B1FF1F649CFF0000000000000000606060FFA0A0A0FF3D76
+      41FF367139FFA2A2A2FFA2A2A2FFA3A3A3FF3D79B0FF82B3D7FF629FCCFF5A9A
+      C9FF5E9BCAFF4381AFFF196098FF00000000000000005C5C5CFFA1A1A1FF3C73
+      40FFA0A1A1FFA3A3A3FFA3A3A3FFA4A4A4FF3674AAFF7DAFD4FF5B9AC9FF5495
+      C7FF5896C8FF4180AEFF135C94FF0000000000000000585858FFA2A2A2FFA2A2
+      A2FFA3A3A3FFA4A4A4FFA4A4A4FFA5A5A5FF2F6FA5FF78ABD2FF78ABD3FF73A7
+      D1FF69A0CDFF407FAEFF0F5991FF999999FF717171FF545454FF515151FF4F4F
+      4FFF4C4C4CFF4A4A4AFF474747FF454545FF25679DFF3274A8FF3D7CAFFF4784
+      B5FF4E8ABAFF3E7EADFF0C578FFF000000000000000000000000000000000000
+      000000000000000000000000000000000000000000000000000000000000105A
+      92FF0D5890FF135C92FF0C578FFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+      FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+      FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF00FFFFFFF0FBFFFFF0FBFFFF00FF
+      FFFFF0FBFFFFF0FBFFFF00FFFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+      FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF000000FF00FFFFFFF0FBFFFF0000
+      00FFF0FBFFFF00FFFFFF000000FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+      FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF000000FF00FFFFFF00FF
+      FFFF00FFFFFF000000FFF0FBFFFF80E020FF80E020FFF0FBFFFFF0FBFFFFF0FB
+      FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF00FFFFFFF0FBFFFF00FFFFFF00FF
+      FFFF00FFFFFF80E020FF00FFFFFF00FFFFFF00FFFFFF00FF00FF40E020FFF0FB
+      FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF000000FFF0FBFFFF00FFFFFF00FF
+      FFFF00FFFFFF40E000FF000000FF000000FF000000FF40E020FF80E020FF80E0
+      20FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF00FFFFFF000000FF0000
+      00FF000000FF00FFFFFF80E040FF80E040FF80E040FF80E040FF80E040FF80E0
+      40FF40E000FFF0FBFFFFF0FBFFFFF0FBFFFF00FFFFFF000000FFF0FBFFFF00FF
+      FFFF00A000FF000000FF00FFFFFF80E040FF80E040FF80E040FF80E040FF00A0
+      00FF00A000FFF0FBFFFFF0FBFFFFF0FBFFFF000000FFF0FBFFFFF0FBFFFF0000
+      00FF00C000FF80E040FF000000FF80E040FF80E040FF00A000FF00A000FF00A0
+      00FF008000FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF00FF
+      FFFF00A000FF00C000FF80E040FF00FF00FF00A000FF00A000FF00A000FF0080
+      00FF006000FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF0000
+      00FF008000FF00A000FF00C000FF80E040FF00C000FF00A000FF008000FF0060
+      00FF000000FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF0080
+      00FF008000FF00A000FF00A000FF00C000FF00A000FF008000FF006000FF0060
+      00FF000000FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+      FFFF006000FF008000FF008000FF00A000FF00A000FF006000FF006000FF0000
+      00FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+      FFFFF0FBFFFF006000FF006000FF008000FF006000FF000000FF004000FFF0FB
+      FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+      FFFFF0FBFFFFF0FBFFFF006000FF006000FF006000FF000000FFF0FBFFFFF0FB
+      FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+      FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+      FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+      FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+      FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+      FFFFF0FBFFFFF0FBFFFF40C0E0FF40C0E0FFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+      FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+      FFFF40C0E0FF40C0E0FF40A0E0FF40A0E0FF40A0E0FF40C0E0FFF0FBFFFFF0FB
+      FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF40A0
+      E0FF40A0E0FF40C0E0FF40C0E0FF40C0E0FF40C0E0FF40C0E0FF40C0E0FFF0FB
+      FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF40A0E0FF80E0
+      E0FF80E0E0FF80E0E0FF80E0E0FF80E0E0FF80E0E0FF80E0E0FF80E0E0FF40A0
+      E0FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF4060A0FF4060
+      A0FF40A0E0FF80E0E0FF80E0E0FF80E0E0FF80E0E0FF80E0E0FF4060C0FF4080
+      C0FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF0000FFFF0000FFFF4080
+      E0FF80E0E0FF4080E0FF80E0E0FF80E0E0FF4080C0FF4060C0FF4080C0FF0000
+      FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF000000FF0000FFFF0000
+      FFFF4080E0FF80E0E0FF40A0E0FF4080C0FF4080C0FF4060C0FF0000FFFF0000
+      FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF000000FF0000
+      FFFF0000FFFF4080E0FF80E0E0FF4080E0FF4060C0FF0000FFFF0000FFFF0000
+      00FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF4060A0FF0000
+      00FF0000FFFF0000FFFF004040FF4080C0FF0000FFFF0000FFFF000000FF4020
+      20FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF4060
+      80FF000000FF0000FFFF0000FFFF0000FFFF0000FFFF000000FF404040FFF0FB
+      FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+      FFFF406080FF0000FFFF0000FFFF0000FFFF0000FFFF404080FFF0FBFFFFF0FB
+      FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF0000
+      FFFF0000FFFF0000FFFF000080FF000000FF0000FFFF0000FFFF404060FFF0FB
+      FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF0000FFFF0000
+      FFFF0000FFFF000080FF000000FFF0FBFFFF000000FF0020A0FF0000FFFF0000
+      00FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF0000FFFF0000FFFF0000
+      80FF002040FF000000FFF0FBFFFFF0FBFFFFF0FBFFFF000000FF0000FFFF0000
+      FFFF000000FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+      FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+      FFFFF0FBFFFFF0FBFFFFF0FBFFFF
+    }
+  end
+  object SDDir: TSelectDirectoryDialog
+    FilterIndex = 0
+    left = 464
+    top = 2
+  end
+end

@@ -1,0 +1,75 @@
+object ExploreIDEMenuForm: TExploreIDEMenuForm
+  Left = 468
+  Height = 336
+  Top = 378
+  Width = 468
+  ActiveControl = TVIDEMenu
+  Caption = 'Lazarus IDE menus'
+  ClientHeight = 336
+  ClientWidth = 468
+  OnCreate = FormCreate
+  Position = poDesktopCenter
+  LCLVersion = '0.9.31'
+  object LTree: TLabel
+    Left = 6
+    Height = 16
+    Top = 6
+    Width = 456
+    Align = alTop
+    BorderSpacing.Around = 6
+    Caption = 'Menu Tree'
+    ParentColor = False
+  end
+  object TVIDEMenu: TTreeView
+    Left = 0
+    Height = 225
+    Top = 28
+    Width = 468
+    Align = alTop
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    DefaultItemHeight = 17
+    ReadOnly = True
+    TabOrder = 0
+    OnChange = TVIDEMenuChange
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+  end
+  object LPAth: TMemo
+    AnchorSideBottom.Control = BCLose
+    Left = 0
+    Height = 36
+    Top = 258
+    Width = 468
+    Align = alTop
+    Anchors = [akBottom]
+    BorderSpacing.Bottom = 6
+    Color = clBtnFace
+    Lines.Strings = (
+      'Path of selected item:'
+    )
+    TabOrder = 1
+  end
+  object Splitter1: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 253
+    Width = 468
+    Align = alTop
+    ResizeAnchor = akTop
+  end
+  object BCLose: TBitBtn
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 392
+    Height = 30
+    Top = 300
+    Width = 75
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Bottom = 6
+    Caption = '&Close'
+    Kind = bkClose
+    ModalResult = 1
+    NumGlyphs = 0
+    TabOrder = 2
+  end
+end

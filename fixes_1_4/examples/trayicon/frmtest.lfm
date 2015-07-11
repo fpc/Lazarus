@@ -1,0 +1,86 @@
+object frmTrayTest: TfrmTrayTest
+  Left = 183
+  Height = 238
+  Top = 176
+  Width = 311
+  ActiveControl = btnShow
+  Caption = 'TTrayIcon test application'
+  ClientHeight = 238
+  ClientWidth = 311
+  OnCreate = FormCreate
+  OnPaint = FormPaint
+  LCLVersion = '0.9.25'
+  object btnShow: TButton
+    Left = 32
+    Height = 33
+    Top = 32
+    Width = 136
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Show'
+    OnClick = btnShowClick
+    TabOrder = 0
+  end
+  object btnHide: TButton
+    Left = 32
+    Height = 33
+    Top = 88
+    Width = 136
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Hide'
+    OnClick = btnHideClick
+    TabOrder = 1
+  end
+  object btnDisplayMessage: TButton
+    Left = 32
+    Height = 33
+    Top = 144
+    Width = 136
+    Caption = 'Display Message'
+    OnClick = HandleClick
+    TabOrder = 2
+  end
+  object chkOnPaintDrawing: TCheckBox
+    Left = 32
+    Height = 21
+    Top = 200
+    Width = 267
+    Caption = 'Test drawing the icon in the Form''s OnPaint event'
+    OnChange = chkOnPaintDrawingChange
+    TabOrder = 3
+  end
+  object PopupMenu: TPopupMenu
+    left = 192
+    top = 96
+    object MenuItem1: TMenuItem
+      Caption = 'New Item1'
+    end
+    object MenuItem3: TMenuItem
+      Caption = 'New Item3'
+    end
+    object MenuItem2: TMenuItem
+      Caption = 'New Item2'
+    end
+  end
+  object SystrayIcon: TTrayIcon
+    Icon.Data = {
+      DE0100000000010001001616100001000400C801000016000000280000001600
+      00002C0000000100040000000000000000000000000000000000000000000000
+      000000000000FF2FA00000C6D200000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000002222222221111111111100002222222221111111111100002222222221
+      1111111111000022222222211111111111000022222222211111111111000002
+      2222221111111111110000002222211111111111110000022222111111111111
+      1100000222221111111111111100000222211111111111111100000222211111
+      1111111111000000022111111111111111000000022111111111111111000000
+      0221111111111111110000000221111111111111110000000222221111111122
+      2200000022222222222222222200000002222222222222222200000002222222
+      2222222222000000022222222222222222000000002222222222222222000000
+      0022222222222222220000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000
+    }
+    left = 237
+    top = 96
+  end
+end

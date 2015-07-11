@@ -1,0 +1,181 @@
+inherited fClarifyBlocks: TfClarifyBlocks
+  Height = 336
+  Width = 334
+  ClientHeight = 336
+  ClientWidth = 334
+  OnResize = FrameResize
+  TabOrder = 0
+  DesignLeft = 699
+  DesignTop = 227
+  object Label1: TLabel[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 14
+    Top = 6
+    Width = 148
+    BorderSpacing.Around = 6
+    Caption = 'Block styles: use a new line at:'
+    ParentColor = False
+  end
+  object rgBlockBegin: TRadioGroup[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = rgBlock
+    Left = 6
+    Height = 81
+    Top = 26
+    Width = 151
+    Anchors = [akTop, akLeft, akRight]
+    AutoFill = True
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'Block with begin'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 63
+    ClientWidth = 147
+    Items.Strings = (
+      'Always'
+      'Leave as is'
+      'Never'
+    )
+    TabOrder = 0
+  end
+  object rgBlock: TRadioGroup[2]
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = rgBlockBegin
+    AnchorSideBottom.Side = asrBottom
+    Left = 163
+    Height = 81
+    Top = 26
+    Width = 165
+    Anchors = [akTop, akRight, akBottom]
+    AutoFill = True
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    Caption = 'Block without begin'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 63
+    ClientWidth = 161
+    Items.Strings = (
+      'Always'
+      'Leave as is'
+      'Never'
+    )
+    TabOrder = 1
+  end
+  object rgEndElse: TRadioGroup[3]
+    AnchorSideLeft.Control = rgBlock
+    AnchorSideTop.Control = rgBlock
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = rgElseIf
+    AnchorSideBottom.Side = asrBottom
+    Left = 163
+    Height = 81
+    Top = 113
+    Width = 165
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoFill = True
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    Caption = 'Between end and else'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 63
+    ClientWidth = 161
+    Items.Strings = (
+      'Always'
+      'Leave as is'
+      'Never'
+    )
+    TabOrder = 3
+  end
+  object rgElseIf: TRadioGroup[4]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = rgBlockBegin
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = rgBlock
+    Left = 6
+    Height = 81
+    Top = 113
+    Width = 151
+    Anchors = [akTop, akLeft, akRight]
+    AutoFill = True
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'Between else and if'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 63
+    ClientWidth = 147
+    Items.Strings = (
+      'Always'
+      'Leave as is'
+      'Never'
+    )
+    TabOrder = 2
+  end
+  object rgElseBegin: TRadioGroup[5]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = rgElseIf
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = rgBlock
+    Left = 6
+    Height = 81
+    Top = 200
+    Width = 151
+    Anchors = [akTop, akLeft, akRight]
+    AutoFill = True
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'Else begin'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 63
+    ClientWidth = 147
+    Items.Strings = (
+      'Always'
+      'Leave as is'
+      'Never'
+    )
+    TabOrder = 4
+  end
+end

@@ -1,0 +1,46 @@
+object ExportProgressForm: TExportProgressForm
+  Left = 323
+  Height = 36
+  Top = 365
+  Width = 471
+  BorderIcons = [biSystemMenu, biMaximize]
+  BorderStyle = bsToolWindow
+  Caption = 'Export progress'
+  ClientHeight = 36
+  ClientWidth = 471
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.27'
+  object LProgress: TLabel
+    Left = 0
+    Height = 13
+    Top = 7
+    Width = 152
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = 'Exporting %d records'
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object BCancel: TButton
+    Left = 392
+    Height = 25
+    Top = 3
+    Width = 75
+    Anchors = [akTop, akRight]
+    BorderSpacing.InnerBorder = 4
+    Caption = '&Cancel'
+    TabOrder = 0
+  end
+  object PBExport: TProgressBar
+    Left = 160
+    Height = 23
+    Top = 3
+    Width = 224
+    Anchors = [akTop, akLeft, akRight]
+    Max = 1000
+    Smooth = True
+    Step = 1
+    TabOrder = 1
+  end
+end

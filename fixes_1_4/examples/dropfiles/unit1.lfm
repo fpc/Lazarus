@@ -1,0 +1,41 @@
+object Form1: TForm1
+  Left = 299
+  Height = 353
+  Top = 155
+  Width = 701
+  HorzScrollBar.Page = 700
+  VertScrollBar.Page = 352
+  ActiveControl = Memo1
+  AllowDropFiles = True
+  Caption = 'On Drop Files event example'
+  ClientHeight = 353
+  ClientWidth = 701
+  OnDropFiles = FormDropFiles
+  object Label1: TLabel
+    Left = 13
+    Height = 14
+    Top = 18
+    Width = 296
+    Caption = 'Drag and drop files on this form and see the results in memo. '
+    ParentColor = False
+  end
+  object Memo1: TMemo
+    Left = 12
+    Height = 287
+    Top = 48
+    Width = 666
+    ScrollBars = ssVertical
+    TabOrder = 0
+  end
+  object ApplicationProperties1: TApplicationProperties
+    CaptureExceptions = True
+    HintColor = clInfoBk
+    HintHidePause = 2500
+    HintPause = 500
+    HintShortCuts = True
+    ShowHint = True
+    OnDropFiles = ApplicationProperties1DropFiles
+    left = 126
+    top = 300
+  end
+end

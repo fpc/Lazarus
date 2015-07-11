@@ -1,0 +1,103 @@
+inherited DebuggerLanguageExceptionsOptions: TDebuggerLanguageExceptionsOptions
+  Height = 421
+  Width = 448
+  ClientHeight = 421
+  ClientWidth = 448
+  TabOrder = 0
+  Visible = False
+  DesignLeft = 312
+  DesignTop = 189
+  object bgIgnoreExceptions: TGroupBox[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = chkNotifyOnException
+    Left = 0
+    Height = 393
+    Top = 0
+    Width = 448
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Bottom = 6
+    Caption = 'Ignore these exceptions'
+    ClientHeight = 374
+    ClientWidth = 444
+    TabOrder = 0
+    object clbExceptions: TCheckListBox
+      AnchorSideLeft.Control = bgIgnoreExceptions
+      AnchorSideTop.Control = DbgLangExceptHint
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = bgIgnoreExceptions
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = cmdExceptionAdd
+      Left = 6
+      Height = 303
+      Top = 30
+      Width = 432
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Around = 6
+      ItemHeight = 0
+      OnClick = clbExceptionsClick
+      TabOrder = 0
+      TopIndex = -1
+    end
+    object cmdExceptionAdd: TBitBtn
+      AnchorSideRight.Control = cmdExceptionRemove
+      AnchorSideBottom.Control = bgIgnoreExceptions
+      AnchorSideBottom.Side = asrBottom
+      Left = 282
+      Height = 29
+      Top = 339
+      Width = 75
+      Anchors = [akRight, akBottom]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'Add'
+      Constraints.MinWidth = 75
+      NumGlyphs = 0
+      OnClick = cmdExceptionAddClick
+      TabOrder = 1
+    end
+    object cmdExceptionRemove: TBitBtn
+      AnchorSideRight.Control = bgIgnoreExceptions
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = bgIgnoreExceptions
+      AnchorSideBottom.Side = asrBottom
+      Left = 363
+      Height = 29
+      Top = 339
+      Width = 75
+      Anchors = [akRight, akBottom]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'Remove'
+      Constraints.MinWidth = 75
+      Enabled = False
+      NumGlyphs = 0
+      OnClick = cmdExceptionRemoveClick
+      TabOrder = 2
+    end
+    object DbgLangExceptHint: TLabel
+      Left = 6
+      Height = 18
+      Top = 6
+      Width = 432
+      Align = alTop
+      BorderSpacing.Around = 6
+      Caption = 'DbgLangExceptHint'
+      ParentColor = False
+    end
+  end
+  object chkNotifyOnException: TCheckBox[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 22
+    Top = 399
+    Width = 208
+    Anchors = [akLeft, akBottom]
+    Caption = 'Break on Lazarus Exceptions'
+    TabOrder = 1
+  end
+end

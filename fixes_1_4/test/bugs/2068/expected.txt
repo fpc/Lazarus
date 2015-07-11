@@ -1,0 +1,7 @@
+FormCreate
+ --> Edit1 is NOT Modified
+ --> Memo1 is NOT Modified
+FormShow
+ --> Edit1 is NOT Modified
+ --> Memo1 is NOT Modified
+

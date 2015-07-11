@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <Name Value="cairocanvas_pkg"/>
+    <Author Value="Petr Kristan"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
+      </SearchPaths>
+      <Other>
+        <CompilerMessages>
+          <MsgFileName Value=""/>
+        </CompilerMessages>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="TCairoPrinterCanvas using the Cairo library."/>
+    <License Value="see COPYING.modifiedLGPL.txt"/>
+    <Files Count="3">
+      <Item1>
+        <Filename Value="cairocanvas.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CairoCanvas"/>
+      </Item1>
+      <Item2>
+        <Filename Value="cairoprinter.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CairoPrinter"/>
+      </Item2>
+      <Item3>
+        <Filename Value="cairocanvasall.pas"/>
+        <UnitName Value="CairoCanvasAll"/>
+      </Item3>
+    </Files>
+    <RequiredPkgs Count="1">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count"/>
+    </CustomOptions>
+  </Package>
+</CONFIG>

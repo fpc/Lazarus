@@ -1,0 +1,143 @@
+object Form1: TForm1
+  Left = 342
+  Height = 437
+  Top = 152
+  Width = 456
+  Caption = 'Form1'
+  ClientHeight = 437
+  ClientWidth = 456
+  DefaultMonitor = dmDesktop
+  Position = poScreenCenter
+  LCLVersion = '0.9.31'
+  object Chart1: TChart
+    Left = 0
+    Height = 377
+    Top = 0
+    Width = 456
+    AxisList = <    
+      item
+        Title.LabelFont.Orientation = 900
+      end    
+      item
+        Alignment = calBottom
+      end>
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+    ParentColor = False
+    object Chart1LineSeries1: TLineSeries
+      Marks.Format = '%1:.0g%%'
+      Marks.Style = smsCustom
+      ZPosition = 12
+      AxisIndexX = 1
+      AxisIndexY = 0
+      LinePen.Color = clRed
+      LinePen.Style = psDot
+      LinePen.Width = 5
+      Source = RandomChartSource1
+    end
+    object Chart1BarSeries1: TBarSeries
+      ZPosition = 11
+      AxisIndexX = 1
+      AxisIndexY = 0
+      BarBrush.Color = clMoneyGreen
+      Source = RandomChartSource1
+    end
+    object Chart1AreaSeries1: TAreaSeries
+      AxisIndexX = 1
+      AxisIndexY = 0
+      AreaContourPen.Width = 2
+      AreaLinesPen.Color = clRed
+      Depth = 10
+      Source = RandomChartSource1
+      UseZeroLevel = True
+    end
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 60
+    Top = 377
+    Width = 456
+    Align = alBottom
+    ClientHeight = 60
+    ClientWidth = 456
+    TabOrder = 1
+    object cbRotateLine: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 10
+      Width = 77
+      Caption = 'Rotate lines'
+      OnChange = cbRotateLineChange
+      TabOrder = 0
+    end
+    object cbRotateBar: TCheckBox
+      Left = 104
+      Height = 17
+      Top = 10
+      Width = 77
+      Caption = 'Rotate bars'
+      OnChange = cbRotateBarChange
+      TabOrder = 1
+    end
+    object cbNegative: TCheckBox
+      Left = 292
+      Height = 17
+      Top = 10
+      Width = 97
+      Caption = 'Negative values'
+      OnChange = cbNegativeChange
+      TabOrder = 2
+    end
+    object cbRotateArea: TCheckBox
+      Left = 200
+      Height = 17
+      Top = 10
+      Width = 78
+      Caption = 'Rotate area'
+      OnChange = cbRotateAreaChange
+      TabOrder = 3
+    end
+    object cbMarkPositions: TComboBox
+      Left = 104
+      Height = 21
+      Top = 31
+      Width = 100
+      ItemHeight = 13
+      ItemIndex = 0
+      Items.Strings = (
+        'Outside'
+        'Positive'
+        'Negative'
+        'Inside'
+      )
+      OnChange = cbMarkPositionsChange
+      Style = csDropDownList
+      TabOrder = 4
+      Text = 'Outside'
+    end
+    object lblMarkPositions: TLabel
+      Left = 8
+      Height = 14
+      Top = 31
+      Width = 69
+      Caption = 'Mark positions'
+      ParentColor = False
+    end
+  end
+  object RandomChartSource1: TRandomChartSource
+    PointsNumber = 9
+    RandSeed = 1376070732
+    XMax = 8
+    XMin = 0
+    YMax = 15
+    YMin = 7
+    left = 352
+    top = 20
+  end
+end

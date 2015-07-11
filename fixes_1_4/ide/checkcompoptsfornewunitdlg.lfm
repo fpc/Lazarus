@@ -1,0 +1,89 @@
+object CheckCompOptsForNewUnitDialog: TCheckCompOptsForNewUnitDialog
+  Left = 305
+  Height = 225
+  Top = 254
+  Width = 434
+  Caption = 'CheckCompOptsForNewUnitDialog'
+  ClientHeight = 225
+  ClientWidth = 434
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.31'
+  object NoteLabel: TLabel
+    Left = 6
+    Height = 16
+    Top = 6
+    Width = 422
+    Align = alTop
+    BorderSpacing.Around = 6
+    Caption = 'NoteLabel'
+    ParentColor = False
+    WordWrap = True
+  end
+  object ModeLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ModeComboBox
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 16
+    Top = 36
+    Width = 68
+    BorderSpacing.Left = 6
+    Caption = 'ModeLabel'
+    ParentColor = False
+  end
+  object ModeComboBox: TComboBox
+    AnchorSideLeft.Control = ModeLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = NoteLabel
+    AnchorSideTop.Side = asrBottom
+    Left = 80
+    Height = 23
+    Top = 33
+    Width = 135
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 11
+    ItemHeight = 0
+    TabOrder = 0
+    Text = 'ModeComboBox'
+  end
+  object AnsistringCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ModeComboBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 26
+    Top = 62
+    Width = 150
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = 'AnsistringCheckBox'
+    TabOrder = 1
+  end
+  object DoNotWarnCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = AnsistringCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 26
+    Top = 98
+    Width = 158
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 10
+    Caption = 'DoNotWarnCheckBox'
+    TabOrder = 2
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 185
+    Width = 422
+    OKButton.Name = 'OKButton'
+    OKButton.OnClick = OkButtonClick
+    HelpButton.Name = 'HelpButton'
+    CloseButton.Name = 'CloseButton'
+    CancelButton.Name = 'CancelButton'
+    TabOrder = 3
+    ShowButtons = [pbOK, pbCancel]
+  end
+end

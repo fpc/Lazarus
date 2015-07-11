@@ -1,0 +1,154 @@
+object frInsertFieldsForm: TfrInsertFieldsForm
+  Left = 352
+  Height = 347
+  Top = 210
+  Width = 438
+  ActiveControl = HorzRB
+  BorderStyle = bsDialog
+  Caption = 'Insert fields'
+  ClientHeight = 347
+  ClientWidth = 438
+  OnCreate = FormCreate
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object Label1: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 16
+    Top = 6
+    Width = 117
+    BorderSpacing.Around = 6
+    Caption = '&Available datasets'
+    FocusControl = DatasetCB
+    ParentColor = False
+  end
+  object FieldsL: TListBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = DatasetCB
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = GroupBox1
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 6
+    Height = 234
+    Top = 63
+    Width = 247
+    HelpContext = 106
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    ClickOnSelChange = False
+    ItemHeight = 0
+    MultiSelect = True
+    TabOrder = 0
+    TopIndex = -1
+  end
+  object DatasetCB: TComboBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = GroupBox1
+    Left = 6
+    Height = 29
+    Top = 28
+    Width = 247
+    HelpContext = 97
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    ItemHeight = 0
+    OnChange = DatasetCBChange
+    Sorted = True
+    Style = csDropDownList
+    TabOrder = 1
+  end
+  object GroupBox1: TGroupBox
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 259
+    Height = 65
+    Top = 6
+    Width = 173
+    Anchors = [akTop, akRight]
+    BorderSpacing.Around = 6
+    Caption = 'Placement'
+    ClientHeight = 49
+    ClientWidth = 171
+    TabOrder = 2
+    object HorzRB: TRadioButton
+      Left = 8
+      Height = 22
+      Top = 5
+      Width = 89
+      HelpContext = 115
+      AllowGrayed = True
+      Caption = '&Horizontal'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+    end
+    object VertRB: TRadioButton
+      Left = 8
+      Height = 22
+      Top = 25
+      Width = 71
+      HelpContext = 122
+      AllowGrayed = True
+      Caption = '&Vertical'
+      TabOrder = 1
+      TabStop = False
+    end
+  end
+  object GroupBox2: TGroupBox
+    AnchorSideTop.Control = GroupBox1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 259
+    Height = 60
+    Top = 77
+    Width = 173
+    Anchors = [akTop, akRight]
+    BorderSpacing.Around = 6
+    ClientHeight = 58
+    ClientWidth = 171
+    TabOrder = 3
+    object HeaderCB: TCheckBox
+      AnchorSideLeft.Control = GroupBox2
+      AnchorSideTop.Control = GroupBox2
+      Left = 6
+      Height = 22
+      Top = 6
+      Width = 125
+      HelpContext = 132
+      BorderSpacing.Around = 6
+      Caption = '&Include headers'
+      TabOrder = 0
+    end
+    object BandCB: TCheckBox
+      AnchorSideLeft.Control = GroupBox2
+      AnchorSideTop.Control = HeaderCB
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 22
+      Top = 34
+      Width = 112
+      BorderSpacing.Around = 6
+      Caption = 'Include &bands'
+      TabOrder = 1
+    end
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 38
+    Top = 303
+    Width = 426
+    OKButton.Name = 'OKButton'
+    HelpButton.Name = 'HelpButton'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    TabOrder = 4
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+end

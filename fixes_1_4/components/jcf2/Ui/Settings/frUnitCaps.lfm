@@ -1,0 +1,50 @@
+inherited frUnitNameCaps: TfrUnitNameCaps
+  Width = 362
+  ClientWidth = 362
+  OnResize = FrameResize
+  TabOrder = 0
+  DesignLeft = 494
+  DesignTop = 229
+  object Label1: TLabel[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Control = Owner
+    Left = 90
+    Height = 14
+    Top = 0
+    Width = 182
+    Caption = 'Set capitalisation on these unit names'
+    ParentColor = False
+  end
+  object mWords: TMemo[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cbEnableAnyWords
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
+    Height = 205
+    Top = 29
+    Width = 350
+    Align = alBottom
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    ScrollBars = ssVertical
+    TabOrder = 1
+  end
+  object cbEnableAnyWords: TCheckBox[2]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 17
+    Top = 6
+    Width = 50
+    BorderSpacing.Around = 6
+    Caption = 'Enable'
+    Checked = True
+    State = cbChecked
+    TabOrder = 0
+  end
+end

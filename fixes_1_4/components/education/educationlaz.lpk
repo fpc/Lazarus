@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <Name Value="EducationLaz"/>
+    <AddToProjectUsesSection Value="True"/>
+    <Author Value="Mattias Gaertner"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CompilerMessages>
+          <UseMsgFile Value="True"/>
+        </CompilerMessages>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="IDE package for training, courses and education."/>
+    <License Value="LGPL-2 or any later"/>
+    <Version Major="1" Release="1"/>
+    <Files Count="14">
+      <Item1>
+        <Filename Value="eduenvoptsframe.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="EduEnvOptsFrame"/>
+      </Item1>
+      <Item2>
+        <Filename Value="README.txt"/>
+        <Type Value="Text"/>
+      </Item2>
+      <Item3>
+        <Filename Value="eduoptions.pas"/>
+        <UnitName Value="EduOptions"/>
+      </Item3>
+      <Item4>
+        <Filename Value="edupkgsystem.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="EduPkgSystem"/>
+      </Item4>
+      <Item5>
+        <Filename Value="educomppalette.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="EduCompPalette"/>
+      </Item5>
+      <Item6>
+        <Filename Value="edumenu.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="EduMenu"/>
+      </Item6>
+      <Item7>
+        <Filename Value="edunewprogram.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="EduNewProgram"/>
+      </Item7>
+      <Item8>
+        <Filename Value="edupropsevents.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="EduPropsEvents"/>
+      </Item8>
+      <Item9>
+        <Filename Value="eduoipages.lfm"/>
+        <Type Value="LFM"/>
+      </Item9>
+      <Item10>
+        <Filename Value="eduoipages.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="EduOIPages"/>
+      </Item10>
+      <Item11>
+        <Filename Value="eduoptionsdlg.lfm"/>
+        <Type Value="LFM"/>
+      </Item11>
+      <Item12>
+        <Filename Value="eduoptionsdlg.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="EduOptionsDlg"/>
+      </Item12>
+      <Item13>
+        <Filename Value="eduspeedbuttons.lfm"/>
+        <Type Value="LFM"/>
+      </Item13>
+      <Item14>
+        <Filename Value="eduspeedbuttons.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="EduSpeedButtons"/>
+      </Item14>
+    </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="3">
+      <Item1>
+        <PackageName Value="CodeTools"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="SynEdit"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="IDEIntf"/>
+      </Item3>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

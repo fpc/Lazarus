@@ -1,0 +1,108 @@
+object DebugAttachDialogForm: TDebugAttachDialogForm
+  Left = 203
+  Height = 535
+  Top = 94
+  Width = 400
+  BorderIcons = [biSystemMenu]
+  Caption = 'Attach to'
+  ClientHeight = 535
+  ClientWidth = 400
+  Constraints.MinHeight = 300
+  Constraints.MinWidth = 400
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.3'
+  object labelRunningProcesses: TLabel
+    AnchorSideTop.Control = Owner
+    Left = 8
+    Height = 13
+    Top = 6
+    Width = 90
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = 'Running Processes'
+    ParentColor = False
+  end
+  object lvProcesses: TListView
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = labelRunningProcesses
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = btnRefresh
+    Left = 6
+    Height = 475
+    Top = 25
+    Width = 388
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    Columns = <    
+      item
+        Caption = 'Image Name'
+        Width = 200
+      end    
+      item
+        Caption = 'PID'
+        Width = 150
+      end>
+    OwnerData = True
+    ReadOnly = True
+    RowSelect = True
+    TabOrder = 0
+    ViewStyle = vsReport
+    OnChange = lvProcessesChange
+    OnColumnClick = lvProcessesColumnClick
+    OnData = lvProcessesData
+    OnDblClick = lvProcessesDblClick
+    OnKeyDown = lvProcessesKeyDown
+  end
+  object btnRefresh: TButton
+    AnchorSideLeft.Control = Owner
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
+    Height = 23
+    Top = 506
+    Width = 64
+    Anchors = [akLeft, akBottom]
+    AutoSize = True
+    BorderSpacing.Left = 6
+    BorderSpacing.Bottom = 6
+    Caption = 'Refresh'
+    OnClick = btnRefreshClick
+    TabOrder = 1
+  end
+  object btnAttach: TButton
+    AnchorSideLeft.Control = btnRefresh
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideBottom.Control = btnRefresh
+    AnchorSideBottom.Side = asrBottom
+    Left = 76
+    Height = 23
+    Top = 506
+    Width = 58
+    Anchors = [akLeft, akBottom]
+    AutoSize = True
+    BorderSpacing.Left = 6
+    Caption = 'Attach'
+    Enabled = False
+    ModalResult = 1
+    TabOrder = 2
+  end
+  object btnCancel: TButton
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = btnRefresh
+    AnchorSideBottom.Side = asrBottom
+    Left = 336
+    Height = 23
+    Top = 506
+    Width = 58
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Right = 6
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 3
+  end
+end

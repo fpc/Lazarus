@@ -1,0 +1,152 @@
+ Valdas Jankunas <zmuogs@gmail.com>, 2012.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2012-08-06 13:40+0300\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Language: lt\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 1.5\n"
+
+#: guitestrunner.rsalltests
+msgid "All Tests"
+msgstr "Visi testavimai"
+
+#: guitestrunner.rserrors
+msgid "%s    Errors: %s"
+msgstr "%s    Klaidos: %s"
+
+#: guitestrunner.rsexception
+msgid "Exception: %s"
+msgstr "Išimtinė situacija: %s"
+
+#: guitestrunner.rsexceptioncla
+msgid "Exception class: %s"
+msgstr "Išimtinės situacijos klasė: %s"
+
+#: guitestrunner.rsexceptionmes
+msgid "Exception message: %s"
+msgstr "Išimtinės situacijos pranešimas: %s"
+
+#: guitestrunner.rsfailures
+msgid "%s     Failures: %s"
+msgstr "%s     Nesėkmės: %s"
+
+#: guitestrunner.rslinenumber
+msgid "Line number: %s"
+msgstr "Eilutės numeris: %s"
+
+#: guitestrunner.rsmessage
+msgid "Message: %s"
+msgstr "Pranešimas: %s"
+
+#: guitestrunner.rsmethodname
+msgid "Method name: %s"
+msgstr "Metodo pavadinimas: %s"
+
+#: guitestrunner.rsnumberofexec
+msgid "Number of executed tests: %s  Time elapsed: %s"
+msgstr "Įvykdyta testavimų: %s Užtruktą: %s"
+
+#: guitestrunner.rsrun
+msgid "Run "
+msgstr "Vykdyti "
+
+#: guitestrunner.rsrunning
+msgid "Running %s"
+msgstr "Vykdoma %s"
+
+#: guitestrunner.rsruns
+msgid "Runs: %s/%s"
+msgstr "Vykdymų: %s/%s"
+
+#: guitestrunner.rsunitname
+msgid "Unit name: %s"
+msgstr "Modulio pavadinimas: %s"
+
+#: guitestrunner.sactcheckall
+msgid "Check all Tests"
+msgstr "Tikrinti visus testavimus"
+
+#: guitestrunner.sactcheckcurrentsuite
+msgid "Check the Current Suite"
+msgstr "Tikrinti veikiamąjį komplektą"
+
+#: guitestrunner.sactcloseform
+msgid "Quit"
+msgstr "Baigti darbą"
+
+#: guitestrunner.sactcloseformh
+msgid "Quit Testting"
+msgstr "Baigti testavimą"
+
+#: guitestrunner.sactrunaction
+msgid "&Run"
+msgstr "&Vykdyti"
+
+#: guitestrunner.sactrunactionh
+msgid "Run all checked test(s)"
+msgstr "Vykdyti parinktus testavimus"
+
+#: guitestrunner.sactrunhighlightedtest
+msgctxt "guitestrunner.sactrunhighlightedtest"
+msgid "Run highlighted test"
+msgstr "Vykdyti pažymėtus testavimus"
+
+#: guitestrunner.sactuncheckall
+msgid "Uncheck all tests"
+msgstr "Naikinti testavimų žymėjimą"
+
+#: guitestrunner.sactuncheckcurrentsuite
+msgid "Uncheck the Current Suite"
+msgstr "Naikinti žymėjimą veikiamajame komplekte"
+
+#: guitestrunner.sbtnclose
+msgid "Close"
+msgstr "Užverti"
+
+#: guitestrunner.sbtnrun
+msgid "Run"
+msgstr "Vykdyti"
+
+#: guitestrunner.sbtnrunh
+msgctxt "guitestrunner.sbtnrunh"
+msgid "Run highlighted test"
+msgstr "Vykdyti pažymėtus testavimus"
+
+#: guitestrunner.sfrmguitest
+msgid "FPCUnit - run unit test"
+msgstr "FPCUnit – modulio testavimas"
+
+#: guitestrunner.smicopy
+msgid "&Copy"
+msgstr "&Kopijuoti"
+
+#: guitestrunner.smicopyclipbrd
+msgid "Copy to clipboard"
+msgstr "Kopijuoti į iškarpinę"
+
+#: guitestrunner.smicut
+msgid "C&ut"
+msgstr "Iš&kirpti"
+
+#: guitestrunner.smiruntest
+msgid "  &Run all selected (checked) tests"
+msgstr "  &Vykdyti parinktus testavimus"
+
+#: guitestrunner.smishowfail
+msgid "Copy message to clipboard"
+msgstr "Pranešimą kopijuoti į iškarpinę"
+
+#: guitestrunner.stshresults
+msgid "Results XML"
+msgstr "Rezultatų XML"
+
+#: guitestrunner.stshtree
+msgid "Testcase tree"
+msgstr "„TestCase“ medis"
+

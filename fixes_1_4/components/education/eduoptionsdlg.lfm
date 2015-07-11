@@ -1,0 +1,38 @@
+object EduOptionsDialog: TEduOptionsDialog
+  Left = 305
+  Height = 382
+  Top = 160
+  Width = 554
+  Caption = 'EduOptionsDialog'
+  ClientHeight = 382
+  ClientWidth = 554
+  OnCreate = FormCreate
+  LCLVersion = '0.9.27'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 33
+    Top = 343
+    Width = 542
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object FramesTreeView: TTreeView
+    Left = 6
+    Height = 331
+    Top = 6
+    Width = 186
+    Align = alLeft
+    BorderSpacing.Around = 6
+    DefaultItemHeight = 19
+    TabOrder = 1
+  end
+  object FramePanel: TPanel
+    Left = 198
+    Height = 337
+    Top = 0
+    Width = 356
+    Align = alClient
+    Caption = 'FramePanel'
+    TabOrder = 2
+  end
+end

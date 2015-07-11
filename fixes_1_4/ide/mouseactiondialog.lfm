@@ -1,0 +1,317 @@
+object MouseaActionDialog: TMouseaActionDialog
+  Left = 314
+  Height = 255
+  Top = 217
+  Width = 374
+  AutoSize = True
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
+  Caption = 'MouseaActionDialog'
+  ClientHeight = 255
+  ClientWidth = 374
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object BtnLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ButtonBox
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = ActionLabel
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 13
+    Top = 136
+    Width = 55
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    Caption = 'BtnLabel'
+    ParentColor = False
+  end
+  object ActionLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ActionBox
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 13
+    Top = 10
+    Width = 55
+    BorderSpacing.Left = 6
+    Caption = 'ActionLabel'
+    ParentColor = False
+  end
+  object OptLabel: TLabel
+    AnchorSideLeft.Control = CaretCheck
+    AnchorSideTop.Control = CaretCheck
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 67
+    Height = 16
+    Top = 56
+    Width = 301
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = False
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    Caption = ' '
+    ParentColor = False
+  end
+  object PriorLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = PriorSpin
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 13
+    Top = 103
+    Width = 47
+    BorderSpacing.Left = 6
+    Caption = 'PriorLabel'
+    ParentColor = False
+  end
+  object CapturePanel: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ShiftCheck
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = BtnDefault
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 6
+    Height = 27
+    Top = 182
+    Width = 279
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
+    BevelOuter = bvLowered
+    BevelWidth = 2
+    ClientHeight = 27
+    ClientWidth = 279
+    Color = clBtnShadow
+    ParentColor = False
+    TabOrder = 2
+    OnMouseDown = CapturePanelMouseDown
+    object PaintBox1: TPaintBox
+      Left = 2
+      Height = 23
+      Top = 2
+      Width = 275
+      Align = alClient
+      OnMouseDown = CapturePanelMouseDown
+      OnMouseWheel = PaintBox1MouseWheel
+    end
+  end
+  object ShiftCheck: TCheckBox
+    AnchorSideLeft.Control = ButtonBox
+    AnchorSideTop.Control = ButtonBox
+    AnchorSideTop.Side = asrBottom
+    Left = 67
+    Height = 17
+    Top = 159
+    Width = 69
+    AllowGrayed = True
+    BorderSpacing.Top = 6
+    Caption = 'ShiftCheck'
+    TabOrder = 6
+  end
+  object AltCheck: TCheckBox
+    AnchorSideLeft.Control = ShiftCheck
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = ShiftCheck
+    AnchorSideTop.Side = asrCenter
+    Left = 142
+    Height = 17
+    Top = 159
+    Width = 60
+    AllowGrayed = True
+    BorderSpacing.Left = 6
+    Caption = 'AltCheck'
+    TabOrder = 7
+  end
+  object CtrlCheck: TCheckBox
+    AnchorSideLeft.Control = AltCheck
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = ShiftCheck
+    AnchorSideTop.Side = asrCenter
+    Left = 208
+    Height = 17
+    Top = 159
+    Width = 64
+    AllowGrayed = True
+    BorderSpacing.Left = 6
+    Caption = 'CtrlCheck'
+    TabOrder = 8
+  end
+  object BtnDefault: TButton
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = CapturePanel
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Side = asrBottom
+    Left = 291
+    Height = 23
+    Top = 184
+    Width = 77
+    Anchors = [akTop, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    Caption = 'BtnDefault'
+    OnClick = BtnDefaultClick
+    TabOrder = 9
+  end
+  object DirCheck: TCheckBox
+    AnchorSideLeft.Control = ClickBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = ClickBox
+    AnchorSideTop.Side = asrCenter
+    Left = 279
+    Height = 17
+    Top = 134
+    Width = 60
+    BorderSpacing.Around = 6
+    Caption = 'DirCheck'
+    TabOrder = 5
+  end
+  object ClickBox: TComboBox
+    AnchorSideLeft.Control = ButtonBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = ButtonBox
+    Left = 173
+    Height = 21
+    Top = 132
+    Width = 100
+    BorderSpacing.Left = 6
+    ItemHeight = 13
+    Style = csDropDownList
+    TabOrder = 4
+  end
+  object ButtonBox: TComboBox
+    AnchorSideLeft.Control = BtnLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = PriorSpin
+    AnchorSideTop.Side = asrBottom
+    Left = 67
+    Height = 21
+    Top = 132
+    Width = 100
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 12
+    ItemHeight = 13
+    OnChange = ButtonBoxChange
+    Style = csDropDownList
+    TabOrder = 3
+  end
+  object CaretCheck: TCheckBox
+    AnchorSideLeft.Control = ActionBox
+    AnchorSideTop.Control = ActionBox
+    AnchorSideTop.Side = asrBottom
+    Left = 67
+    Height = 17
+    Top = 33
+    Width = 74
+    BorderSpacing.Top = 6
+    Caption = 'CaretCheck'
+    TabOrder = 1
+  end
+  object ActionBox: TComboBox
+    AnchorSideLeft.Control = ActionLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 67
+    Height = 21
+    Top = 6
+    Width = 301
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    ItemHeight = 13
+    OnChange = ActionBoxChange
+    Style = csDropDownList
+    TabOrder = 0
+  end
+  object ButtonPanel1: TButtonPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 34
+    Top = 215
+    Width = 362
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 10
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object OptBox: TComboBox
+    AnchorSideLeft.Control = OptLabel
+    AnchorSideTop.Control = OptLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 67
+    Height = 21
+    Top = 72
+    Width = 301
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Right = 6
+    Enabled = False
+    ItemHeight = 13
+    Style = csDropDownList
+    TabOrder = 11
+  end
+  object PriorSpin: TSpinEdit
+    AnchorSideLeft.Control = OptLabel
+    AnchorSideTop.Control = OptBox
+    AnchorSideTop.Side = asrBottom
+    Left = 67
+    Height = 21
+    Top = 99
+    Width = 60
+    BorderSpacing.Top = 6
+    MaxValue = 3
+    TabOrder = 12
+  end
+  object Opt2Spin: TSpinEdit
+    AnchorSideLeft.Control = OptLabel
+    AnchorSideTop.Control = OptBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 308
+    Height = 21
+    Top = 99
+    Width = 60
+    Anchors = [akTop, akRight]
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    MaxValue = 999
+    TabOrder = 13
+  end
+  object Opt2Label: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Opt2Spin
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = Opt2Spin
+    Left = 253
+    Height = 13
+    Top = 103
+    Width = 49
+    Anchors = [akTop, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    Caption = 'Opt2Label'
+    ParentColor = False
+  end
+end

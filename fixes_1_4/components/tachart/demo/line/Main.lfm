@@ -1,0 +1,324 @@
+object Form1: TForm1
+  Left = 605
+  Height = 494
+  Top = 364
+  Width = 691
+  Caption = 'Form1'
+  ClientHeight = 494
+  ClientWidth = 691
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 494
+    Top = 0
+    Width = 691
+    ActivePage = tsFast
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 0
+    OnChange = PageControl1Change
+    object tsFast: TTabSheet
+      Caption = 'Fast drawing'
+      ClientHeight = 468
+      ClientWidth = 683
+      object chFast: TChart
+        Left = 0
+        Height = 430
+        Top = 38
+        Width = 683
+        AxisList = <        
+          item
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+          end        
+          item
+            Alignment = calBottom
+            Minors = <>
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Toolset = ChartToolset1
+        Align = alClient
+        DoubleBuffered = True
+        ParentColor = False
+        object chFastLineSeries1: TLineSeries
+          LinePen.Color = clTeal
+          LinePen.Width = 3
+          Source = RandomChartSource1
+        end
+        object chFastConstantLine1: TConstantLine
+          LineStyle = lsVertical
+          Pen.Color = clAqua
+          Pen.Width = 2
+          Position = 0
+          ZPosition = 1
+        end
+      end
+      object Panel1: TPanel
+        Left = 0
+        Height = 38
+        Top = 0
+        Width = 683
+        Align = alTop
+        ClientHeight = 38
+        ClientWidth = 683
+        TabOrder = 1
+        object cbLineType: TComboBox
+          Left = 8
+          Height = 21
+          Top = 8
+          Width = 96
+          ItemHeight = 13
+          ItemIndex = 1
+          Items.Strings = (
+            'None'
+            'Previous'
+            'Origin'
+            'StepXY'
+            'StepYX'
+          )
+          OnChange = cbLineTypeChange
+          Style = csDropDownList
+          TabOrder = 0
+          Text = 'Previous'
+        end
+        object cb3D: TCheckBox
+          Left = 112
+          Height = 17
+          Top = 12
+          Width = 33
+          Caption = '3D'
+          OnChange = cb3DChange
+          TabOrder = 1
+        end
+        object cbRotated: TCheckBox
+          Left = 152
+          Height = 17
+          Top = 12
+          Width = 59
+          Caption = 'Rotated'
+          OnChange = cbRotatedChange
+          TabOrder = 2
+        end
+        object btnAddSeries: TButton
+          Left = 372
+          Height = 25
+          Top = 6
+          Width = 31
+          Caption = 'Add'
+          OnClick = btnAddSeriesClick
+          TabOrder = 3
+        end
+        object edTime: TEdit
+          Left = 496
+          Height = 21
+          Top = 6
+          Width = 76
+          Alignment = taRightJustify
+          TabOrder = 4
+        end
+        object btnRefresh: TButton
+          Left = 404
+          Height = 25
+          Top = 6
+          Width = 88
+          Caption = 'Timed refresh:'
+          OnClick = btnRefreshClick
+          TabOrder = 5
+        end
+        object cbSorted: TCheckBox
+          Left = 216
+          Height = 17
+          Top = 12
+          Width = 52
+          Caption = 'Sorted'
+          OnChange = cbSortedChange
+          TabOrder = 6
+        end
+        object lblPointsCount: TLabel
+          Left = 282
+          Height = 1
+          Top = 14
+          Width = 1
+          ParentColor = False
+        end
+      end
+    end
+    object tsPointers: TTabSheet
+      Caption = 'Pointers'
+      ClientHeight = 468
+      ClientWidth = 683
+      object chPointers: TChart
+        Left = 0
+        Height = 468
+        Top = 0
+        Width = 513
+        AxisList = <        
+          item
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+          end        
+          item
+            Alignment = calBottom
+            Minors = <>
+          end>
+        AxisVisible = False
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Margins.Left = 20
+        Margins.Right = 20
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        ParentColor = False
+      end
+      object pnlPointers: TPanel
+        Left = 513
+        Height = 468
+        Top = 0
+        Width = 170
+        Align = alRight
+        ClientHeight = 468
+        ClientWidth = 170
+        TabOrder = 1
+        object sePointerSize: TSpinEdit
+          Left = 49
+          Height = 21
+          Top = 6
+          Width = 50
+          OnChange = sePointerSizeChange
+          TabOrder = 0
+          Value = 4
+        end
+        object lblPointerSize: TLabel
+          Left = 9
+          Height = 13
+          Top = 10
+          Width = 19
+          Caption = 'Size'
+          ParentColor = False
+        end
+      end
+    end
+    object tsOscilloscope: TTabSheet
+      Caption = 'Oscilloscope'
+      ClientHeight = 453
+      ClientWidth = 683
+      object chOscillator: TChart
+        Left = 0
+        Height = 453
+        Top = 0
+        Width = 683
+        AxisList = <        
+          item
+            Grid.Color = clMedGray
+            Minors = <>
+            Range.Max = 2
+            Range.Min = -2
+            Range.UseMax = True
+            Range.UseMin = True
+            Title.LabelFont.Orientation = 900
+          end        
+          item
+            Grid.Color = clMedGray
+            Alignment = calBottom
+            Minors = <>
+            Transformations = catOscillator
+          end>
+        BackColor = clBlack
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        DoubleBuffered = True
+        ParentColor = False
+        object chOscillatorLineSeries1: TLineSeries
+          AxisIndexX = 1
+          LinePen.Color = clLime
+          LinePen.Width = 2
+          LineType = ltStepXY
+          Source = lcsOscillator
+        end
+      end
+    end
+  end
+  object RandomChartSource1: TRandomChartSource
+    PointsNumber = 25
+    RandSeed = 840176578
+    XMax = 20
+    XMin = -10
+    YMax = 8
+    YMin = 1
+    left = 464
+    top = 208
+  end
+  object ChartToolset1: TChartToolset
+    left = 464
+    top = 264
+    object ChartToolset1DataPointDragTool1: TDataPointDragTool
+      Shift = [ssLeft]
+      AffectedSeries = '1'
+    end
+    object ChartToolset1ZoomDragTool1: TZoomDragTool
+      Shift = [ssShift, ssLeft]
+      RatioLimit = zrlFixedY
+    end
+    object ChartToolset1PanDragTool1: TPanDragTool
+      Shift = [ssRight]
+    end
+  end
+  object ccsAvg: TCalculatedChartSource
+    AccumulationMethod = camAverage
+    AccumulationRange = 5
+    Origin = RandomChartSource1
+    left = 464
+    top = 108
+  end
+  object ccsSum: TCalculatedChartSource
+    AccumulationMethod = camSum
+    AccumulationRange = 0
+    Origin = RandomChartSource1
+    left = 464
+    top = 52
+  end
+  object ccsDerivative: TCalculatedChartSource
+    AccumulationMethod = camDerivative
+    Origin = RandomChartSource1
+    left = 464
+    top = 160
+  end
+  object lcsOscillator: TListChartSource
+    DataPoints.Strings = (
+      '0|0|?|'
+    )
+    left = 464
+    top = 316
+  end
+  object timOscilloscope: TTimer
+    Enabled = False
+    Interval = 150
+    OnTimer = timOscilloscopeTimer
+    left = 408
+    top = 376
+  end
+  object catOscillator: TChartAxisTransformations
+    left = 464
+    top = 376
+    object catOscillatorLinearAxisTransform1: TLinearAxisTransform
+    end
+  end
+end

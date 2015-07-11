@@ -1,0 +1,25 @@
+object SplashForm: TSplashForm
+  Left = 561
+  Height = 341
+  Top = 370
+  Width = 429
+  HorzScrollBar.Page = 428
+  VertScrollBar.Page = 340
+  AutoSize = True
+  BorderStyle = bsNone
+  Caption = 'Lazarus'
+  ClientHeight = 341
+  ClientWidth = 429
+  FormStyle = fsSplash
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object Image: TImage
+    Left = 0
+    Height = 341
+    Top = 0
+    Width = 429
+    Align = alClient
+    AutoSize = True
+    OnPaint = ImagePaint
+  end
+end

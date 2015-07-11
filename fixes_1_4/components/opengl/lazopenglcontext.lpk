@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="4">
+    <Name Value="LazOpenGLContext"/>
+    <AddToProjectUsesSection Value="True"/>
+    <Author Value="Mattias Gaertner"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
+      </SearchPaths>
+      <Conditionals Value="if LazOpenGLContext_VerboseMultiSampling='1' then
+  CustomOptions+='-dVerboseMultiSampling';"/>
+      <BuildMacros>
+        <Count Value="1"/>
+        <Item1>
+          <Identifier Value="LazOpenGLContext_VerboseMultiSampling"/>
+          <Values Count="2">
+            <Item1 Value="1"/>
+            <Item2 Value="0"/>
+          </Values>
+        </Item1>
+      </BuildMacros>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="Simple cross-platform OpenGL viewer control"/>
+    <Version Release="1"/>
+    <Files Count="5">
+      <Item1>
+        <Filename Value="openglcontext.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="OpenGLContext"/>
+      </Item1>
+      <Item2>
+        <Filename Value="glgtkglxcontext.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GLGtkGlxContext"/>
+      </Item2>
+      <Item3>
+        <Filename Value="glcarbonaglcontext.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GLCarbonAGLContext"/>
+      </Item3>
+      <Item4>
+        <Filename Value="glwin32wglcontext.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GLWin32WGLContext"/>
+      </Item4>
+      <Item5>
+        <Filename Value="glqtcontext.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="glqtcontext"/>
+      </Item5>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="2">
+      <Item1>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <DestinationDirectory Value="$(TestDir)/lazopengl/"/>
+      <CommandAfter Value="/bin/tar czf $(TestDir)/lazopengl.tgz -C $(TestDir) lazopengl"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

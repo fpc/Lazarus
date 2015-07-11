@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+  <package name="lcl">
+    <!--
+  ====================================================================
+    TextStrings
+  ====================================================================
+-->
+    <module name="TextStrings">
+&#x9;    <short>
+          <var>TTextStrings</var> describes a TStrings descendant that is optimized for handling the complete text as whole (instead of line by line)</short>
+      <descr/>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="SysUtils">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLStrConsts">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TTextLineRange">
+        <short>
+          <var>TTextLineRange</var> - record structure showing start and end of line in text, the line as a string, and any user data</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TTextLineRange.StartPos">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TTextLineRange.EndPos">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TTextLineRange.Line">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TTextLineRange.TheObject">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TTextStrings">
+        <short>
+          <var>TTextStrings</var> a TStrings descendant that is optimized for handling the complete text as whole (instead of line by line as in <var>TStringList</var>)</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TTextStrings.FOnChange">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TTextStrings.FOnChanging">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TTextStrings.FArraysValid">
+        <short>
+          <var>FArraysValid</var> - local boolean flag to indicate whether arrays are valid</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TTextStrings.FLineCount">
+        <short>
+          <var>FLineCount</var> - local variable with number of lines</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TTextStrings.FLineCapacity">
+        <short>
+          <var>FLineCapacity</var> - local variable with capacity of lines</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TTextStrings.FLineRanges">
+        <short>
+          <var>FLineRanges</var> - local variable, a pointer to an array of <var>TTextLineRange</var>
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TTextStrings.FText">
+        <short>
+          <var>FText</var> - local variable holding the test string under consideration</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TTextStrings.FUpdateCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TTextStrings.FChangedWhileUpdate">
+        <short>
+          <var>FChangedWhileUpdate</var> - local flag to indicate whether there were changes during the update</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TTextStrings.GetTextStr" link="#rtl.Classes.TStrings.GetTextStr">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TTextStrings.GetTextStr.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TTextStrings.SetTextStr" link="#rtl.Classes.TStrings.SetTextStr">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TTextStrings.SetTextStr.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TTextStrings.BuildArrays">
+        <short>
+          <var>BuildArrays</var> - method for building arrays</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TTextStrings.GetCount" link="#rtl.Classes.TStrings.GetCount">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TTextStrings.GetCount.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TTextStrings.Changed">
+        <short>
+          <var>Changed</var> - software emulation of <var>OnChange</var> event</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TTextStrings.Changing">
+        <short>
+          <var>Changing</var> - software emulation of <var>OnChanging</var> event</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TTextStrings.Get" link="#rtl.Classes.TStrings.Get">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TTextStrings.Get.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TTextStrings.Get.Index">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TTextStrings.ClearArrays">
+        <short>
+          <var>ClearArrays</var> - method for clearing arrays</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TTextStrings.GetObject" link="#rtl.Classes.TStrings.GetObject">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TTextStrings.GetObject.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TTextStrings.GetObject.Index">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TTextStrings.Put" link="#rtl.Classes.TStrings.Put">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TTextStrings.Put.Index">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TTextStrings.Put.S">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TTextStrings.PutObject" link="#rtl.Classes.TStrings.PutObject">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TTextStrings.PutObject.Index">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TTextStrings.PutObject.AnObject">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TTextStrings.GetLineLen">
+        <short>
+          <var>GetLineLen</var> - returns length of indexed line (including new characters if boolean flag set True)</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TTextStrings.GetLineLen.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TTextStrings.GetLineLen.Index">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TTextStrings.GetLineLen.IncludeNewLineChars">
+        <short/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TTextStrings.Destroy" link="#rtl.Classes.TStrings.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TTextStrings.Clear" link="#rtl.Classes.TStrings.Clear">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TTextStrings.SetText" link="#rtl.Classes.TStrings.SetText">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TTextStrings.SetText.TheText">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TTextStrings.Insert" link="#rtl.Classes.TStrings.Insert">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TTextStrings.Insert.Index">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TTextStrings.Insert.S">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TTextStrings.Delete" link="#rtl.Classes.TStrings.Delete">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TTextStrings.Delete.Index">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TTextStrings.Exchange" link="#rtl.Classes.TStrings.Exchange">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TTextStrings.Exchange.Index1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TTextStrings.Exchange.Index2">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TTextStrings.Move" link="#rtl.Classes.TStrings.Move">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TTextStrings.Move.CurIndex">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TTextStrings.Move.NewIndex">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TTextStrings.MakeTextBufferUnique">
+        <short>
+          <var>MakeTextBufferUnique</var> - makes the current text buffer unique</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TTextStrings.BeginUpdate" link="#rtl.Classes.TStrings.BeginUpdate">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TTextStrings.EndUpdate" link="#rtl.Classes.TStrings.EndUpdate">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TTextStrings.GetText" link="#rtl.Classes.TStrings.GetText">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TTextStrings.GetText.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TTextStrings.IndexOf" link="#rtl.Classes.TStrings.IndexOf">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TTextStrings.IndexOf.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TTextStrings.IndexOf.S">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TTextStrings.Add" link="#rtl.Classes.TStrings.Add">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TTextStrings.Add.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TTextStrings.Add.S">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TTextStrings.AddStrings" link="#rtl.Classes.TStrings.AddStrings">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TTextStrings.AddStrings.TheStrings">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TTextStrings.Text" link="#rtl.Classes.TStrings.Text">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TTextStrings.OnChange">
+        <short>
+          <var>OnChange</var> - event handler for a change in the data or text</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TTextStrings.OnChanging">
+        <short>
+          <var>OnChanging</var> - event handler for use while the data or text are changing</short>
+        <descr/>
+        <seealso/>
+      </element>
+    </module>
+    <!-- TextStrings -->
+  </package>
+</fpdoc-descriptions>

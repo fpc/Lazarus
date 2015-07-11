@@ -1,0 +1,67 @@
+inherited ThreadsDlg: TThreadsDlg
+  Left = 345
+  Top = 428
+  Width = 774
+  BorderStyle = bsSizeToolWin
+  Caption = 'Threads'
+  ClientWidth = 774
+  object lvThreads: TListView[0]
+    Left = 0
+    Height = 214
+    Top = 26
+    Width = 774
+    Align = alClient
+    Columns = <    
+      item
+        Width = 20
+      end    
+      item
+        Caption = 'Id'
+      end    
+      item
+        Caption = 'TargetId'
+        Width = 100
+      end    
+      item
+        Caption = 'State'
+      end    
+      item
+        Caption = 'Source'
+        Width = 150
+      end    
+      item
+        Caption = 'Line'
+      end    
+      item
+        Caption = 'Function'
+        Width = 300
+      end>
+    ReadOnly = True
+    RowSelect = True
+    SortType = stText
+    TabOrder = 0
+    ViewStyle = vsReport
+    OnDblClick = lvThreadsDblClick
+  end
+  object ToolBar1: TToolBar[1]
+    Left = 0
+    Height = 26
+    Top = 0
+    Width = 774
+    Caption = 'ToolBar1'
+    ShowCaptions = True
+    TabOrder = 1
+    object tbCurrent: TToolButton
+      Left = 1
+      Top = 2
+      Caption = 'tbCurrent'
+      OnClick = tbCurrentClick
+    end
+    object tbGoto: TToolButton
+      Left = 70
+      Top = 2
+      Caption = 'tbGoto'
+      OnClick = lvThreadsDblClick
+    end
+  end
+end

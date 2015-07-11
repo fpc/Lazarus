@@ -1,0 +1,53 @@
+# Valdas Jankūnas <zmuogs@gmail.com>, 2010.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: Valdas Jankūnas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2010-05-16 13:56+0300\n"
+"Project-Id-Version: \n"
+"Language-Team: Lietuvių <kde-i18n-lt@kde.org>\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.0\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: jcfideregister.format_about_menu
+msgid "&About"
+msgstr "&Apie"
+
+#: jcfideregister.format_category_idecmd
+msgctxt "jcfideregister.format_category_idecmd"
+msgid "JEDI Code Format"
+msgstr "JEDI kodo formatas"
+
+#: jcfideregister.format_current_idecmd
+msgid "Format code in current editor window"
+msgstr "Formatuoti dabartiniame rengyklės lange esantį kodą"
+
+#: jcfideregister.format_current_menu
+msgctxt "jcfideregister.format_current_menu"
+msgid "&Current Editor Window"
+msgstr "&Dabartiniame rengyklės lange"
+
+#: jcfideregister.format_menu
+msgid "JEDI Code &Format"
+msgstr "JEDI kodo &formatas"
+
+#: jcfideregister.format_open_menu
+msgctxt "jcfideregister.format_open_menu"
+msgid "All &Open Windows"
+msgstr "Visuose atvertuose &languose"
+
+#: jcfideregister.format_project_menu
+msgctxt "jcfideregister.format_project_menu"
+msgid "&All Files in Project"
+msgstr "Visuose projekto &failuose"
+
+#: jcfideregister.format_reg_settings_menu
+msgid "&Registry Settings"
+msgstr "&Registro parinktys"
+
+#: jcfideregister.format_settings_menu
+msgid "&Format Settings"
+msgstr "&Formato parinktys"
+

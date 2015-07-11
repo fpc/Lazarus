@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <Name Value="editortoolbar"/>
+    <AddToProjectUsesSection Value="True"/>
+    <Author Value="Graeme Geldenhuys, Giuliano Colla"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
+      </SearchPaths>
+      <Parsing>
+        <SyntaxOptions>
+          <UseAnsiStrings Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
+    </CompilerOptions>
+    <Description Value="Provides a configurable Toolbar in the source editor window, which can be positioned at any side. The toolbar comes with a predefined Jump button, and then Jump Forward and Jump Back buttons. 
+"/>
+    <License Value="GPL
+"/>
+    <Version Minor="8" Release="2"/>
+    <Files Count="4">
+      <Item1>
+        <Filename Value="jumpto_impl.pas"/>
+        <UnitName Value="jumpto_impl"/>
+      </Item1>
+      <Item2>
+        <Filename Value="editortoolbar_impl.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="editortoolbar_impl"/>
+      </Item2>
+      <Item3>
+        <Filename Value="edttbconfigfrm.pas"/>
+        <UnitName Value="EdtTbConfigFrm"/>
+      </Item3>
+      <Item4>
+        <Filename Value="editortoolbar_str.pas"/>
+        <UnitName Value="editortoolbar_str"/>
+      </Item4>
+    </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+      <EnableI18NForLFM Value="True"/>
+    </i18n>
+    <Type Value="DesignTime"/>
+    <RequiredPkgs Count="2">
+      <Item1>
+        <PackageName Value="IDEIntf"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="CodeTools"/>
+      </Item2>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count"/>
+    </CustomOptions>
+  </Package>
+</CONFIG>

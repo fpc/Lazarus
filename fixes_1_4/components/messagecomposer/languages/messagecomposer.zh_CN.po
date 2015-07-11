@@ -1,0 +1,126 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.9.27 beta\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2009-04-24 19:20+0800\n"
+"Last-Translator: XY.Chen <chenxinyv@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Chinese\n"
+"X-Poedit-Country: CHINA\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: messagecomposer.rscancel
+msgid "Cancel"
+msgstr "取消"
+
+#: messagecomposer.rsok
+#, fuzzy
+#| msgid "Ok"
+msgid "OK"
+msgstr "确定"
+
+#: messagecomposer.rstest
+msgid "Test"
+msgstr "测试"
+
+#: messagecomposer.sadd
+msgid "Add"
+msgstr ""
+
+#: messagecomposer.sbuttonsarrayofconst
+msgid "Buttons (array of const)"
+msgstr ""
+
+#: messagecomposer.sbuttonstmsgdlgbuttons
+msgid "Buttons (TMsgDlgButtons)"
+msgstr ""
+
+#: messagecomposer.scaseresult
+msgid "\"Case\" result"
+msgstr ""
+
+#: messagecomposer.sdefault
+msgid "Default"
+msgstr ""
+
+#: messagecomposer.sdelete
+msgid "Delete"
+msgstr ""
+
+#: messagecomposer.sdlgcaption
+msgid "Dialog caption"
+msgstr ""
+
+#: messagecomposer.sdlgtype
+msgid "Dialog type"
+msgstr ""
+
+#: messagecomposer.shelpcontext
+msgid "Help context"
+msgstr ""
+
+#: messagecomposer.shelpfilename
+msgid "Help filename"
+msgstr ""
+
+#: messagecomposer.shelpkeyword
+msgid "Help keyword"
+msgstr ""
+
+#: messagecomposer.sifresult
+msgid "\"If\" result"
+msgstr ""
+
+#: messagecomposer.skindofmessage
+#, fuzzy
+#| msgid "KIND OF MESSAGE"
+msgid "Kind of message"
+msgstr "信息类型"
+
+#: messagecomposer.smaskinput
+msgid "Mask input"
+msgstr ""
+
+#: messagecomposer.smessagecomposercaption
+#, fuzzy
+#| msgid "Message Composer ..."
+msgctxt "messagecomposer.smessagecomposercaption"
+msgid "Message Composer"
+msgstr "信息控制 ..."
+
+#: messagecomposer.smessagecomposermenucaption
+#, fuzzy
+#| msgid "Message Composer ..."
+msgctxt "messagecomposer.smessagecomposermenucaption"
+msgid "Message Composer ..."
+msgstr "信息控制 ..."
+
+#: messagecomposer.smodalresult
+msgid "Modal result"
+msgstr ""
+
+#: messagecomposer.smsgcaption
+msgid "The message to be shown"
+msgstr "显示信息"
+
+#: messagecomposer.snotimplementedyet
+#, fuzzy
+#| msgid "Not Implemented Yet"
+msgid "Not implemented yet"
+msgstr "未实现"
+
+#: messagecomposer.spromptcaption
+msgid "Text asking the user for input"
+msgstr "询问用户输入文本"
+
+#: messagecomposer.ssourcewrapper
+msgid "Source wrapper"
+msgstr ""
+
+#: messagecomposer.svaluevar
+msgid "Value (var)"
+msgstr ""
+

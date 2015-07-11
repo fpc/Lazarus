@@ -1,0 +1,2 @@
+#!/bin/sh
+ppc386 -Fu_debug -FU_debug -Mdelphi -Tlinux -WC -Sg -Se3 -Xs -B -v0i compile_x11.dpr

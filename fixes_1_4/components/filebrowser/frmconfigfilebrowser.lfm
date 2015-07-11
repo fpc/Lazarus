@@ -1,0 +1,69 @@
+object FileBrowserConfigForm: TFileBrowserConfigForm
+  Left = 302
+  Height = 200
+  Top = 184
+  Width = 400
+  Caption = 'Configure file browser'
+  ClientHeight = 200
+  ClientWidth = 400
+  OnShow = FormShow
+  LCLVersion = '0.9.25'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 46
+    Top = 154
+    Width = 388
+    Align = alBottom
+    AutoSize = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object GBStartDir: TGroupBox
+    Left = 6
+    Height = 136
+    Top = 8
+    Width = 386
+    Caption = 'Initial directory'
+    ClientHeight = 115
+    ClientWidth = 382
+    TabOrder = 1
+    object DEInitial: TDirectoryEdit
+      Left = 38
+      Height = 23
+      Top = 89
+      Width = 312
+      ButtonWidth = 23
+      ParentColor = False
+      TabOrder = 0
+    end
+    object RBThisDir: TRadioButton
+      Left = 14
+      Height = 24
+      Top = 65
+      Width = 205
+      Caption = 'Always use this directory'
+      OnClick = SelectInitialDir
+      TabOrder = 1
+    end
+    object RBLastDir: TRadioButton
+      Left = 14
+      Height = 24
+      Top = 36
+      Width = 211
+      Caption = 'Use last opened directory'
+      OnClick = SelectInitialDir
+      TabOrder = 2
+    end
+    object RBUseProjectDir: TRadioButton
+      Left = 14
+      Height = 24
+      Top = 9
+      Width = 231
+      Caption = 'Use current project directory'
+      Checked = True
+      OnClick = SelectInitialDir
+      State = cbChecked
+      TabOrder = 3
+    end
+  end
+end

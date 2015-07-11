@@ -1,0 +1,28 @@
+inherited fComments: TfComments
+  TabOrder = 0
+  DesignLeft = 148
+  DesignTop = 150
+  object cbRemoveEmptyDoubleSlashComments: TCheckBox[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 17
+    Top = 6
+    Width = 156
+    BorderSpacing.Around = 6
+    Caption = 'Remove empty ''//'' comments'
+    TabOrder = 0
+  end
+  object cbRemoveEmptyCurlyBraceComments: TCheckBox[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cbRemoveEmptyDoubleSlashComments
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 17
+    Top = 29
+    Width = 161
+    BorderSpacing.Around = 6
+    Caption = 'Remove empty ''{ }'' comments'
+    TabOrder = 1
+  end
+end

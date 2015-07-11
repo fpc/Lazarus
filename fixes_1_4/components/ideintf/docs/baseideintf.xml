@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="IDEIntf">
+    <module name="BaseIDEIntf">
+      <element name="GetIDEConfigStorage">
+        <short>Returns a TConfigStorage usable for storing options of IDE plugins.</short>
+        <descr>Set LoadFromDisk to true to load the old content on disk.
+If you want to save your options and clear the old options set LoadFromDisk to false. Otherwise you will merge options.
+Every IDE plugin should use its own file for storing options. Especially you must not store extra options in the other option files.
+For an example and more details see 
+http://wiki.lazarus.freepascal.org/Extending_the_IDE#Load.2FSave_settings</descr>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

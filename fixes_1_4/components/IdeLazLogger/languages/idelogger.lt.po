@@ -1,0 +1,26 @@
+ Valdas Jankunas <zmuogs@gmail.com>, 2012.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2012-08-06 18:08+0300\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Language: lt\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 1.5\n"
+
+#: idelogger.ideloggerapply
+msgid "&Apply"
+msgstr "Pri&taikyti"
+
+#: idelogger.ideloggercaption
+msgid "Logging"
+msgstr "Registruojama"
+
+#: idelogger.ideloggermenucaption
+msgid "Logging ..."
+msgstr "Registruojama…"
+

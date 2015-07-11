@@ -1,0 +1,31 @@
+How to create the fpc_crosswin32 rpm
+
+This rpm was only tested under linux.
+
+The base directory is $BuildRoot. Default value is ~/freepascal
+  To change it use for example:
+  []$ export BuildRoot=/home/user/freepascal
+
+First get the FPC sources and the binutils.
+
+For example:
+
+  []$ cd <lazarusdir>/tools/install/cross_unix/
+  []$ ./create_linux_cross_win32_rpm.sh downloadbinutils downloadfpc buildbinutils
+
+This will download the FPC svn to ~/freepascal/fpc, its install files to
+~/freepascal/install and the binutils to ~/freepascal/binutils.
+
+Create the fpc rpm and install it:
+
+  []$ cd <lazarusdir>/tools/install
+  []$ ./create_fpc_rpm.sh ~/freepascal/fpc
+  []$ sudo rpm -Uvh <path_to_rpms>/RPMS/i386/fpc-<version>.i386.rpm
+
+Then build the fpc_crosswin32 rpm and install it:
+  []$ cd <lazarusdir>/tools/install/cross_unix/
+  []$ ./create_linux_cross_win32_rpm.sh buildcrossfpc buildcrosswin32rpm
+  []$ sudo rpm -Uvh <path_to_rpms>/RPMS/i386/fpc_crosswin32-<version>.i386.rpm
+
+Now you can cross compile from linux to win32.
+

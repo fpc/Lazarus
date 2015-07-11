@@ -1,0 +1,9 @@
+object frmBrush: TfrmBrush
+  Left = 290
+  Height = 386
+  Top = 171
+  Width = 400
+  Caption = 'frmBrush'
+  OnPaint = FormPaint
+  LCLVersion = '1.1'
+end

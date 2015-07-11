@@ -1,0 +1,230 @@
+object ContextHelpEditorDlg: TContextHelpEditorDlg
+  Left = 331
+  Height = 515
+  Top = 177
+  Width = 655
+  ActiveControl = ControlsTreeView
+  Caption = 'ContextHelpEditorDlg'
+  ChildSizing.LeftRightSpacing = 6
+  ChildSizing.TopBottomSpacing = 6
+  ChildSizing.HorizontalSpacing = 6
+  ChildSizing.VerticalSpacing = 6
+  ChildSizing.EnlargeHorizontal = crsScaleChilds
+  ClientHeight = 515
+  ClientWidth = 655
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '0.9.29'
+  object WindowControlsGroupBox: TGroupBox
+    Left = 6
+    Height = 465
+    Top = 6
+    Width = 305
+    Align = alLeft
+    BorderSpacing.Around = 6
+    Caption = 'WindowControlsGroupBox'
+    ClientHeight = 444
+    ClientWidth = 297
+    TabOrder = 0
+    object ControlsTreeView: TTreeView
+      AnchorSideBottom.Control = OpenDeclarationBitBtn
+      Left = 6
+      Height = 317
+      Top = 6
+      Width = 285
+      Align = alTop
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Around = 6
+      DefaultItemHeight = 19
+      ParentShowHint = False
+      ReadOnly = True
+      ShowHint = True
+      TabOrder = 0
+      OnShowHint = ControlsTreeViewShowHint
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+    end
+    object CreateHelpNodeForControlButton: TButton
+      Left = 6
+      Height = 35
+      Top = 362
+      Width = 285
+      Align = alBottom
+      BorderSpacing.Around = 6
+      Caption = 'CreateHelpNodeForControlButton'
+      OnClick = CreateHelpNodeForControlButtonClick
+      TabOrder = 1
+    end
+    object TestButton: TButton
+      Left = 6
+      Height = 35
+      Top = 403
+      Width = 285
+      Align = alBottom
+      BorderSpacing.Around = 6
+      Caption = 'TestButton'
+      OnClick = TestButtonClick
+      TabOrder = 2
+    end
+    object OpenDeclarationBitBtn: TBitBtn
+      AnchorSideLeft.Control = WindowControlsGroupBox
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = CreateHelpNodeForControlButton
+      Left = 6
+      Height = 27
+      Top = 329
+      Width = 178
+      Anchors = [akLeft, akBottom]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'OpenDeclarationBitBtn'
+      OnClick = OpenDeclarationBitBtnClick
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 3
+    end
+  end
+  object NodesGroupBox: TGroupBox
+    Left = 328
+    Height = 465
+    Top = 6
+    Width = 321
+    Align = alClient
+    BorderSpacing.Around = 6
+    Caption = 'NodesGroupBox'
+    ClientHeight = 444
+    ClientWidth = 313
+    TabOrder = 1
+    object HelpNodesTreeView: TTreeView
+      Left = 6
+      Height = 247
+      Top = 6
+      Width = 301
+      Align = alClient
+      BorderSpacing.Around = 6
+      DefaultItemHeight = 19
+      ReadOnly = True
+      TabOrder = 0
+      OnSelectionChanged = HelpNodesTreeViewSelectionChanged
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+    end
+    object HelpNodePropertiesGroupBox: TGroupBox
+      Left = 6
+      Height = 179
+      Top = 259
+      Width = 301
+      Align = alBottom
+      BorderSpacing.Around = 6
+      Caption = 'HelpNodePropertiesGroupBox'
+      ClientHeight = 158
+      ClientWidth = 293
+      TabOrder = 1
+      object NodeNameLabel: TLabel
+        Left = 10
+        Height = 18
+        Top = 10
+        Width = 45
+        Caption = 'Name:'
+        ParentColor = False
+      end
+      object NodePathLabel: TLabel
+        Left = 10
+        Height = 18
+        Top = 40
+        Width = 36
+        Caption = 'Path:'
+        ParentColor = False
+      end
+      object NodeHasHelpCheckBox: TCheckBox
+        AnchorSideRight.Control = HelpNodePropertiesGroupBox
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 22
+        Top = 71
+        Width = 281
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        Caption = 'NodeHasHelpCheckBox'
+        OnEditingDone = NodeHasHelpCheckBoxEditingDone
+        TabOrder = 0
+      end
+      object NodeNameEdit: TEdit
+        AnchorSideRight.Control = HelpNodePropertiesGroupBox
+        AnchorSideRight.Side = asrBottom
+        Left = 70
+        Height = 27
+        Top = 5
+        Width = 217
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        OnEditingDone = NodeNameEditEditingDone
+        TabOrder = 1
+        Text = 'NodeNameEdit'
+      end
+      object NodePathEdit: TEdit
+        AnchorSideTop.Control = NodeNameEdit
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = HelpNodePropertiesGroupBox
+        AnchorSideRight.Side = asrBottom
+        Left = 70
+        Height = 27
+        Top = 38
+        Width = 217
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        OnEditingDone = NodePathEditEditingDone
+        TabOrder = 2
+        Text = 'NodePathEdit'
+      end
+      object NodeIsRootCheckBox: TCheckBox
+        AnchorSideRight.Control = HelpNodePropertiesGroupBox
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 22
+        Top = 100
+        Width = 281
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        Caption = 'NodeIsRootCheckBox'
+        OnEditingDone = NodeIsRootCheckBoxEditingDone
+        TabOrder = 3
+      end
+      object FullPathEdit: TEdit
+        AnchorSideTop.Control = NodeIsRootCheckBox
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = HelpNodePropertiesGroupBox
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 27
+        Top = 128
+        Width = 281
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ReadOnly = True
+        TabOrder = 4
+        Text = 'FullPathEdit'
+      end
+    end
+  end
+  object Splitter1: TSplitter
+    Left = 317
+    Height = 465
+    Top = 6
+    Width = 5
+  end
+  object ButtonPanel: TButtonPanel
+    Left = 6
+    Height = 32
+    Top = 477
+    Width = 643
+    OKButton.Name = 'OKButton'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Enabled = False
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    TabOrder = 3
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
+  end
+end

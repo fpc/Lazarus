@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    RegisterLCL
+  ====================================================================
+-->
+
+<module name="RegisterLCL">
+<short/>
+<descr>
+</descr>
+
+<!-- procedure Visibility: default -->
+<element name="Register">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+</module> <!-- RegisterLCL -->
+
+</package>
+</fpdoc-descriptions>

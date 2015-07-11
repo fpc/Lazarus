@@ -1,0 +1,193 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="IDEIntf">
+    <module name="FormEditingIntf">
+      <element name="ComponentPaletteImageWidth">
+        <short>Maximum width of an icon in the component palette</short>
+      </element>
+      <element name="TDMCompAtPosFlag.dmcapfOnlyVisible">
+        <short>Search only visible components, e.g. not below other components</short>
+      </element>
+      <element name="TDMCompAtPosFlag.dmcapfOnlySelectable">
+        <short>Search only selectable components. Normally corresponds to ComponentIsSelectable.</short>
+      </element>
+      <element name="TDesignerMediator.SetDesigner">
+        <short>Called when setting the Designer.</short>
+        <descr>
+          <printshort id="TDesignerMediator.SetDesigner"/>
+No override needed.</descr>
+      </element>
+      <element name="TDesignerMediator.CollectChildren">
+        <short>Used by GetChildComponents to add collected children to add to FCollectedChildren.</short>
+        <descr>
+          <printshort id="TDesignerMediator.CollectChildren"/>
+No override needed.</descr>
+      </element>
+      <element name="TDesignerMediator.FormClass">
+        <short>The mediator handles the designer for this component class.</short>
+        <descr>
+          <printshort id="TDesignerMediator.FormClass"/>
+You must override this.
+If several mediator classes exists, the one with the nearest class wins. There is always only one mediator per form.</descr>
+      </element>
+      <element name="TDesignerMediator.CreateMediator">
+        <short>Called by the IDE to create a mediator.</short>
+        <descr>
+          <printshort id="TDesignerMediator.CreateMediator"/>
+TheOwner is the new Owner for the mediator. aForm is the designed root component (of class FormClass).
+No override needed.</descr>
+      </element>
+      <element name="TDesignerMediator.InitFormInstance">
+        <short>Called after aForm.NewInstance and before aForm.Create.</short>
+        <descr>
+          <printshort id="TDesignerMediator.InitFormInstance"/>
+The IDE has already set csDesigning, csDesignInstance.
+Override this when your component needs special initialization at design time.</descr>
+      </element>
+      <element name="TDesignerMediator.SetBounds">
+        <short>Called by the IDE to set the outer bounds of a component.</short>
+        <descr>
+          <printshort id="TDesignerMediator.SetBounds"/>
+You should override this for your special components and call inherited for other components.</descr>
+      </element>
+      <element name="TDesignerMediator.GetBounds">
+        <short>Called by the IDE to get the outer bounds of a component.</short>
+        <descr>
+          <printshort id="TDesignerMediator.GetBounds"/>
+You should override this for your special components and call inherited for other components.</descr>
+      </element>
+      <element name="TDesignerMediator.SetFormBounds">
+        <short>Called by the IDE to set the bounds of the root component.</short>
+        <descr>
+          <printshort id="TDesignerMediator.SetFormBounds"/>
+The default implementation uses SetBounds. No override needed.
+
+The root component is the top level component and has NewBounds the rectangle with the title and frame given by the window manager. The ClientRect is the inner rectangle, inside the frame of the window manager. All child components and all painting operations are inside this frame. The ClientRect Left and Top are typically 0,0. Use ClientRect.Right-ClientRect.Left for the width. The width/height of the NewBounds depends on the window manager and depends on user theme and platform. Normally you will use the Left,Top of the NewBounds and the Width/Height of the ClientRect.</descr>
+      </element>
+      <element name="TDesignerMediator.SetLCLForm">
+        <short>Called when setting the LCLForm.</short>
+        <descr>
+          <printshort id="TDesignerMediator.SetLCLForm"/>
+No override needed.</descr>
+      </element>
+      <element name="TDesignerMediator.SetRoot">
+        <short>Called when setting the Root component.</short>
+        <descr>
+          <printshort id="TDesignerMediator.SetRoot"/>
+No override needed.</descr>
+      </element>
+      <element name="TDesignerMediator.GetFormBounds">
+        <short>Called by the IDE to get the bounds of the Root component.</short>
+        <descr>
+          <printshort id="TDesignerMediator.GetFormBounds"/>
+The default implementation uses GetBounds. No override needed.
+</descr>
+      </element>
+      <element name="TDesignerMediator.GetClientArea">
+        <short>Called by the IDE to get the inner bounds of a component.</short>
+        <descr>
+          <printshort id="TDesignerMediator.GetClientArea"/>
+The default implementation uses GetBounds and assumes that a child component placed at 0,0 and the Width/Height of the component will completely overlap the component.
+Override this if some of your components place children with an offset like a TGroupBox.
+</descr>
+      </element>
+      <element name="TDesignerMediator.GetComponentOriginOnForm">
+        <short>Returns the outer Left,Top of a component relative to the 0,0 of the client area of the Root component.</short>
+        <descr>
+          <printshort id="TDesignerMediator.GetComponentOriginOnForm"/>
+The default implementation uses GetBounds and GetClientArea. No need to override.</descr>
+      </element>
+      <element name="TDesignerMediator.Paint">
+        <short>Called by the IDE before painting its designer items like icons and markers.</short>
+        <descr>
+          <printshort id="TDesignerMediator.Paint"/>
+Paint here your special components to LCLForm.Canvas.
+The IDE will paint its icons and markers after this call.</descr>
+      </element>
+      <element name="TDesignerMediator.ComponentIsIcon">
+        <short>Returns true if a component should be shown as an icon.</short>
+        <descr>
+          <printshort id="TDesignerMediator.ComponentIsIcon"/>
+Return <i>false</i> for all components that are hidden or that you paint yourself. You should override this.</descr>
+      </element>
+      <element name="TDesignerMediator.ParentAcceptsChild">
+        <short>Used by the IDE to find a parent when a new component is dropped onto the form.</short>
+        <descr>
+          <printshort id="TDesignerMediator.ParentAcceptsChild"/>
+You should override this.
+The Root component must take any component.</descr>
+      </element>
+      <element name="TDesignerMediator.ComponentIsVisible">
+        <short>True, if a component is visible.</short>
+        <descr>
+          <printshort id="TDesignerMediator.ComponentIsVisible"/>
+It does <b>not</b> mean, that all its parents have to be visible. Default is true.</descr>
+      </element>
+      <element name="TDesignerMediator.ComponentIsSelectable">
+        <short>True, if a component can be selected by the mouse.</short>
+        <descr>
+          <printshort id="TDesignerMediator.ComponentIsSelectable"/>
+
+The user can still select a component via the object inspector.</descr>
+      </element>
+      <element name="TDesignerMediator.ComponentAtPos">
+        <short>Find a component at p.</short>
+        <descr>
+          <printshort id="TDesignerMediator.ComponentAtPos"/>
+No need to override.
+The position p is relative to the 0,0 of the client area of the Root component.
+MinClass can be nil. If MinClass is given the returned component must inherit from MinClass.
+</descr>
+      </element>
+      <element name="TDesignerMediator.GetChildComponents">
+        <short>Return a list of child components.</short>
+        <descr>
+          <printshort id="TDesignerMediator.GetChildComponents"/>
+No need to override.
+Child components are those with GetParentComponent=Parent.
+Normally all components on a form have the same Owner but can have different parents.</descr>
+      </element>
+      <element name="TDesignerMediator.InitComponent">
+        <short>Called by the IDE when a new child component is to be added.</short>
+        <descr>
+          <printshort id="TDesignerMediator.InitComponent"/>
+This function must set bounds and parent. 
+No need to override.</descr>
+      </element>
+      <element name="TDesignerMediator.KeyDown">
+        <short>Called by the IDE before it handles a key down event for the form.</short>
+        <descr>
+          <printshort id="TDesignerMediator.KeyDown"/>
+When you handled a key, set Key:=0.</descr>
+      </element>
+      <element name="TDesignerMediator.KeyUp">
+        <short>Called by the IDE before it handles the key up event for the form.</short>
+        <descr>
+          <printshort id="TDesignerMediator.KeyUp"/>
+When you handled a key, set Key:=0.</descr>
+      </element>
+      <element name="TDesignerMediator.LCLForm">
+        <short>This is a LCL form, on which the designer paints.</short>
+        <descr>
+          <printshort id="TDesignerMediator.LCLForm"/>
+        </descr>
+      </element>
+      <element name="TDesignerMediator.Designer">
+        <short>The designer of the Root component.</short>
+        <descr>
+          <printshort id="TDesignerMediator.Designer"/>
+        </descr>
+      </element>
+      <element name="TDesignerMediator.Root">
+        <short>The designed Root component.</short>
+      </element>
+      <element name="TDesignerMediator.MouseDown"/>
+      <element name="TDesignerMediator.MouseMove">
+        <short>Called by the IDE before it handles a mouse move message</short>
+      </element>
+      <element name="TDesignerMediator.MouseUp">
+        <short>Called by the IDE before it handles a mouse up message</short>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

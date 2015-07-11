@@ -1,0 +1,75 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: lremailexportfilter.saccount
+msgid "Account"
+msgstr ""
+
+#: lremailexportfilter.sadress
+msgid "Adress"
+msgstr ""
+
+#: lremailexportfilter.sapplicationname
+msgid "Application name"
+msgstr ""
+
+#: lremailexportfilter.sattachment
+msgid "Attachment"
+msgstr ""
+
+#: lremailexportfilter.sdirectsend
+msgid "Direct send"
+msgstr ""
+
+#: lremailexportfilter.semail
+msgid "Email"
+msgstr ""
+
+#: lremailexportfilter.sformat
+msgid "Format"
+msgstr ""
+
+#: lremailexportfilter.sfromadress
+msgid "From adress"
+msgstr ""
+
+#: lremailexportfilter.sfromname
+msgid "From name"
+msgstr ""
+
+#: lremailexportfilter.shost
+msgid "Host"
+msgstr ""
+
+#: lremailexportfilter.slogin
+msgid "Login"
+msgstr ""
+
+#: lremailexportfilter.smessage
+msgid "Message"
+msgstr ""
+
+#: lremailexportfilter.spassword
+msgid "Password"
+msgstr ""
+
+#: lremailexportfilter.sport
+msgid "Port"
+msgstr ""
+
+#: lremailexportfilter.ssendtoemail
+msgid "Send to email..."
+msgstr ""
+
+#: lremailexportfilter.ssubject
+msgid "Subject"
+msgstr ""
+
+#: lremailexportfilter.stext
+msgid "Text"
+msgstr ""
+
+#: lremailexportfilter.susemailprogram
+msgid "Use mail program"
+msgstr ""
+

@@ -1,0 +1,62 @@
+object FormActStandard: TFormActStandard
+  Left = 537
+  Height = 483
+  Top = 187
+  Width = 330
+  ActiveControl = tvActStdList
+  BorderStyle = bsDialog
+  Caption = 'FormActStandard'
+  ClientHeight = 483
+  ClientWidth = 330
+  KeyPreview = True
+  OnClose = FormActStandardClose
+  Position = poOwnerFormCenter
+  LCLVersion = '0.9.27'
+  object LabelHeadLine: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 14
+    Top = 6
+    Width = 70
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = 'LabelHeadLine'
+    ParentColor = False
+  end
+  object tvActStdList: TTreeView
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = LabelHeadLine
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = BtnPanel
+    Left = 6
+    Height = 422
+    Top = 23
+    Width = 318
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoExpand = True
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 3
+    BorderSpacing.Right = 6
+    DefaultItemHeight = 15
+    HideSelection = False
+    HotTrack = True
+    ReadOnly = True
+    RightClickSelect = True
+    ScrollBars = ssVertical
+    TabOrder = 0
+    OnDblClick = tvActStdListDblClick
+    Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHotTrack, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+  end
+  object BtnPanel: TButtonPanel
+    Left = 6
+    Height = 26
+    Top = 451
+    Width = 318
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
+  end
+end

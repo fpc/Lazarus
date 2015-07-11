@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions><package name="IDEIntf"><module name="CompOptsIntf"><element name="TLazCompilerOptions.TrimCustomOptions"><short>Converts special characters to spaces, trims spaces and control codes at start and end</short>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

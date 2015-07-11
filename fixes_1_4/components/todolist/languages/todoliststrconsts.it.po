@@ -1,0 +1,98 @@
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2014-10-03 19:37+0100\n"
+"Last-Translator: Giuliano Colla <giuliano.colla@fastwebnet.it>\n"
+"Language-Team: PincoPallo Team\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.5.1\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+
+#: todoliststrconsts.dlgfropts
+msgid "Options"
+msgstr "Opzioni"
+
+#: todoliststrconsts.dlgunitdeprefresh
+msgid "Refresh"
+msgstr "Aggiorna"
+
+#: todoliststrconsts.lisctinsertmacro
+msgid "Insert Macro"
+msgstr "Inserisci Macro"
+
+#: todoliststrconsts.lispkgfiletypetext
+msgid "Text"
+msgstr "Testo"
+
+#: todoliststrconsts.lisprint
+msgid "Print"
+msgstr "Stampa"
+
+#: todoliststrconsts.listddinserttodo
+msgid "Insert ToDo"
+msgstr "Inserisci ToDo"
+
+#: todoliststrconsts.listodoexport
+msgid "Export"
+msgstr "Esporta"
+
+#: todoliststrconsts.listodogoto
+msgid "Goto"
+msgstr "Vai a"
+
+#: todoliststrconsts.listodoldescription
+msgid "Description"
+msgstr "Descrizione"
+
+#: todoliststrconsts.listodoldone
+msgid "Done"
+msgstr "Completato"
+
+#: todoliststrconsts.listodolfile
+msgid "Module"
+msgstr "Modulo"
+
+#: todoliststrconsts.listodolist
+msgid "ToDo List"
+msgstr "lista ToDo"
+
+#: todoliststrconsts.listodolistgotoline
+msgid "Goto selected source line"
+msgstr "Vai alla riga di codice selezionata"
+
+#: todoliststrconsts.listodolistoptions
+msgid "ToDo options ..."
+msgstr "Opzioni ToDo ..."
+
+#: todoliststrconsts.listodolistprintlist
+msgid "Print todo items"
+msgstr "Stampa oggetti ToDo"
+
+#: todoliststrconsts.listodolistrefresh
+msgid "Refresh todo items"
+msgstr "Rileggi oggetti ToDo"
+
+#: todoliststrconsts.listodolline
+msgid "Line"
+msgstr "Linea"
+
+#: todoliststrconsts.listodolowner
+msgid "Owner"
+msgstr "Proprietario"
+
+#: todoliststrconsts.listodolpriority
+msgid "Priority"
+msgstr "Priorità"
+
+#: todoliststrconsts.listtodolcategory
+msgid "Category"
+msgstr "Categoria"
+
+#: todoliststrconsts.lisviewtodolist
+msgid "View ToDo List"
+msgstr "Vedi lista ToDo"
+

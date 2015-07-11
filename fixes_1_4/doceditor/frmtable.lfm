@@ -1,0 +1,104 @@
+object TableForm: TTableForm
+  Left = 385
+  Height = 100
+  Top = 217
+  Width = 320
+  HorzScrollBar.Page = 281
+  VertScrollBar.Page = 96
+  AutoSize = True
+  BorderStyle = bsDialog
+  Caption = 'Insert new table'
+  ClientHeight = 100
+  ClientWidth = 320
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object LSERows: TLabel
+    AnchorSideLeft.Control = CBUseHeaderRow
+    AnchorSideTop.Control = SERows
+    AnchorSideTop.Side = asrCenter
+    AnchorSideBottom.Side = asrBottom
+    Left = 12
+    Height = 13
+    Top = 33
+    Width = 26
+    Alignment = taRightJustify
+    BorderSpacing.Around = 6
+    Caption = '&Rows'
+    FocusControl = SERows
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object LSEColumns: TLabel
+    AnchorSideLeft.Control = SERows
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = SEColumns
+    AnchorSideTop.Side = asrCenter
+    AnchorSideBottom.Side = asrBottom
+    Left = 162
+    Height = 13
+    Top = 33
+    Width = 40
+    Alignment = taRightJustify
+    BorderSpacing.Left = 24
+    BorderSpacing.Right = 6
+    Caption = 'Co&lumns'
+    FocusControl = SEColumns
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object CBUseHeaderRow: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 17
+    Top = 6
+    Width = 96
+    AllowGrayed = True
+    BorderSpacing.Around = 6
+    Caption = 'Use &header row'
+    TabOrder = 0
+  end
+  object SERows: TSpinEdit
+    AnchorSideLeft.Control = LSERows
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = CBUseHeaderRow
+    AnchorSideTop.Side = asrBottom
+    Left = 44
+    Height = 21
+    Top = 29
+    Width = 94
+    BorderSpacing.Around = 6
+    TabOrder = 1
+  end
+  object SEColumns: TSpinEdit
+    AnchorSideLeft.Control = LSEColumns
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = CBUseHeaderRow
+    AnchorSideTop.Side = asrBottom
+    Left = 208
+    Height = 21
+    Top = 29
+    Width = 102
+    BorderSpacing.Around = 6
+    TabOrder = 2
+  end
+  object ButtonPanel1: TButtonPanel
+    AnchorSideTop.Control = SERows
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 38
+    Top = 56
+    Width = 308
+    Anchors = [akTop, akLeft, akRight]
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 3
+    ShowButtons = [pbOK, pbCancel]
+  end
+end

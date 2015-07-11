@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    TTGLoad
+  ====================================================================
+-->
+
+<module name="TTGLoad">
+<short></short>
+<descr>
+</descr>
+
+<!-- function Visibility: default -->
+<element name="Load_TrueType_Glyph">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Load_TrueType_Glyph.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Load_TrueType_Glyph.instance">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Load_TrueType_Glyph.glyph">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Load_TrueType_Glyph.glyph_index">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Load_TrueType_Glyph.load_flags">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TT_Get_Metrics">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Metrics.header">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Metrics.index">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Metrics.bearing">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Metrics.advance">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Get_Advance_Widths">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Get_Advance_Widths.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Get_Advance_Widths.face">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Get_Advance_Widths.ppem">
+<short></short>
+</element>
+
+</module> <!-- TTGLoad -->
+
+</package>
+</fpdoc-descriptions>

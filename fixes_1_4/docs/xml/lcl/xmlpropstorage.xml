@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    XMLPropStorage
+  ====================================================================
+-->
+
+<module name="XMLPropStorage">
+<short/>
+<descr>
+</descr>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Classes">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="SysUtils">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLProc">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Forms">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="PropertyStorage">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="XMLCfg">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="DOM">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TPropStorageXMLConfig">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPropStorageXMLConfig.DeleteSubNodes">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPropStorageXMLConfig.DeleteSubNodes.ARootNode">
+<short/>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TCustomXMLPropStorage">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomXMLPropStorage.FCount">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomXMLPropStorage.FFileName">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomXMLPropStorage.FXML">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomXMLPropStorage.FRootNode">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomXMLPropStorage.FRootNodePath">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomXMLPropStorage.StorageNeeded">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomXMLPropStorage.StorageNeeded.ReadOnly">
+<short/>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomXMLPropStorage.FreeStorage">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TCustomXMLPropStorage.GetXMLFileName">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomXMLPropStorage.GetXMLFileName.Result">
+<short/>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TCustomXMLPropStorage.RootSection">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomXMLPropStorage.RootSection.Result">
+<short/>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TCustomXMLPropStorage.FixPath">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomXMLPropStorage.FixPath.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomXMLPropStorage.FixPath.APath">
+<short/>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomXMLPropStorage.XMLConfig">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TCustomXMLPropStorage.DoReadString">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomXMLPropStorage.DoReadString.Result">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomXMLPropStorage.DoReadString.Section">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomXMLPropStorage.DoReadString.Ident">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomXMLPropStorage.DoReadString.TheDefault">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomXMLPropStorage.DoWriteString">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomXMLPropStorage.DoWriteString.Section">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomXMLPropStorage.DoWriteString.Ident">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomXMLPropStorage.DoWriteString.Value">
+<short/>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomXMLPropStorage.DoEraseSections">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomXMLPropStorage.DoEraseSections.ARootSection">
+<short/>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomXMLPropStorage.FileName">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomXMLPropStorage.RootNodePath">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TXMLPropStorage">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso/>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TXMLPropStorage.StoredValues">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TXMLPropStorage.FileName">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TXMLPropStorage.RootNodePath">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TXMLPropStorage.Active">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TXMLPropStorage.OnSaveProperties">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TXMLPropStorage.OnRestoreProperties">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="Register">
+<short/>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+</module> <!-- XMLPropStorage -->
+</package>
+</fpdoc-descriptions>

@@ -1,0 +1,82 @@
+object Form1: TForm1
+  Left = 257
+  Height = 248
+  Top = 177
+  Width = 320
+  Caption = 'Form1'
+  ClientHeight = 248
+  ClientWidth = 320
+  LCLVersion = '1.1'
+  object btnOpenURLHTTP: TButton
+    Left = 64
+    Height = 25
+    Top = 119
+    Width = 184
+    Caption = 'OpenURL with http://'
+    OnClick = btnOpenURLHTTPClick
+    TabOrder = 0
+  end
+  object editFileName: TFileNameEdit
+    Left = 8
+    Height = 21
+    Top = 32
+    Width = 280
+    FilterIndex = 0
+    HideDirectories = False
+    ButtonWidth = 23
+    NumGlyphs = 0
+    MaxLength = 0
+    TabOrder = 1
+  end
+  object Label1: TLabel
+    Left = 8
+    Height = 14
+    Top = 9
+    Width = 216
+    Caption = 'Please indicate a filename or URL for testing:'
+    ParentColor = False
+  end
+  object btnOpenURLFILE: TButton
+    Left = 64
+    Height = 25
+    Top = 151
+    Width = 184
+    Caption = 'OpenURL with file://'
+    OnClick = btnOpenURLFILEClick
+    TabOrder = 2
+  end
+  object btnOpenDocument: TButton
+    Left = 64
+    Height = 25
+    Top = 183
+    Width = 184
+    Caption = 'OpenDocument test'
+    OnClick = btnOpenDocumentClick
+    TabOrder = 3
+  end
+  object btnFindBrowser: TButton
+    Left = 64
+    Height = 25
+    Top = 215
+    Width = 182
+    Caption = 'Find Browser'
+    OnClick = btnFindBrowserClick
+    TabOrder = 4
+  end
+  object Label2: TLabel
+    Left = 9
+    Height = 14
+    Top = 58
+    Width = 35
+    Caption = 'Result:'
+    ParentColor = False
+  end
+  object editResult: TEdit
+    Left = 9
+    Height = 21
+    Top = 80
+    Width = 279
+    TabOrder = 5
+    Text = 'editResult'
+  end
+end

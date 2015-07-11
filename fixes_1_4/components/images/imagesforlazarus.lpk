@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="3">
+    <Name Value="ImagesForLazarus"/>
+    <Author Value="Mazen NEIFER"/>
+    <CompilerOptions>
+      <Version Value="5"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
+      </SearchPaths>
+      <CodeGeneration>
+        <Generate Value="Faster"/>
+      </CodeGeneration>
+      <Linking>
+        <Debugging>
+          <GenerateDebugInfo Value="True"/>
+        </Debugging>
+      </Linking>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="Images for Lazarus.
+
+"/>
+    <License Value="LGPL"/>
+    <Version Major="1" Release="1"/>
+    <Files Count="7">
+      <Item1>
+        <Filename Value="lazpng.pas"/>
+        <UnitName Value="LazPNG"/>
+      </Item1>
+      <Item2>
+        <Filename Value="readme.txt"/>
+        <Type Value="Text"/>
+      </Item2>
+      <Item3>
+        <Filename Value="lazpnm.pas"/>
+        <UnitName Value="LazPNM"/>
+      </Item3>
+      <Item4>
+        <Filename Value="lazjpg.pas"/>
+        <UnitName Value="LazJPG"/>
+      </Item4>
+      <Item5>
+        <Filename Value="lazbmp.pas"/>
+        <UnitName Value="LazBMP"/>
+      </Item5>
+      <Item6>
+        <Filename Value="laztga.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="LazTGA"/>
+      </Item6>
+      <Item7>
+        <Filename Value="lazxpm.pas"/>
+        <UnitName Value="LazXPM"/>
+      </Item7>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="1">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)/"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

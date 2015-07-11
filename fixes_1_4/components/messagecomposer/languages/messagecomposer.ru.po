@@ -1,0 +1,120 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+
+#: messagecomposer.rscancel
+msgid "Cancel"
+msgstr "Отмена"
+
+#: messagecomposer.rsok
+#| msgid "Ok"
+msgid "OK"
+msgstr "ОК"
+
+#: messagecomposer.rstest
+msgid "Test"
+msgstr "Тест"
+
+#: messagecomposer.sadd
+msgid "Add"
+msgstr "Добавить"
+
+#: messagecomposer.sbuttonsarrayofconst
+msgid "Buttons (array of const)"
+msgstr "Кнопки (array of const)"
+
+#: messagecomposer.sbuttonstmsgdlgbuttons
+msgid "Buttons (TMsgDlgButtons)"
+msgstr "Кнопки (TMsgDlgButtons)"
+
+#: messagecomposer.scaseresult
+msgid "\"Case\" result"
+msgstr "Результат \"Case\""
+
+#: messagecomposer.sdefault
+msgid "Default"
+msgstr "По умолчанию"
+
+#: messagecomposer.sdelete
+msgid "Delete"
+msgstr "Удалить"
+
+#: messagecomposer.sdlgcaption
+msgid "Dialog caption"
+msgstr "Заголовок диалога"
+
+#: messagecomposer.sdlgtype
+msgid "Dialog type"
+msgstr "Тип диалога"
+
+#: messagecomposer.shelpcontext
+msgid "Help context"
+msgstr "Контекст справки"
+
+#: messagecomposer.shelpfilename
+msgid "Help filename"
+msgstr "Имя файла справки"
+
+#: messagecomposer.shelpkeyword
+msgid "Help keyword"
+msgstr "Ключевое слово справки"
+
+#: messagecomposer.sifresult
+msgid "\"If\" result"
+msgstr "Результат \"If\""
+
+#: messagecomposer.skindofmessage
+#| msgid "KIND OF MESSAGE"
+msgid "Kind of message"
+msgstr "Тип сообщения"
+
+#: messagecomposer.smaskinput
+#| msgid "Mask Input"
+msgid "Mask input"
+msgstr "Маскировать ввод"
+
+#: messagecomposer.smessagecomposercaption
+#| msgid "Message Composer ..."
+msgctxt "messagecomposer.smessagecomposercaption"
+msgid "Message Composer"
+msgstr "Составитель сообщений"
+
+#: messagecomposer.smessagecomposermenucaption
+#| msgid "Message Composer ..."
+msgctxt "messagecomposer.smessagecomposermenucaption"
+msgid "Message Composer ..."
+msgstr "Составитель сообщений ..."
+
+#: messagecomposer.smodalresult
+msgid "Modal result"
+msgstr "Модальный результат"
+
+#: messagecomposer.smsgcaption
+msgid "The message to be shown"
+msgstr "Отображаемое сообщение"
+
+#: messagecomposer.snotimplementedyet
+#| msgid "Not Implemented Yet"
+msgid "Not implemented yet"
+msgstr "Ещё не реализовано"
+
+#: messagecomposer.spromptcaption
+msgid "Text asking the user for input"
+msgstr "Текст запроса на ввод пользователем"
+
+#: messagecomposer.ssourcewrapper
+#| msgid "SOURCE WRAPPER"
+msgid "Source wrapper"
+msgstr "Вызывающий исходный код"
+
+#: messagecomposer.svaluevar
+msgid "Value (var)"
+msgstr "Значение (переменная)"
+

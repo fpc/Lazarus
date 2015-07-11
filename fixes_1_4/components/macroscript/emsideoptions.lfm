@@ -1,0 +1,36 @@
+object EMSIdeOptionsFrame: TEMSIdeOptionsFrame
+  Left = 0
+  Height = 240
+  Top = 0
+  Width = 320
+  ClientHeight = 240
+  ClientWidth = 320
+  TabOrder = 0
+  DesignLeft = 656
+  DesignTop = 156
+  object lblStatus: TLabel
+    Left = 6
+    Height = 13
+    Top = 6
+    Width = 308
+    Align = alTop
+    BorderSpacing.Around = 6
+    Caption = 'lblStatus'
+    ParentColor = False
+    WordWrap = True
+  end
+  object btnActivate: TButton
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblStatus
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 23
+    Top = 25
+    Width = 82
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'btnActivate'
+    OnClick = btnActivateClick
+    TabOrder = 0
+  end
+end

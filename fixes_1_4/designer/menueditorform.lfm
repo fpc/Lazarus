@@ -1,0 +1,89 @@
+object MainMenuEditorForm: TMainMenuEditorForm
+  Left = 395
+  Height = 220
+  Top = 480
+  Width = 600
+  Caption = 'MainMenuEditorForm'
+  ClientHeight = 220
+  ClientWidth = 600
+  FormStyle = fsStayOnTop
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object MenuScrollBox: TScrollBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = List_menus
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 220
+    Top = 0
+    Width = 382
+    HorzScrollBar.Page = 378
+    HorzScrollBar.Tracking = True
+    VertScrollBar.Page = 216
+    VertScrollBar.Tracking = True
+    Align = alClient
+    ClientHeight = 216
+    ClientWidth = 378
+    TabOrder = 0
+    object Panel: TPanel
+      AnchorSideLeft.Control = MenuScrollBox
+      AnchorSideTop.Control = MenuScrollBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 0
+      Height = 212
+      Top = 0
+      Width = 200
+      BevelOuter = bvNone
+      TabOrder = 0
+    end
+  end
+  object Panel_MenuList: TPanel
+    Left = 387
+    Height = 220
+    Top = 0
+    Width = 213
+    Align = alRight
+    ClientHeight = 220
+    ClientWidth = 213
+    TabOrder = 1
+    object Label_menus: TLabel
+      AnchorSideLeft.Control = List_menus
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = List_menus
+      Left = 8
+      Height = 15
+      Top = 11
+      Width = 65
+      Anchors = [akLeft, akBottom]
+      Caption = 'Label_menus'
+      ParentColor = False
+    end
+    object List_menus: TListBox
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = Panel_MenuList
+      AnchorSideBottom.Side = asrBottom
+      Left = 8
+      Height = 181
+      Top = 32
+      Width = 194
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Around = 6
+      ItemHeight = 0
+      OnClick = List_menusClick
+      TabOrder = 0
+    end
+  end
+  object Splitter_BoxPanel: TSplitter
+    Left = 382
+    Height = 220
+    Top = 0
+    Width = 5
+    Align = alRight
+    ResizeAnchor = akRight
+  end
+end

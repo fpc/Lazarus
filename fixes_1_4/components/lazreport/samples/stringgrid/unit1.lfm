@@ -1,0 +1,187 @@
+object Form1: TForm1
+  Left = 420
+  Height = 612
+  Top = 95
+  Width = 320
+  ActiveControl = Edit1
+  Caption = 'Budget'
+  ClientHeight = 612
+  ClientWidth = 320
+  OnShow = FormShow
+  Position = poDesktopCenter
+  LCLVersion = '0.9.31'
+  object GroupBox1: TGroupBox
+    Left = 8
+    Height = 128
+    Top = 8
+    Width = 305
+    Caption = 'Customer Data'
+    ClientHeight = 110
+    ClientWidth = 301
+    TabOrder = 0
+    object Label1: TLabel
+      Left = 8
+      Height = 14
+      Top = 8
+      Width = 81
+      Caption = 'Customer Name:'
+      ParentColor = False
+    end
+    object Label2: TLabel
+      Left = 8
+      Height = 14
+      Top = 64
+      Width = 44
+      Caption = 'Address:'
+      ParentColor = False
+    end
+    object Edit1: TEdit
+      Left = 8
+      Height = 21
+      Top = 24
+      Width = 280
+      TabOrder = 0
+    end
+    object Edit2: TEdit
+      Left = 8
+      Height = 21
+      Top = 80
+      Width = 280
+      TabOrder = 1
+    end
+  end
+  object GroupBox2: TGroupBox
+    Left = 8
+    Height = 72
+    Top = 152
+    Width = 305
+    Caption = 'Add Products'
+    ClientHeight = 54
+    ClientWidth = 301
+    TabOrder = 1
+    object Label3: TLabel
+      Left = 14
+      Height = 14
+      Top = 8
+      Width = 42
+      Caption = 'Product:'
+      ParentColor = False
+    end
+    object Label4: TLabel
+      Left = 166
+      Height = 14
+      Top = 8
+      Width = 45
+      Caption = 'Price ($):'
+      ParentColor = False
+    end
+    object Edit3: TEdit
+      Left = 14
+      Height = 21
+      Top = 24
+      Width = 144
+      TabOrder = 0
+    end
+    object Edit4: TEdit
+      Left = 166
+      Height = 21
+      Top = 24
+      Width = 64
+      TabOrder = 1
+    end
+    object Button1: TButton
+      Left = 238
+      Height = 25
+      Top = 22
+      Width = 59
+      Caption = 'Add'
+      OnClick = Button1Click
+      TabOrder = 2
+    end
+  end
+  object GroupBox3: TGroupBox
+    Left = 9
+    Height = 280
+    Top = 232
+    Width = 304
+    Caption = 'Budgeted Products:'
+    ClientHeight = 262
+    ClientWidth = 300
+    TabOrder = 2
+    object Label5: TLabel
+      Left = 149
+      Height = 14
+      Top = 231
+      Width = 46
+      Caption = 'Total ($):'
+      ParentColor = False
+    end
+    object StringGrid1: TStringGrid
+      Left = 8
+      Height = 204
+      Top = 8
+      Width = 282
+      ColCount = 2
+      FixedCols = 0
+      RowCount = 1
+      TabOrder = 0
+      ColWidths = (
+        208
+        70
+      )
+      Cells = (
+        2
+        0
+        0
+        'Product'
+        1
+        0
+        'Price'
+      )
+    end
+    object Edit5: TEdit
+      Left = 208
+      Height = 21
+      Top = 224
+      Width = 80
+      TabOrder = 1
+    end
+  end
+  object Button2: TButton
+    Left = 200
+    Height = 25
+    Top = 528
+    Width = 91
+    Caption = 'Design Report'
+    OnClick = Button2Click
+    TabOrder = 3
+  end
+  object Button3: TButton
+    Left = 24
+    Height = 25
+    Top = 528
+    Width = 91
+    Caption = 'Show Report'
+    OnClick = Button3Click
+    TabOrder = 4
+  end
+  object Filas: TfrUserDataset
+    OnCheckEOF = FilasCheckEOF
+    OnFirst = FilasFirst
+    OnNext = FilasNext
+    left = 47
+    top = 576
+  end
+  object frReport1: TfrReport
+    InitialZoom = pzDefault
+    Options = []
+    PreviewButtons = [pbZoom, pbLoad, pbSave, pbPrint, pbFind, pbHelp, pbExit]
+    DataType = dtDataSet
+    OnGetValue = frReport1GetValue
+    left = 153
+    top = 576
+    ReportForm = {
+      19000000
+    }
+  end
+end

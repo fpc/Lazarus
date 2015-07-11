@@ -1,0 +1,42 @@
+ Valdas Jankunas <zmuogs@gmail.com>, 2010, 2012.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2012-08-06 22:14+0300\n"
+"Project-Id-Version: registersqldb\n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.5\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Language: lt\n"
+
+#: registersqldb.sfirebirddatabases
+msgid "Firebird databases"
+msgstr "Firebird duomenų bazės"
+
+#: registersqldb.sinterbasedatabases
+msgid "Interbase databases"
+msgstr "Interbase duomenų bazės"
+
+#: registersqldb.slibraries
+msgid "Shared libraries"
+msgstr ""
+
+#: registersqldb.ssqlscript
+msgid "SQL Script file"
+msgstr "SQL scenarijaus failas"
+
+#: registersqldb.ssqlscriptdesc
+msgid "Create a new SQL Script file"
+msgstr "Kurti naują SQL scenarijaus failą"
+
+#: registersqldb.ssqlsource
+msgid "Insert your SQL statements here"
+msgstr "Čia įterpiami SQL sakiniai"
+
+#: registersqldb.ssqlstringspropertyeditordlgtitle
+msgid "Editing %s"
+msgstr "%s redaguojamas"
+

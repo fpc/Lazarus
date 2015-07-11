@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <Name Value="LR_SqlDB"/>
+    <Author Value="Lazarus, Lagunov A.A."/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+    </CompilerOptions>
+    <Description Value="Add support to FCL SQLdb components for designing LazReport dialogs at runtime with lr_dialogdesign package"/>
+    <License Value="modified LGPL-2
+"/>
+    <Version Minor="2" Release="2"/>
+    <Files Count="4">
+      <Item1>
+        <Filename Value="lr_pqconnection.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="LR_PQConnection"/>
+      </Item1>
+      <Item2>
+        <Filename Value="lr_sqlquery.pas"/>
+        <UnitName Value="lr_SQLQuery"/>
+      </Item2>
+      <Item3>
+        <Filename Value="lr_ibconnection.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="LR_IBConnection"/>
+      </Item3>
+      <Item4>
+        <Filename Value="lr_editsqldbparamsunit.pas"/>
+        <UnitName Value="lr_editsqldbparamsunit"/>
+      </Item4>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="3">
+      <Item1>
+        <PackageName Value="SQLDBLaz"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="lazreport"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="FCL"/>
+      </Item3>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

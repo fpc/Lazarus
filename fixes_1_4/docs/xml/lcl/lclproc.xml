@@ -1,0 +1,2818 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+  <package name="lcl">
+    <!--
+  ====================================================================
+    LCLProc
+  ====================================================================
+-->
+    <module name="LCLProc">
+      <short>Useful lower level helper functions and classes</short>
+      <descr/>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="SysUtils">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Math">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLStrConsts">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TMethodList">
+        <short>A list for method references.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMethodList.FItems" link="TMethodList.Items"/>
+      <!-- variable Visibility: private -->
+      <element name="TMethodList.FCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TMethodList.GetItems" link="TMethodList.Items"/>
+      <element name="TMethodList.GetItems.Result">
+        <short/>
+      </element>
+      <element name="TMethodList.GetItems.Index">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TMethodList.SetItems" link="TMethodList.Items"/>
+      <element name="TMethodList.SetItems.Index">
+        <short/>
+      </element>
+      <element name="TMethodList.SetItems.AValue">
+        <short/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TMethodList.Destroy"/>
+      <!-- function Visibility: public -->
+      <element name="TMethodList.Count">
+        <short>Checked number of Items, can be called with a non-existent object.</short>
+      </element>
+      <element name="TMethodList.Count.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TMethodList.NextDownIndex">
+        <short>Checked decrement of Index, can be called with a non-existent object.</short>
+        <descr>The resulting Index is lower than Count.
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TMethodList.NextDownIndex.Result">
+        <short>True when the Index is valid.
+        </short>
+      </element>
+      <element name="TMethodList.NextDownIndex.Index">
+        <short>The decremented Index, or -1 if the object doesn't exist.</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TMethodList.IndexOf">
+        <short>Returns the list index of AMethod.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TMethodList.IndexOf.Result">
+        <short>The list index, or -1 if not found or the list doesn't exist.</short>
+      </element>
+      <element name="TMethodList.IndexOf.AMethod">
+        <short>The method to find.</short>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TMethodList.Delete">
+        <short>Removes the indexed Item.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TMethodList.Delete.Index">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TMethodList.Remove">
+        <short>Removes the first occurence of AMethod from the list.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TMethodList.Remove.AMethod">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TMethodList.Add">
+        <short>Adds AMethod to the list, as the first or last member.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TMethodList.Add.AMethod">
+        <short/>
+      </element>
+      <element name="TMethodList.Add.AsLast">
+        <short>Add as first (False) or last (True) member.</short>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TMethodList.Insert">
+        <short>Inserts AMethod at Index.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TMethodList.Insert.Index">
+        <short/>
+      </element>
+      <element name="TMethodList.Insert.AMethod">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TMethodList.Move">
+        <short>Moves an Item within the list.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TMethodList.Move.OldIndex">
+        <short/>
+      </element>
+      <element name="TMethodList.Move.NewIndex">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TMethodList.RemoveAllMethodsOfObject">
+        <short>Deletes all occurences of methods of AnObject from the list.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TMethodList.RemoveAllMethodsOfObject.AnObject">
+        <short>The object whose methods shall be removed.</short>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TMethodList.CallNotifyEvents">
+        <short>Invokes all methods in the list, as notification handlers.</short>
+        <descr>All listed methods <b>must</b> take exactly one argument of type TObject!
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TMethodList.CallNotifyEvents.Sender">
+        <short>The reference to pass as the argument to all methods.</short>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TMethodList.Items">
+        <short>Indexed access to the methods in the list.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TMethodList.Items.Index">
+        <short/>
+      </element>
+<!-- array type Visibility: default -->
+      <element name="TStackTracePointers">
+      <short>A dynamic pointer array type.</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+<!-- class Visibility: default -->
+      <element name="TDebugLCLItemInfo">
+        <short>A node in TDebugLCLItems, holding information about a heap object.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+          <link id="TDebugLCLItems"/>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TDebugLCLItemInfo.Item">
+        <short>The address of the item.</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TDebugLCLItemInfo.IsDestroyed">
+        <short>True when the item has been destroyed.</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TDebugLCLItemInfo.Info">
+        <short>A descriptive string
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TDebugLCLItemInfo.CreationStack">
+        <short>Stack trace at creation of the object
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TDebugLCLItemInfo.DestructionStack">
+        <short>Stack trace at destruction of the object
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TDebugLCLItemInfo.AsString">
+        <short>All information about the object.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TDebugLCLItemInfo.AsString.Result">
+        <short/>
+      </element>
+      <element name="TDebugLCLItemInfo.AsString.WithStackTraces">
+        <short>True means include stack traces.</short>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TDebugLCLItemInfo.Destroy"/>
+<!-- class Visibility: default -->
+      <element name="TDebugLCLItems">
+        <short>A list describing dynamically allocated (and destroyed) memory objects.
+        </short>
+        <descr>The list holds descriptive information about the object,
+          and stack traces of its creation and destruction.
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TDebugLCLItems.FItems">
+        <short>The list entries, organized as an AVL tree.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TDebugLCLItems.FName" link="TDebugLCLItems.Name"/>
+      <!-- constructor Visibility: public -->
+      <element name="TDebugLCLItems.Create">
+        <short>Assigns TheName to the list.</short>
+      </element>
+      <element name="TDebugLCLItems.Create.TheName">
+        <short>The descriptive name of the list.</short>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TDebugLCLItems.Destroy"/>
+      <!-- function Visibility: public -->
+      <element name="TDebugLCLItems.FindInfo">
+        <short>Returns information about an item, optionally creating an entry if not found.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TDebugLCLItems.FindInfo.Result">
+        <short>The item information, or Nil if none was found or created.</short>
+      </element>
+      <element name="TDebugLCLItems.FindInfo.p">
+        <short>The address of the item to find.</short>
+      </element>
+      <element name="TDebugLCLItems.FindInfo.CreateIfNotExists">
+        <short>True means create an according list entry, if none existed yet.</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TDebugLCLItems.IsDestroyed">
+        <short>True when the item has been created and destroyed.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TDebugLCLItems.IsDestroyed.Result">
+        <short>True when destroyed, False when alive or not listed.
+        </short>
+      </element>
+      <element name="TDebugLCLItems.IsDestroyed.p">
+        <short>The address to find.</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TDebugLCLItems.IsCreated">
+        <short>True when the item is alive.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TDebugLCLItems.IsCreated.Result">
+        <short>True when the item is listed and has not yet been destroyed.</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDebugLCLItems.IsCreated.p">
+        <short>The address to find.</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TDebugLCLItems.MarkCreated">
+        <short>Checked insert of an item.</short>
+        <descr>
+        </descr>
+        <errors>
+          GDB exception 'RaiseDoubleCreated' when the address is already in use.
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TDebugLCLItems.MarkCreated.Result">
+        <short>The info object describing the address.</short>
+      </element>
+      <element name="TDebugLCLItems.MarkCreated.p">
+        <short>The address to add.</short>
+      </element>
+      <element name="TDebugLCLItems.MarkCreated.InfoText">
+        <short>Descriptive text about the item.</short>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TDebugLCLItems.MarkDestroyed">
+        <short>Checked destruction notification.</short>
+        <descr>
+        </descr>
+        <errors>
+          <ul>
+            <li>GDB exception 'TDebugLCLItems.MarkDestroyed' when the item was not yet created.</li>
+            <li>GDB exception 'RaiseDoubleDestroyed' when the item was already destroyed.</li>
+          </ul>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDebugLCLItems.MarkDestroyed.p">
+        <short>The address to mark as destroyed.</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TDebugLCLItems.GetInfo">
+        <short>Returns textual information about an object.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TDebugLCLItems.GetInfo.Result">
+        <short>The descriptive string.</short>
+      </element>
+      <element name="TDebugLCLItems.GetInfo.p">
+        <short>The address to find.</short>
+      </element>
+      <element name="TDebugLCLItems.GetInfo.WithStackTraces">
+        <short>True means include stack traces.</short>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDebugLCLItems.Name">
+        <short>The descriptive name of the list.</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+<!-- record type Visibility: default -->
+      <element name="TLineInfoCacheItem">
+        <short>A record containing an address/description pair.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TLineInfoCacheItem.Addr">
+        <short>The address to describe.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TLineInfoCacheItem.Info">
+        <short>The descriptive text.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PLineInfoCacheItem" link="TLineInfoCacheItem"/>
+      <!-- function Visibility: default -->
+      <element name="CompareDebugLCLItemInfos">
+        <short>Compare function for the TDebugLCLItems AVL tree
+        </short>
+        <descr>Compares the Item addresses.
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="CompareDebugLCLItemInfos.Result">
+        <short/>
+      </element>
+      <element name="CompareDebugLCLItemInfos.Data1">
+        <short/>
+      </element>
+      <element name="CompareDebugLCLItemInfos.Data2">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CompareItemWithDebugLCLItemInfo">
+        <short>Compare function for <link id="TDebugLCLItems.FindInfo"/>.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="CompareItemWithDebugLCLItemInfo.Result">
+        <short/>
+      </element>
+      <element name="CompareItemWithDebugLCLItemInfo.Item">
+        <short/>
+      </element>
+      <element name="CompareItemWithDebugLCLItemInfo.DebugItemInfo">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CompareLineInfoCacheItems">
+        <short>Compare function for <link id="GetLineInfo"/>
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="CompareLineInfoCacheItems.Result">
+        <short/>
+      </element>
+      <element name="CompareLineInfoCacheItems.Data1">
+        <short/>
+      </element>
+      <element name="CompareLineInfoCacheItems.Data2">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CompareAddrWithLineInfoCacheItem">
+        <short>Compare function for <link id="GetLineInfo"/>
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="CompareAddrWithLineInfoCacheItem.Result">
+        <short/>
+      </element>
+      <element name="CompareAddrWithLineInfoCacheItem.Addr">
+        <short/>
+      </element>
+      <element name="CompareAddrWithLineInfoCacheItem.Item">
+        <short/>
+      </element>
+      <!-- function type Visibility: default -->
+      <element name="TStringsSortCompare">
+        <short>Compare function type for TStrings Strings[].</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TStringsSortCompare.Result">
+        <short/>
+      </element>
+      <element name="TStringsSortCompare.Item1">
+        <short/>
+      </element>
+      <element name="TStringsSortCompare.Item2">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="MergeSort">
+        <short>Sorting TStrings or TFPList.</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="MergeSort.List">
+        <short>The list to sort (overloaded type).</short>
+      </element>
+      <element name="MergeSort.OnCompare">
+        <short>The sort compare function.</short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="GetEnumValueDef">
+        <short>Finds an enum member by name
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="GetEnumValueDef.Result">
+        <short>The member ordinal</short>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="GetEnumValueDef.TypeInfo">
+        <short>The enum TypeInfo.</short>
+      </element>
+      <element name="GetEnumValueDef.Name">
+        <short>The member name.</short>
+      </element>
+      <element name="GetEnumValueDef.DefaultValue">
+        <short>The value returned when the element was not found.</short>
+      </element>
+<!-- function Visibility: default -->
+      <element name="ShortCutToText">
+        <short>Returns the textual representation of an shortcut
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="ShortCutToText.Result">
+        <short/>
+      </element>
+      <element name="ShortCutToText.ShortCut">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="TextToShortCut">
+        <short>Converts the textual representation of an shortcut into an shortcut
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="TextToShortCut.Result">
+        <short/>
+      </element>
+      <element name="TextToShortCut.ShortCutText">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="GetCompleteText">
+        <short>Find an string in a list, given its first few characters.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="GetCompleteText.Result">
+        <short>The found string.</short>
+      </element>
+      <element name="GetCompleteText.sText">
+        <short>The begin of the string to find.</short>
+      </element>
+      <element name="GetCompleteText.iSelStart">
+        <short>The list index where the search should start.</short>
+      </element>
+      <element name="GetCompleteText.bCaseSensitive">
+        <short>True means case-sensitive comparison
+        </short>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="GetCompleteText.bSearchAscending">
+        <short>True means search ascending from iSelStart
+        </short>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="GetCompleteText.slTextList">
+        <short>The list to search.
+        </short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="IsEditableTextKey">
+        <short/>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="IsEditableTextKey.Result">
+        <short/>
+      </element>
+      <element name="IsEditableTextKey.Key">
+        <short>The virtual key code.</short>
+      </element>
+      <!-- function type Visibility: default -->
+      <element name="TSendApplicationMessageFunction">
+        <short/>
+        <descr/>
+        <seealso/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="TSendApplicationMessageFunction.Result">
+        <short/>
+      </element>
+      <element name="TSendApplicationMessageFunction.Msg">
+        <short/>
+      </element>
+      <element name="TSendApplicationMessageFunction.WParam">
+        <short/>
+      </element>
+      <element name="TSendApplicationMessageFunction.LParam">
+        <short/>
+      </element>
+      <!-- procedure type Visibility: default -->
+      <element name="TOwnerFormDesignerModifiedProc">
+        <short/>
+        <descr/>
+        <seealso/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="TOwnerFormDesignerModifiedProc.AComponent">
+        <short/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="SendApplicationMessageFunction">
+        <short/>
+        <descr/>
+        <seealso/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="OwnerFormDesignerModifiedProc">
+        <short/>
+        <descr/>
+        <seealso/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="SendApplicationMessage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="SendApplicationMessage.Result">
+        <short/>
+      </element>
+      <element name="SendApplicationMessage.Msg">
+        <short/>
+      </element>
+      <element name="SendApplicationMessage.WParam">
+        <short/>
+      </element>
+      <element name="SendApplicationMessage.LParam">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="OwnerFormDesignerModified">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="OwnerFormDesignerModified.AComponent">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FreeThenNil">
+        <short>Free the TObject, before setting the reference to Nil.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="FreeThenNil.obj">
+        <short>The object reference (variable).</short>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="RegisterInterfaceInitializationHandler">
+        <short/>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="RegisterInterfaceInitializationHandler.p">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="CallInterfaceInitializationHandlers">
+        <short>Invokes the registered handlers.</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="RegisterInterfaceFinalizationHandler">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="RegisterInterfaceFinalizationHandler.p">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="CallInterfaceFinalizationHandlers">
+        <short>Invokes the registered handlers.
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="OffsetRect">
+        <short>Increments the TopLeft and BottomRight coordinates of the rectangle.
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="OffsetRect.Result">
+        <short>True when the TopLeft coordinates are all positive.
+        </short>
+      </element>
+      <element name="OffsetRect.ARect">
+        <short/>
+      </element>
+      <element name="OffsetRect.dx">
+        <short/>
+      </element>
+      <element name="OffsetRect.dy">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="MoveRect">
+        <short>Makes the rectangle originate at the given coordinates.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="MoveRect.ARect">
+        <short/>
+      </element>
+      <element name="MoveRect.x">
+        <short/>
+      </element>
+      <element name="MoveRect.y">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="MoveRectToFit">
+        <short>Adjusts an rectangle to fit entirely into another one.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="MoveRectToFit.ARect">
+        <short/>
+      </element>
+      <element name="MoveRectToFit.MaxRect">
+        <short>The bounding rectangle.</short>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="MakeMinMax">
+        <short>Eventually swaps the variable contents,
+          so that i1 is not higher than i2.
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="MakeMinMax.i1">
+        <short>Receives the minimum value of both variables.</short>
+      </element>
+      <element name="MakeMinMax.i2">
+        <short>Receives the maximum value of both variables.</short>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="CalculateLeftTopWidthHeight">
+        <short>Converts coordinates into kind of a rectangle with positive Width and Height.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="CalculateLeftTopWidthHeight.X1">
+        <short/>
+      </element>
+      <element name="CalculateLeftTopWidthHeight.Y1">
+        <short/>
+      </element>
+      <element name="CalculateLeftTopWidthHeight.X2">
+        <short/>
+      </element>
+      <element name="CalculateLeftTopWidthHeight.Y2">
+        <short/>
+      </element>
+      <element name="CalculateLeftTopWidthHeight.Left">
+        <short/>
+      </element>
+      <element name="CalculateLeftTopWidthHeight.Top">
+        <short/>
+      </element>
+      <element name="CalculateLeftTopWidthHeight.Width">
+        <short/>
+      </element>
+      <element name="CalculateLeftTopWidthHeight.Height">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="DeleteAmpersands">
+        <short>Replaces all '&amp;x' with 'x',
+          and returns the position of the first adjusted letter in the resulting string.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="DeleteAmpersands.Result">
+        <short>Position of the first adjusted non-ampersand letter.
+        </short>
+      </element>
+      <element name="DeleteAmpersands.Str">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="BreakString">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="BreakString.Result">
+        <short/>
+      </element>
+      <element name="BreakString.s">
+        <short/>
+      </element>
+      <element name="BreakString.MaxLineLength">
+        <short/>
+      </element>
+      <element name="BreakString.Indent">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="ComparePointers">
+        <short>Compares two pointers, returning the Sign of the difference.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="ComparePointers.Result">
+        <short>+1 if p1 is higher than p2, -1 if p2 is higher than p1, 0 if both are equal.
+        </short>
+      </element>
+      <element name="ComparePointers.p1">
+        <short/>
+      </element>
+      <element name="ComparePointers.p2">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CompareHandles">
+        <short>Compares two Handles, returning the Sign of the difference.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="CompareHandles.Result">
+        <short/>
+      </element>
+      <element name="CompareHandles.h1">
+        <short/>
+      </element>
+      <element name="CompareHandles.h2">
+        <short/>
+      </element>
+     <!-- function Visibility: default -->
+      <element name="CompareLCLHandles">
+        <short>Compares two LCLHandles, returning the Sign of the difference.</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="CompareLCLHandles.Result">
+        <short/>
+      </element>
+      <element name="CompareLCLHandles.h1">
+        <short/>
+      </element>
+      <element name="CompareLCLHandles.h2">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CompareRect">
+        <short>Returns True when the two rectangles are equal.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="CompareRect.Result">
+        <short/>
+      </element>
+      <element name="CompareRect.R1">
+        <short/>
+      </element>
+      <element name="CompareRect.R2">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="ComparePoints">
+        <short>Compares the coordinates (y first) and returns the Sign of the difference.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="ComparePoints.Result">
+        <short/>
+      </element>
+      <element name="ComparePoints.p1">
+        <short/>
+      </element>
+      <element name="ComparePoints.p2">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CompareMethods">
+        <short>Returns true when both method references are equal.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="CompareMethods.Result">
+        <short/>
+      </element>
+      <element name="CompareMethods.m1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CompareMethods.m2">
+      <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="RoundToInt">
+        <short>Returns the rounded value as an Integer.</short>
+        <descr/>
+        <errors>
+        </errors>
+        <seealso/>
+      <notes><note>What if the result exceeds the Integer range?</note>
+        </notes>
+      </element>
+      <element name="RoundToInt.Result">
+        <short/>
+      </element>
+      <element name="RoundToInt.e">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="RoundToCardinal">
+        <short>Returns the rounded value as an Cardinal.</short>
+        <descr/>
+        <errors>
+        </errors>
+        <seealso/>
+      <notes><note>What if the result exceeds the Cardinal range?</note>
+        </notes>
+      </element>
+      <element name="RoundToCardinal.Result">
+        <short/>
+      </element>
+      <element name="RoundToCardinal.e">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="TruncToInt">
+        <short>Returns the truncated value as an Integer.</short>
+        <descr/>
+        <errors>
+        </errors>
+        <seealso/>
+      <notes><note>What if the result exceeds the Integer range?</note>
+        </notes>
+      </element>
+      <element name="TruncToInt.Result">
+        <short/>
+      </element>
+      <element name="TruncToInt.e">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="TruncToCardinal">
+        <short>Returns the rounded value as an Cardinal.</short>
+        <descr/>
+        <errors>
+        </errors>
+        <seealso/>
+      <notes><note>What if the result exceeds the Cardinal range?</note>
+        </notes>
+      </element>
+      <element name="TruncToCardinal.Result">
+        <short/>
+      </element>
+      <element name="TruncToCardinal.e">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="StrToDouble">
+        <short>Converts an numeric string into an Double value.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="StrToDouble.Result">
+        <short/>
+      </element>
+      <element name="StrToDouble.s">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="RaiseGDBException">
+        <short>Raises an exception.</short>
+        <descr>Normally, GDB does not catch fpc Exception objects,
+          therefore this procedure raises a standard divide by zero exception
+          which is catched by GDB.
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="RaiseGDBException.Msg">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="RaiseAndCatchException">
+        <short/>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="DumpExceptionBackTrace">
+        <short/>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="DumpStack">
+        <short/>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="GetStackTrace">
+        <short/>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="GetStackTrace.Result">
+        <short/>
+      </element>
+      <element name="GetStackTrace.UseCache">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="GetStackTracePointers">
+        <short/>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="GetStackTracePointers.AStack">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="StackTraceAsString">
+        <short/>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="StackTraceAsString.Result">
+        <short/>
+      </element>
+      <element name="StackTraceAsString.AStack">
+        <short/>
+      </element>
+      <element name="StackTraceAsString.UseCache">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="GetLineInfo">
+        <short/>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="GetLineInfo.Result">
+        <short/>
+      </element>
+      <element name="GetLineInfo.Addr">
+        <short/>
+      </element>
+      <element name="GetLineInfo.UseCache">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="DebugLn">
+        <short>Writes a number of strings (heavily overloaded) to the debug output</short>
+        <errors/>
+        <seealso/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="DebugLn.S">
+        <short>A single string, or a Format string when followed by an argument list.
+        </short>
+      </element>
+      <element name="DebugLn.Args">
+        <short>Writes the formatted dump of the typed arguments.</short>
+      </element>
+      <element name="DebugLn.s1">
+        <short/>
+      </element>
+      <element name="DebugLn.s2">
+        <short/>
+      </element>
+      <element name="DebugLn.s3">
+        <short/>
+      </element>
+      <element name="DebugLn.s4">
+        <short/>
+      </element>
+      <element name="DebugLn.s5">
+        <short/>
+      </element>
+      <element name="DebugLn.s6">
+        <short/>
+      </element>
+      <element name="DebugLn.s7">
+        <short/>
+      </element>
+      <element name="DebugLn.s8">
+        <short/>
+      </element>
+      <element name="DebugLn.s9">
+        <short/>
+      </element>
+      <element name="DebugLn.s10">
+        <short/>
+      </element>
+      <element name="DebugLn.s11">
+        <short/>
+      </element>
+      <element name="DebugLn.s12">
+        <short/>
+      </element>
+      <element name="DebugLn.s13">
+        <short/>
+      </element>
+      <element name="DebugLn.s14">
+        <short/>
+      </element>
+      <element name="DebugLn.s15">
+        <short/>
+      </element>
+      <element name="DebugLn.s16">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="DebugLnEnter">
+        <short/>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="DebugLnEnter.s">
+        <short/>
+      </element>
+      <element name="DebugLnEnter.Args">
+        <short/>
+      </element>
+      <element name="DebugLnEnter.s1"/>
+      <element name="DebugLnEnter.s2"/>
+      <element name="DebugLnEnter.s3"/>
+      <element name="DebugLnEnter.s4"/>
+      <element name="DebugLnEnter.s5"/>
+      <element name="DebugLnEnter.s6"/>
+      <element name="DebugLnEnter.s7"/>
+      <element name="DebugLnEnter.s8"/>
+      <element name="DebugLnEnter.s9"/>
+      <element name="DebugLnEnter.s10"/>
+      <element name="DebugLnEnter.s11"/>
+      <element name="DebugLnEnter.s12"/>
+      <element name="DebugLnEnter.s13"/>
+      <element name="DebugLnEnter.s14"/>
+      <element name="DebugLnEnter.s15"/>
+      <element name="DebugLnEnter.s16"/>
+      <element name="DebugLnEnter.s17"/>
+      <element name="DebugLnEnter.s18"/>
+      <!-- procedure Visibility: default -->
+      <element name="DebugLnExit">
+        <short/>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="DebugLnExit.s">
+        <short/>
+      </element>
+      <element name="DebugLnExit.Args">
+        <short/>
+      </element>
+      <element name="DebugLnExit.s1"/>
+      <element name="DebugLnExit.s2"/>
+      <element name="DebugLnExit.s3"/>
+      <element name="DebugLnExit.s4"/>
+      <element name="DebugLnExit.s5"/>
+      <element name="DebugLnExit.s6"/>
+      <element name="DebugLnExit.s7"/>
+      <element name="DebugLnExit.s8"/>
+      <element name="DebugLnExit.s9"/>
+      <element name="DebugLnExit.s10"/>
+      <element name="DebugLnExit.s11"/>
+      <element name="DebugLnExit.s12"/>
+      <element name="DebugLnExit.s13"/>
+      <element name="DebugLnExit.s14"/>
+      <element name="DebugLnExit.s15"/>
+      <element name="DebugLnExit.s16"/>
+      <element name="DebugLnExit.s17"/>
+      <element name="DebugLnExit.s18"/>
+      <!-- function Visibility: default -->
+      <element name="ConvertLineEndings">
+        <short>Converts all line endings in a string into platform LineEnding.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="ConvertLineEndings.Result">
+        <short/>
+      </element>
+      <element name="ConvertLineEndings.s">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="DbgOut">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="DbgOut.s">
+        <short/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="DbgOut.Args">
+        <short/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="DbgOut.s1"/>
+      <element name="DbgOut.s2"/>
+      <element name="DbgOut.s3"/>
+      <element name="DbgOut.s4"/>
+      <element name="DbgOut.s5"/>
+      <element name="DbgOut.s6"/>
+      <element name="DbgOut.s7"/>
+      <element name="DbgOut.s8"/>
+      <element name="DbgOut.s9"/>
+      <element name="DbgOut.s10"/>
+      <element name="DbgOut.s11"/>
+      <element name="DbgOut.s12"/>
+      <!-- function Visibility: default -->
+      <element name="DbgS">
+        <short>Formats debug output for various argument types (overloaded).</short>
+        <descr>
+          <ul>
+            <li>boolean: "True" or "False".
+            </li><li>pointer: hexidecimal address.
+            </li><li>TRect, TPoint: shows the x/y coordinates.
+            </li><li>TComponentState: set.
+            </li><li>TObject: Name:ClassName.
+            </li><li>TClass: ClassName.
+            </li><li>string, WideString: chars &gt; #126 are translated into #nn (#nnnn) format.
+            </li>
+          </ul>
+        </descr>
+        <errors>""
+        </errors>
+        <seealso/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="DbgS.Result">
+        <short/>
+      </element>
+      <element name="DbgS.s">
+        <short/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="DbgS.q">
+        <short/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="DbgS.MaxDecimals">
+        <short/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="DbgS.m">
+        <short/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="DbgS.c">
+        <short/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="DbgS.i">
+        <short/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="DbgS.r">
+        <short/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="DbgS.p">
+        <short/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="DbgS.e">
+        <short/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="DbgS.b">
+        <short/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="DbgS.Shift">
+        <short/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="DbgS.i1">
+        <short/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="DbgS.i2">
+        <short/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="DbgS.i3">
+        <short/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="DbgS.i4">
+        <short/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="DbgS.ASize">
+        <short/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="DbgS.ATM">
+        <short/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="DbgS.AScrollInfo">
+        <short/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="DbgSName">
+        <short>Returns the component or class name.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="DbgSName.Result">
+        <short/>
+      </element>
+      <element name="DbgSName.p">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="DbgStr">
+        <short>Converts control characters or above #126 into #hex format.
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="DbgStr.Result">
+        <short/>
+      </element>
+      <element name="DbgStr.StringWithSpecialChars">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="DbgWideStr">
+        <short>Converts control characters or above #126 into #hex format.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="DbgWideStr.Result">
+        <short/>
+      </element>
+      <element name="DbgWideStr.StringWithSpecialChars">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="dbgMemRange">
+        <short>Provides an hex dump of a memory section.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="dbgMemRange.Result">
+        <short>The formatted dump.</short>
+      </element>
+      <element name="dbgMemRange.P">
+        <short>The start address.</short>
+      </element>
+      <element name="dbgMemRange.Count">
+        <short>The number of bytes to dump.</short>
+      </element>
+      <element name="dbgMemRange.Width">
+        <short>The number of bytes per line, zero for no line breaks.</short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="dbgMemStream">
+        <short>Provides an hex dump of an memory stream.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+          <p>
+            The dump starts at the <b>current</b> stream position,
+            the position moves to the end of the dumped range.
+          </p>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="dbgMemStream.Result">
+        <short/>
+      </element>
+      <element name="dbgMemStream.MemStream">
+        <short/>
+      </element>
+      <element name="dbgMemStream.Count">
+        <short>The maximum number of bytes to dump.</short>
+      </element>
+
+      <!-- function Visibility: default -->
+      <element name="dbgObjMem">
+        <short>Provides an hex dump of an TObject.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="dbgObjMem.Result">
+        <short/>
+      </element>
+      <element name="dbgObjMem.AnObject">
+        <short/>
+      </element>
+
+      <!-- function Visibility: default -->
+      <element name="dbghex">
+        <short>Provides an hex dump of an Int64, (sign + absolute value).
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="dbghex.Result">
+        <short/>
+      </element>
+      <element name="dbghex.i">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="DbgSWindowPosFlags">
+        <short>Provides an dump of SetWindowPosition flags.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="DbgSWindowPosFlags.Result">
+        <short/>
+      </element>
+      <element name="DbgSWindowPosFlags.Flags">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="DbgsVKCode">
+        <short>Translates an virtual key code into its VK_... name.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="DbgsVKCode.Result">
+        <short/>
+      </element>
+      <element name="DbgsVKCode.c">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="DbgOutThreadLog">
+        <short/>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="DbgOutThreadLog.Msg">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="DebuglnThreadLog">
+        <short/>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="DebuglnThreadLog.Msg">
+        <short/>
+      </element>
+      <element name="DebuglnThreadLog.Args">
+        <short/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="DbgSaveData">
+        <short>Writes data into an file</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="DbgSaveData.FileName">
+        <short/>
+      </element>
+      <element name="DbgSaveData.AData">
+        <short/>
+      </element>
+      <element name="DbgSaveData.ADataSize">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="DbgAppendToFile">
+        <short>Appends a line to the given file</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="DbgAppendToFile.FileName">
+        <short/>
+      </element>
+      <element name="DbgAppendToFile.S">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="DbgAppendToFileWithoutLn">
+        <short>Appends (preformatted) text to an file</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="DbgAppendToFileWithoutLn.FileName">
+        <short/>
+      </element>
+      <element name="DbgAppendToFileWithoutLn.S">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="CloseDebugOutput">
+        <short/>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="StripLN">
+        <short>Strips everything after (and including) an CR or LF.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>???</note>
+        </notes>
+      </element>
+      <element name="StripLN.Result">
+        <short/>
+      </element>
+      <element name="StripLN.ALine">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="GetPart">
+        <short/>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="GetPart.Result">
+        <short/>
+      </element>
+      <element name="GetPart.ASkipTo">
+        <short/>
+      </element>
+      <element name="GetPart.AnEnd">
+        <short/>
+      </element>
+      <element name="GetPart.ASource">
+        <short/>
+      </element>
+      <element name="GetPart.AnIgnoreCase">
+        <short/>
+      </element>
+      <element name="GetPart.AnUpdateSource">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="TextToSingleLine">
+        <short>Compresses multi-line text into a single line.
+        </short>
+        <descr>
+          <pre>
+  Ensures the covenient look of multiline string
+  when displaying it in the single line
+  * Replaces CR and LF with spaces
+  * Removes duplicate spaces
+          </pre>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TextToSingleLine.Result">
+        <short/>
+      </element>
+      <element name="TextToSingleLine.AText">
+        <short/>
+      </element>
+      <element name="SwapCase">
+        <short>Toggles the case of all ASCII characters in an string.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="SwapCase.Result">
+        <short/>
+      </element>
+      <element name="SwapCase.S">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="StringCase">
+        <short/>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="StringCase.Result">
+        <short/>
+      </element>
+      <element name="StringCase.AString">
+        <short/>
+      </element>
+      <element name="StringCase.ACase">
+        <short/>
+      </element>
+      <element name="StringCase.AIgnoreCase">
+        <short/>
+      </element>
+      <element name="StringCase.APartial">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="ClassCase">
+        <short/>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="ClassCase.Result">
+        <short/>
+      </element>
+      <element name="ClassCase.AClass">
+        <short/>
+      </element>
+      <element name="ClassCase.ACase">
+        <short/>
+      </element>
+      <element name="ClassCase.ADecendant">
+        <short/>
+      </element>
+      <!-- "type" alias type Visibility: default -->
+      <element name="UTF16String">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PUTF16String" link="UTF16String">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="UTF8CharacterLength">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="UTF8CharacterLength.Result">
+        <short/>
+      </element>
+      <element name="UTF8CharacterLength.p">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="UTF8Length">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="UTF8Length.Result">
+        <short/>
+      </element>
+      <element name="UTF8Length.s">
+        <short/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="UTF8Length.p">
+        <short/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="UTF8Length.ByteCount">
+        <short/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="UTF8CharacterToUnicode">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="UTF8CharacterToUnicode.Result">
+        <short/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="UTF8CharacterToUnicode.p">
+        <short/>
+      </element>
+      <element name="UTF8CharacterToUnicode.CharLen">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="UnicodeToUTF8">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="UnicodeToUTF8.Result">
+        <short/>
+      </element>
+      <element name="UnicodeToUTF8.u">
+        <short/>
+      </element>
+      <element name="UnicodeToUTF8.Buf">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="UnicodeToUTF8SkipErrors">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="UnicodeToUTF8SkipErrors.Result">
+        <short/>
+      </element>
+      <element name="UnicodeToUTF8SkipErrors.u">
+        <short/>
+      </element>
+      <element name="UnicodeToUTF8SkipErrors.Buf">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="UTF8ToDoubleByteString">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="UTF8ToDoubleByteString.Result">
+        <short/>
+      </element>
+      <element name="UTF8ToDoubleByteString.s">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="UTF8ToDoubleByte">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="UTF8ToDoubleByte.Result">
+        <short/>
+      </element>
+      <element name="UTF8ToDoubleByte.UTF8Str">
+        <short/>
+      </element>
+      <element name="UTF8ToDoubleByte.Len">
+        <short/>
+      </element>
+      <element name="UTF8ToDoubleByte.DBStr">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="UTF8FindNearestCharStart">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="UTF8FindNearestCharStart.Result">
+        <short/>
+      </element>
+      <element name="UTF8FindNearestCharStart.UTF8Str">
+        <short/>
+      </element>
+      <element name="UTF8FindNearestCharStart.Len">
+        <short/>
+      </element>
+      <element name="UTF8FindNearestCharStart.BytePos">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="UTF8CharStart">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="UTF8CharStart.Result">
+        <short/>
+      </element>
+      <element name="UTF8CharStart.UTF8Str">
+        <short/>
+      </element>
+      <element name="UTF8CharStart.Len">
+        <short/>
+      </element>
+      <element name="UTF8CharStart.CharIndex">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="UTF8CharToByteIndex">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+      <descr>
+      </descr>
+      <errors>
+      </errors>
+      <seealso>
+      </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="UTF8CharToByteIndex.Result">
+       <short/>
+      </element>
+      <element name="UTF8CharToByteIndex.UTF8Str">
+        <short/>
+      </element>
+      <element name="UTF8CharToByteIndex.Len">
+        <short/>
+      </element>
+      <element name="UTF8CharToByteIndex.CharIndex">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="UTF8FixBroken">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="UTF8FixBroken.P">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="UTF8CharacterStrictLength">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="UTF8CharacterStrictLength.Result">
+        <short/>
+      </element>
+      <element name="UTF8CharacterStrictLength.P">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="UTF8CStringToUTF8String">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="UTF8CStringToUTF8String.Result">
+        <short/>
+      </element>
+      <element name="UTF8CStringToUTF8String.SourceStart">
+        <short/>
+      </element>
+      <element name="UTF8CStringToUTF8String.SourceLen">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="UTF8Pos">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="UTF8Pos.Result">
+        <short/>
+      </element>
+      <element name="UTF8Pos.SearchForText">
+        <short/>
+      </element>
+      <element name="UTF8Pos.SearchInText">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="UTF8Copy">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="UTF8Copy.Result">
+        <short/>
+      </element>
+      <element name="UTF8Copy.s">
+        <short/>
+      </element>
+      <element name="UTF8Copy.StartCharIndex">
+        <short/>
+      </element>
+      <element name="UTF8Copy.CharCount">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="UTF8Delete">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="UTF8Delete.s">
+        <short/>
+      </element>
+      <element name="UTF8Delete.StartCharIndex">
+        <short/>
+      </element>
+      <element name="UTF8Delete.CharCount">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="UTF8Insert">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="UTF8Insert.source">
+        <short/>
+      </element>
+      <element name="UTF8Insert.s">
+        <short/>
+      </element>
+      <element name="UTF8Insert.StartCharIndex">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="UTF8LowerCase">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="UTF8LowerCase.Result">
+        <short/>
+      </element>
+      <element name="UTF8LowerCase.s">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="UTF8UpperCase">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="UTF8UpperCase.Result">
+        <short/>
+      </element>
+      <element name="UTF8UpperCase.s">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="FindInvalidUTF8Character">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="FindInvalidUTF8Character.Result">
+        <short/>
+      </element>
+      <element name="FindInvalidUTF8Character.p">
+        <short/>
+      </element>
+      <element name="FindInvalidUTF8Character.Count">
+        <short/>
+      </element>
+      <element name="FindInvalidUTF8Character.StopOnNonASCII">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="ValidUTF8String">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="ValidUTF8String.Result">
+        <short/>
+      </element>
+      <element name="ValidUTF8String.s">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="AssignUTF8ListToAnsi">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="AssignUTF8ListToAnsi.UTF8List">
+        <short/>
+      </element>
+      <element name="AssignUTF8ListToAnsi.AnsiList">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="UTF16CharacterLength">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="UTF16CharacterLength.Result">
+        <short/>
+      </element>
+      <element name="UTF16CharacterLength.p">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="UTF16Length">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="UTF16Length.Result">
+        <short/>
+      </element>
+      <element name="UTF16Length.s">
+        <short/>
+      </element>
+      <element name="UTF16Length.p">
+        <short/>
+      </element>
+      <element name="UTF16Length.WordCount">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="UTF16CharacterToUnicode">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="UTF16CharacterToUnicode.Result">
+        <short/>
+      </element>
+      <element name="UTF16CharacterToUnicode.p">
+        <short/>
+      </element>
+      <element name="UTF16CharacterToUnicode.CharLen">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="UnicodeToUTF16">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="UnicodeToUTF16.Result">
+        <short/>
+      </element>
+      <element name="UnicodeToUTF16.u">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="UTF8CompareStr">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="UTF8CompareStr.Result">
+        <short/>
+      </element>
+      <element name="UTF8CompareStr.S1">
+        <short/>
+      </element>
+      <element name="UTF8CompareStr.S2">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="UTF8CompareText">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="UTF8CompareText.Result">
+        <short/>
+      </element>
+      <element name="UTF8CompareText.S1">
+        <short/>
+      </element>
+      <element name="UTF8CompareText.S2">
+        <short/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="TConvertResult">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="TConvertOption">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="TConvertOptions">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="ConvertUTF8ToUTF16">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="ConvertUTF8ToUTF16.Result">
+        <short/>
+      </element>
+      <element name="ConvertUTF8ToUTF16.Dest">
+        <short/>
+      </element>
+      <element name="ConvertUTF8ToUTF16.DestWideCharCount">
+        <short/>
+      </element>
+      <element name="ConvertUTF8ToUTF16.Src">
+        <short/>
+      </element>
+      <element name="ConvertUTF8ToUTF16.SrcCharCount">
+        <short/>
+      </element>
+      <element name="ConvertUTF8ToUTF16.Options">
+        <short/>
+      </element>
+      <element name="ConvertUTF8ToUTF16.ActualWideCharCount">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="ConvertUTF16ToUTF8">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="ConvertUTF16ToUTF8.Result">
+        <short/>
+      </element>
+      <element name="ConvertUTF16ToUTF8.Dest">
+        <short/>
+      </element>
+      <element name="ConvertUTF16ToUTF8.DestCharCount">
+        <short/>
+      </element>
+      <element name="ConvertUTF16ToUTF8.Src">
+        <short/>
+      </element>
+      <element name="ConvertUTF16ToUTF8.SrcWideCharCount">
+        <short/>
+      </element>
+      <element name="ConvertUTF16ToUTF8.Options">
+        <short/>
+      </element>
+      <element name="ConvertUTF16ToUTF8.ActualCharCount">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="UTF8ToUTF16">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="UTF8ToUTF16.Result">
+        <short/>
+      </element>
+      <element name="UTF8ToUTF16.S">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="UTF16ToUTF8">
+        <short>Replaces last digits with a decimal number one higher</short>
+        <descr>For example Name21 becomes Name22.</descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="UTF16ToUTF8.Result">
+        <short/>
+      </element>
+      <element name="UTF16ToUTF8.S">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="LCLGetLanguageIDs">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="LCLGetLanguageIDs.Lang">
+        <short/>
+      </element>
+      <element name="LCLGetLanguageIDs.FallbackLang">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CreateFirstIdentifier">
+        <short>Replaces last digits with 1</short>
+        <descr>For example Name321 becomes Name1</descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="CreateFirstIdentifier.Result">
+        <short/>
+      </element>
+      <element name="CreateFirstIdentifier.Identifier">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CreateNextIdentifier">
+        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <element name="CreateNextIdentifier.Result">
+        <short/>
+      </element>
+      <element name="CreateNextIdentifier.Identifier">
+        <short/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="DebugLnMaxNestPrefixLen">
+        <short/>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="DebugLnNestLvlIndent">
+        <short/>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="DebugText">
+        <short/>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      <notes><note>?</note>
+        </notes>
+      </element>
+    </module>
+    <!-- LCLProc -->
+  </package>
+</fpdoc-descriptions>

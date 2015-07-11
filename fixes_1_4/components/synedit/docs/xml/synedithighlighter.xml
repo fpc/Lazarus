@@ -1,0 +1,207 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="SynEdit">
+    <module name="SynEditHighlighter">
+      <element name="TSynCustomHighlighter.SetRange">
+        <short>Set the working copy of the state that the Highlighter will use to start processing the next line</short>
+        <descr>
+          <p>SetRange sets the range (state) that the Highlighter will use to start processing the next line. SetRange sets the working copy of the state, which can be modified when the line is processed. SetRange must be done before the Line itself is set via <link id="TSynCustomHighlighter.SetLine">SetLine(LineNumber)</link>.  Both can be done together using <link id="TSynCustomHighlighter.StartAtLineIndex">StartAtLineIndex</link>
+          </p>
+          <p>
+            <b>About Ranges</b>
+          </p>
+          <p>Range is the name for the state of the Highlighter at the end of any line of text. For every line in the text one range is stored. Since the range represents the state at the end of Line, it can be used as start value for the next line. The Range at the beginning of the first line is fixed (hard-coded by <link id="TSynCustomHighlighter.ResetRange">ResetRange</link>).
+ </p>
+          <p>Ranges are stored on the SynEdit's Lines (<link id="TSynCustomHighlighter.CurrentLines">CurrentLines</link>) together with the text to which they belong to. The Ranges them self are stored in a <link id="TSynHighlighterRangeList">TSynHighlighterRangeList</link>, which can be accessed via <link id="TSynCustomHighlighter.CurrentRanges">CurrentRanges</link>.
+          </p>
+          <p>A range can be of any type. Common types are: enum, set, or Objects of the class <link id="TSynCustomHighlighterRange">TSynCustomHighlighterRange</link>. If the state is an object, then the stored instance (on CurrentRanges) may be shared between all lines with the same range. Such a shared stored range must not be modified while any single of the lines referring to it is processed. To archive this SetRange must assign (copy) the value of the shared Range object to a working instance.
+</p>
+          <p>Ranges are needed because Highlighting works per line.  SynEdit can ask the highlighter for information about any line at any time. They help avoiding time consuming scans of previous lines to find the correct state for the requested line. A Range could for example indicate, that a line is inside a multi-line comment. Without the range information, the Highlighter may have to pares back many hundreds of lines to see if any line contains an opening multi-line comment.
+</p>
+          <ul>
+            <li>For more about how they are stored see <link id="TSynCustomHighlighter.CurrentRanges">CurrentRanges</link> and  <link id="TSynHighlighterRangeList">TSynHighlighterRangeList</link>
+            </li>
+          </ul>
+        </descr>
+        <seealso>
+          <link id="TSynCustomHighlighter.ResetRange">ResetRange</link>
+          <link id="TSynCustomHighlighter.GetRange">GetRange</link>
+        </seealso>
+      </element>
+      <element name="TSynCustomHighlighter.ResetRange">
+        <seealso>
+          <link id="TSynCustomHighlighter.SetRange">SetRange</link>
+          <link id="TSynCustomHighlighter.GetRange">GetRange</link>
+        </seealso>
+        <short>Reset the working copy of the state that the Highlighter will use to start processing the next line</short>
+        <descr>
+          <p>Reset the working copy of the state that the Highlighter will use to start processing the next line. ResetRange is used to set the state for the first Line in the text. The first line always has the same state, since there are no previous lines, which could have altered it. 
+</p>
+          <ul>
+            <li>For more about ranges see <link id="TSynCustomHighlighter.SetRange">SetRange</link>
+            </li>
+          </ul>
+        </descr>
+      </element>
+      <element name="TSynCustomHighlighter.GetRange">
+        <descr>
+          <p>Get the state of the Highlighter after processing a line.</p>
+          <p>The value returned by GetRange can be stored on the SynEdit's Lines. It can later be used a start value for parsing the next line. If the next line is parsed immediately then the range can be kept (SetRange can be skipped)</p>
+          <p>If the Range is an object (or other pointer type) then GetRange must return a copy of the object. Otherwise modifications made to the working range while processing the next line, would also affect the stored Range. The stored copy of the Range must be treated as immutable.
+If the Highlighter uses objects for ranges, it may use an instance of <link id="TSynCustomHighlighterRanges">TSynCustomHighlighterRanges</link> to keep track of them. This allows GetRange to look for an existing copy of a range with the same data, before creating a new instance to provide the store-able copy</p>
+          <ul>
+            <li>For more about ranges see <link id="TSynCustomHighlighter.SetRange">SetRange</link>
+            </li>
+          </ul>
+        </descr>
+        <short>Get the working copy of the state of the Highlighter after processing a line.</short>
+        <seealso>
+          <link id="TSynCustomHighlighter.SetRange">SetRange</link>
+          <link id="TSynCustomHighlighter.ResetRange">ResetRange</link>
+        </seealso>
+      </element>
+      <element name="TSynHighlighterRangeList">
+        <short>List to hold the Highlighter's Ranges (state at the end of each line). </short>
+        <seealso>
+          <link id="TSynCustomHighlighter.CurrentRanges">TSynCustomHighlighter.CurrentRanges</link>
+          <link id="TSynCustomHighlighter.SetRange">TSynCustomHighlighter.SetRange</link>
+          <link id="TSynCustomHighlighter.GetRange">TSynCustomHighlighter.GetRange</link>
+        </seealso>
+        <descr>
+          <p>List to hold the Highlighter's Ranges </p>
+          <p>This list provides storage for a pointer sized item for each Line of text. The pointer size allows one to store the most common forms of Ranges (set, enum, object).  A Highlighter can use a subclass of this, which could provide memory for other form of ranges (Records or several values)</p>
+          <p>The List is not permanently stored on the Highlighter, as one list is needed for  each SynEdit using the Highlighter. The list is stored on the Lines of each SynEdit. The size of the list is maintained by SynEdit's Lines (see <link id="TSynEditStringList.Ranges">TSynEditStringList.Ranges</link>). SynEdit's Line also take care of keeping the list in sync with the text lines, by inserting and deleting entries whenever text-lines are inserted or deleted. Changes to text Lines are reported to the Highlighters ScanFrom method and updated from there</p>
+          <ul>
+            <li>For more about ranges see <link id="TSynCustomHighlighter.SetRange">TSynCustomHighlighter.SetRange</link>
+            </li>
+            <li>For more about how they are stored and accessed see <link id="TSynCustomHighlighter.CurrentRanges">TSynCustomHighlighter.CurrentRanges</link> and <link id="TSynCustomHighlighter.AttachToLines">TSynCustomHighlighter.AttachToLines</link>
+            </li>
+          </ul>
+        </descr>
+      </element>
+      <element name="TSynHighlighterRangeList.ItemSize">
+        <short>The Size (in Bytes) of one Range. [SizeOf(Pointer)]</short>
+        <descr>
+          <p>The Size (in Bytes) of one Range. </p>
+          <p>The default Size of a range is SizeOf(Pointer), which allows one to store the most common forms of Ranges (set, enum, object). </p>
+          <ul>
+            <li>For more about ranges see <link id="TSynCustomHighlighter.SetRange">TSynCustomHighlighter.SetRange</link>
+            </li>
+          </ul>
+        </descr>
+        <seealso>
+          <link id="TSynHighlighterRangeList">TSynHighlighterRangeList</link>
+        </seealso>
+      </element>
+      <element name="TSynHighlighterRangeList.Range">
+        <descr>
+          <p>Get/Set the Range for a line</p>
+          <p>The range is simply stored or retrieved to/from the List without performing any action on it</p>
+          <ul>
+            <li>For more about ranges see <link id="TSynCustomHighlighter.SetRange">TSynCustomHighlighter.SetRange</link>
+            </li>
+          </ul>
+        </descr>
+        <short>Get/Set the Range for a line</short>
+        <seealso>
+          <link id="TSynHighlighterRangeList">TSynHighlighterRangeList</link>
+          <link id="TSynCustomHighlighter.SetRange">TSynCustomHighlighter.SetRange</link>
+          <link id="TSynCustomHighlighter.GetRange">TSynCustomHighlighter.GetRange</link>
+        </seealso>
+      </element>
+      <element name="TSynCustomHighlighter">
+        <short>Baseclass for Highlighter (content specific highlighting and folding)</short>
+        <descr>
+          <p>Baseclass for Highlighter </p>
+          <p>Highlighter provide content specific information. (such as highlighting elements of a language or an XML document). Highlighter can also provide information about fold-able sections and matching opening/closing keyword pairs (word brackets)
+</p>
+          <p>All highlighting is stateless. That is highlighting happens only according to the current text. It does not depend on any previous version of the text nor on any edit-actions that lead to the current text</p>
+          <p>One instance of a highlighter can be used by any amount of SynEdits.
+As a result of this:
+</p>
+          <ul>
+            <li>No Highlighter Instance has a (fixed) reference to the SynEdit. </li>
+            <li>All data for the Highlighter is (and must be) stored on the SynEdit (actually on the TextBuffer of SynEdit (referred to as "Lines")).  </li>
+          </ul>
+          <p>In order for a highlighter to access and store data related to a SynEdit, each SynEdit will set <link id="TSynCustomHighlighter.CurrentLines">CurrentLines</link> to the SynEdit's Lines. The highlighter only has access to the Lines, not to the SynEdit itself. For an example how a highlighter can store information on the SynEdit's Lines see <link id="TSynCustomHighlighter.AttachToLines">AttachToLines</link>
+          </p>
+        </descr>
+      </element>
+      <element name="TSynCustomHighlighter.DefaultFilter">
+        <short>Not used by SynEdit/Highligher / provided for the IDE only</short>
+        <descr>
+          <p>This field has no functionality within the SynEdit package.
+It is used by the IDE to store file extensions for which the highlighter should be applied.</p>
+        </descr>
+      </element>
+      <element name="TSynCustomHighlighter.CurrentLines">
+        <short>Temporary reference to the Lines object of a SynEdit. Set by each SynEdit before calling any methods of the Highlighter</short>
+        <descr>
+          <p>Temporary reference to the Lines object of a SynEdit.</p>
+          <p>Because a single instance of a highlighter can be used by many SynEdits, the Highlighter does not have a fixed reference to any SynEdit or their Lines.
+Before a SynEdit calls any method of the Highlighter, it must set this Property to the it's own Lines. The highlighter only has access to the Lines, not to the SynEdit itself.
+</p>
+          <p>When setting this property, the Highlighter also initializes it's <link id="TSynCustomHighlighter.CurrentRanges">CurrentRanges</link> to the <link id="TSynHighlighterRangeList">TSynHighlighterRangeList</link> stored on the SynEdit's Lines.
+</p>
+        </descr>
+        <seealso>
+          <link id="TSynCustomHighlighter.AttachToLines">AttachToLines</link>
+          <link id="TSynCustomHighlighter.DetachFromLines">DetachFromLines</link>
+        </seealso>
+      </element>
+      <element name="TSynCustomHighlighter.AttachToLines">
+        <short>Initialize the Lines of a SynEdit for being used by this Highlighter. Called when the Highligher is set to the SynEdit</short>
+        <descr>
+          <p>Initialize the Lines of a SynEdit for being used by this Highlighter.</p>
+          <p>Because a single instance of a Highlighter can be used by many SynEdits, the Highlighter does not store any data itself.
+The Highlighter stores all relevant data for each SynEdit in a <link id="TSynHighlighterRangeList">TSynHighlighterRangeList</link>. This List is kept on the Synedit's Lines.
+Before a SynEdit can use a Highlighter (when the Highlighter is set to the SynEdit), it must call AttachToLines.  The Highlighter can then set it's rangelist the SynEdit's Lines.
+</p>
+        </descr>
+        <seealso>
+          <link id="TSynCustomHighlighter.DetachFromLines">DetachFromLines</link>
+          <link id="TSynCustomHighlighter.CurrentLines">CurrentLines</link>
+          <link id="TSynCustomHighlighter.CurrentRanges">CurrentRanges</link>
+          <link id="synedittextbuffer.TSynEditStringMemory.RangeList">TSynEditStringMemory.RangeList</link>
+        </seealso>
+      </element>
+      <element name="TSynCustomHighlighter.DetachFromLines">
+        <short>Removes any of the Highlighter's data from the Lines of a SynEdit. Called when the Highligher is removed from SynEdit</short>
+        <descr>
+          <p>Removes any of the Highlighter's data from the Lines of a SynEdit.</p>
+          <p>Before a Highlighter is first used by a SynEdit it attaches it's own data to the SynEdit's Lines (see <link id="TSynCustomHighlighter.AttachToLines">AttachToLines</link>). When the Highlighter is no longer used by the SynEdit, DetachFromLines is called in order to clean up</p>
+        </descr>
+        <seealso>
+          <link id="TSynCustomHighlighter.AttachToLines">AttachToLines</link>
+          <link id="TSynCustomHighlighter.CurrentLines">CurrentLines</link>
+          <link id="TSynCustomHighlighter.CurrentRanges">CurrentRanges</link>
+          <link id="synedittextbuffer.TSynEditStringMemory.RangeList">TSynEditStringMemory.RangeList</link>
+        </seealso>
+      </element>
+      <element name="TSynCustomHighlighter.CurrentRanges">
+        <short>Temporary reference to the <link id="TSynHighlighterRangeList">Range-List</link> for the <link id="TSynCustomHighlighter.CurrentLines">CurrentLines</link>
+        </short>
+        <descr>
+          <p>Temporary reference to the <link id="TSynHighlighterRangeList">Range-List</link> for the <link id="TSynCustomHighlighter.CurrentLines">CurrentLines</link>
+          </p>
+          <p>This poperty is a shortcut, to the Range-list stored on the CurrentLines. It is set automatically, each time the CurrentLines are assigned</p>
+        </descr>
+        <seealso>
+          <link id="TSynCustomHighlighter.CurrentLines">TSynCustomHighlighter.CurrentLines</link>
+          <link id="TSynCustomHighlighter.SetRange">TSynCustomHighlighter.SetRange</link>
+          <link id="TSynCustomHighlighter.GetRange">TSynCustomHighlighter.GetRange</link>
+        </seealso>
+      </element>
+      <element name="TSynCustomHighlighter.ScanRanges">
+        <short>Recalculate all changed/unknown <link id="TSynCustomHighlighter.SetRange">Ranges</link> (line states)</short>
+        <descr>
+          <p>Recalculate all changed/unknown <link id="TSynCustomHighlighter.SetRange">Ranges</link> (line states).
+
+The start/end range is available through the TSynHighlighterRangeList, which tracks all changes to the TSynEditStringMemory by which it is managed.
+
+</p>
+        </descr>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

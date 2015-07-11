@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="3">
+    <PathDelim Value="\"/>
+    <Name Value="EasyDockMgr"/>
+    <Author Value="DoDi"/>
+    <CompilerOptions>
+      <Version Value="8"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="..\lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="EasyDocking Manager and Notebook"/>
+    <License Value="LGPL"/>
+    <Version Major="1"/>
+    <Files Count="7">
+      <Item1>
+        <Filename Value="easydocksite.pas"/>
+        <UnitName Value="EasyDockSite"/>
+      </Item1>
+      <Item2>
+        <Filename Value="fdockbook.lfm"/>
+        <Type Value="LFM"/>
+      </Item2>
+      <Item3>
+        <Filename Value="fdockbook.lrs"/>
+        <Type Value="LRS"/>
+      </Item3>
+      <Item4>
+        <Filename Value="fdockbook.pas"/>
+        <UnitName Value="fDockBook"/>
+      </Item4>
+      <Item5>
+        <Filename Value="ffloatingsite.pas"/>
+        <UnitName Value="fFloatingSite"/>
+      </Item5>
+      <Item6>
+        <Filename Value="uminirestore.pas"/>
+        <UnitName Value="uMiniRestore"/>
+      </Item6>
+      <Item7>
+        <Filename Value="umakesite.pas"/>
+        <UnitName Value="uMakeSite"/>
+      </Item7>
+    </Files>
+    <LazDoc Paths="..\docs\"/>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="2">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item2>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)\"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

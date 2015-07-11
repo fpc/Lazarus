@@ -1,0 +1,291 @@
+object Form1: TForm1
+  Left = 106
+  Height = 683
+  Top = 121
+  Width = 489
+  ActiveControl = Button7
+  Caption = 'Form1'
+  ClientHeight = 683
+  ClientWidth = 489
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.3'
+  object Label1: TLabel
+    Left = 12
+    Height = 13
+    Top = 4
+    Width = 229
+    Caption = 'This sample show how to use the printer dialogs'
+    ParentColor = False
+  end
+  object Button2: TButton
+    Left = 8
+    Height = 27
+    Top = 51
+    Width = 176
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Execute TPrinterSetupDialog'
+    OnClick = Button2Click
+    TabOrder = 0
+  end
+  object btnTPrintDialog: TButton
+    Left = 8
+    Height = 27
+    Top = 78
+    Width = 176
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Execute TPrintDialog'
+    OnClick = btnTPrintDialogClick
+    TabOrder = 1
+  end
+  object SGrid: TStringGrid
+    Left = 8
+    Height = 411
+    Top = 264
+    Width = 469
+    AlternateColor = clCream
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoFillColumns = True
+    ColCount = 2
+    Columns = <    
+      item
+        Color = clBtnFace
+        SizePriority = 0
+        Title.Caption = 'Property'
+        Width = 120
+      end    
+      item
+        MinSize = 60
+        MaxSize = 350
+        ReadOnly = True
+        Title.Caption = 'Value'
+        Width = 345
+      end>
+    DefaultColWidth = 120
+    FixedCols = 0
+    FixedRows = 0
+    Options = [goVertLine, goRangeSelect, goSmoothScroll]
+    RowCount = 15
+    TabOrder = 7
+    TitleStyle = tsNative
+    OnSelectCell = SGridSelectCell
+    ColWidths = (
+      120
+      345
+    )
+  end
+  object Button3: TButton
+    Left = 8
+    Height = 27
+    Top = 105
+    Width = 176
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Get default printer info'
+    OnClick = Button3Click
+    TabOrder = 2
+  end
+  object btnDirectPrint: TButton
+    Left = 200
+    Height = 27
+    Top = 152
+    Width = 128
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Direct Print'
+    OnClick = btnDirectPrintClick
+    TabOrder = 3
+  end
+  object Button5: TButton
+    Left = 8
+    Height = 25
+    Top = 132
+    Width = 176
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Update printer state info'
+    OnClick = Button5Click
+    TabOrder = 4
+  end
+  object Button6: TButton
+    Left = 8
+    Height = 25
+    Top = 157
+    Width = 176
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Show printer properties'
+    OnClick = Button6Click
+    TabOrder = 5
+  end
+  object Button7: TButton
+    Left = 8
+    Height = 27
+    Top = 24
+    Width = 176
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Execute TPageSetupDialog'
+    OnClick = Button7Click
+    TabOrder = 6
+  end
+  object chkTestImgs: TCheckBox
+    Left = 407
+    Height = 17
+    Top = 100
+    Width = 65
+    Caption = 'Test Imgs'
+    TabOrder = 8
+  end
+  object chkOutputFile: TCheckBox
+    Left = 195
+    Height = 17
+    Top = 27
+    Width = 71
+    Caption = 'Output File'
+    TabOrder = 9
+  end
+  object txtOutputFile: TFileNameEdit
+    Left = 195
+    Height = 21
+    Top = 48
+    Width = 261
+    DialogKind = dkSave
+    DialogOptions = []
+    FilterIndex = 0
+    HideDirectories = False
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    MaxLength = 0
+    TabOrder = 10
+  end
+  object Label2: TLabel
+    Left = 20
+    Height = 13
+    Top = 188
+    Width = 94
+    Alignment = taRightJustify
+    Caption = 'PageSetupDlg Title:'
+    ParentColor = False
+  end
+  object Label3: TLabel
+    Left = 5
+    Height = 13
+    Top = 212
+    Width = 102
+    Alignment = taRightJustify
+    Caption = 'PrinterSetupDlg Title:'
+    ParentColor = False
+  end
+  object txtPageSetupDlgTitle: TEdit
+    Left = 184
+    Height = 21
+    Top = 188
+    Width = 293
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 11
+    Text = 'Printer Dialogs Tests: PageSetupDialog'
+  end
+  object txtPrinterSetupDlgTitle: TEdit
+    Left = 184
+    Height = 21
+    Top = 212
+    Width = 293
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 12
+    Text = 'Printer Dialogs Tests: PrinterSetupDialog'
+  end
+  object Label4: TLabel
+    Left = 38
+    Height = 13
+    Top = 236
+    Width = 78
+    Alignment = taRightJustify
+    Caption = 'PrintDialog Title:'
+    ParentColor = False
+  end
+  object txtPrintDialogTitle: TEdit
+    Left = 184
+    Height = 21
+    Top = 236
+    Width = 293
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 13
+    Text = 'Printer Dialogs Tests: PrinterDialog'
+  end
+  object btnRotateBin: TButton
+    Left = 195
+    Height = 25
+    Top = 72
+    Width = 127
+    Anchors = [akTop, akRight]
+    Caption = 'Rotate Bin'
+    OnClick = btnRotateBinClick
+    TabOrder = 14
+  end
+  object btnRestoreDefaultBin: TButton
+    Left = 332
+    Height = 25
+    Top = 72
+    Width = 123
+    Anchors = [akTop, akRight]
+    Caption = 'Restore Default Bin'
+    OnClick = btnRestoreDefaultBinClick
+    TabOrder = 15
+  end
+  object btnPrintWithDlg: TButton
+    Left = 334
+    Height = 27
+    Top = 152
+    Width = 142
+    Caption = 'Print with Dialog'
+    OnClick = btnPrintWithDlgClick
+    TabOrder = 16
+  end
+  object comboTests: TComboBox
+    Left = 200
+    Height = 21
+    Top = 120
+    Width = 272
+    ItemHeight = 13
+    ItemIndex = 0
+    Items.Strings = (
+      'Single Page'
+      'Single Page with Images'
+      'Multi-Page'
+    )
+    Style = csDropDownList
+    TabOrder = 17
+    Text = 'Single Page'
+  end
+  object Label5: TLabel
+    Left = 200
+    Height = 13
+    Top = 104
+    Width = 30
+    Caption = 'Tests:'
+    ParentColor = False
+  end
+  object PSD: TPrinterSetupDialog
+    Title = 'Testing dialog title'
+    left = 172
+    top = 452
+  end
+  object PD: TPrintDialog
+    Title = 'Testing title'
+    Collate = True
+    FromPage = 2
+    MinPage = 2
+    MaxPage = 5
+    Options = [poPrintToFile, poPageNums, poSelection, poWarning, poHelp]
+    PrintToFile = True
+    ToPage = 3
+    left = 172
+    top = 484
+  end
+  object PopupMenu1: TPopupMenu
+    left = 212
+    top = 452
+  end
+  object PAGED: TPageSetupDialog
+    Title = 'Ustawienie strony raportu'
+    left = 172
+    top = 516
+  end
+end

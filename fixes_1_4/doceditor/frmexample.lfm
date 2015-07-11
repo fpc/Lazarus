@@ -1,0 +1,55 @@
+object ExampleForm: TExampleForm
+  Left = 387
+  Height = 136
+  Top = 311
+  Width = 432
+  HorzScrollBar.Page = 403
+  VertScrollBar.Page = 84
+  ActiveControl = EFileName
+  Caption = 'Example file'
+  ClientHeight = 136
+  ClientWidth = 432
+  OnCloseQuery = ExampleFormCloseQuery
+  LCLVersion = '0.9.29'
+  object LEFileName: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 18
+    Top = 6
+    Width = 74
+    BorderSpacing.Around = 6
+    Caption = '&Filename'
+    Color = clBtnFace
+    FocusControl = EFileName
+    Layout = tlCenter
+    Transparent = False
+  end
+  object EFileName: TFileNameEdit
+    AnchorSideLeft.Control = LEFileName
+    AnchorSideTop.Control = LEFileName
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 29
+    Top = 30
+    Width = 394
+    DialogTitle = 'Select an example file'
+    DialogOptions = []
+    Filter = 'Pascal files|*.pp;*.pas|All files|*.*'
+    FilterIndex = 0
+    HideDirectories = False
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    MaxLength = 0
+    TabOrder = 0
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 40
+    Top = 90
+    Width = 420
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+end

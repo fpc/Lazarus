@@ -1,0 +1,50 @@
+object Form1: TForm1
+  Left = 296
+  Height = 240
+  Top = 124
+  Width = 320
+  Caption = 'Form1'
+  ClientHeight = 240
+  ClientWidth = 320
+  LCLVersion = '0.9.31'
+  object Chart1: TChart
+    Left = 0
+    Height = 240
+    Top = 0
+    Width = 320
+    AxisList = <    
+      item
+        Title.LabelFont.Orientation = 900
+      end    
+      item
+        Alignment = calBottom
+      end>
+    Depth = 15
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    OnBeforeDrawBackground = Chart1BeforeDrawBackground
+    OnBeforeDrawBackWall = Chart1BeforeDrawBackWall
+    Align = alClient
+    ParentColor = False
+    object Chart1BarSeries1: TBarSeries
+      BarBrush.Color = clRed
+      Source = RandomChartSource1
+      OnBeforeDrawBar = Chart1BarSeries1BeforeDrawBar
+    end
+  end
+  object RandomChartSource1: TRandomChartSource
+    PointsNumber = 10
+    RandSeed = 1499557333
+    XMax = 13
+    XMin = 3
+    YMax = 20
+    YMin = 2
+    left = 248
+    top = 28
+  end
+end

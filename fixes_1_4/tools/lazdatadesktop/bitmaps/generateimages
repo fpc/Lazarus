@@ -1,0 +1,4 @@
+#!/bin/sh
+../../lazres ../dicteditor.res @dicteditor.txt
+  
+  

@@ -1,0 +1,63 @@
+object ChooseKeySchemeDlg: TChooseKeySchemeDlg
+  Left = 406
+  Height = 233
+  Top = 307
+  Width = 433
+  ActiveControl = SchemeRadiogroup.RadioButton0
+  BorderStyle = bsDialog
+  Caption = 'ChooseKeySchemeDlg'
+  ClientHeight = 233
+  ClientWidth = 433
+  OnCreate = ChooseKeySchemeDlgCREATE
+  Position = poScreenCenter
+  LCLVersion = '0.9.27'
+  object NoteLabel: TLabel
+    Left = 6
+    Height = 14
+    Top = 6
+    Width = 421
+    Align = alTop
+    BorderSpacing.Around = 6
+    Caption = 'NoteLabel'
+    ParentColor = False
+    WordWrap = True
+  end
+  object SchemeRadiogroup: TRadioGroup
+    Left = 6
+    Height = 169
+    Top = 26
+    Width = 421
+    Align = alClient
+    AutoFill = True
+    BorderSpacing.Around = 6
+    Caption = 'Scheme'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 151
+    ClientWidth = 417
+    ItemIndex = 0
+    Items.Strings = (
+      'Default (Lazarus)'
+      'Classic (TP)'
+      'Mac OS X (Apple style)'
+      'Mac OS X (Lazarus style)'
+    )
+    TabOrder = 0
+    TabStop = True
+  end
+  object ButtonPanel: TButtonPanel
+    Left = 6
+    Height = 26
+    Top = 201
+    Width = 421
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+    ShowBevel = False
+  end
+end

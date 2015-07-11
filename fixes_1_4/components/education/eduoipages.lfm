@@ -1,0 +1,45 @@
+inherited EduOIPagesFrame: TEduOIPagesFrame
+  Height = 393
+  Width = 456
+  ClientHeight = 393
+  ClientWidth = 456
+  TabOrder = 0
+  DesignLeft = 353
+  DesignTop = 355
+  object grpBoxOIPages: TGroupBox[0]
+    Left = 6
+    Height = 81
+    Top = 6
+    Width = 444
+    Align = alTop
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'grpBoxOIPages'
+    ClientHeight = 62
+    ClientWidth = 440
+    TabOrder = 0
+    object ckBoxFavs: TCheckBox
+      AnchorSideLeft.Control = grpBoxOIPages
+      AnchorSideTop.Control = grpBoxOIPages
+      Left = 6
+      Height = 22
+      Top = 6
+      Width = 94
+      BorderSpacing.Around = 6
+      Caption = 'ckBoxFavs'
+      TabOrder = 0
+    end
+    object ckBoxRestricted: TCheckBox
+      AnchorSideLeft.Control = grpBoxOIPages
+      AnchorSideTop.Control = ckBoxFavs
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 22
+      Top = 34
+      Width = 129
+      BorderSpacing.Around = 6
+      Caption = 'ckBoxRestricted'
+      TabOrder = 1
+    end
+  end
+end

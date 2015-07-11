@@ -1,0 +1,8 @@
+qrybtn_close.xpm
+qrybtn_code.xpm
+qrybtn_execute.xpm
+qrybtn_export.xpm
+qrybtn_next.xpm
+qrybtn_open.xpm
+qrybtn_previous.xpm
+qrybtn_save.xpm

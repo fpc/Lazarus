@@ -1,0 +1,84 @@
+object NewProjectDialog: TNewProjectDialog
+  Left = 240
+  Height = 302
+  Top = 451
+  Width = 561
+  Caption = 'NewProjectDialog'
+  ClientHeight = 302
+  ClientWidth = 561
+  Position = poScreenCenter
+  LCLVersion = '0.9.31'
+  object Panel1: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    Left = 6
+    Height = 252
+    Top = 6
+    Width = 549
+    Align = alClient
+    BorderSpacing.Around = 6
+    BevelOuter = bvNone
+    ClientHeight = 252
+    ClientWidth = 549
+    TabOrder = 0
+    object DescriptionGroupBox: TGroupBox
+      Left = 251
+      Height = 252
+      Top = 0
+      Width = 298
+      Align = alClient
+      Caption = 'DescriptionGroupBox'
+      ClientHeight = 231
+      ClientWidth = 294
+      TabOrder = 0
+      object HelpLabel: TLabel
+        Left = 6
+        Height = 219
+        Top = 6
+        Width = 282
+        Align = alClient
+        BorderSpacing.Around = 6
+        Caption = 'HelpLabel'
+        ParentColor = False
+        WordWrap = True
+      end
+    end
+    object ListBox: TListBox
+      Left = 0
+      Height = 252
+      Top = 0
+      Width = 246
+      Align = alLeft
+      Anchors = []
+      ItemHeight = 0
+      OnDblClick = ListBoxDblClick
+      TabOrder = 1
+    end
+    object Splitter1: TSplitter
+      Left = 246
+      Height = 252
+      Top = 0
+      Width = 5
+    end
+  end
+  object ButtonPanel: TButtonPanel
+    Left = 6
+    Height = 32
+    Top = 264
+    Width = 549
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    HelpButton.OnClick = HelpButtonClick
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+    ShowBevel = False
+  end
+end

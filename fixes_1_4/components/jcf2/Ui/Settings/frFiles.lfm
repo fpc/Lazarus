@@ -1,0 +1,56 @@
+inherited fFiles: TfFiles
+  Height = 281
+  Width = 338
+  ClientHeight = 281
+  ClientWidth = 338
+  OnResize = FrameResize
+  DesignLeft = 597
+  DesignTop = 402
+  object lblStatus: TLabel[0]
+    Left = 8
+    Height = 14
+    Top = 42
+    Width = 42
+    Caption = 'lblStatus'
+    ParentColor = False
+  end
+  object lblDate: TLabel[1]
+    Left = 8
+    Height = 14
+    Top = 64
+    Width = 34
+    Caption = 'lblDate'
+    ParentColor = False
+  end
+  object lblVersion: TLabel[2]
+    Left = 8
+    Height = 14
+    Top = 88
+    Width = 46
+    Caption = 'lblVersion'
+    ParentColor = False
+  end
+  object lblDescription: TLabel[3]
+    Left = 8
+    Height = 14
+    Top = 114
+    Width = 58
+    Caption = 'Description:'
+    ParentColor = False
+  end
+  object lblFormatFileName: TLabel[4]
+    Left = 8
+    Height = 14
+    Top = 8
+    Width = 88
+    Caption = 'lblFormatFileName'
+    ParentColor = False
+  end
+  object mDescription: TMemo[5]
+    Left = 8
+    Height = 89
+    Top = 134
+    Width = 301
+    TabOrder = 0
+  end
+end

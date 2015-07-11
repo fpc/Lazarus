@@ -1,0 +1,63 @@
+object SelectSrcDatasetForm: TSelectSrcDatasetForm
+  Left = 364
+  Height = 282
+  Top = 233
+  Width = 355
+  HorzScrollBar.Page = 356
+  VertScrollBar.Page = 283
+  BorderStyle = bsDialog
+  Caption = 'Select dataset to copy from'
+  ClientHeight = 282
+  ClientWidth = 355
+  OnCreate = FormCreate
+  LCLVersion = '0.9.29'
+  object CBMetaDataOnly: TCheckBox
+    Left = 8
+    Height = 21
+    Top = 15
+    Width = 147
+    AllowGrayed = True
+    Caption = 'Copy only metadata'
+    TabOrder = 0
+  end
+  object LBDatasets: TListBox
+    Left = 8
+    Height = 204
+    Top = 72
+    Width = 249
+    ItemHeight = 0
+    OnClick = LBDatasetsClick
+    TabOrder = 1
+  end
+  object LLBDatasets: TLabel
+    Left = 8
+    Height = 18
+    Top = 45
+    Width = 138
+    Caption = '&Dataset to copy from:'
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object BOK: TButton
+    Left = 264
+    Height = 25
+    Top = 15
+    Width = 85
+    Caption = '&OK'
+    Default = True
+    Enabled = False
+    ModalResult = 1
+    OnClick = BOKClick
+    TabOrder = 3
+  end
+  object BCancel: TButton
+    Left = 264
+    Height = 25
+    Top = 48
+    Width = 83
+    Cancel = True
+    Caption = '&Cancel'
+    ModalResult = 2
+    TabOrder = 2
+  end
+end

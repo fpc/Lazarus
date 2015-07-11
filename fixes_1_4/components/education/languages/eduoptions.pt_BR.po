@@ -1,0 +1,213 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcelo B Paula\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: eduoptions.edurseducation
+msgid "Education"
+msgstr "Ensino"
+
+#: eduoptions.ersaddanentrytothenewdialogtocreateanewprogram
+msgid "Add an entry to the %sNew ...%s dialog to create a new program"
+msgstr "Adicionar uma entreda ao diálogo %sNovo ...%s para criar um novo programa"
+
+#: eduoptions.ersaddanidemenuitemtocreateanewprogram
+msgid "Add an IDE menu item to create a new program"
+msgstr "Adicionar um item no menu da IDE para criar um novo programa"
+
+#: eduoptions.ersaddaspeedbuttontotheidetoolbartocreateanewprogram
+msgid "Add a speed button to the IDE toolbar to create a new program"
+msgstr "Adicionar um botão na barra de ferramentas da IDE para criar um novo programa"
+
+#: eduoptions.ersaddicon
+msgid "Add icon"
+msgstr "Adicionar ícone"
+
+#: eduoptions.ersaddmenuitem
+msgid "Add menu item"
+msgstr "Adicionar item menu"
+
+#: eduoptions.ersaddtonewdialog
+msgid "Add to %sNew ...%s dialog"
+msgstr "Adicionar ao diálogo %sNovo ...%s"
+
+#: eduoptions.ersasimpleprogramonlyonefileiscreatedandaddedtothecur
+msgid "A simple program. Only one file is created and added to the current project."
+msgstr "Um programa simples. Um arquivo apenas é criado e adicionado ao projeto atual."
+
+#: eduoptions.erseducomppalettetitle
+msgid "Component palette"
+msgstr "Paleta de componentes"
+
+#: eduoptions.erseduenvoptsframetitle
+msgid "General"
+msgstr "Geral"
+
+#: eduoptions.ersedumenutitle
+msgid "Menus"
+msgstr "Menus"
+
+#: eduoptions.ersedunewprogramtitle
+msgctxt "eduoptions.ersedunewprogramtitle"
+msgid "New program"
+msgstr "Novo programa"
+
+#: eduoptions.erseduoipages
+msgid "Object Inspector"
+msgstr "Inspetor de Objetos"
+
+#: eduoptions.ersedupropseventstitle
+msgid "Properties and Events"
+msgstr "Propriedades e Eventos"
+
+#: eduoptions.ersedusbtitle
+msgid "Speed Buttons"
+msgstr "Botões aceleradores"
+
+#: eduoptions.ersenableeducheckboxcaption
+msgid "Enable education settings"
+msgstr "Habilitar ajustes para ensino"
+
+#: eduoptions.ersgrpboxeventsext
+msgid "Events: Extended Configuration"
+msgstr "Eventos: Configurações Estendidas"
+
+#: eduoptions.ersgrpboxeventsfull
+msgid "Events: Full Configuration"
+msgstr "Eventos: Configuração Completa"
+
+#: eduoptions.ersgrpboxeventsmin
+msgid "Events: Minimal Configuration"
+msgstr "Eventos: Configuração Mínima"
+
+#: eduoptions.ersgrpboxpropsext
+msgid "Properties: Extended Configuration"
+msgstr "Propriedades: Configuração Estendida"
+
+#: eduoptions.ersgrpboxpropsfull
+msgid "Properties: Full Configuration"
+msgstr "Propriedades: Configuração Completa"
+
+#: eduoptions.ersgrpboxpropsmin
+msgid "Properties: Minimal Configuration"
+msgstr "Propriedades: Configuração Mínima"
+
+#: eduoptions.ershideall
+msgid "Hide all"
+msgstr "Ocultar tudo"
+
+#: eduoptions.ersidemenuitems
+msgid "IDE menu items"
+msgstr "Itens de menu da IDE"
+
+#: eduoptions.ersloaddefaultcode
+msgid "Load default code?"
+msgstr "Carregar código padrão?"
+
+#: eduoptions.ersloadsourcefromfile
+msgid "Load source from file"
+msgstr "Carregar fonte do arquivo"
+
+#: eduoptions.ersnewprogram
+msgctxt "eduoptions.ersnewprogram"
+msgid "New program"
+msgstr "Novo programa"
+
+#: eduoptions.ersnewsinglefileeducationprogram
+msgid "New single file education program"
+msgstr "Novo arquivo único de programa para ensino"
+
+#: eduoptions.ersnewsinglefileprogram
+msgid "New single file program"
+msgstr "Novo arquivo único de programa"
+
+#: eduoptions.ersrdbtnfull
+msgid "Show All"
+msgstr "Exibir Tudo"
+
+#: eduoptions.ersrdgrpeventscaption
+msgid "Events"
+msgstr "Eventos"
+
+#: eduoptions.ersrdgrppropscaption
+msgid "Properties"
+msgstr "Propriedades"
+
+#: eduoptions.ersreplacecurrentsourcewithdefaultsourcecode
+msgid "Replace current source with default source code"
+msgstr "Substituir fonte atual pelo código fonte padrão"
+
+#: eduoptions.ersreplacecurrentwithdefaultsourcecode
+msgid "Replace current with default source code?"
+msgstr "Substituir fonte atual pelo código fonte padrão?"
+
+#: eduoptions.ersshowall
+msgid "Show all"
+msgstr "Exibir tudo"
+
+#: eduoptions.ersshowallchilds
+msgid "Show all children"
+msgstr "Exibir todos os filhos"
+
+#: eduoptions.ersshowextended
+msgid "Show Extended"
+msgstr "Exibição Estendida"
+
+#: eduoptions.ersshowminimal
+msgid "Show Minimal"
+msgstr "Exibição Mínima"
+
+#: eduoptions.ersshowoipages
+msgid "Show Object Inspector Pages"
+msgstr "Exibir Páginas do Inspetor de Objetos"
+
+#: eduoptions.ersshowselection
+msgid "Show Selection"
+msgstr "Exibir Seleção"
+
+#: eduoptions.erssinglefileprogram
+msgid "Single file program"
+msgstr "Arquivo único de programa"
+
+#: eduoptions.erssource
+msgid "Source"
+msgstr "Fonte"
+
+#: eduoptions.erssttexteventsext
+msgid "OnClick, OnChange, OnMouseMove, OnDblClick, OnCreate, OnKeyPress, OnFormCreate"
+msgstr "OnClick, OnChange, OnMouseMove, OnDblClick, OnCreate, OnKeyPress, OnFormCreate"
+
+#: eduoptions.erssttexteventsfull
+msgid "All Events available"
+msgstr "Todos os Eventos disponíveis"
+
+#: eduoptions.erssttexteventsmin
+msgid "OnClick, OnChange, OnMouseMove"
+msgstr "OnClick, OnChange, OnMouseMove"
+
+#: eduoptions.erssttextpropsext
+msgid "Align, Left, Top, Hint, ShowHint, ParentFont, TabOrder, ParentShowHint, WordWrap, FixedCols, FixedRows, DefaultColWidth, DefaultRowHeight, ColCount, RowCount, Borderstyle, Glyph, State, Interval, DataSource, DataField + DB-Properties"
+msgstr "Align, Left, Top, Hint, ShowHint, ParentFont, TabOrder, ParentShowHint, WordWrap, FixedCols, FixedRows, DefaultColWidth, DefaultRowHeight, ColCount, RowCount, Borderstyle, Glyph, State, Interval, DataSource, DataField + DB-Properties"
+
+#: eduoptions.erssttextpropsfull
+msgid "All Properties available"
+msgstr "Todas as Propriedades disponíveis"
+
+#: eduoptions.erssttextpropsmin
+msgid "Name, Caption, Visible, Text, Checked, Items, Font, Color, Enabled, Height, Width, MaxLength, Picture, Columns"
+msgstr "Name, Caption, Visible, Text, Checked, Items, Font, Color, Enabled, Height, Width, MaxLength, Picture, Columns"
+
+#: eduoptions.ersvisiblecomponents
+msgid "Visible components"
+msgstr "Componentes visíveis"
+
+#: eduoptions.ersvisiblespeedbuttons
+msgid "Visible SpeedButtons"
+msgstr "Botões Aceleradores visíveis"
+

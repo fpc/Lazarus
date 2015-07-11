@@ -1,0 +1,91 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2012-08-06 20:46+0300\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Language: lt\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 1.5\n"
+
+#: heaptrcview.rsdtimes
+msgid " (%d times)"
+msgstr " (kartai: %d)"
+
+#: heaptrcview.rserrorparse
+msgid "Error while parsing trace file"
+msgstr "Analizuojant pėdsako failą įvyko klaida"
+
+#: heaptrcview.rsleakview
+#, fuzzy
+#| msgid "Find source lines for leak/stack-traces"
+msgid "Leaks and Traces"
+msgstr "Nuotėkio rodymas"
+
+#: heaptrcview.sbtnclipbrd
+msgid "Paste Clipboard"
+msgstr "Įdėti iš iškarpinės"
+
+#: heaptrcview.sbtnresolve
+msgid "Resolve"
+msgstr "Išspręsti"
+
+#: heaptrcview.sbtnupdate
+msgid "Update"
+msgstr "Naujinti"
+
+#: heaptrcview.schkraw
+msgid "Raw leak data"
+msgstr "Neapdoroti nuotėkio duomenys"
+
+#: heaptrcview.schktop
+msgid "Stay on top"
+msgstr "Laikyti viršuje"
+
+#: heaptrcview.sfrmcap
+#, fuzzy
+#| msgid "LeakView - HeapTrc output viewer"
+msgid "Leaks and Traces - HeapTrc and GDB backtrace output viewer"
+msgstr "LeakView - HeapTrc išvesties žiūryklė"
+
+#: heaptrcview.sfrmselectfilewithdebuginfo
+msgid "Select File with debug info"
+msgstr "Parinkite failą su derinimo informacija"
+
+#: heaptrcview.slbltrace
+msgid ".trc file"
+msgstr "failas „.trc“"
+
+#: heaptrcview.stacklineformat
+msgid "%s"
+msgstr "%s"
+
+#: heaptrcview.stacklineformatwithfile
+msgid "%s file: %s : %d; "
+msgstr "failas „%s“: %s : %d; "
+
+#: heaptrcview.stacktraceformat
+msgid "Leak: %d bytes x %d times"
+msgstr "Nuotėkis: baitų - %d x kartų %d"
+
+#: heaptrcview.stacktraceformatsingle
+msgid "Leak: %d bytes"
+msgstr "Nuotėkis: baitų - %d"
+
+#: heaptrcview.strleakingblockscount
+msgid "Leaking Blocks Count: %d"
+msgstr "Nutekėjusių blokų kiekis: %d"
+
+#: heaptrcview.strleakingmemsize
+msgid "Leaking Mem Size: %d"
+msgstr "Nutekėjusios atminties dydis: %d"
+
+#: heaptrcview.strtotalmemalloc
+#, fuzzy
+#| msgid "Total Mem alloced: %d"
+msgid "Total Mem allocated: %d"
+msgstr "Viso paskirta atminties: %d"
+

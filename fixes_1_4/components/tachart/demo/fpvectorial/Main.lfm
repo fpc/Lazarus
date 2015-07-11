@@ -1,0 +1,132 @@
+object Form1: TForm1
+  Left = 485
+  Height = 342
+  Top = 210
+  Width = 422
+  Caption = 'Form1'
+  ClientHeight = 342
+  ClientWidth = 422
+  Position = poScreenCenter
+  LCLVersion = '1.5'
+  object Chart1: TChart
+    Left = 0
+    Height = 300
+    Top = 42
+    Width = 422
+    AxisList = <    
+      item
+        Grid.Color = clSilver
+        Grid.Style = psDash
+        Marks.LabelFont.CharSet = ANSI_CHARSET
+        Marks.LabelFont.Height = -13
+        Marks.LabelFont.Name = 'Arial Narrow'
+        Marks.LabelFont.Pitch = fpVariable
+        Marks.LabelFont.Quality = fqDraft
+        Minors = <>
+        Title.LabelFont.CharSet = ANSI_CHARSET
+        Title.LabelFont.Color = clRed
+        Title.LabelFont.Height = -19
+        Title.LabelFont.Name = 'Times New Roman'
+        Title.LabelFont.Orientation = 900
+        Title.LabelFont.Pitch = fpVariable
+        Title.LabelFont.Quality = fqDraft
+        Title.LabelFont.Style = [fsItalic]
+        Title.Visible = True
+        Title.Caption = 'y axis'
+      end    
+      item
+        Grid.Color = clSilver
+        Alignment = calBottom
+        Marks.LabelFont.CharSet = ANSI_CHARSET
+        Marks.LabelFont.Height = -13
+        Marks.LabelFont.Name = 'Arial Narrow'
+        Marks.LabelFont.Pitch = fpVariable
+        Marks.LabelFont.Quality = fqDraft
+        Minors = <>
+        Title.LabelFont.CharSet = ANSI_CHARSET
+        Title.LabelFont.Color = clGreen
+        Title.LabelFont.Height = -19
+        Title.LabelFont.Name = 'Times New Roman'
+        Title.LabelFont.Pitch = fpVariable
+        Title.LabelFont.Quality = fqDraft
+        Title.LabelFont.Style = [fsItalic]
+        Title.Visible = True
+        Title.Caption = 'x axis'
+      end>
+    BackColor = clWhite
+    Foot.Alignment = taLeftJustify
+    Foot.Brush.Color = clBtnFace
+    Foot.Brush.Style = bsClear
+    Foot.Font.CharSet = ANSI_CHARSET
+    Foot.Font.Color = clGray
+    Foot.Font.Height = -11
+    Foot.Font.Name = 'Courier New'
+    Foot.Font.Pitch = fpFixed
+    Foot.Font.Quality = fqDraft
+    Foot.Text.Strings = (
+      'printed by TAChart and fpvectorial'
+    )
+    Foot.Visible = True
+    Title.Brush.Color = clBtnFace
+    Title.Brush.Style = bsClear
+    Title.Font.CharSet = ANSI_CHARSET
+    Title.Font.Color = clBlue
+    Title.Font.Height = -16
+    Title.Font.Name = 'Arial'
+    Title.Font.Pitch = fpVariable
+    Title.Font.Quality = fqDraft
+    Title.Font.Style = [fsBold, fsUnderline]
+    Title.Text.Strings = (
+      'Sample chart'
+    )
+    Title.Visible = True
+    Align = alClient
+    ParentColor = False
+    object Chart1LineSeries1: TLineSeries
+      LinePen.Color = clFuchsia
+      Source = RandomChartSource1
+    end
+    object Chart1BarSeries1: TBarSeries
+      BarBrush.Color = clRed
+      Source = RandomChartSource1
+    end
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 42
+    Top = 0
+    Width = 422
+    Align = alTop
+    ClientHeight = 42
+    ClientWidth = 422
+    TabOrder = 1
+    object btnSVG: TButton
+      Left = 8
+      Height = 25
+      Top = 8
+      Width = 96
+      Caption = 'Save as SVG'
+      OnClick = btnSVGClick
+      TabOrder = 0
+    end
+    object btnGCode: TButton
+      Left = 112
+      Height = 25
+      Top = 8
+      Width = 119
+      Caption = 'Save as G-code'
+      OnClick = btnGCodeClick
+      TabOrder = 1
+    end
+  end
+  object RandomChartSource1: TRandomChartSource
+    PointsNumber = 11
+    RandSeed = 1335683875
+    XMax = 1
+    XMin = -1
+    YMax = 100
+    YMin = -100
+    left = 68
+    top = 156
+  end
+end

@@ -1,0 +1,96 @@
+object ConfigureProjectDDForm: TConfigureProjectDDForm
+  Left = 450
+  Height = 179
+  Top = 368
+  Width = 463
+  ActiveControl = CBUseDataDict
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
+  Caption = 'Set project Data Dictionary'
+  ClientHeight = 179
+  ClientWidth = 463
+  OnCreate = FormCreate
+  LCLVersion = '0.9.27'
+  object FEDD: TFileNameEdit
+    Left = 40
+    Height = 27
+    Top = 120
+    Width = 392
+    DialogOptions = []
+    Filter = 'Data dictionary|*.fdd|Any file|*.*'
+    FilterIndex = 0
+    HideDirectories = False
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Enabled = False
+    TabOrder = 0
+  end
+  object CBUseDataDict: TCheckBox
+    Left = 16
+    Height = 26
+    Top = 8
+    Width = 416
+    AutoSize = False
+    Caption = '&Use Data dictionary for this project'
+    TabOrder = 1
+  end
+  object BOK: TButton
+    Left = 376
+    Height = 25
+    Top = 152
+    Width = 75
+    BorderSpacing.InnerBorder = 4
+    Caption = '&OK'
+    Default = True
+    ModalResult = 1
+    OnClick = BOKClick
+    TabOrder = 2
+  end
+  object BCancel: TButton
+    Left = 288
+    Height = 25
+    Top = 152
+    Width = 75
+    BorderSpacing.InnerBorder = 4
+    Cancel = True
+    Caption = '&Cancel'
+    ModalResult = 2
+    TabOrder = 3
+  end
+  object RBUseKnownDD: TRadioButton
+    Left = 17
+    Height = 21
+    Top = 40
+    Width = 159
+    Caption = 'Known data dictionary'
+    Checked = True
+    OnClick = RBUseFileClick
+    State = cbChecked
+    TabOrder = 4
+  end
+  object RBUseFile: TRadioButton
+    Left = 16
+    Height = 21
+    Top = 96
+    Width = 139
+    Caption = 'Data dictionary &file:'
+    OnClick = RBUseFileClick
+    TabOrder = 5
+    TabStop = False
+  end
+  object CBDD: TComboBox
+    Left = 40
+    Height = 25
+    Top = 61
+    Width = 184
+    ItemHeight = 17
+    OnChange = CBDDChange
+    Style = csDropDownList
+    TabOrder = 6
+  end
+  object OpenDialog1: TOpenDialog
+    Title = 'Open existing file'
+    left = 350
+    top = 64
+  end
+end

@@ -1,0 +1,29 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcelo B Paula\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: instantfpcregisterlaz.rsinstantfpcpr
+msgid "InstantFPC program"
+msgstr "Programa InstantFPC"
+
+#: instantfpcregisterlaz.rsinstantfpcsc
+msgid "InstantFPC script"
+msgstr "Script InstantFPC"
+
+#: instantfpcregisterlaz.rssinglefilefr
+#| msgid "%s%sSingle file Free Pascal program executed by instantfpc"
+msgid "%s%sSingle file Free Pascal program executed by InstantFPC"
+msgstr "%s%sPrograma Free Pascal de arquivo único executado pelo InstantFPC"
+
+#: instantfpcregisterlaz.rssinglefilepr
+#| msgid "%s%sSingle file program using instantfpc to compile and execute"
+msgid "%s%sSingle file program using InstantFPC to compile and execute"
+msgstr "%s%sPrograma de arquivo único usando o InstantFPC para compilar e executar"
+

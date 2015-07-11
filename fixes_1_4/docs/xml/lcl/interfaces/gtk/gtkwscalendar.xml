@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="ISO8859-1"?>
+<fpdoc-descriptions>
+<package name="gtk">
+
+<!--
+  ====================================================================
+    GtkWSCalendar
+  ====================================================================
+-->
+
+<module name="GtkWSCalendar">
+<short></short>
+<descr>
+</descr>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="SysUtils">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="glib">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gdk">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gtk">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gdkpixbuf">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="GtkFontCache">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Calendar">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="WSCalendar">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="WSLCLClasses">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSCalendar">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkWSCalendar.GetDateTime">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkWSCalendar.GetDateTime.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCalendar.GetDateTime.ACalendar">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCalendar.SetDateTime">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCalendar.SetDateTime.ACalendar">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCalendar.SetDateTime.ADateTime">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCalendar.SetDisplaySettings">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCalendar.SetDisplaySettings.ACalendar">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCalendar.SetDisplaySettings.ADisplaySettings">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCalendar.SetReadOnly">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCalendar.SetReadOnly.ACalendar">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCalendar.SetReadOnly.AReadOnly">
+<short></short>
+</element>
+</module> <!-- GtkWSCalendar -->
+</package>
+</fpdoc-descriptions>

@@ -1,0 +1,23 @@
+object Form1: TForm1
+  Left = 290
+  Height = 144
+  Top = 189
+  Width = 623
+  HorzScrollBar.Page = 622
+  VertScrollBar.Page = 143
+  Caption = 'Form1'
+  ClientHeight = 144
+  ClientWidth = 623
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnPaint = FormPaint
+  object Label1: TLabel
+    Left = 156
+    Height = 43
+    Top = 42
+    Width = 348
+    Caption = 'You should see a small rectangle filled with black and a diagonal red line'
+    ParentColor = False
+    WordWrap = True
+  end
+end

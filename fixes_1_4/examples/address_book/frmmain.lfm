@@ -1,0 +1,579 @@
+object MainForm: TMainForm
+  Left = 484
+  Height = 522
+  Top = 273
+  Width = 734
+  HorzScrollBar.Page = 733
+  VertScrollBar.Page = 491
+  ActiveControl = PTop
+  Caption = 'Addressbook'
+  ClientHeight = 502
+  ClientWidth = 734
+  Font.Height = -13
+  Font.Name = 'MS Sans Serif'
+  Menu = MMain
+  OnClose = FormClose
+  OnCloseQuery = FormCloseQuery
+  LCLVersion = '1.1'
+  object PTop: TPanel
+    Left = 0
+    Height = 33
+    Top = 0
+    Width = 734
+    Align = alTop
+    BevelOuter = bvLowered
+    ClientHeight = 33
+    ClientWidth = 734
+    FullRepaint = False
+    TabOrder = 0
+    object DBNavigator1: TDBNavigator
+      Left = 456
+      Height = 25
+      Top = 4
+      Width = 260
+      Anchors = [akTop, akRight]
+      BevelOuter = bvNone
+      ChildSizing.EnlargeHorizontal = crsScaleChilds
+      ChildSizing.EnlargeVertical = crsScaleChilds
+      ChildSizing.ShrinkHorizontal = crsScaleChilds
+      ChildSizing.ShrinkVertical = crsScaleChilds
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 100
+      ClientHeight = 25
+      ClientWidth = 260
+      DataSource = DSAddress
+      Options = []
+      TabOrder = 0
+    end
+  end
+  object GDBA: TDBGrid
+    Left = 0
+    Height = 209
+    Top = 33
+    Width = 734
+    Align = alClient
+    Color = clWhite
+    Columns = <    
+      item
+        Title.Caption = 'First name'
+        Width = 117
+        FieldName = 'FirstName'
+      end    
+      item
+        Title.Caption = 'Last name'
+        Width = 127
+        FieldName = 'LastName'
+      end    
+      item
+        Title.Caption = 'Street '
+        Width = 131
+        FieldName = 'Street'
+      end    
+      item
+        Title.Caption = 'Zip '
+        FieldName = 'Zip'
+      end    
+      item
+        Title.Caption = 'Town '
+        Width = 100
+        FieldName = 'Town'
+      end    
+      item
+        Title.Caption = 'Country '
+        FieldName = 'Country'
+      end    
+      item
+        Title.Caption = 'Telephone '
+        FieldName = 'Telephone'
+      end    
+      item
+        Title.Caption = 'Fax '
+        FieldName = 'Fax'
+      end    
+      item
+        Title.Caption = 'Mobile '
+        FieldName = 'Mobile'
+      end    
+      item
+        Title.Caption = 'Email '
+        FieldName = 'Email'
+      end    
+      item
+        Title.Caption = 'WWW '
+        FieldName = 'WWW'
+      end>
+    DataSource = DSAddress
+    ReadOnly = True
+    TabOrder = 1
+    TitleFont.Height = -13
+    TitleFont.Name = 'MS Sans Serif'
+  end
+  object PBottom: TPanel
+    Left = 0
+    Height = 260
+    Top = 242
+    Width = 734
+    Align = alBottom
+    BevelOuter = bvLowered
+    ClientHeight = 260
+    ClientWidth = 734
+    FullRepaint = False
+    TabOrder = 2
+    object LELastName: TLabel
+      Left = 8
+      Height = 17
+      Top = 8
+      Width = 63
+      Alignment = taRightJustify
+      Caption = '&Last name'
+      FocusControl = ELastName
+      Layout = tlCenter
+      ParentColor = False
+    end
+    object LEFirstName: TLabel
+      Left = 8
+      Height = 17
+      Top = 34
+      Width = 63
+      Alignment = taRightJustify
+      Caption = '&First name'
+      FocusControl = EFirstName
+      Layout = tlCenter
+      ParentColor = False
+    end
+    object LEStreet: TLabel
+      Left = 8
+      Height = 17
+      Top = 64
+      Width = 36
+      Alignment = taRightJustify
+      Caption = '&Street'
+      FocusControl = EStreet
+      Layout = tlCenter
+      ParentColor = False
+    end
+    object LEZip: TLabel
+      Left = 8
+      Height = 17
+      Top = 92
+      Width = 20
+      Alignment = taRightJustify
+      Caption = '&Zip'
+      FocusControl = EZip
+      Layout = tlCenter
+      ParentColor = False
+    end
+    object LETown: TLabel
+      Left = 264
+      Height = 17
+      Top = 90
+      Width = 34
+      Alignment = taRightJustify
+      Caption = 'T&own'
+      FocusControl = ETown
+      Layout = tlCenter
+      ParentColor = False
+    end
+    object LETelephone: TLabel
+      Left = 8
+      Height = 17
+      Top = 145
+      Width = 67
+      Alignment = taRightJustify
+      Caption = '&Telephone'
+      FocusControl = ETelephone
+      Layout = tlCenter
+      ParentColor = False
+    end
+    object LECountry: TLabel
+      Left = 8
+      Height = 17
+      Top = 115
+      Width = 46
+      Alignment = taRightJustify
+      Caption = 'Countr&y'
+      FocusControl = ECountry
+      Layout = tlCenter
+      ParentColor = False
+    end
+    object LEFax: TLabel
+      Left = 288
+      Height = 17
+      Top = 145
+      Width = 23
+      Alignment = taRightJustify
+      Caption = 'Fa&x'
+      FocusControl = EFax
+      Layout = tlCenter
+      ParentColor = False
+    end
+    object LEMobile: TLabel
+      Left = 472
+      Height = 17
+      Top = 145
+      Width = 42
+      Alignment = taRightJustify
+      Caption = '&Mobile'
+      FocusControl = EMobile
+      Layout = tlCenter
+      ParentColor = False
+    end
+    object LEEmail: TLabel
+      Left = 8
+      Height = 17
+      Top = 176
+      Width = 35
+      Alignment = taRightJustify
+      Caption = '&Email'
+      FocusControl = EEmail
+      Layout = tlCenter
+      ParentColor = False
+    end
+    object LEWWW: TLabel
+      Left = 8
+      Height = 17
+      Top = 200
+      Width = 40
+      Alignment = taRightJustify
+      Caption = '&WWW'
+      FocusControl = EWWW
+      Layout = tlCenter
+      ParentColor = False
+    end
+    object ELastName: TDBEdit
+      Left = 160
+      Height = 24
+      Top = 8
+      Width = 361
+      DataField = 'LastName'
+      DataSource = DSAddress
+      CharCase = ecNormal
+      MaxLength = 0
+      TabOrder = 0
+    end
+    object EFirstName: TDBEdit
+      Left = 160
+      Height = 24
+      Top = 35
+      Width = 361
+      DataField = 'FirstName'
+      DataSource = DSAddress
+      CharCase = ecNormal
+      MaxLength = 0
+      TabOrder = 1
+    end
+    object EStreet: TDBEdit
+      Left = 160
+      Height = 24
+      Top = 62
+      Width = 361
+      DataField = 'Street'
+      DataSource = DSAddress
+      CharCase = ecNormal
+      MaxLength = 0
+      TabOrder = 2
+    end
+    object EZip: TDBEdit
+      Left = 160
+      Height = 24
+      Top = 89
+      Width = 89
+      DataField = 'Zip'
+      DataSource = DSAddress
+      CharCase = ecNormal
+      MaxLength = 0
+      TabOrder = 3
+    end
+    object ECountry: TDBEdit
+      Left = 160
+      Height = 24
+      Top = 116
+      Width = 361
+      DataField = 'Country'
+      DataSource = DSAddress
+      CharCase = ecNormal
+      MaxLength = 0
+      TabOrder = 5
+    end
+    object EWWW: TDBEdit
+      Left = 160
+      Height = 24
+      Top = 203
+      Width = 361
+      DataField = 'WWW'
+      DataSource = DSAddress
+      CharCase = ecNormal
+      MaxLength = 0
+      TabOrder = 10
+    end
+    object ETelephone: TDBEdit
+      Left = 160
+      Height = 24
+      Top = 144
+      Width = 121
+      DataField = 'Telephone'
+      DataSource = DSAddress
+      CharCase = ecNormal
+      MaxLength = 0
+      TabOrder = 6
+    end
+    object EFax: TDBEdit
+      Left = 336
+      Height = 24
+      Top = 144
+      Width = 121
+      DataField = 'Fax'
+      DataSource = DSAddress
+      CharCase = ecNormal
+      MaxLength = 0
+      TabOrder = 7
+    end
+    object EMobile: TDBEdit
+      Left = 520
+      Height = 24
+      Top = 144
+      Width = 121
+      DataField = 'Mobile'
+      DataSource = DSAddress
+      CharCase = ecNormal
+      MaxLength = 0
+      TabOrder = 8
+    end
+    object EEmail: TDBEdit
+      Left = 160
+      Height = 24
+      Top = 176
+      Width = 361
+      DataField = 'Email'
+      DataSource = DSAddress
+      CharCase = ecNormal
+      MaxLength = 0
+      TabOrder = 9
+    end
+    object ETown: TDBEdit
+      Left = 320
+      Height = 24
+      Top = 89
+      Width = 201
+      DataField = 'Town'
+      DataSource = DSAddress
+      CharCase = ecNormal
+      MaxLength = 0
+      TabOrder = 4
+    end
+  end
+  object MMain: TMainMenu
+    left = 64
+    top = 72
+    object MFile: TMenuItem
+      Caption = '&File'
+      object MINew: TMenuItem
+        Action = ANew
+        OnClick = ANewExecute
+      end
+      object MIOpen: TMenuItem
+        Action = AOpen
+        OnClick = AOpenExecute
+      end
+      object MIClose: TMenuItem
+        Action = AClose
+        OnClick = ACloseExecute
+      end
+      object N1: TMenuItem
+        Caption = '-'
+      end
+      object MIQuit: TMenuItem
+        Action = AQuit
+        OnClick = AQuitExecute
+      end
+    end
+    object Record1: TMenuItem
+      Caption = '&Record'
+      object MIFirst: TMenuItem
+        Action = AFirst
+        OnClick = DoDataAction
+      end
+      object MILAst: TMenuItem
+        Action = ALast
+        OnClick = DoDataAction
+      end
+      object MIPrior: TMenuItem
+        Action = APrior
+        OnClick = DoDataAction
+      end
+      object MINext: TMenuItem
+        Action = ANext
+        OnClick = DoDataAction
+      end
+      object N2: TMenuItem
+        Caption = '-'
+      end
+      object MIInsert: TMenuItem
+        Action = AInsert
+        OnClick = DoDataAction
+      end
+      object MIEdit: TMenuItem
+        Action = AEdit
+        OnClick = DoDataAction
+      end
+      object MIDelete: TMenuItem
+        Action = ADelete
+        OnClick = DoDataAction
+      end
+      object MIPost: TMenuItem
+        Action = APost
+        OnClick = DoDataAction
+      end
+      object MICancel: TMenuItem
+        Action = ACancel
+        OnClick = DoDataAction
+      end
+      object MIRefresh: TMenuItem
+        Action = ARefresh
+        OnClick = DoDataAction
+      end
+    end
+  end
+  object ALMain: TActionList
+    left = 135
+    top = 72
+    object ANew: TAction
+      Caption = '&New'
+      HelpType = htKeyword
+      OnExecute = ANewExecute
+    end
+    object AOpen: TAction
+      Caption = '&Open'
+      HelpType = htKeyword
+      OnExecute = AOpenExecute
+      ShortCut = 16463
+    end
+    object AClose: TAction
+      Caption = '&Close'
+      HelpType = htKeyword
+      OnExecute = ACloseExecute
+      OnUpdate = ACloseUpdate
+    end
+    object AQuit: TAction
+      Caption = '&Quit'
+      HelpType = htKeyword
+      OnExecute = AQuitExecute
+      ShortCut = 16465
+    end
+    object AFirst: TAction
+      Category = 'Dataset'
+      Caption = '&First'
+      HelpType = htKeyword
+      OnExecute = DoDataAction
+      OnUpdate = DataOpen
+      ShortCut = 16454
+    end
+    object APrior: TAction
+      Tag = 1
+      Category = 'Dataset'
+      Caption = '&Prior'
+      HelpType = htKeyword
+      OnExecute = DoDataAction
+      OnUpdate = DataOpen
+    end
+    object ANext: TAction
+      Tag = 2
+      Category = 'Dataset'
+      Caption = '&Next'
+      HelpType = htKeyword
+      OnExecute = DoDataAction
+      OnUpdate = DataOpen
+    end
+    object ALast: TAction
+      Tag = 3
+      Category = 'Dataset'
+      Caption = '&Last'
+      HelpType = htKeyword
+      OnExecute = DoDataAction
+      OnUpdate = DataOpen
+      ShortCut = 16460
+    end
+    object AInsert: TAction
+      Tag = 4
+      Category = 'Dataset'
+      Caption = '&Insert'
+      HelpType = htKeyword
+      OnExecute = DoDataAction
+      OnUpdate = DataOpen
+      ShortCut = 16462
+    end
+    object ADelete: TAction
+      Tag = 5
+      Category = 'Dataset'
+      Caption = '&Delete'
+      HelpType = htKeyword
+      OnExecute = DoDataAction
+      OnUpdate = HaveDataNotEmpty
+      ShortCut = 16452
+    end
+    object AEdit: TAction
+      Tag = 6
+      Category = 'Dataset'
+      Caption = '&Edit'
+      HelpType = htKeyword
+      OnExecute = DoDataAction
+      OnUpdate = HaveDataNotEmpty
+      ShortCut = 113
+    end
+    object APost: TAction
+      Tag = 7
+      Category = 'Dataset'
+      Caption = 'P&ost'
+      HelpType = htKeyword
+      OnExecute = DoDataAction
+      OnUpdate = InEditMode
+      ShortCut = 16467
+    end
+    object ACancel: TAction
+      Tag = 8
+      Category = 'Dataset'
+      Caption = '&Cancel'
+      HelpType = htKeyword
+      OnExecute = DoDataAction
+      OnUpdate = InEditMode
+    end
+    object ARefresh: TAction
+      Category = 'Dataset'
+      Caption = '&Refresh'
+      HelpType = htKeyword
+      OnExecute = DoDataAction
+      OnUpdate = DataOpen
+      ShortCut = 116
+    end
+  end
+  object DBA: TDbf
+    IndexDefs = <>
+    StoreDefs = True
+    TableLevel = 4
+    FilterOptions = []
+    AfterInsert = DBAAfterInsert
+    left = 215
+    top = 72
+  end
+  object SDDBA: TSaveDialog
+    DefaultExt = '.dbf'
+    Filter = 'DBF files|*.dbf|All files|*.*'
+    FilterIndex = 0
+    Options = [ofHideReadOnly, ofPathMustExist, ofEnableSizing]
+    left = 135
+    top = 144
+  end
+  object ODDBA: TOpenDialog
+    DefaultExt = '.dbf'
+    Filter = 'DBF files|*.dbf|All files|*.*'
+    FilterIndex = 0
+    Options = [ofHideReadOnly, ofFileMustExist, ofEnableSizing]
+    left = 64
+    top = 144
+  end
+  object DSAddress: TDatasource
+    DataSet = DBA
+    left = 290
+    top = 72
+  end
+end

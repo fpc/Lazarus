@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="ISO8859-1"?>
+<fpdoc-descriptions>
+<package name="gtk">
+
+<!--
+  ====================================================================
+    GtkWSSpin
+  ====================================================================
+-->
+
+<module name="GtkWSSpin">
+<short></short>
+<descr>
+</descr>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="glib">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gdk">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gtk">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Spin">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="GtkProc">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="GtkWSStdCtrls">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="WSSpin">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="WSLCLClasses">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLType">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSCustomSpinEdit">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkWSCustomSpinEdit.GetSelStart">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkWSCustomSpinEdit.GetSelStart.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomSpinEdit.GetSelStart.ACustomSpinEdit">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkWSCustomSpinEdit.GetSelLength">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkWSCustomSpinEdit.GetSelLength.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomSpinEdit.GetSelLength.ACustomSpinEdit">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkWSCustomSpinEdit.GetValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkWSCustomSpinEdit.GetValue.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomSpinEdit.GetValue.ACustomSpinEdit">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomSpinEdit.SetSelStart">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomSpinEdit.SetSelStart.ACustomSpinEdit">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomSpinEdit.SetSelStart.NewStart">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomSpinEdit.SetSelLength">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomSpinEdit.SetSelLength.ACustomSpinEdit">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomSpinEdit.SetSelLength.NewLength">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomSpinEdit.UpdateControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomSpinEdit.UpdateControl.ACustomSpinEdit">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetGtkSpinEntry">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetGtkSpinEntry.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetGtkSpinEntry.Spin">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetSpinGtkEntry">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetSpinGtkEntry.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetSpinGtkEntry.Spin">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetGtkSpinEditable">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetGtkSpinEditable.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetGtkSpinEditable.Spin">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetSpinGtkEditable">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetSpinGtkEditable.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetSpinGtkEditable.Spin">
+<short></short>
+</element>
+</module> <!-- GtkWSSpin -->
+</package>
+</fpdoc-descriptions>

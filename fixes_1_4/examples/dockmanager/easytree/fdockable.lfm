@@ -1,0 +1,40 @@
+object Dockable: TDockable
+  Left = 680
+  Height = 192
+  Top = 0
+  Width = 244
+  Caption = 'Dockable'
+  ClientHeight = 192
+  ClientWidth = 244
+  DragKind = dkDock
+  DragMode = dmAutomatic
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnResize = FormResize
+  Position = poOwnerFormCenter
+  ShowInTaskBar = stNever
+  LCLVersion = '0.9.27'
+  object Shape1: TShape
+    Left = 0
+    Height = 192
+    Top = 0
+    Width = 244
+    Align = alClient
+  end
+  object Label1: TLabel
+    Left = 10
+    Height = 14
+    Top = 10
+    Width = 33
+    Caption = 'Label1'
+    ParentColor = False
+  end
+  object Label2: TLabel
+    Left = 10
+    Height = 14
+    Top = 32
+    Width = 49
+    Caption = 'irgendwas'
+    ParentColor = False
+  end
+end

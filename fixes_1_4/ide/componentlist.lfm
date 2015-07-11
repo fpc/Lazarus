@@ -1,0 +1,238 @@
+object ComponentListForm: TComponentListForm
+  Left = 560
+  Height = 467
+  Top = 216
+  Width = 300
+  Caption = 'Components'
+  ClientHeight = 467
+  ClientWidth = 300
+  KeyPreview = True
+  OnActivate = FormActivate
+  OnClose = FormClose
+  OnKeyDown = FormKeyDown
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '1.5'
+  object PageControl: TPageControl
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = FilterPanel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel
+    Left = 0
+    Height = 400
+    Top = 27
+    Width = 300
+    ActivePage = TabSheetList
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    TabIndex = 0
+    TabOrder = 1
+    OnChange = PageControlChange
+    object TabSheetList: TTabSheet
+      Caption = 'List'
+      ClientHeight = 375
+      ClientWidth = 296
+      object Panel7: TPanel
+        Left = 0
+        Height = 375
+        Top = 0
+        Width = 296
+        Align = alClient
+        BevelOuter = bvNone
+        BorderWidth = 2
+        ClientHeight = 375
+        ClientWidth = 296
+        TabOrder = 0
+        object ListTree: TTreeView
+          Left = 2
+          Height = 371
+          Top = 2
+          Width = 292
+          Align = alClient
+          DefaultItemHeight = 26
+          Images = imListPalette
+          Indent = 25
+          ReadOnly = True
+          RowSelect = True
+          ShowButtons = False
+          ShowLines = False
+          ShowRoot = False
+          TabOrder = 0
+          OnChange = ComponentsChange
+          OnDblClick = ComponentsDblClick
+          OnKeyPress = TreeKeyPress
+          Options = [tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRowSelect, tvoToolTips]
+        end
+      end
+    end
+    object TabSheetPaletteTree: TTabSheet
+      Caption = 'Palette'
+      ClientHeight = 375
+      ClientWidth = 296
+      object pnPaletteTree: TPanel
+        Left = 0
+        Height = 375
+        Top = 0
+        Width = 296
+        Align = alClient
+        BevelOuter = bvNone
+        BorderWidth = 5
+        ClientHeight = 375
+        ClientWidth = 296
+        TabOrder = 0
+        object PalletteTree: TTreeView
+          Left = 5
+          Height = 365
+          Top = 5
+          Width = 286
+          Align = alClient
+          DefaultItemHeight = 26
+          Images = imListPalette
+          PopupMenu = pmCollapseExpand
+          ReadOnly = True
+          RightClickSelect = True
+          RowSelect = True
+          ShowLines = False
+          TabOrder = 0
+          OnChange = ComponentsChange
+          OnDblClick = ComponentsDblClick
+          OnKeyPress = TreeKeyPress
+          Options = [tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowRoot, tvoToolTips]
+        end
+      end
+    end
+    object TabSheetInheritance: TTabSheet
+      Caption = 'Inheritance'
+      ClientHeight = 375
+      ClientWidth = 296
+      object Panel6: TPanel
+        Left = 0
+        Height = 375
+        Top = 0
+        Width = 296
+        Align = alClient
+        BevelOuter = bvNone
+        BorderWidth = 5
+        ClientHeight = 375
+        ClientWidth = 296
+        TabOrder = 0
+        object InheritanceTree: TTreeView
+          Left = 5
+          Height = 365
+          Top = 5
+          Width = 286
+          Align = alClient
+          DefaultItemHeight = 26
+          Images = imListPalette
+          Indent = 20
+          PopupMenu = pmCollapseExpand
+          ReadOnly = True
+          RightClickSelect = True
+          RowSelect = True
+          TabOrder = 0
+          OnChange = ComponentsChange
+          OnDblClick = ComponentsDblClick
+          OnKeyPress = TreeKeyPress
+          Options = [tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+        end
+      end
+    end
+  end
+  object FilterPanel: TPanel
+    AnchorSideRight.Side = asrBottom
+    Left = 1
+    Height = 27
+    Top = 0
+    Width = 300
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 27
+    ClientWidth = 300
+    TabOrder = 0
+    object LabelSearch: TLabel
+      AnchorSideLeft.Control = FilterPanel
+      AnchorSideTop.Control = FilterPanel
+      Left = 6
+      Height = 15
+      Top = 6
+      Width = 74
+      BorderSpacing.Around = 6
+      Caption = 'LabelSearch'
+      ParentColor = False
+    end
+    object TreeFilterEd: TTreeFilterEdit
+      AnchorSideLeft.Control = LabelSearch
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = LabelSearch
+      AnchorSideTop.Side = asrCenter
+      Left = 86
+      Height = 21
+      Top = 3
+      Width = 210
+      OnAfterFilter = TreeFilterEdAfterFilter
+      ButtonWidth = 23
+      NumGlyphs = 1
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 5
+      MaxLength = 0
+      TabOrder = 0
+      FilteredTreeview = ListTree
+    end
+  end
+  object ButtonPanel: TButtonPanel
+    Left = 6
+    Height = 28
+    Top = 433
+    Width = 288
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    OKButton.OnClick = OKButtonClick
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 2
+    ShowButtons = [pbOK]
+    ShowBevel = False
+  end
+  object imListPalette: TImageList
+    Height = 24
+    Width = 24
+    left = 56
+    top = 112
+  end
+  object pmCollapseExpand: TPopupMenu
+    OnPopup = pmCollapseExpandPopup
+    left = 160
+    top = 112
+    object miExpand: TMenuItem
+      Caption = 'Expand'
+      OnClick = miExpandClick
+    end
+    object miExpandAll: TMenuItem
+      Caption = 'Expand All'
+      OnClick = miExpandAllClick
+    end
+    object MenuItem1: TMenuItem
+      Caption = '-'
+    end
+    object miCollapse: TMenuItem
+      Caption = 'Collapse'
+      OnClick = miCollapseClick
+    end
+    object miCollapseAll: TMenuItem
+      Caption = 'Collapse All'
+      OnClick = miCollapseAllClick
+    end
+  end
+  object imInheritance: TImageList
+    Height = 24
+    Width = 24
+    left = 56
+    top = 168
+  end
+end

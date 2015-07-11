@@ -1,0 +1,1403 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    LCLStrConsts
+  ====================================================================
+-->
+
+<module name="LCLStrConsts">
+&#x9;<short>This unit contains all resource strings of the LCL</short>
+<descr>
+</descr>
+
+<!-- resource string Visibility: default -->
+<element name="SNoMDIForm">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsMbYes">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsMbNo">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsMbOK">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsMbCancel">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsMbAbort">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsMbRetry">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsMbIgnore">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsMbAll">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsMbNoToAll">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsMbYesToAll">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsMbHelp">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsMbClose">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsMtWarning">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsMtError">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsMtInformation">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsMtConfirmation">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsMtCustom">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsfdOpenFile">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsfdOverwriteFile">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsfdFileAlreadyExists">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsfdPathMustExist">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsfdPathNoExist">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsfdFileMustExist">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsfdDirectoryMustExist">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsfdFileNotExist">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsfdDirectoryNotExist">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsfdFileReadOnlyTitle">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsfdFileReadOnly">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsfdFileSaveAs">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsAllFiles">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsfdSelectDirectory">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsSelectcolorTitle">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsSelectFontTitle">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsWarningUnremovedPaintMessages">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsWarningUnreleasedDCsDump">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsWarningUnreleasedGDIObjectsDump">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsWarningUnreleasedMessagesInQueue">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsWarningUnreleasedTimerInfos">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsFileInformation">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsgtkFilter">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsgtkHistory">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsDefaultFileInfoValue">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsBlank">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsUnableToLoadDefaultFont">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsFileInfoFileNotFound">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsgtkOptionNoTransient">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsgtkOptionModule">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsgOptionFatalWarnings">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsgtkOptionDebug">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsgtkOptionNoDebug">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsgdkOptionDebug">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsgdkOptionNoDebug">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsgtkOptionDisplay">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsgtkOptionSync">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsgtkOptionNoXshm">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsgtkOptionName">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsgtkOptionClass">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsWin32Warning">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsWin32Error">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="sInvalidActionRegistration">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="sInvalidActionUnregistration">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="sInvalidActionEnumeration">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="sInvalidActionCreation">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="sMenuNotFound">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="sMenuIndexError">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="sMenuItemIsNil">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="sNoTimers">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="sInvalidIndex">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="sInvalidImageSize">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="sDuplicateMenus">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="sCannotFocus">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsListMustBeEmpty">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsInvalidPropertyValue">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsPropertyDoesNotExist">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsInvalidStreamFormat">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsErrorReadingProperty">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsInvalidFormObjectStream">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsScrollBarOutOfRange">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsInvalidDate">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsErrorOccurredInAtAddressFrame">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsException">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsFormStreamingError">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsFixedColsTooBig">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsFixedRowsTooBig">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsGridFileDoesNotExists">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsNotAValidGridFile">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsIndexOutOfRange">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsERRORInLCL">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsCreatingGdbCatchableError">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsAControlCanNotHaveItselfAsParent">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="lisLCLResourceSNotFound">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsErrorCreatingDeviceContext">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsIndexOutOfBounds">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsUnknownPictureExtension">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsUnsupportedClipboardFormat">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsGroupIndexCannotBeLessThanPrevious">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsIsAlreadyAssociatedWith">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsCanvasDoesNotAllowDrawing">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsUnsupportedBitmapFormat">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsNoInterfaceObject">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsCanNotFocus">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsListIndexExceedsBounds">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsResourceNotFound">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsCalculator">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsError">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsPickDate">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsSize">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsModified">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_UNKNOWN">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_LBUTTON">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_RBUTTON">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_CANCEL">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_MBUTTON">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_BACK">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_TAB">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_CLEAR">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_RETURN">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_SHIFT">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_CONTROL">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_MENU">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_PAUSE">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_CAPITAL">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_KANA">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_JUNJA">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_FINAL">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_HANJA">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_ESCAPE">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_CONVERT">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_NONCONVERT">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_ACCEPT">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_MODECHANGE">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_SPACE">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_PRIOR">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_NEXT">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_END">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_HOME">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_LEFT">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_UP">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_RIGHT">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_DOWN">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_SELECT">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_PRINT">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_EXECUTE">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_SNAPSHOT">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_INSERT">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_DELETE">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_HELP">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_LWIN">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_RWIN">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_APPS">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_NUMPAD">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_NUMLOCK">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_SCROLL">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+</module> <!-- LCLStrConsts -->
+</package>
+</fpdoc-descriptions>

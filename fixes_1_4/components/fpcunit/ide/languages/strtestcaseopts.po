@@ -1,0 +1,31 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: strtestcaseopts.sbtncreate
+msgid "Create unit"
+msgstr ""
+
+#: strtestcaseopts.schksetup
+msgid "Create Setup Method"
+msgstr ""
+
+#: strtestcaseopts.schktear
+msgid "Create TearDown method"
+msgstr ""
+
+#: strtestcaseopts.sfrmtest
+msgid "TestCase Options"
+msgstr ""
+
+#: strtestcaseopts.sgrpfixture
+msgid "Fixture"
+msgstr ""
+
+#: strtestcaseopts.sgrpnames
+msgid "Names"
+msgstr ""
+
+#: strtestcaseopts.slbldefault
+msgid "Default Test Name"
+msgstr ""
+

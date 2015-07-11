@@ -1,0 +1,112 @@
+object lrEditVariablesForm: TlrEditVariablesForm
+  Left = 477
+  Height = 348
+  Top = 229
+  Width = 497
+  Caption = 'Edit variables'
+  ClientHeight = 348
+  ClientWidth = 497
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '1.1'
+  object Memo2: TMemo
+    AnchorSideLeft.Control = Label3
+    AnchorSideTop.Control = Label2
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 254
+    Height = 230
+    Top = 28
+    Width = 237
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    Lines.Strings = (
+      'Memo2'
+    )
+    TabOrder = 0
+  end
+  object BitBtn1: TBitBtn
+    AnchorSideTop.Control = ListBox1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 371
+    Height = 27
+    Top = 267
+    Width = 120
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'Select expresion'
+    OnClick = BitBtn1Click
+    TabOrder = 1
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 300
+    Width = 485
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 2
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object Label1: TLabel
+    AnchorSideTop.Side = asrBottom
+    Left = 8
+    Height = 16
+    Top = 4
+    Width = 85
+    BorderSpacing.Around = 6
+    Caption = 'Variables list'
+    ParentColor = False
+  end
+  object Label2: TLabel
+    AnchorSideLeft.Control = Label3
+    AnchorSideTop.Control = Owner
+    Left = 254
+    Height = 16
+    Top = 6
+    Width = 94
+    BorderSpacing.Around = 6
+    Caption = 'Variable value'
+    ParentColor = False
+  end
+  object ListBox1: TListBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Label3
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 6
+    Height = 268
+    Top = 26
+    Width = 236
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    ItemHeight = 0
+    OnClick = ListBox1Click
+    ScrollWidth = 234
+    TabOrder = 3
+    TopIndex = -1
+  end
+  object Label3: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Control = Owner
+    Left = 248
+    Height = 1
+    Top = 6
+    Width = 1
+    BorderSpacing.Around = 6
+    ParentColor = False
+  end
+end

@@ -1,0 +1,81 @@
+inherited fPreProcessor: TfPreProcessor
+  Height = 282
+  Width = 409
+  ClientHeight = 282
+  ClientWidth = 409
+  OnResize = FrameResize
+  TabOrder = 0
+  DesignLeft = 627
+  DesignTop = 292
+  object lblSymbols: TLabel[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cbEnable
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 14
+    Top = 29
+    Width = 210
+    BorderSpacing.Around = 6
+    Caption = 'Symbols defined for conditional compilation:'
+    ParentColor = False
+  end
+  object lblCompilerOptions: TLabel[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = mSymbols
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 14
+    Top = 140
+    Width = 250
+    BorderSpacing.Top = 6
+    BorderSpacing.Around = 6
+    Caption = 'Compiler options defined for conditional compilation:'
+    ParentColor = False
+  end
+  object mSymbols: TMemo[2]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblSymbols
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 79
+    Top = 49
+    Width = 397
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    ScrollBars = ssVertical
+    TabOrder = 1
+  end
+  object cbEnable: TCheckBox[3]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 17
+    Top = 6
+    Width = 154
+    BorderSpacing.Around = 6
+    Caption = 'Enable preprocessor parsing'
+    Checked = True
+    OnChange = cbEnableChange
+    State = cbChecked
+    TabOrder = 0
+  end
+  object mOptions: TMemo[4]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblCompilerOptions
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
+    Height = 116
+    Top = 160
+    Width = 397
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    ScrollBars = ssVertical
+    TabOrder = 2
+  end
+end

@@ -1,0 +1,175 @@
+object PackageIntegrationOptionsFrame: TPackageIntegrationOptionsFrame
+  Left = 0
+  Height = 352
+  Top = 0
+  Width = 461
+  ClientHeight = 352
+  ClientWidth = 461
+  TabOrder = 0
+  DesignLeft = 768
+  DesignTop = 267
+  object UpdateRadioGroup: TRadioGroup
+    Left = 0
+    Height = 103
+    Top = 133
+    Width = 461
+    Align = alTop
+    AutoFill = True
+    AutoSize = True
+    BorderSpacing.Top = 6
+    Caption = 'Update/Rebuild'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 84
+    ClientWidth = 457
+    ItemIndex = 0
+    Items.Strings = (
+      'Automatically rebuild as needed'
+      'Auto rebuild when rebuilding all'
+      'Manual compilation (never automatically)'
+    )
+    TabOrder = 0
+  end
+  object DocGroupBox: TGroupBox
+    Left = 0
+    Height = 91
+    Top = 242
+    Width = 461
+    Align = alTop
+    AutoSize = True
+    BorderSpacing.Top = 6
+    Caption = 'FPDoc settings'
+    ClientHeight = 72
+    ClientWidth = 457
+    TabOrder = 1
+    object FPDocSearchPathsEdit: TEdit
+      AnchorSideLeft.Control = FPDocSearchPathsLabel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = DocGroupBox
+      AnchorSideRight.Control = DocGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 175
+      Height = 27
+      Top = 6
+      Width = 276
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 0
+      Text = 'FPDocSearchPathsEdit'
+    end
+    object FPDocSearchPathsLabel: TLabel
+      AnchorSideLeft.Control = DocGroupBox
+      AnchorSideTop.Control = FPDocSearchPathsEdit
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 17
+      Top = 11
+      Width = 163
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      Caption = 'FPDocSearchPathsLabel'
+      ParentColor = False
+    end
+    object FPDocPackageNameLabel: TLabel
+      AnchorSideLeft.Control = DocGroupBox
+      AnchorSideTop.Control = FPDocPackageNameEdit
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 17
+      Top = 44
+      Width = 176
+      BorderSpacing.Left = 6
+      Caption = 'FPDocPackageNameLabel'
+      ParentColor = False
+    end
+    object FPDocPackageNameEdit: TEdit
+      AnchorSideLeft.Control = FPDocPackageNameLabel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = FPDocSearchPathsEdit
+      AnchorSideTop.Side = asrBottom
+      Left = 188
+      Height = 27
+      Top = 39
+      Width = 116
+      BorderSpacing.Around = 6
+      OnEnter = FPDocPackageNameEditEnter
+      OnExit = FPDocPackageNameEditExit
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 1
+      Text = 'FPDocPackageNameEdit'
+    end
+  end
+  object PkgTypeGroupBox: TGroupBox
+    Left = 0
+    Height = 127
+    Top = 0
+    Width = 461
+    Align = alTop
+    AutoSize = True
+    Caption = 'PackageType'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 108
+    ClientWidth = 457
+    Constraints.MinHeight = 30
+    TabOrder = 2
+    OnClick = PkgTypeGroupBoxClick
+    object RunAndDesignTimeRadioButton: TRadioButton
+      Left = 6
+      Height = 24
+      Top = 6
+      Width = 445
+      Caption = 'RunAndDesignTimeRadioButton'
+      Checked = True
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 0
+      TabStop = True
+    end
+    object DesignTimeRadioButton: TRadioButton
+      Left = 6
+      Height = 24
+      Top = 30
+      Width = 445
+      Caption = 'DesignTimeRadioButton'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 1
+    end
+    object RunTimeRadioButton: TRadioButton
+      Left = 6
+      Height = 24
+      Top = 54
+      Width = 445
+      Caption = 'RunTimeRadioButton'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 2
+    end
+    object RunTimeOnlyRadioButton: TRadioButton
+      Left = 6
+      Height = 24
+      Top = 78
+      Width = 445
+      Caption = 'RunTimeOnlyRadioButton'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 3
+    end
+  end
+end

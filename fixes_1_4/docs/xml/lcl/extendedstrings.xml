@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+  <package name="lcl">
+    <!--
+  ====================================================================
+    ExtendedStrings
+  ====================================================================
+-->
+    <module name="ExtendedStrings">
+      <short>Defines <var>TExtendedStrings</var> which is a normal <var>TStringList</var>, except that the Objects can hold any type of records</short>
+      <descr/>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="SysUtils">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TExtStringsOption">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TExtStringsOption.esoClearRecordsOnCreate">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TExtStringsOption.esoFreeObjectsOnDelete">
+        <short/>
+      </element>
+      <!-- set type Visibility: default -->
+      <element name="TExtStringsOptions">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TExtendedStringList">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TExtendedStringList.FOptions">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TExtendedStringList.FRecordSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TExtendedStringList.GetRecords">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TExtendedStringList.GetRecords.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TExtendedStringList.GetRecords.Index">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TExtendedStringList.SetOptions">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TExtendedStringList.SetOptions.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TExtendedStringList.SetRecords">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TExtendedStringList.SetRecords.Index">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TExtendedStringList.SetRecords.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TExtendedStringList.SetRecordSize">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TExtendedStringList.SetRecordSize.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TExtendedStringList.DoResizeRecord">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TExtendedStringList.DoResizeRecord.Index">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TExtendedStringList.DoResizeRecord.OldSize">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TExtendedStringList.DoResizeRecord.NewSize">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TExtendedStringList.ResizeRecord">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TExtendedStringList.ResizeRecord.ARecord">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TExtendedStringList.ResizeRecord.Index">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TExtendedStringList.ResizeRecord.OldSize">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TExtendedStringList.ResizeRecord.NewSize">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TExtendedStringList.GetObject">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TExtendedStringList.GetObject.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TExtendedStringList.GetObject.Index">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TExtendedStringList.PutObject">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TExtendedStringList.PutObject.Index">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TExtendedStringList.PutObject.AnObject">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TExtendedStringList.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TExtendedStringList.Create.InitialRecordSize">
+        <short/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TExtendedStringList.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TExtendedStringList.Clear">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TExtendedStringList.Delete">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TExtendedStringList.Delete.Index">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TExtendedStringList.CreateRecord">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TExtendedStringList.CreateRecord.Index">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TExtendedStringList.FreeRecord">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TExtendedStringList.FreeRecord.Index">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TExtendedStringList.FreeAllRecords">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TExtendedStringList.RecordAllocated">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TExtendedStringList.RecordAllocated.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TExtendedStringList.RecordAllocated.Index">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TExtendedStringList.Records">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TExtendedStringList.Records.Index">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TExtendedStringList.RecordSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TExtendedStringList.Options">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+    </module>
+    <!-- ExtendedStrings -->
+  </package>
+</fpdoc-descriptions>

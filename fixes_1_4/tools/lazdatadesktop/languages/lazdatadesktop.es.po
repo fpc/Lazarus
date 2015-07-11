@@ -1,0 +1,780 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Lucas Martín <codedeep@hotmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: lazdatadeskstr.eoaddterminator
+msgid "Add terminator"
+msgstr "Añadir terminador"
+
+#: lazdatadeskstr.eoandtermsinbrackets
+msgid "Put brackets around AND Terms"
+msgstr "Poner corchetes alrededor de los términos \"AND\""
+
+#: lazdatadeskstr.eolinefeedafterandterm
+msgid "Linefeed after AND terms"
+msgstr "Avance de línea después de términos \"AND\""
+
+#: lazdatadeskstr.eolinefeedafterfield
+msgid "Linefeed after each field"
+msgstr "Avance de línea después de cada campo"
+
+#: lazdatadeskstr.eoquotefieldnames
+msgid "Quote field names"
+msgstr "Comillar nombres de campo"
+
+#: lazdatadeskstr.eoskipforeignkeys
+msgid "Skip foreign keys"
+msgstr "Saltar llaves foraneas (externas)"
+
+#: lazdatadeskstr.eouseoldinwhereparams
+msgid "Use OLD prefix in where parameters"
+msgstr "Usar prefijos \"OLD\" en parámetros \"WHERE\""
+
+#: lazdatadeskstr.sclose
+msgid "Close result"
+msgstr "Cerrar resultados"
+
+#: lazdatadeskstr.scolfields
+msgctxt "lazdatadeskstr.scolfields"
+msgid "Fields"
+msgstr "Campos"
+
+#: lazdatadeskstr.scolname
+msgctxt "lazdatadeskstr.scolname"
+msgid "Name"
+msgstr "Nombre"
+
+#: lazdatadeskstr.scoloptions
+msgctxt "lazdatadeskstr.scoloptions"
+msgid "Options"
+msgstr "Opciones"
+
+#: lazdatadeskstr.scolsize
+msgid "Size"
+msgstr "Tamaño"
+
+#: lazdatadeskstr.scoltype
+msgid "Type"
+msgstr "Tipo"
+
+#: lazdatadeskstr.sconfirmclose
+msgid "Confirm close"
+msgstr "Confirma cerrar"
+
+#: lazdatadeskstr.sconnectiondescription
+msgid "Enter a descriptive name for the connection"
+msgstr "Escriba un nombre descriptivo para la conexión"
+
+#: lazdatadeskstr.sconnectionnameexists
+msgid ""
+"There is already a connection named \"%s\"\n"
+"Would you like to override the connection data ?\n"
+msgstr ""
+"Ya existe una conexión denominada \"%s\"\n"
+"¿Desea reemplazar esta conexión de datos? ?\n"
+
+#: lazdatadeskstr.screatecode
+msgid "Create code"
+msgstr "Crear código"
+
+#: lazdatadeskstr.screateconnection
+msgid "Would you like to create a new connection for this database ?"
+msgstr "¿Desea crear una nueva conexión para esta base de datos?"
+
+#: lazdatadeskstr.sddmodified
+msgid ""
+"Data dictionary \"%s\" has changed.\n"
+"What do you want to do with the changes?\n"
+msgstr ""
+"Diccionario de datos \"%s\" ha cambiado.\n"
+"¿Qué quieres hacer con los cambios?\n"
+
+#: lazdatadeskstr.sdeleteobject
+msgid "Delete this %s"
+msgstr "Elimiar este %s"
+
+#: lazdatadeskstr.sdescription
+msgctxt "lazdatadeskstr.sdescription"
+msgid "Description"
+msgstr "Descripción"
+
+#: lazdatadeskstr.sdomain
+msgid "Domain"
+msgstr "Dominio"
+
+#: lazdatadeskstr.sdontclose
+msgid "Do not close editor"
+msgstr "No cerrar editor"
+
+#: lazdatadeskstr.sdontsave
+msgid "Discard changes"
+msgstr "Descartar cambios"
+
+#: lazdatadeskstr.senginetype
+msgid "Engine"
+msgstr "Motor"
+
+#: lazdatadeskstr.serrnoengine
+msgid "No database engine !"
+msgstr "¡ No hay motor de base de datos !"
+
+#: lazdatadeskstr.serrselectfields
+msgid "No fields selected. Please select some fields"
+msgstr "No hay campos selecionados. Por favor, seleccione algunos campos"
+
+#: lazdatadeskstr.serrselecttable
+msgid "No table selected. Please select a table"
+msgstr "No hay tabla seleccionada. Por favor, seleccione una tabla"
+
+#: lazdatadeskstr.serrunknowntype
+msgid "Unknown object type: %d"
+msgstr "Tipo de objeto desconocido: %d"
+
+#: lazdatadeskstr.sexecute
+msgid "Execute SQL"
+msgstr "Ejecute SQL"
+
+#: lazdatadeskstr.sexport
+msgid "Export data"
+msgstr "Exportar datos"
+
+#: lazdatadeskstr.sfield
+msgid "Field"
+msgstr "Campo"
+
+#: lazdatadeskstr.sforeignkey
+msgid "Foreign key"
+msgstr "Llave foranea (externa)"
+
+#: lazdatadeskstr.shintclose
+msgid "Close query result data panel"
+msgstr "Cerrar panel de datos con resultados de la consulta"
+
+#: lazdatadeskstr.shintcreatecode
+msgid "Create pascal code for this data"
+msgstr "Crear código pascal para estos datos"
+
+#: lazdatadeskstr.shintexecute
+msgid "Execute SQL statement"
+msgstr "Ejecutar instrucción \"SQL\""
+
+#: lazdatadeskstr.shintexport
+msgid "Export this data"
+msgstr "Exportar estos datos"
+
+#: lazdatadeskstr.shintload
+msgid "Load SQL statement from file"
+msgstr "Cargar instrucción \"SQL\" desde archivo"
+
+#: lazdatadeskstr.shintnext
+msgid "Next SQL statement"
+msgstr "Siguiente instrucción \"SQL\""
+
+#: lazdatadeskstr.shintprevious
+msgid "Previous SQL statement"
+msgstr "Anterior instrucción \"SQL\""
+
+#: lazdatadeskstr.shintsave
+msgid "Save SQL statement to file"
+msgstr "Salvar instrucción \"SQL\" a archivo"
+
+#: lazdatadeskstr.simportdictinto
+msgid "Import datadictionary"
+msgstr "Importar diccionario de datos"
+
+#: lazdatadeskstr.sindex
+msgid "Index"
+msgstr "Índice"
+
+#: lazdatadeskstr.sld_actionadddomain
+msgid "New domain"
+msgstr "Nuevo dominio"
+
+#: lazdatadeskstr.sld_actionadddomainh
+msgid "Add a domain to the data dictionary"
+msgstr "Añadir un dominio a un diccionario de datos"
+
+#: lazdatadeskstr.sld_actionaddforeignkey
+msgid "New Foreign Key"
+msgstr "Nueva llave foranea (externa)"
+
+#: lazdatadeskstr.sld_actionaddforeignkeyh
+msgid "Add a foreign key to the table"
+msgstr "Añadir una llave foranea (externa) a la tabla"
+
+#: lazdatadeskstr.sld_actionaddsequence
+msgid "New sequence"
+msgstr "Nueva secuencia"
+
+#: lazdatadeskstr.sld_actionaddsequenceh
+msgid "Add a sequence"
+msgstr "Añadir secuencia"
+
+#: lazdatadeskstr.sld_actionclose
+msgid "&Close"
+msgstr "&Cerrar"
+
+#: lazdatadeskstr.sld_actioncloseall
+msgid "Close &All"
+msgstr "Cerrar &Todos"
+
+#: lazdatadeskstr.sld_actioncloseallh
+msgid "Close all Data Dictionaries"
+msgstr "Cerrar todos los diccionarios de datos"
+
+#: lazdatadeskstr.sld_actioncloseh
+msgid "Close current Data Dictionary"
+msgstr "Cerrar actual diccionario de datos"
+
+#: lazdatadeskstr.sld_actioncopy
+msgid "&Copy"
+msgstr "&Copiar"
+
+#: lazdatadeskstr.sld_actioncopyconnection
+msgid "&Copy connection"
+msgstr "&Copiar conexión"
+
+#: lazdatadeskstr.sld_actioncopyh
+msgid "Copy"
+msgstr "Copiar"
+
+#: lazdatadeskstr.sld_actioncreatecode
+msgid "Create &code"
+msgstr "Crear &código"
+
+#: lazdatadeskstr.sld_actioncreatecodeh
+msgid "Create code from definition or data"
+msgstr "Crear código desde definición o datos"
+
+#: lazdatadeskstr.sld_actioncut
+msgid "Cu&t"
+msgstr "Cor&tar"
+
+#: lazdatadeskstr.sld_actioncuth
+msgid "Cut"
+msgstr "Cortar"
+
+#: lazdatadeskstr.sld_actiondeleteconnection
+msgid "&Delete connection"
+msgstr "&Eliminar conexión"
+
+#: lazdatadeskstr.sld_actiondeleteobject
+msgid "Delete &Object"
+msgstr "Eliminar &Objeto"
+
+#: lazdatadeskstr.sld_actiondeleteobjecth
+msgid "Delete the currently selected object"
+msgstr "Eliminar objeto seleccionado actualmente"
+
+#: lazdatadeskstr.sld_actiondeleterecentdatadict
+msgctxt "lazdatadeskstr.sld_actiondeleterecentdatadict"
+msgid "&Delete"
+msgstr "&Eliminar"
+
+#: lazdatadeskstr.sld_actionexit
+msgid "E&xit"
+msgstr "&Salir"
+
+#: lazdatadeskstr.sld_actionexith
+msgid "Quit this program"
+msgstr "Cerrar este programa"
+
+#: lazdatadeskstr.sld_actiongeneratesql
+msgid "&Generate SQL"
+msgstr "&Generar \"SQL\""
+
+#: lazdatadeskstr.sld_actiongeneratesqlh
+msgid "Generate SQL statements for the current table"
+msgstr "Generar sentencia \"SQL\" para la tabla actual"
+
+#: lazdatadeskstr.sld_actionnew
+msgid "&New"
+msgstr "&Nuevo"
+
+#: lazdatadeskstr.sld_actionnewconnection
+msgid "&New connection"
+msgstr "&Nueva conexión"
+
+#: lazdatadeskstr.sld_actionnewfield
+msgid "New &field"
+msgstr "Nuevo &campo"
+
+#: lazdatadeskstr.sld_actionnewfieldh
+msgid "Create a new field in the current table"
+msgstr "Crear un nuevo campo en la tabla actual"
+
+#: lazdatadeskstr.sld_actionnewh
+msgid "Create a new Data Dictionary"
+msgstr "Crear un nuevo Diccionario de Datos"
+
+#: lazdatadeskstr.sld_actionnewindex
+msgid "New index"
+msgstr "Nuevo índice"
+
+#: lazdatadeskstr.sld_actionnewindexh
+msgid "Add new index to current table"
+msgstr "Añadir nuevo índice a la tabla actual"
+
+#: lazdatadeskstr.sld_actionnewtable
+msgid "New &table"
+msgstr "Nueva &tabla"
+
+#: lazdatadeskstr.sld_actionnewtableh
+msgid "Create a new table"
+msgstr "Crear una nueva tabla"
+
+#: lazdatadeskstr.sld_actionopen
+msgid "&Open ..."
+msgstr "&Abrir ..."
+
+#: lazdatadeskstr.sld_actionopenconnection
+msgid "&Open connection"
+msgstr "&Abrir conexión"
+
+#: lazdatadeskstr.sld_actionopenconnectionh
+msgid "Open selected recent connection"
+msgstr "Abrir conexión seleccionada recientemente"
+
+#: lazdatadeskstr.sld_actionopenh
+msgid "Open a new Data Dictionary"
+msgstr "Abrir un nuevo Diccionario de Datos"
+
+#: lazdatadeskstr.sld_actionopenrecentdatadict
+msgid "Open"
+msgstr "Abrir"
+
+#: lazdatadeskstr.sld_actionopenrecentdatadicth
+msgid "Open selected recent datadictionary"
+msgstr "Abrir diccionario de datos seleccionado recientemente"
+
+#: lazdatadeskstr.sld_actionpaste
+msgid "&Paste"
+msgstr "&Pegar"
+
+#: lazdatadeskstr.sld_actionpasteh
+msgid "Paste"
+msgstr "Pegar"
+
+#: lazdatadeskstr.sld_actionsave
+msgid "&Save"
+msgstr "&Salvar"
+
+#: lazdatadeskstr.sld_actionsaveas
+msgid "Save &as"
+msgstr "Salvar &como"
+
+#: lazdatadeskstr.sld_actionsaveash
+msgid "Save datadictionary as"
+msgstr "Salvar diccionario de datos como"
+
+#: lazdatadeskstr.sld_actionsaveh
+msgid "Save Data Dictionary"
+msgstr "Salvar diccionario de datos"
+
+#: lazdatadeskstr.sld_cancel
+msgid "&Cancel"
+msgstr "&Cancelar"
+
+#: lazdatadeskstr.sld_charset
+msgid "Charset"
+msgstr "Conjunto de caracteres"
+
+#: lazdatadeskstr.sld_connectionlv1
+msgctxt "lazdatadeskstr.sld_connectionlv1"
+msgid "Name"
+msgstr "Nombre"
+
+#: lazdatadeskstr.sld_connectionlv2
+msgid "Driver"
+msgstr "Driver"
+
+#: lazdatadeskstr.sld_connectionlv3
+msgid "Last used"
+msgstr "Último usado"
+
+#: lazdatadeskstr.sld_connectionlv4
+msgctxt "lazdatadeskstr.sld_connectionlv4"
+msgid "Description"
+msgstr "Descripción"
+
+#: lazdatadeskstr.sld_connections
+msgctxt "lazdatadeskstr.sld_connections"
+msgid "Connections"
+msgstr "Conexiones"
+
+#: lazdatadeskstr.sld_connecttoadatabase
+msgid "Connect to a database"
+msgstr "Conectar a una base de datos"
+
+#: lazdatadeskstr.sld_createfulltablecreationsql
+msgid "Create full table creation SQL"
+msgstr "Generar \"SQL\" "
+
+#: lazdatadeskstr.sld_createtable
+msgid "Create table"
+msgstr "Crear tabla"
+
+#: lazdatadeskstr.sld_database
+msgctxt "lazdatadeskstr.sld_database"
+msgid "Database"
+msgstr "Base de datos"
+
+#: lazdatadeskstr.sld_delete
+msgctxt "lazdatadeskstr.sld_delete"
+msgid "&Delete"
+msgstr "&Eliminar"
+
+#: lazdatadeskstr.sld_dictionaries
+msgid "Dictionaries"
+msgstr "Diccionarios"
+
+#: lazdatadeskstr.sld_fromconnection
+msgid "From connection"
+msgstr "Desde la conexión"
+
+#: lazdatadeskstr.sld_generatesql
+msgid "Generate SQL"
+msgstr "Generar \"SQL\""
+
+#: lazdatadeskstr.sld_generatesqlstatements
+msgid "Generate SQL statements"
+msgstr "Generar sentencia \"SQL\""
+
+#: lazdatadeskstr.sld_host
+msgid "Host"
+msgstr "Host (anfitrión)"
+
+#: lazdatadeskstr.sld_importupdatedatadictionary
+msgid "Import/Update datadictionary"
+msgstr "Importar/Actualizar diccionario de datos"
+
+#: lazdatadeskstr.sld_indent
+msgid "I&ndent"
+msgstr "Sa&ngrar"
+
+#: lazdatadeskstr.sld_insert
+msgid "&Insert"
+msgstr "&Insertar"
+
+#: lazdatadeskstr.sld_keyfields
+msgid "&Key fields"
+msgstr "&Campos llave"
+
+#: lazdatadeskstr.sld_lazarusdatabasedesktop
+msgid "Lazarus Database Desktop"
+msgstr "Lazarus Database Desktop"
+
+#: lazdatadeskstr.sld_linelength
+msgid "Line Length"
+msgstr "Largo de línea"
+
+#: lazdatadeskstr.sld_menuconnections
+msgctxt "lazdatadeskstr.sld_menuconnections"
+msgid "Connections"
+msgstr "Conexiones"
+
+#: lazdatadeskstr.sld_menudictionary
+msgid "&Dictionary"
+msgstr "&Diccionario"
+
+#: lazdatadeskstr.sld_menudictionaryimport
+msgid "&Import"
+msgstr "&Importar"
+
+#: lazdatadeskstr.sld_menuedit
+msgid "&Edit"
+msgstr "&Editar"
+
+#: lazdatadeskstr.sld_menufile
+msgid "&File"
+msgstr "&Archivo"
+
+#: lazdatadeskstr.sld_ok
+msgid "&OK"
+msgstr "&OK"
+
+#: lazdatadeskstr.sld_opendatadictionaryfilter
+msgctxt "lazdatadeskstr.sld_opendatadictionaryfilter"
+msgid "Data dictionary files|*.fpd|Ini files|*.ini|All files|*.*"
+msgstr "Archivos de dicionario de datos|*.fpd|Archivos Ini|*.ini|Todos los archivos|*.*"
+
+#: lazdatadeskstr.sld_opendatadictionarytitle
+msgid "Open data dictionary"
+msgstr "Abrir dicionario de datos"
+
+#: lazdatadeskstr.sld_options
+msgctxt "lazdatadeskstr.sld_options"
+msgid "Options"
+msgstr "Opciones"
+
+#: lazdatadeskstr.sld_password
+msgid "Password"
+msgstr "Contraseña"
+
+#: lazdatadeskstr.sld_recentlv1
+msgctxt "lazdatadeskstr.sld_recentlv1"
+msgid "Name"
+msgstr "Nombre"
+
+#: lazdatadeskstr.sld_recentlv2
+msgid "Filename"
+msgstr "Nombre de archivo"
+
+#: lazdatadeskstr.sld_recentlv3
+msgid "Last used on"
+msgstr "Última utilización"
+
+#: lazdatadeskstr.sld_savefileasfilter
+msgctxt "lazdatadeskstr.sld_savefileasfilter"
+msgid "Data dictionary files|*.fpd|Ini files|*.ini|All files|*.*"
+msgstr "Archivos de diccionario de datos|*.fpd|Archivos Ini|*.ini|Todos los archivos|*.*"
+
+#: lazdatadeskstr.sld_savefileastitle
+msgid "Save file as"
+msgstr "Salvar archivo como"
+
+#: lazdatadeskstr.sld_select
+msgid "&Select"
+msgstr "&Seleccionar"
+
+#: lazdatadeskstr.sld_selectaconnectiontype
+msgid "Select a conection type"
+msgstr "Seleccionar un tipo de conexión"
+
+#: lazdatadeskstr.sld_selectall
+msgid "Select &all"
+msgstr "Selecionar &todo"
+
+#: lazdatadeskstr.sld_selectnone
+msgid "Select &none"
+msgstr "Seleccionar &nada"
+
+#: lazdatadeskstr.sld_selectupdateinsertfields
+msgid "Select/Update/Insert fields"
+msgstr "Seleccionar/Actualizar/Insertar campos"
+
+#: lazdatadeskstr.sld_separator
+msgid "-"
+msgstr "-"
+
+#: lazdatadeskstr.sld_table
+msgid "Ta&ble"
+msgstr "Ta&bla"
+
+#: lazdatadeskstr.sld_tableandfields
+msgid "Tables and &Fields"
+msgstr "Tablas y &campos"
+
+#: lazdatadeskstr.sld_update
+msgid "&Update"
+msgstr "&Actualizar"
+
+#: lazdatadeskstr.sld_updateexistingtables
+msgid "Update existing tables"
+msgstr "Actualizar tablas existentes"
+
+#: lazdatadeskstr.sld_username
+msgid "Username"
+msgstr "Usuario"
+
+#: lazdatadeskstr.sload
+msgid "Load SQL"
+msgstr "Cargar \"SQL\""
+
+#: lazdatadeskstr.snamefor
+msgid "Enter a name for the new %s"
+msgstr "Escriba un nombre para el nuevo %s"
+
+#: lazdatadeskstr.snew
+msgid "New %s"
+msgstr "Nuevo %s"
+
+#: lazdatadeskstr.snewconnection
+msgid "New connection"
+msgstr "Nueva conexión"
+
+#: lazdatadeskstr.snewdictionary
+msgid "New database"
+msgstr "Nueva base de datos"
+
+#: lazdatadeskstr.snewdomain
+msgid "Create new domain"
+msgstr "Crear nuevo dominio"
+
+#: lazdatadeskstr.snewdomainname
+msgid "Enter a name for the new domain:"
+msgstr "Escriba un nombre para el nuevo dominio:"
+
+#: lazdatadeskstr.snewfield
+msgid "Create new field in table %s"
+msgstr "Crear nuevo campo en la tabla %s"
+
+#: lazdatadeskstr.snewfieldname
+msgid "Enter a name for the new field:"
+msgstr "Escriba un nombre para el nuevo campo:"
+
+#: lazdatadeskstr.snewforeignkey
+msgid "Create new foreign key in table %s"
+msgstr "Crear nueva llave foranea (externa) en la tabla %s"
+
+#: lazdatadeskstr.snewforeignkeyname
+msgid "Enter a name for the new foreign key:"
+msgstr "Escriba un nombre para la nueva llave foranea (externa):"
+
+#: lazdatadeskstr.snewindex
+msgid "Create new index on table %s"
+msgstr "Crear nuevo índice en la tabla %s"
+
+#: lazdatadeskstr.snewindexname
+msgid "Enter a name for the new index:"
+msgstr "Escriba un nombre para el nuevo índice:"
+
+#: lazdatadeskstr.snewobject
+msgid "Create new %s"
+msgstr "Crear nuevo %s"
+
+#: lazdatadeskstr.snewsequence
+msgid "Create new sequence"
+msgstr "Crear nueva sentencia"
+
+#: lazdatadeskstr.snewsequencename
+msgid "Enter a name for the new sequence:"
+msgstr "Escriba un nombre para la nueva sentencia:"
+
+#: lazdatadeskstr.snewtable
+msgid "Create new table"
+msgstr "Crear nueva tabla"
+
+#: lazdatadeskstr.snewtablename
+msgid "Enter a name for the new table:"
+msgstr "Escriba un nombre para la nueva tabla:"
+
+#: lazdatadeskstr.snext
+msgid "Next"
+msgstr "Siguiente"
+
+#: lazdatadeskstr.snodedatabase
+msgctxt "lazdatadeskstr.snodedatabase"
+msgid "Database"
+msgstr "Base de datos"
+
+#: lazdatadeskstr.snodedatadictionary
+msgid "Datadictionary"
+msgstr "Diccionario de datos"
+
+#: lazdatadeskstr.snodedomains
+msgid "Domains"
+msgstr "Dominios"
+
+#: lazdatadeskstr.snodefields
+msgctxt "lazdatadeskstr.snodefields"
+msgid "Fields"
+msgstr "Campos"
+
+#: lazdatadeskstr.snodeforeignkeys
+msgid "Foreign keys"
+msgstr "Llaves foraneas (externas)"
+
+#: lazdatadeskstr.snodeindexes
+msgid "Indexes"
+msgstr "Índices"
+
+#: lazdatadeskstr.snodeindexfields
+msgid "Index fields: "
+msgstr "Campos índice: "
+
+#: lazdatadeskstr.snodeindexoptions
+msgid "Index options: "
+msgstr "Opciones de índice: "
+
+#: lazdatadeskstr.snodesequences
+msgid "Sequences"
+msgstr "Sentencias"
+
+#: lazdatadeskstr.snodetabledata
+msgid "Table Data"
+msgstr "Tabla de datos"
+
+#: lazdatadeskstr.snodetables
+msgid "Tables"
+msgstr "Tablas"
+
+#: lazdatadeskstr.sobject
+msgid "Object"
+msgstr "Objeto"
+
+#: lazdatadeskstr.sparameter
+msgid "Parameter"
+msgstr "Parámetro"
+
+#: lazdatadeskstr.sprevious
+msgid "Previous"
+msgstr "Anterior"
+
+#: lazdatadeskstr.squery
+msgid "Run query"
+msgstr "Ejecutar consulta"
+
+#: lazdatadeskstr.srowsaffected
+msgid "Query executed successfully: %d rows affected."
+msgstr "Consulta ejecutada con éxito: %d registros afectados."
+
+#: lazdatadeskstr.ssave
+msgid "Save SQL"
+msgstr "Salvar \"SQL\""
+
+#: lazdatadeskstr.ssavedata
+msgid "Save changes"
+msgstr "Salvar cambios"
+
+#: lazdatadeskstr.sselectdbfdir
+msgid "Select a directory with DBF files"
+msgstr "Seleccionar un directorio con archivos \"DBF\""
+
+#: lazdatadeskstr.sselectedobject
+msgid "Selected object"
+msgstr "Objeto seleccionado"
+
+#: lazdatadeskstr.ssequence
+msgid "Sequence"
+msgstr "Secuencia"
+
+#: lazdatadeskstr.ssqlfilters
+msgid "SQL files|*.sql|All files|*.*"
+msgstr "Archivos \"SQL\"|*.sql|Todos los archivos|*.*"
+
+#: lazdatadeskstr.stable
+msgid "Table"
+msgstr "Tabla"
+
+#: lazdatadeskstr.sunknownconnection
+msgid "Unknown connection: %s"
+msgstr "Conexión desconocida: %s"
+
+#: lazdatadeskstr.sunknowndictionary
+msgid "Unknown data dictionary: %s"
+msgstr "Diccionario de datos desconocido: %s"
+
+#: lazdatadeskstr.susecurrentdict
+msgid "Yes, use the active dictionary"
+msgstr "Si, usar el dicionario activo"
+
+#: lazdatadeskstr.susenewdict
+msgid "No, import in a new dictionary"
+msgstr "No, importar un nuevo diccionario"
+
+#: lazdatadeskstr.svalue
+msgid "Value"
+msgstr "Valor"
+
+#: lazdatadeskstr.swhichcurrentdicttouse
+msgid "A data dictionary is active.Would you like to import into this data dictionary ?"
+msgstr "Un diccionario de datos está activo. ¿ Deseas importar este diccionario de datos ?"
+

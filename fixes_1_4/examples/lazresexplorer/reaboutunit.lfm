@@ -1,0 +1,132 @@
+object reAboutForm: TreAboutForm
+  Left = 428
+  Height = 471
+  Top = 293
+  Width = 527
+  ActiveControl = ListBox1
+  Caption = 'reAboutForm'
+  ClientHeight = 471
+  ClientWidth = 527
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 40
+    Top = 425
+    Width = 515
+    TabOrder = 0
+    ShowButtons = [pbClose, pbHelp]
+  end
+  object Label2: TLabel
+    AnchorSideTop.Control = Owner
+    Left = 0
+    Height = 18
+    Top = 24
+    Width = 527
+    Align = alTop
+    Alignment = taCenter
+    Caption = 'by Lagunov A.A. (alexs)'
+    ParentColor = False
+  end
+  object lblLicense: TLabel
+    AnchorSideTop.Control = Label2
+    Left = 0
+    Height = 18
+    Top = 42
+    Width = 527
+    Align = alTop
+    Alignment = taCenter
+    Caption = 'App name'
+    ParentColor = False
+    WordWrap = True
+  end
+  object lblBuildDate: TLabel
+    AnchorSideTop.Control = lblLicense
+    Left = 0
+    Height = 18
+    Top = 66
+    Width = 527
+    Align = alTop
+    Alignment = taCenter
+    BorderSpacing.Top = 6
+    Caption = 'Build date :'
+    ParentColor = False
+  end
+  object lblLCLVersion: TLabel
+    AnchorSideTop.Control = lblBuildDate
+    Left = 0
+    Height = 18
+    Top = 84
+    Width = 527
+    Align = alTop
+    Alignment = taCenter
+    Caption = 'LCL Version :'
+    ParentColor = False
+  end
+  object lblFPCVersion: TLabel
+    AnchorSideTop.Control = lblLCLVersion
+    Left = 0
+    Height = 18
+    Top = 102
+    Width = 527
+    Align = alTop
+    Alignment = taCenter
+    Caption = 'FPC Version :'
+    ParentColor = False
+  end
+  object lblTargCPU: TLabel
+    AnchorSideTop.Control = lblFPCVersion
+    Left = 0
+    Height = 18
+    Top = 120
+    Width = 527
+    Align = alTop
+    Alignment = taCenter
+    Caption = 'Target CPU :'
+    ParentColor = False
+  end
+  object lblTargetOS: TLabel
+    Left = 0
+    Height = 18
+    Top = 138
+    Width = 527
+    Align = alTop
+    Alignment = taCenter
+    Caption = 'Target OS :'
+    ParentColor = False
+  end
+  object lblWidgetName: TLabel
+    AnchorSideTop.Control = lblTargetOS
+    Left = 0
+    Height = 18
+    Top = 156
+    Width = 527
+    Align = alTop
+    Alignment = taCenter
+    Caption = 'Widget Name'
+    ParentColor = False
+  end
+  object ListBox1: TListBox
+    Left = 0
+    Height = 245
+    Top = 174
+    Width = 527
+    Align = alClient
+    ItemHeight = 0
+    TabOrder = 1
+    TopIndex = -1
+  end
+  object lblAppName: TLabel
+    AnchorSideTop.Control = Label2
+    Left = 0
+    Height = 18
+    Top = 6
+    Width = 527
+    Align = alTop
+    Alignment = taCenter
+    BorderSpacing.Top = 6
+    Caption = 'App name'
+    ParentColor = False
+  end
+end

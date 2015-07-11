@@ -1,0 +1,19 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: threadoptionsdialog.screateunitbuttoncaption
+msgid "Create Unit"
+msgstr ""
+
+#: threadoptionsdialog.soptionsgroupboxcaption
+msgid "Options"
+msgstr ""
+
+#: threadoptionsdialog.sthreaddialogtitle
+msgid "Thread Class Options"
+msgstr ""
+
+#: threadoptionsdialog.sthreadnamelabelcaption
+msgid "Thread Class Name"
+msgstr ""
+

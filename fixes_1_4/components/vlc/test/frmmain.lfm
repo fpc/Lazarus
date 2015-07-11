@@ -1,0 +1,82 @@
+object Form1: TForm1
+  Left = 479
+  Height = 362
+  Top = 224
+  Width = 546
+  Caption = 'Form1'
+  ClientHeight = 362
+  ClientWidth = 546
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '1.0.2.0'
+  object PVideo: TPanel
+    Left = 16
+    Height = 285
+    Top = 40
+    Width = 518
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    TabOrder = 0
+  end
+  object FEVideo: TFileNameEdit
+    Left = 56
+    Height = 23
+    Top = 7
+    Width = 374
+    DialogTitle = 'Select a video file'
+    FilterIndex = 0
+    HideDirectories = False
+    ButtonWidth = 23
+    NumGlyphs = 0
+    Anchors = [akTop, akLeft, akRight]
+    MaxLength = 0
+    TabOrder = 1
+  end
+  object Label1: TLabel
+    Left = 16
+    Height = 16
+    Top = 7
+    Width = 31
+    Caption = 'Video'
+    ParentColor = False
+  end
+  object Bplay: TButton
+    Left = 462
+    Height = 25
+    Top = 8
+    Width = 75
+    Anchors = [akTop, akRight]
+    Caption = '&Play'
+    OnClick = BplayClick
+    TabOrder = 2
+  end
+  object BStop: TButton
+    Left = 17
+    Height = 25
+    Top = 331
+    Width = 75
+    Anchors = [akLeft, akBottom]
+    Caption = '&Stop'
+    OnClick = BStopClick
+    TabOrder = 3
+  end
+  object BPause: TButton
+    Left = 102
+    Height = 25
+    Top = 331
+    Width = 75
+    Anchors = [akLeft, akBottom]
+    Caption = '&Pause'
+    OnClick = BPauseClick
+    TabOrder = 4
+  end
+  object BResume: TButton
+    Left = 190
+    Height = 25
+    Top = 331
+    Width = 75
+    Anchors = [akLeft, akBottom]
+    Caption = '&Resume'
+    OnClick = BResumeClick
+    TabOrder = 5
+  end
+end

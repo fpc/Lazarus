@@ -1,0 +1,164 @@
+object Form1: TForm1
+  Left = 285
+  Height = 666
+  Hint = 'Form'
+  Top = 111
+  Width = 870
+  Caption = 'Test Control Hint'
+  ClientHeight = 666
+  ClientWidth = 870
+  Color = clBtnFace
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnCreate = FormCreate
+  LCLVersion = '1.1'
+  object ListBox1: TListBox
+    Left = 472
+    Height = 569
+    Top = 8
+    Width = 353
+    ItemHeight = 0
+    TabOrder = 0
+  end
+  object ButtonClear: TButton
+    Left = 752
+    Height = 25
+    Top = 584
+    Width = 75
+    Caption = 'Clear'
+    OnClick = ButtonClearClick
+    TabOrder = 1
+  end
+  object GroupBoxNoShowHint: TGroupBox
+    Left = 8
+    Height = 177
+    Hint = 'GroupBox'
+    Top = 192
+    Width = 449
+    Caption = 'ShowHint = False'
+    ClientHeight = 159
+    ClientWidth = 445
+    TabOrder = 2
+    object ButtonShowHintNoParent1: TButton
+      Left = 14
+      Height = 25
+      Hint = 'Button'
+      Top = 26
+      Width = 209
+      Caption = 'ShowHint = True Parent = False'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 0
+    end
+    object Button1: TButton
+      Left = 14
+      Height = 25
+      Hint = 'Button'
+      Top = 74
+      Width = 209
+      Caption = 'ShowHint = False Parent = False'
+      ParentShowHint = False
+      TabOrder = 1
+    end
+    object Button2: TButton
+      Left = 230
+      Height = 25
+      Top = 26
+      Width = 209
+      Caption = 'ShowHint = True Parent = True'
+      Enabled = False
+      TabOrder = 2
+    end
+    object ButtonNoShowHintShowParent: TButton
+      Left = 230
+      Height = 25
+      Hint = 'Button'
+      Top = 74
+      Width = 209
+      Caption = 'ShowHint = False Parent = True'
+      TabOrder = 3
+    end
+    object Button8: TButton
+      Left = 78
+      Height = 25
+      Top = 115
+      Width = 296
+      Caption = 'ShowHint = True Parent = False / Hint = '''''
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 4
+    end
+  end
+  object GroupBoxShowHint: TGroupBox
+    Left = 8
+    Height = 217
+    Hint = 'GroupBox'
+    Top = 392
+    Width = 449
+    Caption = 'ShowHint = True'
+    ClientHeight = 199
+    ClientWidth = 445
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 3
+    object Button3: TButton
+      Left = 14
+      Height = 25
+      Hint = 'Button'
+      Top = 26
+      Width = 209
+      Caption = 'ShowHint = True Parent = False'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 0
+    end
+    object Button4: TButton
+      Left = 14
+      Height = 25
+      Hint = 'Button'
+      Top = 74
+      Width = 209
+      Caption = 'ShowHint = False Parent = False'
+      ParentShowHint = False
+      TabOrder = 1
+    end
+    object Button5: TButton
+      Left = 230
+      Height = 25
+      Hint = 'Button'
+      Top = 26
+      Width = 209
+      Caption = 'ShowHint = True Parent = True'
+      TabOrder = 2
+    end
+    object Button6: TButton
+      Left = 230
+      Height = 25
+      Hint = 'Button'
+      Top = 74
+      Width = 209
+      Caption = 'ShowHint = False Parent = True'
+      Enabled = False
+      ParentShowHint = False
+      TabOrder = 3
+    end
+    object Button7: TButton
+      Left = 78
+      Height = 25
+      Top = 123
+      Width = 296
+      Caption = 'ShowHint = True Parent = True / Hint = '''''
+      TabOrder = 4
+    end
+  end
+  object CheckBox1: TCheckBox
+    Left = 8
+    Height = 19
+    Top = 160
+    Width = 146
+    Caption = 'GroupBox With Empty Hint'
+    OnChange = CheckBox1Change
+    TabOrder = 4
+  end
+end

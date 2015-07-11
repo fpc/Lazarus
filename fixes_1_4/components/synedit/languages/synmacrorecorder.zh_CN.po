@@ -1,0 +1,29 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.9.16\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2006-06-04 01:29+0800\n"
+"Last-Translator: 巫山霏云 <freefcw@gmail.com>\n"
+"Language-Team: newsfree <freefcw@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: chinese\n"
+"X-Poedit-Country: china\n"
+
+#: synmacrorecorder.scannotpause
+msgid "Can only pause when recording"
+msgstr "录制宏时只能暂停"
+
+#: synmacrorecorder.scannotplay
+msgid "Cannot playback macro when recording"
+msgstr "录制宏时无法回放宏"
+
+#: synmacrorecorder.scannotrecord
+msgid "Cannot record macro when recording"
+msgstr "无法同时录制两个宏"
+
+#: synmacrorecorder.scannotresume
+msgid "Can only resume when paused"
+msgstr "暂停时只能恢复"
+

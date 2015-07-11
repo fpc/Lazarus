@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    UTrace
+  ====================================================================
+-->
+
+<module name="UTrace">
+<short/>
+<descr>
+</descr>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="sysutils">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- alias type Visibility: default -->
+<element name="TAssertErrorAddrType">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure type Visibility: default -->
+<element name="TAssertErrorProc">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TAssertErrorProc.Msg">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TAssertErrorProc.FN">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TAssertErrorProc.LineNo">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TAssertErrorProc.TheAddr">
+<short/>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TraceFileName">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="OldProcPointer">
+<short/>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+</module> <!-- UTrace -->
+</package>
+</fpdoc-descriptions>

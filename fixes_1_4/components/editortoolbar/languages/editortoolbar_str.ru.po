@@ -1,0 +1,179 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: editortoolbar_str.rsadddivider
+msgid "Add Divider"
+msgstr "Добавить разделитель"
+
+#: editortoolbar_str.rsaddselected
+msgid "Add selected item to toolbar"
+msgstr "Добавить выбранный элемент на панель"
+
+#: editortoolbar_str.rsall
+msgid "All"
+msgstr "Все"
+
+#: editortoolbar_str.rsbottom
+msgid "Bottom"
+msgstr "Снизу"
+
+#: editortoolbar_str.rscancel
+msgid "Cancel"
+msgstr "Отмена"
+
+#: editortoolbar_str.rsclearselection
+msgid "Clear selection"
+msgstr "Снять выбор"
+
+#: editortoolbar_str.rscodeexplorer
+msgid "Code Explorer"
+msgstr "Обозреватель кода"
+
+#: editortoolbar_str.rscodetemplates
+msgid "Code Templates"
+msgstr "Шаблоны кода"
+
+#: editortoolbar_str.rsconfiguretoo
+msgid "Configure Toolbar"
+msgstr "Настроить инструментальную панель"
+
+#: editortoolbar_str.rscustom
+msgid "Custom"
+msgstr "Пользовательский"
+
+#: editortoolbar_str.rsdebug
+msgid "Debug"
+msgstr "Отладка"
+
+#: editortoolbar_str.rsdesign
+msgid "Design"
+msgstr "Разработка"
+
+#: editortoolbar_str.rsdesigner
+msgid "Designer"
+msgstr "Дизайнер"
+
+#: editortoolbar_str.rseditortoolbar
+msgid "Editor ToolBar"
+msgstr "Инструментальная панель редактора"
+
+#: editortoolbar_str.rseditortoolbarconfigform
+msgid "Editor Toolbar Configuration"
+msgstr "Настройка инструментальной панели редактора"
+
+#: editortoolbar_str.rshelp
+msgid "Help"
+msgstr "Справка"
+
+#: editortoolbar_str.rshelp1
+msgid "The \"Add\" button inserts a Menu Item before the selected Item of the Toolbar."
+msgstr "Кнопка \"Добавить\" вставляет элемент из меню перед выбранным элементом инструментальной панели."
+
+#: editortoolbar_str.rshelp2
+msgid "If none is selected, the Item will be appended at the end of the Toolbar."
+msgstr "Если ничего не было выбрано, добавление будет произведено в конец панели."
+
+#: editortoolbar_str.rshelp3
+msgid "You may rearrange Toolbar Items with \"Move Up\" and \"Move Down\" buttons."
+msgstr "Элементы панели можно упорядочивать при помощи кнопок \"Переместить вверх\" и \"Переместить вниз\"."
+
+#: editortoolbar_str.rshelp4
+msgid "Hint: to append an Item at the end, use \"Clear selection\""
+msgstr "Подсказка: чтобы добавить элемент в конец, воспользуйтесь кнопкой \"Снять выбор\""
+
+#: editortoolbar_str.rshint
+msgid "You may add here your favorite commands"
+msgstr "Сюда можно добавить часто используемые команды"
+
+#: editortoolbar_str.rshtml
+msgid "HTML"
+msgstr "HTML"
+
+#: editortoolbar_str.rsidemainmenu
+msgid "IDE Main Menu"
+msgstr "Главное меню IDE"
+
+#: editortoolbar_str.rsjumpto
+msgid "Jump To"
+msgstr "Перейти к ..."
+
+#: editortoolbar_str.rsleft
+msgid "Left"
+msgstr "Слева"
+
+#: editortoolbar_str.rsmenutree
+msgid "Available Menu Items"
+msgstr "Доступные элементы меню"
+
+#: editortoolbar_str.rsmenuview
+msgid "View"
+msgstr "Вид"
+
+#: editortoolbar_str.rsmessages
+msgid "Messages"
+msgstr "Сообщения"
+
+#: editortoolbar_str.rsmoveselecteddown
+msgid "Move selected toolbar item down"
+msgstr "Переместить выбранный элемент вниз"
+
+#: editortoolbar_str.rsmoveselectedup
+msgid "Move selected toolbar item up"
+msgstr "Переместить выбранный элемент вверх"
+
+#: editortoolbar_str.rsok
+msgid "OK"
+msgstr "ОК"
+
+#: editortoolbar_str.rspackageeditor
+msgid "Package Editor"
+msgstr "Редактор пакетов"
+
+#: editortoolbar_str.rspackageeditorfiles
+msgid "Package Editor Files"
+msgstr "Файлы в редакторе пакетов"
+
+#: editortoolbar_str.rsposition
+msgid "Position"
+msgstr "Положение"
+
+#: editortoolbar_str.rsprofile
+msgid "Profile"
+msgstr "Профиль"
+
+#: editortoolbar_str.rsremoveselected
+msgid "Remove selected item from toolbar"
+msgstr "Удалить выбранный элемент с панели"
+
+#: editortoolbar_str.rsright
+msgid "Right"
+msgstr "Справа"
+
+#: editortoolbar_str.rssourceeditor
+msgid "Source Editor"
+msgstr "Редактор исходного кода"
+
+#: editortoolbar_str.rssourcetab
+msgid "Source Tab"
+msgstr "Вкладка редактора исходного кода"
+
+#: editortoolbar_str.rstoolbar
+msgid "Toolbar Items"
+msgstr "Элементы панели"
+
+#: editortoolbar_str.rstop
+msgid "Top"
+msgstr "Сверху"
+
+#: editortoolbar_str.serrcouldnotfind
+msgid "Could not find <%s>"
+msgstr "Невозможно найти <%s>"
+

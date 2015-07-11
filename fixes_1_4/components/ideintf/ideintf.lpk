@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <Name Value="IDEIntf"/>
+    <Author Value="Lazarus"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <IncludeFiles Value="images"/>
+        <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
+      </SearchPaths>
+      <Other>
+        <Verbosity>
+          <ShowGenInfo Value="False"/>
+        </Verbosity>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="IDEIntf - the interface units for the Lazarus IDE"/>
+    <License Value="Modified LPGL2"/>
+    <Version Major="1"/>
+    <Files Count="77">
+      <Item1>
+        <Filename Value="actionseditor.pas"/>
+        <UnitName Value="ActionsEditor"/>
+      </Item1>
+      <Item2>
+        <Filename Value="actionseditor.lfm"/>
+        <Type Value="LFM"/>
+      </Item2>
+      <Item3>
+        <Filename Value="actionseditorstd.pas"/>
+        <UnitName Value="ActionsEditorStd"/>
+      </Item3>
+      <Item4>
+        <Filename Value="actionseditorstd.lfm"/>
+        <Type Value="LFM"/>
+      </Item4>
+      <Item5>
+        <Filename Value="baseideintf.pas"/>
+        <UnitName Value="BaseIDEIntf"/>
+      </Item5>
+      <Item6>
+        <Filename Value="checkgroupeditordlg.pas"/>
+        <UnitName Value="CheckGroupEditorDlg"/>
+      </Item6>
+      <Item7>
+        <Filename Value="checkgroupeditordlg.lfm"/>
+        <Type Value="LFM"/>
+      </Item7>
+      <Item8>
+        <Filename Value="checklistboxeditordlg.pas"/>
+        <UnitName Value="CheckListboxEditorDlg"/>
+      </Item8>
+      <Item9>
+        <Filename Value="checklistboxeditordlg.lfm"/>
+        <Type Value="LFM"/>
+      </Item9>
+      <Item10>
+        <Filename Value="collectionpropeditform.pas"/>
+        <UnitName Value="CollectionPropEditForm"/>
+      </Item10>
+      <Item11>
+        <Filename Value="collectionpropeditform.lfm"/>
+        <Type Value="LFM"/>
+      </Item11>
+      <Item12>
+        <Filename Value="columndlg.pp"/>
+        <UnitName Value="ColumnDlg"/>
+      </Item12>
+      <Item13>
+        <Filename Value="componenteditors.pas"/>
+        <UnitName Value="ComponentEditors"/>
+      </Item13>
+      <Item14>
+        <Filename Value="componentreg.pas"/>
+        <UnitName Value="ComponentReg"/>
+      </Item14>
+      <Item15>
+        <Filename Value="componenttreeview.pas"/>
+        <UnitName Value="ComponentTreeView"/>
+      </Item15>
+      <Item16>
+        <Filename Value="compoptsintf.pas"/>
+        <UnitName Value="CompOptsIntf"/>
+      </Item16>
+      <Item17>
+        <Filename Value="dbpropedits.pas"/>
+        <UnitName Value="DBPropEdits"/>
+      </Item17>
+      <Item18>
+        <Filename Value="fieldseditor.pas"/>
+        <UnitName Value="fieldseditor"/>
+      </Item18>
+      <Item19>
+        <Filename Value="fieldseditor.lfm"/>
+        <Type Value="LFM"/>
+      </Item19>
+      <Item20>
+        <Filename Value="fieldslist.pas"/>
+        <UnitName Value="fieldslist"/>
+      </Item20>
+      <Item21>
+        <Filename Value="fieldslist.lfm"/>
+        <Type Value="LFM"/>
+      </Item21>
+      <Item22>
+        <Filename Value="filefilterpropeditor.pas"/>
+        <UnitName Value="FileFilterPropEditor"/>
+      </Item22>
+      <Item23>
+        <Filename Value="filefilterpropeditor.lfm"/>
+        <Type Value="LFM"/>
+      </Item23>
+      <Item24>
+        <Filename Value="formeditingintf.pas"/>
+        <UnitName Value="FormEditingIntf"/>
+      </Item24>
+      <Item25>
+        <Filename Value="frmselectprops.pas"/>
+        <UnitName Value="frmSelectProps"/>
+      </Item25>
+      <Item26>
+        <Filename Value="frmselectprops.lfm"/>
+        <Type Value="LFM"/>
+      </Item26>
+      <Item27>
+        <Filename Value="graphicpropedit.pas"/>
+        <UnitName Value="GraphicPropEdit"/>
+      </Item27>
+      <Item28>
+        <Filename Value="graphicpropedit.lfm"/>
+        <Type Value="LFM"/>
+      </Item28>
+      <Item29>
+        <Filename Value="graphpropedits.pas"/>
+        <UnitName Value="GraphPropEdits"/>
+      </Item29>
+      <Item30>
+        <Filename Value="headercontrolpropedit.pp"/>
+        <UnitName Value="HeaderControlPropEdit"/>
+      </Item30>
+      <Item31>
+        <Filename Value="helpfpdoc.pas"/>
+        <UnitName Value="HelpFPDoc"/>
+      </Item31>
+      <Item32>
+        <Filename Value="idecommands.pas"/>
+        <UnitName Value="IDECommands"/>
+      </Item32>
+      <Item33>
+        <Filename Value="idedialogs.pas"/>
+        <UnitName Value="IDEDialogs"/>
+      </Item33>
+      <Item34>
+        <Filename Value="ideexterntoolintf.pas"/>
+        <UnitName Value="IDEExternToolIntf"/>
+      </Item34>
+      <Item35>
+        <Filename Value="idehelpintf.pas"/>
+        <UnitName Value="IDEHelpIntf"/>
+      </Item35>
+      <Item36>
+        <Filename Value="ideimagesintf.pas"/>
+        <UnitName Value="IDEImagesIntf"/>
+      </Item36>
+      <Item37>
+        <Filename Value="idemsgintf.pas"/>
+        <UnitName Value="IDEMsgIntf"/>
+      </Item37>
+      <Item38>
+        <Filename Value="ideoptionsintf.pas"/>
+        <UnitName Value="IDEOptionsIntf"/>
+      </Item38>
+      <Item39>
+        <Filename Value="idetextconverter.pas"/>
+        <UnitName Value="IDETextConverter"/>
+      </Item39>
+      <Item40>
+        <Filename Value="ideutils.pas"/>
+        <UnitName Value="IDEUtils"/>
+      </Item40>
+      <Item41>
+        <Filename Value="idewindowintf.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="IDEWindowIntf"/>
+      </Item41>
+      <Item42>
+        <Filename Value="imagelisteditor.pp"/>
+        <UnitName Value="ImageListEditor"/>
+      </Item42>
+      <Item43>
+        <Filename Value="imagelisteditor.lfm"/>
+        <Type Value="LFM"/>
+      </Item43>
+      <Item44>
+        <Filename Value="keyvalpropeditdlg.pas"/>
+        <UnitName Value="KeyValPropEditDlg"/>
+      </Item44>
+      <Item45>
+        <Filename Value="keyvalpropeditdlg.lfm"/>
+        <Type Value="LFM"/>
+      </Item45>
+      <Item46>
+        <Filename Value="lazideintf.pas"/>
+        <UnitName Value="LazIDEIntf"/>
+      </Item46>
+      <Item47>
+        <Filename Value="lazstringgridedit.pas"/>
+        <UnitName Value="LazStringGridEdit"/>
+      </Item47>
+      <Item48>
+        <Filename Value="lazstringgridedit.lfm"/>
+        <Type Value="LFM"/>
+      </Item48>
+      <Item49>
+        <Filename Value="listviewpropedit.pp"/>
+        <UnitName Value="ListViewPropEdit"/>
+      </Item49>
+      <Item50>
+        <Filename Value="listviewpropedit.lfm"/>
+        <Type Value="LFM"/>
+      </Item50>
+      <Item51>
+        <Filename Value="macrodefintf.pas"/>
+        <UnitName Value="MacroDefIntf"/>
+      </Item51>
+      <Item52>
+        <Filename Value="macrointf.pas"/>
+        <UnitName Value="MacroIntf"/>
+      </Item52>
+      <Item53>
+        <Filename Value="maskpropedit.pas"/>
+        <UnitName Value="MaskPropEdit"/>
+      </Item53>
+      <Item54>
+        <Filename Value="maskpropedit.lfm"/>
+        <Type Value="LFM"/>
+      </Item54>
+      <Item55>
+        <Filename Value="menuintf.pas"/>
+        <UnitName Value="MenuIntf"/>
+      </Item55>
+      <Item56>
+        <Filename Value="newfield.pas"/>
+        <UnitName Value="newfield"/>
+      </Item56>
+      <Item57>
+        <Filename Value="newfield.lfm"/>
+        <Type Value="LFM"/>
+      </Item57>
+      <Item58>
+        <Filename Value="newitemintf.pas"/>
+        <UnitName Value="NewItemIntf"/>
+      </Item58>
+      <Item59>
+        <Filename Value="objectinspector.pp"/>
+        <UnitName Value="ObjectInspector"/>
+      </Item59>
+      <Item60>
+        <Filename Value="objectinspector.lfm"/>
+        <Type Value="LFM"/>
+      </Item60>
+      <Item61>
+        <Filename Value="objinspstrconsts.pas"/>
+        <UnitName Value="ObjInspStrConsts"/>
+      </Item61>
+      <Item62>
+        <Filename Value="oifavoriteproperties.pas"/>
+        <UnitName Value="OIFavoriteProperties"/>
+      </Item62>
+      <Item63>
+        <Filename Value="packageintf.pas"/>
+        <UnitName Value="PackageIntf"/>
+      </Item63>
+      <Item64>
+        <Filename Value="projectintf.pas"/>
+        <UnitName Value="ProjectIntf"/>
+      </Item64>
+      <Item65>
+        <Filename Value="projectresourcesintf.pas"/>
+        <UnitName Value="ProjectResourcesIntf"/>
+      </Item65>
+      <Item66>
+        <Filename Value="propedits.pp"/>
+        <UnitName Value="PropEdits"/>
+      </Item66>
+      <Item67>
+        <Filename Value="propeditutils.pp"/>
+        <UnitName Value="PropEditUtils"/>
+      </Item67>
+      <Item68>
+        <Filename Value="srceditorintf.pas"/>
+        <UnitName Value="SrcEditorIntf"/>
+      </Item68>
+      <Item69>
+        <Filename Value="statusbarpropedit.pp"/>
+        <UnitName Value="StatusBarPropEdit"/>
+      </Item69>
+      <Item70>
+        <Filename Value="stringspropeditdlg.pas"/>
+        <UnitName Value="StringsPropEditDlg"/>
+      </Item70>
+      <Item71>
+        <Filename Value="stringspropeditdlg.lfm"/>
+        <Type Value="LFM"/>
+      </Item71>
+      <Item72>
+        <Filename Value="texttools.pas"/>
+        <UnitName Value="TextTools"/>
+      </Item72>
+      <Item73>
+        <Filename Value="treeviewpropedit.pas"/>
+        <UnitName Value="TreeViewPropEdit"/>
+      </Item73>
+      <Item74>
+        <Filename Value="treeviewpropedit.lfm"/>
+        <Type Value="LFM"/>
+      </Item74>
+      <Item75>
+        <Filename Value="unitresources.pas"/>
+        <UnitName Value="UnitResources"/>
+      </Item75>
+      <Item76>
+        <Filename Value="projpackintf.pas"/>
+        <UnitName Value="projpackintf"/>
+      </Item76>
+      <Item77>
+        <Filename Value="dbgridcolumnspropeditform.pas"/>
+        <UnitName Value="DBGridColumnsPropEditForm"/>
+      </Item77>
+    </Files>
+    <LazDoc Paths="docs"/>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="1">
+      <Item1>
+        <PackageName Value="LazControls"/>
+      </Item1>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count"/>
+    </CustomOptions>
+  </Package>
+</CONFIG>

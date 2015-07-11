@@ -1,0 +1,245 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Swen Heinig <swen@heinig.email>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+"Language: de_DE\n"
+
+#: svnclasses.rsaction
+msgid "Action"
+msgstr "Aktion"
+
+#: svnclasses.rsadd
+msgid "Add to version control"
+msgstr "Zu Versionskontrolle hinzufügen"
+
+#: svnclasses.rsadded
+msgid "Added"
+msgstr "Hinzugefügt"
+
+#: svnclasses.rsauthor
+msgid "Author"
+msgstr "Autor"
+
+#: svnclasses.rscommit
+msgid "Commit"
+msgstr "Übertragung"
+
+#: svnclasses.rscommitmsg
+msgid "Commit Message"
+msgstr ""
+
+#: svnclasses.rscommitmsghistory
+msgid "Commit Message History"
+msgstr ""
+
+#: svnclasses.rscommitrevision
+msgid "Commit revision"
+msgstr "Übertrage Revision"
+
+#: svnclasses.rsconflict
+msgid "Conflict"
+msgstr "Konflikt"
+
+#: svnclasses.rscopyfrompath
+msgid "Copy from path"
+msgstr "kopiert von"
+
+#: svnclasses.rscreatepatchfile
+msgid "Create patch file"
+msgstr "Patch erzeugen"
+
+#: svnclasses.rsdate
+msgid "Date"
+msgstr "Datum"
+
+#: svnclasses.rsdelete
+msgid "Delete"
+msgstr "Löschen"
+
+#: svnclasses.rsdeleted
+msgid "Deleted"
+msgstr "Gelöscht"
+
+#: svnclasses.rsdiffactivefile
+msgid "Diff active file"
+msgstr "Vergleiche aktive Datei"
+
+#: svnclasses.rsedit
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: svnclasses.rsextension
+msgid "Extension"
+msgstr "Erweiterung"
+
+#: svnclasses.rsfilenotinworkingcopyanymore
+msgid "File is not part of local working copy (anymore)"
+msgstr "Datei ist nicht (mehr) Bestandteil der lokalen Arbeitskopie"
+
+#: svnclasses.rsfilestatus
+msgid "File status"
+msgstr "Dateistatus"
+
+#: svnclasses.rsindexoutofboundsd
+msgid "Index out of bounds (%d)"
+msgstr "Index außerhalb der Grenzen (%d)"
+
+#: svnclasses.rslazarussvncommit
+msgid "LazarusSVN Commit"
+msgstr "LazarusSVN Übertragung"
+
+#: svnclasses.rslazarussvndiff
+#| msgid "%s - LazarusSVN Diff..."
+msgid "%s - LazarusSVN Diff ..."
+msgstr "%s - LazarusSVN Vergleich..."
+
+#: svnclasses.rslazarussvnlog
+#| msgid "%s - LazarusSVN Log..."
+msgid "%s - LazarusSVN Log ..."
+msgstr "%s - LazarusSVN Protokoll..."
+
+#: svnclasses.rslazarussvnupdate
+#| msgid "%s - LazarusSVN Update..."
+msgid "%s - LazarusSVN Update ..."
+msgstr "%s - LazarusSVN Aktualisierung..."
+
+#: svnclasses.rsmerged
+msgid "Merged"
+msgstr "Zusammengeführt"
+
+#: svnclasses.rsmessage
+msgid "Message"
+msgstr "Meldung"
+
+#: svnclasses.rsnoauthor
+msgid "(no author)"
+msgstr "(kein Autor)"
+
+#: svnclasses.rsonlymodifieditemscanbediffed
+msgid "Only modified (M) Items can be diffed"
+msgstr "Nur geänderte (M) Dateien können verglichen werden"
+
+#: svnclasses.rsopenfileineditor
+msgid "Open file in editor"
+msgstr "Öffne Datei im Editor"
+
+#: svnclasses.rsopenpreviousrevisionineditor
+msgid "Open previous revision in editor"
+msgstr "Öffne vorhergehende Version im Editor"
+
+#: svnclasses.rsopenthisrevisionineditor
+msgid "Open this revision in editor"
+msgstr "Öffne diese Revision im Editor"
+
+#: svnclasses.rspath
+msgid "Path"
+msgstr "Pfad"
+
+#: svnclasses.rsprojectfilename
+msgid "Project filename"
+msgstr "Projekt-Dateiname"
+
+#: svnclasses.rsprojectisactive
+msgid "Project is active"
+msgstr "Projekt ist aktiv"
+
+#: svnclasses.rsprojectisnotactiveinsvnsettingspleaseactivatefirst
+msgid "Project is not active in SVN settings, please activate first."
+msgstr ""
+"Projekt ist in den SVN-Einstellungen nicht aktiviert, holen Sie das zunächst "
+"nach."
+
+#: svnclasses.rsprojectname
+msgid "Project name"
+msgstr "Projektname"
+
+#: svnclasses.rsprojectoptions
+msgid "Project options"
+msgstr "Projekteinstellungen"
+
+#: svnclasses.rspropertystatus
+msgid "Property status"
+msgstr "Eigenschaftsstatus"
+
+#: svnclasses.rsrefresh
+msgid "Refresh"
+msgstr "Aktualisieren"
+
+#: svnclasses.rsremove
+msgid "Remove from version control (keep local)"
+msgstr "Aus Versionskontrolle entfernen (lokal behalten)"
+
+#: svnclasses.rsrepositorypath
+msgid "Repository path"
+msgstr "Repository-Pfad"
+
+#: svnclasses.rsrevert
+msgid "Revert"
+msgstr "Änderungen zurücknemen"
+
+#: svnclasses.rsrevision
+msgid "Revision"
+msgstr "Revision"
+
+#: svnclasses.rssave
+msgid "Save"
+msgstr "Speichern"
+
+#: svnclasses.rssettings
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: svnclasses.rsshowdiff
+msgid "Show diff"
+msgstr "Zeige Vergleich"
+
+#: svnclasses.rsshowdiffbase
+#| msgid "Show diff of local changes"
+msgid "Show Diff of Local Changes"
+msgstr "Zeige Vergleich der lokalen Änderungen"
+
+#: svnclasses.rsshowdiffcountrev
+#| msgid "Show last X commits"
+msgid "Show Last X Commits"
+msgstr "Zeige letzte x Übertragungen"
+
+#: svnclasses.rsshowdiffhead
+#| msgid "Show diff against HEAD"
+msgid "Show Diff Against HEAD"
+msgstr "Zeige Vergleich mit HEAD"
+
+#: svnclasses.rsshowdiffprev
+#| msgid "Show diff against previous version"
+msgid "Show Diff Against Previous Version"
+msgstr "Zeige Vergleich mit vorheriger Version"
+
+#: svnclasses.rsshowlog
+msgid "Show log"
+msgstr "Zeige Protokoll"
+
+#: svnclasses.rssourcefiledoesnotbelongtotheprojectpleaseaddfirst
+msgid "Source file does not belong to the project. Please add first."
+msgstr "Quelldatei gehört nicht zum Projekt. Fügen Sie sie zunächst hinzu."
+
+#: svnclasses.rssvnsettings
+msgid "SVN settings"
+msgstr "SVN-Einstellungen"
+
+#: svnclasses.rssvntools
+msgid "SVN tools"
+msgstr "SVN-Werkzeuge"
+
+#: svnclasses.rsupdate
+msgid "Update"
+msgstr "Aktualisierung"
+
+#: svnclasses.rsupdated
+msgid "Updated"
+msgstr "Aktualisiert"

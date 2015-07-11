@@ -1,0 +1,301 @@
+object ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
+  Left = 0
+  Height = 477
+  Top = 0
+  Width = 487
+  ClientHeight = 477
+  ClientWidth = 487
+  TabOrder = 0
+  DesignLeft = 392
+  DesignTop = 251
+  object AppSettingsGroupBox: TGroupBox
+    Left = 0
+    Height = 469
+    Top = 0
+    Width = 487
+    Align = alTop
+    Caption = 'AppSettingsGroupBox'
+    ClientHeight = 444
+    ClientWidth = 483
+    TabOrder = 0
+    object TitleLabel: TLabel
+      AnchorSideLeft.Control = AppSettingsGroupBox
+      AnchorSideTop.Control = TitleEdit
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 20
+      Top = 10
+      Width = 65
+      BorderSpacing.Left = 6
+      Caption = 'TitleLabel'
+      ParentColor = False
+    end
+    object IconLabel: TLabel
+      AnchorSideLeft.Control = AppSettingsGroupBox
+      AnchorSideTop.Control = IconPanel
+      Left = 6
+      Height = 20
+      Top = 40
+      Width = 64
+      BorderSpacing.Left = 6
+      Caption = 'IconLabel'
+      ParentColor = False
+    end
+    object IconTrackLabel: TLabel
+      AnchorSideLeft.Control = IconTrack
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = IconTrack
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = IconTrack
+      Left = 240
+      Height = 20
+      Top = 178
+      Width = 99
+      BorderSpacing.Left = 6
+      BorderSpacing.Right = 6
+      Caption = 'IconTrackLabel'
+      ParentColor = False
+    end
+    object TitleEdit: TEdit
+      Left = 106
+      Height = 28
+      Top = 6
+      Width = 371
+      Align = alTop
+      BorderSpacing.Left = 100
+      BorderSpacing.Around = 6
+      TabOrder = 0
+      Text = 'TitleEdit'
+    end
+    object UseAppBundleCheckBox: TCheckBox
+      AnchorSideLeft.Control = AppSettingsGroupBox
+      AnchorSideTop.Control = DarwinDividerBevel
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 24
+      Top = 372
+      Width = 186
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 3
+      Caption = 'UseAppBundleCheckBox'
+      TabOrder = 6
+    end
+    object UseXPManifestCheckBox: TCheckBox
+      AnchorSideLeft.Control = AppSettingsGroupBox
+      AnchorSideTop.Control = WindowsDividerBevel
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 24
+      Top = 234
+      Width = 186
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 3
+      Caption = 'UseXPManifestCheckBox'
+      OnChange = UseXPManifestCheckBoxChange
+      TabOrder = 7
+    end
+    object IconPanel: TPanel
+      AnchorSideLeft.Control = AppSettingsGroupBox
+      AnchorSideTop.Control = TitleEdit
+      AnchorSideTop.Side = asrBottom
+      Left = 106
+      Height = 128
+      Top = 40
+      Width = 128
+      BorderSpacing.Left = 106
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      BevelOuter = bvNone
+      BorderWidth = 1
+      BorderStyle = bsSingle
+      ClientHeight = 124
+      ClientWidth = 124
+      TabOrder = 1
+      object IconImage: TImage
+        Left = 1
+        Height = 122
+        Top = 1
+        Width = 122
+        Align = alClient
+        Center = True
+        OnPictureChanged = IconImagePictureChanged
+      end
+    end
+    object LoadIconButton: TBitBtn
+      AnchorSideLeft.Control = IconPanel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = IconPanel
+      AnchorSideBottom.Control = IconPanel
+      AnchorSideBottom.Side = asrBottom
+      Left = 240
+      Height = 30
+      Top = 40
+      Width = 131
+      AutoSize = True
+      BorderSpacing.Left = 6
+      Caption = 'LoadIconButton'
+      OnClick = LoadIconButtonClick
+      TabOrder = 3
+    end
+    object SaveIconButton: TBitBtn
+      AnchorSideLeft.Control = LoadIconButton
+      AnchorSideTop.Control = DefaultIconButton
+      AnchorSideTop.Side = asrBottom
+      Left = 240
+      Height = 30
+      Top = 112
+      Width = 129
+      AutoSize = True
+      BorderSpacing.Top = 6
+      Caption = 'SaveIconButton'
+      OnClick = SaveIconButtonClick
+      TabOrder = 4
+    end
+    object ClearIconButton: TBitBtn
+      AnchorSideLeft.Control = SaveIconButton
+      AnchorSideTop.Control = SaveIconButton
+      AnchorSideTop.Side = asrBottom
+      Left = 240
+      Height = 30
+      Top = 148
+      Width = 132
+      AutoSize = True
+      BorderSpacing.Top = 6
+      Caption = 'ClearIconButton'
+      OnClick = ClearIconButtonClick
+      TabOrder = 5
+    end
+    object IconTrack: TTrackBar
+      AnchorSideLeft.Control = IconPanel
+      AnchorSideTop.Control = IconPanel
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = IconPanel
+      AnchorSideRight.Side = asrBottom
+      Left = 106
+      Height = 40
+      Top = 168
+      Width = 128
+      Max = 0
+      OnChange = IconTrackChange
+      Position = 0
+      ShowSelRange = False
+      Anchors = [akTop, akLeft, akRight]
+      TabOrder = 2
+    end
+    object DpiAwareCheckBox: TCheckBox
+      AnchorSideLeft.Control = UseXPManifestCheckBox
+      AnchorSideTop.Control = UseXPManifestCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 27
+      Height = 24
+      Top = 261
+      Width = 154
+      BorderSpacing.Left = 21
+      BorderSpacing.Top = 3
+      Caption = 'DpiAwareCheckBox'
+      TabOrder = 8
+    end
+    object UIAccessCheckBox: TCheckBox
+      AnchorSideLeft.Control = DpiAwareCheckBox
+      AnchorSideTop.Control = ExecutionLevelComboBox
+      AnchorSideTop.Side = asrBottom
+      Left = 27
+      Height = 24
+      Top = 319
+      Width = 146
+      BorderSpacing.Top = 3
+      Caption = 'UIAccessCheckBox'
+      TabOrder = 10
+    end
+    object ExecutionLevelComboBox: TComboBox
+      AnchorSideLeft.Control = ExecutionLevelLabel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = DpiAwareCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 167
+      Height = 28
+      Top = 288
+      Width = 310
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 3
+      ItemHeight = 20
+      Style = csDropDownList
+      TabOrder = 9
+    end
+    object ExecutionLevelLabel: TLabel
+      AnchorSideLeft.Control = DpiAwareCheckBox
+      AnchorSideTop.Control = ExecutionLevelComboBox
+      AnchorSideTop.Side = asrCenter
+      Left = 27
+      Height = 20
+      Top = 292
+      Width = 134
+      Caption = 'ExecutionLevelLabel'
+      ParentColor = False
+    end
+    object DefaultIconButton: TButton
+      AnchorSideLeft.Control = LoadIconButton
+      AnchorSideTop.Control = LoadIconButton
+      AnchorSideTop.Side = asrBottom
+      Left = 240
+      Height = 30
+      Top = 76
+      Width = 147
+      AutoSize = True
+      BorderSpacing.Top = 6
+      Caption = 'DefaultIconButton'
+      OnClick = DefaultIconButtonClick
+      TabOrder = 11
+    end
+    object WindowsDividerBevel: TDividerBevel
+      AnchorSideTop.Control = IconTrack
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 20
+      Top = 211
+      Width = 471
+      Caption = 'For Windows'
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 3
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object DarwinDividerBevel: TDividerBevel
+      AnchorSideTop.Control = UIAccessCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 20
+      Top = 349
+      Width = 471
+      Caption = 'For Darwin'
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 6
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object CreateAppBundleButton: TBitBtn
+      AnchorSideLeft.Control = UseAppBundleCheckBox
+      AnchorSideTop.Control = UseAppBundleCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 27
+      Height = 30
+      Top = 402
+      Width = 187
+      AutoSize = True
+      BorderSpacing.Left = 21
+      BorderSpacing.Top = 6
+      Caption = 'CreateAppBundleButton'
+      OnClick = CreateAppBundleButtonClick
+      TabOrder = 12
+    end
+  end
+  object OpenPictureDialog1: TOpenPictureDialog
+    left = 385
+    top = 190
+  end
+  object SavePictureDialog1: TSavePictureDialog
+    left = 385
+    top = 249
+  end
+end

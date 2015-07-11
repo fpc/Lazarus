@@ -1,0 +1,51 @@
+object NewPkgComponentDialog: TNewPkgComponentDialog
+  Left = 250
+  Height = 255
+  Top = 250
+  Width = 343
+  Caption = 'NewPkgComponentDialog'
+  ClientHeight = 255
+  ClientWidth = 343
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.31'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 40
+    Top = 209
+    Width = 331
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object PkgsGroupBox: TGroupBox
+    Left = 6
+    Height = 197
+    Top = 6
+    Width = 331
+    Align = alClient
+    BorderSpacing.Around = 6
+    Caption = 'PkgsGroupBox'
+    ClientHeight = 178
+    ClientWidth = 327
+    TabOrder = 1
+    object PkgsListBox: TListBox
+      Left = 0
+      Height = 178
+      Top = 0
+      Width = 327
+      Align = alClient
+      ItemHeight = 0
+      ScrollWidth = 325
+      TabOrder = 0
+      TopIndex = -1
+    end
+  end
+end

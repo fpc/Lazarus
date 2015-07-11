@@ -1,0 +1,185 @@
+object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompletionOptionsFrame
+  Left = 0
+  Height = 415
+  Top = 0
+  Width = 537
+  ClientHeight = 415
+  ClientWidth = 537
+  TabOrder = 0
+  Visible = False
+  DesignLeft = 514
+  DesignTop = 178
+  object ICAddSemicolonCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ICAddDividerBevel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 24
+    Top = 90
+    Width = 168
+    Caption = 'ICAddSemicolonCheckBox'
+    TabOrder = 0
+  end
+  object ICAddAssignOperatorCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ICAddSemicolonCheckBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 24
+    Top = 114
+    Width = 198
+    Caption = 'ICAddAssignOperatorCheckBox'
+    TabOrder = 1
+  end
+  object ICAutoStartAfterPointCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ICOpenDividerBevel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 24
+    Top = 25
+    Width = 203
+    Caption = 'ICAutoStartAfterPointCheckBox'
+    TabOrder = 2
+  end
+  object ICAutoAddParameterBracketsCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ICAddDoCheckBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 24
+    Top = 162
+    Width = 245
+    Caption = 'ICAutoAddParameterBracketsCheckBox'
+    TabOrder = 3
+  end
+  object ICShowHelpCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ICAutoStartAfterPointCheckBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 24
+    Top = 49
+    Width = 144
+    Caption = 'ICShowHelpCheckBox'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 4
+  end
+  object ICReplaceCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ICMiscDividerBevel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 24
+    Top = 268
+    Width = 134
+    Caption = 'ICReplaceCheckBox'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 5
+  end
+  object ICAddDoCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ICAddAssignOperatorCheckBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 24
+    Top = 138
+    Width = 128
+    Caption = 'ICAddDoCheckBox'
+    TabOrder = 6
+  end
+  object ICSortForHistoryCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ICSortDividerBevel
+    AnchorSideTop.Side = asrBottom
+    Left = 0
+    Height = 24
+    Top = 203
+    Width = 170
+    Caption = 'ICSortForHistoryCheckBox'
+    TabOrder = 7
+  end
+  object ICSortForScopeCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ICSortForHistoryCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 0
+    Height = 24
+    Top = 227
+    Width = 164
+    Caption = 'ICSortForScopeCheckBox'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 8
+  end
+  object ICOpenDividerBevel: TDividerBevel
+    AnchorSideLeft.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 15
+    Top = 10
+    Width = 537
+    Caption = 'ICOpenDividerBevel'
+    Anchors = [akTop, akLeft, akRight]
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object ICAddDividerBevel: TDividerBevel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ICShowHelpCheckBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 15
+    Top = 75
+    Width = 537
+    Caption = 'ICAddDividerBevel'
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 2
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object ICSortDividerBevel: TDividerBevel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ICAutoAddParameterBracketsCheckBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 15
+    Top = 188
+    Width = 537
+    Caption = 'ICSortDividerBevel'
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 2
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object ICMiscDividerBevel: TDividerBevel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ICSortForScopeCheckBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 15
+    Top = 253
+    Width = 537
+    Caption = 'ICMiscDividerBevel'
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 2
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+end

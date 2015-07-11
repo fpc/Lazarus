@@ -1,0 +1,89 @@
+object Form1: TForm1
+  Caption = 'Form1'
+  ClientHeight = 306
+  ClientWidth = 350
+  OnCreate = Form1Create
+  OnDestroy = Form1Destroy
+  PixelsPerInch = 75
+  HorzScrollBar.Page = 349
+  VertScrollBar.Page = 305
+  Left = 273
+  Height = 306
+  Top = 181
+  Width = 350
+  object GroupBox1: TGroupBox
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.OnChange = nil
+    Caption = 'MyString'
+    ClientHeight = 31
+    ClientWidth = 299
+    ParentColor = True
+    TabOrder = 0
+    Left = 24
+    Height = 48
+    Top = 16
+    Width = 303
+    object TIEdit1: TTIEdit
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.OnChange = nil
+      BorderSpacing.Right = 9
+      TabStop = True
+      TabOrder = 0
+      AnchorSideRight.Control = GroupBox1
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 23
+      Top = 1
+      Width = 284
+    end
+  end
+  object TIRadioGroup1: TTIRadioGroup
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.OnChange = nil
+    Caption = 'MyEnum'
+    Columns = 3
+    ParentColor = True
+    Left = 25
+    Height = 57
+    Top = 72
+    Width = 302
+  end
+  object GroupBox2: TGroupBox
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.OnChange = nil
+    Caption = 'MyRange'
+    ClientHeight = 24
+    ClientWidth = 298
+    ParentColor = True
+    TabOrder = 2
+    Left = 25
+    Height = 41
+    Top = 144
+    Width = 302
+    object TITrackBar1: TTITrackBar
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.OnChange = nil
+      BorderSpacing.Right = 9
+      ScalePos = trTop
+      TabOrder = 0
+      TabStop = True
+      ScalePos = trTop
+      AnchorSideRight.Control = GroupBox2
+      AnchorSideRight.Side = asrBottom
+      Left = 15
+      Height = 20
+      Top = 1
+      Width = 274
+    end
+  end
+  object Memo1: TMemo
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.OnChange = nil
+    ScrollBars = ssAutoBoth
+    TabOrder = 3
+    Left = 27
+    Height = 95
+    Top = 200
+    Width = 300
+  end
+end

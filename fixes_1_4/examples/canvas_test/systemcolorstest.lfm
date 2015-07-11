@@ -1,0 +1,9 @@
+object frmSystemColors: TfrmSystemColors
+  Left = 345
+  Height = 320
+  Top = 160
+  Width = 480
+  Caption = 'frmSystemColors'
+  OnPaint = FormPaint
+  LCLVersion = '1.3'
+end

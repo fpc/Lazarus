@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="IDEIntf">
+    <module name="LazIDEIntf">
+      <element name="TLazIDEInterface.FindUnitFile">
+        <short>Searches the file name of a unit</short>
+        <descr>If TheOwner is nil the current project is searched. TheOwner can be a project, a package or LazarusIDE. The unit is searched in the unit search path of the the base directory using the codetools unit search rules. It will find units of used packages too, the unit name is case insensitive and the normal extensions .pas, .pp are tried. In case of LazarusIDE it will search in all open packages. If the AFileName contains an extension it will also search in the files listed in the project inspector. It returns the empty string if not found. If the file name is not absolute the file was not newly created and not yet saved to disk.</descr>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

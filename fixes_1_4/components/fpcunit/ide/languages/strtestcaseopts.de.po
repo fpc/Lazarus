@@ -1,0 +1,39 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: strtestcaseopts.sbtncreate
+msgid "Create unit"
+msgstr "Erzeuge Unit"
+
+#: strtestcaseopts.schksetup
+msgid "Create Setup Method"
+msgstr "Erzeuge Setup-Methode"
+
+#: strtestcaseopts.schktear
+msgid "Create TearDown method"
+msgstr "Erzeuge TearDown Methode"
+
+#: strtestcaseopts.sfrmtest
+msgid "TestCase Options"
+msgstr "TestCase-Einstellungen"
+
+#: strtestcaseopts.sgrpfixture
+msgid "Fixture"
+msgstr ""
+
+#: strtestcaseopts.sgrpnames
+msgid "Names"
+msgstr "Namen"
+
+#: strtestcaseopts.slbldefault
+msgid "Default Test Name"
+msgstr "Vorgabe-Testname"
+

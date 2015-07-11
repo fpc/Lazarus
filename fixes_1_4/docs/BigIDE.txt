@@ -1,0 +1,26 @@
+How to add a package to the big IDE:
+
+Make the package cross compilable: The output path should be something like
+lib/$(TargetCPU)-$(TargetOS)
+
+Enable the package compiler option 'Create Makefile' and compile the package
+once in the IDE to create the Makefile and Makefile.fpc.
+Add them to svn.
+
+
+Search in the following files for 'big' and add needed things:
+
+ide/Makefile.fpc          Unitpaths and flags
+components/Makefile.fpc   package directories
+ide/lazarus.pp            package names
+
+
+Do not forget to update the ide/Makefile and components/Makefile.
+
+Compiling the bigide:
+
+make bigide             - to compile everything
+make idebig             - to compile only the IDE using the bigide components
+make bigidecomponents   - compile only the bigide components
+
+

@@ -1,0 +1,78 @@
+object Form1: TForm1
+  Left = 422
+  Height = 240
+  Top = 281
+  Width = 320
+  Caption = 'Form1'
+  ClientHeight = 218
+  ClientWidth = 320
+  Menu = MainMenu1
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '0.9.31'
+  object PCFiles: TPageControl
+    Left = 0
+    Height = 218
+    Top = 0
+    Width = 320
+    Align = alClient
+    TabOrder = 0
+  end
+  object MainMenu1: TMainMenu
+    left = 57
+    top = 37
+    object MFile: TMenuItem
+      Caption = '&File'
+      object MINew: TMenuItem
+        Caption = '&New'
+        ShortCut = 16462
+        OnClick = MINewClick
+      end
+      object MIOpen: TMenuItem
+        Caption = '&Open'
+        ShortCut = 16463
+        OnClick = MIOpenClick
+      end
+      object MISave: TMenuItem
+        Caption = '&Save'
+        ShortCut = 16467
+        OnClick = MISaveClick
+      end
+      object MISaveAs: TMenuItem
+        Caption = 'Save as'
+      end
+      object MIRecent: TMenuItem
+        Caption = 'Recent'
+      end
+      object MenuItem2: TMenuItem
+        Caption = '-'
+      end
+      object MIQuit: TMenuItem
+        Caption = '&Quit'
+        ShortCut = 16465
+        OnClick = MIQuitClick
+      end
+    end
+  end
+  object MRUMenuManager1: TMRUMenuManager
+    MaxRecent = 5
+    MenuItem = MIRecent
+    OnRecentFile = MRUMenuManager1RecentFile
+    left = 176
+    top = 40
+  end
+  object ODFile: TOpenDialog
+    DefaultExt = '.txt'
+    Filter = 'Text files|*.txt|All files|*.*'
+    Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
+    left = 40
+    top = 109
+  end
+  object SDFile: TSaveDialog
+    DefaultExt = '.txt'
+    Filter = 'Text files|*.txt|All files|*.*'
+    Options = [ofPathMustExist, ofEnableSizing, ofViewDetail]
+    left = 121
+    top = 115
+  end
+end

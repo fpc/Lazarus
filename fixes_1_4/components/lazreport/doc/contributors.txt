@@ -1,0 +1,21 @@
+The following people contributed to LazReport : 
+
+Aleksey Lagunov       (ru)
+Andrey Gusev          (ru)
+Christian Ulrich      (de)
+Domingo Alvarez Duarte(  )
+German Basisty        (ar)
+Javier Villarroya     (es)
+Jesus Reyes A.        (mx)
+Joerg Braun           (de)
+Junior Goncalves      (br)
+Julio Jiménez B.      (es)
+Luiz Americo          (br)
+Mattias Gaertner      (de)
+Michel Gawrycki       (  )
+Olivier Guilbaud      (fr)
+Petr Smolik           (cz)
+Tony Whyman           (  )
+Ts. Petrov            (  )
+Vincent Snijders      (nl)
+

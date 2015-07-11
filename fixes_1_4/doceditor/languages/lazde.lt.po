@@ -1,0 +1,748 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2012-08-06 22:22+0300\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.5\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Language: lt\n"
+
+#: lazdemsg.saboutformcaption
+msgid "About this application"
+msgstr "Apie šią programą"
+
+#: lazdemsg.sadd
+msgid "&Add"
+msgstr "Pri&dėti"
+
+#: lazdemsg.saddall
+msgid "Add All"
+msgstr "Pridėti visus"
+
+#: lazdemsg.sadddescriptionfile
+msgid "Select a new description file"
+msgstr "Parinkite naują aprašo failą"
+
+#: lazdemsg.sadditionalparams
+msgid "Additional parameters for fpdoc"
+msgstr ""
+
+#: lazdemsg.sbuild
+msgctxt "lazdemsg.sbuild"
+msgid "&Build"
+msgstr "&Daryti"
+
+#: lazdemsg.sbuilddocumentation
+msgid "Build documentation"
+msgstr "Daryti dokumentaciją"
+
+#: lazdemsg.sbuildok
+msgid "Documentation successfully built."
+msgstr "Dokumentacija padaryta sėkmingai."
+
+#: lazdemsg.sbuildoutput
+msgid "Build output"
+msgstr "Darymo išvestis"
+
+#: lazdemsg.sclose
+msgctxt "lazdemsg.sclose"
+msgid "&Close"
+msgstr "&Užverti"
+
+#: lazdemsg.scodeexample
+msgid "Example code File"
+msgstr "Pavyzdinio kodo failas"
+
+#: lazdemsg.scopyright1
+msgid "This application is (c) by  Michael Van Canneyt and the Lazarus team"
+msgstr "Šios programos autorinės teisės priklauso  Michael Van Canneyt ir Lazarus komandai"
+
+#: lazdemsg.scopyright2
+msgid "It is released under the terms of the  GENERAL PUBLIC LICENSE:"
+msgstr "Šios programos naudojimą reguliuoja Bendroji Viešoji Licencija:"
+
+#: lazdemsg.scpu
+msgid "CPU"
+msgstr "Procesorius"
+
+#: lazdemsg.screatecontentfile
+msgid "Create cont&ent file"
+msgstr "Sukurti &turinio failą"
+
+#: lazdemsg.sdataforelement
+msgid "Documentation for element \"%s\":"
+msgstr "Elemento „%s“ dokumentacija:"
+
+#: lazdemsg.sdelete
+msgid "&Delete"
+msgstr "&Pašalinti"
+
+#: lazdemsg.sdeletemodule
+msgid "Are you sure you want to delete module \"%s\" ?"
+msgstr "Ar iš tikro norite pašalinti modulį „%s“?"
+
+#: lazdemsg.sdeletepackage
+msgid "Are you sure you want to delete package \"%s\" ?"
+msgstr "Ar iš tikro norite pašalinti paketą „%s“?"
+
+#: lazdemsg.sdeletetopic
+msgid "Are you sure you want to delete topic \"%s\" ?"
+msgstr "Ar iš tikro norite pašalinti temą „%s“?"
+
+#: lazdemsg.sdescription
+msgid "Description"
+msgstr "Aprašas"
+
+#: lazdemsg.sedit
+msgid "&Edit"
+msgstr "&Taisa"
+
+#: lazdemsg.seditdescriptionfile
+msgid "Change description file"
+msgstr "Keisti aprašo failą"
+
+#: lazdemsg.serrfpdoc
+msgid "Building failed with exit code %d. Please check log."
+msgstr "Darymas nepavyko. Grąžintas klaidos kodas yra %d. Daugiau informacijos rasite žurnale."
+
+#: lazdemsg.serrnomoduleforelement
+msgid "No module found to insert element \"%s\""
+msgstr "Nepavyko rasti modulio, kuriuo būtų galima įterpti elementą „%s“"
+
+#: lazdemsg.serrnonodeformodule
+msgid "No node found for module \"%s\""
+msgstr "Nepavyko rasti mazgo, skirto moduliui „%s“"
+
+#: lazdemsg.serrnonodeforpackage
+msgid "No node found for package \"%s\""
+msgstr "Nepavyko rasti mazgo, skirto paketui „%s“"
+
+#: lazdemsg.serrnonodefortopic
+msgid "No parent node found to insert topic \"%s\""
+msgstr "Nepavyko rasti viršesnio mazgo, kad būtų galima įterpti temą „%s“"
+
+#: lazdemsg.serrnopackageformodule
+msgid "No package found to insert module \"%s\""
+msgstr "Nepavyko rasti paketo, kad būtų galima įterpti modulį „%s“"
+
+#: lazdemsg.serrors
+msgid "Errors"
+msgstr "Klaidos"
+
+#: lazdemsg.serrunknowndomelement
+msgid "Unknwon DOM element as parent for selected element: \"%s\""
+msgstr "Elementas, kuris yra viršesnis parinktajam, yra nežinomas DOM elementas: „%s“"
+
+#: lazdemsg.sfilemodified
+msgid "Document \"%s\" was modified, would you like to save it?"
+msgstr "Dokumente „%s“ yra daryta keitimų. Įrašyti pakeistąjį dokumentą?"
+
+#: lazdemsg.sfilestructure
+msgid "Documentation structure"
+msgstr "Dokumentacijos struktūra"
+
+#: lazdemsg.sfiletemplate
+msgid "template.xml"
+msgstr "sablonas.xml"
+
+#: lazdemsg.sforfile
+msgid " in file "
+msgstr " faile "
+
+#: lazdemsg.sformat
+msgid "&Format"
+msgstr "&Formatas"
+
+#: lazdemsg.sformodule
+msgid " in module "
+msgstr " modulyje "
+
+#: lazdemsg.sforpackage
+msgid " in package "
+msgstr " pakete "
+
+#: lazdemsg.sfortopic
+#, fuzzy
+#| msgid " in topic"
+msgid " in topic "
+msgstr " temoje "
+
+#: lazdemsg.shideprotectedmethods
+msgid "&Hide protected methods"
+msgstr "&Slėpti apsaugotuosius metodus"
+
+#: lazdemsg.shinteditelementlink
+msgid "Edit element link"
+msgstr "Keisti elemento saitą"
+
+#: lazdemsg.shintfileclose
+msgid "Close current file"
+msgstr "Užverti dabartinį failą"
+
+#: lazdemsg.shintfileexit
+msgid "Close doc editor"
+msgstr "Užverti dokumentacijos rengyklę"
+
+#: lazdemsg.shintfilenew
+msgctxt "lazdemsg.shintfilenew"
+msgid "New file"
+msgstr "Naujas failas"
+
+#: lazdemsg.shintfileopen
+msgid "Open file"
+msgstr "Atverti failą"
+
+#: lazdemsg.shintfilesave
+msgid "Save file"
+msgstr "Įrašyti failą"
+
+#: lazdemsg.shintfilesaveas
+msgid "Save file as"
+msgstr "Failą įrašyti taip"
+
+#: lazdemsg.shintformatbold
+msgid "Bold"
+msgstr "Pusjuodis"
+
+#: lazdemsg.shintformatcode
+msgid "Code"
+msgstr "Kodas"
+
+#: lazdemsg.shintformatfile
+msgid "File"
+msgstr "Failas"
+
+#: lazdemsg.shintformatitalics
+msgid "Italic"
+msgstr "Kursyvas"
+
+#: lazdemsg.shintformatremark
+msgid "Remark"
+msgstr "Pastaba"
+
+#: lazdemsg.shintformatunderline
+msgid "Underline"
+msgstr "Pabrauktas"
+
+#: lazdemsg.shintformatvariable
+msgid "Variable"
+msgstr "Kintamasis"
+
+#: lazdemsg.shintinsertbulletedlist
+msgctxt "lazdemsg.shintinsertbulletedlist"
+msgid "Insert bulleted list"
+msgstr ""
+
+#: lazdemsg.shintinsertelement
+msgctxt "lazdemsg.shintinsertelement"
+msgid "New element"
+msgstr "Naujas elementas"
+
+#: lazdemsg.shintinsertlink
+msgctxt "lazdemsg.shintinsertlink"
+msgid "Insert link"
+msgstr "Įterpti saitą"
+
+#: lazdemsg.shintinsertmodule
+msgctxt "lazdemsg.shintinsertmodule"
+msgid "New module"
+msgstr "Naujas modulis"
+
+#: lazdemsg.shintinsertnumberedlist
+msgctxt "lazdemsg.shintinsertnumberedlist"
+msgid "Insert numbered list"
+msgstr ""
+
+#: lazdemsg.shintinsertpackage
+msgctxt "lazdemsg.shintinsertpackage"
+msgid "New package"
+msgstr "Naujas paketas"
+
+#: lazdemsg.shintinsertprintshortlink
+msgid "Insert a short description link"
+msgstr "Įterpti trumpo aprašymo saitą"
+
+#: lazdemsg.shintinserttable
+msgctxt "lazdemsg.shintinserttable"
+msgid "Insert table"
+msgstr "Įterpti lentelę"
+
+#: lazdemsg.shintinserttopic
+msgctxt "lazdemsg.shintinserttopic"
+msgid "New topic"
+msgstr "Nauja tema"
+
+#: lazdemsg.shintmenunewfromfile
+#, fuzzy
+#| msgid "New from file..."
+msgid "New from file ..."
+msgstr "Naujas, pagal failą..."
+
+#: lazdemsg.shinttoolbaradd
+msgid "Add"
+msgstr "Pridėti"
+
+#: lazdemsg.shinttoolbardelete
+msgctxt "lazdemsg.shinttoolbardelete"
+msgid "Delete"
+msgstr "Pašalinti"
+
+#: lazdemsg.shinttoolbaredit
+msgid "Edit"
+msgstr "Taisa"
+
+#: lazdemsg.shmenuextraoptions
+msgid "Show options dialog"
+msgstr "Rodyti parinkčių dialogą"
+
+#: lazdemsg.shmenuhelpabout
+msgid "About this program"
+msgstr "Apie šią programą"
+
+#: lazdemsg.simportcontentfile
+msgid "Import content file"
+msgstr "Importuoti turinio failą"
+
+#: lazdemsg.sinsertbulletedlist
+msgctxt "lazdemsg.sinsertbulletedlist"
+msgid "Insert bulleted list"
+msgstr ""
+
+#: lazdemsg.sinsertexamplecode
+msgid "Insert example code"
+msgstr ""
+
+#: lazdemsg.sinsertlink
+msgctxt "lazdemsg.sinsertlink"
+msgid "Insert link"
+msgstr "Įterpti saitą"
+
+#: lazdemsg.sinsertnumberedlist
+msgctxt "lazdemsg.sinsertnumberedlist"
+msgid "Insert numbered list"
+msgstr ""
+
+#: lazdemsg.sinsertprintshortlink
+msgid "Insert short description link"
+msgstr "Įterpti trumpo aprašymo failą"
+
+#: lazdemsg.sinserttable
+msgctxt "lazdemsg.sinserttable"
+msgid "Insert table"
+msgstr "Įterpti lentelę"
+
+#: lazdemsg.sitemscount
+msgid "Items count"
+msgstr ""
+
+#: lazdemsg.slazdoceditor
+msgid "Lazarus Documentation Editor"
+msgstr "Lazarus dokumentacijos rengyklė"
+
+#: lazdemsg.slinksto
+msgid " links to "
+msgstr " saitas į "
+
+#: lazdemsg.slinktarget
+msgid "Link target"
+msgstr ""
+
+#: lazdemsg.slinktext
+msgid "Link text"
+msgstr ""
+
+#: lazdemsg.sload
+msgid "&Load"
+msgstr "Į&kelti"
+
+#: lazdemsg.smakeskelfromsource
+msgid "Make new document from source file"
+msgstr "Kurti naują dokumentą pagal pirminio kodo failą"
+
+#: lazdemsg.smarkselection
+msgid "Mark selection %s"
+msgstr "Pažymėti išranką %s"
+
+#: lazdemsg.smenucollapseall
+msgid "Collapse All"
+msgstr "Suskleisti visus"
+
+#: lazdemsg.smenudelete
+msgctxt "lazdemsg.smenudelete"
+msgid "Delete"
+msgstr "Pašalinti"
+
+#: lazdemsg.smenuexpandall
+msgid "Expand All"
+msgstr "Išskleisti visus"
+
+#: lazdemsg.smenuextra
+msgid "&Extra"
+msgstr "&Papildomai"
+
+#: lazdemsg.smenuextrabuild
+msgctxt "lazdemsg.smenuextrabuild"
+msgid "&Build"
+msgstr "&Daryti"
+
+#: lazdemsg.smenuextraoptions
+msgid "&Options"
+msgstr "&Parinktys"
+
+#: lazdemsg.smenufile
+msgctxt "lazdemsg.smenufile"
+msgid "&File"
+msgstr "&Failas"
+
+#: lazdemsg.smenufileclose
+msgctxt "lazdemsg.smenufileclose"
+msgid "&Close"
+msgstr "&Užverti"
+
+#: lazdemsg.smenufilenew
+msgid "&New"
+msgstr "&Naujas"
+
+#: lazdemsg.smenufilenewfromfile
+msgid "New from fi&le"
+msgstr "Naujas, pagal fai&lą"
+
+#: lazdemsg.smenufileopen
+msgid "&Open"
+msgstr "&Atverti"
+
+#: lazdemsg.smenufilequit
+msgid "&Quit"
+msgstr "&Baigti darbą"
+
+#: lazdemsg.smenufilerecent
+msgid "&Recent"
+msgstr "Paskutinis &naudotas"
+
+#: lazdemsg.smenufilesave
+msgctxt "lazdemsg.smenufilesave"
+msgid "&Save"
+msgstr "Į&rašyti"
+
+#: lazdemsg.smenufilesaveas
+msgid "Save &as"
+msgstr "Įrašyti &kaip"
+
+#: lazdemsg.smenuformat
+msgid "Format"
+msgstr "Formatas"
+
+#: lazdemsg.smenuformatbold
+msgid "&Bold"
+msgstr "&Pusjuodis"
+
+#: lazdemsg.smenuformatcode
+msgid "&Code"
+msgstr "&Kodas"
+
+#: lazdemsg.smenuformatfile
+msgctxt "lazdemsg.smenuformatfile"
+msgid "&File"
+msgstr "&Failas"
+
+#: lazdemsg.smenuformatitalics
+msgid "&Italic"
+msgstr "&Kursyvas"
+
+#: lazdemsg.smenuformatparagraph
+msgid "&Paragraph"
+msgstr "Para&grafas"
+
+#: lazdemsg.smenuformatremark
+msgid "&Remark"
+msgstr "Pasta&ba"
+
+#: lazdemsg.smenuformatunderline
+msgid "&Underline"
+msgstr "Pabra&uktas"
+
+#: lazdemsg.smenuformatvariable
+msgid "&Variable"
+msgstr "K&intamasis"
+
+#: lazdemsg.smenuhelp
+msgid "&Help"
+msgstr "Žin&ynas"
+
+#: lazdemsg.smenuhelpabout
+#, fuzzy
+#| msgid "&About..."
+msgid "&About ..."
+msgstr "&Apie..."
+
+#: lazdemsg.smenuinsert
+msgid "&Insert"
+msgstr "Į&terpti"
+
+#: lazdemsg.smenuinsertbulletedlist
+msgid "Bulleted list"
+msgstr ""
+
+#: lazdemsg.smenuinsertelement
+msgid "&Element"
+msgstr "&Elementą"
+
+#: lazdemsg.smenuinsertlink
+msgid "&Link"
+msgstr "&Saitą"
+
+#: lazdemsg.smenuinsertlist
+msgid "List"
+msgstr ""
+
+#: lazdemsg.smenuinsertmodule
+msgid "&Module"
+msgstr "&Modulį"
+
+#: lazdemsg.smenuinsertnumberedlist
+msgid "Numbered list"
+msgstr ""
+
+#: lazdemsg.smenuinsertpackage
+msgctxt "lazdemsg.smenuinsertpackage"
+msgid "&Package"
+msgstr "&Paketą"
+
+#: lazdemsg.smenuinsertprintshort
+msgid "Insert short desc link"
+msgstr "Įterpti trumpą aprašymo saitą"
+
+#: lazdemsg.smenuinsertquicklink
+msgid "&Quick Link"
+msgstr "Spar&tųjį saitą"
+
+#: lazdemsg.smenuinsertshortdesclink
+msgid "&Short description link"
+msgstr "Tr&umpo aprašymo saitą"
+
+#: lazdemsg.smenuinserttable
+msgid "&Table"
+msgstr "&Lentelę"
+
+#: lazdemsg.smenuinserttopic
+msgid "T&opic"
+msgstr "&Temą"
+
+#: lazdemsg.smenurename
+msgid "Rename"
+msgstr "Pervadinti"
+
+#: lazdemsg.smoduleelements
+msgid "Elements for selected node"
+msgstr "Elementai, skirti pažymėtajam mazgui"
+
+#: lazdemsg.snew
+msgid "New"
+msgstr "Naujas"
+
+#: lazdemsg.snewdocument
+msgid "New document"
+msgstr "Naujas dokumentas"
+
+#: lazdemsg.snewelement
+msgctxt "lazdemsg.snewelement"
+msgid "New element"
+msgstr "Naujas elementas"
+
+#: lazdemsg.snewfile
+msgctxt "lazdemsg.snewfile"
+msgid "New file"
+msgstr "Naujas failas"
+
+#: lazdemsg.snewmodule
+msgctxt "lazdemsg.snewmodule"
+msgid "New module"
+msgstr "Naujas modulis"
+
+#: lazdemsg.snewpackage
+msgctxt "lazdemsg.snewpackage"
+msgid "New package"
+msgstr "Naujas paketas"
+
+#: lazdemsg.snewtopic
+msgctxt "lazdemsg.snewtopic"
+msgid "New topic"
+msgstr "Nauja tema"
+
+#: lazdemsg.snodename
+msgid "Node name"
+msgstr ""
+
+#: lazdemsg.snoelement
+msgid "No element selected"
+msgstr "Nepažymėjote elemento"
+
+#: lazdemsg.soptdlgbackupextension
+msgid "Backup extension"
+msgstr "Plėtinys atsarginei kopijai"
+
+#: lazdemsg.soptdlgconfirmdeletes
+msgid "C&onfirm deletes"
+msgstr "&Patvirtinti šalinimą"
+
+#: lazdemsg.soptdlgcreatebackups
+msgid "Create &backups"
+msgstr "Kurti atsargines &kopijas"
+
+#: lazdemsg.soptdlgdefaultextension
+msgid "Default extension"
+msgstr "Numatytasis plėtinys"
+
+#: lazdemsg.soptdlgdesktop
+msgid "Desktop"
+msgstr "Darbalaukis"
+
+#: lazdemsg.soptdlgfpdocprogram
+msgid "fpdoc program"
+msgstr "programa „fpdoc“"
+
+#: lazdemsg.soptdlggeneral
+msgid "General"
+msgstr "Pagrindinės"
+
+#: lazdemsg.soptdlgmakeskelprogram
+msgid "makeskel program"
+msgstr "programa „makeskel“"
+
+#: lazdemsg.soptdlgmaxrecentused
+msgid "Max. recent used"
+msgstr "Daugiausia paskutinių naudotų"
+
+#: lazdemsg.soptdlgoptions
+msgid "Options"
+msgstr "Parinktys"
+
+#: lazdemsg.soptdlgreopenlastfile
+msgid "Reopen last file on startup"
+msgstr "Startavus, atverti paskutinį naudotą failą"
+
+#: lazdemsg.soptdlgshowhints
+msgid "Show hints"
+msgstr "Rodyti patarimus"
+
+#: lazdemsg.soptdlgskipemptynodes
+msgid "&Skip empty nodes when saving"
+msgstr "Įrašant, &praleisti tuščius mazgus"
+
+#: lazdemsg.soptdlgstartmaximized
+msgid "Start maximized"
+msgstr "Startavus, išdidinti"
+
+#: lazdemsg.sotheroptions
+msgid "Other options"
+msgstr "Kitos parinktys"
+
+#: lazdemsg.soutput
+msgid "&Output"
+msgstr "&Išvestis"
+
+#: lazdemsg.spackage
+msgctxt "lazdemsg.spackage"
+msgid "&Package"
+msgstr "&Paketas"
+
+#: lazdemsg.spackages
+msgid "Packages"
+msgstr "Paketai"
+
+#: lazdemsg.srenameelement
+msgid "Rename element"
+msgstr "Keisti elemento pavadinimą"
+
+#: lazdemsg.srenamemodule
+msgid "Rename module"
+msgstr "Keisti modulio pavadinimą"
+
+#: lazdemsg.srenamepackage
+msgid "Rename package"
+msgstr "Keisti paketo pavadinimą"
+
+#: lazdemsg.srenametopic
+msgid "Rename topic"
+msgstr "Keisti temos pavadinimą"
+
+#: lazdemsg.ssave
+msgctxt "lazdemsg.ssave"
+msgid "&Save"
+msgstr "Į&rašyti"
+
+#: lazdemsg.ssavebeforebuildquestion
+msgid "You have unsaved changes in \"%s\".%sThey should be saved in order to be visible in built documentation. Save them?"
+msgstr ""
+
+#: lazdemsg.sseealso
+msgid "See Also"
+msgstr "Taip pat žiūrėkite"
+
+#: lazdemsg.sselectoutputdirectory
+msgid "Select output directory"
+msgstr "Parinkite aplanką išvesčiai"
+
+#: lazdemsg.sselectoutputfile
+msgid "Select output file name"
+msgstr "Parinkite išvesties failo pavadinimą"
+
+#: lazdemsg.sselectsometext
+#, fuzzy
+#| msgid "Select some text"
+msgid "Select some text."
+msgstr "Pažymėkite kažkiek teksto"
+
+#: lazdemsg.sshortdescription
+msgid "Short"
+msgstr "Trumpas"
+
+#: lazdemsg.sshowprivatemethods
+msgid "Show p&rivate methods"
+msgstr "Rodyti &privačius metodus"
+
+#: lazdemsg.sskelerrorwithfile
+msgid "makeskel reported an error (%d). Try to load produced file anyway ?"
+msgstr "Programa „makeskel“ pranešė apie klaidą (%d). Vis tiek bandyti įkelti sukurtąjį failą?"
+
+#: lazdemsg.sskelerrorwithoutfile
+#, fuzzy,badformat
+msgid "makeskel reported an error (%d) and produced no file."
+msgstr "Programa „makeskel“ pranešė apie klaidą bei nesukūrė failo."
+
+#: lazdemsg.ssourcescapt
+msgid "Sources"
+msgstr "Pradiniai kodai"
+
+#: lazdemsg.sstartnodenotfound
+msgid "Start element \"%s\" could not be found"
+msgstr "Pradžios elementas „%s“ nerastas"
+
+#: lazdemsg.stablecols
+msgid "Columns"
+msgstr ""
+
+#: lazdemsg.stableheader
+msgid "Use header row"
+msgstr ""
+
+#: lazdemsg.stablerows
+msgid "Rows"
+msgstr ""
+
+#: lazdemsg.stargetos
+msgid "Target OS"
+msgstr "Paskirties OS"
+
+#: lazdemsg.susingcommand
+msgid "Building docs using command: "
+msgstr "Komanda, skirta dokumentacijos kūrimui: "
+
+#: lazdemsg.swarnifnodocumentationnodefound
+msgid "Warn if no documentation node found"
+msgstr "Neradus dokumentacijos mazgo, perspėti"
+

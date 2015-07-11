@@ -1,0 +1,14 @@
+tlrbutton.bmp
+tlrbuttonpanel.bmp
+tlrcheckbox.bmp
+tlrcombobox.bmp
+tlrdateedit.bmp
+tlredit.bmp
+tlrimage.bmp
+tlrlabel.bmp
+tlrlistbox.bmp
+tlrmemo.bmp
+tlrradiobutton.bmp
+tlrradiogroup.bmp
+tlrchecklistbox.bmp
+tlrformstorage.bmp

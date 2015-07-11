@@ -1,0 +1,262 @@
+object Form1: TForm1
+  Left = 1160
+  Height = 430
+  Top = 177
+  Width = 592
+  Caption = 'Form1'
+  ClientHeight = 430
+  ClientWidth = 592
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object pcMain: TPageControl
+    Left = 0
+    Height = 368
+    Top = 0
+    Width = 592
+    ActivePage = tsBar
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 0
+    object tsBar: TTabSheet
+      Caption = 'Bar'
+      ClientHeight = 342
+      ClientWidth = 584
+      object Chart1: TChart
+        Left = 0
+        Height = 342
+        Top = 0
+        Width = 584
+        AxisList = <        
+          item
+            TickLength = 0
+            Marks.Distance = 4
+            Marks.LabelBrush.Color = clSkyBlue
+            Marks.LabelBrush.Style = bsSolid
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+            Title.Visible = True
+            Title.Caption = 'Left axis title'
+            Title.LabelBrush.Style = bsSolid
+          end        
+          item
+            Alignment = calBottom
+            AxisPen.Visible = True
+            Marks.LabelBrush.Color = clSkyBlue
+            Marks.LabelBrush.Style = bsSolid
+            Minors = <>
+            Title.Visible = True
+            Title.Caption = 'Bottom axis title'
+            Title.Frame.Style = psSolid
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Frame.Visible = False
+        Margins.Bottom = 0
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        ParentColor = False
+        object Chart1BarSeries1: TBarSeries
+          Marks.Margins.Left = 8
+          Marks.Margins.Top = 5
+          Marks.Margins.Right = 8
+          Marks.Margins.Bottom = 5
+          Marks.Arrow.BaseLength = 3
+          Marks.Arrow.Length = 9
+          Marks.Arrow.Visible = True
+          Marks.Arrow.Width = 4
+          Marks.Format = '%1:.2f%%'
+          Marks.Frame.Color = 31097
+          Marks.Frame.Width = 2
+          Marks.Style = smsPercent
+          BarBrush.Color = 1410280
+          Source = RandomChartSource1
+        end
+      end
+    end
+    object Multiline: TTabSheet
+      Caption = 'Multiline'
+      ClientHeight = 342
+      ClientWidth = 584
+      object ChartMulti: TChart
+        Left = 0
+        Height = 342
+        Top = 0
+        Width = 584
+        AxisList = <        
+          item
+            Marks.Alignment = taCenter
+            Marks.LabelFont.Orientation = 900
+            Marks.Frame.Style = psSolid
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+            OnMarkToText = ChartMultiAxisList1MarkToText
+          end        
+          item
+            Alignment = calBottom
+            Marks.Frame.Style = psSolid
+            Minors = <>
+            Title.Visible = True
+            Title.Caption = 'test'
+            OnMarkToText = ChartMultiAxisList1MarkToText
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Foot.Text.Strings = (
+          'TAChart'
+        )
+        Title.Brush.Color = clBtnFace
+        Title.Brush.Style = bsClear
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'Chart long'
+          'title'
+        )
+        Title.Visible = True
+        Align = alClient
+        ParentColor = False
+        object ChartMultiLineSeries1: TLineSeries
+          Source = RandomChartSource1
+        end
+      end
+    end
+  end
+  object pnlControls: TPanel
+    Left = 0
+    Height = 62
+    Top = 368
+    Width = 592
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 62
+    ClientWidth = 592
+    TabOrder = 1
+    object cbHideOverlapping: TCheckBox
+      Left = 412
+      Height = 17
+      Top = 12
+      Width = 130
+      Caption = 'Hide overlapping labels'
+      OnChange = cbHideOverlappingChange
+      TabOrder = 0
+    end
+    object gbAngles: TGroupBox
+      Left = 0
+      Height = 62
+      Top = 0
+      Width = 392
+      Align = alLeft
+      Caption = ' Angles '
+      ClientHeight = 44
+      ClientWidth = 388
+      TabOrder = 1
+      object seAxisAngle: TSpinEdit
+        Left = 32
+        Height = 21
+        Top = 4
+        Width = 50
+        Increment = 5
+        MaxValue = 360
+        MinValue = -360
+        OnChange = seAxisAngleChange
+        TabOrder = 0
+      end
+      object lblAxisAngle: TLabel
+        Left = 6
+        Height = 13
+        Top = 8
+        Width = 20
+        Caption = 'Axis'
+        ParentColor = False
+      end
+      object lblSeriesAngle: TLabel
+        Left = 98
+        Height = 13
+        Top = 8
+        Width = 29
+        Caption = 'Series'
+        ParentColor = False
+      end
+      object seSeriesAngle: TSpinEdit
+        Left = 132
+        Height = 21
+        Top = 4
+        Width = 50
+        Increment = 5
+        MaxValue = 360
+        MinValue = -360
+        OnChange = seSeriesAngleChange
+        TabOrder = 1
+      end
+      object lblTitleAngle: TLabel
+        Left = 206
+        Height = 13
+        Top = 8
+        Width = 20
+        Caption = 'Title'
+        ParentColor = False
+      end
+      object seTitleAngle: TSpinEdit
+        Left = 232
+        Height = 21
+        Top = 4
+        Width = 50
+        Increment = 5
+        MaxValue = 360
+        MinValue = -360
+        OnChange = seTitleAngleChange
+        TabOrder = 2
+      end
+      object seCalloutAngle: TSpinEdit
+        Left = 332
+        Height = 21
+        Top = 4
+        Width = 50
+        Increment = 5
+        MaxValue = 120
+        OnChange = seCalloutAngleChange
+        TabOrder = 3
+      end
+      object lblCalloutAngle: TLabel
+        Left = 294
+        Height = 13
+        Top = 8
+        Width = 33
+        Caption = 'Callout'
+        ParentColor = False
+      end
+    end
+    object cbShape: TComboBox
+      Left = 412
+      Height = 21
+      Top = 32
+      Width = 160
+      ItemHeight = 13
+      ItemIndex = 0
+      Items.Strings = (
+        'Rectangle'
+        'Ellipse'
+        'Rounded corners'
+        'Rounded sides'
+        'User-defined'
+      )
+      OnChange = cbShapeChange
+      Style = csDropDownList
+      TabOrder = 2
+      Text = 'Rectangle'
+    end
+  end
+  object RandomChartSource1: TRandomChartSource
+    PointsNumber = 15
+    RandSeed = 567673250
+    XMax = 15
+    XMin = 0
+    YMax = 15
+    YMin = 10
+    left = 342
+    top = 94
+  end
+end

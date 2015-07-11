@@ -1,0 +1,145 @@
+object MainBar: TMainBar
+  Left = 4
+  Height = 66
+  Top = 129
+  Width = 517
+  Caption = 'MainBar'
+  ClientHeight = 46
+  ClientWidth = 517
+  Menu = MainMenu1
+  OnCreate = FormCreate
+  LCLVersion = '0.9.29'
+  object cbLayouts: TComboBox
+    Left = 88
+    Height = 21
+    Top = 0
+    Width = 144
+    ItemHeight = 13
+    Style = csDropDownList
+    TabOrder = 0
+  end
+  object Label1: TLabel
+    Left = 8
+    Height = 14
+    Top = 0
+    Width = 34
+    Caption = 'Layout'
+    ParentColor = False
+  end
+  object buRestore: TButton
+    Left = 304
+    Height = 25
+    Top = 1
+    Width = 91
+    Caption = 'Restore'
+    OnClick = buRestoreClick
+    TabOrder = 1
+  end
+  object buSave: TButton
+    Left = 240
+    Height = 25
+    Top = 1
+    Width = 59
+    Caption = 'Save'
+    OnClick = buSaveClick
+    TabOrder = 2
+  end
+  object buDump: TButton
+    Left = 408
+    Height = 25
+    Top = 3
+    Width = 81
+    Caption = 'Dump'
+    OnClick = buDumpClick
+    TabOrder = 3
+  end
+  object MainMenu1: TMainMenu
+    left = 96
+    object mnFile: TMenuItem
+      Caption = '&File'
+      object mnOpen: TMenuItem
+        Caption = '&Open'
+        OnClick = mnOpenClick
+      end
+      object MenuItem1: TMenuItem
+        Caption = '-'
+      end
+      object mnExit: TMenuItem
+        Caption = 'E&xit'
+        OnClick = mnExitClick
+      end
+    end
+    object mnView: TMenuItem
+      Caption = '&View'
+      object MenuItem2: TMenuItem
+        Caption = 'Object Inspector'
+        OnClick = ViewMenuClick
+      end
+      object MenuItem3: TMenuItem
+        Caption = 'Messages'
+        OnClick = ViewMenuClick
+      end
+      object MenuItem4: TMenuItem
+        Caption = 'Code Explorer'
+        OnClick = ViewMenuClick
+      end
+      object MenuItem5: TMenuItem
+        Caption = 'ToDo List'
+        OnClick = ViewMenuClick
+      end
+      object MenuItem6: TMenuItem
+        Caption = 'Debug windows'
+        object MenuItem7: TMenuItem
+          Caption = 'Watches'
+          OnClick = ViewMenuClick
+        end
+        object MenuItem8: TMenuItem
+          Caption = 'BreakPoints'
+          OnClick = ViewMenuClick
+        end
+        object MenuItem9: TMenuItem
+          Caption = 'Local Variables'
+          OnClick = ViewMenuClick
+        end
+        object MenuItem10: TMenuItem
+          Caption = 'Registers'
+          OnClick = ViewMenuClick
+        end
+        object MenuItem11: TMenuItem
+          Caption = 'Call Stack'
+          OnClick = ViewMenuClick
+        end
+        object MenuItem12: TMenuItem
+          Caption = 'Assembler'
+          OnClick = ViewMenuClick
+        end
+        object MenuItem13: TMenuItem
+          Caption = 'Debug Output'
+          OnClick = ViewMenuClick
+        end
+      end
+    end
+    object MenuItem14: TMenuItem
+      Caption = '&Windows'
+      object mnWindowDump: TMenuItem
+        Caption = '&Dump'
+        OnClick = mnWindowDumpClick
+      end
+      object mnMinimize: TMenuItem
+        Caption = 'Minimize all'
+      end
+      object mnRestore: TMenuItem
+        Caption = 'Restore all'
+      end
+    end
+  end
+  object OpenDialog1: TOpenDialog
+    Filter = '*.pas|*.pas|All Files|*.*'
+    left = 184
+  end
+  object dlgLayout: TSaveDialog
+    DefaultExt = '.lyt'
+    Filter = 'Layouts|*.lyt'
+    left = 144
+  end
+end

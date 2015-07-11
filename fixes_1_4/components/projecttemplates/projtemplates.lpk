@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="4">
+    <Name Value="ProjTemplates"/>
+    <Author Value="Michael Van Canneyt"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
+      </SearchPaths>
+      <Parsing>
+        <SyntaxOptions>
+          <UseAnsiStrings Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="IDE extension to create projects based on project templates
+"/>
+    <License Value="Modified LGPL as per the FCL license
+"/>
+    <Version Major="1"/>
+    <Files Count="7">
+      <Item1>
+        <Filename Value="projecttemplates.pp"/>
+        <UnitName Value="ProjectTemplates"/>
+      </Item1>
+      <Item2>
+        <Filename Value="idetemplateproject.pp"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="IDETemplateProject"/>
+      </Item2>
+      <Item3>
+        <Filename Value="frmtemplatevariables.lfm"/>
+        <Type Value="LFM"/>
+      </Item3>
+      <Item4>
+        <Filename Value="frmtemplatevariables.pas"/>
+        <UnitName Value="frmTemplateVariables"/>
+      </Item4>
+      <Item5>
+        <Filename Value="frmtemplatesettings.lfm"/>
+        <Type Value="LFM"/>
+      </Item5>
+      <Item6>
+        <Filename Value="frmtemplatesettings.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="frmtemplatesettings"/>
+      </Item6>
+      <Item7>
+        <Filename Value="README.txt"/>
+        <Type Value="Text"/>
+      </Item7>
+    </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
+    <Type Value="DesignTime"/>
+    <RequiredPkgs Count="2">
+      <Item1>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="IDEIntf"/>
+      </Item2>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

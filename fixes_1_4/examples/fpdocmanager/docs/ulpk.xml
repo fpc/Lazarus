@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="fpdocmanager">
+    <!--
+  ====================================================================
+    uLpk
+  ====================================================================
+-->
+    <module name="uLpk">
+      <short/>
+      <descr/>
+      <!-- function Visibility: default -->
+      <element name="ImportLpk">
+        <short>Imports an .lpi or .lpk file, creates a documentation project.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="ImportLpk.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ImportLpk.AFile">
+        <short/>
+      </element>
+    </module>
+    <!-- uLpk -->
+  </package>
+</fpdoc-descriptions>

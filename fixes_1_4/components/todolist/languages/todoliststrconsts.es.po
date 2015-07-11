@@ -1,0 +1,95 @@
+msgid ""
+msgstr ""
+"Last-Translator: Lucas Martín <codedeep@hotmail.com>\n"
+"PO-Revision-Date: \n"
+"Project-Id-Version: todolist\n"
+"Language-Team: Español\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: \n"
+"MIME-Version: 1.0\n"
+
+#: todoliststrconsts.dlgfropts
+msgid "Options"
+msgstr "Opciones"
+
+#: todoliststrconsts.dlgunitdeprefresh
+msgid "Refresh"
+msgstr "Actualizar"
+
+#: todoliststrconsts.lisctinsertmacro
+msgid "Insert Macro"
+msgstr "Insertar Macro"
+
+#: todoliststrconsts.lispkgfiletypetext
+msgid "Text"
+msgstr "Texto"
+
+#: todoliststrconsts.lisprint
+msgid "Print"
+msgstr "Imprimir"
+
+#: todoliststrconsts.listddinserttodo
+msgid "Insert ToDo"
+msgstr "Insertar Pendiente (ToDo)"
+
+#: todoliststrconsts.listodoexport
+msgid "Export"
+msgstr "Exportar"
+
+#: todoliststrconsts.listodogoto
+msgid "Goto"
+msgstr "Ir a"
+
+#: todoliststrconsts.listodoldescription
+msgid "Description"
+msgstr "Descripción"
+
+#: todoliststrconsts.listodoldone
+msgid "Done"
+msgstr "Hecho"
+
+#: todoliststrconsts.listodolfile
+msgid "Module"
+msgstr "Módulo"
+
+#: todoliststrconsts.listodolist
+msgid "ToDo List"
+msgstr "Lista ToDo"
+
+#: todoliststrconsts.listodolistgotoline
+msgid "Goto selected source line"
+msgstr "Ir a línea seleccionada de codigo fuente"
+
+#: todoliststrconsts.listodolistoptions
+msgid "ToDo options ..."
+msgstr "Opciones de ToDo ..."
+
+#: todoliststrconsts.listodolistprintlist
+msgid "Print todo items"
+msgstr "Imprimir artículos de ToDo"
+
+#: todoliststrconsts.listodolistrefresh
+msgid "Refresh todo items"
+msgstr "Actualizar los elementos de ToDo"
+
+#: todoliststrconsts.listodolline
+msgid "Line"
+msgstr "Línea"
+
+#: todoliststrconsts.listodolowner
+msgid "Owner"
+msgstr "Propietario"
+
+#: todoliststrconsts.listodolpriority
+msgid "Priority"
+msgstr "Prioridad"
+
+#: todoliststrconsts.listtodolcategory
+msgid "Category"
+msgstr "Categoría"
+
+#: todoliststrconsts.lisviewtodolist
+msgid "View ToDo List"
+msgstr "Ver lista de ToDos"
+

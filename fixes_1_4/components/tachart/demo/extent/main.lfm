@@ -1,0 +1,176 @@
+object Form1: TForm1
+  Left = 319
+  Height = 397
+  Top = 165
+  Width = 396
+  Caption = 'Form1'
+  ClientHeight = 397
+  ClientWidth = 396
+  OnCreate = FormCreate
+  LCLVersion = '1.1'
+  object Chart1: TChart
+    Left = 0
+    Height = 307
+    Top = 0
+    Width = 396
+    AxisList = <    
+      item
+        Grid.Visible = False
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+      end    
+      item
+        Grid.Visible = False
+        Alignment = calBottom
+        Minors = <>
+      end>
+    Extent.XMax = 1.7
+    Extent.XMin = -1.7
+    Extent.YMax = 1.7
+    Extent.YMin = -1.7
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Toolset = ChartToolset1
+    OnExtentChanged = Chart1ExtentChanged
+    Align = alClient
+    ParentColor = False
+    object Chart1LineSeries: TLineSeries
+      LinePen.Color = clRed
+      Pointer.Brush.Color = clRed
+      Pointer.Pen.Color = clRed
+      ShowPoints = True
+      Source = RandomChartSource1
+    end
+    object clRight: TConstantLine
+      LineStyle = lsVertical
+      Pen.Color = clGreen
+      Pen.Style = psDot
+      Position = 1.7
+      UseBounds = False
+    end
+    object clLeft: TConstantLine
+      LineStyle = lsVertical
+      Pen.Color = clGreen
+      Pen.Style = psDot
+      Position = -1.7
+      UseBounds = False
+    end
+    object clTop: TConstantLine
+      Pen.Color = clGreen
+      Pen.Style = psDot
+      Position = 1.7
+      UseBounds = False
+    end
+    object clBottom: TConstantLine
+      Pen.Color = clGreen
+      Pen.Style = psDot
+      Position = -1.7
+      UseBounds = False
+    end
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 90
+    Top = 307
+    Width = 396
+    Align = alBottom
+    ClientHeight = 90
+    ClientWidth = 396
+    TabOrder = 1
+    object lblBoundValue: TLabel
+      Left = 160
+      Height = 13
+      Top = 21
+      Width = 26
+      Caption = 'Value'
+      ParentColor = False
+    end
+    object cgUseBounds: TCheckGroup
+      Left = 1
+      Height = 88
+      Top = 1
+      Width = 147
+      Align = alLeft
+      AutoFill = True
+      Caption = ' Use bounds '
+      ChildSizing.LeftRightSpacing = 8
+      ChildSizing.TopBottomSpacing = 6
+      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+      ChildSizing.EnlargeVertical = crsHomogenousChildResize
+      ChildSizing.ShrinkHorizontal = crsScaleChilds
+      ChildSizing.ShrinkVertical = crsScaleChilds
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 1
+      ClientHeight = 70
+      ClientWidth = 143
+      Items.Strings = (
+        'Left'
+        'Right'
+        'Bottom'
+        'Top'
+      )
+      OnItemClick = cgUseBoundsItemClick
+      TabOrder = 0
+      Data = {
+        0400000002020202
+      }
+    end
+    object fseBounds: TFloatSpinEdit
+      Left = 204
+      Height = 21
+      Top = 17
+      Width = 50
+      Increment = 0.1
+      MaxValue = 10
+      MinValue = 1
+      OnChange = fseBoundsChange
+      TabOrder = 1
+      Value = 1.7
+    end
+    object btnPrevExtent: TButton
+      Left = 159
+      Height = 25
+      Top = 49
+      Width = 95
+      Caption = 'Previous extent'
+      OnClick = btnPrevExtentClick
+      TabOrder = 2
+    end
+    object lblHistory: TLabel
+      Left = 264
+      Height = 13
+      Top = 57
+      Width = 44
+      Caption = 'lblHistory'
+      ParentColor = False
+    end
+  end
+  object RandomChartSource1: TRandomChartSource
+    PointsNumber = 20
+    RandSeed = 628509515
+    XMax = 5
+    XMin = -5
+    YMax = 5
+    YMin = -5
+    left = 176
+    top = 118
+  end
+  object ChartToolset1: TChartToolset
+    left = 336
+    top = 320
+    object ChartToolset1PanDragTool1: TPanDragTool
+      Shift = [ssRight]
+      LimitToExtent = [pdLeft, pdUp, pdRight, pdDown]
+    end
+    object ChartToolset1ZoomDragTool1: TZoomDragTool
+      Shift = [ssLeft]
+      AnimationInterval = 100
+      AnimationSteps = 5
+    end
+  end
+end

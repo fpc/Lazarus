@@ -1,0 +1,85 @@
+object OptionsForm: TOptionsForm
+  Left = 390
+  Height = 275
+  Top = 239
+  Width = 390
+  Caption = 'Options'
+  ClientHeight = 275
+  ClientWidth = 390
+  Position = poMainFormCenter
+  LCLVersion = '0.9.29'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 35
+    Top = 234
+    Width = 378
+    OKButton.Name = 'OKButton'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Enabled = False
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object GBWindow: TGroupBox
+    Left = 16
+    Height = 81
+    Top = 16
+    Width = 300
+    Caption = 'Show message window'
+    ClientHeight = 59
+    ClientWidth = 296
+    TabOrder = 1
+    object CBShowOnStartUp: TCheckBox
+      Left = 14
+      Height = 21
+      Top = 9
+      Width = 126
+      Caption = 'Show on startup'
+      TabOrder = 0
+    end
+    object CBShowOnMessage: TCheckBox
+      Left = 13
+      Height = 21
+      Top = 37
+      Width = 164
+      Caption = 'Show on new message'
+      TabOrder = 1
+    end
+  end
+  object GBMessages: TGroupBox
+    Left = 16
+    Height = 115
+    Top = 109
+    Width = 300
+    Caption = 'Messages'
+    ClientHeight = 93
+    ClientWidth = 296
+    TabOrder = 2
+    object CBNewAtBottom: TCheckBox
+      Left = 13
+      Height = 21
+      Top = 5
+      Width = 216
+      Caption = 'Show new messages at bottom'
+      TabOrder = 0
+    end
+    object CBNewVisible: TCheckBox
+      Left = 14
+      Height = 21
+      Top = 29
+      Width = 206
+      Caption = 'Scroll new messages into view'
+      TabOrder = 1
+    end
+    object CBCleanLogOnNewProcess: TCheckBox
+      Left = 14
+      Height = 21
+      Top = 55
+      Width = 179
+      Caption = 'Clean log on new process'
+      TabOrder = 2
+    end
+  end
+end

@@ -1,0 +1,50 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.9.27 beta\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2009-04-24 19:20+0800\n"
+"Last-Translator: XY.Chen <chenxinyv@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Chinese\n"
+"X-Poedit-Country: CHINA\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: frmselectdataset.scancelbtn
+msgid "Cancel"
+msgstr ""
+
+#: frmselectdataset.scaption
+msgid "Select dataset to copy from"
+msgstr ""
+
+#: frmselectdataset.scopymeta
+msgid "Copy only metadata"
+msgstr ""
+
+#: frmselectdataset.sdataset
+msgid "&Dataset to copy from:"
+msgstr ""
+
+#: frmselectdataset.serrcomponentnotfound
+msgid "Error: Component \"%s\" not found"
+msgstr "错误: 组件 \"%s\" 未找到"
+
+#: frmselectdataset.serrselectdataset
+msgid "Please select a dataset first"
+msgstr "请先选择数据集"
+
+#: frmselectdataset.smenucopydataset
+msgid "Copy data from Dataset"
+msgstr "从数据集拷贝数据"
+
+#: frmselectdataset.smenucreatedataset
+msgid "Create dataset"
+msgstr "建立数据集"
+
+#: frmselectdataset.sokbtn
+msgid "OK"
+msgstr ""
+

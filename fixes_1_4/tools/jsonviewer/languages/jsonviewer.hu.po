@@ -1,0 +1,310 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
+"Language-Team: Magyar (Hungarian)\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: msgjsonviewer.sarray
+msgid "Array (%d elements)"
+msgstr "Tömb (%d elem)"
+
+#: msgjsonviewer.scancelclose
+msgid "Do not close the window"
+msgstr "Ne zárja be az ablakot"
+
+#: msgjsonviewer.scancelpaste
+msgid "Do not paste the new data"
+msgstr "Ne illessze be az új adatot"
+
+#: msgjsonviewer.scaption
+msgctxt "msgjsonviewer.scaption"
+msgid "JSON Viewer"
+msgstr "JSON Megjelenítő"
+
+#: msgjsonviewer.sdiscard
+msgid "Discard changes"
+msgstr "Változások eldobása"
+
+#: msgjsonviewer.sdocumentmodified
+msgid "JSON document modified"
+msgstr "JSON dokumentum módosítva"
+
+#: msgjsonviewer.sdocumentmodifiedaction
+msgid ""
+"The JSON data was changed but not saved.\n"
+"What do want to do ?\n"
+msgstr ""
+"A JSON adatok megváltoztak, de nincsenek mentve.\n"
+"Mit szeretne tenni?\n"
+
+#: msgjsonviewer.sduplicatemembername
+msgid "Duplicate member name \"%s\"."
+msgstr "Többszörös tagnév: \"%s\"."
+
+#: msgjsonviewer.selement
+msgid "Element nr. %d"
+msgstr "Elemszám: %d"
+
+#: msgjsonviewer.sempty
+msgid "Empty document"
+msgstr "Üres dokumentum"
+
+#: msgjsonviewer.serrcreatingconfigdir
+msgid "Could not create the configuration files directory \"%s\""
+msgstr "Nem sikerült létrehozni a beállítások könyvtárát: \"%s\""
+
+#: msgjsonviewer.serrinvalidvalue
+msgid "Invalid value or wrong type: \"%s\""
+msgstr "Érvénytelen érték vagy rossz típus: \"%s\""
+
+#: msgjsonviewer.serrnovalidjsonclipboard
+msgid "The clipboard does not contain valid JSON data"
+msgstr "A vágólap nem tartalmaz érvényes JSON adatot"
+
+#: msgjsonviewer.snewmember
+msgid "New object member"
+msgstr "Új objektum-tag"
+
+#: msgjsonviewer.snewmembername
+msgid "Enter a name for the new member (type: %s)"
+msgstr "Az új tag nevének megadása (típus: %s)"
+
+#: msgjsonviewer.snomorematches
+msgid "No nodes match the criterium"
+msgstr "Nincs a feltételnek megfelelő csomópont"
+
+#: msgjsonviewer.snull
+msgid "null"
+msgstr "NULL"
+
+#: msgjsonviewer.sobject
+msgid "Object (%d members)"
+msgstr "Objektum (%d tag)"
+
+#: msgjsonviewer.ssavedata
+msgid "Save the changes"
+msgstr "Változások mentése"
+
+#: tmainform.acopy.caption
+msgid "&Copy"
+msgstr "&Másolás"
+
+#: tmainform.acopy.hint
+msgid "Copy selected node to clipboard as JSON"
+msgstr "A kijelölt csomópont másolása a vágólapra JSON-ként"
+
+#: tmainform.acut.caption
+msgid "C&ut"
+msgstr "Ki&vágás"
+
+#: tmainform.acut.hint
+msgid "Cut selected node to clipboard as JSON"
+msgstr "A kijelölt csomópont kivágása a vágólapra JSON-ként"
+
+#: tmainform.adeletevalue.caption
+msgid "&Delete value"
+msgstr "Érték törlése"
+
+#: tmainform.adeletevalue.hint
+msgid "Delete the selected value"
+msgstr "A kijelölt érték törlése"
+
+#: tmainform.aexpandall.caption
+msgid "E&xpand all nodes"
+msgstr "Minden csomópont kibontása"
+
+#: tmainform.aexpandall.hint
+msgid "Expand all nodes in the document"
+msgstr "Minden csomópont kibontása a dokumentumban"
+
+#: tmainform.aexpandcurrentcontainer.caption
+msgid "Expand &current object/array"
+msgstr "Jelenlegi objektum/tömb kibontása"
+
+#: tmainform.aexpandcurrentcontainer.hint
+msgid "Expand all nodes in the current object/array"
+msgstr "Minden csomópont kibontása a jelenlegi objektumban/tömbben"
+
+#: tmainform.afind.caption
+msgid "&Find"
+msgstr "Keresés"
+
+#: tmainform.afindnext.caption
+msgid "Find &next occurrence"
+msgstr "Következő előfordulás keresése"
+
+#: tmainform.anew.caption
+msgid "&New"
+msgstr "&Új"
+
+#: tmainform.anew.hint
+msgid "Create new JSON document"
+msgstr "Új JSON dokumentum létrehozása"
+
+#: tmainform.anewarray.caption
+msgid "New &Array"
+msgstr "Új tömb"
+
+#: tmainform.anewarray.hint
+msgid "Add a new JSON array"
+msgstr "Új JSON tömb hozzáadása"
+
+#: tmainform.anewbooleanvalue.caption
+msgid "New &boolean value"
+msgstr "Új logikai érték"
+
+#: tmainform.anewbooleanvalue.hint
+msgid "Add a new boolean value"
+msgstr "Új logikai érték hozzáadása"
+
+#: tmainform.anewnullvalue.caption
+msgid "New N&ull value"
+msgstr "Új üres (null) érték"
+
+#: tmainform.anewnullvalue.hint
+msgid "Add a new null value"
+msgstr "Új üres (null) érték hozzáadása"
+
+#: tmainform.anewnumbervalue.caption
+msgid "&New numerical Value"
+msgstr "Új számérték"
+
+#: tmainform.anewnumbervalue.hint
+msgid "Add a new number value"
+msgstr "Új számérték hozzáadása"
+
+#: tmainform.anewobject.caption
+msgid "New &Object"
+msgstr "Új objektum"
+
+#: tmainform.anewobject.hint
+msgid "Add a new JSON object"
+msgstr "Új JSON objektum hozzáadása"
+
+#: tmainform.anewstringvalue.caption
+msgid "New &string value"
+msgstr "Új szövegérték"
+
+#: tmainform.anewstringvalue.hint
+msgid "Add a new string value"
+msgstr "Új szövegérték hozzáadása"
+
+#: tmainform.aopen.caption
+msgid "&Open"
+msgstr "Meg&nyitás"
+
+#: tmainform.aopen.hint
+msgid "Open JSON document from file"
+msgstr "JSON dokumentum megnyitása fájlból"
+
+#: tmainform.apaste.caption
+msgid "&Paste"
+msgstr "&Beillesztés"
+
+#: tmainform.apaste.hint
+msgid "Paste JSON data in clipboard as new member"
+msgstr "JSON adatok beillesztése a vágólapról új tagként"
+
+#: tmainform.apasteasdocument.caption
+msgid "Paste as new document"
+msgstr "Beillesztés új dokumentumként"
+
+#: tmainform.apasteasdocument.hint
+msgid "Paste JSON data in clipboard as new document"
+msgstr "JSON adatok beillesztése a vágólapról új dokumentumként"
+
+#: tmainform.aquit.caption
+msgid "&Quit"
+msgstr "&Kilépés"
+
+#: tmainform.aquit.hint
+msgid "Exit the program"
+msgstr "Kilépés a programból"
+
+#: tmainform.asave.caption
+msgid "&Save"
+msgstr "&Mentés"
+
+#: tmainform.asave.hint
+msgid "Save the JSON document to file"
+msgstr "JSON dokumentum mentése fájlba"
+
+#: tmainform.asaveas.caption
+msgid "Save &as"
+msgstr "Mentés másként"
+
+#: tmainform.asaveas.hint
+msgid "Save JSON document with a new name"
+msgstr "JSON dokumentum mentése új névvel"
+
+#: tmainform.mainform.caption
+msgctxt "TMAINFORM.MAINFORM.CAPTION"
+msgid "JSON Viewer"
+msgstr "JSON Megjelenítő"
+
+#: tmainform.medit.caption
+msgid "&Edit"
+msgstr "S&zerkesztés"
+
+#: tmainform.menuitem1.caption
+msgctxt "TMAINFORM.MENUITEM1.CAPTION"
+msgid "-"
+msgstr "-"
+
+#: tmainform.menuitem2.caption
+msgctxt "TMAINFORM.MENUITEM2.CAPTION"
+msgid "-"
+msgstr "-"
+
+#: tmainform.menuitem3.caption
+msgctxt "TMAINFORM.MENUITEM3.CAPTION"
+msgid "-"
+msgstr "-"
+
+#: tmainform.menuitem8.caption
+msgctxt "TMAINFORM.MENUITEM8.CAPTION"
+msgid "-"
+msgstr "-"
+
+#: tmainform.mfile.caption
+msgid "&File"
+msgstr "&Fájl"
+
+#: tmainform.midocument.caption
+msgid "&New document with object"
+msgstr "Új dokumentum objektummal"
+
+#: tmainform.miinsert.caption
+msgid "&Values"
+msgstr "Érté&kek"
+
+#: tmainform.misortmembers.caption
+msgid "Sort object members"
+msgstr "Objektum-tagok rendezése"
+
+#: tmainform.mistrict.caption
+msgid "&Strict JSON"
+msgstr "Szigorú JSON"
+
+#: tmainform.moptions.caption
+msgid "&Options"
+msgstr "Beállítás&ok"
+
+#: tmainform.tbjson.caption
+msgid "TBJSON"
+msgstr "TBJSON"
+
+#: tmainform.toolbutton1.caption
+msgid "ToolButton1"
+msgstr "ToolButton1"
+
+#: tmainform.toolbutton4.caption
+msgid "ToolButton4"
+msgstr "ToolButton4"

@@ -1,0 +1,80 @@
+object FileFilterPropEditForm: TFileFilterPropEditForm
+  Left = 335
+  Height = 318
+  Top = 158
+  Width = 473
+  BorderStyle = bsToolWindow
+  Caption = 'Filter editor'
+  ClientHeight = 318
+  ClientWidth = 473
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 40
+    Top = 272
+    Width = 461
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object StringGrid1: TStringGrid
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = MoveUpBtn
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 3
+    Height = 263
+    Top = 3
+    Width = 429
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Right = 6
+    BorderSpacing.Around = 3
+    ColCount = 2
+    DefaultColWidth = 200
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goAlwaysShowEditor, goSmoothScroll]
+    RowCount = 100
+    TabOrder = 1
+    OnClick = StringGrid1Click
+    OnButtonClick = StringGrid1ButtonClick
+    OnEditingDone = StringGrid1EditingDone
+  end
+  object MoveUpBtn: TSpeedButton
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 441
+    Height = 26
+    Top = 88
+    Width = 22
+    Anchors = [akTop, akRight]
+    BorderSpacing.Around = 6
+    Enabled = False
+    OnClick = MoveUpBtnClick
+    ShowHint = True
+    ParentShowHint = False
+  end
+  object MoveDownBtn: TSpeedButton
+    AnchorSideLeft.Control = MoveUpBtn
+    AnchorSideTop.Control = MoveUpBtn
+    AnchorSideTop.Side = asrBottom
+    Left = 441
+    Height = 26
+    Top = 121
+    Width = 22
+    BorderSpacing.Top = 7
+    Enabled = False
+    OnClick = MoveDownBtnClick
+    ShowHint = True
+    ParentShowHint = False
+  end
+end

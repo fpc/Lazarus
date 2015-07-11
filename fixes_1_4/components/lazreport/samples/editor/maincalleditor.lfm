@@ -1,0 +1,643 @@
+object frmMain: TfrmMain
+  Left = 98
+  Height = 545
+  Top = 111
+  Width = 828
+  ActiveControl = Panel1
+  Caption = 'LazReport Test Suite'
+  ClientHeight = 526
+  ClientWidth = 828
+  Font.Name = 'Sans'
+  Menu = MainMenu1
+  OnCloseQuery = FormCloseQuery
+  OnCreate = frmMainCreate
+  ShowHint = True
+  LCLVersion = '1.3'
+  object lblIndex: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideBottom.Control = grid
+    Left = 6
+    Height = 17
+    Top = 100
+    Width = 36
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'Index'
+    ParentColor = False
+  end
+  object lblExpr: TLabel
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = grid
+    Left = 751
+    Height = 17
+    Top = 100
+    Width = 71
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'Expression'
+    ParentColor = False
+  end
+  object sbar: TStatusBar
+    Left = 0
+    Height = 19
+    Top = 507
+    Width = 828
+    Panels = <    
+      item
+        Width = 250
+      end>
+    SimplePanel = False
+  end
+  object comboIndex: TComboBox
+    AnchorSideLeft.Control = lblIndex
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Panel1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = lblExpr
+    AnchorSideBottom.Control = grid
+    Left = 48
+    Height = 27
+    Top = 90
+    Width = 697
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    ItemHeight = 0
+    OnSelect = comboIndexSelect
+    TabOrder = 2
+  end
+  object mastergrid: TDBGrid
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = comboIndex
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = grid
+    AnchorSideBottom.Control = sbar
+    Left = 0
+    Height = 384
+    Top = 123
+    Width = 204
+    Anchors = [akTop, akLeft, akBottom]
+    Color = clMoneyGreen
+    Columns = <>
+    DataSource = srcMaster
+    TabOrder = 3
+    TitleFont.Name = 'Sans'
+    Visible = False
+  end
+  object grid: TDBGrid
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = comboIndex
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = sbar
+    Left = 0
+    Height = 384
+    Top = 123
+    Width = 828
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Color = clWhite
+    Columns = <>
+    DataSource = srcDetail
+    Font.Name = 'Sans'
+    Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
+    ParentFont = False
+    TabOrder = 0
+    TitleFont.Name = 'Sans'
+    OnTitleClick = gridTitleClick
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 84
+    Top = 0
+    Width = 828
+    Align = alTop
+    BevelOuter = bvNone
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 6
+    ClientHeight = 84
+    ClientWidth = 828
+    TabOrder = 4
+    object btnNewReport: TButton
+      Left = 6
+      Height = 33
+      Top = 6
+      Width = 118
+      Action = accNewReport
+      AutoSize = True
+      BorderSpacing.Around = 6
+      TabOrder = 0
+    end
+    object btnOpenReport: TButton
+      Left = 130
+      Height = 33
+      Top = 6
+      Width = 123
+      Action = accOpenReport
+      AutoSize = True
+      BorderSpacing.Around = 6
+      TabOrder = 2
+    end
+    object btnEditReport: TButton
+      Left = 259
+      Height = 33
+      Top = 6
+      Width = 119
+      Action = accEditReport
+      AutoSize = True
+      BorderSpacing.Around = 6
+      TabOrder = 3
+    end
+    object btnPreviewReport: TButton
+      Left = 384
+      Height = 33
+      Top = 6
+      Width = 147
+      Action = accPreviewReport
+      AutoSize = True
+      BorderSpacing.Around = 6
+      TabOrder = 4
+    end
+    object btnPrintReport: TButton
+      Left = 537
+      Height = 33
+      Top = 6
+      Width = 134
+      Action = accPrintReport
+      AutoSize = True
+      BorderSpacing.Around = 6
+      TabOrder = 5
+    end
+    object btnCustomPreview: TButton
+      Left = 677
+      Height = 33
+      Top = 6
+      Width = 145
+      Action = accCustomPreview
+      AutoSize = True
+      BorderSpacing.Around = 6
+      TabOrder = 1
+    end
+    object btnPrintGrid: TButton
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 33
+      Top = 45
+      Width = 118
+      Action = accPrintGrid
+      AutoSize = True
+      BorderSpacing.Around = 6
+      TabOrder = 6
+    end
+    object btnComposite: TButton
+      AnchorSideTop.Side = asrBottom
+      Left = 130
+      Height = 33
+      Top = 45
+      Width = 123
+      Action = accComposite
+      AutoSize = True
+      BorderSpacing.Around = 6
+      TabOrder = 8
+    end
+    object btnImageList: TButton
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Side = asrBottom
+      Left = 259
+      Height = 33
+      Top = 45
+      Width = 119
+      Action = accThumbnails
+      AutoSize = True
+      BorderSpacing.Around = 6
+      TabOrder = 7
+    end
+    object btnMasterDetail: TToggleBox
+      Left = 384
+      Height = 33
+      Top = 45
+      Width = 147
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'Master-Detail Test'
+      OnClick = btnMasterDetailClick
+      TabOrder = 9
+    end
+    object btnExportLast: TButton
+      Left = 537
+      Height = 33
+      Top = 45
+      Width = 134
+      Caption = 'Repeat Export'
+      OnClick = btnExportLastClick
+      TabOrder = 10
+    end
+  end
+  object TheReport: TfrReport
+    Dataset = frDbDetail
+    DefaultCopies = 0
+    InitialZoom = pzDefault
+    Options = [roIgnoreFieldNotFound]
+    PreviewButtons = [pbZoom, pbLoad, pbSave, pbPrint, pbFind, pbHelp, pbExit]
+    DataType = dtDataSet
+    OnBeginDoc = TheReportBeginDoc
+    OnGetValue = TheReportGetValue
+    OnEnterRect = TheReportEnterRect
+    OnUserFunction = TheReportUserFunction
+    OnExportFilterSetup = TheReportExportFilterSetup
+    left = 40
+    top = 192
+  end
+  object Detail: TDbf
+    IndexDefs = <>
+    TableName = 'disco.dbf'
+    TableLevel = 3
+    FilterOptions = []
+    left = 184
+    top = 192
+    object DetailAUTHOR: TStringField
+      DisplayWidth = 20
+      FieldKind = fkData
+      FieldName = 'AUTHOR'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object DetailTITLE: TStringField
+      DisplayWidth = 30
+      FieldKind = fkData
+      FieldName = 'TITLE'
+      Index = 1
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 30
+    end
+    object DetailCOMPANY1: TStringField
+      DisplayLabel = 'COMPANY'
+      DisplayWidth = 12
+      FieldKind = fkLookup
+      FieldName = 'COMPANY1'
+      Index = 2
+      KeyFields = 'COMPANYID'
+      LookupCache = False
+      LookupDataSet = LookCompanies
+      LookupKeyFields = 'COMPANYID'
+      LookupResultField = 'COMPANY'
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 12
+    end
+    object DetailCOUNTRY1: TStringField
+      DisplayLabel = 'COUNTRY'
+      DisplayWidth = 3
+      FieldKind = fkLookup
+      FieldName = 'COUNTRY1'
+      Index = 3
+      KeyFields = 'COUNTRYID'
+      LookupCache = False
+      LookupDataSet = LookCountries
+      LookupKeyFields = 'COUNTRYID'
+      LookupResultField = 'COUNTRY'
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 3
+    end
+    object DetailYEAR: TSmallintField
+      DisplayWidth = 10
+      FieldKind = fkData
+      FieldName = 'YEAR'
+      Index = 4
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object DetailPRICE: TFloatField
+      DisplayWidth = 10
+      FieldKind = fkData
+      FieldName = 'PRICE'
+      Index = 5
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      MaxValue = 0
+      MinValue = 0
+      Precision = 2
+    end
+    object DetailNOTE: TStringField
+      DisplayWidth = 5
+      FieldKind = fkData
+      FieldName = 'NOTE'
+      Index = 6
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 5
+    end
+    object DetailQTY: TSmallintField
+      DisplayWidth = 10
+      FieldKind = fkData
+      FieldName = 'QTY'
+      Index = 7
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object DetailLAST_SELL: TDateField
+      DisplayWidth = 10
+      FieldKind = fkData
+      FieldName = 'LAST_SELL'
+      Index = 8
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object DetailIN_STOCK: TBooleanField
+      DisplayWidth = 5
+      FieldKind = fkData
+      FieldName = 'IN_STOCK'
+      Index = 9
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      DisplayValues = 'True;False'
+    end
+    object DetailCOMPANYID: TLongintField
+      DisplayWidth = 10
+      FieldKind = fkData
+      FieldName = 'COMPANYID'
+      Index = 10
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Visible = False
+    end
+    object DetailCOUNTRYID: TLongintField
+      DisplayWidth = 10
+      FieldKind = fkData
+      FieldName = 'COUNTRYID'
+      Index = 11
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Visible = False
+    end
+  end
+  object srcDetail: TDataSource
+    DataSet = Detail
+    left = 184
+    top = 248
+  end
+  object frDbDetail: TfrDBDataSet
+    DataSet = Detail
+    left = 112
+    top = 192
+  end
+  object PrintGrid: TFrPrintGrid
+    DBGrid = grid
+    Orientation = poLandscape
+    Font.Name = 'Sans'
+    TitleFont.Name = 'Sans'
+    Caption = 'Grid'
+    ShowCaption = True
+    left = 352
+    top = 248
+  end
+  object MainMenu1: TMainMenu
+    left = 112
+    top = 96
+    object MenuItem1: TMenuItem
+      Caption = 'Files'
+      object MenuItem2: TMenuItem
+        Action = accClose
+        OnClick = accCloseExecute
+      end
+    end
+    object MenuItem3: TMenuItem
+      Caption = 'Tests'
+      object MenuItem4: TMenuItem
+        Action = accNewReport
+        OnClick = accNewReportExecute
+      end
+      object MenuItem5: TMenuItem
+        Action = accEditReport
+        OnClick = accEditReportExecute
+      end
+      object MenuItem6: TMenuItem
+        Action = accPreviewReport
+        OnClick = accPreviewReportExecute
+      end
+      object MenuItem7: TMenuItem
+        Action = accPrintReport
+        OnClick = accPrintReportExecute
+      end
+      object MenuItem8: TMenuItem
+        Action = accPrintGrid
+        OnClick = accPrintGridExecute
+      end
+      object MenuItem14: TMenuItem
+        Action = accThumbnails
+        OnClick = accThumbnailsExecute
+      end
+      object MenuItem15: TMenuItem
+        Action = accComposite
+        OnClick = accCompositeExecute
+      end
+    end
+    object MenuItem9: TMenuItem
+      Caption = 'Export'
+      object MenuItem10: TMenuItem
+        Action = accExportToText
+        OnClick = accExportToTextExecute
+      end
+      object MenuItem11: TMenuItem
+        Action = accExportToHtml
+        OnClick = accExportToHtmlExecute
+      end
+      object MenuItem12: TMenuItem
+        Action = accExportToCSV
+        OnClick = accExportToCSVExecute
+      end
+      object MenuItem13: TMenuItem
+        Action = accExportToDbg
+        OnClick = accExportToDbgExecute
+      end
+    end
+  end
+  object ApplicationProperties1: TApplicationProperties
+    HintPause = 10
+    OnShowHint = ApplicationProperties1ShowHint
+    left = 500
+    top = 160
+  end
+  object ActionList1: TActionList
+    left = 48
+    top = 96
+    object accNewReport: TAction
+      Category = 'Tests'
+      Caption = 'New Report'
+      OnExecute = accNewReportExecute
+    end
+    object accEditReport: TAction
+      Category = 'Tests'
+      Caption = 'Edit Report'
+      OnExecute = accEditReportExecute
+    end
+    object accPreviewReport: TAction
+      Category = 'Tests'
+      Caption = 'Preview Report'
+      OnExecute = accPreviewReportExecute
+    end
+    object accPrintGrid: TAction
+      Category = 'Tests'
+      Caption = 'Print Grid'
+      OnExecute = accPrintGridExecute
+    end
+    object accPrintReport: TAction
+      Category = 'Tests'
+      Caption = 'Print Report'
+      OnExecute = accPrintReportExecute
+    end
+    object accClose: TAction
+      Category = 'Files'
+      Caption = 'Close'
+      OnExecute = accCloseExecute
+    end
+    object accExportToText: TAction
+      Category = 'Export'
+      Caption = 'Export to text'
+      OnExecute = accExportToTextExecute
+    end
+    object accExportToHtml: TAction
+      Category = 'Export'
+      Caption = 'Export to html'
+      OnExecute = accExportToHtmlExecute
+    end
+    object accOpenReport: TAction
+      Category = 'Files'
+      Caption = 'Open Report'
+      OnExecute = accOpenReportExecute
+    end
+    object accExportToCSV: TAction
+      Category = 'Export'
+      Caption = 'Export to CSV'
+      OnExecute = accExportToCSVExecute
+    end
+    object accThumbnails: TAction
+      Category = 'Sample Reports'
+      Caption = 'Thumbnails'
+      OnExecute = accThumbnailsExecute
+    end
+    object accExportToDbg: TAction
+      Category = 'Export'
+      Caption = 'Export Debug'
+      OnExecute = accExportToDbgExecute
+    end
+    object accComposite: TAction
+      Category = 'Sample Reports'
+      Caption = 'Composite'
+      OnExecute = accCompositeExecute
+    end
+    object accCustomPreview: TAction
+      Category = 'Tests'
+      Caption = 'Custom Preview'
+      OnExecute = accCustomPreviewExecute
+    end
+  end
+  object OpenDialog1: TOpenDialog
+    Filter = 'LazReport Files|*.lrf|FreeReport Files|*.frf|All Files|*.*'
+    FilterIndex = 0
+    left = 572
+    top = 160
+  end
+  object frCSVExport1: TfrCSVExport
+    left = 352
+    top = 192
+  end
+  object frUserDataset1: TfrUserDataset
+    RangeEnd = reCount
+    left = 112
+    top = 248
+  end
+  object frBarCodeObject1: TfrBarCodeObject
+    left = 272
+    top = 192
+  end
+  object frRoundRectObject1: TfrRoundRectObject
+    left = 272
+    top = 248
+  end
+  object frShapeObject1: TfrShapeObject
+    left = 272
+    top = 304
+  end
+  object frCheckBoxObject1: TfrCheckBoxObject
+    left = 272
+    top = 360
+  end
+  object Composite: TfrCompositeReport
+    DefaultCopies = 0
+    InitialZoom = pzDefault
+    Options = []
+    PreviewButtons = [pbZoom, pbLoad, pbSave, pbPrint, pbFind, pbHelp, pbExit]
+    DataType = dtDataSet
+    left = 40
+    top = 248
+  end
+  object LookCountries: TDbf
+    IndexDefs = <>
+    TableName = 'countries.dbf'
+    TableLevel = 3
+    FilterOptions = []
+    left = 184
+    top = 72
+  end
+  object LookCompanies: TDbf
+    IndexDefs = <>
+    TableName = 'companies.dbf'
+    TableLevel = 3
+    FilterOptions = []
+    left = 184
+    top = 128
+  end
+  object master: TDbf
+    IndexDefs = <>
+    TableLevel = 4
+    FilterOptions = []
+    left = 184
+    top = 312
+  end
+  object srcMaster: TDataSource
+    DataSet = master
+    left = 184
+    top = 368
+  end
+  object frDbMaster: TfrDBDataSet
+    DataSet = master
+    left = 112
+    top = 312
+  end
+  object frHtmlDivExport1: TfrHtmlDivExport
+    left = 500
+    top = 228
+  end
+  object lrAddFunctionLibrary1: TlrAddFunctionLibrary
+    left = 500
+    top = 301
+  end
+end

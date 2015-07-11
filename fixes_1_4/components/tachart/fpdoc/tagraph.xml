@@ -1,0 +1,295 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="TAChartLazarusPkg">
+    <module name="TAGraph">
+      <element name="TChart.Title">
+        <short>Chart title.</short>
+      </element>
+      <element name="TReticuleMode">
+        <short>The mode of reticule drawing.</short>
+        <seealso>
+          <link id="TChart.ReticuleMode">TChart.ReticuleMode</link>
+        </seealso>
+      </element>
+      <element name="TReticuleMode.rmNone">
+        <short>Do not draw reticule.</short>
+      </element>
+      <element name="TReticuleMode.rmVertical">
+        <short>Draw reticule as a vertical line. Find nearest point by X coordinate.</short>
+      </element>
+      <element name="TReticuleMode.rmHorizontal">
+        <short>Draw reticule as a horizontal line. Find nearest point by Y coordinate.</short>
+      </element>
+      <element name="TReticuleMode.rmCross">
+        <short>Draw reticule as both vertical and horizontal line.  Find nearest point by distanse.</short>
+      </element>
+      <element name="TChart.ReticuleMode">
+        <short>Reticule drawing mode.</short>
+        <descr>
+          <p>Reticule is a line highlighting graph point nearest to the mouse cursor.</p>
+          <p>For reticule to be visible, the chart needs to:</p>
+          <p>1. Have ReticuleMode to value other that rmNone;</p>
+          <p>2. Have at least one series implementing GetNearestPoint interface
+(by default it is implemented by line, bar and area series);</p>
+          <p>3. Have <link id="TASeries.TBasicPointSeries.UseReticule">UseReticule</link>
+property of that series set to <var>true</var>.</p>
+        </descr>
+      </element>
+      <element name="TChart.AllowZoom">
+        <short>If <var>true</var>, user can zoom chart with the mouse.</short>
+        <descr>Allow user to zoom chart by drawing new zoom rectangle with the mouse while holding left mouse button.</descr>
+      </element>
+      <element name="TChart">
+        <short>Main charting component.</short>
+        <descr>
+          <p>The chart is composed of list of <link id="TBasicChartSeries">series</link> and fixed <link id="TATypes.TChartElement">elements</link> like legend, axises and footers.</p>
+          <p>Chart methods work with two coordinate systems: floating-point coordinates supplied by series (often called <i>graph coordinates)</i> and on-screen coordinates (often called <i>image coordinates</i>)</p>
+        </descr>
+      </element>
+      <element name="TChart.BackColor">
+        <short>Color of back plane of the chart.</short>
+        <descr>Note that <var>BackColor</var> is different form the <link id="TChart.Color">Color</link> property
+which is used to paint the background of all <var>TChart</var>, including legend, axises and title.</descr>
+        <seealso>
+          <link id="TChart.Color">Color</link>
+        </seealso>
+      </element>
+      <element name="TChart.Depth">
+        <short>The length of Z axis in 3D mode, in pixels. Zero value means 2D mode.</short>
+      </element>
+      <element name="TChart.ExpandPercentage">
+        <short>Default extent size is increased by this percent. May be negative.</short>
+        <descr>
+          <p>To ensure full visualization of the extreme points of the chart, it is usually a good idea
+to set the default zoom value so that the default extent is slightly greater
+than the extent of chart data.</p>
+          <p>This can be done by either setting <var>ExpandPercentage</var> property,
+which increases the extent value relatively, setting the <link id="TChart.Extent">extent</link>
+manually, or setting absolute <link id="TChart.Margins">margins</link>.</p>
+        </descr>
+        <seealso>
+          <link id="TChart.Extent">Extent</link>
+          <link id="TChart.Margins">Margins</link>
+        </seealso>
+      </element>
+      <element name="TChart.Series">
+        <short>The list of chart series.</short>
+        <descr>To add or remove series at run-time,
+use <link id="TChart.AddSeries">AddSeries</link> and <link id="TChart.DeleteSeries">DeleteSeries</link> methods.</descr>
+        <seealso>
+          <link id="TChart.AddSeries">AddSeries</link>
+          <link id="TChart.ClearSeries">ClearSeries</link>
+          <link id="TChart.DeleteSeries">DeleteSeries</link>
+        </seealso>
+      </element>
+      <element name="TChart.SeriesCount">
+        <short>The number of chart series, including inactive ones.</short>
+      </element>
+      <element name="TChart.Foot">
+        <short>Chart footer.</short>
+      </element>
+      <element name="TChart.Frame">
+        <short>The pen to draw frame around the chart.</short>
+        <descr>Set <var>Frame.Visible</var> to <var>false</var> to turn off frame drawing.</descr>
+      </element>
+      <element name="TChart.AxisList">
+        <short>List of graph <link id="TATypes.TChartAxis">axises</link>.</short>
+      </element>
+      <element name="TChart.BottomAxis">
+        <short>Bottom axis of the chart.</short>
+        <descr>Retrieves first axis from the <link id="TChart.AxisList">AxisList</link> with
+<link id="TATypes.TChartAxis.Alignment">Alignment</link> set to
+<link id="TATypes.TChartAxisAlignment">calBottom</link>.</descr>
+        <seealso>
+          <link id="TChart.AxisList">AxisList</link>
+          <link id="TATypes.TChartAxis.Alignment">TChartAxis.Alignment</link>
+        </seealso>
+      </element>
+      <element name="TChart.LeftAxis">
+        <short>Left axis of the chart.</short>
+        <descr>Retrieves first axis from the <link id="TChart.AxisList">AxisList</link> with
+<link id="TATypes.TChartAxis.Alignment">Alignment</link> set to
+<link id="TATypes.TChartAxisAlignment">calLeft</link>.</descr>
+        <seealso>
+          <link id="TChart.AxisList">AxisList</link>
+          <link id="TATypes.TChartAxis.Alignment">TChartAxis.Alignment</link>
+        </seealso>
+      </element>
+      <element name="TChart.Legend">
+        <short>Chart legend.</short>
+      </element>
+      <element name="TChart.OnDrawReticule">
+        <short>Called each time the <link id="TChart.ReticuleMode">reticule</link> is updated.</short>
+      </element>
+      <element name="TChart.Margins">
+        <short>Margins around the chart sides in default extent, in pixels.</short>
+        <seealso>
+          <link id="TChart.BorderSpacing">BorderSpacing</link>
+          <link id="TChart.ExpandPercentage">ExpandPercentage</link>
+          <link id="TChart.Extent">Extent</link>
+        </seealso>
+        <descr>Note that the margins set by this property have effect only on the default extent.
+Use <link id="TChart.BorderSpacing">BorderSpacing</link> property to set margins
+independently of zoom level.</descr>
+      </element>
+      <element name="TChart.Extent">
+        <short>Manual overrides for the chart extent borders.</short>
+      </element>
+      <element name="TBasicChartSeries">
+        <short>The basic chart series class. Do not inherit or instantiate directly.</short>
+      </element>
+      <element name="TBasicChartSeries.Draw">
+        <short>Draw the series on a given canvas.</short>
+      </element>
+      <element name="TBasicChartSeries.IsEmpty">
+        <short>Return <var>true</var> if the series contains no data.</short>
+      </element>
+      <element name="TBasicChartSeries.Active">
+        <short>If <var>true</var>, this series is visible and taken into account in extent calculation.</short>
+      </element>
+      <element name="TBasicChartSeries.Depth">
+        <short>The extent of the series along Z axis, in pixels. Zero for 2D series.</short>
+        <seealso>
+          <link id="TBasicChartSeries.ZPosition">ZPosition</link>
+          <link id="TChart.Depth">TChart.Depth</link>
+        </seealso>
+      </element>
+      <element name="TBasicChartSeries.ParentChart">
+        <short>The chart owning this series</short>
+      </element>
+      <element name="TBasicChartSeries.ShowInLegend">
+        <short>If <var>true</var>, this series is displayed in the legend.</short>
+      </element>
+      <element name="TBasicChartSeries.Title">
+        <short>Series title to show in legend.</short>
+      </element>
+      <element name="TBasicChartSeries.ZPosition">
+        <short>Offset of the series along Z-axis, in pixels. Also determines series drawing order.</short>
+        <descr>
+          <p>The series are drawn in order of decreasing <var>ZPosition</var> value.</p>
+          <p>So to bring series on 2D chart to front, set it's <var>ZPosition</var> to 0.</p>
+        </descr>
+        <seealso>
+          <link id="TBasicChartSeries.Depth">Depth</link>
+          <link id="TChart.Depth">TChart.Depth</link>
+        </seealso>
+      </element>
+      <element name="TChartSeriesList">
+        <short>The list of chart series.</short>
+      </element>
+      <element name="TChartSeriesList.Items">
+        <short>Retrieve char series by index.</short>
+      </element>
+      <element name="TBasicChartSeries.AfterAdd">
+        <short>Called after the series was added to a chart.</short>
+        <seealso>
+          <link id="TChart.AddSeries">TChart.AddSeries</link>
+        </seealso>
+      </element>
+      <element name="TBasicChartSeries.AfterDraw">
+        <short>Called after the series is drawn.</short>
+      </element>
+      <element name="TBasicChartSeries.BeforeDraw">
+        <short>Called before the series is drawn.</short>
+      </element>
+      <element name="TBasicChartSeries.GetLegendItems">
+        <short>Get the list of legend items for this series.</short>
+        <descr>Note that the series may return several items.
+For example, <link id="TASeries.TPieSeries">pie series</link> displays a separate legend item for each pie slice.</descr>
+      </element>
+      <element name="TBasicChartSeries.UpdateBounds">
+        <short>Update the default chart extent according to this series data.</short>
+      </element>
+      <element name="TBasicChartSeries.UpdateMargins">
+        <short>Update chart margins according to this series data.</short>
+        <descr>In particular, margins are used to make room for labels.</descr>
+      </element>
+      <element name="TChart.AddSeries">
+        <short>Add given series to this chart.</short>
+        <descr>Note that the series can only belong to a single chart.</descr>
+      </element>
+      <element name="TChart.ClearSeries">
+        <short>Remove all series from this chart.</short>
+      </element>
+      <element name="TChart.DeleteSeries">
+        <short>Delete given series from the chart.</short>
+      </element>
+      <element name="TChart.PaintOnCanvas">
+        <short>Draw the chart on a given canvas. May be used to print the chart.</short>
+      </element>
+      <element name="TChart.ZoomFull">
+        <short>Restore the default zoom level.</short>
+      </element>
+      <element name="TChart.SaveToImage">
+        <short>Return a raster image of the given type with the screenshot of the chart.</short>
+        <seealso>
+          <link id="TChart.SaveToFile">SaveToFile</link>
+        </seealso>
+        <descr>The image must be freed by calling code.</descr>
+      </element>
+      <element name="TChart.SaveToFile">
+        <short>Save chart screenshot to a file as a raster image of the given type.</short>
+        <seealso>
+          <link id="TChart.SaveToImage">SaveToImage</link>
+          <link id="#LCL.Graphics.TGraphic.SaveToFile">TGraphic.SaveToFile</link>
+        </seealso>
+      </element>
+      <element name="TChart.SaveToBitmapFile">
+        <short>Save chart screenshot to a file as a bitmap image.</short>
+        <descr>Deprecated. Use SaveToFile(TBitmap, fileName) instead.</descr>
+        <seealso>
+          <link id="TChart.SaveToFile">SaveToFile</link>
+        </seealso>
+      </element>
+      <element name="TBasicChartSeries.GetNearestPoint">
+        <short>Get the series point nearest to <var>APoint</var> as measured by <var>ADistFunc</var>.</short>
+        <descr>Return <var>true</var> if such a point exists.</descr>
+      </element>
+      <element name="TChart.GraphToImage">
+        <short>Convert ф point from graph coordinates to image coordinates.</short>
+      </element>
+      <element name="TChart.ImageToGraph">
+        <short>Convert a point from image coordinates to graph coordinates.</short>
+      </element>
+      <element name="TChart.XGraphToImage">
+        <short>Convert X graph coordinate to image coordinate.</short>
+      </element>
+      <element name="TChart.YGraphToImage">
+        <short>Convert Y graph coordinate to image coordinate.</short>
+      </element>
+      <element name="TChart.XImageToGraph">
+        <short>Convert X image coordinate to graph coordinate.</short>
+      </element>
+      <element name="TChart.YImageToGraph">
+        <short>Convert Y image coordinate to graph coordinate.</short>
+      </element>
+      <element name="TChart.CurrentExtent">
+        <short>Return the chart extent at the current zoom level.</short>
+      </element>
+      <element name="TChart.XGraphMax">
+        <short>Deprecated, use <link id="TChart.CurrentExtent">CurrentExtent</link> instead.</short>
+      </element>
+      <element name="TChart.XGraphMin">
+        <short>Deprecated, use <link id="TChart.CurrentExtent">CurrentExtent</link> instead.</short>
+      </element>
+      <element name="TChart.YGraphMax">
+        <short>Deprecated, use <link id="TChart.CurrentExtent">CurrentExtent</link> instead.</short>
+      </element>
+      <element name="TChart.YGraphMin">
+        <short>Deprecated, use <link id="TChart.CurrentExtent">CurrentExtent</link> instead.</short>
+      </element>
+      <element name="TChart.CopyToClipboardBitmap">
+        <short>Save chart screenshot to the clipboard.</short>
+        <seealso>
+          <link id="TChart.SaveToImage">SaveToImage</link>
+        </seealso>
+      </element>
+      <element name="Register" skip="1"/>
+      <element name="RegisterSeriesClass" skip="1"/>
+      <element name="TChart.EraseBackground" skip="1"/>
+      <element name="TChart.GetChildren" skip="1"/>
+      <element name="TChart.Paint" skip="1"/>
+      <element name="TChart.SetChildOrder" skip="1"/>
+    </module>
+  </package>
+</fpdoc-descriptions>

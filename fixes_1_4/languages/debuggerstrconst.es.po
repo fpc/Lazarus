@@ -1,0 +1,153 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2012-10-02 20:21+0100\n"
+"Last-Translator: Lucas Martin <codedeep@hotmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: debuggerstrconst.drsbreakpointcolwidthaction
+msgid "Action column"
+msgstr "Columna acción"
+
+#: debuggerstrconst.drsbreakpointcolwidthcondition
+msgid "Condition column"
+msgstr "Columna condición"
+
+#: debuggerstrconst.drsbreakpointcolwidthfile
+msgid "File/address column"
+msgstr "Columna archivo/dirección"
+
+#: debuggerstrconst.drsbreakpointcolwidthgroup
+msgid "Group column"
+msgstr "Columna grupo"
+
+#: debuggerstrconst.drsbreakpointcolwidthline
+msgctxt "debuggerstrconst.drsbreakpointcolwidthline"
+msgid "Line column"
+msgstr "Columna linea"
+
+#: debuggerstrconst.drsbreakpointcolwidthpasscount
+msgid "Pass-count column"
+msgstr "Columna conteo-pasadas"
+
+#: debuggerstrconst.drscolwidthbrkpointimg
+msgid "Break indication column"
+msgstr "Columna indicador rotura"
+
+#: debuggerstrconst.drscolwidthexpression
+msgid "Expression column"
+msgstr "Columna expresión"
+
+#: debuggerstrconst.drscolwidthfunc
+msgid "Function name column"
+msgstr "Columna nombre función"
+
+#: debuggerstrconst.drscolwidthindex
+msgid "Index column"
+msgstr "Columna índice"
+
+#: debuggerstrconst.drscolwidthline
+msgctxt "debuggerstrconst.drscolwidthline"
+msgid "Line column"
+msgstr "Columna línea"
+
+#: debuggerstrconst.drscolwidthname
+msgid "Name column"
+msgstr "Columna Nombre"
+
+#: debuggerstrconst.drscolwidthsource
+msgid "Source column"
+msgstr "Columna origen"
+
+#: debuggerstrconst.drscolwidthstate
+msgid "State column"
+msgstr "Columna estado"
+
+#: debuggerstrconst.drscolwidthvalue
+msgid "Value column"
+msgstr "Columna valor"
+
+#: debuggerstrconst.drsevalhistorynone
+msgid "No history kept"
+msgstr "No hay historial guardado"
+
+#: debuggerstrconst.drshistorycolwidthcurrent
+msgid "Current column"
+msgstr "Columna actual"
+
+#: debuggerstrconst.drshistorycolwidthlocation
+msgid "Location column"
+msgstr "Columna localización"
+
+#: debuggerstrconst.drshistorycolwidthtime
+msgid "Time column"
+msgstr "Columna tiempo"
+
+#: debuggerstrconst.drsinspectcolwidthdataclass
+msgid "Data class column"
+msgstr "Columna clase dato"
+
+#: debuggerstrconst.drsinspectcolwidthdataname
+msgid "Data name column"
+msgstr "Columna nombre dato"
+
+#: debuggerstrconst.drsinspectcolwidthdatatype
+msgid "Data type column"
+msgstr "Columna tipo dato"
+
+#: debuggerstrconst.drsinspectcolwidthdatavalue
+msgid "Data value column"
+msgstr "Columna valor dato"
+
+#: debuggerstrconst.drsinspectcolwidthdatavisibility
+msgid "Data visibility column"
+msgstr "Columna visibilidad de datos"
+
+#: debuggerstrconst.drsinspectcolwidthmethaddress
+msgid "Method address column"
+msgstr "Columna dirección método"
+
+#: debuggerstrconst.drsinspectcolwidthmethname
+msgid "Method name column"
+msgstr "Columna nombre método"
+
+#: debuggerstrconst.drsinspectcolwidthmethreturns
+msgid "Method returns column"
+msgstr "Columna retornos método"
+
+#: debuggerstrconst.drsinspectcolwidthmethtype
+msgid "Method type column"
+msgstr "Columna tipo método"
+
+#: debuggerstrconst.drslen
+msgid "Len=%d: "
+msgstr "Long=%d: "
+
+#: debuggerstrconst.drsuseinstanceclasstype
+msgid "Use Instance class type"
+msgstr "Utilice tipo Instancia de clase"
+
+#: debuggerstrconst.drswatchsplitterinspect
+msgid "Inspect pane"
+msgstr "Inspeccione panel"
+
+#: debuggerstrconst.dsrevalhistorydown
+msgid "Append result at bottom of history"
+msgstr "Anexar resultado al final del historial"
+
+#: debuggerstrconst.dsrevalhistoryup
+msgid "Insert result at top of history"
+msgstr "Inserte resultado en la parte superior del historial"
+
+#: debuggerstrconst.synfnewvalueisempty
+msgid "\"New value\" is empty."
+msgstr "\"El nuevo valor\" se encuentra vacío."
+
+#: debuggerstrconst.synfthedebuggerwasnotabletomodifythevalue
+msgid "The debugger was not able to modify the value."
+msgstr "El depurador no ha sido capaz de modificar el valor."
+

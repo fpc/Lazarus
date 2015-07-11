@@ -1,0 +1,91 @@
+Index: compiler/comprsrc.pas
+===================================================================
+--- compiler/comprsrc.pas	(revision 12548)
++++ compiler/comprsrc.pas	(working copy)
+@@ -110,16 +110,31 @@
+     else
+       SelectBin:=Bin2;  
+   end;
+-  
++
++  function WindresFileName(filename: TCmdStr): TCmdStr;
++  // to be on the safe side, only give short file names with forward slashes to
++  // windres
++  var
++    i: longint;
++  begin
++    Result := GetShortName(filename);
++    for I:=1 to Length(Result) do
++    if Result[I] in AllowDirectorySeparators then
++      Result[i]:='/';
++  end;
++
+ var
+   respath,
+   srcfilepath,
+   preprocessorbin,
+   s,
+   bin,
+-  resbin   : TCmdStr;
++  resbin,
++  fnameparam : TCmdStr;
++  usewindres,
+   resfound,
+   objused  : boolean;
++
+ begin
+   if output=roRES then
+     Bin:=SelectBin(RCCompiler,target_res.rcbin)
+@@ -128,6 +143,7 @@
+   if bin='' then
+     exit;
+   resfound:=false;
++  usewindres:= bin='windres';
+   if utilsdirectory<>'' then
+     resfound:=FindFile(utilsprefix+bin+source_info.exeext,utilsdirectory,false,resbin);
+   if not resfound then
+@@ -140,11 +156,15 @@
+      current_settings.globalswitches:=current_settings.globalswitches+[cs_link_nolink];
+    end;
+   srcfilepath:=ExtractFilePath(current_module.mainsource^);
++  if usewindres then
++    fnameparam:=WindresFileName(fname)
++  else
++    fnameparam:=maybequoted(fname);
+   if output=roRES then
+     begin
+       s:=target_res.rccmd;
+       Replace(s,'$RES',maybequoted(OutName));
+-      Replace(s,'$RC',maybequoted(fname));
++      Replace(s,'$RC',fnameparam);
+       ObjUsed:=False;
+     end
+   else
+@@ -152,20 +172,23 @@
+       s:=target_res.rescmd;
+       ObjUsed:=(pos('$OBJ',s)>0);
+       Replace(s,'$OBJ',maybequoted(OutName));
+-      Replace(s,'$RES',maybequoted(fname));
++      Replace(s,'$RES',fnameparam);
+     end;
+   { windres doesn't like empty include paths }
+   if respath='' then
+     respath:='.';
+-  Replace(s,'$INC',maybequoted(respath));
++  if usewindres then
++    Replace(s,'$INC',WindresFileName(respath))
++  else
++    Replace(s,'$INC',maybequoted(respath));
+   if (target_res.resbin='windres') then
+    begin
+      if (srcfilepath<>'') then
+-       s:=s+' --include '+maybequoted(srcfilepath);
++       s:=s+' --include '+WindresFileName(srcfilepath);
+      { try to find a preprocessor }
+      preprocessorbin := respath+'cpp'+source_info.exeext;
+      if FileExists(preprocessorbin,true) then
+-       s:=s+' --preprocessor='+preprocessorbin;
++       s:=s+' --preprocessor='+maybequoted(preprocessorbin);
+    end;
+ { Execute the command }
+   if not (cs_link_nolink in current_settings.globalswitches) then

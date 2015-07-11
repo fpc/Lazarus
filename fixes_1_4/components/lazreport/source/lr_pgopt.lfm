@@ -1,0 +1,599 @@
+object frPgoptForm: TfrPgoptForm
+  Left = 342
+  Height = 336
+  Top = 289
+  Width = 467
+  ActiveControl = PageControl1
+  Caption = 'Page options'
+  ClientHeight = 336
+  ClientWidth = 467
+  OnActivate = FormActivate
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  ShowHint = True
+  LCLVersion = '0.9.29'
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 286
+    Top = 0
+    Width = 467
+    ActivePage = TabSheet1
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 0
+    object TabSheet1: TTabSheet
+      Caption = 'Paper'
+      ClientHeight = 253
+      ClientWidth = 461
+      object GroupBox2: TGroupBox
+        AnchorSideTop.Control = TabSheet1
+        AnchorSideRight.Control = TabSheet1
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = TabSheet1
+        AnchorSideBottom.Side = asrBottom
+        Left = 264
+        Height = 241
+        Top = 6
+        Width = 191
+        Anchors = [akTop, akRight, akBottom]
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 6
+        BorderSpacing.Bottom = 6
+        Caption = 'Orientation'
+        ClientHeight = 225
+        ClientWidth = 189
+        TabOrder = 0
+        object imgLandScape: TImage
+          AnchorSideRight.Control = GroupBox2
+          AnchorSideRight.Side = asrBottom
+          Left = 151
+          Height = 26
+          Top = 100
+          Width = 32
+          Anchors = [akRight]
+          AutoSize = True
+          BorderSpacing.Right = 6
+          Picture.Data = {
+            1754506F727461626C654E6574776F726B47726170686963B303000089504E47
+            0D0A1A0A0000000D49484452000000200000001A0803000000E145AE0D000003
+            00504C5445848484000000C6C6C6FFFFFF78787801010102020201010161435F
+            7A4F43614D48724D45754143734E4B5C443D72454E65524F735F006F44477552
+            50724955635654654549733D4C004353413A5F4C00484C4345554F41534D4445
+            4D45524152534E5F5044505245414F5254465F4849493D4C4E4345493A3D3D5C
+            4343673A3A6E5C5C7544575C6F4967634E707544756D4F746557696E536C745C
+            7373575C204968614E656E4361644D64204465532E72654900744E4774495069
+            00556E4354674F49734D4C5C4D5341415F6C4E4C6C444B20455255525F735F50
+            65504172415473544800483D413D4350433A503A5C445C6741746E546F754174
+            5C3D6167436C703A63755C6D744464696F006C634373756F5C6D6D6C656D6B6E
+            6F72746E0073504820724F616F4D6E6745647244206152536D49654656746945
+            746C3D6965436E733A673D007343485C3A4F4A5C4D6541457372507563417368
+            545C694844763D616F5C7473446F206F73646320657564206D65706520726E70
+            6F747267736F7220676161726D6E6161646D5C20614153007265416374506874
+            5269695F766E496F674373734F205C4E634A566F655F6D73507575416E735465
+            0048734B3D004D4343503A4F5F5C4D4441505572555063544C68454969524376
+            4E416F4154734D4520455F643D4C654D4920594270575F72494F6F4E4B67583D
+            7250546100526D4355616F455C6D0053534C75704F62654776634F653D4E7243
+            53733A45695C526F57566E49455C4E5269443D634F5C6F575C6E534D765C5900
+            735743794947734E5F7458426550496D004E334D5F324B505C4C41635F546D53
+            4864453D2E524365493A78415C654C41003D724359635645685353695F007645
+            4E6F585573544D203D42646345653A52205C5F70504F7275466F545F67545072
+            5952615C4F6D7043616C455C69534E6E53566B4F492E5244655349783D416531
+            20000043434F6F565372533D705F576F526972536E614864743D6F6963776F3A
+            736E5C5F5C504E4375546754005C5450625961695C746E7068006C3D436C434C
+            693A496E5CB622D6F90000006E49444154789CCDD04112C0200803C010FFFFE7
+            2A633B2516B83637C725D802598C1E6024317460A001745182256A3045013C50
+            0086234D80361E6036B20284EC5430C7638500C297E4600D335428D8C9007D36
+            5444B02FDE150110CFB7F20BDCCBC3338E3FA9F913601A8335B900EA6507BB70
+            10F4600000000049454E44AE426082
+          }
+        end
+        object imgPortrait: TImage
+          AnchorSideRight.Control = GroupBox2
+          AnchorSideRight.Side = asrBottom
+          Left = 157
+          Height = 32
+          Top = 97
+          Width = 26
+          Anchors = [akRight]
+          AutoSize = True
+          BorderSpacing.Right = 6
+          Picture.Data = {
+            1754506F727461626C654E6574776F726B47726170686963B203000089504E47
+            0D0A1A0A0000000D494844520000001A0000002008030000003B759837000003
+            00504C5445848484C6C6C6FFFFFF0000007878780101010202020101015F4361
+            434F7A484D61454D724341754B4E733D445C4E45724F5265005F7347446F5052
+            755549725456634945654C3D735343005F3A4148004C45434C414F55444D5345
+            4D455241525F4E5350445041455254524F485F463D4949434E4C3A49455C3D3D
+            6743436E3A3A755C5C5C574467496F704E63754475744F6D6957656C536E735C
+            745C5773684920654E6161436E644D64654420722E53004965474E7450497455
+            006954436E494F674C4D73534D5C5F41414C4E6C4B446C5245205F5255505F73
+            4150655441724854733D4800433D413A43505C3A50675C446E7441756F545C74
+            4167613D706C4375633A746D5C6964446C006F7343635C6F756C6D6D6B6D6572
+            6F6E006E744850734F72204D6F6145676E447264526120496D53564665456974
+            3D6C744365693A736E003D674843734F3A5C4D5C4A4541655072734163755468
+            7348695C3D76445C6F614473746F206F6364737565206D20646570656E722074
+            6F7073677220726F6161676E6D72646161205C6D534161657200746341746850
+            6969526E765F676F497373435C204F4A634E656F56736D5F757550736E410065
+            544B73484D003D5043435F4F3A444D5C5550415055724C546349456843526941
+            4E7654416F454D735F45204C3D64494D654259205F57704F49724B4E6F3D5867
+            54507252006155436D456F61006D5C4C53534F70754765624F63764E3D655343
+            72453A73525C6956576F45496E524E5C3D44695C4F635C576F4D536E595C7657
+            73004979434E734758745F506542006D494D334E4B325F4C5C505F6341536D54
+            456448522E3D49654341783A4C655C3D0041594372455663535368005F694E45
+            7655586F4D5473423D20456364523A655F5C204F50704675725F546F50546752
+            59724F5C6143706D456C6153695C536E4E4F6B56522E495365443D7849316541
+            0000204F434353566F3D5372575F7069526F6E53726448616F3D74776369733A
+            6F5F5C6E4E505C54754300546750545C615962745C6968706E3D6C00436C433A
+            694C5C6E49ACDB48A00000006D49444154789CCDD2C112C0101003D084FFFFE7
+            566C2D236E0ECDA5339E60760A985001CA16D43375B34499A522F324F3CF501C
+            29BC41E0899637ADD4A6E7896DB29EDECA549B89D0918E5A81595B28B213B53F
+            6B13C5D2A825717C63CFA0EF92BCEECAE47F4A3CA4C6EFE8F200F423058DE848
+            07460000000049454E44AE426082
+          }
+        end
+        object Panel1: TPanel
+          AnchorSideLeft.Control = GroupBox2
+          AnchorSideTop.Control = GroupBox2
+          AnchorSideTop.Side = asrCenter
+          Left = 3
+          Height = 50
+          Top = 87
+          Width = 99
+          AutoSize = True
+          BorderSpacing.Left = 3
+          BevelOuter = bvNone
+          ClientHeight = 50
+          ClientWidth = 99
+          TabOrder = 0
+          object RB1: TRadioButton
+            AnchorSideTop.Control = Panel1
+            Left = 6
+            Height = 22
+            Top = 0
+            Width = 71
+            HelpContext = 111
+            AllowGrayed = True
+            BorderSpacing.Left = 6
+            Caption = '&Portrait'
+            Checked = True
+            OnClick = RB1Click
+            State = cbChecked
+            TabOrder = 0
+          end
+          object RB2: TRadioButton
+            AnchorSideLeft.Control = RB1
+            AnchorSideTop.Control = RB1
+            AnchorSideTop.Side = asrBottom
+            Left = 6
+            Height = 22
+            Top = 28
+            Width = 93
+            HelpContext = 120
+            AllowGrayed = True
+            BorderSpacing.Top = 6
+            Caption = '&Landscape'
+            OnClick = RB2Click
+            TabOrder = 1
+            TabStop = False
+          end
+        end
+      end
+      object GroupBox3: TGroupBox
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideTop.Control = TabSheet1
+        AnchorSideRight.Control = GroupBox2
+        AnchorSideBottom.Control = TabSheet1
+        AnchorSideBottom.Side = asrBottom
+        Left = 6
+        Height = 241
+        Top = 6
+        Width = 252
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 6
+        BorderSpacing.Bottom = 6
+        Caption = 'Size'
+        ClientHeight = 225
+        ClientWidth = 250
+        TabOrder = 1
+        object Label1: TLabel
+          AnchorSideBottom.Control = E1
+          AnchorSideBottom.Side = asrBottom
+          Left = 8
+          Height = 16
+          Top = 55
+          Width = 70
+          Anchors = [akLeft, akBottom]
+          Caption = '&Width, mm'
+          FocusControl = E1
+          ParentColor = False
+        end
+        object Label2: TLabel
+          AnchorSideBottom.Control = E2
+          AnchorSideBottom.Side = asrBottom
+          Left = 8
+          Height = 16
+          Top = 82
+          Width = 77
+          Anchors = [akLeft, akBottom]
+          Caption = '&Height, mm'
+          FocusControl = E2
+          ParentColor = False
+        end
+        object ComB1: TComboBox
+          AnchorSideLeft.Control = GroupBox3
+          AnchorSideRight.Control = GroupBox3
+          AnchorSideRight.Side = asrBottom
+          Left = 6
+          Height = 29
+          Top = 15
+          Width = 238
+          HelpContext = 130
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Left = 6
+          BorderSpacing.Right = 6
+          ItemHeight = 16
+          ItemWidth = 200
+          OnClick = ComB1Click
+          OnDrawItem = ComB1DrawItem
+          Style = csOwnerDrawFixed
+          TabOrder = 0
+        end
+        object E1: TEdit
+          AnchorSideTop.Control = ComB1
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = GroupBox3
+          AnchorSideRight.Side = asrBottom
+          Left = 170
+          Height = 21
+          Top = 50
+          Width = 74
+          HelpContext = 140
+          Anchors = [akTop, akRight]
+          BorderSpacing.Around = 6
+          TabOrder = 1
+        end
+        object E2: TEdit
+          AnchorSideTop.Control = E1
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = GroupBox3
+          AnchorSideRight.Side = asrBottom
+          Left = 170
+          Height = 21
+          Top = 77
+          Width = 74
+          HelpContext = 150
+          Anchors = [akTop, akRight]
+          BorderSpacing.Around = 6
+          TabOrder = 2
+        end
+      end
+    end
+    object TabSheet3: TTabSheet
+      Caption = 'Options'
+      ClientHeight = 253
+      ClientWidth = 461
+      object GroupBox1: TGroupBox
+        AnchorSideLeft.Control = TabSheet3
+        AnchorSideTop.Control = TabSheet3
+        AnchorSideRight.Control = GroupBox5
+        AnchorSideBottom.Control = TabSheet3
+        AnchorSideBottom.Side = asrBottom
+        Left = 6
+        Height = 52
+        Top = 6
+        Width = 216
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        Caption = 'Options'
+        ClientHeight = 36
+        ClientWidth = 214
+        TabOrder = 0
+        object CB1: TCheckBox
+          Left = 6
+          Height = 19
+          Top = 6
+          Width = 171
+          HelpContext = 160
+          Caption = '&Print to previous page'
+          TabOrder = 0
+        end
+      end
+      object GroupBox5: TGroupBox
+        AnchorSideTop.Control = TabSheet3
+        AnchorSideRight.Control = TabSheet3
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = TabSheet3
+        AnchorSideBottom.Side = asrBottom
+        Left = 228
+        Height = 241
+        Top = 6
+        Width = 229
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 6
+        BorderSpacing.Bottom = 6
+        Caption = 'Columns'
+        ClientHeight = 225
+        ClientWidth = 227
+        TabOrder = 1
+        object Label7: TLabel
+          AnchorSideLeft.Control = GroupBox5
+          AnchorSideTop.Control = GroupBox5
+          Left = 0
+          Height = 18
+          Top = 0
+          Width = 68
+          Caption = '&Number'
+          ParentColor = False
+        end
+        object Label8: TLabel
+          AnchorSideLeft.Control = GroupBox5
+          AnchorSideTop.Control = ecolCount
+          AnchorSideTop.Side = asrBottom
+          Left = 0
+          Height = 18
+          Top = 57
+          Width = 130
+          Caption = '&Column gap, mm'
+          FocusControl = E7
+          ParentColor = False
+        end
+        object lblLayout: TLabel
+          AnchorSideLeft.Control = GroupBox5
+          AnchorSideTop.Control = E7
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 18
+          Top = 116
+          Width = 89
+          BorderSpacing.Around = 6
+          Caption = 'Layout Order'
+          ParentColor = False
+        end
+        object imgColumns: TImage
+          Left = 142
+          Height = 32
+          Top = 128
+          Width = 26
+          AutoSize = True
+          Picture.Data = {
+            1754506F727461626C654E6574776F726B477261706869636901000089504E47
+            0D0A1A0A0000000D494844520000001A00000020080200000083C9FF52000000
+            097048597300000EC400000EC401952B0E1B0000011B49444154789CCD96C16D
+            C3300C45BF0A0FD37B878977B1018A80866917B12F1D20DB2807212E4D514AA8
+            144579B1CD48CFCF8AFCE19052C22FD5BAAE138065595E67EDFB0E60BA5F7EA9
+            9F99AF44EFF5B446FF520E6FB217780E3C977393D5E91B3865E1EA3FC0FDA99D
+            5C9657ED4CD0A05D87D5C399768595E9BB35EBD87765E3CCC7393313D1991500
+            4444E0E33CCBC0D576062B536E8D2FD5593B3659B2EFC01D76CA4B59FBECEA67
+            1CB733D76BD0AEB5F623769DFFB16F67E49DD85F3A04A1F3EE187051B85365FA
+            6CDDDF9D288565BEB381E7BA2FDFE2939D946A594444C2CF309508EE4491883A
+            5D7C8962AEA96CBAED14515DBAD358220CD99452B62AC6E8EA6FDBD6C379ABE0
+            9ECABB67FA0F1E76CC6EC2FD6BE53FD60DBD715BF9EA5227680000000049454E
+            44AE426082
+          }
+        end
+        object imgRows: TImage
+          Left = 142
+          Height = 32
+          Top = 128
+          Width = 26
+          AutoSize = True
+          Picture.Data = {
+            1754506F727461626C654E6574776F726B477261706869636C01000089504E47
+            0D0A1A0A0000000D494844520000001A00000020080200000083C9FF52000000
+            097048597300000EC400000EC401952B0E1B0000011E49444154789CCD56C10D
+            8420101C2E146137D885F6A28931B198BB2EE0652BD705F7201294DD45F472B9
+            F9181718661776542DCB822F611C470D601886FB5CEBBA02D0DBEBEB30EC5C63
+            CC3B5FC6C4BBF07870BB915C42BC40E75C53150FD0E98B9AFBDDA065165900F0
+            D3B342DD35ECD4911BE6382691A0BA76818BDBB8EE64652E24C976993A678CD9
+            732900B6B5800103CD0D905C7EF2DCFC00A1768EE44AE3157451DD41D741759D
+            BA3CC7EBEAC87A5D54C7D55E56479F2CC715E25BCF12A74CF85DB8ABB6B5B909
+            FAE9193B4CCD2AB9CF94DFA9B98FF79EF3B5B425F2E6E592659B5CC6AF0C4AF8
+            56B4B6CDE717D471B513B8243AD2EF624D398F121C855057B4EB0ABF93E30165
+            4739192FD071BD79D7EF4EC60334B6BF957FC4072D668C7B8DFC603E00000000
+            49454E44AE426082
+          }
+          Visible = False
+        end
+        object E7: TEdit
+          AnchorSideLeft.Control = Label7
+          AnchorSideTop.Control = Label8
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = GroupBox5
+          Left = 6
+          Height = 29
+          Top = 81
+          Width = 127
+          HelpContext = 180
+          BorderSpacing.Around = 6
+          TabOrder = 0
+        end
+        object ecolCount: TSpinEdit
+          AnchorSideLeft.Control = Label7
+          AnchorSideTop.Control = Label7
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 27
+          Top = 24
+          Width = 127
+          BorderSpacing.Around = 6
+          OnChange = ecolCountChange
+          TabOrder = 1
+        end
+        object RBColumns: TRadioButton
+          AnchorSideLeft.Control = lblLayout
+          AnchorSideTop.Control = lblLayout
+          AnchorSideTop.Side = asrBottom
+          Left = 12
+          Height = 19
+          Top = 140
+          Width = 102
+          BorderSpacing.Around = 6
+          Caption = 'By Colum&ns'
+          Checked = True
+          Enabled = False
+          OnClick = RBColumnsClick
+          State = cbChecked
+          TabOrder = 2
+        end
+        object RBRows: TRadioButton
+          AnchorSideLeft.Control = lblLayout
+          AnchorSideTop.Control = RBColumns
+          AnchorSideTop.Side = asrBottom
+          Left = 12
+          Height = 19
+          Top = 165
+          Width = 78
+          BorderSpacing.Around = 6
+          Caption = 'By Row&s'
+          Enabled = False
+          OnClick = RBRowsClick
+          TabOrder = 3
+          TabStop = False
+        end
+      end
+      object GroupBox4: TGroupBox
+        AnchorSideLeft.Control = TabSheet3
+        AnchorSideTop.Control = GroupBox1
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = GroupBox5
+        AnchorSideBottom.Control = TabSheet3
+        AnchorSideBottom.Side = asrBottom
+        Left = 6
+        Height = 183
+        Top = 64
+        Width = 216
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Around = 6
+        Caption = 'Page margins'
+        ClientHeight = 167
+        ClientWidth = 214
+        TabOrder = 2
+        object Label3: TLabel
+          AnchorSideTop.Control = CB5
+          AnchorSideTop.Side = asrBottom
+          AnchorSideBottom.Side = asrBottom
+          Left = 108
+          Height = 18
+          Top = 27
+          Width = 72
+          BorderSpacing.Left = 6
+          Caption = '&Left, mm'
+          ParentColor = False
+        end
+        object Label4: TLabel
+          AnchorSideLeft.Control = CB5
+          AnchorSideTop.Control = CB5
+          AnchorSideTop.Side = asrBottom
+          AnchorSideBottom.Side = asrBottom
+          Left = 14
+          Height = 18
+          Top = 27
+          Width = 72
+          BorderSpacing.Left = 6
+          Caption = '&Top, mm'
+          ParentColor = False
+        end
+        object Label5: TLabel
+          AnchorSideLeft.Control = Label4
+          AnchorSideTop.Control = E4
+          AnchorSideTop.Side = asrBottom
+          AnchorSideBottom.Side = asrBottom
+          Left = 14
+          Height = 18
+          Top = 86
+          Width = 83
+          Caption = '&Right, mm'
+          ParentColor = False
+        end
+        object Label6: TLabel
+          AnchorSideLeft.Control = Label3
+          AnchorSideTop.Control = E3
+          AnchorSideTop.Side = asrBottom
+          AnchorSideBottom.Side = asrBottom
+          Left = 108
+          Height = 18
+          Top = 86
+          Width = 98
+          Caption = '&Bottom, mm'
+          ParentColor = False
+        end
+        object CB5: TCheckBox
+          AnchorSideTop.Side = asrBottom
+          Left = 8
+          Height = 19
+          Top = 2
+          Width = 87
+          HelpContext = 62
+          BorderSpacing.Around = 6
+          Caption = '&Don''t use'
+          OnChange = CB5Click
+          TabOrder = 0
+        end
+        object E3: TEdit
+          AnchorSideLeft.Control = Label3
+          AnchorSideTop.Control = Label3
+          AnchorSideTop.Side = asrBottom
+          Left = 114
+          Height = 29
+          Top = 51
+          Width = 64
+          HelpContext = 72
+          BorderSpacing.Around = 6
+          TabOrder = 2
+        end
+        object E4: TEdit
+          AnchorSideLeft.Control = Label4
+          AnchorSideTop.Control = Label4
+          AnchorSideTop.Side = asrBottom
+          Left = 20
+          Height = 29
+          Top = 51
+          Width = 64
+          HelpContext = 81
+          BorderSpacing.Around = 6
+          TabOrder = 1
+        end
+        object E5: TEdit
+          AnchorSideLeft.Control = Label5
+          AnchorSideTop.Control = Label5
+          AnchorSideTop.Side = asrBottom
+          Left = 20
+          Height = 29
+          Top = 110
+          Width = 64
+          HelpContext = 91
+          BorderSpacing.Around = 6
+          TabOrder = 3
+        end
+        object E6: TEdit
+          AnchorSideLeft.Control = Label6
+          AnchorSideTop.Control = Label6
+          AnchorSideTop.Side = asrBottom
+          Left = 114
+          Height = 29
+          Top = 110
+          Width = 64
+          HelpContext = 101
+          BorderSpacing.Around = 6
+          TabOrder = 4
+        end
+      end
+    end
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 38
+    Top = 292
+    Width = 455
+    OKButton.Name = 'OKButton'
+    HelpButton.Name = 'HelpButton'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+end

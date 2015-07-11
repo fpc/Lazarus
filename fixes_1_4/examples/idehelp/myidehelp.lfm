@@ -1,0 +1,279 @@
+object MyHelpSetupDialog: TMyHelpSetupDialog
+  Left = 0
+  Height = 474
+  Top = 0
+  Width = 767
+  ClientHeight = 474
+  ClientWidth = 767
+  TabOrder = 0
+  DesignLeft = 272
+  DesignTop = 240
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 474
+    Top = 0
+    Width = 767
+    ActivePage = PascalSourcesTabSheet
+    Align = alClient
+    TabIndex = 5
+    TabOrder = 0
+    object FPCKeywordsTabSheet: TTabSheet
+      Caption = 'FPCKeywordsTabSheet'
+      ClientHeight = 442
+      ClientWidth = 761
+      object FPCKeywordsMemo: TMemo
+        AnchorSideTop.Control = FPCKeywordsEnableCheckBox
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 381
+        Top = 55
+        Width = 749
+        Align = alBottom
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Around = 6
+        Lines.Strings = (
+          'FPCKeywordsMemo'
+        )
+        TabOrder = 0
+      end
+      object FPCKeywordsEnableCheckBox: TCheckBox
+        AnchorSideLeft.Control = FPCKeywordsTabSheet
+        AnchorSideTop.Control = FPCKeywordsNoteLabel
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 22
+        Top = 27
+        Width = 189
+        BorderSpacing.Around = 6
+        Caption = 'FPCKeywordsEnableCheckBox'
+        TabOrder = 1
+      end
+      object FPCKeywordsNoteLabel: TLabel
+        Left = 6
+        Height = 15
+        Top = 6
+        Width = 749
+        Align = alTop
+        BorderSpacing.Around = 6
+        Caption = 'FPCKeywordsNoteLabel'
+        ParentColor = False
+        WordWrap = True
+      end
+    end
+    object DirectivesTabSheet: TTabSheet
+      Caption = 'DirectivesTabSheet'
+      ClientHeight = 442
+      ClientWidth = 761
+      object DirectivesNoteLabel: TLabel
+        Left = 6
+        Height = 15
+        Top = 6
+        Width = 749
+        Align = alTop
+        BorderSpacing.Around = 6
+        Caption = 'DirectivesNoteLabel'
+        ParentColor = False
+        WordWrap = True
+      end
+      object DirectivesEnableCheckBox: TCheckBox
+        AnchorSideLeft.Control = DirectivesTabSheet
+        AnchorSideTop.Control = DirectivesNoteLabel
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 22
+        Top = 27
+        Width = 170
+        BorderSpacing.Around = 6
+        Caption = 'DirectivesEnableCheckBox'
+        TabOrder = 0
+      end
+      object FPCDirectivesGroupBox: TGroupBox
+        AnchorSideTop.Control = DirectivesEnableCheckBox
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 130
+        Top = 55
+        Width = 749
+        Align = alBottom
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Around = 6
+        Caption = 'FPCDirectivesGroupBox'
+        ClientHeight = 114
+        ClientWidth = 745
+        Constraints.MinHeight = 70
+        TabOrder = 1
+        object FPCDirectivesMemo: TMemo
+          Left = 0
+          Height = 114
+          Top = 0
+          Width = 745
+          Align = alClient
+          Lines.Strings = (
+            'FPCDirectivesMemo'
+          )
+          TabOrder = 0
+        end
+      end
+      object IDEDirectivesGroupBox: TGroupBox
+        Left = 6
+        Height = 234
+        Top = 202
+        Width = 749
+        Align = alBottom
+        BorderSpacing.Around = 6
+        Caption = 'IDEDirectivesGroupBox'
+        ClientHeight = 218
+        ClientWidth = 745
+        Constraints.MinHeight = 70
+        TabOrder = 2
+        object IDEDirectivesMemo: TMemo
+          Left = 0
+          Height = 218
+          Top = 0
+          Width = 745
+          Align = alClient
+          Lines.Strings = (
+            'IDEDirectivesMemo'
+          )
+          TabOrder = 0
+        end
+      end
+      object DirectivesSplitter: TSplitter
+        Cursor = crVSplit
+        Left = 0
+        Height = 5
+        Top = 191
+        Width = 761
+        Align = alBottom
+        ResizeAnchor = akBottom
+      end
+    end
+    object MessagesTabSheet: TTabSheet
+      Caption = 'MessagesTabSheet'
+      ClientHeight = 442
+      ClientWidth = 761
+      object MessagesNoteLabel: TLabel
+        Left = 6
+        Height = 15
+        Top = 6
+        Width = 749
+        Align = alTop
+        BorderSpacing.Around = 6
+        Caption = 'MessagesNoteLabel'
+        ParentColor = False
+        WordWrap = True
+      end
+      object MessagesEnableCheckBox: TCheckBox
+        AnchorSideLeft.Control = MessagesTabSheet
+        AnchorSideTop.Control = MessagesNoteLabel
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 22
+        Top = 27
+        Width = 171
+        BorderSpacing.Around = 6
+        Caption = 'MessagesEnableCheckBox'
+        TabOrder = 0
+      end
+    end
+    object ContextTabSheet: TTabSheet
+      Caption = 'ContextTabSheet'
+      ClientHeight = 442
+      ClientWidth = 761
+      object ContextNoteLabel: TLabel
+        Left = 6
+        Height = 15
+        Top = 6
+        Width = 749
+        Align = alTop
+        BorderSpacing.Around = 6
+        Caption = 'ContextNoteLabel'
+        ParentColor = False
+        WordWrap = True
+      end
+      object ContextEnableCheckBox: TCheckBox
+        AnchorSideLeft.Control = ContextTabSheet
+        AnchorSideTop.Control = ContextNoteLabel
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 22
+        Top = 27
+        Width = 159
+        BorderSpacing.Around = 6
+        Caption = 'ContextEnableCheckBox'
+        TabOrder = 0
+      end
+      object ContextMemo: TMemo
+        AnchorSideTop.Control = ContextEnableCheckBox
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 381
+        Top = 55
+        Width = 749
+        Align = alBottom
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Around = 6
+        Lines.Strings = (
+          'ContextMemo'
+        )
+        TabOrder = 1
+      end
+    end
+    object ClassesTabSheet: TTabSheet
+      Caption = 'ClassesTabSheet'
+      ClientHeight = 442
+      ClientWidth = 761
+      object ClassesNoteLabel: TLabel
+        Left = 6
+        Height = 15
+        Top = 6
+        Width = 749
+        Align = alTop
+        BorderSpacing.Around = 6
+        Caption = 'ClassesNoteLabel'
+        ParentColor = False
+        WordWrap = True
+      end
+      object ClassesCheckBox: TCheckBox
+        AnchorSideLeft.Control = ClassesTabSheet
+        AnchorSideTop.Control = ClassesNoteLabel
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 22
+        Top = 27
+        Width = 121
+        BorderSpacing.Around = 6
+        Caption = 'ClassesCheckBox'
+        TabOrder = 0
+      end
+    end
+    object PascalSourcesTabSheet: TTabSheet
+      Caption = 'PascalSourcesTabSheet'
+      ClientHeight = 442
+      ClientWidth = 761
+      object PascalSourcesNoteLabel: TLabel
+        Left = 6
+        Height = 15
+        Top = 6
+        Width = 749
+        Align = alTop
+        BorderSpacing.Around = 6
+        Caption = 'PascalSourcesNoteLabel'
+        ParentColor = False
+        WordWrap = True
+      end
+      object PascalSourcesEnabledCheckBox: TCheckBox
+        AnchorSideLeft.Control = PascalSourcesTabSheet
+        AnchorSideTop.Control = PascalSourcesNoteLabel
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 22
+        Top = 27
+        Width = 203
+        BorderSpacing.Around = 6
+        Caption = 'PascalSourcesEnabledCheckBox'
+        TabOrder = 0
+      end
+    end
+  end
+end

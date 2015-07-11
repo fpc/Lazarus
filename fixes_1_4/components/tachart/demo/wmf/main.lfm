@@ -1,0 +1,85 @@
+object Form1: TForm1
+  Left = 896
+  Height = 330
+  Top = 186
+  Width = 403
+  Caption = 'Form1'
+  ClientHeight = 330
+  ClientWidth = 403
+  Position = poScreenCenter
+  LCLVersion = '1.3'
+  object Chart1: TChart
+    Left = 0
+    Height = 292
+    Top = 0
+    Width = 403
+    AxisList = <    
+      item
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+      end    
+      item
+        Alignment = calBottom
+        Minors = <>
+      end>
+    Depth = 30
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+    ParentColor = False
+    object Chart1BarSeries1: TBarSeries
+      BarBrush.Color = clRed
+      Depth = 10
+      Source = RandomChartSource1
+    end
+    object Chart1LineSeries1: TLineSeries
+      ZPosition = 20
+      Depth = 10
+      LinePen.Color = clGreen
+      Source = RandomChartSource1
+    end
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 38
+    Top = 292
+    Width = 403
+    Align = alBottom
+    ClientHeight = 38
+    ClientWidth = 403
+    TabOrder = 1
+    object btnSaveToMetafile: TButton
+      Left = 8
+      Height = 25
+      Top = 8
+      Width = 104
+      Caption = 'Save To WMF'
+      OnClick = btnSaveToMetafileClick
+      TabOrder = 0
+    end
+    object btnCopyToClipboard: TButton
+      Left = 120
+      Height = 25
+      Top = 8
+      Width = 139
+      Caption = 'Copy to clipboard'
+      OnClick = btnCopyToClipboardClick
+      TabOrder = 1
+    end
+  end
+  object RandomChartSource1: TRandomChartSource
+    PointsNumber = 20
+    RandSeed = 1527537926
+    XMax = 12
+    XMin = 0
+    YMax = 3
+    YMin = -3
+    left = 140
+    top = 148
+  end
+end

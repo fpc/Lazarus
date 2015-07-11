@@ -1,0 +1,639 @@
+object Form1: TForm1
+  Left = 343
+  Height = 430
+  Top = 184
+  Width = 533
+  Caption = 'TAChart axis demo'
+  ClientHeight = 430
+  ClientWidth = 533
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 430
+    Top = 0
+    Width = 533
+    ActivePage = tsCustomMarks
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 0
+    Options = [nboKeyboardTabSwitch]
+    object tsCustomMarks: TTabSheet
+      Caption = 'Customized marks'
+      ClientHeight = 404
+      ClientWidth = 525
+      object ChartCustomMarks: TChart
+        Left = 0
+        Height = 404
+        Top = 0
+        Width = 525
+        AxisList = <        
+          item
+            TickLength = 0
+            Marks.Distance = 0
+            Marks.Format = '$%0:.9g'
+            Marks.Frame.Style = psSolid
+            Marks.LabelBrush.Color = clMoneyGreen
+            Marks.LabelBrush.Style = bsSolid
+            Marks.Source = lcsMarks
+            Marks.Style = smsCustom
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+          end        
+          item
+            Grid.Visible = False
+            TickLength = 0
+            Alignment = calBottom
+            AxisPen.Color = clGreen
+            AxisPen.Width = 3
+            AxisPen.Visible = True
+            Marks.LabelFont.Height = -13
+            Marks.LabelFont.Style = [fsBold]
+            Marks.Format = '%2:s'
+            Marks.Source = lcsMarks
+            Marks.Style = smsLabel
+            Minors = <            
+              item
+                Grid.Visible = False
+                Intervals.Count = 2
+                Intervals.MinLength = 5
+                Intervals.Options = [aipUseCount]
+                TickColor = clGreen
+                TickLength = 10
+              end>
+            OnMarkToText = ChartCustomMarksAxisList1MarkToText
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Frame.Visible = False
+        Margins.Left = 10
+        Margins.Top = 10
+        Margins.Right = 10
+        Margins.Bottom = 0
+        MarginsExternal.Left = 0
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        ParentColor = False
+        object ChartCustomMarksBarSeries1: TBarSeries
+          Marks.Frame.Visible = False
+          Marks.LabelBrush.Style = bsClear
+          BarBrush.Color = clGreen
+          BarPen.Color = clLime
+          BarPen.Width = 2
+          Source = lcsMarks
+        end
+      end
+    end
+    object tsAxisGroup: TTabSheet
+      Caption = 'Axis groups'
+      ClientHeight = 404
+      ClientWidth = 525
+      object ChartAxisGroup: TChart
+        Left = 0
+        Height = 404
+        Top = 0
+        Width = 525
+        AxisList = <        
+          item
+            Grid.Visible = False
+            TickLength = 0
+            Group = 2
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+          end        
+          item
+            Alignment = calBottom
+            Minors = <>
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        ParentColor = False
+      end
+    end
+    object tsSubmarks: TTabSheet
+      Caption = 'Submarks'
+      ClientHeight = 404
+      ClientWidth = 525
+      object ChartSubmarks: TChart
+        Left = 0
+        Height = 404
+        Top = 0
+        Width = 525
+        AxisList = <        
+          item
+            TickLength = 6
+            Group = 1
+            Marks.Source = udcsMain
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+          end        
+          item
+            Intervals.MaxLength = 100
+            Intervals.MinLength = 30
+            Intervals.NiceSteps = '0.2|0.25|0.5|1.0'
+            TickLength = 6
+            Alignment = calBottom
+            Group = 2
+            Marks.LabelFont.Style = [fsBold]
+            Minors = <            
+              item
+                Grid.Color = clGray
+                Grid.Cosmetic = False
+                Intervals.Count = 10
+                Intervals.MinLength = 5
+                Intervals.Options = [aipUseCount, aipUseMinLength]
+                Marks.Distance = 4
+                Marks.LabelFont.Height = -9
+                Marks.LabelFont.Orientation = 900
+                Marks.Format = '%0:.9g'
+                Marks.Style = smsValue
+              end>
+          end        
+          item
+            Grid.Visible = False
+            TickLength = 2
+            Group = 1
+            Marks.Source = udcsSub
+            Marks.Style = smsNone
+            Minors = <>
+          end>
+        BackColor = clWhite
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        ParentColor = False
+        object ChartSubmarksLineSeries1: TLineSeries
+          Source = udcsGraph
+        end
+      end
+    end
+    object tsDateTime: TTabSheet
+      Caption = 'Date and time'
+      ClientHeight = 404
+      ClientWidth = 525
+      object ChartDateTime: TChart
+        Left = 0
+        Height = 404
+        Top = 0
+        Width = 525
+        AxisList = <        
+          item
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+          end        
+          item
+            Alignment = calBottom
+            Marks.Format = '%2:s'
+            Marks.OverlapPolicy = opHideNeighbour
+            Marks.Source = DateTimeIntervalChartSource1
+            Marks.Style = smsLabel
+            Minors = <>
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'The series contain data points for every hour in 10 years'
+          'Left/right-click to zoom and see various labels on the bottom axis'
+        )
+        Title.Visible = True
+        Toolset = ChartToolsetDateTime
+        Align = alClient
+        ParentColor = False
+        object ChartDateTimeLineSeries1: TLineSeries
+          Source = rcsDates
+        end
+      end
+    end
+    object tsIntervals: TTabSheet
+      Caption = 'Intervals'
+      ClientHeight = 404
+      ClientWidth = 525
+      object ChartIntervals: TChart
+        Left = 0
+        Height = 404
+        Top = 0
+        Width = 525
+        AxisList = <        
+          item
+            Grid.Visible = False
+            Intervals.NiceSteps = '0.25|1.0'
+            TickColor = clMaroon
+            TickLength = 3
+            AxisPen.Color = clMaroon
+            AxisPen.Visible = True
+            Marks.LabelFont.Color = clMaroon
+            Minors = <>
+            Title.LabelFont.Color = clMaroon
+            Title.LabelFont.Orientation = 900
+            Title.Visible = True
+            Title.Caption = 'NiceSteps = 0.25'
+          end        
+          item
+            Grid.Visible = False
+            Intervals.MinLength = 20
+            Intervals.NiceSteps = '0.3|0.6'
+            Alignment = calBottom
+            AxisPen.Visible = True
+            Marks.Format = '%0:.6g'
+            Marks.Range.Max = 0.6
+            Marks.Range.Min = -0.3
+            Marks.Range.UseMax = True
+            Marks.Range.UseMin = True
+            Marks.Style = smsCustom
+            Minors = <>
+            Title.Visible = True
+            Title.Caption = 'Marks.Range = -0.3 .. 0.6'
+          end        
+          item
+            Grid.Visible = False
+            Intervals.Count = 10
+            Intervals.MinLength = 4
+            Intervals.Options = [aipUseCount, aipUseMaxLength, aipUseMinLength, aipUseNiceSteps]
+            TickColor = clGreen
+            TickLength = 3
+            AxisPen.Color = clGreen
+            AxisPen.Visible = True
+            Margin = 8
+            Marks.LabelFont.Color = clGreen
+            Minors = <>
+            Title.LabelFont.Color = clGreen
+            Title.LabelFont.Orientation = 900
+            Title.Visible = True
+            Title.Caption = 'MinLength = 4'
+          end        
+          item
+            Grid.Visible = False
+            Intervals.MaxLength = 200
+            Intervals.Options = [aipUseCount, aipUseMaxLength, aipUseMinLength, aipUseNiceSteps]
+            TickColor = clNavy
+            TickLength = 3
+            AxisPen.Color = clNavy
+            AxisPen.Visible = True
+            Margin = 8
+            Marks.LabelFont.Color = clNavy
+            Minors = <>
+            Title.LabelFont.Color = clNavy
+            Title.LabelFont.Orientation = 900
+            Title.Visible = True
+            Title.Caption = 'MaxLength = 200'
+          end        
+          item
+            Grid.Visible = False
+            Intervals.Options = [aipUseMaxLength, aipUseMinLength]
+            TickLength = 3
+            AxisPen.Visible = True
+            Margin = 8
+            Marks.Format = '%0:.4g'
+            Marks.Style = smsCustom
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+            Title.Visible = True
+            Title.Caption = 'No nice steps'
+          end>
+        BackColor = clSilver
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Frame.Visible = False
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        ParentColor = False
+      end
+    end
+    object tsPosition: TTabSheet
+      Caption = 'Position'
+      ClientHeight = 404
+      ClientWidth = 525
+      object ChartPosition: TChart
+        Left = 0
+        Height = 404
+        Top = 0
+        Width = 395
+        AxisList = <        
+          item
+            Grid.Visible = False
+            Intervals.Tolerance = 1
+            AxisPen.Visible = True
+            Marks.LabelBrush.Style = bsSolid
+            Minors = <>
+            Position = 50
+          end        
+          item
+            Grid.Visible = False
+            Intervals.Tolerance = 1
+            Alignment = calBottom
+            AxisPen.Visible = True
+            Marks.LabelBrush.Style = bsSolid
+            Minors = <>
+            Position = 50
+          end        
+          item
+            Grid.Color = clGray
+            Intervals.Tolerance = 1
+            Visible = False
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+          end        
+          item
+            Grid.Color = clGray
+            Intervals.Tolerance = 1
+            Visible = False
+            Alignment = calBottom
+            Minors = <>
+          end>
+        BackColor = clWhite
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        Color = clWhite
+        ParentColor = False
+        object ChartPositionFuncSeries1: TFuncSeries
+          Extent.UseXMax = True
+          Extent.UseXMin = True
+          Extent.UseYMax = True
+          Extent.UseYMin = True
+          Extent.XMax = 100
+          Extent.XMin = -100
+          Extent.YMax = 30
+          Extent.YMin = -30
+          OnCalculate = ChartPositionFuncSeries1Calculate
+          Pen.Color = clTeal
+          Pen.Width = 2
+        end
+      end
+      object pnlPosition: TPanel
+        Left = 395
+        Height = 404
+        Top = 0
+        Width = 130
+        Align = alRight
+        ClientHeight = 404
+        ClientWidth = 130
+        TabOrder = 1
+        object gbPositionX: TGroupBox
+          Left = 1
+          Height = 121
+          Top = 1
+          Width = 128
+          Align = alTop
+          Caption = ' X axis '
+          ClientHeight = 103
+          ClientWidth = 124
+          TabOrder = 0
+          object seXPosition: TSpinEdit
+            Left = 57
+            Height = 21
+            Top = 1
+            Width = 58
+            OnChange = seXPositionChange
+            TabOrder = 0
+            Value = 50
+          end
+          object lblPositionX: TLabel
+            Left = 6
+            Height = 13
+            Top = 5
+            Width = 41
+            Caption = 'Position:'
+            ParentColor = False
+          end
+          object cbStaticX: TCheckBox
+            Left = 6
+            Height = 17
+            Top = 53
+            Width = 97
+            Caption = 'Show static axis'
+            OnChange = cbStaticXChange
+            TabOrder = 1
+          end
+          object rbPositionBottom: TRadioButton
+            Left = 6
+            Height = 17
+            Top = 77
+            Width = 54
+            Caption = 'Bottom'
+            Checked = True
+            OnChange = rbPositionBottomChange
+            TabOrder = 3
+            TabStop = True
+          end
+          object rbPositionTop: TRadioButton
+            Left = 70
+            Height = 17
+            Top = 77
+            Width = 38
+            Caption = 'Top'
+            TabOrder = 2
+          end
+          object lblUnitsX: TLabel
+            Left = 6
+            Height = 13
+            Top = 33
+            Width = 28
+            Caption = 'Units:'
+            ParentColor = False
+          end
+          object cbUnitsX: TComboBox
+            Left = 54
+            Height = 21
+            Top = 29
+            Width = 60
+            ItemHeight = 13
+            ItemIndex = 0
+            Items.Strings = (
+              'percent'
+              'axis'
+              'graph'
+              'pixel'
+            )
+            OnChange = cbUnitsXChange
+            Style = csDropDownList
+            TabOrder = 4
+            Text = 'percent'
+          end
+        end
+        object gbPositionY: TGroupBox
+          Left = 1
+          Height = 124
+          Top = 122
+          Width = 128
+          Align = alTop
+          Caption = ' Y axis '
+          ClientHeight = 106
+          ClientWidth = 124
+          TabOrder = 1
+          object lblPositionY: TLabel
+            Left = 6
+            Height = 13
+            Top = 4
+            Width = 41
+            Caption = 'Position:'
+            ParentColor = False
+          end
+          object cbStaticY: TCheckBox
+            Left = 6
+            Height = 17
+            Top = 56
+            Width = 97
+            Caption = 'Show static axis'
+            OnChange = cbStaticYChange
+            TabOrder = 0
+          end
+          object seYPosition: TSpinEdit
+            Left = 57
+            Height = 21
+            Top = 0
+            Width = 58
+            OnChange = seYPositionChange
+            TabOrder = 1
+            Value = 50
+          end
+          object rbPositionRight: TRadioButton
+            Left = 70
+            Height = 17
+            Top = 84
+            Width = 45
+            Caption = 'Right'
+            TabOrder = 2
+          end
+          object rbPositionLeft: TRadioButton
+            Left = 6
+            Height = 17
+            Top = 84
+            Width = 39
+            Caption = 'Left'
+            Checked = True
+            OnChange = rbPositionLeftChange
+            TabOrder = 3
+            TabStop = True
+          end
+          object cbUnitsY: TComboBox
+            Left = 54
+            Height = 21
+            Top = 29
+            Width = 60
+            ItemHeight = 13
+            ItemIndex = 0
+            Items.Strings = (
+              'percent'
+              'graph'
+              'pixel'
+            )
+            OnChange = cbUnitsYChange
+            Style = csDropDownList
+            TabOrder = 4
+            Text = 'percent'
+          end
+          object lblUnitsY: TLabel
+            Left = 6
+            Height = 13
+            Top = 33
+            Width = 28
+            Caption = 'Units:'
+            ParentColor = False
+          end
+        end
+      end
+    end
+  end
+  object lcsMarks: TListChartSource
+    DataPoints.Strings = (
+      '1|18000|?|January'
+      '2|35000|?|February'
+      '3|31000|?|March'
+      '4|26000|?|April'
+      '5|37000|?|May'
+      '6|22000|?|June'
+    )
+    left = 216
+    top = 164
+  end
+  object rcsDates: TRandomChartSource
+    RandSeed = 1079653020
+    XMax = 0
+    XMin = 0
+    YMax = 50
+    YMin = 5
+    left = 216
+    top = 216
+  end
+  object DateTimeIntervalChartSource1: TDateTimeIntervalChartSource
+    Params.Count = 10
+    Params.MaxLength = 150
+    Params.MinLength = 20
+    Params.Options = [aipUseCount, aipUseMaxLength, aipUseMinLength, aipUseNiceSteps]
+    left = 352
+    top = 232
+  end
+  object ChartToolsetDateTime: TChartToolset
+    left = 440
+    top = 232
+    object ChartToolset1ZoomIn: TZoomClickTool
+      Shift = [ssLeft]
+      ZoomFactor = 4
+      ZoomRatio = 0.25
+    end
+    object ChartToolset1ZoomOut: TZoomClickTool
+      Shift = [ssRight]
+      ZoomFactor = 0.25
+      ZoomRatio = 4
+    end
+  end
+  object udcsMain: TUserDefinedChartSource
+    OnGetChartDataItem = udcsMainGetChartDataItem
+    PointsNumber = 10
+    left = 440
+    top = 60
+  end
+  object udcsSub: TUserDefinedChartSource
+    OnGetChartDataItem = udcsSubGetChartDataItem
+    PointsNumber = 50
+    left = 440
+    top = 116
+  end
+  object udcsGraph: TUserDefinedChartSource
+    OnGetChartDataItem = udcsGraphGetChartDataItem
+    PointsNumber = 100
+    left = 440
+    top = 172
+  end
+  object csStripes: TChartStyles
+    Styles = <    
+      item
+        Brush.Color = 16631498
+        UsePen = False
+      end    
+      item
+        Brush.Color = 12319483
+        UsePen = False
+      end>
+    left = 352
+    top = 176
+  end
+end

@@ -1,0 +1,17 @@
+Package: fpc-src
+Version: FPCVERSION
+Section: devel
+Priority: optional
+Maintainer: Mattias Gaertner <mattias@cvs.freepascal.org>
+Architecture: ARCH
+Replaces: fpc-source
+Installed-Size: DEBSIZE
+Description: Free Pascal Sources
+ The Free Pascal Compiler is a Turbo Pascal 7.0 and Delphi compatible 
+ 32/64bit Object Pascal Compiler. It comes with fully TP 7.0
+ compatible run-time library.
+ Some extensions are added to the language, like function overloading. Shared
+ libraries can be linked and created. Basic Delphi support is already
+ implemented (classes,exceptions,ansistrings). This package contains the
+ sources for the compiler, the rtl, fcl and packages.
+

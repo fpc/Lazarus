@@ -1,0 +1,860 @@
+object EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
+  Left = 0
+  Height = 455
+  Top = 0
+  Width = 501
+  ClientHeight = 455
+  ClientWidth = 501
+  TabOrder = 0
+  Visible = False
+  DesignLeft = 176
+  DesignTop = 232
+  object MarginAndGutterGroupBox: TGroupBox
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 149
+    Top = 0
+    Width = 501
+    Align = alTop
+    AutoSize = True
+    Caption = 'MarginAndGutterGroupBox'
+    ClientHeight = 131
+    ClientWidth = 497
+    TabOrder = 0
+    object RightMarginLabel: TLabel
+      AnchorSideLeft.Control = RightMarginComboBox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = RightMarginComboBox
+      AnchorSideTop.Side = asrCenter
+      Left = 296
+      Height = 16
+      Top = 9
+      Width = 95
+      BorderSpacing.Left = 6
+      Caption = 'RightMarginLabel'
+      ParentColor = False
+    end
+    object ShowOnlyLineNumbersMultiplesOfLabel: TLabel
+      AnchorSideLeft.Control = ShowOnlyLineNumbersMultiplesOfSpinEdit
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = ShowOnlyLineNumbersMultiplesOfSpinEdit
+      AnchorSideTop.Side = asrCenter
+      Left = 294
+      Height = 16
+      Top = 67
+      Width = 122
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      Caption = 'Every n-th line number'
+      ParentColor = False
+    end
+    object GutterSeparatorIndexLabel: TLabel
+      AnchorSideLeft.Control = RightMarginLabel
+      AnchorSideTop.Control = GutterSeparatorIndexSpinBox
+      AnchorSideTop.Side = asrCenter
+      Left = 296
+      Height = 16
+      Top = 38
+      Width = 140
+      Caption = 'GutterSeparatorIndexLabel'
+      ParentColor = False
+    end
+    object RightMarginColorLink: TLabel
+      AnchorSideLeft.Control = RightMarginLabel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = RightMarginLabel
+      AnchorSideTop.Side = asrCenter
+      Cursor = crHandPoint
+      Left = 397
+      Height = 16
+      Top = 9
+      Width = 118
+      BorderSpacing.Left = 6
+      Caption = 'RightMarginColorLink'
+      Font.Color = clBlue
+      ParentColor = False
+      ParentFont = False
+      OnClick = RightMarginColorLinkClick
+      OnMouseEnter = RightMarginColorLinkMouseEnter
+      OnMouseLeave = RightMarginColorLinkMouseLeave
+    end
+    object VisibleRightMarginCheckBox: TCheckBox
+      AnchorSideLeft.Control = MarginAndGutterGroupBox
+      AnchorSideTop.Control = MarginAndGutterGroupBox
+      Left = 6
+      Height = 19
+      Top = 6
+      Width = 172
+      BorderSpacing.Around = 6
+      Caption = 'VisibleRightMarginCheckBox'
+      OnChange = GeneralCheckBoxOnChange
+      TabOrder = 0
+    end
+    object VisibleGutterCheckBox: TCheckBox
+      AnchorSideLeft.Control = MarginAndGutterGroupBox
+      AnchorSideTop.Control = VisibleRightMarginCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 19
+      Top = 31
+      Width = 139
+      BorderSpacing.Around = 6
+      Caption = 'VisibleGutterCheckBox'
+      OnChange = GeneralCheckBoxOnChange
+      TabOrder = 1
+    end
+    object ShowLineNumbersCheckBox: TCheckBox
+      AnchorSideLeft.Control = MarginAndGutterGroupBox
+      AnchorSideTop.Control = VisibleGutterCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 19
+      Top = 56
+      Width = 172
+      BorderSpacing.Around = 6
+      Caption = 'ShowLineNumbersCheckBox'
+      OnChange = GeneralCheckBoxOnChange
+      OnClick = ShowLineNumbersCheckBoxClick
+      TabOrder = 2
+    end
+    object RightMarginComboBox: TComboBox
+      AnchorSideLeft.Control = VisibleRightMarginCheckBox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = MarginAndGutterGroupBox
+      Left = 234
+      Height = 23
+      Top = 6
+      Width = 56
+      BorderSpacing.Left = 50
+      BorderSpacing.Around = 6
+      ItemHeight = 15
+      Items.Strings = (
+        '80'
+        '78'
+        '76'
+      )
+      OnChange = ComboboxOnChange
+      OnExit = ComboboxOnExit
+      OnKeyDown = ComboBoxOnKeyDown
+      TabOrder = 3
+    end
+    object ShowOnlyLineNumbersMultiplesOfSpinEdit: TSpinEdit
+      AnchorSideLeft.Control = GutterSeparatorIndexSpinBox
+      AnchorSideTop.Control = GutterSeparatorIndexSpinBox
+      AnchorSideTop.Side = asrBottom
+      Left = 234
+      Height = 23
+      Top = 64
+      Width = 54
+      BorderSpacing.Top = 6
+      MinValue = 1
+      OnChange = GeneralCheckBoxOnChange
+      TabOrder = 4
+      Value = 1
+    end
+    object GutterSeparatorIndexSpinBox: TSpinEdit
+      AnchorSideLeft.Control = RightMarginComboBox
+      AnchorSideTop.Control = RightMarginComboBox
+      AnchorSideTop.Side = asrBottom
+      Left = 234
+      Height = 23
+      Top = 35
+      Width = 56
+      MaxValue = 4
+      MinValue = -1
+      OnChange = GeneralCheckBoxOnChange
+      TabOrder = 5
+    end
+    object chkShowOverview: TCheckBox
+      AnchorSideLeft.Control = MarginAndGutterGroupBox
+      AnchorSideTop.Control = ShowLineNumbersCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 19
+      Top = 81
+      Width = 117
+      BorderSpacing.Around = 6
+      Caption = 'chkShowOverview'
+      OnChange = GeneralCheckBoxOnChange
+      TabOrder = 6
+    end
+    object chkTopInfoView: TCheckBox
+      AnchorSideLeft.Control = MarginAndGutterGroupBox
+      AnchorSideTop.Control = chkShowOverview
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 19
+      Top = 106
+      Width = 106
+      BorderSpacing.Around = 6
+      Caption = 'chkTopInfoView'
+      TabOrder = 7
+    end
+  end
+  object EditorFontGroupBox: TGroupBox
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 111
+    Top = 155
+    Width = 501
+    Align = alTop
+    AutoSize = True
+    BorderSpacing.Top = 6
+    Caption = 'EditorFontGroupBox'
+    ClientHeight = 93
+    ClientWidth = 497
+    TabOrder = 1
+    object EditorFontSizeLabel: TLabel
+      AnchorSideLeft.Control = EditorFontSizeSpinEdit
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = EditorFontSizeSpinEdit
+      AnchorSideTop.Side = asrCenter
+      Left = 62
+      Height = 16
+      Top = 38
+      Width = 104
+      BorderSpacing.Around = 6
+      Caption = 'EditorFontSizeLabel'
+      ParentColor = False
+    end
+    object ExtraLineSpacingLabel: TLabel
+      AnchorSideLeft.Control = ExtraLineSpacingComboBox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = ExtraLineSpacingComboBox
+      AnchorSideTop.Side = asrCenter
+      Left = 298
+      Height = 16
+      Top = 38
+      Width = 118
+      BorderSpacing.Around = 6
+      Caption = 'ExtraLineSpacingLabel'
+      ParentColor = False
+    end
+    object ExtraCharSpacingLabel: TLabel
+      AnchorSideLeft.Control = ExtraCharSpacingComboBox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = ExtraCharSpacingComboBox
+      AnchorSideTop.Side = asrCenter
+      Left = 298
+      Height = 16
+      Top = 67
+      Width = 121
+      BorderSpacing.Around = 6
+      Caption = 'ExtraCharSpacingLabel'
+      ParentColor = False
+    end
+    object EditorFontComboBox: TComboBox
+      AnchorSideLeft.Control = EditorFontGroupBox
+      AnchorSideTop.Control = EditorFontGroupBox
+      AnchorSideRight.Control = EditorFontButton
+      Left = 6
+      Height = 23
+      Top = 6
+      Width = 460
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      ItemHeight = 15
+      OnEditingDone = EditorFontComboBoxEditingDone
+      TabOrder = 0
+      Text = 'EditorFontComboBox'
+    end
+    object EditorFontButton: TButton
+      AnchorSideTop.Control = EditorFontComboBox
+      AnchorSideRight.Control = EditorFontGroupBox
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = EditorFontComboBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 466
+      Height = 23
+      Top = 6
+      Width = 25
+      Anchors = [akTop, akRight, akBottom]
+      BorderSpacing.Right = 6
+      Caption = '...'
+      OnClick = EditorFontButtonClick
+      TabOrder = 1
+    end
+    object EditorFontSizeSpinEdit: TSpinEdit
+      AnchorSideLeft.Control = EditorFontGroupBox
+      AnchorSideTop.Control = EditorFontComboBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 23
+      Top = 35
+      Width = 50
+      BorderSpacing.Around = 6
+      OnChange = EditorFontSizeSpinEditChange
+      TabOrder = 2
+    end
+    object ExtraLineSpacingComboBox: TComboBox
+      AnchorSideLeft.Control = EditorFontSizeLabel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = EditorFontComboBox
+      AnchorSideTop.Side = asrBottom
+      Left = 192
+      Height = 23
+      Top = 35
+      Width = 100
+      BorderSpacing.Left = 20
+      BorderSpacing.Around = 6
+      ItemHeight = 15
+      Items.Strings = (
+        '0'
+        '1'
+        '2'
+      )
+      OnChange = ComboboxOnChange
+      OnExit = ComboboxOnExit
+      OnKeyDown = ComboBoxOnKeyDown
+      TabOrder = 4
+    end
+    object ExtraCharSpacingComboBox: TComboBox
+      AnchorSideLeft.Control = ExtraLineSpacingComboBox
+      AnchorSideTop.Control = ExtraLineSpacingComboBox
+      AnchorSideTop.Side = asrBottom
+      Left = 192
+      Height = 23
+      Top = 64
+      Width = 100
+      BorderSpacing.Bottom = 6
+      ItemHeight = 15
+      Items.Strings = (
+        '0'
+        '1'
+        '2'
+      )
+      OnChange = ComboboxOnChange
+      OnExit = ComboboxOnExit
+      OnKeyDown = ComboBoxOnKeyDown
+      TabOrder = 3
+    end
+    object DisableAntialiasingCheckBox: TCheckBox
+      AnchorSideLeft.Control = EditorFontGroupBox
+      AnchorSideTop.Control = EditorFontSizeSpinEdit
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 23
+      Top = 64
+      Width = 172
+      Anchors = [akTop, akLeft, akBottom]
+      BorderSpacing.Around = 6
+      Caption = 'DisableAntialiasingCheckBox'
+      OnChange = GeneralCheckBoxOnChange
+      TabOrder = 5
+    end
+  end
+  inline DisplayPreview: TSynEdit
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 183
+    Top = 272
+    Width = 501
+    Align = alClient
+    BorderSpacing.Top = 6
+    Font.Height = -16
+    Font.Name = 'courier'
+    Font.Pitch = fpFixed
+    Font.Quality = fqNonAntialiased
+    ParentColor = False
+    ParentFont = False
+    TabOrder = 2
+    BookMarkOptions.Xoffset = 30
+    Gutter.Width = 59
+    Gutter.MouseActions = <    
+      item
+        ClickCount = ccAny
+        ClickDir = cdDown
+        Command = emcOnMainGutterClick
+      end    
+      item
+        Button = mbRight
+        Command = emcContextMenu
+      end>
+    RightGutter.Width = 0
+    RightGutter.MouseActions = <>
+    Keystrokes = <    
+      item
+        Command = ecUp
+        ShortCut = 38
+      end    
+      item
+        Command = ecSelUp
+        ShortCut = 8230
+      end    
+      item
+        Command = ecScrollUp
+        ShortCut = 16422
+      end    
+      item
+        Command = ecDown
+        ShortCut = 40
+      end    
+      item
+        Command = ecSelDown
+        ShortCut = 8232
+      end    
+      item
+        Command = ecScrollDown
+        ShortCut = 16424
+      end    
+      item
+        Command = ecLeft
+        ShortCut = 37
+      end    
+      item
+        Command = ecSelLeft
+        ShortCut = 8229
+      end    
+      item
+        Command = ecWordLeft
+        ShortCut = 16421
+      end    
+      item
+        Command = ecSelWordLeft
+        ShortCut = 24613
+      end    
+      item
+        Command = ecRight
+        ShortCut = 39
+      end    
+      item
+        Command = ecSelRight
+        ShortCut = 8231
+      end    
+      item
+        Command = ecWordRight
+        ShortCut = 16423
+      end    
+      item
+        Command = ecSelWordRight
+        ShortCut = 24615
+      end    
+      item
+        Command = ecPageDown
+        ShortCut = 34
+      end    
+      item
+        Command = ecSelPageDown
+        ShortCut = 8226
+      end    
+      item
+        Command = ecPageBottom
+        ShortCut = 16418
+      end    
+      item
+        Command = ecSelPageBottom
+        ShortCut = 24610
+      end    
+      item
+        Command = ecPageUp
+        ShortCut = 33
+      end    
+      item
+        Command = ecSelPageUp
+        ShortCut = 8225
+      end    
+      item
+        Command = ecPageTop
+        ShortCut = 16417
+      end    
+      item
+        Command = ecSelPageTop
+        ShortCut = 24609
+      end    
+      item
+        Command = ecLineStart
+        ShortCut = 36
+      end    
+      item
+        Command = ecSelLineStart
+        ShortCut = 8228
+      end    
+      item
+        Command = ecEditorTop
+        ShortCut = 16420
+      end    
+      item
+        Command = ecSelEditorTop
+        ShortCut = 24612
+      end    
+      item
+        Command = ecLineEnd
+        ShortCut = 35
+      end    
+      item
+        Command = ecSelLineEnd
+        ShortCut = 8227
+      end    
+      item
+        Command = ecEditorBottom
+        ShortCut = 16419
+      end    
+      item
+        Command = ecSelEditorBottom
+        ShortCut = 24611
+      end    
+      item
+        Command = ecToggleMode
+        ShortCut = 45
+      end    
+      item
+        Command = ecCopy
+        ShortCut = 16429
+      end    
+      item
+        Command = ecPaste
+        ShortCut = 8237
+      end    
+      item
+        Command = ecDeleteChar
+        ShortCut = 46
+      end    
+      item
+        Command = ecCut
+        ShortCut = 8238
+      end    
+      item
+        Command = ecDeleteLastChar
+        ShortCut = 8
+      end    
+      item
+        Command = ecDeleteLastChar
+        ShortCut = 8200
+      end    
+      item
+        Command = ecDeleteLastWord
+        ShortCut = 16392
+      end    
+      item
+        Command = ecUndo
+        ShortCut = 32776
+      end    
+      item
+        Command = ecRedo
+        ShortCut = 40968
+      end    
+      item
+        Command = ecLineBreak
+        ShortCut = 13
+      end    
+      item
+        Command = ecSelectAll
+        ShortCut = 16449
+      end    
+      item
+        Command = ecCopy
+        ShortCut = 16451
+      end    
+      item
+        Command = ecBlockIndent
+        ShortCut = 24649
+      end    
+      item
+        Command = ecLineBreak
+        ShortCut = 16461
+      end    
+      item
+        Command = ecInsertLine
+        ShortCut = 16462
+      end    
+      item
+        Command = ecDeleteWord
+        ShortCut = 16468
+      end    
+      item
+        Command = ecBlockUnindent
+        ShortCut = 24661
+      end    
+      item
+        Command = ecPaste
+        ShortCut = 16470
+      end    
+      item
+        Command = ecCut
+        ShortCut = 16472
+      end    
+      item
+        Command = ecDeleteLine
+        ShortCut = 16473
+      end    
+      item
+        Command = ecDeleteEOL
+        ShortCut = 24665
+      end    
+      item
+        Command = ecUndo
+        ShortCut = 16474
+      end    
+      item
+        Command = ecRedo
+        ShortCut = 24666
+      end    
+      item
+        Command = ecGotoMarker0
+        ShortCut = 16432
+      end    
+      item
+        Command = ecGotoMarker1
+        ShortCut = 16433
+      end    
+      item
+        Command = ecGotoMarker2
+        ShortCut = 16434
+      end    
+      item
+        Command = ecGotoMarker3
+        ShortCut = 16435
+      end    
+      item
+        Command = ecGotoMarker4
+        ShortCut = 16436
+      end    
+      item
+        Command = ecGotoMarker5
+        ShortCut = 16437
+      end    
+      item
+        Command = ecGotoMarker6
+        ShortCut = 16438
+      end    
+      item
+        Command = ecGotoMarker7
+        ShortCut = 16439
+      end    
+      item
+        Command = ecGotoMarker8
+        ShortCut = 16440
+      end    
+      item
+        Command = ecGotoMarker9
+        ShortCut = 16441
+      end    
+      item
+        Command = ecSetMarker0
+        ShortCut = 24624
+      end    
+      item
+        Command = ecSetMarker1
+        ShortCut = 24625
+      end    
+      item
+        Command = ecSetMarker2
+        ShortCut = 24626
+      end    
+      item
+        Command = ecSetMarker3
+        ShortCut = 24627
+      end    
+      item
+        Command = ecSetMarker4
+        ShortCut = 24628
+      end    
+      item
+        Command = ecSetMarker5
+        ShortCut = 24629
+      end    
+      item
+        Command = ecSetMarker6
+        ShortCut = 24630
+      end    
+      item
+        Command = ecSetMarker7
+        ShortCut = 24631
+      end    
+      item
+        Command = ecSetMarker8
+        ShortCut = 24632
+      end    
+      item
+        Command = ecSetMarker9
+        ShortCut = 24633
+      end    
+      item
+        Command = ecNormalSelect
+        ShortCut = 24654
+      end    
+      item
+        Command = ecColumnSelect
+        ShortCut = 24643
+      end    
+      item
+        Command = ecLineSelect
+        ShortCut = 24652
+      end    
+      item
+        Command = ecTab
+        ShortCut = 9
+      end    
+      item
+        Command = ecShiftTab
+        ShortCut = 8201
+      end    
+      item
+        Command = ecMatchBracket
+        ShortCut = 24642
+      end>
+    MouseActions = <    
+      item
+        ShiftMask = [ssShift, ssAlt]
+        ClickDir = cdDown
+        Command = emcStartSelections
+        MoveCaret = True
+      end    
+      item
+        Shift = [ssShift]
+        ShiftMask = [ssShift, ssAlt]
+        ClickDir = cdDown
+        Command = emcStartSelections
+        MoveCaret = True
+        Option = 1
+      end    
+      item
+        Shift = [ssAlt]
+        ShiftMask = [ssShift, ssAlt]
+        ClickDir = cdDown
+        Command = emcStartColumnSelections
+        MoveCaret = True
+      end    
+      item
+        Shift = [ssShift, ssAlt]
+        ShiftMask = [ssShift, ssAlt]
+        ClickDir = cdDown
+        Command = emcStartColumnSelections
+        MoveCaret = True
+        Option = 1
+      end    
+      item
+        Button = mbRight
+        Command = emcContextMenu
+      end    
+      item
+        ClickCount = ccDouble
+        ClickDir = cdDown
+        Command = emcSelectWord
+        MoveCaret = True
+      end    
+      item
+        ClickCount = ccTriple
+        ClickDir = cdDown
+        Command = emcSelectLine
+        MoveCaret = True
+      end    
+      item
+        ClickCount = ccQuad
+        ClickDir = cdDown
+        Command = emcSelectPara
+        MoveCaret = True
+      end    
+      item
+        Button = mbMiddle
+        ClickDir = cdDown
+        Command = emcPasteSelection
+        MoveCaret = True
+      end    
+      item
+        Shift = [ssCtrl]
+        ShiftMask = [ssShift, ssAlt, ssCtrl]
+        Command = emcMouseLink
+      end>
+    MouseSelActions = <    
+      item
+        ClickDir = cdDown
+        Command = emcStartDragMove
+      end>
+    Lines.Strings = (
+      'DisplayPreview'
+    )
+    VisibleSpecialChars = [vscSpace, vscTabAtLast]
+    ReadOnly = True
+    BracketHighlightStyle = sbhsBoth
+    BracketMatchColor.Background = clNone
+    BracketMatchColor.Foreground = clNone
+    BracketMatchColor.Style = [fsBold]
+    FoldedCodeColor.Background = clNone
+    FoldedCodeColor.Foreground = clGray
+    FoldedCodeColor.FrameColor = clGray
+    MouseLinkColor.Background = clNone
+    MouseLinkColor.Foreground = clBlue
+    LineHighlightColor.Background = clNone
+    LineHighlightColor.Foreground = clNone
+    inline TSynGutterPartList
+      object TSynGutterMarks
+        Width = 24
+        MouseActions = <>
+      end
+      object TSynGutterLineNumber
+        Width = 19
+        MouseActions = <>
+        MarkupInfo.Background = clBtnFace
+        MarkupInfo.Foreground = clNone
+        DigitCount = 2
+        ShowOnlyLineNumbersMultiplesOf = 1
+        ZeroStart = False
+        LeadingZeros = False
+      end
+      object TSynGutterChanges
+        Width = 4
+        MouseActions = <>
+        ModifiedColor = 59900
+        SavedColor = clGreen
+      end
+      object TSynGutterSeparator
+        Width = 2
+        MouseActions = <>
+      end
+      object TSynGutterCodeFolding
+        MouseActions = <        
+          item
+            Button = mbRight
+            Command = emcCodeFoldContextMenu
+          end        
+          item
+            ShiftMask = [ssShift]
+            Button = mbMiddle
+            ClickCount = ccAny
+            ClickDir = cdDown
+            Command = emcCodeFoldCollaps
+          end        
+          item
+            Shift = [ssShift]
+            ShiftMask = [ssShift]
+            Button = mbMiddle
+            ClickCount = ccAny
+            ClickDir = cdDown
+            Command = emcCodeFoldCollaps
+            Option = 1
+          end        
+          item
+            ClickCount = ccAny
+            ClickDir = cdDown
+            Command = emcNone
+          end>
+        MarkupInfo.Background = clNone
+        MarkupInfo.Foreground = clGray
+        MouseActionsExpanded = <        
+          item
+            ClickCount = ccAny
+            ClickDir = cdDown
+            Command = emcCodeFoldCollaps
+          end>
+        MouseActionsCollapsed = <        
+          item
+            Shift = [ssCtrl]
+            ShiftMask = [ssCtrl]
+            ClickCount = ccAny
+            ClickDir = cdDown
+            Command = emcCodeFoldExpand
+          end        
+          item
+            ShiftMask = [ssCtrl]
+            ClickCount = ccAny
+            ClickDir = cdDown
+            Command = emcCodeFoldExpand
+            Option = 1
+          end>
+      end
+    end
+  end
+end

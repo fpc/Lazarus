@@ -1,0 +1,9 @@
+The package was originally put together by:
+  Mattias Gaertner <mattias@freepascal.org>
+
+From sources obtained from:
+  ftp://ftp.us.freepascal.org/pub/fpc/snapshot/
+
+The files and libraries are released under the terms of the GNU
+Library General Public License, which can be found in the file
+/usr/share/common-licenses/LGPL-2 on a Debian system.

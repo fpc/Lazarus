@@ -1,0 +1,181 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
+"Language-Team: Magyar (Hungarian)\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: editortoolbar_str.rsadddivider
+msgid "Add Divider"
+msgstr "Elválasztó hozzáadása"
+
+#: editortoolbar_str.rsaddselected
+msgid "Add selected item to toolbar"
+msgstr "A kijelölt elem hozzáadása az eszköztárhoz"
+
+#: editortoolbar_str.rsall
+msgid "All"
+msgstr "Mind"
+
+#: editortoolbar_str.rsbottom
+msgid "Bottom"
+msgstr "Alulra"
+
+#: editortoolbar_str.rscancel
+msgid "Cancel"
+msgstr "Mégsem"
+
+#: editortoolbar_str.rsclearselection
+msgid "Clear selection"
+msgstr "Kijelölés megszüntetése"
+
+#: editortoolbar_str.rscodeexplorer
+msgid "Code Explorer"
+msgstr "Kódböngésző"
+
+#: editortoolbar_str.rscodetemplates
+msgid "Code Templates"
+msgstr "Kódsablonok"
+
+#: editortoolbar_str.rsconfiguretoo
+msgid "Configure Toolbar"
+msgstr "Eszköztár beállítása"
+
+#: editortoolbar_str.rscustom
+msgid "Custom"
+msgstr "Egyéni"
+
+#: editortoolbar_str.rsdebug
+msgid "Debug"
+msgstr "Hibakeresés"
+
+#: editortoolbar_str.rsdesign
+msgid "Design"
+msgstr "Tervezés"
+
+#: editortoolbar_str.rsdesigner
+msgid "Designer"
+msgstr "Tervező"
+
+#: editortoolbar_str.rseditortoolbar
+msgid "Editor ToolBar"
+msgstr "Szerkesztő eszköztár"
+
+#: editortoolbar_str.rseditortoolbarconfigform
+msgid "Editor Toolbar Configuration"
+msgstr "Szerkesztő eszköztár beállítása"
+
+#: editortoolbar_str.rshelp
+msgid "Help"
+msgstr "Súgó"
+
+#: editortoolbar_str.rshelp1
+msgid "The \"Add\" button inserts a Menu Item before the selected Item of the Toolbar."
+msgstr "A \"Hozzáadás\" gomb beszúrja a menüelemet az eszköztár kijelölt eleme elé."
+
+#: editortoolbar_str.rshelp2
+msgid "If none is selected, the Item will be appended at the end of the Toolbar."
+msgstr "Ha semmi sincs kijelölve akkor az elem az eszköztár végéhez lesz adva."
+
+#: editortoolbar_str.rshelp3
+msgid "You may rearrange Toolbar Items with \"Move Up\" and \"Move Down\" buttons."
+msgstr "Az eszköztár elemei átrendezhetők a \"Mozgatás felfelé\" és a \"Mozgatás lefelé\" gombokkal."
+
+#: editortoolbar_str.rshelp4
+msgid "Hint: to append an Item at the end, use \"Clear selection\""
+msgstr "Tipp: a \"Kijelölés megszüntetése\" után lehet egy elemet a lista végéhez adni"
+
+#: editortoolbar_str.rshint
+msgid "You may add here your favorite commands"
+msgstr "Itt adhatja hozzá a kedvenc parancsait"
+
+#: editortoolbar_str.rshtml
+msgid "HTML"
+msgstr "HTML"
+
+#: editortoolbar_str.rsidemainmenu
+msgid "IDE Main Menu"
+msgstr "IDE Főmenü"
+
+#: editortoolbar_str.rsjumpto
+msgid "Jump To"
+msgstr "Ugrás ide:"
+
+#: editortoolbar_str.rsleft
+msgid "Left"
+msgstr "Balra"
+
+#: editortoolbar_str.rsmenutree
+msgid "Available Menu Items"
+msgstr "Elérhető menüelemek"
+
+#: editortoolbar_str.rsmenuview
+msgid "View"
+msgstr "Nézet"
+
+#: editortoolbar_str.rsmessages
+msgid "Messages"
+msgstr "Üzenetek"
+
+#: editortoolbar_str.rsmoveselecteddown
+msgid "Move selected toolbar item down"
+msgstr "A kijelöl eszköztárelem mozgatása lefelé"
+
+#: editortoolbar_str.rsmoveselectedup
+msgid "Move selected toolbar item up"
+msgstr "A kijelöl eszköztárelem mozgatása felfelé"
+
+#: editortoolbar_str.rsok
+msgid "OK"
+msgstr "OK"
+
+#: editortoolbar_str.rspackageeditor
+msgid "Package Editor"
+msgstr "Csomagszerkesztő"
+
+#: editortoolbar_str.rspackageeditorfiles
+msgid "Package Editor Files"
+msgstr "Csomagszerkesztő fájljai"
+
+#: editortoolbar_str.rsposition
+msgid "Position"
+msgstr "Elhelyezés"
+
+#: editortoolbar_str.rsprofile
+msgid "Profile"
+msgstr "Profil"
+
+#: editortoolbar_str.rsremoveselected
+msgid "Remove selected item from toolbar"
+msgstr "A kijelölt elem eltávolítása az eszköztárról"
+
+#: editortoolbar_str.rsright
+msgid "Right"
+msgstr "Jobbra"
+
+#: editortoolbar_str.rssourceeditor
+msgid "Source Editor"
+msgstr "Forráskódszerkesztő"
+
+#: editortoolbar_str.rssourcetab
+msgid "Source Tab"
+msgstr "Forrás-fül"
+
+#: editortoolbar_str.rstoolbar
+msgid "Toolbar Items"
+msgstr "Eszköztár elemek"
+
+#: editortoolbar_str.rstop
+msgid "Top"
+msgstr "Felülre"
+
+#: editortoolbar_str.serrcouldnotfind
+msgid "Could not find <%s>"
+msgstr "Nem található: <%s>"
+

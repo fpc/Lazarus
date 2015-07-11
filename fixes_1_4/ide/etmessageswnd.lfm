@@ -1,0 +1,25 @@
+object MessagesView: TMessagesView
+  Left = 213
+  Height = 128
+  Top = 586
+  Width = 639
+  BorderStyle = bsSizeToolWin
+  Caption = 'MessagesView'
+  ClientHeight = 128
+  ClientWidth = 639
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '1.1'
+  inline MessagesFrame1: TMessagesFrame
+    Height = 128
+    Width = 639
+    Align = alClient
+    ClientHeight = 128
+    ClientWidth = 639
+    inherited SearchPanel: TPanel
+      Top = 101
+      Width = 639
+      ClientWidth = 639
+    end
+  end
+end

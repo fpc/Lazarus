@@ -1,0 +1,113 @@
+msgid ""
+msgstr ""
+"Last-Translator: Lucas Martín <codedeep@hotmail.com>\n"
+"PO-Revision-Date: \n"
+"Project-Id-Version: messagecomposer\n"
+"Language-Team: Español\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: \n"
+"MIME-Version: 1.0\n"
+
+#: messagecomposer.rscancel
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: messagecomposer.rsok
+msgid "OK"
+msgstr "Aceptar"
+
+#: messagecomposer.rstest
+msgid "Test"
+msgstr "Test"
+
+#: messagecomposer.sadd
+msgid "Add"
+msgstr "Añadir"
+
+#: messagecomposer.sbuttonsarrayofconst
+msgid "Buttons (array of const)"
+msgstr "Botones (array of const)"
+
+#: messagecomposer.sbuttonstmsgdlgbuttons
+msgid "Buttons (TMsgDlgButtons)"
+msgstr "Botones (TMsgDlgButtons)"
+
+#: messagecomposer.scaseresult
+msgid "\"Case\" result"
+msgstr "resultado \"Case\""
+
+#: messagecomposer.sdefault
+msgid "Default"
+msgstr "Por Defecto"
+
+#: messagecomposer.sdelete
+msgid "Delete"
+msgstr "Eliminar"
+
+#: messagecomposer.sdlgcaption
+msgid "Dialog caption"
+msgstr "Título del cuadro de diálogo"
+
+#: messagecomposer.sdlgtype
+msgid "Dialog type"
+msgstr "Tipo de cuadro de diálogo"
+
+#: messagecomposer.shelpcontext
+msgid "Help context"
+msgstr "Contexto de ayuda"
+
+#: messagecomposer.shelpfilename
+msgid "Help filename"
+msgstr "Nombre de archivo de ayuda"
+
+#: messagecomposer.shelpkeyword
+msgid "Help keyword"
+msgstr "Palabra clave de ayuda"
+
+#: messagecomposer.sifresult
+msgid "\"If\" result"
+msgstr "\"Si\" resultado"
+
+#: messagecomposer.skindofmessage
+msgid "Kind of message"
+msgstr "Tipo de mensaje"
+
+#: messagecomposer.smaskinput
+msgid "Mask input"
+msgstr "Máscara de entrada"
+
+#: messagecomposer.smessagecomposercaption
+msgctxt "messagecomposer.smessagecomposercaption"
+msgid "Message Composer"
+msgstr "Compositor de mensaje"
+
+#: messagecomposer.smessagecomposermenucaption
+msgctxt "messagecomposer.smessagecomposermenucaption"
+msgid "Message Composer ..."
+msgstr "Compositor de mensaje ..."
+
+#: messagecomposer.smodalresult
+msgid "Modal result"
+msgstr "Resultado modal"
+
+#: messagecomposer.smsgcaption
+msgid "The message to be shown"
+msgstr "El mensaje que se muestra"
+
+#: messagecomposer.snotimplementedyet
+msgid "Not implemented yet"
+msgstr "No implementado aún"
+
+#: messagecomposer.spromptcaption
+msgid "Text asking the user for input"
+msgstr "Texto preguntado al usuario para la entrada de datos"
+
+#: messagecomposer.ssourcewrapper
+msgid "Source wrapper"
+msgstr "Contenedor de la fuente"
+
+#: messagecomposer.svaluevar
+msgid "Value (var)"
+msgstr "Valor (var)"
+

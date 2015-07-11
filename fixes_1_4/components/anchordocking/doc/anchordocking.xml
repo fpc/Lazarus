@@ -1,0 +1,254 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="AnchorDocking">
+    <module name="AnchorDocking">
+      <element name="TAnchorDockMaster.SetHeaderAlignLeft">
+        <short>Setter for HeaderAlignLeft</short>
+      </element>
+      <element name="TAnchorDockMaster.SetHeaderAlignTop">
+        <short>Setter for HeaderAlignTop</short>
+      </element>
+      <element name="TAnchorDockMaster.SetShowHeaderCaptionFloatingControl">
+        <short>Setter for ShowHeaderCaptionFloatingControl</short>
+      </element>
+      <element name="TAnchorDockMaster.SetSplitterWidth">
+        <short>Setter for SplitterWidth</short>
+      </element>
+      <element name="TAnchorDockMaster.DoCreateControl">
+        <short>Create a control with OnCreateControl if not already exists and delay autosizing</short>
+      </element>
+      <element name="TAnchorDockMaster.DisableControlAutoSizing">
+        <short>Add control to the internal list only once and delay autosizing</short>
+      </element>
+      <element name="TAnchorDockMaster.ControlCount">
+        <short>Returns number of dockable controls, added via MakeDockable or MakeDockSite or OnCreateControl</short>
+      </element>
+      <element name="TAnchorDockMaster.Controls">
+        <short>the list of dockable controls, starting at 0</short>
+      </element>
+      <element name="TAnchorDockMaster.IndexOfControl">
+        <short>Index of control with Name is aName in the list of dockable controls (case insensitive)</short>
+      </element>
+      <element name="TAnchorDockMaster.FindControl">
+        <short>returns a dockable control with Name is aName (case insensitive)</short>
+      </element>
+      <element name="TAnchorDockMaster.IsSite">
+        <short>Returns true if control is a site (TAnchorDockHostSite) or custom site (MakeDockSite)</short>
+      </element>
+      <element name="TAnchorDockMaster.IsCustomSite">
+        <short>returns true if AControl is a custom dock site (MakeDockSite)</short>
+      </element>
+      <element name="TAnchorDockMaster.GetSite">
+        <short>returns the site (TAnchorDockHostSite) of AControl</short>
+      </element>
+      <element name="TAnchorDockMaster.GetPopupMenu">
+        <short>returns the shared popupmenu used by all headers and pages.</short>
+        <descr>The popup menu is cleared on popup and filled by the headers and pages on Popup.
+</descr>
+      </element>
+      <element name="TAnchorDockMaster.AddPopupMenuItem">
+        <short>Utility function to easily add a menu item to the popupmenu.</short>
+      </element>
+      <element name="TAnchorDockMaster.AddRemovePopupMenuItem">
+        <short>Utility function to add or remove a menu item to/from the popupmenu.</short>
+      </element>
+      <element name="TAnchorDockMaster.MakeDockable">
+        <short>Give AControl a site and optionally show it</short>
+        <descr>If not already done AControl is added to the list of dockable controls and create a site.
+You can call MakeDockable on already dockable forms to show them.
+If Show=true the site, the control and all parents are made visible.
+If BringToFront=true then all parent pages are made active and the top form is focused.
+</descr>
+      </element>
+      <element name="TAnchorDockMaster.MakeDockSite">
+        <short>Give AForm a dockmanager to make it a custom dock site</short>
+        <descr>Sites defines at which sides a site can be docked. The site is docked by putting it onto the form with a splitter and use the Align property . For example alBottom when docking to the bottom. The ResizePolicy defines what happens with the docked site when AForm is resized. 
+</descr>
+      </element>
+      <element name="TAnchorDockMaster.MakeVisible">
+        <short>Make a control and its parents visible</short>
+        <descr>If SwitchPages is true then all parent pages are made active.
+This function does not give focus, not does it bring the form to the front or to the current screen.
+</descr>
+      </element>
+      <element name="TAnchorDockMaster.ShowControl">
+        <short>Create and show a control by name.</short>
+        <descr>If the control does not exist, OnCreateControl is used to create it and is made dockable.
+Then the control and all its parents are made visible.
+If BringToFront=true then the form gets focus.
+</descr>
+      </element>
+      <element name="TAnchorDockMaster.CloseAll">
+        <short>Close all dockable controls.</short>
+      </element>
+      <element name="TAnchorDockMaster.SaveMainLayoutToTree">
+        <short>Save the layout data of the currently visible sites to LayoutTree</short>
+      </element>
+      <element name="TAnchorDockMaster.SaveLayoutToConfig">
+        <short>Save all layout data to Config</short>
+        <descr>Unneded old data is not deleted. Better start with a fresh Config instead of reusing the old.
+</descr>
+      </element>
+      <element name="TAnchorDockMaster.ConfigIsEmpty">
+        <short>returns true if Config contains layout data of at least one control.</short>
+      </element>
+      <element name="TAnchorDockMaster.LoadLayoutFromConfig">
+        <short>Restore the layout from Config, closing unneded forms, automatically creating needed forms.</short>
+        <descr>The MainForm is never closed automatically. The algorithm tries to reuse existing sites, pages and splitters to reduce flickering when switching to another layout. If a form can not be created, the layout automatically enlarges or shrinks the other forms to create a valid layout without gaps.
+</descr>
+      </element>
+      <element name="TAnchorDockMaster.ManualFloat">
+        <short>Undock the Site of AControl from any parent and neighbor sites</short>
+        <descr>AControl can be a site or dockable control.
+</descr>
+      </element>
+      <element name="TAnchorDockMaster.ManualDock">
+        <short>Dock SrcSite to or into TargetSite</short>
+        <descr>SrcSite is the site to be docked. If SrcSite was docked it will be undocked first.
+TargetSite is the site where SrcSite will be docked into or docked as neighbor.
+TargetControl specifies if docking as neighbor (=nil), as inside neighbor (=TargetSide) or in front of a page (=a TAnchorDockPage).
+</descr>
+      </element>
+      <element name="TAnchorDockMaster.ManualEnlarge">
+        <short>Enlarge a site by shrinking some neighbor sites</short>
+        <descr>Returns true if successful. It does not enlarge the parent. Only the available space is distributed differently. Splitters are moved, enlarged, shrinked or rotated. See the wiki for examples.
+</descr>
+      </element>
+      <element name="TAnchorDockMaster.BeginUpdate">
+        <short>Delay simplification. Calls to BeginUpdate must be balanced with EndUpdate.</short>
+        <descr>When the same amount of EndUpdate are called then SimplifyPendingLayouts is called.
+Use this during layout changes.
+</descr>
+      </element>
+      <element name="TAnchorDockMaster.NeedSimplify">
+        <short>Adds AControl to the list of controls to be simplified.</short>
+      </element>
+      <element name="TAnchorDockMaster.NeedFree">
+        <short>Add AControl ot the list of controls to be freed.</short>
+        <descr>After simplification some sites and splitters are not needed, but still referenced. The free is delayed after SimplifyPendingEvents.
+</descr>
+      </element>
+      <element name="TAnchorDockMaster.SimplifyPendingLayouts">
+        <short>Simplify sites added by NeedSimplify and NeedFree.</short>
+        <descr>Simplifying:
+PageControls with only one page is removed and its content moved up.
+Pages without pages are removed and its parent is marked for simplification.
+Sites in layouts without any siblings are removed and its content moved up.
+Sites without children are removed and its parent marked for simplification.
+</descr>
+      </element>
+      <element name="TAnchorDockMaster.AutoFreedIfControlIsRemoved">
+        <short>returns true if AControl depends on RemovedControl</short>
+        <descr>Checks if the simplification algorithm would automatically remove AControl too when RemovedControl is removed.
+</descr>
+      </element>
+      <element name="TAnchorDockMaster.CreateSplitter">
+        <short>Create a new anchor splitter with a unique name.</short>
+      </element>
+      <element name="TAnchorDockMaster.CreateSite">
+        <short>Create a new site with a unique name.</short>
+      </element>
+      <element name="TAnchorDockMaster.OnShowOptions">
+        <short>Set this event to add an Docking options menu item to the popup menu.</short>
+        <descr>The unit AnchorDockOptionsDlg provides a dialog and a function you can use for this. Or you can write your own.
+</descr>
+      </element>
+      <element name="TAnchorDockMaster.DragTreshold">
+        <short>Amount of pixel to drag the mouse before dragging starts.</short>
+      </element>
+      <element name="TAnchorDockMaster.DockOutsideMargin">
+        <short>How many pixel outside a site should it react to mouse dragging.</short>
+        <descr>Maximum distance in pixel for outside mouse snapping. You can drag a site to the outside of a site. If the mouse is outside a site, but inside this range around the site, then the drag is an outside docking operation. Only top level sites can dock outside.
+</descr>
+      </element>
+      <element name="TAnchorDockMaster.DockParentMargin">
+        <short>Amount of pixel to decrease the mouse snap area for child sites</short>
+        <descr>To not cover parent sites, the mouse snap areas of child sites are decreased by this amount of pixel on all four sides.
+</descr>
+      </element>
+      <element name="TAnchorDockMaster.PageAreaInPercent">
+        <short>Percentage of width/height of sites used for mouse snap area for page docking</short>
+        <descr>Page docking is done by draging the mouse over the center of a site. The size of this center area is defined by this value.
+</descr>
+      </element>
+      <element name="TAnchorDockMaster.HeaderAlignTop">
+        <short>Parameter for the automatic header position algorithm.</short>
+        <descr>Move header to top, when (width/height)*100</descr>
+      </element>
+      <element name="TAnchorDockMaster.HeaderAlignLeft">
+        <short>Parameter for the automatic header position algorithm.</short>
+        <descr>Move header to left, when (width/height)*100&gt;=HeaderAlignLeft
+</descr>
+      </element>
+      <element name="TAnchorDockMaster.HeaderHint">
+        <short>The hint template for the headers</short>
+        <descr>The macro %c is replaced with the docking caption.
+</descr>
+      </element>
+      <element name="TAnchorDockMaster.SplitterWidth">
+        <short>The thickness of all anchor splitters</short>
+      </element>
+      <element name="TAnchorDockMaster.ScaleOnResize">
+        <short>When true and a site is resized the child sites are scaled.</short>
+      </element>
+      <element name="TAnchorDockMaster.ShowHeaderCaptionFloatingControl">
+        <short>If true the header captions are even shown for floating sites that have a title bar.</short>
+      </element>
+      <element name="TAnchorDockMaster.OnCreateControl">
+        <short>Event used to create controls by name. Needed by the restore layout functions.</short>
+      </element>
+      <element name="TAnchorDockMaster.AllowDragging">
+        <short>Enable drag, dock via mouse.</short>
+      </element>
+      <element name="TAnchorDockMaster.SplitterClass">
+        <short>For your extensions</short>
+      </element>
+      <element name="TAnchorDockMaster.SiteClass">
+        <short>For your extensions</short>
+      </element>
+      <element name="TAnchorDockMaster.ManagerClass">
+        <short>For your extensions</short>
+      </element>
+      <element name="TAnchorDockMaster.HeaderClass">
+        <short>For your extensions</short>
+      </element>
+      <element name="TAnchorDockMaster.PageControlClass">
+        <short>For your extensions</short>
+      </element>
+      <element name="TAnchorDockMaster.PageClass">
+        <short>For your extensions</short>
+      </element>
+      <element name="DockMaster">
+        <short>The global DockMaster connects all sites and is your door to the anchor docking system.</short>
+      </element>
+      <element name="CopyAnchorBounds">
+        <short>Copy the anchorsides from Source to Target</short>
+      </element>
+      <element name="AnchorAndChangeBounds">
+        <short>Anchor AControl at Side to Target</short>
+      </element>
+      <element name="ControlsLeftTopOnScreen">
+        <short>returns the outer top, left pixel of a control in the screen coordinates.</short>
+      </element>
+      <element name="GetDockSplitter">
+        <short>returns true if Control is anchored to a anchor splitter at Side.</short>
+      </element>
+      <element name="TAnchorDockMaster">
+        <short>The central class of the anchor docking system.</short>
+        <descr>The central instance that connects all sites and manages all global settings. Its global variable is the DockMaster. Applications only need to talk to the DockMaster.
+</descr>
+      </element>
+      <element name="TAnchorDockManager">
+        <short>The TDockManager used by the anchor dock sites.</short>
+        <descr>A TDockManager is the LCL connector to catch various docking events for a TControl. Every TAnchorDockHostSite and every custom dock site gets one TAnchorDockManager. The LCL frees it automatically when the Site is freed.
+</descr>
+      </element>
+      <element name="TAnchorDockHostSite">
+        <descr>This form is the dockhostsite for all controls.
+When docked together they build a tree structure with the docked controls as leaf nodes. A TAnchorDockHostSite has four modes.
+</descr>
+        <short>This form is the base class for anchor dock sites.</short>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

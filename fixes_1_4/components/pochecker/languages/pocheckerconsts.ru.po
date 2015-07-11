@@ -1,0 +1,436 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: pocheckerconsts.rspochecker
+msgid "PO File Checker"
+msgstr "Проверка файлов PO"
+
+#: pocheckerconsts.rs_lang_af_za
+msgid "Afrikaans"
+msgstr "Африкаанс"
+
+#: pocheckerconsts.rs_lang_all
+msgid "All languages"
+msgstr "Все языки"
+
+#: pocheckerconsts.rs_lang_ar
+msgid "Arabic"
+msgstr "Арабский"
+
+#: pocheckerconsts.rs_lang_ca
+msgid "Catalan"
+msgstr "Каталанский"
+
+#: pocheckerconsts.rs_lang_cs
+msgid "Czech"
+msgstr "Чешский"
+
+#: pocheckerconsts.rs_lang_de
+msgid "German"
+msgstr "Немецкий"
+
+#: pocheckerconsts.rs_lang_en
+msgid "English"
+msgstr "Английский"
+
+#: pocheckerconsts.rs_lang_es
+msgid "Spanish"
+msgstr "Испанский"
+
+#: pocheckerconsts.rs_lang_fi
+msgid "Finnish"
+msgstr "Финский"
+
+#: pocheckerconsts.rs_lang_fr
+msgid "French"
+msgstr "Французский"
+
+#: pocheckerconsts.rs_lang_he
+msgid "Hebrew"
+msgstr "Иврит"
+
+#: pocheckerconsts.rs_lang_hu
+msgid "Hungarian"
+msgstr "Венгерский"
+
+#: pocheckerconsts.rs_lang_id
+msgid "Indonesian"
+msgstr "Индонезийский"
+
+#: pocheckerconsts.rs_lang_it
+msgid "Italian"
+msgstr "Итальянский"
+
+#: pocheckerconsts.rs_lang_ja
+msgid "Japanese"
+msgstr "Японский"
+
+#: pocheckerconsts.rs_lang_lt
+msgid "Lithuanian"
+msgstr "Литовский"
+
+#: pocheckerconsts.rs_lang_nl
+msgid "Dutch"
+msgstr "Голландский"
+
+#: pocheckerconsts.rs_lang_pl
+msgid "Polish"
+msgstr "Польский"
+
+#: pocheckerconsts.rs_lang_pt_br
+msgid "Brazilian Portuguese"
+msgstr "Бразильский португальский"
+
+#: pocheckerconsts.rs_lang_ru
+msgid "Russian"
+msgstr "Русский"
+
+#: pocheckerconsts.rs_lang_sk
+msgid "Slovak"
+msgstr "Словацкий"
+
+#: pocheckerconsts.rs_lang_tr
+msgid "Turkish"
+msgstr "Турецкий"
+
+#: pocheckerconsts.rs_lang_uk
+msgid "Ukrainian"
+msgstr "Украинский"
+
+#: pocheckerconsts.rs_lang_zh_cn
+msgid "Chinese, simplified"
+msgstr "Китайский (упрощённый)"
+
+#: pocheckerconsts.salllanguages
+msgid "All Languages"
+msgstr "Все языки"
+
+#: pocheckerconsts.scannotfindmaster
+msgid ""
+"Cannot find master po file:\n"
+"%s\n"
+"for selected file\n"
+"%s\n"
+msgstr ""
+"Невозможно найти главный файл PO:\n"
+"%s\n"
+"для выбранного файла\n"
+"%s\n"
+
+#: pocheckerconsts.scheckforduplicateuntranslatedvalues
+msgid "Check for duplicate untranslated values"
+msgstr "Поиск дублирующихся непереведённых строк"
+
+#: pocheckerconsts.scheckforincompatibleformatarguments
+msgid "Check for incompatible format arguments"
+msgstr "Поиск несовместимых аргументов форматирования"
+
+#: pocheckerconsts.scheckformismatchesinuntranslatedstrings
+msgid "Check for mismatches in untranslated strings"
+msgstr "Поиск несоответствий непереведённых строк"
+
+#: pocheckerconsts.scheckmissingidentifiers
+msgid "Check missing identifiers"
+msgstr "Поиск отсутствующих идентификаторов"
+
+#: pocheckerconsts.schecknumberofitems
+msgid "Check number of items"
+msgstr "Проверка числа строк"
+
+#: pocheckerconsts.scheckstatistics
+msgid "Check percentage of (un)translated and fuzzy strings"
+msgstr "Вывод статистики по (не)переведённым и неточным строкам"
+
+#: pocheckerconsts.sclearlistbox
+msgid "Clear"
+msgstr "Очистить"
+
+#: pocheckerconsts.scopycaption
+msgid "Copy to clipboard"
+msgstr "Копировать в буфер обмена"
+
+#: pocheckerconsts.screatingiconxofy
+msgid "Creating icon nr. %d of %d"
+msgstr "Создание диаграммы %d из %d"
+
+#: pocheckerconsts.scurrenttest
+msgid "Test: %s on %s"
+msgstr "Тест: %s в %s"
+
+#: pocheckerconsts.sduplicatelinenrwithvalue
+msgid "[Line %d] %s"
+msgstr "[Строка %d] %s"
+
+#: pocheckerconsts.sduplicateoriginals
+msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
+msgstr "Исходное значение \"%s\" имеется в нескольких элементах:"
+
+#: pocheckerconsts.serroroncleanup
+msgid ""
+"An unrecoverable error occurred\n"
+"%s\n"
+"Please close the program\n"
+msgstr ""
+"Возникла неустранимая ошибка\n"
+"%s\n"
+"Программу следует закрыть\n"
+
+#: pocheckerconsts.serroroncreate
+msgid ""
+"Error creating an instance of TPoFamily:\n"
+"%s\n"
+msgstr ""
+"Ошибка создания экземпляра класса TPoFamily:\n"
+"%s\n"
+
+#: pocheckerconsts.serrorsbytest
+msgid "Errors / warnings reported by %s for:"
+msgstr "Ошибки и предупреждения, найденные %s для:"
+
+#: pocheckerconsts.sfilesnotfoundandremoved
+msgid ""
+"The following non-existent files were removed from the list:\n"
+"%s\n"
+msgstr ""
+"Следующие несуществующие файлы были удалены из списка:\n"
+"%s\n"
+
+#: pocheckerconsts.sfuzzy
+msgid "Fuzzy"
+msgstr "Неточные переводы"
+
+#: pocheckerconsts.sgrapstatformcaption
+msgid "Graphical summary"
+msgstr "Сводка в графическом виде"
+
+#: pocheckerconsts.sguipofilecheckingtool
+msgid "GUI Po-file checking tool"
+msgstr "Средство проверки файлов PO"
+
+#: pocheckerconsts.sidentifiernotfoundin
+msgid "Identifier [%s] not found in %s"
+msgstr "Идентификатор [%s] не найден в %s"
+
+#: pocheckerconsts.signorefuzzytranslations
+msgid "Ignore translated strings marked as \"fuzzy\""
+msgstr "Не учитывать \"неточные\" строки переводов"
+
+#: pocheckerconsts.sincompatibleformatargs
+#| msgid "[Line: %d] Incompatible format() arguments for:"
+msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
+msgstr "[Строка: %d] Несовместимые и/или неверные аргументы для Format() в:"
+
+#: pocheckerconsts.slineinfilename
+msgid "[Line %d] in %s:"
+msgstr "[Строка %d] в %s:"
+
+#: pocheckerconsts.slinenr
+msgid "[Line: %d]"
+msgstr "[Строка: %d]"
+
+#: pocheckerconsts.smissingmasteridentifier
+msgid "Identifier [%s] found in %s, but it does not exist in %s"
+msgstr "Идентификатор [%s] найден в %s, но отсутствует в %s"
+
+#: pocheckerconsts.snoerrorsfound
+msgid "No errors found"
+msgstr "Ошибок не найдено"
+
+#: pocheckerconsts.snofileslefttocheck
+msgid "There are no files left to check."
+msgstr "Подлежащих проверке файлов больше не осталось."
+
+#: pocheckerconsts.snotestselected
+msgid "There are no tests selected."
+msgstr "Не выбрано ни одного теста."
+
+#: pocheckerconsts.snotetranslationisfuzzy
+msgid "Note: translation is fuzzy"
+msgstr "Внимание: перевод неточен"
+
+#: pocheckerconsts.snrerrorsfound
+msgid "Found %d errors."
+msgstr "Найдено ошибок: %d"
+
+#: pocheckerconsts.snrofitemsmismatch
+msgid "Mismatch in number of items for master and child"
+msgstr "Несоответствие количества элементов в главном и дочернем файлах"
+
+#: pocheckerconsts.snrofitemsmismatchd
+msgid "%s: %d items"
+msgstr "%s: %d элементов"
+
+#: pocheckerconsts.snrwarningsfound
+msgid "Found %d warnings."
+msgstr "Найдено предупреждений: %d"
+
+#: pocheckerconsts.sopenapofile
+msgid "&Open a po-file"
+msgstr "&Открыть файл PO"
+
+#: pocheckerconsts.sopenfail
+#| msgid "Unable to open file %s"
+msgid ""
+"Unable to open file:\n"
+"\"%s\"\n"
+msgstr ""
+"Невозможно открыть файл:\n"
+"\"%s\"\n"
+
+#: pocheckerconsts.sopenfailexternal
+msgid ""
+"Unable to open file\n"
+"\"%s\"\n"
+"in external editor\n"
+"\"%s\"\n"
+msgstr ""
+"Невозможно открыть файл\n"
+"\"%s\"\n"
+"во внешнем редакторе\n"
+"\"%s\"\n"
+
+#: pocheckerconsts.sopenfile
+msgid "Open file %s in Ide Editor?"
+msgstr "Открыть файл %s в редакторе IDE?"
+
+#: pocheckerconsts.sopenfileexternal
+msgid ""
+"Open file:\n"
+"\"%s\"\n"
+"in external editor:\n"
+"\"%s\"?\n"
+msgstr ""
+"Открыть файл:\n"
+"\"%s\"\n"
+"во внешнем редакторе:\n"
+"\"%s\"?\n"
+
+#: pocheckerconsts.soriginal
+msgid "Original"
+msgstr "Исходная строка"
+
+#: pocheckerconsts.spercfuzzy
+#| msgid "Fuzzy strings: %2.0f%%."
+msgid "%s: %4.1f%% fuzzy strings."
+msgstr "%s: %4.1f%% неточных переводов."
+
+#: pocheckerconsts.sperctranslated
+#| msgid "Translated strings: %2.0f%%."
+msgid "%s: %4.1f%% translated strings."
+msgstr "%s: %4.1f%% переведённых строк."
+
+#: pocheckerconsts.spercuntranslated
+#| msgid "Untranslated strings: %2.0f%%."
+msgid "%s: %4.1f%% untranslated strings."
+msgstr "%s: %4.1f%% непереведённых строк."
+
+#: pocheckerconsts.sresults
+msgid "Results"
+msgstr "Результаты"
+
+#: pocheckerconsts.srunselectedtests
+msgid "&Run Selected Tests"
+msgstr "&Запустить выбранные тесты"
+
+#: pocheckerconsts.ssavecaption
+msgid "Save to file"
+msgstr "Сохранить в файл"
+
+#: pocheckerconsts.ssaveerror
+msgid ""
+"Error saving file:\n"
+"%s\n"
+msgstr ""
+"Ошибка сохранения файла:\n"
+"%s\n"
+
+#: pocheckerconsts.sscandir
+msgid "Scan a folder"
+msgstr "Искать в каталоге"
+
+#: pocheckerconsts.sscanninginprogress
+msgid "Scanning in progress, please wait ..."
+msgstr "Идёт поиск, подождите ..."
+
+#: pocheckerconsts.sselectalllistbox
+msgid "Select all files"
+msgstr "Выбрать все файлы"
+
+#: pocheckerconsts.sselectalltests
+#| msgid "Select &All Tests"
+msgid "Select &All"
+msgstr "&Выбрать все"
+
+#: pocheckerconsts.sselectbasictests
+#| msgid "Select &Basic Tests"
+msgid "Select &Basic"
+msgstr "Выбрать &базовые"
+
+#: pocheckerconsts.sselecttesttypes
+msgid "Select test types"
+msgstr "Выбор тестов"
+
+#: pocheckerconsts.sshowstatgraph
+msgid "Show statistics graph"
+msgstr "Показать графическую сводку"
+
+#: pocheckerconsts.sstathint
+#| msgid ""
+#| "%3d Translated (%3.1f%%)\n"
+#| "%3d UnTranslated (%3.1f%%)\n"
+#| "%3d Fuzzy (%3.1f%%)\n"
+msgid ""
+"%3d Translated (%3.1f%%)\n"
+"%3d UnTranslated (%3.1f%%)\n"
+"%3d Fuzzy (%3.1f%%)\n"
+"%d Error(s) in Selected Tests\n"
+msgstr ""
+"Переведённых строк: %3d (%3.1f%%)\n"
+"Непереведённых строк: %3d (%3.1f%%)\n"
+"Неточных переводов: %3d (%3.1f%%)\n"
+"Ошибок в выбранных тестах: %d\n"
+
+#: pocheckerconsts.stotalerrors
+#| msgid "Total errors / warnings found: %d"
+msgid "Total errors found: %d"
+msgstr "Всего найдено ошибок: %d"
+
+#: pocheckerconsts.stotalwarnings
+msgid "Total warnings found: %d"
+msgstr "Всего найдено предупреждений: %d"
+
+#: pocheckerconsts.stranslated
+msgid "Translated"
+msgstr "Переведённые строки"
+
+#: pocheckerconsts.stranslation
+msgid "Translation"
+msgstr "Перевод"
+
+#: pocheckerconsts.stranslationstatistics
+#| msgid "Translation statistics for:"
+msgid "Translation statistics per language:"
+msgstr "Статистика переводов по языкам:"
+
+#: pocheckerconsts.sunselectalltests
+#| msgid "&Unselect All Tests"
+msgid "&Unselect All"
+msgstr "&Снять выбор"
+
+#: pocheckerconsts.sunselectlistbox
+#| msgid "Unselect"
+msgid "Unselect all files"
+msgstr "Снять выбор файлов"
+
+#: pocheckerconsts.suntranslated
+msgid "Untranslated"
+msgstr "Непереведённые строки"
+

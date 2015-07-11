@@ -1,0 +1,1432 @@
+<?xml version="1.0" encoding="ISO8859-1"?>
+<fpdoc-descriptions>
+<package name="gtk">
+
+<!--
+  ====================================================================
+    GtkWSStdCtrls
+  ====================================================================
+-->
+
+<module name="GtkWSStdCtrls">
+<short></short>
+<descr>
+</descr>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Classes">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="SysUtils">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Math">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Controls">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Graphics">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="StdCtrls">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="glib">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gdk">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gtk">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gdkpixbuf">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="GtkFontCache">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="WSStdCtrls">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="WSLCLClasses">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="GtkInt">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLType">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="GtkDef">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLProc">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="GTKWinApiWindow">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gtkglobals">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gtkproc">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="InterfaceBase">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSScrollBar">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSScrollBar.SetParams">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSScrollBar.SetParams.AScrollBar">
+<short></short>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSCustomGroupBox">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomGroupBox.GetPreferredSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomGroupBox.GetPreferredSize.AWinControl">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomGroupBox.GetPreferredSize.PreferredWidth">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomGroupBox.GetPreferredSize.PreferredHeight">
+<short></short>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSGroupBox">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSCustomComboBox">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkWSCustomComboBox.GetSelStart">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkWSCustomComboBox.GetSelStart.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomComboBox.GetSelStart.ACustomComboBox">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkWSCustomComboBox.GetSelLength">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkWSCustomComboBox.GetSelLength.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomComboBox.GetSelLength.ACustomComboBox">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkWSCustomComboBox.GetItemIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkWSCustomComboBox.GetItemIndex.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomComboBox.GetItemIndex.ACustomComboBox">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkWSCustomComboBox.GetMaxLength">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkWSCustomComboBox.GetMaxLength.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomComboBox.GetMaxLength.ACustomComboBox">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomComboBox.SetArrowKeysTraverseList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomComboBox.SetArrowKeysTraverseList.ACustomComboBox">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomComboBox.SetArrowKeysTraverseList.NewTraverseList">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomComboBox.SetSelStart">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomComboBox.SetSelStart.ACustomComboBox">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomComboBox.SetSelStart.NewStart">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomComboBox.SetSelLength">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomComboBox.SetSelLength.ACustomComboBox">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomComboBox.SetSelLength.NewLength">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomComboBox.SetItemIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomComboBox.SetItemIndex.ACustomComboBox">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomComboBox.SetItemIndex.NewIndex">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomComboBox.SetMaxLength">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomComboBox.SetMaxLength.ACustomComboBox">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomComboBox.SetMaxLength.NewLength">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomComboBox.SetStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomComboBox.SetStyle.ACustomComboBox">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomComboBox.SetStyle.NewStyle">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkWSCustomComboBox.GetItems">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkWSCustomComboBox.GetItems.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomComboBox.GetItems.ACustomComboBox">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomComboBox.Sort">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomComboBox.Sort.ACustomComboBox">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomComboBox.Sort.AList">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomComboBox.Sort.IsSorted">
+<short></short>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSComboBox">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSCustomListBox">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkWSCustomListBox.GetSelCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkWSCustomListBox.GetSelCount.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomListBox.GetSelCount.ACustomListBox">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkWSCustomListBox.GetSelected">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkWSCustomListBox.GetSelected.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomListBox.GetSelected.ACustomListBox">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomListBox.GetSelected.AIndex">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkWSCustomListBox.GetStrings">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkWSCustomListBox.GetStrings.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomListBox.GetStrings.ACustomListBox">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkWSCustomListBox.GetItemIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkWSCustomListBox.GetItemIndex.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomListBox.GetItemIndex.ACustomListBox">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkWSCustomListBox.GetTopIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkWSCustomListBox.GetTopIndex.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomListBox.GetTopIndex.ACustomListBox">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomListBox.SelectItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomListBox.SelectItem.ACustomListBox">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomListBox.SelectItem.AIndex">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomListBox.SelectItem.ASelected">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomListBox.SetBorder">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomListBox.SetBorder.ACustomListBox">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomListBox.SetItemIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomListBox.SetItemIndex.ACustomListBox">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomListBox.SetItemIndex.AIndex">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomListBox.SetSelectionMode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomListBox.SetSelectionMode.ACustomListBox">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomListBox.SetSelectionMode.AExtendedSelect">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomListBox.SetSelectionMode.AMultiSelect">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomListBox.SetSorted">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomListBox.SetSorted.ACustomListBox">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomListBox.SetSorted.AList">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomListBox.SetSorted.ASorted">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomListBox.SetTopIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomListBox.SetTopIndex.ACustomListBox">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomListBox.SetTopIndex.NewTopIndex">
+<short></short>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSListBox">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSCustomEdit">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkWSCustomEdit.GetSelStart">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkWSCustomEdit.GetSelStart.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomEdit.GetSelStart.ACustomEdit">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkWSCustomEdit.GetSelLength">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkWSCustomEdit.GetSelLength.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomEdit.GetSelLength.ACustomEdit">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomEdit.SetCharCase">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomEdit.SetCharCase.ACustomEdit">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomEdit.SetCharCase.NewCase">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomEdit.SetEchoMode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomEdit.SetEchoMode.ACustomEdit">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomEdit.SetEchoMode.NewMode">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomEdit.SetMaxLength">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomEdit.SetMaxLength.ACustomEdit">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomEdit.SetMaxLength.NewLength">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomEdit.SetPasswordChar">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomEdit.SetPasswordChar.ACustomEdit">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomEdit.SetPasswordChar.NewChar">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomEdit.SetReadOnly">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomEdit.SetReadOnly.ACustomEdit">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomEdit.SetReadOnly.NewReadOnly">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomEdit.SetSelStart">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomEdit.SetSelStart.ACustomEdit">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomEdit.SetSelStart.NewStart">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomEdit.SetSelLength">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomEdit.SetSelLength.ACustomEdit">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomEdit.SetSelLength.NewLength">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomEdit.GetPreferredSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomEdit.GetPreferredSize.AWinControl">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomEdit.GetPreferredSize.PreferredWidth">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomEdit.GetPreferredSize.PreferredHeight">
+<short></short>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSCustomMemo">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomMemo.AppendText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomMemo.AppendText.ACustomMemo">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomMemo.AppendText.AText">
+<short></short>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSEdit">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSMemo">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSCustomLabel">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomLabel.SetAlignment">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomLabel.SetAlignment.ACustomLabel">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomLabel.SetAlignment.NewAlignment">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomLabel.SetLayout">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomLabel.SetLayout.ACustomLabel">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomLabel.SetLayout.NewLayout">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomLabel.SetWordWrap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomLabel.SetWordWrap.ACustomLabel">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomLabel.SetWordWrap.NewWordWrap">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomLabel.GetPreferredSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomLabel.GetPreferredSize.AWinControl">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomLabel.GetPreferredSize.PreferredWidth">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomLabel.GetPreferredSize.PreferredHeight">
+<short></short>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSLabel">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSButtonControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSCustomCheckBox">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkWSCustomCheckBox.RetrieveState">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkWSCustomCheckBox.RetrieveState.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomCheckBox.RetrieveState.ACustomCheckBox">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomCheckBox.SetShortCut">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomCheckBox.SetShortCut.ACustomCheckBox">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomCheckBox.SetShortCut.OldShortCut">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomCheckBox.SetShortCut.NewShortCut">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomCheckBox.SetState">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomCheckBox.SetState.ACustomCheckBox">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomCheckBox.SetState.NewState">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSCustomCheckBox.GetPreferredSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomCheckBox.GetPreferredSize.AWinControl">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomCheckBox.GetPreferredSize.PreferredWidth">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSCustomCheckBox.GetPreferredSize.PreferredHeight">
+<short></short>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSCheckBox">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSToggleBox">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSRadioButton">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSCustomStaticText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSStaticText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="WidgetGetSelStart">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="WidgetGetSelStart.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="WidgetGetSelStart.Widget">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="WidgetSetSelLength">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="WidgetSetSelLength.Widget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="WidgetSetSelLength.NewLength">
+<short></short>
+</element>
+</module> <!-- GtkWSStdCtrls -->
+</package>
+</fpdoc-descriptions>

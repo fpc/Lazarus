@@ -1,0 +1,371 @@
+object InstallPkgSetDialog: TInstallPkgSetDialog
+  Left = 376
+  Height = 578
+  Top = 216
+  Width = 607
+  ActiveControl = AvailableFilterEdit
+  BorderStyle = bsSizeToolWin
+  Caption = 'InstallPkgSetDialog'
+  ClientHeight = 578
+  ClientWidth = 607
+  Constraints.MinHeight = 400
+  Constraints.MinWidth = 450
+  OnCreate = InstallPkgSetDialogCreate
+  OnDestroy = InstallPkgSetDialogDestroy
+  OnResize = InstallPkgSetDialogResize
+  OnShow = InstallPkgSetDialogShow
+  Position = poScreenCenter
+  LCLVersion = '1.3'
+  object InstallPkgGroupBox: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = NoteLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = lblMiddle
+    AnchorSideBottom.Control = PkgInfoGroupBox
+    Left = 6
+    Height = 373
+    Top = 27
+    Width = 294
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 3
+    BorderSpacing.Bottom = 6
+    Caption = 'InstallPkgGroupBox'
+    ClientHeight = 354
+    ClientWidth = 290
+    TabOrder = 0
+    object ImportButton: TButton
+      Left = 6
+      Height = 25
+      Top = 292
+      Width = 278
+      Align = alBottom
+      BorderSpacing.Around = 6
+      Caption = 'ImportButton'
+      OnClick = ImportButtonClick
+      TabOrder = 3
+    end
+    object ExportButton: TButton
+      Left = 6
+      Height = 25
+      Top = 323
+      Width = 278
+      Align = alBottom
+      BorderSpacing.Around = 6
+      Caption = 'ExportButton'
+      OnClick = ExportButtonClick
+      TabOrder = 4
+    end
+    object InstallTreeView: TTreeView
+      AnchorSideTop.Control = InstalledFilterEdit
+      AnchorSideTop.Side = asrBottom
+      Left = 8
+      Height = 227
+      Top = 28
+      Width = 278
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      DefaultItemHeight = 18
+      MultiSelect = True
+      ReadOnly = True
+      ShowButtons = False
+      ShowLines = False
+      ShowRoot = False
+      TabOrder = 1
+      OnAdvancedCustomDrawItem = TreeViewAdvancedCustomDrawItem
+      OnDblClick = InstallTreeViewDblClick
+      OnKeyPress = InstallTreeViewKeyPress
+      OnSelectionChanged = InstallTreeViewSelectionChanged
+      Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoToolTips, tvoThemedDraw]
+    end
+    object UninstallButton: TBitBtn
+      Left = 6
+      Height = 25
+      Top = 261
+      Width = 278
+      Align = alBottom
+      BorderSpacing.Around = 6
+      Caption = 'UninstallButton'
+      OnClick = UninstallButtonClick
+      TabOrder = 2
+    end
+    object InstalledFilterEdit: TTreeFilterEdit
+      AnchorSideTop.Control = InstallPkgGroupBox
+      Left = 8
+      Height = 28
+      Top = 3
+      Width = 276
+      ButtonWidth = 23
+      NumGlyphs = 1
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 3
+      Font.Color = clBtnShadow
+      MaxLength = 0
+      ParentFont = False
+      TabOrder = 0
+      FilteredTreeview = InstallTreeView
+      OnGetImageIndex = FilterEditGetImageIndex
+    end
+  end
+  object AvailablePkgGroupBox: TGroupBox
+    AnchorSideLeft.Control = lblMiddle
+    AnchorSideTop.Control = NoteLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = PkgInfoGroupBox
+    Left = 306
+    Height = 373
+    Top = 27
+    Width = 295
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 3
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
+    Caption = 'AvailablePkgGroupBox'
+    ClientHeight = 354
+    ClientWidth = 291
+    TabOrder = 1
+    object AvailableTreeView: TTreeView
+      AnchorSideTop.Control = AvailableFilterEdit
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 289
+      Top = 28
+      Width = 279
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Left = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      DefaultItemHeight = 18
+      MultiSelect = True
+      ReadOnly = True
+      ShowButtons = False
+      ShowLines = False
+      ShowRoot = False
+      TabOrder = 1
+      OnAdvancedCustomDrawItem = TreeViewAdvancedCustomDrawItem
+      OnDblClick = AvailableTreeViewDblClick
+      OnKeyPress = AvailableTreeViewKeyPress
+      OnSelectionChanged = AvailableTreeViewSelectionChanged
+      Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoToolTips, tvoThemedDraw]
+    end
+    object AddToInstallButton: TBitBtn
+      Left = 6
+      Height = 25
+      Top = 323
+      Width = 279
+      Align = alBottom
+      BorderSpacing.Around = 6
+      Caption = 'AddToInstallButton'
+      OnClick = AddToInstallButtonClick
+      TabOrder = 2
+    end
+    object AvailableFilterEdit: TTreeFilterEdit
+      AnchorSideTop.Control = AvailablePkgGroupBox
+      Left = 6
+      Height = 28
+      Top = 3
+      Width = 279
+      ButtonWidth = 23
+      NumGlyphs = 1
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 3
+      MaxLength = 0
+      ParentFont = False
+      TabOrder = 0
+      FilteredTreeview = AvailableTreeView
+      OnGetImageIndex = FilterEditGetImageIndex
+    end
+  end
+  object PkgInfoGroupBox: TGroupBox
+    AnchorSideBottom.Control = BtnPanel
+    Left = 0
+    Height = 127
+    Top = 406
+    Width = 607
+    Align = alBottom
+    Caption = 'PkgInfoGroupBox'
+    ClientHeight = 108
+    ClientWidth = 603
+    TabOrder = 2
+    object PkgInfoMemo: TMemo
+      Left = 6
+      Height = 96
+      Top = 6
+      Width = 591
+      Align = alClient
+      BorderSpacing.Around = 6
+      ReadOnly = True
+      ScrollBars = ssAutoVertical
+      TabOrder = 0
+    end
+  end
+  object BtnPanel: TPanel
+    Left = 0
+    Height = 45
+    Top = 533
+    Width = 607
+    Align = alBottom
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 45
+    ClientWidth = 607
+    TabOrder = 3
+    object HelpButton: TBitBtn
+      Left = 6
+      Height = 33
+      Top = 6
+      Width = 76
+      Align = alLeft
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = '&Help'
+      Constraints.MinWidth = 75
+      Kind = bkHelp
+      OnClick = HelpButtonClick
+      TabOrder = 0
+    end
+    object CancelButton: TBitBtn
+      Left = 156
+      Height = 33
+      Top = 6
+      Width = 90
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Cancel = True
+      Caption = 'Cancel'
+      Constraints.MinWidth = 75
+      Kind = bkCancel
+      ModalResult = 2
+      TabOrder = 1
+    end
+    object SaveAndExitButton: TBitBtn
+      Left = 441
+      Height = 33
+      Top = 6
+      Width = 160
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'SaveAndExitButton'
+      Constraints.MinWidth = 75
+      Glyph.Data = {
+        36040000424D3604000000000000360000002800000010000000100000000100
+        2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF001D63
+        9B1619609839145D9562105A92880D5890A4135C92FC0C578FED999999FF7171
+        71FF545454FF515151FF4F4F4FFF4C4C4CFF4A4A4AFF474747FF454545FF2567
+        9DFF3274A8FF3D7CAFFF4784B5FF4E8ABAFF3E7EADFF0C578FEAFFFFFF00FFFF
+        FF00585858FFA2A2A2FFA2A2A2FFA3A3A3FFA4A4A4FFA4A4A4FFA5A5A5FF2F6F
+        A5FF78ABD2FF78ABD3FF73A7D1FF69A0CDFF407FAEFF0F5991EAFFFFFF00FFFF
+        FF005C5C5CFFA1A1A1FF3C7340FFA0A1A1FFA3A3A3FFA3A3A3FFA4A4A4FF3674
+        AAFF7DAFD4FF5B9AC9FF5495C7FF5896C8FF4180AEFF135C94EAFFFFFF00FFFF
+        FF00606060FFA0A0A0FF3D7641FF367139FFA2A2A2FFA2A2A2FFA3A3A3FF3D79
+        B0FF82B3D7FF629FCCFF5A9AC9FF5E9BCAFF4381AFFF196098EA37823EFF347E
+        3BFF317937FF2E7534FF499150FF468F4CFF39733DFFA1A1A1FFA2A2A2FF457E
+        B4FF88B7D9FF67A3CFFF619ECCFF639FCCFF4583B1FF1F649CEA3B8742FF89CB
+        92FF84C88DFF80C688FF7BC383FF77C17FFF478F4DFF3B743FFFA1A1A1FF4C84
+        BAFF8DBBDBFF6EA8D1FF66A6D1FF5FB4DFFF4785B1FF2569A1EA3E8B46FF8FCE
+        99FF7DC687FF78C381FF73C07CFF74C07CFF79C281FF49904FFF547F57FF5489
+        BFFF94BFDDFF75ADD4FF63B8E1FF4BD4FFFF428BB8FF2C6EA6EA41904AFF94D2
+        9FFF91D09AFF8DCD96FF89CB92FF84C88DFF519858FF417C46FF9F9F9FFF5A8E
+        C4FF98C3E0FF7CB3D7FF74AFD6FF5EC4EDFF4B88B3FF3473ABEA44944DFF4291
+        4BFF3F8D48FF3D8945FF5DA465FF5AA061FF45834BFF9E9E9EFF9E9E9EFF6092
+        C9FF9EC7E2FF83B8DAFF7DB4D7FF7EB3D7FF4F89B4FF3B79B1EAFFFFFF00FFFF
+        FF00777777FF9A9A9AFF3D8A45FF498A4FFF9C9C9CFF9D9D9DFF9D9D9DFF6696
+        CCFFA2CBE3FF89BDDCFF83B9DAFF84B9DAFF518BB5FF437EB6EAFFFFFF00FFFF
+        FF007A7A7AFF999999FF529159FF999A99FF9B9B9BFF9C9C9CFF9C9C9CFF6C9A
+        D0FFA7CEE5FF8FC1DFFF89BDDCFF8BBDDCFF538DB6FF4B84BCEAFFFFFF00FFFF
+        FF007D7D7DFF999999FF999999FF9A9A9AFF9A9A9AFF9B9B9BFF9B9B9BFF6F9D
+        D3FFAAD1E7FFABD1E7FF98C7E1FF91C2DEFF568FB7FF5289C1EAFFFFFF00FFFF
+        FF00808080FF7E7E7EFF7C7C7CFF7A7A7AFF777777FF757575FF727272FF719E
+        D4FF6F9ED6FF87B2DCFFABD3E8FFA9D0E6FF5890B8FF598EC6EAFFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00709ED6DB6D9CD4FF85B1DAFF5A91B9FF6093CBEAFFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF006D9CD4896A9AD2FB6697CFEE
+      }
+      OnClick = SaveAndExitButtonClick
+      TabOrder = 3
+    end
+    object SaveAndRebuildButton: TBitBtn
+      Left = 252
+      Height = 33
+      Top = 6
+      Width = 183
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'SaveAndRebuildButton'
+      Constraints.MinWidth = 75
+      Glyph.Data = {
+        36040000424D3604000000000000360000002800000010000000100000000100
+        2000000000000004000064000000640000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        000000000000000000000000000000000000BE7A45FFBE7A45FFBE7A45FF0000
+        0000000000000000000000000000000000000000000000000000000000000000
+        000000000000BE7A45FFBE7A45FF78553958BE7A45FFE3CDBCFFBE7A45FF7855
+        3958BE7A45FFBE7A45FF00000000000000000000000000000000000000000000
+        0000BE7A45FFE3CDBCFFD2A786FFBE7A45FFC79064FFDAB89DFFC79064FFBE7A
+        45FFD2A786FFE3CDBCFFBE7A45FF000000000000000000000000000000000000
+        0000BE7A45FFD2A786FFDAB89DFFDAB89DFFDAB89DFFDAB89DFFDAB89DFFDAB8
+        9DFFDAB89DFFD2A786FFBE7A45FF000000000000000000000000000000000000
+        000078553958BE7A45FFE3CDBCFFCFA17CFFBD7F4CF8C38656FFBA7A46F4D5AE
+        8FFFDAB89DFFBE7A45FF7855395800000000000000000000000000000000BE7A
+        45FFBE7A45FFC79064FFDAB89DFFBD7F4CF8B78256CD78553959A56F43C0BA7A
+        46F4DAB89DFFC79064FFBE7A45FFBE7A45FF000000000000000000000000BE7A
+        45FFE3CDBCFFDAB89DFFDAB89DFFC38656FF785539590000000078553959C386
+        56FFDAB89DFFDAB89DFFE3CDBCFFBE7A45FF000000000000000000000000BE7A
+        45FFBE7A45FFC79064FFDAB89DFFBA7A46F49C6B42AE785539598F633F97BA7C
+        49EEDAB89DFFC79064FFBE7A45FFBE7A45FF0000000000000000000000000000
+        000078553958BE7A45FFDAB89DFFCFA17CFFBA7A46F4C38656FFBA7A46F4D1A5
+        82FFDAB89DFFBE7A45FF78553958000000000000000000000000000000000000
+        0000BE7A45FFD2A786FFDAB89DFFDAB89DFFDAB89DFFDAB89DFFDAB89DFFDAB8
+        9DFFDAB89DFFD2A786FFBE7A45FF000000000000000000000000000000000000
+        0000BE7A45FFE3CDBCFFD2A786FFBE7A45FFC79064FFDAB89DFFC79064FFBE7A
+        45FFD2A786FFE3CDBCFFBE7A45FF000000000000000000000000000000000000
+        000078553958BE7A45FFBE7A45FF78553958BE7A45FFE3CDBCFFBE7A45FF7855
+        3958BE7A45FFBE7A45FF00000000000000000000000000000000000000000000
+        000000000000000000000000000000000000BE7A45FFBE7A45FFBE7A45FF0000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000
+      }
+      OnClick = SaveAndRebuildButtonClick
+      TabOrder = 2
+    end
+  end
+  object NoteLabel: TLabel
+    Left = 6
+    Height = 15
+    Top = 6
+    Width = 595
+    Align = alTop
+    BorderSpacing.Around = 6
+    Caption = 'NoteLabel'
+    ParentColor = False
+  end
+  object lblMiddle: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Control = Owner
+    AnchorSideTop.Side = asrCenter
+    Left = 303
+    Height = 1
+    Top = 289
+    Width = 1
+    AutoSize = False
+    ParentColor = False
+  end
+  object LPKParsingTimer: TTimer
+    OnTimer = LPKParsingTimerTimer
+    left = 337
+    top = 163
+  end
+end

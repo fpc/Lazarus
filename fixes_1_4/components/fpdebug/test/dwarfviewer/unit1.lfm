@@ -1,0 +1,127 @@
+object Form1: TForm1
+  Left = 589
+  Height = 442
+  Top = 267
+  Width = 619
+  Caption = 'test fp'
+  ClientHeight = 442
+  ClientWidth = 619
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '1.3'
+  object FileNameEdit1: TFileNameEdit
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = btnLoad
+    Left = 3
+    Height = 23
+    Top = 3
+    Width = 500
+    FilterIndex = 0
+    HideDirectories = False
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Right = 3
+    BorderSpacing.Bottom = 3
+    BorderSpacing.Around = 3
+    MaxLength = 0
+    TabOrder = 0
+  end
+  object btnLoad: TButton
+    AnchorSideTop.Control = FileNameEdit1
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 541
+    Height = 25
+    Top = 2
+    Width = 75
+    Anchors = [akTop, akRight]
+    BorderSpacing.Left = 35
+    BorderSpacing.Bottom = 3
+    BorderSpacing.Around = 3
+    Caption = 'load'
+    OnClick = btnLoadClick
+    TabOrder = 1
+  end
+  object CompUnitListBox: TListBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = btnShowUnit
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 3
+    Height = 375
+    Top = 64
+    Width = 244
+    Anchors = [akTop, akLeft, akBottom]
+    BorderSpacing.Top = 3
+    BorderSpacing.Right = 3
+    BorderSpacing.Around = 3
+    ItemHeight = 0
+    TabOrder = 2
+  end
+  object btnShowUnit: TButton
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = btnLoad
+    AnchorSideTop.Side = asrBottom
+    Left = 3
+    Height = 25
+    Top = 33
+    Width = 79
+    BorderSpacing.Around = 3
+    Caption = 'Show unit'
+    OnClick = btnShowUnitClick
+    TabOrder = 3
+  end
+  object btnCopyOne: TButton
+    AnchorSideLeft.Control = btnShowUnit
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = btnShowUnit
+    AnchorSideTop.Side = asrCenter
+    Left = 94
+    Height = 25
+    Top = 33
+    Width = 75
+    BorderSpacing.Left = 6
+    BorderSpacing.Around = 6
+    Caption = 'Copy'
+    OnClick = btnCopyOneClick
+    TabOrder = 4
+  end
+  object TreeView1: TTreeView
+    AnchorSideLeft.Control = CompUnitListBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = btnLoad
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 253
+    Height = 406
+    Top = 33
+    Width = 363
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 3
+    BorderSpacing.Top = 3
+    BorderSpacing.Around = 3
+    DefaultItemHeight = 18
+    TabOrder = 5
+  end
+  object btnCopyAll: TButton
+    AnchorSideLeft.Control = btnCopyOne
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = btnShowUnit
+    AnchorSideTop.Side = asrCenter
+    Left = 175
+    Height = 25
+    Top = 33
+    Width = 75
+    BorderSpacing.Around = 6
+    Caption = 'Copy Incl'
+    OnClick = btnCopyAllClick
+    TabOrder = 6
+  end
+end

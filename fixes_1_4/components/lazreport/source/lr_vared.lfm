@@ -1,0 +1,60 @@
+object frVaredForm: TfrVaredForm
+  Left = 481
+  Height = 288
+  Top = 206
+  Width = 381
+  HorzScrollBar.Page = 248
+  VertScrollBar.Page = 268
+  ActiveControl = Memo1
+  Caption = 'Variables list'
+  ClientHeight = 288
+  ClientWidth = 381
+  OnActivate = FormActivate
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object Label1: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 16
+    Top = 6
+    Width = 163
+    BorderSpacing.Around = 6
+    Caption = '&Categories and variables'
+    FocusControl = Memo1
+    ParentColor = False
+  end
+  object Memo1: TMemo
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 6
+    Height = 206
+    Top = 28
+    Width = 369
+    HelpContext = 79
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    TabOrder = 0
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 240
+    Width = 369
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+end

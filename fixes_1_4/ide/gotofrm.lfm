@@ -1,0 +1,50 @@
+object frmGoto: TfrmGoto
+  Left = 423
+  Height = 101
+  Top = 427
+  Width = 250
+  AutoSize = True
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
+  Caption = 'frmGoto'
+  ClientHeight = 101
+  ClientWidth = 250
+  LCLVersion = '0.9.29'
+  object Label1: TLabel
+    Left = 6
+    Height = 14
+    Top = 6
+    Width = 238
+    Align = alTop
+    BorderSpacing.Around = 6
+    Caption = 'Label1'
+    ParentColor = False
+  end
+  object Edit1: TEdit
+    Left = 6
+    Height = 21
+    Top = 26
+    Width = 238
+    Align = alTop
+    BorderSpacing.Around = 6
+    Constraints.MinWidth = 200
+    TabOrder = 0
+    Text = 'Edit1'
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 26
+    Top = 53
+    Width = 238
+    Align = alTop
+    OKButton.Name = 'OKButton'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Enabled = False
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
+  end
+end
