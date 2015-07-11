@@ -15,6 +15,8 @@ type
 
   TDesktopForm = class(TForm)
     ButtonPanel1: TButtonPanel;
+    RenameBitBtn: TBitBtn;
+    SelectedDesktopLabel: TLabel;
     SetDebugDesktopBitBtn: TBitBtn;
     DesktopListBox: TListBox;
     SaveBitBtn: TBitBtn;
@@ -22,10 +24,11 @@ type
     procedure DeleteBitBtnClick(Sender: TObject);
     procedure DesktopListBoxDblClick(Sender: TObject);
     procedure DesktopListBoxDrawItem(Control: TWinControl; Index: Integer;
-      ARect: TRect; State: TOwnerDrawState);
+      ARect: TRect; {%H-}State: TOwnerDrawState);
     procedure DesktopListBoxKeyPress(Sender: TObject; var Key: char);
     procedure DesktopListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
     procedure FormCreate(Sender: TObject);
+    procedure RenameBitBtnClick(Sender: TObject);
     procedure SaveBitBtnClick(Sender: TObject);
     procedure SetDebugDesktopBitBtnClick(Sender: TObject);
   private
@@ -78,10 +81,13 @@ begin
 
   // buttons captions & text
   Caption := dlgManageDesktops;
+  SelectedDesktopLabel.Caption := dlgSelectedDesktop;
   SaveBitBtn.Caption := dlgSaveCurrentDesktop;
   SaveBitBtn.LoadGlyphFromResourceName(HInstance, 'laz_save');
-  DeleteBitBtn.Caption := dlgDeleteSelectedDesktop;
+  DeleteBitBtn.Caption := lisDelete;
   DeleteBitBtn.LoadGlyphFromResourceName(HInstance, 'laz_delete');
+  RenameBitBtn.Caption := lisRename;
+  RenameBitBtn.LoadGlyphFromResourceName(HInstance, 'laz_edit');
   SetDebugDesktopBitBtn.Caption := dlgToggleSelectedDebugDesktop;
   SetDebugDesktopBitBtn.LoadGlyphFromResourceName(HInstance, 'menu_run');
   ButtonPanel1.OKButton.Caption := dlgCloseAndUseSelectedDesktop;
@@ -98,8 +104,46 @@ begin
     for i:=0 to Desktops.Count-1 do
       DesktopListBox.Items.Add(Desktops[i].Name);
 
-  DesktopListBox.ItemIndex := DesktopListBox.Items.IndexOf(SelectName);
+  i := DesktopListBox.Items.IndexOf(SelectName);
+  if (i < 0) and (DesktopListBox.Count > 0) then
+    i := 0;
+  DesktopListBox.ItemIndex := i;
+
   DesktopListBoxSelectionChange(DesktopListBox, False);
+end;
+
+procedure TDesktopForm.RenameBitBtnClick(Sender: TObject);
+var
+  xDesktopName, xOldDesktopName: String;
+  dskIndex: Integer;
+begin
+  if DesktopListBox.ItemIndex = -1 then
+    Exit;
+
+  xDesktopName := DesktopListBox.Items[DesktopListBox.ItemIndex];
+  xOldDesktopName := xDesktopName;
+
+  if not InputQuery(dlgRenameDesktop, dlgDesktopName, xDesktopName)
+  or (xDesktopName = '') // xDesktopName MUST NOT BE EMPTY !!!
+  or (xDesktopName = xOldDesktopName)
+  then
+    Exit;
+
+  with EnvironmentOptions do
+  begin
+    dskIndex := Desktops.IndexOf(xDesktopName);//delete old entry in list if new name is present
+    if (dskIndex >= 0) then
+    begin
+      if (MessageDlg(Format(dlgOverwriteDesktop, [xDesktopName]), mtWarning, mbYesNo, 0) = mrYes) then
+        Desktops.Delete(dskIndex)
+      else
+        Exit;
+    end;
+
+    dskIndex := Desktops.IndexOf(xOldDesktopName);//rename
+    Desktops[dskIndex].Name := xDesktopName;
+    RefreshList(xDesktopName);
+  end;
 end;
 
 procedure TDesktopForm.DeleteBitBtnClick(Sender: TObject);
@@ -198,6 +242,7 @@ procedure TDesktopForm.DesktopListBoxSelectionChange(Sender: TObject;
   User: boolean);
 begin
   DeleteBitBtn.Enabled := DesktopListBox.ItemIndex>=0;
+  RenameBitBtn.Enabled := DeleteBitBtn.Enabled;
   SetDebugDesktopBitBtn.Enabled := DeleteBitBtn.Enabled;
   ButtonPanel1.OKButton.Enabled := DeleteBitBtn.Enabled;
 end;
@@ -205,14 +250,15 @@ end;
 procedure TDesktopForm.SaveBitBtnClick(Sender: TObject);
 var
   dsk: TDesktopOpt;
-  xDesktopName: string;
+  xDesktopName, xOldDesktopName: string;
 begin
   if DesktopListBox.ItemIndex >= 0 then
     xDesktopName := DesktopListBox.Items[DesktopListBox.ItemIndex]
   else
     xDesktopName := '';
+  xOldDesktopName := xDesktopName;
 
-  if not InputQuery(dlgSaveCurrentDesktop, dlgDesktopNameWillBeOverwritten, xDesktopName)
+  if not InputQuery(dlgSaveCurrentDesktop, dlgDesktopName, xDesktopName)
   or (xDesktopName = '') // xDesktopName MUST NOT BE EMPTY !!!
   then
     Exit;
@@ -220,6 +266,12 @@ begin
   with EnvironmentOptions do
   begin
     dsk := Desktops.Find(xDesktopName);
+    if Assigned(dsk) and
+       (xOldDesktopName <> xDesktopName) and//ask only if manually inserted
+       (MessageDlg(Format(dlgOverwriteDesktop, [xDesktopName]), mtWarning, mbYesNo, 0) <> mrYes)
+    then
+      Exit;
+
     if not Assigned(dsk) then
     begin
       debugln(['TDesktopForm.SaveBitBtnClick: Adding ', xDesktopName]);

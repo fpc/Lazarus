@@ -8221,9 +8221,11 @@ begin
   end else if State=iwgfDisabled then
     SearchResultsView.DisableAutoSizing;
   if State>=iwgfShow then
+  begin
     IDEWindowCreators.ShowForm(SearchresultsView,State=iwgfShowOnTop);
-  if SearchresultsView.SearchInListEdit.CanFocus then
-    SearchresultsView.SearchInListEdit.SetFocus;
+    if (State=iwgfShowOnTop) and SearchresultsView.SearchInListEdit.CanFocus then
+      SearchresultsView.SearchInListEdit.SetFocus;
+  end;
 end;
 
 function TMainIDE.GetTestBuildDirectory: string;

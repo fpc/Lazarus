@@ -282,11 +282,12 @@ type
     procedure StoreWindowPositions;
     procedure SetDefaultPosition(const AForm: TCustomForm);
     procedure Assign(SrcList: TSimpleWindowLayoutList; AssignOnlyNewlyCreated,
-      DestroyNotAssigned: Boolean);
+      DestroyNotAssigned, AssignOrder: Boolean);
     function Add(ALayout: TSimpleWindowLayout): integer;
     function CreateWindowLayout(const TheFormID: string): TSimpleWindowLayout;
     function CreateWindowLayout(const TheForm: TCustomForm): TSimpleWindowLayout;
     function IndexOf(const FormID: string): integer;
+    function IndexOf(const AForm: TCustomForm): integer;
     function ItemByForm(AForm: TCustomForm): TSimpleWindowLayout;
     function ItemByFormID(const FormID: string): TSimpleWindowLayout;
     function ItemByFormCaption(const aFormCaption: string): TSimpleWindowLayout;
@@ -1502,11 +1503,18 @@ begin
   while (Result>=0) and (FormID<>Items[Result].GetFormID) do dec(Result);
 end;
 
+function TSimpleWindowLayoutList.IndexOf(const AForm: TCustomForm): integer;
+begin
+  Result:=Count-1;
+  while (Result>=0) and (AForm<>Items[Result].Form) do dec(Result);
+end;
+
 procedure TSimpleWindowLayoutList.LoadFromConfig(Config: TConfigStorage; const Path: string);
 // do not clear, just add/replace the values from the config
 var
   i: integer;
   ID: String;
+  xLayoutIndex: Integer;
 begin
   // create new windows
   i := Config.GetValue(Path+'Desktop/FormIdCount', 0);
@@ -1514,9 +1522,16 @@ begin
   while i > 0 do begin
     ID := Config.GetValue(Path+'Desktop/FormIdList/a'+IntToStr(i), '');
     //debugln(['TSimpleWindowLayoutList.LoadFromConfig ',i,' ',ID]);
-    if (ID <> '') and IsValidIdent(ID)
-    and (IDEWindowCreators.SimpleLayoutStorage.ItemByFormID(ID) = nil) then
-      CreateWindowLayout(ID);
+    if (ID <> '') and IsValidIdent(ID) then
+    begin
+      xLayoutIndex := IndexOf(ID);
+      if (xLayoutIndex = -1) then
+      begin
+        CreateWindowLayout(ID);
+        xLayoutIndex := Count-1;
+      end;
+      fItems.Move(xLayoutIndex, 0);
+    end;
     dec(i);
   end;
 
@@ -1557,13 +1572,11 @@ function TSimpleWindowLayoutList.ItemByForm(AForm: TCustomForm): TSimpleWindowLa
 var
   i: integer;
 begin
-  i:=Count-1;
-  while (i>=0) do begin
-    Result:=Items[i];
-    if Result.Form=AForm then exit;
-    dec(i);
-  end;
-  Result:=nil;
+  i:=IndexOf(AForm);
+  if i>=0 then
+    Result:=Items[i]
+  else
+    Result:=nil;
 end;
 
 function TSimpleWindowLayoutList.ItemByFormID(const FormID: string): TSimpleWindowLayout;
@@ -1755,14 +1768,25 @@ begin
 end;
 
 procedure TSimpleWindowLayoutList.StoreWindowPositions;
-var i: integer;
+var
+  i, l: integer;
+  xOldLayoutIndex: Integer;
 begin
+  //store positions
   for i:=0 to Count-1 do
     Items[i].GetCurrentPosition;
+
+  //store z-order
+  for i:=Screen.CustomFormCount-1 downto 0 do
+  begin
+    xOldLayoutIndex := IndexOf(Screen.CustomForms[i]);
+    if xOldLayoutIndex > 0 then
+      fItems.Move(xOldLayoutIndex, 0);
+  end;
 end;
 
 procedure TSimpleWindowLayoutList.Assign(SrcList: TSimpleWindowLayoutList;
-  AssignOnlyNewlyCreated, DestroyNotAssigned: Boolean);
+  AssignOnlyNewlyCreated, DestroyNotAssigned, AssignOrder: Boolean);
 var
   i: integer;
   xItemIndex: Integer;
@@ -1779,19 +1803,25 @@ begin
         xItemIndex := Self.Add(TSimpleWindowLayout.Create(SrcList[i].FormID));//not found, create
         xNewlyCreated := True;
       end;
-      if xItemIndex<>i then
+      if (xItemIndex<>i) and (AssignOrder) then
+      begin
         Self.fItems.Move(xItemIndex, i);//move it to right position
+        xItemIndex := i;
+      end;
+    end else
       xItemIndex := i;
-    end;
     if not AssignOnlyNewlyCreated or xNewlyCreated then
-      Self.Items[i].Assign(SrcList[i])
+      Self.Items[xItemIndex].Assign(SrcList[i])
   end;
 
-  for i := Count-1 downto xItemIndex+1 do
+  for i := Count-1 downto 0 do
+  if SrcList.IndexOf(Items[i].FormID) = -1 then
+  begin
     if DestroyNotAssigned then
       Delete(i)
     else
       Items[i].Clear;
+  end;
 end;
 
 function TSimpleWindowLayoutList.Add(ALayout: TSimpleWindowLayout): integer;
@@ -2206,19 +2236,16 @@ var
 begin
   if IDEDockMaster=nil then
   begin
-    for i:=0 to SimpleLayoutStorage.Count-1 do begin
+    for i:=SimpleLayoutStorage.Count-1 downto 0 do//loop down in order to keep z-order of the forms
+    begin
       ALayout:=SimpleLayoutStorage[i];
       AForm:=GetForm(ALayout.FormID,ALayout.Visible);
       if AForm=nil then Continue;
       ALayout.Apply(True);
-      if ALayout.Visible then
-        ShowForm(AForm,false)
-      else
-      begin
-        //ALayout.Apply;
-        if AForm.Visible then
-          AForm.Close;
-      end;
+      if ALayout.Visible or (AForm=Application.MainForm) then
+        ShowForm(AForm,true)
+      else if AForm.Visible then
+        AForm.Close;
     end;
   end;
   LayoutChanged;

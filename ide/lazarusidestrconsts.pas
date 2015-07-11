@@ -1235,12 +1235,14 @@ resourcestring
   dlgExportDesktop = 'Export desktop';
   dlgImportDesktop = 'Import desktop';
   dlgManageDesktops = 'Manage desktops';
+  dlgSelectedDesktop = 'Selected desktop:';
   dlgSaveCurrentDesktop = 'Save current desktop';
   dlgCloseAndUseSelectedDesktop = 'Close and use selected desktop';
-  dlgDeleteSelectedDesktop = 'Delete selected desktop';
   dlgReallyDeleteDesktop = 'Really delete desktop "%s"?';
-  dlgToggleSelectedDebugDesktop = 'Toggle selected as debug desktop';
-  dlgDesktopNameWillBeOverwritten = 'Desktop name (old entry will be overwritten):';
+  dlgRenameDesktop = 'Rename desktop';
+  dlgToggleSelectedDebugDesktop = 'Toggle as debug desktop';
+  dlgDesktopName = 'Desktop name:';
+  dlgOverwriteDesktop = 'Desktop with the name "%s" was found.'+sLineBreak+'Should the old desktop be overwritten?';
   dlgDebugDesktop = 'debug desktop';
   dlgDesktopHints = 'Hints';
   dlgDesktopButtons = 'Buttons - ';

@@ -979,7 +979,7 @@ begin
     FIDEDialogLayoutList:=TIDEDialogLayoutList.Create;
     FIDEWindowCreatorsLayoutList:=TSimpleWindowLayoutList.Create(False);
     FIDEDialogLayoutList.Assign(IDEWindowIntf.IDEDialogLayoutList);
-    FIDEWindowCreatorsLayoutList.Assign(IDEWindowIntf.IDEWindowCreators.SimpleLayoutStorage, True, True);
+    FIDEWindowCreatorsLayoutList.Assign(IDEWindowIntf.IDEWindowCreators.SimpleLayoutStorage, True, True, True);
   end;
 end;
 
@@ -1007,8 +1007,8 @@ begin
 
   // window layout
   if Source.FIDEWindowCreatorsLayoutList <> IDEWindowCreators.SimpleLayoutStorage then
-    Source.FIDEWindowCreatorsLayoutList.Assign(IDEWindowCreators.SimpleLayoutStorage, True, True);
-  FIDEWindowCreatorsLayoutList.Assign(Source.FIDEWindowCreatorsLayoutList, False, False);
+    Source.FIDEWindowCreatorsLayoutList.Assign(IDEWindowCreators.SimpleLayoutStorage, True, True, False);
+  FIDEWindowCreatorsLayoutList.Assign(Source.FIDEWindowCreatorsLayoutList, False, False, True);
   FIDEDialogLayoutList.Assign(Source.FIDEDialogLayoutList);
   FSingleTaskBarButton := Source.FSingleTaskBarButton;
   FHideIDEOnRun := Source.FHideIDEOnRun;
@@ -2316,33 +2316,40 @@ begin
 end;
 
 procedure TEnvironmentOptions.UseDesktop(ADesktop: TDesktopOpt);
-  procedure _UpdateEditorOptions(const aAfter: Boolean);
+  function _ContainsControl(const _Parent, _Control: TWinControl): Boolean;
   var
-    i: Integer;
-    Rec: PIDEOptionsGroupRec;
-    Instance: TAbstractIDEOptions;
+    I: Integer;
   begin
-    for i := 0 to IDEEditorGroups.Count - 1 do
+    for I := 0 to _Parent.ControlCount-1 do
+    if _Parent.Controls[I] is TWinControl then
     begin
-      Rec := IDEEditorGroups[i];
-      if Assigned(Rec^.Items) and Assigned(Rec^.GroupClass) then
-      begin
-        Instance := Rec^.GroupClass.GetInstance;
-        if Assigned(Instance) then
-        begin
-          if aAfter then
-            Instance.DoAfterWrite(False)
-          else
-            Instance.DoBeforeWrite(False)
-        end;
-      end;
+      if (_Parent.Controls[I] = _Control) or
+         _ContainsControl(TWinControl(_Parent.Controls[I]), _Control)
+      then
+        Exit(True);
     end;
+    Result := False;
   end;
+var
+  xLastFocusControl: TWinControl;
+  xLastFocusForm: TCustomForm;
 begin
-  _UpdateEditorOptions(False);
+  xLastFocusControl := Screen.ActiveControl;
+  xLastFocusForm := Screen.ActiveCustomForm;
+  DoBeforeWrite(False);
   Desktop.Assign(ADesktop);
-  _UpdateEditorOptions(True);
+  DoAfterWrite(False);
   IDEWindowCreators.RestoreSimpleLayout;
+
+  //set focus back to the previously focused control
+  if Screen.CustomFormIndex(xLastFocusForm) >= 0 then//check if form hasn't been destroyed
+  begin
+    if ((xLastFocusForm = xLastFocusControl) or _ContainsControl(xLastFocusForm, xLastFocusControl)) and//check if control hasn't been destroyed
+       xLastFocusForm.CanFocus and
+       xLastFocusControl.CanFocus
+    then
+      xLastFocusControl.SetFocus;
+  end;
 end;
 
 procedure TEnvironmentOptions.SetLazarusDirectory(const AValue: string);

@@ -15,10 +15,10 @@ object DesktopForm: TDesktopForm
     AnchorSideTop.Control = DesktopListBox
     AnchorSideRight.Control = DeleteBitBtn
     AnchorSideRight.Side = asrBottom
-    Left = 237
+    Left = 280
     Height = 23
     Top = 14
-    Width = 189
+    Width = 146
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
     Caption = 'Save current desktop'
@@ -40,7 +40,7 @@ object DesktopForm: TDesktopForm
     CancelButton.Name = 'CancelButton'
     CancelButton.Caption = 'Close'
     CancelButton.DefaultCaption = False
-    TabOrder = 4
+    TabOrder = 5
     ShowButtons = [pbOK, pbCancel]
     ShowGlyphs = [pbOK, pbClose, pbHelp]
   end
@@ -49,7 +49,7 @@ object DesktopForm: TDesktopForm
     Left = 11
     Height = 147
     Top = 8
-    Width = 216
+    Width = 259
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Right = 10
     ItemHeight = 0
@@ -62,33 +62,61 @@ object DesktopForm: TDesktopForm
   end
   object DeleteBitBtn: TBitBtn
     AnchorSideLeft.Control = SetDebugDesktopBitBtn
-    AnchorSideTop.Control = SaveBitBtn
+    AnchorSideTop.Control = RenameBitBtn
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = SetDebugDesktopBitBtn
     AnchorSideRight.Side = asrBottom
-    Left = 237
+    Left = 280
     Height = 23
-    Top = 43
-    Width = 189
+    Top = 120
+    Width = 146
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Top = 6
-    Caption = 'Delete selected desktop'
+    BorderSpacing.Top = 4
+    Caption = 'Delete'
     OnClick = DeleteBitBtnClick
-    TabOrder = 2
+    TabOrder = 4
   end
   object SetDebugDesktopBitBtn: TBitBtn
-    AnchorSideTop.Control = DeleteBitBtn
+    AnchorSideTop.Control = SelectedDesktopLabel
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
-    Left = 237
+    Left = 280
     Height = 23
-    Top = 86
-    Width = 189
+    Top = 66
+    Width = 146
     Anchors = [akTop, akRight]
     AutoSize = True
-    BorderSpacing.Top = 20
-    Caption = 'Toggle selected as debug desktop'
+    BorderSpacing.Top = 6
+    Caption = 'Toggle as debug desktop'
     OnClick = SetDebugDesktopBitBtnClick
+    TabOrder = 2
+  end
+  object SelectedDesktopLabel: TLabel
+    AnchorSideLeft.Control = SaveBitBtn
+    AnchorSideTop.Control = SaveBitBtn
+    AnchorSideTop.Side = asrBottom
+    Left = 280
+    Height = 13
+    Top = 47
+    Width = 86
+    BorderSpacing.Top = 10
+    Caption = 'Selected desktop:'
+    ParentColor = False
+  end
+  object RenameBitBtn: TBitBtn
+    AnchorSideLeft.Control = SetDebugDesktopBitBtn
+    AnchorSideTop.Control = SetDebugDesktopBitBtn
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = SetDebugDesktopBitBtn
+    AnchorSideRight.Side = asrBottom
+    Left = 280
+    Height = 23
+    Top = 93
+    Width = 146
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 4
+    Caption = 'Rename'
+    OnClick = RenameBitBtnClick
     TabOrder = 3
   end
 end
