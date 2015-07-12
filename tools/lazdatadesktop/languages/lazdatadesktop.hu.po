@@ -213,11 +213,11 @@ msgstr "Külső kulcs hozzáadása a táblához"
 
 #: lazdatadeskstr.sld_actionaddsequence
 msgid "New sequence"
-msgstr "Új sorrend"
+msgstr "Új sorozat"
 
 #: lazdatadeskstr.sld_actionaddsequenceh
 msgid "Add a sequence"
-msgstr "Sorrend hozzáadása"
+msgstr "Sorozat hozzáadása"
 
 #: lazdatadeskstr.sld_actionclose
 msgid "&Close"
@@ -346,7 +346,7 @@ msgstr "A kiválasztott legutóbbi kapcsolat megnyitása"
 
 #: lazdatadeskstr.sld_actionopenh
 msgid "Open a new Data Dictionary"
-msgstr "Új adatszótár megnyitása"
+msgstr "Egy új adatszótár megnyitása"
 
 #: lazdatadeskstr.sld_actionopenrecentdatadict
 msgid "Open"
@@ -399,7 +399,7 @@ msgstr "Meghajtó"
 
 #: lazdatadeskstr.sld_connectionlv3
 msgid "Last used"
-msgstr "Legutóbb használt"
+msgstr "Utolsó használat"
 
 #: lazdatadeskstr.sld_connectionlv4
 msgctxt "lazdatadeskstr.sld_connectionlv4"
@@ -531,7 +531,7 @@ msgstr "Fájlnév"
 
 #: lazdatadeskstr.sld_recentlv3
 msgid "Last used on"
-msgstr "Utolsó használat:"
+msgstr "Utolsó használat"
 
 #: lazdatadeskstr.sld_savefileasfilter
 msgctxt "lazdatadeskstr.sld_savefileasfilter"
@@ -644,7 +644,7 @@ msgstr "Új %s létrehozása"
 
 #: lazdatadeskstr.snewsequence
 msgid "Create new sequence"
-msgstr "Új sorozat étrehozása"
+msgstr "Új sorozat létrehozása"
 
 #: lazdatadeskstr.snewsequencename
 msgid "Enter a name for the new sequence:"
@@ -698,7 +698,7 @@ msgstr "Index beállítások:"
 
 #: lazdatadeskstr.snodesequences
 msgid "Sequences"
-msgstr "Sorrendek"
+msgstr "Sorozatok"
 
 #: lazdatadeskstr.snodetabledata
 msgid "Table Data"
@@ -738,7 +738,7 @@ msgstr "Változások mentése"
 
 #: lazdatadeskstr.sselectdbfdir
 msgid "Select a directory with DBF files"
-msgstr "Válasszon könyvtárat a DBF fájlok számára!"
+msgstr "Könyvtár választása a DBF fájlok számára"
 
 #: lazdatadeskstr.sselectedobject
 msgid "Selected object"
@@ -746,7 +746,7 @@ msgstr "Kiválasztott objektum"
 
 #: lazdatadeskstr.ssequence
 msgid "Sequence"
-msgstr "Sorrend"
+msgstr "Sorozat"
 
 #: lazdatadeskstr.ssqlfilters
 msgid "SQL files|*.sql|All files|*.*"

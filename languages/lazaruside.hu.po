@@ -442,7 +442,7 @@ msgstr "Szinkron szerkesztés"
 
 #: lazarusidestrconsts.dlgaddhiattrgrouptemplateedit
 msgid "Template Edit"
-msgstr "Sablon szerkesztés"
+msgstr "Sablon szerkesztése"
 
 #: lazarusidestrconsts.dlgaddhiattrgrouptext
 msgctxt "lazarusidestrconsts.dlgaddhiattrgrouptext"
@@ -692,7 +692,7 @@ msgstr "Blokk behúzás (tab-ok)"
 
 #: lazarusidestrconsts.dlgborderspacecanbesetinanchoreditor
 msgid "Border space can be set in Anchor editor. A red line is shown if spacing > 0."
-msgstr "A keret-térköz beállítható a Horgony szerkesztőben. Egy piros vonal jelenik meg ha a távolság > 0."
+msgstr "A keret-térköz beállítható a Horgonyszerkesztőben. Egy piros vonal jelenik meg ha a távolság > 0."
 
 #: lazarusidestrconsts.dlgbrackethighlight
 msgid "Bracket highlight"
@@ -814,7 +814,7 @@ msgstr "A form csomagokat igényelhet a működéshez. Az ilyen csomagok automat
 
 #: lazarusidestrconsts.dlgchscodetempl
 msgid "Choose code template file (*.dci)"
-msgstr "Válasszon kódsablon fájlt! (*.dcl)"
+msgstr "Kódsablon fájl választása (*.dci)"
 
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
@@ -3383,11 +3383,11 @@ msgstr "Tükrözés függőlegesen"
 
 #: lazarusidestrconsts.fdmorderbackone
 msgid "Back One"
-msgstr "Egyet hátra"
+msgstr "Hátrább eggyel"
 
 #: lazarusidestrconsts.fdmorderforwardone
 msgid "Forward One"
-msgstr "Egyet előre"
+msgstr "Előbbre eggyel"
 
 #: lazarusidestrconsts.fdmordermovetoback
 msgid "Move to Back"
@@ -5114,7 +5114,7 @@ msgstr "%s Ellenőrizze a célt (OS, CPU, LCL vezérlőkészlet típusa)! Talán
 
 #: lazarusidestrconsts.lischeckuncheckall
 msgid "Check/uncheck all"
-msgstr ""
+msgstr "Minden/Semmi kijelölése"
 
 #: lazarusidestrconsts.lischooseadifferentname
 msgid "Choose a different name"
@@ -5549,7 +5549,7 @@ msgstr "Konstansok kihagyása a következő függvényekben"
 #: lazarusidestrconsts.liscodeobscharconst
 msgctxt "lazarusidestrconsts.liscodeobscharconst"
 msgid "Search for unnamed char constants"
-msgstr "Meg nem nevezett karakter konstansok megkeresése"
+msgstr "Névtelen karakter konstansok megkeresése"
 
 #: lazarusidestrconsts.liscodeobserver
 msgid "Code Observer"
@@ -5567,7 +5567,7 @@ msgstr "Sablon hozzáadása"
 
 #: lazarusidestrconsts.liscodetempladdcodetemplate
 msgid "Add code template"
-msgstr "Kód sablon hozzáadása"
+msgstr "Kódsablon hozzáadása"
 
 #: lazarusidestrconsts.liscodetemplatokenalreadyexists
 msgid " A token \"%s\" already exists! "
@@ -5588,7 +5588,7 @@ msgstr "Megjegyzés:"
 
 #: lazarusidestrconsts.liscodetempleditcodetemplate
 msgid "Edit code template"
-msgstr "Kód sablon szerkesztése"
+msgstr "Kódsablon szerkesztése"
 
 #: lazarusidestrconsts.liscodetemplerror
 msgctxt "lazarusidestrconsts.liscodetemplerror"
@@ -5991,7 +5991,7 @@ msgstr "Szimbólum"
 
 #: lazarusidestrconsts.liscodetoolstemplatefile
 msgid "CodeTools template file"
-msgstr "CodeTools sablon fájl"
+msgstr "CodeTools sablonfájl"
 
 #: lazarusidestrconsts.liscoexecuteafter
 msgid "Execute after"
@@ -7010,7 +7010,7 @@ msgstr "Alapértelmezett szín"
 
 #: lazarusidestrconsts.lisdbgenexceptionraised
 msgid "Exception Raised"
-msgstr "Kivétel Keletkezett"
+msgstr "Kivétel keletkezett"
 
 #: lazarusidestrconsts.lisdbgenmoduleload
 msgid "Module Load"
@@ -7042,11 +7042,11 @@ msgstr "Szál indítása"
 
 #: lazarusidestrconsts.lisdbgenwindowsmessageposted
 msgid "Windows Message Posted"
-msgstr "Windows üzenet küldése"
+msgstr "Küldött Windows üzenet"
 
 #: lazarusidestrconsts.lisdbgenwindowsmessagesent
 msgid "Windows Message Sent"
-msgstr "Küldött Windows üzenet"
+msgstr "Windows üzenet elküldve"
 
 #: lazarusidestrconsts.lisdbgitemdeletehint
 msgctxt "lazarusidestrconsts.lisdbgitemdeletehint"
@@ -7719,15 +7719,15 @@ msgstr "Kijelölt komponensek kivágása a vágólapra"
 
 #: lazarusidestrconsts.lisdsgorderbackone
 msgid "Move component one back"
-msgstr "Komponens eggyel hátra"
+msgstr "Komponens mozgatása eggyel hátrább"
 
 #: lazarusidestrconsts.lisdsgorderforwardone
 msgid "Move component one forward"
-msgstr "Komponens eggyel előre"
+msgstr "Komponens mozgatása eggyel előbbre"
 
 #: lazarusidestrconsts.lisdsgordermovetoback
 msgid "Move component to back"
-msgstr "Komponens háttérbe rakása"
+msgstr "Komponens háttérbe küldése"
 
 #: lazarusidestrconsts.lisdsgordermovetofront
 msgid "Move component to front"
@@ -8252,7 +8252,7 @@ msgstr "Példák:%sAzonosító%sTMyEnum.Enum%sUnitnév.Azonosító%s#Csomagnév.
 
 #: lazarusidestrconsts.lisexamplesopenfirstselected
 msgid "Open first selected"
-msgstr "Első kijelölt megynitása"
+msgstr "Első kijelölt megnyitása"
 
 #: lazarusidestrconsts.lisexceptiondialog
 msgid "Debugger Exception Notification"
@@ -8926,7 +8926,7 @@ msgstr "Ugrás adott sorra"
 
 #: lazarusidestrconsts.lisgotoselected
 msgid "Goto selected"
-msgstr ""
+msgstr "Ugrás a kijelöltre"
 
 #: lazarusidestrconsts.lisgplnotice
 msgid ""
@@ -9677,11 +9677,11 @@ msgstr "Kiadások"
 
 #: lazarusidestrconsts.lisiwonderhowyoudidthaterrorinthe
 msgid "I wonder how you did that. Error in the %s:"
-msgstr "Hát, ez nagyon furcsa. Hiba itt: %s:"
+msgstr "Nahát, ez nagyon furcsa. Hiba itt: %s:"
 
 #: lazarusidestrconsts.lisiwonderhowyoudidthaterrorinthebasedirectory
 msgid "I wonder how you did that: Error in the base directory:"
-msgstr "Hát, ez nagyon furcsa: Hiba az alapkönyvtárban:"
+msgstr "Nahát, ez nagyon furcsa: Hiba az alapkönyvtárban:"
 
 #: lazarusidestrconsts.lisjhjumphistory
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
@@ -11008,7 +11008,7 @@ msgstr "Sz&erkesztés"
 
 #: lazarusidestrconsts.lismenueditcodetemplates
 msgid "Code Templates ..."
-msgstr "Kód sablonok ..."
+msgstr "Kódsablonok ..."
 
 #: lazarusidestrconsts.lismenueditcontexthelp
 msgid "Edit context sensitive Help"
@@ -11133,7 +11133,7 @@ msgstr "Azonosító hivatkozásainak megkeresése ..."
 
 #: lazarusidestrconsts.lismenufindinfiles
 msgid "Find &in Files ..."
-msgstr "Keresés fájlokban ..."
+msgstr "Keresés a fájlokban ..."
 
 #: lazarusidestrconsts.lismenufindnext
 msgid "Find &Next"
@@ -11358,7 +11358,7 @@ msgstr "Projekt megnyitása ..."
 
 #: lazarusidestrconsts.lismenuopenrecent
 msgid "Open &Recent"
-msgstr "Legutóbbi megynyitása"
+msgstr "Legutóbbi megnyitása"
 
 #: lazarusidestrconsts.lismenuopenrecentpkg
 msgid "Open Recent Package"
@@ -15344,7 +15344,7 @@ msgstr "Csomagok megjelenítése"
 
 #: lazarusidestrconsts.lisshowpositionofsourceeditor
 msgid "Show position of source editor"
-msgstr "Váltás a forráskódbeli helyére"
+msgstr "Váltás a forráskódbeli helyzetére"
 
 #: lazarusidestrconsts.lisshowrecentlyusedidentifiersattop
 msgid "Show recently used identifiers at top"
@@ -17986,11 +17986,11 @@ msgstr "Egyidejű szerkesztés (kijelölés közben)"
 
 #: lazarusidestrconsts.srkmcattemplateedit
 msgid "Template Editing"
-msgstr "Sablon szerkesztés"
+msgstr "Sablon szerkesztése"
 
 #: lazarusidestrconsts.srkmcattemplateeditoff
 msgid "Template Editing (not in Cell)"
-msgstr "Sablon szerkesztés (kurzor cellán kívül)"
+msgstr "Sablon szerkesztése (kurzor cellán kívül)"
 
 #: lazarusidestrconsts.srkmcattoolmenu
 msgid "Tools menu commands"
@@ -18043,7 +18043,7 @@ msgstr "Csatolás programhoz "
 
 #: lazarusidestrconsts.srkmecautocompletion
 msgid "Code template completion"
-msgstr "Kód sablon kiegészítés"
+msgstr "Kódsablon kiegészítése"
 
 #: lazarusidestrconsts.srkmecblockcopy
 msgid "Copy Block"
@@ -18322,7 +18322,7 @@ msgstr "Azonosító hivatkozásainak megkeresése"
 
 #: lazarusidestrconsts.srkmecfindinfiles
 msgid "Find in Files"
-msgstr "Keresés fájlokban"
+msgstr "Keresés a fájlokban"
 
 #: lazarusidestrconsts.srkmecfindnext
 msgctxt "lazarusidestrconsts.srkmecfindnext"

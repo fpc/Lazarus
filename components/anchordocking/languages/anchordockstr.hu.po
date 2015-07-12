@@ -13,7 +13,7 @@ msgstr ""
 
 #: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
 msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
-msgstr "Egy elválasztó szabad oldalát nem lehet lehorgonyozni: Csomópont=\"%s\" Típus=%s Horgonyok[%s]=\"%s\""
+msgstr "Egy elválasztó szabad oldala nem rögzíthető: Csomópont=\"%s\" Típus=%s Horgonyok[%s]=\"%s\""
 
 #: anchordockstr.adrsallfiles
 msgid "All files"
@@ -25,23 +25,23 @@ msgstr "Ennyi képpontot kell mozdulnia az egérnek mielőtt a húzás elkezdőd
 
 #: anchordockstr.adrsanchordockinglayout
 msgid "Anchor Docking Layout"
-msgstr "Lehorgonyzás elrendezése"
+msgstr "Rögzített ablakelrendezés"
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
 msgid "Anchor is not splitter: Node=\"%s\" Anchors[%s]=\"%s\""
-msgstr "A horgony nem elválasztó: Csomópont=\"%s\" Horgonyok[%s]=\"%s\""
+msgstr "Rögzítés nem elválasztóhoz: Csomópont=\"%s\" Horgonyok[%s]=\"%s\""
 
 #: anchordockstr.adrsanchornotfoundnodeanchors
 msgid "Anchor not found: Node=\"%s\" Anchors[%s]=\"%s\""
-msgstr "Horgonyzás nincs engedélyezve: Csomópont=\"%s\" Horgonyok[%s]=\"%s\""
+msgstr "Rögzítési hely nem található: Csomópont=\"%s\" Horgonyok[%s]=\"%s\""
 
 #: anchordockstr.adrsanchortowrongsideofsplitternodeanchors
 msgid "Anchor to wrong side of splitter: Node=\"%s\" Anchors[%s]=\"%s\""
-msgstr "Horgonyzás az elválasztó rossz oldalához: Csomópont=\"%s\" Horgonyok[%s]=\"%s\""
+msgstr "Rögzítés az elválasztó rossz oldalához: Csomópont=\"%s\" Horgonyok[%s]=\"%s\""
 
 #: anchordockstr.adrsapagemustnotbeanchorednodeparentparenttypeanchors
 msgid "A page must not be anchored: Node=\"%s\" Parent=%s ParentType=%s Anchors[%s]=\"%s\""
-msgstr "Egy lapot nem lehet lehorgonyozni: Csomópont=\"%s\" Szülő:%s Szülőtípus=%s Horgonyok[%s]=\"%s\""
+msgstr "Egy lap nem rögzíthető: Csomópont=\"%s\" Szülő:%s Szülőtípus=%s Horgonyok[%s]=\"%s\""
 
 #: anchordockstr.adrsautomatically
 msgid "Automatically"
@@ -65,7 +65,7 @@ msgstr "Az \"%s\" dokkterület csak egy területet tartalmazhat."
 
 #: anchordockstr.adrsdockinganchordocking
 msgid "Docking / Anchordocking"
-msgstr "Dokkolás / Lehorgonyzás"
+msgstr "Dokkolás / Ablakok rögzítése"
 
 #: anchordockstr.adrsdockingoptions
 msgid "Docking options"
@@ -289,7 +289,7 @@ msgstr "fel"
 
 #: anchordockstr.adrstouseanchordockingyoumustfirstuninstall
 msgid "To use anchordocking you must first uninstall %s"
-msgstr "A lehorgonyzás használatához először el kell távolítani ezt: %s"
+msgstr "Az ablakok rögzítésének használatához először el kell távolítani ezt: %s"
 
 #: anchordockstr.adrsundock
 msgid "Undock"

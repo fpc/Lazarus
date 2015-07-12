@@ -29,7 +29,7 @@ msgstr "Betöltés gyorsítótárból (%s = %s)"
 
 #: ipconst.httpcantloadgraphic
 msgid "Unable to load graphic %s"
-msgstr ""
+msgstr "Nem lehet betölteni a grafikát: %s"
 
 #: ipconst.httpconnect
 msgid "Connected: (%s)"
@@ -284,7 +284,7 @@ msgstr "Az átvitelt a felhasználó megszakította"
 
 #: ipconst.shtmlcharstackoverfl
 msgid "Character stack overflow"
-msgstr ""
+msgstr "Karakter-verem túlcsordulás"
 
 #: ipconst.shtmldashexp
 msgid "- expected"
@@ -1613,11 +1613,11 @@ msgstr "Hitelesítés újrapróbálása"
 
 #: ipconst.srascallbackcomplete
 msgid "Callback complete"
-msgstr ""
+msgstr "Visszahívás kész"
 
 #: ipconst.srascallbacksetbycaller
 msgid "Callback set by caller"
-msgstr ""
+msgstr "Visszahívás beállítva a hívó által"
 
 #: ipconst.srasconnectdevice
 msgid "Connect device"
@@ -1666,7 +1666,7 @@ msgstr "Port megnyitva"
 
 #: ipconst.srasprepareforcallback
 msgid "Prepare for callback"
-msgstr ""
+msgstr "Visszahívás előkészítése"
 
 #: ipconst.srasprojected
 msgid "Projected"
@@ -1694,7 +1694,7 @@ msgstr ""
 
 #: ipconst.sraswaitforcallback
 msgid "Wait for callback"
-msgstr ""
+msgstr "Várakozás visszahívásra"
 
 #: ipconst.sraswaitformodemreset
 msgid "Wait for modem reset"
@@ -1734,7 +1734,7 @@ msgstr "Siker,"
 
 #: ipconst.ssmtpresponse04
 msgid "Transient, "
-msgstr ""
+msgstr "Átmenő, "
 
 #: ipconst.ssmtpresponse05
 msgid "Persistent, "
@@ -1842,7 +1842,7 @@ msgstr ""
 
 #: ipconst.ssmtpresponse46
 msgid "Routing loop detected"
-msgstr ""
+msgstr "Útválasztás ismétlődése érzékelve"
 
 #: ipconst.ssmtpresponse47
 msgid "Delivery time expired"
@@ -2028,7 +2028,7 @@ msgstr "A puffer mérete nem egyezik."
 
 #: ipconst.ssslclosenotify
 msgid "Server sent close notify."
-msgstr ""
+msgstr "A kiszolgáló lezárási értesítést küldött."
 
 #: ipconst.ssslcompressionfailure
 msgid "Compression failure."
@@ -2255,7 +2255,7 @@ msgstr "%s nem található"
 
 #: ipconst.swebimagestreambad
 msgid "Cannot load image from stream"
-msgstr ""
+msgstr "Nem lehet képet betölteni az adatfolyamból"
 
 #: ipconst.swinsockerr
 msgid "WinSock Error (%d): %s, on API '%s'"
@@ -2263,7 +2263,7 @@ msgstr "WinSock hiba (%d): %s, a következő API-n: '%s'"
 
 #: ipconst.swriteafterrename
 msgid "***Write after rename"
-msgstr ""
+msgstr "***Írás átnevezés után"
 
 #: ipconst.swrongstateerr
 msgid "Can not comply, wrong state"
@@ -2315,7 +2315,7 @@ msgstr "Célcím szükséges"
 
 #: ipconst.swsaediscon
 msgid "Graceful shutdown in progress"
-msgstr ""
+msgstr "Rendes lekapcsolás folyamatban"
 
 #: ipconst.swsaedquot
 msgid "Disk quota exceeded"
@@ -2440,7 +2440,7 @@ msgstr "Elutasítva"
 
 #: ipconst.swsaeremote
 msgid "Too many levels of remote in path"
-msgstr ""
+msgstr "Túl sok szint a távoli útvonalban"
 
 #: ipconst.swsaeshutdown
 msgid "Cannot send after socket shutdown"
@@ -2480,7 +2480,7 @@ msgstr "Sikeres WSAStartup még nem lett végrehajtva"
 
 #: ipconst.swsano_data
 msgid "Valid name, no data record of requested type"
-msgstr ""
+msgstr "Érvényes név, nincs adatrekord a kért típussal"
 
 #: ipconst.swsano_recovery
 msgid "This is a nonrecoverable error"
@@ -2504,7 +2504,7 @@ msgstr ""
 
 #: ipconst.swsatype_not_found
 msgid "Type not found"
-msgstr ""
+msgstr "Típus nem található"
 
 #: ipconst.swsavernotsupported
 msgid "WinSock DLL version not supported"
