@@ -537,7 +537,8 @@ type
     // designer events
     procedure OnDesignerGetSelectedComponentClass(Sender: TObject;
                                  var RegisteredComponent: TRegisteredComponent);
-    procedure OnDesignerComponentAdded(Sender: TObject);
+    procedure OnDesignerComponentAdded(Sender: TObject; AComponent: TComponent;
+                                     ARegisteredComponent: TRegisteredComponent);
     procedure OnDesignerSetDesigning(Sender: TObject; Component: TComponent;
                                      Value: boolean);
     procedure OnDesignerShowOptions(Sender: TObject);
@@ -8278,12 +8279,14 @@ begin
   RegisteredComponent:=IDEComponentPalette.Selected;
 end;
 
-procedure TMainIDE.OnDesignerComponentAdded(Sender: TObject);
+procedure TMainIDE.OnDesignerComponentAdded(Sender: TObject;
+  AComponent: TComponent; ARegisteredComponent: TRegisteredComponent);
 var
   Grid: TOICustomPropertyGrid;
   Row: TOIPropertyGridRow;
 begin
-  IDEComponentPalette.DoAfterComponentAdded;
+  TComponentPalette(IDEComponentPalette).DoAfterComponentAdded(TDesigner(Sender).LookupRoot,
+                                               AComponent, ARegisteredComponent);
   if EnvironmentOptions.CreateComponentFocusNameProperty
   and (ObjectInspector1<>nil) then begin
     if (ObjectInspector1.ShowFavorites) and (EnvironmentOptions.SwitchToFavoritesOITab) then

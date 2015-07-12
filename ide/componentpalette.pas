@@ -126,7 +126,8 @@ type
     function GetUnregisteredIcon: TCustomBitmap;
     function GetSelectButtonIcon: TCustomBitmap;
     function SelectAButton(Button: TSpeedButton): boolean;
-    procedure ComponentWasAdded;
+    procedure ComponentWasAdded(ALookupRoot, AComponent: TComponent;
+                                ARegisteredComponent: TRegisteredComponent);
     procedure CheckComponentDesignerVisible(AComponent: TComponent; var Invisible: boolean);
   public
     constructor Create;
@@ -896,7 +897,8 @@ begin
   Result := (Selected = NewComponent);
 end;
 
-procedure TComponentPalette.ComponentWasAdded;
+procedure TComponentPalette.ComponentWasAdded(ALookupRoot, AComponent: TComponent;
+  ARegisteredComponent: TRegisteredComponent);
 begin
   if not (ssShift in GetKeyShiftState) and (SelectionMode = csmSingle) then
     Selected := nil;
