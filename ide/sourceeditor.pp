@@ -6826,10 +6826,35 @@ function TSourceNotebook.FindSourceEditorWithPageIndex(APageIndex: integer): TSo
 var
   I: integer;
   TempEditor: TControl;
+
+  function FindSynEdit(AControl: TWinControl): TControl;
+  var
+    I: Integer;
+  begin
+    Result := nil;
+
+    with AControl do
+      for I := 0 to ControlCount - 1 do
+      begin
+        if Controls[I] is TIDESynEditor then
+          Exit(Controls[I])
+        else
+        if Controls[I] is TWinControl then
+        begin
+          Result := FindSynEdit(TWinControl(Controls[I]));
+          if Result <> nil then
+            Exit;
+        end;
+      end;
+  end;
+
 begin
   Result := nil;
   if (FSourceEditorList=nil)
     or (APageIndex < 0) or (APageIndex >= PageCount) then exit;
+
+  TempEditor := FindSynEdit(NotebookPage[APageIndex]);
+  {
   TempEditor:=nil;
   with NotebookPage[APageIndex] do
     for I := 0 to ControlCount-1 do
@@ -6838,6 +6863,7 @@ begin
           TempEditor := Controls[I];
           Break;
         end;
+  }
   if TempEditor=nil then exit;
   I := FSourceEditorList.Count-1;
   while (I>=0) and (TSourceEditor(FSourceEditorList[I]).EditorComponent <> TempEditor) do
@@ -7290,6 +7316,9 @@ begin
 
   if (PageCount = 0) and (Parent=nil) and not FIsClosing then
     Close;
+
+  DoActiveEditorChanged;
+  Manager.ActiveEditor := Edit;
 end;
 
 procedure TSourceNotebook.CopyEditor(OldPageIndex, NewWindowIndex,
@@ -7590,7 +7619,8 @@ begin
     // Move focus from Notebook-tabs to editor
     TempEditor:=FindSourceEditorWithPageIndex(PageIndex);
     if IsVisible and (TempEditor <> nil) and (FUpdateLock = 0) then
-      TempEditor.EditorComponent.SetFocus;
+      // this line raises exception when editor is in other tab (for example - focused is designer)
+      ;// TempEditor.EditorComponent.SetFocus;
   finally
     debugln(SRCED_CLOSE, ['TSourceNotebook.CloseFile UnLock']);
     DebugBoss.UnLockCommandProcessing;
@@ -7904,12 +7934,26 @@ End;
 
 function TSourceNotebook.FindPageWithEditor(
   ASourceEditor: TSourceEditor):integer;
+var
+  LParent: TWinControl;
+  LTabSheet: TWinControl;
 begin
-  if (ASourceEditor.EditorComponent.Parent is TTabSheet) and
-     (TTabSheet(ASourceEditor.EditorComponent.Parent).Parent = FNotebook)
-  then
-    Result:=TTabSheet(ASourceEditor.EditorComponent.Parent).PageIndex
-  else
+  if (ASourceEditor.EditorComponent.Parent is TTabSheet) then
+  begin
+    LParent := ASourceEditor.EditorComponent.Parent.Parent;
+    LTabSheet := ASourceEditor.EditorComponent.Parent;
+    while (LParent <> FNotebook) and (LParent <> nil) do
+    begin
+      LTabSheet := LParent;
+      LParent := LParent.Parent;
+    end;
+
+    if (LParent <> nil) and (LTabSheet is TTabSheet) then
+      Result:=TTabSheet(LTabSheet).PageIndex
+    else
+      Result:=-1;
+  end
+  else    
     Result:=-1;
 end;
 
