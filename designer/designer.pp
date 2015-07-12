@@ -475,6 +475,10 @@ begin
   else
     IsNonVisual := DesignerProcs.ComponentIsNonVisual(Child);
 
+  if IsNonVisual and Assigned(IDEComponentsMaster) then
+    if not IDEComponentsMaster.DrawNonVisualComponents(Root) then
+      Exit;
+
   if Child.InheritsFrom(MinClass) and (IsNonVisual or not OnlyNonVisual) then
   begin
     Best := Child;
@@ -2014,6 +2018,13 @@ begin
 
   if ComponentIsIcon(MouseDownComponent) then
   begin
+    if Assigned(IDEComponentsMaster) then
+      if not IDEComponentsMaster.DrawNonVisualComponents(FLookupRoot) then
+      begin
+        MouseDownComponent := nil;
+        Exit;
+      end;
+
     NonVisualComp := MouseDownComponent;
     MoveNonVisualComponentIntoForm(NonVisualComp);
   end;
@@ -3572,7 +3583,10 @@ begin
     ControlSelection.DrawMarkers(DDC);
   end;
   // non visual component icons
-  DrawNonVisualComponents(DDC);
+  if not Assigned(IDEComponentsMaster)
+  or IDEComponentsMaster.DrawNonVisualComponents(FLookupRoot) then
+    DrawNonVisualComponents(DDC);
+
   // guidelines and grabbers
   if (ControlSelection.SelectionForm=Form) then
   begin

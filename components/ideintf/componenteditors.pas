@@ -431,6 +431,12 @@ type
   TPropertyEditorFilterFunc =
     function(const ATestEditor: TPropertyEditor): Boolean of object;
 
+  TIDEComponentsMaster = class
+    function DrawNonVisualComponents(ALookupRoot: TComponent): Boolean; virtual; abstract;
+  end;
+
+var
+  IDEComponentsMaster: TIDEComponentsMaster = nil;
 
 procedure RegisterEditorForm(const AEditorForm: TObject; const AReference: TPersistent);
 procedure UnregisterEditorForm(const AEditorForm: TObject);
