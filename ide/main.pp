@@ -184,6 +184,7 @@ type
     procedure HandleApplicationQueryEndSession(var Cancel: Boolean);
     procedure HandleApplicationEndSession(Sender: TObject);
     procedure HandleScreenChangedForm(Sender: TObject; {%H-}Form: TCustomForm);
+    procedure HandleScreenChangedControl(Sender: TObject; LastControl: TControl);
     procedure HandleScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
     procedure HandleRemoteControlTimer(Sender: TObject);
     procedure HandleSelectFrame(Sender: TObject; var AComponentClass: TComponentClass);
@@ -820,6 +821,7 @@ type
                                 StartPos, {%H-}EndPos: integer): boolean;
 
     // useful information methods
+    procedure GetUnit(SourceEditor: TSourceEditor; out UnitInfo: TUnitInfo);
     procedure GetCurrentUnit(out ActiveSourceEditor: TSourceEditor;
                              out ActiveUnitInfo: TUnitInfo); override;
     procedure GetDesignerUnit(ADesigner: TDesigner;
@@ -927,7 +929,10 @@ type
     procedure DoShowSearchResultsView(State: TIWGetFormState = iwgfShowOnTop); override;
 
     // form editor and designer
-    procedure DoShowDesignerFormOfCurrentSrc; override;
+    procedure DoShowDesignerFormOfCurrentSrc(AComponentPaletteClassSelected: Boolean); override;
+    procedure DoShowDesignerFormOfSrc(AEditor: TSourceEditorInterface); override;
+    procedure DoShowMethod(AEditor: TSourceEditorInterface; const AMethodName: String); override;
+    procedure DoShowDesignerFormOfSrc(AEditor: TSourceEditorInterface; out AForm: TCustomForm); override;
     function CreateDesignerForComponent(AnUnitInfo: TUnitInfo;
                                         AComponent: TComponent): TCustomForm; override;
     // editor and environment options
@@ -1541,6 +1546,7 @@ begin
   Application.AddOnEndSessionHandler(@HandleApplicationEndSession);
   Screen.AddHandlerRemoveForm(@HandleScreenRemoveForm);
   Screen.AddHandlerActiveFormChanged(@HandleScreenChangedForm);
+  Screen.AddHandlerActiveControlChanged(@HandleScreenChangedControl);
   IDEComponentPalette.OnClassSelected := @ComponentPaletteClassSelected;
   MainIDEBar.SetupHints;
   SetupIDEWindowsLayout;
@@ -2715,7 +2721,10 @@ end;
 
 procedure TMainIDE.mnuToggleFormUnitClicked(Sender: TObject);
 begin
-  DoBringToFrontFormOrUnit;
+  if IDETabMaster <> nil then
+    IDETabMaster.ToggleFormUnit
+  else
+    DoBringToFrontFormOrUnit;
 end;
 
 procedure TMainIDE.mnuViewAnchorEditorClicked(Sender: TObject);
@@ -4855,12 +4864,17 @@ end;
 
 procedure TMainIDE.ComponentPaletteClassSelected(Sender: TObject);
 begin
-  if (Screen.CustomFormZOrderCount > 1)
-  and Assigned(Screen.CustomFormsZOrdered[1].Designer) then
+  // code below cant be handled correctly by integrated IDE
+  if
+    (IDETabMaster = nil) and
+    (Screen.CustomFormZOrderCount > 1)
+  and Assigned(Screen.CustomFormsZOrdered[1].Designer) then begin
     // previous active form was designer form
-    ShowDesignerForm(Screen.CustomFormsZOrdered[1])
-  else
-    DoShowDesignerFormOfCurrentSrc;
+    ShowDesignerForm(Screen.CustomFormsZOrdered[1]);
+    DoCallShowDesignerFormOfSourceHandler(lihtShowDesignerFormOfSource,
+                                       Screen.CustomFormsZOrdered[1], nil, True);
+  end else
+    DoShowDesignerFormOfCurrentSrc(True);
 end;
 
 procedure TMainIDE.SelComponentPageButtonClick(Sender: TObject);
@@ -7607,6 +7621,14 @@ end;
 
 //-----------------------------------------------------------------------------
 
+procedure TMainIDE.GetUnit(SourceEditor: TSourceEditor; out UnitInfo: TUnitInfo);
+begin
+  if SourceEditor=nil then
+    UnitInfo:=nil
+  else
+    UnitInfo := Project1.UnitWithEditorComponent(SourceEditor);
+end;
+
 procedure TMainIDE.GetCurrentUnit(out ActiveSourceEditor:TSourceEditor;
   out ActiveUnitInfo:TUnitInfo);
 begin
@@ -7922,7 +7944,7 @@ begin
   if DisplayState <> dsSource then begin
     DoShowSourceOfActiveDesignerForm;
   end else begin
-    DoShowDesignerFormOfCurrentSrc;
+    DoShowDesignerFormOfCurrentSrc(false);
   end;
 end;
 
@@ -7936,24 +7958,94 @@ begin
   debugln(['TMainIDE.DoBringToFrontFormOrInspector old=',dbgs(DisplayState)]);
   {$ENDIF}
   case DisplayState of
-  dsInspector: DoShowDesignerFormOfCurrentSrc;
+  dsInspector: DoShowDesignerFormOfCurrentSrc(false);
   dsInspector2: DoShowSourceOfActiveDesignerForm;
   else
     DoShowInspector(iwgfShowOnTop);
   end;
 end;
 
-procedure TMainIDE.DoShowDesignerFormOfCurrentSrc;
+procedure TMainIDE.DoShowDesignerFormOfCurrentSrc(AComponentPaletteClassSelected: Boolean);
+var
+  LForm: TCustomForm;
+begin
+  DoShowDesignerFormOfSrc(SourceEditorManager.ActiveEditor, LForm);
+  if LForm <> nil then
+    DoCallShowDesignerFormOfSourceHandler(lihtShowDesignerFormOfSource, LForm, SourceEditorManager.ActiveEditor, AComponentPaletteClassSelected);
+end;
+
+procedure TMainIDE.DoShowDesignerFormOfSrc(AEditor: TSourceEditorInterface);
+var
+  LForm: TCustomForm;
+begin
+  DoShowDesignerFormOfSrc(AEditor, LForm);
+end;
+
+procedure TMainIDE.DoShowMethod(AEditor: TSourceEditorInterface;
+  const AMethodName: String);
+var
+  //ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  NewSource: TCodeBuffer;
+  NewX, NewY, NewTopLine: integer;
+  AClassName: string;
+  AInheritedMethodName: string;
+  AnInheritedClassName: string;
+  CurMethodName: String;
+begin
+  if SourceEditorManagerIntf.ActiveEditor <> AEditor then
+    SourceEditorManagerIntf.ActiveEditor := AEditor;
+
+  GetUnit(TSourceEditor(AEditor), ActiveUnitInfo);
+  if not BeginCodeTool(TSourceEditor(AEditor),ActiveUnitInfo,[ctfSwitchToFormSource])
+  then exit;
+  {$IFDEF IDE_DEBUG}
+  debugln('');
+  debugln('[TMainIDE.OnPropHookShowMethod] ************ "',AMethodName,'" ',ActiveUnitInfo.Filename);
+  {$ENDIF}
+
+  AClassName:=ActiveUnitInfo.Component.ClassName;
+  CurMethodName:=AMethodName;
+
+  if IsValidIdentPair(AMethodName,AnInheritedClassName,AInheritedMethodName)
+  then begin
+    AEditor:=nil;
+    ActiveUnitInfo:=Project1.UnitWithComponentClassName(AnInheritedClassName);
+    if ActiveUnitInfo=nil then begin
+      IDEMessageDialog(lisMethodClassNotFound,
+        Format(lisClassOfMethodNotFound, ['"', AnInheritedClassName, '"', '"',
+          AInheritedMethodName, '"']),
+        mtError,[mbCancel],'');
+      exit;
+    end;
+    AClassName:=AnInheritedClassName;
+    CurMethodName:=AInheritedMethodName;
+  end;
+
+  if CodeToolBoss.JumpToPublishedMethodBody(ActiveUnitInfo.Source,
+    AClassName,CurMethodName,
+    NewSource,NewX,NewY,NewTopLine) then
+  begin
+    DoJumpToCodePosition(AEditor, ActiveUnitInfo,
+      NewSource, NewX, NewY, NewTopLine, [jfAddJumpPoint, jfFocusEditor]);
+  end else begin
+    DebugLn(['TMainIDE.OnPropHookShowMethod failed finding the method in code']);
+    DoJumpToCodeToolBossError;
+    raise Exception.Create(lisUnableToShowMethod+' '+lisPleaseFixTheErrorInTheMessageWindow);
+  end;
+end;
+
+procedure TMainIDE.DoShowDesignerFormOfSrc(AEditor: TSourceEditorInterface; out
+  AForm: TCustomForm);
 var
   ActiveSourceEditor: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
-  AForm: TCustomForm;
   UnitCodeBuf: TCodeBuffer;
 begin
   {$IFDEF VerboseIDEDisplayState}
   debugln(['TMainIDE.DoShowDesignerFormOfCurrentSrc ']);
   {$ENDIF}
-  GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
+  GetUnit(TSourceEditor(AEditor), ActiveUnitInfo);
   if (ActiveUnitInfo = nil) then exit;
 
   if (ActiveUnitInfo.Component=nil)
@@ -7988,13 +8080,18 @@ end;
 procedure TMainIDE.DoShowSourceOfActiveDesignerForm;
 var
   ActiveUnitInfo: TUnitInfo;
+  ActiveSourceEditor: TSourceEditor;
 begin
   if SourceEditorManager.SourceEditorCount = 0 then exit;
-  if LastFormActivated <> nil then begin
-    ActiveUnitInfo := Project1.UnitWithComponent(LastFormActivated.Designer.LookupRoot);
+  if LastFormActivated <> nil then
+  begin
+    GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
+
     if (ActiveUnitInfo <> nil) and (ActiveUnitInfo.OpenEditorInfoCount > 0) then
-      SourceEditorManager.ActiveEditor :=
-                 TSourceEditor(ActiveUnitInfo.OpenEditorInfo[0].EditorComponent);
+    begin
+      SourceEditorManager.ActiveEditor := TSourceEditor(ActiveUnitInfo.OpenEditorInfo[0].EditorComponent);
+      DoCallNotifyHandler(lihtShowSourceOfActiveDesignerForm, SourceEditorManager.ActiveEditor);
+    end;
   end;
   SourceEditorManager.ShowActiveWindowOnTop(False);
   {$IFDEF VerboseIDEDisplayState}
@@ -8104,6 +8201,8 @@ begin
         IDEWindowCreators.ShowForm(MessagesView,true);
         SourceEditorManager.ShowActiveWindowOnTop(True);
       end;
+      if IDETabMaster <> nil then
+        IDETabMaster.JumpToCompilerMessage(SrcEdit);
       SrcEdit.EditorComponent.LogicalCaretXY:=LogCaretXY;
       SrcEdit.EditorComponent.TopLine:=TopLine;
       SrcEdit.CenterCursorHoriz(hcmSoftKeepEOL);
@@ -11328,6 +11427,20 @@ begin
   and (Screen.GetCurrentModalForm=nil)
   and (aForm<>WindowMenuActiveForm) then
     WindowMenuActiveForm := aForm;
+end;
+
+procedure TMainIDE.HandleScreenChangedControl(Sender: TObject; LastControl: TControl);
+var
+  LOwner: TComponent;
+begin
+  if LastControl = nil then
+    Exit;
+  LOwner := LastControl.Owner;
+  if LOwner is TOICustomPropertyGrid then
+  case DisplayState of
+    dsSource: DisplayState:=dsInspector;
+    dsForm: DisplayState:=dsInspector2;
+  end;
 end;
 
 procedure TMainIDE.HandleScreenRemoveForm(Sender: TObject; AForm: TCustomForm);

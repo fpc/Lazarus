@@ -149,7 +149,7 @@ type
                            Flags: TCodeToolsFlags): boolean;
     procedure ActivateCodeToolAbortableMode;
     function OnCodeToolBossCheckAbort: boolean;
-    procedure DoShowDesignerFormOfCurrentSrc; virtual; abstract;
+    procedure DoShowDesignerFormOfCurrentSrc(AComponentPaletteClassSelected: Boolean); virtual; abstract;
     function CreateDesignerForComponent(AnUnitInfo: TUnitInfo;
                         AComponent: TComponent): TCustomForm; virtual; abstract;
     procedure UpdateSaveMenuItemsAndButtons(UpdateSaveAll: boolean); virtual; abstract;

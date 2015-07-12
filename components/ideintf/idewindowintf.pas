@@ -487,6 +487,9 @@ procedure Register;
 
 implementation
 
+uses
+  LazIDEIntf;
+
 function StrToIDEWindowPlacement(const s: string): TIDEWindowPlacement;
 begin
   for Result:=Low(TIDEWindowPlacement) to High(TIDEWindowPlacement) do
@@ -2202,11 +2205,13 @@ begin
     // show dockable if it has a creator and is not a designer form
     IDEDockMaster.ShowForm(AForm,BringToFront)
   else
-    SimpleLayoutStorage.ApplyAndShow(Self,AForm,BringToFront,AMoveToVisbleMode);
+    if (IDETabMaster <> nil) and (csDesigning in AForm.ComponentState) then
+      IDETabMaster.ShowForm(AForm)
+    else
+      SimpleLayoutStorage.ApplyAndShow(Self,AForm,BringToFront,AMoveToVisbleMode);
 end;
 
-function TIDEWindowCreatorList.ShowForm(AFormName: string; BringToFront: boolean
-  ): TCustomForm;
+function TIDEWindowCreatorList.ShowForm(AFormName: string; BringToFront: boolean): TCustomForm;
 begin
   Result:=GetForm(AFormName,true,false);
   if Result<>nil then
