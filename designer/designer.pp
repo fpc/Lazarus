@@ -3106,7 +3106,8 @@ begin
       ADDC.Canvas.Pen.Color := GridColor;
       ADDC.Canvas.Pen.Width := 1;
       ADDC.Canvas.Pen.Style := psSolid;
-      DrawGrid(ADDC.Canvas.Handle, AWinControl.ClientRect, GridSizeX, GridSizeY);
+      DrawGrid(ADDC.Canvas.Handle, TControlAccess(AWinControl).GetLogicalClientRect,
+               GridSizeX, GridSizeY);
     end;
     
     if ShowBorderSpacing then
