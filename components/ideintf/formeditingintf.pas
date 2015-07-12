@@ -24,6 +24,11 @@ const
   ComponentPaletteImageHeight = 24;
   ComponentPaletteBtnWidth  = ComponentPaletteImageWidth + 3;
   ComponentPaletteBtnHeight = ComponentPaletteImageHeight + 3;
+  DesignerBaseClassId_TForm = 0;
+  DesignerBaseClassId_TDataModule = 1;
+  DesignerBaseClassId_TFrame = 2;
+  NonControlProxyDesignerFormId = 0;
+  FrameProxyDesignerFormId = 1;
 
 type
   TDMCompAtPosFlag = (
@@ -31,6 +36,93 @@ type
     dmcapfOnlySelectable
     );
   TDMCompAtPosFlags = set of TDMCompAtPosFlag;
+
+  TDesignerMediator = class;
+
+  INonFormDesigner = interface
+  ['{244DEC6B-80FB-4B28-85EF-FE613D1E2DD3}']
+    procedure Create;
+
+    function GetLookupRoot: TComponent;
+    procedure SetLookupRoot(const AValue: TComponent);
+    property LookupRoot: TComponent read GetLookupRoot write SetLookupRoot;
+
+    procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer);
+    procedure Notification(AComponent: TComponent; AOperation: TOperation);
+    procedure Paint;
+
+    procedure DoSaveBounds;
+    procedure DoLoadBounds;
+  end;
+
+  IFrameDesigner = interface(INonFormDesigner)
+  ['{2B9442B0-6359-450A-88A1-BB6744F84918}']
+  end;
+
+  INonControlDesigner = interface(INonFormDesigner)
+  ['{5943A33C-F812-4052-BFE8-77AEA73199A9}']
+    function GetMediator: TDesignerMediator;
+    procedure SetMediator(AValue: TDesignerMediator);
+    property Mediator: TDesignerMediator read GetMediator write SetMediator;
+  end;
+
+  { TNonFormProxyDesignerForm }
+
+  TNonFormProxyDesignerForm = class(TForm, INonFormDesigner)
+  private
+    FNonFormDesigner: INonFormDesigner;
+    FLookupRoot: TComponent;
+  protected
+    procedure Notification(AComponent: TComponent; AOperation: TOperation); override;
+
+    procedure SetLookupRoot(AValue: TComponent); virtual;
+    function GetPublishedBounds(AIndex: Integer): Integer; virtual;
+    procedure SetPublishedBounds(AIndex: Integer; AValue: Integer); virtual;
+  public
+    constructor Create(AOwner: TComponent; ANonFormDesigner: INonFormDesigner); virtual; reintroduce;
+    procedure Paint; override;
+
+    procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
+    procedure SetDesignerFormBounds(ALeft, ATop, AWidth, AHeight: integer);
+    procedure SetPublishedBounds(ALeft, ATop, AWidth, AHeight: integer);
+    procedure SetLookupRootBounds(ALeft, ATop, AWidth, AHeight: integer); virtual;
+
+    function DockedDesigner: boolean; virtual;
+
+    property NonFormDesigner: INonFormDesigner read FNonFormDesigner  implements INonFormDesigner;
+    property LookupRoot: TComponent read FLookupRoot write SetLookupRoot;
+  published
+    property Left: Integer index 0 read GetPublishedBounds write SetPublishedBounds;
+    property Top: Integer index 1 read GetPublishedBounds write SetPublishedBounds;
+    property Width: Integer index 2 read GetPublishedBounds write SetPublishedBounds;
+    property Height: Integer index 3 read GetPublishedBounds write SetPublishedBounds;
+    property ClientWidth: Integer index 2 read GetPublishedBounds write SetPublishedBounds;
+    property ClientHeight: Integer index 3 read GetPublishedBounds write SetPublishedBounds;
+  end;
+
+  { TFrameProxyDesignerForm }
+
+  TFrameProxyDesignerForm = class(TNonFormProxyDesignerForm, IFrameDesigner)
+  private
+    function GetFrameDesigner: IFrameDesigner;
+  public
+    property FrameDesigner: IFrameDesigner read GetFrameDesigner implements IFrameDesigner;
+  end;
+
+  { TNonControlProxyDesignerForm }
+
+  TNonControlProxyDesignerForm = class(TNonFormProxyDesignerForm, INonControlDesigner)
+  private
+    FMediator: TDesignerMediator;
+    function GetNonControlDesigner: INonControlDesigner;
+  protected
+    procedure SetMediator(AValue: TDesignerMediator); virtual;
+  public
+    property NonControlDesigner: INonControlDesigner read GetNonControlDesigner implements INonControlDesigner;
+    property Mediator: TDesignerMediator read FMediator write SetMediator;
+  end;
+
+  TNonFormProxyDesignerFormClass = class of TNonFormProxyDesignerForm;
 
   { TDesignerMediator
     To edit designer forms which do not use the LCL, register a TDesignerMediator,
@@ -89,11 +181,18 @@ type
   { TAbstractFormEditor }
   
   TAbstractFormEditor = class
+  private
+    FNonFormProxyDesignerFormClass: array[0..1] of TNonFormProxyDesignerFormClass;
   protected
     function GetDesignerBaseClasses(Index: integer): TComponentClass; virtual; abstract;
+    function GetStandardDesignerBaseClasses(Index: integer): TComponentClass; virtual; abstract;
+    procedure SetStandardDesignerBaseClasses(Index: integer; AValue: TComponentClass); virtual; abstract;
     function GetDesigner(Index: integer): TIDesigner; virtual; abstract;
     function GetDesignerMediators(Index: integer): TDesignerMediatorClass; virtual; abstract;
+    function GetNonFormProxyDesignerForm(Index: Integer): TNonFormProxyDesignerFormClass; virtual;
+    procedure SetNonFormProxyDesignerForm(Index: Integer; AValue: TNonFormProxyDesignerFormClass); virtual;
   public
+    constructor Create;
     // persistent
     procedure RegisterDefineProperty(const APersistentClassName,
                                      Identifier: string); virtual; abstract;
@@ -138,13 +237,18 @@ type
     function DescendFromDesignerBaseClass(AClass: TComponentClass): integer; virtual; abstract;
     function FindDesignerBaseClassByName(const AClassName: shortstring; WithDefaults: boolean): TComponentClass; virtual; abstract;
 
+    property StandardDesignerBaseClasses[Index: integer]: TComponentClass read GetStandardDesignerBaseClasses
+                                                                         write SetStandardDesignerBaseClasses;
+    function StandardDesignerBaseClassesCount: Integer; virtual; abstract;
     // designers
     function DesignerCount: integer; virtual; abstract;
     property Designer[Index: integer]: TIDesigner read GetDesigner;
     function GetCurrentDesigner: TIDesigner; virtual; abstract;
     function GetDesignerForm(APersistent: TPersistent): TCustomForm; virtual; abstract;
-    function GetDesignerByComponent(AComponent: TComponent
-                                    ): TIDesigner; virtual; abstract;
+    function GetDesignerByComponent(AComponent: TComponent): TIDesigner; virtual; abstract;
+    function NonFormProxyDesignerFormCount: integer; virtual;
+    property NonFormProxyDesignerForm[Index: integer]: TNonFormProxyDesignerFormClass read GetNonFormProxyDesignerForm
+                                                                                     write SetNonFormProxyDesignerForm;
 
     // mediators for non LCL forms
     procedure RegisterDesignerMediator(MediatorClass: TDesignerMediatorClass); virtual; abstract; // auto calls RegisterDesignerBaseClass
@@ -188,6 +292,8 @@ procedure SetDesignInfoLeft(AComponent: TComponent; const aLeft: SmallInt); inli
 procedure SetDesignInfoTop(AComponent: TComponent; const aTop: SmallInt); inline;
 function LeftTopToDesignInfo(const ALeft, ATop: SmallInt): LongInt; inline;
 procedure DesignInfoToLeftTop(ADesignInfo: LongInt; out ALeft, ATop: SmallInt); inline;
+function IsFormDesign(AForm: TCustomForm): boolean;
+function LookupRoot(AForm: TCustomForm): TComponent;
 
 implementation
 
@@ -278,6 +384,151 @@ procedure DesignInfoToLeftTop(ADesignInfo: LongInt; out ALeft, ATop: SmallInt);
 begin
   ALeft := LazLongRec(ADesignInfo).Lo;
   ATop := LazLongRec(ADesignInfo).Hi;
+end;
+
+function IsFormDesign(AForm: TCustomForm): boolean;
+begin
+  if AForm = nil then
+    Exit(False);
+  Result := (csDesignInstance in AForm.ComponentState)
+     or ((csDesigning in AForm.ComponentState) and (AForm.Designer <> nil))
+     or (AForm is TNonFormProxyDesignerForm);
+end;
+
+function LookupRoot(AForm: TCustomForm): TComponent;
+begin
+  if AForm is TNonFormProxyDesignerForm then
+    Result := TNonFormProxyDesignerForm(AForm).LookupRoot
+  else if csDesignInstance in AForm.ComponentState then
+    Result := AForm
+  else
+    Result := nil;
+end;
+
+{ TAbstractFormEditor }
+
+function TAbstractFormEditor.GetNonFormProxyDesignerForm(Index: Integer
+  ): TNonFormProxyDesignerFormClass;
+begin
+  Result := FNonFormProxyDesignerFormClass[Index];
+end;
+
+procedure TAbstractFormEditor.SetNonFormProxyDesignerForm(Index: Integer;
+  AValue: TNonFormProxyDesignerFormClass);
+begin
+  FNonFormProxyDesignerFormClass[Index] := AValue;
+end;
+
+constructor TAbstractFormEditor.Create;
+begin
+  FNonFormProxyDesignerFormClass[NonControlProxyDesignerFormId] := TNonControlProxyDesignerForm;
+  FNonFormProxyDesignerFormClass[FrameProxyDesignerFormId] := TFrameProxyDesignerForm;
+end;
+
+function TAbstractFormEditor.NonFormProxyDesignerFormCount: integer;
+begin
+  Result := Length(FNonFormProxyDesignerFormClass);
+end;
+
+{ TNonControlProxyDesignerForm }
+
+function TNonControlProxyDesignerForm.GetNonControlDesigner: INonControlDesigner;
+begin
+  Result := FNonFormDesigner as INonControlDesigner;
+end;
+
+procedure TNonControlProxyDesignerForm.SetMediator(AValue: TDesignerMediator);
+begin
+  FMediator := AValue;
+end;
+
+{ TFrameProxyDesignerForm }
+
+function TFrameProxyDesignerForm.GetFrameDesigner: IFrameDesigner;
+begin
+  Result := FNonFormDesigner as IFrameDesigner;
+end;
+
+{ TNonFormProxyDesignerForm }
+
+procedure TNonFormProxyDesignerForm.Notification(AComponent: TComponent;
+  AOperation: TOperation);
+begin
+  inherited Notification(AComponent, AOperation);
+  if Assigned(FNonFormDesigner) then
+    FNonFormDesigner.Notification(AComponent, AOperation);
+end;
+
+procedure TNonFormProxyDesignerForm.SetLookupRoot(AValue: TComponent);
+begin
+  FLookupRoot := AValue;
+end;
+
+function TNonFormProxyDesignerForm.GetPublishedBounds(AIndex: Integer): Integer;
+begin
+  case AIndex of
+    0: Result := inherited Left;
+    1: Result := inherited Top;
+    2: Result := inherited Width;
+    3: Result := inherited Height;
+  end;
+end;
+
+procedure TNonFormProxyDesignerForm.SetPublishedBounds(AIndex: Integer;
+  AValue: Integer);
+begin
+  case AIndex of
+    0: inherited Left := AValue;
+    1: inherited Top := AValue;
+    2: inherited Width := AValue;
+    3: inherited Height := AValue;
+  end;
+end;
+
+constructor TNonFormProxyDesignerForm.Create(AOwner: TComponent;
+  ANonFormDesigner: INonFormDesigner);
+begin
+  inherited CreateNew(AOwner, 1);
+
+  FNonFormDesigner := ANonFormDesigner;
+  FNonFormDesigner.Create;
+end;
+
+procedure TNonFormProxyDesignerForm.Paint;
+begin
+  inherited Paint;
+  FNonFormDesigner.Paint;
+end;
+
+procedure TNonFormProxyDesignerForm.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
+begin
+  inherited SetBounds(aLeft, aTop, aWidth, aHeight);
+  if Assigned(FNonFormDesigner) then
+    FNonFormDesigner.SetBounds(ALeft, ATop, AWidth, AHeight);
+end;
+
+procedure TNonFormProxyDesignerForm.SetDesignerFormBounds(ALeft, ATop, AWidth, AHeight: integer);
+begin
+  inherited SetBounds(aLeft, aTop, aWidth, aHeight);
+end;
+
+procedure TNonFormProxyDesignerForm.SetPublishedBounds(ALeft, ATop, AWidth, AHeight: integer);
+begin
+  SetPublishedBounds(0, ALeft);
+  SetPublishedBounds(1, ATop);
+  SetPublishedBounds(2, AWidth);
+  SetPublishedBounds(3, AHeight);
+end;
+
+procedure TNonFormProxyDesignerForm.SetLookupRootBounds(ALeft, ATop, AWidth, AHeight: integer);
+begin
+  if LookupRoot is TControl then
+    TControl(LookupRoot).SetBounds(ALeft, ATop, AWidth, AHeight);
+end;
+
+function TNonFormProxyDesignerForm.DockedDesigner: boolean;
+begin
+  Result := False;
 end;
 
 { TDesignerMediator }

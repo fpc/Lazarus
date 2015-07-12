@@ -102,6 +102,8 @@ type
                                var ComponentClass: TComponentClass);
 
     function GetDesignerBaseClasses(Index: integer): TComponentClass; override;
+    function GetStandardDesignerBaseClasses(Index: integer): TComponentClass; override;
+    procedure SetStandardDesignerBaseClasses(Index: integer; AValue: TComponentClass); override;
     procedure OnDesignerMenuItemClick(Sender: TObject); virtual;
     function FindNonFormFormNode(LookupRoot: TComponent): TAvgLvlTreeNode;
 
@@ -134,38 +136,28 @@ type
     function IsJITComponent(AComponent: TComponent): boolean;
     function GetJITListOfType(AncestorType: TComponentClass): TJITComponentList;
     function FindJITList(AComponent: TComponent): TJITComponentList;
-    function FindJITListByClassName(const AComponentClassName: string
-                                    ): TJITComponentList;
-    function FindJITListByClass(AComponentClass: TComponentClass
-                                ): TJITComponentList;
+    function FindJITListByClassName(const AComponentClassName: string): TJITComponentList;
+    function FindJITListByClass(AComponentClass: TComponentClass): TJITComponentList;
     function GetDesignerForm(APersistent: TPersistent): TCustomForm; override;
 
-    function FindNonFormForm(LookupRoot: TComponent): TCustomNonFormDesignerForm;
+    function FindNonFormForm(LookupRoot: TComponent): TNonFormProxyDesignerForm;
+    function CreateNonFormForm(LookupRoot: TComponent): TNonFormProxyDesignerForm;
 
-    function CreateNonFormForm(LookupRoot: TComponent): TCustomNonFormDesignerForm;
-
-    procedure RenameJITComponent(AComponent: TComponent;
-                                 const NewClassName: shortstring);
-    procedure RenameJITComponentUnitname(AComponent: TComponent;
-                                         const NewUnitName: shortstring);
+    procedure RenameJITComponent(AComponent: TComponent; const NewClassName: shortstring);
+    procedure RenameJITComponentUnitname(AComponent: TComponent; const NewUnitName: shortstring);
     procedure UpdateDesignerFormName(AComponent: TComponent);
     procedure UpdateComponentName(AComponent: TComponent);
-    function CreateNewJITMethod(ALookupRoot: TComponent;
-                                const AMethodName: shortstring): TMethod;
-    procedure RenameJITMethod(AComponent: TComponent;
-                           const OldMethodName, NewMethodName: shortstring);
+    function CreateNewJITMethod(ALookupRoot: TComponent; const AMethodName: shortstring): TMethod;
+    procedure RenameJITMethod(AComponent: TComponent; const OldMethodName, NewMethodName: shortstring);
     procedure SaveHiddenDesignerFormProperties(AComponent: TComponent);
-    function FindJITComponentByClassName(const AComponentClassName: string
-                                         ): TComponent;
-    function FindJITComponentByClass(AComponentClass: TComponentClass
-                                     ): TComponent;
+    function FindJITComponentByClassName(const AComponentClassName: string): TComponent;
+    function FindJITComponentByClass(AComponentClass: TComponentClass): TComponent;
     procedure WriteMethodPropertyEvent(Writer: TWriter; {%H-}Instance: TPersistent;
       PropInfo: PPropInfo; const MethodValue, DefMethodValue: TMethod;
       var Handled: boolean);
     function SaveUnitComponentToBinStream(AnUnitInfo: TUnitInfo;
       var BinCompStream: TExtMemoryStream): TModalResult;
-    function OnGetDanglingMethodName(const AMethod: TMethod;
-                                     aRootComponent: TObject): string;
+    function OnGetDanglingMethodName(const AMethod: TMethod; aRootComponent: TObject): string;
 
     // ancestors
     function GetAncestorLookupRoot(AComponent: TComponent): TComponent; override;
@@ -177,6 +169,7 @@ type
     function DescendFromDesignerBaseClass(AClass: TComponentClass): integer; override;
     function FindDesignerBaseClassByName(const AClassName: shortstring; WithDefaults: boolean): TComponentClass; override;
 
+    function StandardDesignerBaseClassesCount: Integer; override;
     // designers
     function DesignerCount: integer; override;
     function GetDesigner(Index: integer): TIDesigner; override;
@@ -302,8 +295,8 @@ type
   end;
   
 
-const
-  StandardDesignerBaseClasses: array[1..3] of TComponentClass = 
+var
+  StandardDesignerBaseClasses: array[0..2] of TComponentClass =
   (
     Forms.TForm,
     TDataModule,
@@ -461,7 +454,7 @@ begin
   FSelection := TPersistentSelectionList.Create;
   FDesignerBaseClasses:=TFPList.Create;
   FDesignerMediatorClasses:=TFPList.Create;
-  for l:=Low(StandardDesignerBaseClasses) to High(StandardDesignerBaseClasses) do
+  for l:=0 to StandardDesignerBaseClassesCount - 1 do
     FDesignerBaseClasses.Add(StandardDesignerBaseClasses[l]);
 
   JITFormList := TJITForms.Create(nil);
@@ -567,7 +560,7 @@ Begin
     end else if JITNonFormList.IsJITNonForm(AComponent) then begin
       // free/unbind a non form component and its designer form
       aForm:=GetDesignerForm(AComponent);
-      if (AForm<>nil) and (not (AForm is TCustomNonFormDesignerForm)) then
+      if (AForm<>nil) and (not (AForm is TNonFormProxyDesignerForm)) then
         RaiseException(Format(
           lisCFETCustomFormEditorDeleteComponentWhereIsTheTCustomN, [AComponent.
           ClassName]));
@@ -575,7 +568,7 @@ Begin
       if (AForm <> nil) then
       begin
         FNonFormForms.Remove(AForm);
-        TCustomNonFormDesignerForm(AForm).LookupRoot := nil;
+        (AForm as INonFormDesigner).LookupRoot := nil;
         Application.ReleaseComponent(AForm);
       end;
 
@@ -812,20 +805,21 @@ begin
     exit;
 end;
 
-function TCustomFormEditor.FindNonFormForm(LookupRoot: TComponent): TCustomNonFormDesignerForm;
+function TCustomFormEditor.FindNonFormForm(LookupRoot: TComponent): TNonFormProxyDesignerForm;
 var
   AVLNode: TAvgLvlTreeNode;
 begin
   AVLNode := FindNonFormFormNode(LookupRoot);
   if AVLNode <> nil then
-    Result := TCustomNonFormDesignerForm(AVLNode.Data)
+    Result := TNonFormProxyDesignerForm(AVLNode.Data)
   else
     Result := nil;
 end;
 
-function TCustomFormEditor.CreateNonFormForm(LookupRoot: TComponent): TCustomNonFormDesignerForm;
+function TCustomFormEditor.CreateNonFormForm(LookupRoot: TComponent): TNonFormProxyDesignerForm;
 var
   MediatorClass: TDesignerMediatorClass;
+  LNonFormProxyDesignerClass: TNonFormProxyDesignerFormClass;
 begin
   Result := Nil;
   if FindNonFormFormNode(LookupRoot) <> nil then
@@ -833,18 +827,26 @@ begin
   if LookupRoot is TComponent then
   begin
     if LookupRoot is TCustomFrame then
-      Result := TFrameDesignerForm.Create(nil)
+    begin
+      LNonFormProxyDesignerClass := BaseFormEditor1.NonFormProxyDesignerForm[FrameProxyDesignerFormId];
+      Result := TNonFormProxyDesignerForm(LNonFormProxyDesignerClass.NewInstance);
+      Result.Create(nil, TFrameDesignerForm.Create(Result));
+    end
     else
-      Result := TNonControlDesignerForm.Create(nil);
+    begin
+      LNonFormProxyDesignerClass := BaseFormEditor1.NonFormProxyDesignerForm[NonControlProxyDesignerFormId];
+      Result := TNonFormProxyDesignerForm(LNonFormProxyDesignerClass.NewInstance);
+      Result.Create(nil, TNonControlDesignerForm.Create(Result));
+    end;
     Result.Name:='_Designer_'+LookupRoot.Name;
-    Result.LookupRoot := LookupRoot;
+    (Result as INonFormDesigner).LookupRoot := LookupRoot;
     FNonFormForms.Add(Result);
 
-    if Result is TNonControlDesignerForm then begin
+    if Result is BaseFormEditor1.NonFormProxyDesignerForm[NonControlProxyDesignerFormId] then begin
       // create the mediator
       MediatorClass:=GetDesignerMediatorClass(TComponentClass(LookupRoot.ClassType));
       if MediatorClass<>nil then
-        TNonControlDesignerForm(Result).Mediator:=MediatorClass.CreateMediator(nil,LookupRoot);
+        (Result as INonControlDesigner).Mediator:=MediatorClass.CreateMediator(nil,LookupRoot);
     end;
   end else
     RaiseException(Format(lisCFETCustomFormEditorCreateNonFormFormUnknownType, [
@@ -875,7 +877,7 @@ end;
 
 procedure TCustomFormEditor.UpdateDesignerFormName(AComponent: TComponent);
 var
-  ANonFormForm: TCustomNonFormDesignerForm;
+  ANonFormForm: TNonFormProxyDesignerForm;
 begin
   ANonFormForm := FindNonFormForm(AComponent);
   //DebugLn(['TCustomFormEditor.UpdateDesignerFormName ',ANonFormForm<>nil, ' ',AComponent.Name]);
@@ -922,11 +924,11 @@ end;
 
 procedure TCustomFormEditor.SaveHiddenDesignerFormProperties(AComponent: TComponent);
 var
-  NonFormForm: TCustomNonFormDesignerForm;
+  NonFormForm: TNonFormProxyDesignerForm;
 begin
   NonFormForm := FindNonFormForm(AComponent);
   if NonFormForm <> nil then
-    NonFormForm.DoSaveBounds;
+    (NonFormForm as INonFormDesigner).DoSaveBounds;
 end;
 
 function TCustomFormEditor.FindJITComponentByClassName(
@@ -1616,8 +1618,7 @@ begin
   {$ENDIF}
 end;
 
-function TCustomFormEditor.GetAncestorInstance(AComponent: TComponent
-  ): TComponent;
+function TCustomFormEditor.GetAncestorInstance(AComponent: TComponent): TComponent;
 { Returns the next ancestor instance.
   For example:
     TFrame3 = class(TFrame2), TFrame2 = class(TFrame1)
@@ -1650,8 +1651,7 @@ begin
   {$ENDIF}
 end;
 
-function TCustomFormEditor.RegisterDesignerBaseClass(AClass: TComponentClass
-  ): integer;
+function TCustomFormEditor.RegisterDesignerBaseClass(AClass: TComponentClass): integer;
 begin
   if AClass=nil then
     RaiseGDBException('TCustomFormEditor.RegisterDesignerBaseClass');
@@ -1669,21 +1669,18 @@ procedure TCustomFormEditor.UnregisterDesignerBaseClass(AClass: TComponentClass)
 var
   l: Integer;
 begin
-  for l:=Low(StandardDesignerBaseClasses) to High(StandardDesignerBaseClasses)
-  do
+  for l := 0 to StandardDesignerBaseClassesCount-1 do
     if StandardDesignerBaseClasses[l]=AClass then
       RaiseGDBException('TCustomFormEditor.UnregisterDesignerBaseClass');
   FDesignerBaseClasses.Remove(AClass);
 end;
 
-function TCustomFormEditor.IndexOfDesignerBaseClass(AClass: TComponentClass
-  ): integer;
+function TCustomFormEditor.IndexOfDesignerBaseClass(AClass: TComponentClass): integer;
 begin
   Result:=FDesignerBaseClasses.IndexOf(AClass);
 end;
 
-function TCustomFormEditor.DescendFromDesignerBaseClass(AClass: TComponentClass
-  ): integer;
+function TCustomFormEditor.DescendFromDesignerBaseClass(AClass: TComponentClass): integer;
 begin
   Result:=FDesignerBaseClasses.Count-1;
   while (Result>=0)
@@ -1695,22 +1692,41 @@ function TCustomFormEditor.FindDesignerBaseClassByName(
   const AClassName: shortstring; WithDefaults: boolean): TComponentClass;
 var
   i: Integer;
-begin
-  if WithDefaults then begin
-    for i:=Low(StandardDesignerBaseClasses) to high(StandardDesignerBaseClasses)
-    do begin
-      if CompareText(AClassName,StandardDesignerBaseClasses[i].ClassName)=0 then
-      begin
-        Result:=StandardDesignerBaseClasses[i];
-        exit;
-      end;
+
+  function SearchInParent(AParent: TComponentClass): TComponentClass;
+  begin
+    Result := nil;
+    while AParent <> nil do
+    begin
+      if CompareText(AClassName, AParent.ClassName)=0 then
+        Exit(AParent);
+      AParent:=TComponentClass(AParent.ClassParent);
+      if AParent = TComponent then
+        Exit;
     end;
   end;
-  for i:=FDesignerBaseClasses.Count-1 downto 0 do begin
+
+begin
+  if WithDefaults then
+  begin
+    for i := 0 to StandardDesignerBaseClassesCount - 1 do
+    begin
+      Result := SearchInParent(StandardDesignerBaseClasses[i]);
+      if Result <> nil then
+        Exit(StandardDesignerBaseClasses[i]);
+    end;
+  end;
+  for i:=FDesignerBaseClasses.Count-1 downto 0 do
+  begin
     Result:=DesignerBaseClasses[i];
     if CompareText(Result.ClassName,AClassName)=0 then exit;
   end;
   Result:=nil;
+end;
+
+function TCustomFormEditor.StandardDesignerBaseClassesCount: Integer;
+begin
+  Result := Succ(High(CustomFormEditor.StandardDesignerBaseClasses) - Low(CustomFormEditor.StandardDesignerBaseClasses));
 end;
 
 procedure TCustomFormEditor.FindDefineProperty(
@@ -2185,6 +2201,16 @@ begin
   Result:=TComponentClass(FDesignerBaseClasses[Index]);
 end;
 
+function TCustomFormEditor.GetStandardDesignerBaseClasses(Index: integer): TComponentClass;
+begin
+  Result := CustomFormEditor.StandardDesignerBaseClasses[Index];
+end;
+
+procedure TCustomFormEditor.SetStandardDesignerBaseClasses(Index: integer; AValue: TComponentClass);
+begin
+  CustomFormEditor.StandardDesignerBaseClasses[Index] := AValue;
+end;
+
 procedure TCustomFormEditor.FrameCompGetCreationClass(Sender: TObject;
   var NewComponentClass: TComponentClass);
 begin
@@ -2226,8 +2252,7 @@ begin
                     TListSortCompare(@ComparePersClassNameAndDefPropCacheItem));
 end;
 
-function TCustomFormEditor.CreateUniqueComponentName(AComponent: TComponent
-  ): string;
+function TCustomFormEditor.CreateUniqueComponentName(AComponent: TComponent): string;
 begin
   Result:='';
   if (AComponent=nil) then exit;
@@ -2258,8 +2283,7 @@ begin
   end;
 end;
 
-function TCustomFormEditor.TranslateKeyToDesignerCommand(Key: word;
-  Shift: TShiftState): word;
+function TCustomFormEditor.TranslateKeyToDesignerCommand(Key: word; Shift: TShiftState): word;
 begin
   //debugln(['TCustomFormEditor.TranslateKeyToDesignerCommand ',DbgSName(TDesignerIDECommandForm),' ',Key,' ',dbgs(Shift)]);
   Result:=EditorOpts.KeyMap.TranslateKey(Key,Shift,TDesignerIDECommandForm);
@@ -2318,7 +2342,7 @@ var
   i: Integer;
   CurComponent: TComponent;
   P: TPoint;
-  AForm: TCustomNonFormDesignerForm;
+  AForm: TNonFormProxyDesignerForm;
   MinX: Integer;
   MinY: Integer;
   MaxX: Integer;
@@ -2415,8 +2439,7 @@ begin
     CustomForm.Designer.Modified;
 end;
 
-procedure TCustomFormEditor.SetObj_Inspector(
-  AnObjectInspector: TObjectInspectorDlg);
+procedure TCustomFormEditor.SetObj_Inspector(AnObjectInspector: TObjectInspectorDlg);
 begin
   if AnObjectInspector=FObj_Inspector then exit;
   if FObj_Inspector<>nil then begin
@@ -2442,8 +2465,9 @@ begin
   DesignerForm := GetDesignerForm(APersistent);
 
   // ask TMediator
-  if DesignerForm is TNonControlDesignerForm then begin
-    Mediator:=TNonControlDesignerForm(DesignerForm).Mediator;
+  if DesignerForm is BaseFormEditor1.NonFormProxyDesignerForm[NonControlProxyDesignerFormId] then
+  begin
+    Mediator:=(DesignerForm as INonControlDesigner).Mediator;
     if Mediator<>nil then
       Mediator.GetObjInspNodeImageIndex(APersistent, AImageIndex);
   end;

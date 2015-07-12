@@ -1160,8 +1160,8 @@ begin
   InvalidateGrabbers;
   OldCustomForm:=FForm;
   FForm:=NewCustomForm;
-  if FForm is TNonControlDesignerForm then
-    FMediator:=TNonControlDesignerForm(FForm).Mediator
+  if FForm is FormEditingHook.NonFormProxyDesignerForm[NonControlProxyDesignerFormId] then
+    FMediator:=(FForm as INonControlDesigner).Mediator
   else
     FMediator:=nil;
   FLookupRoot:=GetSelectionOwner;
@@ -1177,8 +1177,7 @@ begin
   Result:=FGrabbers[AGrabIndex];
 end;
 
-procedure TControlSelection.SetGrabbers(AGrabIndex:TGrabIndex;
-  const AGrabber: TGrabber);
+procedure TControlSelection.SetGrabbers(AGrabIndex:TGrabIndex; const AGrabber: TGrabber);
 begin
   FGrabbers[AGrabIndex]:=AGrabber;
 end;

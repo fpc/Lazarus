@@ -45,7 +45,8 @@ uses
   DiskDiffsDialog, InputHistory, CheckLFMDlg, LCLMemManager, CodeToolManager,
   CodeToolsStructs, ConvCodeTool, CodeCache, CodeTree, FindDeclarationTool,
   BasicCodeTools, SynEdit, UnitResources, IDEExternToolIntf, ObjectInspector,
-  PublishModule, etMessagesWnd;
+  PublishModule, etMessagesWnd,
+  FormEditingIntf;
 
 type
 
@@ -1611,6 +1612,8 @@ var
   IsPartOfProject: Boolean;
   RequiredPackages: String;
   Src: String;
+  i: Integer;
+  LFindDesignerBaseClassByName: Boolean = True;
 begin
   //debugln('TLazSourceFileManager.NewFile A NewFilename=',NewFilename);
   // empty NewFilename is ok, it will be auto generated
@@ -1776,6 +1779,18 @@ begin
 
     // create component
     AncestorType:=NewFileDescriptor.ResourceClass;
+    if AncestorType <> nil then
+    begin
+      // loop for Inherited Items
+      for i:=0 to BaseFormEditor1.StandardDesignerBaseClassesCount - 1 do
+        if AncestorType.InheritsFrom(BaseFormEditor1.StandardDesignerBaseClasses[i]) then
+        begin
+          LFindDesignerBaseClassByName := False;
+          Break;
+        end;
+      if LFindDesignerBaseClassByName then
+        AncestorType:=FormEditor1.FindDesignerBaseClassByName(AncestorType.ClassName, True);
+    end;
     //DebugLn(['TLazSourceFileManager.NewFile AncestorType=',dbgsName(AncestorType),' ComponentName',NewUnitInfo.ComponentName]);
     if AncestorType<>nil then begin
       ResType:=MainBuildBoss.GetResourceType(NewUnitInfo);
@@ -5952,7 +5967,7 @@ begin
     end;
   end else begin
     // default is TForm
-    AComponentClass:=TForm;
+    AComponentClass:=BaseFormEditor1.StandardDesignerBaseClasses[DesignerBaseClassId_TForm];
   end;
   Result:=true;
 end;
@@ -6017,7 +6032,7 @@ begin
 
   // use TForm as default ancestor
   if AncestorClass=nil then
-    AncestorClass:=TForm;
+    AncestorClass:=BaseFormEditor1.StandardDesignerBaseClasses[DesignerBaseClassId_TForm];
   //DebugLn('TLazSourceFileManager.LoadAncestorDependencyHidden Filename="',AnUnitInfo.Filename,'" AncestorClassName=',AncestorClassName,' AncestorClass=',dbgsName(AncestorClass));
   Result:=mrOk;
 end;

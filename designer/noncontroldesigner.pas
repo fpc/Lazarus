@@ -38,25 +38,25 @@ type
 
   { TNonControlDesignerForm }
 
-  TNonControlDesignerForm = class(TCustomNonFormDesignerForm)
+  TNonControlDesignerForm = class(TCustomNonFormDesignerForm, INonFormDesigner, INonControlDesigner)
   private
     FFrameWidth: integer;
-    FMediator: TDesignerMediator;
-    procedure SetMediator(const AValue: TDesignerMediator);
+    function GetMediator: TDesignerMediator;
+    procedure SetMediator(AValue: TDesignerMediator);
   protected
     procedure SetFrameWidth(const AValue: integer); virtual;
-    procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation);
           override;
   public
-    constructor Create(TheOwner: TComponent); override;
+    procedure Create; override; overload;
     destructor Destroy; override;
     procedure Paint; override;
+    procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
     procedure DoLoadBounds; override;
     procedure DoSaveBounds; override;
   public
     property FrameWidth: integer read FFrameWidth write SetFrameWidth;
-    property Mediator: TDesignerMediator read FMediator write SetMediator;
+    property Mediator: TDesignerMediator read GetMediator write SetMediator;
   end;
   
   
@@ -65,18 +65,26 @@ implementation
 
 { TNonControlDesignerForm }
 
-procedure TNonControlDesignerForm.SetMediator(const AValue: TDesignerMediator);
+function TNonControlDesignerForm.GetMediator: TDesignerMediator;
 begin
-  if FMediator=AValue then exit;
-  if FMediator<>nil then begin
-    FMediator.LCLForm:=nil;
-    FMediator.RemoveFreeNotification(Self);
-  end;
-  FMediator:=AValue;
-  if FMediator<>nil then begin
-    FMediator.LCLForm:=Self;
-    FMediator.FreeNotification(Self);
-    DoLoadBounds;
+  Result := TNonControlProxyDesignerForm(NonFormProxyDesignerForm).Mediator;
+end;
+
+procedure TNonControlDesignerForm.SetMediator(AValue: TDesignerMediator);
+begin
+  with TNonControlProxyDesignerForm(NonFormProxyDesignerForm) do
+  begin
+    if Mediator=AValue then exit;
+    if Mediator<>nil then begin
+      Mediator.LCLForm:=nil;
+      Mediator.RemoveFreeNotification(NonFormProxyDesignerForm);
+    end;
+    Mediator:=AValue;
+    if Mediator<>nil then begin
+      Mediator.LCLForm:=NonFormProxyDesignerForm;
+      Mediator.FreeNotification(NonFormProxyDesignerForm);
+      DoLoadBounds;
+    end;
   end;
 end;
 
@@ -85,15 +93,15 @@ begin
   if FFrameWidth = AValue then 
     Exit;
   FFrameWidth := AValue;
-  Invalidate;
+  NonFormProxyDesignerForm.Invalidate;
 end;
 
-procedure TNonControlDesignerForm.DoSetBounds(ALeft, ATop, AWidth,
-  AHeight: integer);
+procedure TNonControlDesignerForm.SetBounds(aLeft, aTop, aWidth,
+  aHeight: integer);
 begin
-  inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
+  inherited SetBounds(ALeft, ATop, AWidth, AHeight);
   if Mediator<>nil then
-    Mediator.SetFormBounds(LookupRoot,BoundsRect,ClientRect);
+    Mediator.SetFormBounds(LookupRoot,NonFormProxyDesignerForm.BoundsRect,NonFormProxyDesignerForm.ClientRect);
 end;
 
 procedure TNonControlDesignerForm.Notification(AComponent: TComponent;
@@ -101,21 +109,22 @@ procedure TNonControlDesignerForm.Notification(AComponent: TComponent;
 begin
   inherited Notification(AComponent, Operation);
   if Operation=opRemove then begin
-    if FMediator=AComponent then FMediator:=nil;
+    if Mediator=AComponent then Mediator:=nil;
   end;
 end;
 
-constructor TNonControlDesignerForm.Create(TheOwner: TComponent);
+procedure TNonControlDesignerForm.Create;
 begin
-  inherited Create(TheOwner);
+  inherited;
   FFrameWidth := 1;
-  ControlStyle := ControlStyle - [csAcceptsControls];
+  NonFormProxyDesignerForm.ControlStyle := NonFormProxyDesignerForm.ControlStyle - [csAcceptsControls];
 end;
 
 destructor TNonControlDesignerForm.Destroy;
 begin
   try
-    FreeAndNil(FMediator);
+    Mediator.Free;
+    Mediator := nil;
   except
     on E: Exception do begin
       debugln(['TNonControlDesignerForm.Destroy freeing mediator failed: ',E.Message]);
@@ -129,15 +138,16 @@ var
   ARect: TRect;
 begin
   inherited Paint;
+  with NonFormProxyDesignerForm do
   with Canvas do begin
     if LookupRoot is TDataModule then
     begin
       Brush.Color:=clWhite;
       ARect:=Rect(FrameWidth,FrameWidth,
-          Self.ClientWidth-FrameWidth,
-          Self.ClientHeight-FrameWidth);
+          ClientWidth-FrameWidth,
+          ClientHeight-FrameWidth);
       FillRect(ARect);
-      ARect:=Rect(0,0,Self.ClientWidth+1,Self.ClientHeight+1);
+      ARect:=Rect(0,0,ClientWidth+1,ClientHeight+1);
       Pen.Color:=clBlack;
       Frame3d(ARect, FrameWidth, bvLowered);
     end;
@@ -150,16 +160,27 @@ procedure TNonControlDesignerForm.DoLoadBounds;
 
   procedure SetNewBounds(NewLeft, NewTop, NewWidth, NewHeight: integer);
   begin
-    if NewWidth<=0 then NewWidth:=Width;
-    if NewHeight<=0 then NewHeight:=Height;
+    with NonFormProxyDesignerForm do
+    begin
+      if NewWidth<=0 then NewWidth:=Width;
+      if NewHeight<=0 then NewHeight:=Height;
 
-    NewWidth:=Max(20,Min(NewWidth,Screen.Width-50));
-    NewHeight:=Max(20,Min(NewHeight,Screen.Height-50));
-    NewLeft:=Max(0,Min(NewLeft,Screen.Width-NewWidth-50));
-    NewTop:=Max(0,Min(NewTop,Screen.Height-NewHeight-50));
-
-    //debugln('TNonControlDesignerForm.DoLoadBounds (TDataModule) ',dbgsName(LookupRoot),' ',dbgs(NewLeft),',',dbgs(NewTop),',',dbgs(NewWidth),',',dbgs(NewHeight));
-    SetBounds(NewLeft,NewTop,Max(20,NewWidth),Max(NewHeight,20));
+      if DockedDesigner then
+      begin
+        NewLeft:=Max(0,NewLeft);
+        NewTop:=Max(0,NewTop);
+        SetPublishedBounds(NewLeft,NewTop,Max(0,NewWidth),Max(NewHeight,0));
+      end
+      else
+      begin
+        NewWidth:=Max(20,Min(NewWidth,Screen.Width-50));
+        NewHeight:=Max(20,Min(NewHeight,Screen.Height-50));
+        NewLeft:=Max(0,Min(NewLeft,Screen.Width-NewWidth-50));
+        NewTop:=Max(0,Min(NewTop,Screen.Height-NewHeight-50));
+        SetPublishedBounds(NewLeft,NewTop,Max(20,NewWidth),Max(NewHeight,20));
+      end;
+      //debugln('TNonControlDesignerForm.DoLoadBounds (TDataModule) ',dbgsName(LookupRoot),' ',dbgs(NewLeft),',',dbgs(NewTop),',',dbgs(NewWidth),',',dbgs(NewHeight));
+    end;
   end;
 
 var
@@ -180,7 +201,7 @@ begin
     NewHeight := CurDataModule.DesignSize.Y;
     
     SetNewBounds(NewLeft, NewTop, NewWidth, NewHeight);
-  end else begin
+  end else with NonFormProxyDesignerForm do begin
     if Mediator<>nil then begin
       Mediator.GetFormBounds(LookupRoot,NewBounds,NewClientRect);
       NewLeft:=NewBounds.Left;
@@ -203,17 +224,23 @@ begin
 end;
 
 procedure TNonControlDesignerForm.DoSaveBounds;
+var
+  LBoundsRect: TRect;
+  LClientRect: TRect;
 begin
   if LookupRoot is TDataModule then begin
-    with TDataModule(LookupRoot) do begin
+    with NonFormProxyDesignerForm, TDataModule(LookupRoot) do begin
       DesignOffset:=Point(Left,Top);
       DesignSize:=Point(Width,Height);
       //debugln('TNonControlDesignerForm.DoSaveBounds (TDataModule) ',dbgsName(LookupRoot),' ',dbgs(DesignOffset.X),',',dbgs(DesignOffset.Y));
     end;
-  end else if LookupRoot<>nil then begin
+  end else if LookupRoot<>nil then with NonFormProxyDesignerForm do begin
     //debugln(['TNonControlDesignerForm.DoSaveBounds ',dbgsName(LookupRoot),' ',dbgs(Left),',',dbgs(Top),' ',DbgSName(Mediator)]);
     if Mediator<>nil then begin
-      Mediator.SetFormBounds(LookupRoot,BoundsRect,ClientRect);
+      LBoundsRect := Rect(Left, Top, Left + Width, Top + Height);
+      LClientRect := Rect(0, 0, Width, Height);
+
+      Mediator.SetFormBounds(LookupRoot, LBoundsRect, LClientRect);
     end else begin
       SetComponentLeftTopOrDesignInfo(LookupRoot,Left,Top);
     end;

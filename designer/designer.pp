@@ -617,17 +617,19 @@ end;
 constructor TDesigner.Create(TheDesignerForm: TCustomForm;
   AControlSelection: TControlSelection);
 var
+  LNonControlDesigner: INonControlDesigner;
   i: integer;
 begin
   inherited Create;
   //debugln(['TDesigner.Create Self=',dbgs(Pointer(Self)),' TheDesignerForm=',DbgSName(TheDesignerForm)]);
   FForm := TheDesignerForm;
-  if FForm is TNonControlDesignerForm then begin
-    FLookupRoot := TNonControlDesignerForm(FForm).LookupRoot;
-    Mediator:=TNonControlDesignerForm(FForm).Mediator;
+  if FForm is BaseFormEditor1.NonFormProxyDesignerForm[NonControlProxyDesignerFormId] then begin
+    LNonControlDesigner := FForm as INonControlDesigner;
+    FLookupRoot := LNonControlDesigner.LookupRoot;
+    Mediator := LNonControlDesigner.Mediator;
   end
-  else if FForm is TFrameDesignerForm then
-    FLookupRoot := TFrameDesignerForm(FForm).LookupRoot
+  else if FForm is BaseFormEditor1.NonFormProxyDesignerForm[FrameProxyDesignerFormId] then
+    FLookupRoot := (FForm as IFrameDesigner).LookupRoot
   else
     FLookupRoot := FForm;
 
