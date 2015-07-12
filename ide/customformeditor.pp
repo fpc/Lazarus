@@ -514,8 +514,7 @@ Begin
     Obj_Inspector.Selection := FSelection;
 end;
 
-procedure TCustomFormEditor.DeleteComponent(AComponent: TComponent;
-  FreeComponent: boolean);
+procedure TCustomFormEditor.DeleteComponent(AComponent: TComponent; FreeComponent: boolean);
 var
   AForm: TCustomForm;
   AWinControl: TWinControl;
@@ -590,10 +589,10 @@ Begin
       DebugLn(['TCustomFormEditor.DeleteComponent Hiding: ',dbgsName(AWinControl)]);
     end;
   end;
+  PropertyEditorHook.PersistentDeleted;
 end;
 
-function TCustomFormEditor.FindComponentByName(const Name: ShortString
-  ): TComponent;
+function TCustomFormEditor.FindComponentByName(const Name: ShortString): TComponent;
 var
   i: longint;
 Begin

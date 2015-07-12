@@ -2921,6 +2921,8 @@ begin
   // call ComponentDeleted handler
   if Assigned(FOnPersistentDeleted) then
     FOnPersistentDeleted(Self,APersistent);
+  if Hook<>nil then
+    Hook.PersistentDeleted;
 end;
 
 procedure TDesigner.MarkPersistentForDeletion(APersistent: TPersistent);
