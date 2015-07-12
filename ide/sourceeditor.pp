@@ -688,7 +688,7 @@ type
     procedure EditorChanged(Sender: TObject);
     procedure DoClose(var CloseAction: TCloseAction); override;
     procedure DoShow; override;
-
+    procedure DoHide; override;
   protected
     function GetActiveCompletionPlugin: TSourceEditorCompletionPlugin; override;
     function GetCompletionPlugins(Index: integer): TSourceEditorCompletionPlugin; override;
@@ -865,6 +865,8 @@ type
     function  GetUniqueSourceEditors(Index: integer): TSourceEditorInterface; override;
     function GetMarklingProducers(Index: integer): TSourceMarklingProducer; override;
     procedure SyncMessageWnd(Sender: TObject);
+    procedure DoWindowShow(AWindow: TSourceNotebook);
+    procedure DoWindowHide(AWindow: TSourceNotebook);
   public
     procedure BeginAutoFocusLock;
     procedure EndAutoFocusLock;
@@ -6731,6 +6733,15 @@ begin
   // statusbar was not updated when visible=false, update now
   if snUpdateStatusBarNeeded in States then
     UpdateStatusBar;
+  if Assigned(Manager) and (Parent <> nil) then
+    Manager.DoWindowShow(Self);
+end;
+
+procedure TSourceNotebook.DoHide;
+begin
+  inherited DoHide;
+  if Assigned(Manager) and (Parent <> nil) then
+    Manager.DoWindowHide(Self);
 end;
 
 function TSourceNotebook.IndexOfEditorInShareWith(AnOtherEditor: TSourceEditor): Integer;
@@ -8816,6 +8827,16 @@ function TSourceEditorManagerBase.GetMarklingProducers(Index: integer
   ): TSourceMarklingProducer;
 begin
   Result:=TSourceMarklingProducer(fProducers[Index]);
+end;
+
+procedure TSourceEditorManagerBase.DoWindowShow(AWindow: TSourceNotebook);
+begin
+  FChangeNotifyLists[semWindowShow].CallNotifyEvents(AWindow);
+end;
+
+procedure TSourceEditorManagerBase.DoWindowHide(AWindow: TSourceNotebook);
+begin
+  FChangeNotifyLists[semWindowHide].CallNotifyEvents(AWindow);
 end;
 
 procedure TSourceEditorManagerBase.SyncMessageWnd(Sender: TObject);

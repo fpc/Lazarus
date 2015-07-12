@@ -218,6 +218,8 @@ type
     semWindowDestroy,   // Called after removal of a Window
     semWindowActivate,  // Window is now ActiveSourceWindow (does not vave to be focused)
     semWindowFocused,   // The window became the active win of the application
+    semWindowShow,      // Called after a Window is shown
+    semWindowHide,      // Called after a Window is hidden
     semEditorCreate,    // Called after a new editor was created and added to list
     semEditorDestroy,   // Called when an Editor is destroyed / after it is removed fron the list of editors
     semEditorActivate,  // Editor is ActiveEditor
