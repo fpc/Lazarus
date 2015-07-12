@@ -243,7 +243,7 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure CheckOnIdle;
-    procedure KeyUp(var Key: Word; Shift: TShiftState); override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure Refresh(OnlyVisible: boolean);
     procedure RefreshCode(OnlyVisible: boolean);
     procedure RefreshDirectives(OnlyVisible: boolean);
@@ -1878,9 +1878,9 @@ begin
   Refresh(true);
 end;
 
-procedure TCodeExplorerView.KeyUp(var Key: Word; Shift: TShiftState);
+procedure TCodeExplorerView.KeyDown(var Key: Word; Shift: TShiftState);
 begin
-  inherited KeyUp(Key, Shift);
+  inherited KeyDown(Key, Shift);
   ExecuteIDEShortCut(Self,Key,Shift,nil);
 end;
 
