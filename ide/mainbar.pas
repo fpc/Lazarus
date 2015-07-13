@@ -44,6 +44,9 @@ uses
   ProjectIntf, NewItemIntf, MenuIntf, LazIDEIntf, IDEWindowIntf, IDEImagesIntf,
   LazFileCache, EnvironmentOpts, LazarusIDEStrConsts, ComponentReg, IdeCoolbarData;
 
+const
+  LM_TOGGLE_DEBUG_DESKTOP = LM_USER + 101;
+
 type
   { TMainIDEBar }
 
@@ -64,6 +67,7 @@ type
     procedure DoShow; override;
     procedure WndProc(var Message: TLMessage); override;
     procedure Resizing(State: TWindowState); override;
+    procedure ToggleDebugDesktop(var Msg: TLMessage); message LM_TOGGLE_DEBUG_DESKTOP;
   public
     ApplicationIsActivate: boolean;
     LastCompPaletteForm: TCustomForm;
@@ -784,6 +788,14 @@ begin
   end;
   // update all hints in main ide toolbars
   //??? CurShowHint:=EnvironmentOptions.ShowHintsForMainSpeedButtons;
+end;
+
+procedure TMainIDEBar.ToggleDebugDesktop(var Msg: TLMessage);
+begin
+  if (Msg.lParam = 1) then
+    EnvironmentOptions.EnableDebugDesktop
+  else
+    EnvironmentOptions.DisableDebugDesktop;
 end;
 
 procedure TMainIDEBar.UpdateIDEComponentPalette(IfFormChanged: boolean);
