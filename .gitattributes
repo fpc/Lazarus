@@ -6270,6 +6270,7 @@ images/menu/menu_jumpto_implementationuses.png -text svneol=unset#image/png
 images/menu/menu_jumpto_initialization.png -text svneol=unset#image/png
 images/menu/menu_jumpto_interface.png -text svneol=unset#image/png
 images/menu/menu_jumpto_interfaceuses.png -text svneol=unset#image/png
+images/menu/menu_manage_desktops.png -text svneol=unset#image/png
 images/menu/menu_new.png -text svneol=unset#image/png
 images/menu/menu_pause.png -text svneol=unset#image/png
 images/menu/menu_project_add.png -text svneol=unset#image/png
