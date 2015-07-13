@@ -6,8 +6,9 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, ButtonPanel, LCLType,
-  LazarusIDEStrConsts, LCLProc, EnvironmentOpts;
+  Buttons, ButtonPanel,
+  LCLType, LazarusIDEStrConsts, LCLProc, EnvironmentOpts,
+  IDEWindowIntf, IDEOptionsIntf;
 
 type
 
@@ -42,9 +43,6 @@ function ShowDesktopManagerDlg: TModalResult;
 //var DesktopForm: TDesktopForm;
 
 implementation
-
-uses
-  IDEWindowIntf, IDEOptionsIntf;
 
 {$R *.lfm}
 
