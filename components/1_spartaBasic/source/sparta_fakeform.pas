@@ -202,6 +202,9 @@ end;
 
 destructor TFakeForm.Destroy;
 begin
+  FHorzScrollBar.Free;
+  FVertScrollBar.Free;
+
   FHackConstraints.Free;
   FControlForHackedConstraints.Free;
 

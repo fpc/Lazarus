@@ -290,15 +290,15 @@ begin
 {$ELSE}
   LIterator := SourceEditorWindows.Iterator;
   if LIterator <> nil then
-  repeat
-    LSEWD := LIterator.Value;
-    if LSEWD.FPageCtrlList.contains(ASrcEditor) then
-    begin
-      LIterator.Free;
-      Exit(LSEWD.FPageCtrlList[ASrcEditor]);
-    end;
-  until not LIterator.next;
-  LIterator.Free;
+  try
+    repeat
+      LSEWD := LIterator.Value;
+      if LSEWD.FPageCtrlList.contains(ASrcEditor) then
+        Exit(LSEWD.FPageCtrlList[ASrcEditor]);
+    until not LIterator.next;
+  finally
+    LIterator.Free;
+  end;
 {$ENDIF}
 
 end;
@@ -366,25 +366,28 @@ begin
 {$ELSE}
   LIterator := SourceEditorWindows.Iterator;
   if LIterator <> nil then
-  repeat
-    LWindow := LIterator.Key;
+  try
+    repeat
+      LWindow := LIterator.Key;
 
-    LPageCtrl := FindModulePageControl(LWindow);
+      LPageCtrl := FindModulePageControl(LWindow);
 
-    // for example LPageCtrl is nil when we clone module to new window
-    if (LPageCtrl = nil) or (csDestroying in LWindow.ComponentState) then
-      Continue;
+      // for example LPageCtrl is nil when we clone module to new window
+      if (LPageCtrl = nil) or (csDestroying in LWindow.ComponentState) then
+        Continue;
 
-    if LWindow.ActiveEditor = nil then
-      LPageCtrl.HideDesignPage
-    else
-      if LWindow.ActiveEditor.GetDesigner(True) <> nil then
-        // TODO some check function: is displayed right form?
-        LPageCtrl.ShowDesignPage
+      if LWindow.ActiveEditor = nil then
+        LPageCtrl.HideDesignPage
       else
-        LPageCtrl.HideDesignPage;
-  until not LIterator.next;
-  LIterator.Free;
+        if LWindow.ActiveEditor.GetDesigner(True) <> nil then
+          // TODO some check function: is displayed right form?
+          LPageCtrl.ShowDesignPage
+        else
+          LPageCtrl.HideDesignPage;
+    until not LIterator.next;
+  finally
+    LIterator.Free;
+  end;
 {$ENDIF}
 end;
 
@@ -998,23 +1001,29 @@ begin
 {$ELSE}
     LIterator := SourceEditorWindows.Iterator;
     if LIterator <> nil then
-    repeat
-      LSEWD := LIterator.Value;
-      if LSEWD.ActiveDesignFormData <> nil then
-        if LSEWD.ActiveDesignFormData.Form.Form = Form then
-          LSEWD.FActiveDesignFormData := nil; // important - we can't call OnChange tab, because tab don't exist anymore
-
-      LIterator2 := LSEWD.FPageCtrlList.Iterator;
-      if LIterator2 <> nil then
+    try
       repeat
-        mpc := LIterator2.Value;
-        if mpc.DesignFormData <> nil then
-           if mpc.DesignFormData.Form.Form = Form then
-              mpc.DesignFormData := nil;
-      until not LIterator2.next;
-      LIterator2.Free;
-    until not LIterator.next;
-    LIterator.Free;
+        LSEWD := LIterator.Value;
+        if LSEWD.ActiveDesignFormData <> nil then
+          if LSEWD.ActiveDesignFormData.Form.Form = Form then
+            LSEWD.FActiveDesignFormData := nil; // important - we can't call OnChange tab, because tab don't exist anymore
+
+        LIterator2 := LSEWD.FPageCtrlList.Iterator;
+        if LIterator2 <> nil then
+        try
+          repeat
+            mpc := LIterator2.Value;
+            if mpc.DesignFormData <> nil then
+               if mpc.DesignFormData.Form.Form = Form then
+                  mpc.DesignFormData := nil;
+          until not LIterator2.next;
+        finally
+          LIterator2.Free;
+        end;
+      until not LIterator.next;
+    finally
+      LIterator.Free;
+    end;
 {$ENDIF}
 
     LFormData.Free;
@@ -1139,23 +1148,25 @@ var
 {$ELSE}
     LIterator := SourceEditorWindows[LastActiveSourceEditorWindow].FPageCtrlList.Iterator;
     if LIterator <> nil then
-    repeat
-      se := LIterator.Key;
-      Result := True;
-      for i := 0 to LastActiveSourceEditorWindow.Count - 1 do
-        if se = LastActiveSourceEditorWindow.Items[i] then
+    try
+      repeat
+        se := LIterator.Key;
+        Result := True;
+        for i := 0 to LastActiveSourceEditorWindow.Count - 1 do
+          if se = LastActiveSourceEditorWindow.Items[i] then
+          begin
+            Result := False;
+            Break;
+          end;
+        if Result then
         begin
-          Result := False;
-          Break;
+          LastActiveSourceEditor := se; // after moving code editor into other window, sometimes IDE switch to other tab :\ damn... this line prevent this.
+          Exit;
         end;
-      if Result then
-      begin
-        LastActiveSourceEditor := se; // after moving code editor into other window, sometimes IDE switch to other tab :\ damn... this line prevent this.
-        LIterator.Free;
-        Exit;
-      end;
-    until not LIterator.next;
-    LIterator.Free;
+      until not LIterator.next;
+    finally
+      LIterator.Free;
+    end;
 {$ENDIF}
 
     Result := False;
@@ -1406,25 +1417,29 @@ begin
             // deaktywuj zakladke design w pozostalych page control :)
             LIterator := SourceEditorWindows.Iterator;
             if LIterator <> nil then
-            repeat
-              w := LIterator.Key;
-              if w = LActiveSourceWindow then
-                Continue
-              else
-              begin
-                LIterator2 := SourceEditorWindows[w].FPageCtrlList.Iterator;
-                if LIterator2 <> nil then
-                repeat
-                  p := LIterator2.Data;
-                  if (p.Value.DesignFormData = LFormData) and (p.Value <> Sender) then
-                  begin
-                    IDETabMaster.ShowCode(p.Key);
+            try
+              repeat
+                w := LIterator.Key;
+                if w = LActiveSourceWindow then
+                  Continue
+                else
+                begin
+                  LIterator2 := SourceEditorWindows[w].FPageCtrlList.Iterator;
+                  if LIterator2 <> nil then
+                  try
+                    repeat
+                      p := LIterator2.Data;
+                      if (p.Value.DesignFormData = LFormData) and (p.Value <> Sender) then
+                        IDETabMaster.ShowCode(p.Key);
+                    until not LIterator2.next;
+                  finally
+                    LIterator2.Free;
                   end;
-                until not LIterator2.next;
-                LIterator2.Free;
-              end;
-            until not LIterator.next;
-            LIterator.Free;
+                end;
+              until not LIterator.next;
+            finally
+              LIterator.Free;
+            end;
 
             LSourceWndData.ActiveDesignFormData := LFormData;
             // rozne okna moga miec rozne rozmiary
@@ -1451,11 +1466,14 @@ begin
 {$ELSE}
   LIterator := SourceEditorWindows.Iterator;
   if LIterator <> nil then
-  repeat
-    sewd := LIterator.Value;
-    sewd.OnChangeBounds(Sender)
-  until not LIterator.next;
-  LIterator.Free;
+  try
+    repeat
+      sewd := LIterator.Value;
+      sewd.OnChangeBounds(Sender)
+    until not LIterator.next;
+  finally
+    LIterator.Free;
+  end;
 {$ENDIF}
 end;
 
@@ -1562,19 +1580,22 @@ begin
 {$ELSE}
     LIterator := SourceEditorWindows.Iterator;
     if LIterator <> nil then
-    repeat
-      w := LIterator.Key;
-      e := w.ActiveEditor;
-      // zakomentowano, bo wkurwiajace bylo ze dzialalo to dla kazdego editora...
-      if (e = nil) or (e.GetDesigner(True) <> LForm.Form.Form.Designer) then  // mozna to wyelminowac tworzac event zwracajacy ze
-      // nie mozna pokazac formy... albo propert
-        Continue;
+    try
+      repeat
+        w := LIterator.Key;
+        e := w.ActiveEditor;
+        // zakomentowano, bo wkurwiajace bylo ze dzialalo to dla kazdego editora...
+        if (e = nil) or (e.GetDesigner(True) <> LForm.Form.Form.Designer) then  // mozna to wyelminowac tworzac event zwracajacy ze
+        // nie mozna pokazac formy... albo propert
+          Continue;
 
-      p := FindModulePageControl(e);
-      if p.PageIndex = 1 then
-        Exit;
-    until not LIterator.next;
-    LIterator.Free;
+        p := FindModulePageControl(e);
+        if p.PageIndex = 1 then
+          Exit;
+      until not LIterator.next;
+    finally
+      LIterator.Free;
+    end;
 {$ENDIF}
   end;
 
@@ -1732,6 +1753,23 @@ begin
   LChildSite.Height := TCustomForm(LazarusIDE.GetMainBar).Height - AHeight;
 end;
 
+{$IFNDEF USE_GENERICS_COLLECTIONS}
+procedure FreeSourceEditorWindowsValues;
+var
+  LIterator: THashmap<TSourceEditorWindowInterface, TSourceEditorWindowData, THash_TObject>.TIterator;
+begin
+  LIterator := SourceEditorWindows.Iterator;
+  if LIterator <> nil then
+  try
+    repeat
+      LIterator.Value.Free;
+    until not LIterator.next;
+  finally
+    LIterator.Free;
+  end;
+end;
+{$ENDIF}
+
 initialization
   dsgForms := Classes.TList.Create;
 {$IFDEF USE_GENERICS_COLLECTIONS}
@@ -1742,6 +1780,9 @@ initialization
   Forms := Classes.TList.Create;
 finalization
   Forms.Free;
+{$IFNDEF USE_GENERICS_COLLECTIONS}
+  FreeSourceEditorWindowsValues;
+{$ENDIF}
   SourceEditorWindows.Free;
   FreeAndNil(dsgForms);
 end.

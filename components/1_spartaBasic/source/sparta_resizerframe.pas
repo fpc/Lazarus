@@ -94,6 +94,7 @@ type
     function GetBackgroundMargin(const AIndex: Integer): Integer;
   public
     constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
 
     property DesignedForm: IDesignedForm read FDesignedForm write SetDesignedForm;
 
@@ -672,6 +673,12 @@ begin
   pClient.OnChangeBounds := ClientChangeBounds;
   pBG.OnChangeBounds     := BGChangeBounds;
   PositionNodes(Self);
+end;
+
+destructor TResizerFrame.Destroy;
+begin
+  FNodes.Free;
+  inherited Destroy;
 end;
 
 procedure TResizerFrame.PositionNodes(AroundControl: TWinControl);

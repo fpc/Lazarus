@@ -28,11 +28,7 @@ type
 
   { TResizer }
 
-{$IFDEF USE_GENERICS_COLLECTIONS}
-  TResizer = class(TSingletonImplementation, IResizer)
-{$ELSE}
   TResizer = class(TComponent, IResizer)
-{$ENDIF}
   private
     FDesignedForm: IDesignedForm;
 
@@ -206,6 +202,7 @@ end;
 
 constructor TResizer.Create(AParent: TWinControl);
 begin
+  inherited Create(AParent);
   FParent := AParent;
   // create layout
   FEDTU := TList.Create;
