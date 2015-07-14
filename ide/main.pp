@@ -3569,12 +3569,10 @@ begin
 
   if not IDEIsClosing and MainIDEBar.HandleAllocated then
   begin
-    //we need to detach the desktop change from current message process
-    //  -> we post another message to the queue
     if (ToolStatus = itDebugger) then
-      PostMessage(MainIDEBar.Handle, LM_TOGGLE_DEBUG_DESKTOP, 0, 1)
+      EnvironmentOptions.EnableDebugDesktop
     else if (ToolStatus <> itExiting) then
-      PostMessage(MainIDEBar.Handle, LM_TOGGLE_DEBUG_DESKTOP, 0, 0);
+      EnvironmentOptions.DisableDebugDesktop;
   end;
 end;
 
