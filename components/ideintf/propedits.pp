@@ -7127,10 +7127,11 @@ end;
 
 procedure InitPropEdits;
 begin
-  PropertyClassList:=TList.Create;
-  PropertyEditorMapperList:=TList.Create;
-  // register the standard property editors
+  // Don't create PropertyClassList and PropertyEditorMapperList lists here.
+  // RegisterPropertyEditor and RegisterPropertyEditorMapper create them,
+  //  and they are called from many initialization sections in unpredictable order.
 
+  // register the standard property editors
   RegisterPropertyEditor(TypeInfo(AnsiString), TComponent, 'Name', TComponentNamePropertyEditor);
   RegisterPropertyEditor(TypeInfo(TTranslateString), TCustomLabel, 'Caption', TStringMultilinePropertyEditor);
   RegisterPropertyEditor(TypeInfo(TTranslateString), TCustomStaticText, 'Caption', TStringMultilinePropertyEditor);
@@ -7143,10 +7144,8 @@ begin
   RegisterPropertyEditor(TypeInfo(AnsiString), nil, 'SessionProperties', TSessionPropertiesPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TModalResult), nil, 'ModalResult', TModalResultPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TShortCut), nil, '', TShortCutPropertyEditor);
-  //RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TDate'),
-  //  nil,'',TDatePropertyEditor);
-  //RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TTime'),
-  //  nil,'',TTimePropertyEditor);
+  //RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TDate'), nil,'',TDatePropertyEditor);
+  //RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TTime'), nil,'',TTimePropertyEditor);
   RegisterPropertyEditor(TypeInfo(TDateTime), nil, '', TDateTimePropertyEditor);
   RegisterPropertyEditor(TypeInfo(TCursor), nil, '', TCursorPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TComponent), nil, '', TComponentPropertyEditor);
@@ -7178,23 +7177,26 @@ begin
 end;
 
 procedure FinalPropEdits;
-var i: integer;
+var
+  i: integer;
   pm: PPropertyEditorMapperRec;
   pc: PPropertyClassRec;
 begin
-  for i:=0 to PropertyEditorMapperList.Count-1 do begin
-    pm:=PPropertyEditorMapperRec(PropertyEditorMapperList.Items[i]);
-    Dispose(pm);
+  if PropertyEditorMapperList<>nil then begin
+    for i:=0 to PropertyEditorMapperList.Count-1 do begin
+      pm:=PPropertyEditorMapperRec(PropertyEditorMapperList.Items[i]);
+      Dispose(pm);
+    end;
+    FreeAndNil(PropertyEditorMapperList);
   end;
-  PropertyEditorMapperList.Free;
-  PropertyEditorMapperList:=nil;
 
-  for i:=0 to PropertyClassList.Count-1 do begin
-    pc:=PPropertyClassRec(PropertyClassList[i]);
-    Dispose(pc);
+  if PropertyClassList<>nil then begin
+    for i:=0 to PropertyClassList.Count-1 do begin
+      pc:=PPropertyClassRec(PropertyClassList[i]);
+      Dispose(pc);
+    end;
+    FreeAndNil(PropertyClassList);
   end;
-  PropertyClassList.Free;
-  PropertyClassList:=nil;
 
   FreeAndNil(ListPropertyEditors);
   FreeAndNil(VirtualKeyStrings);
