@@ -156,7 +156,7 @@ uses
   UseUnitDlg, FindOverloadsDlg, EditorFileManager,
   CleanDirDlg, CodeContextForm, AboutFrm, CompatibilityRestrictions,
   RestrictionBrowser, ProjectWizardDlg, IDECmdLine, IDEGuiCmdLine, CodeExplOpts,
-  EditorMacroListViewer, SourceFileManager,
+  EditorMacroListViewer, SourceFileManager, EditorToolbarStatic,
   // main ide
   MainBar, MainIntf, MainBase;
 
@@ -4669,6 +4669,7 @@ begin
     Application.TaskBarBehavior := tbSingleButton
   else
     Application.TaskBarBehavior := tbDefault;
+  uAllEditorToolbars.ReloadAll;
 
   // reload lazarus packages
   if LazarusSrcDirChanged then
