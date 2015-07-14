@@ -3174,7 +3174,7 @@ begin
     ParentClientWidth:=r.Right;
     ParentClientHeight:=r.Bottom;
 
-    //if NeedAlignWork then
+    if NeedAlignWork then
     begin
       //DebugLn(['TWinControl.AlignControls  ',DbgSName(Self),' RemainingClientRect=',dbgs(RemainingClientRect),' ',dbgs(ClientRect)]);
       RemainingBorderSpace:=Rect(0,0,0,0);
