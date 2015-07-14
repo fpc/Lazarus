@@ -77,6 +77,7 @@ type
     FLayout: TSimpleWindowLayout;
     FDivider: TSimpleWindowLayoutDividerPos;
     FShowSimpleLayout: boolean;
+    FLayoutChanged: boolean;
     procedure EnableGeometryEdits(aEnable: Boolean);
     function GetPlacementRadioButtons(APlacement: TIDEWindowPlacement): TRadioButton;
     procedure SetLayout(const AValue: TSimpleWindowLayout);
@@ -212,6 +213,8 @@ begin
     lblWindowPosition.Parent:=nil;
     WindowPositionsPanel.Parent:=nil;
   end;
+
+  FLayoutChanged := False;
 end;
 
 procedure TWindowOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -233,7 +236,8 @@ begin
     IDEProjectDirectoryInIdeTitle:=ProjectDirInIdeTitleCheckBox.Checked;
   end;
 
-  IDEWindowCreators.RestoreSimpleLayout;
+  if FLayoutChanged then
+    IDEWindowCreators.RestoreSimpleLayout;
 end;
 
 function TWindowOptionsFrame.GetPlacementRadioButtons(
@@ -343,6 +347,7 @@ begin
     end;
     Layout.ApplyDivider(True);
   end;
+  FLayoutChanged := True;
 end;
 
 procedure TWindowOptionsFrame.EnableGeometryEdits(aEnable: Boolean);
