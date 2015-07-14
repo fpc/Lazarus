@@ -34,7 +34,7 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       AnchorSideRight.Control = PageMoveUpBtn
       AnchorSideBottom.Control = AddPageButton
       Left = 1
-      Height = 323
+      Height = 326
       Top = 0
       Width = 156
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -55,7 +55,7 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       AnchorSideBottom.Control = ImportDividerBevel
       Left = 1
       Height = 29
-      Top = 329
+      Top = 332
       Width = 49
       Anchors = [akLeft, akBottom]
       AutoSize = True
@@ -72,7 +72,7 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       AnchorSideBottom.Side = asrBottom
       Left = 59
       Height = 29
-      Top = 329
+      Top = 332
       Width = 101
       AutoSize = True
       BorderSpacing.Left = 9
@@ -112,14 +112,14 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       ParentShowHint = False
     end
     object ImportDividerBevel: TDividerBevel
-      AnchorSideLeft.Control = ImportButton
+      AnchorSideLeft.Control = ExportButton
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = PagesGroupBox
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = ImportButton
       Left = 1
       Height = 17
-      Top = 364
+      Top = 367
       Width = 190
       Caption = 'Import / Export'
       Anchors = [akLeft, akRight, akBottom]
@@ -127,37 +127,36 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       ParentFont = False
     end
     object ImportButton: TBitBtn
-      AnchorSideLeft.Control = PagesListBox
-      AnchorSideTop.Side = asrBottom
+      AnchorSideLeft.Control = ExportButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = ExportButton
+      AnchorSideTop.Side = asrCenter
       AnchorSideBottom.Control = PagesGroupBox
       AnchorSideBottom.Side = asrBottom
-      Left = 1
+      Left = 77
       Height = 29
       Top = 384
       Width = 65
-      Anchors = [akLeft, akBottom]
       AutoSize = True
-      BorderSpacing.Top = 3
+      BorderSpacing.Left = 13
       BorderSpacing.Bottom = 6
       Caption = 'Import ...'
       OnClick = ImportButtonClick
       TabOrder = 3
     end
     object ExportButton: TBitBtn
-      AnchorSideLeft.Control = ImportButton
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = ImportButton
+      AnchorSideLeft.Control = PagesListBox
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = PagesGroupBox
       AnchorSideBottom.Side = asrBottom
-      Left = 78
+      Left = 1
       Height = 29
       Top = 384
       Width = 63
+      Anchors = [akLeft, akBottom]
       AutoSize = True
-      BorderSpacing.Left = 12
-      BorderSpacing.Top = 6
+      BorderSpacing.Top = 3
       BorderSpacing.Bottom = 6
       Caption = 'Export ...'
       OnClick = ExportButtonClick

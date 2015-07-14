@@ -87,7 +87,7 @@ implementation
 
 function TDesktopOptionsFrame.GetTitle: String;
 begin
-  Result := dlgDesktop;
+  Result := lisGeneral;
 end;
 
 procedure TDesktopOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
@@ -146,9 +146,11 @@ begin
   AutoSaveIntervalInSecsLabel.Caption := dlgIntvInSec;
 
   // desktop files
-  lblImportExport.Caption := lisImportExport;
-  ExportDesktopButton.Caption := dlgExportDesktop;
-  ImportDesktopButton.Caption := dlgImportDesktop;
+  lblImportExport.Caption := lisExportImport;
+  ExportDesktopButton.Caption := lisExport;
+  ImportDesktopButton.Caption := lisImport;
+  ExportDesktopButton.Hint := lisExportEvironmentOptions;
+  ImportDesktopButton.Hint := lisImportEvironmentOptions;
 end;
 
 procedure TDesktopOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);

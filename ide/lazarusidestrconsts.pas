@@ -1164,7 +1164,6 @@ resourcestring
   lissSearching = 'Searching';
   lissSearchText = 'Search text';
 
-  dlgDesktop = 'Desktop';
   dlgWindow = 'Window';
   dlgFrmEditor = 'Form Editor';
   dlgObjInsp = 'Object Inspector';
@@ -1224,7 +1223,7 @@ resourcestring
   podAddPackageUnitToUsesSection = 'Add package unit to uses section';
   lisCodeBrowser = 'Code Browser';
 
-  // Desktop options
+  // IDE General options
   dlgEnvLanguage = 'Language';
   dlgEnvLanguageHint = 'Language of all IDE strings. Restart IDE after changing it for best result.';
   dlgCheckAndAutoSaveFiles = 'Check and Auto Save Files';
@@ -1232,8 +1231,19 @@ resourcestring
   lisIfOnlySessionInfoChangedThenAsk = 'If only the session info changed, ask about saving it.';
   dlgEdFiles = 'Editor Files';
   dlgIntvInSec = 'Interval in secs';
-  dlgExportDesktop = 'Export desktop';
-  dlgImportDesktop = 'Import desktop';
+  dlgDesktopHints = 'Hints';
+  dlgDesktopButtons = 'Buttons - ';
+  dlgDesktopMenus = 'Menus - ';
+  dlgPalHints = 'Hints for component palette';
+  dlgSpBHints = 'Hints for main speed buttons (open, save, ...)';
+  dlgMouseAction = 'Mouse Action';
+  dlgPreferDoubleClickOverSingleClick = 'Prefer double-click over single-click';
+  dlgCurrentlyRespectedByMessagesWindow = 'Currently respected by messages window, '
+    +'jump history and search results.';
+  lisExportEvironmentOptions = 'Export environment options';
+  lisImportEvironmentOptions = 'Import environment options';
+
+  // Desktop options
   dlgManageDesktops = 'Manage desktops';
   dlgSelectedDesktop = 'Selected desktop:';
   dlgSaveCurrentDesktop = 'Save current desktop';
@@ -1244,15 +1254,6 @@ resourcestring
   dlgDesktopName = 'Desktop name:';
   dlgOverwriteDesktop = 'Desktop with the name "%s" was found.'+sLineBreak+'Should the old desktop be overwritten?';
   dlgDebugDesktop = 'debug desktop';
-  dlgDesktopHints = 'Hints';
-  dlgDesktopButtons = 'Buttons - ';
-  dlgDesktopMenus = 'Menus - ';
-  dlgPalHints = 'Hints for component palette';
-  dlgSpBHints = 'Hints for main speed buttons (open, save, ...)';
-  dlgMouseAction = 'Mouse Action';
-  dlgPreferDoubleClickOverSingleClick = 'Prefer double-click over single-click';
-  dlgCurrentlyRespectedByMessagesWindow = 'Currently respected by messages window, '
-    +'jump history and search results.';
 
   // Window options
   dlgShowingWindows = 'Showing Windows';
@@ -4607,7 +4608,7 @@ resourcestring
   lisCmpLstList = 'List';
   lisCmpLstPalette = 'Palette';
   lisCmpLstInheritance = 'Inheritance';
-  lisImportExport = 'Import / Export';
+  lisExportImport = 'Export / Import';
   lisSuccessfullyImported = 'Successfully imported from "%s".';
   lisSuccessfullyExported = 'Successfully exported to "%s".';
 
