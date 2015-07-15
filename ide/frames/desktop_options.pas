@@ -149,8 +149,8 @@ begin
   lblImportExport.Caption := lisExportImport;
   ExportDesktopButton.Caption := lisExport;
   ImportDesktopButton.Caption := lisImport;
-  ExportDesktopButton.Hint := lisExportEvironmentOptions;
-  ImportDesktopButton.Hint := lisImportEvironmentOptions;
+  ExportDesktopButton.Hint := lisExportEnvironmentOptions;
+  ImportDesktopButton.Hint := lisImportEnvironmentOptions;
 end;
 
 procedure TDesktopOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);

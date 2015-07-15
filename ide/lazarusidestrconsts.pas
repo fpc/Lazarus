@@ -1240,8 +1240,8 @@ resourcestring
   dlgPreferDoubleClickOverSingleClick = 'Prefer double-click over single-click';
   dlgCurrentlyRespectedByMessagesWindow = 'Currently respected by messages window, '
     +'jump history and search results.';
-  lisExportEvironmentOptions = 'Export environment options';
-  lisImportEvironmentOptions = 'Import environment options';
+  lisExportEnvironmentOptions = 'Export environment options';
+  lisImportEnvironmentOptions = 'Import environment options';
 
   // Desktop options
   dlgManageDesktops = 'Manage desktops';
