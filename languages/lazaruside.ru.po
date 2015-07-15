@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-07-10 02:08+0300\n"
+"PO-Revision-Date: 2015-07-15 19:39+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -1210,17 +1210,9 @@ msgstr "Шрифт редактора по умолчанию"
 msgid "Default Value"
 msgstr "Значение по умолчанию"
 
-#: lazarusidestrconsts.dlgdeleteselecteddesktop
-msgid "Delete selected desktop"
-msgstr "Удалить выбранный"
-
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
 msgstr "Удалить шаблон "
-
-#: lazarusidestrconsts.dlgdesktop
-msgid "Desktop"
-msgstr "Рабочий стол"
 
 #: lazarusidestrconsts.dlgdesktopbuttons
 msgid "Buttons - "
@@ -1234,9 +1226,9 @@ msgstr "Подсказки"
 msgid "Menus - "
 msgstr "Меню - "
 
-#: lazarusidestrconsts.dlgdesktopnamewillbeoverwritten
-msgid "Desktop name (old entry will be overwritten):"
-msgstr "Имя рабочего стола (имеющийся будет перезаписан):"
+#: lazarusidestrconsts.dlgdesktopname
+msgid "Desktop name:"
+msgstr "Имя рабочего стола:"
 
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
@@ -1529,10 +1521,6 @@ msgstr "Тип"
 #: lazarusidestrconsts.dlgeofocusmessagesaftercompilation
 msgid "Focus messages after compilation"
 msgstr "Переводить фокус в окно сообщений после компиляции"
-
-#: lazarusidestrconsts.dlgexportdesktop
-msgid "Export desktop"
-msgstr "Экспортировать рабочий стол"
 
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
@@ -2081,10 +2069,6 @@ msgstr "Директива $IFDEF подключаемого условно ак
 #: lazarusidestrconsts.dlgignoreverb
 msgid "Ignore"
 msgstr "Пропустить"
-
-#: lazarusidestrconsts.dlgimportdesktop
-msgid "Import desktop"
-msgstr "Импортировать рабочий стол"
 
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
@@ -2833,6 +2817,14 @@ msgstr "Другие модули (-Fu):"
 msgid "Overwrite block"
 msgstr "Заменять выделение"
 
+#: lazarusidestrconsts.dlgoverwritedesktop
+msgid ""
+"Desktop with the name \"%s\" was found.\n"
+"Should the old desktop be overwritten?\n"
+msgstr ""
+"Рабочий стол с именем \"%s\" уже имеется.\n"
+"Перезаписать его?\n"
+
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
 msgstr "Подсказки палитры компонентов"
@@ -3042,6 +3034,10 @@ msgstr "Ссылка"
 msgid "Regular e&xpressions"
 msgstr "&Регулярные выражения"
 
+#: lazarusidestrconsts.dlgrenamedesktop
+msgid "Rename desktop"
+msgstr "Переименовать рабочий стол"
+
 #: lazarusidestrconsts.dlgreplaceall
 msgid "Replace &All"
 msgstr "Заменить &Все"
@@ -3180,6 +3176,10 @@ msgstr "Область поиска"
 #: lazarusidestrconsts.dlgselectallchildcontrols
 msgid "Select all child controls together with their parent."
 msgstr "Выделять все компоненты-потомки вместе с их родителями"
+
+#: lazarusidestrconsts.dlgselecteddesktop
+msgid "Selected desktop:"
+msgstr "Выбранный:"
 
 #: lazarusidestrconsts.dlgselectedtext
 msgid "&Selected text"
@@ -3426,8 +3426,8 @@ msgid "&Text to find"
 msgstr "Н&айти текст"
 
 #: lazarusidestrconsts.dlgtoggleselecteddebugdesktop
-msgid "Toggle selected as debug desktop"
-msgstr "Режим отладки для выбранного"
+msgid "Toggle as debug desktop"
+msgstr "Переключить отладочный режим"
 
 #: lazarusidestrconsts.dlgtopinfohint
 msgid "Current Class/Proc Hint"
@@ -8773,9 +8773,18 @@ msgstr "Экспортировать"
 msgid "Export All Items to File"
 msgstr "Экспортировать всё в файл"
 
+#: lazarusidestrconsts.lisexportenvironmentoptions
+msgctxt "lazarusidestrconsts.lisexportenvironmentoptions"
+msgid "Export environment options"
+msgstr "Экспортировать параметры окружения"
+
 #: lazarusidestrconsts.lisexporthtml
 msgid "Export as HTML"
 msgstr "Экспортировать в HTML"
+
+#: lazarusidestrconsts.lisexportimport
+msgid "Export / Import"
+msgstr "Экспорт / импорт"
 
 #: lazarusidestrconsts.lisexportlist
 msgid "Export list"
@@ -9759,9 +9768,10 @@ msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr "Важное"
 
-#: lazarusidestrconsts.lisimportexport
-msgid "Import / Export"
-msgstr "Импорт / экспорт"
+#: lazarusidestrconsts.lisimportenvironmentoptions
+msgctxt "lazarusidestrconsts.lisimportenvironmentoptions"
+msgid "Import environment options"
+msgstr "Импортировать параметры окружения"
 
 #: lazarusidestrconsts.lisimportfromfile
 msgid "Import from File"

@@ -1232,17 +1232,9 @@ msgstr "Numatytas rengyklės šriftas"
 msgid "Default Value"
 msgstr "Numatyta vertė"
 
-#: lazarusidestrconsts.dlgdeleteselecteddesktop
-msgid "Delete selected desktop"
-msgstr ""
-
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
 msgstr "Pašalinti šabloną"
-
-#: lazarusidestrconsts.dlgdesktop
-msgid "Desktop"
-msgstr "Darbalaukis"
 
 #: lazarusidestrconsts.dlgdesktopbuttons
 msgid "Buttons - "
@@ -1256,8 +1248,8 @@ msgstr "Užuominos"
 msgid "Menus - "
 msgstr "Meniu - "
 
-#: lazarusidestrconsts.dlgdesktopnamewillbeoverwritten
-msgid "Desktop name (old entry will be overwritten):"
+#: lazarusidestrconsts.dlgdesktopname
+msgid "Desktop name:"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
@@ -1553,10 +1545,6 @@ msgstr "Tipas"
 #: lazarusidestrconsts.dlgeofocusmessagesaftercompilation
 msgid "Focus messages after compilation"
 msgstr "Kompiliacijai pasibaigus, rodyti pranešimų langą"
-
-#: lazarusidestrconsts.dlgexportdesktop
-msgid "Export desktop"
-msgstr ""
 
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
@@ -2124,10 +2112,6 @@ msgstr ""
 #: lazarusidestrconsts.dlgignoreverb
 msgid "Ignore"
 msgstr "Ignoruoti"
-
-#: lazarusidestrconsts.dlgimportdesktop
-msgid "Import desktop"
-msgstr ""
 
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
@@ -2894,6 +2878,12 @@ msgstr "Kitų modulių failai (-Fu) (atskirti kabliataškiais):"
 msgid "Overwrite block"
 msgstr "Pakeisti bloką"
 
+#: lazarusidestrconsts.dlgoverwritedesktop
+msgid ""
+"Desktop with the name \"%s\" was found.\n"
+"Should the old desktop be overwritten?\n"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
 msgstr "Sufleriai komponenčių paletei"
@@ -3111,6 +3101,10 @@ msgstr "Rodyklė"
 msgid "Regular e&xpressions"
 msgstr "&Reguliarusis reiškinys"
 
+#: lazarusidestrconsts.dlgrenamedesktop
+msgid "Rename desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgreplaceall
 msgid "Replace &All"
 msgstr "P&akeisti visus"
@@ -3248,6 +3242,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgselectallchildcontrols
 msgid "Select all child controls together with their parent."
+msgstr ""
+
+#: lazarusidestrconsts.dlgselecteddesktop
+msgid "Selected desktop:"
 msgstr ""
 
 #: lazarusidestrconsts.dlgselectedtext
@@ -3495,7 +3493,7 @@ msgid "&Text to find"
 msgstr "Ieškomasis t&ekstas"
 
 #: lazarusidestrconsts.dlgtoggleselecteddebugdesktop
-msgid "Toggle selected as debug desktop"
+msgid "Toggle as debug desktop"
 msgstr ""
 
 #: lazarusidestrconsts.dlgtopinfohint
@@ -9034,9 +9032,18 @@ msgstr "Eksportas…"
 msgid "Export All Items to File"
 msgstr ""
 
+#: lazarusidestrconsts.lisexportenvironmentoptions
+msgctxt "lazarusidestrconsts.lisexportenvironmentoptions"
+msgid "Export environment options"
+msgstr ""
+
 #: lazarusidestrconsts.lisexporthtml
 msgid "Export as HTML"
 msgstr "Eksportuoti HTML formatu"
+
+#: lazarusidestrconsts.lisexportimport
+msgid "Export / Import"
+msgstr ""
 
 #: lazarusidestrconsts.lisexportlist
 msgid "Export list"
@@ -10033,8 +10040,9 @@ msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr ""
 
-#: lazarusidestrconsts.lisimportexport
-msgid "Import / Export"
+#: lazarusidestrconsts.lisimportenvironmentoptions
+msgctxt "lazarusidestrconsts.lisimportenvironmentoptions"
+msgid "Import environment options"
 msgstr ""
 
 #: lazarusidestrconsts.lisimportfromfile

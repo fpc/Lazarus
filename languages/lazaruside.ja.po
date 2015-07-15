@@ -1213,17 +1213,9 @@ msgstr "初期エディタ フォント"
 msgid "Default Value"
 msgstr "デフォルト値"
 
-#: lazarusidestrconsts.dlgdeleteselecteddesktop
-msgid "Delete selected desktop"
-msgstr ""
-
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
 msgstr "テンプレートを削除"
-
-#: lazarusidestrconsts.dlgdesktop
-msgid "Desktop"
-msgstr "デスクトップ"
 
 #: lazarusidestrconsts.dlgdesktopbuttons
 msgid "Buttons - "
@@ -1237,8 +1229,8 @@ msgstr "ヒント"
 msgid "Menus - "
 msgstr "メニュー -"
 
-#: lazarusidestrconsts.dlgdesktopnamewillbeoverwritten
-msgid "Desktop name (old entry will be overwritten):"
+#: lazarusidestrconsts.dlgdesktopname
+msgid "Desktop name:"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
@@ -1533,10 +1525,6 @@ msgstr "タイプ"
 #: lazarusidestrconsts.dlgeofocusmessagesaftercompilation
 msgid "Focus messages after compilation"
 msgstr "コンパイラ後のメッセージにフォーカス"
-
-#: lazarusidestrconsts.dlgexportdesktop
-msgid "Export desktop"
-msgstr ""
 
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
@@ -2105,10 +2093,6 @@ msgstr "インクルードされた混合状態の$IFDEFコード"
 #: lazarusidestrconsts.dlgignoreverb
 msgid "Ignore"
 msgstr "無視"
-
-#: lazarusidestrconsts.dlgimportdesktop
-msgid "Import desktop"
-msgstr ""
 
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
@@ -2865,6 +2849,12 @@ msgstr "その他のユニットファイル(区切り記号はセミコロン):
 msgid "Overwrite block"
 msgstr "ブロックを上書き"
 
+#: lazarusidestrconsts.dlgoverwritedesktop
+msgid ""
+"Desktop with the name \"%s\" was found.\n"
+"Should the old desktop be overwritten?\n"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
 msgstr "コンポーネントパレットのヒント"
@@ -3078,6 +3068,10 @@ msgstr "参照"
 msgid "Regular e&xpressions"
 msgstr "正規表現(&x)"
 
+#: lazarusidestrconsts.dlgrenamedesktop
+msgid "Rename desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgreplaceall
 msgid "Replace &All"
 msgstr "すべて置換(&A)"
@@ -3215,6 +3209,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgselectallchildcontrols
 msgid "Select all child controls together with their parent."
+msgstr ""
+
+#: lazarusidestrconsts.dlgselecteddesktop
+msgid "Selected desktop:"
 msgstr ""
 
 #: lazarusidestrconsts.dlgselectedtext
@@ -3462,7 +3460,7 @@ msgid "&Text to find"
 msgstr "検索テキスト(&T)"
 
 #: lazarusidestrconsts.dlgtoggleselecteddebugdesktop
-msgid "Toggle selected as debug desktop"
+msgid "Toggle as debug desktop"
 msgstr ""
 
 #: lazarusidestrconsts.dlgtopinfohint
@@ -8955,9 +8953,18 @@ msgstr "エクスポート"
 msgid "Export All Items to File"
 msgstr ""
 
+#: lazarusidestrconsts.lisexportenvironmentoptions
+msgctxt "lazarusidestrconsts.lisexportenvironmentoptions"
+msgid "Export environment options"
+msgstr ""
+
 #: lazarusidestrconsts.lisexporthtml
 msgid "Export as HTML"
 msgstr "HTMLとしてエクスポート"
+
+#: lazarusidestrconsts.lisexportimport
+msgid "Export / Import"
+msgstr ""
 
 #: lazarusidestrconsts.lisexportlist
 msgid "Export list"
@@ -9952,8 +9959,9 @@ msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr ""
 
-#: lazarusidestrconsts.lisimportexport
-msgid "Import / Export"
+#: lazarusidestrconsts.lisimportenvironmentoptions
+msgctxt "lazarusidestrconsts.lisimportenvironmentoptions"
+msgid "Import environment options"
 msgstr ""
 
 #: lazarusidestrconsts.lisimportfromfile

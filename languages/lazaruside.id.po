@@ -1253,17 +1253,9 @@ msgstr "Font editor default"
 msgid "Default Value"
 msgstr "Nilai default"
 
-#: lazarusidestrconsts.dlgdeleteselecteddesktop
-msgid "Delete selected desktop"
-msgstr ""
-
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
 msgstr "Hapus template"
-
-#: lazarusidestrconsts.dlgdesktop
-msgid "Desktop"
-msgstr "Desktop"
 
 #: lazarusidestrconsts.dlgdesktopbuttons
 msgid "Buttons - "
@@ -1277,8 +1269,8 @@ msgstr ""
 msgid "Menus - "
 msgstr ""
 
-#: lazarusidestrconsts.dlgdesktopnamewillbeoverwritten
-msgid "Desktop name (old entry will be overwritten):"
+#: lazarusidestrconsts.dlgdesktopname
+msgid "Desktop name:"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
@@ -1579,10 +1571,6 @@ msgstr "Tipe"
 
 #: lazarusidestrconsts.dlgeofocusmessagesaftercompilation
 msgid "Focus messages after compilation"
-msgstr ""
-
-#: lazarusidestrconsts.dlgexportdesktop
-msgid "Export desktop"
 msgstr ""
 
 #: lazarusidestrconsts.dlgextracharspacing
@@ -2152,10 +2140,6 @@ msgstr ""
 #: lazarusidestrconsts.dlgignoreverb
 msgid "Ignore"
 msgstr "Abaikan"
-
-#: lazarusidestrconsts.dlgimportdesktop
-msgid "Import desktop"
-msgstr ""
 
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
@@ -2930,6 +2914,12 @@ msgstr "File Unit Lain (-Fu) (Pemisah adalah titik koma):"
 msgid "Overwrite block"
 msgstr ""
 
+#: lazarusidestrconsts.dlgoverwritedesktop
+msgid ""
+"Desktop with the name \"%s\" was found.\n"
+"Should the old desktop be overwritten?\n"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
 msgstr "Petunjuk untuk palet komponen"
@@ -3149,6 +3139,10 @@ msgstr "Referensi"
 msgid "Regular e&xpressions"
 msgstr ""
 
+#: lazarusidestrconsts.dlgrenamedesktop
+msgid "Rename desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgreplaceall
 msgid "Replace &All"
 msgstr "Ganti &Semua"
@@ -3302,6 +3296,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgselectallchildcontrols
 msgid "Select all child controls together with their parent."
+msgstr ""
+
+#: lazarusidestrconsts.dlgselecteddesktop
+msgid "Selected desktop:"
 msgstr ""
 
 #: lazarusidestrconsts.dlgselectedtext
@@ -3561,7 +3559,7 @@ msgid "&Text to find"
 msgstr "&Teks yang Dicari"
 
 #: lazarusidestrconsts.dlgtoggleselecteddebugdesktop
-msgid "Toggle selected as debug desktop"
+msgid "Toggle as debug desktop"
 msgstr ""
 
 #: lazarusidestrconsts.dlgtopinfohint
@@ -9102,8 +9100,17 @@ msgstr "Ekspor ..."
 msgid "Export All Items to File"
 msgstr ""
 
+#: lazarusidestrconsts.lisexportenvironmentoptions
+msgctxt "lazarusidestrconsts.lisexportenvironmentoptions"
+msgid "Export environment options"
+msgstr ""
+
 #: lazarusidestrconsts.lisexporthtml
 msgid "Export as HTML"
+msgstr ""
+
+#: lazarusidestrconsts.lisexportimport
+msgid "Export / Import"
 msgstr ""
 
 #: lazarusidestrconsts.lisexportlist
@@ -10101,8 +10108,9 @@ msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr ""
 
-#: lazarusidestrconsts.lisimportexport
-msgid "Import / Export"
+#: lazarusidestrconsts.lisimportenvironmentoptions
+msgctxt "lazarusidestrconsts.lisimportenvironmentoptions"
+msgid "Import environment options"
 msgstr ""
 
 #: lazarusidestrconsts.lisimportfromfile

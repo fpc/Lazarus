@@ -1209,17 +1209,9 @@ msgstr "Szerkesztő alapértelmezett betűtípusa"
 msgid "Default Value"
 msgstr "Alapértelmezett érték"
 
-#: lazarusidestrconsts.dlgdeleteselecteddesktop
-msgid "Delete selected desktop"
-msgstr ""
-
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
 msgstr "Sablon törlése: "
-
-#: lazarusidestrconsts.dlgdesktop
-msgid "Desktop"
-msgstr "Felület"
 
 #: lazarusidestrconsts.dlgdesktopbuttons
 msgid "Buttons - "
@@ -1233,8 +1225,8 @@ msgstr "Tippek"
 msgid "Menus - "
 msgstr "Menükben: "
 
-#: lazarusidestrconsts.dlgdesktopnamewillbeoverwritten
-msgid "Desktop name (old entry will be overwritten):"
+#: lazarusidestrconsts.dlgdesktopname
+msgid "Desktop name:"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
@@ -1528,10 +1520,6 @@ msgstr "Típus"
 #: lazarusidestrconsts.dlgeofocusmessagesaftercompilation
 msgid "Focus messages after compilation"
 msgstr "Üzenetek előtérbe hozása fordítás után"
-
-#: lazarusidestrconsts.dlgexportdesktop
-msgid "Export desktop"
-msgstr ""
 
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
@@ -2080,10 +2068,6 @@ msgstr "Kevert állapotú $IFDEF csomópont"
 #: lazarusidestrconsts.dlgignoreverb
 msgid "Ignore"
 msgstr "Kihagyás"
-
-#: lazarusidestrconsts.dlgimportdesktop
-msgid "Import desktop"
-msgstr ""
 
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
@@ -2832,6 +2816,12 @@ msgstr "Egyéb unit fájlok (-Fu):"
 msgid "Overwrite block"
 msgstr "Kijelölés felülírása"
 
+#: lazarusidestrconsts.dlgoverwritedesktop
+msgid ""
+"Desktop with the name \"%s\" was found.\n"
+"Should the old desktop be overwritten?\n"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
 msgstr "Tippek a komponens palettához"
@@ -3041,6 +3031,10 @@ msgstr "Hivatkozás"
 msgid "Regular e&xpressions"
 msgstr "Reguláris kifejerések"
 
+#: lazarusidestrconsts.dlgrenamedesktop
+msgid "Rename desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgreplaceall
 msgid "Replace &All"
 msgstr "Összes cseréje"
@@ -3179,6 +3173,10 @@ msgstr "Keresés hatóköre"
 #: lazarusidestrconsts.dlgselectallchildcontrols
 msgid "Select all child controls together with their parent."
 msgstr "Az összes gyermek-vezérlő kijelölése a szülővel együtt."
+
+#: lazarusidestrconsts.dlgselecteddesktop
+msgid "Selected desktop:"
+msgstr ""
 
 #: lazarusidestrconsts.dlgselectedtext
 msgid "&Selected text"
@@ -3425,7 +3423,7 @@ msgid "&Text to find"
 msgstr "Keresendő szöveg"
 
 #: lazarusidestrconsts.dlgtoggleselecteddebugdesktop
-msgid "Toggle selected as debug desktop"
+msgid "Toggle as debug desktop"
 msgstr ""
 
 #: lazarusidestrconsts.dlgtopinfohint
@@ -8776,9 +8774,18 @@ msgstr "Exportálás"
 msgid "Export All Items to File"
 msgstr "Minden elem exportálása fájlba"
 
+#: lazarusidestrconsts.lisexportenvironmentoptions
+msgctxt "lazarusidestrconsts.lisexportenvironmentoptions"
+msgid "Export environment options"
+msgstr ""
+
 #: lazarusidestrconsts.lisexporthtml
 msgid "Export as HTML"
 msgstr "Exportálás HTML-ként"
+
+#: lazarusidestrconsts.lisexportimport
+msgid "Export / Import"
+msgstr ""
 
 #: lazarusidestrconsts.lisexportlist
 msgid "Export list"
@@ -9762,9 +9769,10 @@ msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr "Fontos"
 
-#: lazarusidestrconsts.lisimportexport
-msgid "Import / Export"
-msgstr "Importálás / Exportálás"
+#: lazarusidestrconsts.lisimportenvironmentoptions
+msgctxt "lazarusidestrconsts.lisimportenvironmentoptions"
+msgid "Import environment options"
+msgstr ""
 
 #: lazarusidestrconsts.lisimportfromfile
 msgid "Import from File"

@@ -1253,17 +1253,9 @@ msgstr "Standaard editorfont"
 msgid "Default Value"
 msgstr "Standaardwaarde"
 
-#: lazarusidestrconsts.dlgdeleteselecteddesktop
-msgid "Delete selected desktop"
-msgstr ""
-
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
 msgstr "Verwijder template"
-
-#: lazarusidestrconsts.dlgdesktop
-msgid "Desktop"
-msgstr "Bureaublad"
 
 #: lazarusidestrconsts.dlgdesktopbuttons
 msgid "Buttons - "
@@ -1277,8 +1269,8 @@ msgstr ""
 msgid "Menus - "
 msgstr ""
 
-#: lazarusidestrconsts.dlgdesktopnamewillbeoverwritten
-msgid "Desktop name (old entry will be overwritten):"
+#: lazarusidestrconsts.dlgdesktopname
+msgid "Desktop name:"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
@@ -1579,10 +1571,6 @@ msgstr "Type"
 
 #: lazarusidestrconsts.dlgeofocusmessagesaftercompilation
 msgid "Focus messages after compilation"
-msgstr ""
-
-#: lazarusidestrconsts.dlgexportdesktop
-msgid "Export desktop"
 msgstr ""
 
 #: lazarusidestrconsts.dlgextracharspacing
@@ -2152,10 +2140,6 @@ msgstr ""
 #: lazarusidestrconsts.dlgignoreverb
 msgid "Ignore"
 msgstr "Negeren"
-
-#: lazarusidestrconsts.dlgimportdesktop
-msgid "Import desktop"
-msgstr ""
 
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
@@ -2926,6 +2910,12 @@ msgstr "Andere unit bestanden (-Fu)"
 msgid "Overwrite block"
 msgstr ""
 
+#: lazarusidestrconsts.dlgoverwritedesktop
+msgid ""
+"Desktop with the name \"%s\" was found.\n"
+"Should the old desktop be overwritten?\n"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
 msgstr "Hints voor componenten palet"
@@ -3141,6 +3131,10 @@ msgstr "Referentie"
 msgid "Regular e&xpressions"
 msgstr ""
 
+#: lazarusidestrconsts.dlgrenamedesktop
+msgid "Rename desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgreplaceall
 msgid "Replace &All"
 msgstr "Vervang &alles"
@@ -3294,6 +3288,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgselectallchildcontrols
 msgid "Select all child controls together with their parent."
+msgstr ""
+
+#: lazarusidestrconsts.dlgselecteddesktop
+msgid "Selected desktop:"
 msgstr ""
 
 #: lazarusidestrconsts.dlgselectedtext
@@ -3553,7 +3551,7 @@ msgid "&Text to find"
 msgstr "&Zoek tekst"
 
 #: lazarusidestrconsts.dlgtoggleselecteddebugdesktop
-msgid "Toggle selected as debug desktop"
+msgid "Toggle as debug desktop"
 msgstr ""
 
 #: lazarusidestrconsts.dlgtopinfohint
@@ -9075,8 +9073,17 @@ msgstr "Exporteer ..."
 msgid "Export All Items to File"
 msgstr ""
 
+#: lazarusidestrconsts.lisexportenvironmentoptions
+msgctxt "lazarusidestrconsts.lisexportenvironmentoptions"
+msgid "Export environment options"
+msgstr ""
+
 #: lazarusidestrconsts.lisexporthtml
 msgid "Export as HTML"
+msgstr ""
+
+#: lazarusidestrconsts.lisexportimport
+msgid "Export / Import"
 msgstr ""
 
 #: lazarusidestrconsts.lisexportlist
@@ -10069,8 +10076,9 @@ msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr ""
 
-#: lazarusidestrconsts.lisimportexport
-msgid "Import / Export"
+#: lazarusidestrconsts.lisimportenvironmentoptions
+msgctxt "lazarusidestrconsts.lisimportenvironmentoptions"
+msgid "Import environment options"
 msgstr ""
 
 #: lazarusidestrconsts.lisimportfromfile
