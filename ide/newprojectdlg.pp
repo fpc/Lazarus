@@ -47,7 +47,7 @@ type
     Panel1: TPanel;
     Splitter1: TSplitter;
     procedure HelpButtonClick(Sender: TObject);
-    procedure TreeDblClick(Sender: TObject);
+    procedure OkClick(Sender: TObject);
     procedure TreeSelectionChange(Sender: TObject);
   private
     FProjectDescriptor: TProjectDescriptor;
@@ -90,20 +90,22 @@ begin
 end;
 
 procedure TNewProjectDialog.FillHelpLabel;
+var
+  ANode: TTreeNode;
 begin
-  if Assigned(Tree.Selected) then
-    if Assigned(Tree.Selected.Data) then
-    begin
-      FProjectDescriptor:=TProjectDescriptor(Tree.Selected.Data);
-      HelpLabel.Caption:=FProjectDescriptor.GetLocalizedDescription;
-      ButtonPanel.OKButton.Enabled:=true;
-    end
-    else
-    begin
-      FProjectDescriptor:=nil;
-      HelpLabel.Caption:=lisChooseOneOfTheseItemsToCreateANewProject;
-      ButtonPanel.OKButton.Enabled:=false;
-    end;
+  ANode := Tree.Selected;
+  if Assigned(ANode) and Assigned(ANode.Data) then
+  begin
+    FProjectDescriptor:=TProjectDescriptor(ANode.Data);
+    HelpLabel.Caption:=FProjectDescriptor.GetLocalizedDescription;
+    ButtonPanel.OKButton.Enabled:=true;
+  end
+  else
+  begin
+    FProjectDescriptor:=nil;
+    HelpLabel.Caption:=lisChooseOneOfTheseItemsToCreateANewProject;
+    ButtonPanel.OKButton.Enabled:=false;
+  end;
 end;
 
 procedure TNewProjectDialog.SetupComponents;
@@ -116,33 +118,27 @@ begin
   NIndexFolder:=IDEImages.LoadImage(16, 'folder');
   NIndexTemplate:=IDEImages.LoadImage(16, 'template');
 
-  with Tree do begin
-    Items.BeginUpdate;
+  Tree.Items.BeginUpdate;
+  RootNode:=Tree.Items.Add(nil, dlgProject);
+  RootNode.ImageIndex:=NIndexFolder;
+  RootNode.SelectedIndex:=NIndexFolder;
+  for i:=0 to ProjectDescriptors.Count-1 do
+    if ProjectDescriptors[i].VisibleInNewDialog then
+    begin
+      ItemNode:=Tree.Items.AddChildObject(RootNode, ProjectDescriptors[i].GetLocalizedName,
+                                                    ProjectDescriptors[i]);
+      ItemNode.ImageIndex:=NIndexTemplate;
+      ItemNode.SelectedIndex:=NIndexTemplate;
+    end;
+  Tree.FullExpand;
+  Tree.Items.EndUpdate;
 
-    RootNode:=Items.Add(nil, dlgProject);
-    RootNode.ImageIndex:=NIndexFolder;
-    RootNode.SelectedIndex:=NIndexFolder;
-
-    for i:=0 to ProjectDescriptors.Count-1 do
-      if ProjectDescriptors[i].VisibleInNewDialog then
-      begin
-        ItemNode:=Items.AddChildObject(RootNode, ProjectDescriptors[i].GetLocalizedName, ProjectDescriptors[i]);
-        ItemNode.ImageIndex:=NIndexTemplate;
-        ItemNode.SelectedIndex:=NIndexTemplate;
-      end;
-
-    FullExpand;
-    Items.EndUpdate;
-
-    //select first child node
+  //select first child node
+  with Tree do
     if Items.Count>0 then
       Selected:=Items[1];
-  end;
 
   DescriptionGroupBox.Caption:=lisCodeHelpDescrTag;
-  ButtonPanel.OKButton.Caption:=lisOk;
-  ButtonPanel.CancelButton.Caption:=lisCancel;
-  ButtonPanel.HelpButton.Caption:=lisHelp;
 end;
 
 procedure TNewProjectDialog.HelpButtonClick(Sender: TObject);
@@ -150,13 +146,15 @@ begin
   LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
-procedure TNewProjectDialog.TreeDblClick(Sender: TObject);
+procedure TNewProjectDialog.OkClick(Sender: TObject);
 var
-  Pnt: TPoint;
+  ANode: TTreeNode;
 begin
-  Pnt:=Tree.ScreenToClient(Mouse.CursorPos);
-  if Assigned(Tree.GetNodeAt(Pnt.X, Pnt.Y)) then
-    ModalResult:=mrOk;
+  ANode := Tree.Selected;
+  if Assigned(ANode) and Assigned(ANode.Data) then
+    ModalResult:=mrOk
+  else
+    ModalResult:=mrNone;
 end;
 
 procedure TNewProjectDialog.TreeSelectionChange(Sender: TObject);

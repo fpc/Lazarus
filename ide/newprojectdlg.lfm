@@ -58,12 +58,11 @@ object NewProjectDialog: TNewProjectDialog
       Width = 269
       Align = alLeft
       Anchors = []
-      DefaultItemHeight = 18
       HideSelection = False
       ReadOnly = True
       ScrollBars = ssAutoBoth
       TabOrder = 0
-      OnDblClick = TreeDblClick
+      OnDblClick = OkClick
       OnSelectionChanged = TreeSelectionChange
       Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     end
@@ -75,6 +74,7 @@ object NewProjectDialog: TNewProjectDialog
     Width = 549
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
+    OKButton.OnClick = OkClick
     HelpButton.Name = 'HelpButton'
     HelpButton.DefaultCaption = True
     HelpButton.OnClick = HelpButtonClick
