@@ -1740,7 +1740,7 @@ begin
   FXMLCfg.SetDeleteValue(Path+'CompilerMessagesFilename/Value',CompilerMessagesFilename,'');
   SaveRecentList(FXMLCfg,FCompilerMessagesFileHistory,Path+'CompilerMessagesFilename/History/');
 
-  // Primary-conyfig vurification
+  // Primary-config verification
   FXMLCfg.SetDeleteValue(Path+'LastCalledByLazarusFullPath/Value',FLastCalledByLazarusFullPath,'');
 
   // global buid options
