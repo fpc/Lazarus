@@ -330,6 +330,10 @@ type
     constructor Create(aEnvOpts: TEnvironmentOptions);
     destructor Destroy; override;
     procedure AddFromCfg(Path: String);
+    procedure SaveToXML(aXMLCfg: TRttiXMLConfig; aConfigStore: TXMLOptionsStorage;
+                        Index: Integer);
+    procedure LoadFromXML(aXMLCfg: TRttiXMLConfig; aConfigStore: TXMLOptionsStorage;
+                        Index: Integer);
     function IndexOf(aName: string): integer;
     function Find(aName: string): TDesktopOpt;
     property Items[Index: Integer]: TDesktopOpt read GetItem; default;
@@ -911,6 +915,35 @@ begin
     dsk.SetConfig(FXMLCfg, FConfigStore);
     dsk.Load(Path);
     Add(dsk);
+  end;
+end;
+
+procedure TDesktopOptList.SaveToXML(aXMLCfg: TRttiXMLConfig;
+  aConfigStore: TXMLOptionsStorage; Index: Integer);
+var
+  I: Integer;
+  CurPath: String;
+begin
+  CurPath := 'Desktops/';
+  Items[Index].SetConfig(aXMLCfg, aConfigStore);
+  aXMLCfg.SetDeleteValue(CurPath + 'Count', 1, 0);
+  Items[Index].Save(CurPath + 'Desktop1/');
+end;
+
+procedure TDesktopOptList.LoadFromXML(aXMLCfg: TRttiXMLConfig;
+  aConfigStore: TXMLOptionsStorage; Index: Integer);
+var
+  I: Integer;
+  CurPath: String;
+  xDesktop: TDesktopOpt;
+begin
+  CurPath := 'Desktops/';
+  if aXMLCfg.HasPath(CurPath, True) then
+  begin
+    xDesktop := TDesktopOpt.Create(Items[Index].Name, False);
+    Items[Index].Assign(xDesktop);
+    Items[Index].SetConfig(aXMLCfg, aConfigStore);
+    Items[Index].Load(CurPath + 'Desktop1/');
   end;
 end;
 
@@ -1943,6 +1976,7 @@ begin
     end;
 
     // The user can define many desktops. They are saved under path Desktops/.
+    FXMLCfg.DeletePath('Desktops/');
     CurPath:='Desktops/';
     FXMLCfg.SetDeleteValue(CurPath+'Count', FDesktops.Count, 0);
     FXMLCfg.SetDeleteValue(CurPath+'DebugDesktop', FDebugDesktopName, '');

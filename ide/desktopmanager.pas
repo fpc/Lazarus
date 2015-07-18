@@ -8,14 +8,16 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons, ButtonPanel,
   LCLType, LazarusIDEStrConsts, LCLProc, EnvironmentOpts,
-  IDEWindowIntf, IDEOptionsIntf;
+  IDEWindowIntf, IDEOptionsIntf, IDEOptionDefs, Laz2_XMLCfg, InputHistory;
 
 type
 
   { TDesktopForm }
 
   TDesktopForm = class(TForm)
+    ExportBitBtn: TBitBtn;
     ButtonPanel1: TButtonPanel;
+    ImportBitBtn: TBitBtn;
     RenameBitBtn: TBitBtn;
     SelectedDesktopLabel: TLabel;
     SetDebugDesktopBitBtn: TBitBtn;
@@ -28,7 +30,9 @@ type
       ARect: TRect; {%H-}State: TOwnerDrawState);
     procedure DesktopListBoxKeyPress(Sender: TObject; var Key: char);
     procedure DesktopListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
+    procedure ExportBitBtnClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure ImportBitBtnClick(Sender: TObject);
     procedure RenameBitBtnClick(Sender: TObject);
     procedure SaveBitBtnClick(Sender: TObject);
     procedure SetDebugDesktopBitBtnClick(Sender: TObject);
@@ -86,6 +90,8 @@ begin
   DeleteBitBtn.LoadGlyphFromResourceName(HInstance, 'laz_delete');
   RenameBitBtn.Caption := lisRename;
   RenameBitBtn.LoadGlyphFromResourceName(HInstance, 'laz_edit');
+  ExportBitBtn.Caption := lisExport;
+  ImportBitBtn.Caption := lisImport;
   SetDebugDesktopBitBtn.Caption := dlgToggleSelectedDebugDesktop;
   SetDebugDesktopBitBtn.LoadGlyphFromResourceName(HInstance, 'menu_run');
   ButtonPanel1.OKButton.Caption := dlgCloseAndUseSelectedDesktop;
@@ -174,6 +180,115 @@ begin
   end;
 end;
 
+
+procedure TDesktopForm.ExportBitBtnClick(Sender: TObject);
+var
+  FXMLCfg: TRttiXMLConfig;
+  FConfigStore: TXMLOptionsStorage;
+  SaveDialog: TSaveDialog;
+  xDesktopName, Filename: string;
+  xDesktopID: Integer;
+begin
+  if DesktopListBox.ItemIndex < 0 then
+    Exit;
+
+  xDesktopName := DesktopListBox.Items[DesktopListBox.ItemIndex];
+  if xDesktopName = '' then
+    Exit;
+
+  xDesktopID := EnvironmentOptions.Desktops.IndexOf(xDesktopName);
+  if xDesktopID = -1 then
+    Exit;
+
+  SaveDialog := TSaveDialog.Create(nil);
+  try
+    try
+      InputHistories.ApplyFileDialogSettings(SaveDialog);
+      SaveDialog.Filter := dlgFilterXML +' (*.xml)|*.xml';
+      SaveDialog.Options := SaveDialog.Options + [ofOverwritePrompt];
+      if SaveDialog.Execute then
+      begin
+        Filename := SaveDialog.Filename;
+        if ExtractFileExt(Filename) = '' then
+          Filename := Filename + '.xml';
+        FXMLCfg := TRttiXMLConfig.CreateClean(Filename);
+        try
+          FConfigStore := TXMLOptionsStorage.Create(FXMLCfg);
+          try
+            EnvironmentOptions.Desktops.SaveToXML(FXMLCfg, FConfigStore, xDesktopID);
+            FConfigStore.WriteToDisk;
+            ShowMessageFmt(lisSuccessfullyExported, [SaveDialog.Filename]);
+          finally
+            FConfigStore.Free;
+          end;
+        finally
+          FreeAndNil(FXMLCfg);
+        end;
+      end;
+      InputHistories.StoreFileDialogSettings(SaveDialog);
+    except
+      on E: Exception do
+      begin
+        DebugLn('ERROR: [TDesktopMangerDialog.ExportBitBtnClick] ', E.Message);
+      end;
+    end;
+  finally
+    SaveDialog.Free;
+  end;
+end;
+
+procedure TDesktopForm.ImportBitBtnClick(Sender: TObject);
+var
+  FXMLCfg: TRttiXMLConfig;
+  FConfigStore: TXMLOptionsStorage;
+  OpenDialog: TOpenDialog;
+  xDesktopName, Filename: string;
+  xDesktopID: Integer;
+begin
+  if DesktopListBox.ItemIndex < 0 then
+    Exit;
+
+  xDesktopName := DesktopListBox.Items[DesktopListBox.ItemIndex];
+  if xDesktopName = '' then
+    Exit;
+
+  xDesktopID := EnvironmentOptions.Desktops.IndexOf(xDesktopName);
+  if xDesktopID = -1 then
+    Exit;
+
+  OpenDialog := TOpenDialog.Create(nil);
+  try
+    try
+      InputHistories.ApplyFileDialogSettings(OpenDialog);
+      OpenDialog.Filter := dlgFilterXML +' (*.xml)|*.xml';
+      if OpenDialog.Execute then
+      begin
+        Filename := OpenDialog.Filename;
+        FXMLCfg := TRttiXMLConfig.Create(Filename);
+        try
+          FConfigStore := TXMLOptionsStorage.Create(FXMLCfg);
+          try
+            EnvironmentOptions.Desktops.LoadFromXML(FXMLCfg, FConfigStore, xDesktopID);
+            ShowMessageFmt(lisSuccessfullyImported, [OpenDialog.Filename]);
+          finally
+            FConfigStore.Free;
+          end;
+        finally
+          FreeAndNil(FXMLCfg);
+        end;
+      end;
+      InputHistories.StoreFileDialogSettings(OpenDialog);
+    except
+      on E: Exception do
+      begin
+        DebugLn('ERROR: [TDesktopMangerDialog.ImportBitBtnClick] ', E.Message);
+      end;
+    end;
+  finally
+    OpenDialog.Free;
+  end;
+end;
+
 procedure TDesktopForm.DesktopListBoxDblClick(Sender: TObject);
 begin
   if ButtonPanel1.OKButton.Enabled then
@@ -243,6 +358,8 @@ begin
   RenameBitBtn.Enabled := DeleteBitBtn.Enabled;
   SetDebugDesktopBitBtn.Enabled := DeleteBitBtn.Enabled;
   ButtonPanel1.OKButton.Enabled := DeleteBitBtn.Enabled;
+  ExportBitBtn.Enabled := DeleteBitBtn.Enabled;
+  ImportBitBtn.Enabled := DeleteBitBtn.Enabled;
 end;
 
 procedure TDesktopForm.SaveBitBtnClick(Sender: TObject);
