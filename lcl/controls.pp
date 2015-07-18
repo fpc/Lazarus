@@ -3169,7 +3169,7 @@ const
   DeadCursors = 1;
 
 const
-  Cursors: array[0..22] of TIdentMapEntry = (
+  CursorIdents: array[0..30] of TIdentMapEntry = (
     (Value: crDefault;      Name: 'crDefault'),
     (Value: crNone;         Name: 'crNone'),
     (Value: crArrow;        Name: 'crArrow'),
@@ -3179,6 +3179,14 @@ const
     (Value: crSizeNS;       Name: 'crSizeNS'),
     (Value: crSizeNWSE;     Name: 'crSizeNWSE'),
     (Value: crSizeWE;       Name: 'crSizeWE'),
+    (Value: crSizeNW;       Name: 'crSizeNW'),
+    (Value: crSizeN;        Name: 'crSizeN'),
+    (Value: crSizeNE;       Name: 'crSizeNE'),
+    (Value: crSizeW;        Name: 'crSizeW'),
+    (Value: crSizeE;        Name: 'crSizeE'),
+    (Value: crSizeSW;       Name: 'crSizeSW'),
+    (Value: crSizeS;        Name: 'crSizeS'),
+    (Value: crSizeSE;       Name: 'crSizeSE'),
     (Value: crUpArrow;      Name: 'crUpArrow'),
     (Value: crHourGlass;    Name: 'crHourGlass'),
     (Value: crDrag;         Name: 'crDrag'),
@@ -3214,17 +3222,18 @@ procedure GetCursorValues(Proc: TGetStrProc);
 var
   I: Integer;
 begin
-  for I := Low(Cursors) to High(Cursors) - DeadCursors do Proc(Cursors[I].Name);
+  for I := Low(CursorIdents) to High(CursorIdents) - DeadCursors do
+    Proc(CursorIdents[I].Name);
 end;
 
 function CursorToIdent(Cursor: Longint; var Ident: string): Boolean;
 begin
-  Result := IntToIdent(Cursor, Ident, Cursors);
+  Result := IntToIdent(Cursor, Ident, CursorIdents);
 end;
 
 function IdentToCursor(const Ident: string; var Cursor: Longint): Boolean;
 begin
-  Result := IdentToInt(Ident, Cursor, Cursors);
+  Result := IdentToInt(Ident, Cursor, CursorIdents);
 end;
 
 // turn off before includes !!
