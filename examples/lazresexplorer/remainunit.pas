@@ -44,6 +44,7 @@ type
     procedure fileExitExecute(Sender: TObject);
     procedure fileOpenExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure HeaderControl1SectionResize(HeaderControl: TCustomHeaderControl;
       Section: THeaderSection);
     procedure hlpAboutExecute(Sender: TObject);
@@ -101,6 +102,11 @@ begin
   OpenDialog1.Filter := sAllFilesSharedLibSoSo;
   {$ENDIF}
   Splitter1ChangeBounds(nil);
+end;
+
+procedure TreMainForm.FormDestroy(Sender: TObject);
+begin
+  if Assigned(Res) then Res.Free;
 end;
 
 procedure TreMainForm.HeaderControl1SectionResize(
@@ -200,7 +206,7 @@ begin
 
   TreeView1.Items.Clear;
   if Assigned(Res) then
-    Res.Free;
+    FreeAndNil(Res);
 
   if not Assigned(Reader) then exit;
 

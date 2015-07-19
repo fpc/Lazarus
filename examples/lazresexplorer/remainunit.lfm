@@ -9,8 +9,9 @@ object reMainForm: TreMainForm
   ClientWidth = 768
   Menu = MainMenu1
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '1.3'
+  LCLVersion = '1.5'
   object TreeView1: TTreeView
     Left = 0
     Height = 506
@@ -35,11 +36,11 @@ object reMainForm: TreMainForm
     TabOrder = 1
     object tabString: TTabSheet
       Caption = 'String'
-      ClientHeight = 480
+      ClientHeight = 478
       ClientWidth = 467
       object StringGrid1: TStringGrid
         Left = 0
-        Height = 480
+        Height = 478
         Top = 0
         Width = 467
         Align = alClient
@@ -128,14 +129,15 @@ object reMainForm: TreMainForm
     end
     object ToolButton3: TToolButton
       Left = 176
+      Height = 22
       Top = 2
-      Width = 10
+      Width = 8
       AutoSize = True
       Caption = 'ToolButton3'
       Style = tbsSeparator
     end
     object ToolButton4: TToolButton
-      Left = 186
+      Left = 184
       Top = 2
       Action = hlpAbout
       AutoSize = True
