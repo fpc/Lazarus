@@ -28,7 +28,7 @@ object IDETodoWindow: TIDETodoWindow
     Align = alClient
     Columns = <    
       item
-        AutoSize = True
+        AutoSize = False
         Caption = 'Done'
         Width = 100
       end    
@@ -37,27 +37,27 @@ object IDETodoWindow: TIDETodoWindow
         Width = 700
       end    
       item
-        AutoSize = True
+        AutoSize = False
         Caption = 'Priority'
         Width = 100
       end    
       item
-        AutoSize = True
+        AutoSize = False
         Caption = 'Module'
         Width = 100
       end    
       item
-        AutoSize = True
+        AutoSize = False
         Caption = 'Line'
         Width = 100
       end    
       item
-        AutoSize = True
+        AutoSize = False
         Caption = 'Owner'
         Width = 100
       end    
       item
-        AutoSize = True
+        AutoSize = False
         Caption = 'Category'
         Width = 100
       end>
