@@ -1045,7 +1045,7 @@ end;
 
 function FileIsReadable(const AFilename: string): boolean;
 begin
-  Result:=true;
+  Result:=FileExistsUTF8(AFilename);
 end;
 
 function FileIsWritable(const AFilename: string): boolean;
