@@ -3,7 +3,6 @@ object reMainForm: TreMainForm
   Height = 605
   Top = 242
   Width = 768
-  ActiveControl = StringGrid1
   Caption = 'reMainForm'
   ClientHeight = 585
   ClientWidth = 768
@@ -57,11 +56,11 @@ object reMainForm: TreMainForm
     end
     object tabImage: TTabSheet
       Caption = 'Image'
-      ClientHeight = 480
-      ClientWidth = 469
+      ClientHeight = 478
+      ClientWidth = 467
       object Image1: TImage
         Left = 0
-        Height = 477
+        Height = 478
         Top = 0
         Width = 467
         Align = alClient
