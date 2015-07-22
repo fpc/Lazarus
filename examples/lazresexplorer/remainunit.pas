@@ -45,6 +45,7 @@ type
     procedure fileExitExecute(Sender: TObject);
     procedure fileOpenExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure HeaderControl1SectionResize(HeaderControl: TCustomHeaderControl;
       Section: THeaderSection);
     procedure hlpAboutExecute(Sender: TObject);
@@ -52,6 +53,7 @@ type
     procedure TreeView1Click(Sender: TObject);
   private
     Res:TResources;
+    procedure ClearDisplay;
     procedure LoadVersionResource(V:TVersionResource);
     procedure LoadBitmapResource(B:TBitmapResource);
     procedure LoadGroupIconResource(G:TGroupIconResource);
@@ -105,6 +107,11 @@ begin
   Splitter1ChangeBounds(nil);
 end;
 
+procedure TreMainForm.FormDestroy(Sender: TObject);
+begin
+  if Assigned(Res) then Res.Free;
+end;
+
 procedure TreMainForm.HeaderControl1SectionResize(
   HeaderControl: TCustomHeaderControl; Section: THeaderSection);
 begin
@@ -131,6 +138,7 @@ var
 begin
   if Assigned(TreeView1.Selected) and Assigned(TreeView1.Selected.Data) then
   begin
+    ClearDisplay;
     ResItem:=TAbstractResource(TreeView1.Selected.Data);
     HeaderControl1.Sections[1].Text:=ResItem.ClassName + ' : ' + ResItem.Name.Name;
     if ResItem is TVersionResource then
@@ -144,6 +152,12 @@ begin
     else
       ;
   end;
+end;
+
+procedure TreMainForm.ClearDisplay;
+begin
+  StringGrid1.Clean;
+  Image1.Picture.Clear;
 end;
 
 procedure TreMainForm.LoadVersionResource(V: TVersionResource);
@@ -201,8 +215,9 @@ begin
     Reader:=TElfResourceReader.Create;
 
   TreeView1.Items.Clear;
+  ClearDisplay;
   if Assigned(Res) then
-    Res.Free;
+    FreeAndNil(Res);
 
   if not Assigned(Reader) then exit;
 
