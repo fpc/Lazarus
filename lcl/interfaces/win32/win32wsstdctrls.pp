@@ -613,7 +613,8 @@ begin
         Exit(DeliverMessage(WindowInfo^.WinControl, LMessage));
       end;
     WM_ERASEBKGND:
-      if WindowsVersion <= wvXP then   // Standardbehavior for XP
+      if (WindowsVersion <= wvXP) or not ThemeServices.ThemesEnabled then
+        // Standardbehavior for XP, or no themes
         Result := CallDefaultWindowProc(Window, Msg, WParam, LParam)
       else
       begin
