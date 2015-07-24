@@ -6,7 +6,7 @@ interface
 
 uses
   // RTL
-  Classes, SysUtils, Types,
+  Classes, SysUtils, Types, fpcanvas, fpimage,
   // LCL -> Use only TForm, TWinControl, TCanvas and TLazIntfImage
   Graphics, Controls, LCLType,
   //
@@ -20,8 +20,17 @@ type
   public
     procedure DrawExpandTriangle(ADest: TCanvas; ASize: TSize;
       AX, AY: Integer; AFacing: TCDControlStateFlag);
+    //
+    procedure DrawMacSquareButton(ADest: TFPCustomCanvas; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDButtonStateEx);
   public
     function GetMeasures(AMeasureID: Integer): Integer; override;
+    // ===================================
+    // Standard Tab
+    // ===================================
+    // TCDButton
+    procedure DrawButton(ADest: TFPCustomCanvas; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDButtonStateEx); override;
     // ===================================
     // Common Controls Tab
     // ===================================
@@ -32,6 +41,21 @@ type
   end;
 
 implementation
+
+const
+
+  // Button
+
+  MAC_SQUARE_BUTTON_FOCUS_FRAME_OUTTER = $00D7BE9F;
+  MAC_SQUARE_BUTTON_FOCUS_FRAME_INNER = $00F7DEBF; // actually it is a gradient as well
+  //
+  MAC_SQUARE_BUTTON_FRAME = $00AFAFAF;
+  MAC_SQUARE_BUTTON_FOCUS_GRADIENT_TOP = $00E3E3E3;
+  MAC_SQUARE_BUTTON_FOCUS_GRADIENT_BOTTOM = $00F7F7F7;
+  //
+  MAC_SQUARE_BUTTON_SUNKEN_GRADIENT_TOP = $00AFAFAF;
+  MAC_SQUARE_BUTTON_SUNKEN_GRADIENT_BOTTOM = $00C5C5C5;
+
 
 { TCDDrawerMac }
 
@@ -83,6 +107,60 @@ begin
   ADest.Polygon(lPoints);
 end;
 
+procedure TCDDrawerMac.DrawMacSquareButton(ADest: TFPCustomCanvas;
+  ASize: TSize; AState: TCDControlState; AStateEx: TCDButtonStateEx);
+var
+  lDest: TCanvas absolute ADest;
+  Str: string;
+  lColor: TColor;
+  lRect: TRect;
+  lFrameDark, lFrameMedDark, lFrameMedium, lFrameLight: TColor;
+  lSelTop, lSelTopGrad, lSelBottomGrad, lSelBottom: TColor;
+  lGradientTop, lGradientBottom: TColor;
+begin
+  // Main body with gradient
+  if csfSunken in AState then
+  begin
+    lGradientTop := MAC_SQUARE_BUTTON_SUNKEN_GRADIENT_TOP;
+    lGradientBottom := MAC_SQUARE_BUTTON_SUNKEN_GRADIENT_BOTTOM;
+  end
+  else// if csfEnabled in AState then
+  begin
+    lGradientTop := MAC_SQUARE_BUTTON_FOCUS_GRADIENT_TOP;
+    lGradientBottom := MAC_SQUARE_BUTTON_FOCUS_GRADIENT_BOTTOM;
+  end;
+  lRect := Bounds(1, 1, ASize.cx-2, ASize.cy-2);
+  lDest.GradientFill(lRect, lGradientTop, lGradientBottom, gdVertical);
+
+  // outter rectangle
+  lColor := AStateEx.ParentRGBColor;
+  ADest.Brush.Style := bsClear;
+  if (csfHasFocus in AState) and not (csfSunken in AState) then
+    lDest.Pen.Color := MAC_SQUARE_BUTTON_FOCUS_FRAME_OUTTER
+  else
+    lDest.Pen.Color := MAC_SQUARE_BUTTON_FRAME;
+  ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
+  ADest.Rectangle(1, 1, ASize.cx-1, ASize.cy-1);
+
+  // inner rectangle (only for focused)
+  if (csfHasFocus in AState) and not (csfSunken in AState) then
+  begin
+    lDest.Pen.Color := MAC_SQUARE_BUTTON_FOCUS_FRAME_INNER;
+    ADest.Rectangle(2, 2, ASize.cx-2, ASize.cy-2);
+    ADest.Rectangle(3, 3, ASize.cx-3, ASize.cy-3);
+  end;
+
+  // Button text
+  ADest.Font.Assign(AStateEx.Font);
+  ADest.Brush.Style := bsClear;
+  ADest.Pen.Style := psSolid;
+  if (csfSunken in AState) then
+    ADest.Font.FPColor := colWhite;
+  Str := AStateEx.Caption;
+  lDest.TextOut((ASize.cx - lDest.TextWidth(Str)) div 2,
+    (ASize.cy - lDest.TextHeight(Str)) div 2, Str);
+end;
+
 function TCDDrawerMac.GetMeasures(AMeasureID: Integer): Integer;
 begin
   case AMeasureID of
@@ -91,6 +169,12 @@ begin
   else
     Result:=inherited GetMeasures(AMeasureID);
   end;
+end;
+
+procedure TCDDrawerMac.DrawButton(ADest: TFPCustomCanvas; ASize: TSize;
+  AState: TCDControlState; AStateEx: TCDButtonStateEx);
+begin
+  DrawMacSquareButton(ADest, ASize, AState, AStateEx);
 end;
 
 procedure TCDDrawerMac.DrawToolBarItem(ADest: TCanvas; ASize: TSize;
