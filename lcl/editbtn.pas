@@ -887,8 +887,7 @@ type
       function GetDefaultGlyphName: String; override;
       procedure ButtonClick; override;
       procedure EditDblClick; override;
-      procedure EditExit; override;
-      procedure EditKeyDown(var Key: word; Shift: TShiftState); override;
+      procedure EditEditingDone; override;
     public
       constructor Create(AOwner: TComponent); override;
       property Time: TDateTime read GetTime write SetTime;
@@ -3043,18 +3042,13 @@ begin
   OpenTimePopup;
 end;
 
-procedure TTimeEdit.EditExit;
+
+procedure TTimeEdit.EditEditingDone;
 begin
-  inherited EditExit;
   ParseInput;
+  inherited EditEditingDone;
 end;
 
-procedure TTimeEdit.EditKeyDown(var Key: word; Shift: TShiftState);
-begin
-  if Key = VK_RETURN then
-    ParseInput;
-  inherited EditKeyDown(Key, Shift);
-end;
 
 constructor TTimeEdit.Create(AOwner: TComponent);
 begin
