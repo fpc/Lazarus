@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, LCLStrConsts, Types, LCLType, LMessages,
   Graphics, Controls, Forms, LazFileUtils, Dialogs, StdCtrls, Buttons, Calendar,
-  ExtDlgs, CalendarPopup, MaskEdit, Menus;
+  ExtDlgs, CalendarPopup, MaskEdit, Menus, StrUtils, DateUtils, TimePopup;
 
 const
   NullDate: TDateTime = 0;
@@ -860,7 +860,101 @@ type
     property TextHintFontColor;
     property TextHintFontStyle;
   end;
+  
+  { TTimeEdit }
 
+  TAcceptTimeEvent = procedure (Sender : TObject; var ATime : TDateTime; var AcceptTime: Boolean) of object;
+  TCustomTimeEvent = procedure (Sender : TObject; var ATime : TDateTime) of object;
+
+  TTimeEdit = class(TCustomEditButton)
+    private
+      FTime: TTime;
+      IsEmptyTime: Boolean;
+      FDefaultNow: Boolean;
+      FDroppedDown: Boolean;
+      FOnAcceptTime: TAcceptTimeEvent;
+      FOnCustomTime: TCustomTimeEvent;
+      function GetTime: TDateTime;
+      procedure SetTime(AValue: TDateTime);
+      procedure SetEmptyTime;
+      procedure TimePopupReturnTime(Sender: TObject; const ATime: TDateTime);
+      procedure TimePopupShowHide(Sender: TObject);
+      procedure OpenTimePopup;
+      procedure ParseInput;
+      function TryParseInput(AInput: String; out ParseResult: TDateTime): Boolean;
+    protected
+      function GetDefaultGlyph: TBitmap; override;
+      function GetDefaultGlyphName: String; override;
+      procedure ButtonClick; override;
+      procedure EditDblClick; override;
+      procedure EditExit; override;
+      procedure EditKeyDown(var Key: word; Shift: TShiftState); override;
+    public
+      constructor Create(AOwner: TComponent); override;
+      property Time: TDateTime read GetTime write SetTime;
+      property Button;
+      property DroppedDown: Boolean read FDroppedDown;
+    published
+      property DefaultNow: Boolean read FDefaultNow write FDefaultNow default False;
+      property OnAcceptTime: TAcceptTimeEvent read FOnAcceptTime write FOnAcceptTime;
+      property OnCustomTime: TCustomTimeEvent read FOnCustomTime write FOnCustomTime;
+      property ReadOnly;
+      property ButtonOnlyWhenFocused;
+      property ButtonWidth;
+      property Action;
+      property Align;
+      property Anchors;
+      property AutoSize;
+      property AutoSelect;
+      property BidiMode;
+      property BorderSpacing;
+      property BorderStyle;
+      property CharCase;
+      property Color;
+      property Constraints;
+      property DirectInput;
+      property Glyph;
+      property NumGlyphs;
+      property DragMode;
+      property EchoMode;
+      property Enabled;
+      property Flat;
+      property FocusOnButtonClick;
+      property Font;
+      property MaxLength;
+      property OnButtonClick;
+      property OnChange;
+      property OnChangeBounds;
+      property OnClick;
+      property OnDblClick;
+      property OnEditingDone;
+      property OnEnter;
+      property OnExit;
+      property OnKeyDown;
+      property OnKeyPress;
+      property OnKeyUp;
+      property OnMouseDown;
+      property OnMouseEnter;
+      property OnMouseLeave;
+      property OnMouseMove;
+      property OnMouseUp;
+      property OnMouseWheel;
+      property OnMouseWheelDown;
+      property OnMouseWheelUp;
+      property OnResize;
+      property OnUTF8KeyPress;
+      property ParentBidiMode;
+      property ParentColor;
+      property ParentFont;
+      property ParentShowHint;
+      property PopupMenu;
+      property ShowHint;
+      property TabStop;
+      property TabOrder;
+      property Visible;
+      property Text;
+  end;
+  
 
   { TCalcEdit }
 
@@ -962,6 +1056,7 @@ var
   FileOpenGlyph: TBitmap;
   DateGlyph: TBitmap;
   CalcGlyph: TBitmap;
+  TimeGlyph: TBitmap;
 
 const
   ResBtnListFilter = 'btnfiltercancel';
@@ -969,6 +1064,7 @@ const
   ResBtnSelDir     = 'btnseldir';
   ResBtnCalendar   = 'btncalendar';
   ResBtnCalculator = 'btncalculator';
+  ResBtnTime       = 'btntime';
 
 procedure Register;
 
@@ -2837,6 +2933,135 @@ begin
   end;
 end;
 
+{ TTimeEdit }
+
+function TTimeEdit.GetTime: TDateTime;
+begin
+  Result := FTime;
+  if IsEmptyTime then begin
+    if FDefaultNow then
+      Result := TimeOf(Now);
+  end else begin
+    if Assigned(FOnCustomTime) then
+      FOnCustomTime(Self, Result);
+  end;
+end;
+
+procedure TTimeEdit.SetTime(AValue: TDateTime);
+var
+  Output: String;
+begin
+  DateTimeToString(Output, DefaultFormatSettings.ShortTimeFormat, AValue);
+  Text := Output;
+  FTime := AValue;
+  IsEmptyTime := False;
+end;
+
+procedure TTimeEdit.SetEmptyTime;
+begin
+  Text := EmptyStr;
+  FTime := NullDate;
+  IsEmptyTime := True;
+end;
+
+procedure TTimeEdit.TimePopupReturnTime(Sender: TObject; const ATime: TDateTime);
+var
+  AcceptResult: Boolean;
+  ReturnedTime: TDateTime;
+begin
+  try
+    AcceptResult := True;
+    ReturnedTime := ATime;
+    if Assigned(FOnAcceptTime) then
+      FOnAcceptTime(Self, ReturnedTime, AcceptResult);
+    if AcceptResult then
+      Self.Time := ReturnedTime;
+  except
+    on E:Exception do
+      MessageDlg(E.Message, mtError, [mbOK], 0);
+  end;
+end;
+
+procedure TTimeEdit.TimePopupShowHide(Sender: TObject);
+begin
+  FDroppedDown := (Sender as TForm).Visible;
+end;
+
+procedure TTimeEdit.OpenTimePopup;
+var
+  PopupOrigin: TPoint;
+  ATime: TDateTime;
+begin
+  ParseInput;
+  PopupOrigin := ControlToScreen(Point(0, Height));
+  ATime := GetTime;
+  if ATime = NullDate then
+    ATime := SysUtils.Time;
+  ShowTimePopup(PopupOrigin, ATime, Self.DoubleBuffered, @TimePopupReturnTime, @TimePopupShowHide);
+end;
+
+function TTimeEdit.TryParseInput(AInput: String; out ParseResult: TDateTime): Boolean;
+begin
+  AInput := Trim(AInput);
+  if (Length(AInput) in [3..4]) and (not AnsiContainsStr(AInput, DefaultFormatSettings.TimeSeparator)) then begin
+    Insert(DefaultFormatSettings.TimeSeparator, AInput, Length(AInput) - 1);
+  end;
+  Result := TryStrToTime(AInput, ParseResult);
+end;
+
+procedure TTimeEdit.ParseInput;
+var
+  TmpResult: TDateTime;
+begin
+  if Trim(Text) = EmptyStr then
+    SetEmptyTime
+  else if TryParseInput(Self.Text, TmpResult) then
+    SetTime(TmpResult)
+  else
+    SetTime(FTime);
+end;
+
+function TTimeEdit.GetDefaultGlyph: TBitmap;
+begin
+  Result := TimeGlyph;
+end;
+
+function TTimeEdit.GetDefaultGlyphName: String;
+begin
+  Result := ResBtnTime;
+end;
+
+procedure TTimeEdit.ButtonClick;
+begin
+  inherited ButtonClick;
+  OpenTimePopup;
+end;
+
+procedure TTimeEdit.EditDblClick;
+begin
+  inherited EditDblClick;
+  OpenTimePopup;
+end;
+
+procedure TTimeEdit.EditExit;
+begin
+  inherited EditExit;
+  ParseInput;
+end;
+
+procedure TTimeEdit.EditKeyDown(var Key: word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    ParseInput;
+  inherited EditKeyDown(Key, Shift);
+end;
+
+constructor TTimeEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  SetEmptyTime;
+end;
+
 { TCalcEdit }
 
 function TCalcEdit.GetAsFloat: Double;
@@ -2916,7 +3141,7 @@ end;
 procedure Register;
 begin
   RegisterComponents('Misc', [TEditButton,TFileNameEdit,TDirectoryEdit,
-                              TDateEdit,TCalcEdit]);
+                              TDateEdit,TTimeEdit,TCalcEdit]);
 end;
 
 end.

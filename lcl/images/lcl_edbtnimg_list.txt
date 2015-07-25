@@ -3,3 +3,4 @@ btncalculator.png
 btncalendar.png
 btnseldir.png
 btnselfile.png
+btntime.png

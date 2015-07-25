@@ -1,0 +1,240 @@
+object TimePopupForm: TTimePopupForm
+  Left = 376
+  Height = 185
+  Top = 246
+  Width = 253
+  AutoSize = True
+  BorderIcons = []
+  BorderStyle = bsNone
+  Caption = 'TimePopupForm'
+  ClientHeight = 185
+  ClientWidth = 253
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnDeactivate = FormDeactivate
+  PopupMode = pmAuto
+  LCLVersion = '1.5'
+  object MainPanel: TPanel
+    Left = 0
+    Height = 185
+    Top = 0
+    Width = 253
+    Align = alClient
+    BevelOuter = bvNone
+    BorderWidth = 1
+    BorderStyle = bsSingle
+    ClientHeight = 181
+    ClientWidth = 249
+    Color = clWindow
+    ParentColor = False
+    TabOrder = 0
+    UseDockManager = False
+    object HoursGrid: TStringGrid
+      Left = 1
+      Height = 43
+      Top = 1
+      Width = 252
+      Align = alTop
+      AutoFillColumns = True
+      BorderStyle = bsNone
+      Color = clBtnFace
+      ColCount = 12
+      Constraints.MinHeight = 42
+      Constraints.MinWidth = 252
+      ExtendedSelect = False
+      FixedCols = 0
+      FixedRows = 0
+      GridLineWidth = 0
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goDrawFocusSelected, goSmoothScroll, goSelectionActive]
+      RowCount = 2
+      ScrollBars = ssNone
+      TabOrder = 0
+      UseXORFeatures = True
+      OnDblClick = GridsDblClick
+      OnKeyDown = GridsKeyDown
+      ColWidths = (
+        21
+        21
+        21
+        21
+        21
+        21
+        21
+        21
+        21
+        21
+        21
+        21
+      )
+      Cells = (
+        24
+        0
+        0
+        '00'
+        0
+        1
+        '12'
+        1
+        0
+        '01'
+        1
+        1
+        '13'
+        2
+        0
+        '02'
+        2
+        1
+        '14'
+        3
+        0
+        '03'
+        3
+        1
+        '15'
+        4
+        0
+        '04'
+        4
+        1
+        '16'
+        5
+        0
+        '05'
+        5
+        1
+        '17'
+        6
+        0
+        '06'
+        6
+        1
+        '18'
+        7
+        0
+        '07'
+        7
+        1
+        '19'
+        8
+        0
+        '08'
+        8
+        1
+        '20'
+        9
+        0
+        '09'
+        9
+        1
+        '21'
+        10
+        0
+        '10'
+        10
+        1
+        '22'
+        11
+        0
+        '11'
+        11
+        1
+        '23'
+      )
+    end
+    object MinutesGrid: TStringGrid
+      Left = 1
+      Height = 59
+      Top = 61
+      Width = 252
+      Align = alTop
+      AutoFillColumns = True
+      BorderStyle = bsNone
+      ColCount = 6
+      Constraints.MinWidth = 252
+      FixedCols = 0
+      FixedRows = 0
+      Flat = True
+      GridLineWidth = 0
+      Options = [goFixedVertLine, goDrawFocusSelected, goSmoothScroll]
+      RowCount = 2
+      ScrollBars = ssNone
+      TabOrder = 1
+      UseXORFeatures = True
+      OnDblClick = GridsDblClick
+      OnKeyDown = GridsKeyDown
+      ColWidths = (
+        42
+        42
+        42
+        42
+        42
+        42
+      )
+      Cells = (
+        12
+        0
+        0
+        '00'
+        0
+        1
+        '30'
+        1
+        0
+        '05'
+        1
+        1
+        '35'
+        2
+        0
+        '10'
+        2
+        1
+        '40'
+        3
+        0
+        '15'
+        3
+        1
+        '45'
+        4
+        0
+        '20'
+        4
+        1
+        '50'
+        5
+        0
+        '25'
+        5
+        1
+        '55'
+      )
+    end
+    object Bevel1: TBevel
+      Left = 1
+      Height = 10
+      Top = 51
+      Width = 247
+      Align = alTop
+      BorderSpacing.Top = 7
+      Shape = bsTopLine
+    end
+    object MoreLessBtn: TBitBtn
+      AnchorSideTop.Control = MinutesGrid
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = MainPanel
+      AnchorSideRight.Side = asrBottom
+      Left = 155
+      Height = 22
+      Hint = 'Ctrl + >'
+      Top = 125
+      Width = 93
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 5
+      Caption = '>>'
+      OnClick = MoreLessBtnClick
+      TabOrder = 2
+    end
+  end
+end
