@@ -6109,6 +6109,7 @@ images/components/tstatictext.png -text svneol=unset#image/png
 images/components/tstatusbar.png -text svneol=unset#image/png
 images/components/tstringgrid.png -text svneol=unset#image/png
 images/components/ttabcontrol.png -text svneol=unset#image/png
+images/components/ttimeedit.png -text svneol=unset#image/png
 images/components/ttimer.png -text svneol=unset#image/png
 images/components/ttogglebox.png -text svneol=unset#image/png
 images/components/ttoolbar.png -text svneol=unset#image/png
@@ -6549,6 +6550,7 @@ lcl/images/btncalendar.png -text svneol=unset#image/png
 lcl/images/btnfiltercancel.png -text
 lcl/images/btnseldir.png -text svneol=unset#image/png
 lcl/images/btnselfile.png -text svneol=unset#image/png
+lcl/images/btntime.png -text svneol=unset#image/png
 lcl/images/buttons/btn_abort.png -text svneol=unset#image/png
 lcl/images/buttons/btn_all.png -text svneol=unset#image/png
 lcl/images/buttons/btn_cancel.png -text svneol=unset#image/png
