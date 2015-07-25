@@ -129,7 +129,7 @@ begin
     lGradientTop := MAC_SQUARE_BUTTON_FOCUS_GRADIENT_TOP;
     lGradientBottom := MAC_SQUARE_BUTTON_FOCUS_GRADIENT_BOTTOM;
   end;
-  lRect := Bounds(1, 1, ASize.cx-2, ASize.cy-2);
+  lRect := Bounds(0, 0, ASize.cx, ASize.cy);
   lDest.GradientFill(lRect, lGradientTop, lGradientBottom, gdVertical);
 
   // outter rectangle
@@ -140,14 +140,15 @@ begin
   else
     lDest.Pen.Color := MAC_SQUARE_BUTTON_FRAME;
   ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
-  ADest.Rectangle(1, 1, ASize.cx-1, ASize.cy-1);
+  //ADest.Rectangle(1, 1, ASize.cx-1, ASize.cy-1);
 
   // inner rectangle (only for focused)
   if (csfHasFocus in AState) and not (csfSunken in AState) then
   begin
     lDest.Pen.Color := MAC_SQUARE_BUTTON_FOCUS_FRAME_INNER;
-    ADest.Rectangle(2, 2, ASize.cx-2, ASize.cy-2);
-    ADest.Rectangle(3, 3, ASize.cx-3, ASize.cy-3);
+    ADest.Rectangle(1, 1, ASize.cx-1, ASize.cy-1);
+    //ADest.Rectangle(2, 2, ASize.cx-2, ASize.cy-2);
+    //ADest.Rectangle(3, 3, ASize.cx-3, ASize.cy-3);
   end;
 
   // Button text
