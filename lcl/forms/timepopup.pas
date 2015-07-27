@@ -113,6 +113,8 @@ end;
 
 procedure TTimePopupForm.FormDeactivate(Sender: TObject);
 begin
+  //Immediately hide the form, otherwise it stays visible while e.g. user is draging
+  //another form (Issue 0028441)
   if (not FClosed) then
     Close;
 end;
