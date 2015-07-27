@@ -1329,10 +1329,9 @@ type
 var
   yave, ycalc, SStot, SSres: Double;
   i, j: Integer;
-  na: Integer;
 begin
-  {$IFOPT R+}{$DEFINE RANGE_CHECK_ON}{$ENDIF}
-  {$IFDEF RANGE_CHECK_ON}{$R-}{$ENDIF}
+  {$PUSH}
+  {$R-}
   yave := 0;
   for i:=0 to n-1 do
     yave := yave + TArbFloatArray(y)[i];
@@ -1348,7 +1347,7 @@ begin
     SSres := SSres + sqr(TArbFloatArray(y)[i] - ycalc);
   end;
   Result := 1.0 - SSres / SStot;
-  {$IFDEF RANGE_CHECK_ON}{$R+}{$ENDIF}
+  {$POP}
 end;
 
 function TFitSeries.Calculate(AX: Double): Double;
@@ -1454,8 +1453,6 @@ var
   var
     i, j, term, ns, np, n: Integer;
     xv, yv, fp: array of ArbFloat;
-    ssTot, ssRes: Double;
-    ycalc, yave: Double;
   begin
     np := ParamCount;
     ns := Source.Count;
