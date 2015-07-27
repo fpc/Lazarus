@@ -247,6 +247,9 @@ type
 
   TFitParamsState = (fpsUnknown, fpsInvalid, fpsValid);
 
+  TCalcGoodnessOfFitEvent = procedure (Sender: TObject; var x,y: ArbFloat;
+    n: Integer; out AResult: Double) of object;
+
   TFitSeries = class(TBasicPointSeries)
   strict private
     FDrawFitRangeOnly: Boolean;
@@ -257,6 +260,8 @@ type
     FPen: TChartPen;
     FState: TFitParamsState;
     FStep: TFuncSeriesStep;
+    FGoodnessOfFit: Double;
+    FOnCalcGoodnessOfFit: TCalcGoodnessOfFitEvent;
     function GetParam(AIndex: Integer): Double;
     function GetParamCount: Integer;
     function PrepareIntervals: TIntervalList;
@@ -272,6 +277,7 @@ type
     procedure Transform(AX, AY: Double; out ANewX, ANewY: Extended);
   protected
     procedure AfterAdd; override;
+    function CalcGoodnessOfFit(var x,y: ArbFloat; n: Integer): Double; virtual;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     procedure SourceChanged(ASender: TObject); override;
   public
@@ -289,25 +295,29 @@ type
       const AParams: TNearestPointParams;
       out AResults: TNearestPointResults): Boolean; override;
     property Param[AIndex: Integer]: Double read GetParam write SetParam;
+    property GoodnessOfFit: Double read FGoodnessOfFit;
     property State: TFitParamsState read FState;
   published
     property AxisIndexX;
     property AxisIndexY;
     property DrawFitRangeOnly: Boolean
       read FDrawFitRangeOnly write SetDrawFitRangeOnly default true;
-    property FitEquation: TFitEquation read FFitEquation write SetFitEquation default fePolynomial;
+    property FitEquation: TFitEquation
+      read FFitEquation write SetFitEquation default fePolynomial;
     property FitRange: TChartRange read FFitRange write SetFitRange;
-    property OnFitComplete: TNotifyEvent read FOnFitComplete write FOnFitComplete;
     property ParamCount: Integer
       read GetParamCount write SetParamCount default DEF_FIT_PARAM_COUNT;
     property Pen: TChartPen read FPen write SetPen;
     property Source;
     property Step: TFuncSeriesStep read FStep write SetStep default DEF_FIT_STEP;
+    property OnCalcGoodnessOfFit: TCalcGoodnessOfFitEvent
+      read FOnCalcGoodnessOfFit write FOnCalcGoodnessOfFit;
+    property OnFitComplete: TNotifyEvent
+      read FOnFitComplete write FOnFitComplete;
   end;
 
   TFuncCalculate3DEvent =
     procedure (const AX, AY: Double; out AZ: Double) of object;
-
 
   TColorMapSeries = class(TBasicFuncSeries)
   public
@@ -1307,6 +1317,40 @@ begin
   FFitRange.SetOwner(ParentChart);
 end;
 
+{ Calculates the R-squared parameter as a simple measure for the goodness-of-fit.
+  More advanced calculations require the standard deviation of the y values
+  which are not available.
+  Method can be overridden for more advanced calculations.
+  x and y are the first values of arrays containing the transformed values
+  used during fitting. n indicates the number of these value pairs. }
+function TFitSeries.CalcGoodnessOfFit(var x,y: ArbFloat; n: Integer): Double;
+type
+  TArbFloatArray = array[0..0] of Arbfloat;
+var
+  yave, ycalc, SStot, SSres: Double;
+  i, j: Integer;
+  na: Integer;
+begin
+  {$IFOPT R+}{$DEFINE RANGE_CHECK_ON}{$ENDIF}
+  {$IFDEF RANGE_CHECK_ON}{$R-}{$ENDIF}
+  yave := 0;
+  for i:=0 to n-1 do
+    yave := yave + TArbFloatArray(y)[i];
+  yave := yave / n;
+
+  SStot := 0.0;
+  SSres := 0.0;
+  for i:=0 to n-1 do begin
+    SStot := SStot + sqr(TArbFloatArray(y)[i] - yave);
+    ycalc := 0.0;
+    for j:=High(FFitParams) downto 0 do
+      ycalc := ycalc * TArbFloatArray(x)[i] + FFitParams[j];
+    SSres := SSres + sqr(TArbFloatArray(y)[i] - ycalc);
+  end;
+  Result := 1.0 - SSres / SStot;
+  {$IFDEF RANGE_CHECK_ON}{$R+}{$ENDIF}
+end;
+
 function TFitSeries.Calculate(AX: Double): Double;
 var
   i: Integer;
@@ -1357,6 +1401,7 @@ begin
   FPen.OnChange := @StyleChanged;
   FStep := DEF_FIT_STEP;
   ParamCount := DEF_FIT_PARAM_COUNT; // Parabolic fit as default.
+  FGoodnessOfFit := NaN;
 end;
 
 destructor TFitSeries.Destroy;
@@ -1409,6 +1454,8 @@ var
   var
     i, j, term, ns, np, n: Integer;
     xv, yv, fp: array of ArbFloat;
+    ssTot, ssRes: Double;
+    ycalc, yave: Double;
   begin
     np := ParamCount;
     ns := Source.Count;
@@ -1440,6 +1487,12 @@ var
     if term <> 1 then exit;
     for i := 0 to High(FFitParams) do
       FFitParams[i] := fp[i];
+
+    // Calculate goodness-of-fit parameter
+    if Assigned(FOnCalcGoodnessOfFit) then
+      FOnCalcGoodnessOfFit(Self, xv[0], yv[0], Length(yv), FGoodnessOfFit)
+    else
+      FGoodnessOfFit := CalcGoodnessOfFit(xv[0], yv[0], Length(yv));
 
     // See comment for "Transform": for exponential and power fit equations, the
     // first fitted parameter is the logarithm of the "real" parameter. It needs
