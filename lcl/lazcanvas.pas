@@ -339,6 +339,9 @@ procedure TLazCanvas.DoPolygonFill(const points: array of TPoint);
 var
   lBoundingBox: TRect;
   x, y, i: integer;
+  // faster version
+  nodes, j, swap, polyCorners: Integer;
+  nodeX: array of Integer;
 begin
   if Brush.Style = bsClear then Exit;
 
@@ -352,12 +355,66 @@ begin
     lBoundingBox.Bottom := Max(Points[i].Y, lBoundingBox.Bottom);
   end;
 
-  // Now scan all points using IsPointInPolygon
+  // good but very slow polygon fill function
+  {// Now scan all points using IsPointInPolygon
   for x := lBoundingBox.Left to lBoundingBox.Right do
     for y := lBoundingBox.Top to lBoundingBox.Bottom do
     begin
       if IsPointInPolygon(X, Y, Points) then SetColor(X, Y, Brush.FPColor);
     end;
+  Exit;
+  }
+
+  //  Loop through the rows of the image.
+  polyCorners := Length(points);
+  for y := lBoundingBox.Top to lBoundingBox.Bottom do
+  begin
+    //  Build a list of nodes.
+    nodes := 0;
+    j := polyCorners-1;
+    for i := 0 to polyCorners-1 do
+    begin
+      if (points[i].Y < y) and (points[j].Y >= y) or
+      (points[j].Y < y) and (points[i].Y >= Y) then
+      begin
+        SetLength(nodeX, nodes+1);
+        nodeX[nodes] := Round(points[i].X + (y-points[i].Y) / (points[j].Y-points[i].Y) * (points[j].X-points[i].X));
+        Inc(nodes);
+      end;
+      j := i;
+    end;
+
+    //  Sort the nodes, via a simple “Bubble” sort.
+    i := 0;
+    while (i<nodes-1) do
+    begin
+      if (nodeX[i]>nodeX[i+1]) then
+      begin
+        swap := nodeX[i];
+        nodeX[i] := nodeX[i+1];
+        nodeX[i+1] := swap;
+        if (i <> 0) then Dec(i);
+      end
+      else
+        Inc(i);
+    end;
+
+    //  Fill the pixels between node pairs.
+    i := 0;
+    while i<nodes do
+    begin
+      if   (nodeX[i  ] >= lBoundingBox.Right) then break;
+      if   (nodeX[i+1] > lBoundingBox.Left) then
+      begin
+        if (nodeX[i  ] < lBoundingBox.Left) then nodeX[i] := lBoundingBox.Left;
+        if (nodeX[i+1] > lBoundingBox.Right) then nodeX[i+1] := lBoundingBox.Right;
+        for X := nodeX[i] to nodeX[i+1]-1 do
+          SetColor(X, Y, Brush.FPColor);
+      end;
+
+      i := i + 2;
+    end;
+  end;
 end;
 
 procedure TLazCanvas.DoLine(x1, y1, x2, y2: integer);
