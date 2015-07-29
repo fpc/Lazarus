@@ -335,6 +335,7 @@ begin
 end;
 
 // unimplemented in FPC
+// algorithm explained here: http://alienryderflex.com/polygon_fill/
 procedure TLazCanvas.DoPolygonFill(const points: array of TPoint);
 var
   lBoundingBox: TRect;
