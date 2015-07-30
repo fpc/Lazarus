@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-06-28 20:19+0100\n"
+"PO-Revision-Date: 2015-07-29 19:29+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -829,7 +829,7 @@ msgstr "Auswahl der Code-Vorlagendatei (*.dci)"
 
 #: lazarusidestrconsts.dlgcloseanduseselecteddesktop
 msgid "Close and use selected desktop"
-msgstr ""
+msgstr "Schließen und gewählten Desktop verwenden"
 
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
@@ -1230,7 +1230,7 @@ msgstr "Menüs - "
 
 #: lazarusidestrconsts.dlgdesktopname
 msgid "Desktop name:"
-msgstr ""
+msgstr "Desktop-Name:"
 
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
@@ -2224,7 +2224,7 @@ msgstr "Pfad zum \"Make\"-Programm"
 
 #: lazarusidestrconsts.dlgmanagedesktops
 msgid "Manage desktops"
-msgstr ""
+msgstr "Desktops verwalten"
 
 #: lazarusidestrconsts.dlgmargingutter
 msgid "Margin and gutter"
@@ -2825,6 +2825,8 @@ msgid ""
 "Desktop with the name \"%s\" was found.\n"
 "Should the old desktop be overwritten?\n"
 msgstr ""
+"Desktop mit dem Namen \"%s\" wurde gefunden.\n"
+"Soll der alte Desktop überschrieben werden?\n"
 
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
@@ -3025,7 +3027,7 @@ msgstr "Am Gitter ausrichten"
 
 #: lazarusidestrconsts.dlgreallydeletedesktop
 msgid "Really delete desktop \"%s\"?"
-msgstr ""
+msgstr "Desktop \"%s\" wirklich löschen?"
 
 #: lazarusidestrconsts.dlgreferencecolor
 msgid "Reference"
@@ -3037,7 +3039,7 @@ msgstr "Reguläre Ausdrücke"
 
 #: lazarusidestrconsts.dlgrenamedesktop
 msgid "Rename desktop"
-msgstr ""
+msgstr "Desktop umbenennen"
 
 #: lazarusidestrconsts.dlgreplaceall
 msgid "Replace &All"
@@ -3111,7 +3113,7 @@ msgstr "Start-Parameter"
 
 #: lazarusidestrconsts.dlgsavecurrentdesktop
 msgid "Save current desktop"
-msgstr ""
+msgstr "Aktuellen Desktop speichern"
 
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
@@ -3180,7 +3182,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgselecteddesktop
 msgid "Selected desktop:"
-msgstr ""
+msgstr "Ausgewählter Desktop:"
 
 #: lazarusidestrconsts.dlgselectedtext
 msgid "&Selected text"
@@ -5668,7 +5670,7 @@ msgstr "Seiten"
 
 #: lazarusidestrconsts.liscmppalettevisible
 msgid "Palette is &visible"
-msgstr ""
+msgstr "Palette ist sichtbar"
 
 #: lazarusidestrconsts.liscmprestoredefaults
 msgid "&Restore defaults"
@@ -8789,7 +8791,7 @@ msgstr "Als HTML exportieren"
 
 #: lazarusidestrconsts.lisexportimport
 msgid "Export / Import"
-msgstr ""
+msgstr "Export / Import"
 
 #: lazarusidestrconsts.lisexportlist
 msgid "Export list"
@@ -9776,7 +9778,7 @@ msgstr "Wichtig"
 #: lazarusidestrconsts.lisimportenvironmentoptions
 msgctxt "lazarusidestrconsts.lisimportenvironmentoptions"
 msgid "Import environment options"
-msgstr ""
+msgstr "Umgebungseinstellungen importieren"
 
 #: lazarusidestrconsts.lisimportfromfile
 msgid "Import from File"
@@ -13352,7 +13354,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddfilesfromfilesystem
 msgid "Add Files from File System"
-msgstr ""
+msgstr "Dateien aus dem Dateisystem hinzufügen"
 
 #: lazarusidestrconsts.lispckeditaddotheritems
 msgid "Add other items"
@@ -13870,7 +13872,7 @@ msgstr "Die Datei \"%s\"%sbefindet sich derzeit nicht im Unitpfad des Packages.%
 
 #: lazarusidestrconsts.lispkgedmorefunctionsforthepackage
 msgid "More functions for the package"
-msgstr ""
+msgstr "Weitere Funktionen für das Package"
 
 #: lazarusidestrconsts.lispkgfiletypebinary
 msgctxt "lazarusidestrconsts.lispkgfiletypebinary"
@@ -13956,7 +13958,7 @@ msgstr "Zirkuläre Abhängigkeiten gefunden"
 
 #: lazarusidestrconsts.lispkgmangcompilepackage
 msgid "Compile package %s"
-msgstr ""
+msgstr "Kompiliere Package %s"
 
 #: lazarusidestrconsts.lispkgmangdeletefailed
 msgid "Delete failed"
@@ -20048,4 +20050,3 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
-
