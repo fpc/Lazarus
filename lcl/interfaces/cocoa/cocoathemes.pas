@@ -37,8 +37,8 @@ type
     procedure InternalDrawParentBackground({%H-}Window: HWND; {%H-}Target: HDC; {%H-}Bounds: PRect); override;
 *)
     function GetDrawState(Details: TThemedElementDetails): ThemeDrawState;
-(*    function DrawButtonElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
-    function DrawComboBoxElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
+    function DrawButtonElement(DC: TCocoaContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
+(*    function DrawComboBoxElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
     function DrawHeaderElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
     function DrawRebarElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;*)
     function DrawToolBarElement(DC: TCocoaContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
@@ -141,64 +141,67 @@ begin
   BoundsRect.size.height := NewHeight + 1;
   BoundsRect.size.width := BoundsRect.size.width - BtnWidth;
   Result := CGRectToRect(BoundsRect);
-end;
+end;*)
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonThemeServices.DrawButtonElement
+  Method:  TCocoaThemeServices.DrawButtonElement
   Params:  DC       - Carbon device context
            Details  - Details for themed element
            R        - Bounding rectangle
            ClipRect - Clipping rectangle
   Returns: ClientRect
 
-  Draws a button element with native Carbon look
+  Draws a button element with native look
+  Button kinds:
+  {BP_PUSHBUTTON } kThemeRoundedBevelButton,
+  {BP_RADIOBUTTON} kThemeRadioButton,
+  {BP_CHECKBOX   } kThemeCheckBox,
+  {BP_GROUPBOX   } kHIThemeGroupBoxKindPrimary,
+  {BP_USERBUTTON } kThemeRoundedBevelButton
  ------------------------------------------------------------------------------}
-function TCarbonThemeServices.DrawButtonElement(DC: TCarbonDeviceContext;
+function TCocoaThemeServices.DrawButtonElement(DC: TCocoaContext;
   Details: TThemedElementDetails; R: TRect; ClipRect: PRect): TRect;
-const
-  ButtonMap: array[BP_PUSHBUTTON..BP_USERBUTTON] of ThemeButtonKind =
-  (
-{BP_PUSHBUTTON } kThemeRoundedBevelButton,
-{BP_RADIOBUTTON} kThemeRadioButton,
-{BP_CHECKBOX   } kThemeCheckBox,
-{BP_GROUPBOX   } kHIThemeGroupBoxKindPrimary, // ??
-{BP_USERBUTTON } kThemeRoundedBevelButton
-  );
 var
-  ButtonDrawInfo: HIThemeButtonDrawInfo;
-  // we can do so because GroupDrawIndo have common fields with ButtonDrawInfo
-  GroupDrawInfo: HIThemeGroupBoxDrawInfo absolute ButtonDrawInfo; 
-  LabelRect: HIRect;
+  lCanvas: TCanvas;
+  lSize: TSize;
+  lCDButton: TCDButtonStateEx;
+  lState: TCDControlState = [];
+  lDrawer: TCDDrawer;
+  lPt: TPoint;
 begin
-  ButtonDrawInfo.version := 0;
-  ButtonDrawInfo.State := GetDrawState(Details);
-  ButtonDrawInfo.kind := ButtonMap[Details.Part];
-  if IsMixed(Details) then
-    ButtonDrawInfo.value := kThemeButtonMixed
-  else
-  if IsChecked(Details) then
-    ButtonDrawInfo.value := kThemeButtonOn
-  else
-    ButtonDrawInfo.value := kThemeButtonOff;
-  ButtonDrawInfo.adornment := kThemeAdornmentNone;
+  lCDButton := TCDButtonStateEx.Create;
+  lCanvas := TCanvas.Create;
+  try
+    lSize.CX := R.Right - R.Left;
+    lSize.CY := R.Bottom - R.Top;
 
-  LabelRect := RectToCGRect(R);
+    if IsHot(Details) then
+      lState += [csfMouseOver];
+    if IsPushed(Details) then
+      lState += [csfSunken];
+    if IsChecked(Details) then
+      lState += [csfSunken];
+    if not IsDisabled(Details) then
+      lState += [csfEnabled];
 
-  if Details.Part = BP_GROUPBOX then
-    OSError(
-      HIThemeDrawGroupBox(LabelRect, GroupDrawInfo, DC.CGContext,
-          kHIThemeOrientationNormal),
-      Self, 'DrawButtonElement', 'HIThemeDrawGroupBox')
-  else
-    OSError(
-      HIThemeDrawButton(LabelRect, ButtonDrawInfo, DC.CGContext,
-        kHIThemeOrientationNormal, @LabelRect),
-      Self, 'DrawButtonElement', 'HIThemeDrawButton');
-      
-  Result := CGRectToRect(LabelRect);
+    lDrawer := GetDrawer(dsMacOSX);
+    lCanvas.Handle := HDC(DC);
+
+    lPt := Types.Point(R.Left, R.Top);
+    if Details.Part = BP_GROUPBOX then
+      lDrawer.DrawGroupBox(lCanvas, lPt, lSize, lState, lCDButton)
+    else
+      lDrawer.DrawButton(lCanvas, lPt, lSize, lState, lCDButton);
+
+    Result := R;
+  finally
+    lCDButton.Free;
+    lCanvas.Handle := 0;
+    lCanvas.Free;
+  end;
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Method:  TCarbonThemeServices.DrawHeaderElement
   Params:  DC       - Carbon device context
            Details  - Details for themed element
@@ -581,9 +584,9 @@ begin
   if CheckDC(DC, 'TCocoaThemeServices.DrawElement') then
   begin
     case Details.Element of
-{      teComboBox: DrawComboBoxElement(Context, Details, R, ClipRect);
+      //teComboBox: DrawComboBoxElement(Context, Details, R, ClipRect);
       teButton: DrawButtonElement(Context, Details, R, ClipRect);
-      teHeader: DrawHeaderElement(Context, Details, R, ClipRect);
+      {teHeader: DrawHeaderElement(Context, Details, R, ClipRect);
       teRebar: DrawRebarElement(Context, Details, R, ClipRect);}
       teToolBar: DrawToolBarElement(Context, Details, R, ClipRect);
       teTreeview: DrawTreeviewElement(Context, Details, R, ClipRect);
