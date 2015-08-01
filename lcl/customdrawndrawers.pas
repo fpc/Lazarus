@@ -336,7 +336,7 @@ type
     function GetClientArea(ADest: TCanvas; ASize: TSize; AControlId: TCDControlID;
       AState: TCDControlState; AStateEx: TCDControlStateEx): TRect; virtual; abstract;
     // To set a different position to draw the control then (0, 0) use the window org of the canvas
-    procedure DrawControl(ADest: TCanvas; ASize: TSize;
+    procedure DrawControl(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AControl: TCDControlID; AState: TCDControlState; AStateEx: TCDControlStateEx);
     // General drawing routines. The ones using TFPCustomCanvas are reusable in LCL-CustomDrawn
     procedure DrawFocusRect(ADest: TFPCustomCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
@@ -355,7 +355,7 @@ type
     procedure DrawControl(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
     // TCDButton
-    procedure DrawButton(ADest: TFPCustomCanvas; ASize: TSize;
+    procedure DrawButton(ADest: TFPCustomCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDButtonStateEx); virtual; abstract;
     // TCDEdit
     procedure DrawEditBackground(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
@@ -383,7 +383,7 @@ type
     procedure DrawScrollBar(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDPositionedCStateEx); virtual; abstract;
     // TCDGroupBox
-    procedure DrawGroupBox(ADest: TFPCustomCanvas; ASize: TSize;
+    procedure DrawGroupBox(ADest: TFPCustomCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
     // TCDPanel
     procedure DrawPanel(ADest: TCanvas; ASize: TSize;
@@ -703,20 +703,20 @@ begin
   end;
 end;
 
-procedure TCDDrawer.DrawControl(ADest: TCanvas; ASize: TSize;
+procedure TCDDrawer.DrawControl(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
   AControl: TCDControlID; AState: TCDControlState; AStateEx: TCDControlStateEx
     );
 begin
   case AControl of
   cidControl:    DrawControl(ADest, ASize, AState, AStateEx);
   //
-  cidButton:     DrawButton(ADest, ASize, AState, TCDButtonStateEx(AStateEx));
+  cidButton:     DrawButton(ADest, ADestPos, ASize, AState, TCDButtonStateEx(AStateEx));
   cidEdit:       DrawEdit(ADest, ASize, AState, TCDEditStateEx(AStateEx));
   cidCheckBox:   DrawCheckBox(ADest, ASize, AState, AStateEx);
   cidRadioButton:DrawRadioButton(ADest, ASize, AState, AStateEx);
   cidComboBox:   DrawComboBox(ADest, ASize, AState, TCDEditStateEx(AStateEx));
   cidScrollBar:  DrawScrollBar(ADest, ASize, AState, TCDPositionedCStateEx(AStateEx));
-  cidGroupBox:   DrawGroupBox(ADest, ASize, AState, AStateEx);
+  cidGroupBox:   DrawGroupBox(ADest, ADestPos, ASize, AState, AStateEx);
   cidPanel:      DrawPanel(ADest, ASize, AState, TCDPanelStateEx(AStateEx));
   //
   cidStaticText: DrawStaticText(ADest, ASize, AState, AStateEx);

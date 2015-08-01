@@ -55,7 +55,7 @@ type
     // Standard Tab
     // ===================================
     // TCDButton
-    procedure DrawButton(ADest: TFPCustomCanvas; ASize: TSize;
+    procedure DrawButton(ADest: TFPCustomCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDButtonStateEx); override;
     // TCDEdit
     procedure DrawEditBackground(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
@@ -83,7 +83,7 @@ type
     procedure DrawScrollBar(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDPositionedCStateEx); override;
     // TCDGroupBox
-    procedure DrawGroupBox(ADest: TFPCustomCanvas; ASize: TSize;
+    procedure DrawGroupBox(ADest: TFPCustomCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
     // TCDPanel
     procedure DrawPanel(ADest: TCanvas; ASize: TSize;
@@ -702,7 +702,7 @@ begin
 end;
 
 procedure TCDDrawerCommon.DrawButton(ADest: TFPCustomCanvas;
-  ASize: TSize; AState: TCDControlState; AStateEx: TCDButtonStateEx);
+  ADestPos: TPoint; ASize: TSize; AState: TCDControlState; AStateEx: TCDButtonStateEx);
 var
   Str: string;
   lGlyphLeftSpacing: Integer = 0;
@@ -1275,7 +1275,7 @@ begin
 end;
 
 procedure TCDDrawerCommon.DrawGroupBox(ADest: TFPCustomCanvas;
-  ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
+  ADestPos: TPoint; ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
 var
   FCaptionMiddle: integer = 0;
   lTextSize: TSize;
