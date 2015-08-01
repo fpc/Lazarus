@@ -97,7 +97,52 @@ begin
           Polygon(P);
         end;
       end;
-    end;
+      stTriangleDown:
+      begin
+        with Self do
+        begin
+          P[0].x := (Width - 1) div 2;
+          P[0].y := Height - PenInc - 1;
+          P[1].x := Width - PenInc - 1;
+          P[1].y := PenInc;
+          P[2].x := PenInc;
+          P[2].y := PenInc;
+          P[3].x := P[0].x;
+          P[3].y := P[0].y;
+          Polygon(P);
+        end;
+      end;
+      stTriangleLeft:
+      begin
+        with Self do
+        begin
+          P[0].x := PenInc;
+          P[0].y := Height div 2;
+          P[1].x := Width - PenInc - 1;
+          P[1].y := PenInc;
+          P[2].x := Width - PenInc - 1;
+          P[2].y := Height - PenInc - 1;
+          P[3].x := P[0].x;
+          P[3].y := P[0].y;
+          Polygon(P);
+        end;
+      end;
+      stTriangleRight:
+      begin
+        with Self do
+        begin
+          P[0].x := Width - PenInc - 1;
+          P[0].y := Height div 2;
+          P[1].x := PenInc;
+          P[1].y := PenInc;
+          P[2].x := PenInc;
+          P[2].y := Height - PenInc - 1;
+          P[3].x := P[0].x;
+          P[3].y := P[0].y;
+          Polygon(P);
+        end;
+      end;
+   end;
   end;
   // to fire OnPaint event
   inherited Paint;

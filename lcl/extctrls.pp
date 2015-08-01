@@ -250,7 +250,8 @@ type
   { TShape }
 
   TShapeType = (stRectangle, stSquare, stRoundRect, stRoundSquare,
-    stEllipse, stCircle, stSquaredDiamond, stDiamond, stTriangle);
+    stEllipse, stCircle, stSquaredDiamond, stDiamond,
+    stTriangle, stTriangleLeft, stTriangleRight, stTriangleDown);
 
   TShape = class(TGraphicControl)
   private
