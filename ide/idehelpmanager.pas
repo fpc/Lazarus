@@ -464,12 +464,12 @@ begin
         Result:=copy(Result,1,p-1)+NewTag+copy(Result,EndPos,length(Result));
         inc(p,length(NewTag));
       end;
-    end else if Result[p] in [' ',#9,#10,#13] then begin
+    end else if Result[p] in [#9,#10,#13] then begin
       // replace spaces and newline characters with a single space
       EndPos:=p+1;
-      while (EndPos<=length(Result)) and (Result[EndPos] in [' ',#9,#10,#13]) do
+      while (EndPos<=length(Result)) and (Result[EndPos] in [#9,#10,#13]) do
         inc(EndPos);
-      if (p > 1) and not (Result[p-1] in [' ',#9,#10,#13]) then
+      if (p > 1) and not (Result[p-1] in [#9,#10,#13]) then
       begin
         Result:=copy(Result,1,p-1)+' '+copy(Result,EndPos,length(Result));
         inc(p);
@@ -477,7 +477,7 @@ begin
       else
         Result:=copy(Result,1,p-1)+copy(Result,EndPos,length(Result));
     end else if Result[p]='&' then begin
-      // special chars: &lt; &gt; &amp;
+      // special chars: &lt; &gt; &amp; &nbsp;
         if (p+2<Length(Result)) and (Result[p+1]='l') and (Result[p+2]='t') and (Result[p+3]=';') then begin
           EndPos:=p+4;
           Result:=copy(Result,1,p-1)+'<'+copy(Result,EndPos,length(Result));
@@ -485,6 +485,10 @@ begin
         if (p+2<Length(Result)) and (Result[p+1]='g') and (Result[p+2]='t') and (Result[p+3]=';') then begin
           EndPos:=p+4;
           Result:=copy(Result,1,p-1)+'>'+copy(Result,EndPos,length(Result));
+        end else
+        if (p+4<Length(Result)) and (Result[p+1]='n') and (Result[p+2]='b') and (Result[p+3]='s') and (Result[p+4]='p') and (Result[p+5]=';') then begin
+          EndPos:=p+6;
+          Result:=copy(Result,1,p-1)+' '+copy(Result,EndPos,length(Result));
         end else
         if (p+3<Length(Result)) and (Result[p+1]='a') and (Result[p+2]='m') and (Result[p+3]='p') and (Result[p+4]=';') then begin
           EndPos:=p+5;
