@@ -60,7 +60,7 @@ type
     // Standard Tab
     // ===================================
     // TCDButton
-    procedure DrawButton(ADest: TFPCustomCanvas; ASize: TSize;
+    procedure DrawButton(ADest: TFPCustomCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDButtonStateEx); override;
   end;
 
@@ -456,7 +456,7 @@ end;
 
 { TCDWin7 }
 
-procedure TCDWin7.DrawButton(ADest: TFPCustomCanvas; ASize: TSize;
+procedure TCDWin7.DrawButton(ADest: TFPCustomCanvas; ADestPos: TPoint; ASize: TSize;
   AState: TCDControlState; AStateEx: TCDButtonStateEx);
 var
   Str: string;
