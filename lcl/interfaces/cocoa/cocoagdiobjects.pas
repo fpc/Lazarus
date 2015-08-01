@@ -1943,7 +1943,7 @@ procedure TCocoaContext.ClearClipping;
 var
   Trans: CGAffineTransform;
 begin
-  if FClipped  then
+  if FClipped then
   begin
     Trans := CGContextGetCTM(CGContext);
     CGContextRestoreGState(CGContext());

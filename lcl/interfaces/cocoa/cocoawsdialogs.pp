@@ -173,14 +173,24 @@ begin
 
   //todo: Options
 
-  if FileDialog.FCompStyle = csOpenFileDialog then
+  if (FileDialog.FCompStyle = csOpenFileDialog) or
+    (FileDialog is TSelectDirectoryDialog) then
   begin
     openDlg := NSOpenPanel.openPanel;
     openDlg.setAllowsMultipleSelection(ofAllowMultiSelect in
       TOpenDialog(FileDialog).Options);
-    openDlg.setCanChooseFiles(True);
+    if (FileDialog is TSelectDirectoryDialog) then
+    begin
+      openDlg.setCanChooseDirectories(True);
+      openDlg.setCanChooseFiles(False);
+    end
+    else
+    begin
+      openDlg.setCanChooseFiles(True);
+      openDlg.setCanChooseDirectories(False);
+      openDlg.setAllowedFileTypes(nsfilter);
+    end;
     openDlg.setTitle(NSStringUtf8(FileDialog.Title));
-    openDlg.setAllowedFileTypes(nsfilter);
     openDlg.setDirectoryURL(NSURL.fileURLWithPath(NSStringUtf8(FileDialog.InitialDir)));
 
     if openDlg.runModal = NSOKButton then
@@ -192,10 +202,8 @@ begin
           NSURL(openDlg.URLs.objectAtIndex(i)).path));
       FileDialog.UserChoice := mrOk;
     end;
-
   end
-  else
-  if FileDialog.FCompStyle = csSaveFileDialog then
+  else if FileDialog.FCompStyle = csSaveFileDialog then
   begin
     saveDlg := NSSavePanel.savePanel;
     saveDlg.setCanCreateDirectories(True);
