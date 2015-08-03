@@ -251,13 +251,15 @@ type
 
   TShapeType = (stRectangle, stSquare, stRoundRect, stRoundSquare,
     stEllipse, stCircle, stSquaredDiamond, stDiamond,
-    stTriangle, stTriangleLeft, stTriangleRight, stTriangleDown);
+    stTriangle, stTriangleLeft, stTriangleRight, stTriangleDown,
+    stStar, stStarDown);
 
   TShape = class(TGraphicControl)
   private
     FPen: TPen;
     FBrush: TBrush;
     FShape: TShapeType;
+    function GetStarAngle(N: Integer; ADown: boolean): Double;
     procedure SetBrush(Value: TBrush);
     procedure SetPen(Value: TPen);
     procedure SetShape(Value: TShapeType);
