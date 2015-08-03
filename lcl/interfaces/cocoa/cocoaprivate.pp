@@ -62,6 +62,7 @@ type
     procedure DidBecomeKeyNotification;
     procedure DidResignKeyNotification;
     procedure SendOnChange;
+    procedure SendOnTextChanged;
     // non event methods
     function DeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult;
     function GetPropStorage: TStringList;
@@ -3640,6 +3641,8 @@ begin
   lNSStr := CocoaUtils.NSStringUtf8(lStr);
   Edit.setStringValue(lNSStr);
   lNSStr.release;
+  // This implements OnChange for both user and code changes
+  if callback <> nil then callback.SendOnTextChanged();
 end;
 
 function TCocoaSpinEdit.acceptsFirstResponder: Boolean;
@@ -3786,6 +3789,8 @@ begin
   lNSStr := CocoaUtils.NSStringUtf8(lStr);
   setStringValue(lNSStr);
   lNSStr.release;
+  // This implements OnChange for both user and code changes
+  if callback <> nil then callback.SendOnTextChanged();
 end;
 
 function TCocoaSpinEdit.GetFieldEditor: TCocoaFieldEditor;

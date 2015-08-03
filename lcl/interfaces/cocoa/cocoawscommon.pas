@@ -62,6 +62,7 @@ type
     procedure DidBecomeKeyNotification; virtual;
     procedure DidResignKeyNotification; virtual;
     procedure SendOnChange; virtual;
+    procedure SendOnTextChanged; virtual; // text controls (like spin) respond to OnChange for this event, but not for SendOnChange
 
     function DeliverMessage(var Msg): LRESULT; virtual; overload;
     function DeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; virtual; overload;
@@ -981,19 +982,24 @@ end;
 
 procedure TLCLCommonCallback.DidBecomeKeyNotification;
 begin
-   LCLSendActivateMsg(Target, WA_ACTIVE, false);
-   LCLSendSetFocusMsg(Target);
+  LCLSendActivateMsg(Target, WA_ACTIVE, false);
+  LCLSendSetFocusMsg(Target);
 end;
 
 procedure TLCLCommonCallback.DidResignKeyNotification;
 begin
-   LCLSendActivateMsg(Target, WA_INACTIVE, false);
-   LCLSendKillFocusMsg(Target);
+  LCLSendActivateMsg(Target, WA_INACTIVE, false);
+  LCLSendKillFocusMsg(Target);
 end;
 
 procedure TLCLCommonCallback.SendOnChange;
 begin
-    SendSimpleMessage(Target, LM_CHANGED);
+  SendSimpleMessage(Target, LM_CHANGED);
+end;
+
+procedure TLCLCommonCallback.SendOnTextChanged;
+begin
+  SendSimpleMessage(Target, CM_TEXTCHANGED);
 end;
 
 function TLCLCommonCallback.DeliverMessage(var Msg): LRESULT;
