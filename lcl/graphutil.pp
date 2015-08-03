@@ -106,102 +106,76 @@ begin
   Result := R or (G shl 8) or (B shl 16);
 end;
 
-const
-  HUE_000 = 0;
-  HUE_060 = 43;
-  HUE_120 = 85;
-  HUE_180 = 128;
-  HUE_240 = 170;
-  HUE_300 = 213;
-
 procedure RGBtoHLS(const R, G, B: Byte; out H, L, S: Byte);
-var
-  cMax, cMin: Byte;             // max and min RGB values
-  Rdelta, Gdelta, Bdelta: Byte; // intermediate value: % of spread from max
-  diff: Byte;
+var aDelta, aMin, aMax: Byte;
 begin
-  // calculate lightness
-  cMax := MaxIntValue([R, G, B]);
-  cMin := MinIntValue([R, G, B]);
-  L := (integer(cMax) + cMin + 1) div 2;
-  diff := cMax - cMin;
-
-  if diff = 0
-  then begin
-    // r=g=b --> achromatic case
-    S := 0;
-    H := 0;
-  end
-  else begin
-    // chromatic case
-    // saturation
-    if L <= 128
-    then S := integer(diff * 255) div (cMax + cMin)
-    else S := integer(diff * 255) div (510 - cMax - cMin);
-
-    // hue
-    Rdelta := (cMax - R);
-    Gdelta := (cMax - G);
-    Bdelta := (cMax - B);
-
-    if R = cMax
-    then H := (HUE_000 + integer(Bdelta - Gdelta) * HUE_060 div diff) and $ff
-    else if G = cMax
-    then H := HUE_120 + integer(Rdelta - Bdelta) * HUE_060 div diff
-    else H := HUE_240 + integer(Gdelta - Rdelta) * HUE_060 div diff;
-  end;
+  aMin := Math.min(Math.min(R, G), B);
+  aMax := Math.max(Math.max(R, G), B);
+  aDelta := aMax - aMin;
+  if aDelta > 0 then
+    begin
+      if aMax = B
+        then H := round(170 + 42.5*(R - G)/aDelta)   { 2*255/3; 255/6 }
+        else if aMax = G
+               then H := round(85 + 42.5*(B - R)/aDelta)  { 255/3 }
+               else if G >= B
+                      then H := round(42.5*(G - B)/aDelta)
+                      else H := round(255 + 42.5*(G - B)/aDelta);
+    end;
+  L := (aMax + aMin) div 2;
+  if (L = 0) or (aDelta = 0)
+    then S := 0
+    else if L <= 127
+           then S := round(255*aDelta/(aMax + aMin))
+           else S := round(255*aDelta/(510 - aMax - aMin));
 end;
 
 
-procedure HLStoRGB(const H, L, S: Byte; out R, G, B: Byte);
-
-  // utility routine for HLStoRGB
-  function HueToRGB(const n1, n2: Byte; Hue: Integer): Byte;
-  begin
-    if Hue > 255
-    then Dec(Hue, 255)
-    else if Hue < 0
-    then Inc(Hue, 255);
-     
-    // return r,g, or b value from this tridrant
-    case Hue of
-      HUE_000..HUE_060 - 1: Result := n1 + (n2 - n1) * Hue div HUE_060;
-      HUE_060..HUE_180 - 1: Result := n2;
-      HUE_180..HUE_240 - 1: Result := n1 + (n2 - n1) * (HUE_240 - Hue) div HUE_060;
-    else
-      Result := n1;
-    end;
-  end;
-
-var
-  n1, n2: Byte;
+procedure HLSToRGB(const H, L, S: Byte; out R, G, B: Byte);
+var hue, chroma, x: Single;
 begin
-  if S = 0
-  then begin
-    // achromatic case
-    R := L;
-    G := L;
-    B := L;
-  end
-  else begin
-    // chromatic case
-    // set up magic numbers
-    if L < 128
-    then begin
-      n2 := L + (L * S) div 255;
-      n1 := 2 * L - n2;
-    end
-    else begin
-      n2 := S + L - (L * S) div 255;
-      n1 := 2 * L - n2 - 1;
+  if S > 0 then
+    begin  { color }
+      hue:=6*H/255;
+      chroma := S*(1 - abs(0.0078431372549*L - 1));  { 2/255 }
+      G := trunc(hue);
+      B := L - round(0.5*chroma);
+      x := B + chroma*(1 - abs(hue - 1 - G and 254));
+      case G of
+        0: begin
+             R := B + round(chroma);
+             G := round(x);
+           end;
+        1: begin
+             R := round(x);
+             G := B + round(chroma);
+           end;
+        2: begin
+             R := B;
+             G := B + round(chroma);
+             B := round(x);
+           end;
+        3: begin
+             R := B;
+             G := round(x);
+             inc(B, round(chroma));
+           end;
+        4: begin
+             R := round(x);
+             G := B;
+             inc(B, round(chroma));
+           end;
+        otherwise
+          R := B + round(chroma);
+          G := B;
+          B := round(x);
+      end;
+    end else
+    begin  { grey }
+      R := L;
+      G := L;
+      B := L;
     end;
-
-
-    // get RGB
-    R := HueToRGB(n1, n2, H + HUE_120);
-    G := HueToRGB(n1, n2, H);
-    B := HueToRGB(n1, n2, H - HUE_120);
-  end;
 end;
 
 
