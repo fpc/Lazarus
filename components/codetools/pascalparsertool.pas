@@ -1778,6 +1778,8 @@ begin
         SaveRaiseCharExpectedButAtomFound(':');
       ReadNextAtom;
       ReadConstant(true,false,[]);
+    end else if UpAtomIs('INTERRUPT') then begin
+      ReadNextAtom;
     end else if UpAtomIs('SYSCALL') then begin
       ReadNextAtom;
       AtomIsIdentifierSaveE;

@@ -248,6 +248,7 @@ type
     procedure RecogniseHintDirectives;
     procedure RecognisePropertyDirectives;
     procedure RecogniseExternalProcDirective;
+    function RecognisePublicProcDirective: boolean;
 
     procedure RecogniseAttributes;
 
@@ -3950,6 +3951,12 @@ begin
         begin
           RecogniseExternalProcDirective;
         end;
+        ttPublic:
+        begin
+          { Break the loop if we have found a class visibility "public" }
+          if not RecognisePublicProcDirective then
+            break;
+        end;
         ttDispId:
         begin
           Recognise(ttDispId);
@@ -3981,14 +3988,20 @@ begin
   { right, i'll fake this one
 
     ExternalProcDirective ->
-      External ["'" libname "'" ["name" "'" procname "'"]]
+      External ["'" libname "'"] ["name" "'" procname "'"]
 
       also allow "index expr"
   }
   PushNode(nExternalDirective);
 
   Recognise(ttExternal);
-  if fcTokenList.FirstSolidTokenType in (IdentiferTokens + [ttQuotedLiteralString]) then
+
+  if fcTokenList.FirstSolidTokenType = ttName then
+  begin
+    Recognise(ttName);
+    RecogniseConstantExpression;
+  end
+  else if fcTokenList.FirstSolidTokenType in (IdentiferTokens + [ttQuotedLiteralString]) then
   begin
     Recognise((IdentiferTokens + [ttQuotedLiteralString]));
 
@@ -4006,6 +4019,27 @@ begin
   end;
 
   PopNode;
+end;
+
+function TBuildParseTree.RecognisePublicProcDirective: boolean;
+begin
+  {
+    PublicProcDirective ->
+      Public ["name" "'" symname "'"]
+  }
+  result:=false;
+  if TopNode.HasParentNode([nClassBody, nObjectType]) then
+    exit;
+
+  Recognise(ttPublic);
+
+  if fcTokenList.FirstSolidTokenType = ttName then
+  begin
+    Recognise(ttName);
+    RecogniseConstantExpression;
+  end;
+
+  result:=true;
 end;
 
 procedure TBuildParseTree.RecogniseObjectType;

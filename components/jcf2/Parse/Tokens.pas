@@ -190,6 +190,7 @@ type
     ttReintroduce,
     ttGeneric,
     ttCVar,
+    ttNostackframe,
     // used in asm
     ttOffset,
     ttPtr,
@@ -216,6 +217,7 @@ type
     { Additional Free Pascal directives }
     ttExperimental,
     ttUnimplemented,
+    ttInterrupt,
 
     { built-in constants }
     ttNil,
@@ -361,7 +363,8 @@ const
     ttNear, ttDynamic, ttExport, ttOverride, ttResident, ttLocal,
     ttOverload, ttReintroduce,
     ttDeprecated, ttLibrary, ttPlatform, ttExperimental, ttUnimplemented,
-    ttStatic, ttFinal, ttVarArgs, ttUnsafe, ttEnumerator];
+    ttStatic, ttFinal, ttVarArgs, ttUnsafe, ttEnumerator, ttNostackframe, ttInterrupt,
+    ttPublic];
 
   ClassDirectives: TTokenTypeSet =
     [ttPrivate, ttProtected, ttPublic, ttPublished, ttAutomated, ttStrict];
@@ -684,6 +687,7 @@ begin
   AddKeyword('reintroduce', wtReservedWordDirective, ttReintroduce);
 
   AddKeyword('cvar', wtReservedWordDirective, ttCVar);
+  AddKeyword('nostackframe', wtReservedWordDirective, ttNostackframe);
 
   // asm
   AddKeyword('offset', wtReservedWordDirective, ttOffset);
@@ -712,6 +716,7 @@ begin
   { Additional Free Pascal directives }
   AddKeyword('experimental', wtReservedWordDirective, ttExperimental);
   AddKeyword('unimplemented', wtReservedWordDirective, ttUnimplemented);
+  AddKeyword('interrupt', wtReservedWordDirective, ttInterrupt);
 
   { operators that are words not symbols }
   AddKeyword('and', wtOperator, ttAnd);
