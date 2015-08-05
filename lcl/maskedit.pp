@@ -1057,9 +1057,10 @@ begin
   begin
     Result := False;
   end;
-  // if NewText = old Text the next statement will do nothing,
+  // if NewText = old Text AND the control is now masked,
+  // then "Text := NewText" will do nothing,
   // and NO mask will appear, so Clear first ...
-  Clear;
+  if IsMasked then Clear;
   Text := NewText;
 end;
 
