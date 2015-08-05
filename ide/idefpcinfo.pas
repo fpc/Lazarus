@@ -31,17 +31,16 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls,
-  lazutf8classes, LazFileUtils, LazUTF8,
-  FileProcs, DefineTemplates, CodeToolManager,
-  IDEWindowIntf, LazIDEIntf,
-  BaseBuildManager, Project, EnvironmentOpts, LazarusIDEStrConsts,
-  AboutFrm, TransferMacros;
+  ButtonPanel, lazutf8classes, LazFileUtils, LazUTF8, FileProcs,
+  DefineTemplates, CodeToolManager, IDEWindowIntf, LazIDEIntf, BaseBuildManager,
+  Project, EnvironmentOpts, LazarusIDEStrConsts, AboutFrm, TransferMacros;
 
 type
 
   { TIDEFPCInfoDialog }
 
   TIDEFPCInfoDialog = class(TForm)
+    ButtonPanel1: TButtonPanel;
     CmdLineOutputMemo: TMemo;
     ValuesMemo: TMemo;
     PageControl1: TPageControl;

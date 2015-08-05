@@ -31,16 +31,17 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls,
-  LCLProc, LazFileUtils, LazUTF8, IDEHelpIntf, IDEWindowIntf, LazIDEIntf, LazHelpIntf,
-  LazHelpHTML, DefineTemplates, CodeToolManager, EnvironmentOpts, AboutFrm,
-  LazConf, LazarusIDEStrConsts,
-  Project, SourceEditor, InitialSetupProc, PackageSystem, PackageDefs;
+  LCLProc, LazFileUtils, LazUTF8, IDEHelpIntf, IDEWindowIntf, LazIDEIntf,
+  LazHelpIntf, LazHelpHTML, ButtonPanel, DefineTemplates, CodeToolManager,
+  EnvironmentOpts, AboutFrm, LazConf, LazarusIDEStrConsts, Project,
+  SourceEditor, InitialSetupProc, PackageSystem, PackageDefs;
 
 type
 
   { TIDEInfoDialog }
 
   TIDEInfoDialog = class(TForm)
+    ButtonPanel1: TButtonPanel;
     GeneralMemo: TMemo;
     HelpMemo: TMemo;
     ModifiedMemo: TMemo;

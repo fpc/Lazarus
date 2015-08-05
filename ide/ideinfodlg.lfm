@@ -1,27 +1,30 @@
 object IDEInfoDialog: TIDEInfoDialog
-  Left = 269
-  Height = 397
-  Top = 294
-  Width = 735
+  Left = 490
+  Height = 450
+  Top = 207
+  Width = 700
+  BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'IDEInfoDialog'
-  ClientHeight = 397
-  ClientWidth = 735
+  ClientHeight = 450
+  ClientWidth = 700
   OnClose = FormClose
   OnCreate = FormCreate
-  LCLVersion = '1.1'
+  Position = poScreenCenter
+  LCLVersion = '1.5'
   object PageControl1: TPageControl
-    Left = 0
-    Height = 397
-    Top = 0
-    Width = 735
+    Left = 6
+    Height = 403
+    Top = 6
+    Width = 688
     ActivePage = HelpTabSheet
     Align = alClient
+    BorderSpacing.Around = 6
     TabIndex = 2
     TabOrder = 0
     object GeneralTabSheet: TTabSheet
       Caption = 'General'
-      ClientHeight = 365
-      ClientWidth = 729
+      ClientHeight = 372
+      ClientWidth = 684
       object GeneralMemo: TMemo
         Left = 0
         Height = 361
@@ -38,8 +41,8 @@ object IDEInfoDialog: TIDEInfoDialog
     end
     object ModifiedTabSheet: TTabSheet
       Caption = 'Modified'
-      ClientHeight = 365
-      ClientWidth = 729
+      ClientHeight = 372
+      ClientWidth = 684
       object ModifiedMemo: TMemo
         Left = 0
         Height = 361
@@ -55,13 +58,13 @@ object IDEInfoDialog: TIDEInfoDialog
     end
     object HelpTabSheet: TTabSheet
       Caption = 'Help'
-      ClientHeight = 365
-      ClientWidth = 729
+      ClientHeight = 372
+      ClientWidth = 684
       object HelpMemo: TMemo
         Left = 0
-        Height = 365
+        Height = 372
         Top = 0
-        Width = 729
+        Width = 684
         Align = alClient
         Lines.Strings = (
           'HelpMemo'
@@ -70,5 +73,22 @@ object IDEInfoDialog: TIDEInfoDialog
         TabOrder = 0
       end
     end
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 29
+    Top = 415
+    Width = 688
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 1
+    ShowButtons = [pbClose]
+    ShowBevel = False
   end
 end
