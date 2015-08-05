@@ -890,8 +890,13 @@ begin
   begin
     rocmb := NSView(TCocoaReadOnlyComboBox.alloc).lclInitWithCreateParams(AParams);
     if not Assigned(rocmb) then Exit;
+    rocmb.Owner := TCustomComboBox(AWinControl);
     rocmb.callback:=TLCLComboboxCallback.Create(rocmb, AWinControl);
     rocmb.list:=TCocoaComboBoxList.Create(nil, rocmb);
+    rocmb.setTarget(rocmb);
+    rocmb.setAction(objcselector('comboboxAction:'));
+    rocmb.lastSelectedItemIndex := rocmb.Owner.ItemIndex;
+    rocmb.selectItemAtIndex(rocmb.lastSelectedItemIndex);
     Result:=TLCLIntfHandle(rocmb);
   end
   else

@@ -473,7 +473,9 @@ type
   protected
     FOwner: TCocoaComboBox;
     FReadOnlyOwner: TCocoaReadOnlyComboBox;
+    FPreChangeListCount: Integer;
     procedure Changed; override;
+    procedure Changing; override;
   public
     // Pass only 1 owner and nil for the other ones
     constructor Create(AOwner: TCocoaComboBox; AReadOnlyOwner: TCocoaReadOnlyComboBox);
@@ -513,9 +515,11 @@ type
 
   TCocoaReadOnlyComboBox = objcclass(NSPopUpButton)
   public
+    Owner: TCustomComboBox;
     callback: IComboboxCallBack;
     list: TCocoaComboBoxList;
     resultNS: NSString;  //use to return values to combo
+    lastSelectedItemIndex: Integer; // -1 means invalid or none selected
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
@@ -524,6 +528,7 @@ type
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
     function lclIsHandle: Boolean; override;
+    procedure comboboxAction(sender: id); message 'comboboxAction:';
   end;
 
   { TCocoaScrollBar }
@@ -3210,6 +3215,7 @@ procedure TCocoaComboBoxList.Changed;
 var
   i: Integer;
   nsstr: NSString;
+  lCurItem: NSMenuItem;
 begin
   if FOwner <> nil then
     fOwner.reloadData;
@@ -3222,8 +3228,16 @@ begin
       FReadOnlyOwner.addItemWithTitle(nsstr);
       nsstr.release;
     end;
+    // reset the selected item
+    {FReadOnlyOwner.lastSelectedItemIndex := FReadOnlyOwner.Owner.ItemIndex;
+    FReadOnlyOwner.selectItemAtIndex(FReadOnlyOwner.lastSelectedItemIndex);}
   end;
   inherited Changed;
+end;
+
+procedure TCocoaComboBoxList.Changing;
+begin
+  FPreChangeListCount := Count;
 end;
 
 constructor TCocoaComboBoxList.Create(AOwner: TCocoaComboBox; AReadOnlyOwner: TCocoaReadOnlyComboBox);
@@ -3367,6 +3381,14 @@ end;
 function TCocoaReadOnlyComboBox.lclIsHandle: Boolean;
 begin
   Result:=true;
+end;
+
+procedure TCocoaReadOnlyComboBox.comboBoxAction(sender: id);
+begin
+  //setTitle(NSSTR(PChar(Format('%d=%d', [indexOfSelectedItem, lastSelectedItemIndex]))));
+  if {(indexOfSelectedItem <> lastSelectedItemIndex) and} (callback <> nil) then
+    callback.ComboBoxSelectionDidChange;
+  //lastSelectedItemIndex := indexOfSelectedItem;
 end;
 
 { TCocoaMenu }
