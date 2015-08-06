@@ -1479,7 +1479,7 @@ begin
     begin
       MsgResult:=IDEQuestionDialog(lisCCOWarningCaption,
         Format(lisTheProjectDoesNotUseTheLCLUnitInterfacesButItSeems, [LineEnding]),
-        mtWarning, [mrYes, lisAddUnitInterfaces, mrNo, dlgIgnoreVerb,
+        mtWarning, [mrYes, lisAddUnitInterfaces, mrNo, lisIgnore,
                     mrNoToAll, lisAlwaysIgnore, mrCancel]);
       case MsgResult of
         mrNo: exit;

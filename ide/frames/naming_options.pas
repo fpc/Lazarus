@@ -87,7 +87,7 @@ begin
       Add(dlgAutoDel);
       Add(dlgAutoRen);
       Add(dlgAmbigWarn);
-      Add(dlgIgnoreVerb);
+      Add(lisIgnore);
       EndUpdate;
     end;
   end;

@@ -40,7 +40,8 @@ uses
   Classes, SysUtils;
 
 resourcestring
-  // Common strings that can be used around Lazarus:
+  // *** Common single word resources that can be safely shared around Lazarus ***
+
   lisLazarus = 'Lazarus';
   lisAdd  = 'Add';
   lisBtnAdd = '&Add';
@@ -64,24 +65,22 @@ resourcestring
   lisOpen = 'Open';
   lisSave = 'Save';
   lisDlgSave = 'Save ...';
-  lisSaveShownMessagesToFile = 'Save Shown Messages to File ...';
   lisSaveAs = 'Save As';
   lisSaveAll = 'Save All';
-  lisExportHtml = 'Export as HTML';
   lisCloseAll = 'Close All';
   lisFile = 'File';
   lisNew = 'New';
   lisClose = 'Close';
   lisBtnClose = '&Close';
-  lisMMAddsCustomOptions = 'Adds custom options:';
-  lisMMDoesNotAddCustomOptions = 'Does not add custom options:';
   lisOk = 'OK';
   lisMenuOk = '&OK';
   lisCancel = 'Cancel';
-  lisUnusedUnitsOf = 'Unused units of %s';
   lisNo = 'No';
   lisYes = 'Yes';
   lisAbort = 'Abort';
+  lisIgnore = 'Ignore';
+  lisNever = 'Never';
+  lisAlways = 'Always';
   lisContinue = 'Continue';
   lisBreak = 'Break';
   lisExit = 'Exit';
@@ -89,14 +88,12 @@ resourcestring
   lisBtnQuit = '&Quit';
   lisRestart = 'Restart';
   lisHelp = 'Help';
-  lisSaveAllOriginalMessagesToFile = 'Save All/Original Messages to File ...';
   lisEnabled = 'Enabled';
   lisBtnEnabled = '&Enabled';
   lisUndo = 'Undo';
   lisRedo = 'Redo';
   lisCut = 'Cut';
   lisCopy = 'Copy';
-  lisMoveFiles2 = 'Move files?';
   lisPaste = 'Paste';
   lisDown = 'Down';
   lisUp   = 'Up';
@@ -123,10 +120,12 @@ resourcestring
   lisRunButtonHint = 'Run';
   lisPause = 'Pause';
   lisStop = 'Stop';
+  lisSort = 'Sort';
   lisBuilding = 'Building';
   lisOptions = 'Options';
   lisLess = 'Less';
   lisMore = 'More';
+  lisDlgMore = 'More ...';
   lisMoreSub = 'More >>';
   lisDefault = 'Default';
   lisClone = 'Clone';
@@ -135,14 +134,29 @@ resourcestring
   lisImport = 'Import';
   lisDlgImport = 'Import ...';
 
+  // *** Common sentence resources that can be safely shared around Lazarus ***
+  //  Be careful, sharing sentences can lead to wrong translations in some places.
+
+  lisExportHtml = 'Export as HTML';
+  lisMoveFiles = 'Move Files';
+  lisMoveFiles2 = 'Move files?';
+  lrsPLDDeleteSelected = 'Delete selected';
+
+  // *** Rest of the resource strings ***
+
   lisImportPackageListXml = 'Import package list (*.xml)';
   lisExportPackageListXml = 'Export package list (*.xml)';
   lrsRescanLplFiles = 'Rescan lpl files';
-  lrsPLDDeleteSelected = 'Delete selected';
   lisRenameShowResult = 'Show list of renamed Identifiers';
   lisResourceNameMustBeUnique = 'Resource name must be unique.';
   lisFailedToAddNNotUniqueResources = 'Failed to add %d not unique resource(s)';
   lisTheIDEIsStillBuilding = 'The IDE is still building.';
+
+  lisSaveShownMessagesToFile = 'Save Shown Messages to File ...';
+  lisMMAddsCustomOptions = 'Adds custom options:';
+  lisMMDoesNotAddCustomOptions = 'Does not add custom options:';
+  lisUnusedUnitsOf = 'Unused units of %s';
+  lisSaveAllOriginalMessagesToFile = 'Save All/Original Messages to File ...';
 
   // errors
   lisErrInvalidOption = 'Invalid option at position %d: "%s"';
@@ -403,8 +417,7 @@ resourcestring
   lisSwitchFilterSettings = 'Switch Filter Settings';
   lisAddFilter = 'Add Filter ...';
   lisCopyAllShownMessagesToClipboard = 'Copy All Shown Messages to Clipboard';
-  lisCopyAllOriginalMessagesToClipboard = 'Copy All/Original Messages to '
-    +'Clipboard';
+  lisCopyAllOriginalMessagesToClipboard = 'Copy All/Original Messages to Clipboard';
   lisCopyItemToClipboard = 'Copy Item to Clipboard';
   lisCopySelectedItemToClipboard = 'Copy Selected Items to Clipboard';
   lisCopyAllItemsToClipboard = 'Copy All Items to Clipboard';
@@ -568,7 +581,6 @@ resourcestring
   lisFull = 'Full';
   lisTranslateTheEnglishMessages = 'Translate the English Messages';
   lisShowMessageTypeID = 'Show Message Type ID';
-  lisMore2 = 'More ...';
   lisToolStoppedWithExitCodeUseContextMenuToGetMoreInfo = 'tool stopped with '
     +'exit code %s. Use context menu to get more information.';
   lisErrors2 = ', Errors: %s';
@@ -1381,14 +1393,11 @@ resourcestring
   dlgCharCaseFileAct = 'Save As - auto rename Pascal files lower case';
   dlgAmbigFileAct = 'Ambiguous file action:';
   dlgEnvAsk = 'Ask';
-  lisNever = 'Never';
   dlgAutoDel = 'Auto delete file';
   dlgAutoRen = 'Auto rename file lowercase';
   dlgnoAutomaticRenaming = 'No automatic renaming';
   lisWhenAUnitIsRenamedUpdateReferences = 'When a unit is renamed, update references';
-  lisAlways = 'Always';
   dlgAmbigWarn = 'Warn on compile';
-  dlgIgnoreVerb = 'Ignore';
   lisAlwaysIgnore = 'Always ignore';
   // OI colors
   dlgBackColor = 'Background';
@@ -2086,7 +2095,6 @@ resourcestring
   dlgInsSpaceFront = 'Insert space in front of';
   dlgInsSpaceAfter = 'Insert space after';
   dlgWRDPreview = 'Preview';
-  lisIdCAdd = 'Add';
   dlgAddSemicolon = 'Add semicolon';
   dlgAddAssignmentOperator = 'Add assignment operator :=';
   lisAddKeywordDo = 'Add keyword "do"';
@@ -4466,9 +4474,7 @@ resourcestring
     +'" in %s%sOld: %s%sNew: %s%s%sContinue?';
   lisUnitNotFoundAtNewPosition = 'unit %s not found at new position "%s"';
   lisUnitRequiresPackage = 'unit %s requires package %s';
-  lisDifferentUnitFoundAtNewPosition = 'different unit %s found at new '
-    +'position "%s"';
-  lisMoveFiles = 'Move Files';
+  lisDifferentUnitFoundAtNewPosition = 'different unit %s found at new position "%s"';
   lisUnitNotFound = 'unit %s not found';
   lisTwoMovedFilesWillHaveTheSameFileNameIn = 'Two moved files will '
     +'have the same file name:%s%s%s%s%sin %s';
@@ -5437,7 +5443,6 @@ resourcestring
   lisClassesAndPropertiesExistValuesWereNotChecked = 'Classes and properties '
     +'exist. Values were not checked.';
   lisInsertPrintShortTag = 'Insert PrintShort tag';
-  lisIdCOpen = 'Open';
   lisAutomaticallyInvokeAfterPoint = 'Automatically invoke after point';
   lisAddParameterBrackets = 'Add parameter brackets';
   lisReplaceWholeIdentifier = 'Replace whole identifier';
@@ -5449,7 +5454,6 @@ resourcestring
   lisBestViewedByInstallingAHTMLControlLikeTurbopowerip = 'Best viewed by '
     +'installing a HTML control like turbopoweriprodsgn';
   lisShowRecentlyUsedIdentifiersAtTop = 'Show recently used identifiers at top';
-  lisSort = 'Sort';
   lisSortForScope = 'Sort for scope';
   lisForExampleShowAtTopTheLocalVariablesThenTheMembers = 'For example show at'
     +' top the local variables, then the members of current class, then of the'

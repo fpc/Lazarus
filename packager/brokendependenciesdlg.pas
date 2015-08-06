@@ -84,7 +84,7 @@ procedure TBrokenDependenciesDialog.FormCreate(Sender: TObject);
 begin
   Caption:=lisA2PBrokenDependencies;
   ButtonPanel1.OKButton.Caption:=lisYes;
-  ButtonPanel1.CloseButton.Caption:=dlgIgnoreVerb;
+  ButtonPanel1.CloseButton.Caption:=lisIgnore;
 
   NoteLabel.Caption:=Format(lisBDDChangingThePackageNameOrVersionBreaksDependencies,
                             [LineEnding, LineEnding]);

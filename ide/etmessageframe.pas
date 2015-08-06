@@ -559,7 +559,7 @@ begin
     MsgShowIDMenuItem:=RegisterIDEMenuCommand(Parent, 'ShowID',
       lisShowMessageTypeID);
     MsgMoreOptionsMenuItem:=RegisterIDEMenuCommand(Parent, 'More Options',
-      lisMore2);
+      lisDlgMore);
 end;
 
 {$R *.lfm}
