@@ -895,7 +895,6 @@ begin
     rocmb.list:=TCocoaComboBoxList.Create(nil, rocmb);
     rocmb.setTarget(rocmb);
     rocmb.setAction(objcselector('comboboxAction:'));
-    rocmb.lastSelectedItemIndex := rocmb.Owner.ItemIndex;
     rocmb.selectItemAtIndex(rocmb.lastSelectedItemIndex);
     Result:=TLCLIntfHandle(rocmb);
   end
@@ -929,12 +928,18 @@ end;
 
 class procedure TCocoaWSCustomComboBox.SetItemIndex(const ACustomComboBox:
   TCustomComboBox;NewIndex:integer);
+var
+  rocmb: TCocoaReadOnlyComboBox;
 begin
   if (not Assigned(ACustomComboBox)) or (not ACustomComboBox.HandleAllocated) then
     Exit;
 
   if ACustomComboBox.ReadOnly then
-    TCocoaReadOnlyComboBox(ACustomComboBox.Handle).selectItemAtIndex(NewIndex)
+  begin
+    rocmb := TCocoaReadOnlyComboBox(ACustomComboBox.Handle);
+    rocmb.lastSelectedItemIndex := NewIndex;
+    rocmb.selectItemAtIndex(NewIndex);
+  end
   else
     TCocoaComboBox(ACustomComboBox.Handle).selectItemAtIndex(NewIndex);
 end;

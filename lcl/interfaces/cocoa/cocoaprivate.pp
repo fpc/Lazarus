@@ -3221,6 +3221,9 @@ begin
     fOwner.reloadData;
   if FReadOnlyOwner <> nil then
   begin
+    // store the current item
+    FReadOnlyOwner.lastSelectedItemIndex := FReadOnlyOwner.indexOfSelectedItem;
+
     FReadOnlyOwner.removeAllItems();
     for i := 0 to Count-1 do
     begin
@@ -3228,9 +3231,9 @@ begin
       FReadOnlyOwner.addItemWithTitle(nsstr);
       nsstr.release;
     end;
+
     // reset the selected item
-    {FReadOnlyOwner.lastSelectedItemIndex := FReadOnlyOwner.Owner.ItemIndex;
-    FReadOnlyOwner.selectItemAtIndex(FReadOnlyOwner.lastSelectedItemIndex);}
+    FReadOnlyOwner.selectItemAtIndex(FReadOnlyOwner.lastSelectedItemIndex);
   end;
   inherited Changed;
 end;
@@ -3385,10 +3388,10 @@ end;
 
 procedure TCocoaReadOnlyComboBox.comboBoxAction(sender: id);
 begin
-  //setTitle(NSSTR(PChar(Format('%d=%d', [indexOfSelectedItem, lastSelectedItemIndex]))));
-  if {(indexOfSelectedItem <> lastSelectedItemIndex) and} (callback <> nil) then
+  //setTitle(NSSTR(PChar(Format('%d=%d', [indexOfSelectedItem, lastSelectedItemIndex])))); // <= for debugging
+  if (indexOfSelectedItem <> lastSelectedItemIndex) and (callback <> nil) then
     callback.ComboBoxSelectionDidChange;
-  //lastSelectedItemIndex := indexOfSelectedItem;
+  lastSelectedItemIndex := indexOfSelectedItem;
 end;
 
 { TCocoaMenu }
