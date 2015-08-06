@@ -147,7 +147,7 @@ begin
   if (csfHasFocus in AState) and not (csfSunken in AState) then
   begin
     lDest.Pen.Color := MAC_SQUARE_BUTTON_FOCUS_FRAME_INNER;
-    ADest.Rectangle(Bounds(ADestPos.X+1, ADestPos.Y+1, ASize.cx-1, ASize.cy-1));
+    ADest.Rectangle(Bounds(ADestPos.X+1, ADestPos.Y+1, ASize.cx-2, ASize.cy-2));
     //ADest.Rectangle(2, 2, ASize.cx-2, ASize.cy-2);
     //ADest.Rectangle(3, 3, ASize.cx-3, ASize.cy-3);
   end;
