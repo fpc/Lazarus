@@ -1842,7 +1842,7 @@ var
   dc: TCocoaContext;
   gdi: TCocoaGDIObject;
 const
-  SName = 'TCarbonWidgetSet.SelectObject';
+  SName = 'TCocoaWidgetSet.SelectObject';
 begin
   {$IFDEF VerboseWinAPI}
     DebugLn(Format('TCocoaWidgetSet.SelectObject DC: %x GDIObj: %x', [ADC, GDIObj]));
@@ -2007,7 +2007,7 @@ begin
   ctx := CheckDC(DC);
   if not Assigned(ctx) then
     Exit;
-  if (ctx <> DefaultContext) and (ctx<>ScreenContext) then
+  if (ctx <> DefaultContext) and (ctx<>ScreenContext) and (not ctx.isControlDC) then
     ctx.Free;
   Result := 1;
 end;

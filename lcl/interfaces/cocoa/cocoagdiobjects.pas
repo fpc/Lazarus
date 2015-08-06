@@ -386,6 +386,7 @@ type
     procedure ClearClipping;
   public
     ctx: NSGraphicsContext;
+    isControlDC: Boolean; // control DCs should never be freed by ReleaseDC as the control will free it by itself
     constructor Create(AGraphicsContext: NSGraphicsContext); virtual;
     destructor Destroy; override;
 
@@ -1942,11 +1943,13 @@ end;
 procedure TCocoaContext.ClearClipping;
 var
   Trans: CGAffineTransform;
+  cgc: CGContextRef;
 begin
   if FClipped then
   begin
-    Trans := CGContextGetCTM(CGContext);
-    CGContextRestoreGState(CGContext());
+    cgc := CGContext();
+    Trans := CGContextGetCTM(cgc);
+    CGContextRestoreGState(cgc);
     ApplyTransform(Trans);
   end;
 end;
