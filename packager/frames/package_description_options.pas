@@ -95,17 +95,16 @@ begin
     NewVersion.Build := RoundToInt(VersionBuildSpinEdit.Value);
 
     // check for broken dependencies
-    BrokenDependencies := PackageGraph.GetBrokenDependenciesWhenChangingPkgID(LazPackage, LazPackage.Name, NewVersion);
+    BrokenDependencies := PackageGraph.GetBrokenDependenciesWhenChangingPkgID(LazPackage,
+                                                    LazPackage.Name, NewVersion);
     RenameDependencies := False;
     try
       if BrokenDependencies.Count > 0 then
       begin
-        MsgResult := ShowBrokenDependencies(BrokenDependencies, DefaultBrokenDepButtons);
-        if MsgResult = mrYes then
+        MsgResult := ShowBrokenDependencies(BrokenDependencies);
+        if MsgResult = mrOK then            // = Yes
           RenameDependencies := True
-        else if MsgResult = mrNo then
-          RenameDependencies := False
-        else
+        else if MsgResult <> mrClose then   // <> Ignore
           exit;
       end;
     finally

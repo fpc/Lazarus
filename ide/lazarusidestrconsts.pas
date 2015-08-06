@@ -80,6 +80,8 @@ resourcestring
   lisCancel = 'Cancel';
   lisUnusedUnitsOf = 'Unused units of %s';
   lisNo = 'No';
+  lisYes = 'Yes';
+  lisAbort = 'Abort';
   lisContinue = 'Continue';
   lisBreak = 'Break';
   lisExit = 'Exit';
@@ -4326,6 +4328,7 @@ resourcestring
     +'%sSelect Yes to change all listed dependencies.'
     +'%sSelect Ignore to break the dependencies and continue.';
   lisA2PDependency = 'Dependency';
+  lisA2PPackageOrProject = 'Package/Project';
   lisA2PBrokenDependencies = 'Broken Dependencies';
   
   // open installed packages dialog

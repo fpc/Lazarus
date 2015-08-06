@@ -1251,11 +1251,11 @@ begin
       RenameDependencies:=false;
       try
         if BrokenDependencies.Count>0 then begin
-          Result:=ShowBrokenDependencies(BrokenDependencies,
-                                         DefaultBrokenDepButtons);
-          if Result=mrAbort then exit;
-          if Result=mrRetry then continue;
-          if Result=mrYes then RenameDependencies:=true;
+          Result:=ShowBrokenDependencies(BrokenDependencies);
+          if Result=mrOK then             // = Yes
+            RenameDependencies:=true
+          else if Result<>mrClose then    // <> Ignore
+            exit;
         end;
       finally
         BrokenDependencies.Free;

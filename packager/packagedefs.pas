@@ -1305,8 +1305,7 @@ begin
   end;
 end;
 
-function FindLowestPkgDependencyNodeWithName(const PkgName: string
-  ): TAVLTreeNode;
+function FindLowestPkgDependencyNodeWithName(const PkgName: string): TAVLTreeNode;
 begin
   Result:=nil;
   if PackageDependencies=nil then exit;
