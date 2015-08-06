@@ -7522,6 +7522,7 @@ packager/addfiletoapackagedlg.pas svneol=native#text/pascal
 packager/addtopackagedlg.lfm svneol=native#text/plain
 packager/addtopackagedlg.pas svneol=native#text/pascal
 packager/basepkgmanager.pas svneol=native#text/pascal
+packager/brokendependenciesdlg.lfm svneol=native#text/plain
 packager/brokendependenciesdlg.pas svneol=native#text/pascal
 packager/cleanpkgdeps.lfm svneol=native#text/plain
 packager/cleanpkgdeps.pas svneol=native#text/plain

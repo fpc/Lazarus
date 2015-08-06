@@ -1,0 +1,60 @@
+object BrokenDependenciesDialog: TBrokenDependenciesDialog
+  Left = 495
+  Height = 380
+  Top = 68
+  Width = 650
+  ActiveControl = DependencyListView
+  BorderIcons = [biSystemMenu]
+  Caption = 'Broken Dependencies'
+  ClientHeight = 380
+  ClientWidth = 650
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.5'
+  object NoteLabel: TLabel
+    Left = 6
+    Height = 15
+    Top = 6
+    Width = 638
+    Align = alTop
+    BorderSpacing.Around = 6
+    Caption = 'NoteLabel'
+    ParentColor = False
+    WordWrap = True
+  end
+  object DependencyListView: TListView
+    Left = 6
+    Height = 305
+    Top = 27
+    Width = 638
+    Align = alClient
+    BorderSpacing.Around = 6
+    Columns = <    
+      item
+        Caption = '--'
+        Width = 200
+      end    
+      item
+        Caption = '--'
+        Width = 423
+      end>
+    ReadOnly = True
+    TabOrder = 0
+    ViewStyle = vsReport
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 36
+    Top = 338
+    Width = 638
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 1
+  end
+end
