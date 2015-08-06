@@ -50,8 +50,14 @@ msgid "Leaks and Traces - HeapTrc and GDB backtrace output viewer"
 msgstr "Exibição Rastreamento Pilha"
 
 #: heaptrcview.sfrmselectfilewithdebuginfo
-msgid "Select File with debug info"
+#, fuzzy
+#| msgid "Select File with debug info"
+msgid "Select file with debug info"
 msgstr "Selecionar arquivo com informações de depuração"
+
+#: heaptrcview.sfrmselecttrcfile
+msgid "Select file with trace log"
+msgstr ""
 
 #: heaptrcview.slbltrace
 msgid ".trc file"

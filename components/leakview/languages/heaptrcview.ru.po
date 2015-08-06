@@ -8,6 +8,8 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 1.7.7\n"
 
 #: heaptrcview.rsdtimes
 msgid " (%d times)"
@@ -18,7 +20,6 @@ msgid "Error while parsing trace file"
 msgstr "Ошибка анализа файла стека вызовов"
 
 #: heaptrcview.rsleakview
-#| msgid "Find source lines for leak/stack-traces"
 msgid "Leaks and Traces"
 msgstr "Утечки памяти и стек вызовов"
 
@@ -43,13 +44,16 @@ msgid "Stay on top"
 msgstr "Поверх других окон"
 
 #: heaptrcview.sfrmcap
-#| msgid "LeakView - HeapTrc output viewer"
 msgid "Leaks and Traces - HeapTrc and GDB backtrace output viewer"
 msgstr "Утечки памяти и стек вызовов - программа просмотра вывода HeapTrc и стека вызовов GDB"
 
 #: heaptrcview.sfrmselectfilewithdebuginfo
-msgid "Select File with debug info"
+msgid "Select file with debug info"
 msgstr "Выберите файл с отладочной информацией"
+
+#: heaptrcview.sfrmselecttrcfile
+msgid "Select file with trace log"
+msgstr "Выберите файл стека вызовов"
 
 #: heaptrcview.slbltrace
 msgid ".trc file"
@@ -80,7 +84,6 @@ msgid "Leaking Mem Size: %d"
 msgstr "Размер утерянной памяти: %d"
 
 #: heaptrcview.strtotalmemalloc
-#| msgid "Total Mem alloced: %d"
 msgid "Total Mem allocated: %d"
 msgstr "Размер выделенной памяти: %d"
 
