@@ -64,16 +64,16 @@ uses
   AsyncProcess,
 {$ENDIF}
   // lazutils
-  LazUTF8, Laz2_XMLCfg,
+  Laz2_XMLCfg, UTF8Process, LazLogger, LazUTF8Classes,
   // lcl
   LCLProc, LCLType, LCLIntf, LConvEncoding, ComCtrls,
-  FileUtil, LazFileUtils, LResources, Forms, Buttons, Menus, Controls, GraphType,
-  HelpIntfs, Graphics, ExtCtrls, Dialogs, InterfaceBase, UTF8Process, LazLogger,
-  lazutf8classes, LazFileCache,
+  FileUtil, LResources, Forms, Buttons, Menus, Controls, GraphType,
+  HelpIntfs, Graphics, ExtCtrls, Dialogs, InterfaceBase,
   // codetools
   FileProcs, FindDeclarationTool, LinkScanner, BasicCodeTools, CodeToolsStructs,
   CodeToolManager, CodeCache, DefineTemplates, KeywordFuncLists, CodeTree,
   StdCodeTools,
+  LazUTF8, LazFileUtils, LazFileCache, // use lazutf8, lazfileutils and lazfilecache after FileProcs and FileUtil
   // synedit
   AllSynEdit, SynEditKeyCmds, SynEditMarks,
   // IDE interface
