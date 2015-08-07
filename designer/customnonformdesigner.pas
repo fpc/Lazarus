@@ -52,7 +52,7 @@ type
     destructor Destroy; override;
     procedure DoLoadBounds; virtual;
     procedure DoSaveBounds; virtual;
-    procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer); virtual;
+    procedure SetBounds({%H-}ALeft, {%H-}ATop, {%H-}AWidth, {%H-}AHeight: integer); virtual;
     procedure Paint; virtual;
   public
     property LookupRoot: TComponent read GetLookupRoot write SetLookupRoot;

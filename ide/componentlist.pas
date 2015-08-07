@@ -86,8 +86,8 @@ type
     FKeepSelected: Boolean;
     procedure ClearSelection;
     procedure SelectionWasChanged;
-    procedure ComponentWasAdded(ALookupRoot, AComponent: TComponent;
-                                ARegisteredComponent: TRegisteredComponent);
+    procedure ComponentWasAdded({%H-}ALookupRoot, {%H-}AComponent: TComponent;
+                                {%H-}ARegisteredComponent: TRegisteredComponent);
     procedure DoComponentInheritence(Comp: TRegisteredComponent);
     procedure UpdateComponents;
     procedure UpdateButtonState;

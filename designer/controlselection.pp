@@ -43,7 +43,7 @@ uses
   // IDEIntf
   PropEditUtils, ComponentEditors, FormEditingIntf,
   // IDE
-  EnvironmentOpts, NonControlDesigner, DesignerProcs;
+  EnvironmentOpts, DesignerProcs;
 
 type
   TArrSize = array of array [0 .. 3] of integer;

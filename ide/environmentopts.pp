@@ -921,7 +921,6 @@ end;
 procedure TDesktopOptList.SaveToXML(aXMLCfg: TRttiXMLConfig;
   aConfigStore: TXMLOptionsStorage; Index: Integer);
 var
-  I: Integer;
   CurPath: String;
 begin
   CurPath := 'Desktops/';
@@ -933,7 +932,6 @@ end;
 procedure TDesktopOptList.LoadFromXML(aXMLCfg: TRttiXMLConfig;
   aConfigStore: TXMLOptionsStorage; Index: Integer);
 var
-  I: Integer;
   CurPath: String;
   xDesktop: TDesktopOpt;
 begin

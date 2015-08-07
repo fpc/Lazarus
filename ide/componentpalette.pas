@@ -126,8 +126,8 @@ type
     function GetUnregisteredIcon: TCustomBitmap;
     function GetSelectButtonIcon: TCustomBitmap;
     function SelectAButton(Button: TSpeedButton): boolean;
-    procedure ComponentWasAdded(ALookupRoot, AComponent: TComponent;
-                                ARegisteredComponent: TRegisteredComponent);
+    procedure ComponentWasAdded({%H-}ALookupRoot, {%H-}AComponent: TComponent;
+                                {%H-}ARegisteredComponent: TRegisteredComponent);
     procedure CheckComponentDesignerVisible(AComponent: TComponent; var Invisible: boolean);
   public
     constructor Create;

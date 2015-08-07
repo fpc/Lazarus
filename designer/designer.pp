@@ -47,7 +47,7 @@ uses
   FormEditingIntf, ComponentReg,
   // IDE
   LazarusIDEStrConsts, EnvironmentOpts, IDECommands, LazIDEIntf, ProjectIntf,
-  LazFileUtils, LazFileCache, NonControlDesigner, FrameDesigner, AlignCompsDlg,
+  LazFileUtils, LazFileCache, AlignCompsDlg,
   SizeCompsDlg, ScaleCompsDlg, TabOrderDlg, AnchorEditor, DesignerProcs,
   CustomFormEditor, AskCompNameDlg, ControlSelection, ChangeClassDialog,
   EditorOptions;
@@ -422,6 +422,7 @@ implementation
 type
   TCustomFormAccess = class(TCustomForm);
   TControlAccess = class(TControl);
+  TWinControlAccess = class(TWinControl);
   TComponentAccess = class(TComponent);
 
   { TComponentSearch }
@@ -3106,7 +3107,7 @@ begin
       ADDC.Canvas.Pen.Color := GridColor;
       ADDC.Canvas.Pen.Width := 1;
       ADDC.Canvas.Pen.Style := psSolid;
-      DrawGrid(ADDC.Canvas.Handle, TControlAccess(AWinControl).GetLogicalClientRect,
+      DrawGrid(ADDC.Canvas.Handle, TWinControlAccess(AWinControl).GetLogicalClientRect,
                GridSizeX, GridSizeY);
     end;
     

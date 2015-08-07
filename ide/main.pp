@@ -8039,7 +8039,6 @@ end;
 procedure TMainIDE.DoShowDesignerFormOfSrc(AEditor: TSourceEditorInterface; out
   AForm: TCustomForm);
 var
-  ActiveSourceEditor: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   UnitCodeBuf: TCodeBuffer;
 begin
