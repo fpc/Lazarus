@@ -63,18 +63,18 @@ uses
 {$IFDEF UseAsyncProcess}
   AsyncProcess,
 {$ENDIF}
-  // lazutils
-  Laz2_XMLCfg, UTF8Process, LazLogger, LazUTF8Classes,
-  // lcl
-  LCLProc, LCLType, LCLIntf, LConvEncoding, ComCtrls,
-  FileUtil, LResources, Forms, Buttons, Menus, Controls, GraphType,
-  HelpIntfs, Graphics, ExtCtrls, Dialogs, InterfaceBase,
-  // codetools
+  // LCL
+  LCLProc, LCLType, LCLIntf, LResources, ComCtrls, HelpIntfs, InterfaceBase,
+  Forms, Buttons, Menus, Controls, GraphType, Graphics, ExtCtrls, Dialogs,
+  // CodeTools
   FileProcs, FindDeclarationTool, LinkScanner, BasicCodeTools, CodeToolsStructs,
   CodeToolManager, CodeCache, DefineTemplates, KeywordFuncLists, CodeTree,
   StdCodeTools,
-  LazUTF8, LazFileUtils, LazFileCache, // use lazutf8, lazfileutils and lazfilecache after FileProcs and FileUtil
-  // synedit
+  // LazUtils
+  // use lazutf8, lazfileutils and lazfilecache after FileProcs and FileUtil
+  FileUtil, LazFileUtils, LazFileCache, LazUTF8, LazUTF8Classes, UTF8Process,
+  LConvEncoding, Laz2_XMLCfg, LazLogger,
+  // SynEdit
   AllSynEdit, SynEditKeyCmds, SynEditMarks,
   // IDE interface
   IDEIntf, ObjectInspector, PropEdits, PropEditUtils,
@@ -8036,8 +8036,8 @@ begin
   end;
 end;
 
-procedure TMainIDE.DoShowDesignerFormOfSrc(AEditor: TSourceEditorInterface; out
-  AForm: TCustomForm);
+procedure TMainIDE.DoShowDesignerFormOfSrc(AEditor: TSourceEditorInterface;
+  out AForm: TCustomForm);
 var
   ActiveUnitInfo: TUnitInfo;
   UnitCodeBuf: TCodeBuffer;

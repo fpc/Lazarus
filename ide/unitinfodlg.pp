@@ -27,9 +27,14 @@ unit UnitInfoDlg;
 interface
 
 uses
-  SysUtils, LCLProc, Controls, StdCtrls, Forms, Buttons,
-  ComCtrls, LazFileUtils, LazarusIDEStrConsts,
-  CodeToolsDefPreview, CodeToolManager, FileProcs;
+  // LCL + FCL
+  SysUtils, LCLProc, Controls, StdCtrls, Forms, Buttons, ComCtrls,
+  // CodeTools
+  CodeToolsDefPreview, CodeToolManager, FileProcs,
+  // LazUtils
+  LazFileUtils,
+  // IDE
+  LazarusIDEStrConsts;
 
 type
 

@@ -39,8 +39,13 @@ uses
   {$IFDEF Windows}
   Windows,
   {$ENDIF}
-  Classes, SysUtils, LazUtilities, LazDbgLog, LazLogger, LazUTF8, LazFileCache,
-  LazFileUtils, LazUTF8Classes, AVL_Tree, CodeToolsStrConsts;
+  // RTL + FCL
+  Classes, SysUtils, AVL_Tree,
+  // CodeTools
+  CodeToolsStrConsts,
+  // LazUtils
+  LazUtilities, LazDbgLog, LazLogger, LazUTF8, LazFileCache,
+  LazFileUtils, LazUTF8Classes;
 
 type
   TFPCStreamSeekType = int64;
@@ -186,8 +191,8 @@ function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
 function GetTempFilename(const Path, Prefix: string): string;
 function SearchFileInDir(const Filename, BaseDirectory: string;
                          SearchCase: TCTSearchFileCase): string; // not thread-safe
-function SearchFileInPath(const Filename, BasePath, SearchPath,
-                      Delimiter: string; SearchCase: TCTSearchFileCase): string; // not thread-safe
+function SearchFileInPath(const Filename, BasePath, SearchPath, Delimiter: string;
+                         SearchCase: TCTSearchFileCase): string; overload; // not thread-safe
 function FindDiskFilename(const Filename: string): string;
 {$IFDEF darwin}
 function GetDarwinSystemFilename(Filename: string): string;

@@ -37,20 +37,20 @@ interface
 {off $DEFINE VerboseDesignerSelect}
 
 uses
-  // FCL + LCL
+  // RTL + FCL + LCL
   Types, Classes, Math, SysUtils, variants, TypInfo,
   LCLProc, LCLType, LResources, LCLIntf, LMessages, InterfaceBase,
-  Forms, Controls, GraphType, Graphics, Dialogs, ExtCtrls, Menus,
-  ClipBrd,
+  Forms, Controls, GraphType, Graphics, Dialogs, ExtCtrls, Menus, ClipBrd,
+  // LazUtils
+  LazFileUtils, LazFileCache,
   // IDEIntf
   IDEDialogs, PropEdits, PropEditUtils, ComponentEditors, MenuIntf, IDEImagesIntf,
-  FormEditingIntf, ComponentReg,
+  FormEditingIntf, ComponentReg, IDECommands, LazIDEIntf, ProjectIntf,
   // IDE
-  LazarusIDEStrConsts, EnvironmentOpts, IDECommands, LazIDEIntf, ProjectIntf,
-  LazFileUtils, LazFileCache, AlignCompsDlg,
-  SizeCompsDlg, ScaleCompsDlg, TabOrderDlg, AnchorEditor, DesignerProcs,
-  CustomFormEditor, AskCompNameDlg, ControlSelection, ChangeClassDialog,
-  EditorOptions;
+  LazarusIDEStrConsts, EnvironmentOpts, EditorOptions,
+  // Designer
+  AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, TabOrderDlg, AnchorEditor, DesignerProcs,
+  CustomFormEditor, AskCompNameDlg, ControlSelection, ChangeClassDialog;
 
 type
   TDesigner = class;

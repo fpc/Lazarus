@@ -32,13 +32,17 @@ unit etFPCMsgParser;
 interface
 
 uses
+  // RTL
   Classes, SysUtils, strutils, math,
-  LazUTF8, LConvEncoding, LazFileUtils, FileUtil,
-  IDEExternToolIntf, PackageIntf, LazIDEIntf, ProjectIntf,
-  MacroIntf,
-  IDEUtils, FileProcs, LazFileCache,
-  KeywordFuncLists, CodeToolsFPCMsgs, CodeToolsStructs, CodeCache,
+  // CodeTools
+  KeywordFuncLists, CodeToolsFPCMsgs, CodeToolsStructs, CodeCache, FileProcs,
   CodeToolManager, DirectoryCacher, BasicCodeTools, DefineTemplates, SourceLog,
+  // LazUtils
+  LConvEncoding, LazUTF8, FileUtil, LazFileUtils,
+  // IDEIntf
+  IDEExternToolIntf, PackageIntf, LazIDEIntf, ProjectIntf, MacroIntf,
+  IDEUtils, LazFileCache,
+  // IDE
   IDECmdLine, LazarusIDEStrConsts, EnvironmentOpts, LazConf, TransferMacros,
   etMakeMsgParser;
 

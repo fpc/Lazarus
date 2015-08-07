@@ -39,14 +39,15 @@ unit CodeHelp;
 interface
 
 uses
-  Classes, SysUtils, LazFileCache, LCLProc, Forms, Controls, FileUtil, Dialogs,
-  AvgLvlTree, LCLType, LazUTF8,
-  Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite,
-  // codetools
+  // RTL + FCL + LCL
+  Classes, SysUtils, LCLType, LCLProc, Forms, Controls, FileUtil, Dialogs,
+  // CodeTools
   CodeAtom, CodeTree, CodeToolManager, FindDeclarationTool, BasicCodeTools,
   KeywordFuncLists, PascalParserTool, CodeCache, CacheCodeTools, CustomCodeTool,
-  FileProcs, LazFileUtils, DefineTemplates, CodeToolsStructs,
-  // synedit
+  FileProcs, DefineTemplates, CodeToolsStructs,
+  // LazUtils
+  AvgLvlTree, LazFileUtils, LazUTF8, LazFileCache, Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite,
+  // SynEdit
   SynHighlighterPas,
   // IDEIntf
   IDECommands, IDEMsgIntf, MacroIntf, PackageIntf, LazHelpIntf, ProjectIntf,

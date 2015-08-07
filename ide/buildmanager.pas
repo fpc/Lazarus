@@ -34,13 +34,15 @@ unit BuildManager;
 interface
 
 uses
+  // RTL + FCL + LCL
   Classes, SysUtils, AVL_Tree,
-  // LCL
-  LConvEncoding, InterfaceBase, LCLProc, Dialogs, FileUtil, Laz2_XMLCfg,
-  LazUTF8, LazFileUtils, LazFileCache, Forms, Controls,
-  // codetools
+  InterfaceBase, LCLProc, Dialogs, Forms, Controls,
+  // CodeTools
   ExprEval, BasicCodeTools, CodeToolManager, DefineTemplates, CodeCache,
   FileProcs, CodeToolsCfgScript,
+  // LazUtils
+  LConvEncoding, FileUtil, LazFileUtils, LazUtilities, LazFileCache, LazUTF8,
+  Laz2_XMLCfg,
   // IDEIntf
   IDEOptionsIntf, ProjectIntf, MacroIntf, IDEDialogs, IDEExternToolIntf,
   CompOptsIntf, LazIDEIntf, MacroDefIntf, IDEMsgIntf,

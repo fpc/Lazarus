@@ -34,12 +34,13 @@ unit ExtTools;
 interface
 
 uses
-  Classes, SysUtils, math, process, Pipes, UTF8Process,
-  LazFileUtils, LazUTF8,
-  // Codetools
+  // RTL + FCL + LCL
+  Classes, SysUtils, math, process, Pipes,
+  LCLIntf, Forms, Dialogs,
+  // CodeTools
   FileProcs, CodeToolsStructs,
-  // LCL
-  LCLIntf, Forms, Dialogs, FileUtil, AvgLvlTree,
+  // LazUtils
+  FileUtil, AvgLvlTree, LazFileUtils, UTF8Process, LazUTF8,
   // IDEIntf
   IDEExternToolIntf, BaseIDEIntf, MacroIntf, IDEMsgIntf, IDEDialogs,
   PackageIntf, LazIDEIntf,

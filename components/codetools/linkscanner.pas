@@ -46,9 +46,13 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, math, CodeToolsStrConsts, CodeToolMemManager,
-  LazFileUtils, FileProcs, LazUtilities, AVL_Tree, ExprEval, SourceLog, LazDbgLog,
-  KeywordFuncLists, BasicCodeTools;
+  // RTL + FCL
+  Classes, SysUtils, math, AVL_Tree,
+  // CodeTools
+  CodeToolsStrConsts, CodeToolMemManager, FileProcs, ExprEval, SourceLog,
+  KeywordFuncLists, BasicCodeTools,
+  // LazUtils
+  LazFileUtils, LazUtilities, LazDbgLog;
 
 const
   PascalCompilerDefine = ExternalMacroStart+'Compiler';

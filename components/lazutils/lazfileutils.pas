@@ -22,7 +22,7 @@ uses
   {$DEFINE NotLiteralFilenames} // e.g. HFS+ normalizes file names
 {$ENDIF}
 
-function CompareFilenames(const Filename1, Filename2: string): integer;
+function CompareFilenames(const Filename1, Filename2: string): integer; overload;
 function CompareFilenamesIgnoreCase(const Filename1, Filename2: string): integer;
 function CompareFileExt(const Filename, Ext: string;
                         CaseSensitive: boolean): integer; overload;
@@ -30,7 +30,7 @@ function CompareFileExt(const Filename, Ext: string): integer; overload;
 
 function CompareFilenameStarts(const Filename1, Filename2: string): integer;
 function CompareFilenames(Filename1: PChar; Len1: integer;
-  Filename2: PChar; Len2: integer): integer;
+  Filename2: PChar; Len2: integer): integer; overload;
 function CompareFilenamesP(Filename1, Filename2: PChar;
   IgnoreCase: boolean = false // false = use default
   ): integer;

@@ -43,11 +43,14 @@ uses
     {$endif}
   // Other units
   Math, // Math after gtk to get the correct Float type
-  LMessages, LCLProc, LazUTF8, LCLIntf, LCLType, DynHashArray, Masks,
-  GraphType, Graphics, LResources, Controls, Forms,
-  Buttons, Menus, StdCtrls, ComCtrls, ExtCtrls, Dialogs, ExtDlgs,
-  ImgList, Gtk2FontCache, Gtk2Globals, Gtk2Def, Gtk2Extra, {%H-}Gtk2Debug,
-  FileUtil, LazFileUtils, LCLMessageGlue;
+  // LCL
+  LMessages, LCLProc, LCLIntf, LCLType, DynHashArray, GraphType, Graphics,
+  LResources, Controls, Forms, Buttons, Menus, StdCtrls, ComCtrls, ExtCtrls,
+  Dialogs, ExtDlgs, ImgList, LCLMessageGlue,
+  // LazUtils
+  Masks, FileUtil, LazFileUtils, LazUTF8,
+  // Gtk2
+  Gtk2FontCache, Gtk2Globals, Gtk2Def, Gtk2Extra, {%H-}Gtk2Debug;
 
 const
   GtkListItemGtkListTag = 'GtkList';

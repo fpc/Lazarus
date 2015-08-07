@@ -5,7 +5,11 @@ unit lrEmailExportFilter;
 interface
 
 uses
-  Classes, SysUtils, LR_Class, lr_PreviewToolsAbstract, UTF8Process;
+  Classes, SysUtils, Forms, Controls,
+  // LazUtils
+  LazFileUtils, LazUTF8, UTF8Process,
+  // LazReport
+  LR_Class, lr_PreviewToolsAbstract;
 
 type
   TEmailApp = class;
@@ -91,8 +95,7 @@ resourcestring
 
 
 implementation
-uses Forms, lrEmailExportFilterSetup, Controls, LCLProc, FileUtil,
-  lrEmailAppFreeSoft
+uses lrEmailExportFilterSetup, lrEmailAppFreeSoft
   {$IFDEF WINDOWS}
     , lrEmailAppTheBat, lrEmailAppMS
   {$ENDIF}

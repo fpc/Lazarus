@@ -110,9 +110,13 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, LazFileUtils, FileProcs, CodeToolsStructs, BasicCodeTools,
-  KeywordFuncLists, LinkScanner, CodeCache, AVL_Tree,
-  CodeTree, NonPascalCodeTools;
+  // RTL + FCL
+  Classes, SysUtils, AVL_Tree,
+  // CodeTools
+  FileProcs, CodeToolsStructs, BasicCodeTools, KeywordFuncLists, LinkScanner,
+  CodeCache, CodeTree, NonPascalCodeTools,
+  // LazUtils
+  LazFileUtils;
 
 type
   TCCodeNodeDesc = word;

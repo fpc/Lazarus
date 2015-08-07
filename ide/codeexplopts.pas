@@ -34,10 +34,17 @@ unit CodeExplOpts;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, Buttons,
-  AvgLvlTree, Laz2_XMLCfg, LazFileUtils, LazFileCache,
+  // RTL + FCL + LCL
+  Classes, SysUtils,
+  LCLProc, Forms, Controls, Graphics, Dialogs, Buttons,
+  // CodeTools
   BasicCodeTools, FileProcs,
-  LazConf, IDEProcs, IDEOptionsIntf, LazarusIDEStrConsts;
+  // LazUtils
+  AvgLvlTree, Laz2_XMLCfg, LazFileUtils, LazFileCache,
+  // IDEIntf
+  IDEOptionsIntf,
+  // IDE
+  LazConf, IDEProcs, LazarusIDEStrConsts;
 
 type
   { TCodeExplorerOptions }

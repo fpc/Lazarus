@@ -53,13 +53,15 @@ unit InterPkgConflictFiles;
 interface
 
 uses
-  Classes, SysUtils, types, math, contnrs, InterfaceBase, Forms, ComCtrls,
-  Controls, ButtonPanel, Themes, Graphics, StdCtrls, Buttons,
-  LazFileUtils, LazFileCache, AvgLvlTree,
+  // RTL + FCL + LCL
+  Classes, SysUtils, types, math, contnrs, InterfaceBase,
+  Forms, ComCtrls, Controls, ButtonPanel, Themes, Graphics, StdCtrls, Buttons,
+  // CodeTools
   BasicCodeTools, DefineTemplates, CodeToolManager, FileProcs,
+  // LazUtils
+  LazFileUtils, LazFileCache, AvgLvlTree,
   // IDEIntf
-  ProjectIntf, CompOptsIntf, IDEWindowIntf, LazIDEIntf,
-  IDEMsgIntf, IDEExternToolIntf,
+  ProjectIntf, CompOptsIntf, IDEWindowIntf, LazIDEIntf, IDEMsgIntf, IDEExternToolIntf,
   // IDE
   CompilerOptions, EnvironmentOpts, IDEProcs, DialogProcs, LazarusIDEStrConsts,
   TransferMacros, LazConf, PackageDefs, PackageSystem;

@@ -35,14 +35,19 @@ unit UnitDependencies;
 interface
 
 uses
+  // RTL + FCL + LCL
   Classes, SysUtils, types, math, AVL_Tree,
   Forms, Controls, ExtCtrls, ComCtrls, StdCtrls, Buttons, Dialogs, Menus, Clipbrd,
+  // CodeTools
+  CodeToolManager, DefineTemplates, CodeToolsStructs, CTUnitGraph, CTUnitGroupGraph,
+  FileProcs, CodeCache,
+  // LazUtils
   LazLogger, LazFileUtils, LazFileCache, LazUtilities, LazUTF8, LvlGraphCtrl,
+  // IDE interface
   LazIDEIntf, ProjectIntf, IDEWindowIntf, PackageIntf, SrcEditorIntf, IDEImagesIntf,
   IDEMsgIntf, IDEExternToolIntf, IDECommands, IDEDialogs,
-  CodeToolManager, DefineTemplates, CodeToolsStructs,
-  IDEOptionDefs, CTUnitGraph, CTUnitGroupGraph, FileProcs, CodeCache,
-  LazarusIDEStrConsts, UnusedUnitsDlg;
+  // IDE
+  IDEOptionDefs, LazarusIDEStrConsts, UnusedUnitsDlg;
 
 const
   GroupPrefixProject = '-Project-';

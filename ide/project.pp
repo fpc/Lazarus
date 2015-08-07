@@ -46,16 +46,17 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, TypInfo, FPCAdds, LCLProc, Forms,
-  FileUtil, Laz2_XMLCfg, Controls, Dialogs, maps, LazFileUtils, LazFileCache,
-  LazUTF8,
-  // codetools
+  // RTL + FCL + LCL
+  Classes, SysUtils, TypInfo, LCLProc, Forms, Controls, Dialogs, maps,
+  // CodeTools
   CodeToolsConfig, ExprEval, DefineTemplates,
   BasicCodeTools, CodeToolsCfgScript, CodeToolManager, CodeCache, FileProcs,
+  // LazUtils
+  FPCAdds, FileUtil, LazFileUtils, LazFileCache, LazUTF8, Laz2_XMLCfg,
   // IDEIntf
   PropEdits, CompOptsIntf, ProjectIntf, MacroIntf, MacroDefIntf, UnitResources,
   PackageIntf, SrcEditorIntf, IDEOptionsIntf, IDEDialogs, LazIDEIntf,
-  // synedit
+  // SynEdit
   SynEdit,
   // IDE
   CompOptsModes, ProjectResources, LazConf, W32Manifest, ProjectIcon,

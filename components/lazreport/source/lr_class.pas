@@ -15,12 +15,16 @@ interface
 {$I LR_Vers.inc}
 
 uses
-  SysUtils, Math, {$IFDEF UNIX}CLocale,{$ENDIF}
-  Classes, MaskUtils, Controls, LazFileUtils, Forms,
-  Dialogs, Menus, Variants, DB, Graphics, Printers, osPrinters, LazUTF8, DOM,
-  XMLWrite, XMLRead, XMLConf, LCLType, LCLIntf, TypInfo, LR_View, LR_Pars,
-  LR_Intrp, LR_DSet, LR_DBSet, LR_DBRel, LR_Const, DbCtrls, LazUtf8Classes,
-  LCLProc;
+  SysUtils, Math, strutils, DateUtils, {$IFDEF UNIX}CLocale,{$ENDIF}
+  Classes, TypInfo, MaskUtils, Variants, DB, DOM, XMLWrite, XMLRead, XMLConf,
+  Controls, Forms, Dialogs, Menus, Graphics, LCLProc, LCLType, LCLIntf,
+  Printers, osPrinters,
+  // LazUtils
+  LazFileUtils, LazUTF8, LazUTF8Classes,
+  // IDEIntf
+  PropEdits,
+  // LazReport
+  LR_View, LR_Pars, LR_Intrp, LR_DSet, LR_DBSet, LR_DBRel, LR_Const, DbCtrls;
 
 const
   lrMaxBandsInReport       = 256; //temp fix. in future need remove this limit
@@ -1544,7 +1548,7 @@ var
 implementation
 
 uses
-  strutils, LR_Fmted, LR_Prntr, LR_Progr, LR_Utils, DateUtils, PropEdits
+  LR_Fmted, LR_Prntr, LR_Progr, LR_Utils
   {$IFDEF JPEG}, JPEG {$ENDIF}, lr_hyphen;
 
 type

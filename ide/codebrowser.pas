@@ -45,21 +45,23 @@ unit CodeBrowser;
 interface
 
 uses
-  Classes, SysUtils, types, LCLProc, LResources, Forms, Controls, Graphics,
-  Dialogs, Clipbrd, LCLIntf, AVL_Tree, StdCtrls, ExtCtrls, ComCtrls, Buttons,
-  Menus, HelpIntfs, LazFileUtils, LazUtilities,
-  // codetools
+  // RTL + FCL + LCL
+  Classes, SysUtils, types, AVL_Tree,
+  LCLProc, LResources, Forms, Controls, Graphics, Dialogs, Clipbrd, StdCtrls,
+  ExtCtrls, ComCtrls, Buttons, Menus, HelpIntfs, LCLIntf,
+  // CodeTools
   BasicCodeTools, DefineTemplates, CodeTree, CodeCache,
   CodeToolsStructs, CodeToolManager, PascalParserTool, LinkScanner, FileProcs,
   CodeIndex, StdCodeTools, SourceLog, CustomCodeTool,
+  // LazUtils
+  LazFileUtils, LazUtilities,
   // IDEIntf
   IDEWindowIntf, SrcEditorIntf, IDEMsgIntf, IDEDialogs, LazConfigStorage,
   IDEHelpIntf, PackageIntf, IDECommands, LazIDEIntf,
   IDEExternToolIntf,
   // IDE
   Project, DialogProcs, PackageSystem, PackageDefs, LazarusIDEStrConsts,
-  IDEOptionDefs, etFPCMsgParser, BasePkgManager,
-  EnvironmentOpts;
+  IDEOptionDefs, etFPCMsgParser, BasePkgManager, EnvironmentOpts;
 
 
 type

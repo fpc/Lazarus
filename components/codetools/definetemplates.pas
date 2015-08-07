@@ -52,10 +52,14 @@ unit DefineTemplates;
 interface
 
 uses
-  Classes, SysUtils, LazUTF8, CodeToolsStrConsts, ExprEval, DirectoryCacher,
-  BasicCodeTools, Laz2_XMLCfg, lazutf8classes, LazFileUtils, AVL_Tree, process,
-  CodeToolsStructs, UTF8Process, LazFileCache, KeywordFuncLists, LinkScanner,
-  FileProcs, LazUtilities, LazDbgLog;
+  // RTL + FCL
+  Classes, SysUtils, AVL_Tree, process,
+  // CodeTools
+  CodeToolsStrConsts, ExprEval, DirectoryCacher, BasicCodeTools,
+  CodeToolsStructs, KeywordFuncLists, LinkScanner, FileProcs,
+  // LazUtils
+  LazUtilities, LazUTF8, LazUTF8Classes, LazFileUtils, UTF8Process,
+  LazFileCache, LazDbgLog, Laz2_XMLCfg;
 
 const
   ExternalMacroStart = ExprEval.ExternalMacroStart;

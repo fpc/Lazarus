@@ -5,9 +5,14 @@ unit HeapTrcView;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ComCtrls, ExtCtrls, LeakInfo, LazIDEIntf, MenuIntf, contnrs, Clipbrd,
-  XMLConf, LCLProc;
+  Classes, SysUtils, XMLConf, contnrs, Clipbrd, LCLProc,
+  LResources, Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls, ExtCtrls,
+  // LazUtils
+  FileUtil, LazFileUtils,
+  // IDEIntf
+  LazIDEIntf, MenuIntf,
+  // LeakView
+  LeakInfo;
 
 type
   TJumpProc = procedure (Sender: TObject; const SourceName: string;
