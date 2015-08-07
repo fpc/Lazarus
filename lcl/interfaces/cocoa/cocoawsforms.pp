@@ -160,10 +160,13 @@ uses
   CocoaInt;
 
 const
+  // The documentation says we should use NSNormalWindowLevel=4 for normal forms,
+  // but in practice this causes the issue http://bugs.freepascal.org/view.php?id=28473
+  // The only value that works is zero =(
   FormStyleToWindowLevel: array[TFormStyle] of NSInteger = (
- { fsNormal          } 4, // NSNormalWindowLevel
- { fsMDIChild        } 4, // NSNormalWindowLevel
- { fsMDIForm         } 4, // NSNormalWindowLevel
+ { fsNormal          } 0,
+ { fsMDIChild        } 0,
+ { fsMDIForm         } 0,
  { fsStayOnTop       } 9, // NSStatusWindowLevel
  { fsSplash          } 9, // NSStatusWindowLevel
  { fsSystemStayOnTop } 10  // NSModalPanelWindowLevel
@@ -407,9 +410,12 @@ var
       Exit;
     end;
 
-    win := TCocoaWindow(win.initWithContentRect_styleMask_backing_defer(R, GetStyleMaskFor(GetDesigningBorderStyle(Form), Form.BorderIcons), NSBackingStoreBuffered, False));
+    win := TCocoaWindow(win.initWithContentRect_styleMask_backing_defer(R,
+      GetStyleMaskFor(GetDesigningBorderStyle(Form), Form.BorderIcons), NSBackingStoreBuffered, False));
     UpdateWindowIcons(win, GetDesigningBorderStyle(Form), Form.BorderIcons);
-    win.setLevel(FormStyleToWindowLevel[Form.FormStyle]);
+    // Don't apply setLevel for normal forms due to issue http://bugs.freepascal.org/view.php?id=28473
+    if not (Form.FormStyle in [fsNormal, fsMDIChild, fsMDIForm]) then
+      win.setLevel(FormStyleToWindowLevel[Form.FormStyle]);
     win.enableCursorRects;
     TCocoaWindow(win).callback := TLCLWindowCallback.Create(win, AWinControl);
     win.setDelegate(win);
