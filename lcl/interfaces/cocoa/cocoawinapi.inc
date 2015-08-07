@@ -2026,6 +2026,7 @@ end;
 
 function TCocoaWidgetSet.SetCursor(ACursor: HCURSOR): HCURSOR;
 begin
+  if ACursor = 0 then Result := 0 else
   Result := HCURSOR(TCocoaCursor(ACursor).Install);
 end;
 

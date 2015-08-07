@@ -1,7 +1,7 @@
 {%MainUnit cocoaint.pas}
 
 {******************************************************************************
-  All utility method implementations of the TCarbonWidgetSet class are here.
+  All utility method implementations of the TCocoaWidgetSet class are here.
 
 
  ******************************************************************************
@@ -22,7 +22,7 @@
   Method:  TCocoaWidgetSet.AppInit
   Params:  ScreenInfo
 
-  Initialize Carbon Widget Set
+  Initialize Cocoa Widget Set
  ------------------------------------------------------------------------------}
 procedure TCocoaWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
 var
@@ -153,7 +153,7 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCocoaWidgetSet.AppTerminate
 
-  Tells Carbon to halt the application
+  Tells Cocoa to halt the application
  ------------------------------------------------------------------------------}
 procedure TCocoaWidgetSet.AppTerminate;
 begin
@@ -509,9 +509,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonWidgetSet.RawImage_DescriptionFromCarbonBitmap
+  Method:  TCocoaWidgetSet.RawImage_DescriptionFromCocoaBitmap
 
-  Creates a rawimage description for a carbonbitmap
+  Creates a rawimage description for a cocoabitmap
  ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.RawImage_DescriptionFromCocoaBitmap(out ADesc: TRawImageDescription; ABitmap: TCocoaBitmap): Boolean;
 var
@@ -631,7 +631,7 @@ begin
 
   if AMask.Depth > 1
   then begin
-    DebugLn('[WARNING] RawImage_FromCarbonBitmap: AMask.Depth > 1');
+    DebugLn('[WARNING] RawImage_FromCocoaBitmap: AMask.Depth > 1');
     Exit;
   end;
 

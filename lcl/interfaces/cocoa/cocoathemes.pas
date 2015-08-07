@@ -64,7 +64,7 @@ implementation
 { TCocoaThemeServices }
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonThemeServices.GetDrawState
+  Method:  TCocoaThemeServices.GetDrawState
   Params:  Details - Details for themed element
   Returns: Draw state of the themed element passed
  ------------------------------------------------------------------------------}
@@ -569,7 +569,7 @@ end;
 *)
 {------------------------------------------------------------------------------
   Method:  TCocoaThemeServices.DrawElement
-  Params:  DC       - Carbon device context
+  Params:  DC       - Cocoa device context
            Details  - Details for themed element
            R        - Bounding rectangle
            ClipRect - Clipping rectangle

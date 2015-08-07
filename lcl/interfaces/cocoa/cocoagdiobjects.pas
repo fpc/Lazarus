@@ -2147,9 +2147,10 @@ begin
     ctx := nil;
   end;
 
+  // ToDo: Should we free the old FBitmap???
+  FBitmap := AValue;
   if FBitmap <> nil then
   begin
-    FBitmap := AValue;
     pool:=NSAutoreleasePool.alloc.init;
     ctx := NSGraphicsContext.graphicsContextWithBitmapImageRep(Bitmap.ImageRep);
     ctx.retain; // extend live beyond NSAutoreleasePool

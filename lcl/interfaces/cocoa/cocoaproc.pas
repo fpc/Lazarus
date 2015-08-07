@@ -2,8 +2,8 @@
                   cocoaproc.pp  -  Cocoa interface procs
                   ----------------------------------------
 
- This unit contains procedures/functions needed for the Carbon <-> LCL interface
- Common carbon untilities (usable by other projects) go to CarbonUtils
+ This unit contains procedures/functions needed for the Cocoa <-> LCL interface
+ Common cocoa untilities (usable by other projects) go to CocoaUtils
 
  *****************************************************************************
   This file is part of the Lazarus Component Library (LCL)
@@ -47,11 +47,11 @@ function OSError(AResult: OSStatus; const AMethodName, ACallName: String;
   CarbonDefaultFont     : AnsiString = '';
   CarbonDefaultFontSize : Integer = 0;}
 
-{ $I mackeycodes.inc}
+{$I mackeycodes.inc}
 
-{function VirtualKeyCodeToMac(AKey: Word): Word;
+function VirtualKeyCodeToMac(AKey: Word): Word;
 
-function GetBorderWindowAttrs(const ABorderStyle: TFormBorderStyle;
+{function GetBorderWindowAttrs(const ABorderStyle: TFormBorderStyle;
   const ABorderIcons: TBorderIcons): WindowAttributes;
 
 function GetCarbonMouseButton(AEvent: EventRef): Integer;
@@ -74,7 +74,7 @@ function CreateCustomHIView(const ARect: HIRect; ControlStyle: TControlStyle = [
 procedure SetControlViewStyle(Control: ControlRef; TinySize, SmallSize, NormalSize: Integer; ControlHeight: Boolean = True);
 
 function CarbonHitTest(Control: ControlRef; const X,Y: integer; var part: ControlPartCode): Boolean;
-
+}
 const
   DEFAULT_CFSTRING_ENCODING = kCFStringEncodingUTF8;
 
@@ -84,6 +84,7 @@ procedure FreeCFString(var AString: CFStringRef);
 function CFStringToStr(AString: CFStringRef; Encoding: CFStringEncoding = DEFAULT_CFSTRING_ENCODING): String;
 function CFStringToData(AString: CFStringRef; Encoding: CFStringEncoding = DEFAULT_CFSTRING_ENCODING): CFDataRef;
 
+{
 function StringsToCFArray(S: TStrings): CFArrayRef;
 
 function RoundFixed(const F: Fixed): Integer;
@@ -242,6 +243,7 @@ begin
       ' ' + AText + ' failed with result ' + DbgS(AResult));
   end;
 end;
+*)
 
 {------------------------------------------------------------------------------
   Name:    VirtualKeyCodeToMac
@@ -323,6 +325,7 @@ begin
   end;
 end;
 
+(*
 {------------------------------------------------------------------------------
   Name:    GetBorderWindowAttrs
   Returns: Converts the form border style and icons to Carbon window attributes
@@ -583,7 +586,7 @@ end;*)
   Name:    FillStandardDescription
   Params:  Desc - Raw image description
 
-  Fills the raw image description with standard Carbon internal image storing
+  Fills the raw image description with standard Cocoa internal image storing
   description
  ------------------------------------------------------------------------------}
 procedure FillStandardDescription(out Desc: TRawImageDescription);
@@ -715,6 +718,7 @@ begin
     Result:=GetEventParameter(event, kEventParamControlPart, typeControlPartCode, nil, sizeof(part), nil, @part)=noErr;
   ReleaseEvent(event);
 end;
+*)
 
 {------------------------------------------------------------------------------
   Name:    CreateCFString
@@ -819,6 +823,7 @@ begin
     Result := CFDataCreate(nil, nil, 0);
 end;
 
+(*
 {------------------------------------------------------------------------------
   Name:    StringsToCFArray
   Params:  S - Strings
