@@ -2017,8 +2017,8 @@ var
 
   function IncUsedMem(c: integer): boolean;
   begin
-    Result:=(UsedMem div 16384)<>((UsedMem+c) div 16384);
-    inc(UsedMem,c);
+    Result:=(UsedMem div 16384)<>((UsedMem{%H-}+c) div 16384);
+    {%H-}inc(UsedMem,c);
   end;
 
   function IdentifierFitsFilter(LvlType: TCodeBrowserLevel;
