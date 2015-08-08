@@ -2137,10 +2137,6 @@ msgstr ""
 msgid "Included mixed state $IFDEF node"
 msgstr ""
 
-#: lazarusidestrconsts.dlgignoreverb
-msgid "Ignore"
-msgstr "Abaikan"
-
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "Sertakan variabel sistem"
@@ -4018,6 +4014,10 @@ msgstr "File Baru"
 msgid "No package found for dependency \"%s\".%sPlease choose an existing package."
 msgstr "Tidak ada paket ditemukan untuk dependensi %s%s%s.%sSilahkan pilih paket yang sudah ada."
 
+#: lazarusidestrconsts.lisa2ppackageorproject
+msgid "Package/Project"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2ppagenametoolong
 msgid "Page Name too long"
 msgstr "Nama Halaman terlalu panjang"
@@ -4177,6 +4177,12 @@ msgstr "Nama Unit tidak benar"
 #: lazarusidestrconsts.lisabandonchanges
 msgid "Abandon changes?"
 msgstr ""
+
+#: lazarusidestrconsts.lisabort
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisabort"
+msgid "Abort"
+msgstr "Batalkan"
 
 #: lazarusidestrconsts.lisabortall
 msgid "Abort all"
@@ -8395,6 +8401,11 @@ msgctxt "lazarusidestrconsts.lisdlgimport"
 msgid "Import ..."
 msgstr ""
 
+#: lazarusidestrconsts.lisdlgmore
+msgctxt "lazarusidestrconsts.lisdlgmore"
+msgid "More ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdlgopen
 msgctxt "lazarusidestrconsts.lisdlgopen"
 msgid "Open ..."
@@ -9924,17 +9935,13 @@ msgctxt "lazarusidestrconsts.lisid"
 msgid "ID"
 msgstr "ID"
 
-#: lazarusidestrconsts.lisidcadd
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisidcadd"
-msgid "Add"
-msgstr "Tambah"
+#: lazarusidestrconsts.lisidcaddition
+msgid "Addition"
+msgstr ""
 
-#: lazarusidestrconsts.lisidcopen
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisidcopen"
-msgid "Open"
-msgstr "Buka"
+#: lazarusidestrconsts.lisidcopening
+msgid "Opening"
+msgstr ""
 
 #: lazarusidestrconsts.liside
 msgid "IDE"
@@ -10069,6 +10076,12 @@ msgstr ""
 #: lazarusidestrconsts.lisifyouwanttousetwodifferentlazarusversionsyoumustst
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr ""
+
+#: lazarusidestrconsts.lisignore
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisignore"
+msgid "Ignore"
+msgstr "Abaikan"
 
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
@@ -13097,10 +13110,6 @@ msgstr ""
 #: lazarusidestrconsts.lismore
 msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
-msgstr ""
-
-#: lazarusidestrconsts.lismore2
-msgid "More ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismoresub
@@ -16699,12 +16708,12 @@ msgstr "Sama"
 msgid "Sorry, this type is not yet implemented"
 msgstr "Maaf, tipe ini belum diimplementasikan"
 
-#: lazarusidestrconsts.lissort
-msgid "Sort"
-msgstr ""
-
 #: lazarusidestrconsts.lissortforscope
 msgid "Sort for scope"
+msgstr ""
+
+#: lazarusidestrconsts.lissorting
+msgid "Sorting"
 msgstr ""
 
 #: lazarusidestrconsts.lissortselascending
@@ -18931,6 +18940,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisxmlparsererrorinfileerror
 msgid "XML parser error in file %s%sError: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisyes
+msgid "Yes"
 msgstr ""
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed

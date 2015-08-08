@@ -2078,10 +2078,6 @@ msgstr "Passiivinen $IFDEF solmu"
 msgid "Included mixed state $IFDEF node"
 msgstr ""
 
-#: lazarusidestrconsts.dlgignoreverb
-msgid "Ignore"
-msgstr "Ohita"
-
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "Ota järjestelmän muuttujat mukaan"
@@ -3867,6 +3863,10 @@ msgstr "Uusi tiedosto"
 msgid "No package found for dependency \"%s\".%sPlease choose an existing package."
 msgstr "Riippuvuuden \"%s\" pakettia ei löydy. %sValitse olemassaoleva paketti."
 
+#: lazarusidestrconsts.lisa2ppackageorproject
+msgid "Package/Project"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2ppagenametoolong
 msgid "Page Name too long"
 msgstr "Sivun nimi on liian pitkä"
@@ -3992,6 +3992,12 @@ msgstr "Kelvoton käännösyksikön nimi"
 #: lazarusidestrconsts.lisabandonchanges
 msgid "Abandon changes?"
 msgstr "Hylkää muutokset?"
+
+#: lazarusidestrconsts.lisabort
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisabort"
+msgid "Abort"
+msgstr "Keskeytä"
 
 #: lazarusidestrconsts.lisabortall
 msgid "Abort all"
@@ -8080,6 +8086,11 @@ msgstr "Vie ..."
 msgid "Import ..."
 msgstr "Tuo ..."
 
+#: lazarusidestrconsts.lisdlgmore
+msgctxt "lazarusidestrconsts.lisdlgmore"
+msgid "More ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdlgopen
 msgid "Open ..."
 msgstr "Avaa ..."
@@ -9577,15 +9588,13 @@ msgctxt "lazarusidestrconsts.lisid"
 msgid "ID"
 msgstr ""
 
-#: lazarusidestrconsts.lisidcadd
-msgctxt "lazarusidestrconsts.lisidcadd"
-msgid "Add"
-msgstr "Lisää"
+#: lazarusidestrconsts.lisidcaddition
+msgid "Addition"
+msgstr ""
 
-#: lazarusidestrconsts.lisidcopen
-msgctxt "lazarusidestrconsts.lisidcopen"
-msgid "Open"
-msgstr "Avaa"
+#: lazarusidestrconsts.lisidcopening
+msgid "Opening"
+msgstr ""
 
 #: lazarusidestrconsts.liside
 msgid "IDE"
@@ -9718,6 +9727,12 @@ msgstr "Jos vain istunnon tiedot muuttuivat, kysy niiden tallentamisesta."
 #: lazarusidestrconsts.lisifyouwanttousetwodifferentlazarusversionsyoumustst
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr "Haluttaessa kaksi eri Lazarus versiota, pitää toinen käynnistää parametrin primary-config-path tai pcp kanssa.%sEsimerkiksi:"
+
+#: lazarusidestrconsts.lisignore
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisignore"
+msgid "Ignore"
+msgstr "Ohita"
 
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
@@ -12481,10 +12496,6 @@ msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Lisää"
 
-#: lazarusidestrconsts.lismore2
-msgid "More ..."
-msgstr ""
-
 #: lazarusidestrconsts.lismoresub
 msgctxt "lazarusidestrconsts.lismoresub"
 msgid "More >>"
@@ -13669,6 +13680,7 @@ msgid "When the form is saved, the IDE can store all TTranslateString properties
 msgstr "Kun lomake on talletettu, IDE voi tallentaa kaikki TTranslateString ominaisuudet paketin po-tiedostoon. Siksi I18N pitää sallia tälle paketille, antaa po-hakemisto ja jättää tämä asetus ruksaamatta."
 
 #: lazarusidestrconsts.lispdabort
+msgctxt "lazarusidestrconsts.lispdabort"
 msgid "Abort"
 msgstr "Keskeytä"
 
@@ -15852,13 +15864,13 @@ msgstr "Löydetty"
 msgid "Sorry, this type is not yet implemented"
 msgstr "Valitan, tätä tyyppiä ei ole vielä toteutettu"
 
-#: lazarusidestrconsts.lissort
-msgid "Sort"
-msgstr ""
-
 #: lazarusidestrconsts.lissortforscope
 msgid "Sort for scope"
 msgstr "Järjestä ulottuvuuden mukaan"
+
+#: lazarusidestrconsts.lissorting
+msgid "Sorting"
+msgstr ""
 
 #: lazarusidestrconsts.lissortselascending
 msgid "Ascending"
@@ -17958,6 +17970,10 @@ msgstr "XML-virhe"
 
 #: lazarusidestrconsts.lisxmlparsererrorinfileerror
 msgid "XML parser error in file %s%sError: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisyes
+msgid "Yes"
 msgstr ""
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed

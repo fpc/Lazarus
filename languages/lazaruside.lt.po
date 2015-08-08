@@ -2109,10 +2109,6 @@ msgstr ""
 msgid "Included mixed state $IFDEF node"
 msgstr ""
 
-#: lazarusidestrconsts.dlgignoreverb
-msgid "Ignore"
-msgstr "Ignoruoti"
-
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "Pridėti sistemos kintamuosius"
@@ -3930,6 +3926,10 @@ msgstr "Naujas failas"
 msgid "No package found for dependency \"%s\".%sPlease choose an existing package."
 msgstr "%s%s%s priklausiniui nerastas paketas.%sNurodykite egzistuojantį paketą."
 
+#: lazarusidestrconsts.lisa2ppackageorproject
+msgid "Package/Project"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2ppagenametoolong
 msgid "Page Name too long"
 msgstr "Per ilgas pavadinimas"
@@ -4093,6 +4093,12 @@ msgstr "Klaidingas modulio pavadinimas"
 #: lazarusidestrconsts.lisabandonchanges
 msgid "Abandon changes?"
 msgstr "Pamiršti pakeitimus?"
+
+#: lazarusidestrconsts.lisabort
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisabort"
+msgid "Abort"
+msgstr "Nutraukti"
 
 #: lazarusidestrconsts.lisabortall
 msgid "Abort all"
@@ -8314,6 +8320,11 @@ msgctxt "lazarusidestrconsts.lisdlgimport"
 msgid "Import ..."
 msgstr "Importuoti…"
 
+#: lazarusidestrconsts.lisdlgmore
+msgctxt "lazarusidestrconsts.lisdlgmore"
+msgid "More ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdlgopen
 msgctxt "lazarusidestrconsts.lisdlgopen"
 msgid "Open ..."
@@ -9852,17 +9863,13 @@ msgctxt "lazarusidestrconsts.lisid"
 msgid "ID"
 msgstr "ID"
 
-#: lazarusidestrconsts.lisidcadd
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisidcadd"
-msgid "Add"
-msgstr "Pridėti"
+#: lazarusidestrconsts.lisidcaddition
+msgid "Addition"
+msgstr ""
 
-#: lazarusidestrconsts.lisidcopen
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisidcopen"
-msgid "Open"
-msgstr "Atverti"
+#: lazarusidestrconsts.lisidcopening
+msgid "Opening"
+msgstr ""
 
 #: lazarusidestrconsts.liside
 msgid "IDE"
@@ -9999,6 +10006,12 @@ msgstr ""
 #| msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%s%sFor example:%s"
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr "Naudojant dvi Lazarus laidas, antrasis Lazarus turi būti startuojamas naudojant komandinės eilutės parametrą „primary-config-path“ (arba „pcp“).%s%sPavyzdžiui:%s"
+
+#: lazarusidestrconsts.lisignore
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisignore"
+msgid "Ignore"
+msgstr "Ignoruoti"
 
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
@@ -12805,10 +12818,6 @@ msgstr "&Keisti"
 msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Daugiau"
-
-#: lazarusidestrconsts.lismore2
-msgid "More ..."
-msgstr ""
 
 #: lazarusidestrconsts.lismoresub
 msgctxt "lazarusidestrconsts.lismoresub"
@@ -16365,12 +16374,12 @@ msgstr "Atitikmenys"
 msgid "Sorry, this type is not yet implemented"
 msgstr "Deja, šis tipas dar neįgyvendintas"
 
-#: lazarusidestrconsts.lissort
-msgid "Sort"
-msgstr ""
-
 #: lazarusidestrconsts.lissortforscope
 msgid "Sort for scope"
+msgstr ""
+
+#: lazarusidestrconsts.lissorting
+msgid "Sorting"
 msgstr ""
 
 #: lazarusidestrconsts.lissortselascending
@@ -18671,6 +18680,10 @@ msgstr "XML klaida"
 #: lazarusidestrconsts.lisxmlparsererrorinfileerror
 msgid "XML parser error in file %s%sError: %s"
 msgstr "XML analizatorius klaida, failas: %s%sKlaida: %s"
+
+#: lazarusidestrconsts.lisyes
+msgid "Yes"
+msgstr ""
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"

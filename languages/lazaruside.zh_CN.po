@@ -2153,10 +2153,6 @@ msgstr ""
 msgid "Included mixed state $IFDEF node"
 msgstr ""
 
-#: lazarusidestrconsts.dlgignoreverb
-msgid "Ignore"
-msgstr "忽略"
-
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "包含系统变量"
@@ -4071,6 +4067,10 @@ msgstr "新建文件"
 msgid "No package found for dependency \"%s\".%sPlease choose an existing package."
 msgstr "没有找到任何包依赖于 %s%s%s.%s请选择一个存在的包."
 
+#: lazarusidestrconsts.lisa2ppackageorproject
+msgid "Package/Project"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2ppagenametoolong
 msgid "Page Name too long"
 msgstr "页面名称太长"
@@ -4230,6 +4230,12 @@ msgstr "错误的单元文件名"
 #: lazarusidestrconsts.lisabandonchanges
 msgid "Abandon changes?"
 msgstr "放弃改变？"
+
+#: lazarusidestrconsts.lisabort
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisabort"
+msgid "Abort"
+msgstr "(中止)"
 
 #: lazarusidestrconsts.lisabortall
 msgid "Abort all"
@@ -8482,6 +8488,11 @@ msgctxt "lazarusidestrconsts.lisdlgimport"
 msgid "Import ..."
 msgstr ""
 
+#: lazarusidestrconsts.lisdlgmore
+msgctxt "lazarusidestrconsts.lisdlgmore"
+msgid "More ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdlgopen
 msgctxt "lazarusidestrconsts.lisdlgopen"
 msgid "Open ..."
@@ -10021,17 +10032,13 @@ msgctxt "lazarusidestrconsts.lisid"
 msgid "ID"
 msgstr "ID"
 
-#: lazarusidestrconsts.lisidcadd
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisidcadd"
-msgid "Add"
-msgstr "添加"
+#: lazarusidestrconsts.lisidcaddition
+msgid "Addition"
+msgstr ""
 
-#: lazarusidestrconsts.lisidcopen
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisidcopen"
-msgid "Open"
-msgstr "打开"
+#: lazarusidestrconsts.lisidcopening
+msgid "Opening"
+msgstr ""
 
 #: lazarusidestrconsts.liside
 msgid "IDE"
@@ -10166,6 +10173,12 @@ msgstr ""
 #: lazarusidestrconsts.lisifyouwanttousetwodifferentlazarusversionsyoumustst
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr ""
+
+#: lazarusidestrconsts.lisignore
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisignore"
+msgid "Ignore"
+msgstr "忽略"
 
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
@@ -13215,10 +13228,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "更多"
-
-#: lazarusidestrconsts.lismore2
-msgid "More ..."
-msgstr ""
 
 #: lazarusidestrconsts.lismoresub
 #, fuzzy
@@ -16836,12 +16845,12 @@ msgstr "匹配"
 msgid "Sorry, this type is not yet implemented"
 msgstr "对不起, 这种类型尚未实现"
 
-#: lazarusidestrconsts.lissort
-msgid "Sort"
-msgstr ""
-
 #: lazarusidestrconsts.lissortforscope
 msgid "Sort for scope"
+msgstr ""
+
+#: lazarusidestrconsts.lissorting
+msgid "Sorting"
 msgstr ""
 
 #: lazarusidestrconsts.lissortselascending
@@ -19100,6 +19109,10 @@ msgstr "XML 错误"
 #: lazarusidestrconsts.lisxmlparsererrorinfileerror
 msgid "XML parser error in file %s%sError: %s"
 msgstr "XML 解析错误的文件 %s%s错误: %s"
+
+#: lazarusidestrconsts.lisyes
+msgid "Yes"
+msgstr ""
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"

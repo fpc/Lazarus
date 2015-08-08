@@ -2065,10 +2065,6 @@ msgstr "Nem aktív $IFDEF csomópont"
 msgid "Included mixed state $IFDEF node"
 msgstr "Kevert állapotú $IFDEF csomópont"
 
-#: lazarusidestrconsts.dlgignoreverb
-msgid "Ignore"
-msgstr "Kihagyás"
-
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "Rendszer változókkal együtt"
@@ -3848,6 +3844,10 @@ msgstr "Új fájl"
 msgid "No package found for dependency \"%s\".%sPlease choose an existing package."
 msgstr "Nem található csomag a(z) \"%s\" függőséghez.%sVálasszon egy létező csomagot!"
 
+#: lazarusidestrconsts.lisa2ppackageorproject
+msgid "Package/Project"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2ppagenametoolong
 msgid "Page Name too long"
 msgstr "Oldalnév túl hosszú"
@@ -3975,6 +3975,12 @@ msgstr "A unit-név érvénytelen"
 #: lazarusidestrconsts.lisabandonchanges
 msgid "Abandon changes?"
 msgstr "Változások elvetése?"
+
+#: lazarusidestrconsts.lisabort
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisabort"
+msgid "Abort"
+msgstr "Megszakítás"
 
 #: lazarusidestrconsts.lisabortall
 msgid "Abort all"
@@ -8076,6 +8082,12 @@ msgctxt "lazarusidestrconsts.lisdlgimport"
 msgid "Import ..."
 msgstr "Importálás ..."
 
+#: lazarusidestrconsts.lisdlgmore
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisdlgmore"
+msgid "More ..."
+msgstr "Továbbiak ..."
+
 #: lazarusidestrconsts.lisdlgopen
 msgctxt "lazarusidestrconsts.lisdlgopen"
 msgid "Open ..."
@@ -9589,15 +9601,13 @@ msgctxt "lazarusidestrconsts.lisid"
 msgid "ID"
 msgstr "ID"
 
-#: lazarusidestrconsts.lisidcadd
-msgctxt "lazarusidestrconsts.lisidcadd"
-msgid "Add"
-msgstr "Hozzáadás"
+#: lazarusidestrconsts.lisidcaddition
+msgid "Addition"
+msgstr ""
 
-#: lazarusidestrconsts.lisidcopen
-msgctxt "lazarusidestrconsts.lisidcopen"
-msgid "Open"
-msgstr "Megnyitás"
+#: lazarusidestrconsts.lisidcopening
+msgid "Opening"
+msgstr ""
 
 #: lazarusidestrconsts.liside
 msgid "IDE"
@@ -9730,6 +9740,12 @@ msgstr "Kérdés a mentésről ha csak a munkamenet információ változtak meg.
 #: lazarusidestrconsts.lisifyouwanttousetwodifferentlazarusversionsyoumustst
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr "Ha különböző Lazarus változatokat akar használni, a második Lazarus-t a primary-config-path vagy a pcp parancssori paraméterrel kell indítani.%sPéldául:"
+
+#: lazarusidestrconsts.lisignore
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisignore"
+msgid "Ignore"
+msgstr "Kihagyás"
 
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
@@ -12533,10 +12549,6 @@ msgstr "&Módosítás"
 msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Tovább"
-
-#: lazarusidestrconsts.lismore2
-msgid "More ..."
-msgstr "Továbbiak ..."
 
 #: lazarusidestrconsts.lismoresub
 msgctxt "lazarusidestrconsts.lismoresub"
@@ -15924,13 +15936,13 @@ msgstr "Találatok"
 msgid "Sorry, this type is not yet implemented"
 msgstr "Sajnáljuk, ez a típus egyelőre nincs megvalósítva"
 
-#: lazarusidestrconsts.lissort
-msgid "Sort"
-msgstr "Rendezés"
-
 #: lazarusidestrconsts.lissortforscope
 msgid "Sort for scope"
 msgstr "Rendezés hatókör alapján"
+
+#: lazarusidestrconsts.lissorting
+msgid "Sorting"
+msgstr ""
 
 #: lazarusidestrconsts.lissortselascending
 msgid "Ascending"
@@ -18034,6 +18046,10 @@ msgstr "XML Hiba"
 #: lazarusidestrconsts.lisxmlparsererrorinfileerror
 msgid "XML parser error in file %s%sError: %s"
 msgstr "XML elemző hiba a(z) %s%s fájlban. Hiba: %s"
+
+#: lazarusidestrconsts.lisyes
+msgid "Yes"
+msgstr ""
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"

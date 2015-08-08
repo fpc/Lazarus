@@ -2085,10 +2085,6 @@ msgstr "Nodo $IFDEF inactivo"
 msgid "Included mixed state $IFDEF node"
 msgstr "Inclusión de nodo de estado $IFDEF mixto"
 
-#: lazarusidestrconsts.dlgignoreverb
-msgid "Ignore"
-msgstr "Ignorar"
-
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "Incluir variables del sistema"
@@ -3877,6 +3873,10 @@ msgstr "Nuevo archivo"
 msgid "No package found for dependency \"%s\".%sPlease choose an existing package."
 msgstr "No se ha encontrado un paquete para la dependencia \"%s\".%sPor favor seleccione un paquete existente."
 
+#: lazarusidestrconsts.lisa2ppackageorproject
+msgid "Package/Project"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2ppagenametoolong
 msgid "Page Name too long"
 msgstr "Nombre de página demasiado largo"
@@ -4004,6 +4004,12 @@ msgstr "Nombre de unidad no válido"
 #: lazarusidestrconsts.lisabandonchanges
 msgid "Abandon changes?"
 msgstr "¿Abandonar cambios?"
+
+#: lazarusidestrconsts.lisabort
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisabort"
+msgid "Abort"
+msgstr "Abortar"
 
 #: lazarusidestrconsts.lisabortall
 msgid "Abort all"
@@ -8112,6 +8118,11 @@ msgctxt "lazarusidestrconsts.lisdlgimport"
 msgid "Import ..."
 msgstr "Importar ..."
 
+#: lazarusidestrconsts.lisdlgmore
+msgctxt "lazarusidestrconsts.lisdlgmore"
+msgid "More ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdlgopen
 msgctxt "lazarusidestrconsts.lisdlgopen"
 msgid "Open ..."
@@ -9625,15 +9636,13 @@ msgctxt "lazarusidestrconsts.lisid"
 msgid "ID"
 msgstr "ID"
 
-#: lazarusidestrconsts.lisidcadd
-msgctxt "lazarusidestrconsts.lisidcadd"
-msgid "Add"
-msgstr "Añadir"
+#: lazarusidestrconsts.lisidcaddition
+msgid "Addition"
+msgstr ""
 
-#: lazarusidestrconsts.lisidcopen
-msgctxt "lazarusidestrconsts.lisidcopen"
-msgid "Open"
-msgstr "Abrir"
+#: lazarusidestrconsts.lisidcopening
+msgid "Opening"
+msgstr ""
 
 #: lazarusidestrconsts.liside
 msgid "IDE"
@@ -9766,6 +9775,12 @@ msgstr "Preguntar si salvar solamente en el caso de que la información de sesi�
 #: lazarusidestrconsts.lisifyouwanttousetwodifferentlazarusversionsyoumustst
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr "Si desea utilizar dos diferentes versiones de Lazarus debe iniciar el segundo Lazarus con la línea de comando parámetro primary-config-path o pcp.%sPor ejemplo:"
+
+#: lazarusidestrconsts.lisignore
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisignore"
+msgid "Ignore"
+msgstr "Ignorar"
 
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
@@ -12573,10 +12588,6 @@ msgstr "&Modificar"
 msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Más"
-
-#: lazarusidestrconsts.lismore2
-msgid "More ..."
-msgstr ""
 
 #: lazarusidestrconsts.lismoresub
 msgctxt "lazarusidestrconsts.lismoresub"
@@ -15966,13 +15977,13 @@ msgstr "Coincidencias"
 msgid "Sorry, this type is not yet implemented"
 msgstr "Lo siento, este tipo no está todavía implementado"
 
-#: lazarusidestrconsts.lissort
-msgid "Sort"
-msgstr "Ordenar"
-
 #: lazarusidestrconsts.lissortforscope
 msgid "Sort for scope"
 msgstr "Ordenar para el campo de acción"
+
+#: lazarusidestrconsts.lissorting
+msgid "Sorting"
+msgstr ""
 
 #: lazarusidestrconsts.lissortselascending
 msgid "Ascending"
@@ -18079,6 +18090,10 @@ msgstr "Error XML"
 #: lazarusidestrconsts.lisxmlparsererrorinfileerror
 msgid "XML parser error in file %s%sError: %s"
 msgstr "Error de análisis en archivo XML %s%sError: %s"
+
+#: lazarusidestrconsts.lisyes
+msgid "Yes"
+msgstr ""
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"

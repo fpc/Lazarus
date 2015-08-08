@@ -2069,10 +2069,6 @@ msgstr ""
 msgid "Included mixed state $IFDEF node"
 msgstr ""
 
-#: lazarusidestrconsts.dlgignoreverb
-msgid "Ignore"
-msgstr "Verwerp"
-
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr ""
@@ -3858,6 +3854,10 @@ msgstr ""
 msgid "No package found for dependency \"%s\".%sPlease choose an existing package."
 msgstr ""
 
+#: lazarusidestrconsts.lisa2ppackageorproject
+msgid "Package/Project"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2ppagenametoolong
 msgid "Page Name too long"
 msgstr ""
@@ -3984,6 +3984,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisabandonchanges
 msgid "Abandon changes?"
+msgstr ""
+
+#: lazarusidestrconsts.lisabort
+msgctxt "lazarusidestrconsts.lisabort"
+msgid "Abort"
 msgstr ""
 
 #: lazarusidestrconsts.lisabortall
@@ -8093,6 +8098,11 @@ msgctxt "lazarusidestrconsts.lisdlgimport"
 msgid "Import ..."
 msgstr ""
 
+#: lazarusidestrconsts.lisdlgmore
+msgctxt "lazarusidestrconsts.lisdlgmore"
+msgid "More ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdlgopen
 msgctxt "lazarusidestrconsts.lisdlgopen"
 msgid "Open ..."
@@ -9599,15 +9609,12 @@ msgctxt "lazarusidestrconsts.lisid"
 msgid "ID"
 msgstr ""
 
-#: lazarusidestrconsts.lisidcadd
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisidcadd"
-msgid "Add"
-msgstr "Voeg by"
+#: lazarusidestrconsts.lisidcaddition
+msgid "Addition"
+msgstr ""
 
-#: lazarusidestrconsts.lisidcopen
-msgctxt "lazarusidestrconsts.lisidcopen"
-msgid "Open"
+#: lazarusidestrconsts.lisidcopening
+msgid "Opening"
 msgstr ""
 
 #: lazarusidestrconsts.liside
@@ -9741,6 +9748,12 @@ msgstr ""
 #: lazarusidestrconsts.lisifyouwanttousetwodifferentlazarusversionsyoumustst
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr ""
+
+#: lazarusidestrconsts.lisignore
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisignore"
+msgid "Ignore"
+msgstr "Verwerp"
 
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
@@ -12586,10 +12599,6 @@ msgstr ""
 #: lazarusidestrconsts.lismore
 msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
-msgstr ""
-
-#: lazarusidestrconsts.lismore2
-msgid "More ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismoresub
@@ -16001,12 +16010,12 @@ msgstr ""
 msgid "Sorry, this type is not yet implemented"
 msgstr ""
 
-#: lazarusidestrconsts.lissort
-msgid "Sort"
-msgstr ""
-
 #: lazarusidestrconsts.lissortforscope
 msgid "Sort for scope"
+msgstr ""
+
+#: lazarusidestrconsts.lissorting
+msgid "Sorting"
 msgstr ""
 
 #: lazarusidestrconsts.lissortselascending
@@ -18111,6 +18120,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisxmlparsererrorinfileerror
 msgid "XML parser error in file %s%sError: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisyes
+msgid "Yes"
 msgstr ""
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed

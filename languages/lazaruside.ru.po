@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-07-15 19:39+0300\n"
+"PO-Revision-Date: 2015-08-08 15:03+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -2066,10 +2066,6 @@ msgstr "Неактивная директива $IFDEF"
 msgid "Included mixed state $IFDEF node"
 msgstr "Директива $IFDEF подключаемого условно активного кода"
 
-#: lazarusidestrconsts.dlgignoreverb
-msgid "Ignore"
-msgstr "Пропустить"
-
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "Включить системные переменные"
@@ -3851,6 +3847,10 @@ msgstr "Новый файл"
 msgid "No package found for dependency \"%s\".%sPlease choose an existing package."
 msgstr "Не найдено пакета для зависимости \"%s\".%sВыберите существующий пакет."
 
+#: lazarusidestrconsts.lisa2ppackageorproject
+msgid "Package/Project"
+msgstr "Пакет/проект"
+
 #: lazarusidestrconsts.lisa2ppagenametoolong
 msgid "Page Name too long"
 msgstr "Имя вкладки слишком длинное"
@@ -3978,6 +3978,11 @@ msgstr "Имя модуля недопустимо"
 #: lazarusidestrconsts.lisabandonchanges
 msgid "Abandon changes?"
 msgstr "Отбросить изменения?"
+
+#: lazarusidestrconsts.lisabort
+msgctxt "lazarusidestrconsts.lisabort"
+msgid "Abort"
+msgstr "Прервать"
 
 #: lazarusidestrconsts.lisabortall
 msgid "Abort all"
@@ -8075,6 +8080,11 @@ msgctxt "lazarusidestrconsts.lisdlgimport"
 msgid "Import ..."
 msgstr "Импортировать ..."
 
+#: lazarusidestrconsts.lisdlgmore
+msgctxt "lazarusidestrconsts.lisdlgmore"
+msgid "More ..."
+msgstr "Прочие ..."
+
 #: lazarusidestrconsts.lisdlgopen
 msgctxt "lazarusidestrconsts.lisdlgopen"
 msgid "Open ..."
@@ -9588,14 +9598,12 @@ msgctxt "lazarusidestrconsts.lisid"
 msgid "ID"
 msgstr "Идентификатор"
 
-#: lazarusidestrconsts.lisidcadd
-msgctxt "lazarusidestrconsts.lisidcadd"
-msgid "Add"
+#: lazarusidestrconsts.lisidcaddition
+msgid "Addition"
 msgstr "Добавление"
 
-#: lazarusidestrconsts.lisidcopen
-msgctxt "lazarusidestrconsts.lisidcopen"
-msgid "Open"
+#: lazarusidestrconsts.lisidcopening
+msgid "Opening"
 msgstr "Открытие"
 
 #: lazarusidestrconsts.liside
@@ -9729,6 +9737,11 @@ msgstr "Если изменились только сведения о сеан�
 #: lazarusidestrconsts.lisifyouwanttousetwodifferentlazarusversionsyoumustst
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr "Если вы хотите использовать два экземпляра Lazarus разных версий, второй экземпляр Lazarus следует запускать с параметром командной строки primary-config-path или pcp.%sНапример:"
+
+#: lazarusidestrconsts.lisignore
+msgctxt "lazarusidestrconsts.lisignore"
+msgid "Ignore"
+msgstr "Пропустить"
 
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
@@ -12534,10 +12547,6 @@ msgstr "&Изменить"
 msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Подробнее"
-
-#: lazarusidestrconsts.lismore2
-msgid "More ..."
-msgstr "Прочие ..."
 
 #: lazarusidestrconsts.lismoresub
 msgctxt "lazarusidestrconsts.lismoresub"
@@ -15925,13 +15934,13 @@ msgstr "Совпадения"
 msgid "Sorry, this type is not yet implemented"
 msgstr "Извините, этот тип ещё не реализован"
 
-#: lazarusidestrconsts.lissort
-msgid "Sort"
-msgstr "Сортировка"
-
 #: lazarusidestrconsts.lissortforscope
 msgid "Sort for scope"
 msgstr "Сортировать по области действия"
+
+#: lazarusidestrconsts.lissorting
+msgid "Sorting"
+msgstr "Сортировка"
 
 #: lazarusidestrconsts.lissortselascending
 msgid "Ascending"
@@ -16422,7 +16431,7 @@ msgstr "Файл \"%s\" не найден.%sВы хотите найти его 
 
 #: lazarusidestrconsts.listhefilewasnotfoundignorewillgoonloadingtheproject
 msgid "The file \"%s\" was not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
-msgstr "Файл \"%s\" не найден.%sПропуск - продолжить загрузку проекта,%sПрервать - остановить загрузку."
+msgstr "Файл \"%s\" не найден.%sПропустить- продолжить загрузку проекта,%sПрервать - остановить загрузку."
 
 #: lazarusidestrconsts.listhefollowingmethodsusedbyarenotinthesourceremoveth
 msgid "The following methods used by %s are not in the source%s%s%s%s%sRemove the dangling references?"
@@ -18034,6 +18043,10 @@ msgstr "Ошибка XML"
 #: lazarusidestrconsts.lisxmlparsererrorinfileerror
 msgid "XML parser error in file %s%sError: %s"
 msgstr "Ошибка анализа XML в файле %s%sОшибка: %s"
+
+#: lazarusidestrconsts.lisyes
+msgid "Yes"
+msgstr "Да"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"

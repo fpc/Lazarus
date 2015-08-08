@@ -2164,10 +2164,6 @@ msgstr ""
 msgid "Included mixed state $IFDEF node"
 msgstr ""
 
-#: lazarusidestrconsts.dlgignoreverb
-msgid "Ignore"
-msgstr "Ignoruj"
-
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "Dołącz zmienne systemowe"
@@ -4077,6 +4073,10 @@ msgstr "Nowy plik"
 msgid "No package found for dependency \"%s\".%sPlease choose an existing package."
 msgstr "Nie znalazłem pakietu dla zależności %s%s%s.%sWybierz _istniejący_ pakiet."
 
+#: lazarusidestrconsts.lisa2ppackageorproject
+msgid "Package/Project"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2ppagenametoolong
 msgid "Page Name too long"
 msgstr "Nazwa zakładki jest zbyt długa"
@@ -4233,6 +4233,12 @@ msgstr "Nieprawidłowa nazwa modułu"
 #: lazarusidestrconsts.lisabandonchanges
 msgid "Abandon changes?"
 msgstr "Porzucić zmiany?"
+
+#: lazarusidestrconsts.lisabort
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisabort"
+msgid "Abort"
+msgstr "Przerwij"
 
 #: lazarusidestrconsts.lisabortall
 msgid "Abort all"
@@ -8427,6 +8433,11 @@ msgctxt "lazarusidestrconsts.lisdlgimport"
 msgid "Import ..."
 msgstr "Importuj ..."
 
+#: lazarusidestrconsts.lisdlgmore
+msgctxt "lazarusidestrconsts.lisdlgmore"
+msgid "More ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdlgopen
 msgctxt "lazarusidestrconsts.lisdlgopen"
 msgid "Open ..."
@@ -9951,17 +9962,13 @@ msgctxt "lazarusidestrconsts.lisid"
 msgid "ID"
 msgstr ""
 
-#: lazarusidestrconsts.lisidcadd
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisidcadd"
-msgid "Add"
-msgstr "Dodaj"
+#: lazarusidestrconsts.lisidcaddition
+msgid "Addition"
+msgstr ""
 
-#: lazarusidestrconsts.lisidcopen
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisidcopen"
-msgid "Open"
-msgstr "Otwórz"
+#: lazarusidestrconsts.lisidcopening
+msgid "Opening"
+msgstr ""
 
 #: lazarusidestrconsts.liside
 msgid "IDE"
@@ -10094,6 +10101,12 @@ msgstr ""
 #: lazarusidestrconsts.lisifyouwanttousetwodifferentlazarusversionsyoumustst
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr ""
+
+#: lazarusidestrconsts.lisignore
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisignore"
+msgid "Ignore"
+msgstr "Ignoruj"
 
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
@@ -13102,10 +13115,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Więcej"
-
-#: lazarusidestrconsts.lismore2
-msgid "More ..."
-msgstr ""
 
 #: lazarusidestrconsts.lismoresub
 #, fuzzy
@@ -16693,12 +16702,12 @@ msgstr ""
 msgid "Sorry, this type is not yet implemented"
 msgstr "Przykro mi, ten typ jeszcze nie jest obsługiwany"
 
-#: lazarusidestrconsts.lissort
-msgid "Sort"
-msgstr ""
-
 #: lazarusidestrconsts.lissortforscope
 msgid "Sort for scope"
+msgstr ""
+
+#: lazarusidestrconsts.lissorting
+msgid "Sorting"
 msgstr ""
 
 #: lazarusidestrconsts.lissortselascending
@@ -18885,6 +18894,10 @@ msgstr "Błąd XML"
 
 #: lazarusidestrconsts.lisxmlparsererrorinfileerror
 msgid "XML parser error in file %s%sError: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisyes
+msgid "Yes"
 msgstr ""
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed

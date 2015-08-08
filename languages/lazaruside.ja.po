@@ -2090,10 +2090,6 @@ msgstr "アクティブでない$IFDEFコード"
 msgid "Included mixed state $IFDEF node"
 msgstr "インクルードされた混合状態の$IFDEFコード"
 
-#: lazarusidestrconsts.dlgignoreverb
-msgid "Ignore"
-msgstr "無視"
-
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "システム変数を含む"
@@ -3895,6 +3891,10 @@ msgstr "新規のファイル"
 msgid "No package found for dependency \"%s\".%sPlease choose an existing package."
 msgstr "依存関係%s%s%sにパッケージが見つかりませんでした。%s存在しているパッケージを一つ選択してください。"
 
+#: lazarusidestrconsts.lisa2ppackageorproject
+msgid "Package/Project"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2ppagenametoolong
 msgid "Page Name too long"
 msgstr "ページ名が長すぎます"
@@ -4058,6 +4058,12 @@ msgstr "ユニット名は無効です"
 #: lazarusidestrconsts.lisabandonchanges
 msgid "Abandon changes?"
 msgstr "変更を破棄しますか？"
+
+#: lazarusidestrconsts.lisabort
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisabort"
+msgid "Abort"
+msgstr "中止"
 
 #: lazarusidestrconsts.lisabortall
 msgid "Abort all"
@@ -8241,6 +8247,11 @@ msgctxt "lazarusidestrconsts.lisdlgimport"
 msgid "Import ..."
 msgstr "インポート ..."
 
+#: lazarusidestrconsts.lisdlgmore
+msgctxt "lazarusidestrconsts.lisdlgmore"
+msgid "More ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdlgopen
 msgctxt "lazarusidestrconsts.lisdlgopen"
 msgid "Open ..."
@@ -9773,17 +9784,13 @@ msgctxt "lazarusidestrconsts.lisid"
 msgid "ID"
 msgstr "ID"
 
-#: lazarusidestrconsts.lisidcadd
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisidcadd"
-msgid "Add"
-msgstr "追加"
+#: lazarusidestrconsts.lisidcaddition
+msgid "Addition"
+msgstr ""
 
-#: lazarusidestrconsts.lisidcopen
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisidcopen"
-msgid "Open"
-msgstr "開く"
+#: lazarusidestrconsts.lisidcopening
+msgid "Opening"
+msgstr ""
 
 #: lazarusidestrconsts.liside
 msgid "IDE"
@@ -9920,6 +9927,12 @@ msgstr ""
 #| msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%s%sFor example:%s"
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr "Lazarus の異なる 2 つのバージョンを共に使用されたいのであれば、2 つ目の Lazarus を primary-config-path あるいは pcp のコマンドライン引数で開始しなければなりません。%s%s例：%s"
+
+#: lazarusidestrconsts.lisignore
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisignore"
+msgid "Ignore"
+msgstr "無視"
 
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
@@ -12710,10 +12723,6 @@ msgstr "修正(&M)"
 msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "その他"
-
-#: lazarusidestrconsts.lismore2
-msgid "More ..."
-msgstr ""
 
 #: lazarusidestrconsts.lismoresub
 msgctxt "lazarusidestrconsts.lismoresub"
@@ -16244,12 +16253,12 @@ msgstr "一致"
 msgid "Sorry, this type is not yet implemented"
 msgstr "すみません、この型はまだ実装されていません"
 
-#: lazarusidestrconsts.lissort
-msgid "Sort"
-msgstr ""
-
 #: lazarusidestrconsts.lissortforscope
 msgid "Sort for scope"
+msgstr ""
+
+#: lazarusidestrconsts.lissorting
+msgid "Sorting"
 msgstr ""
 
 #: lazarusidestrconsts.lissortselascending
@@ -18521,6 +18530,10 @@ msgstr "XMLエラー"
 #: lazarusidestrconsts.lisxmlparsererrorinfileerror
 msgid "XML parser error in file %s%sError: %s"
 msgstr "ファイル%s%sでXMLパーサエラー: %s"
+
+#: lazarusidestrconsts.lisyes
+msgid "Yes"
+msgstr ""
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"

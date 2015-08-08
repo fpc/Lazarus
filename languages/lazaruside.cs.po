@@ -2089,10 +2089,6 @@ msgstr "Neaktivní $IFDEF uzel"
 msgid "Included mixed state $IFDEF node"
 msgstr "Zahrnut $IFDEF uzel smíšerného stavu"
 
-#: lazarusidestrconsts.dlgignoreverb
-msgid "Ignore"
-msgstr "Ignorovat"
-
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "Zahrnout systémové proměnné"
@@ -3890,6 +3886,10 @@ msgstr "Nový soubor"
 msgid "No package found for dependency \"%s\".%sPlease choose an existing package."
 msgstr "Pro závislost \"%s\" nebyl nalezen balíček.%sProsím vyberte existující balíček."
 
+#: lazarusidestrconsts.lisa2ppackageorproject
+msgid "Package/Project"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2ppagenametoolong
 msgid "Page Name too long"
 msgstr "Jméno stránky je příliš dlouhé"
@@ -4023,6 +4023,12 @@ msgstr "Neplatné jméno jednotky"
 #: lazarusidestrconsts.lisabandonchanges
 msgid "Abandon changes?"
 msgstr "Zrušit změny?"
+
+#: lazarusidestrconsts.lisabort
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisabort"
+msgid "Abort"
+msgstr "Přerušit"
 
 #: lazarusidestrconsts.lisabortall
 msgid "Abort all"
@@ -8155,6 +8161,11 @@ msgctxt "lazarusidestrconsts.lisdlgimport"
 msgid "Import ..."
 msgstr "Importovat ..."
 
+#: lazarusidestrconsts.lisdlgmore
+msgctxt "lazarusidestrconsts.lisdlgmore"
+msgid "More ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdlgopen
 msgctxt "lazarusidestrconsts.lisdlgopen"
 msgid "Open ..."
@@ -9684,17 +9695,13 @@ msgctxt "lazarusidestrconsts.lisid"
 msgid "ID"
 msgstr "ID"
 
-#: lazarusidestrconsts.lisidcadd
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisidcadd"
-msgid "Add"
-msgstr "Přidat"
+#: lazarusidestrconsts.lisidcaddition
+msgid "Addition"
+msgstr ""
 
-#: lazarusidestrconsts.lisidcopen
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisidcopen"
-msgid "Open"
-msgstr "Otevřít"
+#: lazarusidestrconsts.lisidcopening
+msgid "Opening"
+msgstr ""
 
 #: lazarusidestrconsts.liside
 msgid "IDE"
@@ -9829,6 +9836,12 @@ msgstr ""
 #, fuzzy
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr "Pokud chcete používat dvě rozdílné verze Lazarusu, musíte spustit druhou verzi s parametrem příkazové řádky primary-config-path nebo pcp. %sNapříklad:"
+
+#: lazarusidestrconsts.lisignore
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisignore"
+msgid "Ignore"
+msgstr "Ignorovat"
 
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
@@ -12626,10 +12639,6 @@ msgstr "&Pozměnit"
 msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Více"
-
-#: lazarusidestrconsts.lismore2
-msgid "More ..."
-msgstr ""
 
 #: lazarusidestrconsts.lismoresub
 msgctxt "lazarusidestrconsts.lismoresub"
@@ -16066,12 +16075,12 @@ msgstr "Odpovídá"
 msgid "Sorry, this type is not yet implemented"
 msgstr "Omlouváme se, tento typ ještě nebyl implementován."
 
-#: lazarusidestrconsts.lissort
-msgid "Sort"
-msgstr ""
-
 #: lazarusidestrconsts.lissortforscope
 msgid "Sort for scope"
+msgstr ""
+
+#: lazarusidestrconsts.lissorting
+msgid "Sorting"
 msgstr ""
 
 #: lazarusidestrconsts.lissortselascending
@@ -18217,6 +18226,10 @@ msgstr "Chyba XML"
 #: lazarusidestrconsts.lisxmlparsererrorinfileerror
 msgid "XML parser error in file %s%sError: %s"
 msgstr "Chyba XML analyzátoru v souboru %s%sChyba: %s"
+
+#: lazarusidestrconsts.lisyes
+msgid "Yes"
+msgstr ""
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"
