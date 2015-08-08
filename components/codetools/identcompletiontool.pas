@@ -48,7 +48,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, typinfo, FileProcs, LazFileUtils, LazUtilities,
+  Classes, SysUtils, typinfo, FileProcs, LazFileUtils,
   CodeTree, CodeAtom, CodeCache, CustomCodeTool, CodeToolsStrConsts,
   KeywordFuncLists, BasicCodeTools, LinkScanner, AvgLvlTree, AVL_Tree,
   SourceChanger, FindDeclarationTool, PascalReaderTool, PascalParserTool,
@@ -869,7 +869,7 @@ begin
   if FCreatedIdentifiers<>nil then begin
     inc(Result,MemSizeFPList(FCreatedIdentifiers));
     for i:=0 to FCreatedIdentifiers.Count-1 do
-      inc(Result,GetIdentLen(PChar(FCreatedIdentifiers[i])));
+      {%H-}inc(Result,GetIdentLen(PChar(FCreatedIdentifiers[i])));
   end;
   if FFilteredList<>nil then begin
     inc(Result,MemSizeFPList(FFilteredList));
@@ -880,7 +880,7 @@ begin
     inc(Result,FHistory.CalcMemSize);
   end;
   if FItems<>nil then begin
-    inc(Result,FItems.Count*SizeOf(TAvgLvlTreeNode));
+    {%H-}inc(Result,FItems.Count*SizeOf(TAvgLvlTreeNode));
     AvgNode:=FItems.FindLowest;
     while AvgNode<>nil do begin
       li:=TIdentifierListItem(AvgNode.Data);
@@ -889,7 +889,7 @@ begin
     end;
   end;
   if FIdentView<>nil then begin
-    inc(Result,FIdentView.Count*SizeOf(TAVLTreeNode));
+    {%H-}inc(Result,FIdentView.Count*SizeOf(TAVLTreeNode));
     Node:=FIdentView.FindLowest;
     while Node<>nil do begin
       hli:=TIdentHistListItem(Node.Data);
@@ -3965,7 +3965,7 @@ var
 begin
   Result:=PtrUInt(InstanceSize);
   if FItems<>nil then begin
-    inc(Result,FItems.Count*SizeOf(TAVLTreeNode));
+    {%H-}inc(Result,FItems.Count*SizeOf(TAVLTreeNode));
     Node:=FItems.FindLowest;
     while Node<>nil do begin
       Item:=TIdentHistListItem(Node.Data);
