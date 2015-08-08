@@ -23,7 +23,8 @@ program iconvtable;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, Unix, LazUTF8, FileUtil, LazUTF8Classes;
+  Classes, SysUtils, Unix,
+  LazFileUtils, LazUTF8, LazUTF8Classes;
 
 var
   Table: array[0..255] of shortstring;

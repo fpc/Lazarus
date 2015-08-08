@@ -387,7 +387,7 @@ function UTF8ToUTF16(const S: AnsiString): UTF16String; inline; deprecated 'Use 
 function UTF16ToUTF8(const S: UTF16String): AnsiString; inline; deprecated 'Use the function in LazUTF8 unit';
 
 // locale
-procedure LCLGetLanguageIDs(var Lang, FallbackLang: String); inline; deprecated 'Use the function in LazUTF8 unit';
+procedure LCLGetLanguageIDs(var Lang, FallbackLang: String); inline; deprecated 'Use function LazGetLanguageIDs in LazUTF8 unit';
 {$ENDIF DisableWrapperFunctions}
 
 // identifier

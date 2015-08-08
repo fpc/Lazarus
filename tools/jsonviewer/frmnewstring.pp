@@ -24,8 +24,7 @@ unit frmnewstring;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ButtonPanel;
+  Forms, StdCtrls, ButtonPanel;
 
 type
 
@@ -45,9 +44,7 @@ type
     procedure SetAllowName(const AValue: Boolean);
     procedure SetMemberName(const AValue: String);
     procedure SetValue(const AValue: String);
-    { private declarations }
   public
-    { public declarations }
     Property AllowName:  Boolean Read GetAllowName Write SetAllowName;
     Property MemberName : String Read GetMemberName Write SetMemberName;
     Property Value : String Read GetValue Write SetValue;

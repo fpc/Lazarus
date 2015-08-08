@@ -25,8 +25,8 @@ unit frmmain;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ActnList,
-  Menus, ComCtrls, IniPropStorage, fpJSON, JSONParser, PropertyStorage, DefaultTranslator;
+  Classes, SysUtils, fpJSON, JSONParser,
+  Forms, Controls, Dialogs, ActnList, Menus, ComCtrls, IniPropStorage, PropertyStorage;
 
 type
 
@@ -180,9 +180,8 @@ type
     procedure SetCaption;
     procedure ShowJSONData(AParent: TTreeNode; Data: TJSONData);
     procedure ShowJSONDocument;
-    { private declarations }
   public
-    { public declarations }
+
   end; 
 
 var
@@ -576,7 +575,6 @@ procedure TMainForm.AddNewValue(AType : TJSONType);
 Var
   D : TJSONData;
   N : String;
-  I : Integer;
 
 begin
   Case AType of

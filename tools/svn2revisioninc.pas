@@ -57,8 +57,9 @@ program Svn2RevisionInc;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, CustApp, SysUtils, Process, UTF8Process, LazFileUtils, LazUTF8,
-  LazLogger, FileUtil, LazUTF8Classes, Dom, XmlRead, GetOpts;
+  Classes, CustApp, SysUtils, Process, Dom, XmlRead,
+  // LazUtils
+  FileUtil, LazFileUtils, LazUTF8, LazUTF8Classes, UTF8Process, LazLogger;
 
 type
 

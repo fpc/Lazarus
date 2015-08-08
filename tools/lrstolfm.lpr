@@ -35,7 +35,7 @@ program lrstolfm;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, LResources, FileUtil;
+  Classes, SysUtils, LResources;
   
 procedure FindResourceInLRS(List: TStrings; var ResourceName: string; var Index: Integer; out ResType: String);
 const

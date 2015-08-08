@@ -24,8 +24,8 @@ unit frmmain;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  Menus, ActnList, ComCtrls, ExtCtrls, simpleipc, dbugmsg, clipbrd;
+  Classes, SysUtils, IniFiles, simpleipc, dbugmsg,
+  Forms, Controls, Dialogs, Menus, ActnList, ComCtrls, ExtCtrls, Clipbrd;
 
 type
 
@@ -99,7 +99,6 @@ type
     procedure MIToolbarClick(Sender: TObject);
     procedure MViewClick(Sender: TObject);
   private
-    { private declarations }
     FPaused : Boolean;
     FSrv : TSimpleIPCServer;
     FShowOnStartUp,
@@ -132,7 +131,6 @@ type
     procedure StartServer;
     procedure StopServer;
   public
-    { public declarations }
     Property StayOnTop : Boolean Read GetStayOnTop Write SetStayOnTop;
     Property ShowToolbar : Boolean Read GetShowToolbar Write SetShowToolBar;
   end; 
@@ -144,7 +142,7 @@ implementation
 
 {$R *.lfm}
 
-uses inifiles,frmoptions;
+uses frmoptions;
 
 { TMainForm }
 

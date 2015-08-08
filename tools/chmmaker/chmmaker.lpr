@@ -7,8 +7,8 @@ uses
   cthreads,
   {$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, LazFileUtils
-  { add your units here }, unit1, CHMSiteMapEditor, lhelpcontrolpkg;
+  Forms, LazFileUtils,
+  unit1, CHMSiteMapEditor, lhelpcontrolpkg;
 
 var
   i: Integer;

@@ -24,8 +24,7 @@ unit frmNewBoolean;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel,
-  StdCtrls;
+  Forms, ButtonPanel, StdCtrls;
 
 type
 
@@ -44,9 +43,7 @@ type
     procedure SetAllowName(const AValue: Boolean);
     procedure SetMemberName(const AValue: String);
     procedure SetValue(const AValue: Boolean);
-    { private declarations }
   public
-    { public declarations }
     Property AllowName:  Boolean Read GetAllowName Write SetAllowName;
     Property MemberName : String Read GetMemberName Write SetMemberName;
     Property Value : Boolean Read GetValue Write SetValue;

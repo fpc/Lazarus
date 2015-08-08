@@ -37,7 +37,7 @@ program UpdatePoFiles;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, FileUtil, Translations;
+  Classes, SysUtils, Translations, LazFileUtils, LazUTF8;
   
 var
   Files: TStringList;

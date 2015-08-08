@@ -25,8 +25,9 @@ unit dicteditor;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, fpdatadict, Controls, ComCtrls, StdCtrls,
-  ExtCtrls, Graphics, ImgList, RTTIGrids, LResources, menus, dialogs;
+  Classes, SysUtils, fpdatadict,
+  Controls, ComCtrls, ExtCtrls, Graphics, Menus, Dialogs, RTTIGrids,
+  LazUTF8;
 
 Type
   TEditObjectType = (eotUnknown,eotDictionary,

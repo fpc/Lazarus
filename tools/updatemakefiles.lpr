@@ -33,8 +33,7 @@ program updatemakefiles;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, sysutils, LazFileUtils, Laz2_XMLCfg, FileProcs, DefineTemplates,
-  UTF8Process;
+  Classes, sysutils, FileProcs, DefineTemplates, LazFileUtils, Laz2_XMLCfg;
 
 var
   LazarusDir: String;

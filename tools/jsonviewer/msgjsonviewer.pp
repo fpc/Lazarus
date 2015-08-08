@@ -4,9 +4,6 @@ unit msgjsonviewer;
 
 interface
 
-uses
-  Classes, SysUtils;
-
 Resourcestring
 
   SCaption = 'JSON Viewer';

@@ -7,9 +7,8 @@ uses
   {$IFDEF UNIX}{$IFDEF UseCThreads}
   cthreads,
   {$ENDIF}{$ENDIF}
-  Classes, SysUtils, Math, interfaces, LCLType, Graphics, GraphType, IntfGraphics,
-  InterfaceBase
-  { you can add units after this };
+  Classes, SysUtils,
+  interfaces, LCLType, Graphics, GraphType, IntfGraphics, InterfaceBase;
 
 // portions of this file has been copied from imglist.inc
 

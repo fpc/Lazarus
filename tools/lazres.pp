@@ -36,9 +36,9 @@ program LazRes;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, FileUtil, LazUTF8Classes, LCLProc, LResources,
-  resource, reswriter, bitmapresource, groupresource, groupiconresource,
-  groupcursorresource;
+  Classes, SysUtils, LCLProc, LResources, resource, reswriter,
+  bitmapresource, groupresource, groupiconresource, groupcursorresource,
+  LazFileUtils, LazUTF8, LazUTF8Classes;
 
 type
   TOutputFileType = (ftLrs, ftRc, ftRes);

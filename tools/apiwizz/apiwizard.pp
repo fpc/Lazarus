@@ -31,8 +31,8 @@ unit APIWizard;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazUTF8Classes, LResources, Forms, Controls,
-  Graphics, Dialogs, StdCtrls, Buttons, ExtCtrls, LCLproc, ComCtrls;
+  Classes, SysUtils, Forms, Controls, Dialogs, StdCtrls, ExtCtrls, LCLproc, ComCtrls,
+  LazFileUtils, LazUTF8, LazUTF8Classes;
 
 type
 

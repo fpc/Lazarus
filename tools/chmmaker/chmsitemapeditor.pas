@@ -5,8 +5,8 @@ unit CHMSiteMapEditor;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, chmsitemap,
-  ComCtrls, ExtCtrls, StdCtrls, Buttons;
+  Classes, SysUtils, chmsitemap,
+  Forms, Controls, Graphics, Dialogs, ComCtrls, ExtCtrls, StdCtrls;
 
 type
 
@@ -48,12 +48,10 @@ type
     procedure SubItemBtnClick(Sender: TObject);
     procedure URLEditChange(Sender: TObject);
   private
-    { private declarations }
     FStream: TStream;
     FSiteMapType: TSiteMapType;
     procedure InitControls;
   public
-    { public declarations }
     procedure LoadFromStream(AStream: TStream);
     function Execute(AStream: TStream; SiteType: TSiteMapType; AvailableLinks: TStrings): Boolean;
   end; 

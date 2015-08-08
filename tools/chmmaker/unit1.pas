@@ -5,9 +5,9 @@ unit unit1;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, ComCtrls, chmsitemap, SynEdit, LazFileUtils, LazLogger, Menus,
-  ExtCtrls, EditBtn, LCLProc, chmfilewriter, types;
+  Classes, SysUtils, types, chmsitemap, chmfilewriter,
+  Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls, Menus, ExtCtrls, EditBtn,
+  LazFileUtils;
 
 type
 
