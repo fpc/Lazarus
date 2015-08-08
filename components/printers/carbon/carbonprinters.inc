@@ -591,6 +591,7 @@ begin
       //
       with FDefaultResolution do
       begin
+        ResCount := 0;
         Valid := (PMPrinterGetPrinterResolutionCount(P, ResCount)=noErr) and (ResCount>1);
         if Valid then
           Valid := GetDefaultPPDResolution(P, HorzRes, VertRes);
