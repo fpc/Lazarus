@@ -1772,7 +1772,7 @@ end;
 
 procedure TSimpleWindowLayoutList.StoreWindowPositions;
 var
-  i, l: integer;
+  i: integer;
   xOldLayoutIndex: Integer;
 begin
   //store positions
