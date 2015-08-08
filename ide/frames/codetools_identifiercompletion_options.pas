@@ -70,12 +70,12 @@ end;
 procedure TCodetoolsIndentifierCompletionOptionsFrame.Setup(
   ADialog: TAbstractOptionsEditorDialog);
 begin
-  ICOpenDividerBevel.Caption:=lisOpen;
+  ICOpenDividerBevel.Caption:=lisIdCOpen;
   ICAutoStartAfterPointCheckBox.Caption:=lisAutomaticallyInvokeAfterPoint;
   ICShowHelpCheckBox.Caption:=lisShowHelp;
   ICShowHelpCheckBox.Hint:=lisBestViewedByInstallingAHTMLControlLikeTurbopowerip;
 
-  ICAddDividerBevel.Caption:=lisAdd;
+  ICAddDividerBevel.Caption:=lisIdCAdd;
   ICAddSemicolonCheckBox.Caption:=dlgAddSemicolon;
   ICAddAssignOperatorCheckBox.Caption:=dlgAddAssignmentOperator;
   ICAddDoCheckBox.Caption:=lisAddKeywordDo;
