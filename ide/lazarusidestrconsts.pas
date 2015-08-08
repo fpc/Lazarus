@@ -120,7 +120,7 @@ resourcestring
   lisRunButtonHint = 'Run';
   lisPause = 'Pause';
   lisStop = 'Stop';
-  lisSort = 'Sort';
+  lisSorting = 'Sorting';
   lisBuilding = 'Building';
   lisOptions = 'Options';
   lisLess = 'Less';
@@ -2095,7 +2095,7 @@ resourcestring
   dlgInsSpaceFront = 'Insert space in front of';
   dlgInsSpaceAfter = 'Insert space after';
   dlgWRDPreview = 'Preview';
-  lisIdCAdd = 'Add';
+  lisIdCAddition = 'Addition';
   dlgAddSemicolon = 'Add semicolon';
   dlgAddAssignmentOperator = 'Add assignment operator :=';
   lisAddKeywordDo = 'Add keyword "do"';
@@ -5444,7 +5444,7 @@ resourcestring
   lisClassesAndPropertiesExistValuesWereNotChecked = 'Classes and properties '
     +'exist. Values were not checked.';
   lisInsertPrintShortTag = 'Insert PrintShort tag';
-  lisIdCOpen = 'Open';
+  lisIdCOpening = 'Opening';
   lisAutomaticallyInvokeAfterPoint = 'Automatically invoke after point';
   lisAddParameterBrackets = 'Add parameter brackets';
   lisReplaceWholeIdentifier = 'Replace whole identifier';
