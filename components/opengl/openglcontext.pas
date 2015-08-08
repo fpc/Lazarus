@@ -40,6 +40,10 @@ unit OpenGLContext;
   {$DEFINE UseCarbonAGL}
   {$DEFINE OpenGLTargetDefined}
 {$ENDIF}
+{$IFDEF LCLCocoa}
+  {$DEFINE UseCarbonCGL}
+  {$DEFINE OpenGLTargetDefined}
+{$ENDIF}
 {$IFDEF LCLWin32}
   {$DEFINE UseWin32WGL}
   {$DEFINE OpenGLTargetDefined}
@@ -70,6 +74,10 @@ uses
 {$ENDIF}
 {$IFDEF UseCarbonAGL}
   GLCarbonAGLContext;
+  {$DEFINE HasRGBBits}
+{$ENDIF}
+{$IFDEF UseCocoaCGL}
+  GLCocoaCGLContext;
   {$DEFINE HasRGBBits}
 {$ENDIF}
 {$IFDEF UseWin32WGL}
