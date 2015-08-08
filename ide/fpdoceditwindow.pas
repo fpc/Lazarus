@@ -277,7 +277,6 @@ begin
   ShortLabel.Caption:=lisShort;
   LinkLabel.Caption:=lisLink;
   CreateButton.Caption := lisCodeHelpCreateButton;
-  CreateButton.Enabled:=false;
   OpenXMLButton.Caption:=lisOpenXML;
   OpenXMLButton.Enabled:=false;
   SaveButton.Caption := '';
@@ -875,8 +874,8 @@ begin
   try
     EnabledState := (Element<>nil) and (Element.ElementNode<>nil);
 
-    CreateButton.Enabled := (Element<>nil) and (Element.ElementNode=nil)
-                            and (Element.ElementName<>'');
+    //CreateButton.Enabled := (Element<>nil) and (Element.ElementNode=nil)
+    //                        and (Element.ElementName<>'');
 
     if EnabledState then
     begin
@@ -1168,7 +1167,7 @@ begin
       FOldVisualValues[i]:='';
 
     Modified := False;
-    CreateButton.Enabled:=false;
+    //CreateButton.Enabled:=false;
     OpenXMLButton.Enabled:=false;
   finally
     Exclude(FFlags,fpdefReading);
@@ -1614,7 +1613,12 @@ end;
 
 procedure TFPDocEditor.CreateButtonClick(Sender: TObject);
 begin
-  if (fChain=nil) or (fChain.Count=0) then exit;
+  if ((fChain=nil) or (fChain.Count=0))
+  or (TCodeHelpElement(fChain[0]).ElementName='') then begin
+    IDEMessageDialog('Invalid Declaration','Please place the editor caret on an identifier. If this is a new unit, please save the file first.',
+      mtError,[mbOK]);
+    exit;
+  end;
   CreateElement(fChain[0]);
 end;
 
