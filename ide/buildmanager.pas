@@ -41,7 +41,7 @@ uses
   ExprEval, BasicCodeTools, CodeToolManager, DefineTemplates, CodeCache,
   FileProcs, CodeToolsCfgScript,
   // LazUtils
-  LConvEncoding, FileUtil, LazFileUtils, LazUtilities, LazFileCache, LazUTF8,
+  LConvEncoding, FileUtil, LazFileUtils, LazFileCache, LazUTF8,
   Laz2_XMLCfg,
   // IDEIntf
   IDEOptionsIntf, ProjectIntf, MacroIntf, IDEDialogs, IDEExternToolIntf,
