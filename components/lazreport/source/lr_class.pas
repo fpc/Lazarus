@@ -8924,6 +8924,7 @@ begin
     if pageRgn<>0 then
       LCLIntf.DeleteObject(pageRgn);
     LCLIntf.SelectClipRGN(Canvas.Handle, oldRgn);
+    LCLIntf.DeleteObject(oldRgn);
   end;
 end;
 
