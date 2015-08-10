@@ -308,6 +308,8 @@ begin
   Result.FTransf := FTransf;
   Result.FValueMax := FValueMax;
   Result.FValueMin := FValueMin;
+  Result.FMinForMarks := FMinForMarks;
+  Result.FMaxForMarks := FMaxForMarks;
   Result.FZOffset := FZOffset;
 end;
 
