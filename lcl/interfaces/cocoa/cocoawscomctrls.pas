@@ -560,11 +560,18 @@ begin
   WriteLn('[TCocoaWSCustomListView.CreateHandle] AWinControl='+IntToStr(PtrInt(AWinControl)));
   {$ENDIF}
   lCocoaLV := TCocoaListView.alloc.lclInitWithCreateParams(AParams);
-  ns := GetNSRect(0, 0, AParams.Width, AParams.Height);
-  lTableLV := TCocoaTableListView.alloc.initWithFrame(ns);
   Result := TLCLIntfHandle(lCocoaLV);
   if Result <> 0 then
   begin
+    ns := GetNSRect(0, 0, AParams.Width, AParams.Height);
+    lTableLV := TCocoaTableListView.alloc.initWithFrame(ns);
+    if lTableLV = nil then
+    begin
+      lCocoaLV.dealloc;
+      Result := 0;
+      exit;
+    end;
+
     // Unintuitive things about NSTableView which caused a lot of headaches:
     // 1-> The column header appears only if the NSTableView is inside a NSScrollView
     // 2-> To get proper scrolling use NSScrollView.setDocumentView instead of addSubview
