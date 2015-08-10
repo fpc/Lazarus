@@ -104,7 +104,7 @@ type
   public
     constructor Create(const AColor: TColor; ASolid, AGlobal: Boolean); reintroduce;
     procedure SetColor(const AColor: TColor; ASolid: Boolean);
-    procedure GetRGBA(AROP2: Integer; out AR, AG, AB, AA: Single);
+    procedure GetRGBA(AROP2: Integer; out AR, AG, AB, AA: CGFloat);
     function CreateNSColor: NSColor;
 
     property Red: Byte read FR write FR;
@@ -146,13 +146,13 @@ type
 
 const
   // use the same pen shapes that are used for carbon
-  CocoaDashStyle: Array [0..1] of Single = (3, 1);
-  CocoaDotStyle: Array [0..1] of Single = (1, 1);
-  CocoaDashDotStyle: Array [0..3] of Single = (3, 1, 1, 1);
-  CocoaDashDotDotStyle: Array [0..5] of Single = (3, 1, 1, 1, 1, 1);
+  CocoaDashStyle: Array [0..1] of CGFloat = (3, 1);
+  CocoaDotStyle: Array [0..1] of CGFloat = (1, 1);
+  CocoaDashDotStyle: Array [0..3] of CGFloat = (3, 1, 1, 1);
+  CocoaDashDotDotStyle: Array [0..5] of CGFloat = (3, 1, 1, 1, 1, 1);
 
 type
-  TCocoaDashes = array of Float32;
+  TCocoaDashes = array of CGFloat;
 
   { TCocoaPen }
 
@@ -669,7 +669,7 @@ begin
   FA := ASolid;
 end;
 
-procedure TCocoaColorObject.GetRGBA(AROP2: Integer; out AR, AG, AB, AA: Single);
+procedure TCocoaColorObject.GetRGBA(AROP2: Integer; out AR, AG, AB, AA: CGFloat);
 var alpha:single;
 begin
   if FA then
@@ -2514,7 +2514,7 @@ procedure TCocoaPen.Apply(ADC: TCocoaContext; UseROP2: Boolean = True);
   end;
 
 var
-  AR, AG, AB, AA: Single;
+  AR, AG, AB, AA: CGFloat;
   AROP2: Integer;
   ADashes: TCocoaDashes;
 begin
@@ -2919,7 +2919,7 @@ end;
 
 procedure TCocoaBrush.Apply(ADC: TCocoaContext; UseROP2: Boolean = True);
 var
-  RGBA: array[0..3] of Single;
+  RGBA: array[0..3] of CGFloat;
   AROP2: Integer;
   APatternSpace: CGColorSpaceRef;
   BaseSpace: CGColorSpaceRef;
