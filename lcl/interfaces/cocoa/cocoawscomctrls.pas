@@ -29,6 +29,8 @@ type
     class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure Update(const AStatusBar: TStatusBar); override;
+    //
+    class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
   end;
 
   { TCocoaWSTabSheet }
@@ -258,6 +260,13 @@ end;
 class procedure TCocoaWSStatusBar.Update(const AStatusBar: TStatusBar);
 begin
 
+end;
+
+class procedure TCocoaWSStatusBar.GetPreferredSize(const AWinControl: TWinControl;
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
+begin
+  PreferredWidth := 0;
+  PreferredHeight := STATUSBAR_DEFAULT_HEIGHT;
 end;
 
 { TCocoaWSCustomPage }
