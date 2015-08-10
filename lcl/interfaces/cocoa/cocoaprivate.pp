@@ -3449,7 +3449,7 @@ var
   item    : NSMenuItem;
   ns      : NSString;
 begin
-  if attachedAppleMenuItems then Exit;
+  {if attachedAppleMenuItems then Exit;
   if hasSubmenu = nil then Exit;
 
   ns := NSStringUtf8('Quit');
@@ -3457,7 +3457,7 @@ begin
     objcselector('lclItemSelected:'), nil);
   Parent.insertItem_atIndex(item, itemArray.count);
 
-  attachedAppleMenuItems := True;
+  attachedAppleMenuItems := True;}
 end;
 
 { TCocoaProgressIndicator }
