@@ -431,25 +431,25 @@ begin
 
     // Some older docs say we should use setAppleMenu to obtain the Services/Hide/Quit items,
     // but its now private and in 10.10 it doesn't seam to do anything
-    {
     for i := 0 to ALCLMenu.Items.Count-1 do
     begin
       lCurItem := ALCLMenu.Items.Items[i];
       if not lCurItem.HandleAllocated or (lCurItem.Caption <> '') then Continue;
 
       lMenuObj := NSObject(lCurItem.Handle);
-      if lMenuObj.isKindOfClass_(NSMenuItem) and NSMenuItem(lMenuObj).hasSubmenu and
+      if lMenuObj.isKindOfClass_(TCocoaMenuItem) and NSMenuItem(lMenuObj).hasSubmenu and
         (NSMenuItem(lMenuObj).submenu <> nil) then
       begin
-        NSApp.setAppleMenu(NSMenuItem(lMenuObj).submenu);
-        Exit;
-      end
-      else if lMenuObj.isKindOfClass_(NSMenu) then
-      begin
-        NSApp.setAppleMenu(NSMenu(lMenuObj));
+        TCocoaMenuItem(lMenuObj).attachAppleMenuItems();
+        //NSApp.setAppleMenu(NSMenuItem(lMenuObj).submenu);
         Exit;
       end;
-    end;}
+      {else if lMenuObj.isKindOfClass_(NSMenu) then
+      begin
+        //NSApp.setAppleMenu(NSMenu(lMenuObj));
+        Exit;
+      end;}
+    end;
   end;
 end;
 

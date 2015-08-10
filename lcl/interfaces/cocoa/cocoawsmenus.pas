@@ -123,7 +123,6 @@ end;
 class function TCocoaWSMainMenu.CreateHandle(const AMenu: TMenu): HMENU;
 begin
   Result := HMENU(TCocoaMenu.alloc.initWithTitle(NSStringUtf8('')));
-  TCocoaMenu(Result).isMainMenu := True;
 end;
 
 { TCocoaWSMenuItem }

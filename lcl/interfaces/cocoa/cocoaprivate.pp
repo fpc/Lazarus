@@ -203,7 +203,6 @@ type
 
   TCocoaMenu = objcclass(NSMenu)
   public
-    isMainMenu: Boolean;
     procedure lclItemSelected(sender: id); message 'lclItemSelected:';
     function lclIsHandle: Boolean; override;
   end;
@@ -213,9 +212,11 @@ type
   TCocoaMenuItem = objcclass(NSMenuItem)
   public
     menuItemCallback: IMenuItemCallback;
+    attachedAppleMenuItems: Boolean;
     procedure lclItemSelected(sender: id); message 'lclItemSelected:';
     function lclGetCallback: IMenuItemCallback; override;
     function lclIsHandle: Boolean; override;
+    procedure attachAppleMenuItems(); message 'lclItemSelected';
   end;
 
   { TCocoaButton }
@@ -1349,8 +1350,8 @@ end;
 
 procedure TCocoaWindow.scrollWheel(event: NSEvent);
 begin
-if not Assigned(callback) or not callback.scrollWheel(event) then
-  inherited scrollWheel(event);
+  if not Assigned(callback) or not callback.scrollWheel(event) then
+    inherited scrollWheel(event);
 end;
 
 procedure TCocoaWindow.sendEvent(event: NSEvent);
@@ -3441,6 +3442,22 @@ end;
 function TCocoaMenuItem.lclGetCallback: IMenuItemCallback;
 begin
   result:=menuItemCallback;
+end;
+
+procedure TCocoaMenuItem.attachAppleMenuItems();
+var
+  item    : NSMenuItem;
+  ns      : NSString;
+begin
+  if attachedAppleMenuItems then Exit;
+  if hasSubmenu = nil then Exit;
+
+  ns := NSStringUtf8('Quit');
+  item := TCocoaMenuItem_Quit.alloc.initWithTitle_action_keyEquivalent(ns,
+    objcselector('lclItemSelected:'), nil);
+  Parent.insertItem_atIndex(item, itemArray.count);
+
+  attachedAppleMenuItems := True;
 end;
 
 { TCocoaProgressIndicator }
