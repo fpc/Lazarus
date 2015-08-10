@@ -8855,6 +8855,7 @@ var
   sx, sy: Double;
   v, IsPrinting: Boolean;
   h: THandle;
+  oldRgn, pageRgn: HRGN;
 begin
   IsPrinting := Printer.Printing and (Canvas is TPrinterCanvas);
   {$IFDEF DebugLR}
@@ -8862,52 +8863,67 @@ begin
           'CanvasPPI=%d',[ord(IsPrinting), Index, Canvas.ClassName,
           Canvas.Font.pixelsPerInch]);
   {$ENDIF}
+  pageRgn := 0;
+  oldRgn := CreateRectRgn(0, 0, 0, 0);
+  LCLIntf.GetClipRgn(Canvas.Handle, oldRgn);
+  try
 
-  DocMode := dmPrinting;
-  p := FPages[Index];
-  with p^ do
-  begin
-    if Visible then
+    DocMode := dmPrinting;
+    p := FPages[Index];
+    with p^ do
     begin
-      if Page = nil then
-        ObjectsToPage(Index);
-        
-      sx:=(DrawRect.Right-DrawRect.Left)/PrnInfo.PgW;
-      sy:=(DrawRect.Bottom-DrawRect.Top)/PrnInfo.PgH;
-      h:= Canvas.Handle;
-
-      for i := 0 to Page.Objects.Count - 1 do
+      if Visible then
       begin
-        t :=TfrView(Page.Objects[i]);
-        v := True;
+        if Page = nil then
+          ObjectsToPage(Index);
 
-        if not IsPrinting then
+        sx:=(DrawRect.Right-DrawRect.Left)/PrnInfo.PgW;
+        sy:=(DrawRect.Bottom-DrawRect.Top)/PrnInfo.PgH;
+        h:= Canvas.Handle;
+        pageRgn := CreateRectRgn(DrawRect.Left+1, DrawRect.Top+1, DrawRect.Right-1, DrawRect.Bottom-1);
+        LCLIntf.SelectClipRGN(Canvas.Handle, pageRgn);
+
+        for i := 0 to Page.Objects.Count - 1 do
         begin
-          with t, DrawRect do
+          t :=TfrView(Page.Objects[i]);
+          v := True;
+
+          if not IsPrinting then
           begin
-            v := RectVisible(h, Rect(Round(x * sx) + Left - 10,
-                                     Round(y * sy) + Top - 10,
-                                     Round((x + dx) * sx) + Left + 10,
-                                     Round((y + dy) * sy) + Top + 10));
+            with t, DrawRect do
+            begin
+              v := RectVisible(h, Rect(Round(x * sx) + Left - 10,
+                                       Round(y * sy) + Top - 10,
+                                       Round((x + dx) * sx) + Left + 10,
+                                       Round((y + dy) * sy) + Top + 10));
+            end;
+          end;
+
+          if v then
+          begin
+            t.ScaleX := sx;
+            t.ScaleY := sy;
+            t.OffsX := DrawRect.Left;
+            t.OffsY := DrawRect.Top;
+            t.IsPrinting := IsPrinting;
+            t.Draw(Canvas);
           end;
         end;
 
-        if v then
-        begin
-          t.ScaleX := sx;
-          t.ScaleY := sy;
-          t.OffsX := DrawRect.Left;
-          t.OffsY := DrawRect.Top;
-          t.IsPrinting := IsPrinting;
-          t.Draw(Canvas);
-        end;
+        LCLIntf.DeleteObject(pageRgn);
+        pageRgn := 0;
+
       end
-    end
-{    else
-    begin
-      Page.Free;
-      Page := nil;
-    end;}
+  {    else
+      begin
+        Page.Free;
+        Page := nil;
+      end;}
+    end;
+  finally
+    if pageRgn<>0 then
+      LCLIntf.DeleteObject(pageRgn);
+    LCLIntf.SelectClipRGN(Canvas.Handle, oldRgn);
   end;
 end;
 
