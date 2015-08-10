@@ -62,9 +62,8 @@ type
   { TCocoaWSMainMenu }
 
   TCocoaWSMainMenu = class(TWSMainMenu)
-  private
-  protected
-  public
+  published
+    class function CreateHandle(const AMenu: TMenu): HMENU; override;
   end;
 
   { TCocoaWSPopupMenu }
@@ -117,6 +116,14 @@ class function TCocoaWSMenu.CreateHandle(const AMenu: TMenu): HMENU;
 begin
   //WriteLn(':>[TCocoaWSMenu.CreateHandle]');
   Result := HMENU(TCocoaMenu.alloc.initWithTitle(NSStringUtf8('')));
+end;
+
+{ TCocoaWSMainMenu }
+
+class function TCocoaWSMainMenu.CreateHandle(const AMenu: TMenu): HMENU;
+begin
+  Result := HMENU(TCocoaMenu.alloc.initWithTitle(NSStringUtf8('')));
+  TCocoaMenu(Result).isMainMenu := True;
 end;
 
 { TCocoaWSMenuItem }

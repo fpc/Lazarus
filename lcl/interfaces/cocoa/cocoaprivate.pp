@@ -22,6 +22,7 @@ unit CocoaPrivate;
 {.$DEFINE COCOA_DEBUG_LISTVIEW}
 {.$DEFINE COCOA_SPIN_DEBUG}
 {.$DEFINE COCOA_SPINEDIT_INSIDE_CONTAINER}
+{.$DEFINE COCOA_SUPERVIEW_HEIGHT}
 
 interface
 
@@ -202,6 +203,7 @@ type
 
   TCocoaMenu = objcclass(NSMenu)
   public
+    isMainMenu: Boolean;
     procedure lclItemSelected(sender: id); message 'lclItemSelected:';
     function lclIsHandle: Boolean; override;
   end;
@@ -635,6 +637,7 @@ type
   public
     callback: ICommonCallback;
     LCLPage: TCustomPage;
+    LCLParent: TCustomTabControl;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     function lclFrame: TRect; override;
@@ -862,6 +865,8 @@ function GetNSViewSuperViewHeight(view: NSView): CGFloat;
 
 implementation
 
+uses CocoaWSComCtrls;
+
 {$I mackeycodes.inc}
 
 procedure SetViewDefaults(AView: NSView);
@@ -884,6 +889,9 @@ begin
     Result := TCocoaTabPageView(view.superview).tabview.contentRect.size.height
   else
     Result := view.superview.frame.size.height;
+  {$IFDEF COCOA_SUPERVIEW_HEIGHT}
+  WriteLn(Format('GetNSViewSuperViewHeight Result=%f', [Result]));
+  {$ENDIF}
 end;
 
 { TCocoaWindowContent }
@@ -2757,10 +2765,22 @@ end;
 function TCocoaTabPage.lclFrame: TRect;
 var
   svh: CGFloat;
+  lParent: TCocoaTabControl;
 begin
-  svh := tabView.frame.size.height;
-  NSToLCLRect(tabView.contentRect, svh, Result);
-  //WriteLn('[TCocoaTabPage.lclFrame] '+dbgs(Result)+' '+NSStringToString(Self.label_));
+  lParent := TCocoaWSCustomTabControl.GetCocoaTabControlHandle(LCLParent);
+  if lParent <> nil then
+  begin
+    svh := lParent.contentRect.size.height;
+    NSToLCLRect(lParent.contentRect, svh, Result);
+  end
+  else
+  begin
+    svh := tabView.frame.size.height;
+    NSToLCLRect(tabView.contentRect, svh, Result);
+  end;
+  {$IFDEF COCOA_DEBUG_TABCONTROL}
+  WriteLn('[TCocoaTabPage.lclFrame] '+dbgs(Result)+' '+NSStringToString(Self.label_));
+  {$ENDIF}
 end;
 
 function TCocoaTabPage.lclClientFrame: TRect;

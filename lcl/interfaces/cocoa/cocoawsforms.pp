@@ -285,15 +285,15 @@ begin
       if NSObject(ACustForm.Menu.Handle).isKindOfClass_(TCocoaMenuItem) then
         begin
         if TCocoaMenuItem(ACustForm.Menu.Handle).hasSubmenu then
-          CocoaWidgetSet.SetMainMenu(HMENU(TCocoaMenuItem(ACustForm.Menu.Handle).submenu))
+          CocoaWidgetSet.SetMainMenu(HMENU(TCocoaMenuItem(ACustForm.Menu.Handle).submenu), ACustForm.Menu)
         else
           debugln('Warning: Menu does not have a valid handle.');
         end
       else
-        CocoaWidgetSet.SetMainMenu(ACustForm.Menu.Handle);
+        CocoaWidgetSet.SetMainMenu(ACustForm.Menu.Handle, ACustForm.Menu);
       end
     else
-      CocoaWidgetSet.SetMainMenu(0);
+      CocoaWidgetSet.SetMainMenu(0, nil);
 
     LCLSendActivateMsg(Target, WA_ACTIVE, false);
     LCLSendSetFocusMsg(Target);
@@ -528,6 +528,7 @@ end;
 
 class procedure TCocoaWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
 begin
+ // modal is started in ShowHide with (fsModal in AForm.FormState)
 //  if ACustomForm.HandleAllocated then
 //    NSPanel(ACustomForm.Handle).setStyleMask(NSwindow(ACustomForm.Handle).styleMask or NSDocModalWindowMask);
 end;

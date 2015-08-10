@@ -36,7 +36,7 @@ uses
   CocoaProc,
   // LCL
   LCLStrConsts, LMessages, LCLMessageGlue, LCLProc, LCLIntf, LCLType,
-  Controls, Forms, Themes,
+  Controls, Forms, Themes, Menus,
   IntfGraphics, Graphics, CocoaWSFactory;
 
 type
@@ -58,6 +58,11 @@ type
     DataType: TCocoaClipboardDataType;
     constructor Create(AMimeType: string; ACocoaFormat: NSString; ADataType: TCocoaClipboardDataType);
   end;
+
+  {// private since 10.5, doesn't seam to do anything in 10.10
+  NSApplicationSetAppleMenu = objccategory external(NSApplication)
+    procedure setAppleMenu(AMenu: NSMenu); message 'setAppleMenu:';
+  end;}
 
   { TCocoaWidgetSet }
 
@@ -129,7 +134,7 @@ type
     procedure FreeStockItems;
     procedure FreeSysColorBrushes;
 
-    procedure SetMainMenu(const AMenu: HMENU);
+    procedure SetMainMenu(const AMenu: HMENU; const ALCLMenu: TMenu);
 
     {todo:}
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;

@@ -47,6 +47,8 @@ type
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
     class procedure SetProperties(const ACustomPage: TCustomPage; ACocoaControl: NSTabViewItem);
+    //
+    class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
   end;
 
   { TCocoaWSCustomTabControl }
@@ -54,6 +56,8 @@ type
   TCocoaWSCustomTabControl = class(TWSCustomTabControl)
   private
     class function LCLTabPosToNSTabStyle(AShowTabs: Boolean; ABorderWidth: Integer; ATabPos: TTabPosition): NSTabViewType;
+  public
+    class function  GetCocoaTabControlHandle(ATabControl: TCustomTabControl): TCocoaTabControl;
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 
@@ -330,6 +334,14 @@ begin
   ACocoaControl.setToolTip(NSStringUTF8(lHintStr));
 end;
 
+class procedure TCocoaWSCustomPage.SetBounds(const AWinControl: TWinControl;
+  const ALeft, ATop, AWidth, AHeight: Integer);
+begin
+  // Pages should be fixed into their PageControl owner,
+  // allowing the TCocoaWSWinControl.SetBounds function to operate here
+  // was causing bug 28489
+end;
+
 { TCocoaWSCustomTabControl }
 
 class function TCocoaWSCustomTabControl.LCLTabPosToNSTabStyle(AShowTabs: Boolean; ABorderWidth: Integer; ATabPos: TTabPosition): NSTabViewType;
@@ -353,6 +365,14 @@ begin
     else
       Result := NSNoTabsBezelBorder;
   end;
+end;
+
+class function TCocoaWSCustomTabControl.GetCocoaTabControlHandle(ATabControl: TCustomTabControl): TCocoaTabControl;
+begin
+  Result := nil;
+  if ATabControl = nil then Exit;
+  if not ATabControl.HandleAllocated then Exit;
+  Result := TCocoaTabControl(ATabControl.Handle);
 end;
 
 class function TCocoaWSCustomTabControl.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
@@ -387,6 +407,7 @@ begin
   AChild.HandleNeeded();
   if not Assigned(AChild) or not AChild.HandleAllocated then Exit;
   lTabPage := TCocoaWSCustomPage.GetCocoaTabPageFromHandle(AChild.Handle);
+  lTabPage.LCLParent := ATabControl;
 
   lTabControl.insertTabViewItem_atIndex(lTabPage, AIndex);
   {$IFDEF COCOA_DEBUG_TABCONTROL}

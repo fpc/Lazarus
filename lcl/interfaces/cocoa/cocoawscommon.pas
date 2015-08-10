@@ -1259,7 +1259,8 @@ begin
   if AWinControl.HandleAllocated then
   begin
     {$IFDEF COCOA_DEBUG_SETBOUNDS}
-    writeln('TCocoaWSWinControl.SetBounds: '+AWinControl.Name+'Bounds='+dbgs(Bounds(ALeft, ATop, AWidth, AHeight)));
+    writeln(Format('TCocoaWSWinControl.SetBounds: %s Bounds=%s',
+      [AWinControl.Name, dbgs(Bounds(ALeft, ATop, AWidth, AHeight))]));
     {$ENDIF}
     NSObject(AWinControl.Handle).lclSetFrame(Bounds(ALeft, ATop, AWidth, AHeight));
   end;
