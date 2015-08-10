@@ -417,6 +417,7 @@ var
 
     if not Assigned(win) then
     begin
+      pool.release;
       Result := 0;
       Exit;
     end;

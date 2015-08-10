@@ -1330,12 +1330,15 @@ begin
     winnr:=NSWindow.windowNumberAtPoint_belowWindowWithWindowNumber(p,0);
     windowbelowpoint:=NSApp.windowWithWindowNumber(winnr);
     if windowbelowpoint=window then
-      begin
+    begin
       Result:=RecurseSubviews(window.contentView, Point);
       if Result<>0 then
-      exit;
+      begin
+        pool.release;
+        exit;
       end;
     end;
+  end;
   pool.release;
 end;
 
