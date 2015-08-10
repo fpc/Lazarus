@@ -43,7 +43,7 @@ type
     procedure DrawCheckBoxSquare(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
     // TCDGroupBox
-    procedure DrawGroupBox(ADest: TFPCustomCanvas; ASize: TSize;
+    procedure DrawGroupBox(ADest: TFPCustomCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
     // ===================================
     // Common Controls Tab
@@ -195,7 +195,7 @@ begin
 end;
 
 procedure TCDDrawerWinCE.DrawGroupBox(ADest: TFPCustomCanvas;
-  ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
+  ADestPos: TPoint; ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
 var
   FCaptionMiddle: integer;
   lTextSize: TSize;
