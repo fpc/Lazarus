@@ -33,7 +33,7 @@ uses
   // Libs
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
   // LCL
-  LMessages, LCLMessageGlue, ExtCtrls, Graphics,
+  LMessages, LCLMessageGlue, ExtCtrls, Graphics, Forms,
   LCLType, LCLProc, Controls, ComCtrls, Spin, StdCtrls;
 
 const
@@ -216,7 +216,22 @@ type
     procedure lclItemSelected(sender: id); message 'lclItemSelected:';
     function lclGetCallback: IMenuItemCallback; override;
     function lclIsHandle: Boolean; override;
-    procedure attachAppleMenuItems(); message 'lclItemSelected';
+    procedure attachAppleMenuItems(); message 'attachAppleMenuItems';
+  end;
+
+  TCocoaMenuItem_HideApp = objcclass(NSMenuItem)
+  public
+    procedure lclItemSelected(sender: id); message 'lclItemSelected:';
+  end;
+
+  TCocoaMenuItem_HideOthers = objcclass(NSMenuItem)
+  public
+    procedure lclItemSelected(sender: id); message 'lclItemSelected:';
+  end;
+
+  TCocoaMenuItem_Quit = objcclass(NSMenuItem)
+  public
+    procedure lclItemSelected(sender: id); message 'lclItemSelected:';
   end;
 
   { TCocoaButton }
@@ -3447,17 +3462,48 @@ end;
 procedure TCocoaMenuItem.attachAppleMenuItems();
 var
   item    : NSMenuItem;
-  ns      : NSString;
+  ns, nsCharCode: NSString;
 begin
-  {if attachedAppleMenuItems then Exit;
-  if hasSubmenu = nil then Exit;
+  if attachedAppleMenuItems then Exit;
+  if not hasSubmenu() then Exit;
 
+  nsCharCode := NSStringUtf8('');
+  // Separator
+  submenu.insertItem_atIndex(NSMenuItem.separatorItem, submenu.itemArray.count);
+  // Hide App
+  ns := NSStringUtf8('Hide ' + Application.Title);
+  item := TCocoaMenuItem_HideApp.alloc.initWithTitle_action_keyEquivalent(ns,
+    objcselector('lclItemSelected:'), nsCharCode);
+  submenu.insertItem_atIndex(item, submenu.itemArray.count);
+  item.setTarget(item);
+  ns.release;
+  // Separator
+  submenu.insertItem_atIndex(NSMenuItem.separatorItem, submenu.itemArray.count);
+  // Quit
   ns := NSStringUtf8('Quit');
   item := TCocoaMenuItem_Quit.alloc.initWithTitle_action_keyEquivalent(ns,
-    objcselector('lclItemSelected:'), nil);
-  Parent.insertItem_atIndex(item, itemArray.count);
+    objcselector('lclItemSelected:'), nsCharCode);
+  submenu.insertItem_atIndex(item, submenu.itemArray.count);
+  item.setTarget(item);
+  ns.release;
+  // release mem
+  nsCharCode.release;
 
-  attachedAppleMenuItems := True;}
+  attachedAppleMenuItems := True;
+end;
+
+procedure TCocoaMenuItem_HideApp.lclItemSelected(sender: id);
+begin
+  Application.Minimize;
+end;
+
+procedure TCocoaMenuItem_HideOthers.lclItemSelected(sender: id);
+begin
+end;
+
+procedure TCocoaMenuItem_Quit.lclItemSelected(sender: id);
+begin
+  Application.Terminate;
 end;
 
 { TCocoaProgressIndicator }
