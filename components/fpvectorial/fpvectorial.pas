@@ -3167,7 +3167,7 @@ class procedure TvEntity.InitializeRenderInfo(out ARenderInfo: TvRenderInfo);
 begin
   ARenderInfo.EntityCanvasMinXY := Point(INVALID_RENDERINFO_CANVAS_XY, INVALID_RENDERINFO_CANVAS_XY);
   ARenderInfo.EntityCanvasMaxXY := Point(INVALID_RENDERINFO_CANVAS_XY, INVALID_RENDERINFO_CANVAS_XY);
-  ARenderInfo.BackgroundColor := colBlack;
+  //ARenderInfo.BackgroundColor := colBlack; Don't change this because otherwise we lose the value set by the page
   ARenderInfo.AdjustPenColorToBackground := True;
   ARenderInfo.Selected := False;
   ARenderInfo.ForceRenderBlock := False;
@@ -3499,6 +3499,7 @@ var
   {$ifdef USE_LCL_CANVAS}
   ALCLDest: TCanvas absolute ADest;
   {$endif}
+  lFPColor: TFPColor;
 begin
   if AFont.Size = 0 then AFont.Size := 10;
   ADest.Font.Size := Round(AmulX * AFont.Size);
@@ -3514,7 +3515,8 @@ begin
   {$ifdef USE_LCL_CANVAS}
   ALCLDest.Font.Orientation := Round(AFont.Orientation * 16);
   {$endif}
-  ADest.Font.FPColor := AdjustColorToBackground(AFont.Color, ARenderInfo);
+  lFPColor := AdjustColorToBackground(AFont.Color, ARenderInfo);
+  ADest.Font.FPColor := lFPColor;
 end;
 
 procedure TvEntityWithPenBrushAndFont.AssignFont(AFont: TvFont);
@@ -4397,7 +4399,9 @@ begin
     ADest.Font.FPColor := AdjustColorToBackground(Font.Color, ARenderInfo);
     lText := Value.Strings[i];
     if not Render_Use_NextText_X then
+    begin
       Render_NextText_X := CoordToCanvasX(X)+XAnchorAdjustment;
+    end;
     if ADoDraw then
       ADest.TextOut(Render_NextText_X, Round(LowerDim.Y), lText);
     //lText := lText + Format(' F=%d', [ADest.Font.Size]); // for debugging
