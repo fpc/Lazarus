@@ -23,6 +23,7 @@ unit fpvectorial;
 {.$define FPVECTORIAL_DEBUG_DIMENSIONS}
 {.$define FPVECTORIAL_TOCANVAS_DEBUG}
 {.$define FPVECTORIAL_DEBUG_BLOCKS}
+{$define FPVECTORIAL_AUTOFIT_DEBUG}
 
 interface
 
@@ -427,11 +428,12 @@ type
     // in CalculateBoundingBox always remember to treat correctly the case of ADest=nil!!!
     // This cased is utilized to guess the size of a document even before getting a canvas to draw at
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); virtual;
-    procedure CalculateSizeInCanvas(ADest: TFPCustomCanvas; out ALeft, ATop, AWidth, AHeight: Integer);
+    function CalculateSizeInCanvas(ADest: TFPCustomCanvas; out ALeft, ATop, AWidth, AHeight: Integer): Boolean;
     procedure CalculateHeightInCanvas(ADest: TFPCustomCanvas; out AHeight: Integer);
     // helper functions for CalculateBoundingBox & TvRenderInfo
     procedure ExpandBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double);
     class procedure CalcEntityCanvasMinMaxXY(var ARenderInfo: TvRenderInfo; APointX, APointY: Integer);
+    class procedure CalcEntityCanvasMinMaxXY_With2Points(var ARenderInfo: TvRenderInfo; AX1, AY1, AX2, AY2: Integer);
     procedure MergeRenderInfo(var AFrom, ATo: TvRenderInfo);
     class procedure InitializeRenderInfo(out ARenderInfo: TvRenderInfo);
     function CentralizeY_InHeight(ADest: TFPCustomCanvas; AHeight: Double): Double;
@@ -1397,6 +1399,7 @@ type
       ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); virtual; abstract;
     procedure Render(ADest: TFPCustomCanvas;
       ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); virtual; abstract;
+    procedure AutoFit(ADest: TFPCustomCanvas; AWidth, AHeight: Integer; out ADeltaX, ADeltaY: Integer; out AZoom: Double); virtual; abstract;
     { Debug methods }
     procedure GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer); virtual; abstract;
   end;
@@ -1478,6 +1481,7 @@ type
       ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
     procedure Render(ADest: TFPCustomCanvas;
       ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
+    procedure AutoFit(ADest: TFPCustomCanvas; AWidth, AHeight: Integer; out ADeltaX, ADeltaY: Integer; out AZoom: Double); override;
     { Debug methods }
     procedure GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer); override;
     //
@@ -1521,6 +1525,7 @@ type
       ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
     procedure Render(ADest: TFPCustomCanvas;
       ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
+    procedure AutoFit(ADest: TFPCustomCanvas; AWidth, AHeight: Integer; out ADeltaX, ADeltaY: Integer; out AZoom: Double); override;
     { Debug methods }
     procedure GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer); override;
   end;
@@ -3090,15 +3095,23 @@ begin
   ABottom := Y+1;
 end;
 
-procedure TvEntity.CalculateSizeInCanvas(ADest: TFPCustomCanvas; out ALeft, ATop, AWidth, AHeight: Integer);
+// returns false if the element is invisible
+function TvEntity.CalculateSizeInCanvas(ADest: TFPCustomCanvas; out ALeft, ATop, AWidth, AHeight: Integer): Boolean;
 var
   lRenderInfo: TvRenderInfo;
 begin
+  Result := True;
+  InitializeRenderInfo(lRenderInfo);
   Render(ADest, lRenderInfo, 0, 0, 1, 1, False);
   ALeft := lRenderInfo.EntityCanvasMinXY.X;
   ATop := lRenderInfo.EntityCanvasMinXY.Y;
   AWidth := lRenderInfo.EntityCanvasMaxXY.X - lRenderInfo.EntityCanvasMinXY.X;
   AHeight := lRenderInfo.EntityCanvasMaxXY.Y - lRenderInfo.EntityCanvasMinXY.Y;
+  if (lRenderInfo.EntityCanvasMinXY.X = INVALID_RENDERINFO_CANVAS_XY) or
+     (lRenderInfo.EntityCanvasMinXY.Y = INVALID_RENDERINFO_CANVAS_XY) or
+     (lRenderInfo.EntityCanvasMaxXY.Y = INVALID_RENDERINFO_CANVAS_XY) or
+     (lRenderInfo.EntityCanvasMaxXY.Y = INVALID_RENDERINFO_CANVAS_XY) then
+     Result := False;
 end;
 
 procedure TvEntity.CalculateHeightInCanvas(ADest: TFPCustomCanvas; out AHeight: Integer);
@@ -3137,6 +3150,13 @@ begin
   else ARenderInfo.EntityCanvasMaxXY.Y := Max(ARenderInfo.EntityCanvasMaxXY.Y, APointY);
 end;
 
+class procedure TvEntity.CalcEntityCanvasMinMaxXY_With2Points(
+  var ARenderInfo: TvRenderInfo; AX1, AY1, AX2, AY2: Integer);
+begin
+  CalcEntityCanvasMinMaxXY(ARenderInfo, AX1, AY1);
+  CalcEntityCanvasMinMaxXY(ARenderInfo, AX2, AY2);
+end;
+
 procedure TvEntity.MergeRenderInfo(var AFrom, ATo: TvRenderInfo);
 begin
   CalcEntityCanvasMinMaxXY(ATo, AFrom.EntityCanvasMinXY.X, AFrom.EntityCanvasMinXY.Y);
@@ -3147,6 +3167,10 @@ class procedure TvEntity.InitializeRenderInfo(out ARenderInfo: TvRenderInfo);
 begin
   ARenderInfo.EntityCanvasMinXY := Point(INVALID_RENDERINFO_CANVAS_XY, INVALID_RENDERINFO_CANVAS_XY);
   ARenderInfo.EntityCanvasMaxXY := Point(INVALID_RENDERINFO_CANVAS_XY, INVALID_RENDERINFO_CANVAS_XY);
+  ARenderInfo.BackgroundColor := colBlack;
+  ARenderInfo.AdjustPenColorToBackground := True;
+  ARenderInfo.Selected := False;
+  ARenderInfo.ForceRenderBlock := False;
 end;
 
 function TvEntity.CentralizeY_InHeight(ADest: TFPCustomCanvas; AHeight: Double): Double;
@@ -3396,6 +3420,7 @@ procedure TvEntityWithPenAndBrush.DrawBrushGradient(ADest: TFPCustomCanvas;
 var
   i: Integer;
   lPoints: TDoubleDynArray;
+  lCanvasPts: array[0..1] of Integer;
   lColor, lColor1, lColor2: TFPColor;
 begin
   if not (Brush.Kind in [bkVerticalGradient, bkHorizontalGradient]) then
@@ -3407,10 +3432,12 @@ begin
     for i := y1 to y2 do
     begin
       lPoints := GetLineIntersectionPoints(CanvasToCoordY(i), False);
+      if Length(lPoints) < 2 then Continue;
+      lCanvasPts[0] := CoordToCanvasX(lPoints[0]); lCanvasPts[1] := CoordToCanvasX(lPoints[1]);
       lColor := MixColors(lColor1, lColor2, i-y1, y2-y1);
       ADest.Pen.FPColor := lColor;
       ADest.Pen.Style := psSolid;
-      ADest.Line(CoordToCanvasX(lPoints[0]), i, CoordToCanvasX(lPoints[1]), i);
+      ADest.Line(lCanvasPts[0], i, lCanvasPts[1], i);
     end;
   end
   else if Brush.Kind = bkHorizontalGradient then
@@ -3418,10 +3445,12 @@ begin
     for i := x1 to x2 do
     begin
       lPoints := GetLineIntersectionPoints(CanvasToCoordX(i), True);
+      if Length(lPoints) < 2 then Continue;
+      lCanvasPts[0] := CoordToCanvasY(lPoints[0]); lCanvasPts[1] := CoordToCanvasY(lPoints[1]);
       lColor := MixColors(lColor1, lColor2, i-x1, x2-x1);
       ADest.Pen.FPColor := lColor;
       ADest.Pen.Style := psSolid;
-      ADest.Line(i, CoordToCanvasY(lPoints[0]), i, CoordToCanvasY(lPoints[1]));
+      ADest.Line(i, lCanvasPts[0], i, lCanvasPts[1]);
     end;
   end;
 end;
@@ -3975,7 +4004,9 @@ begin
       CoordY := CoordToCanvasY(PosY);
       CoordX2 := CoordToCanvasX(Cur2DSegment.X);
       CoordY2 := CoordToCanvasY(Cur2DSegment.Y);
-      ADest.Line(CoordX, CoordY, CoordX2, CoordY2);
+      CalcEntityCanvasMinMaxXY_With2Points(ARenderInfo, CoordX, CoordY, CoordX2, CoordY2);
+      if ADoDraw then
+        ADest.Line(CoordX, CoordY, CoordX2, CoordY2);
 
       PosX := Cur2DSegment.X;
       PosY := Cur2DSegment.Y;
@@ -3992,7 +4023,9 @@ begin
       CoordY := CoordToCanvasY(PosY);
       CoordX2 := CoordToCanvasX(Cur2DSegment.X);
       CoordY2 := CoordToCanvasY(Cur2DSegment.Y);
-      ADest.Line(CoordX, CoordY, CoordX2, CoordY2);
+      CalcEntityCanvasMinMaxXY_With2Points(ARenderInfo, CoordX, CoordY, CoordX2, CoordY2);
+      if ADoDraw then
+        ADest.Line(CoordX, CoordY, CoordX2, CoordY2);
       PosX := Cur2DSegment.X;
       PosY := Cur2DSegment.Y;
       {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
@@ -4012,6 +4045,8 @@ begin
       CoordX4 := CoordToCanvasX(Cur2DBSegment.X);
       CoordY4 := CoordToCanvasY(Cur2DBSegment.Y);
       SetLength(lPoints, 0);
+      CalcEntityCanvasMinMaxXY_With2Points(ARenderInfo, CoordX, CoordY, CoordX2, CoordY2);
+      CalcEntityCanvasMinMaxXY_With2Points(ARenderInfo, CoordX3, CoordY3, CoordX4, CoordY4);
       AddBezierToPoints(
         Make2DPoint(CoordX, CoordY),
         Make2DPoint(CoordX2, CoordY2),
@@ -4021,7 +4056,7 @@ begin
       );
 
       ADest.Brush.Style := Brush.Style;
-      if Length(lPoints) >= 3 then
+      if (Length(lPoints) >= 3) and ADoDraw then
         ADest.Polygon(lPoints);
 
       PosX := Cur2DSegment.X;
@@ -4079,15 +4114,16 @@ begin
       {$endif}
 
       ADest.Brush.Style := Brush.Style;
+      CalcEntityCanvasMinMaxXY_With2Points(ARenderInfo, CoordX, CoordY, CoordX4, CoordY4);
 
       // Arc draws counterclockwise
-      if Cur2DArcSegment.ClockwiseArcFlag then
+      if ADoDraw and Cur2DArcSegment.ClockwiseArcFlag then
       begin
         ACanvas.Arc(
           EllipseRect.Left, EllipseRect.Top, EllipseRect.Right, EllipseRect.Bottom,
           CoordX4, CoordY4, CoordX, CoordY);
       end
-      else
+      else if ADoDraw then
       begin
         ACanvas.Arc(
           EllipseRect.Left, EllipseRect.Top, EllipseRect.Right, EllipseRect.Bottom,
@@ -4620,18 +4656,18 @@ begin
   // (X-Xcenter)^2 / Rx^2 + (Y-Ycenter)^2 / Ry^2 <= 1
   if ACoordIsX then
   begin
-    // Y = sqrt( 1 - (X-Xcenter)^2 / Rx^2 ) * Ry + Xcenter
+    // Y = sqrt( 1 - (X-Xcenter)^2 / Rx^2 ) * Ry + Ycenter
     Result[0] := Max(0, 1-sqr(ACoord-X) / sqr(HorzHalfAxis));
-    Result[0] := sqrt(Result[0]) * VertHalfAxis + X;
+    Result[0] := sqrt(Result[0]) * VertHalfAxis + Y;
     Result[1] := Max(0, 1-sqr(ACoord-X) / sqr(HorzHalfAxis));
-    Result[1] := -1 * sqrt(Result[1]) * VertHalfAxis + X;
+    Result[1] := -1 * sqrt(Result[1]) * VertHalfAxis + Y;
   end
   else
   begin
     Result[0] := Max(0, 1-sqr(ACoord-Y) / sqr(VertHalfAxis));
-    Result[0] := sqrt(Result[0]) * HorzHalfAxis + Y;
+    Result[0] := sqrt(Result[0]) * HorzHalfAxis + X;
     Result[1] := Max(0, 1-sqr(ACoord-Y) / sqr(VertHalfAxis));
-    Result[1] := -1 * sqrt(Result[1]) * HorzHalfAxis + Y;
+    Result[1] := -1 * sqrt(Result[1]) * HorzHalfAxis + X;
   end;
 end;
 
@@ -7758,6 +7794,67 @@ begin
   {$endif}
 end;
 
+procedure TvVectorialPage.AutoFit(ADest: TFPCustomCanvas;
+  AWidth, AHeight: Integer; out ADeltaX, ADeltaY: Integer; out AZoom: Double);
+var
+  i: Integer;
+  lCurEntity: TvEntity;
+  lLeft, lTop, lWidth, lHeight: Integer;
+  lMinX, lMinY, lMaxX, lMaxY: Integer;
+  lZoomFitX, lZoomFitY: Double;
+  {$ifdef FPVECTORIAL_AUTOFIT_DEBUG}
+  lStrings: TStrings;
+  {$endif}
+begin
+  {$ifdef FPVECTORIAL_AUTOFIT_DEBUG}
+  lStrings := TStringList.Create;
+  try
+  {$endif}
+  ADeltaX := 0;
+  ADeltaY := 0;
+  AZoom := 1;
+  lMinX := High(Integer);
+  lMinY := High(Integer);
+  lMaxX := Low(Integer);
+  lMaxY := Low(Integer);
+
+  for i := 0 to FEntities.Count - 1 do
+  begin
+    lCurEntity := TvEntity(FEntities.Items[i]);
+    if lCurEntity.CalculateSizeInCanvas(ADest, lLeft, lTop, lWidth, lHeight) then
+    begin
+      lMinX := Min(lMinX, lLeft);
+      lMinY := Min(lMinY, lTop);
+      lMaxX := Max(lMaxX, lLeft + lWidth);
+      lMaxY := Max(lMaxY, lTop  + lHeight);
+    end;
+    {$ifdef FPVECTORIAL_AUTOFIT_DEBUG}
+    lStrings.Add(Format('[%s] MinX=%d MinY=%d MaxX=%d MaxY=%D', [lCurEntity.ClassName, lMinX, lMinY, lMaxX, lMaxY]));
+    {$endif}
+  end;
+
+  if (lMinX = High(Integer)) or (lMinY = High(Integer)) or
+     (lMaxX = Low(Integer)) or(lMaxY = Low(Integer)) then
+     Exit;
+
+  lWidth := lMaxX - lMinX;
+  lHeight := lMaxY - lMinY;
+  if (lWidth = 0) or (lHeight = 0) then Exit;
+
+  lZoomFitX := AWidth / lWidth;
+  lZoomFitY := AHeight / lHeight;
+  AZoom := Min(lZoomFitX, lZoomFitY) * 0.9;
+  ADeltaX := Round(-1 * AZoom * lMinX);
+  ADeltaY := Round(-1 * AZoom * lMinY);
+  ADeltaY += Round(-1.05 * AZoom * lHeight);
+  {$ifdef FPVECTORIAL_AUTOFIT_DEBUG}
+  finally
+    lStrings.SaveToFile('H:\autofit.txt');
+    lStrings.Free;
+  end;
+  {$endif}
+end;
+
 procedure TvVectorialPage.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
   APageItem: Pointer);
 var
@@ -7929,6 +8026,14 @@ begin
   {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
   WriteLn(':<TvTextPageSequence.Render');
   {$endif}
+end;
+
+procedure TvTextPageSequence.AutoFit(ADest: TFPCustomCanvas;
+  AWidth, AHeight: Integer; out ADeltaX, ADeltaY: Integer; out AZoom: Double);
+begin
+  ADeltaX := 0;
+  ADeltaY := 0;
+  AZoom := 1;
 end;
 
 procedure TvTextPageSequence.GenerateDebugTree(
