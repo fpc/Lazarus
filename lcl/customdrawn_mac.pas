@@ -161,7 +161,7 @@ begin
     ADest.Font.FPColor := colWhite;
   Str := AStateEx.Caption;
   lPosX := ADestPos.X + (ASize.cx - lDest.TextWidth(Str)) div 2;
-  lPosX := ADestPos.Y + (ASize.cy - lDest.TextHeight(Str)) div 2;
+  lPosY := ADestPos.Y + (ASize.cy - lDest.TextHeight(Str)) div 2;
   lDest.TextOut(lPosX, lPosY, Str);
 end;
 
