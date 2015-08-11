@@ -100,17 +100,16 @@ var
 begin
   Control:=TCarbonCustomControl(Handle);
   Info:=GetAGLControlInfo(Control.Widget);
-  debugln(['LOpenGLMakeCurrent AAA0']);
+  debugln(['LOpenGLMakeCurrent got ingo...']);
   if Info=nil then exit;
   AGLContext:=Info^.AGLContext;
   aglSetCurrentContext(AGLContext);
-  debugln(['LOpenGLMakeCurrent AAA1 ',dbgs(Handle)]);
-  debugln(['LOpenGLMakeCurrent AAA2']);
+  debugln(['LOpenGLMakeCurrent set current ',dbgs(Handle)]);
   Form:=GetParentForm(Info^.WinControl);
-  debugln(['LOpenGLMakeCurrent AAA3']);
+  debugln(['LOpenGLMakeCurrent got parent form: ',DbgSName(Form)]);
   Win:=TCarbonWindow(Form.Handle).Window;
 
-  debugln(['LOpenGLMakeCurrent ']);
+  debugln(['LOpenGLMakeCurrent set clipping ...']);
   //GetWindowPortBounds(Win,b);
   clipRgn:=NewRgn;
   SetRectRgn(clipRgn,10,10,100,100);
@@ -215,8 +214,8 @@ begin
   InstallControlEventHandler(Control.Widget, RegisterEventHandler(@CarbonGLControl_Resize),
     1, @TempSpec, Control, nil);
   TempSpec:=MakeEventSpec(kEventClassControl, kEventControlOwningWindowChanged);
-  // The control might be embeded into a window, after the its creation
-  // the example of the situation is give at bug report #17244
+  // The control might be embeded into a window after its creation.
+  // See example for this in bug report #17244
   InstallControlEventHandler(Control.Widget, RegisterEventHandler(@CarbonGLControl_WindowChange),
     1, @TempSpec, Control, nil);
 
