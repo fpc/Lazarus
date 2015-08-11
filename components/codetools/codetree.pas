@@ -91,13 +91,13 @@ const
   ctnObjCCategory       = 35;
   ctnObjCProtocol       = 36;
   ctnCPPClass           = 37;
-  ctnTypeHelper         = 38;//"type helper"
-  ctnRecordHelper       = 39;//"record helper"
+  ctnTypeHelper         = 38;//"type helper", parent/child similar to ctnClass
+  ctnRecordHelper       = 39;//"record helper", parent/child similar to ctnClass
 
   ctnClassAbstract      = 40;
   ctnClassSealed        = 41;
   ctnClassExternal      = 42; // parent: jvm: ctnClass, ObjCClass, ObjCProtocol
-  ctnClassHelper        = 43;//"class helper"
+  ctnClassHelper        = 43;//"class helper", parent/child similar to ctnClass
   ctnClassInheritance   = 44;
   ctnHelperFor          = 45;//class/record/type helper for
   ctnClassGUID          = 46;
