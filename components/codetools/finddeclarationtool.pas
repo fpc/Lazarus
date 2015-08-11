@@ -562,15 +562,23 @@ type
   ECodeToolUnitNotFound = class(ECodeToolFileNotFound)
   end;
 
+  { THelpersListItem }
+
   THelpersListItem = class(TObject)
     ForExprType: TExpressionType;
     HelperContext: TFindContext;
     function CalcMemSize: PtrUInt;
   end;
+
+  { THelpersListRec }
+
   THelpersListRec = record
     ForExprType: TExpressionType;
     HelperContext: TFindContext;
   end;
+
+  { THelpersList }
+
   THelpersList = class
   private
     FTree: TAVLTree;
@@ -4829,17 +4837,6 @@ end;
 
 procedure TFindDeclarationTool.FindHelpersInContext(
   StartNode: TCodeTreeNode; Helpers: THelpersList);
-
-  function SearchNextNode: TCodeTreeNode;
-  begin
-    Result := StartNode.PriorBrother;
-    if Assigned(Result) then
-    begin
-      while Assigned(Result.LastChild) do
-        Result := Result.LastChild;
-    end else
-      Result := StartNode.Parent;
-  end;
 begin
   while Assigned(StartNode) do
   begin
@@ -4852,7 +4849,7 @@ begin
       ctnUsesSection:
         FindHelpersInUsesSection(StartNode, Helpers);
     end;
-    StartNode := SearchNextNode;
+    StartNode := StartNode.Prior;
   end;
 end;
 
