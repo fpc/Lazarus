@@ -4322,7 +4322,8 @@ begin
           EndChildNode;
           IsForward:=false;
         end;
-      end else if UpAtomIs('HELPER') then begin
+      end else if UpAtomIs('HELPER')
+      and (ClassDesc in [ctnClass,ctnRecordType,ctnTypeType]) then begin
         IsHelper:=true;
         case ClassDesc of
           ctnClass: CurNode.Desc:=ctnClassHelper;

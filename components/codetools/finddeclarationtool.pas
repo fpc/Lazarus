@@ -7046,7 +7046,7 @@ function TFindDeclarationTool.BuildInterfaceIdentifierCache(
         FInterfaceIdentifierCache.Add(@Src[Node.StartPos],Node,Node.StartPos);
         ScanForEnums(Node);
         if (Node.Desc = ctnTypeDefinition) and
-           Assigned(Node.FirstChild) and (Node.FirstChild.Desc in [ctnClassHelper, ctnRecordHelper, ctnTypeHelper])
+          Assigned(Node.FirstChild) and (Node.FirstChild.Desc in [ctnClassHelper, ctnRecordHelper, ctnTypeHelper])
         then
           FInterfaceHelperCache.AddFromHelperNode(Node.FirstChild, Self, True);
       end;
