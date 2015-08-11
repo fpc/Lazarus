@@ -122,8 +122,8 @@ type
 ---------------------------------------------------------------------------}
 
 var
-  base, limit : SizeInt;
-  index : SizeInt;
+  base, limit : int64;
+  index : int64;
 
 function Init(aBase, aLimit : Int64) : Boolean;
 begin
@@ -161,7 +161,7 @@ end;
   an error }
 function ReadNext() : Longint; inline;
 var
-  bytesread : SizeInt;
+  bytesread : integer;
 begin
   ReadNext := -1;
   if EBufPos >= EBufCnt then begin
