@@ -1268,7 +1268,7 @@ procedure TLazPagedListMemBase.MoveEntriesBetweenPages(SourcePage, TargetPage: P
   SourceIndex, TargetIndex, EntryCount: Integer);
 var
   MaxS, MaxD, Siz: Integer;
-  PTarget, PSource, m: PByte;
+  PTarget, PSource: PByte;
 begin
   if SourceIndex = -1 then
     SourceIndex := SourcePage^.Count - EntryCount;

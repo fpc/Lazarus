@@ -330,7 +330,6 @@ end;
 function GetDarwinNormalizedFilename(Filename: string; nForm:Integer=2): string;
 var
   theString: CFStringRef;
-  l: CFIndex;
   Mutable: CFMutableStringRef;
 begin
   theString:=CFStringCreateWithCString(nil, Pointer(FileName), kCFStringEncodingUTF8);
