@@ -1,7 +1,8 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="4">
     <Name Value="LazOpenGLContext"/>
+    <Type Value="RunAndDesignTime"/>
     <AddToProjectUsesSection Value="True"/>
     <Author Value="Mattias Gaertner"/>
     <CompilerOptions>
@@ -19,15 +20,13 @@
             <Item1 Value="1"/>
             <Item2 Value="0"/>
           </Values>
+          <ValueDescriptions Count="2"/>
         </Item1>
       </BuildMacros>
-      <Other>
-        <CompilerPath Value="$(CompPath)"/>
-      </Other>
     </CompilerOptions>
     <Description Value="Simple cross-platform OpenGL viewer control"/>
     <Version Release="1"/>
-    <Files Count="5">
+    <Files Count="6">
       <Item1>
         <Filename Value="openglcontext.pas"/>
         <HasRegisterProc Value="True"/>
@@ -53,8 +52,12 @@
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="glqtcontext"/>
       </Item5>
+      <Item6>
+        <Filename Value="glcocoacglcontext.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GLCocoaCGLContext"/>
+      </Item6>
     </Files>
-    <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
       <Item1>
         <PackageName Value="FCL"/>

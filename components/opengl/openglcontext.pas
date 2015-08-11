@@ -41,7 +41,7 @@ unit OpenGLContext;
   {$DEFINE OpenGLTargetDefined}
 {$ENDIF}
 {$IFDEF LCLCocoa}
-  {$DEFINE UseCarbonCGL}
+  {$DEFINE UseCocoaCGL}
   {$DEFINE OpenGLTargetDefined}
 {$ENDIF}
 {$IFDEF LCLWin32}
