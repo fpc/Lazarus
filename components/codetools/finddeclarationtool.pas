@@ -1310,25 +1310,18 @@ end;
 
 function CompareHelpersList(Item1, Item2: Pointer): Integer;
 var
-  I1, I2: THelpersListItem;
+  I1: THelpersListItem absolute Item1;
+  I2: THelpersListItem absolute Item2;
 begin
-  I1 := THelpersListItem(Item1);
-  I2 := THelpersListItem(Item2);
   Result := ComparePointers(I1.ForExprType.Context.Node, I2.ForExprType.Context.Node);
 end;
 
 function CompareHelpersListExprType(Item1, Item2: Pointer): Integer;
 var
-  I1: PExpressionType;
-  I2: THelpersListItem;
+  I1: PExpressionType absolute Item1;
+  I2: THelpersListItem absolute Item2;
 begin
-  I1 := PExpressionType(Item1);
-  I2 := THelpersListItem(Item2);
-  Result := Ord(I1^.Desc) - Ord(I2.ForExprType.Desc);
-  if Result = 0 then
-    Result := ComparePointers(I1^.Context.Tool, I2.ForExprType.Context.Tool);
-  if Result = 0 then
-    Result := ComparePointers(I1^.Context.Node, I2.ForExprType.Context.Node);
+  Result := ComparePointers(I1^.Context.Node, I2.ForExprType.Context.Node);
 end;
 
 procedure THelpersList.AddFromList(const ExtList: THelpersList);
