@@ -44,7 +44,11 @@ uses
   // CodeTools
   CodeToolsStrConsts,
   // LazUtils
-  LazUtilities, LazDbgLog, LazLogger, LazUTF8, LazFileCache,
+  LazUtilities,
+  {$IFNDEF DisableWrapperFunctions}
+  LazDbgLog,
+  {$ENDIF}
+  LazLogger, LazUTF8, LazFileCache,
   LazFileUtils, LazUTF8Classes;
 
 type
