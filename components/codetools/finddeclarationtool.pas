@@ -581,7 +581,7 @@ type
 
   THelpersList = class
   private
-    FTree: TAVLTree;
+    FTree: TAVLTree; // tree of THelpersListItem sorted for CompareHelpersList
   public
     function AddFromHelperNode(HelperNode: TCodeTreeNode;
       Tool: TFindDeclarationTool; RewriteOld: Boolean): THelpersListItem;
@@ -1314,11 +1314,7 @@ var
 begin
   I1 := THelpersListItem(Item1);
   I2 := THelpersListItem(Item2);
-  Result := Ord(I1.ForExprType.Desc) - Ord(I2.ForExprType.Desc);
-  if Result = 0 then
-    Result := ComparePointers(I1.ForExprType.Context.Tool, I2.ForExprType.Context.Tool);
-  if Result = 0 then
-    Result := ComparePointers(I1.ForExprType.Context.Node, I2.ForExprType.Context.Node);
+  Result := ComparePointers(I1.ForExprType.Context.Node, I2.ForExprType.Context.Node);
 end;
 
 function CompareHelpersListExprType(Item1, Item2: Pointer): Integer;
