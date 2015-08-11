@@ -96,7 +96,7 @@ const
 
   ctnClassAbstract      = 40;
   ctnClassSealed        = 41;
-  ctnClassExternal      = 42;
+  ctnClassExternal      = 42; // parent: jvm: ctnClass, ObjCClass, ObjCProtocol
   ctnClassHelper        = 43;//"class helper"
   ctnClassInheritance   = 44;
   ctnHelperFor          = 45;//class/record/type helper for
@@ -106,8 +106,8 @@ const
   ctnClassProtected     = 49;
   ctnClassPublic        = 50;
   ctnClassPublished     = 51;
-  ctnClassRequired      = 52;
-  ctnClassOptional      = 53;
+  ctnClassRequired      = 52; // parent: ObjCProtocol
+  ctnClassOptional      = 53; // parent: ObjCProtocol
   ctnProperty           = 54; // child of visibility section or AllClassInterfaces
   ctnMethodMap          = 55; // child of visibility section or AllClassInterfaces
   

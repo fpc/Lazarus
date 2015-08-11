@@ -3313,14 +3313,6 @@ var
     if ContextNode.Desc=ctnGenericType then begin
       NameNode:=ContextNode.FirstChild;
       if NameNode=nil then exit;
-    end else
-    if (ContextNode.Desc=ctnTypeDefinition)
-    and Assigned(ContextNode.FirstChild)
-    and (ContextNode.FirstChild.Desc=ctnObjCCategory) then begin
-      NameNode:=FindInheritanceNode(ContextNode.FirstChild);
-      if NameNode=nil then exit;
-      NameNode:=NameNode.FirstChild;
-      if NameNode=nil then exit;
     end;
 
     if (fdfCollect in Flags)
@@ -7042,27 +7034,6 @@ function TFindDeclarationTool.BuildInterfaceIdentifierCache(
     end;
   end;
 
-  procedure ScanForExtendedClass(ParentNode: TCodeTreeNode);
-  var
-    Node: TCodeTreeNode;
-  begin
-    Node:=ParentNode.FirstChild;
-    if (Node<>nil) then
-      case Node.Desc of
-      ctnObjCCategory:
-        begin
-          Node:=FindInheritanceNode(Node);
-          if Assigned(Node) then begin
-            Node:=Node.FirstChild;
-            if Assigned(Node) then
-              FInterfaceIdentifierCache.Add(@Src[Node.StartPos],
-                ParentNode,ParentNode.StartPos);
-          end;
-        end;
-      { TODO : class helpers }
-      end;
-  end;
-
   procedure ScanChildren(ParentNode: TCodeTreeNode); forward;
 
   procedure ScanNode(Node: TCodeTreeNode);
@@ -7074,7 +7045,6 @@ function TFindDeclarationTool.BuildInterfaceIdentifierCache(
       begin
         FInterfaceIdentifierCache.Add(@Src[Node.StartPos],Node,Node.StartPos);
         ScanForEnums(Node);
-        ScanForExtendedClass(Node);
         if (Node.Desc = ctnTypeDefinition) and
            Assigned(Node.FirstChild) and (Node.FirstChild.Desc in [ctnClassHelper, ctnRecordHelper, ctnTypeHelper])
         then
