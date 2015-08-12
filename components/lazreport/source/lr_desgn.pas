@@ -245,6 +245,8 @@ type
 
   TfrDesignerForm = class(TfrReportDesigner)
     acDuplicate: TAction;
+    edtRedo: TAction;
+    edtUndo: TAction;
     MenuItem2: TMenuItem;
     tlsDBFields: TAction;
     FileBeforePrintScript: TAction;
@@ -431,6 +433,8 @@ type
     procedure acDuplicateExecute(Sender: TObject);
     procedure acToggleFramesExecute(Sender: TObject);
     procedure C2GetItems(Sender: TObject);
+    procedure edtRedoExecute(Sender: TObject);
+    procedure edtUndoExecute(Sender: TObject);
     procedure FileBeforePrintScriptExecute(Sender: TObject);
     procedure FileOpenExecute(Sender: TObject);
     procedure FilePreviewExecute(Sender: TObject);
@@ -490,8 +494,6 @@ type
     procedure Tab1Change(Sender: TObject);
     procedure N34Click(Sender: TObject);
     procedure GB3Click(Sender: TObject);
-    procedure UndoBClick(Sender: TObject);
-    procedure RedoBClick(Sender: TObject);
     //procedure N20Click(Sender: TObject);
     procedure PBox1Paint(Sender: TObject);
     procedure SB1Click(Sender: TObject);
@@ -3073,11 +3075,14 @@ begin
   FileSave.Hint:=        sFRDesignerFormSaveRp;
   FilePreview.Hint :=    sFRDesignerFormPreview;
 
+  edtUndo.Caption :=      sFRDesignerForm_Undo;
+  edtUndo.Hint :=         sFRDesignerFormUndo;
+  edtRedo.Caption :=      sFRDesignerForm_Redo;
+  edtRedo.Hint :=         sFRDesignerFormRedo;
+
   CutB.Hint :=        sFRDesignerFormCut;
   CopyB.Hint :=       sFRDesignerFormCopy;
   PstB.Hint :=        sFRDesignerFormPast;
-  UndoB.Hint :=       sFRDesignerFormUndo;
-  RedoB.Hint :=       sFRDesignerFormRedo;
   ZB1.Hint :=         sFRDesignerFormBring;
   ZB2.Hint :=         sFRDesignerFormBack;
   SelAllB.Hint :=     sFRDesignerFormSelectAll;
@@ -3150,8 +3155,6 @@ begin
   N39.Caption :=      sFRDesignerForm_preview;
   N10.Caption :=      sFRDesignerForm_Exit;
   EditMenu.Caption := sFRDesignerForm_Edit2;
-  N46.Caption :=      sFRDesignerForm_Undo;
-  N48.Caption :=      sFRDesignerForm_Redo;
   N11.Caption :=      sFRDesignerForm_Cut;
   N12.Caption :=      sFRDesignerForm_Copy;
   N13.Caption :=      sFRDesignerForm_Paste;
@@ -3202,6 +3205,16 @@ begin
       C2.ItemIndex := i;
     Screen.Cursor := crDefault;
   end;
+end;
+
+procedure TfrDesignerForm.edtRedoExecute(Sender: TObject);
+begin
+  Undo(@FRedoBuffer);
+end;
+
+procedure TfrDesignerForm.edtUndoExecute(Sender: TObject);
+begin
+  Undo(@FUndoBuffer);
 end;
 
 procedure TfrDesignerForm.FileBeforePrintScriptExecute(Sender: TObject);
@@ -3878,7 +3891,8 @@ begin
     t := TfrView(Objects[i]);
     if (t.Selected) and not (lrrDontDelete in T.Restrictions) and not (doChildComponent in T.DesignOptions) then
     begin
-      ClipBd.Add(frCreateObject(t.Typ, t.ClassName, Page));
+//      ClipBd.Add(frCreateObject(t.Typ, t.ClassName, Page));
+      ClipBd.Add(frCreateObject(t.Typ, t.ClassName, nil));
       TfrView(ClipBd.Last).Assign(t);
     end;
   end;
@@ -5402,15 +5416,13 @@ end;
 procedure TfrDesignerForm.ClearUndoBuffer;
 begin
   ClearBuffer(FUndoBuffer, FUndoBufferLength);
-  N46.Enabled := False;
-  UndoB.Enabled := N46.Enabled;
+  edtUndo.Enabled := False;
 end;
 
 procedure TfrDesignerForm.ClearRedoBuffer;
 begin
   ClearBuffer(FRedoBuffer, FRedoBufferLength);
-  N48.Enabled := False;
-  RedoB.Enabled := N48.Enabled;
+  edtRedo.Enabled := False;
 end;
 
 procedure TfrDesignerForm.Undo(Buffer: PfrUndoBuffer);
@@ -5485,10 +5497,8 @@ begin
 
   ResetSelection;
   PageView.Invalidate;
-  N46.Enabled := FUndoBufferLength > 0;
-  UndoB.Enabled := N46.Enabled;
-  N48.Enabled := FRedoBufferLength > 0;
-  RedoB.Enabled := N48.Enabled;
+  edtUndo.Enabled := FUndoBufferLength > 0;
+  edtRedo.Enabled := FRedoBufferLength > 0;
 end;
 
 procedure TfrDesignerForm.AddAction(Buffer: PfrUndoBuffer; a: TfrUndoAction; List: TFpList);
@@ -5549,14 +5559,12 @@ begin
   if Buffer = @FUndoBuffer then
   begin
     FUndoBufferLength := BufferLength + 1;
-    N46.Enabled := True;
-    UndoB.Enabled := True;
+    edtUndo.Enabled := True;
   end
   else
   begin
     FRedoBufferLength := BufferLength + 1;
-    N48.Enabled := True;
-    RedoB.Enabled := True;
+    edtRedo.Enabled := True;
   end;
   Modified := True;
   //FileModified := True;
@@ -5722,6 +5730,8 @@ procedure TfrDesignerForm.PstBClick(Sender: TObject); //paste
 var
   i, minx, miny: Integer;
   t, t1: TfrView;
+  S: String;
+  P: TObject;
 begin
   Unselect;
   SelNum := 0;
@@ -5758,16 +5768,6 @@ begin
   PageView.GetMultipleSelected;
   RedrawPage;
   AddUndoAction(acInsert);
-end;
-
-procedure TfrDesignerForm.UndoBClick(Sender: TObject); // undo
-begin
-  Undo(@FUndoBuffer);
-end;
-
-procedure TfrDesignerForm.RedoBClick(Sender: TObject); // redo
-begin
-  Undo(@FRedoBuffer);
 end;
 
 procedure TfrDesignerForm.SelAllBClick(Sender: TObject); // select all
@@ -6450,8 +6450,6 @@ begin
 //  SetMenuItemBitmap(N39, FileBtn4);
   SetMenuItemBitmap(N10, ExitB);
 
-  SetMenuItemBitmap(N46, UndoB);
-  SetMenuItemBitmap(N48, RedoB);
   SetMenuItemBitmap(N11, CutB);
   SetMenuItemBitmap(N12, CopyB);
   SetMenuItemBitmap(N13, PstB);
