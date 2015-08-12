@@ -227,9 +227,9 @@ begin
     lcNeedMininimizeAppWithMainForm,
     lcApplicationTitle,
     lcFormIcon,
-    lcModalWindow,
     lcReceivesLMClearCutCopyPasteReliably:
       Result := LCL_CAPABILITY_NO;
+    lcModalWindow,
     lcAntialiasingEnabledByDefault:
       Result := LCL_CAPABILITY_YES;
   else

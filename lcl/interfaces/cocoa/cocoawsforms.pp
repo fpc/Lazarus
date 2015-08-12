@@ -95,6 +95,8 @@ type
     class function GetStyleMaskFor(ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons): NSUInteger;
     class procedure UpdateWindowIcons(AWindow: NSWindow; ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons);
     class procedure UpdateWindowMask(AWindow: NSWindow; ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons);
+  public
+    class function GetWindowFromHandle(const ACustomForm: TCustomForm): TCocoaWindow;
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 
@@ -308,9 +310,33 @@ begin
 end;
 
 procedure TLCLWindowCallback.CloseQuery(var CanClose: Boolean);
+var
+  i: Integer;
 begin
   // Message results : 0 - do nothing, 1 - destroy window
   CanClose := LCLSendCloseQueryMsg(Target) > 0;
+
+  // Special code for modal forms, which otherwise would get 0 here and not call Close
+  if (CocoaWidgetSet.CurModalForm = FTarget) and
+    (TCustomForm(Target).ModalResult <> mrNone) then
+  begin
+    NSApp.stopModal();
+    CocoaWidgetSet.CurModalForm := nil;
+    // At this point the modal form is closed, but the previously open form isn't focused
+    // Focus the main window if it is visible
+    if Application.MainForm.Visible then Application.MainForm.SetFocus()
+    else
+    begin
+      // if the mainform is hidden, just choose any visible form
+      // ToDo: Figure out a better solution
+      for i := 0 to Screen.FormCount-1 do
+        if Screen.Forms[i].Visible then
+        begin
+          Screen.Forms[i].SetFocus();
+          Break;
+        end;
+    end;
+  end;
 end;
 
 procedure TLCLWindowCallback.Close;
@@ -389,6 +415,13 @@ begin
   StyleMask := GetStyleMaskFor(ABorderStyle, ABorderIcons);
   AWindow.setStyleMask(StyleMask);
   UpdateWindowIcons(AWindow, ABorderStyle, ABorderIcons);
+end;
+
+class function TCocoaWSCustomForm.GetWindowFromHandle(const ACustomForm: TCustomForm): TCocoaWindow;
+begin
+  Result := nil;
+  if not ACustomForm.HandleAllocated then Exit;
+  Result := TCocoaWindow(TCocoaWindowContent(ACustomForm.Handle).lclOwnWindow);
 end;
 
 class function TCocoaWSCustomForm.CreateHandle(const AWinControl: TWinControl;
@@ -525,13 +558,29 @@ class procedure TCocoaWSCustomForm.CloseModal(const ACustomForm: TCustomForm);
 begin
 //  if ACustomForm.HandleAllocated then
 //    NSPanel(ACustomForm.Handle).setStyleMask(NSwindow(ACustomForm.Handle).styleMask and not NSDocModalWindowMask);
+  {if CocoaWidgetSet.CurModalSession <> nil then
+    NSApp.endModalSession(CocoaWidgetSet.CurModalSession);
+  CocoaWidgetSet.CurModalSession := nil;}
+  NSApp.stopModal();
+  CocoaWidgetSet.CurModalForm := nil;
 end;
 
 class procedure TCocoaWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
+var
+  win: TCocoaWindow;
 begin
- // modal is started in ShowHide with (fsModal in AForm.FormState)
-//  if ACustomForm.HandleAllocated then
-//    NSPanel(ACustomForm.Handle).setStyleMask(NSwindow(ACustomForm.Handle).styleMask or NSDocModalWindowMask);
+  // Another possible implementation is to have modal started in ShowHide with (fsModal in AForm.FormState)
+  win := TCocoaWSCustomForm.GetWindowFromHandle(ACustomForm);
+  if win = nil then Exit;
+
+  { Another possible implementation is using a session, but this requires
+    disabling the other windows ourselves
+  CurModalSession: NSModalSession;
+  CocoaWidgetSet.CurModalSession := NSApp.beginModalSessionForWindow(win);
+  NSApp.runModalSession(CocoaWidgetSet.CurModalSession);}
+
+  CocoaWidgetSet.CurModalForm := ACustomForm;
+  NSApp.runModalForWindow(win);
 end;
 
 class procedure TCocoaWSCustomForm.SetAlphaBlend(const ACustomForm: TCustomForm; const AlphaBlend: Boolean; const Alpha: Byte);

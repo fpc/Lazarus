@@ -107,6 +107,9 @@ type
     function GetAppHandle: THandle; override;
     function CreateThemeServices: TThemeServices; override;
   public
+    // modal session
+    CurModalForm: TCustomForm;
+
     constructor Create; override;
     destructor Destroy; override;
 

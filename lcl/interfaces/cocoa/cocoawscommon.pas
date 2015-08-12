@@ -27,7 +27,6 @@ type
       FPropStorage: TStringList;
       FContext: TCocoaContext;
       FHasCaret: Boolean;
-      FTarget: TWinControl;
       FBoundsReportedToChildren: boolean;
       FIsOpaque:boolean;
       FIsEventRouting:boolean;
@@ -37,6 +36,7 @@ type
     function GetIsOpaque: Boolean;
     procedure SetIsOpaque(AValue: Boolean);
   protected
+    FTarget: TWinControl;
     class function CocoaModifiersToKeyState(AModifiers: NSUInteger): PtrInt; static;
     class function CocoaPressedMouseButtonsToKeyState(AMouseButtons: NSUInteger): PtrInt; static;
     procedure OffsetMousePos(var Point: NSPoint);
