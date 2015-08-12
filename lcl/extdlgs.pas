@@ -152,7 +152,17 @@ type
     FOnChange: TNotifyEvent;
     FOnCalcKey: TKeyPressEvent;
     FOnDisplayChange: TNotifyEvent;
+    FDialogScale: integer;
+    FColorBtnDigits,
+    FColorBtnOthers,
+    FColorBtnMemory,
+    FColorBtnOk,
+    FColorBtnCancel,
+    FColorBtnClear,
+    FColorDisplayText,
+    FColorDisplayBack: TColor;
     function GetDisplay: Double;
+    procedure SetDialogScale(AValue: integer);
   protected
     class procedure WSRegisterClass; override;
     procedure Change; virtual;
@@ -167,13 +177,22 @@ type
     property Memory: Double read FMemory;
   published
     property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
-    property CalculatorLayout : TCalculatorLayout Read FLayout Write Flayout;
+    property CalculatorLayout: TCalculatorLayout read FLayout write FLayout default clNormal;
     property Precision: Byte read FPrecision write FPrecision default DefCalcPrecision;
     property Title;
     property Value: Double read FValue write FValue;
     property OnCalcKey: TKeyPressEvent read FOnCalcKey write FOnCalcKey;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnDisplayChange: TNotifyEvent read FOnDisplayChange write FOnDisplayChange;
+    property DialogScale: integer read FDialogScale write SetDialogScale default 100;
+    property ColorBtnDigits: TColor read FColorBtnDigits write FColorBtnDigits;
+    property ColorBtnMemory: TColor read FColorBtnMemory write FColorBtnMemory;
+    property ColorBtnOk: TColor read FColorBtnOk write FColorBtnOk;
+    property ColorBtnCancel: TColor read FColorBtnCancel write FColorBtnCancel;
+    property ColorBtnClear: TColor read FColorBtnClear write FColorBtnClear;
+    property ColorBtnOthers: TColor read FColorBtnOthers write FColorBtnOthers;
+    property ColorDisplayText: TColor read FColorDisplayText write FColorDisplayText;
+    property ColorDisplayBack: TColor read FColorDisplayBack write FColorDisplayBack;
   end;
 
 { TCalculatorForm }
@@ -201,9 +220,8 @@ type
     property DisplayPanel: TPanel read FDisplayPanel;
     property DisplayLabel: TLabel read FDisplayLabel;
   public
-    constructor Create(AOwner: TComponent); override;
-//    constructor CreateLayout(AOwner: TComponent;ALayout : TCalculatorLayout);
-    property Value : Double read GetValue write SetValue;
+    constructor Create(AOwner: TComponent; ALayout: TCalculatorLayout);
+    property Value: Double read GetValue write SetValue;
   end;
 
 function CreateCalculatorForm(AOwner: TComponent; ALayout : TCalculatorLayout; AHelpContext: THelpContext): TCalculatorForm;
@@ -258,16 +276,27 @@ procedure Register;
 
 implementation
 
-{$R lcl_calc_images.res}
+//no need as buttons don't have glyphs now
+//{$R lcl_calc_images.res}
 
-uses 
-  WSExtDlgs;
+uses
+  WSExtDlgs, Math;
 
 procedure Register;
 begin
   RegisterComponents('Dialogs',[TOpenPictureDialog,TSavePictureDialog,
                                 TCalendarDialog,TCalculatorDialog]);
 end;
+
+var
+  cColorBtnDigits: TColor = clblack;
+  cColorBtnMemory: TColor = clnavy;
+  cColorBtnClear: TColor = clred;
+  cColorBtnOk: TColor = clgreen;
+  cColorBtnCancel: TColor = clmaroon;
+  cColorBtnOthers: TColor = clblack;
+  cColorDisplayText: TColor = clblack;
+  cColorDisplayBack: TColor = clwhite;
 
 { TPreviewFileControl }
 
@@ -476,28 +505,53 @@ type
   TCalcBtnKind =
    (cbNone, cbNum0, cbNum1, cbNum2, cbNum3, cbNum4, cbNum5, cbNum6,
     cbNum7, cbNum8, cbNum9, cbSgn, cbDcm, cbDiv, cbMul, cbSub,
-    cbAdd, cbSqr, cbPcnt, cbRev, cbEql, cbBck, cbClr, cbMP,
+    cbAdd, cbSqrt, cbSquare, cbPcnt, cbRev, cbEql, cbBck, cbClr, cbMP,
     cbMS, cbMR, cbMC, cbOk, cbCancel);
 
 const
-  BtnPos: array[TCalculatorLayout, TCalcBtnKind] of TPoint =
-  (((X: -1; Y: -1), (X: 47; Y: 104), (X: 47; Y: 80), (X: 85; Y: 80),
+  CalcFormWidth: array[TCalculatorLayout] of integer = (278, 170);
+  CalcFormHeight: array[TCalculatorLayout] of integer = (160, 150);
+  CalcBtnEqualWidthNormal = 74;
+  CalcBtnClearWidthNormal = 50;
+  CalcBtnEqualWidthSimple = 54;
+  CalcResultKeys = [#13, '=', '%'];
+
+const
+  CalcBtnSizes: array[TCalculatorLayout,1..2] of Integer =
+    ((36,22), (25,21));
+  CalcBtnCaptions: array[cbSgn..cbCancel] of String =
+   ('±', ',', '/', '*', '-', '+', '√', 'x²', '%', '1/x', '=', '«', 'C',
+    'MP','MS','MR','MC', 'ok', 'x');
+  CalcBtnPos: array[TCalculatorLayout, TCalcBtnKind] of TPoint =
+  ((
+    //normal layout
+    (X: -1; Y: -1), (X: 47; Y: 104), (X: 47; Y: 80), (X: 85; Y: 80),
     (X: 123; Y: 80), (X: 47; Y: 56), (X: 85; Y: 56), (X: 123; Y: 56),
     (X: 47; Y: 32), (X: 85; Y: 32), (X: 123; Y: 32), (X: 85; Y: 104),
     (X: 123; Y: 104), (X: 161; Y: 32), (X: 161; Y: 56), (X: 161; Y: 80),
-    (X: 161; Y: 104), (X: 199; Y: 32), (X: 199; Y: 56), (X: 199; Y: 80),
-    (X: 199; Y: 104), (X: 145; Y: 6), (X: 191; Y: 6), (X: 5; Y: 104),
-    (X: 5; Y: 80), (X: 5; Y: 56), (X: 5; Y: 32),
-    (X: 47; Y: 6), (X: 85; Y: 6)),
-   ((X: -1; Y: -1), (X: 6; Y: 75), (X: 6; Y: 52), (X: 29; Y: 52),
-    (X: 52; Y: 52), (X: 6; Y: 29), (X: 29; Y: 29), (X: 52; Y: 29),
-    (X: 6; Y: 6), (X: 29; Y: 6), (X: 52; Y: 6), (X: 52; Y: 75),
-    (X: 29; Y: 75), (X: 75; Y: 6), (X: 75; Y: 29), (X: 75; Y: 52),
-    (X: 75; Y: 75), (X: -1; Y: -1), (X: -1; Y: -1), (X: -1; Y: -1),
-    (X: 52; Y: 98), (X: 29; Y: 98), (X: 6; Y: 98), (X: -1; Y: -1),
+    (X: 161; Y: 104),
+    (X: 199; Y: 32), //sqrt
+    (X: 199+38; Y: 32), //sqr
+    (X: 199; Y: 56), //%
+    (X: 199; Y: 80), //1/x
+    (X: 199; Y: 104), //=
+    (X: 170; Y: 6), //back
+    (X: 223; Y: 6), //clear
+    (X: 5; Y: 104), (X: 5; Y: 80), (X: 5; Y: 56), (X: 5; Y: 32), //mem
+    (X: 47; Y: 6), //ok
+    (X: 100; Y: 6) //cancel
+    ),
+    (
+    //simple layout
+    (X: -1; Y: -1), (X: 6; Y: 75), (X: 6; Y: 52), (X: 34; Y: 52),
+    (X: 62; Y: 52), (X: 6; Y: 29), (X: 34; Y: 29), (X: 62; Y: 29),
+    (X: 6; Y: 6), (X: 34; Y: 6), (X: 62; Y: 6), (X: 62; Y: 75),
+    (X: 34; Y: 75), (X: 90; Y: 6), (X: 90; Y: 29), (X: 90; Y: 52),
+    (X: 90; Y: 75), (X: -1; Y: -1), (X: -1; Y: -1), (X: -1; Y: -1), (X: -1; Y: -1),
+    (X: 62; Y: 98), (X: 34; Y: 98), (X: 6; Y: 98), (X: -1; Y: -1),
     (X: -1; Y: -1), (X: -1; Y: -1), (X: -1; Y: -1),
-    (X: -1; Y: -1), (X: -1; Y: -1)));
-  ResultKeys = [#13, '=', '%'];
+    (X: 140; Y: 6), (X: 140; Y: 29)
+    ));
 
 { ---------------------------------------------------------------------
   Auxiliary
@@ -515,17 +569,17 @@ begin
   end;
 end;
 
-function CreateCalculatorForm(AOwner: TComponent; ALayout : TCalculatorLayout; AHelpContext: THelpContext): TCalculatorForm;
+function CreateCalculatorForm(AOwner: TComponent; ALayout: TCalculatorLayout; AHelpContext: THelpContext): TCalculatorForm;
 begin
-  Result:=TCalculatorForm.Create(AOwner);
+  Result:=TCalculatorForm.Create(AOwner, ALayout);
   with Result do
     try
       HelpContext:=AHelpContext;
       if Screen.PixelsPerInch <> 96 then
       begin { scale to screen res }
         SetDefaultFont(Font, ALayout);
-        Left:=(Screen.Width div 2) - (Width div 2);
-        Top:=(Screen.Height div 2) - (Height div 2);
+        Left:=(Screen.Width - Width) div 2;
+        Top:=(Screen.Height - Height) div 2;
       end;
     except
       Free;
@@ -616,12 +670,6 @@ end;
 
 function CreateCalcBtn(AParent: TWinControl; AKind: TCalcBtnKind;
   AOnClick: TNotifyEvent; ALayout: TCalculatorLayout): TCalcButton;
-const
-  BtnSizes: array[TCalculatorLayout,1..2] of Integer =
-    ((36,22),(21,21));
-  BtnCaptions: array[cbSgn..cbMC] of String =
-   ('±', ',', '/', '*', '-', '+', 'sqrt', '%', '1/x', '=', '<-', 'C',
-    'MP','MS','MR','MC');
 begin
   Result:=TCalcButton.CreateKind(AParent, AKind);
   with Result do
@@ -630,15 +678,25 @@ begin
         Caption:=IntToStr(Tag)
       else if Kind = cbDcm then
         Caption:=DefaultFormatSettings.DecimalSeparator
-      else if Kind in [cbSgn..cbMC] then
-        Caption:=BtnCaptions[Kind];
-      Left:=BtnPos[ALayout, Kind].X;
-      Top:=BtnPos[ALayout, Kind].Y;
-      Width:=BtnSizes[ALayout,1];
-      Height:=BtnSizes[ALayout,2];
+      else if Kind in [cbSgn..cbCancel] then
+        Caption:=CalcBtnCaptions[Kind];
+
+      Left:=CalcBtnPos[ALayout, Kind].X;
+      Top:=CalcBtnPos[ALayout, Kind].Y;
+      Width:=CalcBtnSizes[ALayout,1];
+      Height:=CalcBtnSizes[ALayout,2];
       OnClick:=AOnClick;
       ParentFont:=True;
       Parent:=AParent;
+
+      case Result.Kind of
+        cbMC, cbMR, cbMS, cbMP: Result.Font.Color:= cColorBtnMemory;
+        cbOk: Result.Font.Color:= cColorBtnOk;
+        cbCancel: Result.Font.Color:= cColorBtnCancel;
+        cbClr: Result.Font.Color:= cColorBtnClear;
+        cbNum0..cbNum9: Result.Font.Color:= cColorBtnDigits;
+        else Result.Font.Color:= cColorBtnOthers;
+      end;
     except
       Free;
       raise;
@@ -703,12 +761,6 @@ constructor TCalculatorPanel.CreateLayout(AOwner: TComponent; ALayout: TCalculat
 const
   PanelSizes: array[TCalculatorLayout,1..2] of Integer =
     ((129,140),(124,98));
-  BtnGlyphs: array[TCalculatorLayout,cbSgn..cbCancel] of String =
-   (('btncalcpmin','','','btncalcmul','btncalcmin','btncalcplus', '',
-     '','','','','','','','','', 'btncalcok', 'btncalccancel'),
-    ('btncalcpmin','','','btncalcmul','btncalcmin','btncalcplus', '',
-     '','','','','','','','','', 'btncalcok', 'btncalccancel')
-   );
 var
   I: TCalcBtnKind;
   Bitmap: TCustomBitmap;
@@ -725,29 +777,19 @@ begin
   ParentColor:=True;
   for I:=cbNum0 to cbCancel do
   begin
-    if BtnPos[ALayout, I].X > 0 then
+    if CalcBtnPos[ALayout, I].X > 0 then
       with CreateCalcBtn(Self, I, @BtnClick, ALayout) do
       begin
         if ALayout = clNormal then
         begin
-          if (Kind in [cbBck, cbClr]) then
-            Width:=44;
-          if (Kind in [cbSgn..cbCancel]) then
-            if (BtnGlyphs[ALayout,Kind]<>'') then
-            begin
-              Caption:='';
-              Bitmap := TPixmap.Create;
-              try
-                Bitmap.LoadFromResourceName(hInstance, BtnGlyphs[ALayout,Kind]);
-                Glyph.Assign(Bitmap);
-              finally
-                Bitmap.Free;
-              end;
-            end;
+          if (Kind in [cbBck, cbClr, cbOk, cbCancel]) then
+            Width:=CalcBtnClearWidthNormal;
+          if (Kind in [cbPcnt, cbRev, cbEql]) then
+            Width:=CalcBtnEqualWidthNormal;
         end
         else
         begin
-          if Kind in [cbEql] then Width:=44;
+          if Kind in [cbEql] then Width:=CalcBtnEqualWidthSimple;
         end;
       end;
   end;
@@ -903,6 +945,12 @@ begin
           else
             SetDisplay(Sqrt(GetDisplay));
           end;
+      'S':
+        if FStatus in [csValid, csFirst] then
+          begin
+          FStatus:=csFirst;
+          SetDisplay(Sqr(GetDisplay));
+          end;
       '0'..'9':
         begin
         CheckFirst;
@@ -949,7 +997,7 @@ begin
         end;
         FOperator:=Key;
         FOperand:=GetDisplay;
-        if (Key in ResultKeys) and Assigned(FOnResult) then
+        if (Key in CalcResultKeys) and Assigned(FOnResult) then
           FOnResult(Self);
         end;
       #27, 'C':
@@ -1019,7 +1067,8 @@ begin
     cbMul: CalcKey('*');
     cbSub: CalcKey('-');
     cbAdd: CalcKey('+');
-    cbSqr: CalcKey('Q');
+    cbSqrt: CalcKey('Q');
+    cbSquare: CalcKey('S');
     cbPcnt: CalcKey('%');
     cbRev: CalcKey('R');
     cbEql: CalcKey('=');
@@ -1092,6 +1141,17 @@ begin
   inherited Create(AOwner);
   FPrecision:=DefCalcPrecision;
   FBeepOnError:=True;
+  FDialogScale:=100;
+  FLayout:=clNormal;
+
+  FColorBtnDigits:=cColorBtnDigits;
+  FColorBtnOthers:=cColorBtnOthers;
+  FColorBtnMemory:=cColorBtnMemory;
+  FColorBtnOk:=cColorBtnOk;
+  FColorBtnCancel:=cColorBtnCancel;
+  FColorBtnClear:=cColorBtnClear;
+  FColorDisplayText:=cColorDisplayText;
+  FColorDisplayBack:=cColorDisplayBack;
 end;
 
 destructor TCalculatorDialog.Destroy;
@@ -1112,6 +1172,15 @@ begin
   if Assigned(DlgForm) then
     Result:=TCalculatorPanel(TCalculatorForm(DlgForm).FCalcPanel).GetDisplay
   else Result:=FValue;
+end;
+
+procedure TCalculatorDialog.SetDialogScale(AValue: integer);
+const
+  cMinSize = 80;
+  cMaxSize = 400;
+begin
+  if FDialogScale=AValue then Exit;
+  FDialogScale:=Max(cMinSize, Min(cMaxSize, AValue));
 end;
 
 procedure TCalculatorDialog.CalcKey(var Key: char);
@@ -1139,8 +1208,19 @@ function TCalculatorDialog.Execute: Boolean;
 var
   CPanel: TCalculatorPanel;
 begin
+  cColorBtnDigits:=FColorBtnDigits;
+  cColorBtnOthers:=FColorBtnOthers;
+  cColorBtnMemory:=FColorBtnMemory;
+  cColorBtnOk:=FColorBtnOk;
+  cColorBtnCancel:=FColorBtnCancel;
+  cColorBtnClear:=FColorBtnClear;
+  cColorDisplayText:=FColorDisplayText;
+  cColorDisplayBack:=FColorDisplayBack;
+
   DlgForm:=CreateCalculatorForm(Application, FLayout, HelpContext);
   try
+    if FDialogScale<>100 then
+      DlgForm.ScaleBy(FDialogScale,100);
     if (csDesigning in ComponentState) then
       DlgForm.Position:=poScreenCenter
     else
@@ -1153,6 +1233,7 @@ begin
       FTop:=DlgForm.Top;
     end;
     CPanel:=TCalculatorPanel(TCalculatorForm(DlgForm).FCalcPanel);
+
     DlgForm.Caption:=Title;
     CPanel.FMemory:=FMemory;
     CPanel.UpdateMemoryLabel;
@@ -1187,29 +1268,20 @@ end;
 
 { TCalculatorForm }
 
-constructor TCalculatorForm.Create(AOwner: TComponent);
-begin
-  BeginFormUpdate;
-  inherited CreateNew(AOwner, 0);
-  InitForm(clNormal);
-  EndFormUpdate;
-end;
-{
-constructor TCalculatorForm.CreateLayout(AOwner: TComponent;ALayout : TCalculatorLayout);
+constructor TCalculatorForm.Create(AOwner: TComponent; ALayout: TCalculatorLayout);
 begin
   BeginFormUpdate;
   inherited CreateNew(AOwner, 0);
   InitForm(ALayout);
   EndFormUpdate;
 end;
-}
 
-procedure TCalculatorForm.InitForm(ALayout : TCalculatorLayout);
+procedure TCalculatorForm.InitForm(ALayout: TCalculatorLayout);
 begin
   BorderStyle:=bsDialog;
   Caption:=rsCalculator;
-  ClientHeight:=159;
-  ClientWidth:=242;
+  ClientHeight:=CalcFormHeight[ALayout];
+  ClientWidth:=CalcFormWidth[ALayout];
   SetDefaultFont(Font, ALayout);
   KeyPreview:=True;
   PixelsPerInch:=96;
@@ -1228,10 +1300,12 @@ begin
   FDisplayPanel:=TPanel.Create(Self);
   with FDisplayPanel do
   begin
-    SetBounds(6, 6, 230, 23);
+    Height:=23;
+    Align:=alTop;
+    BorderSpacing.Around:=7;
     Parent:=FMainPanel;
     BevelOuter:=bvLowered;
-    Color:=clWhite;
+    Color:=cColorDisplayBack;
     Font:=Self.Font;
   end;
   FDisplayLabel:=TLabel.Create(Self);
@@ -1239,10 +1313,11 @@ begin
   begin
     AutoSize:=False;
     Alignment:=taRightJustify;
-    SetBounds(5, 2, 217, 15);
+    Align:=alClient;
+    BorderSpacing.Around:=2;
     Parent:=FDisplayPanel;
     Caption:='0';
-    Font.Color:=clBlack;
+    Font.Color:=cColorDisplayText;
   end;
   { CalcPanel }
   FCalcPanel:=TCalculatorPanel.CreateLayout(Self, ALayout);
