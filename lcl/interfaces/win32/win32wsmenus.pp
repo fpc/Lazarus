@@ -32,8 +32,8 @@ uses
 ////////////////////////////////////////////////////
   WSMenus, WSLCLClasses, WSProc,
   Windows, Controls, Classes, SysUtils, Win32Int, Win32Proc, Win32WSImgList,
-  InterfaceBase, LCLProc, LazUTF8, Themes, UxTheme, Win32Themes, Win32Extra,
-  FileUtil;
+  LCLProc, Themes, UxTheme, Win32Themes, Win32Extra,
+  FileUtil, LazUTF8;
 
 type
 

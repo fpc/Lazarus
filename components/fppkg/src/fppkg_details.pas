@@ -58,9 +58,7 @@ type
     procedure FormShow(Sender: TObject);
   private
     FPackageName: string;
-    { private declarations }
   public
-    { public declarations }
     property PackageName: string read FPackageName write FPackageName;
   end; 
 
