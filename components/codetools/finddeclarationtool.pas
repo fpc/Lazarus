@@ -423,6 +423,49 @@ type
   TOnGetDirectoryCache = function(const ADirectory: string
                                   ): TCTDirectoryCache of object;
 
+  TFDHelpersListKind = (
+    fdhlkDelphiHelper,
+    fdhlkObjCCategory
+    );
+
+  { TFDHelpersListItem }
+
+  TFDHelpersListItem = class(TObject)
+    ForExprType: TExpressionType;
+    HelperContext: TFindContext; // Node.Desc (ctnClassHelper, ctnRecordHelper, ctnTypeHelper) or (ctnObjCCategory)
+    function CalcMemSize: PtrUInt;
+  end;
+
+  { TFDHelpersListRec }
+
+  TFDHelpersListRec = record
+    ForExprType: TExpressionType;
+    HelperContext: TFindContext;
+  end;
+
+  { TFDHelpersList }
+
+  TFDHelpersList = class
+  private
+    FKind: TFDHelpersListKind;
+    FTree: TAVLTree; // tree of TFDHelpersListItem sorted for CompareHelpersList
+  public
+    function AddFromHelperNode(HelperNode: TCodeTreeNode;
+      Tool: TFindDeclarationTool; RewriteOld: Boolean): TFDHelpersListItem;
+    procedure AddFromList(const ExtList: TFDHelpersList);
+    function FindFromClassNode(ClassNode: TCodeTreeNode; Tool: TFindDeclarationTool): TFindContext;
+    function FindFromExprType(const ExprType: TExpressionType): TFindContext;
+    procedure DeleteHelperNode(HelperNode: TCodeTreeNode; Tool: TFindDeclarationTool);
+    constructor Create(aKind: TFDHelpersListKind);
+    destructor Destroy; override;
+    procedure Clear;
+    function Count: Integer;
+    function CalcMemSize: PtrUInt;
+    property Kind: TFDHelpersListKind read FKind;
+  end;
+
+  { TGenericParams }
+
   TGenericParams = record
     ParamValuesTool: TFindDeclarationTool;
     SpecializeParamsNode: TCodeTreeNode;
@@ -458,15 +501,13 @@ type
     FoundProc.
       }
 
-  THelpersList = class;
-
   TFindDeclarationParams = class(TObject)
   private
     FFoundProcStackFirst: PFoundProc;//list of all saved PFoundProc
     FFoundProcStackLast: PFoundProc;
     FExtractedOperand: string;
-    FHelpers: THelpersList;
-    FFreeHelpers: Boolean;
+    FHelpers: array[TFDHelpersListKind] of TFDHelpersList;
+    FFreeHelpers: array[TFDHelpersListKind] of Boolean;
     procedure ClearFoundProc;
     procedure FreeFoundProc(aFoundProc: PFoundProc; FreeNext: boolean);
     procedure RemoveFoundProcFromList(aFoundProc: PFoundProc);
@@ -505,7 +546,7 @@ type
     NewPos: TCodeXYPosition;
     NewTopLine: integer;
     NewFlags: TFoundDeclarationFlags;
-    constructor Create(AHelpers: THelpersList = nil);
+    constructor Create(ParentParams: TFindDeclarationParams = nil);
     constructor Create(Tool: TFindDeclarationTool; AContextNode: TCodeTreeNode);
     destructor Destroy; override;
     procedure Clear;
@@ -520,7 +561,7 @@ type
     procedure SetIdentifier(NewIdentifierTool: TFindDeclarationTool;
                 NewIdentifier: PChar; NewOnIdentifierFound: TOnIdentifierFound);
     procedure WriteDebugReport;
-    property Helpers: THelpersList read FHelpers;
+    function GetHelpers(HelperKind: TFDHelpersListKind; CreateIfNotExists: boolean = false): TFDHelpersList;
   end;
   
   
@@ -562,40 +603,6 @@ type
   ECodeToolUnitNotFound = class(ECodeToolFileNotFound)
   end;
 
-  { THelpersListItem }
-
-  THelpersListItem = class(TObject)
-    ForExprType: TExpressionType;
-    HelperContext: TFindContext;
-    function CalcMemSize: PtrUInt;
-  end;
-
-  { THelpersListRec }
-
-  THelpersListRec = record
-    ForExprType: TExpressionType;
-    HelperContext: TFindContext;
-  end;
-
-  { THelpersList }
-
-  THelpersList = class
-  private
-    FTree: TAVLTree; // tree of THelpersListItem sorted for CompareHelpersList
-  public
-    function AddFromHelperNode(HelperNode: TCodeTreeNode;
-      Tool: TFindDeclarationTool; RewriteOld: Boolean): THelpersListItem;
-    procedure AddFromList(const ExtList: THelpersList);
-    function FindFromClassNode(ClassNode: TCodeTreeNode; Tool: TFindDeclarationTool): TFindContext;
-    function FindFromExprType(const ExprType: TExpressionType): TFindContext;
-    procedure DeleteHelperNode(HelperNode: TCodeTreeNode; Tool: TFindDeclarationTool);
-    constructor Create;
-    destructor Destroy; override;
-    procedure Clear;
-    function Count: Integer;
-    function CalcMemSize: PtrUInt;
-  end;
-
   //----------------------------------------------------------------------------
 
   { TFindDeclarationTool }
@@ -605,7 +612,7 @@ type
     FAdjustTopLineDueToComment: boolean;
     FDirectoryCache: TCTDirectoryCache;
     FInterfaceIdentifierCache: TInterfaceIdentifierCache;
-    FInterfaceHelperCache: THelpersList;
+    FInterfaceHelperCache: array[TFDHelpersListKind] of TFDHelpersList;
     FOnFindUsedUnit: TOnFindUsedUnit;
     FOnGetCodeToolForBuffer: TOnGetCodeToolForBuffer;
     FOnGetDirectoryCache: TOnGetDirectoryCache;
@@ -707,7 +714,7 @@ type
       out ExprType: TExpressionType): string;
     function FindEnumeratorOfClass(ClassNode: TCodeTreeNode;
       ExceptionOnNotFound: boolean; out ExprType: TExpressionType;
-      AliasType: PFindContext = nil; Helpers: THelpersList = nil): boolean;
+      AliasType: PFindContext = nil; ParentParams: TFindDeclarationParams = nil): boolean;
     function FindOperatorEnumerator(Node: TCodeTreeNode;
       ExprType: TExpressionType; Need: TFindOperatorEnumerator;
       out ResultExprType: TExpressionType): boolean;
@@ -897,12 +904,11 @@ type
     function CleanPosIsDeclarationIdentifier(CleanPos: integer;
                                              Node: TCodeTreeNode): boolean;
 
-    procedure FindHelpersInContext(StartNode: TCodeTreeNode; Helpers: THelpersList);
     procedure FindHelpersInContext(Params: TFindDeclarationParams);
     procedure FindHelpersInUsesSection(UsesNode: TCodeTreeNode;
-      Helpers: THelpersList);
+      Params: TFindDeclarationParams);
     procedure FindHelpersInInterface(AskingTool: TFindDeclarationTool;
-      Helpers: THelpersList);
+      Params: TFindDeclarationParams);
     function FindIdentifierInContext(Params: TFindDeclarationParams;
       var IdentFoundResult: TIdentifierFoundResult): boolean;
     function FindIdentifierInContext(Params: TFindDeclarationParams): boolean;
@@ -1299,19 +1305,19 @@ begin
   ListOfPFindContext:=nil;
 end;
 
-{ THelpersListItem }
+{ TFDHelpersListItem }
 
-function THelpersListItem.CalcMemSize: PtrUInt;
+function TFDHelpersListItem.CalcMemSize: PtrUInt;
 begin
   Result := InstanceSize;
 end;
 
-{ THelpersList }
+{ TFDHelpersList }
 
 function CompareHelpersList(Item1, Item2: Pointer): Integer;
 var
-  I1: THelpersListItem absolute Item1;
-  I2: THelpersListItem absolute Item2;
+  I1: TFDHelpersListItem absolute Item1;
+  I2: TFDHelpersListItem absolute Item2;
 begin
   Result := ComparePointers(I1.ForExprType.Context.Node, I2.ForExprType.Context.Node);
 end;
@@ -1319,23 +1325,23 @@ end;
 function CompareHelpersListExprType(Item1, Item2: Pointer): Integer;
 var
   I1: PExpressionType absolute Item1;
-  I2: THelpersListItem absolute Item2;
+  I2: TFDHelpersListItem absolute Item2;
 begin
   Result := ComparePointers(I1^.Context.Node, I2.ForExprType.Context.Node);
 end;
 
-procedure THelpersList.AddFromList(const ExtList: THelpersList);
-  function CopyNode(ANode: TAVLTreeNode): THelpersListItem;
+procedure TFDHelpersList.AddFromList(const ExtList: TFDHelpersList);
+  function CopyNode(ANode: TAVLTreeNode): TFDHelpersListItem;
   var
-    FromNode: THelpersListItem;
+    FromNode: TFDHelpersListItem;
   begin
-    FromNode := THelpersListItem(ANode.Data);
-    if Self.FTree.FindKey(FromNode, @CompareHelpersList) <> nil then
+    FromNode := TFDHelpersListItem(ANode.Data);
+    if FTree.FindKey(FromNode, @CompareHelpersList) <> nil then
       Exit;//FPC & Delphi don't support duplicate class helpers!
-    Result := THelpersListItem.Create;
+    Result := TFDHelpersListItem.Create;
     Result.HelperContext := FromNode.HelperContext;
     Result.ForExprType := FromNode.ForExprType;
-    Self.FTree.Add(Result);
+    FTree.Add(Result);
   end;
 var
   Node: TAVLTreeNode;
@@ -1344,17 +1350,17 @@ begin
     CopyNode(Node);
 end;
 
-function THelpersList.CalcMemSize: PtrUInt;
+function TFDHelpersList.CalcMemSize: PtrUInt;
 var
   Node: TAVLTreeNode;
 begin
   Result:=PtrUInt(InstanceSize)+PtrUInt(FTree.InstanceSize);
   for Node in FTree do
-    Inc(Result, THelpersListItem(Node.Data).CalcMemSize);
+    Inc(Result, TFDHelpersListItem(Node.Data).CalcMemSize);
 end;
 
-function THelpersList.AddFromHelperNode(HelperNode: TCodeTreeNode;
-  Tool: TFindDeclarationTool; RewriteOld: Boolean): THelpersListItem;
+function TFDHelpersList.AddFromHelperNode(HelperNode: TCodeTreeNode;
+  Tool: TFindDeclarationTool; RewriteOld: Boolean): TFDHelpersListItem;
 var
   OldKey: TAVLTreeNode;
   ExprType: TExpressionType;
@@ -1369,10 +1375,10 @@ begin
       if RewriteOld then
         FTree.FreeAndDelete(OldKey)
       else
-        Exit(THelpersListItem(OldKey.Data));
+        Exit(TFDHelpersListItem(OldKey.Data));
     end;
 
-    Result := THelpersListItem.Create;
+    Result := TFDHelpersListItem.Create;
     Result.ForExprType := ExprType;
     Result.HelperContext.Node := HelperNode;
     Result.HelperContext.Tool := Tool;
@@ -1381,24 +1387,24 @@ begin
     Result := nil;
 end;
 
-procedure THelpersList.Clear;
+procedure TFDHelpersList.Clear;
 begin
   FTree.FreeAndClear;
 end;
 
-function THelpersList.Count: Integer;
+function TFDHelpersList.Count: Integer;
 begin
   Result := FTree.Count;
 end;
 
-constructor THelpersList.Create;
+constructor TFDHelpersList.Create(aKind: TFDHelpersListKind);
 begin
   inherited Create;
-
-  FTree := TAVLTree.Create(@CompareHelpersList);
+  FKind:=aKind;
+  FTree:=TAVLTree.Create(@CompareHelpersList);
 end;
 
-procedure THelpersList.DeleteHelperNode(HelperNode: TCodeTreeNode;
+procedure TFDHelpersList.DeleteHelperNode(HelperNode: TCodeTreeNode;
   Tool: TFindDeclarationTool);
 var
   OldKey: TAVLTreeNode;
@@ -1414,14 +1420,14 @@ begin
   end;
 end;
 
-destructor THelpersList.Destroy;
+destructor TFDHelpersList.Destroy;
 begin
   Clear;
   FTree.Free;
   inherited Destroy;
 end;
 
-function THelpersList.FindFromClassNode(ClassNode: TCodeTreeNode;
+function TFDHelpersList.FindFromClassNode(ClassNode: TCodeTreeNode;
   Tool: TFindDeclarationTool): TFindContext;
 var
   ExprType: TExpressionType;
@@ -1432,14 +1438,14 @@ begin
   Result := FindFromExprType(ExprType);
 end;
 
-function THelpersList.FindFromExprType(const ExprType: TExpressionType
+function TFDHelpersList.FindFromExprType(const ExprType: TExpressionType
   ): TFindContext;
 var
   Item: TAVLTreeNode;
 begin
   Item := FTree.FindKey(@ExprType, @CompareHelpersListExprType);
   if Assigned(Item) then
-    Result := THelpersListItem(Item.Data).HelperContext
+    Result := TFDHelpersListItem(Item.Data).HelperContext
   else
     Result := CleanFindContext;
 end;
@@ -3488,23 +3494,30 @@ var
   
   function SearchInHelpers: Boolean;
   var
-    CHContext: TFindContext;
+    HelperContext: TFindContext;
+    Helpers: TFDHelpersList;
+    HelperKind: TFDHelpersListKind;
   begin
     Result := False;
     SearchInHelpersInTheEnd := False;
-    CHContext := Params.Helpers.FindFromClassNode(StartContextNode, Self);
+    if StartContextNode.Desc=ctnObjCClass then
+      HelperKind:=fdhlkObjCCategory
+    else
+      HelperKind:=fdhlkDelphiHelper;
+    Helpers:=Params.GetHelpers(HelperKind);
+    if Helpers=nil then exit;
+    HelperContext := Helpers.FindFromClassNode(StartContextNode, Self);
 
-    if Assigned(CHContext.Tool) and Assigned(CHContext.Node) then
+    if (HelperContext.Node<>nil) then
     begin
       OldFlags := Params.Flags;
       try
-        Exclude(Params.Flags, fdfExceptionOnNotFound);
-        Exclude(Params.Flags, fdfIgnoreCurContextNode);
-        Exclude(Params.Flags, fdfSearchInHelpers);
-        Include(Params.Flags, fdfIgnoreUsedUnits);
-        Params.ContextNode := CHContext.Node;
+        Params.Flags:=Params.Flags
+          -[fdfExceptionOnNotFound,fdfIgnoreCurContextNode,fdfSearchInHelpers]
+          +[fdfIgnoreUsedUnits];
+        Params.ContextNode := HelperContext.Node;
 
-        if CHContext.Tool.FindIdentifierInContext(Params, IdentFoundResult) then
+        if HelperContext.Tool.FindIdentifierInContext(Params, IdentFoundResult) then
         begin
           if (IdentFoundResult = ifrAbortSearch) or (
                (IdentFoundResult = ifrSuccess) and
@@ -3552,7 +3565,7 @@ var
           Exclude(Params.Flags,fdfExceptionOnNotFound);
           Exclude(Params.Flags,fdfSearchInHelpersInTheEnd);
 
-          //leaving current class -> check if search in helpers in the end
+          // leaving current class -> check if search in helpers in the end
           if SearchInHelpersInTheEnd then
           begin
             Result := SearchInHelpers;
@@ -4070,7 +4083,7 @@ var
     NewCode: TCodeBuffer;
   begin
     IsPredefined:=false;
-    SubParams:=TFindDeclarationParams.Create(Params.Helpers);
+    SubParams:=TFindDeclarationParams.Create(Params);
     try
       SubParams.GenParams := Params.GenParams;
       IdentStart:=CleanPos;
@@ -4502,11 +4515,15 @@ var
   OldFlags: TFindDeclarationFlags;
   FullExprType: TExpressionType;
   CHContext: TFindContext;
+  Helpers: TFDHelpersList;
 begin
+  FoundInTool:=nil;
+  Helpers:=Params.GetHelpers(fdhlkDelphiHelper);
+  if Helpers=nil then exit(false);
   FullExprType := CleanExpressionType;
   FullExprType.Desc := ExprType;
-  //find class helper functions
-  CHContext := Params.Helpers.FindFromExprType(FullExprType);
+  // find class helper functions
+  CHContext := Helpers.FindFromExprType(FullExprType);
 
   if Assigned(CHContext.Node) and Assigned(CHContext.Tool) then
   begin
@@ -4825,43 +4842,48 @@ begin
 end;
 
 procedure TFindDeclarationTool.FindHelpersInContext(
-  StartNode: TCodeTreeNode; Helpers: THelpersList);
+  Params: TFindDeclarationParams);
+var
+  Node: TCodeTreeNode;
 begin
-  while Assigned(StartNode) do
+  Node:=Params.ContextNode;
+  while Node<>nil do
   begin
-    case StartNode.Desc of
+    case Node.Desc of
       ctnClassHelper, ctnRecordHelper, ctnTypeHelper:
-        if
-          Assigned(StartNode.Parent) and (StartNode.Parent.Desc = ctnTypeDefinition)
-        then
-          Helpers.AddFromHelperNode(StartNode, Self, False);
+        if (Node.Parent.Desc = ctnTypeDefinition) then
+          Params.GetHelpers(fdhlkDelphiHelper,true).AddFromHelperNode(Node, Self, True);
+      ctnObjCCategory:
+        if (Node.Parent.Desc = ctnTypeDefinition) then
+          Params.GetHelpers(fdhlkObjCCategory,true).AddFromHelperNode(Node, Self, False);
       ctnUsesSection:
-        FindHelpersInUsesSection(StartNode, Helpers);
+        FindHelpersInUsesSection(Node, Params);
     end;
-    StartNode := StartNode.Prior;
+    Node := Node.Prior;
   end;
 end;
 
-procedure TFindDeclarationTool.FindHelpersInContext(
-  Params: TFindDeclarationParams);
-begin
-  FindHelpersInContext(Params.ContextNode, Params.Helpers);
-end;
-
 procedure TFindDeclarationTool.FindHelpersInInterface(
-  AskingTool: TFindDeclarationTool; Helpers: THelpersList);
+  AskingTool: TFindDeclarationTool; Params: TFindDeclarationParams);
+var
+  HelperKind: TFDHelpersListKind;
+  Cache: TFDHelpersList;
 begin
   // build tree for pascal source
   if not BuildInterfaceIdentifierCache(true) then exit;
   if (AskingTool<>Self) and (AskingTool<>nil) then
   begin
     AskingTool.AddToolDependency(Self);
-    Helpers.AddFromList(FInterfaceHelperCache);
+    for HelperKind in TFDHelpersListKind do begin
+      Cache:=FInterfaceHelperCache[HelperKind];
+      if (Cache<>nil) and (Cache.Count>0) then
+        Params.GetHelpers(HelperKind,true).AddFromList(FInterfaceHelperCache[HelperKind]);
+    end;
   end;
 end;
 
 procedure TFindDeclarationTool.FindHelpersInUsesSection(
-  UsesNode: TCodeTreeNode; Helpers: THelpersList);
+  UsesNode: TCodeTreeNode; Params: TFindDeclarationParams);
 var
   NewCodeTool: TFindDeclarationTool;
   Node: TCodeTreeNode;
@@ -4878,7 +4900,7 @@ begin
       NewCodeTool:=FindCodeToolForUsedUnit(AnUnitName,InFilename,false);
       if NewCodeTool<>nil then begin
         // search the identifier in the interface of the used unit
-        NewCodeTool.FindHelpersInInterface(Self,Helpers);
+        NewCodeTool.FindHelpersInInterface(Self,Params);
       end;
     end;
     Node:=Node.PriorBrother;
@@ -5989,10 +6011,10 @@ begin
         {$ENDIF}
         if (fdfSearchInHelpers in Params.Flags) and
            (CurClassNode.Desc in [ctnClassHelper,ctnRecordHelper]) and
-           (Params.Helpers.Count > 0)
+           (Params.GetHelpers(fdhlkDelphiHelper)<>nil)
         then//override current helper for the type and search in that type
         begin
-          ForExprType := Params.Helpers.AddFromHelperNode(CurClassNode, Self, True).ForExprType;
+          ForExprType := Params.GetHelpers(fdhlkDelphiHelper).AddFromHelperNode(CurClassNode, Self, True).ForExprType;
           if (ForExprType.Desc = xtContext) and (ForExprType.Context.Tool<>nil) and
              (ForExprType.Context.Node<>nil)
           then begin
@@ -7023,6 +7045,8 @@ function TFindDeclarationTool.BuildInterfaceIdentifierCache(
   procedure ScanChildren(ParentNode: TCodeTreeNode); forward;
 
   procedure ScanNode(Node: TCodeTreeNode);
+  var
+    FirstChild: TCodeTreeNode;
   begin
     case Node.Desc of
     ctnTypeSection,ctnConstSection,ctnVarSection,ctnResStrSection,ctnPropertySection:
@@ -7031,10 +7055,15 @@ function TFindDeclarationTool.BuildInterfaceIdentifierCache(
       begin
         FInterfaceIdentifierCache.Add(@Src[Node.StartPos],Node,Node.StartPos);
         ScanForEnums(Node);
-        if (Node.Desc = ctnTypeDefinition) and
-          Assigned(Node.FirstChild) and (Node.FirstChild.Desc in [ctnClassHelper, ctnRecordHelper, ctnTypeHelper])
-        then
-          FInterfaceHelperCache.AddFromHelperNode(Node.FirstChild, Self, True);
+        FirstChild:=Node.FirstChild;
+        if (Node.Desc = ctnTypeDefinition) and (FirstChild<>nil) then begin
+          case FirstChild.Desc of
+          ctnClassHelper, ctnRecordHelper, ctnTypeHelper:
+            FInterfaceHelperCache[fdhlkDelphiHelper].AddFromHelperNode(FirstChild, Self, True);
+          ctnObjCCategory:
+            FInterfaceHelperCache[fdhlkObjCCategory].AddFromHelperNode(FirstChild, Self, false);
+          end;
+        end;
       end;
     ctnGenericType:
       if Node.FirstChild<>nil then begin
@@ -7067,6 +7096,7 @@ function TFindDeclarationTool.BuildInterfaceIdentifierCache(
 var
   InterfaceNode: TCodeTreeNode;
   Node: TCodeTreeNode;
+  HelperKind: TFDHelpersListKind;
 begin
   // build tree for pascal source
   //debugln(['TFindDeclarationTool.BuildInterfaceIdentifierCache BEFORE ',MainFilename]);
@@ -7096,10 +7126,11 @@ begin
   else
     FInterfaceIdentifierCache.Clear;
   FInterfaceIdentifierCache.Complete:=true;
-  if FInterfaceHelperCache=nil then
-    FInterfaceHelperCache:=THelpersList.Create
-  else
-    FInterfaceHelperCache.Clear;
+  for HelperKind in TFDHelpersListKind do
+    if FInterfaceHelperCache[HelperKind]=nil then
+      FInterfaceHelperCache[HelperKind]:=TFDHelpersList.Create(HelperKind)
+    else
+      FInterfaceHelperCache[HelperKind].Clear;
 
   // add unit node
   MoveCursorToNodeStart(Tree.Root);
@@ -7227,7 +7258,7 @@ begin
   if TypeNode.Desc=ctnIdentifier then begin
     // resolve type
     //debugln(['TFindDeclarationTool.FindIdentifierInTypeOfConstant ']);
-    TypeParams:=TFindDeclarationParams.Create(Params.Helpers);
+    TypeParams:=TFindDeclarationParams.Create(Params);
     try
       TypeParams.ContextNode:=TypeNode;
       TypeParams.SetIdentifier(Self,nil,nil);
@@ -8369,9 +8400,11 @@ var
     if ClassNodeOfMethod.Desc in [ctnClassHelper,ctnRecordHelper] then
     begin
       if (ExprType.Context.Node<>nil) and (ExprType.Context.Tool<>nil) then//inherited helper found -> use it!
-        Params.Helpers.AddFromHelperNode(ExprType.Context.Node, ExprType.Context.Tool, True)
+        Params.GetHelpers(fdhlkDelphiHelper,true)
+          .AddFromHelperNode(ExprType.Context.Node, ExprType.Context.Tool, True)
       else//inherited helper not found -> delete current
-        Params.Helpers.DeleteHelperNode(ClassNodeOfMethod, Self);
+        Params.GetHelpers(fdhlkDelphiHelper,true)
+          .DeleteHelperNode(ClassNodeOfMethod, Self);
 
       HelperForExpr := FindExtendedExprOfHelper(ClassNodeOfMethod);
       if HelperForExpr.Desc = xtContext then
@@ -8828,7 +8861,7 @@ begin
               // array with explicit range
               // Low(array[SubRange])  has the type of the subrange
               Result.Context.Tool.MoveCursorToNodeStart(ParamNode.FirstChild);
-              SubParams:=TFindDeclarationParams.Create(Params.Helpers);
+              SubParams:=TFindDeclarationParams.Create(Params);
               try
                 SubParams.Flags:=fdfDefaultForExpressions;
                 SubParams.ContextNode:=ParamNode;
@@ -8858,7 +8891,7 @@ begin
           // return type is System.SEL
           NewTool:=FindCodeToolForUsedUnit('system','',true);
           if NewTool=nil then exit;
-          SubParams:=TFindDeclarationParams.Create(Params.Helpers);
+          SubParams:=TFindDeclarationParams.Create(Params);
           try
             SubParams.Identifier:='SEL'#0;
             if (not NewTool.FindIdentifierInInterface(Self,SubParams))
@@ -10245,14 +10278,17 @@ begin
 end;
 
 procedure TFindDeclarationTool.DoDeleteNodes(StartNode: TCodeTreeNode);
+var
+  HelperKind: TFDHelpersListKind;
 begin
   ClearNodeCaches;
   if FInterfaceIdentifierCache<>nil then begin
     FInterfaceIdentifierCache.Clear;
     FInterfaceIdentifierCache.Complete:=false;
   end;
-  if FInterfaceHelperCache<>nil then
-    FInterfaceHelperCache.Clear;
+  for HelperKind in TFDHelpersListKind do
+    if FInterfaceHelperCache[HelperKind]<>nil then
+      FInterfaceHelperCache[HelperKind].Clear;
   inherited DoDeleteNodes(StartNode);
 end;
 
@@ -10317,15 +10353,14 @@ begin
 end;
 
 destructor TFindDeclarationTool.Destroy;
+var
+  HelperKind: TFDHelpersListKind;
 begin
-  FInterfaceIdentifierCache.Free;
-  FInterfaceIdentifierCache:=nil;
-  FInterfaceHelperCache.Free;
-  FInterfaceHelperCache:=nil;
-  FDependsOnCodeTools.Free;
-  FDependsOnCodeTools:=nil;
-  FDependentCodeTools.Free;
-  FDependentCodeTools:=nil;
+  FreeAndNil(FInterfaceIdentifierCache);
+  for HelperKind in TFDHelpersListKind do
+    FreeAndNil(FInterfaceHelperCache[HelperKind]);
+  FreeAndNil(FDependsOnCodeTools);
+  FreeAndNil(FDependentCodeTools);
   if FDirectoryCache<>nil then begin
     FDirectoryCache.Release;
     FDirectoryCache:=nil;
@@ -10475,14 +10510,16 @@ var
   NodeCache: TCodeTreeNodeCache;
   TypeCache: TBaseTypeCache;
   m: PtrUInt;
+  HelperKind: TFDHelpersListKind;
 begin
   inherited CalcMemSize(Stats);
   if FInterfaceIdentifierCache<>nil then
     Stats.Add('TFindDeclarationTool.FInterfaceIdentifierCache',
       FInterfaceIdentifierCache.CalcMemSize);
-  if FInterfaceHelperCache<>nil then
-    Stats.Add('TFindDeclarationTool.FInterfaceHelperCache',
-      FInterfaceHelperCache.CalcMemSize);
+  for HelperKind in TFDHelpersListKind do
+    if FInterfaceHelperCache[HelperKind]<>nil then
+      Stats.Add('TFindDeclarationTool.FInterfaceHelperCache[]',
+        FInterfaceHelperCache[HelperKind].CalcMemSize);
   if FFirstNodeCache<>nil then begin
     m:=0;
     NodeCache:=FFirstNodeCache;
@@ -10876,7 +10913,7 @@ begin
         ctnClass, ctnRecordType, ctnClassHelper, ctnRecordHelper, ctnTypeHelper:
           begin
             if not TermExprType.Context.Tool.FindEnumeratorOfClass(
-              TermExprType.Context.Node,true,ExprType,@AliasType, Params.Helpers)
+              TermExprType.Context.Node,true,ExprType,@AliasType, Params)
             then
               RaiseTermHasNoIterator;
             Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,@AliasType);
@@ -10968,7 +11005,7 @@ end;
 
 function TFindDeclarationTool.FindEnumeratorOfClass(ClassNode: TCodeTreeNode;
   ExceptionOnNotFound: boolean; out ExprType: TExpressionType;
-  AliasType: PFindContext; Helpers: THelpersList): boolean;
+  AliasType: PFindContext; ParentParams: TFindDeclarationParams): boolean;
 var
   Params: TFindDeclarationParams;
   ProcTool: TFindDeclarationTool;
@@ -10982,7 +11019,7 @@ begin
   if AliasType<>nil then
     AliasType^:=CleanFindContext;
   ExprType:=CleanExpressionType;
-  Params:=TFindDeclarationParams.Create(Helpers);
+  Params:=TFindDeclarationParams.Create(ParentParams);
   try
     // search function 'GetEnumerator'
     Params.ContextNode:=ClassNode;
@@ -11785,23 +11822,26 @@ begin
   end;
 end;
 
-constructor TFindDeclarationParams.Create(AHelpers: THelpersList);
+constructor TFindDeclarationParams.Create(ParentParams: TFindDeclarationParams);
+var
+  HelperKind: TFDHelpersListKind;
 begin
   inherited Create;
   Clear;
-  FFreeHelpers := not Assigned(AHelpers);
-  if FFreeHelpers then
-    FHelpers := THelpersList.Create
-  else
-    FHelpers := AHelpers;
+  if ParentParams<>nil then
+    for HelperKind in TFDHelpersListKind do
+      FHelpers[HelperKind] := ParentParams.FHelpers[HelperKind];
 end;
 
 destructor TFindDeclarationParams.Destroy;
+var
+  HelperKind: TFDHelpersListKind;
 begin
   Clear;
   FreeFoundProc(FFoundProcStackFirst,true);
-  if FFreeHelpers then
-    FHelpers.Free;
+  for HelperKind in TFDHelpersListKind do
+    if FFreeHelpers[HelperKind] then
+      FHelpers[HelperKind].Free;
   inherited Destroy;
 end;
 
@@ -11917,7 +11957,7 @@ constructor TFindDeclarationParams.Create(Tool: TFindDeclarationTool;
 begin
   Create(nil);//helper list will be created
   ContextNode := AContextNode;
-  if (Tool<> nil) and (ContextNode<>nil) then
+  if (Tool<>nil) and (ContextNode<>nil) then
     Tool.FindHelpersInContext(Self);
 end;
 
@@ -11975,6 +12015,17 @@ begin
     DebugLn(' NewPos=nil');
   DebugLn(' NewFlags=',dbgs(NewFlags));
   DebugLn('');
+end;
+
+function TFindDeclarationParams.GetHelpers(HelperKind: TFDHelpersListKind;
+  CreateIfNotExists: boolean): TFDHelpersList;
+begin
+  Result:=FHelpers[HelperKind];
+  if (Result=nil) and CreateIfNotExists then begin
+    Result:=TFDHelpersList.Create(HelperKind);
+    FHelpers[HelperKind]:=Result;
+    FFreeHelpers[HelperKind]:=true;
+  end;
 end;
 
 procedure TFindDeclarationParams.SetIdentifier(

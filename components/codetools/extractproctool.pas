@@ -1116,14 +1116,12 @@ var
   var
     i: Integer;
     Cache: PWithVarCache;
-    Params: TFindDeclarationParams;
-    CLList: THelpersList;
+    ParentParams, Params: TFindDeclarationParams;
   begin
     Result:=false;
 
-    CLList := THelpersList.Create;
+    ParentParams := TFindDeclarationParams.Create(Self,WithVarNode);
     try
-      FindHelpersInContext(WithVarNode, CLList);
       // check cache
       if WithVarCache=nil then
         WithVarCache:=TFPList.Create;
@@ -1142,7 +1140,7 @@ var
         Cache^.WithVarNode:=WithVarNode;
         Cache^.WithVarExpr:=CleanExpressionType;
         Cache^.VarEndPos:=FindEndOfTerm(WithVarNode.StartPos,false,true);
-        Params:=TFindDeclarationParams.Create(CLList);
+        Params:=TFindDeclarationParams.Create(ParentParams);
         try
           Params.ContextNode:=WithVarNode;
           Params.Flags:=[fdfExceptionOnNotFound,fdfFunctionResult,fdfFindChildren];
@@ -1166,7 +1164,7 @@ var
       if CleanPos<=Cache^.VarEndPos then exit;
 
       // search identifier in with var context
-      Params:=TFindDeclarationParams.Create(CLList);
+      Params:=TFindDeclarationParams.Create(ParentParams);
       try
         Params.SetIdentifier(Self,@Src[CleanPos],nil);
         Params.Flags:=[fdfSearchInAncestors,fdfSearchInHelpers];
@@ -1179,7 +1177,7 @@ var
         Params.Free;
       end;
     finally
-      CLList.Free;
+      ParentParams.Free;
     end;
   end;
 
