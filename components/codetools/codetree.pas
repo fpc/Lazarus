@@ -99,7 +99,7 @@ const
   ctnClassExternal      = 42; // parent: jvm: ctnClass, ObjCClass, ObjCProtocol
   ctnClassHelper        = 43;//"class helper", parent/child similar to ctnClass
   ctnClassInheritance   = 44;
-  ctnHelperFor          = 45;//class/record/type helper for
+  ctnHelperFor          = 45;//class/record/type helper for, only child is ctnIdentifier
   ctnClassGUID          = 46;
   ctnClassClassVar      = 47; // child of visibility section
   ctnClassPrivate       = 48; // child of AllClassObjects

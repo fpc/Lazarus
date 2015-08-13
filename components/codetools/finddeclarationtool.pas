@@ -451,7 +451,7 @@ type
     FTree: TAVLTree; // tree of TFDHelpersListItem sorted for CompareHelpersList
   public
     function AddFromHelperNode(HelperNode: TCodeTreeNode;
-      Tool: TFindDeclarationTool; RewriteOld: Boolean): TFDHelpersListItem;
+      Tool: TFindDeclarationTool; Replace: Boolean): TFDHelpersListItem;
     procedure AddFromList(const ExtList: TFDHelpersList);
     function FindFromClassNode(ClassNode: TCodeTreeNode; Tool: TFindDeclarationTool): TFindContext;
     function FindFromExprType(const ExprType: TExpressionType): TFindContext;
@@ -1360,19 +1360,21 @@ begin
 end;
 
 function TFDHelpersList.AddFromHelperNode(HelperNode: TCodeTreeNode;
-  Tool: TFindDeclarationTool; RewriteOld: Boolean): TFDHelpersListItem;
+  Tool: TFindDeclarationTool; Replace: Boolean): TFDHelpersListItem;
 var
   OldKey: TAVLTreeNode;
   ExprType: TExpressionType;
 begin
+  //debugln(['TFDHelpersList.AddFromHelperNode Start ',Tool.CleanPosToStr(HelperNode.StartPos,true),' ',Tool.ExtractCode(HelperNode.StartPos,HelperNode.StartPos+20,[])]);
   ExprType:=Tool.FindExtendedExprOfHelper(HelperNode);
+  //debugln(['TFDHelpersList.AddFromHelperNode ExprType=',ExprTypeToString(ExprType)]);
 
   if ExprType.Desc in xtAllIdentTypes then
   begin
     OldKey := FTree.FindKey(@ExprType, @CompareHelpersListExprType);
     if OldKey <> nil then
-    begin//FPC & Delphi don't support duplicate class helpers!
-      if RewriteOld then
+    begin
+      if Replace then
         FTree.FreeAndDelete(OldKey)
       else
         Exit(TFDHelpersListItem(OldKey.Data));
@@ -1444,7 +1446,7 @@ var
   Item: TAVLTreeNode;
 begin
   Item := FTree.FindKey(@ExprType, @CompareHelpersListExprType);
-  if Assigned(Item) then
+  if Item<>nil then
     Result := TFDHelpersListItem(Item.Data).HelperContext
   else
     Result := CleanFindContext;
@@ -2709,13 +2711,14 @@ begin
               except
                 on ECodeToolError do ;
               end;
+              SubNode:=FindInheritanceNode(TypeNode);
+              if SubNode<>nil then
+                Result:=Result+ExtractNode(SubNode,[]);
+
               if TypeNode.Desc in [ctnClassHelper, ctnRecordHelper, ctnTypeHelper] then
                 HelperForNode := FindHelperForNode(TypeNode)
               else
                 HelperForNode := nil;
-              SubNode:=FindInheritanceNode(TypeNode);
-              if SubNode<>nil then
-                Result:=Result+ExtractNode(SubNode,[]);
               if HelperForNode<>nil then
                 Result:=Result+' '+ExtractNode(HelperForNode,[]);
             end;
@@ -3507,27 +3510,25 @@ var
     Helpers:=Params.GetHelpers(HelperKind);
     if Helpers=nil then exit;
     HelperContext := Helpers.FindFromClassNode(StartContextNode, Self);
+    if (HelperContext.Node=nil) then exit;
 
-    if (HelperContext.Node<>nil) then
-    begin
-      OldFlags := Params.Flags;
-      try
-        Params.Flags:=Params.Flags
-          -[fdfExceptionOnNotFound,fdfIgnoreCurContextNode,fdfSearchInHelpers]
-          +[fdfIgnoreUsedUnits];
-        Params.ContextNode := HelperContext.Node;
+    OldFlags := Params.Flags;
+    try
+      Params.Flags:=Params.Flags
+        -[fdfExceptionOnNotFound,fdfIgnoreCurContextNode,fdfSearchInHelpers]
+        +[fdfIgnoreUsedUnits];
+      Params.ContextNode := HelperContext.Node;
 
-        if HelperContext.Tool.FindIdentifierInContext(Params, IdentFoundResult) then
-        begin
-          if (IdentFoundResult = ifrAbortSearch) or (
-               (IdentFoundResult = ifrSuccess) and
-                CheckResult(IdentFoundResult=ifrSuccess,False))
-          then
-            Result := True;
-        end;
-      finally
-        Params.Flags := OldFlags;
+      if HelperContext.Tool.FindIdentifierInContext(Params, IdentFoundResult) then
+      begin
+        if (IdentFoundResult = ifrAbortSearch) or (
+             (IdentFoundResult = ifrSuccess) and
+              CheckResult(IdentFoundResult=ifrSuccess,False))
+        then
+          Result := True;
       end;
+    finally
+      Params.Flags := OldFlags;
     end;
   end;
 
@@ -3556,14 +3557,13 @@ var
         end;
       end;
 
-      if (ContextNode.Desc in (AllClasses)) then begin//allow ctnRecordType and ctnTypeTypeBeforeHelper: they can have helpers!
+      if (ContextNode.Desc in AllClasses) then begin//allow ctnRecordType and ctnTypeTypeBeforeHelper: they can have helpers!
         if (fdfSearchInAncestors in Flags) then begin
           // after searching in a class definition, search in its ancestors
           // ToDo: check for cycles in ancestors
 
           OldFlags := Params.Flags;
-          Exclude(Params.Flags,fdfExceptionOnNotFound);
-          Exclude(Params.Flags,fdfSearchInHelpersInTheEnd);
+          Params.Flags:=Params.Flags-[fdfExceptionOnNotFound,fdfSearchInHelpersInTheEnd];
 
           // leaving current class -> check if search in helpers in the end
           if SearchInHelpersInTheEnd then
@@ -3760,13 +3760,12 @@ begin
     exit;
   end;
 
-  //find class helper functions
+  // find class helper functions
   SearchInHelpersInTheEnd := False;
-  if (fdfSearchInHelpers in Flags) and
-     (ContextNode.Desc in [ctnClass, ctnRecordType, ctnTypeType]) and
-     Assigned(ContextNode.Parent) and (ContextNode.Parent.Desc = ctnTypeDefinition)
-  then
-  begin
+  if (fdfSearchInHelpers in Flags)
+    and (ContextNode.Desc in [ctnClass,ctnRecordType,ctnTypeType,ctnObjCClass])
+    and (ContextNode.Parent<>nil) and (ContextNode.Parent.Desc = ctnTypeDefinition)
+  then begin
     if (fdfSearchInHelpersInTheEnd in Flags) then
       SearchInHelpersInTheEnd := True
     else begin
@@ -6009,14 +6008,13 @@ begin
         {$IFDEF ShowTriedContexts}
         DebugLn('[TFindDeclarationTool.FindIdentifierInClassOfMethod]  searching identifier in class of method Identifier=',GetIdentifier(Params.Identifier));
         {$ENDIF}
-        if (fdfSearchInHelpers in Params.Flags) and
-           (CurClassNode.Desc in [ctnClassHelper,ctnRecordHelper]) and
-           (Params.GetHelpers(fdhlkDelphiHelper)<>nil)
-        then//override current helper for the type and search in that type
-        begin
+        if (fdfSearchInHelpers in Params.Flags)
+          and (CurClassNode.Desc in [ctnClassHelper,ctnRecordHelper])
+          and (Params.GetHelpers(fdhlkDelphiHelper)<>nil)
+        then begin
+          // override current helper for the type and search in that type
           ForExprType := Params.GetHelpers(fdhlkDelphiHelper).AddFromHelperNode(CurClassNode, Self, True).ForExprType;
-          if (ForExprType.Desc = xtContext) and (ForExprType.Context.Tool<>nil) and
-             (ForExprType.Context.Node<>nil)
+          if (ForExprType.Desc = xtContext) and (ForExprType.Context.Node<>nil)
           then begin
             Params.ContextNode:=ForExprType.Context.Node;
             Result:=ForExprType.Context.Tool.FindIdentifierInContext(Params);
@@ -8395,11 +8393,12 @@ var
     ExprType.Desc:=xtContext;
     ExprType.Context:=CreateFindContext(Params);
 
-    //helpers have different order -> first search in extended class and then in helper (applies only to inherited call)
     SearchInHelpersInTheEnd := False;
     if ClassNodeOfMethod.Desc in [ctnClassHelper,ctnRecordHelper] then
     begin
-      if (ExprType.Context.Node<>nil) and (ExprType.Context.Tool<>nil) then//inherited helper found -> use it!
+      // helpers have different order
+      // -> first search in extended class and then in helper (applies only to inherited call)
+      if (ExprType.Context.Node<>nil) then//inherited helper found -> use it!
         Params.GetHelpers(fdhlkDelphiHelper,true)
           .AddFromHelperNode(ExprType.Context.Node, ExprType.Context.Tool, True)
       else//inherited helper not found -> delete current
@@ -11732,11 +11731,19 @@ end;
 
 function TFindDeclarationTool.FindExtendedExprOfHelper(HelperNode: TCodeTreeNode
   ): TExpressionType;
+// returns the expression type of the extended class/type of a "helper for"
 var
   ForNode: TCodeTreeNode;
   Params: TFindDeclarationParams;
 begin
-  ForNode := FindHelperForNode(HelperNode);
+  case HelperNode.Desc of
+  ctnClassHelper,ctnRecordHelper,ctnTypeHelper:
+    ForNode:=FindHelperForNode(HelperNode);
+  ctnObjCCategory:
+    ForNode:=FindInheritanceNode(HelperNode);
+  else
+    exit(CleanExpressionType);
+  end;
   if Assigned(ForNode) and Assigned(ForNode.FirstChild) then
   begin
     Params:=TFindDeclarationParams.Create;
