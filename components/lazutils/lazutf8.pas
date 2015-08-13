@@ -2951,8 +2951,9 @@ end;
 {------------------------------------------------------------------------------
   Name:    UTF8CompareStr
   Params: S1, S2 - UTF8 encoded strings
-  Returns: < 0 if S1 < S2, 0 if S1 = S2, > 0 if S2 > S1.
-  Compare 2 UTF8 encoded strings, case sensitive.
+  Returns: < 0 if S1 < S2, 0 if S1 = S2, > 0 if S1 > S2.
+  Compare two UTF8 encoded strings, case sensitive.
+  Internally it uses CompareMemRange, which returns -1 if a byte of S1 is lower than S2.
  ------------------------------------------------------------------------------}
 function UTF8CompareStr(const S1, S2: string): PtrInt;
 begin
@@ -2988,10 +2989,11 @@ end;
 {------------------------------------------------------------------------------
   Name:    UTF8CompareText
   Params: S1, S2 - UTF8 encoded strings
-  Returns: < 0 if S1 < S2, 0 if S1 = S2, > 0 if S2 > S1.
-  Compare 2 UTF8 encoded strings, case insensitive.
+  Returns: < 0 if S1 < S2, 0 if S1 = S2, > 0 if S1 > S2.
+  Compare two UTF8 encoded strings, case insensitive.
   Note: Use this function instead of AnsiCompareText.
   This function guarantees proper collation on all supported platforms.
+  Internally it uses UTF8CompareStr.
  ------------------------------------------------------------------------------}
 function UTF8CompareText(const S1, S2: string): PtrInt;
 var
