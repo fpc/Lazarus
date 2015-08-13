@@ -22,6 +22,9 @@ program finddeclarationtest;
 uses
   Classes, sysutils, consoletestrunner, dom, fpcunit, CodeToolManager,
   CodeToolsConfig, LazLogger, fdtbase, fdt_classhelper, fdt_nestedclasses,
+  {$IFDEF Darwin}
+  fdt_objccategory,
+  {$ENDIF}
   fdt_basic;
 
 const

@@ -41,7 +41,7 @@
         <PackageName Value="fpcunitconsolerunner"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="5">
+    <Units Count="6">
       <Unit0>
         <Filename Value="finddeclarationtest.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -49,23 +49,23 @@
       <Unit1>
         <Filename Value="fdtbase.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="fdtbase"/>
       </Unit1>
       <Unit2>
         <Filename Value="fdt_classhelper.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="fdt_classhelper"/>
       </Unit2>
       <Unit3>
         <Filename Value="fdt_nestedclasses.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="fdt_nestedclasses"/>
       </Unit3>
       <Unit4>
         <Filename Value="fdt_basic.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="fdt_basic"/>
       </Unit4>
+      <Unit5>
+        <Filename Value="fdt_objccategory.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit5>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
