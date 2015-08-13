@@ -220,7 +220,7 @@ type
     property DisplayPanel: TPanel read FDisplayPanel;
     property DisplayLabel: TLabel read FDisplayLabel;
   public
-    constructor Create(AOwner: TComponent; ALayout: TCalculatorLayout);
+    constructor Create(AOwner: TComponent; ALayout: TCalculatorLayout); reintroduce;
     property Value: Double read GetValue write SetValue;
   end;
 
