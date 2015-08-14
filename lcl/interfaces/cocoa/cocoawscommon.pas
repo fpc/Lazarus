@@ -688,7 +688,6 @@ end;
 function TLCLCommonCallback.MouseUpDownEvent(Event: NSEvent): Boolean;
 const
   MSGKINDUP: array[0..3] of Integer = (LM_LBUTTONUP, LM_RBUTTONUP, LM_MBUTTONUP, LM_XBUTTONUP);
-
 var
   Msg: TLMMouse;
   MsgContext: TLMContextMenu;
@@ -696,7 +695,6 @@ var
   MButton: NSInteger;
   obj:NSObject;
   callback: ICommonCallback;
-
 begin
   Result := False; // allow cocoa to handle message
 
@@ -704,18 +702,18 @@ begin
     Exit;
 
    //debugln('MouseUpDownEvent '+Target.name);
-   if CocoaWidgetSet.CaptureControl<>0 then       // check if to route event to capture control
+  if CocoaWidgetSet.CaptureControl<>0 then       // check if to route event to capture control
+  begin
+    obj:=NSObject(CocoaWidgetSet.CaptureControl);
+    if (obj<>Owner) and not FIsEventRouting then
     begin
-      obj:=NSObject(CocoaWidgetSet.CaptureControl);
-      if (obj<>Owner) and not FIsEventRouting then
-        begin
-          FIsEventRouting:=true;
-          callback:=obj.lclGetCallback;
-          Result:=callback.MouseUpDownEvent(Event);
-          FIsEventRouting:=false;
-          exit;
-        end;
+      FIsEventRouting:=true;
+      callback:=obj.lclGetCallback;
+      Result:=callback.MouseUpDownEvent(Event);
+      FIsEventRouting:=false;
+      exit;
     end;
+  end;
 
   // idea of multi click implementation is taken from gtk
 
@@ -759,7 +757,7 @@ begin
         MsgContext.XPos := Round(MousePos.X);
         MsgContext.YPos := Round(MousePos.Y);
         Result := DeliverMessage(MsgContext) <> 0;
-     end;
+      end;
     end;
     NSLeftMouseUp,
     NSRightMouseUp,
@@ -772,7 +770,7 @@ begin
     end;
   end;
 
-//debugln('MouseUpDownEvent:'+DbgS(Msg.Msg)+' Target='+Target.name+);
+  //debugln('MouseUpDownEvent:'+DbgS(Msg.Msg)+' Target='+Target.name+);
 end;
 
 function TLCLCommonCallback.MouseMove(Event: NSEvent): Boolean;
@@ -801,35 +799,34 @@ begin
   targetControl:=nil;
 
   if CocoaWidgetSet.CaptureControl<>0 then       // check if to route event to capture control
+  begin
+    obj:=NSObject(CocoaWidgetSet.CaptureControl);
+    if (obj<>Owner) and not FIsEventRouting then
     begin
-      obj:=NSObject(CocoaWidgetSet.CaptureControl);
-      if (obj<>Owner) and not FIsEventRouting then
-        begin
-          FIsEventRouting:=true;
-          callback:=obj.lclGetCallback;
-          result:=callback.MouseMove(Event);
-          FIsEventRouting:=false;
-          exit;
-        end;
-    end
-    else
-    begin
-
-      if assigned(Target.Parent) and not PtInRect(rect, mp) then
-         targetControl:=Target.Parent                            // outside myself then route to parent
-      else
-      for i:=Target.ComponentCount-1 downto 0  do                // otherwise check, if over child and route to child
-        if Target.Components[i] is TWinControl then
-          begin
-            childControl:=TWinControl(Target.Components[i]);
-            rect:=childControl.BoundsRect;
-             if  PtInRect(rect, mp) then
-                 begin
-                   targetControl:=childControl;
-                   break;
-                 end;
-           end;
+      FIsEventRouting:=true;
+      callback:=obj.lclGetCallback;
+      result:=callback.MouseMove(Event);
+      FIsEventRouting:=false;
+      exit;
     end;
+  end
+  else
+  begin
+    if assigned(Target.Parent) and not PtInRect(rect, mp) then
+       targetControl:=Target.Parent // outside myself then route to parent
+    else
+    for i:=Target.ComponentCount-1 downto 0  do // otherwise check, if over child and route to child
+      if Target.Components[i] is TWinControl then
+      begin
+        childControl:=TWinControl(Target.Components[i]);
+        rect:=childControl.BoundsRect;
+        if  PtInRect(rect, mp) then
+        begin
+          targetControl:=childControl;
+          break;
+        end;
+      end;
+  end;
 
   if assigned(targetControl) and not FIsEventRouting then
   begin

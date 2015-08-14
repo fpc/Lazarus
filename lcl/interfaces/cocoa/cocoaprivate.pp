@@ -1985,8 +1985,8 @@ end;
 
 procedure TCocoaCustomControl.mouseDragged(event: NSEvent);
 begin
-if not Assigned(callback) or not callback.MouseMove(event) then
-  inherited mouseDragged(event);
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited mouseDragged(event);
 end;
 
 procedure TCocoaCustomControl.mouseEntered(event: NSEvent);
@@ -3049,7 +3049,7 @@ end;
 procedure TCocoaTableListView.mouseDragged(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseMove(event) then
-  inherited mouseDragged(event);
+    inherited mouseDragged(event);
 end;
 
 procedure TCocoaTableListView.mouseEntered(event: NSEvent);
