@@ -13,6 +13,12 @@ uses
   LazarusIDEStrConsts, BaseDebugManager, Debugger;
 
 type
+  {$IFDEF darwin}
+  TMyDummyObcCClass = objcclass(NSObject)
+    // dummy class to get rid of FPC messages unit objc and objcbase not used
+    b: BOOL;
+  end;
+  {$ENDIF}
 
   { TDebugAttachDialogForm }
 
