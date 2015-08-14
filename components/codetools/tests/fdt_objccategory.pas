@@ -10,47 +10,63 @@ uses
 
 type
 
-  { ta }
+  { TMyClass }
 
-  ta = objcclass(NSObject)
+  TMyClass = objcclass(NSObject)
   end;
 
-  { ca }
+  { TCategoryA }
 
-  ca = objccategory(NSObject)
+  TCategoryA = objccategory(NSObject)
     procedure categoryAmethod; message 'categoryAmethod';
   end;
 
-  { cb }
+  { TCategoryB }
 
-  cb = objccategory(ta)
+  TCategoryB = objccategory(TMyClass)
     procedure categoryBmethod; message 'categoryBmethod';
+  end;
+
+  { TCategoryC }
+
+  TCategoryC = objccategory(TMyClass)
+    // contrary to helpers there can be multiple ObjCCategory active for a class
+    procedure categoryCmethod; message 'categoryCmethod';
   end;
 
 procedure DoIt;
 
 implementation
 
-{ ca }
+{ TCategoryA }
 
-procedure ca.categoryAmethod;
+procedure TCategoryA.categoryAmethod;
 begin
 
 end;
 
-{ cb }
+{ TCategoryB }
 
-procedure cb.categoryBmethod;
+procedure TCategoryB.categoryBmethod;
+begin
+
+end;
+
+{ TCategoryC }
+
+procedure TCategoryC.categoryCmethod;
 begin
 
 end;
 
 procedure DoIt;
 var
-  a: NSObject;
+  a: TMyClass;
 begin
-  a:=ta(ta.alloc).init;
-  a.categoryAmethod{declaration:fdt_objccategory.ca.categoryAmethod};
+  a:=TMyClass(TMyClass.alloc).init;
+  a.categoryAmethod{declaration:fdt_objccategory.TCategoryA.categoryAmethod};
+  a.categoryBmethod{declaration:fdt_objccategory.TCategoryB.categoryBmethod};
+  a.categoryCmethod{declaration:fdt_objccategory.TCategoryC.categoryCmethod};
 end;
 
 end.

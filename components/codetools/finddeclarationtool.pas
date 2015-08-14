@@ -1319,6 +1319,8 @@ var
   I1: TFDHelpersListItem absolute Item1;
   I2: TFDHelpersListItem absolute Item2;
 begin
+  Result := ord(I1.ForExprType.Desc)-ord(I2.ForExprType.Desc);
+  if Result<>0 then exit;
   Result := ComparePointers(I1.ForExprType.Context.Node, I2.ForExprType.Context.Node);
 end;
 
@@ -1327,6 +1329,8 @@ var
   I1: PExpressionType absolute Item1;
   I2: TFDHelpersListItem absolute Item2;
 begin
+  Result := ord(I1^.Desc)-ord(I2.ForExprType.Desc);
+  if Result<>0 then exit;
   Result := ComparePointers(I1^.Context.Node, I2.ForExprType.Context.Node);
 end;
 
