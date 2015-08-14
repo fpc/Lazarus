@@ -1991,8 +1991,21 @@ begin
 end;
 
 procedure TCocoaCustomControl.drawRect(dirtyRect: NSRect);
+var
+  lTarget: TWinControl;
 begin
   inherited drawRect(dirtyRect);
+  // Implement Color property
+  if Assigned(callback) then
+  begin
+    lTarget := TWinControl(callback.GetTarget());
+    if (lTarget.Color <> clDefault) and (lTarget.Color <> clBtnFace) then
+    begin
+      ColorToNSColor(ColorToRGB(lTarget.Color)).set_();
+      NSRectFill(dirtyRect);
+    end;
+  end;
+
   if CheckMainThread and Assigned(callback) then
     callback.Draw(NSGraphicsContext.currentContext, bounds, dirtyRect);
 end;
