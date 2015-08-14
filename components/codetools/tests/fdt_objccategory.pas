@@ -38,6 +38,16 @@ procedure DoIt;
 
 implementation
 
+procedure DoIt;
+var
+  a: TMyClass;
+begin
+  a:=TMyClass(TMyClass.alloc).init;
+  a.categoryAmethod{declaration:fdt_objccategory.TCategoryA.categoryAmethod};
+  a.categoryBmethod{declaration:fdt_objccategory.TCategoryB.categoryBmethod};
+  a.categoryCmethod{declaration:fdt_objccategory.TCategoryC.categoryCmethod};
+end;
+
 { TCategoryA }
 
 procedure TCategoryA.categoryAmethod;
@@ -57,16 +67,6 @@ end;
 procedure TCategoryC.categoryCmethod;
 begin
 
-end;
-
-procedure DoIt;
-var
-  a: TMyClass;
-begin
-  a:=TMyClass(TMyClass.alloc).init;
-  a.categoryAmethod{declaration:fdt_objccategory.TCategoryA.categoryAmethod};
-  a.categoryBmethod{declaration:fdt_objccategory.TCategoryB.categoryBmethod};
-  a.categoryCmethod{declaration:fdt_objccategory.TCategoryC.categoryCmethod};
 end;
 
 end.

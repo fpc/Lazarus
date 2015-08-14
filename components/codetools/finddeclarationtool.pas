@@ -448,20 +448,26 @@ type
   TFDHelpersList = class
   private
     FKind: TFDHelpersListKind;
-    FTree: TAVLTree; // tree of TFDHelpersListItem sorted for CompareHelpersList
+    FTree: TAVLTree; { tree of TFDHelpersListItem sorted for CompareHelpersList.
+       Nodes with same key (ForExprType) are chronologically ordered from left to right. }
+     procedure AddChronologically(Item: TFDHelpersListItem);
   public
     function AddFromHelperNode(HelperNode: TCodeTreeNode;
       Tool: TFindDeclarationTool; Replace: Boolean): TFDHelpersListItem;
     procedure AddFromList(const ExtList: TFDHelpersList);
-    function FindFromClassNode(ClassNode: TCodeTreeNode; Tool: TFindDeclarationTool): TFindContext;
-    function FindFromExprType(const ExprType: TExpressionType): TFindContext;
+    function IterateFromClassNode(ClassNode: TCodeTreeNode;
+      Tool: TFindDeclarationTool; out HelperContext: TFindContext; out Iterator: TAVLTreeNode): boolean; // returns newest (rightmost)
+    function GetNext(out HelperContext: TFindContext; var Iterator: TAVLTreeNode): boolean;
+    function FindFromExprType(const ExprType: TExpressionType): TFindContext; // returns newest (rightmost)
     procedure DeleteHelperNode(HelperNode: TCodeTreeNode; Tool: TFindDeclarationTool);
     constructor Create(aKind: TFDHelpersListKind);
     destructor Destroy; override;
     procedure Clear;
     function Count: Integer;
     function CalcMemSize: PtrUInt;
+    procedure WriteDebugReport;
     property Kind: TFDHelpersListKind read FKind;
+    property Tree: TAVLTree read FTree;
   end;
 
   { TGenericParams }
@@ -983,6 +989,7 @@ function PredefinedIdentToExprTypeDesc(Identifier: PChar): TExpressionTypeDesc;
 function dbgs(const Flags: TFindDeclarationFlags): string; overload;
 function dbgs(const Flags: TFoundDeclarationFlags): string; overload;
 function dbgs(const vat: TVariableAtomType): string; overload;
+function dbgs(const Kind: TFDHelpersListKind): string; overload;
 
 implementation
 
@@ -1035,6 +1042,11 @@ end;
 function dbgs(const vat: TVariableAtomType): string;
 begin
   Result:=VariableAtomTypeNames[vat];
+end;
+
+function dbgs(const Kind: TFDHelpersListKind): string;
+begin
+  WriteStr(Result, Kind);
 end;
 
 function ListOfPFindContextToStr(const ListOfPFindContext: TFPList): string;
@@ -1340,12 +1352,13 @@ procedure TFDHelpersList.AddFromList(const ExtList: TFDHelpersList);
     FromNode: TFDHelpersListItem;
   begin
     FromNode := TFDHelpersListItem(ANode.Data);
-    if FTree.FindKey(FromNode, @CompareHelpersList) <> nil then
-      Exit;//FPC & Delphi don't support duplicate class helpers!
+    if Kind=fdhlkDelphiHelper then
+      if FTree.FindKey(FromNode, @CompareHelpersList) <> nil then
+        Exit;//FPC & Delphi don't support duplicate class helpers!
     Result := TFDHelpersListItem.Create;
     Result.HelperContext := FromNode.HelperContext;
     Result.ForExprType := FromNode.ForExprType;
-    FTree.Add(Result);
+    AddChronologically(Result);
   end;
 var
   Node: TAVLTreeNode;
@@ -1363,6 +1376,34 @@ begin
     Inc(Result, TFDHelpersListItem(Node.Data).CalcMemSize);
 end;
 
+procedure TFDHelpersList.WriteDebugReport;
+var
+  Node: TAVLTreeNode;
+  Item: TFDHelpersListItem;
+begin
+  debugln(['TFDHelpersList.WriteDebugReport ',dbgs(Kind),' Count=',FTree.Count]);
+  Node:=FTree.FindLowest;
+  while Node<>nil do begin
+    Item:=TFDHelpersListItem(Node.Data);
+    debugln(['  ForExprType=[',ExprTypeToString(Item.ForExprType),']',
+      ' Helper=[',FindContextToString(Item.HelperContext),']']);
+    Node:=FTree.FindSuccessor(Node);
+  end;
+end;
+
+procedure TFDHelpersList.AddChronologically(Item: TFDHelpersListItem);
+begin
+  with Item.ForExprType.Context do begin
+    // Note: ObjCCategory allows multiple helpers for a class (here: ForExprType)
+    // => there can be multiple items with the same key in the tree which
+    //    must be chronologically sorted
+    // -> append the new item rightmost by slightly increasing the key
+    Node:=TCodeTreeNode(Pointer(Node)-SizeOf(Pointer));
+    FTree.Add(Item);
+    Node:=TCodeTreeNode(Pointer(Node)+SizeOf(Pointer));
+  end;
+end;
+
 function TFDHelpersList.AddFromHelperNode(HelperNode: TCodeTreeNode;
   Tool: TFindDeclarationTool; Replace: Boolean): TFDHelpersListItem;
 var
@@ -1375,20 +1416,23 @@ begin
 
   if ExprType.Desc in xtAllIdentTypes then
   begin
-    OldKey := FTree.FindKey(@ExprType, @CompareHelpersListExprType);
-    if OldKey <> nil then
-    begin
-      if Replace then
-        FTree.FreeAndDelete(OldKey)
-      else
-        Exit(TFDHelpersListItem(OldKey.Data));
+    if Kind=fdhlkDelphiHelper then begin
+      // class/type/record helpers only allow one helepr per class
+      OldKey := FTree.FindKey(@ExprType, @CompareHelpersListExprType);
+      if OldKey <> nil then
+      begin
+        if Replace then
+          FTree.FreeAndDelete(OldKey)
+        else
+          Exit(TFDHelpersListItem(OldKey.Data));
+      end;
     end;
 
     Result := TFDHelpersListItem.Create;
     Result.ForExprType := ExprType;
     Result.HelperContext.Node := HelperNode;
     Result.HelperContext.Tool := Tool;
-    FTree.Add(Result);
+    AddChronologically(Result);
   end else
     Result := nil;
 end;
@@ -1433,25 +1477,43 @@ begin
   inherited Destroy;
 end;
 
-function TFDHelpersList.FindFromClassNode(ClassNode: TCodeTreeNode;
-  Tool: TFindDeclarationTool): TFindContext;
+function TFDHelpersList.IterateFromClassNode(ClassNode: TCodeTreeNode;
+  Tool: TFindDeclarationTool; out HelperContext: TFindContext; out
+  Iterator: TAVLTreeNode): boolean;
 var
   ExprType: TExpressionType;
 begin
   ExprType.Desc:=xtContext;
   ExprType.Context.Node:=ClassNode;
   ExprType.Context.Tool:=Tool;
-  Result := FindFromExprType(ExprType);
+  Iterator := FTree.FindRightMostKey(@ExprType, @CompareHelpersListExprType);
+  if Iterator=nil then exit(false);
+  HelperContext:=TFDHelpersListItem(Iterator.Data).HelperContext;
+  Result:=true;
+end;
+
+function TFDHelpersList.GetNext(out HelperContext: TFindContext;
+  var Iterator: TAVLTreeNode): boolean;
+var
+  NextNode: TAVLTreeNode;
+begin
+  NextNode:=FTree.FindPrecessor(Iterator);
+  if (NextNode=nil) or (CompareHelpersList(NextNode.Data,Iterator.Data)<>0) then
+    exit(false);
+  // found an older compatible helper
+  Iterator:=NextNode;
+  HelperContext:=TFDHelpersListItem(Iterator.Data).HelperContext;
+  Result:=true;
 end;
 
 function TFDHelpersList.FindFromExprType(const ExprType: TExpressionType
   ): TFindContext;
 var
-  Item: TAVLTreeNode;
+  Node: TAVLTreeNode;
 begin
-  Item := FTree.FindKey(@ExprType, @CompareHelpersListExprType);
-  if Item<>nil then
-    Result := TFDHelpersListItem(Item.Data).HelperContext
+  Node := FTree.FindRightMostKey(@ExprType, @CompareHelpersListExprType);
+  if Node<>nil then
+    Result := TFDHelpersListItem(Node.Data).HelperContext
   else
     Result := CleanFindContext;
 end;
@@ -3504,6 +3566,7 @@ var
     HelperContext: TFindContext;
     Helpers: TFDHelpersList;
     HelperKind: TFDHelpersListKind;
+    HelperIterator: TAVLTreeNode;
   begin
     Result := False;
     SearchInHelpersInTheEnd := False;
@@ -3513,27 +3576,30 @@ var
       HelperKind:=fdhlkDelphiHelper;
     Helpers:=Params.GetHelpers(HelperKind);
     if Helpers=nil then exit;
-    HelperContext := Helpers.FindFromClassNode(StartContextNode, Self);
-    if (HelperContext.Node=nil) then exit;
+    if not Helpers.IterateFromClassNode(StartContextNode,Self,
+      HelperContext,HelperIterator) then exit;
+    //debugln(['SearchInHelpers START at least one helper found, iterating...']);
+    //Helpers.WriteDebugReport;
+    repeat
+      //debugln(['SearchInHelpers searching in Helper=',FindContextToString(HelperContext),'...']);
+      OldFlags := Params.Flags;
+      try
+        Params.Flags:=Params.Flags
+          -[fdfExceptionOnNotFound,fdfIgnoreCurContextNode,fdfSearchInHelpers]
+          +[fdfIgnoreUsedUnits];
+        Params.ContextNode := HelperContext.Node;
 
-    OldFlags := Params.Flags;
-    try
-      Params.Flags:=Params.Flags
-        -[fdfExceptionOnNotFound,fdfIgnoreCurContextNode,fdfSearchInHelpers]
-        +[fdfIgnoreUsedUnits];
-      Params.ContextNode := HelperContext.Node;
-
-      if HelperContext.Tool.FindIdentifierInContext(Params, IdentFoundResult) then
-      begin
-        if (IdentFoundResult = ifrAbortSearch) or (
-             (IdentFoundResult = ifrSuccess) and
-              CheckResult(IdentFoundResult=ifrSuccess,False))
-        then
-          Result := True;
+        if HelperContext.Tool.FindIdentifierInContext(Params, IdentFoundResult) then
+        begin
+          if (IdentFoundResult = ifrAbortSearch)
+            or ((IdentFoundResult = ifrSuccess) and CheckResult(true,False))
+          then
+            Result := True;
+        end;
+      finally
+        Params.Flags := OldFlags;
       end;
-    finally
-      Params.Flags := OldFlags;
-    end;
+    until not Helpers.GetNext(HelperContext,HelperIterator);
   end;
 
   function SearchNextNode: boolean;
@@ -8400,7 +8466,7 @@ var
     SearchInHelpersInTheEnd := False;
     if ClassNodeOfMethod.Desc in [ctnClassHelper,ctnRecordHelper] then
     begin
-      // helpers have different order
+      // helpers have different order in "inherited" call.
       // -> first search in extended class and then in helper (applies only to inherited call)
       if (ExprType.Context.Node<>nil) then//inherited helper found -> use it!
         Params.GetHelpers(fdhlkDelphiHelper,true)

@@ -686,36 +686,37 @@ begin
   Result:='';
   while Node<>nil do begin
     case Node.Desc of
-    ctnTypeDefinition,ctnGenericType:
+    ctnTypeDefinition:
       begin
         if Result<>'' then Result:='.'+Result;
-        if Node.Desc=ctnTypeDefinition then
-          Result:=GetIdentifier(@Src[Node.StartPos])+Result
-        else if Node.FirstChild<>nil then
-        begin
-          if (Scanner.CompilerMode = cmDELPHI) and (Node.Desc = ctnGenericType)
-          then begin
-            // extract generic type param names
-            ParamsNode:=Node.FirstChild.NextBrother;
-            First:=true;
-            while ParamsNode<>nil do begin
-              if ParamsNode.Desc=ctnGenericParams then begin
-                Result:='>'+Result;
-                ParamNode:=ParamsNode.FirstChild;
-                while ParamNode<>nil do begin
-                  if ParamNode.Desc=ctnGenericParameter then begin
-                    if First then
-                      First:=false
-                    else
-                      Result:=','+Result;
-                    Result:=GetIdentifier(@Src[ParamNode.StartPos])+Result;
-                  end;
-                  ParamNode:=ParamNode.NextBrother;
+        Result:=GetIdentifier(@Src[Node.StartPos])+Result;
+        if not WithParents then break;
+      end;
+    ctnGenericType:
+      begin
+        if Result<>'' then Result:='.'+Result;
+        if (Scanner.CompilerMode = cmDELPHI) and (Node.Desc = ctnGenericType)
+        then begin
+          // extract generic type param names
+          ParamsNode:=Node.FirstChild.NextBrother;
+          First:=true;
+          while ParamsNode<>nil do begin
+            if ParamsNode.Desc=ctnGenericParams then begin
+              Result:='>'+Result;
+              ParamNode:=ParamsNode.FirstChild;
+              while ParamNode<>nil do begin
+                if ParamNode.Desc=ctnGenericParameter then begin
+                  if First then
+                    First:=false
+                  else
+                    Result:=','+Result;
+                  Result:=GetIdentifier(@Src[ParamNode.StartPos])+Result;
                 end;
-                Result:='<'+Result;
+                ParamNode:=ParamNode.NextBrother;
               end;
-              ParamsNode:=ParamsNode.NextBrother;
+              Result:='<'+Result;
             end;
+            ParamsNode:=ParamsNode.NextBrother;
           end;
           Result:=GetIdentifier(@Src[Node.FirstChild.StartPos])+Result;
         end;
