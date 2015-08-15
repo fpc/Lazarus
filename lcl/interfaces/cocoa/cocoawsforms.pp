@@ -322,6 +322,9 @@ begin
   begin
     NSApp.stopModal();
     CocoaWidgetSet.CurModalForm := nil;
+    {// Felipe: This code forces focusing another form, its a work around
+    // for a gdb issue, gdb doesn't start the app properly
+    //
     // At this point the modal form is closed, but the previously open form isn't focused
     // Focus the main window if it is visible
     if Application.MainForm.Visible then Application.MainForm.SetFocus()
@@ -335,7 +338,7 @@ begin
           Screen.Forms[i].SetFocus();
           Break;
         end;
-    end;
+    end;}
   end;
 end;
 
