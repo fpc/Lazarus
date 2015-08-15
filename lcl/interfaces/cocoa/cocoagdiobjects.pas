@@ -199,6 +199,7 @@ type
     constructor CreateDefault(AGlobal: Boolean = False);
     constructor Create(const ALogFont: TLogFont; AFontName: String; AGlobal: Boolean = False); reintroduce; overload;
     constructor Create(const AFont: NSFont; AGlobal: Boolean = False); overload;
+    destructor Destroy; override;
     class function CocoaFontWeightToWin32FontWeight(const CocoaFontWeight: Integer): Integer; static;
     property Antialiased: Boolean read FAntialiased;
     property Font: NSFont read FFont;
@@ -632,6 +633,13 @@ begin
   Pool.release;
 end;
 
+destructor TCocoaFont.Destroy;
+begin
+  if Assigned(FFont) then
+    FFont.release;
+  inherited;
+end;
+
 class function TCocoaFont.CocoaFontWeightToWin32FontWeight(const CocoaFontWeight: Integer): Integer; static;
 begin
   case CocoaFontWeight of
@@ -892,10 +900,16 @@ end;
 
 procedure TCocoaBitmap.FreeHandle;
 begin
-  if FImage = nil then Exit;
-  FImage.release;
-  FImage := nil;
-  FImageRep := nil;
+  if FImage <> nil then
+  begin
+    FImage.release;
+    FImage := nil;
+  end;
+  if FImageRep <> nil then
+  begin
+    FImageRep.release;
+    FImageRep := nil;
+  end;
 end;
 
 procedure TCocoaBitmap.ReCreateHandle;
@@ -1033,7 +1047,7 @@ end;
 
 destructor TCocoaCursor.Destroy;
 begin
-  FBitmap.Free;
+  FreeAndNil(FBitmap); // FBitmap does not use reference counting mechanism...
   if not Standard then
     FCursor.release;
   inherited;
@@ -1132,7 +1146,6 @@ begin
   FTextContainer.setLineFragmentPadding(0);
   FLayout.addTextContainer(FTextContainer);
 
-  FTextStorage.retain;
   LocalPool.release;
 
   FFont := DefaultFont;
@@ -1144,6 +1157,8 @@ end;
 
 destructor TCocoaTextLayout.Destroy;
 begin
+  FLayout.release;
+  FTextContainer.release;
   FTextStorage.release;
   FFont.Release;
   inherited Destroy;
@@ -2153,7 +2168,7 @@ begin
   begin
     pool:=NSAutoreleasePool.alloc.init;
     ctx := NSGraphicsContext.graphicsContextWithBitmapImageRep(Bitmap.ImageRep);
-    ctx.retain; // extend live beyond NSAutoreleasePool
+    ctx.retain; // extend life beyond NSAutoreleasePool
     InitDraw(Bitmap.Width, Bitmap.Height);
     pool.release;
   end;
@@ -2740,9 +2755,12 @@ begin
   begin
     FillChar(ACallBacks, SizeOf(ACallBacks), 0);
     ACallBacks.drawPattern := @DrawBitmapPattern;
+    if (FBitmap <> nil) and (not FBitmap.Global) then FBitmap.Free;
     FBitmap := TCocoaBitmap.Create(8, 8, 1, 1, cbaByte, cbtMask, @HATCH_DATA[AHatch]);
-    FImage := MacOSAll.CGImageRef( FBitmap.ImageRep.CGImageForProposedRect_context_hints(nil, nil, nil));
+    if FImage <> nil then CGImageRelease(FImage);
+    FImage := CGImageCreateCopy(MacOSAll.CGImageRef( FBitmap.ImageRep.CGImageForProposedRect_context_hints(nil, nil, nil)));
     FColored := False;
+    if FCGPattern <> nil then CGPatternRelease(FCGPattern);
     FCGPattern := CGPatternCreate(Self, GetCGRect(0, 0, 8, 8),
       CGAffineTransformIdentity, 8, 8, kCGPatternTilingConstantSpacing,
       Ord(FColored), ACallBacks);
@@ -2758,9 +2776,12 @@ begin
   AHeight := ABitmap.Height;
   FillChar(ACallBacks, SizeOf(ACallBacks), 0);
   ACallBacks.drawPattern := @DrawBitmapPattern;
+  if (FBitmap <> nil) and (not FBitmap.Global) then FBitmap.Free;
   FBitmap := TCocoaBitmap.Create(ABitmap);
-  FImage := MacOSAll.CGImageRef( FBitmap.imageRep.CGImageForProposedRect_context_hints(nil, nil, nil));
+  if FImage <> nil then CGImageRelease(FImage);
+  FImage := CGImageCreateCopy(MacOSAll.CGImageRef( FBitmap.imageRep.CGImageForProposedRect_context_hints(nil, nil, nil)));
   FColored := True;
+  if FCGPattern <> nil then CGPatternRelease(FCGPattern);
   FCGPattern := CGPatternCreate(Self, GetCGRect(0, 0, AWidth, AHeight),
     CGAffineTransformIdentity, AWidth, AHeight, kCGPatternTilingConstantSpacing,
     Ord(FColored), ACallBacks);
@@ -2773,11 +2794,13 @@ var
 begin
   FillChar(ACallBacks, SizeOf(ACallBacks), 0);
   ACallBacks.drawPattern := @DrawBitmapPattern;
+  if FImage <> nil then CGImageRelease(FImage);
   FImage := CGImageCreateCopy(MacOSAll.CGImageRef( AImage.CGImageForProposedRect_context_hints(nil, nil, nil)));
   FColored := True;
   Rect.origin.x := 0;
   Rect.origin.y := 0;
   Rect.size := CGSize(AImage.size);
+  if FCGPattern <> nil then CGPatternRelease(FCGPattern);
   FCGPattern := CGPatternCreate(Self, Rect,
     CGAffineTransformIdentity, Rect.size.width, Rect.size.height, kCGPatternTilingConstantSpacing,
     Ord(FColored), ACallBacks);
@@ -2902,7 +2925,7 @@ begin
     FCGPattern := nil;
   end;
 
-  FreeAndNil(FBitmap);
+  FreeAndNil(FBitmap); // FBitmap does not use refcounts...
 
   if FImage <> nil then
   begin
