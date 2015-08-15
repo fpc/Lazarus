@@ -84,8 +84,8 @@ type
     property Columns: Integer read FColumns write SetColumns default 10;
     property Rows: Integer    read FRows write SetRows default 1;
     property BgColor: TColor  read FbgColor write SetbgColor default clBlack;
-    property OffColor: TColor read FOffColor write SetOffColor default $00104E4A;
-    property OnColor: TColor  read FOnColor write SetOnColor default clYellow;
+    property OffColor: TColor read FOffColor write SetOffColor default $000E3432;
+    property OnColor: TColor  read FOnColor write SetOnColor default clLime;
     property Size: TSegmentSize read FSize write SetSize default 2;
     property Transparent: boolean read FTransparent write SetTransparent default false; {Draws segments with transparent background.BgColor is used as mask color.}
     {Inherited properties}

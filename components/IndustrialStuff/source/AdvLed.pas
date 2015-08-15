@@ -64,7 +64,7 @@ type
 
   published
     // kind property must be published before GlyphOn, GlyphOff,GlyphDisable
-    property Kind: TLedKind read FKind write SetKind ;
+    property Kind: TLedKind read FKind write SetKind default lkRedLight;
     property GlyphDisabled: TLedBitmap index 0 read GetGlyph
              write SetGlyph stored StoredGlyph;
     property GlyphOff: TLedBitmap index 1 read GetGlyph
@@ -151,8 +151,7 @@ constructor TAdvLed.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle - [csSetCaption];
-  Height := 25;
-  Width := 25;
+  AutoSize:=True;
   FGlyphs[lsOn] := TLedBitmap.Create;
   FGlyphs[lsOff] := TLedBitmap.Create;
   FGlyphs[lsDisabled] := TLedBitmap.Create;
