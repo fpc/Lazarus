@@ -23,6 +23,7 @@ interface
 
 uses
   Classes, TypInfo, SysUtils, types, RtlConsts, Forms, Controls, LCLProc,
+  {$IFDEF UseOIThemedCheckBox} CheckBoxThemed, {$ENDIF}
   GraphType, FPCAdds, // for StrToQWord in older fpc versions
   StringHashList, ButtonPanel, Graphics, StdCtrls, Buttons, Menus, LCLType,
   ExtCtrls, ComCtrls, LCLIntf, Dialogs, EditBtn, PropertyStorage, Grids, ValEdit,
@@ -3466,12 +3467,27 @@ procedure TBoolPropertyEditor.PropDrawValue(ACanvas: TCanvas; const ARect: TRect
                                             AState: TPropEditDrawState);
 var
   TxtRect: TRect;
+  str: string;
+  stat: TCheckBoxState;
 begin
+  {$IFDEF UseOIThemedCheckBox}
+  if FPropertyHook.GetCheckboxForBoolean then begin
+    if GetOrdValue<>0 then begin
+      stat := cbChecked;
+      str := '(True)';
+    end else begin
+      stat := cbUnchecked;
+      str := '(False)';
+    end;
+    TCheckBoxThemed.PaintSelf(ACanvas, str, ARect, stat, False, False, False, False, taRightJustify);
+  end;
+  {$ELSE}
   if FPropertyHook.GetCheckboxForBoolean then
     TxtRect := DrawCheckbox(ACanvas, ARect, GetOrdValue<>0)
   else
     TxtRect := ARect;
   inherited PropDrawValue(ACanvas, TxtRect, AState);
+  {$ENDIF}
 end;
 
 { TInt64PropertyEditor }

@@ -32,6 +32,7 @@ uses
   // FCL
   SysUtils, Types, Classes, TypInfo, FPCanvas,
   // LCL
+  {$IFDEF UseOIThemedCheckBox} CheckBoxThemed, {$ENDIF}
   InterfaceBase, Forms, Buttons, Graphics, GraphType, LCLProc, StdCtrls,
   LCLType, LCLIntf, Controls, ComCtrls, ExtCtrls, LMessages,
   LazConfigStorage, Menus, Dialogs, Themes, TreeFilterEdit, ObjInspStrConsts,
@@ -303,7 +304,11 @@ type
 
     ValueEdit: TEdit;
     ValueComboBox: TComboBox;
+    {$IFDEF UseOIThemedCheckBox}
+    ValueCheckBox: TCheckBoxThemed;
+    {$ELSE}
     ValueCheckBox: TCheckBox;
+    {$ENDIF}
     ValueButton: TSpeedButton;
 
     procedure HintTimer(Sender: TObject);
@@ -961,13 +966,17 @@ begin
     OnMouseWheel:=@OnGridMouseWheel;
   end;
 
-  ValueCheckBox:=TCheckBox.Create(Self);
+  ValueCheckBox:={$IFDEF UseOIThemedCheckBox} TCheckBoxThemed.Create(Self); {$ELSE} TCheckBox.Create(Self); {$ENDIF}
   with ValueCheckBox do
   begin
     Name:='ValueCheckBox';
     Visible:=false;
     Enabled:=false;
-    AutoSize:=true;    // SetBounds does not work for CheckBox, AutoSize does.
+    {$IFDEF UseOIThemedCheckBox}
+    AutoSize := false;
+    {$ELSE}
+    AutoSize := true;    // SetBounds does not work for CheckBox, AutoSize does.
+    {$ENDIF}
     Parent:=Self;
     Top := -30;
     OnMouseDown := @ValueControlMouseDown;
@@ -2081,8 +2090,13 @@ begin
     SetActiveControl(FCurrentEdit);
     if (FCurrentEdit is TCustomEdit) then
       TCustomEdit(FCurrentEdit).SelectAll
+    {$IFDEF UseOIThemedCheckBox}
+    else if (FCurrentEdit is TCheckBoxThemed) and WasValueClick then
+      TCheckBoxThemed(FCurrentEdit).Checked:=not TCheckBoxThemed(FCurrentEdit).Checked;
+    {$ELSE}
     else if (FCurrentEdit is TCheckBox) and WasValueClick then
       TCheckBox(FCurrentEdit).Checked:=not TCheckBox(FCurrentEdit).Checked;
+    {$ENDIF}
   end;
 end;
 
@@ -2654,7 +2668,7 @@ begin
         {$ENDIF}
         Dec(EditCompRect.Top);
       end
-      else if FCurrentEdit is TCheckBox then
+      else if FCurrentEdit is {$IFDEF UseOICheckBoxThemed} TCheckBoxThemed {$ELSE} TCheckBox {$ENDIF} then
       begin                     // Align CheckBox to the middle vertically
         TopMargin := (EditCompRect.Bottom - EditCompRect.Top - ValueCheckBox.Height) div 2;
         Inc(EditCompRect.Top, TopMargin);
