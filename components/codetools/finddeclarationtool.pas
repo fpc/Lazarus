@@ -386,7 +386,8 @@ type
     function AsString: string;
     function CalcMemSize: PtrUInt;
   end;
-  
+
+type
   //----------------------------------------------------------------------------
   // TFoundProc is used for comparing overloaded procs
   PFoundProc = ^TFoundProc;
@@ -5060,23 +5061,26 @@ begin
     exit;
   end;
   BaseClassName:=nil;
-  if ClassNode.Desc=ctnClass then begin
+  case ClassNode.Desc of
+  ctnClass:
     if Scanner.Values.IsDefined('CPUJVM') then
       BaseClassName:='JLObject'
     else
       BaseClassName:='TObject';
-  end else if ClassNode.Desc=ctnDispinterface then begin
+  ctnDispinterface:
     // default interface is IDispatch
     BaseClassName:='IDispatch';
-  end else if ClassNode.Desc in AllClassInterfaces then begin
-    if Scanner.Values.IsDefined('CPUJVM') then
-      exit; // JVM has no default interface
-    // Delphi has as default interface IInterface
-    // FPC has as default interface IUnknown and an alias IInterface = IUnknown
-    if CompareSrcIdentifiers(ClassIdentNode.StartPos,'IUnknown') then exit;
-    BaseClassName:='IInterface';
-  end else
-    exit; // has no default ancestor (e.g. record)
+  else
+    if ClassNode.Desc in AllClassInterfaces then begin
+      if Scanner.Values.IsDefined('CPUJVM') then
+        exit; // JVM has no default interface
+      // Delphi has as default interface IInterface
+      // FPC has as default interface IUnknown and an alias IInterface = IUnknown
+      if CompareSrcIdentifiers(ClassIdentNode.StartPos,'IUnknown') then exit;
+      BaseClassName:='IInterface';
+    end else
+      exit; // has no default ancestor (e.g. record)
+  end;
   if CompareSrcIdentifiers(ClassIdentNode.StartPos,BaseClassName) then exit;
 
   {$IFDEF ShowTriedContexts}
@@ -7978,6 +7982,8 @@ var
           Params.Flags:=Params.Flags+[fdfIgnoreUsedUnits];
           if Assigned(Context.Node) and (Context.Node.Desc=ctnImplementation) then
             Params.Flags:=Params.Flags+[fdfSearchInParentNodes];
+          if Context.Node.Desc=ctnObjCClass then
+            Exclude(Params.Flags,fdfExceptionOnNotFound); // ObjCClass has predefined identifiers like 'alloc'
         end;
 
         // check identifier for overloaded procs
@@ -8030,6 +8036,15 @@ var
           Params.Load(OldInput,true);
         end else begin
           // predefined identifier
+          if (Context.Node.Desc=ctnObjCClass)
+            and CompareSrcIdentifiers('alloc',@Src[CurAtom.StartPos])
+          then begin
+            // 'alloc' returns the class itself
+            ExprType.Context:=Context;
+            Params.Load(OldInput,true);
+            exit;
+          end;
+
           Params.Load(OldInput,true);
           ExprType:=FindExpressionTypeOfPredefinedIdentifier(CurAtom.StartPos,
                                                              Params);

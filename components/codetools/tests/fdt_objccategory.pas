@@ -42,7 +42,7 @@ procedure DoIt;
 var
   a: TMyClass;
 begin
-  a:=TMyClass(TMyClass.alloc).init;
+  a:=TMyClass.alloc.init{declaration:objcbase.NSObject.init};
   a.categoryAmethod{declaration:fdt_objccategory.TCategoryA.categoryAmethod};
   a.categoryBmethod{declaration:fdt_objccategory.TCategoryB.categoryBmethod};
   a.categoryCmethod{declaration:fdt_objccategory.TCategoryC.categoryCmethod};
