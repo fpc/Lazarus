@@ -29,7 +29,7 @@ uses
   {$IFDEF Darwin}
   fdt_objccategory,
   {$ENDIF}
-  fdt_basic;
+  fdt_basic, fdt_objcclass;
 
 const
   ConfigFilename = 'codetools.config';

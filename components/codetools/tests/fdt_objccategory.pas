@@ -1,3 +1,7 @@
+{
+ Test with:
+   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_ObjCCategory
+}
 unit fdt_objccategory;
 
 {$mode objfpc}{$H+}
@@ -10,9 +14,9 @@ uses
 
 type
 
-  { TMyClass }
+  { TMyObjCClassB1 }
 
-  TMyClass = objcclass(NSObject)
+  TMyObjCClassB1 = objcclass(NSObject)
   end;
 
   { TCategoryA }
@@ -23,13 +27,13 @@ type
 
   { TCategoryB }
 
-  TCategoryB = objccategory(TMyClass)
+  TCategoryB = objccategory(TMyObjCClassB1)
     procedure categoryBmethod; message 'categoryBmethod';
   end;
 
   { TCategoryC }
 
-  TCategoryC = objccategory(TMyClass)
+  TCategoryC = objccategory(TMyObjCClassB1)
     // contrary to helpers there can be multiple ObjCCategory active for a class
     procedure categoryCmethod; message 'categoryCmethod';
   end;
@@ -40,12 +44,13 @@ implementation
 
 procedure DoIt;
 var
-  a: TMyClass;
+  a: TMyObjCClassB1;
 begin
-  a:=TMyClass.alloc.init{declaration:objcbase.NSObject.init};
+  a:=TMyObjCClassB1.alloc.init{declaration:objcbase.NSObject.init};
   a.categoryAmethod{declaration:fdt_objccategory.TCategoryA.categoryAmethod};
   a.categoryBmethod{declaration:fdt_objccategory.TCategoryB.categoryBmethod};
   a.categoryCmethod{declaration:fdt_objccategory.TCategoryC.categoryCmethod};
+  a.dealloc;
 end;
 
 { TCategoryA }

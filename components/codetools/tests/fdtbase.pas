@@ -5,6 +5,7 @@
    ./finddeclarationtest --format=plain --suite=TestFindDeclaration_NestedClasses
    ./finddeclarationtest --format=plain --suite=TestFindDeclaration_ClassHelper
    ./finddeclarationtest --format=plain --suite=TestFindDeclaration_TypeHelper
+   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_ObjCClass
    ./finddeclarationtest --format=plain --suite=TestFindDeclaration_ObjCCategory
 }
 unit fdtbase;
@@ -32,6 +33,7 @@ type
     procedure TestFindDeclaration_NestedClasses;
     procedure TestFindDeclaration_ClassHelper;
     procedure TestFindDeclaration_TypeHelper;
+    procedure TestFindDeclaration_ObjCClass;
     procedure TestFindDeclaration_ObjCCategory;
   end;
 
@@ -174,6 +176,11 @@ end;
 procedure TTestFindDeclaration.TestFindDeclaration_TypeHelper;
 begin
   FindDeclarations('fdt_typehelper.pas');
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_ObjCClass;
+begin
+  FindDeclarations('fdt_objcclass.pas');
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_ObjCCategory;

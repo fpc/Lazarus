@@ -5070,18 +5070,20 @@ begin
   ctnDispinterface:
     // default interface is IDispatch
     BaseClassName:='IDispatch';
-  else
-    if ClassNode.Desc in AllClassInterfaces then begin
+  ctnClassInterface:
+    begin
       if Scanner.Values.IsDefined('CPUJVM') then
         exit; // JVM has no default interface
       // Delphi has as default interface IInterface
       // FPC has as default interface IUnknown and an alias IInterface = IUnknown
       if CompareSrcIdentifiers(ClassIdentNode.StartPos,'IUnknown') then exit;
       BaseClassName:='IInterface';
-    end else
-      exit; // has no default ancestor (e.g. record)
+    end
+  else
+    exit; // has no default ancestor (e.g. record)
   end;
-  if CompareSrcIdentifiers(ClassIdentNode.StartPos,BaseClassName) then exit;
+  if CompareSrcIdentifiers(ClassIdentNode.StartPos,BaseClassName) then
+    exit; // this is already the base class
 
   {$IFDEF ShowTriedContexts}
   DebugLn('[TFindDeclarationTool.FindAncestorOfClass] ',
@@ -5112,8 +5114,7 @@ begin
     Params.SetResult(AncestorContext);
 
     // check result
-    if not (Params.NewNode.Desc in [ctnClass,ctnClassInterface,ctnClassHelper,ctnRecordHelper,ctnTypeHelper])
-    then
+    if Params.NewNode.Desc<>ClassNode.Desc then
       RaiseBaseClassNotFound;
   end;
   Result:=true;
