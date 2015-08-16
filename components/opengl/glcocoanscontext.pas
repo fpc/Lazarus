@@ -6,11 +6,17 @@
 
   Author: Mattias Gaertner
 
+  Bug: The opengl drawing is wrong. See example testopenglcontext1.
+    Maybe fixed when attributes are supported and/or SwapBuffers.
+
   ToDo:
     use custom pixelformat
       attributes: doublebufferd, version, ...
-    SwapBuffers
-    Mouse,
+      It should work with initWithFrame_pixelFormat, but this paints nothing
+    SwapBuffers - there is no function like aglSwapBuffers in CGL/NS
+    Mouse:
+      the TLCLCommonCallback mouse handlers check Owner.isEnabled, which
+      for a NSView always returns false.
     SharedControl
 }
 unit GLCocoaNSContext;
@@ -105,23 +111,25 @@ end;
 procedure LOpenGLSwapBuffers(Handle: HWND);
 begin
   if Handle=0 then exit;
-  glFlush();
   // ToDo
+  glFlush();
 end;
 
 function LOpenGLMakeCurrent(Handle: HWND): boolean;
+var
+  CGLContext: CGLContextObj;
 begin
   if Handle=0 then exit(false);
-  //CGLContext:=GetCGLContextObj(Handle);
-  //Result:=CGLSetCurrentContext(CGLContext)=kCGLNoError;
-  Result:=true;
+  CGLContext:=GetCGLContextObj(Handle);
+  Result:=CGLSetCurrentContext(CGLContext)=kCGLNoError;
+  //Result:=true;
 end;
 
 function LOpenGLReleaseContext(Handle: HWND): boolean;
 begin
   if Handle=0 then exit(false);
-  //Result:=CGLSetCurrentContext(nil)=kCGLNoError;
-  Result:=true;
+  Result:=CGLSetCurrentContext(nil)=kCGLNoError;
+  //Result:=true;
 end;
 
 procedure LOpenGLClip(Handle: HWND);
@@ -204,7 +212,14 @@ var
 
   procedure CreateList;
   begin
-    //Add(NSOpenGLPFAProfile);    Add(NSOpenGLProfileLegacy);
+    Add(NSOpenGLPFAProfile);
+    if (MajorVersion=3) and (MinorVersion=2) then
+      Add(NSOpenGLProfileVersion3_2Core)
+    else if (MajorVersion=4) and (MinorVersion=1) then
+      Add(NSOpenGLProfileVersion4_1Core)
+    else
+      Add(NSOpenGLProfileLegacy);
+
     //Add(NSOpenGLPFAColorSize);  Add(24);
     //Add(NSOpenGLPFADepthSize);  Add(16);
     Add(NSOpenGLPFADoubleBuffer);
