@@ -189,7 +189,7 @@ begin
   C.Height := AWinControl.Height;
   // create a custom control
   Control := TCarbonCustomControl.Create(AWinControl, C);
-  //debugln(['LOpenGLCreateContext ',dbgsName(Control)]);
+  //debugln(['LOpenGLCreateContext ',dbgsName(AWinControl)]);
 
   // create the AGL context
   disp := GetMainDevice ();

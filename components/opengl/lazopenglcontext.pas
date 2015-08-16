@@ -7,7 +7,7 @@ unit LazOpenGLContext;
 interface
 
 uses
-  OpenGLContext, LazarusPackageIntf;
+  OpenGLContext, GLCocoaNSContext, LazarusPackageIntf;
 
 implementation
 

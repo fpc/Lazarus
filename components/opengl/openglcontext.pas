@@ -27,30 +27,41 @@ unit OpenGLContext;
 {$IFDEF LCLGTK}
   {$IFDEF Linux}
     {$DEFINE UseGtkGLX}
+    {$DEFINE HasRGBA}
+    {$DEFINE HasRGBBits}
     {$DEFINE OpenGLTargetDefined}
   {$ENDIF}
 {$ENDIF}
 {$IFDEF LCLGTK2}
   {$IFDEF Linux}
     {$DEFINE UseGtk2GLX}
+    {$DEFINE UsesModernGL}
+    {$DEFINE HasRGBA}
+    {$DEFINE HasRGBBits}
     {$DEFINE OpenGLTargetDefined}
   {$ENDIF}
 {$ENDIF}
 {$IFDEF LCLCarbon}
   {$DEFINE UseCarbonAGL}
+  {$DEFINE HasRGBA}
+  {$DEFINE HasRGBBits}
   {$DEFINE OpenGLTargetDefined}
 {$ENDIF}
 {$IFDEF LCLCocoa}
-  {$DEFINE UseCocoaCGL}
+  {$DEFINE UseCocoaNS}
+  {$DEFINE UsesModernGL}
   {$DEFINE OpenGLTargetDefined}
 {$ENDIF}
 {$IFDEF LCLWin32}
   {$DEFINE UseWin32WGL}
+  {$DEFINE HasRGBA}
+  {$DEFINE HasRGBBits}
   {$DEFINE OpenGLTargetDefined}
 {$ENDIF}
 {$IFDEF LCLQT}
   {$DEFINE UseQTGLX}
   {$DEFINE UsesModernGL}
+  {$DEFINE HasRGBA}
   {$DEFINE HasRGBBits}
   {$DEFINE OpenGLTargetDefined}
 {$ENDIF}
@@ -65,24 +76,18 @@ uses
   Graphics, LMessages, WSLCLClasses, WSControls,
 {$IFDEF UseGtkGLX}
   GLGtkGlxContext;
-  {$DEFINE HasRGBBits}
 {$ENDIF}
 {$IFDEF UseGtk2GLX}
   GLGtkGlxContext;
-  {$DEFINE UsesModernGL}
-  {$DEFINE HasRGBBits}
 {$ENDIF}
 {$IFDEF UseCarbonAGL}
   GLCarbonAGLContext;
-  {$DEFINE HasRGBBits}
 {$ENDIF}
-{$IFDEF UseCocoaCGL}
-  GLCocoaCGLContext;
-  {$DEFINE HasRGBBits}
+{$IFDEF UseCocoaNS}
+  GLCocoaNSContext;
 {$ENDIF}
 {$IFDEF UseWin32WGL}
   GLWin32WGLContext;
-  {$DEFINE HasRGBBits}
 {$ENDIF}
 {$IFDEF UseQTGLX}
   GLQTContext;
@@ -623,7 +628,10 @@ begin
       AttrControl:=OpenGlControl;
     Result:=LOpenGLCreateContext(OpenGlControl,WSPrivate,
                                  OpenGlControl.SharedControl,
-                                 AttrControl.DoubleBuffered,AttrControl.RGBA,
+                                 AttrControl.DoubleBuffered,
+                                 {$IFDEF HasRGBA}
+                                 AttrControl.RGBA,
+                                 {$ENDIF}
                                  {$IFDEF HasRGBBits}
                                  AttrControl.RedBits,
                                  AttrControl.GreenBits,

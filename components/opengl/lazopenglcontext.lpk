@@ -11,7 +11,12 @@
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
       </SearchPaths>
       <Conditionals Value="if LazOpenGLContext_VerboseMultiSampling='1' then
-  CustomOptions+='-dVerboseMultiSampling';"/>
+  CustomOptions+='-dVerboseMultiSampling';
+
+if LCLWidgetType='cocoa' then begin
+  UsageLinkerOptions := ' -framework OpenGL'
+      +' ''-dylib_file'' ''/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib''';
+end;"/>
       <BuildMacros>
         <Count Value="1"/>
         <Item1>
@@ -53,9 +58,8 @@
         <UnitName Value="glqtcontext"/>
       </Item5>
       <Item6>
-        <Filename Value="glcocoacglcontext.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="GLCocoaCGLContext"/>
+        <Filename Value="glcocoanscontext.pas"/>
+        <UnitName Value="GLCocoaNSContext"/>
       </Item6>
     </Files>
     <RequiredPkgs Count="2">
