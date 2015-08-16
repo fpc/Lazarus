@@ -59,6 +59,7 @@ end;"/>
       </Item5>
       <Item6>
         <Filename Value="glcocoanscontext.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="GLCocoaNSContext"/>
       </Item6>
     </Files>
