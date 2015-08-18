@@ -54,7 +54,7 @@ resourcestring
   sOpenAfterExport     = 'Open after export';
   sAutoCreateFile      = 'Auto create file';
   sPageRange           = 'Page range';
-  sAllPage             = 'All page';
+  sAllPages            = 'All pages';
   sCurrentPage         = 'Current page';
   sPages               = 'Pages:';
   sEnterPageNumbers    = 'Enter page numbers and/or page ranges,'#13'separated by commas. For example, 1,3,5-12';

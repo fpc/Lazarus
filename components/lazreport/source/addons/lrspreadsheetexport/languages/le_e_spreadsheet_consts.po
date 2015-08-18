@@ -5,8 +5,8 @@ msgstr "Content-Type: text/plain; charset=UTF-8"
 msgid "All in one page"
 msgstr ""
 
-#: le_e_spreadsheet_consts.sallpage
-msgid "All page"
+#: le_e_spreadsheet_consts.sallpages
+msgid "All pages"
 msgstr ""
 
 #: le_e_spreadsheet_consts.sautocreatefile

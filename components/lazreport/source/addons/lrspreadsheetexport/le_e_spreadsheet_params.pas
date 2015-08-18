@@ -103,7 +103,7 @@ begin
   CheckBox4.Caption:=sOpenAfterExport;
   CheckBox5.Caption:=sAutoCreateFile;
   GroupBox1.Caption:=sPageRange;
-  RadioButton1.Caption:=sAllPage;
+  RadioButton1.Caption:=sAllPages;
   RadioButton2.Caption:=sCurrentPage;
   RadioButton3.Caption:=sPages;
   Label1.Caption:=sEnterPageNumbers;

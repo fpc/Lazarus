@@ -1,17 +1,27 @@
 msgid ""
-msgstr "Content-Type: text/plain; charset=UTF-8"
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 1.7.7\n"
 
 #: le_e_spreadsheet_consts.sallinonepage
 msgid "All in one page"
 msgstr "Всё на одной странице"
 
-#: le_e_spreadsheet_consts.sallpage
-msgid "All page"
+#: le_e_spreadsheet_consts.sallpages
+msgid "All pages"
 msgstr "Все страницы"
 
 #: le_e_spreadsheet_consts.sautocreatefile
 msgid "Auto create file"
-msgstr "Создать файл без вопросов"
+msgstr "Создавать файл автоматически"
 
 #: le_e_spreadsheet_consts.schunkseach
 msgid "Chunks. Each chunk has (rows):"
@@ -27,17 +37,19 @@ msgstr "Группировка данных"
 
 #: le_e_spreadsheet_consts.sdeleteemptyrows
 msgid "Delete empty rows"
-msgstr "Удалить пустые строки"
+msgstr "Удалять пустые строки"
 
 #: le_e_spreadsheet_consts.senterpagenumbers
 msgid ""
 "Enter page numbers and/or page ranges,\n"
 "separated by commas. For example, 1,3,5-12\n"
 msgstr ""
+"Введите номера и/или диапазоны страниц,\n"
+"разделённые запятыми. Например, 1,3,5-12\n"
 
 #: le_e_spreadsheet_consts.sexportpictures
 msgid "Export pictures"
-msgstr "Экспорт картинок"
+msgstr "Экспортировать изображения"
 
 #: le_e_spreadsheet_consts.sexportsettings
 msgid "Export settings"
@@ -49,11 +61,11 @@ msgstr "Экспорт в электронную таблицу"
 
 #: le_e_spreadsheet_consts.sgeneral
 msgid "General"
-msgstr "Общее"
+msgstr "Общие"
 
 #: le_e_spreadsheet_consts.slikethereport
 msgid "Like the report"
-msgstr "По страницам как в отчёте"
+msgstr "По страницам, как в отчёте"
 
 #: le_e_spreadsheet_consts.smergecells
 msgid "Merge cells"
@@ -61,19 +73,19 @@ msgstr "Объединять ячейки"
 
 #: le_e_spreadsheet_consts.sonlyonecomponent
 msgid "Only one TlrSpreadSheetExport component allowed."
-msgstr "В программе разрешён только один экземпляр TlrSpreadSheetExport"
+msgstr "Разрешается наличие только одного экземпляра TlrSpreadSheetExport"
 
 #: le_e_spreadsheet_consts.sopenafterexport
 msgid "Open after export"
-msgstr "Открыть после экспорта"
+msgstr "Открывать после процедуры экспорта"
 
 #: le_e_spreadsheet_consts.spagebreaks
 msgid "Page breaks"
-msgstr "Разрывы станиц"
+msgstr "Разрывы страниц"
 
 #: le_e_spreadsheet_consts.spagename
 msgid "Page %d"
-msgstr "Лист %d"
+msgstr "Страница %d"
 
 #: le_e_spreadsheet_consts.spagerange
 msgid "Page range"
