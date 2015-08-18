@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <Name Value="lrSpreadSheetExport"/>
+    <Type Value="RunAndDesignTime"/>
+    <Author Value="Aleksey Lagunov"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+    </CompilerOptions>
+    <Description Value="LazReport Export Addon for exporting to "/>
+    <Version Minor="9"/>
+    <Files Count="7">
+      <Item1>
+        <Filename Value="lrspreadsheetexp.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="lrSpreadSheetExp"/>
+      </Item1>
+      <Item2>
+        <Filename Value="le_e_spreadsheet.pas"/>
+        <UnitName Value="le_e_spreadsheet"/>
+      </Item2>
+      <Item3>
+        <Filename Value="le_e_spreadsheet_consts.pas"/>
+        <UnitName Value="le_e_spreadsheet_consts"/>
+      </Item3>
+      <Item4>
+        <Filename Value="le_e_spreadsheet_params.lfm"/>
+        <Type Value="LFM"/>
+      </Item4>
+      <Item5>
+        <Filename Value="le_e_spreadsheet_params.pas"/>
+        <UnitName Value="le_e_spreadsheet_params"/>
+      </Item5>
+      <Item6>
+        <Filename Value="lr_exportmatrix.pas"/>
+        <UnitName Value="LR_ExportMatrix"/>
+      </Item6>
+      <Item7>
+        <Filename Value="le_e_spreadsheet_types.pas"/>
+        <UnitName Value="le_e_spreadsheet_types"/>
+      </Item7>
+    </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
+    <RequiredPkgs Count="3">
+      <Item1>
+        <PackageName Value="laz_fpspreadsheet"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="lazreport"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="IDEIntf"/>
+      </Item3>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

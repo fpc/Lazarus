@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectSession>
+    <Version Value="9"/>
+    <BuildModes Active="Default"/>
+    <Units Count="54">
+      <Unit0>
+        <Filename Value="project1.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
+        <UsageCount Value="66"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="unit1.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form1"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="Unit1"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="62"/>
+        <CursorPos X="65" Y="75"/>
+        <UsageCount Value="66"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="lr_exportmatrix.pas"/>
+        <UnitName Value="LR_ExportMatrix"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="124"/>
+        <CursorPos X="15" Y="143"/>
+        <UsageCount Value="60"/>
+        <Bookmarks Count="2">
+          <Item0 Y="478" ID="1"/>
+          <Item1 X="50" Y="575" ID="2"/>
+        </Bookmarks>
+      </Unit2>
+      <Unit3>
+        <Filename Value="le_e_spreadsheet.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="286"/>
+        <CursorPos X="8" Y="306"/>
+        <UsageCount Value="58"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="le_e_spreadsheet_params.pas"/>
+        <ComponentName Value="leSpreadsheetParamsForm"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="25"/>
+        <CursorPos X="34" Y="55"/>
+        <UsageCount Value="32"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="le_e_spreadsheet_consts.pas"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="3" Y="12"/>
+        <UsageCount Value="24"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="../../../lr_class.pas"/>
+        <UnitName Value="LR_Class"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="12750"/>
+        <CursorPos Y="12769"/>
+        <UsageCount Value="26"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="../../../lr_desgn.pas"/>
+        <ComponentName Value="frDesignerForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="5627"/>
+        <CursorPos Y="5649"/>
+        <UsageCount Value="8"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="../../../lr_crosstab.pas"/>
+        <UnitName Value="lr_CrossTab"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="545"/>
+        <CursorPos Y="569"/>
+        <UsageCount Value="10"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="../../../install/source/fpcsrc/rtl/objpas/classes/classesh.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="236"/>
+        <CursorPos X="3" Y="218"/>
+        <UsageCount Value="10"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="../../../lr_barc.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="471"/>
+        <CursorPos X="35" Y="490"/>
+        <UsageCount Value="8"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="../../../lr_rrect.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="566"/>
+        <CursorPos X="56" Y="568"/>
+        <UsageCount Value="8"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="../../../lr_shape.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="25"/>
+        <CursorPos X="15" Y="46"/>
+        <UsageCount Value="8"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="../../../lr_chbox.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="145"/>
+        <CursorPos X="43" Y="168"/>
+        <UsageCount Value="8"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="../../../lr_utils.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="917"/>
+        <CursorPos Y="933"/>
+        <UsageCount Value="8"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="../../install/source/fpcsrc/rtl/objpas/classes/classesh.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="237"/>
+        <CursorPos X="15" Y="259"/>
+        <UsageCount Value="8"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="../../install/source/fpcsrc/rtl/objpas/classes/lists.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="312"/>
+        <CursorPos X="11" Y="343"/>
+        <UsageCount Value="8"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="../../cairoexport/lr_e_cairo.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="742"/>
+        <CursorPos X="3" Y="725"/>
+        <UsageCount Value="19"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="../../imgexport/lr_e_htmldiv.pas"/>
+        <UnitName Value="LR_e_htmldiv"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="282"/>
+        <CursorPos X="3" Y="295"/>
+        <UsageCount Value="16"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="../../imgexport/lr_e_img.pas"/>
+        <UnitName Value="LR_e_img"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="47"/>
+        <CursorPos Y="51"/>
+        <UsageCount Value="16"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="../../../../../fpspreadsheet/fpspreadsheet.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="6293"/>
+        <CursorPos Y="6314"/>
+        <UsageCount Value="24"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="../../../../../rxfpc/rxdbgridexportspreadsheet.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="349"/>
+        <CursorPos X="19" Y="379"/>
+        <UsageCount Value="8"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="../../install/source/fpcsrc/rtl/unix/classes.pp"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="24"/>
+        <CursorPos X="5" Y="36"/>
+        <UsageCount Value="8"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="../../../install/source/fpcsrc/rtl/objpas/classes/lists.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="803"/>
+        <CursorPos X="3" Y="805"/>
+        <UsageCount Value="8"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="../../../lr_view.pas"/>
+        <ComponentName Value="frPreviewForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="LR_View"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="885"/>
+        <CursorPos X="3" Y="888"/>
+        <UsageCount Value="9"/>
+      </Unit24>
+      <Unit25>
+        <Filename Value="../../../../../../lcl/lclmessageglue.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="99"/>
+        <CursorPos Y="116"/>
+        <UsageCount Value="8"/>
+      </Unit25>
+      <Unit26>
+        <Filename Value="../../../../../RxNew/rxdbgridexportspreadsheet.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="345"/>
+        <CursorPos X="3" Y="352"/>
+        <UsageCount Value="13"/>
+      </Unit26>
+      <Unit27>
+        <Filename Value="../../../../../../lcl/include/rasterimage.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="283"/>
+        <CursorPos Y="302"/>
+        <UsageCount Value="10"/>
+      </Unit27>
+      <Unit28>
+        <Filename Value="../../../../../../lcl/include/canvas.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="1761"/>
+        <CursorPos Y="1782"/>
+        <UsageCount Value="9"/>
+      </Unit28>
+      <Unit29>
+        <Filename Value="../../../../../../lcl/graphics.pp"/>
+        <UnitName Value="Graphics"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="80"/>
+        <CursorPos X="3" Y="100"/>
+        <UsageCount Value="11"/>
+      </Unit29>
+      <Unit30>
+        <Filename Value="../../../../../../lcl/lcltype.pp"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="13" Y="31"/>
+        <UsageCount Value="8"/>
+      </Unit30>
+      <Unit31>
+        <Filename Value="../../../install/source/fpcsrc/rtl/objpas/classes/stringl.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="460"/>
+        <CursorPos X="3" Y="470"/>
+        <UsageCount Value="8"/>
+      </Unit31>
+      <Unit32>
+        <Filename Value="../../../lr_crossarray.pas"/>
+        <UnitName Value="lr_CrossArray"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="37"/>
+        <CursorPos X="15" Y="73"/>
+        <UsageCount Value="9"/>
+      </Unit32>
+      <Unit33>
+        <Filename Value="../../../../../lazutils/lazutf8classes.pas"/>
+        <UnitName Value="LazUTF8Classes"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="20"/>
+        <UsageCount Value="14"/>
+      </Unit33>
+      <Unit34>
+        <Filename Value="../../../../../fpspreadsheet/fpstypes.pas"/>
+        <UnitName Value="fpsTypes"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="226"/>
+        <CursorPos X="18" Y="260"/>
+        <UsageCount Value="15"/>
+      </Unit34>
+      <Unit35>
+        <Filename Value="../../../../../fpspreadsheet/fpsallformats.pas"/>
+        <EditorIndex Value="-1"/>
+        <UsageCount Value="14"/>
+      </Unit35>
+      <Unit36>
+        <Filename Value="../../../../../fpspreadsheet/fpsutils.pas"/>
+        <EditorIndex Value="-1"/>
+        <UsageCount Value="14"/>
+      </Unit36>
+      <Unit37>
+        <Filename Value="../../../../../fpspreadsheet/fpsclasses.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="69"/>
+        <CursorPos X="3" Y="76"/>
+        <UsageCount Value="8"/>
+      </Unit37>
+      <Unit38>
+        <Filename Value="../../../../../rxnew/rxdbgrid.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="876"/>
+        <CursorPos X="14" Y="894"/>
+        <UsageCount Value="9"/>
+      </Unit38>
+      <Unit39>
+        <Filename Value="../../../install/source/fpcsrc/rtl/objpas/sysutils/sysinth.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="20"/>
+        <CursorPos X="3" Y="33"/>
+        <UsageCount Value="9"/>
+      </Unit39>
+      <Unit40>
+        <Filename Value="../../../install/source/fpcsrc/packages/fv/src/app.pas"/>
+        <UnitName Value="App"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="90"/>
+        <CursorPos Y="21"/>
+        <UsageCount Value="9"/>
+      </Unit40>
+      <Unit41>
+        <Filename Value="../../../../../../lcl/forms.pp"/>
+        <UnitName Value="Forms"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="594"/>
+        <CursorPos X="14" Y="612"/>
+        <UsageCount Value="9"/>
+      </Unit41>
+      <Unit42>
+        <Filename Value="../../../../../../lcl/include/customform.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="2834"/>
+        <CursorPos X="3" Y="2852"/>
+        <UsageCount Value="9"/>
+      </Unit42>
+      <Unit43>
+        <Filename Value="../../../install/source/fpcsrc/packages/amunits/examples/otherlibs/string.pas"/>
+        <UnitName Value="Stringtest"/>
+        <EditorIndex Value="-1"/>
+        <UsageCount Value="9"/>
+      </Unit43>
+      <Unit44>
+        <Filename Value="../../../../../lazutils/fileutil.pas"/>
+        <UnitName Value="FileUtil"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="56"/>
+        <CursorPos X="10" Y="76"/>
+        <UsageCount Value="10"/>
+      </Unit44>
+      <Unit45>
+        <Filename Value="../../../install/source/fpcsrc/rtl/objpas/objpas.pp"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="28"/>
+        <CursorPos X="19" Y="57"/>
+        <UsageCount Value="10"/>
+      </Unit45>
+      <Unit46>
+        <Filename Value="../lrspreadsheetexp.pas"/>
+        <UnitName Value="lrSpreadSheetExp"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="8"/>
+        <CursorPos X="47" Y="77"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit46>
+      <Unit47>
+        <Filename Value="../../cairoexport/lr_cairoexp_reg.pas"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="9" Y="12"/>
+        <UsageCount Value="10"/>
+      </Unit47>
+      <Unit48>
+        <Filename Value="../lr_exportmatrix.pas"/>
+        <UnitName Value="LR_ExportMatrix"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="639"/>
+        <CursorPos Y="692"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit48>
+      <Unit49>
+        <Filename Value="../le_e_spreadsheet.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="82"/>
+        <CursorPos Y="345"/>
+        <UsageCount Value="11"/>
+      </Unit49>
+      <Unit50>
+        <Filename Value="/home/install/source/fpcsrc/rtl/objpas/classes/classesh.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="73"/>
+        <CursorPos X="3" Y="94"/>
+        <UsageCount Value="11"/>
+      </Unit50>
+      <Unit51>
+        <Filename Value="../le_e_spreadsheet_types.pas"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="11"/>
+        <CursorPos Y="35"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit51>
+      <Unit52>
+        <Filename Value="../le_e_spreadsheet_consts.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="31"/>
+        <CursorPos X="29" Y="35"/>
+        <UsageCount Value="10"/>
+      </Unit52>
+      <Unit53>
+        <Filename Value="../le_e_spreadsheet_params.pas"/>
+        <ComponentName Value="leSpreadsheetParamsForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="35"/>
+        <CursorPos Y="35"/>
+        <UsageCount Value="10"/>
+      </Unit53>
+    </Units>
+    <JumpHistory Count="20" HistoryIndex="19">
+      <Position1>
+        <Filename Value="../lr_exportmatrix.pas"/>
+        <Caret Line="486" TopLine="467"/>
+      </Position1>
+      <Position2>
+        <Filename Value="../lr_exportmatrix.pas"/>
+        <Caret Line="454" TopLine="434"/>
+      </Position2>
+      <Position3>
+        <Filename Value="../lr_exportmatrix.pas"/>
+        <Caret Line="456" TopLine="434"/>
+      </Position3>
+      <Position4>
+        <Filename Value="../lr_exportmatrix.pas"/>
+        <Caret Line="457" TopLine="434"/>
+      </Position4>
+      <Position5>
+        <Filename Value="../lr_exportmatrix.pas"/>
+        <Caret Line="458" TopLine="434"/>
+      </Position5>
+      <Position6>
+        <Filename Value="../lr_exportmatrix.pas"/>
+        <Caret Line="460" TopLine="434"/>
+      </Position6>
+      <Position7>
+        <Filename Value="../lr_exportmatrix.pas"/>
+        <Caret Line="462" TopLine="434"/>
+      </Position7>
+      <Position8>
+        <Filename Value="../lr_exportmatrix.pas"/>
+        <Caret Line="464" TopLine="434"/>
+      </Position8>
+      <Position9>
+        <Filename Value="../lr_exportmatrix.pas"/>
+        <Caret Line="357" TopLine="337"/>
+      </Position9>
+      <Position10>
+        <Filename Value="../lr_exportmatrix.pas"/>
+        <Caret Line="358" TopLine="337"/>
+      </Position10>
+      <Position11>
+        <Filename Value="../lr_exportmatrix.pas"/>
+        <Caret Line="361" TopLine="337"/>
+      </Position11>
+      <Position12>
+        <Filename Value="../lr_exportmatrix.pas"/>
+        <Caret Line="357" TopLine="337"/>
+      </Position12>
+      <Position13>
+        <Filename Value="../lr_exportmatrix.pas"/>
+        <Caret Line="358" TopLine="337"/>
+      </Position13>
+      <Position14>
+        <Filename Value="../lr_exportmatrix.pas"/>
+        <Caret Line="361" TopLine="337"/>
+      </Position14>
+      <Position15>
+        <Filename Value="../lr_exportmatrix.pas"/>
+        <Caret Line="34"/>
+      </Position15>
+      <Position16>
+        <Filename Value="../le_e_spreadsheet_types.pas"/>
+        <Caret Line="16" Column="66"/>
+      </Position16>
+      <Position17>
+        <Filename Value="../lrspreadsheetexp.pas"/>
+        <Caret Line="33" Column="44"/>
+      </Position17>
+      <Position18>
+        <Filename Value="../lr_exportmatrix.pas"/>
+        <Caret Line="689" Column="28" TopLine="663"/>
+      </Position18>
+      <Position19>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="56" Column="37" TopLine="41"/>
+      </Position19>
+      <Position20>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="50" Column="3" TopLine="48"/>
+      </Position20>
+    </JumpHistory>
+  </ProjectSession>
+  <Debugging>
+    <Watches Count="1">
+      <Item1 RepeatCount="20">
+        <Expression Value="FColWidth"/>
+      </Item1>
+    </Watches>
+  </Debugging>
+</CONFIG>
