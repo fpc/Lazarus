@@ -2681,6 +2681,7 @@ components/lazreport/source/addons/lrspreadsheetexport/demo/unit1.pas svneol=nat
 components/lazreport/source/addons/lrspreadsheetexport/images/TlrSpreadSheetExport.png -text
 components/lazreport/source/addons/lrspreadsheetexport/images/img.txt svneol=native#text/plain
 components/lazreport/source/addons/lrspreadsheetexport/images/mk_res.sh svneol=native#text/plain
+components/lazreport/source/addons/lrspreadsheetexport/languages/le_e_spreadsheet_consts.de.po svneol=native#text/plain
 components/lazreport/source/addons/lrspreadsheetexport/languages/le_e_spreadsheet_consts.po svneol=native#text/plain
 components/lazreport/source/addons/lrspreadsheetexport/languages/le_e_spreadsheet_consts.ru.po svneol=native#text/plain
 components/lazreport/source/addons/lrspreadsheetexport/le_e_spreadsheet.pas svneol=native#text/pascal
