@@ -3981,25 +3981,19 @@ var
   ResHandle: TLResource;
   ResName: String;
 begin
-  Result := nil;
   ResName := ComponentClass.ClassName;
   // prevent raising exception and speedup a bit search/load
   ResHandle := LazarusResources.Find(ResName);
   if ResHandle <> nil then
     Result := CreateBitmapFromLazarusResource(ResHandle)
   else
-  if FindResource(HInstance, PChar(ResName), PChar(RT_BITMAP)) <> 0 then
-  begin
-    Result := TBitmap.Create;
-    Result.LoadFromResourceName(HInstance, ResName);
-    Result.Transparent := True;
-  end
-  else
-  if FindResource(HInstance, PChar(ResName), PChar(RT_RCDATA)) <> 0 then
     Result := CreateBitmapFromResourceName(HInstance, ResName);
 
   if Result = nil then
-    Result := CreateBitmapFromResourceName(HInstance, 'default');
+    Result := CreateBitmapFromResourceName(HInstance, 'default')
+  else
+  if Result is TBitmap then
+    Result.Transparent := True;
 end;
 
 function TPkgComponent.HasIcon: boolean;
