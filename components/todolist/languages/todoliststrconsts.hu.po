@@ -13,7 +13,7 @@ msgstr ""
 
 #: todoliststrconsts.dlgfiltercsv
 msgid "CSV files"
-msgstr ""
+msgstr "CSV fájlok"
 
 #: todoliststrconsts.dlgfropts
 msgid "Options"
@@ -98,4 +98,3 @@ msgstr "Kategória"
 #: todoliststrconsts.lisviewtodolist
 msgid "View ToDo List"
 msgstr "ToDo lista megjelenítése"
-

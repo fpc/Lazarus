@@ -48,14 +48,12 @@ msgid "Leaks and Traces - HeapTrc and GDB backtrace output viewer"
 msgstr "Szivárgás és Nyomkövetés - HeapTrc és GDB visszakövetési kimenet megjelenítő"
 
 #: heaptrcview.sfrmselectfilewithdebuginfo
-#, fuzzy
-#| msgid "Select File with debug info"
 msgid "Select file with debug info"
-msgstr "Válasszon fájlt hibakeresési infókkal!"
+msgstr "Hibakeresési infókat tartalmazó fájl választása"
 
 #: heaptrcview.sfrmselecttrcfile
 msgid "Select file with trace log"
-msgstr ""
+msgstr "Nyomkövetési naplót tartalmazó fájl választása"
 
 #: heaptrcview.slbltrace
 msgid ".trc file"
@@ -88,4 +86,3 @@ msgstr "Szivárgó memória mérete: %d"
 #: heaptrcview.strtotalmemalloc
 msgid "Total Mem allocated: %d"
 msgstr "Teljes lefoglalt memória: %d"
-

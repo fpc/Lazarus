@@ -178,7 +178,7 @@ msgstr "Kód"
 #: lr_const.sbarcodeformdbfld
 msgctxt "lr_const.sbarcodeformdbfld"
 msgid "Insert DB field"
-msgstr "Adatbázis-mező beszúrása"
+msgstr "Adatbázismező beszúrása"
 
 #: lr_const.sbarcodeformopts
 msgctxt "lr_const.sbarcodeformopts"
@@ -681,7 +681,7 @@ msgstr "Elérhető adatbázisok"
 #: lr_const.sfieldsforminsert
 msgctxt "lr_const.sfieldsforminsert"
 msgid "Insert DB field"
-msgstr "Adatbázis-mező beszúrása"
+msgstr "Adatbázismező beszúrása"
 
 #: lr_const.sfilenotfound
 msgid "File not found"
@@ -903,7 +903,7 @@ msgstr "Teljes keret"
 
 #: lr_const.sfrdesignerformback
 msgid "Send to back"
-msgstr "Háttérbeküldés"
+msgstr "Háttérbe helyezés"
 
 #: lr_const.sfrdesignerformbackcolor
 msgid "Background color"
@@ -923,7 +923,7 @@ msgstr "Alsó keretvonal"
 
 #: lr_const.sfrdesignerformbring
 msgid "Bring to front"
-msgstr "Előtérbehozás"
+msgstr "Előtérbe helyezés"
 
 #: lr_const.sfrdesignerformcapt
 msgctxt "lr_const.sfrdesignerformcapt"
@@ -1164,7 +1164,7 @@ msgstr "Igazítás"
 
 #: lr_const.sfrdesignerform_back
 msgid "Send to &back"
-msgstr "Háttérbeküldés"
+msgstr "Háttérbe helyezés"
 
 #: lr_const.sfrdesignerform_beforeprintscript
 msgid "&Before print script ..."
@@ -1172,7 +1172,7 @@ msgstr "Nyomtatás előtti szkript ..."
 
 #: lr_const.sfrdesignerform_bring
 msgid "Bring to &front"
-msgstr "Előtérbehozás "
+msgstr "Előtérbe helyezés"
 
 #: lr_const.sfrdesignerform_copy
 msgid "&Copy"
@@ -1362,7 +1362,7 @@ msgstr "Nyújtás"
 #: lr_const.sgroupeditorformadddbfield
 msgctxt "lr_const.sgroupeditorformadddbfield"
 msgid "Insert DB field"
-msgstr "Adatbázis-mező beszúrása"
+msgstr "Adatbázismező beszúrása"
 
 #: lr_const.sgroupeditorformcapt
 msgid "Group"
@@ -1453,7 +1453,7 @@ msgstr "Kifejezés beszúrása"
 
 #: lr_const.sinsertfields
 msgid "Insert DB fields"
-msgstr "Adatbázismező beszúrása"
+msgstr "Adatbázismezők beszúrása"
 
 #: lr_const.sinsertfieldsformaviabledset
 msgid "&Available datasets"

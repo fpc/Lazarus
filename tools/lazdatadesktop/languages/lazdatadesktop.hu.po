@@ -188,8 +188,6 @@ msgid "Save SQL statement to file"
 msgstr "SQL állomány mentése fájlba"
 
 #: lazdatadeskstr.simportdictinto
-#, fuzzy
-#| msgid "Import datadictionary"
 msgid "Import data dictionary"
 msgstr "Adatszótár importálása"
 
@@ -215,11 +213,11 @@ msgstr "Külső kulcs hozzáadása a táblához"
 
 #: lazdatadeskstr.sld_actionaddsequence
 msgid "New sequence"
-msgstr "Új sorrend"
+msgstr "Új sorozat"
 
 #: lazdatadeskstr.sld_actionaddsequenceh
 msgid "Add a sequence"
-msgstr "Sorrend hozzáadása"
+msgstr "Sorozat hozzáadása"
 
 #: lazdatadeskstr.sld_actionclose
 msgid "&Close"
@@ -348,15 +346,13 @@ msgstr "A kiválasztott legutóbbi kapcsolat megnyitása"
 
 #: lazdatadeskstr.sld_actionopenh
 msgid "Open a new Data Dictionary"
-msgstr "Új adatszótár megnyitása"
+msgstr "Egy új adatszótár megnyitása"
 
 #: lazdatadeskstr.sld_actionopenrecentdatadict
 msgid "Open"
 msgstr "Megnyitás"
 
 #: lazdatadeskstr.sld_actionopenrecentdatadicth
-#, fuzzy
-#| msgid "Open selected recent datadictionary"
 msgid "Open selected recent data dictionary"
 msgstr "A kiválasztott legutóbbi adatszótár megnyitása"
 
@@ -377,8 +373,6 @@ msgid "Save &as"
 msgstr "Mentés másként"
 
 #: lazdatadeskstr.sld_actionsaveash
-#, fuzzy
-#| msgid "Save datadictionary as"
 msgid "Save data dictionary as"
 msgstr "Adatszótár mentése másként"
 
@@ -405,7 +399,7 @@ msgstr "Meghajtó"
 
 #: lazdatadeskstr.sld_connectionlv3
 msgid "Last used"
-msgstr "Legutóbb használt"
+msgstr "Utolsó használat"
 
 #: lazdatadeskstr.sld_connectionlv4
 msgctxt "lazdatadeskstr.sld_connectionlv4"
@@ -460,8 +454,6 @@ msgid "Host"
 msgstr "Kiszolgáló"
 
 #: lazdatadeskstr.sld_importupdatedatadictionary
-#, fuzzy
-#| msgid "Import/Update datadictionary"
 msgid "Import/Update data dictionary"
 msgstr "Adatszótár importálása/frissítése"
 
@@ -539,7 +531,7 @@ msgstr "Fájlnév"
 
 #: lazdatadeskstr.sld_recentlv3
 msgid "Last used on"
-msgstr "Utolsó használat:"
+msgstr "Utolsó használat"
 
 #: lazdatadeskstr.sld_savefileasfilter
 msgctxt "lazdatadeskstr.sld_savefileasfilter"
@@ -611,10 +603,8 @@ msgid "New connection"
 msgstr "Ú&j kapcsolat"
 
 #: lazdatadeskstr.snewdictionary
-#, fuzzy
-#| msgid "New database"
 msgid "New data dictionary"
-msgstr "Új adatbázis"
+msgstr "Új adatszótár"
 
 #: lazdatadeskstr.snewdomain
 msgid "Create new domain"
@@ -654,7 +644,7 @@ msgstr "Új %s létrehozása"
 
 #: lazdatadeskstr.snewsequence
 msgid "Create new sequence"
-msgstr "Új sorozat étrehozása"
+msgstr "Új sorozat létrehozása"
 
 #: lazdatadeskstr.snewsequencename
 msgid "Enter a name for the new sequence:"
@@ -678,8 +668,6 @@ msgid "Database"
 msgstr "Adatbázis"
 
 #: lazdatadeskstr.snodedatadictionary
-#, fuzzy
-#| msgid "Datadictionary"
 msgid "Data dictionary"
 msgstr "Adatszótár"
 
@@ -710,7 +698,7 @@ msgstr "Index beállítások:"
 
 #: lazdatadeskstr.snodesequences
 msgid "Sequences"
-msgstr "Sorrendek"
+msgstr "Sorozatok"
 
 #: lazdatadeskstr.snodetabledata
 msgid "Table Data"
@@ -750,7 +738,7 @@ msgstr "Változások mentése"
 
 #: lazdatadeskstr.sselectdbfdir
 msgid "Select a directory with DBF files"
-msgstr "Válasszon könyvtárat a DBF fájlok számára!"
+msgstr "Könyvtár választása a DBF fájlok számára"
 
 #: lazdatadeskstr.sselectedobject
 msgid "Selected object"
@@ -758,7 +746,7 @@ msgstr "Kiválasztott objektum"
 
 #: lazdatadeskstr.ssequence
 msgid "Sequence"
-msgstr "Sorrend"
+msgstr "Sorozat"
 
 #: lazdatadeskstr.ssqlfilters
 msgid "SQL files|*.sql|All files|*.*"
@@ -778,7 +766,7 @@ msgstr "Ismeretlen adatszótár: %s"
 
 #: lazdatadeskstr.susecurrentdict
 msgid "Yes, use the active dictionary"
-msgstr "Igen, az aktív szótáratt használva"
+msgstr "Igen, az aktív szótárat használva"
 
 #: lazdatadeskstr.susenewdict
 msgid "No, import in a new dictionary"
