@@ -6515,6 +6515,7 @@ lcl/asyncprocess.pp svneol=native#text/plain
 lcl/btn_icons.res -text
 lcl/buttonpanel.pas svneol=native#text/pascal
 lcl/buttons.pp svneol=native#text/pascal
+lcl/calcform.pas svneol=native#text/pascal
 lcl/calendar.pp svneol=native#text/pascal
 lcl/checklst.pas svneol=native#text/pascal
 lcl/clipbrd.pp svneol=native#text/pascal
