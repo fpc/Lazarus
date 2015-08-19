@@ -188,9 +188,9 @@ type
     FMonthChanged: TNotifyEvent;
     FYearChanged: TNotifyEvent;
     FOnChange: TNotifyEvent;
-    FOKCaption:TCaption;
-    FCancelCaption:TCaption;
-    FCalendar:TCalendar;
+    FOKCaption: TCaption;
+    FCancelCaption: TCaption;
+    FCalendar: TCalendar;
     procedure OnDialogClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure OnDialogCloseQuery(Sender : TObject; var CanClose : boolean);
     procedure OnCalendarDayChanged(Sender: TObject);
@@ -214,8 +214,8 @@ type
     property OnMonthChanged: TNotifyEvent read FMonthChanged write FMonthChanged;
     property OnYearChanged: TNotifyEvent read FYearChanged write FYearChanged;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    property OKCaption:TCaption read FOKCaption write FOKCaption;
-    property CancelCaption:TCaption read FCancelCaption write FCancelCaption;
+    property OKCaption: TCaption read FOKCaption write FOKCaption;
+    property CancelCaption: TCaption read FCancelCaption write FCancelCaption;
   end;
 
 procedure Register;
