@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, LCLStrConsts, Types, LCLType, LMessages,
   Graphics, Controls, Forms, LazFileUtils, Dialogs, StdCtrls, Buttons, Calendar,
-  ExtDlgs, CalendarPopup, MaskEdit, Menus, StrUtils, DateUtils, TimePopup;
+  ExtDlgs, CalendarPopup, MaskEdit, Menus, StrUtils, DateUtils, TimePopup, CalcForm;
 
 const
   NullDate: TDateTime = 0;
