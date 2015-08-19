@@ -133,6 +133,7 @@ type
     property ShowHint;
     property ShowLines;
     property ShowRoot;
+    property StateImages;
     property TabOrder;
     property TabStop default True;
     property Tag;
@@ -154,6 +155,8 @@ type
     property OnExit;
     property OnExpanded;
     property OnExpanding;
+    property OnGetImageIndex;
+    property OnGetSelectedIndex;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
