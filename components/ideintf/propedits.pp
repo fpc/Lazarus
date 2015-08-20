@@ -3467,8 +3467,10 @@ procedure TBoolPropertyEditor.PropDrawValue(ACanvas: TCanvas; const ARect: TRect
                                             AState: TPropEditDrawState);
 var
   TxtRect: TRect;
+  {$IFDEF UseOIThemedCheckBox}
   str: string;
   stat: TCheckBoxState;
+  {$ENDIF}
 begin
   {$IFDEF UseOIThemedCheckBox}
   if FPropertyHook.GetCheckboxForBoolean then begin
