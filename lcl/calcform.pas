@@ -155,8 +155,18 @@ type
     cbAdd, cbSqrt, cbSquare, cbPcnt, cbRev, cbEql, cbBck, cbClr, cbMP,
     cbMS, cbMR, cbMC, cbOk, cbCancel);
 
+{$IFDEF Windows}
+// Windows: use BitBtn to enable font color on button
+{$define CalcBitButtons}
+{$ENDIF}
+
 type
-  TCalcButton = class(TCustomSpeedButton)
+
+  { TCalcButton }
+
+  TCalcButton = class(
+    {$IFDEF CalcBitButtons} TCustomBitBtn {$ELSE} TCustomSpeedButton {$ENDIF}
+    )
   private
     FKind: TCalcBtnKind;
   public
@@ -180,7 +190,7 @@ const
   CalcBtnSizes: array[TCalculatorLayout, 1..2] of Integer =
     ((36,22), (25,21));
   CalcBtnCaptions: array[cbSgn..cbCancel] of String =
-   ('±', ',', '/', '*', '-', '+', '√', 'x²', '%', '1/x', '=', '«', 'C',
+   ('±', ',', '/', '*', '-', '+', '√ ', 'x²', '%', '1/x', '=', '«', 'C',
     'MP','MS','MR','MC', 'ok', 'x');
   CalcBtnPos: array[TCalculatorLayout, TCalcBtnKind] of TPoint =
   ((
@@ -784,13 +794,15 @@ end;
 constructor TCalcButton.CreateKind(AOwner: TComponent; AKind: TCalcBtnKind);
 begin
   inherited Create(AOwner);
+  {$IFDEF CalcBitButtons}
+  TabStop:=false;
+  {$ENDIF}
   FKind:=AKind;
   if FKind in [cbNum0..cbClr] then
     Tag:=Ord(Kind) - 1
   else
     Tag:=-1;
 end;
-
 
 end.
 
