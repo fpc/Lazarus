@@ -20,8 +20,8 @@ unit ColorBox;
 interface
 
 uses
-  LResources, SysUtils, LCLProc, LCLType, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, LCLStrConsts;
+  LResources, SysUtils, Types, Classes,
+  LCLProc, LCLType, LCLStrConsts, Graphics, Controls, Forms, Dialogs, StdCtrls;
 
 const
   cDefaultColorRectWidth = 14;
@@ -40,6 +40,7 @@ type
                      cbPrettyNames,    // use good looking color names - like Red for clRed
                      cbCustomColors);  // call OnGetColors after all other colors processing
   TColorBoxStyle = set of TColorBoxStyles;
+  TColorBoxCloseKey = (cbckNone, cbckReturn, cbckOther);
   TGetColorsEvent = procedure(Sender: TCustomColorBox; Items: TStrings) of object;
 
   TCustomColorBox = class(TCustomComboBox)
@@ -51,6 +52,7 @@ type
     FOnGetColors: TGetColorsEvent;
     FStyle: TColorBoxStyle;
     FSelected: TColor;
+    FCloseMode: TColorBoxCloseKey;
     function GetColor(Index : Integer): TColor;
     function GetColorName(Index: Integer): string;
     function GetSelected: TColor;
@@ -68,7 +70,9 @@ type
     procedure Loaded; override;
     procedure InitializeWnd; override;
     procedure DoGetColors; virtual;
+    procedure DropDown; override;
     procedure CloseUp; override;
+    procedure KeyDownBeforeInterface(var Key: Word; Shift: TShiftState); override;
     function PickCustomColor: Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
@@ -378,7 +382,6 @@ begin
   FNoneColorColor := clBlack;
   FDefaultColorColor := clBlack;
   FSelected := clBlack;
-
   SetColorList;
 end;
 {------------------------------------------------------------------------------
@@ -667,10 +670,36 @@ begin
     OnGetColors(Self, Items)
 end;
 
-procedure TCustomColorBox.CloseUp;
+procedure TCustomColorBox.KeyDownBeforeInterface(var Key: Word; Shift: TShiftState);
 begin
-  if (cbCustomColor in Style) and (ItemIndex = 0) then // custom color has been selected
-    PickCustomColor;
+  if DroppedDown then
+  begin
+    if Key = VK_Return then
+      FCloseMode := cbckReturn
+    else
+      FCloseMode := cbckOther; // other keys: Escape, Tab, Space etc.
+  end;
+  inherited KeyDownBeforeInterface(Key, Shift);
+end;
+
+procedure TCustomColorBox.DropDown;
+begin
+  FCloseMode := cbckNone;
+  inherited DropDown;
+end;
+
+procedure TCustomColorBox.CloseUp;
+var
+  mp, co: TPoint;
+  cr: TRect;
+begin
+  mp := Mouse.CursorPos;
+  co := ClientOrigin;
+  cr := Rect(co.x, co.y+Height+BorderWidth, co.x+Width, co.y+Height+ItemHeight);
+  if (cbCustomColor in Style) and (ItemIndex = 0) and (
+    (PtInRect(cr, mp) and (FCloseMode <> cbckOther)) or (FCloseMode = cbckReturn)
+  ) then
+    PickCustomColor;             // custom color has been selected
   if ItemIndex <> -1 then
     Selected := Colors[ItemIndex];
   inherited CloseUp;
