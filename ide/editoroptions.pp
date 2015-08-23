@@ -2914,7 +2914,7 @@ begin
     TheType := lshPython;
     DefaultCommentType := DefaultCommentTypes[TheType];
     SynClass := LazSyntaxHighlighterClasses[TheType];
-    SetBothFilextensions('py');
+    SetBothFilextensions('py;pyw');
     SampleSource :=
       '# Python syntax highlighting'#13#10 +
       'import math'#13#10 + #13#10 +
