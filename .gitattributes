@@ -6517,7 +6517,6 @@ lcl/asyncprocess.pp svneol=native#text/plain
 lcl/btn_icons.res -text
 lcl/buttonpanel.pas svneol=native#text/pascal
 lcl/buttons.pp svneol=native#text/pascal
-lcl/calcform.pas svneol=native#text/pascal
 lcl/calendar.pp svneol=native#text/pascal
 lcl/checklst.pas svneol=native#text/pascal
 lcl/clipbrd.pp svneol=native#text/pascal
@@ -6551,6 +6550,7 @@ lcl/extendedstrings.pas svneol=native#text/pascal
 lcl/extgraphics.pas svneol=native#text/pascal
 lcl/filectrl.pp svneol=native#text/pascal
 lcl/forms.pp svneol=native#text/pascal
+lcl/forms/calcform.pas svneol=native#text/pascal
 lcl/forms/calendarpopup.lfm svneol=native#text/plain
 lcl/forms/calendarpopup.pas svneol=native#text/plain
 lcl/forms/finddlgunit.lfm svneol=native#text/plain

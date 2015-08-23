@@ -26,7 +26,7 @@ uses
   RegisterLCL, ValEdit, LazCanvas, LazDialogs, LazRegions, CustomDrawn_Common, 
   CustomDrawnControls, CustomDrawnDrawers, LazDeviceApis, LDockTree, 
   LazFreeTypeIntfDrawer, CustomDrawn_WinXP, CustomDrawn_Android, Arrow, 
-  EditBtn, ComboEx, DBExtCtrls, CustomDrawn_Mac, LazarusPackageIntf;
+  EditBtn, ComboEx, DBExtCtrls, CustomDrawn_Mac, CalcForm, LazarusPackageIntf;
 
 implementation
 

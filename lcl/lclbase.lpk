@@ -27,7 +27,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Minor="5"/>
-    <Files Count="281">
+    <Files Count="282">
       <Item1>
         <Filename Value="checklst.pas"/>
         <UnitName Value="CheckLst"/>
@@ -1156,6 +1156,10 @@
         <Filename Value="customdrawn_mac.pas"/>
         <UnitName Value="customdrawn_mac"/>
       </Item281>
+      <Item282>
+        <Filename Value="forms/calcform.pas"/>
+        <UnitName Value="CalcForm"/>
+      </Item282>
     </Files>
     <LazDoc Paths="../docs/xml/lcl"/>
     <i18n>
