@@ -332,8 +332,8 @@ var
   Comp1: TRegisteredComponent absolute Data1;
   Comp2: TRegisteredComponent absolute Data2;
 begin
-  // Both CompareText and AnsiCompareText had problems here sometimes
-  //  for some reason. See reports #27660 and #28546 for details.
+  // The same case-insensitive compare function should be used in this function
+  //  and in CompareClassNameWithRegisteredComponent.
   Result:=ShortCompareText(Comp1.ComponentClass.Classname,
                            Comp2.ComponentClass.Classname);
 end;
@@ -345,7 +345,7 @@ var
 begin
   AClassName:=String(Key);
   RegComp:=TRegisteredComponent(Data);
-  Result:=AnsiCompareText(AClassName, RegComp.ComponentClass.ClassName);
+  Result:=ShortCompareText(AClassName, RegComp.ComponentClass.ClassName);
 end;
 
 function dbgs(const c: TComponentPriorityCategory): string;
