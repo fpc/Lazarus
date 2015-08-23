@@ -329,13 +329,13 @@ end;
 
 function CompareIDEComponentByClassName(Data1, Data2: Pointer): integer;
 var
-  Comp1: TRegisteredComponent;
-  Comp2: TRegisteredComponent;
+  Comp1: TRegisteredComponent absolute Data1;
+  Comp2: TRegisteredComponent absolute Data2;
 begin
-  Comp1:=TRegisteredComponent(Data1);
-  Comp2:=TRegisteredComponent(Data2);
-  Result:=AnsiCompareText(Comp1.ComponentClass.Classname,
-                          Comp2.ComponentClass.Classname);
+  // Both CompareText and AnsiCompareText had problems here sometimes
+  //  for some reason. See reports #27660 and #28546 for details.
+  Result:=ShortCompareText(Comp1.ComponentClass.Classname,
+                           Comp2.ComponentClass.Classname);
 end;
 
 function CompareClassNameWithRegisteredComponent(Key, Data: Pointer): integer;
