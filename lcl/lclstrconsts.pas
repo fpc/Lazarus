@@ -298,6 +298,8 @@ resourceString
   rsPickDate   = 'Select a date';
   rsSize = '  size ';
   rsModified = '  modified ';
+  rsDoCopy = 'Copy';
+  rsDoPaste = 'Paste';
 
   // ShellCtrls
   sShellCtrlsName = 'Name';

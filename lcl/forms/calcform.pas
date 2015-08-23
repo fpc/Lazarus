@@ -23,7 +23,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics,
-  StdCtrls, ExtCtrls, Buttons;
+  StdCtrls, ExtCtrls, Buttons, Menus, Clipbrd;
 
 const
   CalcDefPrecision = 15;
@@ -104,6 +104,7 @@ type
     FDisplayLabel: TLabel;
     FOnCalcKey: TCalculatorCalcKeyEvent;
     FOnDisplayChange: TCalculatorDispChangeEvent;
+    FMenu: TPopupMenu;
     procedure FormKeyPress(Sender: TObject; var Key: char);
     procedure CopyItemClick(Sender: TObject);
     function GetValue: Double;
@@ -651,19 +652,19 @@ end;
 
 procedure TCalculatorPanel.Copy;
 begin
-  // Clipboard.AsText:=FText;
+  Clipboard.AsText:=FText;
 end;
 
 procedure TCalculatorPanel.Paste;
+var
+  S: string;
 begin
-{  if Clipboard.HasFormat(CF_TEXT) then
-    try
-      SetDisplay(StrToFloat(Trim(ReplaceStr(Clipboard.AsText,
-        CurrencyString, ''))));
-    except
-      SetCalcText('0');
-    end;
-}
+  if Clipboard.HasFormat(CF_TEXT) then
+  begin
+    S:=Clipboard.AsText;
+    S:=Trim(StringReplace(S, CurrencyString, '', []));
+    SetDisplay(StrToFloatDef(S, 0.0));
+  end;
 end;
 
 { TCalculatorForm }
@@ -677,6 +678,8 @@ begin
 end;
 
 procedure TCalculatorForm.InitForm(ALayout: TCalculatorLayout);
+var
+  mi: TMenuItem;
 begin
   BorderStyle:=bsDialog;
   Caption:=rsCalculator;
@@ -733,6 +736,17 @@ begin
     OnDisplayChange:=@Self.DisplayChange;
     FControl:=FDisplayLabel;
   end;
+  { Menu }
+  FMenu:=TPopupMenu.Create(Self);
+  DisplayPanel.PopupMenu:=FMenu;
+  mi:=TMenuItem.Create(Self);
+  mi.Caption:=rsDoCopy;
+  mi.OnClick:=@CopyItemClick;
+  FMenu.Items.Add(mi);
+  mi:=TMenuItem.Create(Self);
+  mi.Caption:=rsDoPaste;
+  mi.OnClick:=@PasteItemClick;
+  FMenu.Items.Add(mi);
 end;
 
 
