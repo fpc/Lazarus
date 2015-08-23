@@ -1068,6 +1068,8 @@ class function TCocoaWSCustomGroupBox.CreateHandle(const AWinControl: TWinContro
 var
   box: TCocoaGroupBox;
   cap: NSString;
+  lGroupBoxContents: TCocoaCustomControl;
+  ns: NSRect;
 begin
   box := NSView(TCocoaGroupBox.alloc).lclInitWithCreateParams(AParams);
   if Assigned(box) then
@@ -1076,6 +1078,13 @@ begin
     cap := NSStringUTF8(AParams.Caption);
     box.setTitle(cap);
     cap.release;
+
+    // set a content view in order to be able to customize drawing for labels/color
+    ns := GetNSRect(AParams.X, AParams.Y, AParams.Width, AParams.Height);
+    lGroupBoxContents := TCocoaCustomControl(TCocoaCustomControl.alloc.initWithFrame(ns));
+    lGroupBoxContents.callback := TLCLCustomControlCallback.Create(lGroupBoxContents, AWinControl);
+    lGroupBoxContents.autorelease;
+    box.setContentView(lGroupBoxContents);
   end;
   Result := TLCLIntfHandle(box);
 end;

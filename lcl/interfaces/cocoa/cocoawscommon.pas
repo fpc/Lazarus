@@ -67,6 +67,7 @@ type
     function DeliverMessage(var Msg): LRESULT; virtual; overload;
     function DeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; virtual; overload;
     procedure Draw(ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); virtual;
+    procedure DrawBackground(ctx: NSGraphicsContext; const bounds, dirtyRect: NSRect); virtual;
     function ResetCursorRects: Boolean; virtual;
 
     property HasCaret: Boolean read GetHasCaret write SetHasCaret;
@@ -1055,6 +1056,19 @@ begin
     end;
   finally
     FreeAndNil(FContext);
+  end;
+end;
+
+procedure TLCLCommonCallback.DrawBackground(ctx: NSGraphicsContext; const bounds, dirtyRect: NSRect);
+var
+  lTarget: TWinControl;
+begin
+  // Implement Color property
+  lTarget := TWinControl(GetTarget());
+  if (lTarget.Color <> clDefault) and (lTarget.Color <> clBtnFace) then
+  begin
+    ColorToNSColor(ColorToRGB(lTarget.Color)).set_();
+    NSRectFill(dirtyRect);
   end;
 end;
 
