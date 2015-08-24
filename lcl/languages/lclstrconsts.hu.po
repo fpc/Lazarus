@@ -411,6 +411,14 @@ msgstr "&Könyvtár"
 msgid "Docking"
 msgstr "Dokkolás"
 
+#: lclstrconsts.rsdocopy
+msgid "Copy"
+msgstr ""
+
+#: lclstrconsts.rsdopaste
+msgid "Paste"
+msgstr ""
+
 #: lclstrconsts.rsduplicateiconformat
 msgid "Duplicate icon format."
 msgstr "Kettős ikonformátum"
@@ -1553,3 +1561,4 @@ msgstr "Méret"
 #: lclstrconsts.sshellctrlstype
 msgid "Type"
 msgstr "Típus"
+

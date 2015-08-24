@@ -413,6 +413,14 @@ msgstr "&Cartella"
 msgid "Docking"
 msgstr "Agganciamento"
 
+#: lclstrconsts.rsdocopy
+msgid "Copy"
+msgstr ""
+
+#: lclstrconsts.rsdopaste
+msgid "Paste"
+msgstr ""
+
 #: lclstrconsts.rsduplicateiconformat
 msgid "Duplicate icon format."
 msgstr "Formato icona duplicato."

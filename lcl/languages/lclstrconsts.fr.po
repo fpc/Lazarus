@@ -411,6 +411,14 @@ msgstr "&Répertoire"
 msgid "Docking"
 msgstr "Amarrage"
 
+#: lclstrconsts.rsdocopy
+msgid "Copy"
+msgstr ""
+
+#: lclstrconsts.rsdopaste
+msgid "Paste"
+msgstr ""
+
 #: lclstrconsts.rsduplicateiconformat
 msgid "Duplicate icon format."
 msgstr "Dupliquer le format d'icône."

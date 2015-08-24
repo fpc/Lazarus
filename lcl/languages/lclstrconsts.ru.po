@@ -409,6 +409,14 @@ msgstr "&Каталог"
 msgid "Docking"
 msgstr "Стыковка"
 
+#: lclstrconsts.rsdocopy
+msgid "Copy"
+msgstr ""
+
+#: lclstrconsts.rsdopaste
+msgid "Paste"
+msgstr ""
+
 #: lclstrconsts.rsduplicateiconformat
 msgid "Duplicate icon format."
 msgstr "Формат значков дублируется."

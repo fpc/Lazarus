@@ -419,6 +419,14 @@ msgstr "ディレクトリ(&D)"
 msgid "Docking"
 msgstr "ドッキング"
 
+#: lclstrconsts.rsdocopy
+msgid "Copy"
+msgstr ""
+
+#: lclstrconsts.rsdopaste
+msgid "Paste"
+msgstr ""
+
 #: lclstrconsts.rsduplicateiconformat
 msgid "Duplicate icon format."
 msgstr "アイコンの形式が重複しています。"

@@ -409,6 +409,14 @@ msgstr "&Hakemisto"
 msgid "Docking"
 msgstr "Telakointi"
 
+#: lclstrconsts.rsdocopy
+msgid "Copy"
+msgstr ""
+
+#: lclstrconsts.rsdopaste
+msgid "Paste"
+msgstr ""
+
 #: lclstrconsts.rsduplicateiconformat
 msgid "Duplicate icon format."
 msgstr "Samanlaisen kuvakemuodot."

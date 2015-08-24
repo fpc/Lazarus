@@ -421,6 +421,14 @@ msgstr "תיקייה"
 msgid "Docking"
 msgstr "עיגון"
 
+#: lclstrconsts.rsdocopy
+msgid "Copy"
+msgstr ""
+
+#: lclstrconsts.rsdopaste
+msgid "Paste"
+msgstr ""
+
 #: lclstrconsts.rsduplicateiconformat
 msgid "Duplicate icon format."
 msgstr "פומט צלמית כפול"

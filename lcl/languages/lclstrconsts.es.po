@@ -409,6 +409,14 @@ msgstr "&Directorio"
 msgid "Docking"
 msgstr "Anclado"
 
+#: lclstrconsts.rsdocopy
+msgid "Copy"
+msgstr ""
+
+#: lclstrconsts.rsdopaste
+msgid "Paste"
+msgstr ""
+
 #: lclstrconsts.rsduplicateiconformat
 msgid "Duplicate icon format."
 msgstr "Duplicar formato de icono."
