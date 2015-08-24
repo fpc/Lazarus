@@ -662,7 +662,7 @@ begin
   if Clipboard.HasFormat(CF_TEXT) then
   begin
     S:=Clipboard.AsText;
-    S:=Trim(StringReplace(S, CurrencyString, '', []));
+    S:=Trim(StringReplace(S, DefaultFormatSettings.CurrencyString, '', []));
     SetDisplay(StrToFloatDef(S, 0.0));
   end;
 end;
