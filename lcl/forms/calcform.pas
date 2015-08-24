@@ -118,7 +118,7 @@ type
     procedure DisplayChange(Sender: TObject);
     procedure InitForm(ALayout: TCalculatorLayout); virtual;
   public
-    constructor Create(AOwner: TComponent; ALayout: TCalculatorLayout);
+    constructor Create(AOwner: TComponent; ALayout: TCalculatorLayout); reintroduce;
     property Value: Double read GetValue write SetValue;
 
     property MainPanel: TPanel read FMainPanel;
