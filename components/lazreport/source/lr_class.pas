@@ -10891,10 +10891,10 @@ begin
   else
     Result:=false;
 
-  ExportStream.Free;
   if Result then
     FCurrentFilter.AfterExport;
   FreeAndNil(FCurrentFilter);
+  ExportStream.Free;
 end;
 
 procedure TfrReport.FillQueryParams;
