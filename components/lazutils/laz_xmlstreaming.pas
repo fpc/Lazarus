@@ -77,7 +77,7 @@ type
     procedure WriteSet(Value: LongInt; SetType: Pointer); override;
     procedure WriteString(const Value: String); override;
     procedure WriteWideString(const Value: WideString); override;
-    {$IF FPC_FULLVERSION >= 30101}
+    {$IF FPC_FULLVERSION >= 30000}
     procedure WriteSignature; override;
     {$ENDIF}
     {$IFDEF USE_NEW_READER_WRITER}
@@ -131,7 +131,7 @@ type
     function ReadStr: String; override;
     function ReadString(StringType: TValueType): String; override;
     function ReadWideString: WideString; override;
-    {$IF FPC_FULLVERSION >= 30101}
+    {$IF FPC_FULLVERSION >= 30000}
     procedure ReadSignature; override;
     {$ENDIF}
     {$IFDEF USE_NEW_READER_WRITER}
@@ -468,7 +468,7 @@ begin
   GetPropertyElement('widestring')['value'] := System.UTF8Encode(Value);
 end;
 
-{$IF FPC_FULLVERSION >= 30101}
+{$IF FPC_FULLVERSION >= 30000}
 procedure TXMLObjectWriter.WriteSignature;
 begin
 end;
@@ -1143,7 +1143,7 @@ begin
   //writeln('TXMLObjectReader.ReadWideString "',ValueAsUTF8,'"');
 end;
 
-{$IF FPC_FULLVERSION >= 30101}
+{$IF FPC_FULLVERSION >= 30000}
 procedure TXMLObjectReader.ReadSignature;
 begin
 end;
