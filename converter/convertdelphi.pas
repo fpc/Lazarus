@@ -39,9 +39,7 @@ uses
   // LazUtils
   LConvEncoding, FileUtil, LazFileUtils, LazUTF8, LazUTF8Classes,
   // IDEIntf
-  ComponentReg, LazIDEIntf, PackageIntf, ProjectIntf,
-  // IDEIntf
-  IDEDialogs,
+  ComponentReg, LazIDEIntf, PackageIntf, ProjectIntf, IDEDialogs,
   // IDE
   IDEProcs, DialogProcs, EditorOptions, CompilerOptions,
   ProjPackBase, Project, ProjectDefs, PackageDefs, PackageSystem, PackageEditor,

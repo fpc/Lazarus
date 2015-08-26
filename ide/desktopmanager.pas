@@ -57,7 +57,7 @@ var
   xDesktop: TDesktopOpt;
 begin
   xDesktopName := '';
-  theForm:=TDesktopForm.Create(Nil);
+  theForm := TDesktopForm.Create(Nil);
   try
     Result := theForm.ShowModal;
     if (Result = mrOK) and (theForm.DesktopListBox.ItemIndex >= 0) then
@@ -70,7 +70,7 @@ begin
     with EnvironmentOptions do
     begin
       xDesktop := Desktops.Find(xDesktopName);
-      if xDesktop<>nil then
+      if xDesktop <> nil then
         EnvironmentOptions.UseDesktop(xDesktop);
     end;
 end;
