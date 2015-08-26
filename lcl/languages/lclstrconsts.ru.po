@@ -5,9 +5,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-03-01 23:38+0300\n"
+"PO-Revision-Date: 2015-08-26 15:01+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
+"Language: ru\n"
+"X-Generator: Poedit 1.7.7\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
 msgid "Browser \"%s\" not executable."
@@ -411,11 +413,11 @@ msgstr "Стыковка"
 
 #: lclstrconsts.rsdocopy
 msgid "Copy"
-msgstr ""
+msgstr "Копировать"
 
 #: lclstrconsts.rsdopaste
 msgid "Paste"
-msgstr ""
+msgstr "Вставить"
 
 #: lclstrconsts.rsduplicateiconformat
 msgid "Duplicate icon format."
