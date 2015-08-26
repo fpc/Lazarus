@@ -42,7 +42,6 @@ object DesktopForm: TDesktopForm
     CancelButton.DefaultCaption = False
     TabOrder = 7
     ShowButtons = [pbOK, pbCancel]
-    ShowGlyphs = [pbOK, pbClose, pbHelp]
   end
   object DesktopListBox: TListBox
     AnchorSideRight.Control = SaveBitBtn
