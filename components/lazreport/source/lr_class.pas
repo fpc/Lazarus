@@ -10890,11 +10890,14 @@ begin
   end
   else
     Result:=false;
+  //is necessary to destroy the file stream before calling FCurrentFilter.AfterExport
+  //to ensure the exported file is properly written to the file system
+  ExportStream.Free;
+  FCurrentFilter.Stream := nil;
 
   if Result then
     FCurrentFilter.AfterExport;
   FreeAndNil(FCurrentFilter);
-  ExportStream.Free;
 end;
 
 procedure TfrReport.FillQueryParams;

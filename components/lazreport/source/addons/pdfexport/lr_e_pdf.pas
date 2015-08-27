@@ -54,6 +54,7 @@ type
         constructor Create(AStream: TStream); override;
         destructor Destroy; override;
         procedure OnBeginPage; override;
+        procedure OnEndDoc; override;
         procedure OnEndPage; override;
         procedure ShowBackGround(View: TfrView; x, y, h, w: integer);
         procedure Frame(View: TfrView; x, y, h, w: integer);
@@ -166,7 +167,6 @@ end;
 
 destructor TfrTNPDFExportFilter.Destroy;
 begin
-    PDF.GetPdfDoc.SaveToStream(Stream);
     PDF.Free;
     DummyControl.Free;
     inherited;
@@ -193,6 +193,11 @@ begin
     PRPanel.Top := 0;
     PRPanel.Width := PPage.Width;
     PRPanel.Height := PPage.Height;
+end;
+
+procedure TfrTNPDFExportFilter.OnEndDoc;
+begin
+  PDF.GetPdfDoc.SaveToStream(Stream);
 end;
 
 procedure TfrTNPDFExportFilter.OnEndPage;
