@@ -1,30 +1,27 @@
 object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
   Left = 0
-  Height = 373
+  Height = 407
   Top = 0
   Width = 521
-  ClientHeight = 373
+  ClientHeight = 407
   ClientWidth = 521
   TabOrder = 0
   DesignLeft = 444
   DesignTop = 275
   object grpConditionals: TGroupBox
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 166
-    Top = 0
+    Height = 194
+    Top = 213
     Width = 521
-    Align = alClient
-    Anchors = [akTop, akLeft, akRight]
+    Align = alBottom
     Caption = 'grpConditionals'
-    ClientHeight = 150
+    ClientHeight = 178
     ClientWidth = 519
     TabOrder = 0
     inline CondSynEdit: TSynEdit
       AnchorSideRight.Side = asrBottom
       Left = 0
-      Height = 133
+      Height = 161
       Top = 0
       Width = 519
       Align = alClient
@@ -655,7 +652,7 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
     object CondStatusbar: TStatusBar
       Left = 0
       Height = 17
-      Top = 133
+      Top = 161
       Width = 519
       Panels = <      
         item
@@ -674,20 +671,19 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
     Cursor = crVSplit
     Left = 0
     Height = 5
-    Top = 166
+    Top = 208
     Width = 521
     Align = alBottom
     ResizeAnchor = akBottom
   end
   object grpCustomOptions: TGroupBox
-    AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 202
-    Top = 171
+    Height = 208
+    Top = 0
     Width = 521
-    Align = alBottom
+    Align = alClient
     Caption = 'grpCustomOptions'
-    ClientHeight = 186
+    ClientHeight = 192
     ClientWidth = 519
     TabOrder = 2
     object memoCustomOptions: TMemo
@@ -695,7 +691,7 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
       AnchorSideBottom.Control = grpCustomOptions
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 182
+      Height = 188
       Top = 4
       Width = 363
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -712,7 +708,7 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
       AnchorSideRight.Control = btnDefines
       AnchorSideRight.Side = asrBottom
       Left = 369
-      Height = 27
+      Height = 23
       Top = 4
       Width = 150
       Anchors = [akTop, akLeft, akRight]
@@ -727,8 +723,8 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Side = asrBottom
       Left = 369
-      Height = 27
-      Top = 37
+      Height = 23
+      Top = 33
       Width = 150
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True

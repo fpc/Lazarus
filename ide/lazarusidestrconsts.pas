@@ -2136,7 +2136,6 @@ resourcestring
   dlgCOCfgCmpMessages = 'Messages';
   lisChooseAnFPCMessageFile = 'Choose an FPC message file';
   lisChooseAFileWithCodeToolsTemplates = 'Choose a file with CodeTools templates';
-  dlgCOOther = 'Other';
   dlgCOCompilerCommands = 'Compiler Commands';
   lisUnitOutputDirectory = 'Unit Output directory';
   lisSelectANode = 'Select a node';
@@ -2227,6 +2226,7 @@ resourcestring
   lisShowOnlyModified = 'Show only modified';
   lisUseCommentsInCustomOptions = 'Use comments in custom options';
   lisCustomOptions2 = 'Custom options';
+  lisCustomOptions3 = 'Custom Options';
   lisCustomOptHint = 'These options are passed to the compiler after macros are replaced.';
   dlgStopAfterNrErr = 'Stop after number of errors:';
 
@@ -2367,8 +2367,7 @@ resourcestring
     +'does not look correct:%s%s';
   lisTheLazarusDirectoryDoesNotLookCorrect = 'The Lazarus directory "%s" does '
     +'not look correct:%s%s';
-  lisTheContainsANotExistingDirectory = 'The %s contains a nonexistent '
-    +'directory:%s%s';
+  lisTheContainsANotExistingDirectory = 'The %s contains a nonexistent directory:%s%s';
   lisTheProjectDoesNotUseTheLCLUnitInterfacesButItSeems = 'The project does '
     +'not use the LCL unit interfaces, which is required by LCLBase.%sYou will '
     +'get strange linker errors if you use the LCL without interfaces.';
