@@ -1235,7 +1235,7 @@ begin
   MsgLine.SubTool:=SubToolFPC;
   MsgLine.Filename:=AFilename;
   MsgLine.Msg:=OldP;
-  AddMsgLine(MsgLine);
+  inherited AddMsgLine(MsgLine);
   Result:=true;
 end;
 
@@ -1253,7 +1253,7 @@ begin
   MsgLine.SubTool:=SubToolFPC;
   MsgLine.Urgency:=mluProgress;
   MsgLine.Msg:=OldP;
-  AddMsgLine(MsgLine);
+  inherited AddMsgLine(MsgLine);
   Result:=true;
 end;
 
@@ -1391,7 +1391,7 @@ begin
   MsgLine.SubTool:=SubToolFPC;
   MsgLine.Urgency:=mluProgress;
   MsgLine.Msg:=OldP;
-  AddMsgLine(MsgLine);
+  inherited AddMsgLine(MsgLine);
   Result:=true;
 end;
 
@@ -1412,7 +1412,7 @@ begin
   MsgLine.SubTool:=SubToolFPC;
   MsgLine.Urgency:=mluProgress;
   MsgLine.Msg:=OldStart;
-  AddMsgLine(MsgLine);
+  inherited AddMsgLine(MsgLine);
   Result:=true;
 end;
 
@@ -1446,7 +1446,7 @@ begin
   MsgLine.SubTool:=SubToolFPC;
   MsgLine.Urgency:=mluProgress;
   MsgLine.Msg:=OldStart;
-  AddMsgLine(MsgLine);
+  inherited AddMsgLine(MsgLine);
 end;
 
 function TIDEFPCParser.CheckForWindresErrors(p: PChar): boolean;
@@ -1595,8 +1595,11 @@ begin
     MsgLine:=inherited CreateMsgLine(i);
     MsgLine.MsgID:=0;
     MsgLine.SubTool:=SubToolFPCLinker;
-    MsgLine.Urgency:=mluImportant;
-    AddMsgLine(MsgLine);
+    if MsgLine.Msg<>'' then
+      MsgLine.Urgency:=mluImportant
+    else
+      MsgLine.Urgency:=mluVerbose2;
+    inherited AddMsgLine(MsgLine);
   end;
 end;
 
@@ -1614,7 +1617,7 @@ var
   i: Integer;
   MsgLine: TMessageLine;
 begin
-  // find message "Linking ..."
+  // find message "Calling resource compiler ..."
   i:=Tool.WorkerMessages.Count-1;
   while (i>=0) and (Tool.WorkerMessages[i].MsgID<>FPCMsgIDCallingResourceCompiler) do
     dec(i);
@@ -1624,8 +1627,11 @@ begin
     MsgLine:=inherited CreateMsgLine(i);
     MsgLine.MsgID:=0;
     MsgLine.SubTool:=SubToolFPCRes;
-    MsgLine.Urgency:=mluHint;
-    AddMsgLine(MsgLine);
+    if MsgLine.Msg<>'' then
+      MsgLine.Urgency:=mluHint
+    else
+      MsgLine.Urgency:=mluVerbose2;
+    inherited AddMsgLine(MsgLine);
   end;
 end;
 
