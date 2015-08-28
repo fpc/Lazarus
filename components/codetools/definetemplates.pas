@@ -177,9 +177,10 @@ const
   FPCOperatingSystemAlternative2Names: array[1..2] of shortstring =(
       'bsd', 'linux' // see GetDefaultSrcOS2ForTargetOS
     );
-  FPCProcessorNames: array[1..11] of shortstring =(
+  FPCProcessorNames: array[1..12] of shortstring =(
       'a64',
       'arm',
+      'avr',
       'i386',
       'i8086',
       'jvm',
@@ -2849,6 +2850,8 @@ begin
     Result:=Result+'ppc64'
   else if SysUtils.CompareText(TargetCPU,'arm')=0 then
     Result:=Result+'arm'
+  else if SysUtils.CompareText(TargetCPU,'avr')=0 then
+    Result:=Result+'avr'
   else if SysUtils.CompareText(TargetCPU,'sparc')=0 then
     Result:=Result+'sparc'
   else if SysUtils.CompareText(TargetCPU,'x86_64')=0 then
