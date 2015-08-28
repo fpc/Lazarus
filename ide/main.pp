@@ -5658,7 +5658,7 @@ begin
         'Codetools');
       Result.Flags:=Result.Flags+[mlfLeftToken];
     end else
-      Result:=MessagesView.AddCustomMessage(mluError,CodeToolBoss.ErrorMessage,'Codetools');
+      Result:=MessagesView.AddCustomMessage(mluError,CodeToolBoss.ErrorMessage,'',0,0,'Codetools');
     MessagesView.SelectMsgLine(Result);
   end;
 end;
