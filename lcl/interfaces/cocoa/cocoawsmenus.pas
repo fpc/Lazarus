@@ -39,6 +39,8 @@ type
   { TCocoaWSMenuItem }
 
   TCocoaWSMenuItem = class(TWSMenuItem)
+  private
+    class procedure Do_SetCheck(const ANSMenuItem: NSMenuItem; const Checked: boolean);
   published
     class procedure AttachMenu(const AMenuItem: TMenuItem); override;
     class function  CreateHandle(const AMenuItem: TMenuItem): HMENU; override;
@@ -127,6 +129,14 @@ end;
 
 { TCocoaWSMenuItem }
 
+class procedure TCocoaWSMenuItem.Do_SetCheck(const ANSMenuItem: NSMenuItem; const Checked: boolean);
+const
+  menustate : array [Boolean] of NSInteger = (NSOffState, NSOnState);
+begin
+  ANSMenuItem.setOnStateImage(NSMenuCheckmark);
+  ANSMenuItem.setState( menustate[Checked] );
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCocoaWSMenuItem.AttachMenu
   Params:  AMenuItem - LCL menu item
@@ -200,16 +210,19 @@ begin
     item.setKeyEquivalentModifierMask(ShiftSt);
 
     if AMenuItem.IsInMenuBar then
-      begin
+    begin
       ANSMenu := TCocoaMenu.alloc.initWithTitle(ns);
       item.setSubmenu(ANSMenu);
-      end;
+    end;
 
     ns.release;
     nsKey.release;
     item.setTarget(item);
     TCocoaMenuItem(item).menuItemCallback:=TLCLMenuItemCallback.Create(item, AMenuItem);
+
+    // initial set of properties
     item.setEnabled(AMenuItem.Enabled);
+    Do_SetCheck(item, AMenuItem.Checked);
   end;
 
   Result:=HMENU(item);
@@ -317,13 +330,10 @@ end;
  ------------------------------------------------------------------------------}
 class function TCocoaWSMenuItem.SetCheck(const AMenuItem: TMenuItem;
   const Checked: boolean): boolean;
-const
-  menustate : array [Boolean] of NSInteger = (NSOffState, NSOnState);
 begin
   Result:=Assigned(AMenuItem) and (AMenuItem.Handle<>0);
   if not Result then Exit;
-  NSMenuItem(AMenuItem.Handle).setOnStateImage( NSMenuCheckmark );
-  NSMenuItem(AMenuItem.Handle).setState( menustate[Checked] );
+  TCocoaWSMenuItem.Do_SetCheck(NSMenuItem(AMenuItem.Handle), Checked);
 end;
 
 {------------------------------------------------------------------------------
