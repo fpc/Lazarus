@@ -355,25 +355,31 @@ end;
 
 procedure TCustomUpDown.AssociateKeyDown(Sender: TObject; var Key: Word;
   ShiftState : TShiftState);
+var
+  ConsumeKey: Boolean;
 begin
-  If ArrowKeys and (ShiftState = []) then begin
+  ConsumeKey := False;
+  if ArrowKeys and (ShiftState = []) then
+  begin
     case FOrientation of
       udVertical:
         case Key of
           VK_Up:
-            TCustomSpeedButton(FMaxBtn).Click;
+            begin TCustomSpeedButton(FMaxBtn).Click; ConsumeKey := True; end;
           VK_Down:
-            TCustomSpeedButton(FMinBtn).Click;
+            begin TCustomSpeedButton(FMinBtn).Click; ConsumeKey := True; end;
         end;
       udHorizontal:
         case Key of
           VK_Left:
-            TCustomSpeedButton(FMinBtn).Click;
+            begin TCustomSpeedButton(FMinBtn).Click; ConsumeKey := True; end;
           VK_Right:
-            TCustomSpeedButton(FMaxBtn).Click;
+            begin TCustomSpeedButton(FMaxBtn).Click; ConsumeKey := True; end;
         end;
     end;
-  end
+  end;
+  if ConsumeKey then
+    Key := 0;
 end;
 
 procedure TCustomUpDown.OnAssociateChangeBounds(Sender: TObject);

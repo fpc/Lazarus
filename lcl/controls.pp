@@ -1370,6 +1370,8 @@ type
     procedure RemoveHandler(HandlerType: TControlHandlerType;
                             const AMethod: TMethod);
     procedure DoCallNotifyHandler(HandlerType: TControlHandlerType);
+    procedure DoCallKeyEventHandler(HandlerType: TControlHandlerType;
+                                    var Key: Word; Shift: TShiftState);
     procedure DoContextPopup(MousePos: TPoint; var Handled: Boolean); virtual;
     procedure SetZOrder(TopMost: Boolean); virtual;
     class function GetControlClassDefaultSize: TSize; virtual;
