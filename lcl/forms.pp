@@ -475,6 +475,7 @@ type
     procedure SetFormStyle(Value : TFormStyle);
     procedure SetIcon(AValue: TIcon);
     procedure SetMenu(Value: TMainMenu);
+    procedure SetModalResult(Value: TModalResult);
     procedure SetPopupMode(const AValue: TPopupMode);
     procedure SetPopupParent(const AValue: TCustomForm);
     procedure SetPosition(Value: TPosition);
@@ -663,7 +664,7 @@ type
     property KeyPreview: Boolean read FKeyPreview write FKeyPreview default False;
     property MDIChildren[I: Integer]: TCustomForm read GetMDIChildren;
     property Menu : TMainMenu read FMenu write SetMenu;
-    property ModalResult : TModalResult read FModalResult write FModalResult;
+    property ModalResult : TModalResult read FModalResult write SetModalResult;
     property Monitor: TMonitor read GetMonitor;
     property PopupMode: TPopupMode read FPopupMode write SetPopupMode default pmNone;
     property PopupParent: TCustomForm read FPopupParent write SetPopupParent;

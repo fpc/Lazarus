@@ -106,7 +106,8 @@ type
 
     class procedure CloseModal(const ACustomForm: TCustomForm); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
-    
+    class procedure SetModalResult(const ACustomForm: TCustomForm; ANewValue: TModalResult); override;
+
     class procedure SetAlphaBlend(const ACustomForm: TCustomForm; const AlphaBlend: Boolean; const Alpha: Byte); override;
     class procedure SetBorderIcons(const AForm: TCustomForm; const ABorderIcons: TBorderIcons); override;
     class procedure SetFormBorderStyle(const AForm: TCustomForm; const AFormBorderStyle: TFormBorderStyle); override;
@@ -584,6 +585,14 @@ begin
 
   CocoaWidgetSet.CurModalForm := ACustomForm;
   NSApp.runModalForWindow(win);
+end;
+
+// If ShowModal will not be fully blocking in the future this can be removed
+class procedure TCocoaWSCustomForm.SetModalResult(const ACustomForm: TCustomForm;
+  ANewValue: TModalResult);
+begin
+  if (CocoaWidgetSet.CurModalForm = ACustomForm) and (ANewValue <> 0) then
+    CloseModal(ACustomForm);
 end;
 
 class procedure TCocoaWSCustomForm.SetAlphaBlend(const ACustomForm: TCustomForm; const AlphaBlend: Boolean; const Alpha: Byte);
