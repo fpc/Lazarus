@@ -33,7 +33,7 @@ uses
   InterfaceBase, GraphType,
   // private
   CocoaAll, CocoaPrivate, CocoaUtils, CocoaGDIObjects,
-  CocoaProc,
+  CocoaProc, cocoa_extra,
   // LCL
   LCLStrConsts, LMessages, LCLMessageGlue, LCLProc, LCLIntf, LCLType,
   Controls, Forms, Themes, Menus,
@@ -59,10 +59,9 @@ type
     constructor Create(AMimeType: string; ACocoaFormat: NSString; ADataType: TCocoaClipboardDataType);
   end;
 
-  {// private since 10.5, doesn't seam to do anything in 10.10
-  NSApplicationSetAppleMenu = objccategory external(NSApplication)
-    procedure setAppleMenu(AMenu: NSMenu); message 'setAppleMenu:';
-  end;}
+  TAppDelegate = objcclass(NSObject, NSApplicationDelegateProtocol)
+    procedure application_openFiles(sender: NSApplication; filenames: NSArray);
+  end;
 
   { TCocoaWidgetSet }
 
@@ -70,6 +69,7 @@ type
   private
     FTerminating: Boolean;
     FNSApp: NSApplication;
+    FNSApp_Delegate: TAppDelegate;
     FCurrentCursor: HCursor;
     FCaptureControl: HWND;
 

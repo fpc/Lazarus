@@ -33,7 +33,9 @@ begin
   {$ENDIF}
 
   { Creates the application NSApp object }
-  FNsApp := NSApplication.sharedApplication;
+  FNSApp := NSApplication.sharedApplication;
+  FNSApp_Delegate := TAppDelegate.alloc.init;
+  FNSApp.setDelegate(FNSApp_Delegate);
 
   // Sandboxing
   lDict := NSProcessInfo.processInfo.environment;
@@ -535,6 +537,21 @@ begin
   MimeType := AMimeType;
   CocoaFormat := ACocoaFormat;
   DataType := ADataType;
+end;
+
+procedure TAppDelegate.application_openFiles(sender: NSApplication; filenames: NSArray);
+var
+  lFiles: array of string;
+  lNSStr: NSString;
+  i: Integer;
+begin
+  SetLength(lFiles, filenames.count);
+  for i := 0 to filenames.count-1 do
+  begin
+    lNSStr := NSString(filenames.objectAtIndex(i));
+    lFiles[i] := NSStringToString(lNSStr);
+  end;
+  Application.IntfDropFiles(lFiles);
 end;
 
 {------------------------------------------------------------------------------

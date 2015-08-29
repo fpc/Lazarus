@@ -11,6 +11,7 @@ uses
   MacOSAll, // for CGContextRef
   LCLtype, LCLProc, Graphics, Controls, fpcanvas,
   CocoaAll, CocoaProc, CocoaUtils,
+  cocoa_extra,
   {$ifndef CocoaUseHITheme}
   customdrawndrawers, customdrawn_mac,
   {$endif}
@@ -512,24 +513,6 @@ function isSamePoint(const p1, p2: TPoint): Boolean; inline;
 begin
   Result:=(p1.x=p2.x) and (p1.y=p2.y);
 end;
-
-{ TCocoaBitmap }
-
-type
-  // The following dummy categories fix bugs in the Cocoa bindings available in FPC
-  // Remove them when the FPC binding parser is fixed.
-  // More details:
-  // http://wiki.freepascal.org/FPC_PasCocoa/Differences#Sending_messages_to_id
-  // http://wiki.lazarus.freepascal.org/FPC_PasCocoa#Category_declaration
-  NSBitmapImageRepFix = objccategory external(NSBitmapImageRep)
-    function initWithBitmapDataPlanes_pixelsWide_pixelsHigh__colorSpaceName_bytesPerRow_bitsPerPixel(planes: PPByte; width: NSInteger; height: NSInteger; bps: NSInteger; spp: NSInteger; alpha: Boolean; isPlanar_: Boolean; colorSpaceName_: NSString; rBytes: NSInteger; pBits: NSInteger): id; message 'initWithBitmapDataPlanes:pixelsWide:pixelsHigh:bitsPerSample:samplesPerPixel:hasAlpha:isPlanar:colorSpaceName:bytesPerRow:bitsPerPixel:';
-    function initWithBitmapDataPlanes_pixelsWide_pixelsHigh__colorSpaceName_bitmapFormat_bytesPerRow_bitsPerPixel(planes: PPByte; width: NSInteger; height: NSInteger; bps: NSInteger; spp: NSInteger; alpha: Boolean; isPlanar_: Boolean; colorSpaceName_: NSString; bitmapFormat_: NSBitmapFormat; rBytes: NSInteger; pBits: NSInteger): id; message 'initWithBitmapDataPlanes:pixelsWide:pixelsHigh:bitsPerSample:samplesPerPixel:hasAlpha:isPlanar:colorSpaceName:bitmapFormat:bytesPerRow:bitsPerPixel:';
-  end;
-
-  NSGraphicsContextFix = objccategory external(NSGraphicsContext)
-    procedure setImageInterpolation(interpolation: NSImageInterpolation); message 'setImageInterpolation:';
-    procedure setShouldAntialias(antialias: Boolean); message 'setShouldAntialias:';
-  end;
 
 { TCocoaFont }
 
