@@ -478,7 +478,6 @@ var
     ns.release;
     win.setAcceptsMouseMovedEvents(True);
 
-
     cnt.callback := TCocoaWindow(win).callback;
     cnt.callback.IsOpaque:=true;
     win.setContentView(cnt);
@@ -490,6 +489,9 @@ var
       else
         NSWindow(AParams.WndParent).addChildWindow_ordered(win, NSWindowAbove);
     end;
+
+    // support for drag & drop
+    win.registerForDraggedTypes(NSArray.arrayWithObjects_count(@NSFilenamesPboardType, 1));
   end
   else
   begin

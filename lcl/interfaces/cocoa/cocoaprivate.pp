@@ -402,6 +402,9 @@ type
     procedure scrollWheel(event: NSEvent); override;
     procedure sendEvent(event: NSEvent); override;
     function lclIsHandle: Boolean; override;
+    // NSDraggingDestinationCategory
+    function draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation; override;
+    function performDragOperation(sender: NSDraggingInfoProtocol): Boolean; override;
   end;
 
   { TCocoaCustomControl }
@@ -1431,6 +1434,59 @@ begin
   end
   else
     inherited sendEvent(event);
+end;
+
+function TCocoaWindow.draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation;
+var
+  lTarget: TCustomForm = nil;
+begin
+  Result := NSDragOperationNone;
+  if (callback <> nil) and (callback.GetTarget() <> nil) and (callback.GetTarget() is TCustomForm) then
+    lTarget := TCustomForm(callback.GetTarget());
+  if (lTarget <> nil) and (lTarget.OnDropFiles <> nil) then
+  begin
+    Result := sender.draggingSourceOperationMask();
+  end;
+end;
+
+function TCocoaWindow.performDragOperation(sender: NSDraggingInfoProtocol): Boolean;
+var
+  draggedURLs{, lClasses}: NSArray;
+  lFiles: array of string;
+  i: Integer;
+  pboard: NSPasteboard;
+  lNSStr: NSString;
+  //lClass: pobjc_class;
+begin
+  Result := False;
+  pboard := sender.draggingPasteboard();
+
+  // Multiple strings
+  draggedURLs := pboard.propertyListForType(NSFilenamesPboardType);
+  SetLength(lFiles, draggedURLs.count);
+  for i := 0 to draggedURLs.count-1 do
+  begin
+    lNSStr := NSString(draggedURLs.objectAtIndex(i));
+    lFiles[i] := NSStringToString(lNSStr);
+  end;
+
+  // Multiple URLs -> Results in strange URLs with file:// protocol
+  {if pboard.types.containsObject(NSURLPboardType) then
+  begin
+    lClass := NSURL.classClass;
+    lClasses := NSArray.arrayWithObjects_count(@lClass, 1);
+    draggedURLs := pboard.readObjectsForClasses_options(lClasses, nil);
+    SetLength(lFiles, draggedURLs.count);
+    for i := 0 to draggedURLs.count-1 do
+    begin
+      lNSStr := NSURL(draggedURLs.objectAtIndex(i)).absoluteString;
+      lFiles[i] := NSStringToString(lNSStr);
+    end;
+  end;}
+
+  if (Length(lFiles) > 0) and (callback <> nil) and (callback.GetTarget() <> nil) then
+    TCustomForm(callback.GetTarget()).IntfDropFiles(lFiles);
+  Result := True;
 end;
 
 { TCocoaScrollView }
