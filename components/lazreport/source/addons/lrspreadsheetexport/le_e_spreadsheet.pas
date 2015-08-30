@@ -57,11 +57,14 @@ type
     FWorksheet:TsWorksheet;
     FFileName:string;
     FCurPage:integer;
-    FTmpTextWidth: Integer;
-    FTmpTextHeight: Integer;
+{    FTmpTextWidth: Integer;
+    FTmpTextHeight: Integer;}
+    FTmpTextWidth: Double;
+    FTmpTextHeight: Double;
     procedure ExportColWidth;
     procedure ExportRowHight;
-    procedure ExportData;
+    //procedure ExportData;
+    procedure ExportData1;
 
     procedure MakeWorksheet;
   protected
@@ -109,7 +112,8 @@ var
 begin
   for i:=0 to FExportMatrix.ColumnCount-1 do
     //FWorksheet.WriteColWidth(i, round(FExportMatrix.ColumnWidth[i] * 0.161404639));
-    FWorksheet.WriteColWidth(i, Max(FExportMatrix.ColumnWidth[i] div FTmpTextWidth, 1));
+    //FWorksheet.WriteColWidth(i, Max(FExportMatrix.ColumnWidth[i] / FTmpTextWidth, 1));
+    FWorksheet.WriteColWidth(i, FExportMatrix.ColumnWidth[i] / FTmpTextWidth);
 end;
 
 procedure TlrSpreadSheetExportFilter.ExportRowHight;
@@ -117,15 +121,8 @@ var
   i: Integer;
 begin
   for i:=0 to FExportMatrix.RowCount - 1 do
-    FWorksheet.WriteRowHeight(i, FExportMatrix.RowHiht[i] div FTmpTextHeight);
+    FWorksheet.WriteRowHeight(i, FExportMatrix.RowHiht[i] / FTmpTextHeight);
 end;
-
-procedure TlrSpreadSheetExportFilter.ExportData;
-var
-  R:TExportObject;
-  y: Integer;
-  x: Integer;
-  scFrm:TsCellBorders;
 
 function sftofs(AFont:TFont):TsFontStyles;
 begin
@@ -142,6 +139,13 @@ begin
   if fsUnderline in AFont.Style then
     Result:=Result + [fssUnderline];
 end;
+{
+procedure TlrSpreadSheetExportFilter.ExportData;
+var
+  R:TExportObject;
+  y: Integer;
+  x: Integer;
+  scFrm:TsCellBorders;
 
 begin
   for y:=0 to FExportMatrix.RowCount do
@@ -195,6 +199,74 @@ begin
       end;
     end;
 end;
+}
+procedure TlrSpreadSheetExportFilter.ExportData1;
+var
+  R: Integer;
+  Row: TExportRow;
+  C: Integer;
+  Cel: TExportObject;
+  X: Integer;
+  Y: Integer;
+  scFrm:TsCellBorders;
+begin
+  for R:=0 to FExportMatrix.Rows.Count-1 do
+  begin
+    Row:=TExportRow(FExportMatrix.Rows[R]);
+    for C:=0 to Row.Cells.Count-1 do
+    begin
+      Cel:=TExportObject(Row.Cells[C]);
+
+      if Assigned(Cel) then
+      begin
+        X:=Cel.Col;
+        Y:=Row.Row;
+        if Cel.Text<>'' then
+        begin
+          FWorksheet.WriteUTF8Text(Y, X, TrimRight(Cel.Texts.Text));
+          if Cel.Angle <> 0 then
+            FWorksheet.WriteTextRotation(Y, X, rt90DegreeCounterClockwiseRotation);
+          FWorksheet.WriteVertAlignment(Y, X, ssLayout[Cel.Layout]);
+          FWorksheet.WriteWordwrap(Y, X, Cel.WordWrap);
+        end;
+        FWorksheet.WriteBackgroundColor(Y, X, Cel.FillColor);
+
+        if (Cel.Col < Cel.MergedCol) or (Cel.Row < Cel.MergedRow) then
+          FWorksheet.MergeCells(Y, X, Cel.MergedRow, Cel.MergedCol);
+
+        if Assigned(Cel.Font) then
+          FWorksheet.WriteFont(Y, X, Cel.Font.Name,  Cel.Font.Size, sftofs(Cel.Font), Cel.Font.Color, fpNormal);
+
+        FWorksheet.WriteHorAlignment(Y, X, ssAligns[Cel.Alignment]);
+
+        scFrm:=[];
+        if frbLeft in Cel.Frames then
+        begin
+          FWorksheet.WriteBorderColor(Y, X, cbEast, Cel.FrameColor);
+          scFrm:=scFrm + [cbEast]
+        end;
+        if frbTop in Cel.Frames then
+        begin
+          FWorksheet.WriteBorderColor(Y, X, cbNorth, Cel.FrameColor);
+          scFrm:=scFrm + [cbNorth]
+        end;
+        if frbBottom in Cel.Frames then
+        begin
+          FWorksheet.WriteBorderColor(Y, X, cbSouth, Cel.FrameColor);
+          scFrm:=scFrm + [cbSouth]
+        end;
+        if frbRight in Cel.Frames then
+        begin
+          FWorksheet.WriteBorderColor(Y, X, cbWest, Cel.FrameColor);
+          scFrm:=scFrm + [cbWest]
+        end;
+
+        if scFrm <> [] then
+          FWorksheet.WriteBorders(Y, X, scFrm);
+      end;
+    end;
+  end;
+end;
 
 procedure TlrSpreadSheetExportFilter.MakeWorksheet;
 var
@@ -209,7 +281,8 @@ begin
   FWorksheet := FWorkbook.AddWorksheet(S);
   ExportColWidth;
   ExportRowHight;
-  ExportData;
+  //ExportData;
+  ExportData1;
   FWorksheet:=nil;
   FExportMatrix.Clear;
 end;
@@ -318,8 +391,12 @@ end;
 procedure TlrSpreadSheetExportFilter.OnBeginDoc;
 begin
   inherited OnBeginDoc;
-  FTmpTextWidth:=(TempBmp.Canvas.TextWidth('W') + TempBmp.Canvas.TextWidth('i')) div 2;
-  FTmpTextHeight:=TempBmp.Canvas.TextHeight('Wg');
+//  FTmpTextWidth:=(TempBmp.Canvas.TextWidth('W') + TempBmp.Canvas.TextWidth('i')) div 2;
+//  FTmpTextWidth:=TempBmp.Canvas.TextWidth('Wi') / 2;
+{  FTmpTextWidth:=TempBmp.Canvas.TextWidth('I');
+  FTmpTextHeight:=TempBmp.Canvas.TextHeight('Wg');}
+  FTmpTextWidth:=7;
+  FTmpTextHeight:=12;
   FWorkbook := TsWorkbook.Create;
   FCurPage:=0;
 end;
@@ -351,6 +428,7 @@ end;
 
 initialization
   frRegisterExportFilter(TlrSpreadSheetExportFilter, 'Microsoft Excel (*.xls)', '*.xls');
+  frRegisterExportFilter(TlrSpreadSheetExportFilter, 'Microsoft Excel 2007/2010 (*.xlsx)', '*.xlsx');
   frRegisterExportFilter(TlrSpreadSheetExportFilter, 'OpenOffice/LibreOffice (*.ods)', '*.ods');
 end.
 

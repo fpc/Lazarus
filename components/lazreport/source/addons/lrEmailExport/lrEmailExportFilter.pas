@@ -220,11 +220,11 @@ var
   FEmailApp:TEmailApp;
 begin
   FilterClass:=nil;
-  for i:=0 to frFiltersCount - 1 do
-    if (frFilters[i].FilterDesc = AttachmentFormat) then
+  for i:=0 to ExportFilters.Count - 1 do
+    if (ExportFilters[i].FilterDesc = AttachmentFormat) then
     begin
-      FilterClass := frFilters[i].ClassRef;
-      SExt:=ExtractFileExt(frFilters[i].FilterExt);
+      FilterClass := ExportFilters[i].ClassRef;
+      SExt:=ExtractFileExt(ExportFilters[i].FilterExt);
       break;
     end;
   if not Assigned(FilterClass) then exit;

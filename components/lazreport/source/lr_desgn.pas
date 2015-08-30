@@ -3338,6 +3338,7 @@ begin
 
   try
     Rep.LoadFromXMLStream(TestRepStream);
+    Rep.FileName:=SaveR.FileName;
     Rep.ShowReport;
     FreeAndNil(Rep)
   except

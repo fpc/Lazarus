@@ -116,6 +116,8 @@ type
 
     property Top:integer read FTop write FTop;
     property Row:integer read FRow;
+
+    property Cells:TFpList read FCells;
   end;
 
   { TExportMatrix }
@@ -160,6 +162,8 @@ type
     property DeleteEmptyRow:boolean read FDeleteEmptyRow write FDeleteEmptyRow;
     property MergeCell:boolean read FMergeCell write FMergeCell;
     property PageMargin:integer read FPageMargin write FPageMargin;
+
+    property Rows:TFpList read FRows;
   end;
 
 implementation
@@ -523,7 +527,7 @@ begin
     for j:=0 to TExportRow(FRows[i]).FCells.Count - 1 do
     begin
       FObj:=TExportObject(TExportRow(FRows[i]).FCells[j]);
-      FObj.FRow:=i;
+//      FObj.FRow:=i;
       FObj.FCol:=GetColNumByLeft(FObj.FLeft);
     end;
   end;

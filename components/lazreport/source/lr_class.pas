@@ -1498,10 +1498,42 @@ type
     EditorProc : TlrObjEditorProc;
   end;
 
-  TfrExportFilterInfo = record
-    ClassRef: TfrExportFilterClass;
-    FilterDesc, FilterExt: String;
+  { TExportFilterItem }
+
+  TExportFilterItem = class
+  private
+    FClassRef: TfrExportFilterClass;
+    FEnabled: boolean;
+    FFilterDesc: String;
+    FFilterExt: String;
+  public
+    constructor Create;
+    property ClassRef: TfrExportFilterClass read FClassRef;
+    property FilterDesc: String read FFilterDesc;
+    property FilterExt: String read FFilterExt;
+    property Enabled:boolean read FEnabled write FEnabled;
   end;
+
+  { TExportFilters }
+
+  TExportFilters = class
+  private
+    FList:TFPList;
+    function GetCount: integer;
+    procedure Clear;
+    function GetItems(AItem: Integer): TExportFilterItem;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure RegisterFilter(AClassRef: TfrExportFilterClass; const AFilterDesc, AFilterExt: String);
+    procedure DisableFilter(AFilterExt: String);
+    procedure EnableFilter(AFilterExt: String);
+    function FindFilter(AFilterExt: String):TExportFilterItem;
+    function FilterIndex(AClassRef: TfrExportFilterClass; AFilterExt:string): Integer;
+    property Count:integer read GetCount;
+    property Items[AItem:Integer]:TExportFilterItem read GetItems;default;
+  end;
+
 
   TfrFunctionInfo = record
     FunctionLibrary: TfrFunctionLibrary;
@@ -1529,8 +1561,6 @@ var
   DisableDrawing: Boolean;
   frAddIns: Array[0..31] of TfrAddInObjectInfo;   // add-in objects
   frAddInsCount: Integer;
-  frFilters: Array[0..31] of TfrExportFilterInfo; // export filters
-  frFiltersCount: Integer;
   frFunctions: Array[0..31] of TfrFunctionInfo;   // function libraries
   frFunctionsCount: Integer;
   frTools: Array[0..31] of TfrToolsInfo;          // tools
@@ -1557,6 +1587,7 @@ var
   // variables used through report building
   TempBmp: TBitmap;            // temporary bitmap used by TfrMemoView
 
+function ExportFilters:TExportFilters;
 implementation
 
 uses
@@ -1607,6 +1638,7 @@ var
   AppendPage, WasPF: Boolean;
   CompositeMode: Boolean;
   MaxTitleSize: Integer = 0;
+  FExportFilters:TExportFilters = nil;
 
 
   {-----------------------------------------------------------------------------}
@@ -1739,6 +1771,13 @@ begin
     end;
 
   end;
+end;
+
+function ExportFilters: TExportFilters;
+begin
+  if not Assigned(FExportFilters) then
+    FExportFilters:=TExportFilters.Create;
+  Result:=FExportFilters;
 end;
 
 function DoFindObjMetod(S: string; out AObjProp: string
@@ -1902,20 +1941,6 @@ begin
     end;
 end;
 
-function frGetExportFilterIndex(AClassRef: TfrExportFilterClass; const AFilterExt:string): Integer;
-var
-  i: Integer;
-begin
-  result := -1;
-  for i:=0 to Length(frFilters)-1 do
-  with frFilters[i] do
-    if (ClassRef=AClassRef) and (FilterExt=AFilterExt) then
-    begin
-      result := i;
-      break;
-    end;
-end;
-
 procedure frSetAddinEditor(ClassRef: TfrViewClass; EditorForm: TfrObjEditorForm);
 var
   i: Integer;
@@ -1952,13 +1977,7 @@ end;
 procedure frRegisterExportFilter(ClassRef: TfrExportFilterClass;
   const FilterDesc, FilterExt: String);
 begin
-  if frGetExportFilterIndex(ClassRef, FilterExt)<0 then
-  begin
-    frFilters[frFiltersCount].ClassRef := ClassRef;
-    frFilters[frFiltersCount].FilterDesc := FilterDesc;
-    frFilters[frFiltersCount].FilterExt := FilterExt;
-    Inc(frFiltersCount);
-  end;
+  ExportFilters.RegisterFilter(ClassRef,  FilterDesc, FilterExt);
 end;
 
 procedure frRegisterFunctionLibrary(ClassRef: TClass);
@@ -2112,6 +2131,109 @@ begin
       DebugLn('Error: ', e.message,'. Hyphenation support will be disabled');
   end;
 end;
+
+{ TExportFilterItem }
+
+constructor TExportFilterItem.Create;
+begin
+  inherited Create;
+  FEnabled:=true;
+end;
+
+{ TExportFilters }
+
+function TExportFilters.GetCount: integer;
+begin
+  Result:=FList.Count;
+end;
+
+procedure TExportFilters.Clear;
+var
+  i: Integer;
+begin
+  for i:=0 to FList.Count-1 do
+    TExportFilterItem(FList[i]).Free;
+  FList.Clear;
+end;
+
+function TExportFilters.GetItems(AItem: Integer): TExportFilterItem;
+begin
+  Result:=TExportFilterItem(FList[AItem]);
+end;
+
+constructor TExportFilters.Create;
+begin
+  inherited Create;
+  FList:=TFPList.Create;
+end;
+
+destructor TExportFilters.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TExportFilters.RegisterFilter(AClassRef: TfrExportFilterClass;
+  const AFilterDesc, AFilterExt: String);
+var
+  F: TExportFilterItem;
+begin
+  if FilterIndex(AClassRef, AFilterExt) > -1 then exit;
+  F:=TExportFilterItem.Create;
+  F.FClassRef:=AClassRef;
+  F.FFilterExt:=AFilterExt;
+  F.FFilterDesc:=AFilterDesc;
+
+  FList.Add(F);
+end;
+
+procedure TExportFilters.DisableFilter(AFilterExt: String);
+var
+  F: TExportFilterItem;
+begin
+  F:=FindFilter(AFilterExt);
+  if Assigned(F) then
+    F.FEnabled:=true;
+end;
+
+procedure TExportFilters.EnableFilter(AFilterExt: String);
+var
+  F: TExportFilterItem;
+begin
+  F:=FindFilter(AFilterExt);
+  if Assigned(F) then
+    F.FEnabled:=false;
+end;
+
+function TExportFilters.FindFilter(AFilterExt: String): TExportFilterItem;
+var
+  i: Integer;
+begin
+  Result:=nil;
+  AFilterExt:=UTF8UpperCase(AFilterExt);
+  for i:=0 to FList.Count-1 do
+    if UTF8UpperCase(TExportFilterItem(FList[i]).FFilterExt) = AFilterExt then
+    begin
+      Result:=TExportFilterItem(FList[i]);
+      exit;
+    end;
+end;
+
+function TExportFilters.FilterIndex(AClassRef: TfrExportFilterClass;
+  AFilterExt: string): Integer;
+var
+  i: Integer;
+begin
+  Result:=-1;
+  AFilterExt:=UTF8UpperCase(AFilterExt);
+  for i:=0 to FList.Count-1 do
+    if (TExportFilterItem(FList[i]).FClassRef = AClassRef) and (TExportFilterItem(FList[i]).FilterExt = AFilterExt) then
+    begin
+      Result:=i;
+      exit;
+    end;
+end;
+
 {
 procedure CanvasTextRectJustify(const Canvas:TCanvas;
   const ARect: TRect; X1, X2, Y: integer; const Text: string;
@@ -10836,10 +10958,10 @@ begin
   // try to find a export filter from registered list
   if (FilterClass=nil) and (fDefExportFilterClass<>'') then
   begin
-    for i:=0 to Length(frFilters)-1 do
-      if (frFilters[i].ClassRef.ClassName=fDefExportFilterClass) then
+    for i:=0 to ExportFilters.Count - 1 do
+      if (ExportFilters[i].FClassRef.ClassName=fDefExportFilterClass) then
       begin
-        FilterClass := frFilters[i].ClassRef;
+        FilterClass := ExportFilters[i].FClassRef;
         break;
       end;
   end;
@@ -12605,6 +12727,8 @@ begin
   frVariables.Free;
   frCompressor.Free;
   HookList.Free;
+  if Assigned(FExportFilters) then
+    FreeAndNil(FExportFilters);
 end;
 
 { TfrObject }
