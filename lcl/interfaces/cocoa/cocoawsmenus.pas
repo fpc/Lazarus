@@ -29,6 +29,7 @@ uses
   sysutils,
   // LCL
   Controls, Forms, Menus, Graphics, LCLType, LMessages, LCLProc, Classes,
+  LCLMessageGlue,
   // Widgetset
   WSMenus, WSLCLClasses,
   // LCL Cocoa
@@ -36,11 +37,65 @@ uses
 
 type
 
+  IMenuItemCallback = interface(ICommonCallBack)
+    procedure ItemSelected;
+  end;
+
+  { TLCLMenuItemCallback }
+
+  TLCLMenuItemCallback = class(TLCLCommonCallback, IMenuItemCallback)
+  private
+    FMenuItemTarget: TComponent;
+  public
+    constructor Create(AOwner: NSObject; AMenuItemTarget: TComponent); reintroduce;
+    procedure ItemSelected;
+  end;
+
+  { TCocoaMenu }
+
+  TCocoaMenu = objcclass(NSMenu)
+  public
+    procedure lclItemSelected(sender: id); message 'lclItemSelected:';
+    function lclIsHandle: Boolean; override;
+  end;
+
+  { TCocoaMenuItem }
+
+  TCocoaMenuItem = objcclass(NSMenuItem)
+  public
+    menuItemCallback: IMenuItemCallback;
+    attachedAppleMenuItems: Boolean;
+    procedure lclItemSelected(sender: id); message 'lclItemSelected:';
+    function lclGetCallback: IMenuItemCallback; override;
+    function lclIsHandle: Boolean; override;
+    procedure attachAppleMenuItems(); message 'attachAppleMenuItems';
+  end;
+
+  TCocoaMenuItem_HideApp = objcclass(NSMenuItem)
+  public
+    procedure lclItemSelected(sender: id); message 'lclItemSelected:';
+  end;
+
+  TCocoaMenuItem_HideOthers = objcclass(NSMenuItem)
+  public
+    procedure lclItemSelected(sender: id); message 'lclItemSelected:';
+  end;
+
+  TCocoaMenuItem_Quit = objcclass(NSMenuItem)
+  public
+    procedure lclItemSelected(sender: id); message 'lclItemSelected:';
+  end;
+
   { TCocoaWSMenuItem }
 
   TCocoaWSMenuItem = class(TWSMenuItem)
   private
     class procedure Do_SetCheck(const ANSMenuItem: NSMenuItem; const Checked: boolean);
+    // used from the MenuMadness example
+    class function NSMenuCheckmark: NSImage;
+    class function NSMenuRadio: NSImage;
+    class function isSeparator(const ACaption: AnsiString): Boolean;
+    class function MenuCaption(const ACaption: AnsiString): AnsiString;
   published
     class procedure AttachMenu(const AMenuItem: TMenuItem); override;
     class function  CreateHandle(const AMenuItem: TMenuItem): HMENU; override;
@@ -78,31 +133,98 @@ type
 
 implementation
 
-// used from the MenuMadness example
-function NSMenuCheckmark: NSImage;
+{ TLCLMenuItemCallback }
+
+constructor TLCLMenuItemCallback.Create(AOwner: NSObject; AMenuItemTarget: TComponent);
 begin
-  Result:=NSImage.imageNamed(NSString.alloc.initWithCString('NSMenuCheckmark'));
+  Owner := AOwner;
+  FMenuItemTarget := AMenuItemTarget;
 end;
 
-function NSMenuRadio: NSImage;
-begin
-  Result:=NSImage.imageNamed(NSString.alloc.initWithCString('NSMenuRadio'))
-end;
-
-function isSeparator(const ACaption: AnsiString): Boolean;
-begin
-  Result:=ACaption='-';
-end;
-
-function MenuCaption(const ACaption: AnsiString): AnsiString;
+procedure TLCLMenuItemCallback.ItemSelected;
 var
-  i : Integer;
+  Msg:TLMessage;
 begin
-  i:=Pos('&', ACaption);
-  if i>0 then
-    Result:=Copy(ACaption, 1, i-1)+Copy(ACaption,i+1, length(ACaption))
-  else
-    Result:=ACaption;
+  FillChar(Msg{%H-}, SizeOf(Msg), 0);
+  Msg.msg := LM_ACTIVATE;
+  // debugln('send LM_Activate');
+  LCLMessageGlue.DeliverMessage(FMenuItemTarget,Msg);
+end;
+
+{ TCocoaMenu }
+
+function TCocoaMenu.lclIsHandle: Boolean;
+begin
+  Result:=true;
+end;
+
+procedure TCocoaMenu.lclItemSelected(sender:id);
+begin
+
+end;
+
+{ TCocoaMenuITem }
+
+function TCocoaMenuItem.lclIsHandle: Boolean;
+begin
+  Result:=true;
+end;
+
+procedure TCocoaMenuItem.lclItemSelected(sender:id);
+begin
+  menuItemCallback.ItemSelected;
+end;
+
+function TCocoaMenuItem.lclGetCallback: IMenuItemCallback;
+begin
+  result:=menuItemCallback;
+end;
+
+procedure TCocoaMenuItem.attachAppleMenuItems();
+var
+  item    : NSMenuItem;
+  ns, nsCharCode: NSString;
+begin
+  if attachedAppleMenuItems then Exit;
+  if not hasSubmenu() then Exit;
+
+  nsCharCode := NSStringUtf8('');
+  // Separator
+  submenu.insertItem_atIndex(NSMenuItem.separatorItem, submenu.itemArray.count);
+  // Hide App
+  ns := NSStringUtf8('Hide ' + Application.Title);
+  item := TCocoaMenuItem_HideApp.alloc.initWithTitle_action_keyEquivalent(ns,
+    objcselector('lclItemSelected:'), nsCharCode);
+  submenu.insertItem_atIndex(item, submenu.itemArray.count);
+  item.setTarget(item);
+  ns.release;
+  // Separator
+  submenu.insertItem_atIndex(NSMenuItem.separatorItem, submenu.itemArray.count);
+  // Quit
+  ns := NSStringUtf8('Quit');
+  item := TCocoaMenuItem_Quit.alloc.initWithTitle_action_keyEquivalent(ns,
+    objcselector('lclItemSelected:'), nsCharCode);
+  submenu.insertItem_atIndex(item, submenu.itemArray.count);
+  item.setTarget(item);
+  ns.release;
+  // release mem
+  nsCharCode.release;
+
+  attachedAppleMenuItems := True;
+end;
+
+procedure TCocoaMenuItem_HideApp.lclItemSelected(sender: id);
+begin
+  Application.Minimize;
+end;
+
+procedure TCocoaMenuItem_HideOthers.lclItemSelected(sender: id);
+begin
+end;
+
+procedure TCocoaMenuItem_Quit.lclItemSelected(sender: id);
+begin
+  Application.Terminate;
 end;
 
 { TCocoaWSMenu }
@@ -135,6 +257,33 @@ const
 begin
   ANSMenuItem.setOnStateImage(NSMenuCheckmark);
   ANSMenuItem.setState( menustate[Checked] );
+end;
+
+// used from the MenuMadness example
+class function TCocoaWSMenuItem.NSMenuCheckmark: NSImage;
+begin
+  Result:=NSImage.imageNamed(NSString.alloc.initWithCString('NSMenuCheckmark'));
+end;
+
+class function TCocoaWSMenuItem.NSMenuRadio: NSImage;
+begin
+  Result:=NSImage.imageNamed(NSString.alloc.initWithCString('NSMenuRadio'))
+end;
+
+class function TCocoaWSMenuItem.isSeparator(const ACaption: AnsiString): Boolean;
+begin
+  Result:=ACaption='-';
+end;
+
+class function TCocoaWSMenuItem.MenuCaption(const ACaption: AnsiString): AnsiString;
+var
+  i : Integer;
+begin
+  i:=Pos('&', ACaption);
+  if i>0 then
+    Result:=Copy(ACaption, 1, i-1)+Copy(ACaption,i+1, length(ACaption))
+  else
+    Result:=ACaption;
 end;
 
 {------------------------------------------------------------------------------

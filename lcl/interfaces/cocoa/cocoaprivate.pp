@@ -196,45 +196,6 @@ type
     property Enabled: Boolean read GetEnabled write SetEnabled;
   end;
 
-  IMenuItemCallback = interface(ICommonCallBack)
-    procedure ItemSelected;
-  end;
-
-  { TCocoaMenu }
-
-  TCocoaMenu = objcclass(NSMenu)
-  public
-    procedure lclItemSelected(sender: id); message 'lclItemSelected:';
-    function lclIsHandle: Boolean; override;
-  end;
-
-  { TCocoaMenuItem }
-
-  TCocoaMenuItem = objcclass(NSMenuItem)
-  public
-    menuItemCallback: IMenuItemCallback;
-    attachedAppleMenuItems: Boolean;
-    procedure lclItemSelected(sender: id); message 'lclItemSelected:';
-    function lclGetCallback: IMenuItemCallback; override;
-    function lclIsHandle: Boolean; override;
-    procedure attachAppleMenuItems(); message 'attachAppleMenuItems';
-  end;
-
-  TCocoaMenuItem_HideApp = objcclass(NSMenuItem)
-  public
-    procedure lclItemSelected(sender: id); message 'lclItemSelected:';
-  end;
-
-  TCocoaMenuItem_HideOthers = objcclass(NSMenuItem)
-  public
-    procedure lclItemSelected(sender: id); message 'lclItemSelected:';
-  end;
-
-  TCocoaMenuItem_Quit = objcclass(NSMenuItem)
-  public
-    procedure lclItemSelected(sender: id); message 'lclItemSelected:';
-  end;
-
   { TCocoaButton }
 
   TCocoaButton = objcclass(NSButton)
@@ -3532,82 +3493,6 @@ begin
   if (indexOfSelectedItem <> lastSelectedItemIndex) and (callback <> nil) then
     callback.ComboBoxSelectionDidChange;
   lastSelectedItemIndex := indexOfSelectedItem;
-end;
-
-{ TCocoaMenu }
-
-function TCocoaMenu.lclIsHandle: Boolean;
-begin
-  Result:=true;
-end;
-
-procedure TCocoaMenu.lclItemSelected(sender:id);
-begin
-
-end;
-
-{ TCocoaMenuITem }
-
-function TCocoaMenuItem.lclIsHandle: Boolean;
-begin
-  Result:=true;
-end;
-
-procedure TCocoaMenuItem.lclItemSelected(sender:id);
-begin
-  menuItemCallback.ItemSelected;
-end;
-
-function TCocoaMenuItem.lclGetCallback: IMenuItemCallback;
-begin
-  result:=menuItemCallback;
-end;
-
-procedure TCocoaMenuItem.attachAppleMenuItems();
-var
-  item    : NSMenuItem;
-  ns, nsCharCode: NSString;
-begin
-  if attachedAppleMenuItems then Exit;
-  if not hasSubmenu() then Exit;
-
-  nsCharCode := NSStringUtf8('');
-  // Separator
-  submenu.insertItem_atIndex(NSMenuItem.separatorItem, submenu.itemArray.count);
-  // Hide App
-  ns := NSStringUtf8('Hide ' + Application.Title);
-  item := TCocoaMenuItem_HideApp.alloc.initWithTitle_action_keyEquivalent(ns,
-    objcselector('lclItemSelected:'), nsCharCode);
-  submenu.insertItem_atIndex(item, submenu.itemArray.count);
-  item.setTarget(item);
-  ns.release;
-  // Separator
-  submenu.insertItem_atIndex(NSMenuItem.separatorItem, submenu.itemArray.count);
-  // Quit
-  ns := NSStringUtf8('Quit');
-  item := TCocoaMenuItem_Quit.alloc.initWithTitle_action_keyEquivalent(ns,
-    objcselector('lclItemSelected:'), nsCharCode);
-  submenu.insertItem_atIndex(item, submenu.itemArray.count);
-  item.setTarget(item);
-  ns.release;
-  // release mem
-  nsCharCode.release;
-
-  attachedAppleMenuItems := True;
-end;
-
-procedure TCocoaMenuItem_HideApp.lclItemSelected(sender: id);
-begin
-  Application.Minimize;
-end;
-
-procedure TCocoaMenuItem_HideOthers.lclItemSelected(sender: id);
-begin
-end;
-
-procedure TCocoaMenuItem_Quit.lclItemSelected(sender: id);
-begin
-  Application.Terminate;
 end;
 
 { TCocoaProgressIndicator }

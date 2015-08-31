@@ -118,16 +118,6 @@ type
       const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
-  { TLCLMenuItemCallback }
-
-  TLCLMenuItemCallback = class(TLCLCommonCallback, IMenuItemCallback)
-  private
-    FMenuItemTarget: TComponent;
-  public
-    constructor Create(AOwner: NSObject; AMenuItemTarget: TComponent); reintroduce;
-    procedure ItemSelected;
-  end;
-
 const
   DblClickThreshold = 3;// max Movement between two clicks of a DblClick
 
@@ -1379,24 +1369,6 @@ begin
   ctrl := TCocoaCustomControl(TCocoaCustomControl.alloc.lclInitWithCreateParams(AParams));
   ctrl.callback := TLCLCustomControlCallback.Create(ctrl, AWinControl);
   Result := TLCLIntfHandle(ctrl);
-end;
-
-{ TLCLMenuItemCallback }
-
-constructor TLCLMenuItemCallback.Create(AOwner: NSObject; AMenuItemTarget: TComponent);
-begin
-  Owner := AOwner;
-  FMenuItemTarget := AMenuItemTarget;
-end;
-
-procedure TLCLMenuItemCallback.ItemSelected;
-var
-  Msg:TLMessage;
-begin
-  FillChar(Msg{%H-}, SizeOf(Msg), 0);
-  Msg.msg := LM_ACTIVATE;
-  // debugln('send LM_Activate');
-  LCLMessageGlue.DeliverMessage(FMenuItemTarget,Msg);
 end;
 
 end.

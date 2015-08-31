@@ -29,7 +29,7 @@ uses
   // widgetset
   WSExtCtrls, WSLCLClasses, WSControls, WSProc,
   // LCL Cocoa
-  CocoaPrivate, CocoaGDIObjects;
+  CocoaPrivate, CocoaWSMenus, CocoaGDIObjects;
 
 type
 

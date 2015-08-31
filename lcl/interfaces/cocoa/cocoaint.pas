@@ -33,7 +33,7 @@ uses
   InterfaceBase, GraphType,
   // private
   CocoaAll, CocoaPrivate, CocoaUtils, CocoaGDIObjects,
-  CocoaProc, cocoa_extra,
+  CocoaProc, cocoa_extra, CocoaWSMenus,
   // LCL
   LCLStrConsts, LMessages, LCLMessageGlue, LCLProc, LCLIntf, LCLType,
   Controls, Forms, Themes, Menus,
