@@ -9553,7 +9553,11 @@ begin
         begin
           if R.Left < 0 then
             R.Left := 0;
-          Result.X := R.Left;
+          // issue #28591
+          if QWidget_layoutDirection(Widget) = QtRightToLeft then
+            Result.X := 0
+          else
+            Result.X := R.Left;
         end;
       QTabWidgetEast,
       QTabWidgetWest:
