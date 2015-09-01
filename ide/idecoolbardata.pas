@@ -34,7 +34,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, ComCtrls, ExtCtrls, ToolWin, Controls, fgl,
-  MenuIntf, IDEImagesIntf, Laz2_XMLCfg, ToolbarConfig;
+  MenuIntf, IDEImagesIntf, Laz2_XMLCfg, ToolbarConfig, LazIDEIntf;
 
 type
 
@@ -137,15 +137,6 @@ type
    end;
 
   TIDEToolBarList = specialize TFPGObjectList<TIDEToolBar>;
-
-  { TIDEToolBarToolButton }
-  TIDEToolBarToolButton = class(TToolButton)
-  private
-    FMenuItem: TIDEMenuItem;
-  public
-    procedure Click; override;
-    property IdeMenuItem: TIDEMenuItem read FMenuItem write FMenuItem;
-  end;
 
   { TIDECoolBar }
   TIDECoolBar = class
@@ -482,11 +473,12 @@ end;
 
 procedure TIDEToolBar.AddButton(AMenuItem: TIDEMenuItem);
 var
-  B: TIDEToolBarToolButton;
+  B: TIDEToolButton;
   ACaption: string;
   iPos: Integer;
 begin
-  B := TIDEToolBarToolButton.Create(ToolBar);
+  Assert(AMenuItem is TIDEMenuCommand, 'TIDEToolBar.AddButton: AMenuItem is not TIDEMenuCommand.');
+  B := (AMenuItem as TIDEMenuCommand).ToolButtonClass.Create(Toolbar);
   ACaption      := AMenuItem.Caption;
   DeleteAmpersands(ACaption);
   B.Caption     := ACaption;
@@ -521,6 +513,8 @@ begin
   B.Tag := iPos + 1;
   //B.OnClick     := AMenuItem.OnClick;
   PositionAtEnd(ToolBar, B);
+
+  TIDEMenuCommand(AMenuItem).ToolButtonAdded(B);
 end;
 
 // position the button next to the last button
@@ -591,14 +585,7 @@ begin
   Result := FButtonList.Count;
 end;
 
-
-{ TEditToolBarToolButton }
-procedure TIDEToolBarToolButton.Click;
-begin
-  inherited Click;
-  if assigned(FMenuItem) then
-    FMenuItem.TriggerClick;
-end;
+{ TIDECoolBar }
 
 procedure TIDECoolBar.SetIsVisible(AValue: Boolean);
 begin
@@ -607,7 +594,6 @@ begin
     FCoolBar.Visible := AValue;
 end;
 
-{ TIDECoolBar }
 constructor TIDECoolBar.Create(ACoolBar: TCoolBar);
 begin
   inherited Create;

@@ -18,11 +18,12 @@ unit MenuIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLType, LCLProc, Menus, ImgList, Graphics,
+  Classes, SysUtils, LCLType, LCLProc, Menus, ComCtrls, ImgList, Graphics,
   IDECommands, IDEImagesIntf;
   
 type
   TIDEMenuItem = class;
+  TIDEMenuCommand = class;
   TIDEMenuSection = class;
 
   TAddMenuItemProc =
@@ -114,7 +115,20 @@ type
   end;
   TIDEMenuItemClass = class of TIDEMenuItem;
   
-  
+  { TIDEToolButton }
+
+  TIDEToolButton = class(TToolButton)
+  private
+    FMenuItem: TIDEMenuItem;
+  protected
+    procedure DoOnAdded; virtual;
+  public
+    procedure Click; override;
+    property IdeMenuItem: TIDEMenuItem read FMenuItem write FMenuItem;
+  end;
+  TIDEToolButtonClass = class of TIDEToolButton;
+
+
   { TIDEMenuSection
     An TIDEMenuItem with children, either in a sub menu or separated with
     separators.
@@ -210,6 +224,35 @@ type
   end;
   TIDEMenuSectionClass = class of TIDEMenuSection;
 
+  TIDEMenuCommandButtons = class;
+  TIDEMenuCommandButtonsEnumerator = class
+  private
+    FList: TIDEMenuCommandButtons;
+    FPosition: Integer;
+  public
+    constructor Create(AButtons: TIDEMenuCommandButtons);
+    function GetCurrent: TIDEToolButton;
+    function MoveNext: Boolean;
+    property Current: TIDEToolButton read GetCurrent;
+  end;
+
+  TIDEMenuCommandButtons = class(TComponent)
+  private
+    FList: TFPList;
+    function GetCount: Integer;
+    function GetItems(Index: Integer): TIDEToolButton;
+  protected
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+  public
+    constructor Create(aOwner: TComponent); override;
+    destructor Destroy; override;
+  public
+    function GetEnumerator: TIDEMenuCommandButtonsEnumerator;
+    procedure Add(const aBtn: TIDEToolButton);
+
+    property Count: Integer read GetCount;
+    property Items[Index: Integer]: TIDEToolButton read GetItems; default;
+  end;
 
   { TIDEMenuCommand
     A leaf menu item. No children.
@@ -225,6 +268,8 @@ type
     FRadioItem: Boolean;
     FRightJustify: boolean;
     FShowAlwaysCheckable: boolean;
+    FToolButtonClass: TIDEToolButtonClass;
+    FToolButtons: TIDEMenuCommandButtons;
   protected
     procedure MenuItemClick(Sender: TObject); override;
     procedure SetAutoCheck(const AValue: boolean); virtual;
@@ -238,7 +283,20 @@ type
     procedure SetMenuItem(const AValue: TMenuItem); override;
     procedure SetOnClickMethod(const AValue: TNotifyEvent); override;
     procedure SetOnClickProc(const AValue: TNotifyProcedure); override;
+
+    procedure SetCaption(const AValue: string); override;
+    procedure SetEnabled(const AValue: Boolean); override;
+    procedure SetHint(const AValue: String); override;
+    procedure SetImageIndex(const AValue: Integer); override;
+    procedure SetResourceName(const AValue: String); override;
+    procedure SetVisible(const AValue: Boolean); override;
+
     procedure CommandChanged(Sender: TObject);
+  public
+    constructor Create(const TheName: string); override;
+    destructor Destroy; override;
+  public
+    procedure ToolButtonAdded(const aBtn: TIDEToolButton);
   public
     property Command: TIDECommand read FCommand write SetCommand;
     property AutoCheck: boolean read FAutoCheck write SetAutoCheck default False;
@@ -249,6 +307,8 @@ type
     property RightJustify: boolean read FRightJustify write SetRightJustify;
     property ShowAlwaysCheckable: boolean read FShowAlwaysCheckable
                                           write SetShowAlwaysCheckable;
+    property ToolButtonClass: TIDEToolButtonClass read FToolButtonClass write FToolButtonClass;
+    property ToolButtons: TIDEMenuCommandButtons read FToolButtons;
   end;
   TIDEMenuCommandClass = class of TIDEMenuCommand;
   
@@ -567,6 +627,94 @@ begin
   Parent := IDEMenuRoots.FindByPath(Path,true) as TIDEMenuSection;
   Result := RegisterIDEMenuCommand(Parent, Name, Caption,
     OnClickMethod, OnClickProc, Command, ResourceName, UserTag);
+end;
+
+{ TIDEMenuCommandButtonsEnumerator }
+
+constructor TIDEMenuCommandButtonsEnumerator.Create(
+  AButtons: TIDEMenuCommandButtons);
+begin
+  inherited Create;
+  FList := AButtons;
+  FPosition := -1;
+end;
+
+function TIDEMenuCommandButtonsEnumerator.GetCurrent: TIDEToolButton;
+begin
+  Result := FList[FPosition];
+end;
+
+function TIDEMenuCommandButtonsEnumerator.MoveNext: Boolean;
+begin
+  Inc(FPosition);
+  Result := FPosition < FList.Count;
+end;
+
+{ TIDEMenuCommandButtons }
+
+procedure TIDEMenuCommandButtons.Add(const aBtn: TIDEToolButton);
+begin
+  FList.Add(aBtn);
+  aBtn.FreeNotification(Self);
+end;
+
+constructor TIDEMenuCommandButtons.Create(aOwner: TComponent);
+begin
+  inherited Create(aOwner);
+  FList := TFPList.Create;
+end;
+
+destructor TIDEMenuCommandButtons.Destroy;
+var
+  I: Integer;
+begin
+  for I := 0 to Count-1 do
+    Items[I].RemoveFreeNotification(Self);
+  FList.Free;
+  inherited Destroy;
+end;
+
+function TIDEMenuCommandButtons.GetCount: Integer;
+begin
+  Result := FList.Count;
+end;
+
+function TIDEMenuCommandButtons.GetEnumerator: TIDEMenuCommandButtonsEnumerator;
+begin
+  Result := TIDEMenuCommandButtonsEnumerator.Create(Self);
+end;
+
+function TIDEMenuCommandButtons.GetItems(Index: Integer): TIDEToolButton;
+begin
+  Result := TIDEToolButton(FList[Index]);
+end;
+
+procedure TIDEMenuCommandButtons.Notification(AComponent: TComponent;
+  Operation: TOperation);
+var
+  xIndex: Integer;
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) then
+  begin
+    xIndex := FList.IndexOf(AComponent);
+    if xIndex >= 0 then
+      FList.Delete(xIndex);
+  end;
+end;
+
+{ TIDEToolButton }
+
+procedure TIDEToolButton.Click;
+begin
+  inherited Click;
+  if assigned(FMenuItem) then
+    FMenuItem.TriggerClick;
+end;
+
+procedure TIDEToolButton.DoOnAdded;
+begin
+
 end;
 
 { TIDEMenuItem }
@@ -1647,6 +1795,21 @@ begin
     end;
 end;
 
+constructor TIDEMenuCommand.Create(const TheName: string);
+begin
+  inherited Create(TheName);
+
+  FToolButtonClass := TIDEToolButton;
+  FToolButtons := TIDEMenuCommandButtons.Create(nil);
+end;
+
+destructor TIDEMenuCommand.Destroy;
+begin
+  FToolButtons.Free;
+
+  inherited Destroy;
+end;
+
 procedure TIDEMenuCommand.MenuItemClick(Sender: TObject);
 begin
   inherited MenuItemClick(Sender);
@@ -1664,6 +1827,15 @@ begin
   if MenuItem<>nil then MenuItem.AutoCheck:=AutoCheck;
 end;
 
+procedure TIDEMenuCommand.SetCaption(const AValue: string);
+var
+  xBtn: TIDEToolButton;
+begin
+  inherited SetCaption(AValue);
+  for xBtn in ToolButtons do
+    xBtn.Caption := AValue;
+end;
+
 procedure TIDEMenuCommand.SetChecked(const AValue: Boolean);
 begin
   if FChecked=AValue then exit;
@@ -1678,6 +1850,15 @@ begin
   if MenuItem<>nil then MenuItem.Default:=Default;
 end;
 
+procedure TIDEMenuCommand.SetEnabled(const AValue: Boolean);
+var
+  xBtn: TIDEToolButton;
+begin
+  inherited SetEnabled(AValue);
+  for xBtn in ToolButtons do
+    xBtn.Enabled := AValue;
+end;
+
 procedure TIDEMenuCommand.SetGroupIndex(const AValue: Byte);
 begin
   if FGroupIndex=AValue then exit;
@@ -1686,12 +1867,42 @@ begin
     MenuItem.GroupIndex:=GroupIndex;
 end;
 
+procedure TIDEMenuCommand.SetHint(const AValue: String);
+var
+  xBtn: TIDEToolButton;
+begin
+  inherited SetHint(AValue);
+  for xBtn in ToolButtons do
+    xBtn.Hint := AValue;
+end;
+
+procedure TIDEMenuCommand.SetImageIndex(const AValue: Integer);
+var
+  xBtn: TIDEToolButton;
+begin
+  inherited SetImageIndex(AValue);
+  for xBtn in ToolButtons do
+    xBtn.ImageIndex := AValue;
+end;
+
 procedure TIDEMenuCommand.SetRadioItem(const AValue: Boolean);
 begin
   if FRadioItem=AValue then exit;
   FRadioItem:=AValue;
   if MenuItem<>nil then
     MenuItem.RadioItem:=RadioItem;
+end;
+
+procedure TIDEMenuCommand.SetResourceName(const AValue: String);
+var
+  xBtn: TIDEToolButton;
+begin
+  inherited SetResourceName(AValue);
+  for xBtn in ToolButtons do
+    if AValue <> '' then
+      xBtn.ImageIndex := IDEImages.LoadImage(16, FResourceName)
+    else
+      xBtn.ImageIndex := -1;
 end;
 
 procedure TIDEMenuCommand.SetRightJustify(const AValue: boolean);
@@ -1708,6 +1919,21 @@ begin
   FShowAlwaysCheckable:=AValue;
   if MenuItem<>nil then
     MenuItem.ShowAlwaysCheckable:=ShowAlwaysCheckable;
+end;
+
+procedure TIDEMenuCommand.SetVisible(const AValue: Boolean);
+var
+  xBtn: TIDEToolButton;
+begin
+  inherited SetVisible(AValue);
+  for xBtn in ToolButtons do
+    xBtn.Visible := AValue;
+end;
+
+procedure TIDEMenuCommand.ToolButtonAdded(const aBtn: TIDEToolButton);
+begin
+  ToolButtons.Add(aBtn);
+  aBtn.DoOnAdded;
 end;
 
 procedure TIDEMenuCommand.SetCommand(const AValue: TIDECommand);

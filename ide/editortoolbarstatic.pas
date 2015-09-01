@@ -25,7 +25,7 @@ interface
 
 uses
   SysUtils, Classes, Forms, ComCtrls, Controls, ExtCtrls, fgl,
-  MenuIntf, IDEImagesIntf, SrcEditorIntf, BaseIDEIntf,
+  MenuIntf, IDEImagesIntf, SrcEditorIntf, BaseIDEIntf, LazIDEIntf,
   LazarusIDEStrConsts, LazConfigStorage, Laz2_XMLCfg, LCLProc, ToolbarConfig;
 
 const
@@ -117,18 +117,6 @@ uses EnvironmentOpts;
 const
   BasePath = 'EditorToolBarOptions/';
 
-type
-
-  { TEditToolBarToolButton }
-
-  TEditToolBarToolButton = class(TToolButton)
-  private
-    FMenuItem: TIDEMenuItem;
-  public
-    procedure Click; override;
-    property IdeMenuItem: TIDEMenuItem read FMenuItem write FMenuItem;
-  end;
-
 procedure ToggleToolbar (Sender:TObject);
 var
   ToolBarVisible: Boolean;
@@ -137,15 +125,6 @@ begin
   EditorMenuCommand.Checked := ToolBarVisible;
   EnvironmentOptions.Desktop.EditorToolBarOptions.Visible := ToolBarVisible;
   uAllEditorToolbars.ReloadAll;
-end;
-
-{ TEditToolBarToolButton }
-
-procedure TEditToolBarToolButton.Click;
-begin
-  inherited Click;
-  if assigned(FMenuItem) then
-    FMenuItem.TriggerClick;
 end;
 
 { TEditorToolBarOptions }
@@ -185,6 +164,7 @@ end;
 procedure TEditorToolBarOptions.CreateDefaults;
 begin
   FButtonNames.Clear;
+  FButtonNames.Add('IDEMainMenu/Search/itmJumpings/itmJumpToSection/itmJumpToImplementation');
   FButtonNames.Add('IDEMainMenu/Search/itmJumpings/itmJumpBack');
   FButtonNames.Add('IDEMainMenu/Search/itmJumpings/itmJumpForward');
   FButtonNames.Add('---------------');
@@ -214,7 +194,6 @@ begin
   end
   else begin
     // Plan B: Load the old configuration. User settings are not lost.
-    DebugLn('TEditorToolBarOptions.Load: Using old configuration in editortoolbar.xml.');
     cfg := GetIDEConfigStorage(cSettingsFile, True);
     try
       FVisible := cfg.GetValue('Visible',True);
@@ -222,6 +201,9 @@ begin
       ButtonCount := cfg.GetValue('Count', 0);
       if ButtonCount > 0 then
       begin
+        DebugLn('TEditorToolBarOptions.Load: Using old configuration in editortoolbar.xml.');
+        // This used to be hard-coded in old version, add it now.
+        FButtonNames.Add('IDEMainMenu/Search/itmJumpings/itmJumpToSection/itmJumpToImplementation');
         for I := 1 to ButtonCount do
         begin
           ButtonName := Trim(cfg.GetValue('Button' + Format('%2.2d', [I]) + '/Value', ''));
@@ -229,7 +211,7 @@ begin
             FButtonNames.Add(ButtonName);
         end;
       end
-      else
+      else   // No old configuration, use defaults.
         CreateDefaults;
     finally
       cfg.Free;
@@ -383,11 +365,12 @@ end;
 
 procedure TEditorToolbar.AddButton(AMenuItem: TIDEMenuItem);
 var
-  B: TEditToolBarToolButton;
+  B: TIDEToolButton;
   ACaption: string;
   iPos: Integer;
 begin
-  B := TEditToolBarToolButton.Create(TB);
+  Assert(AMenuItem is TIDEMenuCommand, 'TEditorToolbar.AddButton: AMenuItem is not TIDEMenuCommand.');
+  B := (AMenuItem as TIDEMenuCommand).ToolButtonClass.Create(TB);
   ACaption  := AMenuItem.Caption;
   DeleteAmpersands(ACaption);
   B.Caption := ACaption;
@@ -405,6 +388,8 @@ begin
   iPos := FButtonList.Add(AMenuItem);
   B.Tag:= iPos+1;
   PositionAtEnd(TB, B);
+
+  TIDEMenuCommand(AMenuItem).ToolButtonAdded(B);
 end;
 
 // position the button next to the last button

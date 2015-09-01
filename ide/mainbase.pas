@@ -55,7 +55,7 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Math, Classes, LCLType, LCLProc, LCLIntf, Buttons, Menus,
+  Math, Classes, LCLType, LCLProc, LCLIntf, Buttons, Menus, ComCtrls,
   SysUtils, types, Controls, Graphics, ExtCtrls, Dialogs, LazFileUtils, Forms,
   CodeToolManager, AVL_Tree, SynEditKeyCmds, PackageIntf,
   // IDEIntf
@@ -67,7 +67,8 @@ uses
   EnvironmentOpts, EditorOptions, CompilerOptions, KeyMapping, IDEProcs,
   Debugger, IDEOptionDefs, Splash, Designer,
   SourceEditor, FindInFilesDlg,
-  MainBar, MainIntf, SourceSynEditor, PseudoTerminalDlg;
+  MainBar, MainIntf, SourceSynEditor, PseudoTerminalDlg,
+  DesktopManager;
 
 type
   TResetToolFlag = (
@@ -195,6 +196,16 @@ type
     property DisplayState: TDisplayState read FDisplayState write SetDisplayState;
   end;
 
+  { TJumpToSectionToolButton }
+
+  TJumpToSectionToolButton = class(TIDEToolButton)
+  private
+    procedure AddMenuItem(aCmd: TIDEMenuCommand);
+  public
+    procedure DoOnAdded; override;
+    procedure RefreshMenu;
+  end;
+
 function  GetMainIde: TMainIDEBase;
 
 property MainIDE: TMainIDEBase read GetMainIde;
@@ -209,6 +220,45 @@ implementation
 function GetMainIde: TMainIDEBase;
 begin
   Result := TMainIDEBase(MainIDEInterface)
+end;
+
+{ TJumpToSectionToolButton }
+
+procedure TJumpToSectionToolButton.DoOnAdded;
+begin
+  inherited DoOnAdded;
+  RefreshMenu;
+end;
+
+procedure TJumpToSectionToolButton.AddMenuItem(aCmd: TIDEMenuCommand);
+var
+  xItem: TMenuItem;
+begin
+  xItem := TMenuItem.Create(DropdownMenu);
+  DropdownMenu.Items.Add(xItem);
+  xItem.Caption := aCmd.Caption;
+  xItem.OnClick := aCmd.OnClick;
+  xItem.ImageIndex := aCmd.ImageIndex;
+end;
+
+procedure TJumpToSectionToolButton.RefreshMenu;
+var
+  xPM: TPopupMenu;
+begin
+  if DropdownMenu = nil then
+  begin
+    xPM := TPopupMenu.Create(Self);
+    if Assigned(FToolBar) then
+      xPM.Images := FToolBar.Images;
+    DropdownMenu := xPM;
+    Style := tbsDropDown;
+  end;
+  DropdownMenu.Items.Clear;
+  AddMenuItem(MainIDEBar.itmJumpToInterface);
+  AddMenuItem(MainIDEBar.itmJumpToInterfaceUses);
+  AddMenuItem(MainIDEBar.itmJumpToImplementation);
+  AddMenuItem(MainIDEBar.itmJumpToImplementationUses);
+  AddMenuItem(MainIDEBar.itmJumpToInitialization);
 end;
 
 //{$IFDEF LCLCarbon}
@@ -1149,10 +1199,15 @@ begin
     itmJumpToNextBookmark.Command:=GetCommand(ecNextBookmark);
     itmJumpToPrevBookmark.Command:=GetCommand(ecPrevBookmark);
     itmJumpToInterface.Command:=GetCommand(ecJumpToInterface);
+    itmJumpToInterface.ToolButtonClass:=TJumpToSectionToolButton;
     itmJumpToInterfaceUses.Command:=GetCommand(ecJumpToInterfaceUses);
+    itmJumpToInterfaceUses.ToolButtonClass:=TJumpToSectionToolButton;
     itmJumpToImplementation.Command:=GetCommand(ecJumpToImplementation);
+    itmJumpToImplementation.ToolButtonClass:=TJumpToSectionToolButton;
     itmJumpToImplementationUses.Command:=GetCommand(ecJumpToImplementationUses);
+    itmJumpToImplementationUses.ToolButtonClass:=TJumpToSectionToolButton;
     itmJumpToInitialization.Command:=GetCommand(ecJumpToInitialization);
+    itmJumpToInitialization.ToolButtonClass:=TJumpToSectionToolButton;
     itmFindBlockOtherEnd.Command:=GetCommand(ecFindBlockOtherEnd);
     itmFindBlockStart.Command:=GetCommand(ecFindBlockStart);
     itmFindDeclaration.Command:=GetCommand(ecFindDeclaration);
@@ -1292,6 +1347,7 @@ begin
     itmToolConfigure.Command:=GetCommand(ecExtToolSettings);
 
     itmToolManageDesktops.Command:=GetCommand(ecManageDesktops);
+    itmToolManageDesktops.ToolButtonClass:=TShowDesktopsToolButton;
     itmToolManageExamples.Command:=GetCommand(ecManageExamples);
     itmToolDiff.Command:=GetCommand(ecDiff);
 

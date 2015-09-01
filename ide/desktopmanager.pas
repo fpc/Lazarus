@@ -8,7 +8,8 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons, ButtonPanel,
   LCLType, LazarusIDEStrConsts, LCLProc, EnvironmentOpts,
-  IDEWindowIntf, IDEOptionsIntf, IDEOptionDefs, Laz2_XMLCfg, InputHistory;
+  IDEWindowIntf, IDEOptionsIntf, IDEOptionDefs, Laz2_XMLCfg, InputHistory,
+  MenuIntf, MainBar, Menus, ComCtrls;
 
 type
 
@@ -38,13 +39,22 @@ type
     procedure SetDebugDesktopBitBtnClick(Sender: TObject);
   private
     procedure RefreshList(const SelectName: string = '');
-  public
+  end;
 
+  TShowDesktopItem = class(TMenuItem)
+  public
+    DesktopName: string;
+  end;
+
+  TShowDesktopsToolButton = class(TIDEToolButton)
+  private
+    procedure ChangeDesktop(Sender: TObject);
+  public
+    procedure DoOnAdded; override;
+    procedure RefreshMenu;
   end;
 
 function ShowDesktopManagerDlg: TModalResult;
-
-//var DesktopForm: TDesktopForm;
 
 implementation
 
@@ -55,6 +65,8 @@ var
   theForm: TDesktopForm;
   xDesktopName: String;
   xDesktop: TDesktopOpt;
+  I: Integer;
+  xButtons: TIDEMenuCommandButtons;
 begin
   xDesktopName := '';
   theForm := TDesktopForm.Create(Nil);
@@ -66,6 +78,11 @@ begin
     theForm.Free;
   end;
 
+  xButtons := MainIDEBar.itmToolManageDesktops.ToolButtons;
+  for I := 0 to xButtons.Count-1 do
+  if xButtons[I] is TShowDesktopsToolButton then
+    TShowDesktopsToolButton(xButtons[I]).RefreshMenu;
+
   if xDesktopName <> '' then
     with EnvironmentOptions do
     begin
@@ -73,6 +90,55 @@ begin
       if xDesktop <> nil then
         EnvironmentOptions.UseDesktop(xDesktop);
     end;
+end;
+
+procedure TShowDesktopsToolButton.ChangeDesktop(Sender: TObject);
+var
+  xDesktopName: string;
+  xDesktop: TDesktopOpt;
+begin
+  xDesktopName := (Sender as TShowDesktopItem).DesktopName;
+  if xDesktopName <> '' then
+  begin
+    xDesktop := EnvironmentOptions.Desktops.Find(xDesktopName);
+    if xDesktop <> nil then
+      EnvironmentOptions.UseDesktop(xDesktop);
+  end;
+end;
+
+procedure TShowDesktopsToolButton.DoOnAdded;
+begin
+  inherited DoOnAdded;
+  RefreshMenu;
+end;
+
+procedure TShowDesktopsToolButton.RefreshMenu;
+var
+  xItem: TShowDesktopItem;
+  xPM: TPopupMenu;
+  i: Integer;
+  xDesktop: TDesktopOpt;
+begin
+  xPM := DropdownMenu;
+  if xPM = nil then
+  begin
+    xPM := TPopupMenu.Create(Self);
+    DropdownMenu := xPM;
+    Style := tbsDropDown;
+  end;
+
+  xPM.Items.Clear;
+
+  // Saved desktops
+  for i:=0 to EnvironmentOptions.Desktops.Count-1 do
+  begin
+    xDesktop := EnvironmentOptions.Desktops[i];
+    xItem := TShowDesktopItem.Create(xPM);
+    xPM.Items.Add(xItem);
+    xItem.Caption := xDesktop.Name;
+    xItem.OnClick := @ChangeDesktop;
+    xItem.DesktopName := xDesktop.Name;
+  end;
 end;
 
 { TDesktopForm }
