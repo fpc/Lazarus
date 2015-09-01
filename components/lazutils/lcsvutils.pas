@@ -60,7 +60,8 @@ var
   begin
     Len := Length(curWord);
     SetLength(curWord, Len+(leadPtr-wordPtr));
-    Move(wordPtr^, curWord[Len+1], (leadPtr-wordPtr));
+    if Length(curWord) > 0 then
+      Move(wordPtr^, curWord[Len+1], (leadPtr-wordPtr));
     Inc(leadPtr);
     wordPtr := leadPtr;
   end;
