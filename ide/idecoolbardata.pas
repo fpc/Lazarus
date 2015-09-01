@@ -306,6 +306,8 @@ begin
     Add('IDEMainMenu/File/itmFileOpenSave/itmFileSaveAll');
     Add('---------------');
     Add('IDEMainMenu/View/itmViewMainWindows/itmViewToggleFormUnit');
+    Add('---------------');
+    Add('IDEMainMenu/Tools/itmSecondaryTools/itmToolManageDesktops');
   end;
   FIDECoolBarToolBars.Add(ToolBarOpts);
 

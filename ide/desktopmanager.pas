@@ -49,12 +49,15 @@ type
   TShowDesktopsToolButton = class(TIDEToolButton)
   private
     procedure ChangeDesktop(Sender: TObject);
+    procedure SaveAsDesktop(Sender: TObject);
   public
     procedure DoOnAdded; override;
     procedure RefreshMenu;
   end;
 
 function ShowDesktopManagerDlg: TModalResult;
+function SaveCurrentDesktop(const aDesktopName: string; const aShowOverwriteDialog: Boolean): Boolean;
+procedure RefreshDesktopMenus;
 
 implementation
 
@@ -65,8 +68,6 @@ var
   theForm: TDesktopForm;
   xDesktopName: String;
   xDesktop: TDesktopOpt;
-  I: Integer;
-  xButtons: TIDEMenuCommandButtons;
 begin
   xDesktopName := '';
   theForm := TDesktopForm.Create(Nil);
@@ -78,10 +79,7 @@ begin
     theForm.Free;
   end;
 
-  xButtons := MainIDEBar.itmToolManageDesktops.ToolButtons;
-  for I := 0 to xButtons.Count-1 do
-  if xButtons[I] is TShowDesktopsToolButton then
-    TShowDesktopsToolButton(xButtons[I]).RefreshMenu;
+  RefreshDesktopMenus;
 
   if xDesktopName <> '' then
     with EnvironmentOptions do
@@ -90,6 +88,48 @@ begin
       if xDesktop <> nil then
         EnvironmentOptions.UseDesktop(xDesktop);
     end;
+end;
+
+function SaveCurrentDesktop(const aDesktopName: string;
+  const aShowOverwriteDialog: Boolean): Boolean;
+var
+  dsk: TDesktopOpt;
+begin
+  Result := False;
+  if aDesktopName = '' then
+    Exit;
+
+  with EnvironmentOptions do
+  begin
+    dsk := Desktops.Find(aDesktopName);
+    if Assigned(dsk) and
+       aShowOverwriteDialog and
+       (MessageDlg(Format(dlgOverwriteDesktop, [aDesktopName]), mtWarning, mbYesNo, 0) <> mrYes)
+    then
+      Exit;
+
+    if not Assigned(dsk) then
+    begin
+      debugln(['TDesktopForm.SaveBitBtnClick: Adding ', aDesktopName]);
+      dsk := TDesktopOpt.Create(aDesktopName, False);
+      Desktops.Add(dsk);
+    end;
+    debugln(['TDesktopForm.SaveBitBtnClick: Assign from ', Desktop.Name, ' to ', dsk.Name]);
+    Desktop.IDEWindowCreatorsLayoutList.StoreWindowPositions;
+    dsk.Assign(Desktop);
+    Result := True;
+  end;
+end;
+
+procedure RefreshDesktopMenus;
+var
+  xButtons: TIDEMenuCommandButtons;
+  I: Integer;
+begin
+  xButtons := MainIDEBar.itmToolManageDesktops.ToolButtons;
+  for I := 0 to xButtons.Count-1 do
+    if xButtons[I] is TShowDesktopsToolButton then
+      TShowDesktopsToolButton(xButtons[I]).RefreshMenu;
 end;
 
 procedure TShowDesktopsToolButton.ChangeDesktop(Sender: TObject);
@@ -118,6 +158,8 @@ var
   xPM: TPopupMenu;
   i: Integer;
   xDesktop: TDesktopOpt;
+  xMISaveAs: TMenuItem;
+  xMI: TMenuItem;
 begin
   xPM := DropdownMenu;
   if xPM = nil then
@@ -129,6 +171,8 @@ begin
 
   xPM.Items.Clear;
 
+  xMISaveAs := TMenuItem.Create(xPM);
+  xMISaveAs.Caption := dlgSaveCurrentDesktopAs;
   // Saved desktops
   for i:=0 to EnvironmentOptions.Desktops.Count-1 do
   begin
@@ -138,7 +182,46 @@ begin
     xItem.Caption := xDesktop.Name;
     xItem.OnClick := @ChangeDesktop;
     xItem.DesktopName := xDesktop.Name;
+
+    xItem := TShowDesktopItem.Create(xPM);
+    xMISaveAs.Add(xItem);
+    xItem.Caption := xDesktop.Name;
+    xItem.OnClick := @SaveAsDesktop;
+    xItem.DesktopName := xDesktop.Name;
   end;
+
+  if xPM.Items.Count > 0 then
+    xPM.Items.AddSeparator;
+  xPM.Items.Add(xMISaveAs);
+
+  if xMISaveAs.Count > 0 then
+    xMISaveAs.AddSeparator;
+  xMI := TMenuItem.Create(xPM);
+  xMISaveAs.Add(xMI);
+  xMI.Caption := dlgNewDesktop;
+  xMI.OnClick := @SaveAsDesktop;
+end;
+
+procedure TShowDesktopsToolButton.SaveAsDesktop(Sender: TObject);
+var
+  xDesktopName: string;
+  xShowOverwriteDlg: Boolean;
+begin
+  if Sender is TShowDesktopItem then
+  begin
+    xDesktopName := (Sender as TShowDesktopItem).DesktopName;
+    xShowOverwriteDlg := False;
+  end else
+  begin
+    if not InputQuery(dlgSaveCurrentDesktop, dlgDesktopName, xDesktopName)
+    or (xDesktopName = '') // xDesktopName MUST NOT BE EMPTY !!!
+    then
+      Exit;
+    xShowOverwriteDlg := True;
+  end;
+
+  if SaveCurrentDesktop(xDesktopName, xShowOverwriteDlg) then
+    RefreshDesktopMenus;
 end;
 
 { TDesktopForm }
@@ -430,7 +513,6 @@ end;
 
 procedure TDesktopForm.SaveBitBtnClick(Sender: TObject);
 var
-  dsk: TDesktopOpt;
   xDesktopName, xOldDesktopName: string;
 begin
   if DesktopListBox.ItemIndex >= 0 then
@@ -444,26 +526,8 @@ begin
   then
     Exit;
 
-  with EnvironmentOptions do
-  begin
-    dsk := Desktops.Find(xDesktopName);
-    if Assigned(dsk) and
-       (xOldDesktopName <> xDesktopName) and//ask only if manually inserted
-       (MessageDlg(Format(dlgOverwriteDesktop, [xDesktopName]), mtWarning, mbYesNo, 0) <> mrYes)
-    then
-      Exit;
-
-    if not Assigned(dsk) then
-    begin
-      debugln(['TDesktopForm.SaveBitBtnClick: Adding ', xDesktopName]);
-      dsk := TDesktopOpt.Create(xDesktopName, False);
-      Desktops.Add(dsk);
-    end;
-    debugln(['TDesktopForm.SaveBitBtnClick: Assign from ', Desktop.Name, ' to ', dsk.Name]);
-    Desktop.IDEWindowCreatorsLayoutList.StoreWindowPositions;
-    dsk.Assign(Desktop);
+  if SaveCurrentDesktop(xDesktopName, xOldDesktopName <> xDesktopName{ask only if manually inserted}) then
     RefreshList(xDesktopName);
-  end;
 end;
 
 procedure TDesktopForm.SetDebugDesktopBitBtnClick(Sender: TObject);

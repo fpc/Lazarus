@@ -1261,9 +1261,11 @@ resourcestring
   dlgManageDesktops = 'Manage desktops';
   dlgSelectedDesktop = 'Selected desktop:';
   dlgSaveCurrentDesktop = 'Save current desktop';
+  dlgSaveCurrentDesktopAs = 'Save current desktop as';
   dlgCloseAndUseSelectedDesktop = 'Close and use selected desktop';
   dlgReallyDeleteDesktop = 'Really delete desktop "%s"?';
   dlgRenameDesktop = 'Rename desktop';
+  dlgNewDesktop = 'New desktop ...';
   dlgToggleSelectedDebugDesktop = 'Toggle as debug desktop';
   dlgDesktopName = 'Desktop name:';
   dlgOverwriteDesktop = 'Desktop with the name "%s" was found.'+sLineBreak+'Should the old desktop be overwritten?';
