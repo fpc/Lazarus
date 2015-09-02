@@ -139,30 +139,30 @@ var
   Opts: TIDECoolBarOptions;
 begin
   Opts := (AOptions as TEnvironmentOptions).Desktop.IDECoolBarOptions;
-  cbCoolBarVisible.Checked := Opts.IDECoolBarVisible;
-  FTempCoolBar.IsVisible := Opts.IDECoolBarVisible;
+  cbCoolBarVisible.Checked := Opts.Visible;
+  FTempCoolBar.IsVisible := Opts.Visible;
 
-  spCoolBarWidth.Value := Opts.IDECoolBarWidth;
-  FTempCoolBar.Width := Opts.IDECoolBarWidth;
+  spCoolBarWidth.Value := Opts.Width;
+  FTempCoolBar.Width := Opts.Width;
 
-  if not (Opts.IDECoolBarGrabStyle in [0..5]) then
-    Opts.IDECoolBarGrabStyle := 1;
-  cbGrabStyle.ItemIndex := Opts.IDECoolBarGrabStyle;
-  Coolbar.GrabStyle := TGrabStyle(Opts.IDECoolBarGrabStyle);
+  if not (Opts.GrabStyle in [0..5]) then
+    Opts.GrabStyle := 1;
+  cbGrabStyle.ItemIndex := Opts.GrabStyle;
+  Coolbar.GrabStyle := TGrabStyle(Opts.GrabStyle);
 
-  if not (Opts.IDECoolBarGrabWidth in [1..50]) then
-    Opts.IDECoolBarGrabWidth := 5;
-  spGrabWidth.Value := Opts.IDECoolBarGrabWidth;
-  Coolbar.GrabWidth := Opts.IDECoolBarGrabWidth;
+  if not (Opts.GrabWidth in [1..50]) then
+    Opts.GrabWidth := 5;
+  spGrabWidth.Value := Opts.GrabWidth;
+  Coolbar.GrabWidth := Opts.GrabWidth;
 
-  if not (Opts.IDECoolBarBorderStyle in [0..1]) then
-    Opts.IDECoolBarBorderStyle := 1;
-  cbBorderStyle.ItemIndex := Opts.IDECoolBarBorderStyle;
-  Coolbar.BandBorderStyle := TBorderStyle(Opts.IDECoolBarBorderStyle);
+  if not (Opts.BorderStyle in [0..1]) then
+    Opts.BorderStyle := 1;
+  cbBorderStyle.ItemIndex := Opts.BorderStyle;
+  Coolbar.BandBorderStyle := TBorderStyle(Opts.BorderStyle);
   EnableDisableButtons(0);
 
   // ToDo: More tests?
-  if Opts.IDECoolBarToolBars.Count = 0 then
+  if Opts.ToolBars.Count = 0 then
     FTempCoolBar.CopyFromOptions(FDefaultOptions)
   else
     FTempCoolBar.CopyFromOptions(Opts);
@@ -191,11 +191,11 @@ begin
   end;
   FTempCoolBar.Sort;
   FTempCoolBar.CopyToOptions(Opts);
-  Opts.IDECoolBarVisible := cbCoolBarVisible.Checked;
-  Opts.IDECoolBarWidth := FTempCoolBar.Width;
-  Opts.IDECoolBarGrabStyle := cbGrabStyle.ItemIndex;
-  Opts.IDECoolBarGrabWidth := spGrabWidth.Value;
-  Opts.IDECoolBarBorderStyle := cbBorderStyle.ItemIndex;
+  Opts.Visible := cbCoolBarVisible.Checked;
+  Opts.Width := FTempCoolBar.Width;
+  Opts.GrabStyle := cbGrabStyle.ItemIndex;
+  Opts.GrabWidth := spGrabWidth.Value;
+  Opts.BorderStyle := cbBorderStyle.ItemIndex;
   MainIDEBar.RefreshCoolbar;
   MainIDEBar.SetMainIDEHeight;
 end;

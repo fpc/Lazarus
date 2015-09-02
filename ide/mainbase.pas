@@ -1161,7 +1161,7 @@ begin
     CreateMenuItem(ParentMI,itmViewComponentPalette,'itmViewComponentPalette',lisMenuViewComponentPalette, '',
       true, EnvironmentOptions.Desktop.ComponentPaletteOptions.Visible);
     CreateMenuItem(ParentMI,itmViewIDESpeedButtons,'itmViewIDESpeedButtons',lisMenuViewIDESpeedButtons, '',
-      true, EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarVisible);
+      true, EnvironmentOptions.Desktop.IDECoolBarOptions.Visible);
   end;
 end;
 

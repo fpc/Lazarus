@@ -605,14 +605,14 @@ begin
   if EnvironmentOptions.Desktop.ComponentPaletteOptions.Visible then
   begin
     CoolBar.Align := alLeft;
-    CoolBar.Width := EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarWidth;
+    CoolBar.Width := EnvironmentOptions.Desktop.IDECoolBarOptions.Width;
   end
   else
     CoolBar.Align := alClient;
 
   // IDE Coolbar object wraps the actual CoolBar.
   IDECoolBar := TIDECoolBar.Create(CoolBar);
-  IDECoolBar.IsVisible := EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarVisible;;
+  IDECoolBar.IsVisible := EnvironmentOptions.Desktop.IDECoolBarOptions.Visible;
   CoolBar.OnChange := @CoolBarOnChange;
   CreatePopupMenus(TheOwner);
   CoolBar.PopupMenu := OptionsPopupMenu;
@@ -679,14 +679,14 @@ var
 begin
   CoolBarOpts := EnvironmentOptions.Desktop.IDECoolBarOptions;
   //read general settings
-  if not (CoolBarOpts.IDECoolBarGrabStyle in [0..5]) then
-    CoolBarOpts.IDECoolBarGrabStyle := 4;
-  Coolbar.GrabStyle := TGrabStyle(CoolBarOpts.IDECoolBarGrabStyle);
-  if not (CoolBarOpts.IDECoolBarGrabWidth in [1..50]) then
-    CoolBarOpts.IDECoolBarGrabWidth := 5;
-  Coolbar.GrabWidth := CoolBarOpts.IDECoolBarGrabWidth;
-  Coolbar.BandBorderStyle := TBorderStyle(CoolBarOpts.IDECoolBarBorderStyle);
-  Coolbar.Width := CoolBarOpts.IDECoolBarWidth;
+  if not (CoolBarOpts.GrabStyle in [0..5]) then
+    CoolBarOpts.GrabStyle := 4;
+  Coolbar.GrabStyle := TGrabStyle(CoolBarOpts.GrabStyle);
+  if not (CoolBarOpts.GrabWidth in [1..50]) then
+    CoolBarOpts.GrabWidth := 5;
+  Coolbar.GrabWidth := CoolBarOpts.GrabWidth;
+  Coolbar.BandBorderStyle := TBorderStyle(CoolBarOpts.BorderStyle);
+  Coolbar.Width := CoolBarOpts.Width;
   //read toolbars
   CoolBar.Bands.Clear;
   IDECoolBar.CopyFromOptions(CoolBarOpts);
@@ -705,7 +705,7 @@ begin
   end;
   CoolBar.AutosizeBands;
 
-  CoolBar.Visible := CoolBarOpts.IDECoolBarVisible;
+  CoolBar.Visible := CoolBarOpts.Visible;
   itmViewIDESpeedButtons.Checked := CoolBar.Visible;
   MainSplitter.Align := alLeft;
   MainSplitter.Visible := Coolbar.Visible and ComponentPageControl.Visible;
@@ -722,7 +722,7 @@ end;
 
 procedure TMainIDEBar.MainSplitterMoved(Sender: TObject);
 begin
-  EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarWidth := CoolBar.Width;
+  EnvironmentOptions.Desktop.IDECoolBarOptions.Width := CoolBar.Width;
   SetMainIDEHeight;
 end;
 
@@ -737,7 +737,7 @@ begin
   if not (Assigned(EnvironmentOptions) and Assigned(CoolBar) and Assigned(ComponentPageControl)) then
     Exit;
 
-  if EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarVisible then
+  if EnvironmentOptions.Desktop.IDECoolBarOptions.Visible then
   begin
     for I := 0 to CoolBar.Bands.Count-1 do
     begin
@@ -810,7 +810,7 @@ begin
     if CoolBar.Align = alClient then
     begin
       CoolBar.Width := 230;
-      EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarWidth := 230;
+      EnvironmentOptions.Desktop.IDECoolBarOptions.Width := 230;
     end;
     CoolBar.Align := alLeft;
     CoolBar.Vertical := False;
@@ -838,7 +838,7 @@ begin
   itmViewIDESpeedButtons.Checked := SpeedButtonsVisible;
   CoolBar.Visible := SpeedButtonsVisible;
   MainSplitter.Visible := SpeedButtonsVisible;
-  EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarVisible := SpeedButtonsVisible;
+  EnvironmentOptions.Desktop.IDECoolBarOptions.Visible := SpeedButtonsVisible;
   MainSplitter.Visible := Coolbar.Visible and ComponentPageControl.Visible;
   SetMainIDEHeight;
 end;

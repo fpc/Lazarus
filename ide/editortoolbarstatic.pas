@@ -155,7 +155,7 @@ begin
   FButtonNames.Add('IDEMainMenu/Search/itmJumpings/itmJumpToSection/itmJumpToImplementation');
   FButtonNames.Add('IDEMainMenu/Search/itmJumpings/itmJumpBack');
   FButtonNames.Add('IDEMainMenu/Search/itmJumpings/itmJumpForward');
-  FButtonNames.Add('---------------');
+  FButtonNames.Add(cIDEToolbarDivider);
 end;
 
 procedure TEditorToolBarOptions.Load(XMLConfig: TXMLConfig; Path: String);
