@@ -508,6 +508,7 @@ var
 begin
   if FFileSortType=AValue then exit;
   FFileSortType:=AValue;
+  if (csLoading in ComponentState) then Exit;
   CurrPath := GetPath;
   try
     BeginUpdate;
