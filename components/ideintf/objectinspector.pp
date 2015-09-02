@@ -1213,6 +1213,8 @@ begin
   if (not ASelection.ForceUpdate) and FSelection.IsEqual(ASelection) then exit;
 
   OldSelectedRowPath:=PropertyPath(ItemIndex);
+  if FCurrentEdit = ValueEdit then
+    ValueEditExit(Self);
   ItemIndex:=-1;
   ClearRows;
   FSelection.Assign(ASelection);
