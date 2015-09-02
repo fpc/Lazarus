@@ -1843,6 +1843,16 @@ begin
   FControlHandlers[HandlerType].CallNotifyEvents(Self);
 end;
 
+procedure TControl.DoCallKeyEventHandler(HandlerType: TControlHandlerType;
+  var Key: Word; Shift: TShiftState);
+var
+  i: Integer;
+begin
+  i := FControlHandlers[HandlerType].Count;
+  while FControlHandlers[HandlerType].NextDownIndex(i) do
+    TKeyEvent(FControlHandlers[HandlerType][i])(Self, Key, Shift);
+end;
+
 {------------------------------------------------------------------------------
   procedure TControl.DoContextPopup(const MousePos: TPoint;
     var Handled: Boolean);
