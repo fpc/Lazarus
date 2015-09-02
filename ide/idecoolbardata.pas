@@ -121,7 +121,7 @@ type
      procedure AddDivider;
      function GetCount: Integer;
    protected
-     procedure AddButton(AMenuItem: TIDEMenuItem);
+     procedure AddButton(ACommand: TIDEMenuCommand);
      procedure PositionAtEnd(AToolbar: TToolbar; AButton: TToolButton);
    public
      constructor Create;
@@ -171,8 +171,6 @@ var
   IDECoolBar: TIDECoolBar;
 
 implementation
-
-uses MainBar;
 
 const
   BasePath = 'IDECoolBarOptions/';
@@ -473,50 +471,31 @@ begin
   inherited Destroy;
 end;
 
-procedure TIDEToolBar.AddButton(AMenuItem: TIDEMenuItem);
+procedure TIDEToolBar.AddButton(ACommand: TIDEMenuCommand);
 var
   B: TIDEToolButton;
   ACaption: string;
   iPos: Integer;
 begin
-  Assert(AMenuItem is TIDEMenuCommand, 'TIDEToolBar.AddButton: AMenuItem is not TIDEMenuCommand.');
-  B := (AMenuItem as TIDEMenuCommand).ToolButtonClass.Create(Toolbar);
-  ACaption      := AMenuItem.Caption;
+  B := ACommand.ToolButtonClass.Create(Toolbar);
+  ACaption := ACommand.Caption;
   DeleteAmpersands(ACaption);
-  B.Caption     := ACaption;
+  B.Caption := ACaption;
   // Get Shortcut, if any, and append to Hint
-  ACaption := ACaption + GetShortcut(AMenuItem);
-  B.Hint        := ACaption;
+  ACaption := ACaption + GetShortcut(ACommand);
+  B.Hint := ACaption;
   // If we have a image, us it. Otherwise supply a default.
-  if AMenuItem.ImageIndex <> -1 then
-    B.ImageIndex := AMenuItem.ImageIndex
+  if ACommand.ImageIndex <> -1 then
+    B.ImageIndex := ACommand.ImageIndex
   else
     B.ImageIndex := IDEImages.LoadImage(16, 'execute');
-
-  B.Style       := tbsButton;
-  if (AMenuItem.Name = 'itmFileNewForm') or (AMenuItem.Name = 'itmFileNewUnit') then
-  begin
-    B.PopupMenu := MainIDEBar.NewUnitFormPopupMenu;
-    B.Name := AMenuItem.Name;
-  end
-  else if AMenuItem.Name = 'itmProjectBuildMode' then
-  begin
-    B.Style := tbsDropDown;
-    B.DropdownMenu := MainIDEBar.SetBuildModePopupMenu;
-  end
-  else if AMenuItem.Name = 'itmFileOpen' then
-  begin
-    B.Style := tbsDropDown;
-    B.DropdownMenu := MainIDEBar.OpenFilePopUpMenu;
-  end;
-
-  B.IdeMenuItem := AMenuItem;
-  iPos := FButtonList.Add(AMenuItem);
+  B.Style := tbsButton;
+  B.IdeMenuItem := ACommand;
+  iPos := FButtonList.Add(ACommand);
   B.Tag := iPos + 1;
-  //B.OnClick     := AMenuItem.OnClick;
+  //B.OnClick     := ACommand.OnClick;
   PositionAtEnd(ToolBar, B);
-
-  TIDEMenuCommand(AMenuItem).ToolButtonAdded(B);
+  ACommand.ToolButtonAdded(B);
 end;
 
 // position the button next to the last button
@@ -537,21 +516,21 @@ procedure TIDEToolBar.AddCustomItems(Index: Integer);
 const
   cDivider = '---------------';
 var
-  MI: TIDEMenuItem;
+  mi: TIDEMenuItem;
   AName: string;
 begin
   ToolBar.BeginUpdate;
   try
     AName := FButtonNames[Index];
-    if (AName <> '') then
+    if AName <> '' then
     begin
       if AName = cDivider then
         AddDivider
       else
       begin
-        MI := IDEMenuRoots.FindByPath(AName, False);
-        if Assigned(MI) then
-          AddButton(MI);
+        mi := IDEMenuRoots.FindByPath(AName, False);
+        if Assigned(mi) then
+          AddButton(mi as TIDEMenuCommand);
       end;
     end;
     UpdateBar(nil);

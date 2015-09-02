@@ -388,10 +388,7 @@ type
     procedure mnuPackageClicked(Sender: TObject);   // package menu
     // see pkgmanager.pas
 
-    procedure mnuOpenFilePopupClick(Sender: TObject);
-    procedure SetBuildModePopupMenuPopup(Sender: TObject);
     procedure mnuChgBuildModeClicked(Sender: TObject);
-    procedure mnuSetBuildModeClick(Sender: TObject); // event for drop down items
     procedure ToolBarOptionsClick(Sender: TObject);
   private
     fBuilder: TLazarusBuilder;
@@ -1477,9 +1474,7 @@ begin
     SetupStandardIDEMenuItems;
     SetupMainMenu;
     MainIDEBar.Setup(OwningComponent);
-    MainIDEBar.OpenFilePopupHandler := @mnuOpenFilePopupClick;
     MainIDEBar.OptionsMenuItem.OnClick := @ToolBarOptionsClick;
-    MainIDEBar.SetBuildModePopupMenu.OnPopup := @SetBuildModePopupMenuPopup;
     ConnectMainBarEvents;
   finally
     MainIDEBar.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.Create'){$ENDIF};
@@ -3339,101 +3334,9 @@ end;
 
 {------------------------------------------------------------------------------}
 
-procedure TMainIDE.mnuOpenFilePopupClick(Sender: TObject);
-var
-  TheMenuItem: TMenuItem;
-  Index, SeparatorIndex: integer;
-  AFilename: string;
-begin
-  TheMenuItem:=(Sender as TMenuItem);
-  if TheMenuItem.Caption='-' then exit;
-  Index:=TheMenuItem.MenuIndex;
-  SeparatorIndex:=0;
-  while SeparatorIndex<MainIDEBar.OpenFilePopupMenu.Items.Count do begin
-    if MainIDEBar.OpenFilePopupMenu.Items[SeparatorIndex].Caption='-' then
-      break;
-    inc(SeparatorIndex);
-  end;
-  if Index=SeparatorIndex then exit;
-  if Index<SeparatorIndex then begin
-    // open recent project
-    AFilename:=EnvironmentOptions.RecentProjectFiles[Index];
-    DoOpenProjectFile(AFileName,[ofAddToRecent]);
-  end else begin
-    // open recent file
-    dec(Index, SeparatorIndex+1);
-    if DoOpenEditorFile(EnvironmentOptions.RecentOpenFiles[Index],-1,-1,
-      [ofAddToRecent])=mrOk then
-    begin
-      SetRecentFilesMenu;
-      SaveEnvironment;
-    end;
-  end;
-end;
-
-procedure TMainIDE.SetBuildModePopupMenuPopup(Sender: TObject);
-var
-  aMenu: TPopupMenu;
-  CurIndex: Integer;
-  i: Integer;
-
-  procedure AddMode(CurMode: TProjectBuildMode);
-  var
-    AMenuItem: TMenuItem;
-  begin
-    if aMenu.Items.Count > CurIndex then
-      AMenuItem := aMenu.Items[CurIndex]
-    else
-    begin
-      AMenuItem := TMenuItem.Create(OwningComponent);
-      AMenuItem.Name := aMenu.Name + 'Mode' + IntToStr(CurIndex);
-      AMenuItem.OnClick := @mnuSetBuildModeClick;
-      aMenu.Items.Add(AMenuItem);
-    end;
-    AMenuItem.Caption := CurMode.GetCaption;
-    AMenuItem.Checked := (Project1<>nil) and (Project1.ActiveBuildMode=CurMode);
-    AMenuItem.ShowAlwaysCheckable:=true;
-    inc(CurIndex);
-  end;
-
-begin
-  // fill the PopupMenu:
-  CurIndex := 0;
-  aMenu := MainIDEBar.SetBuildModePopupMenu;
-  if Project1<>nil then
-    for i:=0 to Project1.BuildModes.Count-1 do
-      AddMode(Project1.BuildModes[i]);
-  // remove unused menuitems
-  while aMenu.Items.Count > CurIndex do
-    aMenu.Items[aMenu.Items.Count - 1].Free;
-end;
-
 procedure TMainIDE.mnuChgBuildModeClicked(Sender: TObject);
 begin
   DoOpenIDEOptions(TCompilerPathOptionsFrame, '', [TProjectCompilerOptions], []);
-end;
-
-procedure TMainIDE.mnuSetBuildModeClick(Sender: TObject);
-var
-  TheMenuItem: TMenuItem;
-  Index: LongInt;
-  NewMode: TProjectBuildMode;
-begin
-  TheMenuItem:=(Sender as TMenuItem);
-  if TheMenuItem.Caption='-' then exit;
-  Index:=TheMenuItem.MenuIndex;
-  if (Index<0) or (Index>=Project1.BuildModes.Count) then exit;
-  NewMode:=Project1.BuildModes[Index];
-  if NewMode=Project1.ActiveBuildMode then exit;
-  if not (ToolStatus in [itNone,itDebugger]) then begin
-    IDEMessageDialog('Error','You can not change the build mode while compiling.',
-      mtError,[mbOk]);
-    exit;
-  end;
-
-  Project1.ActiveBuildMode:=NewMode;
-  MainBuildBoss.SetBuildTargetProject1(false);
-  UpdateCaption;
 end;
 
 function TMainIDE.CreateDesignerForComponent(AnUnitInfo: TUnitInfo;
@@ -7805,6 +7708,7 @@ begin
   end;
   MainIDEBar.Caption := NewCaption;
   Application.Title := NewTitle;
+  TSetBuildModeToolButton.UpdateHints;
 end;
 
 procedure TMainIDE.HideIDE;

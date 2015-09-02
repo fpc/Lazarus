@@ -1798,7 +1798,6 @@ end;
 constructor TIDEMenuCommand.Create(const TheName: string);
 begin
   inherited Create(TheName);
-
   FToolButtonClass := TIDEToolButton;
   FToolButtons := TIDEMenuCommandButtons.Create(nil);
 end;
@@ -1806,7 +1805,6 @@ end;
 destructor TIDEMenuCommand.Destroy;
 begin
   FToolButtons.Free;
-
   inherited Destroy;
 end;
 

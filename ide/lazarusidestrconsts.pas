@@ -271,6 +271,7 @@ resourcestring
     +'changing all build modes at once. Not implemented yet.';
   
   lisMenuNewUnit = 'New Unit';
+  lisMenuNewCustom = 'New %s';
   lisMenuNewForm = 'New Form';
   lisMenuNewOther = 'New ...';
   lisMenuOpen = '&Open ...';

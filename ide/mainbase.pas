@@ -59,11 +59,11 @@ uses
   SysUtils, types, Controls, Graphics, ExtCtrls, Dialogs, LazFileUtils, Forms,
   CodeToolManager, AVL_Tree, SynEditKeyCmds, PackageIntf,
   // IDEIntf
-  IDEImagesIntf, SrcEditorIntf, LazIDEIntf, MenuIntf,
-  IDECommands, IDEWindowIntf,
+  IDEImagesIntf, SrcEditorIntf, LazIDEIntf, MenuIntf, NewItemIntf,
+  IDECommands, IDEWindowIntf, ProjectIntf,
   // IDE
-  LazConf, LazarusIDEStrConsts, ProjectDefs, Project,
-  TransferMacros, ObjectInspector, PropEdits,
+  LazConf, LazarusIDEStrConsts, ProjectDefs, Project, IDEDialogs,
+  TransferMacros, ObjectInspector, PropEdits, BuildManager, ToolbarConfig,
   EnvironmentOpts, EditorOptions, CompilerOptions, KeyMapping, IDEProcs,
   Debugger, IDEOptionDefs, Splash, Designer,
   SourceEditor, FindInFilesDlg,
@@ -206,6 +206,79 @@ type
     procedure RefreshMenu;
   end;
 
+  { TSetBuildModeToolButton }
+
+  TSetBuildModeToolButton = class(TIDEToolButton)
+  private
+    procedure RefreshMenu(Sender: TObject);
+    procedure mnuSetBuildModeClick(Sender: TObject);
+  public
+    procedure DoOnAdded; override;
+
+    class procedure UpdateHints;
+  end;
+
+  { TOpenFileToolButton }
+
+  TOpenFileToolButton = class(TIDEToolButton)
+  private
+    procedure RefreshMenu(Sender: TObject);
+    procedure mnuOpenFile(Sender: TObject);
+    procedure mnuProjectFile(Sender: TObject);
+  public
+    procedure DoOnAdded; override;
+  end;
+
+  { TOpenFileMenuItem }
+
+  TOpenFileMenuItem = class(TMenuItem)
+  public
+    FileName: string;
+  end;
+
+  { TNewFormUnitToolButton }
+
+  TNewFormUnitToolButton = class(TIDEToolButton)
+  private
+    SetDefaultMenuItem: TMenuItem;
+
+    procedure RefreshMenu(Sender: TObject);
+    procedure mnuSetFormUnitTemplate(Sender: TObject);
+  protected
+    class function FindDefaultTemplateName(Category: TNewIDEItemCategory): string; virtual; abstract;
+    class procedure SetTemplateName(const TemplateName: string); virtual; abstract;
+    class procedure UpdateHint(const AHint: string); virtual; abstract;
+  public
+    procedure DoOnAdded; override;
+
+    class procedure UpdateHints;
+  end;
+
+  { TNewUnitToolButton }
+
+  TNewUnitToolButton = class(TNewFormUnitToolButton)
+  protected
+    class function FindDefaultTemplateName(Category: TNewIDEItemCategory): string; override;
+    class procedure SetTemplateName(const TemplateName: string); override;
+    class procedure UpdateHint(const AHint: string); override;
+  end;
+
+  { TNewFormToolButton }
+
+  TNewFormToolButton = class(TNewFormUnitToolButton)
+  protected
+    class function FindDefaultTemplateName(Category: TNewIDEItemCategory): string; override;
+    class procedure SetTemplateName(const TemplateName: string); override;
+    class procedure UpdateHint(const AHint: string); override;
+  end;
+
+  { TNewFormUnitMenuItem }
+
+  TNewFormUnitMenuItem = class(TMenuItem)
+  public
+    TemplateName: string;
+  end;
+
 function  GetMainIde: TMainIDEBase;
 
 property MainIDE: TMainIDEBase read GetMainIde;
@@ -220,6 +293,267 @@ implementation
 function GetMainIde: TMainIDEBase;
 begin
   Result := TMainIDEBase(MainIDEInterface)
+end;
+
+{ TNewFormUnitToolButton }
+
+procedure TNewFormUnitToolButton.DoOnAdded;
+begin
+  inherited DoOnAdded;
+
+  PopupMenu := TPopupMenu.Create(Self);
+  PopupMenu.OnPopup := @RefreshMenu;
+
+  SetDefaultMenuItem:=TMenuItem.Create(PopupMenu);
+  SetDefaultMenuItem.Caption:=lisSetDefault;
+  PopupMenu.Items.Add(SetDefaultMenuItem);
+
+  UpdateHints;
+end;
+
+procedure TNewFormUnitToolButton.mnuSetFormUnitTemplate(Sender: TObject);
+begin
+  SetTemplateName((Sender as TNewFormUnitMenuItem).TemplateName);
+  EnvironmentOptions.Save(False);
+
+  UpdateHints;
+end;
+
+procedure TNewFormUnitToolButton.RefreshMenu(Sender: TObject);
+var
+  TemplateName: String;
+  Category: TNewIDEItemCategory;
+  i: Integer;
+  CurTemplate: TNewIDEItemTemplate;
+  TheIndex: Integer;
+  Item: TNewFormUnitMenuItem;
+begin
+  Category:=NewIDEItems.FindCategoryByPath(FileDescGroupName,true);
+  TemplateName:=FindDefaultTemplateName(Category);
+
+  // create menu items
+  TheIndex:=0;
+  for i:=0 to Category.Count-1 do begin
+    CurTemplate:=Category[i];
+    if not CurTemplate.VisibleInNewDialog then continue;
+    if TheIndex<SetDefaultMenuItem.Count then
+      Item:=SetDefaultMenuItem[TheIndex] as TNewFormUnitMenuItem
+    else begin
+      Item:=TNewFormUnitMenuItem.Create(SetDefaultMenuItem);
+      SetDefaultMenuItem.Add(Item);
+    end;
+    Item.OnClick:=@mnuSetFormUnitTemplate;
+    Item.Caption:=CurTemplate.LocalizedName;
+    Item.TemplateName:=CurTemplate.Name;
+    Item.ShowAlwaysCheckable:=true;
+    Item.Checked:=CompareText(TemplateName,CurTemplate.Name)=0;
+    inc(TheIndex);
+  end;
+  // remove unneeded items
+  while SetDefaultMenuItem.Count>TheIndex do
+    SetDefaultMenuItem.Items[SetDefaultMenuItem.Count-1].Free;
+end;
+
+class procedure TNewFormUnitToolButton.UpdateHints;
+var
+  Category: TNewIDEItemCategory;
+  TemplateName: String;
+  Template: TNewIDEItemTemplate;
+begin
+  if not Assigned(NewIDEItems) then
+    Exit;
+  Category:=NewIDEItems.FindCategoryByPath(FileDescGroupName,true);
+  TemplateName:=FindDefaultTemplateName(Category);
+  if TemplateName<>'' then  //try to get the LocalizedName
+  begin
+    Template:=Category.FindTemplateByName(TemplateName);
+    if Assigned(Template) then
+      TemplateName := Template.LocalizedName;
+  end;
+  UpdateHint(Format(lisMenuNewCustom, [TemplateName]));
+end;
+
+{ TNewFormToolButton }
+
+class function TNewFormToolButton.FindDefaultTemplateName(
+  Category: TNewIDEItemCategory): string;
+begin
+  Result:=EnvironmentOptions.NewFormTemplate;
+  if (Result='') or (Category.FindTemplateByName(Result)=nil) then
+    Result:=FileDescNameLCLForm;
+end;
+
+class procedure TNewFormToolButton.SetTemplateName(const TemplateName: string);
+begin
+  EnvironmentOptions.NewFormTemplate:=TemplateName;
+end;
+
+class procedure TNewFormToolButton.UpdateHint(const AHint: string);
+begin
+  MainIDEBar.itmFileNewForm.Hint := AHint;
+end;
+
+{ TNewUnitToolButton }
+
+class function TNewUnitToolButton.FindDefaultTemplateName(
+  Category: TNewIDEItemCategory): string;
+begin
+  Result:=EnvironmentOptions.NewUnitTemplate;
+  if (Result='') or (Category.FindTemplateByName(Result)=nil) then
+    Result:=FileDescNamePascalUnit;
+end;
+
+class procedure TNewUnitToolButton.SetTemplateName(const TemplateName: string);
+begin
+  EnvironmentOptions.NewUnitTemplate:=TemplateName;
+end;
+
+class procedure TNewUnitToolButton.UpdateHint(const AHint: string);
+begin
+  MainIDEBar.itmFileNewUnit.Hint := AHint;
+end;
+
+{ TOpenFileToolButton }
+
+procedure TOpenFileToolButton.DoOnAdded;
+begin
+  inherited DoOnAdded;
+
+  DropdownMenu := TPopupMenu.Create(Self);
+  DropdownMenu.OnPopup := @RefreshMenu;
+  Style := tbsDropDown;
+end;
+
+procedure TOpenFileToolButton.mnuOpenFile(Sender: TObject);
+begin
+  if MainIDE.DoOpenEditorFile((Sender as TOpenFileMenuItem).FileName,-1,-1,
+    [ofAddToRecent])=mrOk then
+  begin
+    MainIDE.SetRecentFilesMenu;
+    MainIDE.SaveEnvironment;
+  end;
+end;
+
+procedure TOpenFileToolButton.mnuProjectFile(Sender: TObject);
+begin
+  MainIDE.DoOpenProjectFile((Sender as TOpenFileMenuItem).FileName,[ofAddToRecent]);
+end;
+
+procedure TOpenFileToolButton.RefreshMenu(Sender: TObject);
+  procedure AddFile(const AFileName: string; const AOnClick: TNotifyEvent);
+  var
+    AMenuItem: TOpenFileMenuItem;
+  begin
+    AMenuItem := TOpenFileMenuItem.Create(DropdownMenu);
+    AMenuItem.OnClick := AOnClick;
+    AMenuItem.FileName := AFileName;
+    DropdownMenu.Items.Add(AMenuItem);
+    AMenuItem.Caption := AFilename;
+  end;
+
+  procedure AddFiles(List: TStringList; MaxCount: integer; const AOnClick: TNotifyEvent);
+  var
+    i: integer;
+  begin
+    i := 0;
+    while (i < List.Count) and (i < MaxCount) do
+    begin
+      AddFile(List[i], AOnClick);
+      inc(i);
+    end;
+  end;
+
+begin
+  DropdownMenu.Items.Clear;
+
+  // first add 8 recent projects
+  AddFiles(EnvironmentOptions.RecentProjectFiles, 8, @mnuProjectFile);
+  // add a separator
+  DropdownMenu.Items.AddSeparator;
+  // add 12 recent files
+  AddFiles(EnvironmentOptions.RecentOpenFiles, 12, @mnuOpenFile);
+end;
+
+{ TSetBuildModeToolButton }
+
+procedure TSetBuildModeToolButton.DoOnAdded;
+begin
+  inherited DoOnAdded;
+
+  DropdownMenu := TPopupMenu.Create(Self);
+  DropdownMenu.OnPopup := @RefreshMenu;
+  Style := tbsDropDown;
+  UpdateHints;
+end;
+
+procedure TSetBuildModeToolButton.mnuSetBuildModeClick(Sender: TObject);
+var
+  TheMenuItem: TMenuItem;
+  TheIndex: LongInt;
+  NewMode: TProjectBuildMode;
+begin
+  TheMenuItem := (Sender as TMenuItem);
+  if TheMenuItem.Caption = '-' then exit;
+  TheIndex := TheMenuItem.MenuIndex;
+  if (TheIndex < 0) or (TheIndex >= Project1.BuildModes.Count) then exit;
+  NewMode := Project1.BuildModes[TheIndex];
+  if NewMode = Project1.ActiveBuildMode then exit;
+  if not (MainIDE.ToolStatus in [itNone,itDebugger]) then begin
+    IDEMessageDialog('Error','You can not change the build mode while compiling.',
+      mtError,[mbOk]);
+    exit;
+  end;
+
+  Project1.ActiveBuildMode := NewMode;
+  MainBuildBoss.SetBuildTargetProject1(false);
+  MainIDE.UpdateCaption;
+end;
+
+procedure TSetBuildModeToolButton.RefreshMenu(Sender: TObject);
+var
+  aMenu: TPopupMenu;
+  CurIndex: Integer;
+  i: Integer;
+
+  procedure AddMode(CurMode: TProjectBuildMode);
+  var
+    AMenuItem: TMenuItem;
+  begin
+    if aMenu.Items.Count > CurIndex then
+      AMenuItem := aMenu.Items[CurIndex]
+    else
+    begin
+      AMenuItem := TMenuItem.Create(DropdownMenu);
+      AMenuItem.Name := aMenu.Name + 'Mode' + IntToStr(CurIndex);
+      AMenuItem.OnClick := @mnuSetBuildModeClick;
+      aMenu.Items.Add(AMenuItem);
+    end;
+    AMenuItem.Caption := CurMode.GetCaption;
+    AMenuItem.Checked := (Project1<>nil) and (Project1.ActiveBuildMode=CurMode);
+    AMenuItem.ShowAlwaysCheckable:=true;
+    inc(CurIndex);
+  end;
+
+begin
+  // fill the PopupMenu:
+  CurIndex := 0;
+  aMenu := DropdownMenu;
+  if Project1<>nil then
+    for i:=0 to Project1.BuildModes.Count-1 do
+      AddMode(Project1.BuildModes[i]);
+  // remove unused menuitems
+  while aMenu.Items.Count > CurIndex do
+    aMenu.Items[aMenu.Items.Count - 1].Free;
+end;
+
+class procedure TSetBuildModeToolButton.UpdateHints;
+const
+  cActiveBuildMode = '[%s]';
+begin
+  if Assigned(Project1) then
+    MainIDEBar.itmProjectBuildMode.Hint :=
+      lisChangeBuildMode + GetShortcut(MainIDEBar.itmProjectBuildMode) + sLineBreak +
+      Format(cActiveBuildMode, [Project1.ActiveBuildMode.GetCaption]);
 end;
 
 { TJumpToSectionToolButton }
@@ -242,15 +576,12 @@ begin
 end;
 
 procedure TJumpToSectionToolButton.RefreshMenu;
-var
-  xPM: TPopupMenu;
 begin
   if DropdownMenu = nil then
   begin
-    xPM := TPopupMenu.Create(Self);
+    DropdownMenu := TPopupMenu.Create(Self);
     if Assigned(FToolBar) then
-      xPM.Images := FToolBar.Images;
-    DropdownMenu := xPM;
+      DropdownMenu.Images := FToolBar.Images;
     Style := tbsDropDown;
   end;
   DropdownMenu.Items.Clear;
@@ -1143,9 +1474,12 @@ begin
   with MainIDEBar do begin
     // file menu
     itmFileNewUnit.Command:=GetCommand(ecNewUnit);
+    itmFileNewUnit.ToolButtonClass:=TNewUnitToolButton;
     itmFileNewForm.Command:=GetCommand(ecNewForm);
+    itmFileNewForm.ToolButtonClass:=TNewFormToolButton;
     itmFileNewOther.Command:=GetCommand(ecNew);
     itmFileOpen.Command:=GetCommand(ecOpen);
+    itmFileOpen.ToolButtonClass:=TOpenFileToolButton;
     itmFileRevert.Command:=GetCommand(ecRevert);
     itmFileSave.Command:=GetCommand(ecSave);
     itmFileSaveAs.Command:=GetCommand(ecSaveAs);
@@ -1301,6 +1635,7 @@ begin
     itmProjectViewUnits.Command:=GetCommand(ecViewProjectUnits);
     itmProjectViewForms.Command:=GetCommand(ecViewProjectForms);
     itmProjectViewSource.Command:=GetCommand(ecViewProjectSource);
+    itmProjectBuildMode.ToolButtonClass:=TSetBuildModeToolButton;
 
     // run menu
     itmRunMenuCompile.Command:=GetCommand(ecCompile);

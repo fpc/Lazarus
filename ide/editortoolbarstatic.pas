@@ -73,7 +73,7 @@ type
     procedure SetTbPos;
     procedure UpdateBar(Sender: TObject);
   protected
-    procedure AddButton(AMenuItem: TIDEMenuItem);
+    procedure AddButton(ACommand: TIDEMenuCommand);
     procedure PositionAtEnd(AToolbar: TToolbar; AButton: TToolButton);
   public
     constructor Create(AOwner: TComponent; ACollection: TAllEditorToolbars); overload;
@@ -363,33 +363,30 @@ begin
   CfgButton := nil;
 end;
 
-procedure TEditorToolbar.AddButton(AMenuItem: TIDEMenuItem);
+procedure TEditorToolbar.AddButton(ACommand: TIDEMenuCommand);
 var
   B: TIDEToolButton;
   ACaption: string;
   iPos: Integer;
 begin
-  Assert(AMenuItem is TIDEMenuCommand, 'TEditorToolbar.AddButton: AMenuItem is not TIDEMenuCommand.');
-  B := (AMenuItem as TIDEMenuCommand).ToolButtonClass.Create(TB);
-  ACaption  := AMenuItem.Caption;
+  B := ACommand.ToolButtonClass.Create(TB);
+  ACaption := ACommand.Caption;
   DeleteAmpersands(ACaption);
   B.Caption := ACaption;
   // Get Shortcut, if any, and append to Hint
-  ACaption  := ACaption + GetShortcut(AMenuItem);
-  B.Hint    := ACaption;
+  ACaption := ACaption + GetShortcut(ACommand);
+  B.Hint := ACaption;
   // If we have a image, us it. Otherwise supply a default.
-  if AMenuItem.ImageIndex <> -1 then
-    B.ImageIndex := AMenuItem.ImageIndex
+  if ACommand.ImageIndex <> -1 then
+    B.ImageIndex := ACommand.ImageIndex
   else
     B.ImageIndex := IDEImages.LoadImage(16, 'execute');
-
-  B.Style       := tbsButton;
-  B.IdeMenuItem := AMenuItem;
-  iPos := FButtonList.Add(AMenuItem);
+  B.Style := tbsButton;
+  B.IdeMenuItem := ACommand;
+  iPos := FButtonList.Add(ACommand);
   B.Tag:= iPos+1;
   PositionAtEnd(TB, B);
-
-  TIDEMenuCommand(AMenuItem).ToolButtonAdded(B);
+  ACommand.ToolButtonAdded(B);
 end;
 
 // position the button next to the last button
@@ -490,7 +487,7 @@ begin
       begin
         mi := IDEMenuRoots.FindByPath(ButtonName,false);
         if Assigned(mi) then
-          AddButton(mi);
+          AddButton(mi as TIDEMenuCommand);
       end;
     end;
     SetTbPos;
