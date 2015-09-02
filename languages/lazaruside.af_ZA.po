@@ -1051,11 +1051,6 @@ msgstr ""
 msgid "Config files"
 msgstr ""
 
-#: lazarusidestrconsts.dlgcoother
-msgctxt "lazarusidestrconsts.dlgcoother"
-msgid "Other"
-msgstr ""
-
 #: lazarusidestrconsts.dlgcootherdebugginginfo
 msgid "Other debugging info"
 msgstr ""
@@ -2750,6 +2745,10 @@ msgstr ""
 msgid "Naming"
 msgstr ""
 
+#: lazarusidestrconsts.dlgnewdesktop
+msgid "New desktop ..."
+msgstr ""
+
 #: lazarusidestrconsts.dlgnoautomaticrenaming
 msgid "No automatic renaming"
 msgstr ""
@@ -3109,6 +3108,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgsavecurrentdesktop
 msgid "Save current desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsavecurrentdesktopas
+msgid "Save current desktop as"
 msgstr ""
 
 #: lazarusidestrconsts.dlgsavedlinecolor
@@ -7366,6 +7369,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liscustomoptions2
 msgid "Custom options"
+msgstr ""
+
+#: lazarusidestrconsts.liscustomoptions3
+msgid "Custom Options"
 msgstr ""
 
 #: lazarusidestrconsts.liscustomprogram
@@ -11788,6 +11795,10 @@ msgstr ""
 #: lazarusidestrconsts.lismenunewcomponent
 msgctxt "lazarusidestrconsts.lismenunewcomponent"
 msgid "New Component"
+msgstr ""
+
+#: lazarusidestrconsts.lismenunewcustom
+msgid "New %s"
 msgstr ""
 
 #: lazarusidestrconsts.lismenunewform

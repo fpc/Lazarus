@@ -1090,11 +1090,6 @@ msgstr ""
 msgid "Config files"
 msgstr "配置文件:"
 
-#: lazarusidestrconsts.dlgcoother
-msgctxt "lazarusidestrconsts.dlgcoother"
-msgid "Other"
-msgstr "其余的"
-
 #: lazarusidestrconsts.dlgcootherdebugginginfo
 msgid "Other debugging info"
 msgstr ""
@@ -2863,6 +2858,10 @@ msgstr ""
 msgid "Naming"
 msgstr "命名"
 
+#: lazarusidestrconsts.dlgnewdesktop
+msgid "New desktop ..."
+msgstr ""
+
 #: lazarusidestrconsts.dlgnoautomaticrenaming
 #, fuzzy
 #| msgid "no automatic renaming"
@@ -3260,6 +3259,10 @@ msgstr "带参数运行"
 
 #: lazarusidestrconsts.dlgsavecurrentdesktop
 msgid "Save current desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsavecurrentdesktopas
+msgid "Save current desktop as"
 msgstr ""
 
 #: lazarusidestrconsts.dlgsavedlinecolor
@@ -7735,6 +7738,10 @@ msgstr "自定义选项"
 #: lazarusidestrconsts.liscustomoptions2
 msgid "Custom options"
 msgstr "自定义选项"
+
+#: lazarusidestrconsts.liscustomoptions3
+msgid "Custom Options"
+msgstr ""
 
 #: lazarusidestrconsts.liscustomprogram
 msgid "Custom Program"
@@ -12366,6 +12373,10 @@ msgstr "制作资源字符串 ..."
 msgctxt "lazarusidestrconsts.lismenunewcomponent"
 msgid "New Component"
 msgstr "新建组件"
+
+#: lazarusidestrconsts.lismenunewcustom
+msgid "New %s"
+msgstr ""
 
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"

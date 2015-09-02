@@ -1070,11 +1070,6 @@ msgstr ""
 msgid "Config files"
 msgstr "Файли налаштувань"
 
-#: lazarusidestrconsts.dlgcoother
-msgctxt "lazarusidestrconsts.dlgcoother"
-msgid "Other"
-msgstr "Інше"
-
 #: lazarusidestrconsts.dlgcootherdebugginginfo
 msgid "Other debugging info"
 msgstr ""
@@ -2804,6 +2799,10 @@ msgstr "Вкладки Блокноту"
 msgid "Naming"
 msgstr "Надання назви"
 
+#: lazarusidestrconsts.dlgnewdesktop
+msgid "New desktop ..."
+msgstr ""
+
 #: lazarusidestrconsts.dlgnoautomaticrenaming
 msgid "No automatic renaming"
 msgstr "Без автоперейменування"
@@ -3171,6 +3170,10 @@ msgstr "Параметри Виконання"
 
 #: lazarusidestrconsts.dlgsavecurrentdesktop
 msgid "Save current desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsavecurrentdesktopas
+msgid "Save current desktop as"
 msgstr ""
 
 #: lazarusidestrconsts.dlgsavedlinecolor
@@ -7560,6 +7563,10 @@ msgstr "параметри користувача"
 #: lazarusidestrconsts.liscustomoptions2
 msgid "Custom options"
 msgstr "Спеціальні параметри"
+
+#: lazarusidestrconsts.liscustomoptions3
+msgid "Custom Options"
+msgstr ""
 
 #: lazarusidestrconsts.liscustomprogram
 msgid "Custom Program"
@@ -12038,6 +12045,10 @@ msgstr "Створити рядок ресурсу ..."
 msgctxt "lazarusidestrconsts.lismenunewcomponent"
 msgid "New Component"
 msgstr "Новий компонент"
+
+#: lazarusidestrconsts.lismenunewcustom
+msgid "New %s"
+msgstr ""
 
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"

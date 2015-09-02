@@ -1055,11 +1055,6 @@ msgstr "設定と対象"
 msgid "Config files"
 msgstr "設定ファイル"
 
-#: lazarusidestrconsts.dlgcoother
-msgctxt "lazarusidestrconsts.dlgcoother"
-msgid "Other"
-msgstr "その他"
-
 #: lazarusidestrconsts.dlgcootherdebugginginfo
 msgid "Other debugging info"
 msgstr "他のデバッグ情報"
@@ -2777,6 +2772,10 @@ msgstr "ノートブックのタブ"
 msgid "Naming"
 msgstr "ネーミング"
 
+#: lazarusidestrconsts.dlgnewdesktop
+msgid "New desktop ..."
+msgstr ""
+
 #: lazarusidestrconsts.dlgnoautomaticrenaming
 msgid "No automatic renaming"
 msgstr "自動的にリネームしない"
@@ -3140,6 +3139,10 @@ msgstr "実行パラメーター"
 
 #: lazarusidestrconsts.dlgsavecurrentdesktop
 msgid "Save current desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsavecurrentdesktopas
+msgid "Save current desktop as"
 msgstr ""
 
 #: lazarusidestrconsts.dlgsavedlinecolor
@@ -7497,6 +7500,10 @@ msgstr "カスタムオプション"
 #: lazarusidestrconsts.liscustomoptions2
 msgid "Custom options"
 msgstr "カスタムオプション"
+
+#: lazarusidestrconsts.liscustomoptions3
+msgid "Custom Options"
+msgstr ""
 
 #: lazarusidestrconsts.liscustomprogram
 msgid "Custom Program"
@@ -11959,6 +11966,10 @@ msgstr "リソース文字列作成 ..."
 msgctxt "lazarusidestrconsts.lismenunewcomponent"
 msgid "New Component"
 msgstr "新しいコンポーネント"
+
+#: lazarusidestrconsts.lismenunewcustom
+msgid "New %s"
+msgstr ""
 
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"

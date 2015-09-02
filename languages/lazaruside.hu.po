@@ -1051,11 +1051,6 @@ msgstr "Beállítás és cél"
 msgid "Config files"
 msgstr "Beállítás fájlok"
 
-#: lazarusidestrconsts.dlgcoother
-msgctxt "lazarusidestrconsts.dlgcoother"
-msgid "Other"
-msgstr "Egyéb"
-
 #: lazarusidestrconsts.dlgcootherdebugginginfo
 msgid "Other debugging info"
 msgstr "Egyéb hibakeresési infó"
@@ -2746,6 +2741,10 @@ msgstr "Jegyzettömb fülek"
 msgid "Naming"
 msgstr "Elnevezések"
 
+#: lazarusidestrconsts.dlgnewdesktop
+msgid "New desktop ..."
+msgstr ""
+
 #: lazarusidestrconsts.dlgnoautomaticrenaming
 msgid "No automatic renaming"
 msgstr "Nincs automatikus átnevezés"
@@ -3106,6 +3105,10 @@ msgstr "Futtatási paraméterek"
 #: lazarusidestrconsts.dlgsavecurrentdesktop
 msgid "Save current desktop"
 msgstr "A jelenlegi felület mentése"
+
+#: lazarusidestrconsts.dlgsavecurrentdesktopas
+msgid "Save current desktop as"
+msgstr ""
 
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
@@ -7351,6 +7354,10 @@ msgstr "egyéni beállítások"
 #: lazarusidestrconsts.liscustomoptions2
 msgid "Custom options"
 msgstr "Egyéni beállítások"
+
+#: lazarusidestrconsts.liscustomoptions3
+msgid "Custom Options"
+msgstr ""
 
 #: lazarusidestrconsts.liscustomprogram
 msgid "Custom Program"
@@ -11766,6 +11773,10 @@ msgstr "ResourceString létrehozása ..."
 msgctxt "lazarusidestrconsts.lismenunewcomponent"
 msgid "New Component"
 msgstr "Új komponens"
+
+#: lazarusidestrconsts.lismenunewcustom
+msgid "New %s"
+msgstr ""
 
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"

@@ -1102,11 +1102,6 @@ msgstr ""
 msgid "Config files"
 msgstr "קבצי תצורה:"
 
-#: lazarusidestrconsts.dlgcoother
-msgctxt "lazarusidestrconsts.dlgcoother"
-msgid "Other"
-msgstr "אחר"
-
 #: lazarusidestrconsts.dlgcootherdebugginginfo
 msgid "Other debugging info"
 msgstr ""
@@ -2889,6 +2884,10 @@ msgstr "לשוניות פנקס:"
 msgid "Naming"
 msgstr "מתן שם"
 
+#: lazarusidestrconsts.dlgnewdesktop
+msgid "New desktop ..."
+msgstr ""
+
 #: lazarusidestrconsts.dlgnoautomaticrenaming
 msgid "No automatic renaming"
 msgstr "ללא מתן שמות אוטומטי"
@@ -3289,6 +3288,10 @@ msgstr "הרץ פרמטרים"
 
 #: lazarusidestrconsts.dlgsavecurrentdesktop
 msgid "Save current desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsavecurrentdesktopas
+msgid "Save current desktop as"
 msgstr ""
 
 #: lazarusidestrconsts.dlgsavedlinecolor
@@ -7829,6 +7832,10 @@ msgstr "אפשרויות מותאמות אישית"
 #: lazarusidestrconsts.liscustomoptions2
 msgid "Custom options"
 msgstr "אפשרויות מותאמות אישית"
+
+#: lazarusidestrconsts.liscustomoptions3
+msgid "Custom Options"
+msgstr ""
 
 #: lazarusidestrconsts.liscustomprogram
 msgid "Custom Program"
@@ -12543,6 +12550,10 @@ msgstr "צור מחרוזת משאבים ..."
 msgctxt "lazarusidestrconsts.lismenunewcomponent"
 msgid "New Component"
 msgstr "רכיב חדש"
+
+#: lazarusidestrconsts.lismenunewcustom
+msgid "New %s"
+msgstr ""
 
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"

@@ -1059,11 +1059,6 @@ msgstr "Configurazione e Target"
 msgid "Config files"
 msgstr "File di configurazione"
 
-#: lazarusidestrconsts.dlgcoother
-msgctxt "lazarusidestrconsts.dlgcoother"
-msgid "Other"
-msgstr "Varie"
-
 #: lazarusidestrconsts.dlgcootherdebugginginfo
 msgid "Other debugging info"
 msgstr "Altre informazioni di debug"
@@ -2783,6 +2778,10 @@ msgstr "Linguette del notebook:"
 msgid "Naming"
 msgstr "Assegnazione nomi"
 
+#: lazarusidestrconsts.dlgnewdesktop
+msgid "New desktop ..."
+msgstr ""
+
 #: lazarusidestrconsts.dlgnoautomaticrenaming
 msgid "No automatic renaming"
 msgstr "Nessuna rinomina automatica"
@@ -3144,6 +3143,10 @@ msgstr "Parametri di esecuzione"
 
 #: lazarusidestrconsts.dlgsavecurrentdesktop
 msgid "Save current desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsavecurrentdesktopas
+msgid "Save current desktop as"
 msgstr ""
 
 #: lazarusidestrconsts.dlgsavedlinecolor
@@ -7403,6 +7406,10 @@ msgstr "opzioni personalizzate"
 #: lazarusidestrconsts.liscustomoptions2
 msgid "Custom options"
 msgstr "Opzioni personalizzate"
+
+#: lazarusidestrconsts.liscustomoptions3
+msgid "Custom Options"
+msgstr ""
 
 #: lazarusidestrconsts.liscustomprogram
 msgid "Custom Program"
@@ -11823,6 +11830,10 @@ msgstr "Crea stringa risorse ..."
 msgctxt "lazarusidestrconsts.lismenunewcomponent"
 msgid "New Component"
 msgstr "Nuovo componente"
+
+#: lazarusidestrconsts.lismenunewcustom
+msgid "New %s"
+msgstr ""
 
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"

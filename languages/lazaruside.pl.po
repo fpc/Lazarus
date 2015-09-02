@@ -1101,11 +1101,6 @@ msgstr ""
 msgid "Config files"
 msgstr "Pliki konfiguracyjne:"
 
-#: lazarusidestrconsts.dlgcoother
-msgctxt "lazarusidestrconsts.dlgcoother"
-msgid "Other"
-msgstr "Inne"
-
 #: lazarusidestrconsts.dlgcootherdebugginginfo
 msgid "Other debugging info"
 msgstr "Pozostałe informacje odpluskwiacza"
@@ -2880,6 +2875,10 @@ msgstr "Zakładki Karty:"
 msgid "Naming"
 msgstr "Nazewnictwo"
 
+#: lazarusidestrconsts.dlgnewdesktop
+msgid "New desktop ..."
+msgstr ""
+
 #: lazarusidestrconsts.dlgnoautomaticrenaming
 #, fuzzy
 #| msgid "no automatic renaming"
@@ -3282,6 +3281,10 @@ msgstr "Parametry uruchomienia"
 
 #: lazarusidestrconsts.dlgsavecurrentdesktop
 msgid "Save current desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsavecurrentdesktopas
+msgid "Save current desktop as"
 msgstr ""
 
 #: lazarusidestrconsts.dlgsavedlinecolor
@@ -7685,6 +7688,10 @@ msgstr "opcje niestandardowe"
 #: lazarusidestrconsts.liscustomoptions2
 msgid "Custom options"
 msgstr "Opcje niestandardowe"
+
+#: lazarusidestrconsts.liscustomoptions3
+msgid "Custom Options"
+msgstr ""
 
 #: lazarusidestrconsts.liscustomprogram
 msgid "Custom Program"
@@ -12258,6 +12265,10 @@ msgstr "Utwórz łańcuch w zasobach..."
 msgctxt "lazarusidestrconsts.lismenunewcomponent"
 msgid "New Component"
 msgstr "Nowy komponent"
+
+#: lazarusidestrconsts.lismenunewcustom
+msgid "New %s"
+msgstr ""
 
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"

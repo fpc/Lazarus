@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-08-08 15:03+0300\n"
+"PO-Revision-Date: 2015-09-03 01:18+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -1051,11 +1051,6 @@ msgstr "Настройка и целевая платформа"
 #: lazarusidestrconsts.dlgconfigfiles
 msgid "Config files"
 msgstr "Файлы настройки"
-
-#: lazarusidestrconsts.dlgcoother
-msgctxt "lazarusidestrconsts.dlgcoother"
-msgid "Other"
-msgstr "Другие"
 
 #: lazarusidestrconsts.dlgcootherdebugginginfo
 msgid "Other debugging info"
@@ -2747,6 +2742,10 @@ msgstr "Вкладки редакторов"
 msgid "Naming"
 msgstr "Именование"
 
+#: lazarusidestrconsts.dlgnewdesktop
+msgid "New desktop ..."
+msgstr "Новый рабочий стол ..."
+
 #: lazarusidestrconsts.dlgnoautomaticrenaming
 msgid "No automatic renaming"
 msgstr "Не переименовывать автоматически"
@@ -3107,6 +3106,10 @@ msgstr "Параметры запуска"
 #: lazarusidestrconsts.dlgsavecurrentdesktop
 msgid "Save current desktop"
 msgstr "Сохранить текущий"
+
+#: lazarusidestrconsts.dlgsavecurrentdesktopas
+msgid "Save current desktop as"
+msgstr "Сохранить текущий рабочий стол как"
 
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
@@ -7348,6 +7351,10 @@ msgstr "параметры пользователя"
 
 #: lazarusidestrconsts.liscustomoptions2
 msgid "Custom options"
+msgstr "Параметры пользователя"
+
+#: lazarusidestrconsts.liscustomoptions3
+msgid "Custom Options"
 msgstr "Параметры пользователя"
 
 #: lazarusidestrconsts.liscustomprogram
@@ -11765,6 +11772,10 @@ msgstr "Создать строку ресурсов ..."
 msgctxt "lazarusidestrconsts.lismenunewcomponent"
 msgid "New Component"
 msgstr "Новый компонент"
+
+#: lazarusidestrconsts.lismenunewcustom
+msgid "New %s"
+msgstr "Новый элемент: %s"
 
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"

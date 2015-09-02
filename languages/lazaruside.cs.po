@@ -1055,11 +1055,6 @@ msgstr "Konfigurace a Cíl"
 msgid "Config files"
 msgstr "Konfigurační soubory"
 
-#: lazarusidestrconsts.dlgcoother
-msgctxt "lazarusidestrconsts.dlgcoother"
-msgid "Other"
-msgstr "Jiné"
-
 #: lazarusidestrconsts.dlgcootherdebugginginfo
 msgid "Other debugging info"
 msgstr "Ostatní ladící info"
@@ -2779,6 +2774,10 @@ msgstr "Záložky zápisníku"
 msgid "Naming"
 msgstr "Pojmenování"
 
+#: lazarusidestrconsts.dlgnewdesktop
+msgid "New desktop ..."
+msgstr ""
+
 #: lazarusidestrconsts.dlgnoautomaticrenaming
 msgid "No automatic renaming"
 msgstr "Automaticky nepřejmenovávat"
@@ -3142,6 +3141,10 @@ msgstr "Spustit s parametry"
 
 #: lazarusidestrconsts.dlgsavecurrentdesktop
 msgid "Save current desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsavecurrentdesktopas
+msgid "Save current desktop as"
 msgstr ""
 
 #: lazarusidestrconsts.dlgsavedlinecolor
@@ -7425,6 +7428,10 @@ msgstr "vlastní nastavení"
 #: lazarusidestrconsts.liscustomoptions2
 msgid "Custom options"
 msgstr "Vlastní nastavení"
+
+#: lazarusidestrconsts.liscustomoptions3
+msgid "Custom Options"
+msgstr ""
 
 #: lazarusidestrconsts.liscustomprogram
 msgid "Custom Program"
@@ -11864,6 +11871,10 @@ msgstr "Vytvořit zdrojový řetězec ..."
 msgctxt "lazarusidestrconsts.lismenunewcomponent"
 msgid "New Component"
 msgstr "Nová komponenta"
+
+#: lazarusidestrconsts.lismenunewcustom
+msgid "New %s"
+msgstr ""
 
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"

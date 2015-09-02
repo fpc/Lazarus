@@ -1046,11 +1046,6 @@ msgstr "Muoto ja kohde"
 msgid "Config files"
 msgstr "Asetustiedostot"
 
-#: lazarusidestrconsts.dlgcoother
-msgctxt "lazarusidestrconsts.dlgcoother"
-msgid "Other"
-msgstr "Muu"
-
 #: lazarusidestrconsts.dlgcootherdebugginginfo
 msgid "Other debugging info"
 msgstr "Muu virheenjäljitystieto"
@@ -2768,6 +2763,10 @@ msgstr "Editorin välilehdet"
 msgid "Naming"
 msgstr "Nimeäminen"
 
+#: lazarusidestrconsts.dlgnewdesktop
+msgid "New desktop ..."
+msgstr ""
+
 #: lazarusidestrconsts.dlgnoautomaticrenaming
 msgid "No automatic renaming"
 msgstr "Ei automaattista nimeämistä"
@@ -3124,6 +3123,10 @@ msgstr "Suoritusaikaiset parametrit"
 
 #: lazarusidestrconsts.dlgsavecurrentdesktop
 msgid "Save current desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsavecurrentdesktopas
+msgid "Save current desktop as"
 msgstr ""
 
 #: lazarusidestrconsts.dlgsavedlinecolor
@@ -7360,6 +7363,10 @@ msgstr "mukautetut asetukset"
 #: lazarusidestrconsts.liscustomoptions2
 msgid "Custom options"
 msgstr "Mukautetut asetukset"
+
+#: lazarusidestrconsts.liscustomoptions3
+msgid "Custom Options"
+msgstr ""
 
 #: lazarusidestrconsts.liscustomprogram
 msgid "Custom Program"
@@ -11739,6 +11746,10 @@ msgstr "Tee resurssiteksti ..."
 msgctxt "lazarusidestrconsts.lismenunewcomponent"
 msgid "New Component"
 msgstr "Uusi komponentti"
+
+#: lazarusidestrconsts.lismenunewcustom
+msgid "New %s"
+msgstr ""
 
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"
