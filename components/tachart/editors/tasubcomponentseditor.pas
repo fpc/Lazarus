@@ -233,12 +233,13 @@ end;
 
 procedure TComponentListEditorForm.FormDestroy(Sender: TObject);
 begin
-  if (FComponentEditor <> nil) and (FParent <> nil) and Assigned(GlobalDesignHook)
-  and not (csDestroying in FParent.ComponentState) and (ChildrenListBox.SelCount > 0) then
-  begin
+  if GlobalDesignHook = Nil then
+    Exit;
+  if Assigned(FComponentEditor) and Assigned(FParent)
+  and not (csDestroying in FParent.ComponentState)
+  and (ChildrenListBox.SelCount > 0) then
     GlobalDesignHook.SelectOnlyThis(FParent);
-    GlobalDesignHook.RemoveAllHandlersForObject(Self);
-  end;
+  GlobalDesignHook.RemoveAllHandlersForObject(Self);
 end;
 
 procedure TComponentListEditorForm.miAddClick(Sender: TObject);

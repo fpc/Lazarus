@@ -215,17 +215,19 @@ end;
 
 procedure TDSFieldsEditorFrm.FieldsEditorFrmDestroy(Sender: TObject);
 begin
-  if Assigned(FComponentEditor) and Assigned(LinkDataset) and Assigned(GlobalDesignHook)
-  and not (csDestroying in LinkDataset.ComponentState) and (FieldsListBox.SelCount > 0) then
-  begin
+  if GlobalDesignHook = Nil then
+    Exit;
+  if Assigned(FComponentEditor) and Assigned(LinkDataset)
+  and not (csDestroying in LinkDataset.ComponentState)
+  and (FieldsListBox.SelCount > 0) then
     GlobalDesignHook.SelectOnlyThis(LinkDataset);
-    GlobalDesignHook.RemoveAllHandlersForObject(Self);
-  end;
+  GlobalDesignHook.RemoveAllHandlersForObject(Self);
 end;
 
 procedure TDSFieldsEditorFrm.FieldsListBoxDrawItem(Control: TWinControl;
   Index: Integer; ARect: TRect; State: TOwnerDrawState);
-var  fld: TField;
+var
+  fld: TField;
 begin
   if Index < 0 then Exit;
   if not Assigned(FieldsListBox.Items.Objects[Index]) then Exit;
