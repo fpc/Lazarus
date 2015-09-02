@@ -23,9 +23,14 @@ unit ToolbarConfig;
 interface
 
 uses
-  Classes, SysUtils, Forms, Graphics, Dialogs, ExtCtrls, Buttons, StdCtrls,
-  Controls, ComCtrls, Menus, TreeFilterEdit, LazarusIDEStrConsts,
-  IDECommands, MenuIntf, IDEImagesIntf, LCLProc, ButtonPanel;
+  Classes, SysUtils, fgl,
+  // LCL and LazControls
+  LCLProc, Forms, Graphics, Dialogs, ExtCtrls, Buttons, StdCtrls,
+  Controls, ComCtrls, Menus, ButtonPanel, TreeFilterEdit,
+  // IdeIntf
+  IDECommands, MenuIntf, IDEImagesIntf,
+  // IDE
+  LazarusIDEStrConsts;
 
 type
   { TLvItem }
@@ -98,6 +103,24 @@ type
     procedure LoadSettings(SL: TStringList);
     procedure SaveSettings(SL: TStringList);
   end;
+
+  TIDEMenuItemList = specialize TFPGList<TIDEMenuItem>;
+
+  { TIDEToolbarBase }
+
+  TIDEToolbarBase = class(TComponent)
+   private
+   protected
+     FToolBar: TToolBar;
+     procedure AddButton(ACommand: TIDEMenuCommand);
+     procedure AddDivider;
+     procedure PositionAtEnd(AToolbar: TToolbar; AButton: TToolButton);
+   public
+     //constructor Create(AOwner: TComponent); override;
+     //destructor Destroy; override;
+     property ToolBar: TToolBar read FToolBar;
+   end;
+
 
 function ShowToolBarConfig(aNames: TStringList): TModalResult;
 function GetShortcut(AMenuItem: TIDEMenuItem): string;
@@ -645,6 +668,65 @@ begin
     else
       SL.Add(lvItem.Item.GetPath);
   end;
+end;
+
+{ TIDEToolbarBase }
+{                           For future needs ...
+constructor TIDEToolbarBase.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+end;
+
+destructor TIDEToolbarBase.Destroy;
+begin
+  inherited Destroy;
+end;
+}
+procedure TIDEToolbarBase.AddButton(ACommand: TIDEMenuCommand);
+var
+  B: TIDEToolButton;
+  ACaption: string;
+begin
+  B := ACommand.ToolButtonClass.Create(FToolBar);
+  ACaption := ACommand.Caption;
+  DeleteAmpersands(ACaption);
+  B.Caption := ACaption;
+  // Get Shortcut, if any, and append to Hint
+  ACaption := ACaption + GetShortcut(ACommand);
+  B.Hint := ACaption;
+  // If we have a image, us it. Otherwise supply a default.
+  if ACommand.ImageIndex <> -1 then
+    B.ImageIndex := ACommand.ImageIndex
+  else
+    B.ImageIndex := IDEImages.LoadImage(16, 'execute');
+  B.Style := tbsButton;
+  B.IdeMenuItem := ACommand;
+  PositionAtEnd(FToolBar, B);
+  ACommand.ToolButtonAdded(B);
+end;
+
+procedure TIDEToolbarBase.AddDivider;
+var
+  B: TToolButton;
+begin
+  B := TToolButton.Create(FToolBar);
+  B.Style := tbsDivider;
+  PositionAtEnd(FToolBar, B);
+end;
+
+procedure TIDEToolbarBase.PositionAtEnd(AToolbar: TToolbar; AButton: TToolButton
+  );
+// position the button next to the last button
+var
+  SiblingButton: TToolButton;
+begin
+  if AToolBar.ButtonCount > 0 then
+  begin
+    SiblingButton := AToolBar.Buttons[AToolBar.ButtonCount-1];
+    AButton.SetBounds(SiblingButton.Left + SiblingButton.Width,
+      SiblingButton.Top, AButton.Width, AButton.Height);
+  end;
+  AButton.Parent := AToolBar;
 end;
 
 

@@ -695,7 +695,7 @@ begin
   begin
     CoolBand := CoolBar.Bands.Add;
     CoolBand.Break := IDECoolBar.ToolBars[I].Break;
-    CoolBand.Control := IDECoolBar.ToolBars[I].Toolbar;
+    CoolBand.Control := IDECoolBar.ToolBars[I].ToolBar;
     CoolBand.MinWidth := 25;
     CoolBand.MinHeight := 22;
     CoolBand.FixedSize := True;

@@ -104,35 +104,24 @@ type
   // Actual Coolbar and its member Toolbars
 
   TOnToolBarClick = procedure(Sender: TObject) of object;
-  TIDEMenuItemList = specialize TFPGList<TIDEMenuItem>;
 
   { TIDEToolBar }
-  TIDEToolBar = class
+  TIDEToolBar = class(TIDEToolbarBase)
    private
-     FToolBar: TToolbar;
-     FButtonList: TIDEMenuItemList;
      FButtonNames: TStringList;
-     FUpdateTimer: TTimer;
      FPosition: integer;
      FBreak: Boolean;
      FOnToolbarClick: TOnToolBarClick;
-     procedure UpdateBar(Sender: TObject);
      procedure DoToolBarClick(Sender: TObject);
-     procedure AddDivider;
-     function GetCount: Integer;
-   protected
-     procedure AddButton(ACommand: TIDEMenuCommand);
-     procedure PositionAtEnd(AToolbar: TToolbar; AButton: TToolButton);
    public
-     constructor Create;
+     constructor Create(AOwner: TComponent); override;
      destructor Destroy; override;
-     procedure AddCustomItems(Index: Integer);
      procedure ClearToolbar;
+     procedure AddCustomItems(Index: Integer);
    public
      property Position: Integer read FPosition write FPosition;
      property Break: Boolean read FBreak write FBreak;
      property ButtonNames: TStringList read FButtonNames;
-     property Toolbar: TToolBar read FToolBar;
      property OnToolBarClick: TOnToolbarClick read FOnToolbarClick write FOnToolbarClick;
    end;
 
@@ -156,7 +145,7 @@ type
     procedure CopyFromOptions(Options: TIDECoolBarOptions);
     procedure CopyToOptions(Options: TIDECoolBarOptions);
     function Add: TIDEToolBar;
-    function FindByToolBar(const ToolBar: TToolBar): Integer;
+    function FindByToolBar(const aToolBar: TToolBar): Integer;
     procedure Sort;
     function IsDefaultCoolbar: Boolean;
     function IsDefaultToolbar: Boolean;
@@ -406,36 +395,12 @@ begin
 end;
 
 { TIDEToolBar }
-procedure TIDEToolBar.UpdateBar(Sender: TObject);
-var
-  I, J: Integer;
-begin
-  ToolBar.BeginUpdate;
-  try
-    for I := ToolBar.ButtonCount - 1 downto 0 do
-    begin
-      if ToolBar.Buttons[I].Tag <> 0 then
-      begin
-        J := ToolBar.Buttons[I].Tag - 1;
-        if FButtonList[J] <> nil then
-          ToolBar.Buttons[I].Enabled := FButtonList[J].Enabled;
-      end;
-    end;
-  finally
-    ToolBar.EndUpdate;
-  end;
-end;
 
-procedure TIDEToolBar.DoToolBarClick(Sender: TObject);
+constructor TIDEToolBar.Create(AOwner: TComponent);
 begin
-  if Assigned(FOnToolbarClick) then
-    FOnToolbarClick(Toolbar);
-end;
-
-constructor TIDEToolBar.Create;
-begin
+  inherited Create(AOwner);
   FToolBar := TToolbar.Create(nil);
-  with ToolBar do
+  with FToolBar do
   begin
     ButtonHeight := 22;
     ButtonWidth := 22;
@@ -450,66 +415,14 @@ begin
     ShowHint := True;
     OnClick := @DoToolBarClick;
   end;
-  FButtonList := TIDEMenuItemList.Create;
   FButtonNames := TStringList.Create;
-
-  FUpdateTimer := TTimer.Create(nil);
-  with FUpdateTimer do
-  begin
-    Interval := 500;
-    OnTimer := @UpdateBar;
-    Enabled := True;
-  end;
 end;
 
 destructor TIDEToolBar.Destroy;
 begin
-  FButtonList.Free;
-  FUpdateTimer.Free;
   FToolBar.Free;
   FButtonNames.Free;
   inherited Destroy;
-end;
-
-procedure TIDEToolBar.AddButton(ACommand: TIDEMenuCommand);
-var
-  B: TIDEToolButton;
-  ACaption: string;
-  iPos: Integer;
-begin
-  B := ACommand.ToolButtonClass.Create(Toolbar);
-  ACaption := ACommand.Caption;
-  DeleteAmpersands(ACaption);
-  B.Caption := ACaption;
-  // Get Shortcut, if any, and append to Hint
-  ACaption := ACaption + GetShortcut(ACommand);
-  B.Hint := ACaption;
-  // If we have a image, us it. Otherwise supply a default.
-  if ACommand.ImageIndex <> -1 then
-    B.ImageIndex := ACommand.ImageIndex
-  else
-    B.ImageIndex := IDEImages.LoadImage(16, 'execute');
-  B.Style := tbsButton;
-  B.IdeMenuItem := ACommand;
-  iPos := FButtonList.Add(ACommand);
-  B.Tag := iPos + 1;
-  //B.OnClick     := ACommand.OnClick;
-  PositionAtEnd(ToolBar, B);
-  ACommand.ToolButtonAdded(B);
-end;
-
-// position the button next to the last button
-procedure TIDEToolBar.PositionAtEnd(AToolbar: TToolbar; AButton: TToolButton);
-var
-  SiblingButton: TToolButton;
-begin
-  if AToolbar.ButtonCount > 0 then
-  begin
-    SiblingButton := AToolbar.Buttons[AToolbar.ButtonCount - 1];
-    AButton.SetBounds(SiblingButton.Left + SiblingButton.Width,
-      SiblingButton.Top, AButton.Width, AButton.Height);
-  end;
-  AButton.Parent := AToolbar;
 end;
 
 procedure TIDEToolBar.AddCustomItems(Index: Integer);
@@ -519,7 +432,7 @@ var
   mi: TIDEMenuItem;
   AName: string;
 begin
-  ToolBar.BeginUpdate;
+  FToolBar.BeginUpdate;
   try
     AName := FButtonNames[Index];
     if AName <> '' then
@@ -533,37 +446,28 @@ begin
           AddButton(mi as TIDEMenuCommand);
       end;
     end;
-    UpdateBar(nil);
   finally
-    ToolBar.EndUpdate;
+    FToolBar.EndUpdate;
   end;
-end;
-
-procedure TIDEToolBar.AddDivider;
-var
-  B: TToolButton;
-begin
-  B := TToolbutton.Create(ToolBar);
-  B.Style := tbsDivider;
-  PositionAtEnd(ToolBar, B);
 end;
 
 procedure TIDEToolBar.ClearToolbar;
 var
-  I: Integer;
+  i: Integer;
 begin
-  ToolBar.BeginUpdate;
+  FToolBar.BeginUpdate;
   try
-    for i := ToolBar.ButtonCount - 1 downto 0 do
-      ToolBar.Buttons[I].Free
+    for i := FToolBar.ButtonCount - 1 downto 0 do
+      FToolBar.Buttons[i].Free
   finally
-    ToolBar.EndUpdate;
+    FToolBar.EndUpdate;
   end;
 end;
 
-function TIDEToolBar.GetCount: Integer;
+procedure TIDEToolBar.DoToolBarClick(Sender: TObject);
 begin
-  Result := FButtonList.Count;
+  if Assigned(FOnToolbarClick) then
+    FOnToolbarClick(FToolbar);
 end;
 
 { TIDECoolBar }
@@ -623,7 +527,7 @@ begin
   FCoolBarToolBars.Clear;
   for I := 0 to Options.FIDECoolBarToolBars.Count - 1 do
   begin
-    IDEToolBar := TIDEToolBar.Create;
+    IDEToolBar := TIDEToolBar.Create(Nil);
     FCoolBarToolBars.Add(IDEToolBar);
     IDEToolBar.Position := I;
     IDEToolBar.Break := Options.FIDECoolBarToolBars[I].Break;
@@ -649,18 +553,18 @@ end;
 
 function TIDECoolBar.Add: TIDEToolBar;
 begin
-  Result := TIDEToolBar.Create;
+  Result := TIDEToolBar.Create(Nil);
   FCoolBarToolBars.Add(Result);
 end;
 
-function TIDECoolBar.FindByToolBar(const ToolBar: TToolBar): Integer;
+function TIDECoolBar.FindByToolBar(const aToolBar: TToolBar): Integer;
 var
   I: Integer;
 begin
   Result := -1;
   for I := 0 to FCoolbarToolBars.Count-1 do
   begin
-    if ToolBars[I].Toolbar = Toolbar then
+    if ToolBars[I].ToolBar = aToolBar then
     begin
       Result := I;
       Break;
