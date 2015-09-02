@@ -861,7 +861,7 @@ type
     function FindSmartHint(const CursorPos: TCodeXYPosition;
                     Flags: TFindSmartFlags = DefaultFindSmartHintFlags): string;
     function GetSmartHint(Node: TCodeTreeNode; XYPos: TCodeXYPosition;
-                          WithPosition: boolean): string;
+                          WithPosition: boolean; WithDefinition: boolean = True): string;
 
     function BaseTypeOfNodeHasSubIdents(ANode: TCodeTreeNode): boolean;
     function FindBaseTypeOfNode(Params: TFindDeclarationParams;
@@ -2653,7 +2653,8 @@ begin
 end;
 
 function TFindDeclarationTool.GetSmartHint(Node: TCodeTreeNode;
-  XYPos: TCodeXYPosition; WithPosition: boolean): string;
+  XYPos: TCodeXYPosition; WithPosition: boolean; WithDefinition: boolean
+  ): string;
 
   function ReadIdentifierWithDots: String;
   begin
@@ -2677,6 +2678,10 @@ var
   Tool: TFindDeclarationTool;
   HelperForNode: TCodeTreeNode;
   SubNode: TCodeTreeNode;
+  CTExprType: TExpressionType;
+  CTXYPos: TCodeXYPosition;
+  CTTopLine: integer;
+  CTCursorPos: TCodeXYPosition;
 begin
   Result:='';
 
@@ -2734,6 +2739,7 @@ begin
 
         Result:=Result+ExtractDefinitionName(Node);
         TypeNode:=FindTypeNodeOfDefinition(Node);
+        if not WithDefinition then Result := '';
         if TypeNode<>nil then begin
           case Node.Desc of
             ctnTypeDefinition, ctnGenericType:
@@ -2752,6 +2758,14 @@ begin
           ctnPointertype, ctnRangeType, ctnFileType, ctnclassOfType:
             begin
               Result += ExtractNode(TypeNode, [phpCommentsToSpace]);
+
+              if
+                CleanPosToCaret(TypeNode.StartPos,CTCursorPos) and
+                FindDeclaration(CTCursorPos,
+                  DefaultFindSmartHintFlags+[fsfSearchSourceName],CTExprType,CTXYPos,CTTopLine) and
+                not((CTExprType.Desc=xtContext) and (CTExprType.Context.Node=nil) and (CTExprType.Context.Tool=nil))
+              then
+                Result += CTExprType.Context.Tool.GetSmartHint(CTExprType.Context.Node, CTXYPos, False, False);
             end;
           ctnClass, ctnClassInterface, ctnDispinterface,
           ctnClassHelper, ctnTypeHelper, ctnRecordHelper,
@@ -2803,7 +2817,16 @@ begin
               Result+=copy(NodeStr,1,50);
             end;
           ctnEnumerationType:
-            Result += 'enum';
+            begin
+              if Assigned(Node.FirstChild) then
+              begin
+                NodeStr:=ExtractCode(Node.FirstChild.StartPos,Node.FirstChild.EndPos,[phpCommentsToSpace]);
+                if Length(NodeStr) > 50 then
+                  NodeStr:=Copy(NodeStr, 1, 50) + ' ...';
+                Result += NodeStr;
+              end else
+                Result += 'enum';
+            end;
           end;
         end else begin
           case Node.Desc of
