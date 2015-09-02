@@ -426,8 +426,6 @@ begin
 end;
 
 procedure TIDEToolBar.AddCustomItems(Index: Integer);
-const
-  cDivider = '---------------';
 var
   mi: TIDEMenuItem;
   AName: string;
@@ -437,7 +435,7 @@ begin
     AName := FButtonNames[Index];
     if AName <> '' then
     begin
-      if AName = cDivider then
+      if AName = cIDEToolbarDivider then
         AddDivider
       else
       begin

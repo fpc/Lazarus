@@ -28,10 +28,6 @@ uses
   MenuIntf, IDEImagesIntf, SrcEditorIntf, BaseIDEIntf, LazIDEIntf,
   LazarusIDEStrConsts, LazConfigStorage, Laz2_XMLCfg, LCLProc, ToolbarConfig;
 
-const
-  cSettingsFile = 'editortoolbar.xml';
-  cDivider      = '---------------';
-
 type
 
   { TEditorToolBarOptions }
@@ -106,6 +102,8 @@ uses EnvironmentOpts;
 
 const
   BasePath = 'EditorToolBarOptions/';
+  cSettingsFile = 'editortoolbar.xml';
+
 
 procedure ToggleToolbar (Sender:TObject);
 var
@@ -221,73 +219,6 @@ begin
     XMLConfig.SetDeleteValue(Path + 'Button' + IntToStr(I+1) + '/Name', ButtonNames[I], '');
 end;
 
-{ TAllEditorToolbars }
-
-constructor TAllEditorToolbars.Create;
-begin
-  inherited;
-  FToolBars := TEditorToolbarList.Create;
-  if SourceEditorManagerIntf <> nil then
-  begin
-    SourceEditorManagerIntf.RegisterChangeEvent(semWindowCreate, @SourceWindowCreated);
-    SourceEditorManagerIntf.RegisterChangeEvent(semWindowDestroy,@SourceWindowDestroyed);
-  end;
-end;
-
-destructor TAllEditorToolbars.Destroy;
-begin
-  while FToolBars.Count > 0 do
-    FToolBars[0].Free;
-  FreeAndNil(FToolBars);
-  inherited Destroy;
-end;
-
-procedure TAllEditorToolbars.SourceWindowCreated(Sender: TObject);
-var
-  ETB: TEditorToolbar;
-  i: Integer;
-begin
-  ETB := TEditorToolbar.Create(Sender as TSourceEditorWindowInterface, Self);
-  i := FToolBars.Add(ETB);
-  FToolBars[i].AddStaticItems;
-  FToolBars[i].CopyFromOptions(EnvironmentOptions.Desktop.EditorToolBarOptions);
-end;
-
-procedure TAllEditorToolbars.SourceWindowDestroyed(Sender: TObject);
-var
-  i: integer;
-  aBar: TEditorToolbar;
-begin
-  // Let's remove from our list the destroyed window and then destroy the ToolBar
-  for i:= 0 to FToolBars.Count -1 do begin
-    aBar := FToolBars[i];
-    if aBar.OwnerWindow = TSourceEditorWindowInterface(Sender) then
-    begin
-      FToolBars.Remove(aBar);
-      aBar.Free;
-      exit;
-    end;
-  end;
-end;
-
-procedure TAllEditorToolbars.DoConfigureEditorToolbar(Sender: TObject);
-begin
-  if Assigned(FConfigEvent) then
-    FConfigEvent(Sender);
-end;
-
-procedure TAllEditorToolbars.ReloadAll;
-var
-  i: Integer;
-begin
-  for i := 0 to FToolBars.Count-1 do
-  begin
-    FToolBars[i].ClearToolbar;
-    FToolBars[i].AddStaticItems;
-    FToolBars[i].CopyFromOptions(EnvironmentOptions.Desktop.EditorToolBarOptions);
-  end;
-end;
-
 { TEditorToolbar }
 
 constructor TEditorToolbar.Create(AOwner: TComponent; ACollection: TAllEditorToolbars);
@@ -390,7 +321,7 @@ begin
     for i := 0 to Options.ButtonNames.Count-1 do
     begin
       ButtonName := Options.ButtonNames[i];
-      if ButtonName = cDivider then
+      if ButtonName = cIDEToolbarDivider then
         AddDivider
       else
       begin
@@ -400,11 +331,11 @@ begin
       end;
     end;
     SetTbPos;
-    EditorMenuCommand.Checked:= Options.Visible;
+    EditorMenuCommand.Checked := Options.Visible;
   finally
     FToolBar.EndUpdate;
   end;
-  FToolBar.Visible:= Options.Visible;
+  FToolBar.Visible := Options.Visible;
 end;
 
 procedure CreateEditorToolBar(aConfigEvent: TNotifyEvent);
@@ -420,6 +351,73 @@ begin
   MenuIcon:= 'menu_editor_options';
   //MenuIcon:= 'menu_editor_toolbar'; TODO!
   EditorMenuCommand.ImageIndex := IDEImages.LoadImage(16, MenuIcon);
+end;
+
+{ TAllEditorToolbars }
+
+constructor TAllEditorToolbars.Create;
+begin
+  inherited;
+  FToolBars := TEditorToolbarList.Create;
+  if SourceEditorManagerIntf <> nil then
+  begin
+    SourceEditorManagerIntf.RegisterChangeEvent(semWindowCreate, @SourceWindowCreated);
+    SourceEditorManagerIntf.RegisterChangeEvent(semWindowDestroy,@SourceWindowDestroyed);
+  end;
+end;
+
+destructor TAllEditorToolbars.Destroy;
+begin
+  while FToolBars.Count > 0 do
+    FToolBars[0].Free;
+  FreeAndNil(FToolBars);
+  inherited Destroy;
+end;
+
+procedure TAllEditorToolbars.SourceWindowCreated(Sender: TObject);
+var
+  ETB: TEditorToolbar;
+  i: Integer;
+begin
+  ETB := TEditorToolbar.Create(Sender as TSourceEditorWindowInterface, Self);
+  i := FToolBars.Add(ETB);
+  FToolBars[i].AddStaticItems;
+  FToolBars[i].CopyFromOptions(EnvironmentOptions.Desktop.EditorToolBarOptions);
+end;
+
+procedure TAllEditorToolbars.SourceWindowDestroyed(Sender: TObject);
+var
+  i: integer;
+  aBar: TEditorToolbar;
+begin
+  // Let's remove from our list the destroyed window and then destroy the ToolBar
+  for i:= 0 to FToolBars.Count -1 do begin
+    aBar := FToolBars[i];
+    if aBar.OwnerWindow = TSourceEditorWindowInterface(Sender) then
+    begin
+      FToolBars.Remove(aBar);
+      aBar.Free;
+      exit;
+    end;
+  end;
+end;
+
+procedure TAllEditorToolbars.DoConfigureEditorToolbar(Sender: TObject);
+begin
+  if Assigned(FConfigEvent) then
+    FConfigEvent(Sender);
+end;
+
+procedure TAllEditorToolbars.ReloadAll;
+var
+  i: Integer;
+begin
+  for i := 0 to FToolBars.Count-1 do
+  begin
+    FToolBars[i].ClearToolbar;
+    FToolBars[i].AddStaticItems;
+    FToolBars[i].CopyFromOptions(EnvironmentOptions.Desktop.EditorToolBarOptions);
+  end;
 end;
 
 

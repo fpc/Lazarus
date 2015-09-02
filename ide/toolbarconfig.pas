@@ -114,13 +114,15 @@ type
      FToolBar: TToolBar;
      procedure AddButton(ACommand: TIDEMenuCommand);
      procedure AddDivider;
-     procedure PositionAtEnd(AToolbar: TToolbar; AButton: TToolButton);
+     procedure PositionAtEnd(AToolBar: TToolBar; AButton: TToolButton);
    public
      //constructor Create(AOwner: TComponent); override;
      //destructor Destroy; override;
      property ToolBar: TToolBar read FToolBar;
    end;
 
+const
+  cIDEToolbarDivider = '---------------';
 
 function ShowToolBarConfig(aNames: TStringList): TModalResult;
 function GetShortcut(AMenuItem: TIDEMenuItem): string;
@@ -129,9 +131,6 @@ function GetShortcut(AMenuItem: TIDEMenuItem): string;
 implementation
 
 {$R *.lfm}
-
-const
-  cDivider = '---------------';
 
 function ShowToolBarConfig(aNames: TStringList): TModalResult;
 var
@@ -398,7 +397,7 @@ begin
     end;
     FillRect(ARect);
 
-    if AItem.Caption = cDivider then
+    if AItem.Caption = cIDEToolbarDivider then
       ImageIndex := divImageIndex
     else if Assigned(AItem.Data) and (TIDEMenuItem(AItem.Data).ImageIndex > -1) then
       ImageIndex := TIDEMenuItem(AItem.Data).ImageIndex
@@ -433,7 +432,7 @@ begin
   else
     lvItem := lvToolbar.Items.Add;
   lvItem.Selected := False;
-  lvItem.Caption:= cDivider;
+  lvItem.Caption:= cIDEToolbarDivider;
   {$IF not DEFINED(LCLQt)}
   lvItem.ImageIndex:= divImageIndex;
   {$ENDIF}
@@ -574,7 +573,7 @@ begin
   end
   else begin
     aListItem.Item := nil;
-    MainList.AddObject(cDivider,aListItem);
+    MainList.AddObject(cIDEToolbarDivider,aListItem);
   end;
 end;
 
@@ -608,7 +607,7 @@ var
   lvItem: TListItem;
 begin
   lvItem := lvToolbar.Items.Add;
-  lvItem.Caption:= cDivider;
+  lvItem.Caption:= cIDEToolbarDivider;
   {$IF not DEFINED(LCLQt)}
   lvItem.ImageIndex:= divImageIndex;
   {$ENDIF}
@@ -627,7 +626,7 @@ begin
     aListItem := TLvItem(MainList.Objects[I]);
     mi := aListItem.Item;
     aCaption := MainList.Strings[I];
-    if aCaption = cDivider then
+    if aCaption = cIDEToolbarDivider then
       AddDivider
     else
       AddToolBarItem(mi);
@@ -645,7 +644,7 @@ begin
   begin
     Value := SL.Strings[I];
     if Value = '' then Continue;
-    if Value = cDivider then
+    if Value = cIDEToolbarDivider then
       MI := nil
     else
       MI := IDEMenuRoots.FindByPath(Value, false);
@@ -663,8 +662,8 @@ begin
   for i := 0 to MainList.Count - 1 do
   begin
     lvItem := TLvItem(MainList.Objects[I]);
-    if MainList[I] = cDivider then
-      SL.Add(cDivider)
+    if MainList[I] = cIDEToolbarDivider then
+      SL.Add(cIDEToolbarDivider)
     else
       SL.Add(lvItem.Item.GetPath);
   end;
@@ -691,10 +690,10 @@ begin
   ACaption := ACommand.Caption;
   DeleteAmpersands(ACaption);
   B.Caption := ACaption;
-  // Get Shortcut, if any, and append to Hint
+  // Get Shortcut if any, and append to Hint.
   ACaption := ACaption + GetShortcut(ACommand);
   B.Hint := ACaption;
-  // If we have a image, us it. Otherwise supply a default.
+  // If we have a image, use it. Otherwise supply a default.
   if ACommand.ImageIndex <> -1 then
     B.ImageIndex := ACommand.ImageIndex
   else
@@ -714,8 +713,7 @@ begin
   PositionAtEnd(FToolBar, B);
 end;
 
-procedure TIDEToolbarBase.PositionAtEnd(AToolbar: TToolbar; AButton: TToolButton
-  );
+procedure TIDEToolbarBase.PositionAtEnd(AToolBar: TToolBar; AButton: TToolButton);
 // position the button next to the last button
 var
   SiblingButton: TToolButton;
