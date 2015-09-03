@@ -1268,9 +1268,13 @@ resourcestring
   dlgRenameDesktop = 'Rename desktop';
   dlgNewDesktop = 'New desktop ...';
   dlgToggleSelectedDebugDesktop = 'Toggle as debug desktop';
-  dlgDesktopName = 'Desktop name:';
+  dlgDesktopName = 'Desktop name';
   dlgOverwriteDesktop = 'Desktop with the name "%s" was found.'+sLineBreak+'Should the old desktop be overwritten?';
   dlgDebugDesktop = 'debug desktop';
+  dlgImportDesktopExists = 'A desktop with the same name already exists.'+sLineBreak+'Please confirm the desktop name:';
+  dlgDesktopsImported = '%d desktop(s) successfully imported from "%s"';
+  dlgDesktopsExported = '%d desktop(s) successfully exported to "%s"';
+  lisExportAll = 'all';
 
   // Window options
   dlgShowingWindows = 'Showing Windows';

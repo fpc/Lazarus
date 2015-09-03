@@ -18,6 +18,7 @@ type
   TDesktopForm = class(TForm)
     ExportBitBtn: TBitBtn;
     ButtonPanel1: TButtonPanel;
+    ExportAllBitBtn: TBitBtn;
     ImportBitBtn: TBitBtn;
     RenameBitBtn: TBitBtn;
     SelectedDesktopLabel: TLabel;
@@ -31,6 +32,7 @@ type
       ARect: TRect; {%H-}State: TOwnerDrawState);
     procedure DesktopListBoxKeyPress(Sender: TObject; var Key: char);
     procedure DesktopListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
+    procedure ExportAllBitBtnClick(Sender: TObject);
     procedure ExportBitBtnClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure ImportBitBtnClick(Sender: TObject);
@@ -38,7 +40,8 @@ type
     procedure SaveBitBtnClick(Sender: TObject);
     procedure SetDebugDesktopBitBtnClick(Sender: TObject);
   private
-    procedure RefreshList(const SelectName: string = '');
+    procedure RefreshList(SelectName: string = '');
+    procedure ExportDesktops(const aDesktops: array of TDesktopOpt);
   end;
 
   TShowDesktopItem = class(TMenuItem)
@@ -213,7 +216,7 @@ begin
     xShowOverwriteDlg := False;
   end else
   begin
-    if not InputQuery(dlgSaveCurrentDesktop, dlgDesktopName, xDesktopName)
+    if not InputQuery(dlgDesktopName, dlgSaveCurrentDesktopAs, xDesktopName)
     or (xDesktopName = '') // xDesktopName MUST NOT BE EMPTY !!!
     then
       Exit;
@@ -240,6 +243,7 @@ begin
   RenameBitBtn.Caption := lisRename;
   RenameBitBtn.LoadGlyphFromResourceName(HInstance, 'laz_edit');
   ExportBitBtn.Caption := lisExport;
+  ExportAllBitBtn.Caption := lisExportAll;
   ImportBitBtn.Caption := lisImport;
   SetDebugDesktopBitBtn.Caption := dlgToggleSelectedDebugDesktop;
   SetDebugDesktopBitBtn.LoadGlyphFromResourceName(HInstance, 'menu_run');
@@ -247,10 +251,13 @@ begin
   ButtonPanel1.CancelButton.Caption := lisClose;
 end;
 
-procedure TDesktopForm.RefreshList(const SelectName: string);
+procedure TDesktopForm.RefreshList(SelectName: string);
 var
   i: Integer;
 begin
+  if (SelectName='') and (DesktopListBox.ItemIndex>=0) then
+    SelectName:=DesktopListBox.Items[DesktopListBox.ItemIndex];
+
   DesktopListBox.Clear;
   // Saved desktops
   with EnvironmentOptions do
@@ -332,11 +339,8 @@ end;
 
 procedure TDesktopForm.ExportBitBtnClick(Sender: TObject);
 var
-  FXMLCfg: TRttiXMLConfig;
-  FConfigStore: TXMLOptionsStorage;
-  SaveDialog: TSaveDialog;
-  xDesktopName, Filename: string;
-  xDesktopID: Integer;
+  xDesktopName: String;
+  xDesktop: TDesktopOpt;
 begin
   if DesktopListBox.ItemIndex < 0 then
     Exit;
@@ -345,96 +349,149 @@ begin
   if xDesktopName = '' then
     Exit;
 
-  xDesktopID := EnvironmentOptions.Desktops.IndexOf(xDesktopName);
-  if xDesktopID = -1 then
+  xDesktop := EnvironmentOptions.Desktops.Find(xDesktopName);
+  if xDesktop = nil then
     Exit;
 
-  SaveDialog := TSaveDialog.Create(nil);
+  ExportDesktops([xDesktop]);
+end;
+
+procedure TDesktopForm.ExportDesktops(const aDesktops: array of TDesktopOpt);
+var
+  xXMLCfg: TRttiXMLConfig;
+  xConfigStore: TXMLOptionsStorage;
+  xSaveDialog: TSaveDialog;
+  xFileName: string;
+  xCurPath: String;
+  I: Integer;
+begin
+  if Length(aDesktops) = 0 then
+    Exit;
+
+  xSaveDialog := TSaveDialog.Create(nil);
   try
     try
-      InputHistories.ApplyFileDialogSettings(SaveDialog);
-      SaveDialog.Filter := dlgFilterXML +' (*.xml)|*.xml';
-      SaveDialog.Options := SaveDialog.Options + [ofOverwritePrompt];
-      if SaveDialog.Execute then
+      InputHistories.ApplyFileDialogSettings(xSaveDialog);
+      xSaveDialog.Filter := dlgFilterXML +' (*.xml)|*.xml';
+      xSaveDialog.Options := xSaveDialog.Options + [ofOverwritePrompt];
+      if xSaveDialog.Execute then
       begin
-        Filename := SaveDialog.Filename;
-        if ExtractFileExt(Filename) = '' then
-          Filename := Filename + '.xml';
-        FXMLCfg := TRttiXMLConfig.CreateClean(Filename);
+        xFileName := xSaveDialog.FileName;
+        if ExtractFileExt(xFileName) = '' then
+          xFileName := xFileName + '.xml';
+
+        xXMLCfg := nil;
+        xConfigStore := nil;
         try
-          FConfigStore := TXMLOptionsStorage.Create(FXMLCfg);
-          try
-            EnvironmentOptions.Desktops.SaveToXML(FXMLCfg, FConfigStore, xDesktopID);
-            FConfigStore.WriteToDisk;
-            ShowMessageFmt(lisSuccessfullyExported, [SaveDialog.Filename]);
-          finally
-            FConfigStore.Free;
+          xXMLCfg := TRttiXMLConfig.CreateClean(xFileName);
+          xConfigStore := TXMLOptionsStorage.Create(xXMLCfg);
+          xCurPath := 'Desktops/';
+          xXMLCfg.SetDeleteValue(xCurPath + 'Count', Length(aDesktops), 0);
+          for I := 0 to Length(aDesktops)-1 do
+          begin
+            aDesktops[I].SetConfig(xXMLCfg, xConfigStore);
+            aDesktops[I].Save(xCurPath + 'Desktop'+IntToStr(I+1)+'/');
           end;
+          xConfigStore.WriteToDisk;
+          ShowMessageFmt(dlgDesktopsExported, [Length(aDesktops), xFileName]);
         finally
-          FreeAndNil(FXMLCfg);
+          xConfigStore.Free;
+          xXMLCfg.Free;
         end;
       end;
-      InputHistories.StoreFileDialogSettings(SaveDialog);
+      InputHistories.StoreFileDialogSettings(xSaveDialog);
     except
       on E: Exception do
       begin
         DebugLn('ERROR: [TDesktopMangerDialog.ExportBitBtnClick] ', E.Message);
+        Raise;
       end;
     end;
   finally
-    SaveDialog.Free;
+    xSaveDialog.Free;
   end;
 end;
 
 procedure TDesktopForm.ImportBitBtnClick(Sender: TObject);
 var
-  FXMLCfg: TRttiXMLConfig;
-  FConfigStore: TXMLOptionsStorage;
-  OpenDialog: TOpenDialog;
-  xDesktopName, Filename: string;
-  xDesktopID: Integer;
+  xXMLCfg: TRttiXMLConfig;
+  xConfigStore: TXMLOptionsStorage;
+  xOpenDialog: TOpenDialog;
+  xDesktopName, xOldDesktopName, xFileName: string;
+  xCurPath, xDesktopPath: string;
+  I: Integer;
+  xCount, xImportedCount: Integer;
+  xDsk: TDesktopOpt;
 begin
-  if DesktopListBox.ItemIndex < 0 then
-    Exit;
-
-  xDesktopName := DesktopListBox.Items[DesktopListBox.ItemIndex];
-  if xDesktopName = '' then
-    Exit;
-
-  xDesktopID := EnvironmentOptions.Desktops.IndexOf(xDesktopName);
-  if xDesktopID = -1 then
-    Exit;
-
-  OpenDialog := TOpenDialog.Create(nil);
+  xOpenDialog := TOpenDialog.Create(nil);
   try
     try
-      InputHistories.ApplyFileDialogSettings(OpenDialog);
-      OpenDialog.Filter := dlgFilterXML +' (*.xml)|*.xml';
-      if OpenDialog.Execute then
+      InputHistories.ApplyFileDialogSettings(xOpenDialog);
+      xOpenDialog.Filter := dlgFilterXML +' (*.xml)|*.xml';
+      if xOpenDialog.Execute then
       begin
-        Filename := OpenDialog.Filename;
-        FXMLCfg := TRttiXMLConfig.Create(Filename);
+        xFileName := xOpenDialog.FileName;
+        xXMLCfg := nil;
+        xConfigStore := nil;
         try
-          FConfigStore := TXMLOptionsStorage.Create(FXMLCfg);
-          try
-            EnvironmentOptions.Desktops.LoadFromXML(FXMLCfg, FConfigStore, xDesktopID);
-            ShowMessageFmt(lisSuccessfullyImported, [OpenDialog.Filename]);
-          finally
-            FConfigStore.Free;
+          xXMLCfg := TRttiXMLConfig.Create(xFileName);
+          xConfigStore := TXMLOptionsStorage.Create(xXMLCfg);
+
+          xCurPath := 'Desktops/';
+          xCount := xXMLCfg.GetValue(xCurPath+'Count', 0);
+          xImportedCount := 0;
+          for I := 1 to xCount do
+          begin
+            xDesktopPath := xCurPath+'Desktop'+IntToStr(I)+'/';
+            if not xXMLCfg.HasPath(xDesktopPath, True) then
+              Continue;
+
+            xDesktopName := xXMLCfg.GetValue(xDesktopPath+'Name', '');
+            xOldDesktopName := xDesktopName;
+            //show a dialog to modify desktop name
+            if (EnvironmentOptions.Desktops.IndexOf(xDesktopName) >= 0) and
+               not InputQuery(dlgDesktopName, dlgImportDesktopExists, xDesktopName)
+            then
+              Continue;
+
+            if xDesktopName = '' then
+              Continue;
+            xDsk := EnvironmentOptions.Desktops.Find(xDesktopName);
+            if not Assigned(xDsk) then
+            begin
+              xDsk := TDesktopOpt.Create(xDesktopName, False);
+              EnvironmentOptions.Desktops.Add(xDsk);
+            end else
+            if (xOldDesktopName <> xDesktopName) and
+               (MessageDlg(Format(dlgOverwriteDesktop, [xDesktopName]), mtWarning, mbYesNo, 0) <> mrYes)
+            then
+              Continue;
+
+            xDsk.SetConfig(xXMLCfg, xConfigStore);
+            xDsk.Load(xDesktopPath);
+            Inc(xImportedCount);
+          end;//for
+
+          if xImportedCount>0 then
+          begin
+            ShowMessageFmt(dlgDesktopsImported, [xImportedCount, xFileName]);
+            RefreshList;
           end;
         finally
-          FreeAndNil(FXMLCfg);
+          xConfigStore.Free;
+          xXMLCfg.Free;
         end;
       end;
-      InputHistories.StoreFileDialogSettings(OpenDialog);
+      InputHistories.StoreFileDialogSettings(xOpenDialog);
     except
       on E: Exception do
       begin
         DebugLn('ERROR: [TDesktopMangerDialog.ImportBitBtnClick] ', E.Message);
+        Raise;
       end;
     end;
   finally
-    OpenDialog.Free;
+    xOpenDialog.Free;
   end;
 end;
 
@@ -508,7 +565,18 @@ begin
   SetDebugDesktopBitBtn.Enabled := DeleteBitBtn.Enabled;
   ButtonPanel1.OKButton.Enabled := DeleteBitBtn.Enabled;
   ExportBitBtn.Enabled := DeleteBitBtn.Enabled;
-  ImportBitBtn.Enabled := DeleteBitBtn.Enabled;
+  ExportAllBitBtn.Enabled := DesktopListBox.Items.Count>0;
+end;
+
+procedure TDesktopForm.ExportAllBitBtnClick(Sender: TObject);
+var
+  xDesktops: array of TDesktopOpt;
+  I: Integer;
+begin
+  SetLength(xDesktops, EnvironmentOptions.Desktops.Count);
+  for I := 0 to Length(xDesktops)-1 do
+    xDesktops[I] := EnvironmentOptions.Desktops[I];
+  ExportDesktops(xDesktops);
 end;
 
 procedure TDesktopForm.SaveBitBtnClick(Sender: TObject);
@@ -521,7 +589,7 @@ begin
     xDesktopName := '';
   xOldDesktopName := xDesktopName;
 
-  if not InputQuery(dlgSaveCurrentDesktop, dlgDesktopName, xDesktopName)
+  if not InputQuery(dlgDesktopName, dlgSaveCurrentDesktopAs, xDesktopName)
   or (xDesktopName = '') // xDesktopName MUST NOT BE EMPTY !!!
   then
     Exit;

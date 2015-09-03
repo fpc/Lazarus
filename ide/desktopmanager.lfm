@@ -15,11 +15,12 @@ object DesktopForm: TDesktopForm
     AnchorSideTop.Control = DesktopListBox
     AnchorSideRight.Control = DeleteBitBtn
     AnchorSideRight.Side = asrBottom
-    Left = 234
-    Height = 29
+    Left = 253
+    Height = 25
     Top = 14
-    Width = 178
+    Width = 159
     Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'Save current desktop'
     OnClick = SaveBitBtnClick
@@ -27,8 +28,8 @@ object DesktopForm: TDesktopForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 37
-    Top = 298
+    Height = 34
+    Top = 301
     Width = 406
     OKButton.Name = 'OKButton'
     OKButton.Caption = 'Close and use selected desktop'
@@ -40,7 +41,7 @@ object DesktopForm: TDesktopForm
     CancelButton.Name = 'CancelButton'
     CancelButton.Caption = 'Close'
     CancelButton.DefaultCaption = False
-    TabOrder = 7
+    TabOrder = 8
     ShowButtons = [pbOK, pbCancel]
   end
   object DesktopListBox: TListBox
@@ -48,7 +49,7 @@ object DesktopForm: TDesktopForm
     Left = 11
     Height = 286
     Top = 8
-    Width = 213
+    Width = 232
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Right = 10
     ItemHeight = 0
@@ -59,7 +60,6 @@ object DesktopForm: TDesktopForm
     ScrollWidth = 211
     Style = lbOwnerDrawFixed
     TabOrder = 0
-    TopIndex = -1
   end
   object DeleteBitBtn: TBitBtn
     AnchorSideLeft.Control = SetDebugDesktopBitBtn
@@ -67,11 +67,12 @@ object DesktopForm: TDesktopForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = SetDebugDesktopBitBtn
     AnchorSideRight.Side = asrBottom
-    Left = 234
-    Height = 29
-    Top = 144
-    Width = 178
+    Left = 253
+    Height = 25
+    Top = 130
+    Width = 159
     Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
     BorderSpacing.Top = 4
     Caption = 'Delete'
     OnClick = DeleteBitBtnClick
@@ -81,10 +82,10 @@ object DesktopForm: TDesktopForm
     AnchorSideTop.Control = SelectedDesktopLabel
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
-    Left = 234
-    Height = 29
-    Top = 76
-    Width = 178
+    Left = 253
+    Height = 25
+    Top = 70
+    Width = 159
     Anchors = [akTop, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
@@ -96,10 +97,10 @@ object DesktopForm: TDesktopForm
     AnchorSideLeft.Control = SaveBitBtn
     AnchorSideTop.Control = SaveBitBtn
     AnchorSideTop.Side = asrBottom
-    Left = 234
-    Height = 17
-    Top = 53
-    Width = 121
+    Left = 253
+    Height = 15
+    Top = 49
+    Width = 92
     BorderSpacing.Top = 10
     Caption = 'Selected desktop:'
     ParentColor = False
@@ -110,11 +111,12 @@ object DesktopForm: TDesktopForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = SetDebugDesktopBitBtn
     AnchorSideRight.Side = asrBottom
-    Left = 234
-    Height = 29
-    Top = 111
-    Width = 178
+    Left = 253
+    Height = 25
+    Top = 101
+    Width = 159
     Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'Rename'
     OnClick = RenameBitBtnClick
@@ -124,13 +126,13 @@ object DesktopForm: TDesktopForm
     AnchorSideLeft.Control = DeleteBitBtn
     AnchorSideTop.Control = DeleteBitBtn
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = DeleteBitBtn
-    AnchorSideRight.Side = asrBottom
-    Left = 234
-    Height = 29
-    Top = 185
-    Width = 178
+    AnchorSideRight.Control = ExportAllBitBtn
+    Left = 253
+    Height = 25
+    Top = 167
+    Width = 121
     Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
     BorderSpacing.Top = 12
     Caption = 'Export'
     OnClick = ExportBitBtnClick
@@ -140,16 +142,34 @@ object DesktopForm: TDesktopForm
     AnchorSideLeft.Control = ExportBitBtn
     AnchorSideTop.Control = ExportBitBtn
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = ExportBitBtn
+    AnchorSideRight.Control = DeleteBitBtn
     AnchorSideRight.Side = asrBottom
-    Left = 234
-    Height = 29
-    Top = 218
-    Width = 178
+    Left = 253
+    Height = 25
+    Top = 196
+    Width = 159
     Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
     BorderSpacing.Top = 4
     Caption = 'Import'
     OnClick = ImportBitBtnClick
+    TabOrder = 7
+  end
+  object ExportAllBitBtn: TBitBtn
+    AnchorSideLeft.Control = ExportBitBtn
+    AnchorSideTop.Control = ExportBitBtn
+    AnchorSideRight.Control = DeleteBitBtn
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ExportBitBtn
+    AnchorSideBottom.Side = asrBottom
+    Left = 374
+    Height = 25
+    Top = 167
+    Width = 38
+    Anchors = [akTop, akRight, akBottom]
+    AutoSize = True
+    Caption = 'all'
+    OnClick = ExportAllBitBtnClick
     TabOrder = 6
   end
 end

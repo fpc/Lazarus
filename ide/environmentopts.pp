@@ -283,14 +283,15 @@ type
     // component palette
     FComponentPaletteOptions: TCompPaletteOptions;
 
-    procedure SetConfig(aXMLCfg: TRttiXMLConfig; aConfigStore: TXMLOptionsStorage);
     procedure InitLayoutList;
-    procedure Load(Path: String);
-    procedure Save(Path: String);
   public
     constructor Create(aName: String; const aUseIDELayouts: Boolean);
     destructor Destroy; override;
     procedure Assign(Source: TDesktopOpt);
+  public
+    procedure SetConfig(aXMLCfg: TRttiXMLConfig; aConfigStore: TXMLOptionsStorage);
+    procedure Load(Path: String);
+    procedure Save(Path: String);
 
     property Name: String read FName write FName;
     property IDEWindowCreatorsLayoutList: TSimpleWindowLayoutList read FIDEWindowCreatorsLayoutList write FIDEWindowCreatorsLayoutList;
@@ -330,10 +331,6 @@ type
     constructor Create(aEnvOpts: TEnvironmentOptions);
     destructor Destroy; override;
     procedure AddFromCfg(Path: String);
-    procedure SaveToXML(aXMLCfg: TRttiXMLConfig; aConfigStore: TXMLOptionsStorage;
-                        Index: Integer);
-    procedure LoadFromXML(aXMLCfg: TRttiXMLConfig; aConfigStore: TXMLOptionsStorage;
-                        Index: Integer);
     function IndexOf(aName: string): integer;
     function Find(aName: string): TDesktopOpt;
     property Items[Index: Integer]: TDesktopOpt read GetItem; default;
@@ -915,33 +912,6 @@ begin
     dsk.SetConfig(FXMLCfg, FConfigStore);
     dsk.Load(Path);
     Add(dsk);
-  end;
-end;
-
-procedure TDesktopOptList.SaveToXML(aXMLCfg: TRttiXMLConfig;
-  aConfigStore: TXMLOptionsStorage; Index: Integer);
-var
-  CurPath: String;
-begin
-  CurPath := 'Desktops/';
-  Items[Index].SetConfig(aXMLCfg, aConfigStore);
-  aXMLCfg.SetDeleteValue(CurPath + 'Count', 1, 0);
-  Items[Index].Save(CurPath + 'Desktop1/');
-end;
-
-procedure TDesktopOptList.LoadFromXML(aXMLCfg: TRttiXMLConfig;
-  aConfigStore: TXMLOptionsStorage; Index: Integer);
-var
-  CurPath: String;
-  xDesktop: TDesktopOpt;
-begin
-  CurPath := 'Desktops/';
-  if aXMLCfg.HasPath(CurPath, True) then
-  begin
-    xDesktop := TDesktopOpt.Create(Items[Index].Name, False);
-    Items[Index].Assign(xDesktop);
-    Items[Index].SetConfig(aXMLCfg, aConfigStore);
-    Items[Index].Load(CurPath + 'Desktop1/');
   end;
 end;
 
