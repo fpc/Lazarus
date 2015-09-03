@@ -1408,7 +1408,7 @@ begin
     for I := Low(I) to High(I) do
     begin
       case I of
-        xtChar..xtPointer, xtLongint..xtByte:
+        xtChar..xtPointer, xtLongint..xtByte, xtVariant:
           AddBaseType(PChar(ExpressionTypeDescNames[I]));
         xtFile, xtText:
           if not (ilcfStartInStatement in CurrentIdentifierList.ContextFlags) then
