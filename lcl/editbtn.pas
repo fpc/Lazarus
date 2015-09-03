@@ -384,6 +384,7 @@ type
     property ParentBiDiMode;
     property ParentColor;
     property ParentFont;
+    property ParentShowHint;
     property PasswordChar;
     property PopupMenu;
     property ReadOnly;
