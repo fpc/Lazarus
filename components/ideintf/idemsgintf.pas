@@ -97,7 +97,7 @@ type
 var
   IDEMessagesWindow: TIDEMessagesWindowInterface = nil;// initialized by the IDE
 
-function AddCustomMessage(TheUrgency: TMessageLineUrgency; Msg: string;
+function AddIDEMessage(TheUrgency: TMessageLineUrgency; Msg: string;
   aSrcFilename: string = ''; LineNumber: integer = 0; Column: integer = 0;
   const ViewCaption: string = ''): TMessageLine;
 
@@ -108,7 +108,7 @@ begin
   MsgQuickFixes.RegisterQuickFix(Fix);
 end;
 
-function AddCustomMessage(TheUrgency: TMessageLineUrgency; Msg: string;
+function AddIDEMessage(TheUrgency: TMessageLineUrgency; Msg: string;
   aSrcFilename: string; LineNumber: integer; Column: integer;
   const ViewCaption: string): TMessageLine;
 var
