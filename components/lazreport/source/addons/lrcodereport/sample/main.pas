@@ -140,6 +140,34 @@ begin
     DrawText(0, Cursor.YBottom, GetPageWidth, 6, 'Testing cursors', BoxText);
     DrawText(0, Cursor.YBottom, GetPageWidth, 6, 'next line', BoxText);
     DrawText(0, Cursor.YBottom, GetPageWidth, 6, 'another line', BoxText);
+    // Layout
+    x := Cursor.YBottom + 5;
+    BoxText.FillColor := clSilver;
+    BoxText.Line.LColor := clGreen;
+    BoxText.FontColor := clRed;
+    BoxText.Layout := tlTop;
+    BoxText.Alignment := taLeftJustify;
+    DrawText(20, x, 50, 15, 'TopLeft', BoxText);
+    BoxText.Alignment := taCenter;
+    DrawText(70, x, 50, 15, 'TopCenter', BoxText);
+    BoxText.Alignment := taRightJustify;
+    DrawText(120, x, 50, 15, 'TopRight', BoxText);
+    x := Cursor.YBottom;
+    BoxText.Layout := tlCenter;
+    BoxText.Alignment := taLeftJustify;
+    DrawText(20, x, 50, 15, 'CenterLeft', BoxText);
+    BoxText.Alignment := taCenter;
+    DrawText(70, x, 50, 15, 'CenterCenter', BoxText);
+    BoxText.Alignment := taRightJustify;
+    DrawText(120, x, 50, 15, 'CenterRight', BoxText);
+    x := Cursor.YBottom;
+    BoxText.Layout := tlBottom;
+    BoxText.Alignment := taLeftJustify;
+    DrawText(20, x, 50, 15, 'BottomLeft', BoxText);
+    BoxText.Alignment := taCenter;
+    DrawText(70, x, 50, 15, 'BottomCenter', BoxText);
+    BoxText.Alignment := taRightJustify;
+    DrawText(120, x, 50, 15, 'BottomRight', BoxText);
 
     LineStyle.LColor := clMaroon;
     LineStyle.LWidth := 1;
