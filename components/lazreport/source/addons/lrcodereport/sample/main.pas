@@ -57,7 +57,7 @@ begin
     with CodeReport1 do
     begin
       Report.Clear;                         // reset report
-      CodeReport1BeginReport(CodeReport1);  // execute code
+      RunReport(false);                     // execute code
       Report.PrepareReport;
       Report.ExportTo(TfrTNPDFExportFilter, SaveDialog1.FileName);
     end;
@@ -68,7 +68,7 @@ begin
   with CodeReport1 do
   begin
     Report.Clear;                         // reset report
-    CodeReport1BeginReport(CodeReport1);  // execute code
+    RunReport(false);                     // execute code
     Report.PrepareReport;
     Report.PrintPreparedReport('', 1);    // empty string print all the pages
     // '1-5' print pages from 1 to 5

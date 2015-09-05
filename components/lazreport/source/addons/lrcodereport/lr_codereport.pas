@@ -108,7 +108,7 @@ type
     procedure SetPaper(ASize: integer; AOr: TPrinterOrientation = poPortrait;
       AWidth: integer = 0; AHeight: integer = 0);
     procedure SetRatio(X, Y: double);
-    procedure RunReport;
+    procedure RunReport(aShowPreview: boolean = true);
     procedure SetFont(AName: string; ASize: integer; AStyle: TFontStyles = []);
     procedure NewLine(i: word = 1);
     procedure NewPage;
@@ -257,11 +257,12 @@ begin
   YRatio := Y;
 end;
 
-procedure TlrCodeReport.RunReport;
+procedure TlrCodeReport.RunReport(aShowPreview: boolean = true);
 begin
   if Assigned(OnBeginReport) then
     OnBeginReport(Self);
-  Report.ShowReport;
+  if aShowPreview then
+    Report.ShowReport;
 end;
 
 procedure TlrCodeReport.SetFont(AName: string; ASize: integer;
