@@ -45,9 +45,9 @@ type
 
   TLCLMenuItemCallback = class(TLCLCommonCallback, IMenuItemCallback)
   private
-    FMenuItemTarget: TComponent;
+    FMenuItemTarget: TMenuItem;
   public
-    constructor Create(AOwner: NSObject; AMenuItemTarget: TComponent); reintroduce;
+    constructor Create(AOwner: NSObject; AMenuItemTarget: TMenuItem); reintroduce;
     procedure ItemSelected;
   end;
 
@@ -65,8 +65,12 @@ type
   public
     menuItemCallback: IMenuItemCallback;
     attachedAppleMenuItems: Boolean;
+    FMenuItemTarget: TMenuItem;
+    procedure UncheckSiblings; message 'UncheckSiblings';
+    function GetMenuItemHandle(): TMenuItem; message 'GetMenuItemHandle';
     procedure lclItemSelected(sender: id); message 'lclItemSelected:';
     function lclGetCallback: IMenuItemCallback; override;
+    procedure lclClearCallback; override;
     function lclIsHandle: Boolean; override;
     procedure attachAppleMenuItems(); message 'attachAppleMenuItems';
   end;
@@ -135,7 +139,7 @@ implementation
 
 { TLCLMenuItemCallback }
 
-constructor TLCLMenuItemCallback.Create(AOwner: NSObject; AMenuItemTarget: TComponent);
+constructor TLCLMenuItemCallback.Create(AOwner: NSObject; AMenuItemTarget: TMenuItem);
 begin
   Owner := AOwner;
   FMenuItemTarget := AMenuItemTarget;
@@ -170,14 +174,53 @@ begin
   Result:=true;
 end;
 
+procedure TCocoaMenuItem.UncheckSiblings;
+var
+  i: Integer;
+  lMenuItem, lSibling, lParentMenu: TMenuItem;
+  lSiblingHandle: NSMenuItem;
+begin
+  //lMenuItem := GetMenuItemHandle();
+  lMenuItem := FMenuItemTarget;
+  if lMenuItem = nil then Exit;
+  if not lMenuItem.RadioItem then Exit;
+  if not lMenuItem.Checked then Exit;
+  lParentMenu := lMenuItem.Parent;
+  if lParentMenu = nil then Exit;
+  for i := 0 to lParentMenu.Count - 1 do
+  begin
+    lSibling := lParentMenu.Items[i];
+    if lSibling = nil then Continue;
+    if lSibling = lMenuItem then Continue;
+
+    if lSibling.RadioItem and (lSibling.GroupIndex = lMenuItem.GroupIndex) then
+    begin
+      TCocoaWSMenuItem.SetCheck(lSibling, False);
+    end;
+  end;
+end;
+
+function TCocoaMenuItem.GetMenuItemHandle(): TMenuItem;
+begin
+  Result := nil;
+  if menuItemCallback = nil then Exit;
+  Result := TLCLMenuItemCallback(menuItemCallback).FMenuItemTarget;
+end;
+
 procedure TCocoaMenuItem.lclItemSelected(sender:id);
 begin
   menuItemCallback.ItemSelected;
+  UncheckSiblings();
 end;
 
 function TCocoaMenuItem.lclGetCallback: IMenuItemCallback;
 begin
   result:=menuItemCallback;
+end;
+
+procedure TCocoaMenuItem.lclClearCallback;
+begin
+  menuItemCallback := nil;
 end;
 
 procedure TCocoaMenuItem.attachAppleMenuItems();
@@ -345,7 +388,9 @@ begin
   if not Assigned(AMenuItem) then Exit;
 
   if AMenuItem.Caption = '-' then
-    item := NSMenuItem.separatorItem
+  begin
+    item := NSMenuItem.separatorItem;
+  end
   else
   begin
     s := AMenuItem.Caption;
@@ -357,6 +402,7 @@ begin
     item := TCocoaMenuItem.alloc.initWithTitle_action_keyEquivalent(ns,
       objcselector('lclItemSelected:'), nsKey);
     item.setKeyEquivalentModifierMask(ShiftSt);
+    TCocoaMenuItem(item).FMenuItemTarget := AMenuItem;
 
     if AMenuItem.IsInMenuBar then
     begin
@@ -479,8 +525,13 @@ end;
  ------------------------------------------------------------------------------}
 class function TCocoaWSMenuItem.SetCheck(const AMenuItem: TMenuItem;
   const Checked: boolean): boolean;
+var
+  lHandle: NSMenuItem;
 begin
-  Result:=Assigned(AMenuItem) and (AMenuItem.Handle<>0);
+  Result := Assigned(AMenuItem) and AMenuItem.HandleAllocated() and (AMenuItem.Handle<>0);
+  if not Result then Exit;
+  lHandle := NSMenuItem(AMenuItem.Handle);
+  Result := Result and lHandle.isKindOfClass_(TCocoaMenuItem);
   if not Result then Exit;
   TCocoaWSMenuItem.Do_SetCheck(NSMenuItem(AMenuItem.Handle), Checked);
 end;
