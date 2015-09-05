@@ -330,7 +330,7 @@ begin
         if (i = Start.Y) and (X < Start.X) then
           UTF8Delete(Token, 1, Start.X - X);
 
-        X := X + l; // TODO: combound chars
+        X := X + l; // TODO: compound chars
         if Token = '' then
           continue;
 
