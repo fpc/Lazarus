@@ -37,6 +37,7 @@ type
     procedure lbResourcesSelectItem(Sender: TObject; {%H-}Item: TListItem; {%H-}Selected: Boolean);
   private
     FProject: TProject;
+    FModified: Boolean;
   private
     FAddResourceItemDuplicates: integer;
     FResourceNameList: TStringList; // to keep resource names unique
@@ -102,6 +103,7 @@ begin
     lbResources.Items.Clear;
     FResourceNameList.Clear;
     FResourceFileNameList.Clear;
+    FModified := True;
   end;
   btnClear.Enabled := lbResources.Items.Count > 0;
 end;
@@ -119,6 +121,7 @@ begin
     FResourceFileNameList.Delete(FResourceFileNameList.IndexOf(resFileName));
 
     lbResources.Items.Delete(lbResources.Selected.Index);
+    FModified := True;
   end;
   btnClear.Enabled := lbResources.Items.Count > 0;
 end;
@@ -265,6 +268,7 @@ begin
 
   FResourceFileNameList.Add(ResFile);
   FResourceNameList.Add(ResName);
+  FModified := True;
   exit(true);
 end;
 
@@ -339,6 +343,7 @@ begin
     AddResourceEnd;
   end;
   btnClear.Enabled := lbResources.Items.Count > 0;
+  FModified := False;
 end;
 
 procedure TResourcesOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -346,11 +351,13 @@ var
   Project: TProject;
   I: Integer;
 begin
+  if not FModified then Exit;
   Project := (AOptions as TProjectIDEOptions).Project;
   Project.ProjResources.UserResources.List.Clear;
   for I := 0 to lbResources.Items.Count - 1 do
     Project.ProjResources.UserResources.List.AddResource(lbResources.Items[I].Caption,
       StrToResourceType(lbResources.Items[I].SubItems[LVSUBITEM_TYPE]), lbResources.Items[I].SubItems[LVSUBITEM_NAME]);
+  Project.ProjResources.Modified := True;
 end;
 
 class function TResourcesOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
