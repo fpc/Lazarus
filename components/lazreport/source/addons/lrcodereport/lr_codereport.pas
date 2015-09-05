@@ -586,6 +586,7 @@ begin
   AText.Font.Style := Style.FontStyle;
 
   AText.Alignment := Style.Alignment;
+  AText.Layout := Style.Layout;
 
   AText.Memo.Add(Text);
   AText.CalcGaps;
