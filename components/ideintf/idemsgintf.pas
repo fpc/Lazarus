@@ -17,7 +17,7 @@ interface
 
 uses
   Classes, SysUtils, contnrs, Forms, Menus,
-  IDECommands, IDEExternToolIntf, MenuIntf, LazFileUtils;
+  IDECommands, IDEExternToolIntf, MenuIntf, LazFileUtils, LazLoggerBase;
 
 type
   TMsgQuickFixes = class;
@@ -97,11 +97,35 @@ type
 var
   IDEMessagesWindow: TIDEMessagesWindowInterface = nil;// initialized by the IDE
 
+function AddCustomMessage(TheUrgency: TMessageLineUrgency; Msg: string;
+  aSrcFilename: string = ''; LineNumber: integer = 0; Column: integer = 0;
+  const ViewCaption: string = ''): TMessageLine;
+
 implementation
 
 procedure RegisterIDEMsgQuickFix(Fix: TMsgQuickFix);
 begin
   MsgQuickFixes.RegisterQuickFix(Fix);
+end;
+
+function AddCustomMessage(TheUrgency: TMessageLineUrgency; Msg: string;
+  aSrcFilename: string; LineNumber: integer; Column: integer;
+  const ViewCaption: string): TMessageLine;
+var
+  s: String;
+begin
+  s:=aSrcFilename;
+  if LineNumber>0 then
+    s+='('+IntToStr(LineNumber)+','+IntToStr(Column)+')';
+  s+=' '+MessageLineUrgencyNames[TheUrgency]+': ';
+  if ViewCaption<>'' then
+    s+='('+ViewCaption+') ';
+  s+=Msg;
+  DebugLn(s);
+  if IDEMessagesWindow<>nil then
+    Result:=IDEMessagesWindow.AddCustomMessage(TheUrgency,Msg,aSrcFilename,LineNumber,Column,ViewCaption)
+  else
+    Result:=nil;
 end;
 
 { TIDEMessagesWindowInterface }

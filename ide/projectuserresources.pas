@@ -185,7 +185,7 @@ begin
     end;
   end
   else
-    IDEMessagesWindow.AddCustomMessage(mluError,Format(lisFileNotFound2, [Filename]));
+    AddCustomMessage(mluError,Format(lisFileNotFound2, [Filename]));
 end;
 
 function TResourceItem.GetRealFileName(ProjectDirectory: String): String;
