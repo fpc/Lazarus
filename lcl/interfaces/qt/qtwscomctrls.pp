@@ -579,7 +579,7 @@ begin
       QLabel_setText(QLabelH(Widget.Panels[i].Widget), @Str);
       QLabel_setAlignment(QLabelH(Widget.Panels[i].Widget),
         AlignmentToQtAlignmentMap[AStatusBar.Panels[i].Alignment]);
-      QWidget_setMinimumWidth(Widget.Panels[i].Widget, AStatusBar.Panels[i].Width);
+      QWidget_setMinimumWidth(Widget.Panels[i].Widget, Max(0, AStatusBar.Panels[i].Width));
       QWidget_setVisible(Widget.Panels[i].Widget,
         AStatusBar.Panels[i].Width > 0);
       Widget.Panels[i].AttachEvents;
@@ -639,7 +639,7 @@ begin
       QLabel_setAlignment(QLabelH(QtStatusBar.Panels[PanelIndex].Widget),
         AlignmentToQtAlignmentMap[AStatusBar.Panels[PanelIndex].Alignment]);
       QWidget_setMinimumWidth(QtStatusBar.Panels[PanelIndex].Widget,
-        AStatusBar.Panels[PanelIndex].Width);
+        Max(0, AStatusBar.Panels[PanelIndex].Width));
       QWidget_setVisible(QtStatusBar.Panels[PanelIndex].Widget,
         AStatusBar.Panels[PanelIndex].Width > 0);
     end;
