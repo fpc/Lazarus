@@ -6441,6 +6441,15 @@ begin
           ASize := FOwner.getSize;
           AResizeEvent := QResizeEvent_create(@ASize, @ASize);
           try
+            // issue #28596 and others of TCustomControl clientrect related
+            if CanAdjustClientRectOnResize and
+              LCLObject.ClientRectNeedsInterfaceUpdate then
+            begin
+              {$IF DEFINED(VerboseSizeMsg) OR DEFINED(VerboseQtResize)}
+              DebugLn('TQtWindowArea.ScrollViewEventFilter invalidatingClientRectCache ',dbgsName(Self),' LCL=',dbgsName(LCLObject));
+              {$ENDIF}
+              LCLObject.InvalidateClientRectCache(False);
+            end;
             SlotResize(AResizeEvent);
           finally
             QEvent_destroy(AResizeEvent);
@@ -16017,6 +16026,15 @@ begin
         ASize := FOwner.getSize;
         AResizeEvent := QResizeEvent_create(@ASize, @ASize);
         try
+          // issue #28596 and others of TCustomControl clientrect related
+          if CanAdjustClientRectOnResize and
+            LCLObject.ClientRectNeedsInterfaceUpdate then
+          begin
+            {$IF DEFINED(VerboseSizeMsg) OR DEFINED(VerboseQtResize)}
+            DebugLn('TQtViewPort.EventFilter invalidatingClientRectCache ',dbgsName(Self),' LCL=',dbgsName(LCLObject));
+            {$ENDIF}
+            LCLObject.InvalidateClientRectCache(False);
+          end;
           FOwner.SlotResize(AResizeEvent);
         finally
           QEvent_destroy(AResizeEvent);
