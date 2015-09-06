@@ -264,8 +264,7 @@ begin
     AddLazUtilsDependency;
     // Update GUI state and show message.
     UpdateUtf8RtlButtonState;
-    ShowMessage(Format(lisThisBuildModeNowSetsUTF8InTheRTLFlagsAreInPagesOth, [
-      LineEnding]));
+    ShowMessage(Format(lisThisBuildModeNowSetsUTF8InRTL, [LineEnding]));
   end;
 end;
 

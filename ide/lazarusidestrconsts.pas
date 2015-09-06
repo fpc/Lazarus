@@ -264,9 +264,8 @@ resourcestring
   lisMenuTools = '&Tools';
   lisMenuWindow = '&Window';
   lisMenuHelp = '&Help';
-  lisThisBuildModeNowSetsUTF8InTheRTLFlagsAreInPagesOth = 'This build mode now'
-    +' sets UTF-8 in the RTL.%s Flags are in pages "Other" and "Additions and '
-    +'Overrides".';
+  lisThisBuildModeNowSetsUTF8InRTL = 'This build mode now sets UTF-8 in RTL.%s'
+    +' Flags are in pages "Custom Options" and "Additions and Overrides".';
   lisThisWillAllowChangingAllBuildModesAtOnceNotImpleme = 'This will allow '
     +'changing all build modes at once. Not implemented yet.';
   
