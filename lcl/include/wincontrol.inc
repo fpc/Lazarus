@@ -3174,7 +3174,7 @@ begin
     ParentClientWidth:=r.Right;
     ParentClientHeight:=r.Bottom;
 
-    // if NeedAlignWork then // DaThoX
+    if NeedAlignWork then
     begin
       //DebugLn(['TWinControl.AlignControls  ',DbgSName(Self),' RemainingClientRect=',dbgs(RemainingClientRect),' ',dbgs(ClientRect)]);
       RemainingBorderSpace:=Rect(0,0,0,0);
@@ -3887,8 +3887,6 @@ begin
     // adjust the result by all bounds, that are not yet sent to the interface
     AControl := Self;
     repeat
-      if AControl is TForm then // DaThoX
-        Break;
       inc(Result.X, AControl.Left - AControl.FBoundsRealized.Left);
       inc(Result.Y, AControl.Top - AControl.FBoundsRealized.Top);
       AControl := AControl.Parent;

@@ -7133,6 +7133,7 @@ end;
 
 procedure InitPropEdits;
 begin
+  PropertyClassList:=TList.Create;
   PropertyEditorMapperList:=TList.Create;
   // register the standard property editors
 
