@@ -65,6 +65,7 @@ type
     FPositioningKind: TPositioningKind;
     FMaxWidth, FMaxHeight: Integer;
     FActivePropertyGridItemIndex: Integer;
+    FLastClientWidth, FLastClientHeight: Integer;
 
     procedure PanelPaint(Sender: TObject);
     procedure BGChangeBounds(Sender: TObject);
@@ -225,6 +226,10 @@ begin
   if (DesignedForm = nil) or FNodePositioning then
     Exit;
 
+  FLastClientWidth  := pClient.Width;
+  FLastClientHeight := pClient.Height;
+
+(*
   DesignedForm.BeginUpdate;
 
 {$IFDEF USE_POPUP_PARENT_DESIGNER}
@@ -239,6 +244,7 @@ begin
   DesignedForm.RealWidth  := pClient.Width;
   DesignedForm.RealHeight := pClient.Height;
   DesignedForm.EndUpdate;
+*)
 end;
 
 procedure TResizerFrame.BGChangeBounds(Sender: TObject);
@@ -321,17 +327,30 @@ begin
       Parent := Self;
       Visible := True;
       FNodes.Add(Panel);
-      case Node of
-        {0,}4: Cursor := crSizeNWSE;
-        {1,}5: Cursor := crSizeNS;
-        //{2,}6: Cursor := crSizeNESW;
-        3{,7}: Cursor := crSizeWE;
-      end;
-      if Node in [3,4,5] then
+
+      with TShape.Create(Panel) do
       begin
-        OnMouseDown := NodeMouseDown;
-        OnMouseMove := NodeMouseMove;
-        OnMouseUp := NodeMouseUp;
+        Parent := Panel;
+        Align:= alClient;
+
+        if Node in [3,4,5] then
+          Brush.Color:=clBtnFace
+        else
+          Brush.Color:=clGray;
+
+        case Node of
+          {0,}4: Cursor := crSizeNWSE;
+          {1,}5: Cursor := crSizeNS;
+          //{2,}6: Cursor := crSizeNESW;
+          3{,7}: Cursor := crSizeWE;
+        end;
+        if Node in [3,4,5] then
+        begin
+          OnMouseDown := NodeMouseDown;
+          OnMouseMove := NodeMouseMove;
+          OnMouseUp := NodeMouseUp;
+        end;
+
       end;
     end;
   end;
@@ -355,6 +374,9 @@ procedure TResizerFrame.NodeMouseDown(Sender: TObject; Button: TMouseButton;
 var
   LCtrlPoint: TPoint;
 begin
+  if Sender is TGraphicControl then
+    Sender := TGraphicControl(Sender).Parent;
+
   if (Enabled) AND (Sender is TWinControl) then
   begin
     FNodePositioning:=True;
@@ -438,6 +460,9 @@ var
   OldRect: TRect;
   AdjL,AdjR,AdjT,AdjB: Boolean;
 begin
+  if Sender is TGraphicControl then
+    Sender := TGraphicControl(Sender).Parent;
+
   if FNodePositioning then
   begin
     begin
@@ -512,18 +537,27 @@ begin
     PositionNodes(Self);
     if Assigned(OnNodePositioning) then
       OnNodePositioning(Self, FPositioningKind, pcPositioning);
+
+    // the same operation as belowe exist in ClientChangeBounds but it is
+    // disabled for FNodePositioning = true
+    // we need to refresh this values after OnNodePositioning
+    FLastClientWidth := pClient.Width;
+    FLastClientHeight:= pClient.Height;
   end;
 end;
 
 procedure TResizerFrame.NodeMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
+  if Sender is TGraphicControl then
+    Sender := TGraphicControl(Sender).Parent;
+
   if FNodePositioning then
   begin
     Screen.Cursor := crDefault;
     ReleaseCapture;
 
-    // przywraca ostatnie zaznaczenie w object insp.
+    // restore last selected item in OI.
     if FActivePropertyGridItemIndex <> -1 then
     begin
       if FormEditingHook.GetCurrentObjectInspector <> nil then
@@ -645,7 +679,8 @@ begin
   if DesignedForm = nil then
     Exit(0);
 
-  Result := DesignedForm.Width - DesignedForm.RealWidth;
+  Result := DesignedForm.Width - FLastClientWidth;
+  //Result := DesignedForm.Width - DesignedForm.RealWidth;
 end;
 
 function TResizerFrame.DesignedHeightToScroll: Integer;
@@ -653,7 +688,8 @@ begin
   if DesignedForm = nil then
     Exit(0);
 
-  Result := DesignedForm.Height - DesignedForm.RealHeight;
+  Result := DesignedForm.Height - FLastClientHeight;
+  //Result := DesignedForm.Height - DesignedForm.RealHeight;
 end;
 
 {}
@@ -725,14 +761,14 @@ begin
   begin
     with AroundControl do
     begin
-      CL := (HorizontalSizerLineLength div 2) - (SIZER_RECT_SIZE div 2) + LeftSizerRectLeft;
-      CT := (VerticalSizerLineLength div 2) - (SIZER_RECT_SIZE div 2) + TopSizerRectTop;
-
       FR := Width - RightSizerRectWidth - RightMargin;
       FB := Height - BottomSizerRectHeight - BottomMargin;
 
       FT := TopSizerRectTop;
       FL := LeftSizerRectLeft;
+
+      CL := (FR - FL) div 2 + FL;
+      CT := (FB - FT) div 2 + FT;
 
       case Node of
         0: begin

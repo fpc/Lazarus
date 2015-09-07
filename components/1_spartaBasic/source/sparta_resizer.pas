@@ -117,8 +117,12 @@ begin
     FDesignedForm.RealPopupParent := nil;
     FDesignedForm.RealPopupParent := FindFirstFormParent;
 {$ELSE}
-    FDesignedForm.Form.ParentWindow := FResizerFrame.pClient.Handle; 
+    FDesignedForm.Form.ParentWindow := FResizerFrame.pClient.Handle;
 {$ENDIF}
+    // for big forms (bigger than screen resolution) we need to refresh Real* values
+    DesignedForm.RealWidth := DesignedForm.Width;
+    DesignedForm.RealHeight := DesignedForm.Height;
+
     FDesignedForm.EndUpdate;
     FDesignedForm.OnChangeHackedBounds := @TryBoundSizerToDesignedForm;
     // w tym miejscu powinno już być zainicjalizowane obecnym edytorem na ktorym jest sizer :)
@@ -368,8 +372,8 @@ procedure TResizer.NodePositioning(Sender: TObject; PositioningKind: TPositionin
 
   procedure Positioning;
   var
-    LHiddenHeight: Integer;
-    LHiddenWidth: Integer;
+    LHiddenHeight, LNewHeight: Integer;
+    LHiddenWidth, LNewWidth: Integer;
   begin
     DesignedForm.BeginUpdate;
 
@@ -378,8 +382,20 @@ procedure TResizer.NodePositioning(Sender: TObject; PositioningKind: TPositionin
       LHiddenWidth := sbH.Position;
       if LHiddenWidth > FResizerFrame.DesignedWidthToScroll then
         LHiddenWidth := FResizerFrame.DesignedWidthToScroll;
-      DesignedForm.RealWidth := FResizerFrame.pClient.Width;
-      DesignedForm.Width := FResizerFrame.pClient.Width + LHiddenWidth;
+
+      // TODO - better handling of min width - same in TDesignedFormImpl.SetPublishedBounds (sparta_FakeCustom.pas)
+
+      LNewWidth := FResizerFrame.pClient.Width + LHiddenWidth;
+      DesignedForm.RealWidth := LNewWidth;
+      DesignedForm.Width := LNewWidth;
+
+      // perform minimal width (TODO)
+      {if LNewWidth < DesignedForm.Width then
+      begin
+        FResizerFrame.pClient.Width := DesignedForm.Width;
+        Application.HandleMessage;
+        Application.ProcessMessages;
+      end;}
     end;
 
     if pkBottom in PositioningKind then
@@ -387,8 +403,18 @@ procedure TResizer.NodePositioning(Sender: TObject; PositioningKind: TPositionin
       LHiddenHeight := sbV.Position;
       if LHiddenHeight > FResizerFrame.DesignedHeightToScroll then
         LHiddenHeight := FResizerFrame.DesignedHeightToScroll;
-      DesignedForm.RealHeight := FResizerFrame.pClient.Height;
-      DesignedForm.Height := FResizerFrame.pClient.Height + LHiddenHeight;
+
+      LNewHeight := FResizerFrame.pClient.Height + LHiddenHeight;
+      DesignedForm.RealHeight := LNewHeight;
+      DesignedForm.Height := LNewHeight;
+
+      // perform minimal height (TODO)
+      {if LNewHeight < DesignedForm.RealHeight then
+      begin
+        if FResizerFrame.pClient.Height < DesignedForm.RealHeight then
+          FResizerFrame.pClient.Height := DesignedForm.RealHeight;
+        Application.ProcessMessages;
+      end;}
     end;
 
     DesignedForm.EndUpdate;

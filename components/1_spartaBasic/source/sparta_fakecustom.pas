@@ -497,6 +497,9 @@ begin
     Top    := (LookupRoot as TFrame).Top;
     Width  := (LookupRoot as TFrame).Width;
     Height := (LookupRoot as TFrame).Height;
+
+    DesignedForm.RealWidth := Width;
+    DesignedForm.RealHeight := Height;
   end;
 end;
 
@@ -640,6 +643,9 @@ begin
       Height := LClientRect.Bottom;
     end else
       ;//WriteLn('o kurwa eh');
+
+    DesignedForm.RealWidth := Width;
+    DesignedForm.RealHeight := Height;
   end;
 end;
 
@@ -702,7 +708,14 @@ end;
 
 procedure TFakeCustomForm.SetPublishedBounds(AIndex: Integer; AValue: Integer);
 begin
-  DesignedForm.SetPublishedBounds(AIndex, AValue);
+  case AIndex of
+    0, 1: DesignedForm.SetPublishedBounds(AIndex, AValue);
+    2, 3:
+      begin
+        DesignedForm.SetPublishedBounds(AIndex, AValue);
+        SetRealBounds(AIndex, DesignedForm.GetPublishedBounds(AIndex));
+      end;
+  end;
 end;
 
 constructor TFakeCustomForm.CreateNew(AOwner: TComponent; Num: Integer);
@@ -906,39 +919,47 @@ end;
 /////// positions
 
 procedure TDesignedFormImpl.SetHorzScrollPosition(AValue: Integer);
-var
-  LOldValue: Integer;
+{var
+  LOldValue: Integer;}
 begin
-  if AValue = FHorzScrollPosition then
+  RealLeft := -AValue;
+  {if AValue = FHorzScrollPosition then
     Exit;
 
   LOldValue := FHorzScrollPosition;
   FHorzScrollPosition := AValue;
   TControlScrollBarHack(TScrollingWinControlHack(FOwner).FHorzScrollBar).FPosition := AValue;
-  FOwner.ScrollBy(LOldValue-AValue, 0);
+  FOwner.ScrollBy(LOldValue-AValue, 0);}
 end;
 
 procedure TDesignedFormImpl.SetVertScrollPosition(AValue: Integer);
-var
-  LOldValue: Integer;
+{var
+  LOldValue: Integer;}
 begin
-  if AValue = FVertScrollPosition then
+  RealTop := -AValue;
+  {if AValue = FVertScrollPosition then
     Exit;
 
   LOldValue := FVertScrollPosition;
   FVertScrollPosition := AValue;
   TControlScrollBarHack(TScrollingWinControlHack(FOwner).FVertScrollBar).FPosition := AValue;
-  FOwner.ScrollBy(LOldValue-AValue, 0);
+  FOwner.ScrollBy(LOldValue-AValue, 0);}
 end;
 
 function TDesignedFormImpl.GetHorzScrollPosition: Integer;
 begin
+  {
   Result := FHorzScrollPosition;
+  }
+  Result := -RealLeft;
 end;
 
 function TDesignedFormImpl.GetVertScrollPosition: Integer;
 begin
+  {
   Result := FVertScrollPosition;
+  }
+  Result := -RealTop;
 end;
 
 procedure TDesignedFormImpl.BeginUpdate;

@@ -756,7 +756,7 @@ var
 begin
   LPageCtrl := FindModulePageControl(FForm);
   if LPageCtrl <> nil then
-    LPageCtrl.BoundToDesignTabSheet;
+    //LPageCtrl.BoundToDesignTabSheet;
 end;
 
 procedure TSourceEditorWindowData.AddPageCtrl(ASrcEditor: TSourceEditorInterface; APage: TModulePageControl);
@@ -1685,7 +1685,7 @@ begin
     LSourceWindow := (LFormData as IDesignedForm).LastActiveSourceWindow;
     LPageCtrl := FindModulePageControl(LSourceWindow);
     TFakeFrame(LForm).SetBounds(LForm.Left-1,LForm.Top-1,TFakeFrame(LForm).Width,TFakeFrame(LForm).Height);
-    LPageCtrl.BoundToDesignTabSheet;
+    //LPageCtrl.BoundToDesignTabSheet;
   end
   else
   if (GlobalDesignHook.LookupRoot is TCustomForm) then
