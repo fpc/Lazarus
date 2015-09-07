@@ -41,7 +41,7 @@ uses
   Classes, SysUtils, Math, Forms, Controls, Buttons, Menus,
   ComCtrls, ExtCtrls, LMessages, LCLIntf, LCLType, LCLProc,
   // IDEIntf
-  ProjectIntf, NewItemIntf, MenuIntf, LazIDEIntf, IDEWindowIntf, IDEImagesIntf,
+  ProjectIntf, MenuIntf, LazIDEIntf, IDEWindowIntf, IDEImagesIntf,
   LazFileCache, EnvironmentOpts, LazarusIDEStrConsts, ComponentReg, IdeCoolbarData;
 
 type
@@ -53,10 +53,7 @@ type
     FMainOwningComponent: TComponent;
     FOldWindowState: TWindowState;
     FOnActive: TNotifyEvent;
-    FOpenFilePopupHandler: TNotifyEvent;
     procedure CreatePopupMenus(TheOwner: TComponent);
-    procedure NewUnitFormDefaultClick(Sender: TObject);
-    procedure NewUnitFormPopupMenuPopup(Sender: TObject);
     function CalcMainIDEHeight: Integer;
     function CalcNonClientHeight: Integer;
   protected
@@ -70,9 +67,6 @@ type
     //Coolbar and PopUpMenus
     CoolBar: TCoolBar;
     OptionsMenuItem: TMenuItem;
-    OpenFilePopUpMenu: TPopupMenu;
-    SetBuildModePopupMenu: TPopupMenu;
-    NewUnitFormPopupMenu: TPopupMenu;
     NewUFSetDefaultMenuItem: TMenuItem;
     ComponentPageControl: TPageControl; // component palette
     //GlobalMouseSpeedButton: TSpeedButton; <- what is this
@@ -383,14 +377,12 @@ type
     procedure MainSplitterMoved(Sender: TObject);
     procedure SetMainIDEHeightEvent(Sender: TObject);
     procedure OnMainBarActive(Sender: TObject);
-    procedure OpenFilePopupMenuPopup(Sender: TObject);
     procedure Setup(TheOwner: TComponent);
     procedure SetupHints;
     procedure UpdateIDEComponentPalette(IfFormChanged: boolean);
     procedure HideIDE;
     procedure UnhideIDE;
     property OnActive: TNotifyEvent read FOnActive write FOnActive;
-    property OpenFilePopupHandler: TNotifyEvent read FOpenFilePopupHandler write FOpenFilePopupHandler;
     procedure UpdateDockCaption({%H-}Exclude: TControl); override;
     procedure RefreshCoolbar;
     procedure SetMainIDEHeight;
@@ -415,72 +407,6 @@ begin
   // => invalidate file state
   InvalidateFileStateCache;
   LazarusIDE.DoDropFiles(Sender,FileNames);
-end;
-
-procedure TMainIDEBar.NewUnitFormDefaultClick(Sender: TObject);
-var
-  Category: TNewIDEItemCategory;
-  i: Integer;
-  Item: TMenuItem;
-  Template: TNewIDEItemTemplate;
-begin
-  Item:=Sender as TMenuItem;
-  Category:=NewIDEItems.FindCategoryByPath(FileDescGroupName,true);
-  i:=Item.MenuIndex;
-  if (i<0) or (i>=Category.Count) then exit;
-  Template:=Category[i];
-  if NewUnitFormPopupMenu.Tag=1 then
-    EnvironmentOptions.NewUnitTemplate:=Template.Name
-  else
-    EnvironmentOptions.NewFormTemplate:=Template.Name;
-  //DebugLn(['TMainIDEBar.NewUFDefaultClick ',Template.Name]);
-
-  EnvironmentOptions.Save(False);
-end;
-
-procedure TMainIDEBar.NewUnitFormPopupMenuPopup(Sender: TObject);
-var
-  TemplateName: String;
-  Category: TNewIDEItemCategory;
-  i: Integer;
-  CurTemplate: TNewIDEItemTemplate;
-  Index: Integer;
-  Item: TMenuItem;
-begin
-  Category:=NewIDEItems.FindCategoryByPath(FileDescGroupName,true);
-  // find default template name
-  if NewUnitFormPopupMenu.PopupComponent.Name = 'itmFileNewUnit' then begin
-    TemplateName:=EnvironmentOptions.NewUnitTemplate;
-    if (TemplateName='') or (Category.FindTemplateByName(TemplateName)=nil) then
-      TemplateName:=FileDescNamePascalUnit;
-    NewUnitFormPopupMenu.Tag:=1;
-  end else begin
-    TemplateName:=EnvironmentOptions.NewFormTemplate;
-    if (TemplateName='') or (Category.FindTemplateByName(TemplateName)=nil) then
-      TemplateName:=FileDescNameLCLForm;
-    NewUnitFormPopupMenu.Tag:=2;
-  end;
-  // create menu items
-  Index:=0;
-  for i:=0 to Category.Count-1 do begin
-    CurTemplate:=Category[i];
-    if not CurTemplate.VisibleInNewDialog then continue;
-    if Index<NewUFSetDefaultMenuItem.Count then
-      Item:=NewUFSetDefaultMenuItem[Index]
-    else begin
-      Item:=TMenuItem.Create(NewUFSetDefaultMenuItem);
-      Item.Name:='NewUFSetDefaultMenuItem'+IntToStr(Index);
-      Item.OnClick:=@NewUnitFormDefaultClick;
-      NewUFSetDefaultMenuItem.Add(Item);
-    end;
-    Item.Caption:=CurTemplate.LocalizedName;
-    Item.ShowAlwaysCheckable:=true;
-    Item.Checked:=SysUtils.CompareText(TemplateName,CurTemplate.Name)=0;
-    inc(Index);
-  end;
-  // remove unneeded items
-  while NewUFSetDefaultMenuItem.Count>Index do
-    NewUFSetDefaultMenuItem.Items[NewUFSetDefaultMenuItem.Count-1].Free;
 end;
 
 procedure TMainIDEBar.DoActive;
@@ -512,9 +438,10 @@ begin
       if ANewHeight <> Constraints.MaxHeight then
       begin
         Constraints.MaxHeight := ANewHeight;
-        Constraints.MinHeight := Constraints.MaxHeight;
-        ClientHeight := Constraints.MaxHeight;
-      end;
+        Constraints.MinHeight := ANewHeight;
+        ClientHeight := ANewHeight;
+      end else if ClientHeight <> ANewHeight then
+        ClientHeight := ANewHeight;
     end else
     if Constraints.MaxHeight <> 0 then
     begin
@@ -612,57 +539,6 @@ begin
   end;
 end;
 
-procedure TMainIDEBar.OpenFilePopupMenuPopup(Sender: TObject);
-var
-  CurIndex: integer;
-  OpenMenuItem: TPopupMenu;
-
-  procedure AddFile(const Filename: string);
-  var
-    AMenuItem: TMenuItem;
-  begin
-    if OpenFilePopupMenu.Items.Count > CurIndex then
-      AMenuItem := OpenFilePopupMenu.Items[CurIndex]
-    else
-    begin
-      Assert(Assigned(FMainOwningComponent));
-      AMenuItem := TMenuItem.Create(FMainOwningComponent);
-      AMenuItem.Name := OpenFilePopupMenu.Name + 'Recent' + IntToStr(CurIndex);
-      Assert(Assigned(OpenFilePopupHandler));
-      AMenuItem.OnClick := OpenFilePopupHandler; // mnuOpenFilePopupClick;
-      OpenFilePopupMenu.Items.Add(AMenuItem);
-    end;
-    AMenuItem.Caption := Filename;
-    inc(CurIndex);
-  end;
-
-  procedure AddFiles(List: TStringList; MaxCount: integer);
-  var
-    i: integer;
-  begin
-    i := 0;
-    while (i < List.Count) and (i < MaxCount) do
-    begin
-      AddFile(List[i]);
-      inc(i);
-    end;
-  end;
-
-begin
-  // fill the PopupMenu:
-  CurIndex := 0;
-  // first add 8 recent projects
-  AddFiles(EnvironmentOptions.RecentProjectFiles, 8);
-  // add a separator
-  AddFile('-');
-  // add 12 recent files
-  AddFiles(EnvironmentOptions.RecentOpenFiles, 12);
-  OpenMenuItem := OpenFilePopupMenu;
-  // remove unused menuitems
-  while OpenMenuItem.Items.Count > CurIndex do
-    OpenMenuItem.Items[OpenMenuItem.Items.Count - 1].Free;
-end;
-
 procedure TMainIDEBar.WndProc(var Message: TLMessage);
 begin
   inherited WndProc(Message);
@@ -701,22 +577,6 @@ end;
 
 procedure TMainIDEBar.CreatePopupMenus(TheOwner: TComponent);
 begin
-  // create the popupmenu for the OpenFileArrowSpeedBtn
-  OpenFilePopUpMenu := TPopupMenu.Create(TheOwner);
-  OpenFilePopupMenu.Name:='OpenFilePopupMenu';
-
-  SetBuildModePopupMenu:=TPopupMenu.Create(TheOwner);
-  SetBuildModePopupMenu.Name:='SetBuildModePopupMenu';
-
-  NewUnitFormPopupMenu:=TPopupMenu.Create(TheOwner);
-  NewUnitFormPopupMenu.Name:='NewUnitFormPopupMenu';
-  NewUnitFormPopupMenu.OnPopup:=@NewUnitFormPopupMenuPopup;
-
-  NewUFSetDefaultMenuItem:=TMenuItem.Create(TheOwner);
-  NewUFSetDefaultMenuItem.Name:='NewUFSetDefaultMenuItem';
-  NewUFSetDefaultMenuItem.Caption:=lisSetDefault;
-  NewUnitFormPopupMenu.Items.Add(NewUFSetDefaultMenuItem);
-
   OptionsPopupMenu := TPopupMenu.Create(TheOwner);
   OptionsPopupMenu.Images := IDEImages.Images_16;
   OptionsMenuItem := TMenuItem.Create(TheOwner);
@@ -745,18 +605,17 @@ begin
   if EnvironmentOptions.Desktop.ComponentPaletteOptions.Visible then
   begin
     CoolBar.Align := alLeft;
-    CoolBar.Width := EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarWidth;
+    CoolBar.Width := EnvironmentOptions.Desktop.IDECoolBarOptions.Width;
   end
   else
     CoolBar.Align := alClient;
 
   // IDE Coolbar object wraps the actual CoolBar.
   IDECoolBar := TIDECoolBar.Create(CoolBar);
-  IDECoolBar.IsVisible := EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarVisible;;
+  IDECoolBar.IsVisible := EnvironmentOptions.Desktop.IDECoolBarOptions.Visible;
   CoolBar.OnChange := @CoolBarOnChange;
   CreatePopupMenus(TheOwner);
   CoolBar.PopupMenu := OptionsPopupMenu;
-  OpenFilePopupMenu.OnPopup := @OpenFilePopupMenuPopup;
 
   // Component palette
   ComponentPageControl := TPageControl.Create(TheOwner);
@@ -820,14 +679,14 @@ var
 begin
   CoolBarOpts := EnvironmentOptions.Desktop.IDECoolBarOptions;
   //read general settings
-  if not (CoolBarOpts.IDECoolBarGrabStyle in [0..5]) then
-    CoolBarOpts.IDECoolBarGrabStyle := 4;
-  Coolbar.GrabStyle := TGrabStyle(CoolBarOpts.IDECoolBarGrabStyle);
-  if not (CoolBarOpts.IDECoolBarGrabWidth in [1..50]) then
-    CoolBarOpts.IDECoolBarGrabWidth := 5;
-  Coolbar.GrabWidth := CoolBarOpts.IDECoolBarGrabWidth;
-  Coolbar.BandBorderStyle := TBorderStyle(CoolBarOpts.IDECoolBarBorderStyle);
-  Coolbar.Width := CoolBarOpts.IDECoolBarWidth;
+  if not (CoolBarOpts.GrabStyle in [0..5]) then
+    CoolBarOpts.GrabStyle := 4;
+  Coolbar.GrabStyle := TGrabStyle(CoolBarOpts.GrabStyle);
+  if not (CoolBarOpts.GrabWidth in [1..50]) then
+    CoolBarOpts.GrabWidth := 5;
+  Coolbar.GrabWidth := CoolBarOpts.GrabWidth;
+  Coolbar.BandBorderStyle := TBorderStyle(CoolBarOpts.BorderStyle);
+  Coolbar.Width := CoolBarOpts.Width;
   //read toolbars
   CoolBar.Bands.Clear;
   IDECoolBar.CopyFromOptions(CoolBarOpts);
@@ -836,7 +695,7 @@ begin
   begin
     CoolBand := CoolBar.Bands.Add;
     CoolBand.Break := IDECoolBar.ToolBars[I].Break;
-    CoolBand.Control := IDECoolBar.ToolBars[I].Toolbar;
+    CoolBand.Control := IDECoolBar.ToolBars[I].ToolBar;
     CoolBand.MinWidth := 25;
     CoolBand.MinHeight := 22;
     CoolBand.FixedSize := True;
@@ -846,7 +705,7 @@ begin
   end;
   CoolBar.AutosizeBands;
 
-  CoolBar.Visible := CoolBarOpts.IDECoolBarVisible;
+  CoolBar.Visible := CoolBarOpts.Visible;
   itmViewIDESpeedButtons.Checked := CoolBar.Visible;
   MainSplitter.Align := alLeft;
   MainSplitter.Visible := Coolbar.Visible and ComponentPageControl.Visible;
@@ -863,7 +722,7 @@ end;
 
 procedure TMainIDEBar.MainSplitterMoved(Sender: TObject);
 begin
-  EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarWidth := CoolBar.Width;
+  EnvironmentOptions.Desktop.IDECoolBarOptions.Width := CoolBar.Width;
   SetMainIDEHeight;
 end;
 
@@ -878,7 +737,7 @@ begin
   if not (Assigned(EnvironmentOptions) and Assigned(CoolBar) and Assigned(ComponentPageControl)) then
     Exit;
 
-  if EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarVisible then
+  if EnvironmentOptions.Desktop.IDECoolBarOptions.Visible then
   begin
     for I := 0 to CoolBar.Bands.Count-1 do
     begin
@@ -951,7 +810,7 @@ begin
     if CoolBar.Align = alClient then
     begin
       CoolBar.Width := 230;
-      EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarWidth := 230;
+      EnvironmentOptions.Desktop.IDECoolBarOptions.Width := 230;
     end;
     CoolBar.Align := alLeft;
     CoolBar.Vertical := False;
@@ -979,7 +838,7 @@ begin
   itmViewIDESpeedButtons.Checked := SpeedButtonsVisible;
   CoolBar.Visible := SpeedButtonsVisible;
   MainSplitter.Visible := SpeedButtonsVisible;
-  EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarVisible := SpeedButtonsVisible;
+  EnvironmentOptions.Desktop.IDECoolBarOptions.Visible := SpeedButtonsVisible;
   MainSplitter.Visible := Coolbar.Visible and ComponentPageControl.Visible;
   SetMainIDEHeight;
 end;

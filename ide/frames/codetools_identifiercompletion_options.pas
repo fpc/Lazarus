@@ -70,18 +70,18 @@ end;
 procedure TCodetoolsIndentifierCompletionOptionsFrame.Setup(
   ADialog: TAbstractOptionsEditorDialog);
 begin
-  ICOpenDividerBevel.Caption:=lisIdCOpen;
+  ICOpenDividerBevel.Caption:=lisIdCOpening;
   ICAutoStartAfterPointCheckBox.Caption:=lisAutomaticallyInvokeAfterPoint;
   ICShowHelpCheckBox.Caption:=lisShowHelp;
   ICShowHelpCheckBox.Hint:=lisBestViewedByInstallingAHTMLControlLikeTurbopowerip;
 
-  ICAddDividerBevel.Caption:=lisIdCAdd;
+  ICAddDividerBevel.Caption:=lisIdCAddition;
   ICAddSemicolonCheckBox.Caption:=dlgAddSemicolon;
   ICAddAssignOperatorCheckBox.Caption:=dlgAddAssignmentOperator;
   ICAddDoCheckBox.Caption:=lisAddKeywordDo;
   ICAutoAddParameterBracketsCheckBox.Caption:=lisAddParameterBrackets;
 
-  ICSortDividerBevel.Caption:=lisSort;
+  ICSortDividerBevel.Caption:=lisSorting;
   ICSortForHistoryCheckBox.Caption:=lisShowRecentlyUsedIdentifiersAtTop;
   ICSortForScopeCheckBox.Caption:=lisSortForScope;
   ICSortForScopeCheckBox.Hint:=lisForExampleShowAtTopTheLocalVariablesThenTheMembers;

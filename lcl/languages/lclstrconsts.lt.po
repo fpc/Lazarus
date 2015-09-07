@@ -420,6 +420,14 @@ msgstr "&Aplankas"
 msgid "Docking"
 msgstr "Pritvirtinimas"
 
+#: lclstrconsts.rsdocopy
+msgid "Copy"
+msgstr ""
+
+#: lclstrconsts.rsdopaste
+msgid "Paste"
+msgstr ""
+
 #: lclstrconsts.rsduplicateiconformat
 msgid "Duplicate icon format."
 msgstr "Piktogramos formatai dubliuojasi."

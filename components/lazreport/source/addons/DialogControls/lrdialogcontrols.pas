@@ -105,6 +105,7 @@ type
     constructor Create(AOwnerPage:TfrPage); override;
     procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
     procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
+    procedure Assign(Source: TPersistent); override;
   published
     property Alignment: TAlignment read GetAlignment write SetAlignment;
     property WordWrap:boolean read GetWordWrap write SetWordWrap;
@@ -170,6 +171,7 @@ type
     constructor Create(AOwnerPage:TfrPage); override;
     procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
     procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
+    procedure Assign(Source: TPersistent); override;
   published
     property AutoSize;
     property Color;
@@ -194,6 +196,7 @@ type
     constructor Create(AOwnerPage:TfrPage); override;
     procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
     procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
+    procedure Assign(Source: TPersistent); override;
   published
     property AutoSize;
     property Color;
@@ -229,6 +232,7 @@ type
     constructor Create(AOwnerPage:TfrPage); override;
     procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
     procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
+    procedure Assign(Source: TPersistent); override;
   published
     property Color;
     property Enabled;
@@ -257,6 +261,7 @@ type
     constructor Create(AOwnerPage:TfrPage); override;
     procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
     procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
+    procedure Assign(Source: TPersistent); override;
   published
     property Color;
     property Enabled;
@@ -283,6 +288,7 @@ type
     constructor Create(AOwnerPage:TfrPage); override;
     procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
     procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
+    procedure Assign(Source: TPersistent); override;
   published
     property Color;
     property Enabled;
@@ -308,6 +314,7 @@ type
     procedure UpdateControlPosition; override;
     procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
     procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
+    procedure Assign(Source: TPersistent); override;
   published
     property ButtonOrder: TButtonOrder read GetButtonOrder write SetButtonOrder default boDefault;
     property ShowButtons: TPanelButtons read GetShowButtons write SetShowButtons default DefShowButtons;
@@ -330,13 +337,12 @@ type
   protected
     procedure PaintDesignControl; override;
     function CreateControl:TControl;override;
-    //procedure AfterCreate;override;
     function ExecMetod(const AName: String; p1, p2, p3: Variant; var Val: Variant):boolean;override;
   public
     constructor Create(AOwnerPage:TfrPage); override;
     procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
     procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
-
+    procedure Assign(Source: TPersistent); override;
   published
     property Color;
     property Enabled;
@@ -363,6 +369,7 @@ type
     constructor Create(AOwnerPage:TfrPage); override;
     procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
     procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
+    procedure Assign(Source: TPersistent); override;
   published
     property Color;
     property Enabled;
@@ -558,6 +565,16 @@ begin
   XML.SetValue(Path+'ItemIndex/Value'{%H-}, ItemIndex);
 end;
 
+procedure TlrRadioGroup.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TlrRadioGroup then
+  begin
+    Items.Assign(TlrRadioGroup(Source).Items);
+    ItemIndex:=TlrRadioGroup(Source).ItemIndex;
+  end;
+end;
+
 { TlrCheckListBox }
 
 function TlrCheckListBox.GetItemIndex: integer;
@@ -683,6 +700,16 @@ begin
   inherited SaveToXML(XML, Path);
   XML.SetValue(Path+'Items/Text/Value'{%H-}, Items.Text);
   XML.SetValue(Path+'ItemIndex/Value'{%H-}, ItemIndex);
+end;
+
+procedure TlrCheckListBox.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TlrCheckListBox then
+  begin
+    Items.Assign(TlrCheckListBox(Source).Items);
+    ItemIndex:=TlrCheckListBox(Source).ItemIndex;
+  end;
 end;
 
 { TlrButtonPanel }
@@ -811,6 +838,16 @@ begin
   XML.SetValue(Path+'ShowButtons', GetSaveProperty('ShowButtons'));
 end;
 
+procedure TlrButtonPanel.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TlrButtonPanel then
+  begin
+    ButtonOrder:=TlrButtonPanel(Source).ButtonOrder;
+    ShowButtons:=TlrButtonPanel(Source).ShowButtons;
+  end;
+end;
+
 { TlrDateEdit }
 
 function TlrDateEdit.GetDate: TDateTime;
@@ -861,6 +898,13 @@ end;
 procedure TlrDateEdit.SaveToXML(XML: TLrXMLConfig; const Path: String);
 begin
   inherited SaveToXML(XML, Path);
+end;
+
+procedure TlrDateEdit.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TlrDateEdit then
+    Date:=TlrDateEdit(Source).Date;
 end;
 
 { TlrListBox }
@@ -932,6 +976,16 @@ begin
   inherited SaveToXML(XML, Path);
   XML.SetValue(Path+'Items/Text/Value'{%H-}, Items.Text);
   XML.SetValue(Path+'ItemIndex/Value'{%H-}, ItemIndex);
+end;
+
+procedure TlrListBox.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TlrListBox then
+  begin
+    Items.Assign(TlrListBox(Source).Items);
+    ItemIndex:=TlrListBox(Source).ItemIndex;
+  end;
 end;
 
 { TlrMemo }
@@ -1109,6 +1163,18 @@ begin
   XML.SetValue(Path+'DropDownCount/Value'{%H-}, DropDownCount);
 end;
 
+procedure TlrComboBox.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TlrComboBox then
+  begin
+    Style:=TlrComboBox(Source).Style;
+    Items.Assign(TlrComboBox(Source).Items);
+    ItemIndex:=TlrComboBox(Source).ItemIndex;
+    DropDownCount:=TlrComboBox(Source).DropDownCount;
+  end;
+end;
+
 { TlrCheckBox }
 
 type
@@ -1177,6 +1243,13 @@ begin
   XML.SetValue(Path+'Checked/Value'{%H-}, Checked);
 end;
 
+procedure TlrCheckBox.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TlrCheckBox then
+    Checked:=TlrCheckBox(Source).Checked;
+end;
+
 { TlrButton }
 
 function TlrButton.GetKind: TBitBtnKind;
@@ -1226,6 +1299,13 @@ procedure TlrButton.SaveToXML(XML: TLrXMLConfig; const Path: String);
 begin
   inherited SaveToXML(XML, Path);
   XML.SetValue(Path+'Kind/Value', GetSaveProperty('Kind'));
+end;
+
+procedure TlrButton.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TlrButton then
+    Kind:=TlrButton(Source).Kind;
 end;
 
 { TlrEdit }
@@ -1324,6 +1404,16 @@ begin
   inherited SaveToXML(XML, Path);
   XML.SetValue(Path+'WordWrap/Value'{%H-}, WordWrap);
   XML.SetValue(Path+'Alignment/Value', GetSaveProperty('Alignment'));
+end;
+
+procedure TlrLabel.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TlrLabel then
+  begin
+    Alignment:=TlrLabel(Source).Alignment;
+    WordWrap:=TlrLabel(Source).WordWrap;
+  end;
 end;
 
 

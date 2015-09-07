@@ -4,14 +4,14 @@ object Form1: TForm1
   Top = 194
   Width = 535
   BorderStyle = bsSingle
-  Caption = 'TDictionaryStringList Demo'
+  Caption = 'TLookupStringList Demo'
   ClientHeight = 353
   ClientWidth = 535
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '1.4.0.4'
+  LCLVersion = '1.5'
   object btnDedupeMemo: TButton
     Left = 346
     Height = 25
@@ -32,17 +32,17 @@ object Form1: TForm1
   end
   object lblTime: TLabel
     Left = 16
-    Height = 15
+    Height = 17
     Top = 48
-    Width = 30
+    Width = 32
     Caption = 'Time:'
     ParentColor = False
   end
   object lblLines: TLabel
     Left = 130
-    Height = 15
+    Height = 17
     Top = 48
-    Width = 90
+    Width = 98
     Caption = 'Duplicated Lines:'
     ParentColor = False
   end

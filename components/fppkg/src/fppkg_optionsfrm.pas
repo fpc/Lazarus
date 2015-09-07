@@ -34,8 +34,8 @@ unit fppkg_optionsfrm;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  ButtonPanel, StdCtrls, EditBtn, ExtCtrls, Buttons, pkgoptions, pkgglobals;
+  SysUtils, Forms, Dialogs, ComCtrls, ButtonPanel, StdCtrls, ExtCtrls, Buttons,
+  pkgoptions, pkgglobals;
 
 type
   TPkgColumn = record
@@ -126,9 +126,8 @@ type
     procedure RemoveFromVisibleColumnsButtonClick(Sender: TObject);
   private
     procedure SetupColumnVisibility;
-    { private declarations }
   public
-    { public declarations }
+
   end; 
 
 var

@@ -43,7 +43,7 @@ interface
 
 uses
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeCache, BasicCodeTools,
-  typinfo, LinkScanner, AVL_Tree, KeywordFuncLists;
+  typinfo, LinkScanner, AVL_Tree, KeywordFuncLists, LazDbgLog;
   
 type
   // Insert policy types for class parts (properties, variables, method defs)

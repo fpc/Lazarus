@@ -1,7 +1,7 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="7"/>
+    <Version Value="9"/>
     <General>
       <Flags>
         <MainUnitHasCreateFormStatements Value="False"/>
@@ -10,8 +10,10 @@
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
-      <TargetFileExt Value=""/>
     </General>
+    <BuildModes Count="1">
+      <Item1 Name="default" Default="True"/>
+    </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
       <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
@@ -31,31 +33,28 @@
         <PackageName Value="CodeTools"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="2">
       <Unit0>
         <Filename Value="fixdefinitionorder.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="FixDefinitionOrder"/>
       </Unit0>
       <Unit1>
-        <Filename Value="scanexamples/simplefunctions.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="SimpleFunctions"/>
-      </Unit1>
-      <Unit2>
         <Filename Value="scanexamples/wrongforwarddefinitions.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="WrongForwardDefinitions"/>
-      </Unit2>
+      </Unit1>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="8"/>
+    <Version Value="11"/>
     <SearchPaths>
-      <OtherUnitFiles Value="scanexamples/"/>
+      <OtherUnitFiles Value="scanexamples"/>
     </SearchPaths>
-    <Other>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
+    <Parsing>
+      <SyntaxOptions>
+        <UseAnsiStrings Value="False"/>
+      </SyntaxOptions>
+    </Parsing>
   </CompilerOptions>
 </CONFIG>

@@ -87,7 +87,7 @@ implementation
 
 function TDesktopOptionsFrame.GetTitle: String;
 begin
-  Result := dlgDesktop;
+  Result := lisGeneral;
 end;
 
 procedure TDesktopOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
@@ -146,9 +146,11 @@ begin
   AutoSaveIntervalInSecsLabel.Caption := dlgIntvInSec;
 
   // desktop files
-  lblImportExport.Caption := lisImportExport;
-  ExportDesktopButton.Caption := dlgExportDesktop;
-  ImportDesktopButton.Caption := dlgImportDesktop;
+  lblImportExport.Caption := lisExportImport;
+  ExportDesktopButton.Caption := lisExport;
+  ImportDesktopButton.Caption := lisImport;
+  ExportDesktopButton.Hint := lisExportEnvironmentOptions;
+  ImportDesktopButton.Hint := lisImportEnvironmentOptions;
 end;
 
 procedure TDesktopOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -290,8 +292,7 @@ begin
           AnEnvironmentOptions.Filename := OpenDialog.Filename;
           AnEnvironmentOptions.Load(true);
           DoLoadSettings(AnEnvironmentOptions);
-          if IDEDockMaster=nil then
-            IDEWindowCreators.RestoreSimpleLayout;
+          IDEWindowCreators.RestoreSimpleLayout;
           ShowMessageFmt(lisSuccessfullyImported, [OpenDialog.Filename]);
         finally
           AnEnvironmentOptions.Free;

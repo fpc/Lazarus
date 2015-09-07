@@ -99,6 +99,7 @@ const
   var
     MousePoint: HIPoint;
   begin
+    Result:=Classes.Point(0,0); // Force sane value if mouse location not found
     if OSError(
       GetEventParameter(AEvent, kEventParamWindowMouseLocation, typeHIPoint, nil,
         SizeOf(MousePoint), nil, @MousePoint),

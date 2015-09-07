@@ -28,8 +28,7 @@ program retypepublishedvars;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CodeCache, CodeToolManager, DefineTemplates,
-  CodeAtom, CodeToolsConfig, CodeToolsStructs, PascalParserTool;
+  SysUtils, CodeCache, CodeToolManager, CodeToolsStructs;
 
 const
   ConfigFilename = 'codetools.config';

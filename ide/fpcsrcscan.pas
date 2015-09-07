@@ -31,7 +31,7 @@ unit FPCSrcScan;
 interface
 
 uses
-  Classes, SysUtils, FileProcs, DefineTemplates, CodeToolManager,
+  Classes, SysUtils, FileProcs, LazFileUtils, DefineTemplates, CodeToolManager,
   LazarusIDEStrConsts, ProgressWnd, BaseBuildManager;
 
 type

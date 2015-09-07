@@ -62,8 +62,8 @@ type
     property ShowText: Boolean read FShowText write SetShowText;
     property ShowLevel: Boolean read FShowLevel write SetShowLevel;
 
-    property ColorFore: TColor index 0 read FColorFore write SetColorInd default clBlack;
-    property ColorBack: TColor index 1 read FColorBack write SetColorInd default clWhite;
+    property ColorFore: TColor index 0 read FColorFore write SetColorInd default clLime;
+    property ColorBack: TColor index 1 read FColorBack write SetColorInd default clBlack;
     property ColorRed: TColor index 2 read FColorRed   write SetColorInd default clRed;
     property ColorYellow: TColor index 3 read FColorYellow write SetColorInd default clYellow;
 
@@ -100,6 +100,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
+    property Center default True;
     property State: TStopLights read FState write SetState;
   end;
 

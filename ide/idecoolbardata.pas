@@ -34,7 +34,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, ComCtrls, ExtCtrls, ToolWin, Controls, fgl,
-  MenuIntf, IDEImagesIntf, Laz2_XMLCfg, ToolbarConfig;
+  MenuIntf, IDEImagesIntf, Laz2_XMLCfg, ToolbarConfig, LazIDEIntf;
 
 type
 
@@ -70,12 +70,12 @@ type
   { TIDECoolBarOptions }
   TIDECoolBarOptions = class
   private
-    FIDECoolBarVisible: Boolean;
-    FIDECoolBarWidth: Integer;
-    FIDECoolBarGrabStyle: Integer;
-    FIDECoolBarGrabWidth: Integer;
-    FIDECoolBarBorderStyle: Integer; //TFormBorderStyle;
-    FIDECoolBarToolBars: TIDEToolBarOptionList;
+    FVisible: Boolean;
+    FWidth: Integer;
+    FGrabStyle: Integer;
+    FGrabWidth: Integer;
+    FBorderStyle: Integer; //TFormBorderStyle;
+    FToolBars: TIDEToolBarOptionList;
     procedure CreateDefaultToolbars;
   public
     constructor Create;
@@ -86,12 +86,12 @@ type
     procedure Load(XMLConfig: TXMLConfig; Path: String);
     procedure Save(XMLConfig: TXMLConfig; Path: String);
   public
-    property IDECoolBarVisible: Boolean read FIDECoolBarVisible write FIDECoolBarVisible;
-    property IDECoolBarWidth: Integer read FIDECoolBarWidth write FIDECoolBarWidth;
-    property IDECoolBarGrabStyle: Integer read FIDECoolBarGrabStyle write FIDECoolBarGrabStyle;
-    property IDECoolBarGrabWidth: Integer read FIDECoolBarGrabWidth write FIDECoolBarGrabWidth;
-    property IDECoolBarBorderStyle: Integer read FIDECoolBarBorderStyle write FIDECoolBarBorderStyle;
-    property IDECoolBarToolBars: TIDEToolBarOptionList read FIDECoolBarToolBars;
+    property Visible: Boolean read FVisible write FVisible;
+    property Width: Integer read FWidth write FWidth;
+    property GrabStyle: Integer read FGrabStyle write FGrabStyle;
+    property GrabWidth: Integer read FGrabWidth write FGrabWidth;
+    property BorderStyle: Integer read FBorderStyle write FBorderStyle;
+    property ToolBars: TIDEToolBarOptionList read FToolBars;
   end;
 
   { TDefaultCoolBarOptions }
@@ -104,48 +104,28 @@ type
   // Actual Coolbar and its member Toolbars
 
   TOnToolBarClick = procedure(Sender: TObject) of object;
-  TIDEMenuItemList = specialize TFPGList<TIDEMenuItem>;
 
   { TIDEToolBar }
-  TIDEToolBar = class
+  TIDEToolBar = class(TIDEToolbarBase)
    private
-     FToolBar: TToolbar;
-     FButtonList: TIDEMenuItemList;
      FButtonNames: TStringList;
-     FUpdateTimer: TTimer;
      FPosition: integer;
      FBreak: Boolean;
      FOnToolbarClick: TOnToolBarClick;
-     procedure UpdateBar(Sender: TObject);
      procedure DoToolBarClick(Sender: TObject);
-     procedure AddDivider;
-     function GetCount: Integer;
-   protected
-     procedure AddButton(AMenuItem: TIDEMenuItem);
-     procedure PositionAtEnd(AToolbar: TToolbar; AButton: TToolButton);
    public
-     constructor Create;
+     constructor Create(AOwner: TComponent); override;
      destructor Destroy; override;
-     procedure AddCustomItems(Index: Integer);
      procedure ClearToolbar;
+     procedure AddCustomItems(Index: Integer);
    public
      property Position: Integer read FPosition write FPosition;
      property Break: Boolean read FBreak write FBreak;
      property ButtonNames: TStringList read FButtonNames;
-     property Toolbar: TToolBar read FToolBar;
      property OnToolBarClick: TOnToolbarClick read FOnToolbarClick write FOnToolbarClick;
    end;
 
   TIDEToolBarList = specialize TFPGObjectList<TIDEToolBar>;
-
-  { TIDEToolBarToolButton }
-  TIDEToolBarToolButton = class(TToolButton)
-  private
-    FMenuItem: TIDEMenuItem;
-  public
-    procedure Click; override;
-    property IdeMenuItem: TIDEMenuItem read FMenuItem write FMenuItem;
-  end;
 
   { TIDECoolBar }
   TIDECoolBar = class
@@ -165,7 +145,7 @@ type
     procedure CopyFromOptions(Options: TIDECoolBarOptions);
     procedure CopyToOptions(Options: TIDECoolBarOptions);
     function Add: TIDEToolBar;
-    function FindByToolBar(const ToolBar: TToolBar): Integer;
+    function FindByToolBar(const aToolBar: TToolBar): Integer;
     procedure Sort;
     function IsDefaultCoolbar: Boolean;
     function IsDefaultToolbar: Boolean;
@@ -180,8 +160,6 @@ var
   IDECoolBar: TIDECoolBar;
 
 implementation
-
-uses MainBar;
 
 const
   BasePath = 'IDECoolBarOptions/';
@@ -263,38 +241,38 @@ end;
 constructor TIDECoolBarOptions.Create;
 begin
   inherited Create;
-  FIDECoolBarToolBars := TIDEToolBarOptionList.Create;
+  FToolBars := TIDEToolBarOptionList.Create;
 end;
 
 destructor TIDECoolBarOptions.Destroy;
 begin
-  FIDECoolBarToolBars.Free;
+  FToolBars.Free;
   inherited Destroy;
 end;
 
 procedure TIDECoolBarOptions.Clear;
 begin
-  FIDECoolBarToolBars.Clear;
+  FToolBars.Clear;
 end;
 
 procedure TIDECoolBarOptions.Assign(Source: TIDECoolBarOptions);
 begin
-  FIDECoolBarVisible := Source.FIDECoolBarVisible;
-  FIDECoolBarWidth := Source.FIDECoolBarWidth;
-  FIDECoolBarGrabStyle := Source.FIDECoolBarGrabStyle;
-  FIDECoolBarGrabWidth := Source.FIDECoolBarGrabWidth;
-  FIDECoolBarBorderStyle := Source.FIDECoolBarBorderStyle;
-  FIDECoolBarToolBars.Assign(Source.FIDECoolBarToolBars);
+  FVisible := Source.FVisible;
+  FWidth := Source.FWidth;
+  FGrabStyle := Source.FGrabStyle;
+  FGrabWidth := Source.FGrabWidth;
+  FBorderStyle := Source.FBorderStyle;
+  FToolBars.Assign(Source.FToolBars);
 end;
 
 function TIDECoolBarOptions.EqualToolbars(Opts: TIDECoolBarOptions): boolean;
 var
   I: Integer;
 begin
-  Result := (FIDECoolBarToolBars.Count = Opts.FIDECoolBarToolBars.Count);
+  Result := (FToolBars.Count = Opts.FToolBars.Count);
   if not Result then Exit;
-  for I := 0 to FIDECoolBarToolBars.Count-1 do
-    if not FIDECoolBarToolBars[I].Equals(Opts.FIDECoolBarToolBars[I]) then Exit(False);
+  for I := 0 to FToolBars.Count-1 do
+    if not FToolBars[I].Equals(Opts.FToolBars[I]) then Exit(False);
 end;
 
 procedure TIDECoolBarOptions.CreateDefaultToolbars;
@@ -309,14 +287,16 @@ begin
   begin
     Add('IDEMainMenu/File/itmFileNew/itmFileNewForm');
     Add('IDEMainMenu/File/itmFileNew/itmFileNewUnit');
-    Add('---------------');
+    Add(cIDEToolbarDivider);
     Add('IDEMainMenu/File/itmFileOpenSave/itmFileOpen');
     Add('IDEMainMenu/File/itmFileOpenSave/itmFileSave');
     Add('IDEMainMenu/File/itmFileOpenSave/itmFileSaveAll');
-    Add('---------------');
+    Add(cIDEToolbarDivider);
     Add('IDEMainMenu/View/itmViewMainWindows/itmViewToggleFormUnit');
+    Add(cIDEToolbarDivider);
+    Add('IDEMainMenu/Tools/itmSecondaryTools/itmToolManageDesktops');
   end;
-  FIDECoolBarToolBars.Add(ToolBarOpts);
+  FToolBars.Add(ToolBarOpts);
 
   //debug toolbar defaults
   ToolBarOpts := TIDEToolBarOptions.Create;
@@ -326,7 +306,7 @@ begin
   begin
     Add('IDEMainMenu/Project/itmProjectAddRemoveSection/itmProjectViewUnits');
     Add('IDEMainMenu/Project/itmProjectAddRemoveSection/itmProjectViewForms');
-    Add('---------------');
+    Add(cIDEToolbarDivider);
     Add('IDEMainMenu/Project/itmProjectAddRemoveSection/itmProjectBuildMode');
     Add('IDEMainMenu/Run/itmRunnning/itmRunMenuRun');
     Add('IDEMainMenu/Run/itmRunnning/itmRunMenuPause');
@@ -335,7 +315,7 @@ begin
     Add('IDEMainMenu/Run/itmRunnning/itmRunMenuStepInto');
     Add('IDEMainMenu/Run/itmRunnning/itmRunMenuStepOut');
   end;
-  FIDECoolBarToolBars.Add(ToolBarOpts);
+  FToolBars.Add(ToolBarOpts);
 end;
 
 procedure TIDECoolBarOptions.Load(XMLConfig: TXMLConfig; Path: String);
@@ -348,18 +328,18 @@ begin
   ToolbarCount := XMLConfig.GetValue(Path + 'Count', 0);
   if ToolBarCount = 0 then  // Old format
     ToolbarCount := XMLConfig.GetValue(Path + 'ToolBarCount/Value', 0);
-  FIDECoolBarVisible := XMLConfig.GetValue(Path + 'Visible/Value', True);
-  FIDECoolBarWidth := XMLConfig.GetValue(Path + 'Width/Value', 230);
-  FIDECoolBarGrabStyle := XMLConfig.GetValue(Path + 'GrabStyle/Value', 1);
-  FIDECoolBarGrabWidth := XMLConfig.GetValue(Path + 'GrabWidth/Value', 5);
-  FIDECoolBarBorderStyle := XMLConfig.GetValue(Path + 'BorderStyle/Value', 1);
+  FVisible := XMLConfig.GetValue(Path + 'Visible/Value', True);
+  FWidth := XMLConfig.GetValue(Path + 'Width/Value', 230);
+  FGrabStyle := XMLConfig.GetValue(Path + 'GrabStyle/Value', 1);
+  FGrabWidth := XMLConfig.GetValue(Path + 'GrabWidth/Value', 5);
+  FBorderStyle := XMLConfig.GetValue(Path + 'BorderStyle/Value', 1);
   if ToolBarCount > 0 then
   begin
-    FIDECoolBarToolBars.Clear;
+    FToolBars.Clear;
     for I := 0 to ToolbarCount-1 do
     begin
       ToolBarOpt := TIDEToolBarOptions.Create;
-      FIDECoolBarToolBars.Add(ToolBarOpt);
+      FToolBars.Add(ToolBarOpt);
       ToolBarOpt.FPosition := I;
       ToolBarOpt.Load(XMLConfig, Path + 'ToolBar' + IntToStr(I+1) + '/');
     end;
@@ -377,17 +357,17 @@ begin
   try
     Path := Path + BasePath;
     XMLConfig.DeletePath(Path);
-    XMLConfig.SetDeleteValue(Path + 'Visible/Value', FIDECoolBarVisible, True);
-    XMLConfig.SetDeleteValue(Path + 'Width/Value', FIDECoolBarWidth, 0);
-    XMLConfig.SetDeleteValue(Path + 'GrabStyle/Value', FIDECoolBarGrabStyle, 1);
-    XMLConfig.SetDeleteValue(Path + 'GrabWidth/Value', FIDECoolBarGrabWidth, 5);
-    XMLConfig.SetDeleteValue(Path + 'BorderStyle/Value', FIDECoolBarBorderStyle, 1);
+    XMLConfig.SetDeleteValue(Path + 'Visible/Value', FVisible, True);
+    XMLConfig.SetDeleteValue(Path + 'Width/Value', FWidth, 0);
+    XMLConfig.SetDeleteValue(Path + 'GrabStyle/Value', FGrabStyle, 1);
+    XMLConfig.SetDeleteValue(Path + 'GrabWidth/Value', FGrabWidth, 5);
+    XMLConfig.SetDeleteValue(Path + 'BorderStyle/Value', FBorderStyle, 1);
     if EqualToolbars(DefaultOpts) then Exit;
-    if FIDECoolBarToolBars.Count > 0 then
+    if FToolBars.Count > 0 then
     begin
-      XMLConfig.SetDeleteValue(Path + 'Count', FIDECoolBarToolBars.Count, 0);
-      for I := 0 to FIDECoolBarToolBars.Count - 1 do
-        FIDECoolBarToolBars[I].Save(XMLConfig, Path + 'ToolBar' + IntToStr(I+1) + '/');
+      XMLConfig.SetDeleteValue(Path + 'Count', FToolBars.Count, 0);
+      for I := 0 to FToolBars.Count - 1 do
+        FToolBars[I].Save(XMLConfig, Path + 'ToolBar' + IntToStr(I+1) + '/');
     end;
   finally
     DefaultOpts.Free;
@@ -400,11 +380,11 @@ constructor TDefaultCoolBarOptions.Create;
 begin
   inherited Create;
   //coolbar defaults
-  FIDECoolBarVisible := True;
-  FIDECoolBarWidth := 230;
-  FIDECoolBarGrabStyle := 1;
-  FIDECoolBarGrabWidth := 5;
-  FIDECoolBarBorderStyle := 1;
+  FVisible := True;
+  FWidth := 230;
+  FGrabStyle := 1;
+  FGrabWidth := 5;
+  FBorderStyle := 1;
   //toolbar defaults
   CreateDefaultToolbars;
 end;
@@ -415,36 +395,12 @@ begin
 end;
 
 { TIDEToolBar }
-procedure TIDEToolBar.UpdateBar(Sender: TObject);
-var
-  I, J: Integer;
-begin
-  ToolBar.BeginUpdate;
-  try
-    for I := ToolBar.ButtonCount - 1 downto 0 do
-    begin
-      if ToolBar.Buttons[I].Tag <> 0 then
-      begin
-        J := ToolBar.Buttons[I].Tag - 1;
-        if FButtonList[J] <> nil then
-          ToolBar.Buttons[I].Enabled := FButtonList[J].Enabled;
-      end;
-    end;
-  finally
-    ToolBar.EndUpdate;
-  end;
-end;
 
-procedure TIDEToolBar.DoToolBarClick(Sender: TObject);
+constructor TIDEToolBar.Create(AOwner: TComponent);
 begin
-  if Assigned(FOnToolbarClick) then
-    FOnToolbarClick(Toolbar);
-end;
-
-constructor TIDEToolBar.Create;
-begin
+  inherited Create(AOwner);
   FToolBar := TToolbar.Create(nil);
-  with ToolBar do
+  with FToolBar do
   begin
     ButtonHeight := 22;
     ButtonWidth := 22;
@@ -459,146 +415,60 @@ begin
     ShowHint := True;
     OnClick := @DoToolBarClick;
   end;
-  FButtonList := TIDEMenuItemList.Create;
   FButtonNames := TStringList.Create;
-
-  FUpdateTimer := TTimer.Create(nil);
-  with FUpdateTimer do
-  begin
-    Interval := 500;
-    OnTimer := @UpdateBar;
-    Enabled := True;
-  end;
 end;
 
 destructor TIDEToolBar.Destroy;
 begin
-  FButtonList.Free;
-  FUpdateTimer.Free;
   FToolBar.Free;
   FButtonNames.Free;
   inherited Destroy;
 end;
 
-procedure TIDEToolBar.AddButton(AMenuItem: TIDEMenuItem);
-var
-  B: TIDEToolBarToolButton;
-  ACaption: string;
-  iPos: Integer;
-begin
-  B := TIDEToolBarToolButton.Create(ToolBar);
-  ACaption      := AMenuItem.Caption;
-  DeleteAmpersands(ACaption);
-  B.Caption     := ACaption;
-  // Get Shortcut, if any, and append to Hint
-  ACaption := ACaption + GetShortcut(AMenuItem);
-  B.Hint        := ACaption;
-  // If we have a image, us it. Otherwise supply a default.
-  if AMenuItem.ImageIndex <> -1 then
-    B.ImageIndex := AMenuItem.ImageIndex
-  else
-    B.ImageIndex := IDEImages.LoadImage(16, 'execute');
-
-  B.Style       := tbsButton;
-  if (AMenuItem.Name = 'itmFileNewForm') or (AMenuItem.Name = 'itmFileNewUnit') then
-  begin
-    B.PopupMenu := MainIDEBar.NewUnitFormPopupMenu;
-    B.Name := AMenuItem.Name;
-  end
-  else if AMenuItem.Name = 'itmProjectBuildMode' then
-  begin
-    B.Style := tbsDropDown;
-    B.DropdownMenu := MainIDEBar.SetBuildModePopupMenu;
-  end
-  else if AMenuItem.Name = 'itmFileOpen' then
-  begin
-    B.Style := tbsDropDown;
-    B.DropdownMenu := MainIDEBar.OpenFilePopUpMenu;
-  end;
-
-  B.IdeMenuItem := AMenuItem;
-  iPos := FButtonList.Add(AMenuItem);
-  B.Tag := iPos + 1;
-  //B.OnClick     := AMenuItem.OnClick;
-  PositionAtEnd(ToolBar, B);
-end;
-
-// position the button next to the last button
-procedure TIDEToolBar.PositionAtEnd(AToolbar: TToolbar; AButton: TToolButton);
-var
-  SiblingButton: TToolButton;
-begin
-  if AToolbar.ButtonCount > 0 then
-  begin
-    SiblingButton := AToolbar.Buttons[AToolbar.ButtonCount - 1];
-    AButton.SetBounds(SiblingButton.Left + SiblingButton.Width,
-      SiblingButton.Top, AButton.Width, AButton.Height);
-  end;
-  AButton.Parent := AToolbar;
-end;
-
 procedure TIDEToolBar.AddCustomItems(Index: Integer);
-const
-  cDivider = '---------------';
 var
-  MI: TIDEMenuItem;
+  mi: TIDEMenuItem;
   AName: string;
 begin
-  ToolBar.BeginUpdate;
+  FToolBar.BeginUpdate;
   try
     AName := FButtonNames[Index];
-    if (AName <> '') then
+    if AName <> '' then
     begin
-      if AName = cDivider then
+      if AName = cIDEToolbarDivider then
         AddDivider
       else
       begin
-        MI := IDEMenuRoots.FindByPath(AName, False);
-        if Assigned(MI) then
-          AddButton(MI);
+        mi := IDEMenuRoots.FindByPath(AName, False);
+        if Assigned(mi) then
+          AddButton(mi as TIDEMenuCommand);
       end;
     end;
-    UpdateBar(nil);
   finally
-    ToolBar.EndUpdate;
+    FToolBar.EndUpdate;
   end;
-end;
-
-procedure TIDEToolBar.AddDivider;
-var
-  B: TToolButton;
-begin
-  B := TToolbutton.Create(ToolBar);
-  B.Style := tbsDivider;
-  PositionAtEnd(ToolBar, B);
 end;
 
 procedure TIDEToolBar.ClearToolbar;
 var
-  I: Integer;
+  i: Integer;
 begin
-  ToolBar.BeginUpdate;
+  FToolBar.BeginUpdate;
   try
-    for i := ToolBar.ButtonCount - 1 downto 0 do
-      ToolBar.Buttons[I].Free
+    for i := FToolBar.ButtonCount - 1 downto 0 do
+      FToolBar.Buttons[i].Free
   finally
-    ToolBar.EndUpdate;
+    FToolBar.EndUpdate;
   end;
 end;
 
-function TIDEToolBar.GetCount: Integer;
+procedure TIDEToolBar.DoToolBarClick(Sender: TObject);
 begin
-  Result := FButtonList.Count;
+  if Assigned(FOnToolbarClick) then
+    FOnToolbarClick(FToolbar);
 end;
 
-
-{ TEditToolBarToolButton }
-procedure TIDEToolBarToolButton.Click;
-begin
-  inherited Click;
-  if assigned(FMenuItem) then
-    FMenuItem.TriggerClick;
-end;
+{ TIDECoolBar }
 
 procedure TIDECoolBar.SetIsVisible(AValue: Boolean);
 begin
@@ -607,7 +477,6 @@ begin
     FCoolBar.Visible := AValue;
 end;
 
-{ TIDECoolBar }
 constructor TIDECoolBar.Create(ACoolBar: TCoolBar);
 begin
   inherited Create;
@@ -654,13 +523,13 @@ var
   IDEToolBar: TIDEToolBar;
 begin
   FCoolBarToolBars.Clear;
-  for I := 0 to Options.FIDECoolBarToolBars.Count - 1 do
+  for I := 0 to Options.FToolBars.Count - 1 do
   begin
-    IDEToolBar := TIDEToolBar.Create;
+    IDEToolBar := TIDEToolBar.Create(Nil);
     FCoolBarToolBars.Add(IDEToolBar);
     IDEToolBar.Position := I;
-    IDEToolBar.Break := Options.FIDECoolBarToolBars[I].Break;
-    IDEToolBar.ButtonNames.Assign(Options.FIDECoolBarToolBars[I].ButtonNames);
+    IDEToolBar.Break := Options.FToolBars[I].Break;
+    IDEToolBar.ButtonNames.Assign(Options.FToolBars[I].ButtonNames);
   end;
 end;
 
@@ -669,11 +538,11 @@ var
   I: Integer;
   Opt: TIDEToolBarOptions;
 begin
-  Options.FIDECoolBarToolBars.Clear;
+  Options.FToolBars.Clear;
   for I := 0 to FCoolBarToolBars.Count - 1 do
   begin
     Opt := TIDEToolBarOptions.Create;
-    Options.FIDECoolBarToolBars.Add(Opt);
+    Options.FToolBars.Add(Opt);
     Opt.Position := FCoolBarToolBars[I].Position;
     Opt.Break := FCoolBarToolBars[I].Break;
     Opt.ButtonNames.Assign(FCoolBarToolBars[I].ButtonNames);
@@ -682,18 +551,18 @@ end;
 
 function TIDECoolBar.Add: TIDEToolBar;
 begin
-  Result := TIDEToolBar.Create;
+  Result := TIDEToolBar.Create(Nil);
   FCoolBarToolBars.Add(Result);
 end;
 
-function TIDECoolBar.FindByToolBar(const ToolBar: TToolBar): Integer;
+function TIDECoolBar.FindByToolBar(const aToolBar: TToolBar): Integer;
 var
   I: Integer;
 begin
   Result := -1;
   for I := 0 to FCoolbarToolBars.Count-1 do
   begin
-    if ToolBars[I].Toolbar = Toolbar then
+    if ToolBars[I].ToolBar = aToolBar then
     begin
       Result := I;
       Break;

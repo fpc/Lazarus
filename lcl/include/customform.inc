@@ -1720,6 +1720,13 @@ begin
   end;
 end;
 
+procedure TCustomForm.SetModalResult(Value: TModalResult);
+begin
+  if HandleAllocated and (Value <> FModalResult) then
+    TWSCustomFormClass(WidgetSetClass).SetModalResult(Self, Value);
+  FModalResult := Value;
+end;
+
 {------------------------------------------------------------------------------
        TCustomForm SetBorderIcons
 ------------------------------------------------------------------------------}

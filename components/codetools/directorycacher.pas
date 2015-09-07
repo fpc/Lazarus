@@ -35,8 +35,12 @@ unit DirectoryCacher;
 interface
 
 uses
-  Classes, SysUtils, LazUTF8, LazFileCache, LazFileUtils, FileProcs, AVL_Tree,
-  CodeToolsStructs;
+  // RTL + FCL
+  Classes, SysUtils, AVL_Tree,
+  // CodeTools
+  CodeToolsStructs, FileProcs,
+  // LazUtils
+  LazUTF8, LazFileCache, LazFileUtils, LazUtilities, LazDbgLog;
 
 // verbosity
 { $DEFINE CTDEBUG}

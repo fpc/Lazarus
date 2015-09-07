@@ -29,7 +29,7 @@ msgstr "Betöltés gyorsítótárból (%s = %s)"
 
 #: ipconst.httpcantloadgraphic
 msgid "Unable to load graphic %s"
-msgstr ""
+msgstr "Nem lehet betölteni a grafikát: %s"
 
 #: ipconst.httpconnect
 msgid "Connected: (%s)"
@@ -113,7 +113,7 @@ msgstr "Kísérlet az írásra: "
 
 #: ipconst.sbadframelistobject
 msgid "Unrecognized object of class %s in GIF Frame List"
-msgstr ""
+msgstr "Ismeretlen %s osztályú objektum a GIF képkockalistában"
 
 #: ipconst.sbadimagelibfileformat
 msgid "Unrecognized file format"
@@ -141,7 +141,7 @@ msgstr "Az elérési út nem létezik"
 
 #: ipconst.sbadseekorigin
 msgid "Invalid seek origin"
-msgstr ""
+msgstr "Érvénytelen kezdőpont a pozicionáláshoz"
 
 #: ipconst.sbibuffernotassigned
 msgid "Buffer not assigned"
@@ -175,11 +175,11 @@ msgstr "Érvénytelen adathosszúság"
 
 #: ipconst.sbinhexoddchar
 msgid "One odd character"
-msgstr ""
+msgstr "Egy furcsa karakter"
 
 #: ipconst.sbinhexresourceforkerr
 msgid "Resource fork present"
-msgstr ""
+msgstr "Erőforrás-elágazás"
 
 #: ipconst.sbrokerdownloadreq
 msgid "Download %s?"
@@ -215,7 +215,7 @@ msgstr "%s: az új szám túl kicsi"
 
 #: ipconst.sdestroying
 msgid "Destroying"
-msgstr ""
+msgstr "Megsemmisítés"
 
 #: ipconst.seventconnect
 msgid "Connect: Loc: %s Rem: %s"
@@ -284,7 +284,7 @@ msgstr "Az átvitelt a felhasználó megszakította"
 
 #: ipconst.shtmlcharstackoverfl
 msgid "Character stack overflow"
-msgstr ""
+msgstr "Karakter-verem túlcsordulás"
 
 #: ipconst.shtmldashexp
 msgid "- expected"
@@ -316,7 +316,7 @@ msgstr "Belső hiba"
 
 #: ipconst.shtmlinvalign
 msgid "Invalid alignment specified"
-msgstr ""
+msgstr "A megadott igazítás érvénytelen"
 
 #: ipconst.shtmlinvcolor
 msgid "Invalid color constant:"
@@ -324,15 +324,15 @@ msgstr "Érvénytelen szín-konstans:"
 
 #: ipconst.shtmlinvdir
 msgid "Invalid dir value specified"
-msgstr ""
+msgstr "A megadott irányérték érvénytelen"
 
 #: ipconst.shtmlinvframe
 msgid "Invalid frame specified"
-msgstr ""
+msgstr "A megadott keret érvénytelen"
 
 #: ipconst.shtmlinvgraphic
 msgid "Invalid graphic returned"
-msgstr ""
+msgstr "A visszaadott grafikus objektum érvénytelen"
 
 #: ipconst.shtmlinvint
 msgid "Invalid integer constant"
@@ -340,35 +340,35 @@ msgstr "Érvénytelen egész-szám konstans"
 
 #: ipconst.shtmlinvmethod
 msgid "Invalid method specified"
-msgstr ""
+msgstr "A megadott metódus érvénytelen"
 
 #: ipconst.shtmlinvpicture
 msgid "Invalid picture returned"
-msgstr ""
+msgstr "A visszaadott képobjektum érvénytelen"
 
 #: ipconst.shtmlinvrule
 msgid "Invalid rule specified"
-msgstr ""
+msgstr "A megadott szabály érvénytelen"
 
 #: ipconst.shtmlinvscope
 msgid "Invalid scope specified"
-msgstr ""
+msgstr "A megadott hatókör érvénytelen"
 
 #: ipconst.shtmlinvscroll
 msgid "Invalid scrolling specified"
-msgstr ""
+msgstr "A megadott görgetés érvénytelen"
 
 #: ipconst.shtmlinvshape
 msgid "Invalid shape specified"
-msgstr ""
+msgstr "A megadott alakzat érvénytelen"
 
 #: ipconst.shtmlinvtype
 msgid "Invalid type specified"
-msgstr ""
+msgstr "A megadott típus érvénytelen"
 
 #: ipconst.shtmlinvvaltype
 msgid "Invalid value type specified"
-msgstr ""
+msgstr "A megadott értéktípus érvénytelen"
 
 #: ipconst.shtmllineerror
 msgid "Error \"%s\" at line %d, position %d"
@@ -384,11 +384,11 @@ msgstr "OnGetImage eseménykezelő nincs hozzárendelve"
 
 #: ipconst.shtmlnographic
 msgid "Picture object contains no graphic object"
-msgstr ""
+msgstr "A képobjektum nem tartalmaz grafikus elemet"
 
 #: ipconst.shtmlnotcontainer
 msgid "Parent is not a container"
-msgstr ""
+msgstr "A szülő nem tároló"
 
 #: ipconst.shtmlresunavail
 msgid "Resource unavailable:"
@@ -532,11 +532,11 @@ msgstr "Sikerült"
 
 #: ipconst.sipicmp_ttl_expired_reassem
 msgid "Time to live expired during reassembly"
-msgstr ""
+msgstr "Élettartam lejárt az újraösszeállítás során"
 
 #: ipconst.sipicmp_ttl_expired_transit
 msgid "Time to live expired during transmit"
-msgstr ""
+msgstr "Élettartam lejárt az átvitel során"
 
 #: ipconst.sipicmp_unknown
 msgid "Unknown status"
@@ -1067,11 +1067,11 @@ msgstr "Nincs címzett megadva"
 
 #: ipconst.snoseekforread
 msgid "No seek for read"
-msgstr ""
+msgstr "Nincs pozicionálás az olvasáshoz"
 
 #: ipconst.snoseekforwrite
 msgid "No seek for write"
-msgstr ""
+msgstr "Nincs pozicionálás az íráshoz"
 
 #: ipconst.snosockerr
 msgid "Socket not assigned"
@@ -1087,7 +1087,7 @@ msgstr "Nincs elegendő adat (%s bájt) az olvasási kérés teljesítéséhez (
 
 #: ipconst.snotimererr
 msgid "Not enough system timers available"
-msgstr ""
+msgstr "Nincs elég elérhető rendszeridőzítő"
 
 #: ipconst.snowinsock2err
 msgid "%s requires WinSock 2, and this system only has WinSock 1"
@@ -1099,11 +1099,11 @@ msgstr "Cikk lekérése"
 
 #: ipconst.snsauthpass
 msgid "Authorizing password"
-msgstr "Jelszó engedélyezése"
+msgstr "Engedélyező jelszó"
 
 #: ipconst.snsauthuser
 msgid "Authorizing user"
-msgstr "Felhasználó engedélyezése"
+msgstr "Engedélyező felhasználó"
 
 #: ipconst.snsbody
 msgid "Retrieving body"
@@ -1238,11 +1238,11 @@ msgstr "Csoport kiválasztása"
 
 #: ipconst.soriginfrombegin
 msgid "When origin is soFromBeginning, Offset must be >= 0"
-msgstr ""
+msgstr "Amikor a kezdőpont soFromBeginning, az eltolásnak >= 0 kell lennie"
 
 #: ipconst.soriginfromend
 msgid "When origin is soFromEnd, Offset must be <= 0"
-msgstr ""
+msgstr "Amikor a kezdőpont soFromEnd, az eltolásnak <= 0 kell lennie"
 
 #: ipconst.spngbadbitdepth
 msgid "Unsupported Bit Depth of %d"
@@ -1254,7 +1254,7 @@ msgstr "Ismeretlen adatblokk típus: %s"
 
 #: ipconst.spngbadcolortype
 msgid "Unrecognized color type of %d"
-msgstr ""
+msgstr "A(z) %d színtípusa ismeretlen"
 
 #: ipconst.spngbadinterlacemethod
 msgid "Unrecognized Interlace Method"
@@ -1306,7 +1306,7 @@ msgstr ""
 
 #: ipconst.spngeffectivefilter
 msgid "Effective filter is %s"
-msgstr ""
+msgstr "Az alkalmazandó szűrő: %s"
 
 #: ipconst.spngerrorconstant
 msgid "**** ERROR ****"
@@ -1314,7 +1314,7 @@ msgstr "**** HIBA ****"
 
 #: ipconst.spngfilterchange
 msgid "Filter changed on Row %d to %x"
-msgstr ""
+msgstr "A szűrő a(z) %d. sorban megváltozott erre: %x"
 
 #: ipconst.spngfiltermethod
 msgid "Filter Method: %d"
@@ -1366,7 +1366,7 @@ msgstr "A módosítás dátuma: %s"
 
 #: ipconst.spngnoclipboard
 msgid "PNG Clipboard support is not supported."
-msgstr ""
+msgstr "PNG Vágólap használata nincs támogatva."
 
 #: ipconst.spngpaletteentry
 msgid "Palette Entry %d - Red: %d   Green: %d   Blue: %d"
@@ -1465,11 +1465,11 @@ msgstr "-ERR"
 
 #: ipconst.spop3notauthenticating
 msgid "%s can not be called in transaction state"
-msgstr ""
+msgstr "%s nem hívható átviteli közben"
 
 #: ipconst.spop3nottransacting
 msgid "%s can not be called in authentication state"
-msgstr ""
+msgstr "%s nem hívható hitelesítés közben"
 
 #: ipconst.spop3okresp
 msgid "+OK"
@@ -1477,11 +1477,11 @@ msgstr "+OK"
 
 #: ipconst.sposreqd
 msgid "%s: count must be positive"
-msgstr ""
+msgstr "%s: számnak pozitívnak kell lennie"
 
 #: ipconst.spsapop
 msgid "Logging on with APOP"
-msgstr ""
+msgstr "Bejelentkezés APOP használatával"
 
 #: ipconst.spsconnect
 msgid "Connecting to server"
@@ -1503,7 +1503,7 @@ msgstr "Nincs művelet"
 
 #: ipconst.spspass
 msgid "Logging on with Password"
-msgstr ""
+msgstr "Bejelentkezés jelszóval"
 
 #: ipconst.spsquit
 msgctxt "ipconst.spsquit"
@@ -1541,7 +1541,7 @@ msgstr "Ismeretlen állapot"
 
 #: ipconst.spsuser
 msgid "Logging on with User"
-msgstr ""
+msgstr "Bejelentkezés felhasználónévvel"
 
 #: ipconst.spterror
 msgid "An error occurred with the last task."
@@ -1555,7 +1555,7 @@ msgstr "Postafióklista lekérése"
 #: ipconst.sptlogon
 msgctxt "ipconst.sptlogon"
 msgid "Logging on"
-msgstr ""
+msgstr "Bejelentkezés"
 
 #: ipconst.sptnone
 msgctxt "ipconst.sptnone"
@@ -1613,11 +1613,11 @@ msgstr "Hitelesítés újrapróbálása"
 
 #: ipconst.srascallbackcomplete
 msgid "Callback complete"
-msgstr ""
+msgstr "Visszahívás kész"
 
 #: ipconst.srascallbacksetbycaller
 msgid "Callback set by caller"
-msgstr ""
+msgstr "Visszahívás beállítva a hívó által"
 
 #: ipconst.srasconnectdevice
 msgid "Connect device"
@@ -1638,7 +1638,7 @@ msgstr "Kapcsolat bontva"
 
 #: ipconst.sraserr
 msgid "Ras Error (%d): on API '%s'"
-msgstr "Ras hiba (%d): a következő API-n: '%s'"
+msgstr "RAS hiba (%d): a következő API-n: '%s'"
 
 #: ipconst.srasinteractive
 msgid "Interactive"
@@ -1646,7 +1646,7 @@ msgstr "Interaktív"
 
 #: ipconst.sraslogonnetwork
 msgid "Logon network"
-msgstr ""
+msgstr "Bejelentkezés a hálózatra"
 
 #: ipconst.srasopenport
 msgid "Open port"
@@ -1666,11 +1666,11 @@ msgstr "Port megnyitva"
 
 #: ipconst.srasprepareforcallback
 msgid "Prepare for callback"
-msgstr ""
+msgstr "Visszahívás előkészítése"
 
 #: ipconst.srasprojected
 msgid "Projected"
-msgstr ""
+msgstr "Ütemezve"
 
 #: ipconst.srasreauthenticate
 msgid "Re-authenticate"
@@ -1694,7 +1694,7 @@ msgstr ""
 
 #: ipconst.sraswaitforcallback
 msgid "Wait for callback"
-msgstr ""
+msgstr "Várakozás visszahívásra"
 
 #: ipconst.sraswaitformodemreset
 msgid "Wait for modem reset"
@@ -1722,7 +1722,7 @@ msgstr "TIpTerminalArray.ScrollRows: a kezdő (%d) és befejező (%d) sorszám i
 
 #: ipconst.sseekingdiskfileto
 msgid "Seeking disk file to "
-msgstr ""
+msgstr "Lemezen lévő fájl pozicionálása: "
 
 #: ipconst.sslnopremastersecret
 msgid "No pre-master secret."
@@ -1734,7 +1734,7 @@ msgstr "Siker,"
 
 #: ipconst.ssmtpresponse04
 msgid "Transient, "
-msgstr ""
+msgstr "Átmenő, "
 
 #: ipconst.ssmtpresponse05
 msgid "Persistent, "
@@ -1794,7 +1794,7 @@ msgstr "Az üzenet hossza meghaladja az adminisztratív korlátot"
 
 #: ipconst.ssmtpresponse24
 msgid "Mailing list expansion problem"
-msgstr ""
+msgstr "A levelezési lista bővítése problémás"
 
 #: ipconst.ssmtpresponse30
 msgid "Other or undefined mail system status"
@@ -1838,11 +1838,11 @@ msgstr "Útválasztás nem lehetséges"
 
 #: ipconst.ssmtpresponse45
 msgid "Network congestion"
-msgstr ""
+msgstr "Hálózati torlódás"
 
 #: ipconst.ssmtpresponse46
 msgid "Routing loop detected"
-msgstr ""
+msgstr "Útválasztás ismétlődése érzékelve"
 
 #: ipconst.ssmtpresponse47
 msgid "Delivery time expired"
@@ -1882,7 +1882,7 @@ msgstr "A média nincs támogatva"
 
 #: ipconst.ssmtpresponse62
 msgid "Conversion required and prohibited"
-msgstr ""
+msgstr "Átalakítás szükséges és tilos"
 
 #: ipconst.ssmtpresponse63
 msgid "Conversion required but not supported"
@@ -1890,7 +1890,7 @@ msgstr "Átlakítás szükséges, de nincs támogatva"
 
 #: ipconst.ssmtpresponse64
 msgid "Conversion with loss performed"
-msgstr ""
+msgstr "Az átalakítás veszteséggel végrehajtva"
 
 #: ipconst.ssmtpresponse65
 msgid "Conversion failed"
@@ -1902,15 +1902,15 @@ msgstr "Egyéb vagy meghatározatlan biztonsági állapot"
 
 #: ipconst.ssmtpresponse71
 msgid "Delivery not authorized, message refused"
-msgstr ""
+msgstr "Kézbesítés nincs engedélyezve, üzenet elutasítva"
 
 #: ipconst.ssmtpresponse72
 msgid "Mailing list expansion prohibited"
-msgstr ""
+msgstr "A levelezési lista bővítése tilos"
 
 #: ipconst.ssmtpresponse73
 msgid "Security conversion required but not possible"
-msgstr ""
+msgstr "Biztonsági átalakítás szükséges, de nem lehetséges"
 
 #: ipconst.ssmtpresponse74
 msgid "Security features not supported"
@@ -1926,7 +1926,7 @@ msgstr "A titkosító eljárás nincs támogatva"
 
 #: ipconst.ssmtpresponse77
 msgid "Message integrity failure"
-msgstr ""
+msgstr "Az üzenet sérült"
 
 #: ipconst.ssmtpresponsesubunknown
 msgid "Unknown subcode"
@@ -1963,16 +1963,15 @@ msgstr "Adatok küldése"
 
 #: ipconst.sssehlo
 msgid "Logging on with EHLO"
-msgstr ""
+msgstr "Bejelentkezés EHLO-val"
 
 #: ipconst.sssexpand
-#, fuzzy
 msgid "Expanding"
-msgstr "Kiterjesztett"
+msgstr "Kibővítés"
 
 #: ipconst.ssshelo
 msgid "Logging on with HELO"
-msgstr ""
+msgstr "Bejelentkezés HELO-val"
 
 #: ipconst.ssshelp
 msgid "Help"
@@ -1984,11 +1983,11 @@ msgstr "Rossz tanúsítvány."
 
 #: ipconst.ssslbadcerttype
 msgid "Cert type not found"
-msgstr ""
+msgstr "A tanúsítványtípus nem található"
 
 #: ipconst.ssslbadcompressionvalue
 msgid "Compression value is wrong."
-msgstr ""
+msgstr "A tömörítési érték hibás."
 
 #: ipconst.ssslbadkeyexchangetype
 msgid "Key exchange message expected but not received"
@@ -2008,7 +2007,7 @@ msgstr "Rossz a nyilvános kódolás típusa."
 
 #: ipconst.ssslbadrecordmac
 msgid "Server received a bad record MAC."
-msgstr ""
+msgstr "A kiszolgáló rossz MAC rekordot kapott."
 
 #: ipconst.ssslbadsha1hash
 msgid "SHA1 hash did not match."
@@ -2028,7 +2027,7 @@ msgstr "A puffer mérete nem egyezik."
 
 #: ipconst.ssslclosenotify
 msgid "Server sent close notify."
-msgstr ""
+msgstr "A kiszolgáló lezárási értesítést küldött."
 
 #: ipconst.ssslcompressionfailure
 msgid "Compression failure."
@@ -2052,7 +2051,7 @@ msgstr "Lejárt tanúsítvány."
 
 #: ipconst.ssslfailedhelloparse
 msgid "Did not parse server hello correctly."
-msgstr ""
+msgstr "Nem sikerült megfelelően elemezni a kiszolgáló helló-ját."
 
 #: ipconst.ssslhandshakefailure
 msgid "Handshake failure."
@@ -2084,11 +2083,11 @@ msgstr "Nincs elég memória az SSL rekord olvasásához."
 
 #: ipconst.ssslnotenoughkeymaterail
 msgid "Not enough key material."
-msgstr ""
+msgstr "Nincs elegendő kulcsanyag."
 
 #: ipconst.ssslpaddingerror
 msgid "Padding error."
-msgstr ""
+msgstr "Helykitöltés hiba."
 
 #: ipconst.ssslparsererror
 msgid "Parsing error."
@@ -2219,7 +2218,7 @@ msgstr "Hiba keletkezet ezen feladat közben."
 #: ipconst.sstlogon
 msgctxt "ipconst.sstlogon"
 msgid "Logging on"
-msgstr ""
+msgstr "Bejelentkezés"
 
 #: ipconst.sstnotask
 msgid "None"
@@ -2255,7 +2254,7 @@ msgstr "%s nem található"
 
 #: ipconst.swebimagestreambad
 msgid "Cannot load image from stream"
-msgstr ""
+msgstr "Nem lehet képet betölteni az adatfolyamból"
 
 #: ipconst.swinsockerr
 msgid "WinSock Error (%d): %s, on API '%s'"
@@ -2263,7 +2262,7 @@ msgstr "WinSock hiba (%d): %s, a következő API-n: '%s'"
 
 #: ipconst.swriteafterrename
 msgid "***Write after rename"
-msgstr ""
+msgstr "***Írás átnevezés után"
 
 #: ipconst.swrongstateerr
 msgid "Can not comply, wrong state"
@@ -2315,7 +2314,7 @@ msgstr "Célcím szükséges"
 
 #: ipconst.swsaediscon
 msgid "Graceful shutdown in progress"
-msgstr ""
+msgstr "Rendes lekapcsolás folyamatban"
 
 #: ipconst.swsaedquot
 msgid "Disk quota exceeded"
@@ -2347,11 +2346,11 @@ msgstr "Érvénytelen argumentum"
 
 #: ipconst.swsaeinvalidproctable
 msgid "Invalid procedure table from service provider"
-msgstr ""
+msgstr "Érvénytelen éljáráslista a szolgáltatótól"
 
 #: ipconst.swsaeinvalidprovider
 msgid "Invalid service provider version number"
-msgstr ""
+msgstr "Érvénytelen a szolgáltató változatszáma"
 
 #: ipconst.swsaeisconn
 msgid "Socket is already connected"
@@ -2432,7 +2431,7 @@ msgstr "A protokoll típusa nem megfelelő a szoftvercsatornához"
 
 #: ipconst.swsaeproviderfailedinit
 msgid "Unable to initialize a service provider"
-msgstr ""
+msgstr "Nem sikerült a szolgáltató előkészítése"
 
 #: ipconst.swsaerefused
 msgid "Refused"
@@ -2440,7 +2439,7 @@ msgstr "Elutasítva"
 
 #: ipconst.swsaeremote
 msgid "Too many levels of remote in path"
-msgstr ""
+msgstr "Túl sok szint a távoli útvonalban"
 
 #: ipconst.swsaeshutdown
 msgid "Cannot send after socket shutdown"
@@ -2480,7 +2479,7 @@ msgstr "Sikeres WSAStartup még nem lett végrehajtva"
 
 #: ipconst.swsano_data
 msgid "Valid name, no data record of requested type"
-msgstr ""
+msgstr "Érvényes név, nincs adatrekord a kért típussal"
 
 #: ipconst.swsano_recovery
 msgid "This is a nonrecoverable error"
@@ -2500,11 +2499,11 @@ msgstr "A hálózati alrendszer nem érhető el"
 
 #: ipconst.swsatry_again
 msgid "Non-authoritative host not found"
-msgstr ""
+msgstr "A nem hiteles állomás nem található"
 
 #: ipconst.swsatype_not_found
 msgid "Type not found"
-msgstr ""
+msgstr "Típus nem található"
 
 #: ipconst.swsavernotsupported
 msgid "WinSock DLL version not supported"
@@ -2525,7 +2524,7 @@ msgstr "Hiba erőforráshiány miatt"
 
 #: ipconst.swsa_qos_bad_object
 msgid "Problem filterspec or provider specific buffer"
-msgstr ""
+msgstr "Problémás szűrőleírás vagy szolgáltatói puffer"
 
 #: ipconst.swsa_qos_bad_style
 msgid "Unknown or conflicting style"
@@ -2561,4 +2560,4 @@ msgstr ""
 
 #: ipconst.swsa_qos_traffic_ctrl_error
 msgid "Problem with some part of the flowspec"
-msgstr ""
+msgstr "Probléma van az adatfolyam-leírás egy részével"

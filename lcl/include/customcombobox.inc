@@ -906,8 +906,8 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomComboBox.GetItemIndex : integer;
 begin
-  if not (csDestroying in ComponentState) and
-     not (csDestroyingHandle in ControlState) and HandleAllocated then
+  if not (csDestroyingHandle in ControlState) and HandleAllocated then
+    // WidgetSet must be called even when csDestroying for at least TIniPropStorage's needs.
     FItemIndex:= TWSCustomComboBoxClass(WidgetSetClass).GetItemIndex(Self);
   Result := FItemIndex;
 end;

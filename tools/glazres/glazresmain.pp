@@ -33,9 +33,10 @@ unit glazresmain;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  LCLProc, LResources, Buttons, EditBtn, LazUtf8Classes, Types, LCLType,
-  ExtDlgs, IniFiles;
+  Classes, SysUtils, Types, IniFiles,
+  Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons, ExtDlgs, EditBtn,
+  LResources, LCLProc, LCLType,
+  LazFileUtils, LazUTF8, LazUtf8Classes;
 
 type
 
@@ -70,7 +71,6 @@ type
     procedure AddAnyBtnClick(Sender: TObject);
     procedure StartBtnClick(Sender: TObject);
   private
-    { private declarations }
     FIniFileName: String;
     procedure CreateAnchors;
     procedure ResizeControls({%H-}Dummy: PtrInt);

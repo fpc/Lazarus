@@ -841,6 +841,10 @@ msgstr ""
 msgid "Choose code template file (*.dci)"
 msgstr "Zvoľte súbor šablón kódu (*.dci)"
 
+#: lazarusidestrconsts.dlgcloseanduseselecteddesktop
+msgid "Close and use selected desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "Zobraziť zatváracie tlačítka v poznámkovom bloku"
@@ -1084,11 +1088,6 @@ msgstr ""
 msgid "Config files"
 msgstr "Konfiguračné súbory"
 
-#: lazarusidestrconsts.dlgcoother
-msgctxt "lazarusidestrconsts.dlgcoother"
-msgid "Other"
-msgstr "Ostatné"
-
 #: lazarusidestrconsts.dlgcootherdebugginginfo
 msgid "Other debugging info"
 msgstr ""
@@ -1236,6 +1235,10 @@ msgstr ""
 msgid "User defined extension (.pp.xxx)"
 msgstr "Používateľská prípona (.pp.xxx)"
 
+#: lazarusidestrconsts.dlgdebugdesktop
+msgid "debug desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "Editor ciest"
@@ -1256,19 +1259,9 @@ msgstr "Predvolená hodnota"
 msgid "Delete template "
 msgstr "Zmazať šablónu"
 
-#: lazarusidestrconsts.dlgdesktop
-msgid "Desktop"
-msgstr "Plocha"
-
 #: lazarusidestrconsts.dlgdesktopbuttons
 msgid "Buttons - "
 msgstr ""
-
-#: lazarusidestrconsts.dlgdesktopfiles
-#, fuzzy
-#| msgid "Desktop files"
-msgid "Desktop Files"
-msgstr "Súbory plochy"
 
 #: lazarusidestrconsts.dlgdesktophints
 msgid "Hints"
@@ -1276,6 +1269,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgdesktopmenus
 msgid "Menus - "
+msgstr ""
+
+#: lazarusidestrconsts.dlgdesktopname
+msgid "Desktop name:"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
@@ -2145,10 +2142,6 @@ msgstr ""
 msgid "Included mixed state $IFDEF node"
 msgstr ""
 
-#: lazarusidestrconsts.dlgignoreverb
-msgid "Ignore"
-msgstr "Ignorovať"
-
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "Vrátane systémových premenných"
@@ -2290,10 +2283,6 @@ msgstr "Smart linkovanie"
 msgid "Display line numbers in run-time error backtraces"
 msgstr "Zobraziť čísla riadkov v behovom výpise chýb"
 
-#: lazarusidestrconsts.dlgloaddfile
-msgid "Load desktop settings from file"
-msgstr "Načítať nastavenia plochy zo súboru"
-
 #: lazarusidestrconsts.dlgmainmenu
 msgid "Main Menu"
 msgstr "Hlavné menu"
@@ -2319,6 +2308,10 @@ msgstr "Zobraziť jednotky projektu"
 
 #: lazarusidestrconsts.dlgmakeexecutable
 msgid "\"Make\" executable"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmanagedesktops
+msgid "Manage desktops"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmargingutter
@@ -2851,6 +2844,10 @@ msgstr ""
 msgid "Naming"
 msgstr "Pomenovanie"
 
+#: lazarusidestrconsts.dlgnewdesktop
+msgid "New desktop ..."
+msgstr ""
+
 #: lazarusidestrconsts.dlgnoautomaticrenaming
 #, fuzzy
 #| msgid "no automatic renaming"
@@ -2923,6 +2920,12 @@ msgstr "Ostatné súbory jednotiek (-Fu) (oddelené bodkočiarkou):"
 
 #: lazarusidestrconsts.dlgoverwriteblock
 msgid "Overwrite block"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoverwritedesktop
+msgid ""
+"Desktop with the name \"%s\" was found.\n"
+"Should the old desktop be overwritten?\n"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpalhints
@@ -3140,6 +3143,10 @@ msgstr "Zobraziť mriežku"
 msgid "Snap to grid"
 msgstr "Prichytiť k mriežke"
 
+#: lazarusidestrconsts.dlgreallydeletedesktop
+msgid "Really delete desktop \"%s\"?"
+msgstr ""
+
 #: lazarusidestrconsts.dlgreferencecolor
 msgid "Reference"
 msgstr "Odkazy"
@@ -3149,6 +3156,10 @@ msgstr "Odkazy"
 #| msgid "Regular E&xpressions"
 msgid "Regular e&xpressions"
 msgstr "&Regulárne výrazy"
+
+#: lazarusidestrconsts.dlgrenamedesktop
+msgid "Rename desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgreplaceall
 msgid "Replace &All"
@@ -3232,9 +3243,13 @@ msgstr "Používateľské prepisuje"
 msgid "Run Parameters"
 msgstr "Parametre spustenia"
 
-#: lazarusidestrconsts.dlgsavedfile
-msgid "Save desktop settings to file"
-msgstr "Uložiť nastavenie plochy do súboru"
+#: lazarusidestrconsts.dlgsavecurrentdesktop
+msgid "Save current desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsavecurrentdesktopas
+msgid "Save current desktop as"
+msgstr ""
 
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
@@ -3303,6 +3318,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgselectallchildcontrols
 msgid "Select all child controls together with their parent."
+msgstr ""
+
+#: lazarusidestrconsts.dlgselecteddesktop
+msgid "Selected desktop:"
 msgstr ""
 
 #: lazarusidestrconsts.dlgselectedtext
@@ -3562,6 +3581,10 @@ msgstr "Adresár pre vybudovanie testovacích projektov"
 msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"
 msgstr "&Hľadaný text"
+
+#: lazarusidestrconsts.dlgtoggleselecteddebugdesktop
+msgid "Toggle as debug desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgtopinfohint
 msgid "Current Class/Proc Hint"
@@ -4023,6 +4046,10 @@ msgstr "Nový súbor"
 msgid "No package found for dependency \"%s\".%sPlease choose an existing package."
 msgstr "Nenájdený balíček pre závislosť %s%s%s.%sProsím zvoľte existujúci balíček."
 
+#: lazarusidestrconsts.lisa2ppackageorproject
+msgid "Package/Project"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2ppagenametoolong
 msgid "Page Name too long"
 msgstr "Meno balíčka veľmi dlhé"
@@ -4186,6 +4213,12 @@ msgstr "Neplatné meno jednotky"
 #: lazarusidestrconsts.lisabandonchanges
 msgid "Abandon changes?"
 msgstr "Zahodiť zmeny?"
+
+#: lazarusidestrconsts.lisabort
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisabort"
+msgid "Abort"
+msgstr "Zrušiť"
 
 #: lazarusidestrconsts.lisabortall
 msgid "Abort all"
@@ -5948,6 +5981,10 @@ msgstr "Paleta"
 msgid "Pages"
 msgstr ""
 
+#: lazarusidestrconsts.liscmppalettevisible
+msgid "Palette is &visible"
+msgstr ""
+
 #: lazarusidestrconsts.liscmprestoredefaults
 msgid "&Restore defaults"
 msgstr ""
@@ -7678,6 +7715,10 @@ msgstr "vlastné voľby"
 msgid "Custom options"
 msgstr "Vlastné voľby"
 
+#: lazarusidestrconsts.liscustomoptions3
+msgid "Custom Options"
+msgstr ""
+
 #: lazarusidestrconsts.liscustomprogram
 msgid "Custom Program"
 msgstr "Vlastný program"
@@ -8196,6 +8237,10 @@ msgstr ""
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
 msgstr ""
 
+#: lazarusidestrconsts.lisdesktops
+msgid "Desktops ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdestinationdirectory
 msgid "Destination directory"
 msgstr "Cieľový adresár"
@@ -8421,6 +8466,11 @@ msgstr "Exportovať ..."
 #: lazarusidestrconsts.lisdlgimport
 msgctxt "lazarusidestrconsts.lisdlgimport"
 msgid "Import ..."
+msgstr ""
+
+#: lazarusidestrconsts.lisdlgmore
+msgctxt "lazarusidestrconsts.lisdlgmore"
+msgid "More ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisdlgopen
@@ -9137,8 +9187,17 @@ msgstr "Exportovať ..."
 msgid "Export All Items to File"
 msgstr ""
 
+#: lazarusidestrconsts.lisexportenvironmentoptions
+msgctxt "lazarusidestrconsts.lisexportenvironmentoptions"
+msgid "Export environment options"
+msgstr ""
+
 #: lazarusidestrconsts.lisexporthtml
 msgid "Export as HTML"
+msgstr ""
+
+#: lazarusidestrconsts.lisexportimport
+msgid "Export / Import"
 msgstr ""
 
 #: lazarusidestrconsts.lisexportlist
@@ -9955,17 +10014,13 @@ msgctxt "lazarusidestrconsts.lisid"
 msgid "ID"
 msgstr "ID"
 
-#: lazarusidestrconsts.lisidcadd
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisidcadd"
-msgid "Add"
-msgstr "Pridať"
+#: lazarusidestrconsts.lisidcaddition
+msgid "Addition"
+msgstr ""
 
-#: lazarusidestrconsts.lisidcopen
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisidcopen"
-msgid "Open"
-msgstr "Otvoriť"
+#: lazarusidestrconsts.lisidcopening
+msgid "Opening"
+msgstr ""
 
 #: lazarusidestrconsts.liside
 msgid "IDE"
@@ -10101,6 +10156,12 @@ msgstr ""
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr ""
 
+#: lazarusidestrconsts.lisignore
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisignore"
+msgid "Ignore"
+msgstr "Ignorovať"
+
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
 msgstr "Ignorovať všetko"
@@ -10139,8 +10200,9 @@ msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr ""
 
-#: lazarusidestrconsts.lisimportexport
-msgid "Import / Export"
+#: lazarusidestrconsts.lisimportenvironmentoptions
+msgctxt "lazarusidestrconsts.lisimportenvironmentoptions"
+msgid "Import environment options"
 msgstr ""
 
 #: lazarusidestrconsts.lisimportfromfile
@@ -11512,10 +11574,6 @@ msgstr "Cieľ linkovania"
 msgid "list of all case values"
 msgstr ""
 
-#: lazarusidestrconsts.lisloadedsuccessfully
-msgid "Loaded successfully"
-msgstr ""
-
 #: lazarusidestrconsts.lisloadingfailed
 msgid "Loading %s failed."
 msgstr "načítanie %s zlyhalo."
@@ -12287,6 +12345,10 @@ msgstr "Vytvoriť ResourceString ..."
 msgctxt "lazarusidestrconsts.lismenunewcomponent"
 msgid "New Component"
 msgstr "Nový komponent"
+
+#: lazarusidestrconsts.lismenunewcustom
+msgid "New %s"
+msgstr ""
 
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"
@@ -13150,10 +13212,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Viac"
-
-#: lazarusidestrconsts.lismore2
-msgid "More ..."
-msgstr ""
 
 #: lazarusidestrconsts.lismoresub
 #, fuzzy
@@ -16340,10 +16398,6 @@ msgstr "Uložiť zmeny do projektu %s?"
 msgid "Save current editor file"
 msgstr "uložiť aktuálny súbor editora"
 
-#: lazarusidestrconsts.lissavedsuccessfully
-msgid "Saved successfully"
-msgstr ""
-
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"
 msgstr ""
@@ -16773,12 +16827,12 @@ msgstr "Vhovujúce"
 msgid "Sorry, this type is not yet implemented"
 msgstr "Prepáčte, tento typ zatiaľ nie je implementovaný"
 
-#: lazarusidestrconsts.lissort
-msgid "Sort"
-msgstr ""
-
 #: lazarusidestrconsts.lissortforscope
 msgid "Sort for scope"
+msgstr ""
+
+#: lazarusidestrconsts.lissorting
+msgid "Sorting"
 msgstr ""
 
 #: lazarusidestrconsts.lissortselascending
@@ -19044,6 +19098,10 @@ msgstr "XML Chyba"
 #: lazarusidestrconsts.lisxmlparsererrorinfileerror
 msgid "XML parser error in file %s%sError: %s"
 msgstr "Chyba parsera XML v súbore %s%sChyba: %s"
+
+#: lazarusidestrconsts.lisyes
+msgid "Yes"
+msgstr ""
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"

@@ -37,7 +37,7 @@ unit W32Manifest;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Laz2_XMLCfg, Process, LCLProc, Controls, Forms,
+  Classes, SysUtils, FileUtil, Laz2_XMLCfg, LCLProc, Controls, Forms,
   CodeToolManager, LazConf, LResources,
   ProjectResourcesIntf, resource;
    
@@ -97,7 +97,21 @@ const
     '    <requestedExecutionLevel level="%s" uiAccess="%s"/>'#$D#$A+
     '   </requestedPrivileges>'#$D#$A+
     '  </security>'#$D#$A+
-    ' </trustInfo>'#$D#$A;
+    ' </trustInfo>'#$D#$A+
+    ' <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">'#$D#$A+
+    '  <application>'#$D#$A+
+    '   <!-- Windows Vista -->'#$D#$A+
+    '   <supportedOS Id="{e2011457-1546-43c5-a5fe-008deee3d3f0}" />'#$D#$A+
+    '   <!-- Windows 7 -->'#$D#$A+
+    '   <supportedOS Id="{35138b9a-5d96-4fbd-8e2d-a2440225f93a}" />'#$D#$A+
+    '   <!-- Windows 8 -->'#$D#$A+
+    '   <supportedOS Id="{4a2f28e3-53b9-4441-ba9c-d69d4a4a6e38}" />'#$D#$A+
+    '   <!-- Windows 8.1 -->'#$D#$A+
+    '   <supportedOS Id="{1f676c76-80e1-4239-95bb-83d0f6d0da78}" />'#$D#$A+
+    '   <!-- Windows 10 -->'#$D#$A+
+    '   <supportedOS Id="{8e0f7a12-bfb3-4fe8-b9a5-48fd50a15a9a}" />'#$D#$A+
+    '   </application>'#$D#$A+
+    '  </compatibility>'#$D#$A;
   sManifestFileDataEnd: String =
     '</assembly>';
   sManifestFileDataDpiAware: String =

@@ -30,8 +30,8 @@ unit IDEInfoNeedBuild;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, AvgLvlTree, FileProcs, Forms, Controls, Graphics,
-  Dialogs, StdCtrls, Buttons, ButtonPanel, LCLType,
+  Classes, SysUtils, Forms, Controls, StdCtrls, ButtonPanel, LCLType,
+  AvgLvlTree, LazUtilities,
   IDEWindowIntf, LazIDEIntf, ProjectIntf, PackageIntf,
   LazarusIDEStrConsts, PackageDefs, PackageSystem, Project, InputHistory,
   EnvironmentOpts, IDEProcs, BuildManager;

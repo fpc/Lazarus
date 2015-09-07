@@ -13,6 +13,12 @@ uses
   LazarusIDEStrConsts, BaseDebugManager, Debugger;
 
 type
+  {$IFDEF darwin}
+  TMyDummyObcCClass = objcclass(NSObject)
+    // dummy class to get rid of FPC messages unit objc and objcbase not used
+    b: BOOL;
+  end;
+  {$ENDIF}
 
   { TDebugAttachDialogForm }
 
@@ -168,6 +174,7 @@ begin
     StrRange.location := 0;
     StrRange.length := CFStringGetLength(AString);
 
+    StrSize:=0;
     CFStringGetBytes(AString, StrRange, Encoding,
       Ord('?'), False, nil, 0, StrSize);
     SetLength(Result, StrSize);

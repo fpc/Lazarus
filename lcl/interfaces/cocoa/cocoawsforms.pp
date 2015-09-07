@@ -29,7 +29,7 @@ uses
   // Widgetset
   WSForms, WSLCLClasses, WSProc, LCLMessageGlue,
   // LCL Cocoa
-  CocoaPrivate, CocoaUtils, CocoaWSCommon, CocoaWSStdCtrls;
+  CocoaPrivate, CocoaUtils, CocoaWSCommon, CocoaWSStdCtrls, CocoaWSMenus;
 
 type
   { TLCLWindowCallback }
@@ -95,6 +95,8 @@ type
     class function GetStyleMaskFor(ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons): NSUInteger;
     class procedure UpdateWindowIcons(AWindow: NSWindow; ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons);
     class procedure UpdateWindowMask(AWindow: NSWindow; ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons);
+  public
+    class function GetWindowFromHandle(const ACustomForm: TCustomForm): TCocoaWindow;
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 
@@ -104,7 +106,8 @@ type
 
     class procedure CloseModal(const ACustomForm: TCustomForm); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
-    
+    class procedure SetModalResult(const ACustomForm: TCustomForm; ANewValue: TModalResult); override;
+
     class procedure SetAlphaBlend(const ACustomForm: TCustomForm; const AlphaBlend: Boolean; const Alpha: Byte); override;
     class procedure SetBorderIcons(const AForm: TCustomForm; const ABorderIcons: TBorderIcons); override;
     class procedure SetFormBorderStyle(const AForm: TCustomForm; const AFormBorderStyle: TFormBorderStyle); override;
@@ -160,13 +163,27 @@ uses
   CocoaInt;
 
 const
+  // The documentation says we should use NSNormalWindowLevel=4 for normal forms,
+  // but in practice this causes the issue http://bugs.freepascal.org/view.php?id=28473
+  // The only value that works is zero =(
   FormStyleToWindowLevel: array[TFormStyle] of NSInteger = (
- { fsNormal          } 4, // NSNormalWindowLevel
- { fsMDIChild        } 4, // NSNormalWindowLevel
- { fsMDIForm         } 4, // NSNormalWindowLevel
+ { fsNormal          } 0,
+ { fsMDIChild        } 0,
+ { fsMDIForm         } 0,
  { fsStayOnTop       } 9, // NSStatusWindowLevel
  { fsSplash          } 9, // NSStatusWindowLevel
  { fsSystemStayOnTop } 10  // NSModalPanelWindowLevel
+  );
+  // Window levels make the form always stay on top, so if it is supposed to
+  // stay on top of the app only, then a workaround is to hide it while the app
+  // is deactivated
+  FormStyleToHideOnDeactivate: array[TFormStyle] of Boolean = (
+ { fsNormal          } False,
+ { fsMDIChild        } False,
+ { fsMDIForm         } False,
+ { fsStayOnTop       } True,
+ { fsSplash          } True,
+ { fsSystemStayOnTop } False
   );
 
   HintWindowLevel = 11;  // NSPopUpMenuWindowLevel
@@ -261,30 +278,30 @@ var
   ACustForm: TCustomForm;
 begin
   if not IsActivating then
-    begin
+  begin
     IsActivating:=True;
     ACustForm := Target as TCustomForm;
 
     if (ACustForm.Menu <> nil) and
        (ACustForm.Menu.HandleAllocated) then
-      begin
+    begin
       if NSObject(ACustForm.Menu.Handle).isKindOfClass_(TCocoaMenuItem) then
-        begin
+      begin
         if TCocoaMenuItem(ACustForm.Menu.Handle).hasSubmenu then
-          CocoaWidgetSet.SetMainMenu(HMENU(TCocoaMenuItem(ACustForm.Menu.Handle).submenu))
+          CocoaWidgetSet.SetMainMenu(HMENU(TCocoaMenuItem(ACustForm.Menu.Handle).submenu), ACustForm.Menu)
         else
           debugln('Warning: Menu does not have a valid handle.');
-        end
-      else
-        CocoaWidgetSet.SetMainMenu(ACustForm.Menu.Handle);
       end
+      else
+        CocoaWidgetSet.SetMainMenu(ACustForm.Menu.Handle, ACustForm.Menu);
+    end
     else
-      CocoaWidgetSet.SetMainMenu(0);
+      CocoaWidgetSet.SetMainMenu(0, nil);
 
     LCLSendActivateMsg(Target, WA_ACTIVE, false);
     LCLSendSetFocusMsg(Target);
     IsActivating:=False;
-    end;
+  end;
 end;
 
 procedure TLCLWindowCallback.Deactivate;
@@ -294,9 +311,36 @@ begin
 end;
 
 procedure TLCLWindowCallback.CloseQuery(var CanClose: Boolean);
+var
+  i: Integer;
 begin
   // Message results : 0 - do nothing, 1 - destroy window
   CanClose := LCLSendCloseQueryMsg(Target) > 0;
+
+  // Special code for modal forms, which otherwise would get 0 here and not call Close
+  if (CocoaWidgetSet.CurModalForm = FTarget) and
+    (TCustomForm(Target).ModalResult <> mrNone) then
+  begin
+    NSApp.stopModal();
+    CocoaWidgetSet.CurModalForm := nil;
+    {// Felipe: This code forces focusing another form, its a work around
+    // for a gdb issue, gdb doesn't start the app properly
+    //
+    // At this point the modal form is closed, but the previously open form isn't focused
+    // Focus the main window if it is visible
+    if Application.MainForm.Visible then Application.MainForm.SetFocus()
+    else
+    begin
+      // if the mainform is hidden, just choose any visible form
+      // ToDo: Figure out a better solution
+      for i := 0 to Screen.FormCount-1 do
+        if Screen.Forms[i].Visible then
+        begin
+          Screen.Forms[i].SetFocus();
+          Break;
+        end;
+    end;}
+  end;
 end;
 
 procedure TLCLWindowCallback.Close;
@@ -377,6 +421,13 @@ begin
   UpdateWindowIcons(AWindow, ABorderStyle, ABorderIcons);
 end;
 
+class function TCocoaWSCustomForm.GetWindowFromHandle(const ACustomForm: TCustomForm): TCocoaWindow;
+begin
+  Result := nil;
+  if not ACustomForm.HandleAllocated then Exit;
+  Result := TCocoaWindow(TCocoaWindowContent(ACustomForm.Handle).lclOwnWindow);
+end;
+
 class function TCocoaWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
@@ -403,13 +454,22 @@ var
 
     if not Assigned(win) then
     begin
+      pool.release;
       Result := 0;
       Exit;
     end;
 
-    win := TCocoaWindow(win.initWithContentRect_styleMask_backing_defer(R, GetStyleMaskFor(GetDesigningBorderStyle(Form), Form.BorderIcons), NSBackingStoreBuffered, False));
+    win := TCocoaWindow(win.initWithContentRect_styleMask_backing_defer(R,
+      GetStyleMaskFor(GetDesigningBorderStyle(Form), Form.BorderIcons), NSBackingStoreBuffered, False));
     UpdateWindowIcons(win, GetDesigningBorderStyle(Form), Form.BorderIcons);
-    win.setLevel(FormStyleToWindowLevel[Form.FormStyle]);
+    // For safety, it is better to not apply any setLevel & similar if the form is just a standard style
+    // see issue http://bugs.freepascal.org/view.php?id=28473
+    if not (Form.FormStyle in [fsNormal, fsMDIChild, fsMDIForm])
+      and not (csDesigning in AWinControl.ComponentState) then
+    begin
+      win.setLevel(FormStyleToWindowLevel[Form.FormStyle]);
+      win.setHidesOnDeactivate(FormStyleToHideOnDeactivate[Form.FormStyle]);
+    end;
     win.enableCursorRects;
     TCocoaWindow(win).callback := TLCLWindowCallback.Create(win, AWinControl);
     win.setDelegate(win);
@@ -417,7 +477,6 @@ var
     win.setTitle(ns);
     ns.release;
     win.setAcceptsMouseMovedEvents(True);
-
 
     cnt.callback := TCocoaWindow(win).callback;
     cnt.callback.IsOpaque:=true;
@@ -430,6 +489,9 @@ var
       else
         NSWindow(AParams.WndParent).addChildWindow_ordered(win, NSWindowAbove);
     end;
+
+    // support for drag & drop
+    win.registerForDraggedTypes(NSArray.arrayWithObjects_count(@NSFilenamesPboardType, 1));
   end
   else
   begin
@@ -502,12 +564,37 @@ class procedure TCocoaWSCustomForm.CloseModal(const ACustomForm: TCustomForm);
 begin
 //  if ACustomForm.HandleAllocated then
 //    NSPanel(ACustomForm.Handle).setStyleMask(NSwindow(ACustomForm.Handle).styleMask and not NSDocModalWindowMask);
+  {if CocoaWidgetSet.CurModalSession <> nil then
+    NSApp.endModalSession(CocoaWidgetSet.CurModalSession);
+  CocoaWidgetSet.CurModalSession := nil;}
+  NSApp.stopModal();
+  CocoaWidgetSet.CurModalForm := nil;
 end;
 
 class procedure TCocoaWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
+var
+  win: TCocoaWindow;
 begin
-//  if ACustomForm.HandleAllocated then
-//    NSPanel(ACustomForm.Handle).setStyleMask(NSwindow(ACustomForm.Handle).styleMask or NSDocModalWindowMask);
+  // Another possible implementation is to have modal started in ShowHide with (fsModal in AForm.FormState)
+  win := TCocoaWSCustomForm.GetWindowFromHandle(ACustomForm);
+  if win = nil then Exit;
+
+  { Another possible implementation is using a session, but this requires
+    disabling the other windows ourselves
+  CurModalSession: NSModalSession;
+  CocoaWidgetSet.CurModalSession := NSApp.beginModalSessionForWindow(win);
+  NSApp.runModalSession(CocoaWidgetSet.CurModalSession);}
+
+  CocoaWidgetSet.CurModalForm := ACustomForm;
+  NSApp.runModalForWindow(win);
+end;
+
+// If ShowModal will not be fully blocking in the future this can be removed
+class procedure TCocoaWSCustomForm.SetModalResult(const ACustomForm: TCustomForm;
+  ANewValue: TModalResult);
+begin
+  if (CocoaWidgetSet.CurModalForm = ACustomForm) and (ANewValue <> 0) then
+    CloseModal(ACustomForm);
 end;
 
 class procedure TCocoaWSCustomForm.SetAlphaBlend(const ACustomForm: TCustomForm; const AlphaBlend: Boolean; const Alpha: Byte);
@@ -557,11 +644,14 @@ class procedure TCocoaWSCustomForm.SetFormStyle(const AForm: TCustomform;
 var
   win : NSWindow;
 begin
-  if AForm.HandleAllocated then
+  if AForm.HandleAllocated and not (csDesigning in AForm.ComponentState) then
   begin
     win := TCocoaWindowContent(AForm.Handle).lclOwnWindow;
     if Assigned(win) then
+    begin
       win.setLevel(FormStyleToWindowLevel[AFormStyle]);
+      win.setHidesOnDeactivate(FormStyleToHideOnDeactivate[AFormStyle]);
+    end;
   end;
 end;
 

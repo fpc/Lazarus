@@ -995,8 +995,7 @@ begin
   Result:=mrOk;
 end;
 
-function TProjectDescriptor.CreateStartFiles(AProject: TLazProject
-  ): TModalResult;
+function TProjectDescriptor.CreateStartFiles(AProject: TLazProject): TModalResult;
 begin
   Result:=mrOk;
 end;

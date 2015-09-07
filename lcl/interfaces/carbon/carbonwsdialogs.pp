@@ -26,7 +26,8 @@ uses
   // libs
   MacOSAll,
   // LCL
-  Classes, SysUtils, FileUtil, Controls, Dialogs, LCLType, LCLProc, Masks, Graphics,
+  Classes, SysUtils, FileUtil, Controls, Dialogs, LCLType, LCLProc, Masks,
+  LazFileUtils, Graphics,
   // widgetset
   WSLCLClasses, WSDialogs,
   // LCL Carbon

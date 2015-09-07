@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel,
-  ComCtrls, FileProcs,
+  ComCtrls, FileProcs, LazFileCache,
   PackageDefs, LazarusIDEStrConsts;
 
 type

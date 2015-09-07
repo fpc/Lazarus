@@ -413,6 +413,14 @@ msgstr "&Adresář"
 msgid "Docking"
 msgstr "Ukotvení"
 
+#: lclstrconsts.rsdocopy
+msgid "Copy"
+msgstr ""
+
+#: lclstrconsts.rsdopaste
+msgid "Paste"
+msgstr ""
+
 #: lclstrconsts.rsduplicateiconformat
 msgid "Duplicate icon format."
 msgstr "Zdvojený formát ikony."

@@ -82,8 +82,8 @@ function HideCaret(View: NSView): Boolean;
 function ShowCaret(View: NSView): Boolean;
 function SetCaretPos(X, Y: Integer): Boolean;
 function GetCaretPos(var P: TPoint): Boolean;
-function GetCarbonCaretRespondToFocus: Boolean;
-procedure SetCarbonCaretRespondToFocus(Value: Boolean);
+function GetCocoaCaretRespondToFocus: Boolean;
+procedure SetCocoaCaretRespondToFocus(Value: Boolean);
 function DestroyCaret: Boolean;
 procedure DrawCaret;
 procedure DestroyGlobalCaret;
@@ -208,12 +208,12 @@ begin
   end;
 end;
 
-function GetCarbonCaretRespondToFocus: Boolean;
+function GetCocoaCaretRespondToFocus: Boolean;
 begin
   Result := GlobalCaret.RespondToFocus;
 end;
 
-procedure SetCarbonCaretRespondToFocus(Value: Boolean);
+procedure SetCocoaCaretRespondToFocus(Value: Boolean);
 begin
   GlobalCaret.RespondToFocus := Value;
 end;

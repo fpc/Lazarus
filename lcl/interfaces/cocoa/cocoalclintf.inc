@@ -1,8 +1,8 @@
 {%MainUnit cocoaint.pas}
 
 {******************************************************************************
-  All Carbon interface communication implementations.
-  This are the implementation of the overrides of the Carbon Interface for the
+  All Cocoa interface communication implementations.
+  This is the implementation of the overrides of the Cocoa Interface for the
   methods defined in the
   lcl/include/lclintf.inc
 
@@ -24,7 +24,7 @@
 {------------------------------------------------------------------------------
   Method:  CreateStandardCursor
   Params:  ACursor - Cursor type
-  Returns: Cursor object in Carbon for the specified cursor type
+  Returns: Cursor object in Cocoa for the specified cursor type
  ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.CreateStandardCursor(ACursor: SmallInt): HCursor;
 begin
@@ -45,6 +45,10 @@ begin
     crHandPoint   : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.pointingHandCursor));
     crDrag        : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.dragCopyCursor));
   else
+    // We answer with Result=0 for crHourGlass because Cocoa does not provide any API
+    // to set the wait cursor. As a compromise to make cross-platform LCL apps written
+    // in Windows/Linux behave as expected without change, we answer 0 here and
+    // a non-native wait cursor will be utilized
     Result := 0;
   end;
 end;
@@ -231,7 +235,7 @@ begin
         begin
           if (Buttons[I] < Low(ButtonCaption)) or (Buttons[I] > High(ButtonCaption)) then
           begin
-            DebugLn('TCarbonWidgetSet.PromptUser Invalid button ID: ' + DbgS(Buttons[I]));
+            DebugLn('TCocoaWidgetSet.PromptUser Invalid button ID: ' + DbgS(Buttons[I]));
             Continue;
           end;
 
@@ -264,7 +268,7 @@ begin
   end;
 
   {$IFDEF VerboseLCLIntf}
-    DebugLn('TCarbonWidgetSet.PromptUser Result: ' + DbgS(Result));
+    DebugLn('TCocoaWidgetSet.PromptUser Result: ' + DbgS(Result));
   {$ENDIF}
 end;  {TCocoaWidgetSet.PromptUser}
 
@@ -304,7 +308,7 @@ end;
           ADesc:
   Returns:
 
-  Describes the inner format utilized by Carbon and specific information
+  Describes the inner format utilized by Cocoa and specific information
   for the specified bitmap
  ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.RawImage_DescriptionFromBitmap(ABitmap: HBITMAP; out ADesc: TRawImageDescription): Boolean;
@@ -320,7 +324,7 @@ end;
           ADesc: - Pointer to raw image description
   Returns: True if success
 
-  Retrieves the standard image format utilized by Carbon
+  Retrieves the standard image format utilized by Cocoa
  ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.RawImage_DescriptionFromDevice(ADC: HDC; out ADesc: TRawImageDescription): Boolean;
 begin

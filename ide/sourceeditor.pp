@@ -688,7 +688,7 @@ type
     procedure EditorChanged(Sender: TObject);
     procedure DoClose(var CloseAction: TCloseAction); override;
     procedure DoShow; override;
-    procedure DoHide; override; // DaThoX
+    procedure DoHide; override;
   protected
     function GetActiveCompletionPlugin: TSourceEditorCompletionPlugin; override;
     function GetCompletionPlugins(Index: integer): TSourceEditorCompletionPlugin; override;
@@ -865,10 +865,8 @@ type
     function  GetUniqueSourceEditors(Index: integer): TSourceEditorInterface; override;
     function GetMarklingProducers(Index: integer): TSourceMarklingProducer; override;
     procedure SyncMessageWnd(Sender: TObject);
-    // DaThoX begin
     procedure DoWindowShow(AWindow: TSourceNotebook);
     procedure DoWindowHide(AWindow: TSourceNotebook);
-    // DaThoX end
   public
     procedure BeginAutoFocusLock;
     procedure EndAutoFocusLock;
@@ -6735,18 +6733,16 @@ begin
   // statusbar was not updated when visible=false, update now
   if snUpdateStatusBarNeeded in States then
     UpdateStatusBar;
-  if Assigned(Manager) and (Parent <> nil) then // DaThoX
-    Manager.DoWindowShow(Self); // DaThoX
+  if Assigned(Manager) and (Parent <> nil) then
+    Manager.DoWindowShow(Self);
 end;
 
-// DaThoX begin
 procedure TSourceNotebook.DoHide;
 begin
   inherited DoHide;
   if Assigned(Manager) and (Parent <> nil) then
     Manager.DoWindowHide(Self);
 end;
-// DaThoX end
 
 function TSourceNotebook.IndexOfEditorInShareWith(AnOtherEditor: TSourceEditor): Integer;
 var
@@ -6859,7 +6855,7 @@ begin
     or (APageIndex < 0) or (APageIndex >= PageCount) then exit;
 
   TempEditor := FindSynEdit(NotebookPage[APageIndex]);
-  { DaThoX comment
+  {
   TempEditor:=nil;
   with NotebookPage[APageIndex] do
     for I := 0 to ControlCount-1 do
@@ -7323,10 +7319,8 @@ begin
   if (PageCount = 0) and (Parent=nil) and not FIsClosing then
     Close;
 
-// DaThoX begin
   DoActiveEditorChanged;
   Manager.ActiveEditor := Edit;
-// DaThoX end
 end;
 
 procedure TSourceNotebook.CopyEditor(OldPageIndex, NewWindowIndex,
@@ -7627,10 +7621,8 @@ begin
     // Move focus from Notebook-tabs to editor
     TempEditor:=FindSourceEditorWithPageIndex(PageIndex);
     if IsVisible and (TempEditor <> nil) and (FUpdateLock = 0) then
-    // dathox begin
-    // this line raise exception when editor is in other tab (for example - focused is designer)
-    ;//  TempEditor.EditorComponent.SetFocus;
-    // dathox end
+      // this line raises exception when editor is in other tab (for example - focused is designer)
+      ;// TempEditor.EditorComponent.SetFocus;
   finally
     debugln(SRCED_CLOSE, ['TSourceNotebook.CloseFile UnLock']);
     DebugBoss.UnLockCommandProcessing;
@@ -8885,7 +8877,6 @@ begin
   Result:=TSourceMarklingProducer(fProducers[Index]);
 end;
 
-// DaThoX begin
 procedure TSourceEditorManagerBase.DoWindowShow(AWindow: TSourceNotebook);
 begin
   FChangeNotifyLists[semWindowShow].CallNotifyEvents(AWindow);
@@ -8895,7 +8886,6 @@ procedure TSourceEditorManagerBase.DoWindowHide(AWindow: TSourceNotebook);
 begin
   FChangeNotifyLists[semWindowHide].CallNotifyEvents(AWindow);
 end;
-// DaThoX end
 
 procedure TSourceEditorManagerBase.SyncMessageWnd(Sender: TObject);
 begin

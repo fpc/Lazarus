@@ -86,6 +86,7 @@ type
     class procedure SetFormStyle(const AForm: TCustomform; const AFormStyle, AOldFormStyle: TFormStyle); virtual;
     class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); virtual;
     class procedure ShowModal(const ACustomForm: TCustomForm); virtual;
+    class procedure SetModalResult(const ACustomForm: TCustomForm; ANewValue: TModalResult); virtual;
     class procedure SetPopupParent(const ACustomForm: TCustomForm;
       const APopupMode: TPopupMode; const APopupParent: TCustomForm); virtual;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); virtual;
@@ -197,6 +198,13 @@ begin
 end;
 
 class procedure TWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
+begin
+end;
+
+// This needs implementing only if the TWSCustomForm.ShowModal implementation
+// is fully blocking (which it shouldn't be ideally)
+class procedure TWSCustomForm.SetModalResult(const ACustomForm: TCustomForm;
+  ANewValue: TModalResult);
 begin
 end;
 

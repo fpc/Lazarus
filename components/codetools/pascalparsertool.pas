@@ -412,12 +412,19 @@ begin
   'L':
     if CompareSrcIdentifiers('LABEL',p) then exit(KeyWordFuncTypeLabel);
   'O':
-    if CompareSrcIdentifiers('OBJECT',p)
-    or CompareSrcIdentifiers('OBJCCLASS',p)
-    or CompareSrcIdentifiers('OBJCCATEGORY',p) then
-      exit(KeyWordFuncTypeClass)
-    else if CompareSrcIdentifiers('OBJCPROTOCOL',p) then
-      exit(KeyWordFuncTypeClassInterface(ctnObjCProtocol));
+    begin
+      if CompareSrcIdentifiers('OBJECT',p) then
+        exit(KeyWordFuncTypeClass);
+      if (UpChars[p[1]]='B') and (UpChars[p[2]]='J') and (UpChars[p[3]]='C')
+      and (Scanner.CompilerModeSwitches*[cmsObjectiveC1,cmsObjectiveC2]<>[])
+      then begin
+        if CompareSrcIdentifiers('OBJCCLASS',p)
+        or CompareSrcIdentifiers('OBJCCATEGORY',p) then
+          exit(KeyWordFuncTypeClass)
+        else if CompareSrcIdentifiers('OBJCPROTOCOL',p) then
+          exit(KeyWordFuncTypeClassInterface(ctnObjCProtocol));
+      end;
+    end;
   'P':
     case UpChars[p[1]] of
     'A': if CompareSrcIdentifiers('PACKED',p) then exit(KeyWordFuncTypePacked);
@@ -1778,6 +1785,8 @@ begin
         SaveRaiseCharExpectedButAtomFound(':');
       ReadNextAtom;
       ReadConstant(true,false,[]);
+    end else if UpAtomIs('INTERRUPT') then begin
+      ReadNextAtom;
     end else if UpAtomIs('SYSCALL') then begin
       ReadNextAtom;
       AtomIsIdentifierSaveE;
@@ -4112,6 +4121,8 @@ begin
       if UpAtomIs('EXTERNAL') then begin
         IsJVM:=Scanner.Values.IsDefined('CPUJVM');
         if IsJVM or (IntfDesc=ctnObjCProtocol) then begin
+          // objcprotocol external [name '']
+          // cpujvm: class external '' [name '']
           CreateChildNode;
           CurNode.Desc:=ctnClassExternal;
           ReadNextAtom;
@@ -4311,7 +4322,8 @@ begin
           EndChildNode;
           IsForward:=false;
         end;
-      end else if UpAtomIs('HELPER') then begin
+      end else if UpAtomIs('HELPER')
+      and (ClassDesc in [ctnClass,ctnRecordType,ctnTypeType]) then begin
         IsHelper:=true;
         case ClassDesc of
           ctnClass: CurNode.Desc:=ctnClassHelper;
@@ -5185,7 +5197,7 @@ begin
   if (ExtractSearchPos>0)
   and (ExtractSearchPos<=ExtractMemStream.Position)
   then begin
-    ExtractFoundPos:=ExtractSearchPos-1-LastStreamPos+CurPos.StartPos;
+    ExtractFoundPos:=ExtractSearchPos-1-integer(LastStreamPos)+CurPos.StartPos;
     ExtractSearchPos:=-1;
   end;
   ReadNextAtom;

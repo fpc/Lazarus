@@ -32,10 +32,15 @@ unit InitialSetupProc;
 interface
 
 uses
-  Classes, SysUtils, strutils, LazFileCache, LazUTF8Classes, LazFileUtils,
-  LazLoggerBase, LazUTF8, Laz2_XMLCfg, LazLogger, DefineTemplates,
-  CodeToolManager, FileProcs, LazarusIDEStrConsts, LazConf, EnvironmentOpts,
-  IDEProcs, contnrs;
+  // RTL + FCL + LCL
+  Classes, SysUtils, strutils, contnrs,
+  // CodeTools
+  DefineTemplates, CodeToolManager, FileProcs,
+  // LazUtils
+  LazFileCache, LazUTF8, LazUTF8Classes, LazFileUtils,
+  LazLoggerBase, LazLogger, Laz2_XMLCfg,
+  // IDE
+  LazarusIDEStrConsts, LazConf, EnvironmentOpts, IDEProcs;
 
 type
   TSDFilenameQuality = (

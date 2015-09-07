@@ -28,8 +28,7 @@ program ReplaceResourceDirectives;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CodeCache, CodeToolManager, FileProcs,
-  CodeTree, DirectivesTree;
+  SysUtils, CodeCache, CodeToolManager;
   
 var
   Filename: string;

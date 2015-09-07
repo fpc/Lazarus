@@ -45,7 +45,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
   KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache,
-  AVL_Tree;
+  LazFileUtils, LazUtilities, AVL_Tree, LazDbgLog;
 
 type
   TCodeToolPhase = (

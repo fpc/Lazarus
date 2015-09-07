@@ -45,8 +45,7 @@ program FixH2PASDirectives;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CodeCache, CodeToolManager, FileProcs,
-  CodeTree, DirectivesTree;
+  Classes, SysUtils, CodeCache, CodeToolManager, DirectivesTree;
   
 var
   Filename: string;

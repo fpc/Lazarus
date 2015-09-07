@@ -108,12 +108,34 @@ function CP866ToUTF8(const s: string): string;  // DOS and Windows console's cyr
 function CP874ToUTF8(const s: string): string;  // thai
 function KOI8ToUTF8(const s: string): string;  // russian cyrillic
 function MacintoshToUTF8(const s: string): string;  // Macintosh, alias Mac OS Roman
-function SingleByteToUTF8(const s: string;
-                          const Table: TCharToUTF8Table): string;
+function SingleByteToUTF8(const s: string; const Table: TCharToUTF8Table): string;
 function UCS2LEToUTF8(const s: string): string; // UCS2-LE 2byte little endian
 function UCS2BEToUTF8(const s: string): string; // UCS2-BE 2byte big endian
 
 function UTF8ToUTF8BOM(const s: string): string; // UTF8 with BOM
+{$if FPC_FULLVERSION >= 20701}
+function UTF8ToISO_8859_1(const s: string): RawByteString; // central europe
+function UTF8ToISO_8859_2(const s: string): RawByteString; // eastern europe
+function UTF8ToISO_8859_15(const s: string): RawByteString; // Western European languages
+function UTF8ToCP1250(const s: string): RawByteString; // central europe
+function UTF8ToCP1251(const s: string): RawByteString; // cyrillic
+function UTF8ToCP1252(const s: string): RawByteString; // latin 1
+function UTF8ToCP1253(const s: string): RawByteString; // greek
+function UTF8ToCP1254(const s: string): RawByteString; // turkish
+function UTF8ToCP1255(const s: string): RawByteString; // hebrew
+function UTF8ToCP1256(const s: string): RawByteString; // arabic
+function UTF8ToCP1257(const s: string): RawByteString; // baltic
+function UTF8ToCP1258(const s: string): RawByteString; // vietnam
+function UTF8ToCP437(const s: string): RawByteString;  // DOS central europe
+function UTF8ToCP850(const s: string): RawByteString;  // DOS western europe
+function UTF8ToCP852(const s: string): RawByteString;  // DOS central europe
+function UTF8ToCP866(const s: string): RawByteString;  // DOS and Windows console's cyrillic
+function UTF8ToCP874(const s: string): RawByteString;  // thai
+function UTF8ToKOI8(const s: string): RawByteString;  // russian cyrillic
+function UTF8ToKOI8U(const s: string): RawByteString;  // ukrainian cyrillic
+function UTF8ToKOI8RU(const s: string): RawByteString;  // belarussian cyrillic
+function UTF8ToMacintosh(const s: string): RawByteString;  // Macintosh, alias Mac OS Roman
+{$ELSE}
 function UTF8ToISO_8859_1(const s: string): string; // central europe
 function UTF8ToISO_8859_15(const s: string): string; // Western European languages
 function UTF8ToISO_8859_2(const s: string): string; // eastern europe
@@ -135,12 +157,14 @@ function UTF8ToKOI8(const s: string): string;  // russian cyrillic
 function UTF8ToKOI8U(const s: string): string;  // ukrainian cyrillic
 function UTF8ToKOI8RU(const s: string): string;  // belarussian cyrillic
 function UTF8ToMacintosh(const s: string): string;  // Macintosh, alias Mac OS Roman
-function UTF8ToSingleByte(const s: string;
-                          const UTF8CharConvFunc: TUnicodeToCharID): string;
+// Common function used by all UTF8ToXXX functions.
+function UTF8ToSingleByte(const s: string; const UTF8CharConvFunc: TUnicodeToCharID): string;
+{$ENDIF}
+
 function UTF8ToUCS2LE(const s: string): string; // UCS2-LE 2byte little endian without BOM
 function UTF8ToUCS2BE(const s: string): string; // UCS2-BE 2byte big endian without BOM
 
-{$IFNDEF DisableAsianCodePages}
+{$IFnDEF DisableAsianCodePages}
 // Asian encodings
 function CP932ToUTF8(const s: string): string;      // Japanese
 function CP936ToUTF8(const s: string): string;      // Chinese
@@ -149,13 +173,20 @@ function CP950ToUTF8(const s: string): string;      // Chinese Complex
 
 function DBCSToUTF8(const s: string; CodeP: integer): string;
 
+{$if FPC_FULLVERSION >= 20701}
+function UTF8ToCP932(const s: string): RawByteString; // Japanese
+function UTF8ToCP936(const s: string): RawByteString; // Chinese, essentially the same as GB 2312 and a predecessor to GB 18030
+function UTF8ToCP949(const s: string): RawByteString; // Korea
+function UTF8ToCP950(const s: string): RawByteString; // Chinese Complex
+{$ELSE}
 function UTF8ToCP932(const s: string): string;      // Japanese
 function UTF8ToCP936(const s: string): string;      // Chinese, essentially the same as GB 2312 and a predecessor to GB 18030
 function UTF8ToCP949(const s: string): string;      // Korea
 function UTF8ToCP950(const s: string): string;      // Chinese Complex
+// Common function used by all UTF8ToXXX functions.
+function UTF8ToDBCS(const s: string; const UTF8CharConvFunc: TUnicodeToCharID): string;
+{$ENDIF}
 
-function UTF8ToDBCS(const s: string;
-                            const UTF8CharConvFunc: TUnicodeToCharID): string;
 {$ENDIF}
 
 procedure GetSupportedEncodings(List: TStrings);
@@ -170,7 +201,7 @@ var
   EncodingValid: boolean = false;
   DefaultTextEncoding: string = EncodingAnsi;
 
-{$IFNDEF DisableAsianCodePages}
+{$IFnDEF DisableAsianCodePages}
 {$include asiancodepages.inc}
 {$include asiancodepagefunctions.inc}
 {$ENDIF}
@@ -198,7 +229,7 @@ begin
 end;
 {$ELSE}
 {$IFNDEF Darwin}
-function GetUnixEncoding:string;
+function GetUnixEncoding: string;
 var
   Lang: string;
   i: integer;
@@ -5286,8 +5317,7 @@ begin
   Result:=SingleByteToUTF8(s,ArrayMacintoshToUTF8);
 end;
 
-function SingleByteToUTF8(const s: string; const Table: TCharToUTF8Table
-  ): string;
+function SingleByteToUTF8(const s: string; const Table: TCharToUTF8Table): string;
 var
   len: Integer;
   i: Integer;
@@ -5388,6 +5418,138 @@ begin
   SetLength(Result,len);
 end;
 
+function UTF8ToUTF8BOM(const s: string): string;
+begin
+  Result:=UTF8BOM+s;
+end;
+
+{$if FPC_FULLVERSION >= 20701}
+function UTF8ToISO_8859_1(const s: string): RawByteString;
+begin
+  Result:=S;
+  SetCodePage(Result, 28591, True);
+end;
+
+function UTF8ToISO_8859_2(const s: string): RawByteString;
+begin
+  Result:=S;
+  SetCodePage(Result, 28592, True);
+end;
+
+function UTF8ToISO_8859_15(const s: string): RawByteString;
+begin
+  Result:=S;
+  SetCodePage(Result, 28605, True);
+end;
+
+function UTF8ToCP1250(const s: string): RawByteString;
+begin
+  Result:=S;
+  SetCodePage(Result, 1250, True);
+end;
+
+function UTF8ToCP1251(const s: string): RawByteString;
+begin
+  Result:=S;
+  SetCodePage(Result, 1251, True);
+end;
+
+function UTF8ToCP1252(const s: string): RawByteString;
+begin
+  Result:=S;
+  SetCodePage(Result, 1252, True);
+end;
+
+function UTF8ToCP1253(const s: string): RawByteString;
+begin
+  Result:=S;
+  SetCodePage(Result, 1253, True);
+end;
+
+function UTF8ToCP1254(const s: string): RawByteString;
+begin
+  Result:=S;
+  SetCodePage(Result, 1254, True);
+end;
+
+function UTF8ToCP1255(const s: string): RawByteString;
+begin
+  Result:=S;
+  SetCodePage(Result, 1255, True);
+end;
+
+function UTF8ToCP1256(const s: string): RawByteString;
+begin
+  Result:=S;
+  SetCodePage(Result, 1256, True);
+end;
+
+function UTF8ToCP1257(const s: string): RawByteString;
+begin
+  Result:=S;
+  SetCodePage(Result, 1257, True);
+end;
+
+function UTF8ToCP1258(const s: string): RawByteString;
+begin
+  Result:=S;
+  SetCodePage(Result, 1258, True);
+end;
+
+function UTF8ToCP437(const s: string): RawByteString;
+begin
+  Result:=S;
+  SetCodePage(Result, 437, True);
+end;
+
+function UTF8ToCP850(const s: string): RawByteString;
+begin
+  Result:=S;
+  SetCodePage(Result, 850, True);
+end;
+
+function UTF8ToCP852(const s: string): RawByteString;
+begin
+  Result:=S;
+  SetCodePage(Result, 852, True);
+end;
+
+function UTF8ToCP866(const s: string): RawByteString;
+begin
+  Result:=S;
+  SetCodePage(Result, 866, True);
+end;
+
+function UTF8ToCP874(const s: string): RawByteString;
+begin
+  Result:=S;
+  SetCodePage(Result, 874, True);
+end;
+
+function UTF8ToKOI8(const s: string): RawByteString;
+begin
+  Result:=S;
+  SetCodePage(Result, 20866, True);
+end;
+
+function UTF8ToKOI8U(const s: string): RawByteString;
+begin
+  Result:=S;
+  SetCodePage(Result, 21866, True);
+end;
+
+function UTF8ToKOI8RU(const s: string): RawByteString;
+begin
+  Result:=S;
+  SetCodePage(Result, 21866, True);
+end;
+
+function UTF8ToMacintosh(const s: string): RawByteString;
+begin
+  Result:=S;
+  SetCodePage(Result, 10000, True);
+end;
+{$ELSE}
 function UnicodeToCP1250(Unicode: cardinal): integer;
 begin
   case Unicode of
@@ -6709,11 +6871,6 @@ begin
   end;
 end;
 
-function UTF8ToUTF8BOM(const s: string): string;
-begin
-  Result:=UTF8BOM+s;
-end;
-
 function UTF8ToISO_8859_1(const s: string): string;
 begin
   Result:=UTF8ToSingleByte(s,@UnicodeToISO_8859_1);
@@ -6858,6 +7015,7 @@ begin
   end;
   SetLength(Result,Dest-PChar(Result));
 end;
+{$ENDIF}
 
 function UTF8ToUCS2LE(const s: string): string;
 var
@@ -6960,7 +7118,7 @@ begin
   List.Add(UpperCase(EncodingCP866));
   List.Add(UpperCase(EncodingCP874));
 
-  {$IFNDEF DisableAsianCodePages}
+  {$IFnDEF DisableAsianCodePages}
   List.Add(UpperCase(EncodingCP932));
   List.Add(UpperCase(EncodingCP936));
   List.Add(UpperCase(EncodingCP949));
@@ -7131,7 +7289,7 @@ begin
   if ATo=EncodingCP852 then begin Result:=UTF8ToCP852(s); exit; end;
   if ATo=EncodingCP866 then begin Result:=UTF8ToCP866(s); exit; end;
   if ATo=EncodingCP874 then begin Result:=UTF8ToCP874(s); exit; end;
-  {$IFNDEF DisableAsianCodePages}
+  {$IFnDEF DisableAsianCodePages}
   if ATo=EncodingCP936 then begin Result:=UTF8ToCP936(s); exit; end;
   if ATo=EncodingCP950 then begin Result:=UTF8ToCP950(s); exit; end;
   if ATo=EncodingCP949 then begin Result:=UTF8ToCP949(s); exit; end;
@@ -7176,7 +7334,7 @@ begin
   if AFrom=EncodingCP852 then begin Result:=CP852ToUTF8(s); exit; end;
   if AFrom=EncodingCP866 then begin Result:=CP866ToUTF8(s); exit; end;
   if AFrom=EncodingCP874 then begin Result:=CP874ToUTF8(s); exit; end;
-  {$IFNDEF DisableAsianCodePages}
+  {$IFnDEF DisableAsianCodePages}
   if AFrom=EncodingCP936 then begin Result:=CP936ToUTF8(s); exit; end;
   if AFrom=EncodingCP950 then begin Result:=CP950ToUTF8(s); exit; end;
   if AFrom=EncodingCP949 then begin Result:=CP949ToUTF8(s); exit; end;

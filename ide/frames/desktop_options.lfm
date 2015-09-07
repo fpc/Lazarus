@@ -181,6 +181,8 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     BorderSpacing.Right = 6
     Caption = 'Import desktop'
     OnClick = ImportDesktopButtonClick
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 7
   end
   object ExportDesktopButton: TButton
@@ -199,6 +201,8 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     BorderSpacing.Right = 3
     Caption = 'Export desktop'
     OnClick = ExportDesktopButtonClick
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 8
   end
   object PanelGlyphsButtonsOptions: TPanel

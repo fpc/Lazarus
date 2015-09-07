@@ -712,7 +712,7 @@ end;
 
 function TCompilerOtherOptionsFrame.GetTitle: string;
 begin
-  Result := dlgCOOther;
+  Result := lisCustomOptions3;
 end;
 
 procedure TCompilerOtherOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);

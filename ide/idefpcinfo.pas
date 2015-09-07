@@ -30,16 +30,23 @@ unit IDEFPCInfo;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, FileUtil, lazutf8classes, Forms, Controls,
-  Graphics, Dialogs, StdCtrls, ComCtrls, FileProcs, DefineTemplates,
-  CodeToolManager, BaseBuildManager, Project, EnvironmentOpts,
-  LazarusIDEStrConsts, AboutFrm, TransferMacros, IDEWindowIntf, LazIDEIntf;
+  // RTL + LCL
+  Classes, SysUtils,
+  Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls, ButtonPanel,
+  // CodeTools
+  DefineTemplates, CodeToolManager, FileProcs,
+  // LazUtils
+  LazUTF8Classes, LazFileUtils, LazUTF8,
+  // Other
+  IDEWindowIntf, LazIDEIntf, BaseBuildManager,
+  Project, EnvironmentOpts, LazarusIDEStrConsts, AboutFrm, TransferMacros;
 
 type
 
   { TIDEFPCInfoDialog }
 
   TIDEFPCInfoDialog = class(TForm)
+    ButtonPanel1: TButtonPanel;
     CmdLineOutputMemo: TMemo;
     ValuesMemo: TMemo;
     PageControl1: TPageControl;

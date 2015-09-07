@@ -21,10 +21,13 @@ unit Dialogs;
 interface
 
 uses
-  Types, typinfo, Classes, LResources, SysUtils, LazFileUtils,
-  LCLIntf, InterfaceBase, FileUtil, LCLStrConsts, LCLType, LCLProc, Forms,
+  // RTL + FCL + LCL
+  Types, typinfo, Classes, SysUtils,
+  LResources, LCLIntf, InterfaceBase, LCLStrConsts, LCLType, LCLProc, Forms,
   Controls, Themes, GraphType, Graphics, Buttons, ButtonPanel, StdCtrls,
-  ExtCtrls, LCLClasses, ClipBrd;
+  ExtCtrls, LCLClasses, ClipBrd,
+  // LazUtils
+  FileUtil, LazFileUtils;
 
 
 type

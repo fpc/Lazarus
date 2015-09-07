@@ -438,8 +438,9 @@ var
 begin
   result := false;
   AExt := ExtractFileExt(AFileName);
-  for i:=0 to frFiltersCount-1 do
-    if SameText(AExt, ExtractFileExt(frFilters[i].FilterExt)) then begin
+  for i:=0 to ExportFilters.Count - 1 do
+    if SameText(AExt, ExtractFileExt(ExportFilters[i].FilterExt)) then
+    begin
       FWindow.ExportToWithFilterIndex(i, AFileName);
       result := true;
       break;
@@ -706,8 +707,7 @@ begin
   begin
     FindBtn.Visible := pbFind in TfrReport(Doc).PreviewButtons;
     ZoomBtn.Visible := pbZoom in TfrReport(Doc).PreviewButtons;
-    SaveBtn.Visible := (pbSave in TfrReport(Doc).PreviewButtons) and not
-      ((frFiltersCount = 0) and (roHideDefaultFilter in TfrReport(Doc).Options));
+    SaveBtn.Visible := (pbSave in TfrReport(Doc).PreviewButtons) and not ((ExportFilters.Count = 0) and (roHideDefaultFilter in TfrReport(Doc).Options));
     LoadBtn.Visible := pbLoad in TfrReport(Doc).PreviewButtons;
     PrintBtn.Visible := pbPrint in TfrReport(Doc).PreviewButtons;
     ExitBtn.Visible := pbExit in TfrReport(Doc).PreviewButtons;
@@ -885,10 +885,10 @@ end;
 function TfrPreviewForm.ExportToWithFilterIndex(AFilterIndex: Integer;
   const AFileName: string):boolean;
 begin
-  if (AFilterIndex<0) or (AFilterIndex>=frFiltersCount) then
+  if (AFilterIndex<0) or (AFilterIndex>=ExportFilters.Count) then
     raise exception.Create(sExportFilterIndexError);
   ConnectBack;
-  TfrReport(Doc).ExportTo(frFilters[AFilterIndex].ClassRef, AFileName);
+  TfrReport(Doc).ExportTo(ExportFilters[AFilterIndex].ClassRef, AFileName);
   Connect(Doc);
   Result:=true;
 end;
@@ -1349,12 +1349,15 @@ procedure TfrPreviewForm.SaveBtnClick(Sender: TObject);
 var
   i, Index, IndexOffset: Integer;
   FilterStr, FilterExtension, FileExtension: String;
-  FilterInfo: TfrExportFilterInfo;
+  FilterInfo: TExportFilterItem;
+  FExtList:TStringList;
 begin
   if EMFPages = nil then Exit;
+  FExtList:=TStringList.Create;
   Index := 1;
   if not (roHideDefaultFilter in TfrReport(Doc).Options) then
   begin
+    FExtList.Add('*.frp');
     FilterStr := sRepFile + ' (*.frp)|*.frp';
     IndexOffset := 2;
   end
@@ -1364,30 +1367,46 @@ begin
     IndexOffset := 1;
   end;
   FileExtension := ExtractFileExt(SaveDialog.FileName);
-  for i := 0 to frFiltersCount - 1 do
+
+  for i := 0 to ExportFilters.Count - 1 do
   begin
-    FilterInfo := frFilters[i];
-    if FilterStr <> '' then
-      FilterStr := FilterStr + '|';
-    FilterStr := FilterStr + FilterInfo.FilterDesc + '|' + FilterInfo.FilterExt;
-    FilterExtension := ExtractFileExt(FilterInfo.FilterExt);
-    if (Index = 1) and (Comparetext(FilterExtension, FileExtension)=0) then
-      Index := i + IndexOffset;
+    FilterInfo := ExportFilters[i];
+    if FilterInfo.Enabled then
+    begin
+      FExtList.Add(FilterInfo.FilterExt);
+      if FilterStr <> '' then
+        FilterStr := FilterStr + '|';
+      FilterStr := FilterStr + FilterInfo.FilterDesc + '|' + FilterInfo.FilterExt;
+      FilterExtension := ExtractFileExt(FilterInfo.FilterExt);
+      if (Index = 1) and (Comparetext(FilterExtension, FileExtension)=0) then
+        Index := i + IndexOffset;
+    end;
   end;
+
   SaveDialog.Filter := FilterStr;
   SaveDialog.FilterIndex := Index;
   if SaveDialog.Execute then
   begin
-    Index := SaveDialog.FilterIndex - IndexOffset;
-    if Index = -1 then
+    FileExtension:=ExtractFileExt(SaveDialog.FileName);
+    if FileExtension = '' then
+      FileExtension:=UTF8Copy(FExtList[SaveDialog.FilterIndex - 1], 2, UTF8Length(FExtList[SaveDialog.FilterIndex - 1]) - 1);
+
+    if FileExtension = '.frp' then
       SaveToFile(SaveDialog.FileName)
     else
     begin
-      FilterExtension := Copy(frFilters[Index].FilterExt, 2, 255);
-      ExportToWithFilterIndex(Index,
-        ChangeFileExt(SaveDialog.FileName, FilterExtension));
+      for i := 0 to ExportFilters.Count - 1 do
+      begin
+        FilterInfo := ExportFilters[i];
+        if FilterInfo.Enabled and (FileExtension = UTF8Copy(FilterInfo.FilterExt, 2, UTF8Length(FilterInfo.FilterExt) - 1)) then
+        begin
+          ExportToWithFilterIndex(i, ChangeFileExt(SaveDialog.FileName, FileExtension));
+          break;
+        end;
+      end;
     end;
   end;
+  FExtList.Free;
 end;
 
 procedure TfrPreviewForm.PrintBtnClick(Sender: TObject);

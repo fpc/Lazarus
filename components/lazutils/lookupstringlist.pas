@@ -22,7 +22,7 @@
     This class is useful only when you must preserve the order in list, but
      also need to do fast lookups to see if a string exists, or must prevent duplicates.
 }
-unit DictionaryStringList;
+unit LookupStringList;
 
 {$mode objfpc}{$H+}
 
@@ -33,9 +33,9 @@ uses
 
 type
 
-  { TDictionaryStringList }
+  { TLookupStringList }
 
-  TDictionaryStringList = class(TStringList)
+  TLookupStringList = class(TStringList)
   private
     FMap: TStringMap;
   protected
@@ -53,6 +53,9 @@ type
     function IndexOf(const S: string): Integer; override;
   end;
 
+  TDictionaryStringList = class(TLookupStringList)
+  end deprecated 'The class was renamed to TLookupStringList.';
+
 function Deduplicate(AStrings: TStrings): Boolean;
 
 implementation
@@ -63,11 +66,10 @@ implementation
 }
 function Deduplicate(AStrings: TStrings): Boolean;
 var
-  i: Integer;
-  DSL: TDictionaryStringList;
+  DSL: TLookupStringList;
 begin
   Result := False;
-  DSL := TDictionaryStringList.Create;
+  DSL := TLookupStringList.Create;
   try
     DSL.Assign(AStrings);
     AStrings.Assign(DSL);
@@ -77,34 +79,34 @@ begin
   end;
 end;
 
-{ TDictionaryStringList }
+{ TLookupStringList }
 
-constructor TDictionaryStringList.Create;
+constructor TLookupStringList.Create;
 begin
   inherited Create;
   FMap := TStringMap.Create(True);
 end;
 
-destructor TDictionaryStringList.Destroy;
+destructor TLookupStringList.Destroy;
 begin
   FMap.Free;
   inherited Destroy;
 end;
 
-procedure TDictionaryStringList.Assign(Source: TPersistent);
+procedure TLookupStringList.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
-  if Source is TDictionaryStringList then
-    FMap.Assign(TDictionaryStringList(Source).FMap);
+  if Source is TLookupStringList then
+    FMap.Assign(TLookupStringList(Source).FMap);
 end;
 
-procedure TDictionaryStringList.Clear;
+procedure TLookupStringList.Clear;
 begin
   inherited Clear;
   FMap.Clear;
 end;
 
-procedure TDictionaryStringList.Delete(Index: Integer);
+procedure TLookupStringList.Delete(Index: Integer);
 var
   s: String;
 begin
@@ -116,7 +118,7 @@ begin
     FMap.Remove(s);
 end;
 
-function TDictionaryStringList.Add(const S: string): Integer;
+function TLookupStringList.Add(const S: string): Integer;
 begin
   if not Sorted and (Duplicates = dupIgnore) and FMap.Contains(S) then
     Result := -1
@@ -124,38 +126,38 @@ begin
     Result := inherited Add(S);
 end;
 
-function TDictionaryStringList.AddObject(const S: string; AObject: TObject): Integer;
+function TLookupStringList.AddObject(const S: string; AObject: TObject): Integer;
 begin
   Result := Add(S);
   if Result > -1 then
     Objects[Result] := AObject;
 end;
 
-procedure TDictionaryStringList.InsertItem(Index: Integer; const S: string);
+procedure TLookupStringList.InsertItem(Index: Integer; const S: string);
 begin
   if not Sorted and (Duplicates <> dupAccept) then
     if FMap.Contains(S) then
       case Duplicates of
         DupIgnore : Exit;
-        DupError : raise Exception.Create('TDictionaryStringList.InsertItem:'
+        DupError : raise Exception.Create('TLookupStringList.InsertItem:'
                                          +' Duplicates are not allowed.');
       end;
   inherited InsertItem(Index, S);
   FMap.Add(S);     // Insert string to map, too.
 end;
 
-function TDictionaryStringList.Contains(const S: string): Boolean;
+function TLookupStringList.Contains(const S: string): Boolean;
 begin
   Result := FMap.Contains(S);
 end;
 
-function TDictionaryStringList.Find(const S: string; out Index: Integer): Boolean;
+function TLookupStringList.Find(const S: string; out Index: Integer): Boolean;
 begin
   Index := IndexOf(S);
   Result := Index <> -1;
 end;
 
-function TDictionaryStringList.IndexOf(const S: string): Integer;
+function TLookupStringList.IndexOf(const S: string): Integer;
 begin
   if FMap.Contains(S) then
     Result := inherited IndexOf(S)

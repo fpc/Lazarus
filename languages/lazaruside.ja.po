@@ -824,6 +824,10 @@ msgstr ""
 msgid "Choose code template file (*.dci)"
 msgstr "コードテンプテートファイル(*.dpi)を選択してください"
 
+#: lazarusidestrconsts.dlgcloseanduseselecteddesktop
+msgid "Close and use selected desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "ノートブックの[閉じる]ボタンを表示"
@@ -1051,11 +1055,6 @@ msgstr "設定と対象"
 msgid "Config files"
 msgstr "設定ファイル"
 
-#: lazarusidestrconsts.dlgcoother
-msgctxt "lazarusidestrconsts.dlgcoother"
-msgid "Other"
-msgstr "その他"
-
 #: lazarusidestrconsts.dlgcootherdebugginginfo
 msgid "Other debugging info"
 msgstr "他のデバッグ情報"
@@ -1189,6 +1188,10 @@ msgstr "カーソルはタブをスキップ"
 msgid "User defined extension (.pp.xxx)"
 msgstr "ユーザー定義拡張子(.pp.xxx)"
 
+#: lazarusidestrconsts.dlgdebugdesktop
+msgid "debug desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "パスエディタ"
@@ -1209,17 +1212,9 @@ msgstr "デフォルト値"
 msgid "Delete template "
 msgstr "テンプレートを削除"
 
-#: lazarusidestrconsts.dlgdesktop
-msgid "Desktop"
-msgstr "デスクトップ"
-
 #: lazarusidestrconsts.dlgdesktopbuttons
 msgid "Buttons - "
 msgstr "ボタン -"
-
-#: lazarusidestrconsts.dlgdesktopfiles
-msgid "Desktop Files"
-msgstr "デスクトップパッケージ"
 
 #: lazarusidestrconsts.dlgdesktophints
 msgid "Hints"
@@ -1228,6 +1223,10 @@ msgstr "ヒント"
 #: lazarusidestrconsts.dlgdesktopmenus
 msgid "Menus - "
 msgstr "メニュー -"
+
+#: lazarusidestrconsts.dlgdesktopname
+msgid "Desktop name:"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
@@ -2086,10 +2085,6 @@ msgstr "アクティブでない$IFDEFコード"
 msgid "Included mixed state $IFDEF node"
 msgstr "インクルードされた混合状態の$IFDEFコード"
 
-#: lazarusidestrconsts.dlgignoreverb
-msgid "Ignore"
-msgstr "無視"
-
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "システム変数を含む"
@@ -2221,10 +2216,6 @@ msgstr "スマートリンク"
 msgid "Display line numbers in run-time error backtraces"
 msgstr "実行時エラーの後方探索で行番号を表示"
 
-#: lazarusidestrconsts.dlgloaddfile
-msgid "Load desktop settings from file"
-msgstr "ファイルからデスクトップの設定を読み込む"
-
 #: lazarusidestrconsts.dlgmainmenu
 msgid "Main Menu"
 msgstr "メインメニュー"
@@ -2244,6 +2235,10 @@ msgstr "プロジェクトユニットを表示"
 
 #: lazarusidestrconsts.dlgmakeexecutable
 msgid "\"Make\" executable"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmanagedesktops
+msgid "Manage desktops"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmargingutter
@@ -2777,6 +2772,10 @@ msgstr "ノートブックのタブ"
 msgid "Naming"
 msgstr "ネーミング"
 
+#: lazarusidestrconsts.dlgnewdesktop
+msgid "New desktop ..."
+msgstr ""
+
 #: lazarusidestrconsts.dlgnoautomaticrenaming
 msgid "No automatic renaming"
 msgstr "自動的にリネームしない"
@@ -2844,6 +2843,12 @@ msgstr "その他のユニットファイル(区切り記号はセミコロン):
 #: lazarusidestrconsts.dlgoverwriteblock
 msgid "Overwrite block"
 msgstr "ブロックを上書き"
+
+#: lazarusidestrconsts.dlgoverwritedesktop
+msgid ""
+"Desktop with the name \"%s\" was found.\n"
+"Should the old desktop be overwritten?\n"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
@@ -3046,6 +3051,10 @@ msgstr "グリッドを表示"
 msgid "Snap to grid"
 msgstr "グリッドに留まる"
 
+#: lazarusidestrconsts.dlgreallydeletedesktop
+msgid "Really delete desktop \"%s\"?"
+msgstr ""
+
 #: lazarusidestrconsts.dlgreferencecolor
 msgid "Reference"
 msgstr "参照"
@@ -3053,6 +3062,10 @@ msgstr "参照"
 #: lazarusidestrconsts.dlgregularexpressions
 msgid "Regular e&xpressions"
 msgstr "正規表現(&x)"
+
+#: lazarusidestrconsts.dlgrenamedesktop
+msgid "Rename desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgreplaceall
 msgid "Replace &All"
@@ -3124,9 +3137,13 @@ msgstr "ユーザーオーバーライド"
 msgid "Run Parameters"
 msgstr "実行パラメーター"
 
-#: lazarusidestrconsts.dlgsavedfile
-msgid "Save desktop settings to file"
-msgstr "デスクトップの設定をファイル保存"
+#: lazarusidestrconsts.dlgsavecurrentdesktop
+msgid "Save current desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsavecurrentdesktopas
+msgid "Save current desktop as"
+msgstr ""
 
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
@@ -3191,6 +3208,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgselectallchildcontrols
 msgid "Select all child controls together with their parent."
+msgstr ""
+
+#: lazarusidestrconsts.dlgselecteddesktop
+msgid "Selected desktop:"
 msgstr ""
 
 #: lazarusidestrconsts.dlgselectedtext
@@ -3436,6 +3457,10 @@ msgstr "テストプロジェクトを構築するディレクトリ"
 msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"
 msgstr "検索テキスト(&T)"
+
+#: lazarusidestrconsts.dlgtoggleselecteddebugdesktop
+msgid "Toggle as debug desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgtopinfohint
 msgid "Current Class/Proc Hint"
@@ -3869,6 +3894,10 @@ msgstr "新規のファイル"
 msgid "No package found for dependency \"%s\".%sPlease choose an existing package."
 msgstr "依存関係%s%s%sにパッケージが見つかりませんでした。%s存在しているパッケージを一つ選択してください。"
 
+#: lazarusidestrconsts.lisa2ppackageorproject
+msgid "Package/Project"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2ppagenametoolong
 msgid "Page Name too long"
 msgstr "ページ名が長すぎます"
@@ -4032,6 +4061,12 @@ msgstr "ユニット名は無効です"
 #: lazarusidestrconsts.lisabandonchanges
 msgid "Abandon changes?"
 msgstr "変更を破棄しますか？"
+
+#: lazarusidestrconsts.lisabort
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisabort"
+msgid "Abort"
+msgstr "中止"
 
 #: lazarusidestrconsts.lisabortall
 msgid "Abort all"
@@ -5749,6 +5784,10 @@ msgstr "パレット"
 msgid "Pages"
 msgstr "ページ"
 
+#: lazarusidestrconsts.liscmppalettevisible
+msgid "Palette is &visible"
+msgstr ""
+
 #: lazarusidestrconsts.liscmprestoredefaults
 msgid "&Restore defaults"
 msgstr "既定値に戻す"
@@ -7462,6 +7501,10 @@ msgstr "カスタムオプション"
 msgid "Custom options"
 msgstr "カスタムオプション"
 
+#: lazarusidestrconsts.liscustomoptions3
+msgid "Custom Options"
+msgstr ""
+
 #: lazarusidestrconsts.liscustomprogram
 msgid "Custom Program"
 msgstr "カスタムプログラム"
@@ -7980,6 +8023,10 @@ msgstr ""
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
 msgstr "\"設計時\"パッケージはコンポーネントとメニューアイテムをIDEに追加します。プロジェクトはそれらを使用できますがプロジェクト内に束ねる(compiled into)ことはできません。コンパイラはプロジェクトをコンパイルする際にこのパッケージのユニットを見つけないでしょう。"
 
+#: lazarusidestrconsts.lisdesktops
+msgid "Desktops ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdestinationdirectory
 msgid "Destination directory"
 msgstr "行き先のディレクトリ"
@@ -8206,6 +8253,11 @@ msgstr "エクスポート..."
 msgctxt "lazarusidestrconsts.lisdlgimport"
 msgid "Import ..."
 msgstr "インポート ..."
+
+#: lazarusidestrconsts.lisdlgmore
+msgctxt "lazarusidestrconsts.lisdlgmore"
+msgid "More ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisdlgopen
 msgctxt "lazarusidestrconsts.lisdlgopen"
@@ -8919,9 +8971,18 @@ msgstr "エクスポート"
 msgid "Export All Items to File"
 msgstr ""
 
+#: lazarusidestrconsts.lisexportenvironmentoptions
+msgctxt "lazarusidestrconsts.lisexportenvironmentoptions"
+msgid "Export environment options"
+msgstr ""
+
 #: lazarusidestrconsts.lisexporthtml
 msgid "Export as HTML"
 msgstr "HTMLとしてエクスポート"
+
+#: lazarusidestrconsts.lisexportimport
+msgid "Export / Import"
+msgstr ""
 
 #: lazarusidestrconsts.lisexportlist
 msgid "Export list"
@@ -9730,17 +9791,13 @@ msgctxt "lazarusidestrconsts.lisid"
 msgid "ID"
 msgstr "ID"
 
-#: lazarusidestrconsts.lisidcadd
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisidcadd"
-msgid "Add"
-msgstr "追加"
+#: lazarusidestrconsts.lisidcaddition
+msgid "Addition"
+msgstr ""
 
-#: lazarusidestrconsts.lisidcopen
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisidcopen"
-msgid "Open"
-msgstr "開く"
+#: lazarusidestrconsts.lisidcopening
+msgid "Opening"
+msgstr ""
 
 #: lazarusidestrconsts.liside
 msgid "IDE"
@@ -9878,6 +9935,12 @@ msgstr ""
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr "Lazarus の異なる 2 つのバージョンを共に使用されたいのであれば、2 つ目の Lazarus を primary-config-path あるいは pcp のコマンドライン引数で開始しなければなりません。%s%s例：%s"
 
+#: lazarusidestrconsts.lisignore
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisignore"
+msgid "Ignore"
+msgstr "無視"
+
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
 msgstr "すべて無視"
@@ -9916,8 +9979,9 @@ msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr ""
 
-#: lazarusidestrconsts.lisimportexport
-msgid "Import / Export"
+#: lazarusidestrconsts.lisimportenvironmentoptions
+msgctxt "lazarusidestrconsts.lisimportenvironmentoptions"
+msgid "Import environment options"
 msgstr ""
 
 #: lazarusidestrconsts.lisimportfromfile
@@ -11239,10 +11303,6 @@ msgstr "リンクターゲット"
 msgid "list of all case values"
 msgstr "すべてのcase値のリスト"
 
-#: lazarusidestrconsts.lisloadedsuccessfully
-msgid "Loaded successfully"
-msgstr "読み込みに成功"
-
 #: lazarusidestrconsts.lisloadingfailed
 msgid "Loading %s failed."
 msgstr "%sの読み込みに失敗しました。"
@@ -11906,6 +11966,10 @@ msgstr "リソース文字列作成 ..."
 msgctxt "lazarusidestrconsts.lismenunewcomponent"
 msgid "New Component"
 msgstr "新しいコンポーネント"
+
+#: lazarusidestrconsts.lismenunewcustom
+msgid "New %s"
+msgstr ""
 
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"
@@ -12670,10 +12734,6 @@ msgstr "修正(&M)"
 msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "その他"
-
-#: lazarusidestrconsts.lismore2
-msgid "More ..."
-msgstr ""
 
 #: lazarusidestrconsts.lismoresub
 msgctxt "lazarusidestrconsts.lismoresub"
@@ -15772,10 +15832,6 @@ msgstr "プロジェクト %s の変更を保存しますか?"
 msgid "Save current editor file"
 msgstr "現在のエディタファイルを保存"
 
-#: lazarusidestrconsts.lissavedsuccessfully
-msgid "Saved successfully"
-msgstr "保存に成功"
-
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"
 msgstr "IDE の設定と共に保存されます"
@@ -16208,12 +16264,12 @@ msgstr "一致"
 msgid "Sorry, this type is not yet implemented"
 msgstr "すみません、この型はまだ実装されていません"
 
-#: lazarusidestrconsts.lissort
-msgid "Sort"
-msgstr ""
-
 #: lazarusidestrconsts.lissortforscope
 msgid "Sort for scope"
+msgstr ""
+
+#: lazarusidestrconsts.lissorting
+msgid "Sorting"
 msgstr ""
 
 #: lazarusidestrconsts.lissortselascending
@@ -18485,6 +18541,10 @@ msgstr "XMLエラー"
 #: lazarusidestrconsts.lisxmlparsererrorinfileerror
 msgid "XML parser error in file %s%sError: %s"
 msgstr "ファイル%s%sでXMLパーサエラー: %s"
+
+#: lazarusidestrconsts.lisyes
+msgid "Yes"
+msgstr ""
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"

@@ -822,8 +822,8 @@ begin
   FHelper.FZOffset.Y := Min(ZPosition, AMaxZPosition);
   FHelper.FZOffset.X := -FHelper.FZOffset.Y;
   FHelper.FAtDataOnly := AtDataOnly;
-  FHelper.FMaxForMarks := -infinity;
-  FHelper.FMinForMarks := infinity;
+  FHelper.FMaxForMarks := NegInfinity;
+  FHelper.FMinForMarks := SafeInfinity;
 end;
 
 procedure TChartAxis.SetAlignment(AValue: TChartAxisAlignment);

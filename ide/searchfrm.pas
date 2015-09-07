@@ -31,11 +31,13 @@ unit SearchFrm;
 interface
 
 uses
-  // LCL
-  Classes, SysUtils, types, LCLProc, LCLIntf, Forms, Controls,
-  Dialogs, ExtCtrls, StdCtrls, Buttons, FileProcs, FileUtil, ComCtrls,
-  // synedit, codetools
-  SynRegExpr, SourceLog, KeywordFuncLists, BasicCodeTools,
+  // RTL + FCL + LCL
+  Classes, SysUtils, types, LCLProc, LCLIntf, Forms, Controls, ComCtrls,
+  Dialogs, ExtCtrls, StdCtrls, Buttons,
+  // SynEdit, CodeTools
+  SynRegExpr, SourceLog, KeywordFuncLists, BasicCodeTools, FileProcs,
+  // LazUtils
+  FileUtil, LazFileUtils, LazFileCache,
   // IDEIntf
   IDEWindowIntf, LazIDEIntf, SrcEditorIntf, IDEDialogs,
   // ide
@@ -845,7 +847,7 @@ var
   F: String;
 begin
   F := FileName;
-  if FileProcs.FileIsTextCached(F) then
+  if FileIsTextCached(F) then
   begin
     FParent.UpdateProgress(F);
     FParent.SearchFile(F);

@@ -31,8 +31,7 @@ program H2PasTest;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CodeCache, CodeToolManager, FileProcs,
-  CodeAtom, CodeTree, NonPascalCodeTools, CCodeParserTool,
+  Classes, SysUtils, CodeCache, CodeToolManager, CCodeParserTool, FileProcs,
   H2PasTool;
   
 const

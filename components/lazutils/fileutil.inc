@@ -11,7 +11,7 @@
  *****************************************************************************
 }
  
-{$IFnDEF NoLazUTF8Wrappers}
+{$IFnDEF DisableWrapperFunctions}
 function NeedRTLAnsi: boolean;
 begin
   Result := LazUtf8.NeedRTLAnsi;
@@ -199,7 +199,7 @@ end;
 
 function ExpandFileNameUTF8(const FileName: string): string;
 begin
-  Result := LazFileUtils.ExpandFileNameUtf8(Filename);
+  Result := LazFileUtils.ExpandFileNameUTF8(Filename);
 end;
 
 function CompareFileExt(const Filename, Ext: string; CaseSensitive: boolean): integer;
@@ -340,7 +340,7 @@ begin
 end;
 {$ENDIF}
 
-{$ENDIF}
+{$ENDIF DisableWrapperFunctions}
 
 // ToDo: For ExpandUNCFileNameUTF8
 //

@@ -28,8 +28,7 @@ program AddEventMethod;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CodeCache, CodeToolManager, SimpleUnit1, FileProcs,
-  CodeToolsConfig, CodeCompletionTool;
+  Classes, SysUtils, CodeCache, CodeToolManager;
   
 const
   ConfigFilename = 'codetools.config';

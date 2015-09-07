@@ -53,11 +53,14 @@ uses
 {$IFDEF UNIX}
    Unix,BaseUnix,termio,
 {$ENDIF}
-  Classes, SysUtils, strutils, math, Controls, Maps, Variants, FileUtil, Dialogs,
+  Classes, SysUtils, strutils, math, Variants,
+  Controls, Maps, FileUtil, Dialogs, Forms,
   BaseIDEIntf, LCLProc, LazUTF8, LazClasses, LazLoggerBase,
+  {$IFDEF Darwin}
+  LazFileUtils,
+  {$ENDIF}
   DebugUtils, GDBTypeInfo, GDBMIDebugInstructions, GDBMIMiscClasses,
-  DbgIntfBaseTypes, DbgIntfDebuggerBase, GdbmiStringConstants,
-  Forms;
+  DbgIntfBaseTypes, DbgIntfDebuggerBase, GdbmiStringConstants;
 
 type
   TGDBMIProgramInfo = record

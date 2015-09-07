@@ -927,7 +927,7 @@ begin
   lControlId := GetControlId();
   PrepareControlState;
   PrepareControlStateEx;
-  FDrawer.DrawControl(ACanvas, lSize, lControlId, FState, FStateEx);
+  FDrawer.DrawControl(ACanvas, Point(0, 0), lSize, lControlId, FState, FStateEx);
 end;
 
 procedure TCDControl.MouseEnter;

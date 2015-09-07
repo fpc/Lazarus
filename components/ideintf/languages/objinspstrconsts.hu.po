@@ -663,19 +663,19 @@ msgstr "Beállítások"
 
 #: objinspstrconsts.oisorderbackone
 msgid "Back One"
-msgstr "Egyet hátra"
+msgstr "Hátrább eggyel"
 
 #: objinspstrconsts.oisorderforwardone
 msgid "Forward One"
-msgstr "Egyet előre"
+msgstr "Előbbre eggyel"
 
 #: objinspstrconsts.oisordermovetoback
 msgid "Move to Back"
-msgstr "Háttérbe visz"
+msgstr "Háttérbe"
 
 #: objinspstrconsts.oisordermovetofront
 msgid "Move to Front"
-msgstr "Előtérbe hoz"
+msgstr "Előtérbe"
 
 #: objinspstrconsts.oispastecomponents
 msgctxt "objinspstrconsts.oispastecomponents"

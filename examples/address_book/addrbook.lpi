@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -41,7 +41,6 @@
       <Unit0>
         <Filename Value="addrbook.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="addrbook"/>
       </Unit0>
       <Unit1>
         <Filename Value="frmmain.pas"/>
@@ -49,7 +48,6 @@
         <ComponentName Value="MainForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="frmmain"/>
       </Unit1>
     </Units>
   </ProjectOptions>
@@ -75,7 +73,6 @@
     </Linking>
     <Other>
       <CustomOptions Value="-ddsdebug"/>
-      <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
 </CONFIG>

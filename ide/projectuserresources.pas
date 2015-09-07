@@ -35,8 +35,7 @@ unit ProjectUserResources;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Laz2_XMLCfg, Process, LCLProc, Controls,
-  Graphics, Forms, CodeToolManager, FileProcs, LazConf, LResources, ProjectIntf,
+  Classes, SysUtils, Laz2_XMLCfg, LCLProc, FileProcs, LazFileUtils, LazUTF8,
   ProjectResourcesIntf, IDEMsgIntf, MacroIntf, IDEExternToolIntf,
   LazarusIDEStrConsts, resource, bitmapresource, groupresource,
   groupiconresource, groupcursorresource;
@@ -186,7 +185,7 @@ begin
     end;
   end
   else
-    IDEMessagesWindow.AddCustomMessage(mluError,Format(lisFileNotFound2, [Filename]));
+    AddIDEMessage(mluError,Format(lisFileNotFound2, [Filename]));
 end;
 
 function TResourceItem.GetRealFileName(ProjectDirectory: String): String;

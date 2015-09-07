@@ -782,8 +782,11 @@ end;
 procedure TCustomMaskEdit.SelectPrevChar;
 var
   P: LongInt;
+  AStart: Integer;
+  AStop: Integer;
 begin
-  if FCursorPos = 0 then Exit;
+  GetSel(AStart, AStop);
+  if (FCursorPos = 0) and (AStop - AStart <= 1) then Exit;
   P := FCursorPos;
   Dec(FCursorPos);
   While (FCursorPos > 0) and IsLiteral(FMask[FCursorPos + 1]) do
@@ -1054,9 +1057,10 @@ begin
   begin
     Result := False;
   end;
-  // if NewText = old Text the next statement will do nothing,
+  // if NewText = old Text AND the control is now masked,
+  // then "Text := NewText" will do nothing,
   // and NO mask will appear, so Clear first ...
-  Clear;
+  if IsMasked then Clear;
   Text := NewText;
 end;
 

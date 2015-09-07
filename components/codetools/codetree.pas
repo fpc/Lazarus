@@ -43,7 +43,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeToolsStructs, BasicCodeTools,
-  AVL_Tree;
+  AVL_Tree, LazDbgLog;
 
 //-----------------------------------------------------------------------------
 
@@ -91,23 +91,23 @@ const
   ctnObjCCategory       = 35;
   ctnObjCProtocol       = 36;
   ctnCPPClass           = 37;
-  ctnTypeHelper         = 38;//"type helper"
-  ctnRecordHelper       = 39;//"record helper"
+  ctnTypeHelper         = 38;//"type helper", parent/child similar to ctnClass
+  ctnRecordHelper       = 39;//"record helper", parent/child similar to ctnClass
 
   ctnClassAbstract      = 40;
   ctnClassSealed        = 41;
-  ctnClassExternal      = 42;
-  ctnClassHelper        = 43;//"class helper"
+  ctnClassExternal      = 42; // parent: jvm: ctnClass, ObjCClass, ObjCProtocol
+  ctnClassHelper        = 43;//"class helper", parent/child similar to ctnClass
   ctnClassInheritance   = 44;
-  ctnHelperFor          = 45;//class/record/type helper for
+  ctnHelperFor          = 45;//class/record/type helper for, only child is ctnIdentifier
   ctnClassGUID          = 46;
   ctnClassClassVar      = 47; // child of visibility section
   ctnClassPrivate       = 48; // child of AllClassObjects
   ctnClassProtected     = 49;
   ctnClassPublic        = 50;
   ctnClassPublished     = 51;
-  ctnClassRequired      = 52;
-  ctnClassOptional      = 53;
+  ctnClassRequired      = 52; // parent: ObjCProtocol
+  ctnClassOptional      = 53; // parent: ObjCProtocol
   ctnProperty           = 54; // child of visibility section or AllClassInterfaces
   ctnMethodMap          = 55; // child of visibility section or AllClassInterfaces
   

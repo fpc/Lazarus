@@ -40,12 +40,12 @@ unit ViewUnit_Dlg;
 interface
 
 uses
-  SysUtils, Classes, Controls, Forms, Dialogs, Buttons, StdCtrls,
+  SysUtils, Classes, Controls, Forms, Buttons, StdCtrls,
   LazarusIdeStrConsts, IDEProcs, CustomFormEditor, LCLType, LCLIntf,
   ExtCtrls, ButtonPanel, Menus, AVL_Tree, ComCtrls,
   PackageDefs, IDEWindowIntf, IDEHelpIntf, IDEImagesIntf, ListFilterEdit,
-  CodeToolsStructs, CodeToolManager, FileProcs, lazutf8sysutils, LazFileUtils,
-  LazLogger;
+  CodeToolsStructs, CodeToolManager, FileProcs,
+  lazutf8sysutils, LazFileUtils, LazFileCache;
 
 type
   TIDEProjectItem = (

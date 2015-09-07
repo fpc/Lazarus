@@ -852,6 +852,10 @@ msgstr ""
 msgid "Choose code template file (*.dci)"
 msgstr "Wybierz szablon źródła (*.dci)"
 
+#: lazarusidestrconsts.dlgcloseanduseselecteddesktop
+msgid "Close and use selected desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "Pokaż przyciski zamykania w zakładkach"
@@ -1097,11 +1101,6 @@ msgstr ""
 msgid "Config files"
 msgstr "Pliki konfiguracyjne:"
 
-#: lazarusidestrconsts.dlgcoother
-msgctxt "lazarusidestrconsts.dlgcoother"
-msgid "Other"
-msgstr "Inne"
-
 #: lazarusidestrconsts.dlgcootherdebugginginfo
 msgid "Other debugging info"
 msgstr "Pozostałe informacje odpluskwiacza"
@@ -1251,6 +1250,10 @@ msgstr "Kursor przeskakuje tabulację"
 msgid "User defined extension (.pp.xxx)"
 msgstr "Inne rozszerzenie (.pp.xxx)"
 
+#: lazarusidestrconsts.dlgdebugdesktop
+msgid "debug desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr ""
@@ -1271,19 +1274,9 @@ msgstr "Wartość domyślna"
 msgid "Delete template "
 msgstr "Usuń szablon "
 
-#: lazarusidestrconsts.dlgdesktop
-msgid "Desktop"
-msgstr "Pulpit"
-
 #: lazarusidestrconsts.dlgdesktopbuttons
 msgid "Buttons - "
 msgstr "Przyciski -"
-
-#: lazarusidestrconsts.dlgdesktopfiles
-#, fuzzy
-#| msgid "Desktop files"
-msgid "Desktop Files"
-msgstr "Ustawienia pulpitu"
 
 #: lazarusidestrconsts.dlgdesktophints
 msgid "Hints"
@@ -1292,6 +1285,10 @@ msgstr "Podpowiedzi"
 #: lazarusidestrconsts.dlgdesktopmenus
 msgid "Menus - "
 msgstr "Menu -"
+
+#: lazarusidestrconsts.dlgdesktopname
+msgid "Desktop name:"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
@@ -2162,10 +2159,6 @@ msgstr ""
 msgid "Included mixed state $IFDEF node"
 msgstr ""
 
-#: lazarusidestrconsts.dlgignoreverb
-msgid "Ignore"
-msgstr "Ignoruj"
-
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "Dołącz zmienne systemowe"
@@ -2311,10 +2304,6 @@ msgstr "Łącz sprytnie"
 msgid "Display line numbers in run-time error backtraces"
 msgstr "Wyświetlaj numery linii w zrzucie błędu uruchomieniowego:"
 
-#: lazarusidestrconsts.dlgloaddfile
-msgid "Load desktop settings from file"
-msgstr "Odczytaj ustawenia IDE z pliku"
-
 #: lazarusidestrconsts.dlgmainmenu
 msgid "Main Menu"
 msgstr "Menu główne"
@@ -2338,6 +2327,10 @@ msgstr "Pokaż moduły projektu"
 
 #: lazarusidestrconsts.dlgmakeexecutable
 msgid "\"Make\" executable"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmanagedesktops
+msgid "Manage desktops"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmargingutter
@@ -2882,6 +2875,10 @@ msgstr "Zakładki Karty:"
 msgid "Naming"
 msgstr "Nazewnictwo"
 
+#: lazarusidestrconsts.dlgnewdesktop
+msgid "New desktop ..."
+msgstr ""
+
 #: lazarusidestrconsts.dlgnoautomaticrenaming
 #, fuzzy
 #| msgid "no automatic renaming"
@@ -2957,6 +2954,12 @@ msgstr "Pozostałe katalogi modułów (-Fu) (średnik jest separatorem):"
 #| msgid "Overwrite Block"
 msgid "Overwrite block"
 msgstr "Nadpisz blok"
+
+#: lazarusidestrconsts.dlgoverwritedesktop
+msgid ""
+"Desktop with the name \"%s\" was found.\n"
+"Should the old desktop be overwritten?\n"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
@@ -3176,6 +3179,10 @@ msgstr "Pokaż siatkę"
 msgid "Snap to grid"
 msgstr "Przyciągaj do siatki"
 
+#: lazarusidestrconsts.dlgreallydeletedesktop
+msgid "Really delete desktop \"%s\"?"
+msgstr ""
+
 #: lazarusidestrconsts.dlgreferencecolor
 msgid "Reference"
 msgstr ""
@@ -3185,6 +3192,10 @@ msgstr ""
 #| msgid "Regular E&xpressions"
 msgid "Regular e&xpressions"
 msgstr "&Wyrażenia regularne"
+
+#: lazarusidestrconsts.dlgrenamedesktop
+msgid "Rename desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgreplaceall
 msgid "Replace &All"
@@ -3268,9 +3279,13 @@ msgstr "Nadpisanie zmiennych"
 msgid "Run Parameters"
 msgstr "Parametry uruchomienia"
 
-#: lazarusidestrconsts.dlgsavedfile
-msgid "Save desktop settings to file"
-msgstr "Zapisz ustawienia IDE do pliku"
+#: lazarusidestrconsts.dlgsavecurrentdesktop
+msgid "Save current desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsavecurrentdesktopas
+msgid "Save current desktop as"
+msgstr ""
 
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
@@ -3339,6 +3354,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgselectallchildcontrols
 msgid "Select all child controls together with their parent."
+msgstr ""
+
+#: lazarusidestrconsts.dlgselecteddesktop
+msgid "Selected desktop:"
 msgstr ""
 
 #: lazarusidestrconsts.dlgselectedtext
@@ -3598,6 +3617,10 @@ msgstr "Katalog do budowania testowych projektów"
 msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"
 msgstr "&Znajdź"
+
+#: lazarusidestrconsts.dlgtoggleselecteddebugdesktop
+msgid "Toggle as debug desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgtopinfohint
 msgid "Current Class/Proc Hint"
@@ -4053,6 +4076,10 @@ msgstr "Nowy plik"
 msgid "No package found for dependency \"%s\".%sPlease choose an existing package."
 msgstr "Nie znalazłem pakietu dla zależności %s%s%s.%sWybierz _istniejący_ pakiet."
 
+#: lazarusidestrconsts.lisa2ppackageorproject
+msgid "Package/Project"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2ppagenametoolong
 msgid "Page Name too long"
 msgstr "Nazwa zakładki jest zbyt długa"
@@ -4209,6 +4236,12 @@ msgstr "Nieprawidłowa nazwa modułu"
 #: lazarusidestrconsts.lisabandonchanges
 msgid "Abandon changes?"
 msgstr "Porzucić zmiany?"
+
+#: lazarusidestrconsts.lisabort
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisabort"
+msgid "Abort"
+msgstr "Przerwij"
 
 #: lazarusidestrconsts.lisabortall
 msgid "Abort all"
@@ -5936,6 +5969,10 @@ msgstr "Paleta"
 msgid "Pages"
 msgstr "Strony"
 
+#: lazarusidestrconsts.liscmppalettevisible
+msgid "Palette is &visible"
+msgstr ""
+
 #: lazarusidestrconsts.liscmprestoredefaults
 msgid "&Restore defaults"
 msgstr ""
@@ -7652,6 +7689,10 @@ msgstr "opcje niestandardowe"
 msgid "Custom options"
 msgstr "Opcje niestandardowe"
 
+#: lazarusidestrconsts.liscustomoptions3
+msgid "Custom Options"
+msgstr ""
+
 #: lazarusidestrconsts.liscustomprogram
 msgid "Custom Program"
 msgstr ""
@@ -8168,6 +8209,10 @@ msgstr ""
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
 msgstr ""
 
+#: lazarusidestrconsts.lisdesktops
+msgid "Desktops ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdestinationdirectory
 msgid "Destination directory"
 msgstr "Katalog docelowy"
@@ -8394,6 +8439,11 @@ msgstr "Eksportuj ..."
 msgctxt "lazarusidestrconsts.lisdlgimport"
 msgid "Import ..."
 msgstr "Importuj ..."
+
+#: lazarusidestrconsts.lisdlgmore
+msgctxt "lazarusidestrconsts.lisdlgmore"
+msgid "More ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisdlgopen
 msgctxt "lazarusidestrconsts.lisdlgopen"
@@ -9097,9 +9147,18 @@ msgstr "Eksportuj..."
 msgid "Export All Items to File"
 msgstr ""
 
+#: lazarusidestrconsts.lisexportenvironmentoptions
+msgctxt "lazarusidestrconsts.lisexportenvironmentoptions"
+msgid "Export environment options"
+msgstr ""
+
 #: lazarusidestrconsts.lisexporthtml
 msgid "Export as HTML"
 msgstr "Eksportuj jako HTML"
+
+#: lazarusidestrconsts.lisexportimport
+msgid "Export / Import"
+msgstr ""
 
 #: lazarusidestrconsts.lisexportlist
 msgid "Export list"
@@ -9910,17 +9969,13 @@ msgctxt "lazarusidestrconsts.lisid"
 msgid "ID"
 msgstr ""
 
-#: lazarusidestrconsts.lisidcadd
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisidcadd"
-msgid "Add"
-msgstr "Dodaj"
+#: lazarusidestrconsts.lisidcaddition
+msgid "Addition"
+msgstr ""
 
-#: lazarusidestrconsts.lisidcopen
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisidcopen"
-msgid "Open"
-msgstr "Otwórz"
+#: lazarusidestrconsts.lisidcopening
+msgid "Opening"
+msgstr ""
 
 #: lazarusidestrconsts.liside
 msgid "IDE"
@@ -10054,6 +10109,12 @@ msgstr ""
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr ""
 
+#: lazarusidestrconsts.lisignore
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisignore"
+msgid "Ignore"
+msgstr "Ignoruj"
+
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
 msgstr ""
@@ -10092,8 +10153,9 @@ msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr ""
 
-#: lazarusidestrconsts.lisimportexport
-msgid "Import / Export"
+#: lazarusidestrconsts.lisimportenvironmentoptions
+msgctxt "lazarusidestrconsts.lisimportenvironmentoptions"
+msgid "Import environment options"
 msgstr ""
 
 #: lazarusidestrconsts.lisimportfromfile
@@ -11428,10 +11490,6 @@ msgstr ""
 msgid "list of all case values"
 msgstr ""
 
-#: lazarusidestrconsts.lisloadedsuccessfully
-msgid "Loaded successfully"
-msgstr ""
-
 #: lazarusidestrconsts.lisloadingfailed
 msgid "Loading %s failed."
 msgstr ""
@@ -12207,6 +12265,10 @@ msgstr "Utwórz łańcuch w zasobach..."
 msgctxt "lazarusidestrconsts.lismenunewcomponent"
 msgid "New Component"
 msgstr "Nowy komponent"
+
+#: lazarusidestrconsts.lismenunewcustom
+msgid "New %s"
+msgstr ""
 
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"
@@ -13064,10 +13126,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Więcej"
-
-#: lazarusidestrconsts.lismore2
-msgid "More ..."
-msgstr ""
 
 #: lazarusidestrconsts.lismoresub
 #, fuzzy
@@ -16222,10 +16280,6 @@ msgstr "Chcesz zapisać zmiany w projekcie %s?"
 msgid "Save current editor file"
 msgstr "zapisz edytowany plik"
 
-#: lazarusidestrconsts.lissavedsuccessfully
-msgid "Saved successfully"
-msgstr ""
-
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"
 msgstr ""
@@ -16659,12 +16713,12 @@ msgstr ""
 msgid "Sorry, this type is not yet implemented"
 msgstr "Przykro mi, ten typ jeszcze nie jest obsługiwany"
 
-#: lazarusidestrconsts.lissort
-msgid "Sort"
-msgstr ""
-
 #: lazarusidestrconsts.lissortforscope
 msgid "Sort for scope"
+msgstr ""
+
+#: lazarusidestrconsts.lissorting
+msgid "Sorting"
 msgstr ""
 
 #: lazarusidestrconsts.lissortselascending
@@ -18851,6 +18905,10 @@ msgstr "Błąd XML"
 
 #: lazarusidestrconsts.lisxmlparsererrorinfileerror
 msgid "XML parser error in file %s%sError: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisyes
+msgid "Yes"
 msgstr ""
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed

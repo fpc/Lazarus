@@ -29,6 +29,8 @@ type
     class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure Update(const AStatusBar: TStatusBar); override;
+    //
+    class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
   end;
 
   { TCocoaWSTabSheet }
@@ -47,6 +49,8 @@ type
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
     class procedure SetProperties(const ACustomPage: TCustomPage; ACocoaControl: NSTabViewItem);
+    //
+    class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
   end;
 
   { TCocoaWSCustomTabControl }
@@ -54,6 +58,8 @@ type
   TCocoaWSCustomTabControl = class(TWSCustomTabControl)
   private
     class function LCLTabPosToNSTabStyle(AShowTabs: Boolean; ABorderWidth: Integer; ATabPos: TTabPosition): NSTabViewType;
+  public
+    class function  GetCocoaTabControlHandle(ATabControl: TCustomTabControl): TCocoaTabControl;
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 
@@ -256,6 +262,13 @@ begin
 
 end;
 
+class procedure TCocoaWSStatusBar.GetPreferredSize(const AWinControl: TWinControl;
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
+begin
+  PreferredWidth := 0;
+  PreferredHeight := STATUSBAR_DEFAULT_HEIGHT;
+end;
+
 { TCocoaWSCustomPage }
 
 class function  TCocoaWSCustomPage.GetCocoaTabPageFromHandle(AHandle: HWND): TCocoaTabPage;
@@ -330,6 +343,14 @@ begin
   ACocoaControl.setToolTip(NSStringUTF8(lHintStr));
 end;
 
+class procedure TCocoaWSCustomPage.SetBounds(const AWinControl: TWinControl;
+  const ALeft, ATop, AWidth, AHeight: Integer);
+begin
+  // Pages should be fixed into their PageControl owner,
+  // allowing the TCocoaWSWinControl.SetBounds function to operate here
+  // was causing bug 28489
+end;
+
 { TCocoaWSCustomTabControl }
 
 class function TCocoaWSCustomTabControl.LCLTabPosToNSTabStyle(AShowTabs: Boolean; ABorderWidth: Integer; ATabPos: TTabPosition): NSTabViewType;
@@ -353,6 +374,14 @@ begin
     else
       Result := NSNoTabsBezelBorder;
   end;
+end;
+
+class function TCocoaWSCustomTabControl.GetCocoaTabControlHandle(ATabControl: TCustomTabControl): TCocoaTabControl;
+begin
+  Result := nil;
+  if ATabControl = nil then Exit;
+  if not ATabControl.HandleAllocated then Exit;
+  Result := TCocoaTabControl(ATabControl.Handle);
 end;
 
 class function TCocoaWSCustomTabControl.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
@@ -387,6 +416,7 @@ begin
   AChild.HandleNeeded();
   if not Assigned(AChild) or not AChild.HandleAllocated then Exit;
   lTabPage := TCocoaWSCustomPage.GetCocoaTabPageFromHandle(AChild.Handle);
+  lTabPage.LCLParent := ATabControl;
 
   lTabControl.insertTabViewItem_atIndex(lTabPage, AIndex);
   {$IFDEF COCOA_DEBUG_TABCONTROL}
@@ -539,11 +569,18 @@ begin
   WriteLn('[TCocoaWSCustomListView.CreateHandle] AWinControl='+IntToStr(PtrInt(AWinControl)));
   {$ENDIF}
   lCocoaLV := TCocoaListView.alloc.lclInitWithCreateParams(AParams);
-  ns := GetNSRect(0, 0, AParams.Width, AParams.Height);
-  lTableLV := TCocoaTableListView.alloc.initWithFrame(ns);
   Result := TLCLIntfHandle(lCocoaLV);
   if Result <> 0 then
   begin
+    ns := GetNSRect(0, 0, AParams.Width, AParams.Height);
+    lTableLV := TCocoaTableListView.alloc.initWithFrame(ns);
+    if lTableLV = nil then
+    begin
+      lCocoaLV.dealloc;
+      Result := 0;
+      exit;
+    end;
+
     // Unintuitive things about NSTableView which caused a lot of headaches:
     // 1-> The column header appears only if the NSTableView is inside a NSScrollView
     // 2-> To get proper scrolling use NSScrollView.setDocumentView instead of addSubview

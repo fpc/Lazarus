@@ -551,6 +551,11 @@ begin
   Widget := TQtWidget(AWinControl.Handle);
 
   Widget.BeginUpdate;
+  // issue #28437
+  if AWinControl.HandleObjectShouldBeVisible and not AWinControl.IsParentFont and
+    (AWinControl.Font.Name = 'default') then
+      SetFont(AWinControl, AWinControl.Font);
+
   Widget.setVisible(AWinControl.HandleObjectShouldBeVisible);
   Widget.EndUpdate;
 end;

@@ -98,7 +98,7 @@ begin
   Result := Handle <> 0;
 
   if Result then
-     NSObject(Handle).lclLocalToScreen(P.X, P.Y);
+    NSObject(Handle).lclLocalToScreen(P.X, P.Y);
 end;
 
 {------------------------------------------------------------------------------
@@ -1330,12 +1330,15 @@ begin
     winnr:=NSWindow.windowNumberAtPoint_belowWindowWithWindowNumber(p,0);
     windowbelowpoint:=NSApp.windowWithWindowNumber(winnr);
     if windowbelowpoint=window then
-      begin
+    begin
       Result:=RecurseSubviews(window.contentView, Point);
       if Result<>0 then
-      exit;
+      begin
+        pool.release;
+        exit;
       end;
     end;
+  end;
   pool.release;
 end;
 
@@ -1842,7 +1845,7 @@ var
   dc: TCocoaContext;
   gdi: TCocoaGDIObject;
 const
-  SName = 'TCarbonWidgetSet.SelectObject';
+  SName = 'TCocoaWidgetSet.SelectObject';
 begin
   {$IFDEF VerboseWinAPI}
     DebugLn(Format('TCocoaWidgetSet.SelectObject DC: %x GDIObj: %x', [ADC, GDIObj]));
@@ -2007,7 +2010,7 @@ begin
   ctx := CheckDC(DC);
   if not Assigned(ctx) then
     Exit;
-  if (ctx <> DefaultContext) and (ctx<>ScreenContext) then
+  if (ctx <> DefaultContext) and (ctx<>ScreenContext) and (not ctx.isControlDC) then
     ctx.Free;
   Result := 1;
 end;
@@ -2026,6 +2029,7 @@ end;
 
 function TCocoaWidgetSet.SetCursor(ACursor: HCURSOR): HCURSOR;
 begin
+  if ACursor = 0 then Result := 0 else
   Result := HCURSOR(TCocoaCursor(ACursor).Install);
 end;
 

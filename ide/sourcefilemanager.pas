@@ -46,8 +46,7 @@ uses
   CodeToolsStructs, ConvCodeTool, CodeCache, CodeTree, FindDeclarationTool,
   BasicCodeTools, SynEdit, UnitResources, IDEExternToolIntf, ObjectInspector,
   PublishModule, etMessagesWnd,
-  FormEditingIntf // DaThoX
-  ;
+  FormEditingIntf;
 
 type
 
@@ -1480,7 +1479,7 @@ begin
     begin
       MsgResult:=IDEQuestionDialog(lisCCOWarningCaption,
         Format(lisTheProjectDoesNotUseTheLCLUnitInterfacesButItSeems, [LineEnding]),
-        mtWarning, [mrYes, lisAddUnitInterfaces, mrNo, dlgIgnoreVerb,
+        mtWarning, [mrYes, lisAddUnitInterfaces, mrNo, lisIgnore,
                     mrNoToAll, lisAlwaysIgnore, mrCancel]);
       case MsgResult of
         mrNo: exit;
@@ -1613,8 +1612,8 @@ var
   IsPartOfProject: Boolean;
   RequiredPackages: String;
   Src: String;
-  i: Integer; // DaThoX
-  LFindDesignerBaseClassByName: Boolean = True; // DaThoX
+  i: Integer;
+  LFindDesignerBaseClassByName: Boolean = True;
 begin
   //debugln('TLazSourceFileManager.NewFile A NewFilename=',NewFilename);
   // empty NewFilename is ok, it will be auto generated
@@ -1780,7 +1779,6 @@ begin
 
     // create component
     AncestorType:=NewFileDescriptor.ResourceClass;
-    // begin DaThoX
     if AncestorType <> nil then
     begin
       // loop for Inherited Items
@@ -1793,7 +1791,6 @@ begin
       if LFindDesignerBaseClassByName then
         AncestorType:=FormEditor1.FindDesignerBaseClassByName(AncestorType.ClassName, True);
     end;
-    // end DaThoX
     //DebugLn(['TLazSourceFileManager.NewFile AncestorType=',dbgsName(AncestorType),' ComponentName',NewUnitInfo.ComponentName]);
     if AncestorType<>nil then begin
       ResType:=MainBuildBoss.GetResourceType(NewUnitInfo);
@@ -1844,7 +1841,7 @@ begin
     if NewUnitInfo.Component<>nil then begin
       // show form
       IDEWindowCreators.ShowForm(DefaultObjectInspectorName,false);
-      MainIDE.DoShowDesignerFormOfCurrentSrc(False); // DaThoX
+      MainIDE.DoShowDesignerFormOfCurrentSrc(False);
     end else begin
       MainIDE.DisplayState:= dsSource;
     end;

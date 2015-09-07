@@ -37,20 +37,20 @@ interface
 {off $DEFINE VerboseDesignerSelect}
 
 uses
-  // FCL + LCL
+  // RTL + FCL + LCL
   Types, Classes, Math, SysUtils, variants, TypInfo,
   LCLProc, LCLType, LResources, LCLIntf, LMessages, InterfaceBase,
-  Forms, Controls, GraphType, Graphics, Dialogs, ExtCtrls, Menus,
-  ClipBrd,
+  Forms, Controls, GraphType, Graphics, Dialogs, ExtCtrls, Menus, ClipBrd,
+  // LazUtils
+  LazFileUtils, LazFileCache,
   // IDEIntf
   IDEDialogs, PropEdits, PropEditUtils, ComponentEditors, MenuIntf, IDEImagesIntf,
-  FormEditingIntf, ComponentReg,
+  FormEditingIntf, ComponentReg, IDECommands, LazIDEIntf, ProjectIntf,
   // IDE
-  LazarusIDEStrConsts, EnvironmentOpts, IDECommands, LazIDEIntf, ProjectIntf,
-  LazFileUtils, LazFileCache, NonControlDesigner, FrameDesigner, AlignCompsDlg,
-  SizeCompsDlg, ScaleCompsDlg, TabOrderDlg, AnchorEditor, DesignerProcs,
-  CustomFormEditor, AskCompNameDlg, ControlSelection, ChangeClassDialog,
-  EditorOptions;
+  LazarusIDEStrConsts, EnvironmentOpts, EditorOptions,
+  // Designer
+  AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, TabOrderDlg, AnchorEditor, DesignerProcs,
+  CustomFormEditor, AskCompNameDlg, ControlSelection, ChangeClassDialog;
 
 type
   TDesigner = class;
@@ -71,7 +71,8 @@ type
     const NewName: string) of object;
   TOnProcessCommand = procedure(Sender: TObject; Command: word;
     var Handled: boolean) of object;
-  TOnComponentAdded = procedure(Sender: TObject; AComponent: TComponent; ARegisteredComponent: TRegisteredComponent) of object;  // DaThoX
+  TOnComponentAdded = procedure(Sender: TObject; AComponent: TComponent;
+                           ARegisteredComponent: TRegisteredComponent) of object;
 
   TDesignerFlag = (
     dfHasSized,
@@ -122,7 +123,7 @@ type
     FOnSaveAsXML: TNotifyEvent;
     FOnSetDesigning: TOnSetDesigning;
     FOnShowOptions: TNotifyEvent;
-    FOnComponentAdded: TOnComponentAdded; // DaThoX
+    FOnComponentAdded: TOnComponentAdded;
     FOnViewLFM: TNotifyEvent;
     FShiftState: TShiftState;
     FTheFormEditor: TCustomFormEditor;
@@ -362,7 +363,7 @@ type
                                read FOnRenameComponent write FOnRenameComponent;
     property OnSetDesigning: TOnSetDesigning read FOnSetDesigning write FOnSetDesigning;
     property OnComponentAdded: TOnComponentAdded read FOnComponentAdded
-                                           write FOnComponentAdded; // DaThoX
+                                                write FOnComponentAdded;
     property OnShowOptions: TNotifyEvent read FOnShowOptions write FOnShowOptions;
     property OnViewLFM: TNotifyEvent read FOnViewLFM write FOnViewLFM;
     property OnSaveAsXML: TNotifyEvent read FOnSaveAsXML write FOnSaveAsXML;
@@ -421,6 +422,7 @@ implementation
 type
   TCustomFormAccess = class(TCustomForm);
   TControlAccess = class(TControl);
+  TWinControlAccess = class(TWinControl);
   TComponentAccess = class(TComponent);
 
   { TComponentSearch }
@@ -476,11 +478,9 @@ begin
   else
     IsNonVisual := DesignerProcs.ComponentIsNonVisual(Child);
 
-  // DaThox begin
   if IsNonVisual and Assigned(IDEComponentsMaster) then
     if not IDEComponentsMaster.DrawNonVisualComponents(Root) then
       Exit;
-  // DaThoX end
 
   if Child.InheritsFrom(MinClass) and (IsNonVisual or not OnlyNonVisual) then
   begin
@@ -624,13 +624,12 @@ end;
 constructor TDesigner.Create(TheDesignerForm: TCustomForm;
   AControlSelection: TControlSelection);
 var
-  LNonControlDesigner: INonControlDesigner; // DaThoX
+  LNonControlDesigner: INonControlDesigner;
   i: integer;
 begin
   inherited Create;
   //debugln(['TDesigner.Create Self=',dbgs(Pointer(Self)),' TheDesignerForm=',DbgSName(TheDesignerForm)]);
   FForm := TheDesignerForm;
-// DaThoX begin
   if FForm is BaseFormEditor1.NonFormProxyDesignerForm[NonControlProxyDesignerFormId] then begin
     LNonControlDesigner := FForm as INonControlDesigner;
     FLookupRoot := LNonControlDesigner.LookupRoot;
@@ -638,7 +637,6 @@ begin
   end
   else if FForm is BaseFormEditor1.NonFormProxyDesignerForm[FrameProxyDesignerFormId] then
     FLookupRoot := (FForm as IFrameDesigner).LookupRoot
-// DaThoX end
   else
     FLookupRoot := FForm;
 
@@ -2023,14 +2021,12 @@ begin
 
   if ComponentIsIcon(MouseDownComponent) then
   begin
-    // DaThox begin
     if Assigned(IDEComponentsMaster) then
       if not IDEComponentsMaster.DrawNonVisualComponents(FLookupRoot) then
       begin
         MouseDownComponent := nil;
         Exit;
       end;
-    // DaThoX end
 
     NonVisualComp := MouseDownComponent;
     MoveNonVisualComponentIntoForm(NonVisualComp);
@@ -2300,7 +2296,7 @@ var
     // -> select new component
     SelectOnlyThisComponent(NewComponent);
     if Assigned(FOnComponentAdded) then // this resets the component palette to the selection tool
-      FOnComponentAdded(Self, NewComponent, SelectedCompClass); // DaThoX
+      FOnComponentAdded(Self, NewComponent, SelectedCompClass);
 
     {$IFDEF VerboseDesigner}
     DebugLn('NEW COMPONENT ADDED: Form.ComponentCount=',DbgS(Form.ComponentCount),
@@ -2926,8 +2922,8 @@ begin
   // call ComponentDeleted handler
   if Assigned(FOnPersistentDeleted) then
     FOnPersistentDeleted(Self,APersistent);
-  if Hook<>nil then // DaThoX
-    Hook.PersistentDeleted; // DaThoX
+  if Hook<>nil then
+    Hook.PersistentDeleted;
 end;
 
 procedure TDesigner.MarkPersistentForDeletion(APersistent: TPersistent);
@@ -3111,9 +3107,8 @@ begin
       ADDC.Canvas.Pen.Color := GridColor;
       ADDC.Canvas.Pen.Width := 1;
       ADDC.Canvas.Pen.Style := psSolid;
-      // Dathox
-      DrawGrid(ADDC.Canvas.Handle, TControlAccess(AWinControl).GetLogicalClientRect, GridSizeX, GridSizeY);
-      // Dathox
+      DrawGrid(ADDC.Canvas.Handle, TWinControlAccess(AWinControl).GetLogicalClientRect,
+               GridSizeX, GridSizeY);
     end;
     
     if ShowBorderSpacing then
@@ -3594,9 +3589,8 @@ begin
     ControlSelection.DrawMarkers(DDC);
   end;
   // non visual component icons
-  // DaThoX begin
-  if not Assigned(IDEComponentsMaster) or IDEComponentsMaster.DrawNonVisualComponents(FLookupRoot) then
-  // DaThoX end
+  if not Assigned(IDEComponentsMaster)
+  or IDEComponentsMaster.DrawNonVisualComponents(FLookupRoot) then
     DrawNonVisualComponents(DDC);
 
   // guidelines and grabbers

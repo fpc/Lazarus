@@ -29,8 +29,7 @@ program CompleteAbstractMethods;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CodeCache, CodeToolManager, CodeTree, CodeAtom,
-  AbstractClass1;
+  Classes, SysUtils, CodeCache, CodeToolManager;
 
 const
   ConfigFilename = 'codetools.config';

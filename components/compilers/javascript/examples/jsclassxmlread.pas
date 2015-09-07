@@ -77,7 +77,7 @@ type
   public
     Flags: TJSIClassFlags;
     ParentClass: TJSIdentifier;
-    Unitname: TJSIdentifier;
+    Unit_name: TJSIdentifier;
     Simplename: TJSIdentifier;
     Methods: TFPList; // list of TJSIMethod
     Properties: TFPList; // list TJSIProperty

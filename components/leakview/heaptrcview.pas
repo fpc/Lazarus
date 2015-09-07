@@ -5,9 +5,14 @@ unit HeapTrcView;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ComCtrls, ExtCtrls, LeakInfo, LazIDEIntf, MenuIntf, contnrs, Clipbrd,
-  XMLConf, LCLProc;
+  Classes, SysUtils, XMLConf, contnrs, Clipbrd, LCLProc,
+  LResources, Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls, ExtCtrls,
+  // LazUtils
+  FileUtil, LazFileUtils,
+  // IDEIntf
+  LazIDEIntf, MenuIntf,
+  // LeakView
+  LeakInfo;
 
 type
   TJumpProc = procedure (Sender: TObject; const SourceName: string;
@@ -26,6 +31,7 @@ type
     lblTrcFile: TLabel;
     ctrlPanel: TPanel;
     memoSummary: TMemo;
+    OpenDialog: TOpenDialog;
     splitter: TSplitter;
     trvTraceInfo: TTreeView;
     procedure btnClipboardClick(Sender: TObject);
@@ -86,7 +92,8 @@ resourcestring
   schkRaw = 'Raw leak data';
   schkTop = 'Stay on top';
   sfrmCap = 'Leaks and Traces - HeapTrc and GDB backtrace output viewer';
-  sfrmSelectFileWithDebugInfo = 'Select File with debug info';
+  sfrmSelectFileWithDebugInfo = 'Select file with debug info';
+  sfrmSelectTrcFile = 'Select file with trace log';
 
 var
   HeapTrcViewForm: THeapTrcViewForm = nil;
@@ -126,36 +133,28 @@ begin
 end;
 
 procedure THeapTrcViewForm.BtnResolveClick(Sender: TObject);
-var
-  OpenDialog : TOpenDialog;
 begin
   if Finfo = nil then exit;
 
-  OpenDialog := TOpenDialog.Create(nil);
-  try
-    OpenDialog.Title := sfrmSelectFileWithDebugInfo;
-    if not OpenDialog.Execute then Exit;
+  OpenDialog.FileName := '';
+  OpenDialog.Filter := '';
+  OpenDialog.Title := sfrmSelectFileWithDebugInfo;
+  if not OpenDialog.Execute then Exit;
 
-    Finfo.ResolveLeakInfo(OpenDialog.FileName, fItems);
-    ChangeTreeText;
-  finally
-    OpenDialog.Free;
-  end;
+  Finfo.ResolveLeakInfo(OpenDialog.FileName, fItems);
+  ChangeTreeText;
 end;
 
 procedure THeapTrcViewForm.btnBrowseClick(Sender: TObject);
-var
-  OpenDialog : TOpenDialog;
 begin
-  OpenDialog := TOpenDialog.Create(nil);
-  try
-    if not OpenDialog.Execute then Exit;
-    edtTrcFileName.Text := OpenDialog.FileName;
-    DoUpdateLeaks;
-    AddFileToList(edtTrcFileName.Text);
-  finally
-    OpenDialog.Free;
-  end;
+  OpenDialog.FileName := '';
+  OpenDialog.Filter := slblTrace + '|*.trc';
+  OpenDialog.Title := sfrmSelectTrcFile;
+  if not OpenDialog.Execute then Exit;
+
+  edtTrcFileName.Text := OpenDialog.FileName;
+  DoUpdateLeaks;
+  AddFileToList(edtTrcFileName.Text);
 end;
 
 procedure THeapTrcViewForm.chkStayOnTopChange(Sender: TObject);

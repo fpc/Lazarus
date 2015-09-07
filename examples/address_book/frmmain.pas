@@ -23,9 +23,8 @@ unit frmmain;
 interface
 
 uses
-  SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, DB, Dbf, Grids, DBGrids, DBCtrls, ExtCtrls, ActnList, Menus,
-  StdCtrls;
+  SysUtils, Controls, Forms, Dialogs, DB, Dbf, DBGrids, DBCtrls, ExtCtrls,
+  ActnList, Menus, StdCtrls;
 
 type
   TDataSetFirst = TAction;

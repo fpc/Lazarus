@@ -149,6 +149,7 @@ Maxim Ganetsky
 Mazen Neifer
 Micha Nelissen
 Michael A. Hess
+Michael Fuchs
 Michal Bukovjan
 Michalis Kamburelis
 Mike Sapsard

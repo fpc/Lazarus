@@ -7,8 +7,15 @@ unit leakinfo;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazClasses, LazLoggerBase, DbgInfoReader,
-  TextTools, LazIDEIntf, ProjectIntf, CodeToolManager, CodeCache;
+  Classes, SysUtils,
+  // CodeTools
+  CodeToolManager, CodeCache,
+  // LazUtils
+  FileUtil, LazFileUtils, LazClasses,
+  // IDEIntf
+  TextTools,
+  // LeakView
+  DbgInfoReader;
 
 type
   { TStackLine }

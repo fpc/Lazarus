@@ -1305,8 +1305,7 @@ begin
   end;
 end;
 
-function FindLowestPkgDependencyNodeWithName(const PkgName: string
-  ): TAVLTreeNode;
+function FindLowestPkgDependencyNodeWithName(const PkgName: string): TAVLTreeNode;
 begin
   Result:=nil;
   if PackageDependencies=nil then exit;
@@ -2161,7 +2160,10 @@ end;
 
 class function TPackageIDEOptions.GetInstance: TAbstractIDEOptions;
 begin
-  Result := Package1.IDEOptions;
+  if Package1<>nil then
+    Result := Package1.IDEOptions
+  else
+    Result := nil;
 end;
 
 class function TPackageIDEOptions.GetGroupCaption: string;
@@ -3979,25 +3981,19 @@ var
   ResHandle: TLResource;
   ResName: String;
 begin
-  Result := nil;
   ResName := ComponentClass.ClassName;
   // prevent raising exception and speedup a bit search/load
   ResHandle := LazarusResources.Find(ResName);
   if ResHandle <> nil then
     Result := CreateBitmapFromLazarusResource(ResHandle)
   else
-  if FindResource(HInstance, PChar(ResName), PChar(RT_BITMAP)) <> 0 then
-  begin
-    Result := TBitmap.Create;
-    Result.LoadFromResourceName(HInstance, ResName);
-    Result.Transparent := True;
-  end
-  else
-  if FindResource(HInstance, PChar(ResName), PChar(RT_RCDATA)) <> 0 then
     Result := CreateBitmapFromResourceName(HInstance, ResName);
 
   if Result = nil then
-    Result := CreateBitmapFromResourceName(HInstance, 'default');
+    Result := CreateBitmapFromResourceName(HInstance, 'default')
+  else
+  if Result is TBitmap then
+    Result.Transparent := True;
 end;
 
 function TPkgComponent.HasIcon: boolean;
@@ -4116,7 +4112,10 @@ end;
 
 class function TPkgCompilerOptions.GetInstance: TAbstractIDEOptions;
 begin
-  Result := Package1.CompilerOptions;
+  if Package1<>nil then
+    Result := Package1.CompilerOptions
+  else
+    Result := nil;
 end;
 
 function TPkgCompilerOptions.IsActive: boolean;

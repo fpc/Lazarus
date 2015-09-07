@@ -11,6 +11,7 @@ uses
   MacOSAll, // for CGContextRef
   LCLtype, LCLProc, Graphics, Controls, fpcanvas,
   CocoaAll, CocoaProc, CocoaUtils,
+  cocoa_extra,
   {$ifndef CocoaUseHITheme}
   customdrawndrawers, customdrawn_mac,
   {$endif}
@@ -104,7 +105,7 @@ type
   public
     constructor Create(const AColor: TColor; ASolid, AGlobal: Boolean); reintroduce;
     procedure SetColor(const AColor: TColor; ASolid: Boolean);
-    procedure GetRGBA(AROP2: Integer; out AR, AG, AB, AA: Single);
+    procedure GetRGBA(AROP2: Integer; out AR, AG, AB, AA: CGFloat);
     function CreateNSColor: NSColor;
 
     property Red: Byte read FR write FR;
@@ -146,13 +147,13 @@ type
 
 const
   // use the same pen shapes that are used for carbon
-  CocoaDashStyle: Array [0..1] of Single = (3, 1);
-  CocoaDotStyle: Array [0..1] of Single = (1, 1);
-  CocoaDashDotStyle: Array [0..3] of Single = (3, 1, 1, 1);
-  CocoaDashDotDotStyle: Array [0..5] of Single = (3, 1, 1, 1, 1, 1);
+  CocoaDashStyle: Array [0..1] of CGFloat = (3, 1);
+  CocoaDotStyle: Array [0..1] of CGFloat = (1, 1);
+  CocoaDashDotStyle: Array [0..3] of CGFloat = (3, 1, 1, 1);
+  CocoaDashDotDotStyle: Array [0..5] of CGFloat = (3, 1, 1, 1, 1, 1);
 
 type
-  TCocoaDashes = array of Float32;
+  TCocoaDashes = array of CGFloat;
 
   { TCocoaPen }
 
@@ -199,6 +200,7 @@ type
     constructor CreateDefault(AGlobal: Boolean = False);
     constructor Create(const ALogFont: TLogFont; AFontName: String; AGlobal: Boolean = False); reintroduce; overload;
     constructor Create(const AFont: NSFont; AGlobal: Boolean = False); overload;
+    destructor Destroy; override;
     class function CocoaFontWeightToWin32FontWeight(const CocoaFontWeight: Integer): Integer; static;
     property Antialiased: Boolean read FAntialiased;
     property Font: NSFont read FFont;
@@ -386,6 +388,7 @@ type
     procedure ClearClipping;
   public
     ctx: NSGraphicsContext;
+    isControlDC: Boolean; // control DCs should never be freed by ReleaseDC as the control will free it by itself
     constructor Create(AGraphicsContext: NSGraphicsContext); virtual;
     destructor Destroy; override;
 
@@ -511,24 +514,6 @@ begin
   Result:=(p1.x=p2.x) and (p1.y=p2.y);
 end;
 
-{ TCocoaBitmap }
-
-type
-  // The following dummy categories fix bugs in the Cocoa bindings available in FPC
-  // Remove them when the FPC binding parser is fixed.
-  // More details:
-  // http://wiki.freepascal.org/FPC_PasCocoa/Differences#Sending_messages_to_id
-  // http://wiki.lazarus.freepascal.org/FPC_PasCocoa#Category_declaration
-  NSBitmapImageRepFix = objccategory external(NSBitmapImageRep)
-    function initWithBitmapDataPlanes_pixelsWide_pixelsHigh__colorSpaceName_bytesPerRow_bitsPerPixel(planes: PPByte; width: NSInteger; height: NSInteger; bps: NSInteger; spp: NSInteger; alpha: Boolean; isPlanar_: Boolean; colorSpaceName_: NSString; rBytes: NSInteger; pBits: NSInteger): id; message 'initWithBitmapDataPlanes:pixelsWide:pixelsHigh:bitsPerSample:samplesPerPixel:hasAlpha:isPlanar:colorSpaceName:bytesPerRow:bitsPerPixel:';
-    function initWithBitmapDataPlanes_pixelsWide_pixelsHigh__colorSpaceName_bitmapFormat_bytesPerRow_bitsPerPixel(planes: PPByte; width: NSInteger; height: NSInteger; bps: NSInteger; spp: NSInteger; alpha: Boolean; isPlanar_: Boolean; colorSpaceName_: NSString; bitmapFormat_: NSBitmapFormat; rBytes: NSInteger; pBits: NSInteger): id; message 'initWithBitmapDataPlanes:pixelsWide:pixelsHigh:bitsPerSample:samplesPerPixel:hasAlpha:isPlanar:colorSpaceName:bitmapFormat:bytesPerRow:bitsPerPixel:';
-  end;
-
-  NSGraphicsContextFix = objccategory external(NSGraphicsContext)
-    procedure setImageInterpolation(interpolation: NSImageInterpolation); message 'setImageInterpolation:';
-    procedure setShouldAntialias(antialias: Boolean); message 'setShouldAntialias:';
-  end;
-
 { TCocoaFont }
 
 constructor TCocoaFont.CreateDefault(AGlobal: Boolean = False);
@@ -631,6 +616,13 @@ begin
   Pool.release;
 end;
 
+destructor TCocoaFont.Destroy;
+begin
+  if Assigned(FFont) then
+    FFont.release;
+  inherited;
+end;
+
 class function TCocoaFont.CocoaFontWeightToWin32FontWeight(const CocoaFontWeight: Integer): Integer; static;
 begin
   case CocoaFontWeight of
@@ -668,7 +660,7 @@ begin
   FA := ASolid;
 end;
 
-procedure TCocoaColorObject.GetRGBA(AROP2: Integer; out AR, AG, AB, AA: Single);
+procedure TCocoaColorObject.GetRGBA(AROP2: Integer; out AR, AG, AB, AA: CGFloat);
 var alpha:single;
 begin
   if FA then
@@ -891,10 +883,16 @@ end;
 
 procedure TCocoaBitmap.FreeHandle;
 begin
-  if FImage = nil then Exit;
-  FImage.release;
-  FImage := nil;
-  FImageRep := nil;
+  if FImage <> nil then
+  begin
+    FImage.release;
+    FImage := nil;
+  end;
+  if FImageRep <> nil then
+  begin
+    FImageRep.release;
+    FImageRep := nil;
+  end;
 end;
 
 procedure TCocoaBitmap.ReCreateHandle;
@@ -1032,7 +1030,7 @@ end;
 
 destructor TCocoaCursor.Destroy;
 begin
-  FBitmap.Free;
+  FreeAndNil(FBitmap); // FBitmap does not use reference counting mechanism...
   if not Standard then
     FCursor.release;
   inherited;
@@ -1131,7 +1129,6 @@ begin
   FTextContainer.setLineFragmentPadding(0);
   FLayout.addTextContainer(FTextContainer);
 
-  FTextStorage.retain;
   LocalPool.release;
 
   FFont := DefaultFont;
@@ -1143,6 +1140,8 @@ end;
 
 destructor TCocoaTextLayout.Destroy;
 begin
+  FLayout.release;
+  FTextContainer.release;
   FTextStorage.release;
   FFont.Release;
   inherited Destroy;
@@ -1942,11 +1941,13 @@ end;
 procedure TCocoaContext.ClearClipping;
 var
   Trans: CGAffineTransform;
+  cgc: CGContextRef;
 begin
-  if FClipped  then
+  if FClipped then
   begin
-    Trans := CGContextGetCTM(CGContext);
-    CGContextRestoreGState(CGContext());
+    cgc := CGContext();
+    Trans := CGContextGetCTM(cgc);
+    CGContextRestoreGState(cgc);
     ApplyTransform(Trans);
   end;
 end;
@@ -2144,12 +2145,13 @@ begin
     ctx := nil;
   end;
 
+  // ToDo: Should we free the old FBitmap???
+  FBitmap := AValue;
   if FBitmap <> nil then
   begin
-    FBitmap := AValue;
     pool:=NSAutoreleasePool.alloc.init;
     ctx := NSGraphicsContext.graphicsContextWithBitmapImageRep(Bitmap.ImageRep);
-    ctx.retain; // extend live beyond NSAutoreleasePool
+    ctx.retain; // extend life beyond NSAutoreleasePool
     InitDraw(Bitmap.Width, Bitmap.Height);
     pool.release;
   end;
@@ -2510,7 +2512,7 @@ procedure TCocoaPen.Apply(ADC: TCocoaContext; UseROP2: Boolean = True);
   end;
 
 var
-  AR, AG, AB, AA: Single;
+  AR, AG, AB, AA: CGFloat;
   AROP2: Integer;
   ADashes: TCocoaDashes;
 begin
@@ -2736,9 +2738,12 @@ begin
   begin
     FillChar(ACallBacks, SizeOf(ACallBacks), 0);
     ACallBacks.drawPattern := @DrawBitmapPattern;
+    if (FBitmap <> nil) and (not FBitmap.Global) then FBitmap.Free;
     FBitmap := TCocoaBitmap.Create(8, 8, 1, 1, cbaByte, cbtMask, @HATCH_DATA[AHatch]);
-    FImage := MacOSAll.CGImageRef( FBitmap.ImageRep.CGImageForProposedRect_context_hints(nil, nil, nil));
+    if FImage <> nil then CGImageRelease(FImage);
+    FImage := CGImageCreateCopy(MacOSAll.CGImageRef( FBitmap.ImageRep.CGImageForProposedRect_context_hints(nil, nil, nil)));
     FColored := False;
+    if FCGPattern <> nil then CGPatternRelease(FCGPattern);
     FCGPattern := CGPatternCreate(Self, GetCGRect(0, 0, 8, 8),
       CGAffineTransformIdentity, 8, 8, kCGPatternTilingConstantSpacing,
       Ord(FColored), ACallBacks);
@@ -2754,9 +2759,12 @@ begin
   AHeight := ABitmap.Height;
   FillChar(ACallBacks, SizeOf(ACallBacks), 0);
   ACallBacks.drawPattern := @DrawBitmapPattern;
+  if (FBitmap <> nil) and (not FBitmap.Global) then FBitmap.Free;
   FBitmap := TCocoaBitmap.Create(ABitmap);
-  FImage := MacOSAll.CGImageRef( FBitmap.imageRep.CGImageForProposedRect_context_hints(nil, nil, nil));
+  if FImage <> nil then CGImageRelease(FImage);
+  FImage := CGImageCreateCopy(MacOSAll.CGImageRef( FBitmap.imageRep.CGImageForProposedRect_context_hints(nil, nil, nil)));
   FColored := True;
+  if FCGPattern <> nil then CGPatternRelease(FCGPattern);
   FCGPattern := CGPatternCreate(Self, GetCGRect(0, 0, AWidth, AHeight),
     CGAffineTransformIdentity, AWidth, AHeight, kCGPatternTilingConstantSpacing,
     Ord(FColored), ACallBacks);
@@ -2769,11 +2777,13 @@ var
 begin
   FillChar(ACallBacks, SizeOf(ACallBacks), 0);
   ACallBacks.drawPattern := @DrawBitmapPattern;
+  if FImage <> nil then CGImageRelease(FImage);
   FImage := CGImageCreateCopy(MacOSAll.CGImageRef( AImage.CGImageForProposedRect_context_hints(nil, nil, nil)));
   FColored := True;
   Rect.origin.x := 0;
   Rect.origin.y := 0;
   Rect.size := CGSize(AImage.size);
+  if FCGPattern <> nil then CGPatternRelease(FCGPattern);
   FCGPattern := CGPatternCreate(Self, Rect,
     CGAffineTransformIdentity, Rect.size.width, Rect.size.height, kCGPatternTilingConstantSpacing,
     Ord(FColored), ACallBacks);
@@ -2898,7 +2908,7 @@ begin
     FCGPattern := nil;
   end;
 
-  FreeAndNil(FBitmap);
+  FreeAndNil(FBitmap); // FBitmap does not use refcounts...
 
   if FImage <> nil then
   begin
@@ -2915,7 +2925,7 @@ end;
 
 procedure TCocoaBrush.Apply(ADC: TCocoaContext; UseROP2: Boolean = True);
 var
-  RGBA: array[0..3] of Single;
+  RGBA: array[0..3] of CGFloat;
   AROP2: Integer;
   APatternSpace: CGColorSpaceRef;
   BaseSpace: CGColorSpaceRef;

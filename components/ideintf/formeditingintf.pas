@@ -24,13 +24,11 @@ const
   ComponentPaletteImageHeight = 24;
   ComponentPaletteBtnWidth  = ComponentPaletteImageWidth + 3;
   ComponentPaletteBtnHeight = ComponentPaletteImageHeight + 3;
-  // DaThoX begin
   DesignerBaseClassId_TForm = 0;
   DesignerBaseClassId_TDataModule = 1;
   DesignerBaseClassId_TFrame = 2;
   NonControlProxyDesignerFormId = 0;
   FrameProxyDesignerFormId = 1;
-  // DaThoX end
 
 type
   TDMCompAtPosFlag = (
@@ -39,7 +37,6 @@ type
     );
   TDMCompAtPosFlags = set of TDMCompAtPosFlag;
 
-  // DaThoX begin
   TDesignerMediator = class;
 
   INonFormDesigner = interface
@@ -127,8 +124,6 @@ type
 
   TNonFormProxyDesignerFormClass = class of TNonFormProxyDesignerForm;
 
-  // DaThoX end
-
   { TDesignerMediator
     To edit designer forms which do not use the LCL, register a TDesignerMediator,
     which will emulate the painting, handle the mouse and editing bounds. }
@@ -186,18 +181,18 @@ type
   { TAbstractFormEditor }
   
   TAbstractFormEditor = class
-  private // DaThoX 
-    FNonFormProxyDesignerFormClass: array[0..1] of TNonFormProxyDesignerFormClass; // DaThoX
+  private
+    FNonFormProxyDesignerFormClass: array[0..1] of TNonFormProxyDesignerFormClass;
   protected
     function GetDesignerBaseClasses(Index: integer): TComponentClass; virtual; abstract;
-    function GetStandardDesignerBaseClasses(Index: integer): TComponentClass; virtual; abstract; // DaThoX
-    procedure SetStandardDesignerBaseClasses(Index: integer; AValue: TComponentClass); virtual; abstract; // DaThoX
+    function GetStandardDesignerBaseClasses(Index: integer): TComponentClass; virtual; abstract;
+    procedure SetStandardDesignerBaseClasses(Index: integer; AValue: TComponentClass); virtual; abstract;
     function GetDesigner(Index: integer): TIDesigner; virtual; abstract;
     function GetDesignerMediators(Index: integer): TDesignerMediatorClass; virtual; abstract;
-    function GetNonFormProxyDesignerForm(Index: Integer): TNonFormProxyDesignerFormClass; virtual; // DaThoX
-    procedure SetNonFormProxyDesignerForm(Index: Integer; AValue: TNonFormProxyDesignerFormClass); virtual; // DaThoX
+    function GetNonFormProxyDesignerForm(Index: Integer): TNonFormProxyDesignerFormClass; virtual;
+    procedure SetNonFormProxyDesignerForm(Index: Integer; AValue: TNonFormProxyDesignerFormClass); virtual;
   public
-    constructor Create; // DaThoX
+    constructor Create;
     // persistent
     procedure RegisterDefineProperty(const APersistentClassName,
                                      Identifier: string); virtual; abstract;
@@ -242,15 +237,18 @@ type
     function DescendFromDesignerBaseClass(AClass: TComponentClass): integer; virtual; abstract;
     function FindDesignerBaseClassByName(const AClassName: shortstring; WithDefaults: boolean): TComponentClass; virtual; abstract;
 
-    property StandardDesignerBaseClasses[Index: integer]: TComponentClass read GetStandardDesignerBaseClasses write SetStandardDesignerBaseClasses; // DaThoX
-    function StandardDesignerBaseClassesCount: Integer; virtual; abstract; // DaThoX
+    property StandardDesignerBaseClasses[Index: integer]: TComponentClass read GetStandardDesignerBaseClasses
+                                                                         write SetStandardDesignerBaseClasses;
+    function StandardDesignerBaseClassesCount: Integer; virtual; abstract;
     // designers
     function DesignerCount: integer; virtual; abstract;
     property Designer[Index: integer]: TIDesigner read GetDesigner;
     function GetCurrentDesigner: TIDesigner; virtual; abstract;
     function GetDesignerForm(APersistent: TPersistent): TCustomForm; virtual; abstract;
-    function GetDesignerByComponent(AComponent: TComponent
-                                    ): TIDesigner; virtual; abstract;
+    function GetDesignerByComponent(AComponent: TComponent): TIDesigner; virtual; abstract;
+    function NonFormProxyDesignerFormCount: integer; virtual;
+    property NonFormProxyDesignerForm[Index: integer]: TNonFormProxyDesignerFormClass read GetNonFormProxyDesignerForm
+                                                                                     write SetNonFormProxyDesignerForm;
     function NonFormProxyDesignerFormCount: integer; virtual; // DaThoX
     property NonFormProxyDesignerForm[Index: integer]: TNonFormProxyDesignerFormClass read GetNonFormProxyDesignerForm write SetNonFormProxyDesignerForm; // DaThoX
 
@@ -296,8 +294,8 @@ procedure SetDesignInfoLeft(AComponent: TComponent; const aLeft: SmallInt); inli
 procedure SetDesignInfoTop(AComponent: TComponent; const aTop: SmallInt); inline;
 function LeftTopToDesignInfo(const ALeft, ATop: SmallInt): LongInt; inline;
 procedure DesignInfoToLeftTop(ADesignInfo: LongInt; out ALeft, ATop: SmallInt); inline;
-function IsFormDesign(AForm: TCustomForm): boolean; // DaThoX
-function LookupRoot(AForm: TCustomForm): TComponent; // DaThoX
+function IsFormDesign(AForm: TCustomForm): boolean;
+function LookupRoot(AForm: TCustomForm): TComponent;
 
 implementation
 
@@ -390,7 +388,6 @@ begin
   ATop := LazLongRec(ADesignInfo).Hi;
 end;
 
-// DaThoX begin
 function IsFormDesign(AForm: TCustomForm): boolean;
 begin
   if AForm = nil then
@@ -505,22 +502,19 @@ begin
   FNonFormDesigner.Paint;
 end;
 
-procedure TNonFormProxyDesignerForm.SetBounds(ALeft, ATop, AWidth,
-  AHeight: integer);
+procedure TNonFormProxyDesignerForm.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
 begin
   inherited SetBounds(aLeft, aTop, aWidth, aHeight);
   if Assigned(FNonFormDesigner) then
     FNonFormDesigner.SetBounds(ALeft, ATop, AWidth, AHeight);
 end;
 
-procedure TNonFormProxyDesignerForm.SetDesignerFormBounds(ALeft, ATop, AWidth,
-  AHeight: integer);
+procedure TNonFormProxyDesignerForm.SetDesignerFormBounds(ALeft, ATop, AWidth, AHeight: integer);
 begin
   inherited SetBounds(aLeft, aTop, aWidth, aHeight);
 end;
 
-procedure TNonFormProxyDesignerForm.SetPublishedBounds(ALeft, ATop, AWidth,
-  AHeight: integer);
+procedure TNonFormProxyDesignerForm.SetPublishedBounds(ALeft, ATop, AWidth, AHeight: integer);
 begin
   SetPublishedBounds(0, ALeft);
   SetPublishedBounds(1, ATop);
@@ -528,8 +522,7 @@ begin
   SetPublishedBounds(3, AHeight);
 end;
 
-procedure TNonFormProxyDesignerForm.SetLookupRootBounds(ALeft, ATop, AWidth,
-  AHeight: integer);
+procedure TNonFormProxyDesignerForm.SetLookupRootBounds(ALeft, ATop, AWidth, AHeight: integer);
 begin
   if LookupRoot is TControl then
     TControl(LookupRoot).SetBounds(ALeft, ATop, AWidth, AHeight);
@@ -539,7 +532,6 @@ function TNonFormProxyDesignerForm.DockedDesigner: boolean;
 begin
   Result := False;
 end;
-// DaThoX end
 
 { TDesignerMediator }
 

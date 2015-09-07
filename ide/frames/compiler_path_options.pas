@@ -356,7 +356,7 @@ var
   p: Integer;
   CurPath: String;
   Duplicates: TStringList;
-  i: PtrInt;
+  i: PtrUInt;
   OldUnparsedSrcPath: String;
   NewUnparsedSrcPath: String;
   j: Integer;

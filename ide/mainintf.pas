@@ -61,7 +61,7 @@ uses
 {$ENDIF}
   Classes, LCLType, LCLIntf, Buttons, Menus, SysUtils,
   typinfo, Controls, Graphics, ExtCtrls, Dialogs, FileUtil, Forms,
-  CodeToolManager, CodeCache, AVL_Tree, SynEditKeyCmds,
+  LazFileUtils, CodeToolManager, CodeCache, AVL_Tree, SynEditKeyCmds,
   // IDEIntf
   PropEdits, ObjectInspector, MenuIntf, SrcEditorIntf, ProjectIntf,
   CompOptsIntf, LazIDEIntf, IDEDialogs, IDEWindowIntf,

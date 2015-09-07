@@ -5,14 +5,12 @@ unit laz_pkgcommands;
 interface
 
 uses
-  Classes, SysUtils,pkghandler,laz_pkghandler;
+  pkghandler;
 
 implementation
 
 uses
-  zipper,
-  pkgmessages, pkgglobals, pkgoptions, pkgdownload, pkgrepos, fprepos,
-  laz_pkgrepos, pkgfpmake;
+  pkgglobals, pkgoptions, pkgdownload, pkgrepos, laz_pkgrepos, pkgfpmake;
 
 type
   { TCommandLazListPackages }

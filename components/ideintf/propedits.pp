@@ -23,6 +23,7 @@ interface
 
 uses
   Classes, TypInfo, SysUtils, types, RtlConsts, Forms, Controls, LCLProc,
+  {$IFDEF UseOIThemedCheckBox} CheckBoxThemed, {$ENDIF}
   GraphType, FPCAdds, // for StrToQWord in older fpc versions
   StringHashList, ButtonPanel, Graphics, StdCtrls, Buttons, Menus, LCLType,
   ExtCtrls, ComCtrls, LCLIntf, Dialogs, EditBtn, PropertyStorage, Grids, ValEdit,
@@ -1197,7 +1198,7 @@ type
   TPropHookPersistentAdded = procedure(APersistent: TPersistent; Select: boolean
                                       ) of object;
   TPropHookPersistentDeleting = procedure(APersistent: TPersistent) of object;
-  TPropHookPersistentDeleted = procedure of object; // DaThoX
+  TPropHookPersistentDeleted = procedure of object;
   TPropHookDeletePersistent = procedure(var APersistent: TPersistent) of object;
   TPropHookGetSelection = procedure(const ASelection: TPersistentSelectionList
                                              ) of object;
@@ -1245,7 +1246,7 @@ type
     htBeforeAddPersistent,
     htPersistentAdded,
     htPersistentDeleting,
-    htPersistentDeleted, // DaThoX
+    htPersistentDeleted,
     htDeletePersistent,
     htGetSelectedPersistents,
     htSetSelectedPersistents,
@@ -1322,7 +1323,7 @@ type
     procedure ComponentRenamed(AComponent: TComponent);
     procedure PersistentAdded(APersistent: TPersistent; Select: boolean);
     procedure PersistentDeleting(APersistent: TPersistent);
-    procedure PersistentDeleted; // DaThoX
+    procedure PersistentDeleted;
     procedure DeletePersistent(var APersistent: TPersistent);
     procedure GetSelection(const ASelection: TPersistentSelectionList);
     procedure SetSelection(const ASelection: TPersistentSelectionList);
@@ -1426,12 +1427,10 @@ type
                        const OnPersistentDeleting: TPropHookPersistentDeleting);
     procedure RemoveHandlerPersistentDeleting(
                        const OnPersistentDeleting: TPropHookPersistentDeleting);
-    // DaThoX begin
     procedure AddHandlerPersistentDeleted(
                        const OnPersistentDeleted: TPropHookPersistentDeleted);
     procedure RemoveHandlerPersistentDeleted(
                        const OnPersistentDeleted: TPropHookPersistentDeleted);
-    // DaThoX end
     procedure AddHandlerDeletePersistent(
                            const OnDeletePersistent: TPropHookDeletePersistent);
     procedure RemoveHandlerDeletePersistent(
@@ -3468,12 +3467,29 @@ procedure TBoolPropertyEditor.PropDrawValue(ACanvas: TCanvas; const ARect: TRect
                                             AState: TPropEditDrawState);
 var
   TxtRect: TRect;
+  {$IFDEF UseOIThemedCheckBox}
+  str: string;
+  stat: TCheckBoxState;
+  {$ENDIF}
 begin
+  {$IFDEF UseOIThemedCheckBox}
+  if FPropertyHook.GetCheckboxForBoolean then begin
+    if GetOrdValue<>0 then begin
+      stat := cbChecked;
+      str := '(True)';
+    end else begin
+      stat := cbUnchecked;
+      str := '(False)';
+    end;
+    TCheckBoxThemed.PaintSelf(ACanvas, str, ARect, stat, False, False, False, False, taRightJustify);
+  end;
+  {$ELSE}
   if FPropertyHook.GetCheckboxForBoolean then
     TxtRect := DrawCheckbox(ACanvas, ARect, GetOrdValue<>0)
   else
     TxtRect := ARect;
   inherited PropDrawValue(ACanvas, TxtRect, AState);
+  {$ENDIF}
 end;
 
 { TInt64PropertyEditor }
@@ -5856,7 +5872,6 @@ begin
     TPropHookPersistentDeleting(FHandlers[htPersistentDeleting][i])(APersistent);
 end;
 
-// DaThoX begin
 procedure TPropertyEditorHook.PersistentDeleted;
 var
   i: Integer;
@@ -5865,7 +5880,6 @@ begin
   while GetNextHandlerIndex(htPersistentDeleted,i) do
     TPropHookPersistentDeleted(FHandlers[htPersistentDeleted][i])();
 end;
-// DaThoX end
 
 procedure TPropertyEditorHook.DeletePersistent(var APersistent: TPersistent);
 // Call this to actually free APersistent
@@ -6364,7 +6378,6 @@ begin
   RemoveHandler(htPersistentDeleting,TMethod(OnPersistentDeleting));
 end;
 
-// DaThoX begin
 procedure TPropertyEditorHook.AddHandlerPersistentDeleted(
   const OnPersistentDeleted: TPropHookPersistentDeleted);
 begin
@@ -6376,7 +6389,6 @@ procedure TPropertyEditorHook.RemoveHandlerPersistentDeleted(
 begin
   RemoveHandler(htPersistentDeleted,TMethod(OnPersistentDeleted));
 end;
-// DaThoX end
 
 procedure TPropertyEditorHook.AddHandlerDeletePersistent(
   const OnDeletePersistent: TPropHookDeletePersistent);
@@ -7133,10 +7145,11 @@ end;
 
 procedure InitPropEdits;
 begin
-  PropertyClassList:=TList.Create;
-  PropertyEditorMapperList:=TList.Create;
-  // register the standard property editors
+  // Don't create PropertyClassList and PropertyEditorMapperList lists here.
+  // RegisterPropertyEditor and RegisterPropertyEditorMapper create them,
+  //  and they are called from many initialization sections in unpredictable order.
 
+  // register the standard property editors
   RegisterPropertyEditor(TypeInfo(AnsiString), TComponent, 'Name', TComponentNamePropertyEditor);
   RegisterPropertyEditor(TypeInfo(TTranslateString), TCustomLabel, 'Caption', TStringMultilinePropertyEditor);
   RegisterPropertyEditor(TypeInfo(TTranslateString), TCustomStaticText, 'Caption', TStringMultilinePropertyEditor);
@@ -7149,10 +7162,8 @@ begin
   RegisterPropertyEditor(TypeInfo(AnsiString), nil, 'SessionProperties', TSessionPropertiesPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TModalResult), nil, 'ModalResult', TModalResultPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TShortCut), nil, '', TShortCutPropertyEditor);
-  //RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TDate'),
-  //  nil,'',TDatePropertyEditor);
-  //RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TTime'),
-  //  nil,'',TTimePropertyEditor);
+  //RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TDate'), nil,'',TDatePropertyEditor);
+  //RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TTime'), nil,'',TTimePropertyEditor);
   RegisterPropertyEditor(TypeInfo(TDateTime), nil, '', TDateTimePropertyEditor);
   RegisterPropertyEditor(TypeInfo(TCursor), nil, '', TCursorPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TComponent), nil, '', TComponentPropertyEditor);
@@ -7184,23 +7195,26 @@ begin
 end;
 
 procedure FinalPropEdits;
-var i: integer;
+var
+  i: integer;
   pm: PPropertyEditorMapperRec;
   pc: PPropertyClassRec;
 begin
-  for i:=0 to PropertyEditorMapperList.Count-1 do begin
-    pm:=PPropertyEditorMapperRec(PropertyEditorMapperList.Items[i]);
-    Dispose(pm);
+  if PropertyEditorMapperList<>nil then begin
+    for i:=0 to PropertyEditorMapperList.Count-1 do begin
+      pm:=PPropertyEditorMapperRec(PropertyEditorMapperList.Items[i]);
+      Dispose(pm);
+    end;
+    FreeAndNil(PropertyEditorMapperList);
   end;
-  PropertyEditorMapperList.Free;
-  PropertyEditorMapperList:=nil;
 
-  for i:=0 to PropertyClassList.Count-1 do begin
-    pc:=PPropertyClassRec(PropertyClassList[i]);
-    Dispose(pc);
+  if PropertyClassList<>nil then begin
+    for i:=0 to PropertyClassList.Count-1 do begin
+      pc:=PPropertyClassRec(PropertyClassList[i]);
+      Dispose(pc);
+    end;
+    FreeAndNil(PropertyClassList);
   end;
-  PropertyClassList.Free;
-  PropertyClassList:=nil;
 
   FreeAndNil(ListPropertyEditors);
   FreeAndNil(VirtualKeyStrings);

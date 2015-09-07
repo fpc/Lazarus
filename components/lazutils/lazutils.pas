@@ -15,9 +15,9 @@ uses
   TTDebug, TTError, TTFile, TTGLoad, TTInterp, TTLoad, TTMemory, TTObjs, 
   TTProfile, TTRASTER, TTTables, TTTypes, EasyLazFreeType, LazLoggerBase, 
   LazLoggerDummy, LazClasses, LazFreeTypeFontCollection, LazConfigStorage, 
-  UTF8Process, laz2_xpath, DictionaryStringList, LazLoggerProfiling, FPCAdds, 
-  LazUtilities, lazfglhash, lcsvutils, lazCollections, LazListClasses, 
-  LazFreeTypeFPImageDrawer, LazarusPackageIntf;
+  UTF8Process, laz2_xpath, LazLoggerProfiling, FPCAdds, LazUtilities, 
+  lazfglhash, lcsvutils, lazCollections, LazListClasses, 
+  LazFreeTypeFPImageDrawer, LookupStringList, LazarusPackageIntf;
 
 implementation
 

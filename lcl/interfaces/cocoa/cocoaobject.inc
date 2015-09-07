@@ -1,7 +1,7 @@
 {%MainUnit cocoaint.pas}
 
 {******************************************************************************
-  All utility method implementations of the TCarbonWidgetSet class are here.
+  All utility method implementations of the TCocoaWidgetSet class are here.
 
 
  ******************************************************************************
@@ -22,7 +22,7 @@
   Method:  TCocoaWidgetSet.AppInit
   Params:  ScreenInfo
 
-  Initialize Carbon Widget Set
+  Initialize Cocoa Widget Set
  ------------------------------------------------------------------------------}
 procedure TCocoaWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
 var
@@ -33,7 +33,9 @@ begin
   {$ENDIF}
 
   { Creates the application NSApp object }
-  FNsApp := NSApplication.sharedApplication;
+  FNSApp := NSApplication.sharedApplication;
+  FNSApp_Delegate := TAppDelegate.alloc.init;
+  FNSApp.setDelegate(FNSApp_Delegate);
 
   // Sandboxing
   lDict := NSProcessInfo.processInfo.environment;
@@ -153,7 +155,7 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCocoaWidgetSet.AppTerminate
 
-  Tells Carbon to halt the application
+  Tells Cocoa to halt the application
  ------------------------------------------------------------------------------}
 procedure TCocoaWidgetSet.AppTerminate;
 begin
@@ -227,9 +229,9 @@ begin
     lcNeedMininimizeAppWithMainForm,
     lcApplicationTitle,
     lcFormIcon,
-    lcModalWindow,
     lcReceivesLMClearCutCopyPasteReliably:
       Result := LCL_CAPABILITY_NO;
+    lcModalWindow,
     lcAntialiasingEnabledByDefault:
       Result := LCL_CAPABILITY_YES;
   else
@@ -418,10 +420,39 @@ begin
     DeleteAndNilObject(FSysColorBrushes[i]);
 end;
 
-procedure TCocoaWidgetSet.SetMainMenu(const AMenu: HMENU);
+procedure TCocoaWidgetSet.SetMainMenu(const AMenu: HMENU; const ALCLMenu: TMenu);
+var
+  i: Integer;
+  lCurItem: TMenuItem;
+  lMenuObj: NSObject;
 begin
   if AMenu<>0 then
+  begin
     NSApp.setMainMenu(NSMenu(AMenu));
+    if (ALCLMenu = nil) or not ALCLMenu.HandleAllocated then Exit;
+
+    // Some older docs say we should use setAppleMenu to obtain the Services/Hide/Quit items,
+    // but its now private and in 10.10 it doesn't seam to do anything
+    for i := 0 to ALCLMenu.Items.Count-1 do
+    begin
+      lCurItem := ALCLMenu.Items.Items[i];
+      if not lCurItem.HandleAllocated or (lCurItem.Caption <> '') then Continue;
+
+      lMenuObj := NSObject(lCurItem.Handle);
+      if lMenuObj.isKindOfClass_(TCocoaMenuItem) and NSMenuItem(lMenuObj).hasSubmenu and
+        (NSMenuItem(lMenuObj).submenu <> nil) then
+      begin
+        TCocoaMenuItem(lMenuObj).attachAppleMenuItems();
+        //NSApp.setAppleMenu(NSMenuItem(lMenuObj).submenu);
+        Exit;
+      end;
+      {else if lMenuObj.isKindOfClass_(NSMenu) then
+      begin
+        //NSApp.setAppleMenu(NSMenu(lMenuObj));
+        Exit;
+      end;}
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -508,10 +539,25 @@ begin
   DataType := ADataType;
 end;
 
-{------------------------------------------------------------------------------
-  Method:  TCarbonWidgetSet.RawImage_DescriptionFromCarbonBitmap
+procedure TAppDelegate.application_openFiles(sender: NSApplication; filenames: NSArray);
+var
+  lFiles: array of string;
+  lNSStr: NSString;
+  i: Integer;
+begin
+  SetLength(lFiles, filenames.count);
+  for i := 0 to filenames.count-1 do
+  begin
+    lNSStr := NSString(filenames.objectAtIndex(i));
+    lFiles[i] := NSStringToString(lNSStr);
+  end;
+  Application.IntfDropFiles(lFiles);
+end;
 
-  Creates a rawimage description for a carbonbitmap
+{------------------------------------------------------------------------------
+  Method:  TCocoaWidgetSet.RawImage_DescriptionFromCocoaBitmap
+
+  Creates a rawimage description for a cocoabitmap
  ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.RawImage_DescriptionFromCocoaBitmap(out ADesc: TRawImageDescription; ABitmap: TCocoaBitmap): Boolean;
 var
@@ -631,7 +677,7 @@ begin
 
   if AMask.Depth > 1
   then begin
-    DebugLn('[WARNING] RawImage_FromCarbonBitmap: AMask.Depth > 1');
+    DebugLn('[WARNING] RawImage_FromCocoaBitmap: AMask.Depth > 1');
     Exit;
   end;
 

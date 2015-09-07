@@ -841,6 +841,10 @@ msgstr ""
 msgid "Choose code template file (*.dci)"
 msgstr "选择代码模板文件 (*.dci)"
 
+#: lazarusidestrconsts.dlgcloseanduseselecteddesktop
+msgid "Close and use selected desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "Notebook中显示关闭按钮"
@@ -1086,11 +1090,6 @@ msgstr ""
 msgid "Config files"
 msgstr "配置文件:"
 
-#: lazarusidestrconsts.dlgcoother
-msgctxt "lazarusidestrconsts.dlgcoother"
-msgid "Other"
-msgstr "其余的"
-
 #: lazarusidestrconsts.dlgcootherdebugginginfo
 msgid "Other debugging info"
 msgstr ""
@@ -1240,6 +1239,10 @@ msgstr ""
 msgid "User defined extension (.pp.xxx)"
 msgstr "用户定义后缀 (.pp.xxx)"
 
+#: lazarusidestrconsts.dlgdebugdesktop
+msgid "debug desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "路径编辑器"
@@ -1260,19 +1263,9 @@ msgstr "默认值"
 msgid "Delete template "
 msgstr "删除模板"
 
-#: lazarusidestrconsts.dlgdesktop
-msgid "Desktop"
-msgstr "桌面"
-
 #: lazarusidestrconsts.dlgdesktopbuttons
 msgid "Buttons - "
 msgstr ""
-
-#: lazarusidestrconsts.dlgdesktopfiles
-#, fuzzy
-#| msgid "Desktop files"
-msgid "Desktop Files"
-msgstr "桌面配置文件"
 
 #: lazarusidestrconsts.dlgdesktophints
 msgid "Hints"
@@ -1280,6 +1273,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgdesktopmenus
 msgid "Menus - "
+msgstr ""
+
+#: lazarusidestrconsts.dlgdesktopname
+msgid "Desktop name:"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
@@ -2151,10 +2148,6 @@ msgstr ""
 msgid "Included mixed state $IFDEF node"
 msgstr ""
 
-#: lazarusidestrconsts.dlgignoreverb
-msgid "Ignore"
-msgstr "忽略"
-
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "包含系统变量"
@@ -2300,10 +2293,6 @@ msgstr "智能连接"
 msgid "Display line numbers in run-time error backtraces"
 msgstr "当出现运行错误时显示行号"
 
-#: lazarusidestrconsts.dlgloaddfile
-msgid "Load desktop settings from file"
-msgstr "从文件载入 Lazarus 桌面设置"
-
 #: lazarusidestrconsts.dlgmainmenu
 msgid "Main Menu"
 msgstr "主菜单"
@@ -2329,6 +2318,10 @@ msgstr "查看工程单元"
 
 #: lazarusidestrconsts.dlgmakeexecutable
 msgid "\"Make\" executable"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmanagedesktops
+msgid "Manage desktops"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmargingutter
@@ -2865,6 +2858,10 @@ msgstr ""
 msgid "Naming"
 msgstr "命名"
 
+#: lazarusidestrconsts.dlgnewdesktop
+msgid "New desktop ..."
+msgstr ""
+
 #: lazarusidestrconsts.dlgnoautomaticrenaming
 #, fuzzy
 #| msgid "no automatic renaming"
@@ -2937,6 +2934,12 @@ msgstr "补充单元文件 (-Fu) (分号格开):"
 
 #: lazarusidestrconsts.dlgoverwriteblock
 msgid "Overwrite block"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoverwritedesktop
+msgid ""
+"Desktop with the name \"%s\" was found.\n"
+"Should the old desktop be overwritten?\n"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpalhints
@@ -3154,6 +3157,10 @@ msgstr "显示网格"
 msgid "Snap to grid"
 msgstr "对齐到网格"
 
+#: lazarusidestrconsts.dlgreallydeletedesktop
+msgid "Really delete desktop \"%s\"?"
+msgstr ""
+
 #: lazarusidestrconsts.dlgreferencecolor
 msgid "Reference"
 msgstr "参考"
@@ -3163,6 +3170,10 @@ msgstr "参考"
 #| msgid "Regular E&xpressions"
 msgid "Regular e&xpressions"
 msgstr "正则表达式(&R)"
+
+#: lazarusidestrconsts.dlgrenamedesktop
+msgid "Rename desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgreplaceall
 msgid "Replace &All"
@@ -3246,9 +3257,13 @@ msgstr "用户强制"
 msgid "Run Parameters"
 msgstr "带参数运行"
 
-#: lazarusidestrconsts.dlgsavedfile
-msgid "Save desktop settings to file"
-msgstr "保存 Lazarus 桌面设置到文件"
+#: lazarusidestrconsts.dlgsavecurrentdesktop
+msgid "Save current desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsavecurrentdesktopas
+msgid "Save current desktop as"
+msgstr ""
 
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
@@ -3319,6 +3334,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgselectallchildcontrols
 msgid "Select all child controls together with their parent."
+msgstr ""
+
+#: lazarusidestrconsts.dlgselecteddesktop
+msgid "Selected desktop:"
 msgstr ""
 
 #: lazarusidestrconsts.dlgselectedtext
@@ -3578,6 +3597,10 @@ msgstr "工程构建测试目录"
 msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"
 msgstr "查找文本(&T)"
+
+#: lazarusidestrconsts.dlgtoggleselecteddebugdesktop
+msgid "Toggle as debug desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgtopinfohint
 msgid "Current Class/Proc Hint"
@@ -4047,6 +4070,10 @@ msgstr "新建文件"
 msgid "No package found for dependency \"%s\".%sPlease choose an existing package."
 msgstr "没有找到任何包依赖于 %s%s%s.%s请选择一个存在的包."
 
+#: lazarusidestrconsts.lisa2ppackageorproject
+msgid "Package/Project"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2ppagenametoolong
 msgid "Page Name too long"
 msgstr "页面名称太长"
@@ -4206,6 +4233,12 @@ msgstr "错误的单元文件名"
 #: lazarusidestrconsts.lisabandonchanges
 msgid "Abandon changes?"
 msgstr "放弃改变？"
+
+#: lazarusidestrconsts.lisabort
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisabort"
+msgid "Abort"
+msgstr "(中止)"
 
 #: lazarusidestrconsts.lisabortall
 msgid "Abort all"
@@ -5970,6 +6003,10 @@ msgstr "组件板"
 msgid "Pages"
 msgstr ""
 
+#: lazarusidestrconsts.liscmppalettevisible
+msgid "Palette is &visible"
+msgstr ""
+
 #: lazarusidestrconsts.liscmprestoredefaults
 msgid "&Restore defaults"
 msgstr ""
@@ -7702,6 +7739,10 @@ msgstr "自定义选项"
 msgid "Custom options"
 msgstr "自定义选项"
 
+#: lazarusidestrconsts.liscustomoptions3
+msgid "Custom Options"
+msgstr ""
+
 #: lazarusidestrconsts.liscustomprogram
 msgid "Custom Program"
 msgstr "自定义程序"
@@ -8223,6 +8264,10 @@ msgstr ""
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
 msgstr ""
 
+#: lazarusidestrconsts.lisdesktops
+msgid "Desktops ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdestinationdirectory
 msgid "Destination directory"
 msgstr "目标目录"
@@ -8448,6 +8493,11 @@ msgstr "导出 ..."
 #: lazarusidestrconsts.lisdlgimport
 msgctxt "lazarusidestrconsts.lisdlgimport"
 msgid "Import ..."
+msgstr ""
+
+#: lazarusidestrconsts.lisdlgmore
+msgctxt "lazarusidestrconsts.lisdlgmore"
+msgid "More ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisdlgopen
@@ -9161,8 +9211,17 @@ msgstr "导出 ..."
 msgid "Export All Items to File"
 msgstr ""
 
+#: lazarusidestrconsts.lisexportenvironmentoptions
+msgctxt "lazarusidestrconsts.lisexportenvironmentoptions"
+msgid "Export environment options"
+msgstr ""
+
 #: lazarusidestrconsts.lisexporthtml
 msgid "Export as HTML"
+msgstr ""
+
+#: lazarusidestrconsts.lisexportimport
+msgid "Export / Import"
 msgstr ""
 
 #: lazarusidestrconsts.lisexportlist
@@ -9980,17 +10039,13 @@ msgctxt "lazarusidestrconsts.lisid"
 msgid "ID"
 msgstr "ID"
 
-#: lazarusidestrconsts.lisidcadd
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisidcadd"
-msgid "Add"
-msgstr "添加"
+#: lazarusidestrconsts.lisidcaddition
+msgid "Addition"
+msgstr ""
 
-#: lazarusidestrconsts.lisidcopen
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisidcopen"
-msgid "Open"
-msgstr "打开"
+#: lazarusidestrconsts.lisidcopening
+msgid "Opening"
+msgstr ""
 
 #: lazarusidestrconsts.liside
 msgid "IDE"
@@ -10126,6 +10181,12 @@ msgstr ""
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr ""
 
+#: lazarusidestrconsts.lisignore
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisignore"
+msgid "Ignore"
+msgstr "忽略"
+
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
 msgstr "忽略所有"
@@ -10164,8 +10225,9 @@ msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr ""
 
-#: lazarusidestrconsts.lisimportexport
-msgid "Import / Export"
+#: lazarusidestrconsts.lisimportenvironmentoptions
+msgctxt "lazarusidestrconsts.lisimportenvironmentoptions"
+msgid "Import environment options"
 msgstr ""
 
 #: lazarusidestrconsts.lisimportfromfile
@@ -11534,10 +11596,6 @@ msgstr "连接目标"
 msgid "list of all case values"
 msgstr ""
 
-#: lazarusidestrconsts.lisloadedsuccessfully
-msgid "Loaded successfully"
-msgstr ""
-
 #: lazarusidestrconsts.lisloadingfailed
 msgid "Loading %s failed."
 msgstr "加载 %s 失败."
@@ -12315,6 +12373,10 @@ msgstr "制作资源字符串 ..."
 msgctxt "lazarusidestrconsts.lismenunewcomponent"
 msgid "New Component"
 msgstr "新建组件"
+
+#: lazarusidestrconsts.lismenunewcustom
+msgid "New %s"
+msgstr ""
 
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"
@@ -13177,10 +13239,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "更多"
-
-#: lazarusidestrconsts.lismore2
-msgid "More ..."
-msgstr ""
 
 #: lazarusidestrconsts.lismoresub
 #, fuzzy
@@ -16367,10 +16425,6 @@ msgstr "保存更改到工程 %s?"
 msgid "Save current editor file"
 msgstr "保存当前编辑器的文件"
 
-#: lazarusidestrconsts.lissavedsuccessfully
-msgid "Saved successfully"
-msgstr ""
-
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"
 msgstr ""
@@ -16802,12 +16856,12 @@ msgstr "匹配"
 msgid "Sorry, this type is not yet implemented"
 msgstr "对不起, 这种类型尚未实现"
 
-#: lazarusidestrconsts.lissort
-msgid "Sort"
-msgstr ""
-
 #: lazarusidestrconsts.lissortforscope
 msgid "Sort for scope"
+msgstr ""
+
+#: lazarusidestrconsts.lissorting
+msgid "Sorting"
 msgstr ""
 
 #: lazarusidestrconsts.lissortselascending
@@ -19066,6 +19120,10 @@ msgstr "XML 错误"
 #: lazarusidestrconsts.lisxmlparsererrorinfileerror
 msgid "XML parser error in file %s%sError: %s"
 msgstr "XML 解析错误的文件 %s%s错误: %s"
+
+#: lazarusidestrconsts.lisyes
+msgid "Yes"
+msgstr ""
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"

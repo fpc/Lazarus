@@ -431,7 +431,7 @@ msgstr "Hibás"
 
 #: codetoolsstrconsts.ctshelperisnotallowed
 msgid "Helper after %s is not allowed"
-msgstr ""
+msgstr "A \"helper\" nem következhet %s után"
 
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
@@ -958,4 +958,3 @@ msgstr "Vezérlőkészlet könyvtára"
 #: codetoolsstrconsts.ctswordnotfound
 msgid "\"%s\" not found"
 msgstr "\"%s\" nem található"
-

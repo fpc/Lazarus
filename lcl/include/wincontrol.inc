@@ -3604,8 +3604,8 @@ end;
 
 {------------------------------------------------------------------------------
   TWinControl CanFocus
-  
-  
+
+
 ------------------------------------------------------------------------------}
 function TWinControl.CanFocus: Boolean;
 var
@@ -3626,6 +3626,35 @@ begin
     until False;
     Result := True;
   end;
+end;
+
+{------------------------------------------------------------------------------
+  TWinControl CanSetFocus
+
+  CanSetFocus should be prefered over CanFocus if used in CanSetFocus/SetFocus
+  combination
+
+  if MyControl.CanSetFocus then
+    MyControl.SetFocus;
+
+  because it checks also if the parent form can receive focus and thus prevents
+  the "cannot focus an invisible window" LCL exception.
+------------------------------------------------------------------------------}
+function TWinControl.CanSetFocus: Boolean;
+var
+  Control: TWinControl;
+begin
+  Control := Self;
+  while True do
+  begin
+    // test if all are visible and enabled
+    if not (Control.IsControlVisible and Control.Enabled) then
+      Exit(False);
+    if not Assigned(Control.Parent) then
+      Break;
+    Control := Control.Parent;
+  end;
+  Result := Control is TCustomForm;//the very top parent must be a form
 end;
 
 {------------------------------------------------------------------------------
@@ -3887,6 +3916,8 @@ begin
     // adjust the result by all bounds, that are not yet sent to the interface
     AControl := Self;
     repeat
+      if AControl is TForm then
+        Break;
       inc(Result.X, AControl.Left - AControl.FBoundsRealized.Left);
       inc(Result.Y, AControl.Top - AControl.FBoundsRealized.Top);
       AControl := AControl.Parent;
@@ -5600,6 +5631,7 @@ end;
 procedure TWinControl.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   if Assigned(FOnKeyDown) then FOnKeyDown(Self, Key, Shift);
+  DoCallKeyEventHandler(chtOnKeyDown, Key, Shift);
 end;
 
 {------------------------------------------------------------------------------

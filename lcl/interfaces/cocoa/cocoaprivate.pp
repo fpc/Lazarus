@@ -22,6 +22,7 @@ unit CocoaPrivate;
 {.$DEFINE COCOA_DEBUG_LISTVIEW}
 {.$DEFINE COCOA_SPIN_DEBUG}
 {.$DEFINE COCOA_SPINEDIT_INSIDE_CONTAINER}
+{.$DEFINE COCOA_SUPERVIEW_HEIGHT}
 
 interface
 
@@ -32,7 +33,7 @@ uses
   // Libs
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
   // LCL
-  LMessages, LCLMessageGlue, ExtCtrls, Graphics,
+  LMessages, LCLMessageGlue, ExtCtrls, Graphics, Forms,
   LCLType, LCLProc, Controls, ComCtrls, Spin, StdCtrls;
 
 const
@@ -56,12 +57,14 @@ type
     procedure boundsDidChange;
     // misc events
     procedure Draw(ctx: NSGraphicsContext; const bounds, dirty: NSRect);
+    procedure DrawBackground(ctx: NSGraphicsContext; const bounds, dirty: NSRect);
     function ResetCursorRects: Boolean;
     procedure BecomeFirstResponder;
     procedure ResignFirstResponder;
     procedure DidBecomeKeyNotification;
     procedure DidResignKeyNotification;
     procedure SendOnChange;
+    procedure SendOnTextChanged;
     // non event methods
     function DeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult;
     function GetPropStorage: TStringList;
@@ -193,28 +196,6 @@ type
     property Enabled: Boolean read GetEnabled write SetEnabled;
   end;
 
-  IMenuItemCallback = interface(ICommonCallBack)
-    procedure ItemSelected;
-  end;
-
-  { TCocoaMenu }
-
-  TCocoaMenu = objcclass(NSMenu)
-  public
-    procedure lclItemSelected(sender: id); message 'lclItemSelected:';
-    function lclIsHandle: Boolean; override;
-  end;
-
-  { TCocoaMenuItem }
-
-  TCocoaMenuItem = objcclass(NSMenuItem)
-  public
-    menuItemCallback: IMenuItemCallback;
-    procedure lclItemSelected(sender: id); message 'lclItemSelected:';
-    function lclGetCallback: IMenuItemCallback; override;
-    function lclIsHandle: Boolean; override;
-  end;
-
   { TCocoaButton }
 
   TCocoaButton = objcclass(NSButton)
@@ -325,8 +306,10 @@ type
     procedure mouseUp(event: NSEvent); override;
     procedure rightMouseDown(event: NSEvent); override;
     procedure rightMouseUp(event: NSEvent); override;
+    procedure rightMouseDragged(event: NSEvent); override;
     procedure otherMouseDown(event: NSEvent); override;
     procedure otherMouseUp(event: NSEvent); override;
+    procedure otherMouseDragged(event: NSEvent); override;
     procedure mouseDragged(event: NSEvent); override;
     procedure mouseEntered(event: NSEvent); override;
     procedure mouseExited(event: NSEvent); override;
@@ -369,8 +352,10 @@ type
     procedure mouseUp(event: NSEvent); override;
     procedure rightMouseDown(event: NSEvent); override;
     procedure rightMouseUp(event: NSEvent); override;
+    procedure rightMouseDragged(event: NSEvent); override;
     procedure otherMouseDown(event: NSEvent); override;
     procedure otherMouseUp(event: NSEvent); override;
+    procedure otherMouseDragged(event: NSEvent); override;
     procedure mouseDragged(event: NSEvent); override;
     procedure mouseEntered(event: NSEvent); override;
     procedure mouseExited(event: NSEvent); override;
@@ -378,6 +363,9 @@ type
     procedure scrollWheel(event: NSEvent); override;
     procedure sendEvent(event: NSEvent); override;
     function lclIsHandle: Boolean; override;
+    // NSDraggingDestinationCategory
+    function draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation; override;
+    function performDragOperation(sender: NSDraggingInfoProtocol): Boolean; override;
   end;
 
   { TCocoaCustomControl }
@@ -396,8 +384,10 @@ type
     procedure mouseUp(event: NSEvent); override;
     procedure rightMouseDown(event: NSEvent); override;
     procedure rightMouseUp(event: NSEvent); override;
+    procedure rightMouseDragged(event: NSEvent); override;
     procedure otherMouseDown(event: NSEvent); override;
     procedure otherMouseUp(event: NSEvent); override;
+    procedure otherMouseDragged(event: NSEvent); override;
     procedure mouseDragged(event: NSEvent); override;
     procedure mouseEntered(event: NSEvent); override;
     procedure mouseExited(event: NSEvent); override;
@@ -472,7 +462,9 @@ type
   protected
     FOwner: TCocoaComboBox;
     FReadOnlyOwner: TCocoaReadOnlyComboBox;
+    FPreChangeListCount: Integer;
     procedure Changed; override;
+    procedure Changing; override;
   public
     // Pass only 1 owner and nil for the other ones
     constructor Create(AOwner: TCocoaComboBox; AReadOnlyOwner: TCocoaReadOnlyComboBox);
@@ -512,9 +504,11 @@ type
 
   TCocoaReadOnlyComboBox = objcclass(NSPopUpButton)
   public
+    Owner: TCustomComboBox;
     callback: IComboboxCallBack;
     list: TCocoaComboBoxList;
     resultNS: NSString;  //use to return values to combo
+    lastSelectedItemIndex: Integer; // -1 means invalid or none selected
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
@@ -523,6 +517,7 @@ type
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
     function lclIsHandle: Boolean; override;
+    procedure comboboxAction(sender: id); message 'comboboxAction:';
   end;
 
   { TCocoaScrollBar }
@@ -629,6 +624,7 @@ type
   public
     callback: ICommonCallback;
     LCLPage: TCustomPage;
+    LCLParent: TCustomTabControl;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     function lclFrame: TRect; override;
@@ -856,6 +852,8 @@ function GetNSViewSuperViewHeight(view: NSView): CGFloat;
 
 implementation
 
+uses CocoaWSComCtrls;
+
 {$I mackeycodes.inc}
 
 procedure SetViewDefaults(AView: NSView);
@@ -878,6 +876,9 @@ begin
     Result := TCocoaTabPageView(view.superview).tabview.contentRect.size.height
   else
     Result := view.superview.frame.size.height;
+  {$IFDEF COCOA_SUPERVIEW_HEIGHT}
+  WriteLn(Format('GetNSViewSuperViewHeight Result=%f', [Result]));
+  {$ENDIF}
 end;
 
 { TCocoaWindowContent }
@@ -1077,6 +1078,12 @@ begin
     inherited rightMouseDown(event);
 end;
 
+procedure TCocoaPanel.rightMouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited rightMouseDragged(event);
+end;
+
 procedure TCocoaPanel.otherMouseDown(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
@@ -1087,6 +1094,12 @@ procedure TCocoaPanel.otherMouseUp(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited otherMouseUp(event);
+end;
+
+procedure TCocoaPanel.otherMouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited otherMouseDown(event);
 end;
 
 procedure TCocoaPanel.mouseDragged(event: NSEvent);
@@ -1299,6 +1312,12 @@ begin
     inherited rightMouseDown(event);
 end;
 
+procedure TCocoaWindow.rightMouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited rightMouseDragged(event);
+end;
+
 procedure TCocoaWindow.otherMouseDown(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
@@ -1309,6 +1328,12 @@ procedure TCocoaWindow.otherMouseUp(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited otherMouseUp(event);
+end;
+
+procedure TCocoaWindow.otherMouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited otherMouseDown(event);
 end;
 
 procedure TCocoaWindow.mouseDragged(event: NSEvent);
@@ -1335,8 +1360,8 @@ end;
 
 procedure TCocoaWindow.scrollWheel(event: NSEvent);
 begin
-if not Assigned(callback) or not callback.scrollWheel(event) then
-  inherited scrollWheel(event);
+  if not Assigned(callback) or not callback.scrollWheel(event) then
+    inherited scrollWheel(event);
 end;
 
 procedure TCocoaWindow.sendEvent(event: NSEvent);
@@ -1370,6 +1395,59 @@ begin
   end
   else
     inherited sendEvent(event);
+end;
+
+function TCocoaWindow.draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation;
+var
+  lTarget: TCustomForm = nil;
+begin
+  Result := NSDragOperationNone;
+  if (callback <> nil) and (callback.GetTarget() <> nil) and (callback.GetTarget() is TCustomForm) then
+    lTarget := TCustomForm(callback.GetTarget());
+  if (lTarget <> nil) and (lTarget.OnDropFiles <> nil) then
+  begin
+    Result := sender.draggingSourceOperationMask();
+  end;
+end;
+
+function TCocoaWindow.performDragOperation(sender: NSDraggingInfoProtocol): Boolean;
+var
+  draggedURLs{, lClasses}: NSArray;
+  lFiles: array of string;
+  i: Integer;
+  pboard: NSPasteboard;
+  lNSStr: NSString;
+  //lClass: pobjc_class;
+begin
+  Result := False;
+  pboard := sender.draggingPasteboard();
+
+  // Multiple strings
+  draggedURLs := pboard.propertyListForType(NSFilenamesPboardType);
+  SetLength(lFiles, draggedURLs.count);
+  for i := 0 to draggedURLs.count-1 do
+  begin
+    lNSStr := NSString(draggedURLs.objectAtIndex(i));
+    lFiles[i] := NSStringToString(lNSStr);
+  end;
+
+  // Multiple URLs -> Results in strange URLs with file:// protocol
+  {if pboard.types.containsObject(NSURLPboardType) then
+  begin
+    lClass := NSURL.classClass;
+    lClasses := NSArray.arrayWithObjects_count(@lClass, 1);
+    draggedURLs := pboard.readObjectsForClasses_options(lClasses, nil);
+    SetLength(lFiles, draggedURLs.count);
+    for i := 0 to draggedURLs.count-1 do
+    begin
+      lNSStr := NSURL(draggedURLs.objectAtIndex(i)).absoluteString;
+      lFiles[i] := NSStringToString(lNSStr);
+    end;
+  end;}
+
+  if (Length(lFiles) > 0) and (callback <> nil) and (callback.GetTarget() <> nil) then
+    TCustomForm(callback.GetTarget()).IntfDropFiles(lFiles);
+  Result := True;
 end;
 
 { TCocoaScrollView }
@@ -1933,6 +2011,11 @@ end;
 procedure TCocoaCustomControl.drawRect(dirtyRect: NSRect);
 begin
   inherited drawRect(dirtyRect);
+
+  // Implement Color property
+  if Assigned(callback) then
+    callback.DrawBackground(NSGraphicsContext.currentContext, bounds, dirtyRect);
+
   if CheckMainThread and Assigned(callback) then
     callback.Draw(NSGraphicsContext.currentContext, bounds, dirtyRect);
 end;
@@ -1955,8 +2038,8 @@ end;
 
 procedure TCocoaCustomControl.mouseDragged(event: NSEvent);
 begin
-if not Assigned(callback) or not callback.MouseMove(event) then
-  inherited mouseDragged(event);
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited mouseDragged(event);
 end;
 
 procedure TCocoaCustomControl.mouseEntered(event: NSEvent);
@@ -2017,6 +2100,12 @@ begin
     inherited rightMouseUp(event);
 end;
 
+procedure TCocoaCustomControl.rightMouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited rightMouseDragged(event);
+end;
+
 procedure TCocoaCustomControl.otherMouseDown(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
@@ -2027,6 +2116,12 @@ procedure TCocoaCustomControl.otherMouseUp(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited otherMouseUp(event);
+end;
+
+procedure TCocoaCustomControl.otherMouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited otherMouseDragged(event);
 end;
 
 procedure TCocoaCustomControl.resetCursorRects;
@@ -2751,10 +2846,22 @@ end;
 function TCocoaTabPage.lclFrame: TRect;
 var
   svh: CGFloat;
+  lParent: TCocoaTabControl;
 begin
-  svh := tabView.frame.size.height;
-  NSToLCLRect(tabView.contentRect, svh, Result);
-  //WriteLn('[TCocoaTabPage.lclFrame] '+dbgs(Result)+' '+NSStringToString(Self.label_));
+  lParent := TCocoaWSCustomTabControl.GetCocoaTabControlHandle(LCLParent);
+  if lParent <> nil then
+  begin
+    svh := lParent.contentRect.size.height;
+    NSToLCLRect(lParent.contentRect, svh, Result);
+  end
+  else
+  begin
+    svh := tabView.frame.size.height;
+    NSToLCLRect(tabView.contentRect, svh, Result);
+  end;
+  {$IFDEF COCOA_DEBUG_TABCONTROL}
+  WriteLn('[TCocoaTabPage.lclFrame] '+dbgs(Result)+' '+NSStringToString(Self.label_));
+  {$ENDIF}
 end;
 
 function TCocoaTabPage.lclClientFrame: TRect;
@@ -3007,7 +3114,7 @@ end;
 procedure TCocoaTableListView.mouseDragged(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseMove(event) then
-  inherited mouseDragged(event);
+    inherited mouseDragged(event);
 end;
 
 procedure TCocoaTableListView.mouseEntered(event: NSEvent);
@@ -3166,7 +3273,7 @@ begin
   FillChar(nr, sizeof(nr), 0);
 
   r := lclClientFrame();
-  nr.size.height := STATUSBAR_DEFAULT_HEIGHT;
+  nr.size.height := StatusBar.Height+5; // it gets closer to filling the whole area with +5 no idea why
 
   if StatusBar.SimplePanel then
   begin
@@ -3209,11 +3316,15 @@ procedure TCocoaComboBoxList.Changed;
 var
   i: Integer;
   nsstr: NSString;
+  lCurItem: NSMenuItem;
 begin
   if FOwner <> nil then
     fOwner.reloadData;
   if FReadOnlyOwner <> nil then
   begin
+    // store the current item
+    FReadOnlyOwner.lastSelectedItemIndex := FReadOnlyOwner.indexOfSelectedItem;
+
     FReadOnlyOwner.removeAllItems();
     for i := 0 to Count-1 do
     begin
@@ -3221,8 +3332,16 @@ begin
       FReadOnlyOwner.addItemWithTitle(nsstr);
       nsstr.release;
     end;
+
+    // reset the selected item
+    FReadOnlyOwner.selectItemAtIndex(FReadOnlyOwner.lastSelectedItemIndex);
   end;
   inherited Changed;
+end;
+
+procedure TCocoaComboBoxList.Changing;
+begin
+  FPreChangeListCount := Count;
 end;
 
 constructor TCocoaComboBoxList.Create(AOwner: TCocoaComboBox; AReadOnlyOwner: TCocoaReadOnlyComboBox);
@@ -3368,33 +3487,12 @@ begin
   Result:=true;
 end;
 
-{ TCocoaMenu }
-
-function TCocoaMenu.lclIsHandle: Boolean;
+procedure TCocoaReadOnlyComboBox.comboBoxAction(sender: id);
 begin
-  Result:=true;
-end;
-
-procedure TCocoaMenu.lclItemSelected(sender:id);
-begin
-
-end;
-
-{ TCocoaMenuITem }
-
-function TCocoaMenuItem.lclIsHandle: Boolean;
-begin
-  Result:=true;
-end;
-
-procedure TCocoaMenuItem.lclItemSelected(sender:id);
-begin
-  menuItemCallback.ItemSelected;
-end;
-
-function TCocoaMenuItem.lclGetCallback: IMenuItemCallback;
-begin
-  result:=menuItemCallback;
+  //setTitle(NSSTR(PChar(Format('%d=%d', [indexOfSelectedItem, lastSelectedItemIndex])))); // <= for debugging
+  if (indexOfSelectedItem <> lastSelectedItemIndex) and (callback <> nil) then
+    callback.ComboBoxSelectionDidChange;
+  lastSelectedItemIndex := indexOfSelectedItem;
 end;
 
 { TCocoaProgressIndicator }
@@ -3640,6 +3738,8 @@ begin
   lNSStr := CocoaUtils.NSStringUtf8(lStr);
   Edit.setStringValue(lNSStr);
   lNSStr.release;
+  // This implements OnChange for both user and code changes
+  if callback <> nil then callback.SendOnTextChanged();
 end;
 
 function TCocoaSpinEdit.acceptsFirstResponder: Boolean;
@@ -3786,6 +3886,8 @@ begin
   lNSStr := CocoaUtils.NSStringUtf8(lStr);
   setStringValue(lNSStr);
   lNSStr.release;
+  // This implements OnChange for both user and code changes
+  if callback <> nil then callback.SendOnTextChanged();
 end;
 
 function TCocoaSpinEdit.GetFieldEditor: TCocoaFieldEditor;

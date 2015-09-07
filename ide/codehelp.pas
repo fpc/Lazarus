@@ -39,14 +39,15 @@ unit CodeHelp;
 interface
 
 uses
-  Classes, SysUtils, LazFileCache, LCLProc, Forms, Controls, FileUtil, Dialogs,
-  AvgLvlTree, LCLType, LazUTF8,
-  Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite,
-  // codetools
+  // RTL + FCL + LCL
+  Classes, SysUtils, LCLType, LCLProc, Forms, Controls, FileUtil, Dialogs,
+  // CodeTools
   CodeAtom, CodeTree, CodeToolManager, FindDeclarationTool, BasicCodeTools,
   KeywordFuncLists, PascalParserTool, CodeCache, CacheCodeTools, CustomCodeTool,
   FileProcs, DefineTemplates, CodeToolsStructs,
-  // synedit
+  // LazUtils
+  AvgLvlTree, LazFileUtils, LazUTF8, LazFileCache, Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite,
+  // SynEdit
   SynHighlighterPas,
   // IDEIntf
   IDECommands, IDEMsgIntf, MacroIntf, PackageIntf, LazHelpIntf, ProjectIntf,
@@ -2693,6 +2694,43 @@ var
   NestedComments: Boolean;
   CommentStr, LastComment: String;
 
+  function ShiftLeft(const Comment: String) : String;
+  var
+    Lines : TStringList;
+    S : String;
+    I, J, LeftMost : Integer;
+  begin
+    try
+      Lines := nil;
+      Lines := TStringList.Create;
+      Lines.Text := Comment;
+
+      LeftMost := Length(Comment);
+
+      for I := 0 to Lines.Count - 1 do
+      begin
+        if LeftMost <= 1 then
+          Break;
+
+        S := Lines[I];
+        J := 1;
+        while (J <= Length(S)) and (J < LeftMost) and (S[J] = ' ') do
+          Inc(J);
+
+        if J < LeftMost then
+          LeftMost := J;
+      end;
+
+      if LeftMost > 1 then
+        for I := 0 to Lines.Count - 1 do
+          Lines[I] := Copy(Lines[I], LeftMost, Length(Lines[I]) - LeftMost + 1);
+
+      Result := Lines.Text;
+    finally
+      FreeAndNil(Lines);
+    end;
+  end;  
+  
   procedure AddComment;
   begin
     if (CodeXYPos=nil) or (LastCodeXYPos=nil)
@@ -2700,7 +2738,7 @@ var
     or (CodeXYPos^.Y-LastCodeXYPos^.Y>10) then begin
       // the last comment is at a different position => add a source link
       if LastComment<>'' then
-        Result:=Result+'<span class="comment">'+TextToHTML(LastComment)
+        Result:=Result+'<span class="comment">'+TextToHTML(ShiftLeft(LastComment))
           +' ('+SourcePosToFPDocHint(LastCodeXYPos^,'Source')+')'
           +'</span><br>'+LineEnding;
       LastComment:=CommentStr;
@@ -2713,6 +2751,40 @@ var
     LastCodeXYPos:=CodeXYPos;
   end;
 
+  function ExtractComment(const Source: String;
+    CommentStart: Integer) : String;
+  var
+    CommentEnd, XPos: Integer;
+  begin
+    XPos := CodeXYPos^.X;
+    CommentEnd := FindCommentEnd(Source, CommentStart, NestedComments);
+    
+    case Source[CommentStart] of
+    '/': 
+      begin
+        CommentStart := CommentStart + 2;
+        XPos := 0;
+      end;
+    '(': 
+      begin 
+        CommentStart := CommentStart + 2;
+        CommentEnd := CommentEnd - 2;
+        XPos := XPos + 1;
+      end;
+    '{': 
+      begin 
+        CommentStart := CommentStart + 1;
+        CommentEnd := CommentEnd - 1;
+      end;    
+    end;
+    Result:=Copy(Source, CommentStart, CommentEnd - CommentStart);
+    
+    Result := TrimRight(Result);    
+    
+    if XPos > 0 then
+      Result := StringOfChar(' ', XPos) + Result;
+  end;
+  
 begin
   Result:='';
   if (Tool=nil) or (Node=nil) then exit;
@@ -2731,14 +2803,12 @@ begin
       if (CommentStart<1) or (CommentStart>CommentCode.SourceLength)
       then
         continue;
-      CommentStr:=ExtractCommentContent(CommentCode.Source,CommentStart,
-                                        NestedComments,true,true,true);
+      CommentStr := ExtractComment(CommentCode.Source, CommentStart);
       AddComment;
     end;
     CommentStr:='';
     CodeXYPos:=nil;
     AddComment;
-
   finally
     FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
   end;
@@ -2828,6 +2898,7 @@ begin
   while p>0 do
   begin
     case Result[p] of
+    ' ': Result:=copy(Result,1,p-1)+'&nbsp;'+copy(Result,p+1,length(Result));
     '<': Result:=copy(Result,1,p-1)+'&lt;'+copy(Result,p+1,length(Result));
     '>': Result:=copy(Result,1,p-1)+'&gt;'+copy(Result,p+1,length(Result));
     '&': Result:=copy(Result,1,p-1)+'&amp;'+copy(Result,p+1,length(Result));

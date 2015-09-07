@@ -38,13 +38,13 @@ unit CodyIdentifiersDlg;
 interface
 
 uses
-  Classes, SysUtils, FileProcs, LResources, LCLProc, avl_tree, contnrs, Forms,
-  Controls, Graphics, Dialogs, ButtonPanel, StdCtrls, ExtCtrls, LCLType,
+  Classes, SysUtils, LCLProc, avl_tree, contnrs, Forms,
+  Controls, Dialogs, ButtonPanel, StdCtrls, ExtCtrls, LCLType,
   Buttons, Menus, PackageIntf, LazIDEIntf, SrcEditorIntf, ProjectIntf,
   CompOptsIntf, IDEDialogs, IDEMsgIntf, IDEExternToolIntf, CodeCache,
   BasicCodeTools, CustomCodeTool, CodeToolManager, UnitDictionary, CodeTree,
   LinkScanner, DefineTemplates, CodeToolsStructs, FindDeclarationTool,
-  CodyStrConsts, CodyUtils, CodyOpts;
+  CodyStrConsts, CodyUtils, CodyOpts, FileProcs, LazFileUtils, LazFileCache;
 
 const
   PackageNameFPCSrcDir = 'FPCSrcDir';

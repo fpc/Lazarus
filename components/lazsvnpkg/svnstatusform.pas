@@ -23,9 +23,14 @@ unit SVNStatusForm;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazFileUtils, Forms, Controls, Dialogs,
-  ComCtrls, StdCtrls, ButtonPanel, ExtCtrls, LCLProc, Process,
-  SVNClasses, Menus, LazIDEIntf, BaseIDEIntf, LazConfigStorage;
+  Classes, SysUtils, Process, LCLProc,
+  Forms, Controls, Dialogs, ComCtrls, StdCtrls, ButtonPanel, ExtCtrls, Menus,
+  // LazUtils
+  FileUtil, LazFileUtils, LazConfigStorage,
+  // IDEIntf
+  LazIDEIntf, BaseIDEIntf,
+  // LazSvn
+  SVNClasses;
 
 type
   { TSVNStatusFrm }
@@ -224,7 +229,7 @@ begin
         CmdLine := CmdLine + ' "' + StatusItem.Path + '"';
   end;
 
-  FileName := GetTempFileName('','');
+  FileName := GetTempFileNameUTF8('','');
   SVNCommitMsgMemo.Lines.SaveToFile(FileName);
   CmdLine := CmdLine + ' --file ' + FileName;
 

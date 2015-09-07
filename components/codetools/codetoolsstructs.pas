@@ -32,7 +32,8 @@ unit CodeToolsStructs;
 interface
 
 uses
-  Classes, SysUtils, FileProcs, AVL_Tree, BasicCodeTools;
+  Classes, SysUtils, FileProcs, LazFileUtils, LazUtilities, LazDbgLog,
+  AVL_Tree, BasicCodeTools;
   
 type
   TResourcestringInsertPolicy = (

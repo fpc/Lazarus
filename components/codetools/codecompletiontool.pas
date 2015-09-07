@@ -82,14 +82,18 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
-  CodeCache, CustomCodeTool, PascalParserTool, MethodJumpTool,
+  // RTL + FCL
+  Classes, SysUtils, contnrs, AVL_Tree,
+  // CodeTools
+  FileProcs, CodeToolsStrConsts, StdCodeTools,
+  CodeTree, CodeAtom, CodeCache, CustomCodeTool, PascalParserTool, MethodJumpTool,
   FindDeclarationTool, KeywordFuncLists, CodeToolsStructs, BasicCodeTools,
-  LinkScanner, SourceChanger, CodeGraph, AVL_Tree, contnrs,
+  LinkScanner, SourceChanger, CodeGraph,
   {$IFDEF EnableCodeCompleteTemplates}
   CodeCompletionTemplater,
   {$ENDIF}
-  StdCodeTools;
+  // LazUtils
+  LazFileUtils, LazDbgLog;
 
 type
   TNewClassPart = (ncpPrivateProcs, ncpPrivateVars,

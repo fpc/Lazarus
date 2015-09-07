@@ -30,9 +30,9 @@ unit CTUnitGraph;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, FileProcs, FindDeclarationTool, CodeBeautifier,
-  CodeCache, StdCodeTools, DirectoryCacher, LinkScanner,
-  CustomCodeTool, CodeTree, CodeToolsStructs;
+  Classes, SysUtils, AVL_Tree, FileProcs, LazFileUtils, LazUtilities,
+  FindDeclarationTool, CodeBeautifier, CodeCache, StdCodeTools, DirectoryCacher,
+  LinkScanner, CustomCodeTool, CodeTree, CodeToolsStructs;
 
 type
 

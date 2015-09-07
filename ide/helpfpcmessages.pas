@@ -37,11 +37,12 @@ unit HelpFPCMessages;
 interface
 
 uses
-  Classes, SysUtils, fgl, LCLProc, Dialogs, FileUtil, TextTools, MacroIntf,
+  Classes, SysUtils, fgl, LCLProc, Dialogs, TextTools, MacroIntf,
   LazarusIDEStrConsts, LazConfigStorage, HelpIntfs, IDEHelpIntf, BaseIDEIntf,
   IDEMsgIntf, IDEDialogs, IDEExternToolIntf, LazHelpIntf, LazHelpHTML, StdCtrls,
   ButtonPanel, ExtCtrls, Forms, Controls, Graphics, LCLIntf, CodeToolsFPCMsgs,
-  FileProcs, CodeToolManager, CodeCache, DefineTemplates, EnvironmentOpts;
+  FileProcs, LazFileUtils, LazFileCache, CodeToolManager, CodeCache,
+  DefineTemplates, EnvironmentOpts;
   
 const
   lihcFPCMessages = 'Free Pascal Compiler messages';

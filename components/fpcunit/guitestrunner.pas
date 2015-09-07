@@ -102,6 +102,12 @@ type
     tsTestTree: TTabSheet;
     tsResultsXML: TTabSheet;
     XMLSynEdit: TSynEdit;
+    actNextError: TAction;
+    MenuItem20: TMenuItem;
+    actPrevError: TAction;
+    MenuItem21: TMenuItem;
+    MenuItem22: TMenuItem;
+    MenuItem23: TMenuItem;
     procedure ActCheckAllExecute(Sender: TObject);
     procedure ActCheckCurrentSuiteExecute(Sender: TObject);
     procedure ActCloseFormExecute(Sender: TObject);
@@ -127,6 +133,8 @@ type
     procedure ActCopyErrorMsgExecute(Sender: TObject);
     procedure ActCopyErrorMsgUpdate(Sender: TObject);
     procedure pbBarPaint(Sender: TObject);
+    procedure actNextErrorExecute(Sender: TObject);
+    procedure actPrevErrorExecute(Sender: TObject);
   private
     failureCounter: Integer;
     errorCounter: Integer;
@@ -159,6 +167,8 @@ type
     procedure RunTest(ATest: TTest);
     procedure StartTestSuite(ATestSuite: TTestSuite);
     procedure EndTestSuite(ATestSuite: TTestSuite);
+    procedure NextError;
+    procedure PrevError;
   end;
 
 var
@@ -615,6 +625,16 @@ begin
   end;
 end;
 
+procedure TGUITestRunner.actNextErrorExecute(Sender: TObject);
+begin
+  NextError;
+end;
+
+procedure TGUITestRunner.actPrevErrorExecute(Sender: TObject);
+begin
+  PrevError;
+end;
+
 
 procedure TGUITestRunner.BuildTree(rootNode: TTreeNode; aSuite: TTestSuite);
 var
@@ -1011,6 +1031,42 @@ begin
   Node := FindNode(ATestSuite);
   if Assigned(Node) then
     PaintNodeNonFailed(Node);
+end;
+
+procedure TGUITestRunner.NextError;
+var
+  Node: TTreeNode;
+begin
+  Node := TestTree.Selected;
+  while Assigned(Node) do
+  begin
+    Node := Node.GetNext;
+    if Assigned(Node) and (Node.ImageIndex in [imgRedBall, imgPurpleBall]) and
+      (TObject(Node.Data) is TTestCase) then
+    begin
+      TestTree.Selected := Node;
+      TestTree.MakeSelectionVisible;
+      Exit;
+    end;
+  end;
+end;
+
+procedure TGUITestRunner.PrevError;
+var
+  Node: TTreeNode;
+begin
+  Node := TestTree.Selected;
+  while Assigned(Node) do
+  begin
+    Node := Node.GetPrev;
+    if Assigned(Node) and (Node.ImageIndex in [imgRedBall, imgPurpleBall]) and
+      (TObject(Node.Data) is TTestCase) then
+    begin
+      TestTree.Selected := Node;
+      TestTree.MakeSelectionVisible;
+      Exit;
+    end;
+  end;
 end;
 
 procedure TranslateResStrings;

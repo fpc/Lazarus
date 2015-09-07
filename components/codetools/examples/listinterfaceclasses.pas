@@ -28,8 +28,7 @@ program ListInterfaceClasses;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CodeToolManager, CodeCache, CustomCodeTool, CodeTree,
-  FileProcs;
+  SysUtils, CodeToolManager, CodeCache, CodeTree;
   
 var
   ExpandedFilename: String;

@@ -27,8 +27,9 @@ uses
   Classes, Controls, Buttons, LCLType, LCLProc, Graphics, GraphType,
   // widgetset
   WSButtons, WSLCLClasses, WSProc,
-  // LCL Carbon
-  CocoaWSCommon, CocoaWSStdCtrls, CocoaGDIObjects, CocoaPrivate, CocoaUtils;
+  // LCL Cocoa
+  CocoaWSCommon, CocoaWSStdCtrls, CocoaGDIObjects, CocoaPrivate, CocoaUtils,
+  cocoa_extra;
 
 type
 
@@ -87,11 +88,6 @@ begin
   btn := AllocButton(AWinControl, TLCLButtonCallBack, AParams, NSRoundedBezelStyle, NSMomentaryPushInButton);
   Result := TLCLIntfHandle(btn);
 end;
-
-type
-  NSButtonSoundExtensionsCategory = objccategory external (NSButton)
-    function intrinsicContentSize(): NSSize; message 'intrinsicContentSize';
-  end;
 
 class procedure TCocoaWSBitBtn.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);

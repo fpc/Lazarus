@@ -214,6 +214,7 @@ begin
   // important: free provider before control
   FreeAndNil(FHTMLProvider);
   FreeAndNil(FTextControl);
+  FreeAndNil(FHTMLControl);
   WaitingForIdle:=false;
   inherited Destroy;
 end;

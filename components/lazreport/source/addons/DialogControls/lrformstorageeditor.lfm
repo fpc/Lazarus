@@ -8,7 +8,7 @@ object lrFormStorageEditorForm: TlrFormStorageEditorForm
   ClientWidth = 570
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.3'
+  LCLVersion = '1.5'
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 42
@@ -73,6 +73,7 @@ object lrFormStorageEditorForm: TlrFormStorageEditorForm
       ItemHeight = 0
       OnDblClick = ListBoxPropsDblClick
       ScrollWidth = 250
+      Sorted = True
       TabOrder = 2
       TopIndex = -1
     end

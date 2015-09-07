@@ -28,9 +28,9 @@ program TestUnitDirectives;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CodeCache, CodeToolManager, FileProcs, CodeAtom,
-  BasicCodeTools, SourceChanger, CodeTree,
-  CodeToolsStructs, PascalParserTool, LinkScanner, directives1;
+  SysUtils, CodeCache, CodeToolManager, FileProcs, CodeAtom,
+  BasicCodeTools, SourceChanger, PascalParserTool, LinkScanner, LazUTF8,
+  directives1;
 
 var
   Scanner: TLinkScanner;

@@ -30,8 +30,14 @@ unit etMakeMsgParser;
 interface
 
 uses
-  Classes, SysUtils, IDEExternToolIntf, CodeToolsStructs, KeywordFuncLists,
-  LazFileUtils, FileUtil;
+  // RTL
+  Classes, SysUtils,
+  // CodeTools
+  CodeToolsStructs, KeywordFuncLists,
+  // LazUtils
+  FileUtil, LazFileUtils,
+  // IDEIntf
+  IDEExternToolIntf;
 
 const
   MakeMsgIDEnteringDirectory = 1;

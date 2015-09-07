@@ -144,10 +144,10 @@ begin
     begin
       Brush.Color:=clWhite;
       ARect:=Rect(FrameWidth,FrameWidth,
-          ClientWidth-FrameWidth,     // DaThoX
-          ClientHeight-FrameWidth);   // DaThoX
+          ClientWidth-FrameWidth,
+          ClientHeight-FrameWidth);
       FillRect(ARect);
-      ARect:=Rect(0,0,ClientWidth+1,ClientHeight+1); // DaThoX
+      ARect:=Rect(0,0,ClientWidth+1,ClientHeight+1);
       Pen.Color:=clBlack;
       Frame3d(ARect, FrameWidth, bvLowered);
     end;

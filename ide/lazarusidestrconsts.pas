@@ -40,7 +40,8 @@ uses
   Classes, SysUtils;
 
 resourcestring
-  // Common strings that can be used around Lazarus:
+  // *** Common single word resources that can be safely shared around Lazarus ***
+
   lisLazarus = 'Lazarus';
   lisAdd  = 'Add';
   lisBtnAdd = '&Add';
@@ -64,22 +65,22 @@ resourcestring
   lisOpen = 'Open';
   lisSave = 'Save';
   lisDlgSave = 'Save ...';
-  lisSaveShownMessagesToFile = 'Save Shown Messages to File ...';
   lisSaveAs = 'Save As';
   lisSaveAll = 'Save All';
-  lisExportHtml = 'Export as HTML';
   lisCloseAll = 'Close All';
   lisFile = 'File';
   lisNew = 'New';
   lisClose = 'Close';
   lisBtnClose = '&Close';
-  lisMMAddsCustomOptions = 'Adds custom options:';
-  lisMMDoesNotAddCustomOptions = 'Does not add custom options:';
   lisOk = 'OK';
   lisMenuOk = '&OK';
   lisCancel = 'Cancel';
-  lisUnusedUnitsOf = 'Unused units of %s';
   lisNo = 'No';
+  lisYes = 'Yes';
+  lisAbort = 'Abort';
+  lisIgnore = 'Ignore';
+  lisNever = 'Never';
+  lisAlways = 'Always';
   lisContinue = 'Continue';
   lisBreak = 'Break';
   lisExit = 'Exit';
@@ -87,14 +88,12 @@ resourcestring
   lisBtnQuit = '&Quit';
   lisRestart = 'Restart';
   lisHelp = 'Help';
-  lisSaveAllOriginalMessagesToFile = 'Save All/Original Messages to File ...';
   lisEnabled = 'Enabled';
   lisBtnEnabled = '&Enabled';
   lisUndo = 'Undo';
   lisRedo = 'Redo';
   lisCut = 'Cut';
   lisCopy = 'Copy';
-  lisMoveFiles2 = 'Move files?';
   lisPaste = 'Paste';
   lisDown = 'Down';
   lisUp   = 'Up';
@@ -121,10 +120,12 @@ resourcestring
   lisRunButtonHint = 'Run';
   lisPause = 'Pause';
   lisStop = 'Stop';
+  lisSorting = 'Sorting';
   lisBuilding = 'Building';
   lisOptions = 'Options';
   lisLess = 'Less';
   lisMore = 'More';
+  lisDlgMore = 'More ...';
   lisMoreSub = 'More >>';
   lisDefault = 'Default';
   lisClone = 'Clone';
@@ -133,14 +134,29 @@ resourcestring
   lisImport = 'Import';
   lisDlgImport = 'Import ...';
 
+  // *** Common sentence resources that can be safely shared around Lazarus ***
+  //  Be careful, sharing sentences can lead to wrong translations in some places.
+
+  lisExportHtml = 'Export as HTML';
+  lisMoveFiles = 'Move Files';
+  lisMoveFiles2 = 'Move files?';
+  lrsPLDDeleteSelected = 'Delete selected';
+
+  // *** Rest of the resource strings ***
+
   lisImportPackageListXml = 'Import package list (*.xml)';
   lisExportPackageListXml = 'Export package list (*.xml)';
   lrsRescanLplFiles = 'Rescan lpl files';
-  lrsPLDDeleteSelected = 'Delete selected';
   lisRenameShowResult = 'Show list of renamed Identifiers';
   lisResourceNameMustBeUnique = 'Resource name must be unique.';
   lisFailedToAddNNotUniqueResources = 'Failed to add %d not unique resource(s)';
   lisTheIDEIsStillBuilding = 'The IDE is still building.';
+
+  lisSaveShownMessagesToFile = 'Save Shown Messages to File ...';
+  lisMMAddsCustomOptions = 'Adds custom options:';
+  lisMMDoesNotAddCustomOptions = 'Does not add custom options:';
+  lisUnusedUnitsOf = 'Unused units of %s';
+  lisSaveAllOriginalMessagesToFile = 'Save All/Original Messages to File ...';
 
   // errors
   lisErrInvalidOption = 'Invalid option at position %d: "%s"';
@@ -248,13 +264,13 @@ resourcestring
   lisMenuTools = '&Tools';
   lisMenuWindow = '&Window';
   lisMenuHelp = '&Help';
-  lisThisBuildModeNowSetsUTF8InTheRTLFlagsAreInPagesOth = 'This build mode now'
-    +' sets UTF-8 in the RTL.%s Flags are in pages "Other" and "Additions and '
-    +'Overrides".';
+  lisThisBuildModeNowSetsUTF8InRTL = 'This build mode now sets UTF-8 in RTL.%s'
+    +' Flags are in pages "Custom Options" and "Additions and Overrides".';
   lisThisWillAllowChangingAllBuildModesAtOnceNotImpleme = 'This will allow '
     +'changing all build modes at once. Not implemented yet.';
   
   lisMenuNewUnit = 'New Unit';
+  lisMenuNewCustom = 'New %s';
   lisMenuNewForm = 'New Form';
   lisMenuNewOther = 'New ...';
   lisMenuOpen = '&Open ...';
@@ -401,8 +417,7 @@ resourcestring
   lisSwitchFilterSettings = 'Switch Filter Settings';
   lisAddFilter = 'Add Filter ...';
   lisCopyAllShownMessagesToClipboard = 'Copy All Shown Messages to Clipboard';
-  lisCopyAllOriginalMessagesToClipboard = 'Copy All/Original Messages to '
-    +'Clipboard';
+  lisCopyAllOriginalMessagesToClipboard = 'Copy All/Original Messages to Clipboard';
   lisCopyItemToClipboard = 'Copy Item to Clipboard';
   lisCopySelectedItemToClipboard = 'Copy Selected Items to Clipboard';
   lisCopyAllItemsToClipboard = 'Copy All Items to Clipboard';
@@ -566,7 +581,6 @@ resourcestring
   lisFull = 'Full';
   lisTranslateTheEnglishMessages = 'Translate the English Messages';
   lisShowMessageTypeID = 'Show Message Type ID';
-  lisMore2 = 'More ...';
   lisToolStoppedWithExitCodeUseContextMenuToGetMoreInfo = 'tool stopped with '
     +'exit code %s. Use context menu to get more information.';
   lisErrors2 = ', Errors: %s';
@@ -1164,7 +1178,6 @@ resourcestring
   lissSearching = 'Searching';
   lissSearchText = 'Search text';
 
-  dlgDesktop = 'Desktop';
   dlgWindow = 'Window';
   dlgFrmEditor = 'Form Editor';
   dlgObjInsp = 'Object Inspector';
@@ -1224,7 +1237,7 @@ resourcestring
   podAddPackageUnitToUsesSection = 'Add package unit to uses section';
   lisCodeBrowser = 'Code Browser';
 
-  // Desktop options
+  // IDE General options
   dlgEnvLanguage = 'Language';
   dlgEnvLanguageHint = 'Language of all IDE strings. Restart IDE after changing it for best result.';
   dlgCheckAndAutoSaveFiles = 'Check and Auto Save Files';
@@ -1232,9 +1245,6 @@ resourcestring
   lisIfOnlySessionInfoChangedThenAsk = 'If only the session info changed, ask about saving it.';
   dlgEdFiles = 'Editor Files';
   dlgIntvInSec = 'Interval in secs';
-  dlgExportDesktop = 'Export desktop';
-  dlgImportDesktop = 'Import desktop';
-  dlgSaveCurrentDesktop = 'Save current desktop';
   dlgDesktopHints = 'Hints';
   dlgDesktopButtons = 'Buttons - ';
   dlgDesktopMenus = 'Menus - ';
@@ -1244,6 +1254,26 @@ resourcestring
   dlgPreferDoubleClickOverSingleClick = 'Prefer double-click over single-click';
   dlgCurrentlyRespectedByMessagesWindow = 'Currently respected by messages window, '
     +'jump history and search results.';
+  lisExportEnvironmentOptions = 'Export environment options';
+  lisImportEnvironmentOptions = 'Import environment options';
+
+  // Desktop options
+  dlgManageDesktops = 'Manage desktops';
+  dlgSelectedDesktop = 'Selected desktop:';
+  dlgSaveCurrentDesktop = 'Save current desktop';
+  dlgSaveCurrentDesktopAs = 'Save current desktop as';
+  dlgCloseAndUseSelectedDesktop = 'Close and use selected desktop';
+  dlgReallyDeleteDesktop = 'Really delete desktop "%s"?';
+  dlgRenameDesktop = 'Rename desktop';
+  dlgNewDesktop = 'New desktop ...';
+  dlgToggleSelectedDebugDesktop = 'Toggle as debug desktop';
+  dlgDesktopName = 'Desktop name';
+  dlgOverwriteDesktop = 'Desktop with the name "%s" was found.'+sLineBreak+'Should the old desktop be overwritten?';
+  dlgDebugDesktop = 'debug desktop';
+  dlgImportDesktopExists = 'A desktop with the same name already exists.'+sLineBreak+'Please confirm the desktop name:';
+  dlgDesktopsImported = '%d desktop(s) successfully imported from "%s"';
+  dlgDesktopsExported = '%d desktop(s) successfully exported to "%s"';
+  lisExportAll = 'all';
 
   // Window options
   dlgShowingWindows = 'Showing Windows';
@@ -1369,14 +1399,11 @@ resourcestring
   dlgCharCaseFileAct = 'Save As - auto rename Pascal files lower case';
   dlgAmbigFileAct = 'Ambiguous file action:';
   dlgEnvAsk = 'Ask';
-  lisNever = 'Never';
   dlgAutoDel = 'Auto delete file';
   dlgAutoRen = 'Auto rename file lowercase';
   dlgnoAutomaticRenaming = 'No automatic renaming';
   lisWhenAUnitIsRenamedUpdateReferences = 'When a unit is renamed, update references';
-  lisAlways = 'Always';
   dlgAmbigWarn = 'Warn on compile';
-  dlgIgnoreVerb = 'Ignore';
   lisAlwaysIgnore = 'Always ignore';
   // OI colors
   dlgBackColor = 'Background';
@@ -2074,7 +2101,7 @@ resourcestring
   dlgInsSpaceFront = 'Insert space in front of';
   dlgInsSpaceAfter = 'Insert space after';
   dlgWRDPreview = 'Preview';
-  lisIdCAdd = 'Add';
+  lisIdCAddition = 'Addition';
   dlgAddSemicolon = 'Add semicolon';
   dlgAddAssignmentOperator = 'Add assignment operator :=';
   lisAddKeywordDo = 'Add keyword "do"';
@@ -2115,7 +2142,6 @@ resourcestring
   dlgCOCfgCmpMessages = 'Messages';
   lisChooseAnFPCMessageFile = 'Choose an FPC message file';
   lisChooseAFileWithCodeToolsTemplates = 'Choose a file with CodeTools templates';
-  dlgCOOther = 'Other';
   dlgCOCompilerCommands = 'Compiler Commands';
   lisUnitOutputDirectory = 'Unit Output directory';
   lisSelectANode = 'Select a node';
@@ -2206,6 +2232,7 @@ resourcestring
   lisShowOnlyModified = 'Show only modified';
   lisUseCommentsInCustomOptions = 'Use comments in custom options';
   lisCustomOptions2 = 'Custom options';
+  lisCustomOptions3 = 'Custom Options';
   lisCustomOptHint = 'These options are passed to the compiler after macros are replaced.';
   dlgStopAfterNrErr = 'Stop after number of errors:';
 
@@ -2346,8 +2373,7 @@ resourcestring
     +'does not look correct:%s%s';
   lisTheLazarusDirectoryDoesNotLookCorrect = 'The Lazarus directory "%s" does '
     +'not look correct:%s%s';
-  lisTheContainsANotExistingDirectory = 'The %s contains a nonexistent '
-    +'directory:%s%s';
+  lisTheContainsANotExistingDirectory = 'The %s contains a nonexistent directory:%s%s';
   lisTheProjectDoesNotUseTheLCLUnitInterfacesButItSeems = 'The project does '
     +'not use the LCL unit interfaces, which is required by LCLBase.%sYou will '
     +'get strange linker errors if you use the LCL without interfaces.';
@@ -4316,6 +4342,7 @@ resourcestring
     +'%sSelect Yes to change all listed dependencies.'
     +'%sSelect Ignore to break the dependencies and continue.';
   lisA2PDependency = 'Dependency';
+  lisA2PPackageOrProject = 'Package/Project';
   lisA2PBrokenDependencies = 'Broken Dependencies';
   
   // open installed packages dialog
@@ -4453,9 +4480,7 @@ resourcestring
     +'" in %s%sOld: %s%sNew: %s%s%sContinue?';
   lisUnitNotFoundAtNewPosition = 'unit %s not found at new position "%s"';
   lisUnitRequiresPackage = 'unit %s requires package %s';
-  lisDifferentUnitFoundAtNewPosition = 'different unit %s found at new '
-    +'position "%s"';
-  lisMoveFiles = 'Move Files';
+  lisDifferentUnitFoundAtNewPosition = 'different unit %s found at new position "%s"';
   lisUnitNotFound = 'unit %s not found';
   lisTwoMovedFilesWillHaveTheSameFileNameIn = 'Two moved files will '
     +'have the same file name:%s%s%s%s%sin %s';
@@ -4598,7 +4623,7 @@ resourcestring
   lisCmpLstList = 'List';
   lisCmpLstPalette = 'Palette';
   lisCmpLstInheritance = 'Inheritance';
-  lisImportExport = 'Import / Export';
+  lisExportImport = 'Export / Import';
   lisSuccessfullyImported = 'Successfully imported from "%s".';
   lisSuccessfullyExported = 'Successfully exported to "%s".';
 
@@ -5424,7 +5449,7 @@ resourcestring
   lisClassesAndPropertiesExistValuesWereNotChecked = 'Classes and properties '
     +'exist. Values were not checked.';
   lisInsertPrintShortTag = 'Insert PrintShort tag';
-  lisIdCOpen = 'Open';
+  lisIdCOpening = 'Opening';
   lisAutomaticallyInvokeAfterPoint = 'Automatically invoke after point';
   lisAddParameterBrackets = 'Add parameter brackets';
   lisReplaceWholeIdentifier = 'Replace whole identifier';
@@ -5436,7 +5461,6 @@ resourcestring
   lisBestViewedByInstallingAHTMLControlLikeTurbopowerip = 'Best viewed by '
     +'installing a HTML control like turbopoweriprodsgn';
   lisShowRecentlyUsedIdentifiersAtTop = 'Show recently used identifiers at top';
-  lisSort = 'Sort';
   lisSortForScope = 'Sort for scope';
   lisForExampleShowAtTopTheLocalVariablesThenTheMembers = 'For example show at'
     +' top the local variables, then the members of current class, then of the'

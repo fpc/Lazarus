@@ -38,7 +38,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Dialogs, ComCtrls,
   FileProcs, FileUtil, LazFileUtils, Laz2_XMLCfg, lazutf8classes, LazFileCache,
-  CodeToolsConfig, CodeCache, CodeToolManager, AVL_Tree, LazIDEIntf, IDEDialogs,
+  CodeToolsConfig, CodeCache, CodeToolManager, LazIDEIntf, IDEDialogs,
   IDEProcs, LazarusIDEStrConsts;
 
 type
@@ -140,7 +140,7 @@ begin
   if SrcFilename=DestFilename then
     exit(mrOk);
   repeat
-    if FileProcs.RenameFileUTF8(SrcFilename,DestFilename) then begin
+    if RenameFileUTF8(SrcFilename,DestFilename) then begin
       InvalidateFileStateCache(SrcFilename);
       InvalidateFileStateCache(DestFilename);
       break;

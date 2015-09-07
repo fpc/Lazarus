@@ -24,8 +24,7 @@ unit frmOptions;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  ButtonPanel, StdCtrls;
+  Forms, ButtonPanel, StdCtrls;
 
 type
 
@@ -44,9 +43,7 @@ type
     function GetB(AIndex: integer): Boolean;
     function GetCB(AIndex: Integer): TCheckBox;
     procedure SetB(AIndex: integer; const AValue: Boolean);
-    { private declarations }
   public
-    { public declarations }
     Property ShowOnStartup : Boolean Index 0 Read GetB Write SetB;
     Property ShowOnMessage : Boolean Index 1 Read GetB Write SetB;
     Property NewMessageAtBottom : Boolean Index 2 Read GetB Write SetB;

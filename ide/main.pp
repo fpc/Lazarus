@@ -63,18 +63,18 @@ uses
 {$IFDEF UseAsyncProcess}
   AsyncProcess,
 {$ENDIF}
-  // lazutils
-  LazUTF8, Laz2_XMLCfg,
-  // lcl
-  LCLProc, LCLType, LCLIntf, LConvEncoding, ComCtrls,
-  FileUtil, LazFileUtils, LResources, Forms, Buttons, Menus, Controls, GraphType,
-  HelpIntfs, Graphics, ExtCtrls, Dialogs, InterfaceBase, UTF8Process, LazLogger,
-  lazutf8classes, LazFileCache,
-  // codetools
+  // LCL
+  LCLProc, LCLType, LCLIntf, LResources, ComCtrls, HelpIntfs, InterfaceBase,
+  Forms, Buttons, Menus, Controls, GraphType, Graphics, ExtCtrls, Dialogs,
+  // CodeTools
   FileProcs, FindDeclarationTool, LinkScanner, BasicCodeTools, CodeToolsStructs,
   CodeToolManager, CodeCache, DefineTemplates, KeywordFuncLists, CodeTree,
   StdCodeTools,
-  // synedit
+  // LazUtils
+  // use lazutf8, lazfileutils and lazfilecache after FileProcs and FileUtil
+  FileUtil, LazFileUtils, LazFileCache, LazUTF8, LazUTF8Classes, UTF8Process,
+  LConvEncoding, Laz2_XMLCfg, LazLogger,
+  // SynEdit
   AllSynEdit, SynEditKeyCmds, SynEditMarks,
   // IDE interface
   IDEIntf, ObjectInspector, PropEdits, PropEditUtils,
@@ -156,7 +156,7 @@ uses
   UseUnitDlg, FindOverloadsDlg, EditorFileManager,
   CleanDirDlg, CodeContextForm, AboutFrm, CompatibilityRestrictions,
   RestrictionBrowser, ProjectWizardDlg, IDECmdLine, IDEGuiCmdLine, CodeExplOpts,
-  EditorMacroListViewer, SourceFileManager,
+  EditorMacroListViewer, SourceFileManager, EditorToolbarStatic,
   // main ide
   MainBar, MainIntf, MainBase;
 
@@ -171,6 +171,8 @@ type
 
   TMainIDE = class(TMainIDEBase)
   private
+    IDEIsClosing: Boolean;
+
     // event handlers
     procedure MainIDEFormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure MainIDEFormCloseQuery(Sender: TObject; var CanClose: boolean);
@@ -182,7 +184,7 @@ type
     procedure HandleApplicationQueryEndSession(var Cancel: Boolean);
     procedure HandleApplicationEndSession(Sender: TObject);
     procedure HandleScreenChangedForm(Sender: TObject; {%H-}Form: TCustomForm);
-    procedure HandleScreenChangedControl(Sender: TObject; LastControl: TControl); // DaThoX
+    procedure HandleScreenChangedControl(Sender: TObject; LastControl: TControl);
     procedure HandleScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
     procedure HandleRemoteControlTimer(Sender: TObject);
     procedure HandleSelectFrame(Sender: TObject; var AComponentClass: TComponentClass);
@@ -386,10 +388,7 @@ type
     procedure mnuPackageClicked(Sender: TObject);   // package menu
     // see pkgmanager.pas
 
-    procedure mnuOpenFilePopupClick(Sender: TObject);
-    procedure SetBuildModePopupMenuPopup(Sender: TObject);
     procedure mnuChgBuildModeClicked(Sender: TObject);
-    procedure mnuSetBuildModeClick(Sender: TObject); // event for drop down items
     procedure ToolBarOptionsClick(Sender: TObject);
   private
     fBuilder: TLazarusBuilder;
@@ -410,6 +409,7 @@ type
     function HandleIDEQuestionDialog(const aCaption, aMsg: string;
                                  DlgType: TMsgDlgType; Buttons: array of const;
                                  const HelpKeyword: string): Integer;
+    procedure HandleLayoutChanged(Sender: TObject);
   public
     // Environment options dialog events
     procedure DoLoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
@@ -535,7 +535,8 @@ type
     // designer events
     procedure OnDesignerGetSelectedComponentClass(Sender: TObject;
                                  var RegisteredComponent: TRegisteredComponent);
-    procedure OnDesignerComponentAdded(Sender: TObject; AComponent: TComponent; ARegisteredComponent: TRegisteredComponent); // DaThoX
+    procedure OnDesignerComponentAdded(Sender: TObject; AComponent: TComponent;
+                                     ARegisteredComponent: TRegisteredComponent);
     procedure OnDesignerSetDesigning(Sender: TObject; Component: TComponent;
                                      Value: boolean);
     procedure OnDesignerShowOptions(Sender: TObject);
@@ -817,9 +818,7 @@ type
                                 StartPos, {%H-}EndPos: integer): boolean;
 
     // useful information methods
-    // DaThoX
     procedure GetUnit(SourceEditor: TSourceEditor; out UnitInfo: TUnitInfo);
-    // DaThoX
     procedure GetCurrentUnit(out ActiveSourceEditor: TSourceEditor;
                              out ActiveUnitInfo: TUnitInfo); override;
     procedure GetDesignerUnit(ADesigner: TDesigner;
@@ -927,12 +926,10 @@ type
     procedure DoShowSearchResultsView(State: TIWGetFormState = iwgfShowOnTop); override;
 
     // form editor and designer
-    // DaThoX begin
     procedure DoShowDesignerFormOfCurrentSrc(AComponentPaletteClassSelected: Boolean); override;
     procedure DoShowDesignerFormOfSrc(AEditor: TSourceEditorInterface); override;
     procedure DoShowMethod(AEditor: TSourceEditorInterface; const AMethodName: String); override;
     procedure DoShowDesignerFormOfSrc(AEditor: TSourceEditorInterface; out AForm: TCustomForm); override;
-    // DaThoX end
     function CreateDesignerForComponent(AnUnitInfo: TUnitInfo;
                                         AComponent: TComponent): TCustomForm; override;
     // editor and environment options
@@ -1482,9 +1479,7 @@ begin
     SetupStandardIDEMenuItems;
     SetupMainMenu;
     MainIDEBar.Setup(OwningComponent);
-    MainIDEBar.OpenFilePopupHandler := @mnuOpenFilePopupClick;
     MainIDEBar.OptionsMenuItem.OnClick := @ToolBarOptionsClick;
-    MainIDEBar.SetBuildModePopupMenu.OnPopup := @SetBuildModePopupMenuPopup;
     ConnectMainBarEvents;
   finally
     MainIDEBar.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.Create'){$ENDIF};
@@ -1551,11 +1546,12 @@ begin
   Application.AddOnEndSessionHandler(@HandleApplicationEndSession);
   Screen.AddHandlerRemoveForm(@HandleScreenRemoveForm);
   Screen.AddHandlerActiveFormChanged(@HandleScreenChangedForm);
-  Screen.AddHandlerActiveControlChanged(@HandleScreenChangedControl); // DaThoX
+  Screen.AddHandlerActiveControlChanged(@HandleScreenChangedControl);
   IDEComponentPalette.OnClassSelected := @ComponentPaletteClassSelected;
   MainIDEBar.SetupHints;
   SetupIDEWindowsLayout;
   RestoreIDEWindows;
+  IDEWindowCreators.AddLayoutChangedHandler(@HandleLayoutChanged);
   // make sure the main IDE bar is always shown
   IDEWindowCreators.ShowForm(MainIDEBar,false);
   DebugBoss.UpdateButtonsAndMenuItems; // Disable Stop-button (and some others).
@@ -1972,11 +1968,10 @@ begin
 end;
 
 procedure TMainIDE.MainIDEFormCloseQuery(Sender: TObject; var CanClose: boolean);
-const IsClosing: Boolean = False;
 begin
   CanClose := True;
-  if IsClosing then Exit;
-  IsClosing := True;
+  if IDEIsClosing then Exit;
+  IDEIsClosing := True;
   CanClose := False;
   SourceFileMgr.CheckingFilesOnDisk := True;
   try
@@ -1998,7 +1993,7 @@ begin
 
     CanClose:=(DoCloseProject <> mrAbort);
   finally
-    IsClosing := False;
+    IDEIsClosing := CanClose;
     SourceFileMgr.CheckingFilesOnDisk:=false;
     if not CanClose then
       DoCheckFilesOnDisk(false);
@@ -2343,8 +2338,7 @@ end;
 procedure TMainIDE.RestoreIDEWindows;
 begin
   DoCallNotifyHandler(lihtIDERestoreWindows);
-  if IDEDockMaster=nil then
-    IDEWindowCreators.RestoreSimpleLayout;
+  IDEWindowCreators.RestoreSimpleLayout;
 end;
 
 procedure TMainIDE.FreeIDEWindows;
@@ -2680,9 +2674,6 @@ begin
 
     itmToolConfigure.OnClick := @mnuToolConfigureUserExtToolsClicked;
     itmToolManageDesktops.OnClick := @mnuToolManageDesktopsClicked;
-    {$IFnDEF EnableDesktops}
-    itmToolManageDesktops.Visible := False;
-    {$ENDIF}
     itmToolManageExamples.OnClick := @mnuToolManageExamplesClicked;
     itmToolDiff.OnClick := @mnuToolDiffClicked;
 
@@ -2730,11 +2721,9 @@ end;
 
 procedure TMainIDE.mnuToggleFormUnitClicked(Sender: TObject);
 begin
-  // DaThoX begin
   if IDETabMaster <> nil then
     IDETabMaster.ToggleFormUnit
   else
-  // DaThox end
     DoBringToFrontFormOrUnit;
 end;
 
@@ -3350,101 +3339,9 @@ end;
 
 {------------------------------------------------------------------------------}
 
-procedure TMainIDE.mnuOpenFilePopupClick(Sender: TObject);
-var
-  TheMenuItem: TMenuItem;
-  Index, SeparatorIndex: integer;
-  AFilename: string;
-begin
-  TheMenuItem:=(Sender as TMenuItem);
-  if TheMenuItem.Caption='-' then exit;
-  Index:=TheMenuItem.MenuIndex;
-  SeparatorIndex:=0;
-  while SeparatorIndex<MainIDEBar.OpenFilePopupMenu.Items.Count do begin
-    if MainIDEBar.OpenFilePopupMenu.Items[SeparatorIndex].Caption='-' then
-      break;
-    inc(SeparatorIndex);
-  end;
-  if Index=SeparatorIndex then exit;
-  if Index<SeparatorIndex then begin
-    // open recent project
-    AFilename:=EnvironmentOptions.RecentProjectFiles[Index];
-    DoOpenProjectFile(AFileName,[ofAddToRecent]);
-  end else begin
-    // open recent file
-    dec(Index, SeparatorIndex+1);
-    if DoOpenEditorFile(EnvironmentOptions.RecentOpenFiles[Index],-1,-1,
-      [ofAddToRecent])=mrOk then
-    begin
-      SetRecentFilesMenu;
-      SaveEnvironment;
-    end;
-  end;
-end;
-
-procedure TMainIDE.SetBuildModePopupMenuPopup(Sender: TObject);
-var
-  aMenu: TPopupMenu;
-  CurIndex: Integer;
-  i: Integer;
-
-  procedure AddMode(CurMode: TProjectBuildMode);
-  var
-    AMenuItem: TMenuItem;
-  begin
-    if aMenu.Items.Count > CurIndex then
-      AMenuItem := aMenu.Items[CurIndex]
-    else
-    begin
-      AMenuItem := TMenuItem.Create(OwningComponent);
-      AMenuItem.Name := aMenu.Name + 'Mode' + IntToStr(CurIndex);
-      AMenuItem.OnClick := @mnuSetBuildModeClick;
-      aMenu.Items.Add(AMenuItem);
-    end;
-    AMenuItem.Caption := CurMode.GetCaption;
-    AMenuItem.Checked := (Project1<>nil) and (Project1.ActiveBuildMode=CurMode);
-    AMenuItem.ShowAlwaysCheckable:=true;
-    inc(CurIndex);
-  end;
-
-begin
-  // fill the PopupMenu:
-  CurIndex := 0;
-  aMenu := MainIDEBar.SetBuildModePopupMenu;
-  if Project1<>nil then
-    for i:=0 to Project1.BuildModes.Count-1 do
-      AddMode(Project1.BuildModes[i]);
-  // remove unused menuitems
-  while aMenu.Items.Count > CurIndex do
-    aMenu.Items[aMenu.Items.Count - 1].Free;
-end;
-
 procedure TMainIDE.mnuChgBuildModeClicked(Sender: TObject);
 begin
   DoOpenIDEOptions(TCompilerPathOptionsFrame, '', [TProjectCompilerOptions], []);
-end;
-
-procedure TMainIDE.mnuSetBuildModeClick(Sender: TObject);
-var
-  TheMenuItem: TMenuItem;
-  Index: LongInt;
-  NewMode: TProjectBuildMode;
-begin
-  TheMenuItem:=(Sender as TMenuItem);
-  if TheMenuItem.Caption='-' then exit;
-  Index:=TheMenuItem.MenuIndex;
-  if (Index<0) or (Index>=Project1.BuildModes.Count) then exit;
-  NewMode:=Project1.BuildModes[Index];
-  if NewMode=Project1.ActiveBuildMode then exit;
-  if not (ToolStatus in [itNone,itDebugger]) then begin
-    IDEMessageDialog('Error','You can not change the build mode while compiling.',
-      mtError,[mbOk]);
-    exit;
-  end;
-
-  Project1.ActiveBuildMode:=NewMode;
-  MainBuildBoss.SetBuildTargetProject1(false);
-  UpdateCaption;
 end;
 
 function TMainIDE.CreateDesignerForComponent(AnUnitInfo: TUnitInfo;
@@ -3576,6 +3473,14 @@ begin
   begin
     FWaitForClose := False;
     MainIDEBar.Close;
+  end;
+
+  if not IDEIsClosing and MainIDEBar.HandleAllocated then
+  begin
+    if (ToolStatus = itDebugger) then
+      EnvironmentOptions.EnableDebugDesktop
+    else if (ToolStatus <> itExiting) then
+      EnvironmentOptions.DisableDebugDesktop;
   end;
 end;
 
@@ -4494,9 +4399,6 @@ procedure TMainIDE.SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOption
 begin
   DebugLn(['* TMainIDE.SaveDesktopSettings']);
   IDEWindowCreators.SimpleLayoutStorage.StoreWindowPositions;
-  // do not auto show the search results view
-  IDEWindowCreators.SimpleLayoutStorage.ItemByFormID(
-    NonModalIDEWindowNames[nmiwSearchResultsViewName]).Visible:=false;
 
   if ObjectInspector1<>nil then
     TheEnvironmentOptions.ObjectInspectorOptions.Assign(ObjectInspector1);
@@ -4675,6 +4577,7 @@ begin
     Application.TaskBarBehavior := tbSingleButton
   else
     Application.TaskBarBehavior := tbDefault;
+  uAllEditorToolbars.ReloadAll;
 
   // reload lazarus packages
   if LazarusSrcDirChanged then
@@ -4872,14 +4775,13 @@ procedure TMainIDE.ComponentPaletteClassSelected(Sender: TObject);
 begin
   // code below cant be handled correctly by integrated IDE
   if
-    (IDETabMaster = nil) and // DaThoX
+    (IDETabMaster = nil) and
     (Screen.CustomFormZOrderCount > 1)
   and Assigned(Screen.CustomFormsZOrdered[1].Designer) then begin
     // previous active form was designer form
     ShowDesignerForm(Screen.CustomFormsZOrdered[1]);
-    // dathox begin
-    DoCallShowDesignerFormOfSourceHandler(lihtShowDesignerFormOfSource, Screen.CustomFormsZOrdered[1], nil, True);
-    // dathox end
+    DoCallShowDesignerFormOfSourceHandler(lihtShowDesignerFormOfSource,
+                                       Screen.CustomFormsZOrdered[1], nil, True);
   end else
     DoShowDesignerFormOfCurrentSrc(True);
 end;
@@ -5664,7 +5566,7 @@ begin
         'Codetools');
       Result.Flags:=Result.Flags+[mlfLeftToken];
     end else
-      Result:=MessagesView.AddCustomMessage(mluError,CodeToolBoss.ErrorMessage,'Codetools');
+      Result:=MessagesView.AddCustomMessage(mluError,CodeToolBoss.ErrorMessage,'',0,0,'Codetools');
     MessagesView.SelectMsgLine(Result);
   end;
 end;
@@ -6839,6 +6741,14 @@ begin
   end;
 end;
 
+procedure TMainIDE.HandleLayoutChanged(Sender: TObject);
+begin
+  MainIDEBar.RefreshCoolbar;
+  MainIDEBar.DoSetViewComponentPalette(EnvironmentOptions.Desktop.ComponentPaletteOptions.Visible);
+  MainIDEBar.DoSetMainIDEHeight(MainIDEBar.WindowState = wsMaximized, 55);
+  MainIDEBar.SetMainIDEHeight;
+end;
+
 procedure TMainIDE.DoExecuteRemoteControl;
 
   procedure OpenFiles(Files: TStrings);
@@ -7620,7 +7530,6 @@ end;
 
 //-----------------------------------------------------------------------------
 
-// DaThoX begin
 procedure TMainIDE.GetUnit(SourceEditor: TSourceEditor; out UnitInfo: TUnitInfo);
 begin
   if SourceEditor=nil then
@@ -7628,7 +7537,6 @@ begin
   else
     UnitInfo := Project1.UnitWithEditorComponent(SourceEditor);
 end;
-// DaThoX end
 
 procedure TMainIDE.GetCurrentUnit(out ActiveSourceEditor:TSourceEditor;
   out ActiveUnitInfo:TUnitInfo);
@@ -7805,6 +7713,7 @@ begin
   end;
   MainIDEBar.Caption := NewCaption;
   Application.Title := NewTitle;
+  TSetBuildModeToolButton.UpdateHints;
 end;
 
 procedure TMainIDE.HideIDE;
@@ -7945,7 +7854,7 @@ begin
   if DisplayState <> dsSource then begin
     DoShowSourceOfActiveDesignerForm;
   end else begin
-    DoShowDesignerFormOfCurrentSrc(false); // DaThoX
+    DoShowDesignerFormOfCurrentSrc(false);
   end;
 end;
 
@@ -7959,14 +7868,13 @@ begin
   debugln(['TMainIDE.DoBringToFrontFormOrInspector old=',dbgs(DisplayState)]);
   {$ENDIF}
   case DisplayState of
-  dsInspector: DoShowDesignerFormOfCurrentSrc(false); // DaThoX
+  dsInspector: DoShowDesignerFormOfCurrentSrc(false);
   dsInspector2: DoShowSourceOfActiveDesignerForm;
   else
     DoShowInspector(iwgfShowOnTop);
   end;
 end;
 
-// === DaThoX begin
 procedure TMainIDE.DoShowDesignerFormOfCurrentSrc(AComponentPaletteClassSelected: Boolean);
 var
   LForm: TCustomForm;
@@ -7995,10 +7903,8 @@ var
   AnInheritedClassName: string;
   CurMethodName: String;
 begin
-  // DaThoX begin
   if SourceEditorManagerIntf.ActiveEditor <> AEditor then
     SourceEditorManagerIntf.ActiveEditor := AEditor;
-  // DaThoX end;
 
   GetUnit(TSourceEditor(AEditor), ActiveUnitInfo);
   if not BeginCodeTool(TSourceEditor(AEditor),ActiveUnitInfo,[ctfSwitchToFormSource])
@@ -8039,10 +7945,9 @@ begin
   end;
 end;
 
-procedure TMainIDE.DoShowDesignerFormOfSrc(AEditor: TSourceEditorInterface; out
-  AForm: TCustomForm);
+procedure TMainIDE.DoShowDesignerFormOfSrc(AEditor: TSourceEditorInterface;
+  out AForm: TCustomForm);
 var
-  ActiveSourceEditor: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   UnitCodeBuf: TCodeBuffer;
 begin
@@ -8085,17 +7990,17 @@ end;
 procedure TMainIDE.DoShowSourceOfActiveDesignerForm;
 var
   ActiveUnitInfo: TUnitInfo;
-  ActiveSourceEditor: TSourceEditor; // DaThoX
+  ActiveSourceEditor: TSourceEditor;
 begin
   if SourceEditorManager.SourceEditorCount = 0 then exit;
   if LastFormActivated <> nil then
   begin
-    GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo); // DaThoX
+    GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
 
     if (ActiveUnitInfo <> nil) and (ActiveUnitInfo.OpenEditorInfoCount > 0) then
     begin
-      SourceEditorManager.ActiveEditor := TSourceEditor(ActiveUnitInfo.OpenEditorInfo[0].EditorComponent); // DaThoX
-      DoCallNotifyHandler(lihtShowSourceOfActiveDesignerForm, SourceEditorManager.ActiveEditor); // DaThoX
+      SourceEditorManager.ActiveEditor := TSourceEditor(ActiveUnitInfo.OpenEditorInfo[0].EditorComponent);
+      DoCallNotifyHandler(lihtShowSourceOfActiveDesignerForm, SourceEditorManager.ActiveEditor);
     end;
   end;
   SourceEditorManager.ShowActiveWindowOnTop(False);
@@ -8206,10 +8111,8 @@ begin
         IDEWindowCreators.ShowForm(MessagesView,true);
         SourceEditorManager.ShowActiveWindowOnTop(True);
       end;
-      // DaThoX begin
       if IDETabMaster <> nil then
         IDETabMaster.JumpToCompilerMessage(SrcEdit);
-      // DaThoX end
       SrcEdit.EditorComponent.LogicalCaretXY:=LogCaretXY;
       SrcEdit.EditorComponent.TopLine:=TopLine;
       SrcEdit.CenterCursorHoriz(hcmSoftKeepEOL);
@@ -8328,9 +8231,11 @@ begin
   end else if State=iwgfDisabled then
     SearchResultsView.DisableAutoSizing;
   if State>=iwgfShow then
+  begin
     IDEWindowCreators.ShowForm(SearchresultsView,State=iwgfShowOnTop);
-  if SearchresultsView.SearchInListEdit.CanFocus then
-    SearchresultsView.SearchInListEdit.SetFocus;
+    if (State=iwgfShowOnTop) and SearchresultsView.SearchInListEdit.CanFocus then
+      SearchresultsView.SearchInListEdit.SetFocus;
+  end;
 end;
 
 function TMainIDE.GetTestBuildDirectory: string;
@@ -8389,8 +8294,8 @@ var
   Grid: TOICustomPropertyGrid;
   Row: TOIPropertyGridRow;
 begin
-  // DaThoX
-  TComponentPalette(IDEComponentPalette).DoAfterComponentAdded(TDesigner(Sender).LookupRoot, AComponent, ARegisteredComponent); // DaThoX
+  TComponentPalette(IDEComponentPalette).DoAfterComponentAdded(TDesigner(Sender).LookupRoot,
+                                               AComponent, ARegisteredComponent);
   if EnvironmentOptions.CreateComponentFocusNameProperty
   and (ObjectInspector1<>nil) then begin
     if (ObjectInspector1.ShowFavorites) and (EnvironmentOptions.SwitchToFavoritesOITab) then
@@ -11434,22 +11339,19 @@ begin
     WindowMenuActiveForm := aForm;
 end;
 
-// DaThoX begin
 procedure TMainIDE.HandleScreenChangedControl(Sender: TObject; LastControl: TControl);
 var
   LOwner: TComponent;
 begin
   if LastControl = nil then
     Exit;
-
   LOwner := LastControl.Owner;
-  {if LOwner is TOICustomPropertyGrid then
+  if LOwner is TOICustomPropertyGrid then
   case DisplayState of
     dsSource: DisplayState:=dsInspector;
     dsForm: DisplayState:=dsInspector2;
-  end;}
+  end;
 end;
-// DaThoX end
 
 procedure TMainIDE.HandleScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
 begin

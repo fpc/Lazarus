@@ -30,9 +30,15 @@ unit IDEProcs;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LCLProc, AvgLvlTree, Laz2_XMLCfg, LazUTF8,
-  lazutf8classes, LazFileUtils, LazFileCache, StdCtrls, ExtCtrls, SourceLog,
-  FileProcs, CodeToolManager, CodeToolsConfig, CodeCache, LazConf;
+  // RTL + LCL
+  Classes, SysUtils, LCLProc, StdCtrls, ExtCtrls,
+  // CodeTools
+  SourceLog, FileProcs, CodeToolManager, CodeToolsConfig, CodeCache,
+  // LazUtils
+  FileUtil, LazFileUtils, LazFileCache, LazUTF8, lazutf8classes,
+  AvgLvlTree, Laz2_XMLCfg,
+  // IDE
+  LazConf;
 
 type
   // comments
@@ -128,8 +134,6 @@ function MergeSearchPaths(const OldSearchPath, AddSearchPath: string): string;
 procedure MergeSearchPaths(SearchPath: TStrings; const AddSearchPath: string);
 function RemoveSearchPaths(const SearchPath, RemoveSearchPath: string): string;
 function RemoveNonExistingPaths(const SearchPath, BaseDirectory: string): string;
-function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): string; inline;
-function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string): string; inline;
 function RebaseSearchPath(const SearchPath,
                           OldBaseDirectory, NewBaseDirectory: string;
                           SkipPathsStartingWithMacro: boolean): string;
@@ -810,11 +814,6 @@ begin
   end;
 end;
 
-function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string): string;
-begin
-  Result:=FileProcs.CreateRelativeSearchPath(SearchPath,BaseDirectory);
-end;
-
 function RemoveNonExistingPaths(const SearchPath, BaseDirectory: string): string;
 var
   StartPos: Integer;
@@ -860,11 +859,6 @@ begin
   end;
 end;
 
-function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): string;
-begin
-  Result:=FileProcs.CreateAbsoluteSearchPath(SearchPath,BaseDirectory);
-end;
-
 function SwitchPathDelims(const Filename: string; Switch: TPathDelimSwitch): string;
 var
   i: Integer;
@@ -890,8 +884,7 @@ begin
     Result:=Filename;
 end;
 
-function CheckPathDelim(const OldPathDelim: string; out Changed: boolean
-  ): TPathDelimSwitch;
+function CheckPathDelim(const OldPathDelim: string; out Changed: boolean): TPathDelimSwitch;
 begin
   Changed:=OldPathDelim<>PathDelim;
   if Changed then begin
@@ -961,8 +954,7 @@ begin
   Result:=rltCaseSensitive;
 end;
 
-function CompareRecentListItem(s1, s2: string; ListType: TRecentListType
-  ): boolean;
+function CompareRecentListItem(s1, s2: string; ListType: TRecentListType): boolean;
 begin
   case ListType of
   rltCaseInsensitive: Result:=UTF8LowerCase(s1)=UTF8LowerCase(s2);
@@ -1109,8 +1101,7 @@ begin
   ARect.Bottom:=XMLConfig.GetValue(Path+'Bottom',DefaultRect.Bottom);
 end;
 
-procedure SaveRect(XMLConfig: TXMLConfig; const Path: string;
-                   const ARect: TRect);
+procedure SaveRect(XMLConfig: TXMLConfig; const Path: string; const ARect: TRect);
 begin
   SaveRect(XMLConfig,Path,ARect,Rect(0,0,0,0));
 end;
@@ -1455,7 +1446,7 @@ begin
   if not FileIsSymlink(Filename) and
      not FileIsHardLink(FileName) and
      not FileIsLocked(Filename) and
-     FileProcs.RenameFileUTF8(Filename, BackupFilename) then
+     RenameFileUTF8(Filename, BackupFilename) then
   begin
     // create empty file
     FHandle := FileCreate(UTF8ToSys(FileName));

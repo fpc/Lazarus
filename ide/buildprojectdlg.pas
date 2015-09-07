@@ -28,8 +28,9 @@ unit BuildProjectDlg;
 interface
 
 uses
-  Classes, SysUtils, Math, AVL_Tree, FileProcs, Forms, Controls, Graphics,
-  Dialogs, ButtonPanel, ExtCtrls, StdCtrls, ComCtrls, Masks, LCLIntf,
+  Classes, SysUtils, Math, AVL_Tree, Forms, Controls,
+  Dialogs, ButtonPanel, StdCtrls, ComCtrls, Masks, LCLIntf,
+  FileProcs, LazFileUtils, LazFileCache, LazUtilities,
   // codetools
   CodeToolManager, DirectoryCacher, CodeToolsStructs,
   // IDEIntf

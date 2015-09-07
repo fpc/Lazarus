@@ -30,15 +30,15 @@ unit PPUListDlg;
 interface
 
 uses
-  Classes, SysUtils, contnrs, math, LCLProc, FileUtil, LResources, Forms,
-  Controls, Graphics, Dialogs, ButtonPanel, Grids, StdCtrls, AvgLvlTree,
+  Classes, SysUtils, contnrs, math, LCLProc, FileUtil, Forms,
+  Controls, Dialogs, ButtonPanel, Grids, StdCtrls, AvgLvlTree,
   ExtCtrls, ComCtrls,
   // IDEIntf
   ProjectIntf, LazIDEIntf, IDEDialogs, IDEWindowIntf,
   PackageIntf,
   // codetools
-  BasicCodeTools, FileProcs, CodyStrConsts, CodeToolManager, CodeCache,
-  PPUParser, PPUCodeTools, DefineTemplates,
+  BasicCodeTools, FileProcs, LazFileUtils, LazFileCache, CodyStrConsts,
+  CodeToolManager, CodeCache, PPUParser, PPUCodeTools, DefineTemplates,
   CodyUtils;
 
 const

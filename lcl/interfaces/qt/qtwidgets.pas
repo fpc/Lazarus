@@ -6441,6 +6441,15 @@ begin
           ASize := FOwner.getSize;
           AResizeEvent := QResizeEvent_create(@ASize, @ASize);
           try
+            // issue #28596 and others of TCustomControl clientrect related
+            if CanAdjustClientRectOnResize and
+              LCLObject.ClientRectNeedsInterfaceUpdate then
+            begin
+              {$IF DEFINED(VerboseSizeMsg) OR DEFINED(VerboseQtResize)}
+              DebugLn('TQtWindowArea.ScrollViewEventFilter invalidatingClientRectCache ',dbgsName(Self),' LCL=',dbgsName(LCLObject));
+              {$ENDIF}
+              LCLObject.InvalidateClientRectCache(False);
+            end;
             SlotResize(AResizeEvent);
           finally
             QEvent_destroy(AResizeEvent);
@@ -9553,7 +9562,11 @@ begin
         begin
           if R.Left < 0 then
             R.Left := 0;
-          Result.X := R.Left;
+          // issue #28591
+          if QWidget_layoutDirection(Widget) = QtRightToLeft then
+            Result.X := 0
+          else
+            Result.X := R.Left;
         end;
       QTabWidgetEast,
       QTabWidgetWest:
@@ -16013,6 +16026,15 @@ begin
         ASize := FOwner.getSize;
         AResizeEvent := QResizeEvent_create(@ASize, @ASize);
         try
+          // issue #28596 and others of TCustomControl clientrect related
+          if CanAdjustClientRectOnResize and
+            LCLObject.ClientRectNeedsInterfaceUpdate then
+          begin
+            {$IF DEFINED(VerboseSizeMsg) OR DEFINED(VerboseQtResize)}
+            DebugLn('TQtViewPort.EventFilter invalidatingClientRectCache ',dbgsName(Self),' LCL=',dbgsName(LCLObject));
+            {$ENDIF}
+            LCLObject.InvalidateClientRectCache(False);
+          end;
           FOwner.SlotResize(AResizeEvent);
         finally
           QEvent_destroy(AResizeEvent);

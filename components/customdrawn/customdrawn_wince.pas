@@ -32,7 +32,7 @@ type
     // Standard Tab
     // ===================================
     // TCDButton
-    procedure DrawButton(ADest: TFPCustomCanvas; ASize: TSize;
+    procedure DrawButton(ADest: TFPCustomCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDButtonStateEx); override;
     // TCDEdit
     procedure DrawEditFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
@@ -43,7 +43,7 @@ type
     procedure DrawCheckBoxSquare(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
     // TCDGroupBox
-    procedure DrawGroupBox(ADest: TFPCustomCanvas; ASize: TSize;
+    procedure DrawGroupBox(ADest: TFPCustomCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
     // ===================================
     // Common Controls Tab
@@ -86,7 +86,7 @@ begin
 end;
 
 procedure TCDDrawerWinCE.DrawButton(ADest: TFPCustomCanvas;
-  ASize: TSize; AState: TCDControlState; AStateEx: TCDButtonStateEx);
+  ADestPos: TPoint; ASize: TSize; AState: TCDControlState; AStateEx: TCDButtonStateEx);
 var
   lDest: TCanvas absolute ADest;
   Str: string;
@@ -195,7 +195,7 @@ begin
 end;
 
 procedure TCDDrawerWinCE.DrawGroupBox(ADest: TFPCustomCanvas;
-  ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
+  ADestPos: TPoint; ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
 var
   FCaptionMiddle: integer;
   lTextSize: TSize;

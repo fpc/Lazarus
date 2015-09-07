@@ -4,10 +4,15 @@
    ./finddeclarationtest --format=plain --suite=TestFindDeclaration_Base
    ./finddeclarationtest --format=plain --suite=TestFindDeclaration_NestedClasses
    ./finddeclarationtest --format=plain --suite=TestFindDeclaration_ClassHelper
+   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_TypeHelper
+   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_ObjCClass
+   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_ObjCCategory
 }
 unit fdtbase;
 
 {$mode objfpc}{$H+}
+
+{off $define VerboseFindDeclarationTests}
 
 interface
 
@@ -27,6 +32,9 @@ type
     procedure TestFindDeclaration_Base;
     procedure TestFindDeclaration_NestedClasses;
     procedure TestFindDeclaration_ClassHelper;
+    procedure TestFindDeclaration_TypeHelper;
+    procedure TestFindDeclaration_ObjCClass;
+    procedure TestFindDeclaration_ObjCCategory;
   end;
 
 var
@@ -76,6 +84,9 @@ var
   Marker: String;
 begin
   Filename:=TrimAndExpandFilename(Filename);
+  {$IFDEF VerboseFindDeclarationTests}
+  debugln(['TTestFindDeclaration.FindDeclarations File=',Filename]);
+  {$ENDIF}
   Code:=CodeToolBoss.LoadFile(Filename,true,false);
   if Code=nil then
     raise Exception.Create('unable to load '+Filename);
@@ -106,11 +117,15 @@ begin
     if Marker='declaration' then begin
       ExpectedPath:=copy(Src,PathPos,CommentP-1-PathPos);
       //debugln(['TTestFindDeclaration.FindDeclarations ExpectedPath=',ExpectedPath]);
+      {$IFDEF VerboseFindDeclarationTests}
+      debugln(['TTestFindDeclaration.FindDeclarations searching "',Marker,'" at ',Tool.CleanPosToStr(NameStartPos-1),' ExpectedPath=',ExpectedPath]);
+      {$ENDIF}
       Tool.CleanPosToCaret(NameStartPos-1,CursorPos);
       if not CodeToolBoss.FindDeclaration(CursorPos.Code,CursorPos.X,CursorPos.Y,
         FoundCursorPos.Code,FoundCursorPos.X,FoundCursorPos.Y,FoundTopLine)
       then begin
-        AssertEquals('find declaration failed at '+Tool.CleanPosToStr(NameStartPos-1)+': '+CodeToolBoss.ErrorMessage,false,true);
+        if ExpectedPath<>'' then
+          AssertEquals('find declaration failed at '+Tool.CleanPosToStr(NameStartPos-1)+': '+CodeToolBoss.ErrorMessage,false,true);
         continue;
       end else begin
         FoundTool:=CodeToolBoss.GetCodeToolForSource(FoundCursorPos.Code,true,true) as TFindDeclarationTool;
@@ -156,6 +171,21 @@ end;
 procedure TTestFindDeclaration.TestFindDeclaration_ClassHelper;
 begin
   FindDeclarations('fdt_classhelper.pas');
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_TypeHelper;
+begin
+  FindDeclarations('fdt_typehelper.pas');
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_ObjCClass;
+begin
+  FindDeclarations('fdt_objcclass.pas');
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_ObjCCategory;
+begin
+  FindDeclarations('fdt_objccategory.pas');
 end;
 
 initialization

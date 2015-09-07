@@ -33,7 +33,9 @@ program lplupdate;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CustApp, FileProcs, contnrs, Laz_XMLCfg;
+  Classes, SysUtils, CustApp, contnrs,
+  FileProcs,
+  LazFileUtils, LazUTF8, Laz_XMLCfg;
 
 type
 

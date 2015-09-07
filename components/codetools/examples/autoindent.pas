@@ -28,8 +28,7 @@ program AutoIndent;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, DefineTemplates, CodeToolsConfig, FileProcs,
-  CodeToolsStructs, CodeToolManager, CodeCache, CodeBeautifier;
+  SysUtils, CodeToolManager, CodeCache, CodeBeautifier;
 
 var
   Code: TCodeBuffer;

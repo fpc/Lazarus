@@ -138,8 +138,9 @@ var
   i: Integer;
 begin
   cbFilterList.Items.Clear;
-  for i:=0 to frFiltersCount-1 do
-    cbFilterList.Items.Add(frFilters[i].FilterDesc);
+  for i:=0 to ExportFilters.Count - 1 do
+    if ExportFilters[i].Enabled then
+      cbFilterList.Items.Add(ExportFilters[i].FilterDesc);
 
   if (cbFilterList.Items.Count>0) and (FEmailExport.AttachmentFormat<>'') then
     if cbFilterList.Items.IndexOf(FEmailExport.AttachmentFormat)>-1 then

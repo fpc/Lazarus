@@ -25,10 +25,10 @@ unit frmmain;
 interface
 
 uses
-  Classes, SysUtils, LResources, FileUtil, Forms, Controls, Graphics, Dialogs,
-  Menus, ActnList, StdActns, ComCtrls, dicteditor, fpdatadict, IniPropStorage,
-  conneditor, LCLType, RTTICtrls, ExtCtrls, {StdCtrls,} ddfiles, LCLProc,
-  Translations, lazdatadeskstr;
+  Classes, SysUtils, Forms, Controls, Dialogs, Menus, ActnList, StdActns,
+  ComCtrls, IniPropStorage, LCLType, ExtCtrls, LCLProc, Translations,
+  dicteditor, conneditor, ddfiles, fpdatadict, lazdatadeskstr,
+  FileUtil, LazFileUtils, LazUTF8;
 
 type
   TEngineMenuItem = Class(TMenuItem)
@@ -226,9 +226,7 @@ type
     procedure DoImport(Const EngineName : String);
     procedure DoImport(Const EngineName,ConnectionString : String);
     Procedure DoDDEProgress(Sender : TObject; Const Msg : String);
-    { private declarations }
   public
-    { public declarations }
     procedure OpenDataDict(DDF : TRecentDataDict);
     procedure OpenFile(AFileName : String);
     procedure RaiseEditor(DDE: TDataDictEditor);
@@ -1610,7 +1608,7 @@ begin
   LangID2 := '';
   if Trim(LangId1) = '' then
   begin
-    LCLGetLanguageIDs(LangID1,LangID2);
+    LazGetLanguageIDs(LangID1,LangID2);
     if LangID2 = 'pt' then
     begin
        LangID1 := 'pb';

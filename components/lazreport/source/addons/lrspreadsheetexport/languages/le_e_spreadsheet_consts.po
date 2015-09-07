@@ -1,0 +1,89 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: le_e_spreadsheet_consts.sallinonepage
+msgid "All in one page"
+msgstr ""
+
+#: le_e_spreadsheet_consts.sallpages
+msgid "All pages"
+msgstr ""
+
+#: le_e_spreadsheet_consts.sautocreatefile
+msgid "Auto create file"
+msgstr ""
+
+#: le_e_spreadsheet_consts.schunkseach
+msgid "Chunks. Each chunk has (rows):"
+msgstr ""
+
+#: le_e_spreadsheet_consts.scurrentpage
+msgid "Current page"
+msgstr ""
+
+#: le_e_spreadsheet_consts.sdatagrouping
+msgid "Data grouping"
+msgstr ""
+
+#: le_e_spreadsheet_consts.sdeleteemptyrows
+msgid "Delete empty rows"
+msgstr ""
+
+#: le_e_spreadsheet_consts.senterpagenumbers
+msgid ""
+"Enter page numbers and/or page ranges,\n"
+"separated by commas. For example, 1,3,5-12\n"
+msgstr ""
+
+#: le_e_spreadsheet_consts.sexportpictures
+msgid "Export pictures"
+msgstr ""
+
+#: le_e_spreadsheet_consts.sexportsettings
+msgid "Export settings"
+msgstr ""
+
+#: le_e_spreadsheet_consts.sexporttospreadsheet
+msgid "Export to spreadsheet"
+msgstr ""
+
+#: le_e_spreadsheet_consts.sgeneral
+msgid "General"
+msgstr ""
+
+#: le_e_spreadsheet_consts.slikethereport
+msgid "Like the report"
+msgstr ""
+
+#: le_e_spreadsheet_consts.smergecells
+msgid "Merge cells"
+msgstr ""
+
+#: le_e_spreadsheet_consts.sonlyonecomponent
+msgid "Only one TlrSpreadSheetExport component allowed."
+msgstr ""
+
+#: le_e_spreadsheet_consts.sopenafterexport
+msgid "Open after export"
+msgstr ""
+
+#: le_e_spreadsheet_consts.spagebreaks
+msgid "Page breaks"
+msgstr ""
+
+#: le_e_spreadsheet_consts.spagename
+msgid "Page %d"
+msgstr ""
+
+#: le_e_spreadsheet_consts.spagerange
+msgid "Page range"
+msgstr ""
+
+#: le_e_spreadsheet_consts.spages
+msgid "Pages:"
+msgstr ""
+
+#: le_e_spreadsheet_consts.sreportpagename
+msgid "Report"
+msgstr ""
+

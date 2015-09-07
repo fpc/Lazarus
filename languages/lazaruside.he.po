@@ -851,6 +851,10 @@ msgstr ""
 msgid "Choose code template file (*.dci)"
 msgstr "בחר קובץ תבנית לקוד (*.dci)"
 
+#: lazarusidestrconsts.dlgcloseanduseselecteddesktop
+msgid "Close and use selected desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "הראה את כפתור הסגירה בפנקס"
@@ -1098,11 +1102,6 @@ msgstr ""
 msgid "Config files"
 msgstr "קבצי תצורה:"
 
-#: lazarusidestrconsts.dlgcoother
-msgctxt "lazarusidestrconsts.dlgcoother"
-msgid "Other"
-msgstr "אחר"
-
 #: lazarusidestrconsts.dlgcootherdebugginginfo
 msgid "Other debugging info"
 msgstr ""
@@ -1250,6 +1249,10 @@ msgstr "סמן מדלג על טאבים"
 msgid "User defined extension (.pp.xxx)"
 msgstr "הרחבה של המשתמש (pp.xxx.)"
 
+#: lazarusidestrconsts.dlgdebugdesktop
+msgid "debug desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "נתיב העורך"
@@ -1270,19 +1273,9 @@ msgstr "ערך ברירת מחדל"
 msgid "Delete template "
 msgstr "מחק תבנית"
 
-#: lazarusidestrconsts.dlgdesktop
-msgid "Desktop"
-msgstr "שולחן עבודה"
-
 #: lazarusidestrconsts.dlgdesktopbuttons
 msgid "Buttons - "
 msgstr "לחצנים -"
-
-#: lazarusidestrconsts.dlgdesktopfiles
-#, fuzzy
-#| msgid "Desktop files"
-msgid "Desktop Files"
-msgstr "קבצי שולחן עבודה"
 
 #: lazarusidestrconsts.dlgdesktophints
 msgid "Hints"
@@ -1291,6 +1284,10 @@ msgstr "טיפים"
 #: lazarusidestrconsts.dlgdesktopmenus
 msgid "Menus - "
 msgstr "תפריטים -"
+
+#: lazarusidestrconsts.dlgdesktopname
+msgid "Desktop name:"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
@@ -2165,10 +2162,6 @@ msgstr ""
 msgid "Included mixed state $IFDEF node"
 msgstr ""
 
-#: lazarusidestrconsts.dlgignoreverb
-msgid "Ignore"
-msgstr "התעלם"
-
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "כלול משתני מערכת"
@@ -2314,10 +2307,6 @@ msgstr "קישור חכם"
 msgid "Display line numbers in run-time error backtraces"
 msgstr "הצג מספרי שורות בסוגריים של שגיאות בזמן ריצה"
 
-#: lazarusidestrconsts.dlgloaddfile
-msgid "Load desktop settings from file"
-msgstr "טען הגדרות שולחן עבודה מקובץ"
-
 #: lazarusidestrconsts.dlgmainmenu
 msgid "Main Menu"
 msgstr "תפריט ראשי"
@@ -2343,6 +2332,10 @@ msgstr "צפה ביחידות בפרויקט"
 
 #: lazarusidestrconsts.dlgmakeexecutable
 msgid "\"Make\" executable"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmanagedesktops
+msgid "Manage desktops"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmargingutter
@@ -2891,6 +2884,10 @@ msgstr "לשוניות פנקס:"
 msgid "Naming"
 msgstr "מתן שם"
 
+#: lazarusidestrconsts.dlgnewdesktop
+msgid "New desktop ..."
+msgstr ""
+
 #: lazarusidestrconsts.dlgnoautomaticrenaming
 msgid "No automatic renaming"
 msgstr "ללא מתן שמות אוטומטי"
@@ -2964,6 +2961,12 @@ msgstr "קבצי יחידה אחרים (-Fu) (המפריד הוא פסיק):"
 #| msgid "Overwrite Block"
 msgid "Overwrite block"
 msgstr "כתוב על הבלוק הקיים"
+
+#: lazarusidestrconsts.dlgoverwritedesktop
+msgid ""
+"Desktop with the name \"%s\" was found.\n"
+"Should the old desktop be overwritten?\n"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
@@ -3189,6 +3192,10 @@ msgstr "הראה רשת"
 msgid "Snap to grid"
 msgstr "הצמד לקווי הרשת"
 
+#: lazarusidestrconsts.dlgreallydeletedesktop
+msgid "Really delete desktop \"%s\"?"
+msgstr ""
+
 #: lazarusidestrconsts.dlgreferencecolor
 msgid "Reference"
 msgstr "מקור"
@@ -3198,6 +3205,10 @@ msgstr "מקור"
 #| msgid "Regular E&xpressions"
 msgid "Regular e&xpressions"
 msgstr "ביטוי רגולרי"
+
+#: lazarusidestrconsts.dlgrenamedesktop
+msgid "Rename desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgreplaceall
 msgid "Replace &All"
@@ -3275,9 +3286,13 @@ msgstr "העמסה של משתמש"
 msgid "Run Parameters"
 msgstr "הרץ פרמטרים"
 
-#: lazarusidestrconsts.dlgsavedfile
-msgid "Save desktop settings to file"
-msgstr "שמור הגדרות שולחן עבודה לקובץ"
+#: lazarusidestrconsts.dlgsavecurrentdesktop
+msgid "Save current desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsavecurrentdesktopas
+msgid "Save current desktop as"
+msgstr ""
 
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
@@ -3347,6 +3362,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgselectallchildcontrols
 msgid "Select all child controls together with their parent."
+msgstr ""
+
+#: lazarusidestrconsts.dlgselecteddesktop
+msgid "Selected desktop:"
 msgstr ""
 
 #: lazarusidestrconsts.dlgselectedtext
@@ -3606,6 +3625,10 @@ msgstr "תיקייה לבניית פרוייקטים לנסיון"
 msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"
 msgstr "טקסט לחיפוש"
+
+#: lazarusidestrconsts.dlgtoggleselecteddebugdesktop
+msgid "Toggle as debug desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgtopinfohint
 msgid "Current Class/Proc Hint"
@@ -4064,6 +4087,10 @@ msgstr "קובץ חדש"
 msgid "No package found for dependency \"%s\".%sPlease choose an existing package."
 msgstr "לא נמצאה חבילה עבור התלות s%.s%s%s%. בחר חבילה קיימת."
 
+#: lazarusidestrconsts.lisa2ppackageorproject
+msgid "Package/Project"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2ppagenametoolong
 msgid "Page Name too long"
 msgstr "שם הדף ארוך מידי"
@@ -4227,6 +4254,12 @@ msgstr "שם היחידה שגוי"
 #: lazarusidestrconsts.lisabandonchanges
 msgid "Abandon changes?"
 msgstr "לזנוח שינויים ?"
+
+#: lazarusidestrconsts.lisabort
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisabort"
+msgid "Abort"
+msgstr "בטל"
 
 #: lazarusidestrconsts.lisabortall
 msgid "Abort all"
@@ -6021,6 +6054,10 @@ msgstr "לוח"
 msgid "Pages"
 msgstr ""
 
+#: lazarusidestrconsts.liscmppalettevisible
+msgid "Palette is &visible"
+msgstr ""
+
 #: lazarusidestrconsts.liscmprestoredefaults
 msgid "&Restore defaults"
 msgstr ""
@@ -7796,6 +7833,10 @@ msgstr "אפשרויות מותאמות אישית"
 msgid "Custom options"
 msgstr "אפשרויות מותאמות אישית"
 
+#: lazarusidestrconsts.liscustomoptions3
+msgid "Custom Options"
+msgstr ""
+
 #: lazarusidestrconsts.liscustomprogram
 msgid "Custom Program"
 msgstr "תכנית של המשתמש"
@@ -8323,6 +8364,10 @@ msgstr ""
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
 msgstr ""
 
+#: lazarusidestrconsts.lisdesktops
+msgid "Desktops ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdestinationdirectory
 msgid "Destination directory"
 msgstr "תיקיית היעד"
@@ -8559,6 +8604,11 @@ msgstr "ייצא ..."
 #: lazarusidestrconsts.lisdlgimport
 msgctxt "lazarusidestrconsts.lisdlgimport"
 msgid "Import ..."
+msgstr ""
+
+#: lazarusidestrconsts.lisdlgmore
+msgctxt "lazarusidestrconsts.lisdlgmore"
+msgid "More ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisdlgopen
@@ -9291,8 +9341,17 @@ msgstr "ייצא ..."
 msgid "Export All Items to File"
 msgstr ""
 
+#: lazarusidestrconsts.lisexportenvironmentoptions
+msgctxt "lazarusidestrconsts.lisexportenvironmentoptions"
+msgid "Export environment options"
+msgstr ""
+
 #: lazarusidestrconsts.lisexporthtml
 msgid "Export as HTML"
+msgstr ""
+
+#: lazarusidestrconsts.lisexportimport
+msgid "Export / Import"
 msgstr ""
 
 #: lazarusidestrconsts.lisexportlist
@@ -10118,17 +10177,13 @@ msgctxt "lazarusidestrconsts.lisid"
 msgid "ID"
 msgstr "ID"
 
-#: lazarusidestrconsts.lisidcadd
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisidcadd"
-msgid "Add"
-msgstr "הוסף"
+#: lazarusidestrconsts.lisidcaddition
+msgid "Addition"
+msgstr ""
 
-#: lazarusidestrconsts.lisidcopen
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisidcopen"
-msgid "Open"
-msgstr "פתח"
+#: lazarusidestrconsts.lisidcopening
+msgid "Opening"
+msgstr ""
 
 #: lazarusidestrconsts.liside
 msgid "IDE"
@@ -10264,6 +10319,12 @@ msgstr ""
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr ""
 
+#: lazarusidestrconsts.lisignore
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisignore"
+msgid "Ignore"
+msgstr "התעלם"
+
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
 msgstr "התעלם מהכל"
@@ -10302,8 +10363,9 @@ msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr ""
 
-#: lazarusidestrconsts.lisimportexport
-msgid "Import / Export"
+#: lazarusidestrconsts.lisimportenvironmentoptions
+msgctxt "lazarusidestrconsts.lisimportenvironmentoptions"
+msgid "Import environment options"
 msgstr ""
 
 #: lazarusidestrconsts.lisimportfromfile
@@ -11696,10 +11758,6 @@ msgstr "קשר יעד"
 msgid "list of all case values"
 msgstr "רשימה של כל ערכי case"
 
-#: lazarusidestrconsts.lisloadedsuccessfully
-msgid "Loaded successfully"
-msgstr ""
-
 #: lazarusidestrconsts.lisloadingfailed
 #, fuzzy,badformat
 msgid "Loading %s failed."
@@ -12492,6 +12550,10 @@ msgstr "צור מחרוזת משאבים ..."
 msgctxt "lazarusidestrconsts.lismenunewcomponent"
 msgid "New Component"
 msgstr "רכיב חדש"
+
+#: lazarusidestrconsts.lismenunewcustom
+msgid "New %s"
+msgstr ""
 
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"
@@ -13365,10 +13427,6 @@ msgstr "שנה"
 msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "עוד"
-
-#: lazarusidestrconsts.lismore2
-msgid "More ..."
-msgstr ""
 
 #: lazarusidestrconsts.lismoresub
 #, fuzzy
@@ -16612,10 +16670,6 @@ msgstr "לשמור שינויים לפרויקט %s?"
 msgid "Save current editor file"
 msgstr "שמור את הקובץ הנוכחי שבעורך"
 
-#: lazarusidestrconsts.lissavedsuccessfully
-msgid "Saved successfully"
-msgstr ""
-
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"
 msgstr ""
@@ -17054,12 +17108,12 @@ msgstr "התאמות"
 msgid "Sorry, this type is not yet implemented"
 msgstr "מצטער, סוג זה לא ממומש עדיין"
 
-#: lazarusidestrconsts.lissort
-msgid "Sort"
-msgstr ""
-
 #: lazarusidestrconsts.lissortforscope
 msgid "Sort for scope"
+msgstr ""
+
+#: lazarusidestrconsts.lissorting
+msgid "Sorting"
 msgstr ""
 
 #: lazarusidestrconsts.lissortselascending
@@ -19390,6 +19444,10 @@ msgstr "שגיאת XML"
 #: lazarusidestrconsts.lisxmlparsererrorinfileerror
 msgid "XML parser error in file %s%sError: %s"
 msgstr "שגיאה בקובץ %s בעת קריאת XML%sשגיאה: %s"
+
+#: lazarusidestrconsts.lisyes
+msgid "Yes"
+msgstr ""
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"

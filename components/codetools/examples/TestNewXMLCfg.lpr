@@ -6,7 +6,7 @@ uses
   {$IFDEF UNIX}{$IFDEF UseCThreads}
   cthreads,
   {$ENDIF}{$ENDIF}
-  Classes, SysUtils, CustApp, FileProcs, Laz_XMLCfg, Laz2_XMLCfg;
+  Classes, SysUtils, CustApp, FileProcs, Laz_XMLCfg, Laz2_XMLCfg, LazFileUtils;
 
 type
 

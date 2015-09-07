@@ -34,18 +34,20 @@ unit BuildManager;
 interface
 
 uses
+  // RTL + FCL + LCL
   Classes, SysUtils, AVL_Tree,
-  // LCL
-  LConvEncoding, InterfaceBase, LCLProc, Dialogs, FileUtil, Laz2_XMLCfg,
-  LazUTF8, LazFileUtils, LazFileCache, Forms, Controls,
-  // codetools
+  InterfaceBase, LCLProc, Dialogs, Forms, Controls,
+  // CodeTools
   ExprEval, BasicCodeTools, CodeToolManager, DefineTemplates, CodeCache,
-  FileProcs, CodeToolsCfgScript, CodeToolsStructs,
+  FileProcs, CodeToolsCfgScript,
+  // LazUtils
+  LConvEncoding, FileUtil, LazFileUtils, LazFileCache, LazUTF8,
+  Laz2_XMLCfg,
   // IDEIntf
   IDEOptionsIntf, ProjectIntf, MacroIntf, IDEDialogs, IDEExternToolIntf,
   CompOptsIntf, LazIDEIntf, MacroDefIntf, IDEMsgIntf,
   // IDE
-  IDECmdLine, LazarusIDEStrConsts, DialogProcs, IDEProcs, CodeToolsOptions,
+  IDECmdLine, LazarusIDEStrConsts, DialogProcs, IDEProcs,
   InputHistory, EditDefineTree, ProjectResources, MiscOptions, LazConf,
   EnvironmentOpts, TransferMacros, CompilerOptions,
   ExtToolEditDlg{needed for environment options ExternalUserTools},
@@ -1346,7 +1348,7 @@ function TBuildManager.CheckAmbiguousSources(const AFilename: string;
     NewFilename: string;
   begin
     NewFilename:=AmbiguousFilename+'.ambiguous';
-    if not FileProcs.RenameFileUTF8(AmbiguousFilename,NewFilename) then
+    if not RenameFileUTF8(AmbiguousFilename,NewFilename) then
     begin
       Result:=IDEMessageDialog(lisErrorRenamingFile,
        Format(lisUnableToRenameAmbiguousFileTo,[AmbiguousFilename,LineEnding,NewFilename]),
@@ -1726,8 +1728,8 @@ begin
       dec(i);
       while i>=1 do begin
         repeat
-          if not FileProcs.RenameFileUTF8(BackupFilename+IntToStr(i),
-             BackupFilename+IntToStr(i+1)) then
+          if not RenameFileUTF8(BackupFilename+IntToStr(i),
+                                BackupFilename+IntToStr(i+1)) then
           begin
             ACaption:=lisRenameFileFailed;
             AText:=Format(lisUnableToRenameFileTo,

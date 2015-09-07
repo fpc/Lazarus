@@ -29,8 +29,8 @@ program getexpandedoperand;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CodeCache, CodeToolManager, DefineTemplates, FileProcs,
-  CodeToolsConfig, SimpleUnit1, getterexample1;
+  SysUtils, CodeCache, CodeToolManager,
+  SimpleUnit1, getterexample1;
 
 const
   ConfigFilename = 'codetools.config';

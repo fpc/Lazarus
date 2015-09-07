@@ -320,7 +320,7 @@ procedure GetRGBIntValues(RGB : DWORD; out R, G, B: integer); inline;
 
 function IndexToOverlayMask(iOverlay: UINT): UINT; inline;
 function InflateRect(var ARect: TRect; dx, dy: Integer): Boolean;
-function IntersectRect(var DestRect: TRect; const SrcRect1, SrcRect2: TRect): Boolean;
+function IntersectRect(var DestRect: TRect; const SrcRect1, SrcRect2: TRect): Boolean; inline;
 function IsCharAlphaNumeric(c : Char) : Boolean;
 function IsRectEmpty(const ARect: TRect): Boolean;
 

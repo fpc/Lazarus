@@ -243,7 +243,6 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure CheckOnIdle;
-    // DaThoX
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure Refresh(OnlyVisible: boolean);
     procedure RefreshCode(OnlyVisible: boolean);
@@ -1879,7 +1878,6 @@ begin
   Refresh(true);
 end;
 
-// DaThoX
 procedure TCodeExplorerView.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);

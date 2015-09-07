@@ -834,6 +834,10 @@ msgstr ""
 msgid "Choose code template file (*.dci)"
 msgstr "Tria un fitxer de plantilla (*.dci)"
 
+#: lazarusidestrconsts.dlgcloseanduseselecteddesktop
+msgid "Close and use selected desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "Mostra els botons de tancar en el llibre de notes"
@@ -1075,11 +1079,6 @@ msgstr ""
 msgid "Config files"
 msgstr "Fitxers de configuració:"
 
-#: lazarusidestrconsts.dlgcoother
-msgctxt "lazarusidestrconsts.dlgcoother"
-msgid "Other"
-msgstr "Altres"
-
 #: lazarusidestrconsts.dlgcootherdebugginginfo
 msgid "Other debugging info"
 msgstr ""
@@ -1227,6 +1226,10 @@ msgstr ""
 msgid "User defined extension (.pp.xxx)"
 msgstr "Extensions definides per l'usuari (.pp.xxx)"
 
+#: lazarusidestrconsts.dlgdebugdesktop
+msgid "debug desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr ""
@@ -1247,19 +1250,9 @@ msgstr "Valor per defecte"
 msgid "Delete template "
 msgstr "Elimina la plantilla"
 
-#: lazarusidestrconsts.dlgdesktop
-msgid "Desktop"
-msgstr "Escriptori"
-
 #: lazarusidestrconsts.dlgdesktopbuttons
 msgid "Buttons - "
 msgstr ""
-
-#: lazarusidestrconsts.dlgdesktopfiles
-#, fuzzy
-#| msgid "Desktop files"
-msgid "Desktop Files"
-msgstr "Fitxers de l'escriptori"
 
 #: lazarusidestrconsts.dlgdesktophints
 msgid "Hints"
@@ -1267,6 +1260,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgdesktopmenus
 msgid "Menus - "
+msgstr ""
+
+#: lazarusidestrconsts.dlgdesktopname
+msgid "Desktop name:"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
@@ -2129,10 +2126,6 @@ msgstr ""
 msgid "Included mixed state $IFDEF node"
 msgstr ""
 
-#: lazarusidestrconsts.dlgignoreverb
-msgid "Ignore"
-msgstr "Ignora"
-
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "Inclou les variables del sistema"
@@ -2270,10 +2263,6 @@ msgstr "Enllaçament intel·ligent"
 msgid "Display line numbers in run-time error backtraces"
 msgstr "Mostra els números de línia en errors en temps d'execució en seguiments inversos"
 
-#: lazarusidestrconsts.dlgloaddfile
-msgid "Load desktop settings from file"
-msgstr "Carrega els paràmetres de l'escriptori des del fitxer"
-
 #: lazarusidestrconsts.dlgmainmenu
 msgid "Main Menu"
 msgstr "Menú principal"
@@ -2297,6 +2286,10 @@ msgstr "Mostra les unitats del projecte"
 
 #: lazarusidestrconsts.dlgmakeexecutable
 msgid "\"Make\" executable"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmanagedesktops
+msgid "Manage desktops"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmargingutter
@@ -2828,6 +2821,10 @@ msgstr ""
 msgid "Naming"
 msgstr "Anomenat"
 
+#: lazarusidestrconsts.dlgnewdesktop
+msgid "New desktop ..."
+msgstr ""
+
 #: lazarusidestrconsts.dlgnoautomaticrenaming
 #, fuzzy
 #| msgid "no automatic renaming"
@@ -2900,6 +2897,12 @@ msgstr "Altres fitxers d'unitats (-Fu) (El delimitador és punt i coma):"
 
 #: lazarusidestrconsts.dlgoverwriteblock
 msgid "Overwrite block"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoverwritedesktop
+msgid ""
+"Desktop with the name \"%s\" was found.\n"
+"Should the old desktop be overwritten?\n"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpalhints
@@ -3105,12 +3108,20 @@ msgstr "Mostra la graella"
 msgid "Snap to grid"
 msgstr "Ajusta a la graella"
 
+#: lazarusidestrconsts.dlgreallydeletedesktop
+msgid "Really delete desktop \"%s\"?"
+msgstr ""
+
 #: lazarusidestrconsts.dlgreferencecolor
 msgid "Reference"
 msgstr ""
 
 #: lazarusidestrconsts.dlgregularexpressions
 msgid "Regular e&xpressions"
+msgstr ""
+
+#: lazarusidestrconsts.dlgrenamedesktop
+msgid "Rename desktop"
 msgstr ""
 
 #: lazarusidestrconsts.dlgreplaceall
@@ -3195,9 +3206,13 @@ msgstr "L'usuari substitueix"
 msgid "Run Parameters"
 msgstr "Executa els paràmetres"
 
-#: lazarusidestrconsts.dlgsavedfile
-msgid "Save desktop settings to file"
-msgstr "Desa els paràmetres de l'escriptori al fitxer"
+#: lazarusidestrconsts.dlgsavecurrentdesktop
+msgid "Save current desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsavecurrentdesktopas
+msgid "Save current desktop as"
+msgstr ""
 
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
@@ -3266,6 +3281,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgselectallchildcontrols
 msgid "Select all child controls together with their parent."
+msgstr ""
+
+#: lazarusidestrconsts.dlgselecteddesktop
+msgid "Selected desktop:"
 msgstr ""
 
 #: lazarusidestrconsts.dlgselectedtext
@@ -3521,6 +3540,10 @@ msgstr "Directori per a muntar els projectes de prova"
 msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"
 msgstr "Cerca el &text"
+
+#: lazarusidestrconsts.dlgtoggleselecteddebugdesktop
+msgid "Toggle as debug desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgtopinfohint
 msgid "Current Class/Proc Hint"
@@ -3976,6 +3999,10 @@ msgstr "Nou Arxiu"
 msgid "No package found for dependency \"%s\".%sPlease choose an existing package."
 msgstr "No s'ha trobat cap paquet per la dependència %s%s%s.%sSi us plau, escolliu un paquet existent."
 
+#: lazarusidestrconsts.lisa2ppackageorproject
+msgid "Package/Project"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2ppagenametoolong
 msgid "Page Name too long"
 msgstr "El nom del paquet és massa llarg"
@@ -4131,6 +4158,12 @@ msgstr "El nom de la unitat no és vàlid"
 #: lazarusidestrconsts.lisabandonchanges
 msgid "Abandon changes?"
 msgstr ""
+
+#: lazarusidestrconsts.lisabort
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisabort"
+msgid "Abort"
+msgstr "Avortar"
 
 #: lazarusidestrconsts.lisabortall
 msgid "Abort all"
@@ -5856,6 +5889,10 @@ msgstr ""
 msgid "Pages"
 msgstr ""
 
+#: lazarusidestrconsts.liscmppalettevisible
+msgid "Palette is &visible"
+msgstr ""
+
 #: lazarusidestrconsts.liscmprestoredefaults
 msgid "&Restore defaults"
 msgstr ""
@@ -7570,6 +7607,10 @@ msgstr "opcions personalitzades"
 msgid "Custom options"
 msgstr "Opcions personalitzades"
 
+#: lazarusidestrconsts.liscustomoptions3
+msgid "Custom Options"
+msgstr ""
+
 #: lazarusidestrconsts.liscustomprogram
 msgid "Custom Program"
 msgstr "Programa personalitzat"
@@ -8084,6 +8125,10 @@ msgstr ""
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
 msgstr ""
 
+#: lazarusidestrconsts.lisdesktops
+msgid "Desktops ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdestinationdirectory
 msgid "Destination directory"
 msgstr "Directori de destinació"
@@ -8309,6 +8354,11 @@ msgstr ""
 #: lazarusidestrconsts.lisdlgimport
 msgctxt "lazarusidestrconsts.lisdlgimport"
 msgid "Import ..."
+msgstr ""
+
+#: lazarusidestrconsts.lisdlgmore
+msgctxt "lazarusidestrconsts.lisdlgmore"
+msgid "More ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisdlgopen
@@ -9009,8 +9059,17 @@ msgstr ""
 msgid "Export All Items to File"
 msgstr ""
 
+#: lazarusidestrconsts.lisexportenvironmentoptions
+msgctxt "lazarusidestrconsts.lisexportenvironmentoptions"
+msgid "Export environment options"
+msgstr ""
+
 #: lazarusidestrconsts.lisexporthtml
 msgid "Export as HTML"
+msgstr ""
+
+#: lazarusidestrconsts.lisexportimport
+msgid "Export / Import"
 msgstr ""
 
 #: lazarusidestrconsts.lisexportlist
@@ -9821,17 +9880,13 @@ msgctxt "lazarusidestrconsts.lisid"
 msgid "ID"
 msgstr "ID"
 
-#: lazarusidestrconsts.lisidcadd
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisidcadd"
-msgid "Add"
-msgstr "Afegeix"
+#: lazarusidestrconsts.lisidcaddition
+msgid "Addition"
+msgstr ""
 
-#: lazarusidestrconsts.lisidcopen
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisidcopen"
-msgid "Open"
-msgstr "Obre"
+#: lazarusidestrconsts.lisidcopening
+msgid "Opening"
+msgstr ""
 
 #: lazarusidestrconsts.liside
 msgid "IDE"
@@ -9965,6 +10020,12 @@ msgstr ""
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr ""
 
+#: lazarusidestrconsts.lisignore
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisignore"
+msgid "Ignore"
+msgstr "Ignora"
+
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
 msgstr ""
@@ -10003,8 +10064,9 @@ msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr ""
 
-#: lazarusidestrconsts.lisimportexport
-msgid "Import / Export"
+#: lazarusidestrconsts.lisimportenvironmentoptions
+msgctxt "lazarusidestrconsts.lisimportenvironmentoptions"
+msgid "Import environment options"
 msgstr ""
 
 #: lazarusidestrconsts.lisimportfromfile
@@ -11323,10 +11385,6 @@ msgstr ""
 msgid "list of all case values"
 msgstr ""
 
-#: lazarusidestrconsts.lisloadedsuccessfully
-msgid "Loaded successfully"
-msgstr ""
-
 #: lazarusidestrconsts.lisloadingfailed
 msgid "Loading %s failed."
 msgstr ""
@@ -12092,6 +12150,10 @@ msgstr "Fes cadena del recurs ..."
 msgctxt "lazarusidestrconsts.lismenunewcomponent"
 msgid "New Component"
 msgstr "Nou component"
+
+#: lazarusidestrconsts.lismenunewcustom
+msgid "New %s"
+msgstr ""
 
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"
@@ -12942,10 +13004,6 @@ msgstr ""
 #: lazarusidestrconsts.lismore
 msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
-msgstr ""
-
-#: lazarusidestrconsts.lismore2
-msgid "More ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismoresub
@@ -16091,10 +16149,6 @@ msgstr "Voleu desar els canvis del projecte %s?"
 msgid "Save current editor file"
 msgstr "desa el fitxer editor actual"
 
-#: lazarusidestrconsts.lissavedsuccessfully
-msgid "Saved successfully"
-msgstr ""
-
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"
 msgstr ""
@@ -16524,12 +16578,12 @@ msgstr ""
 msgid "Sorry, this type is not yet implemented"
 msgstr "Ho sento, aquest tipus encara no està implementat"
 
-#: lazarusidestrconsts.lissort
-msgid "Sort"
-msgstr ""
-
 #: lazarusidestrconsts.lissortforscope
 msgid "Sort for scope"
+msgstr ""
+
+#: lazarusidestrconsts.lissorting
+msgid "Sorting"
 msgstr ""
 
 #: lazarusidestrconsts.lissortselascending
@@ -18726,6 +18780,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisxmlparsererrorinfileerror
 msgid "XML parser error in file %s%sError: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisyes
+msgid "Yes"
 msgstr ""
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed

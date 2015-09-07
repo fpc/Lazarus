@@ -27,12 +27,21 @@ begin
   inherited Destroy;
 end;
 
+function TShape.GetStarAngle(N: Integer; ADown: boolean): Double;
+begin
+  Result := pi/5 * N + pi/2 * IfThen(ADown, -1, 1);
+end;
+
 procedure TShape.Paint;
 var
   PaintRect: TRect;
   MinSize: Longint;
   P: array[0..3] of TPoint;
+  PStar: array[0..10] of TPoint;
   PenInc, PenDec: Integer;
+  RadiusBig, RadiusBig2, RadiusSm, i: Integer;
+  PCenter: TPoint;
+  Alfa: Double;
 begin
   with Canvas do
   begin
@@ -95,6 +104,90 @@ begin
           P[3].x := P[0].x;
           P[3].y := P[0].y;
           Polygon(P);
+        end;
+      end;
+      stTriangleDown:
+      begin
+        with Self do
+        begin
+          P[0].x := (Width - 1) div 2;
+          P[0].y := Height - PenInc - 1;
+          P[1].x := Width - PenInc - 1;
+          P[1].y := PenInc;
+          P[2].x := PenInc;
+          P[2].y := PenInc;
+          P[3].x := P[0].x;
+          P[3].y := P[0].y;
+          Polygon(P);
+        end;
+      end;
+      stTriangleLeft:
+      begin
+        with Self do
+        begin
+          P[0].x := PenInc;
+          P[0].y := Height div 2;
+          P[1].x := Width - PenInc - 1;
+          P[1].y := PenInc;
+          P[2].x := Width - PenInc - 1;
+          P[2].y := Height - PenInc - 1;
+          P[3].x := P[0].x;
+          P[3].y := P[0].y;
+          Polygon(P);
+        end;
+      end;
+      stTriangleRight:
+      begin
+        with Self do
+        begin
+          P[0].x := Width - PenInc - 1;
+          P[0].y := Height div 2;
+          P[1].x := PenInc;
+          P[1].y := PenInc;
+          P[2].x := PenInc;
+          P[2].y := Height - PenInc - 1;
+          P[3].x := P[0].x;
+          P[3].y := P[0].y;
+          Polygon(P);
+        end;
+      end;
+      stStar,
+      stStarDown:
+      begin
+        with Self do
+        begin
+          //radius if star scaled by height
+          RadiusBig := Trunc((Height-Pen.Width) / (1+cos(pi/5)));
+          //radius if star scaled by width
+          RadiusBig2 := Trunc((Width-Pen.Width) / (2*sin(pi*2/5)));
+
+          if RadiusBig<=RadiusBig2 then
+          begin
+            if FShape=stStar then
+              PCenter.Y := RadiusBig+PenDec
+            else
+              PCenter.Y := Height-RadiusBig-PenDec;
+          end
+          else
+          begin
+            RadiusBig := RadiusBig2;
+            PCenter.Y := Height div 2;
+          end;
+          PCenter.X := Width div 2;
+          RadiusSm := RadiusBig * 57 div 150;
+
+          for i := 0 to 4 do
+          begin
+            Alfa := GetStarAngle(i*2, FShape=stStarDown);
+            PStar[i*2].x := PCenter.X + Round(RadiusBig*cos(Alfa));
+            PStar[i*2].y := PCenter.Y - Round(RadiusBig*sin(Alfa));
+            Alfa:= GetStarAngle(i*2+1, FShape=stStarDown);
+            PStar[i*2+1].x := PCenter.X + Round(RadiusSm*cos(Alfa));
+            PStar[i*2+1].y := PCenter.Y - Round(RadiusSm*sin(Alfa));
+          end;
+
+          PStar[10] := PStar[0];
+          Polygon(PStar);
         end;
       end;
     end;

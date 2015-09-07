@@ -29,7 +29,8 @@ interface
 
 uses
   Classes, SysUtils, ExtCtrls, Buttons, Controls, StdCtrls, DividerBevel,
-  LazarusIDEStrConsts, IDEOptionsIntf, EnvironmentOpts, EditorToolbarStatic, ToolbarConfig, LCLProc;
+  LazarusIDEStrConsts, LCLProc, IDEOptionsIntf, EnvironmentOpts,
+  EditorToolbarStatic, ToolbarConfig;
 
 type
 
@@ -127,7 +128,6 @@ var
 begin
   Opts := (AOptions as TEnvironmentOptions).Desktop.EditorToolBarOptions;
   Opts.Assign(FLocalOptions);
-  uAllEditorToolbars.ReloadAll;
 end;
 
 class function TEditorToolbarOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

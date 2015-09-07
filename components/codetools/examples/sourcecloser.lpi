@@ -41,7 +41,6 @@
       <Unit0>
         <Filename Value="sourcecloser.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="sourcecloser"/>
       </Unit0>
       <Unit1>
         <Filename Value="testpkg1/create_release.sh"/>
@@ -58,12 +57,6 @@
       <IncludeFiles Value="$(ProjOutDir)"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
-    <Other>
-      <CompilerMessages>
-        <MsgFileName Value=""/>
-      </CompilerMessages>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
   <Debugging>
     <Exceptions Count="3">

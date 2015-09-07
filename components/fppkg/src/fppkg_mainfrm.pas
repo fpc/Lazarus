@@ -39,7 +39,7 @@ uses
   fppkg_optionsfrm, fppkg_details,
   //IDE interface
   {$IFDEF LazarusIDEPackage}
-    IDEIntf, PackageIntf, IDECommands, contnrs, fppkg_lpk,
+    PackageIntf, IDECommands, contnrs, fppkg_lpk,
   {$ENDIF}
   // Repository handler objects
   fprepos,
@@ -119,7 +119,6 @@ type
     procedure SupportCheckGroupItemClick(Sender: TObject; Index: integer);
     procedure UpdateButtonClick(Sender: TObject);
   private
-    { private declarations }
     SearchPhrases: TStrings;
 
     function FindSearchPhrase(pkg: TLazPackageData): boolean;
@@ -134,7 +133,7 @@ type
     procedure UpdatePackageListView;
     procedure ListPackages;
   public
-    { public declarations }
+
   end;
 
 var

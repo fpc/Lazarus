@@ -257,7 +257,8 @@ type
     procedure IterateRegisteredClasses(Proc: TGetComponentClassEvent);
     procedure SetSelectedComp(AComponent: TRegisteredComponent; AMulti: Boolean);
     // Registered handlers
-    procedure DoAfterComponentAdded(ALookupRoot, AComponent: TComponent; ARegisteredComponent: TRegisteredComponent); virtual; // DaThoX
+    procedure DoAfterComponentAdded(ALookupRoot, AComponent: TComponent;
+                            ARegisteredComponent: TRegisteredComponent); virtual;
     procedure DoAfterSelectionChanged;
     procedure RemoveAllHandlersOfObject(AnObject: TObject);
     procedure AddHandlerUpdateVisible(const OnUpdateCompVisibleEvent: TUpdateCompVisibleEvent;
@@ -328,13 +329,13 @@ end;
 
 function CompareIDEComponentByClassName(Data1, Data2: Pointer): integer;
 var
-  Comp1: TRegisteredComponent;
-  Comp2: TRegisteredComponent;
+  Comp1: TRegisteredComponent absolute Data1;
+  Comp2: TRegisteredComponent absolute Data2;
 begin
-  Comp1:=TRegisteredComponent(Data1);
-  Comp2:=TRegisteredComponent(Data2);
-  Result:=AnsiCompareText(Comp1.ComponentClass.Classname,
-                          Comp2.ComponentClass.Classname);
+  // The same case-insensitive compare function should be used in this function
+  //  and in CompareClassNameWithRegisteredComponent.
+  Result:=ShortCompareText(Comp1.ComponentClass.Classname,
+                           Comp2.ComponentClass.Classname);
 end;
 
 function CompareClassNameWithRegisteredComponent(Key, Data: Pointer): integer;
@@ -344,7 +345,7 @@ var
 begin
   AClassName:=String(Key);
   RegComp:=TRegisteredComponent(Data);
-  Result:=AnsiCompareText(AClassName, RegComp.ComponentClass.ClassName);
+  Result:=ShortCompareText(AClassName, RegComp.ComponentClass.ClassName);
 end;
 
 function dbgs(const c: TComponentPriorityCategory): string;
@@ -1092,14 +1093,14 @@ begin
   AComponent.Visible:=Result;
 end;
 
-procedure TBaseComponentPalette.DoAfterComponentAdded(ALookupRoot, // DaThoX
-  AComponent: TComponent; ARegisteredComponent: TRegisteredComponent); // DaThoX
+procedure TBaseComponentPalette.DoAfterComponentAdded(ALookupRoot,
+  AComponent: TComponent; ARegisteredComponent: TRegisteredComponent);
 var
   i: Integer;
 begin
   i:=FHandlers[cphtComponentAdded].Count;
   while FHandlers[cphtComponentAdded].NextDownIndex(i) do
-    TComponentAddedEvent(FHandlers[cphtComponentAdded][i])(ALookupRoot, AComponent, ARegisteredComponent); // DaThoX
+    TComponentAddedEvent(FHandlers[cphtComponentAdded][i])(ALookupRoot, AComponent, ARegisteredComponent);
 end;
 
 procedure TBaseComponentPalette.DoAfterSelectionChanged;

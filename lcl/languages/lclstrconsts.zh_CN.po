@@ -422,6 +422,14 @@ msgstr "目录(&D)"
 msgid "Docking"
 msgstr "停靠"
 
+#: lclstrconsts.rsdocopy
+msgid "Copy"
+msgstr ""
+
+#: lclstrconsts.rsdopaste
+msgid "Paste"
+msgstr ""
+
 #: lclstrconsts.rsduplicateiconformat
 msgid "Duplicate icon format."
 msgstr "同样的图标格式."

@@ -5,8 +5,8 @@ unit Main;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Spin, DictionaryStringList, Math;
+  Classes, SysUtils, Math, Forms, Controls, Dialogs, StdCtrls, Spin,
+  LookupStringList;
 
 type
 
@@ -81,13 +81,13 @@ end;
 
 procedure TForm1.btnDedupeMemoClick(Sender: TObject);
 var
-  DSL :TDictionaryStringList;
+  DSL :TLookupStringList;
   T :TDateTime;
 begin
   Screen.Cursor := crHourGlass;
   try
     T := Now;
-    DSL := TDictionaryStringList.Create;
+    DSL := TLookupStringList.Create;
     try
       DSL.Assign(Memo.Lines);
       UpdateDuplicates(IntToStr(Memo.Lines.Count - DSL.Count));
@@ -105,7 +105,7 @@ procedure TForm1.btnDedupeFileClick(Sender: TObject);
 var
   T :TDateTime;
   N :integer;
-  DSL :TDictionaryStringList;
+  DSL :TLookupStringList;
 begin
   lblTime.Caption := 'Time:';
   lblLines.Caption := 'Duplicated lines:';
@@ -122,7 +122,7 @@ begin
   ShowMessage('Dedupping the file.');
   T := Now;
   N := Memo.Lines.Count;
-  DSL := TDictionaryStringList.Create;
+  DSL := TLookupStringList.Create;
   try
     DSL.LoadFromFile('temp.txt');
     lblLines.Caption := 'Duplicated Lines: ' + IntToStr(N - DSL.Count);

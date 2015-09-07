@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-06-28 20:19+0100\n"
+"PO-Revision-Date: 2015-07-29 19:29+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -827,6 +827,10 @@ msgstr ""
 msgid "Choose code template file (*.dci)"
 msgstr "Auswahl der Code-Vorlagendatei (*.dci)"
 
+#: lazarusidestrconsts.dlgcloseanduseselecteddesktop
+msgid "Close and use selected desktop"
+msgstr "Schließen und gewählten Desktop verwenden"
+
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "Schließen-Schaltfläche im Notebook anzeigen"
@@ -1050,11 +1054,6 @@ msgstr "Konfiguration und Ziele"
 msgid "Config files"
 msgstr "Konfigurationsdateien:"
 
-#: lazarusidestrconsts.dlgcoother
-msgctxt "lazarusidestrconsts.dlgcoother"
-msgid "Other"
-msgstr "Andere"
-
 #: lazarusidestrconsts.dlgcootherdebugginginfo
 msgid "Other debugging info"
 msgstr "Andere Debugger-Optionen"
@@ -1188,6 +1187,10 @@ msgstr "Cursor überspringt Tabulatoren"
 msgid "User defined extension (.pp.xxx)"
 msgstr "Benutzerdefinierte Erweiterung (.pp.xxx)"
 
+#: lazarusidestrconsts.dlgdebugdesktop
+msgid "debug desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "Pfadeditor"
@@ -1208,17 +1211,9 @@ msgstr "Voreinstellung"
 msgid "Delete template "
 msgstr "Vorlage löschen"
 
-#: lazarusidestrconsts.dlgdesktop
-msgid "Desktop"
-msgstr "Desktop"
-
 #: lazarusidestrconsts.dlgdesktopbuttons
 msgid "Buttons - "
 msgstr "Buttons -"
-
-#: lazarusidestrconsts.dlgdesktopfiles
-msgid "Desktop Files"
-msgstr "Desktopdateien"
 
 #: lazarusidestrconsts.dlgdesktophints
 msgid "Hints"
@@ -1227,6 +1222,10 @@ msgstr "Hinweise"
 #: lazarusidestrconsts.dlgdesktopmenus
 msgid "Menus - "
 msgstr "Menüs - "
+
+#: lazarusidestrconsts.dlgdesktopname
+msgid "Desktop name:"
+msgstr "Desktop-Name:"
 
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
@@ -2064,10 +2063,6 @@ msgstr "Inaktiver $IFDEF Knoten"
 msgid "Included mixed state $IFDEF node"
 msgstr ""
 
-#: lazarusidestrconsts.dlgignoreverb
-msgid "Ignore"
-msgstr "Übergehen"
-
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "Systemvariablen einfügen"
@@ -2197,10 +2192,6 @@ msgstr "Smart Linken"
 msgid "Display line numbers in run-time error backtraces"
 msgstr "Zeilennummern in Laufzeitfehler-Backtraces anzeigen"
 
-#: lazarusidestrconsts.dlgloaddfile
-msgid "Load desktop settings from file"
-msgstr "Einstellungen des Desktops aus Datei laden"
-
 #: lazarusidestrconsts.dlgmainmenu
 msgid "Main Menu"
 msgstr "Hauptmenü"
@@ -2221,6 +2212,10 @@ msgstr "Projektunits anzeigen"
 #: lazarusidestrconsts.dlgmakeexecutable
 msgid "\"Make\" executable"
 msgstr "Pfad zum \"Make\"-Programm"
+
+#: lazarusidestrconsts.dlgmanagedesktops
+msgid "Manage desktops"
+msgstr "Desktops verwalten"
 
 #: lazarusidestrconsts.dlgmargingutter
 msgid "Margin and gutter"
@@ -2750,6 +2745,10 @@ msgstr "Notebook-Reiter"
 msgid "Naming"
 msgstr "Namensvergabe"
 
+#: lazarusidestrconsts.dlgnewdesktop
+msgid "New desktop ..."
+msgstr ""
+
 #: lazarusidestrconsts.dlgnoautomaticrenaming
 msgid "No automatic renaming"
 msgstr "Kein automatisches Umbenennen"
@@ -2815,6 +2814,14 @@ msgstr "Andere Units (-Fu) (Trenner ist der Strichpunkt):"
 #: lazarusidestrconsts.dlgoverwriteblock
 msgid "Overwrite block"
 msgstr "Block überschreiben"
+
+#: lazarusidestrconsts.dlgoverwritedesktop
+msgid ""
+"Desktop with the name \"%s\" was found.\n"
+"Should the old desktop be overwritten?\n"
+msgstr ""
+"Desktop mit dem Namen \"%s\" wurde gefunden.\n"
+"Soll der alte Desktop überschrieben werden?\n"
 
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
@@ -3013,6 +3020,10 @@ msgstr "Gitter anzeigen"
 msgid "Snap to grid"
 msgstr "Am Gitter ausrichten"
 
+#: lazarusidestrconsts.dlgreallydeletedesktop
+msgid "Really delete desktop \"%s\"?"
+msgstr "Desktop \"%s\" wirklich löschen?"
+
 #: lazarusidestrconsts.dlgreferencecolor
 msgid "Reference"
 msgstr "Referenz"
@@ -3020,6 +3031,10 @@ msgstr "Referenz"
 #: lazarusidestrconsts.dlgregularexpressions
 msgid "Regular e&xpressions"
 msgstr "Reguläre Ausdrücke"
+
+#: lazarusidestrconsts.dlgrenamedesktop
+msgid "Rename desktop"
+msgstr "Desktop umbenennen"
 
 #: lazarusidestrconsts.dlgreplaceall
 msgid "Replace &All"
@@ -3091,9 +3106,13 @@ msgstr "Benutzervorgaben"
 msgid "Run Parameters"
 msgstr "Start-Parameter"
 
-#: lazarusidestrconsts.dlgsavedfile
-msgid "Save desktop settings to file"
-msgstr "Desktopeinstellungen in Datei speichern"
+#: lazarusidestrconsts.dlgsavecurrentdesktop
+msgid "Save current desktop"
+msgstr "Aktuellen Desktop speichern"
+
+#: lazarusidestrconsts.dlgsavecurrentdesktopas
+msgid "Save current desktop as"
+msgstr ""
 
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
@@ -3159,6 +3178,10 @@ msgstr "Suchbereich"
 #: lazarusidestrconsts.dlgselectallchildcontrols
 msgid "Select all child controls together with their parent."
 msgstr ""
+
+#: lazarusidestrconsts.dlgselecteddesktop
+msgid "Selected desktop:"
+msgstr "Ausgewählter Desktop:"
 
 #: lazarusidestrconsts.dlgselectedtext
 msgid "&Selected text"
@@ -3403,6 +3426,10 @@ msgstr "Verzeichnis für das Anlegen von Testprojekten"
 msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"
 msgstr "Such&text"
+
+#: lazarusidestrconsts.dlgtoggleselecteddebugdesktop
+msgid "Toggle as debug desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgtopinfohint
 msgid "Current Class/Proc Hint"
@@ -3826,6 +3853,10 @@ msgstr "Neue Datei"
 msgid "No package found for dependency \"%s\".%sPlease choose an existing package."
 msgstr "Kein Package für die Abhängigkeit \"%s\" gefunden.%sBitte wählen Sie ein vorhandenes Package."
 
+#: lazarusidestrconsts.lisa2ppackageorproject
+msgid "Package/Project"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2ppagenametoolong
 msgid "Page Name too long"
 msgstr "Name des Reiters zu lang"
@@ -3953,6 +3984,12 @@ msgstr "Unit-Name ist ungültig"
 #: lazarusidestrconsts.lisabandonchanges
 msgid "Abandon changes?"
 msgstr "Änderungen verwerfen?"
+
+#: lazarusidestrconsts.lisabort
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisabort"
+msgid "Abort"
+msgstr "Alles abbrechen"
 
 #: lazarusidestrconsts.lisabortall
 msgid "Abort all"
@@ -5640,6 +5677,10 @@ msgstr "Palette"
 msgid "Pages"
 msgstr "Seiten"
 
+#: lazarusidestrconsts.liscmppalettevisible
+msgid "Palette is &visible"
+msgstr "Palette ist sichtbar"
+
 #: lazarusidestrconsts.liscmprestoredefaults
 msgid "&Restore defaults"
 msgstr "Vo&rgaben wiederherst."
@@ -7319,6 +7360,10 @@ msgstr "Benutzerdefinierte Einstellungen"
 msgid "Custom options"
 msgstr "Benutzerdefinierte Einstellungen"
 
+#: lazarusidestrconsts.liscustomoptions3
+msgid "Custom Options"
+msgstr ""
+
 #: lazarusidestrconsts.liscustomprogram
 msgid "Custom Program"
 msgstr "Benutzerdefiniertes Programm"
@@ -7825,6 +7870,10 @@ msgstr "Delphi-kompatible Ressourcen. Empfohlen."
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
 msgstr ""
 
+#: lazarusidestrconsts.lisdesktops
+msgid "Desktops ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdestinationdirectory
 msgid "Destination directory"
 msgstr "Zielverzeichnis"
@@ -8045,6 +8094,12 @@ msgstr "Export ..."
 msgctxt "lazarusidestrconsts.lisdlgimport"
 msgid "Import ..."
 msgstr "Import ..."
+
+#: lazarusidestrconsts.lisdlgmore
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisdlgmore"
+msgid "More ..."
+msgstr "Mehr ..."
 
 #: lazarusidestrconsts.lisdlgopen
 msgctxt "lazarusidestrconsts.lisdlgopen"
@@ -8744,9 +8799,18 @@ msgstr "Export ..."
 msgid "Export All Items to File"
 msgstr "Alle Elemente in Datei exportieren"
 
+#: lazarusidestrconsts.lisexportenvironmentoptions
+msgctxt "lazarusidestrconsts.lisexportenvironmentoptions"
+msgid "Export environment options"
+msgstr ""
+
 #: lazarusidestrconsts.lisexporthtml
 msgid "Export as HTML"
 msgstr "Als HTML exportieren"
+
+#: lazarusidestrconsts.lisexportimport
+msgid "Export / Import"
+msgstr "Export / Import"
 
 #: lazarusidestrconsts.lisexportlist
 msgid "Export list"
@@ -9550,15 +9614,13 @@ msgctxt "lazarusidestrconsts.lisid"
 msgid "ID"
 msgstr "ID"
 
-#: lazarusidestrconsts.lisidcadd
-msgctxt "lazarusidestrconsts.lisidcadd"
-msgid "Add"
-msgstr "Hinzufügen"
+#: lazarusidestrconsts.lisidcaddition
+msgid "Addition"
+msgstr ""
 
-#: lazarusidestrconsts.lisidcopen
-msgctxt "lazarusidestrconsts.lisidcopen"
-msgid "Open"
-msgstr "Öffnen"
+#: lazarusidestrconsts.lisidcopening
+msgid "Opening"
+msgstr ""
 
 #: lazarusidestrconsts.liside
 msgid "IDE"
@@ -9692,6 +9754,12 @@ msgstr ""
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr "Wenn Sie zwei verschiedene Lazarus-Versionen verwenden wollen, müssen Sie das zweite Lazarus mit dem Kommandozeilenparameter primary-config-path oder pcp starten.%sZum Beispiel:"
 
+#: lazarusidestrconsts.lisignore
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisignore"
+msgid "Ignore"
+msgstr "Übergehen"
+
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
 msgstr "Alle übergehen"
@@ -9730,9 +9798,10 @@ msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr "Wichtig"
 
-#: lazarusidestrconsts.lisimportexport
-msgid "Import / Export"
-msgstr "Import / Export"
+#: lazarusidestrconsts.lisimportenvironmentoptions
+msgctxt "lazarusidestrconsts.lisimportenvironmentoptions"
+msgid "Import environment options"
+msgstr "Umgebungseinstellungen importieren"
 
 #: lazarusidestrconsts.lisimportfromfile
 msgid "Import from File"
@@ -11053,10 +11122,6 @@ msgstr "Link-Ziel"
 msgid "list of all case values"
 msgstr "Liste aller Case-Werte"
 
-#: lazarusidestrconsts.lisloadedsuccessfully
-msgid "Loaded successfully"
-msgstr "Erfolgreich geladen"
-
 #: lazarusidestrconsts.lisloadingfailed
 msgid "Loading %s failed."
 msgstr "Laden von %s fehlgeschlagen"
@@ -11716,6 +11781,10 @@ msgstr "Ressourcenstring erzeugen ..."
 msgctxt "lazarusidestrconsts.lismenunewcomponent"
 msgid "New Component"
 msgstr "Neue Komponente"
+
+#: lazarusidestrconsts.lismenunewcustom
+msgid "New %s"
+msgstr ""
 
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"
@@ -12489,10 +12558,6 @@ msgstr "Ändern"
 msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Weiter"
-
-#: lazarusidestrconsts.lismore2
-msgid "More ..."
-msgstr "Mehr ..."
 
 #: lazarusidestrconsts.lismoresub
 msgctxt "lazarusidestrconsts.lismoresub"
@@ -13312,7 +13377,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddfilesfromfilesystem
 msgid "Add Files from File System"
-msgstr ""
+msgstr "Dateien aus dem Dateisystem hinzufügen"
 
 #: lazarusidestrconsts.lispckeditaddotheritems
 msgid "Add other items"
@@ -13830,7 +13895,7 @@ msgstr "Die Datei \"%s\"%sbefindet sich derzeit nicht im Unitpfad des Packages.%
 
 #: lazarusidestrconsts.lispkgedmorefunctionsforthepackage
 msgid "More functions for the package"
-msgstr ""
+msgstr "Weitere Funktionen für das Package"
 
 #: lazarusidestrconsts.lispkgfiletypebinary
 msgctxt "lazarusidestrconsts.lispkgfiletypebinary"
@@ -13916,7 +13981,7 @@ msgstr "Zirkuläre Abhängigkeiten gefunden"
 
 #: lazarusidestrconsts.lispkgmangcompilepackage
 msgid "Compile package %s"
-msgstr ""
+msgstr "Kompiliere Package %s"
 
 #: lazarusidestrconsts.lispkgmangdeletefailed
 msgid "Delete failed"
@@ -15458,10 +15523,6 @@ msgstr "Änderungen in Projekt %s speichern?"
 msgid "Save current editor file"
 msgstr "Aktuelle Datei im Editor speichern"
 
-#: lazarusidestrconsts.lissavedsuccessfully
-msgid "Saved successfully"
-msgstr "Erfolgreich gespeichert"
-
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"
 msgstr "Gespeichert mit IDE-Einstellungen"
@@ -15886,13 +15947,13 @@ msgstr "Treffer"
 msgid "Sorry, this type is not yet implemented"
 msgstr "Entschuldigung, dieser Typ ist (noch) nicht implementiert"
 
-#: lazarusidestrconsts.lissort
-msgid "Sort"
-msgstr "Sortieren"
-
 #: lazarusidestrconsts.lissortforscope
 msgid "Sort for scope"
 msgstr "Nach Bereich sortieren"
+
+#: lazarusidestrconsts.lissorting
+msgid "Sorting"
+msgstr ""
 
 #: lazarusidestrconsts.lissortselascending
 msgid "Ascending"
@@ -17996,6 +18057,10 @@ msgstr "XML-Fehler"
 msgid "XML parser error in file %s%sError: %s"
 msgstr "XML-Parserfehler in der Datei %s%sFehler: %s"
 
+#: lazarusidestrconsts.lisyes
+msgid "Yes"
+msgstr ""
+
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"
 msgstr "Sie können das für individuelle Formulare deaktivieren über den Package-Editor."
@@ -20012,3 +20077,4 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
+

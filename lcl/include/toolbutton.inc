@@ -155,20 +155,13 @@ begin
       if (Style = tbsCheck) then
         Down := not Down;
       Click;
-
-      //Mouse position can have changed after click (e.g. through a modal dialog)
-      if FMouseInControl then
-      begin
-        Pt := ScreenToClient(Mouse.CursorPos);
-        if not PtInRect(Rect(0,0,Width,Height), Pt) then
-          SetMouseInControl(false);
-      end;
+      //DON'T USE the tool button (Self) after the click call because it could
+      //have been destroyed in the OnClick event handler (e.g. Lazarus IDE does it)!
     end;
   end;
 end;
 
-procedure TToolButton.Notification(AComponent: TComponent;
-  Operation: TOperation);
+procedure TToolButton.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if Operation = opRemove then

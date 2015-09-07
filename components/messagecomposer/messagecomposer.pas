@@ -15,7 +15,8 @@
   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
   Abstract:
-  This unit is a message dialog composer for Lazarus/FPC. It take in account all message dialogs platform indipendent.
+  This unit is a message dialog composer for Lazarus/FPC.
+  It takes into account all message dialogs platform indpendently.
 }
 
 unit MessageComposer;
@@ -26,7 +27,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, LCLType, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ExtCtrls, Spin, Grids, ActnList, ComCtrls, Buttons, EditBtn,
+  StdCtrls, ExtCtrls, Spin, Grids, ActnList, Buttons, EditBtn,
   IDECommands, MenuIntf, LazIDEIntf, SrcEditorIntf;
 
 type
@@ -101,9 +102,9 @@ type
     XSpinEdit: TSpinEdit;
     YSpinEdit: TSpinEdit;
     procedure AddConstExecute(Sender: TObject);
-    procedure ButtonsCheckGroupItemClick(Sender: TObject; Index: integer);
+    procedure ButtonsCheckGroupItemClick(Sender: TObject; {%H-}Index: integer);
     procedure ButtonsStringGridSelectEditor(Sender: TObject; aCol,
-      aRow: Integer; var Editor: TWinControl);
+      {%H-}aRow: Integer; var Editor: TWinControl);
     procedure DelConstExecute(Sender: TObject);
     procedure GetMessageForSourceExecute(Sender: TObject);
     procedure GetParamsFmtExecute(Sender: TObject);
@@ -130,6 +131,47 @@ implementation
 const
   cMessageComposer = 'Message Composer';
   DoubleSpace = '  ';
+  idxPageIf = 0;
+  idxPageCase = 1;
+  idxPageString = 2;
+
+type
+  TComposedMsgKind = (
+    cmkMsgDlgSimple,             //MessageDlg[Msg, DlgType, Buttons(TMsgDlgButtons), HelpCtx]
+    cmkMsgDlgCaption,            //MessageDlg[Caption, Msg, DlgType, Buttons(TMsgDlgButtons), HelpCtx]
+    cmkMsgDlgCaptionHelpKeyWord, //MessageDlg[Caption, Msg, DlgType, Buttons(TMsgDlgButtons), HelpKeyword]
+    cmkMsgDlgPosSimple,          //MessageDlgPos[Msg, DlgType, Buttons(TMsgDlgButtons), HelpCtx, X, Y]
+    cmkMsgDlgPosHelpSimple,      //MessageDlgPosHelp[Msg, DlgType, Buttons(TMsgDlgButtons), HelpCtx, X, Y, HelpFileName]
+    cmkQDlgHelpCtx,              //QuestionDlg[Caption, Msg, DlgType, Buttons(array of const), HelpCtx]
+    cmkQDlgHelpKeyword,          //QuestionDlg[Caption, Msg, DlgType, Buttons(array of const), HelpKeyword]
+    cmkShowMsg,                  //ShowMessage[Msg: string];
+    cmkShowMsgFmt,               //ShowMessageFmt[Msg, Params(array of const)];
+    cmkShowMsgPos,               //ShowMessagePos[Msg, X, Y];
+    cmkInpQMask,                 //InputQuery[Caption, Prompt, MaskInput(Boolean), Value(String)]
+    cmkInpQSimple,               //InputQuery[Caption, Prompt, Value(String)]
+    cmkInpBox,                   //InputBox[Caption, Prompt, Default]
+    cmkPasswBox                  //PasswordBox[Caption, Prompt]
+  );
+
+  const ComposedMsgStrings: array[TComposedMsgKind] of string = (
+    'MessageDlg[Msg, DlgType, Buttons(TMsgDlgButtons), HelpCtx]',
+    'MessageDlg[Caption, Msg, DlgType, Buttons(TMsgDlgButtons), HelpCtx]',
+    'MessageDlg[Caption, Msg, DlgType, Buttons(TMsgDlgButtons), HelpKeyword]',
+    'MessageDlgPos[Msg, DlgType, Buttons(TMsgDlgButtons), HelpCtx, X, Y]',
+    'MessageDlgPosHelp[Msg, DlgType, Buttons(TMsgDlgButtons), HelpCtx, X, Y, HelpFileName]',
+    'QuestionDlg[Caption, Msg, DlgType, Buttons(array of const), HelpCtx]',
+    'QuestionDlg[Caption, Msg, DlgType, Buttons(array of const), HelpKeyword]',
+    'ShowMessage[Msg: string];',
+    'ShowMessageFmt[Msg, Params(array of const)];',
+    'ShowMessagePos[Msg, X, Y];',
+    'InputQuery[Caption, Prompt, MaskInput(Boolean), Value(String)]',
+    'InputQuery[Caption, Prompt, Value(String)]',
+    'InputBox[Caption, Prompt, Default]',
+    'PasswordBox[Caption, Prompt]'
+  );
+
+
+
 
 resourcestring
   SMessageComposerMenuCaption = 'Message Composer ...';
@@ -224,10 +266,13 @@ end;
 
 procedure TFormMessagesComposer.ButtonsStringGridSelectEditor(Sender: TObject; aCol,
   aRow: Integer; var Editor: TWinControl);
+var
+  ComposedMsgKind: TComposedMsgKind;
 begin
   if aCol<>1 then exit;
-  case KindMessageComboBox.ItemIndex of
-    5, 6: begin
+  ComposedMsgKind := TComposedMsgKind(KindMessageComboBox.ItemIndex);
+  case ComposedMsgKind of
+    cmkQDlgHelpCtx, cmkQDlgHelpKeyword: begin
       Editor := TStringGrid(Sender).EditorByStyle(cbsPickList);
       TPickListCellEditor(Editor).Style := csDropDownList;
       TPickListCellEditor(Editor).Clear;
@@ -243,7 +288,7 @@ begin
       TPickListCellEditor(Editor).Items.Add(ModalResultStr[mrNoToAll]);
       TPickListCellEditor(Editor).Items.Add(ModalResultStr[mrYesToAll]);
     end;
-    8: begin
+    cmkShowMsgFmt: begin
       Editor := TStringGrid(Sender).EditorByStyle(cbsAuto);
 //D Decimal format. Precision digits in it
 //E Scientific format. Args is a Floating point value. Precision is used to specify the total number of decimals (exponent is3 digits)
@@ -274,7 +319,11 @@ var Msg, MsgCaption, MsgHelpKeyword, HelpFileName, Prompt, MsgDefault,
     i: integer;
     intParam: integer;
     floatParam: double;
+    ComposedMsgKind: TComposedMsgKind;
+const
+  BoolS: Array[Boolean] of String = ('False','True');
 begin
+  ComposedMsgKind := TComposedMsgKind(KindMessageComboBox.ItemIndex);
   Msg := QuotedStr(MsgMemo.Lines.Text);
 
   if Copy(Msg,Length(Msg)-Length(LineEnding),Length(LineEnding))=LineEnding then
@@ -314,7 +363,7 @@ begin
     if ButtonsCheckGroup.Checked[11] then
       MsgButtons := MsgButtons+' mbClose,';
   end else begin //maybe QuestionDlg() or ShowMessageFmt();
-    if KindMessageComboBox.ItemIndex=8 then begin //ShowMessageFmt();
+    if ComposedMsgKind=cmkShowMsgFmt then begin //ShowMessageFmt();
       for i := 1 to ButtonsStringGrid.RowCount-1 do begin
       //'D', 'E', 'F', 'G', 'M', 'N', 'P', 'S', 'U', 'X' format
         strParam := #32;
@@ -371,34 +420,34 @@ begin
   Prompt := QuotedStr(PromptEdit.Text);
   MsgDefault := QuotedStr(DefaultEdit.Text);
   Value := ValueEdit.Text;//user must knows Value var in his source
-  case KindMessageComboBox.ItemIndex of
-    0: srcMessage := 'MessageDlg('+Msg+', '+DlgType+', '+MsgButtons+','+HelpCtx+')';
-    1: srcMessage := 'MessageDlg('+MsgCaption+', '+Msg+', '+DlgType+', '+
+  case ComposedMsgKind of
+    cmkMsgDlgSimple: srcMessage := 'MessageDlg('+Msg+', '+DlgType+', '+MsgButtons+','+HelpCtx+')';
+    cmkMsgDlgCaption: srcMessage := 'MessageDlg('+MsgCaption+', '+Msg+', '+DlgType+', '+
                                    MsgButtons+', '+HelpCtx+')';
-    2: srcMessage := 'MessageDlg('+MsgCaption+', '+Msg+', '+DlgType+', '+
+    cmkMsgDlgCaptionHelpKeyWord: srcMessage := 'MessageDlg('+MsgCaption+', '+Msg+', '+DlgType+', '+
                                    MsgButtons+', '+MsgHelpKeyword+')';
-    3: srcMessage := 'MessageDlgPos('+Msg+', '+DlgType+', '+MsgButtons+', '+
+    cmkMsgDlgPosSimple: srcMessage := 'MessageDlgPos('+Msg+', '+DlgType+', '+MsgButtons+', '+
                                       HelpCtx+', '+X+', '+Y+')';
-    4: srcMessage := 'MessageDlgPosHelp('+Msg+', '+DlgType+', '+MsgButtons+', '+
+    cmkMsgDlgPosHelpSimple: srcMessage := 'MessageDlgPosHelp('+Msg+', '+DlgType+', '+MsgButtons+', '+
                                           HelpCtx+', '+X+', '+Y+', '+HelpFileName+')';
-    5: srcMessage := 'QuestionDlg('+MsgCaption+', '+Msg+', '+DlgType+', '+
+    cmkQDlgHelpCtx: srcMessage := 'QuestionDlg('+MsgCaption+', '+Msg+', '+DlgType+', '+
                                     MsgButtons+', '+HelpCtx+')';
-    6: srcMessage := 'QuestionDlg('+MsgCaption+', '+Msg+', '+DlgType+', '+
+    cmkQDlgHelpKeyword: srcMessage := 'QuestionDlg('+MsgCaption+', '+Msg+', '+DlgType+', '+
                                     MsgButtons+', '+MsgHelpKeyword+')';
-    7: srcMessage := 'ShowMessage('+Msg+')';
-    8: srcMessage := 'ShowMessageFmt('+Msg+', '+MsgButtons+')';
-    9: srcMessage := 'ShowMessagePos('+Msg+', '+X+', '+Y+')';
-    10: srcMessage := 'InputQuery('+MsgCaption+', '+Prompt+', '+
-                       LowerCase(BoolToStr(MaskInputCheckBox.Checked))+', '+Value+')';
-    11: srcMessage := 'InputQuery('+MsgCaption+', '+Prompt+', '+Value+')';
-    12: srcMessage := 'InputBox('+MsgCaption+', '+Prompt+', '+MsgDefault+')';
-    13: srcMessage := 'PasswordBox('+MsgCaption+', '+Prompt+')'
+    cmkShowMsg: srcMessage := 'ShowMessage('+Msg+')';
+    cmkShowMsgFmt: srcMessage := 'ShowMessageFmt('+Msg+', '+MsgButtons+')';
+    cmkShowMsgPos: srcMessage := 'ShowMessagePos('+Msg+', '+X+', '+Y+')';
+    cmkInpQMask: srcMessage := 'InputQuery('+MsgCaption+', '+Prompt+', '+
+                                BoolS[MaskInputCheckBox.Checked]+', '+Value+')';
+    cmkInpQSimple: srcMessage := 'InputQuery('+MsgCaption+', '+Prompt+', '+Value+')';
+    cmkInpBox: srcMessage := 'InputBox('+MsgCaption+', '+Prompt+', '+MsgDefault+')';
+    cmkPasswBox: srcMessage := 'PasswordBox('+MsgCaption+', '+Prompt+')'
   end;
 
   if SourceWrapperGroupBox.Enabled then begin //no showmessages
     if (IfThenRadioButton.Checked)or(IfThenElseRadioButton.Checked) then begin
       srcMessage := 'if '+srcMessage+' = ';
-      if IfResultComboBox.Enabled then
+      if SourceNoteBook.PageIndex <> idxPageString then
         srcMessage := srcMessage+IfResultComboBox.Text
       else
         srcMessage := srcMessage+QuotedStr(StringResultEdit.Text);
@@ -450,8 +499,10 @@ var strtmp: string;
     ListParams: TStringList;
     indx: integer;
     chrtmp: Char;
+    ComposedMsgKind: TComposedMsgKind;
 begin
-  if KindMessageComboBox.ItemIndex<>8 then exit;
+  ComposedMsgKind := TComposedMsgKind(KindMessageComboBox.ItemIndex);
+  if ComposedMsgKind<>cmkShowMsgFmt then exit;
   ButtonsStringGrid.Cells[0, 0] := 'Params (array of const)';
   ButtonsStringGrid.Cells[1, 0] := 'Values';
   ButtonsStringGrid.FixedCols := 1;
@@ -482,14 +533,21 @@ end;
 procedure TFormMessagesComposer.MessageSetupExecute(Sender: TObject);
 var indx: integer;
     ListResult: TStringList;
+    ComposedMsgKind: TComposedMsgKind;
 begin
-  if KindMessageComboBox.ItemIndex in [0,1,2,3,4] then
+  ComposedMsgKind := TComposedMsgKind(KindMessageComboBox.ItemIndex);
+  if ComposedMsgKind in [cmkMsgDlgSimple,cmkMsgDlgCaption,cmkMsgDlgCaptionHelpKeyWord,
+                         cmkMsgDlgPosSimple,cmkMsgDlgPosHelpSimple] then
     ButtonsNotebook.PageIndex := 0 // ButtonsCheckGroup
   else
     ButtonsNotebook.PageIndex := 1; // ButtonsPanel
 //Msg
-  case KindMessageComboBox.ItemIndex of
-    0,1,2,3,4,5,6,7,8,9: begin
+  case ComposedMsgKind of
+    cmkMsgDlgSimple,cmkMsgDlgCaption,cmkMsgDlgCaptionHelpKeyWord,
+    cmkMsgDlgPosSimple,cmkMsgDlgPosHelpSimple,
+    cmkQDlgHelpCtx,cmkQDlgHelpKeyword,cmkShowMsg,
+    cmkShowMsgFmt,cmkShowMsgPos:
+    begin
       MsgMemo.Color := clWindow;
       MsgMemo.Enabled := true;
     end;
@@ -499,8 +557,15 @@ begin
     end;
   end;
 //Caption
-  case KindMessageComboBox.ItemIndex of
-    1,2,5,6,10,11,12,13: begin
+  case ComposedMsgKind of
+    cmkMsgDlgCaption,
+    cmkMsgDlgCaptionHelpKeyWord,
+    cmkQDlgHelpCtx,
+    cmkQDlgHelpKeyword,
+    cmkInpQMask,
+    cmkInpQSimple,
+    cmkInpBox,
+    cmkPasswBox: begin
       CaptionEdit.Color := clWindow;
       CaptionEdit.Enabled := true;
     end;
@@ -510,8 +575,14 @@ begin
     end;
   end;
 //DlgType;
-  case KindMessageComboBox.ItemIndex of
-    0,1,2,3,4,5,6: begin
+  case ComposedMsgKind of
+    cmkMsgDlgSimple,
+    cmkMsgDlgCaption,
+    cmkMsgDlgCaptionHelpKeyWord,
+    cmkMsgDlgPosSimple,
+    cmkMsgDlgPosHelpSimple,
+    cmkQDlgHelpCtx,
+    cmkQDlgHelpKeyword: begin
       DlgTypeComboBox.Color := clWindow;
       DlgTypeComboBox.Enabled := true;
     end;
@@ -521,8 +592,12 @@ begin
     end;
   end;
 //HelpContext
-  case KindMessageComboBox.ItemIndex of
-    0,1,3,4,5: begin
+  case ComposedMsgKind of
+    cmkMsgDlgSimple,
+    cmkMsgDlgCaption,
+    cmkMsgDlgPosSimple,
+    cmkMsgDlgPosHelpSimple,
+    cmkQDlgHelpCtx: begin
       HelpContextSpinEdit.Color := clWindow;
       HelpContextSpinEdit.Enabled := true;
     end;
@@ -532,8 +607,9 @@ begin
     end;
   end;
 //HelpKeyword
-  case KindMessageComboBox.ItemIndex of
-    2,6: begin
+  case ComposedMsgKind of
+    cmkMsgDlgCaptionHelpKeyWord,
+    cmkQDlgHelpKeyword: begin
       HelpKeyWordEdit.Color := clWindow;
       HelpKeyWordEdit.Enabled := true;
     end;
@@ -543,8 +619,10 @@ begin
     end;
   end;
 //Position X Y
-  case KindMessageComboBox.ItemIndex of
-    3,4,9: begin
+  case ComposedMsgKind of
+    cmkMsgDlgPosSimple,
+    cmkMsgDlgPosHelpSimple,
+    cmkShowMsgPos: begin
       XSpinEdit.Color := clWindow;
       XSpinEdit.Enabled := true;
       YSpinEdit.Color := clWindow;
@@ -558,8 +636,8 @@ begin
     end;
   end;
 //HelpFileName
-  case KindMessageComboBox.ItemIndex of
-    4: begin
+  case ComposedMsgKind of
+    cmkMsgDlgPosHelpSimple: begin
       HelpFileNameEdit.Color := clWindow;
       HelpFileNameEdit.Enabled := true;
     end;
@@ -569,8 +647,8 @@ begin
     end;
   end;
 //Params (array of const)
-  case KindMessageComboBox.ItemIndex of
-    8: begin
+  case ComposedMsgKind of
+    cmkShowMsgFmt: begin
       GetParamsFmt.Execute;
     end;
     else begin
@@ -581,8 +659,11 @@ begin
     end;
   end;
 //Prompt
-  case KindMessageComboBox.ItemIndex of
-    10,11,12,13: begin
+  case ComposedMsgKind of
+    cmkInpQMask,
+    cmkInpQSimple,
+    cmkInpBox,
+    cmkPasswBox: begin
       PromptEdit.Color := clWindow;
       PromptEdit.Enabled := true;
     end;
@@ -592,8 +673,8 @@ begin
     end;
   end;
 //MaskInput
-  case KindMessageComboBox.ItemIndex of
-    10: begin
+  case ComposedMsgKind of
+    cmkInpQMask: begin
       MaskInputCheckBox.Enabled := true;
     end;
     else begin
@@ -601,8 +682,9 @@ begin
     end;
   end;
 //Value
-  case KindMessageComboBox.ItemIndex of
-    10,11: begin
+  case ComposedMsgKind of
+    cmkInpQMask,
+    cmkInpQSimple: begin
       ValueEdit.Color := clWindow;
       ValueEdit.Enabled := true;
     end;
@@ -612,8 +694,8 @@ begin
     end;
   end;
 //Default
-  case KindMessageComboBox.ItemIndex of
-    12: begin
+  case ComposedMsgKind of
+    cmkInpBox: begin
       DefaultEdit.Color := clWindow;
       DefaultEdit.Enabled := true;
     end;
@@ -626,9 +708,14 @@ begin
 /////  Results and Source Wrapper for message //////
 
 //InputBox(); PasswordBox();
-  case KindMessageComboBox.ItemIndex of
-    12,13: begin
-      SourceNotebook.PageIndex := 2;
+  case ComposedMsgKind of
+    cmkInpBox,
+    cmkPasswBox: begin
+      SourceNotebook.PageIndex := idxPageString;
+      if CaseOfEndRadioButton.Checked then IfThenRadioButton.Checked := True;
+      if CaseOfEndElseRadioButton.Checked then IfThenElseRadioButton.Checked := True;
+      CaseOfEndRadioButton.Enabled := False;
+      CaseOfEndElseRadioButton.Enabled := False;
       //StringResultEdit.Enabled := true;
       //StringResultEdit.Color := clWindow;
       //IfResultComboBox.Enabled := false;
@@ -638,10 +725,12 @@ begin
       //CaseOfEndRadioButton.Enabled := false;
     end;
     else begin
+      CaseOfEndRadioButton.Enabled := True;
+      CaseOfEndElseRadioButton.Enabled := True;
       if IfThenRadioButton.Checked or IfThenElseRadioButton.Checked then
-        SourceNotebook.PageIndex := 0
+        SourceNotebook.PageIndex := idxPageIf
       else
-        SourceNotebook.PageIndex := 1;
+        SourceNotebook.PageIndex := idxPageCase;
       //StringResultEdit.Enabled := false;
       //StringResultEdit.Color := clBtnFace;
       //IfResultComboBox.Enabled := true;
@@ -653,15 +742,21 @@ begin
   end;
 
 //ShowMessage(); ShowMessageFmt(); ShowMessagePos();
-  case KindMessageComboBox.ItemIndex of
-    7,8,9: SourceWrapperGroupBox.Enabled := false;
+  case ComposedMsgKind of
+    cmkShowMsg,
+    cmkShowMsgFmt,
+    cmkShowMsgPos: SourceWrapperGroupBox.Enabled := false;
     else
       SourceWrapperGroupBox.Enabled := true;
   end;
 
 //MessageDlg() Result
-  case KindMessageComboBox.ItemIndex of
-    0,1,2,3,4: begin
+  case ComposedMsgKind of
+    cmkMsgDlgSimple,
+    cmkMsgDlgCaption,
+    cmkMsgDlgCaptionHelpKeyWord,
+    cmkMsgDlgPosSimple,
+    cmkMsgDlgPosHelpSimple: begin
       ListResult := TStringList.Create;
       for indx := 0 to ButtonsCheckGroup.Items.Count-1 do
         if ButtonsCheckGroup.Checked[indx] then begin
@@ -702,8 +797,9 @@ begin
   end;
 
 //QuestionDlg() Result
-  case KindMessageComboBox.ItemIndex of
-    5,6: begin
+  case ComposedMsgKind of
+    cmkQDlgHelpCtx,
+    cmkQDlgHelpKeyword: begin
       ListResult := TStringList.Create;
       ListResult.Assign(ButtonsStringGrid.Cols[1]);
       ListResult.Delete(0);
@@ -720,8 +816,9 @@ begin
   end;
 
 //InputQuery() Result
-  case KindMessageComboBox.ItemIndex of
-    10,11: if CaseResultCheckGroup.Items[0]<>'false' then begin
+  case ComposedMsgKind of
+    cmkInpQMask,
+    cmkInpQSimple: if (CaseResultCheckGroup.Items.Count=0) or (CaseResultCheckGroup.Items[0]<>'false') then begin
       CaseResultCheckGroup.Items.Clear;
       CaseResultCheckGroup.Items.Add('false');
       CaseResultCheckGroup.Items.Add('true');
@@ -731,6 +828,8 @@ begin
     end;
   end;
   ButtonsStringGrid.AutoAdjustColumns;
+  ButtonsPanel.Visible := not (ComposedMsgKind in [cmkShowMsg,cmkShowMsgPos,
+                                 cmkInpQMask,cmkInpQSimple,cmkInpBox,cmkPasswBox]);
 end;
 
 procedure TFormMessagesComposer.MessagesInitExecute(Sender: TObject);
@@ -743,6 +842,9 @@ begin
   XSpinEdit.Width := 60;
   YSpinEdit.Width := 60;
 
+  KindMessageComboBox.Clear;
+  KindMessageCombobox.Items.AddStrings(ComposedMsgStrings);
+  KindMessageComboBox.ItemIndex := 0;
   Caption := SMessageComposerCaption;
   CaptionLabel.Caption := SDlgCaption;
   DlgTypeLabel.Caption := SDlgType;
@@ -770,13 +872,15 @@ begin
 end;
 
 procedure TFormMessagesComposer.SetIfOrCaseExecute(Sender: TObject);
+var
+  ComposedMsgKind: TComposedMsgKind;
 begin
-  if (KindMessageComboBox.ItemIndex = 12)or
-     (KindMessageComboBox.ItemIndex = 13) then exit;
+  ComposedMsgKind := TComposedMsgKind(KindMessageComboBox.ItemIndex);
+  if (ComposedMsgKind in [cmkInpBox, cmkPasswBox]) then exit;
   if IfThenRadioButton.Checked or IfThenElseRadioButton.Checked then
-    SourceNotebook.PageIndex := 0
+    SourceNotebook.PageIndex := idxPageIf
   else
-    SourceNotebook.PageIndex := 1;
+    SourceNotebook.PageIndex := idxPageCase;
 end;
 
 procedure TFormMessagesComposer.TestExecute(Sender: TObject);
@@ -786,6 +890,7 @@ var Msg, MsgCaption, MsgHelpKeyword, HelpFileName, Prompt,
     MsgButtons: TMsgDlgButtons;
     HelpCtx: Longint;
     X, Y: integer;
+    ComposedMsgKind: TComposedMsgKind;
 begin
   Msg := MsgMemo.Lines.Text;
   DlgType := TMsgDlgType(DlgTypeComboBox.ItemIndex);
@@ -824,23 +929,24 @@ begin
   Value := ValueEdit.Text;
   HelpFileName:='';
   MsgHelpKeyword:='';
-  case KindMessageComboBox.ItemIndex of
-    0: MessageDlg(Msg, DlgType, MsgButtons, HelpCtx);
-    1: MessageDlg(MsgCaption, Msg, DlgType, MsgButtons, HelpCtx);
-    2: MessageDlg(MsgCaption, Msg, DlgType, MsgButtons, MsgHelpKeyword);
-    3: MessageDlgPos(Msg, DlgType, MsgButtons, HelpCtx, X, Y);
-    4: MessageDlgPosHelp(Msg, DlgType, MsgButtons, HelpCtx, X, Y, HelpFileName);
-    5: QuestionDlg(MsgCaption, Msg+' ('+SNotImplementedYet+')', DlgType, [mrYes, 'Yes', mrNo, 'No',
+  ComposedMsgKind := TComposedMsgKind(KindMessageComboBox.ItemIndex);
+  case ComposedMsgKind of
+    cmkMsgDlgSimple: MessageDlg(Msg, DlgType, MsgButtons, HelpCtx);
+    cmkMsgDlgCaption: MessageDlg(MsgCaption, Msg, DlgType, MsgButtons, HelpCtx);
+    cmkMsgDlgCaptionHelpKeyWord: MessageDlg(MsgCaption, Msg, DlgType, MsgButtons, MsgHelpKeyword);
+    cmkMsgDlgPosSimple: MessageDlgPos(Msg, DlgType, MsgButtons, HelpCtx, X, Y);
+    cmkMsgDlgPosHelpSimple: MessageDlgPosHelp(Msg, DlgType, MsgButtons, HelpCtx, X, Y, HelpFileName);
+    cmkQDlgHelpCtx: QuestionDlg(MsgCaption, Msg+' ('+SNotImplementedYet+')', DlgType, [mrYes, 'Yes', mrNo, 'No',
        mrCancel, 'Cancel'], HelpCtx);
-    6: QuestionDlg(MsgCaption, Msg+' ('+SNotImplementedYet+')', DlgType, [mrYes, 'Yes', mrNo, 'No',
+    cmkQDlgHelpKeyword: QuestionDlg(MsgCaption, Msg+' ('+SNotImplementedYet+')', DlgType, [mrYes, 'Yes', mrNo, 'No',
        mrCancel, 'Cancel'], HelpKeyword);
-    7: ShowMessage(Msg);
-    8: ShowMessageFmt(Msg+' ('+SNotImplementedYet+')', ['Yes','No','Cancel']);
-    9: ShowMessagePos(Msg, X, Y);
-    10: InputQuery(MsgCaption, Prompt, MaskInputCheckBox.Checked, Value);
-    11: InputQuery(MsgCaption, Prompt, Value);
-    12: InputBox(Caption, Prompt, MsgDefault);
-    13: PasswordBox(MsgCaption, Prompt)
+    cmkShowMsg: ShowMessage(Msg);
+    cmkShowMsgFmt: ShowMessageFmt(Msg+' ('+SNotImplementedYet+')', ['Yes','No','Cancel']);
+    cmkShowMsgPos: ShowMessagePos(Msg, X, Y);
+    cmkInpQMask: InputQuery(MsgCaption, Prompt, MaskInputCheckBox.Checked, Value);
+    cmkInpQSimple: InputQuery(MsgCaption, Prompt, Value);
+    cmkInpBox: InputBox(Caption, Prompt, MsgDefault);
+    cmkPasswBox: PasswordBox(MsgCaption, Prompt)
   end;
 end;
 

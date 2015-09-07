@@ -890,8 +890,12 @@ begin
   begin
     rocmb := NSView(TCocoaReadOnlyComboBox.alloc).lclInitWithCreateParams(AParams);
     if not Assigned(rocmb) then Exit;
+    rocmb.Owner := TCustomComboBox(AWinControl);
     rocmb.callback:=TLCLComboboxCallback.Create(rocmb, AWinControl);
     rocmb.list:=TCocoaComboBoxList.Create(nil, rocmb);
+    rocmb.setTarget(rocmb);
+    rocmb.setAction(objcselector('comboboxAction:'));
+    rocmb.selectItemAtIndex(rocmb.lastSelectedItemIndex);
     Result:=TLCLIntfHandle(rocmb);
   end
   else
@@ -924,12 +928,18 @@ end;
 
 class procedure TCocoaWSCustomComboBox.SetItemIndex(const ACustomComboBox:
   TCustomComboBox;NewIndex:integer);
+var
+  rocmb: TCocoaReadOnlyComboBox;
 begin
   if (not Assigned(ACustomComboBox)) or (not ACustomComboBox.HandleAllocated) then
     Exit;
 
   if ACustomComboBox.ReadOnly then
-    TCocoaReadOnlyComboBox(ACustomComboBox.Handle).selectItemAtIndex(NewIndex)
+  begin
+    rocmb := TCocoaReadOnlyComboBox(ACustomComboBox.Handle);
+    rocmb.lastSelectedItemIndex := NewIndex;
+    rocmb.selectItemAtIndex(NewIndex);
+  end
   else
     TCocoaComboBox(ACustomComboBox.Handle).selectItemAtIndex(NewIndex);
 end;
@@ -1058,6 +1068,8 @@ class function TCocoaWSCustomGroupBox.CreateHandle(const AWinControl: TWinContro
 var
   box: TCocoaGroupBox;
   cap: NSString;
+  lGroupBoxContents: TCocoaCustomControl;
+  ns: NSRect;
 begin
   box := NSView(TCocoaGroupBox.alloc).lclInitWithCreateParams(AParams);
   if Assigned(box) then
@@ -1066,6 +1078,13 @@ begin
     cap := NSStringUTF8(AParams.Caption);
     box.setTitle(cap);
     cap.release;
+
+    // set a content view in order to be able to customize drawing for labels/color
+    ns := GetNSRect(AParams.X, AParams.Y, AParams.Width, AParams.Height);
+    lGroupBoxContents := TCocoaCustomControl(TCocoaCustomControl.alloc.initWithFrame(ns));
+    lGroupBoxContents.callback := TLCLCustomControlCallback.Create(lGroupBoxContents, AWinControl);
+    lGroupBoxContents.autorelease;
+    box.setContentView(lGroupBoxContents);
   end;
   Result := TLCLIntfHandle(box);
 end;

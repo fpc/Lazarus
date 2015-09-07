@@ -40,16 +40,15 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, contnrs, LazMethodList, TypInfo, types, FileProcs, BasicCodeTools,
-  CodeToolsStrConsts,
-  LazFileCache,
+  Classes, SysUtils, contnrs, TypInfo, types, FileProcs, LazFileUtils,
+  BasicCodeTools, CodeToolsStrConsts, LazFileCache, LazMethodList,
   EventCodeTool, CodeTree, CodeAtom, SourceChanger, DefineTemplates, CodeCache,
   ExprEval, LinkScanner, KeywordFuncLists, FindOverloads, CodeBeautifier,
   FindDeclarationCache, DirectoryCacher, AVL_Tree,
   PPUCodeTools, LFMTrees, DirectivesTree, CodeCompletionTemplater,
   PascalParserTool, CodeToolsConfig, CustomCodeTool, FindDeclarationTool,
   IdentCompletionTool, StdCodeTools, ResourceCodeTool, CodeToolsStructs,
-  CTUnitGraph, ExtractProcTool;
+  CTUnitGraph, ExtractProcTool, LazDbgLog;
 
 type
   TCodeToolManager = class;

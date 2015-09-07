@@ -29,8 +29,7 @@ program CodeCompletion;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CodeCache, CodeToolManager, DefineTemplates,
-  CodeToolsConfig;
+  SysUtils, CodeCache, CodeToolManager;
 
 const
   ConfigFilename = 'codetools.config';

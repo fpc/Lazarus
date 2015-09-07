@@ -33,10 +33,10 @@ uses
   InterfaceBase, GraphType,
   // private
   CocoaAll, CocoaPrivate, CocoaUtils, CocoaGDIObjects,
-  CocoaProc,
+  CocoaProc, cocoa_extra, CocoaWSMenus,
   // LCL
   LCLStrConsts, LMessages, LCLMessageGlue, LCLProc, LCLIntf, LCLType,
-  Controls, Forms, Themes,
+  Controls, Forms, Themes, Menus,
   IntfGraphics, Graphics, CocoaWSFactory;
 
 type
@@ -59,12 +59,17 @@ type
     constructor Create(AMimeType: string; ACocoaFormat: NSString; ADataType: TCocoaClipboardDataType);
   end;
 
+  TAppDelegate = objcclass(NSObject, NSApplicationDelegateProtocol)
+    procedure application_openFiles(sender: NSApplication; filenames: NSArray);
+  end;
+
   { TCocoaWidgetSet }
 
   TCocoaWidgetSet = class(TWidgetSet)
   private
     FTerminating: Boolean;
     FNSApp: NSApplication;
+    FNSApp_Delegate: TAppDelegate;
     FCurrentCursor: HCursor;
     FCaptureControl: HWND;
 
@@ -102,6 +107,9 @@ type
     function GetAppHandle: THandle; override;
     function CreateThemeServices: TThemeServices; override;
   public
+    // modal session
+    CurModalForm: TCustomForm;
+
     constructor Create; override;
     destructor Destroy; override;
 
@@ -129,7 +137,7 @@ type
     procedure FreeStockItems;
     procedure FreeSysColorBrushes;
 
-    procedure SetMainMenu(const AMenu: HMENU);
+    procedure SetMainMenu(const AMenu: HMENU; const ALCLMenu: TMenu);
 
     {todo:}
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;

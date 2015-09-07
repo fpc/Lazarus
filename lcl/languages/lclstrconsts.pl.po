@@ -415,6 +415,14 @@ msgstr "&Folder"
 msgid "Docking"
 msgstr ""
 
+#: lclstrconsts.rsdocopy
+msgid "Copy"
+msgstr ""
+
+#: lclstrconsts.rsdopaste
+msgid "Paste"
+msgstr ""
+
 #: lclstrconsts.rsduplicateiconformat
 msgid "Duplicate icon format."
 msgstr ""

@@ -5,7 +5,11 @@ unit lrEmailExportFilter;
 interface
 
 uses
-  Classes, SysUtils, LR_Class, lr_PreviewToolsAbstract, UTF8Process;
+  Classes, SysUtils, Forms, Controls,
+  // LazUtils
+  LazFileUtils, LazUTF8, UTF8Process,
+  // LazReport
+  LR_Class, lr_PreviewToolsAbstract;
 
 type
   TEmailApp = class;
@@ -91,8 +95,7 @@ resourcestring
 
 
 implementation
-uses Forms, lrEmailExportFilterSetup, Controls, LCLProc, FileUtil,
-  lrEmailAppFreeSoft
+uses lrEmailExportFilterSetup, lrEmailAppFreeSoft
   {$IFDEF WINDOWS}
     , lrEmailAppTheBat, lrEmailAppMS
   {$ENDIF}
@@ -217,11 +220,11 @@ var
   FEmailApp:TEmailApp;
 begin
   FilterClass:=nil;
-  for i:=0 to frFiltersCount - 1 do
-    if (frFilters[i].FilterDesc = AttachmentFormat) then
+  for i:=0 to ExportFilters.Count - 1 do
+    if (ExportFilters[i].FilterDesc = AttachmentFormat) then
     begin
-      FilterClass := frFilters[i].ClassRef;
-      SExt:=ExtractFileExt(frFilters[i].FilterExt);
+      FilterClass := ExportFilters[i].ClassRef;
+      SExt:=ExtractFileExt(ExportFilters[i].FilterExt);
       break;
     end;
   if not Assigned(FilterClass) then exit;

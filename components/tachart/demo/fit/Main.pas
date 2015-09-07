@@ -96,14 +96,17 @@ var
   s: TStream;
   fs: TFormatSettings;
   si: PChartDataItem;
+  line: String;
 begin
   if not SaveDialog.Execute then exit;
   fs := DefaultFormatSettings;
   fs.DecimalSeparator := '.';
   s := TFileStream.Create(SaveDialog.FileName, fmCreate);
   try
-    for si in ListChartSource do
-      s.WriteAnsiString(Format('%.9g'#9'%.9g'#13#10, [si^.X, si^.Y], fs));
+    for si in ListChartSource do begin
+      line := Format('%.9g'#9'%.9g'#13#10, [si^.X, si^.Y], fs);
+      s.WriteBuffer(line[1], Length(line));
+    end;
   finally
     s.Free;
   end;
@@ -250,6 +253,7 @@ begin
         Add(Format('a = %g', [FitSeries.Param[0]]));
         Add(Format('b = %g', [FitSeries.Param[1]]));
     end;
+    Add(Format('R-squared = %g', [FitSeries.GoodnessOfFit]));
     EndUpdate;
   end;
 end;
@@ -263,7 +267,6 @@ begin
     Items.Add(eq.Equation(fePolynomial).Params(POLY_PARAMS));
     Items.Add(eq.Equation(feLinear).Params(LIN_PARAMS));
     Items.Add(eq.Equation(feExp).Params(EXP_PARAMS));
-    Items.Add(eq.Equation(fePower).Params(PWR_PARAMS));
     Items.Add(eq.Equation(fePower).Params(PWR_PARAMS));
     ItemIndex := Ord(fePolynomial);
   end;

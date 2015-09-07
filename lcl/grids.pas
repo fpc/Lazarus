@@ -1625,12 +1625,14 @@ type
       procedure Clean(StartCol,StartRow,EndCol,EndRow: integer; CleanOptions: TGridZoneSet); overload;
       procedure CopyToClipboard(AUseSelection: boolean = false);
       procedure InsertRowWithValues(Index: Integer; Values: array of String);
-      procedure LoadFromCSVStream(AStream: TStream; ADelimiter: Char=','; WithHeader: boolean=true);
-      procedure LoadFromCSVFile(AFilename: string; ADelimiter: Char=','; WithHeader: boolean=true);
-      procedure SaveToCSVStream(AStream: TStream; ADelimiter: Char=','; WithHeader: boolean=true;
-                                VisibleColumnsOnly: boolean=false);
-      procedure SaveToCSVFile(AFileName: string; ADelimiter: Char=','; WithHeader: boolean=true;
-                                VisibleColumnsOnly: boolean=false);
+      procedure LoadFromCSVStream(AStream: TStream; ADelimiter: Char=',';
+        UseTitles: boolean=true; FromLine: Integer=0; SkipEmptyLines: Boolean=true);
+      procedure LoadFromCSVFile(AFilename: string; ADelimiter: Char=',';
+        UseTitles: boolean=true; FromLine: Integer=0; SkipEmptyLines: Boolean=true);
+      procedure SaveToCSVStream(AStream: TStream; ADelimiter: Char=',';
+        WriteTitles: boolean=true; VisibleColumnsOnly: boolean=false);
+      procedure SaveToCSVFile(AFileName: string; ADelimiter: Char=',';
+        WriteTitles: boolean=true; VisibleColumnsOnly: boolean=false);
 
       property Cells[ACol, ARow: Integer]: string read GetCells write SetCells;
       property Cols[index: Integer]: TStrings read GetCols write SetCols;
@@ -10853,56 +10855,67 @@ begin
 end;
 
 procedure TCustomStringGrid.LoadFromCSVStream(AStream: TStream;
-  ADelimiter: Char=','; WithHeader: boolean=true);
+  ADelimiter: Char=','; UseTitles: boolean=true; FromLine: Integer=0;
+  SkipEmptyLines: Boolean=true);
 var
   MaxCols: Integer = 0;
   MaxRows: Integer = 0;
+  LineCounter: Integer = -1;
 
   function RowOffset: Integer;
   begin
     // return row offset of current CSV record (MaxRows) which is 1 based
-    if withHeader then
+    if UseTitles then
       result := Max(0, FixedRows-1)  + Max(MaxRows-1, 0)
     else
-      result := FixedRows + Max(MaxRows-2, 0);
+      result := FixedRows + Max(MaxRows-1, 0);
   end;
 
   procedure NewRecord(Fields:TStringlist);
   var
     i, aRow: Integer;
   begin
+    inc(LineCounter);
+    if (LineCounter < FromLine) then
+      exit;
+
     if Fields.Count=0 then
       exit;
 
-    Inc(MaxRows);
-    if (MaxRows=1) then
-      // first record
-      if not WithHeader then
-        exit; // ... no header wanted
+    if SkipEmptyLines and (Fields.Count=1) and (Fields[0]='') then
+      exit;
 
     // make sure we have enough columns
     if MaxCols<Fields.Count then
       MaxCols := Fields.Count;
     if Columns.Enabled then begin
       while Columns.VisibleCount<MaxCols do
-          Columns.Add;
+        Columns.Add;
     end
     else begin
       if ColCount<MaxCols then
         ColCount := MaxCols;
     end;
 
-    // and rows ...
+    // setup columns captions if enabled by UseTitles
+    if (MaxRows = 0) then
+      if UseTitles then
+      begin
+        if Columns.Enabled then
+          for i:=0 to Fields.Count-1 do Columns[i].Title.Caption:=Fields[i]
+        else
+          for i:=0 to Fields.Count-1 do Cells[i, 0] := Fields[i];
+        inc(MaxRows);
+        exit;
+      end;
+
+    // Make sure we have enough rows
+    Inc(MaxRows);
     aRow := RowOffset;
     if aRow>RowCount-1 then
       RowCount := aRow + 20;
 
-    // setup columns captions of custom columns if they are enabled
-    if (MaxRows=1) and withHeader and Columns.Enabled then begin
-      for i:=0 to Fields.Count-1 do
-        Columns[i].Title.Caption:=Fields[i];
-    end;
-
+    // Copy line data to cells
     for i:=0 to Fields.Count-1 do
       Cells[i, aRow] := Fields[i];
   end;
@@ -10927,20 +10940,21 @@ begin
 end;
 
 procedure TCustomStringGrid.LoadFromCSVFile(AFilename: string;
-  ADelimiter: Char=','; WithHeader: boolean=true);
+  ADelimiter: Char=','; UseTitles: boolean=true; FromLine: Integer=0;
+  SkipEmptyLines: Boolean=true);
 var
   TheStream: TFileStreamUtf8;
 begin
   TheStream:=TFileStreamUtf8.Create(AFileName,fmOpenRead or fmShareDenyWrite);
   try
-    LoadFromCSVStream(TheStream, ADelimiter, WithHeader);
+    LoadFromCSVStream(TheStream, ADelimiter, UseTitles, FromLine, SkipEmptyLines);
   finally
     TheStream.Free;
   end;
 end;
 
 procedure TCustomStringGrid.SaveToCSVStream(AStream: TStream; ADelimiter: Char;
-  WithHeader: boolean=true; VisibleColumnsOnly: boolean=false);
+  WriteTitles: boolean=true; VisibleColumnsOnly: boolean=false);
 var
   i,j,StartRow: Integer;
   HeaderL, Lines: TStringList;
@@ -10950,7 +10964,7 @@ begin
     exit;
   Lines := TStringList.Create;
   try
-    if WithHeader then begin
+    if WriteTitles then begin
       if Columns.Enabled then begin
         if FixedRows>0 then begin
           HeaderL := TStringList.Create;
@@ -11012,13 +11026,13 @@ begin
 end;
 
 procedure TCustomStringGrid.SaveToCSVFile(AFileName: string; ADelimiter: Char;
-  WithHeader: boolean=true; VisibleColumnsOnly: boolean=false);
+  WriteTitles: boolean=true; VisibleColumnsOnly: boolean=false);
 var
   TheStream: TFileStreamUtf8;
 begin
   TheStream:=TFileStreamUtf8.Create(AFileName,fmCreate);
   try
-    SaveToCSVStream(TheStream, ADelimiter, WithHeader);
+    SaveToCSVStream(TheStream, ADelimiter, WriteTitles, VisibleColumnsOnly);
   finally
     TheStream.Free;
   end;

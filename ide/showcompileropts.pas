@@ -35,11 +35,10 @@ unit ShowCompilerOpts;
 interface
 
 uses
-  Classes, SysUtils, LazUTF8, LazLogger,
-  Forms, Controls, Graphics, Dialogs, Buttons, StdCtrls, ComCtrls, ExtCtrls,
-  CodeToolsCfgScript,
+  Classes, SysUtils, Forms, Controls, Buttons, StdCtrls, ComCtrls, ExtCtrls,
+  LazFileUtils, LazUTF8, CodeToolsCfgScript,
   LazIDEIntf, IDEImagesIntf, CompOptsIntf, ProjectIntf,
-  LazarusIDEStrConsts, CompilerOptions, TransferMacros,
+  LazarusIDEStrConsts, CompilerOptions,
   IDEProcs, Project, ModeMatrixOpts, PackageDefs, MiscOptions;
 
 type

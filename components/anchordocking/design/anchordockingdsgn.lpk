@@ -1,7 +1,8 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="4">
     <Name Value="AnchorDockingDsgn"/>
+    <Type Value="RunAndDesignTime"/>
     <AddToProjectUsesSection Value="True"/>
     <Author Value="Mattias Gaertner mattias@freepascal.org"/>
     <CompilerOptions>
@@ -10,7 +11,7 @@
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Other>
-        <CompilerPath Value="$(CompPath)"/>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
       </Other>
     </CompilerOptions>
     <Description Value="Installs the anchor docking manager in the IDE
@@ -25,7 +26,6 @@
         <UnitName Value="RegisterAnchorDocking"/>
       </Item1>
     </Files>
-    <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
       <Item1>
         <PackageName Value="IDEIntf"/>
@@ -35,7 +35,7 @@
       </Item2>
     </RequiredPkgs>
     <UsageOptions>
-      <UnitPath Value="$(PkgOutDir)/"/>
+      <UnitPath Value="$(PkgOutDir)"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>

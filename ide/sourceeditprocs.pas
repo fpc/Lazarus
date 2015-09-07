@@ -36,13 +36,13 @@ unit SourceEditProcs;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLType, GraphType, Graphics, Controls, SynEdit,
-  SynEditHighlighter, SynRegExpr, SynCompletion, BasicCodeTools, CodeTree,
+  Classes, SysUtils, LCLProc, LCLType, Graphics, Controls,
+  SynRegExpr, SynCompletion, BasicCodeTools, CodeTree,
   CodeAtom, CodeCache, SourceChanger, CustomCodeTool, CodeToolManager,
   PascalParserTool, KeywordFuncLists, FileProcs, IdentCompletionTool,
   PascalReaderTool,
-  LazIDEIntf, TextTools, IDETextConverter, DialogProcs, EditorOptions,
-  IDEImagesIntf, CodeToolsOptions;
+  LazIDEIntf, IDEImagesIntf, TextTools, IDETextConverter,
+  DialogProcs, LazFileUtils, EditorOptions, CodeToolsOptions;
 
 type
 

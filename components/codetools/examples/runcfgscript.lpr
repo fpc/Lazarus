@@ -28,9 +28,7 @@ program RunCfgScript;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, DefineTemplates, CodeToolsConfig, FileProcs,
-  CodeToolsStructs, CodeToolManager, CodeCache, CodeBeautifier,
-  CodeToolsCfgScript;
+  SysUtils, CodeToolManager, CodeCache, CodeToolsCfgScript, LazFileUtils, LazUTF8;
 
 var
   Code: TCodeBuffer;

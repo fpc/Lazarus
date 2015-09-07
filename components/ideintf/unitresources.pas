@@ -149,11 +149,11 @@ class function TCustomLFMUnitResourceFileFormat.FindComponentClass(
   aClassName: string): TComponentClass;
 begin
   if CompareText(aClassName,'TForm')=0 then
-    Result:=FormEditingHook.StandardDesignerBaseClasses[DesignerBaseClassId_TForm] // DaThoX
+    Result:=FormEditingHook.StandardDesignerBaseClasses[DesignerBaseClassId_TForm]
   else if CompareText(aClassName,'TFrame')=0 then
-    Result:=FormEditingHook.StandardDesignerBaseClasses[DesignerBaseClassId_TFrame] // DaThoX
+    Result:=FormEditingHook.StandardDesignerBaseClasses[DesignerBaseClassId_TFrame]
   else if CompareText(aClassName,'TDataModule')=0 then
-    Result:=FormEditingHook.StandardDesignerBaseClasses[DesignerBaseClassId_TDataModule] // DaThoX
+    Result:=FormEditingHook.StandardDesignerBaseClasses[DesignerBaseClassId_TDataModule]
   else
     Result:=nil;
 end;
@@ -170,8 +170,7 @@ begin
   Result:=TForm;
 end;
 
-class function TUnitResourcefileFormat.FindComponentClass(aClassName: string
-  ): TComponentClass;
+class function TUnitResourcefileFormat.FindComponentClass(aClassName: string): TComponentClass;
 begin
   Result:=nil;
 end;

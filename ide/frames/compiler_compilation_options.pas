@@ -5,10 +5,16 @@ unit compiler_compilation_options;
 interface
 
 uses
+  // RTL + FCL + LCL
   Classes, sysutils,
-  Controls, StdCtrls, Dialogs, FileUtil,
+  Controls, StdCtrls, Dialogs,
+  // CodeTools
   FileProcs, DefineTemplates, CodeToolManager,
-  IDEOptionsIntf,  CompOptsIntf, IDEDialogs, IDEUtils,
+  // LazUtils
+  FileUtil, LazFileUtils,
+  // IDEIntf
+  IDEOptionsIntf, CompOptsIntf, IDEDialogs, IDEUtils,
+  // IDE
   Project, CompilerOptions, PackageDefs, LazarusIDEStrConsts, EnvironmentOpts,
   LazConf, IDEProcs, DialogProcs, InputHistory, InitialSetupProc;
 

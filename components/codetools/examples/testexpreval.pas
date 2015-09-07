@@ -28,7 +28,7 @@ program TestExprEval;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, FileProcs, ExprEval;
+  FileProcs, ExprEval;
   
 var
   e: TExpressionEvaluator;

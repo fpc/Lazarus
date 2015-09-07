@@ -33,7 +33,6 @@
       <Unit0>
         <Filename Value="finddeclaration.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="finddeclaration"/>
       </Unit0>
       <Unit1>
         <Filename Value="scanexamples/simpleunit1.pas"/>
@@ -52,7 +51,6 @@
       <Unit4>
         <Filename Value="scanexamples/commentsidentifiers.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="commentsidentifiers"/>
       </Unit4>
     </Units>
   </ProjectOptions>
@@ -61,11 +59,5 @@
     <SearchPaths>
       <OtherUnitFiles Value="scanexamples"/>
     </SearchPaths>
-    <Other>
-      <CompilerMessages>
-        <UseMsgFile Value="True"/>
-      </CompilerMessages>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
 </CONFIG>

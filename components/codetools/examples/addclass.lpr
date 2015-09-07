@@ -28,8 +28,7 @@ program AddClass;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CodeCache, CodeToolManager, FileProcs,
-  BasicCodeTools, SourceChanger, CodeTree;
+  SysUtils, CodeCache, CodeToolManager, BasicCodeTools, SourceChanger, CodeTree;
   
 var
   Filename: string;

@@ -1,0 +1,279 @@
+object leSpreadsheetParamsForm: TleSpreadsheetParamsForm
+  Left = 725
+  Height = 326
+  Top = 260
+  Width = 350
+  Caption = 'Export to spreadsheet'
+  ClientHeight = 326
+  ClientWidth = 350
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.5'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 278
+    Width = 338
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 272
+    Top = 0
+    Width = 350
+    ActivePage = TabSheet2
+    Align = alClient
+    TabIndex = 1
+    TabOrder = 1
+    object TabSheet1: TTabSheet
+      Caption = 'General'
+      ClientHeight = 233
+      ClientWidth = 344
+      object GroupBox1: TGroupBox
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideRight.Control = TabSheet1
+        AnchorSideRight.Side = asrBottom
+        Left = 0
+        Height = 176
+        Top = 208
+        Width = 344
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
+        Caption = 'Page range'
+        ClientHeight = 153
+        ClientWidth = 340
+        TabOrder = 0
+        Visible = False
+        object RadioButton1: TRadioButton
+          AnchorSideLeft.Control = GroupBox1
+          AnchorSideTop.Control = GroupBox1
+          Left = 6
+          Height = 25
+          Top = 6
+          Width = 76
+          BorderSpacing.Around = 6
+          Caption = 'All page'
+          Checked = True
+          TabOrder = 0
+          TabStop = True
+        end
+        object RadioButton2: TRadioButton
+          AnchorSideLeft.Control = GroupBox1
+          AnchorSideTop.Control = RadioButton1
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 25
+          Top = 37
+          Width = 109
+          BorderSpacing.Around = 6
+          Caption = 'Current page'
+          TabOrder = 1
+        end
+        object RadioButton3: TRadioButton
+          AnchorSideLeft.Control = GroupBox1
+          AnchorSideTop.Control = RadioButton2
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 25
+          Top = 68
+          Width = 67
+          BorderSpacing.Around = 6
+          Caption = 'Pages:'
+          TabOrder = 2
+        end
+        object Edit1: TEdit
+          AnchorSideLeft.Control = RadioButton3
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = RadioButton2
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = GroupBox1
+          AnchorSideRight.Side = asrBottom
+          Left = 79
+          Height = 31
+          Top = 68
+          Width = 255
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Around = 6
+          TabOrder = 3
+        end
+        object Label1: TLabel
+          AnchorSideLeft.Control = GroupBox1
+          AnchorSideTop.Control = Edit1
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = GroupBox1
+          AnchorSideRight.Side = asrBottom
+          Left = 6
+          Height = 42
+          Top = 105
+          Width = 328
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Around = 6
+          Caption = 'Enter page numbers and/or page ranges,'#10'separated by commas. For example, 1,3,5-12'
+          ParentColor = False
+        end
+      end
+      object GroupBox2: TGroupBox
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideTop.Control = TabSheet1
+        AnchorSideRight.Control = TabSheet1
+        AnchorSideRight.Side = asrBottom
+        Left = 0
+        Height = 128
+        Top = 0
+        Width = 344
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
+        Caption = 'Data grouping'
+        ClientHeight = 105
+        ClientWidth = 340
+        TabOrder = 1
+        object RadioButton4: TRadioButton
+          AnchorSideLeft.Control = GroupBox2
+          AnchorSideTop.Control = GroupBox2
+          Left = 6
+          Height = 25
+          Top = 6
+          Width = 119
+          BorderSpacing.Around = 6
+          Caption = 'Like the report'
+          Checked = True
+          TabOrder = 0
+          TabStop = True
+        end
+        object RadioButton5: TRadioButton
+          AnchorSideLeft.Control = GroupBox2
+          AnchorSideTop.Control = RadioButton4
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 25
+          Top = 37
+          Width = 119
+          BorderSpacing.Around = 6
+          Caption = 'All in one page'
+          TabOrder = 1
+        end
+        object RadioButton6: TRadioButton
+          AnchorSideLeft.Control = GroupBox2
+          AnchorSideTop.Control = RadioButton5
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 25
+          Top = 68
+          Width = 228
+          BorderSpacing.Around = 6
+          Caption = 'Chunks. Each chunk has (rows):'
+          TabOrder = 2
+          Visible = False
+        end
+        object SpinEdit1: TSpinEdit
+          AnchorSideLeft.Control = RadioButton6
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = RadioButton5
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = GroupBox2
+          AnchorSideRight.Side = asrBottom
+          Left = 240
+          Height = 31
+          Top = 68
+          Width = 94
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Around = 6
+          MaxValue = 655360
+          MinValue = 1
+          TabOrder = 3
+          Value = 50
+          Visible = False
+        end
+      end
+      object CheckBox4: TCheckBox
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideTop.Control = GroupBox2
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 25
+        Top = 134
+        Width = 141
+        BorderSpacing.Around = 6
+        Caption = 'Open after export'
+        TabOrder = 2
+      end
+      object CheckBox5: TCheckBox
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideTop.Control = CheckBox4
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 25
+        Top = 165
+        Width = 123
+        BorderSpacing.Around = 6
+        Caption = 'Auto create file'
+        TabOrder = 3
+        Visible = False
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'Export settings'
+      ClientHeight = 233
+      ClientWidth = 344
+      object CheckBox1: TCheckBox
+        AnchorSideLeft.Control = TabSheet2
+        AnchorSideTop.Control = TabSheet2
+        Left = 6
+        Height = 25
+        Top = 181
+        Width = 123
+        Anchors = [akLeft]
+        BorderSpacing.Around = 6
+        Caption = 'Export pictures'
+        TabOrder = 0
+        Visible = False
+      end
+      object CheckBox2: TCheckBox
+        AnchorSideLeft.Control = TabSheet2
+        AnchorSideTop.Control = TabSheet2
+        Left = 6
+        Height = 25
+        Top = 6
+        Width = 99
+        BorderSpacing.Around = 6
+        Caption = 'Merge cells'
+        TabOrder = 1
+      end
+      object CheckBox3: TCheckBox
+        AnchorSideLeft.Control = TabSheet2
+        AnchorSideTop.Control = CheckBox2
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 25
+        Top = 214
+        Width = 102
+        Anchors = [akLeft]
+        BorderSpacing.Around = 6
+        Caption = 'Page breaks'
+        TabOrder = 2
+        Visible = False
+      end
+      object CheckBox6: TCheckBox
+        AnchorSideLeft.Control = TabSheet2
+        AnchorSideTop.Control = CheckBox2
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 25
+        Top = 37
+        Width = 150
+        BorderSpacing.Around = 6
+        Caption = 'Delete empty rows'
+        TabOrder = 3
+      end
+    end
+  end
+end

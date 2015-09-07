@@ -48,8 +48,12 @@ msgid "Leaks and Traces - HeapTrc and GDB backtrace output viewer"
 msgstr "Szivárgás és Nyomkövetés - HeapTrc és GDB visszakövetési kimenet megjelenítő"
 
 #: heaptrcview.sfrmselectfilewithdebuginfo
-msgid "Select File with debug info"
-msgstr "Válasszon fájlt hibakeresési infókkal!"
+msgid "Select file with debug info"
+msgstr "Hibakeresési infókat tartalmazó fájl választása"
+
+#: heaptrcview.sfrmselecttrcfile
+msgid "Select file with trace log"
+msgstr "Nyomkövetési naplót tartalmazó fájl választása"
 
 #: heaptrcview.slbltrace
 msgid ".trc file"

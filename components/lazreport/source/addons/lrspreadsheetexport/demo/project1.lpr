@@ -1,4 +1,4 @@
-program TDictionaryStringListDemo;
+program project1;
 
 {$mode objfpc}{$H+}
 
@@ -7,7 +7,7 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, Main;
+  Forms, laz_fpspreadsheet, Unit1;
 
 {$R *.res}
 

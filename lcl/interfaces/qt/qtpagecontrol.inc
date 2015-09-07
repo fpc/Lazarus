@@ -424,6 +424,12 @@ begin
     tpRight: NewPos.X := R.Right - NewPos.X;
     tpBottom: NewPos.Y := R.Bottom - NewPos.Y;
   end;
+  // issue #28591, return -1 if we are left of first tab with mouse
+  if (ATabControl.BiDiMode = bdRightToLeft) and (QApplication_mouseButtons = QtLeftButton) then
+  begin
+    if not QWidget_underMouse(TabWidget.TabBar.Widget) then
+      exit(-1);
+  end;
   Result := TabWidget.tabAt(NewPos);
 end;
 

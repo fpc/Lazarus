@@ -33,7 +33,7 @@ interface
 
 uses
   Classes, SysUtils, GetText, LazUTF8, Translations,
-  IDEProcs, FileProcs, avl_tree,
+  IDEProcs, FileProcs, LazFileUtils, LazFileCache,
   CodeToolManager, DirectoryCacher, CodeCache,
   LazarusIDEStrConsts;
   { IDE Language (Human, not computer) }

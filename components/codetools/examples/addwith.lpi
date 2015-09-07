@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -36,25 +36,17 @@
       <Unit0>
         <Filename Value="addwith.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="addwith"/>
       </Unit0>
       <Unit1>
         <Filename Value="scanexamples/addwith1.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="addwith1"/>
       </Unit1>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="10"/>
+    <Version Value="11"/>
     <SearchPaths>
       <OtherUnitFiles Value="scanexamples"/>
     </SearchPaths>
-    <Other>
-      <CompilerMessages>
-        <UseMsgFile Value="True"/>
-      </CompilerMessages>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
 </CONFIG>

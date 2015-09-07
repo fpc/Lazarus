@@ -138,11 +138,11 @@ begin
   FWorksheet := FWorkbook.GetFirstWorksheet;
 
   Y:=0;
-  for Row:=0 to FWorksheet.GetLastRowIndex-1 do
+  for Row:=0 to FWorksheet.GetLastRowIndex do
   begin
     X:=0;
     DY:=CalcRowHeight(FWorksheet.GetRowHeight(Row));
-    for Col:=0 to FWorksheet.GetLastColIndex-1 do
+    for Col:=0 to FWorksheet.GetLastColIndex do
     begin
       Cell := FWorksheet.FindCell(Row, Col);
       if Assigned(Cell) then
@@ -212,7 +212,8 @@ begin
     if fssItalic in sFont.Style then AFont.Style := AFont.Style + [fsItalic];
     if fssUnderline in sFont.Style then AFont.Style := AFont.Style + [fsUnderline];
     if fssStrikeout in sFont.Style then AFont.Style := AFont.Style + [fsStrikeout];
-    AFont.Color := FWorkbook.GetPaletteColor(sFont.Color);
+    //AFont.Color := FWorkbook.GetPaletteColor(sFont.Color);
+    AFont.Color := sFont.Color;
   end;
 end;
 

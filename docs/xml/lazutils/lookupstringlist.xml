@@ -4,17 +4,17 @@
 
 <!--
   ====================================================================
-    DictionaryStringList
+    LookupStringList
   ====================================================================
 -->
 
-<module name="DictionaryStringList">
+<module name="LookupStringList">
 <short></short>
 <descr>
 </descr>
 
 <!-- class Visibility: default -->
-<element name="TDictionaryStringList">
+<element name="TLookupStringList">
 <short></short>
 <descr>
 </descr>
@@ -25,7 +25,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TDictionaryStringList.FMap">
+<element name="TLookupStringList.FMap">
 <short></short>
 <descr>
 </descr>
@@ -34,7 +34,7 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TDictionaryStringList.InsertItem">
+<element name="TLookupStringList.InsertItem">
 <short></short>
 <descr>
 </descr>
@@ -45,22 +45,22 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TDictionaryStringList.InsertItem.Index">
+<element name="TLookupStringList.InsertItem.Index">
 <short></short>
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TDictionaryStringList.InsertItem.S">
+<element name="TLookupStringList.InsertItem.S">
 <short></short>
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TDictionaryStringList.InsertItem.O">
+<element name="TLookupStringList.InsertItem.O">
 <short></short>
 </element>
 
 <!-- constructor Visibility: public -->
-<element name="TDictionaryStringList.Create">
+<element name="TLookupStringList.Create">
 <short></short>
 <descr>
 </descr>
@@ -71,7 +71,7 @@
 </element>
 
 <!-- destructor Visibility: public -->
-<element name="TDictionaryStringList.Destroy">
+<element name="TLookupStringList.Destroy">
 <short></short>
 <descr>
 </descr>
@@ -82,7 +82,7 @@
 </element>
 
 <!-- procedure Visibility: public -->
-<element name="TDictionaryStringList.Assign">
+<element name="TLookupStringList.Assign">
 <short></short>
 <descr>
 </descr>
@@ -93,12 +93,12 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TDictionaryStringList.Assign.Source">
+<element name="TLookupStringList.Assign.Source">
 <short></short>
 </element>
 
 <!-- procedure Visibility: public -->
-<element name="TDictionaryStringList.Clear">
+<element name="TLookupStringList.Clear">
 <short></short>
 <descr>
 </descr>
@@ -109,7 +109,7 @@
 </element>
 
 <!-- procedure Visibility: public -->
-<element name="TDictionaryStringList.Delete">
+<element name="TLookupStringList.Delete">
 <short></short>
 <descr>
 </descr>
@@ -120,12 +120,12 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TDictionaryStringList.Delete.Index">
+<element name="TLookupStringList.Delete.Index">
 <short></short>
 </element>
 
 <!-- function Visibility: public -->
-<element name="TDictionaryStringList.Add">
+<element name="TLookupStringList.Add">
 <short></short>
 <descr>
 </descr>
@@ -136,17 +136,17 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="TDictionaryStringList.Add.Result">
+<element name="TLookupStringList.Add.Result">
 <short></short>
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TDictionaryStringList.Add.S">
+<element name="TLookupStringList.Add.S">
 <short></short>
 </element>
 
 <!-- function Visibility: public -->
-<element name="TDictionaryStringList.AddObject">
+<element name="TLookupStringList.AddObject">
 <short></short>
 <descr>
 </descr>
@@ -157,22 +157,22 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="TDictionaryStringList.AddObject.Result">
+<element name="TLookupStringList.AddObject.Result">
 <short></short>
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TDictionaryStringList.AddObject.S">
+<element name="TLookupStringList.AddObject.S">
 <short></short>
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TDictionaryStringList.AddObject.AObject">
+<element name="TLookupStringList.AddObject.AObject">
 <short></short>
 </element>
 
 <!-- function Visibility: public -->
-<element name="TDictionaryStringList.Contains">
+<element name="TLookupStringList.Contains">
 <short></short>
 <descr>
 </descr>
@@ -183,17 +183,17 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="TDictionaryStringList.Contains.Result">
+<element name="TLookupStringList.Contains.Result">
 <short></short>
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TDictionaryStringList.Contains.S">
+<element name="TLookupStringList.Contains.S">
 <short></short>
 </element>
 
 <!-- function Visibility: public -->
-<element name="TDictionaryStringList.Find">
+<element name="TLookupStringList.Find">
 <short></short>
 <descr>
 </descr>
@@ -204,22 +204,22 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="TDictionaryStringList.Find.Result">
+<element name="TLookupStringList.Find.Result">
 <short></short>
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TDictionaryStringList.Find.S">
+<element name="TLookupStringList.Find.S">
 <short></short>
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TDictionaryStringList.Find.Index">
+<element name="TLookupStringList.Find.Index">
 <short></short>
 </element>
 
 <!-- function Visibility: public -->
-<element name="TDictionaryStringList.IndexOf">
+<element name="TLookupStringList.IndexOf">
 <short></short>
 <descr>
 </descr>
@@ -230,16 +230,16 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="TDictionaryStringList.IndexOf.Result">
+<element name="TLookupStringList.IndexOf.Result">
 <short></short>
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TDictionaryStringList.IndexOf.S">
+<element name="TLookupStringList.IndexOf.S">
 <short></short>
 </element>
 
-</module> <!-- DictionaryStringList -->
+</module> <!-- LookupStringList -->
 
 </package>
 </fpdoc-descriptions>

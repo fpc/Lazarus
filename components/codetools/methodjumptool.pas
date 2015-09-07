@@ -40,7 +40,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, FileProcs, CodeTree, PascalParserTool,
+  Classes, SysUtils, FileProcs, LazFileUtils, CodeTree, PascalParserTool,
   StdCodeTools, KeywordFuncLists, BasicCodeTools,
   LinkScanner, CodeCache, AVL_Tree;
 

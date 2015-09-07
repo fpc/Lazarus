@@ -11138,13 +11138,45 @@ End;
       </element>
       <!-- function Visibility: public -->
       <element name="TWinControl.CanFocus">
-        <short>Is this control allowed to receive the focus?</short>
-        <descr>A control can get the focus only when all of its Parents except the form are Visible and Enabled.
-While CanFocus checks all control parents it does not check whether a form control is placed on can have focus.</descr>
+        <short>Is this control allowed to receive the focus when parent form is visible?</short>
+        <descr>
+          <p>Checks if the control can get focus when parent form is visible, i.e. if all its parents except the form are visible and enabled.
+          </p>
+          <p>A possible usage:</p>
+          <pre>if FormFoo.EditFoo.CanFocus then
+  FormFoo.ActiveControl := FormFoo.EditFoo;
+          </pre>
+          <p>Please note that this function returns True also if the parent form isn't visible and therefore a consecutive SetFocus call could throw an exception. Use <var>CanSetFocus</var> in this case.
+          </p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWinControl.CanSetFocus"/>
+        </seealso>
       </element>
       <element name="TWinControl.CanFocus.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWinControl.CanSetFocus">
+        <short>Is this control allowed to receive the focus?</short>
+        <descr>
+          <p>Checks if the control can get focus, i.e. if all its parents are visible and enabled.
+          </p>
+          <p>A possible usage:</p>
+          <pre>if MyControl.CanSetFocus then
+  MyControl.SetFocus;
+          </pre>
+          <p><var>CanSetFocus</var> should be prefered over <var>CanFocus</var> if used in CanSetFocus/SetFocus combination
+          because it checks also if the parent form can receive focus and thus prevents the "cannot focus an invisible window" LCL exception.
+          </p>
+        </descr>
+        <errors/>
+        <seealso>
+          <link id="TWinControl.CanFocus"/>
+        </seealso>
+      </element>
+      <element name="TWinControl.CanSetFocus.Result">
         <short/>
       </element>
       <!-- function Visibility: public -->

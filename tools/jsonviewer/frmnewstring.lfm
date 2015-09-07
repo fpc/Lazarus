@@ -1,50 +1,48 @@
 object NewStringForm: TNewStringForm
   Left = 509
-  Height = 144
+  Height = 140
   Top = 290
   Width = 320
   ActiveControl = EName
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'New String value'
-  ClientHeight = 144
+  ClientHeight = 140
   ClientWidth = 320
   OnCloseQuery = FormCloseQuery
   Position = poMainFormCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '1.5'
   object EName: TEdit
-    Left = 80
-    Height = 22
-    Top = 18
+    Left = 88
+    Height = 27
+    Top = 16
     Width = 216
     TabOrder = 0
   end
   object EValue: TEdit
-    Left = 80
-    Height = 22
-    Top = 49
+    Left = 88
+    Height = 27
+    Top = 48
     Width = 216
     TabOrder = 1
   end
   object Label1: TLabel
-    Left = 34
-    Height = 22
-    Top = 18
-    Width = 34
+    Left = 8
+    Height = 17
+    Top = 16
+    Width = 40
     Alignment = taRightJustify
-    AutoSize = False
     Caption = '&Name'
     FocusControl = EName
     Layout = tlCenter
     ParentColor = False
   end
   object Label2: TLabel
-    Left = 37
-    Height = 22
+    Left = 8
+    Height = 17
     Top = 49
-    Width = 31
+    Width = 38
     Alignment = taRightJustify
-    AutoSize = False
     Caption = '&Value'
     FocusControl = EValue
     Layout = tlCenter
@@ -52,15 +50,19 @@ object NewStringForm: TNewStringForm
   end
   object BPNewString: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 104
+    Height = 37
+    Top = 97
     Width = 308
     OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
     HelpButton.Enabled = False
     CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 2
     ShowButtons = [pbOK, pbCancel]
   end

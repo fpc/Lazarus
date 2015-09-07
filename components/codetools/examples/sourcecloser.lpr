@@ -35,7 +35,7 @@ program sourcecloser;
 uses
   Classes, SysUtils, AvgLvlTree, LazLogger, LazFileUtils, Laz2_XMLCfg, LazUTF8,
   FileProcs, BasicCodeTools, CodeToolManager, CodeCache, SourceChanger,
-  CodeTree, DefineTemplates, CustApp, contnrs;
+  CodeTree, DefineTemplates, CustApp;
 
 type
 

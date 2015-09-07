@@ -128,7 +128,6 @@ type
     );
   TFindUnitFileFlags = set of TFindUnitFileFlag;
 
-  // DaThoX begin
   // selected part of IDE
   TTabDisplayState = (
     tdsNone,
@@ -136,7 +135,6 @@ type
     tdsDesign,   // focussing designer form/design tab
     tdsOther     // focussing other (user defined) tab assigned to module (like History Tab)
     );
-  // DaThoX end
 
   // find source flags
   // Normally you don't need to pass any flags.
@@ -161,6 +159,8 @@ type
   // DaThoX
   TShowDesignerFormOfSourceFunction = procedure(Sender: TObject; AEditor: TSourceEditorInterface;
                                  AComponentPaletteClassSelected: Boolean) of object;
+  TShowDesignerFormOfSourceFunction = procedure(Sender: TObject; AEditor: TSourceEditorInterface;
+                                 AComponentPaletteClassSelected: Boolean) of object;
   TGetFPCFrontEndPath = function(Sender: TObject;
     var Path: string // this path is prepended to fpc.
     ): boolean of object;
@@ -178,12 +178,10 @@ type
     lihtQuickSyntaxCheck,  // called when quick syntax check is clicked (menu item or shortcut)
     lihtGetFPCFrontEndParams, // called when the IDE gets the parameters of the 'fpc' front end tool
     lihtGetFPCFrontEndPath, // called when the IDE gets the path of the 'fpc' front end tool
-    // dathox begin
     lihtShowDesignerFormOfSource, // called when showed a designer form for code editor (AEditor can be nil!)
     lihtShowSourceOfActiveDesignerForm, // called when showed a code of designer form
     lihtUpdateIDEComponentPalette,
     lihtUpdateComponentPageControl
-    // dathox end
     );
     
   { TLazIDEInterface }
@@ -207,19 +205,17 @@ type
     FLastFormActivated: TCustomForm;
 
     function GetActiveProject: TLazProject; virtual; abstract;
-    procedure DoCallNotifyHandler(HandlerType: TLazarusIDEHandlerType); overload; // DaThoX
+    procedure DoCallNotifyHandler(HandlerType: TLazarusIDEHandlerType); overload;
     function DoCallModalFunctionHandler(HandlerType: TLazarusIDEHandlerType
                                         ): TModalResult;
     function DoCallModalHandledHandler(HandlerType: TLazarusIDEHandlerType;
                                        var Handled: boolean): TModalResult;
-    // DaThoX begin
     procedure DoCallNotifyHandler(HandlerType: TLazarusIDEHandlerType;
                                   Sender: TObject); overload;
     procedure DoCallShowDesignerFormOfSourceHandler(
       HandlerType: TLazarusIDEHandlerType;
       Sender: TObject; AEditor: TSourceEditorInterface;
       AComponentPaletteClassSelected: Boolean);
-    // DaThoX end
 
     procedure SetMainBarSubTitle(const AValue: string); virtual;
   public
@@ -342,12 +338,11 @@ type
                               LoadForm: boolean): TIDesigner; virtual; abstract;
     function GetProjectFileWithRootComponent(AComponent: TComponent): TLazProjectFile; virtual; abstract;
     function GetProjectFileWithDesigner(ADesigner: TIDesigner): TLazProjectFile; virtual; abstract;
-    // DaThoX
+
     procedure DoShowDesignerFormOfSrc(AEditor: TSourceEditorInterface); virtual; abstract; overload;
     procedure DoShowMethod(AEditor: TSourceEditorInterface; const AMethodName: String); virtual; abstract;
     procedure DoShowDesignerFormOfSrc(AEditor: TSourceEditorInterface; out AForm: TCustomForm); virtual; abstract; overload;
-    // DaThoX
-    
+
     // events
     procedure RemoveAllHandlersOfObject(AnObject: TObject);
     procedure AddHandlerOnSavingAll(const OnSaveAllEvent: TModalResultFunction;
@@ -403,6 +398,26 @@ type
     procedure RemoveHandlerGetFPCFrontEndPath(
                                           const Handler: TGetFPCFrontEndPath);
     function CallHandlerGetFPCFrontEndPath(Sender: TObject; var Path: string): boolean;
+    procedure AddHandlerOnUpdateIDEComponentPalette(
+                           const OnUpdateIDEComponentPaletteEvent: TNotifyEvent;
+                           AsLast: boolean = false);
+    procedure RemoveHandlerOnUpdateIDEComponentPalette(
+                               const OnUpdateIDEComponentPaletteEvent: TNotifyEvent);
+    procedure AddHandlerOnUpdateComponentPageControl(
+                           const OnUpdateComponentPageControlEvent: TNotifyEvent;
+                           AsLast: boolean = false);
+    procedure RemoveHandlerOnUpdateComponentPageControl(
+                               const OnUpdateComponentPageControlEvent: TNotifyEvent);
+    procedure AddHandlerOnShowDesignerFormOfSource(
+                           const OnShowDesignerFormOfSourceEvent: TShowDesignerFormOfSourceFunction;
+                           AsLast: boolean = false);
+    procedure RemoveHandlerOnShowDesignerFormOfSource(
+                               const OnShowDesignerFormOfSourceEvent: TShowDesignerFormOfSourceFunction);
+    procedure AddHandlerOnShowSourceOfActiveDesignerForm(
+                           const OnShowSourceOfActiveDesignerForm: TNotifyEvent;
+                           AsLast: boolean = false);
+    procedure RemoveHandlerOnShowSourceOfActiveDesignerForm(
+                               const OnShowSourceOfActiveDesignerForm: TNotifyEvent);
 
     property IDEStarted: boolean read FIDEStarted;
     property LastActivatedWindows: TFPList read FLastActivatedWindows;
@@ -431,7 +446,6 @@ type
     // DaThoX end
   end;
 
-  // DaThoX begin
   TIDETabMaster = class
   protected
     function GetTabDisplayState: TTabDisplayState; virtual; abstract;
@@ -447,11 +461,9 @@ type
     procedure ShowDesigner(ASourceEditor: TSourceEditorInterface; AIndex: Integer = 0); virtual; abstract;
     procedure ShowForm(AForm: TCustomForm); virtual; abstract;
   end;
-  // DaThoX end
 
 var
   LazarusIDE: TLazIDEInterface = nil; // will be set by the IDE
-  // DaThoX
   IDETabMaster: TIDETabMaster = nil;
 
 type
@@ -561,9 +573,7 @@ begin
   Result:=mrOk;
 end;
 
-// DaThoX begin
-procedure TLazIDEInterface.DoCallNotifyHandler(
-  HandlerType: TLazarusIDEHandlerType; Sender: TObject);
+procedure TLazIDEInterface.DoCallNotifyHandler(HandlerType: TLazarusIDEHandlerType; Sender: TObject);
 begin
   FLazarusIDEHandlers[HandlerType].CallNotifyEvents(Sender);
 end;
@@ -576,9 +586,9 @@ var
 begin
   i := FLazarusIDEHandlers[HandlerType].Count;
   while FLazarusIDEHandlers[HandlerType].NextDownIndex(i) do
-    TShowDesignerFormOfSourceFunction(FLazarusIDEHandlers[HandlerType][i])(Sender, AEditor, AComponentPaletteClassSelected);
+    TShowDesignerFormOfSourceFunction(FLazarusIDEHandlers[HandlerType][i])(Sender, AEditor,
+                                                 AComponentPaletteClassSelected);
 end;
-// DaThoX end
 
 constructor TLazIDEInterface.Create(TheOwner: TComponent);
 begin
@@ -810,7 +820,6 @@ begin
   Result:=true;
 end;
 
-// dathox begin
 procedure TLazIDEInterface.AddHandlerOnUpdateIDEComponentPalette(
   const OnUpdateIDEComponentPaletteEvent: TNotifyEvent; AsLast: boolean);
 begin
@@ -835,7 +844,6 @@ begin
   RemoveHandler(lihtUpdateComponentPageControl,TMethod(OnUpdateComponentPageControlEvent));
 end;
 
-
 procedure TLazIDEInterface.AddHandlerOnShowDesignerFormOfSource(
   const OnShowDesignerFormOfSourceEvent: TShowDesignerFormOfSourceFunction; AsLast: boolean);
 begin
@@ -859,7 +867,6 @@ procedure TLazIDEInterface.RemoveHandlerOnShowSourceOfActiveDesignerForm(
 begin
   RemoveHandler(lihtShowSourceOfActiveDesignerForm,TMethod(OnShowSourceOfActiveDesignerForm));
 end;
-// dathox end
 
 initialization
   RegisterPropertyEditor(TypeInfo(AnsiString),

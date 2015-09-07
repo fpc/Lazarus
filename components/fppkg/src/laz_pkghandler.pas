@@ -5,7 +5,7 @@ unit laz_pkghandler;
 interface
 
 uses
-  Classes, SysUtils, pkghandler, pkgglobals, pkgmessages;
+  pkghandler, pkgglobals, pkgmessages;
 
 procedure Laz_ExecuteAction(const APackageName,AAction:string);
 

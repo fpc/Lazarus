@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -38,7 +38,6 @@
       <Unit0>
         <Filename Value="unitdicttest.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="unitdicttest"/>
       </Unit0>
       <Unit1>
         <Filename Value="scanexamples/simpleunit1.pas"/>
@@ -62,8 +61,5 @@
         <UseAnsiStrings Value="False"/>
       </SyntaxOptions>
     </Parsing>
-    <Other>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
 </CONFIG>

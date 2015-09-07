@@ -1,40 +1,44 @@
 object NewNumberForm: TNewNumberForm
-  Left = 436
+  Left = 451
   Height = 240
   Top = 247
-  Width = 320
+  Width = 305
   ActiveControl = EName
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'New number value'
   ClientHeight = 240
-  ClientWidth = 320
+  ClientWidth = 305
   OnCloseQuery = FormCloseQuery
   Position = poMainFormCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '1.5'
   object BPNewNumber: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 200
-    Width = 308
+    Height = 37
+    Top = 197
+    Width = 293
     OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
     HelpButton.Enabled = False
     CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
-    TabOrder = 0
+    CancelButton.DefaultCaption = True
+    TabOrder = 3
     ShowButtons = [pbOK, pbCancel]
   end
   object EName: TEdit
-    Left = 87
-    Height = 22
+    Left = 96
+    Height = 27
     Top = 10
     Width = 185
-    TabOrder = 1
+    TabOrder = 0
   end
   object RGType: TRadioGroup
-    Left = 83
+    Left = 96
     Height = 105
     Top = 44
     Width = 185
@@ -48,36 +52,36 @@ object NewNumberForm: TNewNumberForm
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 89
+    ClientHeight = 86
     ClientWidth = 181
     Items.Strings = (
       'Float'
       'Integer'
       'Int64'
     )
-    TabOrder = 2
+    TabOrder = 1
   end
   object EValue: TEdit
-    Left = 84
-    Height = 22
-    Top = 161
-    Width = 164
-    TabOrder = 3
+    Left = 96
+    Height = 27
+    Top = 159
+    Width = 184
+    TabOrder = 2
   end
   object Label1: TLabel
-    Left = 22
-    Height = 15
-    Top = 14
-    Width = 34
+    Left = 12
+    Height = 17
+    Top = 10
+    Width = 40
     Caption = '&Name'
     FocusControl = EName
     ParentColor = False
   end
   object Label2: TLabel
     Left = 12
-    Height = 15
+    Height = 17
     Top = 159
-    Width = 31
+    Width = 38
     Caption = 'Value'
     ParentColor = False
   end

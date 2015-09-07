@@ -45,9 +45,9 @@ uses
   MemCheck,
 {$ENDIF}
   // FPC + LCL
-  Classes, SysUtils, FileProcs, FileUtil, LCLProc, Forms, Controls, Dialogs,
-  Laz2_XMLCfg, LazLogger, LazFileUtils, InterfaceBase, LazUTF8, laz2_XMLRead,
-  strutils,
+  Classes, SysUtils, strutils, Forms, Controls, Dialogs,
+  FileProcs, FileUtil, LCLProc, LazFileCache,
+  Laz2_XMLCfg, LazLogger, LazFileUtils, LazUTF8, laz2_XMLRead,
   // codetools
   AVL_Tree, contnrs, DefineTemplates, CodeCache,
   BasicCodeTools, CodeToolsStructs, NonPascalCodeTools, SourceChanger,

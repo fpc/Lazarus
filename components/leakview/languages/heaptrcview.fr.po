@@ -48,8 +48,14 @@ msgid "Leaks and Traces - HeapTrc and GDB backtrace output viewer"
 msgstr "Fuites et Traces - Afficheur de traces \"HeapTrc\" et \"GDB\""
 
 #: heaptrcview.sfrmselectfilewithdebuginfo
-msgid "Select File with debug info"
+#, fuzzy
+#| msgid "Select File with debug info"
+msgid "Select file with debug info"
 msgstr "Choisir le fichier contenant les informations de débogage"
+
+#: heaptrcview.sfrmselecttrcfile
+msgid "Select file with trace log"
+msgstr ""
 
 #: heaptrcview.slbltrace
 msgid ".trc file"
@@ -82,3 +88,4 @@ msgstr "Taille de la mémoire perdue : %d"
 #: heaptrcview.strtotalmemalloc
 msgid "Total Mem allocated: %d"
 msgstr "Mémoire totale allouée : %d"
+

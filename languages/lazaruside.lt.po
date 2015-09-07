@@ -835,6 +835,10 @@ msgstr ""
 msgid "Choose code template file (*.dci)"
 msgstr "Rinkitės kodo šablono failą (*.dci)"
 
+#: lazarusidestrconsts.dlgcloseanduseselecteddesktop
+msgid "Close and use selected desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "Rengyklės kortelėse rodyti „Užverti“ mygtukus"
@@ -1068,11 +1072,6 @@ msgstr ""
 msgid "Config files"
 msgstr "Nustatymų failai"
 
-#: lazarusidestrconsts.dlgcoother
-msgctxt "lazarusidestrconsts.dlgcoother"
-msgid "Other"
-msgstr "Kiti"
-
 #: lazarusidestrconsts.dlgcootherdebugginginfo
 msgid "Other debugging info"
 msgstr ""
@@ -1208,6 +1207,10 @@ msgstr "Žymeklis nepaiso tabuliavimų"
 msgid "User defined extension (.pp.xxx)"
 msgstr "Naudotojo nurodytas plėtinys (.pp.xxx)"
 
+#: lazarusidestrconsts.dlgdebugdesktop
+msgid "debug desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "Kelio rengyklė"
@@ -1228,17 +1231,9 @@ msgstr "Numatyta vertė"
 msgid "Delete template "
 msgstr "Pašalinti šabloną"
 
-#: lazarusidestrconsts.dlgdesktop
-msgid "Desktop"
-msgstr "Darbalaukis"
-
 #: lazarusidestrconsts.dlgdesktopbuttons
 msgid "Buttons - "
 msgstr "Klavišai - "
-
-#: lazarusidestrconsts.dlgdesktopfiles
-msgid "Desktop Files"
-msgstr "Darbalaukio failai"
 
 #: lazarusidestrconsts.dlgdesktophints
 msgid "Hints"
@@ -1247,6 +1242,10 @@ msgstr "Užuominos"
 #: lazarusidestrconsts.dlgdesktopmenus
 msgid "Menus - "
 msgstr "Meniu - "
+
+#: lazarusidestrconsts.dlgdesktopname
+msgid "Desktop name:"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
@@ -2105,10 +2104,6 @@ msgstr ""
 msgid "Included mixed state $IFDEF node"
 msgstr ""
 
-#: lazarusidestrconsts.dlgignoreverb
-msgid "Ignore"
-msgstr "Ignoruoti"
-
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "Pridėti sistemos kintamuosius"
@@ -2250,10 +2245,6 @@ msgstr "Saistyti sumaniai"
 msgid "Display line numbers in run-time error backtraces"
 msgstr "Rodyti eilučių numerius veikos metu įvykusių klaidų pėdsako pranešimuose"
 
-#: lazarusidestrconsts.dlgloaddfile
-msgid "Load desktop settings from file"
-msgstr "Įkelti darbalaukio nuostatas iš failo"
-
 #: lazarusidestrconsts.dlgmainmenu
 msgid "Main Menu"
 msgstr "Pagrindinis meniu"
@@ -2273,6 +2264,10 @@ msgstr "Rodyti projekto modulius"
 
 #: lazarusidestrconsts.dlgmakeexecutable
 msgid "\"Make\" executable"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmanagedesktops
+msgid "Manage desktops"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmargingutter
@@ -2806,6 +2801,10 @@ msgstr "Rengyklės kortelės"
 msgid "Naming"
 msgstr "Pavadinimų suteikimas"
 
+#: lazarusidestrconsts.dlgnewdesktop
+msgid "New desktop ..."
+msgstr ""
+
 #: lazarusidestrconsts.dlgnoautomaticrenaming
 msgid "No automatic renaming"
 msgstr "Automatiškai nepervadinti"
@@ -2873,6 +2872,12 @@ msgstr "Kitų modulių failai (-Fu) (atskirti kabliataškiais):"
 #: lazarusidestrconsts.dlgoverwriteblock
 msgid "Overwrite block"
 msgstr "Pakeisti bloką"
+
+#: lazarusidestrconsts.dlgoverwritedesktop
+msgid ""
+"Desktop with the name \"%s\" was found.\n"
+"Should the old desktop be overwritten?\n"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
@@ -3079,6 +3084,10 @@ msgstr "Rodyti tinklelį"
 msgid "Snap to grid"
 msgstr "Pritraukti prie tinklelio taškų"
 
+#: lazarusidestrconsts.dlgreallydeletedesktop
+msgid "Really delete desktop \"%s\"?"
+msgstr ""
+
 #: lazarusidestrconsts.dlgreferencecolor
 msgid "Reference"
 msgstr "Rodyklė"
@@ -3086,6 +3095,10 @@ msgstr "Rodyklė"
 #: lazarusidestrconsts.dlgregularexpressions
 msgid "Regular e&xpressions"
 msgstr "&Reguliarusis reiškinys"
+
+#: lazarusidestrconsts.dlgrenamedesktop
+msgid "Rename desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgreplaceall
 msgid "Replace &All"
@@ -3157,9 +3170,13 @@ msgstr "Naudotojo pakeitimai"
 msgid "Run Parameters"
 msgstr "Starto parametrai"
 
-#: lazarusidestrconsts.dlgsavedfile
-msgid "Save desktop settings to file"
-msgstr "Įrašyti darbalaukio nuostatas faile"
+#: lazarusidestrconsts.dlgsavecurrentdesktop
+msgid "Save current desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsavecurrentdesktopas
+msgid "Save current desktop as"
+msgstr ""
 
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
@@ -3224,6 +3241,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgselectallchildcontrols
 msgid "Select all child controls together with their parent."
+msgstr ""
+
+#: lazarusidestrconsts.dlgselecteddesktop
+msgid "Selected desktop:"
 msgstr ""
 
 #: lazarusidestrconsts.dlgselectedtext
@@ -3469,6 +3490,10 @@ msgstr "Aplankas testo projektų darymui"
 msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"
 msgstr "Ieškomasis t&ekstas"
+
+#: lazarusidestrconsts.dlgtoggleselecteddebugdesktop
+msgid "Toggle as debug desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgtopinfohint
 msgid "Current Class/Proc Hint"
@@ -3904,6 +3929,10 @@ msgstr "Naujas failas"
 msgid "No package found for dependency \"%s\".%sPlease choose an existing package."
 msgstr "%s%s%s priklausiniui nerastas paketas.%sNurodykite egzistuojantį paketą."
 
+#: lazarusidestrconsts.lisa2ppackageorproject
+msgid "Package/Project"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2ppagenametoolong
 msgid "Page Name too long"
 msgstr "Per ilgas pavadinimas"
@@ -4067,6 +4096,12 @@ msgstr "Klaidingas modulio pavadinimas"
 #: lazarusidestrconsts.lisabandonchanges
 msgid "Abandon changes?"
 msgstr "Pamiršti pakeitimus?"
+
+#: lazarusidestrconsts.lisabort
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisabort"
+msgid "Abort"
+msgstr "Nutraukti"
 
 #: lazarusidestrconsts.lisabortall
 msgid "Abort all"
@@ -5804,6 +5839,10 @@ msgstr "Paletė"
 msgid "Pages"
 msgstr ""
 
+#: lazarusidestrconsts.liscmppalettevisible
+msgid "Palette is &visible"
+msgstr ""
+
 #: lazarusidestrconsts.liscmprestoredefaults
 msgid "&Restore defaults"
 msgstr ""
@@ -7531,6 +7570,10 @@ msgstr "naudotojo parinktys"
 msgid "Custom options"
 msgstr "Naudotojo parinktys"
 
+#: lazarusidestrconsts.liscustomoptions3
+msgid "Custom Options"
+msgstr ""
+
 #: lazarusidestrconsts.liscustomprogram
 msgid "Custom Program"
 msgstr "naudotojo programa"
@@ -8053,6 +8096,10 @@ msgstr ""
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
 msgstr ""
 
+#: lazarusidestrconsts.lisdesktops
+msgid "Desktops ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdestinationdirectory
 msgid "Destination directory"
 msgstr "Paskirties aplankas"
@@ -8279,6 +8326,11 @@ msgstr "Eksportas…"
 msgctxt "lazarusidestrconsts.lisdlgimport"
 msgid "Import ..."
 msgstr "Importuoti…"
+
+#: lazarusidestrconsts.lisdlgmore
+msgctxt "lazarusidestrconsts.lisdlgmore"
+msgid "More ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisdlgopen
 msgctxt "lazarusidestrconsts.lisdlgopen"
@@ -8998,9 +9050,18 @@ msgstr "Eksportas…"
 msgid "Export All Items to File"
 msgstr ""
 
+#: lazarusidestrconsts.lisexportenvironmentoptions
+msgctxt "lazarusidestrconsts.lisexportenvironmentoptions"
+msgid "Export environment options"
+msgstr ""
+
 #: lazarusidestrconsts.lisexporthtml
 msgid "Export as HTML"
 msgstr "Eksportuoti HTML formatu"
+
+#: lazarusidestrconsts.lisexportimport
+msgid "Export / Import"
+msgstr ""
 
 #: lazarusidestrconsts.lisexportlist
 msgid "Export list"
@@ -9809,17 +9870,13 @@ msgctxt "lazarusidestrconsts.lisid"
 msgid "ID"
 msgstr "ID"
 
-#: lazarusidestrconsts.lisidcadd
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisidcadd"
-msgid "Add"
-msgstr "Pridėti"
+#: lazarusidestrconsts.lisidcaddition
+msgid "Addition"
+msgstr ""
 
-#: lazarusidestrconsts.lisidcopen
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisidcopen"
-msgid "Open"
-msgstr "Atverti"
+#: lazarusidestrconsts.lisidcopening
+msgid "Opening"
+msgstr ""
 
 #: lazarusidestrconsts.liside
 msgid "IDE"
@@ -9957,6 +10014,12 @@ msgstr ""
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr "Naudojant dvi Lazarus laidas, antrasis Lazarus turi būti startuojamas naudojant komandinės eilutės parametrą „primary-config-path“ (arba „pcp“).%s%sPavyzdžiui:%s"
 
+#: lazarusidestrconsts.lisignore
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisignore"
+msgid "Ignore"
+msgstr "Ignoruoti"
+
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
 msgstr "Visada ignoruoti"
@@ -9997,8 +10060,9 @@ msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr ""
 
-#: lazarusidestrconsts.lisimportexport
-msgid "Import / Export"
+#: lazarusidestrconsts.lisimportenvironmentoptions
+msgctxt "lazarusidestrconsts.lisimportenvironmentoptions"
+msgid "Import environment options"
 msgstr ""
 
 #: lazarusidestrconsts.lisimportfromfile
@@ -11328,10 +11392,6 @@ msgstr "Saito paskirtis"
 msgid "list of all case values"
 msgstr "Visų „case“ verčių sąrašas"
 
-#: lazarusidestrconsts.lisloadedsuccessfully
-msgid "Loaded successfully"
-msgstr "Įkelta sėkmingai"
-
 #: lazarusidestrconsts.lisloadingfailed
 msgid "Loading %s failed."
 msgstr "Nepavyko įkelti %s."
@@ -11997,6 +12057,10 @@ msgstr "Kurti išteklių eilutę…"
 msgctxt "lazarusidestrconsts.lismenunewcomponent"
 msgid "New Component"
 msgstr "Nauja komponentė"
+
+#: lazarusidestrconsts.lismenunewcustom
+msgid "New %s"
+msgstr ""
 
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"
@@ -12765,10 +12829,6 @@ msgstr "&Keisti"
 msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Daugiau"
-
-#: lazarusidestrconsts.lismore2
-msgid "More ..."
-msgstr ""
 
 #: lazarusidestrconsts.lismoresub
 msgctxt "lazarusidestrconsts.lismoresub"
@@ -15891,10 +15951,6 @@ msgstr "Įrašyti pakitusį projektą „%s“?"
 msgid "Save current editor file"
 msgstr "Įrašyti dabartinį rengyklės failą"
 
-#: lazarusidestrconsts.lissavedsuccessfully
-msgid "Saved successfully"
-msgstr "Sėkmingai įrašyta"
-
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"
 msgstr "Įrašyta kartu su IKA nuostatomis"
@@ -16329,12 +16385,12 @@ msgstr "Atitikmenys"
 msgid "Sorry, this type is not yet implemented"
 msgstr "Deja, šis tipas dar neįgyvendintas"
 
-#: lazarusidestrconsts.lissort
-msgid "Sort"
-msgstr ""
-
 #: lazarusidestrconsts.lissortforscope
 msgid "Sort for scope"
+msgstr ""
+
+#: lazarusidestrconsts.lissorting
+msgid "Sorting"
 msgstr ""
 
 #: lazarusidestrconsts.lissortselascending
@@ -18635,6 +18691,10 @@ msgstr "XML klaida"
 #: lazarusidestrconsts.lisxmlparsererrorinfileerror
 msgid "XML parser error in file %s%sError: %s"
 msgstr "XML analizatorius klaida, failas: %s%sKlaida: %s"
+
+#: lazarusidestrconsts.lisyes
+msgid "Yes"
+msgstr ""
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"

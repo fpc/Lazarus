@@ -32,17 +32,16 @@ unit CheckCompilerOpts;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, FileUtil,
-  Clipbrd, StdCtrls, Buttons, Process, AVL_Tree, Menus, ExtCtrls,
-  ButtonPanel, ComCtrls,
+  Classes, SysUtils, Forms, Controls, Dialogs, FileUtil,
+  Clipbrd, StdCtrls, Process, AVL_Tree, Menus, ExtCtrls, ButtonPanel, ComCtrls,
   // codetools
-  KeywordFuncLists, CodeToolManager, FileProcs, DefineTemplates,
-  CodeToolsStructs,
+  CodeToolManager, FileProcs, LazFileCache, LazFileUtils, LazUTF8,
+  DefineTemplates, CodeToolsStructs,
   // IDEIntf
   ProjectIntf, MacroIntf, IDEExternToolIntf, LazIDEIntf, IDEDialogs,
   PackageIntf, IDEMsgIntf,
   // IDE
-  Project, PackageSystem, ExtToolEditDlg, IDEProcs, EnvironmentOpts,
+  Project, PackageSystem, IDEProcs,
   LazarusIDEStrConsts, PackageDefs, CompilerOptions, TransferMacros, LazConf;
 
 type

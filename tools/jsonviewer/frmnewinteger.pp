@@ -24,8 +24,7 @@ unit frmnewinteger;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel,
-  StdCtrls, ExtCtrls, fpjson;
+  SysUtils, Forms, Controls, Dialogs, ButtonPanel, StdCtrls, ExtCtrls, fpjson;
 
 type
 
@@ -49,9 +48,7 @@ type
     procedure SetAllowName(const AValue: Boolean);
     procedure SetMemberName(const AValue: String);
     procedure SetNumberType(const AValue: TJSONNumberType);
-    { private declarations }
   public
-    { public declarations }
     Property AllowName:  Boolean Read GetAllowName Write SetAllowName;
     Property MemberName : String Read GetMemberName Write SetMemberName;
     Property NumberType : TJSONNumberType Read GetNumberType Write SetNumberType;

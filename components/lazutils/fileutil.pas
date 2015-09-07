@@ -32,7 +32,8 @@ unit FileUtil;
 interface
 
 uses
-  Classes, SysUtils, Masks, LazUTF8, LazFileUtils;
+  Classes, SysUtils,
+  Masks, LazUTF8, LazFileUtils;
   
 {$if defined(Windows) or defined(darwin)}
 {$define CaseInsensitiveFilenames}
@@ -52,7 +53,7 @@ const
 // AnsiToUTF8 and UTF8ToAnsi need a widestring manager under Linux, BSD, MacOSX
 // but normally these OS use UTF-8 as system encoding so the widestringmanager
 // is not needed.
-{$IFnDEF NoLazUTF8Wrappers}
+{$IFnDEF DisableWrapperFunctions}
 // *** Wrappers for LazUTF8 ***
 function NeedRTLAnsi: boolean; inline; deprecated 'Use the function in LazUTF8 unit';
 procedure SetNeedRTLAnsi(NewValue: boolean); inline; deprecated 'Use the function in LazUTF8 unit';
@@ -94,7 +95,7 @@ function ForceDirectoriesUTF8(const Dir: string): Boolean; inline; deprecated 'U
 function FileOpenUTF8(Const FileName : string; Mode : Integer) : THandle; inline; deprecated 'Use the function in LazFileUtils unit';
 function FileCreateUTF8(Const FileName : string) : THandle; overload; inline; deprecated 'Use the function in LazFileUtils unit';
 function FileCreateUTF8(Const FileName : string; Rights: Cardinal) : THandle; overload; inline; deprecated 'Use the function in LazFileUtils unit';
-function GetTempFilename(const Directory, Prefix: string): string; inline; deprecated 'Use the function in LazFileUtils unit';
+function GetTempFilename(const Directory, Prefix: string): string; inline; deprecated 'Use the function GetTempFileNameUTF8 in LazFileUtils unit';
 // file names, attributes and states
 function CleanAndExpandFilename(const Filename: string): string; inline; deprecated 'Use the function in LazFileUtils unit';
 function CleanAndExpandDirectory(const Filename: string): string; inline; deprecated 'Use the function in LazFileUtils unit';
@@ -131,7 +132,7 @@ function CreateRelativePath(const Filename, BaseDirectory: string;
 function GetDarwinSystemFilename(Filename: string): string; inline;
 {$ENDIF}
 
-{$ENDIF}
+{$ENDIF DisableWrapperFunctions}
 
 // file and directory operations
 function ComparePhysicalFilenames(const Filename1, Filename2: string): integer;
@@ -163,7 +164,7 @@ type
   TSearchFileInPathFlags = set of TSearchFileInPathFlag;
 
 function SearchFileInPath(const Filename, BasePath, SearchPath,
-  Delimiter: string; Flags: TSearchFileInPathFlags): string;
+  Delimiter: string; Flags: TSearchFileInPathFlags): string; overload;
 function SearchAllFilesInPath(const Filename, BasePath, SearchPath,
   Delimiter: string; Flags: TSearchFileInPathFlags): TStrings;
 function FindDiskFilename(const Filename: string): string;

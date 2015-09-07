@@ -32,15 +32,16 @@ unit ConvertDelphi;
 interface
 
 uses
-  // LCL+FCL
-  Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, LConvEncoding,
-  FileUtil, LazFileUtils, LazUTF8Classes, contnrs, IniFiles,
-  // codetools
+  // RTL + FCL + LCL
+  Classes, SysUtils, contnrs, IniFiles, LCLProc, Forms, Controls, Dialogs,
+  // CodeTools
   CodeToolManager, DefineTemplates, CodeCache, LinkScanner, FileProcs, CodeToolsStructs,
+  // LazUtils
+  LConvEncoding, FileUtil, LazFileUtils, LazUTF8, LazUTF8Classes,
   // IDEIntf
-  ComponentReg, LazIDEIntf, PackageIntf, ProjectIntf,
+  ComponentReg, LazIDEIntf, PackageIntf, ProjectIntf, IDEDialogs,
   // IDE
-  IDEProcs, DialogProcs, IDEDialogs, EditorOptions, CompilerOptions,
+  IDEProcs, DialogProcs, EditorOptions, CompilerOptions,
   ProjPackBase, Project, ProjectDefs, PackageDefs, PackageSystem, PackageEditor,
   BasePkgManager, LazarusIDEStrConsts,
   // Converter

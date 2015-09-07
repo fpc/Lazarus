@@ -32,8 +32,8 @@ uses
 ////////////////////////////////////////////////////
   WSMenus, WSLCLClasses, WSProc,
   Windows, Controls, Classes, SysUtils, Win32Int, Win32Proc, Win32WSImgList,
-  InterfaceBase, LCLProc, LazUTF8, Themes, UxTheme, Win32Themes, Win32Extra,
-  FileUtil;
+  LCLProc, Themes, UxTheme, Win32Themes, Win32Extra,
+  FileUtil, LazUTF8;
 
 type
 
@@ -563,6 +563,7 @@ var
   IsRightToLeft: Boolean;
   Info: tagMENUBARINFO;
   AWnd: HWND;
+  CalculatedSize: TSIZE;
 begin
   if (ItemState and ODS_SELECTED) <> 0 then
     MenuState := tmBarItemPushed
@@ -622,10 +623,13 @@ begin
   ThemeDrawElement(AHDC, Details, ARect, nil);
 
   TextRect := ARect;
-  inc(TextRect.Left, Metrics.ItemMargins.cxLeftWidth);
-  dec(TextRect.Right, Metrics.ItemMargins.cxRightWidth);
-  inc(TextRect.Top, Metrics.ItemMargins.cyTopHeight);
-  dec(TextRect.Bottom, Metrics.ItemMargins.cyBottomHeight);
+  //center the menu item
+  CalculatedSize := VistaBarMenuItemSize(AMenuItem, AHDC);
+  TextRect.Left := (TextRect.Right+TextRect.Left-CalculatedSize.cx) div 2;
+  TextRect.Right := TextRect.Left + CalculatedSize.cx;
+  TextRect.Top := (TextRect.Bottom+TextRect.Top-CalculatedSize.cy) div 2;
+  TextRect.Bottom := TextRect.Top + CalculatedSize.cy;
+
   // draw check/image
   if AMenuItem.HasIcon then
   begin

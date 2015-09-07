@@ -67,7 +67,7 @@ type
     // Standard Tab
     // ===================================
     // TCDButton
-    procedure DrawButton(ADest: TFPCustomCanvas; ASize: TSize;
+    procedure DrawButton(ADest: TFPCustomCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDButtonStateEx); override;
     // TCDEdit
     procedure DrawEditBackground(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
@@ -572,7 +572,7 @@ begin
 
 end;
 
-procedure TCDDrawerAndroid.DrawButton(ADest: TFPCustomCanvas; ASize: TSize;
+procedure TCDDrawerAndroid.DrawButton(ADest: TFPCustomCanvas; ADestPos: TPoint; ASize: TSize;
   AState: TCDControlState; AStateEx: TCDButtonStateEx);
 var
   lDest: TCanvas absolute ADest;

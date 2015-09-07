@@ -898,6 +898,7 @@ begin
     Add('FAR'          ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('FORWARD'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('INLINE'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('INTERRUPT'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('IOCHECK'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LIBRARY'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LOCAL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);

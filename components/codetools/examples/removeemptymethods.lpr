@@ -29,8 +29,7 @@ program RemoveEmptyMethods;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CodeCache, CodeToolManager, DefineTemplates, FileProcs,
-  CodeAtom, CodeToolsConfig, CodeToolsStructs, PascalParserTool,
+  Classes, SysUtils, CodeCache, CodeToolManager, CodeToolsStructs,
   EmptyMethods1;
 
 const

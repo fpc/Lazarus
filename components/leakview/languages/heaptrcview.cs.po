@@ -50,7 +50,11 @@ msgid "Leaks and Traces - HeapTrc and GDB backtrace output viewer"
 msgstr "Prohlížeč úniků(LeakView) - prohlížeč výstupu HeapTrc"
 
 #: heaptrcview.sfrmselectfilewithdebuginfo
-msgid "Select File with debug info"
+msgid "Select file with debug info"
+msgstr ""
+
+#: heaptrcview.sfrmselecttrcfile
+msgid "Select file with trace log"
 msgstr ""
 
 #: heaptrcview.slbltrace
@@ -78,6 +82,7 @@ msgid "Leaking Blocks Count: %d"
 msgstr "Počet uniklých bloků: %d"
 
 #: heaptrcview.strleakingmemsize
+#, fuzzy,badformat
 msgid "Leaking Mem Size: %d"
 msgstr "Velikost uniklé paměti: %s"
 

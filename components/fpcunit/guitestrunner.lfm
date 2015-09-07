@@ -4,7 +4,7 @@ object GUITestRunner: TGUITestRunner
   Top = 123
   Width = 575
   Caption = 'FPCUnit - run unit tests'
-  ClientHeight = 636
+  ClientHeight = 643
   ClientWidth = 575
   Constraints.MinHeight = 200
   Constraints.MinWidth = 250
@@ -103,20 +103,20 @@ object GUITestRunner: TGUITestRunner
   end
   object Panel2: TPanel
     Left = 0
-    Height = 556
+    Height = 563
     Top = 80
     Width = 575
     Align = alClient
     BevelOuter = bvNone
     Caption = 'Panel2'
-    ClientHeight = 556
+    ClientHeight = 563
     ClientWidth = 575
     FullRepaint = False
     TabOrder = 1
     TabStop = True
     object PageControl1: TPageControl
       Left = 0
-      Height = 556
+      Height = 563
       Top = 0
       Width = 575
       ActivePage = tsTestTree
@@ -126,17 +126,18 @@ object GUITestRunner: TGUITestRunner
       TabOrder = 0
       object tsTestTree: TTabSheet
         Caption = 'Testcase tree'
-        ClientHeight = 529
-        ClientWidth = 571
+        ClientHeight = 535
+        ClientWidth = 567
         object TestTree: TTreeView
           Left = 0
-          Height = 317
+          Height = 323
           Top = 3
-          Width = 571
+          Width = 567
           Align = alClient
           BorderSpacing.Top = 3
           BackgroundColor = clBtnFace
           Color = clBtnFace
+          DefaultItemHeight = 18
           Images = TestTreeImageList
           PopupMenu = PopupResults
           ReadOnly = True
@@ -154,16 +155,16 @@ object GUITestRunner: TGUITestRunner
           Cursor = crVSplit
           Left = 0
           Height = 5
-          Top = 320
-          Width = 571
+          Top = 326
+          Width = 567
           Align = alBottom
           ResizeAnchor = akBottom
         end
         object MemoDetails: TMemo
           Left = 0
           Height = 97
-          Top = 432
-          Width = 571
+          Top = 438
+          Width = 567
           Align = alBottom
           PopupMenu = PopupDetails
           ReadOnly = True
@@ -174,16 +175,16 @@ object GUITestRunner: TGUITestRunner
           Cursor = crVSplit
           Left = 0
           Height = 5
-          Top = 427
-          Width = 571
+          Top = 433
+          Width = 567
           Align = alBottom
           ResizeAnchor = akBottom
         end
         object MemoLog: TMemo
           Left = 0
           Height = 102
-          Top = 325
-          Width = 571
+          Top = 331
+          Width = 567
           Align = alBottom
           ReadOnly = True
           ScrollBars = ssAutoBoth
@@ -213,7 +214,7 @@ object GUITestRunner: TGUITestRunner
           TabOrder = 0
           BookMarkOptions.Xoffset = -18
           Gutter.Visible = False
-          Gutter.Width = 57
+          Gutter.Width = 59
           Gutter.MouseActions = <          
             item
               ClickCount = ccAny
@@ -652,7 +653,7 @@ object GUITestRunner: TGUITestRunner
               MouseActions = <>
             end
             object TSynGutterLineNumber
-              Width = 17
+              Width = 19
               MouseActions = <>
               MarkupInfo.Background = clBtnFace
               MarkupInfo.Foreground = clNone
@@ -1816,6 +1817,16 @@ object GUITestRunner: TGUITestRunner
       OnExecute = ActSaveResultsExecute
       ShortCut = 16467
     end
+    object actNextError: TAction
+      Caption = 'Next error'
+      OnExecute = actNextErrorExecute
+      ShortCut = 16462
+    end
+    object actPrevError: TAction
+      Caption = 'Previous error'
+      OnExecute = actPrevErrorExecute
+      ShortCut = 16464
+    end
   end
   object PopupResults: TPopupMenu
     Images = MainImageList
@@ -1969,6 +1980,12 @@ object GUITestRunner: TGUITestRunner
         FF00FFFFFF00FFFFFF00
       }
       OnClick = ActRunHighlightedTestExecute
+    end
+    object MenuItem22: TMenuItem
+      Action = actNextError
+    end
+    object MenuItem23: TMenuItem
+      Action = actPrevError
     end
     object MenuItem5: TMenuItem
       Action = ActCheckAll
@@ -2283,6 +2300,12 @@ object GUITestRunner: TGUITestRunner
           FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
           FF00FFFFFF00FFFFFF00
         }
+      end
+      object MenuItem20: TMenuItem
+        Action = actNextError
+      end
+      object MenuItem21: TMenuItem
+        Action = actPrevError
       end
       object MenuItem13: TMenuItem
         Caption = '-'

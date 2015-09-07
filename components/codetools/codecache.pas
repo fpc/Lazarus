@@ -37,8 +37,8 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, SourceLog, LinkScanner, FileProcs, DirectoryCacher,
-  Avl_Tree, Laz2_XMLCfg;
+  Classes, SysUtils, SourceLog, LinkScanner, FileProcs, LazFileUtils, LazFileCache,
+  DirectoryCacher, Avl_Tree, Laz2_XMLCfg, LazDbgLog;
 
 const
   IncludeLinksFileVersion = 2;

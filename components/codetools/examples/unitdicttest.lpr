@@ -28,9 +28,8 @@ program unitdicttest;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, AVL_Tree, CodeCache, CodeToolManager, FileProcs,
-  BasicCodeTools, SourceChanger, CodeTree, DefineTemplates, unitdictionary,
-  CodeToolsStructs, zstream;
+  SysUtils, AVL_Tree, CodeToolManager, FileProcs,
+  DefineTemplates, unitdictionary, CodeToolsStructs, LazFileUtils;
   
 const
   ConfigFilename = 'codetools.config';
