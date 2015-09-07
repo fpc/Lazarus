@@ -6822,7 +6822,6 @@ begin
     Manager.SendEditorDestroyed(AnEditor);
 end;
 
-// DaThoX begin
 function TSourceNotebook.FindSourceEditorWithPageIndex(APageIndex: integer): TSourceEditor;
 var
   I: integer;
@@ -6872,7 +6871,6 @@ begin
   if i<0 then exit;
   Result := TSourceEditor(FSourceEditorList[i]);
 end;
-// DaThoX end
 
 function TSourceNotebook.GetActiveSE: TSourceEditor;
 Begin
@@ -7934,7 +7932,6 @@ begin
   CheckCurrentCodeBufferChanged;
 End;
 
-// DaThoX begin
 function TSourceNotebook.FindPageWithEditor(
   ASourceEditor: TSourceEditor):integer;
 var
@@ -7959,7 +7956,6 @@ begin
   else    
     Result:=-1;
 end;
-// DaThoX end
 
 function TSourceNotebook.FindSourceEditorWithEditorComponent(EditorComp: TComponent): TSourceEditor;
 var

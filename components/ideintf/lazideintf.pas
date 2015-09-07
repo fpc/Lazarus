@@ -156,9 +156,7 @@ type
     var Params: string // these parameters are passed to fpc.
       // Global options should be prependended, project options should be appended.
     ): boolean of object;
-  // DaThoX
-  TShowDesignerFormOfSourceFunction = procedure(Sender: TObject; AEditor: TSourceEditorInterface;
-                                 AComponentPaletteClassSelected: Boolean) of object;
+
   TShowDesignerFormOfSourceFunction = procedure(Sender: TObject; AEditor: TSourceEditorInterface;
                                  AComponentPaletteClassSelected: Boolean) of object;
   TGetFPCFrontEndPath = function(Sender: TObject;
@@ -422,28 +420,6 @@ type
     property IDEStarted: boolean read FIDEStarted;
     property LastActivatedWindows: TFPList read FLastActivatedWindows;
     property LastFormActivated: TCustomForm read FLastFormActivated write FLastFormActivated;
-    // DaThoX begin
-    procedure AddHandlerOnUpdateIDEComponentPalette(
-                           const OnUpdateIDEComponentPaletteEvent: TNotifyEvent;
-                           AsLast: boolean = false);
-    procedure RemoveHandlerOnUpdateIDEComponentPalette(
-                               const OnUpdateIDEComponentPaletteEvent: TNotifyEvent);
-    procedure AddHandlerOnUpdateComponentPageControl(
-                           const OnUpdateComponentPageControlEvent: TNotifyEvent;
-                           AsLast: boolean = false);
-    procedure RemoveHandlerOnUpdateComponentPageControl(
-                               const OnUpdateComponentPageControlEvent: TNotifyEvent);
-    procedure AddHandlerOnShowDesignerFormOfSource(
-                           const OnShowDesignerFormOfSourceEvent: TShowDesignerFormOfSourceFunction;
-                           AsLast: boolean = false);
-    procedure RemoveHandlerOnShowDesignerFormOfSource(
-                               const OnShowDesignerFormOfSourceEvent: TShowDesignerFormOfSourceFunction);
-    procedure AddHandlerOnShowSourceOfActiveDesignerForm(
-                           const OnShowSourceOfActiveDesignerForm: TNotifyEvent;
-                           AsLast: boolean = false);
-    procedure RemoveHandlerOnShowSourceOfActiveDesignerForm(
-                               const OnShowSourceOfActiveDesignerForm: TNotifyEvent);
-    // DaThoX end
   end;
 
   TIDETabMaster = class

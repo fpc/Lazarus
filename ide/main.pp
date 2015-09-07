@@ -946,11 +946,6 @@ var
 
 implementation
 
-// DaThoX begin
-type
-  TIDEDockMasterAccess = class(TIDEDockMaster);
-// DaThoX end
-
 var
   ParamBaseDirectory: string = '';
   SkipAutoLoadingLastProject: boolean = false;
@@ -7985,7 +7980,6 @@ begin
     TheControlSelection.AssignPersistent(ActiveUnitInfo.Component);
   end;
 end;
-// === DaThoX end
 
 procedure TMainIDE.DoShowSourceOfActiveDesignerForm;
 var

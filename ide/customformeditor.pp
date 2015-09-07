@@ -825,7 +825,6 @@ begin
     RaiseException(lisCFETCustomFormEditorCreateNonFormFormAlreadyExists);
   if LookupRoot is TComponent then
   begin
-    // DaThoX begin
     if LookupRoot is TCustomFrame then
     begin
       LNonFormProxyDesignerClass := BaseFormEditor1.NonFormProxyDesignerForm[FrameProxyDesignerFormId];

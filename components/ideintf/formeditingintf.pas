@@ -249,8 +249,6 @@ type
     function NonFormProxyDesignerFormCount: integer; virtual;
     property NonFormProxyDesignerForm[Index: integer]: TNonFormProxyDesignerFormClass read GetNonFormProxyDesignerForm
                                                                                      write SetNonFormProxyDesignerForm;
-    function NonFormProxyDesignerFormCount: integer; virtual; // DaThoX
-    property NonFormProxyDesignerForm[Index: integer]: TNonFormProxyDesignerFormClass read GetNonFormProxyDesignerForm write SetNonFormProxyDesignerForm; // DaThoX
 
     // mediators for non LCL forms
     procedure RegisterDesignerMediator(MediatorClass: TDesignerMediatorClass); virtual; abstract; // auto calls RegisterDesignerBaseClass
