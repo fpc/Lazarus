@@ -2333,7 +2333,7 @@ end;
 procedure TMainIDE.RestoreIDEWindows;
 begin
   DoCallNotifyHandler(lihtIDERestoreWindows);
-  IDEWindowCreators.RestoreSimpleLayout;
+  EnvironmentOptions.RestoreDesktop;
 end;
 
 procedure TMainIDE.FreeIDEWindows;
@@ -4393,7 +4393,7 @@ procedure TMainIDE.SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOption
 // Called also before reading EnvironmentOptions
 begin
   DebugLn(['* TMainIDE.SaveDesktopSettings']);
-  IDEWindowCreators.SimpleLayoutStorage.StoreWindowPositions;
+  EnvironmentOptions.Desktop.StoreWindowPositions;
 
   if ObjectInspector1<>nil then
     TheEnvironmentOptions.ObjectInspectorOptions.Assign(ObjectInspector1);

@@ -35,7 +35,7 @@ interface
 
 uses
   Math, Classes, SysUtils, LCLProc, AvgLvlTree, ExtCtrls, ComCtrls, Forms,
-  Controls, LazConfigStorage, AnchorDockStr;
+  Controls, LazConfigStorage, AnchorDockStr, Laz2_XMLCfg;
 
 const
   AnchorDockSplitterName = 'AnchorDockSplitter';
@@ -113,8 +113,8 @@ type
     function IsEqual(Node: TAnchorDockLayoutTreeNode): boolean;
     procedure Assign(Node: TAnchorDockLayoutTreeNode);
     procedure Assign(AControl: TControl);
-    procedure LoadFromConfig(Config: TConfigStorage);
-    procedure SaveToConfig(Config: TConfigStorage);
+    procedure LoadFromConfig(Path: string; Config: TRttiXMLConfig);
+    procedure SaveToConfig(Path: string; Config: TRttiXMLConfig);
     function FindChildNode(aName: string; Recursive: boolean): TAnchorDockLayoutTreeNode;
     function FindControlNode: TAnchorDockLayoutTreeNode;
     procedure CheckConsistency; virtual;
@@ -181,8 +181,8 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    procedure LoadFromConfig(Config: TConfigStorage);
-    procedure SaveToConfig(Config: TConfigStorage);
+    procedure LoadFromConfig(Path: string; Config: TRttiXMLConfig);
+    procedure SaveToConfig(Path: string; Config: TRttiXMLConfig);
     procedure IncreaseChangeStamp;
     property ChangeStamp: int64 read FChangeStamp;
     property Modified: boolean read GetModified write SetModified;
@@ -206,8 +206,9 @@ type
     function HasControlName(AName: string): boolean;
     procedure RemoveControlName(AName: string);
     procedure UpdateControlNames;
-    procedure LoadFromConfig(Config: TConfigStorage);
-    procedure SaveToConfig(Config: TConfigStorage);
+    procedure LoadFromConfig(Path: string; Config: TRttiXMLConfig);
+    procedure SaveToConfig(Path: string; Config: TRttiXMLConfig);
+    procedure Assign(Source: TAnchorDockRestoreLayout);
     property ControlNames: TStrings read FControlNames write SetControlNames;
     property Layout: TAnchorDockLayoutTree read FLayout;
   end;
@@ -227,11 +228,12 @@ type
     function FindByName(AControlName: string): TAnchorDockRestoreLayout;
     procedure Add(Layout: TAnchorDockRestoreLayout; RemoveOther: boolean);
     procedure RemoveByName(AControlName: string);
-    procedure LoadFromConfig(Config: TConfigStorage);
-    procedure SaveToConfig(Config: TConfigStorage);
+    procedure LoadFromConfig(Path: string; Config: TRttiXMLConfig);
+    procedure SaveToConfig(Path: string; Config: TRttiXMLConfig);
     function ConfigIsEmpty(Config: TConfigStorage): boolean;
     function Count: integer;
-    property Items[Index: integer]: TAnchorDockRestoreLayout read GetItems;
+    procedure Assign(Source: TAnchorDockRestoreLayouts);
+    property Items[Index: integer]: TAnchorDockRestoreLayout read GetItems; default;
   end;
 
   { TADNameToControl }
@@ -1128,70 +1130,68 @@ begin
   end;
 end;
 
-procedure TAnchorDockLayoutTreeNode.LoadFromConfig(Config: TConfigStorage);
+procedure TAnchorDockLayoutTreeNode.LoadFromConfig(Path: string;
+  Config: TRttiXMLConfig);
 var
   i: Integer;
   Child: TAnchorDockLayoutTreeNode;
   NewCount: longint;
 begin
   Clear;
-  Name:=Config.GetValue('Name','');
-  NodeType:=NameToADLTreeNodeType(Config.GetValue('Type',ADLTreeNodeTypeNames[adltnNone]));
-  Left:=Config.GetValue('Bounds/Left',0);
-  Top:=Config.GetValue('Bounds/Top',0);
-  Width:=Config.GetValue('Bounds/Width',0);
-  Height:=Config.GetValue('Bounds/Height',0);
-  BoundSplitterPos:=Config.GetValue('Bounds/SplitterPos',0);
-  Config.GetValue('Bounds/WorkArea/Rect/',FWorkAreaRect,Rect(0,0,0,0));
-  Anchors[akLeft]:=Config.GetValue('Anchors/Left','');
-  Anchors[akTop]:=Config.GetValue('Anchors/Top','');
-  Anchors[akRight]:=Config.GetValue('Anchors/Right','');
-  Anchors[akBottom]:=Config.GetValue('Anchors/Bottom','');
-  Align:=NameToADLAlign(Config.GetValue('Anchors/Align',dbgs(alNone)));
-  WindowState:=NameToADLWindowState(Config.GetValue('WindowState',ADLWindowStateNames[wsNormal]));
-  HeaderPosition:=NameToADLHeaderPosition(Config.GetValue('Header/Position',ADLHeaderPositionNames[adlhpAuto]));
-  TabPosition:=NameToADLTabPosition(Config.GetValue('Header/TabPosition',ADLTabPostionNames[tpTop]));
-  Monitor:=Config.GetValue('Monitor',0);
-  NewCount:=Config.GetValue('ChildCount',0);
+  Name:=Config.GetValue(Path+'Name','');
+  NodeType:=NameToADLTreeNodeType(Config.GetValue(Path+'Type',ADLTreeNodeTypeNames[adltnNone]));
+  Left:=Config.GetValue(Path+'Bounds/Left',0);
+  Top:=Config.GetValue(Path+'Bounds/Top',0);
+  Width:=Config.GetValue(Path+'Bounds/Width',0);
+  Height:=Config.GetValue(Path+'Bounds/Height',0);
+  BoundSplitterPos:=Config.GetValue(Path+'Bounds/SplitterPos',0);
+  Config.GetValue(Path+'Bounds/WorkArea/Rect/',FWorkAreaRect,Rect(0,0,0,0));
+  Anchors[akLeft]:=Config.GetValue(Path+'Anchors/Left','');
+  Anchors[akTop]:=Config.GetValue(Path+'Anchors/Top','');
+  Anchors[akRight]:=Config.GetValue(Path+'Anchors/Right','');
+  Anchors[akBottom]:=Config.GetValue(Path+'Anchors/Bottom','');
+  Align:=NameToADLAlign(Config.GetValue(Path+'Anchors/Align',dbgs(alNone)));
+  WindowState:=NameToADLWindowState(Config.GetValue(Path+'WindowState',ADLWindowStateNames[wsNormal]));
+  HeaderPosition:=NameToADLHeaderPosition(Config.GetValue(Path+'Header/Position',ADLHeaderPositionNames[adlhpAuto]));
+  TabPosition:=NameToADLTabPosition(Config.GetValue(Path+'Header/TabPosition',ADLTabPostionNames[tpTop]));
+  Monitor:=Config.GetValue(Path+'Monitor',0);
+  NewCount:=Config.GetValue(Path+'ChildCount',0);
   for i:=1 to NewCount do begin
-    Config.AppendBasePath('Item'+IntToStr(i)+'/');
     Child:=TAnchorDockLayoutTreeNode.Create;
     Child.Parent:=Self;
-    Child.LoadFromConfig(Config);
-    Config.UndoAppendBasePath;
+    Child.LoadFromConfig(Path+'Item'+IntToStr(i)+'/', Config);
   end;
 end;
 
-procedure TAnchorDockLayoutTreeNode.SaveToConfig(Config: TConfigStorage);
+procedure TAnchorDockLayoutTreeNode.SaveToConfig(Path: string;
+  Config: TRttiXMLConfig);
 var
   i: Integer;
 begin
-  Config.SetDeleteValue('Name',Name,'');
-  Config.SetDeleteValue('Type',ADLTreeNodeTypeNames[NodeType],
+  Config.SetDeleteValue(Path+'Name',Name,'');
+  Config.SetDeleteValue(Path+'Type',ADLTreeNodeTypeNames[NodeType],
                                ADLTreeNodeTypeNames[adltnNone]);
-  Config.SetDeleteValue('Bounds/Left',Left,0);
-  Config.SetDeleteValue('Bounds/Top',Top,0);
-  Config.SetDeleteValue('Bounds/Width',Width,0);
-  Config.SetDeleteValue('Bounds/Height',Height,0);
-  Config.SetDeleteValue('Bounds/SplitterPos',BoundSplitterPos,0);
-  Config.SetDeleteValue('Bounds/WorkArea/Rect/',FWorkAreaRect,Rect(0,0,0,0));
-  Config.SetDeleteValue('Anchors/Left',Anchors[akLeft],'');
-  Config.SetDeleteValue('Anchors/Top',Anchors[akTop],'');
-  Config.SetDeleteValue('Anchors/Right',Anchors[akRight],'');
-  Config.SetDeleteValue('Anchors/Bottom',Anchors[akBottom],'');
-  Config.SetDeleteValue('Anchors/Align',ADLAlignNames[Align],ADLAlignNames[alNone]);
-  Config.SetDeleteValue('WindowState',ADLWindowStateNames[WindowState],
+  Config.SetDeleteValue(Path+'Bounds/Left',Left,0);
+  Config.SetDeleteValue(Path+'Bounds/Top',Top,0);
+  Config.SetDeleteValue(Path+'Bounds/Width',Width,0);
+  Config.SetDeleteValue(Path+'Bounds/Height',Height,0);
+  Config.SetDeleteValue(Path+'Bounds/SplitterPos',BoundSplitterPos,0);
+  Config.SetDeleteValue(Path+'Bounds/WorkArea/Rect/',FWorkAreaRect,Rect(0,0,0,0));
+  Config.SetDeleteValue(Path+'Anchors/Left',Anchors[akLeft],'');
+  Config.SetDeleteValue(Path+'Anchors/Top',Anchors[akTop],'');
+  Config.SetDeleteValue(Path+'Anchors/Right',Anchors[akRight],'');
+  Config.SetDeleteValue(Path+'Anchors/Bottom',Anchors[akBottom],'');
+  Config.SetDeleteValue(Path+'Anchors/Align',ADLAlignNames[Align],ADLAlignNames[alNone]);
+  Config.SetDeleteValue(Path+'WindowState',ADLWindowStateNames[WindowState],
                                       ADLWindowStateNames[wsNormal]);
-  Config.SetDeleteValue('Header/Position',ADLHeaderPositionNames[HeaderPosition],
+  Config.SetDeleteValue(Path+'Header/Position',ADLHeaderPositionNames[HeaderPosition],
                                           ADLHeaderPositionNames[adlhpAuto]);
-  Config.SetDeleteValue('Header/TabPosition',ADLTabPostionNames[TabPosition],
+  Config.SetDeleteValue(Path+'Header/TabPosition',ADLTabPostionNames[TabPosition],
                                              ADLTabPostionNames[tpTop]);
-  Config.SetDeleteValue('Monitor',Monitor,0);
-  Config.SetDeleteValue('ChildCount',Count,0);
+  Config.SetDeleteValue(Path+'Monitor',Monitor,0);
+  Config.SetDeleteValue(Path+'ChildCount',Count,0);
   for i:=1 to Count do begin
-    Config.AppendBasePath('Item'+IntToStr(i)+'/');
-    Nodes[i-1].SaveToConfig(Config);
-    Config.UndoAppendBasePath;
+    Nodes[i-1].SaveToConfig(Path+'Item'+IntToStr(i)+'/', Config);
   end;
 end;
 
@@ -1665,19 +1665,17 @@ begin
   Modified:=false;
 end;
 
-procedure TAnchorDockLayoutTree.LoadFromConfig(Config: TConfigStorage);
+procedure TAnchorDockLayoutTree.LoadFromConfig(Path: string;
+  Config: TRttiXMLConfig);
 begin
-  Config.AppendBasePath('Nodes/');
-  FRoot.LoadFromConfig(Config);
-  Config.UndoAppendBasePath;
+  FRoot.LoadFromConfig(Path+'Nodes/',Config);
   Root.CheckConsistency;
 end;
 
-procedure TAnchorDockLayoutTree.SaveToConfig(Config: TConfigStorage);
+procedure TAnchorDockLayoutTree.SaveToConfig(Path: string;
+  Config: TRttiXMLConfig);
 begin
-  Config.AppendBasePath('Nodes/');
-  FRoot.SaveToConfig(Config);
-  Config.UndoAppendBasePath;
+  FRoot.SaveToConfig(Path+'Nodes/',Config);
 end;
 
 procedure TAnchorDockLayoutTree.IncreaseChangeStamp;
@@ -1800,6 +1798,12 @@ begin
   FLayout:=TAnchorDockLayoutTree.Create;
 end;
 
+procedure TAnchorDockRestoreLayout.Assign(Source: TAnchorDockRestoreLayout);
+begin
+  FControlNames.Assign(Source.FControlNames);
+  FLayout.Assign(Source.FLayout);
+end;
+
 constructor TAnchorDockRestoreLayout.Create(aLayout: TAnchorDockLayoutTree);
 begin
   FControlNames:=TStringList.Create;
@@ -1853,7 +1857,8 @@ begin
   Check(Layout.Root);
 end;
 
-procedure TAnchorDockRestoreLayout.LoadFromConfig(Config: TConfigStorage);
+procedure TAnchorDockRestoreLayout.LoadFromConfig(Path: string;
+  Config: TRttiXMLConfig);
 var
   i: Integer;
   AName: string;
@@ -1861,8 +1866,8 @@ var
 begin
   FControlNames.Delimiter:=',';
   FControlNames.StrictDelimiter:=true;
-  FControlNames.DelimitedText:=Config.GetValue('Names','');
-  Layout.LoadFromConfig(Config);
+  FControlNames.DelimitedText:=Config.GetValue(Path+'Names','');
+  Layout.LoadFromConfig(Path, Config);
   for i:=FControlNames.Count-1 downto 0 do begin
     AName:=FControlNames[i];
     if (AName<>'') and IsValidIdent(AName)
@@ -1875,12 +1880,13 @@ begin
   end;
 end;
 
-procedure TAnchorDockRestoreLayout.SaveToConfig(Config: TConfigStorage);
+procedure TAnchorDockRestoreLayout.SaveToConfig(Path: string;
+  Config: TRttiXMLConfig);
 begin
   FControlNames.Delimiter:=',';
   FControlNames.StrictDelimiter:=true;
-  Config.SetDeleteValue('Names',FControlNames.DelimitedText,'');
-  Layout.SaveToConfig(Config);
+  Config.SetDeleteValue(Path+'Names',FControlNames.DelimitedText,'');
+  Layout.SaveToConfig(Path, Config);
 end;
 
 { TAnchorDockRestoreLayouts }
@@ -1950,6 +1956,20 @@ begin
   fItems.Add(Layout);
 end;
 
+procedure TAnchorDockRestoreLayouts.Assign(Source: TAnchorDockRestoreLayouts);
+var
+  I: Integer;
+  xNew: TAnchorDockRestoreLayout;
+begin
+  Clear;
+  for I := 0 to Source.Count-1 do
+  begin
+    xNew := TAnchorDockRestoreLayout.Create;
+    Add(xNew, False);
+    xNew.Assign(Source[I]);
+  end;
+end;
+
 procedure TAnchorDockRestoreLayouts.RemoveByName(AControlName: string);
 var
   i: Integer;
@@ -1963,22 +1983,18 @@ begin
   end;
 end;
 
-procedure TAnchorDockRestoreLayouts.LoadFromConfig(Config: TConfigStorage);
+procedure TAnchorDockRestoreLayouts.LoadFromConfig(Path: string;
+  Config: TRttiXMLConfig);
 var
   NewCount: longint;
   NewItem: TAnchorDockRestoreLayout;
   i: Integer;
 begin
   Clear;
-  NewCount:=Config.GetValue('Count',0);
+  NewCount:=Config.GetValue(Path+'Count',0);
   for i:=1 to NewCount do begin
     NewItem:=TAnchorDockRestoreLayout.Create;
-    Config.AppendBasePath('Item'+IntToStr(i+1)+'/');
-    try
-      NewItem.LoadFromConfig(Config);
-    finally
-      Config.UndoAppendBasePath;
-    end;
+    NewItem.LoadFromConfig(Path+'Item'+IntToStr(i+1)+'/', Config);
     if NewItem.ControlNames.Count>0 then
       fItems.Add(NewItem)
     else
@@ -1986,18 +2002,14 @@ begin
   end;
 end;
 
-procedure TAnchorDockRestoreLayouts.SaveToConfig(Config: TConfigStorage);
+procedure TAnchorDockRestoreLayouts.SaveToConfig(Path: string;
+  Config: TRttiXMLConfig);
 var
   i: Integer;
 begin
-  Config.SetDeleteValue('Count',Count,0);
+  Config.SetDeleteValue(Path+'Count',Count,0);
   for i:=0 to Count-1 do begin
-    Config.AppendBasePath('Item'+IntToStr(i+1)+'/');
-    try
-      Items[i].SaveToConfig(Config);
-    finally
-      Config.UndoAppendBasePath;
-    end;
+    Items[i].SaveToConfig(Path+'Item'+IntToStr(i+1)+'/', Config);
   end;
 end;
 

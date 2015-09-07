@@ -1,38 +1,22 @@
 object DesktopForm: TDesktopForm
   Left = 684
-  Height = 341
-  Top = 339
-  Width = 418
+  Height = 288
+  Top = 378
+  Width = 277
   BorderIcons = [biSystemMenu]
   Caption = 'DesktopForm'
-  ClientHeight = 341
-  ClientWidth = 418
+  ClientHeight = 288
+  ClientWidth = 277
   OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '1.5'
-  object SaveBitBtn: TBitBtn
-    AnchorSideLeft.Control = SetDebugDesktopBitBtn
-    AnchorSideTop.Control = DesktopListBox
-    AnchorSideRight.Control = DeleteBitBtn
-    AnchorSideRight.Side = asrBottom
-    Left = 253
-    Height = 25
-    Top = 14
-    Width = 159
-    Anchors = [akTop, akLeft, akRight]
-    AutoSize = True
-    BorderSpacing.Top = 6
-    Caption = 'Save current desktop'
-    OnClick = SaveBitBtnClick
-    TabOrder = 1
-  end
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 34
-    Top = 301
-    Width = 406
+    Top = 248
+    Width = 265
     OKButton.Name = 'OKButton'
-    OKButton.Caption = 'Close and use selected desktop'
+    OKButton.Caption = 'OK'
     OKButton.DefaultCaption = False
     HelpButton.Name = 'HelpButton'
     HelpButton.DefaultCaption = True
@@ -41,135 +25,161 @@ object DesktopForm: TDesktopForm
     CancelButton.Name = 'CancelButton'
     CancelButton.Caption = 'Close'
     CancelButton.DefaultCaption = False
-    TabOrder = 8
-    ShowButtons = [pbOK, pbCancel]
+    TabOrder = 3
+    ShowButtons = [pbClose]
+    object LblGrayedInfo: TLabel
+      Left = 0
+      Height = 37
+      Top = 3
+      Width = 169
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      AutoSize = False
+      BorderSpacing.Top = 5
+      Caption = 'Grayed desktops are for undocked environment.'
+      ParentColor = False
+      WordWrap = True
+    end
   end
   object DesktopListBox: TListBox
-    AnchorSideRight.Control = SaveBitBtn
     Left = 11
-    Height = 286
+    Height = 205
     Top = 8
-    Width = 232
+    Width = 220
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Right = 10
-    ItemHeight = 0
-    OnDblClick = DesktopListBoxDblClick
+    ItemHeight = 18
+    OnDblClick = SetActiveDesktopBitBtnClick
     OnDrawItem = DesktopListBoxDrawItem
     OnKeyPress = DesktopListBoxKeyPress
     OnSelectionChange = DesktopListBoxSelectionChange
-    ScrollWidth = 211
     Style = lbOwnerDrawFixed
     TabOrder = 0
   end
-  object DeleteBitBtn: TBitBtn
-    AnchorSideLeft.Control = SetDebugDesktopBitBtn
-    AnchorSideTop.Control = RenameBitBtn
+  object AutoSaveActiveDesktopCheckBox: TCheckBox
+    AnchorSideLeft.Control = DesktopListBox
+    AnchorSideTop.Control = DesktopListBox
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = SetDebugDesktopBitBtn
-    AnchorSideRight.Side = asrBottom
-    Left = 253
-    Height = 25
-    Top = 130
-    Width = 159
-    Anchors = [akTop, akLeft, akRight]
-    AutoSize = True
-    BorderSpacing.Top = 4
-    Caption = 'Delete'
-    OnClick = DeleteBitBtnClick
-    TabOrder = 4
-  end
-  object SetDebugDesktopBitBtn: TBitBtn
-    AnchorSideTop.Control = SelectedDesktopLabel
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Side = asrBottom
-    Left = 253
-    Height = 25
-    Top = 70
-    Width = 159
-    Anchors = [akTop, akRight]
-    AutoSize = True
-    BorderSpacing.Top = 6
-    Caption = 'Toggle as debug desktop'
-    OnClick = SetDebugDesktopBitBtnClick
+    Left = 11
+    Height = 19
+    Top = 221
+    Width = 151
+    BorderSpacing.Top = 8
+    Caption = 'Auto save active desktop'
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 2
   end
-  object SelectedDesktopLabel: TLabel
-    AnchorSideLeft.Control = SaveBitBtn
-    AnchorSideTop.Control = SaveBitBtn
-    AnchorSideTop.Side = asrBottom
-    Left = 253
-    Height = 15
-    Top = 49
-    Width = 92
-    BorderSpacing.Top = 10
-    Caption = 'Selected desktop:'
-    ParentColor = False
-  end
-  object RenameBitBtn: TBitBtn
-    AnchorSideLeft.Control = SetDebugDesktopBitBtn
-    AnchorSideTop.Control = SetDebugDesktopBitBtn
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = SetDebugDesktopBitBtn
-    AnchorSideRight.Side = asrBottom
-    Left = 253
-    Height = 25
-    Top = 101
-    Width = 159
-    Anchors = [akTop, akLeft, akRight]
-    AutoSize = True
-    BorderSpacing.Top = 6
-    Caption = 'Rename'
-    OnClick = RenameBitBtnClick
-    TabOrder = 3
-  end
-  object ExportBitBtn: TBitBtn
-    AnchorSideLeft.Control = DeleteBitBtn
-    AnchorSideTop.Control = DeleteBitBtn
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = ExportAllBitBtn
-    Left = 253
-    Height = 25
-    Top = 167
-    Width = 121
-    Anchors = [akTop, akLeft, akRight]
-    AutoSize = True
-    BorderSpacing.Top = 12
-    Caption = 'Export'
-    OnClick = ExportBitBtnClick
-    TabOrder = 5
-  end
-  object ImportBitBtn: TBitBtn
-    AnchorSideLeft.Control = ExportBitBtn
-    AnchorSideTop.Control = ExportBitBtn
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = DeleteBitBtn
-    AnchorSideRight.Side = asrBottom
-    Left = 253
-    Height = 25
-    Top = 196
-    Width = 159
-    Anchors = [akTop, akLeft, akRight]
-    AutoSize = True
-    BorderSpacing.Top = 4
-    Caption = 'Import'
-    OnClick = ImportBitBtnClick
-    TabOrder = 7
-  end
-  object ExportAllBitBtn: TBitBtn
-    AnchorSideLeft.Control = ExportBitBtn
-    AnchorSideTop.Control = ExportBitBtn
-    AnchorSideRight.Control = DeleteBitBtn
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = ExportBitBtn
-    AnchorSideBottom.Side = asrBottom
-    Left = 374
-    Height = 25
-    Top = 167
-    Width = 38
+  object ToolBar1: TToolBar
+    Left = 240
+    Height = 237
+    Top = 8
+    Width = 30
+    Align = alNone
     Anchors = [akTop, akRight, akBottom]
-    AutoSize = True
-    Caption = 'all'
-    OnClick = ExportAllBitBtnClick
-    TabOrder = 6
+    Caption = 'ToolBar1'
+    EdgeBorders = []
+    TabOrder = 1
+    object SaveTB: TToolButton
+      Left = 1
+      Top = 0
+      Caption = 'SaveTB'
+      OnClick = SaveBitBtnClick
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object ToolButton1: TToolButton
+      Left = 1
+      Height = 5
+      Top = 22
+      Width = 23
+      Caption = 'ToolButton1'
+      Style = tbsDivider
+    end
+    object SetActiveDesktopTB: TToolButton
+      Left = 1
+      Top = 27
+      Caption = 'SetActiveDesktopTB'
+      OnClick = SetActiveDesktopBitBtnClick
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object SetDebugDesktopTB: TToolButton
+      Left = 1
+      Top = 49
+      Caption = 'SetDebugDesktopTB'
+      OnClick = SetDebugDesktopBitBtnClick
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object RenameTB: TToolButton
+      Left = 1
+      Top = 71
+      Caption = 'RenameTB'
+      OnClick = RenameBitBtnClick
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object DeleteTB: TToolButton
+      Left = 1
+      Top = 93
+      Caption = 'DeleteTB'
+      OnClick = DeleteBitBtnClick
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object ToolButton2: TToolButton
+      Left = 1
+      Height = 5
+      Top = 159
+      Width = 23
+      Caption = 'ToolButton2'
+      Style = tbsDivider
+    end
+    object ExportTB: TToolButton
+      Left = 1
+      Top = 164
+      Caption = 'ExportTB'
+      DropdownMenu = ExportMenu
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object ImportTB: TToolButton
+      Left = 1
+      Top = 186
+      Caption = 'ImportTB'
+      OnClick = ImportBitBtnClick
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object MoveUpTB: TToolButton
+      Tag = -1
+      Left = 1
+      Top = 115
+      Caption = 'MoveUpTB'
+      OnClick = MoveUpTBClick
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object MoveDownTB: TToolButton
+      Tag = 1
+      Left = 1
+      Top = 137
+      Caption = 'MoveDownTB'
+      OnClick = MoveUpTBClick
+      ParentShowHint = False
+      ShowHint = True
+    end
+  end
+  object ExportMenu: TPopupMenu
+    left = 48
+    top = 24
+    object ExportItem: TMenuItem
+      Caption = 'Export selected'
+      OnClick = ExportBitBtnClick
+    end
+    object ExportAllItem: TMenuItem
+      Caption = 'Export all'
+      OnClick = ExportAllBitBtnClick
+    end
   end
 end

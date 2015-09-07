@@ -257,6 +257,7 @@ type
   TDesktopOpt = class
   private
     FName: String;
+    FIsDocked: Boolean;
     FXMLCfg: TRttiXMLConfig;
     FConfigStore: TXMLOptionsStorage;
     // window layout
@@ -283,11 +284,18 @@ type
     // component palette
     FComponentPaletteOptions: TCompPaletteOptions;
 
+    //Docking options
+    FDockedOpt: TAbstractDesktopDockingOpt;
+
+    function GetCompatible: Boolean;
     procedure InitLayoutList;
   public
-    constructor Create(aName: String; const aUseIDELayouts: Boolean);
+    constructor Create(const aName: String; const aUseIDELayouts: Boolean);
+    constructor Create(const aName: String;
+      const aUseIDELayouts: Boolean; const aIsDocked: Boolean);
     destructor Destroy; override;
-    procedure Assign(Source: TDesktopOpt);
+    procedure Assign(Source: TDesktopOpt; const AssignName: Boolean = False);
+    procedure StoreWindowPositions;
   public
     procedure SetConfig(aXMLCfg: TRttiXMLConfig; aConfigStore: TXMLOptionsStorage);
     procedure Load(Path: String);
@@ -314,6 +322,8 @@ type
     property IDECoolBarOptions: TIDECoolBarOptions read FIDECoolBarOptions;
     property EditorToolBarOptions: TEditorToolBarOptions read FEditorToolBarOptions;
     property ComponentPaletteOptions: TCompPaletteOptions read FComponentPaletteOptions;
+    property IsDocked: Boolean read FIsDocked;
+    property Compatible: Boolean read GetCompatible;
   end;
 
   TEnvironmentOptions = class;
@@ -489,9 +499,11 @@ type
     FDesktops: TDesktopOptList;
     FDesktop: TDesktopOpt;
     FLastDesktopBeforeDebug: TDesktopOpt;
-
+    FActiveDesktopName: string;
+    FAutoSaveActiveDesktop: Boolean;
     FDebugDesktopName: string;
 
+    function GetActiveDesktop: TDesktopOpt;
     function GetCompilerFilename: string;
     function GetCompilerMessagesFilename: string;
     function GetDebugDesktop: TDesktopOpt;
@@ -572,6 +584,8 @@ type
     procedure UseDesktop(ADesktop: TDesktopOpt);
     procedure EnableDebugDesktop;
     procedure DisableDebugDesktop;
+    procedure RestoreDesktop;
+    class function DesktopCanBeLoaded(const aDockMaster: string): Boolean;
 
     // auto save
     // ask even if only project session needs saving
@@ -764,9 +778,12 @@ type
     property NewFormTemplate: string read FNewFormTemplate write FNewFormTemplate;
     // Desktop
     property Desktops: TDesktopOptList read FDesktops;
-    property Desktop: TDesktopOpt read FDesktop;
+    property Desktop: TDesktopOpt read FDesktop;               // the working desktop, standalone
     property DebugDesktopName: string read FDebugDesktopName write FDebugDesktopName;
-    property DebugDesktop: TDesktopOpt read GetDebugDesktop;
+    property DebugDesktop: TDesktopOpt read GetDebugDesktop;   // debug desktop from Desktops list
+    property ActiveDesktopName: string read FActiveDesktopName write FActiveDesktopName;
+    property ActiveDesktop: TDesktopOpt read GetActiveDesktop; // active desktop from Desktops list
+    property AutoSaveActiveDesktop: Boolean read FAutoSaveActiveDesktop write FAutoSaveActiveDesktop;
   end;
 
 var
@@ -903,16 +920,18 @@ end;
 procedure TDesktopOptList.AddFromCfg(Path: String);
 var
   dsk: TDesktopOpt;
-  dskName: String;
+  dskName, dskDockMaster: String;
 begin
   dskName := FXMLCfg.GetValue(Path+'Name', 'default');
-  if Find(dskName)=nil then
-  begin
-    dsk := TDesktopOpt.Create(dskName, False);
-    dsk.SetConfig(FXMLCfg, FConfigStore);
-    dsk.Load(Path);
-    Add(dsk);
-  end;
+  dskDockMaster := FXMLCfg.GetValue(Path+'DockMaster', '');
+
+  if not EnvironmentOptions.DesktopCanBeLoaded(dskDockMaster) or (IndexOf(dskName) >= 0) then
+    Exit;
+
+  dsk := TDesktopOpt.Create(dskName, False, dskDockMaster<>'');
+  dsk.SetConfig(FXMLCfg, FConfigStore);
+  dsk.Load(Path);
+  Add(dsk);
 end;
 
 function TDesktopOptList.IndexOf(aName: string): integer;
@@ -941,11 +960,24 @@ end;
 
 { TDesktopOpt }
 
-constructor TDesktopOpt.Create(aName: String; const aUseIDELayouts: Boolean);
+constructor TDesktopOpt.Create(const aName: String;
+  const aUseIDELayouts: Boolean);
 begin
+  Create(aName, aUseIDELayouts, Assigned(IDEDockMaster));
+end;
+
+constructor TDesktopOpt.Create(const aName: String;
+  const aUseIDELayouts: Boolean; const aIsDocked: Boolean);
+begin
+  if aIsDocked and not Assigned(IDEDockMaster) then
+    raise Exception.Create('Internal error: TEnvironmentOptions.CreateDesktop cannot create docked desktop in undocked environment.');
+
   inherited Create;
 
   FName:=aName;
+  FIsDocked := aIsDocked;
+  if aIsDocked then
+    FDockedOpt := IDEDockMaster.DockedDesktopOptClass.Create(aUseIDELayouts);
   FSingleTaskBarButton:=false;
   FHideIDEOnRun:=false;
   FAutoAdjustIDEHeight:=true;
@@ -989,6 +1021,7 @@ begin
   FreeAndNil(FComponentPaletteOptions);
   FreeAndNil(FEditorToolBarOptions);
   FreeAndNil(FIDECoolBarOptions);
+  FreeAndNil(FDockedOpt);
 
   if not FUseIDELayouts then
   begin
@@ -999,12 +1032,18 @@ begin
   inherited Destroy;
 end;
 
-procedure TDesktopOpt.Assign(Source: TDesktopOpt);
+function TDesktopOpt.GetCompatible: Boolean;
 begin
-  // Note: FName is not assigned.
-  // ToDo :
-  //FXMLCfg.Assign(Source.FXMLCfg);
-  //FConfigStore.Assign(Source.FConfigStore);
+  Result := (IsDocked = Assigned(IDEDockMaster));
+end;
+
+procedure TDesktopOpt.Assign(Source: TDesktopOpt; const AssignName: Boolean);
+begin
+  if AssignName then
+    FName := Source.FName;
+
+  if Assigned(FDockedOpt) <> Assigned(Source.FDockedOpt) then
+    raise Exception.Create('Internal error: TDesktopOpt.Assign mixed docked/undocked desktops.');
 
   // window layout
   if Source.FIDEWindowCreatorsLayoutList <> IDEWindowCreators.SimpleLayoutStorage then
@@ -1030,6 +1069,9 @@ begin
   FEditorToolBarOptions.Assign(Source.FEditorToolBarOptions);
   // component palette
   FComponentPaletteOptions.Assign(Source.FComponentPaletteOptions);
+
+  if Assigned(FDockedOpt) then
+    FDockedOpt.Assign(Source.FDockedOpt);
 end;
 
 procedure TDesktopOpt.Load(Path: String);
@@ -1060,12 +1102,20 @@ begin
   FEditorToolBarOptions.Load(FXMLCfg, Path);
   // component palette
   FComponentPaletteOptions.Load(FXMLCfg, Path);
+
+  if Assigned(FDockedOpt) then
+    FDockedOpt.Load(Path, FXMLCfg);
 end;
 
 procedure TDesktopOpt.Save(Path: String);
 begin
   // windows
   FXMLCfg.SetDeleteValue(Path+'Name', FName, '');
+  if Assigned(FDockedOpt) then
+    FXMLCfg.SetDeleteValue(Path+'DockMaster', IDEDockMaster.ClassName, '')
+  else
+    FXMLCfg.DeleteValue(Path+'DockMaster');
+
   FIDEWindowCreatorsLayoutList.SaveToConfig(FConfigStore, Path);
   FIDEDialogLayoutList.SaveToConfig(FConfigStore,Path+'Dialogs/');
 
@@ -1089,6 +1139,9 @@ begin
   FEditorToolBarOptions.Save(FXMLCfg, Path);
   // component palette
   FComponentPaletteOptions.Save(FXMLCfg, Path);
+
+  if Assigned(FDockedOpt) then
+    FDockedOpt.Save(Path, FXMLCfg);
 end;
 
 procedure InitLayoutHelper(const FormID: string);
@@ -1102,6 +1155,14 @@ procedure TDesktopOpt.SetConfig(aXMLCfg: TRttiXMLConfig; aConfigStore: TXMLOptio
 begin
   FXMLCfg := aXMLCfg;
   FConfigStore := aConfigStore;
+end;
+
+procedure TDesktopOpt.StoreWindowPositions;
+begin
+  FIDEWindowCreatorsLayoutList.StoreWindowPositions;
+
+  if Assigned(FDockedOpt) then
+    FDockedOpt.StoreWindowPositions;
 end;
 
 procedure TDesktopOpt.InitLayoutList;
@@ -1261,6 +1322,7 @@ begin
   FDesktops := TDesktopOptList.Create(Self);
   // FDesktop points to the IDE properties
   FDesktop := TDesktopOpt.Create('', True);
+  FAutoSaveActiveDesktop := True;
 end;
 
 destructor TEnvironmentOptions.Destroy;
@@ -1299,6 +1361,12 @@ begin
   if (FLastDesktopBeforeDebug=nil) or (FDesktop=nil) then
     Exit;
   try
+    if AutoSaveActiveDesktop and Assigned(DebugDesktop) then
+    begin
+      Desktop.StoreWindowPositions;
+      DebugDesktop.Assign(Desktop);
+    end;
+
     UseDesktop(FLastDesktopBeforeDebug);
   finally
     FreeAndNil(FLastDesktopBeforeDebug);
@@ -1329,6 +1397,7 @@ begin
   begin
     FLastDesktopBeforeDebug := TDesktopOpt.Create('', False);
     FLastDesktopBeforeDebug.Assign(Desktop);
+    FLastDesktopBeforeDebug.Name := ActiveDesktopName;
     EnvironmentOptions.UseDesktop(DebugDesktop);
   end;
 end;
@@ -1343,6 +1412,13 @@ begin
     //DebugLn('Note: environment config file not found - using defaults');
   end;
   Filename:=ConfFilename;
+end;
+
+class function TEnvironmentOptions.DesktopCanBeLoaded(const aDockMaster: string
+  ): Boolean;
+begin
+  Result := (aDockMaster = '') or (
+    Assigned(IDEDockMaster) and (IDEDockMaster.ClassName = aDockMaster));
 end;
 
 function TEnvironmentOptions.GetParsedLazarusDirectory: string;
@@ -1514,6 +1590,7 @@ begin
     FOpenLastProjectAtStart:=FXMLCfg.GetValue(Path+'AutoSave/OpenLastProjectAtStart',true);
     FShowCompileDialog:=FXMLCfg.GetValue(Path+'ShowCompileDialog/Value',false);
     FAutoCloseCompileDialog:=FXMLCfg.GetValue(Path+'AutoCloseCompileDialog/Value',false);
+    FAutoSaveActiveDesktop:=FXMLCfg.GetValue(Path+'AutoSave/ActiveDesktop',True);
 
     // form editor
     FShowGrid:=FXMLCfg.GetValue(Path+'FormEditor/ShowGrid',true);
@@ -1673,12 +1750,25 @@ begin
       j := FXMLCfg.GetValue(CurPath+'Count', 1);
       for i := 0 to j-1 do
         FDesktops.AddFromCfg(CurPath+'Desktop'+IntToStr(i+1)+'/');
-    end;
-    FDesktop.SetConfig(FXMLCfg, FConfigStore);
+
+      FActiveDesktopName := FXMLCfg.GetValue(CurPath+'ActiveDesktop', '');
+    end else
+      FActiveDesktopName := '';
+
+    //load default desktop - backwards compatibility - or create a new default desktop
     CurPath := 'Desktop/';               // New place: Desktop/
     if not FXMLCfg.HasPath(CurPath, True) then
       CurPath := Path+'Desktop/';        // Old place: EnvironmentOptions/Desktop/
-    FDesktop.Load(CurPath);
+    if FXMLCfg.HasPath(CurPath, True) or//default desktop exists in the settings
+       ((ActiveDesktop.IDECoolBarOptions.ToolBars.Count = 0) and
+        (ActiveDesktop.FIDEDialogLayoutList.Count = 0))//desktop is empty, load it to recreate!
+    then
+    begin
+      ActiveDesktop.SetConfig(FXMLCfg, FConfigStore);
+      ActiveDesktop.Load(CurPath);
+    end;
+
+    Desktop.Assign(ActiveDesktop, False);
 
     FileUpdated;
   except
@@ -1796,6 +1886,7 @@ var
   mwc: TMsgWndColor;
   u: TMessageLineUrgency;
   xSaveDesktop: TDesktopOpt;
+  xActiveDesktopName: string;
 begin
   try
     InitXMLCfg(true);
@@ -1816,6 +1907,7 @@ begin
     FXMLCfg.SetDeleteValue(Path+'AutoSave/IntervalInSecs',FAutoSaveIntervalInSecs,600);
     FXMLCfg.SetDeleteValue(Path+'AutoSave/LastSavedProjectFile',FLastSavedProjectFile,'');
     FXMLCfg.SetDeleteValue(Path+'AutoSave/OpenLastProjectAtStart',FOpenLastProjectAtStart,true);
+    FXMLCfg.SetDeleteValue(Path+'AutoSave/ActiveDesktop', FAutoSaveActiveDesktop, True);
 
     // form editor
     FXMLCfg.SetDeleteValue(Path+'FormEditor/ShowBorderSpacing',FShowBorderSpacing,false);
@@ -1943,23 +2035,39 @@ begin
       end;
     end;
 
+    //automatically save active desktops
+    if AutoSaveActiveDesktop then
+    begin
+      //save active desktop
+      Desktop.StoreWindowPositions;
+      ActiveDesktop.Assign(Desktop);
+
+      if Assigned(FLastDesktopBeforeDebug) then//are we in debug session?
+      begin
+        //save last desktop before the debug desktop
+        xSaveDesktop := FDesktops.Find(FLastDesktopBeforeDebug.Name);
+        if Assigned(xSaveDesktop) then
+          xSaveDesktop.Assign(FLastDesktopBeforeDebug, False);
+      end;
+    end;
+    if Assigned(FLastDesktopBeforeDebug) then
+      xActiveDesktopName := FLastDesktopBeforeDebug.Name
+    else
+      xActiveDesktopName := FActiveDesktopName;
+
     // The user can define many desktops. They are saved under path Desktops/.
     FXMLCfg.DeletePath('Desktops/');
     CurPath:='Desktops/';
     FXMLCfg.SetDeleteValue(CurPath+'Count', FDesktops.Count, 0);
     FXMLCfg.SetDeleteValue(CurPath+'DebugDesktop', FDebugDesktopName, '');
+    FXMLCfg.SetDeleteValue(CurPath+'ActiveDesktop', xActiveDesktopName, '');
     for i := 0 to FDesktops.Count-1 do
     begin
       FDesktops[i].SetConfig(FXMLCfg, FConfigStore);
       FDesktops[i].Save(CurPath+'Desktop'+IntToStr(i+1)+'/');
     end;
 
-    if Assigned(FLastDesktopBeforeDebug) then
-      xSaveDesktop := FLastDesktopBeforeDebug
-    else
-      xSaveDesktop := FDesktop;
-    xSaveDesktop.SetConfig(FXMLCfg, FConfigStore);
-    xSaveDesktop.Save('Desktop/');
+    FXMLCfg.DeletePath('Desktop/');
 
     FXMLCfg.Flush;
     FileUpdated;
@@ -1997,6 +2105,13 @@ end;
 procedure TEnvironmentOptions.RemoveFromRecentProjectFiles(const AFilename: string);
 begin
   RemoveFromRecentList(AFilename,FRecentProjectFiles,rltFile);
+end;
+
+procedure TEnvironmentOptions.RestoreDesktop;
+begin
+  IDEWindowCreators.RestoreSimpleLayout;
+  if Assigned(Desktop.FDockedOpt) then
+    Desktop.FDockedOpt.RestoreDesktop;
 end;
 
 function TEnvironmentOptions.GetParsedTestBuildDirectory: string;
@@ -2309,6 +2424,39 @@ begin
     FFileAge:=0;
 end;
 
+function TEnvironmentOptions.GetActiveDesktop: TDesktopOpt;
+  procedure _UseDefault;
+  begin
+    //use default desktop name
+    if Assigned(IDEDockMaster) then
+      FActiveDesktopName := 'default docked'//name for desktop with AnchorDocking
+    else
+      FActiveDesktopName := 'default';
+  end;
+begin
+  if FActiveDesktopName <> '' then
+  begin
+    Result := FDesktops.Find(FActiveDesktopName);
+    if Assigned(Result) and Result.Compatible then//the selected desktop is supported (docked/docked)
+      Exit;
+  end;
+
+  //the selected desktop is unsupported (docked/undocked)
+  // -> use default
+  _UseDefault;
+  Result := FDesktops.Find(FActiveDesktopName);
+  if Assigned(Result) and Result.Compatible then//the default desktop exists and is supported
+    Exit;
+
+  //recreate desktop with ActiveDesktopName
+  if Assigned(Result) then
+    FDesktops.Remove(Result);
+
+  Result := TDesktopOpt.Create(FActiveDesktopName, False);
+  FDesktops.Add(Result);
+  Result.Assign(Desktop);
+end;
+
 procedure TEnvironmentOptions.SetTestBuildDirectory(const AValue: string);
 var
   NewValue: String;
@@ -2338,10 +2486,11 @@ var
 begin
   xLastFocusControl := Screen.ActiveControl;
   xLastFocusForm := Screen.ActiveCustomForm;
-  DoBeforeWrite(False);
+  DoBeforeWrite(False);  //this is needed to get the EditorToolBar refreshed!!! - needed only here in UseDesktop()
   Desktop.Assign(ADesktop);
-  DoAfterWrite(False);
-  IDEWindowCreators.RestoreSimpleLayout;
+  ActiveDesktopName := ADesktop.Name;
+  DoAfterWrite(False);  //this is needed to get the EditorToolBar refreshed!!! - needed only here in UseDesktop()
+  RestoreDesktop;
 
   //set focus back to the previously focused control
   if Screen.CustomFormIndex(xLastFocusForm) >= 0 then//check if form hasn't been destroyed
@@ -2425,9 +2574,12 @@ end;
 
 function TEnvironmentOptions.GetDebugDesktop: TDesktopOpt;
 begin
-  if FDebugDesktopName<>'' then
-    Result := FDesktops.Find(FDebugDesktopName)
-  else
+  if FDebugDesktopName <> '' then
+  begin
+    Result := FDesktops.Find(FDebugDesktopName);
+    if not(Assigned(Result) and Result.Compatible) then//do not mix docked/undocked desktops
+      Result := nil;
+  end else
     Result := nil;
 end;
 

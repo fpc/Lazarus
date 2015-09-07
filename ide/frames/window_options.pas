@@ -237,7 +237,7 @@ begin
   end;
 
   if FLayoutChanged then
-    IDEWindowCreators.RestoreSimpleLayout;
+    EnvironmentOptions.RestoreDesktop;
 end;
 
 function TWindowOptionsFrame.GetPlacementRadioButtons(

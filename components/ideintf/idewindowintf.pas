@@ -18,7 +18,7 @@ interface
 
 uses
   Math, Classes, SysUtils, LCLProc, LazConfigStorage, LazUTF8, Forms, Controls,
-  LCLIntf;
+  LCLIntf, IDEOptionsIntf;
 
   //----------------------------------------------------------------------------
   // layout settings of modal forms (dialogs) in the IDE
@@ -473,6 +473,7 @@ type
     procedure AdjustMainIDEWindowHeight(const {%H-}AIDEWindow: TCustomForm;
       const {%H-}AAdjustHeight: Boolean; const {%H-}ANewHeight: Integer); virtual;
     procedure CloseAll; virtual; // close all forms, called after IDE has saved all and shuts down
+    function DockedDesktopOptClass: TAbstractDesktopDockingOptClass; virtual; abstract;
     property HideSimpleLayoutOptions: boolean read FHideSimpleLayoutOptions;
   end;
 

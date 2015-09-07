@@ -37,20 +37,13 @@ interface
 
 uses
   Math, Classes, SysUtils, LCLProc, Forms, Controls, FileUtil, LazFileCache,
-  Dialogs, LazConfigStorage, LazFileUtils, XMLPropStorage, StdCtrls,
-  LCLIntf, BaseIDEIntf, ProjectIntf, MacroIntf, IDEDialogs, MenuIntf,
+  Dialogs, LazConfigStorage, LazFileUtils, StdCtrls,
+  LCLIntf, BaseIDEIntf, ProjectIntf,
   LazIDEIntf, IDEWindowIntf, IDEOptionsIntf, AnchorDockStr, AnchorDocking,
   AnchorDockOptionsDlg;
 
 const
-  DefaultLayoutFileName = 'anchordocklayout.xml';
   DefaultConfigFileName = 'anchordockoptions.xml';
-var
-  mnuAnchorDockSection: TIDEMenuSection;
-    mnuADSaveLayoutAsDefault: TIDEMenuCommand;
-    mnuADSaveLayoutToFile: TIDEMenuCommand;
-    mnuADLoadLayoutFromFile: TIDEMenuCommand;
-    mnuADRestoreDefaultLayout: TIDEMenuCommand;
 
 type
 
@@ -62,7 +55,6 @@ type
     FCmdLineLayoutFile: string;
     FSavedChangeStamp: int64;
     FSavedDMChangeStamp: int64;
-    FSaveOnClose: boolean;
     FUserLayoutLoaded: boolean;
     procedure DockMasterCreateControl(Sender: TObject; aName: string;
       var AControl: TControl; DoDisableAutoSizing: boolean);
@@ -79,16 +71,10 @@ type
     property Modified: boolean read GetModified write SetModified;
     procedure LoadSettings;
     procedure SaveSettings;
+    function DockedDesktopOptClass: TAbstractDesktopDockingOptClass; override;
     // layouts
-    function GetUserLayoutFilename(Full: boolean): string;
-    procedure LoadDefaultLayout;
-    procedure LoadUserLayout;
-    procedure SaveUserLayout;
-    procedure LoadLayoutFromFile(Filename: string);
-    procedure SaveLayoutToFile(Filename: string);
     property UserLayoutLoaded: boolean read FUserLayoutLoaded write SetUserLayoutLoaded;
     property CmdLineLayoutFile: string read FCmdLineLayoutFile write FCmdLineLayoutFile;
-    property SaveOnClose: boolean read FSaveOnClose write FSaveOnClose;
     // events
     procedure MakeIDEWindowDockSite(AForm: TCustomForm; ASides: TDockSides = [alBottom]); override;
     procedure MakeIDEWindowDockable(AControl: TWinControl); override;
@@ -97,14 +83,6 @@ type
     procedure AdjustMainIDEWindowHeight(const AIDEWindow: TCustomForm;
       const AAdjustHeight: Boolean; const ANewHeight: Integer); override;
     procedure CloseAll; override;
-    procedure OnIDERestoreWindows(Sender: TObject);
-    function OnProjectClose(Sender: TObject; AProject: TLazProject): TModalResult;
-    procedure OnIDEClose(Sender: TObject);
-    // menu items
-    procedure RestoreDefaultLayoutClicked(Sender: TObject);
-    procedure LoadLayoutFromFileClicked(Sender: TObject);
-    procedure SaveLayoutToFileClicked(Sender: TObject);
-    procedure SaveLayoutAsDefaultClicked(Sender: TObject);
   end;
 
   { TAnchorDockIDEFrame }
@@ -137,27 +115,6 @@ implementation
 procedure Register;
 begin
   if not (IDEDockMaster is TIDEAnchorDockMaster) then exit;
-
-  LazarusIDE.AddHandlerOnIDERestoreWindows(@IDEAnchorDockMaster.OnIDERestoreWindows);
-  LazarusIDE.AddHandlerOnProjectClose(@IDEAnchorDockMaster.OnProjectClose);
-  LazarusIDE.AddHandlerOnIDEClose(@IDEAnchorDockMaster.OnIDEClose);
-
-  // add menu section
-  // As this procedure seems to be called too early, menuitems names will be
-  // not localized. So we will localize them in TIDEAnchorDockMaster.OnIDERestoreWindows for now
-  mnuAnchorDockSection:=RegisterIDEMenuSection(itmSecondaryTools,'AnchorDocking');
-  mnuADSaveLayoutAsDefault:=RegisterIDEMenuCommand(mnuAnchorDockSection,
-    'ADSaveLayoutAsDefault', adrsSaveWindowLayoutAsDefault,
-    @IDEAnchorDockMaster.SaveLayoutAsDefaultClicked);
-  mnuADSaveLayoutToFile:=RegisterIDEMenuCommand(mnuAnchorDockSection,
-    'ADSaveLayoutToFile', adrsSaveWindowLayoutToFile,
-    @IDEAnchorDockMaster.SaveLayoutToFileClicked);
-  mnuADLoadLayoutFromFile:=RegisterIDEMenuCommand(mnuAnchorDockSection,
-    'ADLoadLayoutFromFile', adrsLoadWindowLayoutFromFile,
-    @IDEAnchorDockMaster.LoadLayoutFromFileClicked);
-  mnuADRestoreDefaultLayout:=RegisterIDEMenuCommand(mnuAnchorDockSection,
-    'ADRestoreDefaultLayout', adrsRestoreDefaultLayout,
-    @IDEAnchorDockMaster.RestoreDefaultLayoutClicked);
 
   // add options frame
   AnchorDockOptionsID:=RegisterIDEOptionsEditor(GroupEnvironment,TAnchorDockIDEFrame,
@@ -236,9 +193,8 @@ end;
 constructor TIDEAnchorDockMaster.Create;
 begin
   inherited Create;
-  DefaultAnchorDockOptionFlags:=[adofShow_ShowHeader,adofShow_ShowSaveOnClose];
+  DefaultAnchorDockOptionFlags:=[adofShow_ShowHeader];
 
-  FSaveOnClose:=true;
   IDEAnchorDockMaster:=Self;
   DockMaster.OnCreateControl:=@DockMasterCreateControl;
   DockMaster.OnShowOptions:=@ShowAnchorDockOptions;
@@ -253,8 +209,13 @@ destructor TIDEAnchorDockMaster.Destroy;
 begin
   IDEAnchorDockMaster:=nil;
   if IDEDockMaster=Self then
-    IDEDockMaster:=Self;
+    IDEDockMaster:=nil;
   inherited Destroy;
+end;
+
+function TIDEAnchorDockMaster.DockedDesktopOptClass: TAbstractDesktopDockingOptClass;
+begin
+  Result := TAnchorDesktopOpt;
 end;
 
 procedure TIDEAnchorDockMaster.MakeIDEWindowDockSite(AForm: TCustomForm;
@@ -314,118 +275,6 @@ begin
   SiteNewHeight := Site.Parent.ClientHeight - ANewHeight - Site.BoundSplitter.Height;
   if AAdjustHeight and (Site.Height <> SiteNewHeight) then
     Site.Height := SiteNewHeight;
-end;
-
-function TIDEAnchorDockMaster.GetUserLayoutFilename(Full: boolean): string;
-begin
-  if CmdLineLayoutFile<>'' then begin
-    Result:=CmdLineLayoutFile;
-  end else begin
-    Result:=DefaultLayoutFileName;
-    if Full then
-      Result:=AppendPathDelim(LazarusIDE.GetPrimaryConfigPath)+Result;
-  end;
-end;
-
-procedure TIDEAnchorDockMaster.LoadDefaultLayout;
-var
-  BaseDir: String;
-  Filename: String;
-begin
-  BaseDir:='$PkgDir(AnchorDockingDsgn)';
-  IDEMacros.SubstituteMacros(BaseDir);
-  if (BaseDir<>'') and DirectoryExistsUTF8(BaseDir) then begin
-    Filename:=AppendPathDelim(BaseDir)+'ADLayoutDefault.xml';
-    if FileExistsUTF8(Filename) then
-      LoadLayoutFromFile(Filename);
-  end;
-  Modified:=false;
-end;
-
-procedure TIDEAnchorDockMaster.LoadUserLayout;
-var
-  Filename: String;
-  Config: TConfigStorage;
-begin
-  Filename:=GetUserLayoutFilename(false);
-  try
-    {$IFDEF VerboseAnchorDocking}
-    debugln(['TIDEAnchorDockMaster.LoadUserLayout ',Filename]);
-    {$ENDIF}
-    Config:=GetIDEConfigStorage(Filename,true);
-    try
-      if not DockMaster.ConfigIsEmpty(Config) then begin
-        // loading last layout
-        {$IF defined(VerboseAnchorDocking) or defined(VerboseAnchorDockRestore)}
-        debugln(['TIDEAnchorDockMaster.LoadUserLayout restoring ...']);
-        {$ENDIF}
-        DockMaster.LoadLayoutFromConfig(Config,true);
-        UserLayoutLoaded:=true;
-      end else begin
-        // loading defaults
-        {$IF defined(VerboseAnchorDocking) or defined(VerboseAnchorDockRestore)}
-        debugln(['TIDEAnchorDockMaster.LoadUserLayout loading default layout ...']);
-        {$ENDIF}
-        LoadDefaultLayout;
-      end;
-    finally
-      Config.Free;
-    end;
-  except
-    on E: Exception do begin
-      DebugLn(['TIDEAnchorDockMaster.LoadUserLayout loading ',Filename,' failed: ',E.Message]);
-    end;
-  end;
-  Modified:=false;
-end;
-
-procedure TIDEAnchorDockMaster.SaveUserLayout;
-var
-  Filename: String;
-  Config: TConfigStorage;
-begin
-  Filename:=GetUserLayoutFilename(false);
-  try
-    {$IF defined(VerboseAnchorDocking) or defined(VerboseAnchorDockRestore)}
-    debugln(['TIDEAnchorDockMaster.SaveDefaultLayout ',Filename]);
-    {$ENDIF}
-    Config:=GetIDEConfigStorage(Filename,false);
-    try
-      DockMaster.SaveLayoutToConfig(Config);
-    finally
-      Config.Free;
-    end;
-  except
-    on E: Exception do begin
-      DebugLn(['TIDEAnchorDockMaster.SaveDefaultLayout saving ',Filename,' failed: ',E.Message]);
-    end;
-  end;
-  Modified:=false;
-end;
-
-procedure TIDEAnchorDockMaster.LoadLayoutFromFile(Filename: string);
-var
-  Config: TXMLConfigStorage;
-begin
-  Config:=TXMLConfigStorage.Create(FileName, true);
-  try
-    DockMaster.LoadLayoutFromConfig(Config,true);
-  finally
-    Config.Free;
-  end;
-end;
-
-procedure TIDEAnchorDockMaster.SaveLayoutToFile(Filename: string);
-var
-  Config: TXMLConfigStorage;
-begin
-  Config:=TXMLConfigStorage.Create(FileName, false);
-  try
-    DockMaster.SaveLayoutToConfig(Config);
-    Config.WriteToDisk;
-  finally
-    Config.Free;
-  end;
 end;
 
 procedure TIDEAnchorDockMaster.ShowForm(AForm: TCustomForm;
@@ -534,108 +383,6 @@ begin
   DockMaster.CloseAll;
 end;
 
-function TIDEAnchorDockMaster.OnProjectClose(Sender: TObject;
-  AProject: TLazProject): TModalResult;
-begin
-  Result:=mrOk;
-  if AProject=nil then exit;
-  // do not auto save user layout, the restore is not yet stable
-  //SaveUserLayout;
-end;
-
-procedure TIDEAnchorDockMaster.OnIDEClose(Sender: TObject);
-var
-  aForm: TCustomForm;
-begin
-  SaveSettings;
-  if DockMaster.SaveOnClose then begin
-    debugln(['TIDEAnchorDockMaster.OnIDEClose auto save ...']);
-    aForm:=GetParentForm(Application.MainForm);
-    if (aForm<>nil) and aForm.Monitor.Primary then
-      SaveUserLayout;
-  end;
-end;
-
-procedure TIDEAnchorDockMaster.RestoreDefaultLayoutClicked(Sender: TObject);
-begin
-  LoadDefaultLayout;
-end;
-
-procedure TIDEAnchorDockMaster.OnIDERestoreWindows(Sender: TObject);
-begin
-  // localize menu captions
-  mnuADSaveLayoutAsDefault.Caption:=adrsSaveWindowLayoutAsDefault;
-  mnuADSaveLayoutToFile.Caption:=adrsSaveWindowLayoutToFile;
-  mnuADLoadLayoutFromFile.Caption:=adrsLoadWindowLayoutFromFile;
-  mnuADRestoreDefaultLayout.Caption:=adrsRestoreDefaultLayout;
-  LoadUserLayout;
-end;
-
-procedure TIDEAnchorDockMaster.LoadLayoutFromFileClicked(Sender: TObject);
-var
-  Dlg: TOpenDialog;
-  Filename: String;
-begin
-  Dlg:=TOpenDialog.Create(nil);
-  try
-    InitIDEFileDialog(Dlg);
-    Dlg.Title:=adrsLoadWindowLayoutFromFileXml;
-    Dlg.Options:=Dlg.Options+[ofFileMustExist];
-    Dlg.Filter:=adrsAnchorDockingLayout+'|*.xml|'+adrsAllFiles+'|'+GetAllFilesMask;
-    if Dlg.Execute then begin
-      Filename:=CleanAndExpandFilename(Dlg.FileName);
-      try
-        LoadLayoutFromFile(Filename);
-      except
-        on E: Exception do begin
-          IDEMessageDialog(adrsError,
-            Format(adrsErrorLoadingWindowLayoutFromFile, [Filename, #13, E.Message]),
-            mtError,[mbCancel]);
-        end;
-      end;
-    end;
-    StoreIDEFileDialog(Dlg);
-  finally
-    Dlg.Free;
-  end;
-end;
-
-procedure TIDEAnchorDockMaster.SaveLayoutToFileClicked(Sender: TObject);
-var
-  Dlg: TSaveDialog;
-  Filename: String;
-begin
-  Dlg:=TSaveDialog.Create(nil);
-  try
-    InitIDEFileDialog(Dlg);
-    Dlg.Title:=adrsSaveWindowLayoutToFileXml;
-    Dlg.Options:=Dlg.Options+[ofPathMustExist,ofNoReadOnlyReturn,ofOverwritePrompt];
-    Dlg.Filter:=adrsAnchorDockingLayout+'|*.xml|'+adrsAllFiles+'|'+GetAllFilesMask;
-    if Dlg.Execute then begin
-      Filename:=CleanAndExpandFilename(Dlg.FileName);
-      if ExtractFileExt(Filename)='' then
-        Filename:=Filename+'.xml';
-      try
-        SaveLayoutToFile(Filename);
-      except
-        on E: Exception do begin
-          IDEMessageDialog(adrsError,
-            Format(adrsErrorWritingWindowLayoutToFile, [Filename, LineEnding, E.Message]),
-            mtError,[mbCancel]);
-        end;
-      end;
-    end;
-    StoreIDEFileDialog(Dlg);
-  finally
-    Dlg.Free;
-  end;
-end;
-
-procedure TIDEAnchorDockMaster.SaveLayoutAsDefaultClicked(Sender: TObject);
-begin
-  SaveUserLayout;
-end;
-
 procedure TIDEAnchorDockMaster.IncreaseChangeStamp;
 begin
   LUIncreaseChangeStamp64(FChangeStamp);
@@ -732,11 +479,8 @@ begin
   if not (AOptions is SupportedOptionsClass) then exit;
   OptionsFrame.SaveToSettings(FSettings);
   if (not DockMaster.SettingsAreEqual(FSettings))
-  or (not FileExistsCached(IDEAnchorDockMaster.GetUserLayoutFilename(true)))
   then begin
     DockMaster.LoadSettings(FSettings);
-    IDEAnchorDockMaster.SaveUserLayout;
-    IDEAnchorDockMaster.SaveSettings;
   end;
 end;
 

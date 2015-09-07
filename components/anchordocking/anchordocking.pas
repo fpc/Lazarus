@@ -104,9 +104,31 @@ interface
 uses
   Math, Classes, SysUtils, LResources, types, LCLType, LCLIntf, LCLProc,
   Controls, Forms, ExtCtrls, ComCtrls, Graphics, Themes, Menus, Buttons,
-  LazConfigStorage, AnchorDockStr, AnchorDockStorage, LazFileCache;
+  LazConfigStorage, AnchorDockStr, AnchorDockStorage, LazFileCache,
+  IDEOptionsIntf, Laz2_XMLCfg, MacroIntf, FileUtil, LazIDEIntf;
 
 type
+  TAnchorDesktopOpt = class(TAbstractDesktopDockingOpt)
+  private
+    FTree: TAnchorDockLayoutTree;
+    FRestoreLayouts: TAnchorDockRestoreLayouts;
+  public
+    procedure LoadDefaultLayout;
+    procedure LoadLayoutFromConfig(Path: string; aXMLCfg: TRttiXMLConfig);
+    procedure LoadLayoutFromFile(FileName: string);
+
+    procedure SaveMainLayoutToTree;
+    procedure SaveLayoutToConfig(Path: string; aXMLCfg: TRttiXMLConfig);
+  public
+    constructor Create(aUseIDELayouts: Boolean); override;
+    destructor Destroy; override;
+    procedure Load(Path: String; aXMLCfg: TRttiXMLConfig); override;
+    procedure Save(Path: String; aXMLCfg: TRttiXMLConfig); override;
+    procedure Assign(Source: TAbstractDesktopDockingOpt); override;
+    procedure StoreWindowPositions; override;
+    function RestoreDesktop: Boolean; override;
+  end;
+
   TAnchorDockHostSite = class;
 
   { TAnchorDockCloseButton
@@ -403,7 +425,6 @@ type
     FHeaderFilled: boolean;
     FHideHeaderCaptionFloatingControl: boolean;
     FPageAreaInPercent: integer;
-    FSaveOnClose: boolean;
     FScaleOnResize: boolean;
     FShowHeader: boolean;
     FShowHeaderCaption: boolean;
@@ -418,7 +439,6 @@ type
     procedure SetHeaderStyle(AValue: TADHeaderStyle);
     procedure SetHideHeaderCaptionFloatingControl(AValue: boolean);
     procedure SetPageAreaInPercent(AValue: integer);
-    procedure SetSaveOnClose(AValue: boolean);
     procedure SetScaleOnResize(AValue: boolean);
     procedure SetShowHeader(AValue: boolean);
     procedure SetShowHeaderCaption(AValue: boolean);
@@ -435,7 +455,6 @@ type
     property HeaderHint: string read FHeaderHint write SetHeaderHint;
     property SplitterWidth: integer read FSplitterWidth write SetSplitterWidth;
     property ScaleOnResize: boolean read FScaleOnResize write SetScaleOnResize;
-    property SaveOnClose: boolean read FSaveOnClose write SetSaveOnClose;
     property ShowHeader: boolean read FShowHeader write SetShowHeader;
     property ShowHeaderCaption: boolean read FShowHeaderCaption write SetShowHeaderCaption;
     property HideHeaderCaptionFloatingControl: boolean read FHideHeaderCaptionFloatingControl write SetHideHeaderCaptionFloatingControl;
@@ -487,7 +506,6 @@ type
     FQueueSimplify: Boolean;
     FRestoreLayouts: TAnchorDockRestoreLayouts;
     FRestoring: boolean;
-    FSaveOnClose: boolean;
     FScaleOnResize: boolean;
     FShowHeader: boolean;
     FShowHeaderCaption: boolean;
@@ -521,7 +539,6 @@ type
     procedure SetHeaderHint(AValue: string);
     procedure SetHeaderStyle(AValue: TADHeaderStyle);
     procedure SetPageAreaInPercent(AValue: integer);
-    procedure SetSaveOnClose(AValue: boolean);
     procedure SetScaleOnResize(AValue: boolean);
 
     procedure SetHeaderFlatten(AValue: boolean);
@@ -552,6 +569,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function FullRestoreLayout(Tree: TAnchorDockLayoutTree; Scale: Boolean): Boolean;
     function ControlCount: integer;
     property Controls[Index: integer]: TControl read GetControls;
     function IndexOfControl(const aName: string): integer;
@@ -582,13 +600,10 @@ type
     procedure CloseAll;
 
     // save/restore layouts
-    procedure SaveLayoutToConfig(Config: TConfigStorage);
-    procedure SaveMainLayoutToTree(LayoutTree: TAnchorDockLayoutTree);
     procedure SaveSiteLayoutToTree(AForm: TCustomForm;
                                    LayoutTree: TAnchorDockLayoutTree);
     function CreateRestoreLayout(AControl: TControl): TAnchorDockRestoreLayout;
     function ConfigIsEmpty(Config: TConfigStorage): boolean;
-    function LoadLayoutFromConfig(Config: TConfigStorage; Scale: Boolean): boolean;
     property RestoreLayouts: TAnchorDockRestoreLayouts read FRestoreLayouts; // layout information for restoring hidden forms
     property Restoring: boolean read FRestoring write SetRestoring;
     property IdleConnected: Boolean read FIdleConnected write SetIdleConnected;
@@ -640,7 +655,6 @@ type
 
     property SplitterWidth: integer read FSplitterWidth write SetSplitterWidth default 4;
     property ScaleOnResize: boolean read FScaleOnResize write SetScaleOnResize default true; // scale children when resizing a site
-    property SaveOnClose: boolean read FSaveOnClose write SetSaveOnClose default true; // you must call SaveLayoutToConfig yourself
     property AllowDragging: boolean read FAllowDragging write SetAllowDragging default true;
     property OptionsChangeStamp: int64 read FOptionsChangeStamp;
     procedure IncreaseOptionsChangeStamp; inline;
@@ -683,14 +697,12 @@ function GetDockSplitter(Control: TControl; Side: TAnchorKind;
                          out Splitter: TAnchorDockSplitter): boolean;
 function GetDockSplitterOrParent(Control: TControl; Side: TAnchorKind;
                                  out AnchorControl: TControl): boolean;
-function CountAnchoredControls(Control: TControl; Side: TAnchorKind
-                               ): Integer;
+function CountAnchoredControls(Control: TControl; Side: TAnchorKind): Integer;
 function NeighbourCanBeShrinked(EnlargeControl, Neighbour: TControl;
                                 Side: TAnchorKind): boolean;
 function ControlIsAnchoredIndirectly(StartControl: TControl; Side: TAnchorKind;
                                      DestControl: TControl): boolean;
-procedure GetAnchorControlsRect(Control: TControl;
-                                out ARect: TAnchorControlsRect);
+procedure GetAnchorControlsRect(Control: TControl; out ARect: TAnchorControlsRect);
 function GetEnclosingControlRect(ControlList: TFPlist;
                                  out ARect: TAnchorControlsRect): boolean;
 function GetEnclosedControls(const ARect: TAnchorControlsRect): TFPList;
@@ -988,8 +1000,7 @@ begin
   Result:=Check(Parent.GetControlIndex(StartControl));
 end;
 
-procedure GetAnchorControlsRect(Control: TControl; out
-  ARect: TAnchorControlsRect);
+procedure GetAnchorControlsRect(Control: TControl; out ARect: TAnchorControlsRect);
 var
   a: TAnchorKind;
 begin
@@ -1170,6 +1181,197 @@ begin
   Fill(LeftTopControl);
 end;
 
+{ TAnchorDesktopOpt }
+
+procedure TAnchorDesktopOpt.Assign(Source: TAbstractDesktopDockingOpt);
+var
+  xSource: TAnchorDesktopOpt;
+begin
+  if Source is TAnchorDesktopOpt then
+  begin
+    xSource := TAnchorDesktopOpt(Source);
+    FTree.Assign(xSource.FTree);
+    FRestoreLayouts.Assign(xSource.FRestoreLayouts);
+  end;
+end;
+
+constructor TAnchorDesktopOpt.Create(aUseIDELayouts: Boolean);
+begin
+  inherited;
+
+  FTree := TAnchorDockLayoutTree.Create;
+  FRestoreLayouts := TAnchorDockRestoreLayouts.Create;
+  if aUseIDELayouts then
+    DockMaster.FRestoreLayouts := Self.FRestoreLayouts;
+end;
+
+destructor TAnchorDesktopOpt.Destroy;
+begin
+  FTree.Free;
+  FRestoreLayouts.Free;
+
+  inherited Destroy;
+end;
+
+procedure TAnchorDesktopOpt.Load(Path: String; aXMLCfg: TRttiXMLConfig);
+var
+  Config: TConfigStorage;
+begin
+  //new version of old "TIDEAnchorDockMaster.LoadUserLayout"
+
+  Path := Path + 'AnchorDocking/';
+  try
+    {$IFDEF VerboseAnchorDocking}
+    debugln(['TIDEAnchorDockMaster.LoadUserLayout ',Filename]);
+    {$ENDIF}
+    if aXMLCfg.GetValue(Path+'MainConfig/Nodes/ChildCount',0) > 0 then//config is not empty
+    begin
+      // loading last layout
+      {$IF defined(VerboseAnchorDocking) or defined(VerboseAnchorDockRestore)}
+      debugln(['TIDEAnchorDockMaster.LoadUserLayout restoring ...']);
+      {$ENDIF}
+      LoadLayoutFromConfig(Path,aXMLCfg);
+    end else begin
+      // loading defaults
+      {$IF defined(VerboseAnchorDocking) or defined(VerboseAnchorDockRestore)}
+      debugln(['TIDEAnchorDockMaster.LoadUserLayout loading default layout ...']);
+      {$ENDIF}
+      LoadDefaultLayout;
+    end;
+  except
+    on E: Exception do begin
+      DebugLn(['TIDEAnchorDockMaster.LoadUserLayout loading ',aXMLCfg.GetValue(Path+'Name', ''),' failed: ',E.Message]);
+      Raise;
+    end;
+  end;
+end;
+
+procedure TAnchorDesktopOpt.LoadDefaultLayout;
+var
+  BaseDir: String;
+  Filename: String;
+begin
+  Filename := AppendPathDelim(LazarusIDE.GetPrimaryConfigPath)+'anchordocklayout.xml';
+  if FileExistsUTF8(Filename) then//first load from anchordocklayout.xml -- backwards compatibility
+    LoadLayoutFromFile(Filename)
+  else
+  begin
+    BaseDir := '$PkgDir(AnchorDockingDsgn)';
+    IDEMacros.SubstituteMacros(BaseDir);
+    if (BaseDir<>'') and DirectoryExistsUTF8(BaseDir) then begin
+      Filename:=AppendPathDelim(BaseDir)+'ADLayoutDefault.xml';
+      if FileExistsUTF8(Filename) then
+        LoadLayoutFromFile(Filename);
+    end;
+  end;
+end;
+
+procedure TAnchorDesktopOpt.LoadLayoutFromConfig(Path: string; aXMLCfg: TRttiXMLConfig);
+begin
+  FTree.LoadFromConfig(Path+'MainConfig/', aXMLCfg);
+  FRestoreLayouts.LoadFromConfig(Path+'Restores/', aXMLCfg);
+end;
+
+procedure TAnchorDesktopOpt.LoadLayoutFromFile(FileName: string);
+var
+  Config: TRttiXMLConfig;
+begin
+  Config := TRttiXMLConfig.Create(FileName);
+  try
+    LoadLayoutFromConfig('',Config);
+  finally
+    Config.Free;
+  end;
+end;
+
+procedure TAnchorDesktopOpt.Save(Path: String; aXMLCfg: TRttiXMLConfig);
+begin
+  Path := Path + 'AnchorDocking/';
+  try
+    {$IF defined(VerboseAnchorDocking) or defined(VerboseAnchorDockRestore)}
+    debugln(['TIDEAnchorDockMaster.SaveDefaultLayout ',Filename]);
+    {$ENDIF}
+    SaveLayoutToConfig(Path, aXMLCfg);
+  except
+    on E: Exception do begin
+      DebugLn(['TIDEAnchorDockMaster.SaveDefaultLayout saving ',aXMLCfg.GetValue(Path+'Name', ''),' failed: ',E.Message]);
+      Raise;
+    end;
+  end;
+end;
+
+procedure TAnchorDesktopOpt.SaveLayoutToConfig(Path: string; aXMLCfg: TRttiXMLConfig);
+begin
+  FTree.SaveToConfig(Path+'MainConfig/', aXMLCfg);
+  FRestoreLayouts.SaveToConfig(Path+'Restores/', aXMLCfg);
+  WriteDebugLayout('TAnchorDesktopOpt.SaveLayoutToConfig ',FTree.Root);
+end;
+
+procedure TAnchorDesktopOpt.SaveMainLayoutToTree;
+var
+  i: Integer;
+  AControl: TControl;
+  Site: TAnchorDockHostSite;
+  SavedSites: TFPList;
+  LayoutNode: TAnchorDockLayoutTreeNode;
+  AForm: TCustomForm;
+  VisibleControls: TStringList;
+begin
+  FTree.Clear;
+  SavedSites:=TFPList.Create;
+  VisibleControls:=TStringList.Create;
+  with DockMaster do
+  try
+    for i:=0 to ControlCount-1 do begin
+      AControl:=Controls[i];
+      if not DockedControlIsVisible(AControl) then continue;
+      VisibleControls.Add(AControl.Name);
+      AForm:=GetParentForm(AControl);
+      if AForm=nil then continue;
+      if SavedSites.IndexOf(AForm)>=0 then continue;
+      SavedSites.Add(AForm);
+      debugln(['TAnchorDesktopOpt.SaveMainLayoutToTree AForm=',DbgSName(AForm)]);
+      DebugWriteChildAnchors(AForm,true,true);
+      if (AForm is TAnchorDockHostSite) then begin
+        Site:=TAnchorDockHostSite(AForm);
+        LayoutNode:=FTree.NewNode(FTree.Root);
+        Site.SaveLayout(FTree,LayoutNode);
+      end else if IsCustomSite(AForm) then begin
+        // custom dock site
+        LayoutNode:=FTree.NewNode(FTree.Root);
+        LayoutNode.NodeType:=adltnCustomSite;
+        LayoutNode.Assign(AForm);
+        // can have one normal dock site
+        Site:=TAnchorDockManager(AForm.DockManager).GetChildSite;
+        if Site<>nil then begin
+          LayoutNode:=FTree.NewNode(LayoutNode);
+          Site.SaveLayout(FTree,LayoutNode);
+          {if Site.BoundSplitter<>nil then begin
+            LayoutNode:=FTree.NewNode(LayoutNode);
+            Site.BoundSplitter.SaveLayout(LayoutNode);
+          end;}
+        end;
+      end else
+        raise EAnchorDockLayoutError.Create('invalid root control for save: '+DbgSName(AControl));
+    end;
+    // remove invisible controls
+    FTree.Root.Simplify(VisibleControls);
+  finally
+    VisibleControls.Free;
+    SavedSites.Free;
+  end;
+end;
+
+procedure TAnchorDesktopOpt.StoreWindowPositions;
+begin
+  SaveMainLayoutToTree;
+end;
+
+function TAnchorDesktopOpt.RestoreDesktop: Boolean;
+begin
+  Result := DockMaster.FullRestoreLayout(FTree,True);
+end;
+
 { TAnchorDockSettings }
 
 procedure TAnchorDockSettings.SetAllowDragging(AValue: boolean);
@@ -1243,13 +1445,6 @@ begin
   IncreaseChangeStamp;
 end;
 
-procedure TAnchorDockSettings.SetSaveOnClose(AValue: boolean);
-begin
-  if FSaveOnClose=AValue then Exit;
-  FSaveOnClose:=AValue;
-  IncreaseChangeStamp;
-end;
-
 procedure TAnchorDockSettings.SetScaleOnResize(AValue: boolean);
 begin
   if FScaleOnResize=AValue then Exit;
@@ -1308,7 +1503,6 @@ begin
   HeaderAlignLeft:=Config.GetValue('HeaderAlignLeft',120);
   SplitterWidth:=Config.GetValue('SplitterWidth',4);
   ScaleOnResize:=Config.GetValue('ScaleOnResize',true);
-  SaveOnClose:=Config.GetValue('SaveOnClose',true);
   ShowHeader:=Config.GetValue('ShowHeader',true);
   ShowHeaderCaption:=Config.GetValue('ShowHeaderCaption',true);
   HideHeaderCaptionFloatingControl:=Config.GetValue('HideHeaderCaptionFloatingControl',true);
@@ -1330,7 +1524,6 @@ begin
   Config.SetDeleteValue('HeaderAlignLeft',HeaderAlignLeft,120);
   Config.SetDeleteValue('SplitterWidth',SplitterWidth,4);
   Config.SetDeleteValue('ScaleOnResize',ScaleOnResize,true);
-  Config.SetDeleteValue('SaveOnClose',SaveOnClose,true);
   Config.SetDeleteValue('ShowHeader',ShowHeader,true);
   Config.SetDeleteValue('ShowHeaderCaption',ShowHeaderCaption,true);
   Config.SetDeleteValue('HideHeaderCaptionFloatingControl',HideHeaderCaptionFloatingControl,true);
@@ -1352,7 +1545,6 @@ begin
       and (HeaderHint=Settings.HeaderHint)
       and (SplitterWidth=Settings.SplitterWidth)
       and (ScaleOnResize=Settings.ScaleOnResize)
-      and (SaveOnClose=Settings.SaveOnClose)
       and (ShowHeader=Settings.ShowHeader)
       and (ShowHeaderCaption=Settings.ShowHeaderCaption)
       and (HideHeaderCaptionFloatingControl=Settings.HideHeaderCaptionFloatingControl)
@@ -2015,6 +2207,56 @@ begin
     AddPopupMenuItem('OptionsMenuItem', adrsDockingOptions, @OptionsClick);
 end;
 
+function TAnchorDockMaster.FullRestoreLayout(Tree: TAnchorDockLayoutTree;
+  Scale: Boolean): Boolean;
+var
+  ControlNames: TStringList;
+begin
+  Result:=false;
+  ControlNames:=TStringList.Create;
+  fTreeNameToDocker:=TADNameToControl.Create;
+  try
+    // close all unneeded forms/controls (not helper controls like splitters)
+    if not CloseUnneededControls(Tree) then exit;
+
+    BeginUpdate;
+    try
+      // create all needed forms/controls (not helper controls like splitters)
+      if not CreateNeededControls(Tree,true,ControlNames) then exit;
+
+      // simplify layouts
+      ControlNames.Sort;
+      {$IFDEF VerboseAnchorDockRestore}
+      debugln(['TAnchorDockMaster.LoadLayoutFromConfig controls: ']);
+      debugln(ControlNames.Text);
+      {$ENDIF}
+      // if some forms/controls could not be created the layout needs to be adapted
+      Tree.Root.Simplify(ControlNames);
+
+      // reuse existing sites to reduce flickering
+      MapTreeToControls(Tree);
+      {$IFDEF VerboseAnchorDockRestore}
+      fTreeNameToDocker.WriteDebugReport('TAnchorDockMaster.LoadLayoutFromConfig Map');
+      {$ENDIF}
+
+      // create sites, move controls
+      RestoreLayout(Tree,Scale);
+    finally
+      EndUpdate;
+    end;
+  finally
+    // clean up
+    FreeAndNil(fTreeNameToDocker);
+    ControlNames.Free;
+    // commit (this can raise an exception)
+    EnableAllAutoSizing;
+  end;
+  {$IFDEF VerboseAnchorDockRestore}
+  DebugWriteChildAnchors(Application.MainForm,true,false);
+  {$ENDIF}
+  Result:=true;
+end;
+
 procedure TAnchorDockMaster.SetHideHeaderCaptionFloatingControl(
   const AValue: boolean);
 var
@@ -2114,13 +2356,6 @@ procedure TAnchorDockMaster.SetPageAreaInPercent(AValue: integer);
 begin
   if FPageAreaInPercent=AValue then Exit;
   FPageAreaInPercent:=AValue;
-  OptionsChanged;
-end;
-
-procedure TAnchorDockMaster.SetSaveOnClose(AValue: boolean);
-begin
-  if FSaveOnClose=AValue then Exit;
-  FSaveOnClose:=AValue;
   OptionsChanged;
 end;
 
@@ -2311,7 +2546,6 @@ begin
   FHideHeaderCaptionFloatingControl:=true;
   FSplitterWidth:=4;
   FScaleOnResize:=true;
-  FSaveOnClose:=true;
   fNeedSimplify:=TFPList.Create;
   fNeedFree:=TFPList.Create;
   fDisabledAutosizing:=TFPList.Create;
@@ -2323,7 +2557,6 @@ begin
   FHeaderFilled:=true;
   FPageControlClass:=TAnchorDockPageControl;
   FPageClass:=TAnchorDockPage;
-  FRestoreLayouts:=TAnchorDockRestoreLayouts.Create;
 end;
 
 destructor TAnchorDockMaster.Destroy;
@@ -2334,7 +2567,6 @@ var
   {$ENDIF}
 begin
   QueueSimplify:=false;
-  FreeAndNil(FRestoreLayouts);
   FreeAndNil(fPopupMenu);
   FreeAndNil(fTreeNameToDocker);
   if FControls.Count>0 then begin
@@ -2638,59 +2870,6 @@ begin
   end;
 end;
 
-procedure TAnchorDockMaster.SaveMainLayoutToTree(LayoutTree: TAnchorDockLayoutTree);
-var
-  i: Integer;
-  AControl: TControl;
-  Site: TAnchorDockHostSite;
-  SavedSites: TFPList;
-  LayoutNode: TAnchorDockLayoutTreeNode;
-  AForm: TCustomForm;
-  VisibleControls: TStringList;
-begin
-  SavedSites:=TFPList.Create;
-  VisibleControls:=TStringList.Create;
-  try
-    for i:=0 to ControlCount-1 do begin
-      AControl:=Controls[i];
-      if not DockedControlIsVisible(AControl) then continue;
-      VisibleControls.Add(AControl.Name);
-      AForm:=GetParentForm(AControl);
-      if AForm=nil then continue;
-      if SavedSites.IndexOf(AForm)>=0 then continue;
-      SavedSites.Add(AForm);
-      debugln(['TAnchorDockMaster.SaveMainLayoutToTree AForm=',DbgSName(AForm)]);
-      DebugWriteChildAnchors(AForm,true,true);
-      if (AForm is TAnchorDockHostSite) then begin
-        Site:=TAnchorDockHostSite(AForm);
-        LayoutNode:=LayoutTree.NewNode(LayoutTree.Root);
-        Site.SaveLayout(LayoutTree,LayoutNode);
-      end else if IsCustomSite(AForm) then begin
-        // custom dock site
-        LayoutNode:=LayoutTree.NewNode(LayoutTree.Root);
-        LayoutNode.NodeType:=adltnCustomSite;
-        LayoutNode.Assign(AForm);
-        // can have one normal dock site
-        Site:=TAnchorDockManager(AForm.DockManager).GetChildSite;
-        if Site<>nil then begin
-          LayoutNode:=LayoutTree.NewNode(LayoutNode);
-          Site.SaveLayout(LayoutTree,LayoutNode);
-          {if Site.BoundSplitter<>nil then begin
-            LayoutNode:=LayoutTree.NewNode(LayoutNode);
-            Site.BoundSplitter.SaveLayout(LayoutNode);
-          end;}
-        end;
-      end else
-        raise EAnchorDockLayoutError.Create('invalid root control for save: '+DbgSName(AControl));
-    end;
-    // remove invisible controls
-    LayoutTree.Root.Simplify(VisibleControls);
-  finally
-    VisibleControls.Free;
-    SavedSites.Free;
-  end;
-end;
-
 procedure TAnchorDockMaster.SaveSiteLayoutToTree(AForm: TCustomForm;
   LayoutTree: TAnchorDockLayoutTree);
 var
@@ -2745,102 +2924,9 @@ begin
   AddControlNames(AControl,Result);
 end;
 
-procedure TAnchorDockMaster.SaveLayoutToConfig(Config: TConfigStorage);
-var
-  Tree: TAnchorDockLayoutTree;
-begin
-  Tree:=TAnchorDockLayoutTree.Create;
-  try
-    Config.AppendBasePath('MainConfig/');
-    SaveMainLayoutToTree(Tree);
-    Tree.SaveToConfig(Config);
-    Config.UndoAppendBasePath;
-    Config.AppendBasePath('Restores/');
-    RestoreLayouts.SaveToConfig(Config);
-    Config.UndoAppendBasePath;
-    WriteDebugLayout('TAnchorDockMaster.SaveLayoutToConfig ',Tree.Root);
-    //DebugWriteChildAnchors(Tree.Root);
-  finally
-    Tree.Free;
-  end;
-end;
-
 function TAnchorDockMaster.ConfigIsEmpty(Config: TConfigStorage): boolean;
 begin
   Result:=Config.GetValue('MainConfig/Nodes/ChildCount',0)=0;
-end;
-
-function TAnchorDockMaster.LoadLayoutFromConfig(Config: TConfigStorage;
-  Scale: Boolean): boolean;
-var
-  Tree: TAnchorDockLayoutTree;
-  ControlNames: TStringList;
-begin
-  Result:=false;
-  ControlNames:=TStringList.Create;
-  fTreeNameToDocker:=TADNameToControl.Create;
-  Tree:=TAnchorDockLayoutTree.Create;
-  try
-    // load layout
-    Config.AppendBasePath('MainConfig/');
-    try
-      Tree.LoadFromConfig(Config);
-    finally
-      Config.UndoAppendBasePath;
-    end;
-    // load restore layouts for hidden forms
-    Config.AppendBasePath('Restores/');
-    try
-      RestoreLayouts.LoadFromConfig(Config);
-    finally
-      Config.UndoAppendBasePath;
-    end;
-
-    {$IFDEF VerboseAnchorDockRestore}
-    WriteDebugLayout('TAnchorDockMaster.LoadLayoutFromConfig ',Tree.Root);
-    DebugWriteChildAnchors(Tree.Root);
-    {$ENDIF}
-
-    // close all unneeded forms/controls (not helper controls like splitters)
-    if not CloseUnneededControls(Tree) then exit;
-
-    BeginUpdate;
-    try
-      // create all needed forms/controls (not helper controls like splitters)
-      if not CreateNeededControls(Tree,true,ControlNames) then exit;
-
-      // simplify layouts
-      ControlNames.Sort;
-      {$IFDEF VerboseAnchorDockRestore}
-      debugln(['TAnchorDockMaster.LoadLayoutFromConfig controls: ']);
-      debugln(ControlNames.Text);
-      {$ENDIF}
-      // if some forms/controls could not be created the layout needs to be adapted
-      Tree.Root.Simplify(ControlNames);
-
-      // reuse existing sites to reduce flickering
-      MapTreeToControls(Tree);
-      {$IFDEF VerboseAnchorDockRestore}
-      fTreeNameToDocker.WriteDebugReport('TAnchorDockMaster.LoadLayoutFromConfig Map');
-      {$ENDIF}
-
-      // create sites, move controls
-      RestoreLayout(Tree,Scale);
-    finally
-      EndUpdate;
-    end;
-  finally
-    // clean up
-    FreeAndNil(fTreeNameToDocker);
-    ControlNames.Free;
-    Tree.Free;
-    // commit (this can raise an exception)
-    EnableAllAutoSizing;
-  end;
-  {$IFDEF VerboseAnchorDockRestore}
-  DebugWriteChildAnchors(Application.MainForm,true,false);
-  {$ENDIF}
-  Result:=true;
 end;
 
 procedure TAnchorDockMaster.LoadSettingsFromConfig(Config: TConfigStorage);
@@ -2879,7 +2965,6 @@ begin
   HeaderAlignLeft                  := Settings.HeaderAlignLeft;
   SplitterWidth                    := Settings.SplitterWidth;
   ScaleOnResize                    := Settings.ScaleOnResize;
-  SaveOnClose                      := Settings.SaveOnClose;
   ShowHeader                       := Settings.ShowHeader;
   ShowHeaderCaption                := Settings.ShowHeaderCaption;
   HideHeaderCaptionFloatingControl := Settings.HideHeaderCaptionFloatingControl;
@@ -2899,7 +2984,6 @@ begin
   Settings.HeaderAlignLeft:=HeaderAlignLeft;
   Settings.SplitterWidth:=SplitterWidth;
   Settings.ScaleOnResize:=ScaleOnResize;
-  Settings.SaveOnClose:=SaveOnClose;
   Settings.ShowHeader:=ShowHeader;
   Settings.ShowHeaderCaption:=ShowHeaderCaption;
   Settings.HideHeaderCaptionFloatingControl:=HideHeaderCaptionFloatingControl;

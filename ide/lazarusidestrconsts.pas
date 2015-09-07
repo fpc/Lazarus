@@ -1259,21 +1259,27 @@ resourcestring
 
   // Desktop options
   dlgManageDesktops = 'Manage desktops';
-  dlgSelectedDesktop = 'Selected desktop:';
-  dlgSaveCurrentDesktop = 'Save current desktop';
   dlgSaveCurrentDesktopAs = 'Save current desktop as';
-  dlgCloseAndUseSelectedDesktop = 'Close and use selected desktop';
   dlgReallyDeleteDesktop = 'Really delete desktop "%s"?';
+  dlgCannotDeleteActiveDesktop = 'You cannot delete the active desktop.';
+  dlgCannotDeleteDebugDesktop = 'You cannot delete debug desktop.';
+  dlgCannotUseDockedUndockedDesktop = 'You cannot use docked desktop in undocked environment and vice versa.';
   dlgRenameDesktop = 'Rename desktop';
   dlgNewDesktop = 'New desktop ...';
+  dlgSetActiveDesktop = 'Set active';
   dlgToggleSelectedDebugDesktop = 'Toggle as debug desktop';
   dlgDesktopName = 'Desktop name';
   dlgOverwriteDesktop = 'Desktop with the name "%s" was found.'+sLineBreak+'Should the old desktop be overwritten?';
-  dlgDebugDesktop = 'debug desktop';
+  dlgDebugDesktop = 'debug';
+  dlgActiveDesktop = 'active';
   dlgImportDesktopExists = 'A desktop with the same name already exists.'+sLineBreak+'Please confirm the desktop name:';
   dlgDesktopsImported = '%d desktop(s) successfully imported from "%s"';
   dlgDesktopsExported = '%d desktop(s) successfully exported to "%s"';
-  lisExportAll = 'all';
+  lisExportSelected = 'Export selected';
+  lisExportAll = 'Export all';
+  dlgGrayedDesktopsUndocked = 'Grayed desktops are for undocked environment.';
+  dlgAutoSaveActiveDesktop = 'Auto save active desktop';
+  dlgAutoSaveActiveDesktopHint = 'Save active desktop on IDE close'+sLineBreak+'Save debug desktop on IDE close and debug end';
 
   // Window options
   dlgShowingWindows = 'Showing Windows';

@@ -18,6 +18,9 @@ actions/laz_set_color_default.png
 actions/laz_set_colors_default.png
 actions/laz_wand.png
 actions/preferences.xpm
+actions/laz_cancel.png
+actions/laz_tick.png
+actions/laz_export.png
 items/item_character.png
 items/item_filter.png
 items/item_font.png
