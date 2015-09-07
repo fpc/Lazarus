@@ -1214,6 +1214,8 @@ var
           then raise EInvalidGraphicOperation.Create('TCustomImageList.CreateImagesFromRawImage Create bitmaps');
           
           InternalInsert(Count, ImgHandle, MaskHandle, Width, Height);
+          DeleteObject(ImgHandle);
+          DeleteObject(MaskHandle);
           //DebugLn('CreateImagesFromRawImage B ',Img.Width,',',Img.Height,' ',Count);
           Dec(NewCount);
         end;
