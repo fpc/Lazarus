@@ -340,6 +340,7 @@ type
     procedure windowDidMove(notification: NSNotification); message 'windowDidMove:';
   public
     callback: IWindowCallback;
+    LCLForm: TCustomForm;
     procedure dealloc; override;
     function acceptsFirstResponder: Boolean; override;
     function canBecomeKeyWindow: Boolean; override;
@@ -366,6 +367,8 @@ type
     // NSDraggingDestinationCategory
     function draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation; override;
     function performDragOperation(sender: NSDraggingInfoProtocol): Boolean; override;
+    // menu support
+    procedure lclItemSelected(sender: id); message 'lclItemSelected:';
   end;
 
   { TCocoaCustomControl }
@@ -852,7 +855,7 @@ function GetNSViewSuperViewHeight(view: NSView): CGFloat;
 
 implementation
 
-uses CocoaWSComCtrls;
+uses CocoaWSComCtrls, CocoaInt;
 
 {$I mackeycodes.inc}
 
@@ -1450,6 +1453,11 @@ begin
   Result := True;
 end;
 
+procedure TCocoaWindow.lclItemSelected(sender: id);
+begin
+
+end;
+
 { TCocoaScrollView }
 
 function TCocoaScrollView.lclIsHandle: Boolean;
@@ -1632,6 +1640,8 @@ end;
 
 procedure TCocoaButton.actionButtonClick(sender: NSObject);
 begin
+  if CocoaWidgetSet.IsControlDisabledDueToModal(Self) then Exit;
+
   // this is the action handler of button
   if Assigned(callback) then
     callback.ButtonClick;

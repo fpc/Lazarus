@@ -481,6 +481,7 @@ var
 
     cnt.callback := TCocoaWindow(win).callback;
     cnt.callback.IsOpaque:=true;
+    win.LCLForm := Form;
     win.setContentView(cnt);
 
     if (AParams.WndParent <> 0) then

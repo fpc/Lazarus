@@ -430,10 +430,11 @@ var
   i: Integer;
   lCurItem: TMenuItem;
   lMenuObj: NSObject;
+  lNSMenu: NSMenu absolute AMenu;
 begin
   if AMenu<>0 then
   begin
-    NSApp.setMainMenu(NSMenu(AMenu));
+    NSApp.setMainMenu(lNSMenu);
     if (ALCLMenu = nil) or not ALCLMenu.HandleAllocated then Exit;
 
     // Some older docs say we should use setAppleMenu to obtain the Services/Hide/Quit items,
@@ -457,7 +458,32 @@ begin
         Exit;
       end;}
     end;
+
+    // for modal windows work around bug, but doesn't work :(
+    {$ifdef COCOA_USE_NATIVE_MODAL}
+    {if CurModalForm <> nil then
+    for i := 0 to lNSMenu.numberOfItems()-1 do
+    begin
+      lNSMenu.itemAtIndex(i).setTarget(TCocoaWSCustomForm.GetWindowFromHandle(CurModalForm));
+    end;}
+    {$endif}
   end;
+end;
+
+function TCocoaWidgetSet.IsControlDisabledDueToModal(AControl: NSView): Boolean;
+var
+  lNSObj: NSWindow;
+  lNSWin: TCocoaWindow absolute lNSObj;
+begin
+  Result := False;
+  {$ifndef COCOA_USE_NATIVE_MODAL}
+  if CurModalForm = nil then Exit;
+  lNSObj := AControl.window();
+  if lNSObj = nil then Exit;
+  if not lNSObj.isKindOfClass_(TCocoaWindow) then Exit;
+  if lNSWin.LCLForm = CurModalForm then Exit;
+  Result := True;
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
