@@ -266,7 +266,7 @@ begin
     {$ENDIF}
     Source:=ConvertEncoding(Source,Code.MemEncoding,Code.DiskEncoding);
     {$IF FPC_FULLVERSION >= 20701}
-    SetCodePage(Source,CP_ACP);
+    //SetCodePage(Source,CP_ACP);
     {$ENDIF}
   end;
 end;
