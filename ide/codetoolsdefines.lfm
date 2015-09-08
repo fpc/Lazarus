@@ -5,14 +5,14 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
   Width = 544
   BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'CodeToolsDefinesEditor'
-  ClientHeight = 500
+  ClientHeight = 479
   ClientWidth = 544
   KeyPreview = True
   Menu = MainMenu
   OnClose = FormClose
+  OnCreate = FormCreate
   OnKeyDown = CodeToolsDefinesEditorKeyDown
   OnKeyUp = CodeToolsDefinesEditorKeyUp
-  OnShow = FormShow
   Position = poScreenCenter
   LCLVersion = '1.5'
   object DefineTreeView: TTreeView
@@ -22,6 +22,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
     Width = 532
     Align = alTop
     BorderSpacing.Around = 6
+    DefaultItemHeight = 18
     ReadOnly = True
     TabOrder = 0
     OnSelectionChanged = DefineTreeViewSelectionChanged
@@ -29,36 +30,36 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
   end
   object SelectedItemGroupBox: TGroupBox
     Left = 6
-    Height = 313
+    Height = 293
     Top = 146
     Width = 532
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'SelectedItemGroupBox'
-    ClientHeight = 294
+    ClientHeight = 276
     ClientWidth = 528
     TabOrder = 2
     object NameLabel: TLabel
       Left = 10
-      Height = 17
+      Height = 15
       Top = 26
-      Width = 77
+      Width = 61
       BorderSpacing.Right = 6
       Caption = 'NameLabel'
       ParentColor = False
     end
     object DescriptionLabel: TLabel
       Left = 10
-      Height = 17
+      Height = 15
       Top = 53
-      Width = 115
+      Width = 93
       BorderSpacing.Right = 6
       Caption = 'DescriptionLabel'
       ParentColor = False
     end
     object TypeLabel: TLabel
       Left = 6
-      Height = 17
+      Height = 15
       Top = 6
       Width = 516
       Align = alTop
@@ -68,16 +69,16 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
     end
     object VariableLabel: TLabel
       Left = 10
-      Height = 17
+      Height = 15
       Top = 78
-      Width = 94
+      Width = 74
       BorderSpacing.Right = 6
       Caption = 'VariableLabel'
       ParentColor = False
     end
     object ValueNoteBook: TPageControl
       Left = 6
-      Height = 182
+      Height = 164
       Top = 106
       Width = 516
       ActivePage = ValueAsTextPage
@@ -89,11 +90,11 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
       OnChange = ValueNoteBookPageChanged
       object ValueAsTextPage: TTabSheet
         Caption = 'ValueAsTextPage'
-        ClientHeight = 151
+        ClientHeight = 135
         ClientWidth = 512
         inline ValueAsTextSynEdit: TSynEdit
           Left = 0
-          Height = 151
+          Height = 135
           Top = 0
           Width = 512
           Align = alClient
@@ -620,7 +621,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
       end
       object ValueAsPathsPage: TTabSheet
         Caption = 'ValueAsPathsPage'
-        ClientHeight = 151
+        ClientHeight = 135
         ClientWidth = 512
         inline ValueAsFilePathsSynEdit: TSynEdit
           AnchorSideRight.Control = DeleteFilePathBitBtn
@@ -1195,7 +1196,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
     end
     object NameEdit: TEdit
       Left = 128
-      Height = 27
+      Height = 25
       Top = 23
       Width = 394
       Anchors = [akTop, akLeft, akRight]
@@ -1205,7 +1206,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
     end
     object DescriptionEdit: TEdit
       Left = 128
-      Height = 27
+      Height = 25
       Top = 50
       Width = 394
       Anchors = [akTop, akLeft, akRight]
@@ -1215,7 +1216,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
     end
     object VariableEdit: TEdit
       Left = 128
-      Height = 27
+      Height = 25
       Top = 76
       Width = 394
       Anchors = [akTop, akLeft, akRight]
@@ -1234,8 +1235,8 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 29
-    Top = 465
+    Height = 28
+    Top = 445
     Width = 532
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True

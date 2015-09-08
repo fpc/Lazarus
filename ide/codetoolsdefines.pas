@@ -180,7 +180,7 @@ type
       Shift: TShiftState);
     procedure DefineTreeViewSelectionChanged(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
-    procedure FormShow(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
 
     // value notebook
@@ -297,7 +297,7 @@ begin
   IDEDialogLayoutList.SaveLayout(Self);
 end;
 
-procedure TCodeToolsDefinesEditor.FormShow(Sender: TObject);
+procedure TCodeToolsDefinesEditor.FormCreate(Sender: TObject);
 begin
   ButtonPanel1.OKButton.Caption:= lisOk;
   ButtonPanel1.CancelButton.Caption:= lisCancel;
