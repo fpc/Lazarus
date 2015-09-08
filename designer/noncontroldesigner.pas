@@ -121,10 +121,13 @@ begin
 end;
 
 destructor TNonControlDesignerForm.Destroy;
+var
+  tmp: TDesignerMediator;
 begin
   try
-    Mediator.Free;
+    tmp := Mediator;
     Mediator := nil;
+    tmp.Free;
   except
     on E: Exception do begin
       debugln(['TNonControlDesignerForm.Destroy freeing mediator failed: ',E.Message]);
