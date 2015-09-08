@@ -21,6 +21,7 @@ unit CocoaInt;
 {$mode objfpc}{$H+}
 {$modeswitch objectivec1}
 {$modeswitch objectivec2}
+{$include cocoadefines.inc}
 
 interface
 

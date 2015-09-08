@@ -27,6 +27,10 @@ uses
   MacOSAll, CocoaAll;
 
 type
+  NSMenuFix = objccategory external (NSMenu)
+    function itemAtIndex(index: NSInteger): NSMenuItem; message 'itemAtIndex:';
+  end;
+
   NSViewFix = objccategory external (NSView)
     function fittingSize: NSSize; message 'fittingSize';
   end;

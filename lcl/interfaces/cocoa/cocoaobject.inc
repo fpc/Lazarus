@@ -229,9 +229,14 @@ begin
     lcNeedMininimizeAppWithMainForm,
     lcApplicationTitle,
     lcFormIcon,
+    {$ifndef COCOA_USE_NATIVE_MODAL}
+    lcModalWindow,
+    {$endif}
     lcReceivesLMClearCutCopyPasteReliably:
       Result := LCL_CAPABILITY_NO;
+    {$ifdef COCOA_USE_NATIVE_MODAL}
     lcModalWindow,
+    {$endif}
     lcAntialiasingEnabledByDefault:
       Result := LCL_CAPABILITY_YES;
   else
