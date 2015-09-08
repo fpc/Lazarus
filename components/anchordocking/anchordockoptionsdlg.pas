@@ -34,8 +34,9 @@ unit AnchorDockOptionsDlg;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel,
-  StdCtrls, ComCtrls, LCLProc, AnchorDocking, AnchorDockStr, types;
+  Classes, SysUtils, types,
+  Forms, Controls, ButtonPanel, StdCtrls, ComCtrls,
+  AnchorDocking, AnchorDockStr;
 
 type
   TAnchorDockOptionsFlag = (

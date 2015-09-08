@@ -36,11 +36,15 @@ unit RegisterAnchorDocking;
 interface
 
 uses
-  Math, Classes, SysUtils, LCLProc, Forms, Controls, FileUtil, LazFileCache,
-  Dialogs, LazConfigStorage, LazFileUtils, StdCtrls,
-  LCLIntf, BaseIDEIntf, ProjectIntf,
-  LazIDEIntf, IDEWindowIntf, IDEOptionsIntf, AnchorDockStr, AnchorDocking,
-  AnchorDockOptionsDlg;
+  Math, Classes, SysUtils,
+  // LCL
+  LCLProc, Forms, Controls, Dialogs, StdCtrls,
+  // LazUtils
+  LazFileCache, LazConfigStorage, LazFileUtils,
+  // IdeIntf
+  LCLIntf, BaseIDEIntf, IDEWindowIntf, IDEOptionsIntf,
+  // AnchorDocking
+  AnchorDockStr, AnchorDocking, AnchorDesktopOptions, AnchorDockOptionsDlg;
 
 const
   DefaultConfigFileName = 'anchordockoptions.xml';

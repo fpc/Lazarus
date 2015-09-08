@@ -105,32 +105,10 @@ uses
   Math, Classes, SysUtils, types,
   LCLType, LCLIntf, LCLProc,
   Controls, Forms, ExtCtrls, ComCtrls, Graphics, Themes, Menus, Buttons,
-  LazConfigStorage, LazFileUtils, LazFileCache, Laz2_XMLCfg,
-  IDEOptionsIntf, MacroIntf, LazIDEIntf,
+  LazConfigStorage, LazFileCache,
   AnchorDockStr, AnchorDockStorage;
 
 type
-  TAnchorDesktopOpt = class(TAbstractDesktopDockingOpt)
-  private
-    FTree: TAnchorDockLayoutTree;
-    FRestoreLayouts: TAnchorDockRestoreLayouts;
-  public
-    procedure LoadDefaultLayout;
-    procedure LoadLayoutFromConfig(Path: string; aXMLCfg: TRttiXMLConfig);
-    procedure LoadLayoutFromFile(FileName: string);
-
-    procedure SaveMainLayoutToTree;
-    procedure SaveLayoutToConfig(Path: string; aXMLCfg: TRttiXMLConfig);
-  public
-    constructor Create(aUseIDELayouts: Boolean); override;
-    destructor Destroy; override;
-    procedure Load(Path: String; aXMLCfg: TRttiXMLConfig); override;
-    procedure Save(Path: String; aXMLCfg: TRttiXMLConfig); override;
-    procedure Assign(Source: TAbstractDesktopDockingOpt); override;
-    procedure StoreWindowPositions; override;
-    function RestoreDesktop: Boolean; override;
-  end;
-
   TAnchorDockHostSite = class;
 
   { TAnchorDockCloseButton
@@ -597,16 +575,20 @@ type
                            ResizePolicy: TADMResizePolicy;
                            AllowInside: boolean = false);
     procedure MakeVisible(AControl: TControl; SwitchPages: boolean);
-    function ShowControl(ControlName: string; BringToFront: boolean = false
-                         ): TControl;
+    function ShowControl(ControlName: string; BringToFront: boolean = false): TControl;
     procedure CloseAll;
 
     // save/restore layouts
+    procedure SaveLayoutToConfig(Config: TConfigStorage);
+    procedure SaveMainLayoutToTree(LayoutTree: TAnchorDockLayoutTree);
     procedure SaveSiteLayoutToTree(AForm: TCustomForm;
                                    LayoutTree: TAnchorDockLayoutTree);
     function CreateRestoreLayout(AControl: TControl): TAnchorDockRestoreLayout;
     function ConfigIsEmpty(Config: TConfigStorage): boolean;
-    property RestoreLayouts: TAnchorDockRestoreLayouts read FRestoreLayouts; // layout information for restoring hidden forms
+    function LoadLayoutFromConfig(Config: TConfigStorage; Scale: Boolean): boolean;
+    // layout information for restoring hidden forms
+    property RestoreLayouts: TAnchorDockRestoreLayouts read FRestoreLayouts
+                                                      write FRestoreLayouts;
     property Restoring: boolean read FRestoring write SetRestoring;
     property IdleConnected: Boolean read FIdleConnected write SetIdleConnected;
     procedure LoadSettingsFromConfig(Config: TConfigStorage);
@@ -1181,197 +1163,6 @@ begin
 
   // use flood fill to find the rest
   Fill(LeftTopControl);
-end;
-
-{ TAnchorDesktopOpt }
-
-procedure TAnchorDesktopOpt.Assign(Source: TAbstractDesktopDockingOpt);
-var
-  xSource: TAnchorDesktopOpt;
-begin
-  if Source is TAnchorDesktopOpt then
-  begin
-    xSource := TAnchorDesktopOpt(Source);
-    FTree.Assign(xSource.FTree);
-    FRestoreLayouts.Assign(xSource.FRestoreLayouts);
-  end;
-end;
-
-constructor TAnchorDesktopOpt.Create(aUseIDELayouts: Boolean);
-begin
-  inherited;
-
-  FTree := TAnchorDockLayoutTree.Create;
-  FRestoreLayouts := TAnchorDockRestoreLayouts.Create;
-  if aUseIDELayouts then
-    DockMaster.FRestoreLayouts := Self.FRestoreLayouts;
-end;
-
-destructor TAnchorDesktopOpt.Destroy;
-begin
-  FTree.Free;
-  FRestoreLayouts.Free;
-
-  inherited Destroy;
-end;
-
-procedure TAnchorDesktopOpt.Load(Path: String; aXMLCfg: TRttiXMLConfig);
-var
-  Config: TConfigStorage;
-begin
-  //new version of old "TIDEAnchorDockMaster.LoadUserLayout"
-
-  Path := Path + 'AnchorDocking/';
-  try
-    {$IFDEF VerboseAnchorDocking}
-    debugln(['TIDEAnchorDockMaster.LoadUserLayout ',Filename]);
-    {$ENDIF}
-    if aXMLCfg.GetValue(Path+'MainConfig/Nodes/ChildCount',0) > 0 then//config is not empty
-    begin
-      // loading last layout
-      {$IF defined(VerboseAnchorDocking) or defined(VerboseAnchorDockRestore)}
-      debugln(['TIDEAnchorDockMaster.LoadUserLayout restoring ...']);
-      {$ENDIF}
-      LoadLayoutFromConfig(Path,aXMLCfg);
-    end else begin
-      // loading defaults
-      {$IF defined(VerboseAnchorDocking) or defined(VerboseAnchorDockRestore)}
-      debugln(['TIDEAnchorDockMaster.LoadUserLayout loading default layout ...']);
-      {$ENDIF}
-      LoadDefaultLayout;
-    end;
-  except
-    on E: Exception do begin
-      DebugLn(['TIDEAnchorDockMaster.LoadUserLayout loading ',aXMLCfg.GetValue(Path+'Name', ''),' failed: ',E.Message]);
-      Raise;
-    end;
-  end;
-end;
-
-procedure TAnchorDesktopOpt.LoadDefaultLayout;
-var
-  BaseDir: String;
-  Filename: String;
-begin
-  Filename := AppendPathDelim(LazarusIDE.GetPrimaryConfigPath)+'anchordocklayout.xml';
-  if FileExistsUTF8(Filename) then//first load from anchordocklayout.xml -- backwards compatibility
-    LoadLayoutFromFile(Filename)
-  else
-  begin
-    BaseDir := '$PkgDir(AnchorDockingDsgn)';
-    IDEMacros.SubstituteMacros(BaseDir);
-    if (BaseDir<>'') and DirectoryExistsUTF8(BaseDir) then begin
-      Filename:=AppendPathDelim(BaseDir)+'ADLayoutDefault.xml';
-      if FileExistsUTF8(Filename) then
-        LoadLayoutFromFile(Filename);
-    end;
-  end;
-end;
-
-procedure TAnchorDesktopOpt.LoadLayoutFromConfig(Path: string; aXMLCfg: TRttiXMLConfig);
-begin
-  FTree.LoadFromConfig(Path+'MainConfig/', aXMLCfg);
-  FRestoreLayouts.LoadFromConfig(Path+'Restores/', aXMLCfg);
-end;
-
-procedure TAnchorDesktopOpt.LoadLayoutFromFile(FileName: string);
-var
-  Config: TRttiXMLConfig;
-begin
-  Config := TRttiXMLConfig.Create(FileName);
-  try
-    LoadLayoutFromConfig('',Config);
-  finally
-    Config.Free;
-  end;
-end;
-
-procedure TAnchorDesktopOpt.Save(Path: String; aXMLCfg: TRttiXMLConfig);
-begin
-  Path := Path + 'AnchorDocking/';
-  try
-    {$IF defined(VerboseAnchorDocking) or defined(VerboseAnchorDockRestore)}
-    debugln(['TIDEAnchorDockMaster.SaveDefaultLayout ',Filename]);
-    {$ENDIF}
-    SaveLayoutToConfig(Path, aXMLCfg);
-  except
-    on E: Exception do begin
-      DebugLn(['TIDEAnchorDockMaster.SaveDefaultLayout saving ',aXMLCfg.GetValue(Path+'Name', ''),' failed: ',E.Message]);
-      Raise;
-    end;
-  end;
-end;
-
-procedure TAnchorDesktopOpt.SaveLayoutToConfig(Path: string; aXMLCfg: TRttiXMLConfig);
-begin
-  FTree.SaveToConfig(Path+'MainConfig/', aXMLCfg);
-  FRestoreLayouts.SaveToConfig(Path+'Restores/', aXMLCfg);
-  WriteDebugLayout('TAnchorDesktopOpt.SaveLayoutToConfig ',FTree.Root);
-end;
-
-procedure TAnchorDesktopOpt.SaveMainLayoutToTree;
-var
-  i: Integer;
-  AControl: TControl;
-  Site: TAnchorDockHostSite;
-  SavedSites: TFPList;
-  LayoutNode: TAnchorDockLayoutTreeNode;
-  AForm: TCustomForm;
-  VisibleControls: TStringList;
-begin
-  FTree.Clear;
-  SavedSites:=TFPList.Create;
-  VisibleControls:=TStringList.Create;
-  with DockMaster do
-  try
-    for i:=0 to ControlCount-1 do begin
-      AControl:=Controls[i];
-      if not DockedControlIsVisible(AControl) then continue;
-      VisibleControls.Add(AControl.Name);
-      AForm:=GetParentForm(AControl);
-      if AForm=nil then continue;
-      if SavedSites.IndexOf(AForm)>=0 then continue;
-      SavedSites.Add(AForm);
-      debugln(['TAnchorDesktopOpt.SaveMainLayoutToTree AForm=',DbgSName(AForm)]);
-      DebugWriteChildAnchors(AForm,true,true);
-      if (AForm is TAnchorDockHostSite) then begin
-        Site:=TAnchorDockHostSite(AForm);
-        LayoutNode:=FTree.NewNode(FTree.Root);
-        Site.SaveLayout(FTree,LayoutNode);
-      end else if IsCustomSite(AForm) then begin
-        // custom dock site
-        LayoutNode:=FTree.NewNode(FTree.Root);
-        LayoutNode.NodeType:=adltnCustomSite;
-        LayoutNode.Assign(AForm);
-        // can have one normal dock site
-        Site:=TAnchorDockManager(AForm.DockManager).GetChildSite;
-        if Site<>nil then begin
-          LayoutNode:=FTree.NewNode(LayoutNode);
-          Site.SaveLayout(FTree,LayoutNode);
-          {if Site.BoundSplitter<>nil then begin
-            LayoutNode:=FTree.NewNode(LayoutNode);
-            Site.BoundSplitter.SaveLayout(LayoutNode);
-          end;}
-        end;
-      end else
-        raise EAnchorDockLayoutError.Create('invalid root control for save: '+DbgSName(AControl));
-    end;
-    // remove invisible controls
-    FTree.Root.Simplify(VisibleControls);
-  finally
-    VisibleControls.Free;
-    SavedSites.Free;
-  end;
-end;
-
-procedure TAnchorDesktopOpt.StoreWindowPositions;
-begin
-  SaveMainLayoutToTree;
-end;
-
-function TAnchorDesktopOpt.RestoreDesktop: Boolean;
-begin
-  Result := DockMaster.FullRestoreLayout(FTree,True);
 end;
 
 { TAnchorDockSettings }
@@ -2872,6 +2663,79 @@ begin
   end;
 end;
 
+procedure TAnchorDockMaster.SaveLayoutToConfig(Config: TConfigStorage);
+var
+  Tree: TAnchorDockLayoutTree;
+begin
+  Tree:=TAnchorDockLayoutTree.Create;
+  try
+    Config.AppendBasePath('MainConfig/');
+    SaveMainLayoutToTree(Tree);
+    Tree.SaveToConfig(Config);
+    Config.UndoAppendBasePath;
+    Config.AppendBasePath('Restores/');
+    RestoreLayouts.SaveToConfig(Config);
+    Config.UndoAppendBasePath;
+    WriteDebugLayout('TAnchorDockMaster.SaveLayoutToConfig ',Tree.Root);
+    //DebugWriteChildAnchors(Tree.Root);
+  finally
+    Tree.Free;
+  end;
+end;
+
+procedure TAnchorDockMaster.SaveMainLayoutToTree(LayoutTree: TAnchorDockLayoutTree);
+var
+  i: Integer;
+  AControl: TControl;
+  Site: TAnchorDockHostSite;
+  SavedSites: TFPList;
+  LayoutNode: TAnchorDockLayoutTreeNode;
+  AForm: TCustomForm;
+  VisibleControls: TStringList;
+begin
+  SavedSites:=TFPList.Create;
+  VisibleControls:=TStringList.Create;
+  try
+    for i:=0 to ControlCount-1 do begin
+      AControl:=Controls[i];
+      if not DockedControlIsVisible(AControl) then continue;
+      VisibleControls.Add(AControl.Name);
+      AForm:=GetParentForm(AControl);
+      if AForm=nil then continue;
+      if SavedSites.IndexOf(AForm)>=0 then continue;
+      SavedSites.Add(AForm);
+      debugln(['TAnchorDockMaster.SaveMainLayoutToTree AForm=',DbgSName(AForm)]);
+      DebugWriteChildAnchors(AForm,true,true);
+      if (AForm is TAnchorDockHostSite) then begin
+        Site:=TAnchorDockHostSite(AForm);
+        LayoutNode:=LayoutTree.NewNode(LayoutTree.Root);
+        Site.SaveLayout(LayoutTree,LayoutNode);
+      end else if IsCustomSite(AForm) then begin
+        // custom dock site
+        LayoutNode:=LayoutTree.NewNode(LayoutTree.Root);
+        LayoutNode.NodeType:=adltnCustomSite;
+        LayoutNode.Assign(AForm);
+        // can have one normal dock site
+        Site:=TAnchorDockManager(AForm.DockManager).GetChildSite;
+        if Site<>nil then begin
+          LayoutNode:=LayoutTree.NewNode(LayoutNode);
+          Site.SaveLayout(LayoutTree,LayoutNode);
+          {if Site.BoundSplitter<>nil then begin
+            LayoutNode:=LayoutTree.NewNode(LayoutNode);
+            Site.BoundSplitter.SaveLayout(LayoutNode);
+          end;}
+        end;
+      end else
+        raise EAnchorDockLayoutError.Create('invalid root control for save: '+DbgSName(AControl));
+    end;
+    // remove invisible controls
+    LayoutTree.Root.Simplify(VisibleControls);
+  finally
+    VisibleControls.Free;
+    SavedSites.Free;
+  end;
+end;
+
 procedure TAnchorDockMaster.SaveSiteLayoutToTree(AForm: TCustomForm;
   LayoutTree: TAnchorDockLayoutTree);
 var
@@ -2929,6 +2793,79 @@ end;
 function TAnchorDockMaster.ConfigIsEmpty(Config: TConfigStorage): boolean;
 begin
   Result:=Config.GetValue('MainConfig/Nodes/ChildCount',0)=0;
+end;
+
+function TAnchorDockMaster.LoadLayoutFromConfig(Config: TConfigStorage;
+  Scale: Boolean): boolean;
+var
+  Tree: TAnchorDockLayoutTree;
+  ControlNames: TStringList;
+begin
+  Result:=false;
+  ControlNames:=TStringList.Create;
+  fTreeNameToDocker:=TADNameToControl.Create;
+  Tree:=TAnchorDockLayoutTree.Create;
+  try
+    // load layout
+    Config.AppendBasePath('MainConfig/');
+    try
+      Tree.LoadFromConfig(Config);
+    finally
+      Config.UndoAppendBasePath;
+    end;
+    // load restore layouts for hidden forms
+    Config.AppendBasePath('Restores/');
+    try
+      RestoreLayouts.LoadFromConfig(Config);
+    finally
+      Config.UndoAppendBasePath;
+    end;
+
+    {$IFDEF VerboseAnchorDockRestore}
+    WriteDebugLayout('TAnchorDockMaster.LoadLayoutFromConfig ',Tree.Root);
+    DebugWriteChildAnchors(Tree.Root);
+    {$ENDIF}
+
+    // close all unneeded forms/controls (not helper controls like splitters)
+    if not CloseUnneededControls(Tree) then exit;
+
+    BeginUpdate;
+    try
+      // create all needed forms/controls (not helper controls like splitters)
+      if not CreateNeededControls(Tree,true,ControlNames) then exit;
+
+      // simplify layouts
+      ControlNames.Sort;
+      {$IFDEF VerboseAnchorDockRestore}
+      debugln(['TAnchorDockMaster.LoadLayoutFromConfig controls: ']);
+      debugln(ControlNames.Text);
+      {$ENDIF}
+      // if some forms/controls could not be created the layout needs to be adapted
+      Tree.Root.Simplify(ControlNames);
+
+      // reuse existing sites to reduce flickering
+      MapTreeToControls(Tree);
+      {$IFDEF VerboseAnchorDockRestore}
+      fTreeNameToDocker.WriteDebugReport('TAnchorDockMaster.LoadLayoutFromConfig Map');
+      {$ENDIF}
+
+      // create sites, move controls
+      RestoreLayout(Tree,Scale);
+    finally
+      EndUpdate;
+    end;
+  finally
+    // clean up
+    FreeAndNil(fTreeNameToDocker);
+    ControlNames.Free;
+    Tree.Free;
+    // commit (this can raise an exception)
+    EnableAllAutoSizing;
+  end;
+  {$IFDEF VerboseAnchorDockRestore}
+  DebugWriteChildAnchors(Application.MainForm,true,false);
+  {$ENDIF}
+  Result:=true;
 end;
 
 procedure TAnchorDockMaster.LoadSettingsFromConfig(Config: TConfigStorage);
