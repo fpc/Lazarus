@@ -2350,6 +2350,7 @@ begin
   FHeaderFilled:=true;
   FPageControlClass:=TAnchorDockPageControl;
   FPageClass:=TAnchorDockPage;
+  FRestoreLayouts:=TAnchorDockRestoreLayouts.Create;
 end;
 
 destructor TAnchorDockMaster.Destroy;
@@ -2360,6 +2361,7 @@ var
   {$ENDIF}
 begin
   QueueSimplify:=false;
+  FreeAndNil(FRestoreLayouts);
   FreeAndNil(fPopupMenu);
   FreeAndNil(fTreeNameToDocker);
   if FControls.Count>0 then begin
@@ -5937,14 +5939,12 @@ begin
   EnableAutoSizing;
 end;
 
-procedure TAnchorDockSplitter.SetBoundsKeepDockBounds(ALeft, ATop, AWidth,
-  AHeight: integer);
+procedure TAnchorDockSplitter.SetBoundsKeepDockBounds(ALeft, ATop, AWidth, AHeight: integer);
 begin
   inherited SetBounds(ALeft,ATop,AWidth,AHeight);
 end;
 
-function TAnchorDockSplitter.SideAnchoredControlCount(Side: TAnchorKind
-  ): integer;
+function TAnchorDockSplitter.SideAnchoredControlCount(Side: TAnchorKind): integer;
 var
   Sibling: TControl;
   i: Integer;

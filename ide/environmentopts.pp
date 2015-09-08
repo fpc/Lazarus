@@ -291,8 +291,7 @@ type
     procedure InitLayoutList;
   public
     constructor Create(const aName: String; const aUseIDELayouts: Boolean);
-    constructor Create(const aName: String;
-      const aUseIDELayouts: Boolean; const aIsDocked: Boolean);
+    constructor Create(const aName: String; const aUseIDELayouts, aIsDocked: Boolean);
     destructor Destroy; override;
     procedure Assign(Source: TDesktopOpt; const AssignName: Boolean = False);
     procedure StoreWindowPositions;
@@ -960,14 +959,12 @@ end;
 
 { TDesktopOpt }
 
-constructor TDesktopOpt.Create(const aName: String;
-  const aUseIDELayouts: Boolean);
+constructor TDesktopOpt.Create(const aName: String; const aUseIDELayouts: Boolean);
 begin
   Create(aName, aUseIDELayouts, Assigned(IDEDockMaster));
 end;
 
-constructor TDesktopOpt.Create(const aName: String;
-  const aUseIDELayouts: Boolean; const aIsDocked: Boolean);
+constructor TDesktopOpt.Create(const aName: String; const aUseIDELayouts, aIsDocked: Boolean);
 begin
   if aIsDocked and not Assigned(IDEDockMaster) then
     raise Exception.Create('Internal error: TEnvironmentOptions.CreateDesktop cannot create docked desktop in undocked environment.');

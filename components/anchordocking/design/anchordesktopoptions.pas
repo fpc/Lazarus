@@ -13,10 +13,13 @@ uses
 
 type
 
+  { TAnchorDesktopOpt }
+
   TAnchorDesktopOpt = class(TAbstractDesktopDockingOpt)
   private
     FTree: TAnchorDockLayoutTree;
     FRestoreLayouts: TAnchorDockRestoreLayouts;
+    FRestoreLayoutsCreated: Boolean;
   public
     procedure LoadDefaultLayout;
     procedure LoadLayoutFromConfig(Path: string; aXMLCfg: TRttiXMLConfig);
@@ -52,19 +55,21 @@ end;
 
 constructor TAnchorDesktopOpt.Create(aUseIDELayouts: Boolean);
 begin
-  inherited;
-
+  inherited Create(aUseIDELayouts);
   FTree := TAnchorDockLayoutTree.Create;
-  FRestoreLayouts := TAnchorDockRestoreLayouts.Create;
   if aUseIDELayouts then
-    DockMaster.RestoreLayouts := Self.FRestoreLayouts;
+    FRestoreLayouts := DockMaster.RestoreLayouts
+  else begin
+    FRestoreLayouts := TAnchorDockRestoreLayouts.Create;
+    FRestoreLayoutsCreated := True;
+  end;
 end;
 
 destructor TAnchorDesktopOpt.Destroy;
 begin
   FTree.Free;
-  FRestoreLayouts.Free;
-
+  if FRestoreLayoutsCreated then
+    FRestoreLayouts.Free;
   inherited Destroy;
 end;
 
