@@ -207,7 +207,7 @@ msgstr "No titulos para sitios flotantes"
 
 #: anchordockstr.adrsnochildrenallowedfornodetype
 msgid "No children allowed for Node=\"%s\" Type=%s"
-msgstr "Hijos no permitidos para Nodo=\"%s\ Tipo=%s"
+msgstr "Hijos no permitidos para Nodo=\"%s Tipo=%s"
 
 #: anchordockstr.adrsnotsupportedhasparent
 msgid "Not supported: %s has parent %s"
@@ -228,10 +228,6 @@ msgstr "Restaurar el diseño predeterminado"
 #: anchordockstr.adrsright
 msgid "right"
 msgstr "derecha"
-
-#: anchordockstr.adrssavelayoutonclose
-msgid "Save layout on close"
-msgstr "Guardar diseño al cerrar"
 
 #: anchordockstr.adrssavewindowlayoutasdefault
 msgid "Save window layout as default"

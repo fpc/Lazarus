@@ -3,6 +3,7 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
   Height = 581
   Top = 175
   Width = 592
+  BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'CodeToolsDefinesDialog'
   ClientHeight = 581
   ClientWidth = 592
@@ -10,13 +11,13 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
   OnCreate = CodeToolsDefinesDialogCREATE
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.5'
   object DirectoryGroupbox: TGroupBox
     AnchorSideLeft.Control = ValuesTabSheet
     AnchorSideTop.Control = ValuesTabSheet
     AnchorSideRight.Control = ValuesTabSheet
     Left = 6
-    Height = 62
+    Height = 60
     Top = 6
     Width = 580
     Align = alTop
@@ -24,13 +25,14 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
     BorderSpacing.Around = 6
     Caption = 'DirectoryGroupbox'
     ClientHeight = 41
-    ClientWidth = 572
-    TabOrder = 2
+    ClientWidth = 576
+    TabOrder = 0
     object DirectoryCombobox: TComboBox
+      AnchorSideRight.Control = DirectoryBrowseButton
       Left = 6
       Height = 29
       Top = 6
-      Width = 470
+      Width = 508
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       ItemHeight = 0
@@ -44,12 +46,11 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = DirectoryCombobox
       AnchorSideBottom.Side = asrBottom
-      Left = 541
+      Left = 520
       Height = 29
       Top = 6
-      Width = 26
+      Width = 51
       Anchors = [akTop, akRight, akBottom]
-      AutoSize = True
       BorderSpacing.Right = 5
       Caption = '...'
       OnClick = DirectoryBrowseButtonCLICK
@@ -57,21 +58,22 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
     end
   end
   object PageControl1: TPageControl
-    Left = 0
-    Height = 462
-    Top = 74
-    Width = 592
+    Left = 6
+    Height = 468
+    Top = 72
+    Width = 580
     ActivePage = ValuesTabSheet
     Align = alClient
+    BorderSpacing.Around = 6
     TabIndex = 0
-    TabOrder = 0
+    TabOrder = 1
     object ValuesTabSheet: TTabSheet
       Caption = 'ValuesTabSheet'
-      ClientHeight = 429
-      ClientWidth = 588
+      ClientHeight = 437
+      ClientWidth = 576
       object ValuesListview: TListView
         Left = 6
-        Height = 277
+        Height = 285
         Top = 6
         Width = 296
         Align = alLeft
@@ -85,21 +87,21 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
       object ValueGroupbox: TGroupBox
         Left = 6
         Height = 123
-        Top = 300
-        Width = 576
+        Top = 308
+        Width = 564
         Align = alBottom
         Anchors = [akLeft, akBottom]
         BorderSpacing.Around = 6
         Caption = 'Value'
-        ClientHeight = 102
-        ClientWidth = 568
-        TabOrder = 2
+        ClientHeight = 104
+        ClientWidth = 560
+        TabOrder = 4
         inline ValueSynedit: TSynEdit
           Cursor = crDefault
           Left = 6
-          Height = 90
+          Height = 92
           Top = 6
-          Width = 556
+          Width = 548
           Align = alClient
           BorderSpacing.Around = 6
           Font.Height = -15
@@ -542,6 +544,7 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
               ShiftMask = [ssShift, ssAlt, ssCtrl]
               Command = emcMouseLink
             end>
+          MouseTextActions = <>
           MouseSelActions = <          
             item
               ClickDir = cdDown
@@ -567,13 +570,17 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
               ClickDir = cdDown
               Command = emcStartDragMove
             end>
-          Lines.Strings = (
-            'ValueSynedit'
-          )
           Options = [eoAutoIndent, eoBracketHighlight, eoScrollPastEol, eoShowScrollHint, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces, eoDragDropEditing, eoShowCtrlMouseLinks]
           MouseOptions = [emDragDropEditing, emShowCtrlMouseLinks]
           VisibleSpecialChars = [vscSpace, vscTabAtLast]
           ReadOnly = True
+          SelectedColor.BackPriority = 50
+          SelectedColor.ForePriority = 50
+          SelectedColor.FramePriority = 50
+          SelectedColor.BoldPriority = 50
+          SelectedColor.ItalicPriority = 50
+          SelectedColor.UnderlinePriority = 50
+          SelectedColor.StrikeOutPriority = 50
           BracketHighlightStyle = sbhsBoth
           BracketMatchColor.Background = clNone
           BracketMatchColor.Foreground = clNone
@@ -585,6 +592,7 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
           MouseLinkColor.Foreground = clBlue
           LineHighlightColor.Background = clNone
           LineHighlightColor.Foreground = clNone
+          WantTabs = False
           inline TSynGutterPartList
             object TSynGutterMarks
               Width = 24
@@ -609,6 +617,8 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
             object TSynGutterSeparator
               Width = 2
               MouseActions = <>
+              MarkupInfo.Background = clWhite
+              MarkupInfo.Foreground = clGray
             end
             object TSynGutterCodeFolding
               MouseActions = <              
@@ -666,26 +676,26 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
       end
       object MainSplitter: TSplitter
         Left = 308
-        Height = 289
+        Height = 297
         Top = 0
         Width = 5
       end
       object TemplatesGroupBox: TGroupBox
         Left = 319
-        Height = 277
+        Height = 285
         Top = 6
-        Width = 263
+        Width = 251
         Align = alClient
         BorderSpacing.Around = 6
         Caption = 'TemplatesGroupBox'
-        ClientHeight = 256
-        ClientWidth = 255
-        TabOrder = 3
+        ClientHeight = 266
+        ClientWidth = 247
+        TabOrder = 1
         object ParsedTemplatesTreeView: TTreeView
           Left = 6
           Height = 122
           Top = 6
-          Width = 243
+          Width = 235
           Align = alTop
           BorderSpacing.Around = 6
           ReadOnly = True
@@ -698,54 +708,44 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
           Left = 0
           Height = 5
           Top = 134
-          Width = 255
+          Width = 247
           Align = alTop
           ResizeAnchor = akTop
         end
         object TemplatesMemo: TMemo
           Left = 6
-          Height = 105
+          Height = 115
           Top = 145
-          Width = 243
+          Width = 235
           Align = alClient
           BorderSpacing.Around = 6
-          Lines.Strings = (
-            'Memo1'
-            ''
-            ''
-            ''
-            ''
-            ''
-          )
           ReadOnly = True
-          TabOrder = 1
+          ScrollBars = ssBoth
+          TabOrder = 2
+          WordWrap = False
         end
       end
       object Splitter1: TSplitter
         Cursor = crVSplit
         Left = 0
         Height = 5
-        Top = 289
-        Width = 588
+        Top = 297
+        Width = 576
         Align = alBottom
         ResizeAnchor = akBottom
       end
     end
     object ReportTabSheet: TTabSheet
       Caption = 'ReportTabSheet'
-      ClientHeight = 429
-      ClientWidth = 588
+      ClientHeight = 437
+      ClientWidth = 576
       object ReportMemo: TMemo
-        Left = 0
-        Height = 429
-        Top = 0
-        Width = 588
+        Left = 6
+        Height = 425
+        Top = 6
+        Width = 564
         Align = alClient
-        Lines.Strings = (
-          'ReportMemo'
-          ''
-          ''
-        )
+        BorderSpacing.Around = 6
         ReadOnly = True
         ScrollBars = ssBoth
         TabOrder = 0
@@ -754,8 +754,8 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 33
-    Top = 542
+    Height = 29
+    Top = 546
     Width = 580
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -767,7 +767,7 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
     CancelButton.Enabled = False
-    TabOrder = 1
+    TabOrder = 2
     ShowButtons = [pbOK, pbHelp]
     ShowBevel = False
   end

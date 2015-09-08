@@ -231,10 +231,6 @@ msgstr "Alapértelmezett elrendezés visszaállítása"
 msgid "right"
 msgstr "jobbra"
 
-#: anchordockstr.adrssavelayoutonclose
-msgid "Save layout on close"
-msgstr "Elrendezés mentése kilépéskor"
-
 #: anchordockstr.adrssavewindowlayoutasdefault
 msgid "Save window layout as default"
 msgstr "Ablakelrendezés mentése alapértelmezettnek"
@@ -294,3 +290,4 @@ msgstr "Az ablakok rögzítésének használatához először el kell távolíta
 #: anchordockstr.adrsundock
 msgid "Undock"
 msgstr "Rögzítés feloldása"
+

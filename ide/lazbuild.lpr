@@ -265,6 +265,9 @@ begin
     DebugLn(['TLazBuildApplication.OnCodeBufferEncodeSaving Filename=',Code.Filename,' Mem=',Code.MemEncoding,' to Disk=',Code.DiskEncoding]);
     {$ENDIF}
     Source:=ConvertEncoding(Source,Code.MemEncoding,Code.DiskEncoding);
+    {$IF FPC_FULLVERSION >= 20701}
+    SetCodePage(Source,CP_ACP);
+    {$ENDIF}
   end;
 end;
 
