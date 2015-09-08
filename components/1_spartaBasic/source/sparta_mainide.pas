@@ -583,8 +583,9 @@ begin
   for ne in AddFormEvents do
     ne(Self);
 {$ELSE}
-  for i := 0 to AddFormEvents.Size - 1 do
-    AddFormEvents[i](Self);
+  if AddFormEvents.Size > 0 then  // Arithmetic overflow without a test. Size = unsigned.
+    for i := 0 to AddFormEvents.Size-1 do
+      AddFormEvents[i](Self);
 {$ENDIF}
 
 end;
