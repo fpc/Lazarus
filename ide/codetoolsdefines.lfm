@@ -3,17 +3,18 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
   Height = 500
   Top = 228
   Width = 544
-  BorderStyle = bsSizeToolWin
+  BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'CodeToolsDefinesEditor'
-  ClientHeight = 480
+  ClientHeight = 500
   ClientWidth = 544
   KeyPreview = True
   Menu = MainMenu
   OnClose = FormClose
   OnKeyDown = CodeToolsDefinesEditorKeyDown
   OnKeyUp = CodeToolsDefinesEditorKeyUp
+  OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '1.5'
   object DefineTreeView: TTreeView
     Left = 6
     Height = 123
@@ -21,7 +22,6 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
     Width = 532
     Align = alTop
     BorderSpacing.Around = 6
-    DefaultItemHeight = 17
     ReadOnly = True
     TabOrder = 0
     OnSelectionChanged = DefineTreeViewSelectionChanged
@@ -29,36 +29,36 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
   end
   object SelectedItemGroupBox: TGroupBox
     Left = 6
-    Height = 328
+    Height = 313
     Top = 146
     Width = 532
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'SelectedItemGroupBox'
-    ClientHeight = 310
+    ClientHeight = 294
     ClientWidth = 528
-    TabOrder = 1
+    TabOrder = 2
     object NameLabel: TLabel
       Left = 10
-      Height = 16
+      Height = 17
       Top = 26
-      Width = 61
+      Width = 77
       BorderSpacing.Right = 6
       Caption = 'NameLabel'
       ParentColor = False
     end
     object DescriptionLabel: TLabel
       Left = 10
-      Height = 16
+      Height = 17
       Top = 53
-      Width = 89
+      Width = 115
       BorderSpacing.Right = 6
       Caption = 'DescriptionLabel'
       ParentColor = False
     end
     object TypeLabel: TLabel
       Left = 6
-      Height = 16
+      Height = 17
       Top = 6
       Width = 516
       Align = alTop
@@ -68,32 +68,34 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
     end
     object VariableLabel: TLabel
       Left = 10
-      Height = 16
+      Height = 17
       Top = 78
-      Width = 71
+      Width = 94
       BorderSpacing.Right = 6
       Caption = 'VariableLabel'
       ParentColor = False
     end
     object ValueNoteBook: TPageControl
       Left = 6
-      Height = 198
+      Height = 182
       Top = 106
       Width = 516
+      ActivePage = ValueAsTextPage
       Align = alBottom
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
+      TabIndex = 0
+      TabOrder = 3
       OnChange = ValueNoteBookPageChanged
-      TabOrder = 0
       object ValueAsTextPage: TTabSheet
         Caption = 'ValueAsTextPage'
-        ClientWidth = 508
-        ClientHeight = 170
+        ClientHeight = 151
+        ClientWidth = 512
         inline ValueAsTextSynEdit: TSynEdit
           Left = 0
-          Height = 170
+          Height = 151
           Top = 0
-          Width = 508
+          Width = 512
           Align = alClient
           Font.Height = -16
           Font.Name = 'courier'
@@ -104,30 +106,19 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
           TabOrder = 0
           BookMarkOptions.Xoffset = -18
           Gutter.Visible = False
-          Gutter.Width = 0
+          Gutter.Width = 61
           Gutter.MouseActions = <          
             item
-              Shift = []
-              ShiftMask = []
-              Button = mbLeft
               ClickCount = ccAny
               ClickDir = cdDown
-              Command = 13
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcOnMainGutterClick
             end          
             item
-              Shift = []
-              ShiftMask = []
               Button = mbRight
-              ClickCount = ccSingle
-              ClickDir = cdUp
-              Command = 12
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcContextMenu
             end>
+          RightGutter.Width = 0
+          RightGutter.MouseActions = <>
           Keystrokes = <          
             item
               Command = ecUp
@@ -451,149 +442,108 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
             end>
           MouseActions = <          
             item
-              Shift = []
               ShiftMask = [ssShift, ssAlt]
-              Button = mbLeft
-              ClickCount = ccSingle
               ClickDir = cdDown
-              Command = 1
+              Command = emcStartSelections
               MoveCaret = True
-              Option = 0
-              Priority = 0
             end          
             item
               Shift = [ssShift]
               ShiftMask = [ssShift, ssAlt]
-              Button = mbLeft
-              ClickCount = ccSingle
               ClickDir = cdDown
-              Command = 1
+              Command = emcStartSelections
               MoveCaret = True
               Option = 1
-              Priority = 0
             end          
             item
               Shift = [ssAlt]
               ShiftMask = [ssShift, ssAlt]
-              Button = mbLeft
-              ClickCount = ccSingle
               ClickDir = cdDown
-              Command = 3
+              Command = emcStartColumnSelections
               MoveCaret = True
-              Option = 0
-              Priority = 0
             end          
             item
               Shift = [ssShift, ssAlt]
               ShiftMask = [ssShift, ssAlt]
-              Button = mbLeft
-              ClickCount = ccSingle
               ClickDir = cdDown
-              Command = 3
+              Command = emcStartColumnSelections
               MoveCaret = True
               Option = 1
-              Priority = 0
             end          
             item
-              Shift = []
-              ShiftMask = []
               Button = mbRight
-              ClickCount = ccSingle
-              ClickDir = cdUp
-              Command = 12
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcContextMenu
             end          
             item
-              Shift = []
-              ShiftMask = []
-              Button = mbLeft
               ClickCount = ccDouble
               ClickDir = cdDown
-              Command = 6
+              Command = emcSelectWord
               MoveCaret = True
-              Option = 0
-              Priority = 0
             end          
             item
-              Shift = []
-              ShiftMask = []
-              Button = mbLeft
               ClickCount = ccTriple
               ClickDir = cdDown
-              Command = 7
+              Command = emcSelectLine
               MoveCaret = True
-              Option = 0
-              Priority = 0
             end          
             item
-              Shift = []
-              ShiftMask = []
-              Button = mbLeft
               ClickCount = ccQuad
               ClickDir = cdDown
-              Command = 8
+              Command = emcSelectPara
               MoveCaret = True
-              Option = 0
-              Priority = 0
             end          
             item
-              Shift = []
-              ShiftMask = []
               Button = mbMiddle
-              ClickCount = ccSingle
               ClickDir = cdDown
-              Command = 10
+              Command = emcPasteSelection
               MoveCaret = True
-              Option = 0
-              Priority = 0
             end          
             item
               Shift = [ssCtrl]
               ShiftMask = [ssShift, ssAlt, ssCtrl]
-              Button = mbLeft
-              ClickCount = ccSingle
-              ClickDir = cdUp
-              Command = 11
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcMouseLink
             end>
+          MouseTextActions = <>
           MouseSelActions = <          
             item
-              Shift = []
-              ShiftMask = []
-              Button = mbLeft
-              ClickCount = ccSingle
               ClickDir = cdDown
-              Command = 9
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcStartDragMove
             end          
             item
-              Shift = []
-              ShiftMask = []
-              Button = mbLeft
-              ClickCount = ccSingle
               ClickDir = cdDown
-              Command = 9
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcStartDragMove
             end>
           Lines.Strings = (
             'ValueAsTextSynEdit'
           )
-          Options = [eoDragDropEditing, eoHalfPageScroll, eoScrollByOneLess, eoScrollPastEol, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces, eoBracketHighlight, eoHideRightMargin]
+          Options = [eoBracketHighlight, eoHalfPageScroll, eoHideRightMargin, eoScrollByOneLess, eoScrollPastEol, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces, eoDragDropEditing]
+          MouseOptions = [emDragDropEditing]
+          VisibleSpecialChars = [vscSpace, vscTabAtLast]
+          SelectedColor.BackPriority = 50
+          SelectedColor.ForePriority = 50
+          SelectedColor.FramePriority = 50
+          SelectedColor.BoldPriority = 50
+          SelectedColor.ItalicPriority = 50
+          SelectedColor.UnderlinePriority = 50
+          SelectedColor.StrikeOutPriority = 50
           BracketHighlightStyle = sbhsBoth
+          BracketMatchColor.Background = clNone
+          BracketMatchColor.Foreground = clNone
+          BracketMatchColor.Style = [fsBold]
+          FoldedCodeColor.Background = clNone
+          FoldedCodeColor.Foreground = clGray
+          FoldedCodeColor.FrameColor = clGray
+          MouseLinkColor.Background = clNone
+          MouseLinkColor.Foreground = clBlue
+          LineHighlightColor.Background = clNone
+          LineHighlightColor.Foreground = clNone
           inline TSynGutterPartList
             object TSynGutterMarks
-              Width = 23
+              Width = 24
+              MouseActions = <>
             end
             object TSynGutterLineNumber
-              Width = 25
+              Width = 21
               MouseActions = <>
               MarkupInfo.Background = clBtnFace
               MarkupInfo.Foreground = clNone
@@ -604,35 +554,28 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
             end
             object TSynGutterChanges
               Width = 4
+              MouseActions = <>
               ModifiedColor = 59900
               SavedColor = clGreen
             end
             object TSynGutterSeparator
               Width = 2
+              MouseActions = <>
+              MarkupInfo.Background = clWhite
+              MarkupInfo.Foreground = clGray
             end
             object TSynGutterCodeFolding
               MouseActions = <              
                 item
-                  Shift = []
-                  ShiftMask = []
                   Button = mbRight
-                  ClickCount = ccSingle
-                  ClickDir = cdUp
-                  Command = 16
-                  MoveCaret = False
-                  Option = 0
-                  Priority = 0
+                  Command = emcCodeFoldContextMenu
                 end              
                 item
-                  Shift = []
                   ShiftMask = [ssShift]
                   Button = mbMiddle
                   ClickCount = ccAny
                   ClickDir = cdDown
-                  Command = 14
-                  MoveCaret = False
-                  Option = 0
-                  Priority = 0
+                  Command = emcCodeFoldCollaps
                 end              
                 item
                   Shift = [ssShift]
@@ -640,58 +583,36 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
                   Button = mbMiddle
                   ClickCount = ccAny
                   ClickDir = cdDown
-                  Command = 14
-                  MoveCaret = False
+                  Command = emcCodeFoldCollaps
                   Option = 1
-                  Priority = 0
                 end              
                 item
-                  Shift = []
-                  ShiftMask = []
-                  Button = mbLeft
                   ClickCount = ccAny
                   ClickDir = cdDown
-                  Command = 0
-                  MoveCaret = False
-                  Option = 0
-                  Priority = 0
+                  Command = emcNone
                 end>
               MarkupInfo.Background = clNone
               MarkupInfo.Foreground = clGray
               MouseActionsExpanded = <              
                 item
-                  Shift = []
-                  ShiftMask = []
-                  Button = mbLeft
                   ClickCount = ccAny
                   ClickDir = cdDown
-                  Command = 14
-                  MoveCaret = False
-                  Option = 0
-                  Priority = 0
+                  Command = emcCodeFoldCollaps
                 end>
               MouseActionsCollapsed = <              
                 item
                   Shift = [ssCtrl]
                   ShiftMask = [ssCtrl]
-                  Button = mbLeft
                   ClickCount = ccAny
                   ClickDir = cdDown
-                  Command = 15
-                  MoveCaret = False
-                  Option = 0
-                  Priority = 0
+                  Command = emcCodeFoldExpand
                 end              
                 item
-                  Shift = []
                   ShiftMask = [ssCtrl]
-                  Button = mbLeft
                   ClickCount = ccAny
                   ClickDir = cdDown
-                  Command = 15
-                  MoveCaret = False
+                  Command = emcCodeFoldExpand
                   Option = 1
-                  Priority = 0
                 end>
             end
           end
@@ -699,8 +620,8 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
       end
       object ValueAsPathsPage: TTabSheet
         Caption = 'ValueAsPathsPage'
-        ClientWidth = 508
-        ClientHeight = 168
+        ClientHeight = 151
+        ClientWidth = 512
         inline ValueAsFilePathsSynEdit: TSynEdit
           AnchorSideRight.Control = DeleteFilePathBitBtn
           Left = 0
@@ -719,30 +640,19 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
           TabOrder = 0
           BookMarkOptions.Xoffset = -18
           Gutter.Visible = False
-          Gutter.Width = 0
+          Gutter.Width = 61
           Gutter.MouseActions = <          
             item
-              Shift = []
-              ShiftMask = []
-              Button = mbLeft
               ClickCount = ccAny
               ClickDir = cdDown
-              Command = 13
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcOnMainGutterClick
             end          
             item
-              Shift = []
-              ShiftMask = []
               Button = mbRight
-              ClickCount = ccSingle
-              ClickDir = cdUp
-              Command = 12
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcContextMenu
             end>
+          RightGutter.Width = 0
+          RightGutter.MouseActions = <>
           Keystrokes = <          
             item
               Command = ecUp
@@ -1066,149 +976,108 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
             end>
           MouseActions = <          
             item
-              Shift = []
               ShiftMask = [ssShift, ssAlt]
-              Button = mbLeft
-              ClickCount = ccSingle
               ClickDir = cdDown
-              Command = 1
+              Command = emcStartSelections
               MoveCaret = True
-              Option = 0
-              Priority = 0
             end          
             item
               Shift = [ssShift]
               ShiftMask = [ssShift, ssAlt]
-              Button = mbLeft
-              ClickCount = ccSingle
               ClickDir = cdDown
-              Command = 1
+              Command = emcStartSelections
               MoveCaret = True
               Option = 1
-              Priority = 0
             end          
             item
               Shift = [ssAlt]
               ShiftMask = [ssShift, ssAlt]
-              Button = mbLeft
-              ClickCount = ccSingle
               ClickDir = cdDown
-              Command = 3
+              Command = emcStartColumnSelections
               MoveCaret = True
-              Option = 0
-              Priority = 0
             end          
             item
               Shift = [ssShift, ssAlt]
               ShiftMask = [ssShift, ssAlt]
-              Button = mbLeft
-              ClickCount = ccSingle
               ClickDir = cdDown
-              Command = 3
+              Command = emcStartColumnSelections
               MoveCaret = True
               Option = 1
-              Priority = 0
             end          
             item
-              Shift = []
-              ShiftMask = []
               Button = mbRight
-              ClickCount = ccSingle
-              ClickDir = cdUp
-              Command = 12
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcContextMenu
             end          
             item
-              Shift = []
-              ShiftMask = []
-              Button = mbLeft
               ClickCount = ccDouble
               ClickDir = cdDown
-              Command = 6
+              Command = emcSelectWord
               MoveCaret = True
-              Option = 0
-              Priority = 0
             end          
             item
-              Shift = []
-              ShiftMask = []
-              Button = mbLeft
               ClickCount = ccTriple
               ClickDir = cdDown
-              Command = 7
+              Command = emcSelectLine
               MoveCaret = True
-              Option = 0
-              Priority = 0
             end          
             item
-              Shift = []
-              ShiftMask = []
-              Button = mbLeft
               ClickCount = ccQuad
               ClickDir = cdDown
-              Command = 8
+              Command = emcSelectPara
               MoveCaret = True
-              Option = 0
-              Priority = 0
             end          
             item
-              Shift = []
-              ShiftMask = []
               Button = mbMiddle
-              ClickCount = ccSingle
               ClickDir = cdDown
-              Command = 10
+              Command = emcPasteSelection
               MoveCaret = True
-              Option = 0
-              Priority = 0
             end          
             item
               Shift = [ssCtrl]
               ShiftMask = [ssShift, ssAlt, ssCtrl]
-              Button = mbLeft
-              ClickCount = ccSingle
-              ClickDir = cdUp
-              Command = 11
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcMouseLink
             end>
+          MouseTextActions = <>
           MouseSelActions = <          
             item
-              Shift = []
-              ShiftMask = []
-              Button = mbLeft
-              ClickCount = ccSingle
               ClickDir = cdDown
-              Command = 9
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcStartDragMove
             end          
             item
-              Shift = []
-              ShiftMask = []
-              Button = mbLeft
-              ClickCount = ccSingle
               ClickDir = cdDown
-              Command = 9
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcStartDragMove
             end>
           Lines.Strings = (
             'ValueAsTextSynEdit'
           )
-          Options = [eoDragDropEditing, eoHalfPageScroll, eoScrollByOneLess, eoScrollPastEol, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces, eoBracketHighlight, eoHideRightMargin]
+          Options = [eoBracketHighlight, eoHalfPageScroll, eoHideRightMargin, eoScrollByOneLess, eoScrollPastEol, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces, eoDragDropEditing]
+          MouseOptions = [emDragDropEditing]
+          VisibleSpecialChars = [vscSpace, vscTabAtLast]
+          SelectedColor.BackPriority = 50
+          SelectedColor.ForePriority = 50
+          SelectedColor.FramePriority = 50
+          SelectedColor.BoldPriority = 50
+          SelectedColor.ItalicPriority = 50
+          SelectedColor.UnderlinePriority = 50
+          SelectedColor.StrikeOutPriority = 50
           BracketHighlightStyle = sbhsBoth
+          BracketMatchColor.Background = clNone
+          BracketMatchColor.Foreground = clNone
+          BracketMatchColor.Style = [fsBold]
+          FoldedCodeColor.Background = clNone
+          FoldedCodeColor.Foreground = clGray
+          FoldedCodeColor.FrameColor = clGray
+          MouseLinkColor.Background = clNone
+          MouseLinkColor.Foreground = clBlue
+          LineHighlightColor.Background = clNone
+          LineHighlightColor.Foreground = clNone
           inline TSynGutterPartList
             object TSynGutterMarks
-              Width = 23
+              Width = 24
+              MouseActions = <>
             end
             object TSynGutterLineNumber
-              Width = 25
+              Width = 21
               MouseActions = <>
               MarkupInfo.Background = clBtnFace
               MarkupInfo.Foreground = clNone
@@ -1219,35 +1088,28 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
             end
             object TSynGutterChanges
               Width = 4
+              MouseActions = <>
               ModifiedColor = 59900
               SavedColor = clGreen
             end
             object TSynGutterSeparator
               Width = 2
+              MouseActions = <>
+              MarkupInfo.Background = clWhite
+              MarkupInfo.Foreground = clGray
             end
             object TSynGutterCodeFolding
               MouseActions = <              
                 item
-                  Shift = []
-                  ShiftMask = []
                   Button = mbRight
-                  ClickCount = ccSingle
-                  ClickDir = cdUp
-                  Command = 16
-                  MoveCaret = False
-                  Option = 0
-                  Priority = 0
+                  Command = emcCodeFoldContextMenu
                 end              
                 item
-                  Shift = []
                   ShiftMask = [ssShift]
                   Button = mbMiddle
                   ClickCount = ccAny
                   ClickDir = cdDown
-                  Command = 14
-                  MoveCaret = False
-                  Option = 0
-                  Priority = 0
+                  Command = emcCodeFoldCollaps
                 end              
                 item
                   Shift = [ssShift]
@@ -1255,58 +1117,36 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
                   Button = mbMiddle
                   ClickCount = ccAny
                   ClickDir = cdDown
-                  Command = 14
-                  MoveCaret = False
+                  Command = emcCodeFoldCollaps
                   Option = 1
-                  Priority = 0
                 end              
                 item
-                  Shift = []
-                  ShiftMask = []
-                  Button = mbLeft
                   ClickCount = ccAny
                   ClickDir = cdDown
-                  Command = 0
-                  MoveCaret = False
-                  Option = 0
-                  Priority = 0
+                  Command = emcNone
                 end>
               MarkupInfo.Background = clNone
               MarkupInfo.Foreground = clGray
               MouseActionsExpanded = <              
                 item
-                  Shift = []
-                  ShiftMask = []
-                  Button = mbLeft
                   ClickCount = ccAny
                   ClickDir = cdDown
-                  Command = 14
-                  MoveCaret = False
-                  Option = 0
-                  Priority = 0
+                  Command = emcCodeFoldCollaps
                 end>
               MouseActionsCollapsed = <              
                 item
                   Shift = [ssCtrl]
                   ShiftMask = [ssCtrl]
-                  Button = mbLeft
                   ClickCount = ccAny
                   ClickDir = cdDown
-                  Command = 15
-                  MoveCaret = False
-                  Option = 0
-                  Priority = 0
+                  Command = emcCodeFoldExpand
                 end              
                 item
-                  Shift = []
                   ShiftMask = [ssCtrl]
-                  Button = mbLeft
                   ClickCount = ccAny
                   ClickDir = cdDown
-                  Command = 15
-                  MoveCaret = False
+                  Command = emcCodeFoldExpand
                   Option = 1
-                  Priority = 0
                 end>
             end
           end
@@ -1318,7 +1158,6 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
           Width = 75
           Anchors = [akTop, akRight]
           Caption = 'MoveFilePathUpBitBtn'
-          NumGlyphs = 0
           OnClick = MoveFilePathUpBitBtnClick
           TabOrder = 1
         end
@@ -1329,7 +1168,6 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
           Width = 75
           Anchors = [akTop, akRight]
           Caption = 'MoveFilePathDownBitBtn'
-          NumGlyphs = 0
           OnClick = MoveNodeDownMenuItemClick
           TabOrder = 2
         end
@@ -1340,7 +1178,6 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
           Width = 75
           Anchors = [akTop, akRight]
           Caption = 'DeleteFilePathBitBtn'
-          NumGlyphs = 0
           OnClick = DeleteFilePathBitBtnClick
           TabOrder = 3
         end
@@ -1351,7 +1188,6 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
           Width = 75
           Anchors = [akTop, akRight]
           Caption = 'InsertFilePathBitBtn'
-          NumGlyphs = 0
           OnClick = InsertFilePathBitBtnClick
           TabOrder = 4
         end
@@ -1359,31 +1195,31 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
     end
     object NameEdit: TEdit
       Left = 128
-      Height = 23
+      Height = 27
       Top = 23
       Width = 394
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
-      TabOrder = 1
+      TabOrder = 0
       Text = 'NameEdit'
     end
     object DescriptionEdit: TEdit
       Left = 128
-      Height = 23
+      Height = 27
       Top = 50
       Width = 394
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
-      TabOrder = 2
+      TabOrder = 1
       Text = 'DescriptionEdit'
     end
     object VariableEdit: TEdit
       Left = 128
-      Height = 23
+      Height = 27
       Top = 76
       Width = 394
       Anchors = [akTop, akLeft, akRight]
-      TabOrder = 3
+      TabOrder = 2
       Text = 'VariableEdit'
     end
   end
@@ -1396,23 +1232,27 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
     Align = alTop
     ResizeAnchor = akTop
   end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 29
+    Top = 465
+    Width = 532
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    OKButton.OnClick = OKButtonClick
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 3
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
+  end
   object MainMenu: TMainMenu
     left = 46
     top = 72
-    object ExitMenuItem: TMenuItem
-      Caption = 'ExitMenuItem'
-      object SaveAndExitMenuItem: TMenuItem
-        Caption = 'SaveAndExitMenuItem'
-        OnClick = SaveAndExitMenuItemClick
-      end
-      object MenuItem2: TMenuItem
-        Caption = '-'
-      end
-      object DontSaveAndExitMenuItem: TMenuItem
-        Caption = 'DontSaveAndExitMenuItem'
-        OnClick = DontSaveAndExitMenuItemClick
-      end
-    end
     object EditMenuItem: TMenuItem
       Caption = 'EditMenuItem'
       object MoveNodeUpMenuItem: TMenuItem

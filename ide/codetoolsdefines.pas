@@ -45,7 +45,7 @@ interface
 
 uses
   Classes, SysUtils, Math, LCLIntf, Forms, Controls, Buttons, StdCtrls,
-  ComCtrls,  LCLType, ExtCtrls, Menus, LCLProc, Graphics, Dialogs,
+  ComCtrls,  LCLType, ExtCtrls, Menus, LCLProc, Graphics, Dialogs, ButtonPanel,
   SynEdit,
   CodeToolManager, DefineTemplates,
   IDEWindowIntf, IDEImagesIntf, IDEDialogs,
@@ -58,6 +58,7 @@ type
   { TCodeToolsDefinesEditor }
 
   TCodeToolsDefinesEditor = class(TForm)
+    ButtonPanel1: TButtonPanel;
     MenuItem1: TMenuItem;
     MenuItem10: TMenuItem;
     MenuItem11: TMenuItem;
@@ -66,7 +67,6 @@ type
     MenuItem17: TMenuItem;
     MenuItem18: TMenuItem;
     MenuItem19: TMenuItem;
-    MenuItem2: TMenuItem;
     MenuItem23: TMenuItem;
     MenuItem27: TMenuItem;
     MenuItem29: TMenuItem;
@@ -76,11 +76,7 @@ type
     ValueAsPathsPage: TTabSheet;
     MainSplitter: TSplitter;
     MainMenu: TMainMenu;
-    
-    // exit menu
-    ExitMenuItem: TMenuItem;
-    SaveAndExitMenuItem: TMenuItem;
-    DontSaveAndExitMenuItem: TMenuItem;
+
 
     // edit nodes
     EditMenuItem: TMenuItem;
@@ -184,10 +180,8 @@ type
       Shift: TShiftState);
     procedure DefineTreeViewSelectionChanged(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
-
-    // exit menu
-    procedure SaveAndExitMenuItemClick(Sender: TObject);
-    procedure DontSaveAndExitMenuItemClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure OKButtonClick(Sender: TObject);
 
     // value notebook
     procedure ValueNoteBookPageChanged(Sender: TObject);
@@ -276,18 +270,6 @@ end;
 
 { TCodeToolsDefinesEditor }
 
-procedure TCodeToolsDefinesEditor.SaveAndExitMenuItemClick(Sender: TObject);
-begin
-  SaveSelectedValues;
-  FLastSelectedNode:=nil;
-  ModalResult:=mrOk;
-end;
-
-procedure TCodeToolsDefinesEditor.DontSaveAndExitMenuItemClick(Sender: TObject);
-begin
-  ModalResult:=mrCancel;
-end;
-
 procedure TCodeToolsDefinesEditor.CodeToolsDefinesEditorKeyDown(
   Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
@@ -313,6 +295,19 @@ begin
   CodeToolsOpts.DefinesEditMainSplitterTop:=MainSplitter.Top;
   CodeToolsOpts.Save;
   IDEDialogLayoutList.SaveLayout(Self);
+end;
+
+procedure TCodeToolsDefinesEditor.FormShow(Sender: TObject);
+begin
+  ButtonPanel1.OKButton.Caption:= lisOk;
+  ButtonPanel1.CancelButton.Caption:= lisCancel;
+end;
+
+procedure TCodeToolsDefinesEditor.OKButtonClick(Sender: TObject);
+begin
+  SaveSelectedValues;
+  FLastSelectedNode:=nil;
+  ModalResult:=mrOk;
 end;
 
 procedure TCodeToolsDefinesEditor.ValueNoteBookPageChanged(Sender: TObject);
@@ -934,11 +929,6 @@ procedure TCodeToolsDefinesEditor.CreateComponents;
 var
   DefAction: TDefineAction;
 begin
-  // exit menu
-  ExitMenuItem.Caption := lisExit;
-  SaveAndExitMenuItem.Caption:=lisCodeToolsDefsSaveAndExit;
-  DontSaveAndExitMenuItem.Caption:=lisCodeToolsDefsExitWithoutSave;
-
   // edit nodes
   EditMenuItem.Caption := lisEdit;
   MoveNodeUpMenuItem.Caption:=lisCodeToolsDefsMoveNodeUp;
