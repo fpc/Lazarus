@@ -102,10 +102,12 @@ unit AnchorDocking;
 interface
 
 uses
-  Math, Classes, SysUtils, LResources, types, LCLType, LCLIntf, LCLProc,
+  Math, Classes, SysUtils, types,
+  LCLType, LCLIntf, LCLProc,
   Controls, Forms, ExtCtrls, ComCtrls, Graphics, Themes, Menus, Buttons,
-  LazConfigStorage, AnchorDockStr, AnchorDockStorage, LazFileCache,
-  IDEOptionsIntf, Laz2_XMLCfg, MacroIntf, FileUtil, LazIDEIntf;
+  LazConfigStorage, LazFileUtils, LazFileCache, Laz2_XMLCfg,
+  IDEOptionsIntf, MacroIntf, LazIDEIntf,
+  AnchorDockStr, AnchorDockStorage;
 
 type
   TAnchorDesktopOpt = class(TAbstractDesktopDockingOpt)
