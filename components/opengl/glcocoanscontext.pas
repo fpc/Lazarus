@@ -63,7 +63,7 @@ type
   TCocoaOpenGLView = objcclass(NSOpenGLView)
   public
     Owner: TWinControl;
-    callback: ICommonCallback;
+    callback: TLCLCommonCallback;
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
@@ -72,6 +72,7 @@ type
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     function lclIsHandle: Boolean; override;
+    function lclIsEnabled: Boolean; override;
     // mouse
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
@@ -389,6 +390,11 @@ end;
 function TCocoaOpenGLView.lclIsHandle: Boolean;
 begin
   Result:=true;
+end;
+
+function TCocoaOpenGLView.lclIsEnabled: Boolean;
+begin
+  Result := Owner.Enabled;
 end;
 
 procedure TCocoaOpenGLView.mouseDown(event: NSEvent);
