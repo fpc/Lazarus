@@ -1999,6 +1999,7 @@ var
   DesignSender: TControl;
   Button: TMouseButton;
   Handled: Boolean;
+  MouseDownControl: TControl;
 begin
   FHintTimer.Enabled := False;
   FHintWindow.Visible := False;
@@ -2058,8 +2059,10 @@ begin
 
   if (MouseDownComponent <> nil) and (MouseDownComponent is TControl) then
   begin
-    with TControl(MouseDownComponent).ScreenToClient(Form.ClientToScreen(MouseDownPos)) do
-      if TControl(MouseDownComponent).Perform(CM_DESIGNHITTEST, TheMessage.Keys, Longint(SmallPoint(X, Y))) > 0 then
+    MouseDownControl:=TControl(MouseDownComponent);
+    with MouseDownControl.ScreenToClient(Form.ClientToScreen(MouseDownPos)) do
+      if (csDesignInteractive in MouseDownControl.ControlStyle)
+      or (MouseDownControl.Perform(CM_DESIGNHITTEST, TheMessage.Keys, Longint(SmallPoint(X, Y))) > 0) then
       begin
         TControlAccess(MouseDownComponent).MouseDown(Button, Shift, X, Y);
         Exit;
@@ -2376,6 +2379,7 @@ var
   Handled: Boolean;
   i, j: Integer;
   SelectedPersistent: TSelectedControl;
+  MouseDownControl: TControl;
 begin
   FHintTimer.Enabled := False;
   FHintWindow.Visible := False;
@@ -2413,8 +2417,10 @@ begin
 
   if (MouseDownComponent <> nil) and (MouseDownComponent is TControl) then
   begin
-    with TControl(MouseDownComponent).ScreenToClient(Form.ClientToScreen(MouseUpPos)) do
-      if TControl(MouseDownComponent).Perform(CM_DESIGNHITTEST, TheMessage.Keys, Longint(SmallPoint(X, Y))) > 0 then
+    MouseDownControl:=TControl(MouseDownComponent);
+    with MouseDownControl.ScreenToClient(Form.ClientToScreen(MouseUpPos)) do
+      if (csDesignInteractive in MouseDownControl.ControlStyle)
+      or (MouseDownControl.Perform(CM_DESIGNHITTEST, TheMessage.Keys, Longint(SmallPoint(X, Y))) > 0) then
       begin
         TControlAccess(MouseDownComponent).MouseUp(Button, Shift, X, Y);
         Exit;
@@ -2538,6 +2544,7 @@ var
   DesignSender: TControl;
   Handled: Boolean;
   MouseMoveComponent: TComponent;
+  MouseMoveControl: TControl;
 begin
   GetMouseMsgShift(TheMessage, Shift, Button);
 
@@ -2565,8 +2572,10 @@ begin
     MouseMoveComponent := ComponentAtPos(LastMouseMovePos.X, LastMouseMovePos.Y, True, True);
   if (MouseMoveComponent <> nil) and (MouseMoveComponent is TControl) then
   begin
-    with TControl(MouseMoveComponent).ScreenToClient(Form.ClientToScreen(LastMouseMovePos)) do
-      if TControl(MouseMoveComponent).Perform(CM_DESIGNHITTEST, TheMessage.Keys, Longint(SmallPoint(X, Y))) > 0 then
+    MouseMoveControl:=TControl(MouseMoveComponent);
+    with MouseMoveControl.ScreenToClient(Form.ClientToScreen(LastMouseMovePos)) do
+      if (csDesignInteractive in MouseMoveControl.ControlStyle)
+      or (MouseMoveControl.Perform(CM_DESIGNHITTEST, TheMessage.Keys, Longint(SmallPoint(X, Y))) > 0) then
       begin
         TControlAccess(MouseMoveComponent).MouseMove(Shift, X, Y);
         Exit;
