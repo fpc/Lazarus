@@ -2239,22 +2239,26 @@ var
   i: Integer;
   ALayout: TSimpleWindowLayout;
   AForm: TCustomForm;
+  HasChanged: Boolean;
 begin
   if IDEDockMaster=nil then
   begin
+    HasChanged:=false;
     for i:=SimpleLayoutStorage.Count-1 downto 0 do//loop down in order to keep z-order of the forms
     begin
       ALayout:=SimpleLayoutStorage[i];
       AForm:=GetForm(ALayout.FormID,ALayout.Visible);
       if AForm=nil then Continue;
+      HasChanged:=true;
       ALayout.Apply(True);
       if ALayout.Visible or (AForm=Application.MainForm) then
         ShowForm(AForm,true)
       else if AForm.Visible then
         AForm.Close;
     end;
+    if HasChanged then
+      LayoutChanged;
   end;
-  LayoutChanged;
 end;
 
 function TIDEWindowCreatorList.GetScreenrectForDefaults: TRect;

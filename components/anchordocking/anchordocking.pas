@@ -2041,7 +2041,7 @@ begin
     // clean up
     FreeAndNil(fTreeNameToDocker);
     ControlNames.Free;
-    // commit (this can raise an exception)
+    // commit (this can raise an exception, when it triggers events)
     EnableAllAutoSizing;
   end;
   {$IFDEF VerboseAnchorDockRestore}
