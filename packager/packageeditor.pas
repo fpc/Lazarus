@@ -42,7 +42,7 @@ uses
   IDEImagesIntf, MenuIntf, LazIDEIntf, ProjectIntf, CodeToolsStructs,
   FormEditingIntf, PackageIntf, IDEHelpIntf, IDEOptionsIntf,
   IDEExternToolIntf,
-  NewItemIntf,
+  NewItemIntf, IDEWindowIntf,
   // IDE
   IDEDialogs, IDEProcs, LazarusIDEStrConsts, IDEDefs, CompilerOptions,
   ComponentReg, UnitResources, EnvironmentOpts, DialogProcs, InputHistory,
@@ -3551,6 +3551,7 @@ end;
 
 initialization
   PackageEditors:=nil;
+  IDEWindowsGlobalOptions.Add(PackageEditorWindowPrefix, False);
 
 end.
 

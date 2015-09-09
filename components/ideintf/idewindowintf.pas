@@ -209,16 +209,12 @@ type
     FDefaultWidth: integer;
     FDefaultHeight: integer;
     FWindowState: TIDEWindowState;
-    FForm: TCustomForm;
     FFormID: string;
     FDefaultWindowPlacement: TIDEWindowPlacement;
     FDividers: TSimpleWindowLayoutDividerPosList;
+    function GetForm: TCustomForm;
     function GetFormCaption: string;
-    function GetFormID: string;
-    procedure SetForm(const AValue: TCustomForm);
     procedure OnFormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
-  protected
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AFormID: string); reintroduce;
     destructor Destroy; override;
@@ -233,11 +229,13 @@ type
     procedure LoadFromConfig(Config: TConfigStorage; const Path: string);
     procedure SaveToConfig(Config: TConfigStorage; const Path: string);
     function CustomCoordinatesAreValid: boolean;
+    function DefaultCoordinatesAreValid: boolean;
     procedure CloseForm;
+    procedure SetForm(const AForm: TCustomForm);
     function ValidateAndSetCoordinates(const aForce: Boolean = False): Boolean;
     procedure SetDefaultPosition(const AForm: TCustomForm);
   public
-    property FormID: string read GetFormID write FFormID;
+    property FormID: string read FFormID write FFormID;
     function FormBaseID(out SubIndex: Integer): String; // split FormID into name+number
     property FormCaption: string read GetFormCaption;
     property WindowPlacement: TIDEWindowPlacement read fWindowPlacement write FWindowPlacement;
@@ -252,7 +250,7 @@ type
     property DefaultWidth: integer read FDefaultWidth write FDefaultWidth;
     property DefaultHeight: integer read FDefaultHeight write FDefaultHeight;
     property WindowState: TIDEWindowState read FWindowState write FWindowState;
-    property Form: TCustomForm read FForm write SetForm;
+    property Form: TCustomForm read GetForm;
     property Visible: boolean read FVisible write FVisible;
     property Applied: boolean read FApplied write FApplied;
     property Dividers: TSimpleWindowLayoutDividerPosList read FDividers;
@@ -281,8 +279,7 @@ type
                            AMoveToVisbleMode: TLayoutMoveToVisbleMode = vmAlwaysMoveToVisible);
     procedure StoreWindowPositions;
     procedure SetDefaultPosition(const AForm: TCustomForm);
-    procedure Assign(SrcList: TSimpleWindowLayoutList; AssignOnlyNewlyCreated,
-      DestroyNotAssigned, AssignOrder: Boolean);
+    procedure CopyItemsFrom(SrcList: TSimpleWindowLayoutList);
     function Add(ALayout: TSimpleWindowLayout): integer;
     function CreateWindowLayout(const TheFormID: string): TSimpleWindowLayout;
     function CreateWindowLayout(const TheForm: TCustomForm): TSimpleWindowLayout;
@@ -477,12 +474,29 @@ type
     property HideSimpleLayoutOptions: boolean read FHideSimpleLayoutOptions;
   end;
 
+  TIDEWindowGlobalOption = class
+  public
+    CanSetVisibility: Boolean;
+  end;
+
+  TIDEWindowsGlobalOptions = class
+  private
+    FList: TStringList;
+  public
+    constructor Create;
+    destructor Destroy; override;
+  public
+    procedure Add(const aFormIDPrefix: string; CanSetVisibility: Boolean);
+    function CanSetVisibility(const aFormID: string): Boolean;
+  end;
+
 var
   IDEDockMaster: TIDEDockMaster = nil; // can be set by a package
 
 procedure MakeIDEWindowDockable(AControl: TWinControl);
 procedure MakeIDEWindowDockSite(AForm: TCustomForm);
 procedure CloseAllForms;
+function IDEWindowsGlobalOptions: TIDEWindowsGlobalOptions;
 
 procedure Register;
 
@@ -490,6 +504,9 @@ implementation
 
 uses
   LazIDEIntf;
+
+var
+  FIDEWindowsGlobalOptions: TIDEWindowsGlobalOptions = nil;
 
 function StrToIDEWindowPlacement(const s: string): TIDEWindowPlacement;
 begin
@@ -551,9 +568,60 @@ begin
   end;
 end;
 
+function IDEWindowsGlobalOptions: TIDEWindowsGlobalOptions;
+begin
+  if not Assigned(FIDEWindowsGlobalOptions) then
+    FIDEWindowsGlobalOptions := TIDEWindowsGlobalOptions.Create;
+
+  Result := FIDEWindowsGlobalOptions;
+end;
+
 procedure Register;
 begin
   RegisterComponents('Misc',[TIDEDialogLayoutStorage]);
+end;
+
+{ TIDEWindowsGlobalOptions }
+
+procedure TIDEWindowsGlobalOptions.Add(const aFormIDPrefix: string;
+  CanSetVisibility: Boolean);
+var
+  xIndex: Integer;
+begin
+  xIndex := FList.Add(aFormIDPrefix);
+  if FList.Objects[xIndex] = nil then
+    FList.Objects[xIndex] := TIDEWindowGlobalOption.Create;
+
+  TIDEWindowGlobalOption(FList.Objects[xIndex]).CanSetVisibility := CanSetVisibility;
+end;
+
+function TIDEWindowsGlobalOptions.CanSetVisibility(const aFormID: string
+  ): Boolean;
+var
+  I: Integer;
+begin
+  for I := 0 to FList.Count-1 do
+  if Copy(aFormID, 1, Length(FList[I])) = FList[I] then
+  begin
+    Result := TIDEWindowGlobalOption(FList.Objects[I]).CanSetVisibility;
+    Exit;
+  end;
+  Result := True;//default is true
+end;
+
+constructor TIDEWindowsGlobalOptions.Create;
+begin
+  inherited Create;
+
+  FList := TStringList.Create;
+  FList.Sorted := True;
+  FList.OwnsObjects := True;
+end;
+
+destructor TIDEWindowsGlobalOptions.Destroy;
+begin
+  FList.Free;
+  inherited Destroy;
 end;
 
 { TSimpleWindowLayoutDividerPosList }
@@ -1110,7 +1178,6 @@ end;
 
 destructor TSimpleWindowLayout.Destroy;
 begin
-  Form:=nil;
   inherited Destroy;
   FDividers.Free;
 end;
@@ -1182,27 +1249,19 @@ begin
   GetCurrentPosition;
 end;
 
-procedure TSimpleWindowLayout.Notification(AComponent: TComponent;
-  Operation: TOperation);
-begin
-  inherited Notification(AComponent, Operation);
-  if Operation=opRemove then begin
-    if fForm=AComponent then begin
-      fForm:=nil;
-      Applied:=false;
-    end;
-  end;
-end;
-
 function TSimpleWindowLayout.CustomCoordinatesAreValid: boolean;
 begin
   Result:=(Width>0) and (Height>0); // and (Left>10-Width) and (Top>10-Height);
 end;
 
+function TSimpleWindowLayout.DefaultCoordinatesAreValid: boolean;
+begin
+  Result:=(DefaultWidth>0) and (DefaultHeight>0);
+end;
+
 procedure TSimpleWindowLayout.CloseForm;
 begin
   GetCurrentPosition;
-  Form:=nil;
 end;
 
 function TSimpleWindowLayout.ValidateAndSetCoordinates(const aForce: Boolean
@@ -1210,12 +1269,19 @@ function TSimpleWindowLayout.ValidateAndSetCoordinates(const aForce: Boolean
 var
   i: Integer;
   NewBounds: TRect;
+  xForm: TCustomForm;
 begin
   Result := False;
-  if aForce or CustomCoordinatesAreValid then begin
+  xForm := Form;
+  if Assigned(xForm) and
+     (aForce or CustomCoordinatesAreValid) then
+  begin
     if not CustomCoordinatesAreValid then//default position
+    begin
+      if not DefaultCoordinatesAreValid then//don't change the coordinates if default position is invalid
+        Exit;
       NewBounds := Bounds(DefaultLeft, DefaultTop, DefaultWidth, DefaultHeight)
-    else// explicit position
+    end else// explicit position
       NewBounds := Bounds(Left, Top, Width, Height);
 
     // set minimum size
@@ -1248,7 +1314,7 @@ begin
     end;
 
     // set bounds (do not use SetRestoredBounds - that flickers with the current LCL implementation)
-    FForm.SetBounds(NewBounds.Left, NewBounds.Top,
+    xForm.SetBounds(NewBounds.Left, NewBounds.Top,
                     NewBounds.Right - NewBounds.Left,
                     NewBounds.Bottom - NewBounds.Top);
     Result := True;
@@ -1270,31 +1336,15 @@ begin
   Result := copy(Result, 1, i);
 end;
 
-procedure TSimpleWindowLayout.SetForm(const AValue: TCustomForm);
+procedure TSimpleWindowLayout.SetForm(const AForm: TCustomForm);
 begin
-  if fForm=AValue then exit;
-  if Assigned(Form) then
+  if Assigned(AForm) then
   begin
-    RemoveFreeNotification(Form);
-    Form.RemoveHandlerClose(@OnFormClose);
-  end;
-  fForm:=AValue;
-  if Assigned(Form) then
-  begin
-    fFormID := Form.Name;
-    FFormCaption := Form.Caption;
-    FreeNotification(Form);
-    Form.AddHandlerClose(@OnFormClose);
+    fFormID := AForm.Name;
+    FFormCaption := AForm.Caption;
+    AForm.AddHandlerClose(@OnFormClose);
     Applied:=false;
   end;
-end;
-
-function TSimpleWindowLayout.GetFormID: string;
-begin
-  if Form=nil then
-    Result:=fFormID
-  else
-    Result:=Form.Name;
 end;
 
 function TSimpleWindowLayout.GetFormCaption: string;
@@ -1370,10 +1420,12 @@ var
   i, j: Integer;
   f: Boolean;
   Creator: TIDEWindowCreator;
+  xForm: TCustomForm;
 begin
   Creator:=IDEWindowCreators.FindWithName(FormID);
   if (Creator = nil) or (Creator.OnGetDividerSize = nil) then exit;
-  if fForm = nil then exit;
+  xForm := Form;
+  if xForm = nil then exit;
   for i := 0 to FDividers.Count - 1 do begin
     if FDividers[i].FId < 0 then continue;
     f := AForce;
@@ -1385,7 +1437,7 @@ begin
     end;
     if f then begin
       j:=-1;
-      if Creator.OnGetDividerSize(fForm, FDividers[i].Id, j) then
+      if Creator.OnGetDividerSize(xForm, FDividers[i].Id, j) then
         FDividers[i].Size := j
       else
         FDividers[i].Size := -1; // Default / Not Changed / Unavailable
@@ -1405,10 +1457,26 @@ begin
   //debugln('TSimpleWindowLayout.GetCurrentPosition ',DbgSName(Self),' ',FormID,' Width=',dbgs(Width));
 end;
 
+function TSimpleWindowLayout.GetForm: TCustomForm;
+var
+  I: Integer;
+begin
+  for I := 0 to Screen.CustomFormCount-1 do
+  if Screen.CustomForms[I].Name = FFormID then
+  begin
+    Result := Screen.CustomForms[I];
+    Exit;
+  end;
+  Result := nil;
+end;
+
 function TSimpleWindowLayout.Apply(const aForce: Boolean): Boolean;
+var
+  xForm: TCustomForm;
 begin
   Result := False;
-  if fForm = nil then exit;
+  xForm := Form;
+  if xForm = nil then exit;
   Applied:=true;
   {$IFDEF VerboseIDEDocking}
   debugln(['TSimpleWindowLayoutList.ApplyAndShow restore ',
@@ -1421,8 +1489,8 @@ begin
     begin
       //DebugLn(['TMainIDE.OnApplyWindowLayout ',IDEWindowStateNames[WindowState]]);
       case WindowState of
-        iwsMinimized: FForm.WindowState:=wsMinimized;
-        iwsMaximized: FForm.WindowState:=wsMaximized;
+        iwsMinimized: xForm.WindowState:=wsMinimized;
+        iwsMaximized: xForm.WindowState:=wsMaximized;
       end;
       Result := ValidateAndSetCoordinates(aForce);     // Adjust bounds to screen area and apply them.
       if WindowState in [iwsMinimized, iwsMaximized] then
@@ -1453,7 +1521,7 @@ begin
           f := WindowPlacement in [iwpRestoreWindowGeometry, iwpRestoreWindowSize];
       end;
       if f then
-        Creator.OnSetDividerSize(fForm, FDividers[i].Id, FDividers[i].Size);
+        Creator.OnSetDividerSize(Form, FDividers[i].Id, FDividers[i].Size);
     end;
   end;
 end;
@@ -1504,7 +1572,7 @@ end;
 function TSimpleWindowLayoutList.IndexOf(const FormID: string): integer;
 begin
   Result:=Count-1;
-  while (Result>=0) and (FormID<>Items[Result].GetFormID) do dec(Result);
+  while (Result>=0) and (FormID<>Items[Result].FormID) do dec(Result);
 end;
 
 function TSimpleWindowLayoutList.IndexOf(const AForm: TCustomForm): integer;
@@ -1649,7 +1717,7 @@ begin
     ALayout:=ItemByFormID(AForm.Name);
     if ALayout<>nil then
     begin
-      ALayout.Form:=AForm;
+      ALayout.SetForm(AForm);
       if ALayout.Applied then exit;
       if ALayout.Apply then exit;
     end;
@@ -1789,42 +1857,22 @@ begin
   end;
 end;
 
-procedure TSimpleWindowLayoutList.Assign(SrcList: TSimpleWindowLayoutList;
-  AssignOnlyNewlyCreated, DestroyNotAssigned, AssignOrder: Boolean);
+procedure TSimpleWindowLayoutList.CopyItemsFrom(SrcList: TSimpleWindowLayoutList);
 var
-  i: integer;
-  xItemIndex: Integer;
-  xNewlyCreated: Boolean;
+  SrcI: Integer;//index in SrcList
+  SelfI: Integer;//index in Self
 begin
   if SrcList=nil then exit;
-  for i:=0 to SrcList.Count-1 do begin
-    xNewlyCreated := False;
-    if (i >= Self.Count) or (Self.Items[i].FormID <> SrcList[i].FormID) then
-    begin//the target item has not the same index, find it!
-      xItemIndex := IndexOf(SrcList[i].FormID);
-      if xItemIndex < 0 then
-      begin
-        xItemIndex := Self.Add(TSimpleWindowLayout.Create(SrcList[i].FormID));//not found, create
-        xNewlyCreated := True;
-      end;
-      if (xItemIndex<>i) and (AssignOrder) then
-      begin
-        Self.fItems.Move(xItemIndex, i);//move it to right position
-        xItemIndex := i;
-      end;
-    end else
-      xItemIndex := i;
-    if not AssignOnlyNewlyCreated or xNewlyCreated then
-      Self.Items[xItemIndex].Assign(SrcList[i])
-  end;
 
-  for i := Count-1 downto 0 do
-  if SrcList.IndexOf(Items[i].FormID) = -1 then
+  //do not clear self, always copy items
+  for SrcI:=0 to SrcList.Count-1 do
   begin
-    if DestroyNotAssigned then
-      Delete(i)
-    else
-      Items[i].Clear;
+    SelfI := IndexOf(SrcList[SrcI].FormID);
+    if SelfI < 0 then
+      SelfI := Self.Add(TSimpleWindowLayout.Create(SrcList[SrcI].FormID));//not found, create
+    Self.fItems.Move(SelfI, SrcI);//move it to right position
+    SelfI := SrcI;
+    Self.Items[SelfI].Assign(SrcList[SrcI])
   end;
 end;
 
@@ -1850,7 +1898,7 @@ function TSimpleWindowLayoutList.CreateWindowLayout(const TheForm: TCustomForm
   ): TSimpleWindowLayout;
 begin
   Result:=CreateWindowLayout(TheForm.Name);
-  Result.Form:=TheForm;
+  Result.SetForm(TheForm);
 end;
 
 { TIDEWindowCreator }
@@ -2199,7 +2247,7 @@ begin
       SimpleLayoutStorage.CreateWindowLayout(AForm);
   end
   else
-    Layout.Form:=AForm;
+    Layout.SetForm(AForm);
 
   if (IDEDockMaster<>nil) and (not (csDesigning in AForm.ComponentState))
   and (FindWithName(AForm.Name)<>nil) then
@@ -2240,6 +2288,7 @@ var
   ALayout: TSimpleWindowLayout;
   AForm: TCustomForm;
   HasChanged: Boolean;
+  AChangeVisibility: Boolean;
 begin
   if IDEDockMaster=nil then
   begin
@@ -2247,14 +2296,22 @@ begin
     for i:=SimpleLayoutStorage.Count-1 downto 0 do//loop down in order to keep z-order of the forms
     begin
       ALayout:=SimpleLayoutStorage[i];
-      AForm:=GetForm(ALayout.FormID,ALayout.Visible);
+      AChangeVisibility := IDEWindowsGlobalOptions.CanSetVisibility(ALayout.FormID);
+      AForm:=GetForm(ALayout.FormID,AChangeVisibility and ALayout.Visible);
       if AForm=nil then Continue;
       HasChanged:=true;
-      ALayout.Apply(True);
-      if ALayout.Visible or (AForm=Application.MainForm) then
-        ShowForm(AForm,true)
-      else if AForm.Visible then
-        AForm.Close;
+      ALayout.Apply(AChangeVisibility);
+      if AChangeVisibility then
+      begin
+        if ALayout.Visible or (AForm=Application.MainForm) then
+          ShowForm(AForm,true)
+        else if AForm.Visible then
+          AForm.Close;
+      end else
+      begin//do not change visibility
+        if AForm.Visible then//Only make sure their z-index is OK if they are already visible
+          ShowForm(AForm,true)
+      end;
     end;
     if HasChanged then
       LayoutChanged;
@@ -2298,6 +2355,7 @@ initialization
 finalization
   FreeAndNil(IDEWindowCreators);
   FreeAndNil(IDEDialogLayoutList);
+  FreeAndNil(FIDEWindowsGlobalOptions);
 
 end.
 

@@ -1009,7 +1009,7 @@ begin
     FIDEDialogLayoutList:=TIDEDialogLayoutList.Create;
     FIDEWindowCreatorsLayoutList:=TSimpleWindowLayoutList.Create(False);
     FIDEDialogLayoutList.Assign(IDEWindowIntf.IDEDialogLayoutList);
-    FIDEWindowCreatorsLayoutList.Assign(IDEWindowIntf.IDEWindowCreators.SimpleLayoutStorage, True, True, True);
+    FIDEWindowCreatorsLayoutList.CopyItemsFrom(IDEWindowIntf.IDEWindowCreators.SimpleLayoutStorage);
   end;
 end;
 
@@ -1043,9 +1043,7 @@ begin
     raise Exception.Create('Internal error: TDesktopOpt.Assign mixed docked/undocked desktops.');
 
   // window layout
-  if Source.FIDEWindowCreatorsLayoutList <> IDEWindowCreators.SimpleLayoutStorage then
-    Source.FIDEWindowCreatorsLayoutList.Assign(IDEWindowCreators.SimpleLayoutStorage, True, True, False);
-  FIDEWindowCreatorsLayoutList.Assign(Source.FIDEWindowCreatorsLayoutList, False, False, True);
+  FIDEWindowCreatorsLayoutList.CopyItemsFrom(Source.FIDEWindowCreatorsLayoutList);
   FIDEDialogLayoutList.Assign(Source.FIDEDialogLayoutList);
   FSingleTaskBarButton := Source.FSingleTaskBarButton;
   FHideIDEOnRun := Source.FHideIDEOnRun;

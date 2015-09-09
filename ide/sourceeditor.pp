@@ -6710,7 +6710,7 @@ begin
     // => disconnect first
     Layout:=IDEWindowCreators.SimpleLayoutStorage.ItemByForm(Self);
     if Layout<>nil then
-      Layout.Form:=nil;
+      Layout.SetForm(nil);
     Name := Name + '___' + IntToStr({%H-}PtrUInt(Pointer(Self)));
     CloseAction := caFree;
   end
@@ -8574,6 +8574,8 @@ begin
   SRCED_OPEN  := DebugLogger.RegisterLogGroup('SRCED_OPEN' {$IFDEF SRCED_OPEN} , True {$ENDIF} );
   SRCED_CLOSE := DebugLogger.RegisterLogGroup('SRCED_CLOSE' {$IFDEF SRCED_CLOSE} , True {$ENDIF} );
   SRCED_PAGES := DebugLogger.RegisterLogGroup('SRCED_PAGES' {$IFDEF SRCED_PAGES} , True {$ENDIF} );
+
+  IDEWindowsGlobalOptions.Add(NonModalIDEWindowNames[nmiwSourceNoteBookName], False);
 end;
 
 procedure InternalFinal;
