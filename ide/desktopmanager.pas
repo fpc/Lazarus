@@ -62,8 +62,11 @@ type
   end;
 
   TShowDesktopsToolButton = class(TIDEToolButton)
+  private class var
+    DoChangeDesktopName: string;
   private
     procedure ChangeDesktop(Sender: TObject);
+    class procedure DoChangeDesktop({%H-}Data: PtrInt);
     procedure SaveAsDesktop(Sender: TObject);
     procedure MenuOnPopup(Sender: TObject);
 
@@ -143,11 +146,17 @@ begin
 end;
 
 procedure TShowDesktopsToolButton.ChangeDesktop(Sender: TObject);
+begin
+  DoChangeDesktopName := (Sender as TShowDesktopItem).DesktopName;
+  Application.QueueAsyncCall(@DoChangeDesktop, 1);
+end;
+
+class procedure TShowDesktopsToolButton.DoChangeDesktop(Data: PtrInt);
 var
   xDesktopName: string;
   xDesktop: TDesktopOpt;
 begin
-  xDesktopName := (Sender as TShowDesktopItem).DesktopName;
+  xDesktopName := DoChangeDesktopName;
   if xDesktopName = '' then
     Exit;
 
