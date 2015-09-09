@@ -66,7 +66,7 @@ type
     menuItemCallback: IMenuItemCallback;
     attachedAppleMenuItems: Boolean;
     FMenuItemTarget: TMenuItem;
-    procedure UncheckSiblings; message 'UncheckSiblings';
+    procedure UncheckSiblings(AIsChangingToChecked: Boolean = False); message 'UncheckSiblings:';
     function GetMenuItemHandle(): TMenuItem; message 'GetMenuItemHandle';
     procedure lclItemSelected(sender: id); message 'lclItemSelected:';
     function lclGetCallback: IMenuItemCallback; override;
@@ -174,7 +174,7 @@ begin
   Result:=true;
 end;
 
-procedure TCocoaMenuItem.UncheckSiblings;
+procedure TCocoaMenuItem.UncheckSiblings(AIsChangingToChecked: Boolean);
 var
   i: Integer;
   lMenuItem, lSibling, lParentMenu: TMenuItem;
@@ -184,7 +184,7 @@ begin
   lMenuItem := FMenuItemTarget;
   if lMenuItem = nil then Exit;
   if not lMenuItem.RadioItem then Exit;
-  if not lMenuItem.Checked then Exit;
+  if (not AIsChangingToChecked) and (not lMenuItem.Checked) then Exit;
   lParentMenu := lMenuItem.Parent;
   if lParentMenu = nil then Exit;
   for i := 0 to lParentMenu.Count - 1 do
@@ -193,9 +193,11 @@ begin
     if lSibling = nil then Continue;
     if lSibling = lMenuItem then Continue;
 
-    if lSibling.RadioItem and (lSibling.GroupIndex = lMenuItem.GroupIndex) then
+    if lSibling.RadioItem and (lSibling.GroupIndex = lMenuItem.GroupIndex) and
+      lSibling.HandleAllocated() then
     begin
-      TCocoaWSMenuItem.SetCheck(lSibling, False);
+      lSiblingHandle := NSMenuItem(lSibling.Handle);
+      TCocoaWSMenuItem.Do_SetCheck(lSiblingHandle, False);
     end;
   end;
 end;
@@ -527,13 +529,15 @@ class function TCocoaWSMenuItem.SetCheck(const AMenuItem: TMenuItem;
   const Checked: boolean): boolean;
 var
   lHandle: NSMenuItem;
+  lCocoaHandle: TCocoaMenuItem absolute lHandle;
 begin
   Result := Assigned(AMenuItem) and AMenuItem.HandleAllocated() and (AMenuItem.Handle<>0);
   if not Result then Exit;
   lHandle := NSMenuItem(AMenuItem.Handle);
   Result := Result and lHandle.isKindOfClass_(TCocoaMenuItem);
   if not Result then Exit;
-  TCocoaWSMenuItem.Do_SetCheck(NSMenuItem(AMenuItem.Handle), Checked);
+  TCocoaWSMenuItem.Do_SetCheck(lHandle, Checked);
+  lCocoaHandle.UncheckSiblings(True);
 end;
 
 {------------------------------------------------------------------------------
