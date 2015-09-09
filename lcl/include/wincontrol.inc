@@ -3916,8 +3916,6 @@ begin
     // adjust the result by all bounds, that are not yet sent to the interface
     AControl := Self;
     repeat
-      if AControl is TForm then
-        Break;
       inc(Result.X, AControl.Left - AControl.FBoundsRealized.Left);
       inc(Result.Y, AControl.Top - AControl.FBoundsRealized.Top);
       AControl := AControl.Parent;
