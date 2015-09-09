@@ -1745,8 +1745,8 @@ begin
       // New path under Desktops/. Default=1 forces reading default values always.
       FDebugDesktopName := FXMLCfg.GetValue(CurPath+'DebugDesktop', '');
       j := FXMLCfg.GetValue(CurPath+'Count', 1);
-      for i := 0 to j-1 do
-        FDesktops.AddFromCfg(CurPath+'Desktop'+IntToStr(i+1)+'/');
+      for i := 1 to j do
+        FDesktops.AddFromCfg(CurPath+'Desktop'+IntToStr(i)+'/');
 
       FActiveDesktopName := FXMLCfg.GetValue(CurPath+'ActiveDesktop', '');
     end else
@@ -1769,7 +1769,6 @@ begin
 
     FileUpdated;
   except
-    // ToDo
     on E: Exception do
       DebugLn('[TEnvironmentOptions.Load]  error reading "',FFilename,'": '+E.Message);
   end;
