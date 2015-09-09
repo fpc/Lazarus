@@ -261,7 +261,7 @@ type
   // Do not define: TExpressionTypeDescs = set of TExpressionTypeDesc;
   // There are too many enums, so the set would be big and slow
   
-const
+var
   ExpressionTypeDescNames: array[TExpressionTypeDesc] of string = (
     'None',
     'Context',
@@ -307,6 +307,7 @@ const
     'Nil'
   );
 
+const
   xtAllTypes = [Low(TExpressionTypeDesc)..High(TExpressionTypeDesc)]-[xtNone];
   xtAllPredefinedTypes = xtAllTypes-[xtContext];
   xtAllIdentTypes = xtAllTypes - [xtConstOrdInteger,xtConstBoolean,xtConstReal,xtConstString,xtConstSet,xtCompilerFunc,xtNil];

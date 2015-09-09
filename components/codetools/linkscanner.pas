@@ -54,6 +54,10 @@ uses
   // LazUtils
   LazFileUtils, LazUtilities, LazDbgLog;
 
+var
+  FPCSystemUnitName: String = 'system';
+  DelphiSystemUnitName: String = 'System';
+
 const
   PascalCompilerDefine = ExternalMacroStart+'Compiler';
   MacroUseHeapTrc = ExternalMacroStart+'UseHeapTrcUnit';
@@ -2851,9 +2855,9 @@ begin
   if FHiddenUsedUnits='' then begin
     // see fpc/compiler/pmodules.pp loaddefaultunits
     if PascalCompiler=pcDelphi then
-      FHiddenUsedUnits:='System'
+      FHiddenUsedUnits:=DelphiSystemUnitName
     else
-      FHiddenUsedUnits:='system';
+      FHiddenUsedUnits:=FPCSystemUnitName;
     if InitialValues.IsDefined('VER1_0')
     then begin
       if InitialValues.IsDefined('LINUX') then
