@@ -23,10 +23,13 @@ unit chmcontentprovider;
 interface
 
 uses
-  Classes, SysUtils, Laz2_XMLCfg,
-  LCLIntf, FileUtil, Forms, StdCtrls, ExtCtrls, ComCtrls, Controls, Menus,
-  BaseContentProvider, FileContentProvider, IpHtml, ChmReader, ChmDataProvider,
-  lhelpstrconsts;
+  Classes, SysUtils, ChmReader,
+  // LCL
+  LCLIntf, Forms, StdCtrls, ExtCtrls, ComCtrls, Controls, Menus,
+  // LazUtils
+  LazFileUtils, LazUTF8, Laz2_XMLCfg,
+  // ChmHelp
+  IpHtml, BaseContentProvider, FileContentProvider, ChmDataProvider, lhelpstrconsts;
 
 type
 
