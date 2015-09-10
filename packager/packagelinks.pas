@@ -195,6 +195,7 @@ var
   PkgLinks: TPackageLinks = nil; // set by the PkgBoss
 
 function ComparePackageLinks(Data1, Data2: Pointer): integer;
+function dbgs(Origin: TPkgLinkOrigin): string; overload;
 
 
 implementation
@@ -208,6 +209,15 @@ begin
   Link1:=TPackageLink(Data1);
   Link2:=TPackageLink(Data2);
   Result:=Link1.Compare(Link2);
+end;
+
+function dbgs(Origin: TPkgLinkOrigin): string;
+begin
+  case Origin of
+  ploGlobal: Result:='Global';
+  ploUser: Result:='User';
+  else Result:='?';
+  end;
 end;
 
 function ComparePackageIDAndLink(Key, Data: Pointer): integer;

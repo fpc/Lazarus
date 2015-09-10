@@ -89,6 +89,10 @@ type
     puifDoNotConfirm,
     puifDoNotBuildIDE
     );
+  TPkgVerbosityFlag = (
+   pvPkgSearch // write debug messsages what packages are searched and found
+   );
+  TPkgVerbosityFlags = set of TPkgVerbosityFlag;
 
   TPkgUninstallFlags = set of TPkgUninstallFlag;
 
@@ -177,6 +181,7 @@ type
     FLazControlsPackage: TLazPackage;
     FTree: TAVLTree; // sorted tree of TLazPackage
     FUpdateLock: integer;
+    FVerbosity: TPkgVerbosityFlags;
     function CreateDefaultPackage: TLazPackage;
     function GetCount: Integer;
     function GetPackages(Index: integer): TLazPackage;
@@ -408,6 +413,7 @@ type
     property ErrorMsg: string read FErrorMsg write FErrorMsg;
     property Packages[Index: integer]: TLazPackage read GetPackages; default; // see Count for the number
     property UpdateLock: integer read FUpdateLock;
+    property Verbosity: TPkgVerbosityFlags read FVerbosity write FVerbosity;
 
     // base packages
     property FCLPackage: TLazPackage read FFCLPackage;
@@ -778,12 +784,16 @@ begin
   BeginUpdate(false);
   try
     AFilename:=PkgLink.GetEffectiveFilename;
+    if pvPkgSearch in Verbosity then
+      debugln(['Info: (lazarus) Open dependency: trying "'+Dependency.PackageName+'" in '+dbgs(PkgLink.Origin)+' links: "'+PkgLink.GetEffectiveFilename+'" ...']);
     //debugln(['TLazPackageGraph.OpenDependencyWithPackageLink AFilename=',AFilename,' ',PkgLink.Origin=ploGlobal]);
     if not FileExistsUTF8(AFilename) then begin
       DebugLn('Note: (lazarus) Invalid Package Link: file "'+AFilename+'" does not exist.');
       PkgLink.LPKFileDateValid:=false;
       exit(mrCancel);
     end;
+    if pvPkgSearch in Verbosity then
+      debugln(['Info: (lazarus) Open dependency: package file found: "'+AFilename+'". Parsing lpk ...']);
     try
       PkgLink.LPKFileDate:=FileDateToDateTimeDef(FileAgeUTF8(AFilename));
       PkgLink.LPKFileDateValid:=true;
@@ -798,16 +808,20 @@ begin
     except
       on E: Exception do begin
         DebugLn('Error: (lazarus) unable to read file "'+AFilename+'" ',E.Message);
-        Result:=mrCancel;
-        exit;
+        exit(mrCancel);
       end;
     end;
     if not NewPackage.MakeSense then begin
       DebugLn('Error: (lazarus) invalid package file "'+AFilename+'".');
       exit(mrCancel);
     end;
-    if SysUtils.CompareText(PkgLink.Name,NewPackage.Name)<>0 then exit;
+    if SysUtils.CompareText(PkgLink.Name,NewPackage.Name)<>0 then begin
+      DebugLn('Error: (lazarus) package file "'+AFilename+'" and name "'+NewPackage.Name+'" mismatch.');
+      exit(mrCancel);
+    end;
     // ok
+    if pvPkgSearch in Verbosity then
+      debugln('Info: (lazarus) Open dependency ['+Dependency.PackageName+']: Success: "'+NewPackage.Filename+'"');
     Result:=mrOk;
     Dependency.RequiredPackage:=NewPackage;
     Dependency.LoadPackageResult:=lprSuccess;
@@ -1922,6 +1936,8 @@ var
   OldEditor: TBasePackageEditor;
   i: Integer;
 begin
+  if pvPkgSearch in Verbosity then
+    debugln(['Info: (lazarus) replacing package "'+OldPackage.Filename+'" with "'+NewPackage.Filename+'"']);
   BeginUpdate(true);
   // save flags
   OldInstalled:=OldPackage.Installed;
@@ -5319,6 +5335,8 @@ var
   i: Integer;
 begin
   if Dependency.LoadPackageResult=lprUndefined then begin
+    if pvPkgSearch in Verbosity then
+      debugln('Info: (lazarus) Open dependency '+Dependency.AsString(true,true)+' ...');
     //debugln(['TLazPackageGraph.OpenDependency ',Dependency.PackageName,' ',Dependency.DefaultFilename,' Prefer=',Dependency.PreferDefaultFilename]);
     BeginUpdate(false);
     // search compatible package in opened packages
@@ -5328,6 +5346,8 @@ begin
       APackage:=TLazPackage(ANode.Data);
       Dependency.RequiredPackage:=APackage;
       Dependency.LoadPackageResult:=lprSuccess;
+      if pvPkgSearch in Verbosity then
+        debugln(['Info: (lazarus) Open dependency ['+Dependency.PackageName+']: Success: was already loaded']);
     end;
     // load preferred package
     if (Dependency.DefaultFilename<>'') and Dependency.PreferDefaultFilename
@@ -5339,6 +5359,8 @@ begin
         or ((Dependency.RequiredPackage.FindUsedByDepPrefer(Dependency)=nil)
             and (CompareFilenames(PreferredFilename,Dependency.RequiredPackage.Filename)<>0)))
       then begin
+        if pvPkgSearch in Verbosity then
+          debugln(['Info: (lazarus) Open dependency ['+Dependency.PackageName+']: trying resolved preferred filename: "'+PreferredFilename+'" ...']);
         OpenFile(PreferredFilename);
       end;
     end;
@@ -5376,6 +5398,8 @@ begin
         and (Dependency.DefaultFilename<>'') then begin
           AFilename:=Dependency.FindDefaultFilename;
           if AFilename<>'' then begin
+            if pvPkgSearch in Verbosity then
+              debugln(['Info: (lazarus) Open dependency ['+Dependency.PackageName+']: trying resolved default filename: "'+PreferredFilename+'" ...']);
             OpenFile(AFilename);
           end;
         end;
@@ -5384,6 +5408,8 @@ begin
         if Dependency.LoadPackageResult=lprNotFound then begin
           CurDir:=GetDependencyOwnerDirectory(Dependency);
           if (CurDir<>'') then begin
+            if pvPkgSearch in Verbosity then
+              debugln(['Info: (lazarus) Open dependency ['+Dependency.PackageName+']: trying in owner directory "'+AppendPathDelim(CurDir)+'" ...']);
             AFilename:=FindDiskFileCaseInsensitive(
                          AppendPathDelim(CurDir)+Dependency.PackageName+'.lpk');
             if FileExistsCached(AFilename) then begin
@@ -5399,32 +5425,33 @@ begin
             if APackage.ProvidesPackage(Dependency.PackageName) then begin
               Dependency.RequiredPackage:=APackage;
               Dependency.LoadPackageResult:=lprSuccess;
+              if pvPkgSearch in Verbosity then
+                debugln(['Info: (lazarus) Open dependency ['+Dependency.PackageName+']: Success. Package "'+APackage.IDAsString+'" provides '+Dependency.AsString]);
+              break;
             end;
           end;
         end;
       end else begin
         // there is already a package with this name, but wrong version open
         // -> unable to load this dependency due to conflict
-        debugln('Error: (lazarus) [TLazPackageGraph.OpenDependency}:');
+        debugln('Error: (lazarus) Open dependency found incompatible package: searched for '+Dependency.AsString(true)+', but found '+APackage.IDAsString);
         if IsStaticBasePackage(APackage.Name) then
         begin
-          debugln(['  LazarusDir="',EnvironmentOptions.GetParsedLazarusDirectory,'"']);
+          debugln(['Note: (lazarus) LazarusDir="',EnvironmentOptions.GetParsedLazarusDirectory,'"']);
           // wrong base package
           if (EnvironmentOptions.LazarusDirectory='')
           or (not DirPathExistsCached(EnvironmentOptions.GetParsedLazarusDirectory))
           then begin
             // the lazarus directory is not set
-            debugln(['  The Lazarus directory is not set. Pass parameter --lazarusdir.']);
+            debugln(['Note: (lazarus) The Lazarus directory is not set. Pass parameter --lazarusdir.']);
           end else if not DirPathExistsCached(PkgLinks.GetGlobalLinkDirectory)
           then begin
-            debugln(['  The lpl directory is missing. Check that the Lazarus (--lazarusdir) directory is correct.']);
+            debugln(['Note: (lazarus) The lpl directory is missing. Check that the Lazarus (--lazarusdir) directory is correct.']);
           end;
         end;
         if APackage.Missing then
         begin
-          debugln(['  The lpk (',APackage.Filename,') is missing for dependency=',Dependency.AsString])
-        end else begin
-          debugln(['  Another package with wrong version is already open: Dependency=',Dependency.AsString,' Pkg=',APackage.IDAsString])
+          debugln(['Note: (lazarus) The lpk (',APackage.Filename,') is missing for dependency=',Dependency.AsString])
         end;
         Dependency.LoadPackageResult:=lprLoadError;
       end;

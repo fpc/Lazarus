@@ -283,7 +283,7 @@ type
     procedure ConsistencyCheck;
     function IsCompatible(Pkg: TLazPackageID): boolean;
     procedure MakeCompatible(const PkgName: string; const Version: TPkgVersion);
-    function AsString(WithOwner: boolean = false): string;
+    function AsString(WithOwner: boolean = false; WithDefaults: boolean = false): string;
     function NextUsedByDependency: TPkgDependency;
     function PrevUsedByDependency: TPkgDependency;
     function NextRequiresDependency: TPkgDependency;
@@ -2010,7 +2010,8 @@ begin
   if MaxVersion.Compare(Version)<0 then MaxVersion.Assign(Version);
 end;
 
-function TPkgDependency.AsString(WithOwner: boolean): string;
+function TPkgDependency.AsString(WithOwner: boolean; WithDefaults: boolean
+  ): string;
 begin
   if Self=nil then
     exit('(nil)');
@@ -2021,6 +2022,17 @@ begin
     Result:=Result+' (<='+MaxVersion.AsString+')';
   if WithOwner and (Owner<>nil) then
     Result:=GetDependencyOwnerAsString(Self)+' uses '+Result;
+  if WithDefaults then
+  begin
+    if DefaultFilename<>'' then begin
+      Result+=', ';
+      if PreferDefaultFilename then
+        Result+='preferred'
+      else
+        Result+='default';
+      Result+='="'+DefaultFilename+'"';
+    end;
+  end;
 end;
 
 function TPkgDependency.NextUsedByDependency: TPkgDependency;

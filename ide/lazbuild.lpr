@@ -65,6 +65,7 @@ type
     fCPUOverride: String;
     FMaxProcessCount: integer;
     fOSOverride: String;
+    FPkgGraphVerbosity: TPkgVerbosityFlags;
     FSkipDependencies: boolean;
     fInitialized: boolean;
     fInitResult: boolean;
@@ -165,6 +166,7 @@ type
     property LazarusDirOverride: String read fLazarusDirOverride write fLazarusDirOverride;
     property BuildModeOverride: String read FBuildModeOverride write FBuildModeOverride;
     property MaxProcessCount: integer read FMaxProcessCount write FMaxProcessCount;
+    property PkgGraphVerbosity: TPkgVerbosityFlags read FPkgGraphVerbosity write FPkgGraphVerbosity;
   end;
 
 var
@@ -1191,6 +1193,7 @@ begin
   PackageGraph:=TLazPackageGraph.Create;
   PackageGraph.OnAddPackage:=@PackageGraphAddPackage;
   PackageGraph.OnCheckInterPkgFiles:=@PackageGraphCheckInterPkgFiles;
+  PackageGraph.Verbosity:=PkgGraphVerbosity;
 end;
 
 procedure TLazBuildApplication.SetupDialogs;
@@ -1477,6 +1480,7 @@ begin
   try
     LongOptions.Add('quiet');
     LongOptions.Add('verbose');
+    LongOptions.Add('verbose-pkgsearch');
     LongOptions.Add('primary-config-path:');
     LongOptions.Add('pcp:');
     LongOptions.Add('secondary-config-path:');
@@ -1504,6 +1508,9 @@ begin
       writeln('');
       exit;
     end;
+
+    if HasOption('verbose-pkgsearch') then
+      Include(fPkgGraphVerbosity,pvPkgSearch);
 
     // building IDE
     if HasOption('build-ide') then begin
@@ -1689,6 +1696,8 @@ begin
   w(space+'Passing quiet two times, will pass -vw-n-h-i-l-d-u-t-p-c-x- to the compiler');
   writeln('--verbose');
   w(space+lisBeMoreVerboseCanBeGivenMultipleTimes);
+  writeln('--verbose-pkgsearch');
+  w(space+'Write what package files are searched and found');
   writeln('');
 
   writeln('--add-package');
