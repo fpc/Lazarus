@@ -1084,6 +1084,12 @@ begin
     CreateMenuItem(ParentMI,itmJumpToImplementationUses,'itmJumpToImplementationUses',lisMenuJumpToImplementationUses, 'menu_jumpto_implementationuses');
     CreateMenuItem(ParentMI,itmJumpToInitialization,'itmJumpToInitialization',lisMenuJumpToInitialization, 'menu_jumpto_initialization');
 
+    ParentMI:=itmJumpings;
+    CreateMenuItem(ParentMI,itmJumpToProcedureHeader,'itmJumpToProcedureHeader',lisMenuJumpToProcedureHeader, 'menu_jumpto_procedureheader');
+    CreateMenuItem(ParentMI,itmJumpToProcedureBegin,'itmJumpToProcedureBegin',lisMenuJumpToProcedureBegin, 'menu_jumpto_procedurebegin');
+    itmJumpToProcedureHeader.Visible := False;
+    itmJumpToProcedureBegin.Visible := False;
+
     CreateMenuSeparatorSection(mnuSearch,itmBookmarks,'itmBookmarks');
     ParentMI:=itmBookmarks;
 
@@ -1542,6 +1548,8 @@ begin
     itmJumpToImplementationUses.ToolButtonClass:=TJumpToSectionToolButton;
     itmJumpToInitialization.Command:=GetCommand(ecJumpToInitialization);
     itmJumpToInitialization.ToolButtonClass:=TJumpToSectionToolButton;
+    itmJumpToProcedureHeader.Command:=GetCommand(ecJumpToProcedureHeader);
+    itmJumpToProcedureBegin.Command:=GetCommand(ecJumpToProcedureBegin);
     itmFindBlockOtherEnd.Command:=GetCommand(ecFindBlockOtherEnd);
     itmFindBlockStart.Command:=GetCommand(ecFindBlockStart);
     itmFindDeclaration.Command:=GetCommand(ecFindDeclaration);

@@ -948,6 +948,7 @@ type
     jmpInterface, jmpInterfaceUses,
     jmpImplementation, jmpImplementationUses,
     jmpInitialization);
+  TJumpToProcedureType = (jmpHeader, jmpBegin);
 
   { TSourceEditorManager }
   (* Reintroduce all Methods with the final types *)
@@ -1025,12 +1026,16 @@ type
   public
     procedure BookMarkNextClicked(Sender: TObject);
     procedure BookMarkPrevClicked(Sender: TObject);
+    procedure JumpToPos(FileName: string; Pos: TCodeXYPosition; TopLine: Integer);
     procedure JumpToSection(JumpType: TJumpToSectionType);
     procedure JumpToInterfaceClicked(Sender: TObject);
     procedure JumpToInterfaceUsesClicked(Sender: TObject);
     procedure JumpToImplementationClicked(Sender: TObject);
     procedure JumpToImplementationUsesClicked(Sender: TObject);
     procedure JumpToInitializationClicked(Sender: TObject);
+    procedure JumpToProcedure(const JumpType: TJumpToProcedureType);
+    procedure JumpToProcedureHeaderClicked(Sender: TObject);
+    procedure JumpToProcedureBeginClicked(Sender: TObject);
   protected
     // macros
     function MacroFuncCol(const {%H-}s:string; const {%H-}Data: PtrInt;
@@ -9637,6 +9642,77 @@ begin
   JumpToSection(jmpInterfaceUses);
 end;
 
+procedure TSourceEditorManager.JumpToPos(FileName: string;
+  Pos: TCodeXYPosition; TopLine: Integer);
+begin
+  if (LazarusIDE.DoOpenFileAndJumpToPos(Filename
+       ,Point(Pos.X,Pos.Y), TopLine, -1,-1
+       ,[ofRegularFile,ofUseCache]) = mrOk)
+  then
+    ActiveEditor.EditorControl.SetFocus;
+end;
+
+procedure TSourceEditorManager.JumpToProcedure(
+  const JumpType: TJumpToProcedureType);
+const
+  cJumpNames: array[TJumpToProcedureType] of string = (
+    'procedure header', 'procedure begin');
+var
+  SrcEditor: TSourceEditorInterface;
+  ProcNode: TCodeTreeNode;
+  Tool: TCodeTool;
+  CleanPos: integer;
+  NewPos: TCodeXYPosition;
+  NewTopLine: integer;
+  JumpFound: Boolean;
+begin
+  if not LazarusIDE.BeginCodeTools then Exit; //==>
+
+  SrcEditor := SourceEditorManagerIntf.ActiveEditor;
+  if not Assigned(SrcEditor) then Exit; //==>
+
+  if CodeToolBoss.Explore(SrcEditor.CodeToolsBuffer as TCodeBuffer, Tool, false, false) then
+  begin
+    if Tool.CaretToCleanPos(
+        CodeXYPosition(SrcEditor.CursorTextXY.X, SrcEditor.CursorTextXY.Y, SrcEditor.CodeToolsBuffer as TCodeBuffer),
+        CleanPos) <> 0
+    then
+      Exit;
+    ProcNode := Tool.FindDeepestNodeAtPos(CleanPos{%H-},true);
+    while (ProcNode <> nil) and (ProcNode.Desc <> ctnProcedure) do
+      ProcNode := ProcNode.Parent;
+
+    if (ProcNode <> nil) and (ProcNode.Desc = ctnProcedure) then
+    begin
+      if JumpType = jmpBegin then
+        JumpFound := Tool.FindJumpPointInProcNode(ProcNode, NewPos, NewTopLine)
+      else
+        JumpFound := Tool.JumpToCleanPos(ProcNode.StartPos, ProcNode.StartPos, ProcNode.EndPos, NewPos, NewTopLine, True);
+    end else
+      JumpFound := False;
+
+    if JumpFound then
+      JumpToPos(NewPos.Code.Filename, NewPos, NewTopLine)
+    else
+    begin
+      CodeToolBoss.SetError(nil, 0, 0, Format(lisCannotFind, [cJumpNames[JumpType]]));
+      LazarusIDE.DoJumpToCodeToolBossError;
+    end;
+  end
+  else
+    LazarusIDE.DoJumpToCodeToolBossError;
+end;
+
+procedure TSourceEditorManager.JumpToProcedureBeginClicked(Sender: TObject);
+begin
+  JumpToProcedure(jmpBegin);
+end;
+
+procedure TSourceEditorManager.JumpToProcedureHeaderClicked(Sender: TObject);
+begin
+  JumpToProcedure(jmpHeader);
+end;
+
 procedure TSourceEditorManager.JumpToSection(JumpType: TJumpToSectionType);
 const
   cJumpNames: array[TJumpToSectionType] of string = (
@@ -9677,19 +9753,14 @@ begin
           Node := Tool.FindRootNode(ctnEndPoint);
       end;
     end;
-    if (Node <> nil) then
-    begin
-      NewTopLine := 0;
-      NewCodePos := CleanCodeXYPosition;
-      if Tool.CleanPosToCaretAndTopLine(Node.StartPos, NewCodePos, NewTopLine)
-      and (LazarusIDE.DoOpenFileAndJumpToPos(NewCodePos.Code.Filename
-            ,Point(NewCodePos.X,NewCodePos.Y), NewTopLine, -1,-1
-            ,[ofRegularFile,ofUseCache]) = mrOk)
-      then
-        ActiveEditor.EditorControl.SetFocus;
-    end
+
+    if (Node <> nil) and Tool.CleanPosToCaretAndTopLine(Node.StartPos, NewCodePos, NewTopLine) then
+      JumpToPos(NewCodePos.Code.Filename, NewCodePos, NewTopLine)
     else
-      ShowMessage(Format(lisCannotFind, [cJumpNames[JumpType]]));
+    begin
+      CodeToolBoss.SetError(nil, 0, 0, Format(lisCannotFind, [cJumpNames[JumpType]]));
+      LazarusIDE.DoJumpToCodeToolBossError;
+    end;
   end
   else
     LazarusIDE.DoJumpToCodeToolBossError;

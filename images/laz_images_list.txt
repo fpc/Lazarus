@@ -94,6 +94,8 @@ menu/menu_jumpto_interfaceuses.png
 menu/menu_jumpto_implementation.png
 menu/menu_jumpto_implementationuses.png
 menu/menu_jumpto_initialization.png
+menu/menu_jumpto_procedureheader.png
+menu/menu_jumpto_procedurebegin.png
 menu/menu_search_next_bookmark.png
 menu/menu_search_openfile_atcursor.png
 menu/menu_search_previous_bookmark.png

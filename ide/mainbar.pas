@@ -146,6 +146,8 @@ type
         itmJumpToImplementation: TIDEMenuCommand;
         itmJumpToImplementationUses: TIDEMenuCommand;
         itmJumpToInitialization: TIDEMenuCommand;
+        itmJumpToProcedureHeader: TIDEMenuCommand;
+        itmJumpToProcedureBegin: TIDEMenuCommand;
       //itmBookmarks: TIDEMenuSection;
         itmSetFreeBookmark: TIDEMenuCommand;
         itmJumpToNextBookmark: TIDEMenuCommand;

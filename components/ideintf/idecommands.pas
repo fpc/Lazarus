@@ -80,6 +80,8 @@ const
   ecJumpToImplementation    = ecFirstLazarus + 27;
   ecJumpToImplementationUses= ecFirstLazarus + 28;
   ecJumpToInitialization    = ecFirstLazarus + 29;
+  ecJumpToProcedureHeader   = ecFirstLazarus + 30;
+  ecJumpToProcedureBegin    = ecFirstLazarus + 31;
 
   // edit selection
   ecSelectionUpperCase      = ecFirstLazarus + 50;

@@ -555,6 +555,8 @@ begin
     ecJumpToImplementation    : Result:= lisMenuJumpToImplementation;
     ecJumpToImplementationUses: Result:= lisMenuJumpToImplementationUses;
     ecJumpToInitialization    : Result:= lisMenuJumpToInitialization;
+    ecJumpToProcedureHeader   : Result:= lisMenuJumpToProcedureHeader;
+    ecJumpToProcedureBegin    : Result:= lisMenuJumpToProcedureBegin;
     ecOpenFileAtCursor        : Result:= srkmecOpenFileAtCursor;
     ecProcedureList           : Result:= lisPListProcedureList;
 
@@ -2769,6 +2771,8 @@ begin
   AddDefault(C, 'Jump to Implementation', lisMenuJumpToImplementation, ecJumpToImplementation);
   AddDefault(C, 'Jump to Implementation uses', lisMenuJumpToImplementationUses, ecJumpToImplementationUses);
   AddDefault(C, 'Jump to Initialization', lisMenuJumpToInitialization, ecJumpToInitialization);
+  AddDefault(C, 'Jump to Procedure header', lisMenuJumpToProcedureHeader, ecJumpToProcedureHeader);
+  AddDefault(C, 'Jump to Procedure begin', lisMenuJumpToProcedureBegin, ecJumpToProcedureBegin);
   AddDefault(C, 'Show abstract methods', srkmecShowAbstractMethods, ecShowAbstractMethods);
   AddDefault(C, 'Remove empty methods', srkmecRemoveEmptyMethods, ecRemoveEmptyMethods);
   AddDefault(C, 'Remove unused units', srkmecRemoveUnusedUnits, ecRemoveUnusedUnits);

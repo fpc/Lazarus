@@ -389,6 +389,8 @@ resourcestring
   lisMenuJumpToImplementation = 'Jump to Implementation';
   lisMenuJumpToImplementationUses = 'Jump to Implementation uses';
   lisMenuJumpToInitialization = 'Jump to Initialization';
+  lisMenuJumpToProcedureHeader = 'Jump to Procedure header';
+  lisMenuJumpToProcedureBegin = 'Jump to Procedure begin';
   lisMenuViewUnits = 'Units ...';
   lisMenuViewForms = 'Forms ...';
   lisMenuViewUnitDependencies = 'Unit Dependencies';

@@ -2101,6 +2101,8 @@ begin
   MainIDEBar.itmJumpToImplementation.OnClick := @SourceEditorManager.JumpToImplementationClicked;
   MainIDEBar.itmJumpToImplementationUses.OnClick := @SourceEditorManager.JumpToImplementationUsesClicked;
   MainIDEBar.itmJumpToInitialization.OnClick := @SourceEditorManager.JumpToInitializationClicked;
+  MainIDEBar.itmJumpToProcedureHeader.OnClick := @SourceEditorManager.JumpToProcedureHeaderClicked;
+  MainIDEBar.itmJumpToProcedureBegin.OnClick := @SourceEditorManager.JumpToProcedureBeginClicked;
   MainIDEBar.itmFindBlockStart.OnClick:=@mnuSearchFindBlockStart;
   MainIDEBar.itmFindBlockOtherEnd.OnClick:=@mnuSearchFindBlockOtherEnd;
   MainIDEBar.itmFindDeclaration.OnClick:=@mnuSearchFindDeclaration;
