@@ -198,6 +198,7 @@ type
     FLazarusIDEHandlers: array[TLazarusIDEHandlerType] of TMethodList;
     FOwningComponent: TComponent;
     FIDEStarted: boolean;
+    FIDEIsClosing: Boolean;
     FLastActivatedWindows: TFPList;
     // used to find the last form so you can display the correct tab
     FLastFormActivated: TCustomForm;
@@ -418,6 +419,7 @@ type
                                const OnShowSourceOfActiveDesignerForm: TNotifyEvent);
 
     property IDEStarted: boolean read FIDEStarted;
+    property IDEIsClosing: boolean read FIDEIsClosing;
     property LastActivatedWindows: TFPList read FLastActivatedWindows;
     property LastFormActivated: TCustomForm read FLastFormActivated write FLastFormActivated;
   end;

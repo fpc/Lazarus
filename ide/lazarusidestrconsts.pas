@@ -1339,6 +1339,7 @@ resourcestring
   dlgMaxRecentFiles = 'Max recent files';
   dlgMaxRecentProjs = 'Max recent project files';
   dlgQOpenLastPrj = 'Open last project at start';
+  dlgQOpenPackages = 'Open packages';
   dlgLazarusDir = 'Lazarus directory (default for all projects)';
   dlgFpcExecutable = 'Compiler executable (e.g. %s)';
   dlgFpcSrcPath = 'FPC source directory';
@@ -3989,6 +3990,7 @@ resourcestring
     +'%s%s'
     +'%slazbuild is non interactive, aborting now.';
   lisPkgMangSavePackageLpk = 'Save Package %s (*.lpk)';
+  lisPkgMangSaveAsAlreadyOpenedPackage = 'The package %s is already open in the IDE.'+sLineBreak+'You cannot save a package with the same name.';
   lisPkgMangInvalidPackageFileExtension = 'Invalid package file extension';
   lisPkgMangPackagesMustHaveTheExtensionLpk = 'Packages must have the '
     +'extension .lpk';

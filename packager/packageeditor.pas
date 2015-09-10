@@ -47,7 +47,7 @@ uses
   IDEDialogs, IDEProcs, LazarusIDEStrConsts, IDEDefs, CompilerOptions,
   ComponentReg, UnitResources, EnvironmentOpts, DialogProcs, InputHistory,
   PackageDefs, AddToPackageDlg, PkgVirtualUnitEditor, MissingPkgFilesDlg,
-  PackageSystem, CleanPkgDeps;
+  PackageSystem, CleanPkgDeps, MainBase;
   
 const
   PackageEditorMenuRootName = 'PackageEditor';
@@ -435,7 +435,9 @@ type
     procedure Clear;
     procedure Remove(Editor: TPackageEditorForm);
     function IndexOfPackage(Pkg: TLazPackage): integer;
-    function FindEditor(Pkg: TLazPackage): TPackageEditorForm;
+    function IndexOfPackage(const PkgName: string): integer;
+    function FindEditor(Pkg: TLazPackage): TPackageEditorForm; overload;
+    function FindEditor(const PkgName: string): TPackageEditorForm; overload;
     function OpenEditor(Pkg: TLazPackage): TPackageEditorForm;
     function OpenFile(Sender: TObject; const Filename: string): TModalResult;
     function OpenPkgFile(Sender: TObject; PkgFile: TPkgFile): TModalResult;
@@ -1182,20 +1184,27 @@ var
   MsgResult: Integer;
 begin
   //debugln(['TPackageEditorForm.PackageEditorFormCloseQuery ',Caption]);
-  if (LazPackage<>nil) and (not (lpfDestroying in LazPackage.Flags))
-  and (not LazPackage.ReadOnly) and LazPackage.Modified then begin
-
-    MsgResult:=MessageDlg(lisPkgMangSavePackage,
-      Format(lisPckEditPackageHasChangedSavePackage, [LazPackage.IDAsString, LineEnding]),
-      mtConfirmation,[mbYes,mbNo,mbAbort],0);
-    case MsgResult of
-      mrYes:
-        MsgResult:=PackageEditors.SavePackage(LazPackage,false);
-      mrNo:
-        LazPackage.UserIgnoreChangeStamp:=LazPackage.ChangeStamp;
+  if (LazPackage<>nil) and (not (lpfDestroying in LazPackage.Flags)) then
+  begin
+    if (not LazPackage.ReadOnly) and LazPackage.Modified then
+    begin
+      MsgResult:=MessageDlg(lisPkgMangSavePackage,
+        Format(lisPckEditPackageHasChangedSavePackage, [LazPackage.IDAsString, LineEnding]),
+        mtConfirmation,[mbYes,mbNo,mbAbort],0);
+      case MsgResult of
+        mrYes:
+          MsgResult:=PackageEditors.SavePackage(LazPackage,false);
+        mrNo:
+          LazPackage.UserIgnoreChangeStamp:=LazPackage.ChangeStamp;
+      end;
+      if MsgResult=mrAbort then CanClose:=false;
+      LazPackage.Modified:=false; // clear modified flag, so that it will be closed
     end;
-    if MsgResult=mrAbort then CanClose:=false;
-    LazPackage.Modified:=false; // clear modified flag, so that it will be closed
+    if CanClose and not MainIDE.IDEIsClosing then
+    begin
+      EnvironmentOptions.LastOpenPackages.Remove(LazPackage.Filename);
+      MainIDE.SaveEnvironment;
+    end;
   end;
   //debugln(['TPackageEditorForm.PackageEditorFormCloseQuery CanClose=',CanClose,' ',Caption]);
   if CanClose then
@@ -1845,13 +1854,23 @@ end;
 
 procedure TPackageEditorForm.SetLazPackage(const AValue: TLazPackage);
 begin
-  if FLazPackage=AValue then exit;
-  if FLazPackage<>nil then FLazPackage.Editor:=nil;
+  if (FLazPackage=AValue) and
+     not(Assigned(AValue) and (Name<>PackageEditorWindowPrefix+AValue.Name))//force editor name change when package name changed!
+  then
+    exit;
+  if FLazPackage<>nil then
+  begin
+    FLazPackage.Editor:=nil;
+    if EnvironmentOptions.LastOpenPackages.Remove(FLazPackage.Filename) then
+      MainIDE.SaveEnvironment;
+  end;
   FLazPackage:=AValue;
   if FLazPackage=nil then begin
     Name:=Name+'___off___';
     exit;
   end;
+  EnvironmentOptions.LastOpenPackages.Add(FLazPackage.Filename);
+  MainIDE.SaveEnvironment;
   Name:=PackageEditorWindowPrefix+LazPackage.Name;
   FLazPackage.Editor:=Self;
   // update components
@@ -3304,6 +3323,19 @@ begin
   Result:=TPackageEditorForm(FItems[Index]);
 end;
 
+function TPackageEditors.IndexOfPackage(const PkgName: string): integer;
+var
+  I: Integer;
+begin
+  for I := 0 to Count-1 do
+    if Assigned(Editors[I].LazPackage) and
+      SameText(ExtractFileNameOnly(Editors[I].LazPackage.Filename), PkgName)
+    then
+      Exit(I);
+
+  Result := -1;
+end;
+
 constructor TPackageEditors.Create;
 begin
   FItems:=TFPList.Create;
@@ -3393,6 +3425,17 @@ begin
   if FItems<>nil then
     FItems.Remove(Pkg.Editor);
   if Assigned(OnFreeEditor) then OnFreeEditor(Pkg);
+end;
+
+function TPackageEditors.FindEditor(const PkgName: string): TPackageEditorForm;
+var
+  i: Integer;
+begin
+  i:=IndexOfPackage(PkgName);
+  if i>=0 then
+    Result:=Editors[i]
+  else
+    Result:=nil;
 end;
 
 function TPackageEditors.CreateNewFile(Sender: TObject;

@@ -252,6 +252,12 @@ type
 
 type
 
+  TLastOpenPackagesList = class(TStringList)
+  public
+    function Remove(const aString: string): Boolean;
+    constructor Create;
+  end;
+
   { TDesktopOpt }
 
   TDesktopOpt = class
@@ -369,6 +375,7 @@ type
     FAutoSaveProject: boolean;
     FAutoSaveIntervalInSecs: integer;
     FLastSavedProjectFile: string;
+    FLastOpenPackages: TLastOpenPackagesList;//list of filenames with open packages
 
     // designer
     FCreateComponentFocusNameProperty: boolean;
@@ -468,6 +475,7 @@ type
     FRecentPackageFiles: TStringList;
     FMaxRecentPackageFiles: integer;
     FOpenLastProjectAtStart: boolean;
+    FOpenPackagesAtStart: boolean;
     // Prevent repopulating Recent project files menu with example projects if it was already cleared up.
     FAlreadyPopulatedRecentFiles : Boolean;
 
@@ -718,8 +726,11 @@ type
     property LastSavedProjectFile: string read FLastSavedProjectFile
                      write FLastSavedProjectFile; { if empty then create new project,
                                                     if '-' then do not load/create any project }
+    property LastOpenPackages: TLastOpenPackagesList read FLastOpenPackages;
     property OpenLastProjectAtStart: boolean read FOpenLastProjectAtStart
                                              write FOpenLastProjectAtStart;
+    property OpenPackagesAtStart: boolean read FOpenPackagesAtStart
+                                             write FOpenPackagesAtStart;
     property FileDialogFilter: string read FFileDialogFilter write FFileDialogFilter;
 
     // backup
@@ -895,6 +906,25 @@ end;
 function dbgs(u: TMessageLineUrgency): string;
 begin
   WriteStr(Result, u);
+end;
+
+{ TLastOpenPackagesList }
+
+constructor TLastOpenPackagesList.Create;
+begin
+  inherited Create;
+  Sorted:=true;
+  Duplicates:=dupIgnore;
+end;
+
+function TLastOpenPackagesList.Remove(const aString: string): Boolean;
+var
+  xIndex: Integer;
+begin
+  xIndex := IndexOf(aString);
+  Result := xIndex >= 0;
+  if Result then
+    Delete(xIndex);
 end;
 
 { TDesktopOptList }
@@ -1193,6 +1223,7 @@ begin
   FAutoSaveProject:=true;
   FAutoSaveIntervalInSecs:=300; // 5 minutes
   FLastSavedProjectFile:='';
+  FLastOpenPackages:=TLastOpenPackagesList.Create;
 
   // EnvironmentOptionsDialog editor
   FShowGrid:=true;
@@ -1280,6 +1311,7 @@ begin
   FRecentPackageFiles:=TStringList.Create;
   FMaxRecentPackageFiles:=DefaultMaxRecentPackageFiles;
   FOpenLastProjectAtStart:=true;
+  FOpenPackagesAtStart:=true;
 
   // backup
   with FBackupInfoProjectFiles do begin
@@ -1348,6 +1380,7 @@ begin
   FreeAndNil(FConfigStore);
   FreeAndNil(FDbgConfigStore);
   FreeAndNil(FXMLCfg);
+  FreeAndNil(FLastOpenPackages);
   inherited Destroy;
 end;
 
@@ -1551,7 +1584,7 @@ var
   Path, CurPath: String;
   i, j: Integer;
   Rec: PIDEOptionsGroupRec;
-  NodeName: String;
+  NodeName, xFileName: String;
   mwc: TMsgWndColor;
   u: TMessageLineUrgency;
 begin
@@ -1583,9 +1616,21 @@ begin
     FAutoSaveIntervalInSecs:=FXMLCfg.GetValue(Path+'AutoSave/IntervalInSecs',600);
     FLastSavedProjectFile:=FXMLCfg.GetValue(Path+'AutoSave/LastSavedProjectFile','');
     FOpenLastProjectAtStart:=FXMLCfg.GetValue(Path+'AutoSave/OpenLastProjectAtStart',true);
+    FOpenPackagesAtStart:=FXMLCfg.GetValue(Path+'AutoSave/OpenPackagesAtStart',true);
     FShowCompileDialog:=FXMLCfg.GetValue(Path+'ShowCompileDialog/Value',false);
     FAutoCloseCompileDialog:=FXMLCfg.GetValue(Path+'AutoCloseCompileDialog/Value',false);
     FAutoSaveActiveDesktop:=FXMLCfg.GetValue(Path+'AutoSave/ActiveDesktop',True);
+    FLastOpenPackages.Clear;
+    if FOpenPackagesAtStart then
+    begin
+      i := 1;
+      repeat
+        xFileName := FXMLCfg.GetValue(Path+'AutoSave/LastOpenPackages/Package'+IntToStr(i), '');
+        if FileExistsCached(xFileName) then
+          FLastOpenPackages.Add(xFileName);
+        Inc(i);
+      until xFileName='';
+    end;
 
     // form editor
     FShowGrid:=FXMLCfg.GetValue(Path+'FormEditor/ShowGrid',true);
@@ -1901,7 +1946,14 @@ begin
     FXMLCfg.SetDeleteValue(Path+'AutoSave/IntervalInSecs',FAutoSaveIntervalInSecs,600);
     FXMLCfg.SetDeleteValue(Path+'AutoSave/LastSavedProjectFile',FLastSavedProjectFile,'');
     FXMLCfg.SetDeleteValue(Path+'AutoSave/OpenLastProjectAtStart',FOpenLastProjectAtStart,true);
+    FXMLCfg.SetDeleteValue(Path+'AutoSave/OpenPackagesAtStart',FOpenPackagesAtStart,true);
     FXMLCfg.SetDeleteValue(Path+'AutoSave/ActiveDesktop', FAutoSaveActiveDesktop, True);
+    if FOpenPackagesAtStart and (FLastOpenPackages.Count > 0) then
+    begin
+      for i := 0 to FLastOpenPackages.Count-1 do
+        FXMLCfg.SetValue(Path+'AutoSave/LastOpenPackages/Package'+IntToStr(i+1), FLastOpenPackages[i]);
+    end else
+      FXMLCfg.DeletePath(Path+'AutoSave/LastOpenPackages/');
 
     // form editor
     FXMLCfg.SetDeleteValue(Path+'FormEditor/ShowBorderSpacing',FShowBorderSpacing,false);

@@ -171,8 +171,6 @@ type
 
   TMainIDE = class(TMainIDEBase)
   private
-    IDEIsClosing: Boolean;
-
     // event handlers
     procedure MainIDEFormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure MainIDEFormCloseQuery(Sender: TObject; var CanClose: boolean);
@@ -1966,7 +1964,7 @@ procedure TMainIDE.MainIDEFormCloseQuery(Sender: TObject; var CanClose: boolean)
 begin
   CanClose := True;
   if IDEIsClosing then Exit;
-  IDEIsClosing := True;
+  FIDEIsClosing := True;
   CanClose := False;
   SourceFileMgr.CheckingFilesOnDisk := True;
   try
@@ -1988,7 +1986,7 @@ begin
 
     CanClose:=(DoCloseProject <> mrAbort);
   finally
-    IDEIsClosing := CanClose;
+    FIDEIsClosing := CanClose;
     SourceFileMgr.CheckingFilesOnDisk:=false;
     if not CanClose then
       DoCheckFilesOnDisk(false);
@@ -2175,6 +2173,7 @@ var
   i: Integer;
   OpenFlags: TOpenFlags;
   AFilename: String;
+  PkgOpenFlags: TPkgOpenFlags;
 begin
   {$IFDEF IDE_DEBUG}
   debugln('TMainIDE.SetupStartProject A ***********');
@@ -2220,7 +2219,27 @@ begin
         // protocol that the IDE was able to open the project without crashing
         IDEProtocolOpts.LastProjectLoadingCrashed := false;
         IDEProtocolOpts.Save;
-        if not ProjectLoaded then begin
+        if ProjectLoaded then
+        begin
+          if EnvironmentOptions.OpenPackagesAtStart then
+          begin
+            PkgOpenFlags:=[pofAddToRecent];
+            for I := 0 to EnvironmentOptions.LastOpenPackages.Count-1 do
+            begin
+              AFilename:=EnvironmentOptions.LastOpenPackages[I];
+              if AFilename='' then
+                continue;
+              if i<EnvironmentOptions.LastOpenPackages.Count-1 then
+                Include(PkgOpenFlags,pofMultiOpen)
+              else
+                Exclude(PkgOpenFlags,pofMultiOpen);
+              if PkgBoss.DoOpenPackageFile(AFilename,PkgOpenFlags,true)=mrAbort then begin
+                break;
+              end;
+            end;
+          end;
+        end else
+        begin
           DoCloseProject;
         end;
       end;

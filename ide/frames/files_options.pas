@@ -61,6 +61,7 @@ type
     MaxRecentProjectFilesSpin: TSpinEdit;
     MaxRecentProjectFilesLabel: TLabel;
     OpenLastProjectAtStartCheckBox: TCheckBox;
+    OpenPackagesAtStartCheckBox: TCheckBox;
     ShowCompileDialogCheckBox: TCheckBox;
     TestBuildDirButton:TButton;
     TestBuildDirComboBox:TComboBox;
@@ -68,6 +69,7 @@ type
     procedure CompilerTranslationFileButtonClick(Sender:TObject);
     procedure FilesButtonClick(Sender: TObject);
     procedure DirectoriesButtonClick(Sender: TObject);
+    procedure OpenLastProjectAtStartCheckBoxChange(Sender: TObject);
     procedure ShowCompileDialogCheckBoxChange(Sender: TObject);
   private
     FOldLazarusDir: string;
@@ -220,6 +222,7 @@ begin
   MaxRecentOpenFilesLabel.Caption:=dlgMaxRecentFiles;
   MaxRecentProjectFilesLabel.Caption:=dlgMaxRecentProjs;
   OpenLastProjectAtStartCheckBox.Caption:=dlgQOpenLastPrj;
+  OpenPackagesAtStartCheckBox.Caption:=dlgQOpenPackages;
   ShowCompileDialogCheckBox.Visible:=false;
   AutoCloseCompileDialogCheckBox.Visible:=false;
   LazarusDirLabel.Caption:=dlgLazarusDir;
@@ -270,6 +273,12 @@ end;
 function TFilesOptionsFrame.GetTitle: String;
 begin
   Result := dlgEnvFiles;
+end;
+
+procedure TFilesOptionsFrame.OpenLastProjectAtStartCheckBoxChange(
+  Sender: TObject);
+begin
+  OpenPackagesAtStartCheckBox.Enabled := OpenLastProjectAtStartCheckBox.Checked;
 end;
 
 function TFilesOptionsFrame.Check: Boolean;
@@ -360,6 +369,7 @@ begin
 
     // open last project at start
     OpenLastProjectAtStartCheckBox.Checked:=OpenLastProjectAtStart;
+    OpenPackagesAtStartCheckBox.Checked:=OpenPackagesAtStart;
 
     // compile dialog
     fOldShowCompileDialog:=ShowCompileDialog;
@@ -391,6 +401,7 @@ begin
     MaxRecentOpenFiles := MaxRecentOpenFilesSpin.Value;
     MaxRecentProjectFiles := MaxRecentProjectFilesSpin.Value;
     OpenLastProjectAtStart:=OpenLastProjectAtStartCheckBox.Checked;
+    OpenPackagesAtStart:=OpenPackagesAtStartCheckBox.Checked;
     ShowCompileDialog := ShowCompileDialogCheckBox.Checked;
     AutoCloseCompileDialog := AutoCloseCompileDialogCheckBox.Checked;
   end;

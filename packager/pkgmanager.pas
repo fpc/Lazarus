@@ -1155,6 +1155,15 @@ begin
         NewMainUnitFileName:=ChangeFileExt(NewFileName,'.pas')
       else
         NewMainUnitFileName:='';
+
+      if PackageEditors.FindEditor(NewPkgName) <> nil then
+      begin
+        Result:=IDEMessageDialog(lisPkgMangInvalidPackageName,
+          Format(lisPkgMangSaveAsAlreadyOpenedPackage, [NewPkgName]),
+          mtInformation,[mbRetry,mbAbort]);
+        if Result=mrAbort then exit;
+        continue; // try again
+      end;
       
       // check file extension
       if ExtractFileExt(NewFilename)='' then begin
@@ -1291,12 +1300,19 @@ begin
   
   // set filename
   APackage.Filename:=NewFilename;
+  if Assigned(APackage.Editor) then
+    APackage.Editor.LazPackage := APackage;//force package editor name change!
   
   // rename package
   PackageGraph.ChangePackageID(APackage,NewPkgName,APackage.Version,
                                RenameDependencies,true);
   SaveAutoInstallDependencies;
   RenamePackageInProject;
+
+  //update LastOpenPackages list
+  EnvironmentOptions.LastOpenPackages.Remove(OldPkgFilename);
+  EnvironmentOptions.LastOpenPackages.Add(NewFileName);
+  MainIDE.SaveEnvironment;
 
   // clean up old package file to reduce ambiguousities
   if FileExistsUTF8(OldPkgFilename)
