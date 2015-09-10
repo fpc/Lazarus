@@ -1267,7 +1267,7 @@ resourcestring
   dlgRenameDesktop = 'Rename desktop';
   dlgNewDesktop = 'New desktop ...';
   dlgSetActiveDesktop = 'Set active';
-  dlgToggleSelectedDebugDesktop = 'Toggle as debug desktop';
+  dlgToggleDebugDesktop = 'Toggle as debug desktop';
   dlgDesktopName = 'Desktop name';
   dlgOverwriteDesktop = 'Desktop with the name "%s" was found.'+sLineBreak+'Should the old desktop be overwritten?';
   dlgDebugDesktop = 'debug';

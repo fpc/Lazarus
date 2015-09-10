@@ -1,7 +1,7 @@
 object DesktopForm: TDesktopForm
-  Left = 684
+  Left = 300
   Height = 288
-  Top = 378
+  Top = 316
   Width = 277
   BorderIcons = [biSystemMenu]
   Caption = 'DesktopForm'
@@ -82,7 +82,7 @@ object DesktopForm: TDesktopForm
     object SaveTB: TToolButton
       Left = 1
       Top = 0
-      Caption = 'SaveTB'
+      Action = SaveAction
       OnClick = SaveBitBtnClick
       ParentShowHint = False
       ShowHint = True
@@ -98,7 +98,7 @@ object DesktopForm: TDesktopForm
     object SetActiveDesktopTB: TToolButton
       Left = 1
       Top = 27
-      Caption = 'SetActiveDesktopTB'
+      Action = SetActiveDesktopAction
       OnClick = SetActiveDesktopBitBtnClick
       ParentShowHint = False
       ShowHint = True
@@ -106,7 +106,7 @@ object DesktopForm: TDesktopForm
     object SetDebugDesktopTB: TToolButton
       Left = 1
       Top = 49
-      Caption = 'SetDebugDesktopTB'
+      Action = SetDebugDesktopAction
       OnClick = SetDebugDesktopBitBtnClick
       ParentShowHint = False
       ShowHint = True
@@ -114,7 +114,7 @@ object DesktopForm: TDesktopForm
     object RenameTB: TToolButton
       Left = 1
       Top = 71
-      Caption = 'RenameTB'
+      Action = RenameAction
       OnClick = RenameBitBtnClick
       ParentShowHint = False
       ShowHint = True
@@ -122,7 +122,7 @@ object DesktopForm: TDesktopForm
     object DeleteTB: TToolButton
       Left = 1
       Top = 93
-      Caption = 'DeleteTB'
+      Action = DeleteAction
       OnClick = DeleteBitBtnClick
       ParentShowHint = False
       ShowHint = True
@@ -146,7 +146,7 @@ object DesktopForm: TDesktopForm
     object ImportTB: TToolButton
       Left = 1
       Top = 186
-      Caption = 'ImportTB'
+      Action = ImportAction
       OnClick = ImportBitBtnClick
       ParentShowHint = False
       ShowHint = True
@@ -155,7 +155,7 @@ object DesktopForm: TDesktopForm
       Tag = -1
       Left = 1
       Top = 115
-      Caption = 'MoveUpTB'
+      Action = MoveUpAction
       OnClick = MoveUpTBClick
       ParentShowHint = False
       ShowHint = True
@@ -164,7 +164,7 @@ object DesktopForm: TDesktopForm
       Tag = 1
       Left = 1
       Top = 137
-      Caption = 'MoveDownTB'
+      Action = MoveDownAction
       OnClick = MoveUpTBClick
       ParentShowHint = False
       ShowHint = True
@@ -174,12 +174,68 @@ object DesktopForm: TDesktopForm
     left = 48
     top = 24
     object ExportItem: TMenuItem
-      Caption = 'Export selected'
+      Action = ExportAction
       OnClick = ExportBitBtnClick
     end
     object ExportAllItem: TMenuItem
-      Caption = 'Export all'
+      Action = ExportAllAction
       OnClick = ExportAllBitBtnClick
+    end
+  end
+  object ActionList1: TActionList
+    left = 108
+    top = 28
+    object SaveAction: TAction
+      Caption = 'SaveAction'
+      OnExecute = SaveBitBtnClick
+      ShortCut = 16467
+    end
+    object SetActiveDesktopAction: TAction
+      Caption = 'SetActiveDesktopAction'
+      OnExecute = SetActiveDesktopBitBtnClick
+      ShortCut = 16397
+    end
+    object SetDebugDesktopAction: TAction
+      Caption = 'SetDebugDesktopAction'
+      OnExecute = SetDebugDesktopBitBtnClick
+      ShortCut = 16452
+    end
+    object RenameAction: TAction
+      Caption = 'RenameAction'
+      OnExecute = RenameBitBtnClick
+      ShortCut = 16466
+    end
+    object DeleteAction: TAction
+      Caption = 'DeleteAction'
+      OnExecute = DeleteBitBtnClick
+      ShortCut = 16430
+    end
+    object MoveUpAction: TAction
+      Tag = -1
+      Caption = 'MoveUpAction'
+      OnExecute = MoveUpTBClick
+      ShortCut = 16422
+    end
+    object MoveDownAction: TAction
+      Tag = 1
+      Caption = 'MoveDownAction'
+      OnExecute = MoveUpTBClick
+      ShortCut = 16424
+    end
+    object ExportAction: TAction
+      Caption = 'ExportAction'
+      OnExecute = ExportBitBtnClick
+      ShortCut = 16453
+    end
+    object ExportAllAction: TAction
+      Caption = 'ExportAllAction'
+      OnExecute = ExportAllBitBtnClick
+      ShortCut = 24645
+    end
+    object ImportAction: TAction
+      Caption = 'ImportAction'
+      OnExecute = ImportBitBtnClick
+      ShortCut = 16457
     end
   end
 end
