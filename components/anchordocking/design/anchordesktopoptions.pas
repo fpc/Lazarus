@@ -74,8 +74,6 @@ begin
 end;
 
 procedure TAnchorDesktopOpt.Load(Path: String; aXMLCfg: TRttiXMLConfig);
-var
-  Config: TConfigStorage;
 begin
   //new version of old "TIDEAnchorDockMaster.LoadUserLayout"
 
