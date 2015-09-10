@@ -65,8 +65,9 @@ uses
   Classes, SysUtils, Math, LCLProc, Forms, Controls, Dialogs, StrUtils,
   ComCtrls, ActnList, AvgLvlTree, LazUTF8Classes, LCLType, ButtonPanel,
   CodeCache, CodeToolManager, BasicCodeTools, FileProcs, LazFileUtils,
+  LclIntf,
   // IDEIntf
-  LazIDEIntf, IDEImagesIntf, PackageIntf, ProjectIntf, IDEHelpIntf,
+  LazIDEIntf, IDEImagesIntf, PackageIntf, ProjectIntf,
   // IDE
   ToDoListStrConsts;
 
@@ -341,7 +342,8 @@ end;
 
 procedure TIDETodoWindow.HelpButtonClick(Sender: TObject);
 begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
+  // usual API from IdeHelpIntf don't work
+  OpenURL('http://wiki.freepascal.org/IDE_Window:_ToDo_List');
 end;
 
 procedure TIDETodoWindow.lvTodoClick(Sender: TObject);
