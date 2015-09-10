@@ -1778,29 +1778,34 @@ begin
     FDesktops.Clear;
     FDesktops.SetConfig(FXMLCfg, FConfigStore);
     CurPath := 'Desktops/';
+    FActiveDesktopName := '';
     if FXMLCfg.HasPath(CurPath, True) then
     begin
-      // New path under Desktops/. Default=1 forces reading default values always.
+      // Default=1 forces reading default values always.
       FDebugDesktopName := FXMLCfg.GetValue(CurPath+'DebugDesktop', '');
+      FActiveDesktopName := FXMLCfg.GetValue(CurPath+'ActiveDesktop', '');
       j := FXMLCfg.GetValue(CurPath+'Count', 1);
       for i := 1 to j do
         FDesktops.AddFromCfg(CurPath+'Desktop'+IntToStr(i)+'/');
+    end;
 
-      FActiveDesktopName := FXMLCfg.GetValue(CurPath+'ActiveDesktop', '');
-    end else
-      FActiveDesktopName := '';
-
-    //load default desktop - backwards compatibility - or create a new default desktop
-    CurPath := 'Desktop/';               // New place: Desktop/
-    if not FXMLCfg.HasPath(CurPath, True) then
-      CurPath := Path+'Desktop/';        // Old place: EnvironmentOptions/Desktop/
-    if FXMLCfg.HasPath(CurPath, True) or//default desktop exists in the settings
-       ((ActiveDesktop.IDECoolBarOptions.ToolBars.Count = 0) and
-        (ActiveDesktop.FIDEDialogLayoutList.Count = 0))//desktop is empty, load it to recreate!
-    then
-    begin
-      ActiveDesktop.SetConfig(FXMLCfg, FConfigStore);
-      ActiveDesktop.Load(CurPath);
+    if FFileVersion<109 then begin
+      //load old default desktop - backwards compatibility - or create a new default desktop
+      CurPath := 'Desktop/';               // New place: Desktop/
+      if not FXMLCfg.HasPath(CurPath, True) then
+        CurPath := Path+'Desktop/';        // Old place: EnvironmentOptions/Desktop/
+      if FXMLCfg.HasPath(CurPath, True) or//default desktop exists in the settings
+         ((ActiveDesktop.IDECoolBarOptions.ToolBars.Count = 0) and
+          (ActiveDesktop.FIDEDialogLayoutList.Count = 0))//desktop is empty, load it to recreate!
+      then
+      begin
+        ActiveDesktop.SetConfig(FXMLCfg, FConfigStore);
+        ActiveDesktop.Load(CurPath);
+      end;
+    end;
+    if FFileVersion<=109 then begin
+      FXMLCfg.DeletePath('Desktop');
+      FXMLCfg.DeletePath(CurPath+'Desktop');
     end;
 
     Desktop.Assign(ActiveDesktop, False);
@@ -2107,13 +2112,10 @@ begin
       FDesktops[i].Save(CurPath+'Desktop'+IntToStr(i+1)+'/');
     end;
 
-    FXMLCfg.DeletePath('Desktop/');
-
     FXMLCfg.Flush;
     FileUpdated;
   except
     on E: Exception do begin
-      // ToDo
       DebugLn('[TEnvironmentOptions.Save]  error writing "',Filename,'": ',E.Message);
     end;
   end;
@@ -2465,7 +2467,8 @@ begin
 end;
 
 function TEnvironmentOptions.GetActiveDesktop: TDesktopOpt;
-  procedure _UseDefault;
+
+  procedure ChooseDefault;
   begin
     //use default desktop name
     if Assigned(IDEDockMaster) then
@@ -2473,19 +2476,20 @@ function TEnvironmentOptions.GetActiveDesktop: TDesktopOpt;
     else
       FActiveDesktopName := 'default';
   end;
+
 begin
   if FActiveDesktopName <> '' then
   begin
     Result := FDesktops.Find(FActiveDesktopName);
-    if Assigned(Result) and Result.Compatible then//the selected desktop is supported (docked/docked)
+    if Assigned(Result) and Result.Compatible then
       Exit;
   end;
 
   //the selected desktop is unsupported (docked/undocked)
   // -> use default
-  _UseDefault;
+  ChooseDefault;
   Result := FDesktops.Find(FActiveDesktopName);
-  if Assigned(Result) and Result.Compatible then//the default desktop exists and is supported
+  if Assigned(Result) and Result.Compatible then
     Exit;
 
   //recreate desktop with ActiveDesktopName
