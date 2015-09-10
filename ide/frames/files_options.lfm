@@ -43,17 +43,16 @@ object FilesOptionsFrame: TFilesOptionsFrame
     Width = 195
     BorderSpacing.Top = 6
     Caption = 'OpenLastProjectAtStartCheckBox'
-    OnChange = OpenLastProjectAtStartCheckBoxChange
     TabOrder = 0
   end
   object ShowCompileDialogCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = OpenPackagesAtStartCheckBox
+    AnchorSideTop.Control = OpenLastProjectAtStartCheckBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 2
     Height = 19
-    Top = 88
+    Top = 69
     Width = 180
     BorderSpacing.Top = 2
     Caption = 'ShowCompileDialogCheckBox'
@@ -66,7 +65,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 2
     Height = 15
-    Top = 136
+    Top = 117
     Width = 82
     BorderSpacing.Top = 10
     Caption = 'LazarusDirLabel'
@@ -81,7 +80,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideBottom.Side = asrBottom
     Left = 542
     Height = 23
-    Top = 151
+    Top = 132
     Width = 25
     Anchors = [akTop, akRight, akBottom]
     Caption = '...'
@@ -95,7 +94,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideRight.Control = LazarusDirButton
     Left = 2
     Height = 23
-    Top = 151
+    Top = 132
     Width = 540
     Anchors = [akTop, akLeft, akRight]
     ItemHeight = 15
@@ -109,7 +108,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideRight.Control = CompilerPathButton
     Left = 2
     Height = 23
-    Top = 195
+    Top = 176
     Width = 540
     Anchors = [akTop, akLeft, akRight]
     ItemHeight = 15
@@ -124,7 +123,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideBottom.Side = asrBottom
     Left = 542
     Height = 23
-    Top = 195
+    Top = 176
     Width = 25
     Anchors = [akTop, akRight, akBottom]
     Caption = '...'
@@ -137,7 +136,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 2
     Height = 15
-    Top = 180
+    Top = 161
     Width = 101
     BorderSpacing.Top = 6
     Caption = 'CompilerPathLabel'
@@ -150,7 +149,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideRight.Control = FPCSourceDirButton
     Left = 2
     Height = 23
-    Top = 239
+    Top = 220
     Width = 540
     Anchors = [akTop, akLeft, akRight]
     ItemHeight = 15
@@ -165,7 +164,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideBottom.Side = asrBottom
     Left = 542
     Height = 23
-    Top = 239
+    Top = 220
     Width = 25
     Anchors = [akTop, akRight, akBottom]
     Caption = '...'
@@ -178,7 +177,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 2
     Height = 15
-    Top = 224
+    Top = 205
     Width = 100
     BorderSpacing.Top = 6
     Caption = 'FPCSourceDirLabel'
@@ -190,7 +189,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 2
     Height = 15
-    Top = 268
+    Top = 249
     Width = 81
     BorderSpacing.Top = 6
     Caption = 'MakePathLabel'
@@ -202,7 +201,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 2
     Height = 15
-    Top = 312
+    Top = 293
     Width = 91
     BorderSpacing.Top = 6
     Caption = 'TestBuildDirLabel'
@@ -215,7 +214,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideRight.Control = MakePathButton
     Left = 2
     Height = 23
-    Top = 283
+    Top = 264
     Width = 540
     Anchors = [akTop, akLeft, akRight]
     ItemHeight = 15
@@ -230,7 +229,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideBottom.Side = asrBottom
     Left = 542
     Height = 23
-    Top = 283
+    Top = 264
     Width = 25
     Anchors = [akTop, akRight, akBottom]
     Caption = '...'
@@ -244,7 +243,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideRight.Control = TestBuildDirButton
     Left = 2
     Height = 23
-    Top = 327
+    Top = 308
     Width = 540
     Anchors = [akTop, akLeft, akRight]
     ItemHeight = 15
@@ -259,7 +258,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideBottom.Side = asrBottom
     Left = 542
     Height = 23
-    Top = 327
+    Top = 308
     Width = 25
     Anchors = [akTop, akRight, akBottom]
     Caption = '...'
@@ -273,7 +272,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 32
     Height = 19
-    Top = 107
+    Top = 88
     Width = 206
     BorderSpacing.Left = 30
     Caption = 'AutoCloseCompileDialogCheckBox'
@@ -285,7 +284,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 2
     Height = 15
-    Top = 356
+    Top = 337
     Width = 153
     Alignment = taRightJustify
     BorderSpacing.Top = 6
@@ -302,7 +301,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideBottom.Side = asrBottom
     Left = 542
     Height = 23
-    Top = 371
+    Top = 352
     Width = 25
     Anchors = [akTop, akRight, akBottom]
     Caption = '...'
@@ -318,7 +317,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideRight.Control = CompilerTranslationFileButton
     Left = 2
     Height = 23
-    Top = 371
+    Top = 352
     Width = 540
     Anchors = [akTop, akLeft, akRight]
     ItemHeight = 15
@@ -365,18 +364,5 @@ object FilesOptionsFrame: TFilesOptionsFrame
     BorderSpacing.Left = 3
     BorderSpacing.Around = 2
     TabOrder = 16
-  end
-  object OpenPackagesAtStartCheckBox: TCheckBox
-    AnchorSideLeft.Control = OpenLastProjectAtStartCheckBox
-    AnchorSideTop.Control = OpenLastProjectAtStartCheckBox
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Side = asrBottom
-    Left = 32
-    Height = 19
-    Top = 67
-    Width = 186
-    BorderSpacing.Left = 30
-    Caption = 'OpenPackagesAtStartCheckBox'
-    TabOrder = 17
   end
 end

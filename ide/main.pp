@@ -2221,21 +2221,18 @@ begin
         IDEProtocolOpts.Save;
         if ProjectLoaded then
         begin
-          if EnvironmentOptions.OpenPackagesAtStart then
+          PkgOpenFlags:=[pofAddToRecent];
+          for I := 0 to EnvironmentOptions.LastOpenPackages.Count-1 do
           begin
-            PkgOpenFlags:=[pofAddToRecent];
-            for I := 0 to EnvironmentOptions.LastOpenPackages.Count-1 do
-            begin
-              AFilename:=EnvironmentOptions.LastOpenPackages[I];
-              if AFilename='' then
-                continue;
-              if i<EnvironmentOptions.LastOpenPackages.Count-1 then
-                Include(PkgOpenFlags,pofMultiOpen)
-              else
-                Exclude(PkgOpenFlags,pofMultiOpen);
-              if PkgBoss.DoOpenPackageFile(AFilename,PkgOpenFlags,true)=mrAbort then begin
-                break;
-              end;
+            AFilename:=EnvironmentOptions.LastOpenPackages[I];
+            if AFilename='' then
+              continue;
+            if i<EnvironmentOptions.LastOpenPackages.Count-1 then
+              Include(PkgOpenFlags,pofMultiOpen)
+            else
+              Exclude(PkgOpenFlags,pofMultiOpen);
+            if PkgBoss.DoOpenPackageFile(AFilename,PkgOpenFlags,true)=mrAbort then begin
+              break;
             end;
           end;
         end else
