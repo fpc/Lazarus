@@ -63,9 +63,9 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
     AnchorSideTop.Control = ClassPartInsertPolicyRadioGroup
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 24
+    Height = 17
     Top = 106
-    Width = 227
+    Width = 192
     BorderSpacing.Around = 6
     Caption = 'MixMethodsAndPropertiesCheckBox'
     TabOrder = 2
@@ -75,12 +75,12 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
     AnchorSideTop.Control = UpdateAllMethodSignaturesCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 24
-    Top = 166
-    Width = 204
+    Height = 17
+    Top = 152
+    Width = 177
     BorderSpacing.Around = 6
     Caption = 'ClassHeaderCommentsCheckBox'
-    TabOrder = 3
+    TabOrder = 4
   end
   object PropertyCompletionGroupBox: TGroupBox
     AnchorSideLeft.Control = Owner
@@ -90,23 +90,23 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 184
-    Top = 226
+    Height = 158
+    Top = 198
     Width = 575
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'PropertyCompletionGroupBox'
-    ClientHeight = 167
+    ClientHeight = 140
     ClientWidth = 571
-    TabOrder = 4
+    TabOrder = 6
     object PropertyCompletionCheckBox: TCheckBox
       AnchorSideLeft.Control = PropertyCompletionGroupBox
       AnchorSideTop.Control = PropertyCompletionGroupBox
       Left = 6
-      Height = 24
+      Height = 17
       Top = 6
-      Width = 192
+      Width = 162
       BorderSpacing.Around = 6
       Caption = 'PropertyCompletionCheckBox'
       TabOrder = 0
@@ -118,8 +118,8 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
       AnchorSideRight.Control = PropertyCompletionGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 125
-      Top = 36
+      Height = 105
+      Top = 29
       Width = 559
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
@@ -127,27 +127,29 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
       BevelOuter = bvNone
       ChildSizing.Layout = cclTopToBottomThenLeftToRight
       ChildSizing.ControlsPerLine = 5
-      ClientHeight = 125
+      ClientHeight = 105
       ClientWidth = 559
       TabOrder = 1
       object SetPropertyVariablenameLabel: TLabel
         AnchorSideTop.Side = asrCenter
         Left = 11
-        Height = 15
-        Top = 5
-        Width = 171
+        Height = 13
+        Top = 4
+        Width = 147
         BorderSpacing.Right = 6
         BorderSpacing.CellAlignHorizontal = ccaRightBottom
         BorderSpacing.CellAlignVertical = ccaCenter
         Caption = 'SetPropertyVariablenameLabel'
         ParentColor = False
+        ParentShowHint = False
+        ShowHint = True
       end
       object PrivateVariablePrefixLabel: TLabel
         AnchorSideTop.Side = asrCenter
-        Left = 36
-        Height = 15
-        Top = 30
-        Width = 146
+        Left = 33
+        Height = 13
+        Top = 25
+        Width = 125
         BorderSpacing.Right = 6
         BorderSpacing.CellAlignHorizontal = ccaRightBottom
         BorderSpacing.CellAlignVertical = ccaCenter
@@ -157,9 +159,9 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
       object PropertyStoredIdentPostfixLabel: TLabel
         AnchorSideTop.Side = asrCenter
         Left = 0
-        Height = 15
-        Top = 55
-        Width = 182
+        Height = 13
+        Top = 46
+        Width = 158
         BorderSpacing.Right = 6
         BorderSpacing.CellAlignHorizontal = ccaRightBottom
         BorderSpacing.CellAlignVertical = ccaCenter
@@ -169,9 +171,9 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
       object PropertyWriteIdentPrefixLabel: TLabel
         AnchorSideTop.Side = asrCenter
         Left = 11
-        Height = 15
-        Top = 80
-        Width = 171
+        Height = 13
+        Top = 67
+        Width = 147
         BorderSpacing.Right = 6
         BorderSpacing.CellAlignHorizontal = ccaRightBottom
         BorderSpacing.CellAlignVertical = ccaCenter
@@ -180,10 +182,10 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
       end
       object PropertyReadIdentPrefixLabel: TLabel
         AnchorSideTop.Side = asrCenter
-        Left = 14
-        Height = 15
-        Top = 105
-        Width = 168
+        Left = 12
+        Height = 13
+        Top = 88
+        Width = 146
         BorderSpacing.Right = 6
         BorderSpacing.CellAlignHorizontal = ccaRightBottom
         BorderSpacing.CellAlignVertical = ccaCenter
@@ -193,52 +195,84 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
       object SetPropertyVariablenameEdit: TEdit
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Side = asrBottom
-        Left = 188
-        Height = 25
+        Left = 164
+        Height = 21
         Top = 0
         Width = 80
+        ParentShowHint = False
+        ShowHint = True
         TabOrder = 0
         Text = 'SetPropertyVariablenameEdit'
       end
       object PrivateVariablePrefixEdit: TEdit
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Side = asrBottom
-        Left = 188
-        Height = 25
-        Top = 25
+        Left = 164
+        Height = 21
+        Top = 21
         Width = 80
-        TabOrder = 1
+        TabOrder = 3
         Text = 'PrivateVariablePrefixEdit'
       end
       object PropertyStoredIdentPostfixEdit: TEdit
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Side = asrBottom
-        Left = 188
-        Height = 25
-        Top = 50
+        Left = 164
+        Height = 21
+        Top = 42
         Width = 80
-        TabOrder = 2
+        TabOrder = 4
         Text = 'PropertyStoredIdentPostfixEdit'
       end
       object PropertyWriteIdentPrefixEdit: TEdit
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Side = asrBottom
-        Left = 188
-        Height = 25
-        Top = 75
+        Left = 164
+        Height = 21
+        Top = 63
         Width = 80
-        TabOrder = 3
+        TabOrder = 5
         Text = 'PropertyWriteIdentPrefixEdit'
       end
       object PropertyReadIdentPrefixEdit: TEdit
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Side = asrBottom
-        Left = 188
-        Height = 25
-        Top = 100
+        Left = 164
+        Height = 21
+        Top = 84
         Width = 80
-        TabOrder = 4
+        TabOrder = 6
         Text = 'PropertyReadIdentPrefixEdit'
+      end
+      object SetPropertyVariableIsPrefixCheckBox: TCheckBox
+        AnchorSideLeft.Control = SetPropertyVariablenameEdit
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = SetPropertyVariablenameEdit
+        AnchorSideTop.Side = asrCenter
+        Left = 254
+        Height = 17
+        Top = 2
+        Width = 200
+        BorderSpacing.Left = 10
+        Caption = 'SetPropertyVariableIsPrefixCheckBox'
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 1
+      end
+      object SetPropertyVariableUseConstCheckBox: TCheckBox
+        AnchorSideLeft.Control = SetPropertyVariableIsPrefixCheckBox
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = SetPropertyVariablenameEdit
+        AnchorSideTop.Side = asrCenter
+        Left = 464
+        Height = 17
+        Top = 2
+        Width = 209
+        BorderSpacing.Left = 10
+        Caption = 'SetPropertyVariableUseConstCheckBox'
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 2
       end
     end
   end
@@ -247,9 +281,9 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
     AnchorSideTop.Control = ClassHeaderCommentsCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 24
-    Top = 196
-    Width = 251
+    Height = 17
+    Top = 175
+    Width = 216
     BorderSpacing.Around = 6
     Caption = 'ClassImplementationCommentsCheckBox'
     TabOrder = 5
@@ -259,11 +293,11 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
     AnchorSideTop.Control = MixMethodsAndPropertiesCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 24
-    Top = 136
-    Width = 235
+    Height = 17
+    Top = 129
+    Width = 200
     BorderSpacing.Around = 6
     Caption = 'UpdateAllMethodSignaturesCheckBox'
-    TabOrder = 6
+    TabOrder = 3
   end
 end

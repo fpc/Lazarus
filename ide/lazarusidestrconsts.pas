@@ -2100,6 +2100,11 @@ resourcestring
   dlgCDTStoredPostfix = 'Stored postfix';
   dlgCDTVariablePrefix = 'Variable prefix';
   dlgSetPropertyVariable = 'Set property Variable';
+  dlgSetPropertyVariableHint = 'The parameter name for the default setter procedure.';
+  dlgSetPropertyVariableIsPrefix = 'is prefix';
+  dlgSetPropertyVariableIsPrefixHint = 'If checked, the "Set property Variable" is a prefix. Otherwise it is a fixed name.';
+  dlgSetPropertyVariableUseConst = 'use const';
+  dlgSetPropertyVariableUseConstHint = 'If checked, the setter parameter is marked with "const".';
   dlgMaxLineLength = 'Max line length:';
   dlgNotSplitLineFront = 'Do not split line in front of';
   dlgNotSplitLineAfter = 'Do not split line after';

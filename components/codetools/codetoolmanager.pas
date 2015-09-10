@@ -118,6 +118,8 @@ type
     FOnSearchUsedUnit: TOnSearchUsedUnit;
     FResourceTool: TResourceCodeTool;
     FSetPropertyVariablename: string;
+    FSetPropertyVariableIsPrefix: Boolean;
+    FSetPropertyVariableUseConst: Boolean;
     FSourceExtensions: string; // default is '.pp;.pas;.lpr;.dpr;.dpk'
     FPascalTools: TAVLTree; // tree of TCustomCodeTool sorted TCustomCodeTool(Data).Scanner.MainCode
     FTabWidth: integer;
@@ -147,7 +149,9 @@ type
     procedure SetCodeCompletionTemplateFileName(AValue: String);
     procedure SetCompleteProperties(const AValue: boolean);
     procedure SetIndentSize(NewValue: integer);
+    procedure SetSetPropertyVariableIsPrefix(aValue: Boolean);
     procedure SetSetPropertyVariablename(AValue: string);
+    procedure SetSetPropertyVariableUseConst(aValue: Boolean);
     procedure SetTabWidth(const AValue: integer);
     procedure SetUseTabs(AValue: boolean);
     procedure SetVisibleEditorLines(NewValue: integer);
@@ -285,6 +289,10 @@ type
     property JumpCentered: boolean read FJumpCentered write SetJumpCentered;
     property SetPropertyVariablename: string
                    read FSetPropertyVariablename write SetSetPropertyVariablename;
+    property SetPropertyVariableIsPrefix: Boolean
+                   read FSetPropertyVariableIsPrefix write SetSetPropertyVariableIsPrefix;
+    property SetPropertyVariableUseConst: Boolean
+                   read FSetPropertyVariableUseConst write SetSetPropertyVariableUseConst;
     property VisibleEditorLines: integer
                            read FVisibleEditorLines write SetVisibleEditorLines;
     property TabWidth: integer read FTabWidth write SetTabWidth;
@@ -5777,10 +5785,22 @@ begin
     FCurCodeTool.JumpCentered:=NewValue;
 end;
 
+procedure TCodeToolManager.SetSetPropertyVariableIsPrefix(aValue: Boolean);
+begin
+  if FSetPropertyVariableIsPrefix = aValue then Exit;
+  FSetPropertyVariableIsPrefix := aValue;
+end;
+
 procedure TCodeToolManager.SetSetPropertyVariablename(AValue: string);
 begin
   if FSetPropertyVariablename=aValue then Exit;
   FSetPropertyVariablename:=aValue;
+end;
+
+procedure TCodeToolManager.SetSetPropertyVariableUseConst(aValue: Boolean);
+begin
+  if FSetPropertyVariableUseConst = aValue then Exit;
+  FSetPropertyVariableUseConst := aValue;
 end;
 
 procedure TCodeToolManager.SetCursorBeyondEOL(NewValue: boolean);
@@ -5885,6 +5905,8 @@ begin
     AddInheritedCodeToOverrideMethod:=Self.AddInheritedCodeToOverrideMethod;
     CompleteProperties:=Self.CompleteProperties;
     SetPropertyVariablename:=Self.SetPropertyVariablename;
+    SetPropertyVariableIsPrefix:=Self.SetPropertyVariableIsPrefix;
+    SetPropertyVariableUseConst:=Self.SetPropertyVariableUseConst;
   end;
   Result.CheckFilesOnDisk:=FCheckFilesOnDisk;
   Result.IndentSize:=FIndentSize;
@@ -6267,6 +6289,8 @@ begin
     PtrUInt(InstanceSize)
     +MemSizeString(FErrorMsg)
     +MemSizeString(FSetPropertyVariablename)
+    +PtrUInt(SizeOf(FSetPropertyVariableIsPrefix))
+    +PtrUInt(SizeOf(FSetPropertyVariableUseConst))
     +MemSizeString(FSourceExtensions)
     );
   if DefinePool<>nil then

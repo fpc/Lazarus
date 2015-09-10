@@ -97,6 +97,8 @@ type
     FPropertyStoredIdentPostfix: string;
     FPrivateVariablePrefix: string;
     FSetPropertyVariablename: string;
+    FSetPropertyVariableIsPrefix: Boolean;
+    FSetPropertyVariableUseConst: Boolean;
     FUsesInsertPolicy: TUsesInsertPolicy;
 
     // identifier completion
@@ -116,6 +118,8 @@ type
     procedure SetCodeCompletionTemplateFileName(aValue: String);
     procedure SetFilename(const AValue: string);
     procedure SetSetPropertyVariablename(aValue: string);
+    procedure SetSetPropertyVariableIsPrefix(aValue: Boolean);
+    procedure SetSetPropertyVariableUseConst(aValue: Boolean);
   public
     class function GetGroupCaption:string; override;
     class function GetInstance: TAbstractIDEOptions; override;
@@ -204,6 +208,10 @@ type
       read FPrivateVariablePrefix write FPrivateVariablePrefix;
     property SetPropertyVariablename: string
       read FSetPropertyVariablename write SetSetPropertyVariablename;
+    property SetPropertyVariableIsPrefix: Boolean
+      read FSetPropertyVariableIsPrefix write SetSetPropertyVariableIsPrefix;
+    property SetPropertyVariableUseConst: Boolean
+      read FSetPropertyVariableUseConst write SetSetPropertyVariableUseConst;
     property UsesInsertPolicy: TUsesInsertPolicy
       read FUsesInsertPolicy write FUsesInsertPolicy;
       
@@ -472,6 +480,10 @@ begin
       'CodeToolsOptions/PrivateVariablePrefix/Value',''),'F');
     FSetPropertyVariablename:=ReadIdentifier(XMLConfig.GetValue(
       'CodeToolsOptions/SetPropertyVariablename/Value',''),'AValue');
+    FSetPropertyVariableIsPrefix:=XMLConfig.GetValue(
+      'CodeToolsOptions/SetPropertyVariableIsPrefix/Value',false);
+    FSetPropertyVariableUseConst:=XMLConfig.GetValue(
+      'CodeToolsOptions/SetPropertyVariableUseConst/Value',false);
     FUsesInsertPolicy:=UsesInsertPolicyNameToPolicy(XMLConfig.GetValue(
       'CodeToolsOptions/UsesInsertPolicy/Value',
       UsesInsertPolicyNames[DefaultUsesInsertPolicy]));
@@ -620,6 +632,10 @@ begin
       FPrivateVariablePrefix,'F');
     XMLConfig.SetDeleteValue('CodeToolsOptions/SetPropertyVariablename/Value',
       FSetPropertyVariablename,'AValue');
+    XMLConfig.SetDeleteValue('CodeToolsOptions/SetPropertyVariableIsPrefix/Value',
+      FSetPropertyVariableIsPrefix,false);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/SetPropertyVariableUseConst/Value',
+      FSetPropertyVariableUseConst,false);
     XMLConfig.SetDeleteValue('CodeToolsOptions/UsesInsertPolicy/Value',
       UsesInsertPolicyNames[FUsesInsertPolicy],
       UsesInsertPolicyNames[DefaultUsesInsertPolicy]);
@@ -694,10 +710,22 @@ begin
   FFilename:=ConfFilename;
 end;
 
+procedure TCodeToolsOptions.SetSetPropertyVariableIsPrefix(aValue: Boolean);
+begin
+  if FSetPropertyVariableIsPrefix=aValue then Exit;
+  FSetPropertyVariableIsPrefix:=aValue;
+end;
+
 procedure TCodeToolsOptions.SetSetPropertyVariablename(aValue: string);
 begin
   if FSetPropertyVariablename=aValue then Exit;
   FSetPropertyVariablename:=aValue;
+end;
+
+procedure TCodeToolsOptions.SetSetPropertyVariableUseConst(aValue: Boolean);
+begin
+  if FSetPropertyVariableUseConst=aValue then Exit;
+  FSetPropertyVariableUseConst:=aValue;
 end;
 
 procedure TCodeToolsOptions.Assign(Source: TPersistent);
@@ -753,6 +781,8 @@ begin
     FPropertyStoredIdentPostfix:=CodeToolsOpts.FPropertyStoredIdentPostfix;
     FPrivateVariablePrefix:=CodeToolsOpts.FPrivateVariablePrefix;
     FSetPropertyVariablename:=CodeToolsOpts.FSetPropertyVariablename;
+    FSetPropertyVariableIsPrefix:=CodeToolsOpts.FSetPropertyVariableIsPrefix;
+    FSetPropertyVariableUseConst:=CodeToolsOpts.FSetPropertyVariableUseConst;
     FUsesInsertPolicy:=CodeToolsOpts.FUsesInsertPolicy;
     
     // identifier completion
@@ -810,6 +840,8 @@ begin
   FPropertyStoredIdentPostfix:='IsStored';
   FPrivateVariablePrefix:='f';
   FSetPropertyVariablename:='AValue';
+  FSetPropertyVariableIsPrefix:=false;
+  FSetPropertyVariableUseConst:=false;
   FUsesInsertPolicy:=DefaultUsesInsertPolicy;
   
   // identifier completion
@@ -885,6 +917,8 @@ begin
     and (FPropertyStoredIdentPostfix=CodeToolsOpts.FPropertyStoredIdentPostfix)
     and (FPrivateVariablePrefix=CodeToolsOpts.FPrivateVariablePrefix)
     and (FSetPropertyVariablename=CodeToolsOpts.FSetPropertyVariablename)
+    and (FSetPropertyVariableIsPrefix=CodeToolsOpts.FSetPropertyVariableIsPrefix)
+    and (FSetPropertyVariableUseConst=CodeToolsOpts.FSetPropertyVariableUseConst)
     and (FUsesInsertPolicy=CodeToolsOpts.FUsesInsertPolicy)
 
     // identifier completion
@@ -962,6 +996,8 @@ begin
     // CreateCode - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     AssignTo(Boss.SourceChangeCache.BeautifyCodeOptions);
     Boss.SetPropertyVariablename:=SetPropertyVariablename;
+    Boss.SetPropertyVariableIsPrefix:=SetPropertyVariableIsPrefix;
+    Boss.SetPropertyVariableUseConst:=SetPropertyVariableUseConst;
 
     // Identifier Completion - - - - - - - - - - - - - - - - - - - - - - - - - -
     Boss.IdentifierList.SortForHistory:=IdentComplSortForHistory;

@@ -138,6 +138,8 @@ type
     FCompleteProperties: boolean;
     FirstInsert: TCodeTreeNodeExtension; // list of insert requests
     FSetPropertyVariablename: string;
+    FSetPropertyVariableIsPrefix: Boolean;
+    FSetPropertyVariableUseConst: Boolean;
     FJumpToProcName: string;
     NewClassSectionIndent: array[TPascalClassSection] of integer;
     NewClassSectionInsertPos: array[TPascalClassSection] of integer;
@@ -145,7 +147,9 @@ type
     fNewMainUsesSectionUnits: TAVLTree; // tree of AnsiString
     procedure AddNewPropertyAccessMethodsToClassProcs(ClassProcs: TAVLTree;
       const TheClassName: string);
+    procedure SetSetPropertyVariableIsPrefix(aValue: Boolean);
     procedure SetSetPropertyVariablename(AValue: string);
+    procedure SetSetPropertyVariableUseConst(aValue: Boolean);
     function UpdateProcBodySignature(ProcBodyNodes: TAVLTree;
       const BodyNodeExt: TCodeTreeNodeExtension;
       ProcAttrCopyDefToBody: TProcHeadAttributes; var ProcsCopied: boolean;
@@ -381,6 +385,10 @@ type
     // Options
     property SetPropertyVariablename: string read FSetPropertyVariablename
                                              write SetSetPropertyVariablename;
+    property SetPropertyVariableIsPrefix: Boolean
+      read FSetPropertyVariableIsPrefix write SetSetPropertyVariableIsPrefix;
+    property SetPropertyVariableUseConst: Boolean
+      read FSetPropertyVariableUseConst write SetSetPropertyVariableUseConst;
     property CompleteProperties: boolean read FCompleteProperties
                                          write FCompleteProperties;
     property AddInheritedCodeToOverrideMethod: boolean
@@ -473,10 +481,24 @@ begin
   FSourceChangeCache.MainScanner:=Scanner;
 end;
 
+procedure TCodeCompletionCodeTool.SetSetPropertyVariableIsPrefix(aValue: Boolean
+  );
+begin
+  if FSetPropertyVariableIsPrefix = aValue then Exit;
+  FSetPropertyVariableIsPrefix := aValue;
+end;
+
 procedure TCodeCompletionCodeTool.SetSetPropertyVariablename(AValue: string);
 begin
   if FSetPropertyVariablename=aValue then Exit;
   FSetPropertyVariablename:=aValue;
+end;
+
+procedure TCodeCompletionCodeTool.SetSetPropertyVariableUseConst(aValue: Boolean
+  );
+begin
+  if FSetPropertyVariableUseConst = aValue then Exit;
+  FSetPropertyVariableUseConst := aValue;
 end;
 
 function TCodeCompletionCodeTool.OnTopLvlIdentifierFound(
@@ -1410,6 +1432,8 @@ begin
   inherited CalcMemSize(Stats);
   Stats.Add('TCodeCompletionCodeTool',
      MemSizeString(FSetPropertyVariablename)
+    +PtrUInt(SizeOf(FSetPropertyVariableIsPrefix))
+    +PtrUInt(SizeOf(FSetPropertyVariableUseConst))
     +MemSizeString(FJumpToProcName)
     +length(NewClassSectionIndent)*SizeOf(integer)
     +length(NewClassSectionInsertPos)*SizeOf(integer)
@@ -6761,7 +6785,7 @@ var
   end;
 
 var
-  CleanAccessFunc, CleanParamList, ParamList, PropType, VariableName: string;
+  CleanAccessFunc, CleanParamList, ParamList, PropName, PropType, VariableName: string;
   IsClassProp: boolean;
   InsertPos: integer;
   BeautifyCodeOpts: TBeautifyCodeOptions;
@@ -6788,6 +6812,10 @@ var
     end;
     ReadNextAtom; // read name
     Parts[ppName]:=CurPos;
+    PropName := copy(Src,Parts[ppName].StartPos,
+      Parts[ppName].EndPos-Parts[ppName].StartPos);
+    if (PropName <> '') and (PropName[1] = '&') then//property name starts with '&'
+      Delete(PropName, 1, 1);
     ReadNextAtom;
   end;
   
@@ -6966,13 +6994,10 @@ var
       or (CodeCompleteClassNode.Desc in AllClassInterfaces) then
       begin
         // create the default read identifier for a function
-        AccessParam:=AccessParamPrefix+copy(Src,Parts[ppName].StartPos,
-                                   Parts[ppName].EndPos-Parts[ppName].StartPos);
+        AccessParam:=AccessParamPrefix+PropName;
       end else begin
         // create the default read identifier for a variable
-        AccessParam:=BeautifyCodeOpts.PrivateVariablePrefix
-                                 +copy(Src,Parts[ppName].StartPos,
-                                   Parts[ppName].EndPos-Parts[ppName].StartPos);
+        AccessParam:=BeautifyCodeOpts.PrivateVariablePrefix+PropName;
       end;
     end;
 
@@ -7095,6 +7120,7 @@ var
     AccessParamPrefix: String;
     AccessParam: String;
     AccessFunc: String;
+    AccessVariableName, AccessVariableNameParam: String;
   begin
     // check write specifier
     if not PartIsAtom[ppWrite] then exit;
@@ -7108,8 +7134,7 @@ var
       AccessParam:=copy(Src,Parts[ppWrite].StartPos,
             Parts[ppWrite].EndPos-Parts[ppWrite].StartPos)
     else
-      AccessParam:=AccessParamPrefix+copy(Src,Parts[ppName].StartPos,
-            Parts[ppName].EndPos-Parts[ppName].StartPos);
+      AccessParam:=AccessParamPrefix+PropName;
 
     // complete property definition for write specifier
     if (Parts[ppWrite].StartPos<0) and CompleteProperties then begin
@@ -7176,6 +7201,13 @@ var
       // add insert demand for function
       // build function code
       ProcBody:='';
+      AccessVariableName := SetPropertyVariablename;
+      if SetPropertyVariableIsPrefix then
+        AccessVariableName := AccessVariableName+PropName;
+      if SetPropertyVariableUseConst then
+        AccessVariableNameParam := 'const '+AccessVariableName
+      else
+        AccessVariableNameParam := AccessVariableName;
       if (Parts[ppParamList].StartPos>0) then begin
         MoveCursorToCleanPos(Parts[ppParamList].StartPos);
         ReadNextAtom;
@@ -7189,20 +7221,20 @@ var
         if (Parts[ppIndexWord].StartPos<1) then begin
           // param list, no index
           AccessFunc:='procedure '+AccessParam
-                      +'('+ParamList+';'+SetPropertyVariablename+':'
+                      +'('+ParamList+';'+AccessVariableNameParam+':'
                       +PropType+');';
         end else begin
           // index + param list
           AccessFunc:='procedure '+AccessParam
                       +'(AIndex:'+IndexType+';'+ParamList+';'
-                      +SetPropertyVariablename+':'+PropType+');';
+                      +AccessVariableNameParam+':'+PropType+');';
         end;
       end else begin
         if (Parts[ppIndexWord].StartPos<1) then begin
           // no param list, no index
           AccessFunc:=
             'procedure '+AccessParam
-            +'('+SetPropertyVariablename+':'+PropType+');';
+            +'('+AccessVariableNameParam+':'+PropType+');';
           if VariableName<>'' then begin
             { read spec is a variable -> add simple assign code to body
               For example:
@@ -7230,14 +7262,14 @@ var
               ProcBody:=
                 'procedure '
                 +ExtractClassName(PropNode.Parent.Parent,false)+'.'+AccessParam
-                +'('+SetPropertyVariablename+':'+PropType+');'
+                +'('+AccessVariableNameParam+':'+PropType+');'
                 +BeautifyCodeOpts.LineEnd
                 +'begin'+BeautifyCodeOpts.LineEnd
                 +BeautifyCodeOpts.GetIndentStr(BeautifyCodeOpts.Indent)
-                  +'if '+VariableName+'='+SetPropertyVariablename+' then Exit;'
+                  +'if '+VariableName+'='+AccessVariableName+' then Exit;'
                   +BeautifyCodeOpts.LineEnd
                 +BeautifyCodeOpts.GetIndentStr(BeautifyCodeOpts.Indent)
-                  +VariableName+':='+SetPropertyVariablename+';'
+                  +VariableName+':='+AccessVariableName+';'
                   +BeautifyCodeOpts.LineEnd
                 +'end;';
             end;
@@ -7247,7 +7279,7 @@ var
         end else begin
           // index, no param list
           AccessFunc:='procedure '+AccessParam
-                  +'(AIndex:'+IndexType+';'+SetPropertyVariablename+':'+PropType+');';
+                  +'(AIndex:'+IndexType+';'+AccessVariableNameParam+':'+PropType+');';
         end;
       end;
       // add new Insert Node
@@ -7283,8 +7315,7 @@ var
       AccessParam:=copy(Src,Parts[ppStored].StartPos,
             Parts[ppStored].EndPos-Parts[ppStored].StartPos);
     end else
-      AccessParam:=copy(Src,Parts[ppName].StartPos,
-        Parts[ppName].EndPos-Parts[ppName].StartPos)
+      AccessParam:=PropName
         +BeautifyCodeOpts.PropertyStoredIdentPostfix;
     CleanAccessFunc:=UpperCaseStr(AccessParam);
     // check if procedure exists
@@ -9300,6 +9331,8 @@ constructor TCodeCompletionCodeTool.Create;
 begin
   inherited Create;
   FSetPropertyVariablename:='AValue';
+  FSetPropertyVariableIsPrefix := false;
+  FSetPropertyVariableUseConst := false;
   FCompleteProperties:=true;
   FAddInheritedCodeToOverrideMethod:=true;
 end;
