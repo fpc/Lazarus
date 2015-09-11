@@ -1640,8 +1640,6 @@ end;
 
 procedure TCocoaButton.actionButtonClick(sender: NSObject);
 begin
-  if CocoaWidgetSet.IsControlDisabledDueToModal(Self) then Exit;
-
   // this is the action handler of button
   if Assigned(callback) then
     callback.ButtonClick;
@@ -2276,6 +2274,7 @@ end;
 function LCLControlExtension.lclIsEnabled:Boolean;
 begin
   Result := IsEnabled;
+  if Result and CocoaWidgetSet.IsControlDisabledDueToModal(Self) then Result := False;
 end;
 
 procedure LCLControlExtension.lclSetEnabled(AEnabled:Boolean);
