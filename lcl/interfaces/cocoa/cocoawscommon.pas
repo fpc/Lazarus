@@ -51,7 +51,7 @@ type
     function GetTarget: TObject;
     function GetCallbackObject: TObject;
     function MouseUpDownEvent(Event: NSEvent): Boolean; virtual;
-    function KeyEvent(Event: NSEvent): Boolean; virtual;
+    function KeyEvent(Event: NSEvent; AForceAsKeyDown: Boolean = False): Boolean; virtual;
     procedure MouseClick; virtual;
     function MouseMove(Event: NSEvent): Boolean; virtual;
     function scrollWheel(Event: NSEvent): Boolean; virtual;
@@ -280,7 +280,7 @@ begin
 end;
 
 
-function TLCLCommonCallback.KeyEvent(Event: NSEvent): Boolean;
+function TLCLCommonCallback.KeyEvent(Event: NSEvent; AForceAsKeyDown: Boolean): Boolean;
 var
   UTF8VKCharacter: TUTF8Char; // char without modifiers, used for VK_ key value
   UTF8Character: TUTF8Char;   // char to send via IntfUtf8KeyPress
@@ -290,7 +290,7 @@ var
   VKKeyCode: word;         // VK_ code
   IsSysKey: Boolean;       // Is alt (option) key down?
   KeyData: PtrInt;         // Modifiers (ctrl, alt, mouse buttons...)
-
+  eventType: NSEventType;
 
 (*
   Mac keycodes handling is not so straight. For an explanation, see
@@ -631,7 +631,11 @@ var
   end;
 
 begin
-  case Event.type_ of
+  eventType := Event.type_;
+  if AForceAsKeyDown then
+    eventType := NSKeyDown;
+
+  case eventType of
     NSKeyDown:
       begin
         if not TranslateMacKeyCode then

@@ -50,7 +50,7 @@ type
     function MouseUpDownEvent(Event: NSEvent): Boolean;
     procedure MouseClick;
     function MouseMove(Event: NSEvent): Boolean;
-    function KeyEvent(Event: NSEvent): Boolean;
+    function KeyEvent(Event: NSEvent; AForceAsKeyDown: Boolean = False): Boolean;
     function scrollWheel(Event: NSEvent): Boolean;
     // size, pos events
     procedure frameDidChange;
@@ -247,6 +247,9 @@ type
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
     function lclIsHandle: Boolean; override;
+    // key
+    //procedure keyDown(event: NSEvent); override; -> keyDown doesn't work in NSTextField
+    procedure keyUp(event: NSEvent); override;
   end;
 
   { TCocoaSecureTextField }
@@ -262,6 +265,9 @@ type
     function resignFirstResponder: Boolean; override;
     procedure resetCursorRects; override;
     function lclIsHandle: Boolean; override;
+    // key
+    //procedure keyDown(event: NSEvent); override; -> keyDown doesn't work in NSTextField
+    procedure keyUp(event: NSEvent); override;
   end;
 
 
@@ -1862,6 +1868,18 @@ begin
     inherited resetCursorRects;
 end;
 
+procedure TCocoaTextField.keyUp(event: NSEvent);
+begin
+  if Assigned(callback) then
+  begin
+    // NSTextField doesn't provide keyDown, so emulate it here
+    callback.KeyEvent(event, True);
+    // keyUp now
+    callback.KeyEvent(event);
+  end;
+  inherited keyUp(event);
+end;
+
 { TCocoaTextView }
 
 function TCocoaTextView.lclIsHandle: Boolean;
@@ -1988,6 +2006,18 @@ procedure TCocoaSecureTextField.resetCursorRects;
 begin
   if not callback.resetCursorRects then
     inherited resetCursorRects;
+end;
+
+procedure TCocoaSecureTextField.keyUp(event: NSEvent);
+begin
+  if Assigned(callback) then
+  begin
+    // NSTextField doesn't provide keyDown, so emulate it here
+    callback.KeyEvent(event, True);
+    // keyUp now
+    callback.KeyEvent(event);
+  end;
+  inherited keyUp(event);
 end;
 
 { TCocoaCustomControl }
