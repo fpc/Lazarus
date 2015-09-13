@@ -134,10 +134,10 @@ begin
   begin
     IDEComponentPalette.SetSelectedComp(LComponent, ssShift in GetKeyShiftState);
     // deactivate "Selection tool button"
-    // wszystkie przyciski z komponentami AllowAllUp := False i dla Selection tool AllowAllUp := True
+    // all buttons with components AllowAllUp := False and for Selection tool AllowAllUp := True
     for i in LSender.Owner do
       if i is TSpeedButton then
-        // trik z LSender.Down dla DblClick
+        // trick with LSender.Down for DblClick
         if (LButton.Tag <> 0) then
           LButton.AllowAllUp := False
         else // Selection tool
@@ -204,12 +204,12 @@ begin
 
   LClass := AComponent.ComponentClass;
 
-  // forma dla której kliknelismy komponent niekoniecznie musi być aktywna...
+  // form for which was clicked component - this form does not necessarily have to be active...
   GlobalDesignHook.LookupRoot := FRoot;
 
   LParent := FormEditingHook.GetDefaultComponentParent(LClass);
 
-  // domyslna pozycja
+  // default position
   if not Assigned(LParent) or not FormEditingHook.GetDefaultComponentPosition(LClass, LParent, LPos.X, LPos.Y) then
     exit;
 
@@ -265,7 +265,7 @@ begin
   LSearchResult.TabVisible := FFilter <> '';
   if FFilter = '' then
   begin
-    // pokaz wszystko
+    // show all
     for i := 1 to pcComponents.PageCount - 1 do
     begin
       pcComponents.Pages[i].TabVisible := True;
@@ -277,7 +277,7 @@ begin
       end;
     end;
   end
-  // filtrujemy!
+  // use filter !
   else
   begin
 {$IFDEF USE_GENERICS_COLLECTIONS}
@@ -308,7 +308,7 @@ begin
       pcComponents.Pages[i].TabVisible := LVisibleButtons > 0;
     end;
 
-    // dodaj wszystkie buttony na nowa zakladke z wynikami
+    // add all buttons to the new page with results
     LPComponents := FPages[LSearchResult].FComponents;
     for i := LPComponents.ControlCount - 1 downto 0  do
       LPComponents.Controls[i].Free;
@@ -580,7 +580,7 @@ procedure TComponentsPalette.UpdateComponentsList;
     FPages.insert(LPage, TPageData.Create(LUpDown, LPComponents, LButton));
 {$ENDIF}
 
-    // nie wszystkie kart maja komponenty - np. wyniki wyszukiwania
+    // not each page has components - for example: searching result
     if (APage = nil) or (not APage.Visible) then
       Exit;
 
@@ -653,7 +653,7 @@ end;
 procedure TComponentsPalette.OnDesignSetSelection(
   const ASelection: TPersistentSelectionList);
 begin
-  // tylko dla zastepstwa oryginalnej palety
+  // to replace original components palette
   if not FIgnoreRoot then
     Exit;
 

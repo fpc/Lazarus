@@ -25,30 +25,7 @@ uses
   SrcEditorIntf;
 
 type
-  // class hacks for scrolling windows without bars
-  TControlScrollBarHack = class(TPersistent)
-  public
-    FAutoRange: Longint; // = FRange - ClientSize, >=0
-    FIncrement: TScrollBarInc;
-    FKind: TScrollBarKind;
-    FPage: TScrollBarInc;
-    FPosition: Integer;
-    FRange: Integer;
-    FSmooth: Boolean;
-    FTracking: Boolean;
-    FVisible: Boolean;
-  end;
-
-  TScrollingWinControlHack = class(TCustomControl)
-  private
-    FHorzScrollBar: TControlScrollBar;
-    FVertScrollBar: TControlScrollBar;
-  end;
-
-  { TFakeCustomForm }
-
   { TDesignedFormImpl }
-
 
 {$IFDEF USE_GENERICS_COLLECTIONS}
   TDesignedFormImpl = class(TSingletonImplementation, IDesignedRealFormHelper, IDesignedForm)
@@ -134,6 +111,8 @@ type
     function QueryInterface(constref IID: TGUID; out Obj): HResult; override;
   end;
 
+  { TFakeCustomForm }
+
   TFakeCustomForm = class(TForm, IDesignedRealForm, IDesignedForm)
   private
     FDesignedForm: TDesignedFormImpl;
@@ -215,8 +194,6 @@ type
   end;
 
 
-  { TFakeCustomFrame }
-
   { TDesignedFrameFormImpl }
 
   TDesignedFrameFormImpl = class(TDesignedFormImpl)
@@ -224,6 +201,8 @@ type
     function GetPublishedBounds(AIndex: Integer): Integer; override;
     procedure SetPublishedBounds(AIndex: Integer; AValue: Integer); override;
   end;
+
+  { TFakeCustomFrame }
 
   TFakeCustomFrame = class(TFrameProxyDesignerForm, IDesignedRealForm, IDesignedForm)
   private
@@ -337,8 +316,7 @@ begin
     end;
   end;
 
-  // niepotrzebne bo juz trzymamy wartosci w TFrame ale jak szalec to szalec ;D
-  // żartowalem. trzeba zrobic refresh w OI
+  // refresh for OI
   inherited SetPublishedBounds(AIndex, AValue);
 end;
 
@@ -370,8 +348,7 @@ begin
       3: Height := AValue;
     end;
 
-  // niepotrzebne bo juz trzymamy wartosci w TFrame ale jak szalec to szalec ;D
-  // żartowalem. trzeba zrobic refresh w OI
+  // refresh for OI
   inherited SetPublishedBounds(AIndex, AValue);
 end;
 
@@ -425,8 +402,8 @@ end;
 
 destructor TFakeCustomFrame.Destroy;
 begin
-  // trzeba wywolac "Screen.RemoveForm" by pozostala czesc silnika
-  // wyzerowala referencje przez IDesignedForm do FDesignedForm
+  // we need to call "Screen.RemoveForm" to perform
+  // references back to nil by IDesignedForm to FDesignedForm
   inherited Destroy;
   if Assigned(FDesignedForm) then
     FDesignedForm.Free;
@@ -553,8 +530,8 @@ end;
 
 destructor TFakeCustomNonControl.Destroy;
 begin
-  // trzeba wywolac "Screen.RemoveForm" by pozostala czesc silnika
-  // wyzerowala referencje przez IDesignedForm do FDesignedForm
+  // we need to call "Screen.RemoveForm" to perform
+  // references back to nil by IDesignedForm to FDesignedForm
   inherited Destroy;
   if Assigned(FDesignedForm) then
     FDesignedForm.Free;
@@ -730,8 +707,8 @@ end;
 
 destructor TFakeCustomForm.Destroy;
 begin
-  // trzeba wywolac "Screen.RemoveForm" by pozostala czesc silnika
-  // wyzerowala referencje przez IDesignedForm do FDesignedForm
+  // we need to call "Screen.RemoveForm" to perform
+  // references back to nil by IDesignedForm to FDesignedForm
   inherited Destroy;
   if Assigned(FDesignedForm) then
     FDesignedForm.Free;
@@ -919,46 +896,22 @@ end;
 /////// positions
 
 procedure TDesignedFormImpl.SetHorzScrollPosition(AValue: Integer);
-{var
-  LOldValue: Integer;}
 begin
   RealLeft := -AValue;
-  {if AValue = FHorzScrollPosition then
-    Exit;
-
-  LOldValue := FHorzScrollPosition;
-  FHorzScrollPosition := AValue;
-  TControlScrollBarHack(TScrollingWinControlHack(FOwner).FHorzScrollBar).FPosition := AValue;
-  FOwner.ScrollBy(LOldValue-AValue, 0);}
 end;
 
 procedure TDesignedFormImpl.SetVertScrollPosition(AValue: Integer);
-{var
-  LOldValue: Integer;}
 begin
   RealTop := -AValue;
-  {if AValue = FVertScrollPosition then
-    Exit;
-
-  LOldValue := FVertScrollPosition;
-  FVertScrollPosition := AValue;
-  TControlScrollBarHack(TScrollingWinControlHack(FOwner).FVertScrollBar).FPosition := AValue;
-  FOwner.ScrollBy(LOldValue-AValue, 0);}
 end;
 
 function TDesignedFormImpl.GetHorzScrollPosition: Integer;
 begin
-  {
-  Result := FHorzScrollPosition;
-  }
   Result := -RealLeft;
 end;
 
 function TDesignedFormImpl.GetVertScrollPosition: Integer;
 begin
-  {
-  Result := FVertScrollPosition;
-  }
   Result := -RealTop;
 end;
 

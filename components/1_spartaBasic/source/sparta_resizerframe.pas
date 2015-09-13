@@ -133,26 +133,25 @@ implementation
 
 { TResizerFrame }
 
-procedure TileImage(const ASource: TImage;
-    ATarget: TCanvas; AX, AY, AWidth, AHeight: Integer);
 // Tiles the source image over the given target canvas
+procedure TileImage(const ASource: TImage; ATarget: TCanvas; AX, AY,
+  AWidth, AHeight: Integer);
 var
-  X, Y: Integer;
-  dX, dY: Integer;
+  LX, LY, LDeltaX, LDeltaY: Integer;
 begin
-  dX := ASource.Width;
-  dY := ASource.Height;
-  Y := 0;
-  while Y < AHeight do
+  LDeltaX := ASource.Width;
+  LDeltaY := ASource.Height;
+  LY := 0;
+  while LY < AHeight do
+  begin
+    LX := 0;
+    while LX < AWidth do
     begin
-      X := 0;
-      while X < AWidth do
-        begin
-          ATarget.Draw(AX + X, AY + Y, ASource.Picture.graphic);
-          Inc(X, dX);
-        end;
-      Inc(Y, dY);
+      ATarget.Draw(AX + LX, AY + LY, ASource.Picture.graphic);
+      Inc(LX, LDeltaX);
     end;
+    Inc(LY, LDeltaY);
+  end;
 end;
 
 procedure TResizerFrame.sbVerticalScroll(Sender: TObject;
@@ -168,7 +167,8 @@ begin
   PositionNodes(Self);
 
   if Assigned(FOnVerticalScroll)
-    // for refresh from this class pass sender as nil. in other case program will go into infinity loop
+    // for refresh from this class, pass sender as nil.
+    // In other case program will go into infinity loop
     and (Sender <> nil) then
     FOnVerticalScroll(Sender, ScrollCode, ScrollPos);
 end;
@@ -186,7 +186,8 @@ begin
   PositionNodes(Self);
 
   if Assigned(FOnHorizontalScroll)
-    // for refresh from this class pass sender as nil. in other case program will go into infinity loop
+    // for refresh from this class, pass sender as nil.
+    // In other case program will go into infinity loop
     and (Sender <> nil) then
     FOnHorizontalScroll(Sender, ScrollCode, ScrollPos);
 end;
@@ -304,22 +305,8 @@ begin
     with Panel do
     begin
       BevelOuter := bvNone;
-      // TODO
-      {
-      BorderBCStyle:= bpsBorder;
-      Border.Style:= bboSolid;
-      BevelWidth:=5;
-      }
-
-
       Color := clBlack;
-      // TODO
-      {
-      if Node in [3,4,5] then
-        Background.Color:=clBtnFace
-      else
-        Background.Color:=clGray;
-      }
+
       Name := 'Node' + IntToStr(Node);
       Caption:='';
       Width := SIZER_RECT_SIZE;
@@ -381,7 +368,7 @@ begin
   begin
     FNodePositioning:=True;
 
-    // podczas resize zasady nas nie obowiązują :)
+    // when we start resizing the rules do not apply to us :)
     FMaxWidth := Constraints.MaxWidth;
     FMaxHeight := Constraints.MaxHeight;
     Constraints.MaxWidth := 0;
@@ -403,8 +390,8 @@ begin
       BorderSpacing.Bottom := Max(Self.Height - (pB.Top - BgBottomMargin), 0);
     end;
 
-    // jesli byl aktywny ActivePropertyGrid.ItemIndex dla wysokosci lub szerekosci w trakcie skalowania
-    // wartosci sie gryzly :<
+    // when was active ActivePropertyGrid.ItemIndex for height or width during scaling
+    // there was problem with values :<
     if ((Sender = pR) or (Sender = pB) or (FNodes.IndexOf(Sender) in [3,4,5])) and (FormEditingHook.GetCurrentObjectInspector <> nil) then
     begin
       FActivePropertyGridItemIndex := FormEditingHook.GetCurrentObjectInspector.GetActivePropertyGrid.ItemIndex;
@@ -415,9 +402,8 @@ begin
 
     SetCapture(TWinControl(Sender).Handle);
     GetCursorPos(FOldPos);
-    // przygotuj deltę kliknięcia (sizery mają szerokosc i wysokosc wiec nie wszystko dzialalo ok
-    // wystepowal maly skok
-    // do tego dolicz deltę powstala jesli sa scroolbary i ich pozycję...
+    // perform first "click delta" to reduce leap
+    // + calculate delta created by scrollbars and theirs position...
     FillChar(FDelta, SizeOf(FDelta), #0);
     LCtrlPoint := (Sender as TWinControl).ScreenToClient(Mouse.CursorPos);
     if Sender = pR then
@@ -584,7 +570,7 @@ begin
 
     if (FDesignedForm <> nil) then
     begin
-      // after resizing, TFrame is frozen in Windows
+      // after resizing, TFrame is frozen in Windows OS
       // this is trick to workaraund IDE bug.
       DesignedForm.BeginUpdate;
       DesignedForm.RealWidth := DesignedForm.RealWidth + 1;
@@ -725,7 +711,7 @@ begin
   if FDesignedForm = nil then
     Exit;
 
-  // pozycje pasków
+  // positions of bars
   if not FNodePositioning then
   begin
   pL.Left := -FHorizontalScrollPos;
@@ -733,7 +719,7 @@ begin
   pT.Top := -FVerticalScrollPos;
   pB.Top := FDesignedForm.Height - FVerticalScrollPos + pT.Height + BgBottomMargin + BgTopMargin;
 
-  // szerokosci i wysokosci
+  // width and height
   pL.Top:=0;
   pL.Height := FDesignedForm.Height + 2*SIZER_RECT_SIZE + BgTopMargin + BgBottomMargin;
   pR.Top:=0;

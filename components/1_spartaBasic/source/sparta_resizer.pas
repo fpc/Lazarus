@@ -39,10 +39,10 @@ type
 
     procedure FunnyButtonClick(Sender: TObject);
   protected
-    // By poprawnie dzialal scroolbar z "PageSize" trzeba pamiętać prawdziwe
-    // maxymalne wartosci (co prawda nie mozna przesuwac suwakiem poza zakres Max - PageSize,
-    // jednak po kliknieciu przycisku przesuwajacego maxymalna wartosc wynosi już max)
-    // obejsciem tego problematycznego problemu jest pamiętanie we wlasnym zakresie maxymalnej wartosci
+    // To perform proper behaviour for scroolbar with "PageSize" we need to remember real
+    // maximal values (is possible to scroll outside of range 0..(Max - PageSize),
+    // after mouse click in button responsible for changing value of scrollbar,
+    // our value is equal to Max :\). Workaround: we need to remember real max value in our own place
     FRealMaxH: Integer;
     FRealMaxV: Integer;
     FSpecialMargin: array[0..3] of Integer;
@@ -125,8 +125,8 @@ begin
 
     FDesignedForm.EndUpdate;
     FDesignedForm.OnChangeHackedBounds := @TryBoundSizerToDesignedForm;
-    // w tym miejscu powinno już być zainicjalizowane obecnym edytorem na ktorym jest sizer :)
-    // zautomatyzowac jakims interfejsem utilsy?
+    // in this place DesignedForm should be initialized by current editor (+ "sizer")
+    // TODO some interfaces for utils (Design Time Utils - DTU) ?
     LLookupRoot := LookupRoot(DesignedForm.Form);
 
     if FMainDTU <> nil then
@@ -180,11 +180,11 @@ begin
   FDesignedForm.BeginUpdate;
   if Sender = sbV then
   begin
-    // uwazaj by nie przekroczyc zakresu. Max ma calkowita wartosc wlacznie z codepage (patrz opis zmiennej FRealMaxV)
+    // Warning - don't overflow the range! (go to description for FRealMaxV)
     ScrollPos := Min(ScrollPos, FRealMaxV);
     FResizerFrame.VerticalScrollPos := ScrollPos;
-    // scroll w formie
-    with FResizerFrame do // -8 gdy skalujemy formę i gdzy przestaje wymagać scrolla -> stąd Max
+    // scroll for form
+    with FResizerFrame do // -8 when we scaling the form and we don't need to scroll -> there is Max
       LScrollPos := Max(ifthen(pBG.Top + BgTopMargin <= 0, ScrollPos - SIZER_RECT_SIZE - BgTopMargin, 0), 0);
     FDesignedForm.VertScrollPosition := LScrollPos;
   end;
@@ -192,7 +192,7 @@ begin
   begin
     ScrollPos := Min(ScrollPos, FRealMaxH);
     FResizerFrame.HorizontalScrollPos := ScrollPos;
-    // scroll w formie
+    // scroll for form
     with FResizerFrame do
       LScrollPos := Max(ifthen(pBG.Left + BgLeftMargin <= 0, ScrollPos - SIZER_RECT_SIZE - BgLeftMargin, 0), 0);
     FDesignedForm.HorzScrollPosition := LScrollPos;
@@ -324,7 +324,7 @@ begin
   begin
     FResizerFrame.Width := LWidth;
     FResizerFrame.Height := LHeight;
-    // zaraportować... po rozszerzeniu i po zmniejszeniu constrait nie dzia dla frame (LCL bug)
+    // after enlargement and after reducing constrait not work for frame (LCL bug)
     if FResizerFrame.Width > FResizerFrame.Constraints.MaxWidth then
       FResizerFrame.Width := FResizerFrame.Constraints.MaxWidth;
     if FResizerFrame.Height > FResizerFrame.Constraints.MaxHeight then
@@ -358,7 +358,8 @@ begin
   {!}
   FResizerFrame.ClientChangeBounds(nil);
 
-  // kazdy edytor moze miec scrole w roznych pozycjach. ten event jest wywolywany i to jedyna mozliwosc ustawienia pozycji
+  // each editor can have scrolls in different positions.
+  // this is our place where we can call event to set scroll positions.
   LScrollPos := FResizerFrame.VerticalScrollPos;
   sbScroll(sbV, scEndScroll, LScrollPos);
   LScrollPos := FResizerFrame.HorizontalScrollPos;

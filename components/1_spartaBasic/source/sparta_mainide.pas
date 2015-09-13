@@ -391,7 +391,8 @@ begin
 {$ENDIF}
 end;
 
-// sometimes at some level of initialization form can not contain TIDesigner (during ide run and when is oppened default project with some TForm1)
+// sometimes at some level of initialization form can not contain TIDesigner
+// (during ide run and when is oppened default project with some TForm1)
 function FindDesignFormData(AForm: TCustomForm): TDesignFormData; overload;
 var
   f: TDesignFormData;
@@ -632,7 +633,8 @@ end;
 procedure TModulePageControl.SetDesignFormData(const AValue: TDesignFormData);
 begin
   if (AValue = FDesignFormData) then
-    // for show lfm code, if we want after editing lfm go back to form without any error (error can be raised even when we restart IDE)
+    // for show lfm code, if we want after editing lfm go back to form without any error
+    // (when we restart IDE some error can be raised )
     if Assigned(FResizer) then
     begin
       if FResizer.DesignedForm = AValue as IDesignedForm then
@@ -692,10 +694,8 @@ begin
   if FActiveDesignFormData = AValue then
     Exit;
 
-  // ukrywanie jest też w resize. To zdarzenie jest potrzebne gdyż nie zachodzi OnChange ModulePageCtrl
-  // tylko można przelaczyc kod z zakladkami z kodem i window jest still active :)
   if FActiveDesignFormData <> nil then
-    // nie chowaj jesli forma ma byc schowana podczas przechwytywania na starcie
+    // don't hide now if soon form will be hidden (for example on the IDE start)
     if not FActiveDesignFormData.FHiding then
     begin
       FActiveDesignFormData.FForm.HideWindow;
@@ -718,7 +718,7 @@ begin
     LazarusIDE.DoShowDesignerFormOfSrc(FForm.ActiveEditor);
   end;
 
-  // gdy DestroyEditor - z tego miejsca nie jestesmy w stanie ustalic pagecontrol po FForm (trzebabyprzechowywac lastactiveeditor)
+  // when is fired DestroyEditor - from this place we can't navigate to pagecontrol by FForm (we need to handle lastactiveeditor)
   if LPageCtrl = nil then
     Exit;
 
@@ -1216,20 +1216,20 @@ begin
 
     LDesignFormData := FindDesignFormData(LPageCtrl);
 
-    // thanks this when we switch tab, design form is hidden
+    // when we switch tab, design form should be hidden
     if (LDesigner = nil) or (LDesignFormData = nil) then
       SourceEditorWindows[LSourceEditorWindow].ActiveDesignFormData := nil
     else
     begin
-      // podczas ladowania formy np. z paczki przypisanie ActiveDesignFormData
-      // blokuje kolejke komunikatow chowajacych forme i nie zachodzi zdarzenie
-      // ktore ustawia hiding na false. Nie mozna od razu sprawdzic tego bo istnieja formy
-      // (np. nieobsluzone design - frame na wczesnym etapie) ktore zwracaja puste designformdata
-      // moze w przyszlosci to nie bedzie potrzebne
+      // during form  loading for example from package, ActiveDesignFormData assignment,
+      // blocks the message queue responsible for hiding form
+      // We can't check it because there are some forms where designing is not handled yet.
+      // (for that kind of forms is returned empty designformdata)
+      // maybe we can fix this in future
       if not LDesignFormData.FHiding then
-        // zapobiega nadawaniu captiona formy jako eFormCaption z kliknięcia :)
+        // Prevent unexpected events (when is deactivated some control outside designed form)
         if (LDesignFormData.Form.LastActiveSourceWindow = LSourceEditorWindow)
-        // important!!! for many error - przelaczanie sie miedzy edytorami...
+        // important!!! for many error - switching between editors...
         and (LPageCtrl.PageIndex = 1) then
           SourceEditorWindows[LSourceEditorWindow].ActiveDesignFormData := LDesignFormData
         else
@@ -1271,15 +1271,15 @@ var
   LSourceEditorWindow: TSourceEditorWindowInterface;
   LFormData: TDesignFormData;
 begin
-  // sender jest specjalnym parametrem. mozliwa jest sytuacja podczas przenoszenia eytora
-  // ze nie zostalo wywolane EditorDestroy - patrz editoractivate
+  // sender is here as special parameter, because is possible situation where is moved editor
+  // to another window and was not triggered EditorDestroy - for more info goto editoractivate
   if Sender = nil then
     LSourceEditor := LastActiveSourceEditor
   else
     LSourceEditor := TSourceEditorInterface(Sender);
 
-  // parent już nie istnieje i musimy szukać po wszystkich oknach ...
-  if Sender = nil then // ale nie dla tej sytuacji
+  // parent don't exist anymore and we must search in each window...
+  if Sender = nil then // but not for Sender = nil :P
     LPageCtrl := SourceEditorWindows[LastActiveSourceEditorWindow].FPageCtrlList[LastActiveSourceEditor]
   else
     LPageCtrl := AbsoluteFindModulePageControl(LSourceEditor);
@@ -1289,7 +1289,7 @@ begin
 
   LFormData := FindDesignFormData(LSourceEditor.GetDesigner(False));
 
-  // patrz komentarz na poczatku (wymuszone destroy)
+  // goto first comment (forced destroy)
   if Sender = nil then
     LSourceEditorWindow := LastActiveSourceEditorWindow
   else
@@ -1364,14 +1364,14 @@ var
   LPageCtrl: TModulePageControl;
   LSourceWndData: TSourceEditorWindowData;
 begin
-  // activate right source editor window when user is clicking on page.
+  // activate proper source editor window when user is clicking on page.
   // (at clicking time can be active other source window)
   LActiveSourceWindow := TComponent(Sender).Owner as TSourceEditorWindowInterface;
   if LActiveSourceWindow <> SourceEditorManagerIntf.ActiveSourceWindow then
     SourceEditorManagerIntf.ActiveSourceWindow := LActiveSourceWindow;
 
   LPageCtrl := TModulePageControl(Sender);
-  // if in some key there is no module and is visible page other than code page.
+  // in case there is no module and is visible page other than code page.
   if (LActiveSourceWindow.ActiveEditor <> nil) and (LPageCtrl <> nil) then
   begin
     LDesigner := LActiveSourceWindow.ActiveEditor.GetDesigner(True);
@@ -1387,7 +1387,7 @@ begin
           end;
         1:
           begin
-            // deaktywuj zakladke design w pozostalych page control :)
+            //  deactivate design tab in other page control :)
             for w in SourceEditorWindows.Keys do
               if w = LActiveSourceWindow then
                 Continue
@@ -1399,7 +1399,7 @@ begin
                   end;
 
             LSourceWndData.ActiveDesignFormData := LFormData;
-            // rozne okna moga miec rozne rozmiary
+            // to handle windows with different size
             LPageCtrl.BoundToDesignTabSheet;
           end;
       end;
@@ -1415,7 +1415,7 @@ begin
           end;
         1:
           begin
-            // deaktywuj zakladke design w pozostalych page control :)
+            // deactivate design tab in other page control :)
             LIterator := SourceEditorWindows.Iterator;
             if LIterator <> nil then
             try
@@ -1443,7 +1443,7 @@ begin
             end;
 
             LSourceWndData.ActiveDesignFormData := LFormData;
-            // rozne okna moga miec rozne rozmiary
+            // to handle windows with different size
             LPageCtrl.BoundToDesignTabSheet;
           end;
       end;
@@ -1484,7 +1484,7 @@ var
   LWindowData: TSourceEditorWindowData;
   LDesignForm: TDesignFormData;
 begin
-  // sprawdź rodzica czy siezmienil. jesli tak to znaczy ze oddokowalismy zadokowalismy okno i trzeba wykonac pewne akcje
+  // Check parent. Maybe is different? If yes then window changed state (docked/undocked) and we need to perform few actions
   LWindow := Sender as TSourceEditorWindowInterface;
 
   // dock/undock event :)
@@ -1499,11 +1499,11 @@ begin
   if LWindowData.FLastTopParent <> LWindow.GetTopParent then
   begin
     LWindowData.FLastTopParent := LWindow.GetTopParent;
-    // trzeba zrobic refresh w popupparent
+    // refresh for popupparent
     LDesignForm := LWindowData.ActiveDesignFormData;
     LWindowData.ActiveDesignFormData := nil;
     LWindowData.ActiveDesignFormData := LDesignForm;
-    // ten postmessage cos rozwala w dokowaniu, trzeba wydelegowac to do design form ...
+    // ...
     //PostMessage(LWindow.Handle, WM_BoundToDesignTabSheet, 0, 0);
     if LDesignForm <> nil then
     begin
@@ -1545,33 +1545,16 @@ begin
   LPageCtrl := FindModulePageControl(SourceEditorManagerIntf.ActiveEditor);
 
   if LPageCtrl = nil then
-    Exit; // nie powinno sie zdarzyc ale kto wie :P to IDE bywa zlosliwe
-
-  // lekarstwo na buga gdy pomimo otwartej zakladki design, klikniemy poza obszarem roboczym formy (np.
-  // w zakladke designer, IDE aktywowac usiluje forme co jest bledem. musimy przezucic sie na "Code"
-  {case LPageCtrl.PageIndex of
-    0: LPageCtrl.PageIndex := 1;
-    1: LPageCtrl.PageIndex := 0;
-  end;}
-
-  // powyzsze jest jednak falszywe. dodawanie komponentow na forme wszystko papralo i na przemian pokazywal sie kod
-  // albo forma. jedyne logiczne rozwiazanie to uzycie OnUserInputHandler i sprawdzanie ActiveEditor i przypisanego
-  // mu ModulePage ktory ciagle ustawia stan na Designer dla F12.
-
-  // przy double widoku (forma + clon z kodem) w chwili wybierania componentow nie mozna sie przelaczyc...
-  //  przemyslec ... (dodatkowy parametr dla tej metody? Show for components?)
+    Exit; // it should not happen but who knows :P Lazarus IDE is sometimes mischievous
 
   if AComponentPaletteClassSelected then
   begin
-    // sprawdź czy forma juz jest gdzies otwarta w edytorze. jesli nie jesli sie da
-    // pokaz dla obecnie aktywnego modulu.
+    // if form is already opened do nothing, if not then show form for active module.
 {$IFDEF USE_GENERICS_COLLECTIONS}
     for w in SourceEditorWindows.Keys do
     begin
       e := w.ActiveEditor;
-      // zakomentowano, bo wkurwiajace bylo ze dzialalo to dla kazdego editora...
-      if (e = nil) or (e.GetDesigner(True) <> LForm.Form.Form.Designer) then  // mozna to wyelminowac tworzac event zwracajacy ze
-      // nie mozna pokazac formy... albo propert
+      if (e = nil) or (e.GetDesigner(True) <> LForm.Form.Form.Designer) then
         Continue;
 
       p := FindModulePageControl(e);
@@ -1585,9 +1568,7 @@ begin
       repeat
         w := LIterator.Key;
         e := w.ActiveEditor;
-        // zakomentowano, bo wkurwiajace bylo ze dzialalo to dla kazdego editora...
-        if (e = nil) or (e.GetDesigner(True) <> LForm.Form.Form.Designer) then  // mozna to wyelminowac tworzac event zwracajacy ze
-        // nie mozna pokazac formy... albo propert
+        if (e = nil) or (e.GetDesigner(True) <> LForm.Form.Form.Designer) then
           Continue;
 
         p := FindModulePageControl(e);
