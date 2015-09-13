@@ -70,7 +70,6 @@ type
     fBuffer: TMemoryStream;
     fFirstAttribute: boolean;
     procedure AssignFont(Value: TFont);
-    procedure SetExportAsText(Value: boolean);
     procedure SetFont(Value: TFont);
     procedure SetHighlighter(Value: TSynCustomHighlighter);
     procedure SetTitle(const Value: string);
@@ -147,6 +146,7 @@ type
     { Returns a string that has all the invalid chars of the output format
       replaced with the entries in the replacement array. }
     function ReplaceReservedChars(AToken: string; out IsSpace: boolean): string;
+    procedure SetExportAsText(Value: boolean); virtual;  //TSynExportHtml needs to override it
     { Sets the token attribute of the next token to determine the changes
       of colors and font styles so the properties of the next token can be
       added to the output buffer. }

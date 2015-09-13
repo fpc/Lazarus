@@ -46,17 +46,31 @@ interface
 uses
   Classes,
   LCLIntf, LCLType, Graphics, ClipBrd,
-  SynEditExport;
+  SynEditExport, LCLProc, LazUtf8;
 
 type
   THTMLFontSize = (fs01, fs02, fs03, fs04, fs05, fs06, fs07, fsDefault);        //eb 2000-10-12
 
+  TExportHtmlOption = (
+    heoFragmentOnly, //no surrounding <html><body>...</body><html> Note: will exclude heoDoctype, heoCharset
+    heoDoctype,      //add doctype declaration
+    heoCharset,      //add charset (UTF-8) information
+    heoWinClipHeader //add Clipboard header (affects Windows only) Note: cannot be set if ExportAsText = True!
+  );
+  TExportHtmlOptions = set of TExportHtmlOption;
+
+
+  { TSynExporterHTML }
+
   TSynExporterHTML = class(TSynCustomExporter)
   private
+    fOptions: TExportHtmlOptions;
     fFontSize: THTMLFontSize;
     function ColorToHTML(AColor: TColor): string;
+    procedure SetExportHtmlOptions(Value: TExportHtmlOptions);
+    function GetCreateHTMLFragment: Boolean;
+    procedure SetCreateHTMLFragment(Value: Boolean);
   protected
-    fCreateHTMLFragment: boolean;
     procedure FormatAfterLastAttribute; override;
     procedure FormatAttributeDone(BackgroundChanged, ForegroundChanged: boolean;
       FontStylesChanged: TFontStyles); override;
@@ -70,13 +84,15 @@ type
     function GetFooter: string; override;
     function GetFormatName: string; override;
     function GetHeader: string; override;
+    procedure SetExportAsText(Value: boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
   published
     property Color;
-    property CreateHTMLFragment: boolean read fCreateHTMLFragment
-      write fCreateHTMLFragment default FALSE;
+    property CreateHTMLFragment: boolean read GetCreateHTMLFragment
+      write SetCreateHTMLFragment default FALSE; deprecated 'Use Options instead';
     property DefaultFilter;
+    property Options: TExportHtmlOptions read fOptions write SetExportHtmlOptions default [heoDoctype, heoCharset];
     property Font;
     property Highlighter;
     property HTMLFontSize: THTMLFontSize read fFontSize write fFontSize;        //eb 2000-10-12
@@ -90,23 +106,48 @@ uses
   SysUtils,
   SynEditStrConst;
 
+const
+  DocType = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"' + LineEnding +
+            '"http://www.w3.org/TR/html4/loose.dtd">';  //cannot use strict, because we use <font> tag
+  Generator = '<meta name="generator" content="Lazarus SynEdit Html Exporter">';
+  CharSet = '<meta http-equiv="content-type" content="text/html; charset=utf-8">';
+  DocumentStart = '<html>'+LineEnding+
+                  '<head>'+LineEnding+
+                  '%s'+LineEnding+
+                  '</head>'+LineEnding+
+                  '<body text=%s bgcolor=%s>';
+  DocumentEnd = '</body>'+LineEnding+'</html>';
+  CodeStart = '<pre><code>';
+  CodeEnd = '</code></pre>';
+  FontStart = '<font %s face="%s">';
+  FontEnd = '</font>';
+  WinClipHeaderFmt = 'Version:0.9' + LineEnding +
+                     'StartHTML:%.8d' + LineEnding +
+                     'EndHTML:%.8d' + LineEnding +
+                     'StartFragment:%.8d' + LineEnding +
+                     'EndFragment:%.8d' + LineEnding;
+
+  StartFragmentComment = '<!--StartFragment-->';
+  EndFragmentComment = '<!--EndFragment-->';
+
 { TSynExporterHTML }
 
 constructor TSynExporterHTML.Create(AOwner: TComponent);
 const
-  CF_HTML = 'HTML Format';
+  HTML_Format = {$ifdef windows}'HTML Format'{$else}'text/html'{$endif};
 begin
   inherited Create(AOwner);
   {**************}
-  fClipboardFormat := RegisterClipboardFormat(CF_HTML);
+  fClipboardFormat := RegisterClipboardFormat(HTML_Format);
   fFontSize := fs03;
+  fOptions := [heoDocType, heoCharset];
   fDefaultFilter := SYNS_FilterHTML;
   // setup array of chars to be replaced
   fReplaceReserved['&'] := '&amp;';
   fReplaceReserved['<'] := '&lt;';
   fReplaceReserved['>'] := '&gt;';
-  fReplaceReserved['"'] := '&quot;';
-  fReplaceReserved[''''] := '&apos;';
+  //fReplaceReserved['"'] := '&quot;';   //no need to replace this
+  //fReplaceReserved[''''] := '&apos;';  //no need to replace this
 { The following characters are multi-byte in UTF-8:
   fReplaceReserved['™'] := '&trade;';
   fReplaceReserved['©'] := '&copy;';
@@ -319,11 +360,15 @@ end;
 
 function TSynExporterHTML.GetFooter: string;
 begin
-  Result := '';
-  if fExportAsText then
-    Result := '</font>'#13#10'</code></pre>'#13#10;
-  if not fCreateHTMLFragment then
-    Result := Result + '</body>'#13#10'</html>';
+  Result := FontEnd + LineEnding + CodeEnd;
+  if (heoWinClipHeader in Options) then
+    Result := Result + EndFragmentComment;
+
+  if not (heoFragmentOnly in Options) then
+  begin
+    if (Result <> '') then Result := Result + LineEnding;
+    Result := Result + DocumentEnd;
+  end;
 end;
 
 function TSynExporterHTML.GetFormatName: string;
@@ -332,48 +377,99 @@ begin
 end;
 
 function TSynExporterHTML.GetHeader: string;
-const
-  DescriptionSize = 105;
-  HeaderSize = 47;
-  FooterSize1 = 58;
-  FooterSize2 = 24;
-  NativeHeader = 'Version:0.9'#13#10 +
-                 'StartHTML:%.10d'#13#10 +
-                 'EndHTML:%.10d'#13#10 +
-                 'StartFragment:%.10d'#13#10 +
-                 'EndFragment:%.10d'#13#10;
-  HTMLAsTextHeader = '<html>'#13#10 +
-                     '<head>'#13#10 +
-                     '<title>%s</title>'#13#10 +
-                     '</head>'#13#10 +
-                     '<!-- Generated by SynEdit HTML exporter -->'#13#10 +
-                     '<body text=%s bgcolor=%s>'#13#10;
 var
   sFontSize: string;                                                            //eb 2000-10-12
+  DocHeader, HeadText, WinClipHeader, SFooter: String;
+  WinClipHeaderSize, FooterLen: Integer;
 begin
   Result := '';
-  if fExportAsText then begin
-    if not fCreateHTMLFragment then
-      Result := Format(HTMLAsTextHeader, [Title, ColorToHtml(fFont.Color),
-        ColorToHTML(fBackgroundColor)]);
-{begin}                                                                         //eb 2000-10-12
-    if fFontSize <> fsDefault then
-      sFontSize := Format(' size=%d', [1 + Ord(fFontSize)])
-    else
-      sFontSize := '';
-    Result := Result + Format('<pre>'#13#10'<code><font %s face="%s">',
-      [sFontSize, fFont.Name]);
-{end}                                                                           //eb 2000-10-12
-  end else begin
+  DocHeader := '';
+  if not (heoFragmentOnly in Options) then
+  begin
+    if (heoDocType in fOptions) then
+      DocHeader := DocHeader + DocType + LineEnding;
+    HeadText := Generator;
+    if (heoCharSet in fOptions) then
+      HeadText := HeadText + LineEnding + CharSet;
+    HeadText := HeadText + LineEnding + Format('<title>%s</title>',[Title]);
+    DocHeader := DocHeader + Format(DocumentStart,[HeadText,ColorToHtml(fFont.Color),ColorToHTML(fBackgroundColor)]);
+    if (heoWinClipHeader in fOptions) then
+      DocHeader := DocHeader + LineEnding + StartFragmentComment;
+    DocHeader := DocHeader + CodeStart; //Don't add LineEndings after this point, because of <pre> tag
+  end  //not heoFragmentOnly
+  else
+  begin
+    if (heoWinClipHeader in fOptions) then
+      DocHeader := DocHeader + StartFragmentComment + CodeStart;
+  end;
+  if fFontSize <> fsDefault then
+    sFontSize := Format(' size=%d', [1 + Ord(fFontSize)])
+  else
+    sFontSize := '';
+  DocHeader := DocHeader + Format('<font %s face="%s">',[sFontSize, fFont.Name]);
+
+  if (heoWinClipHeader in fOptions) then
+  begin
+    WinClipHeaderSize := Length(Format(WinClipHeaderFmt,[0,0,0,0]));
+    SFooter := GetFooter;
+    FooterLen := Length(SFooter);
+
+    //debugln(['TSynExporterHtml.GetHeader: WinClipHeaderSize=',WinClipHeadersize]);
+    //debugln(['  Footer="',Sfooter,'"']);
+    //debugln(['  FooterLen=',FooterLen]);
+    //debugln(['  BufferSize=',getBufferSize]);
+    //debugln(['  length(docHeader)=',length(docheader)]);
+
     // Described in http://msdn.microsoft.com/library/sdkdoc/htmlclip/htmlclipboard.htm
-    Result := Format(NativeHeader, [DescriptionSize,
-      DescriptionSize + HeaderSize + GetBufferSize + FooterSize1,
-      DescriptionSize + HeaderSize,
-      DescriptionSize + HeaderSize + GetBufferSize + FooterSize2]);
-    if not fCreateHTMLFragment then
-      Result := Result + '<html>'#13#10'<head></head>'#13#10'<body>';
-    Result := Result + '<!--StartFragment--><pre><code>';
-    AddData('</code></pre><!--EndFragment-->');
+    WinClipHeader := Format(WinClipHeaderFmt,
+      [WinClipHeaderSize,  //HtmlStart
+       WinClipHeaderSize + Length(DocHeader) + FooterLen + GetBufferSize - 1, //HtmlEnd
+       WinClipHeaderSize + Utf8Pos(StartFragmentComment, DocHeader) + Length(StartfragmentComment) - 1, //StartFragment
+       WinClipHeaderSize + Length(DocHeader) + Utf8Pos(EndFragmentComment, SFooter) + GetBufferSize - 1  //EndFragment
+      ]);
+      DocHeader := WinClipHeader + DocHeader;
+  end;
+
+  Result := DocHeader;
+end;
+
+procedure TSynExporterHTML.SetExportAsText(Value: boolean);
+begin
+  if (Value <> ExportAsText) then
+  begin
+    inherited SetExportAsText(Value);
+    if Value then
+      fOptions := fOptions - [heoWinClipHeader];
+  end;
+end;
+
+procedure TSynExporterHTML.SetExportHtmlOptions(Value: TExportHtmlOptions);
+begin
+  if (fOptions <> Value) then
+  begin
+    Clear;
+    fOptions := Value;
+    if ExportAsText then fOptions := fOptions - [heoWinClipHeader];
+    if (heoFragmentOnly in Value) then
+    begin
+      fOptions := fOptions - [heoDoctype, heoCharSet];
+    end;
+  end;
+end;
+
+function TSynExporterHTML.GetCreateHTMLFragment: Boolean;
+begin
+  Result := (heoFragmentOnly in fOptions);
+end;
+
+procedure TSynExporterHTML.SetCreateHTMLFragment(Value: Boolean);
+begin
+  if (GetCreateHTMLFragment <> Value) then
+  begin
+    if Value then
+      Options := Options + [heoFragmentOnly]
+    else
+      Options := Options - [heoFragmentOnly];
   end;
 end;
 
