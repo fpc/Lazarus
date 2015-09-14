@@ -1085,7 +1085,8 @@ begin
     // set a content view in order to be able to customize drawing for labels/color
     ns := GetNSRect(AParams.X, AParams.Y, AParams.Width, AParams.Height);
     lGroupBoxContents := TCocoaCustomControl(TCocoaCustomControl.alloc.initWithFrame(ns));
-    lGroupBoxContents.callback := TLCLCustomControlCallback.Create(lGroupBoxContents, AWinControl);
+    // Don't use TLCLCustomControlCallback because then no more events will arrive
+    lGroupBoxContents.callback := TLCLCommonCallback.Create(lGroupBoxContents, AWinControl);
     lGroupBoxContents.autorelease;
     box.setContentView(lGroupBoxContents);
   end;

@@ -50,6 +50,7 @@ type
     function GetContext: TCocoaContext;
     function GetTarget: TObject;
     function GetCallbackObject: TObject;
+    function GetCaptureControlCallback: ICommonCallBack;
     function MouseUpDownEvent(Event: NSEvent): Boolean; virtual;
     function KeyEvent(Event: NSEvent; AForceAsKeyDown: Boolean = False): Boolean; virtual;
     procedure MouseClick; virtual;
@@ -277,6 +278,21 @@ end;
 function TLCLCommonCallback.GetCallbackObject: TObject;
 begin
   Result := Self;
+end;
+
+function TLCLCommonCallback.GetCaptureControlCallback: ICommonCallBack;
+var
+  obj: NSObject;
+  lCaptureView: NSView;
+begin
+  Result := nil;
+  if CocoaWidgetSet.CaptureControl = 0 then Exit;
+  obj := NSObject(CocoaWidgetSet.CaptureControl);
+  lCaptureView := GetNSObjectView(obj);
+  if (obj <> Owner) and (lCaptureView <> Owner) and not FIsEventRouting then
+  begin
+    Result := lCaptureView.lclGetCallback;
+  end;
 end;
 
 
@@ -688,8 +704,7 @@ var
   MsgContext: TLMContextMenu;
   MousePos: NSPoint;
   MButton: NSInteger;
-  obj:NSObject;
-  callback: ICommonCallback;
+  lCaptureControlCallback: ICommonCallback;
 begin
   Result := False; // allow cocoa to handle message
 
@@ -697,17 +712,13 @@ begin
     Exit;
 
    //debugln('MouseUpDownEvent '+Target.name);
-  if CocoaWidgetSet.CaptureControl<>0 then       // check if to route event to capture control
+  lCaptureControlCallback := GetCaptureControlCallback();
+  if lCaptureControlCallback <> nil then
   begin
-    obj:=NSObject(CocoaWidgetSet.CaptureControl);
-    if (obj<>Owner) and not FIsEventRouting then
-    begin
-      FIsEventRouting:=true;
-      callback:=obj.lclGetCallback;
-      Result:=callback.MouseUpDownEvent(Event);
-      FIsEventRouting:=false;
-      exit;
-    end;
+    FIsEventRouting:=true;
+    Result := lCaptureControlCallback.MouseUpDownEvent(Event);
+    FIsEventRouting:=false;
+    exit;
   end;
 
   // idea of multi click implementation is taken from gtk
@@ -793,17 +804,13 @@ begin
   rect:=Owner.lclClientFrame;
   targetControl:=nil;
 
-  if CocoaWidgetSet.CaptureControl<>0 then       // check if to route event to capture control
+  callback := GetCaptureControlCallback();
+  if callback <> nil then
   begin
-    obj:=NSObject(CocoaWidgetSet.CaptureControl);
-    if (obj<>Owner) and not FIsEventRouting then
-    begin
-      FIsEventRouting:=true;
-      callback:=obj.lclGetCallback;
-      result:=callback.MouseMove(Event);
-      FIsEventRouting:=false;
-      exit;
-    end;
+    FIsEventRouting:=true;
+    Result := callback.MouseMove(Event);
+    FIsEventRouting:=false;
+    exit;
   end
   else
   begin

@@ -222,16 +222,21 @@ begin
   result:=CFStringToStr(AString);
 end;
 
+// Return the content view of a given non-view or
+// for a view. For Window and Box and similar containers
+// it returns the content view
 function GetNSObjectView(obj: NSObject): NSView;
 begin
   Result := nil;
   if not Assigned(obj) then Exit;
   if obj.isKindOfClass_(NSView) then
-    Result:=NSView(obj)
+    Result := NSView(obj)
   else if obj.isKindOfClass_(NSWindow) then
-    Result:=NSWindow(obj).contentView
+    Result := NSWindow(obj).contentView
   else if obj.isKindOfClass_(NSTabViewItem) then
-    Result := NSTabViewItem(obj).view;
+    Result := NSTabViewItem(obj).view
+  else if obj.isKindOfClass_(NSBox) then
+    Result := NSBox(obj).contentView;
 end;
 
 function GetNSObjectWindow(obj: NSObject): NSWindow;
