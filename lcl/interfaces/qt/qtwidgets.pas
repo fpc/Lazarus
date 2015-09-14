@@ -10726,7 +10726,7 @@ begin
 
   if (FDropList <> nil) and (Sender = FDropList.Widget) then
   begin
-    if QEvent_type(Event) = QEventFontChange then
+    if (Byte(QEvent_type(Event)) in [QEventKeyPress, QEventKeyRelease,QEventFontChange]) then
       Result := inherited EventFilter(Sender, Event);
     QEvent_ignore(Event);
     exit;
