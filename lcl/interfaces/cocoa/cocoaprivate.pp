@@ -1889,20 +1889,23 @@ end;
 
 procedure TCocoaTextView.keyDown(event: NSEvent);
 begin
-  if not Assigned(callback) or not callback.KeyEvent(event) then
-    inherited keyDown(event);
+  if Assigned(callback) then callback.KeyEvent(event);
+  // don't skip inherited or else key input won't work
+  inherited keyDown(event);
 end;
 
 procedure TCocoaTextView.keyUp(event: NSEvent);
 begin
-  if not Assigned(callback) or not callback.KeyEvent(event) then
-    inherited keyUp(event);
+  if Assigned(callback) then callback.KeyEvent(event);
+  // don't skip inherited or else key input won't work
+  inherited keyUp(event);
 end;
 
 procedure TCocoaTextView.flagsChanged(event: NSEvent);
 begin
-  if not Assigned(callback) or not callback.KeyEvent(event) then
-    inherited flagsChanged(event);
+  if Assigned(callback) then callback.KeyEvent(event);
+  // don't skip inherited or else key input won't work
+  inherited flagsChanged(event);
 end;
 
 function TCocoaTextView.acceptsFirstResponder: Boolean;
