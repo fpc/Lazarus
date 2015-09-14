@@ -390,6 +390,10 @@ msgstr "読み取り専用"
 msgid "Lowercase, first letter up"
 msgstr "頭文字以外を小文字に"
 
+#: lazarusidestrconsts.dlgactivedesktop
+msgid "active"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddassignmentoperator
 msgid "Add assignment operator :="
 msgstr "代入演算子 := を追加"
@@ -633,6 +637,16 @@ msgstr "空のメソッドを自動的に削除"
 msgid "Auto rename file lowercase"
 msgstr "ファイル名を自動的に小文字化"
 
+#: lazarusidestrconsts.dlgautosaveactivedesktop
+msgid "Auto save active desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgautosaveactivedesktophint
+msgid ""
+"Save active desktop on IDE close\n"
+"Save debug desktop on IDE close and debug end\n"
+msgstr ""
+
 #: lazarusidestrconsts.dlgavailableforms
 msgid "Available forms:"
 msgstr "利用可能フォーム"
@@ -709,6 +723,18 @@ msgstr "括弧の強調"
 #: lazarusidestrconsts.dlgbracketmatchgroup
 msgid "Matching bracket pairs"
 msgstr "括弧のペアを揃える"
+
+#: lazarusidestrconsts.dlgcannotdeleteactivedesktop
+msgid "You cannot delete the active desktop."
+msgstr ""
+
+#: lazarusidestrconsts.dlgcannotdeletedebugdesktop
+msgid "You cannot delete debug desktop."
+msgstr ""
+
+#: lazarusidestrconsts.dlgcannotusedockedundockeddesktop
+msgid "You cannot use docked desktop in undocked environment and vice versa."
+msgstr ""
 
 #: lazarusidestrconsts.dlgcasesensitive
 msgctxt "lazarusidestrconsts.dlgcasesensitive"
@@ -823,10 +849,6 @@ msgstr ""
 #: lazarusidestrconsts.dlgchscodetempl
 msgid "Choose code template file (*.dci)"
 msgstr "コードテンプテートファイル(*.dpi)を選択してください"
-
-#: lazarusidestrconsts.dlgcloseanduseselecteddesktop
-msgid "Close and use selected desktop"
-msgstr ""
 
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
@@ -1189,7 +1211,7 @@ msgid "User defined extension (.pp.xxx)"
 msgstr "ユーザー定義拡張子(.pp.xxx)"
 
 #: lazarusidestrconsts.dlgdebugdesktop
-msgid "debug desktop"
+msgid "debug"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
@@ -1225,7 +1247,15 @@ msgid "Menus - "
 msgstr "メニュー -"
 
 #: lazarusidestrconsts.dlgdesktopname
-msgid "Desktop name:"
+msgid "Desktop name"
+msgstr ""
+
+#: lazarusidestrconsts.dlgdesktopsexported
+msgid "%d desktop(s) successfully exported to \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgdesktopsimported
+msgid "%d desktop(s) successfully imported from \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
@@ -1904,6 +1934,10 @@ msgstr "gprofのためのコードを生成"
 msgid "Grabber color"
 msgstr "グラバーの色"
 
+#: lazarusidestrconsts.dlggrayeddesktopsundocked
+msgid "Grayed desktops are for undocked environment."
+msgstr ""
+
 #: lazarusidestrconsts.dlggridcolor
 msgid "Grid color"
 msgstr "グリッド色"
@@ -2084,6 +2118,12 @@ msgstr "アクティブでない$IFDEFコード"
 #: lazarusidestrconsts.dlgifdefnodetmpactive
 msgid "Included mixed state $IFDEF node"
 msgstr "インクルードされた混合状態の$IFDEFコード"
+
+#: lazarusidestrconsts.dlgimportdesktopexists
+msgid ""
+"A desktop with the same name already exists.\n"
+"Please confirm the desktop name:\n"
+msgstr ""
 
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
@@ -3036,7 +3076,9 @@ msgid "Property Name"
 msgstr "プロパティ名"
 
 #: lazarusidestrconsts.dlgqopenlastprj
-msgid "Open last project at start"
+#, fuzzy
+#| msgid "Open last project at start"
+msgid "Open last project and packages at start"
 msgstr "起動時に最後に開いていたプロジェクトを開く"
 
 #: lazarusidestrconsts.dlgqshowborderspacing
@@ -3137,10 +3179,6 @@ msgstr "ユーザーオーバーライド"
 msgid "Run Parameters"
 msgstr "実行パラメーター"
 
-#: lazarusidestrconsts.dlgsavecurrentdesktop
-msgid "Save current desktop"
-msgstr ""
-
 #: lazarusidestrconsts.dlgsavecurrentdesktopas
 msgid "Save current desktop as"
 msgstr ""
@@ -3210,13 +3248,13 @@ msgstr ""
 msgid "Select all child controls together with their parent."
 msgstr ""
 
-#: lazarusidestrconsts.dlgselecteddesktop
-msgid "Selected desktop:"
-msgstr ""
-
 #: lazarusidestrconsts.dlgselectedtext
 msgid "&Selected text"
 msgstr "選択されたテキスト(&S)"
+
+#: lazarusidestrconsts.dlgsetactivedesktop
+msgid "Set active"
+msgstr ""
 
 #: lazarusidestrconsts.dlgsetallelementdefault
 msgid "Set all elements to default"
@@ -3229,6 +3267,26 @@ msgstr "要素を既定値に設定"
 #: lazarusidestrconsts.dlgsetpropertyvariable
 msgid "Set property Variable"
 msgstr "プロパティ変数を設定"
+
+#: lazarusidestrconsts.dlgsetpropertyvariablehint
+msgid "The parameter name for the default setter procedure."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableisprefix
+msgid "is prefix"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableisprefixhint
+msgid "If checked, the \"Set property Variable\" is a prefix. Otherwise it is a fixed name."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableuseconst
+msgid "use const"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableuseconsthint
+msgid "If checked, the setter parameter is marked with \"const\"."
+msgstr ""
 
 #: lazarusidestrconsts.dlgshowallunits
 msgid "Show all units"
@@ -3458,7 +3516,8 @@ msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"
 msgstr "検索テキスト(&T)"
 
-#: lazarusidestrconsts.dlgtoggleselecteddebugdesktop
+#: lazarusidestrconsts.dlgtoggledebugdesktop
+msgctxt "lazarusidestrconsts.dlgtoggledebugdesktop"
 msgid "Toggle as debug desktop"
 msgstr ""
 
@@ -8967,6 +9026,10 @@ msgctxt "lazarusidestrconsts.lisexport"
 msgid "Export"
 msgstr "エクスポート"
 
+#: lazarusidestrconsts.lisexportall
+msgid "Export all"
+msgstr ""
+
 #: lazarusidestrconsts.lisexportallitemstofile
 msgid "Export All Items to File"
 msgstr ""
@@ -8991,6 +9054,10 @@ msgstr "エクスポートリスト"
 #: lazarusidestrconsts.lisexportpackagelistxml
 msgid "Export package list (*.xml)"
 msgstr "パッケージリスト(*.xml)をエクスポート"
+
+#: lazarusidestrconsts.lisexportselected
+msgid "Export selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisexpression
 msgid "Expression:"
@@ -11950,6 +12017,14 @@ msgstr "前のブックマークへ移動"
 msgid "Jump to Previous Error"
 msgstr "前のエラーへ移動"
 
+#: lazarusidestrconsts.lismenujumptoprocedurebegin
+msgid "Jump to Procedure begin"
+msgstr ""
+
+#: lazarusidestrconsts.lismenujumptoprocedureheader
+msgid "Jump to Procedure header"
+msgstr ""
+
 #: lazarusidestrconsts.lismenulowercaseselection
 msgid "Lowercase Selection"
 msgstr "選択部を小文字化"
@@ -14357,6 +14432,12 @@ msgstr "ファイルを置換"
 #: lazarusidestrconsts.lispkgmangrequiredpackageswerenotfound
 msgid "One or more required packages were not found. See package graph for details."
 msgstr "一つ以上の要求されたパッケージが見つかりませんでした。詳細はパッケージグラフをご参照ください。"
+
+#: lazarusidestrconsts.lispkgmangsaveasalreadyopenedpackage
+msgid ""
+"The package %s is already open in the IDE.\n"
+"You cannot save a package with the same name.\n"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmangsavepackage
 msgid "Save package?"
@@ -17189,8 +17270,8 @@ msgstr "%s%s%sのユニット検索パスはパッケージ %sのソースディ
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "作業ディレクトリ %s%s%s が存在しません。%sメニュー>実行>実行パラメータで作業ディレクトリをチェックしてください。"
 
-#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inthertlflagsareinpagesoth
-msgid "This build mode now sets UTF-8 in the RTL.%s Flags are in pages \"Other\" and \"Additions and Overrides\"."
+#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inrtl
+msgid "This build mode now sets UTF-8 in RTL.%s Flags are in pages \"Custom Options\" and \"Additions and Overrides\"."
 msgstr ""
 
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename

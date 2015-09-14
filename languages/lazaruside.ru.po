@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-09-03 01:18+0300\n"
+"PO-Revision-Date: 2015-09-15 01:51+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -393,6 +393,10 @@ msgstr "Только чтение"
 msgid "Lowercase, first letter up"
 msgstr "Только первая буква заглавная"
 
+#: lazarusidestrconsts.dlgactivedesktop
+msgid "active"
+msgstr "активный"
+
 #: lazarusidestrconsts.dlgaddassignmentoperator
 msgid "Add assignment operator :="
 msgstr "Добавлять оператор присваивания :="
@@ -634,6 +638,18 @@ msgstr "Автоматически удалять пустые методы"
 msgid "Auto rename file lowercase"
 msgstr "Переименовать в нижний регистр"
 
+#: lazarusidestrconsts.dlgautosaveactivedesktop
+msgid "Auto save active desktop"
+msgstr "Автоматически сохранять активный"
+
+#: lazarusidestrconsts.dlgautosaveactivedesktophint
+msgid ""
+"Save active desktop on IDE close\n"
+"Save debug desktop on IDE close and debug end\n"
+msgstr ""
+"Сохранять активный рабочий стол при закрытии IDE,\n"
+"сохранять отладочный рабочий стол при закрытии IDE и окончании отладки\n"
+
 #: lazarusidestrconsts.dlgavailableforms
 msgid "Available forms:"
 msgstr "Доступные формы:"
@@ -710,6 +726,18 @@ msgstr "Подсветка скобок"
 #: lazarusidestrconsts.dlgbracketmatchgroup
 msgid "Matching bracket pairs"
 msgstr "Парные скобки"
+
+#: lazarusidestrconsts.dlgcannotdeleteactivedesktop
+msgid "You cannot delete the active desktop."
+msgstr "Невозможно удалить активный рабочий стол."
+
+#: lazarusidestrconsts.dlgcannotdeletedebugdesktop
+msgid "You cannot delete debug desktop."
+msgstr "Невозможно удалить отладочный рабочий стол."
+
+#: lazarusidestrconsts.dlgcannotusedockedundockeddesktop
+msgid "You cannot use docked desktop in undocked environment and vice versa."
+msgstr "Невозможно использовать стыкуемый рабочий стол в нестыкуемом окружении, и наоборот."
 
 #: lazarusidestrconsts.dlgcasesensitive
 msgctxt "lazarusidestrconsts.dlgcasesensitive"
@@ -824,10 +852,6 @@ msgstr "Форма может требовать пакета для корре�
 #: lazarusidestrconsts.dlgchscodetempl
 msgid "Choose code template file (*.dci)"
 msgstr "Выберите файл шаблонов кода (*.dci)"
-
-#: lazarusidestrconsts.dlgcloseanduseselecteddesktop
-msgid "Close and use selected desktop"
-msgstr "Закрыть и использовать выбранный"
 
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
@@ -1186,7 +1210,7 @@ msgid "User defined extension (.pp.xxx)"
 msgstr "Расширение пользователя (.pp.xxx)"
 
 #: lazarusidestrconsts.dlgdebugdesktop
-msgid "debug desktop"
+msgid "debug"
 msgstr "отладочный"
 
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
@@ -1222,8 +1246,16 @@ msgid "Menus - "
 msgstr "Меню - "
 
 #: lazarusidestrconsts.dlgdesktopname
-msgid "Desktop name:"
-msgstr "Имя рабочего стола:"
+msgid "Desktop name"
+msgstr "Имя рабочего стола"
+
+#: lazarusidestrconsts.dlgdesktopsexported
+msgid "%d desktop(s) successfully exported to \"%s\""
+msgstr "Рабочие столы (%d шт.) успешно экспортированы в \"%s\""
+
+#: lazarusidestrconsts.dlgdesktopsimported
+msgid "%d desktop(s) successfully imported from \"%s\""
+msgstr "Рабочие столы (%d шт.) успешно импортированы из \"%s\""
 
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
@@ -1880,6 +1912,10 @@ msgstr "Генерировать код для gprof"
 msgid "Grabber color"
 msgstr "Узел захвата"
 
+#: lazarusidestrconsts.dlggrayeddesktopsundocked
+msgid "Grayed desktops are for undocked environment."
+msgstr "Серым отмечены рабочие столы для нестыкуемого окружения."
+
 #: lazarusidestrconsts.dlggridcolor
 msgid "Grid color"
 msgstr "Сетка"
@@ -2060,6 +2096,14 @@ msgstr "Неактивная директива $IFDEF"
 #: lazarusidestrconsts.dlgifdefnodetmpactive
 msgid "Included mixed state $IFDEF node"
 msgstr "Директива $IFDEF подключаемого условно активного кода"
+
+#: lazarusidestrconsts.dlgimportdesktopexists
+msgid ""
+"A desktop with the same name already exists.\n"
+"Please confirm the desktop name:\n"
+msgstr ""
+"Рабочий стол с таким именем уже имеется.\n"
+"Подтвердите это имя:\n"
 
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
@@ -3002,8 +3046,8 @@ msgid "Property Name"
 msgstr "Имя свойства"
 
 #: lazarusidestrconsts.dlgqopenlastprj
-msgid "Open last project at start"
-msgstr "Открывать последний проект при запуске"
+msgid "Open last project and packages at start"
+msgstr "Открывать последние проект и пакеты при запуске"
 
 #: lazarusidestrconsts.dlgqshowborderspacing
 msgid "Show border spacing"
@@ -3103,10 +3147,6 @@ msgstr "Пользовательские перекрытия"
 msgid "Run Parameters"
 msgstr "Параметры запуска"
 
-#: lazarusidestrconsts.dlgsavecurrentdesktop
-msgid "Save current desktop"
-msgstr "Сохранить текущий"
-
 #: lazarusidestrconsts.dlgsavecurrentdesktopas
 msgid "Save current desktop as"
 msgstr "Сохранить текущий рабочий стол как"
@@ -3176,13 +3216,13 @@ msgstr "Область поиска"
 msgid "Select all child controls together with their parent."
 msgstr "Выделять все компоненты-потомки вместе с их родителями"
 
-#: lazarusidestrconsts.dlgselecteddesktop
-msgid "Selected desktop:"
-msgstr "Выбранный:"
-
 #: lazarusidestrconsts.dlgselectedtext
 msgid "&Selected text"
 msgstr "В вы&деленном"
+
+#: lazarusidestrconsts.dlgsetactivedesktop
+msgid "Set active"
+msgstr "Сделать активным"
 
 #: lazarusidestrconsts.dlgsetallelementdefault
 msgid "Set all elements to default"
@@ -3195,6 +3235,26 @@ msgstr "Установить элемент по умолчанию"
 #: lazarusidestrconsts.dlgsetpropertyvariable
 msgid "Set property Variable"
 msgstr "Переменная свойства"
+
+#: lazarusidestrconsts.dlgsetpropertyvariablehint
+msgid "The parameter name for the default setter procedure."
+msgstr "Имя параметра для процедуры установки свойства по умолчанию."
+
+#: lazarusidestrconsts.dlgsetpropertyvariableisprefix
+msgid "is prefix"
+msgstr "префикс"
+
+#: lazarusidestrconsts.dlgsetpropertyvariableisprefixhint
+msgid "If checked, the \"Set property Variable\" is a prefix. Otherwise it is a fixed name."
+msgstr "При выборе \"переменная свойства\" будет префиксом. В противном случае это будет фиксированное имя."
+
+#: lazarusidestrconsts.dlgsetpropertyvariableuseconst
+msgid "use const"
+msgstr "использовать const"
+
+#: lazarusidestrconsts.dlgsetpropertyvariableuseconsthint
+msgid "If checked, the setter parameter is marked with \"const\"."
+msgstr "При выборе параметр помечается \"const\"."
 
 #: lazarusidestrconsts.dlgshowallunits
 msgid "Show all units"
@@ -3424,9 +3484,10 @@ msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"
 msgstr "Н&айти текст"
 
-#: lazarusidestrconsts.dlgtoggleselecteddebugdesktop
+#: lazarusidestrconsts.dlgtoggledebugdesktop
+msgctxt "lazarusidestrconsts.dlgtoggledebugdesktop"
 msgid "Toggle as debug desktop"
-msgstr "Переключить отладочный режим"
+msgstr "Переключить режим отладочного рабочего стола"
 
 #: lazarusidestrconsts.dlgtopinfohint
 msgid "Current Class/Proc Hint"
@@ -8786,6 +8847,10 @@ msgctxt "lazarusidestrconsts.lisexport"
 msgid "Export"
 msgstr "Экспортировать"
 
+#: lazarusidestrconsts.lisexportall
+msgid "Export all"
+msgstr "Экспортировать все"
+
 #: lazarusidestrconsts.lisexportallitemstofile
 msgid "Export All Items to File"
 msgstr "Экспортировать всё в файл"
@@ -8810,6 +8875,10 @@ msgstr "Список экспорта"
 #: lazarusidestrconsts.lisexportpackagelistxml
 msgid "Export package list (*.xml)"
 msgstr "Список экспортируемых пакетов (*.xml)"
+
+#: lazarusidestrconsts.lisexportselected
+msgid "Export selected"
+msgstr "Экспортировать выбранный"
 
 #: lazarusidestrconsts.lisexpression
 msgid "Expression:"
@@ -11756,6 +11825,14 @@ msgstr "Перейти к предыдущей закладке"
 msgid "Jump to Previous Error"
 msgstr "Перейти к предыдущей ошибке"
 
+#: lazarusidestrconsts.lismenujumptoprocedurebegin
+msgid "Jump to Procedure begin"
+msgstr "Перейти к началу тела процедуры"
+
+#: lazarusidestrconsts.lismenujumptoprocedureheader
+msgid "Jump to Procedure header"
+msgstr "Перейти к заголовку процедуры"
+
 #: lazarusidestrconsts.lismenulowercaseselection
 msgid "Lowercase Selection"
 msgstr "Нижний регистр выделенного"
@@ -14146,6 +14223,14 @@ msgstr "Заменить файл"
 #: lazarusidestrconsts.lispkgmangrequiredpackageswerenotfound
 msgid "One or more required packages were not found. See package graph for details."
 msgstr "Некоторых требуемых пакетов не найдено. Для получения подробностей смотрите диаграмму пакетов."
+
+#: lazarusidestrconsts.lispkgmangsaveasalreadyopenedpackage
+msgid ""
+"The package %s is already open in the IDE.\n"
+"You cannot save a package with the same name.\n"
+msgstr ""
+"Пакет %s уже открыт в IDE.\n"
+"Невозможно сохранить пакет с таким же именем.\n"
 
 #: lazarusidestrconsts.lispkgmangsavepackage
 msgid "Save package?"
@@ -16776,9 +16861,9 @@ msgstr "Путь поиска модулей \"%s\" содержит катал�
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "Рабочий каталог \"%s\" не существует.%sПроверьте его в меню Запуск -> Параметры запуска."
 
-#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inthertlflagsareinpagesoth
-msgid "This build mode now sets UTF-8 in the RTL.%s Flags are in pages \"Other\" and \"Additions and Overrides\"."
-msgstr "Этот режим сборки теперь задаёт использование UTF-8 в RTL.%sФлаги находятся на страницах \"Другие\" и \"Дополнения и перекрытия\"."
+#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inrtl
+msgid "This build mode now sets UTF-8 in RTL.%s Flags are in pages \"Custom Options\" and \"Additions and Overrides\"."
+msgstr "Этот режим сборки теперь задаёт использование UTF-8 в RTL.%sФлаги находятся на страницах \"Параметры пользователя\" и \"Дополнения и перекрытия\"."
 
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
 msgid "This component already contains a class with the name %s."

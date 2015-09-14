@@ -392,6 +392,10 @@ msgstr "Csak olvasható"
 msgid "Lowercase, first letter up"
 msgstr "Kisbetűs, első betű nagy"
 
+#: lazarusidestrconsts.dlgactivedesktop
+msgid "active"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddassignmentoperator
 msgid "Add assignment operator :="
 msgstr "Értékadás operátor hozzáadása :="
@@ -633,6 +637,16 @@ msgstr "Üres metódusok automatikus eltávolítása"
 msgid "Auto rename file lowercase"
 msgstr "Fájlok automatikus átnevezése kisbetűsre"
 
+#: lazarusidestrconsts.dlgautosaveactivedesktop
+msgid "Auto save active desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgautosaveactivedesktophint
+msgid ""
+"Save active desktop on IDE close\n"
+"Save debug desktop on IDE close and debug end\n"
+msgstr ""
+
 #: lazarusidestrconsts.dlgavailableforms
 msgid "Available forms:"
 msgstr "Elérhető form-ok:"
@@ -709,6 +723,18 @@ msgstr "Zárójel kiemelése"
 #: lazarusidestrconsts.dlgbracketmatchgroup
 msgid "Matching bracket pairs"
 msgstr "Illeszkedő zárójel párok"
+
+#: lazarusidestrconsts.dlgcannotdeleteactivedesktop
+msgid "You cannot delete the active desktop."
+msgstr ""
+
+#: lazarusidestrconsts.dlgcannotdeletedebugdesktop
+msgid "You cannot delete debug desktop."
+msgstr ""
+
+#: lazarusidestrconsts.dlgcannotusedockedundockeddesktop
+msgid "You cannot use docked desktop in undocked environment and vice versa."
+msgstr ""
 
 #: lazarusidestrconsts.dlgcasesensitive
 msgctxt "lazarusidestrconsts.dlgcasesensitive"
@@ -823,10 +849,6 @@ msgstr "A form csomagokat igényelhet a működéshez. Az ilyen csomagok automat
 #: lazarusidestrconsts.dlgchscodetempl
 msgid "Choose code template file (*.dci)"
 msgstr "Kódsablon fájl választása (*.dci)"
-
-#: lazarusidestrconsts.dlgcloseanduseselecteddesktop
-msgid "Close and use selected desktop"
-msgstr "Bezárás és a kiválasztott felület használata"
 
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
@@ -1185,7 +1207,9 @@ msgid "User defined extension (.pp.xxx)"
 msgstr "Felhasználó által megadott kiterjesztés (.pp.xxx)"
 
 #: lazarusidestrconsts.dlgdebugdesktop
-msgid "debug desktop"
+#, fuzzy
+#| msgid "debug desktop"
+msgid "debug"
 msgstr "hibakereső felület"
 
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
@@ -1221,8 +1245,18 @@ msgid "Menus - "
 msgstr "Menükben: "
 
 #: lazarusidestrconsts.dlgdesktopname
-msgid "Desktop name:"
+#, fuzzy
+#| msgid "Desktop name:"
+msgid "Desktop name"
 msgstr "Felület neve:"
+
+#: lazarusidestrconsts.dlgdesktopsexported
+msgid "%d desktop(s) successfully exported to \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgdesktopsimported
+msgid "%d desktop(s) successfully imported from \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
@@ -1879,6 +1913,10 @@ msgstr "Kód generálása gprof-hoz"
 msgid "Grabber color"
 msgstr "Méretező színe"
 
+#: lazarusidestrconsts.dlggrayeddesktopsundocked
+msgid "Grayed desktops are for undocked environment."
+msgstr ""
+
 #: lazarusidestrconsts.dlggridcolor
 msgid "Grid color"
 msgstr "Rács színe"
@@ -2059,6 +2097,12 @@ msgstr "Nem aktív $IFDEF csomópont"
 #: lazarusidestrconsts.dlgifdefnodetmpactive
 msgid "Included mixed state $IFDEF node"
 msgstr "Kevert állapotú $IFDEF csomópont"
+
+#: lazarusidestrconsts.dlgimportdesktopexists
+msgid ""
+"A desktop with the same name already exists.\n"
+"Please confirm the desktop name:\n"
+msgstr ""
 
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
@@ -3001,7 +3045,9 @@ msgid "Property Name"
 msgstr "Tulajdonság név"
 
 #: lazarusidestrconsts.dlgqopenlastprj
-msgid "Open last project at start"
+#, fuzzy
+#| msgid "Open last project at start"
+msgid "Open last project and packages at start"
 msgstr "Legutóbbi projekt megnyitása indításkor"
 
 #: lazarusidestrconsts.dlgqshowborderspacing
@@ -3102,10 +3148,6 @@ msgstr "Felhasználói felülírások"
 msgid "Run Parameters"
 msgstr "Futtatási paraméterek"
 
-#: lazarusidestrconsts.dlgsavecurrentdesktop
-msgid "Save current desktop"
-msgstr "A jelenlegi felület mentése"
-
 #: lazarusidestrconsts.dlgsavecurrentdesktopas
 msgid "Save current desktop as"
 msgstr ""
@@ -3175,13 +3217,13 @@ msgstr "Keresés hatóköre"
 msgid "Select all child controls together with their parent."
 msgstr "Az összes gyermek-vezérlő kijelölése a szülővel együtt."
 
-#: lazarusidestrconsts.dlgselecteddesktop
-msgid "Selected desktop:"
-msgstr "Kiválasztott velület:"
-
 #: lazarusidestrconsts.dlgselectedtext
 msgid "&Selected text"
 msgstr "Kijelölt szöveg"
+
+#: lazarusidestrconsts.dlgsetactivedesktop
+msgid "Set active"
+msgstr ""
 
 #: lazarusidestrconsts.dlgsetallelementdefault
 msgid "Set all elements to default"
@@ -3194,6 +3236,26 @@ msgstr "Elem alapértelmezettre állítása"
 #: lazarusidestrconsts.dlgsetpropertyvariable
 msgid "Set property Variable"
 msgstr "Tulajdonság-beállítás változója"
+
+#: lazarusidestrconsts.dlgsetpropertyvariablehint
+msgid "The parameter name for the default setter procedure."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableisprefix
+msgid "is prefix"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableisprefixhint
+msgid "If checked, the \"Set property Variable\" is a prefix. Otherwise it is a fixed name."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableuseconst
+msgid "use const"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableuseconsthint
+msgid "If checked, the setter parameter is marked with \"const\"."
+msgstr ""
 
 #: lazarusidestrconsts.dlgshowallunits
 msgid "Show all units"
@@ -3423,7 +3485,9 @@ msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"
 msgstr "Keresendő szöveg"
 
-#: lazarusidestrconsts.dlgtoggleselecteddebugdesktop
+#: lazarusidestrconsts.dlgtoggledebugdesktop
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgtoggledebugdesktop"
 msgid "Toggle as debug desktop"
 msgstr "Hibakereső felület ki-/bekapcsolása"
 
@@ -8788,6 +8852,10 @@ msgctxt "lazarusidestrconsts.lisexport"
 msgid "Export"
 msgstr "Exportálás"
 
+#: lazarusidestrconsts.lisexportall
+msgid "Export all"
+msgstr ""
+
 #: lazarusidestrconsts.lisexportallitemstofile
 msgid "Export All Items to File"
 msgstr "Minden elem exportálása fájlba"
@@ -8812,6 +8880,10 @@ msgstr "Lista exportálása"
 #: lazarusidestrconsts.lisexportpackagelistxml
 msgid "Export package list (*.xml)"
 msgstr "Csomaglista exportálása (*.xml)"
+
+#: lazarusidestrconsts.lisexportselected
+msgid "Export selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisexpression
 msgid "Expression:"
@@ -11757,6 +11829,14 @@ msgstr "Ugrás az előző könyvjelzőre"
 msgid "Jump to Previous Error"
 msgstr "Ugrás az előző hibára"
 
+#: lazarusidestrconsts.lismenujumptoprocedurebegin
+msgid "Jump to Procedure begin"
+msgstr ""
+
+#: lazarusidestrconsts.lismenujumptoprocedureheader
+msgid "Jump to Procedure header"
+msgstr ""
+
 #: lazarusidestrconsts.lismenulowercaseselection
 msgid "Lowercase Selection"
 msgstr "Kijelölés kisbetűssé alakítása"
@@ -14146,6 +14226,12 @@ msgstr "Fájl cseréje"
 #: lazarusidestrconsts.lispkgmangrequiredpackageswerenotfound
 msgid "One or more required packages were not found. See package graph for details."
 msgstr "Egy vagy több szükséges csomag nem található. Lásd a Csomag-fát a részletekért!"
+
+#: lazarusidestrconsts.lispkgmangsaveasalreadyopenedpackage
+msgid ""
+"The package %s is already open in the IDE.\n"
+"You cannot save a package with the same name.\n"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmangsavepackage
 msgid "Save package?"
@@ -16776,9 +16862,9 @@ msgstr "A(z) \"%s\" unit keresési útvonala tartalmazza a(z) \"%s\" könyvtára
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "A(z) \"%s\" munkakönyvtár nem létezik.%sEllenőrizze a munkakönyvtárat a menüben itt: Futtatás -> Futtatási paraméterek"
 
-#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inthertlflagsareinpagesoth
-msgid "This build mode now sets UTF-8 in the RTL.%s Flags are in pages \"Other\" and \"Additions and Overrides\"."
-msgstr "Ezen építési mód bekapcsolja az UTF-8 támogatást az RTL-ben.%s Részletek az \"Egyéb\" és a \"Kiegészítések és felülbírálások\" lapokon."
+#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inrtl
+msgid "This build mode now sets UTF-8 in RTL.%s Flags are in pages \"Custom Options\" and \"Additions and Overrides\"."
+msgstr ""
 
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
 msgid "This component already contains a class with the name %s."

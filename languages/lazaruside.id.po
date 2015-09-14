@@ -390,6 +390,10 @@ msgstr "Hanya Baca"
 msgid "Lowercase, first letter up"
 msgstr "Huruf kecil, huruf pertama besar"
 
+#: lazarusidestrconsts.dlgactivedesktop
+msgid "active"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddassignmentoperator
 msgid "Add assignment operator :="
 msgstr ""
@@ -637,6 +641,16 @@ msgstr ""
 msgid "Auto rename file lowercase"
 msgstr "Otomatis mengganti nama file ke huruf kecil"
 
+#: lazarusidestrconsts.dlgautosaveactivedesktop
+msgid "Auto save active desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgautosaveactivedesktophint
+msgid ""
+"Save active desktop on IDE close\n"
+"Save debug desktop on IDE close and debug end\n"
+msgstr ""
+
 #: lazarusidestrconsts.dlgavailableforms
 msgid "Available forms:"
 msgstr "Form tersedia:"
@@ -714,6 +728,18 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgbracketmatchgroup
 msgid "Matching bracket pairs"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcannotdeleteactivedesktop
+msgid "You cannot delete the active desktop."
+msgstr ""
+
+#: lazarusidestrconsts.dlgcannotdeletedebugdesktop
+msgid "You cannot delete debug desktop."
+msgstr ""
+
+#: lazarusidestrconsts.dlgcannotusedockedundockeddesktop
+msgid "You cannot use docked desktop in undocked environment and vice versa."
 msgstr ""
 
 #: lazarusidestrconsts.dlgcasesensitive
@@ -835,10 +861,6 @@ msgstr ""
 #: lazarusidestrconsts.dlgchscodetempl
 msgid "Choose code template file (*.dci)"
 msgstr "Pilih file template kode (*.dci)"
-
-#: lazarusidestrconsts.dlgcloseanduseselecteddesktop
-msgid "Close and use selected desktop"
-msgstr ""
 
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
@@ -1229,7 +1251,7 @@ msgid "User defined extension (.pp.xxx)"
 msgstr "Ekstensi ditetapkan pemakai (.pp.xxx)"
 
 #: lazarusidestrconsts.dlgdebugdesktop
-msgid "debug desktop"
+msgid "debug"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
@@ -1265,7 +1287,15 @@ msgid "Menus - "
 msgstr ""
 
 #: lazarusidestrconsts.dlgdesktopname
-msgid "Desktop name:"
+msgid "Desktop name"
+msgstr ""
+
+#: lazarusidestrconsts.dlgdesktopsexported
+msgid "%d desktop(s) successfully exported to \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgdesktopsimported
+msgid "%d desktop(s) successfully imported from \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
@@ -1943,6 +1973,10 @@ msgstr "Hasilkan kode untuk gprof"
 msgid "Grabber color"
 msgstr "Warna Penggengam"
 
+#: lazarusidestrconsts.dlggrayeddesktopsundocked
+msgid "Grayed desktops are for undocked environment."
+msgstr ""
+
 #: lazarusidestrconsts.dlggridcolor
 msgid "Grid color"
 msgstr "Warna grid"
@@ -2130,6 +2164,12 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgifdefnodetmpactive
 msgid "Included mixed state $IFDEF node"
+msgstr ""
+
+#: lazarusidestrconsts.dlgimportdesktopexists
+msgid ""
+"A desktop with the same name already exists.\n"
+"Please confirm the desktop name:\n"
 msgstr ""
 
 #: lazarusidestrconsts.dlgincludesystemvariables
@@ -3107,7 +3147,9 @@ msgid "Property Name"
 msgstr "Nama properti"
 
 #: lazarusidestrconsts.dlgqopenlastprj
-msgid "Open last project at start"
+#, fuzzy
+#| msgid "Open last project at start"
+msgid "Open last project and packages at start"
 msgstr "Buka proyek terakhir saat mulai"
 
 #: lazarusidestrconsts.dlgqshowborderspacing
@@ -3220,10 +3262,6 @@ msgstr "Penolakan pemakai"
 msgid "Run Parameters"
 msgstr "Parameter Menjalankan"
 
-#: lazarusidestrconsts.dlgsavecurrentdesktop
-msgid "Save current desktop"
-msgstr ""
-
 #: lazarusidestrconsts.dlgsavecurrentdesktopas
 msgid "Save current desktop as"
 msgstr ""
@@ -3297,12 +3335,12 @@ msgstr ""
 msgid "Select all child controls together with their parent."
 msgstr ""
 
-#: lazarusidestrconsts.dlgselecteddesktop
-msgid "Selected desktop:"
-msgstr ""
-
 #: lazarusidestrconsts.dlgselectedtext
 msgid "&Selected text"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetactivedesktop
+msgid "Set active"
 msgstr ""
 
 #: lazarusidestrconsts.dlgsetallelementdefault
@@ -3316,6 +3354,26 @@ msgstr "Set elemen ke default"
 #: lazarusidestrconsts.dlgsetpropertyvariable
 msgid "Set property Variable"
 msgstr "Set property Variable"
+
+#: lazarusidestrconsts.dlgsetpropertyvariablehint
+msgid "The parameter name for the default setter procedure."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableisprefix
+msgid "is prefix"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableisprefixhint
+msgid "If checked, the \"Set property Variable\" is a prefix. Otherwise it is a fixed name."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableuseconst
+msgid "use const"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableuseconsthint
+msgid "If checked, the setter parameter is marked with \"const\"."
+msgstr ""
 
 #: lazarusidestrconsts.dlgshowallunits
 msgid "Show all units"
@@ -3557,7 +3615,8 @@ msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"
 msgstr "&Teks yang Dicari"
 
-#: lazarusidestrconsts.dlgtoggleselecteddebugdesktop
+#: lazarusidestrconsts.dlgtoggledebugdesktop
+msgctxt "lazarusidestrconsts.dlgtoggledebugdesktop"
 msgid "Toggle as debug desktop"
 msgstr ""
 
@@ -9114,6 +9173,10 @@ msgctxt "lazarusidestrconsts.lisexport"
 msgid "Export"
 msgstr "Ekspor ..."
 
+#: lazarusidestrconsts.lisexportall
+msgid "Export all"
+msgstr ""
+
 #: lazarusidestrconsts.lisexportallitemstofile
 msgid "Export All Items to File"
 msgstr ""
@@ -9137,6 +9200,10 @@ msgstr "Daftar ekspor"
 
 #: lazarusidestrconsts.lisexportpackagelistxml
 msgid "Export package list (*.xml)"
+msgstr ""
+
+#: lazarusidestrconsts.lisexportselected
+msgid "Export selected"
 msgstr ""
 
 #: lazarusidestrconsts.lisexpression
@@ -12243,6 +12310,14 @@ msgstr "Lompat ke penunjuk sebelumnya"
 msgid "Jump to Previous Error"
 msgstr "Lompat ke kesalahan sebelumnya"
 
+#: lazarusidestrconsts.lismenujumptoprocedurebegin
+msgid "Jump to Procedure begin"
+msgstr ""
+
+#: lazarusidestrconsts.lismenujumptoprocedureheader
+msgid "Jump to Procedure header"
+msgstr ""
+
 #: lazarusidestrconsts.lismenulowercaseselection
 #, fuzzy
 #| msgid "Lowercase selection"
@@ -14782,6 +14857,12 @@ msgstr "Timpa File"
 
 #: lazarusidestrconsts.lispkgmangrequiredpackageswerenotfound
 msgid "One or more required packages were not found. See package graph for details."
+msgstr ""
+
+#: lazarusidestrconsts.lispkgmangsaveasalreadyopenedpackage
+msgid ""
+"The package %s is already open in the IDE.\n"
+"You cannot save a package with the same name.\n"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangsavepackage
@@ -17610,8 +17691,8 @@ msgstr ""
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr ""
 
-#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inthertlflagsareinpagesoth
-msgid "This build mode now sets UTF-8 in the RTL.%s Flags are in pages \"Other\" and \"Additions and Overrides\"."
+#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inrtl
+msgid "This build mode now sets UTF-8 in RTL.%s Flags are in pages \"Custom Options\" and \"Additions and Overrides\"."
 msgstr ""
 
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
