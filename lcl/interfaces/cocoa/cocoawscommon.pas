@@ -705,14 +705,15 @@ var
   MousePos: NSPoint;
   MButton: NSInteger;
   lCaptureControlCallback: ICommonCallback;
+  //Str: string;
 begin
   Result := False; // allow cocoa to handle message
 
   if Assigned(Target) and (not (csDesigning in Target.ComponentState) and not Owner.lclIsEnabled) then
     Exit;
 
-   //debugln('MouseUpDownEvent '+Target.name);
   lCaptureControlCallback := GetCaptureControlCallback();
+  //Str := (Format('MouseUpDownEvent Target=%s Self=%x CaptureControlCallback=%x', [Target.name, PtrUInt(Self), PtrUInt(lCaptureControlCallback)]));
   if lCaptureControlCallback <> nil then
   begin
     FIsEventRouting:=true;

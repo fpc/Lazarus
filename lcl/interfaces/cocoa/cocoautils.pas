@@ -229,14 +229,14 @@ function GetNSObjectView(obj: NSObject): NSView;
 begin
   Result := nil;
   if not Assigned(obj) then Exit;
-  if obj.isKindOfClass_(NSView) then
+  if obj.isKindOfClass_(NSBox) then
+    Result := NSBox(obj).contentView
+  else if obj.isKindOfClass_(NSView) then
     Result := NSView(obj)
   else if obj.isKindOfClass_(NSWindow) then
     Result := NSWindow(obj).contentView
   else if obj.isKindOfClass_(NSTabViewItem) then
-    Result := NSTabViewItem(obj).view
-  else if obj.isKindOfClass_(NSBox) then
-    Result := NSBox(obj).contentView;
+    Result := NSTabViewItem(obj).view;
 end;
 
 function GetNSObjectWindow(obj: NSObject): NSWindow;

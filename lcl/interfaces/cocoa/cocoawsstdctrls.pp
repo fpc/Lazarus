@@ -1073,6 +1073,7 @@ var
   cap: NSString;
   lGroupBoxContents: TCocoaCustomControl;
   ns: NSRect;
+  //str: string;
 begin
   box := NSView(TCocoaGroupBox.alloc).lclInitWithCreateParams(AParams);
   if Assigned(box) then
@@ -1085,8 +1086,8 @@ begin
     // set a content view in order to be able to customize drawing for labels/color
     ns := GetNSRect(AParams.X, AParams.Y, AParams.Width, AParams.Height);
     lGroupBoxContents := TCocoaCustomControl(TCocoaCustomControl.alloc.initWithFrame(ns));
-    // Don't use TLCLCustomControlCallback because then no more events will arrive
-    lGroupBoxContents.callback := TLCLCommonCallback.Create(lGroupBoxContents, AWinControl);
+    lGroupBoxContents.callback := TLCLCustomControlCallback.Create(lGroupBoxContents, AWinControl);
+    //str := Format('%X=%X', [PtrUInt(box.callback), PtrUInt(lGroupBoxContents.callback)]);
     lGroupBoxContents.autorelease;
     box.setContentView(lGroupBoxContents);
   end;
