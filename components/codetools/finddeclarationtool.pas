@@ -2671,6 +2671,39 @@ function TFindDeclarationTool.GetSmartHint(Node: TCodeTreeNode;
     until false;
   end;
 
+  function MoveToLastIdentifierThroughDots(ExtTool: TFindDeclarationTool): Boolean;
+  var
+    LastPos: TAtomPosition;
+  begin
+    LastPos := ExtTool.CurPos;
+    ExtTool.ReadNextAtom;
+    while ExtTool.CurPos.Flag = cafPoint do
+    begin
+      ExtTool.ReadNextAtom;
+      LastPos := ExtTool.CurPos;
+      ExtTool.ReadNextAtom;
+    end;
+    ExtTool.CurPos := LastPos;
+    Result := True;
+  end;
+
+  function ProceedWithSmartHint(ExtTool: TFindDeclarationTool): string;
+  var
+    CTExprType: TExpressionType;
+    CTXYPos: TCodeXYPosition;
+    CTTopLine: integer;
+    CTCursorPos: TCodeXYPosition;
+  begin
+    MoveToLastIdentifierThroughDots(ExtTool);
+    if ExtTool.CleanPosToCaret(ExtTool.CurPos.StartPos,CTCursorPos) and
+       ExtTool.FindDeclaration(CTCursorPos,
+         DefaultFindSmartHintFlags+[fsfSearchSourceName],CTExprType,CTXYPos,CTTopLine) and
+       not((CTExprType.Desc=xtContext) and (CTExprType.Context.Node=nil) and (CTExprType.Context.Tool=nil))
+    then
+      Result := CTExprType.Context.Tool.GetSmartHint(CTExprType.Context.Node, CTXYPos, False, False)
+    else
+      Result := '';
+  end;
 var
   IdentNode, TypeNode, ANode: TCodeTreeNode;
   ClassStr: String;
@@ -2679,10 +2712,6 @@ var
   Tool: TFindDeclarationTool;
   HelperForNode: TCodeTreeNode;
   SubNode: TCodeTreeNode;
-  CTExprType: TExpressionType;
-  CTXYPos: TCodeXYPosition;
-  CTTopLine: integer;
-  CTCursorPos: TCodeXYPosition;
 begin
   Result:='';
 
@@ -2755,18 +2784,26 @@ begin
               Result += ': ';
           end;
           case TypeNode.Desc of
-          ctnIdentifier, ctnSpecialize, ctnSpecializeType,
-          ctnPointertype, ctnRangeType, ctnFileType, ctnclassOfType:
+          ctnSetType:
             begin
               Result += ExtractNode(TypeNode, [phpCommentsToSpace]);
+              MoveCursorToNodeStart(TypeNode);
+              ReadNextAtom;
+              if ReadNextUpAtomIs('OF') then
+              begin
+                ReadNextAtom;
+                if (Length(Result) > 0) and (Result[Length(Result)] = ';') then//delete last ";" from set
+                  Delete(Result, Length(Result), 1);
 
-              if
-                CleanPosToCaret(TypeNode.StartPos,CTCursorPos) and
-                FindDeclaration(CTCursorPos,
-                  DefaultFindSmartHintFlags+[fsfSearchSourceName],CTExprType,CTXYPos,CTTopLine) and
-                not((CTExprType.Desc=xtContext) and (CTExprType.Context.Node=nil) and (CTExprType.Context.Tool=nil))
-              then
-                Result += CTExprType.Context.Tool.GetSmartHint(CTExprType.Context.Node, CTXYPos, False, False);
+                Result += ' = ['+Copy(ProceedWithSmartHint(Self), 1, 40)+']';
+              end;
+            end;
+          ctnIdentifier, ctnSpecialize, ctnSpecializeType,
+          ctnPointerType, ctnRangeType, ctnFileType, ctnClassOfType:
+            begin
+              Result += ExtractNode(TypeNode, [phpCommentsToSpace]);
+              MoveCursorToNodeStart(TypeNode);
+              Result += ProceedWithSmartHint(Self);
             end;
           ctnClass, ctnClassInterface, ctnDispinterface,
           ctnClassHelper, ctnTypeHelper, ctnRecordHelper,
@@ -2892,10 +2929,14 @@ begin
             Params.Free;
           end;
         end;
-        if (Node<>nil)
-        and (Node.Desc in [ctnProperty,ctnGlobalProperty]) then begin
-          Result += Tool.ExtractProperty(Node,
-              [phpWithoutName,phpWithParameterNames,phpWithResultType]);
+        if (Node<>nil) then begin
+          if (Node.Desc in [ctnProperty,ctnGlobalProperty]) then begin
+            Result += Tool.ExtractProperty(Node,
+                [phpWithoutName,phpWithParameterNames,phpWithResultType]);
+          end;
+
+          if Tool.MoveCursorToPropType(Node) then
+            Result += ProceedWithSmartHint(Tool);
         end;
       end;
 
