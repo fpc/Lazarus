@@ -85,6 +85,7 @@ type
     MajorVersion: Cardinal;
     MinorVersion: Cardinal;
     MultiSampling: Cardinal;
+    ContextFlags: Cardinal;
   end;
 
 function GTK_TYPE_GL_AREA: TGtkType;
@@ -109,10 +110,10 @@ function gdk_x11_get_default_screen:gint;cdecl;external;
 procedure LOpenGLViewport(Left, Top, Width, Height: integer);
 procedure LOpenGLSwapBuffers(Handle: HWND);
 function LOpenGLMakeCurrent(Handle: HWND): boolean;
-function LOpenGLReleaseContext(Handle: HWND): boolean;
+function LOpenGLReleaseContext({%H-}Handle: HWND): boolean;
 function LOpenGLCreateContext(AWinControl: TWinControl;
              WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
-             DoubleBuffered, RGBA: boolean;
+             DoubleBuffered, RGBA, DebugContext: boolean;
              const RedBits, GreenBits, BlueBits, MajorVersion, MinorVersion,
              MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal;
              const AParams: TCreateParams): HWND;
@@ -595,7 +596,7 @@ begin
   Result:=PGtkWidget(gl_area);
 end;
 
-function CustomXErrorHandler(para1:PDisplay; para2:PXErrorEvent):cint;cdecl;
+function CustomXErrorHandler({%H-}para1:PDisplay; para2:PXErrorEvent):cint;cdecl;
 begin
   if para2^.error_code=8 then begin
     raise Exception.Create('A BadMatch X error occured. Most likely the requested OpenGL version is invalid.');
@@ -623,7 +624,7 @@ var
   GLXContext: TGLXContext;
   i: Integer;
   { Used with glXCreateContextAttribsARB to select 3.X and above context }
-  Context3X: array [0..4] of Integer;
+  Context3X: array [0..6] of Integer;
 
 begin
   Result:=nil;
@@ -679,7 +680,9 @@ begin
       Context3X[1]:=Attribs.MajorVersion;
       Context3X[2]:=GLX_CONTEXT_MINOR_VERSION_ARB;
       Context3X[3]:=Attribs.MinorVersion;
-      Context3X[4]:=None;
+      Context3X[4]:=GLX_CONTEXT_FLAGS_ARB;
+      Context3X[5]:=Attribs.ContextFlags;
+      Context3X[6]:=None;
       if (ShareList<>nil) then begin
         GLXContext:=glXCreateContextAttribsARB(XDisplay, FBConfig,
                                               PrivateShareList^.glxcontext, true,
@@ -846,7 +849,7 @@ end;
 
 function LOpenGLCreateContextCore(AWinControl: TWinControl;
   WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
-  DoubleBuffered, RGBA: boolean;
+  DoubleBuffered, RGBA, DebugContext: boolean;
   const RedBits, GreenBits, BlueBits, MajorVersion, MinorVersion,
   MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal;
   const AParams: TCreateParams): HWND;
@@ -863,6 +866,12 @@ begin
     BlueBits,AlphaBits,DepthBits,StencilBits,AUXBuffers);
   Attribs.MajorVersion:=MajorVersion;
   Attribs.MinorVersion:=MinorVersion;
+
+  // fill in context flags
+  Attribs.ContextFlags:=0;
+  if DebugContext then
+     Attribs.ContextFlags:=Attribs.ContextFlags or GLX_CONTEXT_DEBUG_BIT_ARB;
+
   if MultiSampling>1 then begin
     Attribs.MultiSampling:=MultiSampling;
   end else begin
@@ -893,7 +902,7 @@ end;
 
 function LOpenGLCreateContext(AWinControl: TWinControl;
   WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
-  DoubleBuffered, RGBA: boolean;
+  DoubleBuffered, RGBA, DebugContext: boolean;
   const RedBits, GreenBits, BlueBits, MajorVersion, MinorVersion,
   MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal;
   const AParams: TCreateParams): HWND;
@@ -909,7 +918,7 @@ begin
     {$ENDIF}
     try
       Result := LOpenGLCreateContextCore(AWinControl, WSPrivate, SharedControl,
-        DoubleBuffered, RGBA, RedBits, GreenBits, BlueBits, MajorVersion,
+        DoubleBuffered, RGBA, DebugContext, RedBits, GreenBits, BlueBits, MajorVersion,
         MinorVersion, MultiSampling, AlphaBits, DepthBits, StencilBits,
         AUXBuffers, AParams);
     except
@@ -918,14 +927,14 @@ begin
       {$ENDIF}
       { retry without MultiSampling }
       Result := LOpenGLCreateContextCore(AWinControl, WSPrivate, SharedControl,
-        DoubleBuffered, RGBA, RedBits, GreenBits, BlueBits, MajorVersion,
+        DoubleBuffered, RGBA, DebugContext, RedBits, GreenBits, BlueBits, MajorVersion,
         MinorVersion, 1, AlphaBits, DepthBits, StencilBits, AUXBuffers, AParams);
     end;
   end else begin
     { no multi-sampling requested (or GLX_ARB_multisample not available),
       just pass to LOpenGLCreateContextCore }
     Result := LOpenGLCreateContextCore(AWinControl, WSPrivate, SharedControl, 
-      DoubleBuffered, RGBA, RedBits, GreenBits, BlueBits, MajorVersion,
+      DoubleBuffered, RGBA, DebugContext, RedBits, GreenBits, BlueBits, MajorVersion,
       MinorVersion, MultiSampling, AlphaBits, DepthBits, StencilBits,
       AUXBuffers, AParams);
   end;

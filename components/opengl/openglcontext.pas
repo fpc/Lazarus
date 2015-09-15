@@ -38,6 +38,7 @@ unit OpenGLContext;
     {$DEFINE UsesModernGL}
     {$DEFINE HasRGBA}
     {$DEFINE HasRGBBits}
+    {$DEFINE HasDebugContext}
     {$DEFINE OpenGLTargetDefined}
   {$ENDIF}
 {$ENDIF}
@@ -118,6 +119,7 @@ type
   private
     FAutoResizeViewport: boolean;
     FCanvas: TCanvas; // only valid at designtime
+    FDebugContext: boolean;
     FDoubleBuffered: boolean;
     FFrameDiffTime: integer;
     FOnMakeCurrent: TOpenGlCtrlMakeCurrentEvent;
@@ -135,6 +137,7 @@ type
     FSharingOpenGlControls: TList;
     function GetSharingControls(Index: integer): TCustomOpenGLControl;
     procedure SetAutoResizeViewport(const AValue: boolean);
+    procedure SetDebugContext(AValue: boolean);
     procedure SetDoubleBuffered(const AValue: boolean);
     procedure SetOpenGLMajorVersion(AValue: Cardinal);
     procedure SetOpenGLMinorVersion(AValue: Cardinal);
@@ -179,6 +182,7 @@ type
     property AutoResizeViewport: boolean read FAutoResizeViewport
                                          write SetAutoResizeViewport default false;
     property DoubleBuffered: boolean read FDoubleBuffered write SetDoubleBuffered default true;
+    property DebugContext: boolean read FDebugContext write SetDebugContext default false; // create context with debugging enabled. Requires OpenGLMajorVersion!
     property RGBA: boolean read FRGBA write SetRGBA default true;
     {$IFDEF HasRGBBits}
     property RedBits: Cardinal read FRedBits write SetRedBits default 8;
@@ -298,6 +302,13 @@ begin
   and IsVisible and HandleAllocated
   and MakeCurrent then
     LOpenGLViewport(0,0,Width,Height);
+end;
+
+procedure TCustomOpenGLControl.SetDebugContext(AValue: boolean);
+begin
+  if FDebugContext=AValue then Exit;
+  FDebugContext:=AValue;
+  OpenGLAttributesChanged;
 end;
 
 procedure TCustomOpenGLControl.SetDoubleBuffered(const AValue: boolean);
@@ -631,6 +642,9 @@ begin
                                  AttrControl.DoubleBuffered,
                                  {$IFDEF HasRGBA}
                                  AttrControl.RGBA,
+                                 {$ENDIF}
+                                 {$IFDEF HasDebugContext}
+                                 AttrControl.DebugContext,
                                  {$ENDIF}
                                  {$IFDEF HasRGBBits}
                                  AttrControl.RedBits,
