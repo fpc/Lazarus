@@ -9683,6 +9683,10 @@ msgstr "これ以上のブレークポイントをグループ\"%s\"に割り当
 msgid "%sThere are %d more empty groups, delete all?"
 msgstr "%s　%d の空のグループがあります。全て削除しますか？"
 
+#: lazarusidestrconsts.lisgrouplocalvariables
+msgid "Group automatically defined local variables"
+msgstr ""
+
 #: lazarusidestrconsts.lisgroupnameemptyclearinstead
 msgid "The group name cannot be empty. Clear breakpoints' group(s)?"
 msgstr "グループ名は空であってはなりません。ブレークポイントのグループを消去しますか？"

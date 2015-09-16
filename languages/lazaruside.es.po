@@ -9535,6 +9535,10 @@ msgstr "No hay mas puntos de interrupción asignados al grupo \"%s\", ¿borrarlo
 msgid "%sThere are %d more empty groups, delete all?"
 msgstr "%sHay %d grupos vacíos más, ¿borrarlos todos?"
 
+#: lazarusidestrconsts.lisgrouplocalvariables
+msgid "Group automatically defined local variables"
+msgstr ""
+
 #: lazarusidestrconsts.lisgroupnameemptyclearinstead
 msgid "The group name cannot be empty. Clear breakpoints' group(s)?"
 msgstr "El nombre del grupo no puede estar vacío. ¿Limpiar los grupo(s) de puntos de interrupción?"

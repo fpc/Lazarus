@@ -9508,6 +9508,10 @@ msgstr ""
 msgid "%sThere are %d more empty groups, delete all?"
 msgstr "%sEs gibt %d weitere leere Gruppen. Alle löschen?"
 
+#: lazarusidestrconsts.lisgrouplocalvariables
+msgid "Group automatically defined local variables"
+msgstr ""
+
 #: lazarusidestrconsts.lisgroupnameemptyclearinstead
 msgid "The group name cannot be empty. Clear breakpoints' group(s)?"
 msgstr "Der Gruppenname darf nicht leer sein. Haltepunkt-Gruppe(n) löschen?"

@@ -9555,6 +9555,10 @@ msgstr "Nessun breakpoint assegnato al gruppo \"%s\", cancellarlo?"
 msgid "%sThere are %d more empty groups, delete all?"
 msgstr "%sVi sono altri %d gruppi vuoti. Cancellare tutti?"
 
+#: lazarusidestrconsts.lisgrouplocalvariables
+msgid "Group automatically defined local variables"
+msgstr ""
+
 #: lazarusidestrconsts.lisgroupnameemptyclearinstead
 msgid "The group name cannot be empty. Clear breakpoints' group(s)?"
 msgstr "Il nome di un gruppo non può essere vuoto. Cancellare il gruppo?"

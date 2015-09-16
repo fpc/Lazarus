@@ -9762,6 +9762,10 @@ msgstr "Grupė „%s“ nebeturi jai priskirtų stabdos taškų. Ar ją pašalin
 msgid "%sThere are %d more empty groups, delete all?"
 msgstr "%sČia yra ir daugiau (%d) tuščių grupių. Jas visas pašalinti?"
 
+#: lazarusidestrconsts.lisgrouplocalvariables
+msgid "Group automatically defined local variables"
+msgstr ""
+
 #: lazarusidestrconsts.lisgroupnameemptyclearinstead
 msgid "The group name cannot be empty. Clear breakpoints' group(s)?"
 msgstr "Grupės pavadinimas neturi būti tuščias. Ar išvalyti stabdos taškų grupę(-es)?"

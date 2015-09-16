@@ -9756,6 +9756,10 @@ msgstr "До групи \"%s\" більше непризначено точок 
 msgid "%sThere are %d more empty groups, delete all?"
 msgstr "%sЄ ще %d порожніх груп, видалити всі?"
 
+#: lazarusidestrconsts.lisgrouplocalvariables
+msgid "Group automatically defined local variables"
+msgstr ""
+
 #: lazarusidestrconsts.lisgroupnameemptyclearinstead
 msgid "The group name cannot be empty. Clear breakpoints' group(s)?"
 msgstr "Назва групи не може бути порожня. Очистити груп(и) точок зупинки?"

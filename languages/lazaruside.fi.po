@@ -9487,6 +9487,10 @@ msgstr "Ryhmässä \"%s\" ei ole enää keskeytyskohtia, poista se?"
 msgid "%sThere are %d more empty groups, delete all?"
 msgstr "%sJäljellä on %d tyhjää ryhmää, poista kaikki?"
 
+#: lazarusidestrconsts.lisgrouplocalvariables
+msgid "Group automatically defined local variables"
+msgstr ""
+
 #: lazarusidestrconsts.lisgroupnameemptyclearinstead
 msgid "The group name cannot be empty. Clear breakpoints' group(s)?"
 msgstr "Ryhmän nimi ei saa olla tyhjä. Tyhjennä keskeytyskohtien ryhmä(t)?"

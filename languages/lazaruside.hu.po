@@ -9504,6 +9504,10 @@ msgstr "Nincs több töréspont társítva a(z) \"%s\" csoporthoz. Törölhető?
 msgid "%sThere are %d more empty groups, delete all?"
 msgstr "%sVan még %d üres csoport. Összes törlése?"
 
+#: lazarusidestrconsts.lisgrouplocalvariables
+msgid "Group automatically defined local variables"
+msgstr ""
+
 #: lazarusidestrconsts.lisgroupnameemptyclearinstead
 msgid "The group name cannot be empty. Clear breakpoints' group(s)?"
 msgstr "A csoport neve nem lehet üres. Törlendő a töréspontok csoportja?"

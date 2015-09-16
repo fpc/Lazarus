@@ -9592,6 +9592,10 @@ msgstr "Žádné další body přerušení nejsou přiřazeny ke skupině \"%s\"
 msgid "%sThere are %d more empty groups, delete all?"
 msgstr "%sExistuje %d dalších prázdných skupin, smazat všechny?"
 
+#: lazarusidestrconsts.lisgrouplocalvariables
+msgid "Group automatically defined local variables"
+msgstr ""
+
 #: lazarusidestrconsts.lisgroupnameemptyclearinstead
 msgid "The group name cannot be empty. Clear breakpoints' group(s)?"
 msgstr "Jméno skupiny nemůže být prázdné. Vyčistit skupiny bodu přerušení?"
