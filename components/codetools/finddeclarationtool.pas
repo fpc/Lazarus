@@ -2794,7 +2794,6 @@ begin
                 if (Length(Result) > 0) and (Result[Length(Result)] = ';') then//delete last ";" from set
                   Delete(Result, Length(Result), 1);
 
-                Result += ' = ['+Copy(ProceedWithSmartHint(Self), 4, High(Integer))+']';
                 SetStr := ProceedWithSmartHint(Self);
                 if (Length(SetStr) > 2) and (SetStr[2] = '=') then
                   SetStr := Copy(SetStr, 4, High(Integer));
