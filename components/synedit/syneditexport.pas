@@ -272,6 +272,9 @@ end;
 procedure TSynCustomExporter.CopyToClipboardFormat(AFormat: UINT);
 begin
   fBuffer.Position:=0;
+  //if we don't clear the clipboard, external applications will only ever see the
+  //first Copy we put there
+  ClipBoard.Clear;
   ClipBoard.AddFormat(AFormat,fBuffer);
 end;
 
