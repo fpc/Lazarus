@@ -5599,7 +5599,8 @@ end;
 procedure TWinControl.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   if Assigned(FOnKeyDown) then FOnKeyDown(Self, Key, Shift);
-  DoCallKeyEventHandler(chtOnKeyDown, Key, Shift);
+  if Key <> 0 then
+    DoCallKeyEventHandler(chtOnKeyDown, Key, Shift);
 end;
 
 {------------------------------------------------------------------------------
