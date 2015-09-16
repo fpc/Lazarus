@@ -87,6 +87,7 @@ type
     FUpdateAllMethodSignatures: boolean;
     FUpdateMultiProcSignatures: boolean;
     FUpdateOtherProcSignaturesCase: boolean;
+    FGroupLocalVariables: boolean;
     FWordPolicyExceptions: TStringList;
     FDoNotSplitLineInFront: TAtomTypes;
     FDoNotSplitLineAfter: TAtomTypes;
@@ -178,6 +179,8 @@ type
       read FUpdateMultiProcSignatures write FUpdateMultiProcSignatures;
     property UpdateOtherProcSignaturesCase: boolean
       read FUpdateOtherProcSignaturesCase write FUpdateOtherProcSignaturesCase;
+    property GroupLocalVariables: boolean
+      read FGroupLocalVariables write FGroupLocalVariables;
     property ClassHeaderComments: boolean
       read FClassHeaderComments write FClassHeaderComments;
     property ClassImplementationComments: boolean
@@ -446,6 +449,8 @@ begin
       'CodeToolsOptions/UpdateMultiProcSignatures/Value',true);
     FUpdateOtherProcSignaturesCase:=XMLConfig.GetValue(
       'CodeToolsOptions/UpdateOtherProcSignaturesCase/Value',true);
+    FGroupLocalVariables:=XMLConfig.GetValue(
+      'CodeToolsOptions/GroupLocalVariables/Value',true);
     FClassHeaderComments:=XMLConfig.GetValue(
       'CodeToolsOptions/ClassHeaderComments/Value',true);
     FClassImplementationComments:=XMLConfig.GetValue(
@@ -599,6 +604,9 @@ begin
       true);
     XMLConfig.SetDeleteValue(
       'CodeToolsOptions/UpdateOtherProcSignaturesCase/Value',FUpdateOtherProcSignaturesCase,
+      true);
+    XMLConfig.SetDeleteValue(
+      'CodeToolsOptions/GroupLocalVariables/Value',FGroupLocalVariables,
       true);
     XMLConfig.SetDeleteValue(
       'CodeToolsOptions/ClassImplementationComments/Value',
@@ -767,6 +775,7 @@ begin
     FKeepForwardProcOrder:=CodeToolsOpts.KeepForwardProcOrder;
     FUpdateMultiProcSignatures:=CodeToolsOpts.UpdateMultiProcSignatures;
     FUpdateOtherProcSignaturesCase:=CodeToolsOpts.UpdateOtherProcSignaturesCase;
+    FGroupLocalVariables:=CodeToolsOpts.GroupLocalVariables;
     FClassHeaderComments:=CodeToolsOpts.ClassHeaderComments;
     FClassImplementationComments:=CodeToolsOpts.ClassImplementationComments;
     FMethodInsertPolicy:=CodeToolsOpts.FMethodInsertPolicy;
@@ -826,6 +835,7 @@ begin
   FKeepForwardProcOrder:=true;
   FUpdateMultiProcSignatures:=true;
   FUpdateOtherProcSignaturesCase:=true;
+  FGroupLocalVariables:=true;
   FClassHeaderComments:=true;
   FClassImplementationComments:=true;
   FMethodInsertPolicy:=mipClassOrder;
@@ -903,6 +913,7 @@ begin
     and (FKeepForwardProcOrder=CodeToolsOpts.KeepForwardProcOrder)
     and (FUpdateMultiProcSignatures=CodeToolsOpts.UpdateMultiProcSignatures)
     and (FUpdateOtherProcSignaturesCase=CodeToolsOpts.UpdateOtherProcSignaturesCase)
+    and (FGroupLocalVariables=CodeToolsOpts.GroupLocalVariables)
     and (FClassHeaderComments=CodeToolsOpts.ClassHeaderComments)
     and (FClassImplementationComments=CodeToolsOpts.ClassImplementationComments)
     and (FMethodInsertPolicy=CodeToolsOpts.FMethodInsertPolicy)
@@ -1022,6 +1033,7 @@ begin
     Beauty.KeepForwardProcOrder:=KeepForwardProcOrder;
     Beauty.UpdateMultiProcSignatures:=UpdateMultiProcSignatures;
     Beauty.UpdateOtherProcSignaturesCase:=UpdateOtherProcSignaturesCase;
+    Beauty.GroupLocalVariables:=GroupLocalVariables;
     Beauty.ClassHeaderComments:=ClassHeaderComments;
     Beauty.ClassImplementationComments:=ClassImplementationComments;
     Beauty.MethodInsertPolicy:=MethodInsertPolicy;

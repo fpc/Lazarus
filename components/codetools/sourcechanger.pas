@@ -150,6 +150,7 @@ type
     KeepForwardProcOrder: boolean;
     UpdateMultiProcSignatures: boolean;
     UpdateOtherProcSignaturesCase: boolean; // when updating proc signatures not under cursor, fix case
+    GroupLocalVariables: boolean;
     // classes, methods, properties
     ClassHeaderComments: boolean;
     ClassImplementationComments: boolean;
@@ -1256,6 +1257,7 @@ begin
   UpdateAllMethodSignatures:=true;
   UpdateMultiProcSignatures:=true;
   UpdateOtherProcSignaturesCase:=true;
+  GroupLocalVariables:=true;
   MethodInsertPolicy:=mipClassOrder;
   ForwardProcBodyInsertPolicy:=fpipBehindMethods;
   KeepForwardProcOrder:=true;

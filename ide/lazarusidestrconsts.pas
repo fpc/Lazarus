@@ -5999,6 +5999,7 @@ resourcestring
   lisUDUnits2 = 'Units: %s';
   lisCTOUpdateAllMethodSignatures = 'Update all method signatures';
   lisCTOUpdateMultipleProcedureSignatures = 'Update multiple procedure signatures';
+  lisGroupLocalVariables = 'Group automatically defined local variables';
   lisUpdateOtherProcedureSignaturesWhenOnlyLetterCaseHa = 'Update other '
     +'procedure signatures when only letter case has changed';
   lisTemplateFile = 'Template file';

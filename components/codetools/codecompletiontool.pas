@@ -1050,6 +1050,16 @@ function TCodeCompletionCodeTool.AddLocalVariable(CleanCursorPos: integer;
   CleanLevelPos: integer): boolean;
 // if CleanLevelPos<1 then CleanLevelPos:=CleanCursorPos
 // CleanLevelPos selects the target node, e.g. a ctnProcedure
+
+  function FindFirstVarDeclaration(var Node: TCodeTreeNode): TCodeTreeNode;
+  begin
+    Result := Node;
+    while Assigned(Result.PriorBrother) and (Result.PriorBrother.Desc = ctnVarDefinition) and
+      not Assigned(Result.PriorBrother.LastChild)
+    do
+      Result := Result.PriorBrother;
+  end;
+
 var
   CursorNode, VarSectionNode, VarNode: TCodeTreeNode;
   Indent, InsertPos: integer;
@@ -1060,6 +1070,10 @@ var
   OtherSectionNode: TCodeTreeNode;
   HeaderNode: TCodeTreeNode;
   Beauty: TBeautifyCodeOptions;
+  VarTypeNode: TCodeTreeNode;
+  InsertVarLineStart: integer;
+  InsertVarLineEnd: integer;
+  InsertAsNewLine: Boolean;
 begin
   Result:=false;
   if CleanLevelPos<1 then CleanLevelPos:=CleanCursorPos;
@@ -1127,21 +1141,70 @@ begin
   //DebugLn(['TCodeCompletionCodeTool.AddLocalVariable C InsertTxt="',InsertTxt,'" ParentNode=',ParentNode.DescAsString,' HeaderNode=',HeaderNode.DescAsString,' OtherSectionNode=',OtherSectionNode.DescAsString,' VarSectionNode=',VarSectionNode.DescAsString,' CursorNode=',CursorNode.DescAsString]);
   end;
 
+  InsertAsNewLine := True;
   if (VarSectionNode<>nil) then begin
-    // there is already a var section
-    // -> append variable
     //debugln(['TCodeCompletionCodeTool.AddLocalVariable insert into existing var section']);
-    VarNode:=VarSectionNode.LastChild;
-    if VarNode<>nil then begin
-      Indent:=Beauty.GetLineIndent(Src,VarNode.StartPos);
-      if PositionsInSameLine(Src,VarSectionNode.StartPos,VarNode.StartPos) then
+    // there is already a var section
+    // -> first check if variables with the same type are defined (search backwards)
+    VarTypeNode := nil;
+    if Beauty.GroupLocalVariables then
+    begin
+      VarNode:=VarSectionNode.LastChild;
+      while Assigned(VarNode) and not Assigned(VarTypeNode) do
+      begin
+        if (VarNode.Desc = ctnVarDefinition) and Assigned(VarNode.LastChild) and
+           (VarNode.LastChild.Desc = ctnIdentifier) and
+           (CompareIdentifiers(PChar(VariableType), PChar(ExtractNode(VarNode.LastChild,[phpCommentsToSpace]))) = 0)
+        then
+          VarTypeNode := VarNode;
+        VarNode := VarNode.PriorBrother;
+      end;
+    end;
+    if Assigned(VarTypeNode) then
+    begin
+      // -> append variable to already defined line
+      VarNode := FindFirstVarDeclaration(VarTypeNode);//find starting indentation
+      Indent:=Beauty.GetLineIndent(Src,VarTypeNode.StartPos);
+      if PositionsInSameLine(Src,VarTypeNode.StartPos,VarNode.StartPos) then
         inc(Indent,Beauty.Indent);
-      InsertPos:=FindLineEndOrCodeAfterPosition(VarNode.EndPos);
-    end else begin
-      Indent:=Beauty.GetLineIndent(Src,VarSectionNode.StartPos);
-      MoveCursorToNodeStart(VarSectionNode);
-      ReadNextAtom;
-      InsertPos:=CurPos.EndPos;
+      MoveCursorToNodeStart(VarTypeNode.LastChild);
+      ReadPriorAtom;
+      if CurPos.Flag = cafColon then
+      begin
+        InsertPos:=CurPos.StartPos;
+        GetLineStartEndAtPosition(Src, InsertPos, InsertVarLineStart, InsertVarLineEnd);
+        InsertTxt:=VariableName;
+        if InsertPos-InsertVarLineStart+Length(VariableName)+2 > Beauty.LineLength then//the variable name doesn't fit into the line
+          InsertTxt := Beauty.LineEnd + Beauty.GetIndentStr(Indent) + InsertTxt
+        else if InsertVarLineEnd-InsertVarLineStart+Length(VariableName)+2 > Beauty.LineLength then//the variable type doesn't fit into the line
+        begin
+          if atColon in Beauty.DoNotSplitLineInFront then
+            InsertTxt := Beauty.LineEnd + Beauty.GetIndentStr(Indent) + InsertTxt
+          else
+            InsertTxt := InsertTxt + Beauty.LineEnd + Beauty.GetIndentStr(Indent);
+        end;
+        InsertTxt:=','+InsertTxt;
+        Indent := 0;
+        InsertAsNewLine := False;
+      end else
+        VarTypeNode := nil;//error: colon not found, insert as new line
+    end;
+    if not Assigned(VarTypeNode) then
+    begin
+      // -> append variable to new line
+      VarNode:=VarSectionNode.LastChild;
+      if VarNode<>nil then begin
+        InsertPos:=FindLineEndOrCodeAfterPosition(VarNode.EndPos);
+        VarNode := FindFirstVarDeclaration(VarNode);//find indentation of first var definition
+        Indent:=Beauty.GetLineIndent(Src,VarNode.StartPos);
+        if PositionsInSameLine(Src,VarSectionNode.StartPos,VarNode.StartPos) then
+          inc(Indent,Beauty.Indent);
+      end else begin
+        Indent:=Beauty.GetLineIndent(Src,VarSectionNode.StartPos)+Beauty.Indent;
+        MoveCursorToNodeStart(VarSectionNode);
+        ReadNextAtom;
+        InsertPos:=CurPos.EndPos;
+      end;
     end;
   end else begin
     // there is no var section yet
@@ -1183,11 +1246,14 @@ begin
     InsertTxt:='var'+Beauty.LineEnd
                +Beauty.GetIndentStr(Indent+Beauty.Indent)+InsertTxt;
   end;
-  
+
   // insert new code
   InsertTxt:=Beauty.BeautifyStatement(InsertTxt,Indent);
   //DebugLn('TCodeCompletionCodeTool.AddLocalVariable E ',InsertTxt,' ');
-  SourceChangeCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,InsertTxt);
+  if InsertAsNewLine then
+    SourceChangeCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,InsertTxt)
+  else
+    SourceChangeCache.Replace(gtNone,gtNone,InsertPos,InsertPos,InsertTxt);
 
   if (VariableTypeUnitName<>'')
   and (not IsHiddenUsedUnit(PChar(VariableTypeUnitName))) then begin
