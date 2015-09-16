@@ -2706,8 +2706,7 @@ function TFindDeclarationTool.GetSmartHint(Node: TCodeTreeNode;
   end;
 var
   IdentNode, TypeNode, ANode: TCodeTreeNode;
-  ClassStr: String;
-  NodeStr: String;
+  ClassStr, NodeStr, SetStr: String;
   Params: TFindDeclarationParams;
   Tool: TFindDeclarationTool;
   HelperForNode: TCodeTreeNode;
@@ -2796,6 +2795,11 @@ begin
                   Delete(Result, Length(Result), 1);
 
                 Result += ' = ['+Copy(ProceedWithSmartHint(Self), 4, 1000)+']';
+                SetStr := ProceedWithSmartHint(Self);
+                if (Length(SetStr) > 2) and (SetStr[2] = '=') then
+                  SetStr := Copy(SetStr, 4, 1000);
+                if (SetStr <> '') then
+                  Result += ' = ['+SetStr+']';
               end;
             end;
           ctnIdentifier, ctnSpecialize, ctnSpecializeType,
