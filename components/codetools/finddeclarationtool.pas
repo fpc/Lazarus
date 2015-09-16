@@ -2795,7 +2795,7 @@ begin
                 if (Length(Result) > 0) and (Result[Length(Result)] = ';') then//delete last ";" from set
                   Delete(Result, Length(Result), 1);
 
-                Result += ' = ['+Copy(ProceedWithSmartHint(Self), 1, 40)+']';
+                Result += ' = ['+Copy(ProceedWithSmartHint(Self), 4, 1000)+']';
               end;
             end;
           ctnIdentifier, ctnSpecialize, ctnSpecializeType,
