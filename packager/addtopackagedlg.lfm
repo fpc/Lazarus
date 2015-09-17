@@ -17,7 +17,7 @@ object AddToPackageDlg: TAddToPackageDlg
   LCLVersion = '1.5'
   object PageControl1: TPageControl
     Left = 0
-    Height = 319
+    Height = 316
     Top = 0
     Width = 658
     ActivePage = NewComponentPage
@@ -27,16 +27,16 @@ object AddToPackageDlg: TAddToPackageDlg
     OnChange = PageControl1Change
     object NewComponentPage: TTabSheet
       Caption = 'New Component'
-      ClientHeight = 291
-      ClientWidth = 650
+      ClientHeight = 285
+      ClientWidth = 654
       OnResize = NewComponentPageResize
       object AncestorTypeLabel: TLabel
         AnchorSideTop.Control = AncestorComboBox
         AnchorSideTop.Side = asrCenter
         Left = 5
-        Height = 15
-        Top = 10
-        Width = 101
+        Height = 17
+        Top = 12
+        Width = 130
         Caption = 'AncestorTypeLabel'
         ParentColor = False
       end
@@ -44,9 +44,9 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideTop.Control = ClassNameEdit
         AnchorSideTop.Side = asrCenter
         Left = 5
-        Height = 15
-        Top = 39
-        Width = 87
+        Height = 17
+        Top = 46
+        Width = 112
         Caption = 'ClassNameLabel'
         ParentColor = False
       end
@@ -54,9 +54,9 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideTop.Control = PalettePageCombobox
         AnchorSideTop.Side = asrCenter
         Left = 5
-        Height = 15
-        Top = 68
-        Width = 90
+        Height = 17
+        Top = 80
+        Width = 119
         Caption = 'PalettePageLabel'
         ParentColor = False
       end
@@ -64,9 +64,9 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideTop.Control = ComponentUnitFileEdit
         AnchorSideTop.Side = asrCenter
         Left = 5
-        Height = 15
-        Top = 97
-        Width = 132
+        Height = 17
+        Top = 114
+        Width = 168
         Caption = 'ComponentUnitFileLabel'
         ParentColor = False
       end
@@ -74,9 +74,9 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideTop.Control = ComponentUnitNameEdit
         AnchorSideTop.Side = asrCenter
         Left = 5
-        Height = 15
-        Top = 126
-        Width = 146
+        Height = 17
+        Top = 147
+        Width = 184
         Caption = 'ComponentUnitNameLabel'
         ParentColor = False
       end
@@ -84,11 +84,11 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = NewComponentPage
         Left = 184
-        Height = 23
+        Height = 29
         Top = 6
         Width = 200
         BorderSpacing.Top = 6
-        ItemHeight = 15
+        ItemHeight = 0
         OnChange = AncestorComboBoxChange
         OnCloseUp = AncestorComboBoxCloseUp
         TabOrder = 0
@@ -100,9 +100,9 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideTop.Control = AncestorComboBox
         AnchorSideTop.Side = asrCenter
         Left = 390
-        Height = 19
+        Height = 24
         Top = 8
-        Width = 162
+        Width = 207
         BorderSpacing.Left = 6
         Caption = 'AncestorShowAllCheckBox'
         Checked = True
@@ -117,8 +117,8 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideRight.Control = AncestorComboBox
         AnchorSideRight.Side = asrBottom
         Left = 184
-        Height = 23
-        Top = 35
+        Height = 27
+        Top = 41
         Width = 200
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 6
@@ -133,11 +133,11 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideRight.Control = AncestorComboBox
         AnchorSideRight.Side = asrBottom
         Left = 184
-        Height = 23
-        Top = 64
+        Height = 29
+        Top = 74
         Width = 200
         BorderSpacing.Top = 6
-        ItemHeight = 15
+        ItemHeight = 0
         TabOrder = 3
         Text = 'PalettePageCombobox'
       end
@@ -147,9 +147,9 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = ComponentUnitFileBrowseButton
         Left = 184
-        Height = 23
-        Top = 93
-        Width = 383
+        Height = 27
+        Top = 109
+        Width = 364
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 6
         TabOrder = 4
@@ -160,14 +160,15 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideTop.Control = ComponentUnitFileEdit
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = ComponentUnitFileShortenButton
-        Left = 567
-        Height = 25
+        Left = 548
+        Height = 29
         Hint = 'Save file dialog'
-        Top = 92
-        Width = 35
+        Top = 108
+        Width = 50
         Anchors = [akTop, akRight]
         AutoSize = True
         Caption = '...'
+        Constraints.MinWidth = 50
         OnClick = ComponentUnitFileBrowseButtonClick
         ParentShowHint = False
         ShowHint = True
@@ -179,15 +180,16 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = NewComponentPage
         AnchorSideRight.Side = asrBottom
-        Left = 602
-        Height = 25
+        Left = 598
+        Height = 29
         Hint = 'Shorten or expand filename'
-        Top = 92
-        Width = 42
+        Top = 108
+        Width = 50
         Anchors = [akTop, akRight]
         AutoSize = True
         BorderSpacing.Right = 6
         Caption = '<>'
+        Constraints.MinWidth = 50
         OnClick = ComponentUnitFileShortenButtonClick
         ParentShowHint = False
         ShowHint = True
@@ -200,8 +202,8 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideRight.Control = AncestorComboBox
         AnchorSideRight.Side = asrBottom
         Left = 184
-        Height = 23
-        Top = 122
+        Height = 27
+        Top = 142
         Width = 200
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 6
@@ -211,32 +213,46 @@ object AddToPackageDlg: TAddToPackageDlg
       end
       object ComponentIconLabel: TLabel
         AnchorSideLeft.Control = ComponentUnitNameLabel
-        AnchorSideTop.Control = ComponentIconSpeedButton
+        AnchorSideTop.Control = ComponentIconBitBtn
         AnchorSideTop.Side = asrCenter
         Left = 5
-        Height = 15
-        Top = 157
-        Width = 115
+        Height = 17
+        Top = 183
+        Width = 144
         Caption = 'ComponentIconLabel'
         ParentColor = False
       end
-      object ComponentIconSpeedButton: TSpeedButton
+      object ComponentIconBitBtn: TBitBtn
         AnchorSideLeft.Control = ComponentUnitNameEdit
         AnchorSideTop.Control = ComponentUnitNameEdit
         AnchorSideTop.Side = asrBottom
         Left = 184
-        Height = 26
-        Top = 151
-        Width = 28
+        Height = 32
+        Top = 175
+        Width = 50
         BorderSpacing.Top = 6
-        OnClick = ComponentIconSpeedButtonClick
-        ShowHint = True
-        ParentShowHint = False
+        Constraints.MinWidth = 50
+        GlyphShowMode = gsmAlways
+        OnClick = ComponentIconBitBtnClick
+        TabOrder = 8
+      end
+      object LabelIconInfo: TLabel
+        AnchorSideLeft.Control = ComponentIconBitBtn
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = ComponentIconLabel
+        AnchorSideTop.Side = asrCenter
+        Left = 240
+        Height = 17
+        Top = 183
+        Width = 6
+        BorderSpacing.Around = 6
+        Caption = '?'
+        ParentColor = False
       end
     end
     object NewRequirementPage: TTabSheet
       Caption = 'New Requirement'
-      ClientHeight = 289
+      ClientHeight = 285
       ClientWidth = 654
       object NewDepPanel: TPanel
         Left = 0
@@ -273,7 +289,7 @@ object AddToPackageDlg: TAddToPackageDlg
           AutoComplete = True
           AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
           Constraints.MinWidth = 200
-          ItemHeight = 15
+          ItemHeight = 0
           OnChange = DependPkgNameComboBoxChange
           TabOrder = 0
           Text = 'DependPkgNameComboBox'
@@ -322,7 +338,7 @@ object AddToPackageDlg: TAddToPackageDlg
     end
     object AddFilesPage: TTabSheet
       Caption = 'Add Files'
-      ClientHeight = 289
+      ClientHeight = 285
       ClientWidth = 654
       object FilesListView: TListView
         Left = 6
@@ -398,8 +414,8 @@ object AddToPackageDlg: TAddToPackageDlg
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 26
-    Top = 325
+    Height = 29
+    Top = 322
     Width = 646
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True

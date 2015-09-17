@@ -87,7 +87,7 @@ type
     ClassNameEdit: TEdit;
     ClassNameLabel: TLabel;
     ComponentIconLabel: TLabel;
-    ComponentIconSpeedButton: TSpeedButton;
+    ComponentIconBitBtn: TBitBtn;
     ComponentUnitFileBrowseButton: TButton;
     ComponentUnitFileEdit: TEdit;
     ComponentUnitFileLabel: TLabel;
@@ -104,6 +104,7 @@ type
     FilesDirButton: TBitBtn;
     FilesListView: TListView;
     FilesShortenButton: TBitBtn;
+    LabelIconInfo: TLabel;
     NewComponentPage: TTabSheet;
     NewDepPanel: TPanel;
     NewRequirementPage: TTabSheet;
@@ -118,7 +119,7 @@ type
     procedure CancelAddFileButtonClick(Sender: TObject);
     procedure CancelAddUnitButtonClick(Sender: TObject);
     procedure ClassNameEditChange(Sender: TObject);
-    procedure ComponentIconSpeedButtonClick(Sender: TObject);
+    procedure ComponentIconBitBtnClick(Sender: TObject);
     procedure ComponentUnitFileBrowseButtonClick(Sender: TObject);
     procedure ComponentUnitFileShortenButtonClick(Sender: TObject);
     procedure ComponentUnitNameEditChange(Sender: TObject);
@@ -518,7 +519,7 @@ begin
   CheckNewCompOk;
 end;
 
-procedure TAddToPackageDlg.ComponentIconSpeedButtonClick(Sender: TObject);
+procedure TAddToPackageDlg.ComponentIconBitBtnClick(Sender: TObject);
 var
   Dlg: TOpenPictureDialog;
 begin
@@ -1046,8 +1047,8 @@ begin
   ComponentUnitNameLabel.Caption:=lisA2PUnitName;
   ComponentUnitNameEdit.Text:='';
   ComponentIconLabel.Caption:=lisA2PIconAndSize;
-  ComponentIconSpeedButton.Width:=ComponentPaletteBtnWidth;
-  ComponentIconSpeedButton.Height:=ComponentPaletteBtnHeight;
+  ComponentIconBitBtn.Width:=ComponentPaletteBtnWidth;
+  ComponentIconBitBtn.Height:=ComponentPaletteBtnHeight;
 end;
 
 procedure TAddToPackageDlg.SetupAddDependencyPage;
@@ -1089,6 +1090,8 @@ begin
     Hint:=lisDeleteSelectedFiles;
     LoadGlyphFromResourceName(HInstance, 'laz_delete');
   end;
+
+  LabelIconInfo.Caption:=lisNoneClickToChooseOne;
 end;
 
 procedure TAddToPackageDlg.OnIterateComponentClasses(PkgComponent: TPkgComponent);
@@ -1205,11 +1208,11 @@ begin
     Image:=TImage.Create(nil);
     try
       Image.Picture.LoadFromFile(AFilename);
-      ComponentIconSpeedButton.Glyph.Assign(Image.Picture.Graphic);
+      ComponentIconBitBtn.Glyph.Assign(Image.Picture.Graphic);
       ShortFilename:=AFilename;
       LazPackage.ShortenFilename(ShortFilename,true);
-      with ComponentIconSpeedButton do
-        Hint:=Format('%s (%dx%d)', [ShortFilename, Glyph.Width, Glyph.Height]);
+      LabelIconInfo.Caption:= Format('%s (%dx%d)',
+        [ShortFilename, ComponentIconBitBtn.Glyph.Width, ComponentIconBitBtn.Glyph.Height]);
       FComponentIconFilename:=AFilename;
     finally
       Image.Free;
@@ -1219,9 +1222,9 @@ begin
       IDEMessageDialog(lisCCOErrorCaption,
         Format(lisErrorLoadingFile2,[AFilename]) + LineEnding + E.Message,
         mtError, [mbCancel]);
-      ComponentIconSpeedButton.Glyph.Clear;
+      ComponentIconBitBtn.Glyph.Clear;
       FComponentIconFilename:='';
-      ComponentIconSpeedButton.Hint:=lisNoneClickToChooseOne;
+      LabelIconInfo.Caption:=lisNoneClickToChooseOne;
     end;
   end;
 end;
