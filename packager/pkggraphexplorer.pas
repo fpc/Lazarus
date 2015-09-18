@@ -39,7 +39,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, ComCtrls,
   StdCtrls, Menus, Dialogs, Graphics, LCLType, ExtCtrls, ButtonPanel,
-  AVL_Tree, contnrs,
+  AVL_Tree, contnrs, LCLIntf,
   IDECommands, PackageIntf, IDEImagesIntf, LazIDEIntf,
   LvlGraphCtrl,
   LazConf, LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, EnvironmentOpts,
@@ -67,6 +67,7 @@ type
     UninstallMenuItem: TMenuItem;
     procedure CleanPkgDepsMenuItemClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure HelpButtonClick(Sender: TObject);
     procedure LvlGraphControl1DblClick(Sender: TObject);
     procedure LvlGraphControl1SelectionChanged(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
@@ -207,6 +208,11 @@ end;
 procedure TPkgGraphExplorerDlg.FormCreate(Sender: TObject);
 begin
   ButtonPanel1.OKButton.Caption:= lisClose;
+end;
+
+procedure TPkgGraphExplorerDlg.HelpButtonClick(Sender: TObject);
+begin
+  OpenUrl('http://wiki.freepascal.org/IDE_Window:_Package_Graph');
 end;
 
 procedure TPkgGraphExplorerDlg.LvlGraphControl1SelectionChanged(Sender: TObject
