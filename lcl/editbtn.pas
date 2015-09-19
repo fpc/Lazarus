@@ -39,8 +39,6 @@ const
 
 type
 
-
-
   { TEbEdit }
 
   TEbEdit = class(TCustomMaskedit)
@@ -873,11 +871,14 @@ type
       IsEmptyTime: Boolean;
       FDefaultNow: Boolean;
       FDroppedDown: Boolean;
+      FSimpleLayout: Boolean;
       FOnAcceptTime: TAcceptTimeEvent;
       FOnCustomTime: TCustomTimeEvent;
       function GetTime: TDateTime;
       procedure SetTime(AValue: TDateTime);
       procedure SetEmptyTime;
+      function GetLayout: Boolean;
+      procedure SetLayout(AValue: Boolean);
       procedure TimePopupReturnTime(Sender: TObject; const ATime: TDateTime);
       procedure TimePopupShowHide(Sender: TObject);
       procedure OpenTimePopup;
@@ -949,6 +950,7 @@ type
       property ParentShowHint;
       property PopupMenu;
       property ShowHint;
+      property SimpleLayout: Boolean read GetLayout write SetLayout default True;
       property TabStop;
       property TabOrder;
       property Visible;
@@ -2947,6 +2949,16 @@ begin
   end;
 end;
 
+function TTimeEdit.GetLayout: Boolean;
+begin
+  Result := FSimpleLayout;
+end;
+
+procedure TTimeEdit.SetLayout(AValue: Boolean);
+begin
+  FSimpleLayout := AValue;
+end;
+
 procedure TTimeEdit.SetTime(AValue: TDateTime);
 var
   Output: String;
@@ -2997,7 +3009,7 @@ begin
   ATime := GetTime;
   if ATime = NullDate then
     ATime := SysUtils.Time;
-  ShowTimePopup(PopupOrigin, ATime, Self.DoubleBuffered, @TimePopupReturnTime, @TimePopupShowHide);
+  ShowTimePopup(PopupOrigin, ATime, Self.DoubleBuffered, @TimePopupReturnTime, @TimePopupShowHide, FSimpleLayout);
 end;
 
 function TTimeEdit.TryParseInput(AInput: String; out ParseResult: TDateTime): Boolean;
@@ -3043,18 +3055,17 @@ begin
   OpenTimePopup;
 end;
 
-
 procedure TTimeEdit.EditEditingDone;
 begin
   ParseInput;
   inherited EditEditingDone;
 end;
 
-
 constructor TTimeEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   SetEmptyTime;
+  FSimpleLayout := True;
 end;
 
 { TCalcEdit }
