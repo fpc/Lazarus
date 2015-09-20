@@ -15,7 +15,7 @@ unit MacApplicationRes;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazUTF8Classes;
+  Classes, SysUtils, LazUTF8Classes, LazFileUtils;
   
 type
   EMacResourceException = Exception;
