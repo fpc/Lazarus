@@ -2410,6 +2410,7 @@ components/lazreport/images/designer/lrd_select_all.png -text
 components/lazreport/images/designer/lrd_underline.png -text
 components/lazreport/images/designer/lrd_undo.png -text
 components/lazreport/images/package_images.bat svneol=native#text/x-msdos-program
+components/lazreport/images/package_images.sh svneol=native#text/plain
 components/lazreport/license-lazreport.txt svneol=native#text/plain
 components/lazreport/license-rus.txt svneol=native#text/plain
 components/lazreport/license.txt svneol=native#text/plain
