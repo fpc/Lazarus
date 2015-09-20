@@ -11,7 +11,7 @@ object ProjectI18NOptionsFrame: TProjectI18NOptionsFrame
   DesignTop = 355
   object EnableI18NCheckBox: TCheckBox
     Left = 0
-    Height = 19
+    Height = 24
     Top = 0
     Width = 438
     Align = alTop
@@ -25,32 +25,33 @@ object ProjectI18NOptionsFrame: TProjectI18NOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 76
-    Top = 25
+    Height = 108
+    Top = 30
     Width = 438
     Align = alTop
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'i18n Options'
-    ClientHeight = 56
+    ClientHeight = 91
     ClientWidth = 434
     TabOrder = 1
     object PoOutDirLabel: TLabel
       Left = 6
       Height = 15
       Top = 6
-      Width = 111
+      Width = 118
       BorderSpacing.Around = 6
       Caption = 'PO Output Directory:'
       ParentColor = False
     end
     object PoForFormsCheckBox: TCheckBox
       AnchorSideLeft.Control = PoOutDirLabel
+      AnchorSideTop.Control = POOutDirEdit
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 19
-      Top = 72
-      Width = 136
+      Height = 24
+      Top = 67
+      Width = 145
       BorderSpacing.Top = 15
       Caption = 'PoForFormsCheckBox'
       ParentShowHint = False
@@ -63,7 +64,7 @@ object ProjectI18NOptionsFrame: TProjectI18NOptionsFrame
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 23
+      Height = 25
       Top = 27
       Width = 420
       Anchors = [akTop, akLeft, akRight]
@@ -74,6 +75,7 @@ object ProjectI18NOptionsFrame: TProjectI18NOptionsFrame
       MaxLength = 0
       NumGlyphs = 1
       OnButtonClick = POOutDirButtonClick
+      ParentShowHint = False
       PasswordChar = #0
       ShowHint = True
       TabOrder = 0
