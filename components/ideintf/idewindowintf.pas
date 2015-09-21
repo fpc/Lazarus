@@ -20,6 +20,10 @@ uses
   Math, Classes, SysUtils, LCLProc, LazConfigStorage, LazUTF8, Forms, Controls,
   LCLIntf, IDEOptionsIntf;
 
+const
+  IDEWndCfgFileVersion = 2;
+  // 2: changed default WindowPlacement from iwpRestoreWindowSize to iwpRestoreWindowGeometry
+
   //----------------------------------------------------------------------------
   // layout settings of modal forms (dialogs) in the IDE
 type
@@ -226,7 +230,7 @@ type
     procedure ReadCurrentDividers(AForce: Boolean = False);
     procedure ReadCurrentCoordinates;
     procedure ReadCurrentState;
-    procedure LoadFromConfig(Config: TConfigStorage; const Path: string);
+    procedure LoadFromConfig(Config: TConfigStorage; const Path: string; FileVersion: integer);
     procedure SaveToConfig(Config: TConfigStorage; const Path: string);
     function CustomCoordinatesAreValid: boolean;
     function DefaultCoordinatesAreValid: boolean;
@@ -1182,9 +1186,11 @@ begin
   FDividers.Free;
 end;
 
-procedure TSimpleWindowLayout.LoadFromConfig(Config: TConfigStorage; const Path: string);
+procedure TSimpleWindowLayout.LoadFromConfig(Config: TConfigStorage;
+  const Path: string; FileVersion: integer);
 var
   P: string;
+  DefaultValue: TIDEWindowPlacement;
 begin
   // set all values to default
   Clear;
@@ -1195,8 +1201,12 @@ begin
   P:=Path+P+'/';
   FFormCaption := Config.GetValue(P+'Caption/Value', fFormID);
   // placement
+  if FileVersion<2 then
+    DefaultValue:=iwpRestoreWindowSize
+  else
+    DefaultValue:=iwpRestoreWindowGeometry;
   fWindowPlacement:=StrToIDEWindowPlacement(Config.GetValue(
-    P+'WindowPlacement/Value',IDEWindowPlacementNames[fWindowPlacement]));
+    P+'WindowPlacement/Value',IDEWindowPlacementNames[DefaultValue]));
   // custom position
   Left := Config.GetValue(P+'CustomPosition/Left', Left);
   Top := Config.GetValue(P+'CustomPosition/Top', Top);
@@ -1204,7 +1214,7 @@ begin
   Height := Config.GetValue(P+'CustomPosition/Height', Height);
   // state
   fWindowState:=StrToIDEWindowState(Config.GetValue(
-    P+'WindowState/Value',IDEWindowStateNames[fWindowState]));
+    P+'WindowState/Value',IDEWindowStateNames[iwsNormal]));
   FVisible:=Config.GetValue(P+'Visible/Value',false);
   //debugln(['TSimpleWindowLayout.LoadFromConfig ',FormID,' ',Left,',',Top,',',Width,',',Height]);
   FDividers.LoadFromConfig(Config, P + 'Divider/');
@@ -1223,14 +1233,14 @@ begin
   // placement
   Config.SetDeleteValue(P+'WindowPlacement/Value',
     IDEWindowPlacementNames[fWindowPlacement],
-    IDEWindowPlacementNames[iwpRestoreWindowSize]);
+    IDEWindowPlacementNames[iwpRestoreWindowGeometry]);
   // custom position
   Config.SetDeleteValue(P+'CustomPosition/Left', Left, 0);
   Config.SetDeleteValue(P+'CustomPosition/Top', Top, 0);
   Config.SetDeleteValue(P+'CustomPosition/Width', Width, 0);
   Config.SetDeleteValue(P+'CustomPosition/Height', Height, 0);
   // state
-  Config.SetValue(P+'WindowState/Value',IDEWindowStateNames[fWindowState]);
+  Config.SetDeleteValue(P+'WindowState/Value',IDEWindowStateNames[fWindowState],IDEWindowStateNames[iwsNormal]);
   Config.SetDeleteValue(P+'Visible/Value',FVisible,false);
   FDividers.SaveToConfig(Config, P + 'Divider/');
 end;
@@ -1586,8 +1596,9 @@ procedure TSimpleWindowLayoutList.LoadFromConfig(Config: TConfigStorage; const P
 var
   i: integer;
   ID: String;
-  xLayoutIndex: Integer;
+  xLayoutIndex, FileVersion: Integer;
 begin
+  FileVersion:=Config.GetValue(Path+'Desktop/Version', 0);
   // create new windows
   i := Config.GetValue(Path+'Desktop/FormIdCount', 0);
   //debugln(['TSimpleWindowLayoutList.LoadFromConfig ',i]);
@@ -1608,13 +1619,14 @@ begin
   end;
 
   for i:=0 to Count-1 do
-    Items[i].LoadFromConfig(Config,Path);
+    Items[i].LoadFromConfig(Config,Path,FileVersion);
 end;
 
 procedure TSimpleWindowLayoutList.SaveToConfig(Config: TConfigStorage; const Path: string);
 var
   i: integer;
 begin
+  Config.SetValue(Path+'Desktop/Version', IDEWndCfgFileVersion);
   Config.SetDeleteValue(Path+'Desktop/FormIdCount',Count,0);
   //debugln(['TSimpleWindowLayoutList.SaveToConfig ',Count]);
   for i:=0 to Count-1 do begin
