@@ -93,6 +93,8 @@ type
     function HorizontalSizerLineLength: Integer;
 
     function GetBackgroundMargin(const AIndex: Integer): Integer;
+
+    procedure TryBoundDesignedForm;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -202,6 +204,8 @@ begin
     begin
       FBackground.Parent := pBG;
     end;
+  // special for QT (at start "design form" has wrong position)
+  TryBoundDesignedForm;
 end;
 
 procedure TResizerFrame.PanelPaint(Sender: TObject);
@@ -400,7 +404,9 @@ begin
     else
       FActivePropertyGridItemIndex := -1;
 
+    {$IFDEF WINDOWS}
     SetCapture(TWinControl(Sender).Handle);
+    {$ENDIF}
     GetCursorPos(FOldPos);
     // perform first "click delta" to reduce leap
     // + calculate delta created by scrollbars and theirs position...
@@ -446,6 +452,7 @@ var
   OldRect: TRect;
   AdjL,AdjR,AdjT,AdjB: Boolean;
 begin
+  // handle TPanel for resizing rectangles
   if Sender is TGraphicControl then
     Sender := TGraphicControl(Sender).Parent;
 
@@ -541,7 +548,9 @@ begin
   if FNodePositioning then
   begin
     Screen.Cursor := crDefault;
+    {$IFDEF WINDOWS}
     ReleaseCapture;
+    {$ENDIF}
 
     // restore last selected item in OI.
     if FActivePropertyGridItemIndex <> -1 then
@@ -568,15 +577,13 @@ begin
 
     GlobalDesignHook.RefreshPropertyValues;
 
-    if (FDesignedForm <> nil) then
-    begin
-      // after resizing, TFrame is frozen in Windows OS
-      // this is trick to workaraund IDE bug.
-      DesignedForm.BeginUpdate;
-      DesignedForm.RealWidth := DesignedForm.RealWidth + 1;
-      DesignedForm.RealWidth := DesignedForm.RealWidth - 1;
-      DesignedForm.EndUpdate;
-    end;
+    // after resizing, TFrame is frozen in Windows OS
+    // this is trick to workaraund IDE bug. Also for proper size for normal form
+    TryBoundDesignedForm;
+
+    // for GTK2 resizing form (pClient is hidden under pBG)
+    pClient.SendToBack;
+    pClient.BringToFront;
   end;
 end;
 
@@ -658,6 +665,17 @@ begin
     Result := 0
   else
     Result := FBackground.GetMargin(AIndex);
+end;
+
+procedure TResizerFrame.TryBoundDesignedForm;
+begin
+  if DesignedForm = nil then
+    Exit;
+
+  DesignedForm.BeginUpdate;
+  DesignedForm.RealWidth := DesignedForm.RealWidth + 1;
+  DesignedForm.RealWidth := DesignedForm.RealWidth - 1;
+  DesignedForm.EndUpdate;
 end;
 
 function TResizerFrame.DesignedWidthToScroll: Integer;

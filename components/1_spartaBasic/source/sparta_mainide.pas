@@ -517,6 +517,7 @@ begin
       SourceEditorWindows[Form.LastActiveSourceWindow].OnChangeBounds(nil);
 
    // we need to correct ActiveEditor to right form
+   { commented because there were problems with QT (inactive form)
    case TheMessage.msg of
      LM_LBUTTONDOWN, LM_RBUTTONDOWN, LM_MBUTTONDOWN, LM_XBUTTONDOWN:
        if Form.LastActiveSourceWindow <> nil then
@@ -525,6 +526,7 @@ begin
          SourceEditorManagerIntf.ActiveEditor := Form.LastActiveSourceWindow.ActiveEditor;
        end;
    end;
+   }
 
    FWndMethod(TheMessage);
 end;
@@ -709,8 +711,8 @@ begin
     if not AValue.FHiding and (RealBorderStyle <> bsNone) then
     begin
       BeginUpdate;
-      RealBorderIcons := [];
-      RealBorderStyle := bsNone;
+      //RealBorderIcons := [];
+      //RealBorderStyle := bsNone;
       Form.Show;
       EndUpdate;
     end;
@@ -1247,8 +1249,8 @@ begin
           if not LDesignFormData.FHiding and (RealBorderStyle <> bsNone) then
           begin
               BeginUpdate;
-              RealBorderIcons := [];
-              RealBorderStyle := bsNone;
+              //RealBorderIcons := [];
+              //RealBorderStyle := bsNone;
               Form.Show;
               EndUpdate;
               LPageCtrl.BoundToDesignTabSheet;

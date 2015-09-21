@@ -18,7 +18,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, FormEditingIntf, Controls, TypInfo, LCLIntf,
-  LCLType, sparta_DesignedForm, 
+  LCLType, sparta_DesignedForm, Math,
 {$IFDEF USE_GENERICS_COLLECTIONS}
   Generics.Defaults,
 {$ENDIF}
@@ -48,6 +48,7 @@ type
 
     procedure SetOnChangeHackedBounds(const AValue: TNotifyEvent);
     function GetOnChangeHackedBounds: TNotifyEvent;
+    function PositionDelta: TPoint;
   protected
     FUpdate: boolean;
   protected
@@ -888,6 +889,49 @@ begin
   Result := FOnChangeHackedBounds;
 end;
 
+function TDesignedFormImpl.PositionDelta: TPoint;
+
+  procedure FormBorderDelta;
+  var
+    LTestCtrl: TWinControl;
+    LTestRec, LFormRect: TRect;
+    LForm: TCustomForm;
+  begin
+    LForm := GetForm;
+    LTestCtrl := TWinControl.Create(Self);
+    try
+      LTestCtrl.Parent := LForm;
+      LTestCtrl.Left := 0;
+      LTestCtrl.Top := 0;
+
+      GetWindowRect(LForm.Handle, LFormRect);
+      GetWindowRect(LTestCtrl.Handle, LTestRec);
+
+      Result.x := Result.x + Max(LTestRec.Left - LFormRect.Left, 0);
+      Result.y := Result.y + Max(LTestRec.Top  - LFormRect.Top,  0);
+    finally
+      LTestCtrl.free;
+    end;
+  end;
+
+  procedure MainMenuDelta;
+  var
+    LForm: TCustomForm;
+  begin
+    LForm := GetForm;
+    if LForm.Menu <> nil then
+      if LForm.Menu.Items.Count>0 then
+        Result.y := Result.y - LCLIntf.GetSystemMetrics(SM_CYMENU);
+  end;
+
+begin
+  Result := Point(0, 0);
+  {$IFDEF WINDOWS}
+  FormBorderDelta;
+  MainMenuDelta;
+  {$ENDIF}
+end;
+
 procedure TDesignedFormImpl.SetOnChangeHackedBounds(const AValue: TNotifyEvent);
 begin
   FOnChangeHackedBounds := AValue;
@@ -897,22 +941,22 @@ end;
 
 procedure TDesignedFormImpl.SetHorzScrollPosition(AValue: Integer);
 begin
-  RealLeft := -AValue;
+  RealLeft := -PositionDelta.x - AValue;
 end;
 
 procedure TDesignedFormImpl.SetVertScrollPosition(AValue: Integer);
 begin
-  RealTop := -AValue;
+  RealTop := -PositionDelta.y - AValue;
 end;
 
 function TDesignedFormImpl.GetHorzScrollPosition: Integer;
 begin
-  Result := -RealLeft;
+  Result := -(RealLeft + PositionDelta.x);
 end;
 
 function TDesignedFormImpl.GetVertScrollPosition: Integer;
 begin
-  Result := -RealTop;
+  Result := -(RealTop + PositionDelta.y);
 end;
 
 procedure TDesignedFormImpl.BeginUpdate;
