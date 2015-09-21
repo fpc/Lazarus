@@ -2269,7 +2269,10 @@ begin
   case AKind of
     dkOpen, dkPictureOpen:
     begin
-      O := TOpenDialog.Create(Self);
+      if AKind = dkPictureOpen then
+        O := TOpenPictureDialog.Create(Self)
+      else
+        O := TOpenDialog.Create(Self);
       Result := O;
     end;
     dkSave, dkPictureSave:
