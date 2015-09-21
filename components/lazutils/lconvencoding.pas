@@ -6777,107 +6777,107 @@ end;
 
 function UTF8ToISO_8859_1(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,28591,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToISO_8859_1{$endif},Result);
+  InternalUTF8ToCP(s,28591,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToISO_8859_1{$endif},Result);
 end;
 
 function UTF8ToISO_8859_2(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,28592,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToISO_8859_2{$endif},Result);
+  InternalUTF8ToCP(s,28592,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToISO_8859_2{$endif},Result);
 end;
 
 function UTF8ToISO_8859_15(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,28605,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToISO_8859_15{$endif},Result);
+  InternalUTF8ToCP(s,28605,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToISO_8859_15{$endif},Result);
 end;
 
 function UTF8ToCP1250(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,1250,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToCP1250{$endif},Result);
+  InternalUTF8ToCP(s,1250,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToCP1250{$endif},Result);
 end;
 
 function UTF8ToCP1251(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,1251,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToCP1251{$endif},Result);
+  InternalUTF8ToCP(s,1251,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToCP1251{$endif},Result);
 end;
 
 function UTF8ToCP1252(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,1252,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToCP1252{$endif},Result);
+  InternalUTF8ToCP(s,1252,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToCP1252{$endif},Result);
 end;
 
 function UTF8ToCP1253(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,1253,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToCP1253{$endif},Result);
+  InternalUTF8ToCP(s,1253,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToCP1253{$endif},Result);
 end;
 
 function UTF8ToCP1254(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,1254,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToCP1254{$endif},Result);
+  InternalUTF8ToCP(s,1254,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToCP1254{$endif},Result);
 end;
 
 function UTF8ToCP1255(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,1255,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToCP1255{$endif},Result);
+  InternalUTF8ToCP(s,1255,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToCP1255{$endif},Result);
 end;
 
 function UTF8ToCP1256(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,1256,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToCP1256{$endif},Result);
+  InternalUTF8ToCP(s,1256,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToCP1256{$endif},Result);
 end;
 
 function UTF8ToCP1257(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,1257,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToCP1257{$endif},Result);
+  InternalUTF8ToCP(s,1257,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToCP1257{$endif},Result);
 end;
 
 function UTF8ToCP1258(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,1258,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToCP1258{$endif},Result);
+  InternalUTF8ToCP(s,1258,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToCP1258{$endif},Result);
 end;
 
 function UTF8ToCP437(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,437,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToCP437{$endif},Result);
+  InternalUTF8ToCP(s,437,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToCP437{$endif},Result);
 end;
 
 function UTF8ToCP850(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,850,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToCP850{$endif},Result);
+  InternalUTF8ToCP(s,850,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToCP850{$endif},Result);
 end;
 
 function UTF8ToCP852(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,852,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToCP852{$endif},Result);
+  InternalUTF8ToCP(s,852,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToCP852{$endif},Result);
 end;
 
 function UTF8ToCP866(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,866,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToCP866{$endif},Result);
+  InternalUTF8ToCP(s,866,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToCP866{$endif},Result);
 end;
 
 function UTF8ToCP874(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,874,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToCP874{$endif},Result);
+  InternalUTF8ToCP(s,874,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToCP874{$endif},Result);
 end;
 
 function UTF8ToKOI8(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,20866,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToKOI8{$endif},Result);
+  InternalUTF8ToCP(s,20866,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToKOI8{$endif},Result);
 end;
 
 function UTF8ToKOI8U(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,21866,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToKOI8U{$endif},Result);
+  InternalUTF8ToCP(s,21866,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToKOI8U{$endif},Result);
 end;
 
 function UTF8ToKOI8RU(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,21866,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToKOI8RU{$endif},Result);
+  InternalUTF8ToCP(s,21866,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToKOI8RU{$endif},Result);
 end;
 
 function UTF8ToMacintosh(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,10000,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToMacintosh{$endif},Result);
+  InternalUTF8ToCP(s,10000,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToMacintosh{$endif},Result);
 end;
 {$ELSE}
 function UTF8ToISO_8859_1(const s: string): string;
