@@ -71,6 +71,7 @@ const
 
   DefaultAutoSaveIntervalInSecs = 300;
 
+  DefaultRubberbandSelectsGrandChilds = false;
   DefaultGridColor = clBlack;
   DefaultGridSize = 8;
   DefaultGuideLineColorLeftTop = clBlue;
@@ -1249,7 +1250,7 @@ begin
   FMarkerColor:=clDkGray;
   FRubberbandSelectionColor:=clNavy;
   FRubberbandCreationColor:=clMaroon;
-  FRubberbandSelectsGrandChilds:=true;
+  FRubberbandSelectsGrandChilds:=DefaultRubberbandSelectsGrandChilds;
   FDesignerPaintLazy:=true;
   FCreateComponentFocusNameProperty:=false;
   FSwitchToFavoritesOITab:=false;
@@ -1658,7 +1659,7 @@ begin
        FRubberbandSelectionColor);
     FRubberbandCreationColor:=FXMLCfg.GetValue(Path+'FormEditor/Rubberband/CreationColor/Value',
        FRubberbandCreationColor);
-    FRubberbandSelectsGrandChilds:=FXMLCfg.GetValue(Path+'FormEditor/Rubberband/SelectsGrandChilds/Value',false);
+    FRubberbandSelectsGrandChilds:=FXMLCfg.GetValue(Path+'FormEditor/Rubberband/SelectsGrandChilds/Value',DefaultRubberbandSelectsGrandChilds);
     FDesignerPaintLazy:=FXMLCfg.GetValue(Path+'FormEditor/DesignerPaint/Lazy/Value',true);
     FCreateComponentFocusNameProperty:=FXMLCfg.GetValue(
        Path+'FormEditor/CreateComponentFocusNameProperty/Value',false);
@@ -1984,7 +1985,7 @@ begin
     FXMLCfg.SetDeleteValue(Path+'FormEditor/Rubberband/CreationColor/Value',
        FRubberbandCreationColor,clRed);
     FXMLCfg.SetDeleteValue(Path+'FormEditor/Rubberband/SelectsGrandChilds/Value',
-       FRubberbandSelectsGrandChilds,false);
+       FRubberbandSelectsGrandChilds,DefaultRubberbandSelectsGrandChilds);
     FXMLCfg.SetDeleteValue(Path+'FormEditor/DesignerPaint/Lazy/Value',FDesignerPaintLazy,true);
     FXMLCfg.SetDeleteValue(Path+'FormEditor/CreateComponentFocusNameProperty/Value',
        FCreateComponentFocusNameProperty,false);
