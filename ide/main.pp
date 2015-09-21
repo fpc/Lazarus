@@ -8785,8 +8785,6 @@ end;
 
 procedure TMainIDE.OnCodeBufferEncodeSaving(Code: TCodeBuffer;
   const Filename: string; var Source: string);
-//var
-//  r: RawByteString;
 begin
   if (Code.DiskEncoding<>'') and (Code.MemEncoding<>'')
   and (Code.DiskEncoding<>Code.MemEncoding) then begin
@@ -8794,10 +8792,7 @@ begin
     DebugLn(['TMainIDE.OnCodeBufferEncodeSaving Filename=',Code.Filename,' Mem=',Code.MemEncoding,' to Disk=',Code.DiskEncoding]);
     {$ENDIF}
     Source:=ConvertEncoding(Source,Code.MemEncoding,Code.DiskEncoding);
-    {$IF FPC_FULLVERSION >= 20701}
-    //r:=Source;
-    //SetCodePage(Source,CP_ACP);
-    {$ENDIF}
+    //debugln(['TMainIDE.OnCodeBufferEncodeSaving ',dbgMemRange(PByte(Source),length(Source))]);
   end;
 end;
 
