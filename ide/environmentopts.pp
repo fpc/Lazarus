@@ -73,6 +73,8 @@ const
 
   DefaultGridColor = clBlack;
   DefaultGridSize = 8;
+  DefaultGuideLineColorLeftTop = clBlue;
+  DefaultGuideLineColorRightBottom = clGreen;
 
   //----------------------------------------------------------------------------
   
@@ -1236,8 +1238,8 @@ begin
   FGridSizeY:=DefaultGridSize;
   FShowGuideLines:=true;
   FSnapToGuideLines:=true;
-  FGuideLineColorLeftTop:=clBlue;
-  FGuideLineColorRightBottom:=clGreen;
+  FGuideLineColorLeftTop:=DefaultGuideLineColorLeftTop;
+  FGuideLineColorRightBottom:=DefaultGuideLineColorRightBottom;
   FShowComponentCaptions:=false;
   FShowEditorHints:=true;
   FAutoCreateFormsOnOpen:=true;
@@ -1642,9 +1644,9 @@ begin
     FShowGuideLines:=FXMLCfg.GetValue(Path+'FormEditor/ShowGuideLines',true);
     FSnapToGuideLines:=FXMLCfg.GetValue(Path+'FormEditor/SnapToGuideLines',true);
     FGuideLineColorLeftTop:=FXMLCfg.GetValue(Path+'FormEditor/GuideLineColorLeftTop',
-       FGuideLineColorLeftTop);
+       DefaultGuideLineColorLeftTop);
     FGuideLineColorRightBottom:=FXMLCfg.GetValue(Path+'FormEditor/GuideLineColorRightBottom',
-       FGuideLineColorRightBottom);
+       DefaultGuideLineColorRightBottom);
     FShowComponentCaptions:=FXMLCfg.GetValue(Path+'FormEditor/ShowComponentCaptions',true);
     FShowEditorHints:=FXMLCfg.GetValue(Path+'FormEditor/ShowEditorHints',true);
     FAutoCreateFormsOnOpen:=FXMLCfg.GetValue(Path+'FormEditor/AutoCreateFormsOnOpen',true);
@@ -1968,8 +1970,8 @@ begin
     FXMLCfg.SetDeleteValue(Path+'FormEditor/GridSizeY',FGridSizeY,DefaultGridSize);
     FXMLCfg.SetDeleteValue(Path+'FormEditor/ShowGuideLines',FShowGuideLines,true);
     FXMLCfg.SetDeleteValue(Path+'FormEditor/SnapToGuideLines',FSnapToGuideLines,true);
-    FXMLCfg.SetDeleteValue(Path+'FormEditor/GuideLineColorLeftTop',FGuideLineColorLeftTop,clGreen);
-    FXMLCfg.SetDeleteValue(Path+'FormEditor/GuideLineColorRightBottom',FGuideLineColorRightBottom,clBlue);
+    FXMLCfg.SetDeleteValue(Path+'FormEditor/GuideLineColorLeftTop',FGuideLineColorLeftTop,DefaultGuideLineColorLeftTop);
+    FXMLCfg.SetDeleteValue(Path+'FormEditor/GuideLineColorRightBottom',FGuideLineColorRightBottom,DefaultGuideLineColorRightBottom);
     FXMLCfg.SetDeleteValue(Path+'FormEditor/ShowComponentCaptions',FShowComponentCaptions,true);
     FXMLCfg.SetDeleteValue(Path+'FormEditor/ShowEditorHints',FShowEditorHints,true);
     FXMLCfg.SetDeleteValue(Path+'FormEditor/AutoCreateFormsOnOpen',FAutoCreateFormsOnOpen,true);
