@@ -68,7 +68,11 @@ const
   DefaultMaxRecentOpenFiles = 10;
   DefaultMaxRecentProjectFiles = 5;
   DefaultMaxRecentPackageFiles = 10;
+
   DefaultAutoSaveIntervalInSecs = 300;
+
+  DefaultGridColor = clBlack;
+  DefaultGridSize = 8;
 
   //----------------------------------------------------------------------------
   
@@ -1226,10 +1230,10 @@ begin
   // EnvironmentOptionsDialog editor
   FShowGrid:=true;
   FShowBorderSpacing:=false;
-  FGridColor:=clBlack;
+  FGridColor:=DefaultGridColor;
   FSnapToGrid:=true;
-  FGridSizeX:=8;
-  FGridSizeY:=8;
+  FGridSizeX:=DefaultGridSize;
+  FGridSizeY:=DefaultGridSize;
   FShowGuideLines:=true;
   FSnapToGuideLines:=true;
   FGuideLineColorLeftTop:=clBlue;
@@ -1631,10 +1635,10 @@ begin
     // form editor
     FShowGrid:=FXMLCfg.GetValue(Path+'FormEditor/ShowGrid',true);
     FShowBorderSpacing:=FXMLCfg.GetValue(Path+'FormEditor/ShowBorderSpacing',false);
-    FGridColor:=FXMLCfg.GetValue(Path+'FormEditor/GridColor',FGridColor);
+    FGridColor:=FXMLCfg.GetValue(Path+'FormEditor/GridColor',DefaultGridColor);
     FSnapToGrid:=FXMLCfg.GetValue(Path+'FormEditor/SnapToGrid',true);
-    FGridSizeX:=FXMLCfg.GetValue(Path+'FormEditor/GridSizeX',8);
-    FGridSizeY:=FXMLCfg.GetValue(Path+'FormEditor/GridSizeY',8);
+    FGridSizeX:=FXMLCfg.GetValue(Path+'FormEditor/GridSizeX',DefaultGridSize);
+    FGridSizeY:=FXMLCfg.GetValue(Path+'FormEditor/GridSizeY',DefaultGridSize);
     FShowGuideLines:=FXMLCfg.GetValue(Path+'FormEditor/ShowGuideLines',true);
     FSnapToGuideLines:=FXMLCfg.GetValue(Path+'FormEditor/SnapToGuideLines',true);
     FGuideLineColorLeftTop:=FXMLCfg.GetValue(Path+'FormEditor/GuideLineColorLeftTop',
@@ -1958,10 +1962,10 @@ begin
     // form editor
     FXMLCfg.SetDeleteValue(Path+'FormEditor/ShowBorderSpacing',FShowBorderSpacing,false);
     FXMLCfg.SetDeleteValue(Path+'FormEditor/ShowGrid',FShowGrid,true);
-    FXMLCfg.SetDeleteValue(Path+'FormEditor/GridColor',FGridColor,clBlack);
+    FXMLCfg.SetDeleteValue(Path+'FormEditor/GridColor',FGridColor,DefaultGridColor);
     FXMLCfg.SetDeleteValue(Path+'FormEditor/SnapToGrid',FSnapToGrid,true);
-    FXMLCfg.SetDeleteValue(Path+'FormEditor/GridSizeX',FGridSizeX,8);
-    FXMLCfg.SetDeleteValue(Path+'FormEditor/GridSizeY',FGridSizeY,8);
+    FXMLCfg.SetDeleteValue(Path+'FormEditor/GridSizeX',FGridSizeX,DefaultGridSize);
+    FXMLCfg.SetDeleteValue(Path+'FormEditor/GridSizeY',FGridSizeY,DefaultGridSize);
     FXMLCfg.SetDeleteValue(Path+'FormEditor/ShowGuideLines',FShowGuideLines,true);
     FXMLCfg.SetDeleteValue(Path+'FormEditor/SnapToGuideLines',FSnapToGuideLines,true);
     FXMLCfg.SetDeleteValue(Path+'FormEditor/GuideLineColorLeftTop',FGuideLineColorLeftTop,clGreen);
