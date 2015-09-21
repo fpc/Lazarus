@@ -6252,8 +6252,11 @@ procedure TCodeToolManager.WriteDebugReport(WriteTool,
 begin
   DebugLn('[TCodeToolManager.WriteDebugReport]');
   if FCurCodeTool<>nil then begin
-    if WriteTool then
+    if WriteTool then begin
       FCurCodeTool.WriteDebugTreeReport;
+      if FCurCodeTool.Scanner<>nil then
+        FCurCodeTool.Scanner.WriteDebugReport;
+    end;
   end;
   if WriteDefPool then
     DefinePool.WriteDebugReport
