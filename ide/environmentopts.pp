@@ -68,6 +68,7 @@ const
   DefaultMaxRecentOpenFiles = 10;
   DefaultMaxRecentProjectFiles = 5;
   DefaultMaxRecentPackageFiles = 10;
+  DefaultAutoSaveIntervalInSecs = 300;
 
   //----------------------------------------------------------------------------
   
@@ -1218,7 +1219,7 @@ begin
   FAskSaveSessionOnly:=false;
   FAutoSaveEditorFiles:=true;
   FAutoSaveProject:=true;
-  FAutoSaveIntervalInSecs:=300; // 5 minutes
+  FAutoSaveIntervalInSecs:=DefaultAutoSaveIntervalInSecs;
   FLastSavedProjectFile:='';
   FLastOpenPackages:=TLastOpenPackagesList.Create;
 
@@ -1609,7 +1610,7 @@ begin
     FAskSaveSessionOnly:=FXMLCfg.GetValue(Path+'AutoSave/AskSaveSessionOnly',false);
     FAutoSaveEditorFiles:=FXMLCfg.GetValue(Path+'AutoSave/EditorFiles',true);
     FAutoSaveProject:=FXMLCfg.GetValue(Path+'AutoSave/Project',true);
-    FAutoSaveIntervalInSecs:=FXMLCfg.GetValue(Path+'AutoSave/IntervalInSecs',600);
+    FAutoSaveIntervalInSecs:=FXMLCfg.GetValue(Path+'AutoSave/IntervalInSecs',DefaultAutoSaveIntervalInSecs);
     FLastSavedProjectFile:=FXMLCfg.GetValue(Path+'AutoSave/LastSavedProjectFile','');
     FOpenLastProjectAtStart:=FXMLCfg.GetValue(Path+'AutoSave/OpenLastProjectAtStart',true);
     FShowCompileDialog:=FXMLCfg.GetValue(Path+'ShowCompileDialog/Value',false);
@@ -1943,7 +1944,7 @@ begin
     FXMLCfg.SetDeleteValue(Path+'AutoSave/AskSaveSessionOnly',FAskSaveSessionOnly,false);
     FXMLCfg.SetDeleteValue(Path+'AutoSave/EditorFiles',FAutoSaveEditorFiles,true);
     FXMLCfg.SetDeleteValue(Path+'AutoSave/Project',FAutoSaveProject,true);
-    FXMLCfg.SetDeleteValue(Path+'AutoSave/IntervalInSecs',FAutoSaveIntervalInSecs,600);
+    FXMLCfg.SetDeleteValue(Path+'AutoSave/IntervalInSecs',FAutoSaveIntervalInSecs,DefaultAutoSaveIntervalInSecs);
     FXMLCfg.SetDeleteValue(Path+'AutoSave/LastSavedProjectFile',FLastSavedProjectFile,'');
     FXMLCfg.SetDeleteValue(Path+'AutoSave/OpenLastProjectAtStart',FOpenLastProjectAtStart,true);
     FXMLCfg.SetDeleteValue(Path+'AutoSave/ActiveDesktop', FAutoSaveActiveDesktop, True);
