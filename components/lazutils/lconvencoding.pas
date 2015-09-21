@@ -16,6 +16,15 @@ unit LConvEncoding;
 interface
 
 { $Define DisableAsianCodePages}
+{$if FPC_FULLVERSION >= 20701}
+  {$Define HasCP} // AnsiString has codepage
+  {$ifdef EnableUTF8RTL}
+    // Windows provides conversion functions.
+    // Unix: unit cwstring provides conversion functions, which is used by EnableUTF8RTL.
+    {$Define UseSystemCPConv} // use system conversions
+  {$endif}
+{$endif}
+{$ifdef UseLCPConv}{$undef UseSystemCPConv}{$endif}
 
 uses
   SysUtils, Classes, dos, LazUTF8
@@ -67,10 +76,12 @@ const
 
 function GuessEncoding(const s: string): string;
 
-function ConvertEncodingFromUTF8(const s, ToEncoding: string; out Encoded: boolean): string;
+function ConvertEncodingFromUTF8(const s, ToEncoding: string; out Encoded: boolean
+  {$ifdef HasCP}; SetTargetCodePage: boolean = false{$endif}): string;
 function ConvertEncodingToUTF8(const s, FromEncoding: string; out Encoded: boolean): string;
 // For UTF8 use the above functions, they save you one parameter
-function ConvertEncoding(const s, FromEncoding, ToEncoding: string): string;
+function ConvertEncoding(const s, FromEncoding, ToEncoding: string
+  {$ifdef HasCP}; SetTargetCodePage: boolean = false{$endif}): string;
 
 // This routine should obtain the encoding utilized by ansistring in the RTL
 function GetDefaultTextEncoding: string;
@@ -113,28 +124,28 @@ function UCS2LEToUTF8(const s: string): string; // UCS2-LE 2byte little endian
 function UCS2BEToUTF8(const s: string): string; // UCS2-BE 2byte big endian
 
 function UTF8ToUTF8BOM(const s: string): string; // UTF8 with BOM
-{$if FPC_FULLVERSION >= 20701}
-function UTF8ToISO_8859_1(const s: string): RawByteString; // central europe
-function UTF8ToISO_8859_2(const s: string): RawByteString; // eastern europe
-function UTF8ToISO_8859_15(const s: string): RawByteString; // Western European languages
-function UTF8ToCP1250(const s: string): RawByteString; // central europe
-function UTF8ToCP1251(const s: string): RawByteString; // cyrillic
-function UTF8ToCP1252(const s: string): RawByteString; // latin 1
-function UTF8ToCP1253(const s: string): RawByteString; // greek
-function UTF8ToCP1254(const s: string): RawByteString; // turkish
-function UTF8ToCP1255(const s: string): RawByteString; // hebrew
-function UTF8ToCP1256(const s: string): RawByteString; // arabic
-function UTF8ToCP1257(const s: string): RawByteString; // baltic
-function UTF8ToCP1258(const s: string): RawByteString; // vietnam
-function UTF8ToCP437(const s: string): RawByteString;  // DOS central europe
-function UTF8ToCP850(const s: string): RawByteString;  // DOS western europe
-function UTF8ToCP852(const s: string): RawByteString;  // DOS central europe
-function UTF8ToCP866(const s: string): RawByteString;  // DOS and Windows console's cyrillic
-function UTF8ToCP874(const s: string): RawByteString;  // thai
-function UTF8ToKOI8(const s: string): RawByteString;  // russian cyrillic
-function UTF8ToKOI8U(const s: string): RawByteString;  // ukrainian cyrillic
-function UTF8ToKOI8RU(const s: string): RawByteString;  // belarussian cyrillic
-function UTF8ToMacintosh(const s: string): RawByteString;  // Macintosh, alias Mac OS Roman
+{$ifdef HasCP}
+function UTF8ToISO_8859_1(const s: string; SetTargetCodePage: boolean = false): RawByteString; // central europe
+function UTF8ToISO_8859_2(const s: string; SetTargetCodePage: boolean = false): RawByteString; // eastern europe
+function UTF8ToISO_8859_15(const s: string; SetTargetCodePage: boolean = false): RawByteString; // Western European languages
+function UTF8ToCP1250(const s: string; SetTargetCodePage: boolean = false): RawByteString; // central europe
+function UTF8ToCP1251(const s: string; SetTargetCodePage: boolean = false): RawByteString; // cyrillic
+function UTF8ToCP1252(const s: string; SetTargetCodePage: boolean = false): RawByteString; // latin 1
+function UTF8ToCP1253(const s: string; SetTargetCodePage: boolean = false): RawByteString; // greek
+function UTF8ToCP1254(const s: string; SetTargetCodePage: boolean = false): RawByteString; // turkish
+function UTF8ToCP1255(const s: string; SetTargetCodePage: boolean = false): RawByteString; // hebrew
+function UTF8ToCP1256(const s: string; SetTargetCodePage: boolean = false): RawByteString; // arabic
+function UTF8ToCP1257(const s: string; SetTargetCodePage: boolean = false): RawByteString; // baltic
+function UTF8ToCP1258(const s: string; SetTargetCodePage: boolean = false): RawByteString; // vietnam
+function UTF8ToCP437(const s: string; SetTargetCodePage: boolean = false): RawByteString;  // DOS central europe
+function UTF8ToCP850(const s: string; SetTargetCodePage: boolean = false): RawByteString;  // DOS western europe
+function UTF8ToCP852(const s: string; SetTargetCodePage: boolean = false): RawByteString;  // DOS central europe
+function UTF8ToCP866(const s: string; SetTargetCodePage: boolean = false): RawByteString;  // DOS and Windows console's cyrillic
+function UTF8ToCP874(const s: string; SetTargetCodePage: boolean = false): RawByteString;  // thai
+function UTF8ToKOI8(const s: string; SetTargetCodePage: boolean = false): RawByteString;  // russian cyrillic
+function UTF8ToKOI8U(const s: string; SetTargetCodePage: boolean = false): RawByteString;  // ukrainian cyrillic
+function UTF8ToKOI8RU(const s: string; SetTargetCodePage: boolean = false): RawByteString;  // belarussian cyrillic
+function UTF8ToMacintosh(const s: string; SetTargetCodePage: boolean = false): RawByteString;  // Macintosh, alias Mac OS Roman
 {$ELSE}
 function UTF8ToISO_8859_1(const s: string): string; // central europe
 function UTF8ToISO_8859_15(const s: string): string; // Western European languages
@@ -157,9 +168,9 @@ function UTF8ToKOI8(const s: string): string;  // russian cyrillic
 function UTF8ToKOI8U(const s: string): string;  // ukrainian cyrillic
 function UTF8ToKOI8RU(const s: string): string;  // belarussian cyrillic
 function UTF8ToMacintosh(const s: string): string;  // Macintosh, alias Mac OS Roman
-// Common function used by all UTF8ToXXX functions.
-function UTF8ToSingleByte(const s: string; const UTF8CharConvFunc: TUnicodeToCharID): string;
 {$ENDIF}
+// custom conversion
+function UTF8ToSingleByte(const s: string; const UTF8CharConvFunc: TUnicodeToCharID): string;
 
 function UTF8ToUCS2LE(const s: string): string; // UCS2-LE 2byte little endian without BOM
 function UTF8ToUCS2BE(const s: string): string; // UCS2-BE 2byte big endian without BOM
@@ -173,20 +184,19 @@ function CP950ToUTF8(const s: string): string;      // Chinese Complex
 
 function DBCSToUTF8(const s: string; CodeP: integer): string;
 
-{$if FPC_FULLVERSION >= 20701}
-function UTF8ToCP932(const s: string): RawByteString; // Japanese
-function UTF8ToCP936(const s: string): RawByteString; // Chinese, essentially the same as GB 2312 and a predecessor to GB 18030
-function UTF8ToCP949(const s: string): RawByteString; // Korea
-function UTF8ToCP950(const s: string): RawByteString; // Chinese Complex
+{$ifdef HasCP}
+function UTF8ToCP932(const s: string; SetTargetCodePage: boolean = false): RawByteString; // Japanese
+function UTF8ToCP936(const s: string; SetTargetCodePage: boolean = false): RawByteString; // Chinese, essentially the same as GB 2312 and a predecessor to GB 18030
+function UTF8ToCP949(const s: string; SetTargetCodePage: boolean = false): RawByteString; // Korea
+function UTF8ToCP950(const s: string; SetTargetCodePage: boolean = false): RawByteString; // Chinese Complex
 {$ELSE}
 function UTF8ToCP932(const s: string): string;      // Japanese
 function UTF8ToCP936(const s: string): string;      // Chinese, essentially the same as GB 2312 and a predecessor to GB 18030
 function UTF8ToCP949(const s: string): string;      // Korea
 function UTF8ToCP950(const s: string): string;      // Chinese Complex
+{$ENDIF}
 // Common function used by all UTF8ToXXX functions.
 function UTF8ToDBCS(const s: string; const UTF8CharConvFunc: TUnicodeToCharID): string;
-{$ENDIF}
-
 {$ENDIF}
 
 procedure GetSupportedEncodings(List: TStrings);
@@ -5327,7 +5337,7 @@ var
   c: Char;
 begin
   if s='' then begin
-    Result:=s;
+    Result:='';
     exit;
   end;
   len:=length(s);
@@ -5423,133 +5433,7 @@ begin
   Result:=UTF8BOM+s;
 end;
 
-{$if FPC_FULLVERSION >= 20701}
-function UTF8ToISO_8859_1(const s: string): RawByteString;
-begin
-  Result:=S;
-  SetCodePage(Result, 28591, True);
-end;
-
-function UTF8ToISO_8859_2(const s: string): RawByteString;
-begin
-  Result:=S;
-  SetCodePage(Result, 28592, True);
-end;
-
-function UTF8ToISO_8859_15(const s: string): RawByteString;
-begin
-  Result:=S;
-  SetCodePage(Result, 28605, True);
-end;
-
-function UTF8ToCP1250(const s: string): RawByteString;
-begin
-  Result:=S;
-  SetCodePage(Result, 1250, True);
-end;
-
-function UTF8ToCP1251(const s: string): RawByteString;
-begin
-  Result:=S;
-  SetCodePage(Result, 1251, True);
-end;
-
-function UTF8ToCP1252(const s: string): RawByteString;
-begin
-  Result:=S;
-  SetCodePage(Result, 1252, True);
-end;
-
-function UTF8ToCP1253(const s: string): RawByteString;
-begin
-  Result:=S;
-  SetCodePage(Result, 1253, True);
-end;
-
-function UTF8ToCP1254(const s: string): RawByteString;
-begin
-  Result:=S;
-  SetCodePage(Result, 1254, True);
-end;
-
-function UTF8ToCP1255(const s: string): RawByteString;
-begin
-  Result:=S;
-  SetCodePage(Result, 1255, True);
-end;
-
-function UTF8ToCP1256(const s: string): RawByteString;
-begin
-  Result:=S;
-  SetCodePage(Result, 1256, True);
-end;
-
-function UTF8ToCP1257(const s: string): RawByteString;
-begin
-  Result:=S;
-  SetCodePage(Result, 1257, True);
-end;
-
-function UTF8ToCP1258(const s: string): RawByteString;
-begin
-  Result:=S;
-  SetCodePage(Result, 1258, True);
-end;
-
-function UTF8ToCP437(const s: string): RawByteString;
-begin
-  Result:=S;
-  SetCodePage(Result, 437, True);
-end;
-
-function UTF8ToCP850(const s: string): RawByteString;
-begin
-  Result:=S;
-  SetCodePage(Result, 850, True);
-end;
-
-function UTF8ToCP852(const s: string): RawByteString;
-begin
-  Result:=S;
-  SetCodePage(Result, 852, True);
-end;
-
-function UTF8ToCP866(const s: string): RawByteString;
-begin
-  Result:=S;
-  SetCodePage(Result, 866, True);
-end;
-
-function UTF8ToCP874(const s: string): RawByteString;
-begin
-  Result:=S;
-  SetCodePage(Result, 874, True);
-end;
-
-function UTF8ToKOI8(const s: string): RawByteString;
-begin
-  Result:=S;
-  SetCodePage(Result, 20866, True);
-end;
-
-function UTF8ToKOI8U(const s: string): RawByteString;
-begin
-  Result:=S;
-  SetCodePage(Result, 21866, True);
-end;
-
-function UTF8ToKOI8RU(const s: string): RawByteString;
-begin
-  Result:=S;
-  SetCodePage(Result, 21866, True);
-end;
-
-function UTF8ToMacintosh(const s: string): RawByteString;
-begin
-  Result:=S;
-  SetCodePage(Result, 10000, True);
-end;
-{$ELSE}
+{$IfNdef UseSystemCPConv}
 function UnicodeToCP1250(Unicode: cardinal): integer;
 begin
   case Unicode of
@@ -6871,6 +6755,131 @@ begin
   end;
 end;
 
+{$endif}
+
+{$if FPC_FULLVERSION >= 20701}
+procedure InternalUTF8ToCP(const s: string; TargetCodePage: TSystemCodePage;
+  SetTargetCodePage: boolean;
+  {$ifndef UseSystemCPConv}const UTF8CharConvFunc: TUnicodeToCharID;{$endif}
+  out TheResult: RawByteString); inline;
+begin
+  {$ifdef UseSystemCPConv}
+  TheResult:=s;
+  SetCodePage(TheResult, TargetCodePage, True);
+  if not SetTargetCodePage then
+    SetCodePage(TheResult, CP_ACP, False);
+  {$else}
+  TheResult:=UTF8ToSingleByte(s,UTF8CharConvFunc);
+  if SetTargetCodePage then
+    SetCodePage(TheResult, TargetCodePage, False);
+  {$endif}
+end;
+
+function UTF8ToISO_8859_1(const s: string; SetTargetCodePage: boolean): RawByteString;
+begin
+  InternalUTF8ToCP(s,28591,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToISO_8859_1{$endif},Result);
+end;
+
+function UTF8ToISO_8859_2(const s: string; SetTargetCodePage: boolean): RawByteString;
+begin
+  InternalUTF8ToCP(s,28592,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToISO_8859_2{$endif},Result);
+end;
+
+function UTF8ToISO_8859_15(const s: string; SetTargetCodePage: boolean): RawByteString;
+begin
+  InternalUTF8ToCP(s,28605,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToISO_8859_15{$endif},Result);
+end;
+
+function UTF8ToCP1250(const s: string; SetTargetCodePage: boolean): RawByteString;
+begin
+  InternalUTF8ToCP(s,1250,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToCP1250{$endif},Result);
+end;
+
+function UTF8ToCP1251(const s: string; SetTargetCodePage: boolean): RawByteString;
+begin
+  InternalUTF8ToCP(s,1251,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToCP1251{$endif},Result);
+end;
+
+function UTF8ToCP1252(const s: string; SetTargetCodePage: boolean): RawByteString;
+begin
+  InternalUTF8ToCP(s,1252,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToCP1252{$endif},Result);
+end;
+
+function UTF8ToCP1253(const s: string; SetTargetCodePage: boolean): RawByteString;
+begin
+  InternalUTF8ToCP(s,1253,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToCP1253{$endif},Result);
+end;
+
+function UTF8ToCP1254(const s: string; SetTargetCodePage: boolean): RawByteString;
+begin
+  InternalUTF8ToCP(s,1254,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToCP1254{$endif},Result);
+end;
+
+function UTF8ToCP1255(const s: string; SetTargetCodePage: boolean): RawByteString;
+begin
+  InternalUTF8ToCP(s,1255,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToCP1255{$endif},Result);
+end;
+
+function UTF8ToCP1256(const s: string; SetTargetCodePage: boolean): RawByteString;
+begin
+  InternalUTF8ToCP(s,1256,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToCP1256{$endif},Result);
+end;
+
+function UTF8ToCP1257(const s: string; SetTargetCodePage: boolean): RawByteString;
+begin
+  InternalUTF8ToCP(s,1257,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToCP1257{$endif},Result);
+end;
+
+function UTF8ToCP1258(const s: string; SetTargetCodePage: boolean): RawByteString;
+begin
+  InternalUTF8ToCP(s,1258,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToCP1258{$endif},Result);
+end;
+
+function UTF8ToCP437(const s: string; SetTargetCodePage: boolean): RawByteString;
+begin
+  InternalUTF8ToCP(s,437,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToCP437{$endif},Result);
+end;
+
+function UTF8ToCP850(const s: string; SetTargetCodePage: boolean): RawByteString;
+begin
+  InternalUTF8ToCP(s,850,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToCP850{$endif},Result);
+end;
+
+function UTF8ToCP852(const s: string; SetTargetCodePage: boolean): RawByteString;
+begin
+  InternalUTF8ToCP(s,852,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToCP852{$endif},Result);
+end;
+
+function UTF8ToCP866(const s: string; SetTargetCodePage: boolean): RawByteString;
+begin
+  InternalUTF8ToCP(s,866,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToCP866{$endif},Result);
+end;
+
+function UTF8ToCP874(const s: string; SetTargetCodePage: boolean): RawByteString;
+begin
+  InternalUTF8ToCP(s,874,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToCP874{$endif},Result);
+end;
+
+function UTF8ToKOI8(const s: string; SetTargetCodePage: boolean): RawByteString;
+begin
+  InternalUTF8ToCP(s,20866,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToKOI8{$endif},Result);
+end;
+
+function UTF8ToKOI8U(const s: string; SetTargetCodePage: boolean): RawByteString;
+begin
+  InternalUTF8ToCP(s,21866,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToKOI8U{$endif},Result);
+end;
+
+function UTF8ToKOI8RU(const s: string; SetTargetCodePage: boolean): RawByteString;
+begin
+  InternalUTF8ToCP(s,21866,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToKOI8RU{$endif},Result);
+end;
+
+function UTF8ToMacintosh(const s: string; SetTargetCodePage: boolean): RawByteString;
+begin
+  InternalUTF8ToCP(s,10000,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToMacintosh{$endif},Result);
+end;
+{$ELSE}
 function UTF8ToISO_8859_1(const s: string): string;
 begin
   Result:=UTF8ToSingleByte(s,@UnicodeToISO_8859_1);
@@ -6975,6 +6984,7 @@ function UTF8ToMacintosh(const s: string): string;
 begin
   Result:=UTF8ToSingleByte(s,@UnicodeToMacintosh);
 end;
+{$ENDIF}
 
 function UTF8ToSingleByte(const s: string;
   const UTF8CharConvFunc: TUnicodeToCharID): string;
@@ -7007,6 +7017,7 @@ begin
       inc(Src,CharLen);
       dec(len,CharLen);
       i:=UTF8CharConvFunc(Unicode);
+      //writeln('UTF8ToSingleByte Unicode=',Unicode,' CharLen=',CharLen,' c="',copy(s,Src-PChar(s)+1-CharLen,CharLen),'" i=',i);
       if i>=0 then begin
         Dest^:=chr(i);
         inc(Dest);
@@ -7015,7 +7026,6 @@ begin
   end;
   SetLength(Result,Dest-PChar(Result));
 end;
-{$ENDIF}
 
 function UTF8ToUCS2LE(const s: string): string;
 var
@@ -7263,42 +7273,52 @@ begin
 end;
 
 
-function ConvertEncodingFromUTF8(const s, ToEncoding: string; out Encoded: boolean): string;
+function ConvertEncodingFromUTF8(const s, ToEncoding: string; out Encoded: boolean
+  {$ifdef HasCP}; SetTargetCodePage: boolean = false{$endif}): string;
 var
   ATo: string;
+
+  {$ifdef HasCP}
+  procedure CheckKeepCP; inline;
+  begin
+    if SetTargetCodePage then
+      raise Exception.Create('ConvertEncodingFromUTF8: cannot set AnsiString codepage to "'+ATo+'"');
+  end;
+  {$endif}
+
 begin
-  Result:= s;
-  Encoded:= true;
-  ATo:= NormalizeEncoding(ToEncoding);
+  Result:=s;
+  Encoded:=true;
+  ATo:=NormalizeEncoding(ToEncoding);
 
   if ATo=EncodingUTF8BOM then begin Result:=UTF8ToUTF8BOM(s); exit; end;
-  if ATo=EncodingCPIso1 then begin Result:=UTF8ToISO_8859_1(s); exit; end;
-  if ATo=EncodingCPIso15 then begin Result:=UTF8ToISO_8859_15(s); exit; end;
-  if ATo=EncodingCPIso2 then begin Result:=UTF8ToISO_8859_2(s); exit; end;
-  if ATo=EncodingCP1250 then begin Result:=UTF8ToCP1250(s); exit; end;
-  if ATo=EncodingCP1251 then begin Result:=UTF8ToCP1251(s); exit; end;
-  if ATo=EncodingCP1252 then begin Result:=UTF8ToCP1252(s); exit; end;
-  if ATo=EncodingCP1253 then begin Result:=UTF8ToCP1253(s); exit; end;
-  if ATo=EncodingCP1254 then begin Result:=UTF8ToCP1254(s); exit; end;
-  if ATo=EncodingCP1255 then begin Result:=UTF8ToCP1255(s); exit; end;
-  if ATo=EncodingCP1256 then begin Result:=UTF8ToCP1256(s); exit; end;
-  if ATo=EncodingCP1257 then begin Result:=UTF8ToCP1257(s); exit; end;
-  if ATo=EncodingCP1258 then begin Result:=UTF8ToCP1258(s); exit; end;
-  if ATo=EncodingCP437 then begin Result:=UTF8ToCP437(s); exit; end;
-  if ATo=EncodingCP850 then begin Result:=UTF8ToCP850(s); exit; end;
-  if ATo=EncodingCP852 then begin Result:=UTF8ToCP852(s); exit; end;
-  if ATo=EncodingCP866 then begin Result:=UTF8ToCP866(s); exit; end;
-  if ATo=EncodingCP874 then begin Result:=UTF8ToCP874(s); exit; end;
+  if ATo=EncodingCPIso1 then begin Result:=UTF8ToISO_8859_1(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCPIso15 then begin Result:=UTF8ToISO_8859_15(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCPIso2 then begin Result:=UTF8ToISO_8859_2(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP1250 then begin Result:=UTF8ToCP1250(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP1251 then begin Result:=UTF8ToCP1251(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP1252 then begin Result:=UTF8ToCP1252(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP1253 then begin Result:=UTF8ToCP1253(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP1254 then begin Result:=UTF8ToCP1254(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP1255 then begin Result:=UTF8ToCP1255(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP1256 then begin Result:=UTF8ToCP1256(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP1257 then begin Result:=UTF8ToCP1257(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP1258 then begin Result:=UTF8ToCP1258(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP437 then begin Result:=UTF8ToCP437(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP850 then begin Result:=UTF8ToCP850(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP852 then begin Result:=UTF8ToCP852(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP866 then begin Result:=UTF8ToCP866(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP874 then begin Result:=UTF8ToCP874(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
   {$IFnDEF DisableAsianCodePages}
-  if ATo=EncodingCP936 then begin Result:=UTF8ToCP936(s); exit; end;
-  if ATo=EncodingCP950 then begin Result:=UTF8ToCP950(s); exit; end;
-  if ATo=EncodingCP949 then begin Result:=UTF8ToCP949(s); exit; end;
-  if ATo=EncodingCP932 then begin Result:=UTF8ToCP932(s); exit; end;
+  if ATo=EncodingCP936 then begin Result:=UTF8ToCP936(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP950 then begin Result:=UTF8ToCP950(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP949 then begin Result:=UTF8ToCP949(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP932 then begin Result:=UTF8ToCP932(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
   {$ENDIF}
-  if ATo=EncodingCPKOI8 then begin Result:=UTF8ToKOI8(s); exit; end;
-  if ATo=EncodingCPMac then begin Result:=UTF8ToMacintosh(s); exit; end;
-  if ATo=EncodingUCS2LE then begin Result:=UTF8ToUCS2LE(s); exit; end;
-  if ATo=EncodingUCS2BE then begin Result:=UTF8ToUCS2BE(s); exit; end;
+  if ATo=EncodingCPKOI8 then begin Result:=UTF8ToKOI8(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCPMac then begin Result:=UTF8ToMacintosh(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingUCS2LE then begin {$ifdef HasCP}CheckKeepCP;{$endif} Result:=UTF8ToUCS2LE(s); exit; end;
+  if ATo=EncodingUCS2BE then begin {$ifdef HasCP}CheckKeepCP;{$endif} Result:=UTF8ToUCS2BE(s); exit; end;
 
   if (ATo=GetDefaultTextEncoding) and Assigned(ConvertUTF8ToAnsi) then begin
     Result:=ConvertUTF8ToAnsi(s);
@@ -7312,9 +7332,9 @@ function ConvertEncodingToUTF8(const s, FromEncoding: string; out Encoded: boole
 var
   AFrom: string;
 begin
-  Result:= s;
-  Encoded:= true;
-  AFrom:= NormalizeEncoding(FromEncoding);
+  Result:=s;
+  Encoded:=true;
+  AFrom:=NormalizeEncoding(FromEncoding);
 
   if AFrom=EncodingUTF8BOM then begin Result:=UTF8BOMToUTF8(s); exit; end;
   if AFrom=EncodingCPIso1 then begin Result:=ISO_8859_1ToUTF8(s); exit; end;
@@ -7353,7 +7373,8 @@ begin
   Encoded:= false;
 end;
 
-function ConvertEncoding(const s, FromEncoding, ToEncoding: string): string;
+function ConvertEncoding(const s, FromEncoding, ToEncoding: string
+  {$ifdef HasCP}; SetTargetCodePage: boolean{$endif}): string;
 var
   AFrom, ATo, SysEnc : String;
   Encoded : Boolean;
@@ -7381,19 +7402,19 @@ begin
   //DebugLn(['ConvertEncoding ',AFrom,' ',ATo]);
 
   if AFrom=EncodingUTF8 then begin
-    Result:= ConvertEncodingFromUTF8(s, ATo, Encoded);
+    Result:=ConvertEncodingFromUTF8(s, ATo, Encoded{$ifdef HasCP}, SetTargetCodePage{$endif});
     if Encoded then exit;
   end
   else
   if ATo=EncodingUTF8 then begin
-    Result:= ConvertEncodingToUTF8(s, AFrom, Encoded);
+    Result:=ConvertEncodingToUTF8(s, AFrom, Encoded);
     if Encoded then exit;
   end
   else
   begin
-    Result:= ConvertEncodingToUTF8(s, AFrom, Encoded);
+    Result:=ConvertEncodingToUTF8(s, AFrom, Encoded);
     if Encoded then
-      Result:= ConvertEncodingFromUTF8(Result, ATo, Encoded);
+      Result:=ConvertEncodingFromUTF8(Result, ATo, Encoded{$ifdef HasCP}, SetTargetCodePage{$endif});
     if Encoded then exit;
   end;
 

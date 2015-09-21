@@ -92,31 +92,7 @@ begin
   Result := DBCSToUTF8(s, 932);
 end;
 
-{$if FPC_FULLVERSION >= 20701}
-function UTF8ToCP932(const s: string): RawByteString;
-begin
-  Result:=S;
-  SetCodePage(Result, 932, True);
-end;
-
-function UTF8ToCP936(const s: string): RawByteString;
-begin
-  Result:=S;
-  SetCodePage(Result, 936, True);
-end;
-
-function UTF8ToCP949(const s: string): RawByteString;
-begin
-  Result:=S;
-  SetCodePage(Result, 949, True);
-end;
-
-function UTF8ToCP950(const s: string): RawByteString;
-begin
-  Result:=S;
-  SetCodePage(Result, 950, True);
-end;
-{$ELSE}
+{$ifndef UseSystemCPConv}
 function UnicodeToCP936(Unicode: cardinal): integer;
 begin
   case Unicode of
@@ -152,7 +128,46 @@ begin
       Result := CP932CU[SearchTable(Uni932U, Unicode)];
   end;
 end;
+{$endif}
 
+{$ifdef HASCP}
+procedure InternalUTF8ToDBCS(const s: string; TargetCodePage: TSystemCodePage;
+  SetTargetCodePage: boolean;
+  {$ifndef UseSystemCPConv}const UTF8CharConvFunc: TUnicodeToCharID;{$endif}
+  out TheResult: RawByteString); inline;
+begin
+  {$ifdef UseSystemCPConv}
+  TheResult:=s;
+  SetCodePage(TheResult, TargetCodePage, True);
+  if not SetTargetCodePage then
+    SetCodePage(TheResult, CP_ACP, False);
+  {$else}
+  TheResult:=UTF8ToDBCS(s,UTF8CharConvFunc);
+  if SetTargetCodePage then
+    SetCodePage(TheResult, TargetCodePage, False);
+  {$endif}
+end;
+
+function UTF8ToCP932(const s: string; SetTargetCodePage: boolean): RawByteString;
+begin
+  InternalUTF8ToDBCS(s,932,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToCP932{$endif},Result);
+end;
+
+function UTF8ToCP936(const s: string; SetTargetCodePage: boolean): RawByteString;
+begin
+  InternalUTF8ToDBCS(s,936,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToCP936{$endif},Result);
+end;
+
+function UTF8ToCP949(const s: string; SetTargetCodePage: boolean): RawByteString;
+begin
+  InternalUTF8ToDBCS(s,949,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToCP949{$endif},Result);
+end;
+
+function UTF8ToCP950(const s: string; SetTargetCodePage: boolean): RawByteString;
+begin
+  InternalUTF8ToDBCS(s,950,SetTargetCodePage,{$IfNDef UseSystemCPConv}@UnicodeToCP950{$endif},Result);
+end;
+{$ELSE}
 function UTF8ToCP932(const s: string): string;
 begin
   Result := UTF8ToDBCS(s, @UnicodeToCP932);
@@ -172,6 +187,7 @@ function UTF8ToCP950(const s: string): string;
 begin
   Result := UTF8ToDBCS(s, @UnicodeToCP950);
 end;
+{$ENDIF}
 
 function UTF8ToDBCS(const s: string; const UTF8CharConvFunc: TUnicodeToCharID): string;
 var
@@ -224,5 +240,4 @@ begin
   //SetLength(Result, Dest - PChar(Result));
   SetLength(Result, {%H-}PtrUInt(Dest) - PtrUInt(Result));
 end;
-{$ENDIF}
 
