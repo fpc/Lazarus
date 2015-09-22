@@ -2677,6 +2677,8 @@ function TFindDeclarationTool.GetSmartHint(Node: TCodeTreeNode;
   begin
     LastPos := ExtTool.CurPos;
     ExtTool.ReadNextAtom;
+    if ExtTool.CurPos.Flag = cafWord then
+      ExtTool.ReadNextAtom;
     while ExtTool.CurPos.Flag = cafPoint do
     begin
       ExtTool.ReadNextAtom;
@@ -2790,7 +2792,6 @@ begin
               ReadNextAtom;
               if ReadNextUpAtomIs('OF') then
               begin
-                ReadNextAtom;
                 if (Length(Result) > 0) and (Result[Length(Result)] = ';') then//delete last ";" from set
                   Delete(Result, Length(Result), 1);
 
