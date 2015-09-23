@@ -69,7 +69,7 @@ uses
   // CodeTools
   FileProcs, FindDeclarationTool, LinkScanner, BasicCodeTools, CodeToolsStructs,
   CodeToolManager, CodeCache, DefineTemplates, KeywordFuncLists, CodeTree,
-  StdCodeTools, CodeAtom,
+  StdCodeTools,
   // LazUtils
   // use lazutf8, lazfileutils and lazfilecache after FileProcs and FileUtil
   FileUtil, LazFileUtils, LazFileCache, LazUTF8, LazUTF8Classes, UTF8Process,
@@ -10361,7 +10361,7 @@ var
   HasHint: Boolean;
   p: SizeInt;
   Opts: TDBGEvaluateFlags;
-  AbsPos: integer;
+  AtomStartPos, AtomEndPos: integer;
   AtomRect: TRect;
 begin
   //DebugLn(['TMainIDE.OnSrcNotebookShowHintForSource START']);
@@ -10448,31 +10448,10 @@ begin
   begin
     //Find start of identifier
     AtomRect := Rect(-1,-1,-1,-1);
-    SrcEdit.CodeBuffer.LineColToPosition(CaretPos.y, CaretPos.x, AbsPos);
-    if (AbsPos > 0) and (AbsPos <= SrcEdit.CodeBuffer.SourceLength) and
-       CodeToolBoss.InitCurCodeTool(SrcEdit.CodeBuffer)
-    then
-    begin
-      CodeToolBoss.CurCodeTool.BuildTree(lsrInit);
-      CodeToolBoss.CurCodeTool.MoveCursorToCleanPos(AbsPos);
-      CodeToolBoss.CurCodeTool.ReadPriorAtom;
-      CodeToolBoss.CurCodeTool.MoveCursorToCleanPos(CodeToolBoss.CurCodeTool.CurPos.StartPos);
-      repeat
-        CodeToolBoss.CurCodeTool.ReadNextAtom;
-      until CodeToolBoss.CurCodeTool.CurPos.Flag = cafWord;
-      SrcEdit.CodeBuffer.AbsoluteToLineCol(CodeToolBoss.CurCodeTool.CurPos.StartPos,
-        AtomRect.Top, AtomRect.Left);
-      SrcEdit.CodeBuffer.AbsoluteToLineCol(CodeToolBoss.CurCodeTool.CurPos.EndPos,
-        AtomRect.Bottom, AtomRect.Right);
-      AtomRect.TopLeft := SrcEdit.EditorComponent.RowColumnToPixels(AtomRect.TopLeft);
-      AtomRect.BottomRight := SrcEdit.EditorComponent.RowColumnToPixels(AtomRect.BottomRight);
-      Inc(AtomRect.Bottom, SrcEdit.EditorComponent.LineHeight);
-    end;
-    if (AtomRect.Left = -1) then//something went wrong, use position of caret
-    begin
-      AtomRect.TopLeft:=SrcEdit.EditorComponent.RowColumnToPixels(CaretPos);
-      AtomRect.BottomRight:=AtomRect.TopLeft;
-    end;
+    SrcEdit.EditorComponent.GetWordBoundsAtRowCol(CaretPos, AtomStartPos, AtomEndPos);
+    AtomRect.TopLeft := SrcEdit.EditorComponent.RowColumnToPixels(Point(AtomStartPos, CaretPos.y));
+    AtomRect.BottomRight := SrcEdit.EditorComponent.RowColumnToPixels(Point(AtomEndPos, CaretPos.y));
+    Inc(AtomRect.Bottom, SrcEdit.EditorComponent.LineHeight);
 
     SrcEdit.ActivateHint(AtomRect, BaseURL, SmartHintStr, AutoShown);
   end;
