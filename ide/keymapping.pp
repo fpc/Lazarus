@@ -705,6 +705,7 @@ begin
     ecEditContextHelp         : Result:= lisMenuEditContextHelp;
     ecReportingBug            : Result:= srkmecReportingBug;
     ecFocusHint               : Result:= lisFocusHint;
+    ecSmartHint               : Result:= lisMenuShowSmartHint;
 
     // desginer
     ecDesignerCopy            : Result:= lisDsgCopyComponents;
@@ -2344,6 +2345,7 @@ begin
   ecEditContextHelp:     SetSingle(VK_F1,[ssShift,ssCtrl], VK_HELP,[ssCtrl]);
   ecReportingBug:        SetSingle(VK_UNKNOWN,[]);
   ecFocusHint:           SetSingle(VK_UNKNOWN,[]);
+  ecSmartHint:           SetSingle(VK_UNKNOWN,[]);
 
   // designer
   ecDesignerCopy:        SetSingle(VK_C,[ssMeta]);
@@ -3038,6 +3040,7 @@ begin
   AddDefault(C, 'Edit context sensitive help', lisKMEditContextSensitiveHelp, ecEditContextHelp);
   AddDefault(C, 'Reporting a bug', srkmecReportingBug, ecReportingBug);
   AddDefault(C, 'Focus hint', lisFocusHint, ecFocusHint);
+  AddDefault(C, 'Context sensitive smart hint', lisMenuShowSmartHint, ecSmartHint);
 
   // designer  - without menu items in the IDE bar (at least not directly)
   C:=Categories[AddCategory('Designer',lisKeyCatDesigner,IDECmdScopeDesignerOnly)];

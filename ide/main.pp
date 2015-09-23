@@ -471,7 +471,7 @@ type
     procedure OnSrcNotebookReadOnlyChanged(Sender: TObject);
     procedure OnSrcNotebookSaveAll(Sender: TObject);
     procedure OnSrcNotebookShowHintForSource(SrcEdit: TSourceEditor;
-                                           ClientPos: TPoint; CaretPos: TPoint);
+                                           ClientPos: TPoint; CaretPos: TPoint; ShowByCommand: Boolean);
     procedure OnSrcNoteBookShowUnitInfo(Sender: TObject);
     procedure OnSrcNotebookToggleFormUnit(Sender: TObject);
     procedure OnSrcNotebookToggleObjectInsp(Sender: TObject);
@@ -10331,7 +10331,7 @@ begin
 end;
 
 procedure TMainIDE.OnSrcNotebookShowHintForSource(SrcEdit: TSourceEditor;
-  ClientPos: TPoint; CaretPos: TPoint);
+  ClientPos: TPoint; CaretPos: TPoint; ShowByCommand: Boolean);
 
   function CheckExpressionIsValid(var Expr: String): boolean;
   var
@@ -10443,7 +10443,7 @@ begin
   end;
 
   if HasHint then
-    SrcEdit.ActivateHint(ClientPos, BaseURL, SmartHintStr);
+    SrcEdit.ActivateHint(ClientPos, BaseURL, SmartHintStr, ShowByCommand);
 end;
 
 procedure TMainIDE.OnSrcNoteBookActivated(Sender: TObject);

@@ -599,6 +599,7 @@ resourcestring
   lisKMEditContextSensitiveHelp = 'Edit context sensitive help';
   lisMenuContextHelp = 'Context sensitive Help';
   lisMenuEditContextHelp = 'Edit context sensitive Help';
+  lisMenuShowSmartHint = 'Context sensitive smart hint';
 
   lisDsgCopyComponents = 'Copy selected components to clipboard';
   lisDsgCutComponents = 'Cut selected components to clipboard';
