@@ -1323,10 +1323,14 @@ begin
       NewBounds.Bottom := NewBounds.Bottom + i - NewBounds.Top;
     end;
 
-    // set bounds (do not use SetRestoredBounds - that flickers with the current LCL implementation)
-    xForm.SetBounds(NewBounds.Left, NewBounds.Top,
-                    NewBounds.Right - NewBounds.Left,
-                    NewBounds.Bottom - NewBounds.Top);
+    if xForm.WindowState = wsNormal then
+      xForm.SetBounds(NewBounds.Left, NewBounds.Top,
+                      NewBounds.Right - NewBounds.Left,
+                      NewBounds.Bottom - NewBounds.Top)
+    else
+      xForm.SetRestoredBounds(NewBounds.Left, NewBounds.Top,
+                      NewBounds.Right - NewBounds.Left,
+                      NewBounds.Bottom - NewBounds.Top);
     Result := True;
   end;
 end;
@@ -1383,16 +1387,28 @@ end;
 procedure TSimpleWindowLayout.ReadCurrentCoordinates;
 var
   p: TPoint;
+  xForm: TCustomForm;
 begin
-  if (Form<>nil) and (Form.WindowState=wsNormal) then begin
-    if Form.Parent<>nil then
-      p:=Form.ClientOrigin
+  xForm := Form;
+  if (xForm<>nil) then
+  begin
+    if xForm.Parent<>nil then
+      p:=xForm.ClientOrigin
     else
       p:=Point(0,0);
-    Left:=Form.Left+p.X;
-    Top:=Form.Top+p.Y;
-    Width:=Form.Width;
-    Height:=Form.Height;
+    if (xForm.WindowState=wsNormal) then
+    begin
+      Left:=xForm.Left+p.X;
+      Top:=xForm.Top+p.Y;
+      Width:=xForm.Width;
+      Height:=xForm.Height;
+    end else
+    begin
+      Left:=xForm.RestoredLeft+p.X;
+      Top:=xForm.RestoredTop+p.Y;
+      Width:=xForm.RestoredWidth;
+      Height:=xForm.RestoredHeight;
+    end;
   end;
 end;
 
