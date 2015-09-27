@@ -63,7 +63,7 @@ type
 
   TAbstractDesktopDockingOpt = class
   public
-    constructor Create(aUseIDELayouts: Boolean); virtual;
+    constructor Create({%H-}aUseIDELayouts: Boolean); virtual;
     procedure StoreWindowPositions; virtual; abstract;
     procedure Load(Path: String; aXMLCfg: TRttiXMLConfig); virtual; abstract;
     procedure Save(Path: String; aXMLCfg: TRttiXMLConfig); virtual; abstract;
