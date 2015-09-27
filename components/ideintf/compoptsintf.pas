@@ -136,7 +136,6 @@ type
     procedure SetGenerateDwarf(const AValue: Boolean);
     procedure SetGenGProfCode(const AValue: Boolean);
     procedure SetHeapSize(const AValue: Integer);
-    procedure SetStackSize(const AValue: Integer);
     procedure SetIncludeAssertionCode(const AValue: Boolean);
     procedure SetInitConst(const AValue: Boolean);
     procedure SetIOChecks(const AValue: Boolean);
@@ -145,6 +144,7 @@ type
     procedure SetOverflowChecks(const AValue: Boolean);
     procedure SetPassLinkerOpt(const AValue: Boolean);
     procedure SetRangeChecks(const AValue: Boolean);
+    procedure SetRelocatableUnit(const AValue: Boolean);
     procedure SetShowAll(const AValue: Boolean);
     procedure SetShowCompProc(const AValue: Boolean);
     procedure SetShowCond(const AValue: Boolean);
@@ -152,6 +152,7 @@ type
     procedure SetShowErrors(const AValue: Boolean);
     procedure SetShowExecInfo(const AValue: Boolean);
     procedure SetShowGenInfo(const AValue: Boolean);
+    procedure SetShowLinesCompiled(const AValue: Boolean);
     procedure SetShowHints(const AValue: Boolean);
     procedure SetShowHintsForSenderNotUsed(const AValue: Boolean);
     procedure SetShowHintsForUnusedUnitsInMainSrc(const AValue: Boolean);
@@ -161,23 +162,23 @@ type
     procedure SetShowTriedFiles(const AValue: Boolean);
     procedure SetShowUsedFiles(const AValue: Boolean);
     procedure SetShowWarn(const AValue: Boolean);
+    procedure SetSmallerCode(const AValue: boolean);
     procedure SetSmartLinkUnit(const AValue: Boolean);
-    procedure SetRelocatableUnit(const AValue: Boolean);
     procedure SetStackChecks(const AValue: Boolean);
+    procedure SetStackSize(const AValue: Integer);
     procedure SetStaticKeyword(const AValue: Boolean);
     procedure SetStopAfterErrCount(const AValue: integer);
     procedure SetStripSymbols(const AValue: Boolean);
     procedure SetSyntaxMode(const AValue: string);
     procedure SetTargetFilenameAppplyConventions(const AValue: boolean);
+    procedure SetTrashVariables(const AValue: Boolean);
+    procedure SetUncertainOpt(const AValue: Boolean);
     procedure SetUseAnsiStr(const AValue: Boolean);
     procedure SetUseExternalDbgSyms(const AValue: Boolean);
     procedure SetUseHeaptrc(const AValue: Boolean);
-    procedure SetTrashVariables(const AValue: Boolean);
     procedure SetUseLineInfoUnit(const AValue: Boolean);
     procedure SetUseValgrind(const AValue: Boolean);
-    procedure SetUncertainOpt(const AValue: Boolean);
     procedure SetVarsInReg(const AValue: Boolean);
-    procedure SetSmallerCode(const AValue: boolean);
     procedure SetVerifyObjMethodCall(const AValue: boolean);
     procedure SetWin32GraphicApp(const AValue: boolean);
     procedure SetWriteFPCLogo(const AValue: Boolean);
@@ -259,6 +260,7 @@ type
     fShowCond: Boolean;
     fShowExecInfo: Boolean;
     fShowSummary: Boolean;
+    fShowLinesCompiled: Boolean;
     fShowHintsForUnusedUnitsInMainSrc: Boolean;
     fShowHintsForSenderNotUsed: Boolean;
     fWriteFPCLogo: Boolean;
@@ -421,6 +423,7 @@ type
     property ShowCond: Boolean read fShowCond write SetShowCond; // -vc
     property ShowExecInfo: Boolean read fShowExecInfo write SetShowExecInfo; // -vx
     property ShowSummary: Boolean read FShowSummary write SetShowSummary; deprecated; // summary is now always shown (in the header)
+    property ShowLinesCompiled: Boolean read fShowLinesCompiled write SetShowLinesCompiled;
     property ShowHintsForUnusedUnitsInMainSrc: Boolean
       read fShowHintsForUnusedUnitsInMainSrc write SetShowHintsForUnusedUnitsInMainSrc;
     property ShowHintsForSenderNotUsed: Boolean
@@ -734,6 +737,13 @@ procedure TLazCompilerOptions.SetHeapSize(const AValue: Integer);
 begin
   if fHeapSize=AValue then exit;
   fHeapSize:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetShowLinesCompiled(const AValue: Boolean);
+begin
+  if fShowLinesCompiled=AValue then Exit;
+  fShowLinesCompiled:=AValue;
   IncreaseChangeStamp;
 end;
 

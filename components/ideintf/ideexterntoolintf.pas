@@ -309,6 +309,7 @@ type
   private
     FHideHintsSenderNotUsed: boolean;
     FHideHintsUnitNotUsedInMainSource: boolean;
+    FShowLinesCompiled: boolean;
   protected
     FFilesToIgnoreUnitNotUsed: TStrings;
   public
@@ -321,6 +322,8 @@ type
     class function GetFPCMsgValues(Msg: TMessageLine; out Value1, Value2: string): boolean; virtual; abstract;
     property FilesToIgnoreUnitNotUsed: TStrings read FFilesToIgnoreUnitNotUsed
                                                 write FFilesToIgnoreUnitNotUsed;
+    property ShowLinesCompiled: boolean read FShowLinesCompiled
+                                     write FShowLinesCompiled default false;
     property HideHintsSenderNotUsed: boolean read FHideHintsSenderNotUsed
                                      write FHideHintsSenderNotUsed default true;
     property HideHintsUnitNotUsedInMainSource: boolean

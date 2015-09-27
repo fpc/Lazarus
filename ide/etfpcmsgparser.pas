@@ -60,6 +60,7 @@ const
   FPCMsgIDChecksumChanged = 10028;
   FPCMsgIDUnitNotUsed = 5023; // Unit "$1" not used in $2
   FPCMsgIDCompilationAborted = 1018;
+  FPCMsgIDLinesCompiled = 1008;
 
   FPCMsgAttrWorkerDirectory = 'WD';
   FPCMsgAttrMissingUnit = 'MissingUnit';
@@ -1400,7 +1401,7 @@ var
   OldStart: PChar;
   MsgLine: TMessageLine;
 begin
-  Result:=fMsgID=1008;
+  Result:=fMsgID=FPCMsgIDLinesCompiled;
   if (not Result) and (fMsgID>0) then exit;
   OldStart:=p;
   if not Result then begin
@@ -1408,12 +1409,15 @@ begin
     if not ReadString(p,' lines compiled, ') then exit;
     if not ReadNumberWithThousandSep(p) then exit;
   end;
+  Result:=true;
   MsgLine:=CreateMsgLine;
   MsgLine.SubTool:=SubToolFPC;
-  MsgLine.Urgency:=mluProgress;
+  if ShowLinesCompiled then
+    MsgLine.Urgency:=mluImportant
+  else
+    MsgLine.Urgency:=mluVerbose;
   MsgLine.Msg:=OldStart;
   inherited AddMsgLine(MsgLine);
-  Result:=true;
 end;
 
 function TIDEFPCParser.CheckForExecutableInfo(p: PChar): boolean;
@@ -2560,7 +2564,7 @@ var
   TranslatedItem: TFPCMsgItem;
   MsgLine: TMessageLine;
   TranslatedMsg: String;
-  MsgType: TMessageLineUrgency;
+  MsgUrgency: TMessageLineUrgency;
   Msg: string;
 begin
   Result:=false;
@@ -2571,15 +2575,17 @@ begin
   TranslatedItem:=nil;
   if (TranslationFile<>nil) then
     TranslatedItem:=TranslationFile.GetMsg(fMsgID);
-  Translate(p,MsgItem,TranslatedItem,TranslatedMsg,MsgType);
+  Translate(p,MsgItem,TranslatedItem,TranslatedMsg,MsgUrgency);
   Msg:=p;
   case fMsgID of
   FPCMsgIDThereWereErrorsCompiling: // There were $1 errors compiling module, stopping
-    MsgType:=mluVerbose;
+    MsgUrgency:=mluVerbose;
+  FPCMsgIDLinesCompiled: // n lines compiled, m sec
+    if ShowLinesCompiled then MsgUrgency:=mluImportant;
   end;
   MsgLine:=CreateMsgLine;
   MsgLine.SubTool:=SubToolFPC;
-  MsgLine.Urgency:=MsgType;
+  MsgLine.Urgency:=MsgUrgency;
   MsgLine.Msg:=Msg;
   MsgLine.TranslatedMsg:=TranslatedMsg;
   AddMsgLine(MsgLine);
