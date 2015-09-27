@@ -1245,7 +1245,7 @@ var
   OldP: PChar;
 begin
   Result:=fMsgID=9001;
-  if (fMsgID>0) and not Result then exit;
+  if (not Result) and (fMsgID>0) then exit;
   OldP:=p;
   if (not Result) and (not CompStr('Assembling ',p)) then exit;
   MsgLine:=CreateMsgLine;
@@ -1401,7 +1401,7 @@ var
   MsgLine: TMessageLine;
 begin
   Result:=fMsgID=1008;
-  if (fMsgID>0) and not Result then exit;
+  if (not Result) and (fMsgID>0) then exit;
   OldStart:=p;
   if not Result then begin
     if not ReadNumberWithThousandSep(p) then exit;
@@ -1429,7 +1429,7 @@ var
   MsgLine: TMessageLine;
 begin
   Result:=(fMsgID>=9130) and (fMsgID<=9140);
-  if (fMsgID>0) and not Result then exit;
+  if (not Result) and (fMsgID>0) then exit;
   OldStart:=p;
   if (not Result) then begin
     if not (ReadString(p,'Size of Code: ') or
@@ -2727,7 +2727,7 @@ var
   MsgLine: TMessageLine;
 begin
   Result:=fMsgID=10027;
-  if (fMsgID>0) and not Result then exit;
+  if (not Result) and (fMsgID>0) then exit;
   OldP:=p;
   if not Result then begin
     if not ReadString(p,'Load from ') then exit;
