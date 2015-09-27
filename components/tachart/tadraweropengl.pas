@@ -215,6 +215,14 @@ begin
   FPenStyle := psSolid;
 end;
 
+procedure TOpenGLDrawer.PutPixel(AX, AY: Integer; AColor: TChartColor);
+begin
+  ChartGLColor(FChartColorToFPColorFunc(AColor));
+  glBegin(GL_POINTS);
+  glVertex2i(AX, AY);
+  glEnd;
+end;
+
 procedure TOpenGLDrawer.RadialPie(
   AX1, AY1, AX2, AY2: Integer; AStartAngle16Deg, AAngleLength16Deg: Integer);
 var

@@ -62,6 +62,7 @@ type
     procedure Polyline(
       const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
     procedure PrepareSimplePen(AColor: TChartColor);
+    procedure PutPixel(AX, AY: Integer; AColor: TChartColor); override;
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
       AStartAngle16Deg, AAngleLength16Deg: Integer);
@@ -239,6 +240,37 @@ begin
   FPenColor := FChartColorToFPColorFunc(AColor);
   FPenStyle := psSolid;
   FPenWidth := 1;
+end;
+
+procedure TFPVectorialDrawer.PutPixel(AX, AY: Integer; AColor: TChartColor);
+const
+  d = 0.2;
+var
+  pencol: TFPColor;
+  penSty: TFPPenStyle;
+  brushCol: TFPColor;
+  brushSty: TFPBrushStyle;
+begin
+  penCol := FPenColor;
+  penSty := FPenStyle;
+  brushCol := FBrushColor;
+  brushSty := FBrushStyle;
+  SetPenParams(psSolid, AColor);
+  SetBrushParams(bsSolid, AColor);
+  AY := InvertY(AY);
+  FCanvas.StartPath;
+  FCanvas.AddMoveToPath(AX-d, AY-d);
+  FCanvas.AddLineToPath(AX-d, AY+d);
+  FCanvas.AddLineTopath(AX+d, AY+d);
+  FCanvas.AddLineToPath(AX+d, AY-d);
+  FCanvas.AddLineToPath(AX-d, AY-d);
+  ApplyBrush;
+  ApplyPen;
+  FCanvas.EndPath;
+  FPenColor := penCol;
+  FPenStyle := penSty;
+  FBrushColor := brushCol;
+  FBrushStyle := brushSty;
 end;
 
 procedure TFPVectorialDrawer.RadialPie(

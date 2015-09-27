@@ -59,6 +59,7 @@ type
       const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
     procedure PrepareSimplePen(AColor: TChartColor);
     procedure PutImage(AX, AY: Integer; AImage: TFPCustomImage); override;
+    procedure PutPixel(AX, AY: Integer; AColor: TChartColor); override;
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
       AStartAngle16Deg, AAngleLength16Deg: Integer);
@@ -238,6 +239,11 @@ begin
   finally
     bmp.Free;
   end;
+end;
+
+procedure TCanvasDrawer.PutPixel(AX, AY: Integer; AColor: TChartColor);
+begin
+  GetCanvas.Pixels[AX, AY] := AColor;
 end;
 
 procedure TCanvasDrawer.RadialPie(

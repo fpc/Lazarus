@@ -54,6 +54,7 @@ type
       const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
     procedure PrepareSimplePen(AColor: TChartColor);
     procedure PutImage(AX, AY: Integer; AImage: TFPCustomImage); override;
+    procedure PutPixel(AX, AY: Integer; AColor: TChartColor); override;
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
       AStartAngle16Deg, AAngleLength16Deg: Integer);
@@ -188,6 +189,11 @@ begin
     for x := 0 to AImage.Width - 1 do
       if AImage[x, y].alpha > 0 then
         Canvas.Colors[AX + x, AY + y] := AImage[x, y];
+end;
+
+procedure TBGRABitmapDrawer.PutPixel(AX, AY: Integer; AColor: TChartColor);
+begin
+  Canvas.Pixels[AX, AY] := AColor;
 end;
 
 procedure TBGRABitmapDrawer.RadialPie(
