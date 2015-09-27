@@ -400,7 +400,9 @@ begin
   else
   begin
     if (heoWinClipHeader in fOptions) then
-      DocHeader := DocHeader + StartFragmentComment + CodeStart;
+      DocHeader := DocHeader + StartFragmentComment + CodeStart
+    else
+      DocHeader := DocHeader + CodeStart;
   end;
   if fFontSize <> fsDefault then
     sFontSize := Format(' size=%d', [1 + Ord(fFontSize)])
