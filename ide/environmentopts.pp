@@ -439,6 +439,7 @@ type
     FShowCompileDialog: Boolean;       // show dialog during compile
     FAutoCloseCompileDialog: Boolean;  // auto close dialog after succesed compile
     FMsgViewFilters: TLMsgViewFilters;
+    FMsgViewShowFPCMsgLinesCompiled: Boolean;
 
     // compiler + debugger + lazarus files
     FParseValues: array[TEnvOptParseType] of TParseString;
@@ -783,6 +784,7 @@ type
     property MsgViewColors[c: TMsgWndColor]: TColor read GetMsgViewColors write SetMsgViewColors;
     property MsgViewFilters: TLMsgViewFilters read FMsgViewFilters;
     property MsgColors[u: TMessageLineUrgency]: TColor read GetMsgColors write SetMsgColors;
+    property MsgViewShowFPCMsgLinesCompiled: Boolean read FMsgViewShowFPCMsgLinesCompiled write FMsgViewShowFPCMsgLinesCompiled;
 
     // glyphs
     property ShowButtonGlyphs: TApplicationShowGlyphs read FShowButtonGlyphs write FShowButtonGlyphs;
@@ -1284,6 +1286,7 @@ begin
   for u:=low(TMessageLineUrgency) to high(TMessageLineUrgency) do
     fMsgColors[u] := clDefault;
   FMsgViewFilters:=TLMsgViewFilters.Create(nil);
+  FMsgViewShowFPCMsgLinesCompiled:=false;
 
   // glyphs
   FShowButtonGlyphs := sbgSystem;
@@ -1697,6 +1700,7 @@ begin
       fMsgColors[u] := FXMLCfg.GetValue(
         Path+'MsgView/MsgColors/'+dbgs(u),clDefault);
     MsgViewFilters.LoadFromXMLConfig(FXMLCfg,'MsgView/Filters/');
+    FMsgViewShowFPCMsgLinesCompiled:=FXMLCfg.GetValue(Path+'MsgView/FPCMsg/ShowLinesCompiled',false);
 
     // glyphs
     FShowButtonGlyphs := TApplicationShowGlyphs(FXMLCfg.GetValue(Path+'ShowButtonGlyphs/Value',
@@ -2027,6 +2031,7 @@ begin
       FXMLCfg.SetDeleteValue(Path+'MsgView/MsgColors/'+dbgs(u),
       fMsgColors[u],clDefault);
     MsgViewFilters.SaveToXMLConfig(FXMLCfg,'MsgView/Filters/');
+    FXMLCfg.SetDeleteValue(Path+'MsgView/FPCMsg/ShowLinesCompiled',FMsgViewShowFPCMsgLinesCompiled,false);
 
     // glyphs
     FXMLCfg.SetDeleteValue(Path+'ShowButtonGlyphs/Value',Ord(FShowButtonGlyphs), Ord(sbgSystem));

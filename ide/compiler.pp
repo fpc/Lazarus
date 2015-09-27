@@ -337,7 +337,7 @@ begin
     Tool.CmdLineParams:=CmdLine;
     Tool.Process.CurrentDirectory:=WorkingDir;
     FPCParser:=TFPCParser(Tool.AddParsers(SubToolFPC));
-    FPCParser.ShowLinesCompiled:=AProject.CompilerOptions.ShowLinesCompiled;
+    FPCParser.ShowLinesCompiled:=EnvironmentOptions.MsgViewShowFPCMsgLinesCompiled;
     FPCParser.HideHintsSenderNotUsed:=not AProject.CompilerOptions.ShowHintsForSenderNotUsed;
     FPCParser.HideHintsUnitNotUsedInMainSource:=not AProject.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc;
     if (not AProject.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc)

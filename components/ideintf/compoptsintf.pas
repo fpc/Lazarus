@@ -152,7 +152,6 @@ type
     procedure SetShowErrors(const AValue: Boolean);
     procedure SetShowExecInfo(const AValue: Boolean);
     procedure SetShowGenInfo(const AValue: Boolean);
-    procedure SetShowLinesCompiled(const AValue: Boolean);
     procedure SetShowHints(const AValue: Boolean);
     procedure SetShowHintsForSenderNotUsed(const AValue: Boolean);
     procedure SetShowHintsForUnusedUnitsInMainSrc(const AValue: Boolean);
@@ -260,7 +259,6 @@ type
     fShowCond: Boolean;
     fShowExecInfo: Boolean;
     fShowSummary: Boolean;
-    fShowLinesCompiled: Boolean;
     fShowHintsForUnusedUnitsInMainSrc: Boolean;
     fShowHintsForSenderNotUsed: Boolean;
     fWriteFPCLogo: Boolean;
@@ -423,7 +421,6 @@ type
     property ShowCond: Boolean read fShowCond write SetShowCond; // -vc
     property ShowExecInfo: Boolean read fShowExecInfo write SetShowExecInfo; // -vx
     property ShowSummary: Boolean read FShowSummary write SetShowSummary; deprecated; // summary is now always shown (in the header)
-    property ShowLinesCompiled: Boolean read fShowLinesCompiled write SetShowLinesCompiled;
     property ShowHintsForUnusedUnitsInMainSrc: Boolean
       read fShowHintsForUnusedUnitsInMainSrc write SetShowHintsForUnusedUnitsInMainSrc;
     property ShowHintsForSenderNotUsed: Boolean
@@ -737,13 +734,6 @@ procedure TLazCompilerOptions.SetHeapSize(const AValue: Integer);
 begin
   if fHeapSize=AValue then exit;
   fHeapSize:=AValue;
-  IncreaseChangeStamp;
-end;
-
-procedure TLazCompilerOptions.SetShowLinesCompiled(const AValue: Boolean);
-begin
-  if fShowLinesCompiled=AValue then Exit;
-  fShowLinesCompiled:=AValue;
   IncreaseChangeStamp;
 end;
 
