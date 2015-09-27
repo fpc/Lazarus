@@ -408,7 +408,7 @@ begin
     sFontSize := Format(' size=%d', [1 + Ord(fFontSize)])
   else
     sFontSize := '';
-  DocHeader := DocHeader + Format('<font %s face="%s">',[sFontSize, fFont.Name]);
+  DocHeader := DocHeader + Format(FontStart,[sFontSize, fFont.Name]);
 
   if (heoWinClipHeader in fOptions) then
   begin
