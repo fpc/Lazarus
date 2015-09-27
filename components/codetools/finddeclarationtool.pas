@@ -516,6 +516,7 @@ type
     FExtractedOperand: string;
     FHelpers: array[TFDHelpersListKind] of TFDHelpersList;
     FFreeHelpers: array[TFDHelpersListKind] of Boolean;
+    FNeedHelpers: Boolean;
     procedure ClearFoundProc;
     procedure FreeFoundProc(aFoundProc: PFoundProc; FreeNext: boolean);
     procedure RemoveFoundProcFromList(aFoundProc: PFoundProc);
@@ -539,6 +540,7 @@ type
     // input parameters:
     Flags: TFindDeclarationFlags;
     Identifier: PChar;
+    ContextTool: TFindDeclarationTool;
     ContextNode: TCodeTreeNode;
     OnIdentifierFound: TOnIdentifierFound;
     IdentifierTool: TFindDeclarationTool;
@@ -4986,6 +4988,7 @@ var
   Node: TCodeTreeNode;
 begin
   Node:=Params.ContextNode;
+  Params.FNeedHelpers:=false;
   while Node<>nil do
   begin
     case Node.Desc of
@@ -10965,6 +10968,7 @@ begin
   {$IFDEF CheckNodeTool}CheckNodeTool(Params.ContextNode);{$ENDIF}
   Result:='';
   AliasType:=CleanFindContext;
+
   if IsTermEdgedBracket(TermPos,EdgedBracketsStartPos) then begin
     // check for constant sets: [enum]
     MoveCursorToCleanPos(EdgedBracketsStartPos);
@@ -11575,6 +11579,7 @@ var
   Params: TFindDeclarationParams;
   PointerNode: TCodeTreeNode;
 begin
+  //debugln(['TFindDeclarationTool.IsTermNamedPointer ',CleanPosToStr(TermPos.StartPos,true),' Term={',copy(Src,TermPos.StartPos,TermPos.EndPos-TermPos.StartPos),'}']);
   Result:=false;
   MoveCursorToCleanPos(TermPos.StartPos);
   ReadNextAtom;
@@ -11589,7 +11594,6 @@ begin
   Node := FindDeepestNodeAtPos(CurPos.StartPos,true);
   Params:=TFindDeclarationParams.Create(Self, Node);
   try
-    Params.ContextNode:=Node;
     SubExprType:=FindExpressionResultType(Params,CurPos.StartPos,-1);
   finally
     Params.Free;
@@ -12118,9 +12122,10 @@ constructor TFindDeclarationParams.Create(Tool: TFindDeclarationTool;
   AContextNode: TCodeTreeNode);
 begin
   Create(nil);//helper list will be created
+  ContextTool := Tool;
   ContextNode := AContextNode;
-  if (Tool<>nil) and (ContextNode<>nil) then
-    Tool.FindHelpersInContext(Self);
+  if (ContextTool<>nil) and (ContextNode<>nil) then
+    FNeedHelpers:=true;
 end;
 
 procedure TFindDeclarationParams.ClearInput;
@@ -12182,6 +12187,8 @@ end;
 function TFindDeclarationParams.GetHelpers(HelperKind: TFDHelpersListKind;
   CreateIfNotExists: boolean): TFDHelpersList;
 begin
+  if FNeedHelpers then
+    ContextTool.FindHelpersInContext(Self); // beware: this calls GetHelpers
   Result:=FHelpers[HelperKind];
   if (Result=nil) and CreateIfNotExists then begin
     Result:=TFDHelpersList.Create(HelperKind);
