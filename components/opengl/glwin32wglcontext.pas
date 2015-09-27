@@ -23,7 +23,7 @@ function LOpenGLMakeCurrent(Handle: HWND): boolean;
 function LOpenGLReleaseContext(Handle: HWND): boolean;
 function LOpenGLCreateContext(AWinControl: TWinControl;
                     WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
-                    DoubleBuffered, RGBA: boolean;
+                    DoubleBuffered, RGBA, DebugContext: boolean;
                     const RedBits, GreenBits, BlueBits,
                     MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal;
                     const AParams: TCreateParams): HWND;
@@ -137,6 +137,9 @@ const
   WGL_DEPTH_BUFFER_BIT_ARB                         = $00000004;
   WGL_STENCIL_BUFFER_BIT_ARB                       = $00000008;
 
+  WGL_CONTEXT_FLAGS_ARB                            = $2094;
+  WGL_CONTEXT_DEBUG_BIT_ARB                        = $0001;
+
 const
   opengl32 = 'OpenGL32.dll';
   glu32 = 'GLU32.dll';
@@ -183,6 +186,7 @@ var
 
 
   // ARB wgl extensions
+  wglCreateContextAttribsARB : function (DC: HDC; hShareContext:HGLRC; attribList:PInteger ):HGLRC;stdcall;
   wglGetExtensionsStringARB: function(DC: HDC): PChar; stdcall;
   wglGetPixelFormatAttribivARB: function(DC: HDC; iPixelFormat, iLayerPlane: Integer; nAttributes: TGLenum;
     const piAttributes: PGLint; piValues : PGLint) : BOOL; stdcall;
@@ -406,7 +410,7 @@ end;
 
 function LOpenGLCreateContext(AWinControl: TWinControl;
   WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
-  DoubleBuffered, RGBA: boolean;
+  DoubleBuffered, RGBA, DebugContext: boolean;
   const RedBits, GreenBits, BlueBits,
   MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal;
   const AParams: TCreateParams): HWND;
@@ -419,6 +423,8 @@ var
   VisualAttrList: PInteger;
   VisualAttrFloat: array [0..1] of Single;
   MsInitSuccess: WINBOOL;
+  FailReason : string;
+  attribList : array [0..2] of Integer;
 begin
   InitWGL;
   //InitOpenGLContextGLWindowClass;
@@ -497,9 +503,28 @@ begin
   end;
 
   // create WGL context
-  Info^.WGLContext:=wglCreateContext(Info^.DC);
+  Info^.WGLContext:=0;
+  if not DebugContext then
+    begin
+      Info^.WGLContext:=wglCreateContext(Info^.DC);
+      FailReason:='wglCreateContext failed';
+    end
+    else if wglCreateContextAttribsARB = nil then
+    begin
+      FailReason:='wglCreateContextAttribsARB not supported';
+    end
+    else
+    begin
+      // try to create debug context
+      attribList[0]:=WGL_CONTEXT_FLAGS_ARB;
+      attribList[1]:=WGL_CONTEXT_DEBUG_BIT_ARB;
+      attribList[2]:=0;
+      Info^.WGLContext:=wglCreateContextAttribsARB(Info^.DC, 0, @attribList);
+      FailReason:='wglCreateContextAttribsARB failed';
+    end;
+
   if Info^.WGLContext=0 then
-    raise Exception.Create('LOpenGLCreateContext wglCreateContext failed');
+    raise Exception.CreateFmt('LOpenGLCreateContext: %s', [FailReason]);
 
   // share context objects
   if Assigned(SharedControl) then begin
@@ -546,6 +571,7 @@ begin
     LGlMsCreateTemporaryWindow;
 
     // ARB wgl extensions
+    Pointer(wglCreateContextAttribsARB) := GLGetProcAddress('wglCreateContextAttribsARB');
     Pointer(wglGetExtensionsStringARB) := GLGetProcAddress('wglGetExtensionsStringARB');
     Pointer(wglGetPixelFormatAttribivARB) := GLGetProcAddress('wglGetPixelFormatAttribivARB');
     Pointer(wglGetPixelFormatAttribfvARB) := GLGetProcAddress('wglGetPixelFormatAttribfvARB');

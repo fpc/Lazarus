@@ -57,6 +57,7 @@ unit OpenGLContext;
   {$DEFINE UseWin32WGL}
   {$DEFINE HasRGBA}
   {$DEFINE HasRGBBits}
+  {$DEFINE HasDebugContext}
   {$DEFINE OpenGLTargetDefined}
 {$ENDIF}
 {$IFDEF LCLQT}
