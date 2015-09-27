@@ -676,6 +676,8 @@ begin
   DesignedForm.RealWidth := DesignedForm.RealWidth + 1;
   DesignedForm.RealWidth := DesignedForm.RealWidth - 1;
   DesignedForm.EndUpdate;
+
+  HideSizeControls;
 end;
 
 function TResizerFrame.DesignedWidthToScroll: Integer;
