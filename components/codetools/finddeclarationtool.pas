@@ -540,7 +540,8 @@ type
     // input parameters:
     Flags: TFindDeclarationFlags;
     Identifier: PChar;
-    ContextTool: TFindDeclarationTool;
+    StartTool: TFindDeclarationTool;
+    StartNode: TCodeTreeNode;
     ContextNode: TCodeTreeNode;
     OnIdentifierFound: TOnIdentifierFound;
     IdentifierTool: TFindDeclarationTool;
@@ -1582,7 +1583,6 @@ begin
     CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(CleanCursorPos,true);
     // search
     Params:=TFindDeclarationParams.Create(Self, CursorNode);
-    Params.ContextNode:=CursorNode;
     Params.SetIdentifier(Self,Identifier,nil);
     Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound,
                    fdfExceptionOnPredefinedIdent,
@@ -1933,7 +1933,6 @@ begin
       // find declaration of identifier
       Params:=TFindDeclarationParams.Create(Self, CursorNode);
       try
-        Params.ContextNode:=CursorNode;
         Params.SetIdentifier(Self,IdentifierStart,@CheckSrcIdentifier);
         Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound,
                        fdfExceptionOnPredefinedIdent,
@@ -4987,7 +4986,7 @@ procedure TFindDeclarationTool.FindHelpersInContext(
 var
   Node: TCodeTreeNode;
 begin
-  Node:=Params.ContextNode;
+  Node:=Params.StartNode;
   Params.FNeedHelpers:=false;
   while Node<>nil do
   begin
@@ -5029,16 +5028,16 @@ procedure TFindDeclarationTool.FindHelpersInUsesSection(
 var
   NewCodeTool: TFindDeclarationTool;
   Node: TCodeTreeNode;
-
-var
   AnUnitName: string;
   InFilename: string;
 begin
   // search in units
+  //debugln(['TFindDeclarationTool.FindHelpersInUsesSection START ',CleanPosToStr(UsesNode.StartPos,true),' Main=',MainFilename]);
   Node:=UsesNode.LastChild;
   while Node<>nil do begin
     AnUnitName:=ExtractUsedUnitName(Node,@InFilename);
     if AnUnitName<>'' then begin
+      //debugln(['TFindDeclarationTool.FindHelpersInUsesSection ',CleanPosToStr(Node.StartPos),' AnUnitName="',AnUnitName,'" in "',InFilename,'"']);
       NewCodeTool:=FindCodeToolForUsedUnit(AnUnitName,InFilename,false);
       if NewCodeTool<>nil then begin
         // search the identifier in the interface of the used unit
@@ -11999,6 +11998,17 @@ begin
       FHelpers[HelperKind] := ParentParams.FHelpers[HelperKind];
 end;
 
+constructor TFindDeclarationParams.Create(Tool: TFindDeclarationTool;
+  AContextNode: TCodeTreeNode);
+begin
+  Create(nil);//helper list will be created
+  StartTool := Tool;
+  StartNode := AContextNode;
+  ContextNode := AContextNode;
+  if (StartTool<>nil) and (ContextNode<>nil) then
+    FNeedHelpers:=true;
+end;
+
 destructor TFindDeclarationParams.Destroy;
 var
   HelperKind: TFDHelpersListKind;
@@ -12118,16 +12128,6 @@ begin
   end;
 end;
 
-constructor TFindDeclarationParams.Create(Tool: TFindDeclarationTool;
-  AContextNode: TCodeTreeNode);
-begin
-  Create(nil);//helper list will be created
-  ContextTool := Tool;
-  ContextNode := AContextNode;
-  if (ContextTool<>nil) and (ContextNode<>nil) then
-    FNeedHelpers:=true;
-end;
-
 procedure TFindDeclarationParams.ClearInput;
 begin
   Flags:=[];
@@ -12188,7 +12188,7 @@ function TFindDeclarationParams.GetHelpers(HelperKind: TFDHelpersListKind;
   CreateIfNotExists: boolean): TFDHelpersList;
 begin
   if FNeedHelpers then
-    ContextTool.FindHelpersInContext(Self); // beware: this calls GetHelpers
+    StartTool.FindHelpersInContext(Self); // beware: this calls GetHelpers
   Result:=FHelpers[HelperKind];
   if (Result=nil) and CreateIfNotExists then begin
     Result:=TFDHelpersList.Create(HelperKind);
