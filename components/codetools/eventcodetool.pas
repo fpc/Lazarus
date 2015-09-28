@@ -1125,11 +1125,10 @@ begin
   //debugln(['TEventsCodeTool.FindTypeOfPropertyInfo found: ',FindContextToString(AClassContext)]);
 
   // search property
-  Params:=TFindDeclarationParams.Create(Self, AClassContext.Node);
+  Params:=TFindDeclarationParams.Create(AClassContext.Tool, AClassContext.Node);
   try
     Params.Flags:=[fdfSearchInAncestors,fdfSearchInHelpers];
     if ExceptionOnNotFound then Include(Params.Flags,fdfExceptionOnNotFound);
-    Params.ContextNode:=AClassContext.Node;
     Params.SetIdentifier(Self,PChar(PropName),nil);
     if not AClassContext.Tool.FindIdentifierInContext(Params) then begin
       RaiseException('property not found '+DbgSName(Instance)+'.'+PropName);

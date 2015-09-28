@@ -2923,7 +2923,7 @@ begin
           // property without type
           // -> search ancestor property
           if not Tool.MoveCursorToPropName(Node) then break;
-          Params:=TFindDeclarationParams.Create(Self, Node);
+          Params:=TFindDeclarationParams.Create(Tool, Node);
           try
             Params.SetIdentifier(Tool,@Tool.Src[Tool.CurPos.StartPos],nil);
             Params.Flags:=[fdfSearchInAncestors,fdfSearchInHelpers];
@@ -12005,7 +12005,14 @@ begin
   StartTool := Tool;
   StartNode := AContextNode;
   ContextNode := AContextNode;
-  if (StartTool<>nil) and (ContextNode<>nil) then
+  {$IFDEF CheckNodeTool}
+  if (StartNode<>nil) and (StartNode.GetRoot<>StartTool.Tree.Root) then begin
+    debugln(['TFindDeclarationParams.Create Inconsistency']);
+    CTDumpStack;
+    raise Exception.Create('TFindDeclarationParams.Create StartNode does not belong to StartTool');
+  end;
+  {$ENDIF}
+  if (StartTool<>nil) and (StartNode<>nil) then
     FNeedHelpers:=true;
 end;
 

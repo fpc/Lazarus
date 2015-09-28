@@ -2793,7 +2793,6 @@ begin
   Params:=TFindDeclarationParams.Create(Self, CursorNode);
   try
     // check parameter list
-    Params.ContextNode:=CursorNode;
     ExprList:=CreateParamExprListFromStatement(BracketOpenPos,Params);
 
     // create parameter list
@@ -5912,7 +5911,6 @@ function TCodeCompletionCodeTool.FindAssignMethod(CursorPos: TCodeXYPosition;
     try
       Params.Flags:=[fdfSearchInAncestors];
       Params.Identifier:=PChar(ProcName);
-      Params.ContextNode:=ClassNode;
       if not FindIdentifierInContext(Params) then exit;
       //debugln(['FindInheritedAssign NewNode=',Params.NewNode.DescAsString]);
       if Params.NewNode=nil then exit;
@@ -6185,7 +6183,6 @@ begin
   if VarNode=nil then begin
     Params:=TFindDeclarationParams.Create(Self, CursorNode);
     try
-      Params.ContextNode:=CursorNode;
       Params.SetIdentifier(Self,Identifier,nil);
       Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,fdfSearchInHelpers,
                      fdfTopLvlResolving,fdfFindVariable];
@@ -6252,7 +6249,7 @@ begin
         AddAssignment('nil');
       ctnProcedureHead:
         if Tool.NodeIsFunction(Node) then begin
-          Params:=TFindDeclarationParams.Create(Self, Node);
+          Params:=TFindDeclarationParams.Create(Tool, Node);
           try
             aContext:=Tool.FindBaseTypeOfNode(Params,Node);
             Tool:=aContext.Tool;
@@ -6472,7 +6469,6 @@ begin
       // find type of term
       Params:=TFindDeclarationParams.Create(Self, CursorNode);
       try
-        Params.ContextNode:=CursorNode;
         NewType:=FindTermTypeAsString(TermAtom,Params,NewExprType);
       finally
         Params.Free;

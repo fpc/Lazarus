@@ -3253,7 +3253,6 @@ begin
     //DebugLn(['TIdentCompletionTool.GetValuesOfCaseVariable Expr=',dbgstr(copy(Src,CaseAtom.EndPos,EndPos-CaseAtom.EndPos))]);
 
     Params:=TFindDeclarationParams.Create(Self, CursorNode);
-    Params.ContextNode:=CursorNode;
     Params.Flags:=fdfDefaultForExpressions+[fdfFunctionResult];
     ExprType:=FindExpressionTypeOfTerm(CaseAtom.EndPos,EndPos,Params,true);
     //DebugLn(['TIdentCompletionTool.GetValuesOfCaseVariable Type=',ExprTypeToString(ExprType)]);
