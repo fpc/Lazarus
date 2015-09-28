@@ -541,6 +541,10 @@ end;
 
 
 function FindMatch(var f: TSearchRec) : Longint;
+{$IFnDEF EnableUTF8RTL}
+var
+  Dummy: String;
+{$ENDIF}
 begin
   { Find file with correct attribute }
   While (F.FindData.dwFileAttributes and cardinal(F.ExcludeAttr))<>0 do
@@ -559,7 +563,13 @@ begin
     in win32 it is the ansi structure with a utf-8 string
     in wince it is a wide structure }
   {$ifdef FindData_W}
+  {$IFDEF EnableUTF8RTL}
   f.Name:=UTF8Encode(UnicodeString(F.FindData.cFileName));
+  {$ELSE}
+  Dummy := '';
+  Insert(UTF8Encode(UnicodeString(F.FindData.cFileName)), Dummy, 1);
+  f.Name := Dummy;
+  {$ENDIF}
   {$else}
   f.Name:=F.FindData.cFileName;
   {$endif}
