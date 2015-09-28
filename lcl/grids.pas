@@ -899,7 +899,6 @@ type
     procedure CellClick(const aCol,aRow: Integer; const Button:TMouseButton); virtual;
     procedure CheckLimits(var aCol,aRow: Integer);
     procedure CheckLimitsWithError(const aCol, aRow: Integer);
-    procedure ClearSelections;
     procedure CMBiDiModeChanged(var Message: TLMessage); message CM_BIDIMODECHANGED;
     procedure CMMouseEnter(var Message: TLMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Message :TLMessage); message CM_MouseLeave;
@@ -1201,6 +1200,7 @@ type
     function  CellToGridZone(aCol,aRow: Integer): TGridZone;
     procedure CheckPosition;
     procedure Clear;
+    procedure ClearSelections;
 
     function  EditorByStyle(Style: TColumnButtonStyle): TWinControl; virtual;
     procedure EditorKeyDown(Sender: TObject; var Key:Word; Shift:TShiftState);
@@ -7486,6 +7486,9 @@ end;
 procedure TCustomGrid.ClearSelections;
 begin
   SetLength(FSelections, 0);
+  UpdateSelectionRange;
+  FPivot := Point(Col, Row);
+  InvalidateGrid;
 end;
 
 procedure TCustomGrid.CMBiDiModeChanged(var Message: TLMessage);
