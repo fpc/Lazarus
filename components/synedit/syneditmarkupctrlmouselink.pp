@@ -51,6 +51,8 @@ type
     procedure InternalUpdateCtrlMouse;
   protected
     procedure SetLines(const AValue : TSynEditStrings); override;
+    procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
+    procedure DoEnabledChanged(Sender: TObject); override;
   public
     procedure UpdateCtrlState(aShift: TShiftState);
     procedure UpdateCtrlMouse;
@@ -133,8 +135,8 @@ procedure TSynEditMarkupCtrlMouseLink.InternalUpdateCtrlMouse;
 
   procedure doNotShowLink;
   begin
-    if CtrlMouseLine > 0 then
-      TCustomSynEdit(SynEdit).Invalidate;
+    if FCtrlMouseLine >= 0 then
+      InvalidateSynLines(FCtrlMouseLine, FCtrlMouseLine);
     FCursor := crDefault;
     CtrlMouseLine:=-1;
     FCtrlLinkable := False;
@@ -152,11 +154,13 @@ begin
        (NewX2 = CtrlMouseX2)
     then
       exit;
+    if (FCtrlMouseLine >= 0) and (FCtrlMouseLine <> NewY) then
+      InvalidateSynLines(FCtrlMouseLine, FCtrlMouseLine);
     FCtrlLinkable := TCustomSynEdit(SynEdit).IsLinkable(NewY, NewX1, NewX2);
     CtrlMouseLine := fLastMouseCaret.Y;
     CtrlMouseX1 := NewX1;
     CtrlMouseX2 := NewX2;
-    TCustomSynEdit(SynEdit).Invalidate;
+    InvalidateSynLines(FCtrlMouseLine, FCtrlMouseLine);
     if FCtrlLinkable then
       FCursor := crHandPoint
     else
@@ -236,6 +240,21 @@ begin
   if Lines <> nil then begin;
     Lines.AddModifiedHandler(senrLinesModified, @LinesChanged);
   end;
+end;
+
+procedure TSynEditMarkupCtrlMouseLink.DoMarkupChanged(AMarkup: TSynSelectedColor
+  );
+begin
+  inherited DoMarkupChanged(AMarkup);
+  if FCtrlMouseLine >= 0 then
+    InvalidateSynLines(FCtrlMouseLine, FCtrlMouseLine);
+end;
+
+procedure TSynEditMarkupCtrlMouseLink.DoEnabledChanged(Sender: TObject);
+begin
+  inherited DoEnabledChanged(Sender);
+  if FCtrlMouseLine >= 0 then
+    InvalidateSynLines(FCtrlMouseLine, FCtrlMouseLine);
 end;
 
 function TSynEditMarkupCtrlMouseLink.GetMarkupAttributeAtRowCol(const aRow: Integer;

@@ -1007,7 +1007,7 @@ end;
 
 function TSynHTMLSyn.Func37: TtkTokenKind;
 begin
-  if KeyComp('CITE') Or KeyComp('NAV') then begin
+  if KeyComp('CITE') Or KeyComp('NAV') Or KeyComp('MAIN') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1103,7 +1103,7 @@ end;
 
 function TSynHTMLSyn.Func48: TtkTokenKind;
 begin
-  if KeyComp('BLINK') then begin
+  if KeyComp('BLINK') Or KeyComp('DIALOG') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1451,7 +1451,7 @@ end;
 
 function TSynHTMLSyn.Func100: TtkTokenKind;
 begin
-  if KeyComp('FIGCAPTION') then begin
+  if KeyComp('FIGCAPTION') Or KeyComp('MENUITEM') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1761,7 +1761,7 @@ end;
 
 function TSynHTMLSyn.Func159: TtkTokenKind;
 begin
-  if KeyComp('/CITE') Or KeyComp('/NAV') then begin
+  if KeyComp('/CITE') Or KeyComp('/NAV') Or KeyComp('/MAIN') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1842,7 +1842,7 @@ end;
 
 function TSynHTMLSyn.Func170: TtkTokenKind;
 begin
-  if KeyComp('/BLINK') then begin
+  if KeyComp('/BLINK') Or KeyComp('/DIALOG') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -2147,7 +2147,7 @@ end;
 
 function TSynHTMLSyn.Func222: TtkTokenKind;
 begin
-  if KeyComp('/FIGCAPTION') then begin
+  if KeyComp('/FIGCAPTION') Or KeyComp('/MENUITEM') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;

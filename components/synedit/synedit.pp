@@ -5827,7 +5827,7 @@ begin
     try
       inherited;
       ComputeCaret(X, Y);
-      NewCaret := CaretXY;
+      NewCaret := LogicalCaretXY;
       // if from other control then move when SHIFT, else copy
       // if from Self then copy when CTRL, else move
       if Source <> Self then begin
@@ -5874,7 +5874,7 @@ begin
           // insert the selected text
           FCaret.IncForcePastEOL;
           try
-            CaretXY := NewCaret;
+            LogicalCaretXY := NewCaret;
             BlockBegin := NewCaret;
             SetSelTextPrimitive(smNormal, PChar(DragDropText), true);
             if FoldInfo <> '' then begin
@@ -5886,9 +5886,9 @@ begin
           finally
             FCaret.DecForcePastEOL;
           end;
-          FCaret.LineCharPos := NewCaret;
-          BlockBegin := PhysicalToLogicalPos(NewCaret);
-          BlockEnd := LogicalCaretXY;
+          FCaret.LineBytePos := NewCaret;
+          BlockBegin := NewCaret;
+          BlockEnd := NewCaret;
         finally
           InternalEndUndoBlock;
         end;
