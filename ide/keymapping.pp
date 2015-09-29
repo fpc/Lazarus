@@ -3537,8 +3537,10 @@ var
     // Ignore the second Ctrl key in sequential combos unless both variations are defined.
     // For example "Ctrl-X, Y" and "Ctrl-X, Ctrl-Y" are then treated the same.
     if (aKey.Key2<>VK_UNKNOWN) and (aKey.Shift=[ssCtrl]) and (aKey.Shift2-[ssCtrl]=[])
-    and not ShiftConflict(aKey) then
-      aKey.ShiftMask2:=[ssCtrl]
+    and not ShiftConflict(aKey) then begin
+      aKey.ShiftMask2:=[ssCtrl];
+      aKey.Shift2:=[];
+    end
     else
       aKey.ShiftMask2:=[];
   end;
