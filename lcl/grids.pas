@@ -8429,8 +8429,11 @@ begin
 
   result := False;
 
-  if AAutoAdvance=aaNone then
+  if AAutoAdvance=aaNone then begin
+    ACol := 0;
+    ARow := 0;
     exit; // quick case, no auto movement allowed
+  end;
 
   if [goRowSelect,goRelaxedRowSelect]*Options=[goRowSelect] then begin
     if Inverse then
