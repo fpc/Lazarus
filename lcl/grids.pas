@@ -10664,8 +10664,12 @@ var
         ini := P;
         while (P^<>#0) and (P^<>#9) do
           Inc(P);
-        SetLength(St, P-Ini);
-        Move(Ini^,St[1],P-Ini);
+        if P=Ini then
+          St := ''
+        else begin
+          SetLength(St, P-Ini);
+          Move(Ini^,St[1],P-Ini);
+        end;
         SubL.Add(St);
         if P^<>#0 then
           Inc(P);
