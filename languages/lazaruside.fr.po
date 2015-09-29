@@ -12110,6 +12110,10 @@ msgstr "Placer un signet libre"
 msgid "S&how Execution Point"
 msgstr "Montrer le &point d'exécution"
 
+#: lazarusidestrconsts.lismenushowsmarthint
+msgid "Context sensitive smart hint"
+msgstr ""
+
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort Selection ..."
 msgstr "Trier la sélection..."

@@ -12181,6 +12181,10 @@ msgstr "Nastavit volnou záložku"
 msgid "S&how Execution Point"
 msgstr "Ukázat bod vykonávání"
 
+#: lazarusidestrconsts.lismenushowsmarthint
+msgid "Context sensitive smart hint"
+msgstr ""
+
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort Selection ..."
 msgstr "Seřadit výběr ..."

@@ -12121,6 +12121,10 @@ msgstr "Establecer un Marcador Libre"
 msgid "S&how Execution Point"
 msgstr "Ver Punto de Ejecucción"
 
+#: lazarusidestrconsts.lismenushowsmarthint
+msgid "Context sensitive smart hint"
+msgstr ""
+
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort Selection ..."
 msgstr "Ordenar selección ..."

@@ -12140,6 +12140,10 @@ msgstr "Imposta un segnalibro libero"
 msgid "S&how Execution Point"
 msgstr "&Mostra punto di esecuzione"
 
+#: lazarusidestrconsts.lismenushowsmarthint
+msgid "Context sensitive smart hint"
+msgstr ""
+
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort Selection ..."
 msgstr "Ordina selezione ..."

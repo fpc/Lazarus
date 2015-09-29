@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-09-17 00:55+0300\n"
+"PO-Revision-Date: 2015-09-30 02:00+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -12083,6 +12083,10 @@ msgstr "Установить свободную закладку"
 #: lazarusidestrconsts.lismenushowexecutionpoint
 msgid "S&how Execution Point"
 msgstr "Показать точку &исполнения"
+
+#: lazarusidestrconsts.lismenushowsmarthint
+msgid "Context sensitive smart hint"
+msgstr "Контекстно-зависимая умная подсказка"
 
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort Selection ..."

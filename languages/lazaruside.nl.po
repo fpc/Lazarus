@@ -12557,6 +12557,10 @@ msgstr "Plaats een beschikbare bookmark"
 msgid "S&how Execution Point"
 msgstr ""
 
+#: lazarusidestrconsts.lismenushowsmarthint
+msgid "Context sensitive smart hint"
+msgstr ""
+
 #: lazarusidestrconsts.lismenusortselection
 #, fuzzy
 #| msgid "Sort selection ..."

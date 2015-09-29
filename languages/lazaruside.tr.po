@@ -12355,6 +12355,10 @@ msgstr "Serbest bir yer imi belirle"
 msgid "S&how Execution Point"
 msgstr ""
 
+#: lazarusidestrconsts.lismenushowsmarthint
+msgid "Context sensitive smart hint"
+msgstr ""
+
 #: lazarusidestrconsts.lismenusortselection
 #, fuzzy
 #| msgid "Sort selection ..."

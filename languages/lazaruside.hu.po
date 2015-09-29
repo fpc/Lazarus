@@ -12085,6 +12085,10 @@ msgstr "Üres könyvjelző beállítása"
 msgid "S&how Execution Point"
 msgstr "Futási pont megjelenítése"
 
+#: lazarusidestrconsts.lismenushowsmarthint
+msgid "Context sensitive smart hint"
+msgstr ""
+
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort Selection ..."
 msgstr "Kijelölés rendezése ..."

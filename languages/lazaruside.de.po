@@ -12093,6 +12093,10 @@ msgstr "Freies Lesezeichen setzen"
 msgid "S&how Execution Point"
 msgstr "Ausführungspunkt anzeigen"
 
+#: lazarusidestrconsts.lismenushowsmarthint
+msgid "Context sensitive smart hint"
+msgstr ""
+
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort Selection ..."
 msgstr "Auswahl sortieren ..."

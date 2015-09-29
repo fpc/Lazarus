@@ -12369,6 +12369,10 @@ msgstr "Padėti laisvą žymę"
 msgid "S&how Execution Point"
 msgstr "&Rodyti vykdymo tašką"
 
+#: lazarusidestrconsts.lismenushowsmarthint
+msgid "Context sensitive smart hint"
+msgstr ""
+
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort Selection ..."
 msgstr "Rūšiuoti pažymėtą…"

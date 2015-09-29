@@ -12357,6 +12357,10 @@ msgstr "Встановити вільну закладку"
 msgid "S&how Execution Point"
 msgstr "По&казати Точку Виконання"
 
+#: lazarusidestrconsts.lismenushowsmarthint
+msgid "Context sensitive smart hint"
+msgstr ""
+
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort Selection ..."
 msgstr "Сортування вибраного ..."

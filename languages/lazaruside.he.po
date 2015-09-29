@@ -12917,6 +12917,10 @@ msgstr "קבע סימניה חופשית"
 msgid "S&how Execution Point"
 msgstr "הראה נקודת ביצוע"
 
+#: lazarusidestrconsts.lismenushowsmarthint
+msgid "Context sensitive smart hint"
+msgstr ""
+
 #: lazarusidestrconsts.lismenusortselection
 #, fuzzy
 #| msgid "Sort selection ..."

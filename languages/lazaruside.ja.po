@@ -12276,6 +12276,10 @@ msgstr "自由なブックマークをつける"
 msgid "S&how Execution Point"
 msgstr "実行ポイントを表示(&h)"
 
+#: lazarusidestrconsts.lismenushowsmarthint
+msgid "Context sensitive smart hint"
+msgstr ""
+
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort Selection ..."
 msgstr "選択部分をソートする ..."
