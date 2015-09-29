@@ -2351,7 +2351,7 @@ end;
 procedure TMainIDE.RestoreIDEWindows;
 begin
   DoCallNotifyHandler(lihtIDERestoreWindows);
-  EnvironmentOptions.RestoreDesktop;
+  EnvironmentOptions.Desktop.RestoreDesktop;
 end;
 
 procedure TMainIDE.FreeIDEWindows;
@@ -4411,7 +4411,7 @@ procedure TMainIDE.SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOption
 // Called also before reading EnvironmentOptions
 begin
   DebugLn(['* TMainIDE.SaveDesktopSettings']);
-  EnvironmentOptions.Desktop.StoreWindowPositions;
+  EnvironmentOptions.Desktop.ImportSettingsFromIDE;
 
   if ObjectInspector1<>nil then
     TheEnvironmentOptions.ObjectInspectorOptions.Assign(ObjectInspector1);

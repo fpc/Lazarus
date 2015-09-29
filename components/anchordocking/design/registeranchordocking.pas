@@ -46,9 +46,6 @@ uses
   // AnchorDocking
   AnchorDockStr, AnchorDocking, AnchorDesktopOptions, AnchorDockOptionsDlg;
 
-const
-  DefaultConfigFileName = 'anchordockoptions.xml';
-
 type
 
   { TIDEAnchorDockMaster }
@@ -73,8 +70,6 @@ type
     procedure IncreaseChangeStamp; inline;
     property ChangeStamp: int64 read FChangeStamp;
     property Modified: boolean read GetModified write SetModified;
-    procedure LoadSettings;
-    procedure SaveSettings;
     function DockedDesktopOptClass: TAbstractDesktopDockingOptClass; override;
     // layouts
     property UserLayoutLoaded: boolean read FUserLayoutLoaded write SetUserLayoutLoaded;
@@ -123,7 +118,6 @@ begin
   // add options frame
   AnchorDockOptionsID:=RegisterIDEOptionsEditor(GroupEnvironment,TAnchorDockIDEFrame,
                                                 AnchorDockOptionsID)^.Index;
-  IDEAnchorDockMaster.LoadSettings;
 end;
 
 { TIDEAnchorDockMaster }
@@ -390,43 +384,6 @@ end;
 procedure TIDEAnchorDockMaster.IncreaseChangeStamp;
 begin
   LUIncreaseChangeStamp64(FChangeStamp);
-end;
-
-procedure TIDEAnchorDockMaster.LoadSettings;
-var
-  Config: TConfigStorage;
-begin
-  try
-    Config:=GetIDEConfigStorage(DefaultConfigFileName,true);
-    try
-      DockMaster.LoadSettingsFromConfig(Config);
-    finally
-      Config.Free;
-    end;
-  except
-    on E: Exception do begin
-      DebugLn(['TIDEAnchorDockMaster.LoadSettings failed: ',E.Message]);
-    end;
-  end;
-end;
-
-procedure TIDEAnchorDockMaster.SaveSettings;
-var
-  Config: TConfigStorage;
-begin
-  try
-    Config:=GetIDEConfigStorage(DefaultConfigFileName,false);
-    try
-      DockMaster.SaveSettingsToConfig(Config);
-      Config.WriteToDisk;
-    finally
-      Config.Free;
-    end;
-  except
-    on E: Exception do begin
-      DebugLn(['TIDEAnchorDockMaster.SaveSettings failed: ',E.Message]);
-    end;
-  end;
 end;
 
 { TAnchorDockIDEFrame }

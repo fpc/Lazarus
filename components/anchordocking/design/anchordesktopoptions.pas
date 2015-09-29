@@ -8,8 +8,12 @@ uses
   Classes, SysUtils,
   LCLProc, Forms, Controls,
   LazFileUtils, LazConfigStorage, Laz2_XMLCfg,
-  IDEOptionsIntf, MacroIntf, LazIDEIntf,
+  IDEOptionsIntf, MacroIntf, LazIDEIntf, BaseIDEIntf,
   AnchorDocking, AnchorDockStorage;
+
+const
+  AnchorDockingFileVersion = 1;
+  //1 added Settings node (FSettings: TAnchorDockSettings)
 
 type
 
@@ -19,7 +23,7 @@ type
   private
     FTree: TAnchorDockLayoutTree;
     FRestoreLayouts: TAnchorDockRestoreLayouts;
-    FRestoreLayoutsCreated: Boolean;
+    FSettings: TAnchorDockSettings;
   public
     procedure LoadDefaultLayout;
     procedure LoadLayoutFromConfig(Path: string; aXMLCfg: TRttiXMLConfig);
@@ -28,13 +32,14 @@ type
     procedure SaveMainLayoutToTree;
     procedure SaveLayoutToConfig(Path: string; aXMLCfg: TRttiXMLConfig);
   public
-    constructor Create(aUseIDELayouts: Boolean); override;
+    constructor Create; override;
     destructor Destroy; override;
     procedure Load(Path: String; aXMLCfg: TRttiXMLConfig); override;
     procedure Save(Path: String; aXMLCfg: TRttiXMLConfig); override;
-    procedure Assign(Source: TAbstractDesktopDockingOpt); override;
-    procedure StoreWindowPositions; override;
+    procedure ImportSettingsFromIDE; override;
+    procedure ExportSettingsToIDE; override;
     function RestoreDesktop: Boolean; override;
+    procedure Assign(Source: TAbstractDesktopDockingOpt); override;
   end;
 
 implementation
@@ -50,27 +55,31 @@ begin
     xSource := TAnchorDesktopOpt(Source);
     FTree.Assign(xSource.FTree);
     FRestoreLayouts.Assign(xSource.FRestoreLayouts);
+    FSettings.Assign(xSource.FSettings);
   end;
 end;
 
-constructor TAnchorDesktopOpt.Create(aUseIDELayouts: Boolean);
+constructor TAnchorDesktopOpt.Create;
 begin
-  inherited Create(aUseIDELayouts);
+  inherited Create;
+
   FTree := TAnchorDockLayoutTree.Create;
-  if aUseIDELayouts then
-    FRestoreLayouts := DockMaster.RestoreLayouts
-  else begin
-    FRestoreLayouts := TAnchorDockRestoreLayouts.Create;
-    FRestoreLayoutsCreated := True;
-  end;
+  FSettings := TAnchorDockSettings.Create;
+  FRestoreLayouts := TAnchorDockRestoreLayouts.Create;
 end;
 
 destructor TAnchorDesktopOpt.Destroy;
 begin
+  FSettings.Free;
   FTree.Free;
-  if FRestoreLayoutsCreated then
-    FRestoreLayouts.Free;
+  FRestoreLayouts.Free;
   inherited Destroy;
+end;
+
+procedure TAnchorDesktopOpt.ExportSettingsToIDE;
+begin
+  DockMaster.LoadSettings(FSettings);
+  DockMaster.RestoreLayouts.Assign(FRestoreLayouts);
 end;
 
 procedure TAnchorDesktopOpt.Load(Path: String; aXMLCfg: TRttiXMLConfig);
@@ -124,10 +133,44 @@ begin
   end;
 end;
 
-procedure TAnchorDesktopOpt.LoadLayoutFromConfig(Path: string; aXMLCfg: TRttiXMLConfig);
+procedure TAnchorDesktopOpt.ImportSettingsFromIDE;
 begin
+  SaveMainLayoutToTree;
+  DockMaster.SaveSettings(FSettings);
+  FRestoreLayouts.Assign(DockMaster.RestoreLayouts);
+end;
+
+procedure TAnchorDesktopOpt.LoadLayoutFromConfig(Path: string;
+  aXMLCfg: TRttiXMLConfig);
+
+  procedure LoadAnchorDockOptions;
+  var
+    Config: TConfigStorage;
+  begin
+    try
+      Config:=GetIDEConfigStorage('anchordockoptions.xml',true);
+      try
+        FSettings.LoadFromConfig(Config);
+      finally
+        Config.Free;
+      end;
+    except
+      on E: Exception do begin
+        DebugLn(['TAnchorDesktopOpt.LoadLayoutFromConfig - LoadAnchorDockOptions failed: ',E.Message]);
+      end;
+    end;
+  end;
+
+var
+  FileVersion: Integer;
+begin
+  FileVersion:=aXMLCfg.GetValue(Path+'Version/Value',0);
   FTree.LoadFromConfig(Path+'MainConfig/', aXMLCfg);
   FRestoreLayouts.LoadFromConfig(Path+'Restores/', aXMLCfg);
+  if (FileVersion = 0) then//backwards compatibility - read anchordockoptions.xml
+    LoadAnchorDockOptions
+  else
+    FSettings.LoadFromConfig(Path+'Settings/', aXMLCfg);
 end;
 
 procedure TAnchorDesktopOpt.LoadLayoutFromFile(FileName: string);
@@ -160,8 +203,10 @@ end;
 
 procedure TAnchorDesktopOpt.SaveLayoutToConfig(Path: string; aXMLCfg: TRttiXMLConfig);
 begin
+  aXMLCfg.SetValue(Path+'Version/Value',AnchorDockingFileVersion);
   FTree.SaveToConfig(Path+'MainConfig/', aXMLCfg);
   FRestoreLayouts.SaveToConfig(Path+'Restores/', aXMLCfg);
+  FSettings.SaveToConfig(Path+'Settings/', aXMLCfg);
   WriteDebugLayout('TAnchorDesktopOpt.SaveLayoutToConfig ',FTree.Root);
 end;
 
@@ -218,11 +263,6 @@ begin
     VisibleControls.Free;
     SavedSites.Free;
   end;
-end;
-
-procedure TAnchorDesktopOpt.StoreWindowPositions;
-begin
-  SaveMainLayoutToTree;
 end;
 
 function TAnchorDesktopOpt.RestoreDesktop: Boolean;

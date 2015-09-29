@@ -105,7 +105,7 @@ uses
   Math, Classes, SysUtils, types,
   LCLType, LCLIntf, LCLProc,
   Controls, Forms, ExtCtrls, ComCtrls, Graphics, Themes, Menus, Buttons,
-  LazConfigStorage, LazFileCache,
+  LazConfigStorage, Laz2_XMLCfg, LazFileCache,
   AnchorDockStr, AnchorDockStorage;
 
 type
@@ -444,9 +444,12 @@ type
     property HeaderFilled: boolean read FHeaderFilled write SetHeaderFilled;
     procedure IncreaseChangeStamp; inline;
     property ChangeStamp: integer read FChangeStamp;
-    procedure LoadFromConfig(Config: TConfigStorage);
-    procedure SaveToConfig(Config: TConfigStorage);
+    procedure LoadFromConfig(Config: TConfigStorage); overload;
+    procedure LoadFromConfig(Path: string; Config: TRttiXMLConfig); overload;
+    procedure SaveToConfig(Config: TConfigStorage); overload;
+    procedure SaveToConfig(Path: string; Config: TRttiXMLConfig); overload;
     function IsEqual(Settings: TAnchorDockSettings): boolean; reintroduce;
+    procedure Assign(Source: TAnchorDockSettings);
   end;
 
   TAnchorDockMaster = class;
@@ -1280,6 +1283,27 @@ begin
   IncreaseChangeStamp;
 end;
 
+procedure TAnchorDockSettings.Assign(Source: TAnchorDockSettings);
+begin
+  FAllowDragging := Source.FAllowDragging;
+  FChangeStamp := Source.FChangeStamp;
+  FDockOutsideMargin := Source.FDockOutsideMargin;
+  FDockParentMargin := Source.FDockParentMargin;
+  FDragTreshold := Source.FDragTreshold;
+  FHeaderAlignLeft := Source.FHeaderAlignLeft;
+  FHeaderAlignTop := Source.FHeaderAlignTop;
+  FHeaderHint := Source.FHeaderHint;
+  FHeaderStyle := Source.FHeaderStyle;
+  FHeaderFlatten := Source.FHeaderFlatten;
+  FHeaderFilled := Source.FHeaderFilled;
+  FHideHeaderCaptionFloatingControl := Source.FHideHeaderCaptionFloatingControl;
+  FPageAreaInPercent := Source.FPageAreaInPercent;
+  FScaleOnResize := Source.FScaleOnResize;
+  FShowHeader := Source.FShowHeader;
+  FShowHeaderCaption := Source.FShowHeaderCaption;
+  FSplitterWidth := Source.FSplitterWidth;
+end;
+
 procedure TAnchorDockSettings.IncreaseChangeStamp;
 begin
   LUIncreaseChangeStamp(fChangeStamp);
@@ -1304,6 +1328,26 @@ begin
   HeaderFlatten:=Config.GetValue('HeaderFlatten',true);
   HeaderFilled:=Config.GetValue('HeaderFilled',true);
   Config.UndoAppendBasePath;
+end;
+
+procedure TAnchorDockSettings.SaveToConfig(Path: string; Config: TRttiXMLConfig
+  );
+begin
+  Config.SetDeleteValue(Path+'DragThreshold',DragTreshold,4);
+  Config.SetDeleteValue(Path+'DockOutsideMargin',DockOutsideMargin,10);
+  Config.SetDeleteValue(Path+'DockParentMargin',DockParentMargin,10);
+  Config.SetDeleteValue(Path+'PageAreaInPercent',PageAreaInPercent,40);
+  Config.SetDeleteValue(Path+'HeaderAlignTop',HeaderAlignTop,80);
+  Config.SetDeleteValue(Path+'HeaderAlignLeft',HeaderAlignLeft,120);
+  Config.SetDeleteValue(Path+'SplitterWidth',SplitterWidth,4);
+  Config.SetDeleteValue(Path+'ScaleOnResize',ScaleOnResize,true);
+  Config.SetDeleteValue(Path+'ShowHeader',ShowHeader,true);
+  Config.SetDeleteValue(Path+'ShowHeaderCaption',ShowHeaderCaption,true);
+  Config.SetDeleteValue(Path+'HideHeaderCaptionFloatingControl',HideHeaderCaptionFloatingControl,true);
+  Config.SetDeleteValue(Path+'AllowDragging',AllowDragging,true);
+  Config.SetDeleteValue(Path+'HeaderStyle',ADHeaderStyleNames[HeaderStyle],ADHeaderStyleNames[adhsDefault]);
+  Config.SetDeleteValue(Path+'HeaderFlatten',HeaderFlatten,true);
+  Config.SetDeleteValue(Path+'HeaderFilled',HeaderFilled,true);
 end;
 
 procedure TAnchorDockSettings.SaveToConfig(Config: TConfigStorage);
@@ -1346,6 +1390,26 @@ begin
       and (HeaderFlatten=Settings.HeaderFlatten)
       and (HeaderFilled=Settings.HeaderFilled)
       ;
+end;
+
+procedure TAnchorDockSettings.LoadFromConfig(Path: string;
+  Config: TRttiXMLConfig);
+begin
+  DragTreshold:=Config.GetValue(Path+'DragThreshold',4);
+  DockOutsideMargin:=Config.GetValue(Path+'DockOutsideMargin',10);
+  DockParentMargin:=Config.GetValue(Path+'DockParentMargin',10);
+  PageAreaInPercent:=Config.GetValue(Path+'PageAreaInPercent',40);
+  HeaderAlignTop:=Config.GetValue(Path+'HeaderAlignTop',80);
+  HeaderAlignLeft:=Config.GetValue(Path+'HeaderAlignLeft',120);
+  SplitterWidth:=Config.GetValue(Path+'SplitterWidth',4);
+  ScaleOnResize:=Config.GetValue(Path+'ScaleOnResize',true);
+  ShowHeader:=Config.GetValue(Path+'ShowHeader',true);
+  ShowHeaderCaption:=Config.GetValue(Path+'ShowHeaderCaption',true);
+  HideHeaderCaptionFloatingControl:=Config.GetValue(Path+'HideHeaderCaptionFloatingControl',true);
+  AllowDragging:=Config.GetValue(Path+'AllowDragging',true);
+  HeaderStyle:=StrToADHeaderStyle(Config.GetValue(Path+'HeaderStyle',ADHeaderStyleNames[adhsDefault]));
+  HeaderFlatten:=Config.GetValue(Path+'HeaderFlatten',true);
+  HeaderFilled:=Config.GetValue(Path+'HeaderFilled',true);
 end;
 
 { TAnchorDockMaster }

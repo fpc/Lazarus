@@ -63,12 +63,14 @@ type
 
   TAbstractDesktopDockingOpt = class
   public
-    constructor Create({%H-}aUseIDELayouts: Boolean); virtual;
+    constructor Create; virtual;
     procedure StoreWindowPositions; virtual; abstract;
     procedure Load(Path: String; aXMLCfg: TRttiXMLConfig); virtual; abstract;
     procedure Save(Path: String; aXMLCfg: TRttiXMLConfig); virtual; abstract;
-    procedure Assign(Source: TAbstractDesktopDockingOpt); virtual; abstract;
+    procedure ImportSettingsFromIDE; virtual; abstract;
+    procedure ExportSettingsToIDE; virtual; abstract;
     function RestoreDesktop: Boolean; virtual; abstract;
+    procedure Assign(Source: TAbstractDesktopDockingOpt); virtual; abstract;
   end;
   TAbstractDesktopDockingOptClass = class of TAbstractDesktopDockingOpt;
 
@@ -422,7 +424,7 @@ end;
 
 { TAbstractDesktopDockingOpt }
 
-constructor TAbstractDesktopDockingOpt.Create(aUseIDELayouts: Boolean);
+constructor TAbstractDesktopDockingOpt.Create;
 begin
   inherited Create;
 end;

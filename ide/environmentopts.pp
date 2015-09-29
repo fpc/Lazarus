@@ -275,7 +275,6 @@ type
     FXMLCfg: TRttiXMLConfig;
     FConfigStore: TXMLOptionsStorage;
     // window layout
-    FUseIDELayouts: Boolean;
     FIDEWindowCreatorsLayoutList: TSimpleWindowLayoutList;
     FIDEDialogLayoutList: TIDEDialogLayoutList;
     FSingleTaskBarButton: boolean;
@@ -304,15 +303,17 @@ type
     function GetCompatible: Boolean;
     procedure InitLayoutList;
   public
-    constructor Create(const aName: String; const aUseIDELayouts: Boolean);
-    constructor Create(const aName: String; const aUseIDELayouts, aIsDocked: Boolean);
+    constructor Create(const aName: String);
+    constructor Create(const aName: String; const aIsDocked: Boolean);
     destructor Destroy; override;
     procedure Assign(Source: TDesktopOpt; const AssignName: Boolean = False);
-    procedure StoreWindowPositions;
   public
     procedure SetConfig(aXMLCfg: TRttiXMLConfig; aConfigStore: TXMLOptionsStorage);
     procedure Load(Path: String);
     procedure Save(Path: String);
+    procedure ImportSettingsFromIDE;
+    procedure ExportSettingsToIDE;
+    procedure RestoreDesktop;
 
     property Name: String read FName write FName;
     property IDEWindowCreatorsLayoutList: TSimpleWindowLayoutList read FIDEWindowCreatorsLayoutList write FIDEWindowCreatorsLayoutList;
@@ -599,7 +600,6 @@ type
     procedure UseDesktop(ADesktop: TDesktopOpt);
     procedure EnableDebugDesktop;
     procedure DisableDebugDesktop;
-    procedure RestoreDesktop;
     class function DesktopCanBeLoaded(const aDockMaster: string): Boolean;
 
     // auto save
@@ -964,7 +964,7 @@ begin
   if not EnvironmentOptions.DesktopCanBeLoaded(dskDockMaster) or (IndexOf(dskName) >= 0) then
     Exit;
 
-  dsk := TDesktopOpt.Create(dskName, False, dskDockMaster<>'');
+  dsk := TDesktopOpt.Create(dskName, dskDockMaster<>'');
   dsk.SetConfig(FXMLCfg, FConfigStore);
   dsk.Load(Path);
   Add(dsk);
@@ -996,12 +996,12 @@ end;
 
 { TDesktopOpt }
 
-constructor TDesktopOpt.Create(const aName: String; const aUseIDELayouts: Boolean);
+constructor TDesktopOpt.Create(const aName: String);
 begin
-  Create(aName, aUseIDELayouts, Assigned(IDEDockMaster));
+  Create(aName, Assigned(IDEDockMaster));
 end;
 
-constructor TDesktopOpt.Create(const aName: String; const aUseIDELayouts, aIsDocked: Boolean);
+constructor TDesktopOpt.Create(const aName: String; const aIsDocked: Boolean);
 begin
   if aIsDocked and not Assigned(IDEDockMaster) then
     raise Exception.Create('Internal error: TEnvironmentOptions.CreateDesktop cannot create docked desktop in undocked environment.');
@@ -1011,7 +1011,7 @@ begin
   FName:=aName;
   FIsDocked := aIsDocked;
   if aIsDocked then
-    FDockedOpt := IDEDockMaster.DockedDesktopOptClass.Create(aUseIDELayouts);
+    FDockedOpt := IDEDockMaster.DockedDesktopOptClass.Create;
   FSingleTaskBarButton:=false;
   FHideIDEOnRun:=false;
   FAutoAdjustIDEHeight:=true;
@@ -1034,20 +1034,10 @@ begin
   // Windows layout
   InitLayoutList;
 
-  FUseIDELayouts := aUseIDELayouts;
-  if FUseIDELayouts then
-  begin
-    //default desktop - use IDE storage objects!
-    FIDEDialogLayoutList:=IDEWindowIntf.IDEDialogLayoutList;
-    FIDEWindowCreatorsLayoutList := IDEWindowIntf.IDEWindowCreators.SimpleLayoutStorage;
-  end else
-  begin
-    //saved desktops - use own layout storage objects
-    FIDEDialogLayoutList:=TIDEDialogLayoutList.Create;
-    FIDEWindowCreatorsLayoutList:=TSimpleWindowLayoutList.Create(False);
-    FIDEDialogLayoutList.Assign(IDEWindowIntf.IDEDialogLayoutList);
-    FIDEWindowCreatorsLayoutList.CopyItemsFrom(IDEWindowIntf.IDEWindowCreators.SimpleLayoutStorage);
-  end;
+  FIDEDialogLayoutList:=TIDEDialogLayoutList.Create;
+  FIDEWindowCreatorsLayoutList:=TSimpleWindowLayoutList.Create(False);
+  FIDEDialogLayoutList.Assign(IDEWindowIntf.IDEDialogLayoutList);
+  FIDEWindowCreatorsLayoutList.CopyItemsFrom(IDEWindowIntf.IDEWindowCreators.SimpleLayoutStorage);
 end;
 
 destructor TDesktopOpt.Destroy;
@@ -1057,11 +1047,8 @@ begin
   FreeAndNil(FIDECoolBarOptions);
   FreeAndNil(FDockedOpt);
 
-  if not FUseIDELayouts then
-  begin
-    FreeAndNil(FIDEDialogLayoutList);
-    FreeAndNil(FIDEWindowCreatorsLayoutList);
-  end;
+  FreeAndNil(FIDEDialogLayoutList);
+  FreeAndNil(FIDEWindowCreatorsLayoutList);
 
   inherited Destroy;
 end;
@@ -1139,6 +1126,23 @@ begin
     FDockedOpt.Load(Path, FXMLCfg);
 end;
 
+procedure TDesktopOpt.RestoreDesktop;
+begin
+  IDEWindowCreators.RestoreSimpleLayout;
+  if Assigned(FDockedOpt) then
+    FDockedOpt.RestoreDesktop;
+end;
+
+procedure TDesktopOpt.ImportSettingsFromIDE;
+begin
+  IDEWindowIntf.IDEWindowCreators.SimpleLayoutStorage.StoreWindowPositions;
+  FIDEDialogLayoutList.Assign(IDEWindowIntf.IDEDialogLayoutList);
+  FIDEWindowCreatorsLayoutList.CopyItemsFrom(IDEWindowIntf.IDEWindowCreators.SimpleLayoutStorage);
+
+  if Assigned(FDockedOpt) then
+    FDockedOpt.ImportSettingsFromIDE;
+end;
+
 procedure TDesktopOpt.Save(Path: String);
 begin
   // windows
@@ -1176,6 +1180,15 @@ begin
     FDockedOpt.Save(Path, FXMLCfg);
 end;
 
+procedure TDesktopOpt.ExportSettingsToIDE;
+begin
+  if Assigned(FDockedOpt) then
+    FDockedOpt.ExportSettingsToIDE;
+
+  IDEWindowIntf.IDEDialogLayoutList.Assign(FIDEDialogLayoutList);
+  IDEWindowIntf.IDEWindowCreators.SimpleLayoutStorage.CopyItemsFrom(FIDEWindowCreatorsLayoutList);
+end;
+
 procedure InitLayoutHelper(const FormID: string);
 begin
   with IDEWindowCreators.SimpleLayoutStorage do
@@ -1187,14 +1200,6 @@ procedure TDesktopOpt.SetConfig(aXMLCfg: TRttiXMLConfig; aConfigStore: TXMLOptio
 begin
   FXMLCfg := aXMLCfg;
   FConfigStore := aConfigStore;
-end;
-
-procedure TDesktopOpt.StoreWindowPositions;
-begin
-  FIDEWindowCreatorsLayoutList.StoreWindowPositions;
-
-  if Assigned(FDockedOpt) then
-    FDockedOpt.StoreWindowPositions;
 end;
 
 procedure TDesktopOpt.InitLayoutList;
@@ -1355,7 +1360,7 @@ begin
   // Desktop collection
   FDesktops := TDesktopOptList.Create(Self);
   // FDesktop points to the IDE properties
-  FDesktop := TDesktopOpt.Create('', True);
+  FDesktop := TDesktopOpt.Create('');
   FAutoSaveActiveDesktop := True;
 end;
 
@@ -1398,7 +1403,7 @@ begin
   try
     if AutoSaveActiveDesktop and Assigned(DebugDesktop) then
     begin
-      Desktop.StoreWindowPositions;
+      Desktop.ImportSettingsFromIDE;
       DebugDesktop.Assign(Desktop);
     end;
 
@@ -1430,7 +1435,7 @@ procedure TEnvironmentOptions.EnableDebugDesktop;
 begin
   if not Assigned(FLastDesktopBeforeDebug) and Assigned(DebugDesktop) then
   begin
-    FLastDesktopBeforeDebug := TDesktopOpt.Create('', False);
+    FLastDesktopBeforeDebug := TDesktopOpt.Create('');
     FLastDesktopBeforeDebug.Assign(Desktop);
     FLastDesktopBeforeDebug.Name := ActiveDesktopName;
     EnvironmentOptions.UseDesktop(DebugDesktop);
@@ -1821,6 +1826,7 @@ begin
     end;
 
     Desktop.Assign(ActiveDesktop, False);
+    Desktop.ExportSettingsToIDE;
 
     FileUpdated;
   except
@@ -2097,7 +2103,7 @@ begin
     if AutoSaveActiveDesktop then
     begin
       //save active desktop
-      Desktop.StoreWindowPositions;
+      Desktop.ImportSettingsFromIDE;
       ActiveDesktop.Assign(Desktop);
 
       if Assigned(FLastDesktopBeforeDebug) then//are we in debug session?
@@ -2160,13 +2166,6 @@ end;
 procedure TEnvironmentOptions.RemoveFromRecentProjectFiles(const AFilename: string);
 begin
   RemoveFromRecentList(AFilename,FRecentProjectFiles,rltFile);
-end;
-
-procedure TEnvironmentOptions.RestoreDesktop;
-begin
-  IDEWindowCreators.RestoreSimpleLayout;
-  if Assigned(Desktop.FDockedOpt) then
-    Desktop.FDockedOpt.RestoreDesktop;
 end;
 
 function TEnvironmentOptions.GetParsedTestBuildDirectory: string;
@@ -2509,7 +2508,7 @@ begin
   if Assigned(Result) then
     FDesktops.Remove(Result);
 
-  Result := TDesktopOpt.Create(FActiveDesktopName, False);
+  Result := TDesktopOpt.Create(FActiveDesktopName);
   FDesktops.Add(Result);
   Result.Assign(Desktop);
 end;
@@ -2547,7 +2546,8 @@ begin
   Desktop.Assign(ADesktop);
   ActiveDesktopName := ADesktop.Name;
   DoAfterWrite(False);  //this is needed to get the EditorToolBar refreshed!!! - needed only here in UseDesktop()
-  RestoreDesktop;
+  Desktop.ExportSettingsToIDE;
+  Desktop.RestoreDesktop;
 
   //set focus back to the previously focused control
   if Screen.CustomFormIndex(xLastFocusForm) >= 0 then//check if form hasn't been destroyed

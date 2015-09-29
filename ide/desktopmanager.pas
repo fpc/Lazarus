@@ -145,13 +145,13 @@ begin
     end;
 
     debugln(['TDesktopForm.SaveBitBtnClick: Creating ', aDesktopName]);
-    dsk := TDesktopOpt.Create(aDesktopName, False);
+    dsk := TDesktopOpt.Create(aDesktopName);
     if dskIndex < 0 then
       Desktops.Add(dsk)
     else
       Desktops.Insert(dskIndex, dsk);
     debugln(['TDesktopForm.SaveBitBtnClick: Assign from active desktop to ', aDesktopName]);
-    Desktop.StoreWindowPositions;
+    Desktop.ImportSettingsFromIDE;
     dsk.Assign(Desktop);
     ActiveDesktopName := aDesktopName;
     Result := True;
@@ -592,7 +592,7 @@ begin
             if Assigned(xDsk) then //if desktop is to be rewritten, it has to be recreated
               EnvironmentOptions.Desktops.Remove(xDsk);
 
-            xDsk := TDesktopOpt.Create(xDesktopName, False, xDesktopDockMaster<>'');
+            xDsk := TDesktopOpt.Create(xDesktopName, xDesktopDockMaster<>'');
             EnvironmentOptions.Desktops.Add(xDsk);
 
             if xDsk.Name = EnvironmentOptions.ActiveDesktopName then
