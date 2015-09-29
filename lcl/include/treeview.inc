@@ -3126,6 +3126,8 @@ begin
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := @ImageListChange;
   FSelectedColor:=clHighlight;
+  FSelectedFontColor:=clWhite;
+  FSelectedFontColorUsed:=false;
   fSeparatorColor:=clGray;
   FStateChangeLink := TChangeLink.Create;
   FStateChangeLink.OnChange := @ImageListChange;
@@ -3378,6 +3380,14 @@ procedure TCustomTreeView.SetSelectedColor(Value: TColor);
 begin
   if FSelectedColor<>Value then begin
     FSelectedColor:=Value;
+    Invalidate;
+  end;
+end;
+
+procedure TCustomTreeView.SetSelectedFontColor(Value: TColor);
+begin
+  if FSelectedFontColor<>Value then begin
+    FSelectedFontColor:=Value;
     Invalidate;
   end;
 end;
@@ -4911,15 +4921,14 @@ var
         else
         begin
           Canvas.Brush.Color := FSelectedColor;
-          Canvas.Font.Color := InvertColor(Brush.Color);
+          Canvas.Font.Color := IfThen(FSelectedFontColorUsed, FSelectedFontColor, InvertColor(FSelectedColor));
           Canvas.FillRect(NodeRect);
         end
       else
       if not (tvoThemedDraw in Options) then
       begin
-        //Canvas.Font.Color := Font.Color;
         Canvas.Brush.Color := FSelectedColor;
-        Canvas.Font.Color := InvertColor(Brush.Color);
+        Canvas.Font.Color := IfThen(FSelectedFontColorUsed, FSelectedFontColor, InvertColor(FSelectedColor));
         Canvas.FillRect(NodeRect);
       end;
     end

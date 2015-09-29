@@ -3231,6 +3231,8 @@ type
     FScrolledLeft: integer; // horizontal scrolled pixels (hidden pixels at left)
     FScrolledTop: integer;  // vertical scrolled pixels (hidden pixels at top)
     FSelectedColor: TColor;
+    FSelectedFontColor: TColor;
+    FSelectedFontColorUsed: boolean;
     FSelectedNode: TTreeNode;
     FSelectionChangeEventLock: integer;
     fSeparatorColor: TColor;
@@ -3287,6 +3289,7 @@ type
     procedure SetScrolledLeft(AValue: integer);
     procedure SetScrolledTop(AValue: integer);
     procedure SetSelectedColor(Value: TColor);
+    procedure SetSelectedFontColor(Value: TColor);
     procedure SetSelection(Value: TTreeNode);
     procedure SetSeparatorColor(const AValue: TColor);
     procedure SetShowButton(Value: Boolean);
@@ -3498,6 +3501,8 @@ type
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssBoth;
     property Selected: TTreeNode read GetSelection write SetSelection;
     property SelectionColor: TColor read FSelectedColor write SetSelectedColor default clHighlight;
+    property SelectionFontColor: TColor read FSelectedFontColor write SetSelectedFontColor default clWhite;
+    property SelectionFontColorUsed: boolean read FSelectedFontColorUsed write FSelectedFontColorUsed default False;
     property SelectionCount: Cardinal read GetSelectionCount;
     property Selections[AIndex: Integer]: TTreeNode read GetSelections;
     property SeparatorColor: TColor read fSeparatorColor write SetSeparatorColor default clGray;
@@ -3548,6 +3553,9 @@ type
     property RowSelect;
     property ScrollBars;
     property SelectionColor;
+    property SelectionFontColor;
+    property SelectionFontColorUsed;
+    property SeparatorColor;
     property ShowButtons;
     property ShowHint;
     property ShowLines;
