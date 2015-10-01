@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-07-29 19:29+0100\n"
+"PO-Revision-Date: 2015-09-29 18:22+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -395,7 +395,7 @@ msgstr "Kleinbuchstaben, erster immer groß"
 
 #: lazarusidestrconsts.dlgactivedesktop
 msgid "active"
-msgstr ""
+msgstr "aktiv"
 
 #: lazarusidestrconsts.dlgaddassignmentoperator
 msgid "Add assignment operator :="
@@ -642,7 +642,7 @@ msgstr "Dateinamen in Kleinbuchstaben"
 
 #: lazarusidestrconsts.dlgautosaveactivedesktop
 msgid "Auto save active desktop"
-msgstr ""
+msgstr "Aktiven Desktop automatisch speichern"
 
 #: lazarusidestrconsts.dlgautosaveactivedesktophint
 msgid ""
@@ -729,7 +729,7 @@ msgstr "Korrespondierende Klammernpaare"
 
 #: lazarusidestrconsts.dlgcannotdeleteactivedesktop
 msgid "You cannot delete the active desktop."
-msgstr ""
+msgstr "Sie können den aktiven Desktop nicht löschen."
 
 #: lazarusidestrconsts.dlgcannotdeletedebugdesktop
 msgid "You cannot delete debug desktop."
@@ -1246,8 +1246,6 @@ msgid "Menus - "
 msgstr "Menüs - "
 
 #: lazarusidestrconsts.dlgdesktopname
-#, fuzzy
-#| msgid "Desktop name:"
 msgid "Desktop name"
 msgstr "Desktop-Name:"
 
@@ -2104,6 +2102,8 @@ msgid ""
 "A desktop with the same name already exists.\n"
 "Please confirm the desktop name:\n"
 msgstr ""
+"Ein Desktop mit dem gleichen Namen existiert bereits.\n"
+"Bitte bestätigen Sie den Desktopnamen:\n"
 
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
@@ -2789,7 +2789,7 @@ msgstr "Namensvergabe"
 
 #: lazarusidestrconsts.dlgnewdesktop
 msgid "New desktop ..."
-msgstr ""
+msgstr "Neuer Desktop ..."
 
 #: lazarusidestrconsts.dlgnoautomaticrenaming
 msgid "No automatic renaming"
@@ -3047,10 +3047,8 @@ msgid "Property Name"
 msgstr "Name der Eigenschaft"
 
 #: lazarusidestrconsts.dlgqopenlastprj
-#, fuzzy
-#| msgid "Open last project at start"
 msgid "Open last project and packages at start"
-msgstr "Zuletzt geladenes Projekt beim Start öffnen"
+msgstr "Zuletzt geladenes Projekt und Packages beim Start öffnen"
 
 #: lazarusidestrconsts.dlgqshowborderspacing
 msgid "Show border spacing"
@@ -3152,7 +3150,7 @@ msgstr "Start-Parameter"
 
 #: lazarusidestrconsts.dlgsavecurrentdesktopas
 msgid "Save current desktop as"
-msgstr ""
+msgstr "Aktuellen Desktop speichern unter"
 
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
@@ -3225,7 +3223,7 @@ msgstr "Au&sgewählter Text"
 
 #: lazarusidestrconsts.dlgsetactivedesktop
 msgid "Set active"
-msgstr ""
+msgstr "aktivieren"
 
 #: lazarusidestrconsts.dlgsetallelementdefault
 msgid "Set all elements to default"
@@ -3916,7 +3914,7 @@ msgstr "Kein Package für die Abhängigkeit \"%s\" gefunden.%sBitte wählen Sie 
 
 #: lazarusidestrconsts.lisa2ppackageorproject
 msgid "Package/Project"
-msgstr ""
+msgstr "Package/Projekt"
 
 #: lazarusidestrconsts.lisa2ppagenametoolong
 msgid "Page Name too long"
@@ -4047,7 +4045,6 @@ msgid "Abandon changes?"
 msgstr "Änderungen verwerfen?"
 
 #: lazarusidestrconsts.lisabort
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisabort"
 msgid "Abort"
 msgstr "Alles abbrechen"
@@ -7312,7 +7309,7 @@ msgstr "Neue Komponente erstellen in..."
 
 #: lazarusidestrconsts.liscreatenowforthisproject
 msgid "Create now for this project"
-msgstr ""
+msgstr "Jetzt für dieses Projekt erzeugen"
 
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
@@ -7933,7 +7930,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdesktops
 msgid "Desktops ..."
-msgstr ""
+msgstr "Desktops ..."
 
 #: lazarusidestrconsts.lisdestinationdirectory
 msgid "Destination directory"
@@ -8045,7 +8042,7 @@ msgstr "Gruppen deaktivieren"
 
 #: lazarusidestrconsts.lisdisablei18nforlfm
 msgid "Disable I18N for LFM"
-msgstr "i18n für LFM deaktivieren"
+msgstr "i18n für lfm-Dateien ausschalten"
 
 #: lazarusidestrconsts.lisdisableoptionxg
 msgid "Disable Option -Xg?"
@@ -8157,7 +8154,6 @@ msgid "Import ..."
 msgstr "Import ..."
 
 #: lazarusidestrconsts.lisdlgmore
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisdlgmore"
 msgid "More ..."
 msgstr "Mehr ..."
@@ -8533,7 +8529,7 @@ msgstr "Gruppen aktivieren"
 
 #: lazarusidestrconsts.lisenablei18nforlfm
 msgid "Enable I18N for LFM"
-msgstr ""
+msgstr "i18n für lfm-Dateien einschalten"
 
 #: lazarusidestrconsts.lisenableinternationalizationandtranslationsupport
 msgid "Enable internationalization and translation support"
@@ -9828,7 +9824,6 @@ msgid "If you want to use two different Lazarus versions you must start the seco
 msgstr "Wenn Sie zwei verschiedene Lazarus-Versionen verwenden wollen, müssen Sie das zweite Lazarus mit dem Kommandozeilenparameter primary-config-path oder pcp starten.%sZum Beispiel:"
 
 #: lazarusidestrconsts.lisignore
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisignore"
 msgid "Ignore"
 msgstr "Übergehen"
@@ -12093,10 +12088,6 @@ msgstr "Freies Lesezeichen setzen"
 msgid "S&how Execution Point"
 msgstr "Ausführungspunkt anzeigen"
 
-#: lazarusidestrconsts.lismenushowsmarthint
-msgid "Context sensitive smart hint"
-msgstr ""
-
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort Selection ..."
 msgstr "Auswahl sortieren ..."
@@ -13458,7 +13449,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lispckdisablei18noflfm
 msgid "Disable I18N of lfm"
-msgstr ""
+msgstr "i18n für lfm-Dateien ausschalten"
 
 #: lazarusidestrconsts.lispckeditaddfilesfromfilesystem
 msgid "Add Files from File System"
@@ -14683,11 +14674,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisppuinwrongdirectory
 msgid "ppu in wrong directory=%s."
-msgstr ""
+msgstr "ppu im falschen Verzeichnis=%s."
 
 #: lazarusidestrconsts.lisppunotfoundcheckyourfpccfg
 msgid "%s.ppu not found. Check your fpc.cfg."
-msgstr ""
+msgstr "%s.ppu nicht gefunden. Prüfen Sie ihre fpc.cfg."
 
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"
@@ -18150,7 +18141,7 @@ msgstr "XML-Parserfehler in der Datei %s%sFehler: %s"
 
 #: lazarusidestrconsts.lisyes
 msgid "Yes"
-msgstr ""
+msgstr "Ja"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"
@@ -20168,4 +20159,3 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
-
