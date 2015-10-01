@@ -4253,7 +4253,7 @@ begin
     s:=s+'unitdir='+FormUnitPath+e;
   if IncPath<>'' then
     s:=s+'includedir='+FormIncPath+e;
-  s:=s+'options='+OtherOptions+e;
+  s:=s+'options='+OtherOptions+' $(DBG_OPTIONS)'+e;
   s:=s+''+e;
   s:=s+'[target]'+e;
   s:=s+'units='+MainSrcFile+e;
@@ -4287,6 +4287,11 @@ begin
   s:=s+'endif'+e;
   s:=s+'endif'+e;
   s:=s+'export LCL_PLATFORM'+e;
+  s+=e;
+  s:=s+'DBG_OPTIONS='+e;
+  s:=s+'ifeq ($(OS_TARGET),darwin)'+e;
+  s:=s+'DBG_OPTIONS=-gw'+e;
+  s:=s+'endif'+e;
 
   s:=s+''+e;
   s:=s+'[rules]'+e;

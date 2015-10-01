@@ -5,10 +5,16 @@ main=lcl
 packages=rtl
 
 [target]
-units=lcl.ps
+units=lcl.pas
+
+[prerules]
+DBG_OPTIONS=
+ifeq ($(OS_TARGET),darwin)
+DBG_OPTIONS=-gw
+endif
 
 [compiler]
-options=-gl -dnogui
+options=-gl -dnogui $(DBG_OPTIONS)
 unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) \
     ../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) \
     ../../../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) \

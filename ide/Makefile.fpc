@@ -14,7 +14,7 @@ packages=regexpr
 programs=lazarus startlazarus lazbuild
 
 [compiler]
-options=-gl -vbqewnhi -Sci -dlcl$(LCL_PLATFORM)
+options=-gl -vbqewnhi -Sci -dlcl$(LCL_PLATFORM) $(DBG_OPTIONS)
 unittargetdir=../units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
 unitdir=../designer \
         ../debugger \
@@ -71,6 +71,11 @@ endif
 endif
 endif
 export LCL_PLATFORM
+
+DBG_OPTIONS=
+ifeq ($(OS_TARGET),darwin)
+DBG_OPTIONS=-gw
+endif
 
 #
 # LibPaths
