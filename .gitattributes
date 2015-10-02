@@ -5830,6 +5830,7 @@ ide/ideinfodlg.lfm svneol=native#text/plain
 ide/ideinfodlg.pas svneol=native#text/plain
 ide/ideinfoneedbuild.lfm svneol=native#text/plain
 ide/ideinfoneedbuild.pas svneol=native#text/plain
+ide/ideinstances.pas svneol=native#text/pascal
 ide/ideoptiondefs.pas svneol=native#text/pascal
 ide/ideoptionsdlg.lfm svneol=native#text/plain
 ide/ideoptionsdlg.pas svneol=native#text/pascal
