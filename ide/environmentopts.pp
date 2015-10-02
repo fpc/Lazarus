@@ -1817,17 +1817,7 @@ begin
     // The user can define many desktops. They are saved under path Desktops/.
     FDesktops.Clear;
     FDesktops.SetConfig(FXMLCfg, FConfigStore);
-    CurPath := 'Desktops/';
     FActiveDesktopName := '';
-    if FXMLCfg.HasPath(CurPath, True) then
-    begin
-      // Default=1 forces reading default values always.
-      FDebugDesktopName := FXMLCfg.GetValue(CurPath+'DebugDesktop', '');
-      FActiveDesktopName := FXMLCfg.GetValue(CurPath+'ActiveDesktop', '');
-      j := FXMLCfg.GetValue(CurPath+'Count', 1);
-      for i := 1 to j do
-        FDesktops.AddFromCfg(CurPath+'Desktop'+IntToStr(i)+'/');
-    end;
 
     if FFileVersion<109 then begin
       //load old default desktop - backwards compatibility - or create a new default desktop
@@ -1842,6 +1832,13 @@ begin
         ActiveDesktop.SetConfig(FXMLCfg, FConfigStore);
         ActiveDesktop.Load(CurPath);
       end;
+    end else begin
+      CurPath := 'Desktops/';
+      FDebugDesktopName := FXMLCfg.GetValue(CurPath+'DebugDesktop', '');
+      FActiveDesktopName := FXMLCfg.GetValue(CurPath+'ActiveDesktop', '');
+      j := FXMLCfg.GetValue(CurPath+'Count', 1);
+      for i := 1 to j do
+        FDesktops.AddFromCfg(CurPath+'Desktop'+IntToStr(i)+'/');
     end;
     if FFileVersion<=109 then begin
       FXMLCfg.DeletePath('Desktop');
