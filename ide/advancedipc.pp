@@ -30,7 +30,11 @@ uses
   {$IFDEF UNIX}
   baseunix,
   {$endif}
-  sysutils, Classes;
+  sysutils, Classes
+  {$IF FPC_FULLVERSION<20701}
+  ,LazUTF8SysUtils
+  {$ENDIF}
+  ;
 
 const
   HEADER_VERSION = 2;
@@ -305,7 +309,7 @@ end;
 class procedure TIPCBase.FindRunningServers(const aServerIDPrefix: string;
   const outServerIDs: TStrings; const aGlobal: Boolean);
 var
-  xRec: TRawByteSearchRec;
+  xRec: {$IF FPC_FULLVERSION>=20701}TRawByteSearchRec{$ELSE}TSearchRec{$ENDIF};
 begin
   if FindFirst(ServerIDToFileName(aServerIDPrefix+'*', aGlobal), faAnyFile, xRec) = 0 then
   begin
@@ -454,7 +458,7 @@ end;
 
 procedure TIPCServer.DeletePendingRequests;
 var
-  xRec: TRawByteSearchRec;
+  xRec: {$IF FPC_FULLVERSION>=20701}TRawByteSearchRec{$ELSE}TSearchRec{$ENDIF};
   xDir: string;
 begin
   xDir := ExtractFilePath(FFileName);
@@ -491,7 +495,7 @@ function TIPCServer.FindFirstRequest(out outFileName: string; out
   outStream: TStream; out outMsgType: TMessageType; out outMsgLen: Integer
   ): Integer;
 var
-  xRec: TRawByteSearchRec;
+  xRec: {$IF FPC_FULLVERSION>=20701}TRawByteSearchRec{$ELSE}TSearchRec{$ENDIF};
 begin
   outFileName := '';
   outStream := nil;
@@ -515,7 +519,7 @@ end;
 
 function TIPCServer.FindHighestPendingRequestId: Integer;
 var
-  xRec: TRawByteSearchRec;
+  xRec: {$IF FPC_FULLVERSION>=20701}TRawByteSearchRec{$ELSE}TSearchRec{$ENDIF};
   xRequestID, xHighestId: LongInt;
 begin
   xHighestId := -1;
@@ -536,7 +540,7 @@ end;
 
 function TIPCServer.GetPendingRequestCount: Integer;
 var
-  xRec: TRawByteSearchRec;
+  xRec: {$IF FPC_FULLVERSION>=20701}TRawByteSearchRec{$ELSE}TSearchRec{$ENDIF};
 begin
   Result := 0;
   if FindFirst(GetRequestPrefix+'*', faAnyFile, xRec) = 0 then
