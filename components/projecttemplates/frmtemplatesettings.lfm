@@ -1,53 +1,66 @@
 object TemplateSettingsForm: TTemplateSettingsForm
-  Left = 470
-  Height = 127
-  Top = 175
-  Width = 400
+  Left = 472
+  Height = 103
+  Top = 287
+  Width = 409
   HorzScrollBar.Page = 399
   VertScrollBar.Page = 126
+  BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Project templates settings'
-  ClientHeight = 127
-  ClientWidth = 400
+  ClientHeight = 103
+  ClientWidth = 409
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.5'
+  Visible = False
   object Label1: TLabel
-    Left = 8
+    AnchorSideLeft.Control = Owner
+    Left = 6
     Height = 24
-    Top = 16
+    Top = 8
     Width = 160
     AutoSize = False
+    BorderSpacing.Around = 6
     Caption = '&Directory with templates:'
     FocusControl = DETemplates
     Layout = tlCenter
     ParentColor = False
   end
   object DETemplates: TDirectoryEdit
-    Left = 8
-    Height = 23
-    Top = 41
-    Width = 360
+    AnchorSideLeft.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 27
+    Top = 32
+    Width = 397
     ShowHidden = False
-    ButtonWidth = 23
+    ButtonWidth = 40
     NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
     MaxLength = 0
     TabOrder = 0
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 87
-    Width = 388
+    Height = 29
+    Top = 68
+    Width = 397
     OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
     OKButton.OnClick = OKButtonClick
     HelpButton.Name = 'HelpButton'
-    HelpButton.Enabled = False
+    HelpButton.DefaultCaption = True
+    HelpButton.OnClick = HelpButtonClick
     CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 1
-    ShowButtons = [pbOK, pbCancel]
+    ShowButtons = [pbOK, pbCancel, pbHelp]
     ShowBevel = False
   end
 end
