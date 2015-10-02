@@ -2004,8 +2004,8 @@ var
 begin
   i:=fDisabledAutosizing.Count-1;
   while (i>=0) do begin
-    //debugln(['TAnchorDockMaster.EnableAllAutoSizing ',DbgSName(TControl(fDisabledAutosizing[i]))]);
     AControl:=TControl(fDisabledAutosizing[i]);
+    //debugln(['TAnchorDockMaster.EnableAllAutoSizing ',DbgSName(AControl)]);
     fDisabledAutosizing.Delete(i);
     AControl.EnableAutoSizing;
     i:=Min(i,fDisabledAutosizing.Count)-1;
