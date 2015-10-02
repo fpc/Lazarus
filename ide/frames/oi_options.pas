@@ -129,7 +129,7 @@ const
       { ooShowComponentTree  } True,
       { ooShowHints          } False,
       { ooAutoShow           } True,
-      { ooCheckboxForBoolean } False,
+      { ooCheckboxForBoolean } True,
       { ooBoldNonDefault     } True,
       { ooDrawGridLines      } True,
       { ooShowGutter         } True,

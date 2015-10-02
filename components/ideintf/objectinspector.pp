@@ -32,7 +32,7 @@ uses
   // FCL
   SysUtils, Types, Classes, TypInfo, FPCanvas,
   // LCL
-  {$IFDEF UseOIThemedCheckBox} CheckBoxThemed, {$ENDIF}
+  {$IFnDEF UseOINormalCheckBox} CheckBoxThemed, {$ENDIF}
   InterfaceBase, Forms, Buttons, Graphics, GraphType, LCLProc, StdCtrls,
   LCLType, LCLIntf, Controls, ComCtrls, ExtCtrls, LMessages,
   LazConfigStorage, Menus, Dialogs, Themes, TreeFilterEdit, ObjInspStrConsts,
@@ -304,7 +304,7 @@ type
 
     ValueEdit: TEdit;
     ValueComboBox: TComboBox;
-    {$IFDEF UseOIThemedCheckBox}
+    {$IFnDEF UseOINormalCheckBox}
     ValueCheckBox: TCheckBoxThemed;
     {$ELSE}
     ValueCheckBox: TCheckBox;
@@ -966,13 +966,13 @@ begin
     OnMouseWheel:=@OnGridMouseWheel;
   end;
 
-  ValueCheckBox:={$IFDEF UseOIThemedCheckBox} TCheckBoxThemed.Create(Self); {$ELSE} TCheckBox.Create(Self); {$ENDIF}
+  ValueCheckBox:={$IFnDEF UseOINormalCheckBox} TCheckBoxThemed.Create(Self); {$ELSE} TCheckBox.Create(Self); {$ENDIF}
   with ValueCheckBox do
   begin
     Name:='ValueCheckBox';
     Visible:=false;
     Enabled:=false;
-    {$IFDEF UseOIThemedCheckBox}
+    {$IFnDEF UseOINormalCheckBox}
     AutoSize := false;
     {$ELSE}
     AutoSize := true;    // SetBounds does not work for CheckBox, AutoSize does.
@@ -2090,7 +2090,7 @@ begin
     SetActiveControl(FCurrentEdit);
     if (FCurrentEdit is TCustomEdit) then
       TCustomEdit(FCurrentEdit).SelectAll
-    {$IFDEF UseOIThemedCheckBox}
+    {$IFnDEF UseOINormalCheckBox}
     else if (FCurrentEdit is TCheckBoxThemed) and WasValueClick then
       TCheckBoxThemed(FCurrentEdit).Checked:=not TCheckBoxThemed(FCurrentEdit).Checked;
     {$ELSE}
@@ -3673,6 +3673,7 @@ begin
   FGutterColor := DefGutterColor;
   FGutterEdgeColor := DefGutterEdgeColor;
 
+  FCheckboxForBoolean := True;
   FBoldNonDefaultValues := True;
   FDrawGridLines := True;
   FShowGutter := True;
@@ -3729,7 +3730,7 @@ begin
 
     FShowHints:=ConfigStore.GetValue(Path+'ShowHints',FileVersion>=3);
     FAutoShow := ConfigStore.GetValue(Path+'AutoShow',True);
-    FCheckboxForBoolean := ConfigStore.GetValue(Path+'CheckboxForBoolean',False);
+    FCheckboxForBoolean := ConfigStore.GetValue(Path+'CheckboxForBoolean',True);
     FBoldNonDefaultValues := ConfigStore.GetValue(Path+'BoldNonDefaultValues',True);
     FDrawGridLines := ConfigStore.GetValue(Path+'DrawGridLines',True);
     FShowGutter := ConfigStore.GetValue(Path+'ShowGutter',True);
