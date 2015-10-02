@@ -142,6 +142,14 @@ resourcestring
   lisMoveFiles2 = 'Move files?';
   lrsPLDDeleteSelected = 'Delete selected';
 
+  dlgMultipleInstances = 'Multiple Lazarus instances';
+  dlgMultipleInstances_AlwaysStartNew = 'always start a new instance';
+  dlgMultipleInstances_OpenFilesInRunning = 'open files in a running instance';
+  dlgMultipleInstances_ForceSingleInstance = 'do not allow multiple instances';
+  dlgRunningInstanceModalError = 'The running Lazarus instance cannot accept any files.'+sLineBreak+'Do you want to open them in a new IDE instance?'+sLineBreak+sLineBreak+'%s';
+  dlgForceUniqueInstanceModalError = 'The running Lazarus instance cannot accept any files.';
+  dlgRunningInstanceNotRespondingError = 'Lazarus instance is running but not responding.';
+
   // *** Rest of the resource strings ***
 
   lisImportPackageListXml = 'Import package list (*.xml)';

@@ -40,6 +40,7 @@ type
 
   TFilesOptionsFrame = class(TAbstractIDEOptionsEditor)
     AutoCloseCompileDialogCheckBox: TCheckBox;
+    MultipleInstancesComboBox: TComboBox;
     CompilerTranslationFileButton:TButton;
     CompilerTranslationFileComboBox:TComboBox;
     CompilerTranslationFileLabel:TLabel;
@@ -49,6 +50,7 @@ type
     FPCSourceDirButton:TButton;
     FPCSourceDirComboBox:TComboBox;
     FPCSourceDirLabel:TLabel;
+    MultipleInstancesLabel: TLabel;
     lblCenter: TLabel;
     LazarusDirButton:TButton;
     LazarusDirComboBox:TComboBox;
@@ -229,6 +231,16 @@ begin
     Add(ProgramDirectory(true));
     EndUpdate;
   end;
+  MultipleInstancesLabel.Caption := dlgMultipleInstances;
+  with MultipleInstancesComboBox.Items do
+  begin
+    BeginUpdate;
+    Add(dlgMultipleInstances_AlwaysStartNew);
+    Add(dlgMultipleInstances_OpenFilesInRunning);
+    Add(dlgMultipleInstances_ForceSingleInstance);
+    EndUpdate;
+  end;
+  Assert(MultipleInstancesComboBox.Items.Count = Ord(High(TIDEMultipleInstancesOption))+1);
 
   CompilerPathLabel.Caption:=Format(dlgFpcExecutable,[GetDefaultCompilerFilename]);
   FPCSourceDirLabel.Caption:=dlgFpcSrcPath;
@@ -361,6 +373,8 @@ begin
     // open last project at start
     OpenLastProjectAtStartCheckBox.Checked:=OpenLastProjectAtStart;
 
+    MultipleInstancesComboBox.ItemIndex := Ord(MultipleInstances);
+
     // compile dialog
     fOldShowCompileDialog:=ShowCompileDialog;
     ShowCompileDialogCheckBox.Checked:=ShowCompileDialog;
@@ -391,6 +405,7 @@ begin
     MaxRecentOpenFiles := MaxRecentOpenFilesSpin.Value;
     MaxRecentProjectFiles := MaxRecentProjectFilesSpin.Value;
     OpenLastProjectAtStart:=OpenLastProjectAtStartCheckBox.Checked;
+    MultipleInstances := TIDEMultipleInstancesOption(MultipleInstancesComboBox.ItemIndex);
     ShowCompileDialog := ShowCompileDialogCheckBox.Checked;
     AutoCloseCompileDialog := AutoCloseCompileDialogCheckBox.Checked;
   end;

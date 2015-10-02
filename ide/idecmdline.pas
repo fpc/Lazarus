@@ -50,6 +50,7 @@ const
   NoSplashScreenOptLong='--no-splash-screen';
   NoSplashScreenOptShort='--nsc';
   StartedByStartLazarusOpt='--started-by-startlazarus';
+  ForceNewInstanceOpt='--force-new-instance';
   SkipLastProjectOpt='--skip-last-project';
   DebugLogOpt='--debug-log=';
   DebugLogOptEnable='--debug-enable=';

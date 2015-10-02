@@ -184,6 +184,16 @@ const
       'Never'
     );
 
+type
+  TIDEMultipleInstancesOption = (mioAlwaysStartNew, mioOpenFilesInRunning, mioForceSingleInstance);
+const
+  IDEMultipleInstancesOptionNames: array[TIDEMultipleInstancesOption] of string = (
+    'AlwaysStartNew',      // mioAlwaysStartNew
+    'OpenFilesInRunning',  // mioOpenFilesInRunning
+    'ForceSingleInstance'  // mioForceSingleInstance
+    );
+  DefaultIDEMultipleInstancesOption = mioOpenFilesInRunning;
+
   { Messages window }
 type
   TMsgWndFileNameStyle = (
@@ -485,6 +495,7 @@ type
     FRecentPackageFiles: TStringList;
     FMaxRecentPackageFiles: integer;
     FOpenLastProjectAtStart: boolean;
+    FMultipleInstances: TIDEMultipleInstancesOption;
     // Prevent repopulating Recent project files menu with example projects if it was already cleared up.
     FAlreadyPopulatedRecentFiles : Boolean;
 
@@ -737,6 +748,8 @@ type
     property LastOpenPackages: TLastOpenPackagesList read FLastOpenPackages;
     property OpenLastProjectAtStart: boolean read FOpenLastProjectAtStart
                                              write FOpenLastProjectAtStart;
+    property MultipleInstances: TIDEMultipleInstancesOption read FMultipleInstances
+                                                                write FMultipleInstances;
     property FileDialogFilter: string read FFileDialogFilter write FFileDialogFilter;
 
     // backup
@@ -812,6 +825,7 @@ function AmbiguousFileActionNameToType(const Action: string): TAmbiguousFileActi
 function CharCaseFileActionNameToType(const Action: string): TCharCaseFileAction;
 function UnitRenameReferencesActionNameToType(const Action: string): TUnitRenameReferencesAction;
 function StrToMsgWndFilenameStyle(const s: string): TMsgWndFileNameStyle;
+function StrToIDEMultipleInstancesOption(const s: string): TIDEMultipleInstancesOption;
 
 function SimpleDirectoryCheck(const OldDir, NewDir,
   NotFoundErrMsg: string; out StopChecking: boolean): boolean;
@@ -879,6 +893,13 @@ begin
   for Result in TMsgWndFileNameStyle do
     if CompareText(s,MsgWndFileNameStyleNames[Result])=0 then exit;
   Result:=mwfsShort;
+end;
+
+function StrToIDEMultipleInstancesOption(const s: string): TIDEMultipleInstancesOption;
+begin
+  for Result in TIDEMultipleInstancesOption do
+    if CompareText(s,IDEMultipleInstancesOptionNames[Result])=0 then exit;
+  Result:=DefaultIDEMultipleInstancesOption;
 end;
 
 function SimpleDirectoryCheck(const OldDir, NewDir,
@@ -1324,6 +1345,7 @@ begin
   FRecentPackageFiles:=TStringList.Create;
   FMaxRecentPackageFiles:=DefaultMaxRecentPackageFiles;
   FOpenLastProjectAtStart:=true;
+  FMultipleInstances:=DefaultIDEMultipleInstancesOption;
 
   // backup
   with FBackupInfoProjectFiles do begin
@@ -1761,6 +1783,7 @@ begin
       Path+'UnitRenameReferencesAction/Value',UnitRenameReferencesActionNames[urraAsk]));
     FAskForFilenameOnNewFile:=FXMLCfg.GetValue(Path+'AskForFilenameOnNewFile/Value',false);
     FLowercaseDefaultFilename:=FXMLCfg.GetValue(Path+'LowercaseDefaultFilename/Value',true);
+    FMultipleInstances:=StrToIDEMultipleInstancesOption(FXMLCfg.GetValue(Path+'MultipleInstances/Value',''));
 
     // fpdoc
     FPDocPaths := FXMLCfg.GetValue(Path+'LazDoc/Paths','');
@@ -2070,6 +2093,11 @@ begin
                              FAskForFilenameOnNewFile,false);
     FXMLCfg.SetDeleteValue(Path+'LowercaseDefaultFilename/Value',
                              FLowercaseDefaultFilename,true);
+    if FMultipleInstances = DefaultIDEMultipleInstancesOption then
+      FXMLCfg.DeletePath(Path+'MultipleInstances')
+    else
+      FXMLCfg.SetValue(Path+'MultipleInstances/Value',IDEMultipleInstancesOptionNames[FMultipleInstances]);
+
     // fpdoc
     FXMLCfg.SetDeleteValue(Path+'LazDoc/Paths',FPDocPaths,'');
 
