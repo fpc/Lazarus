@@ -54,7 +54,7 @@ begin
     Results[Index]:=-1;
     i:=Index;
     while i<List.Count-1 do begin
-      if List[i]=Value then  // hier wuerde die teure Vergleichsoperation stehen
+      if List[i]=Value then  // imagine here an expensive compare function
         Results[Index]:=i;
       inc(i,BlockCount);
     end;
@@ -72,7 +72,7 @@ begin
     BlockCount:=ProcThreadPool.MaxThreadCount;
     SetLength(Results,BlockCount);
     ProcThreadPool.DoParallel(@FindBestParallel,0,BlockCount-1,@Data);
-    // Ergebnisse zusammenfassen
+    // collect results
     Result:=-1;
     for Index:=0 to BlockCount-1 do
       if Results[Index]>=0 then
@@ -87,7 +87,7 @@ begin
   Result:=-1;
   i:=0;
   while i<List.Count do begin
-    if List[i]=Value then // hier wuerde die teure Vergleichsoperation stehen
+    if List[i]=Value then  // imagine here an expensive compare function
       Result:=i;
     inc(i);
   end;
