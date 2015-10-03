@@ -16,7 +16,10 @@ unit LocalizedForms;
 interface
 
 uses
-  Classes, Forms;
+{$IFDEF MSWINDOWS}
+  Windows,
+{$ENDIF}
+  Classes, SysUtils, Forms;
 
 type
   TLocalizedForm = class(TForm)
@@ -47,8 +50,6 @@ function GetLCIDFromLangCode(ALang: String): Integer;
 implementation
 
 {$R *.lfm}
-
-
 
 { Local procedures }
 
