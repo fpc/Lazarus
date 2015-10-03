@@ -2276,7 +2276,7 @@ begin
           begin
             ParsedValue:=TrimAndExpandDirectory(ParsedValue,GetPrimaryConfigPath);
             if ParsedValue='' then
-              ParsedValue:=GetPrimaryConfigPath;
+              ParsedValue:=TrimFilename(AppendPathDelim(GetCurrentDirUTF8));
           end;
         eopFPCSourceDirectory,eopTestBuildDirectory:
           // directory
