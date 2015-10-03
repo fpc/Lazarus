@@ -895,7 +895,8 @@ procedure TCustomSplitter.Paint;
 begin
   inherited Paint;
 
-  DrawThemedPattern(ClientRect)
+  if not Assigned(OnPaint) then
+    DrawThemedPattern(ClientRect);
 end;
 
 procedure TCustomSplitter.MouseEnter;
