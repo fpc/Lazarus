@@ -222,8 +222,9 @@ function TIPCBase.GetUniqueRequest(out outFileName: string): Integer;
 begin
   Randomize;
   repeat
-    //if Randomize/Random is started from 2 processes at exactly same moment, it returns the same number! -> prevent duplicates by adding GetCurrentThreadId
-    Result := Integer(Int64(Random(High(Integer)))+GetCurrentThreadId);
+    //if Randomize/Random is started from 2 processes at exactly same moment, it returns the same number! -> prevent duplicates by xor GetCurrentThreadId
+    //the result must be of range 0..$7FFFFFFF (High(Integer))
+    Result := Integer((Int64(Random($7FFFFFFF)) xor GetCurrentThreadId) and $7FFFFFFF);
     outFileName := GetRequestFileName(Result);
   until not RequestExists(outFileName);
 end;
@@ -520,19 +521,15 @@ end;
 function TIPCServer.FindHighestPendingRequestId: Integer;
 var
   xRec: {$IF FPC_FULLVERSION>=20701}TRawByteSearchRec{$ELSE}TSearchRec{$ENDIF};
-  xRequestID, xHighestId: LongInt;
+  xRequestID: LongInt;
 begin
-  xHighestId := -1;
   Result := -1;
   if FindFirst(GetRequestPrefix+'*', faAnyFile, xRec) = 0 then
   begin
     repeat
       xRequestID := RequestFileNameToID(xRec.Name);
-      if xRequestID > xHighestId then
-      begin
-        xHighestId := xRequestID;
+      if xRequestID > Result then
         Result := xRequestID;
-      end;
     until FindNext(xRec) <> 0;
   end;
   FindClose(xRec);
