@@ -501,7 +501,7 @@ var
         {$IFNDEF MSWINDOWS}
         //this code is not slowing up IDE start because if there was highest client found (the normal way), we close anyway
         Randomize;  //random sleep in order to prevent double file locks on unix
-        Sleep(Random( PtrInt(($3F+GetCurrentThreadId) and $3F) ));
+        Sleep((PtrInt(Random($3F)) + PtrInt(GetCurrentThreadId)) and $3F);
         {$ENDIF}
         if not (xServer.StartServer(False) and (xServer.GetPendingRequestCount > 0)) then
           Exit;//server is already running or there are no pending message -> close
