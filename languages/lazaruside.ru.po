@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-09-30 02:00+0300\n"
+"PO-Revision-Date: 2015-10-04 00:46+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -1860,6 +1860,10 @@ msgstr "Элемент"
 msgid "Processing Instruction"
 msgstr "Команда обработки"
 
+#: lazarusidestrconsts.dlgforceuniqueinstancemodalerror
+msgid "The running Lazarus instance cannot accept any files."
+msgstr "Запущенный экземпляр Lazarus не может принять файлы."
+
 #: lazarusidestrconsts.dlgforecolor
 msgid "Foreground"
 msgstr "Цвет текста"
@@ -2750,6 +2754,22 @@ msgstr "Перемещать все курсоры за основным"
 msgid "Enable multi caret for column selection"
 msgstr "Включить несколько курсоров при выделении столбца"
 
+#: lazarusidestrconsts.dlgmultipleinstances
+msgid "Multiple Lazarus instances"
+msgstr "Несколько экземпляров Lazarus"
+
+#: lazarusidestrconsts.dlgmultipleinstances_alwaysstartnew
+msgid "always start a new instance"
+msgstr "всегда запускать новый экземпляр"
+
+#: lazarusidestrconsts.dlgmultipleinstances_forcesingleinstance
+msgid "do not allow multiple instances"
+msgstr "не разрешать несколько экземпляров"
+
+#: lazarusidestrconsts.dlgmultipleinstances_openfilesinrunning
+msgid "open files in a running instance"
+msgstr "открывать файлы в запущенном экземпляре"
+
 #: lazarusidestrconsts.dlgmultiselect
 msgid "Multi Select"
 msgstr "Множественное выделение"
@@ -3117,6 +3137,22 @@ msgstr "Прямоугольник создания"
 msgctxt "lazarusidestrconsts.dlgruberbandselectioncolor"
 msgid "Rubberband Selection"
 msgstr "Прямоугольник выделения"
+
+#: lazarusidestrconsts.dlgrunninginstancemodalerror
+msgid ""
+"The running Lazarus instance cannot accept any files.\n"
+"Do you want to open them in a new IDE instance?\n"
+"\n"
+"%s\n"
+msgstr ""
+"Запущенный экземпляр Lazarus не может принять файлы.\n"
+"Хотите открыть их в новом экземпляре IDE?\n"
+"\n"
+"%s\n"
+
+#: lazarusidestrconsts.dlgrunninginstancenotrespondingerror
+msgid "Lazarus instance is running but not responding."
+msgstr "Экземпляр Lazarus запущен, но не отвечает."
 
 #: lazarusidestrconsts.dlgrunodisplay
 msgid "Display (not for win32, e.g. 198.112.45.11:0, x.org:1, hydra:0.1)"
