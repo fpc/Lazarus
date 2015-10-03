@@ -16,6 +16,7 @@ interface
 
 resourcestring
   p4lrsCancel = 'Cancel';
+  p4lrsPrinterProperties = 'Printer properties';
   p4lrsOk = 'Ok';
   p4lrsGeneral = 'General';
   p4lrsPaperSize = 'Paper size';

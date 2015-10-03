@@ -67,6 +67,10 @@ msgstr "Тип бумаги"
 msgid "Portrait"
 msgstr "Книжная"
 
+#: printer4lazstrconst.p4lrsprinterproperties
+msgid "Printer properties"
+msgstr "Свойства принтера"
+
 #: printer4lazstrconst.p4lrsresolution
 msgid "Resolution"
 msgstr "Разрешение"
