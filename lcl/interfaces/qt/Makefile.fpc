@@ -7,8 +7,14 @@ packages=rtl
 [target]
 units=lcl.pas
 
+[prerules]
+DBG_OPTIONS=
+ifeq ($(OS_TARGET),darwin)
+DBG_OPTIONS=-gw
+endif
+
 [compiler]
-options=-gl -dqt
+options=-gl -dqt $(DBG_OPTIONS)
 unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) \
     ../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) \
     ../../../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) \

@@ -72,6 +72,7 @@ rsts=lclstrconsts
 packages=
 
 [prerules]
+DBG_OPTIONS=
 STATEFILE=Makefile.compiled
 ifeq ($(findstring $(OS_TARGET),win32 win64 wince),)
 NONWIN32=nonwin32
@@ -83,6 +84,9 @@ ifeq ($(OS_TARGET),wince)
 ifndef LCL_ENABLE_CHECKS
 LCL_DISABLE_CHECKS=-dDisableChecks
 endif
+endif
+ifeq ($(OS_TARGET),darwin)
+DBG_OPTIONS=-gw
 endif
 
 [compiler]

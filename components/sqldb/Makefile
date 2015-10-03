@@ -342,6 +342,10 @@ endif
 endif
 endif
 export LCL_PLATFORM
+DBG_OPTIONS=
+ifeq ($(OS_TARGET),darwin)
+DBG_OPTIONS=-gw
+endif
 ifeq ($(FULL_TARGET),i386-linux)
 override TARGET_UNITS+=sqldblaz.pas
 endif
@@ -817,70 +821,70 @@ ifeq ($(FULL_TARGET),aarch64-darwin)
 override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),i386-linux)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),i386-go32v2)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),i386-win32)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),i386-os2)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),i386-freebsd)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),i386-beos)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),i386-haiku)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),i386-netbsd)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),i386-solaris)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),i386-qnx)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),i386-netware)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),i386-openbsd)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),i386-wdosx)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),i386-darwin)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),i386-emx)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),i386-watcom)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),i386-netwlibc)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),i386-wince)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),i386-embedded)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),i386-symbian)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),i386-nativent)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),i386-iphonesim)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),i386-android)
 override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
@@ -889,91 +893,91 @@ ifeq ($(FULL_TARGET),i386-aros)
 override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
 endif
 ifeq ($(FULL_TARGET),m68k-linux)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),m68k-freebsd)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),m68k-netbsd)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),m68k-amiga)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),m68k-atari)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),m68k-openbsd)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),m68k-palmos)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),m68k-embedded)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),powerpc-linux)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),powerpc-netbsd)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),powerpc-amiga)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),powerpc-macos)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),powerpc-darwin)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),powerpc-morphos)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),powerpc-embedded)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),powerpc-wii)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),powerpc-aix)
 override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
 endif
 ifeq ($(FULL_TARGET),sparc-linux)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),sparc-netbsd)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),sparc-solaris)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),sparc-embedded)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),x86_64-linux)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),x86_64-freebsd)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),x86_64-netbsd)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),x86_64-solaris)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),x86_64-openbsd)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),x86_64-darwin)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),x86_64-win64)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),x86_64-embedded)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),x86_64-iphonesim)
 override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
@@ -982,58 +986,58 @@ ifeq ($(FULL_TARGET),x86_64-dragonfly)
 override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
 endif
 ifeq ($(FULL_TARGET),arm-linux)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),arm-palmos)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),arm-darwin)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),arm-wince)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),arm-gba)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),arm-nds)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),arm-embedded)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),arm-symbian)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),arm-android)
 override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
 endif
 ifeq ($(FULL_TARGET),powerpc64-linux)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),powerpc64-darwin)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),powerpc64-embedded)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),powerpc64-aix)
 override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
 endif
 ifeq ($(FULL_TARGET),avr-embedded)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),armeb-linux)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),armeb-embedded)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),mips-linux)
 override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
 endif
 ifeq ($(FULL_TARGET),mipsel-linux)
-override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
+override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),mipsel-embedded)
 override COMPILER_OPTIONS+=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM)
@@ -2464,6 +2468,7 @@ endif
 ifeq ($(OS_SOURCE),openbsd)
 override FPCOPT+=-FD$(NEW_BINUTILS_PATH)
 override FPCMAKEOPT+=-FD$(NEW_BINUTILS_PATH)
+override FPMAKE_BUILD_OPT+=-FD$(NEW_BINUTILS_PATH)
 endif
 ifndef CROSSBOOTSTRAP
 ifneq ($(BINUTILSPREFIX),)
@@ -2476,6 +2481,7 @@ endif
 ifndef CROSSCOMPILE
 ifneq ($(BINUTILSPREFIX),)
 override FPCMAKEOPT+=-XP$(BINUTILSPREFIX)
+override FPMAKE_BUILD_OPT+=-XP$(BINUTILSPREFIX)
 endif
 endif
 ifdef UNITDIR
@@ -2574,6 +2580,9 @@ ifdef LINKSHARED
 endif
 ifdef OPT
 override FPCOPT+=$(OPT)
+endif
+ifdef FPMAKEBUILDOPT
+override FPMAKE_BUILD_OPT+=$(FPMAKEBUILDOPT)
 endif
 ifdef FPCOPTDEF
 override FPCOPT+=$(addprefix -d,$(FPCOPTDEF))
@@ -2756,7 +2765,7 @@ endif
 fpc_sourceinstall: distclean
 	$(MKDIR) $(INSTALL_SOURCEDIR)
 	$(COPYTREE) $(BASEDIR)/* $(INSTALL_SOURCEDIR)
-fpc_exampleinstall: $(addsuffix _distclean,$(TARGET_EXAMPLEDIRS))
+fpc_exampleinstall: $(EXAMPLEINSTALLTARGET) $(addsuffix _distclean,$(TARGET_EXAMPLEDIRS))
 ifdef HASEXAMPLES
 	$(MKDIR) $(INSTALL_EXAMPLEDIR)
 endif
@@ -2927,6 +2936,10 @@ ifdef AOUTEXT
 endif
 ifdef DEBUGSYMEXT
 	-$(DEL) *$(DEBUGSYMEXT)
+endif
+ifdef LOCALFPMAKEBIN
+	-$(DEL) $(LOCALFPMAKEBIN)
+	-$(DEL) $(FPMAKEBINOBJ)
 endif
 fpc_distclean: cleanall
 .PHONY: fpc_baseinfo

@@ -15,7 +15,7 @@ libc=y
 packages=rtl
 
 [compiler]
-options=-gs -gl -Sghi -O3 -dlcl$(LCL_PLATFORM)
+options=-gs -gl -Sghi -O3 -dlcl$(LCL_PLATFORM) $(DBG_OPTIONS)
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
 unitdir=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) \
           $(LAZDIR)/packager/units/$(CPU_TARGET)-$(OS_TARGET) \
@@ -30,6 +30,10 @@ targetdir=.
 [prerules]
 LAZDIR=../../..
 LHELP_OPT=
+DBG_OPTIONS=
+ifeq ($(OS_TARGET),darwin)
+DBG_OPTIONS=-gw
+endif
 
 # LCL Platform
 ifndef LCL_PLATFORM
