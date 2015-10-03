@@ -4269,6 +4269,7 @@ begin
   end;
   s:=s+'      $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) \'+e;
   s:=s+'      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))'+e;
+  s:=s+''+e;
   s:=s+'[prerules]'+e;
   s:=s+'# LCL Platform'+e;
   s:=s+'ifndef LCL_PLATFORM'+e;
