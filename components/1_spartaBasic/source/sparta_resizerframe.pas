@@ -580,10 +580,6 @@ begin
     // after resizing, TFrame is frozen in Windows OS
     // this is trick to workaraund IDE bug. Also for proper size for normal form
     TryBoundDesignedForm;
-
-    // for GTK2 resizing form (pClient is hidden under pBG)
-    pClient.SendToBack;
-    pClient.BringToFront;
   end;
 end;
 
@@ -678,6 +674,11 @@ begin
   DesignedForm.EndUpdate;
 
   HideSizeControls;
+  ShowSizeControls;
+
+  // for GTK2 resizing form (pClient is hidden under pBG)
+  pClient.SendToBack;
+  pClient.BringToFront;
 end;
 
 function TResizerFrame.DesignedWidthToScroll: Integer;
