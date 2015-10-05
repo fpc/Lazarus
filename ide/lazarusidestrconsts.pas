@@ -4640,7 +4640,8 @@ resourcestring
   lisEditorToolbar = 'Editor ToolBar';
   lisEditorToolbarHint = 'You may add here your favorite commands';
   lisConfigureEditorToolbar = 'Configure Toolbar';
-  lisEditorToolbarVisible = 'EditorToolbar is &visible';
+  lisEditorToolbarVisible = 'Editor Toolbar is &visible';
+  lisEditorToolbarSettings = 'Editor Toolbar Settings';
   lisPosition = 'Position';
 
   // components palette settings and list form
