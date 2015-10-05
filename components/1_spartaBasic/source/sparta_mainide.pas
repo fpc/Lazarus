@@ -516,19 +516,22 @@ begin
     if Form.LastActiveSourceWindow <> nil then
       SourceEditorWindows[Form.LastActiveSourceWindow].OnChangeBounds(nil);
 
-   // we need to correct ActiveEditor to right form
-   { commented because there were problems with QT (inactive form)
-   case TheMessage.msg of
-     LM_LBUTTONDOWN, LM_RBUTTONDOWN, LM_MBUTTONDOWN, LM_XBUTTONDOWN:
-       if Form.LastActiveSourceWindow <> nil then
-       begin
-         SourceEditorManagerIntf.ActiveSourceWindow := Form.LastActiveSourceWindow;
-         SourceEditorManagerIntf.ActiveEditor := Form.LastActiveSourceWindow.ActiveEditor;
-       end;
-   end;
-   }
+  // we need to correct ActiveEditor to right form
+  // this code works correctly on Windows platform 
+  // (is necessery for selecting controls after form resizing).
+  // in Linux platforms below code brings problems with QT (inactive form)
+  {$IFDEF WINDOWS}
+  case TheMessage.msg of
+    LM_LBUTTONDOWN, LM_RBUTTONDOWN, LM_MBUTTONDOWN, LM_XBUTTONDOWN:
+      if Form.LastActiveSourceWindow <> nil then
+      begin
+        SourceEditorManagerIntf.ActiveSourceWindow := Form.LastActiveSourceWindow;
+        SourceEditorManagerIntf.ActiveEditor := Form.LastActiveSourceWindow.ActiveEditor;
+      end;
+  end;
+  {$ENDIF}
 
-   FWndMethod(TheMessage);
+  FWndMethod(TheMessage);
 end;
 
 procedure TDesignFormData.SetPopupParent(AVal: TSourceEditorWindowInterface);
