@@ -1178,6 +1178,9 @@ resourcestring
   dlgEOFocusMessagesAfterCompilation = 'Focus messages after compilation';
   lisMaximumParallelProcesses0MeansDefault = 'Maximum parallel processes, 0 '
     +'means default (%s)';
+  lisShowFPCMessageLinesCompiled = 'Show FPC message "lines compiled"';
+  lisElevateTheMessagePriorityToAlwaysShowItByDefaultIt = 'Elevate the message'
+    +' priority to always show it (by default it has low priority "verbose")';
   lisMessagesWindow = 'Messages Window';
   lisCheckForDiskFileChangesViaContent = 'Check for disk file changes via content '
     +'rather than timestamp';
