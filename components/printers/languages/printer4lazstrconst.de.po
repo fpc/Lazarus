@@ -68,6 +68,10 @@ msgstr "Papiertyp"
 msgid "Portrait"
 msgstr "Hochformat"
 
+#: printer4lazstrconst.p4lrsprinterproperties
+msgid "Printer properties"
+msgstr ""
+
 #: printer4lazstrconst.p4lrsresolution
 msgid "Resolution"
 msgstr "Auflösung"
