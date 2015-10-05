@@ -6941,7 +6941,7 @@ begin
     // => disconnect first
     Layout:=IDEWindowCreators.SimpleLayoutStorage.ItemByForm(Self);
     if Layout<>nil then
-      Layout.SetForm(nil);
+      Layout.Form:=nil;
     Name := Name + '___' + IntToStr({%H-}PtrUInt(Pointer(Self)));
     CloseAction := caFree;
   end
