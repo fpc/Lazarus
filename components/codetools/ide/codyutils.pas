@@ -337,6 +337,8 @@ begin
   if CodePos<>nil then CodePos^:=CleanCodeXYPosition;
   SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
   if SrcEdit=nil then begin
+    if JumpToError then
+      IDEMessageDialog('No source editor','This function needs a Pascal source in the source editor.',mtError,[mbOk]);
     debugln(['CodyUtils.ParseTilCursor: no source editor']);
     exit(cupeNoSrcEditor);
   end;

@@ -915,6 +915,8 @@ components/codetools/ide/cody.pas svneol=native#text/pascal
 components/codetools/ide/cody.res -text
 components/codetools/ide/codycopydeclaration.pas svneol=native#text/plain
 components/codetools/ide/codyctrls.pas svneol=native#text/plain
+components/codetools/ide/codyfindoverloads.lfm svneol=native#text/plain
+components/codetools/ide/codyfindoverloads.pas svneol=native#text/plain
 components/codetools/ide/codyfrm.lfm svneol=native#text/plain
 components/codetools/ide/codyfrm.pas svneol=native#text/plain
 components/codetools/ide/codyidentifiersdlg.lfm svneol=native#text/plain

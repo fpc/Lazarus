@@ -445,6 +445,7 @@ function TPascalReaderTool.ExtractProcName(ProcNode: TCodeTreeNode;
 var
   ProcHeadNode: TCodeTreeNode;
   Part: String;
+  HasClassName: Boolean;
 begin
   Result:='';
   if [phpWithoutClassName,phpWithoutName]*Attr=
@@ -457,9 +458,10 @@ begin
   ProcHeadNode:=ProcNode.FirstChild;
   if (ProcHeadNode=nil) or (ProcHeadNode.StartPos<1) then exit;
   MoveCursorToNodeStart(ProcHeadNode);
+  HasClassName:=false;
   repeat
     ReadNextAtom;
-    if not AtomIsIdentifier then exit;
+    if not AtomIsIdentifier then break;
     if phpInUpperCase in Attr then
       Part:=GetUpAtom
     else
@@ -467,17 +469,24 @@ begin
     ReadNextAtom;
     if (CurPos.Flag<>cafPoint) then begin
       // end of method identifier is the proc name
-      if phpWithoutName in Attr then exit;
+      if phpWithoutName in Attr then break;
       if Result<>'' then Result:=Result+'.';
       Result:=Result+Part;
-      exit;
+      break;
     end;
     if not (phpWithoutClassName in Attr) then begin
       // in front of . is class name
       if Result<>'' then Result:=Result+'.';
       Result:=Result+Part;
+      HasClassName:=true;
     end;
   until false;
+  if (not HasClassName)
+  and ([phpWithoutClassName,phpAddClassName]*Attr=[phpAddClassName]) then begin
+    Part:=ExtractClassName(ProcNode,false,true);
+    if Part<>'' then
+      Result:=Part+'.'+Result;
+  end;
 end;
 
 function TPascalReaderTool.ExtractProcHead(ProcNode: TCodeTreeNode;

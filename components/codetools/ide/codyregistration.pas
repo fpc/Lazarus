@@ -38,6 +38,7 @@ uses
   PPUListDlg, AddAssignMethodDlg, AddWithBlockDlg,
   {$IFDEF EnableCodyExperiments}
   CodyCopyDeclaration,
+  CodyFindOverloads,
   {$ENDIF}
   CodyNodeInfoDlg, CodyFrm, DeclareVarDlg, CodyIdentifiersDlg, CodyMiscOptsFrame;
 
@@ -135,6 +136,12 @@ begin
   InitUnitDictionary;
   CreateSourceCommand(CmdCatCodeTools,'ShowUnitDictionary',
     crsShowUnitIdentifierDictionary,nil,@ShowUnitDictionaryDialog);
+
+  // Find overloads
+  {$IFDEF EnableCodyExperiments}
+  CreateSourceCommand(CmdCatCodeTools,'FindProcOverloads',
+    'Find Procedure/Method Overloads',nil,@ShowFindOverloadsClicked);
+  {$ENDIF}
 
   // Refactor menu - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
