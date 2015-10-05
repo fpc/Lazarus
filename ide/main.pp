@@ -1105,6 +1105,9 @@ begin
     AddHelp(['or ',NoSplashScreenOptShort]);
     AddHelp([BreakString(space+lisDoNotShowSplashScreen,75, 22)]);
     AddHelp(['']);
+    AddHelp([ForceNewInstanceOpt]);
+    AddHelp([BreakString(space+'Do not check if another IDE instance is already running', 75, 22)]);
+    AddHelp(['']);
     AddHelp([SkipLastProjectOpt]);
     AddHelp([BreakString(space+lisSkipLoadingLastProject, 75, 22)]);
     AddHelp(['']);
