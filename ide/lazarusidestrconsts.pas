@@ -180,6 +180,8 @@ resourcestring
   lisCmdLineLCLInterfaceSpecificOptions = 'LCL Interface specific options:';
   lisDoNotShowSplashScreen = 'Do not show splash screen';
   lisSkipLoadingLastProject = 'Skip loading last project';
+  lisDoNotCheckIfAnotherIDEInstanceIsAlreadyRunning = '%sDo not check if '
+    +'another IDE instance is already running';
   lisOverrideLanguage = 'Override language. For example --language=de.'+
     ' For possible values see files in the languages directory.';
   lissecondaryConfigDirectoryWhereLazarusSearchesFor = 'secondary config '+
