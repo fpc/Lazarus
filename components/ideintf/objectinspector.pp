@@ -3784,7 +3784,7 @@ begin
 
     ConfigStore.SetDeleteValue(Path+'ShowHints',FShowHints, True);
     ConfigStore.SetDeleteValue(Path+'AutoShow',FAutoShow, True);
-    ConfigStore.SetDeleteValue(Path+'CheckboxForBoolean',FCheckboxForBoolean, False);
+    ConfigStore.SetDeleteValue(Path+'CheckboxForBoolean',FCheckboxForBoolean, True);
     ConfigStore.SetDeleteValue(Path+'BoldNonDefaultValues',FBoldNonDefaultValues, True);
     ConfigStore.SetDeleteValue(Path+'DrawGridLines',FDrawGridLines, True);
     ConfigStore.SetDeleteValue(Path+'ShowGutter',FShowGutter, True);
