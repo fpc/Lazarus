@@ -92,8 +92,8 @@ uses
   BaseUnix,
 {$ENDIF}
   Classes, SysUtils, Process, Forms, Controls, Dialogs, LCLProc,
-  UTF8Process, FileUtil, LazFileUtils, LazUTF8, FileProcs,
-  IDECmdLine, LazConf, Splash, BaseIDEIntf;
+  UTF8Process, FileUtil, FileProcs, LazUTF8, LazFileUtils,
+  IDECmdLine, LazConf, Splash, BaseIDEIntf, IDEInstances;
   
 type
 
@@ -244,13 +244,22 @@ begin
   if FShowSplashOption then
     ShowSplash;
 
+  // we already handled IDEInstances, ignore it in lazarus EXE
+  if (FCmdLineParams.IndexOf(ForceNewInstanceOpt) = -1) then
+    FCmdLineParams.Add(ForceNewInstanceOpt);
+  // pass the AllowOpenLastProject parameter to lazarus EXE
+  if not LazIDEInstances.AllowOpenLastProject and
+     (FCmdLineParams.IndexOf(SkipLastProjectOpt) = -1)
+  then
+    FCmdLineParams.Add(SkipLastProjectOpt);
+
   // set primary config path
   PCP:=ExtractPrimaryConfigPath(FCmdLineParams);
   if PCP<>'' then
     SetPrimaryConfigPath(PCP);
 
   // get command line files
-  CmdLineFiles := ExtractCmdLineFilenames;
+  CmdLineFiles := LazIDEInstances.FilesToOpen;
   if CmdLineFiles<>nil then
   begin
     for i := 0 to CmdLineFiles.Count-1 do

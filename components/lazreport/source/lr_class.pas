@@ -2170,6 +2170,7 @@ end;
 destructor TExportFilters.Destroy;
 begin
   Clear;
+  FList.Free;
   inherited Destroy;
 end;
 

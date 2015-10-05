@@ -85,13 +85,22 @@ type
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
   end;
 
+  TColorPanelDelegate = objcclass(NSObject, NSWindowDelegateProtocol)
+  public
+    colorPanel: NSColorPanel;
+    ColorDialog: TColorDialog;
+    DontPickColorOnClose: Boolean;
+    // NSWindowDelegateProtocol
+    procedure windowWillClose(notification: NSNotification); message 'windowWillClose:';
+    //
+    procedure doPickColor; message 'doPickColor';
+    procedure pickColor; message 'pickColor'; // button action
+    procedure exit; message 'exit'; // button action
+  end;
 
 implementation
 
-
-
 { TCocoaWSFileDialog }
-
 
 {------------------------------------------------------------------------------
   Method:  TCocoaWSFileDialog.ShowModal
@@ -235,19 +244,74 @@ end;  {TCocoaWSFileDialog.ShowModal}
  ------------------------------------------------------------------------------}
 class procedure TCocoaWSColorDialog.ShowModal(const ACommonDialog: TCommonDialog);
 var
-  ColorDialog: TColorDialog;
+  colorDelegate: TColorPanelDelegate;
+  ColorDialog: TColorDialog absolute ACommonDialog;
+  colorPanel: NSColorPanel;
+  session: NSModalSession;
+  inColor: RGBColor = (red: 128; green: 128; blue: 128);
+  outColor: RGBColor = (red: 0; green: 0; blue: 0);
+  //point: Point;  = {0, 0};
+  // accessory view
+  accessoryView: NSView;
+  lRect: NSRect;
+  okButton, cancelButton: NSButton;
 begin
   {$IFDEF VerboseWSClass}
   DebugLn('TCocoaWSColorDialog.ShowModal for ' + ACommonDialog.Name);
   {$ENDIF}
 
   ACommonDialog.UserChoice := mrCancel;
-  ColorDialog := ACommonDialog as TColorDialog;
+
+  colorPanel := NSColorPanel.sharedColorPanel();
+  colorPanel.setColor(ColorToNSColor(ColorDialog.Color));
+
+  colorDelegate := TColorPanelDelegate.alloc.init();
+  colorDelegate.colorPanel := colorPanel;
+  colorDelegate.ColorDialog := ColorDialog;
+
+  // setup panel and its accessory view
+  lRect := GetNSRect(0, 0, 220, 30);
+  accessoryView := NSView.alloc.initWithFrame(lRect);
+
+  lRect := GetNSRect(110, 4, 110-8, 24);
+  okButton := NSButton.alloc.initWithFrame(lRect);
+  okButton.setButtonType(NSMomentaryPushInButton);
+  okButton.setBezelStyle(NSRoundedBezelStyle);
+  okButton.setTitle(NSStringUtf8('Pick'));
+  okButton.setAction(objcselector('pickColor'));
+  okButton.setTarget(colorDelegate);
+
+  lRect := GetNSRect(8, 4, 110-8, 24);
+  cancelButton := NSButton.alloc.initWithFrame(lRect);
+  cancelButton.setButtonType(NSMomentaryPushInButton);
+  cancelButton.setBezelStyle(NSRoundedBezelStyle);
+  cancelButton.setTitle(NSStringUtf8('Cancel'));
+  cancelButton.SetAction(objcselector('exit'));
+  cancelButton.setTarget(colorDelegate);
+
+  accessoryView.addSubview(okButton.autorelease);
+  accessoryView.addSubview(cancelButton.autorelease);
+
+  colorPanel.setDelegate(colorDelegate);
+  colorPanel.setAccessoryView(accessoryView.autorelease);
+  colorPanel.setShowsAlpha(True);
+  colorPanel.setDefaultButtonCell(okButton.cell);
+
+  // load user settings
+  (*NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  NSString *color = [defaults stringForKey:@"startColor"];
+  if (color != nil) {
+    [panel setColor:[NSColor colorFromHex:color]];
+  }
+  [panel setMode:[defaults integerForKey:@"mode"]]; // will be 0 if not set, wich is NSGrayModeColorPanel
+*)
+
+  // show panel
+  colorPanel.makeKeyAndOrderFront(colorDelegate);
+  NSApp.runModalForWindow(colorPanel);
 end;
 
-
 { TCocoaWSFontDialog }
-
 
 {------------------------------------------------------------------------------
   Method:  TCocoaWSFontDialog.ShowModal
@@ -265,6 +329,38 @@ begin
 
   AFontDialog := ACommonDialog as TFontDialog;
   AFontDialog.UserChoice := mrCancel;
+end;
+
+{ TColorPanelDelegate }
+
+procedure TColorPanelDelegate.windowWillClose(notification: NSNotification);
+begin
+  if not DontPickColorOnClose then
+  begin
+    ColorDialog.UserChoice := mrOk;
+    doPickColor();
+  end;
+  NSApp.stopModal();
+end;
+
+procedure TColorPanelDelegate.doPickColor();
+begin
+  ColorDialog.Color := NSColorToRGB(colorPanel.color);
+end;
+
+procedure TColorPanelDelegate.pickColor();
+begin
+  ColorDialog.UserChoice := mrCancel;
+  DontPickColorOnClose := True;
+  doPickColor();
+  exit();
+end;
+
+procedure TColorPanelDelegate.exit();
+begin
+  ColorDialog.UserChoice := mrOk;
+  DontPickColorOnClose := True;
+  colorPanel.close();
 end;
 
 end.

@@ -1920,12 +1920,9 @@ begin
 end;
 
 procedure TIDEMenuCommand.SetVisible(const AValue: Boolean);
-var
-  xBtn: TIDEToolButton;
 begin
   inherited SetVisible(AValue);
-  for xBtn in ToolButtons do
-    xBtn.Visible := AValue;
+  //do not set visible for tool buttons, you usually only want to hide menu item and keep tool buttons visible
 end;
 
 procedure TIDEMenuCommand.ToolButtonAdded(const aBtn: TIDEToolButton);

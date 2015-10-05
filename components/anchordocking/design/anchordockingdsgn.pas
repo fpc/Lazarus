@@ -2,20 +2,20 @@
   This source is only used to compile and install the package.
  }
 
-unit AnchorDockingDsgn; 
+unit AnchorDockingDsgn;
 
 interface
 
 uses
-  RegisterAnchorDocking, LazarusPackageIntf;
+  RegisterAnchorDocking, AnchorDesktopOptions, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('RegisterAnchorDocking', @RegisterAnchorDocking.Register); 
-end; 
+  RegisterUnit('RegisterAnchorDocking', @RegisterAnchorDocking.Register);
+end;
 
 initialization
-  RegisterPackage('AnchorDockingDsgn', @Register); 
+  RegisterPackage('AnchorDockingDsgn', @Register);
 end.

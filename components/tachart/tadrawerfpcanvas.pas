@@ -59,6 +59,7 @@ type
     procedure Polyline(
       const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
     procedure PrepareSimplePen(AColor: TChartColor);
+    procedure PutPixel(AX, AY: Integer; AColor: TChartColor);
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
       AStartAngle16Deg, AAngleLength16Deg: Integer);
@@ -201,6 +202,11 @@ begin
   FCanvas.Pen.FPColor := FChartColorToFPColorFunc(AColor);
   FCanvas.Pen.Width := 1;
   FCanvas.Pen.Style := psSolid;
+end;
+
+procedure TFPCanvasDrawer.PutPixel(AX, AY: Integer; AColor: TChartColor);
+begin
+  FCanvas.Colors[AX, AY] := FChartColorToFPColorFunc(AColor);
 end;
 
 procedure TFPCanvasDrawer.RadialPie(

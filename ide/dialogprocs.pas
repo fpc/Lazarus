@@ -350,9 +350,9 @@ begin
         if (lbfQuiet in Flags) then begin
           Result:=mrCancel;
         end else begin
-          Result:=MessageDlg(lisXMLError,
+          Result:=IDEMessageDialog(lisXMLError,
             Format(lisXMLParserErrorInFileError, [Filename, LineEnding, E.Message]),
-              mtError, [mbCancel], 0);
+              mtError, [mbCancel]);
         end;
       end;
     end;
@@ -381,9 +381,9 @@ begin
       Config.WriteToStream(ms);
     except
       on E: Exception do begin
-        Result:=MessageDlg(lisXMLError,
+        Result:=IDEMessageDialog(lisXMLError,
           Format(lisUnableToWriteXmlStreamToError, [Filename, LineEnding, E.Message]),
-            mtError, [mbCancel], 0);
+            mtError, [mbCancel]);
       end;
     end;
     ms.Position:=0;

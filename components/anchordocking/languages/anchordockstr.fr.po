@@ -231,10 +231,6 @@ msgstr "Revenir à la disposition par défaut"
 msgid "right"
 msgstr "droite"
 
-#: anchordockstr.adrssavelayoutonclose
-msgid "Save layout on close"
-msgstr "Enregistrer la disposition à la fermeture"
-
 #: anchordockstr.adrssavewindowlayoutasdefault
 msgid "Save window layout as default"
 msgstr "Enregistrer la disposition comme celle par défaut"
@@ -294,3 +290,4 @@ msgstr "Pour utiliser l'amarrage par ancres vous devez tout d'abord désinstalle
 #: anchordockstr.adrsundock
 msgid "Undock"
 msgstr "Désamarrer"
+

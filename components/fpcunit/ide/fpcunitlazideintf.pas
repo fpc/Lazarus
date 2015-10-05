@@ -170,7 +170,6 @@ begin
   // add
   AProject.AddPackageDependency('FCL');
   AProject.AddPackageDependency('LCL');
-  AProject.AddPackageDependency('FPCUnitTestRunner');
   
   // compiler options
   AProject.LazCompilerOptions.UseLineInfoUnit:=true;
@@ -355,7 +354,6 @@ begin
 
   // add FCL dependency
   AProject.AddPackageDependency('FCL');
-  AProject.AddPackageDependency('FPCUnitConsoleRunner');
 
   // compiler options
   AProject.LazCompilerOptions.UseLineInfoUnit:=true;

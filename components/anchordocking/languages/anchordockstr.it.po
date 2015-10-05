@@ -233,10 +233,6 @@ msgstr "Ripristina la disposizione predefinita"
 msgid "right"
 msgstr "destra"
 
-#: anchordockstr.adrssavelayoutonclose
-msgid "Save layout on close"
-msgstr "Salva la disposizione della finestra alla chiusura"
-
 #: anchordockstr.adrssavewindowlayoutasdefault
 msgid "Save window layout as default"
 msgstr "Salva la disposizione della finestra come default"

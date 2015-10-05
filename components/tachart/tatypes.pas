@@ -93,7 +93,7 @@ type
   TSeriesPointerStyle = (
     psNone, psRectangle, psCircle, psCross, psDiagCross, psStar,
     psLowBracket, psHighBracket, psLeftBracket, psRightBracket, psDiamond,
-    psTriangle, psLeftTriangle, psRightTriangle, psVertBar, psHorBar);
+    psTriangle, psLeftTriangle, psRightTriangle, psVertBar, psHorBar, psPoint);
 
   { TSeriesPointer }
 
@@ -428,10 +428,10 @@ const
   DRAW_STRINGS: array [TSeriesPointerStyle] of String = (
     // psNone, psRectangle, psCircle, psCross, psDiagCross, psStar,
     // psLowBracket, psHighBracket, psLeftBracket, psRightBracket, psDiamond,
-    // psTriangle, psLeftTriangle, psRightTriangle, psVertBar, psHorBar
+    // psTriangle, psLeftTriangle, psRightTriangle, psVertBar, psHorBar, psPoint
     '', '17931', '', '28 46', '19 73', '28 46 19 73',
     '41236', '47896', '87412', '89632', '84268',
-    '183', '842', '862', '82', '46');
+    '183', '842', '862', '82', '46', '');
 begin
   ADrawer.Brush := Brush;
   if (ocBrush in OverrideColor) and (AColor <> clTAColor) then
@@ -440,6 +440,9 @@ begin
   if (ocPen in OverrideColor) and (AColor <> clTAColor) then
     ADrawer.SetPenParams(Pen.Style, AColor);
 
+  if Style = psPoint then
+    ADrawer.PutPixel(ACenter.X, ACenter.Y, Pen.Color)
+  else
   if Style = psCircle then
     ADrawer.Ellipse(
       ACenter.X - ASize.X, ACenter.Y - ASize.Y,

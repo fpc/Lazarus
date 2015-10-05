@@ -84,7 +84,6 @@ resourcestring
   adrsSplitterWidth = 'Splitter width';
   adrsSplitterThickness = 'Splitter thickness';
   adrsScaleOnResize = 'Scale on resize';
-  adrsSaveLayoutOnClose = 'Save layout on close';
   adrsScaleSubSitesWhenASiteIsResized =
     'Scale sub sites when a site is resized';
   adrsShowHeaderCaptions = 'Show header captions';

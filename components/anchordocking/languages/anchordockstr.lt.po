@@ -247,10 +247,6 @@ msgstr "Atstatyti numatytąjį maketą"
 msgid "right"
 msgstr "dešinysis"
 
-#: anchordockstr.adrssavelayoutonclose
-msgid "Save layout on close"
-msgstr ""
-
 #: anchordockstr.adrssavewindowlayoutasdefault
 msgid "Save window layout as default"
 msgstr "Lango maketą įrašyti kaip numatytąjį"

@@ -1,7 +1,7 @@
 object IDETodoWindow: TIDETodoWindow
-  Left = 263
+  Left = 415
   Height = 300
-  Top = 409
+  Top = 429
   Width = 643
   ActiveControl = lvTodo
   Caption = 'IDETodoWindow'
@@ -12,23 +12,16 @@ object IDETodoWindow: TIDETodoWindow
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '1.1'
-  object StatusBar: TStatusBar
-    Left = 0
-    Height = 22
-    Top = 278
-    Width = 643
-    Panels = <>
-  end
+  LCLVersion = '1.5'
   object lvTodo: TListView
-    Left = 0
-    Height = 230
-    Top = 48
-    Width = 643
+    Left = 6
+    Height = 205
+    Top = 54
+    Width = 631
     Align = alClient
+    BorderSpacing.Around = 6
     Columns = <    
       item
-        AutoSize = False
         Caption = 'Done'
         Width = 100
       end    
@@ -37,27 +30,22 @@ object IDETodoWindow: TIDETodoWindow
         Width = 700
       end    
       item
-        AutoSize = False
         Caption = 'Priority'
         Width = 100
       end    
       item
-        AutoSize = False
         Caption = 'Module'
         Width = 100
       end    
       item
-        AutoSize = False
         Caption = 'Line'
         Width = 100
       end    
       item
-        AutoSize = False
         Caption = 'Owner'
         Width = 100
       end    
       item
-        AutoSize = False
         Caption = 'Category'
         Width = 100
       end>
@@ -84,7 +72,7 @@ object IDETodoWindow: TIDETodoWindow
     ShowHint = True
     TabOrder = 1
     object tbOptions: TToolButton
-      Left = 199
+      Left = 209
       Top = 2
       AllowAllUp = True
       AutoSize = True
@@ -92,7 +80,7 @@ object IDETodoWindow: TIDETodoWindow
       Visible = False
     end
     object tbPrint: TToolButton
-      Left = 152
+      Left = 162
       Top = 2
       AutoSize = True
       Caption = 'Print'
@@ -105,17 +93,35 @@ object IDETodoWindow: TIDETodoWindow
       AutoSize = True
     end
     object tbGoto: TToolButton
-      Left = 56
+      Left = 61
       Top = 2
       Action = acGoto
       AutoSize = True
     end
     object tbExport: TToolButton
-      Left = 103
+      Left = 108
       Top = 2
       Action = acExport
       AutoSize = True
     end
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 29
+    Top = 265
+    Width = 631
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    HelpButton.OnClick = HelpButtonClick
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 2
+    ShowButtons = [pbClose, pbHelp]
+    ShowBevel = False
   end
   object ActionList: TActionList
     left = 414

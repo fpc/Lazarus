@@ -13,7 +13,7 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
   object InfoMemo: TMemo
     Left = 0
     Height = 144
-    Top = 332
+    Top = 329
     Width = 675
     Align = alBottom
     Lines.Strings = (
@@ -27,25 +27,25 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
     Cursor = crVSplit
     Left = 0
     Height = 5
-    Top = 327
+    Top = 324
     Width = 675
     Align = alBottom
     ResizeAnchor = akBottom
   end
   object Panel1: TPanel
     Left = 0
-    Height = 327
+    Height = 324
     Top = 0
     Width = 675
     Align = alClient
     BevelOuter = bvNone
     Caption = 'Panel1'
-    ClientHeight = 327
+    ClientHeight = 324
     ClientWidth = 675
     TabOrder = 0
     object LvlGraphControl1: TLvlGraphControl
       Left = 199
-      Height = 327
+      Height = 324
       Top = 0
       Width = 476
       Align = alClient
@@ -64,11 +64,10 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
     end
     object PkgTreeView: TTreeView
       Left = 0
-      Height = 327
+      Height = 324
       Top = 0
       Width = 194
       Align = alLeft
-      DefaultItemHeight = 18
       PopupMenu = PkgPopupMenu
       ReadOnly = True
       TabOrder = 0
@@ -79,27 +78,28 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
     end
     object Splitter1: TSplitter
       Left = 194
-      Height = 327
+      Height = 324
       Top = 0
       Width = 5
     end
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 26
-    Top = 482
+    Height = 29
+    Top = 479
     Width = 663
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     OKButton.OnClick = OKButtonClick
     HelpButton.Name = 'HelpButton'
     HelpButton.DefaultCaption = True
+    HelpButton.OnClick = HelpButtonClick
     CloseButton.Name = 'CloseButton'
     CloseButton.DefaultCaption = True
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
     TabOrder = 3
-    ShowButtons = [pbOK]
+    ShowButtons = [pbOK, pbHelp]
     ShowBevel = False
   end
   object PkgPopupMenu: TPopupMenu

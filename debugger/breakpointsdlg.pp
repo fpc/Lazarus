@@ -928,8 +928,9 @@ var
   CurBreakPoint: TIDEBreakPoint;
   Msg: String;
   List: TList;
-  n: Integer;
+  n, Idx: Integer;
 begin
+  Idx := lvBreakPoints.ItemIndex;
   Item:=lvBreakPoints.Selected;
   if Item = nil then exit;
 
@@ -950,25 +951,29 @@ begin
   if lvBreakPoints.SelCount = 1
   then begin
     TBaseBreakPoint(Item.Data).ReleaseReference;
-    Exit;
-  end;
+  end
+  else begin
+    List := TList.Create;
+    for n := 0 to lvBreakPoints.Items.Count - 1 do
+    begin
+      Item := lvBreakPoints.Items[n];
+      if Item.Selected
+      then List.Add(Item.Data);
+    end;
 
-  List := TList.Create;
-  for n := 0 to lvBreakPoints.Items.Count - 1 do
-  begin
-    Item := lvBreakPoints.Items[n];
-    if Item.Selected
-    then List.Add(Item.Data);
+    lvBreakPoints.BeginUpdate;
+    try
+      for n := 0 to List.Count - 1 do
+        TBaseBreakPoint(List[n]).ReleaseReference;
+    finally
+      lvBreakPoints.EndUpdate;
+    end;
+    List.Free;
   end;
-
-  lvBreakPoints.BeginUpdate;
-  try
-    for n := 0 to List.Count - 1 do
-      TBaseBreakPoint(List[n]).ReleaseReference;
-  finally
-    lvBreakPoints.EndUpdate;
-  end;
-  List.Free;
+  if Idx > lvBreakPoints.Items.Count - 1 then
+    Idx := lvBreakPoints.Items.Count - 1;
+  if Idx >= 0 then
+    lvBreakPoints.ItemIndex := Idx;
 end;
 
 procedure TBreakPointsDlg.JumpToCurrentBreakPoint;

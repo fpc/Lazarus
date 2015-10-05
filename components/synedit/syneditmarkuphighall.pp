@@ -147,6 +147,7 @@ type
     procedure DoTopLineChanged(OldTopLine : Integer); override;
     procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); override;
     procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
+    procedure DoEnabledChanged(Sender: TObject); override;
     procedure DoTextChanged(StartLine, EndLine, ACountDiff: Integer); override; // 1 based
     procedure DoVisibleChanged(AVisible: Boolean); override;
     function  HasVisibleMatch: Boolean; // does not check, if in visible line range. Only Count and DideSingleMatch
@@ -1966,6 +1967,11 @@ begin
   else
     SendLineInvalidation;
   FMarkupEnabled := MarkupInfo.IsEnabled;
+end;
+
+procedure TSynEditMarkupHighlightAllBase.DoEnabledChanged(Sender: TObject);
+begin
+  Invalidate;
 end;
 
 function TSynEditMarkupHighlightAllBase.GetMatchCount: Integer;

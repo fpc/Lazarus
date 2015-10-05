@@ -93,6 +93,9 @@ type
     procedure SetDeleteValue(const APath: String; AValue, DefValue: Integer);
     procedure SetValue(const APath: String; AValue: Boolean);
     procedure SetDeleteValue(const APath: String; AValue, DefValue: Boolean);
+    procedure GetValue(const APath: String; out ARect: TRect;
+                       const ADefault: TRect);
+    procedure SetDeleteValue(const APath: String; const AValue, DefValue: TRect);
     procedure SetExtendedValue(const APath: String; const AValue: extended);
     procedure SetDeleteExtendedValue(const APath: String;
                                      const AValue, DefValue: extended);
@@ -257,6 +260,15 @@ begin
   Result := StrToIntDef(GetValue(APath, IntToStr(ADefault)),ADefault);
 end;
 
+procedure TXMLConfig.GetValue(const APath: String; out ARect: TRect;
+  const ADefault: TRect);
+begin
+  ARect.Left:=GetValue(APath+'Left',ADefault.Left);
+  ARect.Top:=GetValue(APath+'Top',ADefault.Top);
+  ARect.Right:=GetValue(APath+'Right',ADefault.Right);
+  ARect.Bottom:=GetValue(APath+'Bottom',ADefault.Bottom);
+end;
+
 function TXMLConfig.GetValue(const APath: String; ADefault: Boolean): Boolean;
 var
   s: String;
@@ -325,6 +337,15 @@ begin
     DeleteValue(APath)
   else
     SetValue(APath,AValue);
+end;
+
+procedure TXMLConfig.SetDeleteValue(const APath: String; const AValue,
+  DefValue: TRect);
+begin
+  SetDeleteValue(APath+'Left',AValue.Left,DefValue.Left);
+  SetDeleteValue(APath+'Top',AValue.Top,DefValue.Top);
+  SetDeleteValue(APath+'Right',AValue.Right,DefValue.Right);
+  SetDeleteValue(APath+'Bottom',AValue.Bottom,DefValue.Bottom);
 end;
 
 procedure TXMLConfig.SetValue(const APath: String; AValue: Boolean);

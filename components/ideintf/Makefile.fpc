@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for IDEIntf 1.0
 #
-#   This file was generated on 14-2-15
+#   This file was generated on 1-10-15
 
 [package]
 name=ideintf
@@ -12,7 +12,7 @@ version=1.0
 unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
 unitdir=../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) .
 includedir=images
-options= -MObjFPC -Scghi -O1 -g -gl -l -vi- -vewnhbq -dLCL -dLCL$(LCL_PLATFORM)
+options= -MObjFPC -Scghi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 
 [target]
 units=ideintf.pas
@@ -43,6 +43,11 @@ endif
 endif
 endif
 export LCL_PLATFORM
+
+DBG_OPTIONS=
+ifeq ($(OS_TARGET),darwin)
+DBG_OPTIONS=-gw
+endif
 
 [rules]
 .PHONY: cleartarget compiled all

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-01-27 16:27+0100\n"
+"PO-Revision-Date: 2015-09-29 18:32+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "Language: de\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.7.5\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -419,7 +419,7 @@ msgstr "Löschen?"
 
 #: objinspstrconsts.oischangeclass
 msgid "Change Class ..."
-msgstr ""
+msgstr "Ändere Klasse ..."
 
 #: objinspstrconsts.oischangeparent
 msgid "Change Parent"
@@ -498,9 +498,8 @@ msgid "Delete selected field(s)"
 msgstr "Gewählte(s) Feld(er) löschen"
 
 #: objinspstrconsts.oisdlinesdchars
-#, fuzzy,badformat
 msgid "%d lines, %d chars"
-msgstr "% Zeilen, % Zeichen"
+msgstr "%d Zeilen, %d Zeichen"
 
 #: objinspstrconsts.oisenumeration
 msgid "Enumeration"
@@ -698,7 +697,7 @@ msgstr "Grafik speichern unter"
 
 #: objinspstrconsts.oispressakey
 msgid "Press a key ..."
-msgstr ""
+msgstr "Drücken Sie eine Taste ..."
 
 #: objinspstrconsts.oisproperties
 msgid "Properties"
@@ -870,9 +869,8 @@ msgid "First"
 msgstr "Erster"
 
 #: objinspstrconsts.oistdactdatasetinsertheadline
-#, fuzzy,badformat
 msgid "&Insert"
-msgstr "%Einfügen"
+msgstr "E&infügen"
 
 #: objinspstrconsts.oistdactdatasetinserthint
 msgctxt "objinspstrconsts.oistdactdatasetinserthint"
@@ -1573,4 +1571,3 @@ msgstr "Tab nach links bewegen"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Tab nach rechts bewegen"
-

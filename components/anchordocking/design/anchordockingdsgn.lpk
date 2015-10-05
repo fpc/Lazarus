@@ -19,12 +19,20 @@
     <License Value="GPL2 as the IDE
 "/>
     <Version Minor="5"/>
-    <Files Count="1">
+    <Files Count="3">
       <Item1>
         <Filename Value="registeranchordocking.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="RegisterAnchorDocking"/>
       </Item1>
+      <Item2>
+        <Filename Value="registeranchordocking.lfm"/>
+        <Type Value="LFM"/>
+      </Item2>
+      <Item3>
+        <Filename Value="anchordesktopoptions.pas"/>
+        <UnitName Value="AnchorDesktopOptions"/>
+      </Item3>
     </Files>
     <RequiredPkgs Count="2">
       <Item1>

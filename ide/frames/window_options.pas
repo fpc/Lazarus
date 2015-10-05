@@ -77,7 +77,6 @@ type
     FLayout: TSimpleWindowLayout;
     FDivider: TSimpleWindowLayoutDividerPos;
     FShowSimpleLayout: boolean;
-    FLayoutChanged: boolean;
     procedure EnableGeometryEdits(aEnable: Boolean);
     function GetPlacementRadioButtons(APlacement: TIDEWindowPlacement): TRadioButton;
     procedure SetLayout(const AValue: TSimpleWindowLayout);
@@ -151,7 +150,7 @@ begin
     ProjectDirInIdeTitleCheckBox.Checked:=IDEProjectDirectoryInIdeTitle;
   end;
 
-  FLayouts.Assign(IDEWindowCreators.SimpleLayoutStorage, False, True, True);
+  FLayouts.CopyItemsFrom(IDEWindowCreators.SimpleLayoutStorage);
 
   if FShowSimpleLayout then begin
     // Window Positions
@@ -213,15 +212,12 @@ begin
     lblWindowPosition.Parent:=nil;
     WindowPositionsPanel.Parent:=nil;
   end;
-
-  FLayoutChanged := False;
 end;
 
 procedure TWindowOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   SaveLayout;
-  FLayouts.Assign(IDEWindowCreators.SimpleLayoutStorage, True, True, False);
-  IDEWindowCreators.SimpleLayoutStorage.Assign(FLayouts, False, False, True);
+  IDEWindowCreators.SimpleLayoutStorage.CopyItemsFrom(FLayouts);
 
   with (AOptions as TEnvironmentOptions).Desktop do
   begin
@@ -235,9 +231,6 @@ begin
     AutoAdjustIDEHeightFullCompPal := AutoAdjustIDEHeightFullCompPalCheckBox.Checked;
     IDEProjectDirectoryInIdeTitle:=ProjectDirInIdeTitleCheckBox.Checked;
   end;
-
-  if FLayoutChanged then
-    IDEWindowCreators.RestoreSimpleLayout;
 end;
 
 function TWindowOptionsFrame.GetPlacementRadioButtons(
@@ -347,7 +340,6 @@ begin
     end;
     Layout.ApplyDivider(True);
   end;
-  FLayoutChanged := True;
 end;
 
 procedure TWindowOptionsFrame.EnableGeometryEdits(aEnable: Boolean);

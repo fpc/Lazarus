@@ -390,6 +390,10 @@ msgstr "Vain luettavissa"
 msgid "Lowercase, first letter up"
 msgstr "Ensimmäinen kirjain iso muut pieniä"
 
+#: lazarusidestrconsts.dlgactivedesktop
+msgid "active"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddassignmentoperator
 msgid "Add assignment operator :="
 msgstr "Lisää := operaattori (saa arvokseen) "
@@ -633,6 +637,16 @@ msgstr "Poista automaattisesti tyhjät metodit"
 msgid "Auto rename file lowercase"
 msgstr "Muuta nimi pieniksi kirjaimiksi"
 
+#: lazarusidestrconsts.dlgautosaveactivedesktop
+msgid "Auto save active desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgautosaveactivedesktophint
+msgid ""
+"Save active desktop on IDE close\n"
+"Save debug desktop on IDE close and debug end\n"
+msgstr ""
+
 #: lazarusidestrconsts.dlgavailableforms
 msgid "Available forms:"
 msgstr "Käytettävissä olevat lomakkeet:"
@@ -709,6 +723,18 @@ msgstr "Sulkujen korostus"
 #: lazarusidestrconsts.dlgbracketmatchgroup
 msgid "Matching bracket pairs"
 msgstr "Yhteensopivat sulkuparit"
+
+#: lazarusidestrconsts.dlgcannotdeleteactivedesktop
+msgid "You cannot delete the active desktop."
+msgstr ""
+
+#: lazarusidestrconsts.dlgcannotdeletedebugdesktop
+msgid "You cannot delete debug desktop."
+msgstr ""
+
+#: lazarusidestrconsts.dlgcannotusedockedundockeddesktop
+msgid "You cannot use docked desktop in undocked environment and vice versa."
+msgstr ""
 
 #: lazarusidestrconsts.dlgcasesensitive
 msgid "&Case sensitive"
@@ -821,10 +847,6 @@ msgstr "Lomake saattaa tarvita paketin toimiakseen. Asenna se automaattisesti."
 #: lazarusidestrconsts.dlgchscodetempl
 msgid "Choose code template file (*.dci)"
 msgstr "Valitse koodimallinetiedosto (*.dci)"
-
-#: lazarusidestrconsts.dlgcloseanduseselecteddesktop
-msgid "Close and use selected desktop"
-msgstr ""
 
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
@@ -1180,7 +1202,7 @@ msgid "User defined extension (.pp.xxx)"
 msgstr "Käyttäjän määrittämä tarkennin (.pp.xxx)"
 
 #: lazarusidestrconsts.dlgdebugdesktop
-msgid "debug desktop"
+msgid "debug"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
@@ -1216,7 +1238,15 @@ msgid "Menus - "
 msgstr "Valikot -"
 
 #: lazarusidestrconsts.dlgdesktopname
-msgid "Desktop name:"
+msgid "Desktop name"
+msgstr ""
+
+#: lazarusidestrconsts.dlgdesktopsexported
+msgid "%d desktop(s) successfully exported to \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgdesktopsimported
+msgid "%d desktop(s) successfully imported from \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
@@ -1841,6 +1871,10 @@ msgstr "Solmu"
 msgid "Processing Instruction"
 msgstr "Toimintaohjeet"
 
+#: lazarusidestrconsts.dlgforceuniqueinstancemodalerror
+msgid "The running Lazarus instance cannot accept any files."
+msgstr ""
+
 #: lazarusidestrconsts.dlgforecolor
 msgid "Foreground"
 msgstr "Edusta"
@@ -1892,6 +1926,10 @@ msgstr "Generoi koodi gprof:ia varten"
 #: lazarusidestrconsts.dlggrabbercolor
 msgid "Grabber color"
 msgstr "Valitun komponentin väri"
+
+#: lazarusidestrconsts.dlggrayeddesktopsundocked
+msgid "Grayed desktops are for undocked environment."
+msgstr ""
 
 #: lazarusidestrconsts.dlggridcolor
 msgid "Grid color"
@@ -2071,6 +2109,12 @@ msgstr "Passiivinen $IFDEF solmu"
 
 #: lazarusidestrconsts.dlgifdefnodetmpactive
 msgid "Included mixed state $IFDEF node"
+msgstr ""
+
+#: lazarusidestrconsts.dlgimportdesktopexists
+msgid ""
+"A desktop with the same name already exists.\n"
+"Please confirm the desktop name:\n"
 msgstr ""
 
 #: lazarusidestrconsts.dlgincludesystemvariables
@@ -2727,6 +2771,22 @@ msgstr ""
 msgid "Enable multi caret for column selection"
 msgstr ""
 
+#: lazarusidestrconsts.dlgmultipleinstances
+msgid "Multiple Lazarus instances"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmultipleinstances_alwaysstartnew
+msgid "always start a new instance"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmultipleinstances_forcesingleinstance
+msgid "do not allow multiple instances"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmultipleinstances_openfilesinrunning
+msgid "open files in a running instance"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmultiselect
 msgid "Multi Select"
 msgstr "Monivalinta"
@@ -3021,7 +3081,9 @@ msgid "Property Name"
 msgstr "Ominaisuuden nimi"
 
 #: lazarusidestrconsts.dlgqopenlastprj
-msgid "Open last project at start"
+#, fuzzy
+#| msgid "Open last project at start"
+msgid "Open last project and packages at start"
 msgstr "Avaa viimeksi käytetty projekti Lazaruksen käynnistyessä"
 
 #: lazarusidestrconsts.dlgqshowborderspacing
@@ -3092,6 +3154,18 @@ msgstr "Kuminauhojen luonti"
 msgid "Rubberband Selection"
 msgstr "Kuminauhojen valinta"
 
+#: lazarusidestrconsts.dlgrunninginstancemodalerror
+msgid ""
+"The running Lazarus instance cannot accept any files.\n"
+"Do you want to open them in a new IDE instance?\n"
+"\n"
+"%s\n"
+msgstr ""
+
+#: lazarusidestrconsts.dlgrunninginstancenotrespondingerror
+msgid "Lazarus instance is running but not responding."
+msgstr ""
+
 #: lazarusidestrconsts.dlgrunodisplay
 msgid "Display (not for win32, e.g. 198.112.45.11:0, x.org:1, hydra:0.1)"
 msgstr "Näyttö (ei win32:lle, esim. 198.112.45.11:0, x.org:1, hydra:0.1)"
@@ -3120,10 +3194,6 @@ msgstr "Käyttäjän määrittelemät"
 #: lazarusidestrconsts.dlgrunparameters
 msgid "Run Parameters"
 msgstr "Suoritusaikaiset parametrit"
-
-#: lazarusidestrconsts.dlgsavecurrentdesktop
-msgid "Save current desktop"
-msgstr ""
 
 #: lazarusidestrconsts.dlgsavecurrentdesktopas
 msgid "Save current desktop as"
@@ -3194,13 +3264,13 @@ msgstr ""
 msgid "Select all child controls together with their parent."
 msgstr "Valitse kaikki lapsikontrollit emokontrollin kanssa."
 
-#: lazarusidestrconsts.dlgselecteddesktop
-msgid "Selected desktop:"
-msgstr ""
-
 #: lazarusidestrconsts.dlgselectedtext
 msgid "&Selected text"
 msgstr "&Valittu teksti"
+
+#: lazarusidestrconsts.dlgsetactivedesktop
+msgid "Set active"
+msgstr ""
 
 #: lazarusidestrconsts.dlgsetallelementdefault
 msgid "Set all elements to default"
@@ -3213,6 +3283,26 @@ msgstr "Aseta elementti oletusarvoon"
 #: lazarusidestrconsts.dlgsetpropertyvariable
 msgid "Set property Variable"
 msgstr "Muuttuja ominaisuuden asettajassa"
+
+#: lazarusidestrconsts.dlgsetpropertyvariablehint
+msgid "The parameter name for the default setter procedure."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableisprefix
+msgid "is prefix"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableisprefixhint
+msgid "If checked, the \"Set property Variable\" is a prefix. Otherwise it is a fixed name."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableuseconst
+msgid "use const"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableuseconsthint
+msgid "If checked, the setter parameter is marked with \"const\"."
+msgstr ""
 
 #: lazarusidestrconsts.dlgshowallunits
 msgid "Show all units"
@@ -3441,7 +3531,8 @@ msgstr "Kansio testiprojektien kokoamiseen"
 msgid "&Text to find"
 msgstr "&Etsittävä"
 
-#: lazarusidestrconsts.dlgtoggleselecteddebugdesktop
+#: lazarusidestrconsts.dlgtoggledebugdesktop
+msgctxt "lazarusidestrconsts.dlgtoggledebugdesktop"
 msgid "Toggle as debug desktop"
 msgstr ""
 
@@ -8788,6 +8879,10 @@ msgctxt "lazarusidestrconsts.lisexport"
 msgid "Export"
 msgstr "Vie"
 
+#: lazarusidestrconsts.lisexportall
+msgid "Export all"
+msgstr ""
+
 #: lazarusidestrconsts.lisexportallitemstofile
 msgid "Export All Items to File"
 msgstr "Vie kaikki kohdat tiedostoon"
@@ -8812,6 +8907,10 @@ msgstr "Vie luettelo"
 #: lazarusidestrconsts.lisexportpackagelistxml
 msgid "Export package list (*.xml)"
 msgstr "Vie pakettiluettelo (*.xml)"
+
+#: lazarusidestrconsts.lisexportselected
+msgid "Export selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisexpression
 msgid "Expression:"
@@ -9419,6 +9518,10 @@ msgstr "Ryhmässä \"%s\" ei ole enää keskeytyskohtia, poista se?"
 #: lazarusidestrconsts.lisgroupemptydeletemore
 msgid "%sThere are %d more empty groups, delete all?"
 msgstr "%sJäljellä on %d tyhjää ryhmää, poista kaikki?"
+
+#: lazarusidestrconsts.lisgrouplocalvariables
+msgid "Group automatically defined local variables"
+msgstr ""
 
 #: lazarusidestrconsts.lisgroupnameemptyclearinstead
 msgid "The group name cannot be empty. Clear breakpoints' group(s)?"
@@ -11730,6 +11833,14 @@ msgstr "Hyppää edelliseen kirjanmerkkiin"
 msgid "Jump to Previous Error"
 msgstr "Hyppää edelliseen virheeseen"
 
+#: lazarusidestrconsts.lismenujumptoprocedurebegin
+msgid "Jump to Procedure begin"
+msgstr ""
+
+#: lazarusidestrconsts.lismenujumptoprocedureheader
+msgid "Jump to Procedure header"
+msgstr ""
+
 #: lazarusidestrconsts.lismenulowercaseselection
 msgid "Lowercase Selection"
 msgstr "Valinta pieniksi kirjaimiksi"
@@ -11973,6 +12084,10 @@ msgstr "Aseta vapaa kirjanmerkki"
 #: lazarusidestrconsts.lismenushowexecutionpoint
 msgid "S&how Execution Point"
 msgstr "Näytä &suorituspiste"
+
+#: lazarusidestrconsts.lismenushowsmarthint
+msgid "Context sensitive smart hint"
+msgstr ""
 
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort Selection ..."
@@ -14090,6 +14205,12 @@ msgstr "Korvaa tiedosto"
 #: lazarusidestrconsts.lispkgmangrequiredpackageswerenotfound
 msgid "One or more required packages were not found. See package graph for details."
 msgstr "Joitain vaadittuja paketteja ei löytynyt. Katso tarkemmin pakettikuvaajasta."
+
+#: lazarusidestrconsts.lispkgmangsaveasalreadyopenedpackage
+msgid ""
+"The package %s is already open in the IDE.\n"
+"You cannot save a package with the same name.\n"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmangsavepackage
 msgid "Save package?"
@@ -16705,8 +16826,8 @@ msgstr ""
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr ""
 
-#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inthertlflagsareinpagesoth
-msgid "This build mode now sets UTF-8 in the RTL.%s Flags are in pages \"Other\" and \"Additions and Overrides\"."
+#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inrtl
+msgid "This build mode now sets UTF-8 in RTL.%s Flags are in pages \"Custom Options\" and \"Additions and Overrides\"."
 msgstr ""
 
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename

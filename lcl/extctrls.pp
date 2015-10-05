@@ -410,6 +410,7 @@ type
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
+    property OnPaint;
     property ParentColor;
     property ParentShowHint;
     property PopupMenu;

@@ -413,11 +413,11 @@ msgstr "Dokkolás"
 
 #: lclstrconsts.rsdocopy
 msgid "Copy"
-msgstr ""
+msgstr "Másolás"
 
 #: lclstrconsts.rsdopaste
 msgid "Paste"
-msgstr ""
+msgstr "Beillesztés"
 
 #: lclstrconsts.rsduplicateiconformat
 msgid "Duplicate icon format."

@@ -157,6 +157,7 @@ uses
   CleanDirDlg, CodeContextForm, AboutFrm, CompatibilityRestrictions,
   RestrictionBrowser, ProjectWizardDlg, IDECmdLine, IDEGuiCmdLine, CodeExplOpts,
   EditorMacroListViewer, SourceFileManager, EditorToolbarStatic,
+  IDEInstances,
   // main ide
   MainBar, MainIntf, MainBase;
 
@@ -171,8 +172,6 @@ type
 
   TMainIDE = class(TMainIDEBase)
   private
-    IDEIsClosing: Boolean;
-
     // event handlers
     procedure MainIDEFormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure MainIDEFormCloseQuery(Sender: TObject; var CanClose: boolean);
@@ -189,6 +188,8 @@ type
     procedure HandleRemoteControlTimer(Sender: TObject);
     procedure HandleSelectFrame(Sender: TObject; var AComponentClass: TComponentClass);
     procedure OIChangedTimerTimer(Sender: TObject);
+    procedure LazInstancesStartNewInstance(const aFiles: TStrings;
+      var Result: TStartNewInstanceResult);
   public
     // file menu
     procedure mnuNewUnitClicked(Sender: TObject);
@@ -473,7 +474,7 @@ type
     procedure OnSrcNotebookReadOnlyChanged(Sender: TObject);
     procedure OnSrcNotebookSaveAll(Sender: TObject);
     procedure OnSrcNotebookShowHintForSource(SrcEdit: TSourceEditor;
-                                           ClientPos: TPoint; CaretPos: TPoint);
+                                           CaretPos: TPoint; AutoShown: Boolean);
     procedure OnSrcNoteBookShowUnitInfo(Sender: TObject);
     procedure OnSrcNotebookToggleFormUnit(Sender: TObject);
     procedure OnSrcNotebookToggleObjectInsp(Sender: TObject);
@@ -639,6 +640,7 @@ type
     OldCompilerFilename, OldLanguage: String;
     OIChangedTimer: TIdleTimer;
 
+    procedure DoDropFilesAsync(Data: PtrInt);
     procedure RenameInheritedMethods(AnUnitInfo: TUnitInfo; List: TStrings);
     function OIHelpProvider: TAbstractIDEHTMLProvider;
     // form editor and designer
@@ -951,6 +953,14 @@ var
   SkipAutoLoadingLastProject: boolean = false;
   StartedByStartLazarus: boolean = false;
   ShowSetupDialog: boolean = false;
+
+type
+  TDoDropFilesAsyncParams = class(TComponent)
+  public
+    FileNames: array of string;
+    WindowIndex: Integer;
+    BringToFront: Boolean;
+  end;
 
 function FindDesignComponent(const aName: string): TComponent;
 var
@@ -1558,6 +1568,7 @@ begin
   DoShowMessagesView(false);           // reopen extra windows
   fUserInputSinceLastIdle:=true; // Idle work gets done initially before user action.
   MainIDEBar.ApplicationIsActivate:=true;
+  LazIDEInstances.StartListening(@LazInstancesStartNewInstance);
   FIDEStarted:=true;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.StartIDE END');{$ENDIF}
 end;
@@ -1948,6 +1959,7 @@ end;
 procedure TMainIDE.MainIDEFormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
+  LazIDEInstances.StopServer;
   DoCallNotifyHandler(lihtIDEClose);
   SaveEnvironment(true);
   if IDEDockMaster<>nil then
@@ -1966,7 +1978,7 @@ procedure TMainIDE.MainIDEFormCloseQuery(Sender: TObject; var CanClose: boolean)
 begin
   CanClose := True;
   if IDEIsClosing then Exit;
-  IDEIsClosing := True;
+  FIDEIsClosing := True;
   CanClose := False;
   SourceFileMgr.CheckingFilesOnDisk := True;
   try
@@ -1988,7 +2000,7 @@ begin
 
     CanClose:=(DoCloseProject <> mrAbort);
   finally
-    IDEIsClosing := CanClose;
+    FIDEIsClosing := CanClose;
     SourceFileMgr.CheckingFilesOnDisk:=false;
     if not CanClose then
       DoCheckFilesOnDisk(false);
@@ -2103,6 +2115,8 @@ begin
   MainIDEBar.itmJumpToImplementation.OnClick := @SourceEditorManager.JumpToImplementationClicked;
   MainIDEBar.itmJumpToImplementationUses.OnClick := @SourceEditorManager.JumpToImplementationUsesClicked;
   MainIDEBar.itmJumpToInitialization.OnClick := @SourceEditorManager.JumpToInitializationClicked;
+  MainIDEBar.itmJumpToProcedureHeader.OnClick := @SourceEditorManager.JumpToProcedureHeaderClicked;
+  MainIDEBar.itmJumpToProcedureBegin.OnClick := @SourceEditorManager.JumpToProcedureBeginClicked;
   MainIDEBar.itmFindBlockStart.OnClick:=@mnuSearchFindBlockStart;
   MainIDEBar.itmFindBlockOtherEnd.OnClick:=@mnuSearchFindBlockOtherEnd;
   MainIDEBar.itmFindDeclaration.OnClick:=@mnuSearchFindDeclaration;
@@ -2175,108 +2189,123 @@ var
   i: Integer;
   OpenFlags: TOpenFlags;
   AFilename: String;
+  PkgOpenFlags: TPkgOpenFlags;
 begin
   {$IFDEF IDE_DEBUG}
   debugln('TMainIDE.SetupStartProject A ***********');
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.SetupStartProject A');{$ENDIF}
   // load command line project or last project or create a new project
-  CmdLineFiles:=ExtractCmdLineFilenames;
-  try
-    ProjectLoaded:=false;
+  CmdLineFiles:=LazIDEInstances.FilesToOpen;
+  ProjectLoaded:=false;
 
-    // try command line project
-    if (CmdLineFiles<>nil) and (CmdLineFiles.Count>0) then begin
-      AProjectFilename:=CmdLineFiles[0];
-      if (CompareFileExt(AProjectFilename,'.lpr',false)=0) then
-        AProjectFilename:=ChangeFileExt(AProjectFilename,'.lpi');
-      // only try to load .lpi files, other files are loaded later
-      if (CompareFileExt(AProjectFilename,'.lpi',false)=0) then begin
-        AProjectFilename:=CleanAndExpandFilename(AProjectFilename);
-        if FileExistsUTF8(AProjectFilename) then begin
-          CmdLineFiles.Delete(0);
-          ProjectLoaded:=(DoOpenProjectFile(AProjectFilename,[])=mrOk);
-        end;
+  // try command line project
+  if (CmdLineFiles<>nil) and (CmdLineFiles.Count>0) then begin
+    AProjectFilename:=CmdLineFiles[0];
+    if (CompareFileExt(AProjectFilename,'.lpr',false)=0) then
+      AProjectFilename:=ChangeFileExt(AProjectFilename,'.lpi');
+    // only try to load .lpi files, other files are loaded later
+    if (CompareFileExt(AProjectFilename,'.lpi',false)=0) then begin
+      AProjectFilename:=CleanAndExpandFilename(AProjectFilename);
+      if FileExistsUTF8(AProjectFilename) then begin
+        CmdLineFiles.Delete(0);
+        ProjectLoaded:=(DoOpenProjectFile(AProjectFilename,[ofAddToRecent])=mrOk);
       end;
     end;
+  end;
 
-    // try loading last project if lazarus didn't fail last time
-    if (not ProjectLoaded)
-    and (not SkipAutoLoadingLastProject)
-    and (EnvironmentOptions.OpenLastProjectAtStart)
-    and (EnvironmentOptions.LastSavedProjectFile<>'')
-    and (EnvironmentOptions.LastSavedProjectFile<>RestoreProjectClosed)
-    and (FileExistsCached(EnvironmentOptions.LastSavedProjectFile))
-    then begin
-      if (not IDEProtocolOpts.LastProjectLoadingCrashed)
-      or AskIfLoadLastFailingProject then begin
-        // protocol that the IDE is trying to load the last project and did not
-        // yet succeed
-        IDEProtocolOpts.LastProjectLoadingCrashed := True;
-        IDEProtocolOpts.Save;
-        // try loading the project
-        ProjectLoaded:=
-          (DoOpenProjectFile(EnvironmentOptions.LastSavedProjectFile,[])=mrOk);
-        // protocol that the IDE was able to open the project without crashing
-        IDEProtocolOpts.LastProjectLoadingCrashed := false;
-        IDEProtocolOpts.Save;
-        if not ProjectLoaded then begin
-          DoCloseProject;
-        end;
-      end;
-    end;
-    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.SetupStartProject B');{$ENDIF}
-
-    if (not ProjectLoaded) then
-    begin
-      if EnvironmentOptions.OpenLastProjectAtStart
-      and (EnvironmentOptions.LastSavedProjectFile=RestoreProjectClosed) then begin
-        // IDE was closed without a project => restore that state
-      end else begin
-        // create new project
-        DoNewProject(ProjectDescriptorApplication);
-      end;
-    end;
-
-    // load the cmd line files
-    if CmdLineFiles<>nil then begin
-      for i:=0 to CmdLineFiles.Count-1 do
-      Begin
-        AFilename:=CleanAndExpandFilename(CmdLineFiles.Strings[i]);
-        if not FileExistsCached(AFilename) then begin
-          debugln(['WARNING: command line file not found: "',AFilename,'"']);
-          continue;
-        end;
-        if Project1=nil then begin
-          // to open a file a project is needed
-          // => create a project
-          DoNewProject(ProjectDescriptorEmptyProject);
-        end;
-        if CompareFileExt(AFilename,'.lpk',false)=0 then begin
-          if PkgBoss.DoOpenPackageFile(AFilename,[pofAddToRecent,pofMultiOpen],true)=mrAbort
-          then
-            break;
-        end else begin
-          OpenFlags:=[ofAddToRecent,ofRegularFile];
-          if i<CmdLineFiles.Count then
-            Include(OpenFlags,ofMultiOpen);
-          if DoOpenEditorFile(AFilename,-1,-1,OpenFlags)=mrAbort then begin
+  // try loading last project if lazarus didn't fail last time
+  if (not ProjectLoaded)
+  and (LazIDEInstances.AllowOpenLastProject)
+  and (not SkipAutoLoadingLastProject)
+  and (EnvironmentOptions.OpenLastProjectAtStart)
+  and (EnvironmentOptions.LastSavedProjectFile<>'')
+  and (EnvironmentOptions.LastSavedProjectFile<>RestoreProjectClosed)
+  and (FileExistsCached(EnvironmentOptions.LastSavedProjectFile))
+  then begin
+    if (not IDEProtocolOpts.LastProjectLoadingCrashed)
+    or AskIfLoadLastFailingProject then begin
+      // protocol that the IDE is trying to load the last project and did not
+      // yet succeed
+      IDEProtocolOpts.LastProjectLoadingCrashed := True;
+      IDEProtocolOpts.Save;
+      // try loading the project
+      ProjectLoaded:=
+        (DoOpenProjectFile(EnvironmentOptions.LastSavedProjectFile,[])=mrOk);
+      // protocol that the IDE was able to open the project without crashing
+      IDEProtocolOpts.LastProjectLoadingCrashed := false;
+      IDEProtocolOpts.Save;
+      if ProjectLoaded then
+      begin
+        PkgOpenFlags:=[pofAddToRecent];
+        for I := 0 to EnvironmentOptions.LastOpenPackages.Count-1 do
+        begin
+          AFilename:=EnvironmentOptions.LastOpenPackages[I];
+          if AFilename='' then
+            continue;
+          if i<EnvironmentOptions.LastOpenPackages.Count-1 then
+            Include(PkgOpenFlags,pofMultiOpen)
+          else
+            Exclude(PkgOpenFlags,pofMultiOpen);
+          if PkgBoss.DoOpenPackageFile(AFilename,PkgOpenFlags,true)=mrAbort then begin
             break;
           end;
         end;
+      end else
+      begin
+        DoCloseProject;
       end;
     end;
-
-    if Project1=nil then
-      DoNoProjectWizard(nil);
-
-    {$IFDEF IDE_DEBUG}
-    debugln('TMainIDE.Create B');
-    {$ENDIF}
-    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.SetupStartProject C');{$ENDIF}
-  finally
-    CmdLineFiles.Free;
   end;
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.SetupStartProject B');{$ENDIF}
+
+  if (not ProjectLoaded) then
+  begin
+    if EnvironmentOptions.OpenLastProjectAtStart
+    and (EnvironmentOptions.LastSavedProjectFile=RestoreProjectClosed) then begin
+      // IDE was closed without a project => restore that state
+    end else begin
+      // create new project
+      DoNewProject(ProjectDescriptorApplication);
+    end;
+  end;
+
+  // load the cmd line files
+  if CmdLineFiles<>nil then begin
+    for i:=0 to CmdLineFiles.Count-1 do
+    Begin
+      AFilename:=CleanAndExpandFilename(CmdLineFiles.Strings[i]);
+      if not FileExistsCached(AFilename) then begin
+        debugln(['WARNING: command line file not found: "',AFilename,'"']);
+        continue;
+      end;
+      if Project1=nil then begin
+        // to open a file a project is needed
+        // => create a project
+        DoNewProject(ProjectDescriptorEmptyProject);
+      end;
+      if CompareFileExt(AFilename,'.lpk',false)=0 then begin
+        if PkgBoss.DoOpenPackageFile(AFilename,[pofAddToRecent,pofMultiOpen],true)=mrAbort
+        then
+          break;
+      end else begin
+        OpenFlags:=[ofAddToRecent,ofRegularFile];
+        if i<CmdLineFiles.Count then
+          Include(OpenFlags,ofMultiOpen);
+        if DoOpenEditorFile(AFilename,-1,-1,OpenFlags)=mrAbort then begin
+          break;
+        end;
+      end;
+    end;
+  end;
+
+  if Project1=nil then
+    DoNoProjectWizard(nil);
+
+  {$IFDEF IDE_DEBUG}
+  debugln('TMainIDE.Create B');
+  {$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.SetupStartProject C');{$ENDIF}
 end;
 
 procedure TMainIDE.SetupRemoteControl;
@@ -2333,7 +2362,7 @@ end;
 procedure TMainIDE.RestoreIDEWindows;
 begin
   DoCallNotifyHandler(lihtIDERestoreWindows);
-  IDEWindowCreators.RestoreSimpleLayout;
+  EnvironmentOptions.Desktop.RestoreDesktop;
 end;
 
 procedure TMainIDE.FreeIDEWindows;
@@ -4393,7 +4422,7 @@ procedure TMainIDE.SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOption
 // Called also before reading EnvironmentOptions
 begin
   DebugLn(['* TMainIDE.SaveDesktopSettings']);
-  IDEWindowCreators.SimpleLayoutStorage.StoreWindowPositions;
+  EnvironmentOptions.Desktop.ImportSettingsFromIDE;
 
   if ObjectInspector1<>nil then
     TheEnvironmentOptions.ObjectInspectorOptions.Assign(ObjectInspector1);
@@ -5367,6 +5396,27 @@ begin
     SourceEditorManager.DecUpdateLock;
   end;
   SetRecentFilesMenu;
+end;
+
+procedure TMainIDE.DoDropFilesAsync(Data: PtrInt);
+var
+  xParams: TDoDropFilesAsyncParams;
+begin
+  xParams := TDoDropFilesAsyncParams(Data);
+  try
+    if Length(xParams.FileNames) > 0 then
+      DoDropFiles(Self, xParams.FileNames, xParams.WindowIndex);
+    if xParams.BringToFront then
+    begin
+      if Application.MainForm.WindowState = wsMinimized then
+        UnhideIDE;
+      Application.BringToFront;
+      if SourceEditorManager.ActiveSourceWindow <> nil then
+        SourceEditorManager.ActiveSourceWindow.BringToFront;
+    end;
+  finally
+    xParams.Free;
+  end;
 end;
 
 function TMainIDE.DoSelectFrame: TComponentClass;
@@ -8774,6 +8824,7 @@ begin
     DebugLn(['TMainIDE.OnCodeBufferEncodeSaving Filename=',Code.Filename,' Mem=',Code.MemEncoding,' to Disk=',Code.DiskEncoding]);
     {$ENDIF}
     Source:=ConvertEncoding(Source,Code.MemEncoding,Code.DiskEncoding);
+    //debugln(['TMainIDE.OnCodeBufferEncodeSaving ',dbgMemRange(PByte(Source),length(Source))]);
   end;
 end;
 
@@ -9091,6 +9142,51 @@ begin
     if NeedSave(AEditor) then exit;
   end;
   Result:=false;
+end;
+
+procedure TMainIDE.LazInstancesStartNewInstance(const aFiles: TStrings;
+  var Result: TStartNewInstanceResult);
+var
+  xParams: TDoDropFilesAsyncParams;
+  I: Integer;
+begin
+  if aFiles.Count > 0 then
+  begin
+    //there are files to open
+    if EnvironmentOptions.MultipleInstances = mioAlwaysStartNew then
+    begin//the user wants to open them in new instance!
+      Result := ofrStartNewInstance;
+    end else
+    if (not IsWindowEnabled(Application.MainForm.Handle) or//check that main is active
+       (Application.ModalLevel > 0))//check that no modal window is opened
+    then
+    begin
+      if EnvironmentOptions.MultipleInstances = mioForceSingleInstance then
+        Result := ofrForceSingleInstanceModalError
+      else
+        Result := ofrModalError;
+    end else
+      Result := ofrDoNotStart;
+  end else
+  begin
+    //no files to open
+    if EnvironmentOptions.MultipleInstances = mioForceSingleInstance then
+      Result := ofrDoNotStart
+    else
+      Result := ofrStartNewInstance;
+  end;
+
+  if Result in [ofrStartNewInstance, ofrModalError, ofrForceSingleInstanceModalError]  then
+    Exit;
+
+  //show up the current IDE and open files (if there are any)
+  xParams := TDoDropFilesAsyncParams.Create(Self);//we need direct response, do not wait to get the files opened!
+  SetLength(xParams.FileNames, aFiles.Count);
+  for I := 0 to aFiles.Count-1 do
+    xParams.FileNames[I] := aFiles[I];
+  xParams.WindowIndex := -1;
+  xParams.BringToFront := True;
+  Application.QueueAsyncCall(@DoDropFilesAsync, PtrInt(xParams));
 end;
 
 procedure TMainIDE.ApplyCodeToolChanges;
@@ -10312,7 +10408,7 @@ begin
 end;
 
 procedure TMainIDE.OnSrcNotebookShowHintForSource(SrcEdit: TSourceEditor;
-  ClientPos: TPoint; CaretPos: TPoint);
+  CaretPos: TPoint; AutoShown: Boolean);
 
   function CheckExpressionIsValid(var Expr: String): boolean;
   var
@@ -10342,6 +10438,8 @@ var
   HasHint: Boolean;
   p: SizeInt;
   Opts: TDBGEvaluateFlags;
+  AtomStartPos, AtomEndPos: integer;
+  AtomRect: TRect;
 begin
   //DebugLn(['TMainIDE.OnSrcNotebookShowHintForSource START']);
   if (SrcEdit=nil) then exit;
@@ -10424,7 +10522,16 @@ begin
   end;
 
   if HasHint then
-    SrcEdit.ActivateHint(ClientPos, BaseURL, SmartHintStr);
+  begin
+    //Find start of identifier
+    AtomRect := Rect(-1,-1,-1,-1);
+    SrcEdit.EditorComponent.GetWordBoundsAtRowCol(CaretPos, AtomStartPos, AtomEndPos);
+    AtomRect.TopLeft := SrcEdit.EditorComponent.RowColumnToPixels(Point(AtomStartPos, CaretPos.y));
+    AtomRect.BottomRight := SrcEdit.EditorComponent.RowColumnToPixels(Point(AtomEndPos, CaretPos.y));
+    Inc(AtomRect.Bottom, SrcEdit.EditorComponent.LineHeight);
+
+    SrcEdit.ActivateHint(AtomRect, BaseURL, SmartHintStr, AutoShown);
+  end;
 end;
 
 procedure TMainIDE.OnSrcNoteBookActivated(Sender: TObject);

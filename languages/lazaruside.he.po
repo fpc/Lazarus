@@ -399,6 +399,10 @@ msgstr "קריאה בלבד"
 msgid "Lowercase, first letter up"
 msgstr "אותיות קטנות, אות ראשונה למעלה"
 
+#: lazarusidestrconsts.dlgactivedesktop
+msgid "active"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddassignmentoperator
 msgid "Add assignment operator :="
 msgstr "הוסף אופרטור הצבה :="
@@ -648,6 +652,16 @@ msgstr "הסר אוטומטית מתודות ריקות"
 msgid "Auto rename file lowercase"
 msgstr "שנה אוטומטית שם קובץ לאותיות קטנות"
 
+#: lazarusidestrconsts.dlgautosaveactivedesktop
+msgid "Auto save active desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgautosaveactivedesktophint
+msgid ""
+"Save active desktop on IDE close\n"
+"Save debug desktop on IDE close and debug end\n"
+msgstr ""
+
 #: lazarusidestrconsts.dlgavailableforms
 msgid "Available forms:"
 msgstr "טפסים זמינים"
@@ -728,6 +742,18 @@ msgstr "סוגריים מודגשים"
 #: lazarusidestrconsts.dlgbracketmatchgroup
 msgid "Matching bracket pairs"
 msgstr "זוגות סוגריים תואמים"
+
+#: lazarusidestrconsts.dlgcannotdeleteactivedesktop
+msgid "You cannot delete the active desktop."
+msgstr ""
+
+#: lazarusidestrconsts.dlgcannotdeletedebugdesktop
+msgid "You cannot delete debug desktop."
+msgstr ""
+
+#: lazarusidestrconsts.dlgcannotusedockedundockeddesktop
+msgid "You cannot use docked desktop in undocked environment and vice versa."
+msgstr ""
 
 #: lazarusidestrconsts.dlgcasesensitive
 #, fuzzy
@@ -850,10 +876,6 @@ msgstr ""
 #: lazarusidestrconsts.dlgchscodetempl
 msgid "Choose code template file (*.dci)"
 msgstr "בחר קובץ תבנית לקוד (*.dci)"
-
-#: lazarusidestrconsts.dlgcloseanduseselecteddesktop
-msgid "Close and use selected desktop"
-msgstr ""
 
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
@@ -1250,7 +1272,7 @@ msgid "User defined extension (.pp.xxx)"
 msgstr "הרחבה של המשתמש (pp.xxx.)"
 
 #: lazarusidestrconsts.dlgdebugdesktop
-msgid "debug desktop"
+msgid "debug"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
@@ -1286,7 +1308,15 @@ msgid "Menus - "
 msgstr "תפריטים -"
 
 #: lazarusidestrconsts.dlgdesktopname
-msgid "Desktop name:"
+msgid "Desktop name"
+msgstr ""
+
+#: lazarusidestrconsts.dlgdesktopsexported
+msgid "%d desktop(s) successfully exported to \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgdesktopsimported
+msgid "%d desktop(s) successfully imported from \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
@@ -1919,6 +1949,10 @@ msgstr "צומת"
 msgid "Processing Instruction"
 msgstr "הוראת עיבוד"
 
+#: lazarusidestrconsts.dlgforceuniqueinstancemodalerror
+msgid "The running Lazarus instance cannot accept any files."
+msgstr ""
+
 #: lazarusidestrconsts.dlgforecolor
 msgid "Foreground"
 msgstr "קידמה"
@@ -1972,6 +2006,10 @@ msgstr "צור קוד עבור gprof"
 #: lazarusidestrconsts.dlggrabbercolor
 msgid "Grabber color"
 msgstr "לוכד צבע"
+
+#: lazarusidestrconsts.dlggrayeddesktopsundocked
+msgid "Grayed desktops are for undocked environment."
+msgstr ""
 
 #: lazarusidestrconsts.dlggridcolor
 msgid "Grid color"
@@ -2160,6 +2198,12 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgifdefnodetmpactive
 msgid "Included mixed state $IFDEF node"
+msgstr ""
+
+#: lazarusidestrconsts.dlgimportdesktopexists
+msgid ""
+"A desktop with the same name already exists.\n"
+"Please confirm the desktop name:\n"
 msgstr ""
 
 #: lazarusidestrconsts.dlgincludesystemvariables
@@ -2844,6 +2888,22 @@ msgstr ""
 msgid "Enable multi caret for column selection"
 msgstr ""
 
+#: lazarusidestrconsts.dlgmultipleinstances
+msgid "Multiple Lazarus instances"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmultipleinstances_alwaysstartnew
+msgid "always start a new instance"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmultipleinstances_forcesingleinstance
+msgid "do not allow multiple instances"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmultipleinstances_openfilesinrunning
+msgid "open files in a running instance"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmultiselect
 msgid "Multi Select"
 msgstr "בחירה מרובה"
@@ -3177,7 +3237,9 @@ msgid "Property Name"
 msgstr "שם התכונה"
 
 #: lazarusidestrconsts.dlgqopenlastprj
-msgid "Open last project at start"
+#, fuzzy
+#| msgid "Open last project at start"
+msgid "Open last project and packages at start"
 msgstr "פתח את הפרויקט האחרון בהתחלה"
 
 #: lazarusidestrconsts.dlgqshowborderspacing
@@ -3255,6 +3317,18 @@ msgctxt "lazarusidestrconsts.dlgruberbandselectioncolor"
 msgid "Rubberband Selection"
 msgstr "בחירת סרגל גמיש"
 
+#: lazarusidestrconsts.dlgrunninginstancemodalerror
+msgid ""
+"The running Lazarus instance cannot accept any files.\n"
+"Do you want to open them in a new IDE instance?\n"
+"\n"
+"%s\n"
+msgstr ""
+
+#: lazarusidestrconsts.dlgrunninginstancenotrespondingerror
+msgid "Lazarus instance is running but not responding."
+msgstr ""
+
 #: lazarusidestrconsts.dlgrunodisplay
 msgid "Display (not for win32, e.g. 198.112.45.11:0, x.org:1, hydra:0.1)"
 msgstr "תצוגה (לא עבור win32, למשל 198.112.45.11:0, x.org:1, hydra:0.1)"
@@ -3285,10 +3359,6 @@ msgstr "העמסה של משתמש"
 #| msgid "Run parameters"
 msgid "Run Parameters"
 msgstr "הרץ פרמטרים"
-
-#: lazarusidestrconsts.dlgsavecurrentdesktop
-msgid "Save current desktop"
-msgstr ""
 
 #: lazarusidestrconsts.dlgsavecurrentdesktopas
 msgid "Save current desktop as"
@@ -3364,15 +3434,15 @@ msgstr ""
 msgid "Select all child controls together with their parent."
 msgstr ""
 
-#: lazarusidestrconsts.dlgselecteddesktop
-msgid "Selected desktop:"
-msgstr ""
-
 #: lazarusidestrconsts.dlgselectedtext
 #, fuzzy
 #| msgid "&Selected Text"
 msgid "&Selected text"
 msgstr "ה&טקסט שנבחר"
+
+#: lazarusidestrconsts.dlgsetactivedesktop
+msgid "Set active"
+msgstr ""
 
 #: lazarusidestrconsts.dlgsetallelementdefault
 msgid "Set all elements to default"
@@ -3385,6 +3455,26 @@ msgstr "קבע אלמנט לברירת המחדל"
 #: lazarusidestrconsts.dlgsetpropertyvariable
 msgid "Set property Variable"
 msgstr "קבע את משתנה התכונות"
+
+#: lazarusidestrconsts.dlgsetpropertyvariablehint
+msgid "The parameter name for the default setter procedure."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableisprefix
+msgid "is prefix"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableisprefixhint
+msgid "If checked, the \"Set property Variable\" is a prefix. Otherwise it is a fixed name."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableuseconst
+msgid "use const"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableuseconsthint
+msgid "If checked, the setter parameter is marked with \"const\"."
+msgstr ""
 
 #: lazarusidestrconsts.dlgshowallunits
 msgid "Show all units"
@@ -3626,7 +3716,8 @@ msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"
 msgstr "טקסט לחיפוש"
 
-#: lazarusidestrconsts.dlgtoggleselecteddebugdesktop
+#: lazarusidestrconsts.dlgtoggledebugdesktop
+msgctxt "lazarusidestrconsts.dlgtoggledebugdesktop"
 msgid "Toggle as debug desktop"
 msgstr ""
 
@@ -9337,6 +9428,10 @@ msgctxt "lazarusidestrconsts.lisexport"
 msgid "Export"
 msgstr "ייצא ..."
 
+#: lazarusidestrconsts.lisexportall
+msgid "Export all"
+msgstr ""
+
 #: lazarusidestrconsts.lisexportallitemstofile
 msgid "Export All Items to File"
 msgstr ""
@@ -9360,6 +9455,10 @@ msgstr "ייצא רשימה"
 
 #: lazarusidestrconsts.lisexportpackagelistxml
 msgid "Export package list (*.xml)"
+msgstr ""
+
+#: lazarusidestrconsts.lisexportselected
+msgid "Export selected"
 msgstr ""
 
 #: lazarusidestrconsts.lisexpression
@@ -9997,6 +10096,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisgroupemptydeletemore
 msgid "%sThere are %d more empty groups, delete all?"
+msgstr ""
+
+#: lazarusidestrconsts.lisgrouplocalvariables
+msgid "Group automatically defined local variables"
 msgstr ""
 
 #: lazarusidestrconsts.lisgroupnameemptyclearinstead
@@ -12532,6 +12635,14 @@ msgstr "קפוץ אל הסימניה הקודמת"
 msgid "Jump to Previous Error"
 msgstr "קפוץ אל השגיאה הקודמת"
 
+#: lazarusidestrconsts.lismenujumptoprocedurebegin
+msgid "Jump to Procedure begin"
+msgstr ""
+
+#: lazarusidestrconsts.lismenujumptoprocedureheader
+msgid "Jump to Procedure header"
+msgstr ""
+
 #: lazarusidestrconsts.lismenulowercaseselection
 #, fuzzy
 #| msgid "Lowercase selection"
@@ -12837,6 +12948,10 @@ msgstr "קבע סימניה חופשית"
 #| msgid "S&how execution point"
 msgid "S&how Execution Point"
 msgstr "הראה נקודת ביצוע"
+
+#: lazarusidestrconsts.lismenushowsmarthint
+msgid "Context sensitive smart hint"
+msgstr ""
 
 #: lazarusidestrconsts.lismenusortselection
 #, fuzzy
@@ -15128,6 +15243,12 @@ msgstr "החלף קובץ"
 
 #: lazarusidestrconsts.lispkgmangrequiredpackageswerenotfound
 msgid "One or more required packages were not found. See package graph for details."
+msgstr ""
+
+#: lazarusidestrconsts.lispkgmangsaveasalreadyopenedpackage
+msgid ""
+"The package %s is already open in the IDE.\n"
+"You cannot save a package with the same name.\n"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangsavepackage
@@ -18064,8 +18185,8 @@ msgstr "נתיב חיפוש היחידות של %s%s%s מכיל את תיקיי�
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "תיקיית העבודה %s%s%s לא קיימת. בדוק את תיקיית העבודה ב Menu > Run > Run parameters."
 
-#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inthertlflagsareinpagesoth
-msgid "This build mode now sets UTF-8 in the RTL.%s Flags are in pages \"Other\" and \"Additions and Overrides\"."
+#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inrtl
+msgid "This build mode now sets UTF-8 in RTL.%s Flags are in pages \"Custom Options\" and \"Additions and Overrides\"."
 msgstr ""
 
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename

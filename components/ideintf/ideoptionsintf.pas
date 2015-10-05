@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Controls, Buttons, Forms, StdCtrls, Graphics,
-  ComCtrls, Grids;
+  ComCtrls, Grids, Laz2_XMLCfg;
 
 const
   NoParent = -1;
@@ -60,6 +60,19 @@ type
   TIDEOptionsEditorSettings = set of TIDEOptionsEditorSetting;
 
   TIDEOptionsWriteEvent = procedure(Sender: TObject; Restore: boolean) of object;
+
+  TAbstractDesktopDockingOpt = class
+  public
+    constructor Create; virtual;
+    procedure StoreWindowPositions; virtual; abstract;
+    procedure Load(Path: String; aXMLCfg: TRttiXMLConfig); virtual; abstract;
+    procedure Save(Path: String; aXMLCfg: TRttiXMLConfig); virtual; abstract;
+    procedure ImportSettingsFromIDE; virtual; abstract;
+    procedure ExportSettingsToIDE; virtual; abstract;
+    function RestoreDesktop: Boolean; virtual; abstract;
+    procedure Assign(Source: TAbstractDesktopDockingOpt); virtual; abstract;
+  end;
+  TAbstractDesktopDockingOptClass = class of TAbstractDesktopDockingOpt;
 
   { TAbstractIDEOptions base class for all option containers }
 
@@ -407,6 +420,13 @@ begin
     Result := 1
   else
     Result := 0;
+end;
+
+{ TAbstractDesktopDockingOpt }
+
+constructor TAbstractDesktopDockingOpt.Create;
+begin
+  inherited Create;
 end;
 
 { TDefaultFont }

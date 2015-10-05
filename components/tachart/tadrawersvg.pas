@@ -83,6 +83,7 @@ type
       const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
     procedure PrepareSimplePen(AColor: TChartColor);
     procedure PutImage(AX, AY: Integer; AImage: TFPCustomImage); override;
+    procedure PutPixel(AX, AY: Integer; AColor: TChartColor); override;
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
       AStartAngle16Deg, AAngleLength16Deg: Integer);
@@ -341,6 +342,14 @@ begin
     s.Free;
     b.Free;
   end;
+end;
+
+procedure TSVGDrawer.PutPixel(AX, AY: Integer; AColor: TChartColor);
+var
+  stroke: String;
+begin
+  stroke := 'stroke:'+ColorToHex(FChartColorToFPColorFunc(ColorOrMono(AColor))) + ';stroke-width:1;';
+  WriteFmt(RECT_FMT, [AX, AY, 1, 1, stroke]);
 end;
 
 procedure TSVGDrawer.RadialPie(

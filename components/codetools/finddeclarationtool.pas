@@ -261,7 +261,7 @@ type
   // Do not define: TExpressionTypeDescs = set of TExpressionTypeDesc;
   // There are too many enums, so the set would be big and slow
   
-const
+var
   ExpressionTypeDescNames: array[TExpressionTypeDesc] of string = (
     'None',
     'Context',
@@ -307,6 +307,7 @@ const
     'Nil'
   );
 
+const
   xtAllTypes = [Low(TExpressionTypeDesc)..High(TExpressionTypeDesc)]-[xtNone];
   xtAllPredefinedTypes = xtAllTypes-[xtContext];
   xtAllIdentTypes = xtAllTypes - [xtConstOrdInteger,xtConstBoolean,xtConstReal,xtConstString,xtConstSet,xtCompilerFunc,xtNil];
@@ -515,6 +516,7 @@ type
     FExtractedOperand: string;
     FHelpers: array[TFDHelpersListKind] of TFDHelpersList;
     FFreeHelpers: array[TFDHelpersListKind] of Boolean;
+    FNeedHelpers: Boolean;
     procedure ClearFoundProc;
     procedure FreeFoundProc(aFoundProc: PFoundProc; FreeNext: boolean);
     procedure RemoveFoundProcFromList(aFoundProc: PFoundProc);
@@ -538,6 +540,8 @@ type
     // input parameters:
     Flags: TFindDeclarationFlags;
     Identifier: PChar;
+    StartTool: TFindDeclarationTool;
+    StartNode: TCodeTreeNode;
     ContextNode: TCodeTreeNode;
     OnIdentifierFound: TOnIdentifierFound;
     IdentifierTool: TFindDeclarationTool;
@@ -1579,7 +1583,6 @@ begin
     CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(CleanCursorPos,true);
     // search
     Params:=TFindDeclarationParams.Create(Self, CursorNode);
-    Params.ContextNode:=CursorNode;
     Params.SetIdentifier(Self,Identifier,nil);
     Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound,
                    fdfExceptionOnPredefinedIdent,
@@ -1930,7 +1933,6 @@ begin
       // find declaration of identifier
       Params:=TFindDeclarationParams.Create(Self, CursorNode);
       try
-        Params.ContextNode:=CursorNode;
         Params.SetIdentifier(Self,IdentifierStart,@CheckSrcIdentifier);
         Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound,
                        fdfExceptionOnPredefinedIdent,
@@ -2670,18 +2672,48 @@ function TFindDeclarationTool.GetSmartHint(Node: TCodeTreeNode;
     until false;
   end;
 
+  function MoveToLastIdentifierThroughDots(ExtTool: TFindDeclarationTool): Boolean;
+  var
+    LastPos: TAtomPosition;
+  begin
+    LastPos := ExtTool.CurPos;
+    ExtTool.ReadNextAtom;
+    if ExtTool.CurPos.Flag = cafWord then
+      ExtTool.ReadNextAtom;
+    while ExtTool.CurPos.Flag = cafPoint do
+    begin
+      ExtTool.ReadNextAtom;
+      LastPos := ExtTool.CurPos;
+      ExtTool.ReadNextAtom;
+    end;
+    ExtTool.CurPos := LastPos;
+    Result := True;
+  end;
+
+  function ProceedWithSmartHint(ExtTool: TFindDeclarationTool): string;
+  var
+    CTExprType: TExpressionType;
+    CTXYPos: TCodeXYPosition;
+    CTTopLine: integer;
+    CTCursorPos: TCodeXYPosition;
+  begin
+    MoveToLastIdentifierThroughDots(ExtTool);
+    if ExtTool.CleanPosToCaret(ExtTool.CurPos.StartPos,CTCursorPos) and
+       ExtTool.FindDeclaration(CTCursorPos,
+         DefaultFindSmartHintFlags+[fsfSearchSourceName],CTExprType,CTXYPos,CTTopLine) and
+       not((CTExprType.Desc=xtContext) and (CTExprType.Context.Node=nil) and (CTExprType.Context.Tool=nil))
+    then
+      Result := CTExprType.Context.Tool.GetSmartHint(CTExprType.Context.Node, CTXYPos, False, False)
+    else
+      Result := '';
+  end;
 var
   IdentNode, TypeNode, ANode: TCodeTreeNode;
-  ClassStr: String;
-  NodeStr: String;
+  ClassStr, NodeStr, SetStr: String;
   Params: TFindDeclarationParams;
   Tool: TFindDeclarationTool;
   HelperForNode: TCodeTreeNode;
   SubNode: TCodeTreeNode;
-  CTExprType: TExpressionType;
-  CTXYPos: TCodeXYPosition;
-  CTTopLine: integer;
-  CTCursorPos: TCodeXYPosition;
 begin
   Result:='';
 
@@ -2754,18 +2786,29 @@ begin
               Result += ': ';
           end;
           case TypeNode.Desc of
-          ctnIdentifier, ctnSpecialize, ctnSpecializeType,
-          ctnPointertype, ctnRangeType, ctnFileType, ctnclassOfType:
+          ctnSetType:
             begin
               Result += ExtractNode(TypeNode, [phpCommentsToSpace]);
+              MoveCursorToNodeStart(TypeNode);
+              ReadNextAtom;
+              if ReadNextUpAtomIs('OF') then
+              begin
+                if (Length(Result) > 0) and (Result[Length(Result)] = ';') then//delete last ";" from set
+                  Delete(Result, Length(Result), 1);
 
-              if
-                CleanPosToCaret(TypeNode.StartPos,CTCursorPos) and
-                FindDeclaration(CTCursorPos,
-                  DefaultFindSmartHintFlags+[fsfSearchSourceName],CTExprType,CTXYPos,CTTopLine) and
-                not((CTExprType.Desc=xtContext) and (CTExprType.Context.Node=nil) and (CTExprType.Context.Tool=nil))
-              then
-                Result += CTExprType.Context.Tool.GetSmartHint(CTExprType.Context.Node, CTXYPos, False, False);
+                SetStr := ProceedWithSmartHint(Self);
+                if (Length(SetStr) > 2) and (SetStr[2] = '=') then
+                  SetStr := Copy(SetStr, 4, High(Integer));
+                if (SetStr <> '') then
+                  Result += ' = ['+SetStr+']';
+              end;
+            end;
+          ctnIdentifier, ctnSpecialize, ctnSpecializeType,
+          ctnPointerType, ctnRangeType, ctnFileType, ctnClassOfType:
+            begin
+              Result += ExtractNode(TypeNode, [phpCommentsToSpace]);
+              MoveCursorToNodeStart(TypeNode);
+              Result += ProceedWithSmartHint(Self);
             end;
           ctnClass, ctnClassInterface, ctnDispinterface,
           ctnClassHelper, ctnTypeHelper, ctnRecordHelper,
@@ -2880,7 +2923,7 @@ begin
           // property without type
           // -> search ancestor property
           if not Tool.MoveCursorToPropName(Node) then break;
-          Params:=TFindDeclarationParams.Create(Self, Node);
+          Params:=TFindDeclarationParams.Create(Tool, Node);
           try
             Params.SetIdentifier(Tool,@Tool.Src[Tool.CurPos.StartPos],nil);
             Params.Flags:=[fdfSearchInAncestors,fdfSearchInHelpers];
@@ -2891,10 +2934,14 @@ begin
             Params.Free;
           end;
         end;
-        if (Node<>nil)
-        and (Node.Desc in [ctnProperty,ctnGlobalProperty]) then begin
-          Result += Tool.ExtractProperty(Node,
-              [phpWithoutName,phpWithParameterNames,phpWithResultType]);
+        if (Node<>nil) then begin
+          if (Node.Desc in [ctnProperty,ctnGlobalProperty]) then begin
+            Result += Tool.ExtractProperty(Node,
+                [phpWithoutName,phpWithParameterNames,phpWithResultType]);
+          end;
+
+          if Tool.MoveCursorToPropType(Node) then
+            Result += ProceedWithSmartHint(Tool);
         end;
       end;
 
@@ -4939,7 +4986,8 @@ procedure TFindDeclarationTool.FindHelpersInContext(
 var
   Node: TCodeTreeNode;
 begin
-  Node:=Params.ContextNode;
+  Node:=Params.StartNode;
+  Params.FNeedHelpers:=false;
   while Node<>nil do
   begin
     case Node.Desc of
@@ -4980,16 +5028,16 @@ procedure TFindDeclarationTool.FindHelpersInUsesSection(
 var
   NewCodeTool: TFindDeclarationTool;
   Node: TCodeTreeNode;
-
-var
   AnUnitName: string;
   InFilename: string;
 begin
   // search in units
+  //debugln(['TFindDeclarationTool.FindHelpersInUsesSection START ',CleanPosToStr(UsesNode.StartPos,true),' Main=',MainFilename]);
   Node:=UsesNode.LastChild;
   while Node<>nil do begin
     AnUnitName:=ExtractUsedUnitName(Node,@InFilename);
     if AnUnitName<>'' then begin
+      //debugln(['TFindDeclarationTool.FindHelpersInUsesSection ',CleanPosToStr(Node.StartPos),' AnUnitName="',AnUnitName,'" in "',InFilename,'"']);
       NewCodeTool:=FindCodeToolForUsedUnit(AnUnitName,InFilename,false);
       if NewCodeTool<>nil then begin
         // search the identifier in the interface of the used unit
@@ -10919,6 +10967,7 @@ begin
   {$IFDEF CheckNodeTool}CheckNodeTool(Params.ContextNode);{$ENDIF}
   Result:='';
   AliasType:=CleanFindContext;
+
   if IsTermEdgedBracket(TermPos,EdgedBracketsStartPos) then begin
     // check for constant sets: [enum]
     MoveCursorToCleanPos(EdgedBracketsStartPos);
@@ -11529,6 +11578,7 @@ var
   Params: TFindDeclarationParams;
   PointerNode: TCodeTreeNode;
 begin
+  //debugln(['TFindDeclarationTool.IsTermNamedPointer ',CleanPosToStr(TermPos.StartPos,true),' Term={',copy(Src,TermPos.StartPos,TermPos.EndPos-TermPos.StartPos),'}']);
   Result:=false;
   MoveCursorToCleanPos(TermPos.StartPos);
   ReadNextAtom;
@@ -11543,7 +11593,6 @@ begin
   Node := FindDeepestNodeAtPos(CurPos.StartPos,true);
   Params:=TFindDeclarationParams.Create(Self, Node);
   try
-    Params.ContextNode:=Node;
     SubExprType:=FindExpressionResultType(Params,CurPos.StartPos,-1);
   finally
     Params.Free;
@@ -11949,6 +11998,24 @@ begin
       FHelpers[HelperKind] := ParentParams.FHelpers[HelperKind];
 end;
 
+constructor TFindDeclarationParams.Create(Tool: TFindDeclarationTool;
+  AContextNode: TCodeTreeNode);
+begin
+  Create(nil);//helper list will be created
+  StartTool := Tool;
+  StartNode := AContextNode;
+  ContextNode := AContextNode;
+  {$IFDEF CheckNodeTool}
+  if (StartNode<>nil) and (StartNode.GetRoot<>StartTool.Tree.Root) then begin
+    debugln(['TFindDeclarationParams.Create Inconsistency']);
+    CTDumpStack;
+    raise Exception.Create('TFindDeclarationParams.Create StartNode does not belong to StartTool');
+  end;
+  {$ENDIF}
+  if (StartTool<>nil) and (StartNode<>nil) then
+    FNeedHelpers:=true;
+end;
+
 destructor TFindDeclarationParams.Destroy;
 var
   HelperKind: TFDHelpersListKind;
@@ -12068,15 +12135,6 @@ begin
   end;
 end;
 
-constructor TFindDeclarationParams.Create(Tool: TFindDeclarationTool;
-  AContextNode: TCodeTreeNode);
-begin
-  Create(nil);//helper list will be created
-  ContextNode := AContextNode;
-  if (Tool<>nil) and (ContextNode<>nil) then
-    Tool.FindHelpersInContext(Self);
-end;
-
 procedure TFindDeclarationParams.ClearInput;
 begin
   Flags:=[];
@@ -12136,6 +12194,8 @@ end;
 function TFindDeclarationParams.GetHelpers(HelperKind: TFDHelpersListKind;
   CreateIfNotExists: boolean): TFDHelpersList;
 begin
+  if FNeedHelpers then
+    StartTool.FindHelpersInContext(Self); // beware: this calls GetHelpers
   Result:=FHelpers[HelperKind];
   if (Result=nil) and CreateIfNotExists then begin
     Result:=TFDHelpersList.Create(HelperKind);

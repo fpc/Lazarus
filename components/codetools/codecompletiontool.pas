@@ -138,6 +138,8 @@ type
     FCompleteProperties: boolean;
     FirstInsert: TCodeTreeNodeExtension; // list of insert requests
     FSetPropertyVariablename: string;
+    FSetPropertyVariableIsPrefix: Boolean;
+    FSetPropertyVariableUseConst: Boolean;
     FJumpToProcName: string;
     NewClassSectionIndent: array[TPascalClassSection] of integer;
     NewClassSectionInsertPos: array[TPascalClassSection] of integer;
@@ -145,7 +147,9 @@ type
     fNewMainUsesSectionUnits: TAVLTree; // tree of AnsiString
     procedure AddNewPropertyAccessMethodsToClassProcs(ClassProcs: TAVLTree;
       const TheClassName: string);
+    procedure SetSetPropertyVariableIsPrefix(aValue: Boolean);
     procedure SetSetPropertyVariablename(AValue: string);
+    procedure SetSetPropertyVariableUseConst(aValue: Boolean);
     function UpdateProcBodySignature(ProcBodyNodes: TAVLTree;
       const BodyNodeExt: TCodeTreeNodeExtension;
       ProcAttrCopyDefToBody: TProcHeadAttributes; var ProcsCopied: boolean;
@@ -381,6 +385,10 @@ type
     // Options
     property SetPropertyVariablename: string read FSetPropertyVariablename
                                              write SetSetPropertyVariablename;
+    property SetPropertyVariableIsPrefix: Boolean
+      read FSetPropertyVariableIsPrefix write SetSetPropertyVariableIsPrefix;
+    property SetPropertyVariableUseConst: Boolean
+      read FSetPropertyVariableUseConst write SetSetPropertyVariableUseConst;
     property CompleteProperties: boolean read FCompleteProperties
                                          write FCompleteProperties;
     property AddInheritedCodeToOverrideMethod: boolean
@@ -473,10 +481,24 @@ begin
   FSourceChangeCache.MainScanner:=Scanner;
 end;
 
+procedure TCodeCompletionCodeTool.SetSetPropertyVariableIsPrefix(aValue: Boolean
+  );
+begin
+  if FSetPropertyVariableIsPrefix = aValue then Exit;
+  FSetPropertyVariableIsPrefix := aValue;
+end;
+
 procedure TCodeCompletionCodeTool.SetSetPropertyVariablename(AValue: string);
 begin
   if FSetPropertyVariablename=aValue then Exit;
   FSetPropertyVariablename:=aValue;
+end;
+
+procedure TCodeCompletionCodeTool.SetSetPropertyVariableUseConst(aValue: Boolean
+  );
+begin
+  if FSetPropertyVariableUseConst = aValue then Exit;
+  FSetPropertyVariableUseConst := aValue;
 end;
 
 function TCodeCompletionCodeTool.OnTopLvlIdentifierFound(
@@ -1028,6 +1050,16 @@ function TCodeCompletionCodeTool.AddLocalVariable(CleanCursorPos: integer;
   CleanLevelPos: integer): boolean;
 // if CleanLevelPos<1 then CleanLevelPos:=CleanCursorPos
 // CleanLevelPos selects the target node, e.g. a ctnProcedure
+
+  function FindFirstVarDeclaration(var Node: TCodeTreeNode): TCodeTreeNode;
+  begin
+    Result := Node;
+    while Assigned(Result.PriorBrother) and (Result.PriorBrother.Desc = ctnVarDefinition) and
+      not Assigned(Result.PriorBrother.LastChild)
+    do
+      Result := Result.PriorBrother;
+  end;
+
 var
   CursorNode, VarSectionNode, VarNode: TCodeTreeNode;
   Indent, InsertPos: integer;
@@ -1038,6 +1070,10 @@ var
   OtherSectionNode: TCodeTreeNode;
   HeaderNode: TCodeTreeNode;
   Beauty: TBeautifyCodeOptions;
+  VarTypeNode: TCodeTreeNode;
+  InsertVarLineStart: integer;
+  InsertVarLineEnd: integer;
+  InsertAsNewLine: Boolean;
 begin
   Result:=false;
   if CleanLevelPos<1 then CleanLevelPos:=CleanCursorPos;
@@ -1105,21 +1141,70 @@ begin
   //DebugLn(['TCodeCompletionCodeTool.AddLocalVariable C InsertTxt="',InsertTxt,'" ParentNode=',ParentNode.DescAsString,' HeaderNode=',HeaderNode.DescAsString,' OtherSectionNode=',OtherSectionNode.DescAsString,' VarSectionNode=',VarSectionNode.DescAsString,' CursorNode=',CursorNode.DescAsString]);
   end;
 
+  InsertAsNewLine := True;
   if (VarSectionNode<>nil) then begin
-    // there is already a var section
-    // -> append variable
     //debugln(['TCodeCompletionCodeTool.AddLocalVariable insert into existing var section']);
-    VarNode:=VarSectionNode.LastChild;
-    if VarNode<>nil then begin
-      Indent:=Beauty.GetLineIndent(Src,VarNode.StartPos);
-      if PositionsInSameLine(Src,VarSectionNode.StartPos,VarNode.StartPos) then
+    // there is already a var section
+    // -> first check if variables with the same type are defined (search backwards)
+    VarTypeNode := nil;
+    if Beauty.GroupLocalVariables then
+    begin
+      VarNode:=VarSectionNode.LastChild;
+      while Assigned(VarNode) and not Assigned(VarTypeNode) do
+      begin
+        if (VarNode.Desc = ctnVarDefinition) and Assigned(VarNode.LastChild) and
+           (VarNode.LastChild.Desc = ctnIdentifier) and
+           (CompareIdentifiers(PChar(VariableType), PChar(ExtractNode(VarNode.LastChild,[phpCommentsToSpace]))) = 0)
+        then
+          VarTypeNode := VarNode;
+        VarNode := VarNode.PriorBrother;
+      end;
+    end;
+    if Assigned(VarTypeNode) then
+    begin
+      // -> append variable to already defined line
+      VarNode := FindFirstVarDeclaration(VarTypeNode);//find starting indentation
+      Indent:=Beauty.GetLineIndent(Src,VarTypeNode.StartPos);
+      if PositionsInSameLine(Src,VarTypeNode.StartPos,VarNode.StartPos) then
         inc(Indent,Beauty.Indent);
-      InsertPos:=FindLineEndOrCodeAfterPosition(VarNode.EndPos);
-    end else begin
-      Indent:=Beauty.GetLineIndent(Src,VarSectionNode.StartPos);
-      MoveCursorToNodeStart(VarSectionNode);
-      ReadNextAtom;
-      InsertPos:=CurPos.EndPos;
+      MoveCursorToNodeStart(VarTypeNode.LastChild);
+      ReadPriorAtom;
+      if CurPos.Flag = cafColon then
+      begin
+        InsertPos:=CurPos.StartPos;
+        GetLineStartEndAtPosition(Src, InsertPos, InsertVarLineStart, InsertVarLineEnd);
+        InsertTxt:=VariableName;
+        if InsertPos-InsertVarLineStart+Length(VariableName)+2 > Beauty.LineLength then//the variable name doesn't fit into the line
+          InsertTxt := Beauty.LineEnd + Beauty.GetIndentStr(Indent) + InsertTxt
+        else if InsertVarLineEnd-InsertVarLineStart+Length(VariableName)+2 > Beauty.LineLength then//the variable type doesn't fit into the line
+        begin
+          if atColon in Beauty.DoNotSplitLineInFront then
+            InsertTxt := Beauty.LineEnd + Beauty.GetIndentStr(Indent) + InsertTxt
+          else
+            InsertTxt := InsertTxt + Beauty.LineEnd + Beauty.GetIndentStr(Indent);
+        end;
+        InsertTxt:=','+InsertTxt;
+        Indent := 0;
+        InsertAsNewLine := False;
+      end else
+        VarTypeNode := nil;//error: colon not found, insert as new line
+    end;
+    if not Assigned(VarTypeNode) then
+    begin
+      // -> append variable to new line
+      VarNode:=VarSectionNode.LastChild;
+      if VarNode<>nil then begin
+        InsertPos:=FindLineEndOrCodeAfterPosition(VarNode.EndPos);
+        VarNode := FindFirstVarDeclaration(VarNode);//find indentation of first var definition
+        Indent:=Beauty.GetLineIndent(Src,VarNode.StartPos);
+        if PositionsInSameLine(Src,VarSectionNode.StartPos,VarNode.StartPos) then
+          inc(Indent,Beauty.Indent);
+      end else begin
+        Indent:=Beauty.GetLineIndent(Src,VarSectionNode.StartPos)+Beauty.Indent;
+        MoveCursorToNodeStart(VarSectionNode);
+        ReadNextAtom;
+        InsertPos:=CurPos.EndPos;
+      end;
     end;
   end else begin
     // there is no var section yet
@@ -1161,11 +1246,14 @@ begin
     InsertTxt:='var'+Beauty.LineEnd
                +Beauty.GetIndentStr(Indent+Beauty.Indent)+InsertTxt;
   end;
-  
+
   // insert new code
   InsertTxt:=Beauty.BeautifyStatement(InsertTxt,Indent);
   //DebugLn('TCodeCompletionCodeTool.AddLocalVariable E ',InsertTxt,' ');
-  SourceChangeCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,InsertTxt);
+  if InsertAsNewLine then
+    SourceChangeCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,InsertTxt)
+  else
+    SourceChangeCache.Replace(gtNone,gtNone,InsertPos,InsertPos,InsertTxt);
 
   if (VariableTypeUnitName<>'')
   and (not IsHiddenUsedUnit(PChar(VariableTypeUnitName))) then begin
@@ -1410,6 +1498,8 @@ begin
   inherited CalcMemSize(Stats);
   Stats.Add('TCodeCompletionCodeTool',
      MemSizeString(FSetPropertyVariablename)
+    +PtrUInt(SizeOf(FSetPropertyVariableIsPrefix))
+    +PtrUInt(SizeOf(FSetPropertyVariableUseConst))
     +MemSizeString(FJumpToProcName)
     +length(NewClassSectionIndent)*SizeOf(integer)
     +length(NewClassSectionInsertPos)*SizeOf(integer)
@@ -2703,7 +2793,6 @@ begin
   Params:=TFindDeclarationParams.Create(Self, CursorNode);
   try
     // check parameter list
-    Params.ContextNode:=CursorNode;
     ExprList:=CreateParamExprListFromStatement(BracketOpenPos,Params);
 
     // create parameter list
@@ -5822,7 +5911,6 @@ function TCodeCompletionCodeTool.FindAssignMethod(CursorPos: TCodeXYPosition;
     try
       Params.Flags:=[fdfSearchInAncestors];
       Params.Identifier:=PChar(ProcName);
-      Params.ContextNode:=ClassNode;
       if not FindIdentifierInContext(Params) then exit;
       //debugln(['FindInheritedAssign NewNode=',Params.NewNode.DescAsString]);
       if Params.NewNode=nil then exit;
@@ -6095,7 +6183,6 @@ begin
   if VarNode=nil then begin
     Params:=TFindDeclarationParams.Create(Self, CursorNode);
     try
-      Params.ContextNode:=CursorNode;
       Params.SetIdentifier(Self,Identifier,nil);
       Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,fdfSearchInHelpers,
                      fdfTopLvlResolving,fdfFindVariable];
@@ -6162,7 +6249,7 @@ begin
         AddAssignment('nil');
       ctnProcedureHead:
         if Tool.NodeIsFunction(Node) then begin
-          Params:=TFindDeclarationParams.Create(Self, Node);
+          Params:=TFindDeclarationParams.Create(Tool, Node);
           try
             aContext:=Tool.FindBaseTypeOfNode(Params,Node);
             Tool:=aContext.Tool;
@@ -6382,7 +6469,6 @@ begin
       // find type of term
       Params:=TFindDeclarationParams.Create(Self, CursorNode);
       try
-        Params.ContextNode:=CursorNode;
         NewType:=FindTermTypeAsString(TermAtom,Params,NewExprType);
       finally
         Params.Free;
@@ -6761,7 +6847,7 @@ var
   end;
 
 var
-  CleanAccessFunc, CleanParamList, ParamList, PropType, VariableName: string;
+  CleanAccessFunc, CleanParamList, ParamList, PropName, PropType, VariableName: string;
   IsClassProp: boolean;
   InsertPos: integer;
   BeautifyCodeOpts: TBeautifyCodeOptions;
@@ -6788,6 +6874,10 @@ var
     end;
     ReadNextAtom; // read name
     Parts[ppName]:=CurPos;
+    PropName := copy(Src,Parts[ppName].StartPos,
+      Parts[ppName].EndPos-Parts[ppName].StartPos);
+    if (PropName <> '') and (PropName[1] = '&') then//property name starts with '&'
+      Delete(PropName, 1, 1);
     ReadNextAtom;
   end;
   
@@ -6966,13 +7056,10 @@ var
       or (CodeCompleteClassNode.Desc in AllClassInterfaces) then
       begin
         // create the default read identifier for a function
-        AccessParam:=AccessParamPrefix+copy(Src,Parts[ppName].StartPos,
-                                   Parts[ppName].EndPos-Parts[ppName].StartPos);
+        AccessParam:=AccessParamPrefix+PropName;
       end else begin
         // create the default read identifier for a variable
-        AccessParam:=BeautifyCodeOpts.PrivateVariablePrefix
-                                 +copy(Src,Parts[ppName].StartPos,
-                                   Parts[ppName].EndPos-Parts[ppName].StartPos);
+        AccessParam:=BeautifyCodeOpts.PrivateVariablePrefix+PropName;
       end;
     end;
 
@@ -7095,6 +7182,7 @@ var
     AccessParamPrefix: String;
     AccessParam: String;
     AccessFunc: String;
+    AccessVariableName, AccessVariableNameParam: String;
   begin
     // check write specifier
     if not PartIsAtom[ppWrite] then exit;
@@ -7108,8 +7196,7 @@ var
       AccessParam:=copy(Src,Parts[ppWrite].StartPos,
             Parts[ppWrite].EndPos-Parts[ppWrite].StartPos)
     else
-      AccessParam:=AccessParamPrefix+copy(Src,Parts[ppName].StartPos,
-            Parts[ppName].EndPos-Parts[ppName].StartPos);
+      AccessParam:=AccessParamPrefix+PropName;
 
     // complete property definition for write specifier
     if (Parts[ppWrite].StartPos<0) and CompleteProperties then begin
@@ -7176,6 +7263,13 @@ var
       // add insert demand for function
       // build function code
       ProcBody:='';
+      AccessVariableName := SetPropertyVariablename;
+      if SetPropertyVariableIsPrefix then
+        AccessVariableName := AccessVariableName+PropName;
+      if SetPropertyVariableUseConst then
+        AccessVariableNameParam := 'const '+AccessVariableName
+      else
+        AccessVariableNameParam := AccessVariableName;
       if (Parts[ppParamList].StartPos>0) then begin
         MoveCursorToCleanPos(Parts[ppParamList].StartPos);
         ReadNextAtom;
@@ -7189,20 +7283,20 @@ var
         if (Parts[ppIndexWord].StartPos<1) then begin
           // param list, no index
           AccessFunc:='procedure '+AccessParam
-                      +'('+ParamList+';'+SetPropertyVariablename+':'
+                      +'('+ParamList+';'+AccessVariableNameParam+':'
                       +PropType+');';
         end else begin
           // index + param list
           AccessFunc:='procedure '+AccessParam
                       +'(AIndex:'+IndexType+';'+ParamList+';'
-                      +SetPropertyVariablename+':'+PropType+');';
+                      +AccessVariableNameParam+':'+PropType+');';
         end;
       end else begin
         if (Parts[ppIndexWord].StartPos<1) then begin
           // no param list, no index
           AccessFunc:=
             'procedure '+AccessParam
-            +'('+SetPropertyVariablename+':'+PropType+');';
+            +'('+AccessVariableNameParam+':'+PropType+');';
           if VariableName<>'' then begin
             { read spec is a variable -> add simple assign code to body
               For example:
@@ -7230,14 +7324,14 @@ var
               ProcBody:=
                 'procedure '
                 +ExtractClassName(PropNode.Parent.Parent,false)+'.'+AccessParam
-                +'('+SetPropertyVariablename+':'+PropType+');'
+                +'('+AccessVariableNameParam+':'+PropType+');'
                 +BeautifyCodeOpts.LineEnd
                 +'begin'+BeautifyCodeOpts.LineEnd
                 +BeautifyCodeOpts.GetIndentStr(BeautifyCodeOpts.Indent)
-                  +'if '+VariableName+'='+SetPropertyVariablename+' then Exit;'
+                  +'if '+VariableName+'='+AccessVariableName+' then Exit;'
                   +BeautifyCodeOpts.LineEnd
                 +BeautifyCodeOpts.GetIndentStr(BeautifyCodeOpts.Indent)
-                  +VariableName+':='+SetPropertyVariablename+';'
+                  +VariableName+':='+AccessVariableName+';'
                   +BeautifyCodeOpts.LineEnd
                 +'end;';
             end;
@@ -7247,7 +7341,7 @@ var
         end else begin
           // index, no param list
           AccessFunc:='procedure '+AccessParam
-                  +'(AIndex:'+IndexType+';'+SetPropertyVariablename+':'+PropType+');';
+                  +'(AIndex:'+IndexType+';'+AccessVariableNameParam+':'+PropType+');';
         end;
       end;
       // add new Insert Node
@@ -7283,8 +7377,7 @@ var
       AccessParam:=copy(Src,Parts[ppStored].StartPos,
             Parts[ppStored].EndPos-Parts[ppStored].StartPos);
     end else
-      AccessParam:=copy(Src,Parts[ppName].StartPos,
-        Parts[ppName].EndPos-Parts[ppName].StartPos)
+      AccessParam:=PropName
         +BeautifyCodeOpts.PropertyStoredIdentPostfix;
     CleanAccessFunc:=UpperCaseStr(AccessParam);
     // check if procedure exists
@@ -9300,6 +9393,8 @@ constructor TCodeCompletionCodeTool.Create;
 begin
   inherited Create;
   FSetPropertyVariablename:='AValue';
+  FSetPropertyVariableIsPrefix := false;
+  FSetPropertyVariableUseConst := false;
   FCompleteProperties:=true;
   FAddInheritedCodeToOverrideMethod:=true;
 end;

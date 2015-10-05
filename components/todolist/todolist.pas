@@ -63,8 +63,9 @@ interface
 uses
   // FCL, RTL, LCL
   Classes, SysUtils, Math, LCLProc, Forms, Controls, Dialogs, StrUtils,
-  ComCtrls, ActnList, AvgLvlTree, LazUTF8Classes, LCLType, CodeCache,
-  CodeToolManager, BasicCodeTools, FileProcs, LazFileUtils,
+  ComCtrls, ActnList, AvgLvlTree, LazUTF8Classes, LCLType, ButtonPanel,
+  CodeCache, CodeToolManager, BasicCodeTools, FileProcs, LazFileUtils,
+  LclIntf,
   // IDEIntf
   LazIDEIntf, IDEImagesIntf, PackageIntf, ProjectIntf,
   // IDE
@@ -138,9 +139,9 @@ type
     acRefresh: TAction;
     acExport: TAction;
     ActionList: TActionList;
+    ButtonPanel1: TButtonPanel;
     lvTodo: TListView;
     SaveDialog1: TSaveDialog;
-    StatusBar: TStatusBar;
     ToolBar: TToolBar;
     tbGoto: TToolButton;
     tbOptions: TToolButton;
@@ -153,6 +154,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift:TShiftState);
     procedure FormShow(Sender: TObject);
+    procedure HelpButtonClick(Sender: TObject);
     procedure lvTodoClick(Sender: TObject);
     procedure lvTodoColumnClick(Sender : TObject; Column : TListColumn);
     procedure lvTodoCompare(Sender : TObject; Item1, Item2 : TListItem;
@@ -336,6 +338,12 @@ end;
 procedure TIDETodoWindow.FormShow(Sender: TObject);
 begin
   IdleConnected:=true;
+end;
+
+procedure TIDETodoWindow.HelpButtonClick(Sender: TObject);
+begin
+  // usual API from IdeHelpIntf don't work
+  OpenURL('http://wiki.freepascal.org/IDE_Window:_ToDo_List');
 end;
 
 procedure TIDETodoWindow.lvTodoClick(Sender: TObject);

@@ -18,6 +18,7 @@ unit CocoaWSForms;
 
 {$mode objfpc}{$H+}
 {$modeswitch objectivec1}
+{$include cocoadefines.inc}
 
 interface
 
@@ -480,6 +481,7 @@ var
 
     cnt.callback := TCocoaWindow(win).callback;
     cnt.callback.IsOpaque:=true;
+    win.LCLForm := Form;
     win.setContentView(cnt);
 
     if (AParams.WndParent <> 0) then
@@ -567,7 +569,9 @@ begin
   {if CocoaWidgetSet.CurModalSession <> nil then
     NSApp.endModalSession(CocoaWidgetSet.CurModalSession);
   CocoaWidgetSet.CurModalSession := nil;}
-  NSApp.stopModal();
+ {$ifdef COCOA_USE_NATIVE_MODAL}
+ NSApp.stopModal();
+ {$endif}
   CocoaWidgetSet.CurModalForm := nil;
 end;
 
@@ -586,7 +590,9 @@ begin
   NSApp.runModalSession(CocoaWidgetSet.CurModalSession);}
 
   CocoaWidgetSet.CurModalForm := ACustomForm;
+  {$ifdef COCOA_USE_NATIVE_MODAL}
   NSApp.runModalForWindow(win);
+  {$endif}
 end;
 
 // If ShowModal will not be fully blocking in the future this can be removed

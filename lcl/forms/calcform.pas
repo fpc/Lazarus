@@ -1,7 +1,7 @@
 {
  /***************************************************************************
                                calcform.pas
-                               -----------
+                               ------------
                               Calculator form
 
 
@@ -31,7 +31,7 @@ const
 type
   TCalculatorCalcKeyEvent = procedure (var key: char) of object;
   TCalculatorDispChangeEvent = procedure of object;
-  TCalcState = (csFirst, csValid, csError);
+  TCalculatorState = (csFirst, csValid, csError);
 
   TCalculatorLayout = (clNormal, clSimple);
 
@@ -41,7 +41,7 @@ type
   TCalculatorPanel = class(TPanel)
   private
     FText: string;
-    FStatus: TCalcState;
+    FStatus: TCalculatorState;
     FOperator: Char;
     FOperand: Double;
     FMemory: Double;
@@ -82,7 +82,7 @@ type
     property Memory: Double read FMemory write FMemory;
     property Precision: byte read FPrecision write FPrecision;
     property BeepOnError: boolean read FBeepOnError write FBeepOnError;
-    property Status: TCalcState read FStatus write FStatus;
+    property Status: TCalculatorState read FStatus write FStatus;
     property OperatorChar: char read FOperator write FOperator;
     property Text: string read FText;
 
@@ -143,6 +143,11 @@ var
   cColorBtnOthers: TColor = clblack;
   cColorDisplayText: TColor = clblack;
   cColorDisplayBack: TColor = clwhite;
+
+  cCalculatorFontName: string = 'MS Sans Serif';
+  cCalculatorFontSize: integer = 8;
+  cCalculatorFontStyle: TFontStyles = [fsBold];
+
 
 implementation
 
@@ -228,13 +233,10 @@ const
 
 procedure SetDefaultFont(AFont: TFont; Layout: TCalculatorLayout);
 begin
-  with AFont do
-  begin
-    Color := clWindowText;
-    Name := 'MS Sans Serif';
-    Size := 8;
-    Style := [fsBold];
-  end;
+  //AFont.Color:=cCalculatorFontColor; //all controls now have their custom colors
+  AFont.Name:=cCalculatorFontName;
+  AFont.Size:=cCalculatorFontSize;
+  AFont.Style:=cCalculatorFontStyle;
 end;
 
 function CreateCalculatorForm(AOwner: TComponent; ALayout: TCalculatorLayout; AHelpContext: THelpContext): TCalculatorForm;
@@ -345,6 +347,7 @@ begin
       Alignment:=taCenter;
       AutoSize:=False;
       Parent:=FMemoryPanel;
+      Font.Color:=cColorDisplayText;
       Font.Style:=[];
     end;
   end;

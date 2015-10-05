@@ -142,6 +142,14 @@ resourcestring
   lisMoveFiles2 = 'Move files?';
   lrsPLDDeleteSelected = 'Delete selected';
 
+  dlgMultipleInstances = 'Multiple Lazarus instances';
+  dlgMultipleInstances_AlwaysStartNew = 'always start a new instance';
+  dlgMultipleInstances_OpenFilesInRunning = 'open files in a running instance';
+  dlgMultipleInstances_ForceSingleInstance = 'do not allow multiple instances';
+  dlgRunningInstanceModalError = 'The running Lazarus instance cannot accept any files.'+sLineBreak+'Do you want to open them in a new IDE instance?'+sLineBreak+sLineBreak+'%s';
+  dlgForceUniqueInstanceModalError = 'The running Lazarus instance cannot accept any files.';
+  dlgRunningInstanceNotRespondingError = 'Lazarus instance is running but not responding.';
+
   // *** Rest of the resource strings ***
 
   lisImportPackageListXml = 'Import package list (*.xml)';
@@ -389,6 +397,8 @@ resourcestring
   lisMenuJumpToImplementation = 'Jump to Implementation';
   lisMenuJumpToImplementationUses = 'Jump to Implementation uses';
   lisMenuJumpToInitialization = 'Jump to Initialization';
+  lisMenuJumpToProcedureHeader = 'Jump to Procedure header';
+  lisMenuJumpToProcedureBegin = 'Jump to Procedure begin';
   lisMenuViewUnits = 'Units ...';
   lisMenuViewForms = 'Forms ...';
   lisMenuViewUnitDependencies = 'Unit Dependencies';
@@ -597,6 +607,7 @@ resourcestring
   lisKMEditContextSensitiveHelp = 'Edit context sensitive help';
   lisMenuContextHelp = 'Context sensitive Help';
   lisMenuEditContextHelp = 'Edit context sensitive Help';
+  lisMenuShowSmartHint = 'Context sensitive smart hint';
 
   lisDsgCopyComponents = 'Copy selected components to clipboard';
   lisDsgCutComponents = 'Cut selected components to clipboard';
@@ -1259,21 +1270,27 @@ resourcestring
 
   // Desktop options
   dlgManageDesktops = 'Manage desktops';
-  dlgSelectedDesktop = 'Selected desktop:';
-  dlgSaveCurrentDesktop = 'Save current desktop';
   dlgSaveCurrentDesktopAs = 'Save current desktop as';
-  dlgCloseAndUseSelectedDesktop = 'Close and use selected desktop';
   dlgReallyDeleteDesktop = 'Really delete desktop "%s"?';
+  dlgCannotDeleteActiveDesktop = 'You cannot delete the active desktop.';
+  dlgCannotDeleteDebugDesktop = 'You cannot delete debug desktop.';
+  dlgCannotUseDockedUndockedDesktop = 'You cannot use docked desktop in undocked environment and vice versa.';
   dlgRenameDesktop = 'Rename desktop';
   dlgNewDesktop = 'New desktop ...';
-  dlgToggleSelectedDebugDesktop = 'Toggle as debug desktop';
+  dlgSetActiveDesktop = 'Set active';
+  dlgToggleDebugDesktop = 'Toggle as debug desktop';
   dlgDesktopName = 'Desktop name';
   dlgOverwriteDesktop = 'Desktop with the name "%s" was found.'+sLineBreak+'Should the old desktop be overwritten?';
-  dlgDebugDesktop = 'debug desktop';
+  dlgDebugDesktop = 'debug';
+  dlgActiveDesktop = 'active';
   dlgImportDesktopExists = 'A desktop with the same name already exists.'+sLineBreak+'Please confirm the desktop name:';
   dlgDesktopsImported = '%d desktop(s) successfully imported from "%s"';
   dlgDesktopsExported = '%d desktop(s) successfully exported to "%s"';
-  lisExportAll = 'all';
+  lisExportSelected = 'Export selected';
+  lisExportAll = 'Export all';
+  dlgGrayedDesktopsUndocked = 'Grayed desktops are for undocked environment.';
+  dlgAutoSaveActiveDesktop = 'Auto save active desktop';
+  dlgAutoSaveActiveDesktopHint = 'Save active desktop on IDE close'+sLineBreak+'Save debug desktop on IDE close and debug end';
 
   // Window options
   dlgShowingWindows = 'Showing Windows';
@@ -1332,7 +1349,7 @@ resourcestring
   dlgEnvOtherFiles = 'Other Files';
   dlgMaxRecentFiles = 'Max recent files';
   dlgMaxRecentProjs = 'Max recent project files';
-  dlgQOpenLastPrj = 'Open last project at start';
+  dlgQOpenLastPrj = 'Open last project and packages at start';
   dlgLazarusDir = 'Lazarus directory (default for all projects)';
   dlgFpcExecutable = 'Compiler executable (e.g. %s)';
   dlgFpcSrcPath = 'FPC source directory';
@@ -2094,6 +2111,11 @@ resourcestring
   dlgCDTStoredPostfix = 'Stored postfix';
   dlgCDTVariablePrefix = 'Variable prefix';
   dlgSetPropertyVariable = 'Set property Variable';
+  dlgSetPropertyVariableHint = 'The parameter name for the default setter procedure.';
+  dlgSetPropertyVariableIsPrefix = 'is prefix';
+  dlgSetPropertyVariableIsPrefixHint = 'If checked, the "Set property Variable" is a prefix. Otherwise it is a fixed name.';
+  dlgSetPropertyVariableUseConst = 'use const';
+  dlgSetPropertyVariableUseConstHint = 'If checked, the setter parameter is marked with "const".';
   dlgMaxLineLength = 'Max line length:';
   dlgNotSplitLineFront = 'Do not split line in front of';
   dlgNotSplitLineAfter = 'Do not split line after';
@@ -3983,6 +4005,7 @@ resourcestring
     +'%s%s'
     +'%slazbuild is non interactive, aborting now.';
   lisPkgMangSavePackageLpk = 'Save Package %s (*.lpk)';
+  lisPkgMangSaveAsAlreadyOpenedPackage = 'The package %s is already open in the IDE.'+sLineBreak+'You cannot save a package with the same name.';
   lisPkgMangInvalidPackageFileExtension = 'Invalid package file extension';
   lisPkgMangPackagesMustHaveTheExtensionLpk = 'Packages must have the '
     +'extension .lpk';
@@ -5985,6 +6008,7 @@ resourcestring
   lisUDUnits2 = 'Units: %s';
   lisCTOUpdateAllMethodSignatures = 'Update all method signatures';
   lisCTOUpdateMultipleProcedureSignatures = 'Update multiple procedure signatures';
+  lisGroupLocalVariables = 'Group automatically defined local variables';
   lisUpdateOtherProcedureSignaturesWhenOnlyLetterCaseHa = 'Update other '
     +'procedure signatures when only letter case has changed';
   lisTemplateFile = 'Template file';

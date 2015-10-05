@@ -69,6 +69,14 @@ const
   DefaultMaxRecentProjectFiles = 5;
   DefaultMaxRecentPackageFiles = 10;
 
+  DefaultAutoSaveIntervalInSecs = 300;
+
+  DefaultRubberbandSelectsGrandChilds = false;
+  DefaultGridColor = clBlack;
+  DefaultGridSize = 8;
+  DefaultGuideLineColorLeftTop = clBlue;
+  DefaultGuideLineColorRightBottom = clGreen;
+
   //----------------------------------------------------------------------------
   
   { Backup }
@@ -176,6 +184,16 @@ const
       'Never'
     );
 
+type
+  TIDEMultipleInstancesOption = (mioAlwaysStartNew, mioOpenFilesInRunning, mioForceSingleInstance);
+const
+  IDEMultipleInstancesOptionNames: array[TIDEMultipleInstancesOption] of string = (
+    'AlwaysStartNew',      // mioAlwaysStartNew
+    'OpenFilesInRunning',  // mioOpenFilesInRunning
+    'ForceSingleInstance'  // mioForceSingleInstance
+    );
+  DefaultIDEMultipleInstancesOption = mioOpenFilesInRunning;
+
   { Messages window }
 type
   TMsgWndFileNameStyle = (
@@ -252,15 +270,21 @@ type
 
 type
 
+  TLastOpenPackagesList = class(TStringList)
+  public
+    function Remove(const aString: string): Boolean;
+    constructor Create;
+  end;
+
   { TDesktopOpt }
 
   TDesktopOpt = class
   private
     FName: String;
+    FIsDocked: Boolean;
     FXMLCfg: TRttiXMLConfig;
     FConfigStore: TXMLOptionsStorage;
     // window layout
-    FUseIDELayouts: Boolean;
     FIDEWindowCreatorsLayoutList: TSimpleWindowLayoutList;
     FIDEDialogLayoutList: TIDEDialogLayoutList;
     FSingleTaskBarButton: boolean;
@@ -283,15 +307,23 @@ type
     // component palette
     FComponentPaletteOptions: TCompPaletteOptions;
 
+    //Docking options
+    FDockedOpt: TAbstractDesktopDockingOpt;
+
+    function GetCompatible: Boolean;
     procedure InitLayoutList;
   public
-    constructor Create(aName: String; const aUseIDELayouts: Boolean);
+    constructor Create(const aName: String);
+    constructor Create(const aName: String; const aIsDocked: Boolean);
     destructor Destroy; override;
-    procedure Assign(Source: TDesktopOpt);
+    procedure Assign(Source: TDesktopOpt; const AssignName: Boolean = False);
   public
     procedure SetConfig(aXMLCfg: TRttiXMLConfig; aConfigStore: TXMLOptionsStorage);
     procedure Load(Path: String);
     procedure Save(Path: String);
+    procedure ImportSettingsFromIDE;
+    procedure ExportSettingsToIDE;
+    procedure RestoreDesktop;
 
     property Name: String read FName write FName;
     property IDEWindowCreatorsLayoutList: TSimpleWindowLayoutList read FIDEWindowCreatorsLayoutList write FIDEWindowCreatorsLayoutList;
@@ -314,6 +346,8 @@ type
     property IDECoolBarOptions: TIDECoolBarOptions read FIDECoolBarOptions;
     property EditorToolBarOptions: TEditorToolBarOptions read FEditorToolBarOptions;
     property ComponentPaletteOptions: TCompPaletteOptions read FComponentPaletteOptions;
+    property IsDocked: Boolean read FIsDocked;
+    property Compatible: Boolean read GetCompatible;
   end;
 
   TEnvironmentOptions = class;
@@ -360,6 +394,7 @@ type
     FAutoSaveProject: boolean;
     FAutoSaveIntervalInSecs: integer;
     FLastSavedProjectFile: string;
+    FLastOpenPackages: TLastOpenPackagesList;//list of filenames with open packages
 
     // designer
     FCreateComponentFocusNameProperty: boolean;
@@ -415,6 +450,7 @@ type
     FShowCompileDialog: Boolean;       // show dialog during compile
     FAutoCloseCompileDialog: Boolean;  // auto close dialog after succesed compile
     FMsgViewFilters: TLMsgViewFilters;
+    FMsgViewShowFPCMsgLinesCompiled: Boolean;
 
     // compiler + debugger + lazarus files
     FParseValues: array[TEnvOptParseType] of TParseString;
@@ -459,6 +495,7 @@ type
     FRecentPackageFiles: TStringList;
     FMaxRecentPackageFiles: integer;
     FOpenLastProjectAtStart: boolean;
+    FMultipleInstances: TIDEMultipleInstancesOption;
     // Prevent repopulating Recent project files menu with example projects if it was already cleared up.
     FAlreadyPopulatedRecentFiles : Boolean;
 
@@ -489,9 +526,11 @@ type
     FDesktops: TDesktopOptList;
     FDesktop: TDesktopOpt;
     FLastDesktopBeforeDebug: TDesktopOpt;
-
+    FActiveDesktopName: string;
+    FAutoSaveActiveDesktop: Boolean;
     FDebugDesktopName: string;
 
+    function GetActiveDesktop: TDesktopOpt;
     function GetCompilerFilename: string;
     function GetCompilerMessagesFilename: string;
     function GetDebugDesktop: TDesktopOpt;
@@ -572,6 +611,7 @@ type
     procedure UseDesktop(ADesktop: TDesktopOpt);
     procedure EnableDebugDesktop;
     procedure DisableDebugDesktop;
+    class function DesktopCanBeLoaded(const aDockMaster: string): Boolean;
 
     // auto save
     // ask even if only project session needs saving
@@ -705,8 +745,11 @@ type
     property LastSavedProjectFile: string read FLastSavedProjectFile
                      write FLastSavedProjectFile; { if empty then create new project,
                                                     if '-' then do not load/create any project }
+    property LastOpenPackages: TLastOpenPackagesList read FLastOpenPackages;
     property OpenLastProjectAtStart: boolean read FOpenLastProjectAtStart
                                              write FOpenLastProjectAtStart;
+    property MultipleInstances: TIDEMultipleInstancesOption read FMultipleInstances
+                                                                write FMultipleInstances;
     property FileDialogFilter: string read FFileDialogFilter write FFileDialogFilter;
 
     // backup
@@ -754,6 +797,7 @@ type
     property MsgViewColors[c: TMsgWndColor]: TColor read GetMsgViewColors write SetMsgViewColors;
     property MsgViewFilters: TLMsgViewFilters read FMsgViewFilters;
     property MsgColors[u: TMessageLineUrgency]: TColor read GetMsgColors write SetMsgColors;
+    property MsgViewShowFPCMsgLinesCompiled: Boolean read FMsgViewShowFPCMsgLinesCompiled write FMsgViewShowFPCMsgLinesCompiled;
 
     // glyphs
     property ShowButtonGlyphs: TApplicationShowGlyphs read FShowButtonGlyphs write FShowButtonGlyphs;
@@ -764,9 +808,12 @@ type
     property NewFormTemplate: string read FNewFormTemplate write FNewFormTemplate;
     // Desktop
     property Desktops: TDesktopOptList read FDesktops;
-    property Desktop: TDesktopOpt read FDesktop;
+    property Desktop: TDesktopOpt read FDesktop;               // the working desktop, standalone
     property DebugDesktopName: string read FDebugDesktopName write FDebugDesktopName;
-    property DebugDesktop: TDesktopOpt read GetDebugDesktop;
+    property DebugDesktop: TDesktopOpt read GetDebugDesktop;   // debug desktop from Desktops list
+    property ActiveDesktopName: string read FActiveDesktopName write FActiveDesktopName;
+    property ActiveDesktop: TDesktopOpt read GetActiveDesktop; // active desktop from Desktops list
+    property AutoSaveActiveDesktop: Boolean read FAutoSaveActiveDesktop write FAutoSaveActiveDesktop;
   end;
 
 var
@@ -778,6 +825,7 @@ function AmbiguousFileActionNameToType(const Action: string): TAmbiguousFileActi
 function CharCaseFileActionNameToType(const Action: string): TCharCaseFileAction;
 function UnitRenameReferencesActionNameToType(const Action: string): TUnitRenameReferencesAction;
 function StrToMsgWndFilenameStyle(const s: string): TMsgWndFileNameStyle;
+function StrToIDEMultipleInstancesOption(const s: string): TIDEMultipleInstancesOption;
 
 function SimpleDirectoryCheck(const OldDir, NewDir,
   NotFoundErrMsg: string; out StopChecking: boolean): boolean;
@@ -847,6 +895,13 @@ begin
   Result:=mwfsShort;
 end;
 
+function StrToIDEMultipleInstancesOption(const s: string): TIDEMultipleInstancesOption;
+begin
+  for Result in TIDEMultipleInstancesOption do
+    if CompareText(s,IDEMultipleInstancesOptionNames[Result])=0 then exit;
+  Result:=DefaultIDEMultipleInstancesOption;
+end;
+
 function SimpleDirectoryCheck(const OldDir, NewDir,
   NotFoundErrMsg: string; out StopChecking: boolean): boolean;
 var
@@ -881,6 +936,25 @@ begin
   WriteStr(Result, u);
 end;
 
+{ TLastOpenPackagesList }
+
+constructor TLastOpenPackagesList.Create;
+begin
+  inherited Create;
+  Sorted:=true;
+  Duplicates:=dupIgnore;
+end;
+
+function TLastOpenPackagesList.Remove(const aString: string): Boolean;
+var
+  xIndex: Integer;
+begin
+  xIndex := IndexOf(aString);
+  Result := xIndex >= 0;
+  if Result then
+    Delete(xIndex);
+end;
+
 { TDesktopOptList }
 
 constructor TDesktopOptList.Create(aEnvOpts: TEnvironmentOptions);
@@ -903,16 +977,18 @@ end;
 procedure TDesktopOptList.AddFromCfg(Path: String);
 var
   dsk: TDesktopOpt;
-  dskName: String;
+  dskName, dskDockMaster: String;
 begin
   dskName := FXMLCfg.GetValue(Path+'Name', 'default');
-  if Find(dskName)=nil then
-  begin
-    dsk := TDesktopOpt.Create(dskName, False);
-    dsk.SetConfig(FXMLCfg, FConfigStore);
-    dsk.Load(Path);
-    Add(dsk);
-  end;
+  dskDockMaster := FXMLCfg.GetValue(Path+'DockMaster', '');
+
+  if not EnvironmentOptions.DesktopCanBeLoaded(dskDockMaster) or (IndexOf(dskName) >= 0) then
+    Exit;
+
+  dsk := TDesktopOpt.Create(dskName, dskDockMaster<>'');
+  dsk.SetConfig(FXMLCfg, FConfigStore);
+  dsk.Load(Path);
+  Add(dsk);
 end;
 
 function TDesktopOptList.IndexOf(aName: string): integer;
@@ -941,11 +1017,22 @@ end;
 
 { TDesktopOpt }
 
-constructor TDesktopOpt.Create(aName: String; const aUseIDELayouts: Boolean);
+constructor TDesktopOpt.Create(const aName: String);
 begin
+  Create(aName, Assigned(IDEDockMaster));
+end;
+
+constructor TDesktopOpt.Create(const aName: String; const aIsDocked: Boolean);
+begin
+  if aIsDocked and not Assigned(IDEDockMaster) then
+    raise Exception.Create('Internal error: TEnvironmentOptions.CreateDesktop cannot create docked desktop in undocked environment.');
+
   inherited Create;
 
   FName:=aName;
+  FIsDocked := aIsDocked;
+  if aIsDocked then
+    FDockedOpt := IDEDockMaster.DockedDesktopOptClass.Create;
   FSingleTaskBarButton:=false;
   FHideIDEOnRun:=false;
   FAutoAdjustIDEHeight:=true;
@@ -968,20 +1055,10 @@ begin
   // Windows layout
   InitLayoutList;
 
-  FUseIDELayouts := aUseIDELayouts;
-  if FUseIDELayouts then
-  begin
-    //default desktop - use IDE storage objects!
-    FIDEDialogLayoutList:=IDEWindowIntf.IDEDialogLayoutList;
-    FIDEWindowCreatorsLayoutList := IDEWindowIntf.IDEWindowCreators.SimpleLayoutStorage;
-  end else
-  begin
-    //saved desktops - use own layout storage objects
-    FIDEDialogLayoutList:=TIDEDialogLayoutList.Create;
-    FIDEWindowCreatorsLayoutList:=TSimpleWindowLayoutList.Create(False);
-    FIDEDialogLayoutList.Assign(IDEWindowIntf.IDEDialogLayoutList);
-    FIDEWindowCreatorsLayoutList.Assign(IDEWindowIntf.IDEWindowCreators.SimpleLayoutStorage, True, True, True);
-  end;
+  FIDEDialogLayoutList:=TIDEDialogLayoutList.Create;
+  FIDEWindowCreatorsLayoutList:=TSimpleWindowLayoutList.Create(False);
+  FIDEDialogLayoutList.Assign(IDEWindowIntf.IDEDialogLayoutList);
+  FIDEWindowCreatorsLayoutList.CopyItemsFrom(IDEWindowIntf.IDEWindowCreators.SimpleLayoutStorage);
 end;
 
 destructor TDesktopOpt.Destroy;
@@ -989,27 +1066,29 @@ begin
   FreeAndNil(FComponentPaletteOptions);
   FreeAndNil(FEditorToolBarOptions);
   FreeAndNil(FIDECoolBarOptions);
+  FreeAndNil(FDockedOpt);
 
-  if not FUseIDELayouts then
-  begin
-    FreeAndNil(FIDEDialogLayoutList);
-    FreeAndNil(FIDEWindowCreatorsLayoutList);
-  end;
+  FreeAndNil(FIDEDialogLayoutList);
+  FreeAndNil(FIDEWindowCreatorsLayoutList);
 
   inherited Destroy;
 end;
 
-procedure TDesktopOpt.Assign(Source: TDesktopOpt);
+function TDesktopOpt.GetCompatible: Boolean;
 begin
-  // Note: FName is not assigned.
-  // ToDo :
-  //FXMLCfg.Assign(Source.FXMLCfg);
-  //FConfigStore.Assign(Source.FConfigStore);
+  Result := (IsDocked = Assigned(IDEDockMaster));
+end;
+
+procedure TDesktopOpt.Assign(Source: TDesktopOpt; const AssignName: Boolean);
+begin
+  if AssignName then
+    FName := Source.FName;
+
+  if Assigned(FDockedOpt) <> Assigned(Source.FDockedOpt) then
+    raise Exception.Create('Internal error: TDesktopOpt.Assign mixed docked/undocked desktops.');
 
   // window layout
-  if Source.FIDEWindowCreatorsLayoutList <> IDEWindowCreators.SimpleLayoutStorage then
-    Source.FIDEWindowCreatorsLayoutList.Assign(IDEWindowCreators.SimpleLayoutStorage, True, True, False);
-  FIDEWindowCreatorsLayoutList.Assign(Source.FIDEWindowCreatorsLayoutList, False, False, True);
+  FIDEWindowCreatorsLayoutList.CopyItemsFrom(Source.FIDEWindowCreatorsLayoutList);
   FIDEDialogLayoutList.Assign(Source.FIDEDialogLayoutList);
   FSingleTaskBarButton := Source.FSingleTaskBarButton;
   FHideIDEOnRun := Source.FHideIDEOnRun;
@@ -1030,6 +1109,9 @@ begin
   FEditorToolBarOptions.Assign(Source.FEditorToolBarOptions);
   // component palette
   FComponentPaletteOptions.Assign(Source.FComponentPaletteOptions);
+
+  if Assigned(FDockedOpt) then
+    FDockedOpt.Assign(Source.FDockedOpt);
 end;
 
 procedure TDesktopOpt.Load(Path: String);
@@ -1060,12 +1142,37 @@ begin
   FEditorToolBarOptions.Load(FXMLCfg, Path);
   // component palette
   FComponentPaletteOptions.Load(FXMLCfg, Path);
+
+  if Assigned(FDockedOpt) then
+    FDockedOpt.Load(Path, FXMLCfg);
+end;
+
+procedure TDesktopOpt.RestoreDesktop;
+begin
+  IDEWindowCreators.RestoreSimpleLayout;
+  if Assigned(FDockedOpt) then
+    FDockedOpt.RestoreDesktop;
+end;
+
+procedure TDesktopOpt.ImportSettingsFromIDE;
+begin
+  IDEWindowIntf.IDEWindowCreators.SimpleLayoutStorage.StoreWindowPositions;
+  FIDEDialogLayoutList.Assign(IDEWindowIntf.IDEDialogLayoutList);
+  FIDEWindowCreatorsLayoutList.CopyItemsFrom(IDEWindowIntf.IDEWindowCreators.SimpleLayoutStorage);
+
+  if Assigned(FDockedOpt) then
+    FDockedOpt.ImportSettingsFromIDE;
 end;
 
 procedure TDesktopOpt.Save(Path: String);
 begin
   // windows
   FXMLCfg.SetDeleteValue(Path+'Name', FName, '');
+  if Assigned(FDockedOpt) then
+    FXMLCfg.SetDeleteValue(Path+'DockMaster', IDEDockMaster.ClassName, '')
+  else
+    FXMLCfg.DeleteValue(Path+'DockMaster');
+
   FIDEWindowCreatorsLayoutList.SaveToConfig(FConfigStore, Path);
   FIDEDialogLayoutList.SaveToConfig(FConfigStore,Path+'Dialogs/');
 
@@ -1089,6 +1196,18 @@ begin
   FEditorToolBarOptions.Save(FXMLCfg, Path);
   // component palette
   FComponentPaletteOptions.Save(FXMLCfg, Path);
+
+  if Assigned(FDockedOpt) then
+    FDockedOpt.Save(Path, FXMLCfg);
+end;
+
+procedure TDesktopOpt.ExportSettingsToIDE;
+begin
+  if Assigned(FDockedOpt) then
+    FDockedOpt.ExportSettingsToIDE;
+
+  IDEWindowIntf.IDEDialogLayoutList.Assign(FIDEDialogLayoutList);
+  IDEWindowIntf.IDEWindowCreators.SimpleLayoutStorage.CopyItemsFrom(FIDEWindowCreatorsLayoutList);
 end;
 
 procedure InitLayoutHelper(const FormID: string);
@@ -1135,20 +1254,21 @@ begin
   FAskSaveSessionOnly:=false;
   FAutoSaveEditorFiles:=true;
   FAutoSaveProject:=true;
-  FAutoSaveIntervalInSecs:=300; // 5 minutes
+  FAutoSaveIntervalInSecs:=DefaultAutoSaveIntervalInSecs;
   FLastSavedProjectFile:='';
+  FLastOpenPackages:=TLastOpenPackagesList.Create;
 
   // EnvironmentOptionsDialog editor
   FShowGrid:=true;
   FShowBorderSpacing:=false;
-  FGridColor:=clBlack;
+  FGridColor:=DefaultGridColor;
   FSnapToGrid:=true;
-  FGridSizeX:=8;
-  FGridSizeY:=8;
+  FGridSizeX:=DefaultGridSize;
+  FGridSizeY:=DefaultGridSize;
   FShowGuideLines:=true;
   FSnapToGuideLines:=true;
-  FGuideLineColorLeftTop:=clBlue;
-  FGuideLineColorRightBottom:=clGreen;
+  FGuideLineColorLeftTop:=DefaultGuideLineColorLeftTop;
+  FGuideLineColorRightBottom:=DefaultGuideLineColorRightBottom;
   FShowComponentCaptions:=false;
   FShowEditorHints:=true;
   FAutoCreateFormsOnOpen:=true;
@@ -1158,7 +1278,7 @@ begin
   FMarkerColor:=clDkGray;
   FRubberbandSelectionColor:=clNavy;
   FRubberbandCreationColor:=clMaroon;
-  FRubberbandSelectsGrandChilds:=true;
+  FRubberbandSelectsGrandChilds:=DefaultRubberbandSelectsGrandChilds;
   FDesignerPaintLazy:=true;
   FCreateComponentFocusNameProperty:=false;
   FSwitchToFavoritesOITab:=false;
@@ -1192,6 +1312,7 @@ begin
   for u:=low(TMessageLineUrgency) to high(TMessageLineUrgency) do
     fMsgColors[u] := clDefault;
   FMsgViewFilters:=TLMsgViewFilters.Create(nil);
+  FMsgViewShowFPCMsgLinesCompiled:=false;
 
   // glyphs
   FShowButtonGlyphs := sbgSystem;
@@ -1224,6 +1345,7 @@ begin
   FRecentPackageFiles:=TStringList.Create;
   FMaxRecentPackageFiles:=DefaultMaxRecentPackageFiles;
   FOpenLastProjectAtStart:=true;
+  FMultipleInstances:=DefaultIDEMultipleInstancesOption;
 
   // backup
   with FBackupInfoProjectFiles do begin
@@ -1260,7 +1382,8 @@ begin
   // Desktop collection
   FDesktops := TDesktopOptList.Create(Self);
   // FDesktop points to the IDE properties
-  FDesktop := TDesktopOpt.Create('', True);
+  FDesktop := TDesktopOpt.Create('');
+  FAutoSaveActiveDesktop := True;
 end;
 
 destructor TEnvironmentOptions.Destroy;
@@ -1291,6 +1414,7 @@ begin
   FreeAndNil(FConfigStore);
   FreeAndNil(FDbgConfigStore);
   FreeAndNil(FXMLCfg);
+  FreeAndNil(FLastOpenPackages);
   inherited Destroy;
 end;
 
@@ -1299,6 +1423,12 @@ begin
   if (FLastDesktopBeforeDebug=nil) or (FDesktop=nil) then
     Exit;
   try
+    if AutoSaveActiveDesktop and Assigned(DebugDesktop) then
+    begin
+      Desktop.ImportSettingsFromIDE;
+      DebugDesktop.Assign(Desktop);
+    end;
+
     UseDesktop(FLastDesktopBeforeDebug);
   finally
     FreeAndNil(FLastDesktopBeforeDebug);
@@ -1327,8 +1457,9 @@ procedure TEnvironmentOptions.EnableDebugDesktop;
 begin
   if not Assigned(FLastDesktopBeforeDebug) and Assigned(DebugDesktop) then
   begin
-    FLastDesktopBeforeDebug := TDesktopOpt.Create('', False);
+    FLastDesktopBeforeDebug := TDesktopOpt.Create('');
     FLastDesktopBeforeDebug.Assign(Desktop);
+    FLastDesktopBeforeDebug.Name := ActiveDesktopName;
     EnvironmentOptions.UseDesktop(DebugDesktop);
   end;
 end;
@@ -1343,6 +1474,13 @@ begin
     //DebugLn('Note: environment config file not found - using defaults');
   end;
   Filename:=ConfFilename;
+end;
+
+class function TEnvironmentOptions.DesktopCanBeLoaded(const aDockMaster: string
+  ): Boolean;
+begin
+  Result := (aDockMaster = '') or (
+    Assigned(IDEDockMaster) and (IDEDockMaster.ClassName = aDockMaster));
 end;
 
 function TEnvironmentOptions.GetParsedLazarusDirectory: string;
@@ -1480,7 +1618,7 @@ var
   Path, CurPath: String;
   i, j: Integer;
   Rec: PIDEOptionsGroupRec;
-  NodeName: String;
+  NodeName, xFileName: String;
   mwc: TMsgWndColor;
   u: TMessageLineUrgency;
 begin
@@ -1509,25 +1647,37 @@ begin
     FAskSaveSessionOnly:=FXMLCfg.GetValue(Path+'AutoSave/AskSaveSessionOnly',false);
     FAutoSaveEditorFiles:=FXMLCfg.GetValue(Path+'AutoSave/EditorFiles',true);
     FAutoSaveProject:=FXMLCfg.GetValue(Path+'AutoSave/Project',true);
-    FAutoSaveIntervalInSecs:=FXMLCfg.GetValue(Path+'AutoSave/IntervalInSecs',600);
+    FAutoSaveIntervalInSecs:=FXMLCfg.GetValue(Path+'AutoSave/IntervalInSecs',DefaultAutoSaveIntervalInSecs);
     FLastSavedProjectFile:=FXMLCfg.GetValue(Path+'AutoSave/LastSavedProjectFile','');
     FOpenLastProjectAtStart:=FXMLCfg.GetValue(Path+'AutoSave/OpenLastProjectAtStart',true);
     FShowCompileDialog:=FXMLCfg.GetValue(Path+'ShowCompileDialog/Value',false);
     FAutoCloseCompileDialog:=FXMLCfg.GetValue(Path+'AutoCloseCompileDialog/Value',false);
+    FAutoSaveActiveDesktop:=FXMLCfg.GetValue(Path+'AutoSave/ActiveDesktop',True);
+    FLastOpenPackages.Clear;
+    if FOpenLastProjectAtStart then
+    begin
+      i := 1;
+      repeat
+        xFileName := FXMLCfg.GetValue(Path+'AutoSave/LastOpenPackages/Package'+IntToStr(i), '');
+        if FileExistsCached(xFileName) then
+          FLastOpenPackages.Add(xFileName);
+        Inc(i);
+      until xFileName='';
+    end;
 
     // form editor
     FShowGrid:=FXMLCfg.GetValue(Path+'FormEditor/ShowGrid',true);
     FShowBorderSpacing:=FXMLCfg.GetValue(Path+'FormEditor/ShowBorderSpacing',false);
-    FGridColor:=FXMLCfg.GetValue(Path+'FormEditor/GridColor',FGridColor);
+    FGridColor:=FXMLCfg.GetValue(Path+'FormEditor/GridColor',DefaultGridColor);
     FSnapToGrid:=FXMLCfg.GetValue(Path+'FormEditor/SnapToGrid',true);
-    FGridSizeX:=FXMLCfg.GetValue(Path+'FormEditor/GridSizeX',8);
-    FGridSizeY:=FXMLCfg.GetValue(Path+'FormEditor/GridSizeY',8);
+    FGridSizeX:=FXMLCfg.GetValue(Path+'FormEditor/GridSizeX',DefaultGridSize);
+    FGridSizeY:=FXMLCfg.GetValue(Path+'FormEditor/GridSizeY',DefaultGridSize);
     FShowGuideLines:=FXMLCfg.GetValue(Path+'FormEditor/ShowGuideLines',true);
     FSnapToGuideLines:=FXMLCfg.GetValue(Path+'FormEditor/SnapToGuideLines',true);
     FGuideLineColorLeftTop:=FXMLCfg.GetValue(Path+'FormEditor/GuideLineColorLeftTop',
-       FGuideLineColorLeftTop);
+       DefaultGuideLineColorLeftTop);
     FGuideLineColorRightBottom:=FXMLCfg.GetValue(Path+'FormEditor/GuideLineColorRightBottom',
-       FGuideLineColorRightBottom);
+       DefaultGuideLineColorRightBottom);
     FShowComponentCaptions:=FXMLCfg.GetValue(Path+'FormEditor/ShowComponentCaptions',true);
     FShowEditorHints:=FXMLCfg.GetValue(Path+'FormEditor/ShowEditorHints',true);
     FAutoCreateFormsOnOpen:=FXMLCfg.GetValue(Path+'FormEditor/AutoCreateFormsOnOpen',true);
@@ -1539,7 +1689,7 @@ begin
        FRubberbandSelectionColor);
     FRubberbandCreationColor:=FXMLCfg.GetValue(Path+'FormEditor/Rubberband/CreationColor/Value',
        FRubberbandCreationColor);
-    FRubberbandSelectsGrandChilds:=FXMLCfg.GetValue(Path+'FormEditor/Rubberband/SelectsGrandChilds/Value',false);
+    FRubberbandSelectsGrandChilds:=FXMLCfg.GetValue(Path+'FormEditor/Rubberband/SelectsGrandChilds/Value',DefaultRubberbandSelectsGrandChilds);
     FDesignerPaintLazy:=FXMLCfg.GetValue(Path+'FormEditor/DesignerPaint/Lazy/Value',true);
     FCreateComponentFocusNameProperty:=FXMLCfg.GetValue(
        Path+'FormEditor/CreateComponentFocusNameProperty/Value',false);
@@ -1577,6 +1727,7 @@ begin
       fMsgColors[u] := FXMLCfg.GetValue(
         Path+'MsgView/MsgColors/'+dbgs(u),clDefault);
     MsgViewFilters.LoadFromXMLConfig(FXMLCfg,'MsgView/Filters/');
+    FMsgViewShowFPCMsgLinesCompiled:=FXMLCfg.GetValue(Path+'MsgView/FPCMsg/ShowLinesCompiled',false);
 
     // glyphs
     FShowButtonGlyphs := TApplicationShowGlyphs(FXMLCfg.GetValue(Path+'ShowButtonGlyphs/Value',
@@ -1632,6 +1783,7 @@ begin
       Path+'UnitRenameReferencesAction/Value',UnitRenameReferencesActionNames[urraAsk]));
     FAskForFilenameOnNewFile:=FXMLCfg.GetValue(Path+'AskForFilenameOnNewFile/Value',false);
     FLowercaseDefaultFilename:=FXMLCfg.GetValue(Path+'LowercaseDefaultFilename/Value',true);
+    FMultipleInstances:=StrToIDEMultipleInstancesOption(FXMLCfg.GetValue(Path+'MultipleInstances/Value',''));
 
     // fpdoc
     FPDocPaths := FXMLCfg.GetValue(Path+'LazDoc/Paths','');
@@ -1665,24 +1817,39 @@ begin
     // The user can define many desktops. They are saved under path Desktops/.
     FDesktops.Clear;
     FDesktops.SetConfig(FXMLCfg, FConfigStore);
-    CurPath := 'Desktops/';
-    if FXMLCfg.HasPath(CurPath, True) then
-    begin
-      // New path under Desktops/. Default=1 forces reading default values always.
+    FActiveDesktopName := '';
+
+    if FFileVersion<109 then begin
+      //load old default desktop - backwards compatibility - or create a new default desktop
+      CurPath := 'Desktop/';               // New place: Desktop/
+      if not FXMLCfg.HasPath(CurPath, True) then
+        CurPath := Path+'Desktop/';        // Old place: EnvironmentOptions/Desktop/
+      if FXMLCfg.HasPath(CurPath, True) or//default desktop exists in the settings
+         ((ActiveDesktop.IDECoolBarOptions.ToolBars.Count = 0) and
+          (ActiveDesktop.FIDEDialogLayoutList.Count = 0))//desktop is empty, load it to recreate!
+      then
+      begin
+        ActiveDesktop.SetConfig(FXMLCfg, FConfigStore);
+        ActiveDesktop.Load(CurPath);
+      end;
+    end else begin
+      CurPath := 'Desktops/';
       FDebugDesktopName := FXMLCfg.GetValue(CurPath+'DebugDesktop', '');
+      FActiveDesktopName := FXMLCfg.GetValue(CurPath+'ActiveDesktop', '');
       j := FXMLCfg.GetValue(CurPath+'Count', 1);
-      for i := 0 to j-1 do
-        FDesktops.AddFromCfg(CurPath+'Desktop'+IntToStr(i+1)+'/');
+      for i := 1 to j do
+        FDesktops.AddFromCfg(CurPath+'Desktop'+IntToStr(i)+'/');
     end;
-    FDesktop.SetConfig(FXMLCfg, FConfigStore);
-    CurPath := 'Desktop/';               // New place: Desktop/
-    if not FXMLCfg.HasPath(CurPath, True) then
-      CurPath := Path+'Desktop/';        // Old place: EnvironmentOptions/Desktop/
-    FDesktop.Load(CurPath);
+    if FFileVersion<=109 then begin
+      FXMLCfg.DeletePath('Desktop');
+      FXMLCfg.DeletePath(CurPath+'Desktop');
+    end;
+
+    Desktop.Assign(ActiveDesktop, False);
+    Desktop.ExportSettingsToIDE;
 
     FileUpdated;
   except
-    // ToDo
     on E: Exception do
       DebugLn('[TEnvironmentOptions.Load]  error reading "',FFilename,'": '+E.Message);
   end;
@@ -1796,6 +1963,7 @@ var
   mwc: TMsgWndColor;
   u: TMessageLineUrgency;
   xSaveDesktop: TDesktopOpt;
+  xActiveDesktopName: string;
 begin
   try
     InitXMLCfg(true);
@@ -1813,21 +1981,28 @@ begin
     FXMLCfg.SetDeleteValue(Path+'AutoSave/AskSaveSessionOnly',FAskSaveSessionOnly,false);
     FXMLCfg.SetDeleteValue(Path+'AutoSave/EditorFiles',FAutoSaveEditorFiles,true);
     FXMLCfg.SetDeleteValue(Path+'AutoSave/Project',FAutoSaveProject,true);
-    FXMLCfg.SetDeleteValue(Path+'AutoSave/IntervalInSecs',FAutoSaveIntervalInSecs,600);
+    FXMLCfg.SetDeleteValue(Path+'AutoSave/IntervalInSecs',FAutoSaveIntervalInSecs,DefaultAutoSaveIntervalInSecs);
     FXMLCfg.SetDeleteValue(Path+'AutoSave/LastSavedProjectFile',FLastSavedProjectFile,'');
     FXMLCfg.SetDeleteValue(Path+'AutoSave/OpenLastProjectAtStart',FOpenLastProjectAtStart,true);
+    FXMLCfg.SetDeleteValue(Path+'AutoSave/ActiveDesktop', FAutoSaveActiveDesktop, True);
+    if FOpenLastProjectAtStart and (FLastOpenPackages.Count > 0) then
+    begin
+      for i := 0 to FLastOpenPackages.Count-1 do
+        FXMLCfg.SetValue(Path+'AutoSave/LastOpenPackages/Package'+IntToStr(i+1), FLastOpenPackages[i]);
+    end else
+      FXMLCfg.DeletePath(Path+'AutoSave/LastOpenPackages/');
 
     // form editor
     FXMLCfg.SetDeleteValue(Path+'FormEditor/ShowBorderSpacing',FShowBorderSpacing,false);
     FXMLCfg.SetDeleteValue(Path+'FormEditor/ShowGrid',FShowGrid,true);
-    FXMLCfg.SetDeleteValue(Path+'FormEditor/GridColor',FGridColor,clBlack);
+    FXMLCfg.SetDeleteValue(Path+'FormEditor/GridColor',FGridColor,DefaultGridColor);
     FXMLCfg.SetDeleteValue(Path+'FormEditor/SnapToGrid',FSnapToGrid,true);
-    FXMLCfg.SetDeleteValue(Path+'FormEditor/GridSizeX',FGridSizeX,8);
-    FXMLCfg.SetDeleteValue(Path+'FormEditor/GridSizeY',FGridSizeY,8);
+    FXMLCfg.SetDeleteValue(Path+'FormEditor/GridSizeX',FGridSizeX,DefaultGridSize);
+    FXMLCfg.SetDeleteValue(Path+'FormEditor/GridSizeY',FGridSizeY,DefaultGridSize);
     FXMLCfg.SetDeleteValue(Path+'FormEditor/ShowGuideLines',FShowGuideLines,true);
     FXMLCfg.SetDeleteValue(Path+'FormEditor/SnapToGuideLines',FSnapToGuideLines,true);
-    FXMLCfg.SetDeleteValue(Path+'FormEditor/GuideLineColorLeftTop',FGuideLineColorLeftTop,clGreen);
-    FXMLCfg.SetDeleteValue(Path+'FormEditor/GuideLineColorRightBottom',FGuideLineColorRightBottom,clBlue);
+    FXMLCfg.SetDeleteValue(Path+'FormEditor/GuideLineColorLeftTop',FGuideLineColorLeftTop,DefaultGuideLineColorLeftTop);
+    FXMLCfg.SetDeleteValue(Path+'FormEditor/GuideLineColorRightBottom',FGuideLineColorRightBottom,DefaultGuideLineColorRightBottom);
     FXMLCfg.SetDeleteValue(Path+'FormEditor/ShowComponentCaptions',FShowComponentCaptions,true);
     FXMLCfg.SetDeleteValue(Path+'FormEditor/ShowEditorHints',FShowEditorHints,true);
     FXMLCfg.SetDeleteValue(Path+'FormEditor/AutoCreateFormsOnOpen',FAutoCreateFormsOnOpen,true);
@@ -1840,7 +2015,7 @@ begin
     FXMLCfg.SetDeleteValue(Path+'FormEditor/Rubberband/CreationColor/Value',
        FRubberbandCreationColor,clRed);
     FXMLCfg.SetDeleteValue(Path+'FormEditor/Rubberband/SelectsGrandChilds/Value',
-       FRubberbandSelectsGrandChilds,false);
+       FRubberbandSelectsGrandChilds,DefaultRubberbandSelectsGrandChilds);
     FXMLCfg.SetDeleteValue(Path+'FormEditor/DesignerPaint/Lazy/Value',FDesignerPaintLazy,true);
     FXMLCfg.SetDeleteValue(Path+'FormEditor/CreateComponentFocusNameProperty/Value',
        FCreateComponentFocusNameProperty,false);
@@ -1882,6 +2057,7 @@ begin
       FXMLCfg.SetDeleteValue(Path+'MsgView/MsgColors/'+dbgs(u),
       fMsgColors[u],clDefault);
     MsgViewFilters.SaveToXMLConfig(FXMLCfg,'MsgView/Filters/');
+    FXMLCfg.SetDeleteValue(Path+'MsgView/FPCMsg/ShowLinesCompiled',FMsgViewShowFPCMsgLinesCompiled,false);
 
     // glyphs
     FXMLCfg.SetDeleteValue(Path+'ShowButtonGlyphs/Value',Ord(FShowButtonGlyphs), Ord(sbgSystem));
@@ -1914,6 +2090,11 @@ begin
                              FAskForFilenameOnNewFile,false);
     FXMLCfg.SetDeleteValue(Path+'LowercaseDefaultFilename/Value',
                              FLowercaseDefaultFilename,true);
+    if FMultipleInstances = DefaultIDEMultipleInstancesOption then
+      FXMLCfg.DeletePath(Path+'MultipleInstances')
+    else
+      FXMLCfg.SetValue(Path+'MultipleInstances/Value',IDEMultipleInstancesOptionNames[FMultipleInstances]);
+
     // fpdoc
     FXMLCfg.SetDeleteValue(Path+'LazDoc/Paths',FPDocPaths,'');
 
@@ -1943,29 +2124,42 @@ begin
       end;
     end;
 
+    //automatically save active desktops
+    if AutoSaveActiveDesktop then
+    begin
+      //save active desktop
+      Desktop.ImportSettingsFromIDE;
+      ActiveDesktop.Assign(Desktop);
+
+      if Assigned(FLastDesktopBeforeDebug) then//are we in debug session?
+      begin
+        //save last desktop before the debug desktop
+        xSaveDesktop := FDesktops.Find(FLastDesktopBeforeDebug.Name);
+        if Assigned(xSaveDesktop) then
+          xSaveDesktop.Assign(FLastDesktopBeforeDebug, False);
+      end;
+    end;
+    if Assigned(FLastDesktopBeforeDebug) then
+      xActiveDesktopName := FLastDesktopBeforeDebug.Name
+    else
+      xActiveDesktopName := FActiveDesktopName;
+
     // The user can define many desktops. They are saved under path Desktops/.
     FXMLCfg.DeletePath('Desktops/');
     CurPath:='Desktops/';
     FXMLCfg.SetDeleteValue(CurPath+'Count', FDesktops.Count, 0);
     FXMLCfg.SetDeleteValue(CurPath+'DebugDesktop', FDebugDesktopName, '');
+    FXMLCfg.SetDeleteValue(CurPath+'ActiveDesktop', xActiveDesktopName, '');
     for i := 0 to FDesktops.Count-1 do
     begin
       FDesktops[i].SetConfig(FXMLCfg, FConfigStore);
       FDesktops[i].Save(CurPath+'Desktop'+IntToStr(i+1)+'/');
     end;
 
-    if Assigned(FLastDesktopBeforeDebug) then
-      xSaveDesktop := FLastDesktopBeforeDebug
-    else
-      xSaveDesktop := FDesktop;
-    xSaveDesktop.SetConfig(FXMLCfg, FConfigStore);
-    xSaveDesktop.Save('Desktop/');
-
     FXMLCfg.Flush;
     FileUpdated;
   except
     on E: Exception do begin
-      // ToDo
       DebugLn('[TEnvironmentOptions.Save]  error writing "',Filename,'": ',E.Message);
     end;
   end;
@@ -2082,7 +2276,7 @@ begin
           begin
             ParsedValue:=TrimAndExpandDirectory(ParsedValue,GetPrimaryConfigPath);
             if ParsedValue='' then
-              ParsedValue:=GetPrimaryConfigPath;
+              ParsedValue:=TrimFilename(AppendPathDelim(GetCurrentDirUTF8));
           end;
         eopFPCSourceDirectory,eopTestBuildDirectory:
           // directory
@@ -2309,6 +2503,41 @@ begin
     FFileAge:=0;
 end;
 
+function TEnvironmentOptions.GetActiveDesktop: TDesktopOpt;
+
+  procedure ChooseDefault;
+  begin
+    //use default desktop name
+    if Assigned(IDEDockMaster) then
+      FActiveDesktopName := 'default docked'//name for desktop with AnchorDocking
+    else
+      FActiveDesktopName := 'default';
+  end;
+
+begin
+  if FActiveDesktopName <> '' then
+  begin
+    Result := FDesktops.Find(FActiveDesktopName);
+    if Assigned(Result) and Result.Compatible then
+      Exit;
+  end;
+
+  //the selected desktop is unsupported (docked/undocked)
+  // -> use default
+  ChooseDefault;
+  Result := FDesktops.Find(FActiveDesktopName);
+  if Assigned(Result) and Result.Compatible then
+    Exit;
+
+  //recreate desktop with ActiveDesktopName
+  if Assigned(Result) then
+    FDesktops.Remove(Result);
+
+  Result := TDesktopOpt.Create(FActiveDesktopName);
+  FDesktops.Add(Result);
+  Result.Assign(Desktop);
+end;
+
 procedure TEnvironmentOptions.SetTestBuildDirectory(const AValue: string);
 var
   NewValue: String;
@@ -2338,10 +2567,12 @@ var
 begin
   xLastFocusControl := Screen.ActiveControl;
   xLastFocusForm := Screen.ActiveCustomForm;
-  DoBeforeWrite(False);
+  DoBeforeWrite(False);  //this is needed to get the EditorToolBar refreshed!!! - needed only here in UseDesktop()
   Desktop.Assign(ADesktop);
-  DoAfterWrite(False);
-  IDEWindowCreators.RestoreSimpleLayout;
+  ActiveDesktopName := ADesktop.Name;
+  DoAfterWrite(False);  //this is needed to get the EditorToolBar refreshed!!! - needed only here in UseDesktop()
+  Desktop.ExportSettingsToIDE;
+  Desktop.RestoreDesktop;
 
   //set focus back to the previously focused control
   if Screen.CustomFormIndex(xLastFocusForm) >= 0 then//check if form hasn't been destroyed
@@ -2425,9 +2656,12 @@ end;
 
 function TEnvironmentOptions.GetDebugDesktop: TDesktopOpt;
 begin
-  if FDebugDesktopName<>'' then
-    Result := FDesktops.Find(FDebugDesktopName)
-  else
+  if FDebugDesktopName <> '' then
+  begin
+    Result := FDesktops.Find(FDebugDesktopName);
+    if not(Assigned(Result) and Result.Compatible) then//do not mix docked/undocked desktops
+      Result := nil;
+  end else
     Result := nil;
 end;
 

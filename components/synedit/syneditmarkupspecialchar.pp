@@ -42,6 +42,7 @@ type
     procedure SetVisibleSpecialChars(AValue: TSynVisibleSpecialChars);
   protected
     procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
+    procedure DoEnabledChanged(Sender: TObject); override;
     function IsSpecial(pos: Integer): Boolean; inline;
   public
     constructor Create(ASynEdit : TSynEditBase);
@@ -73,7 +74,13 @@ end;
 procedure TSynEditMarkupSpecialChar.DoMarkupChanged(AMarkup: TSynSelectedColor);
 begin
   inherited DoMarkupChanged(AMarkup);
-  FHasMarkup := AMarkup.IsEnabled;
+  FHasMarkup := RealEnabled;
+  SynEdit.Invalidate;
+end;
+
+procedure TSynEditMarkupSpecialChar.DoEnabledChanged(Sender: TObject);
+begin
+  FHasMarkup := RealEnabled;
   SynEdit.Invalidate;
 end;
 

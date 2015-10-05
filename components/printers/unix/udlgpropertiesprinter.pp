@@ -343,6 +343,7 @@ begin
   if Sender=nil then ;
   Notebook1.PageIndex:=0;
 
+  Caption := p4lrsPrinterProperties;
   btnCancel1.Caption := p4lrsCancel;
   btnOk.Caption := p4lrsOk;
   pgGeneral.Caption := p4lrsGeneral;

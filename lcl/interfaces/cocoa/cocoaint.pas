@@ -21,6 +21,7 @@ unit CocoaInt;
 {$mode objfpc}{$H+}
 {$modeswitch objectivec1}
 {$modeswitch objectivec2}
+{$include cocoadefines.inc}
 
 interface
 
@@ -33,7 +34,7 @@ uses
   InterfaceBase, GraphType,
   // private
   CocoaAll, CocoaPrivate, CocoaUtils, CocoaGDIObjects,
-  CocoaProc, cocoa_extra, CocoaWSMenus,
+  CocoaProc, cocoa_extra, CocoaWSMenus, CocoaWSForms,
   // LCL
   LCLStrConsts, LMessages, LCLMessageGlue, LCLProc, LCLIntf, LCLType,
   Controls, Forms, Themes, Menus,
@@ -138,6 +139,7 @@ type
     procedure FreeSysColorBrushes;
 
     procedure SetMainMenu(const AMenu: HMENU; const ALCLMenu: TMenu);
+    function IsControlDisabledDueToModal(AControl: NSView): Boolean;
 
     {todo:}
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;

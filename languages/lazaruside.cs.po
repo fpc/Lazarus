@@ -394,6 +394,10 @@ msgstr "Pouze pro čtení"
 msgid "Lowercase, first letter up"
 msgstr "Malé písmena, první písmeno velké"
 
+#: lazarusidestrconsts.dlgactivedesktop
+msgid "active"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddassignmentoperator
 msgid "Add assignment operator :="
 msgstr "Přidat operátor přiřazení :="
@@ -637,6 +641,16 @@ msgstr "Automaticky odstranit prázdné metody"
 msgid "Auto rename file lowercase"
 msgstr "Automaticky nastav malá písmena v názvu souboru"
 
+#: lazarusidestrconsts.dlgautosaveactivedesktop
+msgid "Auto save active desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgautosaveactivedesktophint
+msgid ""
+"Save active desktop on IDE close\n"
+"Save debug desktop on IDE close and debug end\n"
+msgstr ""
+
 #: lazarusidestrconsts.dlgavailableforms
 msgid "Available forms:"
 msgstr "Dostupné formuláře:"
@@ -713,6 +727,18 @@ msgstr "Zvýraznění závorky"
 #: lazarusidestrconsts.dlgbracketmatchgroup
 msgid "Matching bracket pairs"
 msgstr "Odpovídající závorkový pár"
+
+#: lazarusidestrconsts.dlgcannotdeleteactivedesktop
+msgid "You cannot delete the active desktop."
+msgstr ""
+
+#: lazarusidestrconsts.dlgcannotdeletedebugdesktop
+msgid "You cannot delete debug desktop."
+msgstr ""
+
+#: lazarusidestrconsts.dlgcannotusedockedundockeddesktop
+msgid "You cannot use docked desktop in undocked environment and vice versa."
+msgstr ""
 
 #: lazarusidestrconsts.dlgcasesensitive
 msgctxt "lazarusidestrconsts.dlgcasesensitive"
@@ -827,10 +853,6 @@ msgstr ""
 #: lazarusidestrconsts.dlgchscodetempl
 msgid "Choose code template file (*.dci)"
 msgstr "Vyberte šablonu kódu (*.dci)"
-
-#: lazarusidestrconsts.dlgcloseanduseselecteddesktop
-msgid "Close and use selected desktop"
-msgstr ""
 
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
@@ -1189,7 +1211,7 @@ msgid "User defined extension (.pp.xxx)"
 msgstr "Uživatelsky definované rozšíření (.pp.xxx)"
 
 #: lazarusidestrconsts.dlgdebugdesktop
-msgid "debug desktop"
+msgid "debug"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
@@ -1225,7 +1247,15 @@ msgid "Menus - "
 msgstr "Nabídky - "
 
 #: lazarusidestrconsts.dlgdesktopname
-msgid "Desktop name:"
+msgid "Desktop name"
+msgstr ""
+
+#: lazarusidestrconsts.dlgdesktopsexported
+msgid "%d desktop(s) successfully exported to \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgdesktopsimported
+msgid "%d desktop(s) successfully imported from \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
@@ -1851,6 +1881,10 @@ msgstr "Uzel"
 msgid "Processing Instruction"
 msgstr "Zpracování instrukcí"
 
+#: lazarusidestrconsts.dlgforceuniqueinstancemodalerror
+msgid "The running Lazarus instance cannot accept any files."
+msgstr ""
+
 #: lazarusidestrconsts.dlgforecolor
 msgid "Foreground"
 msgstr "Popředí"
@@ -1902,6 +1936,10 @@ msgstr "Vytvářet kód pro gprof"
 #: lazarusidestrconsts.dlggrabbercolor
 msgid "Grabber color"
 msgstr "Barva zachytávače"
+
+#: lazarusidestrconsts.dlggrayeddesktopsundocked
+msgid "Grayed desktops are for undocked environment."
+msgstr ""
 
 #: lazarusidestrconsts.dlggridcolor
 msgid "Grid color"
@@ -2083,6 +2121,12 @@ msgstr "Neaktivní $IFDEF uzel"
 #: lazarusidestrconsts.dlgifdefnodetmpactive
 msgid "Included mixed state $IFDEF node"
 msgstr "Zahrnut $IFDEF uzel smíšerného stavu"
+
+#: lazarusidestrconsts.dlgimportdesktopexists
+msgid ""
+"A desktop with the same name already exists.\n"
+"Please confirm the desktop name:\n"
+msgstr ""
 
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
@@ -2738,6 +2782,22 @@ msgstr ""
 msgid "Enable multi caret for column selection"
 msgstr ""
 
+#: lazarusidestrconsts.dlgmultipleinstances
+msgid "Multiple Lazarus instances"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmultipleinstances_alwaysstartnew
+msgid "always start a new instance"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmultipleinstances_forcesingleinstance
+msgid "do not allow multiple instances"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmultipleinstances_openfilesinrunning
+msgid "open files in a running instance"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmultiselect
 msgid "Multi Select"
 msgstr "Vícenásobný výběr"
@@ -3038,7 +3098,9 @@ msgid "Property Name"
 msgstr "Jméno vlastnosti"
 
 #: lazarusidestrconsts.dlgqopenlastprj
-msgid "Open last project at start"
+#, fuzzy
+#| msgid "Open last project at start"
+msgid "Open last project and packages at start"
 msgstr "Otevřít poslední projekt při startu"
 
 #: lazarusidestrconsts.dlgqshowborderspacing
@@ -3110,6 +3172,18 @@ msgctxt "lazarusidestrconsts.dlgruberbandselectioncolor"
 msgid "Rubberband Selection"
 msgstr "Výběr vodících linek"
 
+#: lazarusidestrconsts.dlgrunninginstancemodalerror
+msgid ""
+"The running Lazarus instance cannot accept any files.\n"
+"Do you want to open them in a new IDE instance?\n"
+"\n"
+"%s\n"
+msgstr ""
+
+#: lazarusidestrconsts.dlgrunninginstancenotrespondingerror
+msgid "Lazarus instance is running but not responding."
+msgstr ""
+
 #: lazarusidestrconsts.dlgrunodisplay
 msgid "Display (not for win32, e.g. 198.112.45.11:0, x.org:1, hydra:0.1)"
 msgstr "Zobrazení (ne pro win32, např. 198.112.45.11:0, x.org:1, hydra:0.1)"
@@ -3138,10 +3212,6 @@ msgstr "Uživatelské předefinování"
 #: lazarusidestrconsts.dlgrunparameters
 msgid "Run Parameters"
 msgstr "Spustit s parametry"
-
-#: lazarusidestrconsts.dlgsavecurrentdesktop
-msgid "Save current desktop"
-msgstr ""
 
 #: lazarusidestrconsts.dlgsavecurrentdesktopas
 msgid "Save current desktop as"
@@ -3212,13 +3282,13 @@ msgstr ""
 msgid "Select all child controls together with their parent."
 msgstr ""
 
-#: lazarusidestrconsts.dlgselecteddesktop
-msgid "Selected desktop:"
-msgstr ""
-
 #: lazarusidestrconsts.dlgselectedtext
 msgid "&Selected text"
 msgstr "&Vybraný text"
+
+#: lazarusidestrconsts.dlgsetactivedesktop
+msgid "Set active"
+msgstr ""
 
 #: lazarusidestrconsts.dlgsetallelementdefault
 msgid "Set all elements to default"
@@ -3231,6 +3301,26 @@ msgstr "Nastavit prvek na výchozí"
 #: lazarusidestrconsts.dlgsetpropertyvariable
 msgid "Set property Variable"
 msgstr "Nastavit hodnotu vlastnosti"
+
+#: lazarusidestrconsts.dlgsetpropertyvariablehint
+msgid "The parameter name for the default setter procedure."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableisprefix
+msgid "is prefix"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableisprefixhint
+msgid "If checked, the \"Set property Variable\" is a prefix. Otherwise it is a fixed name."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableuseconst
+msgid "use const"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableuseconsthint
+msgid "If checked, the setter parameter is marked with \"const\"."
+msgstr ""
 
 #: lazarusidestrconsts.dlgshowallunits
 msgid "Show all units"
@@ -3460,7 +3550,8 @@ msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"
 msgstr "Hledaný &Text"
 
-#: lazarusidestrconsts.dlgtoggleselecteddebugdesktop
+#: lazarusidestrconsts.dlgtoggledebugdesktop
+msgctxt "lazarusidestrconsts.dlgtoggledebugdesktop"
 msgid "Toggle as debug desktop"
 msgstr ""
 
@@ -8874,6 +8965,10 @@ msgctxt "lazarusidestrconsts.lisexport"
 msgid "Export"
 msgstr "Exportovat"
 
+#: lazarusidestrconsts.lisexportall
+msgid "Export all"
+msgstr ""
+
 #: lazarusidestrconsts.lisexportallitemstofile
 msgid "Export All Items to File"
 msgstr ""
@@ -8898,6 +8993,10 @@ msgstr "Exportovat seznam"
 #: lazarusidestrconsts.lisexportpackagelistxml
 msgid "Export package list (*.xml)"
 msgstr "Exportovat seznam balíčků (*.xml)"
+
+#: lazarusidestrconsts.lisexportselected
+msgid "Export selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisexpression
 msgid "Expression:"
@@ -9524,6 +9623,10 @@ msgstr "Žádné další body přerušení nejsou přiřazeny ke skupině \"%s\"
 #: lazarusidestrconsts.lisgroupemptydeletemore
 msgid "%sThere are %d more empty groups, delete all?"
 msgstr "%sExistuje %d dalších prázdných skupin, smazat všechny?"
+
+#: lazarusidestrconsts.lisgrouplocalvariables
+msgid "Group automatically defined local variables"
+msgstr ""
 
 #: lazarusidestrconsts.lisgroupnameemptyclearinstead
 msgid "The group name cannot be empty. Clear breakpoints' group(s)?"
@@ -11855,6 +11958,14 @@ msgstr "Skočit na předchozí značku"
 msgid "Jump to Previous Error"
 msgstr "Skočit na předchozí chybu"
 
+#: lazarusidestrconsts.lismenujumptoprocedurebegin
+msgid "Jump to Procedure begin"
+msgstr ""
+
+#: lazarusidestrconsts.lismenujumptoprocedureheader
+msgid "Jump to Procedure header"
+msgstr ""
+
 #: lazarusidestrconsts.lismenulowercaseselection
 msgid "Lowercase Selection"
 msgstr "Změnit výběr na malá písmena"
@@ -12101,6 +12212,10 @@ msgstr "Nastavit volnou záložku"
 #: lazarusidestrconsts.lismenushowexecutionpoint
 msgid "S&how Execution Point"
 msgstr "Ukázat bod vykonávání"
+
+#: lazarusidestrconsts.lismenushowsmarthint
+msgid "Context sensitive smart hint"
+msgstr ""
 
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort Selection ..."
@@ -14250,6 +14365,12 @@ msgstr "Nahradit soubor"
 #: lazarusidestrconsts.lispkgmangrequiredpackageswerenotfound
 msgid "One or more required packages were not found. See package graph for details."
 msgstr "Jeden nebo více vyžadovaných balíčků nebylo nalezeno. Viz graf balíčků pro více detailů."
+
+#: lazarusidestrconsts.lispkgmangsaveasalreadyopenedpackage
+msgid ""
+"The package %s is already open in the IDE.\n"
+"You cannot save a package with the same name.\n"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmangsavepackage
 msgid "Save package?"
@@ -16946,8 +17067,8 @@ msgstr "Cesta hledání jednotek \"%s\" obsahuje zdrojový adresář \"%s\" bal�
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "Pracovní adresář \"%s\" neexistuje.%sProsím, zkontrolujte pracovní adresář v Spustit -> Parametry spuštění."
 
-#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inthertlflagsareinpagesoth
-msgid "This build mode now sets UTF-8 in the RTL.%s Flags are in pages \"Other\" and \"Additions and Overrides\"."
+#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inrtl
+msgid "This build mode now sets UTF-8 in RTL.%s Flags are in pages \"Custom Options\" and \"Additions and Overrides\"."
 msgstr ""
 
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename

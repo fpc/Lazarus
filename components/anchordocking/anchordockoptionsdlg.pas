@@ -34,13 +34,13 @@ unit AnchorDockOptionsDlg;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel,
-  StdCtrls, ComCtrls, LCLProc, AnchorDocking, AnchorDockStr, types;
+  Classes, SysUtils, types,
+  Forms, Controls, ButtonPanel, StdCtrls, ComCtrls,
+  AnchorDocking, AnchorDockStr;
 
 type
   TAnchorDockOptionsFlag = (
-    adofShow_ShowHeader,
-    adofShow_ShowSaveOnClose
+    adofShow_ShowHeader
     );
   TAnchorDockOptionsFlags = set of TAnchorDockOptionsFlag;
 
@@ -58,7 +58,6 @@ type
     HeaderStyleComboBox: TComboBox;
     HeaderStyleLabel: TLabel;
     HideHeaderCaptionForFloatingCheckBox: TCheckBox;
-    SaveLayoutOnCloseCheckBox: TCheckBox;
     ScaleOnResizeCheckBox: TCheckBox;
     ShowHeaderCaptionCheckBox: TCheckBox;
     ShowHeaderCheckBox: TCheckBox;
@@ -247,7 +246,6 @@ begin
     ShowHeaderCaptionCheckBox.BorderSpacing.Left:=15
   else
     ShowHeaderCaptionCheckBox.BorderSpacing.Left:=0;
-  SaveLayoutOnCloseCheckBox.Visible:=adofShow_ShowSaveOnClose in Flags;
 end;
 
 constructor TAnchorDockOptionsFrame.Create(TheOwner: TComponent);
@@ -292,7 +290,6 @@ begin
   TheSettings.HeaderAlignLeft:=HeaderAlignLeftTrackBar.Position;
   TheSettings.SplitterWidth:=SplitterWidthTrackBar.Position;
   TheSettings.ScaleOnResize:=ScaleOnResizeCheckBox.Checked;
-  TheSettings.SaveOnClose:=SaveLayoutOnCloseCheckBox.Checked;
   TheSettings.ShowHeader:=ShowHeaderCheckBox.Checked;
   TheSettings.ShowHeaderCaption:=ShowHeaderCaptionCheckBox.Checked;
   TheSettings.HideHeaderCaptionFloatingControl:=HideHeaderCaptionForFloatingCheckBox.Checked;
@@ -335,9 +332,6 @@ begin
   SplitterWidthTrackBar.Hint:=adrsSplitterThickness;
   SplitterWidthTrackBar.Position:=TheSettings.SplitterWidth;
   UpdateSplitterWidthLabel;
-
-  SaveLayoutOnCloseCheckBox.Caption:=adrsSaveLayoutOnClose;
-  SaveLayoutOnCloseCheckBox.Checked:=TheSettings.SaveOnClose;
 
   ScaleOnResizeCheckBox.Caption:=adrsScaleOnResize;
   ScaleOnResizeCheckBox.Hint:=adrsScaleSubSitesWhenASiteIsResized;

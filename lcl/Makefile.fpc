@@ -72,6 +72,7 @@ rsts=lclstrconsts
 packages=
 
 [prerules]
+DBG_OPTIONS=
 STATEFILE=Makefile.compiled
 ifeq ($(findstring $(OS_TARGET),win32 win64 wince),)
 NONWIN32=nonwin32
@@ -84,9 +85,12 @@ ifndef LCL_ENABLE_CHECKS
 LCL_DISABLE_CHECKS=-dDisableChecks
 endif
 endif
+ifeq ($(OS_TARGET),darwin)
+DBG_OPTIONS=-gw
+endif
 
 [compiler]
-options=-gl -Sic $(LCL_DISABLE_CHECKS)
+options=-gl -Sic $(LCL_DISABLE_CHECKS) $(DBG_OPTIONS)
 unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
 unitdir=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 includedir=include

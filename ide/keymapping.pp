@@ -555,6 +555,8 @@ begin
     ecJumpToImplementation    : Result:= lisMenuJumpToImplementation;
     ecJumpToImplementationUses: Result:= lisMenuJumpToImplementationUses;
     ecJumpToInitialization    : Result:= lisMenuJumpToInitialization;
+    ecJumpToProcedureHeader   : Result:= lisMenuJumpToProcedureHeader;
+    ecJumpToProcedureBegin    : Result:= lisMenuJumpToProcedureBegin;
     ecOpenFileAtCursor        : Result:= srkmecOpenFileAtCursor;
     ecProcedureList           : Result:= lisPListProcedureList;
 
@@ -703,6 +705,7 @@ begin
     ecEditContextHelp         : Result:= lisMenuEditContextHelp;
     ecReportingBug            : Result:= srkmecReportingBug;
     ecFocusHint               : Result:= lisFocusHint;
+    ecSmartHint               : Result:= lisMenuShowSmartHint;
 
     // desginer
     ecDesignerCopy            : Result:= lisDsgCopyComponents;
@@ -2342,6 +2345,7 @@ begin
   ecEditContextHelp:     SetSingle(VK_F1,[ssShift,ssCtrl], VK_HELP,[ssCtrl]);
   ecReportingBug:        SetSingle(VK_UNKNOWN,[]);
   ecFocusHint:           SetSingle(VK_UNKNOWN,[]);
+  ecSmartHint:           SetSingle(VK_UNKNOWN,[]);
 
   // designer
   ecDesignerCopy:        SetSingle(VK_C,[ssMeta]);
@@ -2769,6 +2773,8 @@ begin
   AddDefault(C, 'Jump to Implementation', lisMenuJumpToImplementation, ecJumpToImplementation);
   AddDefault(C, 'Jump to Implementation uses', lisMenuJumpToImplementationUses, ecJumpToImplementationUses);
   AddDefault(C, 'Jump to Initialization', lisMenuJumpToInitialization, ecJumpToInitialization);
+  AddDefault(C, 'Jump to Procedure header', lisMenuJumpToProcedureHeader, ecJumpToProcedureHeader);
+  AddDefault(C, 'Jump to Procedure begin', lisMenuJumpToProcedureBegin, ecJumpToProcedureBegin);
   AddDefault(C, 'Show abstract methods', srkmecShowAbstractMethods, ecShowAbstractMethods);
   AddDefault(C, 'Remove empty methods', srkmecRemoveEmptyMethods, ecRemoveEmptyMethods);
   AddDefault(C, 'Remove unused units', srkmecRemoveUnusedUnits, ecRemoveUnusedUnits);
@@ -3034,6 +3040,7 @@ begin
   AddDefault(C, 'Edit context sensitive help', lisKMEditContextSensitiveHelp, ecEditContextHelp);
   AddDefault(C, 'Reporting a bug', srkmecReportingBug, ecReportingBug);
   AddDefault(C, 'Focus hint', lisFocusHint, ecFocusHint);
+  AddDefault(C, 'Context sensitive smart hint', lisMenuShowSmartHint, ecSmartHint);
 
   // designer  - without menu items in the IDE bar (at least not directly)
   C:=Categories[AddCategory('Designer',lisKeyCatDesigner,IDECmdScopeDesignerOnly)];
@@ -3530,8 +3537,10 @@ var
     // Ignore the second Ctrl key in sequential combos unless both variations are defined.
     // For example "Ctrl-X, Y" and "Ctrl-X, Ctrl-Y" are then treated the same.
     if (aKey.Key2<>VK_UNKNOWN) and (aKey.Shift=[ssCtrl]) and (aKey.Shift2-[ssCtrl]=[])
-    and not ShiftConflict(aKey) then
-      aKey.ShiftMask2:=[ssCtrl]
+    and not ShiftConflict(aKey) then begin
+      aKey.ShiftMask2:=[ssCtrl];
+      aKey.Shift2:=[];
+    end
     else
       aKey.ShiftMask2:=[];
   end;

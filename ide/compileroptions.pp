@@ -2862,7 +2862,10 @@ begin
 
     dit := DebugInfoType;
     case dit of
-      dsAuto:      switches := switches + ' -g';
+      dsAuto:      if (not (ccloNoMacroParams in Flags))  and (CurTargetOS='darwin') then
+                     switches += ' -gw'
+                   else
+                     switches += ' -g';
       dsStabs:     switches := switches + ' -gs';
       dsDwarf2:    switches := switches + ' -gw2';
       dsDwarf2Set: switches := switches + ' -gw2 -godwarfsets';

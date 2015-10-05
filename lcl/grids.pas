@@ -899,7 +899,6 @@ type
     procedure CellClick(const aCol,aRow: Integer; const Button:TMouseButton); virtual;
     procedure CheckLimits(var aCol,aRow: Integer);
     procedure CheckLimitsWithError(const aCol, aRow: Integer);
-    procedure ClearSelections;
     procedure CMBiDiModeChanged(var Message: TLMessage); message CM_BIDIMODECHANGED;
     procedure CMMouseEnter(var Message: TLMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Message :TLMessage); message CM_MouseLeave;
@@ -1201,6 +1200,7 @@ type
     function  CellToGridZone(aCol,aRow: Integer): TGridZone;
     procedure CheckPosition;
     procedure Clear;
+    procedure ClearSelections;
 
     function  EditorByStyle(Style: TColumnButtonStyle): TWinControl; virtual;
     procedure EditorKeyDown(Sender: TObject; var Key:Word; Shift:TShiftState);
@@ -7486,6 +7486,9 @@ end;
 procedure TCustomGrid.ClearSelections;
 begin
   SetLength(FSelections, 0);
+  UpdateSelectionRange;
+  FPivot := Point(Col, Row);
+  InvalidateGrid;
 end;
 
 procedure TCustomGrid.CMBiDiModeChanged(var Message: TLMessage);
@@ -8426,8 +8429,11 @@ begin
 
   result := False;
 
-  if AAutoAdvance=aaNone then
+  if AAutoAdvance=aaNone then begin
+    ACol := 0;
+    ARow := 0;
     exit; // quick case, no auto movement allowed
+  end;
 
   if [goRowSelect,goRelaxedRowSelect]*Options=[goRowSelect] then begin
     if Inverse then
@@ -10661,8 +10667,12 @@ var
         ini := P;
         while (P^<>#0) and (P^<>#9) do
           Inc(P);
-        SetLength(St, P-Ini);
-        Move(Ini^,St[1],P-Ini);
+        if P=Ini then
+          St := ''
+        else begin
+          SetLength(St, P-Ini);
+          Move(Ini^,St[1],P-Ini);
+        end;
         SubL.Add(St);
         if P^<>#0 then
           Inc(P);

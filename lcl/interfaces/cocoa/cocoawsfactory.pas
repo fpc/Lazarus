@@ -222,8 +222,8 @@ end;
 
 function RegisterFileDialog: Boolean; alias : 'WSRegisterFileDialog';
 begin
-   RegisterWSComponent(TFileDialog, TCocoaWSFileDialog);
-   Result := True;
+  RegisterWSComponent(TFileDialog, TCocoaWSFileDialog);
+  Result := True;
 end;
 
 function RegisterOpenDialog: Boolean; alias : 'WSRegisterOpenDialog';
@@ -243,7 +243,8 @@ end;
 
 function RegisterColorDialog: Boolean; alias : 'WSRegisterColorDialog';
 begin
-  Result := False;
+  RegisterWSComponent(TColorDialog, TCocoaWSColorDialog);
+  Result := True;
 end;
 
 function RegisterColorButton: Boolean; alias : 'WSRegisterColorButton';

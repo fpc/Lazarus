@@ -390,6 +390,10 @@ msgstr "Sólo-Lectura"
 msgid "Lowercase, first letter up"
 msgstr "Minúsculas, primera letra en mayúsculas"
 
+#: lazarusidestrconsts.dlgactivedesktop
+msgid "active"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddassignmentoperator
 msgid "Add assignment operator :="
 msgstr "Añadir operador de asignación :="
@@ -633,6 +637,16 @@ msgstr "Eliminar métodos vacios automáticamente"
 msgid "Auto rename file lowercase"
 msgstr "Renombrar automáticamente en minúsculas"
 
+#: lazarusidestrconsts.dlgautosaveactivedesktop
+msgid "Auto save active desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgautosaveactivedesktophint
+msgid ""
+"Save active desktop on IDE close\n"
+"Save debug desktop on IDE close and debug end\n"
+msgstr ""
+
 #: lazarusidestrconsts.dlgavailableforms
 msgid "Available forms:"
 msgstr "Formularios disponibles:"
@@ -709,6 +723,18 @@ msgstr "Resaltado de paréntesis"
 #: lazarusidestrconsts.dlgbracketmatchgroup
 msgid "Matching bracket pairs"
 msgstr "Coincidente con pares de paréntesis"
+
+#: lazarusidestrconsts.dlgcannotdeleteactivedesktop
+msgid "You cannot delete the active desktop."
+msgstr ""
+
+#: lazarusidestrconsts.dlgcannotdeletedebugdesktop
+msgid "You cannot delete debug desktop."
+msgstr ""
+
+#: lazarusidestrconsts.dlgcannotusedockedundockeddesktop
+msgid "You cannot use docked desktop in undocked environment and vice versa."
+msgstr ""
 
 #: lazarusidestrconsts.dlgcasesensitive
 msgctxt "lazarusidestrconsts.dlgcasesensitive"
@@ -823,10 +849,6 @@ msgstr "El formulario puede requerir un paquete para funcionar. Instala dicho pa
 #: lazarusidestrconsts.dlgchscodetempl
 msgid "Choose code template file (*.dci)"
 msgstr "Escoja archivo de plantilla de código (*.dci)"
-
-#: lazarusidestrconsts.dlgcloseanduseselecteddesktop
-msgid "Close and use selected desktop"
-msgstr ""
 
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
@@ -1185,7 +1207,7 @@ msgid "User defined extension (.pp.xxx)"
 msgstr "Extensión definida por usuario (.pp.xxx)"
 
 #: lazarusidestrconsts.dlgdebugdesktop
-msgid "debug desktop"
+msgid "debug"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
@@ -1221,7 +1243,15 @@ msgid "Menus - "
 msgstr "Menús - "
 
 #: lazarusidestrconsts.dlgdesktopname
-msgid "Desktop name:"
+msgid "Desktop name"
+msgstr ""
+
+#: lazarusidestrconsts.dlgdesktopsexported
+msgid "%d desktop(s) successfully exported to \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgdesktopsimported
+msgid "%d desktop(s) successfully imported from \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
@@ -1847,6 +1877,10 @@ msgstr "Nodo"
 msgid "Processing Instruction"
 msgstr "Procesando Instrucción"
 
+#: lazarusidestrconsts.dlgforceuniqueinstancemodalerror
+msgid "The running Lazarus instance cannot accept any files."
+msgstr ""
+
 #: lazarusidestrconsts.dlgforecolor
 msgid "Foreground"
 msgstr "Color de texto"
@@ -1898,6 +1932,10 @@ msgstr "Generar código para gprof"
 #: lazarusidestrconsts.dlggrabbercolor
 msgid "Grabber color"
 msgstr "Coger color"
+
+#: lazarusidestrconsts.dlggrayeddesktopsundocked
+msgid "Grayed desktops are for undocked environment."
+msgstr ""
 
 #: lazarusidestrconsts.dlggridcolor
 msgid "Grid color"
@@ -2079,6 +2117,12 @@ msgstr "Nodo $IFDEF inactivo"
 #: lazarusidestrconsts.dlgifdefnodetmpactive
 msgid "Included mixed state $IFDEF node"
 msgstr "Inclusión de nodo de estado $IFDEF mixto"
+
+#: lazarusidestrconsts.dlgimportdesktopexists
+msgid ""
+"A desktop with the same name already exists.\n"
+"Please confirm the desktop name:\n"
+msgstr ""
 
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
@@ -2734,6 +2778,22 @@ msgstr ""
 msgid "Enable multi caret for column selection"
 msgstr ""
 
+#: lazarusidestrconsts.dlgmultipleinstances
+msgid "Multiple Lazarus instances"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmultipleinstances_alwaysstartnew
+msgid "always start a new instance"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmultipleinstances_forcesingleinstance
+msgid "do not allow multiple instances"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmultipleinstances_openfilesinrunning
+msgid "open files in a running instance"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmultiselect
 msgid "Multi Select"
 msgstr "Multiselección"
@@ -3028,7 +3088,9 @@ msgid "Property Name"
 msgstr "Nombre de la propiedad"
 
 #: lazarusidestrconsts.dlgqopenlastprj
-msgid "Open last project at start"
+#, fuzzy
+#| msgid "Open last project at start"
+msgid "Open last project and packages at start"
 msgstr "Abrir último proyecto al iniciar"
 
 #: lazarusidestrconsts.dlgqshowborderspacing
@@ -3100,6 +3162,18 @@ msgctxt "lazarusidestrconsts.dlgruberbandselectioncolor"
 msgid "Rubberband Selection"
 msgstr "Selección de goma elástica"
 
+#: lazarusidestrconsts.dlgrunninginstancemodalerror
+msgid ""
+"The running Lazarus instance cannot accept any files.\n"
+"Do you want to open them in a new IDE instance?\n"
+"\n"
+"%s\n"
+msgstr ""
+
+#: lazarusidestrconsts.dlgrunninginstancenotrespondingerror
+msgid "Lazarus instance is running but not responding."
+msgstr ""
+
 #: lazarusidestrconsts.dlgrunodisplay
 msgid "Display (not for win32, e.g. 198.112.45.11:0, x.org:1, hydra:0.1)"
 msgstr "Display (no para win32, e.j. 198.112.45.11:0, x.org:1, hydra:0.1)"
@@ -3128,10 +3202,6 @@ msgstr "Usar reemplazos"
 #: lazarusidestrconsts.dlgrunparameters
 msgid "Run Parameters"
 msgstr "Parámetros de ejecución"
-
-#: lazarusidestrconsts.dlgsavecurrentdesktop
-msgid "Save current desktop"
-msgstr ""
 
 #: lazarusidestrconsts.dlgsavecurrentdesktopas
 msgid "Save current desktop as"
@@ -3202,13 +3272,13 @@ msgstr ""
 msgid "Select all child controls together with their parent."
 msgstr "Selecciona todos los controles hijos junto con su padre."
 
-#: lazarusidestrconsts.dlgselecteddesktop
-msgid "Selected desktop:"
-msgstr ""
-
 #: lazarusidestrconsts.dlgselectedtext
 msgid "&Selected text"
 msgstr "Texto &Seleccionado"
+
+#: lazarusidestrconsts.dlgsetactivedesktop
+msgid "Set active"
+msgstr ""
 
 #: lazarusidestrconsts.dlgsetallelementdefault
 msgid "Set all elements to default"
@@ -3221,6 +3291,26 @@ msgstr "Asignar predeterminado al elemento"
 #: lazarusidestrconsts.dlgsetpropertyvariable
 msgid "Set property Variable"
 msgstr "Fijar propiedad Variable"
+
+#: lazarusidestrconsts.dlgsetpropertyvariablehint
+msgid "The parameter name for the default setter procedure."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableisprefix
+msgid "is prefix"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableisprefixhint
+msgid "If checked, the \"Set property Variable\" is a prefix. Otherwise it is a fixed name."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableuseconst
+msgid "use const"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableuseconsthint
+msgid "If checked, the setter parameter is marked with \"const\"."
+msgstr ""
 
 #: lazarusidestrconsts.dlgshowallunits
 msgid "Show all units"
@@ -3450,7 +3540,8 @@ msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"
 msgstr "&Texto a buscar"
 
-#: lazarusidestrconsts.dlgtoggleselecteddebugdesktop
+#: lazarusidestrconsts.dlgtoggledebugdesktop
+msgctxt "lazarusidestrconsts.dlgtoggledebugdesktop"
 msgid "Toggle as debug desktop"
 msgstr ""
 
@@ -8824,6 +8915,10 @@ msgctxt "lazarusidestrconsts.lisexport"
 msgid "Export"
 msgstr "Exportar ..."
 
+#: lazarusidestrconsts.lisexportall
+msgid "Export all"
+msgstr ""
+
 #: lazarusidestrconsts.lisexportallitemstofile
 msgid "Export All Items to File"
 msgstr "Exportar todos los elementos a fichero"
@@ -8848,6 +8943,10 @@ msgstr "Exportar lista"
 #: lazarusidestrconsts.lisexportpackagelistxml
 msgid "Export package list (*.xml)"
 msgstr "Exportar lista de paquete (*.xml)"
+
+#: lazarusidestrconsts.lisexportselected
+msgid "Export selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisexpression
 msgid "Expression:"
@@ -9467,6 +9566,10 @@ msgstr "No hay mas puntos de interrupción asignados al grupo \"%s\", ¿borrarlo
 #: lazarusidestrconsts.lisgroupemptydeletemore
 msgid "%sThere are %d more empty groups, delete all?"
 msgstr "%sHay %d grupos vacíos más, ¿borrarlos todos?"
+
+#: lazarusidestrconsts.lisgrouplocalvariables
+msgid "Group automatically defined local variables"
+msgstr ""
 
 #: lazarusidestrconsts.lisgroupnameemptyclearinstead
 msgid "The group name cannot be empty. Clear breakpoints' group(s)?"
@@ -11795,6 +11898,14 @@ msgstr "Saltar al Marcador Anterior"
 msgid "Jump to Previous Error"
 msgstr "Saltar al Error Anterior"
 
+#: lazarusidestrconsts.lismenujumptoprocedurebegin
+msgid "Jump to Procedure begin"
+msgstr ""
+
+#: lazarusidestrconsts.lismenujumptoprocedureheader
+msgid "Jump to Procedure header"
+msgstr ""
+
 #: lazarusidestrconsts.lismenulowercaseselection
 msgid "Lowercase Selection"
 msgstr "Selección en Minúsculas"
@@ -12041,6 +12152,10 @@ msgstr "Establecer un Marcador Libre"
 #: lazarusidestrconsts.lismenushowexecutionpoint
 msgid "S&how Execution Point"
 msgstr "Ver Punto de Ejecucción"
+
+#: lazarusidestrconsts.lismenushowsmarthint
+msgid "Context sensitive smart hint"
+msgstr ""
 
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort Selection ..."
@@ -14190,6 +14305,12 @@ msgstr "Reemplazar Archivo"
 #: lazarusidestrconsts.lispkgmangrequiredpackageswerenotfound
 msgid "One or more required packages were not found. See package graph for details."
 msgstr "Uno o más paquetes necesarios no fueron encontrados. Ver el gráfico de paquete para más detalles."
+
+#: lazarusidestrconsts.lispkgmangsaveasalreadyopenedpackage
+msgid ""
+"The package %s is already open in the IDE.\n"
+"You cannot save a package with the same name.\n"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmangsavepackage
 msgid "Save package?"
@@ -16821,8 +16942,8 @@ msgstr "La ruta de búsqueda de Unidades de \"%s\" contiene el directorio de fue
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "El directorio de trabajo \"%s\" no existe.%sPor favor, verifique el directorio de trabajo en el Menu > Ejecutar > Parámetros de Ejecución."
 
-#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inthertlflagsareinpagesoth
-msgid "This build mode now sets UTF-8 in the RTL.%s Flags are in pages \"Other\" and \"Additions and Overrides\"."
+#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inrtl
+msgid "This build mode now sets UTF-8 in RTL.%s Flags are in pages \"Custom Options\" and \"Additions and Overrides\"."
 msgstr ""
 
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename

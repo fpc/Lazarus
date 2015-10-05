@@ -56,6 +56,7 @@ type
     procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); override;
     procedure DoTextChanged(StartLine, EndLine, ACountDiff: Integer); override;
     procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
+    procedure DoEnabledChanged(Sender: TObject); override;
     procedure DoVisibleChanged(AVisible: Boolean); override;
     procedure InvalidateCurrentHighlight;
   public
@@ -326,6 +327,12 @@ begin
 end;
 
 procedure TSynEditMarkupWordGroup.DoMarkupChanged(AMarkup: TSynSelectedColor);
+begin
+  FForceInvalidate := True;
+  InvalidateCurrentHighlight;
+end;
+
+procedure TSynEditMarkupWordGroup.DoEnabledChanged(Sender: TObject);
 begin
   FForceInvalidate := True;
   InvalidateCurrentHighlight;

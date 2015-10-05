@@ -239,10 +239,6 @@ msgstr "Восстановить разбивку окна по умолчани
 msgid "right"
 msgstr "справа"
 
-#: anchordockstr.adrssavelayoutonclose
-msgid "Save layout on close"
-msgstr "Сохранять разбивку окна при выходе"
-
 #: anchordockstr.adrssavewindowlayoutasdefault
 msgid "Save window layout as default"
 msgstr "Сохранить разбивку окна как разбивку по умолчанию"

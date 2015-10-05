@@ -80,6 +80,8 @@ const
   ecJumpToImplementation    = ecFirstLazarus + 27;
   ecJumpToImplementationUses= ecFirstLazarus + 28;
   ecJumpToInitialization    = ecFirstLazarus + 29;
+  ecJumpToProcedureHeader   = ecFirstLazarus + 30;
+  ecJumpToProcedureBegin    = ecFirstLazarus + 31;
 
   // edit selection
   ecSelectionUpperCase      = ecFirstLazarus + 50;
@@ -333,6 +335,7 @@ const
   ecEditContextHelp         = ecFirstLazarus + 904;
   ecReportingBug            = ecFirstLazarus + 905;
   ecFocusHint               = ecFirstLazarus + 906;
+  ecSmartHint               = ecFirstLazarus + 907;
 
   // designer
   ecDesignerCopy            = ecFirstLazarus + 1000;
@@ -1225,7 +1228,7 @@ begin
 end;
 
 const
-  IDEEditorCommandStrs: array[0..308] of TIdentMapEntry = (
+  IDEEditorCommandStrs: array[0..309] of TIdentMapEntry = (
   // search
     (Value: ecFind;                                   Name: 'ecFind'),
     (Value: ecFindAgain;                              Name: 'ecFindAgain'),
@@ -1509,6 +1512,7 @@ const
     (Value: ecEditContextHelp;                        Name: 'ecEditContextHelp'),
     (Value: ecReportingBug;                           Name: 'ecReportingBug'),
     (Value: ecFocusHint;                              Name: 'ecFocusHint'),
+    (Value: ecSmartHint;                              Name: 'ecSmartHint'),
 
   // designer
     (Value: ecDesignerCopy;                           Name: 'ecDesignerCopy'),

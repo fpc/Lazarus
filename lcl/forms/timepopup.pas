@@ -36,16 +36,18 @@ type
     procedure GridsDblClick(Sender: TObject);
     procedure GridsKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure MoreLessBtnClick(Sender: TObject);
-    procedure SetLayout(SimpleLayout: Boolean);
   private
     FClosed: Boolean;
     FOnReturnTime: TReturnTimeEvent;
     FSimpleLayout: Boolean;
+    FPopupOrigin: TPoint;
     procedure ActivateDoubleBuffered;
     procedure CalcGridHeights;
     function GetTime: TDateTime;
     procedure Initialize(const PopupOrigin: TPoint; ATime: TDateTime);
+    procedure KeepInView(const PopupOrigin: TPoint);
     procedure ReturnTime;
+    procedure SetLayout(SimpleLayout: Boolean);
     procedure SetTime(ATime: TDateTime);
   published
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -54,14 +56,14 @@ type
   end;
 
 procedure ShowTimePopup(const Position: TPoint; ATime: TDateTime; const DoubleBufferedForm: Boolean;
-                        const OnReturnTime: TReturnTimeEvent; const OnShowHide: TNotifyEvent = nil);
+                        const OnReturnTime: TReturnTimeEvent; const OnShowHide: TNotifyEvent = nil; SimpleLayout: Boolean = True);
 
 implementation
 
 {$R *.lfm}
 
 procedure ShowTimePopup(const Position: TPoint; ATime: TDateTime; const DoubleBufferedForm: Boolean; const OnReturnTime: TReturnTimeEvent;
-                        const OnShowHide: TNotifyEvent);
+                        const OnShowHide: TNotifyEvent; SimpleLayout: Boolean);
 var
   NewForm: TTimePopupForm;
 begin
@@ -72,7 +74,11 @@ begin
   NewForm.OnHide := OnShowHide;
   if DoubleBufferedForm then
     NewForm.ActivateDoubleBuffered;
+  NewForm.SetLayout(SimpleLayout);
+  if not SimpleLayout then
+    NewForm.SetTime(ATime); //update the row and col in the grid;
   NewForm.Show;
+  NewForm.KeepInView(Position);
 end;
 
 procedure TTimePopupForm.SetTime(ATime: TDateTime);
@@ -178,6 +184,7 @@ begin
   try
   if SimpleLayout then
   begin
+    MoreLessBtn.Caption := '>>';
     MinutesGrid.RowCount := 2;
     MinutesGrid.ColCount := 6;
     for r := 0 to MinutesGrid.RowCount - 1 do
@@ -189,6 +196,7 @@ begin
   end
   else
   begin
+    MoreLessBtn.Caption := '<<';
     MinutesGrid.RowCount := 12;
     MinutesGrid.ColCount := 5;
     for r := 0 to MinutesGrid.RowCount - 1 do
@@ -200,6 +208,7 @@ begin
   end;
   CalcGridHeights;
   FSimpleLayout := SimpleLayout;
+  KeepInView(FPopupOrigin);
   finally
     MinutesGrid.EndUpdate(True);
   end;
@@ -240,6 +249,13 @@ begin
 end;
 
 procedure TTimePopupForm.Initialize(const PopupOrigin: TPoint; ATime: TDateTime);
+begin
+  FPopupOrigin := PopupOrigin;
+  KeepInView(PopupOrigin);
+  SetTime(ATime);
+end;
+
+procedure TTimePopupForm.KeepInView(const PopupOrigin: TPoint);
 var
   ABounds: TRect;
 begin
@@ -252,7 +268,8 @@ begin
     Top := ABounds.Bottom - Height
   else
     Top := PopupOrigin.Y;
-  SetTime(ATime);
+  //store the fitting point, so the form won't move if it layout is changed back to simple
+  FPopupOrigin := Point(Left, Top);
 end;
 
 procedure TTimePopupForm.ReturnTime;

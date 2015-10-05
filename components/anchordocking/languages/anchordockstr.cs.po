@@ -242,10 +242,6 @@ msgstr "Obnovit výchozí rozložení"
 msgid "right"
 msgstr "vpravo"
 
-#: anchordockstr.adrssavelayoutonclose
-msgid "Save layout on close"
-msgstr ""
-
 #: anchordockstr.adrssavewindowlayoutasdefault
 msgid "Save window layout as default"
 msgstr "Uložit rozvržení oken jako výchozí"

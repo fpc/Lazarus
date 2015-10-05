@@ -46,6 +46,7 @@ type
     procedure MarkupChangedIntern(AMarkup: TObject);
   protected
     procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
+    procedure DoEnabledChanged(Sender: TObject); override;
   public
     constructor Create(ASynEdit : TSynEditBase; ASelection: TSynEditSelection);
     destructor Destroy; override;
@@ -104,6 +105,11 @@ begin
   p1 := FSelection.FirstLineBytePos;  // always ordered
   p2 := FSelection.LastLineBytePos;
   InvalidateSynLines(p1.y, p2.y);
+end;
+
+procedure TSynEditMarkupSelection.DoEnabledChanged(Sender: TObject);
+begin
+  DoMarkupChanged(nil);
 end;
 
 constructor TSynEditMarkupSelection.Create(ASynEdit : TSynEditBase; ASelection: TSynEditSelection);

@@ -41,6 +41,7 @@ type
     TemplateFileLabel: TLabel;
     UpdateMultiProcSignaturesCheckBox: TCheckBox;
     UpdateOtherProcSignaturesCaseCheckBox: TCheckBox;
+    GroupLocalVariablesCheckBox: TCheckBox;
     UsesInsertPolicyRadioGroup: TRadioGroup;
     procedure TemplateFileBrowseButtonClick(Sender: TObject);
   private
@@ -116,6 +117,8 @@ begin
     lisCTOUpdateMultipleProcedureSignatures;
   UpdateOtherProcSignaturesCaseCheckBox.Caption:=
     lisUpdateOtherProcedureSignaturesWhenOnlyLetterCaseHa;
+  GroupLocalVariablesCheckBox.Caption:=
+    lisGroupLocalVariables;
 
   TemplateFileLabel.Caption:=lisTemplateFile;
   {$IFNDEF EnableCodeCompleteTemplates}
@@ -152,6 +155,7 @@ begin
 
     UpdateMultiProcSignaturesCheckBox.Checked:=UpdateMultiProcSignatures;
     UpdateOtherProcSignaturesCaseCheckBox.Checked:=UpdateOtherProcSignaturesCase;
+    GroupLocalVariablesCheckBox.Checked:=GroupLocalVariables;
 
     TemplateFileEdit.Text:=CodeCompletionTemplateFileName;
   end;
@@ -180,6 +184,7 @@ begin
 
     UpdateMultiProcSignatures:=UpdateMultiProcSignaturesCheckBox.Checked;
     UpdateOtherProcSignaturesCase:=UpdateOtherProcSignaturesCaseCheckBox.Checked;
+    GroupLocalVariables:=GroupLocalVariablesCheckBox.Checked;
 
     CodeCompletionTemplateFileName:=TemplateFileEdit.Text;
   end;

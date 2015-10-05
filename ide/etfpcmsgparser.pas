@@ -60,6 +60,7 @@ const
   FPCMsgIDChecksumChanged = 10028;
   FPCMsgIDUnitNotUsed = 5023; // Unit "$1" not used in $2
   FPCMsgIDCompilationAborted = 1018;
+  FPCMsgIDLinesCompiled = 1008;
 
   FPCMsgAttrWorkerDirectory = 'WD';
   FPCMsgAttrMissingUnit = 'MissingUnit';
@@ -1245,7 +1246,7 @@ var
   OldP: PChar;
 begin
   Result:=fMsgID=9001;
-  if (fMsgID>0) and not Result then exit;
+  if (not Result) and (fMsgID>0) then exit;
   OldP:=p;
   if (not Result) and (not CompStr('Assembling ',p)) then exit;
   MsgLine:=CreateMsgLine;
@@ -1400,20 +1401,23 @@ var
   OldStart: PChar;
   MsgLine: TMessageLine;
 begin
-  Result:=fMsgID=1008;
-  if (fMsgID>0) and not Result then exit;
+  Result:=fMsgID=FPCMsgIDLinesCompiled;
+  if (not Result) and (fMsgID>0) then exit;
   OldStart:=p;
   if not Result then begin
     if not ReadNumberWithThousandSep(p) then exit;
     if not ReadString(p,' lines compiled, ') then exit;
     if not ReadNumberWithThousandSep(p) then exit;
   end;
+  Result:=true;
   MsgLine:=CreateMsgLine;
   MsgLine.SubTool:=SubToolFPC;
-  MsgLine.Urgency:=mluProgress;
+  if ShowLinesCompiled then
+    MsgLine.Urgency:=mluImportant
+  else
+    MsgLine.Urgency:=mluVerbose;
   MsgLine.Msg:=OldStart;
   inherited AddMsgLine(MsgLine);
-  Result:=true;
 end;
 
 function TIDEFPCParser.CheckForExecutableInfo(p: PChar): boolean;
@@ -1429,7 +1433,7 @@ var
   MsgLine: TMessageLine;
 begin
   Result:=(fMsgID>=9130) and (fMsgID<=9140);
-  if (fMsgID>0) and not Result then exit;
+  if (not Result) and (fMsgID>0) then exit;
   OldStart:=p;
   if (not Result) then begin
     if not (ReadString(p,'Size of Code: ') or
@@ -2560,7 +2564,7 @@ var
   TranslatedItem: TFPCMsgItem;
   MsgLine: TMessageLine;
   TranslatedMsg: String;
-  MsgType: TMessageLineUrgency;
+  MsgUrgency: TMessageLineUrgency;
   Msg: string;
 begin
   Result:=false;
@@ -2571,15 +2575,17 @@ begin
   TranslatedItem:=nil;
   if (TranslationFile<>nil) then
     TranslatedItem:=TranslationFile.GetMsg(fMsgID);
-  Translate(p,MsgItem,TranslatedItem,TranslatedMsg,MsgType);
+  Translate(p,MsgItem,TranslatedItem,TranslatedMsg,MsgUrgency);
   Msg:=p;
   case fMsgID of
   FPCMsgIDThereWereErrorsCompiling: // There were $1 errors compiling module, stopping
-    MsgType:=mluVerbose;
+    MsgUrgency:=mluVerbose;
+  FPCMsgIDLinesCompiled: // n lines compiled, m sec
+    if ShowLinesCompiled then MsgUrgency:=mluImportant;
   end;
   MsgLine:=CreateMsgLine;
   MsgLine.SubTool:=SubToolFPC;
-  MsgLine.Urgency:=MsgType;
+  MsgLine.Urgency:=MsgUrgency;
   MsgLine.Msg:=Msg;
   MsgLine.TranslatedMsg:=TranslatedMsg;
   AddMsgLine(MsgLine);
@@ -2727,7 +2733,7 @@ var
   MsgLine: TMessageLine;
 begin
   Result:=fMsgID=10027;
-  if (fMsgID>0) and not Result then exit;
+  if (not Result) and (fMsgID>0) then exit;
   OldP:=p;
   if not Result then begin
     if not ReadString(p,'Load from ') then exit;

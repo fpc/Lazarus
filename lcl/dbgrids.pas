@@ -4520,6 +4520,8 @@ begin
   {$endif}
 
   Result := False;
+  if Item=nil then
+    Exit;
   if FCanDoBinarySearch then
     BinarySearch
   else

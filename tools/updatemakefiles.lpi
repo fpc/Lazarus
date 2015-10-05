@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -32,19 +32,15 @@
         <LaunchingApplication PathPlusParams="/usr/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="2">
+    <RequiredPackages Count="1">
       <Item1>
         <PackageName Value="CodeTools"/>
       </Item1>
-      <Item2>
-        <PackageName Value="LCLBase"/>
-      </Item2>
     </RequiredPackages>
     <Units Count="1">
       <Unit0>
         <Filename Value="updatemakefiles.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="updatemakefiles"/>
       </Unit0>
     </Units>
   </ProjectOptions>
@@ -57,12 +53,6 @@
       <IncludeFiles Value="$(ProjOutDir)"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
-    <Other>
-      <CompilerMessages>
-        <MsgFileName Value=""/>
-      </CompilerMessages>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
   <Debugging>
     <Exceptions Count="3">

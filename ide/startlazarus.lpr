@@ -34,6 +34,7 @@ uses
   redirect_stderr,
   Interfaces, SysUtils,
   Forms,
+  IDEInstances,
   LazarusManager;
   
 {$R *.res}
@@ -44,6 +45,9 @@ var
 begin
   redirect_stderr.DoShowWindow := False;
   Application.Initialize;
+  LazIDEInstances.PerformCheck;
+  if not LazIDEInstances.StartIDE then
+    Exit;
   ALazarusManager := TLazarusManager.Create(nil);
   ALazarusManager.Initialize;
   ALazarusManager.Run;

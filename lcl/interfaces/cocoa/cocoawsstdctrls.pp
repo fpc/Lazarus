@@ -320,6 +320,7 @@ procedure TLCLRadioButtonCallback.ButtonClick;
 var
   SubView: NSView;
 begin
+  if not Owner.lclIsEnabled() then Exit;
   if NSButton(Owner).state = NSOnState then
   begin
     for SubView in NSButton(Owner).superView.subviews do
@@ -333,6 +334,7 @@ end;
 
 procedure TLCLButtonCallback.ButtonClick;
 begin
+  if not Owner.lclIsEnabled() then Exit;
   SendSimpleMessage(Target, LM_CLICKED);
 end;
 
@@ -348,6 +350,7 @@ end;
 procedure TLCLCheckBoxCallback.ButtonClick;
 begin
   inherited;
+  if not Owner.lclIsEnabled() then Exit;
   SendSimpleMessage(Target, LM_CHANGED);
   // todo: win32 has something about dbcheckbox handling here. so maybe we need to handle it special too
 end;
@@ -1070,6 +1073,7 @@ var
   cap: NSString;
   lGroupBoxContents: TCocoaCustomControl;
   ns: NSRect;
+  //str: string;
 begin
   box := NSView(TCocoaGroupBox.alloc).lclInitWithCreateParams(AParams);
   if Assigned(box) then
@@ -1083,6 +1087,7 @@ begin
     ns := GetNSRect(AParams.X, AParams.Y, AParams.Width, AParams.Height);
     lGroupBoxContents := TCocoaCustomControl(TCocoaCustomControl.alloc.initWithFrame(ns));
     lGroupBoxContents.callback := TLCLCustomControlCallback.Create(lGroupBoxContents, AWinControl);
+    //str := Format('%X=%X', [PtrUInt(box.callback), PtrUInt(lGroupBoxContents.callback)]);
     lGroupBoxContents.autorelease;
     box.setContentView(lGroupBoxContents);
   end;

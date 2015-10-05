@@ -22,7 +22,7 @@ uses
   {$IFDEF STALE_PIPE_WORKAROUND}
   BaseUnix,
   {$ENDIF}
-  Classes, SysUtils, FileUtil, LazLogger, SimpleIPC, process, UTF8Process;
+  Classes, SysUtils, LazFileUtils, LazLogger, SimpleIPC, process, UTF8Process;
 
 const
   PROTOCOL_VERSION='2'; //IDE<>LHelp communication protocol version. Please update when breaking compatibility

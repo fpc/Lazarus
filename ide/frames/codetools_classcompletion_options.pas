@@ -33,6 +33,8 @@ type
   { TCodetoolsClassCompletionOptionsFrame }
 
   TCodetoolsClassCompletionOptionsFrame = class(TAbstractIDEOptionsEditor)
+    SetPropertyVariableIsPrefixCheckBox: TCheckBox;
+    SetPropertyVariableUseConstCheckBox: TCheckBox;
     ClassHeaderCommentsCheckBox: TCheckBox;
     ClassImplementationCommentsCheckBox: TCheckBox;
     ClassPartInsertPolicyRadioGroup: TRadioGroup;
@@ -108,6 +110,12 @@ begin
   PropertyStoredIdentPostfixLabel.Caption:=dlgCDTStoredPostfix;
   PrivateVariablePrefixLabel.Caption:=dlgCDTVariablePrefix;
   SetPropertyVariablenameLabel.Caption:=dlgSetPropertyVariable;
+  SetPropertyVariablenameLabel.Hint:=dlgSetPropertyVariableHint;
+  SetPropertyVariablenameEdit.Hint:=SetPropertyVariablenameLabel.Hint;
+  SetPropertyVariableIsPrefixCheckBox.Caption:=dlgSetPropertyVariableIsPrefix;
+  SetPropertyVariableIsPrefixCheckBox.Hint:=dlgSetPropertyVariableIsPrefixHint;
+  SetPropertyVariableUseConstCheckBox.Caption:=dlgSetPropertyVariableUseConst;
+  SetPropertyVariableUseConstCheckBox.Hint:=dlgSetPropertyVariableUseConstHint;
 end;
 
 procedure TCodetoolsClassCompletionOptionsFrame.ReadSettings(
@@ -143,6 +151,8 @@ begin
     PropertyStoredIdentPostfixEdit.Text := PropertyStoredIdentPostfix;
     PrivateVariablePrefixEdit.Text := PrivateVariablePrefix;
     SetPropertyVariablenameEdit.Text := SetPropertyVariablename;
+    SetPropertyVariableIsPrefixCheckBox.Checked := SetPropertyVariableIsPrefix;
+    SetPropertyVariableUseConstCheckBox.Checked := SetPropertyVariableUseConst;
   end;
 end;
 
@@ -178,6 +188,8 @@ begin
       ReadIdentifier(PrivateVariablePrefixEdit.Text,'F');
     SetPropertyVariablename :=
       ReadIdentifier(SetPropertyVariablenameEdit.Text,'AValue');
+    SetPropertyVariableIsPrefix := SetPropertyVariableIsPrefixCheckBox.Checked;
+    SetPropertyVariableUseConst := SetPropertyVariableUseConstCheckBox.Checked;
   end;
 end;
 

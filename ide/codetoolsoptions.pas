@@ -87,6 +87,7 @@ type
     FUpdateAllMethodSignatures: boolean;
     FUpdateMultiProcSignatures: boolean;
     FUpdateOtherProcSignaturesCase: boolean;
+    FGroupLocalVariables: boolean;
     FWordPolicyExceptions: TStringList;
     FDoNotSplitLineInFront: TAtomTypes;
     FDoNotSplitLineAfter: TAtomTypes;
@@ -97,6 +98,8 @@ type
     FPropertyStoredIdentPostfix: string;
     FPrivateVariablePrefix: string;
     FSetPropertyVariablename: string;
+    FSetPropertyVariableIsPrefix: Boolean;
+    FSetPropertyVariableUseConst: Boolean;
     FUsesInsertPolicy: TUsesInsertPolicy;
 
     // identifier completion
@@ -116,6 +119,8 @@ type
     procedure SetCodeCompletionTemplateFileName(aValue: String);
     procedure SetFilename(const AValue: string);
     procedure SetSetPropertyVariablename(aValue: string);
+    procedure SetSetPropertyVariableIsPrefix(aValue: Boolean);
+    procedure SetSetPropertyVariableUseConst(aValue: Boolean);
   public
     class function GetGroupCaption:string; override;
     class function GetInstance: TAbstractIDEOptions; override;
@@ -174,6 +179,8 @@ type
       read FUpdateMultiProcSignatures write FUpdateMultiProcSignatures;
     property UpdateOtherProcSignaturesCase: boolean
       read FUpdateOtherProcSignaturesCase write FUpdateOtherProcSignaturesCase;
+    property GroupLocalVariables: boolean
+      read FGroupLocalVariables write FGroupLocalVariables;
     property ClassHeaderComments: boolean
       read FClassHeaderComments write FClassHeaderComments;
     property ClassImplementationComments: boolean
@@ -204,6 +211,10 @@ type
       read FPrivateVariablePrefix write FPrivateVariablePrefix;
     property SetPropertyVariablename: string
       read FSetPropertyVariablename write SetSetPropertyVariablename;
+    property SetPropertyVariableIsPrefix: Boolean
+      read FSetPropertyVariableIsPrefix write SetSetPropertyVariableIsPrefix;
+    property SetPropertyVariableUseConst: Boolean
+      read FSetPropertyVariableUseConst write SetSetPropertyVariableUseConst;
     property UsesInsertPolicy: TUsesInsertPolicy
       read FUsesInsertPolicy write FUsesInsertPolicy;
       
@@ -438,6 +449,8 @@ begin
       'CodeToolsOptions/UpdateMultiProcSignatures/Value',true);
     FUpdateOtherProcSignaturesCase:=XMLConfig.GetValue(
       'CodeToolsOptions/UpdateOtherProcSignaturesCase/Value',true);
+    FGroupLocalVariables:=XMLConfig.GetValue(
+      'CodeToolsOptions/GroupLocalVariables/Value',true);
     FClassHeaderComments:=XMLConfig.GetValue(
       'CodeToolsOptions/ClassHeaderComments/Value',true);
     FClassImplementationComments:=XMLConfig.GetValue(
@@ -472,6 +485,10 @@ begin
       'CodeToolsOptions/PrivateVariablePrefix/Value',''),'F');
     FSetPropertyVariablename:=ReadIdentifier(XMLConfig.GetValue(
       'CodeToolsOptions/SetPropertyVariablename/Value',''),'AValue');
+    FSetPropertyVariableIsPrefix:=XMLConfig.GetValue(
+      'CodeToolsOptions/SetPropertyVariableIsPrefix/Value',false);
+    FSetPropertyVariableUseConst:=XMLConfig.GetValue(
+      'CodeToolsOptions/SetPropertyVariableUseConst/Value',false);
     FUsesInsertPolicy:=UsesInsertPolicyNameToPolicy(XMLConfig.GetValue(
       'CodeToolsOptions/UsesInsertPolicy/Value',
       UsesInsertPolicyNames[DefaultUsesInsertPolicy]));
@@ -589,6 +606,9 @@ begin
       'CodeToolsOptions/UpdateOtherProcSignaturesCase/Value',FUpdateOtherProcSignaturesCase,
       true);
     XMLConfig.SetDeleteValue(
+      'CodeToolsOptions/GroupLocalVariables/Value',FGroupLocalVariables,
+      true);
+    XMLConfig.SetDeleteValue(
       'CodeToolsOptions/ClassImplementationComments/Value',
       FClassImplementationComments,true);
     XMLConfig.SetDeleteValue('CodeToolsOptions/MethodInsertPolicy/Value',
@@ -620,6 +640,10 @@ begin
       FPrivateVariablePrefix,'F');
     XMLConfig.SetDeleteValue('CodeToolsOptions/SetPropertyVariablename/Value',
       FSetPropertyVariablename,'AValue');
+    XMLConfig.SetDeleteValue('CodeToolsOptions/SetPropertyVariableIsPrefix/Value',
+      FSetPropertyVariableIsPrefix,false);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/SetPropertyVariableUseConst/Value',
+      FSetPropertyVariableUseConst,false);
     XMLConfig.SetDeleteValue('CodeToolsOptions/UsesInsertPolicy/Value',
       UsesInsertPolicyNames[FUsesInsertPolicy],
       UsesInsertPolicyNames[DefaultUsesInsertPolicy]);
@@ -694,10 +718,22 @@ begin
   FFilename:=ConfFilename;
 end;
 
+procedure TCodeToolsOptions.SetSetPropertyVariableIsPrefix(aValue: Boolean);
+begin
+  if FSetPropertyVariableIsPrefix=aValue then Exit;
+  FSetPropertyVariableIsPrefix:=aValue;
+end;
+
 procedure TCodeToolsOptions.SetSetPropertyVariablename(aValue: string);
 begin
   if FSetPropertyVariablename=aValue then Exit;
   FSetPropertyVariablename:=aValue;
+end;
+
+procedure TCodeToolsOptions.SetSetPropertyVariableUseConst(aValue: Boolean);
+begin
+  if FSetPropertyVariableUseConst=aValue then Exit;
+  FSetPropertyVariableUseConst:=aValue;
 end;
 
 procedure TCodeToolsOptions.Assign(Source: TPersistent);
@@ -739,6 +775,7 @@ begin
     FKeepForwardProcOrder:=CodeToolsOpts.KeepForwardProcOrder;
     FUpdateMultiProcSignatures:=CodeToolsOpts.UpdateMultiProcSignatures;
     FUpdateOtherProcSignaturesCase:=CodeToolsOpts.UpdateOtherProcSignaturesCase;
+    FGroupLocalVariables:=CodeToolsOpts.GroupLocalVariables;
     FClassHeaderComments:=CodeToolsOpts.ClassHeaderComments;
     FClassImplementationComments:=CodeToolsOpts.ClassImplementationComments;
     FMethodInsertPolicy:=CodeToolsOpts.FMethodInsertPolicy;
@@ -753,6 +790,8 @@ begin
     FPropertyStoredIdentPostfix:=CodeToolsOpts.FPropertyStoredIdentPostfix;
     FPrivateVariablePrefix:=CodeToolsOpts.FPrivateVariablePrefix;
     FSetPropertyVariablename:=CodeToolsOpts.FSetPropertyVariablename;
+    FSetPropertyVariableIsPrefix:=CodeToolsOpts.FSetPropertyVariableIsPrefix;
+    FSetPropertyVariableUseConst:=CodeToolsOpts.FSetPropertyVariableUseConst;
     FUsesInsertPolicy:=CodeToolsOpts.FUsesInsertPolicy;
     
     // identifier completion
@@ -796,6 +835,7 @@ begin
   FKeepForwardProcOrder:=true;
   FUpdateMultiProcSignatures:=true;
   FUpdateOtherProcSignaturesCase:=true;
+  FGroupLocalVariables:=true;
   FClassHeaderComments:=true;
   FClassImplementationComments:=true;
   FMethodInsertPolicy:=mipClassOrder;
@@ -810,6 +850,8 @@ begin
   FPropertyStoredIdentPostfix:='IsStored';
   FPrivateVariablePrefix:='f';
   FSetPropertyVariablename:='AValue';
+  FSetPropertyVariableIsPrefix:=false;
+  FSetPropertyVariableUseConst:=false;
   FUsesInsertPolicy:=DefaultUsesInsertPolicy;
   
   // identifier completion
@@ -871,6 +913,7 @@ begin
     and (FKeepForwardProcOrder=CodeToolsOpts.KeepForwardProcOrder)
     and (FUpdateMultiProcSignatures=CodeToolsOpts.UpdateMultiProcSignatures)
     and (FUpdateOtherProcSignaturesCase=CodeToolsOpts.UpdateOtherProcSignaturesCase)
+    and (FGroupLocalVariables=CodeToolsOpts.GroupLocalVariables)
     and (FClassHeaderComments=CodeToolsOpts.ClassHeaderComments)
     and (FClassImplementationComments=CodeToolsOpts.ClassImplementationComments)
     and (FMethodInsertPolicy=CodeToolsOpts.FMethodInsertPolicy)
@@ -885,6 +928,8 @@ begin
     and (FPropertyStoredIdentPostfix=CodeToolsOpts.FPropertyStoredIdentPostfix)
     and (FPrivateVariablePrefix=CodeToolsOpts.FPrivateVariablePrefix)
     and (FSetPropertyVariablename=CodeToolsOpts.FSetPropertyVariablename)
+    and (FSetPropertyVariableIsPrefix=CodeToolsOpts.FSetPropertyVariableIsPrefix)
+    and (FSetPropertyVariableUseConst=CodeToolsOpts.FSetPropertyVariableUseConst)
     and (FUsesInsertPolicy=CodeToolsOpts.FUsesInsertPolicy)
 
     // identifier completion
@@ -962,6 +1007,8 @@ begin
     // CreateCode - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     AssignTo(Boss.SourceChangeCache.BeautifyCodeOptions);
     Boss.SetPropertyVariablename:=SetPropertyVariablename;
+    Boss.SetPropertyVariableIsPrefix:=SetPropertyVariableIsPrefix;
+    Boss.SetPropertyVariableUseConst:=SetPropertyVariableUseConst;
 
     // Identifier Completion - - - - - - - - - - - - - - - - - - - - - - - - - -
     Boss.IdentifierList.SortForHistory:=IdentComplSortForHistory;
@@ -986,6 +1033,7 @@ begin
     Beauty.KeepForwardProcOrder:=KeepForwardProcOrder;
     Beauty.UpdateMultiProcSignatures:=UpdateMultiProcSignatures;
     Beauty.UpdateOtherProcSignaturesCase:=UpdateOtherProcSignaturesCase;
+    Beauty.GroupLocalVariables:=GroupLocalVariables;
     Beauty.ClassHeaderComments:=ClassHeaderComments;
     Beauty.ClassImplementationComments:=ClassImplementationComments;
     Beauty.MethodInsertPolicy:=MethodInsertPolicy;

@@ -50,7 +50,7 @@ type
     function MouseUpDownEvent(Event: NSEvent): Boolean;
     procedure MouseClick;
     function MouseMove(Event: NSEvent): Boolean;
-    function KeyEvent(Event: NSEvent): Boolean;
+    function KeyEvent(Event: NSEvent; AForceAsKeyDown: Boolean = False): Boolean;
     function scrollWheel(Event: NSEvent): Boolean;
     // size, pos events
     procedure frameDidChange;
@@ -247,6 +247,9 @@ type
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
     function lclIsHandle: Boolean; override;
+    // key
+    //procedure keyDown(event: NSEvent); override; -> keyDown doesn't work in NSTextField
+    procedure keyUp(event: NSEvent); override;
   end;
 
   { TCocoaSecureTextField }
@@ -262,6 +265,9 @@ type
     function resignFirstResponder: Boolean; override;
     procedure resetCursorRects; override;
     function lclIsHandle: Boolean; override;
+    // key
+    //procedure keyDown(event: NSEvent); override; -> keyDown doesn't work in NSTextField
+    procedure keyUp(event: NSEvent); override;
   end;
 
 
@@ -340,6 +346,7 @@ type
     procedure windowDidMove(notification: NSNotification); message 'windowDidMove:';
   public
     callback: IWindowCallback;
+    LCLForm: TCustomForm;
     procedure dealloc; override;
     function acceptsFirstResponder: Boolean; override;
     function canBecomeKeyWindow: Boolean; override;
@@ -366,6 +373,8 @@ type
     // NSDraggingDestinationCategory
     function draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation; override;
     function performDragOperation(sender: NSDraggingInfoProtocol): Boolean; override;
+    // menu support
+    procedure lclItemSelected(sender: id); message 'lclItemSelected:';
   end;
 
   { TCocoaCustomControl }
@@ -852,7 +861,7 @@ function GetNSViewSuperViewHeight(view: NSView): CGFloat;
 
 implementation
 
-uses CocoaWSComCtrls;
+uses CocoaWSComCtrls, CocoaInt;
 
 {$I mackeycodes.inc}
 
@@ -1450,6 +1459,11 @@ begin
   Result := True;
 end;
 
+procedure TCocoaWindow.lclItemSelected(sender: id);
+begin
+
+end;
+
 { TCocoaScrollView }
 
 function TCocoaScrollView.lclIsHandle: Boolean;
@@ -1854,6 +1868,18 @@ begin
     inherited resetCursorRects;
 end;
 
+procedure TCocoaTextField.keyUp(event: NSEvent);
+begin
+  if Assigned(callback) then
+  begin
+    // NSTextField doesn't provide keyDown, so emulate it here
+    callback.KeyEvent(event, True);
+    // keyUp now
+    callback.KeyEvent(event);
+  end;
+  inherited keyUp(event);
+end;
+
 { TCocoaTextView }
 
 function TCocoaTextView.lclIsHandle: Boolean;
@@ -1863,20 +1889,23 @@ end;
 
 procedure TCocoaTextView.keyDown(event: NSEvent);
 begin
-  if not Assigned(callback) or not callback.KeyEvent(event) then
-    inherited keyDown(event);
+  if Assigned(callback) then callback.KeyEvent(event);
+  // don't skip inherited or else key input won't work
+  inherited keyDown(event);
 end;
 
 procedure TCocoaTextView.keyUp(event: NSEvent);
 begin
-  if not Assigned(callback) or not callback.KeyEvent(event) then
-    inherited keyUp(event);
+  if Assigned(callback) then callback.KeyEvent(event);
+  // don't skip inherited or else key input won't work
+  inherited keyUp(event);
 end;
 
 procedure TCocoaTextView.flagsChanged(event: NSEvent);
 begin
-  if not Assigned(callback) or not callback.KeyEvent(event) then
-    inherited flagsChanged(event);
+  if Assigned(callback) then callback.KeyEvent(event);
+  // don't skip inherited or else key input won't work
+  inherited flagsChanged(event);
 end;
 
 function TCocoaTextView.acceptsFirstResponder: Boolean;
@@ -1980,6 +2009,18 @@ procedure TCocoaSecureTextField.resetCursorRects;
 begin
   if not callback.resetCursorRects then
     inherited resetCursorRects;
+end;
+
+procedure TCocoaSecureTextField.keyUp(event: NSEvent);
+begin
+  if Assigned(callback) then
+  begin
+    // NSTextField doesn't provide keyDown, so emulate it here
+    callback.KeyEvent(event, True);
+    // keyUp now
+    callback.KeyEvent(event);
+  end;
+  inherited keyUp(event);
 end;
 
 { TCocoaCustomControl }
@@ -2266,6 +2307,7 @@ end;
 function LCLControlExtension.lclIsEnabled:Boolean;
 begin
   Result := IsEnabled;
+  if Result and CocoaWidgetSet.IsControlDisabledDueToModal(Self) then Result := False;
 end;
 
 procedure LCLControlExtension.lclSetEnabled(AEnabled:Boolean);

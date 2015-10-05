@@ -42,11 +42,14 @@ interface
 
 uses
   Classes, SysUtils, SimpleIPC, Laz2_XMLCfg,
-  FileUtil, Forms, Controls, Dialogs,
-  Buttons, LCLProc, ComCtrls, ExtCtrls, Menus, LCLType, LCLIntf, StdCtrls,
-  BaseContentProvider, ChmContentProvider, lhelpstrconsts, DefaultTranslator,
-  {$IFDEF USE_LNET}, HTTPContentProvider{$ENDIF}
-  lazlogger;
+  // LCL
+  Forms, Controls, Dialogs, Buttons, ComCtrls, ExtCtrls, Menus, StdCtrls,
+  LCLProc, LCLType, LCLIntf, DefaultTranslator,
+  // LazUtils
+  LazFileUtils, LazUTF8, LazLogger,
+  // ChmHelp
+  {$IFDEF USE_LNET}HTTPContentProvider,{$ENDIF}
+  BaseContentProvider, ChmContentProvider, lhelpstrconsts;
 
 type
 
