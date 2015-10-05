@@ -3466,13 +3466,21 @@ end;
 procedure TBoolPropertyEditor.PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
                                             AState: TPropEditDrawState);
 var
+  {$IFDEF UseOINormalCheckBox}
   TxtRect: TRect;
-  {$IFnDEF UseOINormalCheckBox}
+  {$ELSE}
   str: string;
   stat: TCheckBoxState;
   {$ENDIF}
 begin
-  {$IFnDEF UseOINormalCheckBox}
+  {$IFDEF UseOINormalCheckBox}
+  if FPropertyHook.GetCheckboxForBoolean then
+    TxtRect := DrawCheckbox(ACanvas, ARect, GetOrdValue<>0)
+  else
+    TxtRect := ARect;
+  inherited PropDrawValue(ACanvas, TxtRect, AState);
+  {$ELSE}
+  if aState=[] then ;
   if FPropertyHook.GetCheckboxForBoolean then begin
     if GetOrdValue<>0 then begin
       stat := cbChecked;
@@ -3483,12 +3491,6 @@ begin
     end;
     TCheckBoxThemed.PaintSelf(ACanvas, str, ARect, stat, False, False, False, False, taRightJustify);
   end;
-  {$ELSE}
-  if FPropertyHook.GetCheckboxForBoolean then
-    TxtRect := DrawCheckbox(ACanvas, ARect, GetOrdValue<>0)
-  else
-    TxtRect := ARect;
-  inherited PropDrawValue(ACanvas, TxtRect, AState);
   {$ENDIF}
 end;
 
