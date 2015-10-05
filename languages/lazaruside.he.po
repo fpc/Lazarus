@@ -8722,6 +8722,10 @@ msgstr "%s לא קיים: %s"
 msgid "Do not change"
 msgstr ""
 
+#: lazarusidestrconsts.lisdonotcheckifanotherideinstanceisalreadyrunning
+msgid "%sDo not check if another IDE instance is already running"
+msgstr ""
+
 #: lazarusidestrconsts.lisdonotclosetheproject
 msgid "Do not close the project"
 msgstr "אל תסגור את הפרוייקט"
@@ -8892,8 +8896,12 @@ msgstr ""
 msgid "You may add here your favorite commands"
 msgstr ""
 
+#: lazarusidestrconsts.liseditortoolbarsettings
+msgid "Editor Toolbar Settings"
+msgstr ""
+
 #: lazarusidestrconsts.liseditortoolbarvisible
-msgid "EditorToolbar is &visible"
+msgid "Editor Toolbar is &visible"
 msgstr ""
 
 #: lazarusidestrconsts.lisedoptsloadascheme
@@ -8997,6 +9005,10 @@ msgstr "כותרת ושם קובץ נדרשים"
 #: lazarusidestrconsts.lisedtexttoolworkingdirectory
 msgid "Working Directory:"
 msgstr "ספריית העבודה:"
+
+#: lazarusidestrconsts.liselevatethemessageprioritytoalwaysshowitbydefaultit
+msgid "Elevate the message priority to always show it (by default it has low priority \"verbose\")"
+msgstr ""
 
 #: lazarusidestrconsts.lisemdall
 msgctxt "lazarusidestrconsts.lisemdall"
@@ -17063,6 +17075,10 @@ msgstr "הראה הבדלים בין האופנים..."
 #: lazarusidestrconsts.lisshowemptyunitspackages
 msgid "Show empty units/packages"
 msgstr "הראה יחידות/חבילות ריקות"
+
+#: lazarusidestrconsts.lisshowfpcmessagelinescompiled
+msgid "Show FPC message \"lines compiled\""
+msgstr ""
 
 #: lazarusidestrconsts.lisshowglyphsfor
 #, fuzzy

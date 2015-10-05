@@ -8282,6 +8282,10 @@ msgstr "%s neexistuje: %s"
 msgid "Do not change"
 msgstr "Neměnit"
 
+#: lazarusidestrconsts.lisdonotcheckifanotherideinstanceisalreadyrunning
+msgid "%sDo not check if another IDE instance is already running"
+msgstr ""
+
 #: lazarusidestrconsts.lisdonotclosetheproject
 msgid "Do not close the project"
 msgstr "Nezavírat projekt"
@@ -8449,8 +8453,12 @@ msgstr ""
 msgid "You may add here your favorite commands"
 msgstr ""
 
+#: lazarusidestrconsts.liseditortoolbarsettings
+msgid "Editor Toolbar Settings"
+msgstr ""
+
 #: lazarusidestrconsts.liseditortoolbarvisible
-msgid "EditorToolbar is &visible"
+msgid "Editor Toolbar is &visible"
 msgstr ""
 
 #: lazarusidestrconsts.lisedoptsloadascheme
@@ -8554,6 +8562,10 @@ msgstr "Požadováno název a jméno souboru"
 #: lazarusidestrconsts.lisedtexttoolworkingdirectory
 msgid "Working Directory:"
 msgstr "Pracovní složka:"
+
+#: lazarusidestrconsts.liselevatethemessageprioritytoalwaysshowitbydefaultit
+msgid "Elevate the message priority to always show it (by default it has low priority \"verbose\")"
+msgstr ""
 
 #: lazarusidestrconsts.lisemdall
 msgctxt "lazarusidestrconsts.lisemdall"
@@ -16045,6 +16057,10 @@ msgstr "Ukázat rozdíly mezi módy ..."
 #: lazarusidestrconsts.lisshowemptyunitspackages
 msgid "Show empty units/packages"
 msgstr "Ukázat prázdné jednotky/balíčky"
+
+#: lazarusidestrconsts.lisshowfpcmessagelinescompiled
+msgid "Show FPC message \"lines compiled\""
+msgstr ""
 
 #: lazarusidestrconsts.lisshowglyphsfor
 #, fuzzy

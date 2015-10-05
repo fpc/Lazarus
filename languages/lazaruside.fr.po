@@ -8226,6 +8226,10 @@ msgstr "%s n'existe pas : %s"
 msgid "Do not change"
 msgstr "Ne pas modifier"
 
+#: lazarusidestrconsts.lisdonotcheckifanotherideinstanceisalreadyrunning
+msgid "%sDo not check if another IDE instance is already running"
+msgstr ""
+
 #: lazarusidestrconsts.lisdonotclosetheproject
 msgid "Do not close the project"
 msgstr "Ne pas fermer le projet "
@@ -8392,8 +8396,12 @@ msgstr ""
 msgid "You may add here your favorite commands"
 msgstr ""
 
+#: lazarusidestrconsts.liseditortoolbarsettings
+msgid "Editor Toolbar Settings"
+msgstr ""
+
 #: lazarusidestrconsts.liseditortoolbarvisible
-msgid "EditorToolbar is &visible"
+msgid "Editor Toolbar is &visible"
 msgstr ""
 
 #: lazarusidestrconsts.lisedoptsloadascheme
@@ -8497,6 +8505,10 @@ msgstr "Titre et nom de fichier requis"
 #: lazarusidestrconsts.lisedtexttoolworkingdirectory
 msgid "Working Directory:"
 msgstr "Répertoire de travail :"
+
+#: lazarusidestrconsts.liselevatethemessageprioritytoalwaysshowitbydefaultit
+msgid "Elevate the message priority to always show it (by default it has low priority \"verbose\")"
+msgstr ""
 
 #: lazarusidestrconsts.lisemdall
 msgctxt "lazarusidestrconsts.lisemdall"
@@ -15939,6 +15951,10 @@ msgstr "Montrer les différences entre les modes..."
 #: lazarusidestrconsts.lisshowemptyunitspackages
 msgid "Show empty units/packages"
 msgstr "Montrer les unités/paquets vides"
+
+#: lazarusidestrconsts.lisshowfpcmessagelinescompiled
+msgid "Show FPC message \"lines compiled\""
+msgstr ""
 
 #: lazarusidestrconsts.lisshowglyphsfor
 msgid "Show Glyphs for"

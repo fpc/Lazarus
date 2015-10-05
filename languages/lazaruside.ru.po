@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-10-04 00:46+0300\n"
+"PO-Revision-Date: 2015-10-06 02:14+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -8207,6 +8207,10 @@ msgstr "%s не существует: %s"
 msgid "Do not change"
 msgstr "В неизменном виде"
 
+#: lazarusidestrconsts.lisdonotcheckifanotherideinstanceisalreadyrunning
+msgid "%sDo not check if another IDE instance is already running"
+msgstr "%sНе проверять, что другой экземпляр IDE уже запущен"
+
 #: lazarusidestrconsts.lisdonotclosetheproject
 msgid "Do not close the project"
 msgstr "Не закрывать проект"
@@ -8373,8 +8377,12 @@ msgstr "Инструментальная панель редактора"
 msgid "You may add here your favorite commands"
 msgstr "Сюда можно добавить часто используемые команды"
 
+#: lazarusidestrconsts.liseditortoolbarsettings
+msgid "Editor Toolbar Settings"
+msgstr "Параметры инструментальной панели редактора"
+
 #: lazarusidestrconsts.liseditortoolbarvisible
-msgid "EditorToolbar is &visible"
+msgid "Editor Toolbar is &visible"
 msgstr "&Показывать инструментальную панель редактора"
 
 #: lazarusidestrconsts.lisedoptsloadascheme
@@ -8478,6 +8486,10 @@ msgstr "Требуются заголовок и имя файла"
 #: lazarusidestrconsts.lisedtexttoolworkingdirectory
 msgid "Working Directory:"
 msgstr "Рабочий каталог:"
+
+#: lazarusidestrconsts.liselevatethemessageprioritytoalwaysshowitbydefaultit
+msgid "Elevate the message priority to always show it (by default it has low priority \"verbose\")"
+msgstr "Всегда отображать сообщение как важное (по умолчанию оно относится к менее важным \"подробным\")"
 
 #: lazarusidestrconsts.lisemdall
 msgctxt "lazarusidestrconsts.lisemdall"
@@ -15916,6 +15928,10 @@ msgstr "Показать разницу между режимами ..."
 #: lazarusidestrconsts.lisshowemptyunitspackages
 msgid "Show empty units/packages"
 msgstr "Показывать пустые модули/пакеты"
+
+#: lazarusidestrconsts.lisshowfpcmessagelinescompiled
+msgid "Show FPC message \"lines compiled\""
+msgstr "Показывать сообщение FPC со статистикой компиляции"
 
 #: lazarusidestrconsts.lisshowglyphsfor
 msgid "Show Glyphs for"

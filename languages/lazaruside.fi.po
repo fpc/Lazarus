@@ -8205,6 +8205,10 @@ msgstr "%s ei ole olemassa: %s"
 msgid "Do not change"
 msgstr "Älä muuta"
 
+#: lazarusidestrconsts.lisdonotcheckifanotherideinstanceisalreadyrunning
+msgid "%sDo not check if another IDE instance is already running"
+msgstr ""
+
 #: lazarusidestrconsts.lisdonotclosetheproject
 msgid "Do not close the project"
 msgstr "Ei suljetakaan projektia"
@@ -8370,8 +8374,12 @@ msgstr ""
 msgid "You may add here your favorite commands"
 msgstr ""
 
+#: lazarusidestrconsts.liseditortoolbarsettings
+msgid "Editor Toolbar Settings"
+msgstr ""
+
 #: lazarusidestrconsts.liseditortoolbarvisible
-msgid "EditorToolbar is &visible"
+msgid "Editor Toolbar is &visible"
 msgstr ""
 
 #: lazarusidestrconsts.lisedoptsloadascheme
@@ -8475,6 +8483,10 @@ msgstr "Otsikko ja tiedostonimi vaaditaan"
 #: lazarusidestrconsts.lisedtexttoolworkingdirectory
 msgid "Working Directory:"
 msgstr "Työhakemisto"
+
+#: lazarusidestrconsts.liselevatethemessageprioritytoalwaysshowitbydefaultit
+msgid "Elevate the message priority to always show it (by default it has low priority \"verbose\")"
+msgstr ""
 
 #: lazarusidestrconsts.lisemdall
 msgctxt "lazarusidestrconsts.lisemdall"
@@ -15838,6 +15850,10 @@ msgstr "Näytä erot moodien välillä ..."
 #: lazarusidestrconsts.lisshowemptyunitspackages
 msgid "Show empty units/packages"
 msgstr "Näytä tyhjät käännösyksiköt/paketit"
+
+#: lazarusidestrconsts.lisshowfpcmessagelinescompiled
+msgid "Show FPC message \"lines compiled\""
+msgstr ""
 
 #: lazarusidestrconsts.lisshowglyphsfor
 msgid "Show Glyphs for"
