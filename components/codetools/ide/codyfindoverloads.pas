@@ -316,16 +316,54 @@ end;
 procedure TCodyFindOverloadsWindow.GatherProcsOfUnit(NodeGraph: TCodeGraph;
   ProgNode: TCodeTreeNode; CurUnit: TCFOUnit);
 
-  procedure AddAncestors(Tool: TFindDeclarationTool; ClassNode: TCodeTreeNode);
-  begin
+  procedure AddAncestors(Tool: TFindDeclarationTool; ClassNode: TCodeTreeNode); forward;
 
+  function AddClassNode(Tool: TFindDeclarationTool; ClassNode: TCodeTreeNode): TCFONode;
+  var
+    Edge: TCFOEdge;
+  begin
+    if ClassNode=nil then
+      RaiseCatchableException('');
+    Result:=TCFONode(NodeGraph.GetGraphNode(ClassNode,false));
+    if Result<>nil then exit;
+    debugln(['AddClassNode ',Tool.ExtractClassName(ClassNode,false)]);
+    Result:=TCFONode(NodeGraph.AddGraphNode(ClassNode));
+    Result.Tool:=Tool;
+    // create edge "reachable", so that all nodes are reachable
+    Edge:=TCFOEdge(NodeGraph.AddEdge(ClassNode,ProgNode));
+    Edge.Typ:=cfoetReachable;
+    AddAncestors(Tool,ClassNode);
+  end;
+
+  procedure AddAncestors(Tool: TFindDeclarationTool; ClassNode: TCodeTreeNode);
+  var
+    ListOfPFindContext: TFPList;
+    Params: TFindDeclarationParams;
+    Context: PFindContext;
+    i: Integer;
+  begin
+    debugln(['AddAncestors ',Tool.ExtractClassName(ClassNode,false)]);
+    ListOfPFindContext:=nil;
+    Params:=TFindDeclarationParams.Create(nil);
+    try
+      Tool.FindAncestorsOfClass(ClassNode,ListOfPFindContext,Params,true,false);
+      if ListOfPFindContext<>nil then begin
+        for i:=0 to ListOfPFindContext.Count-1 do begin
+          Context:=PFindContext(ListOfPFindContext[i]);
+          AddClassNode(Context^.Tool,Context^.Node);
+        end;
+      end;
+    finally
+      Params.Free;
+      FreeListOfPFindContext(ListOfPFindContext);
+    end;
   end;
 
 var
   Tool: TStandardCodeTool;
   ProcNode, ClassNode: TCodeTreeNode;
   CurProcName: String;
-  GraphProcNode, GraphClassNode: TCFONode;
+  GraphProcNode: TCFONode;
   Edge: TCFOEdge;
 begin
   if ugufLoadError in CurUnit.Flags then exit;
@@ -347,15 +385,10 @@ begin
           ClassNode:=ClassNode.Parent;
         end;
         if ClassNode<>nil then begin
-          GraphClassNode:=TCFONode(NodeGraph.AddGraphNode(ClassNode));
-          GraphClassNode.Tool:=Tool;
+          AddClassNode(Tool,ClassNode);
           // create edge "is method of"
           Edge:=TCFOEdge(NodeGraph.AddEdge(ProcNode,ClassNode));
           Edge.Typ:=cfoetMethodOf;
-          // create edge "reachable", so that all nodes are reachable
-          Edge:=TCFOEdge(NodeGraph.AddEdge(ClassNode,ProgNode));
-          Edge.Typ:=cfoetReachable;
-          AddAncestors(Tool,ClassNode);
         end else begin
           // not a method
           // create edge "reachable", so that all nodes are reachable
@@ -384,7 +417,6 @@ var
   sl: TStringList;
   ClassNode: TCodeTreeNode;
   ListOfPFindContext: TFPList;
-  Params: TFindDeclarationParams;
   i: Integer;
   aContext: PFindContext;
 begin
@@ -398,10 +430,8 @@ begin
       // method
       sl.Add('Only descendants of '+ProcTool.ExtractClassName(ClassNode,false));
       ListOfPFindContext:=nil;
-      Params:=TFindDeclarationParams.Create(nil);
       try
-        ProcTool.FindAncestorsOfClass(ClassNode,ListOfPFindContext,Params,
-          false,false);
+        ProcTool.FindClassAndAncestors(ClassNode,ListOfPFindContext,false);
         if ListOfPFindContext<>nil then begin
           for i:=0 to ListOfPFindContext.Count-1 do begin
             aContext:=PFindContext(ListOfPFindContext[i]);
@@ -409,7 +439,6 @@ begin
           end;
         end;
       finally
-        Params.Free;
         FreeListOfPFindContext(ListOfPFindContext);
       end;
       sl.Add('Only methods');

@@ -885,7 +885,7 @@ type
     // ancestors
     function FindClassAndAncestors(ClassNode: TCodeTreeNode;
       out ListOfPFindContext: TFPList; ExceptionOnNotFound: boolean
-      ): boolean; // without interfaces
+      ): boolean; // without interfaces, recursive
     function FindContextClassAndAncestors(const CursorPos: TCodeXYPosition;
       var ListOfPFindContext: TFPList): boolean; // without interfaces
     function FindAncestorOfClass(ClassNode: TCodeTreeNode;
@@ -897,7 +897,7 @@ type
     function FindAncestorsOfClass(ClassNode: TCodeTreeNode;
       var ListOfPFindContext: TFPList;
       Params: TFindDeclarationParams; FindClassContext: boolean;
-      ExceptionOnNotFound: boolean = true): boolean; // with interfaces
+      ExceptionOnNotFound: boolean = true): boolean; // with interfaces, not recursive
 
     function FindExtendedExprOfHelper(HelperNode: TCodeTreeNode): TExpressionType;
 
