@@ -108,7 +108,7 @@ type
     procedure AddStartAndTargetUnits;
     procedure GatherProcsOfAllUnits;
     procedure GatherProcsOfUnit(NodeGraph: TCodeGraph; ProgNode: TCodeTreeNode;
-      CurUnit: TCFOUnit);
+      CurUnit: TCFOUnit; ExcludeAbstractProcs: boolean);
     procedure FreeUsesGraph;
     function GetDefaultCaption: string;
     procedure FillFilterControls(ProcTool: TFindDeclarationTool;
@@ -289,12 +289,14 @@ var
   CurUnit: TCFOUnit;
   NodeGraph: TCodeGraph;
   ProgNode: TCodeTreeNode;
+  ExcludeAbstractProcs: Boolean;
 begin
-  if FUsesGraph=nil then begin
-    Exclude(FFlags,cfofGatherProcs);
+  Exclude(FFlags,cfofGatherProcs);
+  if FUsesGraph=nil then
     exit;
-  end;
   debugln(['TCodyFindOverloadsWindow.GatherProcsOfAllUnits START']);
+
+  ExcludeAbstractProcs:=HideAbstractCheckBox.Checked;
   ProgNode:=TCodeTreeNode.Create;
   NodeGraph:=TCodeGraph.Create(TCFONode,TCFOEdge);
   try
@@ -303,7 +305,7 @@ begin
     FileNode:=FUsesGraph.FilesTree.FindLowest;
     while FileNode<>nil do begin
       CurUnit:=TCFOUnit(FileNode.Data);
-      GatherProcsOfUnit(NodeGraph,ProgNode,CurUnit);
+      GatherProcsOfUnit(NodeGraph,ProgNode,CurUnit,ExcludeAbstractProcs);
       FileNode:=FUsesGraph.FilesTree.FindSuccessor(FileNode);
     end;
   finally
@@ -314,7 +316,7 @@ begin
 end;
 
 procedure TCodyFindOverloadsWindow.GatherProcsOfUnit(NodeGraph: TCodeGraph;
-  ProgNode: TCodeTreeNode; CurUnit: TCFOUnit);
+  ProgNode: TCodeTreeNode; CurUnit: TCFOUnit; ExcludeAbstractProcs: boolean);
 
   procedure AddAncestors(Tool: TFindDeclarationTool; ClassNode: TCodeTreeNode); forward;
 
@@ -339,8 +341,9 @@ procedure TCodyFindOverloadsWindow.GatherProcsOfUnit(NodeGraph: TCodeGraph;
   var
     ListOfPFindContext: TFPList;
     Params: TFindDeclarationParams;
-    Context: PFindContext;
+    Ancestor: PFindContext;
     i: Integer;
+    Edge: TCFOEdge;
   begin
     debugln(['AddAncestors ',Tool.ExtractClassName(ClassNode,false)]);
     ListOfPFindContext:=nil;
@@ -349,8 +352,11 @@ procedure TCodyFindOverloadsWindow.GatherProcsOfUnit(NodeGraph: TCodeGraph;
       Tool.FindAncestorsOfClass(ClassNode,ListOfPFindContext,Params,true,false);
       if ListOfPFindContext<>nil then begin
         for i:=0 to ListOfPFindContext.Count-1 do begin
-          Context:=PFindContext(ListOfPFindContext[i]);
-          AddClassNode(Context^.Tool,Context^.Node);
+          Ancestor:=PFindContext(ListOfPFindContext[i]);
+          AddClassNode(Ancestor^.Tool,Ancestor^.Node);
+          // create edge "descendant of"
+          Edge:=TCFOEdge(NodeGraph.AddEdge(ClassNode,Ancestor^.Node));
+          Edge.Typ:=cfoetDescendantOf;
         end;
       end;
     finally
@@ -359,12 +365,55 @@ procedure TCodyFindOverloadsWindow.GatherProcsOfUnit(NodeGraph: TCodeGraph;
     end;
   end;
 
+  procedure AddProcNode(Tool: TFindDeclarationTool; ProcNode: TCodeTreeNode);
+  var
+    CurProcName: String;
+    GraphProcNode: TCFONode;
+    ClassNode: TCodeTreeNode;
+    Edge: TCFOEdge;
+  begin
+    // check name
+    CurProcName:=Tool.ExtractProcName(ProcNode,[phpWithoutClassName]);
+    if CompareIdentifiers(PChar(CurProcName),PChar(FTargetName))<>0 then exit;
+
+    debugln(['TCodyFindOverloadsWindow.GatherProcsOfUnit ',Tool.CleanPosToStr(ProcNode.StartPos,true)]);
+
+    // check if method
+    ClassNode:=ProcNode.Parent;
+    while ClassNode<>nil do begin
+      if ClassNode.Desc in AllClasses then break;
+      ClassNode:=ClassNode.Parent;
+    end;
+    if ClassNode<>nil then begin
+      if ExcludeAbstractProcs then begin
+        if ClassNode.Desc in AllClassInterfaces then exit;
+        if Tool.ProcNodeHasSpecifier(ProcNode,psABSTRACT) then exit;
+      end;
+    end;
+    // ToDo: check param compatibility
+
+    // add node
+    GraphProcNode:=TCFONode(NodeGraph.AddGraphNode(ProcNode));
+    GraphProcNode.Tool:=Tool;
+
+    // add edges
+    if ClassNode<>nil then begin
+      // create nodes for class and ancestors
+      AddClassNode(Tool,ClassNode);
+      // create edge "is method of"
+      Edge:=TCFOEdge(NodeGraph.AddEdge(ProcNode,ClassNode));
+      Edge.Typ:=cfoetMethodOf;
+    end else begin
+      // not a method
+      // create edge "reachable", so that all nodes are reachable
+      Edge:=TCFOEdge(NodeGraph.AddEdge(ProcNode,ProgNode));
+      Edge.Typ:=cfoetReachable;
+    end;
+  end;
+
 var
   Tool: TStandardCodeTool;
-  ProcNode, ClassNode: TCodeTreeNode;
-  CurProcName: String;
-  GraphProcNode: TCFONode;
-  Edge: TCFOEdge;
+  ProcNode: TCodeTreeNode;
 begin
   if ugufLoadError in CurUnit.Flags then exit;
   if not (ugufReached in CurUnit.Flags) then exit; // this unit was not reached
@@ -373,30 +422,8 @@ begin
   ProcNode:=Tool.Tree.Root;
   while ProcNode<>nil do begin
     if ProcNode.Desc in [ctnImplementation,ctnBeginBlock] then break;
-    if ProcNode.Desc=ctnProcedure then begin
-      CurProcName:=Tool.ExtractProcName(ProcNode,[phpWithoutClassName]);
-      if CompareIdentifiers(PChar(CurProcName),PChar(FTargetName))=0 then begin
-        debugln(['TCodyFindOverloadsWindow.GatherProcsOfUnit ',Tool.CleanPosToStr(ProcNode.StartPos,true)]);
-        GraphProcNode:=TCFONode(NodeGraph.AddGraphNode(ProcNode));
-        GraphProcNode.Tool:=Tool;
-        ClassNode:=ProcNode.Parent;
-        while ClassNode<>nil do begin
-          if ClassNode.Desc in AllClasses then break;
-          ClassNode:=ClassNode.Parent;
-        end;
-        if ClassNode<>nil then begin
-          AddClassNode(Tool,ClassNode);
-          // create edge "is method of"
-          Edge:=TCFOEdge(NodeGraph.AddEdge(ProcNode,ClassNode));
-          Edge.Typ:=cfoetMethodOf;
-        end else begin
-          // not a method
-          // create edge "reachable", so that all nodes are reachable
-          Edge:=TCFOEdge(NodeGraph.AddEdge(ProcNode,ProgNode));
-          Edge.Typ:=cfoetReachable;
-        end;
-      end;
-    end;
+    if ProcNode.Desc=ctnProcedure then
+      AddProcNode(Tool,ProcNode);
     ProcNode:=ProcNode.Next;
   end;
 end;
