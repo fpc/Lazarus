@@ -39,7 +39,7 @@ unit CodyFindOverloads;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, FileUtil, LazLoggerBase, CodyUtils,
+  Classes, SysUtils, AVL_Tree, FileUtil, LazLoggerBase, LazUtilities, CodyUtils,
   CodeToolManager, CodeTree, CodeCache, FindDeclarationTool, PascalParserTool,
   BasicCodeTools, CTUnitGraph, FileProcs, StdCodeTools, CodeGraph, LazIDEIntf,
   IDEWindowIntf, ProjectIntf, Forms, Controls, Graphics, Dialogs, ExtCtrls,
@@ -57,6 +57,7 @@ type
     // for ctnProcedure:
     Compatibility: TTypeCompatibility;
     Distance: integer;
+    ShortestPathNode: TCFONode;
   end;
 
   TCFOEdgeType = (
@@ -70,6 +71,14 @@ type
     Typ: TCFOEdgeType;
   end;
 
+const
+  CFOEdgeDistance: array[TCFOEdgeType] of integer = (
+    1000000, // cfoetReachable
+    0,       // cfoetMethodOf
+    1        // cfoetDescendantOf
+    );
+
+type
   TCFOFlag = (
     cfofParsing,
     cfofGatherProcs
@@ -137,6 +146,8 @@ var
 procedure ShowFindOverloadsClicked(Sender: TObject);
 procedure ShowFindOverloads(State: TIWGetFormState = iwgfShowOnTop);
 
+function CompareCFONodeByDistance(Node1, Node2: Pointer): integer;
+
 implementation
 
 procedure ShowFindOverloadsClicked(Sender: TObject);
@@ -153,6 +164,19 @@ begin
     CodyFindOverloadsWindow.DisableAlign;
   if State>=iwgfShow then
     IDEWindowCreators.ShowForm(CodyFindOverloadsWindow,State=iwgfShowOnTop);
+end;
+
+function CompareCFONodeByDistance(Node1, Node2: Pointer): integer;
+var
+  n1: TCFONode absolute Node1;
+  n2: TCFONode absolute Node2;
+begin
+  if n1.Distance<n2.Distance then
+    exit(-1)
+  else if n1.Distance>n2.Distance then
+    exit(1)
+  else
+    Result:=ComparePointers(n1.Node,n2.Node);
 end;
 
 {$R *.lfm}
@@ -468,9 +492,76 @@ end;
 
 procedure TCodyFindOverloadsWindow.CalcDistances(NodeGraph: TCodeGraph;
   TargetGraphNode: TCFONode);
+var
+  Unvisited: TAVLTree;
+
+  procedure UpdateDistancesAlongEdges(GraphNode: TCFONode; Edges: TAVLTree);
+  var
+    AVLNode: TAVLTreeNode;
+    Edge: TCFOEdge;
+    NewDistance: Integer;
+    OtherNode: TCFONode;
+    WasUnvisited: Boolean;
+  begin
+    if Edges=nil then exit;
+    AVLNode:=Edges.FindLowest;
+    while AVLNode<>nil do begin
+      Edge:=TCFOEdge(AVLNode.Data);
+      NewDistance:=GraphNode.Distance+CFOEdgeDistance[Edge.Typ];
+      if GraphNode=Edge.FromNode then begin
+        OtherNode:=TCFONode(Edge.ToNode);
+      end else begin
+        OtherNode:=TCFONode(Edge.FromNode);
+      end;
+      if NewDistance<OtherNode.Distance then begin
+        WasUnvisited:=Unvisited.Find(OtherNode)<>nil;
+        if WasUnvisited then
+          Unvisited.Remove(OtherNode);
+        OtherNode.Distance:=NewDistance;
+        OtherNode.ShortestPathNode:=GraphNode;
+        if WasUnvisited then
+          Unvisited.Add(OtherNode);
+      end;
+      AVLNode:=Edges.FindSuccessor(AVLNode);
+    end;
+  end;
+
+var
+  AVLNode: TAVLTreeNode;
+  GraphNode: TCFONode;
 begin
   debugln(['TCodyFindOverloadsWindow.CalcDistances ']);
 
+  Unvisited:=TAVLTree.Create(@CompareCFONodeByDistance);
+  try
+    // Dijkstra's shotest path algorithm
+
+    // build Unvisited queue, set Distance of TargetGraphNode to 0
+    // infinite Distance all other
+    AVLNode:=NodeGraph.Nodes.FindLowest;
+    while AVLNode<>nil do begin
+      GraphNode:=TCFONode(AVLNode.Data);
+      if GraphNode=TargetGraphNode then
+        GraphNode.Distance:=0
+      else
+        GraphNode.Distance:=High(integer);
+      Unvisited.Add(GraphNode);
+      AVLNode:=NodeGraph.Nodes.FindSuccessor(AVLNode);
+    end;
+
+    // for each node with minimum distance ...
+    while Unvisited.Count>0 do begin
+      // get unvisited node with minimum distance
+      AVLNode:=Unvisited.FindLowest;
+      GraphNode:=TCFONode(AVLNode.Data);
+      //debugln(['TCodyFindOverloadsWindow.CalcDistances GraphNode=',GraphNode.Tool.ExtractProcName(GraphNode.Node,[phpAddClassName]),' Distance=',GraphNode.Distance]);
+      Unvisited.Delete(AVLNode);
+      UpdateDistancesAlongEdges(GraphNode,GraphNode.InTree);
+      UpdateDistancesAlongEdges(GraphNode,GraphNode.OutTree);
+    end;
+  finally
+    Unvisited.Free;
+  end;
 end;
 
 procedure TCodyFindOverloadsWindow.FreeUsesGraph;
