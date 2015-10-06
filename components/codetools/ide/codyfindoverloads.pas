@@ -39,14 +39,36 @@ unit CodyFindOverloads;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazLoggerBase, CodyUtils, CodeToolManager,
-  CodeTree, CodeCache, FindDeclarationTool, PascalParserTool, BasicCodeTools,
-  CTUnitGraph, FileProcs, LazIDEIntf, IDEWindowIntf, ProjectIntf,
-  Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, Grids, ComCtrls;
+  Classes, SysUtils, AVL_Tree, FileUtil, LazLoggerBase, CodyUtils,
+  CodeToolManager, CodeTree, CodeCache, FindDeclarationTool, PascalParserTool,
+  BasicCodeTools, CTUnitGraph, FileProcs, StdCodeTools, CodeGraph, LazIDEIntf,
+  IDEWindowIntf, ProjectIntf, Forms, Controls, Graphics, Dialogs, ExtCtrls,
+  StdCtrls, Grids, ComCtrls;
 
 type
+  TCFOUnit = class(TUGUnit)
+  public
+  end;
+
+  TCFONode = class(TCodeGraphNode)
+  public
+    Tool: TFindDeclarationTool;
+  end;
+
+  TCFOEdgeType = (
+    cfoetReachable, // FromNode (proc) is reachable by ToNode(program)
+    cfoetMethodOf,  // FromNode (proc) is method of ToNode (class)
+    cfoetDescendantOf  // FromNode (class) is descendant of ToNode (class)
+    );
+
+  TCFOEdge = class(TCodeGraphEdge)
+  public
+    Typ: TCFOEdgeType;
+  end;
+
   TCFOFlag = (
-    cfofParsing
+    cfofParsing,
+    cfofGatherProcs
     );
   TCFOFlags = set of TCFOFlag;
 
@@ -84,6 +106,9 @@ type
     procedure StartParsing;
     procedure AbortParsing;
     procedure AddStartAndTargetUnits;
+    procedure GatherProcsOfAllUnits;
+    procedure GatherProcsOfUnit(NodeGraph: TCodeGraph; ProgNode: TCodeTreeNode;
+      CurUnit: TCFOUnit);
     procedure FreeUsesGraph;
     function GetDefaultCaption: string;
     procedure FillFilterControls(ProcTool: TFindDeclarationTool;
@@ -165,17 +190,19 @@ begin
   if cfofParsing in FFlags then begin
     fUsesGraph.Parse(true,Completed,200);
     if Completed then begin
-      Exclude(FFlags,cfofParsing);
-      // hide progress bar and update stats
-      ProgressBar1.Visible:=false;
-      RefreshButton.Enabled:=true;
-      Timer1.Enabled:=false;
-      ResultsGroupBox.Caption:=Format('Units: %s', [IntToStr(FUsesGraph.FilesTree.Count)]);
-      // update controls
-      //UpdateAll;
+      FFlags:=FFlags-[cfofParsing]+[cfofGatherProcs];
     end;
-  end
-  else
+  end else if cfofGatherProcs in FFlags then begin
+    GatherProcsOfAllUnits;
+    FFlags:=FFlags-[cfofGatherProcs];
+    // hide progress bar and update stats
+    ProgressBar1.Visible:=false;
+    RefreshButton.Enabled:=true;
+    Timer1.Enabled:=false;
+    ResultsGroupBox.Caption:=Format('Units: %s', [IntToStr(FUsesGraph.FilesTree.Count)]);
+    // update controls
+    //UpdateAll;
+  end else
     IdleConnected:=false;
   Done:=not IdleConnected;
 end;
@@ -212,6 +239,9 @@ procedure TCodyFindOverloadsWindow.CreateUsesGraph(out TheUsesGraph: TUsesGraph
   );
 begin
   TheUsesGraph:=CodeToolBoss.CreateUsesGraph;
+  if not TCFOUnit.InheritsFrom(TheUsesGraph.UnitClass) then
+    RaiseCatchableException('');
+  TheUsesGraph.UnitClass:=TCFOUnit;
 end;
 
 procedure TCodyFindOverloadsWindow.StartParsing;
@@ -251,6 +281,91 @@ begin
   aProject:=LazarusIDE.ActiveProject;
   if (aProject<>nil) and (aProject.MainFile<>nil) then
     FUsesGraph.AddStartUnit(aProject.MainFile.Filename);
+end;
+
+procedure TCodyFindOverloadsWindow.GatherProcsOfAllUnits;
+var
+  FileNode: TAVLTreeNode;
+  CurUnit: TCFOUnit;
+  NodeGraph: TCodeGraph;
+  ProgNode: TCodeTreeNode;
+begin
+  if FUsesGraph=nil then begin
+    Exclude(FFlags,cfofGatherProcs);
+    exit;
+  end;
+  debugln(['TCodyFindOverloadsWindow.GatherProcsOfAllUnits START']);
+  ProgNode:=TCodeTreeNode.Create;
+  NodeGraph:=TCodeGraph.Create(TCFONode,TCFOEdge);
+  try
+    NodeGraph.AddGraphNode(ProgNode);
+
+    FileNode:=FUsesGraph.FilesTree.FindLowest;
+    while FileNode<>nil do begin
+      CurUnit:=TCFOUnit(FileNode.Data);
+      GatherProcsOfUnit(NodeGraph,ProgNode,CurUnit);
+      FileNode:=FUsesGraph.FilesTree.FindSuccessor(FileNode);
+    end;
+  finally
+    NodeGraph.Free;
+    ProgNode.Free;
+  end;
+  debugln(['TCodyFindOverloadsWindow.GatherProcsOfAllUnits END']);
+end;
+
+procedure TCodyFindOverloadsWindow.GatherProcsOfUnit(NodeGraph: TCodeGraph;
+  ProgNode: TCodeTreeNode; CurUnit: TCFOUnit);
+
+  procedure AddAncestors(Tool: TFindDeclarationTool; ClassNode: TCodeTreeNode);
+  begin
+
+  end;
+
+var
+  Tool: TStandardCodeTool;
+  ProcNode, ClassNode: TCodeTreeNode;
+  CurProcName: String;
+  GraphProcNode, GraphClassNode: TCFONode;
+  Edge: TCFOEdge;
+begin
+  if ugufLoadError in CurUnit.Flags then exit;
+  if not (ugufReached in CurUnit.Flags) then exit; // this unit was not reached
+  if ugufIsIncludeFile in CurUnit.Flags then exit;
+  Tool:=CurUnit.Tool;
+  ProcNode:=Tool.Tree.Root;
+  while ProcNode<>nil do begin
+    if ProcNode.Desc in [ctnImplementation,ctnBeginBlock] then break;
+    if ProcNode.Desc=ctnProcedure then begin
+      CurProcName:=Tool.ExtractProcName(ProcNode,[phpWithoutClassName]);
+      if CompareIdentifiers(PChar(CurProcName),PChar(FTargetName))=0 then begin
+        debugln(['TCodyFindOverloadsWindow.GatherProcsOfUnit ',Tool.CleanPosToStr(ProcNode.StartPos,true)]);
+        GraphProcNode:=TCFONode(NodeGraph.AddGraphNode(ProcNode));
+        GraphProcNode.Tool:=Tool;
+        ClassNode:=ProcNode.Parent;
+        while ClassNode<>nil do begin
+          if ClassNode.Desc in AllClasses then break;
+          ClassNode:=ClassNode.Parent;
+        end;
+        if ClassNode<>nil then begin
+          GraphClassNode:=TCFONode(NodeGraph.AddGraphNode(ClassNode));
+          GraphClassNode.Tool:=Tool;
+          // create edge "is method of"
+          Edge:=TCFOEdge(NodeGraph.AddEdge(ProcNode,ClassNode));
+          Edge.Typ:=cfoetMethodOf;
+          // create edge "reachable", so that all nodes are reachable
+          Edge:=TCFOEdge(NodeGraph.AddEdge(ClassNode,ProgNode));
+          Edge.Typ:=cfoetReachable;
+          AddAncestors(Tool,ClassNode);
+        end else begin
+          // not a method
+          // create edge "reachable", so that all nodes are reachable
+          Edge:=TCFOEdge(NodeGraph.AddEdge(ProcNode,ProgNode));
+          Edge.Typ:=cfoetReachable;
+        end;
+      end;
+    end;
+    ProcNode:=ProcNode.Next;
+  end;
 end;
 
 procedure TCodyFindOverloadsWindow.FreeUsesGraph;

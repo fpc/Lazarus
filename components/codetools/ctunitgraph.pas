@@ -76,7 +76,7 @@ type
     constructor Create(const aFilename: string);
     destructor Destroy; override;
     procedure Clear;
-    function IndexOfUses(const aFilename: string): integer;
+    function IndexOfUses(const aFilename: string): integer; // slow linear search
   end;
   TUGUnitClass = class of TUGUnit;
 
