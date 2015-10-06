@@ -26,7 +26,7 @@ uses
   Classes, SysUtils, fgl,
   // LCL and LazControls
   LCLProc, Forms, Graphics, Dialogs, ExtCtrls, Buttons, StdCtrls,
-  Controls, ComCtrls, Menus, ButtonPanel, TreeFilterEdit,
+  Controls, ComCtrls, Menus, ButtonPanel, TreeFilterEdit, LclIntf,
   // IdeIntf
   IDECommands, MenuIntf, IDEImagesIntf,
   // IDE
@@ -200,7 +200,6 @@ begin
   MainList := TStringList.Create;
   MainList.OwnsObjects:= True; // it should be the default, but just to make sure...
   Image := TBitmap.Create;
-  pnlButtons.Helpbutton.OnClick := @btnHelpClick;
   SetupCaptions;
   LoadCategories;
 end;
@@ -218,8 +217,11 @@ end;
 
 procedure TToolBarConfig.btnHelpClick(Sender: TObject);
 begin
+  OpenUrl('http://wiki.freepascal.org/IDE_Window:_Editor_Toolbar');
+  {
   ShowMessageFmt('%s%s%s%s%s%s%s', [lisCoolBarHelp1, LineEnding, lisCoolBarHelp2, LineEnding,
                                     lisCoolBarHelp3, LineEnding, lisCoolBarHelp4]);
+                                    }
 end;
 
 procedure TToolBarConfig.btnShowClick(Sender: TObject);
