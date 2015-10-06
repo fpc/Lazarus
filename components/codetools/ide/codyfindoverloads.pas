@@ -53,6 +53,10 @@ type
   TCFONode = class(TCodeGraphNode)
   public
     Tool: TFindDeclarationTool;
+
+    // for ctnProcedure:
+    Compatibility: TTypeCompatibility;
+    Distance: integer;
   end;
 
   TCFOEdgeType = (
@@ -108,7 +112,9 @@ type
     procedure AddStartAndTargetUnits;
     procedure GatherProcsOfAllUnits;
     procedure GatherProcsOfUnit(NodeGraph: TCodeGraph; ProgNode: TCodeTreeNode;
-      CurUnit: TCFOUnit; ExcludeAbstractProcs: boolean);
+      CurUnit: TCFOUnit; ExcludeAbstractProcs: boolean;
+      var TargetGraphNode: TCFONode);
+    procedure CalcDistances(NodeGraph: TCodeGraph; TargetGraphNode: TCFONode);
     procedure FreeUsesGraph;
     function GetDefaultCaption: string;
     procedure FillFilterControls(ProcTool: TFindDeclarationTool;
@@ -290,6 +296,7 @@ var
   NodeGraph: TCodeGraph;
   ProgNode: TCodeTreeNode;
   ExcludeAbstractProcs: Boolean;
+  TargetGraphNode: TCFONode;
 begin
   Exclude(FFlags,cfofGatherProcs);
   if FUsesGraph=nil then
@@ -302,12 +309,20 @@ begin
   try
     NodeGraph.AddGraphNode(ProgNode);
 
+    TargetGraphNode:=nil;
     FileNode:=FUsesGraph.FilesTree.FindLowest;
     while FileNode<>nil do begin
       CurUnit:=TCFOUnit(FileNode.Data);
-      GatherProcsOfUnit(NodeGraph,ProgNode,CurUnit,ExcludeAbstractProcs);
+      GatherProcsOfUnit(NodeGraph,ProgNode,CurUnit,ExcludeAbstractProcs,
+        TargetGraphNode);
       FileNode:=FUsesGraph.FilesTree.FindSuccessor(FileNode);
     end;
+
+    // ToDo: filter using RelationComboBox
+
+    if TargetGraphNode<>nil then
+      CalcDistances(NodeGraph,TargetGraphNode);
+
   finally
     NodeGraph.Free;
     ProgNode.Free;
@@ -316,7 +331,8 @@ begin
 end;
 
 procedure TCodyFindOverloadsWindow.GatherProcsOfUnit(NodeGraph: TCodeGraph;
-  ProgNode: TCodeTreeNode; CurUnit: TCFOUnit; ExcludeAbstractProcs: boolean);
+  ProgNode: TCodeTreeNode; CurUnit: TCFOUnit; ExcludeAbstractProcs: boolean;
+  var TargetGraphNode: TCFONode);
 
   procedure AddAncestors(Tool: TFindDeclarationTool; ClassNode: TCodeTreeNode); forward;
 
@@ -365,12 +381,15 @@ procedure TCodyFindOverloadsWindow.GatherProcsOfUnit(NodeGraph: TCodeGraph;
     end;
   end;
 
-  procedure AddProcNode(Tool: TFindDeclarationTool; ProcNode: TCodeTreeNode);
+  procedure AddProcNode(Tool: TFindDeclarationTool; ProcNode: TCodeTreeNode;
+    TargetCleanPos: integer);
   var
     CurProcName: String;
     GraphProcNode: TCFONode;
     ClassNode: TCodeTreeNode;
     Edge: TCFOEdge;
+    Compatibility: TTypeCompatibility;
+    IsTargetProc: Boolean;
   begin
     // check name
     CurProcName:=Tool.ExtractProcName(ProcNode,[phpWithoutClassName]);
@@ -390,11 +409,25 @@ procedure TCodyFindOverloadsWindow.GatherProcsOfUnit(NodeGraph: TCodeGraph;
         if Tool.ProcNodeHasSpecifier(ProcNode,psABSTRACT) then exit;
       end;
     end;
-    // ToDo: check param compatibility
+
+    Compatibility:=tcExact;
+    if (TargetGraphNode=nil)
+    and (ProcNode.StartPos<=TargetCleanPos)
+    and (TargetCleanPos<ProcNode.FirstChild.EndPos) then begin
+      // this is the target proc
+      IsTargetProc:=true;
+    end else begin
+      // ToDo: check param compatibility
+      IsTargetProc:=false;
+
+    end;
 
     // add node
     GraphProcNode:=TCFONode(NodeGraph.AddGraphNode(ProcNode));
     GraphProcNode.Tool:=Tool;
+    GraphProcNode.Compatibility:=Compatibility;
+    if IsTargetProc then
+      TargetGraphNode:=GraphProcNode;
 
     // add edges
     if ClassNode<>nil then begin
@@ -414,18 +447,30 @@ procedure TCodyFindOverloadsWindow.GatherProcsOfUnit(NodeGraph: TCodeGraph;
 var
   Tool: TStandardCodeTool;
   ProcNode: TCodeTreeNode;
+  TargetCleanPos: integer;
 begin
   if ugufLoadError in CurUnit.Flags then exit;
   if not (ugufReached in CurUnit.Flags) then exit; // this unit was not reached
   if ugufIsIncludeFile in CurUnit.Flags then exit;
   Tool:=CurUnit.Tool;
+  if (TargetGraphNode<>nil)
+  or (Tool.CaretToCleanPos(TargetXYPosition,TargetCleanPos)<>0) then
+    TargetCleanPos:=0;
+
   ProcNode:=Tool.Tree.Root;
   while ProcNode<>nil do begin
     if ProcNode.Desc in [ctnImplementation,ctnBeginBlock] then break;
     if ProcNode.Desc=ctnProcedure then
-      AddProcNode(Tool,ProcNode);
+      AddProcNode(Tool,ProcNode,TargetCleanPos);
     ProcNode:=ProcNode.Next;
   end;
+end;
+
+procedure TCodyFindOverloadsWindow.CalcDistances(NodeGraph: TCodeGraph;
+  TargetGraphNode: TCFONode);
+begin
+  debugln(['TCodyFindOverloadsWindow.CalcDistances ']);
+
 end;
 
 procedure TCodyFindOverloadsWindow.FreeUsesGraph;
