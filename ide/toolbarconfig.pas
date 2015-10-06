@@ -217,11 +217,7 @@ end;
 
 procedure TToolBarConfig.btnHelpClick(Sender: TObject);
 begin
-  OpenUrl('http://wiki.freepascal.org/IDE_Window:_Editor_Toolbar');
-  {
-  ShowMessageFmt('%s%s%s%s%s%s%s', [lisCoolBarHelp1, LineEnding, lisCoolBarHelp2, LineEnding,
-                                    lisCoolBarHelp3, LineEnding, lisCoolBarHelp4]);
-                                    }
+  OpenUrl('http://wiki.freepascal.org/IDE_Window:_Toolbar_Config');
 end;
 
 procedure TToolBarConfig.btnShowClick(Sender: TObject);

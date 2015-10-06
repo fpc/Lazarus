@@ -4596,13 +4596,6 @@ resourcestring
   lisCoolbarMoveSelectedDown = 'Move selected toolbar item down';
   lisCoolbarAddDivider = 'Add Divider';
   lisCoolbarClearSelection = 'Clear selection';
-  lisCoolbarHelp1 = 'The "Add" button inserts a command before the ' +
-                    'selected Item of the Toolbar.';
-  lisCoolbarHelp2 = 'If none is selected, the Item will be appended at the end ' +
-                    'of the Toolbar.';
-  lisCoolbarHelp3 = 'You may rearrange Toolbar Items with "Move Up" and '+
-                    '"Move Down" buttons.';
-  lisCoolbarHelp4 = 'Hint: to append an Item at the end, use "Clear selection"';
   lisToolbarConfiguration = 'Toolbar Configuration';
   lisCoolbarAvailableCommands = 'Available commands';
   lisCoolbarToolbarCommands = 'Toolbar commands';
