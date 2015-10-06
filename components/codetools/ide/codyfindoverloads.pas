@@ -124,6 +124,7 @@ type
       CurUnit: TCFOUnit; ExcludeAbstractProcs: boolean;
       var TargetGraphNode: TCFONode);
     procedure CalcDistances(NodeGraph: TCodeGraph; TargetGraphNode: TCFONode);
+    procedure FillGrid(NodeGraph: TCodeGraph; TargetGraphNode: TCFONode);
     procedure FreeUsesGraph;
     function GetDefaultCaption: string;
     procedure FillFilterControls(ProcTool: TFindDeclarationTool;
@@ -224,14 +225,6 @@ begin
     end;
   end else if cfofGatherProcs in FFlags then begin
     GatherProcsOfAllUnits;
-    FFlags:=FFlags-[cfofGatherProcs];
-    // hide progress bar and update stats
-    ProgressBar1.Visible:=false;
-    RefreshButton.Enabled:=true;
-    Timer1.Enabled:=false;
-    ResultsGroupBox.Caption:=Format('Units: %s', [IntToStr(FUsesGraph.FilesTree.Count)]);
-    // update controls
-    //UpdateAll;
   end else
     IdleConnected:=false;
   Done:=not IdleConnected;
@@ -323,6 +316,12 @@ var
   TargetGraphNode: TCFONode;
 begin
   Exclude(FFlags,cfofGatherProcs);
+  Timer1.Enabled:=false;
+  // hide progress bar and update stats
+  ProgressBar1.Visible:=false;
+  RefreshButton.Enabled:=true;
+  ResultsGroupBox.Caption:=Format('Units: %s', [IntToStr(FUsesGraph.FilesTree.Count)]);
+
   if FUsesGraph=nil then
     exit;
   debugln(['TCodyFindOverloadsWindow.GatherProcsOfAllUnits START']);
@@ -347,6 +346,7 @@ begin
     if TargetGraphNode<>nil then
       CalcDistances(NodeGraph,TargetGraphNode);
 
+    FillGrid(NodeGraph,TargetGraphNode);
   finally
     NodeGraph.Free;
     ProgNode.Free;
@@ -368,7 +368,7 @@ procedure TCodyFindOverloadsWindow.GatherProcsOfUnit(NodeGraph: TCodeGraph;
       RaiseCatchableException('');
     Result:=TCFONode(NodeGraph.GetGraphNode(ClassNode,false));
     if Result<>nil then exit;
-    debugln(['AddClassNode ',Tool.ExtractClassName(ClassNode,false)]);
+    //debugln(['AddClassNode ',Tool.ExtractClassName(ClassNode,false)]);
     Result:=TCFONode(NodeGraph.AddGraphNode(ClassNode));
     Result.Tool:=Tool;
     // create edge "reachable", so that all nodes are reachable
@@ -385,7 +385,7 @@ procedure TCodyFindOverloadsWindow.GatherProcsOfUnit(NodeGraph: TCodeGraph;
     i: Integer;
     Edge: TCFOEdge;
   begin
-    debugln(['AddAncestors ',Tool.ExtractClassName(ClassNode,false)]);
+    //debugln(['AddAncestors ',Tool.ExtractClassName(ClassNode,false)]);
     ListOfPFindContext:=nil;
     Params:=TFindDeclarationParams.Create(nil);
     try
@@ -564,6 +564,50 @@ begin
   end;
 end;
 
+procedure TCodyFindOverloadsWindow.FillGrid(NodeGraph: TCodeGraph;
+  TargetGraphNode: TCFONode);
+var
+  Grid: TStringGrid;
+  AVLNode: TAVLTreeNode;
+  GraphNode: TCFONode;
+  List: TFPList;
+  Row: Integer;
+  s: String;
+begin
+  Grid:=ResultsStringGrid;
+  Grid.Visible:=true;
+  Grid.Columns[0].Title.Caption:='Name';
+  Grid.Columns[1].Title.Caption:='Compatibility';
+  Grid.Columns[2].Title.Caption:='Distance';
+
+  List:=TFPList.Create;
+  AVLNode:=NodeGraph.Nodes.FindLowest;
+  while AVLNode<>nil do begin
+    GraphNode:=TCFONode(AVLNode.Data);
+    AVLNode:=NodeGraph.Nodes.FindSuccessor(AVLNode);
+    if GraphNode=TargetGraphNode then continue;
+    if GraphNode.Node.Desc<>ctnProcedure then continue;
+    List.Add(GraphNode);
+  end;
+
+  Grid.RowCount:=List.Count+1;
+  for Row:=1 to List.Count do begin
+    GraphNode:=TCFONode(List[Row-1]);
+
+    s:=GraphNode.Tool.ExtractProcName(GraphNode.Node,[phpAddClassName]);
+    Grid.Cells[0,Row]:=s;
+
+    case GraphNode.Compatibility of
+    tcExact: s:='fits exactly';
+    tcCompatible: s:='compatible';
+    tcIncompatible: s:='incompatible';
+    end;
+    Grid.Cells[1,Row]:=s;
+
+    Grid.Cells[2,Row]:=IntToStr(GraphNode.Distance);
+  end;
+end;
+
 procedure TCodyFindOverloadsWindow.FreeUsesGraph;
 begin
   FreeAndNil(FUsesGraph);
@@ -698,6 +742,7 @@ var
   TargetTool: TFindDeclarationTool;
 begin
   Result:=false;
+  Caption:=GetDefaultCaption;
 
   AbortParsing;
   ResultsStringGrid.Visible:=false;
@@ -749,6 +794,7 @@ begin
   FTargetName:=TargetTool.ExtractProcName(TargetProcNode,[phpWithoutClassName]);
   FTargetPath:=TargetTool.ExtractProcName(TargetProcNode,[phpAddClassName]);
   TargetTool.CleanPosToCaret(TargetProcNode.StartPos,FTargetXYPosition);
+  Caption:=GetDefaultCaption+' - '+FTargetPath;
 
   FillFilterControls(TargetTool,TargetProcNode);
 

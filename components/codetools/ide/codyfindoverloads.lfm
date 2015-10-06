@@ -49,14 +49,14 @@ object CodyFindOverloadsWindow: TCodyFindOverloadsWindow
   end
   object FilterGroupBox: TGroupBox
     Left = 0
-    Height = 92
-    Top = 249
+    Height = 94
+    Top = 247
     Width = 553
     Align = alBottom
     AutoSize = True
     Caption = 'FilterGroupBox'
     ChildSizing.LeftRightSpacing = 6
-    ClientHeight = 75
+    ClientHeight = 77
     ClientWidth = 549
     TabOrder = 1
     object CompatibleParamsCheckBox: TCheckBox
@@ -77,7 +77,7 @@ object CodyFindOverloadsWindow: TCodyFindOverloadsWindow
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 15
-      Top = 30
+      Top = 31
       Width = 75
       Caption = 'RelationLabel'
       ParentColor = False
@@ -90,7 +90,7 @@ object CodyFindOverloadsWindow: TCodyFindOverloadsWindow
       AnchorSideRight.Control = FilterGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 87
-      Height = 27
+      Height = 29
       Top = 24
       Width = 456
       Anchors = [akTop, akLeft, akRight]
@@ -106,7 +106,7 @@ object CodyFindOverloadsWindow: TCodyFindOverloadsWindow
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 24
-      Top = 51
+      Top = 53
       Width = 152
       Caption = 'HideAbstractCheckBox'
       ParentShowHint = False
@@ -116,21 +116,51 @@ object CodyFindOverloadsWindow: TCodyFindOverloadsWindow
   end
   object ResultsGroupBox: TGroupBox
     Left = 0
-    Height = 249
+    Height = 247
     Top = 0
     Width = 553
     Align = alClient
     Caption = 'ResultsGroupBox'
-    ClientHeight = 232
+    ClientHeight = 230
     ClientWidth = 549
     TabOrder = 2
     object ResultsStringGrid: TStringGrid
       Left = 0
-      Height = 212
+      Height = 210
       Top = 20
       Width = 549
       Align = alClient
+      AutoFillColumns = True
+      ColCount = 3
+      Columns = <      
+        item
+          ReadOnly = True
+          SizePriority = 10
+          Title.Caption = 'Name'
+          Width = 182
+        end      
+        item
+          MaxSize = 100
+          ReadOnly = True
+          Title.Alignment = taCenter
+          Title.Caption = 'Compatibility'
+          Width = 182
+        end      
+        item
+          MaxSize = 100
+          ReadOnly = True
+          Title.Alignment = taCenter
+          Title.Caption = 'Distance'
+          Width = 183
+        end>
+      FixedCols = 0
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowSelect, goDblClickAutoSize, goSmoothScroll, goRowHighlight]
       TabOrder = 0
+      ColWidths = (
+        182
+        182
+        183
+      )
     end
     object ProgressBar1: TProgressBar
       Left = 0
@@ -144,7 +174,7 @@ object CodyFindOverloadsWindow: TCodyFindOverloadsWindow
   object Timer1: TTimer
     Interval = 300
     OnTimer = Timer1Timer
-    left = 331
-    top = 179
+    left = 112
+    top = 144
   end
 end
