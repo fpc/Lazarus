@@ -86,6 +86,8 @@ type
     procedure AddStartAndTargetUnits;
     procedure FreeUsesGraph;
     function GetDefaultCaption: string;
+    procedure FillFilterControls(ProcTool: TFindDeclarationTool;
+      ProcNode: TCodeTreeNode);
   protected
     procedure UpdateShowing; override;
   public
@@ -261,6 +263,54 @@ begin
   Result:='Cody - Find Overloads';
 end;
 
+procedure TCodyFindOverloadsWindow.FillFilterControls(
+  ProcTool: TFindDeclarationTool; ProcNode: TCodeTreeNode);
+var
+  sl: TStringList;
+  ClassNode: TCodeTreeNode;
+  ListOfPFindContext: TFPList;
+  Params: TFindDeclarationParams;
+  i: Integer;
+  aContext: PFindContext;
+begin
+  // RelationComboBox
+  sl:=TStringList.Create;
+  try
+    ClassNode:=ProcNode;
+    while (ClassNode<>nil) and (not (ClassNode.Desc in AllClasses)) do
+      ClassNode:=ClassNode.Parent;
+    if ClassNode<>nil then begin
+      // method
+      sl.Add('Only descendants of '+ProcTool.ExtractClassName(ClassNode,false));
+      ListOfPFindContext:=nil;
+      Params:=TFindDeclarationParams.Create(nil);
+      try
+        ProcTool.FindAncestorsOfClass(ClassNode,ListOfPFindContext,Params,
+          false,false);
+        if ListOfPFindContext<>nil then begin
+          for i:=0 to ListOfPFindContext.Count-1 do begin
+            aContext:=PFindContext(ListOfPFindContext[i]);
+            sl.Add('Only descendants of '+aContext^.Tool.ExtractClassName(aContext^.Node,false));
+          end;
+        end;
+      finally
+        Params.Free;
+        FreeListOfPFindContext(ListOfPFindContext);
+      end;
+      sl.Add('Only methods');
+    end else begin
+      // procedure, non method
+      sl.Add('Only non methods');
+    end;
+    sl.Add('Any');
+    RelationComboBox.Items:=sl;
+    if sl.IndexOf(RelationComboBox.Text)<0 then
+      RelationComboBox.Text:='Any';
+  finally
+    sl.Free;
+  end;
+end;
+
 procedure TCodyFindOverloadsWindow.UpdateShowing;
 begin
   inherited UpdateShowing;
@@ -339,7 +389,6 @@ var
   ErrorHandled: boolean;
   CurInitError: TCUParseError;
   TargetTool: TFindDeclarationTool;
-  sl: TStringList;
 begin
   Result:=false;
 
@@ -394,18 +443,7 @@ begin
   FTargetPath:=TargetTool.ExtractProcName(TargetProcNode,[phpAddClassName]);
   TargetTool.CleanPosToCaret(TargetProcNode.StartPos,FTargetXYPosition);
 
-  // RelationComboBox
-  sl:=TStringList.Create;
-  try
-    if FTargetName<>FTargetPath then begin
-      sl.Add('Only descendants of '+FTargetPath);
-      // ToDo: add ancestor methods
-    end;
-    sl.Add('Any');
-    RelationComboBox.Items:=sl;
-  finally
-    sl.Free;
-  end;
+  FillFilterControls(TargetTool,TargetProcNode);
 
   StartParsing;
 
