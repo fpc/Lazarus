@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, TypInfo, LResources, Forms, Controls, Graphics, Dialogs,
-  ObjectInspector, PropEdits, StdCtrls, Buttons;
+  ObjectInspector, PropEdits, PropEditUtils, StdCtrls, Buttons;
 
 type
   { TMyComponent }
@@ -20,6 +20,8 @@ type
     property AnInteger: integer read FAnInteger write SetAnInteger;
   end;
 
+  { TForm1 }
+
   TForm1 = class(TForm)
     PropGridGroupbox: TGroupBox;
     SetCompAsOIRootButton: TButton;
@@ -32,6 +34,8 @@ type
     procedure SetCompAsOIRootButtonClick(Sender: TObject);
   private
     procedure SetObjectInspectorRoot(AComponent: TComponent);
+  protected
+    function GetOwner: TPersistent; override;
   public
     TheObjectInspector: TObjectInspectorDlg;
     ThePropertyEditorHook: TPropertyEditorHook;
@@ -48,8 +52,8 @@ implementation
 procedure TForm1.Form1Create(Sender: TObject);
 begin
   // create the PropertyEditorHook (the interface to the properties)
-  ThePropertyEditorHook:=TPropertyEditorHook.Create;
-  
+  ThePropertyEditorHook:=TPropertyEditorHook.Create(nil);
+
   // create the ObjectInspector
   TheObjectInspector:=TObjectInspectorDlg.Create(Application);
   TheObjectInspector.PropertyEditorHook:=ThePropertyEditorHook;
@@ -103,6 +107,13 @@ begin
   TheObjectInspector.Selection:=Selection;
   PropertyGrid.Selection:=Selection;
   Selection.Free;
+end;
+
+function TForm1.GetOwner: TPersistent;
+begin
+  // this form is the LookupRoot => GetOwner must be nil
+  // see GetLookupRootForComponent
+  Result:=nil;
 end;
 
 { TMyComponent }
