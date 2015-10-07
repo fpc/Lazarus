@@ -86,6 +86,7 @@ type
     Name: string;
     ClassPath: string;
     TheUnitName: string;
+    Caption: string;
     Params: string;
     Distance: integer;
     Compatibility: TTypeCompatibility;
@@ -119,6 +120,8 @@ type
     procedure JumpToButtonClick(Sender: TObject);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
     procedure RefreshButtonClick(Sender: TObject);
+    procedure ResultsStringGridColRowExchanged(Sender: TObject;
+      IsColumn: Boolean; sIndex, tIndex: Integer);
     procedure ResultsStringGridCompareCells(Sender: TObject; ACol, ARow, BCol,
       BRow: Integer; var Result: integer);
     procedure Timer1Timer(Sender: TObject);
@@ -259,12 +262,33 @@ begin
   Init;
 end;
 
+procedure TCodyFindOverloadsWindow.ResultsStringGridColRowExchanged(
+  Sender: TObject; IsColumn: Boolean; sIndex, tIndex: Integer);
+begin
+  if (not IsColumn) and (sIndex>0) and (sIndex<=ProcCount)
+  and (tIndex>0) and (tIndex<=ProcCount) then
+    FProcList.Exchange(sIndex-1,tIndex-1);
+end;
+
 procedure TCodyFindOverloadsWindow.ResultsStringGridCompareCells(
   Sender: TObject; ACol, ARow, BCol, BRow: Integer; var Result: integer);
+var
+  AProc, BProc: TCFOProc;
 begin
-  if (aRow>0) and (ARow<=ProcCount) then begin
-
-  end;
+  if (ARow>0) and (ARow<=ProcCount) and (ACol=BCol)
+  and (BRow>0) and (BRow<=ProcCount) then begin
+    AProc:=Procs[ARow-1];
+    BProc:=Procs[BRow-1];
+    case ACol of
+    0: Result:=CompareText(AProc.Caption,BProc.Caption);
+    1: Result:=ord(AProc.Compatibility)-ord(BProc.Compatibility);
+    2: Result:=ord(AProc.Distance)-ord(BProc.Distance);
+    end;
+    if ResultsStringGrid.SortOrder=soDescending then
+      Result:=-Result;
+    //debugln(['TCodyFindOverloadsWindow.ResultsStringGridCompareCells "',AProc.Caption,'" "',BProc.Caption,'" ',Result]);
+  end else
+    debugln(['TCodyFindOverloadsWindow.ResultsStringGridCompareCells invalid ACol=',ACol,' ARow=',ARow,' BCol=',BCol,' BRow=',BRow]);
 end;
 
 procedure TCodyFindOverloadsWindow.Timer1Timer(Sender: TObject);
@@ -670,6 +694,7 @@ begin
     if aProc.ClassPath<>'' then
       s+=aProc.ClassPath+'.';
     s+=aProc.Name;
+    aProc.Caption:=s;
     Grid.Cells[0,Row]:=s;
 
     case aProc.Compatibility of
