@@ -8,6 +8,7 @@ object CodyFindOverloadsWindow: TCodyFindOverloadsWindow
   ClientWidth = 553
   OnClose = FormClose
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   Position = poScreenCenter
   LCLVersion = '1.5'
   object BtnPanel: TPanel
@@ -130,7 +131,6 @@ object CodyFindOverloadsWindow: TCodyFindOverloadsWindow
       Top = 20
       Width = 549
       Align = alClient
-      AutoFillColumns = True
       ColCount = 3
       Columns = <      
         item
@@ -140,26 +140,27 @@ object CodyFindOverloadsWindow: TCodyFindOverloadsWindow
           Width = 182
         end      
         item
-          MaxSize = 100
+          MaxSize = 1000
           ReadOnly = True
           Title.Alignment = taCenter
           Title.Caption = 'Compatibility'
-          Width = 182
+          Width = 100
         end      
         item
-          MaxSize = 100
+          MaxSize = 1000
           ReadOnly = True
           Title.Alignment = taCenter
           Title.Caption = 'Distance'
-          Width = 183
+          Width = 100
         end>
       FixedCols = 0
       Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowSelect, goDblClickAutoSize, goSmoothScroll, goRowHighlight]
       TabOrder = 0
+      OnCompareCells = ResultsStringGridCompareCells
       ColWidths = (
         182
-        182
-        183
+        100
+        100
       )
     end
     object ProgressBar1: TProgressBar

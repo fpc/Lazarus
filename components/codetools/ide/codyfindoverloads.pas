@@ -31,6 +31,15 @@
       Params must be compatible: Yes, No
       (Only for method:) Only descendants, have same ancestor method, all
       (Only for method:) Show abstract methods and interfaces
+
+  ToDo:
+    -show line number
+    -Sort columns
+    -Jump to method
+    -param compatibility
+    -last visited
+    -filter by ancestor
+    -hint: show file name + param list
 }
 unit CodyFindOverloads;
 
@@ -39,11 +48,11 @@ unit CodyFindOverloads;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, FileUtil, LazLoggerBase, LazUtilities, CodyUtils,
-  CodeToolManager, CodeTree, CodeCache, FindDeclarationTool, PascalParserTool,
-  BasicCodeTools, CTUnitGraph, FileProcs, StdCodeTools, CodeGraph, LazIDEIntf,
-  IDEWindowIntf, ProjectIntf, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, Grids, ComCtrls;
+  Classes, SysUtils, AVL_Tree, contnrs, FileUtil, LazLoggerBase, LazUtilities,
+  CodyUtils, CodeToolManager, CodeTree, CodeCache, FindDeclarationTool,
+  PascalParserTool, BasicCodeTools, CTUnitGraph, FileProcs, StdCodeTools,
+  CodeGraph, LazIDEIntf, IDEWindowIntf, ProjectIntf, Forms, Controls, Graphics,
+  Dialogs, ExtCtrls, StdCtrls, Grids, ComCtrls;
 
 type
   TCFOUnit = class(TUGUnit)
@@ -71,12 +80,16 @@ type
     Typ: TCFOEdgeType;
   end;
 
-const
-  CFOEdgeDistance: array[TCFOEdgeType] of integer = (
-    1000000, // cfoetReachable
-    0,       // cfoetMethodOf
-    1        // cfoetDescendantOf
-    );
+  TCFOProc = class
+  public
+    XYPos: TCodeXYPosition;
+    Name: string;
+    ClassPath: string;
+    TheUnitName: string;
+    Params: string;
+    Distance: integer;
+    Compatibility: TTypeCompatibility;
+  end;
 
 type
   TCFOFlag = (
@@ -100,20 +113,25 @@ type
     ResultsGroupBox: TGroupBox;
     ResultsStringGrid: TStringGrid;
     Timer1: TTimer;
-    procedure CloseButtonClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure JumpToButtonClick(Sender: TObject);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
     procedure RefreshButtonClick(Sender: TObject);
+    procedure ResultsStringGridCompareCells(Sender: TObject; ACol, ARow, BCol,
+      BRow: Integer; var Result: integer);
     procedure Timer1Timer(Sender: TObject);
   private
     FIdleConnected: boolean;
     FFlags: TCFOFlags;
+    FProcList: TObjectList;
     FTargetName: string;
     FTargetPath: string;
     FTargetXYPosition: TCodeXYPosition;
     FUsesGraph: TUsesGraph;
+    function GetProcCount: integer;
+    function GetProcs(Index: integer): TCFOProc;
     procedure SetIdleConnected(AValue: boolean);
     procedure CreateUsesGraph(out TheUsesGraph: TUsesGraph);
     procedure StartParsing;
@@ -124,7 +142,8 @@ type
       CurUnit: TCFOUnit; ExcludeAbstractProcs: boolean;
       var TargetGraphNode: TCFONode);
     procedure CalcDistances(NodeGraph: TCodeGraph; TargetGraphNode: TCFONode);
-    procedure FillGrid(NodeGraph: TCodeGraph; TargetGraphNode: TCFONode);
+    procedure CreateProcList(NodeGraph: TCodeGraph; TargetGraphNode: TCFONode);
+    procedure FillGrid;
     procedure FreeUsesGraph;
     function GetDefaultCaption: string;
     procedure FillFilterControls(ProcTool: TFindDeclarationTool;
@@ -135,10 +154,12 @@ type
     procedure JumpToIdentifier;
     function Init: boolean;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
-    property UsesGraph: TUsesGraph read FUsesGraph;
+    property ProcCount: integer read GetProcCount;
+    property Procs[Index: integer]: TCFOProc read GetProcs;
     property TargetXYPosition: TCodeXYPosition read FTargetXYPosition;
     property TargetName: string read FTargetName;
     property TargetPath: string read FTargetPath;
+    property UsesGraph: TUsesGraph read FUsesGraph;
   end;
 
 var
@@ -186,6 +207,8 @@ end;
 
 procedure TCodyFindOverloadsWindow.FormCreate(Sender: TObject);
 begin
+  FProcList:=TObjectList.Create(true);
+
   Caption:=GetDefaultCaption;
   RefreshButton.Caption:='Refresh';
   JumpToButton.Caption:='Jump to';
@@ -197,9 +220,9 @@ begin
   RelationLabel.Caption:='Relations:';
 end;
 
-procedure TCodyFindOverloadsWindow.CloseButtonClick(Sender: TObject);
+procedure TCodyFindOverloadsWindow.FormDestroy(Sender: TObject);
 begin
-
+  FreeAndNil(FProcList);
 end;
 
 procedure TCodyFindOverloadsWindow.FormClose(Sender: TObject;
@@ -236,6 +259,14 @@ begin
   Init;
 end;
 
+procedure TCodyFindOverloadsWindow.ResultsStringGridCompareCells(
+  Sender: TObject; ACol, ARow, BCol, BRow: Integer; var Result: integer);
+begin
+  if (aRow>0) and (ARow<=ProcCount) then begin
+
+  end;
+end;
+
 procedure TCodyFindOverloadsWindow.Timer1Timer(Sender: TObject);
 var
   Cnt: Integer;
@@ -256,6 +287,16 @@ begin
     Application.AddOnIdleHandler(@OnIdle)
   else
     Application.RemoveOnIdleHandler(@OnIdle);
+end;
+
+function TCodyFindOverloadsWindow.GetProcCount: integer;
+begin
+  Result:=FProcList.Count;
+end;
+
+function TCodyFindOverloadsWindow.GetProcs(Index: integer): TCFOProc;
+begin
+  Result:=TCFOProc(FProcList[Index]);
 end;
 
 procedure TCodyFindOverloadsWindow.CreateUsesGraph(out TheUsesGraph: TUsesGraph
@@ -346,7 +387,9 @@ begin
     if TargetGraphNode<>nil then
       CalcDistances(NodeGraph,TargetGraphNode);
 
-    FillGrid(NodeGraph,TargetGraphNode);
+    CreateProcList(NodeGraph,TargetGraphNode);
+
+    FillGrid;
   finally
     NodeGraph.Free;
     ProgNode.Free;
@@ -507,7 +550,16 @@ var
     AVLNode:=Edges.FindLowest;
     while AVLNode<>nil do begin
       Edge:=TCFOEdge(AVLNode.Data);
-      NewDistance:=GraphNode.Distance+CFOEdgeDistance[Edge.Typ];
+      NewDistance:=GraphNode.Distance;
+      case Edge.Typ of
+      cfoetReachable: NewDistance+=100000;// not related
+      cfoetMethodOf: ; // methods within one class are close
+      cfoetDescendantOf:
+        if GraphNode=Edge.FromNode then
+          NewDistance+=10  // going to the ancestors
+        else
+          NewDistance+=1;  // going to the descendants
+      end;
       if GraphNode=Edge.FromNode then begin
         OtherNode:=TCFONode(Edge.ToNode);
       end else begin
@@ -564,48 +616,78 @@ begin
   end;
 end;
 
-procedure TCodyFindOverloadsWindow.FillGrid(NodeGraph: TCodeGraph;
+procedure TCodyFindOverloadsWindow.CreateProcList(NodeGraph: TCodeGraph;
   TargetGraphNode: TCFONode);
 var
-  Grid: TStringGrid;
   AVLNode: TAVLTreeNode;
+  aProc: TCFOProc;
   GraphNode: TCFONode;
-  List: TFPList;
-  Row: Integer;
-  s: String;
+  Tool: TFindDeclarationTool;
+  Node: TCodeTreeNode;
 begin
-  Grid:=ResultsStringGrid;
-  Grid.Visible:=true;
-  Grid.Columns[0].Title.Caption:='Name';
-  Grid.Columns[1].Title.Caption:='Compatibility';
-  Grid.Columns[2].Title.Caption:='Distance';
+  FProcList.Clear;
 
-  List:=TFPList.Create;
   AVLNode:=NodeGraph.Nodes.FindLowest;
   while AVLNode<>nil do begin
     GraphNode:=TCFONode(AVLNode.Data);
     AVLNode:=NodeGraph.Nodes.FindSuccessor(AVLNode);
     if GraphNode=TargetGraphNode then continue;
     if GraphNode.Node.Desc<>ctnProcedure then continue;
-    List.Add(GraphNode);
+    aProc:=TCFOProc.Create;
+
+    Tool:=GraphNode.Tool;
+    Node:=GraphNode.Node;
+    Tool.CleanPosToCaret(Node.FirstChild.StartPos,aProc.XYPos);
+    aProc.Name:=Tool.ExtractProcName(Node,[phpWithoutClassName]);
+    aProc.ClassPath:=Tool.ExtractClassPath(Node);
+    aProc.TheUnitName:=Tool.GetSourceName(false);
+    aProc.Compatibility:=GraphNode.Compatibility;
+    aProc.Distance:=GraphNode.Distance;
+    FProcList.Add(aProc);
   end;
+end;
 
-  Grid.RowCount:=List.Count+1;
-  for Row:=1 to List.Count do begin
-    GraphNode:=TCFONode(List[Row-1]);
+procedure TCodyFindOverloadsWindow.FillGrid;
+var
+  Grid: TStringGrid;
+  Row: Integer;
+  s: String;
+  aProc: TCFOProc;
+begin
+  Grid:=ResultsStringGrid;
+  Grid.BeginUpdate;
+  Grid.Visible:=true;
+  Grid.Columns[0].Title.Caption:='Name';
+  Grid.Columns[1].Title.Caption:='Compatibility';
+  Grid.Columns[2].Title.Caption:='Distance';
 
-    s:=GraphNode.Tool.ExtractProcName(GraphNode.Node,[phpAddClassName]);
+  Grid.RowCount:=ProcCount+1;
+  for Row:=1 to ProcCount do begin
+    aProc:=Procs[Row-1];
+
+    // path
+    s:=aProc.TheUnitName+': ';
+    if aProc.ClassPath<>'' then
+      s+=aProc.ClassPath+'.';
+    s+=aProc.Name;
     Grid.Cells[0,Row]:=s;
 
-    case GraphNode.Compatibility of
+    case aProc.Compatibility of
     tcExact: s:='fits exactly';
     tcCompatible: s:='compatible';
     tcIncompatible: s:='incompatible';
     end;
     Grid.Cells[1,Row]:=s;
 
-    Grid.Cells[2,Row]:=IntToStr(GraphNode.Distance);
+    Grid.Cells[2,Row]:=IntToStr(aProc.Distance);
   end;
+
+  Grid.EndUpdate(true);
+
+  Grid.HandleNeeded;
+
+  // ToDo: resize columns
+
 end;
 
 procedure TCodyFindOverloadsWindow.FreeUsesGraph;
