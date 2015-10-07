@@ -1,7 +1,7 @@
 {
  Test with:
    ./finddeclarationtest --format=plain --suite=TTestFindDeclaration
-   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_Base
+   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_Basic
    ./finddeclarationtest --format=plain --suite=TestFindDeclaration_NestedClasses
    ./finddeclarationtest --format=plain --suite=TestFindDeclaration_ClassHelper
    ./finddeclarationtest --format=plain --suite=TestFindDeclaration_TypeHelper
@@ -18,8 +18,8 @@ interface
 
 uses
   Classes, SysUtils, CodeToolManager, ExprEval, CodeCache, BasicCodeTools,
-  CustomCodeTool, CodeTree, FindDeclarationTool, KeywordFuncLists, LazLogger,
-  LazFileUtils, fpcunit, testregistry;
+  CustomCodeTool, CodeTree, FindDeclarationTool, KeywordFuncLists,
+  IdentCompletionTool, LazLogger, LazFileUtils, fpcunit, testregistry;
 
 type
 
@@ -29,12 +29,14 @@ type
   private
     procedure FindDeclarations(Filename: string);
   published
-    procedure TestFindDeclaration_Base;
+    procedure TestFindDeclaration_Basic;
     procedure TestFindDeclaration_NestedClasses;
     procedure TestFindDeclaration_ClassHelper;
     procedure TestFindDeclaration_TypeHelper;
+    {$IFDEF Darwin}
     procedure TestFindDeclaration_ObjCClass;
     procedure TestFindDeclaration_ObjCCategory;
+    {$ENDIF}
   end;
 
 var
@@ -66,6 +68,22 @@ procedure TTestFindDeclaration.FindDeclarations(Filename: string);
     Path:=Prefix+Path;
   end;
 
+  function NodeAsPath(Tool: TFindDeclarationTool; Node: TCodeTreeNode): string;
+  begin
+    Result:='';
+    while Node<>nil do begin
+      case Node.Desc of
+      ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition:
+        PrependPath(GetIdentifier(@Tool.Src[Node.StartPos]),Result);
+      ctnInterface,ctnUnit:
+        PrependPath(Tool.GetSourceName(false),Result);
+      ctnProcedureHead:
+        PrependPath(Tool.ExtractProcName(Node,[]),Result);
+      end;
+      Node:=Node.Parent;
+    end;
+  end;
+
 var
   Code: TCodeBuffer;
   Tool: TCodeTool;
@@ -80,8 +98,9 @@ var
   FoundNode: TCodeTreeNode;
   FoundPath: String;
   Src: String;
-  NameStartPos: Integer;
+  NameStartPos, i, l: Integer;
   Marker: String;
+  IdentItem: TIdentifierListItem;
 begin
   Filename:=TrimAndExpandFilename(Filename);
   {$IFDEF VerboseFindDeclarationTests}
@@ -121,11 +140,13 @@ begin
       debugln(['TTestFindDeclaration.FindDeclarations searching "',Marker,'" at ',Tool.CleanPosToStr(NameStartPos-1),' ExpectedPath=',ExpectedPath]);
       {$ENDIF}
       Tool.CleanPosToCaret(NameStartPos-1,CursorPos);
+
+      // test FindDeclaration
       if not CodeToolBoss.FindDeclaration(CursorPos.Code,CursorPos.X,CursorPos.Y,
         FoundCursorPos.Code,FoundCursorPos.X,FoundCursorPos.Y,FoundTopLine)
       then begin
         if ExpectedPath<>'' then
-          AssertEquals('find declaration failed at '+Tool.CleanPosToStr(NameStartPos-1)+': '+CodeToolBoss.ErrorMessage,false,true);
+          AssertEquals('find declaration failed at '+Tool.CleanPosToStr(NameStartPos-1,true)+': '+CodeToolBoss.ErrorMessage,false,true);
         continue;
       end else begin
         FoundTool:=CodeToolBoss.GetCodeToolForSource(FoundCursorPos.Code,true,true) as TFindDeclarationTool;
@@ -136,29 +157,40 @@ begin
         end else begin
           FoundTool.CaretToCleanPos(FoundCursorPos,FoundCleanPos);
           FoundNode:=FoundTool.FindDeepestNodeAtPos(FoundCleanPos,true);
-          while FoundNode<>nil do begin
-            case FoundNode.Desc of
-            ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition:
-              PrependPath(GetIdentifier(@FoundTool.Src[FoundNode.StartPos]),FoundPath);
-            ctnInterface,ctnUnit:
-              PrependPath(FoundTool.GetSourceName(false),FoundPath);
-            ctnProcedureHead:
-              PrependPath(FoundTool.ExtractProcName(FoundNode,[]),FoundPath);
-            end;
-            FoundNode:=FoundNode.Parent;
-          end;
+          FoundPath:=NodeAsPath(FoundTool,FoundNode);
         end;
         //debugln(['TTestFindDeclaration.FindDeclarations FoundPath=',FoundPath]);
-        AssertEquals('find declaration wrong at '+Tool.CleanPosToStr(NameStartPos-1),LowerCase(ExpectedPath),LowerCase(FoundPath));
+        AssertEquals('find declaration wrong at '+Tool.CleanPosToStr(NameStartPos-1,true),LowerCase(ExpectedPath),LowerCase(FoundPath));
+      end;
+
+      // test identifier completion
+      if ExpectedPath<>'' then begin
+        if not CodeToolBoss.GatherIdentifiers(CursorPos.Code,CursorPos.X,CursorPos.Y)
+        then begin
+          if ExpectedPath<>'' then
+            AssertEquals('GatherIdentifiers failed at '+Tool.CleanPosToStr(NameStartPos-1,true)+': '+CodeToolBoss.ErrorMessage,false,true);
+          continue;
+        end else begin
+          i:=CodeToolBoss.IdentifierList.GetFilteredCount-1;
+          while i>=0 do begin
+            IdentItem:=CodeToolBoss.IdentifierList.FilteredItems[i];
+            l:=length(IdentItem.Identifier);
+            if ((l=length(ExpectedPath)) or (ExpectedPath[length(ExpectedPath)-l]='.'))
+            and (CompareText(IdentItem.Identifier,RightStr(ExpectedPath,l))=0)
+            then break;
+            dec(i);
+          end;
+          AssertEquals('GatherIdentifiers misses "'+ExpectedPath+'" at '+Tool.CleanPosToStr(NameStartPos-1,true),true,i>=0);
+        end;
       end;
     end else begin
-      AssertEquals('Unknown marker at '+Tool.CleanPosToStr(NameStartPos,true),'declaration',Marker);
+      AssertEquals('Unknown marker at '+Tool.CleanPosToStr(NameStartPos-1,true),'declaration',Marker);
       continue;
     end;
   end;
 end;
 
-procedure TTestFindDeclaration.TestFindDeclaration_Base;
+procedure TTestFindDeclaration.TestFindDeclaration_Basic;
 begin
   FindDeclarations('fdt_basic.pas');
 end;
@@ -178,6 +210,7 @@ begin
   FindDeclarations('fdt_typehelper.pas');
 end;
 
+{$IFDEF Darwin}
 procedure TTestFindDeclaration.TestFindDeclaration_ObjCClass;
 begin
   FindDeclarations('fdt_objcclass.pas');
@@ -187,6 +220,7 @@ procedure TTestFindDeclaration.TestFindDeclaration_ObjCCategory;
 begin
   FindDeclarations('fdt_objccategory.pas');
 end;
+{$ENDIF}
 
 initialization
   GetTestRegistry.TestName := 'All tests';
