@@ -14,34 +14,34 @@ object MacroListView: TMacroListView
   object Panel1: TPanel
     AnchorSideRight.Control = pnlButtons
     Left = 6
-    Height = 309
+    Height = 310
     Top = 6
-    Width = 274
+    Width = 285
     Align = alLeft
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
     BevelOuter = bvNone
-    ClientHeight = 309
-    ClientWidth = 274
+    ClientHeight = 310
+    ClientWidth = 285
     TabOrder = 0
     object lbRecordedView: TListView
       Left = 0
-      Height = 260
+      Height = 261
       Top = 24
-      Width = 274
+      Width = 285
       Align = alClient
       AutoWidthLastColumn = True
       Columns = <      
         item
-          Width = 270
+          Width = 267
         end>
       PopupMenu = PopupMenu1
       RowSelect = True
       ShowColumnHeaders = False
       SortType = stText
-      TabOrder = 0
+      TabOrder = 1
       ViewStyle = vsReport
       OnSelectItem = lbRecordedViewSelectItem
     end
@@ -49,14 +49,14 @@ object MacroListView: TMacroListView
       Left = 0
       Height = 24
       Top = 0
-      Width = 274
+      Width = 285
       AutoSize = True
       BorderSpacing.InnerBorder = 1
-      EdgeBorders = [ebLeft, ebTop, ebRight]
+      EdgeBorders = []
       ParentShowHint = False
       ShowCaptions = True
       ShowHint = True
-      TabOrder = 1
+      TabOrder = 0
       object tbRecorded: TToolButton
         Tag = 1
         Left = 3
@@ -69,7 +69,7 @@ object MacroListView: TMacroListView
       end
       object tbProject: TToolButton
         Tag = 1
-        Left = 97
+        Left = 99
         Top = 2
         Caption = 'tbProject'
         Grouped = True
@@ -78,7 +78,7 @@ object MacroListView: TMacroListView
       end
       object tbIDE: TToolButton
         Tag = 1
-        Left = 173
+        Left = 179
         Top = 2
         Caption = 'tbIDE'
         Grouped = True
@@ -86,7 +86,7 @@ object MacroListView: TMacroListView
         Style = tbsCheck
       end
       object ToolButton3: TToolButton
-        Left = 89
+        Left = 91
         Height = 22
         Top = 2
         Width = 8
@@ -94,7 +94,7 @@ object MacroListView: TMacroListView
         Style = tbsSeparator
       end
       object ToolButton4: TToolButton
-        Left = 165
+        Left = 171
         Height = 22
         Top = 2
         Width = 8
@@ -105,8 +105,8 @@ object MacroListView: TMacroListView
     object ToolBar2: TToolBar
       Left = 0
       Height = 22
-      Top = 287
-      Width = 274
+      Top = 288
+      Width = 285
       Align = alBottom
       AutoSize = True
       BorderSpacing.Top = 3
@@ -118,20 +118,20 @@ object MacroListView: TMacroListView
         Left = 1
         Height = 22
         Top = 0
-        Width = 67
+        Width = 66
         Align = alLeft
         Caption = 'lbMoveTo'
         Layout = tlCenter
         ParentColor = False
       end
       object tbMoveProject: TToolButton
-        Left = 68
+        Left = 67
         Top = 0
         Caption = 'tbMoveProject'
         OnClick = tbMoveProjectClick
       end
       object tbMoveIDE: TToolButton
-        Left = 173
+        Left = 176
         Top = 0
         Caption = 'tbMoveIDE'
         OnClick = tbMoveIDEClick
@@ -140,8 +140,8 @@ object MacroListView: TMacroListView
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 38
-    Top = 321
+    Height = 37
+    Top = 322
     Width = 412
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -152,21 +152,21 @@ object MacroListView: TMacroListView
     CloseButton.DefaultCaption = True
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
-    TabOrder = 1
+    TabOrder = 2
     ShowButtons = [pbClose, pbHelp]
   end
   object pnlButtons: TPanel
-    Left = 286
-    Height = 315
+    Left = 297
+    Height = 316
     Top = 0
-    Width = 138
+    Width = 127
     Align = alRight
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 315
-    ClientWidth = 138
+    ClientHeight = 316
+    ClientWidth = 127
     Constraints.MinHeight = 250
-    TabOrder = 2
+    TabOrder = 1
     object btnSelect: TButton
       AnchorSideLeft.Control = pnlButtons
       AnchorSideTop.Control = pnlButtons
@@ -174,9 +174,9 @@ object MacroListView: TMacroListView
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 30
+      Height = 29
       Top = 6
-      Width = 126
+      Width = 115
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
       BorderSpacing.Left = 6
@@ -194,9 +194,9 @@ object MacroListView: TMacroListView
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 30
-      Top = 42
-      Width = 126
+      Height = 29
+      Top = 41
+      Width = 115
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
       BorderSpacing.Left = 6
@@ -213,9 +213,9 @@ object MacroListView: TMacroListView
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = chkRepeat
       Left = 6
-      Height = 30
-      Top = 156
-      Width = 126
+      Height = 29
+      Top = 160
+      Width = 115
       Anchors = [akLeft, akRight, akBottom]
       AutoSize = True
       BorderSpacing.Left = 6
@@ -223,7 +223,7 @@ object MacroListView: TMacroListView
       BorderSpacing.Bottom = 3
       Caption = 'btnPlay'
       OnClick = btnPlayClick
-      TabOrder = 2
+      TabOrder = 5
     end
     object btnRecord: TButton
       AnchorSideLeft.Control = pnlButtons
@@ -233,9 +233,9 @@ object MacroListView: TMacroListView
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = btnRecordStop
       Left = 6
-      Height = 30
-      Top = 249
-      Width = 126
+      Height = 29
+      Top = 252
+      Width = 115
       Anchors = [akLeft, akRight, akBottom]
       AutoSize = True
       BorderSpacing.Left = 6
@@ -243,7 +243,7 @@ object MacroListView: TMacroListView
       BorderSpacing.Bottom = 6
       Caption = 'btnRecord'
       OnClick = btnRecordClick
-      TabOrder = 3
+      TabOrder = 8
     end
     object btnRecordStop: TButton
       AnchorSideLeft.Control = pnlButtons
@@ -254,16 +254,16 @@ object MacroListView: TMacroListView
       AnchorSideBottom.Control = pnlButtons
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 30
-      Top = 285
-      Width = 126
+      Height = 29
+      Top = 287
+      Width = 115
       Anchors = [akLeft, akRight, akBottom]
       AutoSize = True
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
       Caption = 'btnRecordStop'
       OnClick = btnRecordStopClick
-      TabOrder = 4
+      TabOrder = 9
     end
     object chkRepeat: TCheckBox
       AnchorSideLeft.Control = pnlButtons
@@ -274,15 +274,15 @@ object MacroListView: TMacroListView
       AnchorSideBottom.Control = edRepeat
       Left = 6
       Height = 24
-      Top = 189
-      Width = 126
+      Top = 192
+      Width = 115
       Anchors = [akLeft, akRight, akBottom]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 3
       Caption = 'chkRepeat'
-      TabOrder = 5
+      TabOrder = 6
     end
     object edRepeat: TSpinEdit
       AnchorSideLeft.Control = pnlButtons
@@ -293,8 +293,8 @@ object MacroListView: TMacroListView
       AnchorSideBottom.Control = btnRecord
       Left = 6
       Height = 23
-      Top = 216
-      Width = 126
+      Top = 219
+      Width = 115
       Anchors = [akLeft, akRight, akBottom]
       AutoSize = False
       BorderSpacing.Left = 6
@@ -303,7 +303,7 @@ object MacroListView: TMacroListView
       BorderSpacing.Bottom = 10
       MaxValue = 999
       MinValue = 1
-      TabOrder = 6
+      TabOrder = 7
       Value = 1
     end
     object btnDelete: TButton
@@ -314,9 +314,9 @@ object MacroListView: TMacroListView
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 30
-      Top = 150
-      Width = 126
+      Height = 29
+      Top = 146
+      Width = 115
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
       BorderSpacing.Left = 6
@@ -324,7 +324,7 @@ object MacroListView: TMacroListView
       BorderSpacing.Right = 6
       Caption = 'btnDelete'
       OnClick = btnDeleteClick
-      TabOrder = 7
+      TabOrder = 4
     end
     object btnSetKeys: TButton
       AnchorSideLeft.Control = pnlButtons
@@ -334,9 +334,9 @@ object MacroListView: TMacroListView
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 30
-      Top = 78
-      Width = 126
+      Height = 29
+      Top = 76
+      Width = 115
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
       BorderSpacing.Left = 6
@@ -344,7 +344,7 @@ object MacroListView: TMacroListView
       BorderSpacing.Right = 6
       Caption = 'btnSetKeys'
       OnClick = btnSetKeysClick
-      TabOrder = 8
+      TabOrder = 2
     end
     object btnEdit: TButton
       AnchorSideLeft.Control = pnlButtons
@@ -354,9 +354,9 @@ object MacroListView: TMacroListView
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 30
-      Top = 114
-      Width = 126
+      Height = 29
+      Top = 111
+      Width = 115
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
       BorderSpacing.Left = 6
@@ -364,7 +364,7 @@ object MacroListView: TMacroListView
       BorderSpacing.Right = 6
       Caption = 'btnEdit'
       OnClick = btnEditClick
-      TabOrder = 9
+      TabOrder = 3
     end
   end
   object PopupMenu1: TPopupMenu
