@@ -3935,7 +3935,7 @@ var
   TextDoubleSelLine: Boolean;
 begin
   Reset;
-  if (FileVersion > 0) and (FileVersion < 11) then
+  if FileVersion < 11 then
     FGutterLeft := moGLDownClick;
   AltColumnMode := False;
   TextDoubleSelLine := False;
@@ -4598,14 +4598,13 @@ var
   DefOpts: TSynEditorOptions;
 begin
   try
-    FileVersion:=XMLConfig.GetValue('EditorOptions/Version', 0); // Should default be EditorOptsFormatVersion?
+    FileVersion:=XMLConfig.GetValue('EditorOptions/Version', EditorOptsFormatVersion);
 
     XMLConfig.ReadObject('EditorOptions/Misc/', Self, FDefaultValues);
 
     // general options
     DefOpts := SynEditDefaultOptions;
-    // FileVersion=0: load an empty (none existing) file
-    if (FileVersion > 0) and (FileVersion < 10) then DefOpts := DefOpts - [eoTabIndent];
+    if (FileVersion < 10) then DefOpts := DefOpts - [eoTabIndent];
     for SynEditOpt := Low(TSynEditorOption) to High(TSynEditorOption) do
     begin
       SynEditOptName := GetSynEditOptionName(SynEditOpt);
@@ -4688,7 +4687,7 @@ begin
       XMLConfig.GetValue('EditorOptions/Display/VisibleRightMargin', True);
     fVisibleGutter :=
       XMLConfig.GetValue('EditorOptions/Display/VisibleGutter', True);
-    if (FileVersion>0) and (FileVersion<4) then begin
+    if FileVersion<4 then begin
       fShowLineNumbers :=
         XMLConfig.GetValue('EditorOptions/Display/ShowLineNumbers', False);
       fShowOnlyLineNumbersMultiplesOf :=
@@ -4724,7 +4723,7 @@ begin
       XMLConfig.GetValue('EditorOptions/Display/ExtraLineSpacing', 1);
     fDisableAntialiasing :=
       XMLConfig.GetValue('EditorOptions/Display/DisableAntialiasing',
-                         (FileVersion>0) and (FileVersion<7));
+                         FileVersion<7);
     FDoNotWarnForFont :=
       XMLConfig.GetValue('EditorOptions/Display/DoNotWarnForFont', '');
 
