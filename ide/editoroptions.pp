@@ -5215,7 +5215,7 @@ function TEditorOptions.ReadPascalColorScheme: String;
 var
   FormatVersion: Integer;
 begin
-  FormatVersion := XMLConfig.GetValue('EditorOptions/Color/Version', 0); // Should default be EditorOptsFormatVersion?
+  FormatVersion := XMLConfig.GetValue('EditorOptions/Color/Version', EditorOptsFormatVersion);
   if FormatVersion > 1 then
     Result := XMLConfig.GetValue(
       'EditorOptions/Color/Lang' + StrToValidXMLName(
