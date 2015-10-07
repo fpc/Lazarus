@@ -98,7 +98,7 @@ var
   FoundNode: TCodeTreeNode;
   FoundPath: String;
   Src: String;
-  NameStartPos, i, l: Integer;
+  NameStartPos, i, l, IdentifierStartPos: Integer;
   Marker: String;
   IdentItem: TIdentifierListItem;
 begin
@@ -121,6 +121,7 @@ begin
     p:=CommentP;
     CommentP:=FindCommentEnd(Src,CommentP,Tool.Scanner.NestedComments);
     if Src[p]<>'{' then continue;
+    IdentifierStartPos:=p;
     inc(p);
     NameStartPos:=p;
     if not IsIdentStartChar[Src[p]] then continue;
@@ -132,6 +133,9 @@ begin
     end;
     inc(p);
     PathPos:=p;
+    while (IdentifierStartPos>1) and (IsIdentChar[Src[IdentifierStartPos-1]]) do
+      dec(IdentifierStartPos);
+
     //debugln(['TTestFindDeclaration.FindDeclarations params: ',dbgstr(Tool.Src,p,CommentP-p)]);
     if Marker='declaration' then begin
       ExpectedPath:=copy(Src,PathPos,CommentP-1-PathPos);
@@ -139,14 +143,14 @@ begin
       {$IFDEF VerboseFindDeclarationTests}
       debugln(['TTestFindDeclaration.FindDeclarations searching "',Marker,'" at ',Tool.CleanPosToStr(NameStartPos-1),' ExpectedPath=',ExpectedPath]);
       {$ENDIF}
-      Tool.CleanPosToCaret(NameStartPos-1,CursorPos);
+      Tool.CleanPosToCaret(IdentifierStartPos,CursorPos);
 
       // test FindDeclaration
       if not CodeToolBoss.FindDeclaration(CursorPos.Code,CursorPos.X,CursorPos.Y,
         FoundCursorPos.Code,FoundCursorPos.X,FoundCursorPos.Y,FoundTopLine)
       then begin
         if ExpectedPath<>'' then
-          AssertEquals('find declaration failed at '+Tool.CleanPosToStr(NameStartPos-1,true)+': '+CodeToolBoss.ErrorMessage,false,true);
+          AssertEquals('find declaration failed at '+Tool.CleanPosToStr(IdentifierStartPos,true)+': '+CodeToolBoss.ErrorMessage,false,true);
         continue;
       end else begin
         FoundTool:=CodeToolBoss.GetCodeToolForSource(FoundCursorPos.Code,true,true) as TFindDeclarationTool;
@@ -160,7 +164,7 @@ begin
           FoundPath:=NodeAsPath(FoundTool,FoundNode);
         end;
         //debugln(['TTestFindDeclaration.FindDeclarations FoundPath=',FoundPath]);
-        AssertEquals('find declaration wrong at '+Tool.CleanPosToStr(NameStartPos-1,true),LowerCase(ExpectedPath),LowerCase(FoundPath));
+        AssertEquals('find declaration wrong at '+Tool.CleanPosToStr(IdentifierStartPos,true),LowerCase(ExpectedPath),LowerCase(FoundPath));
       end;
 
       // test identifier completion
@@ -168,7 +172,7 @@ begin
         if not CodeToolBoss.GatherIdentifiers(CursorPos.Code,CursorPos.X,CursorPos.Y)
         then begin
           if ExpectedPath<>'' then
-            AssertEquals('GatherIdentifiers failed at '+Tool.CleanPosToStr(NameStartPos-1,true)+': '+CodeToolBoss.ErrorMessage,false,true);
+            AssertEquals('GatherIdentifiers failed at '+Tool.CleanPosToStr(IdentifierStartPos,true)+': '+CodeToolBoss.ErrorMessage,false,true);
           continue;
         end else begin
           i:=CodeToolBoss.IdentifierList.GetFilteredCount-1;
@@ -180,11 +184,11 @@ begin
             then break;
             dec(i);
           end;
-          AssertEquals('GatherIdentifiers misses "'+ExpectedPath+'" at '+Tool.CleanPosToStr(NameStartPos-1,true),true,i>=0);
+          AssertEquals('GatherIdentifiers misses "'+ExpectedPath+'" at '+Tool.CleanPosToStr(IdentifierStartPos,true),true,i>=0);
         end;
       end;
     end else begin
-      AssertEquals('Unknown marker at '+Tool.CleanPosToStr(NameStartPos-1,true),'declaration',Marker);
+      AssertEquals('Unknown marker at '+Tool.CleanPosToStr(IdentifierStartPos,true),'declaration',Marker);
       continue;
     end;
   end;
