@@ -4,6 +4,7 @@
    ./finddeclarationtest --format=plain --suite=TestFindDeclaration_Basic
    ./finddeclarationtest --format=plain --suite=TestFindDeclaration_NestedClasses
    ./finddeclarationtest --format=plain --suite=TestFindDeclaration_ClassHelper
+   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_tchlp41
    ./finddeclarationtest --format=plain --suite=TestFindDeclaration_TypeHelper
    ./finddeclarationtest --format=plain --suite=TestFindDeclaration_ObjCClass
    ./finddeclarationtest --format=plain --suite=TestFindDeclaration_ObjCCategory
@@ -32,6 +33,7 @@ type
     procedure TestFindDeclaration_Basic;
     procedure TestFindDeclaration_NestedClasses;
     procedure TestFindDeclaration_ClassHelper;
+    procedure TestFindDeclaration_tchlp41;
     procedure TestFindDeclaration_TypeHelper;
     {$IFDEF Darwin}
     procedure TestFindDeclaration_ObjCClass;
@@ -207,6 +209,11 @@ end;
 procedure TTestFindDeclaration.TestFindDeclaration_ClassHelper;
 begin
   FindDeclarations('fdt_classhelper.pas');
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_tchlp41;
+begin
+  FindDeclarations('fpctests/tchlp41.pp');
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_TypeHelper;

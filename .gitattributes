@@ -995,6 +995,7 @@ components/codetools/tests/fdt_typehelper.pas svneol=native#text/plain
 components/codetools/tests/fdtbase.pas svneol=native#text/plain
 components/codetools/tests/finddeclarationtest.lpi svneol=native#text/plain
 components/codetools/tests/finddeclarationtest.lpr svneol=native#text/plain
+components/codetools/tests/fpctests/tchlp41.pp svneol=native#text/plain
 components/codetools/tests/parsertbase.pas svneol=native#text/plain
 components/codetools/tests/parsertest.lpi svneol=native#text/plain
 components/codetools/tests/parsertest.lpr svneol=native#text/plain
