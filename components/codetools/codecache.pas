@@ -1124,11 +1124,11 @@ var LinkCnt, i: integer;
 begin
   FIncludeLinks.FreeAndClear;
 
-  FileVersion:=XMLConfig.GetValue(XMLPath+'IncludeLinks/Version',0); // Should default be IncludeLinksFileVersion?
+  FileVersion:=XMLConfig.GetValue(XMLPath+'IncludeLinks/Version',IncludeLinksFileVersion);
   FExpirationTimeInDays:=XMLConfig.GetValue(
       XMLPath+'IncludeLinks/ExpirationTimeInDays',
       FExpirationTimeInDays);
-  if FileVersion=2 then begin
+  if FileVersion>=2 then begin
     List:=TStringList.Create;
     try
       List.Text:=XMLConfig.GetValue(XMLPath+'IncludeLinks/Data','');
