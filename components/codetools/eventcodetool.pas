@@ -533,6 +533,7 @@ var
   TypeName: string;
   Params: TFindDeclarationParams;
   TypeContext: TFindContext;
+  ContextNode: TCodeTreeNode;
 begin
   Result:=CleanFindContext;
   if AStartUnitName<>'' then begin
@@ -549,16 +550,16 @@ begin
   try
     // find method type declaration
     TypeName:=ATypeInfo^.Name;
-    Params:=TFindDeclarationParams.Create(Self,nil);//FindHelpersInContext will be called later
+    // find method in interface and used units
+    ContextNode:=FindImplementationNode;
+    if ContextNode=nil then
+      ContextNode:=FindMainBeginEndNode;
+    if ContextNode=nil then begin
+      MoveCursorToNodeStart(Tree.Root);
+      RaiseException(Format(ctsIdentifierNotFound,[GetIdentifier(@TypeName[1])]));
+    end;
+    Params:=TFindDeclarationParams.Create(Self,ContextNode);
     try
-      // find method in interface and used units
-      Params.ContextNode:=FindImplementationNode;
-      if Params.ContextNode=nil then
-        Params.ContextNode:=FindMainBeginEndNode;
-      if Params.ContextNode=nil then begin
-        MoveCursorToNodeStart(Tree.Root);
-        RaiseException(Format(ctsIdentifierNotFound,[GetIdentifier(@TypeName[1])]));
-      end;
       FindHelpersInContext(Params);
       Params.SetIdentifier(Self,@TypeName[1],nil);
       Params.Flags:=[fdfExceptionOnNotFound,fdfSearchInParentNodes];

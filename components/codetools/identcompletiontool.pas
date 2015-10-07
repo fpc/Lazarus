@@ -2524,15 +2524,14 @@ begin
   Result:=false;
 
   ActivateGlobalWriteLock;
-  Params:=TFindDeclarationParams.Create;//FindHelpersInContext called later
-  try
-    InitCollectIdentifiers(CursorPos,IdentifierList);
-    IdentStartXY:=FindIdentifierStartPos(CursorPos);
-    if CheckCursorInCompilerDirective(IdentStartXY) then exit(true);
+  InitCollectIdentifiers(CursorPos,IdentifierList);
+  IdentStartXY:=FindIdentifierStartPos(CursorPos);
+  if CheckCursorInCompilerDirective(IdentStartXY) then exit(true);
 
-    ParseSourceTillCollectionStart(IdentStartXY,CleanCursorPos,CursorNode,
-                                   IdentStartPos,IdentEndPos);
-    Params.ContextNode:=CursorNode;
+  ParseSourceTillCollectionStart(IdentStartXY,CleanCursorPos,CursorNode,
+                                 IdentStartPos,IdentEndPos);
+  Params:=TFindDeclarationParams.Create(Self,CursorNode);
+  try
     FindHelpersInContext(Params);
     if CleanCursorPos=0 then ;
     if IdentStartPos>0 then begin
