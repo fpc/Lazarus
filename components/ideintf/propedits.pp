@@ -3466,23 +3466,20 @@ end;
 procedure TBoolPropertyEditor.PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
                                             AState: TPropEditDrawState);
 var
-  {$IFDEF UseOINormalCheckBox}
   TxtRect: TRect;
-  {$ELSE}
+  {$IFnDEF UseOINormalCheckBox}
   str: string;
   stat: TCheckBoxState;
   {$ENDIF}
 begin
-  {$IFDEF UseOINormalCheckBox}
   if FPropertyHook.GetCheckboxForBoolean then
-    TxtRect := DrawCheckbox(ACanvas, ARect, GetOrdValue<>0)
-  else
-    TxtRect := ARect;
-  inherited PropDrawValue(ACanvas, TxtRect, AState);
+  begin                         // Checkbox for Booleans.
+  {$IFDEF UseOINormalCheckBox}
+    TxtRect := DrawCheckbox(ACanvas, ARect, GetOrdValue<>0);
   {$ELSE}
-  if aState=[] then ;
-  if FPropertyHook.GetCheckboxForBoolean then begin
-    if GetOrdValue<>0 then begin
+    TxtRect.Top := -100;        // Don't call inherited PropDrawValue
+    if GetOrdValue<>0 then
+    begin
       stat := cbChecked;
       str := '(True)';
     end else begin
@@ -3490,8 +3487,12 @@ begin
       str := '(False)';
     end;
     TCheckBoxThemed.PaintSelf(ACanvas, str, ARect, stat, False, False, False, False, taRightJustify);
-  end;
   {$ENDIF}
+  end
+  else
+    TxtRect := ARect;           // Classic Combobox for Booleans.
+  if TxtRect.Top <> -100 then
+    inherited PropDrawValue(ACanvas, TxtRect, AState);
 end;
 
 { TInt64PropertyEditor }
