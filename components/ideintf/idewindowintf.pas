@@ -1204,7 +1204,7 @@ begin
   P:=Path+P+'/';
   FFormCaption := Config.GetValue(P+'Caption/Value', fFormID);
   // placement
-  if FileVersion<2 then
+  if FileVersion=1 then
     DefaultValue:=iwpRestoreWindowSize
   else
     DefaultValue:=iwpRestoreWindowGeometry;
