@@ -4,10 +4,14 @@
    ./finddeclarationtest --format=plain --suite=TestFindDeclaration_Basic
    ./finddeclarationtest --format=plain --suite=TestFindDeclaration_NestedClasses
    ./finddeclarationtest --format=plain --suite=TestFindDeclaration_ClassHelper
-   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_tchlp41
    ./finddeclarationtest --format=plain --suite=TestFindDeclaration_TypeHelper
    ./finddeclarationtest --format=plain --suite=TestFindDeclaration_ObjCClass
    ./finddeclarationtest --format=plain --suite=TestFindDeclaration_ObjCCategory
+
+ FPC tests:
+   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_tchlp41
+   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_tchlp46
+   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_tchlp47
 }
 unit fdtbase;
 
@@ -33,12 +37,14 @@ type
     procedure TestFindDeclaration_Basic;
     procedure TestFindDeclaration_NestedClasses;
     procedure TestFindDeclaration_ClassHelper;
-    procedure TestFindDeclaration_tchlp41;
     procedure TestFindDeclaration_TypeHelper;
     {$IFDEF Darwin}
     procedure TestFindDeclaration_ObjCClass;
     procedure TestFindDeclaration_ObjCCategory;
     {$ENDIF}
+    procedure TestFindDeclaration_tchlp41;
+    procedure TestFindDeclaration_tchlp46;
+    procedure TestFindDeclaration_tchlp47;
   end;
 
 var
@@ -211,11 +217,6 @@ begin
   FindDeclarations('fdt_classhelper.pas');
 end;
 
-procedure TTestFindDeclaration.TestFindDeclaration_tchlp41;
-begin
-  FindDeclarations('fpctests/tchlp41.pp');
-end;
-
 procedure TTestFindDeclaration.TestFindDeclaration_TypeHelper;
 begin
   FindDeclarations('fdt_typehelper.pas');
@@ -232,6 +233,21 @@ begin
   FindDeclarations('fdt_objccategory.pas');
 end;
 {$ENDIF}
+
+procedure TTestFindDeclaration.TestFindDeclaration_tchlp41;
+begin
+  FindDeclarations('fpctests/tchlp41.pp');
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_tchlp46;
+begin
+  FindDeclarations('fpctests/tchlp46.pp');
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_tchlp47;
+begin
+  FindDeclarations('fpctests/tchlp47.pp');
+end;
 
 initialization
   GetTestRegistry.TestName := 'All tests';

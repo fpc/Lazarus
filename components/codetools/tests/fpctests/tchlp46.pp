@@ -1,6 +1,6 @@
-{ the extended class has higher priority than the parent class when
-  searching for symbols }
-program tchlp41;
+{ test that helpers can access the methods of the parent helper using
+  "inherited" }
+program tchlp46;
 
 {$ifdef fpc}
   {$mode delphi}
@@ -9,7 +9,7 @@ program tchlp41;
 
 type
   TTest = class
-    function Test(aRecurse: Boolean): Integer;
+
   end;
 
   TTestHelper = class helper for TTest
@@ -20,22 +20,17 @@ type
     function Test(aRecurse: Boolean): Integer;
   end;
 
-function TTest.Test(aRecurse: Boolean): Integer;
-begin
-  Result := 1;
-end;
-
 function TTestHelper.Test(aRecurse: Boolean): Integer;
 begin
-  Result := 2;
+  Result := 1;
 end;
 
 function TTestHelperSub.Test(aRecurse: Boolean): Integer;
 begin
   if aRecurse then
-    Result := inherited Test{declaration:TTest.Test}(False)
+    Result := inherited Test{declaration:TTestHelper.Test}(False)
   else
-    Result := 3;
+    Result := 2;
 end;
 
 var
@@ -43,7 +38,7 @@ var
   res: Integer;
 begin
   t := TTest.Create;
-  res := t.Test{declaration:TTestHelperSub.Test}(True);
+  res := t.Test{declaration:TTestHelperSub.test}(True);
   Writeln('t.Test: ', res);
   if res <> 1 then
     Halt(1);
