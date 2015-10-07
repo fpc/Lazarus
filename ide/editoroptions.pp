@@ -4598,7 +4598,7 @@ var
   DefOpts: TSynEditorOptions;
 begin
   try
-    FileVersion:=XMLConfig.GetValue('EditorOptions/Version', 0);
+    FileVersion:=XMLConfig.GetValue('EditorOptions/Version', 0); // Should default be EditorOptsFormatVersion?
 
     XMLConfig.ReadObject('EditorOptions/Misc/', Self, FDefaultValues);
 
@@ -5216,7 +5216,7 @@ function TEditorOptions.ReadPascalColorScheme: String;
 var
   FormatVersion: Integer;
 begin
-  FormatVersion := XMLConfig.GetValue('EditorOptions/Color/Version', 0);
+  FormatVersion := XMLConfig.GetValue('EditorOptions/Color/Version', 0); // Should default be EditorOptsFormatVersion?
   if FormatVersion > 1 then
     Result := XMLConfig.GetValue(
       'EditorOptions/Color/Lang' + StrToValidXMLName(

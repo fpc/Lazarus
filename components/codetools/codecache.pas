@@ -1124,7 +1124,7 @@ var LinkCnt, i: integer;
 begin
   FIncludeLinks.FreeAndClear;
 
-  FileVersion:=XMLConfig.GetValue(XMLPath+'IncludeLinks/Version',0);
+  FileVersion:=XMLConfig.GetValue(XMLPath+'IncludeLinks/Version',0); // Should default be IncludeLinksFileVersion?
   FExpirationTimeInDays:=XMLConfig.GetValue(
       XMLPath+'IncludeLinks/ExpirationTimeInDays',
       FExpirationTimeInDays);

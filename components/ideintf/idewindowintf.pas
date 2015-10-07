@@ -1625,7 +1625,7 @@ var
   ID: String;
   xLayoutIndex, FileVersion: Integer;
 begin
-  FileVersion:=Config.GetValue(Path+'Desktop/Version', 0);
+  FileVersion:=Config.GetValue(Path+'Desktop/Version', IDEWndCfgFileVersion);
   // create new windows
   i := Config.GetValue(Path+'Desktop/FormIdCount', 0);
   //debugln(['TSimpleWindowLayoutList.LoadFromConfig ',i]);
