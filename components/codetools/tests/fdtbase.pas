@@ -9,9 +9,7 @@
    ./finddeclarationtest --format=plain --suite=TestFindDeclaration_ObjCCategory
 
  FPC tests:
-   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_tchlp41
-   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_tchlp46
-   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_tchlp47
+   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_FPCTests
 }
 unit fdtbase;
 
@@ -24,7 +22,8 @@ interface
 uses
   Classes, SysUtils, CodeToolManager, ExprEval, CodeCache, BasicCodeTools,
   CustomCodeTool, CodeTree, FindDeclarationTool, KeywordFuncLists,
-  IdentCompletionTool, LazLogger, LazFileUtils, fpcunit, testregistry;
+  IdentCompletionTool, FileProcs, LazLogger, LazFileUtils, fpcunit,
+  testregistry;
 
 type
 
@@ -42,9 +41,7 @@ type
     procedure TestFindDeclaration_ObjCClass;
     procedure TestFindDeclaration_ObjCCategory;
     {$ENDIF}
-    procedure TestFindDeclaration_tchlp41;
-    procedure TestFindDeclaration_tchlp46;
-    procedure TestFindDeclaration_tchlp47;
+    procedure TestFindDeclaration_FPCTests;
   end;
 
 var
@@ -234,19 +231,19 @@ begin
 end;
 {$ENDIF}
 
-procedure TTestFindDeclaration.TestFindDeclaration_tchlp41;
+procedure TTestFindDeclaration.TestFindDeclaration_FPCTests;
+var
+  Info: TSearchRec;
+  aFilename: String;
 begin
-  FindDeclarations('fpctests/tchlp41.pp');
-end;
-
-procedure TTestFindDeclaration.TestFindDeclaration_tchlp46;
-begin
-  FindDeclarations('fpctests/tchlp46.pp');
-end;
-
-procedure TTestFindDeclaration.TestFindDeclaration_tchlp47;
-begin
-  FindDeclarations('fpctests/tchlp47.pp');
+  if FindFirstUTF8('fpctests/t*.p*',faAnyFile,Info)=0 then begin
+    repeat
+      if faDirectory and Info.Attr>0 then continue;
+      aFilename:=Info.Name;
+      if not FilenameIsPascalUnit(aFilename) then continue;
+      FindDeclarations('fpctests'+PathDelim+aFilename);
+    until FindNextUTF8(Info)<>0;
+  end;
 end;
 
 initialization
