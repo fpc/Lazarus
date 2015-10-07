@@ -27,9 +27,9 @@ uses
   {$ENDIF}
   fdt_nestedclasses,
   {$IFDEF Darwin}
-  fdt_objccategory,
+  fdt_objccategory, fdt_objcclass,
   {$ENDIF}
-  fdt_basic, fdt_objcclass;
+  fdt_basic;
 
 const
   ConfigFilename = 'codetools.config';
