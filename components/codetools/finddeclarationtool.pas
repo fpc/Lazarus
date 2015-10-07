@@ -4986,7 +4986,7 @@ procedure TFindDeclarationTool.FindHelpersInContext(
 var
   Node: TCodeTreeNode;
 begin
-  Node:=Params.StartNode;
+  Node:=Params.ContextNode;
   Params.FNeedHelpers:=false;
   while Node<>nil do
   begin
@@ -12193,9 +12193,16 @@ end;
 
 function TFindDeclarationParams.GetHelpers(HelperKind: TFDHelpersListKind;
   CreateIfNotExists: boolean): TFDHelpersList;
+var
+  xLastContextNode: TCodeTreeNode;
 begin
   if FNeedHelpers then
+  begin
+    xLastContextNode:=ContextNode;
+    ContextNode:=StartNode;
     StartTool.FindHelpersInContext(Self); // beware: this calls GetHelpers
+    ContextNode:=xLastContextNode;
+  end;
   Result:=FHelpers[HelperKind];
   if (Result=nil) and CreateIfNotExists then begin
     Result:=TFDHelpersList.Create(HelperKind);
