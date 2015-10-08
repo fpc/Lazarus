@@ -4,7 +4,7 @@ object MainForm: TMainForm
   Top = 225
   Width = 695
   Caption = 'JSON Viewer'
-  ClientHeight = 489
+  ClientHeight = 480
   ClientWidth = 695
   Icon.Data = {
     7E04000000000100010010100000010020006804000016000000280000001000
@@ -49,8 +49,8 @@ object MainForm: TMainForm
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnShow = FormShow
-  SessionProperties = 'MIStrict.Checked;MIdocument.Checked;Top;Width;Left;Height'
-  LCLVersion = '0.9.29'
+  SessionProperties = 'Height;Left;MIdocument.Checked;MIStrict.Checked;Top;Width;MICompact.Checked'
+  LCLVersion = '1.5'
   object TBJSON: TToolBar
     Left = 0
     Height = 26
@@ -78,6 +78,7 @@ object MainForm: TMainForm
     end
     object ToolButton4: TToolButton
       Left = 70
+      Height = 22
       Top = 2
       Width = 8
       Caption = 'ToolButton4'
@@ -115,6 +116,7 @@ object MainForm: TMainForm
     end
     object ToolButton1: TToolButton
       Left = 216
+      Height = 22
       Top = 2
       Width = 8
       Caption = 'ToolButton1'
@@ -128,11 +130,11 @@ object MainForm: TMainForm
   end
   object TVJSON: TTreeView
     Left = 0
-    Height = 463
+    Height = 454
     Top = 26
     Width = 695
     Align = alClient
-    DefaultItemHeight = 16
+    DefaultItemHeight = 28
     HideSelection = False
     Images = ILJSON
     TabOrder = 1
@@ -143,7 +145,7 @@ object MainForm: TMainForm
   object ActionList1: TActionList
     Images = ILJSON
     left = 88
-    top = 104
+    top = 128
     object ANew: TAction
       Category = 'File'
       Caption = '&New'
@@ -307,8 +309,8 @@ object MainForm: TMainForm
   end
   object MMJSON: TMainMenu
     Images = ILJSON
-    left = 13
-    top = 19
+    left = 40
+    top = 56
     object MFile: TMenuItem
       Caption = '&File'
       object MINew: TMenuItem
@@ -981,11 +983,16 @@ object MainForm: TMainForm
         Caption = 'Sort object members'
         OnClick = MISortMembersClick
       end
+      object MICompact: TMenuItem
+        AutoCheck = True
+        Caption = 'Compact display'
+        OnClick = MICompactClick
+      end
     end
   end
   object ILJSON: TImageList
-    left = 112
-    top = 61
+    left = 176
+    top = 56
     Bitmap = {
       4C69100000001000000010000000FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
       FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
@@ -1507,16 +1514,16 @@ object MainForm: TMainForm
     DefaultExt = '.json'
     Filter = 'JSON files|*.json|Javascript files|*.js|All files|*.*'
     Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
-    left = 156
-    top = 79
+    left = 280
+    top = 56
   end
   object SDJSON: TSaveDialog
     Title = 'Save JSON document to file'
     DefaultExt = '.json'
     Filter = 'JSON files|*.json|Javascript files|*.js|All files|*.*'
     Options = [ofPathMustExist, ofEnableSizing, ofViewDetail]
-    left = 161
-    top = 118
+    left = 488
+    top = 56
   end
   object PSMain: TIniPropStorage
     StoredValues = <    
@@ -1534,15 +1541,19 @@ object MainForm: TMainForm
         Name = 'Sort'
         Value = '0'
         OnRestore = PSMainStoredValues2Restore
+      end    
+      item
+        Name = 'compact'
+        OnRestore = PSMainStoredValues3Restore
       end>
     Active = False
-    left = 196
-    top = 96
+    left = 384
+    top = 56
   end
   object FDJSON: TFindDialog
     Options = [frDown, frHideUpDown, frDisableUpDown]
     OnFind = FDJSONFind
-    left = 264
-    top = 109
+    left = 376
+    top = 128
   end
 end

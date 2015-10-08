@@ -59,6 +59,7 @@ type
     MEDit: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
+    MICompact: TMenuItem;
     MIFInd: TMenuItem;
     MIExpandCurrent: TMenuItem;
     MIExpandAll: TMenuItem;
@@ -136,6 +137,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure HaveData(Sender: TObject);
+    procedure MICompactClick(Sender: TObject);
     procedure MIdocumentClick(Sender: TObject);
     procedure MISortMembersClick(Sender: TObject);
     procedure MIStrictClick(Sender: TObject);
@@ -144,6 +146,8 @@ type
     procedure PSMainStoredValues1Restore(Sender: TStoredValue;
       var Value: TStoredType);
     procedure PSMainStoredValues2Restore(Sender: TStoredValue;
+      var Value: TStoredType);
+    procedure PSMainStoredValues3Restore(Sender: TStoredValue;
       var Value: TStoredType);
     procedure TVJSONEdited(Sender: TObject; Node: TTreeNode; var S: string);
     procedure TVJSONEditing(Sender: TObject; Node: TTreeNode;
@@ -154,6 +158,7 @@ type
     FSortObjectMembers,
     FStrict,
     FNewObject,
+    FCompact,
     FModified : Boolean;
     FCurrentFind : TTreeNode;
     procedure AddDataToContainer(const AMemberName: String; D: TJSONData);
@@ -223,6 +228,12 @@ procedure TMainForm.PSMainStoredValues2Restore(Sender: TStoredValue;
   var Value: TStoredType);
 begin
   FSortObjectMembers:=StrToIntDef(Value,0)=1;
+end;
+
+procedure TMainForm.PSMainStoredValues3Restore(Sender: TStoredValue;
+  var Value: TStoredType);
+begin
+  FCompact:=StrToIntDef(Value,0)=1;
 end;
 
 procedure TMainForm.TVJSONEdited(Sender: TObject; Node: TTreeNode; var S: string);
@@ -424,23 +435,17 @@ begin
    begin
    P:=TJSONData(PN.Data);
    If P.JSONType=jtArray then
+     TJSONArray(P).Remove(D)
+   else If P.JSONType=jtObject then
+     TJSONObject(P).Remove(D);
+   PN:=PN.Parent;
+   If PN<>Nil then
      begin
-     TJSONArray(P).Remove(D);
-     PN:=PN.Parent;
-     If PN<>Nil then
-       PN.DeleteChildren
-     else
-       TVJSON.Items.Clear;
+     PN.DeleteChildren;
      ShowJSONData(PN,P);
      end
-   else If P.JSONType=jtObject then
-     begin
-     TJSONObject(P).Remove(D);
-     PN:=PN.Parent;
-     If PN<>Nil then
-       PN.DeleteChildren;
-            ShowJSONData(PN,P);
-     end;
+   else
+     ShowJSONDocument;
    end;
    Modify;
 end;
@@ -733,14 +738,18 @@ end;
 
 Function TMainForm.CurrentData : TJSONData;
 
+Var
+  N : TTreeNode;
+
 begin
-  If (CurrentNode=Nil) then
+  N:=CurrentNode;
+  If (N=Nil) then
     Result:=Nil
   else
     begin
-    Result:=TJSONData(CurrentNode.Data);
-    If (Result=Nil) and (CurrentNode.Count=1) then
-      Result:=TJSONData(CurrentNode.Items[0].Data);
+    Result:=TJSONData(N.Data);
+    If (Result=Nil) and (N.Count=1) then
+      Result:=TJSONData(N.Items[0].Data);
     end;
 end;
 
@@ -920,6 +929,13 @@ begin
   (Sender as TAction).Enabled:=(FRoot<>Nil);
 end;
 
+procedure TMainForm.MICompactClick(Sender: TObject);
+begin
+  FCompact:=MICompact.Checked;
+  PSMain.StoredValue['compact']:=IntToStr(Ord(Fstrict));
+  ShowJSONDocument;
+end;
+
 procedure TMainForm.MIdocumentClick(Sender: TObject);
 begin
   FNewObject:=(Sender as TMenuItem).Checked;
@@ -966,7 +982,7 @@ begin
     BeginUpdate;
     try
       TVJSON.Items.Clear;
-      SHowJSONData(Nil,FRoot);
+      ShowJSONData(Nil,FRoot);
       With TVJSON do
         If (Items.Count>0) and Assigned(Items[0]) then
           begin
@@ -989,50 +1005,58 @@ Var
   S : TStringList;
 
 begin
-  N:=Nil;
-  if Assigned(Data) then
-    begin
-    Case Data.JSONType of
-      jtArray,
-      jtObject:
-        begin
-        If (Data.JSONType=jtArray) then
-          C:=SArray
-         else
-           C:=SObject;
-        N:=TVJSON.Items.AddChild(AParent,Format(C,[Data.Count]));
-        S:=TstringList.Create;
-        try
-          For I:=0 to Data.Count-1 do
-            If Data.JSONtype=jtArray then
-              S.AddObject(IntToStr(I),Data.items[i])
-            else
-              S.AddObject(TJSONObject(Data).Names[i],Data.items[i]);
-          If FSortObjectMembers and (Data.JSONType=jtObject) then
-            S.Sort;
-          For I:=0 to S.Count-1 do
-            begin
-            N2:=TVJSON.Items.AddChild(N,S[i]);
-            D:=TJSONData(S.Objects[i]);
-            N2.ImageIndex:=ImageTypeMap[D.JSONType];
-            N2.SelectedIndex:=ImageTypeMap[D.JSONType];
-            ShowJSONData(N2,D);
-            end
-        finally
-          S.Free;
-        end;
-        end;
-      jtNull:
-        N:=TVJSON.Items.AddChild(AParent,SNull);
-    else
-      N:=TVJSON.Items.AddChild(AParent,Data.AsString);
-    end;
-    If Assigned(N) then
+  if Not Assigned(Data) then
+    exit;
+  if FCompact and (AParent<>Nil) then
+    N:=AParent
+  else
+    N:=TVJSON.Items.AddChild(AParent,'');
+  Case Data.JSONType of
+    jtArray,
+    jtObject:
       begin
-      N.ImageIndex:=ImageTypeMap[Data.JSONType];
-      N.SelectedIndex:=ImageTypeMap[Data.JSONType];
-      N.Data:=Data;
+      If (Data.JSONType=jtArray) then
+        C:=SArray
+      else
+        C:=SObject;
+      C:=Format(C,[Data.Count]);
+      S:=TstringList.Create;
+      try
+        For I:=0 to Data.Count-1 do
+          If Data.JSONtype=jtArray then
+            S.AddObject(IntToStr(I),Data.items[i])
+          else
+            S.AddObject(TJSONObject(Data).Names[i],Data.items[i]);
+        If FSortObjectMembers and (Data.JSONType=jtObject) then
+          S.Sort;
+        For I:=0 to S.Count-1 do
+          begin
+          N2:=TVJSON.Items.AddChild(N,S[i]);
+          D:=TJSONData(S.Objects[i]);
+          N2.ImageIndex:=ImageTypeMap[D.JSONType];
+          N2.SelectedIndex:=ImageTypeMap[D.JSONType];
+          ShowJSONData(N2,D);
+          end
+      finally
+        S.Free;
       end;
+      end;
+    jtNull:
+      C:=SNull;
+  else
+    C:=Data.AsString;
+    if (Data.JSONType=jtString) then
+      C:='"'+C+'"';
+  end;
+  If Assigned(N) then
+    begin
+    If N.Text='' then
+      N.Text:=C
+    else
+      N.Text:=N.Text+': '+C;
+    N.ImageIndex:=ImageTypeMap[Data.JSONType];
+    N.SelectedIndex:=ImageTypeMap[Data.JSONType];
+    N.Data:=Data;
     end;
 end;
 
