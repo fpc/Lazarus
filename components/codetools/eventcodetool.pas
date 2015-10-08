@@ -560,7 +560,6 @@ begin
     end;
     Params:=TFindDeclarationParams.Create(Self,ContextNode);
     try
-      FindHelpersInContext(Params);
       Params.SetIdentifier(Self,@TypeName[1],nil);
       Params.Flags:=[fdfExceptionOnNotFound,fdfSearchInParentNodes];
       //DebugLn(['TEventsCodeTool.FindMethodTypeInfo TypeName=',TypeName,' MainFilename=',MainFilename]);
