@@ -1,19 +1,19 @@
 object AskCompNameDialog: TAskCompNameDialog
   Left = 299
-  Height = 125
+  Height = 140
   Top = 177
   Width = 389
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'AskCompNameDialog'
-  ClientHeight = 125
+  ClientHeight = 140
   ClientWidth = 389
   OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '1.5'
   object Label1: TLabel
     Left = 6
-    Height = 15
+    Height = 17
     Top = 6
     Width = 377
     Align = alTop
@@ -26,8 +26,8 @@ object AskCompNameDialog: TAskCompNameDialog
     AnchorSideTop.Control = Label1
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 23
-    Top = 27
+    Height = 27
+    Top = 29
     Width = 377
     Align = alTop
     BorderSpacing.Around = 6
@@ -39,8 +39,8 @@ object AskCompNameDialog: TAskCompNameDialog
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 26
-    Top = 93
+    Height = 29
+    Top = 105
     Width = 377
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -60,12 +60,14 @@ object AskCompNameDialog: TAskCompNameDialog
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = NameEdit
     AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel1
     Left = 6
-    Height = 32
-    Top = 56
+    Height = 37
+    Top = 62
     Width = 377
-    Anchors = [akTop, akLeft, akRight]
+    Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 6
+    BorderSpacing.Bottom = 6
     BevelOuter = bvNone
     Caption = 'InfoPanel'
     Color = clInfoBk
