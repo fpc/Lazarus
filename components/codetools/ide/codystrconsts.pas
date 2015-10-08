@@ -266,6 +266,11 @@ resourcestring
   crsExactly = 'exactly';
   crsCompatible = 'compatible';
   crsIncompatible = 'incompatible';
+  crsCodyFindOverloads = 'Cody - Find Overloads';
+  crsOnlyMethods = 'Only methods';
+  crsOnlyDescendantsOf = 'Only descendants of %s';
+  crsOnlyNonMethods = 'Only non methods';
+  crsAny = 'Any';
   crsFilter2 = 'Filter';
   crsJumpTo2 = 'Jump to';
 

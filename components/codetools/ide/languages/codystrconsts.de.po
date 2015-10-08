@@ -43,6 +43,10 @@ msgstr "Bereits definiert bei %s"
 msgid "... and %s more identifiers"
 msgstr "... und %s weitere Bezeichner"
 
+#: codystrconsts.crsany
+msgid "Any"
+msgstr ""
+
 #: codystrconsts.crsawindowforthelazarusideitcanbedockedlikethecodeexp
 msgid "A window for the Lazarus IDE. It can be docked like the Code Explorer or the FPDoc Editor. This also creates a menu item in the View menu and a short cut."
 msgstr ""
@@ -173,6 +177,10 @@ msgstr ""
 
 #: codystrconsts.crscodenodeinformation
 msgid "Code Node Information"
+msgstr ""
+
+#: codystrconsts.crscodyfindoverloads
+msgid "Cody - Find Overloads"
 msgstr ""
 
 #: codystrconsts.crscodyidentifierdictionary
@@ -492,6 +500,18 @@ msgstr "Keine Unit ausgewählt"
 
 #: codystrconsts.crsonclipboard
 msgid "On clipboard"
+msgstr ""
+
+#: codystrconsts.crsonlydescendantsof
+msgid "Only descendants of %s"
+msgstr ""
+
+#: codystrconsts.crsonlymethods
+msgid "Only methods"
+msgstr ""
+
+#: codystrconsts.crsonlynonmethods
+msgid "Only non methods"
 msgstr ""
 
 #: codystrconsts.crsoptions

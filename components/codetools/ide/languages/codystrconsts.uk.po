@@ -46,6 +46,10 @@ msgstr "Вже визначений в %s"
 msgid "... and %s more identifiers"
 msgstr ""
 
+#: codystrconsts.crsany
+msgid "Any"
+msgstr ""
+
 #: codystrconsts.crsawindowforthelazarusideitcanbedockedlikethecodeexp
 msgid "A window for the Lazarus IDE. It can be docked like the Code Explorer or the FPDoc Editor. This also creates a menu item in the View menu and a short cut."
 msgstr ""
@@ -177,6 +181,10 @@ msgstr ""
 #: codystrconsts.crscodenodeinformation
 msgid "Code Node Information"
 msgstr "Інформація про Вузол Коду"
+
+#: codystrconsts.crscodyfindoverloads
+msgid "Cody - Find Overloads"
+msgstr ""
 
 #: codystrconsts.crscodyidentifierdictionary
 msgid "Identifier Dictionary"
@@ -504,6 +512,18 @@ msgstr "Модуль не вибраний"
 #: codystrconsts.crsonclipboard
 msgid "On clipboard"
 msgstr "На буфер обміну"
+
+#: codystrconsts.crsonlydescendantsof
+msgid "Only descendants of %s"
+msgstr ""
+
+#: codystrconsts.crsonlymethods
+msgid "Only methods"
+msgstr ""
+
+#: codystrconsts.crsonlynonmethods
+msgid "Only non methods"
+msgstr ""
 
 #: codystrconsts.crsoptions
 msgid "Options"

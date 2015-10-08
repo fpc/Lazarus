@@ -44,6 +44,10 @@ msgstr "Déjà défini à %s"
 msgid "... and %s more identifiers"
 msgstr "... et %s identificateurs"
 
+#: codystrconsts.crsany
+msgid "Any"
+msgstr ""
+
 #: codystrconsts.crsawindowforthelazarusideitcanbedockedlikethecodeexp
 msgid "A window for the Lazarus IDE. It can be docked like the Code Explorer or the FPDoc Editor. This also creates a menu item in the View menu and a short cut."
 msgstr "Une fenêtre pour l'EDI Lazarus. Elle peut être amarrée comme l'explorateur de code ou l'éditeur \"FPDoc\". Elle crée aussi un élément dans le menu \"Voir\" et un raccourci."
@@ -175,6 +179,10 @@ msgstr "Buffers de code"
 #: codystrconsts.crscodenodeinformation
 msgid "Code Node Information"
 msgstr "Information de nœud de code"
+
+#: codystrconsts.crscodyfindoverloads
+msgid "Cody - Find Overloads"
+msgstr ""
 
 #: codystrconsts.crscodyidentifierdictionary
 msgid "Identifier Dictionary"
@@ -494,6 +502,18 @@ msgstr "Aucune unité sélectionnée"
 #: codystrconsts.crsonclipboard
 msgid "On clipboard"
 msgstr "Dans le presse-papier"
+
+#: codystrconsts.crsonlydescendantsof
+msgid "Only descendants of %s"
+msgstr ""
+
+#: codystrconsts.crsonlymethods
+msgid "Only methods"
+msgstr ""
+
+#: codystrconsts.crsonlynonmethods
+msgid "Only non methods"
+msgstr ""
 
 #: codystrconsts.crsoptions
 msgid "Options"

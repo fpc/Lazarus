@@ -68,6 +68,7 @@ object CodyFindOverloadsWindow: TCodyFindOverloadsWindow
       Top = 0
       Width = 181
       Caption = 'CompatibleParamsCheckBox'
+      OnChange = CompatibleParamsCheckBoxChange
       ParentShowHint = False
       ShowHint = True
       TabOrder = 0
@@ -98,6 +99,7 @@ object CodyFindOverloadsWindow: TCodyFindOverloadsWindow
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
       ItemHeight = 0
+      OnChange = RelationComboBoxChange
       Style = csDropDownList
       TabOrder = 1
     end
@@ -110,6 +112,7 @@ object CodyFindOverloadsWindow: TCodyFindOverloadsWindow
       Top = 53
       Width = 152
       Caption = 'HideAbstractCheckBox'
+      OnChange = HideAbstractCheckBoxChange
       ParentShowHint = False
       ShowHint = True
       TabOrder = 2

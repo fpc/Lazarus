@@ -120,6 +120,8 @@ function ParseUnit(out Tool: TCodeTool; out CleanPos: integer;
    TilCursor: boolean = false): TCUParseError;
 procedure OpenCodyHelp(Path: string);
 
+function GetPatternValue1(const Pattern, PlaceHolder, Src: string; out Value1: string): boolean;
+
 implementation
 
 procedure ExplodeAWithBlockCmd(Sender: TObject);
@@ -382,6 +384,35 @@ var
 begin
   BasePath:='http://wiki.lazarus.freepascal.org/Cody';
   OpenURL(BasePath+Path);
+end;
+
+function GetPatternValue1(const Pattern, PlaceHolder, Src: string; out
+  Value1: string): boolean;
+{ Pattern: 'Descendant of %1'
+  PlaceHolder: '%1'
+  Src:     'Descendant of TWinControl'
+  Value1:  'TWinControl'
+}
+var
+  PatLen, SrcLen, PHLen, l: Integer;
+  p: SizeInt;
+begin
+  Value1:='';
+  Result:=false;
+  PatLen:=length(Pattern);
+  PHLen:=length(PlaceHolder);
+  SrcLen:=length(Src);
+  if SrcLen<PatLen-PHLen then exit;
+  p:=Pos(PlaceHolder,Pattern);
+  if p<1 then exit;
+  // check start pattern
+  if (p>1) and (not CompareMem(Pointer(Src),Pointer(Pattern),p-1)) then exit;
+  // check end pattern
+  l:=PatLen-p-PHLen;
+  if (l>0)
+  and (not CompareMem(Pointer(Src)+SrcLen-l,Pointer(Pattern)+p+PHLen,l)) then exit;
+  Value1:=copy(Src,p,SrcLen-PatLen+PHLen);
+  Result:=true;
 end;
 
 { TCodyClipboardSrcData }
