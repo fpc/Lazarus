@@ -258,6 +258,16 @@ resourcestring
   crsFindSourceOfGDBBacktrace = 'Find source of GDB backtrace';
   crsPasteLinesOfAGdbBacktrace = 'Paste lines of a gdb backtrace:';
   crsJump = 'Jump';
+  crsHideAbstractMethodsAndMethodsOfClassInterfaces = 'Hide abstract methods '
+    +'and methods of class interfaces';
+  crsName = 'Name';
+  crsCompatibility = 'Compatibility';
+  crsDistance = 'Distance';
+  crsExactly = 'exactly';
+  crsCompatible = 'compatible';
+  crsIncompatible = 'incompatible';
+  crsFilter2 = 'Filter';
+  crsJumpTo2 = 'Jump to';
 
 implementation
 

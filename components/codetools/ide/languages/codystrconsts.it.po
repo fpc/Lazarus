@@ -186,6 +186,14 @@ msgctxt "codystrconsts.crscogeneral"
 msgid "General"
 msgstr "Generale"
 
+#: codystrconsts.crscompatibility
+msgid "Compatibility"
+msgstr ""
+
+#: codystrconsts.crscompatible
+msgid "compatible"
+msgstr ""
+
 #: codystrconsts.crsconfigurenewidewindow
 msgid "Configure new IDE window"
 msgstr "Configurare una nuova finestra dell'IDE"
@@ -271,6 +279,10 @@ msgstr "Cancellare il pacchetto"
 msgid "Delete unit?"
 msgstr "Cancellare la unit?"
 
+#: codystrconsts.crsdistance
+msgid "Distance"
+msgstr ""
+
 #: codystrconsts.crsdvisakeyword
 msgid "\"%s\" is a keyword."
 msgstr "\"%s\" è una parola chiave."
@@ -278,6 +290,10 @@ msgstr "\"%s\" è una parola chiave."
 #: codystrconsts.crserror
 msgid "Error: %s"
 msgstr "Errore: %s"
+
+#: codystrconsts.crsexactly
+msgid "exactly"
+msgstr ""
 
 #: codystrconsts.crsexplodeawithblock
 msgid "Explode a \"With\" Block"
@@ -311,6 +327,10 @@ msgstr "Errore di lettura del file"
 msgid "(Filter)"
 msgstr "(Filtro)"
 
+#: codystrconsts.crsfilter2
+msgid "Filter"
+msgstr ""
+
 #: codystrconsts.crsfindgdbbacktraceline
 msgid "Find GDB backtrace line"
 msgstr "Trovare la riga di backtrace GDB"
@@ -338,6 +358,10 @@ msgstr "Gbyte"
 #: codystrconsts.crshelp
 msgid "&Help"
 msgstr "&Aiuto"
+
+#: codystrconsts.crshideabstractmethodsandmethodsofclassinterfaces
+msgid "Hide abstract methods and methods of class interfaces"
+msgstr ""
 
 #: codystrconsts.crshideunitsofotherprojects
 msgid "Hide units of other projects"
@@ -372,6 +396,10 @@ msgstr "Dipendenza impossibile"
 msgid "in \"%s\""
 msgstr "in \"%s\""
 
+#: codystrconsts.crsincompatible
+msgid "incompatible"
+msgstr ""
+
 #: codystrconsts.crsinimplementation
 msgid "In implementation"
 msgstr "In implementazione"
@@ -395,6 +423,10 @@ msgstr "Salta"
 #: codystrconsts.crsjumpto
 msgid "&Jump to"
 msgstr "&Salta a"
+
+#: codystrconsts.crsjumpto2
+msgid "Jump to"
+msgstr ""
 
 #: codystrconsts.crskbytes
 msgid "kbytes"
@@ -439,6 +471,10 @@ msgstr "%s minuti"
 #: codystrconsts.crsmissing
 msgid "missing ..."
 msgstr "mancante..."
+
+#: codystrconsts.crsname
+msgid "Name"
+msgstr ""
 
 #: codystrconsts.crsnoneselected
 msgid "none selected"

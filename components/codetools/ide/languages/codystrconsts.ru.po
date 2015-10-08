@@ -187,6 +187,14 @@ msgctxt "codystrconsts.crscogeneral"
 msgid "General"
 msgstr "Общие"
 
+#: codystrconsts.crscompatibility
+msgid "Compatibility"
+msgstr ""
+
+#: codystrconsts.crscompatible
+msgid "compatible"
+msgstr ""
+
 #: codystrconsts.crsconfigurenewidewindow
 msgid "Configure new IDE window"
 msgstr "Параметры нового окна IDE"
@@ -274,6 +282,10 @@ msgstr "Удалить пакет?"
 msgid "Delete unit?"
 msgstr "Удалить модуль?"
 
+#: codystrconsts.crsdistance
+msgid "Distance"
+msgstr ""
+
 #: codystrconsts.crsdvisakeyword
 msgid "\"%s\" is a keyword."
 msgstr "\"%s\" является ключевым словом."
@@ -281,6 +293,10 @@ msgstr "\"%s\" является ключевым словом."
 #: codystrconsts.crserror
 msgid "Error: %s"
 msgstr "Ошибка: %s"
+
+#: codystrconsts.crsexactly
+msgid "exactly"
+msgstr ""
 
 #: codystrconsts.crsexplodeawithblock
 #| msgid "Explode a \"With\" block"
@@ -315,6 +331,10 @@ msgstr "Ошибка чтения файла"
 msgid "(Filter)"
 msgstr "(Фильтр)"
 
+#: codystrconsts.crsfilter2
+msgid "Filter"
+msgstr ""
+
 #: codystrconsts.crsfindgdbbacktraceline
 msgid "Find GDB backtrace line"
 msgstr "Найти строку кода для стека вызовов GDB"
@@ -342,6 +362,10 @@ msgstr "ГБ"
 #: codystrconsts.crshelp
 msgid "&Help"
 msgstr "&Справка"
+
+#: codystrconsts.crshideabstractmethodsandmethodsofclassinterfaces
+msgid "Hide abstract methods and methods of class interfaces"
+msgstr ""
 
 #: codystrconsts.crshideunitsofotherprojects
 msgid "Hide units of other projects"
@@ -376,6 +400,10 @@ msgstr "Недопустимая зависимость"
 msgid "in \"%s\""
 msgstr "в \"%s\""
 
+#: codystrconsts.crsincompatible
+msgid "incompatible"
+msgstr ""
+
 #: codystrconsts.crsinimplementation
 msgid "In implementation"
 msgstr "В секции Implementation"
@@ -402,6 +430,10 @@ msgstr "Перейти"
 #| msgid "Jump to"
 msgid "&Jump to"
 msgstr "&Перейти"
+
+#: codystrconsts.crsjumpto2
+msgid "Jump to"
+msgstr ""
 
 #: codystrconsts.crskbytes
 msgid "kbytes"
@@ -446,6 +478,10 @@ msgstr "%s минут"
 #: codystrconsts.crsmissing
 msgid "missing ..."
 msgstr "отсутствует ..."
+
+#: codystrconsts.crsname
+msgid "Name"
+msgstr ""
 
 #: codystrconsts.crsnoneselected
 msgid "none selected"

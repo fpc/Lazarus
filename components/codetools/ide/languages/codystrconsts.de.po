@@ -184,6 +184,14 @@ msgctxt "codystrconsts.crscogeneral"
 msgid "General"
 msgstr "Allgemein"
 
+#: codystrconsts.crscompatibility
+msgid "Compatibility"
+msgstr ""
+
+#: codystrconsts.crscompatible
+msgid "compatible"
+msgstr ""
+
 #: codystrconsts.crsconfigurenewidewindow
 msgid "Configure new IDE window"
 msgstr "Neues IDE-Fenster konfigurieren"
@@ -269,6 +277,10 @@ msgstr "Package löschen?"
 msgid "Delete unit?"
 msgstr "Unit löschen?"
 
+#: codystrconsts.crsdistance
+msgid "Distance"
+msgstr ""
+
 #: codystrconsts.crsdvisakeyword
 msgid "\"%s\" is a keyword."
 msgstr "\"%s\" ist ein Schlüsselwort."
@@ -276,6 +288,10 @@ msgstr "\"%s\" ist ein Schlüsselwort."
 #: codystrconsts.crserror
 msgid "Error: %s"
 msgstr "Fehler: %s"
+
+#: codystrconsts.crsexactly
+msgid "exactly"
+msgstr ""
 
 #: codystrconsts.crsexplodeawithblock
 msgid "Explode a \"With\" Block"
@@ -309,6 +325,10 @@ msgstr "Datei-Lesefehler"
 msgid "(Filter)"
 msgstr "(Filter)"
 
+#: codystrconsts.crsfilter2
+msgid "Filter"
+msgstr ""
+
 #: codystrconsts.crsfindgdbbacktraceline
 msgid "Find GDB backtrace line"
 msgstr ""
@@ -336,6 +356,10 @@ msgstr ""
 #: codystrconsts.crshelp
 msgid "&Help"
 msgstr "&Hilfe"
+
+#: codystrconsts.crshideabstractmethodsandmethodsofclassinterfaces
+msgid "Hide abstract methods and methods of class interfaces"
+msgstr ""
 
 #: codystrconsts.crshideunitsofotherprojects
 msgid "Hide units of other projects"
@@ -370,6 +394,10 @@ msgstr "Unmögliche Abhängigkeit"
 msgid "in \"%s\""
 msgstr ""
 
+#: codystrconsts.crsincompatible
+msgid "incompatible"
+msgstr ""
+
 #: codystrconsts.crsinimplementation
 msgid "In implementation"
 msgstr ""
@@ -393,6 +421,10 @@ msgstr ""
 #: codystrconsts.crsjumpto
 msgid "&Jump to"
 msgstr "Springe zu"
+
+#: codystrconsts.crsjumpto2
+msgid "Jump to"
+msgstr ""
 
 #: codystrconsts.crskbytes
 msgid "kbytes"
@@ -436,6 +468,10 @@ msgstr "%s Minuten"
 
 #: codystrconsts.crsmissing
 msgid "missing ..."
+msgstr ""
+
+#: codystrconsts.crsname
+msgid "Name"
 msgstr ""
 
 #: codystrconsts.crsnoneselected

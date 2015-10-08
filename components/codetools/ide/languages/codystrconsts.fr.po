@@ -185,6 +185,14 @@ msgctxt "codystrconsts.crscogeneral"
 msgid "General"
 msgstr "Général"
 
+#: codystrconsts.crscompatibility
+msgid "Compatibility"
+msgstr ""
+
+#: codystrconsts.crscompatible
+msgid "compatible"
+msgstr ""
+
 #: codystrconsts.crsconfigurenewidewindow
 msgid "Configure new IDE window"
 msgstr "Configurer une nouvelle fenêtre de l'EDI"
@@ -270,6 +278,10 @@ msgstr "Faut-il supprimer le paquet ?"
 msgid "Delete unit?"
 msgstr "Faut-il supprimer l'unité ?"
 
+#: codystrconsts.crsdistance
+msgid "Distance"
+msgstr ""
+
 #: codystrconsts.crsdvisakeyword
 msgid "\"%s\" is a keyword."
 msgstr "\"%s\" est un mot-clé."
@@ -277,6 +289,10 @@ msgstr "\"%s\" est un mot-clé."
 #: codystrconsts.crserror
 msgid "Error: %s"
 msgstr "Erreur : %s"
+
+#: codystrconsts.crsexactly
+msgid "exactly"
+msgstr ""
 
 #: codystrconsts.crsexplodeawithblock
 msgid "Explode a \"With\" Block"
@@ -310,6 +326,10 @@ msgstr "Erreur de lecture du fichier"
 msgid "(Filter)"
 msgstr "(Filtre)"
 
+#: codystrconsts.crsfilter2
+msgid "Filter"
+msgstr ""
+
 #: codystrconsts.crsfindgdbbacktraceline
 msgid "Find GDB backtrace line"
 msgstr "Chercher une ligne de la trace de \"GDB\""
@@ -337,6 +357,10 @@ msgstr "Giga-octets"
 #: codystrconsts.crshelp
 msgid "&Help"
 msgstr "&Aide"
+
+#: codystrconsts.crshideabstractmethodsandmethodsofclassinterfaces
+msgid "Hide abstract methods and methods of class interfaces"
+msgstr ""
 
 #: codystrconsts.crshideunitsofotherprojects
 msgid "Hide units of other projects"
@@ -371,6 +395,10 @@ msgstr "Dépendance impossible"
 msgid "in \"%s\""
 msgstr "dans \"%s\""
 
+#: codystrconsts.crsincompatible
+msgid "incompatible"
+msgstr ""
+
 #: codystrconsts.crsinimplementation
 msgid "In implementation"
 msgstr "Dans l'implémentation"
@@ -394,6 +422,10 @@ msgstr "Saut"
 #: codystrconsts.crsjumpto
 msgid "&Jump to"
 msgstr "&Aller à"
+
+#: codystrconsts.crsjumpto2
+msgid "Jump to"
+msgstr ""
 
 #: codystrconsts.crskbytes
 msgid "kbytes"
@@ -438,6 +470,10 @@ msgstr "%s minutes"
 #: codystrconsts.crsmissing
 msgid "missing ..."
 msgstr "manquant..."
+
+#: codystrconsts.crsname
+msgid "Name"
+msgstr ""
 
 #: codystrconsts.crsnoneselected
 msgid "none selected"
@@ -742,3 +778,4 @@ msgstr "Unité virtuelle"
 #: codystrconsts.crswhere
 msgid "Where"
 msgstr "Où"
+

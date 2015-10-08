@@ -46,11 +46,15 @@ unit CodyFindOverloads;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, contnrs, FileUtil, LazLoggerBase, LazUtilities,
-  CodyUtils, CodeToolManager, CodeTree, CodeCache, FindDeclarationTool,
+  Classes, SysUtils, AVL_Tree, contnrs,
+  FileUtil, LazLoggerBase, LazUtilities,
+  Forms, Controls, Graphics,
+  Dialogs, ExtCtrls, StdCtrls, Grids, ComCtrls,
+  CodeToolManager, CodeTree, CodeCache, FindDeclarationTool,
   PascalParserTool, BasicCodeTools, CTUnitGraph, FileProcs, StdCodeTools,
-  CodeGraph, LazIDEIntf, IDEWindowIntf, ProjectIntf, Forms, Controls, Graphics,
-  Dialogs, ExtCtrls, StdCtrls, Grids, ComCtrls;
+  CodeGraph,
+  LazIDEIntf, IDEWindowIntf, ProjectIntf,
+  CodyUtils, CodyStrConsts;
 
 type
   TCFOUnit = class(TUGUnit)
@@ -212,13 +216,14 @@ begin
   FProcList:=TObjectList.Create(true);
 
   Caption:=GetDefaultCaption;
-  RefreshButton.Caption:='Refresh';
-  JumpToButton.Caption:='Jump to';
+  RefreshButton.Caption:=crsRefresh;
+  JumpToButton.Caption:=crsJumpTo2;
 
-  FilterGroupBox.Caption:='Filter';
+  FilterGroupBox.Caption:=crsFilter2;
   CompatibleParamsCheckBox.Caption:='Only procedures with compatible parameters';
-  CompatibleParamsCheckBox.Hint:='If unchecked list also procedures with same name, but incompatible parameter lists.';
-  HideAbstractCheckBox.Caption:='Hide abstract methods and methods of class interfaces';
+  CompatibleParamsCheckBox.Hint:='If unchecked list also procedures with same name and incompatible parameter lists.';
+  HideAbstractCheckBox.Caption:=
+    crsHideAbstractMethodsAndMethodsOfClassInterfaces;
   RelationLabel.Caption:='Relations:';
 end;
 
@@ -685,9 +690,9 @@ begin
   Grid:=ResultsStringGrid;
   Grid.BeginUpdate;
   Grid.Visible:=true;
-  Grid.Columns[0].Title.Caption:='Name';
-  Grid.Columns[1].Title.Caption:='Compatibility';
-  Grid.Columns[2].Title.Caption:='Distance';
+  Grid.Columns[0].Title.Caption:=crsName;
+  Grid.Columns[1].Title.Caption:=crsCompatibility;
+  Grid.Columns[2].Title.Caption:=crsDistance;
 
   Grid.RowCount:=ProcCount+1;
   for Row:=1 to ProcCount do begin
@@ -702,15 +707,16 @@ begin
     Grid.Cells[0,Row]:=s;
 
     case aProc.Compatibility of
-    tcExact: s:='fits exactly';
-    tcCompatible: s:='compatible';
-    tcIncompatible: s:='incompatible';
+    tcExact: s:=crsExactly;
+    tcCompatible: s:=crsCompatible;
+    tcIncompatible: s:=crsIncompatible;
     end;
     Grid.Cells[1,Row]:=s;
 
     Grid.Cells[2,Row]:=IntToStr(aProc.Distance);
   end;
 
+  Grid.SortColRow(true,0);
   Grid.EndUpdate(true);
 
   Grid.HandleNeeded;
@@ -747,15 +753,19 @@ begin
       ClassNode:=ClassNode.Parent;
     if ClassNode<>nil then begin
       // method
-      sl.Add('Only descendants of '+ProcTool.ExtractClassName(ClassNode,false));
       ListOfPFindContext:=nil;
       try
-        ProcTool.FindClassAndAncestors(ClassNode,ListOfPFindContext,false);
+        try
+          ProcTool.FindClassAndAncestors(ClassNode,ListOfPFindContext,false);
+        except
+        end;
         if ListOfPFindContext<>nil then begin
           for i:=0 to ListOfPFindContext.Count-1 do begin
             aContext:=PFindContext(ListOfPFindContext[i]);
             sl.Add('Only descendants of '+aContext^.Tool.ExtractClassName(aContext^.Node,false));
           end;
+        end else begin
+          sl.Add('Only descendants of '+ProcTool.ExtractClassName(ClassNode,false));
         end;
       finally
         FreeListOfPFindContext(ListOfPFindContext);

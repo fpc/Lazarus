@@ -185,6 +185,14 @@ msgctxt "codystrconsts.crscogeneral"
 msgid "General"
 msgstr "Pagrindinis"
 
+#: codystrconsts.crscompatibility
+msgid "Compatibility"
+msgstr ""
+
+#: codystrconsts.crscompatible
+msgid "compatible"
+msgstr ""
+
 #: codystrconsts.crsconfigurenewidewindow
 msgid "Configure new IDE window"
 msgstr "Derinti naują IKA langą"
@@ -270,6 +278,10 @@ msgstr ""
 msgid "Delete unit?"
 msgstr ""
 
+#: codystrconsts.crsdistance
+msgid "Distance"
+msgstr ""
+
 #: codystrconsts.crsdvisakeyword
 msgid "\"%s\" is a keyword."
 msgstr "„%s“ yra bazinis žodis."
@@ -277,6 +289,10 @@ msgstr "„%s“ yra bazinis žodis."
 #: codystrconsts.crserror
 msgid "Error: %s"
 msgstr "Klaida: %s"
+
+#: codystrconsts.crsexactly
+msgid "exactly"
+msgstr ""
 
 #: codystrconsts.crsexplodeawithblock
 msgid "Explode a \"With\" Block"
@@ -310,6 +326,10 @@ msgstr "Klaida skaitant failą"
 msgid "(Filter)"
 msgstr "(Filtras)"
 
+#: codystrconsts.crsfilter2
+msgid "Filter"
+msgstr ""
+
 #: codystrconsts.crsfindgdbbacktraceline
 msgid "Find GDB backtrace line"
 msgstr ""
@@ -337,6 +357,10 @@ msgstr "GiB"
 #: codystrconsts.crshelp
 msgid "&Help"
 msgstr "Žin&ynas"
+
+#: codystrconsts.crshideabstractmethodsandmethodsofclassinterfaces
+msgid "Hide abstract methods and methods of class interfaces"
+msgstr ""
 
 #: codystrconsts.crshideunitsofotherprojects
 msgid "Hide units of other projects"
@@ -371,6 +395,10 @@ msgstr "Neįmanoma priklausomybė"
 msgid "in \"%s\""
 msgstr ""
 
+#: codystrconsts.crsincompatible
+msgid "incompatible"
+msgstr ""
+
 #: codystrconsts.crsinimplementation
 msgid "In implementation"
 msgstr "„Implementation“ skiltyje"
@@ -394,6 +422,10 @@ msgstr ""
 #: codystrconsts.crsjumpto
 msgid "&Jump to"
 msgstr "&Šokti į"
+
+#: codystrconsts.crsjumpto2
+msgid "Jump to"
+msgstr ""
 
 #: codystrconsts.crskbytes
 msgid "kbytes"
@@ -438,6 +470,10 @@ msgstr "%s min."
 #: codystrconsts.crsmissing
 msgid "missing ..."
 msgstr "trūksta…"
+
+#: codystrconsts.crsname
+msgid "Name"
+msgstr ""
 
 #: codystrconsts.crsnoneselected
 msgid "none selected"

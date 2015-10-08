@@ -187,6 +187,14 @@ msgctxt "codystrconsts.crscogeneral"
 msgid "General"
 msgstr "Загальні"
 
+#: codystrconsts.crscompatibility
+msgid "Compatibility"
+msgstr ""
+
+#: codystrconsts.crscompatible
+msgid "compatible"
+msgstr ""
+
 #: codystrconsts.crsconfigurenewidewindow
 msgid "Configure new IDE window"
 msgstr ""
@@ -276,12 +284,20 @@ msgstr ""
 msgid "Delete unit?"
 msgstr ""
 
+#: codystrconsts.crsdistance
+msgid "Distance"
+msgstr ""
+
 #: codystrconsts.crsdvisakeyword
 msgid "\"%s\" is a keyword."
 msgstr "\"%s\" це ключове слово."
 
 #: codystrconsts.crserror
 msgid "Error: %s"
+msgstr ""
+
+#: codystrconsts.crsexactly
+msgid "exactly"
 msgstr ""
 
 #: codystrconsts.crsexplodeawithblock
@@ -318,6 +334,10 @@ msgstr ""
 msgid "(Filter)"
 msgstr ""
 
+#: codystrconsts.crsfilter2
+msgid "Filter"
+msgstr ""
+
 #: codystrconsts.crsfindgdbbacktraceline
 msgid "Find GDB backtrace line"
 msgstr ""
@@ -345,6 +365,10 @@ msgstr "ГБ"
 #: codystrconsts.crshelp
 msgid "&Help"
 msgstr "&Довідка"
+
+#: codystrconsts.crshideabstractmethodsandmethodsofclassinterfaces
+msgid "Hide abstract methods and methods of class interfaces"
+msgstr ""
 
 #: codystrconsts.crshideunitsofotherprojects
 msgid "Hide units of other projects"
@@ -379,6 +403,10 @@ msgstr ""
 msgid "in \"%s\""
 msgstr ""
 
+#: codystrconsts.crsincompatible
+msgid "incompatible"
+msgstr ""
+
 #: codystrconsts.crsinimplementation
 msgid "In implementation"
 msgstr "В реалізації"
@@ -403,6 +431,10 @@ msgstr ""
 
 #: codystrconsts.crsjumpto
 msgid "&Jump to"
+msgstr ""
+
+#: codystrconsts.crsjumpto2
+msgid "Jump to"
 msgstr ""
 
 #: codystrconsts.crskbytes
@@ -448,6 +480,10 @@ msgstr ""
 #: codystrconsts.crsmissing
 msgid "missing ..."
 msgstr "відсутній ..."
+
+#: codystrconsts.crsname
+msgid "Name"
+msgstr ""
 
 #: codystrconsts.crsnoneselected
 msgid "none selected"

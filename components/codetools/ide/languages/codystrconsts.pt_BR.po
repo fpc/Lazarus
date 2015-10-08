@@ -188,6 +188,14 @@ msgctxt "codystrconsts.crscogeneral"
 msgid "General"
 msgstr "Geral"
 
+#: codystrconsts.crscompatibility
+msgid "Compatibility"
+msgstr ""
+
+#: codystrconsts.crscompatible
+msgid "compatible"
+msgstr ""
+
 #: codystrconsts.crsconfigurenewidewindow
 msgid "Configure new IDE window"
 msgstr "Configurar nova janela IDE"
@@ -275,6 +283,10 @@ msgstr "Excluir pacote?"
 msgid "Delete unit?"
 msgstr "Excluir unidade?"
 
+#: codystrconsts.crsdistance
+msgid "Distance"
+msgstr ""
+
 #: codystrconsts.crsdvisakeyword
 msgid "\"%s\" is a keyword."
 msgstr "\"%s\" é uma palavra-chave."
@@ -282,6 +294,10 @@ msgstr "\"%s\" é uma palavra-chave."
 #: codystrconsts.crserror
 msgid "Error: %s"
 msgstr "Erro: %s"
+
+#: codystrconsts.crsexactly
+msgid "exactly"
+msgstr ""
 
 #: codystrconsts.crsexplodeawithblock
 #| msgid "Explode a \"With\" block"
@@ -316,6 +332,10 @@ msgstr "Erro de leitura no arquivo"
 msgid "(Filter)"
 msgstr "(Filtro)"
 
+#: codystrconsts.crsfilter2
+msgid "Filter"
+msgstr ""
+
 #: codystrconsts.crsfindgdbbacktraceline
 msgid "Find GDB backtrace line"
 msgstr ""
@@ -343,6 +363,10 @@ msgstr "Gbytes"
 #: codystrconsts.crshelp
 msgid "&Help"
 msgstr "&Ajuda"
+
+#: codystrconsts.crshideabstractmethodsandmethodsofclassinterfaces
+msgid "Hide abstract methods and methods of class interfaces"
+msgstr ""
 
 #: codystrconsts.crshideunitsofotherprojects
 msgid "Hide units of other projects"
@@ -377,6 +401,10 @@ msgstr "Dependência impossível"
 msgid "in \"%s\""
 msgstr "em \"%s\""
 
+#: codystrconsts.crsincompatible
+msgid "incompatible"
+msgstr ""
+
 #: codystrconsts.crsinimplementation
 msgid "In implementation"
 msgstr "Na implementação"
@@ -402,6 +430,10 @@ msgstr ""
 #| msgid "Jump to"
 msgid "&Jump to"
 msgstr "&Saltar para"
+
+#: codystrconsts.crsjumpto2
+msgid "Jump to"
+msgstr ""
 
 #: codystrconsts.crskbytes
 msgid "kbytes"
@@ -446,6 +478,10 @@ msgstr "%s minutos"
 #: codystrconsts.crsmissing
 msgid "missing ..."
 msgstr "faltando ..."
+
+#: codystrconsts.crsname
+msgid "Name"
+msgstr ""
 
 #: codystrconsts.crsnoneselected
 msgid "none selected"

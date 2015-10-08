@@ -185,6 +185,14 @@ msgctxt "codystrconsts.crscogeneral"
 msgid "General"
 msgstr "Általános"
 
+#: codystrconsts.crscompatibility
+msgid "Compatibility"
+msgstr ""
+
+#: codystrconsts.crscompatible
+msgid "compatible"
+msgstr ""
+
 #: codystrconsts.crsconfigurenewidewindow
 msgid "Configure new IDE window"
 msgstr "Új IDE ablak beállítása"
@@ -270,6 +278,10 @@ msgstr "Csomag törlése?"
 msgid "Delete unit?"
 msgstr "Unit törlése?"
 
+#: codystrconsts.crsdistance
+msgid "Distance"
+msgstr ""
+
 #: codystrconsts.crsdvisakeyword
 msgid "\"%s\" is a keyword."
 msgstr "A(z) \"%s\" egy kulcsszó."
@@ -277,6 +289,10 @@ msgstr "A(z) \"%s\" egy kulcsszó."
 #: codystrconsts.crserror
 msgid "Error: %s"
 msgstr "Hiba: %s"
+
+#: codystrconsts.crsexactly
+msgid "exactly"
+msgstr ""
 
 #: codystrconsts.crsexplodeawithblock
 msgid "Explode a \"With\" Block"
@@ -310,6 +326,10 @@ msgstr "Fájl olvasási hiba"
 msgid "(Filter)"
 msgstr "(Szűrő)"
 
+#: codystrconsts.crsfilter2
+msgid "Filter"
+msgstr ""
+
 #: codystrconsts.crsfindgdbbacktraceline
 msgid "Find GDB backtrace line"
 msgstr "A GDB visszakövetés sorának megkeresése"
@@ -337,6 +357,10 @@ msgstr "Gbájt"
 #: codystrconsts.crshelp
 msgid "&Help"
 msgstr "&Súgó"
+
+#: codystrconsts.crshideabstractmethodsandmethodsofclassinterfaces
+msgid "Hide abstract methods and methods of class interfaces"
+msgstr ""
 
 #: codystrconsts.crshideunitsofotherprojects
 msgid "Hide units of other projects"
@@ -371,6 +395,10 @@ msgstr "Lehetetlen függőség"
 msgid "in \"%s\""
 msgstr "itt: \"%s\""
 
+#: codystrconsts.crsincompatible
+msgid "incompatible"
+msgstr ""
+
 #: codystrconsts.crsinimplementation
 msgid "In implementation"
 msgstr "A kidolgozásban"
@@ -394,6 +422,10 @@ msgstr "Ugrás"
 #: codystrconsts.crsjumpto
 msgid "&Jump to"
 msgstr "Ugrás ide"
+
+#: codystrconsts.crsjumpto2
+msgid "Jump to"
+msgstr ""
 
 #: codystrconsts.crskbytes
 msgid "kbytes"
@@ -438,6 +470,10 @@ msgstr "%s perc"
 #: codystrconsts.crsmissing
 msgid "missing ..."
 msgstr "hiányzik ..."
+
+#: codystrconsts.crsname
+msgid "Name"
+msgstr ""
 
 #: codystrconsts.crsnoneselected
 msgid "none selected"
@@ -742,3 +778,4 @@ msgstr "Virtuális unit"
 #: codystrconsts.crswhere
 msgid "Where"
 msgstr "Hely"
+
