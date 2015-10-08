@@ -28,17 +28,15 @@ unit uDlgPropertiesPrinter;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ComCtrls, ExtCtrls,
-  StdCtrls, Buttons, Printers, CupsLCL, OsPrinters in '../osprinters.pas', LCLProc,
-  CupsDyn, Printer4LazStrConst;
+  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ComCtrls,
+  ExtCtrls, StdCtrls, Buttons, Printers, CupsLCL, OsPrinters, LCLProc,
+  ButtonPanel, CupsDyn, Printer4LazStrConst;
 
 type
 
   { Tdlgpropertiesprinter }
 
   Tdlgpropertiesprinter = class(TForm)
-    btnCancel1: TBUTTON;
-    btnOk: TBUTTON;
     cbPaperSize: TCOMBOBOX;
     cbResolution: TComboBox;
     cbPaperType: TCOMBOBOX;
@@ -56,11 +54,11 @@ type
     labResolution: TLabel;
     labPaperType: TLABEL;
     labPaperSize: TLABEL;
+    ButtonPanel1: TButtonPanel;
     pgAdvanced: TTabSheet;
     Notebook1: TPageControl;
     pgGeneral: TTabSheet;
     pgMargins: TTabSheet;
-    Panel1: TPANEL;
     rbSheet1: TRADIOBUTTON;
     rbSheet2: TRADIOBUTTON;
     rbSheet4: TRADIOBUTTON;
@@ -344,8 +342,8 @@ begin
   Notebook1.PageIndex:=0;
 
   Caption := p4lrsPrinterProperties;
-  btnCancel1.Caption := p4lrsCancel;
-  btnOk.Caption := p4lrsOk;
+  ButtonPanel1.CancelButton.Caption := p4lrsCancel;
+  ButtonPanel1.OKButton.Caption := p4lrsOk;
   pgGeneral.Caption := p4lrsGeneral;
   labPaperSize.Caption := p4lrsPaperSize;
   labPaperType.Caption := p4lrsPaperType;
