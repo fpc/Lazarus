@@ -9145,11 +9145,13 @@ begin
     // test if forward proc
     //debugln('TCodeCompletionCodeTool.CompleteCode ',CursorNode.DescAsString);
     if CursorNode.Desc = ctnInterface then
-    begin//Search nearest (to the left) CursorNode if we are within interface section
+    begin
+      //Search nearest (to the left) CursorNode if we are within interface section
       CursorNode := CursorNode.LastChild;
       while Assigned(CursorNode) and (CursorNode.StartPos > CleanCursorPos) do
         CursorNode := CursorNode.PriorBrother;
-      if CursorNode=nil then
+      if (CursorNode=nil)
+      or (not PositionsInSameLine(Src,CursorNode.EndPos,CleanCursorPos)) then
         CursorNode:=FCompletingCursorNode;
     end;
     ProcNode:=CursorNode.GetNodeOfType(ctnProcedure);
