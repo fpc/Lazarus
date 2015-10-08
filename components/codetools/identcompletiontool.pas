@@ -1171,6 +1171,8 @@ begin
     Ident:=@FoundContext.Tool.Src[FoundContext.Node.StartPos];
     
   ctnProcedure,ctnProcedureHead:
+    //do not list class constructors and destructors
+    if not FoundContext.Tool.NodeIsClassConstructorOrDestructor(FoundContext.Node) then
     begin
       Ident:=FoundContext.Tool.GetProcNameIdentifier(FoundContext.Node);
       NewItem := CurrentIdentifierList.FindIdentifier(Ident,true);

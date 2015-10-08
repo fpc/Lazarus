@@ -43,7 +43,7 @@ interface
 
 uses
   Classes, SysUtils, math, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
-  CodeCache, CustomCodeTool,
+  CodeCache, CustomCodeTool, PascalReaderTool,
   PascalParserTool, CodeCompletionTool, KeywordFuncLists, BasicCodeTools,
   LinkScanner, AVL_Tree, SourceChanger,
   FindDeclarationTool;
@@ -843,7 +843,7 @@ var
     else
       ProcHead:='';
     ProcHead:=ProcHead+ProcName+BaseParamList;
-    ConflictProcNode:=FindProcNode(ContextNode,ProcHead,
+    ConflictProcNode:=FindProcNode(ContextNode,ProcHead,mgMethod,
                                    ShortProcFormat+[phpIgnoreForwards]);
     Result:=ConflictProcNode<>nil;
     if Result then begin

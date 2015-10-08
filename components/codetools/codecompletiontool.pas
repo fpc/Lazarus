@@ -88,7 +88,7 @@ uses
   FileProcs, CodeToolsStrConsts, StdCodeTools,
   CodeTree, CodeAtom, CodeCache, CustomCodeTool, PascalParserTool, MethodJumpTool,
   FindDeclarationTool, KeywordFuncLists, CodeToolsStructs, BasicCodeTools,
-  LinkScanner, SourceChanger, CodeGraph,
+  LinkScanner, SourceChanger, CodeGraph, PascalReaderTool,
   {$IFDEF EnableCodeCompleteTemplates}
   CodeCompletionTemplater,
   {$ENDIF}
@@ -140,7 +140,7 @@ type
     FSetPropertyVariablename: string;
     FSetPropertyVariableIsPrefix: Boolean;
     FSetPropertyVariableUseConst: Boolean;
-    FJumpToProcName: string;
+    FJumpToProcHead: TPascalMethodHeader;
     NewClassSectionIndent: array[TPascalClassSection] of integer;
     NewClassSectionInsertPos: array[TPascalClassSection] of integer;
     fFullTopLvlName: string;// used by OnTopLvlIdentifierFound
@@ -457,13 +457,13 @@ begin
   end;
   // ToDo: check ancestor procs too
   // search in current class
-  Result:=(FindProcNode(FCompletingFirstEntryNode,NameAndParamsUpCase,[phpInUpperCase])<>nil);
+  Result:=(FindProcNode(FCompletingFirstEntryNode,NameAndParamsUpCase,mgMethod,[phpInUpperCase])<>nil);
 end;
 
 procedure TCodeCompletionCodeTool.SetCodeCompleteClassNode(const AClassNode: TCodeTreeNode);
 begin
   FreeClassInsertionList;
-  FJumpToProcName:='';
+  FJumpToProcHead.Name:='';
   FCodeCompleteClassNode:=AClassNode;
   if CodeCompleteClassNode=nil then begin
     FCompletingFirstEntryNode:=nil;
@@ -1500,7 +1500,8 @@ begin
      MemSizeString(FSetPropertyVariablename)
     +PtrUInt(SizeOf(FSetPropertyVariableIsPrefix))
     +PtrUInt(SizeOf(FSetPropertyVariableUseConst))
-    +MemSizeString(FJumpToProcName)
+    +MemSizeString(FJumpToProcHead.Name)
+    +PtrUInt(SizeOf(FJumpToProcHead.Group))
     +length(NewClassSectionIndent)*SizeOf(integer)
     +length(NewClassSectionInsertPos)*SizeOf(integer)
     +MemSizeString(fFullTopLvlName));
@@ -8349,8 +8350,9 @@ procedure TCodeCompletionCodeTool.GuessProcDefBodyMapping(ProcDefNodes,
         NewNodeExt.Node:=ProcNode;
         NewNodeExt.Txt:=ExtractProcName(ProcNode,[phpWithoutClassName]);
         NewNodeExt.Data:=NodeExt;
+        NewNodeExt.Flags:=Integer(ExtractProcedureGroup(ProcNode));
         if Result=nil then
-          Result:=TAVLTree.Create(@CompareCodeTreeNodeExt);
+          Result:=TAVLTree.Create(@CompareCodeTreeNodeExtMethodHeaders);
         Result.Add(NewNodeExt);
       end;
       AVLNodeExt:=NodeExtTree.FindSuccessor(AVLNodeExt);
@@ -8544,15 +8546,16 @@ var
     {$ENDIF}
     ProcCode:=Beauty.BeautifyProc(ProcCode,Indent,ANodeExt.ExtTxt3='');
     FSourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,ProcCode);
-    if FJumpToProcName='' then begin
+    if FJumpToProcHead.Name='' then begin
       // remember one proc body to jump to after the completion
-      FJumpToProcName:=ANodeExt.Txt;
-      if System.Pos('.',FJumpToProcName)<1 then
-        FJumpToProcName:=TheClassName+'.'+FJumpToProcName;
-      if FJumpToProcName[length(FJumpToProcName)]<>';' then
-        FJumpToProcName:=FJumpToProcName+';';
+      FJumpToProcHead.Name:=ANodeExt.Txt;
+      FJumpToProcHead.Group:=TPascalMethodGroup(ANodeExt.Flags);
+      if System.Pos('.',FJumpToProcHead.Name)<1 then
+        FJumpToProcHead.Name:=TheClassName+'.'+FJumpToProcHead.Name;
+      if FJumpToProcHead.Name[length(FJumpToProcHead.Name)]<>';' then
+        FJumpToProcHead.Name:=FJumpToProcHead.Name+';';
       {$IFDEF CTDEBUG}
-      DebugLn('CreateMissingClassProcBodies FJumpToProcName="',FJumpToProcName,'"');
+      DebugLn('CreateMissingClassProcBodies FJumpToProcHead.Name="',FJumpToProcHead.Name,'"');
       {$ENDIF}
     end;
   end;
@@ -8615,7 +8618,9 @@ var
       if NextAVLNode<>nil then begin
         ANodeExt:=TCodeTreeNodeExtension(AnAVLNode.Data);
         ANodeExt2:=TCodeTreeNodeExtension(NextAVLNode.Data);
-        if CompareTextIgnoringSpace(ANodeExt.Txt,ANodeExt2.Txt,false)=0 then
+        if SameMethodHeaders(ANodeExt.Txt, TPascalMethodGroup(ANodeExt.Flags),
+          ANodeExt2.Txt, TPascalMethodGroup(ANodeExt2.Flags))
+        then
         begin
           // proc redefined -> error
           if ANodeExt.Node.StartPos>ANodeExt2.Node.StartPos then begin
@@ -8937,7 +8942,7 @@ begin
             begin
               // search alphabetically nearest proc body
               ExistingNode:=ProcBodyNodes.FindNearest(MissingNode.Data);
-              cmp:=CompareCodeTreeNodeExt(ExistingNode.Data,MissingNode.Data);
+              cmp:=CompareCodeTreeNodeExtMethodHeaders(ExistingNode.Data,MissingNode.Data);
               if (cmp<0) then begin
                 AnAVLNode:=ProcBodyNodes.FindSuccessor(ExistingNode);
                 if AnAVLNode<>nil then begin
@@ -9043,9 +9048,9 @@ begin
     FreeClassInsertionList;
   end;
 
-  if FJumpToProcName<>'' then begin
+  if FJumpToProcHead.Name<>'' then begin
     {$IFDEF CTDEBUG}
-    DebugLn('TCodeCompletionCodeTool.ApplyChangesAndJumpToFirstNewProc Jump to new proc body ... "',FJumpToProcName,'"');
+    DebugLn('TCodeCompletionCodeTool.ApplyChangesAndJumpToFirstNewProc Jump to new proc body ... "',FJumpToProcHead.Name,'"');
     {$ENDIF}
     // there was a new proc body
     // -> find it and jump to
@@ -9061,9 +9066,9 @@ begin
     FCodeCompleteClassNode:=FindClassNode(CursorNode,CurClassName,true,false);
     if CodeCompleteClassNode=nil then
       RaiseException('oops, I lost your class');
-    ProcNode:=FindProcNode(CursorNode,FJumpToProcName,[phpInUpperCase,phpIgnoreForwards]);
+    ProcNode:=FindProcNode(CursorNode,FJumpToProcHead,[phpInUpperCase,phpIgnoreForwards]);
     if ProcNode=nil then begin
-      debugln(['TCodeCompletionCodeTool.ApplyChangesAndJumpToFirstNewProc Proc="',FJumpToProcName,'"']);
+      debugln(['TCodeCompletionCodeTool.ApplyChangesAndJumpToFirstNewProc Proc="',FJumpToProcHead.Name,'"']);
       RaiseException(ctsNewProcBodyNotFound);
     end;
     Result:=FindJumpPointInProcNode(ProcNode,NewPos,NewTopLine);

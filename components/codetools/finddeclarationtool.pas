@@ -9517,6 +9517,12 @@ begin
       exit;
     end;
 
+    if FoundContext.Tool.NodeIsClassConstructorOrDestructor(FoundContext.Node) then
+    begin
+      Result:=ifrProceedSearch;
+      Exit;
+    end;
+
     if (not (fdfCollect in Params.Flags))
     and CallHasEmptyParamsAndFoundProcFits then begin
       // call has brackets without params (e.g. writeln() )

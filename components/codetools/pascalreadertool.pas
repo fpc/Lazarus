@@ -57,6 +57,15 @@ type
     epriInDirective
     );
 
+  //the scope groups of pascal methods.
+  //please note that Destructor is principally a method and thus is not listed here -> you cannot define "procedure Destroy;" and "destructor Destroy" in one class
+  TPascalMethodGroup = (mgMethod, mgConstructor, mgClassConstructor, mgClassDestructor);
+
+  TPascalMethodHeader = record
+    Name: string;
+    Group: TPascalMethodGroup;
+  end;
+
   TOnEachPRIdentifier = procedure(Sender: TPascalParserTool;
     IdentifierCleanPos: integer; Range: TEPRIRange;
     Node: TCodeTreeNode; Data: Pointer; var Abort: boolean) of object;
@@ -121,6 +130,8 @@ type
         Attr: TProcHeadAttributes): string;
     function ExtractProcHead(ProcNode: TCodeTreeNode;
         Attr: TProcHeadAttributes): string;
+    function ExtractProcHeadWithGroup(ProcNode: TCodeTreeNode;
+        Attr: TProcHeadAttributes): TPascalMethodHeader;
     function ExtractProcedureHeader(CursorPos: TCodeXYPosition;
       Attributes: TProcHeadAttributes; var ProcHead: string): boolean;
     function ExtractClassNameOfProcNode(ProcNode: TCodeTreeNode;
@@ -129,7 +140,10 @@ type
         ProcSpec: TProcedureSpecifier): boolean;
     function GetProcNameIdentifier(ProcNode: TCodeTreeNode): PChar;
     function FindProcNode(StartNode: TCodeTreeNode; const AProcHead: string;
-        Attr: TProcHeadAttributes): TCodeTreeNode;
+        AProcSpecType: TPascalMethodGroup;
+        Attr: TProcHeadAttributes): TCodeTreeNode; overload;
+    function FindProcNode(StartNode: TCodeTreeNode; const AProcHead: TPascalMethodHeader;
+        Attr: TProcHeadAttributes): TCodeTreeNode; overload;
     function FindCorrespondingProcNode(ProcNode: TCodeTreeNode;
         Attr: TProcHeadAttributes = [phpWithoutClassKeyword,phpWithoutClassName]
         ): TCodeTreeNode;
@@ -138,6 +152,7 @@ type
         ): TCodeTreeNode;
     function FindProcBody(ProcNode: TCodeTreeNode): TCodeTreeNode;
     function ProcBodyIsEmpty(ProcNode: TCodeTreeNode): boolean;
+    function ExtractProcedureGroup(ProcNode: TCodeTreeNode): TPascalMethodGroup;
     procedure MoveCursorToFirstProcSpecifier(ProcNode: TCodeTreeNode);
     function MoveCursorToProcSpecifier(ProcNode: TCodeTreeNode;
         ProcSpec: TProcedureSpecifier): boolean;
@@ -156,6 +171,7 @@ type
     function NodeIsMethodBody(ProcNode: TCodeTreeNode): boolean;
     function GetMethodOfBody(Node: TCodeTreeNode): TCodeTreeNode;
     function NodeIsFunction(ProcNode: TCodeTreeNode): boolean;
+    function NodeIsClassConstructorOrDestructor(ProcNode: TCodeTreeNode): boolean;
     function NodeIsConstructor(ProcNode: TCodeTreeNode): boolean;
     function NodeIsDestructor(ProcNode: TCodeTreeNode): boolean;
     function NodeIsForwardProc(ProcNode: TCodeTreeNode): boolean;
@@ -267,7 +283,53 @@ type
     procedure CalcMemSize(Stats: TCTMemStats); override;
   end;
 
+function CompareMethodHeaders(const Method1Name: string; Method1Group: TPascalMethodGroup;
+  const Method2Name: string; Method2Group: TPascalMethodGroup): Integer; overload;
+function CompareMethodHeaders(const Method1Head: TPascalMethodHeader; const Method2Head: TPascalMethodHeader): Integer; overload;
+function SameMethodHeaders(const Method1Name: string; Method1Group: TPascalMethodGroup;
+  const Method2Name: string; Method2Group: TPascalMethodGroup): Boolean; overload;
+function SameMethodHeaders(const Method1Head: TPascalMethodHeader; const Method2Head: TPascalMethodHeader): Boolean; overload;
+function CompareCodeTreeNodeExtMethodHeaders(NodeData1, NodeData2: pointer): integer;
+
 implementation
+
+function CompareMethodHeaders(const Method1Name: string;
+  Method1Group: TPascalMethodGroup; const Method2Name: string;
+  Method2Group: TPascalMethodGroup): Integer;
+begin
+  Result := (Ord(Method1Group) - Ord(Method2Group));
+  if Result <> 0 then exit;
+  Result := CompareTextIgnoringSpace(Method1Name,Method2Name,false);
+end;
+
+function CompareMethodHeaders(const Method1Head: TPascalMethodHeader;
+  const Method2Head: TPascalMethodHeader): Integer;
+begin
+  Result := CompareMethodHeaders(Method1Head.Name, Method1Head.Group,
+    Method2Head.Name, Method2Head.Group);
+end;
+
+function SameMethodHeaders(const Method1Name: string;
+  Method1Group: TPascalMethodGroup; const Method2Name: string;
+  Method2Group: TPascalMethodGroup): Boolean;
+begin
+  Result := CompareMethodHeaders(Method1Name, Method1Group,  Method2Name,  Method2Group) = 0;
+end;
+
+function SameMethodHeaders(const Method1Head: TPascalMethodHeader;
+  const Method2Head: TPascalMethodHeader): Boolean;
+begin
+  Result := CompareMethodHeaders(Method1Head, Method2Head) = 0;
+end;
+
+function CompareCodeTreeNodeExtMethodHeaders(NodeData1, NodeData2: pointer): integer;
+var
+  NodeExt1: TCodeTreeNodeExtension absolute NodeData1;
+  NodeExt2: TCodeTreeNodeExtension absolute NodeData2;
+begin
+  Result:=CompareMethodHeaders(NodeExt1.Txt,TPascalMethodGroup(NodeExt1.Flags),NodeExt2.Txt,TPascalMethodGroup(NodeExt2.Flags));
+end;
+
 
 { TPascalReaderTool }
 
@@ -667,6 +729,13 @@ begin
     Result:=Result+';';
 end;
 
+function TPascalReaderTool.ExtractProcHeadWithGroup(ProcNode: TCodeTreeNode;
+  Attr: TProcHeadAttributes): TPascalMethodHeader;
+begin
+  Result.Name := ExtractProcHead(ProcNode, Attr);
+  Result.Group := ExtractProcedureGroup(ProcNode);
+end;
+
 function TPascalReaderTool.ExtractProcedureHeader(CursorPos: TCodeXYPosition;
   Attributes: TProcHeadAttributes; var ProcHead: string): boolean;
 var
@@ -842,14 +911,15 @@ begin
 end;
 
 function TPascalReaderTool.FindProcNode(StartNode: TCodeTreeNode;
-  const AProcHead: string; Attr: TProcHeadAttributes): TCodeTreeNode;
+  const AProcHead: TPascalMethodHeader; Attr: TProcHeadAttributes): TCodeTreeNode;
 // search in all next brothers for a Procedure Node with the Name ProcName
 // if there are no further brothers and the parent is a section node
 // ( e.g. 'interface', 'implementation', ...) or a class visibility node
 // (e.g. 'public', 'private', ...) then the search will continue in the next
 // section
-var CurProcHead: string;
+var
   InClass: Boolean;
+  CurProcHead: TPascalMethodHeader;
 begin
   Result:=StartNode;
   InClass:=FindClassOrInterfaceNode(StartNode)<>nil;
@@ -860,10 +930,11 @@ begin
       and (not ((phpIgnoreProcsWithBody in Attr)
             and (FindProcBody(Result)<>nil))) then
       begin
-        CurProcHead:=ExtractProcHead(Result,Attr);
+        CurProcHead:=ExtractProcHeadWithGroup(Result,Attr);
         //DebugLn(['TPascalReaderTool.FindProcNode B "',CurProcHead,'" =? "',AProcHead,'" Result=',CompareTextIgnoringSpace(CurProcHead,AProcHead,false)]);
-        if (CurProcHead<>'')
-        and (CompareTextIgnoringSpace(CurProcHead,AProcHead,false)=0) then
+        if (CurProcHead.Name<>'') and
+            SameMethodHeaders(AProcHead, CurProcHead)
+        then
           exit;
       end;
     end;
@@ -875,12 +946,23 @@ begin
   end;
 end;
 
+function TPascalReaderTool.FindProcNode(StartNode: TCodeTreeNode;
+  const AProcHead: string; AProcSpecType: TPascalMethodGroup;
+  Attr: TProcHeadAttributes): TCodeTreeNode;
+var
+  ProcHead: TPascalMethodHeader;
+begin
+  ProcHead.Name := AProcHead;
+  ProcHead.Group := AProcSpecType;
+  Result := FindProcNode(StartNode, ProcHead, Attr);
+end;
+
 function TPascalReaderTool.FindCorrespondingProcNode(ProcNode: TCodeTreeNode;
   Attr: TProcHeadAttributes): TCodeTreeNode;
 var
   ClassNode: TCodeTreeNode;
   StartNode: TCodeTreeNode;
-  ProcHead: String;
+  ProcHead: TPascalMethodHeader;
 begin
   Result:=nil;
   // get ctnProcedure
@@ -924,7 +1006,7 @@ begin
   end;
   if StartNode=nil then exit;
 
-  ProcHead:=ExtractProcHead(ProcNode,Attr);
+  ProcHead:=ExtractProcHeadWithGroup(ProcNode,Attr);
   //debugln('TPascalReaderTool.FindCorrespondingProcNode StartNode=',StartNode.DescAsString,' ProcHead=',dbgstr(ProcHead),' ',dbgs(Attr),' ',StartNode.DescAsString);
   Result:=FindProcNode(StartNode,ProcHead,Attr);
   if Result=ProcNode then begin
@@ -2405,6 +2487,28 @@ begin
     Result:=ctnNone;
 end;
 
+function TPascalReaderTool.ExtractProcedureGroup(ProcNode: TCodeTreeNode
+  ): TPascalMethodGroup;
+begin
+  Result:=mgMethod;
+  if (ProcNode=nil) then exit;
+  if ProcNode.Desc=ctnProcedureHead then
+    ProcNode:=ProcNode.Parent;
+  if ProcNode.Desc<>ctnProcedure then exit;
+  MoveCursorToNodeStart(ProcNode);
+  ReadNextAtom;
+  if UpAtomIs('CLASS') then
+  begin
+    ReadNextAtom;
+    if UpAtomIs('CONSTRUCTOR') then
+      Result := mgClassConstructor;
+    if UpAtomIs('DESTRUCTOR') then
+      Result := mgClassDestructor;
+  end else
+  if UpAtomIs('CONSTRUCTOR') then
+    Result := mgConstructor
+end;
+
 function TPascalReaderTool.PositionInSourceName(CleanPos: integer): boolean;
 var
   NamePos: TAtomPosition;
@@ -2731,6 +2835,12 @@ begin
   if (TypeNode.FirstChild.Desc in AllClasses)
   and (TypeNode.FirstChild.SubDesc and ctnsForwardDeclaration=0) then
     Result:=true;
+end;
+
+function TPascalReaderTool.NodeIsClassConstructorOrDestructor(
+  ProcNode: TCodeTreeNode): boolean;
+begin
+  Result := ExtractProcedureGroup(ProcNode) in [mgClassConstructor, mgClassDestructor];
 end;
 
 function TPascalReaderTool.NodeIsForwardType(TypeNode: TCodeTreeNode): boolean;
