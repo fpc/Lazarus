@@ -445,7 +445,12 @@ function TCodeCompletionCodeTool.ProcExistsInCodeCompleteClass(
 // NameAndParams should be uppercase and contains the proc name and the
 // parameter list without names and default values
 // and should not contain any comments and no result type
-var ANodeExt: TCodeTreeNodeExtension;
+var
+  ANodeExt: TCodeTreeNodeExtension;
+  Params: TFindDeclarationParams;
+  ClassNode, CompletingChildNode: TCodeTreeNode;
+  Tool: TFindDeclarationTool;
+  Vis: TClassSectionVisibility;
 begin
   Result:=false;
   // search in new nodes, which will be inserted
@@ -455,9 +460,29 @@ begin
       exit(true);
     ANodeExt:=ANodeExt.Next;
   end;
-  // ToDo: check ancestor procs too
   // search in current class
   Result:=(FindProcNode(FCompletingFirstEntryNode,NameAndParamsUpCase,mgMethod,[phpInUpperCase])<>nil);
+  if not Result then
+  begin
+    //search in ancestor classes
+    Params:=TFindDeclarationParams.Create;
+    try
+      ClassNode:=CodeCompleteClassNode;
+      Tool:=Self;
+      while not Result and Tool.FindAncestorOfClass(ClassNode,Params,True) do begin
+        Tool:=Params.NewCodeTool;
+        ClassNode:=Params.NewNode;
+        CompletingChildNode:=GetFirstClassIdentifier(ClassNode);
+        if Tool=Self then
+          Vis := csvPrivateAndHigher
+        else
+          Vis := csvProtectedAndHigher;
+        Result := (Tool.FindProcNode(CompletingChildNode,NameAndParamsUpCase,mgMethod,[phpInUpperCase], Vis)<>nil);
+      end;
+    finally
+      Params.Free;
+    end;
+  end;
 end;
 
 procedure TCodeCompletionCodeTool.SetCodeCompleteClassNode(const AClassNode: TCodeTreeNode);
@@ -556,7 +581,12 @@ end;
 
 function TCodeCompletionCodeTool.VarExistsInCodeCompleteClass(
   const UpperName: string): boolean;
-var ANodeExt: TCodeTreeNodeExtension;
+var
+  ANodeExt: TCodeTreeNodeExtension;
+  Params: TFindDeclarationParams;
+  ClassNode, CompletingChildNode: TCodeTreeNode;
+  Tool: TFindDeclarationTool;
+  Vis: TClassSectionVisibility;
 begin
   Result:=false;
   // search in new nodes, which will be inserted
@@ -566,9 +596,29 @@ begin
       exit(true);
     ANodeExt:=ANodeExt.Next;
   end;
-  // ToDo: check ancestor vars too
   // search in current class
   Result:=(FindVarNode(FCompletingFirstEntryNode,UpperName)<>nil);
+  if not Result then
+  begin
+    //search in ancestor classes
+    Params:=TFindDeclarationParams.Create;
+    try
+      ClassNode:=CodeCompleteClassNode;
+      Tool:=Self;
+      while not Result and Tool.FindAncestorOfClass(ClassNode,Params,True) do begin
+        Tool:=Params.NewCodeTool;
+        ClassNode:=Params.NewNode;
+        CompletingChildNode:=GetFirstClassIdentifier(ClassNode);
+        if Tool=Self then
+          Vis := csvPrivateAndHigher
+        else
+          Vis := csvProtectedAndHigher;
+        Result := (Tool.FindVarNode(CompletingChildNode,UpperName,Vis)<>nil);
+      end;
+    finally
+      Params.Free;
+    end;
+  end;
 end;
 
 procedure TCodeCompletionCodeTool.AddClassInsertion(

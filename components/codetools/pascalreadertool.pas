@@ -66,6 +66,12 @@ type
     Group: TPascalMethodGroup;
   end;
 
+  TClassSectionVisibility = (
+    csvEverything,//same class same unit
+    csvPrivateAndHigher,//same unit different class
+    csvProtectedAndHigher,//ancestor class different unit
+    csvPublicAndHigher);//other class other unit
+
   TOnEachPRIdentifier = procedure(Sender: TPascalParserTool;
     IdentifierCleanPos: integer; Range: TEPRIRange;
     Node: TCodeTreeNode; Data: Pointer; var Abort: boolean) of object;
@@ -141,9 +147,9 @@ type
     function GetProcNameIdentifier(ProcNode: TCodeTreeNode): PChar;
     function FindProcNode(StartNode: TCodeTreeNode; const AProcHead: string;
         AProcSpecType: TPascalMethodGroup;
-        Attr: TProcHeadAttributes): TCodeTreeNode; overload;
+        Attr: TProcHeadAttributes; Visibility: TClassSectionVisibility = csvEverything): TCodeTreeNode; overload;
     function FindProcNode(StartNode: TCodeTreeNode; const AProcHead: TPascalMethodHeader;
-        Attr: TProcHeadAttributes): TCodeTreeNode; overload;
+        Attr: TProcHeadAttributes; Visibility: TClassSectionVisibility = csvEverything): TCodeTreeNode; overload;
     function FindCorrespondingProcNode(ProcNode: TCodeTreeNode;
         Attr: TProcHeadAttributes = [phpWithoutClassKeyword,phpWithoutClassName]
         ): TCodeTreeNode;
@@ -216,13 +222,15 @@ type
     function IsClassNode(Node: TCodeTreeNode): boolean; // class, not object
     function FindInheritanceNode(ClassNode: TCodeTreeNode): TCodeTreeNode;
     function FindHelperForNode(HelperNode: TCodeTreeNode): TCodeTreeNode;
+    function IdentNodeIsInVisibleClassSection(Node: TCodeTreeNode; Visibility: TClassSectionVisibility): Boolean;
 
     // records
     function ExtractRecordCaseType(RecordCaseNode: TCodeTreeNode): string;
 
     // variables, types
     function FindVarNode(StartNode: TCodeTreeNode;
-        const UpperVarName: string): TCodeTreeNode;
+        const UpperVarName: string;
+        Visibility: TClassSectionVisibility = csvEverything): TCodeTreeNode;
     function FindTypeNodeOfDefinition(
         DefinitionNode: TCodeTreeNode): TCodeTreeNode;
     function NodeIsPartOfTypeDefinition(ANode: TCodeTreeNode): boolean;
@@ -911,7 +919,8 @@ begin
 end;
 
 function TPascalReaderTool.FindProcNode(StartNode: TCodeTreeNode;
-  const AProcHead: TPascalMethodHeader; Attr: TProcHeadAttributes): TCodeTreeNode;
+  const AProcHead: TPascalMethodHeader; Attr: TProcHeadAttributes;
+  Visibility: TClassSectionVisibility): TCodeTreeNode;
 // search in all next brothers for a Procedure Node with the Name ProcName
 // if there are no further brothers and the parent is a section node
 // ( e.g. 'interface', 'implementation', ...) or a class visibility node
@@ -928,7 +937,9 @@ begin
       if (not ((phpIgnoreForwards in Attr)
                and ((Result.SubDesc and ctnsForwardDeclaration)>0)))
       and (not ((phpIgnoreProcsWithBody in Attr)
-            and (FindProcBody(Result)<>nil))) then
+            and (FindProcBody(Result)<>nil)))
+      and (not InClass or IdentNodeIsInVisibleClassSection(Result, Visibility))
+      then
       begin
         CurProcHead:=ExtractProcHeadWithGroup(Result,Attr);
         //DebugLn(['TPascalReaderTool.FindProcNode B "',CurProcHead,'" =? "',AProcHead,'" Result=',CompareTextIgnoringSpace(CurProcHead,AProcHead,false)]);
@@ -948,13 +959,13 @@ end;
 
 function TPascalReaderTool.FindProcNode(StartNode: TCodeTreeNode;
   const AProcHead: string; AProcSpecType: TPascalMethodGroup;
-  Attr: TProcHeadAttributes): TCodeTreeNode;
+  Attr: TProcHeadAttributes; Visibility: TClassSectionVisibility): TCodeTreeNode;
 var
   ProcHead: TPascalMethodHeader;
 begin
   ProcHead.Name := AProcHead;
   ProcHead.Group := AProcSpecType;
-  Result := FindProcNode(StartNode, ProcHead, Attr);
+  Result := FindProcNode(StartNode, ProcHead, Attr, Visibility);
 end;
 
 function TPascalReaderTool.FindCorrespondingProcNode(ProcNode: TCodeTreeNode;
@@ -2070,7 +2081,8 @@ begin
 end;
 
 function TPascalReaderTool.FindVarNode(StartNode: TCodeTreeNode;
-  const UpperVarName: string): TCodeTreeNode;
+  const UpperVarName: string; Visibility: TClassSectionVisibility
+  ): TCodeTreeNode;
 var
   InClass: Boolean;
 begin
@@ -2078,6 +2090,7 @@ begin
   InClass:=FindClassOrInterfaceNode(StartNode)<>nil;
   while Result<>nil do begin
     if (Result.Desc=ctnVarDefinition)
+    and (not InClass or IdentNodeIsInVisibleClassSection(Result, Visibility))
     and (CompareNodeIdentChars(Result,UpperVarName)=0) then
       exit;
     if InClass then
@@ -2485,6 +2498,26 @@ begin
     Result:=Tree.Root.Desc
   else
     Result:=ctnNone;
+end;
+
+function TPascalReaderTool.IdentNodeIsInVisibleClassSection(
+  Node: TCodeTreeNode; Visibility: TClassSectionVisibility): Boolean;
+begin
+  if Visibility = csvEverything then
+    Result := True
+  else
+  if (Node.Parent<>nil) then
+    case Visibility of
+      //csvAbovePrivate: todo: add strict private and strict protected (should be registered as new sections)
+      csvProtectedAndHigher:
+        Result := not(Node.Parent.Desc = ctnClassPrivate);//todo: add strict private
+      csvPublicAndHigher:
+        Result := not(Node.Parent.Desc in [ctnClassPrivate, ctnClassProtected]);//todo: strict private and strict protected
+    else
+      Result := True
+    end
+  else
+    Result := False;
 end;
 
 function TPascalReaderTool.ExtractProcedureGroup(ProcNode: TCodeTreeNode
