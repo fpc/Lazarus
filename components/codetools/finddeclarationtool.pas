@@ -1430,14 +1430,17 @@ begin
   if ExprType.Desc in xtAllIdentTypes then
   begin
     if Kind=fdhlkDelphiHelper then begin
-      // class/type/record helpers only allow one helepr per class
+      // class/type/record helpers only allow one helper per class
       OldKey := FTree.FindKey(@ExprType, @CompareHelpersListExprType);
       if OldKey <> nil then
       begin
-        if Replace then
-          FTree.FreeAndDelete(OldKey)
-        else
-          Exit(TFDHelpersListItem(OldKey.Data));
+        Result:=TFDHelpersListItem(OldKey.Data);
+        if Replace then begin
+          // keep AVLNode, it may be in use by the iterator of SearchInHelpers
+          Result.HelperContext.Node := HelperNode;
+          Result.HelperContext.Tool := Tool;
+        end;
+        exit;
       end;
     end;
 
@@ -12210,6 +12213,8 @@ begin
     Result:=TFDHelpersList.Create(HelperKind);
     FHelpers[HelperKind]:=Result;
     FFreeHelpers[HelperKind]:=true;
+    //if HelperKind=fdhlkDelphiHelper then
+    //  debugln(['TFindDeclarationParams.GetHelpers Self=',dbgs(Pointer(Self)),' Helper=',dbgs(Pointer(FHelpers[HelperKind]))]);
   end;
 end;
 
