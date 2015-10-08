@@ -10,6 +10,8 @@
 
  FPC tests:
    ./finddeclarationtest --format=plain --suite=TestFindDeclaration_FPCTests
+   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_FPCTests --filemask=t*.pp
+   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_FPCTests --filemask=tchlp41.pp
 }
 unit fdtbase;
 
@@ -232,11 +234,21 @@ end;
 {$ENDIF}
 
 procedure TTestFindDeclaration.TestFindDeclaration_FPCTests;
+const
+  fmparam = '--filemask=';
 var
   Info: TSearchRec;
-  aFilename: String;
+  aFilename, Param, aFileMask: String;
+  i: Integer;
 begin
-  if FindFirstUTF8('fpctests/t*.p*',faAnyFile,Info)=0 then begin
+  aFileMask:='t*.p*';
+  for i:=1 to ParamCount do begin
+    Param:=ParamStr(i);
+    if LeftStr(Param,length(fmparam))=fmparam then
+      aFileMask:=copy(Param,length(fmparam)+1,100);
+  end;
+
+  if FindFirstUTF8('fpctests'+PathDelim+aFileMask,faAnyFile,Info)=0 then begin
     repeat
       if faDirectory and Info.Attr>0 then continue;
       aFilename:=Info.Name;
