@@ -973,8 +973,8 @@ function ExprTypeToString(const ExprType: TExpressionType): string;
 function CreateExpressionType(const Desc, SubDesc: TExpressionTypeDesc;
   const Context: TFindContext): TExpressionType;
 
-function FindContextToString(const FindContext: TFindContext): string; overload;
-function FindContextToString(const FindContext: PFindContext): string; overload;
+function FindContextToString(const FindContext: TFindContext; RelativeFilename: boolean = true): string; overload;
+function FindContextToString(const FindContext: PFindContext; RelativeFilename: boolean = true): string; overload;
 function CreateFindContext(NewTool: TFindDeclarationTool;
   NewNode: TCodeTreeNode): TFindContext;
 function CreateFindContext(Params: TFindDeclarationParams): TFindContext;
@@ -1070,7 +1070,7 @@ begin
   end;
 end;
 
-function DbgsFC(const Context: TFindContext): string;
+function dbgsFC(const Context: TFindContext): string;
 var
   CursorPos: TCodeXYPosition;
 begin
@@ -1194,14 +1194,16 @@ end;
 
 { TFindContext }
 
-function FindContextToString(const FindContext: TFindContext): string;
+function FindContextToString(const FindContext: TFindContext;
+  RelativeFilename: boolean): string;
 var
   IdentNode: TCodeTreeNode;
   Caret: TCodeXYPosition;
+  aFilename: String;
 begin
   Result:='';
   if FindContext.Node<>nil then begin
-    Result:=Result+'Node='+FindContext.Node.DescAsString;
+    Result:=Result+'Node="'+FindContext.Node.DescAsString+'"';
     IdentNode:=FindContext.Node;
     while (IdentNode<>nil) do begin
       if IdentNode.Desc in AllSimpleIdentifierDefinitions
@@ -1226,22 +1228,28 @@ begin
     if FindContext.Tool<>nil then begin
       if FindContext.Tool.CleanPosToCaret(FindContext.Node.StartPos,Caret) then
       begin
-        Result:=Result+' File='+Caret.Code.Filename
-                +'('+IntToStr(Caret.Y)+','+IntToStr(Caret.X)+')';
+        aFilename:=Caret.Code.Filename;
+        if RelativeFilename then
+          aFilename:=ExtractRelativepath(ExtractFilePath(FindContext.Tool.MainFilename),aFilename);
+        Result:=Result+' File='+aFilename+'('+IntToStr(Caret.Y)+','+IntToStr(Caret.X)+')';
       end else begin
-        Result:=Result+' File="'+FindContext.Tool.MainFilename+'"';
+        aFilename:=FindContext.Tool.MainFilename;
+        if RelativeFilename then
+          aFilename:=ExtractFileName(aFilename);
+        Result:=Result+' File="'+aFilename+'"';
       end;
     end;
   end else
     Result:='nil';
 end;
 
-function FindContextToString(const FindContext: PFindContext): string;
+function FindContextToString(const FindContext: PFindContext;
+  RelativeFilename: boolean): string;
 begin
   if FindContext=nil then
     Result:='-'
   else
-    Result:=FindContextToString(FindContext^);
+    Result:=FindContextToString(FindContext^,RelativeFilename);
 end;
 
 function CreateFindContext(NewTool: TFindDeclarationTool;
@@ -3671,6 +3679,7 @@ var
         Params.Flags := OldFlags;
       end;
     until not Helpers.GetNext(HelperContext,HelperIterator);
+    //debugln(['SearchInHelpers END']);
   end;
 
   function SearchNextNode: boolean;
