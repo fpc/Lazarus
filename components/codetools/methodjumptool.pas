@@ -34,7 +34,7 @@ interface
 
 {$I codetools.inc}
 
-{ $DEFINE CTDEBUG}
+{off $DEFINE CTDEBUG}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -281,7 +281,7 @@ const
     if SearchForProcNode=nil then exit;
     SearchedProcHead:=ExtractProcHeadWithGroup(SearchForProcNode,SearchForProcAttr);
     {$IFDEF CTDEBUG}
-    DebugLn('TMethodJumpingCodeTool.FindJumpPoint.FindBestProcNode Searching ',SearchForProcNode.DescAsString,' "',SearchedProcHead.Head,'" ',ProcHeadAttributesToStr(SearchForProcAttr));
+    DebugLn('TMethodJumpingCodeTool.FindJumpPoint.FindBestProcNode Searching ',SearchForProcNode.DescAsString,' "',SearchedProcHead.Name,'" ',ProcHeadAttributesToStr(SearchForProcAttr));
     {$ENDIF}
     if SearchedProcHead.Name='' then exit;
     ProcNode:=FindProcNode(StartNode,SearchedProcHead,SearchInProcAttr);
@@ -366,7 +366,7 @@ begin
     // and then jumping is a nide feature
     // => search in all implemented class procedures for the body
     {$IFDEF CTDEBUG}
-    DebugLn('TMethodJumpingCodeTool.FindJumpPoint ClasNode=',ClassNode.DescAsString);
+    DebugLn('TMethodJumpingCodeTool.FindJumpPoint ClassNode=',ClassNode.DescAsString);
     {$ENDIF}
     if (ClassNode.SubDesc and ctnsForwardDeclaration)>0 then exit;
     // parse class and build CodeTreeNodes for all properties/methods

@@ -187,7 +187,8 @@ type
 
     // classes
     function ExtractClassName(Node: TCodeTreeNode;
-        InUpperCase: boolean; WithParents: boolean = true): string;
+        InUpperCase: boolean; WithParents: boolean = true;
+        WithGenericParams: boolean = false): string;
     function ExtractClassPath(Node: TCodeTreeNode): string;
     function ExtractClassInheritance(ClassNode: TCodeTreeNode;
         Attr: TProcHeadAttributes): string;
@@ -763,7 +764,8 @@ begin
 end;
 
 function TPascalReaderTool.ExtractClassName(Node: TCodeTreeNode;
-  InUpperCase: boolean; WithParents: boolean): string;
+  InUpperCase: boolean; WithParents: boolean; WithGenericParams: boolean
+  ): string;
 var
   ParamsNode: TCodeTreeNode;
   ParamNode: TCodeTreeNode;
@@ -781,28 +783,29 @@ begin
     ctnGenericType:
       begin
         if Result<>'' then Result:='.'+Result;
-        if (Scanner.CompilerMode = cmDELPHI) and (Node.Desc = ctnGenericType)
-        then begin
+        if (Node.Desc = ctnGenericType) then begin
           // extract generic type param names
-          ParamsNode:=Node.FirstChild.NextBrother;
-          First:=true;
-          while ParamsNode<>nil do begin
-            if ParamsNode.Desc=ctnGenericParams then begin
-              Result:='>'+Result;
-              ParamNode:=ParamsNode.FirstChild;
-              while ParamNode<>nil do begin
-                if ParamNode.Desc=ctnGenericParameter then begin
-                  if First then
-                    First:=false
-                  else
-                    Result:=','+Result;
-                  Result:=GetIdentifier(@Src[ParamNode.StartPos])+Result;
+          if WithGenericParams then begin
+            ParamsNode:=Node.FirstChild.NextBrother;
+            First:=true;
+            while ParamsNode<>nil do begin
+              if ParamsNode.Desc=ctnGenericParams then begin
+                Result:='>'+Result;
+                ParamNode:=ParamsNode.FirstChild;
+                while ParamNode<>nil do begin
+                  if ParamNode.Desc=ctnGenericParameter then begin
+                    if First then
+                      First:=false
+                    else
+                      Result:=','+Result;
+                    Result:=GetIdentifier(@Src[ParamNode.StartPos])+Result;
+                  end;
+                  ParamNode:=ParamNode.NextBrother;
                 end;
-                ParamNode:=ParamNode.NextBrother;
+                Result:='<'+Result;
               end;
-              Result:='<'+Result;
+              ParamsNode:=ParamsNode.NextBrother;
             end;
-            ParamsNode:=ParamsNode.NextBrother;
           end;
           Result:=GetIdentifier(@Src[Node.FirstChild.StartPos])+Result;
         end;
