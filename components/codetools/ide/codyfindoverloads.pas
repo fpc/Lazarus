@@ -34,8 +34,6 @@
 
   ToDo:
     -show line number
-    -Sort columns
-    -Jump to method
     -param compatibility
     -last visited
     -filter by ancestor
@@ -124,6 +122,7 @@ type
       IsColumn: Boolean; sIndex, tIndex: Integer);
     procedure ResultsStringGridCompareCells(Sender: TObject; ACol, ARow, BCol,
       BRow: Integer; var Result: integer);
+    procedure ResultsStringGridDblClick(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
   private
     FIdleConnected: boolean;
@@ -237,7 +236,7 @@ end;
 
 procedure TCodyFindOverloadsWindow.JumpToButtonClick(Sender: TObject);
 begin
-
+  JumpToIdentifier;
 end;
 
 procedure TCodyFindOverloadsWindow.OnIdle(Sender: TObject; var Done: Boolean);
@@ -289,6 +288,11 @@ begin
     //debugln(['TCodyFindOverloadsWindow.ResultsStringGridCompareCells "',AProc.Caption,'" "',BProc.Caption,'" ',Result]);
   end else
     debugln(['TCodyFindOverloadsWindow.ResultsStringGridCompareCells invalid ACol=',ACol,' ARow=',ARow,' BCol=',BCol,' BRow=',BRow]);
+end;
+
+procedure TCodyFindOverloadsWindow.ResultsStringGridDblClick(Sender: TObject);
+begin
+  JumpToIdentifier;
 end;
 
 procedure TCodyFindOverloadsWindow.Timer1Timer(Sender: TObject);
@@ -713,6 +717,7 @@ begin
 
   // ToDo: resize columns
 
+  JumpToButton.Enabled:=Grid.Row>0;
 end;
 
 procedure TCodyFindOverloadsWindow.FreeUsesGraph;
@@ -778,8 +783,15 @@ begin
 end;
 
 procedure TCodyFindOverloadsWindow.JumpToIdentifier;
+var
+  i: Integer;
+  aProc: TCFOProc;
 begin
-
+  i:=ResultsStringGrid.Row-1;
+  if (i<0) or (i>=ProcCount) then exit;
+  aProc:=Procs[i];
+  LazarusIDE.DoOpenFileAndJumpToPos(aProc.XYPos.Code.Filename,
+    Point(aProc.XYPos.X,aProc.XYPos.Y),-1,-1,-1,[]);
 end;
 
 function TCodyFindOverloadsWindow.Init: boolean;
@@ -853,6 +865,7 @@ begin
 
   AbortParsing;
   ResultsStringGrid.Visible:=false;
+  JumpToButton.Enabled:=false;
   FTargetName:='';
   FTargetPath:='';
   FTargetXYPosition:=CleanCodeXYPosition;
