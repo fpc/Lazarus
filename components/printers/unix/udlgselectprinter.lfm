@@ -1,48 +1,50 @@
 object dlgSelectPrinter: TdlgSelectPrinter
   Left = 330
-  Height = 406
+  Height = 441
   Top = 111
-  Width = 530
+  Width = 563
   ActiveControl = btnProp
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
   Caption = 'Printing'
-  ClientHeight = 406
-  ClientWidth = 530
+  ClientHeight = 441
+  ClientWidth = 563
   OnCreate = dlgSelectPrinterCREATE
   OnShow = dlgSelectPrinterSHOW
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.5'
   object PrinterGroupbox: TGroupBox
     Left = 6
     Height = 137
     Top = 6
-    Width = 518
+    Width = 551
     Align = alTop
     BorderSpacing.Around = 6
     Caption = ' Printer '
     ClientHeight = 118
-    ClientWidth = 514
+    ClientWidth = 547
     TabOrder = 0
     object labState: TLabel
       Left = 96
-      Height = 15
+      Height = 17
       Top = 49
-      Width = 53
+      Width = 57
       Caption = 'labState'
       ParentColor = False
     end
     object labLocation: TLabel
       Left = 96
-      Height = 15
+      Height = 17
       Top = 73
-      Width = 72
+      Width = 80
       Caption = 'labLocation'
       ParentColor = False
     end
     object labComment: TLabel
       Left = 96
-      Height = 15
+      Height = 17
       Top = 97
-      Width = 78
+      Width = 87
       Caption = 'labComment'
       ParentColor = False
     end
@@ -53,74 +55,81 @@ object dlgSelectPrinter: TdlgSelectPrinter
       Width = 17
     end
     object PrinterNameLabel: TLabel
-      Left = 236
-      Height = 15
-      Top = 9
-      Width = 36
+      Left = 250
+      Height = 17
+      Top = 8
+      Width = 40
       Anchors = []
       Caption = 'Name'
       ParentColor = False
     end
     object PrinterStateLabel: TLabel
       Left = 10
-      Height = 15
+      Height = 17
       Top = 49
-      Width = 34
+      Width = 36
       Caption = 'State'
       ParentColor = False
       OnChangeBounds = PrinterStateLabelChangeBounds
     end
     object PrinterLocationLabel: TLabel
       Left = 10
-      Height = 15
+      Height = 17
       Top = 73
-      Width = 53
+      Width = 59
       Caption = 'Location'
       ParentColor = False
     end
     object PrinterDescriptionLabel: TLabel
       Left = 10
-      Height = 15
+      Height = 17
       Top = 97
-      Width = 71
+      Width = 78
       Caption = 'Description'
       ParentColor = False
     end
     object labPrinterName: TLabel
       Left = 10
-      Height = 15
+      Height = 17
       Top = 12
-      Width = 36
+      Width = 40
       Caption = 'Name'
       ParentColor = False
       OnChangeBounds = PrinterStateLabelChangeBounds
     end
     object btnProp: TButton
-      Left = 415
-      Height = 25
-      Top = 8
-      Width = 95
-      Anchors = []
+      AnchorSideLeft.Control = cbPrinters
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = cbPrinters
+      AnchorSideRight.Side = asrBottom
+      Left = 442
+      Height = 29
+      Top = 7
+      Width = 99
+      Anchors = [akTop, akRight]
       AutoSize = True
       Caption = 'Properties ...'
       OnClick = btnPropCLICK
       TabOrder = 0
     end
     object cbPrintToFile: TCheckBox
-      Left = 414
-      Height = 21
-      Top = 42
-      Width = 92
+      AnchorSideRight.Side = asrBottom
+      Left = 438
+      Height = 24
+      Top = 39
+      Width = 101
       Anchors = [akRight, akBottom]
       Caption = 'Print to file'
       TabOrder = 1
     end
     object cbPrinters: TComboBox
+      AnchorSideRight.Control = btnProp
       Left = 120
-      Height = 25
+      Height = 31
       Top = 7
-      Width = 287
+      Width = 316
       Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Right = 6
       ItemHeight = 0
       OnChange = cbPrintersCHANGE
       OnKeyPress = cbPrintersKEYPRESS
@@ -130,9 +139,9 @@ object dlgSelectPrinter: TdlgSelectPrinter
   end
   object NbOpts: TPageControl
     Left = 6
-    Height = 180
+    Height = 217
     Top = 177
-    Width = 518
+    Width = 551
     ActivePage = pgCopies
     Align = alClient
     Anchors = [akLeft]
@@ -141,28 +150,28 @@ object dlgSelectPrinter: TdlgSelectPrinter
     TabOrder = 1
     object pgCopies: TTabSheet
       Caption = 'Copies'
-      ClientHeight = 155
-      ClientWidth = 514
+      ClientHeight = 186
+      ClientWidth = 547
       object gbPages: TGroupBox
         AnchorSideBottom.Control = pgCopies
         AnchorSideBottom.Side = asrBottom
         Left = 8
-        Height = 142
+        Height = 173
         Top = 7
         Width = 262
         Anchors = [akTop, akLeft, akBottom]
         BorderSpacing.Around = 6
         Caption = ' Select pages '
-        ClientHeight = 123
+        ClientHeight = 154
         ClientWidth = 258
         TabOrder = 0
         object Bevel1: TBevel
           AnchorSideTop.Control = edRange
           AnchorSideTop.Side = asrBottom
-          Left = 18
-          Height = 3
-          Top = 102
-          Width = 230
+          Left = 8
+          Height = 2
+          Top = 110
+          Width = 240
           BorderSpacing.Top = 6
           Shape = bsTopLine
           Style = bsRaised
@@ -170,10 +179,10 @@ object dlgSelectPrinter: TdlgSelectPrinter
         object labPage: TLabel
           AnchorSideTop.Control = Bevel1
           AnchorSideTop.Side = asrBottom
-          Left = 14
-          Height = 15
-          Top = 117
-          Width = 38
+          Left = 8
+          Height = 17
+          Top = 124
+          Width = 40
           BorderSpacing.Top = 12
           Caption = 'Pages'
           ParentColor = False
@@ -185,10 +194,10 @@ object dlgSelectPrinter: TdlgSelectPrinter
           AnchorSideTop.Side = asrCenter
           AnchorSideRight.Control = gbPages
           AnchorSideRight.Side = asrBottom
-          Left = 92
-          Height = 25
-          Top = 71
-          Width = 160
+          Left = 90
+          Height = 27
+          Top = 77
+          Width = 162
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 15
           BorderSpacing.Right = 6
@@ -200,8 +209,8 @@ object dlgSelectPrinter: TdlgSelectPrinter
           AnchorSideRight.Control = gbPages
           AnchorSideRight.Side = asrBottom
           Left = 104
-          Height = 25
-          Top = 112
+          Height = 27
+          Top = 119
           Width = 148
           Anchors = [akTop, akRight]
           BorderSpacing.Right = 6
@@ -219,10 +228,10 @@ object dlgSelectPrinter: TdlgSelectPrinter
         object rbCurrentPage: TRadioButton
           AnchorSideTop.Control = rbAllPage
           AnchorSideTop.Side = asrBottom
-          Left = 14
-          Height = 21
-          Top = 27
-          Width = 106
+          Left = 8
+          Height = 24
+          Top = 26
+          Width = 113
           BorderSpacing.Around = 2
           Caption = 'Current page'
           DragCursor = crDefault
@@ -232,21 +241,20 @@ object dlgSelectPrinter: TdlgSelectPrinter
         object rbRange: TRadioButton
           AnchorSideTop.Control = rbSelection
           AnchorSideTop.Side = asrBottom
-          Left = 14
-          Height = 21
-          Top = 73
-          Width = 63
+          Left = 8
+          Height = 24
+          Top = 78
+          Width = 67
           BorderSpacing.Around = 2
           Caption = 'Range'
           DragCursor = crDefault
           TabOrder = 4
         end
         object rbAllPage: TRadioButton
-          Left = 14
-          Height = 21
+          Left = 8
+          Height = 24
           Top = 0
-          Width = 41
-          BorderSpacing.Around = 6
+          Width = 47
           Caption = 'All '
           Checked = True
           DragCursor = crDefault
@@ -256,10 +264,10 @@ object dlgSelectPrinter: TdlgSelectPrinter
         object rbSelection: TRadioButton
           AnchorSideTop.Control = rbCurrentPage
           AnchorSideTop.Side = asrBottom
-          Left = 14
-          Height = 21
-          Top = 50
-          Width = 81
+          Left = 8
+          Height = 24
+          Top = 52
+          Width = 88
           BorderSpacing.Around = 2
           Caption = 'Selection'
           DragCursor = crDefault
@@ -275,21 +283,21 @@ object dlgSelectPrinter: TdlgSelectPrinter
         AnchorSideBottom.Control = pgCopies
         AnchorSideBottom.Side = asrBottom
         Left = 276
-        Height = 142
+        Height = 173
         Top = 7
-        Width = 232
+        Width = 265
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
         Caption = ' Copies '
-        ClientHeight = 123
-        ClientWidth = 228
+        ClientHeight = 154
+        ClientWidth = 261
         TabOrder = 1
         object imgCollate: TImage
           AnchorSideTop.Control = lanNumCopies
           AnchorSideTop.Side = asrBottom
           Left = 6
           Height = 37
-          Top = 27
+          Top = 29
           Width = 93
           AutoSize = True
           BorderSpacing.Top = 6
@@ -297,9 +305,9 @@ object dlgSelectPrinter: TdlgSelectPrinter
         end
         object lanNumCopies: TLabel
           Left = 6
-          Height = 15
+          Height = 17
           Top = 6
-          Width = 110
+          Width = 120
           Caption = 'Number of copies'
           ParentColor = False
         end
@@ -308,10 +316,10 @@ object dlgSelectPrinter: TdlgSelectPrinter
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = lanNumCopies
           AnchorSideTop.Side = asrCenter
-          Left = 122
-          Height = 25
+          Left = 132
+          Height = 27
           Top = 1
-          Width = 50
+          Width = 60
           BorderSpacing.Left = 6
           TabOrder = 0
         end
@@ -319,9 +327,9 @@ object dlgSelectPrinter: TdlgSelectPrinter
           AnchorSideTop.Control = edCopies
           AnchorSideTop.Side = asrBottom
           Left = 119
-          Height = 21
-          Top = 32
-          Width = 67
+          Height = 24
+          Top = 34
+          Width = 74
           AllowGrayed = True
           BorderSpacing.Around = 6
           Caption = 'Collate'
@@ -333,9 +341,9 @@ object dlgSelectPrinter: TdlgSelectPrinter
           AnchorSideTop.Control = cbCollate
           AnchorSideTop.Side = asrBottom
           Left = 119
-          Height = 21
-          Top = 59
-          Width = 73
+          Height = 24
+          Top = 64
+          Width = 79
           AllowGrayed = True
           BorderSpacing.Around = 6
           Caption = 'Reverse'
@@ -347,8 +355,8 @@ object dlgSelectPrinter: TdlgSelectPrinter
     end
     object pgAdvance: TTabSheet
       Caption = 'Advanced'
-      ClientHeight = 156
-      ClientWidth = 510
+      ClientHeight = 186
+      ClientWidth = 547
       object labTask: TLabel
         Left = 7
         Height = 14
@@ -436,23 +444,22 @@ object dlgSelectPrinter: TdlgSelectPrinter
     end
   end
   object BtnPanel: TPanel
-    Left = 6
-    Height = 37
-    Top = 363
-    Width = 518
+    Left = 0
+    Height = 41
+    Top = 400
+    Width = 563
     Align = alBottom
     Anchors = [akLeft, akBottom]
     AutoSize = True
-    BorderSpacing.Around = 6
     BevelOuter = bvNone
-    ClientHeight = 37
-    ClientWidth = 518
+    ClientHeight = 41
+    ClientWidth = 563
     FullRepaint = False
     TabOrder = 2
     TabStop = True
     object btnCancel: TButton
-      Left = 456
-      Height = 25
+      Left = 501
+      Height = 29
       Top = 6
       Width = 56
       Align = alRight
@@ -464,10 +471,10 @@ object dlgSelectPrinter: TdlgSelectPrinter
       TabOrder = 0
     end
     object btnPrint: TButton
-      Left = 407
-      Height = 25
+      Left = 450
+      Height = 29
       Top = 6
-      Width = 43
+      Width = 45
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -479,9 +486,9 @@ object dlgSelectPrinter: TdlgSelectPrinter
     end
     object btnReduc: TButton
       Left = 6
-      Height = 25
+      Height = 29
       Top = 6
-      Width = 61
+      Width = 63
       Align = alLeft
       AutoSize = True
       BorderSpacing.Around = 6
@@ -490,10 +497,10 @@ object dlgSelectPrinter: TdlgSelectPrinter
       TabOrder = 2
     end
     object btnPreview: TButton
-      Left = 340
-      Height = 25
+      Left = 379
+      Height = 29
       Top = 6
-      Width = 61
+      Width = 65
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -506,28 +513,30 @@ object dlgSelectPrinter: TdlgSelectPrinter
     Left = 6
     Height = 22
     Top = 149
-    Width = 518
+    Width = 551
     Align = alTop
     BorderSpacing.Around = 6
     BevelOuter = bvNone
     ClientHeight = 22
-    ClientWidth = 518
+    ClientWidth = 551
     TabOrder = 3
     object labCUPS: TLabel
       AnchorSideTop.Side = asrBottom
       Left = 8
-      Height = 15
+      Height = 17
       Top = 3
-      Width = 232
+      Width = 251
       Caption = 'CUPS (Common Unix Printing System)'
       ParentColor = False
     end
     object labCUPSServer: TLabel
+      AnchorSideLeft.Control = labCUPS
       AnchorSideLeft.Side = asrBottom
-      Left = 248
-      Height = 15
+      Left = 265
+      Height = 17
       Top = 3
-      Width = 92
+      Width = 100
+      BorderSpacing.Around = 6
       Caption = 'labCUPSServer'
       ParentColor = False
     end
