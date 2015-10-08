@@ -9091,7 +9091,7 @@ var
   CursorNode: TCodeTreeNode;
   OldCleanCursorPos: LongInt;
 var
-  ProcNode, ImplementationNode, AClassNode: TCodeTreeNode;
+  ProcNode, AClassNode: TCodeTreeNode;
   IsEventAssignment: boolean;
 begin
   //DebugLn(['TCodeCompletionCodeTool.CompleteCode CursorPos=',Dbgs(CursorPos),' OldTopLine=',OldTopLine]);
@@ -9128,8 +9128,6 @@ begin
     {$IFDEF CTDEBUG}
     DebugLn('TCodeCompletionCodeTool.CompleteCode A CleanCursorPos=',dbgs(CleanCursorPos),' NodeDesc=',NodeDescriptionAsString(CursorNode.Desc));
     {$ENDIF}
-    ImplementationNode:=FindImplementationNode;
-    if ImplementationNode=nil then ImplementationNode:=Tree.Root;
 
     // test if in a class
     AClassNode:=FindClassOrInterfaceNode(CursorNode);
