@@ -657,6 +657,10 @@ msgstr "Salvar dicionário agora"
 msgid "Save to file %s"
 msgstr "Salvar para o arquivo %s"
 
+#: codystrconsts.crsscanningsunits
+msgid "Scanning: %s units ..."
+msgstr ""
+
 #: codystrconsts.crssearching
 msgid "searching ..."
 msgstr "localizando ..."

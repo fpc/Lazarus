@@ -162,7 +162,7 @@ object CodyFindOverloadsWindow: TCodyFindOverloadsWindow
       TabOrder = 0
       OnColRowExchanged = ResultsStringGridColRowExchanged
       OnCompareCells = ResultsStringGridCompareCells
-      OnDblClick = ResultsStringGridDblClick
+      OnMouseDown = ResultsStringGridMouseDown
       ColWidths = (
         182
         100

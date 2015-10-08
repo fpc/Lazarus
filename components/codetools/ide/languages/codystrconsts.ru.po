@@ -658,6 +658,10 @@ msgstr "Сохранить словарь сейчас"
 msgid "Save to file %s"
 msgstr "Сохранить в файл %s"
 
+#: codystrconsts.crsscanningsunits
+msgid "Scanning: %s units ..."
+msgstr ""
+
 #: codystrconsts.crssearching
 msgid "searching ..."
 msgstr "поиск ..."

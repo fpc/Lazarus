@@ -36,7 +36,6 @@
     -show line number
     -param compatibility
     -last visited
-    -filter by ancestor
     -hint: show file name + param list
 }
 unit CodyFindOverloads;
@@ -138,7 +137,8 @@ type
       IsColumn: Boolean; sIndex, tIndex: Integer);
     procedure ResultsStringGridCompareCells(Sender: TObject; ACol, ARow, BCol,
       BRow: Integer; var Result: integer);
-    procedure ResultsStringGridDblClick(Sender: TObject);
+    procedure ResultsStringGridMouseDown(Sender: TObject; {%H-}Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure Timer1Timer(Sender: TObject);
   private
     FFilterAncestor: string;
@@ -335,9 +335,16 @@ begin
     debugln(['TCodyFindOverloadsWindow.ResultsStringGridCompareCells invalid ACol=',ACol,' ARow=',ARow,' BCol=',BCol,' BRow=',BRow]);
 end;
 
-procedure TCodyFindOverloadsWindow.ResultsStringGridDblClick(Sender: TObject);
+procedure TCodyFindOverloadsWindow.ResultsStringGridMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  Col, Row: Longint;
 begin
-  JumpToIdentifier;
+  Col:=0;
+  Row:=0;
+  ResultsStringGrid.MouseToCell(X,Y,Col,Row);
+  if (Row>0) and (ssDouble in Shift) then
+    JumpToIdentifier;
 end;
 
 procedure TCodyFindOverloadsWindow.Timer1Timer(Sender: TObject);
@@ -348,7 +355,7 @@ begin
   Cnt:=0;
   if FUsesGraph.FilesTree<>nil then
     Cnt:=FUsesGraph.FilesTree.Count;
-  ResultsGroupBox.Caption:=Format('Scanning: %s units ...', [IntToStr(Cnt)]);
+  ResultsGroupBox.Caption:=Format(crsScanningSUnits, [IntToStr(Cnt)]);
 end;
 
 procedure TCodyFindOverloadsWindow.SetIdleConnected(AValue: boolean);
@@ -678,11 +685,11 @@ var
       Edge:=TCFOEdge(AVLNode.Data);
       NewDistance:=GraphNode.Distance;
       case Edge.Typ of
-      cfoetReachable: NewDistance+=100000;// not related
+      cfoetReachable: NewDistance+=50000;// not related
       cfoetMethodOf: ; // methods within one class are close
       cfoetDescendantOf:
         if GraphNode=Edge.FromNode then
-          NewDistance+=10  // going to the ancestors
+          NewDistance+=100  // going to the ancestors
         else
           NewDistance+=1;  // going to the descendants
       end;
@@ -813,8 +820,7 @@ begin
   Grid.EndUpdate(true);
 
   Grid.HandleNeeded;
-
-  // ToDo: resize columns
+  Grid.AutoAdjustColumns;
 
   JumpToButton.Enabled:=Grid.Row>0;
 end;

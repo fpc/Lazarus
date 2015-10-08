@@ -647,6 +647,10 @@ msgstr "Szótár mentése most"
 msgid "Save to file %s"
 msgstr "Mentés fájlba: %s"
 
+#: codystrconsts.crsscanningsunits
+msgid "Scanning: %s units ..."
+msgstr ""
+
 #: codystrconsts.crssearching
 msgid "searching ..."
 msgstr "keresés ..."

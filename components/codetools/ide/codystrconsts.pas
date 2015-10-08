@@ -268,6 +268,7 @@ resourcestring
   crsIncompatible = 'incompatible';
   crsCodyFindOverloads = 'Cody - Find Overloads';
   crsOnlyMethods = 'Only methods';
+  crsScanningSUnits = 'Scanning: %s units ...';
   crsOnlyDescendantsOf = 'Only descendants of %s';
   crsOnlyNonMethods = 'Only non methods';
   crsAny = 'Any';

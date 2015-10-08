@@ -647,6 +647,10 @@ msgstr "Žodyną įrašyti dabar"
 msgid "Save to file %s"
 msgstr "Įrašyti į failą „%s“"
 
+#: codystrconsts.crsscanningsunits
+msgid "Scanning: %s units ..."
+msgstr ""
+
 #: codystrconsts.crssearching
 msgid "searching ..."
 msgstr "ieškoma…"

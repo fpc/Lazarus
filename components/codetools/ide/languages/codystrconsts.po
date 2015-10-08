@@ -637,6 +637,10 @@ msgstr ""
 msgid "Save to file %s"
 msgstr ""
 
+#: codystrconsts.crsscanningsunits
+msgid "Scanning: %s units ..."
+msgstr ""
+
 #: codystrconsts.crssearching
 msgid "searching ..."
 msgstr ""
