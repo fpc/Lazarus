@@ -3681,7 +3681,7 @@ var
       finally
         Params.Flags := OldFlags;
       end;
-    until not Helpers.GetNext(HelperContext,HelperIterator);
+    until (HelperKind=fdhlkDelphiHelper) or (not Helpers.GetNext(HelperContext,HelperIterator));
     //debugln(['SearchInHelpers END']);
   end;
 
@@ -5005,7 +5005,9 @@ begin
     case Node.Desc of
       ctnClassHelper, ctnRecordHelper, ctnTypeHelper:
         if (Node.Parent.Desc = ctnTypeDefinition) then
-          Params.GetHelpers(fdhlkDelphiHelper,true).AddFromHelperNode(Node, Self, True);
+          Params.GetHelpers(fdhlkDelphiHelper,true).AddFromHelperNode(Node, Self,
+            False{ keep last found Helper }
+            );
       ctnObjCCategory:
         if (Node.Parent.Desc = ctnTypeDefinition) then
           Params.GetHelpers(fdhlkObjCCategory,true).AddFromHelperNode(Node, Self, False);
@@ -7215,7 +7217,9 @@ function TFindDeclarationTool.BuildInterfaceIdentifierCache(
         if (Node.Desc = ctnTypeDefinition) and (FirstChild<>nil) then begin
           case FirstChild.Desc of
           ctnClassHelper, ctnRecordHelper, ctnTypeHelper:
-            FInterfaceHelperCache[fdhlkDelphiHelper].AddFromHelperNode(FirstChild, Self, True);
+            FInterfaceHelperCache[fdhlkDelphiHelper].AddFromHelperNode(FirstChild, Self,
+              True{ use last found helper}
+              );
           ctnObjCCategory:
             FInterfaceHelperCache[fdhlkObjCCategory].AddFromHelperNode(FirstChild, Self, false);
           end;
