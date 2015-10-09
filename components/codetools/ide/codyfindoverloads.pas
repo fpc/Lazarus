@@ -160,7 +160,14 @@ type
     procedure AbortParsing;
     procedure AddStartAndTargetUnits;
     procedure GatherProcsOfAllUnits;
-    procedure GatherProcsOfUnit(NodeGraph: TCodeGraph; ProgNode: TCodeTreeNode;
+    function AddClassNode(NodeGraph: TCodeGraph; Tool: TFindDeclarationTool;
+      ClassNode, ProjectNode: TCodeTreeNode): TCFONode;
+    procedure AddAncestors(NodeGraph: TCodeGraph; Tool: TFindDeclarationTool;
+      ClassNode, ProjectNode: TCodeTreeNode);
+    procedure AddProcNode(NodeGraph: TCodeGraph; Tool: TFindDeclarationTool;
+      ProcNode, ProjectNode: TCodeTreeNode; TargetCleanPos: integer;
+      var TargetGraphNode: TCFONode);
+    procedure GatherProcsOfUnit(NodeGraph: TCodeGraph; ProjectNode: TCodeTreeNode;
       CurUnit: TCFOUnit; var TargetGraphNode: TCFONode);
     function IsClassNodeDescendantOf(NodeGraph: TCodeGraph;
       GraphClassNode: TCFONode; Ancestor: string): boolean;
@@ -497,133 +504,133 @@ begin
   debugln(['TCodyFindOverloadsWindow.GatherProcsOfAllUnits END']);
 end;
 
-procedure TCodyFindOverloadsWindow.GatherProcsOfUnit(NodeGraph: TCodeGraph;
-  ProgNode: TCodeTreeNode; CurUnit: TCFOUnit; var TargetGraphNode: TCFONode);
+function TCodyFindOverloadsWindow.AddClassNode(NodeGraph: TCodeGraph;
+  Tool: TFindDeclarationTool; ClassNode, ProjectNode: TCodeTreeNode): TCFONode;
+var
+  Edge: TCFOEdge;
+begin
+  if ClassNode=nil then
+    RaiseCatchableException('');
+  Result:=TCFONode(NodeGraph.GetGraphNode(ClassNode,false));
+  if Result<>nil then exit;
+  //debugln(['AddClassNode ',Tool.ExtractClassName(ClassNode,false)]);
+  Result:=TCFONode(NodeGraph.AddGraphNode(ClassNode));
+  Result.Tool:=Tool;
+  Result.TheClassName:=Tool.ExtractClassName(ClassNode,false);
+  // create edge "reachable", so that all nodes are reachable
+  Edge:=TCFOEdge(NodeGraph.AddEdge(ClassNode,ProjectNode));
+  Edge.Typ:=cfoetReachable;
+  AddAncestors(NodeGraph,Tool,ClassNode,ProjectNode);
+end;
 
-  procedure AddAncestors(Tool: TFindDeclarationTool; ClassNode: TCodeTreeNode); forward;
+procedure TCodyFindOverloadsWindow.AddAncestors(NodeGraph: TCodeGraph;
+  Tool: TFindDeclarationTool; ClassNode, ProjectNode: TCodeTreeNode);
+var
+  ListOfPFindContext: TFPList;
+  Params: TFindDeclarationParams;
+  Ancestor: PFindContext;
+  i: Integer;
+  Edge: TCFOEdge;
+begin
+  //debugln(['AddAncestors ',Tool.ExtractClassName(ClassNode,false)]);
+  ListOfPFindContext:=nil;
+  Params:=TFindDeclarationParams.Create(nil);
+  try
+    Tool.FindAncestorsOfClass(ClassNode,ListOfPFindContext,Params,true,false);
+    if ListOfPFindContext<>nil then begin
+      for i:=0 to ListOfPFindContext.Count-1 do begin
+        Ancestor:=PFindContext(ListOfPFindContext[i]);
+        AddClassNode(NodeGraph,Ancestor^.Tool,Ancestor^.Node,ProjectNode);
+        // create edge "descendant of"
+        Edge:=TCFOEdge(NodeGraph.AddEdge(ClassNode,Ancestor^.Node));
+        Edge.Typ:=cfoetDescendantOf;
+      end;
+    end;
+  finally
+    Params.Free;
+    FreeListOfPFindContext(ListOfPFindContext);
+  end;
+end;
 
-  function AddClassNode(Tool: TFindDeclarationTool; ClassNode: TCodeTreeNode): TCFONode;
-  var
-    Edge: TCFOEdge;
-  begin
-    if ClassNode=nil then
-      RaiseCatchableException('');
-    Result:=TCFONode(NodeGraph.GetGraphNode(ClassNode,false));
-    if Result<>nil then exit;
-    //debugln(['AddClassNode ',Tool.ExtractClassName(ClassNode,false)]);
-    Result:=TCFONode(NodeGraph.AddGraphNode(ClassNode));
-    Result.Tool:=Tool;
-    Result.TheClassName:=Tool.ExtractClassName(ClassNode,false);
+procedure TCodyFindOverloadsWindow.AddProcNode(NodeGraph: TCodeGraph;
+  Tool: TFindDeclarationTool; ProcNode, ProjectNode: TCodeTreeNode;
+  TargetCleanPos: integer; var TargetGraphNode: TCFONode);
+var
+  CurProcName: String;
+  GraphProcNode, GraphClassNode: TCFONode;
+  ClassNode: TCodeTreeNode;
+  Edge: TCFOEdge;
+  Compatibility: TTypeCompatibility;
+  IsTargetProc: Boolean;
+begin
+  // check name
+  CurProcName:=Tool.ExtractProcName(ProcNode,[phpWithoutClassName]);
+  if CompareIdentifiers(PChar(CurProcName),PChar(FTargetName))<>0 then exit;
+
+  debugln(['TCodyFindOverloadsWindow.GatherProcsOfUnit ',Tool.CleanPosToStr(ProcNode.StartPos,true)]);
+
+  // check if method
+  ClassNode:=ProcNode.Parent;
+  while ClassNode<>nil do begin
+    if ClassNode.Desc in AllClasses then break;
+    ClassNode:=ClassNode.Parent;
+  end;
+  if ClassNode<>nil then begin
+    // a method
+    if HideAbstractMethods then begin
+      if ClassNode.Desc in AllClassInterfaces then exit;
+      if Tool.ProcNodeHasSpecifier(ProcNode,psABSTRACT) then exit;
+    end;
+    if FilterRelation=cfofrOnlyNonMethods then
+      exit;
+  end else begin
+    // a non method
+    if FilterRelation in [cfofrOnlyMethods,cfofrOnlyDescendantsOf] then
+      exit;
+  end;
+
+  Compatibility:=tcExact;
+  if (TargetGraphNode=nil)
+  and (ProcNode.StartPos<=TargetCleanPos)
+  and (TargetCleanPos<ProcNode.FirstChild.EndPos) then begin
+    // this is the target proc
+    IsTargetProc:=true;
+  end else begin
+    // ToDo: check param compatibility
+    IsTargetProc:=false;
+    //Compatibility:=CheckProcParamsCompatibility();
+  end;
+
+  // add node
+  GraphProcNode:=TCFONode(NodeGraph.AddGraphNode(ProcNode));
+  GraphProcNode.Tool:=Tool;
+  GraphProcNode.Compatibility:=Compatibility;
+  if IsTargetProc then
+    TargetGraphNode:=GraphProcNode;
+
+  // add edges
+  if ClassNode<>nil then begin
+    // create nodes for class and ancestors
+    GraphClassNode:=AddClassNode(NodeGraph,Tool,ClassNode,ProjectNode);
+    if (FilterRelation=cfofrOnlyDescendantsOf)
+    and (not IsClassNodeDescendantOf(NodeGraph,GraphClassNode,FilterAncestor)) then begin
+      NodeGraph.DeleteGraphNode(ProcNode);
+      exit;
+    end;
+
+    // create edge "is method of"
+    Edge:=TCFOEdge(NodeGraph.AddEdge(ProcNode,ClassNode));
+    Edge.Typ:=cfoetMethodOf;
+  end else begin
+    // not a method
     // create edge "reachable", so that all nodes are reachable
-    Edge:=TCFOEdge(NodeGraph.AddEdge(ClassNode,ProgNode));
+    Edge:=TCFOEdge(NodeGraph.AddEdge(ProcNode,ProcNode));
     Edge.Typ:=cfoetReachable;
-    AddAncestors(Tool,ClassNode);
   end;
+end;
 
-  procedure AddAncestors(Tool: TFindDeclarationTool; ClassNode: TCodeTreeNode);
-  var
-    ListOfPFindContext: TFPList;
-    Params: TFindDeclarationParams;
-    Ancestor: PFindContext;
-    i: Integer;
-    Edge: TCFOEdge;
-  begin
-    //debugln(['AddAncestors ',Tool.ExtractClassName(ClassNode,false)]);
-    ListOfPFindContext:=nil;
-    Params:=TFindDeclarationParams.Create(nil);
-    try
-      Tool.FindAncestorsOfClass(ClassNode,ListOfPFindContext,Params,true,false);
-      if ListOfPFindContext<>nil then begin
-        for i:=0 to ListOfPFindContext.Count-1 do begin
-          Ancestor:=PFindContext(ListOfPFindContext[i]);
-          AddClassNode(Ancestor^.Tool,Ancestor^.Node);
-          // create edge "descendant of"
-          Edge:=TCFOEdge(NodeGraph.AddEdge(ClassNode,Ancestor^.Node));
-          Edge.Typ:=cfoetDescendantOf;
-        end;
-      end;
-    finally
-      Params.Free;
-      FreeListOfPFindContext(ListOfPFindContext);
-    end;
-  end;
-
-  procedure AddProcNode(Tool: TFindDeclarationTool; ProcNode: TCodeTreeNode;
-    TargetCleanPos: integer);
-  var
-    CurProcName: String;
-    GraphProcNode, GraphClassNode: TCFONode;
-    ClassNode: TCodeTreeNode;
-    Edge: TCFOEdge;
-    Compatibility: TTypeCompatibility;
-    IsTargetProc: Boolean;
-  begin
-    // check name
-    CurProcName:=Tool.ExtractProcName(ProcNode,[phpWithoutClassName]);
-    if CompareIdentifiers(PChar(CurProcName),PChar(FTargetName))<>0 then exit;
-
-    debugln(['TCodyFindOverloadsWindow.GatherProcsOfUnit ',Tool.CleanPosToStr(ProcNode.StartPos,true)]);
-
-    // check if method
-    ClassNode:=ProcNode.Parent;
-    while ClassNode<>nil do begin
-      if ClassNode.Desc in AllClasses then break;
-      ClassNode:=ClassNode.Parent;
-    end;
-    if ClassNode<>nil then begin
-      // a method
-      if HideAbstractMethods then begin
-        if ClassNode.Desc in AllClassInterfaces then exit;
-        if Tool.ProcNodeHasSpecifier(ProcNode,psABSTRACT) then exit;
-      end;
-      if FilterRelation=cfofrOnlyNonMethods then
-        exit;
-    end else begin
-      // a non method
-      if FilterRelation in [cfofrOnlyMethods,cfofrOnlyDescendantsOf] then
-        exit;
-    end;
-
-    Compatibility:=tcExact;
-    if (TargetGraphNode=nil)
-    and (ProcNode.StartPos<=TargetCleanPos)
-    and (TargetCleanPos<ProcNode.FirstChild.EndPos) then begin
-      // this is the target proc
-      IsTargetProc:=true;
-    end else begin
-      // ToDo: check param compatibility
-      IsTargetProc:=false;
-
-    end;
-
-    // add node
-    GraphProcNode:=TCFONode(NodeGraph.AddGraphNode(ProcNode));
-    GraphProcNode.Tool:=Tool;
-    GraphProcNode.Compatibility:=Compatibility;
-    if IsTargetProc then
-      TargetGraphNode:=GraphProcNode;
-
-    // add edges
-    if ClassNode<>nil then begin
-      // create nodes for class and ancestors
-      GraphClassNode:=AddClassNode(Tool,ClassNode);
-      if (FilterRelation=cfofrOnlyDescendantsOf)
-      and (not IsClassNodeDescendantOf(NodeGraph,GraphClassNode,FilterAncestor)) then begin
-        NodeGraph.DeleteGraphNode(ProcNode);
-        exit;
-      end;
-
-      // create edge "is method of"
-      Edge:=TCFOEdge(NodeGraph.AddEdge(ProcNode,ClassNode));
-      Edge.Typ:=cfoetMethodOf;
-    end else begin
-      // not a method
-      // create edge "reachable", so that all nodes are reachable
-      Edge:=TCFOEdge(NodeGraph.AddEdge(ProcNode,ProgNode));
-      Edge.Typ:=cfoetReachable;
-    end;
-  end;
-
+procedure TCodyFindOverloadsWindow.GatherProcsOfUnit(NodeGraph: TCodeGraph;
+  ProjectNode: TCodeTreeNode; CurUnit: TCFOUnit; var TargetGraphNode: TCFONode);
 var
   Tool: TStandardCodeTool;
   ProcNode: TCodeTreeNode;
@@ -641,7 +648,8 @@ begin
   while ProcNode<>nil do begin
     if ProcNode.Desc in [ctnImplementation,ctnBeginBlock] then break;
     if ProcNode.Desc=ctnProcedure then
-      AddProcNode(Tool,ProcNode,TargetCleanPos);
+      AddProcNode(NodeGraph,Tool,ProcNode,ProjectNode,
+                  TargetCleanPos,TargetGraphNode);
     ProcNode:=ProcNode.Next;
   end;
 end;

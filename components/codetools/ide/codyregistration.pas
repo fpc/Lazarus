@@ -35,10 +35,9 @@ uses
   IDECommands, NewIDEWndDlg,
   CodeToolManager,
   CodyStrConsts, CodyUtils, CodyCtrls, CodyOpts,
-  PPUListDlg, AddAssignMethodDlg, AddWithBlockDlg,
+  PPUListDlg, AddAssignMethodDlg, AddWithBlockDlg, CodyFindOverloads,
   {$IFDEF EnableCodyExperiments}
   CodyCopyDeclaration,
-  CodyFindOverloads,
   {$ENDIF}
   CodyNodeInfoDlg, CodyFrm, DeclareVarDlg, CodyIdentifiersDlg, CodyMiscOptsFrame;
 
@@ -138,10 +137,8 @@ begin
     crsShowUnitIdentifierDictionary,nil,@ShowUnitDictionaryDialog);
 
   // Find overloads
-  {$IFDEF EnableCodyExperiments}
   CreateSourceCommand(CmdCatCodeTools,'FindProcOverloads',
     'Find Procedure/Method Overloads',nil,@ShowFindOverloadsClicked);
-  {$ENDIF}
 
   // Refactor menu - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
