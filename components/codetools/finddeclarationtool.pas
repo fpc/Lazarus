@@ -8421,7 +8421,7 @@ var
       begin
         // search default property of the class / interface
         Params.Save(OldInput);
-        Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound]
+        Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound,fdfSearchInHelpers]
                       +fdfGlobals*Params.Flags;
         // special identifier for default property
         Params.SetIdentifier(Self,@Src[CurAtom.StartPos],nil);
