@@ -35,6 +35,7 @@ var
 begin
   t := TTest.Create;
   res1{guesstype:integer} := t[3];
+  res2{guesstype:integer} := t.GetTest(3);
   Writeln('value: ', res);
   if res <> 3 then
     Halt(1);
