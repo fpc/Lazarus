@@ -106,8 +106,12 @@ var
   FoundPath: String;
   Src: String;
   NameStartPos, i, l, IdentifierStartPos: Integer;
-  Marker: String;
+  Marker, ExpectedType, NewType: String;
   IdentItem: TIdentifierListItem;
+  ItsAKeyword, IsSubIdentifier: boolean;
+  ExistingDefinition: TFindContext;
+  ListOfPFindContext: TFPList;
+  NewExprType: TExpressionType;
 begin
   Filename:=TrimAndExpandFilename(Filename);
   {$IFDEF VerboseFindDeclarationTests}
@@ -146,7 +150,6 @@ begin
     //debugln(['TTestFindDeclaration.FindDeclarations params: ',dbgstr(Tool.Src,p,CommentP-p)]);
     if Marker='declaration' then begin
       ExpectedPath:=copy(Src,PathPos,CommentP-1-PathPos);
-      //debugln(['TTestFindDeclaration.FindDeclarations ExpectedPath=',ExpectedPath]);
       {$IFDEF VerboseFindDeclarationTests}
       debugln(['TTestFindDeclaration.FindDeclarations searching "',Marker,'" at ',Tool.CleanPosToStr(NameStartPos-1),' ExpectedPath=',ExpectedPath]);
       {$ENDIF}
@@ -194,6 +197,38 @@ begin
           AssertEquals('GatherIdentifiers misses "'+ExpectedPath+'" at '+Tool.CleanPosToStr(IdentifierStartPos,true),true,i>=0);
         end;
       end;
+    end else if Marker='guesstype' then begin
+      ExpectedType:=copy(Src,PathPos,CommentP-1-PathPos);
+      { $IFDEF VerboseFindDeclarationTests}
+      debugln(['TTestFindDeclaration.FindDeclarations "',Marker,'" at ',Tool.CleanPosToStr(NameStartPos-1),' ExpectedType=',ExpectedType]);
+      { $ENDIF}
+      Tool.CleanPosToCaret(IdentifierStartPos,CursorPos);
+
+      // test GuessTypeOfIdentifier
+      ListOfPFindContext:=nil;
+      try
+        if not CodeToolBoss.GuessTypeOfIdentifier(CursorPos.Code,CursorPos.X,CursorPos.Y,
+          ItsAKeyword, IsSubIdentifier, ExistingDefinition, ListOfPFindContext,
+          NewExprType, NewType)
+        then begin
+          if ExpectedType<>'' then
+            AssertEquals('GuessTypeOfIdentifier failed at '+Tool.CleanPosToStr(IdentifierStartPos,true)+': '+CodeToolBoss.ErrorMessage,false,true);
+          continue;
+        end else if ExistingDefinition.Node<>nil then begin
+          // already defined, no guessing needed
+          AssertEquals('GuessTypeOfIdentifier wrong at '
+            +Tool.CleanPosToStr(IdentifierStartPos,true),
+            'cannot find definition',
+            'found definition: '+ExistingDefinition.Tool.CleanPosToStr(
+                                          ExistingDefinition.Node.StartPos,true));
+        end else begin
+          //debugln(['TTestFindDeclaration.FindDeclarations FoundPath=',FoundPath]);
+          AssertEquals('GuessTypeOfIdentifier wrong at '+Tool.CleanPosToStr(IdentifierStartPos,true),LowerCase(ExpectedType),LowerCase(NewType));
+        end;
+      finally
+        FreeListOfPFindContext(ListOfPFindContext);
+      end;
+
     end else begin
       AssertEquals('Unknown marker at '+Tool.CleanPosToStr(IdentifierStartPos,true),'declaration',Marker);
       continue;

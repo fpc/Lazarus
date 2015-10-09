@@ -353,7 +353,7 @@ type
     // guess type of an undeclared identifier
     function GuessTypeOfIdentifier(CursorPos: TCodeXYPosition;
         out IsKeyword, IsSubIdentifier: boolean;
-        out ExistingDefinition: TFindContext; // next existing definition
+        out ExistingDefinition: TFindContext; // if it already exists
         out ListOfPFindContext: TFPList; // possible classes
         out NewExprType: TExpressionType; out NewType: string): boolean; // false = not at an identifier
     function DeclareVariableNearBy(InsertPos: TCodeXYPosition;

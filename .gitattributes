@@ -1004,6 +1004,7 @@ components/codetools/tests/fpctests/tchlp47.pp svneol=native#text/plain
 components/codetools/tests/fpctests/tchlp48.pp svneol=native#text/plain
 components/codetools/tests/fpctests/tchlp49.pp svneol=native#text/plain
 components/codetools/tests/fpctests/tchlp50.pp svneol=native#text/plain
+components/codetools/tests/fpctests/tchlp53.pp svneol=native#text/plain
 components/codetools/tests/parsertbase.pas svneol=native#text/plain
 components/codetools/tests/parsertest.lpi svneol=native#text/plain
 components/codetools/tests/parsertest.lpr svneol=native#text/plain
