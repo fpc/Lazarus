@@ -77,6 +77,7 @@ interface
 {off $DEFINE VerboseCompleteEventAssign}
 {off $DEFINE EnableCodeCompleteTemplates}
 {$DEFINE VerboseGetPossibleInitsForVariable}
+{off $DEFINE VerboseGuessTypeOfIdentifier}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -6426,13 +6427,17 @@ begin
   // find identifier name
   GetIdentStartEndAtPosition(Src,CleanCursorPos,
     IdentifierAtom.StartPos,IdentifierAtom.EndPos);
+  {$IFDEF VerboseGuessTypeOfIdentifier}
   debugln('TCodeCompletionCodeTool.GuessTypeOfIdentifier A Atom=',GetAtom(IdentifierAtom),' "',dbgstr(Src,CleanCursorPos,10),'"');
+  {$ENDIF}
   if IdentifierAtom.StartPos=IdentifierAtom.EndPos then exit;
   Result:=true;
 
   MoveCursorToAtomPos(IdentifierAtom);
   if AtomIsKeyWord then begin
+    {$IFDEF VerboseGuessTypeOfIdentifier}
     debugln(['TCodeCompletionCodeTool.GuessTypeOfIdentifier is keyword: ',GetAtom]);
+    {$ENDIF}
     IsKeyword:=true;
     exit;
   end;
@@ -6442,7 +6447,7 @@ begin
   try
     Params:=TFindDeclarationParams.Create(Self, CursorNode);
     try
-      {$IFDEF CTDEBUG}
+      {$IF defined(CTDEBUG) or defined(VerboseGuessTypeOfIdentifier)}
       DebugLn('  GuessTypeOfIdentifier: check if variable is already defined ...');
       {$ENDIF}
       // check if identifier exists
@@ -6451,7 +6456,9 @@ begin
         // identifier is already defined
         ExistingDefinition.Tool:=Params.NewCodeTool;
         ExistingDefinition.Node:=Params.NewNode;
+        {$IFDEF VerboseGuessTypeOfIdentifier}
         debugln(['TCodeCompletionCodeTool.GuessTypeOfIdentifier identifier already defined at ',FindContextToString(ExistingDefinition)]);
+        {$ENDIF}
       end;
     finally
       Params.Free;
@@ -6461,7 +6468,9 @@ begin
     if not FindIdentifierContextsAtStatement(IdentifierAtom.StartPos,
       IsSubIdentifier,ListOfPFindContext)
     then begin
+      {$IFDEF VerboseGuessTypeOfIdentifier}
       debugln(['TCodeCompletionCodeTool.GuessTypeOfIdentifier FindIdentifierContextsAtStatement failed']);
+      {$ENDIF}
       exit;
     end;
 
@@ -6511,10 +6520,14 @@ begin
       TermAtom.StartPos:=CurPos.StartPos;
       TermAtom.EndPos:=FindEndOfExpression(TermAtom.StartPos);
       if TermAtom.StartPos=TermAtom.EndPos then begin
+        {$IFDEF VerboseGuessTypeOfIdentifier}
         debugln(['TCodeCompletionCodeTool.GuessTypeOfIdentifier nothing behind := operator']);
+        {$ENDIF}
         exit;
       end;
+      {$IFDEF VerboseGuessTypeOfIdentifier}
       debugln(['TCodeCompletionCodeTool.GuessTypeOfIdentifier guessing type of assignment :="',dbgstr(Src,TermAtom.StartPos,TermAtom.EndPos-TermAtom.StartPos),'"']);
+      {$ENDIF}
 
       // find type of term
       Params:=TFindDeclarationParams.Create(Self, CursorNode);
@@ -6523,7 +6536,9 @@ begin
       finally
         Params.Free;
       end;
+      {$IFDEF VerboseGuessTypeOfIdentifier}
       debugln(['TCodeCompletionCodeTool.GuessTypeOfIdentifier Assignment type=',NewType]);
+      {$ENDIF}
       Result:=true;
     end;
 
@@ -6545,7 +6560,9 @@ begin
         TermAtom.StartPos:=CurPos.StartPos;
         TermAtom.EndPos:=FindEndOfExpression(TermAtom.StartPos);
 
+        {$IFDEF VerboseGuessTypeOfIdentifier}
         debugln(['TCodeCompletionCodeTool.GuessTypeOfIdentifier guessing type of for-in list "',dbgstr(Src,TermAtom.StartPos,TermAtom.EndPos-TermAtom.StartPos),'"']);
+        {$ENDIF}
         // find type of term
         Params:=TFindDeclarationParams.Create(Self, CursorNode);
         try
@@ -6553,13 +6570,17 @@ begin
         finally
           Params.Free;
         end;
+        {$IFDEF VerboseGuessTypeOfIdentifier}
         debugln(['TCodeCompletionCodeTool.GuessTypeOfIdentifier For-In type=',NewType]);
+        {$ENDIF}
         Result:=true;
       end;
     end;
 
     if not Result then begin
+      {$IFDEF VerboseGuessTypeOfIdentifier}
       debugln(['TCodeCompletionCodeTool.GuessTypeOfIdentifier can not guess type']);
+      {$ENDIF}
       exit;
     end;
 

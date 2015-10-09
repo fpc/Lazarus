@@ -7853,7 +7853,7 @@ var
   { normally not the identifier is searched, but its type
     but there is one exception:
       if the identifier is a function and it is the end of the variable then
-      the the decision is based on the fdfFunctionResult flag.
+      the decision is based on the fdfFunctionResult flag.
   }
   var
     ProcNode, FuncResultNode: TCodeTreeNode;
@@ -8218,8 +8218,7 @@ var
       // 'class of' => jump to the class
       ExprType.Desc:=xtContext;
       Params.Flags:=Params.Flags+[fdfFunctionResult,fdfFindChildren];
-      ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
-                                              ExprType.Context.Node.FirstChild);
+      ExprType.Context.Node:=ExprType.Context.Node.FirstChild;
     end
     else if (ExprType.Desc=xtContext)
     and (ExprType.Context.Node.Desc=ctnPointerType)
@@ -8231,8 +8230,7 @@ var
       // => this '.' is a dereference
       ExprType.Desc:=xtContext;
       Params.Flags:=Params.Flags+[fdfFunctionResult,fdfFindChildren];
-      ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
-                                              ExprType.Context.Node.FirstChild);
+      ExprType.Context.Node:=ExprType.Context.Node.FirstChild;
     end;
   end;
 
@@ -8297,7 +8295,7 @@ var
     end;
     ResolveBaseTypeOfIdentifier;
     if (ExprType.Desc=xtPointer) then begin
-      // the compiler type pointer resolves to a pointer
+      // the compiler type 'Pointer'
       exit;
     end;
     if (ExprType.Context.Node<>StartNode) then begin
@@ -8316,8 +8314,7 @@ var
         RaiseExceptionFmt(ctsIllegalQualifier,['^']);
       end;
       ExprType.Desc:=xtContext;
-      ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
-                                              ExprType.Context.Node.FirstChild);
+      ExprType.Context.Node:=ExprType.Context.Node.FirstChild;
     end else if NodeHasParentOfType(ExprType.Context.Node,ctnPointerType) then
     begin
       // this is a pointer type definition
@@ -8401,19 +8398,16 @@ var
           Params.SetIdentifier(Self,'tvarrec',nil);
           Params.ContextNode:=ExprType.Context.Node;
           ExprType.Context.Tool.FindIdentifierInContext(Params);
-          ExprType.Context:=Params.NewCodeTool.FindBaseTypeOfNode(Params,
-                                                                Params.NewNode);
+          ExprType.Context:=CreateFindContext(Params);
           Params.Load(OldInput,true);
         end else begin
-          ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
-                                               ExprType.Context.Node.LastChild);
+          ExprType.Context.Node:=ExprType.Context.Node.LastChild;
         end;
       end;
                                                
     ctnPointerType:
       // the pointer type is the only child node
-      ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
-                                              ExprType.Context.Node.FirstChild);
+      ExprType.Context.Node:=ExprType.Context.Node.FirstChild;
 
     ctnClass, ctnClassInterface, ctnDispinterface, ctnObject, ctnRecordType,
     ctnClassHelper, ctnRecordHelper, ctnTypeHelper,
@@ -8423,22 +8417,18 @@ var
         Params.Save(OldInput);
         Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound,fdfSearchInHelpers]
                       +fdfGlobals*Params.Flags;
-        // special identifier for default property
+        // special identifier '[' for default property
         Params.SetIdentifier(Self,@Src[CurAtom.StartPos],nil);
         Params.ContextNode:=ExprType.Context.Node;
         ExprType.Context.Tool.FindIdentifierInContext(Params);
         ExprType.Context:=CreateFindContext(Params);
         Params.Load(OldInput,true);
-        ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
-                                                ExprType.Context.Node);
       end;
 
     ctnProperty, ctnGlobalProperty:
       begin
         if not ExprType.Context.Tool.PropertyNodeHasParamList(ExprType.Context.Node) then
           RaiseIdentInCurContextNotFound;
-        ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
-                                                ExprType.Context.Node);
       end;
 
     ctnIdentifier:

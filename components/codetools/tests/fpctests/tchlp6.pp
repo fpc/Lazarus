@@ -26,7 +26,7 @@ var
   res: Integer;
 begin
   t := TTest.Create;
-  res{guesstype:longint} := t[3];
+  res{guesstype:integer} := t[3];
   Writeln('value: ', res);
   if res <> 3 then
     Halt(1);
