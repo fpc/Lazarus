@@ -489,8 +489,6 @@ begin
       FileNode:=FUsesGraph.FilesTree.FindSuccessor(FileNode);
     end;
 
-    // ToDo: filter using RelationComboBox
-
     if TargetGraphNode<>nil then
       CalcDistances(NodeGraph,TargetGraphNode);
 
