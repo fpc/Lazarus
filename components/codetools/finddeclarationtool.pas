@@ -542,6 +542,7 @@ type
     Identifier: PChar;
     StartTool: TFindDeclarationTool;
     StartNode: TCodeTreeNode;
+    Parent: TFindDeclarationParams;
     ContextNode: TCodeTreeNode;
     OnIdentifierFound: TOnIdentifierFound;
     IdentifierTool: TFindDeclarationTool;
@@ -12010,14 +12011,10 @@ begin
 end;
 
 constructor TFindDeclarationParams.Create(ParentParams: TFindDeclarationParams);
-var
-  HelperKind: TFDHelpersListKind;
 begin
   inherited Create;
   Clear;
-  if ParentParams<>nil then
-    for HelperKind in TFDHelpersListKind do
-      FHelpers[HelperKind] := ParentParams.FHelpers[HelperKind];
+  Parent:=ParentParams;
 end;
 
 constructor TFindDeclarationParams.Create(Tool: TFindDeclarationTool;
@@ -12046,7 +12043,7 @@ begin
   FreeFoundProc(FFoundProcStackFirst,true);
   for HelperKind in TFDHelpersListKind do
     if FFreeHelpers[HelperKind] then
-      FHelpers[HelperKind].Free;
+      FreeAndNil(FHelpers[HelperKind]);
   inherited Destroy;
 end;
 
@@ -12216,6 +12213,8 @@ end;
 function TFindDeclarationParams.GetHelpers(HelperKind: TFDHelpersListKind;
   CreateIfNotExists: boolean): TFDHelpersList;
 begin
+  if Parent<>nil then
+    exit(Parent.GetHelpers(HelperKind,CreateIfNotExists));
   if FNeedHelpers then
     StartTool.FindHelpersInContext(Self); // beware: this calls GetHelpers
   Result:=FHelpers[HelperKind];

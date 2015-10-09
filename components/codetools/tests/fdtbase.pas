@@ -199,9 +199,9 @@ begin
       end;
     end else if Marker='guesstype' then begin
       ExpectedType:=copy(Src,PathPos,CommentP-1-PathPos);
-      { $IFDEF VerboseFindDeclarationTests}
+      {$IFDEF VerboseFindDeclarationTests}
       debugln(['TTestFindDeclaration.FindDeclarations "',Marker,'" at ',Tool.CleanPosToStr(NameStartPos-1),' ExpectedType=',ExpectedType]);
-      { $ENDIF}
+      {$ENDIF}
       Tool.CleanPosToCaret(IdentifierStartPos,CursorPos);
 
       // test GuessTypeOfIdentifier
@@ -214,13 +214,6 @@ begin
           if ExpectedType<>'' then
             AssertEquals('GuessTypeOfIdentifier failed at '+Tool.CleanPosToStr(IdentifierStartPos,true)+': '+CodeToolBoss.ErrorMessage,false,true);
           continue;
-        end else if ExistingDefinition.Node<>nil then begin
-          // already defined, no guessing needed
-          AssertEquals('GuessTypeOfIdentifier wrong at '
-            +Tool.CleanPosToStr(IdentifierStartPos,true),
-            'cannot find definition',
-            'found definition: '+ExistingDefinition.Tool.CleanPosToStr(
-                                          ExistingDefinition.Node.StartPos,true));
         end else begin
           //debugln(['TTestFindDeclaration.FindDeclarations FoundPath=',FoundPath]);
           AssertEquals('GuessTypeOfIdentifier wrong at '+Tool.CleanPosToStr(IdentifierStartPos,true),LowerCase(ExpectedType),LowerCase(NewType));

@@ -340,7 +340,7 @@ type
         OverrideMod, CallInherited, CallInheritedOnlyInElse: boolean;
         SourceChanger: TSourceChangeCache;
         out NewPos: TCodeXYPosition; out NewTopLine: integer;
-        LocalVarName: string = '' // default aSource
+        LocalVarName: string = '' // default is 'aSource'
         ): boolean;
 
     // local variables
@@ -354,7 +354,7 @@ type
     function GuessTypeOfIdentifier(CursorPos: TCodeXYPosition;
         out IsKeyword, IsSubIdentifier: boolean;
         out ExistingDefinition: TFindContext; // if it already exists
-        out ListOfPFindContext: TFPList; // possible classes
+        out ListOfPFindContext: TFPList; // possible classes for adding as sub identifier
         out NewExprType: TExpressionType; out NewType: string): boolean; // false = not at an identifier
     function DeclareVariableNearBy(InsertPos: TCodeXYPosition;
         const VariableName, NewType, NewUnitName: string;
@@ -6390,16 +6390,15 @@ function TCodeCompletionCodeTool.GuessTypeOfIdentifier(
    aclass.identifier:=<something>
    <something>:=aclass.identifier
    <something>:=<something>+aclass.identifier
-   <proc>(,,aclass.identifier)
    for identifier in <something>
+   ToDo: <proc>(,,aclass.identifier)
 
- checks where the identifier is already defined
+ checks where the identifier is already defined or is a keyword
  checks if the identifier is a sub identifier (e.g. A.identifier)
- creates the list of possible locations and notes
- checks if it is the target of an assignment and guess the type
- checks if it is the source of an for in and guess the type
- ToDo: checks if it is the target of an assignment and guess the type
- ToDo: checks if it is a parameter and guess the type
+ creates the list of possible insert locations
+ checks if it is the target of an assignment and guesses the type
+ checks if it is the run variable of an for in and guesses the type
+ ToDo: checks if it is a parameter and guesses the type
 }
 var
   CleanCursorPos: integer;
@@ -6500,7 +6499,7 @@ begin
       end;
     end;
 
-    // find assignment operator
+    // find assignment operator :=
     MoveCursorToAtomPos(IdentifierAtom);
     ReadNextAtom;
     if AtomIs(':=') then begin
