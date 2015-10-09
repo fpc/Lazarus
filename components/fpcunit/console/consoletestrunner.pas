@@ -249,10 +249,10 @@ var
 begin
   if StyleSheet<>'' then begin
     Doc.StylesheetType := 'text/xsl';
-    Doc.StylesheetHRef := StyleSheet;
+    Doc.StylesheetHRef := UTF8Decode(StyleSheet);
   end;
   n := Doc.CreateElement('Title');
-  n.AppendChild(Doc.CreateTextNode(Title));
+  n.AppendChild(Doc.CreateTextNode(UTF8Decode(Title)));
   Doc.FirstChild.AppendChild(n);
 end;
 
