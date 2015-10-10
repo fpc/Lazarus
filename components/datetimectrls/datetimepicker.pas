@@ -114,12 +114,17 @@ type
 
   TDTDateMode = (dmComboBox, dmUpDown, dmNone);
 
+  { calendar alignment - left or right,
+    dtaDefault means it is determined by BiDiMode }
+  TDTCalAlignment = (dtaLeft, dtaRight, dtaDefault);
+
   { TCustomDateTimePicker }
 
   TCustomDateTimePicker = class(TCustomControl)
   private
     FAutoAdvance: Boolean;
     FAutoButtonSize: Boolean;
+    FCalAlignment: TDTCalAlignment;
     FCalendarWrapperClass: TCalendarControlWrapperClass;
     FCascade: Boolean;
     FCenturyFrom, FEffectiveCenturyFrom: Word;
@@ -186,10 +191,12 @@ type
     function GetChecked: Boolean;
     function GetDate: TDate;
     function GetDateTime: TDateTime;
+    function GetDroppedDown: Boolean;
     function GetShowCheckBox: Boolean;
     function GetTime: TTime;
     procedure SetArrowShape(const AValue: TArrowShape);
     procedure SetAutoButtonSize(AValue: Boolean);
+    procedure SetCalAlignment(AValue: TDTCalAlignment);
     procedure SetCalendarWrapperClass(AValue: TCalendarControlWrapperClass);
     procedure SetCenturyFrom(const AValue: Word);
     procedure SetChecked(const AValue: Boolean);
@@ -380,6 +387,8 @@ type
     property MonthNames: String read FMonthNames write SetMonthNames;
     property ShowMonthNames: Boolean
              read FShowMonthNames write SetShowMonthNames default False;
+    property DroppedDown: Boolean read GetDroppedDown;
+    property CalAlignment: TDTCalAlignment read FCalAlignment write SetCalAlignment default dtaDefault;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -449,6 +458,7 @@ type
     property ParentBiDiMode;
     property MonthNames;
     property ShowMonthNames;
+    property CalAlignment;
 // events:
     property OnChange;
     property OnCheckBoxChange;
@@ -580,7 +590,8 @@ begin
   H := Height;
   W := Width;
 
-  if IsRightToLeft then
+  if (DTPicker.CalAlignment = dtaRight) or
+        ((DTPicker.CalAlignment = dtaDefault) and IsRightToLeft) then
     P := DTPicker.ControlToScreen(Point(DTPicker.Width - W, DTPicker.Height))
   else
     P := DTPicker.ControlToScreen(Point(0, DTPicker.Height));
@@ -3293,6 +3304,11 @@ begin
     Result := FDateTime;
 end;
 
+function TCustomDateTimePicker.GetDroppedDown: Boolean;
+begin
+  Result := Assigned(FCalendarForm);
+end;
+
 function TCustomDateTimePicker.GetShowCheckBox: Boolean;
 begin
   Result := Assigned(FCheckBox);
@@ -3333,6 +3349,12 @@ begin
     end;
 
   end;
+end;
+
+procedure TCustomDateTimePicker.SetCalAlignment(AValue: TDTCalAlignment);
+begin
+  if FCalAlignment = AValue then Exit;
+  FCalAlignment := AValue;
 end;
 
 procedure TCustomDateTimePicker.SetCalendarWrapperClass(
@@ -3637,6 +3659,7 @@ begin
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, cx, cy);
 
+  FCalAlignment := dtaDefault;
   FCorrectedDTP := dtpAMPM;
   FCorrectedValue := 0;
   FChangeInRecursiveCall := False;

@@ -115,6 +115,7 @@ type
     property ParentBiDiMode;
     property MonthNames;
     property ShowMonthNames;
+    property CalAlignment;
   //events:
     property OnChange;
     property OnCheckBoxChange;
