@@ -410,6 +410,7 @@ type
   public
     property DateTime;
     property CalendarWrapperClass;
+    property DroppedDown;
   published
     property ArrowShape;
     property ShowCheckBox;

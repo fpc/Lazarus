@@ -63,6 +63,7 @@ type
     destructor Destroy; override;
     property Field: TField read GetField;
     property CalendarWrapperClass;
+    property DroppedDown;
   published
     { Published declarations }
     property DataField: string read GetDataField write SetDataField;
