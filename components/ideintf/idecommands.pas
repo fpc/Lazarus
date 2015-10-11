@@ -962,68 +962,228 @@ begin
   IDECommandScopes.Add(Result);
 end;
 
-{ TIDECommands }
+{ TIDECommandScope }
 
-procedure TIDECommands.AddCustomUpdateEvent(const aEvent: TNotifyEvent);
+function TIDECommandScope.GetCategories(Index: integer): TIDECommandCategory;
 begin
-  FCustomUpdateEvents.Add(TMethod(aEvent));
+  Result:=TIDECommandCategory(FCategories[Index]);
 end;
 
-constructor TIDECommands.Create;
+function TIDECommandScope.GetIDEWindowClasses(Index: integer): TCustomFormClass;
 begin
-  inherited Create;
-
-  FCustomUpdateEvents := TMethodList.Create;
-
-  //Updating the events needs a lot of CPU power, use TTimer for late updating
-  FLateUpdateTimer := TTimer.Create(nil);
-  FLateUpdateTimer.Interval := 800;
-  FLateUpdateTimer.OnTimer := @FLateUpdateTimerTimer;
-  FLateUpdateTimer.Enabled := False;
+  Result:=TCustomFormClass(FIDEWindowClasses[Index]);
 end;
 
-destructor TIDECommands.Destroy;
+constructor TIDECommandScope.Create(const TheName: string);
 begin
-  FLateUpdateTimer.Free;
-  FCustomUpdateEvents.Free;
-  inherited Destroy;
+  FName:=TheName;
+  FIDEWindowClasses:=TFPList.Create;
+  FCategories:=TFPList.Create;
 end;
 
-procedure TIDECommands.ExecuteUpdateEvents;
+destructor TIDECommandScope.Destroy;
 var
   i: Integer;
 begin
-  if not Application.Active or
-     (ActivePopupMenu <> nil) or//no popup menus
-     (Application.ModalLevel > 0) or//no modal windows
-     not IsWindowEnabled(Application.MainForm.Handle)//main IDE must be enabled
-  then
-    Exit;
-
-  FCustomUpdateEvents.CallNotifyEvents(Self);
-  for i := 0 to CategoryCount-1 do
-    Categories[i].DoOnUpdate;
+  for i:=FCategories.Count-1 downto 0 do
+    Categories[i].Scope:=nil;
+  FreeAndNil(FIDEWindowClasses);
+  FreeAndNil(FCategories);
+  inherited Destroy;
 end;
 
-procedure TIDECommands.FLateUpdateTimerTimer(Sender: TObject);
+procedure TIDECommandScope.AddWindowClass(AWindowClass: TCustomFormClass);
 begin
-  ExecuteUpdateEvents;
+  if FIDEWindowClasses.IndexOf(AWindowClass)>=0 then
+    RaiseGDBException('TIDECommandScope.AddWindowClass');
+  FIDEWindowClasses.Add(AWindowClass);
 end;
 
-procedure TIDECommands.LateExecuteUpdateEvents;
+procedure TIDECommandScope.RemoveWindowClass(AWindowClass: TCustomFormClass);
 begin
-  FLateUpdateTimer.Enabled := False;
-  FLateUpdateTimer.Enabled := True;
+  FIDEWindowClasses.Remove(AWindowClass);
 end;
 
-procedure TIDECommands.RemoveCustomUpdateEvent(const aEvent: TNotifyEvent);
+function TIDECommandScope.IDEWindowClassCount: integer;
 begin
-  FCustomUpdateEvents.Remove(TMethod(aEvent));
+  Result:=FIDEWindowClasses.Count;
 end;
 
-procedure TIDECommands.StartUpdateHandler;
+function TIDECommandScope.CategoryCount: integer;
 begin
-  FLateUpdateTimer.Enabled := True;
+  Result:=FCategories.Count;
+end;
+
+function TIDECommandScope.HasIDEWindowClass(AWindowClass: TCustomFormClass): boolean;
+var
+  i: Integer;
+begin
+  if AWindowClass<>nil then begin
+    for i:=0 to FIDEWindowClasses.Count-1 do begin
+      if (FIDEWindowClasses[i]=nil)
+      or AWindowClass.InheritsFrom(TCustomFormClass(FIDEWindowClasses[i])) then
+        exit(true);
+    end;
+  end else begin
+    if FIDEWindowClasses.IndexOf(nil)>=0 then
+      exit(true);
+  end;
+  Result:=false;
+end;
+
+function TIDECommandScope.Intersects(AScope: TIDECommandScope): boolean;
+var
+  i: Integer;
+  CurClass: TCustomFormClass;
+begin
+  if AScope=nil then
+    Result:=true
+  else begin
+    for i:=0 to FIDEWindowClasses.Count-1 do begin
+      CurClass:=TCustomFormClass(FIDEWindowClasses[i]);
+      if (CurClass=nil)
+      or (AScope.FIDEWindowClasses.IndexOf(FIDEWindowClasses[i])>=0) then
+        exit(true);
+    end;
+    Result:=false;
+  end;
+end;
+
+procedure TIDECommandScope.WriteDebugReport;
+var
+  i: Integer;
+begin
+  debugln('TIDECommandScope.WriteDebugReport ',Name);
+  for i:=0 to FIDEWindowClasses.Count-1 do begin
+    if FIDEWindowClasses[i]=nil then
+      debugln('  ',dbgs(i),'/',dbgs(FIDEWindowClasses.Count),' nil')
+    else
+      debugln('  ',dbgs(i),'/',dbgs(FIDEWindowClasses.Count),' ',TClass(FIDEWindowClasses[i]).ClassName);
+  end;
+end;
+
+{ TIDECommandScopes }
+
+function TIDECommandScopes.GetItems(Index: integer): TIDECommandScope;
+begin
+  Result:=TIDECommandScope(FItems[Index]);
+end;
+
+constructor TIDECommandScopes.Create;
+begin
+  FItems:=TFPList.Create;
+end;
+
+destructor TIDECommandScopes.Destroy;
+begin
+  Clear;
+  FItems.Free;
+  inherited Destroy;
+end;
+
+procedure TIDECommandScopes.Clear;
+var
+  i: Integer;
+begin
+  for i:=0 to FItems.Count-1 do Items[i].Free;
+  FItems.Clear;
+end;
+
+procedure TIDECommandScopes.Add(NewItem: TIDECommandScope);
+begin
+  NewItem.fName:=CreateUniqueName(NewItem.Name);
+  FItems.Add(NewItem);
+end;
+
+function TIDECommandScopes.IndexOf(AnItem: TIDECommandScope): Integer;
+begin
+  Result:=FItems.IndexOf(AnItem);
+end;
+
+function TIDECommandScopes.IndexByName(const AName: string): Integer;
+begin
+  Result:=Count-1;
+  while (Result>=0) and (CompareText(AName,Items[Result].Name)<>0) do
+    dec(Result);
+end;
+
+function TIDECommandScopes.FindByName(const AName: string): TIDECommandScope;
+var
+  i: LongInt;
+begin
+  i:=IndexByName(AName);
+  if i>=0 then
+    Result:=Items[i]
+  else
+    Result:=nil;
+end;
+
+function TIDECommandScopes.CreateUniqueName(const AName: string): string;
+begin
+  Result:=AName;
+  if IndexByName(Result)<0 then exit;
+  Result:=CreateFirstIdentifier(Result);
+  while IndexByName(Result)>=0 do
+    Result:=CreateNextIdentifier(Result);
+end;
+
+function TIDECommandScopes.Count: integer;
+begin
+  Result:=FItems.Count;
+end;
+
+{ TIDECommandCategory }
+
+procedure TIDECommandCategory.SetDescription(const AValue: string);
+begin
+  if FDescription=AValue then exit;
+  FDescription:=AValue;
+end;
+
+procedure TIDECommandCategory.SetScope(const AValue: TIDECommandScope);
+begin
+  if FScope=AValue then exit;
+  if FScope<>nil then
+    FScope.FCategories.Remove(Self);
+  FScope:=AValue;
+  if FScope<>nil then
+    FScope.FCategories.Add(Self);
+end;
+
+destructor TIDECommandCategory.Destroy;
+begin
+  Scope:=nil;
+  inherited Destroy;
+end;
+
+procedure TIDECommandCategory.DoOnUpdate;
+var
+  i: Integer;
+begin
+  for i := 0 to Count-1 do
+    TIDECommand(Items[i]).DoOnUpdate;
+end;
+
+function TIDECommandCategory.ScopeIntersects(AScope: TIDECommandScope): boolean;
+begin
+  if (Scope=nil) or (AScope=nil) then
+    Result:=true
+  else
+    Result:=Scope.Intersects(AScope);
+end;
+
+procedure TIDECommandCategory.WriteScopeDebugReport;
+begin
+  debugln('TIDECommandCategory.WriteScopeDebugReport ',Name,'=',Description);
+  if Scope<>nil then
+    Scope.WriteDebugReport
+  else
+    debugln('  Scope=nil');
+end;
+
+procedure TIDECommandCategory.Delete(Index: Integer);
+begin
+  inherited Delete(Index);
 end;
 
 { TIDECommand }
@@ -1245,6 +1405,70 @@ begin
     Result:=true;
     OnExecuteProc(Sender);
   end;
+end;
+
+{ TIDECommands }
+
+procedure TIDECommands.AddCustomUpdateEvent(const aEvent: TNotifyEvent);
+begin
+  FCustomUpdateEvents.Add(TMethod(aEvent));
+end;
+
+constructor TIDECommands.Create;
+begin
+  inherited Create;
+
+  FCustomUpdateEvents := TMethodList.Create;
+
+  //Updating the events needs a lot of CPU power, use TTimer for late updating
+  FLateUpdateTimer := TTimer.Create(nil);
+  FLateUpdateTimer.Interval := 800;
+  FLateUpdateTimer.OnTimer := @FLateUpdateTimerTimer;
+  FLateUpdateTimer.Enabled := False;
+end;
+
+destructor TIDECommands.Destroy;
+begin
+  FLateUpdateTimer.Free;
+  FCustomUpdateEvents.Free;
+  inherited Destroy;
+end;
+
+procedure TIDECommands.ExecuteUpdateEvents;
+var
+  i: Integer;
+begin
+  if not Application.Active or
+     (ActivePopupMenu <> nil) or//no popup menus
+     (Application.ModalLevel > 0) or//no modal windows
+     not IsWindowEnabled(Application.MainForm.Handle)//main IDE must be enabled
+  then
+    Exit;
+
+  FCustomUpdateEvents.CallNotifyEvents(Self);
+  for i := 0 to CategoryCount-1 do
+    Categories[i].DoOnUpdate;
+end;
+
+procedure TIDECommands.FLateUpdateTimerTimer(Sender: TObject);
+begin
+  ExecuteUpdateEvents;
+end;
+
+procedure TIDECommands.LateExecuteUpdateEvents;
+begin
+  FLateUpdateTimer.Enabled := False;
+  FLateUpdateTimer.Enabled := True;
+end;
+
+procedure TIDECommands.RemoveCustomUpdateEvent(const aEvent: TNotifyEvent);
+begin
+  FCustomUpdateEvents.Remove(TMethod(aEvent));
+end;
+
+procedure TIDECommands.StartUpdateHandler;
+begin
+  FLateUpdateTimer.Enabled := True;
 end;
 
 { TIDESpecialCommand }
@@ -1507,230 +1731,6 @@ end;
 procedure TIDESpecialCommands.Remove(const aUser: TIDESpecialCommand);
 begin
   FList.Remove(aUser);
-end;
-
-{ TIDECommandScopes }
-
-function TIDECommandScopes.GetItems(Index: integer): TIDECommandScope;
-begin
-  Result:=TIDECommandScope(FItems[Index]);
-end;
-
-constructor TIDECommandScopes.Create;
-begin
-  FItems:=TFPList.Create;
-end;
-
-destructor TIDECommandScopes.Destroy;
-begin
-  Clear;
-  FItems.Free;
-  inherited Destroy;
-end;
-
-procedure TIDECommandScopes.Clear;
-var
-  i: Integer;
-begin
-  for i:=0 to FItems.Count-1 do Items[i].Free;
-  FItems.Clear;
-end;
-
-procedure TIDECommandScopes.Add(NewItem: TIDECommandScope);
-begin
-  NewItem.fName:=CreateUniqueName(NewItem.Name);
-  FItems.Add(NewItem);
-end;
-
-function TIDECommandScopes.IndexOf(AnItem: TIDECommandScope): Integer;
-begin
-  Result:=FItems.IndexOf(AnItem);
-end;
-
-function TIDECommandScopes.IndexByName(const AName: string): Integer;
-begin
-  Result:=Count-1;
-  while (Result>=0) and (CompareText(AName,Items[Result].Name)<>0) do
-    dec(Result);
-end;
-
-function TIDECommandScopes.FindByName(const AName: string): TIDECommandScope;
-var
-  i: LongInt;
-begin
-  i:=IndexByName(AName);
-  if i>=0 then
-    Result:=Items[i]
-  else
-    Result:=nil;
-end;
-
-function TIDECommandScopes.CreateUniqueName(const AName: string): string;
-begin
-  Result:=AName;
-  if IndexByName(Result)<0 then exit;
-  Result:=CreateFirstIdentifier(Result);
-  while IndexByName(Result)>=0 do
-    Result:=CreateNextIdentifier(Result);
-end;
-
-function TIDECommandScopes.Count: integer;
-begin
-  Result:=FItems.Count;
-end;
-
-{ TIDECommandCategory }
-
-procedure TIDECommandCategory.SetDescription(const AValue: string);
-begin
-  if FDescription=AValue then exit;
-  FDescription:=AValue;
-end;
-
-procedure TIDECommandCategory.SetScope(const AValue: TIDECommandScope);
-begin
-  if FScope=AValue then exit;
-  if FScope<>nil then
-    FScope.FCategories.Remove(Self);
-  FScope:=AValue;
-  if FScope<>nil then
-    FScope.FCategories.Add(Self);
-end;
-
-destructor TIDECommandCategory.Destroy;
-begin
-  Scope:=nil;
-  inherited Destroy;
-end;
-
-procedure TIDECommandCategory.DoOnUpdate;
-var
-  i: Integer;
-begin
-  for i := 0 to Count-1 do
-    TIDECommand(Items[i]).DoOnUpdate;
-end;
-
-function TIDECommandCategory.ScopeIntersects(AScope: TIDECommandScope): boolean;
-begin
-  if (Scope=nil) or (AScope=nil) then
-    Result:=true
-  else
-    Result:=Scope.Intersects(AScope);
-end;
-
-procedure TIDECommandCategory.WriteScopeDebugReport;
-begin
-  debugln('TIDECommandCategory.WriteScopeDebugReport ',Name,'=',Description);
-  if Scope<>nil then
-    Scope.WriteDebugReport
-  else
-    debugln('  Scope=nil');
-end;
-
-procedure TIDECommandCategory.Delete(Index: Integer);
-begin
-  inherited Delete(Index);
-end;
-
-{ TIDECommandScope }
-
-function TIDECommandScope.GetCategories(Index: integer): TIDECommandCategory;
-begin
-  Result:=TIDECommandCategory(FCategories[Index]);
-end;
-
-function TIDECommandScope.GetIDEWindowClasses(Index: integer): TCustomFormClass;
-begin
-  Result:=TCustomFormClass(FIDEWindowClasses[Index]);
-end;
-
-constructor TIDECommandScope.Create(const TheName: string);
-begin
-  FName:=TheName;
-  FIDEWindowClasses:=TFPList.Create;
-  FCategories:=TFPList.Create;
-end;
-
-destructor TIDECommandScope.Destroy;
-var
-  i: Integer;
-begin
-  for i:=FCategories.Count-1 downto 0 do
-    Categories[i].Scope:=nil;
-  FreeAndNil(FIDEWindowClasses);
-  FreeAndNil(FCategories);
-  inherited Destroy;
-end;
-
-procedure TIDECommandScope.AddWindowClass(AWindowClass: TCustomFormClass);
-begin
-  if FIDEWindowClasses.IndexOf(AWindowClass)>=0 then
-    RaiseGDBException('TIDECommandScope.AddWindowClass');
-  FIDEWindowClasses.Add(AWindowClass);
-end;
-
-procedure TIDECommandScope.RemoveWindowClass(AWindowClass: TCustomFormClass);
-begin
-  FIDEWindowClasses.Remove(AWindowClass);
-end;
-
-function TIDECommandScope.IDEWindowClassCount: integer;
-begin
-  Result:=FIDEWindowClasses.Count;
-end;
-
-function TIDECommandScope.CategoryCount: integer;
-begin
-  Result:=FCategories.Count;
-end;
-
-function TIDECommandScope.HasIDEWindowClass(AWindowClass: TCustomFormClass): boolean;
-var
-  i: Integer;
-begin
-  if AWindowClass<>nil then begin
-    for i:=0 to FIDEWindowClasses.Count-1 do begin
-      if (FIDEWindowClasses[i]=nil)
-      or AWindowClass.InheritsFrom(TCustomFormClass(FIDEWindowClasses[i])) then
-        exit(true);
-    end;
-  end else begin
-    if FIDEWindowClasses.IndexOf(nil)>=0 then
-      exit(true);
-  end;
-  Result:=false;
-end;
-
-function TIDECommandScope.Intersects(AScope: TIDECommandScope): boolean;
-var
-  i: Integer;
-  CurClass: TCustomFormClass;
-begin
-  if AScope=nil then
-    Result:=true
-  else begin
-    for i:=0 to FIDEWindowClasses.Count-1 do begin
-      CurClass:=TCustomFormClass(FIDEWindowClasses[i]);
-      if (CurClass=nil)
-      or (AScope.FIDEWindowClasses.IndexOf(FIDEWindowClasses[i])>=0) then
-        exit(true);
-    end;
-    Result:=false;
-  end;
-end;
-
-procedure TIDECommandScope.WriteDebugReport;
-var
-  i: Integer;
-begin
-  debugln('TIDECommandScope.WriteDebugReport ',Name);
-  for i:=0 to FIDEWindowClasses.Count-1 do begin
-    if FIDEWindowClasses[i]=nil then
-      debugln('  ',dbgs(i),'/',dbgs(FIDEWindowClasses.Count),' nil')
-    else
-      debugln('  ',dbgs(i),'/',dbgs(FIDEWindowClasses.Count),' ',TClass(FIDEWindowClasses[i]).ClassName);
-  end;
 end;
 
 const
