@@ -5247,7 +5247,7 @@ begin
     // can trigger the old editor to be refocused (while not visible)
   end;
 
-  IDECommandList.LateExecuteUpdateEvents;
+  IDECommandList.ExecuteUpdateEvents;
 end;
 
 procedure TSourceEditor.EditorActivateSyncro(Sender: TObject);
@@ -5334,12 +5334,15 @@ begin
 //  debugln('MouseMove in Editor',X,',',Y);
   if Assigned(OnMouseMove) then
     OnMouseMove(Self,Shift,X,Y);
+  if Shift*[ssLeft,ssRight]<>[] then
+    IDECommandList.PostponeUpdateEvents;
 end;
 
 procedure TSourceEditor.EditorMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  IDECommandList.LateExecuteUpdateEvents;
+  if Button=mbLeft then
+    IDECommandList.ExecuteUpdateEvents;
 end;
 
 procedure TSourceEditor.EditorMouseWheel(Sender: TObject; Shift: TShiftState;
@@ -5366,7 +5369,7 @@ begin
   if Assigned(OnKeyDown) then
     OnKeyDown(Sender, Key, Shift);
 
-  IDECommandList.LateExecuteUpdateEvents;
+  IDECommandList.PostponeUpdateEvents;
 end;
 
 procedure TSourceEditor.EditorKeyUp(Sender: TObject; var Key: Word;
@@ -5376,7 +5379,7 @@ begin
   if Assigned(OnKeyUp) then
     OnKeyUp(Sender, Key, Shift);
 
-  IDECommandList.LateExecuteUpdateEvents;
+  IDECommandList.PostponeUpdateEvents;
 end;
 
 {-------------------------------------------------------------------------------

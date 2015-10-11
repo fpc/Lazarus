@@ -598,9 +598,9 @@ type
   TIDECommands = class
   private
     FCustomUpdateEvents: TMethodList;
-    FLateUpdateTimer: TTimer;
+    FUpdateTimer: TTimer;
 
-    procedure FLateUpdateTimerTimer(Sender: TObject);
+    procedure UpdateTimerTimer(Sender: TObject);
   protected
     function GetCategory(Index: integer): TIDECommandCategory; virtual; abstract;
   public
@@ -623,10 +623,11 @@ type
             IDEWindowClass: TCustomFormClass = nil): TFPList; virtual; abstract; // list of TIDECommand
     function CategoryCount: integer; virtual; abstract;
   public
-    procedure StartUpdateHandler;
+    procedure StartUpdateTimer;
+    procedure StopUpdateTimer;
 
     procedure ExecuteUpdateEvents;
-    procedure LateExecuteUpdateEvents;
+    procedure PostponeUpdateEvents;
 
     procedure AddCustomUpdateEvent(const aEvent: TNotifyEvent);
     procedure RemoveCustomUpdateEvent(const aEvent: TNotifyEvent);
@@ -1420,16 +1421,17 @@ begin
 
   FCustomUpdateEvents := TMethodList.Create;
 
-  //Updating the events needs a lot of CPU power, use TTimer for late updating
-  FLateUpdateTimer := TTimer.Create(nil);
-  FLateUpdateTimer.Interval := 800;
-  FLateUpdateTimer.OnTimer := @FLateUpdateTimerTimer;
-  FLateUpdateTimer.Enabled := False;
+  //Updating the commands needs time and CPU power (codetools are called for some commands)
+  // -> use TTimer with a reasonable interval and not Application.OnIdle
+  FUpdateTimer := TTimer.Create(nil);
+  FUpdateTimer.Interval := 500;
+  FUpdateTimer.OnTimer := @UpdateTimerTimer;
+  FUpdateTimer.Enabled := False;
 end;
 
 destructor TIDECommands.Destroy;
 begin
-  FLateUpdateTimer.Free;
+  FUpdateTimer.Free;
   FCustomUpdateEvents.Free;
   inherited Destroy;
 end;
@@ -1450,16 +1452,18 @@ begin
     Categories[i].DoOnUpdate;
 end;
 
-procedure TIDECommands.FLateUpdateTimerTimer(Sender: TObject);
+procedure TIDECommands.UpdateTimerTimer(Sender: TObject);
 begin
   ExecuteUpdateEvents;
-  FLateUpdateTimer.Enabled := False;
 end;
 
-procedure TIDECommands.LateExecuteUpdateEvents;
+procedure TIDECommands.PostponeUpdateEvents;
 begin
-  FLateUpdateTimer.Enabled := False;
-  FLateUpdateTimer.Enabled := True;
+  if FUpdateTimer.Enabled then
+  begin
+    FUpdateTimer.Enabled := False;
+    FUpdateTimer.Enabled := True;
+  end;
 end;
 
 procedure TIDECommands.RemoveCustomUpdateEvent(const aEvent: TNotifyEvent);
@@ -1467,9 +1471,14 @@ begin
   FCustomUpdateEvents.Remove(TMethod(aEvent));
 end;
 
-procedure TIDECommands.StartUpdateHandler;
+procedure TIDECommands.StartUpdateTimer;
 begin
-  FLateUpdateTimer.Enabled := True;
+  FUpdateTimer.Enabled := True;
+end;
+
+procedure TIDECommands.StopUpdateTimer;
+begin
+  FUpdateTimer.Enabled := False;
 end;
 
 { TIDESpecialCommand }

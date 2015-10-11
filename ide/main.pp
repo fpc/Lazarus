@@ -1577,7 +1577,7 @@ begin
   MainIDEBar.ApplicationIsActivate:=true;
   IDECommandList.AddCustomUpdateEvent(@UpdateMainIDECommands);
   LazIDEInstances.StartListening(@LazInstancesStartNewInstance);
-  IDECommandList.StartUpdateHandler;
+  IDECommandList.StartUpdateTimer;
   FIDEStarted:=true;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.StartIDE END');{$ENDIF}
 end;
@@ -1973,6 +1973,7 @@ procedure TMainIDE.MainIDEFormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   LazIDEInstances.StopServer;
+  IDECommandList.StopUpdateTimer;
   DoCallNotifyHandler(lihtIDEClose);
   SaveEnvironment(true);
   if IDEDockMaster<>nil then
