@@ -633,6 +633,7 @@ begin
     ecViewProjectForms        : Result:= srkmecViewForms;
     ecViewProjectSource       : Result:= lisMenuViewProjectSource;
     ecProjectOptions          : Result:= lisMenuProjectOptions;
+    ecProjectChangeBuildMode  : Result:= lisChangeBuildMode;
 
     // run menu (menu string resource)
     ecCompile                 : Result:= srkmecCompile;
@@ -1230,6 +1231,7 @@ begin
   ecViewProjectForms:    SetSingle(VK_F12,[ssShift]);
   ecViewProjectSource:   SetSingle(VK_UNKNOWN,[]);
   ecProjectOptions:      SetSingle(VK_F11,[ssShift,ssCtrl]);
+  ecProjectChangeBuildMode:SetSingle(VK_UNKNOWN,[]);
 
   // run menu
   ecCompile:             SetSingle(VK_F9,[ssCtrl]);
@@ -1661,6 +1663,7 @@ begin
   ecViewProjectForms:    SetSingle(VK_F12,[ssShift]);
   ecViewProjectSource:   SetSingle(VK_UNKNOWN,[]);
   ecProjectOptions:      SetSingle(VK_F11,[ssShift,ssCtrl]);
+  ecProjectChangeBuildMode:SetSingle(VK_UNKNOWN,[]);
 
   // run menu
   ecCompile:             SetSingle(VK_F9,[ssCtrl]);
@@ -2282,6 +2285,7 @@ begin
   ecViewProjectForms:    SetSingle(VK_U,[ssShift,ssCtrl]);
   ecViewProjectSource:   SetSingle(VK_UNKNOWN,[]);
   ecProjectOptions:      SetSingle(VK_UNKNOWN,[]);
+  ecProjectChangeBuildMode:SetSingle(VK_UNKNOWN,[]);
 
   // run menu
   ecCompile:             SetSingle(VK_B,[ssMeta]);
@@ -2958,6 +2962,7 @@ begin
   AddDefault(C, 'View Forms', lisHintViewForms, ecViewProjectForms);
   AddDefault(C, 'View project source', lisKMViewProjectSource, ecViewProjectSource);
   AddDefault(C, 'View project options', lisKMViewProjectOptions, ecProjectOptions);
+  AddDefault(C, 'Change build mode', lisChangeBuildMode, ecProjectChangeBuildMode);
 
   // run menu
   C:=Categories[AddCategory('RunMenu',srkmCatRunMenu,nil)];

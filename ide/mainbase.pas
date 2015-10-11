@@ -1653,7 +1653,8 @@ begin
     itmProjectRemoveFrom.Command:=GetCommand(ecRemoveFromProj);
     itmProjectViewUnits.Command:=GetCommand(ecViewProjectUnits);
     itmProjectViewForms.Command:=GetCommand(ecViewProjectForms);
-    itmProjectViewSource.Command:=GetCommand(ecViewProjectSource,TSetBuildModeToolButton);
+    itmProjectViewSource.Command:=GetCommand(ecViewProjectSource);
+    itmProjectBuildMode.Command:=GetCommand(ecProjectChangeBuildMode,TSetBuildModeToolButton);
 
     // run menu
     itmRunMenuCompile.Command:=GetCommand(ecCompile);
