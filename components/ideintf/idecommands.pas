@@ -1453,6 +1453,7 @@ end;
 procedure TIDECommands.FLateUpdateTimerTimer(Sender: TObject);
 begin
   ExecuteUpdateEvents;
+  FLateUpdateTimer.Enabled := False;
 end;
 
 procedure TIDECommands.LateExecuteUpdateEvents;
