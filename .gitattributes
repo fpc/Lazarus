@@ -1907,6 +1907,7 @@ components/ideintf/statusbarpropedit.pp svneol=native#text/pascal
 components/ideintf/stringspropeditdlg.lfm svneol=native#text/plain
 components/ideintf/stringspropeditdlg.pas svneol=native#text/plain
 components/ideintf/texttools.pas svneol=native#text/pascal
+components/ideintf/toolbarintf.pas svneol=native#text/pascal
 components/ideintf/treeviewpropedit.lfm svneol=native#text/plain
 components/ideintf/treeviewpropedit.pas svneol=native#text/plain
 components/ideintf/unitresources.pas svneol=native#text/plain
