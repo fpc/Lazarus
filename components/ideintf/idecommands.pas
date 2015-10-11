@@ -30,7 +30,8 @@ unit IDECommands;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, LCLType, Menus, PropEdits;
+  Classes, SysUtils, LCLProc, Forms, LCLType, Menus, PropEdits, IDEImagesIntf,
+  ExtCtrls, LCLIntf;
   
 const
   { editor commands constants. see syneditkeycmds.pp for more
@@ -432,6 +433,8 @@ const
 type
   TIDECommand = class;
   TIDECommandCategory = class;
+  TIDESpecialCommand = class;
+  TIDESpecialCommands = class;
 
   TNotifyProcedure = procedure(Sender: TObject);
 
@@ -512,6 +515,7 @@ type
     destructor Destroy; override;
     function ScopeIntersects(AScope: TIDECommandScope): boolean;
     procedure WriteScopeDebugReport;
+    procedure DoOnUpdate;
   public
     property Name: string read FName;
     property Description: string read FDescription write SetDescription;
@@ -522,19 +526,25 @@ type
   
   
   { TIDECommand }
-  { class for storing the keys of a single command
-    (shortcut-command relationship) }
+  { class for storing the keys of a single command (shortcut-command relationship) }
   TIDECommand = class
   private
     FCategory: TIDECommandCategory;
     FCommand: word;
     FLocalizedName: string;
     FName: String;
-    FOnChange: TNotifyEvent;
     FOnExecute: TNotifyEvent;
     FOnExecuteProc: TNotifyProcedure;
     FShortcutA: TIDEShortCut;
     FShortcutB: TIDEShortCut;
+    FOnUpdateMethod: TNotifyEvent;
+    FOnUpdateProc: TNotifyProcedure;
+    FUsers: TIDESpecialCommands;
+
+    function GetUser(Index: Integer): TIDESpecialCommand;
+    function GetUserCount: Integer;
+    procedure SetOnExecute(const aOnExecute: TNotifyEvent);
+    procedure SetOnExecuteProc(const aOnExecuteProc: TNotifyProcedure);
   protected
     function GetLocalizedName: string; virtual;
     procedure SetLocalizedName(const AValue: string); virtual;
@@ -562,6 +572,10 @@ type
     procedure ClearShortcutB;
     function GetCategoryAndName: string;
     function Execute(Sender: TObject): boolean;
+    procedure UserAdded(const aUser: TIDESpecialCommand);
+    procedure UserRemoved(const aUser: TIDESpecialCommand);
+    procedure DoOnUpdate; overload;
+    procedure DoOnUpdate(Sender: TObject); overload;
   public
     property Name: String read FName;
     property Command: word read FCommand;// see the ecXXX constants above
@@ -569,18 +583,30 @@ type
     property Category: TIDECommandCategory read FCategory write SetCategory;
     property ShortcutA: TIDEShortCut read FShortcutA write SetShortcutA;
     property ShortcutB: TIDEShortCut read FShortcutB write SetShortcutB;
-    property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    property OnExecute: TNotifyEvent read FOnExecute write FOnExecute;
-    property OnExecuteProc: TNotifyProcedure read FOnExecuteProc write FOnExecuteProc;
+    property OnExecute: TNotifyEvent read FOnExecute write SetOnExecute;
+    property OnExecuteProc: TNotifyProcedure read FOnExecuteProc write SetOnExecuteProc;
+    property OnUpdate: TNotifyEvent read FOnUpdateMethod write FOnUpdateMethod;
+    property OnUpdateProc: TNotifyProcedure read FOnUpdateProc write FOnUpdateProc;
+
+    property Users[Index: Integer]: TIDESpecialCommand read GetUser;
+    property UserCount: Integer read GetUserCount;
   end;
 
 
   { TIDECommands }
 
   TIDECommands = class
+  private
+    FCustomUpdateEvents: TMethodList;
+    FLateUpdateTimer: TTimer;
+
+    procedure FLateUpdateTimerTimer(Sender: TObject);
   protected
     function GetCategory(Index: integer): TIDECommandCategory; virtual; abstract;
   public
+    constructor Create;
+    destructor Destroy; override;
+
     function FindIDECommand(ACommand: word): TIDECommand; virtual; abstract;
     function CreateCategory(Parent: TIDECommandCategory;
                             const Name, Description: string;
@@ -597,8 +623,99 @@ type
             IDEWindowClass: TCustomFormClass = nil): TFPList; virtual; abstract; // list of TIDECommand
     function CategoryCount: integer; virtual; abstract;
   public
+    procedure StartUpdateHandler;
+
+    procedure ExecuteUpdateEvents;
+    procedure LateExecuteUpdateEvents;
+
+    procedure AddCustomUpdateEvent(const aEvent: TNotifyEvent);
+    procedure RemoveCustomUpdateEvent(const aEvent: TNotifyEvent);
+  public
     property Categories[Index: integer]: TIDECommandCategory read GetCategory;
   end;
+
+  // MenuItem and ButtonCommand inherit from SpecialCommand.
+
+  TIDESpecialCommand = class(TPersistent)
+  private
+    FCommand: TIDECommand;
+    FName: string;
+    FCaption: string;
+    FEnabled: Boolean;
+    FChecked: Boolean;
+    FHint: string;
+    FImageIndex: Integer;
+    FOnClickMethod: TNotifyEvent;
+    FOnClickProc: TNotifyProcedure;
+    FVisible: Boolean;
+  protected
+    function GetCaption: string; virtual;
+    procedure SetCommand(const AValue: TIDECommand); virtual;
+    procedure SetName(const aName: string); virtual;
+    procedure SetCaption(aCaption: string); virtual;
+    procedure SetEnabled(const aEnabled: Boolean); virtual;
+    procedure SetChecked(const aChecked: Boolean); virtual;
+    procedure SetHint(const aHint: string); virtual;
+    procedure SetImageIndex(const aImageIndex: Integer); virtual;
+    procedure SetVisible(const aVisible: Boolean); virtual;
+    procedure SetOnClickMethod(const aOnClick: TNotifyEvent); virtual;
+    procedure SetOnClickProc(const aOnClickProc: TNotifyProcedure); virtual;
+    procedure SetResourceName(const aResourceName: string); virtual;
+    procedure ShortCutsUpdated(const {%H-}aShortCut, {%H-}aShortCutKey2: TShortCut); virtual;
+  public
+    constructor Create(const aName: string); virtual;
+    destructor Destroy; override;
+  public
+    procedure DoOnClick; overload;
+    procedure DoOnClick(Sender: TObject); virtual; overload;
+  public
+    function GetCaptionWithShortCut: String; virtual;
+    function GetHintOrCaptionWithShortCut: String; virtual;
+    function GetShortcut: String; virtual;
+
+    property Command: TIDECommand read FCommand write SetCommand;
+    property Name: string read FName write SetName;
+    property Caption: string read GetCaption write SetCaption;
+    property Hint: string read FHint write SetHint;
+    property Enabled: Boolean read FEnabled write SetEnabled;
+    property Checked: Boolean read FChecked write SetChecked;
+    property Visible: Boolean read FVisible write SetVisible;
+    property ImageIndex: Integer read FImageIndex write SetImageIndex;
+    property ResourceName: string write SetResourceName;
+
+    property OnClick: TNotifyEvent read FOnClickMethod write SetOnClickMethod;
+    property OnClickProc: TNotifyProcedure read FOnClickProc write SetOnClickProc;
+  end;
+
+  TIDESpecialCommandEnumerator = class
+  private
+    FList: TIDESpecialCommands;
+    FPosition: Integer;
+  public
+    constructor Create(AButtons: TIDESpecialCommands);
+    function GetCurrent: TIDESpecialCommand;
+    function MoveNext: Boolean;
+    property Current: TIDESpecialCommand read GetCurrent;
+  end;
+
+  TIDESpecialCommands = class
+  private
+    FList: TFPList;
+    function GetCount: Integer;
+    function GetItems(Index: Integer): TIDESpecialCommand;
+  public
+    constructor Create;
+    destructor Destroy; override;
+  public
+    function GetEnumerator: TIDESpecialCommandEnumerator;
+    procedure Add(const aUser: TIDESpecialCommand);
+    procedure Remove(const aUser: TIDESpecialCommand);
+
+    property Count: Integer read GetCount;
+    property Items[Index: Integer]: TIDESpecialCommand read GetItems; default;
+  end;
+
+
 
 const
   CleanIDEShortCut: TIDEShortCut =
@@ -845,6 +962,70 @@ begin
   IDECommandScopes.Add(Result);
 end;
 
+{ TIDECommands }
+
+procedure TIDECommands.AddCustomUpdateEvent(const aEvent: TNotifyEvent);
+begin
+  FCustomUpdateEvents.Add(TMethod(aEvent));
+end;
+
+constructor TIDECommands.Create;
+begin
+  inherited Create;
+
+  FCustomUpdateEvents := TMethodList.Create;
+
+  //Updating the events needs a lot of CPU power, use TTimer for late updating
+  FLateUpdateTimer := TTimer.Create(nil);
+  FLateUpdateTimer.Interval := 800;
+  FLateUpdateTimer.OnTimer := @FLateUpdateTimerTimer;
+  FLateUpdateTimer.Enabled := False;
+end;
+
+destructor TIDECommands.Destroy;
+begin
+  FLateUpdateTimer.Free;
+  FCustomUpdateEvents.Free;
+  inherited Destroy;
+end;
+
+procedure TIDECommands.ExecuteUpdateEvents;
+var
+  i: Integer;
+begin
+  if not Application.Active or
+     (ActivePopupMenu <> nil) or//no popup menus
+     (Application.ModalLevel > 0) or//no modal windows
+     not IsWindowEnabled(Application.MainForm.Handle)//main IDE must be enabled
+  then
+    Exit;
+
+  FCustomUpdateEvents.CallNotifyEvents(Self);
+  for i := 0 to CategoryCount-1 do
+    Categories[i].DoOnUpdate;
+end;
+
+procedure TIDECommands.FLateUpdateTimerTimer(Sender: TObject);
+begin
+  ExecuteUpdateEvents;
+end;
+
+procedure TIDECommands.LateExecuteUpdateEvents;
+begin
+  FLateUpdateTimer.Enabled := False;
+  FLateUpdateTimer.Enabled := True;
+end;
+
+procedure TIDECommands.RemoveCustomUpdateEvent(const aEvent: TNotifyEvent);
+begin
+  FCustomUpdateEvents.Remove(TMethod(aEvent));
+end;
+
+procedure TIDECommands.StartUpdateHandler;
+begin
+  FLateUpdateTimer.Enabled := True;
+end;
+
 { TIDECommand }
 
 procedure TIDECommand.SetShortcutA(const AValue: TIDEShortCut);
@@ -863,9 +1044,25 @@ begin
   Change;
 end;
 
-procedure TIDECommand.Change;
+procedure TIDECommand.UserAdded(const aUser: TIDESpecialCommand);
 begin
-  if Assigned(OnChange) then OnChange(Self);
+  FUsers.Add(aUser);
+end;
+
+procedure TIDECommand.UserRemoved(const aUser: TIDESpecialCommand);
+begin
+  FUsers.Remove(aUser);
+end;
+
+procedure TIDECommand.Change;
+var
+  xUser: TIDESpecialCommand;
+begin
+  for xUser in FUsers do
+  begin
+    xUser.ShortCutsUpdated(KeyToShortCut(ShortcutA.Key1,ShortcutA.Shift1),
+                           KeyToShortCut(ShortcutA.Key2,ShortcutA.Shift2));
+  end;
 end;
 
 procedure TIDECommand.Init;
@@ -881,12 +1078,42 @@ begin
     Result:=Name;
 end;
 
+function TIDECommand.GetUser(Index: Integer): TIDESpecialCommand;
+begin
+  Result := FUsers[Index];
+end;
+
+function TIDECommand.GetUserCount: Integer;
+begin
+  Result := FUsers.Count;
+end;
+
 procedure TIDECommand.SetLocalizedName(const AValue: string);
 begin
   if FLocalizedName=AValue then exit;
   FLocalizedName:=AValue;
   //DebugLn('TIDECommand.SetLocalizedName ',dbgs(Assigned(OnChange)),' ',Name);
   Change;
+end;
+
+procedure TIDECommand.SetOnExecute(const aOnExecute: TNotifyEvent);
+var
+  xUser: TIDESpecialCommand;
+begin
+  if FOnExecute = aOnExecute then Exit;
+  FOnExecute := aOnExecute;
+  for xUser in FUsers do
+    xUser.OnClick := FOnExecute;
+end;
+
+procedure TIDECommand.SetOnExecuteProc(const aOnExecuteProc: TNotifyProcedure);
+var
+  xUser: TIDESpecialCommand;
+begin
+  if FOnExecuteProc = aOnExecuteProc then Exit;
+  FOnExecuteProc := aOnExecuteProc;
+  for xUser in FUsers do
+    xUser.OnClickProc := FOnExecuteProc;
 end;
 
 procedure TIDECommand.SetCategory(const AValue: TIDECommandCategory);
@@ -928,6 +1155,7 @@ constructor TIDECommand.Create(TheCategory: TIDECommandCategory;
   const ExecuteMethod: TNotifyEvent;
   const ExecuteProc: TNotifyProcedure);
 begin
+  FUsers:=TIDESpecialCommands.Create;
   fCommand:=TheCommand;
   fName:=TheName;
   FLocalizedName:=TheLocalizedName;
@@ -951,19 +1179,27 @@ end;
 
 constructor TIDECommand.Create(ACommand: TIDECommand; ACategory: TIDECommandCategory);
 begin
-  fCommand:=ACommand.Command;
-  fName:=ACommand.Name;
-  FLocalizedName:=ACommand.LocalizedName;
-  fShortcutA:=ACommand.ShortcutA;
-  fShortcutB:=ACommand.ShortcutB;
-  DefaultShortcutA:=ACommand.ShortcutA;
-  DefaultShortcutB:=ACommand.ShortcutB;
-  Category:=ACategory;
+  Create(ACategory, ACommand.Name, ACommand.LocalizedName, ACommand.Command,
+    ACommand.ShortcutA, ACommand.ShortcutB, ACommand.OnExecute, ACommand.OnExecuteProc);
 end;
 
 destructor TIDECommand.Destroy;
 begin
+  FUsers.Free;
   inherited Destroy;
+end;
+
+procedure TIDECommand.DoOnUpdate(Sender: TObject);
+begin
+  if Assigned(FOnUpdateProc) then
+    FOnUpdateProc(Sender);
+  if Assigned(FOnUpdateMethod) then
+    FOnUpdateMethod(Sender);
+end;
+
+procedure TIDECommand.DoOnUpdate;
+begin
+  DoOnUpdate(Self);
 end;
 
 procedure TIDECommand.Assign(ACommand: TIDECommand);
@@ -1009,6 +1245,268 @@ begin
     Result:=true;
     OnExecuteProc(Sender);
   end;
+end;
+
+{ TIDESpecialCommand }
+
+constructor TIDESpecialCommand.Create(const aName: string);
+begin
+  inherited Create;
+
+  FName := aName;
+  FEnabled:=true;
+  FVisible:=true;
+  FImageIndex:=-1;
+end;
+
+destructor TIDESpecialCommand.Destroy;
+begin
+  if Assigned(FCommand) then
+    FCommand.UserRemoved(Self);
+  inherited Destroy;
+end;
+
+procedure TIDESpecialCommand.DoOnClick(Sender: TObject);
+begin
+  if Assigned(FOnClickProc) then
+    FOnClickProc(Self)
+  else
+  if Assigned(FOnClickMethod) then
+    FOnClickMethod(Self);
+end;
+
+procedure TIDESpecialCommand.DoOnClick;
+begin
+  DoOnClick(Self);
+end;
+
+function TIDESpecialCommand.GetCaption: string;
+begin
+  if FCaption<>'' then
+    Result:=FCaption
+  else
+    Result:=FName;
+end;
+
+function TIDESpecialCommand.GetCaptionWithShortCut: String;
+begin
+  Result := Caption;
+  DeleteAmpersands(Result);
+  Result := Result + GetShortcut;
+end;
+
+function TIDESpecialCommand.GetHintOrCaptionWithShortCut: String;
+begin
+  if Hint <> '' then
+    Result := Hint
+  else
+    Result := Caption;
+  DeleteAmpersands(Result);
+  Result := Result + GetShortcut;
+end;
+
+function TIDESpecialCommand.GetShortcut: String;
+begin
+  Result := '';
+  if Assigned(FCommand) then
+    Result := ShortCutToText(FCommand.AsShortCut);
+  if Result <> '' then
+    Result := ' (' + Result + ')';
+end;
+
+procedure TIDESpecialCommand.SetCaption(aCaption: string);
+var
+  xUser: TIDESpecialCommand;
+begin
+  if FCaption=aCaption then Exit;
+  FCaption := aCaption;
+  if FCommand<> nil then
+    for xUser in FCommand.FUsers do
+      if xUser <> Self then
+        xUser.Caption:=aCaption;
+end;
+
+procedure TIDESpecialCommand.SetChecked(const aChecked: Boolean);
+var
+  xUser: TIDESpecialCommand;
+begin
+  if FChecked=aChecked then Exit;
+  FChecked := aChecked;
+  if FCommand<> nil then
+    for xUser in FCommand.FUsers do
+      if xUser <> Self then
+        xUser.Checked:=aChecked;
+end;
+
+procedure TIDESpecialCommand.SetCommand(const AValue: TIDECommand);
+begin
+  if FCommand = AValue then
+    Exit;
+  if FCommand <> nil then
+  begin
+    //DebugLn('TIDEMenuCommand.SetCommand OLD ',ShortCutToText(FCommand.AsShortCut),' FCommand.Name=',FCommand.Name,' Name=',Name,' FCommand=',dbgs(Pointer(FCommand)));
+    if FCommand.OnExecute=OnClick then
+      FCommand.OnExecute:=nil;
+    if FCommand.OnExecuteProc=OnClickProc then
+      FCommand.OnExecuteProc:=nil;
+  end;
+  FCommand := AValue;
+  if FCommand <> nil then
+  begin
+    if FCommand.OnExecute = nil then
+      FCommand.OnExecute := OnClick;
+    if FCommand.OnExecuteProc = nil then
+      FCommand.OnExecuteProc := OnClickProc;
+    //DebugLn('TIDEMenuCommand.SetCommand NEW ',ShortCutToText(FCommand.AsShortCut),' FCommand.Name=',FCommand.Name,' Name=',Name,' FCommand=',dbgs(Pointer(FCommand)));
+    FCommand.Change;
+    FCommand.UserAdded(Self);
+  end;
+end;
+
+procedure TIDESpecialCommand.SetEnabled(const aEnabled: Boolean);
+var
+  xUser: TIDESpecialCommand;
+begin
+  if FEnabled=aEnabled then Exit;
+  FEnabled := aEnabled;
+  if FCommand<> nil then
+    for xUser in FCommand.FUsers do
+      if xUser <> Self then
+        xUser.Enabled:=aEnabled;
+end;
+
+procedure TIDESpecialCommand.SetHint(const aHint: string);
+var
+  xUser: TIDESpecialCommand;
+begin
+  if FHint=aHint then Exit;
+  FHint := aHint;
+  if FCommand<> nil then
+    for xUser in FCommand.FUsers do
+      if xUser <> Self then
+        xUser.Hint:=aHint;
+end;
+
+procedure TIDESpecialCommand.SetImageIndex(const aImageIndex: Integer);
+var
+  xUser: TIDESpecialCommand;
+begin
+  if FImageIndex=aImageIndex then Exit;
+  FImageIndex := aImageIndex;
+  if FCommand<> nil then
+    for xUser in FCommand.FUsers do
+      if xUser <> Self then
+        xUser.ImageIndex:=aImageIndex;
+end;
+
+procedure TIDESpecialCommand.SetName(const aName: string);
+begin
+  FName := aName;
+end;
+
+procedure TIDESpecialCommand.SetOnClickMethod(const aOnClick: TNotifyEvent);
+begin
+  if FOnClickMethod = aOnClick then Exit;
+  FOnClickMethod := aOnClick;
+  if FCommand<> nil then
+    FCommand.OnExecute:=aOnClick;
+end;
+
+procedure TIDESpecialCommand.SetOnClickProc(const aOnClickProc: TNotifyProcedure);
+begin
+  if FOnClickProc = aOnClickProc then Exit;
+  FOnClickProc := aOnClickProc;
+  if FCommand<> nil then
+    FCommand.OnExecuteProc:=aOnClickProc;
+end;
+
+procedure TIDESpecialCommand.SetResourceName(const aResourceName: string);
+begin
+  if aResourceName <> '' then
+    ImageIndex := IDEImages.LoadImage(16, aResourceName)
+  else
+    ImageIndex := -1;
+end;
+
+procedure TIDESpecialCommand.ShortCutsUpdated(const aShortCut,
+  aShortCutKey2: TShortCut);
+begin
+  //nothing here, override in descendants
+end;
+
+procedure TIDESpecialCommand.SetVisible(const aVisible: Boolean);
+var
+  xUser: TIDESpecialCommand;
+begin
+  if FVisible=aVisible then Exit;
+  FVisible := aVisible;
+  if FCommand<> nil then
+    for xUser in FCommand.FUsers do
+      if xUser <> Self then
+        xUser.Visible:=aVisible;
+end;
+
+{ TIDESpecialCommandEnumerator }
+
+constructor TIDESpecialCommandEnumerator.Create(AButtons: TIDESpecialCommands);
+begin
+  inherited Create;
+  FList := AButtons;
+  FPosition := -1;
+end;
+
+function TIDESpecialCommandEnumerator.GetCurrent: TIDESpecialCommand;
+begin
+  Result := TIDESpecialCommand(FList[FPosition]);
+end;
+
+function TIDESpecialCommandEnumerator.MoveNext: Boolean;
+begin
+  Inc(FPosition);
+  Result := FPosition < FList.Count;
+end;
+
+{ TIDESpecialCommands }
+
+procedure TIDESpecialCommands.Add(const aUser: TIDESpecialCommand);
+begin
+  FList.Add(aUser);
+end;
+
+constructor TIDESpecialCommands.Create;
+begin
+  inherited Create;
+  FList := TFPList.Create;
+end;
+
+destructor TIDESpecialCommands.Destroy;
+var
+  I: Integer;
+begin
+  for I := 0 to Count-1 do
+    Items[I].FCommand := nil;
+  FList.Free;
+  inherited Destroy;
+end;
+
+function TIDESpecialCommands.GetCount: Integer;
+begin
+  Result := FList.Count;
+end;
+
+function TIDESpecialCommands.GetEnumerator: TIDESpecialCommandEnumerator;
+begin
+  Result := TIDESpecialCommandEnumerator.Create(Self);
+end;
+
+function TIDESpecialCommands.GetItems(Index: Integer): TIDESpecialCommand;
+begin
+  Result := TIDESpecialCommand(FList[Index]);
+end;
+
+procedure TIDESpecialCommands.Remove(const aUser: TIDESpecialCommand);
+begin
+  FList.Remove(aUser);
 end;
 
 { TIDECommandScopes }
@@ -1103,6 +1601,14 @@ destructor TIDECommandCategory.Destroy;
 begin
   Scope:=nil;
   inherited Destroy;
+end;
+
+procedure TIDECommandCategory.DoOnUpdate;
+var
+  i: Integer;
+begin
+  for i := 0 to Count-1 do
+    TIDECommand(Items[i]).DoOnUpdate;
 end;
 
 function TIDECommandCategory.ScopeIntersects(AScope: TIDECommandScope): boolean;

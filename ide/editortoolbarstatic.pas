@@ -26,7 +26,8 @@ interface
 uses
   SysUtils, Classes, Forms, ComCtrls, Controls, ExtCtrls, fgl,
   MenuIntf, IDEImagesIntf, SrcEditorIntf, BaseIDEIntf, LazIDEIntf,
-  LazarusIDEStrConsts, LazConfigStorage, Laz2_XMLCfg, LCLProc, ToolbarConfig;
+  LazarusIDEStrConsts, LazConfigStorage, Laz2_XMLCfg, LCLProc, ToolbarConfig,
+  ToolBarIntf;
 
 type
 
@@ -312,9 +313,9 @@ end;
 
 procedure TEditorToolbar.CopyFromOptions(Options: TEditorToolBarOptions);
 var
-  mi: TIDEMenuItem;
   ButtonName: string;
   i: Integer;
+  mi: TIDEButtonCommand;
 begin
   FToolBar.BeginUpdate;
   try
@@ -325,9 +326,9 @@ begin
         AddDivider
       else
       begin
-        mi := IDEMenuRoots.FindByPath(ButtonName,false);
+        mi := IDEToolButtonCategories.FindItemByMenuPathOrName(ButtonName);
         if Assigned(mi) then
-          AddButton(mi as TIDEMenuCommand);
+          AddButton(mi);
       end;
     end;
     SetTbPos;

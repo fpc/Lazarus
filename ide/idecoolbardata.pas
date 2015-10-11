@@ -33,8 +33,8 @@ unit IdeCoolbarData;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, ComCtrls, ExtCtrls, ToolWin, Controls, fgl,
-  MenuIntf, IDEImagesIntf, Laz2_XMLCfg, ToolbarConfig, LazIDEIntf;
+  Classes, SysUtils, LCLProc, ComCtrls, ToolWin, Controls, fgl,
+  ToolBarIntf, IDEImagesIntf, Laz2_XMLCfg, ToolbarConfig;
 
 type
 
@@ -427,8 +427,8 @@ end;
 
 procedure TIDEToolBar.AddCustomItems(Index: Integer);
 var
-  mi: TIDEMenuItem;
   AName: string;
+  mi: TIDEButtonCommand;
 begin
   FToolBar.BeginUpdate;
   try
@@ -439,9 +439,9 @@ begin
         AddDivider
       else
       begin
-        mi := IDEMenuRoots.FindByPath(AName, False);
+        mi := IDEToolButtonCategories.FindItemByMenuPathOrName(AName);
         if Assigned(mi) then
-          AddButton(mi as TIDEMenuCommand);
+          AddButton(mi);
       end;
     end;
   finally

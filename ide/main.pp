@@ -75,13 +75,13 @@ uses
   FileUtil, LazFileUtils, LazFileCache, LazUTF8, LazUTF8Classes, UTF8Process,
   LConvEncoding, Laz2_XMLCfg, LazLogger,
   // SynEdit
-  AllSynEdit, SynEditKeyCmds, SynEditMarks,
+  AllSynEdit, SynEditKeyCmds, SynEditMarks, SynEditHighlighter,
   // IDE interface
   IDEIntf, ObjectInspector, PropEdits, PropEditUtils,
   MacroIntf, IDECommands, IDEWindowIntf, ComponentReg,
   SrcEditorIntf, NewItemIntf, IDEExternToolIntf, IDEMsgIntf,
   PackageIntf, ProjectIntf, CompOptsIntf, MenuIntf, LazIDEIntf, IDEDialogs,
-  IDEOptionsIntf, IDEImagesIntf, ComponentEditors,
+  IDEOptionsIntf, IDEImagesIntf, ComponentEditors, ToolBarIntf,
   // protocol
   IDEProtocol,
   // compile
@@ -380,17 +380,20 @@ type
     // help menu
     // see helpmanager.pas
 
-    // Handlers called when a menu opens. Can disable sub-items etc.
-    procedure mnuFileClicked(Sender: TObject);      // file menu
-    procedure mnuEditClicked(Sender: TObject);      // edit menu
-    procedure mnuSourceClicked(Sender: TObject);    // source menu
-    procedure mnuProjectClicked(Sender: TObject);   // project menu
-    procedure mnuRunClicked(Sender: TObject);       // run menu
-    procedure mnuPackageClicked(Sender: TObject);   // package menu
+    // Handlers to update commands. Can disable sub-items etc.
+    procedure UpdateMainIDECommands(Sender: TObject);
+    procedure UpdateFileMenu(Sender: TObject);      // file menu
+    procedure UpdateEditMenu(Sender: TObject);      // edit menu
+    procedure UpdateSourceMenu(Sender: TObject);    // source menu
+    procedure UpdateProjectMenu(Sender: TObject);   // project menu
+    procedure UpdateRunMenu(Sender: TObject);       // run menu
+    procedure UpdatePackageMenu(Sender: TObject);   // package menu
     // see pkgmanager.pas
 
     procedure mnuChgBuildModeClicked(Sender: TObject);
     procedure ToolBarOptionsClick(Sender: TObject);
+  private
+    FLastUnitInfoFileName: string; // used in UpdateProjectMenu
   private
     fBuilder: TLazarusBuilder;
     function DoBuildLazarusSub(Flags: TBuildLazarusFlags): TModalResult;
@@ -1572,7 +1575,9 @@ begin
   DoShowMessagesView(false);           // reopen extra windows
   fUserInputSinceLastIdle:=true; // Idle work gets done initially before user action.
   MainIDEBar.ApplicationIsActivate:=true;
+  IDECommandList.AddCustomUpdateEvent(@UpdateMainIDECommands);
   LazIDEInstances.StartListening(@LazInstancesStartNewInstance);
+  IDECommandList.StartUpdateHandler;
   FIDEStarted:=true;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.StartIDE END');{$ENDIF}
 end;
@@ -1580,6 +1585,9 @@ end;
 destructor TMainIDE.Destroy;
 begin
   ToolStatus:=itExiting;
+
+  IDECommandList.RemoveCustomUpdateEvent(@UpdateMainIDECommands);
+
   if Assigned(ExternalTools) then
     ExternalTools.TerminateAll;
 
@@ -1643,6 +1651,7 @@ begin
   FreeThenNil(LazProjectDescriptors);
   FreeThenNil(NewIDEItems);
   FreeThenNil(IDEMenuRoots);
+  FreeThenNil(IDEToolButtonCategories);
   // IDE options objects
   FreeThenNil(CodeToolsOpts);
   FreeThenNil(CodeExplorerOptions);
@@ -2119,8 +2128,6 @@ begin
   MainIDEBar.itmJumpToImplementation.OnClick := @SourceEditorManager.JumpToImplementationClicked;
   MainIDEBar.itmJumpToImplementationUses.OnClick := @SourceEditorManager.JumpToImplementationUsesClicked;
   MainIDEBar.itmJumpToInitialization.OnClick := @SourceEditorManager.JumpToInitializationClicked;
-  MainIDEBar.itmJumpToProcedureHeader.OnClick := @SourceEditorManager.JumpToProcedureHeaderClicked;
-  MainIDEBar.itmJumpToProcedureBegin.OnClick := @SourceEditorManager.JumpToProcedureBeginClicked;
   MainIDEBar.itmFindBlockStart.OnClick:=@mnuSearchFindBlockStart;
   MainIDEBar.itmFindBlockOtherEnd.OnClick:=@mnuSearchFindBlockOtherEnd;
   MainIDEBar.itmFindDeclaration.OnClick:=@mnuSearchFindDeclaration;
@@ -2449,6 +2456,8 @@ end;
 procedure TMainIDE.SetupStandardIDEMenuItems;
 begin
   IDEMenuRoots:=TIDEMenuRoots.Create;
+  IDEToolButtonCategories:=TIDEToolButtonCategories.Create;
+
   RegisterStandardSourceTabMenuItems;
   RegisterStandardSourceEditorMenuItems;
   RegisterStandardMessagesViewMenuItems;
@@ -2487,7 +2496,7 @@ end;
 procedure TMainIDE.SetupFileMenu;
 begin
   inherited SetupFileMenu;
-  mnuFile.OnClick:=@mnuFileClicked;
+  mnuFile.OnClick:=@UpdateFileMenu;
   with MainIDEBar do begin
     itmFileNewUnit.OnClick := @mnuNewUnitClicked;
     itmFileNewForm.OnClick := @mnuNewFormClicked;
@@ -2512,7 +2521,7 @@ end;
 procedure TMainIDE.SetupEditMenu;
 begin
   inherited SetupEditMenu;
-  mnuEdit.OnClick:=@mnuEditClicked;
+  mnuEdit.OnClick:=@UpdateEditMenu;
   with MainIDEBar do begin
     itmEditUndo.OnClick:=@mnuEditUndoClicked;
     itmEditRedo.OnClick:=@mnuEditRedoClicked;
@@ -2578,7 +2587,7 @@ end;
 procedure TMainIDE.SetupSourceMenu;
 begin
   inherited SetupSourceMenu;
-  mnuSource.OnClick:=@mnuSourceClicked;
+  mnuSource.OnClick:=@UpdateSourceMenu;
   with MainIDEBar do begin
     itmSourceCommentBlock.OnClick:=@mnuSourceCommentBlockClicked;
     itmSourceUncommentBlock.OnClick:=@mnuSourceUncommentBlockClicked;
@@ -2636,7 +2645,7 @@ end;
 procedure TMainIDE.SetupProjectMenu;
 begin
   inherited SetupProjectMenu;
-  mnuProject.OnClick:=@mnuProjectClicked;
+  mnuProject.OnClick:=@UpdateProjectMenu;
   with MainIDEBar do begin
     itmProjectNew.OnClick := @mnuNewProjectClicked;
     itmProjectNewFromFile.OnClick := @mnuNewProjectFromFileClicked;
@@ -2660,7 +2669,7 @@ end;
 procedure TMainIDE.SetupRunMenu;
 begin
   inherited SetupRunMenu;
-  mnuRun.OnClick:=@mnuRunClicked;
+  mnuRun.OnClick:=@UpdateRunMenu;
   with MainIDEBar do begin
     itmRunMenuCompile.OnClick := @mnuCompileProjectClicked;
     itmRunMenuBuild.OnClick := @mnuBuildProjectClicked;
@@ -2688,7 +2697,7 @@ end;
 procedure TMainIDE.SetupPackageMenu;
 begin
   inherited SetupPackageMenu;
-  mnuPackage.OnClick:=@mnuPackageClicked;
+  mnuPackage.OnClick:=@UpdatePackageMenu;
 end;
 
 procedure TMainIDE.SetupToolsMenu;
@@ -3551,7 +3560,7 @@ end;
 
 {------------------------------------------------------------------------------}
 
-procedure TMainIDE.mnuFileClicked(Sender: TObject);
+procedure TMainIDE.UpdateFileMenu(Sender: TObject);
 var
   ASrcEdit: TSourceEditor;
   AnUnitInfo: TUnitInfo;
@@ -3563,7 +3572,17 @@ begin
   end;
 end;
 
-procedure TMainIDE.mnuEditClicked(Sender: TObject);
+procedure TMainIDE.UpdateMainIDECommands(Sender: TObject);
+begin
+  UpdateFileMenu(Sender);
+  UpdateEditMenu(Sender);
+  UpdateSourceMenu(Sender);
+  UpdateProjectMenu(Sender);
+  UpdateRunMenu(Sender);
+  UpdatePackageMenu(Sender);
+end;
+
+procedure TMainIDE.UpdateEditMenu(Sender: TObject);
 var
   ASrcEdit: TSourceEditor;
   AnUnitInfo: TUnitInfo;
@@ -3613,38 +3632,29 @@ begin
   end;
 end;
 
-procedure TMainIDE.mnuSourceClicked(Sender: TObject);
+procedure TMainIDE.UpdateSourceMenu(Sender: TObject);
 var
   ASrcEdit: TSourceEditor;
   AnUnitInfo: TUnitInfo;
   Editable, SelEditable, SelAvail, IdentFound, StringFound: Boolean;
-  StartCode, EndCode: TCodeBuffer;
-  StartPos, EndPos: TPoint;
-  NewX, NewY, NewTopLine: integer;
-  CursorXY: TPoint;
+  xToken: string;
+  xAttr: TSynHighlighterAttributes;
 begin
   Editable:=False;
   SelAvail:=False;
-  IdentFound:=False;
   StringFound:=False;
-  ASrcEdit:=nil;
-  if BeginCodeTool(ASrcEdit,AnUnitInfo,[]) then begin
-    Assert(Assigned(ASrcEdit));
+  IdentFound:=False;
+  GetCurrentUnit(ASrcEdit,AnUnitInfo);
+  if ASrcEdit<>nil then
+  begin
     Editable:=not ASrcEdit.ReadOnly;
     SelAvail:=ASrcEdit.SelectionAvailable;
-
-    // Try to find main identifier declaration to enable rename feature.
-    CursorXY:=ASrcEdit.EditorComponent.LogicalCaretXY;
-    IdentFound:=CodeToolBoss.FindMainDeclaration(AnUnitInfo.Source,
-                  CursorXY.X,CursorXY.Y,StartCode,NewX,NewY,NewTopLine);
-
-    // Calculate start and end of string expr to enable ResourceString feature.
-    if ASrcEdit.EditorComponent.SelAvail then
-      CursorXY:=ASrcEdit.EditorComponent.BlockBegin;
-    if CodeToolBoss.GetStringConstBounds(AnUnitInfo.Source,CursorXY.X,CursorXY.Y,
-                                         StartCode,StartPos.X,StartPos.Y,
-                                         EndCode,EndPos.X,EndPos.Y,true) then
-      StringFound:=(StartCode<>EndCode) or (CompareCaret(StartPos,EndPos)<>0);
+    //it is faster to get information from SynEdit than from CodeTools
+    if ASrcEdit.EditorComponent.GetHighlighterAttriAtRowCol(ASrcEdit.EditorComponent.CaretXY, xToken, xAttr) then
+    begin
+      StringFound := xAttr = ASrcEdit.EditorComponent.Highlighter.StringAttribute;
+      IdentFound := xAttr = ASrcEdit.EditorComponent.Highlighter.IdentifierAttribute;
+    end;
   end;
   SelEditable:=Editable and SelAvail;
   with MainIDEBar do begin
@@ -3691,7 +3701,7 @@ begin
   end;
 end;
 
-procedure TMainIDE.mnuProjectClicked(Sender: TObject);
+procedure TMainIDE.UpdateProjectMenu(Sender: TObject);
 var
   ASrcEdit: TSourceEditor;
   AUnitInfo: TUnitInfo;
@@ -3702,32 +3712,37 @@ begin
   MainIDEBar.itmProjectAddTo.Enabled:=NotPartOfProj;
 end;
 
-procedure TMainIDE.mnuRunClicked(Sender: TObject);
+procedure TMainIDE.UpdateRunMenu(Sender: TObject);
 begin
   with MainIDEBar do begin
     itmRunMenuBuildManyModes.Enabled:=Project1.BuildModes.Count>1;
   end;
 end;
 
-procedure TMainIDE.mnuPackageClicked(Sender: TObject);
+procedure TMainIDE.UpdatePackageMenu(Sender: TObject);
 var
   ASrcEdit: TSourceEditor;
   AUnitInfo: TUnitInfo;
   PkgFile: TPkgFile;
   CanOpenPkgOfFile, CanAddCurFile: Boolean;
 begin
-  CanOpenPkgOfFile:=False;
-  CanAddCurFile:=False;
   GetCurrentUnit(ASrcEdit,AUnitInfo);
-  if Assigned(ASrcEdit) then begin
+  if Assigned(AUnitInfo) and (AUnitInfo.Filename <> FLastUnitInfoFileName) then
+  begin
     PkgFile:=PackageGraph.FindFileInAllPackages(AUnitInfo.Filename,true,
-                                            not AUnitInfo.IsPartOfProject);
+                                          not AUnitInfo.IsPartOfProject);
     CanOpenPkgOfFile:=Assigned(PkgFile);
     CanAddCurFile:=(not AUnitInfo.IsVirtual) and FileExistsUTF8(AUnitInfo.Filename)
           and not AUnitInfo.IsPartOfProject;
+    MainIDEBar.itmPkgOpenPackageOfCurUnit.Enabled:=CanOpenPkgOfFile;
+    MainIDEBar.itmPkgAddCurFileToPkg.Enabled:=CanAddCurFile;
+    FLastUnitInfoFileName := AUnitInfo.Filename;
+  end else
+  begin
+    MainIDEBar.itmPkgOpenPackageOfCurUnit.Enabled:=False;
+    MainIDEBar.itmPkgAddCurFileToPkg.Enabled:=False;
+    FLastUnitInfoFileName := '';
   end;
-  MainIDEBar.itmPkgOpenPackageOfCurUnit.Enabled:=CanOpenPkgOfFile;
-  MainIDEBar.itmPkgAddCurFileToPkg.Enabled:=CanAddCurFile;
 end;
 
 {------------------------------------------------------------------------------}

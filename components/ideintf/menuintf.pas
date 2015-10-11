@@ -18,7 +18,7 @@ unit MenuIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLType, LCLProc, Menus, ComCtrls, ImgList, Graphics,
+  Classes, SysUtils, LCLType, LCLProc, Menus, ImgList, Graphics,
   IDECommands, IDEImagesIntf;
   
 type
@@ -36,49 +36,37 @@ type
     
   { TIDEMenuItem }
 
-  TIDEMenuItem = class(TPersistent)
+  TIDEMenuItem = class(TIDESpecialCommand)
   private
     FAutoFreeMenuItem: boolean;
     FBitmap: TBitmap;
-    FCaption: string;
-    FEnabled: Boolean;
-    FHint: string;
-    FImageIndex: Integer;
     FMenuItem: TMenuItem;
     FMenuItemClass: TMenuItemClass;
-    FName: string;
-    FOnClickMethod: TNotifyEvent;
-    FOnClickProc: TNotifyProcedure;
-    FResourceName: String;
     FSection: TIDEMenuSection;
     FSectionIndex: Integer;
     FSize: integer;
     FTag: Integer;
     FUserTag: PtrUInt;
-    FVisible: Boolean;
     FLastVisibleActive: boolean;
     procedure MenuItemDestroy(Sender: TObject);
     procedure BitmapChange(Sender: TObject);
   protected
+    procedure SetCommand(const AValue: TIDECommand); override;
     procedure MenuItemClick(Sender: TObject); virtual;
     function GetBitmap: TBitmap; virtual;
-    function GetCaption: string; virtual;
-    function GetHint: String; virtual;
     procedure SetBitmap(const AValue: TBitmap); virtual;
-    procedure SetCaption(const AValue: string); virtual;
-    procedure SetEnabled(const AValue: Boolean); virtual;
-    procedure SetHint(const AValue: String); virtual;
-    procedure SetImageIndex(const AValue: Integer); virtual;
+    procedure SetCaption(AValue: string); override;
+    procedure SetEnabled(const AValue: Boolean); override;
+    procedure SetChecked(const AValue: Boolean); override;
+    procedure SetHint(const AValue: String); override;
+    procedure SetImageIndex(const AValue: Integer); override;
     procedure SetMenuItem(const AValue: TMenuItem); virtual;
-    procedure SetName(const AValue: string); virtual;
-    procedure SetOnClickMethod(const AValue: TNotifyEvent); virtual;
-    procedure SetOnClickProc(const AValue: TNotifyProcedure); virtual;
-    procedure SetResourceName(const AValue: String); virtual;
     procedure SetSection(const AValue: TIDEMenuSection); virtual;
-    procedure SetVisible(const AValue: Boolean); virtual;
+    procedure SetVisible(const AValue: Boolean); override;
     procedure ClearMenuItems; virtual;
+    procedure ShortCutsUpdated(const aShortCut, aShortCutKey2: TShortCut); override;
   public
-    constructor Create(const TheName: string); virtual;
+    constructor Create(const TheName: string); override;
     destructor Destroy; override;
     function GetImageList: TCustomImageList; virtual;
     function HasBitmap: Boolean;
@@ -93,41 +81,17 @@ type
     procedure WriteDebugReport(const Prefix: string;
                                MenuItemDebugReport: boolean); virtual;
     procedure ConsistencyCheck; virtual;
-    procedure TriggerClick;
   public
-    property Name: string read FName write SetName;
     property Bitmap: TBitmap read GetBitmap write SetBitmap;
-    property Hint: String read GetHint write SetHint;
-    property ImageIndex: Integer read FImageIndex write SetImageIndex;
-    property Visible: Boolean read FVisible write SetVisible;
-    property OnClick: TNotifyEvent read FOnClickMethod write SetOnClickMethod;
-    property OnClickProc: TNotifyProcedure read FOnClickProc write SetOnClickProc;
-    property Caption: string read GetCaption write SetCaption;
     property Section: TIDEMenuSection read FSection write SetSection;
-    property Enabled: Boolean read FEnabled write SetEnabled;
     property MenuItem: TMenuItem read FMenuItem write SetMenuItem;
     property MenuItemClass: TMenuItemClass read FMenuItemClass write FMenuItemClass;
     property SectionIndex: Integer read FSectionIndex;
     property AutoFreeMenuItem: boolean read FAutoFreeMenuItem write FAutoFreeMenuItem;
-    property ResourceName: String read FResourceName write SetResourceName;
     property Tag: Integer read FTag write FTag;
     property UserTag: PtrUInt read FUserTag write FUserTag;
   end;
   TIDEMenuItemClass = class of TIDEMenuItem;
-  
-  { TIDEToolButton }
-
-  TIDEToolButton = class(TToolButton)
-  private
-    FMenuItem: TIDEMenuItem;
-  protected
-    procedure DoOnAdded; virtual;
-  public
-    procedure Click; override;
-    property IdeMenuItem: TIDEMenuItem read FMenuItem write FMenuItem;
-  end;
-  TIDEToolButtonClass = class of TIDEToolButton;
-
 
   { TIDEMenuSection
     An TIDEMenuItem with children, either in a sub menu or separated with
@@ -224,36 +188,6 @@ type
   end;
   TIDEMenuSectionClass = class of TIDEMenuSection;
 
-  TIDEMenuCommandButtons = class;
-  TIDEMenuCommandButtonsEnumerator = class
-  private
-    FList: TIDEMenuCommandButtons;
-    FPosition: Integer;
-  public
-    constructor Create(AButtons: TIDEMenuCommandButtons);
-    function GetCurrent: TIDEToolButton;
-    function MoveNext: Boolean;
-    property Current: TIDEToolButton read GetCurrent;
-  end;
-
-  TIDEMenuCommandButtons = class(TComponent)
-  private
-    FList: TFPList;
-    function GetCount: Integer;
-    function GetItems(Index: Integer): TIDEToolButton;
-  protected
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-  public
-    constructor Create(aOwner: TComponent); override;
-    destructor Destroy; override;
-  public
-    function GetEnumerator: TIDEMenuCommandButtonsEnumerator;
-    procedure Add(const aBtn: TIDEToolButton);
-
-    property Count: Integer read GetCount;
-    property Items[Index: Integer]: TIDEToolButton read GetItems; default;
-  end;
-
   { TIDEMenuCommand
     A leaf menu item. No children.
     Hint: The shortcut is defined via the Command property.
@@ -261,54 +195,30 @@ type
   TIDEMenuCommand = class(TIDEMenuItem)
   private
     FAutoCheck: boolean;
-    FChecked: Boolean;
-    FCommand: TIDECommand;
     FDefault: Boolean;
     FGroupIndex: Byte;
     FRadioItem: Boolean;
     FRightJustify: boolean;
     FShowAlwaysCheckable: boolean;
-    FToolButtonClass: TIDEToolButtonClass;
-    FToolButtons: TIDEMenuCommandButtons;
   protected
     procedure MenuItemClick(Sender: TObject); override;
     procedure SetAutoCheck(const AValue: boolean); virtual;
-    procedure SetChecked(const AValue: Boolean); virtual;
     procedure SetDefault(const AValue: Boolean); virtual;
     procedure SetGroupIndex(const AValue: Byte); virtual;
     procedure SetRadioItem(const AValue: Boolean); virtual;
     procedure SetRightJustify(const AValue: boolean); virtual;
     procedure SetShowAlwaysCheckable(const AValue: boolean); virtual;
-    procedure SetCommand(const AValue: TIDECommand); virtual;
     procedure SetMenuItem(const AValue: TMenuItem); override;
     procedure SetOnClickMethod(const AValue: TNotifyEvent); override;
     procedure SetOnClickProc(const AValue: TNotifyProcedure); override;
-
-    procedure SetCaption(const AValue: string); override;
-    procedure SetEnabled(const AValue: Boolean); override;
-    procedure SetHint(const AValue: String); override;
-    procedure SetImageIndex(const AValue: Integer); override;
-    procedure SetResourceName(const AValue: String); override;
-    procedure SetVisible(const AValue: Boolean); override;
-
-    procedure CommandChanged(Sender: TObject);
   public
-    constructor Create(const TheName: string); override;
-    destructor Destroy; override;
-  public
-    procedure ToolButtonAdded(const aBtn: TIDEToolButton);
-  public
-    property Command: TIDECommand read FCommand write SetCommand;
     property AutoCheck: boolean read FAutoCheck write SetAutoCheck default False;
-    property Checked: Boolean read FChecked write SetChecked default False;
     property Default: Boolean read FDefault write SetDefault default False;
     property GroupIndex: Byte read FGroupIndex write SetGroupIndex default 0;
     property RadioItem: Boolean read FRadioItem write SetRadioItem;
     property RightJustify: boolean read FRightJustify write SetRightJustify;
     property ShowAlwaysCheckable: boolean read FShowAlwaysCheckable
                                           write SetShowAlwaysCheckable;
-    property ToolButtonClass: TIDEToolButtonClass read FToolButtonClass write FToolButtonClass;
-    property ToolButtons: TIDEMenuCommandButtons read FToolButtons;
   end;
   TIDEMenuCommandClass = class of TIDEMenuCommand;
   
@@ -629,94 +539,6 @@ begin
     OnClickMethod, OnClickProc, Command, ResourceName, UserTag);
 end;
 
-{ TIDEMenuCommandButtonsEnumerator }
-
-constructor TIDEMenuCommandButtonsEnumerator.Create(
-  AButtons: TIDEMenuCommandButtons);
-begin
-  inherited Create;
-  FList := AButtons;
-  FPosition := -1;
-end;
-
-function TIDEMenuCommandButtonsEnumerator.GetCurrent: TIDEToolButton;
-begin
-  Result := FList[FPosition];
-end;
-
-function TIDEMenuCommandButtonsEnumerator.MoveNext: Boolean;
-begin
-  Inc(FPosition);
-  Result := FPosition < FList.Count;
-end;
-
-{ TIDEMenuCommandButtons }
-
-procedure TIDEMenuCommandButtons.Add(const aBtn: TIDEToolButton);
-begin
-  FList.Add(aBtn);
-  aBtn.FreeNotification(Self);
-end;
-
-constructor TIDEMenuCommandButtons.Create(aOwner: TComponent);
-begin
-  inherited Create(aOwner);
-  FList := TFPList.Create;
-end;
-
-destructor TIDEMenuCommandButtons.Destroy;
-var
-  I: Integer;
-begin
-  for I := 0 to Count-1 do
-    Items[I].RemoveFreeNotification(Self);
-  FList.Free;
-  inherited Destroy;
-end;
-
-function TIDEMenuCommandButtons.GetCount: Integer;
-begin
-  Result := FList.Count;
-end;
-
-function TIDEMenuCommandButtons.GetEnumerator: TIDEMenuCommandButtonsEnumerator;
-begin
-  Result := TIDEMenuCommandButtonsEnumerator.Create(Self);
-end;
-
-function TIDEMenuCommandButtons.GetItems(Index: Integer): TIDEToolButton;
-begin
-  Result := TIDEToolButton(FList[Index]);
-end;
-
-procedure TIDEMenuCommandButtons.Notification(AComponent: TComponent;
-  Operation: TOperation);
-var
-  xIndex: Integer;
-begin
-  inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) then
-  begin
-    xIndex := FList.IndexOf(AComponent);
-    if xIndex >= 0 then
-      FList.Delete(xIndex);
-  end;
-end;
-
-{ TIDEToolButton }
-
-procedure TIDEToolButton.Click;
-begin
-  inherited Click;
-  if assigned(FMenuItem) then
-    FMenuItem.TriggerClick;
-end;
-
-procedure TIDEToolButton.DoOnAdded;
-begin
-
-end;
-
 { TIDEMenuItem }
 
 procedure TIDEMenuItem.MenuItemClick(Sender: TObject);
@@ -736,31 +558,10 @@ begin
   if MenuItem<>nil then MenuItem.Bitmap:=Bitmap;
 end;
 
-procedure TIDEMenuItem.SetOnClickProc(const AValue: TNotifyProcedure);
-begin
-  FOnClickProc := AValue;
-end;
-
-procedure TIDEMenuItem.SetResourceName(const AValue: String);
-begin
-  if FResourceName = AValue then exit;
-  FResourceName := AValue;
-  if MenuItem <> nil then
-    if AValue <> '' then
-      MenuItem.ImageIndex := IDEImages.LoadImage(16, FResourceName)
-    else
-      MenuItem.ImageIndex := -1;
-end;
-
-procedure TIDEMenuItem.SetOnClickMethod(const AValue: TNotifyEvent);
-begin
-  FOnClickMethod := AValue;
-end;
-
 procedure TIDEMenuItem.SetEnabled(const AValue: Boolean);
 begin
-  if FEnabled=AValue then exit;
-  FEnabled:=AValue;
+  if Enabled=AValue then exit;
+  inherited SetEnabled(AValue);
   if MenuItem<>nil then
     MenuItem.Enabled:=Enabled;
 end;
@@ -775,19 +576,6 @@ begin
   Result:=FBitmap;
 end;
 
-function TIDEMenuItem.GetCaption: string;
-begin
-  if FCaption<>'' then
-    Result:=FCaption
-  else
-    Result:=FName;
-end;
-
-function TIDEMenuItem.GetHint: String;
-begin
-  Result:=FHint;
-end;
-
 procedure TIDEMenuItem.SetBitmap(const AValue: TBitmap);
 begin
   if FBitmap=AValue then exit;
@@ -799,24 +587,53 @@ begin
     MenuItem.Bitmap:=FBitmap;
 end;
 
-procedure TIDEMenuItem.SetCaption(const AValue: string);
+procedure TIDEMenuItem.SetCaption(AValue: string);
 begin
-  FCaption:=AValue;
+  if Caption=AValue then Exit;
+  inherited SetCaption(AValue);
   if MenuItem<>nil then
     MenuItem.Caption:=Caption;
 end;
 
+procedure TIDEMenuItem.SetChecked(const AValue: Boolean);
+begin
+  if Checked=AValue then exit;
+  inherited SetChecked(AValue);
+  if MenuItem<>nil then
+    MenuItem.Checked:=Checked;
+end;
+
+procedure TIDEMenuItem.SetCommand(const AValue: TIDECommand);
+var
+  I: Integer;
+  xUser: TIDESpecialCommand;
+begin
+  inherited SetCommand(AValue);
+  //copy properties to other command users
+  if AValue<>nil then
+    for I := 0 to AValue.UserCount-1 do
+      if AValue.Users[I] <> Self then
+      begin
+        xUser:=AValue.Users[I];
+        xUser.Caption:=Caption;
+        xUser.Hint:=Hint;
+        xUser.ImageIndex:=ImageIndex;
+        xUser.Enabled:=Enabled;
+      end;
+end;
+
 procedure TIDEMenuItem.SetHint(const AValue: String);
 begin
-  FHint:=AValue;
+  if Hint=AValue then Exit;
+  inherited SetHint(AValue);
   if MenuItem<>nil then
     MenuItem.Hint:=Hint;
 end;
 
 procedure TIDEMenuItem.SetImageIndex(const AValue: Integer);
 begin
-  if FImageIndex=AValue then exit;
-  FImageIndex:=AValue;
+  if ImageIndex=AValue then exit;
+  inherited SetImageIndex(AValue);
   if MenuItem<>nil then
     MenuItem.ImageIndex:=ImageIndex;
 end;
@@ -837,16 +654,9 @@ begin
     MenuItem.Visible := Visible;
     MenuItem.Enabled := Enabled;
     MenuItem.OnClick := @MenuItemClick;
-    if ResourceName <> '' then
-      MenuItem.ImageIndex := IDEImages.LoadImage(16, ResourceName);
+    MenuItem.ImageIndex := ImageIndex;
   end else if Section<>nil then
     Section.Invalidate(SectionIndex,SectionIndex);
-end;
-
-procedure TIDEMenuItem.SetName(const AValue: string);
-begin
-  if FName=AValue then exit;
-  FName:=AValue;
 end;
 
 procedure TIDEMenuItem.SetSection(const AValue: TIDEMenuSection);
@@ -867,13 +677,24 @@ procedure TIDEMenuItem.SetVisible(const AValue: Boolean);
 var
   OldVisibleActive: Boolean;
 begin
-  if FVisible=AValue then exit;
+  if Visible=AValue then exit;
   OldVisibleActive:=VisibleActive;
-  FVisible:=AValue;
+  inherited SetVisible(AValue);
   if MenuItem<>nil then
     MenuItem.Visible:=Visible;
   if (VisibleActive<>OldVisibleActive) and (Section<>nil) then
     Section.ItemVisibleActiveChanged(Self);
+end;
+
+procedure TIDEMenuItem.ShortCutsUpdated(const aShortCut,
+  aShortCutKey2: TShortCut);
+begin
+  inherited ShortCutsUpdated(aShortCut, aShortCutKey2);
+  if MenuItem<>nil then
+  begin
+    MenuItem.ShortCut:=aShortCut;
+    MenuItem.ShortCutKey2:=aShortCutKey2;
+  end;
 end;
 
 procedure TIDEMenuItem.ClearMenuItems;
@@ -893,14 +714,10 @@ end;
 
 constructor TIDEMenuItem.Create(const TheName: string);
 begin
-  inherited Create;
+  inherited Create(TheName);
   FSize:=1;
-  FName:=TheName;
-  FEnabled:=true;
-  FVisible:=true;
   FMenuItemClass:=TMenuItem;
   FSectionIndex:=-1;
-  FImageIndex:=-1;
   {$IFDEF VerboseMenuIntf}
   //debugln('TIDEMenuItem.Create ',dbgsName(Self),' Name="',Name,'"');
   {$ENDIF}
@@ -1074,11 +891,6 @@ begin
     if SectionIndex<0 then
       RaiseError;
   end;
-end;
-
-procedure TIDEMenuItem.TriggerClick;
-begin
-  MenuItemClick(Self);
 end;
 
 { TIDEMenuSection }
@@ -1516,7 +1328,7 @@ end;
 
 procedure TIDEMenuSection.Insert(Index: Integer; AnItem: TIDEMenuItem);
 begin
-  AnItem.fName:=CreateUniqueName(AnItem.Name);
+  AnItem.Name:=CreateUniqueName(AnItem.Name);
   FItems.Insert(Index,AnItem);
   UpdateChildsIndex(Index);
   UpdateSize(AnItem.Size);
@@ -1781,33 +1593,6 @@ end;
 
 { TIDEMenuCommand }
 
-procedure TIDEMenuCommand.CommandChanged(Sender: TObject);
-begin
-  //DebugLn('TIDEMenuCommand.CommandChanged ',Name);
-  if MenuItem<>nil then
-    if FCommand<>nil then begin
-      MenuItem.ShortCut:=KeyToShortCut(FCommand.ShortcutA.Key1,FCommand.ShortcutA.Shift1);
-      MenuItem.ShortCutKey2:=KeyToShortCut(FCommand.ShortcutA.Key2,FCommand.ShortcutA.Shift2);
-    end
-    else begin
-      MenuItem.ShortCut:=0;
-      MenuItem.ShortCutKey2:=0;
-    end;
-end;
-
-constructor TIDEMenuCommand.Create(const TheName: string);
-begin
-  inherited Create(TheName);
-  FToolButtonClass := TIDEToolButton;
-  FToolButtons := TIDEMenuCommandButtons.Create(nil);
-end;
-
-destructor TIDEMenuCommand.Destroy;
-begin
-  FToolButtons.Free;
-  inherited Destroy;
-end;
-
 procedure TIDEMenuCommand.MenuItemClick(Sender: TObject);
 begin
   inherited MenuItemClick(Sender);
@@ -1825,36 +1610,11 @@ begin
   if MenuItem<>nil then MenuItem.AutoCheck:=AutoCheck;
 end;
 
-procedure TIDEMenuCommand.SetCaption(const AValue: string);
-var
-  xBtn: TIDEToolButton;
-begin
-  inherited SetCaption(AValue);
-  for xBtn in ToolButtons do
-    xBtn.Caption := AValue;
-end;
-
-procedure TIDEMenuCommand.SetChecked(const AValue: Boolean);
-begin
-  if FChecked=AValue then exit;
-  FChecked:=AValue;
-  if MenuItem<>nil then MenuItem.Checked:=Checked;
-end;
-
 procedure TIDEMenuCommand.SetDefault(const AValue: Boolean);
 begin
   if FDefault=AValue then exit;
   FDefault:=AValue;
   if MenuItem<>nil then MenuItem.Default:=Default;
-end;
-
-procedure TIDEMenuCommand.SetEnabled(const AValue: Boolean);
-var
-  xBtn: TIDEToolButton;
-begin
-  inherited SetEnabled(AValue);
-  for xBtn in ToolButtons do
-    xBtn.Enabled := AValue;
 end;
 
 procedure TIDEMenuCommand.SetGroupIndex(const AValue: Byte);
@@ -1865,42 +1625,12 @@ begin
     MenuItem.GroupIndex:=GroupIndex;
 end;
 
-procedure TIDEMenuCommand.SetHint(const AValue: String);
-var
-  xBtn: TIDEToolButton;
-begin
-  inherited SetHint(AValue);
-  for xBtn in ToolButtons do
-    xBtn.Hint := AValue;
-end;
-
-procedure TIDEMenuCommand.SetImageIndex(const AValue: Integer);
-var
-  xBtn: TIDEToolButton;
-begin
-  inherited SetImageIndex(AValue);
-  for xBtn in ToolButtons do
-    xBtn.ImageIndex := AValue;
-end;
-
 procedure TIDEMenuCommand.SetRadioItem(const AValue: Boolean);
 begin
   if FRadioItem=AValue then exit;
   FRadioItem:=AValue;
   if MenuItem<>nil then
     MenuItem.RadioItem:=RadioItem;
-end;
-
-procedure TIDEMenuCommand.SetResourceName(const AValue: String);
-var
-  xBtn: TIDEToolButton;
-begin
-  inherited SetResourceName(AValue);
-  for xBtn in ToolButtons do
-    if AValue <> '' then
-      xBtn.ImageIndex := IDEImages.LoadImage(16, FResourceName)
-    else
-      xBtn.ImageIndex := -1;
 end;
 
 procedure TIDEMenuCommand.SetRightJustify(const AValue: boolean);
@@ -1919,44 +1649,6 @@ begin
     MenuItem.ShowAlwaysCheckable:=ShowAlwaysCheckable;
 end;
 
-procedure TIDEMenuCommand.SetVisible(const AValue: Boolean);
-begin
-  inherited SetVisible(AValue);
-  //do not set visible for tool buttons, you usually only want to hide menu item and keep tool buttons visible
-end;
-
-procedure TIDEMenuCommand.ToolButtonAdded(const aBtn: TIDEToolButton);
-begin
-  ToolButtons.Add(aBtn);
-  aBtn.DoOnAdded;
-end;
-
-procedure TIDEMenuCommand.SetCommand(const AValue: TIDECommand);
-begin
-  if FCommand = AValue then
-    Exit;
-  if FCommand <> nil then
-  begin
-    //DebugLn('TIDEMenuCommand.SetCommand OLD ',ShortCutToText(FCommand.AsShortCut),' FCommand.Name=',FCommand.Name,' Name=',Name,' FCommand=',dbgs(Pointer(FCommand)));
-    FCommand.OnChange := nil;
-    if FCommand.OnExecute=OnClick then
-      FCommand.OnExecute:=nil;
-    if FCommand.OnExecuteProc=OnClickProc then
-      FCommand.OnExecuteProc:=nil;
-  end;
-  FCommand := AValue;
-  if FCommand <> nil then
-  begin
-    if FCommand.OnExecute = nil then
-      FCommand.OnExecute := OnClick;
-    if FCommand.OnExecuteProc = nil then
-      FCommand.OnExecuteProc := OnClickProc;
-    FCommand.OnChange := @CommandChanged;
-    //DebugLn('TIDEMenuCommand.SetCommand NEW ',ShortCutToText(FCommand.AsShortCut),' FCommand.Name=',FCommand.Name,' Name=',Name,' FCommand=',dbgs(Pointer(FCommand)));
-  end;
-  CommandChanged(nil);
-end;
-
 procedure TIDEMenuCommand.SetMenuItem(const AValue: TMenuItem);
 begin
   inherited SetMenuItem(AValue);
@@ -1967,9 +1659,9 @@ begin
     MenuItem.RadioItem:=RadioItem;
     MenuItem.RightJustify:=RightJustify;
     MenuItem.ShowAlwaysCheckable:=ShowAlwaysCheckable;
-    if FCommand<>nil then begin
-      MenuItem.ShortCut:=KeyToShortCut(FCommand.ShortcutA.Key1,FCommand.ShortcutA.Shift1);
-      MenuItem.ShortCutKey2:=KeyToShortCut(FCommand.ShortcutA.Key2,FCommand.ShortcutA.Shift2);
+    if Command<>nil then begin
+      MenuItem.ShortCut:=KeyToShortCut(Command.ShortcutA.Key1,Command.ShortcutA.Shift1);
+      MenuItem.ShortCutKey2:=KeyToShortCut(Command.ShortcutA.Key2,Command.ShortcutA.Shift2);
     end
     else begin
       MenuItem.ShortCut:=0;
@@ -2020,7 +1712,7 @@ end;
 
 procedure TIDEMenuRoots.RegisterMenuRoot(Section: TIDEMenuSection);
 begin
-  Section.FName:=CreateUniqueName(Section.Name);
+  Section.Name:=CreateUniqueName(Section.Name);
   FItems.Add(Section);
 end;
 

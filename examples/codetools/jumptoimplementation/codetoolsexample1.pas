@@ -26,9 +26,9 @@ unit CodeToolsExample1;
 interface
 
 uses
-  Classes, SysUtils, MenuIntf, LazIDEIntf, Controls, SrcEditorIntf,
+  Classes, SysUtils, LazIDEIntf, Controls, SrcEditorIntf,
   CodeToolManager, CodeTree, CodeCache, CustomCodeTool, IDECommands,
-  LCLType, Menus, ComCtrls;
+  ToolBarIntf, LCLType, Menus, ComCtrls;
 
 type
   TJumpToSectionDemoToolButton = class(TIDEToolButton)
@@ -121,17 +121,16 @@ procedure Register;
 var
   Key: TIDEShortCut;
   Cat: TIDECommandCategory;
-  CmdMyTool: TIDECommand;
-  xMenuCmd: TIDEMenuCommand;
+  xCmd: TIDECommand;
+  xBtnCmd: TIDEButtonCommand;
 begin
-  // register IDE shortcut and menu item
+  // register IDE shortcut and tool button
   Key := IDEShortCut(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Cat:=IDECommandList.FindCategoryByName(CommandCategoryCodeTools);
-  CmdMyTool := RegisterIDECommand(Cat,'JumpToImplementationDemo', 'Jump to implementation keyword (demo)', Key, nil, @JumpIDEToImplementationKeyword);
+  xCmd := RegisterIDECommand(Cat,'JumpToImplementationDemo', 'Jump to implementation keyword (demo)', Key, nil, @JumpIDEToImplementationKeyword);
 
-  xMenuCmd := RegisterIDEMenuCommand(itmCodeToolSearches,'JumpToImplementationDemo',
-    'Jump to implementation keyword (demo)',nil,@JumpIDEToImplementationKeyword, CmdMyTool);
-  xMenuCmd.ToolButtonClass := TJumpToSectionDemoToolButton;
+  xBtnCmd := RegisterIDEButtonCommand(xCmd);
+  xBtnCmd.ToolButtonClass := TJumpToSectionDemoToolButton;
 end;
 
 { TJumpToSectionDemoToolButton }

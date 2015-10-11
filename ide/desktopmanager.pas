@@ -9,7 +9,7 @@ uses
   Buttons, ButtonPanel, IDEImagesIntf,
   LCLType, LazarusIDEStrConsts, LCLProc, EnvironmentOpts,
   IDEWindowIntf, IDEOptionsIntf, IDEOptionDefs, Laz2_XMLCfg, InputHistory,
-  MenuIntf, Menus, ComCtrls, ActnList;
+  ToolBarIntf, Menus, ComCtrls, ActnList;
 
 type
 
