@@ -1353,6 +1353,8 @@ begin
     AddCompilerFunction('Seg','var X','LongInt');
     AddCompilerProcedure('SetLength','var S:String;NewLength:Integer');
     AddCompilerProcedure('SetLength','var A:Array;NewLength:Integer');
+    if Scanner.Values.IsDefined('FPC_HAS_CPSTRING') then
+      AddCompilerProcedure('SetString','out S:RawByteString;Buf:PAnsiChar;Len:SizeInt');
     AddCompilerFunction('SizeOf','Identifier','Integer');
     AddCompilerFunction('Slice','var A:Array;Count:Integer','Array');
     AddCompilerProcedure('Str','const X[:Width[:Decimals]];var S:String');
