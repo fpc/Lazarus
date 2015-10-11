@@ -12919,6 +12919,8 @@ begin
       Key := 0
     end;
   end
+  else if ((key = VK_C) or (key = VK_INSERT)) and (ssCtrl in Shift) then
+    FHyper.CopyToClipboard
   else
     inherited KeyDown(Key, Shift);
 end;
