@@ -176,8 +176,8 @@ type
     lihtQuickSyntaxCheck,  // called when quick syntax check is clicked (menu item or shortcut)
     lihtGetFPCFrontEndParams, // called when the IDE gets the parameters of the 'fpc' front end tool
     lihtGetFPCFrontEndPath, // called when the IDE gets the path of the 'fpc' front end tool
-    lihtShowDesignerFormOfSource, // called when showed a designer form for code editor (AEditor can be nil!)
-    lihtShowSourceOfActiveDesignerForm, // called when showed a code of designer form
+    lihtShowDesignerFormOfSource, // called after showing a designer form for code editor (AEditor can be nil!)
+    lihtShowSourceOfActiveDesignerForm, // called after showing a code of designer form
     lihtUpdateIDEComponentPalette,
     lihtUpdateComponentPageControl
     );
