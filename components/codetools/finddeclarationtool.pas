@@ -3129,7 +3129,7 @@ begin
   {$IFDEF CheckNodeTool}CheckNodeTool(ContextNode);{$ENDIF}
   // find declaration of identifier
   Identifier:=@Src[IdentAtom.StartPos];
-  //DebugLn(['TFindDeclarationTool.IdentifierIsDefined ',GetIdentifier(Identifier),' ',CompareIdentifiers(Identifier,'Result'),' ',]);
+  //DebugLn(['TFindDeclarationTool.IdentifierIsDefined BEGIN Params IdentAtom.StartPos=',IdentAtom.StartPos,'=',GetIdentifier(Identifier),', ContextNode.StartPos=',ContextNode.StartPos,'=',ContextNode.DescAsString,' "',ExtractNode(ContextNode,[]),'"']);
   if (CompareIdentifiers(Identifier,'Self')=0) then begin
     Node:=ContextNode;
     while (Node<>nil) do begin
@@ -3694,7 +3694,7 @@ var
     repeat
       // search for prior node
       {$IFDEF ShowTriedIdentifiers}
-      DebugLn('[TFindDeclarationTool.FindIdentifierInContext] Searching prior node of ',ContextNode.DescAsString,' ',dbgstr(copy(Src,ContextNode.StartPos,ContextNode.EndPos-ContextNode.StartPos)));
+      DebugLn('[TFindDeclarationTool.FindIdentifierInContext.SearchNextNode] Searching prior node of ',ContextNode.DescAsString,' ',dbgstr(copy(Src,ContextNode.StartPos,ContextNode.EndPos-ContextNode.StartPos)));
       {$ENDIF}
       LastSearchedNode:=ContextNode;
 
@@ -3711,7 +3711,8 @@ var
         end;
       end;
 
-      if (ContextNode.Desc in AllClasses) then begin//allow ctnRecordType and ctnTypeTypeBeforeHelper: they can have helpers!
+      if (ContextNode.Desc in AllClasses) then begin
+        //allow ctnRecordType and ctnTypeTypeBeforeHelper: they can have helpers!
         if (fdfSearchInAncestors in Flags) then begin
           // after searching in a class definition, search in its ancestors
           // ToDo: check for cycles in ancestors
@@ -3726,7 +3727,6 @@ var
             Params.Flags := OldFlags;
             if Result then
             begin
-              Result := True;
               FindIdentifierInContext:=true;
               Exit(AbortNoCacheResult);
             end;
@@ -3783,26 +3783,36 @@ var
         if ContextNode.Desc in AllClassSections then
           break
         else if ContextNode.Desc=ctnWithVariable then begin
-          // check if StartContextNode is covered by the ContextNode
-          // a WithVariable ranges from the start of its expression
-          // to the end of the with statement
+          { check if StartContextNode is covered by the ContextNode
+             a WithVariable ranges from the start of its expression
+             to the end of the with statement
+             for example:
+               will be skipped:
+                 with ContextNode do ;
+                 with B do StartContextNode;
+
+               will be searched:
+                 with ContextNode, StartContextNode do ;
+          }
           {$IFDEF ShowExprEval}
           DebugLn('SearchNextNode WithVar StartContextNode.StartPos=',dbgs(StartContextNode.StartPos),
             ' ContextNode=',dbgs(ContextNode.StartPos),'-',dbgs(ContextNode.EndPos),
-            ' WithStart="',StringToPascalConst(copy(Src,ContextNode.StartPos,15)),'"');
+            ' WithStart=',StringToPascalConst(
+              copy(copy(Src,ContextNode.StartPos,ContextNode.EndPos-ContextNode.StartPos),1,50)));
           {$ENDIF}
           if (StartContextNode.StartPos>=ContextNode.StartPos)
-          and (StartContextNode.StartPos<ContextNode.EndPos) then break;
-          { ELSE: this with statement does not cover the startcontext
-           -> skip it
-           for example:
-             will be skipped:
-               with ContextNode do ;
-               with B do StartContextNode;
-
-             will be searched:
-               with ContextNode, StartContextNode do ;
-          }
+          and (StartContextNode.StartPos<ContextNode.EndPos) then begin
+            {$IFDEF ShowExprEval}
+            debugln(['SearchNextNode WithVar covers startcontext']);
+            {$ENDIF}
+            // for example: with ContextNode, StartContextNode do ;
+            break;
+          end else begin
+            // this with statement does not cover the startcontext. For instance:
+            //   with ContextNode do ;
+            //   with B do StartContextNode;
+            // -> skip it
+          end;
         end else if ContextNode.Desc=ctnOnBlock then begin
           // the ctnOnIdentifier is only valid within the ctnOnStatement
           // => skip

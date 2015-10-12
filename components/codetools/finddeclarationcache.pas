@@ -106,7 +106,7 @@ type
   }
 const
   AllNodeCacheDescs =
-    AllClasses+[ctnProcedure, ctnWithStatement];
+    AllClasses+[ctnProcedure, ctnWithVariable];
   
 type
   TNodeCacheEntryFlag = (ncefSearchedInParents, ncefSearchedInAncestors);
