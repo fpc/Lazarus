@@ -17,6 +17,7 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     Height = 23
     Top = 6
     Width = 305
+    OnAfterFilter = FilterEditAfterFilter
     OnFilterItem = FilterEditFilterItem
     ButtonWidth = 23
     NumGlyphs = 1
