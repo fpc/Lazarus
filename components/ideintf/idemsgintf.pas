@@ -7,7 +7,7 @@
   Author: Mattias Gaertner
 
   Abstract:
-    Interface to the IDE messages (below the source editor).
+    Interface to the Messages window (below the source editor).
 }
 unit IDEMsgIntf;
 
