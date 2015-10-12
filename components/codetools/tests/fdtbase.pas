@@ -2,6 +2,7 @@
  Test with:
    ./finddeclarationtest --format=plain --suite=TTestFindDeclaration
    ./finddeclarationtest --format=plain --suite=TestFindDeclaration_Basic
+   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_With
    ./finddeclarationtest --format=plain --suite=TestFindDeclaration_NestedClasses
    ./finddeclarationtest --format=plain --suite=TestFindDeclaration_ClassHelper
    ./finddeclarationtest --format=plain --suite=TestFindDeclaration_TypeHelper
@@ -36,6 +37,7 @@ type
     procedure FindDeclarations(Filename: string);
   published
     procedure TestFindDeclaration_Basic;
+    procedure TestFindDeclaration_With;
     procedure TestFindDeclaration_NestedClasses;
     procedure TestFindDeclaration_ClassHelper;
     procedure TestFindDeclaration_TypeHelper;
@@ -84,7 +86,7 @@ procedure TTestFindDeclaration.FindDeclarations(Filename: string);
         PrependPath(GetIdentifier(@Tool.Src[Node.StartPos]),Result);
       ctnInterface,ctnUnit:
         PrependPath(Tool.GetSourceName(false),Result);
-      ctnProcedureHead:
+      ctnProcedure:
         PrependPath(Tool.ExtractProcName(Node,[]),Result);
       end;
       Node:=Node.Parent;
@@ -171,6 +173,7 @@ begin
         end else begin
           FoundTool.CaretToCleanPos(FoundCursorPos,FoundCleanPos);
           FoundNode:=FoundTool.FindDeepestNodeAtPos(FoundCleanPos,true);
+          //debugln(['TTestFindDeclaration.FindDeclarations Found: ',FoundTool.CleanPosToStr(FoundNode.StartPos,true)]);
           FoundPath:=NodeAsPath(FoundTool,FoundNode);
         end;
         //debugln(['TTestFindDeclaration.FindDeclarations FoundPath=',FoundPath]);
@@ -232,6 +235,11 @@ end;
 procedure TTestFindDeclaration.TestFindDeclaration_Basic;
 begin
   FindDeclarations('fdt_basic.pas');
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_With;
+begin
+  FindDeclarations('fdt_with.pas');
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_NestedClasses;

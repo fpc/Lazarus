@@ -992,6 +992,7 @@ components/codetools/tests/fdt_nestedclasses.pas svneol=native#text/plain
 components/codetools/tests/fdt_objccategory.pas svneol=native#text/plain
 components/codetools/tests/fdt_objcclass.pas svneol=native#text/plain
 components/codetools/tests/fdt_typehelper.pas svneol=native#text/plain
+components/codetools/tests/fdt_with.pas svneol=native#text/plain
 components/codetools/tests/fdtbase.pas svneol=native#text/plain
 components/codetools/tests/finddeclarationtest.lpi svneol=native#text/plain
 components/codetools/tests/finddeclarationtest.lpr svneol=native#text/plain

@@ -40,7 +40,7 @@
         <PackageName Value="fpcunitconsolerunner"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="8">
+    <Units Count="9">
       <Unit0>
         <Filename Value="finddeclarationtest.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -73,6 +73,10 @@
         <Filename Value="fdt_objcclass.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit7>
+      <Unit8>
+        <Filename Value="fdt_with.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit8>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
