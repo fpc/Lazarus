@@ -82,7 +82,6 @@ type
 
   TMainIDEBase = class(TMainIDEInterface)
   private
-    FToolStatus: TIDEToolStatus;
     FWindowMenuActiveForm: TCustomForm;
     FDisplayState: TDisplayState;
     procedure SetDisplayState(AValue: TDisplayState);
@@ -119,8 +118,7 @@ type
     procedure SetupHelpMenu; virtual;
 
     procedure LoadMenuShortCuts; virtual;
-    function GetToolStatus: TIDEToolStatus; override;
-    procedure SetToolStatus(const AValue: TIDEToolStatus); virtual;
+    procedure SetToolStatus(const AValue: TIDEToolStatus); override;
 
     procedure DoMnuWindowClicked(Sender: TObject);
     procedure mnuOpenProjectClicked(Sender: TObject); virtual; abstract;
@@ -191,7 +189,6 @@ type
       Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual; abstract;
     procedure SelComponentPageButtonClick(Sender: TObject); virtual; abstract;
   public
-    property ToolStatus: TIDEToolStatus read FToolStatus write SetToolStatus;
     property WindowMenuActiveForm: TCustomForm read FWindowMenuActiveForm write FWindowMenuActiveForm;
     property DisplayState: TDisplayState read FDisplayState write SetDisplayState;
   end;
@@ -677,8 +674,8 @@ end;
 
 procedure TMainIDEBase.SetToolStatus(const AValue: TIDEToolStatus);
 begin
-  if FToolStatus=AValue then exit;
-  FToolStatus:=AValue;
+  if ToolStatus=AValue then exit;
+  inherited SetToolStatus(AValue);
   UpdateCaption;
 end;
 
@@ -1721,11 +1718,6 @@ begin
     itmHelpOnlineHelp.Command:=GetCommand(ecOnlineHelp);
     itmHelpReportingBug.Command:=GetCommand(ecReportingBug);
   end;
-end;
-
-function TMainIDEBase.GetToolStatus: TIDEToolStatus;
-begin
-  Result:=FToolStatus;
 end;
 
 function TMainIDEBase.DoOpenMacroFile(Sender: TObject; const AFilename: string

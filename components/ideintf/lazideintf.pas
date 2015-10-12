@@ -173,19 +173,39 @@ type
     lihtProjectBuilding, // called before IDE builds the project
     lihtProjectDependenciesCompiling, // called before IDE compiles dependencies of project
     lihtProjectDependenciesCompiled, // called after IDE compiled dependencies of project
+    lihtProjectBuildingFinished, // called after IDE builds the project
+    lihtLazarusBuilding, // called before IDE builds Lazarus IDE
+    lihtLazarusBuildingFinished, // called after IDE builds Lazarus IDE
     lihtQuickSyntaxCheck,  // called when quick syntax check is clicked (menu item or shortcut)
     lihtGetFPCFrontEndParams, // called when the IDE gets the parameters of the 'fpc' front end tool
     lihtGetFPCFrontEndPath, // called when the IDE gets the path of the 'fpc' front end tool
     lihtShowDesignerFormOfSource, // called after showing a designer form for code editor (AEditor can be nil!)
     lihtShowSourceOfActiveDesignerForm, // called after showing a code of designer form
     lihtUpdateIDEComponentPalette,
-    lihtUpdateComponentPageControl
+    lihtUpdateComponentPageControl,
+    lihtChangeToolStatus//called when IDEToolStatus has changed (e.g. itNone->itBuilder etc.)
     );
     
+  TLazToolStatus = (
+    itNone,            // The default mode. All editing allowed.
+    itExiting,         // the ide is shutting down
+    itBuilder,         // compiling (the project, a package, IDE itself, an external tool)
+                       //    Loading/Saving/Debugging is not allowed.
+    itDebugger,        // debugging the project.
+                       //    Loading/Saving/Compiling is not allowed.
+    itCodeTools,       // the CodeToolBoss is working and has called the progress event.
+    itCodeToolAborting,// the CodeToolBoss is working and is about to abort
+    itCustom           // this state is not used yet.
+    );
+  TLazToolStatusChangeEvent = procedure(Sender: TObject; OldStatus, NewStatus: TLazToolStatus) of object;
+
+  TLazBuildingFinishedEvent = procedure(Sender: TObject; BuildSuccessful: Boolean) of object;
+
   { TLazIDEInterface }
 
   TLazIDEInterface = class(TComponent)
   private
+    FToolStatus: TLazToolStatus;
     FMainBarSubTitle: string;
     FOpenEditorsOnCodeToolChange: boolean;
     FOpenMainSourceOnCodeToolChange: boolean;
@@ -203,6 +223,7 @@ type
     // used to find the last form so you can display the correct tab
     FLastFormActivated: TCustomForm;
 
+    procedure SetToolStatus(const AToolStatus: TLazToolStatus); virtual;
     function GetActiveProject: TLazProject; virtual; abstract;
     procedure DoCallNotifyHandler(HandlerType: TLazarusIDEHandlerType); overload;
     function DoCallModalFunctionHandler(HandlerType: TLazarusIDEHandlerType
@@ -215,6 +236,8 @@ type
       HandlerType: TLazarusIDEHandlerType;
       Sender: TObject; AEditor: TSourceEditorInterface;
       AComponentPaletteClassSelected: Boolean);
+    procedure DoCallBuildingFinishedHandler(HandlerType: TLazarusIDEHandlerType;
+      Sender: TObject; BuildSuccessful: Boolean);
 
     procedure SetMainBarSubTitle(const AValue: string); virtual;
   public
@@ -222,6 +245,8 @@ type
     destructor Destroy; override;
     property OwningComponent: TComponent read FOwningComponent;
     
+    property ToolStatus: TLazToolStatus read FToolStatus write SetToolStatus;
+
     // the main window with the IDE menu
     function GetMainBar: TComponent; virtual; abstract;
     property MainBarSubTitle: string read FMainBarSubTitle write SetMainBarSubTitle;
@@ -372,6 +397,11 @@ type
                                 AsLast: boolean = false);
     procedure RemoveHandlerOnProjectBuilding(
                                 const OnProjBuildingEvent: TModalResultFunction);
+    procedure AddHandlerOnProjectBuildingFinished(
+                           const OnProjBuildingFinishedEvent: TLazBuildingFinishedEvent;
+                           AsLast: boolean = false);
+    procedure RemoveHandlerOnProjectBuildingFinished(
+                               const OnProjBuildingFinishedEvent: TLazBuildingFinishedEvent);
     procedure AddHandlerOnProjectDependenciesCompiling(
                    const OnProjDependenciesCompilingEvent: TModalResultFunction;
                    AsLast: boolean = false);
@@ -382,6 +412,16 @@ type
                     AsLast: boolean = false);
     procedure RemoveHandlerOnProjectDependenciesCompiled(
                    const OnProjDependenciesCompiledEvent: TModalResultFunction);
+    procedure AddHandlerOnLazarusBuilding(
+                                const OnLazBuildingEvent: TModalResultFunction;
+                                AsLast: boolean = false);
+    procedure RemoveHandlerOnLazarusBuilding(
+                                const OnLazBuildingEvent: TModalResultFunction);
+    procedure AddHandlerOnLazarusBuildingFinished(
+                           const OnLazBuildingFinishedEvent: TLazBuildingFinishedEvent;
+                           AsLast: boolean = false);
+    procedure RemoveHandlerOnLazarusBuildingFinished(
+                               const OnLazBuildingFinishedEvent: TLazBuildingFinishedEvent);
     procedure AddHandlerOnQuickSyntaxCheck(
                            const OnQuickSyntaxCheckEvent: TModalHandledFunction;
                            AsLast: boolean = false);
@@ -417,6 +457,11 @@ type
                            AsLast: boolean = false);
     procedure RemoveHandlerOnShowSourceOfActiveDesignerForm(
                                const OnShowSourceOfActiveDesignerForm: TNotifyEvent);
+    procedure AddHandlerOnChangeToolStatus(
+                           const OnChangeToolStatus: TLazToolStatusChangeEvent;
+                           AsLast: boolean = false);
+    procedure RemoveHandlerOnChangeToolStatus(
+                               const OnChangeToolStatus: TLazToolStatusChangeEvent);
 
     property IDEStarted: boolean read FIDEStarted;
     property IDEIsClosing: boolean read FIDEIsClosing;
@@ -497,6 +542,24 @@ procedure TLazIDEInterface.SetMainBarSubTitle(const AValue: string);
 begin
   if FMainBarSubTitle=AValue then exit;
   FMainBarSubTitle:=AValue;
+end;
+
+procedure TLazIDEInterface.SetToolStatus(const AToolStatus: TLazToolStatus);
+var
+  xMethod: TLazToolStatusChangeEvent;
+  I: Integer;
+  OldToolStatus: TLazToolStatus;
+begin
+  if FToolStatus=aToolStatus then Exit;
+
+  OldToolStatus:=FToolStatus;
+  FToolStatus:=AToolStatus;
+
+  for I := 0 to FLazarusIDEHandlers[lihtChangeToolStatus].Count-1 do
+  begin
+    xMethod := TLazToolStatusChangeEvent(FLazarusIDEHandlers[lihtChangeToolStatus][I]);
+    xMethod(Self, OldToolStatus, AToolStatus);
+  end;
 end;
 
 procedure TLazIDEInterface.DoCallNotifyHandler(
@@ -612,6 +675,20 @@ begin
   DoShowSearchResultsView(State);
 end;
 
+procedure TLazIDEInterface.DoCallBuildingFinishedHandler(
+  HandlerType: TLazarusIDEHandlerType; Sender: TObject; BuildSuccessful: Boolean
+  );
+var
+  I: Integer;
+  xMethod: TLazBuildingFinishedEvent;
+begin
+  for I := 0 to FLazarusIDEHandlers[HandlerType].Count-1 do
+  begin
+    xMethod := TLazBuildingFinishedEvent(FLazarusIDEHandlers[HandlerType][I]);
+    xMethod(Sender, BuildSuccessful);
+  end;
+end;
+
 procedure TLazIDEInterface.RemoveAllHandlersOfObject(AnObject: TObject);
 var
   HandlerType: TLazarusIDEHandlerType;
@@ -650,10 +727,34 @@ begin
   AddHandler(lihtIDERestoreWindows,TMethod(OnIDERestoreWindowsEvent),AsLast);
 end;
 
+procedure TLazIDEInterface.AddHandlerOnLazarusBuilding(
+  const OnLazBuildingEvent: TModalResultFunction; AsLast: boolean);
+begin
+  AddHandler(lihtLazarusBuilding,TMethod(OnLazBuildingEvent), AsLast);
+end;
+
+procedure TLazIDEInterface.AddHandlerOnLazarusBuildingFinished(
+  const OnLazBuildingFinishedEvent: TLazBuildingFinishedEvent; AsLast: boolean);
+begin
+  AddHandler(lihtLazarusBuildingFinished,TMethod(OnLazBuildingFinishedEvent), AsLast);
+end;
+
 procedure TLazIDEInterface.RemoveHandlerOnIDERestoreWindows(
   const OnIDERestoreWindowsEvent: TNotifyEvent);
 begin
   RemoveHandler(lihtIDERestoreWindows,TMethod(OnIDERestoreWindowsEvent));
+end;
+
+procedure TLazIDEInterface.RemoveHandlerOnLazarusBuilding(
+  const OnLazBuildingEvent: TModalResultFunction);
+begin
+  RemoveHandler(lihtLazarusBuilding,TMethod(OnLazBuildingEvent));
+end;
+
+procedure TLazIDEInterface.RemoveHandlerOnLazarusBuildingFinished(
+  const OnLazBuildingFinishedEvent: TLazBuildingFinishedEvent);
+begin
+  RemoveHandler(lihtLazarusBuildingFinished,TMethod(OnLazBuildingFinishedEvent));
 end;
 
 procedure TLazIDEInterface.AddHandlerOnIDEClose(
@@ -777,11 +878,35 @@ begin
   AddHandler(lihtGetFPCFrontEndPath,TMethod(Handler),AsLast);
 end;
 
+procedure TLazIDEInterface.AddHandlerOnProjectBuildingFinished(
+  const OnProjBuildingFinishedEvent: TLazBuildingFinishedEvent; AsLast: boolean
+  );
+begin
+  AddHandler(lihtProjectBuildingFinished,TMethod(OnProjBuildingFinishedEvent),AsLast);
+end;
+
+procedure TLazIDEInterface.AddHandlerOnChangeToolStatus(
+  const OnChangeToolStatus: TLazToolStatusChangeEvent; AsLast: boolean);
+begin
+  AddHandler(lihtChangeToolStatus,TMethod(OnChangeToolStatus),AsLast);
+end;
 
 procedure TLazIDEInterface.RemoveHandlerGetFPCFrontEndPath(
   const Handler: TGetFPCFrontEndPath);
 begin
   RemoveHandler(lihtGetFPCFrontEndPath,TMethod(Handler));
+end;
+
+procedure TLazIDEInterface.RemoveHandlerOnProjectBuildingFinished(
+  const OnProjBuildingFinishedEvent: TLazBuildingFinishedEvent);
+begin
+  RemoveHandler(lihtProjectBuildingFinished,TMethod(OnProjBuildingFinishedEvent));
+end;
+
+procedure TLazIDEInterface.RemoveHandlerOnChangeToolStatus(
+  const OnChangeToolStatus: TLazToolStatusChangeEvent);
+begin
+  RemoveHandler(lihtChangeToolStatus,TMethod(OnChangeToolStatus));
 end;
 
 function TLazIDEInterface.CallHandlerGetFPCFrontEndPath(Sender: TObject;
