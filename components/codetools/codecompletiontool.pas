@@ -9156,13 +9156,177 @@ end;
 function TCodeCompletionCodeTool.CompleteCode(CursorPos: TCodeXYPosition;
   OldTopLine: integer; out NewPos: TCodeXYPosition; out NewTopLine: integer;
   SourceChangeCache: TSourceChangeCache): boolean;
+
+  function TryCompleteLocalVar(CleanCursorPos: integer;
+    CursorNode: TCodeTreeNode): Boolean;
+  begin
+    // test if Local variable assignment (i:=3)
+    Result:=CompleteLocalVariableAssignment(CleanCursorPos,OldTopLine,
+                                  CursorNode,NewPos,NewTopLine,SourceChangeCache);
+    if Result then exit;
+
+    // test if Local variable iterator (for i in j)
+    Result:=CompleteLocalVariableForIn(CleanCursorPos,OldTopLine,
+                                  CursorNode,NewPos,NewTopLine,SourceChangeCache);
+    if Result then exit;
+
+    // test if undeclared local variable as parameter (GetPenPos(x,y))
+    Result:=CompleteLocalIdentifierByParameter(CleanCursorPos,OldTopLine,
+                                  CursorNode,NewPos,NewTopLine,SourceChangeCache);
+    if Result then exit;
+  end;
+
+  function TryComplete(CleanCursorPos, OrigCleanCursorPos: integer): Boolean;
+  var
+    CursorNode: TCodeTreeNode;
+    ProcNode, AClassNode: TCodeTreeNode;
+    IsEventAssignment: boolean;
+  begin
+    Result := False;
+    CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+    FCompletingCursorNode:=CursorNode;
+    try
+
+      {$IFDEF CTDEBUG}
+      DebugLn('TCodeCompletionCodeTool.CompleteCode A CleanCursorPos=',dbgs(CleanCursorPos),' NodeDesc=',NodeDescriptionAsString(CursorNode.Desc));
+      {$ENDIF}
+
+      // test if in a class
+      AClassNode:=FindClassOrInterfaceNode(CursorNode);
+      if AClassNode<>nil then begin
+        Result:=CompleteClass(AClassNode,CleanCursorPos,OldTopLine,CursorNode,
+                              NewPos,NewTopLine);
+        exit;
+      end;
+      {$IFDEF CTDEBUG}
+      DebugLn('TCodeCompletionCodeTool.CompleteCode not in-a-class ... ');
+      {$ENDIF}
+
+      // test if forward proc
+      //debugln('TCodeCompletionCodeTool.CompleteCode ',CursorNode.DescAsString);
+      if CursorNode.Desc = ctnInterface then
+      begin
+        //Search nearest (to the left) CursorNode if we are within interface section
+        CursorNode := CursorNode.LastChild;
+        while Assigned(CursorNode) and (CursorNode.StartPos > CleanCursorPos) do
+          CursorNode := CursorNode.PriorBrother;
+        if (CursorNode=nil)
+        or (not PositionsInSameLine(Src,CursorNode.EndPos,CleanCursorPos)) then
+          CursorNode:=FCompletingCursorNode;
+      end;
+      ProcNode:=CursorNode.GetNodeOfType(ctnProcedure);
+      if (ProcNode=nil) and (CursorNode.Desc=ctnProcedure) then
+        ProcNode:=CursorNode;
+      if (ProcNode<>nil) and (ProcNode.Desc=ctnProcedure)
+      and ((ProcNode.SubDesc and ctnsForwardDeclaration)>0) then begin
+        // Node is forward Proc
+        Result:=CompleteForwardProcs(CursorPos,ProcNode,CursorNode,NewPos,NewTopLine,
+                             SourceChangeCache);
+        exit;
+      end;
+
+      // test if Event assignment (MyClick:=@Button1.OnClick)
+      Result:=CompleteEventAssignment(CleanCursorPos,OldTopLine,CursorNode,
+                             IsEventAssignment,NewPos,NewTopLine,SourceChangeCache);
+      if IsEventAssignment then exit;
+
+      Result:=TryCompleteLocalVar(CleanCursorPos,CursorNode);
+      if Result then exit;
+
+      // test if procedure call
+      Result:=CompleteProcByCall(CleanCursorPos,OldTopLine,
+                                 CursorNode,NewPos,NewTopLine,SourceChangeCache);
+      if Result then exit;
+
+      // test if method body
+      if OrigCleanCursorPos <> -1 then
+        Result:=CompleteMethodByBody(OrigCleanCursorPos,OldTopLine,CursorNode,
+                               NewPos,NewTopLine,SourceChangeCache);
+      if Result then exit;
+    finally
+      FCompletingCursorNode:=nil;
+    end;
+  end;
+
+  function TryFirstLocalIdentOccurence(CursorNode: TCodeTreeNode;
+    OrigCleanCursorPos, CleanCursorPos: Integer): boolean;
+  var
+    AtomContextNode, StatementNode: TCodeTreeNode;
+    IdentAtom, LastCurPos: TAtomPosition;
+    UpIdentifier: string;
+    LastAtomIsDot: Boolean;
+    Params: TFindDeclarationParams;
+    OldCodePos: TCodePosition;
+  begin
+    Result := false;
+
+    // get enclosing Begin block
+    if not (CursorNode.Desc in AllPascalStatements) then exit;
+    StatementNode:=CursorNode;
+    while StatementNode<>nil do begin
+      if (StatementNode.Desc=ctnBeginBlock) then begin
+        if (StatementNode.Parent.Desc in [ctnProcedure,ctnProgram]) then break;
+      end else if StatementNode.Desc in [ctnInitialization,ctnFinalization] then
+        break;
+      StatementNode:=StatementNode.Parent;
+    end;
+    if StatementNode=nil then exit;
+
+    // read UpIdentifier at CleanCursorPos
+    GetIdentStartEndAtPosition(Src,CleanCursorPos,
+      IdentAtom.StartPos,IdentAtom.EndPos);
+    if IdentAtom.StartPos=IdentAtom.EndPos then
+      Exit;
+
+    MoveCursorToAtomPos(IdentAtom);
+    if not AtomIsIdentifier then
+      Exit; // a keyword
+
+    UpIdentifier := GetUpAtom;
+
+    //find first occurence of UpIdentifier from procedure begin until CleanCursorPos
+    //we are interested only in local variables/identifiers
+    //  --> the UpIdentifier must not be preceded by a point ("MyObject.I" - if we want to complete I)
+    //      and then do another check if it is not available with the "with" command, e.g.
+    MoveCursorToCleanPos(StatementNode.StartPos);
+    if StatementNode.Desc=ctnBeginBlock then
+      BuildSubTreeForBeginBlock(StatementNode);
+    LastAtomIsDot := False;
+    while CurPos.EndPos < CleanCursorPos do
+    begin
+      ReadNextAtom;
+      if not LastAtomIsDot and AtomIsIdentifier and UpAtomIs(UpIdentifier) then
+      begin
+        AtomContextNode:=FindDeepestNodeAtPos(StatementNode,CurPos.StartPos,true);
+        Params:=TFindDeclarationParams.Create(Self, AtomContextNode);
+        try
+          // check if UpIdentifier doesn't exists (e.g. because of a with statement)
+          LastCurPos := CurPos;
+          if not IdentifierIsDefined(CurPos,AtomContextNode,Params) then
+          begin
+            FCompletingCursorNode:=CursorNode;
+            try
+              if not CleanPosToCodePos(OrigCleanCursorPos,OldCodePos) then
+                RaiseException('TCodeCompletionCodeTool.TryFirstLocalIdentOccurence CleanPosToCodePos');
+              CompleteCode:=TryCompleteLocalVar(LastCurPos.StartPos,AtomContextNode);
+              AdjustCursor(OldCodePos,OldTopLine,NewPos,NewTopLine);
+              exit(true);
+            finally
+              FCompletingCursorNode:=nil;
+            end;
+          end;
+          CurPos := LastCurPos;//IdentifierIsDefined changes the CurPos
+        finally
+          Params.Free;
+        end;
+      end;
+      LastAtomIsDot := CurPos.Flag=cafPoint;
+    end;
+  end;
+
 var
-  CleanCursorPos: integer;
+  CleanCursorPos, OrigCleanCursorPos: integer;
   CursorNode: TCodeTreeNode;
-  OldCleanCursorPos: LongInt;
-var
-  ProcNode, AClassNode: TCodeTreeNode;
-  IsEventAssignment: boolean;
 begin
   //DebugLn(['TCodeCompletionCodeTool.CompleteCode CursorPos=',Dbgs(CursorPos),' OldTopLine=',OldTopLine]);
 
@@ -9171,7 +9335,7 @@ begin
     RaiseException('need a SourceChangeCache');
   BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,
                           [btSetIgnoreErrorPos]);
-  OldCleanCursorPos:=CleanCursorPos;
+  OrigCleanCursorPos:=CleanCursorPos;
   NewPos:=CleanCodeXYPosition;
   NewTopLine:=0;
 
@@ -9189,82 +9353,20 @@ begin
       inc(CleanCursorPos);
     until (CleanCursorPos>=SrcLen) or (not (Src[CleanCursorPos] in [' ',#9]));
   end;
-  
-  CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+
   CodeCompleteSrcChgCache:=SourceChangeCache;
+  CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
   FCompletingCursorNode:=CursorNode;
   try
-
-    {$IFDEF CTDEBUG}
-    DebugLn('TCodeCompletionCodeTool.CompleteCode A CleanCursorPos=',dbgs(CleanCursorPos),' NodeDesc=',NodeDescriptionAsString(CursorNode.Desc));
-    {$ENDIF}
-
-    // test if in a class
-    AClassNode:=FindClassOrInterfaceNode(CursorNode);
-    if AClassNode<>nil then begin
-      Result:=CompleteClass(AClassNode,CleanCursorPos,OldTopLine,CursorNode,
-                            NewPos,NewTopLine);
-      exit;
-    end;
-    {$IFDEF CTDEBUG}
-    DebugLn('TCodeCompletionCodeTool.CompleteCode not in-a-class ... ');
-    {$ENDIF}
-
-    // test if forward proc
-    //debugln('TCodeCompletionCodeTool.CompleteCode ',CursorNode.DescAsString);
-    if CursorNode.Desc = ctnInterface then
-    begin
-      //Search nearest (to the left) CursorNode if we are within interface section
-      CursorNode := CursorNode.LastChild;
-      while Assigned(CursorNode) and (CursorNode.StartPos > CleanCursorPos) do
-        CursorNode := CursorNode.PriorBrother;
-      if (CursorNode=nil)
-      or (not PositionsInSameLine(Src,CursorNode.EndPos,CleanCursorPos)) then
-        CursorNode:=FCompletingCursorNode;
-    end;
-    ProcNode:=CursorNode.GetNodeOfType(ctnProcedure);
-    if (ProcNode=nil) and (CursorNode.Desc=ctnProcedure) then
-      ProcNode:=CursorNode;
-    if (ProcNode<>nil) and (ProcNode.Desc=ctnProcedure)
-    and ((ProcNode.SubDesc and ctnsForwardDeclaration)>0) then begin
-      // Node is forward Proc
-      Result:=CompleteForwardProcs(CursorPos,ProcNode,CursorNode,NewPos,NewTopLine,
-                           SourceChangeCache);
-      exit;
-    end;
-
-    // test if Event assignment (MyClick:=@Button1.OnClick)
-    Result:=CompleteEventAssignment(CleanCursorPos,OldTopLine,CursorNode,
-                           IsEventAssignment,NewPos,NewTopLine,SourceChangeCache);
-    if IsEventAssignment then exit;
-
-    // test if Local variable assignment (i:=3)
-    Result:=CompleteLocalVariableAssignment(CleanCursorPos,OldTopLine,
-                                  CursorNode,NewPos,NewTopLine,SourceChangeCache);
-    if Result then exit;
-
-    // test if Local variable iterator (for i in j)
-    Result:=CompleteLocalVariableForIn(CleanCursorPos,OldTopLine,
-                                  CursorNode,NewPos,NewTopLine,SourceChangeCache);
-    if Result then exit;
-
-    // test if undeclared local variable as parameter (GetPenPos(x,y))
-    Result:=CompleteLocalIdentifierByParameter(CleanCursorPos,OldTopLine,
-                                  CursorNode,NewPos,NewTopLine,SourceChangeCache);
-    if Result then exit;
-
-    // test if procedure call
-    Result:=CompleteProcByCall(CleanCursorPos,OldTopLine,
-                                 CursorNode,NewPos,NewTopLine,SourceChangeCache);
-    if Result then exit;
-
-    // test if method body
-    Result:=CompleteMethodByBody(OldCleanCursorPos,OldTopLine,CursorNode,
-                           NewPos,NewTopLine,SourceChangeCache);
-    if Result then exit;
+    if TryComplete(CleanCursorPos, OrigCleanCursorPos) then exit;
   finally
     FCompletingCursorNode:=nil;
   end;
+
+  { Find the first occurence of the (local) identifier at cursor in current
+    procedure body and try again. }
+  Result:=TryFirstLocalIdentOccurence(CursorNode,OrigCleanCursorPos,CleanCursorPos);
+  if Result then exit;
 
   {$IFDEF CTDEBUG}
   DebugLn('TCodeCompletionCodeTool.CompleteCode  nothing to complete ... ');
