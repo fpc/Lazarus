@@ -2481,7 +2481,6 @@ begin
     FreeAndNil(FConfigStore);
     FreeAndNil(FDbgConfigStore);
     FreeAndNil(FXMLCfg);
-    InvalidateFileStateCache;
     if CleanConfig then
       FXMLCfg:=TRttiXMLConfig.CreateClean(Filename)
     else
