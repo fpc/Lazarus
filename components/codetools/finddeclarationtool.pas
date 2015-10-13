@@ -4457,7 +4457,7 @@ begin
       DebugLn('[TFindDeclarationTool.FindBaseTypeOfNode] LOOP Result=',Result.Node.DescAsString,' ',Result.Tool.CleanPosToStr(Result.Node.StartPos,true),' Flags=[',dbgs(Params.Flags),']');
       {$ENDIF}
       if NodeExistsInStack(NodeStack,Result.Node) then begin
-        // circle detected
+        // cycle detected
         Result.Tool.MoveCursorToNodeStart(Result.Node);
         Result.Tool.RaiseException(ctsCircleInDefinitions);
       end;
@@ -4491,7 +4491,7 @@ begin
         DebugLn('[TFindDeclarationTool.FindBaseTypeOfNode] Class is forward');
         {$ENDIF}
 
-        // ToDo: check for circles in ancestor chain
+        // ToDo: check for cycles in ancestor chain
         
         ClassIdentNode:=Result.Node.Parent;
         if (ClassIdentNode=nil)
@@ -4500,7 +4500,6 @@ begin
           MoveCursorToCleanPos(Result.Node.StartPos);
           RaiseForwardClassNameLess;
         end;
-        // ToDo: search only in unit
         Params.Save(OldInput);
         Params.SetIdentifier(Self,@Src[ClassIdentNode.StartPos],
                              @CheckSrcIdentifier);
@@ -4527,7 +4526,7 @@ begin
         DebugLn('[TFindDeclarationTool.FindBaseTypeOfNode] "Class Of"');
         {$ENDIF}
 
-        // ToDo: check for circles in ancestor chain
+        // ToDo: check for cycles in ancestor chain
 
         ClassIdentNode:=Result.Node.FirstChild;
         if (ClassIdentNode=nil) or (not (ClassIdentNode.Desc=ctnIdentifier))
@@ -7858,6 +7857,26 @@ var
     end;
     Result:=FlagCanBeForwardDefined;
   end;
+
+  procedure ResolveTypeLessProperty;
+  begin
+    if ExprType.Desc<>xtContext then exit;
+    with ExprType.Context do begin
+      if not (Node.Desc in [ctnProperty,ctnGlobalProperty]) then exit;
+      if Tool.PropNodeIsTypeLess(Node)
+      and Tool.MoveCursorToPropName(Node) then begin
+        // typeless property => search in ancestors: it can be property with parameters
+        Params.Save(OldInput);
+        Params.SetIdentifier(Tool,@Tool.Src[Tool.CurPos.StartPos],nil);
+        Params.Flags:=[fdfSearchInAncestors,fdfSearchInHelpers];
+        if Tool.FindIdentifierInAncestors(Node.Parent.Parent,Params) then begin
+          Tool:=Params.NewCodeTool;
+          Node:=Params.NewNode;
+        end;
+        Params.Load(OldInput,true);
+      end;
+    end;
+  end;
   
   procedure ResolveBaseTypeOfIdentifier;
   { normally not the identifier is searched, but its type
@@ -7886,25 +7905,7 @@ var
     if (not AtEnd)
     and (Context.Node.Desc in [ctnProperty,ctnGlobalProperty])
     then begin
-      with Context do begin
-        if Tool.PropNodeIsTypeLess(Node)
-        and Tool.MoveCursorToPropName(Node) then begin
-          // typeless property => search in ancestors: it can be property with parameters
-          Params.Save(OldInput);
-          Params.SetIdentifier(Tool,@Tool.Src[Tool.CurPos.StartPos],nil);
-          Params.Flags:=[fdfSearchInAncestors,fdfSearchInHelpers];
-          if Tool.FindIdentifierInAncestors(Node.Parent.Parent,Params) then begin
-            Tool:=Params.NewCodeTool;
-            Node:=Params.NewNode;
-            ExprType.Context:=Context;
-          end;
-          Params.Load(OldInput,true);
-        end;
-      end;
-      if Context.Tool.PropertyNodeHasParamList(Context.Node) then begin
-        // the parameter list is resolved with the [] operators
-        exit;
-      end;
+      ResolveTypeLessProperty;
     end;
 
     CurAliasType:=nil;
@@ -8357,7 +8358,7 @@ var
     end;
   begin
     {$IFDEF ShowExprEval}
-    debugln(['  FindExpressionTypeOfTerm ResolveEdgedBracketOpen']);
+    debugln(['  FindExpressionTypeOfTerm ResolveEdgedBracketOpen ',ExprTypeToString(ExprType)]);
     {$ENDIF}
     if fdfExtractOperand in Params.Flags then begin
       // simple copying, todo: expand argument
@@ -8370,6 +8371,22 @@ var
       ReadNextAtom;
       RaiseIllegalQualifierFound;
     end;
+
+    if (ExprType.Desc=xtContext)
+    and (ExprType.Context.Node.Desc=ctnProperty) then begin
+      // [] behind a property
+      // -> Check if this property has parameters
+      ResolveTypeLessProperty;
+      if (ExprType.Desc=xtContext)
+      and (ExprType.Context.Node.Desc=ctnProperty)
+      and ExprType.Context.Tool.PropertyNodeHasParamList(ExprType.Context.Node)
+      then begin
+        // use the property type
+        ResolveChildren;
+        exit;
+      end;
+    end;
+
     ResolveBaseTypeOfIdentifier;
 
     if ExprType.Desc in xtAllStringTypes then begin

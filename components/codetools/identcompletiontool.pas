@@ -2028,7 +2028,7 @@ begin
                                        Params,false);
     if (ExprType.Desc in xtAllIdentTypes) then begin
       GatherContext:=ExprType.Context;
-      debugln(['TIdentCompletionTool.FindCollectionContext ',ExprTypeToString(ExprType)]);
+      //debugln(['TIdentCompletionTool.FindCollectionContext ',ExprTypeToString(ExprType)]);
       StartInSubContext:=true;
     end;
   end;
