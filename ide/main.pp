@@ -6548,6 +6548,7 @@ begin
                                 pbfSkipAssembler in Flags,aCompileHint);
         if ConsoleVerbosity>=0 then
           debugln(['TMainIDE.DoBuildProject compiler time in s: ',(Now-StartTime)*86400]);
+        DoCallBuildingFinishedHandler(lihtProjectBuildingFinished, Self, Result=mrOk);
         if Result<>mrOk then begin
           // save state, so that next time the project is not compiled clean
           Project1.LastCompilerFilename:=CompilerFilename;
@@ -6996,6 +6997,12 @@ begin
     exit;
   end;
 
+  Result:=DoCallModalFunctionHandler(lihtLazarusBuilding);
+  if Result<>mrOk then begin
+    debugln(['TMainIDE.DoBuildLazarusSub handler lihtLazarusBuilding negative']);
+    exit;
+  end;
+
   if fBuilder=Nil then
     fBuilder:=TLazarusBuilder.Create;
   if ExternalTools.RunningCount=0 then
@@ -7073,6 +7080,7 @@ begin
     SourceEditorManager.ClearErrorLines;
     IDEBuildFlags:=IDEBuildFlags+[blfUseMakeIDECfg,blfDontClean];
     Result:=fBuilder.MakeLazarus(BuildLazProfiles.Current, IDEBuildFlags);
+    DoCallBuildingFinishedHandler(lihtLazarusBuildingFinished, Self, Result=mrOk);
     if Result<>mrOk then exit;
 
     if fBuilder.ProfileChanged then begin
