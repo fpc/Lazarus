@@ -13,9 +13,12 @@ type
   { TMyClass1 }
 
   TMyClass1 = class
+  private
+    function GetItems(Index: Integer): TComponent;
   public
     constructor Create{declaration:System.TObject.Create};
     procedure DefaultHandler{declaration:System.TObject.DefaultHandler}(var message); override;
+    property Items[Index: Integer]: TComponent read GetItems; default;
   end;
 
   { TMyClass2 }
@@ -29,9 +32,16 @@ implementation
 
 { TMyClass1 }
 
+function TMyClass1.GetItems(Index: Integer): TComponent;
+begin
+  if Index=0 then ;
+  Result:=nil;
+end;
+
 constructor TMyClass1{declaration:fdt_basic.TMyClass1}.Create{declaration:fdt_basic.TMyClass1.Create};
 begin
-
+  Self.Items{declaration:fdt_basic.TMyClass1.Items}[0].Name{declaration:Classes.TComponent.Name}:='';
+  Self[0].Name{declaration:Classes.TComponent.Name}:='';
 end;
 
 procedure TMyClass1.DefaultHandler(var message);

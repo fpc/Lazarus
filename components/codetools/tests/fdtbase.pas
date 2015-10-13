@@ -88,6 +88,8 @@ procedure TTestFindDeclaration.FindDeclarations(Filename: string);
         PrependPath(Tool.GetSourceName(false),Result);
       ctnProcedure:
         PrependPath(Tool.ExtractProcName(Node,[]),Result);
+      ctnProperty:
+        PrependPath(Tool.ExtractPropName(Node,false),Result);
       end;
       Node:=Node.Parent;
     end;
