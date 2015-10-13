@@ -270,8 +270,6 @@ type
                         SourceChangeCache: TSourceChangeCache): boolean;
     function AddPublishedVariable(const UpperClassName,VarName, VarType: string;
                       SourceChangeCache: TSourceChangeCache): boolean; override;
-    function GatherPublishedMethods(ClassNode: TCodeTreeNode;
-                              out ListOfPFindContext: TFPList): boolean;
 
     // graph of definitions of a unit
     function GatherUnitDefinitions(out TreeOfCodeTreeNodeExt: TAVLTree;
@@ -5656,20 +5654,9 @@ var
   s: TPascalClassSection;
   
   procedure GatherClassProcs;
-  var
-    PublishedMethods: TFPList;
   begin
     // gather existing proc definitions in the class
     if ClassProcs=nil then begin
-      PublishedMethods:=nil;
-      try
-        {$IFDEF EnableInheritedEmptyMethods}
-        DebugLn(['GatherClassProcs EnableInheritedEmptyMethods']);
-        GatherPublishedMethods(FCompletingStartNode,PublishedMethods);
-        {$ENDIF}
-      finally
-        FreeListOfPFindContext(PublishedMethods);
-      end;
       ClassProcs:=GatherProcNodes(FCompletingFirstEntryNode,
          [phpInUpperCase,phpAddClassName],
          ExtractClassName(CodeCompleteClassNode,true));
@@ -6765,28 +6752,6 @@ begin
       SourceChangeCache.Clear;
     if not SourceChangeCache.EndUpdate then
       Result:=false;
-  end;
-end;
-
-function TCodeCompletionCodeTool.GatherPublishedMethods(
-  ClassNode: TCodeTreeNode; out ListOfPFindContext: TFPList): boolean;
-var
-  Ancestors: TFPList; // list of PFindContext
-  i: Integer;
-  Context: PFindContext;
-begin
-  Result:=false;
-  Ancestors:=nil;
-  ListOfPFindContext:=nil;
-  try
-    if not FindClassAndAncestors(ClassNode,Ancestors,false) then exit;
-    if Ancestors=nil then exit(true);
-    for i:=0 to Ancestors.Count-1 do begin
-      Context:=PFindContext(Ancestors[i]);
-      DebugLn(['TCodeCompletionCodeTool.GatherPublishedMethods ',Context^.Node.DescAsString]);
-    end;
-  finally
-    FreeListOfPFindContext(Ancestors);
   end;
 end;
 
