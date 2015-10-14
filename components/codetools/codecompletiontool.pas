@@ -9141,14 +9141,12 @@ function TCodeCompletionCodeTool.CompleteCode(CursorPos: TCodeXYPosition;
     if Result then exit;
   end;
 
-  function TryComplete(CleanCursorPos, OrigCleanCursorPos: integer): Boolean;
+  function TryComplete(CursorNode: TCodeTreeNode; CleanCursorPos, OrigCleanCursorPos: integer): Boolean;
   var
-    CursorNode: TCodeTreeNode;
     ProcNode, AClassNode: TCodeTreeNode;
     IsEventAssignment: boolean;
   begin
     Result := False;
-    CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
     FCompletingCursorNode:=CursorNode;
     try
 
@@ -9321,17 +9319,13 @@ begin
 
   CodeCompleteSrcChgCache:=SourceChangeCache;
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
-  FCompletingCursorNode:=CursorNode;
-  try
-    if TryComplete(CleanCursorPos, OrigCleanCursorPos) then exit;
-  finally
-    FCompletingCursorNode:=nil;
-  end;
 
   { Find the first occurence of the (local) identifier at cursor in current
     procedure body and try again. }
   Result:=TryFirstLocalIdentOccurence(CursorNode,OrigCleanCursorPos,CleanCursorPos);
   if Result then exit;
+
+  if TryComplete(CursorNode, CleanCursorPos, OrigCleanCursorPos) then exit;
 
   {$IFDEF CTDEBUG}
   DebugLn('TCodeCompletionCodeTool.CompleteCode  nothing to complete ... ');
