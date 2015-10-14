@@ -1379,6 +1379,7 @@ type
     constructor Create(TheOwner: TComponent); override;
   published
     property Align;
+    property Alignment;
     property Anchors;
     property AutoSize default True;
     property BidiMode;
