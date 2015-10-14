@@ -60,9 +60,6 @@ uses
 {$ENDIF}
   // fpc packages
   Math, Classes, SysUtils, Process, TypInfo, types, strutils, AVL_Tree,
-{$IFDEF UseAsyncProcess}
-  AsyncProcess,
-{$ENDIF}
   // LCL
   LCLProc, LCLType, LCLIntf, LResources, ComCtrls, HelpIntfs, InterfaceBase,
   Forms, Buttons, Menus, Controls, GraphType, Graphics, ExtCtrls, Dialogs,
