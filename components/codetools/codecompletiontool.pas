@@ -9141,7 +9141,7 @@ function TCodeCompletionCodeTool.CompleteCode(CursorPos: TCodeXYPosition;
     if Result then exit;
   end;
 
-  function TryComplete(CursorNode: TCodeTreeNode; CleanCursorPos, OrigCleanCursorPos: integer): Boolean;
+  function TryComplete(CursorNode: TCodeTreeNode; CleanCursorPos: integer): Boolean;
   var
     ProcNode, AClassNode: TCodeTreeNode;
     IsEventAssignment: boolean;
@@ -9199,12 +9199,6 @@ function TCodeCompletionCodeTool.CompleteCode(CursorPos: TCodeXYPosition;
       // test if procedure call
       Result:=CompleteProcByCall(CleanCursorPos,OldTopLine,
                                  CursorNode,NewPos,NewTopLine,SourceChangeCache);
-      if Result then exit;
-
-      // test if method body
-      if OrigCleanCursorPos <> -1 then
-        Result:=CompleteMethodByBody(OrigCleanCursorPos,OldTopLine,CursorNode,
-                               NewPos,NewTopLine,SourceChangeCache);
       if Result then exit;
     finally
       FCompletingCursorNode:=nil;
@@ -9320,12 +9314,17 @@ begin
   CodeCompleteSrcChgCache:=SourceChangeCache;
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
 
-  if TryComplete(CursorNode, CleanCursorPos, OrigCleanCursorPos) then
+  if TryComplete(CursorNode, CleanCursorPos) then
     exit(true);
 
   { Find the first occurence of the (local) identifier at cursor in current
     procedure body and try again. }
   if TryFirstLocalIdentOccurence(CursorNode,OrigCleanCursorPos,CleanCursorPos) then
+    exit(true);
+
+  if CompleteMethodByBody(OrigCleanCursorPos,OldTopLine,CursorNode,
+                         NewPos,NewTopLine,SourceChangeCache)
+  then
     exit(true);
 
   {$IFDEF CTDEBUG}
