@@ -172,24 +172,10 @@ end;
 
 procedure TIdeCoolbarOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
-  I, J: integer;
-  ToolBar: TToolBar;
   Opts: TIDECoolBarOptions;
 begin
   Opts := (AOptions as TEnvironmentOptions).Desktop.IDECoolBarOptions;
-  for I := 0 to Coolbar.Bands.Count - 1 do
-  begin
-    if Coolbar.Bands[I].Control = nil then
-      Continue;
-    ToolBar := (Coolbar.Bands[I].Control as TToolBar);
-    J := FTempCoolBar.FindByToolBar(ToolBar);
-    if J <> -1 then
-    begin
-      FTempCoolBar.ToolBars[J].Position := Coolbar.Bands[I].Index;
-      FTempCoolBar.ToolBars[J].Break := Coolbar.Bands[I].Break;
-    end;
-  end;
-  FTempCoolBar.Sort;
+  FTempCoolBar.CopyFromRealCoolbar(Coolbar);
   FTempCoolBar.CopyToOptions(Opts);
   Opts.Visible := cbCoolBarVisible.Checked;
   Opts.Width := FTempCoolBar.Width;
@@ -346,22 +332,20 @@ end;
 procedure TIdeCoolbarOptionsFrame.PopulateToolBar;
 var
   CoolBand: TCoolBand;
-  I, J: Integer;
+  I: Integer;
 begin
   CoolBar.Bands.Clear;
   for I := 0 to FTempCoolBar.ToolBars.Count - 1 do
   begin
     CoolBand := CoolBar.Bands.Add;
-    CoolBand.Break := FTempCoolBar.ToolBars[I].Break;
+    CoolBand.Break := FTempCoolBar.ToolBars[I].CurrentOptions.Break;
     CoolBand.Control := FTempCoolBar.ToolBars[I].Toolbar;
     FTempCoolBar.ToolBars[I].Toolbar.Enabled := False;
     CoolBand.Visible := True;
     CoolBand.MinWidth := 25;
     CoolBand.MinHeight := 22;
     CoolBand.FixedSize := True;
-    FTempCoolBar.ToolBars[I].ClearToolbar;
-    for J := 0 to FTempCoolBar.ToolBars[I].ButtonNames.Count - 1 do
-      FTempCoolBar.ToolBars[I].AddCustomItems(J);
+    FTempCoolBar.ToolBars[I].UseCurrentOptions;
   end;
   if CoolBar.Bands.Count > 0 then
     SelectBand(0);
@@ -391,7 +375,7 @@ var
   IDEToolbar: TIDEToolBar;
 begin
   IDEToolbar := FTempCoolBar.Add;
-  IDEToolbar.Break := False;
+  IDEToolbar.CurrentOptions.Break := False;
   IDEToolbar.OnToolBarClick := @ToolBarClick;
 
   CoolBand := CoolBar.Bands.Add;
@@ -422,15 +406,10 @@ begin
   if ToolBar <> nil then
   begin
     ToConfig := FTempCoolBar.FindByToolBar(ToolBar);
-    if ToConfig <> -1 then
-    begin
-      if ShowToolBarConfig(FTempCoolBar.ToolBars[ToConfig].ButtonNames) = mrOK then
-      begin
-        FTempCoolBar.ToolBars[ToConfig].ClearToolbar;
-        for I := 0 to FTempCoolBar.ToolBars[ToConfig].ButtonNames.Count - 1 do
-          FTempCoolBar.ToolBars[ToConfig].AddCustomItems(I);
-      end;
-    end;
+    if (ToConfig <> -1)
+    and (ShowToolBarConfig(FTempCoolBar.ToolBars[ToConfig].CurrentOptions.ButtonNames) = mrOK)
+    then
+      FTempCoolBar.ToolBars[ToConfig].UseCurrentOptions;
   end;
   Coolbar.AutosizeBands;
   EnableDisableButtons(1);

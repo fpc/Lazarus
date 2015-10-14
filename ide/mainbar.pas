@@ -673,7 +673,7 @@ end;
 
 procedure TMainIDEBar.RefreshCoolbar;
 var
-  I, J: Integer;
+  I: Integer;
   CoolBand: TCoolBand;
   CoolBarOpts: TIDECoolBarOptions;
 begin
@@ -694,14 +694,12 @@ begin
   for I := 0 to IDECoolBar.ToolBars.Count - 1 do
   begin
     CoolBand := CoolBar.Bands.Add;
-    CoolBand.Break := IDECoolBar.ToolBars[I].Break;
+    CoolBand.Break := IDECoolBar.ToolBars[I].CurrentOptions.Break;
     CoolBand.Control := IDECoolBar.ToolBars[I].ToolBar;
     CoolBand.MinWidth := 25;
     CoolBand.MinHeight := 22;
     CoolBand.FixedSize := True;
-    IDECoolBar.ToolBars[I].ClearToolbar;
-    for J := 0 to IDECoolBar.ToolBars[I].ButtonNames.Count - 1 do
-      IDECoolBar.ToolBars[I].AddCustomItems(J);
+    IDECoolBar.ToolBars[I].UseCurrentOptions;
   end;
   CoolBar.AutosizeBands;
 
@@ -777,19 +775,7 @@ var
   I, J: Integer;
   ToolBar: TToolBar;
 begin
-  for I := 0 to Coolbar.Bands.Count - 1 do
-  begin
-    if Coolbar.Bands[I].Control = nil then
-      Continue;
-    ToolBar := (Coolbar.Bands[I].Control as TToolBar);
-    J := IDECoolBar.FindByToolBar(ToolBar);
-    if J <> -1 then
-    begin
-      IDECoolBar.ToolBars[J].Position := Coolbar.Bands[I].Index;
-      IDECoolBar.ToolBars[J].Break := Coolbar.Bands[I].Break;
-    end
-  end;
-  IDECoolBar.Sort;
+  IDECoolBar.CopyFromRealCoolbar(Coolbar);
   IDECoolBar.CopyToOptions(EnvironmentOptions.Desktop.IDECoolBarOptions);
   SetMainIDEHeight;
 end;

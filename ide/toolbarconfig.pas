@@ -104,6 +104,23 @@ type
     procedure SaveSettings(SL: TStringList);
   end;
 
+  { TIDEToolBarOptionsBase }
+
+  TIDEToolBarOptionsBase = class
+  private
+    FButtonNames: TStringList;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    function Equals(Opts: TIDEToolBarOptionsBase): boolean; overload;
+    procedure Assign(Source: TIDEToolBarOptionsBase);
+    //procedure Load(XMLConfig: TXMLConfig; Path: String);
+    //procedure Save(XMLConfig: TXMLConfig; Path: String);
+  published
+    property ButtonNames: TStringList read FButtonNames; // write FButtonNames;
+  end;
+
   { TIDEToolbarBase }
 
   TIDEToolbarBase = class(TComponent)
@@ -112,7 +129,9 @@ type
      FToolBar: TToolBar;
      procedure AddButton(ACommand: TIDEButtonCommand);
      procedure AddDivider;
+     procedure CopyFromOptions(Options: TIDEToolBarOptionsBase);
      procedure PositionAtEnd(AToolBar: TToolBar; AButton: TToolButton);
+     procedure PostCopyOptions; virtual;
    public
      //constructor Create(AOwner: TComponent); override;
      //destructor Destroy; override;
@@ -209,7 +228,6 @@ procedure TToolBarConfig.btnHideClick(Sender: TObject);
 begin
   lvToolbar.Columns[1].Visible:= false;
 end;
-
 
 procedure TToolBarConfig.lbToolbarSelectionChange(Sender: TObject);
 var
@@ -625,6 +643,34 @@ begin
   end;
 end;
 
+{ TIDEToolBarOptionsBase }
+
+constructor TIDEToolBarOptionsBase.Create;
+begin
+  FButtonNames := TStringList.Create;
+end;
+
+destructor TIDEToolBarOptionsBase.Destroy;
+begin
+  FButtonNames.Free;
+  inherited Destroy;
+end;
+
+procedure TIDEToolBarOptionsBase.Clear;
+begin
+  FButtonNames.Clear;
+end;
+
+function TIDEToolBarOptionsBase.Equals(Opts: TIDEToolBarOptionsBase): boolean;
+begin
+  Result := FButtonNames.Equals(Opts.FButtonNames);
+end;
+
+procedure TIDEToolBarOptionsBase.Assign(Source: TIDEToolBarOptionsBase);
+begin
+  FButtonNames.Assign(Source.FButtonNames);
+end;
+
 { TIDEToolbarBase }
 {                           For future needs ...
 constructor TIDEToolbarBase.Create(AOwner: TComponent);
@@ -664,6 +710,32 @@ begin
   PositionAtEnd(FToolBar, B);
 end;
 
+procedure TIDEToolbarBase.CopyFromOptions(Options: TIDEToolBarOptionsBase);
+var
+  mi: TIDEButtonCommand;
+  ButtonName: string;
+  i: Integer;
+begin
+  FToolBar.BeginUpdate;
+  try
+    for i := 0 to Options.ButtonNames.Count-1 do
+    begin
+      ButtonName := Options.ButtonNames[i];
+      if ButtonName = cIDEToolbarDivider then
+        AddDivider
+      else
+      begin
+        mi := IDEToolButtonCategories.FindItemByMenuPathOrName(ButtonName);
+        if Assigned(mi) then
+          AddButton(mi);
+      end;
+    end;
+    PostCopyOptions;
+  finally
+    FToolBar.EndUpdate;
+  end;
+end;
+
 procedure TIDEToolbarBase.PositionAtEnd(AToolBar: TToolBar; AButton: TToolButton);
 // position the button next to the last button
 var
@@ -678,6 +750,10 @@ begin
   AButton.Parent := AToolBar;
 end;
 
+procedure TIDEToolbarBase.PostCopyOptions;
+begin
+  // Can be overridden.
+end;
 
 end.
 

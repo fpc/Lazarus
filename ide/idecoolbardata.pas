@@ -42,32 +42,34 @@ type
   // They don't contain LCL components.
 
   { TIDEToolBarOptions }
-  TIDEToolBarOptions = class
+
+  TIDEToolBarOptions = class(TIDEToolBarOptionsBase)
   private
-    FPosition: Integer;
+    FPosIndex: Integer;
     FBreak: Boolean;
-    FButtonNames: TStringList;
   public
-    constructor Create;
-    destructor Destroy; override;
+    //constructor Create;
+    //destructor Destroy; override;
     function Equals(Opts: TIDEToolBarOptions): boolean; overload;
     procedure Assign(Source: TIDEToolBarOptions);
+    procedure CopyPosFromBand(Band: TCoolBand);
     procedure Load(XMLConfig: TXMLConfig; SubPath: String);
     procedure Save(XMLConfig: TXMLConfig; SubPath: String);
   published
-    property Position: Integer read FPosition write FPosition;
     property Break: Boolean read FBreak write FBreak;
-    property ButtonNames: TStringList read FButtonNames write FButtonNames;
+    property PosIndex: Integer read FPosIndex write FPosIndex;
   end;
 
 
   { TIDEToolBarOptionList }
+
   Ttbo = specialize TFPGObjectList<TIDEToolBarOptions>;
   TIDEToolBarOptionList = class(Ttbo)
     procedure Assign(Source: TIDEToolBarOptionList);
   end;
 
   { TIDECoolBarOptions }
+
   TIDECoolBarOptions = class
   private
     FVisible: Boolean;
@@ -95,6 +97,7 @@ type
   end;
 
   { TDefaultCoolBarOptions }
+
   TDefaultCoolBarOptions = class(TIDECoolBarOptions)
   public
     constructor Create;
@@ -106,28 +109,26 @@ type
   TOnToolBarClick = procedure(Sender: TObject) of object;
 
   { TIDEToolBar }
+
   TIDEToolBar = class(TIDEToolbarBase)
    private
-     FButtonNames: TStringList;
-     FPosition: integer;
-     FBreak: Boolean;
+     FCurrentOptions: TIDEToolBarOptions;
      FOnToolbarClick: TOnToolBarClick;
      procedure DoToolBarClick(Sender: TObject);
    public
      constructor Create(AOwner: TComponent); override;
      destructor Destroy; override;
      procedure ClearToolbar;
-     procedure AddCustomItems(Index: Integer);
+     procedure UseCurrentOptions;
    public
-     property Position: Integer read FPosition write FPosition;
-     property Break: Boolean read FBreak write FBreak;
-     property ButtonNames: TStringList read FButtonNames;
+     property CurrentOptions: TIDEToolBarOptions read FCurrentOptions;
      property OnToolBarClick: TOnToolbarClick read FOnToolbarClick write FOnToolbarClick;
    end;
 
   TIDEToolBarList = specialize TFPGObjectList<TIDEToolBar>;
 
   { TIDECoolBar }
+
   TIDECoolBar = class
   private
     FCoolBar: TCoolBar;  // The actual CoolBar, not owned by this class.
@@ -142,6 +143,7 @@ type
     destructor Destroy; override;
     procedure SetCoolBarDefaults;
     procedure SetToolBarDefaults;
+    procedure CopyFromRealCoolbar(RealCoolbar: TCoolBar);
     procedure CopyFromOptions(Options: TIDECoolBarOptions);
     procedure CopyToOptions(Options: TIDECoolBarOptions);
     function Add: TIDEToolBar;
@@ -165,30 +167,34 @@ const
   BasePath = 'IDECoolBarOptions/';
 
 { TIDEToolBarOptions }
-
+{
 constructor TIDEToolBarOptions.Create;
 begin
   inherited Create;
-  ButtonNames := TStringList.Create;
 end;
 
 destructor TIDEToolBarOptions.Destroy;
 begin
-  ButtonNames.Free;
   inherited Destroy;
 end;
-
+}
 function TIDEToolBarOptions.Equals(Opts: TIDEToolBarOptions): boolean;
 begin
-  Result := (FPosition = Opts.FPosition) and (FBreak = Opts.FBreak)
-    and FButtonNames.Equals(Opts.FButtonNames);
+  Result := inherited Equals(Opts)
+      and (FPosIndex = Opts.FPosIndex) and (FBreak = Opts.FBreak);
 end;
 
 procedure TIDEToolBarOptions.Assign(Source: TIDEToolBarOptions);
 begin
-  FPosition := Source.FPosition;
+  inherited Assign(Source);
+  FPosIndex := Source.FPosIndex;
   FBreak := Source.FBreak;
-  FButtonNames.Assign(Source.FButtonNames);
+end;
+
+procedure TIDEToolBarOptions.CopyPosFromBand(Band: TCoolBand);
+begin
+  FPosIndex := Band.Index;
+  FBreak := Band.Break;
 end;
 
 procedure TIDEToolBarOptions.Load(XMLConfig: TXMLConfig; SubPath: String);
@@ -207,7 +213,7 @@ begin
     if ButtonName = '' then  // Old format
       ButtonName := XMLConfig.GetValue(SubPath + 'Buttons/Name' + IntToStr(I) + '/Value', '');
     if ButtonName <> '' then
-      FButtonNames.Add(ButtonName);
+      ButtonNames.Add(ButtonName);
   end;
 end;
 
@@ -281,7 +287,7 @@ var
 begin
   //standard toolbar defaults
   ToolBarOpts := TIDEToolBarOptions.Create;
-  ToolBarOpts.Position := 0;
+  ToolBarOpts.PosIndex := 0;
   ToolBarOpts.Break := False;
   with ToolBarOpts.ButtonNames do
   begin
@@ -300,7 +306,7 @@ begin
 
   //debug toolbar defaults
   ToolBarOpts := TIDEToolBarOptions.Create;
-  ToolBarOpts.Position := 1;
+  ToolBarOpts.PosIndex := 1;
   ToolBarOpts.Break := True;
   with ToolBarOpts.ButtonNames do
   begin
@@ -340,7 +346,7 @@ begin
     begin
       ToolBarOpt := TIDEToolBarOptions.Create;
       FToolBars.Add(ToolBarOpt);
-      ToolBarOpt.FPosition := I;
+      ToolBarOpt.PosIndex := I;
       ToolBarOpt.Load(XMLConfig, Path + 'ToolBar' + IntToStr(I+1) + '/');
     end;
   end;
@@ -415,38 +421,14 @@ begin
     ShowHint := True;
     OnClick := @DoToolBarClick;
   end;
-  FButtonNames := TStringList.Create;
+  FCurrentOptions := TIDEToolBarOptions.Create;
 end;
 
 destructor TIDEToolBar.Destroy;
 begin
+  FCurrentOptions.Free;
   FToolBar.Free;
-  FButtonNames.Free;
   inherited Destroy;
-end;
-
-procedure TIDEToolBar.AddCustomItems(Index: Integer);
-var
-  AName: string;
-  mi: TIDEButtonCommand;
-begin
-  FToolBar.BeginUpdate;
-  try
-    AName := FButtonNames[Index];
-    if AName <> '' then
-    begin
-      if AName = cIDEToolbarDivider then
-        AddDivider
-      else
-      begin
-        mi := IDEToolButtonCategories.FindItemByMenuPathOrName(AName);
-        if Assigned(mi) then
-          AddButton(mi);
-      end;
-    end;
-  finally
-    FToolBar.EndUpdate;
-  end;
 end;
 
 procedure TIDEToolBar.ClearToolbar;
@@ -460,6 +442,12 @@ begin
   finally
     FToolBar.EndUpdate;
   end;
+end;
+
+procedure TIDEToolBar.UseCurrentOptions;
+begin
+  ClearToolbar;
+  CopyFromOptions(FCurrentOptions);
 end;
 
 procedure TIDEToolBar.DoToolBarClick(Sender: TObject);
@@ -517,6 +505,23 @@ begin
   CopyFromOptions(FDefaultOptions);
 end;
 
+procedure TIDECoolBar.CopyFromRealCoolbar(RealCoolbar: TCoolBar);
+var
+  ToolBar: TToolBar;
+  I, J: Integer;
+begin
+  for I := 0 to RealCoolbar.Bands.Count - 1 do
+  begin
+    if RealCoolbar.Bands[I].Control = nil then
+      Continue;
+    ToolBar := (RealCoolbar.Bands[I].Control as TToolBar);
+    J := FindByToolBar(ToolBar);
+    if J <> -1 then
+      ToolBars[J].CurrentOptions.CopyPosFromBand(RealCoolbar.Bands[I]);
+  end;
+  Sort;
+end;
+
 procedure TIDECoolBar.CopyFromOptions(Options: TIDECoolBarOptions);
 var
   I: Integer;
@@ -527,9 +532,9 @@ begin
   begin
     IDEToolBar := TIDEToolBar.Create(Nil);
     FCoolBarToolBars.Add(IDEToolBar);
-    IDEToolBar.Position := I;
-    IDEToolBar.Break := Options.FToolBars[I].Break;
-    IDEToolBar.ButtonNames.Assign(Options.FToolBars[I].ButtonNames);
+    IDEToolBar.CurrentOptions.PosIndex := I;
+    IDEToolBar.CurrentOptions.Break := Options.FToolBars[I].Break;
+    IDEToolBar.CurrentOptions.ButtonNames.Assign(Options.FToolBars[I].ButtonNames);
   end;
 end;
 
@@ -543,9 +548,9 @@ begin
   begin
     Opt := TIDEToolBarOptions.Create;
     Options.FToolBars.Add(Opt);
-    Opt.Position := FCoolBarToolBars[I].Position;
-    Opt.Break := FCoolBarToolBars[I].Break;
-    Opt.ButtonNames.Assign(FCoolBarToolBars[I].ButtonNames);
+    Opt.PosIndex := FCoolBarToolBars[I].CurrentOptions.PosIndex;
+    Opt.Break := FCoolBarToolBars[I].CurrentOptions.Break;
+    Opt.ButtonNames.Assign(FCoolBarToolBars[I].CurrentOptions.ButtonNames);
   end;
 end;
 
@@ -572,7 +577,7 @@ end;
 
 function Compare(const Item1, Item2: TIDEToolBar): Integer;
 begin
-  Result := Item1.Position - Item2.Position;
+  Result := Item1.CurrentOptions.PosIndex - Item2.CurrentOptions.PosIndex;
 end;
 
 procedure TIDECoolBar.Sort;
