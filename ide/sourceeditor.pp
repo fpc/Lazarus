@@ -4878,6 +4878,7 @@ begin
   if UseWordCompletion then
     Completion.CurrentCompletionType:=ctWordCompletion;
 
+  Completion.AutoUseSingleIdent := CodeToolsOpts.IdentComplAutoUseSingleIdent;
   Completion.Execute(TextS2, CompletionRect);
   {$IFDEF VerboseIDECompletionBox}
   debugln(['TSourceEditor.StartIdentCompletionBox END Completion.TheForm.Visible=',Completion.TheForm.Visible]);

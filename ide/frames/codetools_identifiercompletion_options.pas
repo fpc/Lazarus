@@ -44,6 +44,7 @@ type
     ICReplaceCheckBox: TCheckBox;
     ICJumpToErrorCheckBox: TCheckBox;
     ICShowHelpCheckBox: TCheckBox;
+    ICAutoUseSingleIdent: TCheckBox;
     ICSortDividerBevel: TDividerBevel;
     ICSortForHistoryCheckBox: TCheckBox;
     ICSortForScopeCheckBox: TCheckBox;
@@ -72,6 +73,7 @@ procedure TCodetoolsIndentifierCompletionOptionsFrame.Setup(
 begin
   ICOpenDividerBevel.Caption:=lisIdCOpening;
   ICAutoStartAfterPointCheckBox.Caption:=lisAutomaticallyInvokeAfterPoint;
+  ICAutoUseSingleIdent.Caption:=lisAutomaticallyUseSinglePossibleIdent;
   ICShowHelpCheckBox.Caption:=lisShowHelp;
   ICShowHelpCheckBox.Hint:=lisBestViewedByInstallingAHTMLControlLikeTurbopowerip;
 
@@ -102,6 +104,7 @@ begin
     ICAddAssignOperatorCheckBox.Checked := IdentComplAddAssignOperator;
     ICAddDoCheckBox.Checked := IdentComplAddDo;
     ICAutoStartAfterPointCheckBox.Checked := IdentComplAutoStartAfterPoint;
+    ICAutoUseSingleIdent.Checked := IdentComplAutoUseSingleIdent;
     ICAutoAddParameterBracketsCheckBox.Checked:=IdentComplAddParameterBrackets;
     ICReplaceCheckBox.Checked:=IdentComplReplaceIdentifier;
     ICJumpToErrorCheckBox.Checked:=IdentComplJumpToError;
@@ -120,6 +123,7 @@ begin
     IdentComplAddAssignOperator := ICAddAssignOperatorCheckBox.Checked;
     IdentComplAddDo := ICAddDoCheckBox.Checked;
     IdentComplAutoStartAfterPoint := ICAutoStartAfterPointCheckBox.Checked;
+    IdentComplAutoUseSingleIdent := ICAutoUseSingleIdent.Checked;
     IdentComplAddParameterBrackets:=ICAutoAddParameterBracketsCheckBox.Checked;
     IdentComplReplaceIdentifier:=ICReplaceCheckBox.Checked;
     IdentComplJumpToError:=ICJumpToErrorCheckBox.Checked;

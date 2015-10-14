@@ -5473,6 +5473,7 @@ resourcestring
   lisInsertPrintShortTag = 'Insert PrintShort tag';
   lisIdCOpening = 'Opening';
   lisAutomaticallyInvokeAfterPoint = 'Automatically invoke after point';
+  lisAutomaticallyUseSinglePossibleIdent = 'Automatically use single possible identifier';
   lisAddParameterBrackets = 'Add parameter brackets';
   lisReplaceWholeIdentifier = 'Replace whole identifier';
   lisEnableReplaceWholeIdentifierDisableReplacePrefix = 'Enable = replace '
