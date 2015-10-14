@@ -73,7 +73,6 @@ type
   end;
 
   TCFOEdgeType = (
-    cfoetReachable, // FromNode (proc) is reachable by ToNode(program)
     cfoetMethodOf,  // FromNode (proc) is method of ToNode (class)
     cfoetDescendantOf  // FromNode (descendant class) is descendant of ToNode (ancestor class)
     );
@@ -156,25 +155,26 @@ type
     procedure ReadRelationComboBox;
     procedure SetIdleConnected(AValue: boolean);
     procedure CreateUsesGraph(out TheUsesGraph: TUsesGraph);
+    procedure FreeUsesGraph;
     procedure StartParsing;
     procedure AbortParsing;
     procedure AddStartAndTargetUnits;
     procedure GatherProcsOfAllUnits;
     function AddClassNode(NodeGraph: TCodeGraph; Tool: TFindDeclarationTool;
-      ClassNode, ProjectNode: TCodeTreeNode): TCFONode;
+      ClassNode: TCodeTreeNode): TCFONode;
     procedure AddAncestors(NodeGraph: TCodeGraph; Tool: TFindDeclarationTool;
-      ClassNode, ProjectNode: TCodeTreeNode);
+      ClassNode: TCodeTreeNode);
     procedure AddProcNode(NodeGraph: TCodeGraph; Tool: TFindDeclarationTool;
-      ProcNode, ProjectNode: TCodeTreeNode; TargetCleanPos: integer;
+      ProcNode: TCodeTreeNode; TargetCleanPos: integer;
       var TargetGraphNode: TCFONode);
-    procedure GatherProcsOfUnit(NodeGraph: TCodeGraph; ProjectNode: TCodeTreeNode;
+    procedure GatherProcsOfUnit(NodeGraph: TCodeGraph;
       CurUnit: TCFOUnit; var TargetGraphNode: TCFONode);
     function IsClassNodeDescendantOf(NodeGraph: TCodeGraph;
       GraphClassNode: TCFONode; Ancestor: string): boolean;
     procedure CalcDistances(NodeGraph: TCodeGraph; TargetGraphNode: TCFONode);
-    procedure CreateProcList(NodeGraph: TCodeGraph; TargetGraphNode: TCFONode);
+    procedure CreateProcList(NodeGraph: TCodeGraph; TargetGraphNode: TCFONode;
+      out NewProclist: TObjectList);
     procedure FillGrid;
-    procedure FreeUsesGraph;
     function GetDefaultCaption: string;
     procedure FillFilterControls(ProcTool: TFindDeclarationTool;
       ProcNode: TCodeTreeNode);
@@ -254,6 +254,7 @@ begin
   HideAbstractCheckBox.Caption:=
     crsHideAbstractMethodsAndMethodsOfClassInterfaces;
   RelationLabel.Caption:='Relations:';
+  ResultsStringGrid.Visible:=false;
 end;
 
 procedure TCodyFindOverloadsWindow.FormDestroy(Sender: TObject);
@@ -412,6 +413,11 @@ begin
   TheUsesGraph.UnitClass:=TCFOUnit;
 end;
 
+procedure TCodyFindOverloadsWindow.FreeUsesGraph;
+begin
+  FreeAndNil(FUsesGraph);
+end;
+
 procedure TCodyFindOverloadsWindow.StartParsing;
 begin
   if (FUsesGraph<>nil) or (cfofParsing in FFlags) then
@@ -458,8 +464,8 @@ var
   FileNode: TAVLTreeNode;
   CurUnit: TCFOUnit;
   NodeGraph: TCodeGraph;
-  ProgNode: TCodeTreeNode;
   TargetGraphNode: TCFONode;
+  NewProcList: TObjectList;
 begin
   Exclude(FFlags,cfofGatherProcs);
   Timer1.Enabled:=false;
@@ -470,42 +476,38 @@ begin
 
   if FUsesGraph=nil then
     exit;
-  debugln(['TCodyFindOverloadsWindow.GatherProcsOfAllUnits START']);
+  debugln(['TCodyFindOverloadsWindow.GatherProcsOfAllUnits START Proc="',TargetName,'"']);
 
   // get filter
   FHideAbstractMethods:=HideAbstractCheckBox.Checked;
   ReadRelationComboBox;
 
-  ProgNode:=TCodeTreeNode.Create;
   NodeGraph:=TCodeGraph.Create(TCFONode,TCFOEdge);
   try
-    NodeGraph.AddGraphNode(ProgNode);
-
     TargetGraphNode:=nil;
     FileNode:=FUsesGraph.FilesTree.FindLowest;
     while FileNode<>nil do begin
       CurUnit:=TCFOUnit(FileNode.Data);
-      GatherProcsOfUnit(NodeGraph,ProgNode,CurUnit,TargetGraphNode);
+      GatherProcsOfUnit(NodeGraph,CurUnit,TargetGraphNode);
       FileNode:=FUsesGraph.FilesTree.FindSuccessor(FileNode);
     end;
 
     if TargetGraphNode<>nil then
       CalcDistances(NodeGraph,TargetGraphNode);
 
-    CreateProcList(NodeGraph,TargetGraphNode);
+    CreateProcList(NodeGraph,TargetGraphNode,NewProcList);
+    FreeAndNil(FProcList);
+    FProcList:=NewProcList;
 
     FillGrid;
   finally
     NodeGraph.Free;
-    ProgNode.Free;
   end;
   debugln(['TCodyFindOverloadsWindow.GatherProcsOfAllUnits END']);
 end;
 
 function TCodyFindOverloadsWindow.AddClassNode(NodeGraph: TCodeGraph;
-  Tool: TFindDeclarationTool; ClassNode, ProjectNode: TCodeTreeNode): TCFONode;
-var
-  Edge: TCFOEdge;
+  Tool: TFindDeclarationTool; ClassNode: TCodeTreeNode): TCFONode;
 begin
   if ClassNode=nil then
     RaiseCatchableException('');
@@ -515,14 +517,11 @@ begin
   Result:=TCFONode(NodeGraph.AddGraphNode(ClassNode));
   Result.Tool:=Tool;
   Result.TheClassName:=Tool.ExtractClassName(ClassNode,false);
-  // create edge "reachable", so that all nodes are reachable
-  Edge:=TCFOEdge(NodeGraph.AddEdge(ClassNode,ProjectNode));
-  Edge.Typ:=cfoetReachable;
-  AddAncestors(NodeGraph,Tool,ClassNode,ProjectNode);
+  AddAncestors(NodeGraph,Tool,ClassNode);
 end;
 
 procedure TCodyFindOverloadsWindow.AddAncestors(NodeGraph: TCodeGraph;
-  Tool: TFindDeclarationTool; ClassNode, ProjectNode: TCodeTreeNode);
+  Tool: TFindDeclarationTool; ClassNode: TCodeTreeNode);
 var
   ListOfPFindContext: TFPList;
   Params: TFindDeclarationParams;
@@ -538,7 +537,7 @@ begin
     if ListOfPFindContext<>nil then begin
       for i:=0 to ListOfPFindContext.Count-1 do begin
         Ancestor:=PFindContext(ListOfPFindContext[i]);
-        AddClassNode(NodeGraph,Ancestor^.Tool,Ancestor^.Node,ProjectNode);
+        AddClassNode(NodeGraph,Ancestor^.Tool,Ancestor^.Node);
         // create edge "descendant of"
         Edge:=TCFOEdge(NodeGraph.AddEdge(ClassNode,Ancestor^.Node));
         Edge.Typ:=cfoetDescendantOf;
@@ -551,7 +550,7 @@ begin
 end;
 
 procedure TCodyFindOverloadsWindow.AddProcNode(NodeGraph: TCodeGraph;
-  Tool: TFindDeclarationTool; ProcNode, ProjectNode: TCodeTreeNode;
+  Tool: TFindDeclarationTool; ProcNode: TCodeTreeNode;
   TargetCleanPos: integer; var TargetGraphNode: TCFONode);
 var
   CurProcName: String;
@@ -609,7 +608,7 @@ begin
   // add edges
   if ClassNode<>nil then begin
     // create nodes for class and ancestors
-    GraphClassNode:=AddClassNode(NodeGraph,Tool,ClassNode,ProjectNode);
+    GraphClassNode:=AddClassNode(NodeGraph,Tool,ClassNode);
     if (FilterRelation=cfofrOnlyDescendantsOf)
     and (not IsClassNodeDescendantOf(NodeGraph,GraphClassNode,FilterAncestor)) then begin
       NodeGraph.DeleteGraphNode(ProcNode);
@@ -621,14 +620,11 @@ begin
     Edge.Typ:=cfoetMethodOf;
   end else begin
     // not a method
-    // create edge "reachable", so that all nodes are reachable
-    Edge:=TCFOEdge(NodeGraph.AddEdge(ProcNode,ProcNode));
-    Edge.Typ:=cfoetReachable;
   end;
 end;
 
 procedure TCodyFindOverloadsWindow.GatherProcsOfUnit(NodeGraph: TCodeGraph;
-  ProjectNode: TCodeTreeNode; CurUnit: TCFOUnit; var TargetGraphNode: TCFONode);
+  CurUnit: TCFOUnit; var TargetGraphNode: TCFONode);
 var
   Tool: TStandardCodeTool;
   ProcNode: TCodeTreeNode;
@@ -646,8 +642,7 @@ begin
   while ProcNode<>nil do begin
     if ProcNode.Desc in [ctnImplementation,ctnBeginBlock] then break;
     if ProcNode.Desc=ctnProcedure then
-      AddProcNode(NodeGraph,Tool,ProcNode,ProjectNode,
-                  TargetCleanPos,TargetGraphNode);
+      AddProcNode(NodeGraph,Tool,ProcNode,TargetCleanPos,TargetGraphNode);
     ProcNode:=ProcNode.Next;
   end;
 end;
@@ -691,7 +686,6 @@ var
       Edge:=TCFOEdge(AVLNode.Data);
       NewDistance:=GraphNode.Distance;
       case Edge.Typ of
-      cfoetReachable: NewDistance+=50000;// not related
       cfoetMethodOf: ; // methods within one class are close
       cfoetDescendantOf:
         if GraphNode=Edge.FromNode then
@@ -706,12 +700,12 @@ var
       end;
       if NewDistance<OtherNode.Distance then begin
         WasUnvisited:=Unvisited.Find(OtherNode)<>nil;
-        if WasUnvisited then
-          Unvisited.Remove(OtherNode);
+        if not WasUnvisited then
+          RaiseCatchableException(''); // visited nodes must have minimal distance
+        Unvisited.Remove(OtherNode);
         OtherNode.Distance:=NewDistance;
         OtherNode.ShortestPathNode:=GraphNode;
-        if WasUnvisited then
-          Unvisited.Add(OtherNode);
+        Unvisited.Add(OtherNode);
       end;
       AVLNode:=Edges.FindSuccessor(AVLNode);
     end;
@@ -735,7 +729,8 @@ begin
       if GraphNode=TargetGraphNode then
         GraphNode.Distance:=0
       else
-        GraphNode.Distance:=High(integer);
+        GraphNode.Distance:=50000;
+      GraphNode.ShortestPathNode:=nil;
       Unvisited.Add(GraphNode);
       AVLNode:=NodeGraph.Nodes.FindSuccessor(AVLNode);
     end;
@@ -756,7 +751,7 @@ begin
 end;
 
 procedure TCodyFindOverloadsWindow.CreateProcList(NodeGraph: TCodeGraph;
-  TargetGraphNode: TCFONode);
+  TargetGraphNode: TCFONode; out NewProclist: TObjectList);
 var
   AVLNode: TAVLTreeNode;
   aProc: TCFOProc;
@@ -764,7 +759,7 @@ var
   Tool: TFindDeclarationTool;
   Node: TCodeTreeNode;
 begin
-  FProcList.Clear;
+  NewProcList:=TObjectList.Create(true);
 
   AVLNode:=NodeGraph.Nodes.FindLowest;
   while AVLNode<>nil do begin
@@ -782,7 +777,7 @@ begin
     aProc.TheUnitName:=Tool.GetSourceName(false);
     aProc.Compatibility:=GraphNode.Compatibility;
     aProc.Distance:=GraphNode.Distance;
-    FProcList.Add(aProc);
+    NewProcList.Add(aProc);
   end;
 end;
 
@@ -829,11 +824,6 @@ begin
   Grid.AutoAdjustColumns;
 
   JumpToButton.Enabled:=Grid.Row>0;
-end;
-
-procedure TCodyFindOverloadsWindow.FreeUsesGraph;
-begin
-  FreeAndNil(FUsesGraph);
 end;
 
 function TCodyFindOverloadsWindow.GetDefaultCaption: string;
@@ -989,7 +979,6 @@ begin
   if csDestroying in ComponentState then exit;
 
   Caption:=GetDefaultCaption;
-  ResultsStringGrid.Visible:=false;
   JumpToButton.Enabled:=false;
   FTargetName:='';
   FTargetPath:='';

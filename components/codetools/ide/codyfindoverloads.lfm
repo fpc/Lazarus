@@ -131,7 +131,7 @@ object CodyFindOverloadsWindow: TCodyFindOverloadsWindow
     object ResultsStringGrid: TStringGrid
       Left = 0
       Height = 230
-      Top = 20
+      Top = 0
       Width = 552
       Align = alClient
       ColCount = 3
@@ -172,9 +172,9 @@ object CodyFindOverloadsWindow: TCodyFindOverloadsWindow
     object ProgressBar1: TProgressBar
       Left = 0
       Height = 20
-      Top = 0
+      Top = 230
       Width = 552
-      Align = alTop
+      Align = alBottom
       TabOrder = 1
     end
   end
