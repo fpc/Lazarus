@@ -33,8 +33,7 @@
       (Only for method:) Show abstract methods and interfaces
 
   ToDo:
-    -show line number
-    -param compatibility
+    -show line number to distinguish overloads in same unit
     -last visited
     -hint: show file name + param list
 }
@@ -566,7 +565,7 @@ begin
   CurProcName:=Tool.ExtractProcName(ProcNode,[phpWithoutClassName]);
   if CompareIdentifiers(PChar(CurProcName),PChar(FTargetName))<>0 then exit;
 
-  debugln(['TCodyFindOverloadsWindow.GatherProcsOfUnit ',Tool.CleanPosToStr(ProcNode.StartPos,true)]);
+  //debugln(['TCodyFindOverloadsWindow.GatherProcsOfUnit ',Tool.CleanPosToStr(ProcNode.StartPos,true)]);
 
   // check if method
   ClassNode:=ProcNode.Parent;
@@ -607,7 +606,8 @@ begin
     // create nodes for class and ancestors
     GraphClassNode:=AddClassNode(NodeGraph,Tool,ClassNode);
     if (FilterRelation=cfofrOnlyDescendantsOf)
-    and (not IsClassNodeDescendantOf(NodeGraph,GraphClassNode,FilterAncestor)) then begin
+    and (not IsClassNodeDescendantOf(NodeGraph,GraphClassNode,FilterAncestor))
+    then begin
       NodeGraph.DeleteGraphNode(ProcNode);
       exit;
     end;
@@ -615,8 +615,6 @@ begin
     // create edge "is method of"
     Edge:=TCFOEdge(NodeGraph.AddEdge(ProcNode,ClassNode));
     Edge.Typ:=cfoetMethodOf;
-  end else begin
-    // not a method
   end;
 end;
 
@@ -969,14 +967,11 @@ var
     if ProcNode.Desc=ctnProcedureHead then
       ProcNode:=ProcNode.Parent;
     if ProcNode.Desc<>ctnProcedure then exit;
-    if ProcNode.Parent.Desc=ctnInterface then exit;
-    if (ProcNode.Parent.Desc=ctnImplementation)
-    or ProcTool.NodeIsMethodBody(ProcNode)
-    or (not ProcTool.NodeIsForwardProc(ProcNode)) then begin
-      Node:=ProcTool.FindCorrespondingProcNode(ProcNode,[phpWithoutClassName]);
-      if Node=nil then exit;
-      ProcNode:=Node;
-    end;
+    if ProcNode.GetNodeOfType(ctnInterface)<>nil then exit;
+    if ProcTool.NodeIsForwardProc(ProcNode) then exit;
+    Node:=ProcTool.FindCorrespondingProcNode(ProcNode,[phpWithoutClassName]);
+    if Node=nil then exit;
+    ProcNode:=Node;
   end;
 
   function IsCursorAtProcCall(StatementNode: TCodeTreeNode;
