@@ -9320,12 +9320,13 @@ begin
   CodeCompleteSrcChgCache:=SourceChangeCache;
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
 
+  if TryComplete(CursorNode, CleanCursorPos, OrigCleanCursorPos) then
+    exit(true);
+
   { Find the first occurence of the (local) identifier at cursor in current
     procedure body and try again. }
-  Result:=TryFirstLocalIdentOccurence(CursorNode,OrigCleanCursorPos,CleanCursorPos);
-  if Result then exit;
-
-  if TryComplete(CursorNode, CleanCursorPos, OrigCleanCursorPos) then exit;
+  if TryFirstLocalIdentOccurence(CursorNode,OrigCleanCursorPos,CleanCursorPos) then
+    exit(true);
 
   {$IFDEF CTDEBUG}
   DebugLn('TCodeCompletionCodeTool.CompleteCode  nothing to complete ... ');
