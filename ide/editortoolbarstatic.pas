@@ -24,10 +24,9 @@ unit EditorToolbarStatic;
 interface
 
 uses
-  SysUtils, Classes, Forms, ComCtrls, Controls, ExtCtrls, fgl,
-  MenuIntf, IDEImagesIntf, SrcEditorIntf, BaseIDEIntf, LazIDEIntf,
-  LazarusIDEStrConsts, LazConfigStorage, Laz2_XMLCfg, LCLProc, ToolbarConfig,
-  ToolBarIntf;
+  SysUtils, Classes, fgl, ComCtrls, Controls, LCLProc,
+  MenuIntf, IDEImagesIntf, SrcEditorIntf, BaseIDEIntf,
+  LazarusIDEStrConsts, LazConfigStorage, Laz2_XMLCfg, ToolbarConfig;
 
 type
 
@@ -167,15 +166,7 @@ begin
   begin
     FVisible := XMLConfig.GetValue(Path + 'Visible', True);
     FPosition := XMLConfig.GetValue(Path + 'Position', 'Top');
-    ButtonCount := XMLConfig.GetValue(Path + 'Count', 0);
-    for I := 1 to ButtonCount do
-    begin
-      ButtonName := XMLConfig.GetValue(Path + 'Button' + IntToStr(I) + '/Name', '');
-      if ButtonName = '' then  // Old format
-        ButtonName := XMLConfig.GetValue(Path + 'Buttons/Name' + IntToStr(I) + '/Value', '');
-      if ButtonName <> '' then
-        ButtonNames.Add(ButtonName);
-    end;
+    LoadButtonNames(XMLConfig, Path);
   end
   else begin
     // Plan B: Load the old configuration. User settings are not lost.
@@ -205,15 +196,11 @@ begin
 end;
 
 procedure TEditorToolBarOptions.Save(XMLConfig: TXMLConfig; Path: String);
-var
-  I: Integer;
 begin
   Path := Path + BasePath;
   XMLConfig.SetDeleteValue(Path + 'Visible', FVisible, True);
   XMLConfig.SetDeleteValue(Path + 'Position', FPosition, 'Top');
-  XMLConfig.SetDeleteValue(Path + 'Count', ButtonNames.Count, 0);
-  for I := 0 to ButtonNames.Count-1 do
-    XMLConfig.SetDeleteValue(Path + 'Button' + IntToStr(I+1) + '/Name', ButtonNames[I], '');
+  SaveButtonNames(XMLConfig, Path);
 end;
 
 { TEditorToolbar }

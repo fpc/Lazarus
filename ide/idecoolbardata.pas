@@ -34,7 +34,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, ComCtrls, ToolWin, Controls, fgl,
-  ToolBarIntf, IDEImagesIntf, Laz2_XMLCfg, ToolbarConfig;
+  IDEImagesIntf, Laz2_XMLCfg, ToolbarConfig;
 
 type
 
@@ -198,33 +198,15 @@ begin
 end;
 
 procedure TIDEToolBarOptions.Load(XMLConfig: TXMLConfig; SubPath: String);
-var
-  ButtonCount: Integer;
-  ButtonName: string;
-  I: Integer;
 begin
   FBreak := XMLConfig.GetValue(SubPath + 'Break/Value', False);
-  ButtonCount := XMLConfig.GetValue(SubPath + 'Count', 0);
-  if ButtonCount = 0 then  // Old format
-    ButtonCount := XMLConfig.GetValue(SubPath + 'ButtonCount/Value', 0);
-  for I := 1 to ButtonCount do
-  begin
-    ButtonName := XMLConfig.GetValue(SubPath + 'Button' + IntToStr(I) + '/Name', '');
-    if ButtonName = '' then  // Old format
-      ButtonName := XMLConfig.GetValue(SubPath + 'Buttons/Name' + IntToStr(I) + '/Value', '');
-    if ButtonName <> '' then
-      ButtonNames.Add(ButtonName);
-  end;
+  LoadButtonNames(XMLConfig, SubPath);
 end;
 
 procedure TIDEToolBarOptions.Save(XMLConfig: TXMLConfig; SubPath: String);
-var
-  I: Integer;
 begin
   XMLConfig.SetDeleteValue(SubPath + 'Break/Value', FBreak, False);
-  XMLConfig.SetDeleteValue(SubPath + 'Count', ButtonNames.Count, 0);
-  for I := 0 to ButtonNames.Count-1 do
-    XMLConfig.SetDeleteValue(SubPath + 'Button' + IntToStr(I+1) + '/Name', ButtonNames[I], '');
+  SaveButtonNames(XMLConfig, SubPath);
 end;
 
 { TIDEToolBarOptionList }

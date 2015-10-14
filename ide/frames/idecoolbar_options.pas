@@ -394,7 +394,6 @@ procedure TIdeCoolbarOptionsFrame.bConfigClick(Sender: TObject);
 var
   ToConfig: Integer;
   ToolBar: TToolBar;
-  I: Integer;
 begin
   ToConfig := GetSelectedBand;
   if ToConfig = -1 then

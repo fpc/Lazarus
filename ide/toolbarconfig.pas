@@ -27,6 +27,8 @@ uses
   // LCL and LazControls
   LCLProc, Forms, Graphics, ExtCtrls, Buttons, StdCtrls,
   Controls, ComCtrls, Menus, ButtonPanel, TreeFilterEdit, LclIntf,
+  // LazUtils
+  Laz2_XMLCfg,
   // IdeIntf
   IDECommands, ToolBarIntf, IDEImagesIntf,
   // IDE
@@ -109,6 +111,9 @@ type
   TIDEToolBarOptionsBase = class
   private
     FButtonNames: TStringList;
+  protected
+    procedure LoadButtonNames(XMLConfig: TXMLConfig; SubPath: String);
+    procedure SaveButtonNames(XMLConfig: TXMLConfig; SubPath: String);
   public
     constructor Create;
     destructor Destroy; override;
@@ -669,6 +674,34 @@ end;
 procedure TIDEToolBarOptionsBase.Assign(Source: TIDEToolBarOptionsBase);
 begin
   FButtonNames.Assign(Source.FButtonNames);
+end;
+
+procedure TIDEToolBarOptionsBase.LoadButtonNames(XMLConfig: TXMLConfig; SubPath: String);
+var
+  ButtonCount: Integer;
+  ButtonName: string;
+  I: Integer;
+begin
+  ButtonCount := XMLConfig.GetValue(SubPath + 'Count', 0);
+  if ButtonCount = 0 then  // Old format
+    ButtonCount := XMLConfig.GetValue(SubPath + 'ButtonCount/Value', 0);
+  for I := 1 to ButtonCount do
+  begin
+    ButtonName := XMLConfig.GetValue(SubPath + 'Button' + IntToStr(I) + '/Name', '');
+    if ButtonName = '' then  // Old format
+      ButtonName := XMLConfig.GetValue(SubPath + 'Buttons/Name' + IntToStr(I) + '/Value', '');
+    if ButtonName <> '' then
+      ButtonNames.Add(ButtonName);
+  end;
+end;
+
+procedure TIDEToolBarOptionsBase.SaveButtonNames(XMLConfig: TXMLConfig; SubPath: String);
+var
+  I: Integer;
+begin
+  XMLConfig.SetDeleteValue(SubPath + 'Count', ButtonNames.Count, 0);
+  for I := 0 to ButtonNames.Count-1 do
+    XMLConfig.SetDeleteValue(SubPath + 'Button' + IntToStr(I+1) + '/Name', ButtonNames[I], '');
 end;
 
 { TIDEToolbarBase }

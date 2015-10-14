@@ -771,9 +771,6 @@ begin
 end;
 
 procedure TMainIDEBar.CoolBarOnChange(Sender: TObject);
-var
-  I, J: Integer;
-  ToolBar: TToolBar;
 begin
   IDECoolBar.CopyFromRealCoolbar(Coolbar);
   IDECoolBar.CopyToOptions(EnvironmentOptions.Desktop.IDECoolBarOptions);
