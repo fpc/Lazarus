@@ -823,12 +823,14 @@ procedure TCodyFindOverloadsWindow.FillGrid;
 var
   Grid: TStringGrid;
   Row: Integer;
-  s: String;
+  s, OldSelectedProcName: String;
   aProc: TCFOProc;
 begin
   Grid:=ResultsStringGrid;
   Grid.BeginUpdate;
-  Grid.Visible:=true;
+  OldSelectedProcName:='';
+  if Grid.Row>0 then
+    OldSelectedProcName:=Grid.Cells[0,Grid.Row];
   Grid.Columns[0].Title.Caption:=crsName;
   Grid.Columns[1].Title.Caption:=crsCompatibility;
   Grid.Columns[2].Title.Caption:=crsDistance;
@@ -844,6 +846,8 @@ begin
     s+=aProc.Name;
     aProc.Caption:=s;
     Grid.Cells[0,Row]:=s;
+    if s=OldSelectedProcName then
+      Grid.Row:=Row;
 
     case aProc.Compatibility of
     tcExact: s:=crsExact;
@@ -856,6 +860,7 @@ begin
   end;
 
   Grid.SortColRow(true,0);
+  Grid.Visible:=true;
   Grid.EndUpdate(true);
 
   Grid.HandleNeeded;
