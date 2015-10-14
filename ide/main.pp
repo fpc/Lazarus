@@ -3729,16 +3729,19 @@ var
   CanOpenPkgOfFile, CanAddCurFile: Boolean;
 begin
   GetCurrentUnit(ASrcEdit,AUnitInfo);
-  if Assigned(AUnitInfo) and (AUnitInfo.Filename <> FLastUnitInfoFileName) then
+  if Assigned(AUnitInfo) then
   begin
-    PkgFile:=PackageGraph.FindFileInAllPackages(AUnitInfo.Filename,true,
-                                          not AUnitInfo.IsPartOfProject);
-    CanOpenPkgOfFile:=Assigned(PkgFile);
-    CanAddCurFile:=(not AUnitInfo.IsVirtual) and FileExistsUTF8(AUnitInfo.Filename)
-          and not AUnitInfo.IsPartOfProject;
-    MainIDEBar.itmPkgOpenPackageOfCurUnit.Enabled:=CanOpenPkgOfFile;
-    MainIDEBar.itmPkgAddCurFileToPkg.Enabled:=CanAddCurFile;
-    FLastUnitInfoFileName := AUnitInfo.Filename;
+    if (AUnitInfo.Filename <> FLastUnitInfoFileName) then
+    begin
+      PkgFile:=PackageGraph.FindFileInAllPackages(AUnitInfo.Filename,true,
+                                            not AUnitInfo.IsPartOfProject);
+      CanOpenPkgOfFile:=Assigned(PkgFile);
+      CanAddCurFile:=(not AUnitInfo.IsVirtual) and FileExistsUTF8(AUnitInfo.Filename)
+            and not AUnitInfo.IsPartOfProject;
+      MainIDEBar.itmPkgOpenPackageOfCurUnit.Enabled:=CanOpenPkgOfFile;
+      MainIDEBar.itmPkgAddCurFileToPkg.Enabled:=CanAddCurFile;
+      FLastUnitInfoFileName := AUnitInfo.Filename;
+    end;
   end else
   begin
     MainIDEBar.itmPkgOpenPackageOfCurUnit.Enabled:=False;
