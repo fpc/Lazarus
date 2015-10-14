@@ -4700,6 +4700,10 @@ msgstr "文字終端"
 msgid "do not add character"
 msgstr "文字を追加しない"
 
+#: lazarusidestrconsts.lisautomaticallyusesinglepossibleident
+msgid "Automatically use single possible identifier"
+msgstr ""
+
 #: lazarusidestrconsts.lisautomaticfeatures
 msgid "Completion and Hints"
 msgstr "補完とヒント"
@@ -7214,22 +7218,6 @@ msgstr "ボタン"
 
 #: lazarusidestrconsts.liscoolbargrabwidth
 msgid "Grab width"
-msgstr ""
-
-#: lazarusidestrconsts.liscoolbarhelp1
-msgid "The \"Add\" button inserts a command before the selected Item of the Toolbar."
-msgstr ""
-
-#: lazarusidestrconsts.liscoolbarhelp2
-msgid "If none is selected, the Item will be appended at the end of the Toolbar."
-msgstr ""
-
-#: lazarusidestrconsts.liscoolbarhelp3
-msgid "You may rearrange Toolbar Items with \"Move Up\" and \"Move Down\" buttons."
-msgstr ""
-
-#: lazarusidestrconsts.liscoolbarhelp4
-msgid "Hint: to append an Item at the end, use \"Clear selection\""
 msgstr ""
 
 #: lazarusidestrconsts.liscoolbaridemainmenu

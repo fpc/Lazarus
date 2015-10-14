@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-10-06 02:14+0300\n"
+"PO-Revision-Date: 2015-10-15 00:39+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -4607,6 +4607,10 @@ msgstr "конца слова"
 msgid "do not add character"
 msgstr "не добавлять сам символ"
 
+#: lazarusidestrconsts.lisautomaticallyusesinglepossibleident
+msgid "Automatically use single possible identifier"
+msgstr "Автоматически выбирать единственный возможный идентификатор"
+
 #: lazarusidestrconsts.lisautomaticfeatures
 msgid "Completion and Hints"
 msgstr "Автозавершение и подсказки"
@@ -7091,22 +7095,6 @@ msgstr "Кнопка"
 #: lazarusidestrconsts.liscoolbargrabwidth
 msgid "Grab width"
 msgstr "Ширина"
-
-#: lazarusidestrconsts.liscoolbarhelp1
-msgid "The \"Add\" button inserts a command before the selected Item of the Toolbar."
-msgstr "Кнопка \"Добавить\" вставляет команду перед выбранным элементом инструментальной панели."
-
-#: lazarusidestrconsts.liscoolbarhelp2
-msgid "If none is selected, the Item will be appended at the end of the Toolbar."
-msgstr "Если ничего не было выбрано, добавление будет произведено в конец панели."
-
-#: lazarusidestrconsts.liscoolbarhelp3
-msgid "You may rearrange Toolbar Items with \"Move Up\" and \"Move Down\" buttons."
-msgstr "Элементы панели можно упорядочивать при помощи кнопок \"Переместить вверх\" и \"Переместить вниз\"."
-
-#: lazarusidestrconsts.liscoolbarhelp4
-msgid "Hint: to append an Item at the end, use \"Clear selection\""
-msgstr "Подсказка: чтобы добавить элемент в конец, воспользуйтесь кнопкой \"Снять выбор\""
 
 #: lazarusidestrconsts.liscoolbaridemainmenu
 msgid "IDE Main Menu"

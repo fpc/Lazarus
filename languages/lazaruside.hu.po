@@ -4602,6 +4602,10 @@ msgstr "kifejezés végén"
 msgid "do not add character"
 msgstr "ne adjon hozzá karaktert"
 
+#: lazarusidestrconsts.lisautomaticallyusesinglepossibleident
+msgid "Automatically use single possible identifier"
+msgstr ""
+
 #: lazarusidestrconsts.lisautomaticfeatures
 msgid "Completion and Hints"
 msgstr "Kiegészítés és tippek"
@@ -7089,22 +7093,6 @@ msgstr "Nyomógomb"
 #: lazarusidestrconsts.liscoolbargrabwidth
 msgid "Grab width"
 msgstr "Fogantyú szélessége"
-
-#: lazarusidestrconsts.liscoolbarhelp1
-msgid "The \"Add\" button inserts a command before the selected Item of the Toolbar."
-msgstr "A \"Hozzáadás\" gomb beszúr egy parancsot az eszköztár kijelölt eleme elé."
-
-#: lazarusidestrconsts.liscoolbarhelp2
-msgid "If none is selected, the Item will be appended at the end of the Toolbar."
-msgstr "Ha semmi sincs kijelölve akkor az elem az eszköztár végéhez lesz adva."
-
-#: lazarusidestrconsts.liscoolbarhelp3
-msgid "You may rearrange Toolbar Items with \"Move Up\" and \"Move Down\" buttons."
-msgstr "Az eszköztár elemei átrendezhetők a \"Mozgatás felfelé\" és a \"Mozgatás lefelé\" gombokkal."
-
-#: lazarusidestrconsts.liscoolbarhelp4
-msgid "Hint: to append an Item at the end, use \"Clear selection\""
-msgstr "Tipp: a \"Kijelölés megszüntetése\" után lehet egy elemet a lista végéhez adni"
 
 #: lazarusidestrconsts.liscoolbaridemainmenu
 msgid "IDE Main Menu"

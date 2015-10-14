@@ -4621,6 +4621,10 @@ msgstr "fin de mot"
 msgid "do not add character"
 msgstr "ne pas ajouter de caractère"
 
+#: lazarusidestrconsts.lisautomaticallyusesinglepossibleident
+msgid "Automatically use single possible identifier"
+msgstr ""
+
 #: lazarusidestrconsts.lisautomaticfeatures
 msgid "Completion and Hints"
 msgstr "Complétion et conseils"
@@ -7109,22 +7113,6 @@ msgstr "Bouton"
 #: lazarusidestrconsts.liscoolbargrabwidth
 msgid "Grab width"
 msgstr "Largeur de saisie"
-
-#: lazarusidestrconsts.liscoolbarhelp1
-msgid "The \"Add\" button inserts a command before the selected Item of the Toolbar."
-msgstr "Le bouton \"Ajouter\" insère une commande avant l'élément sélectionné de la barre d'outils."
-
-#: lazarusidestrconsts.liscoolbarhelp2
-msgid "If none is selected, the Item will be appended at the end of the Toolbar."
-msgstr "Si rien n'est sélectionné, l'élément sera ajouté à la fin de la barre d'outils."
-
-#: lazarusidestrconsts.liscoolbarhelp3
-msgid "You may rearrange Toolbar Items with \"Move Up\" and \"Move Down\" buttons."
-msgstr "Vous pouvez modifier l'organisation des éléments de la barre d'outils avec les boutons \"Déplacer vers le haut\" et \"Déplacer vers le bas\"."
-
-#: lazarusidestrconsts.liscoolbarhelp4
-msgid "Hint: to append an Item at the end, use \"Clear selection\""
-msgstr "Conseil : afin d'ajouter un élément à la fin, utilisez \"Mettre à zéro la sélection\""
 
 #: lazarusidestrconsts.liscoolbaridemainmenu
 msgid "IDE Main Menu"
