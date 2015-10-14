@@ -297,8 +297,8 @@ msgstr "\"%s\" ist ein Schlüsselwort."
 msgid "Error: %s"
 msgstr "Fehler: %s"
 
-#: codystrconsts.crsexactly
-msgid "exactly"
+#: codystrconsts.crsexact
+msgid "exact"
 msgstr ""
 
 #: codystrconsts.crsexplodeawithblock

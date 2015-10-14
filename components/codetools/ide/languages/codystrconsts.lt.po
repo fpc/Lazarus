@@ -298,8 +298,8 @@ msgstr "„%s“ yra bazinis žodis."
 msgid "Error: %s"
 msgstr "Klaida: %s"
 
-#: codystrconsts.crsexactly
-msgid "exactly"
+#: codystrconsts.crsexact
+msgid "exact"
 msgstr ""
 
 #: codystrconsts.crsexplodeawithblock

@@ -288,8 +288,8 @@ msgstr ""
 msgid "Error: %s"
 msgstr ""
 
-#: codystrconsts.crsexactly
-msgid "exactly"
+#: codystrconsts.crsexact
+msgid "exact"
 msgstr ""
 
 #: codystrconsts.crsexplodeawithblock

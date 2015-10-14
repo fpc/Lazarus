@@ -302,8 +302,8 @@ msgstr "\"%s\" является ключевым словом."
 msgid "Error: %s"
 msgstr "Ошибка: %s"
 
-#: codystrconsts.crsexactly
-msgid "exactly"
+#: codystrconsts.crsexact
+msgid "exact"
 msgstr ""
 
 #: codystrconsts.crsexplodeawithblock

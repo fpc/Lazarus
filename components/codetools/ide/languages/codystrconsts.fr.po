@@ -298,8 +298,8 @@ msgstr "\"%s\" est un mot-clé."
 msgid "Error: %s"
 msgstr "Erreur : %s"
 
-#: codystrconsts.crsexactly
-msgid "exactly"
+#: codystrconsts.crsexact
+msgid "exact"
 msgstr ""
 
 #: codystrconsts.crsexplodeawithblock

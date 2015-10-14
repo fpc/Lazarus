@@ -303,8 +303,8 @@ msgstr "\"%s\" é uma palavra-chave."
 msgid "Error: %s"
 msgstr "Erro: %s"
 
-#: codystrconsts.crsexactly
-msgid "exactly"
+#: codystrconsts.crsexact
+msgid "exact"
 msgstr ""
 
 #: codystrconsts.crsexplodeawithblock

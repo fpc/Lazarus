@@ -68,9 +68,11 @@ object CodyFindOverloadsWindow: TCodyFindOverloadsWindow
       Top = 0
       Width = 181
       Caption = 'CompatibleParamsCheckBox'
+      Checked = True
       OnChange = CompatibleParamsCheckBoxChange
       ParentShowHint = False
       ShowHint = True
+      State = cbChecked
       TabOrder = 0
     end
     object RelationLabel: TLabel

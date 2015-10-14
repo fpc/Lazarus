@@ -64,12 +64,13 @@ type
   public
     Tool: TFindDeclarationTool;
 
-    // for ctnProcedure:
+    // for ctnProcedure
     Compatibility: TTypeCompatibility;
-    Distance: integer;
-    ShortestPathNode: TCFONode;
     // for ctnClass
     TheClassName: string;
+    // path and distance to target proc
+    Distance: integer;
+    ShortestPathNode: TCFONode;
   end;
 
   TCFOEdgeType = (
@@ -171,6 +172,7 @@ type
       CurUnit: TCFOUnit; var TargetGraphNode: TCFONode);
     function IsClassNodeDescendantOf(NodeGraph: TCodeGraph;
       GraphClassNode: TCFONode; Ancestor: string): boolean;
+    procedure CalcCompatibilities(NodeGraph: TCodeGraph; TargetGraphNode: TCFONode);
     procedure CalcDistances(NodeGraph: TCodeGraph; TargetGraphNode: TCFONode);
     procedure CreateProcList(NodeGraph: TCodeGraph; TargetGraphNode: TCFONode;
       out NewProclist: TObjectList);
@@ -492,8 +494,10 @@ begin
       FileNode:=FUsesGraph.FilesTree.FindSuccessor(FileNode);
     end;
 
-    if TargetGraphNode<>nil then
+    if TargetGraphNode<>nil then begin
+      CalcCompatibilities(NodeGraph,TargetGraphNode);
       CalcDistances(NodeGraph,TargetGraphNode);
+    end;
 
     CreateProcList(NodeGraph,TargetGraphNode,NewProcList);
     FreeAndNil(FProcList);
@@ -557,8 +561,6 @@ var
   GraphProcNode, GraphClassNode: TCFONode;
   ClassNode: TCodeTreeNode;
   Edge: TCFOEdge;
-  Compatibility: TTypeCompatibility;
-  IsTargetProc: Boolean;
 begin
   // check name
   CurProcName:=Tool.ExtractProcName(ProcNode,[phpWithoutClassName]);
@@ -586,24 +588,19 @@ begin
       exit;
   end;
 
-  Compatibility:=tcExact;
-  if (TargetGraphNode=nil)
-  and (ProcNode.StartPos<=TargetCleanPos)
-  and (TargetCleanPos<ProcNode.FirstChild.EndPos) then begin
-    // this is the target proc
-    IsTargetProc:=true;
-  end else begin
-    // ToDo: check param compatibility
-    IsTargetProc:=false;
-    //Compatibility:=CheckProcParamsCompatibility();
-  end;
-
   // add node
   GraphProcNode:=TCFONode(NodeGraph.AddGraphNode(ProcNode));
   GraphProcNode.Tool:=Tool;
-  GraphProcNode.Compatibility:=Compatibility;
-  if IsTargetProc then
+  GraphProcNode.Compatibility:=tcCompatible; // default, will be set later
+
+  // check if this is the target proc
+  if (TargetGraphNode=nil)
+  and (ProcNode.StartPos<=TargetCleanPos)
+  and (TargetCleanPos<ProcNode.EndPos)
+  and (TargetPath=Tool.ExtractProcName(ProcNode,[phpAddClassName])) then begin
     TargetGraphNode:=GraphProcNode;
+    TargetGraphNode.Compatibility:=tcExact;
+  end;
 
   // add edges
   if ClassNode<>nil then begin
@@ -665,6 +662,43 @@ begin
     AVLNode:=GraphClassNode.OutTree.FindSuccessor(AVLNode);
   end;
   Result:=false;
+end;
+
+procedure TCodyFindOverloadsWindow.CalcCompatibilities(NodeGraph: TCodeGraph;
+  TargetGraphNode: TCFONode);
+var
+  AVLNode: TAVLTreeNode;
+  GraphNode: TCFONode;
+  Params: TFindDeclarationParams;
+  ExprList: TExprTypeList;
+  ParamNode: TCodeTreeNode;
+begin
+  ExprList:=nil;
+  Params:=TFindDeclarationParams.Create(TargetGraphNode.Tool,TargetGraphNode.Node);
+  try
+    ExprList:=TargetGraphNode.Tool.CreateParamExprListFromProcNode(
+                                                   TargetGraphNode.Node,Params);
+
+    AVLNode:=NodeGraph.Nodes.FindLowest;
+    while AVLNode<>nil do begin
+      GraphNode:=TCFONode(AVLNode.Data);
+      if GraphNode.Node.Desc=ctnProcedure then begin
+        if GraphNode=TargetGraphNode then
+          GraphNode.Compatibility:=tcExact
+        else begin
+          ParamNode:=GraphNode.Tool.GetFirstParameterNode(GraphNode.Node);
+          GraphNode.Compatibility:=
+            GraphNode.Tool.IsParamNodeListCompatibleToExprList(ExprList,
+              ParamNode,Params);
+          //debugln(['TCodyFindOverloadsWindow.CalcCompatibilities ',GraphNode.Tool.ExtractProcName(GraphNode.Node,[phpAddClassName]),' Compatible=',TypeCompatibilityNames[GraphNode.Compatibility]]);
+        end;
+      end;
+      AVLNode:=NodeGraph.Nodes.FindSuccessor(AVLNode);
+    end;
+  finally
+    ExprList.Free;
+    Params.Free;
+  end;
 end;
 
 procedure TCodyFindOverloadsWindow.CalcDistances(NodeGraph: TCodeGraph;
@@ -729,7 +763,7 @@ begin
       if GraphNode=TargetGraphNode then
         GraphNode.Distance:=0
       else
-        GraphNode.Distance:=50000;
+        GraphNode.Distance:=100000;
       GraphNode.ShortestPathNode:=nil;
       Unvisited.Add(GraphNode);
       AVLNode:=NodeGraph.Nodes.FindSuccessor(AVLNode);
@@ -758,8 +792,10 @@ var
   GraphNode: TCFONode;
   Tool: TFindDeclarationTool;
   Node: TCodeTreeNode;
+  OnlyCompatible: Boolean;
 begin
   NewProcList:=TObjectList.Create(true);
+  OnlyCompatible:=CompatibleParamsCheckBox.Checked;
 
   AVLNode:=NodeGraph.Nodes.FindLowest;
   while AVLNode<>nil do begin
@@ -767,6 +803,8 @@ begin
     AVLNode:=NodeGraph.Nodes.FindSuccessor(AVLNode);
     if GraphNode=TargetGraphNode then continue;
     if GraphNode.Node.Desc<>ctnProcedure then continue;
+    if OnlyCompatible and (GraphNode.Compatibility=tcIncompatible) then continue;
+
     aProc:=TCFOProc.Create;
 
     Tool:=GraphNode.Tool;
@@ -808,7 +846,7 @@ begin
     Grid.Cells[0,Row]:=s;
 
     case aProc.Compatibility of
-    tcExact: s:=crsExactly;
+    tcExact: s:=crsExact;
     tcCompatible: s:=crsCompatible;
     tcIncompatible: s:=crsIncompatible;
     end;
@@ -936,7 +974,7 @@ var
     end;
   end;
 
-  function CheckCursorAtProcCall(StatementNode: TCodeTreeNode;
+  function IsCursorAtProcCall(StatementNode: TCodeTreeNode;
     out ProcTool: TFindDeclarationTool; out ProcNode: TCodeTreeNode): boolean;
   var
     CurIdentStart, CurIdentEnd, NewTopLine: integer;
@@ -964,7 +1002,7 @@ var
       ProcTool:=NewTool;
       ProcNode:=NewNode;
       FindProcDeclaration(ProcTool,ProcNode);
-      debugln(['TCodyFindOverloadsDialog.Init.CheckCursorAtProcCall TargetProc ',ProcTool.CleanPosToStr(ProcNode.StartPos,true),' Class=',ProcTool.ExtractProcName(ProcNode,[phpAddClassName])]);
+      debugln(['TCodyFindOverloadsDialog.Init.IsCursorAtProcCall TargetProc ',ProcTool.CleanPosToStr(ProcNode.StartPos,true),' Class=',ProcTool.ExtractProcName(ProcNode,[phpAddClassName])]);
     end;
   end;
 
@@ -1004,7 +1042,7 @@ begin
       break;
     end else if (BeginNode=nil) and (Node.Desc=ctnBeginBlock) then begin
       BeginNode:=Node;
-      if not CheckCursorAtProcCall(BeginNode,TargetTool,TargetProcNode) then
+      if not IsCursorAtProcCall(BeginNode,TargetTool,TargetProcNode) then
         exit;
     end;
     Node:=Node.Parent;

@@ -263,7 +263,7 @@ resourcestring
   crsName = 'Name';
   crsCompatibility = 'Compatibility';
   crsDistance = 'Distance';
-  crsExactly = 'exactly';
+  crsExact = 'exact';
   crsCompatible = 'compatible';
   crsIncompatible = 'incompatible';
   crsCodyFindOverloads = 'Cody - Find Overloads';

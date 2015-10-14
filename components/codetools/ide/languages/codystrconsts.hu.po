@@ -298,8 +298,8 @@ msgstr "A(z) \"%s\" egy kulcsszó."
 msgid "Error: %s"
 msgstr "Hiba: %s"
 
-#: codystrconsts.crsexactly
-msgid "exactly"
+#: codystrconsts.crsexact
+msgid "exact"
 msgstr ""
 
 #: codystrconsts.crsexplodeawithblock

@@ -935,7 +935,7 @@ type
       TargetExprParamList: TExprTypeList;
       FirstSourceParameterNode: TCodeTreeNode;
       Params: TFindDeclarationParams;
-      CompatibilityList: TTypeCompatibilityList): TTypeCompatibility;
+      CompatibilityList: TTypeCompatibilityList = nil): TTypeCompatibility;
     function CreateParamExprListFromProcNode(ProcNode: TCodeTreeNode;
       Params: TFindDeclarationParams): TExprTypeList;
 
