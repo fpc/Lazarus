@@ -411,8 +411,9 @@ begin
     FOnActive(Self);
 end;
 
-procedure TMainIDEBar.DoSetMainIDEHeight(const AIDEIsMaximized: Boolean;
-  ANewHeight: Integer);
+procedure TMainIDEBar.DoSetMainIDEHeight(const AIDEIsMaximized: Boolean; ANewHeight: Integer);
+var
+  NonClientH: Integer;
 begin
   if not Showing then
     Exit;
@@ -430,7 +431,11 @@ begin
   begin
     if (AIDEIsMaximized or EnvironmentOptions.Desktop.AutoAdjustIDEHeight) then
     begin
-      ANewHeight := ANewHeight + CalcNonClientHeight;
+      NonClientH := CalcNonClientHeight;
+      // Sanity check. CalcNonClientHeight can return negative values when
+      //  both Coolbar and Palette are hidden.
+      if NonClientH < 0 then Exit;
+      Inc(ANewHeight, NonClientH);
       if ANewHeight <> Constraints.MaxHeight then
       begin
         Constraints.MaxHeight := ANewHeight;
