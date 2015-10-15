@@ -288,6 +288,14 @@ msgstr ""
 msgid "Error: %s"
 msgstr ""
 
+#: codystrconsts.crserrorcursorisnotinaprojectunit
+msgid "Error: cursor is not in a project unit"
+msgstr ""
+
+#: codystrconsts.crserrorneedsourceeditoratprocedurecallordeclaration
+msgid "Error: Need source editor at procedure call or declaration"
+msgstr ""
+
 #: codystrconsts.crsexact
 msgid "exact"
 msgstr ""
@@ -385,6 +393,10 @@ msgctxt "codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne"
 msgid "If identifier is added to the implementation section and needed unit needs to be added, add to the uses section of the implementation"
 msgstr ""
 
+#: codystrconsts.crsifuncheckedlistalsoprocedureswithsamenameandincomp
+msgid "If unchecked list also procedures with same name and incompatible parameter lists."
+msgstr ""
+
 #: codystrconsts.crsimpossibledependency
 msgid "Impossible dependency"
 msgstr ""
@@ -477,6 +489,10 @@ msgstr ""
 msgid "none selected"
 msgstr ""
 
+#: codystrconsts.crsnooverloadsfoundinprojectunits
+msgid "no overloads found in project units"
+msgstr ""
+
 #: codystrconsts.crsnoproject
 msgid "No project"
 msgstr ""
@@ -503,6 +519,10 @@ msgstr ""
 
 #: codystrconsts.crsonlynonmethods
 msgid "Only non methods"
+msgstr ""
+
+#: codystrconsts.crsonlyprocedureswithcompatibleparameters
+msgid "Only procedures with compatible parameters"
 msgstr ""
 
 #: codystrconsts.crsoptions
@@ -543,6 +563,10 @@ msgstr ""
 
 #: codystrconsts.crspackagewithsamename
 msgid "Package with same name"
+msgstr ""
+
+#: codystrconsts.crsparseerror
+msgid "Parse error"
 msgstr ""
 
 #: codystrconsts.crspastelinesofagdbbacktrace
@@ -621,6 +645,10 @@ msgstr ""
 msgid "Refresh"
 msgstr ""
 
+#: codystrconsts.crsrelations
+msgid "Relations:"
+msgstr ""
+
 #: codystrconsts.crsreport
 msgid "Report"
 msgstr ""
@@ -635,6 +663,10 @@ msgstr ""
 
 #: codystrconsts.crssavetofile
 msgid "Save to file %s"
+msgstr ""
+
+#: codystrconsts.crsscanning
+msgid "Scanning ..."
 msgstr ""
 
 #: codystrconsts.crsscanningsunits

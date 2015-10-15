@@ -299,6 +299,14 @@ msgstr "\"%s\" √® una parola chiave."
 msgid "Error: %s"
 msgstr "Errore: %s"
 
+#: codystrconsts.crserrorcursorisnotinaprojectunit
+msgid "Error: cursor is not in a project unit"
+msgstr ""
+
+#: codystrconsts.crserrorneedsourceeditoratprocedurecallordeclaration
+msgid "Error: Need source editor at procedure call or declaration"
+msgstr ""
+
 #: codystrconsts.crsexact
 msgid "exact"
 msgstr ""
@@ -396,6 +404,10 @@ msgctxt "codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne"
 msgid "If identifier is added to the implementation section and needed unit needs to be added, add to the uses section of the implementation"
 msgstr "Se si aggiunge un identificatore nella sezione implementazione, ed occorre aggiungere delle unit, aggiungerle nella sezione \"uses\" dell'implementazione"
 
+#: codystrconsts.crsifuncheckedlistalsoprocedureswithsamenameandincomp
+msgid "If unchecked list also procedures with same name and incompatible parameter lists."
+msgstr ""
+
 #: codystrconsts.crsimpossibledependency
 msgid "Impossible dependency"
 msgstr "Dipendenza impossibile"
@@ -488,6 +500,10 @@ msgstr ""
 msgid "none selected"
 msgstr "nessuna selezione"
 
+#: codystrconsts.crsnooverloadsfoundinprojectunits
+msgid "no overloads found in project units"
+msgstr ""
+
 #: codystrconsts.crsnoproject
 msgid "No project"
 msgstr "Nessun progetto"
@@ -514,6 +530,10 @@ msgstr ""
 
 #: codystrconsts.crsonlynonmethods
 msgid "Only non methods"
+msgstr ""
+
+#: codystrconsts.crsonlyprocedureswithcompatibleparameters
+msgid "Only procedures with compatible parameters"
 msgstr ""
 
 #: codystrconsts.crsoptions
@@ -555,6 +575,10 @@ msgstr "Pacchetti: %s, Unit: %s, Identificatori: %s%sDatabase: %s"
 #: codystrconsts.crspackagewithsamename
 msgid "Package with same name"
 msgstr "Pacchetto con lo stesso nome"
+
+#: codystrconsts.crsparseerror
+msgid "Parse error"
+msgstr ""
 
 #: codystrconsts.crspastelinesofagdbbacktrace
 msgid "Paste lines of a gdb backtrace:"
@@ -632,6 +656,10 @@ msgstr "Cancellare veramente la unit dal database?%sNota: questo non modifica n√
 msgid "Refresh"
 msgstr "Rinfrescare"
 
+#: codystrconsts.crsrelations
+msgid "Relations:"
+msgstr ""
+
 #: codystrconsts.crsreport
 msgid "Report"
 msgstr "Relazione"
@@ -647,6 +675,10 @@ msgstr "Salvare il dizionario ora"
 #: codystrconsts.crssavetofile
 msgid "Save to file %s"
 msgstr "Salvare nel file %s"
+
+#: codystrconsts.crsscanning
+msgid "Scanning ..."
+msgstr ""
 
 #: codystrconsts.crsscanningsunits
 msgid "Scanning: %s units ..."

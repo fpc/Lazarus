@@ -297,6 +297,14 @@ msgstr "\"%s\" ist ein Schlüsselwort."
 msgid "Error: %s"
 msgstr "Fehler: %s"
 
+#: codystrconsts.crserrorcursorisnotinaprojectunit
+msgid "Error: cursor is not in a project unit"
+msgstr ""
+
+#: codystrconsts.crserrorneedsourceeditoratprocedurecallordeclaration
+msgid "Error: Need source editor at procedure call or declaration"
+msgstr ""
+
 #: codystrconsts.crsexact
 msgid "exact"
 msgstr ""
@@ -394,6 +402,10 @@ msgctxt "codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne"
 msgid "If identifier is added to the implementation section and needed unit needs to be added, add to the uses section of the implementation"
 msgstr ""
 
+#: codystrconsts.crsifuncheckedlistalsoprocedureswithsamenameandincomp
+msgid "If unchecked list also procedures with same name and incompatible parameter lists."
+msgstr ""
+
 #: codystrconsts.crsimpossibledependency
 msgid "Impossible dependency"
 msgstr "Unmögliche Abhängigkeit"
@@ -486,6 +498,10 @@ msgstr ""
 msgid "none selected"
 msgstr ""
 
+#: codystrconsts.crsnooverloadsfoundinprojectunits
+msgid "no overloads found in project units"
+msgstr ""
+
 #: codystrconsts.crsnoproject
 msgid "No project"
 msgstr "Kein Projekt"
@@ -512,6 +528,10 @@ msgstr ""
 
 #: codystrconsts.crsonlynonmethods
 msgid "Only non methods"
+msgstr ""
+
+#: codystrconsts.crsonlyprocedureswithcompatibleparameters
+msgid "Only procedures with compatible parameters"
 msgstr ""
 
 #: codystrconsts.crsoptions
@@ -553,6 +573,10 @@ msgstr "Packages: %s, Units: %s, Bezeichner: %s%sDatenbank: %s"
 #: codystrconsts.crspackagewithsamename
 msgid "Package with same name"
 msgstr "Package mit dem selben Namen"
+
+#: codystrconsts.crsparseerror
+msgid "Parse error"
+msgstr ""
 
 #: codystrconsts.crspastelinesofagdbbacktrace
 msgid "Paste lines of a gdb backtrace:"
@@ -630,6 +654,10 @@ msgstr ""
 msgid "Refresh"
 msgstr "Aktualisieren"
 
+#: codystrconsts.crsrelations
+msgid "Relations:"
+msgstr ""
+
 #: codystrconsts.crsreport
 msgid "Report"
 msgstr "Bericht"
@@ -644,6 +672,10 @@ msgstr "Speichere Wörterbuch jetzt"
 
 #: codystrconsts.crssavetofile
 msgid "Save to file %s"
+msgstr ""
+
+#: codystrconsts.crsscanning
+msgid "Scanning ..."
 msgstr ""
 
 #: codystrconsts.crsscanningsunits

@@ -146,6 +146,7 @@ type
     FIdleConnected: boolean;
     FFlags: TCFOFlags;
     FProcList: TObjectList;
+    FTargetInProject: boolean;
     FTargetName: string;
     FTargetPath: string;
     FTargetXYPosition: TCodeXYPosition;
@@ -191,6 +192,7 @@ type
     property TargetXYPosition: TCodeXYPosition read FTargetXYPosition;
     property TargetName: string read FTargetName;
     property TargetPath: string read FTargetPath;
+    property TargetInProject: boolean read FTargetInProject;
     property UsesGraph: TUsesGraph read FUsesGraph;
     property FilterRelation: TCFOFilterRelation read FFilterRelation;
     property FilterAncestor: string read FFilterAncestor;
@@ -250,11 +252,12 @@ begin
   JumpToButton.Caption:=crsJumpTo2;
 
   FilterGroupBox.Caption:=crsFilter2;
-  CompatibleParamsCheckBox.Caption:='Only procedures with compatible parameters';
-  CompatibleParamsCheckBox.Hint:='If unchecked list also procedures with same name and incompatible parameter lists.';
+  CompatibleParamsCheckBox.Caption:=crsOnlyProceduresWithCompatibleParameters;
+  CompatibleParamsCheckBox.Hint:=
+    crsIfUncheckedListAlsoProceduresWithSameNameAndIncomp;
   HideAbstractCheckBox.Caption:=
     crsHideAbstractMethodsAndMethodsOfClassInterfaces;
-  RelationLabel.Caption:='Relations:';
+  RelationLabel.Caption:=crsRelations;
   ResultsStringGrid.Visible:=false;
 end;
 
@@ -427,7 +430,7 @@ begin
 
   ProgressBar1.Visible:=true;
   ProgressBar1.Style:=pbstMarquee;
-  ResultsGroupBox.Caption:='Scanning ...';
+  ResultsGroupBox.Caption:=crsScanning;
   Timer1.Enabled:=true;
   RefreshButton.Enabled:=false;
 
@@ -467,6 +470,7 @@ var
   NodeGraph: TCodeGraph;
   TargetGraphNode: TCFONode;
   NewProcList: TObjectList;
+  s: String;
 begin
   Exclude(FFlags,cfofGatherProcs);
   Timer1.Enabled:=false;
@@ -493,7 +497,8 @@ begin
       FileNode:=FUsesGraph.FilesTree.FindSuccessor(FileNode);
     end;
 
-    if TargetGraphNode<>nil then begin
+    FTargetInProject:=TargetGraphNode<>nil;
+    if TargetInProject then begin
       CalcCompatibilities(NodeGraph,TargetGraphNode);
       CalcDistances(NodeGraph,TargetGraphNode);
     end;
@@ -501,6 +506,15 @@ begin
     CreateProcList(NodeGraph,TargetGraphNode,NewProcList);
     FreeAndNil(FProcList);
     FProcList:=NewProcList;
+    if ProcCount=0 then begin
+      s:=', ';
+      if TargetInProject then begin
+        s+=crsNoOverloadsFoundInProjectUnits;
+      end else begin
+        s+=crsErrorCursorIsNotInAProjectUnit;
+      end;
+      ResultsGroupBox.Caption:=ResultsGroupBox.Caption+s;
+    end;
 
     FillGrid;
   finally
@@ -825,44 +839,48 @@ var
   aProc: TCFOProc;
 begin
   Grid:=ResultsStringGrid;
-  Grid.BeginUpdate;
-  OldSelectedProcName:='';
-  if Grid.Row>0 then
-    OldSelectedProcName:=Grid.Cells[0,Grid.Row];
-  Grid.Columns[0].Title.Caption:=crsName;
-  Grid.Columns[1].Title.Caption:=crsCompatibility;
-  Grid.Columns[2].Title.Caption:=crsDistance;
+  if Grid.RowCount>0 then begin
+    Grid.BeginUpdate;
+    OldSelectedProcName:='';
+    if Grid.Row>0 then
+      OldSelectedProcName:=Grid.Cells[0,Grid.Row];
+    Grid.Columns[0].Title.Caption:=crsName;
+    Grid.Columns[1].Title.Caption:=crsCompatibility;
+    Grid.Columns[2].Title.Caption:=crsDistance;
 
-  Grid.RowCount:=ProcCount+1;
-  for Row:=1 to ProcCount do begin
-    aProc:=Procs[Row-1];
+    Grid.RowCount:=ProcCount+1;
+    for Row:=1 to ProcCount do begin
+      aProc:=Procs[Row-1];
 
-    // path
-    s:=aProc.TheUnitName+': ';
-    if aProc.ClassPath<>'' then
-      s+=aProc.ClassPath+'.';
-    s+=aProc.Name;
-    aProc.Caption:=s;
-    Grid.Cells[0,Row]:=s;
-    if s=OldSelectedProcName then
-      Grid.Row:=Row;
+      // path
+      s:=aProc.TheUnitName+': ';
+      if aProc.ClassPath<>'' then
+        s+=aProc.ClassPath+'.';
+      s+=aProc.Name;
+      aProc.Caption:=s;
+      Grid.Cells[0,Row]:=s;
+      if s=OldSelectedProcName then
+        Grid.Row:=Row;
 
-    case aProc.Compatibility of
-    tcExact: s:=crsExact;
-    tcCompatible: s:=crsCompatible;
-    tcIncompatible: s:=crsIncompatible;
+      case aProc.Compatibility of
+      tcExact: s:=crsExact;
+      tcCompatible: s:=crsCompatible;
+      tcIncompatible: s:=crsIncompatible;
+      end;
+      Grid.Cells[1,Row]:=s;
+
+      Grid.Cells[2,Row]:=IntToStr(aProc.Distance);
     end;
-    Grid.Cells[1,Row]:=s;
 
-    Grid.Cells[2,Row]:=IntToStr(aProc.Distance);
+    Grid.SortColRow(true,0);
+    Grid.Visible:=true;
+    Grid.EndUpdate(true);
+
+    Grid.HandleNeeded;
+    Grid.AutoAdjustColumns;
+  end else begin
+    Grid.Visible:=false;
   end;
-
-  Grid.SortColRow(true,0);
-  Grid.Visible:=true;
-  Grid.EndUpdate(true);
-
-  Grid.HandleNeeded;
-  Grid.AutoAdjustColumns;
 
   JumpToButton.Enabled:=Grid.Row>0;
 end;
@@ -994,7 +1012,7 @@ var
     if not CurTool.FindDeclaration(CurCodePos,DefaultFindSmartFlags,
       NewTool,NewNode,NewPos,NewTopLine)
     then begin
-      ResultsGroupBox.Caption:='Parse error';
+      ResultsGroupBox.Caption:=crsParseError;
       LazarusIDE.DoJumpToCodeToolBossError;
       exit(false);
     end;
@@ -1026,7 +1044,7 @@ begin
   // parse source
   CurInitError:=ParseTilCursor(CurTool, CurCleanPos, CurNode, ErrorHandled, true, @CurCodePos);
   if CurInitError<>cupeSuccess then begin
-    ResultsGroupBox.Caption:='Parse error';
+    ResultsGroupBox.Caption:=crsParseError;
     exit;
   end;
 
@@ -1059,7 +1077,8 @@ begin
     TargetProcNode:=ProcNode;
   end;
   if TargetProcNode=nil then begin
-    ResultsGroupBox.Caption:='Need source editor at procedure call or declaration';
+    ResultsGroupBox.Caption:=
+      crsErrorNeedSourceEditorAtProcedureCallOrDeclaration;
     exit;
   end;
 

@@ -304,6 +304,14 @@ msgstr "\"%s\" является ключевым словом."
 msgid "Error: %s"
 msgstr "Ошибка: %s"
 
+#: codystrconsts.crserrorcursorisnotinaprojectunit
+msgid "Error: cursor is not in a project unit"
+msgstr ""
+
+#: codystrconsts.crserrorneedsourceeditoratprocedurecallordeclaration
+msgid "Error: Need source editor at procedure call or declaration"
+msgstr ""
+
 #: codystrconsts.crsexact
 msgid "exact"
 msgstr "точное соответствие"
@@ -402,6 +410,10 @@ msgctxt "codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne"
 msgid "If identifier is added to the implementation section and needed unit needs to be added, add to the uses section of the implementation"
 msgstr "Если при добавлении идентификатора в секцию Implementation требуется подключить необходимый модуль, подключать его в выражении Uses секции Implementation"
 
+#: codystrconsts.crsifuncheckedlistalsoprocedureswithsamenameandincomp
+msgid "If unchecked list also procedures with same name and incompatible parameter lists."
+msgstr ""
+
 #: codystrconsts.crsimpossibledependency
 msgid "Impossible dependency"
 msgstr "Недопустимая зависимость"
@@ -497,6 +509,10 @@ msgstr "Имя"
 msgid "none selected"
 msgstr "не выбран"
 
+#: codystrconsts.crsnooverloadsfoundinprojectunits
+msgid "no overloads found in project units"
+msgstr ""
+
 #: codystrconsts.crsnoproject
 msgid "No project"
 msgstr "Проект отсутствует"
@@ -524,6 +540,10 @@ msgstr "Только методы"
 #: codystrconsts.crsonlynonmethods
 msgid "Only non methods"
 msgstr "Только не являющиеся методами"
+
+#: codystrconsts.crsonlyprocedureswithcompatibleparameters
+msgid "Only procedures with compatible parameters"
+msgstr ""
 
 #: codystrconsts.crsoptions
 msgid "Options"
@@ -565,6 +585,10 @@ msgstr "Пакетов: %s, Модулей: %s, Идентификаторов: 
 #: codystrconsts.crspackagewithsamename
 msgid "Package with same name"
 msgstr "Пакет с тем же именем"
+
+#: codystrconsts.crsparseerror
+msgid "Parse error"
+msgstr ""
 
 #: codystrconsts.crspastelinesofagdbbacktrace
 msgid "Paste lines of a gdb backtrace:"
@@ -644,6 +668,10 @@ msgstr "Действительно удалить модуль из базы д�
 msgid "Refresh"
 msgstr "Обновить"
 
+#: codystrconsts.crsrelations
+msgid "Relations:"
+msgstr ""
+
 #: codystrconsts.crsreport
 msgid "Report"
 msgstr "Отчёт"
@@ -659,6 +687,10 @@ msgstr "Сохранить словарь сейчас"
 #: codystrconsts.crssavetofile
 msgid "Save to file %s"
 msgstr "Сохранить в файл %s"
+
+#: codystrconsts.crsscanning
+msgid "Scanning ..."
+msgstr ""
 
 #: codystrconsts.crsscanningsunits
 msgid "Scanning: %s units ..."
@@ -819,3 +851,4 @@ msgstr "Виртуальный модуль"
 #: codystrconsts.crswhere
 msgid "Where"
 msgstr "Расположение"
+
