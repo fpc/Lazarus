@@ -88,8 +88,8 @@ type
       const aCommand: TIDECommand): TIDEButtonCommand; overload;
     function AddButton(const aCommand: TIDECommand): TIDEButtonCommand; overload;
     function FindCreateCategory(const aName, aDescription: string): TIDEToolButtonCategory;
-    function FindItemByName(aName: string): TIDEButtonCommand;
-    function FindItemByMenuPathOrName(aName: string): TIDEButtonCommand;
+    function FindItemByName(const aName: string): TIDEButtonCommand;
+    function FindItemByMenuPathOrName(var aName: string): TIDEButtonCommand;
     function FindItemByCommand(const aCommand: TIDECommand): TIDEButtonCommand;
     property Items[Index: Integer]: TIDEToolButtonCategory read GetItems; default;
   end;
@@ -396,26 +396,22 @@ begin
   inherited Destroy;
 end;
 
-function TIDEToolButtonCategories.FindItemByMenuPathOrName(aName: string
+function TIDEToolButtonCategories.FindItemByMenuPathOrName(var aName: string
   ): TIDEButtonCommand;
 var
-  i: Integer;
   xMI: TIDEMenuItem;
 begin
-  i := LastDelimiter('/', aName);
-  if (i > 0) then
-  begin
-    //find by path from aName (backwards compatibility)
-    xMI := IDEMenuRoots.FindByPath(aName, False);
-    if Assigned(xMI) and Assigned(xMI.Command) then
-    begin
-      Result := FindItemByCommand(xMI.Command);
-      if Assigned(Result) then
-        Exit;
-    end;
-    Delete(aName, 1, i);
-  end;
   Result := FindItemByName(aName);
+  if Result<>nil then Exit;
+
+  //find by path from aName (backwards compatibility)
+  xMI := IDEMenuRoots.FindByPath(aName, False);
+  if Assigned(xMI) and Assigned(xMI.Command) then
+  begin
+    Result := FindItemByCommand(xMI.Command);
+    if Assigned(Result) then
+      aName := xMI.Command.Name;
+  end;
 end;
 
 function TIDEToolButtonCategories.FindCreateCategory(const aName,
@@ -448,7 +444,8 @@ begin
   Result := nil;
 end;
 
-function TIDEToolButtonCategories.FindItemByName(aName: string): TIDEButtonCommand;
+function TIDEToolButtonCategories.FindItemByName(const aName: string
+  ): TIDEButtonCommand;
 var
   i: Integer;
 begin

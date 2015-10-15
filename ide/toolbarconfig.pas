@@ -625,12 +625,15 @@ var
 begin
   for I := 0 to SL.Count - 1 do
   begin
-    Value := SL.Strings[I];
+    Value := SL[I];
     if Value = '' then Continue;
     if Value = cIDEToolbarDivider then
       MI := nil
     else
+    begin
       MI := IDEToolButtonCategories.FindItemByMenuPathOrName(Value);
+      SL[I] := Value;
+    end;
     AddListItem(MI);
   end;
   FillToolBar;
@@ -765,6 +768,7 @@ begin
       else
       begin
         mi := IDEToolButtonCategories.FindItemByMenuPathOrName(ButtonName);
+        Options.ButtonNames[i] := ButtonName;
         if Assigned(mi) then
           AddButton(mi);
       end;
