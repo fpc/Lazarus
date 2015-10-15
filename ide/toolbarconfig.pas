@@ -34,6 +34,10 @@ uses
   // IDE
   LazarusIDEStrConsts;
 
+const
+  IDEToolBarConfigVersion = 1;
+  // 1 added file version in config
+
 type
   { TLvItem }
   TLvItem = class (TObject)
@@ -680,15 +684,16 @@ procedure TIDEToolBarOptionsBase.LoadButtonNames(XMLConfig: TXMLConfig; SubPath:
 var
   ButtonCount: Integer;
   ButtonName: string;
-  I: Integer;
+  I, FileVersion: Integer;
 begin
+  FileVersion := XMLConfig.GetValue(SubPath + 'Version', 0);
   ButtonCount := XMLConfig.GetValue(SubPath + 'Count', 0);
-  if ButtonCount = 0 then  // Old format
+  if (FileVersion < 1) and (ButtonCount = 0) then  // Old format
     ButtonCount := XMLConfig.GetValue(SubPath + 'ButtonCount/Value', 0);
   for I := 1 to ButtonCount do
   begin
     ButtonName := XMLConfig.GetValue(SubPath + 'Button' + IntToStr(I) + '/Name', '');
-    if ButtonName = '' then  // Old format
+    if (FileVersion < 1) and (ButtonName = '') then  // Old format
       ButtonName := XMLConfig.GetValue(SubPath + 'Buttons/Name' + IntToStr(I) + '/Value', '');
     if ButtonName <> '' then
       ButtonNames.Add(ButtonName);
@@ -699,6 +704,7 @@ procedure TIDEToolBarOptionsBase.SaveButtonNames(XMLConfig: TXMLConfig; SubPath:
 var
   I: Integer;
 begin
+  XMLConfig.SetValue(SubPath + 'Version', IDEToolBarConfigVersion);
   XMLConfig.SetDeleteValue(SubPath + 'Count', ButtonNames.Count, 0);
   for I := 0 to ButtonNames.Count-1 do
     XMLConfig.SetDeleteValue(SubPath + 'Button' + IntToStr(I+1) + '/Name', ButtonNames[I], '');
