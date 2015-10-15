@@ -192,6 +192,8 @@ type
     ToolBar2: TToolBar;
     tbMoveProject: TToolButton;
     tbMoveIDE: TToolButton;
+    ToolButton3: TToolButton;
+    ToolButton4: TToolButton;
     procedure btnDeleteClick(Sender: TObject);
     procedure btnEditClick(Sender: TObject);
     procedure btnPlayClick(Sender: TObject);
@@ -305,7 +307,7 @@ procedure DoEditorMacroStateChanged;
 begin
   if EditorMacroForRecording= nil then exit;
 
-  if not(EditorMacroForRecording.State  in [emRecording, emRecPaused]) and
+  if not(EditorMacroForRecording.State in [emRecording, emRecPaused]) and
     (CurrentRecordingMacro <> nil)
   then begin
     // finished recording
@@ -1404,7 +1406,7 @@ begin
   tbIDE.Hint := lisSavedWithIDESettings;
   tbMoveProject.Caption := lisProjectMacro;
   tbMoveIDE.Caption := lisIDE;
-  lbMoveTo.Caption := lisMoveTo;
+  lbMoveTo.Caption := lisMoveTo + '  '; // Anchors do not work here. Use spaces.
 
   btnSelect.Caption := lisMenuSelect;
   btnRename.Caption := lisRename2;

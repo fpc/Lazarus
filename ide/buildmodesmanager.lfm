@@ -10,7 +10,7 @@ object BuildModesForm: TBuildModesForm
   OnDestroy = FormDestroy
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.5'
   object BuildModesGroupBox: TGroupBox
     Left = 6
     Height = 305
@@ -20,20 +20,20 @@ object BuildModesForm: TBuildModesForm
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'BuildModesGroupBox'
-    ClientHeight = 286
+    ClientHeight = 280
     ClientWidth = 596
     TabOrder = 0
     object BuildModesStringGrid: TStringGrid
       AnchorSideTop.Control = AddSpeedButton
       AnchorSideTop.Side = asrBottom
       Left = 0
-      Height = 263
-      Top = 23
+      Height = 251
+      Top = 29
       Width = 596
       Align = alBottom
       Anchors = [akTop, akLeft, akRight, akBottom]
       AutoFillColumns = True
-      BorderSpacing.Top = 1
+      BorderSpacing.Top = 7
       ColCount = 3
       Columns = <      
         item
@@ -131,19 +131,17 @@ object BuildModesForm: TBuildModesForm
       AnchorSideTop.Control = DiffSpeedButton
       AnchorSideTop.Side = asrCenter
       Left = 160
-      Height = 15
-      Top = 4
-      Width = 63
+      Height = 20
+      Top = 1
+      Width = 69
       Caption = 'NoteLabel'
       ParentColor = False
     end
     object btnCreateDefaultModes: TButton
-      AnchorSideTop.Control = NoteLabel
-      AnchorSideTop.Side = asrCenter
-      Left = 362
-      Height = 25
-      Top = -1
-      Width = 228
+      Left = 339
+      Height = 30
+      Top = -7
+      Width = 251
       Anchors = [akTop, akRight]
       AutoSize = True
       Caption = 'Create Debug and Release modes'
@@ -153,8 +151,8 @@ object BuildModesForm: TBuildModesForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 41
-    Top = 319
+    Height = 38
+    Top = 322
     Width = 600
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
