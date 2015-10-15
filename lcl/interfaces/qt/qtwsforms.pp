@@ -581,8 +581,9 @@ begin
 
   {$IFDEF HASX11}
 
-  if Application.TaskBarBehavior = tbSingleButton then
-    SetShowInTaskbar(TForm(AWinControl), TForm(AWinControl).ShowInTaskBar);
+  if (Application.TaskBarBehavior = tbSingleButton) or
+    (TForm(AWinControl).ShowInTaskBar <> stDefault) then
+      SetShowInTaskbar(TForm(AWinControl), TForm(AWinControl).ShowInTaskBar);
 
   if AWinControl.HandleObjectShouldBeVisible and
     not (csDesigning in TForm(AWinControl).ComponentState) and
