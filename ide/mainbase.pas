@@ -1155,10 +1155,6 @@ begin
       CreateMenuItem(itmViewIDEInternalsWindows, itmSearchInFPDocFiles,'itmSearchInFPDocFiles','Search in FPDoc files');
       {$ENDIF}
     end;
-    CreateMenuItem(ParentMI,itmViewComponentPalette,'itmViewComponentPalette',lisMenuViewComponentPalette, '',
-      true, EnvironmentOptions.Desktop.ComponentPaletteOptions.Visible);
-    CreateMenuItem(ParentMI,itmViewIDESpeedButtons,'itmViewIDESpeedButtons',lisMenuViewIDESpeedButtons, '',
-      true, EnvironmentOptions.Desktop.IDECoolBarOptions.Visible);
   end;
 end;
 
@@ -1580,8 +1576,6 @@ begin
     itmViewSearchResults.Command:=GetCommand(ecToggleSearchResults);
     itmViewAnchorEditor.Command:=GetCommand(ecViewAnchorEditor);
     itmViewTabOrder.Command:=GetCommand(ecViewTabOrder);
-    itmViewComponentPalette.Command:=GetCommand(ecToggleCompPalette);
-    itmViewIDESpeedButtons.Command:=GetCommand(ecToggleIDESpeedBtns);
     //itmPkgPackageLinks.Command:=GetCommand(ec?);
 
     // source menu

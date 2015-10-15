@@ -253,8 +253,6 @@ type
     procedure mnuToggleFormUnitClicked(Sender: TObject);
     procedure mnuViewAnchorEditorClicked(Sender: TObject);
     procedure mnuViewTabOrderClicked(Sender: TObject);
-    procedure mnuViewComponentPaletteClicked(Sender: TObject);
-    procedure mnuViewIDESpeedButtonsClicked(Sender: TObject);
     procedure mnuViewFPCInfoClicked(Sender: TObject);
     procedure mnuViewIDEInfoClicked(Sender: TObject);
     procedure mnuViewNeedBuildClicked(Sender: TObject);
@@ -2573,8 +2571,6 @@ begin
     itmViewSearchResults.OnClick := @mnuViewSearchResultsClick;
     itmViewAnchorEditor.OnClick := @mnuViewAnchorEditorClicked;
     itmViewTabOrder.OnClick := @mnuViewTabOrderClicked;
-    itmViewComponentPalette.OnClick := @mnuViewComponentPaletteClicked;
-    itmViewIDESpeedButtons.OnClick := @mnuViewIDESpeedButtonsClicked;
 
     itmViewFPCInfo.OnClick:=@mnuViewFPCInfoClicked;
     itmViewIDEInfo.OnClick:=@mnuViewIDEInfoClicked;
@@ -2770,16 +2766,6 @@ end;
 procedure TMainIDE.mnuViewTabOrderClicked(Sender: TObject);
 begin
   DoViewTabOrderEditor;
-end;
-
-procedure TMainIDE.mnuViewComponentPaletteClicked(Sender: TObject);
-begin
-  MainIDEBar.DoToggleViewComponentPalette;
-end;
-
-procedure TMainIDE.mnuViewIDESpeedButtonsClicked(Sender: TObject);
-begin
-  MainIDEBar.DoToggleViewIDESpeedButtons;
 end;
 
 procedure TMainIDE.mnuViewFPCInfoClicked(Sender: TObject);

@@ -176,8 +176,6 @@ type
       //itmViewSecondaryWindows: TIDEMenuSection;
         itmViewAnchorEditor: TIDEMenuCommand;
         itmViewTabOrder: TIDEMenuCommand;
-        itmViewComponentPalette: TIDEMenuCommand;
-        itmViewIDESpeedButtons: TIDEMenuCommand;
         itmViewMessage: TIDEMenuCommand;
         itmViewSearchResults: TIDEMenuCommand;
         //itmViewDebugWindows: TIDEMenuSection;
@@ -388,8 +386,6 @@ type
     procedure SetMainIDEHeight;
     procedure DoSetMainIDEHeight(const AIDEIsMaximized: Boolean; ANewHeight: Integer = 0);
     procedure DoSetViewComponentPalette(aVisible: Boolean);
-    procedure DoToggleViewComponentPalette;
-    procedure DoToggleViewIDESpeedButtons;
     procedure AllowCompilation(aAllow: Boolean);
   end;
 
@@ -704,7 +700,6 @@ begin
   CoolBar.AutosizeBands;
 
   CoolBar.Visible := CoolBarOpts.Visible;
-  itmViewIDESpeedButtons.Checked := CoolBar.Visible;
   MainSplitter.Align := alLeft;
   MainSplitter.Visible := Coolbar.Visible and ComponentPageControl.Visible;
 end;
@@ -786,7 +781,6 @@ procedure TMainIDEBar.DoSetViewComponentPalette(aVisible: Boolean);
 begin
   if aVisible = ComponentPageControl.Visible then Exit;
   ComponentPageControl.Visible := aVisible;
-  itmViewComponentPalette.Checked := aVisible;
   EnvironmentOptions.Desktop.ComponentPaletteOptions.Visible := aVisible;
   if aVisible then
   begin
@@ -804,25 +798,8 @@ begin
   MainSplitter.Visible := Coolbar.Visible and aVisible;
 
   if aVisible then//when showing component palette, it must be visible to calculate it correctly
-    DoSetMainIDEHeight(WindowState = wsMaximized, 55);//it will cause the IDE to flicker, but it's better than to have wrongly calculated IDE height
-  SetMainIDEHeight;
-end;
-
-procedure TMainIDEBar.DoToggleViewComponentPalette;
-begin
-  DoSetViewComponentPalette(not ComponentPageControl.Visible);
-end;
-
-procedure TMainIDEBar.DoToggleViewIDESpeedButtons;
-var
-  SpeedButtonsVisible: boolean;
-begin
-  SpeedButtonsVisible := not CoolBar.Visible;
-  itmViewIDESpeedButtons.Checked := SpeedButtonsVisible;
-  CoolBar.Visible := SpeedButtonsVisible;
-  MainSplitter.Visible := SpeedButtonsVisible;
-  EnvironmentOptions.Desktop.IDECoolBarOptions.Visible := SpeedButtonsVisible;
-  MainSplitter.Visible := Coolbar.Visible and ComponentPageControl.Visible;
+    //this will cause the IDE to flicker, but it's better than to have wrongly calculated IDE height
+    DoSetMainIDEHeight(WindowState = wsMaximized, 55);
   SetMainIDEHeight;
 end;
 

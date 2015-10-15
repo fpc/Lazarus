@@ -441,7 +441,6 @@ resourcestring
   lisMenuViewTabOrder = 'Tab Order';
   lisKMToggleViewComponentPalette = 'Toggle View Component Palette';
   lisMenuViewComponentPalette = 'Component Palette';
-  lisMenuViewIDESpeedButtons = 'IDE Speed Buttons';
   lisMenuDebugWindows = 'Debug Windows';
   lisMenuViewWatches = 'Watches';
   lisMenuViewBreakPoints = 'BreakPoints';

@@ -25,7 +25,7 @@ interface
 
 uses
   SysUtils, Classes, fgl, ComCtrls, Controls, LCLProc,
-  MenuIntf, IDEImagesIntf, SrcEditorIntf, BaseIDEIntf,
+  IDEImagesIntf, SrcEditorIntf, BaseIDEIntf,
   LazarusIDEStrConsts, LazConfigStorage, Laz2_XMLCfg, ToolbarConfig;
 
 type
@@ -92,7 +92,6 @@ procedure CreateEditorToolBar(aConfigEvent: TNotifyEvent);
 
 var
   uAllEditorToolbars: TAllEditorToolbars;
-  EditorMenuCommand: TIDEMenuCommand;
 
 implementation
 
@@ -102,16 +101,6 @@ const
   BasePath = 'EditorToolBarOptions/';
   cSettingsFile = 'editortoolbar.xml';
 
-
-procedure ToggleToolbar (Sender:TObject);
-var
-  ToolBarVisible: Boolean;
-begin
-  ToolBarVisible := not EnvironmentOptions.Desktop.EditorToolBarOptions.Visible;
-  EditorMenuCommand.Checked := ToolBarVisible;
-  EnvironmentOptions.Desktop.EditorToolBarOptions.Visible := ToolBarVisible;
-  uAllEditorToolbars.ReloadAll;
-end;
 
 { TEditorToolBarOptions }
 
@@ -295,18 +284,9 @@ begin
 end;
 
 procedure CreateEditorToolBar(aConfigEvent: TNotifyEvent);
-var
-  MenuIcon: string;
 begin
   uAllEditorToolbars := TAllEditorToolbars.Create;
   uAllEditorToolbars.FConfigEvent := aConfigEvent;
-  EditorMenuCommand := RegisterIDEMenuCommand(itmViewSecondaryWindows,'EditorToolBar',
-    lisEditorToolbar,nil,@ToggleToolbar);
-  EditorMenuCommand.Checked := True;
-  EditorMenuCommand.Enabled := True;
-  MenuIcon:= 'menu_editor_options';
-  //MenuIcon:= 'menu_editor_toolbar'; TODO!
-  EditorMenuCommand.ImageIndex := IDEImages.LoadImage(16, MenuIcon);
 end;
 
 { TAllEditorToolbars }
@@ -343,7 +323,6 @@ begin
   Opts := EnvironmentOptions.Desktop.EditorToolBarOptions;
   ETB.CopyFromOptions(Opts);
   ETB.FToolBar.Visible := Opts.Visible;
-  EditorMenuCommand.Checked := Opts.Visible;
 end;
 
 procedure TAllEditorToolbars.SourceWindowDestroyed(Sender: TObject);
@@ -384,13 +363,12 @@ begin
     Opts := EnvironmentOptions.Desktop.EditorToolBarOptions;
     aBar.CopyFromOptions(Opts);
     aBar.FToolBar.Visible := Opts.Visible;
-    EditorMenuCommand.Checked := Opts.Visible;
   end;
 end;
 
 
 initialization
-  //CreateEditorToolBar;
+  ;
 
 finalization
   uAllEditorToolbars.Free;
