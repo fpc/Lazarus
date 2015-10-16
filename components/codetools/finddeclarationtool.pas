@@ -55,7 +55,7 @@ interface
 { $DEFINE ShowTriedParentContexts}
 { $DEFINE ShowTriedIdentifiers}
 { $DEFINE ShowTriedUnits}
-{ $DEFINE ShowExprEval}
+{$DEFINE ShowExprEval}
 { $DEFINE ShowForInEval}
 { $DEFINE ShowFoundIdentifier}
 { $DEFINE ShowNodeCache}
@@ -102,7 +102,9 @@ type
     vatEdgedBracketOpen, // [
     vatEdgedBracketClose,// ]
     vatAddrOp,           // @
-    vatKeyword           // other keywords
+    vatKeyword,          // other keywords
+    vatNumber,           // decimal, & octal, % binary, $ hex
+    vatStringConstant    // '' or #
     );
     
 const
@@ -121,7 +123,9 @@ const
      'Bracket[',
      'Bracket]',
      'AddrOperator@ ',
-     'Keyword'
+     'Keyword',
+     'Number',
+     'StringConstant'
      );
      
 type
@@ -3073,6 +3077,7 @@ function TFindDeclarationTool.FindDeclarationOfIdentAtParam(
   Examples:
     A^.B().C[].Identifier
     inherited Identifier(p1,p2)
+    'Hello'.identifier
 }
 var
   StartPos, EndPos: integer;
@@ -7601,6 +7606,7 @@ function TFindDeclarationTool.FindStartOfTerm(EndPos: integer; InType: boolean
   9. (@A)
   10. A()[]
   11. nothing (e.g. cursor behind semicolon, keyword or closing bracket)
+  12. 'A'.B  (constant.B, type helpers)
 }
   procedure RaiseIdentNotFound;
   begin
@@ -7610,6 +7616,7 @@ function TFindDeclarationTool.FindStartOfTerm(EndPos: integer; InType: boolean
 var CurAtom, NextAtom: TAtomPosition;
   NextAtomType, CurAtomType: TVariableAtomType;
   StartPos: LongInt;
+  CurIsValue, NextIsValue: Boolean;
 begin
   StartPos:=FindStartOfAtom(Src,EndPos);
   MoveCursorToCleanPos(StartPos);
@@ -7617,6 +7624,7 @@ begin
   if not IsSpaceChar[Src[StartPos]] then
     ReadNextAtom;
   NextAtomType:=GetCurrentAtomType;
+  NextIsValue:=NextAtomType in [vatIdentifier,vatPreDefIdentifier,vatNumber,vatStringConstant];
   repeat
     ReadPriorAtom;
     CurAtom:=CurPos;
@@ -7651,14 +7659,13 @@ begin
       Result:=NextAtom.StartPos;
       exit;
     end;
-    if (not (CurAtomType in [vatIdentifier,vatPreDefIdentifier,vatPoint,vatUp,
-      vatEdgedBracketClose,vatRoundBracketClose]))
-    or ((CurAtomType in [vatIdentifier,vatPreDefIdentifier,vatNone])
-        and (NextAtomType in [vatIdentifier,vatPreDefIdentifier]))
-    or ((CurAtomType in [vatNone])
-        and (NextAtomType in [vatIdentifier,vatPreDefIdentifier,
-                              vatRoundBracketClose]))
+    CurIsValue:=CurAtomType in [vatIdentifier,vatPreDefIdentifier,vatNumber,vatStringConstant];
+
+    if (not (CurAtomType in [vatIdentifier,vatPreDefIdentifier,vatNumber,vatStringConstant,
+      vatPoint,vatUp,vatEdgedBracketClose,vatRoundBracketClose]))
+    or (CurIsValue and NextIsValue)
     then begin
+      // boundary found between current and next
       if NextAtom.StartPos>=EndPos then begin
         // no token belongs to a variable (e.g. ; ;)
         Result:=EndPos;
@@ -7677,6 +7684,7 @@ begin
     end;
     NextAtom:=CurAtom;
     NextAtomType:=CurAtomType;
+    NextIsValue:=CurIsValue;
   until false;
 end;
 
@@ -7705,8 +7713,8 @@ type
   TIsIdentEndOfVar = (iieovYes, iieovNo, iieovUnknown);
 var
   CurAtomType: TVariableAtomType;
-  NextAtomType: TVariableAtomType; // next, after any brackets
-  LastAtomType: TVariableAtomType;
+  NextAtomType: TVariableAtomType; // next, if CurAtomType is brackets then after the brackets
+  PrevAtomType: TVariableAtomType; // previous, start of brackets
   CurAtom, NextAtom: TAtomPosition;
   CurAtomBracketEndPos: integer;
   StartNode: TCodeTreeNode;
@@ -7766,7 +7774,7 @@ var
     {$IFDEF ShowExprEval}
     DebugLn(['  FindExpressionTypeOfTerm InitAtomQueue StartPos=',StartPos,' EndPos=',EndPos,' Expr="',copy(Src,StartPos,EndPos-StartPos),'"']);
     {$ENDIF}
-    LastAtomType:=vatNone;
+    PrevAtomType:=vatNone;
     MoveCursorToCleanPos(StartPos);
     ReadNextAtom;
     if CurPos.StartPos>SrcLen then exit;
@@ -7789,7 +7797,7 @@ var
   
   procedure ReadNextExpressionAtom;
   begin
-    LastAtomType:=CurAtomType;
+    PrevAtomType:=CurAtomType;
     CurAtom:=NextAtom;
     CurAtomType:=NextAtomType;
     MoveCursorToCleanPos(NextAtom.StartPos);
@@ -8499,7 +8507,7 @@ var
       ReadNextAtom;
       RaiseIllegalQualifierFound;
     end;
-    if LastAtomType<>vatNone then begin
+    if PrevAtomType<>vatNone then begin
       // typecast or function
       {$IFDEF ShowExprEval}
       debugln(['  FindExpressionTypeOfTerm ResolveRoundBracketOpen skip typecast/paramlist="',dbgstr(Src,CurAtom.StartPos,CurAtomBracketEndPos-CurAtom.StartPos),'"']);
@@ -9858,50 +9866,62 @@ end;
 function TFindDeclarationTool.GetCurrentAtomType: TVariableAtomType;
 var
   Node: TCodeTreeNode;
+  c: Char;
 begin
   //debugln(['TFindDeclarationTool.GetCurrentAtomType ',CurPos.StartPos,' ',CurPos.EndPos,' ',SrcLen,' ',GetAtom]);
   if (CurPos.StartPos=CurPos.EndPos) then
-    Result:=vatSpace
+    exit(vatSpace)
   else if (CurPos.StartPos<1) or (CurPos.StartPos>SrcLen) then
-    Result:=vatNone
-  else if IsIdentStartChar[Src[CurPos.StartPos]] then begin
+    exit(vatNone);
+  c:=Src[CurPos.StartPos];
+  if IsIdentStartChar[c] then begin
     if WordIsPredefinedIdentifier.DoItCaseInsensitive(Src,CurPos.StartPos,
       CurPos.EndPos-CurPos.StartPos) then
-      Result:=vatPreDefIdentifier
+      exit(vatPreDefIdentifier)
     else if UpAtomIs('INHERITED') then
-      Result:=vatINHERITED
+      exit(vatINHERITED)
     else if UpAtomIs('AS') then
-      Result:=vatAS
+      exit(vatAS)
     else if WordIsKeyWord.DoItCaseInsensitive(Src,CurPos.StartPos,
              CurPos.EndPos-CurPos.StartPos) then
-      Result:=vatKeyWord
+      exit(vatKeyWord)
     else if UpAtomIs('PROPERTY') then begin
       Node:=FindDeepestNodeAtPos(CurPos.StartPos,false);
       if (Node<>nil) and (Node.Desc in [ctnProperty,ctnPropertySection]) then
-        Result:=vatKeyword
+        exit(vatKeyword)
       else
-        Result:=vatIdentifier;
+        exit(vatIdentifier);
     end else
-      Result:=vatIdentifier;
-  end else if (Src[CurPos.StartPos]='&') and (CurPos.StartPos<SrcLen)
-  and IsIdentStartChar[Src[CurPos.StartPos+1]] then begin
-    // &keyword
-    Result:=vatIdentifier;
-  end
-  else if (CurPos.StartPos=CurPos.EndPos-1) then begin
-    case Src[CurPos.StartPos] of
-    '.': Result:=vatPoint;
-    '^': Result:=vatUp;
-    '(': Result:=vatRoundBracketOpen;
-    ')': Result:=vatRoundBracketClose;
-    '[': Result:=vatEdgedBracketOpen;
-    ']': Result:=vatEdgedBracketClose;
-    '@': Result:=vatAddrOp;
-    else Result:=vatNone;
+      exit(vatIdentifier);
+  end else if (CurPos.StartPos=CurPos.EndPos-1) then begin
+    case c of
+    '.': exit(vatPoint);
+    '^': exit(vatUp);
+    '(': exit(vatRoundBracketOpen);
+    ')': exit(vatRoundBracketClose);
+    '[': exit(vatEdgedBracketOpen);
+    ']': exit(vatEdgedBracketClose);
+    '@': exit(vatAddrOp);
+    else exit(vatNone);
     end;
   end
-  else
-    Result:=vatNone;
+  else begin
+    case c of
+    '''','#': exit(vatStringConstant);
+    '&':
+      begin
+        if (CurPos.StartPos+1=CurPos.EndPos) then exit(vatNone);
+        c:=Src[CurPos.StartPos+1];
+        if IsIdentStartChar[c] then begin
+          // &keyword
+          exit(vatIdentifier);
+        end else if IsNumberChar[c] then
+          exit(vatNumber) // octal
+        else exit(vatNone);
+      end;
+    else exit(vatNone);
+    end;
+  end;
 end;
 
 function TFindDeclarationTool.CreateParamExprListFromStatement(
