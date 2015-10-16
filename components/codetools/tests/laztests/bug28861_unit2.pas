@@ -12,7 +12,6 @@ implementation
 begin
   'Hello'.Twice{declaration:bug28861_unit1.TStringHelper.Twice};
   'Hello'.Thrice{declaration:bug28861_unit1.TStringHelper.Thrice};
-  'Hello'.GetTheLength{declaration:bug28861_unit1.TStringHelper.GetTheLength};
-  'Hello'.{collectidentifiers:}
+  'Hello'.TheLength{declaration:bug28861_unit1.TStringHelper.TheLength};
 end.
 

@@ -2026,10 +2026,13 @@ begin
       Params.Flags:=Params.Flags+[fdfIgnoreCurContextNode];
     ExprType:=FindExpressionTypeOfTerm(ContextExprStartPos,IdentStartPos,
                                        Params,false);
-    if (ExprType.Desc in xtAllIdentTypes) then begin
+    if ExprType.Desc=xtContext then begin
       GatherContext:=ExprType.Context;
       //debugln(['TIdentCompletionTool.FindCollectionContext ',ExprTypeToString(ExprType)]);
       StartInSubContext:=true;
+    end else begin
+      // for example "string.|"
+      GatherContext:=CleanFindContext;
     end;
   end;
   ExprType.Context := GatherContext;
@@ -2730,13 +2733,13 @@ begin
             Params.Flags:=Params.Flags+[fdfIgnoreCurContextNode];
           GatherContext.Tool.FindIdentifierInContext(Params);
         end else
-        if ExprType.Desc in xtAllIdentPredefinedTypes then
+        if ExprType.Desc in xtAllTypeHelperTypes then
         begin
           // gather all identifiers in cursor context for basic types (strings etc.)
           Params.ContextNode:=CursorNode;
           Params.SetIdentifier(Self,nil,@CollectAllIdentifiers);
           Params.Flags:=[fdfSearchInAncestors,fdfCollect,fdfFindVariable,fdfSearchInHelpers];
-          CurrentIdentifierList.Context:=GatherContext;
+          CurrentIdentifierList.Context:=CursorContext;
           FindIdentifierInBasicTypeHelpers(ExprType.Desc, Params);
         end;
 
