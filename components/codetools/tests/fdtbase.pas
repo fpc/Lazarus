@@ -41,10 +41,8 @@ type
     procedure TestFindDeclaration_NestedClasses;
     procedure TestFindDeclaration_ClassHelper;
     procedure TestFindDeclaration_TypeHelper;
-    {$IFDEF Darwin}
     procedure TestFindDeclaration_ObjCClass;
     procedure TestFindDeclaration_ObjCCategory;
-    {$ENDIF}
     procedure TestFindDeclaration_FPCTests;
   end;
 
@@ -259,7 +257,6 @@ begin
   FindDeclarations('fdt_typehelper.pas');
 end;
 
-{$IFDEF Darwin}
 procedure TTestFindDeclaration.TestFindDeclaration_ObjCClass;
 begin
   FindDeclarations('fdt_objcclass.pas');
@@ -269,7 +266,6 @@ procedure TTestFindDeclaration.TestFindDeclaration_ObjCCategory;
 begin
   FindDeclarations('fdt_objccategory.pas');
 end;
-{$ENDIF}
 
 procedure TTestFindDeclaration.TestFindDeclaration_FPCTests;
 const
