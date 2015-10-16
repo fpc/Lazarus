@@ -40,7 +40,7 @@
         <PackageName Value="fpcunitconsolerunner"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="11">
+    <Units Count="13">
       <Unit0>
         <Filename Value="finddeclarationtest.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -85,6 +85,14 @@
         <Filename Value="fpctests/README.txt"/>
         <IsPartOfProject Value="True"/>
       </Unit10>
+      <Unit11>
+        <Filename Value="laztests/bug28866_prg.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="laztests/bug28866_unit1.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit12>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
