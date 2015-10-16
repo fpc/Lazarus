@@ -39,6 +39,7 @@ type
   TTestFindDeclaration = class(TTestCase)
   private
     procedure FindDeclarations(Filename: string);
+    procedure TestFiles(Directory: string);
   published
     procedure TestFindDeclaration_Basic;
     procedure TestFindDeclaration_With;
@@ -48,6 +49,7 @@ type
     procedure TestFindDeclaration_ObjCClass;
     procedure TestFindDeclaration_ObjCCategory;
     procedure TestFindDeclaration_FPCTests;
+    procedure TestFindDeclaration_LazTests;
   end;
 
 var
@@ -236,6 +238,32 @@ begin
   end;
 end;
 
+procedure TTestFindDeclaration.TestFiles(Directory: string);
+const
+  fmparam = '--filemask=';
+var
+  Info: TSearchRec;
+  aFilename, Param, aFileMask: String;
+  i: Integer;
+begin
+  aFileMask:='t*.p*';
+  for i:=1 to ParamCount do begin
+    Param:=ParamStr(i);
+    if LeftStr(Param,length(fmparam))=fmparam then
+      aFileMask:=copy(Param,length(fmparam)+1,100);
+  end;
+  Directory:=AppendPathDelim(Directory);
+
+  if FindFirstUTF8(Directory+aFileMask,faAnyFile,Info)=0 then begin
+    repeat
+      if faDirectory and Info.Attr>0 then continue;
+      aFilename:=Info.Name;
+      if not FilenameIsPascalUnit(aFilename) then continue;
+      FindDeclarations(Directory+aFilename);
+    until FindNextUTF8(Info)<>0;
+  end;
+end;
+
 procedure TTestFindDeclaration.TestFindDeclaration_Basic;
 begin
   FindDeclarations('fdt_basic.pas');
@@ -272,28 +300,13 @@ begin
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_FPCTests;
-const
-  fmparam = '--filemask=';
-var
-  Info: TSearchRec;
-  aFilename, Param, aFileMask: String;
-  i: Integer;
 begin
-  aFileMask:='t*.p*';
-  for i:=1 to ParamCount do begin
-    Param:=ParamStr(i);
-    if LeftStr(Param,length(fmparam))=fmparam then
-      aFileMask:=copy(Param,length(fmparam)+1,100);
-  end;
+  TestFiles('fpctests');
+end;
 
-  if FindFirstUTF8('fpctests'+PathDelim+aFileMask,faAnyFile,Info)=0 then begin
-    repeat
-      if faDirectory and Info.Attr>0 then continue;
-      aFilename:=Info.Name;
-      if not FilenameIsPascalUnit(aFilename) then continue;
-      FindDeclarations('fpctests'+PathDelim+aFilename);
-    until FindNextUTF8(Info)<>0;
-  end;
+procedure TTestFindDeclaration.TestFindDeclaration_LazTests;
+begin
+  TestFiles('laztests');
 end;
 
 initialization
