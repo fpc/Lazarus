@@ -6799,6 +6799,7 @@ begin
   MainIDEBar.RefreshCoolbar;
   MainIDEBar.DoSetViewComponentPalette(EnvironmentOptions.Desktop.ComponentPaletteOptions.Visible);
   MainIDEBar.DoSetMainIDEHeight(MainIDEBar.WindowState = wsMaximized, 55);
+  MainIDEBar.SetMainIDEHeight;
 end;
 
 procedure TMainIDE.DoExecuteRemoteControl;
