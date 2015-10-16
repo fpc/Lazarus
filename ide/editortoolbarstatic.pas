@@ -24,7 +24,7 @@ unit EditorToolbarStatic;
 interface
 
 uses
-  SysUtils, Classes, fgl, ComCtrls, Controls, LCLProc,
+  SysUtils, Classes, fgl, ComCtrls, Controls, LCLProc, Menus,
   IDEImagesIntf, SrcEditorIntf, BaseIDEIntf,
   LazarusIDEStrConsts, LazConfigStorage, Laz2_XMLCfg, ToolbarConfig;
 
@@ -58,9 +58,7 @@ type
   private
     FCollection: TAllEditorToolbars;
     FWindow: TSourceEditorWindowInterface;
-    CfgButton: TToolButton;
-    procedure AddStaticItems;
-    procedure InitEditorToolBar;
+    CfgItem: TMenuItem;
     procedure ClearToolbar;
   protected
     procedure PostCopyOptions; override;
@@ -195,6 +193,8 @@ end;
 { TEditorToolbar }
 
 constructor TEditorToolbar.Create(AOwner: TComponent; ACollection: TAllEditorToolbars);
+var
+  xPM: TPopupMenu;
 begin
   inherited Create(AOwner);
   Assert(not Assigned(FToolBar), 'TEditorToolbar.Create: FToolBar is assigned');
@@ -209,21 +209,22 @@ begin
   FToolBar.Flat     := True;
   FToolBar.Images   := IDEImages.Images_16;
   FToolBar.ShowHint := True;
-  FToolBar.Hint     := lisEditorToolbarHint;
 
-  AddStaticItems;
+  xPM := TPopupMenu.Create(FToolBar);
+  xPM.Images := IDEImages.Images_16;
+  CfgItem := TMenuItem.Create(xPM);
+  xPM.Items.Add(CfgItem);
+  CfgItem.Caption     := lisConfigureEditorToolbar;
+  CfgItem.ImageIndex  := IDEImages.LoadImage(16, 'preferences');
+  CfgItem.OnClick     := @FCollection.DoConfigureEditorToolbar;
+
+  FToolBar.PopupMenu  := xPM;
 end;
 
 destructor TEditorToolbar.Destroy;
 begin
   uAllEditorToolbars.FToolBars.Remove(Self);
   inherited Destroy;
-end;
-
-procedure TEditorToolbar.InitEditorToolBar;
-begin
-  FToolBar := nil;
-  CfgButton := nil;
 end;
 
 procedure TEditorToolbar.PostCopyOptions;
@@ -248,25 +249,6 @@ begin
   end;
 end;
 
-procedure TEditorToolbar.AddStaticItems;
-begin
-  FToolBar.BeginUpdate;
-  try
-    // Config Button
-    if CfgButton = nil then
-      CfgButton := TToolbutton.Create(FToolBar);
-    CfgButton.Caption     := lisConfigureEditorToolbar;
-    CfgButton.Hint        := CfgButton.Caption;
-    CfgButton.ImageIndex  := IDEImages.LoadImage(16, 'preferences');
-    CfgButton.Style       := tbsButton;
-    CfgButton.OnClick     := @FCollection.DoConfigureEditorToolbar;
-    PositionAtEnd(FToolBar, CfgButton);
-    AddDivider;
-  finally
-    FToolBar.EndUpdate;
-  end;
-end;
-
 procedure TEditorToolbar.ClearToolbar;
 var
   i: integer;
@@ -274,10 +256,7 @@ begin
   FToolBar.BeginUpdate;
   try
     for i := FToolBar.ButtonCount - 1 downto 0 do
-      if FToolBar.Buttons[i] <> CfgButton then
-        FToolBar.Buttons[i].Free
-      else
-        FToolBar.Buttons[i].Parent := nil;
+      FToolBar.Buttons[i].Free
   finally
     FToolBar.EndUpdate;
   end;
@@ -314,12 +293,9 @@ procedure TAllEditorToolbars.SourceWindowCreated(Sender: TObject);
 var
   ETB: TEditorToolbar;
   Opts: TEditorToolBarOptions;
-  i: Integer;
 begin
   ETB := TEditorToolbar.Create(Sender as TSourceEditorWindowInterface, Self);
-  i := FToolBars.Add(ETB);
-  Assert(FToolBars[i] = ETB, 'TAllEditorToolbars.SourceWindowCreated: FToolBars[i] <> ETB');
-  ETB.AddStaticItems;
+  FToolBars.Add(ETB);
   Opts := EnvironmentOptions.Desktop.EditorToolBarOptions;
   ETB.CopyFromOptions(Opts);
   ETB.FToolBar.Visible := Opts.Visible;
@@ -359,7 +335,6 @@ begin
   begin
     aBar := FToolBars[i];
     aBar.ClearToolbar;
-    aBar.AddStaticItems;
     Opts := EnvironmentOptions.Desktop.EditorToolBarOptions;
     aBar.CopyFromOptions(Opts);
     aBar.FToolBar.Visible := Opts.Visible;

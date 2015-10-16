@@ -4630,7 +4630,6 @@ resourcestring
 
   // Editor Toolbar
   lisEditorToolbar = 'Editor ToolBar';
-  lisEditorToolbarHint = 'You may add here your favorite commands';
   lisConfigureEditorToolbar = 'Configure Toolbar';
   lisEditorToolbarVisible = 'Editor Toolbar is &visible';
   lisEditorToolbarSettings = 'Editor Toolbar Settings';
