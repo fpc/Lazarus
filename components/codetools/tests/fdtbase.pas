@@ -13,6 +13,10 @@
    ./finddeclarationtest --format=plain --suite=TestFindDeclaration_FPCTests
    ./finddeclarationtest --format=plain --suite=TestFindDeclaration_FPCTests --filemask=t*.pp
    ./finddeclarationtest --format=plain --suite=TestFindDeclaration_FPCTests --filemask=tchlp41.pp
+ Laz tests:
+   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_LazTests
+   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_LazTests --filemask=t*.pp
+   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_LazTests --filemask=tdefaultproperty1.pp
 }
 unit fdtbase;
 
