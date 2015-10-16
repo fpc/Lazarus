@@ -2453,7 +2453,7 @@ begin
         ClearIgnoreErrorAfter;
       end;
     end else
-    if (ExprType.Desc in xtAllIdentPredefinedTypes) then
+    if (ExprType.Desc in xtAllTypeHelperTypes) then
     begin
       Params.ContextNode:=CursorNode;
       Params.SetIdentifier(Self,@Src[ProcNameAtom.StartPos],nil);

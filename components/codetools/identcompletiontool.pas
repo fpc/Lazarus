@@ -2924,7 +2924,7 @@ var
     {$IFDEF VerboseCodeContext}
     DebugLn('CheckContextIsParameter searching procedures, properties and variables ...');
     {$ENDIF}
-    if ExprType.Desc in xtAllIdentPredefinedTypes then
+    if ExprType.Desc in xtAllTypeHelperTypes then
       ExprType.Context.Tool.FindIdentifierInBasicTypeHelpers(ExprType.Desc, Params)
     else
       ExprType.Context.Tool.FindIdentifierInContext(Params);
