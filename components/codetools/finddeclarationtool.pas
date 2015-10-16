@@ -8051,7 +8051,7 @@ var
     end;
     // find sub identifier
     if not IdentFound then begin
-      if ExprType.Desc<>xtContext then
+      if not (ExprType.Desc in [xtContext,xtNone]) then
       begin
         if (ExprType.Desc in xtAllTypeHelperTypes) then
         begin
@@ -8072,7 +8072,7 @@ var
             ExprType.Context.Tool := Params.NewCodeTool;
             ExprType.Context.Node := Params.NewNode;
             {$IFDEF ShowExprEval}
-            debugln(['ResolveIdentifier Found In Helper: "',ExprTypeToString(ExprType),'"']);
+            debugln(['ResolveIdentifier "',GetAtom(CurAtom),'" Found In Helper: "',ExprTypeToString(ExprType),'"']);
             {$ENDIF}
           end else begin
             {$IFDEF ShowExprEval}
@@ -8082,7 +8082,7 @@ var
           Params.Load(OldInput,true);
         end;
 
-        if ExprType.Desc<>xtContext then begin
+        if ExprType.Desc in xtAllPredefinedTypes then begin
           ExprType:=FindExpressionTypeOfPredefinedIdentifier(CurAtom.StartPos,
                                                              Params);
           {$IFDEF CheckNodeTool}
@@ -8090,12 +8090,15 @@ var
             ExprType.Context.Tool.CheckNodeTool(ExprType.Context.Node);
           {$ENDIF}
           {$IFDEF ShowExprEval}
-          debugln(['ResolveIdentifier Predefined: ',ExprType.Desc in xtAllTypeHelperTypes]);
+          debugln(['ResolveIdentifier Predefined  "',GetAtom(CurAtom),'" : ',ExprType.Desc in xtAllTypeHelperTypes]);
           {$ENDIF}
         end;
       end else
       begin
-        Context:=ExprType.Context;
+        if ExprType.Desc=xtContext then
+          Context:=ExprType.Context
+        else
+          Context:=CreateFindContext(Self,StartNode);
         Params.Save(OldInput);
         // build new param flags for sub identifiers
         Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound,fdfSearchInHelpers]
@@ -8128,7 +8131,7 @@ var
 
         // search ...
         {$IFDEF ShowExprEval}
-        Dbgout(['  FindExpressionTypeOfTerm ResolveIdentifier backward ',BoolToStr(IsStart,'Main','Sub'),'Ident="',GetIdentifier(Params.Identifier),'" ContextNode="',Params.ContextNode.DescAsString,'" "',dbgstr(Context.Tool.Src,Params.ContextNode.StartPos,15),'" ',dbgs(Params.Flags)]);
+        Dbgout(['  FindExpressionTypeOfTerm ResolveIdentifier "',GetAtom(CurAtom),'" backward ',BoolToStr(IsStart,'Main','Sub'),'Ident="',GetIdentifier(Params.Identifier),'" ContextNode="',Params.ContextNode.DescAsString,'" "',dbgstr(Context.Tool.Src,Params.ContextNode.StartPos,15),'" ',dbgs(Params.Flags)]);
         {$ENDIF}
         ExprType.Desc:=xtNone;
         // first search backwards
@@ -8143,7 +8146,7 @@ var
                         +(fdfGlobals*Params.Flags);
           Params.ContextNode:=Context.Node;
           {$IFDEF ShowExprEval}
-          DebugLn(['  FindExpressionTypeOfTerm ResolveIdentifier forward SubIdent="',GetIdentifier(Params.Identifier),'" ContextNode="',Params.ContextNode.DescAsString,'" "',dbgstr(Context.Tool.Src,Params.ContextNode.StartPos,15),'" ',dbgs(Params.Flags)]);
+          DebugLn(['  FindExpressionTypeOfTerm ResolveIdentifier "',GetAtom(CurAtom),'" forward SubIdent="',GetIdentifier(Params.Identifier),'" ContextNode="',Params.ContextNode.DescAsString,'" "',dbgstr(Context.Tool.Src,Params.ContextNode.StartPos,15),'" ',dbgs(Params.Flags)]);
           {$ENDIF}
           if FindIdentifierInContext(Params) then begin
             ExprType.Desc:=xtContext;
