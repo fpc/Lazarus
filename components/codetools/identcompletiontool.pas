@@ -2571,6 +2571,7 @@ begin
       end else begin
         FindCollectionContext(Params,IdentStartPos,CursorNode,
                              ExprType,ContextExprStartPos,StartInSubContext);
+        //debugln(['TIdentCompletionTool.GatherIdentifiers FindCollectionContext ',ExprTypeToString(ExprType)]);
 
         GatherContext := ExprType.Context;
         // find class and ancestors if existing (needed for protected identifiers)
