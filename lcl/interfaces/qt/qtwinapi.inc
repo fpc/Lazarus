@@ -6454,6 +6454,9 @@ begin
       and not TQtMainWindow(Widget).ShowOnTaskBar then
         SetSkipX11Taskbar(Widget.Widget, True);
     {$ENDIF}
+    if (Byte(nCmdShow) in [SW_SHOW, SW_SHOWNORMAL, SW_SHOWMAXIMIZED, SW_SHOWFULLSCREEN]) and
+      (Widget is TQtMainWindow) then
+        TQtMainWindow(Widget).Activate;
     Result := True;
   end;
 end;
