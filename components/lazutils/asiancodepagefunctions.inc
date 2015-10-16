@@ -92,7 +92,7 @@ begin
   Result := DBCSToUTF8(s, 932);
 end;
 
-{$ifndef UseSystemCPConv}
+{$IfNDef UseSystemCPConv}
 function UnicodeToCP936(Unicode: cardinal): integer;
 begin
   case Unicode of
@@ -133,7 +133,7 @@ end;
 {$ifdef HASCP}
 procedure InternalUTF8ToDBCS(const s: string; TargetCodePage: TSystemCodePage;
   SetTargetCodePage: boolean;
-  {$ifndef UseSystemCPConv}const UTF8CharConvFunc: TUnicodeToCharID;{$endif}
+  {$IfNDef UseSystemCPConv}const UTF8CharConvFunc: TUnicodeToCharID;{$endif}
   out TheResult: RawByteString); inline;
 begin
   {$ifdef UseSystemCPConv}
