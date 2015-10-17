@@ -6951,6 +6951,22 @@ begin
           FFoldedLinesView.UnFoldAtTextIndex(CaretY-1);
       EcToggleMarkupWord:
           FMarkupHighCaret.ToggleCurrentWord;
+      ecZoomOut, ecZoomIn: begin
+          if not (( (Command = ecZoomOut) and (abs(Font.Height) < 3) ) or
+                  ( (Command = ecZoomIn) and (abs(Font.Height) > 50) ))
+          then begin
+            CY := 1;
+            if Command = ecZoomIn then CY := -1;
+            CX := FLastSetFontSize;
+            if Font.Height < 0
+            then Font.Height := Font.Height + CY
+            else Font.Height := Font.Height - CY;
+            FLastSetFontSize := CX;
+          end;
+        end;
+      ecZoomNorm: begin
+          Font.Height := FLastSetFontSize;
+        end;
     end;
   finally
     DecPaintLock;

@@ -435,7 +435,11 @@ begin
     ecBlockGotoBegin  : Result := srkmecBlockGotoBegin;
     ecBlockGotoEnd    : Result := srkmecBlockGotoEnd;
 
-    // multi coret
+    ecZoomOut         : Result := srkmecZoomOut;
+    ecZoomIn          : Result := srkmecZoomIn;
+    ecZoomNorm        : Result := dlfMouseSimpleButtonZoomReset;
+
+    // multi caret
     ecPluginMultiCaretSetCaret          : Result := srkmecPluginMultiCaretSetCaret;
     ecPluginMultiCaretUnsetCaret        : Result := srkmecPluginMultiCaretUnsetCaret;
     ecPluginMultiCaretToggleCaret       : Result := srkmecPluginMultiCaretToggleCaret;
@@ -2899,6 +2903,10 @@ begin
   AddDefault(C, 'Copy to new window', srkmecCopyEditorNewWindow, ecCopyEditorNewWindow);
 
   AddDefault(C, 'Lock editor', srkmecLockEditor, ecLockEditor);
+
+  AddDefault(C, 'Zoom Reset', dlfMouseSimpleButtonZoomReset, ecZoomNorm);
+  AddDefault(C, 'Zoom In', srkmecZoomIn, ecZoomIn);
+  AddDefault(C, 'Zoom Out', srkmecZoomOut, ecZoomOut);
 
   // file menu
   C:=Categories[AddCategory('FileMenu',srkmCatFileMenu,nil)];

@@ -2924,6 +2924,9 @@ resourcestring
   srkmecBlockGotoBegin  = 'Goto Block begin';
   srkmecBlockGotoEnd    = 'Goto Block end';
 
+  srkmecZoomIn    = 'Zoom in';
+  srkmecZoomOut   = 'Zoom out';
+
   srkmecShiftTab              = 'Shift Tab';
   lisTab                      = 'Tab';
   srkmecMatchBracket          = 'Go to matching bracket';
