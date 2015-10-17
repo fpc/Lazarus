@@ -543,8 +543,11 @@ end;
 
 procedure TIDEMenuItem.MenuItemClick(Sender: TObject);
 begin
-  if Assigned(OnClick) then OnClick(Self);
-  if Assigned(OnClickProc) then OnClickProc(Self);
+  if Assigned(OnClick) then
+    OnClick(Self)
+  else
+  if Assigned(OnClickProc) then
+    OnClickProc(Self);
 end;
 
 procedure TIDEMenuItem.MenuItemDestroy(Sender: TObject);
