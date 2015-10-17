@@ -1402,7 +1402,7 @@ begin
   if Assigned(OnExecute) then begin
     Result:=true;
     OnExecute(Sender);
-  end;
+  end else
   if Assigned(OnExecuteProc) then begin
     Result:=true;
     OnExecuteProc(Sender);
@@ -1593,8 +1593,8 @@ begin
     if FCommand.OnExecuteProc = nil then
       FCommand.OnExecuteProc := OnClickProc;
     //DebugLn('TIDEMenuCommand.SetCommand NEW ',ShortCutToText(FCommand.AsShortCut),' FCommand.Name=',FCommand.Name,' Name=',Name,' FCommand=',dbgs(Pointer(FCommand)));
-    FCommand.Change;
     FCommand.UserAdded(Self);
+    FCommand.Change;
   end;
 end;
 
