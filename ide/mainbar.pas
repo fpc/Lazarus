@@ -412,8 +412,6 @@ begin
 end;
 
 procedure TMainIDEBar.DoSetMainIDEHeight(const AIDEIsMaximized: Boolean; ANewHeight: Integer);
-var
-  NonClientH: Integer;
 begin
   if not Showing then
     Exit;
@@ -431,11 +429,7 @@ begin
   begin
     if (AIDEIsMaximized or EnvironmentOptions.Desktop.AutoAdjustIDEHeight) then
     begin
-      NonClientH := CalcNonClientHeight;
-      // Sanity check. CalcNonClientHeight can return negative values when
-      //  both Coolbar and Palette are hidden.
-      if NonClientH < 0 then Exit;
-      Inc(ANewHeight, NonClientH);
+      Inc(ANewHeight, CalcNonClientHeight);
       if ANewHeight <> Constraints.MaxHeight then
       begin
         Constraints.MaxHeight := ANewHeight;
@@ -494,10 +488,19 @@ begin
 
   Result := WindowClientRect.Top - WindowRect.Top;
 
+  {$IFDEF LCLQt}
+  // ToDo: fix this properly for QT.
+  //  Result can be negative (-560) when both Coolbar and Palette are hidden.
+  if Result < 0 then
+    Result := 55;
+  {$ENDIF LCLQt}
+  Assert(Result >= 0, 'TMainIDEBar.CalcNonClientHeight: Result < 0');
+
   {$IFDEF LCLWin32}
   //Win32 the constrained height has to be without SM_CYSIZEFRAME and SM_CYMENU
   Result := Result - (LCLIntf.GetSystemMetrics(SM_CYSIZEFRAME) + LCLIntf.GetSystemMetrics(SM_CYMENU));
   {$ENDIF LCLWin32}
+
   {$ELSE}
   //other widgetsets
   //Carbon tested - behaves correctly

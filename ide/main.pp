@@ -6798,7 +6798,12 @@ procedure TMainIDE.HandleLayoutChanged(Sender: TObject);
 begin
   MainIDEBar.RefreshCoolbar;
   MainIDEBar.DoSetViewComponentPalette(EnvironmentOptions.Desktop.ComponentPaletteOptions.Visible);
-  MainIDEBar.DoSetMainIDEHeight(MainIDEBar.WindowState = wsMaximized, 55);
+  // to be able to calculate IDE height correctly, the ComponentPalette
+  // has to have some valid height if it is visible
+  if EnvironmentOptions.Desktop.ComponentPaletteOptions.Visible
+  and Assigned(MainIDEBar.ComponentPageControl.ActivePage)
+  and (MainIDEBar.ComponentPageControl.ActivePage.Width<=0) then
+    MainIDEBar.DoSetMainIDEHeight(MainIDEBar.WindowState = wsMaximized, 55);
   MainIDEBar.SetMainIDEHeight;
 end;
 
