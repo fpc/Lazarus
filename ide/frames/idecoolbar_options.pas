@@ -81,11 +81,12 @@ type
     FTempCoolBarOptions: TIDECoolBarOptions;
     // Used for assigning and testing the default configuration.
     FDefaultOptions: TDefaultCoolBarOptions;
+    procedure EnableDisableGeneralButtons;
+    procedure EnableDisableToolbarButtons;
     procedure SelectBand(const ID: integer);
     function GetSelectedBand: Integer;
     procedure ToolBarClick(Sender: TObject);
     procedure PopulateToolBar;
-    procedure EnableDisableButtons(const bType: Integer);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -159,7 +160,7 @@ begin
     Opts.BorderStyle := 1;
   cbBorderStyle.ItemIndex := Opts.BorderStyle;
   Coolbar.BandBorderStyle := TBorderStyle(Opts.BorderStyle);
-  EnableDisableButtons(0);
+  EnableDisableGeneralButtons;
 
   // ToDo: More tests?
   if Opts.ToolBars.Count = 0 then
@@ -214,7 +215,7 @@ end;
 procedure TIdeCoolbarOptionsFrame.spCoolBarWidthChange(Sender: TObject);
 begin
   FTempCoolBar.Width := spCoolBarWidth.Value;
-  EnableDisableButtons(0);
+  EnableDisableGeneralButtons;
 end;
 
 procedure TIdeCoolbarOptionsFrame.tmWaitTimer(Sender: TObject);
@@ -227,32 +228,32 @@ procedure TIdeCoolbarOptionsFrame.spGrabWidthChange(Sender: TObject);
 begin
   CoolBar.GrabWidth := TSpinEdit(Sender).Value;
   CoolBar.AutosizeBands;
-  EnableDisableButtons(0);
+  EnableDisableGeneralButtons;
 end;
 
 procedure TIdeCoolbarOptionsFrame.cbGrabStyleChange(Sender: TObject);
 begin
   CoolBar.GrabStyle := TGrabStyle(TComboBox(Sender).ItemIndex);
   CoolBar.AutosizeBands;
-  EnableDisableButtons(0);
+  EnableDisableGeneralButtons;
 end;
 
 procedure TIdeCoolbarOptionsFrame.cbCoolBarVisibleClick(Sender: TObject);
 begin
   FTempCoolBar.IsVisible := cbCoolBarVisible.Checked;
-  EnableDisableButtons(0);
+  EnableDisableGeneralButtons;
 end;
 
 procedure TIdeCoolbarOptionsFrame.CoolbarChange(Sender: TObject);
 begin
-  EnableDisableButtons(1);
+  EnableDisableToolbarButtons;
 end;
 
 procedure TIdeCoolbarOptionsFrame.cbBorderStyleChange(Sender: TObject);
 begin
   Coolbar.BandBorderStyle := TBorderStyle(TComboBox(Sender).ItemIndex);
   Coolbar.AutosizeBands;
-  EnableDisableButtons(0);
+  EnableDisableGeneralButtons;
 end;
 
 procedure TIdeCoolbarOptionsFrame.SelectBand(const ID: integer);
@@ -301,32 +302,28 @@ begin
     SelectBand(CoolBand.Index);
 end;
 
-procedure TIdeCoolbarOptionsFrame.EnableDisableButtons(const bType: Integer);
+procedure TIdeCoolbarOptionsFrame.EnableDisableGeneralButtons;
+begin
+  bDefaultGeneral.Enabled := not FTempCoolBar.IsDefaultCoolbar;
+end;
+
+procedure TIdeCoolbarOptionsFrame.EnableDisableToolbarButtons;
 var
   I: Integer;
   Selected: Boolean;
 begin
-  case bType of
-    0:
+  Selected := False;
+  for I := 0 to Coolbar.Bands.Count - 1 do
+  begin
+    if Coolbar.Bands[I].Color = clHighlight then
     begin
-      bDefaultGeneral.Enabled := not FTempCoolBar.IsDefaultCoolbar;
-    end;
-    1:
-    begin
-      Selected := False;
-      for I := 0 to Coolbar.Bands.Count - 1 do
-      begin
-        if Coolbar.Bands[I].Color = clHighlight then
-        begin
-          Selected := True;
-          Break;
-        end;
-      end;
-      bConfig.Enabled := Selected;
-      bDelete.Enabled := Selected;
-      bDefaultToolbar.Enabled := not FTempCoolBar.IsDefaultToolbar;
+      Selected := True;
+      Break;
     end;
   end;
+  bConfig.Enabled := Selected;
+  bDelete.Enabled := Selected;
+  bDefaultToolbar.Enabled := not FTempCoolBar.IsDefaultToolbar;
 end;
 
 procedure TIdeCoolbarOptionsFrame.PopulateToolBar;
@@ -350,7 +347,7 @@ begin
   if CoolBar.Bands.Count > 0 then
     SelectBand(0);
   Coolbar.AutosizeBands;
-  EnableDisableButtons(1);
+  EnableDisableToolbarButtons;
 end;
 
 constructor TIdeCoolbarOptionsFrame.Create(AOwner: TComponent);
@@ -387,7 +384,7 @@ begin
   CoolBand.MinHeight := 22;
   CoolBand.FixedSize := True;
   SelectBand(CoolBand.Index);
-  EnableDisableButtons(1);
+  EnableDisableToolbarButtons;
 end;
 
 procedure TIdeCoolbarOptionsFrame.bConfigClick(Sender: TObject);
@@ -411,7 +408,7 @@ begin
       FTempCoolBar.ToolBars[ToConfig].UseCurrentOptions;
   end;
   Coolbar.AutosizeBands;
-  EnableDisableButtons(1);
+  EnableDisableToolbarButtons;
 end;
 
 procedure TIdeCoolbarOptionsFrame.bDeleteClick(Sender: TObject);
@@ -439,7 +436,7 @@ begin
       CoolBar.Bands.Delete(ToDelete);
     end;
   end;
-  EnableDisableButtons(1);
+  EnableDisableToolbarButtons;
 end;
 
 procedure TIdeCoolbarOptionsFrame.bDefaultGeneralClick(Sender: TObject);
@@ -453,7 +450,7 @@ begin
   BiDiMode := bdLeftToRight;
   cbBorderStyle.ItemIndex := 1;
   FTempCoolBar.SetCoolBarDefaults;
-  EnableDisableButtons(0);
+  EnableDisableGeneralButtons;
 end;
 
 procedure TIdeCoolbarOptionsFrame.bDefaultToolbarClick(Sender: TObject);
