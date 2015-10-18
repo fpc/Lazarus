@@ -1016,6 +1016,7 @@ components/codetools/tests/laztests/bug28861_unit2.pas svneol=native#text/plain
 components/codetools/tests/laztests/bug28866_prg.pas svneol=native#text/plain
 components/codetools/tests/laztests/bug28866_unit1.pas svneol=native#text/plain
 components/codetools/tests/laztests/bug28876.pas svneol=native#text/plain
+components/codetools/tests/laztests/delphi_autodereference1.pas svneol=native#text/plain
 components/codetools/tests/laztests/tdefaultproperty1.pas svneol=native#text/plain
 components/codetools/tests/parsertbase.pas svneol=native#text/plain
 components/codetools/tests/parsertest.lpi svneol=native#text/plain

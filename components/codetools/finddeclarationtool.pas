@@ -8257,7 +8257,7 @@ var
     if (ExprType.Context.Node=nil) then exit;
     if (ExprType.Context.Node.Desc in AllUsableSourceTypes) then begin
       if ExprType.Context.Tool=Self then begin
-        // this unit name => implementation
+        // unit name of this unit => implementation
         // Note: allowed for programs too
         NewNode:=Tree.Root;
         if NewNode.Desc=ctnUnit then begin
@@ -8270,7 +8270,7 @@ var
         {$ENDIF}
         ExprType.Context.Node:=NewNode;
       end else begin
-        // unit name => interface
+        // unit name of another unit => interface
         {$IFDEF ShowExprEval}
         debugln(['  FindExpressionTypeOfTerm ResolveChildren unit -> interface node']);
         {$ENDIF}
@@ -8293,9 +8293,7 @@ var
       // -> check for pointer type
       // left side of expression has defined a special context
       // => this '.' is a dereference
-      ExprType.Desc:=xtContext;
-      Params.Flags:=Params.Flags+[fdfFunctionResult,fdfFindChildren];
-      ExprType.Context.Node:=ExprType.Context.Node.FirstChild;
+      ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,ExprType.Context.Node.FirstChild);
     end;
   end;
 
