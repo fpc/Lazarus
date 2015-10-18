@@ -131,6 +131,7 @@ resourcestring
   lisClone = 'Clone';
   lisExport = 'Export';
   lisDlgExport = 'Export ...';
+  lisExportSub = 'Export >>';
   lisImport = 'Import';
   lisDlgImport = 'Import ...';
 

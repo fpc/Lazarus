@@ -640,21 +640,23 @@ begin
   btnCheck.ModalResult := mrNone;
   btnCheck.OnClick  := @DoCheck;
   btnCheck.LoadGlyphFromStock(idButtonYes);
-  // Import
+
   ADialog.AddButtonSeparator;
-  btnLoadSave := CreateButton(lisImport);
-  btnLoadSave.OnClick  := @DoImport;
-  btnLoadSave.Hint := dlgCOLoadSaveHint;
-  btnLoadSave.LoadGlyphFromStock(idButtonOpen);
+
   // Export
   btnExport := CreateButton(lisExport);
   btnExport.OnClick  := @DoExport;
   btnExport.Hint := dlgCOLoadSaveHint;
   btnExport.LoadGlyphFromStock(idButtonSave);
-  ADialog.AddButtonSeparator;
-
+  // Import
+  btnLoadSave := CreateButton(lisImport);
+  btnLoadSave.OnClick  := @DoImport;
+  btnLoadSave.Hint := dlgCOLoadSaveHint;
+  btnLoadSave.LoadGlyphFromStock(idButtonOpen);
   if btnLoadSave.Glyph.Empty then
     btnLoadSave.LoadGlyphFromResourceName(HInstance, 'laz_save');
+
+  ADialog.AddButtonSeparator;
 
   chkUseAsDefault := TCheckBox(ADialog.AddControl(TCheckBox));
   chkUseAsDefault.Caption := dlgCOSetAsDefault;
