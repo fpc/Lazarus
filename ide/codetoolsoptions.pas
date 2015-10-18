@@ -106,6 +106,7 @@ type
     FIdentComplAddSemicolon: Boolean;
     FIdentComplAddAssignOperator: Boolean;
     FIdentComplAutoStartAfterPoint: boolean;
+    FIdentComplAutoUseSingleIdent: boolean;
 
     // auto indentation
     FIndentOnLineBreak: boolean;
@@ -226,6 +227,8 @@ type
     property IdentComplAddDo: Boolean read FIdentComplAddDo write FIdentComplAddDo;
     property IdentComplAutoStartAfterPoint: boolean read FIdentComplAutoStartAfterPoint
                                            write FIdentComplAutoStartAfterPoint;
+    property IdentComplAutoUseSingleIdent: boolean read FIdentComplAutoUseSingleIdent
+                                           write FIdentComplAutoUseSingleIdent;
     property IdentComplAddParameterBrackets: boolean
       read FIdentComplAddParameterBrackets write FIdentComplAddParameterBrackets;
     property IdentComplReplaceIdentifier: boolean
@@ -502,6 +505,8 @@ begin
       'CodeToolsOptions/IdentifierCompletion/AddDo',true);
     FIdentComplAutoStartAfterPoint:=XMLConfig.GetValue(
       'CodeToolsOptions/IdentifierCompletion/AutoStartAfterPoint',true);
+    FIdentComplAutoUseSingleIdent:=XMLConfig.GetValue(
+      'CodeToolsOptions/IdentifierCompletion/AutoUseSingleIdent',true);
     FIdentComplAddParameterBrackets:=XMLConfig.GetValue(
       'CodeToolsOptions/IdentifierCompletion/AutoAddParameterBrackets',true);
     FIdentComplReplaceIdentifier:=XMLConfig.GetValue(
@@ -657,6 +662,8 @@ begin
       FIdentComplAddDo,true);
     XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/AutoStartAfterPoint',
       FIdentComplAutoStartAfterPoint,true);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/AutoUseSingleIdent',
+      FIdentComplAutoUseSingleIdent,true);
     XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/AutoAddParameterBrackets',
       FIdentComplAddParameterBrackets,true);
     XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/ReplaceIdentifier',
@@ -799,6 +806,7 @@ begin
     FIdentComplAddAssignOperator:=CodeToolsOpts.FIdentComplAddAssignOperator;
     FIdentComplAddDo:=CodeToolsOpts.FIdentComplAddDo;
     FIdentComplAutoStartAfterPoint:=CodeToolsOpts.FIdentComplAutoStartAfterPoint;
+    FIdentComplAutoUseSingleIdent:=CodeToolsOpts.FIdentComplAutoUseSingleIdent;
     FIdentComplAddParameterBrackets:=CodeToolsOpts.FIdentComplAddParameterBrackets;
     FIdentComplReplaceIdentifier:=CodeToolsOpts.FIdentComplReplaceIdentifier;
     FIdentComplJumpToError:=CodeToolsOpts.FIdentComplJumpToError;
@@ -859,6 +867,7 @@ begin
   FIdentComplAddAssignOperator:=true;
   FIdentComplAddDo:=true;
   FIdentComplAutoStartAfterPoint:=true;
+  FIdentComplAutoUseSingleIdent:=true;
   FIdentComplAddParameterBrackets:=true;
   FIdentComplReplaceIdentifier:=true;
   FIdentComplJumpToError:=true;
@@ -937,6 +946,7 @@ begin
     and (FIdentComplAddAssignOperator=CodeToolsOpts.FIdentComplAddAssignOperator)
     and (FIdentComplAddDo=CodeToolsOpts.FIdentComplAddDo)
     and (FIdentComplAutoStartAfterPoint=CodeToolsOpts.FIdentComplAutoStartAfterPoint)
+    and (FIdentComplAutoUseSingleIdent=CodeToolsOpts.FIdentComplAutoUseSingleIdent)
     and (FIdentComplAddParameterBrackets=CodeToolsOpts.FIdentComplAddParameterBrackets)
     and (FIdentComplReplaceIdentifier=CodeToolsOpts.FIdentComplReplaceIdentifier)
     and (FIdentComplJumpToError=CodeToolsOpts.FIdentComplJumpToError)

@@ -194,7 +194,7 @@ begin
     if CompareFileExt(fXMLConfig.Filename,'.lpk',false)=0 then
     begin
       try
-        FileVersion:=fXMLConfig.GetValue(PkgVersionPath,0);
+        FileVersion:=fXMLConfig.GetValue(PkgVersionPath,2);
       except
         FileVersion:=2;               // On error assume version 2.
       end;

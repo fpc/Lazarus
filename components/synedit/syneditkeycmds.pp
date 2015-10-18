@@ -229,6 +229,10 @@ const
   EcUnFoldCurrent          = 382;
   EcToggleMarkupWord       = 383;
 
+  ecZoomOut             = 400;
+  ecZoomIn              = 401;
+  ecZoomNorm            = 402;
+
   ecDeleteLastChar  = 501;  // Delete last char (i.e. backspace key)
   ecDeleteChar      = 502;  // Delete char at cursor (i.e. delete key)
   ecDeleteWord      = 503;  // Delete from cursor to end of word

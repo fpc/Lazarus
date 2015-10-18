@@ -100,7 +100,7 @@ begin
     cbPos.Items[i] := sLocalizedPosValues[i]; // localized
   cbPos.Caption := cbPos.Items[cbPos.ItemIndex];
 
-  dbGeneralSettings.Caption := 'Editor Toolbars Settings'; // ToDo: Will be removed ...
+  dbGeneralSettings.Caption := lisEditorToolbarSettings; // ToDo: Will be removed ...
   cbCoolBarVisible.Caption := lisEditorToolbarVisible;
   lblpos.Caption := lisPosition;
   bDefaultToolbar.Caption := lisCmpRestoreDefaults;

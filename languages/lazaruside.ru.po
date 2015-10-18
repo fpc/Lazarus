@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-10-04 00:46+0300\n"
+"PO-Revision-Date: 2015-10-15 00:39+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -4607,6 +4607,10 @@ msgstr "конца слова"
 msgid "do not add character"
 msgstr "не добавлять сам символ"
 
+#: lazarusidestrconsts.lisautomaticallyusesinglepossibleident
+msgid "Automatically use single possible identifier"
+msgstr "Автоматически выбирать единственный возможный идентификатор"
+
 #: lazarusidestrconsts.lisautomaticfeatures
 msgid "Completion and Hints"
 msgstr "Автозавершение и подсказки"
@@ -7092,22 +7096,6 @@ msgstr "Кнопка"
 msgid "Grab width"
 msgstr "Ширина"
 
-#: lazarusidestrconsts.liscoolbarhelp1
-msgid "The \"Add\" button inserts a command before the selected Item of the Toolbar."
-msgstr "Кнопка \"Добавить\" вставляет команду перед выбранным элементом инструментальной панели."
-
-#: lazarusidestrconsts.liscoolbarhelp2
-msgid "If none is selected, the Item will be appended at the end of the Toolbar."
-msgstr "Если ничего не было выбрано, добавление будет произведено в конец панели."
-
-#: lazarusidestrconsts.liscoolbarhelp3
-msgid "You may rearrange Toolbar Items with \"Move Up\" and \"Move Down\" buttons."
-msgstr "Элементы панели можно упорядочивать при помощи кнопок \"Переместить вверх\" и \"Переместить вниз\"."
-
-#: lazarusidestrconsts.liscoolbarhelp4
-msgid "Hint: to append an Item at the end, use \"Clear selection\""
-msgstr "Подсказка: чтобы добавить элемент в конец, воспользуйтесь кнопкой \"Снять выбор\""
-
 #: lazarusidestrconsts.liscoolbaridemainmenu
 msgid "IDE Main Menu"
 msgstr "Главное меню IDE"
@@ -8207,6 +8195,10 @@ msgstr "%s не существует: %s"
 msgid "Do not change"
 msgstr "В неизменном виде"
 
+#: lazarusidestrconsts.lisdonotcheckifanotherideinstanceisalreadyrunning
+msgid "%sDo not check if another IDE instance is already running"
+msgstr "%sНе проверять, что другой экземпляр IDE уже запущен"
+
 #: lazarusidestrconsts.lisdonotclosetheproject
 msgid "Do not close the project"
 msgstr "Не закрывать проект"
@@ -8373,8 +8365,12 @@ msgstr "Инструментальная панель редактора"
 msgid "You may add here your favorite commands"
 msgstr "Сюда можно добавить часто используемые команды"
 
+#: lazarusidestrconsts.liseditortoolbarsettings
+msgid "Editor Toolbar Settings"
+msgstr "Параметры инструментальной панели редактора"
+
 #: lazarusidestrconsts.liseditortoolbarvisible
-msgid "EditorToolbar is &visible"
+msgid "Editor Toolbar is &visible"
 msgstr "&Показывать инструментальную панель редактора"
 
 #: lazarusidestrconsts.lisedoptsloadascheme
@@ -8478,6 +8474,10 @@ msgstr "Требуются заголовок и имя файла"
 #: lazarusidestrconsts.lisedtexttoolworkingdirectory
 msgid "Working Directory:"
 msgstr "Рабочий каталог:"
+
+#: lazarusidestrconsts.liselevatethemessageprioritytoalwaysshowitbydefaultit
+msgid "Elevate the message priority to always show it (by default it has low priority \"verbose\")"
+msgstr "Всегда отображать сообщение как важное (по умолчанию оно относится к менее важным \"подробным\")"
 
 #: lazarusidestrconsts.lisemdall
 msgctxt "lazarusidestrconsts.lisemdall"
@@ -15916,6 +15916,10 @@ msgstr "Показать разницу между режимами ..."
 #: lazarusidestrconsts.lisshowemptyunitspackages
 msgid "Show empty units/packages"
 msgstr "Показывать пустые модули/пакеты"
+
+#: lazarusidestrconsts.lisshowfpcmessagelinescompiled
+msgid "Show FPC message \"lines compiled\""
+msgstr "Показывать сообщение FPC со статистикой компиляции"
 
 #: lazarusidestrconsts.lisshowglyphsfor
 msgid "Show Glyphs for"

@@ -15,11 +15,11 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 17
-    Top = 72
-    Width = 144
+    Height = 19
+    Top = 99
+    Width = 161
     Caption = 'ICAddSemicolonCheckBox'
-    TabOrder = 2
+    TabOrder = 3
   end
   object ICAddAssignOperatorCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
@@ -27,11 +27,11 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 17
-    Top = 89
-    Width = 172
+    Height = 19
+    Top = 118
+    Width = 187
     Caption = 'ICAddAssignOperatorCheckBox'
-    TabOrder = 3
+    TabOrder = 4
   end
   object ICAutoStartAfterPointCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
@@ -39,9 +39,9 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 17
-    Top = 23
-    Width = 174
+    Height = 19
+    Top = 25
+    Width = 187
     Caption = 'ICAutoStartAfterPointCheckBox'
     TabOrder = 0
   end
@@ -51,25 +51,25 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 17
-    Top = 123
-    Width = 211
+    Height = 19
+    Top = 156
+    Width = 229
     Caption = 'ICAutoAddParameterBracketsCheckBox'
-    TabOrder = 5
+    TabOrder = 6
   end
   object ICShowHelpCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = ICAutoStartAfterPointCheckBox
+    AnchorSideTop.Control = ICAutoUseSingleIdent
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 17
-    Top = 40
-    Width = 125
+    Height = 19
+    Top = 63
+    Width = 137
     Caption = 'ICShowHelpCheckBox'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 1
+    TabOrder = 2
   end
   object ICReplaceCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
@@ -77,13 +77,13 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 17
-    Top = 204
-    Width = 116
+    Height = 19
+    Top = 247
+    Width = 124
     Caption = 'ICReplaceCheckBox'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 8
+    TabOrder = 9
   end
   object ICAddDoCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
@@ -91,42 +91,42 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 17
-    Top = 106
-    Width = 110
+    Height = 19
+    Top = 137
+    Width = 120
     Caption = 'ICAddDoCheckBox'
-    TabOrder = 4
+    TabOrder = 5
   end
   object ICSortForHistoryCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = ICSortDividerBevel
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 17
-    Top = 155
-    Width = 148
+    Height = 19
+    Top = 192
+    Width = 159
     Caption = 'ICSortForHistoryCheckBox'
-    TabOrder = 6
+    TabOrder = 7
   end
   object ICSortForScopeCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = ICSortForHistoryCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 17
-    Top = 172
-    Width = 143
+    Height = 19
+    Top = 211
+    Width = 153
     Caption = 'ICSortForScopeCheckBox'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 7
+    TabOrder = 8
   end
   object ICOpenDividerBevel: TDividerBevel
     AnchorSideLeft.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 13
+    Height = 15
     Top = 10
     Width = 537
     Caption = 'ICOpenDividerBevel'
@@ -141,8 +141,8 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 13
-    Top = 59
+    Height = 15
+    Top = 84
     Width = 537
     Caption = 'ICAddDividerBevel'
     Anchors = [akTop, akLeft, akRight]
@@ -157,8 +157,8 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 13
-    Top = 142
+    Height = 15
+    Top = 177
     Width = 537
     Caption = 'ICSortDividerBevel'
     Anchors = [akTop, akLeft, akRight]
@@ -173,8 +173,8 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 13
-    Top = 191
+    Height = 15
+    Top = 232
     Width = 537
     Caption = 'ICMiscDividerBevel'
     Anchors = [akTop, akLeft, akRight]
@@ -188,12 +188,26 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 17
-    Top = 221
-    Width = 139
+    Height = 19
+    Top = 266
+    Width = 151
     Caption = 'ICJumpToErrorCheckBox'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 9
+    TabOrder = 10
+  end
+  object ICAutoUseSingleIdent: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ICAutoStartAfterPointCheckBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 19
+    Top = 44
+    Width = 135
+    Caption = 'ICAutoUseSingleIdent'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 1
   end
 end

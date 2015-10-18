@@ -40,9 +40,9 @@ uses
   // LCL
   LCLProc, Forms, Controls, Dialogs, StdCtrls,
   // LazUtils
-  LazFileCache, LazConfigStorage, LazFileUtils,
+  LazFileCache, LazFileUtils,
   // IdeIntf
-  LCLIntf, BaseIDEIntf, IDEWindowIntf, IDEOptionsIntf,
+  LCLIntf, IDEWindowIntf, IDEOptionsIntf,
   // AnchorDocking
   AnchorDockStr, AnchorDocking, AnchorDesktopOptions, AnchorDockOptionsDlg;
 

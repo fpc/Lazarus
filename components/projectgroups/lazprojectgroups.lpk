@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <Name Value="lazprojectgroups"/>
+    <Type Value="RunAndDesignTime"/>
+    <Author Value="Michael Van Canneyt"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+    </CompilerOptions>
+    <Description Value="IDE Add-on for grouping projects, packages and project groups."/>
+    <License Value="Same as IDEIntf.
+Modified LGPL-2."/>
+    <Version Minor="1"/>
+    <Files Count="5">
+      <Item1>
+        <Filename Value="projectgroupintf.pp"/>
+        <UnitName Value="projectgroupintf"/>
+      </Item1>
+      <Item2>
+        <Filename Value="projectgroup.pp"/>
+        <UnitName Value="projectgroup"/>
+      </Item2>
+      <Item3>
+        <Filename Value="projectgroupeditor.pas"/>
+        <UnitName Value="projectgroupeditor"/>
+      </Item3>
+      <Item4>
+        <Filename Value="regprojectgroup.pp"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="regprojectgroup"/>
+      </Item4>
+      <Item5>
+        <Filename Value="README.txt"/>
+        <Type Value="Binary"/>
+      </Item5>
+    </Files>
+    <RequiredPkgs Count="1">
+      <Item1>
+        <PackageName Value="IDEIntf"/>
+      </Item1>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

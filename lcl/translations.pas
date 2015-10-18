@@ -87,7 +87,8 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, LazFileUtils, StringHashList, AvgLvlTree,
-  LConvEncoding, LazUTF8, LazUTF8Classes, jsonparser, fpjson;
+  LConvEncoding, LazUTF8, LazUTF8Classes,
+  {$IF FPC_FULLVERSION>=30101}jsonscanner,{$ENDIF} jsonparser, fpjson;
 
 type
   TStringsType = (
@@ -1172,19 +1173,30 @@ var
   procedure UpdateFromRsj;
   var
     Parser: TJSONParser;
-    JsonItems: TJSONArray;
+    JsonItems, SourceBytes: TJSONArray;
     JsonData, JsonItem: TJSONObject;
-    I: Integer;
+    K, L: Integer;
+    Data: TJSONData;
   begin
-    Parser := TJSONParser.Create(InputLines.Text);
+    Parser := TJSONParser.Create(InputLines.Text{$IF FPC_FULLVERSION>=30101},jsonscanner.DefaultOptions{$ENDIF});
     try
       JsonData := Parser.Parse as TJSONObject;
       try
         JsonItems := JsonData.Arrays['strings'];
-        for I := 0 to JsonItems.Count - 1 do
+        for K := 0 to JsonItems.Count - 1 do
         begin
-          JsonItem := JsonItems.Items[I] as TJSONObject;
-          UpdateItem(JsonItem.Get('name'), JsonItem.Get('value'));
+          JsonItem := JsonItems.Items[K] as TJSONObject;
+          Data:=JsonItem.Find('sourcebytes');
+          if Data is TJSONArray then begin
+            // fpc 3.1.1 writes the bytes of the source without encoding change
+            // while 'value' contains the string encoded as UTF16 with \u hexcodes.
+            SourceBytes := TJSONArray(Data);
+            SetLength(Value,SourceBytes.Count);
+            for L := 1 to length(Value) do
+              Value[L] := chr(SourceBytes.Integers[L-1]);
+          end else
+            Value:=JsonItem.Get('value');
+          UpdateItem(JsonItem.Get('name'), Value);
         end;
       finally
         JsonData.Free;

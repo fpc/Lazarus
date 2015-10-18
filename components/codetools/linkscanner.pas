@@ -210,7 +210,7 @@ const
      cmsProperty,cmsDefault_inline,cmsExcept,cmsAdvancedRecords],
     // cmDELPHIUNICODE
     [cmsClass,cmsObjpas,cmsResult,cmsString_pchar,
-     cmsPointer_2_procedure,cmsAutoderef,cmsTp_procvar,cmsInitfinal,cmsDefault_ansistring,
+     cmsPointer_2_procedure,cmsAutoderef,cmsTp_procvar,cmsInitfinal,
      cmsOut,cmsDefault_para,cmsDuplicate_names,cmsHintdirective,
      cmsProperty,cmsDefault_inline,cmsExcept,cmsAdvancedRecords,
      cmsSystemcodepage,cmsDefault_unicodestring],

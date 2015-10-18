@@ -120,8 +120,8 @@ function IsLazarusPIDRunning(aPID: int64): boolean;
     s: String;
   begin
     Result:=false;
-    if GetProcessForPID(aPid,psn)<>noErr then exit;
-    FillByte(info,SizeOf(info),0);
+    if GetProcessForPID(aPid,psn{%H-})<>noErr then exit;
+    FillByte(info{%H-},SizeOf(info),0);
     if GetProcessInformation(psn,info)<>noErr then exit;
     processName := nil;
     if CopyProcessName(psn, processName)<>noErr then exit;

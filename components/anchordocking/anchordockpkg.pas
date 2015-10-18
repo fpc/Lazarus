@@ -2,20 +2,13 @@
   This source is only used to compile and install the package.
  }
 
-unit anchordockpkg; 
+unit anchordockpkg;
 
 interface
 
 uses
-    AnchorDocking, AnchorDockStorage, AnchorDockStr, AnchorDockOptionsDlg, 
-  LazarusPackageIntf;
+  AnchorDocking, AnchorDockStorage, AnchorDockStr, AnchorDockOptionsDlg;
 
 implementation
 
-procedure Register; 
-begin
-end; 
-
-initialization
-  RegisterPackage('AnchorDocking', @Register); 
 end.

@@ -1,0 +1,189 @@
+object CodyFindOverloadsWindow: TCodyFindOverloadsWindow
+  Left = 728
+  Height = 400
+  Top = 242
+  Width = 556
+  Caption = 'CodyFindOverloadsWindow'
+  ClientHeight = 400
+  ClientWidth = 556
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  Position = poScreenCenter
+  LCLVersion = '1.5'
+  object BtnPanel: TPanel
+    Left = 0
+    Height = 39
+    Top = 361
+    Width = 556
+    Align = alBottom
+    AutoSize = True
+    BevelOuter = bvNone
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.HorizontalSpacing = 6
+    ClientHeight = 39
+    ClientWidth = 556
+    TabOrder = 0
+    object JumpToButton: TButton
+      Left = 456
+      Height = 27
+      Top = 6
+      Width = 94
+      Align = alRight
+      AutoSize = True
+      Caption = 'JumpToButton'
+      OnClick = JumpToButtonClick
+      TabOrder = 0
+    end
+    object RefreshButton: TButton
+      Left = 6
+      Height = 27
+      Top = 6
+      Width = 95
+      Align = alLeft
+      AutoSize = True
+      Caption = 'RefreshButton'
+      OnClick = RefreshButtonClick
+      TabOrder = 1
+    end
+  end
+  object FilterGroupBox: TGroupBox
+    Left = 0
+    Height = 94
+    Top = 267
+    Width = 556
+    Align = alBottom
+    AutoSize = True
+    Caption = 'FilterGroupBox'
+    ChildSizing.LeftRightSpacing = 6
+    ClientHeight = 77
+    ClientWidth = 552
+    TabOrder = 1
+    object CompatibleParamsCheckBox: TCheckBox
+      AnchorSideLeft.Control = FilterGroupBox
+      AnchorSideTop.Control = FilterGroupBox
+      Left = 6
+      Height = 24
+      Top = 0
+      Width = 181
+      Caption = 'CompatibleParamsCheckBox'
+      Checked = True
+      OnChange = CompatibleParamsCheckBoxChange
+      ParentShowHint = False
+      ShowHint = True
+      State = cbChecked
+      TabOrder = 0
+    end
+    object RelationLabel: TLabel
+      AnchorSideLeft.Control = FilterGroupBox
+      AnchorSideTop.Control = RelationComboBox
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 15
+      Top = 31
+      Width = 75
+      Caption = 'RelationLabel'
+      ParentColor = False
+    end
+    object RelationComboBox: TComboBox
+      AnchorSideLeft.Control = RelationLabel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = CompatibleParamsCheckBox
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = FilterGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 87
+      Height = 29
+      Top = 24
+      Width = 459
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Right = 6
+      ItemHeight = 0
+      OnChange = RelationComboBoxChange
+      Style = csDropDownList
+      TabOrder = 1
+    end
+    object HideAbstractCheckBox: TCheckBox
+      AnchorSideLeft.Control = FilterGroupBox
+      AnchorSideTop.Control = RelationComboBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 24
+      Top = 53
+      Width = 152
+      Caption = 'HideAbstractCheckBox'
+      OnChange = HideAbstractCheckBoxChange
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 2
+    end
+  end
+  object ResultsGroupBox: TGroupBox
+    Left = 0
+    Height = 267
+    Top = 0
+    Width = 556
+    Align = alClient
+    Caption = 'ResultsGroupBox'
+    ClientHeight = 250
+    ClientWidth = 552
+    TabOrder = 2
+    object ResultsStringGrid: TStringGrid
+      Left = 0
+      Height = 230
+      Top = 0
+      Width = 552
+      Align = alClient
+      ColCount = 3
+      ColumnClickSorts = True
+      Columns = <      
+        item
+          ReadOnly = True
+          SizePriority = 10
+          Title.Caption = 'Name'
+          Width = 182
+        end      
+        item
+          MaxSize = 1000
+          ReadOnly = True
+          Title.Alignment = taCenter
+          Title.Caption = 'Compatibility'
+          Width = 100
+        end      
+        item
+          MaxSize = 1000
+          ReadOnly = True
+          Title.Alignment = taCenter
+          Title.Caption = 'Distance'
+          Width = 100
+        end>
+      FixedCols = 0
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowSelect, goDblClickAutoSize, goSmoothScroll, goRowHighlight]
+      TabOrder = 0
+      OnColRowExchanged = ResultsStringGridColRowExchanged
+      OnCompareCells = ResultsStringGridCompareCells
+      OnMouseDown = ResultsStringGridMouseDown
+      ColWidths = (
+        182
+        100
+        100
+      )
+    end
+    object ProgressBar1: TProgressBar
+      Left = 0
+      Height = 20
+      Top = 230
+      Width = 552
+      Align = alBottom
+      TabOrder = 1
+    end
+  end
+  object Timer1: TTimer
+    Interval = 300
+    OnTimer = Timer1Timer
+    left = 112
+    top = 144
+  end
+end

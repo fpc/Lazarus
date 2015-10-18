@@ -23,19 +23,25 @@ unit ToolbarConfig;
 interface
 
 uses
-  Classes, SysUtils, fgl,
+  Classes, SysUtils,
   // LCL and LazControls
-  LCLProc, Forms, Graphics, Dialogs, ExtCtrls, Buttons, StdCtrls,
-  Controls, ComCtrls, Menus, ButtonPanel, TreeFilterEdit,
+  LCLProc, Forms, Graphics, ExtCtrls, Buttons, StdCtrls,
+  Controls, ComCtrls, Menus, ButtonPanel, TreeFilterEdit, LclIntf,
+  // LazUtils
+  Laz2_XMLCfg,
   // IdeIntf
-  IDECommands, MenuIntf, IDEImagesIntf,
+  IDECommands, ToolBarIntf, IDEImagesIntf,
   // IDE
   LazarusIDEStrConsts;
+
+const
+  IDEToolBarConfigVersion = 1;
+  // 1 added file version in config
 
 type
   { TLvItem }
   TLvItem = class (TObject)
-    Item: TIDEMenuItem;
+    Item: TIDEButtonCommand;
     LvIndex: Integer;
   end;
 
@@ -93,10 +99,10 @@ type
     procedure ExchangeMainListItem (Item1,Item2: TListItem);
     procedure SetupCaptions;
     procedure LoadCategories;
-    procedure AddMenuItem(ParentNode: TTreeNode; Item: TIDEMenuItem; Level: Integer);
-    function RootNodeCaption(Item: TIDEMenuItem): string;
-    procedure AddListItem(Item: TIDEMenuItem);
-    procedure AddToolBarItem(Item: TIDEMenuItem);
+    procedure AddMenuItem(ParentNode: TTreeNode; Item: TIDEButtonCommand);
+    function RootNodeCaption(Item: TIDEButtonCommand): string;
+    procedure AddListItem(Item: TIDEButtonCommand);
+    procedure AddToolBarItem(Item: TIDEButtonCommand);
     procedure AddDivider;
     procedure FillToolBar;
   public
@@ -104,7 +110,25 @@ type
     procedure SaveSettings(SL: TStringList);
   end;
 
-  TIDEMenuItemList = specialize TFPGList<TIDEMenuItem>;
+  { TIDEToolBarOptionsBase }
+
+  TIDEToolBarOptionsBase = class
+  private
+    FButtonNames: TStringList;
+  protected
+    procedure LoadButtonNames(XMLConfig: TXMLConfig; SubPath: String);
+    procedure SaveButtonNames(XMLConfig: TXMLConfig; SubPath: String);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    function Equals(Opts: TIDEToolBarOptionsBase): boolean; overload;
+    procedure Assign(Source: TIDEToolBarOptionsBase);
+    //procedure Load(XMLConfig: TXMLConfig; Path: String);
+    //procedure Save(XMLConfig: TXMLConfig; Path: String);
+  published
+    property ButtonNames: TStringList read FButtonNames; // write FButtonNames;
+  end;
 
   { TIDEToolbarBase }
 
@@ -112,9 +136,11 @@ type
    private
    protected
      FToolBar: TToolBar;
-     procedure AddButton(ACommand: TIDEMenuCommand);
+     procedure AddButton(ACommand: TIDEButtonCommand);
      procedure AddDivider;
+     procedure CopyFromOptions(Options: TIDEToolBarOptionsBase);
      procedure PositionAtEnd(AToolBar: TToolBar; AButton: TToolButton);
+     procedure PostCopyOptions; virtual;
    public
      //constructor Create(AOwner: TComponent); override;
      //destructor Destroy; override;
@@ -125,7 +151,6 @@ const
   cIDEToolbarDivider = '---------------';
 
 function ShowToolBarConfig(aNames: TStringList): TModalResult;
-function GetShortcut(AMenuItem: TIDEMenuItem): string;
 
 
 implementation
@@ -145,23 +170,6 @@ begin
       Conf.SaveSettings(aNames);
   finally
     Conf.Free;
-  end;
-end;
-
-function GetShortcut(AMenuItem: TIDEMenuItem): string;
-var
-  ACommand: TIDECommand;
-  AShortcut: string;
-begin
-  Result := '';
-  AShortcut := '';
-  if AMenuItem is TIDEMenuCommand then
-  begin
-    ACommand := TIDEMenuCommand(AMenuItem).Command;
-    if Assigned(ACommand) then
-      AShortcut := ShortCutToText(ACommand.AsShortCut);
-    if AShortcut <> '' then
-      Result := ' (' + AShortcut + ')';
   end;
 end;
 
@@ -200,7 +208,6 @@ begin
   MainList := TStringList.Create;
   MainList.OwnsObjects:= True; // it should be the default, but just to make sure...
   Image := TBitmap.Create;
-  pnlButtons.Helpbutton.OnClick := @btnHelpClick;
   SetupCaptions;
   LoadCategories;
 end;
@@ -218,8 +225,7 @@ end;
 
 procedure TToolBarConfig.btnHelpClick(Sender: TObject);
 begin
-  ShowMessageFmt('%s%s%s%s%s%s%s', [lisCoolBarHelp1, LineEnding, lisCoolBarHelp2, LineEnding,
-                                    lisCoolBarHelp3, LineEnding, lisCoolBarHelp4]);
+  OpenUrl('http://wiki.freepascal.org/IDE_Window:_Toolbar_Config');
 end;
 
 procedure TToolBarConfig.btnShowClick(Sender: TObject);
@@ -231,7 +237,6 @@ procedure TToolBarConfig.btnHideClick(Sender: TObject);
 begin
   lvToolbar.Columns[1].Visible:= false;
 end;
-
 
 procedure TToolBarConfig.lbToolbarSelectionChange(Sender: TObject);
 var
@@ -267,7 +272,7 @@ var
   aMainListItem: TLvItem;
 begin
   aMainListItem := TLvItem.Create;
-  aMainListItem.Item := TIDEMenuItem(Item.Data);
+  aMainListItem.Item := TIDEButtonCommand(Item.Data);
   aMainListItem.LvIndex := Item.Index;
   if NextItem = Nil then
     MainList.AddObject(Item.Caption,aMainListItem)
@@ -322,7 +327,7 @@ begin
   begin
     btnAdd.Enabled := False;
     anIndex:= lvToolbar.ItemIndex;
-    ACaption:= TIDEMenuItem(n.Data).Caption;
+    ACaption:= TIDEButtonCommand(n.Data).Caption;
     DeleteAmpersands(ACaption);
     if anIndex > -1 then
       lvItem            := lvToolbar.Items.Insert(lvToolbar.ItemIndex)
@@ -357,7 +362,7 @@ end;
 
 procedure TToolBarConfig.btnRemoveClick(Sender: TObject);
 Var
-  mi: TIDEMenuItem;
+  mi: TIDEButtonCommand;
   n: TTreeNode;
   I: Integer;
   lvItem: TListItem;
@@ -365,7 +370,7 @@ begin
   I := lvToolbar.ItemIndex;
   if I > -1 then begin
     lvItem := lvToolbar.Items[I];
-    mi := TIDEMenuItem(lvItem.Data);
+    mi := TIDEButtonCommand(lvItem.Data);
     RemoveMainListItem(lvItem);
     lvToolbar.Items.Delete(lvToolbar.ItemIndex);
     if I < lvToolbar.Items.Count then
@@ -373,7 +378,8 @@ begin
     lbToolbarSelectionChange(lvToolbar);
     if assigned(mi) then begin
       n:= TV.Items.FindNodeWithData(mi);
-      n.Visible:= True;
+      if n<>nil then
+        n.Visible:= True;
     end;
     TVSelectionChanged(TV);
   end;
@@ -399,8 +405,8 @@ begin
 
     if AItem.Caption = cIDEToolbarDivider then
       ImageIndex := divImageIndex
-    else if Assigned(AItem.Data) and (TIDEMenuItem(AItem.Data).ImageIndex > -1) then
-      ImageIndex := TIDEMenuItem(AItem.Data).ImageIndex
+    else if Assigned(AItem.Data) and (TIDEButtonCommand(AItem.Data).ImageIndex > -1) then
+      ImageIndex := TIDEButtonCommand(AItem.Data).ImageIndex
     else
       ImageIndex := defImageIndex;
     Image.Clear;
@@ -488,62 +494,42 @@ end;
 
 procedure TToolBarConfig.LoadCategories;
 var
-  i: integer;
+  i, l: integer;
+  xCategory: TIDEToolButtonCategory;
+  xCaption: string;
+  n: TTreeNode;
 begin
   TV.Items.BeginUpdate;
   try
     TV.Items.Clear;
-    for i := 0 to IDEMenuRoots.Count-1 do
-      AddMenuItem(nil, IDEMenuRoots[i],0);
+    for i := 0 to IDEToolButtonCategories.Count-1 do
+    begin
+      xCategory := IDEToolButtonCategories[i];
+      xCaption := xCategory.Description;
+      DeleteAmpersands(xCaption);
+      n := TV.Items.AddChild(nil, Format('%s', [xCaption]));
+      for l := 0 to xCategory.ButtonCount-1 do
+        AddMenuItem(n, xCategory.Buttons[l]);
+    end;
   finally
     TV.Items.EndUpdate;
   end;
 end;
 
-procedure TToolBarConfig.AddMenuItem(ParentNode: TTreeNode; Item: TIDEMenuItem; Level: Integer);
+procedure TToolBarConfig.AddMenuItem(ParentNode: TTreeNode;
+  Item: TIDEButtonCommand);
 var
   n: TTreeNode;
-  i: integer;
-  sec: TIDEMenuSection;
-  ACaption: string;
-  hasCaption: boolean;
 begin
-  if Item is TIDEMenuSection then
-  begin
-    if Item.Name <> Item.Caption then hasCaption:= true
-    else hasCaption:= false;
-    sec := (Item as TIDEMenuSection);
-    if sec.Count > 0 then begin // skip empty sections
-      if Level= 0 then ACaption:= RootNodeCaption(Item)
-      else begin
-        if hasCaption then ACaption:= Item.Caption
-        else ACaption:= '---';
-      end;
-      DeleteAmpersands(ACaption);
-      if (Level > 0) and ( not hasCaption) then n:= ParentNode
-      else begin
-        n := TV.Items.AddChild(ParentNode, Format('%s', [ACaption]));
-        n.ImageIndex := Item.ImageIndex;
-        n.SelectedIndex := Item.ImageIndex;
-      end;
-      for i := 0 to sec.Count-1 do
-        AddMenuItem(n, sec.Items[i],Level+1);
-    end;
-  end
-  else begin
-    if Item.Caption <> '-' then begin // workaround for HTML Editor dividers
-      ACaption:= Item.Caption;
-      DeleteAmpersands(ACaption);
-      ACaption:= ACaption + GetShortcut(Item);
-      n := TV.Items.AddChild(ParentNode, Format('%s', [ACaption]));
-      n.ImageIndex := Item.ImageIndex;
-      n.SelectedIndex := Item.ImageIndex;
-      n.Data := Item;
-    end;
+  if Item.Caption <> '-' then begin // workaround for HTML Editor dividers
+    n := TV.Items.AddChild(ParentNode, Format('%s', [Item.GetCaptionWithShortCut]));
+    n.ImageIndex := Item.ImageIndex;
+    n.SelectedIndex := Item.ImageIndex;
+    n.Data := Item;
   end;
 end;
 
-function TToolBarConfig.RootNodeCaption(Item: TIDEMenuItem): string;
+function TToolBarConfig.RootNodeCaption(Item: TIDEButtonCommand): string;
 var
   AName: string;
 begin
@@ -562,7 +548,7 @@ begin
   end;
 end;
 
-procedure TToolBarConfig.AddListItem(Item: TIDEMenuItem);
+procedure TToolBarConfig.AddListItem(Item: TIDEButtonCommand);
 var
   aListItem: TLvItem;
 begin
@@ -577,18 +563,14 @@ begin
   end;
 end;
 
-procedure TToolBarConfig.AddToolBarItem(Item: TIDEMenuItem);
+procedure TToolBarConfig.AddToolBarItem(Item: TIDEButtonCommand);
 Var
   n: TTreeNode;
-  ACaption: string;
   lvItem: TListItem;
 begin
   if Assigned(Item) then begin
-    ACaption:= Item.Caption;
-    DeleteAmpersands(ACaption);
-    ACaption:= ACaption+GetShortcut(Item);
     lvItem := lvToolbar.Items.Add;
-    lvItem.Caption:= ACaption;
+    lvItem.Caption:= Item.GetCaptionWithShortCut;
     lvItem.Data:= Item;
     {$IF not DEFINED(LCLQt)}
     if Item.ImageIndex > -1 then
@@ -598,7 +580,8 @@ begin
     {$ENDIF}
    // lvItem.SubItems.Add(IntToStr(PMask));
     n:= TV.Items.FindNodeWithData(Item);
-    n.Visible:= False;
+    if n<>nil then
+      n.Visible:= False;
   end;
 end;
 
@@ -619,7 +602,7 @@ var
   I: Integer;
   aListItem: TLvItem;
   aCaption: string;
-  mi: TIDEMenuItem;
+  mi: TIDEButtonCommand;
 begin
   for I:= 0 to MainList.Count -1 do
   begin
@@ -638,16 +621,19 @@ procedure TToolBarConfig.LoadSettings(SL: TStringList);
 var
   I: Integer;
   Value: string;
-  MI: TIDEMenuItem;
+  MI: TIDEButtonCommand;
 begin
   for I := 0 to SL.Count - 1 do
   begin
-    Value := SL.Strings[I];
+    Value := SL[I];
     if Value = '' then Continue;
     if Value = cIDEToolbarDivider then
       MI := nil
     else
-      MI := IDEMenuRoots.FindByPath(Value, false);
+    begin
+      MI := IDEToolButtonCategories.FindItemByMenuPathOrName(Value);
+      SL[I] := Value;
+    end;
     AddListItem(MI);
   end;
   FillToolBar;
@@ -665,8 +651,66 @@ begin
     if MainList[I] = cIDEToolbarDivider then
       SL.Add(cIDEToolbarDivider)
     else
-      SL.Add(lvItem.Item.GetPath);
+      SL.Add(lvItem.Item.Name);
   end;
+end;
+
+{ TIDEToolBarOptionsBase }
+
+constructor TIDEToolBarOptionsBase.Create;
+begin
+  FButtonNames := TStringList.Create;
+end;
+
+destructor TIDEToolBarOptionsBase.Destroy;
+begin
+  FButtonNames.Free;
+  inherited Destroy;
+end;
+
+procedure TIDEToolBarOptionsBase.Clear;
+begin
+  FButtonNames.Clear;
+end;
+
+function TIDEToolBarOptionsBase.Equals(Opts: TIDEToolBarOptionsBase): boolean;
+begin
+  Result := FButtonNames.Equals(Opts.FButtonNames);
+end;
+
+procedure TIDEToolBarOptionsBase.Assign(Source: TIDEToolBarOptionsBase);
+begin
+  FButtonNames.Assign(Source.FButtonNames);
+end;
+
+procedure TIDEToolBarOptionsBase.LoadButtonNames(XMLConfig: TXMLConfig; SubPath: String);
+var
+  ButtonCount: Integer;
+  ButtonName: string;
+  I, FileVersion: Integer;
+begin
+  FileVersion := XMLConfig.GetValue(SubPath + 'Version', 0);
+  ButtonCount := XMLConfig.GetValue(SubPath + 'Count', 0);
+  if (FileVersion < 1) and (ButtonCount = 0) then  // Old format
+    ButtonCount := XMLConfig.GetValue(SubPath + 'ButtonCount/Value', 0);
+  for I := 1 to ButtonCount do
+  begin
+    ButtonName := XMLConfig.GetValue(SubPath + 'Button' + IntToStr(I) + '/Name', '');
+    if (FileVersion < 1) and (ButtonName = '') then  // Old format
+      ButtonName := XMLConfig.GetValue(SubPath + 'Buttons/Name' + IntToStr(I) + '/Value', '');
+    if ButtonName <> '' then
+      ButtonNames.Add(ButtonName);
+  end;
+end;
+
+procedure TIDEToolBarOptionsBase.SaveButtonNames(XMLConfig: TXMLConfig; SubPath: String);
+var
+  I: Integer;
+begin
+  XMLConfig.SetValue(SubPath + 'Version', IDEToolBarConfigVersion);
+  XMLConfig.SetDeleteValue(SubPath + 'Count', ButtonNames.Count, 0);
+  for I := 0 to ButtonNames.Count-1 do
+    XMLConfig.SetDeleteValue(SubPath + 'Button' + IntToStr(I+1) + '/Name', ButtonNames[I], '');
 end;
 
 { TIDEToolbarBase }
@@ -681,25 +725,20 @@ begin
   inherited Destroy;
 end;
 }
-procedure TIDEToolbarBase.AddButton(ACommand: TIDEMenuCommand);
+procedure TIDEToolbarBase.AddButton(ACommand: TIDEButtonCommand);
 var
   B: TIDEToolButton;
-  ACaption: string;
 begin
   B := ACommand.ToolButtonClass.Create(FToolBar);
-  ACaption := ACommand.Caption;
-  DeleteAmpersands(ACaption);
-  B.Caption := ACaption;
-  // Get Shortcut if any, and append to Hint.
-  ACaption := ACaption + GetShortcut(ACommand);
-  B.Hint := ACaption;
+  B.Hint := ACommand.GetHintOrCaptionWithShortCut;
+  B.Enabled := ACommand.Enabled;
   // If we have a image, use it. Otherwise supply a default.
   if ACommand.ImageIndex <> -1 then
     B.ImageIndex := ACommand.ImageIndex
   else
     B.ImageIndex := IDEImages.LoadImage(16, 'execute');
   B.Style := tbsButton;
-  B.IdeMenuItem := ACommand;
+  B.Item := ACommand;
   PositionAtEnd(FToolBar, B);
   ACommand.ToolButtonAdded(B);
 end;
@@ -711,6 +750,33 @@ begin
   B := TToolButton.Create(FToolBar);
   B.Style := tbsDivider;
   PositionAtEnd(FToolBar, B);
+end;
+
+procedure TIDEToolbarBase.CopyFromOptions(Options: TIDEToolBarOptionsBase);
+var
+  mi: TIDEButtonCommand;
+  ButtonName: string;
+  i: Integer;
+begin
+  FToolBar.BeginUpdate;
+  try
+    for i := 0 to Options.ButtonNames.Count-1 do
+    begin
+      ButtonName := Options.ButtonNames[i];
+      if ButtonName = cIDEToolbarDivider then
+        AddDivider
+      else
+      begin
+        mi := IDEToolButtonCategories.FindItemByMenuPathOrName(ButtonName);
+        Options.ButtonNames[i] := ButtonName;
+        if Assigned(mi) then
+          AddButton(mi);
+      end;
+    end;
+    PostCopyOptions;
+  finally
+    FToolBar.EndUpdate;
+  end;
 end;
 
 procedure TIDEToolbarBase.PositionAtEnd(AToolBar: TToolBar; AButton: TToolButton);
@@ -727,6 +793,10 @@ begin
   AButton.Parent := AToolBar;
 end;
 
+procedure TIDEToolbarBase.PostCopyOptions;
+begin
+  // Can be overridden.
+end;
 
 end.
 

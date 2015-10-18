@@ -26,6 +26,7 @@
    mar 08 2005 OG - Dynamique CUPS link
                   - Some bug compile fix
    mar 08 2005 OG - Modifications for Printer4Lazarus pakage
+   oct 2015       - property BigMode, refactor, anchors fix
 ------------------------------------------------------------------------------*)
 unit uDlgSelectPrinter;
 
@@ -36,7 +37,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons, ExtCtrls, Spin, ComCtrls, LCLType, InterfaceBase,
-  Printers, OsPrinters, CUPSDyn;
+  Printers, OsPrinters, CUPSDyn, Math;
 
 type
 
@@ -103,11 +104,15 @@ type
     { private declarations }
     fPropertiesSetting : Boolean;
     FOptions: TPrintDialogOptions;
-    
+    FBig: boolean;
+    FHeightInit: integer;
+    FHeightDec: integer;
     function GetPrintRange: TPrintRange;
     procedure RefreshInfos;
     procedure InitPrinterOptions;
+    procedure SetBigMode(AValue: boolean);
     procedure SetPrintRange(const AValue: TPrintRange);
+    property BigMode: boolean read FBig write SetBigMode;
   public
     { public declaration}
     constructor Create(aOwner : TComponent); override;
@@ -150,15 +155,16 @@ constructor TdlgSelectPrinter.Create(aOwner : TComponent);
 begin
   Inherited Create(aOwner);
 
-  //Set Height of form
-  btnReduc.Tag:=1;
-  btnReducCLICK(nil);
+  FHeightInit:=Height;
+  FHeightDec:=NbOpts.Height;
+
   if WidgetSet.LCLPlatform = lpCarbon then
-    begin  //Can't hide tabs with button on Carbon, so just expand dialog.
-    btnReduc.Tag:=0;
-    btnReducCLICK(nil);
-    btnReduc.Visible:=False;
-    end;
+  begin  //Can't hide tabs with button on Carbon, so just expand dialog.
+    BigMode:=true;
+    btnReduc.Visible:=false;
+  end
+  else
+    BigMode:=false;
 end;
 
 
@@ -419,32 +425,27 @@ begin
   Key:=#0;
 end;
 
-//If tag of btnReduc is 0 then the caption is "More ..." and
-//if it's 1 then "Less ..."
 procedure TdlgSelectPrinter.btnReducCLICK(Sender: TObject);
 begin
   if Sender=nil then ;
+  BigMode:=not BigMode;
+end;
+
+procedure TdlgSelectPrinter.SetBigMode(AValue: boolean);
+begin
+  FBig:= AValue;
+  NbOpts.Visible:= FBig;
 
   Constraints.MinHeight:=0;
   Constraints.MaxHeight:=0;
-  if btnReduc.Tag=1 then
-  begin
-    btnReduc.Tag:=0;
-    btnReduc.Caption:='More ...';
-    Height:=217;
-    Constraints.MinHeight:=Height;
-    Constraints.MaxHeight:=Height;
-  end
+  Height:=FHeightInit-IfThen(not FBig, FHeightDec);
+  Constraints.MinHeight:=Height;
+  Constraints.MaxHeight:=Height;
+
+  if not FBig then
+    btnReduc.Caption:='More ...'
   else
-  begin
-    Constraints.MinHeight:=0;
-    Constraints.MaxHeight:=0;
-    btnReduc.Tag:=1;
     btnReduc.Caption:='Less ...';
-    Height:=440;
-    Constraints.MinHeight:=Height;
-    Constraints.MaxHeight:=0;
-  end;
 end;
 
 procedure TdlgSelectPrinter.btnPrintCLICK(Sender: TObject);

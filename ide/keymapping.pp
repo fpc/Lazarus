@@ -435,7 +435,11 @@ begin
     ecBlockGotoBegin  : Result := srkmecBlockGotoBegin;
     ecBlockGotoEnd    : Result := srkmecBlockGotoEnd;
 
-    // multi coret
+    ecZoomOut         : Result := srkmecZoomOut;
+    ecZoomIn          : Result := srkmecZoomIn;
+    ecZoomNorm        : Result := dlfMouseSimpleButtonZoomReset;
+
+    // multi caret
     ecPluginMultiCaretSetCaret          : Result := srkmecPluginMultiCaretSetCaret;
     ecPluginMultiCaretUnsetCaret        : Result := srkmecPluginMultiCaretUnsetCaret;
     ecPluginMultiCaretToggleCaret       : Result := srkmecPluginMultiCaretToggleCaret;
@@ -633,6 +637,7 @@ begin
     ecViewProjectForms        : Result:= srkmecViewForms;
     ecViewProjectSource       : Result:= lisMenuViewProjectSource;
     ecProjectOptions          : Result:= lisMenuProjectOptions;
+    ecProjectChangeBuildMode  : Result:= lisChangeBuildMode;
 
     // run menu (menu string resource)
     ecCompile                 : Result:= srkmecCompile;
@@ -1230,6 +1235,7 @@ begin
   ecViewProjectForms:    SetSingle(VK_F12,[ssShift]);
   ecViewProjectSource:   SetSingle(VK_UNKNOWN,[]);
   ecProjectOptions:      SetSingle(VK_F11,[ssShift,ssCtrl]);
+  ecProjectChangeBuildMode:SetSingle(VK_UNKNOWN,[]);
 
   // run menu
   ecCompile:             SetSingle(VK_F9,[ssCtrl]);
@@ -1661,6 +1667,7 @@ begin
   ecViewProjectForms:    SetSingle(VK_F12,[ssShift]);
   ecViewProjectSource:   SetSingle(VK_UNKNOWN,[]);
   ecProjectOptions:      SetSingle(VK_F11,[ssShift,ssCtrl]);
+  ecProjectChangeBuildMode:SetSingle(VK_UNKNOWN,[]);
 
   // run menu
   ecCompile:             SetSingle(VK_F9,[ssCtrl]);
@@ -2282,6 +2289,7 @@ begin
   ecViewProjectForms:    SetSingle(VK_U,[ssShift,ssCtrl]);
   ecViewProjectSource:   SetSingle(VK_UNKNOWN,[]);
   ecProjectOptions:      SetSingle(VK_UNKNOWN,[]);
+  ecProjectChangeBuildMode:SetSingle(VK_UNKNOWN,[]);
 
   // run menu
   ecCompile:             SetSingle(VK_B,[ssMeta]);
@@ -2896,6 +2904,10 @@ begin
 
   AddDefault(C, 'Lock editor', srkmecLockEditor, ecLockEditor);
 
+  AddDefault(C, 'Zoom Reset', dlfMouseSimpleButtonZoomReset, ecZoomNorm);
+  AddDefault(C, 'Zoom In', srkmecZoomIn, ecZoomIn);
+  AddDefault(C, 'Zoom Out', srkmecZoomOut, ecZoomOut);
+
   // file menu
   C:=Categories[AddCategory('FileMenu',srkmCatFileMenu,nil)];
   AddDefault(C, 'New', lisNew, ecNew);
@@ -2958,6 +2970,7 @@ begin
   AddDefault(C, 'View Forms', lisHintViewForms, ecViewProjectForms);
   AddDefault(C, 'View project source', lisKMViewProjectSource, ecViewProjectSource);
   AddDefault(C, 'View project options', lisKMViewProjectOptions, ecProjectOptions);
+  AddDefault(C, 'Change build mode', lisChangeBuildMode, ecProjectChangeBuildMode);
 
   // run menu
   C:=Categories[AddCategory('RunMenu',srkmCatRunMenu,nil)];

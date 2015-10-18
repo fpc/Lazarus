@@ -2,6 +2,7 @@
 <CONFIG>
   <Package Version="4">
     <Name Value="Cody"/>
+    <Type Value="RunAndDesignTime"/>
     <Author Value="Mattias Gaertner - mattias@freepascal.org"/>
     <CompilerOptions>
       <Version Value="11"/>
@@ -9,17 +10,13 @@
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
       </SearchPaths>
       <Other>
-        <CompilerMessages>
-          <UseMsgFile Value="True"/>
-        </CompilerMessages>
         <CustomOptions Value="$(IDEBuildOptions)"/>
-        <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
     <Description Value="IDE extensions using Codetools."/>
     <License Value="GPL2"/>
     <Version Major="1" Minor="1"/>
-    <Files Count="16">
+    <Files Count="17">
       <Item1>
         <Filename Value="ppulistdlg.pas"/>
         <UnitName Value="PPUListDlg"/>
@@ -85,13 +82,16 @@
         <Filename Value="newidewnddlg.pas"/>
         <UnitName Value="NewIDEWndDlg"/>
       </Item16>
+      <Item17>
+        <Filename Value="codyfindoverloads.pas"/>
+        <UnitName Value="CodyFindOverloads"/>
+      </Item17>
     </Files>
     <LazDoc Paths="doc"/>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
-    <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">
       <Item1>
         <PackageName Value="SynEdit"/>

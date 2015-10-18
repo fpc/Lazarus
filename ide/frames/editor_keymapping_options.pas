@@ -59,6 +59,7 @@ type
     procedure EditMenuItemClick(Sender: TObject);
     procedure ChooseSchemeButtonClick(Sender: TObject);
     procedure ClearButtonClick(Sender: TObject);
+    procedure FilterEditAfterFilter(Sender: TObject);
     function FilterEditFilterItem(Item: TObject; out Done: Boolean): Boolean;
     procedure FilterEditKeyPress(Sender: TObject; var {%H-}Key: char);
     procedure FindKeyButtonClick(Sender: TObject);
@@ -471,6 +472,11 @@ begin
       Items.TopLvlItems[Items.TopLvlCount - 1].Delete;
     EndUpdate;
   end;
+end;
+
+procedure TEditorKeymappingOptionsFrame.FilterEditAfterFilter(Sender: TObject);
+begin
+  TreeView.MakeSelectionVisible;
 end;
 
 function TEditorKeymappingOptionsFrame.KeyMappingRelationToCaption(Index: Integer): String;

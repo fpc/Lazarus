@@ -275,12 +275,14 @@ procedure TSVGPathTokenizer.TokenizePathString(AStr: string);
 const
   Str_Space: Char = ' ';
   Str_Comma: Char = ',';
+  Str_Plus: Char = '+';
+  Str_Minus: Char = '-';
   ListOfCommandLetters: set of Char = ['a'..'d', 'f'..'z', 'A'..'D', 'F'..'Z'];
 var
   i: Integer;
   lTmpStr: string = '';
   lState: Integer;
-  lFirstTmpStrChar, lCurChar: Char;
+  lFirstTmpStrChar, lCurChar, lPrevChar: Char;
 begin
   lState := 0;
 
@@ -290,6 +292,7 @@ begin
     case lState of
     0: // Adding to the tmp string
     begin
+      if i > 0 then lPrevChar := AStr[i-1];
       lCurChar := AStr[i];
       if lCurChar = Str_Space then
       begin
@@ -301,6 +304,11 @@ begin
       begin
         AddToken(lTmpStr);
         lTmpStr := '';
+      end
+      else if (lCurChar in [Str_Plus, Str_Minus]) and (lPrevChar in ['0'..'9']) then
+      begin
+        AddToken(lTmpStr);
+        lTmpStr := lCurChar;
       end
       else
       begin

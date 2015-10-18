@@ -251,8 +251,9 @@ begin
   MWFocusCheckBox.Caption:=dlgEOFocusMessagesAfterCompilation;
   MWMaxProcsLabel.Caption:=Format(lisMaximumParallelProcesses0MeansDefault, [
     IntToStr(DefaultMaxProcessCount)]);
-  MWShowFPCMsgLinesCompiledCheckBox.Caption:='Show FPC message "lines compiled"';
-  MWShowFPCMsgLinesCompiledCheckBox.Hint:='Elevate the message priority to always show it (by default it has low priority "verbose")';
+  MWShowFPCMsgLinesCompiledCheckBox.Caption:=lisShowFPCMessageLinesCompiled;
+  MWShowFPCMsgLinesCompiledCheckBox.Hint:=
+    lisElevateTheMessagePriorityToAlwaysShowItByDefaultIt;
   Notebook1.PageIndex := 0;
 end;
 

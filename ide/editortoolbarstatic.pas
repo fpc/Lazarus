@@ -24,22 +24,21 @@ unit EditorToolbarStatic;
 interface
 
 uses
-  SysUtils, Classes, Forms, ComCtrls, Controls, ExtCtrls, fgl,
-  MenuIntf, IDEImagesIntf, SrcEditorIntf, BaseIDEIntf, LazIDEIntf,
-  LazarusIDEStrConsts, LazConfigStorage, Laz2_XMLCfg, LCLProc, ToolbarConfig;
+  SysUtils, Classes, fgl, ComCtrls, Controls, LCLProc, Menus,
+  IDEImagesIntf, SrcEditorIntf, BaseIDEIntf,
+  LazarusIDEStrConsts, LazConfigStorage, Laz2_XMLCfg, ToolbarConfig;
 
 type
 
   { TEditorToolBarOptions }
 
-  TEditorToolBarOptions = class
+  TEditorToolBarOptions = class(TIDEToolBarOptionsBase)
   private
     FVisible: Boolean;
     FPosition: string;
-    FButtonNames: TStringList;
   public
     constructor Create;
-    destructor Destroy; override;
+    //destructor Destroy; override;
     procedure Clear;
     function Equals(Opts: TEditorToolBarOptions): boolean; overload;
     procedure Assign(Source: TEditorToolBarOptions);
@@ -49,7 +48,6 @@ type
   published
     property Visible: Boolean read FVisible write FVisible;
     property Position: string read FPosition write FPosition;
-    property ButtonNames: TStringList read FButtonNames write FButtonNames;
   end;
 
   TAllEditorToolbars = class;
@@ -60,12 +58,10 @@ type
   private
     FCollection: TAllEditorToolbars;
     FWindow: TSourceEditorWindowInterface;
-    CfgButton: TToolButton;
-    procedure SetTbPos;
-    procedure AddStaticItems;
-    procedure InitEditorToolBar;
+    CfgItem: TMenuItem;
     procedure ClearToolbar;
-    procedure CopyFromOptions(Options: TEditorToolBarOptions);
+  protected
+    procedure PostCopyOptions; override;
   public
     constructor Create(AOwner: TComponent; ACollection: TAllEditorToolbars); overload;
     destructor Destroy; override;
@@ -94,7 +90,6 @@ procedure CreateEditorToolBar(aConfigEvent: TNotifyEvent);
 
 var
   uAllEditorToolbars: TAllEditorToolbars;
-  EditorMenuCommand: TIDEMenuCommand;
 
 implementation
 
@@ -105,57 +100,45 @@ const
   cSettingsFile = 'editortoolbar.xml';
 
 
-procedure ToggleToolbar (Sender:TObject);
-var
-  ToolBarVisible: Boolean;
-begin
-  ToolBarVisible := not EnvironmentOptions.Desktop.EditorToolBarOptions.Visible;
-  EditorMenuCommand.Checked := ToolBarVisible;
-  EnvironmentOptions.Desktop.EditorToolBarOptions.Visible := ToolBarVisible;
-  uAllEditorToolbars.ReloadAll;
-end;
-
 { TEditorToolBarOptions }
 
 constructor TEditorToolBarOptions.Create;
 begin
   inherited Create;
-  ButtonNames := TStringList.Create;
   FVisible := True;
 end;
-
+{
 destructor TEditorToolBarOptions.Destroy;
 begin
-  ButtonNames.Free;
   inherited Destroy;
 end;
-
+}
 procedure TEditorToolBarOptions.Clear;
 begin
-  ButtonNames.Clear;
+  inherited Clear;
   FVisible := True;
 end;
 
 function TEditorToolBarOptions.Equals(Opts: TEditorToolBarOptions): boolean;
 begin
-  Result := (FVisible = Opts.FVisible) and (FPosition = Opts.FPosition)
-    and FButtonNames.Equals(Opts.FButtonNames);
+  Result := inherited Equals(Opts)
+      and (FVisible = Opts.FVisible) and (FPosition = Opts.FPosition);
 end;
 
 procedure TEditorToolBarOptions.Assign(Source: TEditorToolBarOptions);
 begin
+  inherited Assign(Source);
   FVisible := Source.FVisible;
   FPosition := Source.FPosition;
-  FButtonNames.Assign(Source.FButtonNames);
 end;
 
 procedure TEditorToolBarOptions.CreateDefaults;
 begin
-  FButtonNames.Clear;
-  FButtonNames.Add('IDEMainMenu/Search/itmJumpings/itmJumpToSection/itmJumpToImplementation');
-  FButtonNames.Add('IDEMainMenu/Search/itmJumpings/itmJumpBack');
-  FButtonNames.Add('IDEMainMenu/Search/itmJumpings/itmJumpForward');
-  FButtonNames.Add(cIDEToolbarDivider);
+  ButtonNames.Clear;
+  ButtonNames.Add('IDEMainMenu/Search/itmJumpings/itmJumpToSection/itmJumpToImplementation');
+  ButtonNames.Add('IDEMainMenu/Search/itmJumpings/itmJumpBack');
+  ButtonNames.Add('IDEMainMenu/Search/itmJumpings/itmJumpForward');
+  ButtonNames.Add(cIDEToolbarDivider);
 end;
 
 procedure TEditorToolBarOptions.Load(XMLConfig: TXMLConfig; Path: String);
@@ -170,15 +153,7 @@ begin
   begin
     FVisible := XMLConfig.GetValue(Path + 'Visible', True);
     FPosition := XMLConfig.GetValue(Path + 'Position', 'Top');
-    ButtonCount := XMLConfig.GetValue(Path + 'Count', 0);
-    for I := 1 to ButtonCount do
-    begin
-      ButtonName := XMLConfig.GetValue(Path + 'Button' + IntToStr(I) + '/Name', '');
-      if ButtonName = '' then  // Old format
-        ButtonName := XMLConfig.GetValue(Path + 'Buttons/Name' + IntToStr(I) + '/Value', '');
-      if ButtonName <> '' then
-        FButtonNames.Add(ButtonName);
-    end;
+    LoadButtonNames(XMLConfig, Path);
   end
   else begin
     // Plan B: Load the old configuration. User settings are not lost.
@@ -191,12 +166,12 @@ begin
       begin
         DebugLn('TEditorToolBarOptions.Load: Using old configuration in editortoolbar.xml.');
         // This used to be hard-coded in old version, add it now.
-        FButtonNames.Add('IDEMainMenu/Search/itmJumpings/itmJumpToSection/itmJumpToImplementation');
+        ButtonNames.Add('IDEMainMenu/Search/itmJumpings/itmJumpToSection/itmJumpToImplementation');
         for I := 1 to ButtonCount do
         begin
           ButtonName := Trim(cfg.GetValue('Button' + Format('%2.2d', [I]) + '/Value', ''));
           if ButtonName <> '' then
-            FButtonNames.Add(ButtonName);
+            ButtonNames.Add(ButtonName);
         end;
       end
       else   // No old configuration, use defaults.
@@ -208,20 +183,18 @@ begin
 end;
 
 procedure TEditorToolBarOptions.Save(XMLConfig: TXMLConfig; Path: String);
-var
-  I: Integer;
 begin
   Path := Path + BasePath;
   XMLConfig.SetDeleteValue(Path + 'Visible', FVisible, True);
   XMLConfig.SetDeleteValue(Path + 'Position', FPosition, 'Top');
-  XMLConfig.SetDeleteValue(Path + 'Count', ButtonNames.Count, 0);
-  for I := 0 to ButtonNames.Count-1 do
-    XMLConfig.SetDeleteValue(Path + 'Button' + IntToStr(I+1) + '/Name', ButtonNames[I], '');
+  SaveButtonNames(XMLConfig, Path);
 end;
 
 { TEditorToolbar }
 
 constructor TEditorToolbar.Create(AOwner: TComponent; ACollection: TAllEditorToolbars);
+var
+  xPM: TPopupMenu;
 begin
   inherited Create(AOwner);
   Assert(not Assigned(FToolBar), 'TEditorToolbar.Create: FToolBar is assigned');
@@ -236,9 +209,16 @@ begin
   FToolBar.Flat     := True;
   FToolBar.Images   := IDEImages.Images_16;
   FToolBar.ShowHint := True;
-  FToolBar.Hint     := lisEditorToolbarHint;
 
-  AddStaticItems;
+  xPM := TPopupMenu.Create(FToolBar);
+  xPM.Images := IDEImages.Images_16;
+  CfgItem := TMenuItem.Create(xPM);
+  xPM.Items.Add(CfgItem);
+  CfgItem.Caption     := lisConfigureEditorToolbar;
+  CfgItem.ImageIndex  := IDEImages.LoadImage(16, 'preferences');
+  CfgItem.OnClick     := @FCollection.DoConfigureEditorToolbar;
+
+  FToolBar.PopupMenu  := xPM;
 end;
 
 destructor TEditorToolbar.Destroy;
@@ -247,13 +227,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TEditorToolbar.InitEditorToolBar;
-begin
-  FToolBar := nil;
-  CfgButton := nil;
-end;
-
-procedure TEditorToolbar.SetTbPos;
+procedure TEditorToolbar.PostCopyOptions;
 begin
   case EnvironmentOptions.Desktop.EditorToolBarOptions.Position of
     'Top': begin
@@ -275,25 +249,6 @@ begin
   end;
 end;
 
-procedure TEditorToolbar.AddStaticItems;
-begin
-  FToolBar.BeginUpdate;
-  try
-    // Config Button
-    if CfgButton = nil then
-      CfgButton := TToolbutton.Create(FToolBar);
-    CfgButton.Caption     := lisConfigureEditorToolbar;
-    CfgButton.Hint        := CfgButton.Caption;
-    CfgButton.ImageIndex  := IDEImages.LoadImage(16, 'preferences');
-    CfgButton.Style       := tbsButton;
-    CfgButton.OnClick     := @FCollection.DoConfigureEditorToolbar;
-    PositionAtEnd(FToolBar, CfgButton);
-    AddDivider;
-  finally
-    FToolBar.EndUpdate;
-  end;
-end;
-
 procedure TEditorToolbar.ClearToolbar;
 var
   i: integer;
@@ -301,56 +256,16 @@ begin
   FToolBar.BeginUpdate;
   try
     for i := FToolBar.ButtonCount - 1 downto 0 do
-      if FToolBar.Buttons[i] <> CfgButton then
-        FToolBar.Buttons[i].Free
-      else
-        FToolBar.Buttons[i].Parent := nil;
+      FToolBar.Buttons[i].Free
   finally
     FToolBar.EndUpdate;
   end;
-end;
-
-procedure TEditorToolbar.CopyFromOptions(Options: TEditorToolBarOptions);
-var
-  mi: TIDEMenuItem;
-  ButtonName: string;
-  i: Integer;
-begin
-  FToolBar.BeginUpdate;
-  try
-    for i := 0 to Options.ButtonNames.Count-1 do
-    begin
-      ButtonName := Options.ButtonNames[i];
-      if ButtonName = cIDEToolbarDivider then
-        AddDivider
-      else
-      begin
-        mi := IDEMenuRoots.FindByPath(ButtonName,false);
-        if Assigned(mi) then
-          AddButton(mi as TIDEMenuCommand);
-      end;
-    end;
-    SetTbPos;
-    EditorMenuCommand.Checked := Options.Visible;
-  finally
-    FToolBar.EndUpdate;
-  end;
-  FToolBar.Visible := Options.Visible;
 end;
 
 procedure CreateEditorToolBar(aConfigEvent: TNotifyEvent);
-var
-  MenuIcon: string;
 begin
   uAllEditorToolbars := TAllEditorToolbars.Create;
   uAllEditorToolbars.FConfigEvent := aConfigEvent;
-  EditorMenuCommand := RegisterIDEMenuCommand(itmViewSecondaryWindows,'EditorToolBar',
-    lisEditorToolbar,nil,@ToggleToolbar);
-  EditorMenuCommand.Checked := True;
-  EditorMenuCommand.Enabled := True;
-  MenuIcon:= 'menu_editor_options';
-  //MenuIcon:= 'menu_editor_toolbar'; TODO!
-  EditorMenuCommand.ImageIndex := IDEImages.LoadImage(16, MenuIcon);
 end;
 
 { TAllEditorToolbars }
@@ -377,12 +292,13 @@ end;
 procedure TAllEditorToolbars.SourceWindowCreated(Sender: TObject);
 var
   ETB: TEditorToolbar;
-  i: Integer;
+  Opts: TEditorToolBarOptions;
 begin
   ETB := TEditorToolbar.Create(Sender as TSourceEditorWindowInterface, Self);
-  i := FToolBars.Add(ETB);
-  FToolBars[i].AddStaticItems;
-  FToolBars[i].CopyFromOptions(EnvironmentOptions.Desktop.EditorToolBarOptions);
+  FToolBars.Add(ETB);
+  Opts := EnvironmentOptions.Desktop.EditorToolBarOptions;
+  ETB.CopyFromOptions(Opts);
+  ETB.FToolBar.Visible := Opts.Visible;
 end;
 
 procedure TAllEditorToolbars.SourceWindowDestroyed(Sender: TObject);
@@ -391,7 +307,8 @@ var
   aBar: TEditorToolbar;
 begin
   // Let's remove from our list the destroyed window and then destroy the ToolBar
-  for i:= 0 to FToolBars.Count -1 do begin
+  for i:= 0 to FToolBars.Count -1 do
+  begin
     aBar := FToolBars[i];
     if aBar.OwnerWindow = TSourceEditorWindowInterface(Sender) then
     begin
@@ -410,19 +327,23 @@ end;
 
 procedure TAllEditorToolbars.ReloadAll;
 var
+  aBar: TEditorToolbar;
+  Opts: TEditorToolBarOptions;
   i: Integer;
 begin
   for i := 0 to FToolBars.Count-1 do
   begin
-    FToolBars[i].ClearToolbar;
-    FToolBars[i].AddStaticItems;
-    FToolBars[i].CopyFromOptions(EnvironmentOptions.Desktop.EditorToolBarOptions);
+    aBar := FToolBars[i];
+    aBar.ClearToolbar;
+    Opts := EnvironmentOptions.Desktop.EditorToolBarOptions;
+    aBar.CopyFromOptions(Opts);
+    aBar.FToolBar.Visible := Opts.Visible;
   end;
 end;
 
 
 initialization
-  //CreateEditorToolBar;
+  ;
 
 finalization
   uAllEditorToolbars.Free;

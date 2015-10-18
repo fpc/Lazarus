@@ -72,17 +72,7 @@ uses
 
 type
   // The IDE is at anytime in a specific state:
-  TIDEToolStatus = (
-    itNone,            // The default mode. All editing allowed.
-    itExiting,         // the ide is shutting down
-    itBuilder,         // compiling (the project, a package, IDE itself, an external tool)
-                       //    Loading/Saving/Debugging is not allowed.
-    itDebugger,        // debugging the project.
-                       //    Loading/Saving/Compiling is not allowed.
-    itCodeTools,       // the CodeToolBoss is working and has called the progress event.
-    itCodeToolAborting,// the CodeToolBoss is working and is about to abort
-    itCustom           // this state is not used yet.
-    );
+  TIDEToolStatus = TLazToolStatus;
 
   // window in front
   TDisplayState = (
@@ -122,14 +112,11 @@ type
 
   TMainIDEInterface = class(TLazIDEInterface)
   protected
-    function GetToolStatus: TIDEToolStatus; virtual; abstract;
     function GetActiveProject: TLazProject; override;
 
   public
     HiddenWindowsOnRun: TFPList; // list of forms, that were automatically hidden
                                // and will be shown when debugged program stops
-
-    property ToolStatus: TIDEToolStatus read GetToolStatus;
 
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;

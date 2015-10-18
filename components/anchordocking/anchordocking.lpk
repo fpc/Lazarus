@@ -2,7 +2,6 @@
 <CONFIG>
   <Package Version="4">
     <Name Value="AnchorDocking"/>
-    <Type Value="RunAndDesignTime"/>
     <AddToProjectUsesSection Value="True"/>
     <Author Value="Mattias Gaertner mattias@freepascal.org"/>
     <CompilerOptions>

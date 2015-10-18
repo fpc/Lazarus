@@ -33,10 +33,10 @@ uses
   SysUtils, Types, Classes, TypInfo, FPCanvas,
   // LCL
   {$IFnDEF UseOINormalCheckBox} CheckBoxThemed, {$ENDIF}
-  InterfaceBase, Forms, Buttons, Graphics, GraphType, LCLProc, StdCtrls,
-  LCLType, LCLIntf, Controls, ComCtrls, ExtCtrls, LMessages,
-  LazConfigStorage, Menus, Dialogs, Themes, TreeFilterEdit, ObjInspStrConsts,
-  PropEdits, ListViewPropEdit, ImageListEditor,
+  InterfaceBase, Forms, Buttons, Graphics, GraphType, StdCtrls, LCLType,
+  LCLIntf, Controls, ComCtrls, ExtCtrls, LMessages, LazConfigStorage,
+  LazLoggerBase, Menus, Dialogs, Themes, LCLProc, TreeFilterEdit,
+  ObjInspStrConsts, PropEdits, ListViewPropEdit, ImageListEditor,
   ComponentTreeView, ComponentEditors, IDEImagesIntf, IDEHelpIntf,
   OIFavoriteProperties, PropEditUtils;
 
@@ -4325,6 +4325,8 @@ begin
 end;
 
 procedure TObjectInspectorDlg.SetSelection(const ASelection: TPersistentSelectionList);
+var
+  OldInSelection: Boolean;
 begin
   if ASelection<>nil then begin
     if FSelection.IsEqual(ASelection) then
@@ -4338,6 +4340,7 @@ begin
   end else begin
     if FSelection.Count=0 then exit;
   end;
+  OldInSelection := FInSelection;
   FInSelection := True;
   try
     // ToDo: Clear filter only if a selected node is hidden (Visible=False)
@@ -4351,7 +4354,7 @@ begin
     if Assigned(FOnSelectPersistentsInOI) then
       FOnSelectPersistentsInOI(Self);
   finally
-    FInSelection := False;
+    FInSelection := OldInSelection;
   end;
 end;
 
@@ -4367,7 +4370,7 @@ begin
     WidgetSetsRestrictedBox.Invalidate;
     ComponentRestrictedBox.Invalidate;
   end;
-  
+
   for Page := Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
     if GridControl[Page] <> nil then
       GridControl[Page].Selection := FSelection;
@@ -4505,7 +4508,7 @@ procedure TObjectInspectorDlg.ComponentTreeSelectionChanged(Sender: TObject);
 begin
   if (PropertyEditorHook=nil) or (PropertyEditorHook.LookupRoot=nil) then exit;
   if FSelection.IsEqual(ComponentTree.Selection) then exit;
-  Fselection.Assign(ComponentTree.Selection);
+  FSelection.Assign(ComponentTree.Selection);
   RefreshSelection;
   if Assigned(FOnSelectPersistentsInOI) then
     FOnSelectPersistentsInOI(Self);
@@ -5099,7 +5102,6 @@ begin
     Result := nil;
 end;
 
-// --- Boolean settings ---
 procedure TObjectInspectorDlg.OnShowComponentTreePopupMenuItemClick(Sender: TObject);
 begin
   ShowComponentTree:=not ShowComponentTree;

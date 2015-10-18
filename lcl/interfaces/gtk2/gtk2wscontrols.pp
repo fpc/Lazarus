@@ -633,12 +633,45 @@ end;
 
 class procedure TGtk2WSWinControl.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
+var
+  AForm: TCustomForm;
+  Geometry: TGdkGeometry;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetBounds')
   then Exit;
 
   ResizeHandle(AWinControl);
   InvalidateLastWFPResult(AWinControl, Rect(ALeft, ATop, AWidth, AHeight));
+  if not AWinControl.Visible then // Gtk2WSForms.ShowHide will correct visibility
+    exit;
+  if not (AWinControl is TCustomForm) then
+    exit;
+  AForm := TCustomForm(AWinControl);
+  if not (csDesigning in AForm.ComponentState) and
+    AForm.HandleObjectShouldBeVisible and
+    (AForm.BorderStyle in [bsDialog, bsSingle]) then
+  begin
+    // we must set fixed size, gtk_window_set_resizable does not work
+    // as expected for some reason.issue #20741
+    with Geometry do
+    begin
+      min_width := AForm.Width;
+      max_width := AForm.Width;
+      min_height := AForm.Height;
+      max_height := AForm.Height;
+
+      base_width := AForm.Width;
+      base_height := AForm.Height;
+      width_inc := 1;
+      height_inc := 1;
+      min_aspect := 0;
+      max_aspect := 1;
+      win_gravity := gtk_window_get_gravity({%H-}PGtkWindow(AForm.Handle));
+    end;
+    //debugln('TGtk2WSWinControl.ConstraintsChange A ',GetWidgetDebugReport(Widget),' max=',dbgs(Geometry.max_width),'x',dbgs(Geometry.max_height));
+    gtk_window_set_geometry_hints({%H-}PGtkWindow(AForm.Handle), nil, @Geometry,
+      GDK_HINT_POS or GDK_HINT_MIN_SIZE or GDK_HINT_MAX_SIZE);
+  end;
 end;
 
 

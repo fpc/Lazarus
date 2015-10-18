@@ -531,6 +531,9 @@ type
     property OnStartDrag;
     property OnUTF8KeyPress;
     property Text;
+    property TextHint;
+    property TextHintFontColor;
+    property TextHintFontStyle;
   end;
 
   { TFileNameEdit }
@@ -955,6 +958,9 @@ type
       property TabOrder;
       property Visible;
       property Text;
+      property TextHint;
+      property TextHintFontColor;
+      property TextHintFontStyle;
   end;
   
 

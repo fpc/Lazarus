@@ -4615,6 +4615,10 @@ msgstr "sanan loppu"
 msgid "do not add character"
 msgstr "älä lisää merkkiä"
 
+#: lazarusidestrconsts.lisautomaticallyusesinglepossibleident
+msgid "Automatically use single possible identifier"
+msgstr ""
+
 #: lazarusidestrconsts.lisautomaticfeatures
 msgid "Completion and Hints"
 msgstr "Koodin täydennys ja vihjeet"
@@ -7095,22 +7099,6 @@ msgstr "Nappi"
 msgid "Grab width"
 msgstr ""
 
-#: lazarusidestrconsts.liscoolbarhelp1
-msgid "The \"Add\" button inserts a command before the selected Item of the Toolbar."
-msgstr ""
-
-#: lazarusidestrconsts.liscoolbarhelp2
-msgid "If none is selected, the Item will be appended at the end of the Toolbar."
-msgstr ""
-
-#: lazarusidestrconsts.liscoolbarhelp3
-msgid "You may rearrange Toolbar Items with \"Move Up\" and \"Move Down\" buttons."
-msgstr ""
-
-#: lazarusidestrconsts.liscoolbarhelp4
-msgid "Hint: to append an Item at the end, use \"Clear selection\""
-msgstr ""
-
 #: lazarusidestrconsts.liscoolbaridemainmenu
 msgid "IDE Main Menu"
 msgstr ""
@@ -8205,6 +8193,10 @@ msgstr "%s ei ole olemassa: %s"
 msgid "Do not change"
 msgstr "Älä muuta"
 
+#: lazarusidestrconsts.lisdonotcheckifanotherideinstanceisalreadyrunning
+msgid "%sDo not check if another IDE instance is already running"
+msgstr ""
+
 #: lazarusidestrconsts.lisdonotclosetheproject
 msgid "Do not close the project"
 msgstr "Ei suljetakaan projektia"
@@ -8370,8 +8362,12 @@ msgstr ""
 msgid "You may add here your favorite commands"
 msgstr ""
 
+#: lazarusidestrconsts.liseditortoolbarsettings
+msgid "Editor Toolbar Settings"
+msgstr ""
+
 #: lazarusidestrconsts.liseditortoolbarvisible
-msgid "EditorToolbar is &visible"
+msgid "Editor Toolbar is &visible"
 msgstr ""
 
 #: lazarusidestrconsts.lisedoptsloadascheme
@@ -8475,6 +8471,10 @@ msgstr "Otsikko ja tiedostonimi vaaditaan"
 #: lazarusidestrconsts.lisedtexttoolworkingdirectory
 msgid "Working Directory:"
 msgstr "Työhakemisto"
+
+#: lazarusidestrconsts.liselevatethemessageprioritytoalwaysshowitbydefaultit
+msgid "Elevate the message priority to always show it (by default it has low priority \"verbose\")"
+msgstr ""
 
 #: lazarusidestrconsts.lisemdall
 msgctxt "lazarusidestrconsts.lisemdall"
@@ -15838,6 +15838,10 @@ msgstr "Näytä erot moodien välillä ..."
 #: lazarusidestrconsts.lisshowemptyunitspackages
 msgid "Show empty units/packages"
 msgstr "Näytä tyhjät käännösyksiköt/paketit"
+
+#: lazarusidestrconsts.lisshowfpcmessagelinescompiled
+msgid "Show FPC message \"lines compiled\""
+msgstr ""
 
 #: lazarusidestrconsts.lisshowglyphsfor
 msgid "Show Glyphs for"

@@ -4922,7 +4922,6 @@ end;
 function TPkgManager.SearchFile(const AFilename: string;
   SearchFlags: TSearchIDEFileFlags; InObject: TObject): TPkgFile;
 var
-  i: Integer;
   APackage: TLazPackage;
   CurFilename: String;
 begin
@@ -4934,14 +4933,8 @@ begin
     if Result<>nil then exit;
   end;
   if not (siffDoNotCheckAllPackages in SearchFlags) then begin
-    for i:=0 to PackageGraph.Count-1 do begin
-      APackage:=PackageGraph[i];
-      CurFilename:=AFilename;
-      APackage.ShortenFilename(CurFilename,true);
-      Result:=APackage.SearchShortFilename(CurFilename,SearchFlags);
-      //debugln(['TPkgManager.SearchFile Pkg=',APackage.Filename,' CurFilename="',CurFilename,'" Resul=',Result<>nil,' HasDirectory=',APackage.HasDirectory,' ExpFile=',APackage.DirectoryExpanded]);
-      if Result<>nil then exit;
-    end;
+    Result := PackageGraph.FindFileInAllPackages(AFilename, True, True);
+    if Result<>nil then exit;
   end;
   Result:=nil;
 end;

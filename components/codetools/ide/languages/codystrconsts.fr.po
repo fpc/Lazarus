@@ -44,6 +44,10 @@ msgstr "Déjà défini à %s"
 msgid "... and %s more identifiers"
 msgstr "... et %s identificateurs"
 
+#: codystrconsts.crsany
+msgid "Any"
+msgstr ""
+
 #: codystrconsts.crsawindowforthelazarusideitcanbedockedlikethecodeexp
 msgid "A window for the Lazarus IDE. It can be docked like the Code Explorer or the FPDoc Editor. This also creates a menu item in the View menu and a short cut."
 msgstr "Une fenêtre pour l'EDI Lazarus. Elle peut être amarrée comme l'explorateur de code ou l'éditeur \"FPDoc\". Elle crée aussi un élément dans le menu \"Voir\" et un raccourci."
@@ -176,6 +180,10 @@ msgstr "Buffers de code"
 msgid "Code Node Information"
 msgstr "Information de nœud de code"
 
+#: codystrconsts.crscodyfindoverloads
+msgid "Cody - Find Overloads"
+msgstr ""
+
 #: codystrconsts.crscodyidentifierdictionary
 msgid "Identifier Dictionary"
 msgstr "Dictionnaire des identificateurs"
@@ -184,6 +192,14 @@ msgstr "Dictionnaire des identificateurs"
 msgctxt "codystrconsts.crscogeneral"
 msgid "General"
 msgstr "Général"
+
+#: codystrconsts.crscompatibility
+msgid "Compatibility"
+msgstr ""
+
+#: codystrconsts.crscompatible
+msgid "compatible"
+msgstr ""
 
 #: codystrconsts.crsconfigurenewidewindow
 msgid "Configure new IDE window"
@@ -270,6 +286,10 @@ msgstr "Faut-il supprimer le paquet ?"
 msgid "Delete unit?"
 msgstr "Faut-il supprimer l'unité ?"
 
+#: codystrconsts.crsdistance
+msgid "Distance"
+msgstr ""
+
 #: codystrconsts.crsdvisakeyword
 msgid "\"%s\" is a keyword."
 msgstr "\"%s\" est un mot-clé."
@@ -277,6 +297,18 @@ msgstr "\"%s\" est un mot-clé."
 #: codystrconsts.crserror
 msgid "Error: %s"
 msgstr "Erreur : %s"
+
+#: codystrconsts.crserrorcursorisnotinaprojectunit
+msgid "Error: cursor is not in a project unit"
+msgstr ""
+
+#: codystrconsts.crserrorneedsourceeditoratprocedurecallordeclaration
+msgid "Error: Need source editor at procedure call or declaration"
+msgstr ""
+
+#: codystrconsts.crsexact
+msgid "exact"
+msgstr ""
 
 #: codystrconsts.crsexplodeawithblock
 msgid "Explode a \"With\" Block"
@@ -310,6 +342,10 @@ msgstr "Erreur de lecture du fichier"
 msgid "(Filter)"
 msgstr "(Filtre)"
 
+#: codystrconsts.crsfilter2
+msgid "Filter"
+msgstr ""
+
 #: codystrconsts.crsfindgdbbacktraceline
 msgid "Find GDB backtrace line"
 msgstr "Chercher une ligne de la trace de \"GDB\""
@@ -338,6 +374,10 @@ msgstr "Giga-octets"
 msgid "&Help"
 msgstr "&Aide"
 
+#: codystrconsts.crshideabstractmethodsandmethodsofclassinterfaces
+msgid "Hide abstract methods and methods of class interfaces"
+msgstr ""
+
 #: codystrconsts.crshideunitsofotherprojects
 msgid "Hide units of other projects"
 msgstr "Cacher les unités des autres projets"
@@ -363,6 +403,10 @@ msgctxt "codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne"
 msgid "If identifier is added to the implementation section and needed unit needs to be added, add to the uses section of the implementation"
 msgstr "Si l'identificateur est ajouté à la section implémentation et qu'une unité a besoin d'être ajoutée, ajoutez-la à la section \"uses\" de l'implémentation."
 
+#: codystrconsts.crsifuncheckedlistalsoprocedureswithsamenameandincomp
+msgid "If unchecked list also procedures with same name and incompatible parameter lists."
+msgstr ""
+
 #: codystrconsts.crsimpossibledependency
 msgid "Impossible dependency"
 msgstr "Dépendance impossible"
@@ -370,6 +414,10 @@ msgstr "Dépendance impossible"
 #: codystrconsts.crsin
 msgid "in \"%s\""
 msgstr "dans \"%s\""
+
+#: codystrconsts.crsincompatible
+msgid "incompatible"
+msgstr ""
 
 #: codystrconsts.crsinimplementation
 msgid "In implementation"
@@ -394,6 +442,10 @@ msgstr "Saut"
 #: codystrconsts.crsjumpto
 msgid "&Jump to"
 msgstr "&Aller à"
+
+#: codystrconsts.crsjumpto2
+msgid "Jump to"
+msgstr ""
 
 #: codystrconsts.crskbytes
 msgid "kbytes"
@@ -439,9 +491,17 @@ msgstr "%s minutes"
 msgid "missing ..."
 msgstr "manquant..."
 
+#: codystrconsts.crsname
+msgid "Name"
+msgstr ""
+
 #: codystrconsts.crsnoneselected
 msgid "none selected"
 msgstr "Aucun sélectionné"
+
+#: codystrconsts.crsnooverloadsfoundinprojectunits
+msgid "no overloads found in project units"
+msgstr ""
 
 #: codystrconsts.crsnoproject
 msgid "No project"
@@ -458,6 +518,22 @@ msgstr "Aucune unité sélectionnée"
 #: codystrconsts.crsonclipboard
 msgid "On clipboard"
 msgstr "Dans le presse-papier"
+
+#: codystrconsts.crsonlydescendantsof
+msgid "Only descendants of %s"
+msgstr ""
+
+#: codystrconsts.crsonlymethods
+msgid "Only methods"
+msgstr ""
+
+#: codystrconsts.crsonlynonmethods
+msgid "Only non methods"
+msgstr ""
+
+#: codystrconsts.crsonlyprocedureswithcompatibleparameters
+msgid "Only procedures with compatible parameters"
+msgstr ""
 
 #: codystrconsts.crsoptions
 msgid "Options"
@@ -498,6 +574,10 @@ msgstr "Paquets : %s, Unités : %s, Identificateurs : %s%sBase de données : %s"
 #: codystrconsts.crspackagewithsamename
 msgid "Package with same name"
 msgstr "Paquet portant le même nom"
+
+#: codystrconsts.crsparseerror
+msgid "Parse error"
+msgstr ""
 
 #: codystrconsts.crspastelinesofagdbbacktrace
 msgid "Paste lines of a gdb backtrace:"
@@ -575,6 +655,10 @@ msgstr "Voulez-vous vraiment supprimer l'unité de la base de données ?%sRemarq
 msgid "Refresh"
 msgstr "Rafraîchir"
 
+#: codystrconsts.crsrelations
+msgid "Relations:"
+msgstr ""
+
 #: codystrconsts.crsreport
 msgid "Report"
 msgstr "Rapport"
@@ -590,6 +674,14 @@ msgstr "Enregistrer le dictionnaire tout de suite"
 #: codystrconsts.crssavetofile
 msgid "Save to file %s"
 msgstr "Enregistrer dans le fichier %s"
+
+#: codystrconsts.crsscanning
+msgid "Scanning ..."
+msgstr ""
+
+#: codystrconsts.crsscanningsunits
+msgid "Scanning: %s units ..."
+msgstr ""
 
 #: codystrconsts.crssearching
 msgid "searching ..."
@@ -742,3 +834,4 @@ msgstr "Unité virtuelle"
 #: codystrconsts.crswhere
 msgid "Where"
 msgstr "Où"
+

@@ -15,12 +15,12 @@ uses
   IDECommands, IDEDialogs, IDEExternToolIntf, IDEHelpIntf, IDEImagesIntf, 
   IDEMsgIntf, IDEOptionsIntf, IDETextConverter, IDEUtils, IDEWindowIntf, 
   ImageListEditor, KeyValPropEditDlg, LazIDEIntf, LazStringGridEdit, 
-  ListViewPropEdit, MacroDefIntf, MacroIntf, MaskPropEdit, MenuIntf, newfield, 
+  ListViewPropEdit, MacroDefIntf, MacroIntf, MaskPropEdit, MenuIntf, NewField, 
   NewItemIntf, ObjectInspector, ObjInspStrConsts, OIFavoriteProperties, 
   PackageIntf, ProjectIntf, ProjectResourcesIntf, PropEdits, PropEditUtils, 
   SrcEditorIntf, StatusBarPropEdit, StringsPropEditDlg, TextTools, 
   TreeViewPropEdit, UnitResources, ProjPackIntf, DBGridColumnsPropEditForm, 
-  LazarusPackageIntf;
+  ToolBarIntf, LazarusPackageIntf;
 
 implementation
 

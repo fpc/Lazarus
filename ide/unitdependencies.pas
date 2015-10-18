@@ -324,6 +324,8 @@ function CompareUDBaseNodes(UDNode1, UDNode2: Pointer): integer;
 
 implementation
 
+{$R *.lfm}
+
 procedure ShowUnitDependenciesClicked(Sender: TObject);
 begin
   ShowUnitDependencies;
@@ -336,8 +338,8 @@ begin
        State=iwgfDisabled,LazarusIDE.OwningComponent)
   else if State=iwgfDisabled then
     UnitDependenciesWindow.DisableAlign;
- if State>=iwgfShow then
-   IDEWindowCreators.ShowForm(UnitDependenciesWindow,State=iwgfShowOnTop);
+  if State>=iwgfShow then
+    IDEWindowCreators.ShowForm(UnitDependenciesWindow,State=iwgfShowOnTop);
 end;
 
 procedure InitUnitDependenciesQuickFixItems;
@@ -2291,8 +2293,6 @@ begin
     RaiseCatchableException('');
   TheUsesGraph.UsesClass:=TUDUses;
 end;
-
-{$R *.lfm}
 
 end.
 

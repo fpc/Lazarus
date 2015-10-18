@@ -60,10 +60,10 @@ uses
   CodeToolManager, AVL_Tree, SynEditKeyCmds, PackageIntf,
   // IDEIntf
   IDEImagesIntf, SrcEditorIntf, LazIDEIntf, MenuIntf, NewItemIntf,
-  IDECommands, IDEWindowIntf, ProjectIntf,
+  IDECommands, IDEWindowIntf, ProjectIntf, ToolBarIntf,
   // IDE
   LazConf, LazarusIDEStrConsts, ProjectDefs, Project, IDEDialogs,
-  TransferMacros, ObjectInspector, PropEdits, BuildManager, ToolbarConfig,
+  TransferMacros, ObjectInspector, PropEdits, BuildManager,
   EnvironmentOpts, EditorOptions, CompilerOptions, KeyMapping, IDEProcs,
   Debugger, IDEOptionDefs, Splash, Designer,
   SourceEditor, FindInFilesDlg,
@@ -82,7 +82,6 @@ type
 
   TMainIDEBase = class(TMainIDEInterface)
   private
-    FToolStatus: TIDEToolStatus;
     FWindowMenuActiveForm: TCustomForm;
     FDisplayState: TDisplayState;
     procedure SetDisplayState(AValue: TDisplayState);
@@ -119,8 +118,7 @@ type
     procedure SetupHelpMenu; virtual;
 
     procedure LoadMenuShortCuts; virtual;
-    function GetToolStatus: TIDEToolStatus; override;
-    procedure SetToolStatus(const AValue: TIDEToolStatus); virtual;
+    procedure SetToolStatus(const AValue: TIDEToolStatus); override;
 
     procedure DoMnuWindowClicked(Sender: TObject);
     procedure mnuOpenProjectClicked(Sender: TObject); virtual; abstract;
@@ -191,7 +189,6 @@ type
       Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual; abstract;
     procedure SelComponentPageButtonClick(Sender: TObject); virtual; abstract;
   public
-    property ToolStatus: TIDEToolStatus read FToolStatus write SetToolStatus;
     property WindowMenuActiveForm: TCustomForm read FWindowMenuActiveForm write FWindowMenuActiveForm;
     property DisplayState: TDisplayState read FDisplayState write SetDisplayState;
   end;
@@ -326,7 +323,7 @@ var
   i: Integer;
   CurTemplate: TNewIDEItemTemplate;
   TheIndex: Integer;
-  Item: TNewFormUnitMenuItem;
+  xItem: TNewFormUnitMenuItem;
 begin
   Category:=NewIDEItems.FindCategoryByPath(FileDescGroupName,true);
   TemplateName:=FindDefaultTemplateName(Category);
@@ -337,16 +334,16 @@ begin
     CurTemplate:=Category[i];
     if not CurTemplate.VisibleInNewDialog then continue;
     if TheIndex<SetDefaultMenuItem.Count then
-      Item:=SetDefaultMenuItem[TheIndex] as TNewFormUnitMenuItem
+      xItem:=SetDefaultMenuItem[TheIndex] as TNewFormUnitMenuItem
     else begin
-      Item:=TNewFormUnitMenuItem.Create(SetDefaultMenuItem);
-      SetDefaultMenuItem.Add(Item);
+      xItem:=TNewFormUnitMenuItem.Create(SetDefaultMenuItem);
+      SetDefaultMenuItem.Add(xItem);
     end;
-    Item.OnClick:=@mnuSetFormUnitTemplate;
-    Item.Caption:=CurTemplate.LocalizedName;
-    Item.TemplateName:=CurTemplate.Name;
-    Item.ShowAlwaysCheckable:=true;
-    Item.Checked:=CompareText(TemplateName,CurTemplate.Name)=0;
+    xItem.OnClick:=@mnuSetFormUnitTemplate;
+    xItem.Caption:=CurTemplate.LocalizedName;
+    xItem.TemplateName:=CurTemplate.Name;
+    xItem.ShowAlwaysCheckable:=true;
+    xItem.Checked:=CompareText(TemplateName,CurTemplate.Name)=0;
     inc(TheIndex);
   end;
   // remove unneeded items
@@ -552,7 +549,7 @@ const
 begin
   if Assigned(Project1) then
     MainIDEBar.itmProjectBuildMode.Hint :=
-      lisChangeBuildMode + GetShortcut(MainIDEBar.itmProjectBuildMode) + sLineBreak +
+      lisChangeBuildMode + MainIDEBar.itmProjectBuildMode.GetShortcut + sLineBreak +
       Format(cActiveBuildMode, [Project1.ActiveBuildMode.GetCaption]);
 end;
 
@@ -677,8 +674,8 @@ end;
 
 procedure TMainIDEBase.SetToolStatus(const AValue: TIDEToolStatus);
 begin
-  if FToolStatus=AValue then exit;
-  FToolStatus:=AValue;
+  if ToolStatus=AValue then exit;
+  inherited SetToolStatus(AValue);
   UpdateCaption;
 end;
 
@@ -1084,12 +1081,6 @@ begin
     CreateMenuItem(ParentMI,itmJumpToImplementationUses,'itmJumpToImplementationUses',lisMenuJumpToImplementationUses, 'menu_jumpto_implementationuses');
     CreateMenuItem(ParentMI,itmJumpToInitialization,'itmJumpToInitialization',lisMenuJumpToInitialization, 'menu_jumpto_initialization');
 
-    ParentMI:=itmJumpings;
-    CreateMenuItem(ParentMI,itmJumpToProcedureHeader,'itmJumpToProcedureHeader',lisMenuJumpToProcedureHeader, 'menu_jumpto_procedureheader');
-    CreateMenuItem(ParentMI,itmJumpToProcedureBegin,'itmJumpToProcedureBegin',lisMenuJumpToProcedureBegin, 'menu_jumpto_procedurebegin');
-    itmJumpToProcedureHeader.Visible := False;
-    itmJumpToProcedureBegin.Visible := False;
-
     CreateMenuSeparatorSection(mnuSearch,itmBookmarks,'itmBookmarks');
     ParentMI:=itmBookmarks;
 
@@ -1164,10 +1155,6 @@ begin
       CreateMenuItem(itmViewIDEInternalsWindows, itmSearchInFPDocFiles,'itmSearchInFPDocFiles','Search in FPDoc files');
       {$ENDIF}
     end;
-    CreateMenuItem(ParentMI,itmViewComponentPalette,'itmViewComponentPalette',lisMenuViewComponentPalette, '',
-      true, EnvironmentOptions.Desktop.ComponentPaletteOptions.Visible);
-    CreateMenuItem(ParentMI,itmViewIDESpeedButtons,'itmViewIDESpeedButtons',lisMenuViewIDESpeedButtons, '',
-      true, EnvironmentOptions.Desktop.IDECoolBarOptions.Visible);
   end;
 end;
 
@@ -1471,21 +1458,40 @@ end;
 
 procedure TMainIDEBase.LoadMenuShortCuts;
 
-  function GetCommand(ACommand: word): TIDECommand;
+  function GetCmdAndBtn(ACommand: word; out ToolButton: TIDEButtonCommand): TIDECommand;
   begin
     Result:=IDECommandList.FindIDECommand(ACommand);
+    if Result<>nil then
+      ToolButton := RegisterIDEButtonCommand(Result)
+    else
+      ToolButton := nil;
   end;
 
+  function GetCommand(ACommand: word): TIDECommand;
+  var
+    ToolButton: TIDEButtonCommand;
+  begin
+    Result:=GetCmdAndBtn(ACommand, ToolButton);
+  end;
+
+  function GetCommand(ACommand: word; ToolButtonClass: TIDEToolButtonClass): TIDECommand;
+  var
+    ToolButton: TIDEButtonCommand;
+  begin
+    Result:=GetCmdAndBtn(ACommand, ToolButton);
+    if ToolButton<>nil then
+      ToolButton.ToolButtonClass := ToolButtonClass;
+  end;
+
+var
+  xBtnItem: TIDEButtonCommand;
 begin
   with MainIDEBar do begin
     // file menu
-    itmFileNewUnit.Command:=GetCommand(ecNewUnit);
-    itmFileNewUnit.ToolButtonClass:=TNewUnitToolButton;
-    itmFileNewForm.Command:=GetCommand(ecNewForm);
-    itmFileNewForm.ToolButtonClass:=TNewFormToolButton;
+    itmFileNewUnit.Command:=GetCommand(ecNewUnit, TNewUnitToolButton);
+    itmFileNewForm.Command:=GetCommand(ecNewForm, TNewFormToolButton);
     itmFileNewOther.Command:=GetCommand(ecNew);
-    itmFileOpen.Command:=GetCommand(ecOpen);
-    itmFileOpen.ToolButtonClass:=TOpenFileToolButton;
+    itmFileOpen.Command:=GetCommand(ecOpen, TOpenFileToolButton);
     itmFileRevert.Command:=GetCommand(ecRevert);
     itmFileSave.Command:=GetCommand(ecSave);
     itmFileSaveAs.Command:=GetCommand(ecSaveAs);
@@ -1493,7 +1499,6 @@ begin
     itmFileClose.Command:=GetCommand(ecClose);
     itmFileCloseAll.Command:=GetCommand(ecCloseAll);
     itmFileCleanDirectory.Command:=GetCommand(ecCleanDirectory);
-    itmFileQuit.Command:=GetCommand(ecQuit);
     itmFileQuit.Command:=GetCommand(ecQuit);
 
     // edit menu
@@ -1538,18 +1543,17 @@ begin
     itmSetFreeBookmark.Command:=GetCommand(ecSetFreeBookmark);
     itmJumpToNextBookmark.Command:=GetCommand(ecNextBookmark);
     itmJumpToPrevBookmark.Command:=GetCommand(ecPrevBookmark);
-    itmJumpToInterface.Command:=GetCommand(ecJumpToInterface);
-    itmJumpToInterface.ToolButtonClass:=TJumpToSectionToolButton;
-    itmJumpToInterfaceUses.Command:=GetCommand(ecJumpToInterfaceUses);
-    itmJumpToInterfaceUses.ToolButtonClass:=TJumpToSectionToolButton;
-    itmJumpToImplementation.Command:=GetCommand(ecJumpToImplementation);
-    itmJumpToImplementation.ToolButtonClass:=TJumpToSectionToolButton;
-    itmJumpToImplementationUses.Command:=GetCommand(ecJumpToImplementationUses);
-    itmJumpToImplementationUses.ToolButtonClass:=TJumpToSectionToolButton;
-    itmJumpToInitialization.Command:=GetCommand(ecJumpToInitialization);
-    itmJumpToInitialization.ToolButtonClass:=TJumpToSectionToolButton;
-    itmJumpToProcedureHeader.Command:=GetCommand(ecJumpToProcedureHeader);
-    itmJumpToProcedureBegin.Command:=GetCommand(ecJumpToProcedureBegin);
+    itmJumpToInterface.Command:=GetCommand(ecJumpToInterface, TJumpToSectionToolButton);
+    itmJumpToInterfaceUses.Command:=GetCommand(ecJumpToInterfaceUses, TJumpToSectionToolButton);
+    itmJumpToImplementation.Command:=GetCommand(ecJumpToImplementation, TJumpToSectionToolButton);
+    itmJumpToImplementationUses.Command:=GetCommand(ecJumpToImplementationUses, TJumpToSectionToolButton);
+    itmJumpToInitialization.Command:=GetCommand(ecJumpToInitialization, TJumpToSectionToolButton);
+    GetCmdAndBtn(ecJumpToProcedureHeader, xBtnItem);
+    xBtnItem.OnClick := @SourceEditorManager.JumpToProcedureHeaderClicked;
+    xBtnItem.ImageIndex := IDEImages.LoadImage(16, 'menu_jumpto_procedureheader');
+    GetCmdAndBtn(ecJumpToProcedureBegin, xBtnItem);
+    xBtnItem.ImageIndex := IDEImages.LoadImage(16, 'menu_jumpto_procedurebegin');
+    xBtnItem.OnClick := @SourceEditorManager.JumpToProcedureBeginClicked;
     itmFindBlockOtherEnd.Command:=GetCommand(ecFindBlockOtherEnd);
     itmFindBlockStart.Command:=GetCommand(ecFindBlockStart);
     itmFindDeclaration.Command:=GetCommand(ecFindDeclaration);
@@ -1572,8 +1576,6 @@ begin
     itmViewSearchResults.Command:=GetCommand(ecToggleSearchResults);
     itmViewAnchorEditor.Command:=GetCommand(ecViewAnchorEditor);
     itmViewTabOrder.Command:=GetCommand(ecViewTabOrder);
-    itmViewComponentPalette.Command:=GetCommand(ecToggleCompPalette);
-    itmViewIDESpeedButtons.Command:=GetCommand(ecToggleIDESpeedBtns);
     //itmPkgPackageLinks.Command:=GetCommand(ec?);
 
     // source menu
@@ -1643,7 +1645,7 @@ begin
     itmProjectViewUnits.Command:=GetCommand(ecViewProjectUnits);
     itmProjectViewForms.Command:=GetCommand(ecViewProjectForms);
     itmProjectViewSource.Command:=GetCommand(ecViewProjectSource);
-    itmProjectBuildMode.ToolButtonClass:=TSetBuildModeToolButton;
+    itmProjectBuildMode.Command:=GetCommand(ecProjectChangeBuildMode,TSetBuildModeToolButton);
 
     // run menu
     itmRunMenuCompile.Command:=GetCommand(ecCompile);
@@ -1689,8 +1691,7 @@ begin
 
     itmToolConfigure.Command:=GetCommand(ecExtToolSettings);
 
-    itmToolManageDesktops.Command:=GetCommand(ecManageDesktops);
-    itmToolManageDesktops.ToolButtonClass:=TShowDesktopsToolButton;
+    itmToolManageDesktops.Command:=GetCommand(ecManageDesktops, TShowDesktopsToolButton);
     itmToolManageExamples.Command:=GetCommand(ecManageExamples);
     itmToolDiff.Command:=GetCommand(ecDiff);
 
@@ -1711,11 +1712,6 @@ begin
     itmHelpOnlineHelp.Command:=GetCommand(ecOnlineHelp);
     itmHelpReportingBug.Command:=GetCommand(ecReportingBug);
   end;
-end;
-
-function TMainIDEBase.GetToolStatus: TIDEToolStatus;
-begin
-  Result:=FToolStatus;
 end;
 
 function TMainIDEBase.DoOpenMacroFile(Sender: TObject; const AFilename: string

@@ -44,6 +44,10 @@ msgstr "Jau įgyvendinta ties %s"
 msgid "... and %s more identifiers"
 msgstr "… dar liko identifikatorių: %s"
 
+#: codystrconsts.crsany
+msgid "Any"
+msgstr ""
+
 #: codystrconsts.crsawindowforthelazarusideitcanbedockedlikethecodeexp
 msgid "A window for the Lazarus IDE. It can be docked like the Code Explorer or the FPDoc Editor. This also creates a menu item in the View menu and a short cut."
 msgstr "Langas, skirta Lazarus IKA. Jis gali būti pritvirtintas kaip ir „Kodo tyrinėtojas“ arba „FPDoc rengyklė“. Šiam langui bus sukurtas menių „Rodymas“ papunktis ir sparčiųjų klavišų derinys."
@@ -176,6 +180,10 @@ msgstr "CodeBuffers"
 msgid "Code Node Information"
 msgstr "Informacija apie kodo mazgą"
 
+#: codystrconsts.crscodyfindoverloads
+msgid "Cody - Find Overloads"
+msgstr ""
+
 #: codystrconsts.crscodyidentifierdictionary
 msgid "Identifier Dictionary"
 msgstr "Identifikatorių žodynas"
@@ -184,6 +192,14 @@ msgstr "Identifikatorių žodynas"
 msgctxt "codystrconsts.crscogeneral"
 msgid "General"
 msgstr "Pagrindinis"
+
+#: codystrconsts.crscompatibility
+msgid "Compatibility"
+msgstr ""
+
+#: codystrconsts.crscompatible
+msgid "compatible"
+msgstr ""
 
 #: codystrconsts.crsconfigurenewidewindow
 msgid "Configure new IDE window"
@@ -270,6 +286,10 @@ msgstr ""
 msgid "Delete unit?"
 msgstr ""
 
+#: codystrconsts.crsdistance
+msgid "Distance"
+msgstr ""
+
 #: codystrconsts.crsdvisakeyword
 msgid "\"%s\" is a keyword."
 msgstr "„%s“ yra bazinis žodis."
@@ -277,6 +297,18 @@ msgstr "„%s“ yra bazinis žodis."
 #: codystrconsts.crserror
 msgid "Error: %s"
 msgstr "Klaida: %s"
+
+#: codystrconsts.crserrorcursorisnotinaprojectunit
+msgid "Error: cursor is not in a project unit"
+msgstr ""
+
+#: codystrconsts.crserrorneedsourceeditoratprocedurecallordeclaration
+msgid "Error: Need source editor at procedure call or declaration"
+msgstr ""
+
+#: codystrconsts.crsexact
+msgid "exact"
+msgstr ""
 
 #: codystrconsts.crsexplodeawithblock
 msgid "Explode a \"With\" Block"
@@ -310,6 +342,10 @@ msgstr "Klaida skaitant failą"
 msgid "(Filter)"
 msgstr "(Filtras)"
 
+#: codystrconsts.crsfilter2
+msgid "Filter"
+msgstr ""
+
 #: codystrconsts.crsfindgdbbacktraceline
 msgid "Find GDB backtrace line"
 msgstr ""
@@ -338,6 +374,10 @@ msgstr "GiB"
 msgid "&Help"
 msgstr "Žin&ynas"
 
+#: codystrconsts.crshideabstractmethodsandmethodsofclassinterfaces
+msgid "Hide abstract methods and methods of class interfaces"
+msgstr ""
+
 #: codystrconsts.crshideunitsofotherprojects
 msgid "Hide units of other projects"
 msgstr "Slėpti kitų projektų modulius"
@@ -363,12 +403,20 @@ msgctxt "codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne"
 msgid "If identifier is added to the implementation section and needed unit needs to be added, add to the uses section of the implementation"
 msgstr "Pridėti prie skiltyje „Implementation“ naudojamų modulių, kai identifikatorius yra įdėtas „Implementation“ sekcijoje ir būtina pridėti reikiamą modulį."
 
+#: codystrconsts.crsifuncheckedlistalsoprocedureswithsamenameandincomp
+msgid "If unchecked list also procedures with same name and incompatible parameter lists."
+msgstr ""
+
 #: codystrconsts.crsimpossibledependency
 msgid "Impossible dependency"
 msgstr "Neįmanoma priklausomybė"
 
 #: codystrconsts.crsin
 msgid "in \"%s\""
+msgstr ""
+
+#: codystrconsts.crsincompatible
+msgid "incompatible"
 msgstr ""
 
 #: codystrconsts.crsinimplementation
@@ -394,6 +442,10 @@ msgstr ""
 #: codystrconsts.crsjumpto
 msgid "&Jump to"
 msgstr "&Šokti į"
+
+#: codystrconsts.crsjumpto2
+msgid "Jump to"
+msgstr ""
 
 #: codystrconsts.crskbytes
 msgid "kbytes"
@@ -439,9 +491,17 @@ msgstr "%s min."
 msgid "missing ..."
 msgstr "trūksta…"
 
+#: codystrconsts.crsname
+msgid "Name"
+msgstr ""
+
 #: codystrconsts.crsnoneselected
 msgid "none selected"
 msgstr "nepažymėta"
+
+#: codystrconsts.crsnooverloadsfoundinprojectunits
+msgid "no overloads found in project units"
+msgstr ""
 
 #: codystrconsts.crsnoproject
 msgid "No project"
@@ -458,6 +518,22 @@ msgstr "Nėra pažymėtų modulių"
 #: codystrconsts.crsonclipboard
 msgid "On clipboard"
 msgstr "Iškarpinėje"
+
+#: codystrconsts.crsonlydescendantsof
+msgid "Only descendants of %s"
+msgstr ""
+
+#: codystrconsts.crsonlymethods
+msgid "Only methods"
+msgstr ""
+
+#: codystrconsts.crsonlynonmethods
+msgid "Only non methods"
+msgstr ""
+
+#: codystrconsts.crsonlyprocedureswithcompatibleparameters
+msgid "Only procedures with compatible parameters"
+msgstr ""
 
 #: codystrconsts.crsoptions
 msgid "Options"
@@ -498,6 +574,10 @@ msgstr "Paketai: %s; Moduliai: %s; Identifikatoriai: %s%sDuomenų bazė: %s"
 #: codystrconsts.crspackagewithsamename
 msgid "Package with same name"
 msgstr "Paketas tuo pačiu pavadinimu"
+
+#: codystrconsts.crsparseerror
+msgid "Parse error"
+msgstr ""
 
 #: codystrconsts.crspastelinesofagdbbacktrace
 msgid "Paste lines of a gdb backtrace:"
@@ -575,6 +655,10 @@ msgstr ""
 msgid "Refresh"
 msgstr "Atnaujinti"
 
+#: codystrconsts.crsrelations
+msgid "Relations:"
+msgstr ""
+
 #: codystrconsts.crsreport
 msgid "Report"
 msgstr "Ataskaita"
@@ -590,6 +674,14 @@ msgstr "Žodyną įrašyti dabar"
 #: codystrconsts.crssavetofile
 msgid "Save to file %s"
 msgstr "Įrašyti į failą „%s“"
+
+#: codystrconsts.crsscanning
+msgid "Scanning ..."
+msgstr ""
+
+#: codystrconsts.crsscanningsunits
+msgid "Scanning: %s units ..."
+msgstr ""
 
 #: codystrconsts.crssearching
 msgid "searching ..."

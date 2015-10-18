@@ -251,6 +251,7 @@ type
 
   TSynBaseCompletion = class(TLazSynMultiEditPlugin)
   private
+    FAutoUseSingleIdent: Boolean;
     Form: TSynBaseCompletionForm;
     FAddedPersistentCaret: boolean;
     FOnExecute: TNotifyEvent;
@@ -354,6 +355,7 @@ type
              write SetLongLineHintType default sclpExtendRightOnly;
     property DoubleClickSelects: Boolean read GetDoubleClickSelects write SetDoubleClickSelects default True;
     property ShowSizeDrag: Boolean read GetShowSizeDrag write SetShowSizeDrag default False;
+    property AutoUseSingleIdent: Boolean read FAutoUseSingleIdent write FAutoUseSingleIdent;
   end;
 
   { TSynCompletion }
@@ -1316,6 +1318,7 @@ begin
   inherited Create(AOwner);
   Form := GetCompletionFormClass.Create(nil); // Do not create with owner, or the designer will make it visible
   Form.Width := FWidth;
+  FAutoUseSingleIdent := True;
 end;
 
 destructor TSynBaseCompletion.Destroy;
@@ -1398,7 +1401,7 @@ begin
   CurrentString := s;
   if Assigned(OnExecute) then
     OnExecute(Self);
-  if (ItemList.Count=1) and Assigned(OnValidate) then begin
+  if (ItemList.Count=1) and Assigned(OnValidate) and FAutoUseSingleIdent then begin
     OnValidate(Form, '', []);
     exit;
   end;

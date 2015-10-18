@@ -5,17 +5,23 @@ unit DesktopManager;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, ButtonPanel, IDEImagesIntf,
-  LCLType, LazarusIDEStrConsts, LCLProc, EnvironmentOpts,
-  IDEWindowIntf, IDEOptionsIntf, IDEOptionDefs, Laz2_XMLCfg, InputHistory,
-  MenuIntf, Menus, ComCtrls, ActnList;
+  Classes, SysUtils, Types,
+  LCLType, LCLProc, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Buttons, ButtonPanel, Menus, ComCtrls, ActnList,
+  // LazUtils
+  Laz2_XMLCfg,
+  // IdeIntf
+  IDEImagesIntf, ToolBarIntf,
+  // IDE
+  LazarusIDEStrConsts, EnvironmentOpts, IDEOptionDefs, InputHistory;
 
 type
 
   { TDesktopForm }
 
   TDesktopForm = class(TForm)
+    ExportBitBtn: TBitBtn;
+    ImportBitBtn: TBitBtn;
     ImportAction: TAction;
     ExportAction: TAction;
     ExportAllAction: TAction;
@@ -41,25 +47,27 @@ type
     SetDebugDesktopTB: TToolButton;
     RenameTB: TToolButton;
     DeleteTB: TToolButton;
-    ToolButton2: TToolButton;
-    ExportTB: TToolButton;
-    ImportTB: TToolButton;
     MoveUpTB: TToolButton;
     MoveDownTB: TToolButton;
-    procedure DeleteBitBtnClick(Sender: TObject);
+    ToolButton2: TToolButton;
+    ToolButton3: TToolButton;
+    procedure DeleteActionClick(Sender: TObject);
     procedure DesktopListBoxDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; {%H-}State: TOwnerDrawState);
     procedure DesktopListBoxKeyPress(Sender: TObject; var Key: char);
     procedure DesktopListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
-    procedure ExportAllBitBtnClick(Sender: TObject);
+    procedure ExportAllActionClick(Sender: TObject);
+    procedure ExportActionClick(Sender: TObject);
     procedure ExportBitBtnClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure ImportBitBtnClick(Sender: TObject);
-    procedure MoveUpTBClick(Sender: TObject);
-    procedure RenameBitBtnClick(Sender: TObject);
-    procedure SaveBitBtnClick(Sender: TObject);
-    procedure SetActiveDesktopBitBtnClick(Sender: TObject);
-    procedure SetDebugDesktopBitBtnClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure ImportActionClick(Sender: TObject);
+    procedure MoveUpDownActionClick(Sender: TObject);
+    procedure RenameActionClick(Sender: TObject);
+    procedure SaveActionHint(var HintStr: string; var CanShow: Boolean);
+    procedure SaveActionClick(Sender: TObject);
+    procedure SetActiveDesktopActionClick(Sender: TObject);
+    procedure SetDebugDesktopActionClick(Sender: TObject);
   private
     FActiveDesktopChanged: Boolean;
 
@@ -245,7 +253,7 @@ procedure TShowDesktopsToolButton.RefreshMenu;
       xItem.ImageIndex := IDEImages.LoadImage(16, 'state_warning')
     else
     if _Desktop.Name = EnvironmentOptions.DebugDesktopName then
-      xItem.ImageIndex := IDEImages.LoadImage(16, 'menu_run');
+      xItem.ImageIndex := IDEImages.LoadImage(16, 'debugger');
   end;
 
 var
@@ -262,7 +270,7 @@ begin
   xMISaveAs.ImageIndex := IDEImages.LoadImage(16, 'laz_save');
   xMIToggleDebug := TMenuItem.Create(xPM);
   xMIToggleDebug.Caption := dlgToggleDebugDesktop;
-  xMIToggleDebug.ImageIndex := IDEImages.LoadImage(16, 'menu_run');
+  xMIToggleDebug.ImageIndex := IDEImages.LoadImage(16, 'debugger');
   // Saved desktops
   for i:=0 to EnvironmentOptions.Desktops.Count-1 do
   begin
@@ -315,14 +323,7 @@ end;
 { TDesktopForm }
 
 procedure TDesktopForm.FormCreate(Sender: TObject);
-var
-  xIndex: Integer;
 begin
-  RefreshList;
-  xIndex := DesktopListBox.Items.IndexOf(EnvironmentOptions.ActiveDesktopName);
-  if xIndex >= 0 then
-    DesktopListBox.ItemIndex := xIndex;
-
   // buttons captions & text
   ToolBar1.Images := IDEImages.Images_16;
   Caption := dlgManageDesktops;
@@ -332,12 +333,6 @@ begin
   DeleteAction.ImageIndex := IDEImages.LoadImage(16, 'laz_cancel');
   RenameAction.Hint := lisRename;
   RenameAction.ImageIndex := IDEImages.LoadImage(16, 'laz_edit');
-  ExportAction.Hint := lisExport;
-  ExportTB.ImageIndex := IDEImages.LoadImage(16, 'laz_export');
-  ExportAction.Caption := lisExportSelected;
-  ExportAllAction.Caption := lisExportAll;
-  ImportAction.Hint := lisImport;
-  ImportAction.ImageIndex := IDEImages.LoadImage(16, 'laz_open');
   MoveUpAction.Hint := lisMenuEditorMoveUp;
   MoveUpAction.ImageIndex := IDEImages.LoadImage(16, 'arrow_up');
   MoveDownAction.Hint := lisMenuEditorMoveDown;
@@ -345,32 +340,55 @@ begin
   SetActiveDesktopAction.Hint := dlgSetActiveDesktop;
   SetActiveDesktopAction.ImageIndex := IDEImages.LoadImage(16, 'laz_tick');
   SetDebugDesktopAction.Hint := dlgToggleDebugDesktop;
-  SetDebugDesktopAction.ImageIndex := IDEImages.LoadImage(16, 'menu_run');
-  ButtonPanel1.CloseButton.Caption := lisClose;
+  SetDebugDesktopAction.ImageIndex := IDEImages.LoadImage(16, 'debugger');
   AutoSaveActiveDesktopCheckBox.Caption := dlgAutoSaveActiveDesktop;
   AutoSaveActiveDesktopCheckBox.Hint := dlgAutoSaveActiveDesktopHint;
   LblGrayedInfo.Caption := dlgGrayedDesktopsUndocked;
   LblGrayedInfo.Font.Color := clGrayText;
+
+  ExportAction.Hint := lisExport;
+  ExportAction.Caption := lisExportSelected;
+  ExportAllAction.Caption := lisExportAll;
+  ImportAction.Hint := lisImport;
+  ExportBitBtn.LoadGlyphFromStock(idButtonSave);
+  ExportBitBtn.Caption := lisExportSub;
+  ImportBitBtn.LoadGlyphFromStock(idButtonOpen);
+  ImportBitBtn.Caption := lisImport;
+end;
+
+procedure TDesktopForm.FormShow(Sender: TObject);
+var
+  xIndex: Integer;
+begin
+  RefreshList;
+  xIndex := DesktopListBox.Items.IndexOf(EnvironmentOptions.ActiveDesktopName);
+  if xIndex >= 0 then
+    DesktopListBox.ItemIndex := xIndex;
 end;
 
 procedure TDesktopForm.RefreshList(SelectName: string);
 var
+  DskTop: TDesktopOpt;
   i: Integer;
+  HasNonCompatible: Boolean;
 begin
   if (SelectName='') and (DesktopListBox.ItemIndex>=0) then
     SelectName:=DesktopListBox.Items[DesktopListBox.ItemIndex];
 
-  LblGrayedInfo.Visible := False;
+  HasNonCompatible := False;
   DesktopListBox.Clear;
   // Saved desktops
-  with EnvironmentOptions do
+  for i:=0 to EnvironmentOptions.Desktops.Count-1 do
   begin
-    for i:=0 to Desktops.Count-1 do
-    begin
-      DesktopListBox.Items.Add(Desktops[i].Name);
-      LblGrayedInfo.Visible := LblGrayedInfo.Visible or not Desktops[i].Compatible;//show info for incompatible desktops
-    end;
+    DskTop := EnvironmentOptions.Desktops[i];
+    DesktopListBox.Items.Add(DskTop.Name);
+    if not DskTop.Compatible then
+      HasNonCompatible := True;
   end;
+  if HasNonCompatible then
+    LblGrayedInfo.Caption := dlgGrayedDesktopsUndocked
+  else
+    LblGrayedInfo.Caption := '';
 
   i := DesktopListBox.Items.IndexOf(SelectName);
   if (i < 0) and (DesktopListBox.Count > 0) then
@@ -380,7 +398,7 @@ begin
   DesktopListBoxSelectionChange(DesktopListBox, False);
 end;
 
-procedure TDesktopForm.RenameBitBtnClick(Sender: TObject);
+procedure TDesktopForm.RenameActionClick(Sender: TObject);
 var
   xDesktopName, xOldDesktopName: String;
   dskIndex: Integer;
@@ -418,48 +436,37 @@ begin
   end;
 end;
 
-procedure TDesktopForm.DeleteBitBtnClick(Sender: TObject);
+procedure TDesktopForm.SaveActionHint(var HintStr: string; var CanShow: Boolean);
+begin
+
+end;
+
+procedure TDesktopForm.DeleteActionClick(Sender: TObject);
 var
-  xDesktopName: String;
+  dskName: String;
   dskIndex: Integer;
 begin
   if DesktopListBox.ItemIndex = -1 then
     Exit;
-
-  xDesktopName := DesktopListBox.Items[DesktopListBox.ItemIndex];
-  if (xDesktopName = EnvironmentOptions.ActiveDesktopName) then
-  begin
-    MessageDlg(dlgCannotDeleteActiveDesktop, mtError, [mbOK], 0);
+  dskName := DesktopListBox.Items[DesktopListBox.ItemIndex];
+  if MessageDlg(Format(dlgReallyDeleteDesktop, [dskName]), mtConfirmation, mbYesNo, 0) <> mrYes then
     Exit;
-  end else
-  if (xDesktopName = EnvironmentOptions.DebugDesktopName) then
+  dskIndex := EnvironmentOptions.Desktops.IndexOf(dskName);
+  if dskIndex >= 0 then
   begin
-    MessageDlg(dlgCannotDeleteDebugDesktop, mtError, [mbOK], 0);
-    Exit;
-  end;
-
-  if MessageDlg(Format(dlgReallyDeleteDesktop, [xDesktopName]), mtConfirmation, mbYesNo, 0) <> mrYes then
-    Exit;
-
-  with EnvironmentOptions do
-  begin
-    dskIndex := Desktops.IndexOf(xDesktopName);
-    if dskIndex >= 0 then
-    begin
-      debugln(['TDesktopForm.SaveBitBtnClick: Deleting ', xDesktopName]);
-      Desktops.Delete(dskIndex);
-      if DesktopListBox.ItemIndex+1 < DesktopListBox.Count then
-        xDesktopName := DesktopListBox.Items[DesktopListBox.ItemIndex+1]
-      else if DesktopListBox.ItemIndex > 0 then
-        xDesktopName := DesktopListBox.Items[DesktopListBox.ItemIndex-1]
-      else
-        xDesktopName := '';
-      RefreshList(xDesktopName);
-    end;
+    debugln(['TDesktopForm.SaveBitBtnClick: Deleting ', dskName]);
+    EnvironmentOptions.Desktops.Delete(dskIndex);
+    if DesktopListBox.ItemIndex+1 < DesktopListBox.Count then
+      dskName := DesktopListBox.Items[DesktopListBox.ItemIndex+1]
+    else if DesktopListBox.ItemIndex > 0 then
+      dskName := DesktopListBox.Items[DesktopListBox.ItemIndex-1]
+    else
+      dskName := '';
+    RefreshList(dskName);
   end;
 end;
 
-procedure TDesktopForm.ExportBitBtnClick(Sender: TObject);
+procedure TDesktopForm.ExportActionClick(Sender: TObject);
 var
   xDesktopName: String;
   xDesktop: TDesktopOpt;
@@ -476,6 +483,14 @@ begin
     Exit;
 
   ExportDesktops([xDesktop]);
+end;
+
+procedure TDesktopForm.ExportBitBtnClick(Sender: TObject);
+var
+  p: TPoint;
+begin
+  p := ExportBitBtn.ClientToScreen(Point(0,ExportBitBtn.Height));
+  ExportMenu.PopUp(p.x,p.y);
 end;
 
 procedure TDesktopForm.ExportDesktops(const aDesktops: array of TDesktopOpt);
@@ -534,7 +549,7 @@ begin
   end;
 end;
 
-procedure TDesktopForm.ImportBitBtnClick(Sender: TObject);
+procedure TDesktopForm.ImportActionClick(Sender: TObject);
 var
   xXMLCfg: TRttiXMLConfig;
   xConfigStore: TXMLOptionsStorage;
@@ -625,7 +640,7 @@ begin
   end;
 end;
 
-procedure TDesktopForm.MoveUpTBClick(Sender: TObject);
+procedure TDesktopForm.MoveUpDownActionClick(Sender: TObject);
 var
   xIncPos: Integer;
   xOldName: String;
@@ -731,23 +746,37 @@ end;
 procedure TDesktopForm.DesktopListBoxKeyPress(Sender: TObject; var Key: char);
 begin
   if Key = Char(VK_RETURN) then
-    SetActiveDesktopBitBtnClick(Sender);
+    SetActiveDesktopActionClick(Sender);
 end;
 
-procedure TDesktopForm.DesktopListBoxSelectionChange(Sender: TObject;
-  User: boolean);
+procedure TDesktopForm.DesktopListBoxSelectionChange(Sender: TObject; User: boolean);
+var
+  HasSel, IsActive, IsDebug: Boolean;
+  CurName: String;
 begin
-  DeleteAction.Enabled := DesktopListBox.ItemIndex>=0;
-  RenameAction.Enabled := DeleteAction.Enabled;
-  SetDebugDesktopAction.Enabled := DeleteAction.Enabled;
-  MoveUpAction.Enabled := DeleteAction.Enabled;
-  MoveDownAction.Enabled := DeleteAction.Enabled;
-  ExportAction.Enabled := DeleteAction.Enabled;
+  HasSel := DesktopListBox.ItemIndex>=0;
+  if HasSel then
+  begin
+    CurName := DesktopListBox.Items[DesktopListBox.ItemIndex];
+    IsActive := CurName = EnvironmentOptions.ActiveDesktopName;
+    IsDebug := CurName = EnvironmentOptions.DebugDesktopName;
+  end
+  else begin
+    IsActive := False;
+    IsDebug := False;
+  end;
+  SetActiveDesktopAction.Enabled := HasSel and not IsActive;
+  SetDebugDesktopAction.Enabled := HasSel and not IsDebug;
+  RenameAction.Enabled := HasSel;
+  DeleteAction.Enabled := HasSel and not (IsActive or IsDebug);
+  MoveUpAction.Enabled := HasSel and (DesktopListBox.ItemIndex > 0);
+  MoveDownAction.Enabled := HasSel and (DesktopListBox.ItemIndex < DesktopListBox.Items.Count-1);
+  ExportAction.Enabled := HasSel;
   ExportAllAction.Enabled := DesktopListBox.Items.Count>0;
-  ExportTB.Enabled := ExportItem.Enabled or ExportAllItem.Enabled;
+  ExportBitBtn.Enabled := ExportItem.Enabled or ExportAllItem.Enabled;
 end;
 
-procedure TDesktopForm.ExportAllBitBtnClick(Sender: TObject);
+procedure TDesktopForm.ExportAllActionClick(Sender: TObject);
 var
   xDesktops: array of TDesktopOpt;
   I: Integer;
@@ -758,7 +787,7 @@ begin
   ExportDesktops(xDesktops);
 end;
 
-procedure TDesktopForm.SaveBitBtnClick(Sender: TObject);
+procedure TDesktopForm.SaveActionClick(Sender: TObject);
 var
   xDesktopName, xOldDesktopName: string;
 begin
@@ -781,7 +810,7 @@ begin
   end;
 end;
 
-procedure TDesktopForm.SetActiveDesktopBitBtnClick(Sender: TObject);
+procedure TDesktopForm.SetActiveDesktopActionClick(Sender: TObject);
 begin
   if (DesktopListBox.ItemIndex = -1) or
      (EnvironmentOptions.ActiveDesktopName = DesktopListBox.Items[DesktopListBox.ItemIndex])
@@ -799,7 +828,7 @@ begin
   RefreshList;
 end;
 
-procedure TDesktopForm.SetDebugDesktopBitBtnClick(Sender: TObject);
+procedure TDesktopForm.SetDebugDesktopActionClick(Sender: TObject);
 var
   xDesktopName: String;
 begin

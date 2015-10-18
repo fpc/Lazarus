@@ -146,8 +146,6 @@ type
         itmJumpToImplementation: TIDEMenuCommand;
         itmJumpToImplementationUses: TIDEMenuCommand;
         itmJumpToInitialization: TIDEMenuCommand;
-        itmJumpToProcedureHeader: TIDEMenuCommand;
-        itmJumpToProcedureBegin: TIDEMenuCommand;
       //itmBookmarks: TIDEMenuSection;
         itmSetFreeBookmark: TIDEMenuCommand;
         itmJumpToNextBookmark: TIDEMenuCommand;
@@ -178,8 +176,6 @@ type
       //itmViewSecondaryWindows: TIDEMenuSection;
         itmViewAnchorEditor: TIDEMenuCommand;
         itmViewTabOrder: TIDEMenuCommand;
-        itmViewComponentPalette: TIDEMenuCommand;
-        itmViewIDESpeedButtons: TIDEMenuCommand;
         itmViewMessage: TIDEMenuCommand;
         itmViewSearchResults: TIDEMenuCommand;
         //itmViewDebugWindows: TIDEMenuSection;
@@ -390,8 +386,6 @@ type
     procedure SetMainIDEHeight;
     procedure DoSetMainIDEHeight(const AIDEIsMaximized: Boolean; ANewHeight: Integer = 0);
     procedure DoSetViewComponentPalette(aVisible: Boolean);
-    procedure DoToggleViewComponentPalette;
-    procedure DoToggleViewIDESpeedButtons;
     procedure AllowCompilation(aAllow: Boolean);
   end;
 
@@ -417,8 +411,7 @@ begin
     FOnActive(Self);
 end;
 
-procedure TMainIDEBar.DoSetMainIDEHeight(const AIDEIsMaximized: Boolean;
-  ANewHeight: Integer);
+procedure TMainIDEBar.DoSetMainIDEHeight(const AIDEIsMaximized: Boolean; ANewHeight: Integer);
 begin
   if not Showing then
     Exit;
@@ -436,7 +429,7 @@ begin
   begin
     if (AIDEIsMaximized or EnvironmentOptions.Desktop.AutoAdjustIDEHeight) then
     begin
-      ANewHeight := ANewHeight + CalcNonClientHeight;
+      Inc(ANewHeight, CalcNonClientHeight);
       if ANewHeight <> Constraints.MaxHeight then
       begin
         Constraints.MaxHeight := ANewHeight;
@@ -495,10 +488,19 @@ begin
 
   Result := WindowClientRect.Top - WindowRect.Top;
 
+  {$IFDEF LCLQt}
+  // ToDo: fix this properly for QT.
+  //  Result can be negative (-560) when both Coolbar and Palette are hidden.
+  if Result < 0 then
+    Result := 55;
+  {$ENDIF LCLQt}
+  Assert(Result >= 0, 'TMainIDEBar.CalcNonClientHeight: Result < 0');
+
   {$IFDEF LCLWin32}
   //Win32 the constrained height has to be without SM_CYSIZEFRAME and SM_CYMENU
   Result := Result - (LCLIntf.GetSystemMetrics(SM_CYSIZEFRAME) + LCLIntf.GetSystemMetrics(SM_CYMENU));
   {$ENDIF LCLWin32}
+
   {$ELSE}
   //other widgetsets
   //Carbon tested - behaves correctly
@@ -675,7 +677,7 @@ end;
 
 procedure TMainIDEBar.RefreshCoolbar;
 var
-  I, J: Integer;
+  I: Integer;
   CoolBand: TCoolBand;
   CoolBarOpts: TIDECoolBarOptions;
 begin
@@ -696,19 +698,16 @@ begin
   for I := 0 to IDECoolBar.ToolBars.Count - 1 do
   begin
     CoolBand := CoolBar.Bands.Add;
-    CoolBand.Break := IDECoolBar.ToolBars[I].Break;
+    CoolBand.Break := IDECoolBar.ToolBars[I].CurrentOptions.Break;
     CoolBand.Control := IDECoolBar.ToolBars[I].ToolBar;
     CoolBand.MinWidth := 25;
     CoolBand.MinHeight := 22;
     CoolBand.FixedSize := True;
-    IDECoolBar.ToolBars[I].ClearToolbar;
-    for J := 0 to IDECoolBar.ToolBars[I].ButtonNames.Count - 1 do
-      IDECoolBar.ToolBars[I].AddCustomItems(J);
+    IDECoolBar.ToolBars[I].UseCurrentOptions;
   end;
   CoolBar.AutosizeBands;
 
   CoolBar.Visible := CoolBarOpts.Visible;
-  itmViewIDESpeedButtons.Checked := CoolBar.Visible;
   MainSplitter.Align := alLeft;
   MainSplitter.Visible := Coolbar.Visible and ComponentPageControl.Visible;
 end;
@@ -775,23 +774,8 @@ begin
 end;
 
 procedure TMainIDEBar.CoolBarOnChange(Sender: TObject);
-var
-  I, J: Integer;
-  ToolBar: TToolBar;
 begin
-  for I := 0 to Coolbar.Bands.Count - 1 do
-  begin
-    if Coolbar.Bands[I].Control = nil then
-      Continue;
-    ToolBar := (Coolbar.Bands[I].Control as TToolBar);
-    J := IDECoolBar.FindByToolBar(ToolBar);
-    if J <> -1 then
-    begin
-      IDECoolBar.ToolBars[J].Position := Coolbar.Bands[I].Index;
-      IDECoolBar.ToolBars[J].Break := Coolbar.Bands[I].Break;
-    end
-  end;
-  IDECoolBar.Sort;
+  IDECoolBar.CopyFromRealCoolbar(Coolbar);
   IDECoolBar.CopyToOptions(EnvironmentOptions.Desktop.IDECoolBarOptions);
   SetMainIDEHeight;
 end;
@@ -805,7 +789,6 @@ procedure TMainIDEBar.DoSetViewComponentPalette(aVisible: Boolean);
 begin
   if aVisible = ComponentPageControl.Visible then Exit;
   ComponentPageControl.Visible := aVisible;
-  itmViewComponentPalette.Checked := aVisible;
   EnvironmentOptions.Desktop.ComponentPaletteOptions.Visible := aVisible;
   if aVisible then
   begin
@@ -823,25 +806,8 @@ begin
   MainSplitter.Visible := Coolbar.Visible and aVisible;
 
   if aVisible then//when showing component palette, it must be visible to calculate it correctly
-    DoSetMainIDEHeight(WindowState = wsMaximized, 55);//it will cause the IDE to flicker, but it's better than to have wrongly calculated IDE height
-  SetMainIDEHeight;
-end;
-
-procedure TMainIDEBar.DoToggleViewComponentPalette;
-begin
-  DoSetViewComponentPalette(not ComponentPageControl.Visible);
-end;
-
-procedure TMainIDEBar.DoToggleViewIDESpeedButtons;
-var
-  SpeedButtonsVisible: boolean;
-begin
-  SpeedButtonsVisible := not CoolBar.Visible;
-  itmViewIDESpeedButtons.Checked := SpeedButtonsVisible;
-  CoolBar.Visible := SpeedButtonsVisible;
-  MainSplitter.Visible := SpeedButtonsVisible;
-  EnvironmentOptions.Desktop.IDECoolBarOptions.Visible := SpeedButtonsVisible;
-  MainSplitter.Visible := Coolbar.Visible and ComponentPageControl.Visible;
+    //this will cause the IDE to flicker, but it's better than to have wrongly calculated IDE height
+    DoSetMainIDEHeight(WindowState = wsMaximized, 55);
   SetMainIDEHeight;
 end;
 

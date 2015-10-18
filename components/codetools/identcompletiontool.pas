@@ -1171,6 +1171,8 @@ begin
     Ident:=@FoundContext.Tool.Src[FoundContext.Node.StartPos];
     
   ctnProcedure,ctnProcedureHead:
+    //do not list class constructors and destructors
+    if not FoundContext.Tool.NodeIsClassConstructorOrDestructor(FoundContext.Node) then
     begin
       Ident:=FoundContext.Tool.GetProcNameIdentifier(FoundContext.Node);
       NewItem := CurrentIdentifierList.FindIdentifier(Ident,true);
@@ -1351,6 +1353,8 @@ begin
     AddCompilerFunction('Seg','var X','LongInt');
     AddCompilerProcedure('SetLength','var S:String;NewLength:Integer');
     AddCompilerProcedure('SetLength','var A:Array;NewLength:Integer');
+    if Scanner.Values.IsDefined('FPC_HAS_CPSTRING') then
+      AddCompilerProcedure('SetString','out S:RawByteString;Buf:PAnsiChar;Len:SizeInt');
     AddCompilerFunction('SizeOf','Identifier','Integer');
     AddCompilerFunction('Slice','var A:Array;Count:Integer','Array');
     AddCompilerProcedure('Str','const X[:Width[:Decimals]];var S:String');
@@ -2022,10 +2026,13 @@ begin
       Params.Flags:=Params.Flags+[fdfIgnoreCurContextNode];
     ExprType:=FindExpressionTypeOfTerm(ContextExprStartPos,IdentStartPos,
                                        Params,false);
-    if (ExprType.Desc in xtAllIdentTypes) then begin
+    if ExprType.Desc=xtContext then begin
       GatherContext:=ExprType.Context;
-      debugln(['TIdentCompletionTool.FindCollectionContext ',ExprTypeToString(ExprType)]);
+      //debugln(['TIdentCompletionTool.FindCollectionContext ',ExprTypeToString(ExprType)]);
       StartInSubContext:=true;
+    end else begin
+      // for example "string.|"
+      GatherContext:=CleanFindContext;
     end;
   end;
   ExprType.Context := GatherContext;
@@ -2524,7 +2531,6 @@ begin
   Result:=false;
 
   ActivateGlobalWriteLock;
-  Params:=TFindDeclarationParams.Create;//FindHelpersInContext called later
   try
     InitCollectIdentifiers(CursorPos,IdentifierList);
     IdentStartXY:=FindIdentifierStartPos(CursorPos);
@@ -2532,227 +2538,230 @@ begin
 
     ParseSourceTillCollectionStart(IdentStartXY,CleanCursorPos,CursorNode,
                                    IdentStartPos,IdentEndPos);
-    Params.ContextNode:=CursorNode;
-    FindHelpersInContext(Params);
-    if CleanCursorPos=0 then ;
-    if IdentStartPos>0 then begin
-      MoveCursorToCleanPos(IdentStartPos);
-      ReadNextAtom;
-      CurrentIdentifierList.StartAtom:=CurPos;
-    end;
-
-    // find context
-    {$IFDEF CTDEBUG}
-    DebugLn('TIdentCompletionTool.GatherIdentifiers B',
-      ' CleanCursorPos=',CleanPosToStr(CleanCursorPos),
-      ' IdentStartPos=',CleanPosToStr(IdentStartPos),' IdentEndPos=',CleanPosToStr(IdentEndPos),
-      ' Ident=',copy(Src,IdentStartPos,IdentEndPos-IdentStartPos));
-    {$ENDIF}
-    GatherContext:=CreateFindContext(Self,CursorNode);
-    CurrentIdentifierList.NewMemberVisibility:=GetClassVisibility(CursorNode);
-    if CursorNode.Desc in [ctnUsesSection,ctnUseUnit] then begin
-      GatherUnitNames;
-      MoveCursorToCleanPos(IdentEndPos);
-      ReadNextAtom;
-      if (CurPos.Flag=cafWord) and (not UpAtomIs('IN')) then begin
-        // add comma
-        CurrentIdentifierList.ContextFlags:=
-          CurrentIdentifierList.ContextFlags+[ilcfNeedsEndComma];
-      end;
-    end else if (CursorNode.Desc in AllSourceTypes)
-    and (PositionsInSameLine(Src,CursorNode.StartPos,IdentStartPos)) then begin
-      GatherSourceNames(GatherContext);
-    end else begin
-      FindCollectionContext(Params,IdentStartPos,CursorNode,
-                           ExprType,ContextExprStartPos,StartInSubContext);
-
-      GatherContext := ExprType.Context;
-      // find class and ancestors if existing (needed for protected identifiers)
-      if GatherContext.Tool = Self then
-        FindContextClassAndAncestors(IdentStartXY, FICTClassAndAncestors);
-
-      CursorContext:=CreateFindContext(Self,CursorNode);
-      GatherContextKeywords(CursorContext,IdentStartPos,Beautifier);
-
-      // check for incomplete context
-      
-      // context bracket level
-      CurrentIdentifierList.StartBracketLvl:=
-        GetBracketLvl(Src,CursorNode.StartPos,IdentStartPos,
-                      Scanner.NestedComments);
-      if CursorNode.Desc in AllPascalStatements then begin
-        CurrentIdentifierList.ContextFlags:=
-          CurrentIdentifierList.ContextFlags+[ilcfStartInStatement];
-      end;
-
-      // context in front of
-      StartPosOfVariable:=FindStartOfTerm(IdentStartPos,NodeTermInType(CursorNode));
-      if StartPosOfVariable>0 then begin
-        if StartPosOfVariable=IdentStartPos then begin
-          // cursor is at start of an operand
-          CurrentIdentifierList.ContextFlags:=
-            CurrentIdentifierList.ContextFlags+[ilcfStartOfOperand];
-        end else begin
-          MoveCursorToCleanPos(IdentStartPos);
-          ReadPriorAtom;
-          if CurPos.Flag=cafPoint then
-            // cursor is behind a point
-            CurrentIdentifierList.ContextFlags:=
-              CurrentIdentifierList.ContextFlags+[ilcfStartIsSubIdent];
-        end;
-        MoveCursorToCleanPos(StartPosOfVariable);
-        ReadPriorAtom;
-        CurrentIdentifierList.StartAtomInFront:=CurPos;
-        if (ilcfStartInStatement in CurrentIdentifierList.ContextFlags)
-        then begin
-          // check if LValue
-          if (CurPos.Flag in [cafSemicolon,cafEnd,cafColon])
-          or UpAtomIs('BEGIN')
-          or UpAtomIs('TRY') or UpAtomIs('FINALLY') or UpAtomIs('EXCEPT')
-          or UpAtomIs('FOR') or UpAtomIs('DO') or UpAtomIs('THEN')
-          or UpAtomIs('REPEAT') or UpAtomIs('ASM') or UpAtomIs('ELSE')
-          then begin
-            CurrentIdentifierList.ContextFlags:=
-              CurrentIdentifierList.ContextFlags+[ilcfStartOfStatement];
-          end;
-          // check if expression
-          if UpAtomIs('IF') or UpAtomIs('CASE') or UpAtomIs('WHILE')
-          or UpAtomIs('UNTIL')
-          then begin
-            // todo: check at start of expression, not only in front of variable
-            CurrentIdentifierList.ContextFlags:=
-              CurrentIdentifierList.ContextFlags+[ilcfIsExpression, ilcfDontAllowProcedures];
-          end;
-          // check if procedure is allowed
-          if CurPos.Flag in [cafComma, cafRoundBracketOpen, cafEdgedBracketOpen, cafEqual, cafOtherOperator] then
-            CurrentIdentifierList.ContextFlags:=
-              CurrentIdentifierList.ContextFlags+[ilcfDontAllowProcedures];
-        end;
-      end;
-      // context behind
-      if (IdentEndPos<SrcLen) then begin
-        MoveCursorToCleanPos(IdentEndPos);
-        //debugln(['TIdentCompletionTool.GatherIdentifiers "',dbgstr(Src,IdentStartPos,IdentEndPos-IdentStartPos),'"']);
-        InFrontOfDirective:=(CurPos.StartPos<SrcLen) and (Src[CurPos.StartPos]='{')
-                            and (Src[CurPos.StartPos+1]='$');
+    Params:=TFindDeclarationParams.Create(Self,CursorNode);
+    try
+      if CleanCursorPos=0 then ;
+      if IdentStartPos>0 then begin
+        MoveCursorToCleanPos(IdentStartPos);
         ReadNextAtom;
+        CurrentIdentifierList.StartAtom:=CurPos;
+      end;
 
-        // check end of line
-        if (not InFrontOfDirective)
-        and (CursorPos.Code.LineColIsOutside(CursorPos.Y,CursorPos.X)
-          or (not PositionsInSameLine(Src,IdentEndPos,CurPos.StartPos)))
-        then
+      // find context
+      {$IFDEF CTDEBUG}
+      DebugLn('TIdentCompletionTool.GatherIdentifiers B',
+        ' CleanCursorPos=',CleanPosToStr(CleanCursorPos),
+        ' IdentStartPos=',CleanPosToStr(IdentStartPos),' IdentEndPos=',CleanPosToStr(IdentEndPos),
+        ' Ident=',copy(Src,IdentStartPos,IdentEndPos-IdentStartPos));
+      {$ENDIF}
+      GatherContext:=CreateFindContext(Self,CursorNode);
+      CurrentIdentifierList.NewMemberVisibility:=GetClassVisibility(CursorNode);
+      if CursorNode.Desc in [ctnUsesSection,ctnUseUnit] then begin
+        GatherUnitNames;
+        MoveCursorToCleanPos(IdentEndPos);
+        ReadNextAtom;
+        if (CurPos.Flag=cafWord) and (not UpAtomIs('IN')) then begin
+          // add comma
           CurrentIdentifierList.ContextFlags:=
-            CurrentIdentifierList.ContextFlags+[ilcfEndOfLine];
-
-        CurrentIdentifierList.StartAtomBehind:=CurPos;
-        // check if a semicolon is needed or forbidden at the end
-        if InFrontOfDirective
-        or (CurrentIdentifierList.StartBracketLvl>0)
-        or (CurPos.Flag in [cafSemicolon, cafEqual, cafColon, cafComma,
-                   cafPoint, cafRoundBracketOpen, cafRoundBracketClose,
-                   cafEdgedBracketOpen, cafEdgedBracketClose])
-        or ((CurPos.Flag in [cafWord,cafNone])
-            and (UpAtomIs('ELSE')
-                 or UpAtomIs('THEN')
-                 or UpAtomIs('DO')
-                 or UpAtomIs('TO')
-                 or UpAtomIs('OF')
-                 or WordIsBinaryOperator.DoItCaseInsensitive(Src,
-                          CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)))
-        then begin
-          // do not add semicolon
-          CurrentIdentifierList.ContextFlags:=
-            CurrentIdentifierList.ContextFlags+[ilcfNoEndSemicolon];
+            CurrentIdentifierList.ContextFlags+[ilcfNeedsEndComma];
         end;
-        // check if in statement
-        if (ilcfStartInStatement in CurrentIdentifierList.ContextFlags) then
-        begin
-          // check if a semicolon is needed at the end
-          if (not (ilcfNoEndSemicolon in CurrentIdentifierList.ContextFlags))
-          then begin
-            // check if a semicolon is needed at the end
-            if (CurPos.Flag in [cafEnd])
-            or WordIsBlockKeyWord.DoItCaseInsensitive(Src,
-                                  CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
-            or ((CurPos.Flag=cafWord)
-                and (not PositionsInSameLine(Src,IdentEndPos,CurPos.StartPos)))
-            then begin
-              // add semicolon
+      end else if (CursorNode.Desc in AllSourceTypes)
+      and (PositionsInSameLine(Src,CursorNode.StartPos,IdentStartPos)) then begin
+        GatherSourceNames(GatherContext);
+      end else begin
+        FindCollectionContext(Params,IdentStartPos,CursorNode,
+                             ExprType,ContextExprStartPos,StartInSubContext);
+        //debugln(['TIdentCompletionTool.GatherIdentifiers FindCollectionContext ',ExprTypeToString(ExprType)]);
+
+        GatherContext := ExprType.Context;
+        // find class and ancestors if existing (needed for protected identifiers)
+        if GatherContext.Tool = Self then
+          FindContextClassAndAncestors(IdentStartXY, FICTClassAndAncestors);
+
+        CursorContext:=CreateFindContext(Self,CursorNode);
+        GatherContextKeywords(CursorContext,IdentStartPos,Beautifier);
+
+        // check for incomplete context
+
+        // context bracket level
+        CurrentIdentifierList.StartBracketLvl:=
+          GetBracketLvl(Src,CursorNode.StartPos,IdentStartPos,
+                        Scanner.NestedComments);
+        if CursorNode.Desc in AllPascalStatements then begin
+          CurrentIdentifierList.ContextFlags:=
+            CurrentIdentifierList.ContextFlags+[ilcfStartInStatement];
+        end;
+
+        // context in front of
+        StartPosOfVariable:=FindStartOfTerm(IdentStartPos,NodeTermInType(CursorNode));
+        if StartPosOfVariable>0 then begin
+          if StartPosOfVariable=IdentStartPos then begin
+            // cursor is at start of an operand
+            CurrentIdentifierList.ContextFlags:=
+              CurrentIdentifierList.ContextFlags+[ilcfStartOfOperand];
+          end else begin
+            MoveCursorToCleanPos(IdentStartPos);
+            ReadPriorAtom;
+            if CurPos.Flag=cafPoint then
+              // cursor is behind a point
               CurrentIdentifierList.ContextFlags:=
-                CurrentIdentifierList.ContextFlags+[ilcfNeedsEndSemicolon];
+                CurrentIdentifierList.ContextFlags+[ilcfStartIsSubIdent];
+          end;
+          MoveCursorToCleanPos(StartPosOfVariable);
+          ReadPriorAtom;
+          CurrentIdentifierList.StartAtomInFront:=CurPos;
+          if (ilcfStartInStatement in CurrentIdentifierList.ContextFlags)
+          then begin
+            // check if LValue
+            if (CurPos.Flag in [cafSemicolon,cafEnd,cafColon])
+            or UpAtomIs('BEGIN')
+            or UpAtomIs('TRY') or UpAtomIs('FINALLY') or UpAtomIs('EXCEPT')
+            or UpAtomIs('FOR') or UpAtomIs('DO') or UpAtomIs('THEN')
+            or UpAtomIs('REPEAT') or UpAtomIs('ASM') or UpAtomIs('ELSE')
+            then begin
+              CurrentIdentifierList.ContextFlags:=
+                CurrentIdentifierList.ContextFlags+[ilcfStartOfStatement];
+            end;
+            // check if expression
+            if UpAtomIs('IF') or UpAtomIs('CASE') or UpAtomIs('WHILE')
+            or UpAtomIs('UNTIL')
+            then begin
+              // todo: check at start of expression, not only in front of variable
+              CurrentIdentifierList.ContextFlags:=
+                CurrentIdentifierList.ContextFlags+[ilcfIsExpression, ilcfDontAllowProcedures];
+            end;
+            // check if procedure is allowed
+            if CurPos.Flag in [cafComma, cafRoundBracketOpen, cafEdgedBracketOpen, cafEqual, cafOtherOperator] then
+              CurrentIdentifierList.ContextFlags:=
+                CurrentIdentifierList.ContextFlags+[ilcfDontAllowProcedures];
+          end;
+        end;
+        // context behind
+        if (IdentEndPos<SrcLen) then begin
+          MoveCursorToCleanPos(IdentEndPos);
+          //debugln(['TIdentCompletionTool.GatherIdentifiers "',dbgstr(Src,IdentStartPos,IdentEndPos-IdentStartPos),'"']);
+          InFrontOfDirective:=(CurPos.StartPos<SrcLen) and (Src[CurPos.StartPos]='{')
+                              and (Src[CurPos.StartPos+1]='$');
+          ReadNextAtom;
+
+          // check end of line
+          if (not InFrontOfDirective)
+          and (CursorPos.Code.LineColIsOutside(CursorPos.Y,CursorPos.X)
+            or (not PositionsInSameLine(Src,IdentEndPos,CurPos.StartPos)))
+          then
+            CurrentIdentifierList.ContextFlags:=
+              CurrentIdentifierList.ContextFlags+[ilcfEndOfLine];
+
+          CurrentIdentifierList.StartAtomBehind:=CurPos;
+          // check if a semicolon is needed or forbidden at the end
+          if InFrontOfDirective
+          or (CurrentIdentifierList.StartBracketLvl>0)
+          or (CurPos.Flag in [cafSemicolon, cafEqual, cafColon, cafComma,
+                     cafPoint, cafRoundBracketOpen, cafRoundBracketClose,
+                     cafEdgedBracketOpen, cafEdgedBracketClose])
+          or ((CurPos.Flag in [cafWord,cafNone])
+              and (UpAtomIs('ELSE')
+                   or UpAtomIs('THEN')
+                   or UpAtomIs('DO')
+                   or UpAtomIs('TO')
+                   or UpAtomIs('OF')
+                   or WordIsBinaryOperator.DoItCaseInsensitive(Src,
+                            CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)))
+          then begin
+            // do not add semicolon
+            CurrentIdentifierList.ContextFlags:=
+              CurrentIdentifierList.ContextFlags+[ilcfNoEndSemicolon];
+          end;
+          // check if in statement
+          if (ilcfStartInStatement in CurrentIdentifierList.ContextFlags) then
+          begin
+            // check if a semicolon is needed at the end
+            if (not (ilcfNoEndSemicolon in CurrentIdentifierList.ContextFlags))
+            then begin
+              // check if a semicolon is needed at the end
+              if (CurPos.Flag in [cafEnd])
+              or WordIsBlockKeyWord.DoItCaseInsensitive(Src,
+                                    CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
+              or ((CurPos.Flag=cafWord)
+                  and (not PositionsInSameLine(Src,IdentEndPos,CurPos.StartPos)))
+              then begin
+                // add semicolon
+                CurrentIdentifierList.ContextFlags:=
+                  CurrentIdentifierList.ContextFlags+[ilcfNeedsEndSemicolon];
+              end;
             end;
           end;
-        end;
-        // check missing 'do' after 'with'
-        if CurrentIdentifierList.StartUpAtomInFrontIs('WITH')
-        and (not CurrentIdentifierList.StartUpAtomBehindIs('DO'))
-        and (CurrentIdentifierList.StartBracketLvl=0)
-        and (not (CurrentIdentifierList.StartAtomBehind.Flag in
-               [cafComma,cafPoint,cafRoundBracketOpen,cafEdgedBracketOpen]))
-        and (not CurrentIdentifierList.StartUpAtomBehindIs('^'))
-        then
+          // check missing 'do' after 'with'
+          if CurrentIdentifierList.StartUpAtomInFrontIs('WITH')
+          and (not CurrentIdentifierList.StartUpAtomBehindIs('DO'))
+          and (CurrentIdentifierList.StartBracketLvl=0)
+          and (not (CurrentIdentifierList.StartAtomBehind.Flag in
+                 [cafComma,cafPoint,cafRoundBracketOpen,cafEdgedBracketOpen]))
+          and (not CurrentIdentifierList.StartUpAtomBehindIs('^'))
+          then
+            CurrentIdentifierList.ContextFlags:=
+              CurrentIdentifierList.ContextFlags+[ilcfNeedsDo];
+        end else begin
+          // end of source
           CurrentIdentifierList.ContextFlags:=
-            CurrentIdentifierList.ContextFlags+[ilcfNeedsDo];
-      end else begin
-        // end of source
-        CurrentIdentifierList.ContextFlags:=
-          CurrentIdentifierList.ContextFlags+[ilcfEndOfLine];
+            CurrentIdentifierList.ContextFlags+[ilcfEndOfLine];
+        end;
+
+        // search and gather identifiers in context
+        if (GatherContext.Tool<>nil) and (GatherContext.Node<>nil) then begin
+          {$IFDEF CTDEBUG}
+          DebugLn('TIdentCompletionTool.GatherIdentifiers D CONTEXT: ',
+            GatherContext.Tool.MainFilename,
+            ' ',GatherContext.Node.DescAsString,
+            ' "',StringToPascalConst(copy(GatherContext.Tool.Src,GatherContext.Node.StartPos,50)),'"');
+          {$ENDIF}
+
+          // gather all identifiers in context
+          Params.ContextNode:=GatherContext.Node;
+          Params.SetIdentifier(Self,nil,@CollectAllIdentifiers);
+          Params.Flags:=[fdfSearchInAncestors,fdfCollect,fdfFindVariable,fdfSearchInHelpers];
+          if (Params.ContextNode.Desc=ctnInterface) and StartInSubContext then
+            Include(Params.Flags,fdfIgnoreUsedUnits);
+          if not StartInSubContext then
+            Include(Params.Flags,fdfSearchInParentNodes);
+          if Params.ContextNode.Desc in AllClasses then
+            Exclude(Params.Flags,fdfSearchInParentNodes);
+          {$IFDEF CTDEBUG}
+          DebugLn('TIdentCompletionTool.GatherIdentifiers F');
+          {$ENDIF}
+          CurrentIdentifierList.Context:=GatherContext;
+          if GatherContext.Node.Desc=ctnIdentifier then
+            Params.Flags:=Params.Flags+[fdfIgnoreCurContextNode];
+          GatherContext.Tool.FindIdentifierInContext(Params);
+        end else
+        if ExprType.Desc in xtAllTypeHelperTypes then
+        begin
+          // gather all identifiers in cursor context for basic types (strings etc.)
+          Params.ContextNode:=CursorNode;
+          Params.SetIdentifier(Self,nil,@CollectAllIdentifiers);
+          Params.Flags:=[fdfSearchInAncestors,fdfCollect,fdfFindVariable,fdfSearchInHelpers];
+          CurrentIdentifierList.Context:=CursorContext;
+          FindIdentifierInBasicTypeHelpers(ExprType.Desc, Params);
+        end;
+
+        // check for procedure/method declaration context
+        CheckProcedureDeclarationContext;
+
+        // add useful identifiers
+        {$IFDEF CTDEBUG}
+        DebugLn('TIdentCompletionTool.GatherIdentifiers G');
+        {$ENDIF}
+        GatherUsefulIdentifiers(IdentStartPos,CursorContext,GatherContext);
       end;
 
-      // search and gather identifiers in context
-      if (GatherContext.Tool<>nil) and (GatherContext.Node<>nil) then begin
-        {$IFDEF CTDEBUG}
-        DebugLn('TIdentCompletionTool.GatherIdentifiers D CONTEXT: ',
-          GatherContext.Tool.MainFilename,
-          ' ',GatherContext.Node.DescAsString,
-          ' "',StringToPascalConst(copy(GatherContext.Tool.Src,GatherContext.Node.StartPos,50)),'"');
-        {$ENDIF}
-
-        // gather all identifiers in context
-        Params.ContextNode:=GatherContext.Node;
-        Params.SetIdentifier(Self,nil,@CollectAllIdentifiers);
-        Params.Flags:=[fdfSearchInAncestors,fdfCollect,fdfFindVariable,fdfSearchInHelpers];
-        if (Params.ContextNode.Desc=ctnInterface) and StartInSubContext then
-          Include(Params.Flags,fdfIgnoreUsedUnits);
-        if not StartInSubContext then
-          Include(Params.Flags,fdfSearchInParentNodes);
-        if Params.ContextNode.Desc in AllClasses then
-          Exclude(Params.Flags,fdfSearchInParentNodes);
-        {$IFDEF CTDEBUG}
-        DebugLn('TIdentCompletionTool.GatherIdentifiers F');
-        {$ENDIF}
-        CurrentIdentifierList.Context:=GatherContext;
-        if GatherContext.Node.Desc=ctnIdentifier then
-          Params.Flags:=Params.Flags+[fdfIgnoreCurContextNode];
-        GatherContext.Tool.FindIdentifierInContext(Params);
-      end else
-      if ExprType.Desc in xtAllIdentPredefinedTypes then
-      begin
-        // gather all identifiers in cursor context for basic types (strings etc.)
-        Params.ContextNode:=CursorNode;
-        Params.SetIdentifier(Self,nil,@CollectAllIdentifiers);
-        Params.Flags:=[fdfSearchInAncestors,fdfCollect,fdfFindVariable,fdfSearchInHelpers];
-        CurrentIdentifierList.Context:=GatherContext;
-        FindIdentifierInBasicTypeHelpers(ExprType.Desc, Params);
-      end;
-
-      // check for procedure/method declaration context
-      CheckProcedureDeclarationContext;
-
-      // add useful identifiers
-      {$IFDEF CTDEBUG}
-      DebugLn('TIdentCompletionTool.GatherIdentifiers G');
-      {$ENDIF}
-      GatherUsefulIdentifiers(IdentStartPos,CursorContext,GatherContext);
+      Result:=true;
+    finally
+      FreeListOfPFindContext(FICTClassAndAncestors);
+      FreeAndNil(FIDCTFoundPublicProperties);
+      Params.Free;
+      ClearIgnoreErrorAfter;
     end;
-
-    Result:=true;
   finally
-    FreeListOfPFindContext(FICTClassAndAncestors);
-    FreeAndNil(FIDCTFoundPublicProperties);
-    Params.Free;
-    ClearIgnoreErrorAfter;
     DeactivateGlobalWriteLock;
     CurrentIdentifierList:=nil;
   end;
@@ -2828,6 +2837,8 @@ var
       AddCompilerProc('Seg','var X','LongInt');
       AddCompilerProc('SetLength','var S:String;NewLength:Integer');
       AddCompilerProc('SetLength','var A:Array;NewLength:Integer');
+      if Scanner.Values.IsDefined('FPC_HAS_CPSTRING') then
+        AddCompilerProc('SetString','out S:RawByteString;Buf:PAnsiChar;Len:SizeInt');
       AddCompilerProc('SizeOf','Identifier','Integer');
       AddCompilerProc('Slice','var A:Array;Count:Integer','Array');
       AddCompilerProc('Str','const X[:Width[:Decimals]];var S:String');
@@ -2917,7 +2928,7 @@ var
     {$IFDEF VerboseCodeContext}
     DebugLn('CheckContextIsParameter searching procedures, properties and variables ...');
     {$ENDIF}
-    if ExprType.Desc in xtAllIdentPredefinedTypes then
+    if ExprType.Desc in xtAllTypeHelperTypes then
       ExprType.Context.Tool.FindIdentifierInBasicTypeHelpers(ExprType.Desc, Params)
     else
       ExprType.Context.Tool.FindIdentifierInContext(Params);
@@ -2938,43 +2949,44 @@ begin
   CurrentIdentifierContexts:=CodeContexts;
 
   ActivateGlobalWriteLock;
-  Params:=TFindDeclarationParams.Create;//FindHelpersInContext called later
   try
     InitCollectIdentifiers(CursorPos,IdentifierList);
     ParseSourceTillCollectionStart(CursorPos,CleanCursorPos,CursorNode,
                                    IdentStartPos,IdentEndPos);
-    Params.ContextNode:=CursorNode;
-    FindHelpersInContext(Params);
-    if IdentStartPos=0 then ;
-    if IdentEndPos=0 then ;
+    Params:=TFindDeclarationParams.Create(Self, CursorNode);
+    try
+      if IdentStartPos=0 then ;
+      if IdentEndPos=0 then ;
 
-    // find class and ancestors if existing (needed for protected identifiers)
-    FindContextClassAndAncestors(CursorPos,FICTClassAndAncestors);
+      // find class and ancestors if existing (needed for protected identifiers)
+      FindContextClassAndAncestors(CursorPos,FICTClassAndAncestors);
 
-    if CursorNode<>nil then begin
-      if not CheckContextIsParameter(Result) then begin
-        DebugLn(['TIdentCompletionTool.FindCodeContext cursor not at parameter']);
-        exit;
+      if CursorNode<>nil then begin
+        if not CheckContextIsParameter(Result) then begin
+          DebugLn(['TIdentCompletionTool.FindCodeContext cursor not at parameter']);
+          exit;
+        end;
       end;
-    end;
 
-    if CurrentIdentifierContexts=nil then begin
-      // create default
-      AddCollectionContext(Self,CursorNode);
-    end;
+      if CurrentIdentifierContexts=nil then begin
+        // create default
+        AddCollectionContext(Self,CursorNode);
+      end;
 
-    Result:=true;
+      Result:=true;
+    finally
+      if Result then begin
+        CodeContexts:=CurrentIdentifierContexts;
+        CurrentIdentifierContexts:=nil;
+      end else begin
+        FreeAndNil(CurrentIdentifierContexts);
+      end;
+      FreeListOfPFindContext(FICTClassAndAncestors);
+      FreeAndNil(FIDCTFoundPublicProperties);
+      Params.Free;
+      ClearIgnoreErrorAfter;
+    end;
   finally
-    if Result then begin
-      CodeContexts:=CurrentIdentifierContexts;
-      CurrentIdentifierContexts:=nil;
-    end else begin
-      FreeAndNil(CurrentIdentifierContexts);
-    end;
-    FreeListOfPFindContext(FICTClassAndAncestors);
-    FreeAndNil(FIDCTFoundPublicProperties);
-    Params.Free;
-    ClearIgnoreErrorAfter;
     DeactivateGlobalWriteLock;
     FreeAndNil(CurrentIdentifierList);
   end;

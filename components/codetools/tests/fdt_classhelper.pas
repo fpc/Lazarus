@@ -1,3 +1,7 @@
+{
+ Test with:
+   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_ClassHelper
+}
 unit fdt_classhelper;
 
 {$mode objfpc}{$H+}
@@ -16,6 +20,21 @@ type
     function MyVar: integer;
   end;
 
+  { TMyClass }
+
+  TMyClass = class(TObject)
+  public
+    procedure Hello;
+  end;
+
+  { TMyClassHelper }
+
+  TMyClassHelper = class helper for TMyClass
+  public
+    procedure Hello2;
+  end;
+
+
 procedure DoIt;
 
 implementation
@@ -27,6 +46,20 @@ begin
   sl:=TStringList{declaration:Classes.TStringList}.Create;
   writeln('DoIt ',sl.MyVar{declaration:fdt_classhelper.TStringsClassHelper.MyVar});
   sl.Free;
+end;
+
+{ TMyClassHelper }
+
+procedure TMyClassHelper.Hello2;
+begin
+
+end;
+
+{ TMyClass }
+
+procedure TMyClass.Hello;
+begin
+  Self.Hello2{declaration:fdt_classhelper.TMyClassHelper.Hello2};
 end;
 
 { TStringsClassHelper }

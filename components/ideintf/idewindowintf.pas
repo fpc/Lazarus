@@ -1204,7 +1204,7 @@ begin
   P:=Path+P+'/';
   FFormCaption := Config.GetValue(P+'Caption/Value', fFormID);
   // placement
-  if FileVersion<2 then
+  if FileVersion=1 then
     DefaultValue:=iwpRestoreWindowSize
   else
     DefaultValue:=iwpRestoreWindowGeometry;
@@ -1625,7 +1625,7 @@ var
   ID: String;
   xLayoutIndex, FileVersion: Integer;
 begin
-  FileVersion:=Config.GetValue(Path+'Desktop/Version', 0);
+  FileVersion:=Config.GetValue(Path+'Desktop/Version', IDEWndCfgFileVersion);
   // create new windows
   i := Config.GetValue(Path+'Desktop/FormIdCount', 0);
   //debugln(['TSimpleWindowLayoutList.LoadFromConfig ',i]);

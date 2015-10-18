@@ -131,6 +131,7 @@ resourcestring
   lisClone = 'Clone';
   lisExport = 'Export';
   lisDlgExport = 'Export ...';
+  lisExportSub = 'Export >>';
   lisImport = 'Import';
   lisDlgImport = 'Import ...';
 
@@ -180,6 +181,8 @@ resourcestring
   lisCmdLineLCLInterfaceSpecificOptions = 'LCL Interface specific options:';
   lisDoNotShowSplashScreen = 'Do not show splash screen';
   lisSkipLoadingLastProject = 'Skip loading last project';
+  lisDoNotCheckIfAnotherIDEInstanceIsAlreadyRunning = '%sDo not check if '
+    +'another IDE instance is already running';
   lisOverrideLanguage = 'Override language. For example --language=de.'+
     ' For possible values see files in the languages directory.';
   lissecondaryConfigDirectoryWhereLazarusSearchesFor = 'secondary config '+
@@ -439,7 +442,6 @@ resourcestring
   lisMenuViewTabOrder = 'Tab Order';
   lisKMToggleViewComponentPalette = 'Toggle View Component Palette';
   lisMenuViewComponentPalette = 'Component Palette';
-  lisMenuViewIDESpeedButtons = 'IDE Speed Buttons';
   lisMenuDebugWindows = 'Debug Windows';
   lisMenuViewWatches = 'Watches';
   lisMenuViewBreakPoints = 'BreakPoints';
@@ -1176,6 +1178,9 @@ resourcestring
   dlgEOFocusMessagesAfterCompilation = 'Focus messages after compilation';
   lisMaximumParallelProcesses0MeansDefault = 'Maximum parallel processes, 0 '
     +'means default (%s)';
+  lisShowFPCMessageLinesCompiled = 'Show FPC message "lines compiled"';
+  lisElevateTheMessagePriorityToAlwaysShowItByDefaultIt = 'Elevate the message'
+    +' priority to always show it (by default it has low priority "verbose")';
   lisMessagesWindow = 'Messages Window';
   lisCheckForDiskFileChangesViaContent = 'Check for disk file changes via content '
     +'rather than timestamp';
@@ -1272,8 +1277,6 @@ resourcestring
   dlgManageDesktops = 'Manage desktops';
   dlgSaveCurrentDesktopAs = 'Save current desktop as';
   dlgReallyDeleteDesktop = 'Really delete desktop "%s"?';
-  dlgCannotDeleteActiveDesktop = 'You cannot delete the active desktop.';
-  dlgCannotDeleteDebugDesktop = 'You cannot delete debug desktop.';
   dlgCannotUseDockedUndockedDesktop = 'You cannot use docked desktop in undocked environment and vice versa.';
   dlgRenameDesktop = 'Rename desktop';
   dlgNewDesktop = 'New desktop ...';
@@ -2919,6 +2922,9 @@ resourcestring
   srkmecBlockDelete     = 'Delete Block';
   srkmecBlockGotoBegin  = 'Goto Block begin';
   srkmecBlockGotoEnd    = 'Goto Block end';
+
+  srkmecZoomIn    = 'Zoom in';
+  srkmecZoomOut   = 'Zoom out';
 
   srkmecShiftTab              = 'Shift Tab';
   lisTab                      = 'Tab';
@@ -4591,13 +4597,6 @@ resourcestring
   lisCoolbarMoveSelectedDown = 'Move selected toolbar item down';
   lisCoolbarAddDivider = 'Add Divider';
   lisCoolbarClearSelection = 'Clear selection';
-  lisCoolbarHelp1 = 'The "Add" button inserts a command before the ' +
-                    'selected Item of the Toolbar.';
-  lisCoolbarHelp2 = 'If none is selected, the Item will be appended at the end ' +
-                    'of the Toolbar.';
-  lisCoolbarHelp3 = 'You may rearrange Toolbar Items with "Move Up" and '+
-                    '"Move Down" buttons.';
-  lisCoolbarHelp4 = 'Hint: to append an Item at the end, use "Clear selection"';
   lisToolbarConfiguration = 'Toolbar Configuration';
   lisCoolbarAvailableCommands = 'Available commands';
   lisCoolbarToolbarCommands = 'Toolbar commands';
@@ -4633,9 +4632,9 @@ resourcestring
 
   // Editor Toolbar
   lisEditorToolbar = 'Editor ToolBar';
-  lisEditorToolbarHint = 'You may add here your favorite commands';
   lisConfigureEditorToolbar = 'Configure Toolbar';
-  lisEditorToolbarVisible = 'EditorToolbar is &visible';
+  lisEditorToolbarVisible = 'Editor Toolbar is &visible';
+  lisEditorToolbarSettings = 'Editor Toolbar Settings';
   lisPosition = 'Position';
 
   // components palette settings and list form
@@ -5474,6 +5473,7 @@ resourcestring
   lisInsertPrintShortTag = 'Insert PrintShort tag';
   lisIdCOpening = 'Opening';
   lisAutomaticallyInvokeAfterPoint = 'Automatically invoke after point';
+  lisAutomaticallyUseSinglePossibleIdent = 'Automatically use single possible identifier';
   lisAddParameterBrackets = 'Add parameter brackets';
   lisReplaceWholeIdentifier = 'Replace whole identifier';
   lisEnableReplaceWholeIdentifierDisableReplacePrefix = 'Enable = replace '

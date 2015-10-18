@@ -534,6 +534,7 @@
       <Unit76>
         <Filename Value="ideguicmdline.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="IDEGuiCmdLine"/>
       </Unit76>
       <Unit77>
         <Filename Value="frames/env_file_filters.pas"/>
@@ -652,6 +653,7 @@
         <ComponentName Value="MessagesFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="etMessageFrame"/>
       </Unit96>
       <Unit97>
         <Filename Value="etquickfixes.pas"/>
@@ -689,6 +691,7 @@
         <ComponentName Value="MsgWndOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="MsgWnd_Options"/>
       </Unit102>
       <Unit103>
         <Filename Value="compileroptions.pp"/>

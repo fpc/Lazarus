@@ -507,17 +507,16 @@ end;
 
 procedure TComponentPalette.ActivePageChanged(Sender: TObject);
 begin
-  if FPageControl=nil then exit;
+  if (FPageControl=nil) or fUpdatingPageControl then exit;
   if (Selected<>nil)
   and ((Selected.RealPage as TComponentPage).PageComponent=FPageControl.ActivePage) then exit;
-  if fUpdatingPageControl then exit;
   {$IFDEF VerboseComponentPalette}
   DebugLn('TComponentPalette.ActivePageChanged: Calling ReAlignButtons, setting Selected:=nil.');
   {$ENDIF}
   ReAlignButtons(FPageControl.ActivePage);
   Selected:=nil;
 
-  if Assigned(FOnChangeActivePage) then
+  if MainIDE.IDEStarted and Assigned(FOnChangeActivePage) then
     FOnChangeActivePage(Sender);
 end;
 
