@@ -404,7 +404,7 @@ begin
     else
       FActivePropertyGridItemIndex := -1;
 
-    {$IFDEF WINDOWS}
+    {$IF Defined(LCLWin32) or Defined(LCLWin64)}
     SetCapture(TWinControl(Sender).Handle);
     {$ENDIF}
     GetCursorPos(FOldPos);
@@ -548,7 +548,7 @@ begin
   if FNodePositioning then
   begin
     Screen.Cursor := crDefault;
-    {$IFDEF WINDOWS}
+    {$IF Defined(LCLWin32) or Defined(LCLWin64)}
     ReleaseCapture;
     {$ENDIF}
 
@@ -677,7 +677,9 @@ begin
   ShowSizeControls;
 
   // for GTK2 resizing form (pClient is hidden under pBG)
-  pClient.SendToBack;
+  {$IF DEFINED(LCLGtk2) OR DEFINED(LCLQt)}
+  pClient.SendToBack; // <--- this is a must.
+  {$ENDIF}
   pClient.BringToFront;
 end;
 
