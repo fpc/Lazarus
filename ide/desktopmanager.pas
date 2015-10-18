@@ -341,7 +341,6 @@ begin
   SetActiveDesktopAction.ImageIndex := IDEImages.LoadImage(16, 'laz_tick');
   SetDebugDesktopAction.Hint := dlgToggleDebugDesktop;
   SetDebugDesktopAction.ImageIndex := IDEImages.LoadImage(16, 'debugger');
-  ButtonPanel1.CloseButton.Caption := lisClose;
   AutoSaveActiveDesktopCheckBox.Caption := dlgAutoSaveActiveDesktop;
   AutoSaveActiveDesktopCheckBox.Hint := dlgAutoSaveActiveDesktopHint;
   LblGrayedInfo.Caption := dlgGrayedDesktopsUndocked;
@@ -351,7 +350,6 @@ begin
   ExportAction.Caption := lisExportSelected;
   ExportAllAction.Caption := lisExportAll;
   ImportAction.Hint := lisImport;
-  //ImportAction.ImageIndex := IDEImages.LoadImage(16, 'laz_open');
   ExportBitBtn.LoadGlyphFromStock(idButtonSave);
   ExportBitBtn.Caption := lisExportSub;
   ImportBitBtn.LoadGlyphFromStock(idButtonOpen);
@@ -445,42 +443,26 @@ end;
 
 procedure TDesktopForm.DeleteActionClick(Sender: TObject);
 var
-  xDesktopName: String;
+  dskName: String;
   dskIndex: Integer;
 begin
   if DesktopListBox.ItemIndex = -1 then
     Exit;
-
-  xDesktopName := DesktopListBox.Items[DesktopListBox.ItemIndex];
-  if (xDesktopName = EnvironmentOptions.ActiveDesktopName) then
-  begin
-    MessageDlg(dlgCannotDeleteActiveDesktop, mtError, [mbOK], 0);
+  dskName := DesktopListBox.Items[DesktopListBox.ItemIndex];
+  if MessageDlg(Format(dlgReallyDeleteDesktop, [dskName]), mtConfirmation, mbYesNo, 0) <> mrYes then
     Exit;
-  end else
-  if (xDesktopName = EnvironmentOptions.DebugDesktopName) then
+  dskIndex := EnvironmentOptions.Desktops.IndexOf(dskName);
+  if dskIndex >= 0 then
   begin
-    MessageDlg(dlgCannotDeleteDebugDesktop, mtError, [mbOK], 0);
-    Exit;
-  end;
-
-  if MessageDlg(Format(dlgReallyDeleteDesktop, [xDesktopName]), mtConfirmation, mbYesNo, 0) <> mrYes then
-    Exit;
-
-  with EnvironmentOptions do
-  begin
-    dskIndex := Desktops.IndexOf(xDesktopName);
-    if dskIndex >= 0 then
-    begin
-      debugln(['TDesktopForm.SaveBitBtnClick: Deleting ', xDesktopName]);
-      Desktops.Delete(dskIndex);
-      if DesktopListBox.ItemIndex+1 < DesktopListBox.Count then
-        xDesktopName := DesktopListBox.Items[DesktopListBox.ItemIndex+1]
-      else if DesktopListBox.ItemIndex > 0 then
-        xDesktopName := DesktopListBox.Items[DesktopListBox.ItemIndex-1]
-      else
-        xDesktopName := '';
-      RefreshList(xDesktopName);
-    end;
+    debugln(['TDesktopForm.SaveBitBtnClick: Deleting ', dskName]);
+    EnvironmentOptions.Desktops.Delete(dskIndex);
+    if DesktopListBox.ItemIndex+1 < DesktopListBox.Count then
+      dskName := DesktopListBox.Items[DesktopListBox.ItemIndex+1]
+    else if DesktopListBox.ItemIndex > 0 then
+      dskName := DesktopListBox.Items[DesktopListBox.ItemIndex-1]
+    else
+      dskName := '';
+    RefreshList(dskName);
   end;
 end;
 
@@ -768,13 +750,28 @@ begin
 end;
 
 procedure TDesktopForm.DesktopListBoxSelectionChange(Sender: TObject; User: boolean);
+var
+  HasSel, IsActive, IsDebug: Boolean;
+  CurName: String;
 begin
-  DeleteAction.Enabled := DesktopListBox.ItemIndex>=0;
-  RenameAction.Enabled := DeleteAction.Enabled;
-  SetDebugDesktopAction.Enabled := DeleteAction.Enabled;
-  MoveUpAction.Enabled := DeleteAction.Enabled;
-  MoveDownAction.Enabled := DeleteAction.Enabled;
-  ExportAction.Enabled := DeleteAction.Enabled;
+  HasSel := DesktopListBox.ItemIndex>=0;
+  if HasSel then
+  begin
+    CurName := DesktopListBox.Items[DesktopListBox.ItemIndex];
+    IsActive := CurName = EnvironmentOptions.ActiveDesktopName;
+    IsDebug := CurName = EnvironmentOptions.DebugDesktopName;
+  end
+  else begin
+    IsActive := False;
+    IsDebug := False;
+  end;
+  SetActiveDesktopAction.Enabled := HasSel and not IsActive;
+  SetDebugDesktopAction.Enabled := HasSel and not IsDebug;
+  RenameAction.Enabled := HasSel;
+  DeleteAction.Enabled := HasSel and not (IsActive or IsDebug);
+  MoveUpAction.Enabled := HasSel and (DesktopListBox.ItemIndex > 0);
+  MoveDownAction.Enabled := HasSel and (DesktopListBox.ItemIndex < DesktopListBox.Items.Count-1);
+  ExportAction.Enabled := HasSel;
   ExportAllAction.Enabled := DesktopListBox.Items.Count>0;
   ExportBitBtn.Enabled := ExportItem.Enabled or ExportAllItem.Enabled;
 end;

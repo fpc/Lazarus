@@ -1277,8 +1277,6 @@ resourcestring
   dlgManageDesktops = 'Manage desktops';
   dlgSaveCurrentDesktopAs = 'Save current desktop as';
   dlgReallyDeleteDesktop = 'Really delete desktop "%s"?';
-  dlgCannotDeleteActiveDesktop = 'You cannot delete the active desktop.';
-  dlgCannotDeleteDebugDesktop = 'You cannot delete debug desktop.';
   dlgCannotUseDockedUndockedDesktop = 'You cannot use docked desktop in undocked environment and vice versa.';
   dlgRenameDesktop = 'Rename desktop';
   dlgNewDesktop = 'New desktop ...';
