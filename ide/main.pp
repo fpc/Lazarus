@@ -388,8 +388,6 @@ type
     procedure mnuChgBuildModeClicked(Sender: TObject);
     procedure ToolBarOptionsClick(Sender: TObject);
   private
-    FLastUnitInfoFileName: string; // used in UpdateProjectMenu
-  private
     fBuilder: TLazarusBuilder;
     function DoBuildLazarusSub(Flags: TBuildLazarusFlags): TModalResult;
     // Global IDE events
@@ -3714,22 +3712,17 @@ begin
   GetCurrentUnit(ASrcEdit,AUnitInfo);
   if Assigned(AUnitInfo) then
   begin
-    if (AUnitInfo.Filename <> FLastUnitInfoFileName) then
-    begin
-      PkgFile:=PackageGraph.FindFileInAllPackages(AUnitInfo.Filename,true,
-                                            not AUnitInfo.IsPartOfProject);
-      CanOpenPkgOfFile:=Assigned(PkgFile);
-      CanAddCurFile:=(not AUnitInfo.IsVirtual) and FileExistsUTF8(AUnitInfo.Filename)
-            and not AUnitInfo.IsPartOfProject;
-      MainIDEBar.itmPkgOpenPackageOfCurUnit.Enabled:=CanOpenPkgOfFile;
-      MainIDEBar.itmPkgAddCurFileToPkg.Enabled:=CanAddCurFile;
-      FLastUnitInfoFileName := AUnitInfo.Filename;
-    end;
+    PkgFile:=PackageGraph.FindFileInAllPackages(AUnitInfo.Filename,true,
+                                          not AUnitInfo.IsPartOfProject);
+    CanOpenPkgOfFile:=Assigned(PkgFile);
+    CanAddCurFile:=(not AUnitInfo.IsVirtual) and FileExistsUTF8(AUnitInfo.Filename)
+          and not AUnitInfo.IsPartOfProject;
+    MainIDEBar.itmPkgOpenPackageOfCurUnit.Enabled:=CanOpenPkgOfFile;
+    MainIDEBar.itmPkgAddCurFileToPkg.Enabled:=CanAddCurFile;
   end else
   begin
     MainIDEBar.itmPkgOpenPackageOfCurUnit.Enabled:=False;
     MainIDEBar.itmPkgAddCurFileToPkg.Enabled:=False;
-    FLastUnitInfoFileName := '';
   end;
 end;
 

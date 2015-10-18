@@ -144,6 +144,33 @@ type
     ErrorMessage: string;
   end;
 
+  TLazPackageGraph = class;
+
+  { TLazPackageGraphFileCachePackageInfo }
+
+  TLazPackageGraphFileCachePackageInfo = record
+    FileName: string;
+    ChangeStamp: Integer;
+  end;
+
+  { TLazPackageGraphFileCache }
+
+  TLazPackageGraphFileCache = class(TObject)
+  private
+    FGraph: TLazPackageGraph;
+    FPackageInfo: array of TLazPackageGraphFileCachePackageInfo;
+    FFilesList: TFilenameToPointerTree;
+    FRemovedFilesList: TFilenameToPointerTree;
+    function NeedsUpdate: Boolean;
+    procedure Update;
+  public
+    constructor Create(AOwner: TLazPackageGraph);
+    destructor Destroy; override;
+  public
+    function FindFileInAllPackages(TheFilename: string;
+      IgnoreDeleted, FindVirtualFile: boolean): TPkgFile;
+  end;
+
   { TLazPackageGraph }
 
   TLazPackageGraph = class
@@ -182,6 +209,7 @@ type
     FTree: TAVLTree; // sorted tree of TLazPackage
     FUpdateLock: integer;
     FVerbosity: TPkgVerbosityFlags;
+    FFindFileCache: TLazPackageGraphFileCache;
     function CreateDefaultPackage: TLazPackage;
     function GetCount: Integer;
     function GetPackages(Index: integer): TLazPackage;
@@ -632,6 +660,93 @@ begin
   Result:=UTF8Trim(Result,[]);
 end;
 
+{ TLazPackageGraphFileCache }
+
+constructor TLazPackageGraphFileCache.Create(AOwner: TLazPackageGraph);
+begin
+  inherited Create;
+
+  FGraph := AOwner;
+  SetLength(FPackageInfo, 0);
+  FFilesList := TFilenameToPointerTree.Create(true);
+  FRemovedFilesList := TFilenameToPointerTree.Create(true);
+end;
+
+destructor TLazPackageGraphFileCache.Destroy;
+begin
+  SetLength(FPackageInfo, 0);
+  FreeAndNil(FFilesList);
+  FreeAndNil(FRemovedFilesList);
+
+  inherited Destroy;
+end;
+
+function TLazPackageGraphFileCache.FindFileInAllPackages(
+  TheFilename: string; IgnoreDeleted, FindVirtualFile: boolean): TPkgFile;
+
+  procedure FindFileInStrList(const Files: TFilenameToPointerTree);
+  begin
+    Result:=TPkgFile(Files[TheFilename]);
+    if (Result<>nil) and (not FindVirtualFile)
+    and (not FilenameIsAbsolute(Result.Filename)) then
+      Result := nil;
+  end;
+
+begin
+  Result:=nil;
+
+  if NeedsUpdate then
+    Update;
+
+  FindFileInStrList(FFilesList);
+  if Result<>nil then Exit;
+  if not IgnoreDeleted then
+    FindFileInStrList(FRemovedFilesList);
+end;
+
+function TLazPackageGraphFileCache.NeedsUpdate: Boolean;
+var
+  I: Integer;
+begin
+  if FGraph.Count <> Length(FPackageInfo) then
+    Exit(True);
+
+  for I := 0 to FGraph.Count-1 do
+    if (FPackageInfo[I].ChangeStamp <> FGraph[I].ChangeStamp)
+      or (FPackageInfo[I].FileName<>FGraph[I].Filename)
+    then
+      Exit(True);
+
+  Result := False;
+end;
+
+procedure TLazPackageGraphFileCache.Update;
+var
+  I, L: Integer;
+  xPck: TLazPackage;
+begin
+  SetLength(FPackageInfo, FGraph.Count);
+  FFilesList.Clear;
+  FRemovedFilesList.Clear;
+  for I := 0 to FGraph.Count-1 do
+  begin
+    xPck := FGraph[I];
+    FPackageInfo[I].ChangeStamp := xPck.ChangeStamp;
+    FPackageInfo[I].FileName := xPck.Filename;
+
+    for L := 0 to xPck.FileCount-1 do
+    begin
+      FFilesList[xPck.Files[L].GetFullFilename]:=xPck.Files[L];
+      FFilesList[xPck.Files[L].Filename]:=xPck.Files[L];
+    end;
+    for L := 0 to xPck.RemovedFilesCount-1 do
+    begin
+      FRemovedFilesList[xPck.RemovedFiles[L].GetFullFilename]:=xPck.RemovedFiles[L];
+      FRemovedFilesList[xPck.RemovedFiles[L].Filename]:=xPck.RemovedFiles[L];
+    end;
+  end;
+end;
+
 { TLazPkgGraphBuildItem }
 
 // inline
@@ -925,6 +1040,7 @@ begin
   FreeAndNil(FLazarusBasePackages);
   FreeAndNil(FItems);
   FreeAndNil(FTree);
+  FreeAndNil(FFindFileCache);
   inherited Destroy;
 end;
 
@@ -1477,17 +1593,11 @@ end;
 
 function TLazPackageGraph.FindFileInAllPackages(const TheFilename: string;
   IgnoreDeleted, FindVirtualFile: boolean): TPkgFile;
-var
-  Cnt: Integer;
-  i: Integer;
 begin
-  Cnt:=Count;
-  for i:=0 to Cnt-1 do begin
-    Result:=Packages[i].FindPkgFile(TheFilename,IgnoreDeleted,
-                                    FindVirtualFile);
-    if Result<>nil then exit;
-  end;
-  Result:=nil;
+  if FFindFileCache=nil then
+    FFindFileCache := TLazPackageGraphFileCache.Create(Self);
+
+  Result := FFindFileCache.FindFileInAllPackages(TheFilename, IgnoreDeleted, FindVirtualFile);
 end;
 
 procedure TLazPackageGraph.FindPossibleOwnersOfUnit(const TheFilename: string;
