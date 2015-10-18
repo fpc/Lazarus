@@ -36,69 +36,36 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, Controls, Forms, Buttons, StdCtrls, Dialogs,
-  LazarusIDEStrConsts, ButtonPanel, IDEDialogs;
-
-type
-  { TSysVarUserOverrideDialog }
-  TSysVarUserOverrideDialog = class(TForm)
-    ButtonPanel: TButtonPanel;
-    VariableLabel: TLabel;
-    VariableEdit: TEdit;
-    ValueLabel: TLabel;
-    ValueEdit: TEdit;
-    procedure OkButtonClick(Sender: TObject);
-  private
-  public
-    constructor Create(TheOwner: TComponent); override;
-  end;
+  Classes, SysUtils, Controls, Forms, Dialogs,
+  LazarusIDEStrConsts, IDEDialogs;
 
 function ShowSysVarUserOverrideDialog(var AName, AValue: string): TModalResult;
 
 implementation
 
-{$R *.lfm}
-
 function ShowSysVarUserOverrideDialog(var AName, AValue: string): TModalResult;
+var
+  ok: boolean;
+  Vals: array of string;
 begin
-  with TSysVarUserOverrideDialog.Create(nil) do
-  try
-    VariableEdit.Text:=AName;
-    ValueEdit.Text:=AValue;
-    //if AName=''
-    //  then ActiveControl := VariableEdit;
-    Result:=ShowModal;
-    if (Result=mrOk) then begin
-      AName:=Trim(VariableEdit.Text);
-      AValue:=ValueEdit.Text;
-    end;
-  finally
-    Free;
-  end;
-end;
+  SetLength(Vals, 2);
+  Vals[0]:= AName;
+  Vals[1]:= AValue;
 
-{ TSysVarUserOverrideDialog }
+  repeat
+    ok:= InputQuery(lisSVUOOverrideSystemVariable,
+      [lisVariable, lisValue], Vals);
+    if not ok then exit(mrCancel);
 
-procedure TSysVarUserOverrideDialog.OkButtonClick(Sender: TObject);
-var v: string;
-begin
-  v:=Trim(VariableEdit.Text);
-  if not IsValidIdent(v) then begin
-    if IDEMessageDialog(lisSVUOInvalidVariableName,
-      Format(lisSVUOisNotAValidIdentifier, [v]),
-      mtWarning,[mbCancel,mbIgnore])=mrCancel
-    then ModalResult := mrNone; //cancel close
-  end;
-end;
-
-constructor TSysVarUserOverrideDialog.Create(TheOwner: TComponent);
-begin
-  inherited Create(TheOwner);
-
-  Caption:=lisSVUOOverrideSystemVariable;
-
-  VariableLabel.Caption:=lisVariable;
-  ValueLabel.Caption:=lisValue;
+    AName:= Trim(Vals[0]);
+    AValue:= Vals[1];
+    if IsValidIdent(AName) then
+      exit(mrOk)
+    else
+      if IDEMessageDialog(lisSVUOInvalidVariableName,
+        Format(lisSVUOisNotAValidIdentifier, [AName]),
+        mtWarning, [mbCancel, mbIgnore])=mrIgnore then exit(mrOk);
+  until false;
 end;
 
 end.
