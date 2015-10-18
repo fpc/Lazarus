@@ -168,7 +168,7 @@ begin
         FoundCursorPos.Code,FoundCursorPos.X,FoundCursorPos.Y,FoundTopLine)
       then begin
         if ExpectedPath<>'' then
-          AssertEquals('find declaration failed at '+Tool.CleanPosToStr(IdentifierStartPos,true)+': '+CodeToolBoss.ErrorMessage,false,true);
+          AssertEquals('find declaration failed at '+Tool.CleanPosToStr(IdentifierStartPos,true)+': '+CodeToolBoss.ErrorMessage,true,false);
         continue;
       end else begin
         FoundTool:=CodeToolBoss.GetCodeToolForSource(FoundCursorPos.Code,true,true) as TFindDeclarationTool;
