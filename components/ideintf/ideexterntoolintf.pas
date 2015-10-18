@@ -23,6 +23,7 @@ const
   SubToolFPCLinker = 'FPCLinker';
   SubToolFPCRes = 'FPCRes';
   SubToolFPCWindRes = 'FPCWindRes';
+  SubToolFPCAssembler = 'FPCAssembler';
 
   SubToolMake = 'make';
   SubToolMakePriority = 1000; // higher than FPC
