@@ -36,9 +36,7 @@ type
     fSortedData: TStringList;
     fCheckedItems: TStringMap;         // Only needed for TCheckListBox
     function CompareFNs(AFilename1,AFilename2: string): integer;
-    function GetFirstSelected: Integer;
     procedure SetFilteredListbox(const AValue: TCustomListBox);
-    procedure UnselectAll;
   protected
     procedure MoveNext; override;
     procedure MovePrev; override;
@@ -56,7 +54,6 @@ type
   public
     property SelectionList: TStringList read fSelectionList;
     property Items: TStringList read fOriginalData;
-    property Data: TStringList read fOriginalData; deprecated 'Use property Items instead';
   published
     property FilteredListbox: TCustomListBox read fFilteredListbox write SetFilteredListbox;
   end;
@@ -226,50 +223,28 @@ begin
   end;
 end;
 
-function TListFilterEdit.GetFirstSelected: Integer;
-var
-  i: Integer;
-begin
-  Result := -1;
-  for i := 0 to fFilteredListbox.Count - 1 do
-    if fFilteredListbox.Selected[i] then
-      Exit(i);
-end;
-
-procedure TListFilterEdit.UnselectAll;
-var
-  i: Integer;
-begin
-  for i := 0 to fFilteredListbox.Count - 1 do
-    fFilteredListbox.Selected[i] := False;
-end;
-
 procedure TListFilterEdit.MoveNext;
 var
   i: Integer;
 begin
-  i := GetFirstSelected + 1;
-  if fFilteredListbox.Count > 0 then begin
-    UnselectAll;
-    if i < fFilteredListbox.Count then
-      fFilteredListbox.Selected[i] := True
-    else
-      fFilteredListbox.Selected[0] := True;
-  end;
+  if fFilteredListbox.Count = 0 then Exit;
+  i := fFilteredListbox.ItemIndex + 1;
+  if i < fFilteredListbox.Count then
+    fFilteredListbox.ItemIndex := i
+  else
+    fFilteredListbox.ItemIndex := 0;
 end;
 
 procedure TListFilterEdit.MovePrev;
 var
   i: Integer;
 begin
-  i := GetFirstSelected - 1;
-  if fFilteredListbox.Count > 0 then begin
-    UnselectAll;
-    if i >= 0 then
-      fFilteredListbox.Selected[i] := True
-    else
-      fFilteredListbox.Selected[fFilteredListbox.Count-1] := True;
-  end;
+  if fFilteredListbox.Count = 0 then Exit;
+  i := fFilteredListbox.ItemIndex - 1;
+  if i >= 0 then
+    fFilteredListbox.ItemIndex := i
+  else
+    fFilteredListbox.ItemIndex := fFilteredListbox.Count-1;
 end;
 
 function TListFilterEdit.ReturnKeyHandled: Boolean;
