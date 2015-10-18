@@ -893,9 +893,9 @@ type
 
     // ancestors
     function FindClassAndAncestors(ClassNode: TCodeTreeNode;
-      out ListOfPFindContext: TFPList; ExceptionOnNotFound: boolean
+      var ListOfPFindContext: TFPList; ExceptionOnNotFound: boolean
       ): boolean; // without interfaces, recursive
-    function FindContextClassAndAncestors(const CursorPos: TCodeXYPosition;
+    function FindContextClassAndAncestorsAndExtendedClassOfHelper(const CursorPos: TCodeXYPosition;
       var ListOfPFindContext: TFPList): boolean; // without interfaces
     function FindAncestorOfClass(ClassNode: TCodeTreeNode;
       Params: TFindDeclarationParams; FindClassContext: boolean): boolean; // returns false for TObject, IInterface, IUnknown
@@ -4950,7 +4950,7 @@ begin
 end;
 
 function TFindDeclarationTool.FindClassAndAncestors(ClassNode: TCodeTreeNode;
-  out ListOfPFindContext: TFPList; ExceptionOnNotFound: boolean): boolean;
+  var ListOfPFindContext: TFPList; ExceptionOnNotFound: boolean): boolean;
 var
   Params: TFindDeclarationParams;
 
@@ -4979,7 +4979,6 @@ var
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(ClassNode);{$ENDIF}
   Result:=false;
-  ListOfPFindContext:=nil;
   if (ClassNode=nil) or (not (ClassNode.Desc in AllClasses))
   or (ClassNode.Parent=nil)
   or (not (ClassNode.Parent.Desc in [ctnTypeDefinition,ctnGenericType])) then
@@ -5076,14 +5075,14 @@ begin
   end;
 end;
 
-function TFindDeclarationTool.FindContextClassAndAncestors(
-  const CursorPos: TCodeXYPosition; var ListOfPFindContext: TFPList
-  ): boolean;
+function TFindDeclarationTool.FindContextClassAndAncestorsAndExtendedClassOfHelper
+  (const CursorPos: TCodeXYPosition; var ListOfPFindContext: TFPList): boolean;
 // returns a list of nodes of AllClasses (ctnClass, ...)
 var
   CleanCursorPos: integer;
   ANode: TCodeTreeNode;
   ClassNode: TCodeTreeNode;
+  ExtendedClassExpr: TExpressionType;
 begin
   Result:=false;
   ListOfPFindContext:=nil;
@@ -5107,6 +5106,15 @@ begin
     if not FindClassAndAncestors(ClassNode,ListOfPFindContext,true)
     then exit;
     
+    //find extended class node
+    ExtendedClassExpr := FindExtendedExprOfHelper(ClassNode);
+    if ((ExtendedClassExpr.Desc=xtContext) and (ExtendedClassExpr.Context.Tool<>nil) and
+        (ExtendedClassExpr.Context.Node<>nil) and (ExtendedClassExpr.Context.Node.Desc=ctnClass)) then
+    begin
+      if not ExtendedClassExpr.Context.Tool.FindClassAndAncestors(ExtendedClassExpr.Context.Node,ListOfPFindContext,true)
+      then exit;
+    end;
+
     //debugln('TFindDeclarationTool.FindContextClassAndAncestors List: ',ListOfPFindContextToStr(ListOfPFindContext));
     
   finally

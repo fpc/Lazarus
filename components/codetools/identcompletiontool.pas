@@ -355,7 +355,7 @@ type
     FBeautifier: TBeautifyCodeOptions;
     FLastGatheredIdentParent: TCodeTreeNode;
     FLastGatheredIdentLevel: integer;
-    FICTClassAndAncestors: TFPList;// list of PCodeXYPosition
+    FICTClassAndAncestorsAndExtClassOfHelper: TFPList;// list of PCodeXYPosition
     FIDCTFoundPublicProperties: TAVLTree;// tree of PChar (pointing to the
                                     // property names in source)
     FIDTFoundMethods: TAVLTree;// tree of TCodeTreeNodeExtension Txt=clean text
@@ -1009,7 +1009,7 @@ var
     FoundClassContext: TFindContext;
   begin
     Result:=false;
-    if FICTClassAndAncestors<>nil then begin
+    if (FICTClassAndAncestorsAndExtClassOfHelper<>nil) then begin
       // start of the identifier completion is in a method or class
       // => all protected ancestor classes are allowed as well.
       CurClassNode:=FoundContext.Node;
@@ -1018,8 +1018,8 @@ var
         CurClassNode:=CurClassNode.Parent;
       if CurClassNode=nil then exit;
       FoundClassContext:=CreateFindContext(Params.NewCodeTool,CurClassNode);
-      if IndexOfFindContext(FICTClassAndAncestors,@FoundClassContext)>=0 then begin
-        // this class node is the class or one of the ancestors of the class
+      if IndexOfFindContext(FICTClassAndAncestorsAndExtClassOfHelper,@FoundClassContext)>=0 then begin
+        // this class node is the class or one of the ancestors of the class or extended class of the helper+ancestors
         // of the start context of the identifier completion
         exit(true);
       end;
@@ -2576,7 +2576,9 @@ begin
         GatherContext := ExprType.Context;
         // find class and ancestors if existing (needed for protected identifiers)
         if GatherContext.Tool = Self then
-          FindContextClassAndAncestors(IdentStartXY, FICTClassAndAncestors);
+        begin
+          FindContextClassAndAncestorsAndExtendedClassOfHelper(IdentStartXY, FICTClassAndAncestorsAndExtClassOfHelper);
+        end;
 
         CursorContext:=CreateFindContext(Self,CursorNode);
         GatherContextKeywords(CursorContext,IdentStartPos,Beautifier);
@@ -2756,7 +2758,7 @@ begin
 
       Result:=true;
     finally
-      FreeListOfPFindContext(FICTClassAndAncestors);
+      FreeListOfPFindContext(FICTClassAndAncestorsAndExtClassOfHelper);
       FreeAndNil(FIDCTFoundPublicProperties);
       Params.Free;
       ClearIgnoreErrorAfter;
@@ -2959,7 +2961,7 @@ begin
       if IdentEndPos=0 then ;
 
       // find class and ancestors if existing (needed for protected identifiers)
-      FindContextClassAndAncestors(CursorPos,FICTClassAndAncestors);
+      FindContextClassAndAncestorsAndExtendedClassOfHelper(CursorPos,FICTClassAndAncestorsAndExtClassOfHelper);
 
       if CursorNode<>nil then begin
         if not CheckContextIsParameter(Result) then begin
@@ -2981,7 +2983,7 @@ begin
       end else begin
         FreeAndNil(CurrentIdentifierContexts);
       end;
-      FreeListOfPFindContext(FICTClassAndAncestors);
+      FreeListOfPFindContext(FICTClassAndAncestorsAndExtClassOfHelper);
       FreeAndNil(FIDCTFoundPublicProperties);
       Params.Free;
       ClearIgnoreErrorAfter;
@@ -3324,9 +3326,9 @@ var
   m: PtrUint;
 begin
   inherited CalcMemSize(Stats);
-  if FICTClassAndAncestors<>nil then
-    Stats.Add('TIdentCompletionTool.ClassAndAncestors',
-        FICTClassAndAncestors.Count*(SizeOf(TAVLTreeNode)+SizeOf(TCodeXYPosition)));
+  if FICTClassAndAncestorsAndExtClassOfHelper<>nil then
+    Stats.Add('TIdentCompletionTool.ClassAndAncestorsAndExtClassOfHelper',
+        FICTClassAndAncestorsAndExtClassOfHelper.Count*(SizeOf(TAVLTreeNode)+SizeOf(TCodeXYPosition)));
   if FIDCTFoundPublicProperties<>nil then
     Stats.Add('TIdentCompletionTool.FoundPublicProperties',
               FIDCTFoundPublicProperties.Count*SizeOf(TAVLTreeNode));

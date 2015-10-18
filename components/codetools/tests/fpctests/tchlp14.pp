@@ -18,7 +18,7 @@ type
 
 function TTestHelper.AccessTest: Integer;
 begin
-  Result := Test3;
+  Result := Test3{declaration:uchlp12.TTest.test3};
 end;
 
 begin
