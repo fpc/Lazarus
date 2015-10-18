@@ -224,7 +224,7 @@ begin
   repeat
     //if Randomize/Random is started from 2 processes at exactly same moment, it returns the same number! -> prevent duplicates by xor GetCurrentThreadId
     //the result must be of range 0..$7FFFFFFF (High(Integer))
-    Result := Integer((PtrInt(Random($7FFFFFFF)) xor PtrInt(GetCurrentThreadId)) and $7FFFFFFF);
+    Result := Integer((PtrInt(Random($7FFFFFFF)) xor {%H-}PtrInt(GetCurrentThreadId)) and $7FFFFFFF);
     outFileName := GetRequestFileName(Result);
   until not RequestExists(outFileName);
 end;
