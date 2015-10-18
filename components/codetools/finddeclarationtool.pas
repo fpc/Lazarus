@@ -8254,6 +8254,9 @@ var
     debugln(['  FindExpressionTypeOfTerm ResolveChildren']);
     {$ENDIF}
     ResolveBaseTypeOfIdentifier;
+    {$IFDEF ShowExprEval}
+    debugln(['  FindExpressionTypeOfTerm ResolveChildren ExprType=',ExprTypeToString(ExprType)]);
+    {$ENDIF}
     if (ExprType.Context.Node=nil) then exit;
     if (ExprType.Context.Node.Desc in AllUsableSourceTypes) then begin
       if ExprType.Context.Tool=Self then begin
