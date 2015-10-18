@@ -34,9 +34,16 @@ type
     function GetStr: string;
   end;
 
+  { TEnumTypeHelperOld }
+
+  TEnumTypeHelperOld = type helper for TShiftStateEnum
+  public
+    function Old78: integer;
+  end;
+
   { TEnumTypeHelper }
 
-  TEnumTypeHelper = type helper for TShiftStateEnum
+  TEnumTypeHelper = type helper(TEnumTypeHelperOld) for TShiftStateEnum
   public
     function Get78: integer;
   end;
@@ -62,8 +69,17 @@ begin
   if AnsiS<>'' then ;
 
   e:=ssDouble;
-  i:=e.Get78{ Not yet supported: declaration:fdt_typehelper.TEnumTypeHelper.Get78};
+  i:=e.Old78{declaration:fdt_typehelper.TEnumTypeHelperOld.Old78};
   if i<>78 then ;
+  i:=e.Get78{declaration:fdt_typehelper.TEnumTypeHelper.Get78};
+  if i<>78 then ;
+end;
+
+{ TEnumTypeHelperOld }
+
+function TEnumTypeHelperOld.Old78: integer;
+begin
+  Result:=78;
 end;
 
 { TEnumTypeHelper }
