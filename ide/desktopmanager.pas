@@ -253,7 +253,7 @@ procedure TShowDesktopsToolButton.RefreshMenu;
       xItem.ImageIndex := IDEImages.LoadImage(16, 'state_warning')
     else
     if _Desktop.Name = EnvironmentOptions.DebugDesktopName then
-      xItem.ImageIndex := IDEImages.LoadImage(16, 'menu_run');
+      xItem.ImageIndex := IDEImages.LoadImage(16, 'debugger');
   end;
 
 var
@@ -270,7 +270,7 @@ begin
   xMISaveAs.ImageIndex := IDEImages.LoadImage(16, 'laz_save');
   xMIToggleDebug := TMenuItem.Create(xPM);
   xMIToggleDebug.Caption := dlgToggleDebugDesktop;
-  xMIToggleDebug.ImageIndex := IDEImages.LoadImage(16, 'menu_run');
+  xMIToggleDebug.ImageIndex := IDEImages.LoadImage(16, 'debugger');
   // Saved desktops
   for i:=0 to EnvironmentOptions.Desktops.Count-1 do
   begin
@@ -340,7 +340,7 @@ begin
   SetActiveDesktopAction.Hint := dlgSetActiveDesktop;
   SetActiveDesktopAction.ImageIndex := IDEImages.LoadImage(16, 'laz_tick');
   SetDebugDesktopAction.Hint := dlgToggleDebugDesktop;
-  SetDebugDesktopAction.ImageIndex := IDEImages.LoadImage(16, 'menu_run');
+  SetDebugDesktopAction.ImageIndex := IDEImages.LoadImage(16, 'debugger');
   ButtonPanel1.CloseButton.Caption := lisClose;
   AutoSaveActiveDesktopCheckBox.Caption := dlgAutoSaveActiveDesktop;
   AutoSaveActiveDesktopCheckBox.Hint := dlgAutoSaveActiveDesktopHint;
