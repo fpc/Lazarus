@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Types,
-  LCLType, LCLProc, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  LCLIntf, LCLType, LCLProc, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons, ButtonPanel, Menus, ComCtrls, ActnList,
   // LazUtils
   Laz2_XMLCfg,
@@ -61,6 +61,7 @@ type
     procedure ExportBitBtnClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure HelpButtonClick(Sender: TObject);
     procedure ImportActionClick(Sender: TObject);
     procedure MoveUpDownActionClick(Sender: TObject);
     procedure RenameActionClick(Sender: TObject);
@@ -364,6 +365,11 @@ begin
   xIndex := DesktopListBox.Items.IndexOf(EnvironmentOptions.ActiveDesktopName);
   if xIndex >= 0 then
     DesktopListBox.ItemIndex := xIndex;
+end;
+
+procedure TDesktopForm.HelpButtonClick(Sender: TObject);
+begin
+  OpenUrl('http://wiki.freepascal.org/IDE_Window:_Desktops');
 end;
 
 procedure TDesktopForm.RefreshList(SelectName: string);

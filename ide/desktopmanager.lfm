@@ -2,37 +2,38 @@ object DesktopForm: TDesktopForm
   Left = 334
   Height = 292
   Top = 319
-  Width = 304
+  Width = 377
   BorderIcons = [biSystemMenu]
   Caption = 'DesktopForm'
   ClientHeight = 292
-  ClientWidth = 304
+  ClientWidth = 377
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poScreenCenter
   LCLVersion = '1.5'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 35
-    Top = 251
-    Width = 292
+    Height = 37
+    Top = 249
+    Width = 365
     OKButton.Name = 'OKButton'
     OKButton.Caption = 'OK'
     OKButton.DefaultCaption = False
     HelpButton.Name = 'HelpButton'
     HelpButton.DefaultCaption = True
+    HelpButton.OnClick = HelpButtonClick
     CloseButton.Name = 'CloseButton'
     CloseButton.DefaultCaption = True
     CancelButton.Name = 'CancelButton'
     CancelButton.Caption = 'Close'
     CancelButton.DefaultCaption = False
     TabOrder = 3
-    ShowButtons = [pbClose]
+    ShowButtons = [pbClose, pbHelp]
     object ExportBitBtn: TBitBtn
-      Left = 28
-      Height = 27
+      Left = 99
+      Height = 29
       Top = 8
-      Width = 87
+      Width = 88
       Align = alCustom
       AutoSize = True
       Caption = 'ExportBitBtn'
@@ -41,10 +42,10 @@ object DesktopForm: TDesktopForm
       TabOrder = 4
     end
     object ImportBitBtn: TBitBtn
-      Left = 121
-      Height = 27
+      Left = 193
+      Height = 29
       Top = 8
-      Width = 90
+      Width = 91
       Align = alCustom
       AutoSize = True
       Caption = 'ImportBitBtn'
@@ -59,9 +60,9 @@ object DesktopForm: TDesktopForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = AutoSaveActiveDesktopCheckBox
     Left = 11
-    Height = 169
+    Height = 185
     Top = 8
-    Width = 247
+    Width = 320
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Bottom = 6
     ItemHeight = 18
@@ -69,19 +70,17 @@ object DesktopForm: TDesktopForm
     OnDrawItem = DesktopListBoxDrawItem
     OnKeyPress = DesktopListBoxKeyPress
     OnSelectionChange = DesktopListBoxSelectionChange
-    ScrollWidth = 245
     Style = lbOwnerDrawFixed
     TabOrder = 0
-    TopIndex = -1
   end
   object AutoSaveActiveDesktopCheckBox: TCheckBox
     AnchorSideLeft.Control = LblGrayedInfo
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = LblGrayedInfo
     Left = 11
-    Height = 21
-    Top = 183
-    Width = 170
+    Height = 22
+    Top = 199
+    Width = 178
     Anchors = [akLeft, akBottom]
     BorderSpacing.Top = 6
     BorderSpacing.Bottom = 6
@@ -91,7 +90,7 @@ object DesktopForm: TDesktopForm
     TabOrder = 2
   end
   object ToolBar1: TToolBar
-    Left = 267
+    Left = 340
     Height = 241
     Top = 8
     Width = 30
@@ -187,9 +186,9 @@ object DesktopForm: TDesktopForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 11
-    Height = 34
-    Top = 210
-    Width = 247
+    Height = 17
+    Top = 227
+    Width = 320
     Anchors = [akLeft, akRight, akBottom]
     BorderSpacing.Top = 3
     Caption = 'Grayed desktops are for undocked environment.'
