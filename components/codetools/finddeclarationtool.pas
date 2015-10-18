@@ -8235,7 +8235,7 @@ var
   begin
     aTool:=ExprType.Context.Tool;
     {$IFDEF ShowExprEval}
-    debugln(['  FindExpressionTypeOfTerm ResolveChildren used unit -> interface node ',dbgstr(ExprType.Context.Tool.ExtractNode(ExprType.Context.Node,[]))]);
+    debugln(['  FindExpressionTypeOfTerm ResolveUseUnit used unit -> interface node ',dbgstr(ExprType.Context.Tool.ExtractNode(ExprType.Context.Node,[]))]);
     {$ENDIF}
     AnUnitName:=aTool.ExtractUsedUnitName(ExprType.Context.Node,@InFilename);
     NewCodeTool:=aTool.FindCodeToolForUsedUnit(AnUnitName,InFilename,true);
@@ -8283,9 +8283,7 @@ var
     end
     else if (ExprType.Context.Node.Desc=ctnClassOfType) then begin
       // 'class of' => jump to the class
-      ExprType.Desc:=xtContext;
-      Params.Flags:=Params.Flags+[fdfFunctionResult,fdfFindChildren];
-      ExprType.Context.Node:=ExprType.Context.Node.FirstChild;
+      ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,ExprType.Context.Node.FirstChild);
     end
     else if (ExprType.Desc=xtContext)
     and (ExprType.Context.Node.Desc=ctnPointerType)
