@@ -292,7 +292,6 @@ procedure SetDesignInfoLeft(AComponent: TComponent; const aLeft: SmallInt); inli
 procedure SetDesignInfoTop(AComponent: TComponent; const aTop: SmallInt); inline;
 function LeftTopToDesignInfo(const ALeft, ATop: SmallInt): LongInt; inline;
 procedure DesignInfoToLeftTop(ADesignInfo: LongInt; out ALeft, ATop: SmallInt); inline;
-function IsFormDesign(AForm: TCustomForm): boolean;
 function LookupRoot(AForm: TCustomForm): TComponent;
 
 implementation
@@ -386,13 +385,15 @@ begin
   ATop := LazLongRec(ADesignInfo).Hi;
 end;
 
-function IsFormDesign(AForm: TCustomForm): boolean;
+function IsFormDesignFunction(AForm: TWinControl): boolean;
+var
+  LForm: TCustomForm absolute AForm;
 begin
-  if AForm = nil then
+  if (AForm = nil) or not (AForm is TCustomForm) then
     Exit(False);
-  Result := (csDesignInstance in AForm.ComponentState)
-     or ((csDesigning in AForm.ComponentState) and (AForm.Designer <> nil))
-     or (AForm is TNonFormProxyDesignerForm);
+  Result := (csDesignInstance in LForm.ComponentState)
+     or ((csDesigning in LForm.ComponentState) and (LForm.Designer <> nil))
+     or (LForm is TNonFormProxyDesignerForm);
 end;
 
 function LookupRoot(AForm: TCustomForm): TComponent;
@@ -807,5 +808,7 @@ begin
 
 end;
 
+initialization
+  IsFormDesign := @IsFormDesignFunction;
 end.
 
