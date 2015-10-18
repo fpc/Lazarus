@@ -2980,6 +2980,8 @@ resourcestring
   srkmecMoveEditorRight       = 'Move editor right';
   srkmecMoveEditorLeftmost    = 'Move editor leftmost';
   srkmecMoveEditorRightmost   = 'Move editor rightmost';
+  srkmecPrevEditorInHistory   = 'Go to previous editor in history';
+  srkmecNextEditorInHistory   = 'Go to next editor in history';
 
   srkmecNextSharedEditor         = 'Go to next editor with same Source';
   srkmecPrevSharedEditor         = 'Go to prior editor with same Source';

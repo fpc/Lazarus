@@ -220,6 +220,8 @@ const
   ecCopyEditorNextWindow    = ecFirstLazarus + 345;
   ecCopyEditorPrevWindow    = ecFirstLazarus + 346;
   ecCopyEditorNewWindow     = ecFirstLazarus + 347;
+  ecPrevEditorInHistory     = ecFirstLazarus + 348;
+  ecNextEditorInHistory     = ecFirstLazarus + 349;
 
   ecGotoEditor1             = ecFirstLazarus + 350;
   ecGotoEditor2             = ecGotoEditor1 + 1;
@@ -1745,7 +1747,7 @@ begin
 end;
 
 const
-  IDEEditorCommandStrs: array[0..310] of TIdentMapEntry = (
+  IDEEditorCommandStrs: array[0..312] of TIdentMapEntry = (
   // search
     (Value: ecFind;                                   Name: 'ecFind'),
     (Value: ecFindAgain;                              Name: 'ecFindAgain'),
@@ -1915,6 +1917,8 @@ const
     (Value: ecCopyEditorNextWindow;                   Name: 'ecCopyEditorNextWindow'),
     (Value: ecCopyEditorPrevWindow;                   Name: 'ecCopyEditorPrevWindow'),
     (Value: ecCopyEditorNewWindow;                    Name: 'ecCopyEditorNewWindow'),
+    (Value: ecPrevEditorInHistory;                    Name: 'ecPrevEditorInHistory'),
+    (Value: ecNextEditorInHistory;                    Name: 'ecNextEditorInHistory'),
 
     (Value: ecGotoEditor1;                            Name: 'ecGotoEditor1'),
     (Value: ecGotoEditor2;                            Name: 'ecGotoEditor2'),

@@ -538,6 +538,7 @@ begin
     ecSynMacroPlay, ecSynMacroRecord,
     ecToggleFormUnit..ecViewThreads, ecViewHistory,
     ecNextEditor, ecPrevEditor, ecNextWindow, ecPrevWindow,
+    ecPrevEditorInHistory, ecNextEditorInHistory,
     ecGotoEditor1..ecGotoEditor0:
       aEvent := TSynSkippedEvent.Create;
     else

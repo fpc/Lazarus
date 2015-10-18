@@ -579,6 +579,8 @@ type
   );
   TSourceNotebookUpdateFlags = set of TSourceNotebookUpdateFlag;
 
+  TBrowseEditorTabHistoryDialog = class;
+
   { TSourceNotebook }
 
   TSourceNotebook = class(TSourceEditorWindowInterface)
@@ -645,6 +647,7 @@ type
     FProcessingCommand: boolean;
     FSourceEditorList: TFPList; // list of TSourceEditor
     FHistoryList: TFPList; // list of TSourceEditor page order for when a window closes
+    FHistoryDlg: TBrowseEditorTabHistoryDialog;
     FStopBtnIdx: Integer;
   private
     FUpdateTabAndPageTimer: TTimer;
@@ -834,6 +837,22 @@ type
     property PageIndex: Integer read GetPageIndex write SetPageIndex;
     property PageCount: Integer read GetPageCount;
     property NotebookPages: TStrings read GetNotebookPages;
+  end;
+
+  { TBrowseEditorTabHistoryDialog }
+
+  TBrowseEditorTabHistoryDialog = class(TForm)
+  private
+    FNotebook: TSourceNotebook;
+    FEditorList: TListBox;
+
+    procedure MoveInList(aForward: Boolean);
+  protected
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure KeyUp(var Key: Word; Shift: TShiftState); override;
+    procedure DoCreate; override;
+  public
+    procedure Show(aForward: Boolean); reintroduce;
   end;
 
   TSrcEditMangerHandlerType = (
@@ -1701,6 +1720,161 @@ var
   SE1: TSourceEditorInterface absolute SrcEdit;
 begin
   Result:=CompareFilenames(AnsiString(FileNameStr),SE1.FileName);
+end;
+
+{ TBrowseEditorTabHistoryDialog }
+
+procedure TBrowseEditorTabHistoryDialog.DoCreate;
+begin
+  inherited DoCreate;
+
+  Assert(Owner is TSourceNotebook);
+  FNotebook := TSourceNotebook(Owner);
+
+  Caption := lisCoolbarSourceTab;
+  BorderIcons:=[];
+  BorderStyle:=bsSizeable;
+  KeyPreview := True;
+
+  FEditorList := TListBox.Create(Self);
+  FEditorList.Parent := Self;
+  FEditorList.Align := alClient;
+  {$IFDEF MSWINDOWS}//bsNone seems to work on Windows only
+  FEditorList.BorderStyle := bsNone;
+  {$ENDIF}
+end;
+
+procedure TBrowseEditorTabHistoryDialog.KeyDown(var Key: Word;
+  Shift: TShiftState);
+  function CommandUsed(Command: TIDECommand): Boolean;
+  begin
+    Result :=
+     ((Command.ShortcutA.Key1 = Key) and (Command.ShortcutA.Shift1 = Shift)) or
+     ((Command.ShortcutA.Key2 = Key) and (Command.ShortcutA.Shift2 = Shift));
+  end;
+var
+  xPrev, xNext: TIDECommand;
+begin
+  xPrev := IDECommandList.FindIDECommand(ecPrevEditorInHistory);
+  if CommandUsed(xPrev) then
+  begin
+    MoveInList(True);
+    Key := 0;
+  end else
+  begin
+    xNext := IDECommandList.FindIDECommand(ecNextEditorInHistory);
+    if CommandUsed(xNext) then
+    begin
+      MoveInList(False);
+      Key := 0;
+    end;
+  end;
+  inherited KeyDown(Key, Shift);
+end;
+
+procedure TBrowseEditorTabHistoryDialog.MoveInList(aForward: Boolean);
+begin
+  if aForward then
+  begin
+    if FEditorList.ItemIndex < FEditorList.Items.Count-1 then
+      FEditorList.ItemIndex := FEditorList.ItemIndex + 1
+    else
+      FEditorList.ItemIndex := 0;
+  end else
+  begin
+    if FEditorList.ItemIndex > 0 then
+      FEditorList.ItemIndex := FEditorList.ItemIndex - 1
+    else
+      FEditorList.ItemIndex := FEditorList.Items.Count - 1;
+  end;
+end;
+
+procedure TBrowseEditorTabHistoryDialog.KeyUp(var Key: Word; Shift: TShiftState
+  );
+begin
+  if Key = VK_CONTROL then
+  begin
+    Close;
+    if FEditorList.ItemIndex >= 0 then
+      FNotebook.PageIndex := TCustomPage(FEditorList.Items.Objects[FEditorList.ItemIndex]).PageIndex;
+    if (FNotebook.ActiveEditor<>nil) and
+      FNotebook.ActiveEditor.EditorControl.CanSetFocus
+    then
+      FNotebook.ActiveEditor.EditorControl.SetFocus;
+    Key := 0;
+  end;
+
+  inherited KeyUp(Key, Shift);
+end;
+
+procedure TBrowseEditorTabHistoryDialog.Show(aForward: Boolean);
+  procedure PlaceMe;
+  var
+    xWidth, xHeight: Integer;
+  begin
+    xWidth := Canvas.TextWidth('m')*20;
+    if FEditorList.ItemHeight>0 then//ItemHeight can be 0 the first time
+      xHeight := Min(10, FEditorList.Items.Count)*FEditorList.ItemHeight
+    else
+      xHeight := 200;
+    {$IFNDEF MSWINDOWS}
+    xHeight := xHeight + GetSystemMetrics(SM_CYBORDER)*2;
+    {$ENDIF}
+
+    SetBounds(
+      (FNotebook.Left+FNotebook.BoundsRect.Right-xWidth) div 2,
+      (FNotebook.Top+FNotebook.BoundsRect.Bottom-xHeight) div 2,
+      xWidth,
+      xHeight);
+  end;
+
+var
+  I: Integer;
+  xPage: TCustomPage;
+  xIndex: TAvgLvlTree;
+begin
+  if FNotebook.PageCount <= 1 then
+    Exit;
+
+  FEditorList.Items.BeginUpdate;
+  xIndex := TAvgLvlTree.Create;
+  try
+    FEditorList.Items.Clear;
+    for I := 0 to FNotebook.FHistoryList.Count-1 do
+    begin
+      xPage := TCustomPage(FNotebook.FHistoryList[I]);
+      FEditorList.Items.AddObject(xPage.Caption, xPage);
+      xIndex.Add(xPage);
+    end;
+
+    //add pages not in history to the right of the active page
+    for I := FNotebook.PageIndex+1 to FNotebook.PageCount-1 do
+    begin
+      xPage := FNotebook.NoteBookPage[I];
+      if xIndex.Find(xPage)=nil then
+        FEditorList.Items.AddObject(xPage.Caption, xPage);
+    end;
+    //add pages not in history to the left of the active page
+    for I := 0 to FNotebook.PageIndex-1 do
+    begin
+      xPage := FNotebook.NoteBookPage[I];
+      if xIndex.Find(xPage)=nil then
+        FEditorList.Items.AddObject(xPage.Caption, xPage);
+    end;
+  finally
+    xIndex.Free;
+    FEditorList.Items.EndUpdate;
+  end;
+
+  if aForward then
+    FEditorList.ItemIndex := 1
+  else
+    FEditorList.ItemIndex := FEditorList.Count-1;
+
+  PlaceMe;
+  Visible := True;
+  PlaceMe;
+  BringToFront;
 end;
 
 { TSourceEditorHintWindowManager }
@@ -6021,6 +6195,8 @@ begin
   FHistoryList := TFPList.Create;
   FSrcEditsSortedForFilenames := TAvgLvlTree.Create(@CompareSrcEditIntfWithFilename);
 
+  FHistoryDlg := TBrowseEditorTabHistoryDialog.CreateNew(Self);
+
   OnDropFiles := @SourceNotebookDropFiles;
   AllowDropFiles:=true;
 
@@ -8473,6 +8649,12 @@ begin
 
   ecPrevEditor :
     PrevEditor;
+
+  ecPrevEditorInHistory :
+    FHistoryDlg.Show(True);
+
+  ecNextEditorInHistory:
+    FHistoryDlg.Show(False);
 
   ecMoveEditorLeft:
     MoveActivePageLeft;
