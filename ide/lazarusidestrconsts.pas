@@ -827,6 +827,9 @@ resourcestring
     'The new unit is not yet in the unit search path.%sAdd directory %s?';
   lisisAlreadyPartOfTheProject = '%s is already part of the Project.';
   lisRemoveFromProject = 'Remove from Project';
+  lisShouldTheComponentBeAutoCreatedWhenTheApplicationS = 'Should the '
+    +'component "%s" be auto created when the application starts?';
+  lisAddToStartupComponents = 'Add to startup components?';
   lisCreateAProjectFirst = 'Create a project first!';
   lisTheTestDirectoryCouldNotBeFoundSeeIDEOpt = 'The Test Directory '
     +'could not be found:%s"%s"%s(see IDE options)';

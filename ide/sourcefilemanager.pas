@@ -221,6 +221,8 @@ type
                        CloseFlags: TCloseFlags): TModalResult;
     function OpenComponent(const UnitFilename: string; OpenFlags: TOpenFlags;
         CloseFlags: TCloseFlags; out Component: TComponent): TModalResult;
+    function UpdateUnitInfoResourceBaseClass(AnUnitInfo: TUnitInfo;
+      Quiet: boolean): boolean;
 
     // methods for 'close unit'
     function CloseUnitComponent(AnUnitInfo: TUnitInfo; Flags: TCloseFlags): TModalResult;
@@ -2926,6 +2928,7 @@ var
   LFMComponentName: String;
   LFMClassName: String;
   anUnitName: String;
+  LFMCode: TCodeBuffer;
 begin
   if Project1=nil then exit(mrCancel);
   MainIDE.GetCurrentUnit(ActiveSourceEditor, ActiveUnitInfo);
@@ -2949,14 +2952,16 @@ begin
         // this unit has a lfm, but the lpi does not know a ComponentName
         // => maybe this component was added without the IDE
         LFMFilename:=ChangeFileExt(CurUnitInfo.Filename,'.lfm');
-        if FileExistsCached(LFMFilename)
-        and ReadLFMHeaderFromFile(LFMFilename,LFMType,LFMComponentName,LFMClassName)
+        if LoadCodeBuffer(LFMCode,LFMFilename,[lbfUpdateFromDisk,lbfCheckIfText],false)=mrOk
         then begin
-          anUnitName:=CurUnitInfo.SrcUnitName;
-          if anUnitName='' then
-            anUnitName:=ExtractFileNameOnly(LFMFilename);
-          ItemList.Add(LFMComponentName, CurUnitInfo.Filename,
-            i, CurUnitInfo = ActiveUnitInfo);
+          ReadLFMHeader(LFMCode.Source,LFMType,LFMComponentName,LFMClassName);
+          if LFMComponentName<>'' then begin
+            anUnitName:=CurUnitInfo.SrcUnitName;
+            if anUnitName='' then
+              anUnitName:=ExtractFileNameOnly(LFMFilename);
+            ItemList.Add(LFMComponentName, CurUnitInfo.Filename,
+              i, CurUnitInfo = ActiveUnitInfo);
+          end;
         end;
       end;
     end else
@@ -3149,12 +3154,14 @@ function TLazSourceFileManager.AddActiveUnitToProject: TModalResult;
 var
   ActiveSourceEditor: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
-  s, ShortUnitName: string;
+  s, ShortUnitName, LFMFilename, LFMType, LFMComponentName,
+    LFMClassName: string;
   OkToAdd: boolean;
   Owners: TFPList;
   i: Integer;
   APackage: TLazPackage;
   MsgResult: TModalResult;
+  LFMCode: TCodeBuffer;
 begin
   Result:=mrCancel;
   ActiveSourceEditor:=nil;
@@ -3241,6 +3248,32 @@ begin
           if CodeToolBoss.AddUnitToMainUsesSection(Project1.MainUnitInfo.Source,ShortUnitName,'')
           then
             Project1.MainUnitInfo.Modified:=true;
+        end;
+      end;
+    end;
+  end;
+
+  if Project1.AutoCreateForms
+  and (pfMainUnitHasCreateFormStatements in Project1.Flags)
+  and FilenameIsPascalUnit(ActiveUnitInfo.Filename) then
+  begin
+    UpdateUnitInfoResourceBaseClass(ActiveUnitInfo,true);
+    if ActiveUnitInfo.ResourceBaseClass in [pfcbcForm,pfcbcDataModule] then
+    begin
+      LFMFilename:=ActiveUnitInfo.UnitResourceFileformat.GetUnitResourceFilename(ActiveUnitInfo.Filename,true);
+      if LoadCodeBuffer(LFMCode,LFMFilename,[lbfUpdateFromDisk],false)=mrOk then
+      begin
+        // read lfm header
+        ReadLFMHeader(LFMCode.Source,LFMType,LFMComponentName,LFMClassName);
+        if (LFMComponentName<>'')
+        and (LFMClassName<>'') then begin
+          if IDEMessageDialog(lisAddToStartupComponents,
+            Format(lisShouldTheComponentBeAutoCreatedWhenTheApplicationS, [
+              LFMComponentName]),
+            mtInformation,[mbYes,mbNo])=mrYes then
+          begin
+            Project1.AddCreateFormToProjectFile(LFMClassName,LFMComponentName);
+          end;
         end;
       end;
     end;
@@ -5926,6 +5959,107 @@ begin
     Result:=mrOk
   else
     Result:=mrCancel;
+end;
+
+function TLazSourceFileManager.UpdateUnitInfoResourceBaseClass(
+  AnUnitInfo: TUnitInfo; Quiet: boolean): boolean;
+var
+  LFMFilename, LFMClassName, LFMType, Ancestor, LFMComponentName: String;
+  LFMCode, Code: TCodeBuffer;
+  LoadFileFlags: TLoadBufferFlags;
+  ClearOldInfo: Boolean;
+  Tool: TCodeTool;
+  Node: TCodeTreeNode;
+  ListOfPFindContext: TFPList;
+  i: Integer;
+  Context: PFindContext;
+begin
+  Result:=false;
+  if AnUnitInfo.Component<>nil then
+    exit(true); // a loaded resource is always uptodate
+  if AnUnitInfo.IsVirtual then
+    exit(true); // a new unit is always uptodate
+  ListOfPFindContext:=nil;
+  ClearOldInfo:=true;
+  try
+    // find lfm file
+    if not FilenameIsPascalUnit(AnUnitInfo.Filename) then
+      exit(true); // not a unit -> clear info
+    LFMFilename:=AnUnitInfo.UnitResourceFileformat.GetUnitResourceFilename(
+      AnUnitInfo.Filename,true);
+    if (LFMFilename='') or not FileExistsCached(LFMFilename) then
+      exit(true); // no lfm -> clear info
+  finally
+    if ClearOldInfo then begin
+      AnUnitInfo.ResourceBaseClass:=pfcbcNone;
+      AnUnitInfo.ComponentName:='';
+      AnUnitInfo.ComponentResourceName:='';
+    end;
+  end;
+  try
+    if (CompareFileExt(LFMFilename,'lfm')<>0) then
+    begin
+      // no lfm format -> keep old info
+      exit(true);
+    end;
+    // clear old info
+    AnUnitInfo.ResourceBaseClass:=pfcbcNone;
+    AnUnitInfo.ComponentName:='';
+    AnUnitInfo.ComponentResourceName:='';
+    // load lfm
+    LoadFileFlags:=[lbfUpdateFromDisk,lbfCheckIfText];
+    if Quiet then
+      Include(LoadFileFlags,lbfQuiet);
+    if LoadCodeBuffer(LFMCode,LFMFilename,LoadFileFlags,false)<>mrOk then
+      exit; // lfm read error
+    // read lfm header
+    ReadLFMHeader(LFMCode.Source,LFMType,LFMComponentName,LFMClassName);
+    if LFMClassName='' then
+      exit; // lfm syntax error
+
+    // LFM component name
+    AnUnitInfo.ComponentName:=LFMComponentName;
+    AnUnitInfo.ComponentResourceName:=LFMComponentName;
+
+    // check ancestors
+    if LoadCodeBuffer(Code,AnUnitInfo.Filename,LoadFileFlags,false)<>mrOk then
+      exit; // pas read error
+    CodeToolBoss.Explore(Code,Tool,false,true);
+    if Tool=nil then
+      exit; // pas load error
+    try
+      Node:=Tool.FindDeclarationNodeInInterface(LFMClassName,true);
+      if Node=nil then
+        exit(Tool.FindImplementationNode<>nil); // class not found, reliable if whole interface was read
+
+      if (Node=nil) or (Node.Desc<>ctnTypeDefinition)
+      or (Node.FirstChild=nil) or (Node.FirstChild.Desc<>ctnClass) then
+        exit(true); // this is not a class
+      Tool.FindClassAndAncestors(Node.FirstChild,ListOfPFindContext,false);
+      if ListOfPFindContext=nil then
+        exit; // ancestor not found -> probably syntax error
+
+      for i:=0 to ListOfPFindContext.Count-1 do begin
+        Context:=PFindContext(ListOfPFindContext[i]);
+        Ancestor:=UpperCase(Context^.Tool.ExtractClassName(Context^.Node,false));
+        if (Ancestor='TFORM') or (Ancestor='TCUSTOMFORM') then begin
+          AnUnitInfo.ResourceBaseClass:=pfcbcForm;
+          exit(true);
+        end else if Ancestor='TDATAMODULE' then begin
+          AnUnitInfo.ResourceBaseClass:=pfcbcDataModule;
+          exit(true);
+        end else if (Ancestor='TFRAME') or (Ancestor='TCUSTOMFRAME') then begin
+          AnUnitInfo.ResourceBaseClass:=pfcbcFrame;
+          exit(true);
+        end else if Ancestor='TCOMPONENT' then
+          exit(true);
+      end;
+    except
+      exit; // syntax error or unit not found
+    end;
+  finally
+    FreeListOfPFindContext(ListOfPFindContext);
+  end;
 end;
 
 function TLazSourceFileManager.FindBaseComponentClass(AnUnitInfo: TUnitInfo;

@@ -198,10 +198,9 @@ begin
     ACodeBuffer:=CodeToolBoss.LoadFile(AFilename,false,false);
     if ACodeBuffer<>nil then begin
       // file is in cache
-      if (not (lbfCheckIfText in Flags)) or ACodeBuffer.SourceIsText then begin
-        Result:=mrOk;
-        exit;
-      end;
+      if (not (lbfCheckIfText in Flags)) or ACodeBuffer.SourceIsText then
+        exit(mrOk);
+      ACodeBuffer:=nil;
     end;
   end;
   repeat
