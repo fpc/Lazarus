@@ -8021,14 +8021,19 @@ var
             end;
             ProcNode:=ProcNode.Parent;
           end;
-        end else if (cmsResult in FLastCompilerModeSwitches)
-        and CompareSrcIdentifiers(CurAtom.StartPos,'RESULT') then begin
+        end else if CompareSrcIdentifiers(CurAtom.StartPos,'RESULT')
+        and (cmsResult in Scanner.CompilerModeSwitches) then begin
           // RESULT has a special meaning in a function
           // -> check if in a function
-          if fdfExtractOperand in Params.Flags then Params.AddOperandPart('Result');
+          if fdfExtractOperand in Params.Flags then
+            Params.AddOperandPart('Result');
           ProcNode:=StartNode;
-          while (ProcNode<>nil) and not NodeIsFunction(ProcNode) do
+          while (ProcNode<>nil) do begin
+            if (ProcNode.Desc=ctnProcedure)
+            and (NodeIsFunction(ProcNode) or NodeIsOperator(ProcNode)) then
+              break;
             ProcNode:=ProcNode.Parent;
+          end;
           if (ProcNode<>nil) then begin
             if IsEnd and (fdfFindVariable in StartFlags) then begin
               BuildSubTreeForProcHead(ProcNode);
@@ -8048,8 +8053,8 @@ var
             end else begin
               OldFlags:=Params.Flags;
               Params.Flags:=Params.Flags+[fdfFunctionResult,fdfFindChildren];
-              ExprType.Desc:=xtContext;
               ExprType.Context:=FindBaseTypeOfNode(Params,ProcNode);
+              ExprType.Desc:=xtContext;
               Params.Flags:=OldFlags;
               exit;
             end;
