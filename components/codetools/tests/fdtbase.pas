@@ -156,7 +156,7 @@ begin
       dec(IdentifierStartPos);
 
     //debugln(['TTestFindDeclaration.FindDeclarations params: ',dbgstr(Tool.Src,p,CommentP-p)]);
-    if Marker='declaration' then begin
+    if (Marker='declaration') then begin
       ExpectedPath:=copy(Src,PathPos,CommentP-1-PathPos);
       {$IFDEF VerboseFindDeclarationTests}
       debugln(['TTestFindDeclaration.FindDeclarations searching "',Marker,'" at ',Tool.CleanPosToStr(NameStartPos-1),' ExpectedPath=',ExpectedPath]);
@@ -187,7 +187,7 @@ begin
       end;
 
       // test identifier completion
-      if ExpectedPath<>'' then begin
+      if (ExpectedPath<>'') then begin
         if not CodeToolBoss.GatherIdentifiers(CursorPos.Code,CursorPos.X,CursorPos.Y)
         then begin
           if ExpectedPath<>'' then
