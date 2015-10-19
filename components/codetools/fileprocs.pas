@@ -220,6 +220,7 @@ function FilenameIsPascalUnit(const Filename: string;
                               CaseSensitive: boolean = false): boolean;
 function FilenameIsPascalUnit(Filename: PChar; FilenameLen: integer;
                               CaseSensitive: boolean = false): boolean;
+function ExtractFileUnitname(Filename: string; WithNameSpace: boolean): string;
 function IsPascalUnitExt(FileExt: PChar; CaseSensitive: boolean = false): boolean;
 function SearchPascalUnitInDir(const AnUnitName, BaseDirectory: string;
                                SearchCase: TCTSearchFileCase): string;
@@ -1144,6 +1145,23 @@ begin
     until false;
   end;
   Result:=false;
+end;
+
+function ExtractFileUnitname(Filename: string; WithNameSpace: boolean): string;
+var
+  p: Integer;
+begin
+  Result:=ExtractFileNameOnly(Filename);
+  if (Result='') or WithNameSpace then exit;
+  // find last dot
+  p:=length(Filename);
+  while p>0 do begin
+    if Filename[p]='.' then begin
+      Delete(Result,1,p);
+      exit;
+    end;
+    dec(p);
+  end;
 end;
 
 function IsPascalUnitExt(FileExt: PChar; CaseSensitive: boolean): boolean;
