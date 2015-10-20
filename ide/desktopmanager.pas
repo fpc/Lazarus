@@ -65,7 +65,6 @@ type
     procedure ImportActionClick(Sender: TObject);
     procedure MoveUpDownActionClick(Sender: TObject);
     procedure RenameActionClick(Sender: TObject);
-    procedure SaveActionHint(var HintStr: string; var CanShow: Boolean);
     procedure SaveActionClick(Sender: TObject);
     procedure SetActiveDesktopActionClick(Sender: TObject);
     procedure SetDebugDesktopActionClick(Sender: TObject);
@@ -355,6 +354,11 @@ begin
   ExportBitBtn.Caption := lisExportSub;
   ImportBitBtn.LoadGlyphFromStock(idButtonOpen);
   ImportBitBtn.Caption := lisImport;
+
+  ButtonPanel1.HelpButton.TabOrder := 0;
+  ExportBitBtn.TabOrder := 1;
+  ImportBitBtn.TabOrder := 2;
+  ButtonPanel1.OKButton.TabOrder := 3;
 end;
 
 procedure TDesktopForm.FormShow(Sender: TObject);
@@ -440,11 +444,6 @@ begin
     Desktops[dskIndex].Name := xDesktopName;
     RefreshList(xDesktopName);
   end;
-end;
-
-procedure TDesktopForm.SaveActionHint(var HintStr: string; var CanShow: Boolean);
-begin
-
 end;
 
 procedure TDesktopForm.DeleteActionClick(Sender: TObject);

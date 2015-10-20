@@ -13,8 +13,8 @@ object DesktopForm: TDesktopForm
   LCLVersion = '1.5'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 37
-    Top = 249
+    Height = 34
+    Top = 252
     Width = 365
     OKButton.Name = 'OKButton'
     OKButton.Caption = 'OK'
@@ -30,10 +30,10 @@ object DesktopForm: TDesktopForm
     TabOrder = 3
     ShowButtons = [pbClose, pbHelp]
     object ExportBitBtn: TBitBtn
-      Left = 99
-      Height = 29
+      Left = 93
+      Height = 26
       Top = 8
-      Width = 88
+      Width = 91
       Align = alCustom
       AutoSize = True
       Caption = 'ExportBitBtn'
@@ -42,10 +42,10 @@ object DesktopForm: TDesktopForm
       TabOrder = 4
     end
     object ImportBitBtn: TBitBtn
-      Left = 193
-      Height = 29
+      Left = 190
+      Height = 26
       Top = 8
-      Width = 91
+      Width = 94
       Align = alCustom
       AutoSize = True
       Caption = 'ImportBitBtn'
@@ -60,7 +60,7 @@ object DesktopForm: TDesktopForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = AutoSaveActiveDesktopCheckBox
     Left = 11
-    Height = 185
+    Height = 190
     Top = 8
     Width = 320
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -78,16 +78,16 @@ object DesktopForm: TDesktopForm
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = LblGrayedInfo
     Left = 11
-    Height = 22
-    Top = 199
-    Width = 178
+    Height = 19
+    Top = 204
+    Width = 151
     Anchors = [akLeft, akBottom]
     BorderSpacing.Top = 6
     BorderSpacing.Bottom = 6
     Caption = 'Auto save active desktop'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 2
+    TabOrder = 1
   end
   object ToolBar1: TToolBar
     Left = 340
@@ -98,7 +98,7 @@ object DesktopForm: TDesktopForm
     Anchors = [akTop, akRight, akBottom]
     Caption = 'ToolBar1'
     EdgeBorders = []
-    TabOrder = 1
+    TabOrder = 2
     object SaveTB: TToolButton
       Left = 1
       Top = 0
@@ -109,15 +109,15 @@ object DesktopForm: TDesktopForm
     end
     object ToolButton1: TToolButton
       Left = 1
-      Height = 8
+      Height = 5
       Top = 22
       Width = 23
       Caption = 'ToolButton1'
-      Style = tbsSeparator
+      Style = tbsDivider
     end
     object SetActiveDesktopTB: TToolButton
       Left = 1
-      Top = 30
+      Top = 27
       Action = SetActiveDesktopAction
       OnClick = SetActiveDesktopActionClick
       ParentShowHint = False
@@ -125,7 +125,7 @@ object DesktopForm: TDesktopForm
     end
     object SetDebugDesktopTB: TToolButton
       Left = 1
-      Top = 60
+      Top = 54
       Action = SetDebugDesktopAction
       OnClick = SetDebugDesktopActionClick
       ParentShowHint = False
@@ -133,7 +133,7 @@ object DesktopForm: TDesktopForm
     end
     object RenameTB: TToolButton
       Left = 1
-      Top = 82
+      Top = 76
       Action = RenameAction
       OnClick = RenameActionClick
       ParentShowHint = False
@@ -141,7 +141,7 @@ object DesktopForm: TDesktopForm
     end
     object DeleteTB: TToolButton
       Left = 1
-      Top = 104
+      Top = 98
       Action = DeleteAction
       OnClick = DeleteActionClick
       ParentShowHint = False
@@ -150,7 +150,7 @@ object DesktopForm: TDesktopForm
     object MoveUpTB: TToolButton
       Tag = -1
       Left = 1
-      Top = 134
+      Top = 125
       Action = MoveUpAction
       OnClick = MoveUpDownActionClick
       ParentShowHint = False
@@ -159,7 +159,7 @@ object DesktopForm: TDesktopForm
     object MoveDownTB: TToolButton
       Tag = 1
       Left = 1
-      Top = 156
+      Top = 147
       Action = MoveDownAction
       OnClick = MoveUpDownActionClick
       ParentShowHint = False
@@ -167,27 +167,27 @@ object DesktopForm: TDesktopForm
     end
     object ToolButton2: TToolButton
       Left = 1
-      Height = 8
-      Top = 126
+      Height = 5
+      Top = 120
       Width = 23
       Caption = 'ToolButton2'
-      Style = tbsSeparator
+      Style = tbsDivider
     end
     object ToolButton3: TToolButton
       Left = 1
-      Height = 8
-      Top = 52
+      Height = 5
+      Top = 49
       Width = 23
       Caption = 'ToolButton3'
-      Style = tbsSeparator
+      Style = tbsDivider
     end
   end
   object LblGrayedInfo: TLabel
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 11
-    Height = 17
-    Top = 227
+    Height = 15
+    Top = 229
     Width = 320
     Anchors = [akLeft, akRight, akBottom]
     BorderSpacing.Top = 3
