@@ -5610,7 +5610,8 @@ resourcestring
     +'not-found errors. This can take a minute.';
   lisActive = 'Active';
   lisBuildModes = 'Build modes';
-  lisSetUTF8InRTL = 'Set UTF-8 in RTL';
+  lisAddFcUTF8 = 'Add -FcUTF8';
+  lisAddFcUTF8Hint = 'May be needed if source files have non-ansistring literals.';
   lisInSession = 'In session';
   lisTheDefaultModeMustBeStoredInProject =
     'The default mode must be stored in project, not in session.';
@@ -5977,6 +5978,8 @@ resourcestring
   lisMMCustomOption = 'Custom Option';
   lisMMIDEMacro = 'IDE Macro';
   lisMMOverrideOutputDirectory = 'Override output directory (-FU)';
+  lisMMUseSystemEncoding = 'Use system encoding';
+  lisMMUseSystemEncodingHint = 'Disable support for UTF-8 default string encoding.';
   lisPriority = 'Priority';
   lisUDScanningUnits = 'Scanning: %s units ...';
   lisUDFile = 'File: %s';

@@ -18,8 +18,8 @@ object IDEOptionsDialog: TIDEOptionsDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     Left = 6
-    Height = 36
-    Top = 458
+    Height = 37
+    Top = 457
     Width = 788
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
@@ -39,7 +39,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
   end
   object CatTVSplitter: TSplitter
     Left = 255
-    Height = 458
+    Height = 457
     Top = 0
     Width = 4
   end
@@ -47,12 +47,12 @@ object IDEOptionsDialog: TIDEOptionsDialog
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 0
-    Height = 458
+    Height = 457
     Top = 0
     Width = 255
     Align = alLeft
     BevelOuter = bvNone
-    ClientHeight = 458
+    ClientHeight = 457
     ClientWidth = 255
     Constraints.MinWidth = 150
     TabOrder = 2
@@ -64,12 +64,11 @@ object IDEOptionsDialog: TIDEOptionsDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = SettingsPanel
       Left = 6
-      Height = 401
-      Top = 37
+      Height = 398
+      Top = 39
       Width = 249
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Top = 6
-      DefaultItemHeight = 18
       ReadOnly = True
       TabOrder = 0
       OnChange = CategoryTreeChange
@@ -83,7 +82,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
       AnchorSideTop.Control = CategoryPanel
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 25
+      Height = 27
       Top = 6
       Width = 249
       OnFilterItem = FilterEditFilterItem
@@ -96,12 +95,13 @@ object IDEOptionsDialog: TIDEOptionsDialog
       MaxLength = 0
       ParentFont = False
       TabOrder = 1
+      TextHint = '(suodatin)'
       FilteredTreeview = CategoryTree
     end
     object SettingsPanel: TPanel
       Left = 0
       Height = 20
-      Top = 438
+      Top = 437
       Width = 255
       Align = alBottom
       AutoSize = True
@@ -130,12 +130,12 @@ object IDEOptionsDialog: TIDEOptionsDialog
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = UseBuildModeCheckBox
       AnchorSideTop.Side = asrCenter
-      Left = 112
-      Height = 29
+      Left = 124
+      Height = 27
       Top = 5
       Width = 154
       BorderSpacing.Left = 7
-      ItemHeight = 0
+      ItemHeight = 23
       OnSelect = BuildModeComboBoxSelect
       Style = csDropDownList
       TabOrder = 0
@@ -145,9 +145,9 @@ object IDEOptionsDialog: TIDEOptionsDialog
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = BuildModeComboBox
       AnchorSideTop.Side = asrCenter
-      Left = 277
+      Left = 289
       Height = 25
-      Top = 7
+      Top = 6
       Width = 25
       BorderSpacing.Left = 11
       Caption = '...'
@@ -157,30 +157,15 @@ object IDEOptionsDialog: TIDEOptionsDialog
     object UseBuildModeCheckBox: TCheckBox
       AnchorSideTop.Side = asrCenter
       Left = 12
-      Height = 24
+      Height = 22
       Top = 7
-      Width = 93
+      Width = 105
       BorderSpacing.Left = 6
       Caption = 'Build modes'
       OnChange = UseBuildModeCheckBoxChange
       ParentShowHint = False
       ShowHint = True
       TabOrder = 2
-    end
-    object SetUtf8InRtlButton: TButton
-      AnchorSideLeft.Control = BuildModeManageButton
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = BuildModeManageButton
-      AnchorSideTop.Side = asrCenter
-      Left = 317
-      Height = 27
-      Top = 6
-      Width = 102
-      AutoSize = True
-      BorderSpacing.Left = 15
-      Caption = 'Set UTF-8 in RTL'
-      OnClick = SetUtf8InRtlButtonClick
-      TabOrder = 3
     end
   end
   object EditorsPanel: TScrollBox
@@ -192,7 +177,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel
     Left = 259
-    Height = 418
+    Height = 417
     Top = 40
     Width = 535
     HorzScrollBar.Page = 1

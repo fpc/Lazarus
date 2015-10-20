@@ -16,14 +16,14 @@ unit LConvEncoding;
 interface
 
 { $Define DisableAsianCodePages}
-{$if FPC_FULLVERSION >= 20701}
+{$if FPC_FULLVERSION >= 30000}
   {$Define HasCP} // AnsiString has codepage
-  {$ifdef EnableUTF8RTL}
+  {$IFnDEF DisableUTF8RTL}
     // Windows provides conversion functions.
-    // Unix: unit cwstring provides conversion functions, which is used by EnableUTF8RTL.
+    // Unix: unit cwstring provides conversion functions which are used by default UTF-8 encoding system.
     {$Define UseSystemCPConv} // use system conversions
-  {$endif}
-{$endif}
+  {$ENDIF}
+{$IFEND}
 {$ifdef UseLCPConv}{$undef UseSystemCPConv}{$endif}
 
 uses

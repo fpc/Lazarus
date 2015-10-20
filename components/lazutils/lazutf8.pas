@@ -18,17 +18,16 @@ unit LazUTF8;
 
 {$mode objfpc}{$H+}{$inline on}
 
-{$IF defined(EnableUTF8RTL) and (FPC_FULLVERSION<20701)}
-  {$error UTF8 in RTL requires fpc 2.7.1+}
-{$ENDIF}
-
+{$IF (FPC_FULLVERSION >= 30000) AND NOT DEFINED(DisableUTF8RTL)}
+  {$DEFINE ReallyUseUTF8RTL}
+{$IFEND}
 interface
 
 uses
-  {$IFDEF EnableUTF8RTL}
-    {$ifdef unix}
-    cwstring, // UTF8 RTL on Unix requires this. Must be used although it pulls in clib.
-    {$endif}
+  {$IFDEF ReallyUseUTF8RTL}
+  {$ifdef unix}
+  cwstring, // UTF8 RTL on Unix requires this. Must be used although it pulls in clib.
+  {$endif}
   FPCAdds,
   {$ENDIF}
   {$ifdef windows}
@@ -43,8 +42,8 @@ function NeedRTLAnsi: boolean;// true if system encoding is not UTF-8
 procedure SetNeedRTLAnsi(NewValue: boolean);
 
 // UTF8ToSys works like UTF8ToAnsi but more independent of widestringmanager
-function UTF8ToSys(const s: string): string; overload; {$IFDEF EnableUTF8RTL}inline;{$ENDIF}
-function UTF8ToSys(const AFormatSettings: TFormatSettings): TFormatSettings; overload; {$IFDEF EnableUTF8RTL}inline;{$ENDIF}
+function UTF8ToSys(const s: string): string; overload; {$IFDEF ReallyUseUTF8RTL}inline;{$ENDIF}
+function UTF8ToSys(const AFormatSettings: TFormatSettings): TFormatSettings; overload; {$IFDEF ReallyUseUTF8RTL}inline;{$ENDIF}
 
 // SysToUTF8 works like AnsiToUTF8 but more independent of widestringmanager
 function SysToUTF8(const s: string): string; overload;
@@ -252,7 +251,7 @@ end;
 
 function UTF8ToSys(const s: string): string;
 begin
-  {$IFDEF EnableUTF8RTL}
+  {$IFDEF ReallyUseUTF8RTL}
   Result:=s;
   {$ELSE}
   if NeedRTLAnsi and (not IsASCII(s)) then
@@ -264,7 +263,7 @@ end;
 
 function SysToUTF8(const s: string): string;
 begin
-  {$IFDEF EnableUTF8RTL}
+  {$IFDEF ReallyUseUTF8RTL}
   Result:=s;
   {$ELSE}
   if NeedRTLAnsi and (not IsASCII(s)) then
@@ -298,13 +297,13 @@ begin
 end;
 
 function UTF8ToSys(const AFormatSettings: TFormatSettings): TFormatSettings;
-{$IFNDEF EnableUTF8RTL}
+{$IFnDEF ReallyUseUTF8RTL}
 var
   i: Integer;
 {$ENDIF}
 begin
   Result := AFormatSettings;
-  {$IFNDEF EnableUTF8RTL}
+  {$IFnDEF ReallyUseUTF8RTL}
   Result.CurrencyString := UTF8ToSys(AFormatSettings.CurrencyString);
   for i:=1 to 12 do begin
     Result.LongMonthNames[i] := UTF8ToSys(AFormatSettings.LongMonthNames[i]);
