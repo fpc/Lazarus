@@ -306,11 +306,11 @@ msgstr "Ошибка: %s"
 
 #: codystrconsts.crserrorcursorisnotinaprojectunit
 msgid "Error: cursor is not in a project unit"
-msgstr ""
+msgstr "Ошибка: курсор не находится в модуле проекта"
 
 #: codystrconsts.crserrorneedsourceeditoratprocedurecallordeclaration
 msgid "Error: Need source editor at procedure call or declaration"
-msgstr ""
+msgstr "Ошибка: курсор в редакторе следует установить на вызове или объявлении процедуры"
 
 #: codystrconsts.crsexact
 msgid "exact"
@@ -412,7 +412,7 @@ msgstr "Если при добавлении идентификатора в с�
 
 #: codystrconsts.crsifuncheckedlistalsoprocedureswithsamenameandincomp
 msgid "If unchecked list also procedures with same name and incompatible parameter lists."
-msgstr ""
+msgstr "При отключении будут также выводиться процедуры с такими же именами, но несовместимыми наборами параметров."
 
 #: codystrconsts.crsimpossibledependency
 msgid "Impossible dependency"
@@ -511,7 +511,7 @@ msgstr "не выбран"
 
 #: codystrconsts.crsnooverloadsfoundinprojectunits
 msgid "no overloads found in project units"
-msgstr ""
+msgstr "перегруженных процедур в модулях проекта не найдено"
 
 #: codystrconsts.crsnoproject
 msgid "No project"
@@ -543,7 +543,7 @@ msgstr "Только не являющиеся методами"
 
 #: codystrconsts.crsonlyprocedureswithcompatibleparameters
 msgid "Only procedures with compatible parameters"
-msgstr ""
+msgstr "Только процедуры с совместимыми параметрами"
 
 #: codystrconsts.crsoptions
 msgid "Options"
@@ -588,7 +588,7 @@ msgstr "Пакет с тем же именем"
 
 #: codystrconsts.crsparseerror
 msgid "Parse error"
-msgstr ""
+msgstr "Ошибка анализа"
 
 #: codystrconsts.crspastelinesofagdbbacktrace
 msgid "Paste lines of a gdb backtrace:"
@@ -670,7 +670,7 @@ msgstr "Обновить"
 
 #: codystrconsts.crsrelations
 msgid "Relations:"
-msgstr ""
+msgstr "Отношения:"
 
 #: codystrconsts.crsreport
 msgid "Report"
@@ -690,7 +690,7 @@ msgstr "Сохранить в файл %s"
 
 #: codystrconsts.crsscanning
 msgid "Scanning ..."
-msgstr ""
+msgstr "Идёт поиск ..."
 
 #: codystrconsts.crsscanningsunits
 msgid "Scanning: %s units ..."
@@ -851,4 +851,3 @@ msgstr "Виртуальный модуль"
 #: codystrconsts.crswhere
 msgid "Where"
 msgstr "Расположение"
-
