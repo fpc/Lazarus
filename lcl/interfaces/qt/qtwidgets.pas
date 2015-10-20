@@ -2067,6 +2067,9 @@ begin
       end;
     end else
     begin
+      if (Self is TQtMainWindow) then
+        setFocusPolicy(QtTabFocus) // issue #28880
+      else
       if (csNoFocus in LCLObject.ControlStyle) then
       begin
         if LCLObject.TabStop then
@@ -6430,7 +6433,7 @@ begin
   BeginEventProcessing;
   try
     if (QEvent_Type(Event) in [QEventContextMenu, QEventHoverEnter, QEventPaint,
-                               QEventHoverMove, QEventHoverLeave]) then
+                               QEventHoverMove, QEventHoverLeave, QEventHide]) then
     begin
       Result := inherited EventFilter(Sender, Event);
     end else
@@ -16143,8 +16146,24 @@ end;
 
 function TQtAbstractScrollArea.EventFilter(Sender: QObjectH; Event: QEventH
   ): Boolean; cdecl;
+var
+  w: QWidgetH;
 begin
   Result := False;
+
+  if (QEvent_type(Event) = QEventHide) then
+  begin
+    // issue #28880
+    w := QWidget_mouseGrabber;
+    if w <> nil then
+    begin
+      if w = Widget then
+        ReleaseCapture
+      else
+      if w = viewportWidget then
+        ReleaseCapture;
+    end;
+  end else
   if (QEvent_type(Event) = QEventResize) then
     // DebugLn('***TQtAbstractScrollArea.EventFilter QEventResize(',dbgsName(LCLObject),') EAT !')
   else
