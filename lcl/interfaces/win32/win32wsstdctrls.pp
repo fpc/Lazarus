@@ -613,13 +613,19 @@ begin
         Exit(DeliverMessage(WindowInfo^.WinControl, LMessage));
       end;
     WM_ERASEBKGND:
-      if (WindowsVersion <= wvXP) or not ThemeServices.ThemesEnabled then
-        // Standardbehavior for XP, or no themes
-        Result := CallDefaultWindowProc(Window, Msg, WParam, LParam)
-      else
       begin
-        // Avoid unnecessary background paints to avoid flickering of the listbox
         WindowInfo := GetWin32WindowInfo(Window);
+        if ((WindowsVersion <= wvServer2003) or not ThemeServices.ThemesEnabled) then
+        begin
+          if Assigned(WindowInfo^.WinControl) and not
+             (TCustomListbox(WindowInfo^.WinControl).Style in [lbOwnerDrawFixed, lbOwnerDrawVariable])
+          then begin
+            // Standard behavior for XP/WinServer2003, no themes, no OwnerDraw
+            Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
+            exit;
+          end
+        end;
+        // Avoid unnecessary background paints to avoid flickering of the listbox
         Count := SendMessage(Window, LB_GETCOUNT, 0, 0);
         if Assigned(WindowInfo^.WinControl) and
           (TCustomListBox(WindowInfo^.WinControl).Columns < 2) and
