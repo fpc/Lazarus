@@ -4865,7 +4865,10 @@ end;
 
 procedure TQtWidget.setFocus;
 begin
-  QWidget_setFocus(Widget);
+  if getFocusPolicy <> QtNoFocus then
+    QWidget_setFocus(Widget, QtTabFocusReason)
+  else
+    QWidget_setFocus(Widget);
 end;
 
 procedure TQtWidget.setFocusPolicy(const APolicy: QtFocusPolicy);
