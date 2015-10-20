@@ -1457,16 +1457,24 @@ type
 
   { TIpHtmlNodeTR }
 
-  TIpHtmlNodeTR = class(TIpHtmlNodeBlock)
+  TIpHtmlNodeTR = class(TIpHtmlNodeCore)
   private
     FAlign: TIpHtmlAlign;
     FVAlign: TIpHtmlVAlign;
+    FBgColor: TColor;
+    FTextColor: TColor;
+    procedure SetBgColor(const AValue: TColor);
+    procedure SetTextColor(const AValue: TColor);
+  protected
+    procedure AppendSelection(var S: String); override;
   public
     constructor Create(ParentNode : TIpHtmlNode);
     procedure SetProps(const RenderProps: TIpHtmlProps); override;
   public
     property Align : TIpHtmlAlign read FAlign write FAlign;
     property VAlign : TIpHtmlVAlign read FVAlign write FVAlign;
+    property BgColor: TColor read FBgColor write SetBgColor;
+    property TextColor: TColor read FTextColor write SetTextColor;
   end;
 
   TIpHtmlCellScope = (hcsUnspec, hcsRow, hcsCol, hcsRowGroup, hcsColGroup);
@@ -1485,6 +1493,7 @@ type
     FWidth: TIpHtmlLength;
     FVAlign: TIpHtmlVAlign3;
   protected
+    procedure AppendSelection(var S: String); override;
     procedure DimChanged(Sender: TObject);
   public
     FPadRect : TRect;
@@ -2665,6 +2674,9 @@ function CalcMultiLength(const List: TIpHtmlMultiLengthList;
 function GetAlignmentForStr(str: string; pDefault: TIpHtmlAlign = haDefault): TIpHtmlAlign;
 function dbgs(et: TElementType): string; overload;
 
+function GetNextSiblingNode(ANode: TIpHtmlNode): TIpHtmlNode;
+function GetPrevSiblingNode(ANode: TIpHtmlNode): TIpHtmlNode;
+
 procedure Register;
 
 implementation
@@ -2796,6 +2808,56 @@ end;
 function dbgs(et: TElementType): string;
 begin
   writestr(Result,et);
+end;
+
+function GetNextSiblingNode(ANode: TIpHtmlNode): TIpHtmlNode;
+var
+  node: TIpHtmlNode;
+  parent: TIpHtmlNodeMulti;
+  i: Integer;
+begin
+  Result := nil;
+  if ANode = nil then
+    exit;
+  if (ANode.FParentNode = nil) or not (ANode.ParentNode is TIpHtmlNodeMulti) then
+    exit;
+  parent := TIpHtmlNodeMulti(ANode.FParentNode);
+  if parent.ChildCount = 1 then
+    exit;
+  Result := parent.ChildNode[parent.ChildCount-1];
+  for i := parent.ChildCount-2 downto 0 do
+  begin
+    node := parent.ChildNode[i];
+    if node = ANode then
+      exit;
+    Result := node;
+  end;
+  Result := nil;
+end;
+
+function GetPrevSiblingNode(ANode: TIpHtmlNode): TIpHtmlNode;
+var
+  node: TIpHtmlNode;
+  parent: TIpHtmlNodeMulti;
+  i: Integer;
+begin
+  Result := nil;
+  if ANode = nil then
+    exit;
+  if (ANode.FParentNode = nil) or not (ANode.ParentNode is TIpHtmlNodeMulti) then
+    exit;
+  parent := TIpHtmlNodeMulti(ANode.FParentNode);
+  if parent.ChildCount = 1 then
+    exit;
+  Result := parent.ChildNode[0];
+  for i:=1 to parent.ChildCount-1 do
+  begin
+    node := parent.ChildNode[i];
+    if node = ANode then
+      exit;
+    Result := node;
+  end;
+  Result := nil;
 end;
 
 procedure Register;
@@ -9113,15 +9175,18 @@ end;
 procedure TIpHtmlNodeP.Enqueue;
 begin
   if FChildren.Count > 0 then begin
-    if not (FParentNode is TIpHtmlNodeLI) then begin
+    if not ((FParentNode is TIpHtmlNodeLI) or (FParentNode is TIpHtmlNodeTD)) then
+    begin
       EnqueueElement(Owner.SoftLF);
       EnqueueElement(Owner.HardLF);
     end;
   end;
   inherited Enqueue;
   if FChildren.Count > 0 then begin
-    EnqueueElement(Owner.SoftLF);
-    EnqueueElement(Owner.HardLF);
+    if not (FParentNode is TIpHtmlNodeTD) then begin
+      EnqueueElement(Owner.SoftLF);
+      EnqueueElement(Owner.HardLF);
+    end;
   end;
 end;
 
@@ -9279,7 +9344,7 @@ begin
   inherited Enqueue;
   if FChildren.Count > 0 then begin
     EnqueueElement(Owner.SoftLF);
-    EnqueueElement(Owner.HardLF);
+//    EnqueueElement(Owner.HardLF);    // Remove large spacing after header line
   end;
 end;
 
@@ -10088,9 +10153,14 @@ begin
   hiaCenter :
     EnqueueElement(Owner.SoftLF);
   end;
-}
+ }
+  EnqueueElement(Owner.SoftLF);
+
   EnqueueElement(Element);
-{
+
+  EnqueueElement(Owner.SoftLF);
+  EnqueueElement(Owner.hardLF);  // LFs needed otherwise next element is too close
+                               {
   case Align of
   hiaTop,
   hiaMiddle,
@@ -10098,7 +10168,7 @@ begin
   hiaCenter :
     EnqueueElement(Owner.SoftLF);
   end;
-}
+  }
 end;
 
 procedure TIpHtmlNodeTABLE.SetBorder(const Value: Integer);
@@ -10198,6 +10268,8 @@ begin
 end;
 {$ENDIF}
 
+{ TIpNodeTR }
+
 procedure TIpHtmlNodeTR.SetProps(const RenderProps: TIpHtmlProps);
 begin
   Props.Assign(RenderProps);
@@ -10212,6 +10284,33 @@ begin
   FElementName := 'tr';
   FAlign := haDefault;
   FValign := hvaMiddle;
+  FBgColor := -1;
+  FTextColor := -1;
+end;
+
+procedure TIpHtmlNodeTR.AppendSelection(var S: String);
+var
+  prev: TIpHtmlNode;
+begin
+  prev := GetPrevSiblingNode(Self);
+  if prev is TIpHtmlNodeTR then S := S + LineEnding;
+  inherited AppendSelection(S);
+end;
+
+procedure TIpHtmlNodeTR.SetBgColor(const AValue: TColor);
+begin
+  if AValue <> FBgColor then begin
+    FBgColor := AValue;
+    InvalidateSize;
+  end;
+end;
+
+procedure TIpHtmlNodeTR.SetTextColor(const AValue: TColor);
+begin
+  if AValue <> FTextColor then begin
+    FTextColor := AValue;
+    InvalidateSize;
+  end;
 end;
 
 { TIpHtmlNodeMAP }
@@ -12317,6 +12416,15 @@ begin
   inherited;
 end;
 
+procedure TIpHtmlNodeTableHeaderOrCell.AppendSelection(var S: String);
+var
+  prev: TIpHtmlNode;
+begin
+  prev := GetPrevSiblingNode(self);
+  if prev is TIpHtmlNodeTableHeaderOrCell then S := S + #9;
+  inherited AppendSelection(S);
+end;
+
 procedure TIpHtmlNodeTableHeaderOrCell.CalcMinMaxPropWidth(RenderProps: TIpHtmlProps;
   var Min, Max: Integer);
 begin
@@ -12906,6 +13014,19 @@ begin
   begin
     TIpHtmlCustomPanel(Owner).Scroll(hsaEnd);
     Key := 0
+  end
+  else if ((key = VK_C) or (key = VK_INSERT)) and (Shift = [ssCtrl]) then   // copy to clipboard
+  begin
+    HtmlPanel.CopyToClipboard;
+//    FHyper.CopyToClipboard;
+    Key := 0;
+  end
+  else if (key = VK_A) and (Shift = [ssCtrl]) then      // select all
+  begin
+    HtmlPanel.SelectAll;
+//    FHyper.SelectAll;
+//    Invalidate;
+    Key := 0;
   end
   else if key = VK_RETURN then // return
   begin
@@ -15504,6 +15625,7 @@ begin
   FElementName := 'td';
 end;
 
+
 { TIpHtmlNodeCAPTION }
 
 constructor TIpHtmlNodeCAPTION.Create(ParentNode: TIpHtmlNode);
@@ -15514,5 +15636,6 @@ end;
 
 initialization
   InitScrollProcs;
+
 end.
 
