@@ -648,8 +648,7 @@ begin
     exit;
   AForm := TCustomForm(AWinControl);
   if not (csDesigning in AForm.ComponentState) and
-    AForm.HandleObjectShouldBeVisible and
-    (AForm.BorderStyle in [bsDialog, bsSingle]) then
+    AForm.HandleObjectShouldBeVisible then
   begin
     // we must set fixed size, gtk_window_set_resizable does not work
     // as expected for some reason.issue #20741
@@ -669,8 +668,16 @@ begin
       win_gravity := gtk_window_get_gravity({%H-}PGtkWindow(AForm.Handle));
     end;
     //debugln('TGtk2WSWinControl.ConstraintsChange A ',GetWidgetDebugReport(Widget),' max=',dbgs(Geometry.max_width),'x',dbgs(Geometry.max_height));
-    gtk_window_set_geometry_hints({%H-}PGtkWindow(AForm.Handle), nil, @Geometry,
-      GDK_HINT_POS or GDK_HINT_MIN_SIZE or GDK_HINT_MAX_SIZE);
+    if (AForm.BorderStyle in [bsDialog, bsSingle]) then
+      gtk_window_set_geometry_hints({%H-}PGtkWindow(AForm.Handle), nil, @Geometry,
+        GDK_HINT_POS or GDK_HINT_MIN_SIZE or GDK_HINT_MAX_SIZE)
+    else
+    begin
+      if AForm.BorderStyle <> bsNone then
+        gtk_window_set_geometry_hints({%H-}PGtkWindow(AForm.Handle), nil, @Geometry,
+          GDK_HINT_POS or GDK_HINT_BASE_SIZE);
+      gtk_window_resize({%H-}PGtkWindow(AForm.Handle), AForm.Width, AForm.Height);
+    end;
   end;
 end;
 
