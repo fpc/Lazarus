@@ -7439,8 +7439,10 @@ begin
           FPageIndex := APageIndex + 1
         else
           FPageIndex := APageIndex - 1;
-      FNoteBook.PageIndex := FPageIndex;
-      Include(FUpdateFlags,ufPageIndexChanged);
+      if FUpdateLock = 0 then
+        ApplyPageIndex
+      else
+        Include(FUpdateFlags,ufPageIndexChanged);
     end;
     NotebookPages.Delete(APageIndex);
   end else begin
