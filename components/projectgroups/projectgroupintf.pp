@@ -1,3 +1,5 @@
+{ If you want to extend the package only access this unit.
+}
 unit ProjectGroupIntf;
 
 {$mode objfpc}{$H+}
@@ -15,7 +17,7 @@ Type
   TActionResult = (arNotAllowed,arOK,arFailed);
   TActionResults = set of TActionResult;
 
-  TProjectGroup = CLass;
+  TProjectGroup = class;
 
   { TCompileTarget - can be a project, package or project group}
 

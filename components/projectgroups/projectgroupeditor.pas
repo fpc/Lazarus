@@ -50,8 +50,8 @@ type
     ATargetEarlier: TAction;
     AProjectGroupDelete: TAction;
     AProjectGroupSave: TAction;
-    ALPG: TActionList;
-    ILPG: TImageList;
+    ActionListMain: TActionList;
+    ImageListMain: TImageList;
     PMIOPen: TMenuItem;
     PMISaveAs: TMenuItem;
     PMIProperties: TMenuItem;
@@ -60,10 +60,10 @@ type
     PMIDelete: TMenuItem;
     PMICompileClean: TMenuItem;
     PMICompile: TMenuItem;
-    ODTarget: TOpenDialog;
-    PMMore: TPopupMenu;
-    PMProjectGroup: TPopupMenu;
-    SDPG: TSaveDialog;
+    OpenDialogTarget: TOpenDialog;
+    PopupMenuMore: TPopupMenu;
+    PopupMenuTree: TPopupMenu;
+    SaveDialogPG: TSaveDialog;
     SBPG: TStatusBar;
     TBProjectGroup: TToolBar;
     TBSave: TToolButton;
@@ -145,12 +145,10 @@ type
     Function SelectedTarget : TCompileTarget;
     Function SelectedNodeType : TCompileTarget;
     procedure UpdateIDEMenuCommandFromAction(Sender: TObject; Item: TIDEMenuCommand);
-    { private declarations }
   protected
     Procedure Localize;
     Procedure ShowProjectGroup;
   public
-    { public declarations }
     Property ProjectGroup : TProjectGroup Read FProjectGroup Write SetProjectGroup;
     Property ActiveTarget : TCompileTarget Read GetActiveTarget;
   end;
@@ -458,13 +456,12 @@ begin
 end;
 
 procedure TProjectGroupEditorForm.UpdateIDEMenuCommandFromAction(Sender : TObject; Item: TIDEMenuCommand);
-
 begin
   Item.Enabled:=(Sender as TAction).Enabled;
   Item.Visible:=(Sender as TAction).Visible;
 end;
 
-    procedure TProjectGroupEditorForm.FormCreate(Sender: TObject);
+procedure TProjectGroupEditorForm.FormCreate(Sender: TObject);
 
   procedure SetItem(Item: TIDEMenuCommand; AnOnClick: TNotifyEvent;
                     aShow: boolean = true; AEnable: boolean = true);
@@ -476,7 +473,7 @@ end;
   end;
 
 begin
-  PGEditMenuSectionMisc.MenuItem:=PMMore.Items;
+  PGEditMenuSectionMisc.MenuItem:=PopupMenuMore.Items;
   SetItem(cmdTargetAdd,@AProjectGroupAddExistingExecute);
   SetItem(cmdTargetRemove,@AProjectGroupDeleteExecute);
   SetItem(cmdTargetCompile,@ATargetCompileExecute);
@@ -493,10 +490,8 @@ begin
 end;
 
 procedure TProjectGroupEditorForm.TVPGDblClick(Sender: TObject);
-
 Var
   ND : TNodeData;
-
 begin
   ND:=SelectedNodeData;
   if Not (Assigned(ND) and (ND.NodeType=ntTarget)) then
@@ -509,11 +504,9 @@ end;
 
 Procedure TProjectGroupEditorForm.DoTargetAdded(Sender: TObject;
   Target: TCompileTarget);
-
 Var
   PG : TProjectGroup;
   N : TTreeNode;
-
 begin
   PG:=sender as TProjectGroup;
   // ToDo : use of FTargetNodes is wrong if PG<>FProjectGroup
@@ -525,11 +518,9 @@ end;
 
 Procedure TProjectGroupEditorForm.DoTargetDeleted(Sender: TObject;
   Target: TCompileTarget);
-
 Var
   PG : TProjectGroup;
   N : TTreeNode;
-
 begin
   PG:=sender as TProjectGroup;
   N:=FindNodeFromTarget(Target);
@@ -542,11 +533,9 @@ end;
 
 Procedure TProjectGroupEditorForm.DoTargetActivated(Sender: TObject;
   Target: TCompileTarget);
-
 Var
   NC,NA : TTreeNode;
   N : String;
-
 begin
   NC:=FindNodeFromTarget(FActiveTarget);
   NA:=FindNodeFromTarget(Target);
@@ -564,12 +553,10 @@ end;
 
 Procedure TProjectGroupEditorForm.DoTargetExchanged(Sender: TObject; Target1,
   Target2: TCompileTarget);
-
 Var
   S,N1,N2 : TTreeNode;
   ND1,ND2 : TNodeData;
   NT1,NT2 : TCaption;
-
 begin
   N1:=FindNodeFromTarget(Target1);
   N2:=FindNodeFromTarget(Target2);
@@ -604,24 +591,22 @@ end;
 
 procedure TProjectGroupEditorForm.AProjectGroupAddExistingExecute(Sender: TObject);
 begin
-  InitIDEFileDialog(ODTarget);
-  With ODTarget do
-    begin
+  InitIDEFileDialog(OpenDialogTarget);
+  With OpenDialogTarget do
+  begin
     // TODO: Needs to be fetched from central set of strings
     Filter:='Lazarus projects|*.lpi|Lazarus packages|*.lpk|Lazarus project groups|*.lpg';
     If Execute then
-      begin
+    begin
       FProjectGroup.AddTarget(FileName);
-      end;
     end;
-  StoreIDEFileDialog(ODTarget);
+  end;
+  StoreIDEFileDialog(OpenDialogTarget);
 end;
 
 procedure TProjectGroupEditorForm.ATargetActivateUpdate(Sender: TObject);
-
 Var
   T : TCompileTarget;
-
 begin
   T:=SelectedTarget;
   (Sender as TAction).Enabled:=Assigned(T) and Not T.Active;
@@ -629,10 +614,8 @@ begin
 end;
 
 procedure TProjectGroupEditorForm.ATargetActivateExecute(Sender: TObject);
-
 Var
   T : TNodeData;
-
 begin
   T:=SelectedNodeData;
   if not (Assigned(T) and Assigned(T.Target) and Assigned(T.ProjectGroup)) then
@@ -652,10 +635,8 @@ begin
 end;
 
 function TProjectGroupEditorForm.AllowPerform(ATargetAction : TTargetAction; AAction : TAction = Nil) : Boolean;
-
 Var
   T : TCompileTarget;
-
 begin
   T:=SelectedTarget;
   Result:=Assigned(T) and (ATargetAction in T.AllowedActions);
@@ -664,10 +645,8 @@ begin
 end;
 
 procedure TProjectGroupEditorForm.Perform(ATargetAction : TTargetAction);
-
 Var
   T : TNodeData;
-
 begin
   T:=SelectedNodeData;
   if Assigned(T) and Assigned(T.Target) and Assigned(T.ProjectGroup) then
