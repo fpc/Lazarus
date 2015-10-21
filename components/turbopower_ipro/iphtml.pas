@@ -9122,10 +9122,12 @@ begin
   for i := StartSelIndex to EndSelIndex do begin
     CurElem := PIpHtmlElement(FLayouter.FElementQueue[i]);
     R := CurElem.WordRect2;
+    { wp: removed because this would add an empty line to a long word-wrapped text
     if not LFDone and (R.Top <> LastY) then begin
-      S := S + #13#10;
+      S := S + LineEnding;
       LFDone := True;
     end;
+    }
     case CurElem.ElementType of
     etWord :
       begin
@@ -9139,7 +9141,7 @@ begin
       end;
     etSoftLF..etClearBoth :
       if not LFDone then begin
-        S := S + #13#10;
+        S := S + LineEnding;
         LFDone := True;
       end;
     end;
