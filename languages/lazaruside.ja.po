@@ -724,14 +724,6 @@ msgstr "括弧の強調"
 msgid "Matching bracket pairs"
 msgstr "括弧のペアを揃える"
 
-#: lazarusidestrconsts.dlgcannotdeleteactivedesktop
-msgid "You cannot delete the active desktop."
-msgstr ""
-
-#: lazarusidestrconsts.dlgcannotdeletedebugdesktop
-msgid "You cannot delete debug desktop."
-msgstr ""
-
 #: lazarusidestrconsts.dlgcannotusedockedundockeddesktop
 msgid "You cannot use docked desktop in undocked environment and vice versa."
 msgstr ""
@@ -4269,6 +4261,14 @@ msgstr ""
 msgid "Added property \"%s\" for %s."
 msgstr ""
 
+#: lazarusidestrconsts.lisaddfcutf8
+msgid "Add -FcUTF8"
+msgstr ""
+
+#: lazarusidestrconsts.lisaddfcutf8hint
+msgid "May be needed if source files have non-ansistring literals."
+msgstr ""
+
 #: lazarusidestrconsts.lisaddfilesindirectory
 msgid "Add Files in Directory"
 msgstr "ディレクトリにファイルを追加"
@@ -4345,6 +4345,10 @@ msgstr ""
 #: lazarusidestrconsts.lisaddtoproject
 msgid "Add %s to project?"
 msgstr "%s をプロジェクトに追加しますか？"
+
+#: lazarusidestrconsts.lisaddtostartupcomponents
+msgid "Add to startup components?"
+msgstr ""
 
 #: lazarusidestrconsts.lisaddtounitsearchpath
 msgid "Add to unit search path?"
@@ -8526,10 +8530,6 @@ msgstr "マクロエディタ"
 msgid "Editor ToolBar"
 msgstr ""
 
-#: lazarusidestrconsts.liseditortoolbarhint
-msgid "You may add here your favorite commands"
-msgstr ""
-
 #: lazarusidestrconsts.liseditortoolbarsettings
 msgid "Editor Toolbar Settings"
 msgstr ""
@@ -9089,6 +9089,10 @@ msgstr "パッケージリスト(*.xml)をエクスポート"
 
 #: lazarusidestrconsts.lisexportselected
 msgid "Export selected"
+msgstr ""
+
+#: lazarusidestrconsts.lisexportsub
+msgid "Export >>"
 msgstr ""
 
 #: lazarusidestrconsts.lisexpression
@@ -12490,11 +12494,6 @@ msgctxt "lazarusidestrconsts.lismenuviewhistory"
 msgid "History"
 msgstr "履歴"
 
-#: lazarusidestrconsts.lismenuviewidespeedbuttons
-msgctxt "lazarusidestrconsts.lismenuviewidespeedbuttons"
-msgid "IDE Speed Buttons"
-msgstr "IDEスピードボタンを表示"
-
 #: lazarusidestrconsts.lismenuviewjumphistory
 msgctxt "lazarusidestrconsts.lismenuviewjumphistory"
 msgid "Jump History"
@@ -12812,6 +12811,14 @@ msgstr "対象："
 #: lazarusidestrconsts.lismmundolastchangetothisgrid
 msgid "Undo last change to this grid"
 msgstr "最後の変更をこのグリッドまで元に戻す"
+
+#: lazarusidestrconsts.lismmusesystemencoding
+msgid "Use system encoding"
+msgstr ""
+
+#: lazarusidestrconsts.lismmusesystemencodinghint
+msgid "Disable support for UTF-8 default string encoding."
+msgstr ""
 
 #: lazarusidestrconsts.lismmvalues
 msgid "Value \"%s\""
@@ -16188,16 +16195,16 @@ msgstr ""
 msgid "(Set up default indentation)"
 msgstr "（既定のインデント合わせを設定）"
 
-#: lazarusidestrconsts.lissetutf8inrtl
-msgid "Set UTF-8 in RTL"
-msgstr ""
-
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
 msgstr "Short:"
 
 #: lazarusidestrconsts.lisshortnopath
 msgid "Short, no path"
+msgstr ""
+
+#: lazarusidestrconsts.lisshouldthecomponentbeautocreatedwhentheapplications
+msgid "Should the component \"%s\" be auto created when the application starts?"
 msgstr ""
 
 #: lazarusidestrconsts.lisshow
@@ -19740,6 +19747,10 @@ msgstr "次のブックマーク"
 msgid "Go to next editor"
 msgstr "次のエディタに移動"
 
+#: lazarusidestrconsts.srkmecnexteditorinhistory
+msgid "Go to next editor in history"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecnextsharededitor
 msgid "Go to next editor with same Source"
 msgstr "同じソースをもつ次のエディタに移動"
@@ -19823,6 +19834,10 @@ msgstr "前のブックマーク"
 #: lazarusidestrconsts.srkmecpreveditor
 msgid "Go to prior editor"
 msgstr "前のエディタに移動"
+
+#: lazarusidestrconsts.srkmecpreveditorinhistory
+msgid "Go to previous editor in history"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecprevsharededitor
 msgid "Go to prior editor with same Source"
@@ -20379,6 +20394,14 @@ msgstr "カーソルを単語の左側に移動"
 #: lazarusidestrconsts.srkmecwordright
 msgid "Move cursor word right"
 msgstr "カーソルを単語の右側に移動"
+
+#: lazarusidestrconsts.srkmeczoomin
+msgid "Zoom in"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeczoomout
+msgid "Zoom out"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeditforcmd
 msgid "Edit keys of command"

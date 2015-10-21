@@ -726,14 +726,6 @@ msgstr "Zárójel kiemelése"
 msgid "Matching bracket pairs"
 msgstr "Illeszkedő zárójel párok"
 
-#: lazarusidestrconsts.dlgcannotdeleteactivedesktop
-msgid "You cannot delete the active desktop."
-msgstr "Aktív felület nem törölhető."
-
-#: lazarusidestrconsts.dlgcannotdeletedebugdesktop
-msgid "You cannot delete debug desktop."
-msgstr "Hibakereső felület nem törölhető."
-
 #: lazarusidestrconsts.dlgcannotusedockedundockeddesktop
 msgid "You cannot use docked desktop in undocked environment and vice versa."
 msgstr "Dokkolt felületek nem használhatók nem dokkolt környezetben és fordítva."
@@ -4189,6 +4181,14 @@ msgstr "A hiányzó \"%s\" objektum hozzá lett adva a pascal forráskódhoz."
 msgid "Added property \"%s\" for %s."
 msgstr "A(z) \"%s\" tulajdonság hozzá lett adva ehhez: \"%s\""
 
+#: lazarusidestrconsts.lisaddfcutf8
+msgid "Add -FcUTF8"
+msgstr ""
+
+#: lazarusidestrconsts.lisaddfcutf8hint
+msgid "May be needed if source files have non-ansistring literals."
+msgstr ""
+
 #: lazarusidestrconsts.lisaddfilesindirectory
 msgid "Add Files in Directory"
 msgstr "Fájlok hozzáadása könyvtárból"
@@ -4265,6 +4265,10 @@ msgstr "Hozzáadás az include keresési útvonalakhoz?"
 #: lazarusidestrconsts.lisaddtoproject
 msgid "Add %s to project?"
 msgstr "%s hozzáadása a projekthez?"
+
+#: lazarusidestrconsts.lisaddtostartupcomponents
+msgid "Add to startup components?"
+msgstr ""
 
 #: lazarusidestrconsts.lisaddtounitsearchpath
 msgid "Add to unit search path?"
@@ -8359,10 +8363,6 @@ msgstr "Szerkesztő makrók"
 msgid "Editor ToolBar"
 msgstr "Szerkesztő eszköztára"
 
-#: lazarusidestrconsts.liseditortoolbarhint
-msgid "You may add here your favorite commands"
-msgstr "Itt adhatja hozzá kedvenc parancsait"
-
 #: lazarusidestrconsts.liseditortoolbarsettings
 msgid "Editor Toolbar Settings"
 msgstr ""
@@ -8915,6 +8915,10 @@ msgstr "Csomaglista exportálása (*.xml)"
 #: lazarusidestrconsts.lisexportselected
 msgid "Export selected"
 msgstr "Kijelölt exportálása"
+
+#: lazarusidestrconsts.lisexportsub
+msgid "Export >>"
+msgstr ""
 
 #: lazarusidestrconsts.lisexpression
 msgid "Expression:"
@@ -12301,11 +12305,6 @@ msgctxt "lazarusidestrconsts.lismenuviewhistory"
 msgid "History"
 msgstr "Előzmények"
 
-#: lazarusidestrconsts.lismenuviewidespeedbuttons
-msgctxt "lazarusidestrconsts.lismenuviewidespeedbuttons"
-msgid "IDE Speed Buttons"
-msgstr "IDE gyorsgombok"
-
 #: lazarusidestrconsts.lismenuviewjumphistory
 msgctxt "lazarusidestrconsts.lismenuviewjumphistory"
 msgid "Jump History"
@@ -12631,6 +12630,14 @@ msgstr "Célok:"
 #: lazarusidestrconsts.lismmundolastchangetothisgrid
 msgid "Undo last change to this grid"
 msgstr "Legutóbbi változtatás visszavonása e rácsban"
+
+#: lazarusidestrconsts.lismmusesystemencoding
+msgid "Use system encoding"
+msgstr ""
+
+#: lazarusidestrconsts.lismmusesystemencodinghint
+msgid "Disable support for UTF-8 default string encoding."
+msgstr ""
 
 #: lazarusidestrconsts.lismmvalues
 msgid "Value \"%s\""
@@ -15879,10 +15886,6 @@ msgstr "Állítsa be ezt a fordító üzeneteinek más nyelvre történő leford
 msgid "(Set up default indentation)"
 msgstr "(Alapértelmezett behúzás beállítása)"
 
-#: lazarusidestrconsts.lissetutf8inrtl
-msgid "Set UTF-8 in RTL"
-msgstr "UTF-8 bekapcsolása az RTL-ben"
-
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
 msgstr "Rövidítés:"
@@ -15890,6 +15893,10 @@ msgstr "Rövidítés:"
 #: lazarusidestrconsts.lisshortnopath
 msgid "Short, no path"
 msgstr "Rövid, nincs útvonal"
+
+#: lazarusidestrconsts.lisshouldthecomponentbeautocreatedwhentheapplications
+msgid "Should the component \"%s\" be auto created when the application starts?"
+msgstr ""
 
 #: lazarusidestrconsts.lisshow
 msgid "Show"
@@ -19252,6 +19259,10 @@ msgstr "Következő könyvjelző"
 msgid "Go to next editor"
 msgstr "Következő lapfülre ugrás"
 
+#: lazarusidestrconsts.srkmecnexteditorinhistory
+msgid "Go to next editor in history"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecnextsharededitor
 msgid "Go to next editor with same Source"
 msgstr "Váltás a következő szerkesztőre ugyanezzel a forrással"
@@ -19335,6 +19346,10 @@ msgstr "Előző könyvjelző"
 #: lazarusidestrconsts.srkmecpreveditor
 msgid "Go to prior editor"
 msgstr "Előző lapfülre ugrás"
+
+#: lazarusidestrconsts.srkmecpreveditorinhistory
+msgid "Go to previous editor in history"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecprevsharededitor
 msgid "Go to prior editor with same Source"
@@ -19887,6 +19902,14 @@ msgstr "Kurzor mozgatása szavanként balra"
 #: lazarusidestrconsts.srkmecwordright
 msgid "Move cursor word right"
 msgstr "Kurzor mozgatása szavanként jobbra"
+
+#: lazarusidestrconsts.srkmeczoomin
+msgid "Zoom in"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeczoomout
+msgid "Zoom out"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeditforcmd
 msgid "Edit keys of command"

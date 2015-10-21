@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-10-15 00:39+0300\n"
+"PO-Revision-Date: 2015-10-22 01:46+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -726,14 +726,6 @@ msgstr "Подсветка скобок"
 #: lazarusidestrconsts.dlgbracketmatchgroup
 msgid "Matching bracket pairs"
 msgstr "Парные скобки"
-
-#: lazarusidestrconsts.dlgcannotdeleteactivedesktop
-msgid "You cannot delete the active desktop."
-msgstr "Невозможно удалить активный рабочий стол."
-
-#: lazarusidestrconsts.dlgcannotdeletedebugdesktop
-msgid "You cannot delete debug desktop."
-msgstr "Невозможно удалить отладочный рабочий стол."
 
 #: lazarusidestrconsts.dlgcannotusedockedundockeddesktop
 msgid "You cannot use docked desktop in undocked environment and vice versa."
@@ -4194,6 +4186,14 @@ msgstr "В исходный код на Паскале добавлен отсу
 msgid "Added property \"%s\" for %s."
 msgstr "Добавлено свойство \"%s\" для %s."
 
+#: lazarusidestrconsts.lisaddfcutf8
+msgid "Add -FcUTF8"
+msgstr "Добавить -FcUTF8"
+
+#: lazarusidestrconsts.lisaddfcutf8hint
+msgid "May be needed if source files have non-ansistring literals."
+msgstr "Может понадобиться, если файлы исходного кода содержат литералы, не являющиеся Ansistring."
+
 #: lazarusidestrconsts.lisaddfilesindirectory
 msgid "Add Files in Directory"
 msgstr "Добавить файлы из каталога"
@@ -4270,6 +4270,10 @@ msgstr "Добавить к путям поиска включаемых фай�
 #: lazarusidestrconsts.lisaddtoproject
 msgid "Add %s to project?"
 msgstr "Добавить %s к проекту?"
+
+#: lazarusidestrconsts.lisaddtostartupcomponents
+msgid "Add to startup components?"
+msgstr "Добавить компонент к создаваемым при запуске?"
 
 #: lazarusidestrconsts.lisaddtounitsearchpath
 msgid "Add to unit search path?"
@@ -8361,10 +8365,6 @@ msgstr "Макросы редактора"
 msgid "Editor ToolBar"
 msgstr "Инструментальная панель редактора"
 
-#: lazarusidestrconsts.liseditortoolbarhint
-msgid "You may add here your favorite commands"
-msgstr "Сюда можно добавить часто используемые команды"
-
 #: lazarusidestrconsts.liseditortoolbarsettings
 msgid "Editor Toolbar Settings"
 msgstr "Параметры инструментальной панели редактора"
@@ -8915,6 +8915,10 @@ msgstr "Список экспортируемых пакетов (*.xml)"
 #: lazarusidestrconsts.lisexportselected
 msgid "Export selected"
 msgstr "Экспортировать выбранный"
+
+#: lazarusidestrconsts.lisexportsub
+msgid "Export >>"
+msgstr "Экспортировать >>"
 
 #: lazarusidestrconsts.lisexpression
 msgid "Expression:"
@@ -12302,11 +12306,6 @@ msgctxt "lazarusidestrconsts.lismenuviewhistory"
 msgid "History"
 msgstr "История"
 
-#: lazarusidestrconsts.lismenuviewidespeedbuttons
-msgctxt "lazarusidestrconsts.lismenuviewidespeedbuttons"
-msgid "IDE Speed Buttons"
-msgstr "Кнопки быстрого доступа IDE"
-
 #: lazarusidestrconsts.lismenuviewjumphistory
 msgctxt "lazarusidestrconsts.lismenuviewjumphistory"
 msgid "Jump History"
@@ -12632,6 +12631,14 @@ msgstr "Цели: "
 #: lazarusidestrconsts.lismmundolastchangetothisgrid
 msgid "Undo last change to this grid"
 msgstr "Отменить последнюю правку в данной таблице"
+
+#: lazarusidestrconsts.lismmusesystemencoding
+msgid "Use system encoding"
+msgstr "Использовать системную кодировку"
+
+#: lazarusidestrconsts.lismmusesystemencodinghint
+msgid "Disable support for UTF-8 default string encoding."
+msgstr "Отключить поддержку UTF-8 в качестве кодировки строки по умолчанию."
 
 #: lazarusidestrconsts.lismmvalues
 msgid "Value \"%s\""
@@ -15881,10 +15888,6 @@ msgstr "Задайте это значение для перевода сооб�
 msgid "(Set up default indentation)"
 msgstr "(Настроить отступ по умолчанию)"
 
-#: lazarusidestrconsts.lissetutf8inrtl
-msgid "Set UTF-8 in RTL"
-msgstr "Задать UTF-8 в RTL"
-
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
 msgstr "Краткое:"
@@ -15892,6 +15895,10 @@ msgstr "Краткое:"
 #: lazarusidestrconsts.lisshortnopath
 msgid "Short, no path"
 msgstr "Короткое, без указания пути"
+
+#: lazarusidestrconsts.lisshouldthecomponentbeautocreatedwhentheapplications
+msgid "Should the component \"%s\" be auto created when the application starts?"
+msgstr "Должен ли компонент \"%s\" автоматически создаваться при запуске приложения?"
 
 #: lazarusidestrconsts.lisshow
 msgid "Show"
@@ -19254,6 +19261,10 @@ msgstr "Следующая закладка"
 msgid "Go to next editor"
 msgstr "Перейти к следующему редактору"
 
+#: lazarusidestrconsts.srkmecnexteditorinhistory
+msgid "Go to next editor in history"
+msgstr "Перейти к следующему редактору в истории"
+
 #: lazarusidestrconsts.srkmecnextsharededitor
 msgid "Go to next editor with same Source"
 msgstr "Перейти к следующему редактору с тем же файлом исходного кода"
@@ -19337,6 +19348,10 @@ msgstr "Предыдущая закладка"
 #: lazarusidestrconsts.srkmecpreveditor
 msgid "Go to prior editor"
 msgstr "Перейти к предыдущему редактору"
+
+#: lazarusidestrconsts.srkmecpreveditorinhistory
+msgid "Go to previous editor in history"
+msgstr "Перейти к предыдущему редактору в истории"
 
 #: lazarusidestrconsts.srkmecprevsharededitor
 msgid "Go to prior editor with same Source"
@@ -19889,6 +19904,14 @@ msgstr "Переместить курсор на слово влево"
 #: lazarusidestrconsts.srkmecwordright
 msgid "Move cursor word right"
 msgstr "Переместить курсор на слово вправо"
+
+#: lazarusidestrconsts.srkmeczoomin
+msgid "Zoom in"
+msgstr "Увеличить масштаб"
+
+#: lazarusidestrconsts.srkmeczoomout
+msgid "Zoom out"
+msgstr "Уменьшить масштаб"
 
 #: lazarusidestrconsts.srkmeditforcmd
 msgid "Edit keys of command"

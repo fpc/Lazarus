@@ -724,14 +724,6 @@ msgstr "Resaltado de paréntesis"
 msgid "Matching bracket pairs"
 msgstr "Coincidente con pares de paréntesis"
 
-#: lazarusidestrconsts.dlgcannotdeleteactivedesktop
-msgid "You cannot delete the active desktop."
-msgstr ""
-
-#: lazarusidestrconsts.dlgcannotdeletedebugdesktop
-msgid "You cannot delete debug desktop."
-msgstr ""
-
 #: lazarusidestrconsts.dlgcannotusedockedundockeddesktop
 msgid "You cannot use docked desktop in undocked environment and vice versa."
 msgstr ""
@@ -4215,6 +4207,14 @@ msgstr "Añadido objeto perdido \"%s\" a la fuente de Pascal."
 msgid "Added property \"%s\" for %s."
 msgstr "Añadida propiedad \"%s\" para %s."
 
+#: lazarusidestrconsts.lisaddfcutf8
+msgid "Add -FcUTF8"
+msgstr ""
+
+#: lazarusidestrconsts.lisaddfcutf8hint
+msgid "May be needed if source files have non-ansistring literals."
+msgstr ""
+
 #: lazarusidestrconsts.lisaddfilesindirectory
 msgid "Add Files in Directory"
 msgstr "Añadir Archivos en Directorio"
@@ -4291,6 +4291,10 @@ msgstr "¿Añadir para trayecto de búsqueda de include?"
 #: lazarusidestrconsts.lisaddtoproject
 msgid "Add %s to project?"
 msgstr "¿Añadir %s al proyecto?"
+
+#: lazarusidestrconsts.lisaddtostartupcomponents
+msgid "Add to startup components?"
+msgstr ""
 
 #: lazarusidestrconsts.lisaddtounitsearchpath
 msgid "Add to unit search path?"
@@ -8393,10 +8397,6 @@ msgstr "Editar macros"
 msgid "Editor ToolBar"
 msgstr ""
 
-#: lazarusidestrconsts.liseditortoolbarhint
-msgid "You may add here your favorite commands"
-msgstr ""
-
 #: lazarusidestrconsts.liseditortoolbarsettings
 msgid "Editor Toolbar Settings"
 msgstr ""
@@ -8946,6 +8946,10 @@ msgstr "Exportar lista de paquete (*.xml)"
 
 #: lazarusidestrconsts.lisexportselected
 msgid "Export selected"
+msgstr ""
+
+#: lazarusidestrconsts.lisexportsub
+msgid "Export >>"
 msgstr ""
 
 #: lazarusidestrconsts.lisexpression
@@ -12335,11 +12339,6 @@ msgctxt "lazarusidestrconsts.lismenuviewhistory"
 msgid "History"
 msgstr "Historial"
 
-#: lazarusidestrconsts.lismenuviewidespeedbuttons
-msgctxt "lazarusidestrconsts.lismenuviewidespeedbuttons"
-msgid "IDE Speed Buttons"
-msgstr "Ver Botones del IDE"
-
 #: lazarusidestrconsts.lismenuviewjumphistory
 msgctxt "lazarusidestrconsts.lismenuviewjumphistory"
 msgid "Jump History"
@@ -12666,6 +12665,14 @@ msgstr "Objetivos: "
 #: lazarusidestrconsts.lismmundolastchangetothisgrid
 msgid "Undo last change to this grid"
 msgstr "Deshacer último cambio realizado en esta rejilla"
+
+#: lazarusidestrconsts.lismmusesystemencoding
+msgid "Use system encoding"
+msgstr ""
+
+#: lazarusidestrconsts.lismmusesystemencodinghint
+msgid "Disable support for UTF-8 default string encoding."
+msgstr ""
 
 #: lazarusidestrconsts.lismmvalues
 msgid "Value \"%s\""
@@ -15916,10 +15923,6 @@ msgstr "Seleccionar esto para traducir los mensajes del compilador a otro lengua
 msgid "(Set up default indentation)"
 msgstr "(Configurar sangría predeterminada)"
 
-#: lazarusidestrconsts.lissetutf8inrtl
-msgid "Set UTF-8 in RTL"
-msgstr ""
-
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
 msgstr "Corto:"
@@ -15927,6 +15930,10 @@ msgstr "Corto:"
 #: lazarusidestrconsts.lisshortnopath
 msgid "Short, no path"
 msgstr "Corto, sin trayecto"
+
+#: lazarusidestrconsts.lisshouldthecomponentbeautocreatedwhentheapplications
+msgid "Should the component \"%s\" be auto created when the application starts?"
+msgstr ""
 
 #: lazarusidestrconsts.lisshow
 msgid "Show"
@@ -19296,6 +19303,10 @@ msgstr "Siguiente Marcador"
 msgid "Go to next editor"
 msgstr "Ir a siguiente editor"
 
+#: lazarusidestrconsts.srkmecnexteditorinhistory
+msgid "Go to next editor in history"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecnextsharededitor
 msgid "Go to next editor with same Source"
 msgstr "Ir al editor siguiente con la misma Fuente "
@@ -19379,6 +19390,10 @@ msgstr "Marcador Anterior"
 #: lazarusidestrconsts.srkmecpreveditor
 msgid "Go to prior editor"
 msgstr "Ir a editor anterior"
+
+#: lazarusidestrconsts.srkmecpreveditorinhistory
+msgid "Go to previous editor in history"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecprevsharededitor
 msgid "Go to prior editor with same Source"
@@ -19931,6 +19946,14 @@ msgstr "Mover cursor una palabra a la izquierda"
 #: lazarusidestrconsts.srkmecwordright
 msgid "Move cursor word right"
 msgstr "Mover cursor una palabra a la derecha"
+
+#: lazarusidestrconsts.srkmeczoomin
+msgid "Zoom in"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeczoomout
+msgid "Zoom out"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeditforcmd
 msgid "Edit keys of command"
