@@ -54,6 +54,7 @@ begin
   // ToDo: clean ... -> clean up dialog
   // ToDo: compile all from here
   // ToDo: compile all clean from here
+  // ToDo: set build mode of all projects
 
   Section:=RegisterIDEMenuSection(Root,'AddRemove');
   PGEditMenuSectionAddRemove:=Section;
@@ -74,6 +75,10 @@ begin
   cmdTargetProperties:=RegisterIDEMenuCommand(Section,'TargetProperties',lisTargetProperties);// ToDo
   // ToDo: Copy filename
   // ToDo: View source (project)
+
+  // ToDo: find in files
+  // ToDo: find references in files
+
 end;
 
 Procedure Register;

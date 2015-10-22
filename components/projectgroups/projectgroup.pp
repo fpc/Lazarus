@@ -1,3 +1,8 @@
+{
+  ToDo:
+    - Build file
+    - build modes of project as nodes with checkboxes
+}
 unit ProjectGroup;
 
 {$mode objfpc}{$H+}
