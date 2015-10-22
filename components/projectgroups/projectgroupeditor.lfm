@@ -1,7 +1,7 @@
 object ProjectGroupEditorForm: TProjectGroupEditorForm
-  Left = 691
+  Left = 790
   Height = 358
-  Top = 400
+  Top = 309
   Width = 785
   Caption = 'ProjectGroupEditorForm'
   ClientHeight = 358

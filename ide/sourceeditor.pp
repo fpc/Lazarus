@@ -581,6 +581,14 @@ type
 
   TBrowseEditorTabHistoryDialog = class;
 
+  TSrcPopupMenuItemsStamp = record
+    SrcEdit: TSourceEditor;
+    EditorComponentStamp: int64;
+    FileStateStamp: int64;
+    SourceCacheStamp: int64;
+    DefinesStep: integer;
+  end;
+
   { TSourceNotebook }
 
   TSourceNotebook = class(TSourceEditorWindowInterface)
@@ -626,6 +634,7 @@ type
     FBaseCaption: String;
     FIsClosing: Boolean;
     FSrcEditsSortedForFilenames: TAvgLvlTree; // TSourceEditorInterface sorted for Filename
+    FSrcPopupMenuItemsStamp: TSrcPopupMenuItemsStamp;
     TabPopUpMenu, SrcPopUpMenu, DbgPopUpMenu: TPopupMenu;
     procedure ApplyPageIndex;
     procedure ExecuteEditorItemClick(Sender: TObject);
@@ -6937,6 +6946,18 @@ var
   ProcName, xToken: String;
   xAttr: TSynHighlighterAttributes;
 begin
+  if (FSrcPopupMenuItemsStamp.SrcEdit = SrcEdit)
+  and (FSrcPopupMenuItemsStamp.EditorComponentStamp = SrcEdit.EditorComponent.ChangeStamp)
+  and (FSrcPopupMenuItemsStamp.FileStateStamp = FileStateCache.TimeStamp)
+  and (FSrcPopupMenuItemsStamp.SourceCacheStamp = CodeToolBoss.SourceCache.ChangeStamp)
+  and (FSrcPopupMenuItemsStamp.DefinesStep = CodeToolBoss.DefineTree.ChangeStep)
+  then exit;
+  FSrcPopupMenuItemsStamp.SrcEdit := SrcEdit;
+  FSrcPopupMenuItemsStamp.EditorComponentStamp := SrcEdit.EditorComponent.ChangeStamp;
+  FSrcPopupMenuItemsStamp.FileStateStamp := FileStateCache.TimeStamp;
+  FSrcPopupMenuItemsStamp.SourceCacheStamp := CodeToolBoss.SourceCache.ChangeStamp;
+  FSrcPopupMenuItemsStamp.DefinesStep := CodeToolBoss.DefineTree.ChangeStep;
+
   // Clipboard section:
   SrcEditMenuCut.Enabled := SrcEdit.SelectionAvailable and not SrcEdit.ReadOnly;
   SrcEditMenuCopy.Enabled := SrcEdit.SelectionAvailable;
