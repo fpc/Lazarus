@@ -30,7 +30,7 @@ uses
   {$IFDEF UNIX}
   baseunix,
   {$endif}
-  sysutils, Classes
+  sysutils, Classes, LazFileUtils
   {$IF FPC_FULLVERSION<20701}
   ,LazUTF8SysUtils
   {$ENDIF}
@@ -350,16 +350,16 @@ class procedure TIPCBase.FindRunningServers(const aServerIDPrefix: string;
 var
   xRec: TIPCSearchRec;
 begin
-  if FindFirst(ServerIDToFileName(aServerIDPrefix+AllFilesMask, aGlobal), faAnyFile, xRec) = 0 then
+  if FindFirstUTF8(ServerIDToFileName(aServerIDPrefix+AllFilesMask, aGlobal), faAnyFile, xRec) = 0 then
   begin
     repeat
       if (Pos('-', xRec.Name) = 0) and//file that we found is a pending message
          ServerRunning(xRec.Name, aGlobal)
       then
         outServerIDs.Add(xRec.Name);
-    until FindNext(xRec) <> 0;
+    until FindNextUTF8(xRec) <> 0;
   end;
-  FindClose(xRec);
+  FindCloseUTF8(xRec);
 end;
 
 function TIPCBase.GetPeekedRequestFileName(const aRequestID: Integer): string;
@@ -563,13 +563,13 @@ var
   xDir: string;
 begin
   xDir := ExtractFilePath(FFileName);
-  if FindFirst(GetRequestPrefix+AllFilesMask, faAnyFile, xRec) = 0 then
+  if FindFirstUTF8(GetRequestPrefix+AllFilesMask, faAnyFile, xRec) = 0 then
   begin
     repeat
       DeleteFile(xDir+xRec.Name);
-    until FindNext(xRec) <> 0;
+    until FindNextUTF8(xRec) <> 0;
   end;
-  FindClose(xRec);
+  FindCloseUTF8(xRec);
 end;
 
 function TIPCServer.DeleteRequest(const aRequestID: Integer): Boolean;
@@ -603,7 +603,7 @@ begin
   outMsgType := -1;
   outMsgLen := 0;
   Result := -1;
-  if FindFirst(GetRequestPrefix+AllFilesMask, faAnyFile, xRec) = 0 then
+  if FindFirstUTF8(GetRequestPrefix+AllFilesMask, faAnyFile, xRec) = 0 then
   begin
     repeat
       Result := RequestFileNameToID(xRec.Name);
@@ -613,9 +613,9 @@ begin
         if not CanReadMessage(outFileName, outStream, outMsgType, outMsgLen) then
           Result := -1;
       end;
-    until (Result >= 0) or (FindNext(xRec) <> 0);
+    until (Result >= 0) or (FindNextUTF8(xRec) <> 0);
   end;
-  FindClose(xRec);
+  FindCloseUTF8(xRec);
 end;
 
 function TIPCServer.FindHighestPendingRequestId: Integer;
@@ -624,15 +624,15 @@ var
   xRequestID: LongInt;
 begin
   Result := -1;
-  if FindFirst(GetRequestPrefix+AllFilesMask, faAnyFile, xRec) = 0 then
+  if FindFirstUTF8(GetRequestPrefix+AllFilesMask, faAnyFile, xRec) = 0 then
   begin
     repeat
       xRequestID := RequestFileNameToID(xRec.Name);
       if xRequestID > Result then
         Result := xRequestID;
-    until FindNext(xRec) <> 0;
+    until FindNextUTF8(xRec) <> 0;
   end;
-  FindClose(xRec);
+  FindCloseUTF8(xRec);
 end;
 
 function TIPCServer.GetPendingRequestCount: Integer;
@@ -640,14 +640,14 @@ var
   xRec: TIPCSearchRec;
 begin
   Result := 0;
-  if FindFirst(GetRequestPrefix+AllFilesMask, faAnyFile, xRec) = 0 then
+  if FindFirstUTF8(GetRequestPrefix+AllFilesMask, faAnyFile, xRec) = 0 then
   begin
     repeat
       if RequestFileNameToID(xRec.Name) >= 0 then
         Inc(Result);
-    until FindNext(xRec) <> 0;
+    until FindNextUTF8(xRec) <> 0;
   end;
-  FindClose(xRec);
+  FindCloseUTF8(xRec);
 end;
 
 function TIPCServer.PeekRequest(out outRequestID: Integer; out
