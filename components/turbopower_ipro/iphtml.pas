@@ -228,6 +228,9 @@ type
 
   { TIpHtmlBaseLayouter }
 
+  TIpHtmlNodeIterator = procedure (ANode: TIpHtmlNode; AProps: TIpHtmlProps;
+    var Done: Boolean);
+
   // Abstract base class for the HTML Layout engine
   TIpHtmlBaseLayouter = class
   protected
@@ -236,6 +239,8 @@ type
     FCurProps : TIpHtmlProps;
     FBlockMin, FBlockMax : Integer;
     function GetProps: TIpHtmlProps;
+    procedure RemoveLeadingLFs;
+    procedure RemoveDuplicateLFs;
   public
     FPageRect : TRect;
     constructor Create(AOwner: TIpHtmlNodeCore); virtual;
@@ -246,6 +251,7 @@ type
     procedure CalcMinMaxPropWidth(RenderProps: TIpHtmlProps;
       var aMin, aMax: Integer); virtual; abstract;
     procedure Render(RenderProps: TIpHtmlProps); virtual; abstract;
+    procedure IterateParents(AProc: TIpHtmlNodeIterator);
   public
     property Props : TIpHtmlProps read GetProps;
   end;
@@ -3575,6 +3581,52 @@ end;
 function TIpHtmlBaseLayouter.GetProps: TIpHtmlProps;
 begin
   Result := FOwner.Props;
+end;
+
+procedure TIpHtmlBaseLayouter.IterateParents(AProc: TIpHtmlNodeIterator);
+var
+  p: TIpHtmlNode;
+  done: Boolean;
+begin
+  p := FOwner; //.FParentNode;
+  done := false;
+  while Assigned(p) do
+  begin
+    AProc(p, Props, done);
+    if done then
+      break
+    else
+      p := p.FParentNode;
+  end;
+end;
+
+procedure TIpHtmlBaseLayouter.RemoveLeadingLFs;
+begin
+  while PIpHtmlElement(FElementQueue[0])^.ElementType in [etSoftLF, etHardLF] do
+    FElementQueue.Delete(0);
+end;
+
+procedure TIpHtmlBaseLayouter.RemoveDuplicateLFs;
+var
+  i: Integer;
+begin
+  i := pred(FElementQueue.Count);
+  while i >= 0 do begin
+    case PIpHtmlElement(FElementQueue[i])^.ElementType of
+      etSoftLF:
+        if (i > 0) and (PIpHtmlElement(FElementQueue[i-1])^.ElementType in [etSoftLF, etHardLF])
+          then FElementQueue.Delete(i);
+      {
+      etHardLF:
+        if (i > 0) and (PIpHtmlElement(FElementQueue[i-1])^.ElementType in [etSoftLF, etHardLF])
+        then begin
+          FElementQueue.Delete(i-1);
+          dec(i);
+        end;
+        }
+    end;
+    dec(i);
+  end;
 end;
 
 { TIpHtmlBaseTableLayouter }
@@ -7583,7 +7635,7 @@ end;
 
 function TIpHtml.ParseCellAlign(Default : TIpHtmlAlign): TIpHtmlAlign;
 begin
-  Result := GetAlignmentForStr(FindAttribute(htmlAttrALIGN), haCenter);
+  Result := GetAlignmentForStr(FindAttribute(htmlAttrALIGN), Default);
 //  if FlagErrors then
 //    ReportError(SHtmlInvAlign);
 end;
@@ -9183,7 +9235,9 @@ begin
       EnqueueElement(Owner.HardLF);
     end;
   end;
+
   inherited Enqueue;
+
   if FChildren.Count > 0 then begin
     if not (FParentNode is TIpHtmlNodeTD) then begin
       EnqueueElement(Owner.SoftLF);
@@ -10157,6 +10211,7 @@ begin
   end;
  }
   EnqueueElement(Owner.SoftLF);
+  EnqueueElement(Owner.HardLF);
 
   EnqueueElement(Element);
 
@@ -11037,8 +11092,10 @@ begin
   if FChildren.Count > 0 then
     EnqueueElement(Owner.HardLF);
   inherited Enqueue;
+  {
   if FChildren.Count > 0 then
     EnqueueElement(Owner.HardLF);
+    }
 end;
 
 { TIpHtmlNodeBLOCKQUOTE }
@@ -15626,7 +15683,6 @@ begin
   inherited Create(ParentNode);
   FElementName := 'td';
 end;
-
 
 { TIpHtmlNodeCAPTION }
 
