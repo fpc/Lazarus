@@ -556,21 +556,18 @@ begin
       if AWinControl.HandleObjectShouldBeVisible and
         not (TCustomForm(AWinControl).FormStyle in fsAllStayOnTop) and
         not (fsModal in TCustomForm(AWinControl).FormState) and
+        (TCustomForm(AWinControl).FormStyle <> fsMDIChild) and
         (TCustomForm(AWinControl).PopupMode = pmAuto) and
         (TCustomForm(AWinControl).BorderStyle = bsNone) and
         (TCustomForm(AWinControl).PopupParent = nil) then
       begin
         W := QApplication_activeWindow;
-        if (W <> nil) and not QWidget_isModal(W) then
-        begin
-          Flags := QWidget_windowFlags(W);
-          if (Flags and QtWindowStaysOnTopHint <> QtWindowStaysOnTopHint) and
-            GetAlwaysOnTopX11(W) then
-          begin
-            Flags := Widget.windowFlags;
-            Widget.setWindowFlags(Flags or QtWindowStaysOnTopHint);
-          end;
-        end;
+        Flags := Widget.windowFlags;
+        if W <> nil then
+          Widget.setParent(W)
+        else
+          Widget.setParent(QApplication_desktop);
+        Widget.setWindowFlags(Flags or QtTool);
       end;
       {$ENDIF}
     end;
