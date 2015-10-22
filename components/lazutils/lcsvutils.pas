@@ -163,7 +163,7 @@ var
 
   procedure ConvertEncoding;
   var
-    Pw: PWidechar;
+    W: WideString;
   begin
     if (CSVEncoding=ceAuto) and (BufLen>1) then begin
       if (leadPtr[0]=#$FF) and (leadPtr[1]=#$FE) then begin
@@ -192,9 +192,11 @@ var
         begin
           if CSVEncoding=ceUTF16be then
             ConvertToUTF16;
-          Pw := pointer(leadPtr);
-          Buffer := UTF8Encode(widestring(Pw));
+          SetLength(W,(tailPtr-leadPtr) div 2 +1);
+          System.Move(leadPtr^,W[1],length(W));
+          Buffer := UTF8Encode(W);
           leadPtr := @Buffer[1];
+          BufLen := length(Buffer);
         end;
     end;
   end;
