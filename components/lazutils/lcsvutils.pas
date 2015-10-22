@@ -56,13 +56,16 @@ var
 
   procedure StorePart;
   var
-    Len: Integer;
+    Len, AddLen: SizeInt;
   begin
     Len := Length(curWord);
-    SetLength(curWord, Len+(leadPtr-wordPtr));
-    if Length(curWord) > 0 then
-      Move(wordPtr^, curWord[Len+1], (leadPtr-wordPtr));
-    Inc(leadPtr);
+    AddLen := leadPtr-wordPtr;
+    if AddLen > 0 then begin
+      SetLength(curWord, Len+AddLen);
+      Move(wordPtr^, curWord[Len+1], AddLen);
+    end;
+    if leadPtr<tailPtr then
+      Inc(leadPtr);
     wordPtr := leadPtr;
   end;
 
