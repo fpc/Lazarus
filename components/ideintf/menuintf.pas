@@ -328,6 +328,7 @@ var
       itmOptionsDialogs: TIDEMenuSection;
       itmCustomTools: TIDEMenuSection;
       itmSecondaryTools: TIDEMenuSection;
+      itmConversion: TIDEMenuSection;
       itmDelphiConversion: TIDEMenuSection;
       itmBuildingLazarus: TIDEMenuSection;
 

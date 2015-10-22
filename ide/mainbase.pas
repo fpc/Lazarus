@@ -1384,14 +1384,17 @@ begin
     CreateMenuItem(ParentMI,itmToolManageExamples,'itmToolManageExamples',lisMenuExampleProjects, 'camera');
     CreateMenuItem(ParentMI,itmToolDiff,'itmToolDiff',lisMenuCompareFiles, 'menu_tool_diff');
 
+    CreateMenuSeparatorSection(mnuTools,itmConversion,'itmConversion');
+    ParentMI:=itmConversion;
+    CreateMenuItem(ParentMI,itmToolConvertEncoding,'itmToolConvertEncoding',lisMenuConvertEncoding);
+    CreateMenuItem(ParentMI,itmToolCheckLFM,'itmToolCheckLFM',lisMenuCheckLFM, 'menu_tool_check_lfm');
+
     CreateMenuSubSection(mnuTools,itmDelphiConversion,'itmDelphiConversion',lisMenuDelphiConversion,'menu_tool_dfm_to_lfm');
     ParentMI:=itmDelphiConversion;
-    CreateMenuItem(ParentMI,itmToolCheckLFM,'itmToolCheckLFM',lisMenuCheckLFM, 'menu_tool_check_lfm');
     CreateMenuItem(ParentMI,itmToolConvertDelphiUnit,'itmToolConvertDelphiUnit',lisMenuConvertDelphiUnit,'menu_tool_dfm_to_lfm');
     CreateMenuItem(ParentMI,itmToolConvertDelphiProject,'itmToolConvertDelphiProject',lisMenuConvertDelphiProject,'menu_tool_dfm_to_lfm');
     CreateMenuItem(ParentMI,itmToolConvertDelphiPackage,'itmToolConvertDelphiPackage',lisMenuConvertDelphiPackage,'menu_tool_dfm_to_lfm');
     CreateMenuItem(ParentMI,itmToolConvertDFMtoLFM,'itmToolConvertDFMtoLFM',lisMenuConvertDFMtoLFM,'menu_tool_dfm_to_lfm');
-    CreateMenuItem(ParentMI,itmToolConvertEncoding,'itmToolConvertEncoding',lisMenuConvertEncoding);
 
     CreateMenuSeparatorSection(mnuTools,itmBuildingLazarus,'itmBuildingLazarus');
     ParentMI:=itmBuildingLazarus;
