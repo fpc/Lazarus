@@ -1218,6 +1218,7 @@ begin
     i:=0;
     while i<Count do begin
       Child:=Items[i];
+      Child.DoOnRequestCaption(Child);
       if Child is TIDEMenuSection then
         TIDEMenuSection(Child).NotifySubSectionOnShow(Sender,false);
       inc(i);

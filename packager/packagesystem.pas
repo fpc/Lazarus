@@ -214,6 +214,7 @@ type
     function GetCount: Integer;
     function GetPackages(Index: integer): TLazPackage;
     procedure DoDependencyChanged(Dependency: TPkgDependency);
+    function GetPackagesChangeStamp: Int64;
     procedure SetRegistrationPackage(const AValue: TLazPackage);
     procedure UpdateBrokenDependenciesToPackage(APackage: TLazPackage);
     function OpenDependencyWithPackageLink(Dependency: TPkgDependency;
@@ -442,6 +443,7 @@ type
     property Packages[Index: integer]: TLazPackage read GetPackages; default; // see Count for the number
     property UpdateLock: integer read FUpdateLock;
     property Verbosity: TPkgVerbosityFlags read FVerbosity write FVerbosity;
+    property PackagesChangeStamp: Int64 read GetPackagesChangeStamp;
 
     // base packages
     property FCLPackage: TLazPackage read FFCLPackage;
@@ -5155,6 +5157,21 @@ begin
       ListOfPackages:=TStringList.Create;
     ListOfPackages.AddObject(NewFilename,APackage);
   end;
+end;
+
+function TLazPackageGraph.GetPackagesChangeStamp: Int64;
+var
+  I: Integer;
+  xPck: TLazPackage;
+begin
+  {$push}{$R-}  // range check off
+  Result := 0;
+  for I := 0 to Count-1 do
+  begin
+    xPck := Packages[I];
+    Inc(Result, xPck.ChangeStamp);
+  end;
+  {$pop}
 end;
 
 procedure TLazPackageGraph.SortDependencyListTopologicallyOld(
