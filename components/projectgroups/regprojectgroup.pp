@@ -10,34 +10,15 @@ interface
 
 uses
   Classes, SysUtils, ProjectGroupIntf, MenuIntf,
-  ProjectGroup, ProjectGroupEditor;
+  ProjectGroupStrConst, ProjectGroup, ProjectGroupEditor;
 
 procedure RegisterStandardProjectGroupMenuItems;
-Procedure Register;
+procedure Register;
 
 implementation
 
-Const
+const
   ProjectGroupEditorMenuRootName = 'ProjectGroupEditorMenu';
-
-Resourcestring
-  lisTargetAdd          = 'Add target';
-  lisTargetRemove       = 'Remove target';
-  lisTargetCompile      = 'Compile';
-  lisTargetCompileClean = 'Compile clean';
-  lisTargetInstall      = 'Install';
-  lisTargetUnInstall    = 'Uninstall';
-  lisTargetActivate     = 'Activate target';
-  lisTargetOpen         = 'Open Target';
-  lisTargetRun          = 'Run Target';
-  lisTargetProperties   = 'Target properties';
-  lisTargetLater        = 'Compile target later';
-  lisTargetEarlier      = 'Compile target earlier';
-  lisNewProjectGroup    = 'New Project group';
-  lisOpenProjectGroup   = 'Open Project group';
-  lisSaveProjectGroup   = 'Save Project group';
-  lisSaveProjectGroupAs = 'Save Project group as';
-
 
 procedure RegisterStandardProjectGroupMenuItems;
 var
@@ -79,9 +60,10 @@ begin
   // ToDo: find in files
   // ToDo: find references in files
 
+  // ToDo: D&D order compile targets
 end;
 
-Procedure Register;
+procedure Register;
 begin
   RegisterStandardProjectGroupMenuItems;
   IDEProjectGroupManager:=TIDEProjectGroupManager.Create;
