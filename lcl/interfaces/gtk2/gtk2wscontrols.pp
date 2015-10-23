@@ -644,7 +644,8 @@ begin
   InvalidateLastWFPResult(AWinControl, Rect(ALeft, ATop, AWidth, AHeight));
   if not AWinControl.Visible then // Gtk2WSForms.ShowHide will correct visibility
     exit;
-  if not (AWinControl is TCustomForm) then
+  if (not (AWinControl is TCustomForm)) or (AWinControl.Parent<>nil)
+  or (AWinControl.ParentWindow<>0) then
     exit;
   AForm := TCustomForm(AWinControl);
   if not (csDesigning in AForm.ComponentState) and
