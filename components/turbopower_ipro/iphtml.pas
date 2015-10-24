@@ -1737,7 +1737,7 @@ type
 
   TIpHtmlRectListEntry = record
     Rect : TRect;
-    Node : PIpHtmlElement;
+    Element : PIpHtmlElement;
     Block : TIpHtmlNodeBlock;
   end;
   PIpHtmlRectListEntry = ^TIpHtmlRectListEntry;
@@ -2063,7 +2063,7 @@ type
     destructor Destroy; override;
     function PagePtToScreen(const Pt: TPoint): TPoint;
     function PageRectToScreen(const Rect: TRect; var ScreenRect: TRect): Boolean;
-    procedure AddRect(const R: TRect; Node: PIpHtmlElement; Block: TIpHtmlNodeBlock);
+    procedure AddRect(const R: TRect; AElement: PIpHtmlElement; ABlock: TIpHtmlNodeBlock);
     procedure LoadFromStream(S : TStream);
     procedure Render(TargetCanvas: TCanvas; TargetPageRect : TRect;
       UsePaintBuffer: Boolean; const TopLeft: TPoint);
@@ -8355,7 +8355,7 @@ begin
   FCurElement := nil;
   for i := 0 to Pred(RectList.Count) do
     if PtInRect(PIpHtmlRectListEntry(RectList[i]).Rect, Pt) then begin
-      FCurElement := PIpHtmlRectListEntry(RectList[i]).Node;
+      FCurElement := PIpHtmlRectListEntry(RectList[i]).Element;
       break;
     end;
 end;
@@ -8441,14 +8441,15 @@ begin
     FOnPost(Self, URL, FormData);
 end;
 
-procedure TIpHtml.AddRect(const R : TRect; Node : PIpHtmlElement; Block: TIpHtmlNodeBlock);
+procedure TIpHtml.AddRect(const R: TRect; AElement: PIpHtmlElement;
+  ABlock: TIpHtmlNodeBlock);
 var
   NewEntry : PIpHtmlRectListEntry;
 begin
   New(NewEntry);
   NewEntry.Rect := R;
-  NewEntry.Node := Node;
-  NewEntry.Block := Block;
+  NewEntry.Element := AElement;
+  NewEntry.Block := ABlock;
   RectList.Add(NewEntry);
 end;
 
@@ -8512,15 +8513,15 @@ begin
     for i:= 0 to RectList.Count-1 do begin
       item := PIpHtmlRectListEntry(RectList[i]);
       // (de)select only text elements
-      if Item.Node.ElementType<>etWord then
+      if Item.Element.ElementType<>etWord then
         Continue;
       if DeselectAll then
         Selected := false
       else
         Selected := (StartSelIndex<=i)and(i<=EndSelIndex);
       // Invalidate only changed elements
-      if Item.Node.IsSelected<>Selected then begin
-        Item.Node.IsSelected := Selected;
+      if Item.Element.IsSelected<>Selected then begin
+        Item.Element.IsSelected := Selected;
         if Body.PageRectToScreen(Item^.Rect, R) then
           InvalidateRect(R);
       end;
