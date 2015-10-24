@@ -60,7 +60,7 @@ type
   { TIDEProjectGroup }
 
   TIDEProjectGroup = Class(TProjectGroup)
-  Private
+  private
     FOnFileNameChange: TNotifyEvent;
     FOnTargetActivated: TTargetEvent;
     FOnTargetAdded: TTargetEvent;
@@ -79,9 +79,11 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    function IndexOfTarget(const Target: TCompileTarget): Integer; override;
+    function IndexOfRemovedTarget(const Target: TCompileTarget): Integer; override;
     function AddTarget(Const AFileName: String): TCompileTarget; override;
     procedure RemoveTarget(Index: Integer); override;
-    procedure ExchangeTargets(ASource, ATarget: Integer); override;
+    procedure ExchangeTargets(ASource, ATarget: Integer); override; // ToDo: replace with MoveTarget
     procedure ActivateTarget(T: TCompileTarget); override;
     function LoadFromFile(Options: TProjectGroupLoadOptions): Boolean;
     function SaveToFile: Boolean;
@@ -251,19 +253,19 @@ begin
   Result:=False;
   F:=TSaveDialog.Create(Nil);
   With F do
-   try
-    FileName:=FProjectGroup.FileName;
-    InitIDEFileDialog(F);
-    F.Options:=[ofOverwritePrompt,ofPathMustExist,ofEnableSizing];
-    F.Filter:='Lazarus project group|*.lpg|All files|'+AllFilesMask;
-    F.DefaultExt:='.lpg';
-    Result:=F.Execute;
-    if Result then
-      FProjectGroup.FileName:=TrimAndExpandFilename(FileName);
-    StoreIDEFileDialog(F);
-   finally
-     F.Free;
-   end;
+    try
+      FileName:=FProjectGroup.FileName;
+      InitIDEFileDialog(F);
+      F.Options:=[ofOverwritePrompt,ofPathMustExist,ofEnableSizing];
+      F.Filter:=lisLazarusProjectGroup+'|*.lpg|'+lisAllFiles+'|'+AllFilesMask;
+      F.DefaultExt:='.lpg';
+      Result:=F.Execute;
+      if Result then
+        FProjectGroup.FileName:=TrimAndExpandFilename(FileName);
+      StoreIDEFileDialog(F);
+    finally
+      F.Free;
+    end;
 end;
 
 procedure TIDEProjectGroupManager.DoSaveAsClick(Sender: TObject);
@@ -359,6 +361,17 @@ begin
   inherited Destroy;
 end;
 
+function TIDEProjectGroup.IndexOfTarget(const Target: TCompileTarget): Integer;
+begin
+  Result:=FTargets.IndexOf(Target);
+end;
+
+function TIDEProjectGroup.IndexOfRemovedTarget(const Target: TCompileTarget
+  ): Integer;
+begin
+  Result:=FRemovedTargets.IndexOf(Target);
+end;
+
 function TIDEProjectGroup.AddTarget(const AFileName: String): TCompileTarget;
 begin
   Result:=Nil;
@@ -378,11 +391,11 @@ var
   Target: TCompileTarget;
 begin
   Target:=Targets[Index];
-  if Assigned(FOnTargetDeleted) then
-    FOnTargetDeleted(Self,Target);
   FTargets.Delete(Index);
   FRemovedTargets.Add(Target);
   Target.Removed:=true;
+  if Assigned(FOnTargetDeleted) then
+    FOnTargetDeleted(Self,Target);
 end;
 
 procedure TIDEProjectGroup.ExchangeTargets(ASource, ATarget: Integer);
