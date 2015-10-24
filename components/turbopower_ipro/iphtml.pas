@@ -12945,10 +12945,17 @@ begin
   {$IFDEF IP_LAZARUS}
   Self.SetFocus;
   if (Button=mbLeft) and HtmlPanel.AllowTextSelect then begin
-    ClearSelection;
-    SelStart := Point(X + ViewLeft, Y + ViewTop);
-    NewSelection := False;
-    HaveSelection := True;
+    if Shift * [ssShift] = [] then begin
+      ClearSelection;
+      SelStart := Point(X + ViewLeft, Y + ViewTop);
+      NewSelection := False;
+      HaveSelection := True;
+    end else
+    if (Shift * [ssShift] = [ssShift]) and HaveSelection then begin
+      SelEnd := Point(X + ViewLeft, Y + ViewTop);
+      SetSelection;
+      ScrollPtInView(SelEnd);
+    end;
   end;
   {$ELSE}
   IPHC := HtmlPanel;
