@@ -14,7 +14,7 @@ unit TestFileProc;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testglobals, LazFileUtils, FileProcs;
+  Classes, SysUtils, fpcunit, testglobals, LazFileUtils, LazUTF8;
 
 type
 

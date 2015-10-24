@@ -11,6 +11,7 @@
    ./runtests --format=plain --suite=TestSimpleFormat
    ./runtests --format=plain --suite=TestDateToCfgStr
    ./runtests --format=plain --suite=TestFilenameIsMatching
+   ./runtests --format=plain --suite=TestExtractFileUnitname
    ./runtests --format=plain --suite=TestChangeLineEndings
 }
 unit TestBasicCodetools;
@@ -40,6 +41,7 @@ type
     // FileProcs
     procedure TestDateToCfgStr;
     procedure TestFilenameIsMatching;
+    procedure TestExtractFileUnitname;
     // SourceLog
     procedure TestChangeLineEndings;
   end;
@@ -372,6 +374,28 @@ begin
   t('*.{p{as,p,},inc}','b.p',true,true);
   t('*.{p{as,p,},inc}','b.inc',true,true);
   t('*.{p{as,p,},inc}','c.lfm',true,false);
+end;
+
+procedure TTestBasicCodeTools.TestExtractFileUnitname;
+
+  procedure t(Filename: string; WithNameSpace: boolean; Expected: string);
+  begin
+    AssertEquals('ExtractFileUnitname('''+Filename+''')',Expected,ExtractFileUnitname(Filename,WithNameSpace));
+  end;
+
+begin
+  t('a.pas',true,'a');
+  t('a.pp',true,'a');
+  t('a.p',true,'a');
+  t('ab.pas',true,'ab');
+  t('a.pas',false,'a');
+  t('ab.pas',false,'ab');
+  t('a.b.pas',true,'a.b');
+  t('a.b.pas',false,'b');
+  t('ab.c.pas',true,'ab.c');
+  t('ab.c.pas',false,'c');
+  t('ab.c.d.pas',true,'ab.c.d');
+  t('ab.c.d.pas',false,'d');
 end;
 
 procedure TTestBasicCodeTools.TestChangeLineEndings;

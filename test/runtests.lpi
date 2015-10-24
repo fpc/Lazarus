@@ -90,6 +90,7 @@
       <Unit1>
         <Filename Value="testlpi.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="TestLpi"/>
       </Unit1>
       <Unit2>
         <Filename Value="bugtestcase.pas"/>
@@ -102,6 +103,7 @@
       <Unit4>
         <Filename Value="lcltests\testunicode.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="TestUnicode"/>
       </Unit4>
       <Unit5>
         <Filename Value="testunits.pas"/>
@@ -151,6 +153,7 @@
       <Unit16>
         <Filename Value="lazutils\testlconvencoding.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="TestLConvEncoding"/>
       </Unit16>
     </Units>
   </ProjectOptions>
