@@ -1154,9 +1154,9 @@ begin
   Result:=ExtractFileNameOnly(Filename);
   if (Result='') or WithNameSpace then exit;
   // find last dot
-  p:=length(Filename);
+  p:=length(Result);
   while p>0 do begin
-    if Filename[p]='.' then begin
+    if Result[p]='.' then begin
       Delete(Result,1,p);
       exit;
     end;

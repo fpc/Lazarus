@@ -380,7 +380,7 @@ procedure TTestBasicCodeTools.TestExtractFileUnitname;
 
   procedure t(Filename: string; WithNameSpace: boolean; Expected: string);
   begin
-    AssertEquals('ExtractFileUnitname('''+Filename+''')',Expected,ExtractFileUnitname(Filename,WithNameSpace));
+    AssertEquals('ExtractFileUnitname('''+Filename+''','+BoolToStr(WithNameSpace,true)+')',Expected,ExtractFileUnitname(Filename,WithNameSpace));
   end;
 
 begin
