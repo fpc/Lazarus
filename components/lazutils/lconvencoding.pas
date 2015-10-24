@@ -93,11 +93,16 @@ function NormalizeEncoding(const Encoding: string): string;
 
 type
   TConvertEncodingFunction = function(const s: string): string;
+  {$ifdef HasCP}
+  TConvertUTF8ToEncodingFunc = function(const s: string; SetTargetCodePage: boolean = false): RawByteString;
+  {$else}
+  TConvertUTF8ToEncodingFunc = function(const s: string): string;
+  {$endif}
   TCharToUTF8Table = array[char] of PChar;
   TUnicodeToCharID = function(Unicode: cardinal): integer;
 var
   ConvertAnsiToUTF8: TConvertEncodingFunction = nil;
-  ConvertUTF8ToAnsi: TConvertEncodingFunction = nil;
+  ConvertUTF8ToAnsi: TConvertUTF8ToEncodingFunc = nil;
 
 function UTF8BOMToUTF8(const s: string): string; // UTF8 with BOM
 function ISO_8859_1ToUTF8(const s: string): string; // central europe
@@ -5434,315 +5439,6 @@ begin
 end;
 
 {$IfNdef UseSystemCPConv}
-function UnicodeToCP1250(Unicode: cardinal): integer;
-begin
-  case Unicode of
-  0..127,129,131,136,144,152: Result:=Unicode;
-  160: Result:=160;
-  164: Result:=164;
-  166..169: Result:=Unicode;
-  171..174: Result:=Unicode;
-  176..177: Result:=Unicode;
-  180..184: Result:=Unicode;
-  187: Result:=187;
-  193..194: Result:=Unicode;
-  196: Result:=196;
-  199: Result:=199;
-  201: Result:=201;
-  203: Result:=203;
-  205..206: Result:=Unicode;
-  211..212: Result:=Unicode;
-  214..215: Result:=Unicode;
-  218: Result:=218;
-  220..221: Result:=Unicode;
-  223: Result:=223;
-  225..226: Result:=Unicode;
-  228: Result:=228;
-  231: Result:=231;
-  233: Result:=233;
-  235: Result:=235;
-  237..238: Result:=Unicode;
-  243..244: Result:=Unicode;
-  246..247: Result:=Unicode;
-  250: Result:=250;
-  252..253: Result:=Unicode;
-  258: Result:=195;
-  259: Result:=227;
-  260: Result:=165;
-  261: Result:=185;
-  262: Result:=198;
-  263: Result:=230;
-  268: Result:=200;
-  269: Result:=232;
-  270: Result:=207;
-  271: Result:=239;
-  272: Result:=208;
-  273: Result:=240;
-  280: Result:=202;
-  281: Result:=234;
-  282: Result:=204;
-  283: Result:=236;
-  313: Result:=197;
-  314: Result:=229;
-  317: Result:=188;
-  318: Result:=190;
-  321: Result:=163;
-  322: Result:=179;
-  323: Result:=209;
-  324: Result:=241;
-  327: Result:=210;
-  328: Result:=242;
-  336: Result:=213;
-  337: Result:=245;
-  340: Result:=192;
-  341: Result:=224;
-  344: Result:=216;
-  345: Result:=248;
-  346: Result:=140;
-  347: Result:=156;
-  350: Result:=170;
-  351: Result:=186;
-  352: Result:=138;
-  353: Result:=154;
-  354: Result:=222;
-  355: Result:=254;
-  356: Result:=141;
-  357: Result:=157;
-  366: Result:=217;
-  367: Result:=249;
-  368: Result:=219;
-  369: Result:=251;
-  377: Result:=143;
-  378: Result:=159;
-  379: Result:=175;
-  380: Result:=191;
-  381: Result:=142;
-  382: Result:=158;
-  711: Result:=161;
-  728: Result:=162;
-  729: Result:=255;
-  731: Result:=178;
-  733: Result:=189;
-  8211..8212: Result:=Unicode-8061;
-  8216..8217: Result:=Unicode-8071;
-  8218: Result:=130;
-  8220..8221: Result:=Unicode-8073;
-  8222: Result:=132;
-  8224..8225: Result:=Unicode-8090;
-  8226: Result:=149;
-  8230: Result:=133;
-  8240: Result:=137;
-  8249: Result:=139;
-  8250: Result:=155;
-  8364: Result:=128;
-  8482: Result:=153;
-  else Result:=-1;
-  end;
-end;
-
-function UnicodeToCP1251(Unicode: cardinal): integer;
-begin
-  case Unicode of
-  0..127,152: Result:=Unicode;
-  160: Result:=160;
-  164: Result:=164;
-  166..167: Result:=Unicode;
-  169: Result:=169;
-  171..174: Result:=Unicode;
-  176..177: Result:=Unicode;
-  181..183: Result:=Unicode;
-  187: Result:=187;
-  1025: Result:=168;
-  1026..1027: Result:=Unicode-898;
-  1028: Result:=170;
-  1029: Result:=189;
-  1030: Result:=178;
-  1031: Result:=175;
-  1032: Result:=163;
-  1033: Result:=138;
-  1034: Result:=140;
-  1035: Result:=142;
-  1036: Result:=141;
-  1038: Result:=161;
-  1039: Result:=143;
-  1040..1103: Result:=Unicode-848;
-  1105: Result:=184;
-  1106: Result:=144;
-  1107: Result:=131;
-  1108: Result:=186;
-  1109: Result:=190;
-  1110: Result:=179;
-  1111: Result:=191;
-  1112: Result:=188;
-  1113: Result:=154;
-  1114: Result:=156;
-  1115: Result:=158;
-  1116: Result:=157;
-  1118: Result:=162;
-  1119: Result:=159;
-  1168: Result:=165;
-  1169: Result:=180;
-  8211..8212: Result:=Unicode-8061;
-  8216..8217: Result:=Unicode-8071;
-  8218: Result:=130;
-  8220..8221: Result:=Unicode-8073;
-  8222: Result:=132;
-  8224..8225: Result:=Unicode-8090;
-  8226: Result:=149;
-  8230: Result:=133;
-  8240: Result:=137;
-  8249: Result:=139;
-  8250: Result:=155;
-  8364: Result:=136;
-  8470: Result:=185;
-  8482: Result:=153;
-  else Result:=-1;
-  end;
-end;
-
-function UnicodeToCP1252(Unicode: cardinal): integer;
-begin
-  case Unicode of
-  0..127,129,141,143,144,157: Result:=Unicode;
-  160..255: Result:=Unicode;
-  338: Result:=140;
-  339: Result:=156;
-  352: Result:=138;
-  353: Result:=154;
-  376: Result:=159;
-  381: Result:=142;
-  382: Result:=158;
-  402: Result:=131;
-  710: Result:=136;
-  732: Result:=152;
-  8211..8212: Result:=Unicode-8061;
-  8216..8217: Result:=Unicode-8071;
-  8218: Result:=130;
-  8220..8221: Result:=Unicode-8073;
-  8222: Result:=132;
-  8224..8225: Result:=Unicode-8090;
-  8226: Result:=149;
-  8230: Result:=133;
-  8240: Result:=137;
-  8249: Result:=139;
-  8250: Result:=155;
-  8364: Result:=128;
-  8482: Result:=153;
-  else Result:=-1;
-  end;
-end;
-
-function UnicodeToCP1253(Unicode: cardinal): integer;
-begin
-  case Unicode of
-  0..127,129,136,138,140,141,142,143,144,152,154,156,157,158,159,170: Result:=Unicode;
-  160: Result:=160;
-  163..169: Result:=Unicode;
-  171..174: Result:=Unicode;
-  176..179: Result:=Unicode;
-  181..183: Result:=Unicode;
-  187: Result:=187;
-  189: Result:=189;
-  402: Result:=131;
-  900: Result:=180;
-  901..902: Result:=Unicode-740;
-  904..906: Result:=Unicode-720;
-  908: Result:=188;
-  910..975: Result:=Unicode-720;
-  8211..8212: Result:=Unicode-8061;
-  8213: Result:=175;
-  8216..8217: Result:=Unicode-8071;
-  8218: Result:=130;
-  8220..8221: Result:=Unicode-8073;
-  8222: Result:=132;
-  8224..8225: Result:=Unicode-8090;
-  8226: Result:=149;
-  8230: Result:=133;
-  8240: Result:=137;
-  8249: Result:=139;
-  8250: Result:=155;
-  8364: Result:=128;
-  8482: Result:=153;
-  else Result:=-1;
-  end;
-end;
-
-function UnicodeToCP1254(Unicode: cardinal): integer;
-begin
-  case Unicode of
-  0..127,129,141,142,143,144,157,158: Result:=Unicode;
-  160..207: Result:=Unicode;
-  209..220: Result:=Unicode;
-  223..239: Result:=Unicode;
-  241..252: Result:=Unicode;
-  255: Result:=255;
-  286: Result:=208;
-  287: Result:=240;
-  304: Result:=221;
-  305: Result:=253;
-  338: Result:=140;
-  339: Result:=156;
-  350: Result:=222;
-  351: Result:=254;
-  352: Result:=138;
-  353: Result:=154;
-  376: Result:=159;
-  402: Result:=131;
-  710: Result:=136;
-  732: Result:=152;
-  8211..8212: Result:=Unicode-8061;
-  8216..8217: Result:=Unicode-8071;
-  8218: Result:=130;
-  8220..8221: Result:=Unicode-8073;
-  8222: Result:=132;
-  8224..8225: Result:=Unicode-8090;
-  8226: Result:=149;
-  8230: Result:=133;
-  8240: Result:=137;
-  8249: Result:=139;
-  8250: Result:=155;
-  8364: Result:=128;
-  8482: Result:=153;
-  else Result:=-1;
-  end;
-end;
-
-function UnicodeToCP1255(Unicode: cardinal): integer;
-begin
-  case Unicode of
-  0..127,129,138,140..144,154: Result:=Unicode;
-  156..163: Result:=Unicode;
-  165..169: Result:=Unicode;
-  171..185: Result:=Unicode;
-  187..191: Result:=Unicode;
-  215: Result:=170;
-  247: Result:=186;
-  402: Result:=131;
-  710: Result:=136;
-  732: Result:=152;
-  1456..1475: Result:=Unicode-1264;
-  1488..1516: Result:=Unicode-1264;
-  1517: Result:=255;
-  1520..1535: Result:=Unicode-1308;
-  8206..8207: Result:=Unicode-7953;
-  8211..8212: Result:=Unicode-8061;
-  8216..8217: Result:=Unicode-8071;
-  8218: Result:=130;
-  8220..8221: Result:=Unicode-8073;
-  8222: Result:=132;
-  8224..8225: Result:=Unicode-8090;
-  8226: Result:=149;
-  8230: Result:=133;
-  8240: Result:=137;
-  8249: Result:=139;
-  8250: Result:=155;
-  8362: Result:=164;
-  8364: Result:=128;
-  8482: Result:=153;
-  else Result:=-1;
-  end;
-end;
-
 function UnicodeToCP1256(Unicode: cardinal): integer;
 begin
   case Unicode of
@@ -5802,170 +5498,6 @@ begin
   8240: Result:=137;
   8249: Result:=139;
   8250: Result:=155;
-  8364: Result:=128;
-  8482: Result:=153;
-  else Result:=-1;
-  end;
-end;
-
-function UnicodeToCP1257(Unicode: cardinal): integer;
-begin
-  case Unicode of
-  0..127: Result:=Unicode;
-  129: Result:=129;
-  131: Result:=131;
-  136: Result:=136;
-  138: Result:=138;
-  140: Result:=140;
-  144: Result:=144;
-  152: Result:=152;
-  154: Result:=154;
-  156: Result:=156;
-  159..167: Result:=Unicode;
-  168: Result:=141;
-  169: Result:=169;
-  171..174: Result:=Unicode;
-  175: Result:=157;
-  176..183: Result:=Unicode;
-  184: Result:=143;
-  185: Result:=185;
-  187..190: Result:=Unicode;
-  196..197: Result:=Unicode;
-  198: Result:=175;
-  201: Result:=201;
-  211: Result:=211;
-  213..215: Result:=Unicode;
-  216: Result:=168;
-  220: Result:=220;
-  223: Result:=223;
-  228..229: Result:=Unicode;
-  230: Result:=191;
-  233: Result:=233;
-  243: Result:=243;
-  245..247: Result:=Unicode;
-  248: Result:=184;
-  252: Result:=252;
-  256: Result:=194;
-  257: Result:=226;
-  260: Result:=192;
-  261: Result:=224;
-  262: Result:=195;
-  263: Result:=227;
-  268: Result:=200;
-  269: Result:=232;
-  274: Result:=199;
-  275: Result:=231;
-  278: Result:=203;
-  279: Result:=235;
-  280: Result:=198;
-  281: Result:=230;
-  290: Result:=204;
-  291: Result:=236;
-  298: Result:=206;
-  299: Result:=238;
-  302: Result:=193;
-  303: Result:=225;
-  310: Result:=205;
-  311: Result:=237;
-  315: Result:=207;
-  316: Result:=239;
-  321: Result:=217;
-  322: Result:=249;
-  323: Result:=209;
-  324: Result:=241;
-  325: Result:=210;
-  326: Result:=242;
-  332: Result:=212;
-  333: Result:=244;
-  342: Result:=170;
-  343: Result:=186;
-  346: Result:=218;
-  347: Result:=250;
-  352: Result:=208;
-  353: Result:=240;
-  362: Result:=219;
-  363: Result:=251;
-  370: Result:=216;
-  371: Result:=248;
-  377: Result:=202;
-  378: Result:=234;
-  379: Result:=221;
-  380: Result:=253;
-  381: Result:=222;
-  382: Result:=254;
-  711: Result:=142;
-  729: Result:=255;
-  731: Result:=158;
-  8211..8212: Result:=Unicode-8061;
-  8216..8217: Result:=Unicode-8071;
-  8218: Result:=130;
-  8220..8221: Result:=Unicode-8073;
-  8222: Result:=132;
-  8224..8225: Result:=Unicode-8090;
-  8226: Result:=149;
-  8230: Result:=133;
-  8240: Result:=137;
-  8249: Result:=139;
-  8250: Result:=155;
-  8364: Result:=128;
-  8482: Result:=153;
-  else Result:=-1;
-  end;
-end;
-
-function UnicodeToCP1258(Unicode: cardinal): integer;
-begin
-  case Unicode of
-  0..127: Result:=Unicode;
-  129: Result:=129;
-  138: Result:=138;
-  141..144: Result:=Unicode;
-  154: Result:=154;
-  157..158: Result:=Unicode;
-  160..194: Result:=Unicode;
-  196..203: Result:=Unicode;
-  205..207: Result:=Unicode;
-  209: Result:=209;
-  211..212: Result:=Unicode;
-  214..220: Result:=Unicode;
-  223..226: Result:=Unicode;
-  228..235: Result:=Unicode;
-  237..239: Result:=Unicode;
-  241: Result:=241;
-  243..244: Result:=Unicode;
-  246..252: Result:=Unicode;
-  255: Result:=255;
-  258: Result:=195;
-  259: Result:=227;
-  272: Result:=208;
-  273: Result:=240;
-  338: Result:=140;
-  339: Result:=156;
-  376: Result:=159;
-  402: Result:=131;
-  416: Result:=213;
-  417: Result:=245;
-  431: Result:=221;
-  432: Result:=253;
-  710: Result:=136;
-  732: Result:=152;
-  768: Result:=204;
-  769: Result:=236;
-  771: Result:=222;
-  777: Result:=210;
-  803: Result:=242;
-  8211..8212: Result:=Unicode-8061;
-  8216..8217: Result:=Unicode-8071;
-  8218: Result:=130;
-  8220..8221: Result:=Unicode-8073;
-  8222: Result:=132;
-  8224..8225: Result:=Unicode-8090;
-  8226: Result:=149;
-  8230: Result:=133;
-  8240: Result:=137;
-  8249: Result:=139;
-  8250: Result:=155;
-  8363: Result:=254;
   8364: Result:=128;
   8482: Result:=153;
   else Result:=-1;
@@ -6426,27 +5958,6 @@ begin
   end;
 end;
 
-function UnicodeToCP874(Unicode: cardinal): integer;
-begin
-  case Unicode of
-  0..127: Result:=Unicode;
-  129..132: Result:=Unicode;
-  134..144: Result:=Unicode;
-  152..160: Result:=Unicode;
-  219..222: Result:=Unicode;
-  252..255: Result:=Unicode;
-  3585..3642: Result:=Unicode-3424;
-  3647..3675: Result:=Unicode-3424;
-  8211..8212: Result:=Unicode-8061;
-  8216..8217: Result:=Unicode-8071;
-  8220..8221: Result:=Unicode-8073;
-  8226: Result:=149;
-  8230: Result:=133;
-  8364: Result:=128;
-  else Result:=-1;
-  end;
-end;
-
 function UnicodeToKOI8(Unicode: cardinal): integer;
 begin
   case Unicode of
@@ -6754,130 +6265,633 @@ begin
   else Result:=-1;
   end;
 end;
-
 {$endif}
+
+function UnicodeToCP1250(Unicode: cardinal): integer;
+begin
+  case Unicode of
+  0..127,129,131,136,144,152: Result:=Unicode;
+  160: Result:=160;
+  164: Result:=164;
+  166..169: Result:=Unicode;
+  171..174: Result:=Unicode;
+  176..177: Result:=Unicode;
+  180..184: Result:=Unicode;
+  187: Result:=187;
+  193..194: Result:=Unicode;
+  196: Result:=196;
+  199: Result:=199;
+  201: Result:=201;
+  203: Result:=203;
+  205..206: Result:=Unicode;
+  211..212: Result:=Unicode;
+  214..215: Result:=Unicode;
+  218: Result:=218;
+  220..221: Result:=Unicode;
+  223: Result:=223;
+  225..226: Result:=Unicode;
+  228: Result:=228;
+  231: Result:=231;
+  233: Result:=233;
+  235: Result:=235;
+  237..238: Result:=Unicode;
+  243..244: Result:=Unicode;
+  246..247: Result:=Unicode;
+  250: Result:=250;
+  252..253: Result:=Unicode;
+  258: Result:=195;
+  259: Result:=227;
+  260: Result:=165;
+  261: Result:=185;
+  262: Result:=198;
+  263: Result:=230;
+  268: Result:=200;
+  269: Result:=232;
+  270: Result:=207;
+  271: Result:=239;
+  272: Result:=208;
+  273: Result:=240;
+  280: Result:=202;
+  281: Result:=234;
+  282: Result:=204;
+  283: Result:=236;
+  313: Result:=197;
+  314: Result:=229;
+  317: Result:=188;
+  318: Result:=190;
+  321: Result:=163;
+  322: Result:=179;
+  323: Result:=209;
+  324: Result:=241;
+  327: Result:=210;
+  328: Result:=242;
+  336: Result:=213;
+  337: Result:=245;
+  340: Result:=192;
+  341: Result:=224;
+  344: Result:=216;
+  345: Result:=248;
+  346: Result:=140;
+  347: Result:=156;
+  350: Result:=170;
+  351: Result:=186;
+  352: Result:=138;
+  353: Result:=154;
+  354: Result:=222;
+  355: Result:=254;
+  356: Result:=141;
+  357: Result:=157;
+  366: Result:=217;
+  367: Result:=249;
+  368: Result:=219;
+  369: Result:=251;
+  377: Result:=143;
+  378: Result:=159;
+  379: Result:=175;
+  380: Result:=191;
+  381: Result:=142;
+  382: Result:=158;
+  711: Result:=161;
+  728: Result:=162;
+  729: Result:=255;
+  731: Result:=178;
+  733: Result:=189;
+  8211..8212: Result:=Unicode-8061;
+  8216..8217: Result:=Unicode-8071;
+  8218: Result:=130;
+  8220..8221: Result:=Unicode-8073;
+  8222: Result:=132;
+  8224..8225: Result:=Unicode-8090;
+  8226: Result:=149;
+  8230: Result:=133;
+  8240: Result:=137;
+  8249: Result:=139;
+  8250: Result:=155;
+  8364: Result:=128;
+  8482: Result:=153;
+  else Result:=-1;
+  end;
+end;
+
+function UnicodeToCP1251(Unicode: cardinal): integer;
+begin
+  case Unicode of
+  0..127,152: Result:=Unicode;
+  160: Result:=160;
+  164: Result:=164;
+  166..167: Result:=Unicode;
+  169: Result:=169;
+  171..174: Result:=Unicode;
+  176..177: Result:=Unicode;
+  181..183: Result:=Unicode;
+  187: Result:=187;
+  1025: Result:=168;
+  1026..1027: Result:=Unicode-898;
+  1028: Result:=170;
+  1029: Result:=189;
+  1030: Result:=178;
+  1031: Result:=175;
+  1032: Result:=163;
+  1033: Result:=138;
+  1034: Result:=140;
+  1035: Result:=142;
+  1036: Result:=141;
+  1038: Result:=161;
+  1039: Result:=143;
+  1040..1103: Result:=Unicode-848;
+  1105: Result:=184;
+  1106: Result:=144;
+  1107: Result:=131;
+  1108: Result:=186;
+  1109: Result:=190;
+  1110: Result:=179;
+  1111: Result:=191;
+  1112: Result:=188;
+  1113: Result:=154;
+  1114: Result:=156;
+  1115: Result:=158;
+  1116: Result:=157;
+  1118: Result:=162;
+  1119: Result:=159;
+  1168: Result:=165;
+  1169: Result:=180;
+  8211..8212: Result:=Unicode-8061;
+  8216..8217: Result:=Unicode-8071;
+  8218: Result:=130;
+  8220..8221: Result:=Unicode-8073;
+  8222: Result:=132;
+  8224..8225: Result:=Unicode-8090;
+  8226: Result:=149;
+  8230: Result:=133;
+  8240: Result:=137;
+  8249: Result:=139;
+  8250: Result:=155;
+  8364: Result:=136;
+  8470: Result:=185;
+  8482: Result:=153;
+  else Result:=-1;
+  end;
+end;
+
+function UnicodeToCP1252(Unicode: cardinal): integer;
+begin
+  case Unicode of
+  0..127,129,141,143,144,157: Result:=Unicode;
+  160..255: Result:=Unicode;
+  338: Result:=140;
+  339: Result:=156;
+  352: Result:=138;
+  353: Result:=154;
+  376: Result:=159;
+  381: Result:=142;
+  382: Result:=158;
+  402: Result:=131;
+  710: Result:=136;
+  732: Result:=152;
+  8211..8212: Result:=Unicode-8061;
+  8216..8217: Result:=Unicode-8071;
+  8218: Result:=130;
+  8220..8221: Result:=Unicode-8073;
+  8222: Result:=132;
+  8224..8225: Result:=Unicode-8090;
+  8226: Result:=149;
+  8230: Result:=133;
+  8240: Result:=137;
+  8249: Result:=139;
+  8250: Result:=155;
+  8364: Result:=128;
+  8482: Result:=153;
+  else Result:=-1;
+  end;
+end;
+
+function UnicodeToCP1253(Unicode: cardinal): integer;
+begin
+  case Unicode of
+  0..127,129,136,138,140,141,142,143,144,152,154,156,157,158,159,170: Result:=Unicode;
+  160: Result:=160;
+  163..169: Result:=Unicode;
+  171..174: Result:=Unicode;
+  176..179: Result:=Unicode;
+  181..183: Result:=Unicode;
+  187: Result:=187;
+  189: Result:=189;
+  402: Result:=131;
+  900: Result:=180;
+  901..902: Result:=Unicode-740;
+  904..906: Result:=Unicode-720;
+  908: Result:=188;
+  910..975: Result:=Unicode-720;
+  8211..8212: Result:=Unicode-8061;
+  8213: Result:=175;
+  8216..8217: Result:=Unicode-8071;
+  8218: Result:=130;
+  8220..8221: Result:=Unicode-8073;
+  8222: Result:=132;
+  8224..8225: Result:=Unicode-8090;
+  8226: Result:=149;
+  8230: Result:=133;
+  8240: Result:=137;
+  8249: Result:=139;
+  8250: Result:=155;
+  8364: Result:=128;
+  8482: Result:=153;
+  else Result:=-1;
+  end;
+end;
+
+function UnicodeToCP1254(Unicode: cardinal): integer;
+begin
+  case Unicode of
+  0..127,129,141,142,143,144,157,158: Result:=Unicode;
+  160..207: Result:=Unicode;
+  209..220: Result:=Unicode;
+  223..239: Result:=Unicode;
+  241..252: Result:=Unicode;
+  255: Result:=255;
+  286: Result:=208;
+  287: Result:=240;
+  304: Result:=221;
+  305: Result:=253;
+  338: Result:=140;
+  339: Result:=156;
+  350: Result:=222;
+  351: Result:=254;
+  352: Result:=138;
+  353: Result:=154;
+  376: Result:=159;
+  402: Result:=131;
+  710: Result:=136;
+  732: Result:=152;
+  8211..8212: Result:=Unicode-8061;
+  8216..8217: Result:=Unicode-8071;
+  8218: Result:=130;
+  8220..8221: Result:=Unicode-8073;
+  8222: Result:=132;
+  8224..8225: Result:=Unicode-8090;
+  8226: Result:=149;
+  8230: Result:=133;
+  8240: Result:=137;
+  8249: Result:=139;
+  8250: Result:=155;
+  8364: Result:=128;
+  8482: Result:=153;
+  else Result:=-1;
+  end;
+end;
+
+function UnicodeToCP1255(Unicode: cardinal): integer;
+begin
+  case Unicode of
+  0..127,129,138,140..144,154: Result:=Unicode;
+  156..163: Result:=Unicode;
+  165..169: Result:=Unicode;
+  171..185: Result:=Unicode;
+  187..191: Result:=Unicode;
+  215: Result:=170;
+  247: Result:=186;
+  402: Result:=131;
+  710: Result:=136;
+  732: Result:=152;
+  1456..1475: Result:=Unicode-1264;
+  1488..1516: Result:=Unicode-1264;
+  1517: Result:=255;
+  1520..1535: Result:=Unicode-1308;
+  8206..8207: Result:=Unicode-7953;
+  8211..8212: Result:=Unicode-8061;
+  8216..8217: Result:=Unicode-8071;
+  8218: Result:=130;
+  8220..8221: Result:=Unicode-8073;
+  8222: Result:=132;
+  8224..8225: Result:=Unicode-8090;
+  8226: Result:=149;
+  8230: Result:=133;
+  8240: Result:=137;
+  8249: Result:=139;
+  8250: Result:=155;
+  8362: Result:=164;
+  8364: Result:=128;
+  8482: Result:=153;
+  else Result:=-1;
+  end;
+end;
+
+function UnicodeToCP1257(Unicode: cardinal): integer;
+begin
+  case Unicode of
+  0..127: Result:=Unicode;
+  129: Result:=129;
+  131: Result:=131;
+  136: Result:=136;
+  138: Result:=138;
+  140: Result:=140;
+  144: Result:=144;
+  152: Result:=152;
+  154: Result:=154;
+  156: Result:=156;
+  159..167: Result:=Unicode;
+  168: Result:=141;
+  169: Result:=169;
+  171..174: Result:=Unicode;
+  175: Result:=157;
+  176..183: Result:=Unicode;
+  184: Result:=143;
+  185: Result:=185;
+  187..190: Result:=Unicode;
+  196..197: Result:=Unicode;
+  198: Result:=175;
+  201: Result:=201;
+  211: Result:=211;
+  213..215: Result:=Unicode;
+  216: Result:=168;
+  220: Result:=220;
+  223: Result:=223;
+  228..229: Result:=Unicode;
+  230: Result:=191;
+  233: Result:=233;
+  243: Result:=243;
+  245..247: Result:=Unicode;
+  248: Result:=184;
+  252: Result:=252;
+  256: Result:=194;
+  257: Result:=226;
+  260: Result:=192;
+  261: Result:=224;
+  262: Result:=195;
+  263: Result:=227;
+  268: Result:=200;
+  269: Result:=232;
+  274: Result:=199;
+  275: Result:=231;
+  278: Result:=203;
+  279: Result:=235;
+  280: Result:=198;
+  281: Result:=230;
+  290: Result:=204;
+  291: Result:=236;
+  298: Result:=206;
+  299: Result:=238;
+  302: Result:=193;
+  303: Result:=225;
+  310: Result:=205;
+  311: Result:=237;
+  315: Result:=207;
+  316: Result:=239;
+  321: Result:=217;
+  322: Result:=249;
+  323: Result:=209;
+  324: Result:=241;
+  325: Result:=210;
+  326: Result:=242;
+  332: Result:=212;
+  333: Result:=244;
+  342: Result:=170;
+  343: Result:=186;
+  346: Result:=218;
+  347: Result:=250;
+  352: Result:=208;
+  353: Result:=240;
+  362: Result:=219;
+  363: Result:=251;
+  370: Result:=216;
+  371: Result:=248;
+  377: Result:=202;
+  378: Result:=234;
+  379: Result:=221;
+  380: Result:=253;
+  381: Result:=222;
+  382: Result:=254;
+  711: Result:=142;
+  729: Result:=255;
+  731: Result:=158;
+  8211..8212: Result:=Unicode-8061;
+  8216..8217: Result:=Unicode-8071;
+  8218: Result:=130;
+  8220..8221: Result:=Unicode-8073;
+  8222: Result:=132;
+  8224..8225: Result:=Unicode-8090;
+  8226: Result:=149;
+  8230: Result:=133;
+  8240: Result:=137;
+  8249: Result:=139;
+  8250: Result:=155;
+  8364: Result:=128;
+  8482: Result:=153;
+  else Result:=-1;
+  end;
+end;
+
+function UnicodeToCP1258(Unicode: cardinal): integer;
+begin
+  case Unicode of
+  0..127: Result:=Unicode;
+  129: Result:=129;
+  138: Result:=138;
+  141..144: Result:=Unicode;
+  154: Result:=154;
+  157..158: Result:=Unicode;
+  160..194: Result:=Unicode;
+  196..203: Result:=Unicode;
+  205..207: Result:=Unicode;
+  209: Result:=209;
+  211..212: Result:=Unicode;
+  214..220: Result:=Unicode;
+  223..226: Result:=Unicode;
+  228..235: Result:=Unicode;
+  237..239: Result:=Unicode;
+  241: Result:=241;
+  243..244: Result:=Unicode;
+  246..252: Result:=Unicode;
+  255: Result:=255;
+  258: Result:=195;
+  259: Result:=227;
+  272: Result:=208;
+  273: Result:=240;
+  338: Result:=140;
+  339: Result:=156;
+  376: Result:=159;
+  402: Result:=131;
+  416: Result:=213;
+  417: Result:=245;
+  431: Result:=221;
+  432: Result:=253;
+  710: Result:=136;
+  732: Result:=152;
+  768: Result:=204;
+  769: Result:=236;
+  771: Result:=222;
+  777: Result:=210;
+  803: Result:=242;
+  8211..8212: Result:=Unicode-8061;
+  8216..8217: Result:=Unicode-8071;
+  8218: Result:=130;
+  8220..8221: Result:=Unicode-8073;
+  8222: Result:=132;
+  8224..8225: Result:=Unicode-8090;
+  8226: Result:=149;
+  8230: Result:=133;
+  8240: Result:=137;
+  8249: Result:=139;
+  8250: Result:=155;
+  8363: Result:=254;
+  8364: Result:=128;
+  8482: Result:=153;
+  else Result:=-1;
+  end;
+end;
+
+function UnicodeToCP874(Unicode: cardinal): integer;
+begin
+  case Unicode of
+  0..127: Result:=Unicode;
+  129..132: Result:=Unicode;
+  134..144: Result:=Unicode;
+  152..160: Result:=Unicode;
+  219..222: Result:=Unicode;
+  252..255: Result:=Unicode;
+  3585..3642: Result:=Unicode-3424;
+  3647..3675: Result:=Unicode-3424;
+  8211..8212: Result:=Unicode-8061;
+  8216..8217: Result:=Unicode-8071;
+  8220..8221: Result:=Unicode-8073;
+  8226: Result:=149;
+  8230: Result:=133;
+  8364: Result:=128;
+  else Result:=-1;
+  end;
+end;
 
 {$if FPC_FULLVERSION >= 20701}
 procedure InternalUTF8ToCP(const s: string; TargetCodePage: TSystemCodePage;
   SetTargetCodePage: boolean;
-  {$ifndef UseSystemCPConv}const UTF8CharConvFunc: TUnicodeToCharID;{$endif}
+  const UTF8CharConvFunc: TUnicodeToCharID;
   out TheResult: RawByteString); inline;
 begin
-  {$ifdef UseSystemCPConv}
-  TheResult:=s;
-  SetCodePage(TheResult, TargetCodePage, True);
-  if not SetTargetCodePage then
-    SetCodePage(TheResult, CP_ACP, False);
-  {$else}
-  TheResult:=UTF8ToSingleByte(s,UTF8CharConvFunc);
-  if SetTargetCodePage then
-    SetCodePage(TheResult, TargetCodePage, False);
-  {$endif}
+  if not Assigned(UTF8CharConvFunc) then
+  begin
+    TheResult:=s;
+    SetCodePage(TheResult, TargetCodePage, True);
+    if not SetTargetCodePage then
+      SetCodePage(TheResult, CP_ACP, False);
+  end else begin
+    TheResult:=UTF8ToSingleByte(s,UTF8CharConvFunc);
+    if SetTargetCodePage then
+      SetCodePage(TheResult, TargetCodePage, False);
+  end;
 end;
 
 function UTF8ToISO_8859_1(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,28591,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToISO_8859_1{$endif},Result);
+  InternalUTF8ToCP(s,28591,SetTargetCodePage,{$IfDef UseSystemCPConv}nil{$else}@UnicodeToISO_8859_1{$endif},Result);
 end;
 
 function UTF8ToISO_8859_2(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,28592,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToISO_8859_2{$endif},Result);
+  InternalUTF8ToCP(s,28592,SetTargetCodePage,{$IfDef UseSystemCPConv}nil{$else}@UnicodeToISO_8859_2{$endif},Result);
 end;
 
 function UTF8ToISO_8859_15(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,28605,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToISO_8859_15{$endif},Result);
+  InternalUTF8ToCP(s,28605,SetTargetCodePage,{$IfDef UseSystemCPConv}nil{$else}@UnicodeToISO_8859_15{$endif},Result);
 end;
 
 function UTF8ToCP1250(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,1250,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToCP1250{$endif},Result);
+  // system conversion fails for character #129 -> using table
+  InternalUTF8ToCP(s,1250,SetTargetCodePage,@UnicodeToCP1250,Result);
 end;
 
 function UTF8ToCP1251(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,1251,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToCP1251{$endif},Result);
+  // system conversion fails for character #152 -> using table
+  InternalUTF8ToCP(s,1251,SetTargetCodePage,@UnicodeToCP1251,Result);
 end;
 
 function UTF8ToCP1252(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,1252,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToCP1252{$endif},Result);
+  // system conversion fails for character #128 -> using table
+  InternalUTF8ToCP(s,1252,SetTargetCodePage,@UnicodeToCP1252,Result);
 end;
 
 function UTF8ToCP1253(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,1253,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToCP1253{$endif},Result);
+  // system conversion fails for character #129 -> using table
+  InternalUTF8ToCP(s,1253,SetTargetCodePage,@UnicodeToCP1253,Result);
 end;
 
 function UTF8ToCP1254(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,1254,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToCP1254{$endif},Result);
+  // system conversion fails for character #129 -> using table
+  InternalUTF8ToCP(s,1254,SetTargetCodePage,@UnicodeToCP1254,Result);
 end;
 
 function UTF8ToCP1255(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,1255,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToCP1255{$endif},Result);
+  // system conversion fails for character #129 -> using table
+  InternalUTF8ToCP(s,1255,SetTargetCodePage,@UnicodeToCP1255,Result);
 end;
 
 function UTF8ToCP1256(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,1256,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToCP1256{$endif},Result);
+  InternalUTF8ToCP(s,1256,SetTargetCodePage,{$IfDef UseSystemCPConv}nil{$else}@UnicodeToCP1256{$endif},Result);
 end;
 
 function UTF8ToCP1257(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,1257,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToCP1257{$endif},Result);
+  // system conversion fails for character #129 -> using table
+  InternalUTF8ToCP(s,1257,SetTargetCodePage,@UnicodeToCP1257,Result);
 end;
 
 function UTF8ToCP1258(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,1258,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToCP1258{$endif},Result);
+  // system conversion fails for character #129 -> using table
+  InternalUTF8ToCP(s,1258,SetTargetCodePage,@UnicodeToCP1258,Result);
 end;
 
 function UTF8ToCP437(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,437,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToCP437{$endif},Result);
+  InternalUTF8ToCP(s,437,SetTargetCodePage,{$IfDef UseSystemCPConv}nil{$else}@UnicodeToCP437{$endif},Result);
 end;
 
 function UTF8ToCP850(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,850,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToCP850{$endif},Result);
+  InternalUTF8ToCP(s,850,SetTargetCodePage,{$IfDef UseSystemCPConv}nil{$else}@UnicodeToCP850{$endif},Result);
 end;
 
 function UTF8ToCP852(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,852,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToCP852{$endif},Result);
+  InternalUTF8ToCP(s,852,SetTargetCodePage,{$IfDef UseSystemCPConv}nil{$else}@UnicodeToCP852{$endif},Result);
 end;
 
 function UTF8ToCP866(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,866,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToCP866{$endif},Result);
+  InternalUTF8ToCP(s,866,SetTargetCodePage,{$IfDef UseSystemCPConv}nil{$else}@UnicodeToCP866{$endif},Result);
 end;
 
 function UTF8ToCP874(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,874,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToCP874{$endif},Result);
+  // system conversion fails for character #129 -> using table
+  InternalUTF8ToCP(s,874,SetTargetCodePage,@UnicodeToCP874,Result);
 end;
 
 function UTF8ToKOI8(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,20866,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToKOI8{$endif},Result);
+  InternalUTF8ToCP(s,20866,SetTargetCodePage,{$IfDef UseSystemCPConv}nil{$else}@UnicodeToKOI8{$endif},Result);
 end;
 
 function UTF8ToKOI8U(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,21866,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToKOI8U{$endif},Result);
+  InternalUTF8ToCP(s,21866,SetTargetCodePage,{$IfDef UseSystemCPConv}nil{$else}@UnicodeToKOI8U{$endif},Result);
 end;
 
 function UTF8ToKOI8RU(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,21866,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToKOI8RU{$endif},Result);
+  InternalUTF8ToCP(s,21866,SetTargetCodePage,{$IfDef UseSystemCPConv}nil{$else}@UnicodeToKOI8RU{$endif},Result);
 end;
 
 function UTF8ToMacintosh(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
-  InternalUTF8ToCP(s,10000,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToMacintosh{$endif},Result);
+  InternalUTF8ToCP(s,10000,SetTargetCodePage,{$IfDef UseSystemCPConv}nil{$else}@UnicodeToMacintosh{$endif},Result);
 end;
 {$ELSE}
 function UTF8ToISO_8859_1(const s: string): string;
