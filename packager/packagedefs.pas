@@ -520,6 +520,7 @@ type
     FAuthor: string;
     FAutoUpdate: TPackageUpdatePolicy;
     FFPDocPackageName: string;
+    FOnModifySilently: TNotifyEvent;
     FOptionsBackup: TLazPackage;
     FComponents: TFPList; // TFPList of TPkgComponent
     FDefineTemplates: TLazPackageDefineTemplates;
@@ -787,6 +788,7 @@ type
     property UserReadOnly: boolean read FUserReadOnly write SetUserReadOnly;
     property UserIgnoreChangeStamp: integer read FUserIgnoreChangeStamp
                                             write FUserIgnoreChangeStamp;
+    property OnModifySilently: TNotifyEvent read FOnModifySilently write FOnModifySilently;
   end;
   
   PLazPackage = ^TLazPackage;
@@ -2589,6 +2591,8 @@ begin
     inc(FChangeStamp)
   else
     FChangeStamp:=low(FChangeStamp);
+  if Assigned(FOnModifySilently) then
+    FOnModifySilently(Self);
 end;
 
 procedure TLazPackage.SetModified(const AValue: boolean);

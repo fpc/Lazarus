@@ -210,11 +210,11 @@ type
     FUpdateLock: integer;
     FVerbosity: TPkgVerbosityFlags;
     FFindFileCache: TLazPackageGraphFileCache;
+    FChangeStamp: Int64;
     function CreateDefaultPackage: TLazPackage;
     function GetCount: Integer;
     function GetPackages(Index: integer): TLazPackage;
     procedure DoDependencyChanged(Dependency: TPkgDependency);
-    function GetPackagesChangeStamp: Int64;
     procedure SetRegistrationPackage(const AValue: TLazPackage);
     procedure UpdateBrokenDependenciesToPackage(APackage: TLazPackage);
     function OpenDependencyWithPackageLink(Dependency: TPkgDependency;
@@ -230,6 +230,9 @@ type
                     var Note: string): TModalResult;
     procedure InvalidateStateFile(APackage: TLazPackage);
     procedure OnExtToolBuildStopped(Sender: TObject);
+    procedure PkgModify(Sender: TObject);
+  protected
+    procedure IncChangeStamp;
   public
     constructor Create;
     destructor Destroy; override;
@@ -443,7 +446,7 @@ type
     property Packages[Index: integer]: TLazPackage read GetPackages; default; // see Count for the number
     property UpdateLock: integer read FUpdateLock;
     property Verbosity: TPkgVerbosityFlags read FVerbosity write FVerbosity;
-    property PackagesChangeStamp: Int64 read GetPackagesChangeStamp;
+    property ChangeStamp: Int64 read FChangeStamp;
 
     // base packages
     property FCLPackage: TLazPackage read FFCLPackage;
@@ -917,6 +920,7 @@ begin
       XMLConfig:=TXMLConfig.Create(nil);
       NewPackage:=TLazPackage.Create;
       NewPackage.Filename:=AFilename;
+      NewPackage.OnModifySilently := @PkgModify;
       Result:=LoadXMLConfigFromCodeBuffer(AFilename,XMLConfig,
                          Code,[lbfUpdateFromDisk,lbfRevert],ShowAbort);
       if Result<>mrOk then exit;
@@ -1115,6 +1119,7 @@ begin
   if FUpdateLock<=0 then RaiseException('TLazPackageGraph.EndUpdate');
   dec(FUpdateLock);
   if FUpdateLock=0 then begin
+    IncChangeStamp;
     if Assigned(OnEndUpdate) then OnEndUpdate(Self,fChanged);
   end;
 end;
@@ -1670,6 +1675,11 @@ begin
   end;
 end;
 
+procedure TLazPackageGraph.PkgModify(Sender: TObject);
+begin
+  IncChangeStamp;
+end;
+
 function TLazPackageGraph.DependencyExists(Dependency: TPkgDependency;
   Flags: TFindPackageFlags): boolean;
 begin
@@ -1706,6 +1716,7 @@ function TLazPackageGraph.CreateNewPackage(const Prefix: string): TLazPackage;
 begin
   BeginUpdate(true);
   Result:=TLazPackage.Create;
+  Result.OnModifySilently:=@PkgModify;
   Result.Name:=CreateUniquePkgName(Prefix,nil);
   AddPackage(Result);
   EndUpdate;
@@ -1941,7 +1952,9 @@ begin
     AddRequiredDependency(SynEditPackage.CreateDependencyWithOwner(Result));
 
     Modified:=false;
+    OnModifySilently:=@PkgModify;
   end;
+  IncChangeStamp;
 end;
 
 function TLazPackageGraph.GetCount: Integer;
@@ -5159,19 +5172,14 @@ begin
   end;
 end;
 
-function TLazPackageGraph.GetPackagesChangeStamp: Int64;
-var
-  I: Integer;
-  xPck: TLazPackage;
+procedure TLazPackageGraph.IncChangeStamp;
 begin
-  {$push}{$R-}  // range check off
-  Result := 0;
-  for I := 0 to Count-1 do
+  if FUpdateLock = 0 then
   begin
-    xPck := Packages[I];
-    Inc(Result, xPck.ChangeStamp);
+    {$push}{$R-}  // range check off
+    Inc(FChangeStamp);
+    {$pop}
   end;
-  {$pop}
 end;
 
 procedure TLazPackageGraph.SortDependencyListTopologicallyOld(
@@ -5746,6 +5754,7 @@ begin
       UsageOptions.UnitPath:='';
 
       Modified:=false;
+      OnModifySilently:=@PkgModify;
       EndUpdate;
     end;
     AddPackage(BrokenPackage);

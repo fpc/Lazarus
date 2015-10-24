@@ -1049,19 +1049,16 @@ end;
 { TPackageCommandsStamp }
 
 function TPackageCommandsStamp.Changed(AUnitInfo: TUnitInfo): Boolean;
-var
-  xPackagesChangeStamp: Int64;
 begin
-  xPackagesChangeStamp := PackageGraph.PackagesChangeStamp;
   Result := not(
         (UnitInfo = AUnitInfo)
-    and (PackagesChangeStamp = xPackagesChangeStamp)
+    and (PackagesChangeStamp = PackageGraph.ChangeStamp)
     );
 
   if not Result then Exit;
 
   UnitInfo := AUnitInfo;
-  PackagesChangeStamp := xPackagesChangeStamp;
+  PackagesChangeStamp := PackageGraph.ChangeStamp;
 end;
 
 { TProjectCommandsStamp }
