@@ -1119,6 +1119,7 @@ type
     property SelectedColor: TSynSelectedColor read GetSelectedColor write SetSelectedColor;
 
     // Colors
+    property MarkupManager: TSynEditMarkupManager read fMarkupManager;
     property Color default clWhite;
     property IncrementColor: TSynSelectedColor read GetIncrementColor write SetIncrementColor;
     property HighlightAllColor: TSynSelectedColor read GetHighlightAllColor write SetHighlightAllColor;
@@ -5063,7 +5064,7 @@ begin
     if (FChangedLinesStart<1) or (FChangedLinesStart>AIndex+1) then
       FChangedLinesStart:=AIndex+1;
     if (FChangedLinesEnd >= 0) and (FChangedLinesEnd<AIndex+1) then
-      FChangedLinesEnd:=AIndex + 1 + MaX(ACount, 0);
+      FChangedLinesEnd:=AIndex + 1 + MaX(ACount, 0);  // TODO: why 2 (TWO) extra lines?
   end else begin
     ScanRanges;
     InvalidateLines(AIndex + 1, AIndex + ACount);
