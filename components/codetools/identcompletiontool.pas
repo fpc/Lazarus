@@ -2108,6 +2108,7 @@ var
   Directive: String;
   ms: TCompilerModeSwitch;
   cm: TCompilerMode;
+  OptimizerSwitch: TOptimizerSwitch;
 begin
   Result:=false;
   Line:=CursorPos.Code.GetLine(CursorPos.Y-1,false);
@@ -2348,6 +2349,9 @@ begin
         end else if Directive='interfaces' then begin
           AddKeyWord('COM');
           AddKeyWord('CORBA');
+        end else if Directive='optimization' then begin
+          for OptimizerSwitch in TOptimizerSwitch do
+            AddKeyWord(OptimizerSwitchStr[OptimizerSwitch]);
         end;
       end;
       exit;
