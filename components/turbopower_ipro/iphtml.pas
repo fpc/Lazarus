@@ -9145,6 +9145,8 @@ begin
 
   StartSelIndex := 0;
   EndSelIndex := pred(FLayouter.FElementQueue.Count);
+  EndPt := Point(-1, -1);
+
   if not Owner.FAllSelected then
   begin
     // Find elements which contain the start-/end-selection-points
@@ -9162,18 +9164,48 @@ begin
       if (istart <> -1) and (iend <> -1) then
         break;
     end;
+
+    // Start click could have been before first char of a line
+    if (istart = -1) then
+      for i:=0 to pred(FLayouter.FElementQueue.Count) do
+      begin
+        CurElem := PIpHtmlElement(FLayouter.FElementQueue[i]);
+        R := CurElem^.WordRect2;
+        if (Owner.FEndSel.Y >= R.Top) and (Owner.FEndSel.Y <= R.Bottom) and (Owner.FEndSel.X < R.Left) then
+        begin
+          istart := i;
+          break;
+        end;
+      end;
+
+    // End click could have been beyond line end
+    if (iend = -1) then
+      for i:=pred(FLayouter.FElementQueue.Count) downto 0 do
+      begin
+        CurElem := PIpHtmlElement(FLayouter.FElementQueue[i]);
+        R := CurElem^.WordRect2;
+        if (Owner.FEndSel.Y >= R.Top) and (Owner.FEndSel.Y <= R.Bottom) and (Owner.FEndSel.X > R.Right) then
+        begin
+          iend := i;
+          EndPt := Point((R.Left + R.Right) div 2, (R.Top + R.Bottom) div 2);
+          break;
+        end;
+      end;
+
     if (istart <> -1) and (iend <> -1) then
     begin
       if istart < iend then
       begin
         StartSelIndex := istart;
         EndSelIndex := iend;
-        EndPt := Owner.FEndSel;
+        if (EndPt.X = -1) and (EndPt.Y = -1) then
+          EndPt := Owner.FEndSel;
       end else
       begin
         StartSelIndex := iend;
         EndSelIndex := istart;
-        EndPt := Owner.FStartSel;
+        if (EndPt.X = -1) and (EndPt.Y = -1) then
+          EndPt := Owner.FStartSel;
       end;
     end else
     if (istart <> -1) and (iend = -1) then
@@ -9182,7 +9214,8 @@ begin
     if (istart = -1) and (iend <> -1) then
     begin
       EndSelIndex := iend;
-      EndPt := Owner.FEndSel;
+      if (EndPt.X = -1) and (EndPt.Y = -1) then
+        EndPt := Owner.FEndSel;
     end;
   end;
 
