@@ -303,22 +303,28 @@ end;
 
 procedure TListFilterEdit.MoveTo(AIndex: Integer; ASelect: Boolean);
 var
-  I: Integer;
+  I, xOldItemIndex, xSelStart, xSelEnd: Integer;
 begin
   fFilteredListbox.LockSelectionChange;
   fFilteredListbox.Items.BeginUpdate;
   try
     if ASelect and fFilteredListbox.MultiSelect then
     begin
-      if fFilteredListbox.ItemIndex < AIndex then
-        for I := Max(0, fFilteredListbox.ItemIndex) to AIndex do
-          fFilteredListbox.Selected[I] := True
-      else
-        for I := Max(0, fFilteredListbox.ItemIndex) downto AIndex do
-          fFilteredListbox.Selected[I] := True
+      xOldItemIndex := fFilteredListbox.ItemIndex;
+      xSelStart := xOldItemIndex;
+      xSelEnd := xOldItemIndex;
+      while (xSelStart>=0) and fFilteredListbox.Selected[xSelStart] do
+        Dec(xSelStart);
+      while (xSelEnd<fFilteredListbox.Count) and fFilteredListbox.Selected[xSelEnd] do
+        Inc(xSelEnd);
+      fFilteredListbox.ItemIndex := AIndex;
+      for I := Min(AIndex+1, xSelStart+1) to Max(AIndex-1, xSelEnd-1) do
+        fFilteredListbox.Selected[I] := True;
+      //Win32 sets ItemIndex to the last Selected[?] := True - in contrast to Gtk2 -> set selected again to work on all widgetsets
+      fFilteredListbox.Selected[AIndex] := True;
     end else
     begin
-      fFilteredListbox.ClearSelection;
+      fFilteredListbox.ItemIndex := AIndex;
       fFilteredListbox.Selected[AIndex] := True;
     end;
 
