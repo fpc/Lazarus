@@ -127,7 +127,7 @@ type
   {$ENDIF}
 
   TIpHtml = class;
-  
+
   {$IFDEF IP_LAZARUS}
   TIpAbstractHtmlDataProvider = class;
   {$DEFINE CSS_INTERFACE}
@@ -332,7 +332,7 @@ type
     procedure UnmarkControl; virtual;
     procedure HideUnmarkedControl; virtual;
     procedure EnumChildren(EnumProc: TIpHtmlNodeEnumProc; UserData: Pointer); virtual;
-    procedure AppendSelection(var S : string); virtual;
+    procedure AppendSelection(var S : string; var Completed: Boolean); virtual;
   public
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
@@ -368,7 +368,7 @@ type
   protected
     procedure ReportDrawRects(M : TRectMethod); override;
     procedure ReportMapRects(M : TRectMethod); override;
-    procedure AppendSelection(var S : string); override;
+    procedure AppendSelection(var S : string; var Completed: Boolean); override;
     procedure EnumChildren(EnumProc: TIpHtmlNodeEnumProc; UserData: Pointer); override;
   public
     constructor Create(ParentNode : TIpHtmlNode);
@@ -487,7 +487,6 @@ type
 
   TIpHtmlNodeBlock = class(TIpHtmlNodeCore)
   private
-    function CheckSelection(aSelIndex: Integer): Boolean;
     function GetPageRect: TRect;
   protected
     FLayouter : TIpHtmlBaseLayouter;
@@ -502,7 +501,7 @@ type
     function GetHeight(const RenderProps: TIpHtmlProps; const Width: Integer): Integer;
     procedure InvalidateSize; override;
     procedure ReportCurDrawRects(aOwner: TIpHtmlNode; M : TRectMethod); override;
-    procedure AppendSelection(var S : string); override;
+    procedure AppendSelection(var S : string; var Completed: Boolean); override;
     procedure SetBackground(const AValue: string);
     procedure SetBgColor(const AValue: TColor);
     procedure SetTextColor(const AValue: TColor);
@@ -1472,7 +1471,7 @@ type
     procedure SetBgColor(const AValue: TColor);
     procedure SetTextColor(const AValue: TColor);
   protected
-    procedure AppendSelection(var S: String); override;
+    procedure AppendSelection(var S: String; var Completed: Boolean); override;
   public
     constructor Create(ParentNode : TIpHtmlNode);
     procedure SetProps(const RenderProps: TIpHtmlProps); override;
@@ -1499,7 +1498,7 @@ type
     FWidth: TIpHtmlLength;
     FVAlign: TIpHtmlVAlign3;
   protected
-    procedure AppendSelection(var S: String); override;
+    procedure AppendSelection(var S: String; var Completed: Boolean); override;
     procedure DimChanged(Sender: TObject);
   public
     FPadRect : TRect;
@@ -2693,7 +2692,7 @@ uses
   {$IFDEF Html_Print}
   Printers, PrintersDlgs, IpHtmlPv,
   {$ENDIF}
-  ipHtmlBlockLayout, ipHtmlTableLayout;
+  StrUtils, ipHtmlBlockLayout, ipHtmlTableLayout;
 
 {$R *.res}
 
@@ -3841,7 +3840,7 @@ begin
     FParentNode.ReportCurDrawRects(Owner, M);
 end;
 
-procedure TIpHtmlNode.AppendSelection(var S: string);
+procedure TIpHtmlNode.AppendSelection(var S: string; var Completed: Boolean);
 begin
 end;
 
@@ -4286,13 +4285,17 @@ begin
     TIpHtmlNode(FChildren[i]).EnumChildren(EnumProc, UserData);
 end;
 
-procedure TIpHtmlNodeMulti.AppendSelection(var S: string);
+procedure TIpHtmlNodeMulti.AppendSelection(var S: string; var Completed: Boolean);
 var
   i : Integer;
 begin
-  inherited;
+  if Completed then
+    exit;
   for i := 0 to Pred(FChildren.Count) do
-    TIpHtmlNode(FChildren[i]).AppendSelection(S);
+  begin
+    TIpHtmlNode(FChildren[i]).AppendSelection(S, Completed);
+    if Completed then exit;
+  end;
 end;
 
 { TIpHtmlNodeBODY }
@@ -7767,7 +7770,6 @@ begin
 
   if not FAllSelected
   and ((FStartSel.x < 0) or (FEndSel.x < 0)) then Exit;
-  
 
   if not FAllSelected then begin
     CurBlock := nil;
@@ -8551,11 +8553,14 @@ end;
 procedure TIpHtml.CopyToClipboard;
 var
   S : string;
+  completed: Boolean;
 begin
   if HaveSelection then begin
     S := '';
-    if FHtml <> nil then
-      FHtml.AppendSelection(S);
+    if FHtml <> nil then begin
+      completed := false;  // terminate recursion if selection-end-point is found
+      FHtml.AppendSelection(S, completed);
+    end;
     if S <> '' then begin
       Clipboard.Open;
       try
@@ -9121,56 +9126,67 @@ begin
   end;
 end;
 
-function TIpHtmlNodeBlock.CheckSelection(aSelIndex: Integer): Boolean;
-var
-  CurElem : PIpHtmlElement;
-  R : TRect;
-begin
-  CurElem := PIpHtmlElement(FLayouter.FElementQueue[aSelIndex]);
-  R := CurElem.WordRect2;
-  if (R.Bottom <> 0) and (R.Top > Owner.FStartSel.Y)
-  and (R.Bottom < Owner.FEndSel.Y) then
-    Exit(False)
-  else
-  if PtInRect(R, Owner.FStartSel) or PtInRect(R, Owner.FEndSel) then
-    Exit(False)
-  else
-  if (R.Bottom >= Owner.FStartSel.Y) and (R.Top <= Owner.FEndSel.Y)
-  and (R.Left >= Owner.FStartSel.X) and (R.Right <= Owner.FEndSel.X) then
-    Exit(False);
-  Result := True;
-end;
-
 function TIpHtmlNodeBlock.GetPageRect: TRect;
 begin
   Result := FLayouter.FPageRect;
 end;
 
-procedure TIpHtmlNodeBlock.AppendSelection(var S: string);
+procedure TIpHtmlNodeBlock.AppendSelection(var S: string; var Completed: Boolean);
 var
-  LastY, StartSelIndex, EndSelIndex, i : Integer;
+  //LastY,
+  StartSelIndex, EndSelIndex, i, istart, iend : Integer;
   CurElem : PIpHtmlElement;
   R : TRect;
   LFDone : Boolean;
+  EndPt: TPoint;
 begin
-  if not Owner.FAllSelected then begin
-    StartSelIndex := 0;
-    while StartSelIndex < FLayouter.FElementQueue.Count do begin
-      if not CheckSelection(StartSelIndex) then
-        Break;
-      Inc(StartSelIndex);
+  if Completed then
+    exit;
+
+  StartSelIndex := 0;
+  EndSelIndex := pred(FLayouter.FElementQueue.Count);
+  if not Owner.FAllSelected then
+  begin
+    // Find elements which contain the start-/end-selection-points
+    // Note: they may not be in correct order because the y coords of the start/end
+    // clicks may be reversed if in the same line of an etObject element!
+    istart := -1;
+    iend := -1;
+    for i:=0 to pred(FLayouter.FElementQueue.Count) do
+    begin
+      CurElem := PIpHtmlElement(FLayouter.FElementQueue[i]);
+      if PtInRect(CurElem^.WordRect2, Owner.FStartSel) then
+        istart := i;
+      if PtInRect(CurElem^.WordRect2, Owner.FEndSel) then
+        iend := i;
+      if (istart <> -1) and (iend <> -1) then
+        break;
     end;
-    EndSelIndex := Pred(FLayouter.FElementQueue.Count);
-    while EndSelIndex >= 0 do begin
-      if not CheckSelection(EndSelIndex) then
-        Break;
-      Dec(EndSelIndex);
+    if (istart <> -1) and (iend <> -1) then
+    begin
+      if istart < iend then
+      begin
+        StartSelIndex := istart;
+        EndSelIndex := iend;
+        EndPt := Owner.FEndSel;
+      end else
+      begin
+        StartSelIndex := iend;
+        EndSelIndex := istart;
+        EndPt := Owner.FStartSel;
+      end;
+    end else
+    if (istart <> -1) and (iend = -1) then
+      StartSelIndex := istart
+    else
+    if (istart = -1) and (iend <> -1) then
+    begin
+      EndSelIndex := iend;
+      EndPt := Owner.FEndSel;
     end;
-  end else begin
-    StartSelIndex := 0;
-    EndSelIndex := FLayouter.FElementQueue.Count - 1;
   end;
-  LastY := -1;
+
+  //LastY := -1;
   LFDone := True;
   for i := StartSelIndex to EndSelIndex do begin
     CurElem := PIpHtmlElement(FLayouter.FElementQueue[i]);
@@ -9181,6 +9197,7 @@ begin
       LFDone := True;
     end;
     }
+
     case CurElem.ElementType of
     etWord :
       begin
@@ -9189,7 +9206,7 @@ begin
       end;
     etObject :
       begin
-        TIpHtmlNodeAlignInline(CurElem.Owner).AppendSelection(S);
+        TIpHtmlNodeAlignInline(CurElem.Owner).AppendSelection(S, Completed);
         LFDone := False;
       end;
     etSoftLF..etClearBoth :
@@ -9198,7 +9215,16 @@ begin
         LFDone := True;
       end;
     end;
-    LastY := R.Top;
+    //LastY := R.Top;
+
+    // Prevent running over selection end if there is a etObject at this level
+    // of recursion.
+    if not Owner.FAllSelected then
+      if PtInRect(R, EndPt) then
+      begin
+        Completed := true;
+        exit;
+      end;
   end;
 end;
 
@@ -10346,13 +10372,15 @@ begin
   FTextColor := -1;
 end;
 
-procedure TIpHtmlNodeTR.AppendSelection(var S: String);
+procedure TIpHtmlNodeTR.AppendSelection(var S: String; var Completed: Boolean);
 var
   prev: TIpHtmlNode;
 begin
+  if Completed then
+    exit;
   prev := GetPrevSiblingNode(Self);
   if prev is TIpHtmlNodeTR then S := S + LineEnding;
-  inherited AppendSelection(S);
+  inherited AppendSelection(S, Completed);
 end;
 
 procedure TIpHtmlNodeTR.SetBgColor(const AValue: TColor);
@@ -12476,13 +12504,16 @@ begin
   inherited;
 end;
 
-procedure TIpHtmlNodeTableHeaderOrCell.AppendSelection(var S: String);
+procedure TIpHtmlNodeTableHeaderOrCell.AppendSelection(var S: String;
+  var Completed: Boolean);
 var
   prev: TIpHtmlNode;
 begin
+  if Completed then
+    exit;
   prev := GetPrevSiblingNode(self);
   if prev is TIpHtmlNodeTableHeaderOrCell then S := S + #9;
-  inherited AppendSelection(S);
+  inherited AppendSelection(S, Completed);
 end;
 
 procedure TIpHtmlNodeTableHeaderOrCell.CalcMinMaxPropWidth(RenderProps: TIpHtmlProps;
