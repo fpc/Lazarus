@@ -79,8 +79,12 @@ type
     procedure OnBeforeTreeDestroy(Sender: TObject);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure MoveNext; override;
-    procedure MovePrev; override;
+    procedure MoveNext(ASelect: Boolean = False); override;
+    procedure MovePrev(ASelect: Boolean = False); override;
+    procedure MovePageUp(ASelect: Boolean = False); override;
+    procedure MovePageDown(ASelect: Boolean = False); override;
+    procedure MoveHome(ASelect: Boolean = False); override;
+    procedure MoveEnd(ASelect: Boolean = False); override;
     function ReturnKeyHandled: Boolean; override;
     procedure SortAndFilter; override;
     procedure ApplyFilterCore; override;
@@ -578,6 +582,16 @@ begin
     end;
 end;
 
+procedure TTreeFilterEdit.MoveEnd(ASelect: Boolean);
+begin
+  fFilteredTreeview.MoveEnd(ASelect);
+end;
+
+procedure TTreeFilterEdit.MoveHome(ASelect: Boolean);
+begin
+  fFilteredTreeview.MoveHome(ASelect);
+end;
+
 function TTreeFilterEdit.GetCleanBranch(ARootNode: TTreeNode): TTreeFilterBranch;
 // Get a new or existing branch with data cleared for a given tree-node.
 begin
@@ -607,14 +621,24 @@ begin
     end;
 end;
 
-procedure TTreeFilterEdit.MoveNext;
+procedure TTreeFilterEdit.MoveNext(ASelect: Boolean);
 begin
-  fFilteredTreeview.MoveToNextNode;
+  fFilteredTreeview.MoveToNextNode(ASelect);
 end;
 
-procedure TTreeFilterEdit.MovePrev;
+procedure TTreeFilterEdit.MovePageDown(ASelect: Boolean);
 begin
-  fFilteredTreeview.MoveToPrevNode;
+  fFilteredTreeview.MovePageDown(ASelect);
+end;
+
+procedure TTreeFilterEdit.MovePageUp(ASelect: Boolean);
+begin
+  fFilteredTreeview.MovePageUp(ASelect);
+end;
+
+procedure TTreeFilterEdit.MovePrev(ASelect: Boolean);
+begin
+  fFilteredTreeview.MoveToPrevNode(ASelect);
 end;
 
 function TTreeFilterEdit.ReturnKeyHandled: Boolean;

@@ -17,7 +17,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, LResources, Graphics, Controls, StdCtrls,
-  LCLProc, LCLType, EditBtn, CheckLst, LazFileUtils, LazUTF8, AvgLvlTree;
+  LCLProc, LCLType, EditBtn, CheckLst, LazFileUtils, LazUTF8, AvgLvlTree,
+  Math;
 
 type
 
@@ -38,8 +39,14 @@ type
     function CompareFNs(AFilename1,AFilename2: string): integer;
     procedure SetFilteredListbox(const AValue: TCustomListBox);
   protected
-    procedure MoveNext; override;
-    procedure MovePrev; override;
+    procedure EditEnter; override;
+    procedure MoveTo(AIndex: Integer; ASelect: Boolean);
+    procedure MoveNext(ASelect: Boolean = False); override;
+    procedure MovePrev(ASelect: Boolean = False); override;
+    procedure MovePageUp(ASelect: Boolean = False); override;
+    procedure MovePageDown(ASelect: Boolean = False); override;
+    procedure MoveHome(ASelect: Boolean = False); override;
+    procedure MoveEnd(ASelect: Boolean = False); override;
     function ReturnKeyHandled: Boolean; override;
     procedure SortAndFilter; override;
     procedure ApplyFilterCore; override;
@@ -91,6 +98,14 @@ begin
   inherited Destroy;
 end;
 
+procedure TListFilterEdit.EditEnter;
+begin
+  inherited EditEnter;
+  Exit;
+  if (fFilteredListbox.SelCount = 0) and (fFilteredListbox.Count > 0) then
+    fFilteredListbox.Selected[0] := True;
+end;
+
 procedure TListFilterEdit.RemoveItem(AItem: string);
 var
   i: Integer;
@@ -109,6 +124,18 @@ begin
     fCheckedItems.Add(AItem)
   else
     fCheckedItems.Remove(AItem);
+end;
+
+procedure TListFilterEdit.MoveEnd(ASelect: Boolean);
+begin
+  if fFilteredListbox.Items.Count > 0 then
+    MoveTo(fFilteredListbox.Items.Count-1, ASelect);
+end;
+
+procedure TListFilterEdit.MoveHome(ASelect: Boolean);
+begin
+  if fFilteredListbox.Items.Count > 0 then
+    MoveTo(0, ASelect);
 end;
 
 function TListFilterEdit.GetDefaultGlyph: TBitmap;
@@ -223,28 +250,89 @@ begin
   end;
 end;
 
-procedure TListFilterEdit.MoveNext;
+procedure TListFilterEdit.MoveNext(ASelect: Boolean);
 var
   i: Integer;
 begin
   if fFilteredListbox.Count = 0 then Exit;
-  i := fFilteredListbox.ItemIndex + 1;
-  if i < fFilteredListbox.Count then
-    fFilteredListbox.ItemIndex := i
+  if (fFilteredListbox.ItemIndex=0) and not fFilteredListbox.Selected[0] then
+    i := 0
   else
-    fFilteredListbox.ItemIndex := 0;
+    i := fFilteredListbox.ItemIndex + 1;
+  if i >= fFilteredListbox.Count then
+    i := fFilteredListbox.Count-1;
+  MoveTo(i, ASelect);
 end;
 
-procedure TListFilterEdit.MovePrev;
+procedure TListFilterEdit.MovePageDown(ASelect: Boolean);
+var
+  I: Integer;
+begin
+  if fFilteredListbox.Items.Count = 0 then
+    Exit;
+  I := fFilteredListbox.ItemIndex + Pred(fFilteredListbox.ClientHeight div fFilteredListbox.ItemHeight);
+  if (I < 0) or (I >= fFilteredListbox.Items.Count) then
+    I := fFilteredListbox.Items.Count-1;
+
+  MoveTo(I, ASelect);
+end;
+
+procedure TListFilterEdit.MovePageUp(ASelect: Boolean);
+var
+  I: Integer;
+begin
+  if fFilteredListbox.Items.Count = 0 then
+    Exit;
+  I := fFilteredListbox.ItemIndex - Pred(fFilteredListbox.ClientHeight div fFilteredListbox.ItemHeight);
+  if (I < 0) or (I >= fFilteredListbox.Items.Count) then
+    I := 0;
+
+  MoveTo(I, ASelect);
+end;
+
+procedure TListFilterEdit.MovePrev(ASelect: Boolean);
 var
   i: Integer;
 begin
   if fFilteredListbox.Count = 0 then Exit;
   i := fFilteredListbox.ItemIndex - 1;
-  if i >= 0 then
-    fFilteredListbox.ItemIndex := i
-  else
-    fFilteredListbox.ItemIndex := fFilteredListbox.Count-1;
+  if i < 0 then
+    i := 0;
+  MoveTo(i, ASelect);
+end;
+
+procedure TListFilterEdit.MoveTo(AIndex: Integer; ASelect: Boolean);
+var
+  I: Integer;
+begin
+  fFilteredListbox.LockSelectionChange;
+  fFilteredListbox.Items.BeginUpdate;
+  try
+    if ASelect and fFilteredListbox.MultiSelect then
+    begin
+      if fFilteredListbox.ItemIndex < AIndex then
+        for I := Max(0, fFilteredListbox.ItemIndex) to AIndex do
+          fFilteredListbox.Selected[I] := True
+      else
+        for I := Max(0, fFilteredListbox.ItemIndex) downto AIndex do
+          fFilteredListbox.Selected[I] := True
+    end else
+    begin
+      fFilteredListbox.ClearSelection;
+      fFilteredListbox.Selected[AIndex] := True;
+    end;
+
+    if not fFilteredListbox.ItemFullyVisible(AIndex) then
+    begin
+      if fFilteredListbox.TopIndex < AIndex then
+        fFilteredListbox.TopIndex := AIndex - Pred(fFilteredListbox.ClientHeight div fFilteredListbox.ItemHeight)
+      else
+        fFilteredListbox.TopIndex := AIndex;
+    end;
+  finally
+    fFilteredListbox.UnlockSelectionChange;
+    fFilteredListbox.Items.EndUpdate;
+  end;
 end;
 
 function TListFilterEdit.ReturnKeyHandled: Boolean;

@@ -17,7 +17,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, LResources, Graphics, Controls, ComCtrls,
-  LCLProc, LCLType, EditBtn, FileUtil, LazUTF8, fgl;
+  LCLProc, LCLType, EditBtn, FileUtil, LazUTF8, fgl, Math;
 
 type
 
@@ -43,8 +43,14 @@ type
     function MatchesFilter(aData: TStringArray): Boolean;
     procedure SetFilteredListview(const AValue: TCustomListView);
   protected
-    procedure MoveNext; override;
-    procedure MovePrev; override;
+    procedure MoveTo(AIndex: Integer; ASelect: Boolean);
+    function GetLastSelectedIndex: Integer;
+    procedure MoveNext(ASelect: Boolean = False); override;
+    procedure MovePrev(ASelect: Boolean = False); override;
+    procedure MovePageUp(ASelect: Boolean = False); override;
+    procedure MovePageDown(ASelect: Boolean = False); override;
+    procedure MoveHome(ASelect: Boolean = False); override;
+    procedure MoveEnd(ASelect: Boolean = False); override;
     function ReturnKeyHandled: Boolean; override;
     procedure SortAndFilter; override;
     procedure ApplyFilterCore; override;
@@ -97,6 +103,14 @@ begin
   Result := ListFilterGlyph;
 end;
 
+function TListViewFilterEdit.GetLastSelectedIndex: Integer;
+begin
+  if fFilteredListview.LastSelected<>nil then
+    Result := fFilteredListview.LastSelected.Index
+  else
+    Result := -1;
+end;
+
 function ListItem2Data(AItem: TListItem): TStringArray;
 var
   i: Integer;
@@ -143,6 +157,20 @@ begin
       Exit;
   end;
   Result := False;
+end;
+
+procedure TListViewFilterEdit.MoveEnd(ASelect: Boolean);
+begin
+  if fFilteredListview.Items.Count = 0 then
+    Exit;
+  MoveTo(fFilteredListview.Items.Count-1, ASelect);
+end;
+
+procedure TListViewFilterEdit.MoveHome(ASelect: Boolean);
+begin
+  if fFilteredListview.Items.Count = 0 then
+    Exit;
+  MoveTo(0, ASelect);
 end;
 
 procedure TListViewFilterEdit.SortAndFilter;
@@ -196,29 +224,77 @@ begin
         fFilteredListview.Items[i].Selected:=True;
 end;
 
-procedure TListViewFilterEdit.MoveNext;
+procedure TListViewFilterEdit.MoveNext(ASelect: Boolean);
 var
   i: Integer;
 begin
-  i := fFilteredListview.ItemIndex + 1;
-  if fFilteredListview.Items.Count > 0 then begin
-    if i < fFilteredListview.Items.Count then
-      fFilteredListview.ItemIndex := i
-    else
-      fFilteredListview.ItemIndex := 0;
-  end;
+  if fFilteredListview.Items.Count = 0 then Exit;
+  i := GetLastSelectedIndex + 1;
+  if i >= fFilteredListview.Items.Count then
+    i := fFilteredListview.Items.Count-1;
+  MoveTo(i, ASelect);
 end;
 
-procedure TListViewFilterEdit.MovePrev;
+procedure TListViewFilterEdit.MovePageDown(ASelect: Boolean);
+var
+  I: Integer;
+begin
+  if fFilteredListview.Items.Count = 0 then
+    Exit;
+  I := GetLastSelectedIndex + fFilteredListview.VisibleRowCount;
+  if (I < 0) or (I >= fFilteredListview.Items.Count) then
+    I := fFilteredListview.Items.Count-1;
+  MoveTo(I, ASelect);
+end;
+
+procedure TListViewFilterEdit.MovePageUp(ASelect: Boolean);
+var
+  I: Integer;
+begin
+  if fFilteredListview.Items.Count = 0 then
+    Exit;
+  I := GetLastSelectedIndex - fFilteredListview.VisibleRowCount;
+  if (I < 0) or (I >= fFilteredListview.Items.Count) then
+    I := 0;
+  MoveTo(I, ASelect);
+end;
+
+procedure TListViewFilterEdit.MovePrev(ASelect: Boolean);
 var
   i: Integer;
 begin
-  i := fFilteredListview.ItemIndex - 1;
-  if fFilteredListview.Items.Count > 0 then begin
-    if i >= 0 then
-      fFilteredListview.ItemIndex := i
-    else
-      fFilteredListview.ItemIndex := fFilteredListview.Items.Count-1;
+  if fFilteredListview.Items.Count = 0 then Exit;
+  i := GetLastSelectedIndex - 1;
+  if i < 0 then
+    i := 0;
+  MoveTo(i, ASelect);
+end;
+
+procedure TListViewFilterEdit.MoveTo(AIndex: Integer; ASelect: Boolean);
+var
+  I: Integer;
+begin
+  fFilteredListview.BeginUpdate;
+  try
+    if ASelect and fFilteredListview.MultiSelect then
+    begin
+      if fFilteredListview.ItemIndex < AIndex then
+        for I := Max(0, fFilteredListview.ItemIndex) to AIndex do
+          fFilteredListview.Items[I].Selected := True
+      else
+        for I := Max(0, fFilteredListview.ItemIndex) downto AIndex do
+          fFilteredListview.Items[I].Selected := True;
+      fFilteredListview.ItemIndex := AIndex;
+    end else
+    begin
+      fFilteredListview.ClearSelection;
+      fFilteredListview.ItemIndex := AIndex;
+    end;
+
+    if fFilteredListview.LastSelected<>nil then
+      fFilteredListview.LastSelected.MakeVisible(False);
+  finally
+    fFilteredListview.EndUpdate;
   end;
 end;
 
