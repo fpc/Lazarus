@@ -7772,7 +7772,7 @@ begin
   if not FAllSelected then begin
     CurBlock := nil;
     // search blocks that intersect the selection
-    // 1.- find first block that intersect upleft  point of sel. (start from 0)
+    // 1.- find first block that intersects upleft point of sel. (start from 0)
     StartSelIndex := 0;
     while StartSelIndex < RectList.Count do begin
       CurBlock := PIpHtmlRectListEntry(RectList[StartSelIndex]).Block;
@@ -7800,10 +7800,10 @@ begin
       Inc(StartSelIndex);
     end;
     if StartSelIndex >= RectList.Count then Exit;
-    // 2.- find first block thta intersect downright point of sel. (start from count-1)
+    // 2.- find first block that intersects downright point of sel. (start from count-1)
     EndSelIndex := Pred(RectList.Count);
     while EndSelIndex >= StartSelIndex do begin
-      if PIpHtmlRectListEntry(RectList[EndSelIndex]).Block = CurBlock then begin
+ //     if PIpHtmlRectListEntry(RectList[EndSelIndex]).Block = CurBlock then begin
         {if FAllSelected then
           break;}
         R := PIpHtmlRectListEntry(RectList[EndSelIndex]).Rect;
@@ -7821,7 +7821,7 @@ begin
         else
           if (R.Left >= FStartSel.x) and (R.Right <= FEndSel.x) then
             break;
-      end;
+//      end;
       Dec(EndSelIndex);
     end;
   end else begin
