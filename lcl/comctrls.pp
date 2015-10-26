@@ -3015,6 +3015,7 @@ type
   private
     FCount: integer;
     FSelection: TFPList;
+    FStartMultiSelected: TTreeNode; // node where user started multiselection
     FFirstMultiSelected: TTreeNode;
     FLastMultiSelected: TTreeNode;
     FKeepCollapsedNodes: boolean;
@@ -3095,6 +3096,7 @@ type
     procedure FreeAllNodeData;
     procedure SelectionsChanged(ANode: TTreeNode; const AIsSelected: Boolean);
     procedure SelectOnlyThis(Node: TTreeNode);
+    procedure MultiSelect(Node: TTreeNode; ClearWholeSelection: Boolean);
     procedure SortTopLevelNodes(SortProc: TTreeNodeCompare);
     procedure WriteDebugReport(const Prefix: string; AllNodes: boolean);
     property Count: Integer read GetCount;

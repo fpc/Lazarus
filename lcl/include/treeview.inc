@@ -570,7 +570,10 @@ begin
 
   // If there isn't any selected node, set self as first
   if CurNode = nil then
-    TheTreeNodes.FFirstMultiSelected := Self
+  begin
+    TheTreeNodes.FFirstMultiSelected := Self;
+    TheTreeNodes.FStartMultiSelected := Self;
+  end
   else
   begin
 
@@ -2688,6 +2691,67 @@ begin
     end else begin
       // nothing to do
     end;
+  end;
+end;
+
+procedure TTreeNodes.MultiSelect(Node: TTreeNode; ClearWholeSelection: Boolean);
+var
+  I, FirstNode, LastNode: TTreeNode;
+  GetNext: Boolean;
+begin
+  if Owner<>nil then Owner.LockSelectionChangeEvent;
+  try
+    if FStartMultiSelected=nil then
+    begin
+      FirstNode := Node;
+      FStartMultiSelected := Node;
+    end else
+      FirstNode := FStartMultiSelected;
+
+    if ClearWholeSelection then
+    begin
+      ClearMultiSelection(True);
+    end else
+    begin
+      //clear only last selection
+      if Assigned(FLastMultiSelected) then
+      begin
+        LastNode := FLastMultiSelected;
+        GetNext := (FirstNode.Index <= LastNode.Index);
+        I := FirstNode;
+        I.MultiSelected:=False;
+        while (I<>LastNode) do
+        begin
+          if GetNext then
+            I:=I.GetNextSibling
+          else
+            I:=I.GetPrevSibling;
+          if I=nil then Break;
+          I.MultiSelected:=False;
+        end;
+      end;
+      if Assigned(Owner) then
+        Owner.Selected := nil;
+    end;
+
+    //select again
+    GetNext := (FirstNode.Index <= Node.Index);
+    I := FirstNode;
+    I.Selected:=True;
+    while (I<>Node) do
+    begin
+      if GetNext then
+        I:=I.GetNextSibling
+      else
+        I:=I.GetPrevSibling;
+      if I=nil then Break;
+      I.Selected:=True;
+    end;
+
+    FStartMultiSelected := FirstNode;
+    FLastMultiSelected := Node;
+  finally
+    if Owner<>nil then Owner.UnlockSelectionChangeEvent;
   end;
 end;
 
@@ -5241,8 +5305,7 @@ begin
           Exclude(FStates,tvsEditOnMouseUp);
           LockSelectionChangeEvent;
           try
-            Items.ClearMultiSelection;
-            CursorNode.MultiSelectGroup;
+            Items.MultiSelect(CursorNode, not(ssCtrl in Shift));
           finally
             UnlockSelectionChangeEvent;
           end;
@@ -5251,6 +5314,8 @@ begin
         begin
           Exclude(FStates,tvsEditOnMouseUp);
           CursorNode.MultiSelected:=not CursorNode.MultiSelected;
+          if CursorNode.MultiSelected then
+            FTreeNodes.FStartMultiSelected := CursorNode;
         end
         else
         begin
@@ -5386,7 +5451,7 @@ begin
   if tvoAllowMultiSelect in FOptions then
   begin
     if ASelect then
-      ANewNode.MultiSelectGroup
+      FTreeNodes.MultiSelect(ANewNode, False)
     else begin
       FTreeNodes.SelectOnlyThis(ANewNode);
     end;
