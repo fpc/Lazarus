@@ -890,8 +890,10 @@ begin
     DebugLn(['TPackageLinks.FindLinkWithDependencyInTree Dependency makes no sense']);
     exit;
   end;
+  {$IFDEF VerbosePkgLinkSameName}
   if CompareText(Dependency.PackageName,'tstver')=0 then
-    debugln(['TPackageLinks.FindLinkWithDependencyInTree AAA1 ',Dependency.AsString(true)]);
+    debugln(['TPackageLinks.FindLinkWithDependencyInTree START ',Dependency.AsString(true)]);
+  {$ENDIF}
   // if there are several fitting the description, use the last used
   // and highest version
   CurNode:=FindLeftMostNode(LinkTree,Dependency.PackageName);
