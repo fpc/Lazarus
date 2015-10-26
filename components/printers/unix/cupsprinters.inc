@@ -851,9 +851,12 @@ var
   var
     CurPath: String;
   begin
+    Result:=false;
     CurPath:=CleanAndExpandDirectory(Path);
-    Result:=DirPathExists(CurPath);
-    if Result then NewPath:=CurPath;
+    if CurPath='' then exit(false);
+    if not DirectoryIsWritable(CurPath) then exit;
+    NewPath:=CurPath;
+    Result:=true;
   end;
 
 begin
