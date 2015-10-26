@@ -644,7 +644,7 @@ begin
     end;
     APackage:=PackageGraph.FindPackageWithName(APackageName,nil);
     if APackage=nil then exit;
-    AForm:=PackageEditors.OpenEditor(APackage,DoDisableAutoSizing);
+    AForm:=PackageEditors.CreateEditor(APackage,DoDisableAutoSizing);
   end;
 end;
 
