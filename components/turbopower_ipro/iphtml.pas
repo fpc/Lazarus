@@ -303,6 +303,7 @@ type
 
   TRectMethod = procedure(const R : TRect) of object;
   TIpHtmlNodeEnumProc = procedure(Node: TIpHtmlNode; const UserData: Pointer) of object;
+  TIpHtmlNodeClass = class of TIpHtmlNode;
 
   {abstract base node}
   TIpHtmlNode = class(TPersistent)
@@ -2681,6 +2682,7 @@ function dbgs(et: TElementType): string; overload;
 
 function GetNextSiblingNode(ANode: TIpHtmlNode): TIpHtmlNode;
 function GetPrevSiblingNode(ANode: TIpHtmlNode): TIpHtmlNode;
+function GetParentNodeOfClass(ANode: TIpHtmlNode; AClass: TIpHtmlNodeClass): TIpHtmlNode;
 
 procedure Register;
 
@@ -2864,6 +2866,15 @@ begin
   end;
   Result := nil;
 end;
+
+function GetParentNodeOfClass(ANode: TIpHtmlNode;
+  AClass: TIpHtmlNodeClass): TIpHtmlNode;
+begin
+  Result := ANode;
+  while Assigned(Result) and not (Result is AClass) do
+    Result := Result.FParentNode;
+end;
+
 
 procedure Register;
 begin
@@ -9132,9 +9143,24 @@ begin
 end;
 
 procedure TIpHtmlNodeBlock.AppendSelection(var S: string; var Completed: Boolean);
+
+  // Avoid adding too many linefeeds - at most one blank line!
+  procedure AddLF(var S: String);
+  const
+    DBL_LF = LineEnding + LineEnding;
+  var
+    endPart: String;
+  begin
+    if S <> '' then begin
+      endpart := Copy(S, Length(S) - Length(DBL_LF) + 1, Length(DBL_LF));
+      if endpart <> DBL_LF then
+        S := S + LineEnding;
+    end;
+  end;
+
 var
-  //LastY,
-  StartSelIndex, EndSelIndex, i, istart, iend : Integer;
+  LastY, StartSelIndex, EndSelIndex, i, istart, iend : Integer;
+  LastNode: TIpHtmlNode;
   CurElem : PIpHtmlElement;
   R : TRect;
   LFDone : Boolean;
@@ -9219,17 +9245,17 @@ begin
     end;
   end;
 
-  //LastY := -1;
+  LastNode := nil;
+  LastY := -1;
   LFDone := True;
   for i := StartSelIndex to EndSelIndex do begin
     CurElem := PIpHtmlElement(FLayouter.FElementQueue[i]);
     R := CurElem.WordRect2;
-    { wp: removed because this would add an empty line to a long word-wrapped text
-    if not LFDone and (R.Top <> LastY) then begin
-      S := S + LineEnding;
-      LFDone := True;
-    end;
-    }
+
+    // Take care of inserting blank lines after headers etc., but don't insert
+    // line breaks in long text elements.
+    if not LFDone and (R.Top <> LastY) and (LastNode <> CurElem.Owner) then
+      AddLF(S);
 
     case CurElem.ElementType of
     etWord :
@@ -9244,17 +9270,17 @@ begin
       end;
     etSoftLF..etClearBoth :
       if not LFDone then begin
-        S := S + LineEnding;
+        AddLF(S);
         LFDone := True;
       end;
     end;
-    //LastY := R.Top;
+    LastY := R.Top;
+    LastNode := CurElem.Owner;
 
-    // Prevent running over selection end if there is a etObject at this level
-    // of recursion.
+    // Prevent running over selection end if there is an etObject element at
+    // current level of recursion.
     if not Owner.FAllSelected then
-      if PtInRect(R, EndPt) then
-      begin
+      if PtInRect(R, EndPt) then begin
         Completed := true;
         exit;
       end;
