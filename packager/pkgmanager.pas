@@ -644,7 +644,7 @@ begin
     end;
     APackage:=PackageGraph.FindPackageWithName(APackageName,nil);
     if APackage=nil then exit;
-    AForm:=PackageEditors.OpenEditor(APackage);
+    AForm:=PackageEditors.OpenEditor(APackage,DoDisableAutoSizing);
   end;
 end;
 
@@ -3485,7 +3485,6 @@ end;
 function TPkgManager.DoNewPackage: TModalResult;
 var
   NewPackage: TLazPackage;
-  CurEditor: TPackageEditorForm;
 begin
   Result:=mrCancel;
   // create a new package with standard dependencies
@@ -3495,8 +3494,7 @@ begin
   NewPackage.Modified:=false;
 
   // open a package editor
-  CurEditor:=PackageEditors.OpenEditor(NewPackage);
-  IDEWindowCreators.ShowForm(CurEditor,true);
+  PackageEditors.OpenEditor(NewPackage,true);
 
   Result:=DoSavePackage(NewPackage,[psfSaveAs]);
 end;
@@ -3513,7 +3511,6 @@ end;
 function TPkgManager.DoOpenPackage(APackage: TLazPackage;
   Flags: TPkgOpenFlags; ShowAbort: boolean): TModalResult;
 var
-  CurEditor: TPackageEditorForm;
   AFilename: String;
 begin
   AFilename:=APackage.Filename;
@@ -3526,8 +3523,7 @@ begin
   end;
 
   // open a package editor
-  CurEditor:=PackageEditors.OpenEditor(APackage);
-  IDEWindowCreators.ShowForm(CurEditor,true);
+  PackageEditors.OpenEditor(APackage,true);
 
   // add to recent packages
   if (pofAddToRecent in Flags) then begin
@@ -3698,14 +3694,12 @@ procedure TPkgManager.OpenHiddenModifiedPackages;
 var
   i: Integer;
   APackage: TLazPackage;
-  Editor: TPackageEditorForm;
 begin
   for i:=0 to PackageGraph.Count-1 do begin
     APackage:=PackageGraph.Packages[i];
     if (APackage.Editor=nil) and APackage.Modified
     and (APackage.UserIgnoreChangeStamp<>APackage.ChangeStamp) then begin
-      Editor:=PackageEditors.OpenEditor(APackage);
-      IDEWindowCreators.ShowForm(Editor,false);
+      PackageEditors.OpenEditor(APackage,false);
     end;
   end;
 end;
@@ -5091,9 +5085,9 @@ end;
 function TPkgManager.DoNewPackageComponent: TModalResult;
 var
   APackage: TLazPackage;
-  CurEditor: TPackageEditorForm;
   SaveFlags: TPkgSaveFlags;
   Page: TAddToPkgType;
+  CurEditor: TPackageEditorForm;
 begin
   Result:=ShowNewPkgComponentDialog(APackage);
   if Result<>mrOk then exit;
@@ -5108,8 +5102,7 @@ begin
     Include(SaveFlags,psfSaveAs);
   end;
   // open a package editor
-  CurEditor:=PackageEditors.OpenEditor(APackage);
-  IDEWindowCreators.ShowForm(CurEditor,true);
+  CurEditor:=PackageEditors.OpenEditor(APackage,true);
   // save
   Result:=DoSavePackage(APackage,SaveFlags);
   if Result<>mrOk then exit;

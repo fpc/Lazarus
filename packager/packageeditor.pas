@@ -438,7 +438,8 @@ type
     function IndexOfPackage(const PkgName: string): integer;
     function FindEditor(Pkg: TLazPackage): TPackageEditorForm; overload;
     function FindEditor(const PkgName: string): TPackageEditorForm; overload;
-    function OpenEditor(Pkg: TLazPackage): TPackageEditorForm;
+    function CreateEditor(Pkg: TLazPackage; DoDisableAutoSizing: boolean): TPackageEditorForm;
+    function OpenEditor(Pkg: TLazPackage; BringToFront: boolean): TPackageEditorForm;
     function OpenFile(Sender: TObject; const Filename: string): TModalResult;
     function OpenPkgFile(Sender: TObject; PkgFile: TPkgFile): TModalResult;
     function OpenDependency(Sender: TObject;
@@ -3381,13 +3382,39 @@ begin
     Result:=nil;
 end;
 
-function TPackageEditors.OpenEditor(Pkg: TLazPackage): TPackageEditorForm;
+function TPackageEditors.CreateEditor(Pkg: TLazPackage;
+  DoDisableAutoSizing: boolean): TPackageEditorForm;
 begin
   Result:=FindEditor(Pkg);
-  if Result=nil then begin
-    Result:=TPackageEditorForm.Create(LazarusIDE.OwningComponent);
+  if Result<>nil then begin
+    if DoDisableAutoSizing then
+      Result.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockMaster Delayed'){$ENDIF};
+  end else begin
+    Result:=TPackageEditorForm(TPackageEditorForm.NewInstance);
+    {$IFDEF DebugDisableAutoSizing}
+    if DoDisableAutoSizing then
+      Result.DisableAutoSizing('TAnchorDockMaster Delayed')
+    else
+      Result.DisableAutoSizing('TPackageEditors.OpenEditor');
+    {$ELSE}
+    Result.DisableAutoSizing;
+    {$ENDIF}
+    Result.Create(LazarusIDE.OwningComponent);
     Result.LazPackage:=Pkg;
     FItems.Add(Result);
+    if not DoDisableAutoSizing then
+      Result.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TPackageEditors.OpenEditor'){$ENDIF};
+  end;
+end;
+
+function TPackageEditors.OpenEditor(Pkg: TLazPackage; BringToFront: boolean
+  ): TPackageEditorForm;
+begin
+  Result:=CreateEditor(Pkg,true);
+  try
+    IDEWindowCreators.ShowForm(Result, BringToFront);
+  finally
+    Result.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockMaster Delayed'){$ENDIF};
   end;
 end;
 

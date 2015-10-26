@@ -1804,7 +1804,6 @@ function TConvertDelphiPackage.CreateInstance: TModalResult;
 // open new package. If .lpk does not exist, create it
 var
   PkgName: String;
-  CurEditor: TPackageEditorForm;
 begin
   fProjPack:=nil;
   if FileExistsUTF8(fLazPMainFilename) then begin
@@ -1836,8 +1835,7 @@ begin
     LazPackage.Filename:=fLazPMainFilename;
     fProjPack.BaseCompilerOptions.SyntaxMode:='delphi';
     // open a package editor
-    CurEditor:=PackageEditors.OpenEditor(LazPackage);
-    CurEditor.Show;
+    PackageEditors.OpenEditor(LazPackage,true);
     // save .lpk file
     PackageEditors.SavePackage(LazPackage,false);
     Result:=mrOK;
