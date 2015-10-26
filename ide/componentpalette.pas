@@ -693,7 +693,7 @@ begin
         DisableAutoSize);
       if AComponent<>nil then begin
         if DisableAutoSize and (AComponent is TControl) then
-          TControl(AComponent).EnableAutoSizing;
+          TControl(AComponent).EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ComponentBtnDblClick'){$ENDIF};
         GlobalDesignHook.PersistentAdded(AComponent,true);
       end;
     end;

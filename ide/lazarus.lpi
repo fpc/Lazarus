@@ -684,6 +684,7 @@
         <ComponentName Value="DebugAttachDialogForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="DebugAttachDialog"/>
       </Unit101>
       <Unit102>
         <Filename Value="frames/msgwnd_options.pas"/>
@@ -704,6 +705,7 @@
       <Unit105>
         <Filename Value="compiler.pp"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="Compiler"/>
       </Unit105>
       <Unit106>
         <Filename Value="exttooldialog.pas"/>
@@ -973,6 +975,7 @@
         <Filename Value="checkcompileropts.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="CheckCompilerOpts"/>
       </Unit163>
       <Unit164>
         <Filename Value="inputfiledialog.pas"/>
@@ -1095,6 +1098,7 @@
       <Unit189>
         <Filename Value="applicationbundle.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="ApplicationBundle"/>
       </Unit189>
       <Unit190>
         <Filename Value="msgvieweditor.pas"/>

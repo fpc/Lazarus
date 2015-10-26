@@ -1242,7 +1242,7 @@ begin
       try
         NewComponent := TComponent(TypeClass.newinstance);
         if DisableAutoSize and (NewComponent is TControl) then
-          TControl(NewComponent).DisableAutoSizing;
+          TControl(NewComponent).DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomFormEditor.CreateComponent'){$ENDIF};
         SetComponentDesignMode(NewComponent,true);
         if DescendFromDesignerBaseClass(TypeClass)>=0 then begin
           // this class can have its own lfm streams (e.g. a TFrame)

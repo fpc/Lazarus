@@ -108,6 +108,10 @@ uses
   LazConfigStorage, Laz2_XMLCfg, LazFileCache,
   AnchorDockStr, AnchorDockStorage;
 
+{$IFDEF DebugDisableAutoSizing}
+const ADAutoSizingReason = 'TAnchorDockMaster Delayed';
+{$ENDIF}
+
 type
   TAnchorDockHostSite = class;
 
@@ -799,13 +803,16 @@ procedure CopyAnchorBounds(Source, Target: TControl);
 var
   a: TAnchorKind;
 begin
-  Target.DisableAutoSizing;
-  Target.BoundsRect:=Source.BoundsRect;
-  Target.Anchors:=Source.Anchors;
-  Target.Align:=Source.Align;
-  for a:=low(TAnchorKind) to high(TAnchorKind) do
-    Target.AnchorSide[a].Assign(Source.AnchorSide[a]);
-  Target.EnableAutoSizing;
+  Target.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('CopyAnchorBounds'){$ENDIF};
+  try
+    Target.BoundsRect:=Source.BoundsRect;
+    Target.Anchors:=Source.Anchors;
+    Target.Align:=Source.Align;
+    for a:=low(TAnchorKind) to high(TAnchorKind) do
+      Target.AnchorSide[a].Assign(Source.AnchorSide[a]);
+  finally
+    Target.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('CopyAnchorBounds'){$ENDIF};
+  end;
 end;
 
 procedure AnchorAndChangeBounds(AControl: TControl; Side: TAnchorKind;
@@ -1514,7 +1521,7 @@ function TAnchorDockMaster.CreateNeededControls(Tree: TAnchorDockLayoutTree;
               raise EAnchorDockLayoutError.Create('not a docksite: '+DbgSName(AControl));
           finally
             if not DisableAutoSizing then
-              AControl.EnableAutoSizing;
+              AControl.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}(ADAutoSizingReason){$ENDIF};
           end;
         end else begin
           debugln(['CreateControlsForNode ',Node.Name,' failed to create']);
@@ -1994,7 +2001,7 @@ begin
   //debugln(['TAnchorDockMaster.DisableControlAutoSizing ',DbgSName(AControl)]);
   fDisabledAutosizing.Add(AControl);
   AControl.FreeNotification(Self);
-  AControl.DisableAutoSizing;
+  AControl.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}(ADAutoSizingReason){$ENDIF};
 end;
 
 procedure TAnchorDockMaster.EnableAllAutoSizing;
@@ -2007,7 +2014,7 @@ begin
     AControl:=TControl(fDisabledAutosizing[i]);
     //debugln(['TAnchorDockMaster.EnableAllAutoSizing ',DbgSName(AControl)]);
     fDisabledAutosizing.Delete(i);
-    AControl.EnableAutoSizing;
+    AControl.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}(ADAutoSizingReason){$ENDIF};
     i:=Min(i,fDisabledAutosizing.Count)-1;
   end;
 end;
@@ -2592,7 +2599,7 @@ begin
     raise Exception.Create('TAnchorDockMaster.MakeDockable '+
       adrsControlIsAlreadyADocksite);
   Site:=nil;
-  AControl.DisableAutoSizing;
+  AControl.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockMaster.DisableControlAutoSizing'){$ENDIF};
   try
     if AControl is TAnchorDockHostSite then begin
       // already a site
@@ -2621,7 +2628,7 @@ begin
         end;
       finally
         if Site<>nil then
-          Site.EnableAutoSizing;
+          Site.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}(ADAutoSizingReason){$ENDIF};
       end;
     end else if AControl.Parent is TAnchorDockHostSite then begin
       // AControl is already docked => show site
@@ -2634,7 +2641,7 @@ begin
     if (Site<>nil) and Show then
       MakeVisible(Site,BringToFront);
   finally
-    AControl.EnableAutoSizing;
+    AControl.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockMaster.DisableControlAutoSizing'){$ENDIF};
   end;
   // BringToFront
   if Show and BringToFront and (Site<>nil) then begin
@@ -2660,7 +2667,7 @@ begin
       adrsModalFormsCanNotBeMadeDockable);
   if Sites=[] then
     raise Exception.Create('TAnchorDockMaster.MakeDockSite Sites=[]');
-  AForm.DisableAutoSizing;
+  AForm.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockMaster.MakeDockSite'){$ENDIF};
   try
     if FControls.IndexOf(AForm)<0 then begin
       FControls.Add(AForm);
@@ -2674,7 +2681,7 @@ begin
     AForm.UseDockManager:=true;
     AForm.DockSite:=true;
   finally
-    AForm.EnableAutoSizing;
+    AForm.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockMaster.MakeDockSite'){$ENDIF};
   end;
 end;
 
@@ -3117,7 +3124,7 @@ begin
   if fNeedFree.IndexOf(AControl)>=0 then exit;
   if csDestroying in AControl.ComponentState then exit;
   fNeedFree.Add(AControl);
-  AControl.DisableAutoSizing;
+  AControl.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}(ADAutoSizingReason){$ENDIF};
   AControl.Parent:=nil;
   AControl.Visible:=false;
 end;
@@ -3271,16 +3278,26 @@ var
   NewName: String;
 begin
   Result:=TAnchorDockHostSite(SiteClass.NewInstance);
+  {$IFDEF DebugDisableAutoSizing}
+  if DisableAutoSizing then
+    Result.DisableAutoSizing(ADAutoSizingReason)
+  else
+    Result.DisableAutoSizing('TAnchorDockMaster.CreateSite');
+  {$ELSE}
   Result.DisableAutoSizing;
-  Result.CreateNew(Self,1);
-  i:=0;
-  repeat
-    inc(i);
-    NewName:=NamePrefix+AnchorDockSiteName+IntToStr(i);
-  until (Screen.FindForm(NewName)=nil) and (FindComponent(NewName)=nil);
-  Result.Name:=NewName;
-  if not DisableAutoSizing then
-    Result.EnableAutoSizing;
+  {$ENDIF};
+  try
+    Result.CreateNew(Self,1);
+    i:=0;
+    repeat
+      inc(i);
+      NewName:=NamePrefix+AnchorDockSiteName+IntToStr(i);
+    until (Screen.FindForm(NewName)=nil) and (FindComponent(NewName)=nil);
+    Result.Name:=NewName;
+  finally
+    if not DisableAutoSizing then
+      Result.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockMaster.CreateSite'){$ENDIF};
+  end;
 end;
 
 function TAnchorDockMaster.CreateSplitter(NamePrefix: string
@@ -3336,12 +3353,12 @@ begin
   if UpdatingLayout then exit;
   //debugln(['TAnchorDockHostSite.ExecuteDock Self="',Caption,'"  Control=',DbgSName(NewControl),' DropOnControl=',DbgSName(DropOnControl),' Align=',dbgs(DockAlign)]);
 
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.ExecuteDock HostSite'){$ENDIF};
   try
     BeginUpdateLayout;
     try
       DockMaster.SimplifyPendingLayouts;
-      NewControl.DisableAutoSizing;
+      NewControl.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.ExecuteDock NewControl'){$ENDIF};
 
       if (NewControl.Parent=Self) and (SiteType=adhstLayout) then begin
         // change of layout, one child is docked to the outer side
@@ -3383,12 +3400,12 @@ begin
           Result:=DockAnotherControl(nil,NewControl,DockAlign,DropOnControl<>nil);
       end;
 
-      NewControl.EnableAutoSizing;
+      NewControl.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.ExecuteDock NewControl'){$ENDIF};
     finally
       EndUpdateLayout;
     end;
   finally
-    EnableAutoSizing;
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.ExecuteDock HostSite'){$ENDIF};
   end;
 end;
 
@@ -4073,7 +4090,7 @@ begin
     {$IFDEF VerboseAnchorDockPages}
     debugln(['TAnchorDockHostSite.SimplifyPages "',Caption,'" PageCount=1']);
     {$ENDIF}
-    DisableAutoSizing;
+    DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.SimplifyPages'){$ENDIF};
     BeginUpdateLayout;
     try
       // move the content of the Page to the place where Pages is
@@ -4090,7 +4107,7 @@ begin
         SimplifyOneControl;
     finally
       EndUpdateLayout;
-      EnableAutoSizing;
+      EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.SimplifyPages'){$ENDIF};
     end;
     //debugln(['TAnchorDockHostSite.SimplifyPages END Self="',Caption,'"']);
     //DebugWriteChildAnchors(GetParentForm(Self),true,true);
@@ -4112,7 +4129,7 @@ begin
   if SiteType<>adhstOneControl then exit;
   if not IsOneSiteLayout(Site) then exit;
   debugln(['TAnchorDockHostSite.SimplifyOneControl Self="',Caption,'" Site="',Site.Caption,'"']);
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.SimplifyOneControl'){$ENDIF};
   BeginUpdateLayout;
   try
     // move the content of Site up and free Site
@@ -4154,7 +4171,7 @@ begin
     DockMaster.NeedFree(Site);
   finally
     EndUpdateLayout;
-    EnableAutoSizing;
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.SimplifyOneControl'){$ENDIF};
   end;
 
   //debugln(['TAnchorDockHostSite.SimplifyOneControl END Self="',Caption,'"']);
@@ -4245,7 +4262,7 @@ begin
     try
       AControl.ManualDock(Result,nil,alClient);
     finally
-      Result.EnableAutoSizing;
+      Result.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}(ADAutoSizingReason){$ENDIF};
     end;
   end;
 end;
@@ -4323,11 +4340,14 @@ begin
   Result:=true;
   // => undock
   BeginUpdateLayout;
-  DisableAutoSizing;
-  debugln(['TAnchorDockHostSite.CheckIfOneControlHidden ',DbgSName(Self),' UpdatingLayout=',UpdatingLayout,' Visible=',Visible,' Parent=',DbgSName(Parent),' csDestroying=',csDestroying in ComponentState,' SiteType=',dbgs(SiteType),' Child=',DbgSName(Child),' Child.csDestroying=',csDestroying in Child.ComponentState]);
-  Visible:=false;
-  Parent:=nil;
-  EnableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.CheckIfOneControlHidden'){$ENDIF};
+  try
+    debugln(['TAnchorDockHostSite.CheckIfOneControlHidden ',DbgSName(Self),' UpdatingLayout=',UpdatingLayout,' Visible=',Visible,' Parent=',DbgSName(Parent),' csDestroying=',csDestroying in ComponentState,' SiteType=',dbgs(SiteType),' Child=',DbgSName(Child),' Child.csDestroying=',csDestroying in Child.ComponentState]);
+    Visible:=false;
+    Parent:=nil;
+  finally
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.CheckIfOneControlHidden'){$ENDIF};
+  end;
   EndUpdateLayout;
   if (not (Child is TCustomForm)) or (csDestroying in Child.ComponentState) then
     Release;
@@ -4391,12 +4411,15 @@ var
   p: TPoint;
 begin
   if Parent=nil then exit;
-  DisableAutoSizing;
-  p := Point(0,0);
-  p := ClientToScreen(p);
-  Parent:=nil;
-  SetBounds(p.x,p.y,Width,Height);
-  EnableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.Undock'){$ENDIF};
+  try
+    p := Point(0,0);
+    p := ClientToScreen(p);
+    Parent:=nil;
+    SetBounds(p.x,p.y,Width,Height);
+  finally
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.Undock'){$ENDIF};
+  end;
 end;
 
 function TAnchorDockHostSite.CanMerge: boolean;
@@ -4419,7 +4442,7 @@ begin
   if (SiteType<>adhstLayout) or (ParentSite.SiteType<>adhstLayout) then
     RaiseGDBException('');
   ParentSite.BeginUpdateLayout;
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.Merge'){$ENDIF};
   try
     for i := ControlCount - 1 downto 0 do begin
       Child := Controls[i];
@@ -4512,7 +4535,7 @@ begin
   ParentSite:=TAnchorDockHostSite(Parent);
   if not OnlyCheckIfPossible then begin
     ParentSite.BeginUpdateLayout;
-    ParentSite.DisableAutoSizing;
+    ParentSite.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.EnlargeSideResizeTwoSplitters'){$ENDIF};
   end;
   try
     // check ShrinkSplitter
@@ -4569,7 +4592,7 @@ begin
 
   finally
     if not OnlyCheckIfPossible then begin
-      ParentSite.EnableAutoSizing;
+      ParentSite.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.EnlargeSideResizeTwoSplitters'){$ENDIF};
       ParentSite.EndUpdateLayout;
     end;
   end;
@@ -4660,7 +4683,7 @@ begin
 
   //debugln(['TAnchorDockHostSite.EnlargeSideRotateSplitter BEFORE Self=',DbgSName(Self),'=',dbgs(BoundsRect),' Side=',dbgs(Side),' CWSide=',dbgs(CWSide),' CWSplitter=',CWSplitter.Name,'=',dbgs(CWSplitter.BoundsRect),' CCWSide=',dbgs(CCWSide),' CCWSplitter=',CCWSplitter.Name,'=',dbgs(CCWSplitter.BoundsRect),' Behind=',dbgs(BehindSide),'=',RotateSplitter.Name,'=',dbgs(RotateSplitter.BoundsRect)]);
 
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.EnlargeSideRotateSplitter'){$ENDIF};
   try
     // enlarge the two neighbor splitters
     AnchorAndChangeBounds(CWSplitter,Side,RotateSplitter.AnchorSide[Side].Control);
@@ -4706,7 +4729,7 @@ begin
     end;
     //debugln(['TAnchorDockHostSite.EnlargeSideRotateSplitter AFTER Self=',DbgSName(Self),'=',dbgs(BoundsRect),' Side=',dbgs(Side),' CWSide=',dbgs(CWSide),' CWSplitter=',CWSplitter.Name,'=',dbgs(CWSplitter.BoundsRect),' CCWSide=',dbgs(CCWSide),' CCWSplitter=',CCWSplitter.Name,'=',dbgs(CCWSplitter.BoundsRect),' Behind=',dbgs(BehindSide),'=',RotateSplitter.Name,'=',dbgs(RotateSplitter.BoundsRect)]);
   finally
-    EnableAutoSizing;
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.EnlargeSideRotateSplitter'){$ENDIF};
   end;
 end;
 
@@ -4775,7 +4798,7 @@ begin
     end;
   adhstOneControl:
     begin
-      DisableAutoSizing;
+      DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.CloseSite'){$ENDIF};
       NeedEnableAutoSizing:=true;
       try
         AControl:=GetOneControl;
@@ -4817,7 +4840,7 @@ begin
         Parent:=nil;
       finally
         if NeedEnableAutoSizing then
-          EnableAutoSizing;
+          EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.CloseSite'){$ENDIF};
       end;
     end;
   end;
@@ -4827,26 +4850,29 @@ procedure TAnchorDockHostSite.RemoveControl(AControl: TControl);
 begin
   //debugln(['TAnchorDockHostSite.RemoveControl ',DbgSName(Self),'=',Caption,' ',DbgSName(AControl)]);
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.RemoveControl'){$ENDIF};
-  inherited RemoveControl(AControl);
-  if not (csDestroying in ComponentState) then begin
-    if (not ((AControl is TAnchorDockHeader)
-             or (AControl is TAnchorDockSplitter)))
-    then begin
-      //debugln(['TAnchorDockHostSite.RemoveControl START ',Caption,' ',dbgs(SiteType),' ',DbgSName(AControl),' UpdatingLayout=',UpdatingLayout]);
-      if (SiteType=adhstLayout) then
-        RemoveControlFromLayout(AControl)
-      else
-        DockMaster.NeedSimplify(Self);
-      UpdateDockCaption;
-      //debugln(['TAnchorDockHostSite.RemoveControl END ',Caption,' ',dbgs(SiteType),' ',DbgSName(AControl)]);
+  try
+    inherited RemoveControl(AControl);
+    if not (csDestroying in ComponentState) then begin
+      if (not ((AControl is TAnchorDockHeader)
+               or (AControl is TAnchorDockSplitter)))
+      then begin
+        //debugln(['TAnchorDockHostSite.RemoveControl START ',Caption,' ',dbgs(SiteType),' ',DbgSName(AControl),' UpdatingLayout=',UpdatingLayout]);
+        if (SiteType=adhstLayout) then
+          RemoveControlFromLayout(AControl)
+        else
+          DockMaster.NeedSimplify(Self);
+        UpdateDockCaption;
+        //debugln(['TAnchorDockHostSite.RemoveControl END ',Caption,' ',dbgs(SiteType),' ',DbgSName(AControl)]);
+      end;
     end;
+  finally
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.RemoveControl'){$ENDIF};
   end;
-  EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.RemoveControl'){$ENDIF};
 end;
 
 procedure TAnchorDockHostSite.InsertControl(AControl: TControl; Index: integer);
 begin
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.InsertControl'){$ENDIF};
   try
     inherited InsertControl(AControl, Index);
     if not ((AControl is TAnchorDockSplitter)
@@ -4854,7 +4880,7 @@ begin
     then
       UpdateDockCaption;
   finally
-    EnableAutoSizing;
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.InsertControl'){$ENDIF};
   end;
 end;
 
@@ -5320,10 +5346,13 @@ end;
 procedure TAnchorDockHeader.SetAlign(Value: TAlign);
 begin
   if Value=Align then exit;
-  DisableAutoSizing;
-  inherited SetAlign(Value);
-  UpdateHeaderControls;
-  EnableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.SetAlign'){$ENDIF};
+  try
+    inherited SetAlign(Value);
+    UpdateHeaderControls;
+  finally
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.SetAlign'){$ENDIF};
+  end;
 end;
 
 procedure TAnchorDockHeader.DoOnShowHint(HintInfo: PHintInfo);
@@ -5457,7 +5486,7 @@ begin
     //debugln(['TAnchorDockManager.InsertControl DockSite="',DockSite.Caption,'" Control=',DbgSName(ADockObject.Control),' InsertAt=',dbgs(ADockObject.DropAlign)])
   end else begin
     debugln(['TAnchorDockManager.InsertControl DockSite=nil Site="',DbgSName(Site),'" Control=',DbgSName(ADockObject.Control),' InsertAt=',dbgs(ADockObject.DropAlign),' Site.Bounds=',dbgs(Site.BoundsRect),' Control.Client=',dbgs(ADockObject.Control.ClientRect),' Parent=',DbgSName(ADockObject.Control.Parent)]);
-    Site.DisableAutoSizing;
+    Site.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockManager.InsertControl'){$ENDIF};
     try
       // align dragged Control
       Child:=ADockObject.Control;
@@ -5512,7 +5541,7 @@ begin
       debugln(['TAnchorDockManager.InsertControl AFTER Site="',DbgSName(Site),'" Control=',DbgSName(ADockObject.Control),' InsertAt=',dbgs(ADockObject.DropAlign),' Site.Bounds=',dbgs(Site.BoundsRect),' Control.ClientRect=',dbgs(ADockObject.Control.ClientRect)]);
 
     finally
-      Site.EnableAutoSizing;
+      Site.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockManager.InsertControl'){$ENDIF};
     end;
   end;
 end;
@@ -5997,10 +6026,13 @@ end;
 
 procedure TAnchorDockSplitter.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
 begin
-  DisableAutoSizing;
-  inherited SetBounds(ALeft, ATop, AWidth, AHeight);
-  UpdateDockBounds;
-  EnableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockSplitter.SetBounds'){$ENDIF};
+  try
+    inherited SetBounds(ALeft, ATop, AWidth, AHeight);
+    UpdateDockBounds;
+  finally
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockSplitter.SetBounds'){$ENDIF};
+  end;
 end;
 
 procedure TAnchorDockSplitter.SetBoundsKeepDockBounds(ALeft, ATop, AWidth, AHeight: integer);

@@ -5425,6 +5425,7 @@ procedure TControl.EnableAutoSizing
   procedure CheckReason;
   var
     i: Integer;
+    s: String;
   begin
     i:=FAutoSizingLockReasons.Count-1;
     while i>=0 do begin
@@ -5434,7 +5435,10 @@ procedure TControl.EnableAutoSizing
       end;
       dec(i);
     end;
-    RaiseGDBException('TControl.EnableAutoSizing never disabled with reason: '+Reason);
+    s:='TControl.EnableAutoSizing '+DbgSName(Self)+' never disabled with reason "'+Reason+'"';
+    for i:=0 to FAutoSizingLockReasons.Count-1 do
+      s+=','+LineEnding+'reason['+IntToStr(i)+']="'+FAutoSizingLockReasons[i]+'"';
+    RaiseGDBException(s);
   end;
   {$ENDIF}
 

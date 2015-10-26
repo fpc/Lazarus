@@ -7596,10 +7596,10 @@ begin
   then
     exit;
 
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.MoveEditor'){$ENDIF};
   IncUpdateLock;
   try
-    DestWin.DisableAutoSizing;
+    DestWin.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.MoveEdito DestWinr'){$ENDIF};
     DestWin.IncUpdateLock;
     try
       Edit := FindSourceEditorWithPageIndex(OldPageIndex);
@@ -7620,11 +7620,11 @@ begin
       DestWin.UpdateStatusBar;
       DestWin.NotebookPageChanged(nil); // make sure page SynEdit willl be visible
     finally
-      DestWin.EnableAutoSizing;
+      DestWin.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.MoveEdito DestWinr'){$ENDIF};
       DestWin.DecUpdateLock;
     end;
   finally
-    EnableAutoSizing;
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.MoveEditor'){$ENDIF};
     DecUpdateLock
   end;
 
@@ -10891,7 +10891,14 @@ var
   i: Integer;
 begin
   Result := TSourceNotebook(TSourceNotebook.NewInstance);
+  {$IFDEF DebugDisableAutoSizing}
+  if DoDisableAutoSizing then
+    Result.DisableAutoSizing('TAnchorDockMaster Delayed')
+  else
+    Result.DisableAutoSizing('TSourceEditorManager.CreateNewWindow');
+  {$ELSE}
   Result.DisableAutoSizing;
+  {$ENDIF};
   if AnID > 0 then
     Result.Create(Self, AnID)
   else
@@ -10910,7 +10917,7 @@ begin
   end;
   FChangeNotifyLists[semWindowCreate].CallNotifyEvents(Result);
   if not DoDisableAutoSizing then
-    Result.EnableAutoSizing;
+    Result.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceEditorManager.CreateNewWindow'){$ENDIF};
 end;
 
 function TSourceEditorManager.SenderToEditor(Sender: TObject): TSourceEditor;

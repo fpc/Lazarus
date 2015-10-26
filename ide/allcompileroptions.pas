@@ -324,7 +324,7 @@ begin
   if (FEffectiveFilter = edOptionsFilter.Text)
   and (FEffectiveShowModified = cbShowModified.Checked) then Exit;
   Container := sbAllOptions;
-  Container.DisableAutoSizing;
+  Container.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TfrmAllCompilerOptions.RenderAndFilterOptions'){$ENDIF};
   try
     // First filter and set Visible flag.
     FOptionsReader.FilterOptions(UTF8LowerCase(edOptionsFilter.Text),
@@ -337,7 +337,7 @@ begin
     FEffectiveShowModified := cbShowModified.Checked;
     FocusControl(edOptionsFilter);
   finally
-    Container.EnableAutoSizing;
+    Container.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TfrmAllCompilerOptions.RenderAndFilterOptions'){$ENDIF};
     Container.Invalidate;
   end;
 end;

@@ -1444,7 +1444,7 @@ begin
   then begin
     CurDialog := TDebuggerDlg(DEBUGDIALOGCLASS[ADialogType].NewInstance);
     if FInStateChange then CurDialog.BeginUpdate;
-    CurDialog.DisableAutoSizing;
+    CurDialog.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TDebugManager.ViewDebugDialog'){$ENDIF};
     CurDialog.Create(Self);
     FDialogs[ADialogType]:=CurDialog;
     CurDialog.Name:= DebugDialogNames[ADialogType];
@@ -1468,7 +1468,7 @@ begin
   end
   else begin
     CurDialog:=FDialogs[ADialogType];
-    CurDialog.DisableAutoSizing;
+    CurDialog.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TDebugManager.ViewDebugDialog'){$ENDIF};
     if (CurDialog is TBreakPointsDlg)
     then begin
       if (Project1<>nil) then
@@ -1487,11 +1487,11 @@ begin
     end;
   end;
   if not DoDisableAutoSizing then
-    CurDialog.EnableAutoSizing;
+    CurDialog.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TDebugManager.ViewDebugDialog'){$ENDIF};
   if Show then
   begin
     CurDialog.BeginUpdate;
-    IDEWindowCreators.ShowForm(CurDialog,BringToFront, vmOnlyMoveOffScreenToVisible);
+    IDEWindowCreators.ShowForm(CurDialog,BringToFront,vmOnlyMoveOffScreenToVisible);
     CurDialog.EndUpdate;
   end;
 end;

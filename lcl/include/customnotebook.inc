@@ -192,7 +192,7 @@ begin
   else
     NewControlIndex := FNotebook.GetControlIndex(TCustomPage(FPageList[NewIndex]));
 
-  FNotebook.DisableAutoSizing;
+  FNotebook.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TNBPages.Move'){$ENDIF};
   try
      // move Page in notebook handle
     FNotebook.WSMovePage(APage, NewIndex);
@@ -210,7 +210,7 @@ begin
     if FNotebook.PageIndex >= 0 then // keep if -1
       FNotebook.PageIndex := NewIndex;
   finally
-    FNotebook.EnableAutoSizing;
+    FNotebook.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TNBPages.Move'){$ENDIF};
   end;
 end;
 

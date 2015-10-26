@@ -255,7 +255,7 @@ begin
     if not CUPSLibInstalled then Exit;
     fcupsHttp:=httpConnect(cupsServer(),ippPort());
     if not Assigned(fcupsHttp) then
-       raise Exception.Create('Unable to contact server!');
+       raise Exception.Create('Unable to contact server: '+GetLastError);
   end;
 end;
 

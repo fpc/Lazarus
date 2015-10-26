@@ -1830,7 +1830,7 @@ begin
                                 DisableAutoSize);
         if DisableAutoSize and (NewUnitInfo.Component<>nil)
         and (NewUnitInfo.Component is TControl) then
-          TControl(NewUnitInfo.Component).EnableAutoSizing;
+          TControl(NewUnitInfo.Component).EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TLazSourceFileManager.NewFile'){$ENDIF};
       end;
       if Result<>mrOk then
       begin
@@ -5774,7 +5774,7 @@ begin
           if ofLoadHiddenResource in OpenFlags then
             NewControl.ControlStyle:=NewControl.ControlStyle+[csNoDesignVisible];
           if DisableAutoSize then
-            NewControl.EnableAutoSizing;
+            NewControl.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TLazSourceFileManager.LoadLFM'){$ENDIF};
         end;
 
         if NewComponent is TFrame then

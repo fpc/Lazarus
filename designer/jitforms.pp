@@ -1043,7 +1043,7 @@ begin
     //debugln('[TJITForms.DoCreateJITComponent] Creating an instance of JIT class "'+NewClassName+'" = class('+AncestorClass.ClassName+') ...');
     Instance:=TComponent(FCurReadClass.NewInstance);
     if DisableAutoSize and (Instance is TControl) then
-      TControl(Instance).DisableAutoSizing;
+      TControl(Instance).DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TJITComponentList.DoCreateJITComponent'){$ENDIF};
     //debugln('[TJITForms.DoCreateJITComponent] Initializing new instance ... ',DbgS(Instance));
     TComponent(FCurReadJITComponent):=Instance;
     try

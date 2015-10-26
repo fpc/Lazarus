@@ -5794,7 +5794,7 @@ begin
     CodeExplorerView.OnJumpToCode:=@OnCodeExplorerJumpToCode;
     CodeExplorerView.OnShowOptions:=@OnCodeExplorerShowOptions;
   end else if State=iwgfDisabled then
-    CodeExplorerView.DisableAutoSizing;
+    CodeExplorerView.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.DoShowCodeExplorer'){$ENDIF};
 
   if State>=iwgfShow then begin
     IDEWindowCreators.ShowForm(CodeExplorerView,State=iwgfShowOnTop);
@@ -5834,7 +5834,7 @@ begin
     IDEWindowCreators.CreateForm(RestrictionBrowserView,TRestrictionBrowserView,
       State=iwgfDisabled,OwningComponent)
   else if State=iwgfDisabled then
-    RestrictionBrowserView.DisableAutoSizing;
+    RestrictionBrowserView.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.DoShowRestrictionBrowser'){$ENDIF};
 
   RestrictionBrowserView.SetIssueName(RestrictedName);
   if State>=iwgfShow then
@@ -5848,7 +5848,7 @@ begin
     IDEWindowCreators.CreateForm(ComponentListForm,TComponentListForm,
        State=iwgfDisabled,OwningComponent);
   end else if State=iwgfDisabled then
-    ComponentListForm.DisableAutoSizing;
+    ComponentListForm.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.DoShowComponentList'){$ENDIF};
   if State>=iwgfShow then
     IDEWindowCreators.ShowForm(ComponentListForm,State=iwgfShowOnTop);
 end;
@@ -5860,7 +5860,7 @@ begin
       State=iwgfDisabled,OwningComponent);
     JumpHistoryViewWin.OnSelectionChanged := @JumpHistoryViewSelectionChanged;
   end else if State=iwgfDisabled then
-    JumpHistoryViewWin.DisableAutoSizing;
+    JumpHistoryViewWin.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.DoShowJumpHistory'){$ENDIF};
   if State>=iwgfShow then
     IDEWindowCreators.ShowForm(JumpHistoryViewWin,State=iwgfShowOnTop);
 end;
@@ -8526,7 +8526,7 @@ begin
        State=iwgfDisabled,LazarusIDE.OwningComponent);
     SearchresultsView.OnSelectionChanged := OnSearchResultsViewSelectionChanged;
   end else if State=iwgfDisabled then
-    SearchResultsView.DisableAutoSizing;
+    SearchResultsView.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.DoShowSearchResultsView'){$ENDIF};
   if State>=iwgfShow then
   begin
     IDEWindowCreators.ShowForm(SearchresultsView,State=iwgfShowOnTop);
@@ -11469,7 +11469,7 @@ procedure TMainIDE.CreateObjectInspector(aDisableAutoSize: boolean);
 begin
   if ObjectInspector1<>nil then begin
     if aDisableAutoSize then
-      ObjectInspector1.DisableAutoSizing;
+      ObjectInspector1.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.CreateObjectInspector'){$ENDIF};
     exit;
   end;
   IDEWindowCreators.CreateForm(ObjectInspector1,TObjectInspectorDlg,

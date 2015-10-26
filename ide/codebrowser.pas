@@ -446,7 +446,7 @@ begin
     IDEWindowCreators.CreateForm(CodeBrowserView,TCodeBrowserView,
       DisableAutoSizing,LazarusIDE.OwningComponent)
   else if DisableAutoSizing then
-    CodeBrowserView.DisableAutoSizing;
+    CodeBrowserView.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('CreateCodeBrowser'){$ENDIF};
 end;
 
 procedure ShowCodeBrowser(const Identifier: string);
