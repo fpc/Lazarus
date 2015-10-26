@@ -851,14 +851,9 @@ var
   var
     CurPath: String;
   begin
-    Result:=false;
-    writeln('TryTemporaryPath AAA1 ',Path);
     CurPath:=CleanAndExpandDirectory(Path);
-    writeln('TryTemporaryPath AAA2 ',CurPath);
-    if CurPath='' then exit(false);
-    if not DirectoryIsWritable(CurPath) then exit;
-    NewPath:=CurPath;
-    Result:=true;
+    Result:=DirPathExists(CurPath);
+    if Result then NewPath:=CurPath;
   end;
 
 begin
@@ -867,11 +862,10 @@ begin
   inherited DoBeginDoc;
   inc(FBeginDocCount);
 
-  if (not TryTemporaryPath('~/tmp1/'))
-  and (not TryTemporaryPath('/tmp2/'))
+  if (not TryTemporaryPath('~/tmp/'))
+  and (not TryTemporaryPath('/tmp/'))
   and (not TryTemporaryPath('/var/tmp/')) then
     NewPath:='';
-  Halt;
 
   FOutputFileName := AppendPathDelim(NewPath)+
     'OutPrinter_'+FormatDateTime('yyyymmmddd-hhnnss',Now);
