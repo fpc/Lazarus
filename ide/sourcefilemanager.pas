@@ -2948,12 +2948,14 @@ begin
                        CurUnitInfo.Filename, i, CurUnitInfo = ActiveUnitInfo);
       end else if FilenameIsAbsolute(CurUnitInfo.Filename)
       and FilenameIsPascalSource(CurUnitInfo.Filename)
-      and FileExistsCached(CurUnitInfo.Filename) then begin
+      and FileExistsCached(CurUnitInfo.Filename) then
+      begin
         // this unit has a lfm, but the lpi does not know a ComponentName
         // => maybe this component was added without the IDE
         LFMFilename:=ChangeFileExt(CurUnitInfo.Filename,'.lfm');
-        if LoadCodeBuffer(LFMCode,LFMFilename,[lbfUpdateFromDisk,lbfCheckIfText],false)=mrOk
-        then begin
+        LFMCode:=CodeToolBoss.LoadFile(LFMFilename,true,false);
+        if LFMCode<>nil then
+        begin
           ReadLFMHeader(LFMCode.Source,LFMType,LFMComponentName,LFMClassName);
           if LFMComponentName<>'' then begin
             anUnitName:=CurUnitInfo.SrcUnitName;
