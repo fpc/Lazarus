@@ -1509,6 +1509,13 @@ begin
   cairo_ps_surface_dsc_begin_setup(sf);
   cairo_ps_surface_dsc_comment(sf, PChar(s));
 
+  if (fStream=nil) and not FileExists(FOutputFileName) then
+  begin
+    DebugLn('Error: unable to write cairo ps to "'+FOutputFileName+'"');
+    DestroyCairoHandle;
+    exit(0);
+  end;
+
   //rotate and move
   case Orientation of
     poLandscape: begin

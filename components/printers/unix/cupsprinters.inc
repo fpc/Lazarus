@@ -473,18 +473,20 @@ var
   aPrinterName : string;
 begin
   Result:=-1;
+  if aFileName='' then
+    raise Exception.Create('TCUPSPrinter.PrintFile missing Filename');
   if not CUPSLibInstalled then Exit;
   aFileName:=ExpandFileNameUTF8(aFileName);
 
   if (Printers.Count>0) then
   begin
     if not Assigned(fcupsOptions) then
-        SetOptionsOfPrinter;
+      SetOptionsOfPrinter;
 
     if Assigned(fcupsPrinter) then
-       aPrinterName:=fcupsPrinter^.Name
+      aPrinterName:=fcupsPrinter^.Name
     else
-       aPrinterName:='';
+      aPrinterName:='';
 
     {$IFDEF DebugCUPS}
     DebugOptions;
@@ -846,6 +848,7 @@ end;
 procedure TCUPSPrinter.DoBeginDoc;
 var
   NewPath: String;
+  fs: TFileStream;
 
   function TryTemporaryPath(const Path: string): Boolean;
   var
@@ -872,13 +875,22 @@ begin
 
   FOutputFileName := AppendPathDelim(NewPath)+
     'OutPrinter_'+FormatDateTime('yyyymmmddd-hhnnss',Now);
-    
+
   if RawMode then
     FOutputFileName := FOutputFileName + '.raw'
   else begin
     FOutputFileName := FOutputFileName + '.ps';
     TFilePrinterCanvas(Canvas).OutputFileName := FOutputFileName;
   end;
+
+  // test writing, on error this raises exception showing the user the filename
+  fs:=TFileStream.Create(FOutputFilename,fmCreate);
+  try
+    fs.Write(FOutputFilename[1],1);
+  finally
+    fs.free;
+  end;
+  DeleteFileUTF8(FOutputFilename);
 end;
 
 //If not aborted, send PostScript file to printer.
@@ -902,9 +914,11 @@ begin
     end;
     
   end else
-    TFilePrinterCanvas(Canvas).OutPutFileName:='';
-  
-  if not aAborted and FileExistsUTF8(FOutputFileName) then begin
+    TFilePrinterCanvas(Canvas).OutputFileName:='';
+
+  if not aAborted then begin
+    if not FileExistsUTF8(FOutputFileName) then
+      raise Exception.Create('Unable to write to "'+FOutputFileName+'"');
     {$IFDEF LogPrintoutFile}
     CopyFile(FOutputFileName, 'printjob'+ExtractFileExt(FOutputFileName));
     {$ENDIF}
@@ -916,7 +930,6 @@ begin
     {$ENDIF}
     DeleteFileUTF8(FOutputFilename);
   end;
-
 end;
 
 procedure TCUPSPrinter.DoResetPrintersList;
