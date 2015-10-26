@@ -467,8 +467,9 @@ var
   s: String;
   fHandle: THANDLE;
 begin
-  TempFilename:=SysUtils.GetTempFilename(AppendPathDelim(DirectoryName),'tstperm');
   Result:=false;
+  if not DirPathExists(DirectoryName) then exit;
+  TempFilename:=SysUtils.GetTempFilename(AppendPathDelim(DirectoryName),'tstperm');
   fHandle := FileCreateUtf8(TempFileName, fmCreate, 438);
   if (THandle(fHandle) <> feInvalidHandle) then
   begin
