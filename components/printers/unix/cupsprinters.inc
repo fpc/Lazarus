@@ -467,7 +467,7 @@ begin
 end;
 {$ENDIF}
 
-//Print the file aFileName with a selected printer an options
+//Print the file aFileName with a selected printer and options
 function TCUPSPrinter.PrintFile(aFileName: String): longint;
 var
   aPrinterName : string;
@@ -496,6 +496,11 @@ begin
                                   PChar(Self.Title),
                                   fcupsNumOpts,fcupsOptions);
   end;
+end;
+
+function TCUPSPrinter.GetLastError: string;
+begin
+  Result:=ippErrorString(cupsdyn.cupsLastError());
 end;
 
 function TCUPSPrinter.IsOptionValueValid(AKeyword, AValue: pchar): boolean;
@@ -896,6 +901,8 @@ end;
 //If not aborted, send PostScript file to printer.
 //After, delete this file.
 procedure TCUPSPrinter.DoEndDoc(aAborted: Boolean);
+var
+  CupsResult: LongInt;
 begin
   inherited DoEndDoc(aAborted);
   dec(FBeginDocCount);
@@ -922,13 +929,19 @@ begin
     {$IFDEF LogPrintoutFile}
     CopyFile(FOutputFileName, 'printjob'+ExtractFileExt(FOutputFileName));
     {$ENDIF}
-    {$IFNDEF DoNotPrint}
-    if Filename<>'' then
-      CopyFile(FOutputFileName, FileName)
-    else
-      PrintFile(FOutputFileName);
-    {$ENDIF}
-    DeleteFileUTF8(FOutputFilename);
+    try
+      {$IFNDEF DoNotPrint}
+      if Filename<>'' then
+        CopyFile(FOutputFileName, FileName)
+      else begin
+        CupsResult:=PrintFile(FOutputFileName+'1');
+        if CupsResult<=0 then
+          raise Exception.Create('CUPS printing: '+GetLastError);
+      end;
+      {$ENDIF}
+    finally
+      DeleteFileUTF8(FOutputFilename);
+    end;
   end;
 end;
 
