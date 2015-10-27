@@ -5,8 +5,8 @@ unit MainUnit;
 interface
 
 uses
-  Classes, SysUtils, TypInfo, LResources, Forms, Controls, Graphics, Dialogs,
-  ObjectInspector, PropEdits, PropEditUtils, StdCtrls, Buttons;
+  Classes, TypInfo, Forms, Controls, StdCtrls,
+  ObjectInspector, PropEdits, PropEditUtils, GraphPropEdits;
 
 type
   { TMyComponent }
