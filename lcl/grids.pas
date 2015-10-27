@@ -3599,7 +3599,10 @@ begin
     CurrentTextStyle.SingleLine := (gc = nil) or (not gc.Title.MultiLine);
     Canvas.TextStyle := CurrentTextStyle;
   end else begin
-    Canvas.TextStyle := DefaultTextStyle;
+    CurrentTextStyle := DefaultTextStyle;
+    CurrentTextStyle.Alignment := BidiFlipAlignment(CurrentTextStyle.Alignment, UseRightToLeftAlignment);
+    CurrentTextStyle.RightToLeft := UseRightToLeftAlignment;
+    Canvas.TextStyle := CurrentTextStyle;
     Canvas.Brush.Color := clWindow;
     Canvas.Font.Color := clWindowText;
   end;
