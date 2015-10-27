@@ -43,7 +43,8 @@ uses
   LazarusIDEStrConsts, IDECmdLine;
 
 type
-  TStartNewInstanceResult = (ofrStartNewInstance, ofrDoNotStart, ofrModalError, ofrForceSingleInstanceModalError, ofrNotResponding);
+  TStartNewInstanceResult = (ofrStartNewInstance, ofrDoNotStart, ofrModalError,
+                             ofrForceSingleInstanceModalError, ofrNotResponding);
   TStartNewInstanceEvent = procedure(const aFiles: TStrings;
     var outResult: TStartNewInstanceResult) of object;
 

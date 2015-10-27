@@ -749,7 +749,7 @@ type
     property OpenLastProjectAtStart: boolean read FOpenLastProjectAtStart
                                              write FOpenLastProjectAtStart;
     property MultipleInstances: TIDEMultipleInstancesOption read FMultipleInstances
-                                                                write FMultipleInstances;
+                                                           write FMultipleInstances;
     property FileDialogFilter: string read FFileDialogFilter write FFileDialogFilter;
 
     // backup
@@ -2090,10 +2090,9 @@ begin
                              FAskForFilenameOnNewFile,false);
     FXMLCfg.SetDeleteValue(Path+'LowercaseDefaultFilename/Value',
                              FLowercaseDefaultFilename,true);
-    if FMultipleInstances = DefaultIDEMultipleInstancesOption then
-      FXMLCfg.DeletePath(Path+'MultipleInstances')
-    else
-      FXMLCfg.SetValue(Path+'MultipleInstances/Value',IDEMultipleInstancesOptionNames[FMultipleInstances]);
+    FXMLCfg.SetDeleteValue(Path+'MultipleInstances/Value',
+        IDEMultipleInstancesOptionNames[FMultipleInstances],
+        IDEMultipleInstancesOptionNames[DefaultIDEMultipleInstancesOption]);
 
     // fpdoc
     FXMLCfg.SetDeleteValue(Path+'LazDoc/Paths',FPDocPaths,'');
