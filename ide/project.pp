@@ -2782,7 +2782,7 @@ begin
   begin
     s := FXMLConfig.GetValue(Path+SubPath+'Define'+IntToStr(i)+'/Value', '');
     if s <> '' then
-      OtherDefines.Add(s);
+      FOtherDefines.Add(s);
   end;
 end;
 

@@ -31,7 +31,7 @@ uses
   Classes, SysUtils, math, AVL_Tree, LazLogger, Forms, Controls, Graphics,
   Dialogs, StdCtrls, ComCtrls, ExtCtrls, Buttons, LCLType, LazUTF8,
   CodeToolsCfgScript, KeywordFuncLists, LazarusIDEStrConsts,
-  IDEOptionsIntf, CompOptsIntf, IDECommands, LazIDEIntf, Project, PackageDefs,
+  IDEOptionsIntf, CompOptsIntf, IDECommands, PackageDefs,
   CompilerOptions, Compiler, AllCompilerOptions, DefinesGui,
   EditorOptions, SynEdit, SynEditKeyCmds, SynCompletion, SourceSynEditor;
 
@@ -62,6 +62,7 @@ type
     FCompOptions: TBaseCompilerOptions;
     FIdleConnected: Boolean;
     FIsPackage: boolean;
+    FLocalOtherDefines: TStrings;
     FCompletionHistory: TStrings;
     FCompletionValues: TStrings;
     FDefaultVariables: TCTCfgScriptVariables;
@@ -157,11 +158,11 @@ begin
     EditForm.OptionsReader := FOptionsReader;
     EditForm.OptionsThread := FOptionsThread;
     EditForm.CustomOptions := memoCustomOptions.Lines;
-    EditForm.DefinesCheckList.Items.Assign(Project1.OtherDefines);
+    EditForm.DefinesCheckList.Items.Assign(FLocalOtherDefines);
     EditForm.UseComments := FUseComments;
     if EditForm.ShowModal = mrOK then
     begin
-      Project1.OtherDefines.Assign(EditForm.DefinesCheckList.Items);
+      FLocalOtherDefines.Assign(EditForm.DefinesCheckList.Items);
       // Synchronize with custom options memo
       EditForm.ToCustomOptions(memoCustomOptions.Lines);
       memoCustomOptions.Invalidate;
@@ -673,6 +674,7 @@ end;
 constructor TCompilerOtherOptionsFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  FLocalOtherDefines:=TStringList.Create;
   FCompletionValues:=TStringList.Create;
   FCompletionHistory:=TStringList.Create;
   fDefaultVariables:=TCTCfgScriptVariables.Create;
@@ -702,10 +704,11 @@ begin
   IdleConnected:=false;
   FreeAndNil(fOptionsThread);
   FreeAndNil(FOptionsReader);
+  FreeAndNil(fEngine);
+  FreeAndNil(fDefaultVariables);
   FreeAndNil(FCompletionHistory);
   FreeAndNil(FCompletionValues);
-  FreeAndNil(fDefaultVariables);
-  FreeAndNil(fEngine);
+  FreeAndNil(FLocalOtherDefines);
   inherited Destroy;
 end;
 
@@ -757,6 +760,7 @@ begin
   memoCustomOptions.Text := FCompOptions.CustomOptions;
   memoCustomOptions.OnChange(Nil);
   FUseComments := FCompOptions.UseCommentsInCustomOptions;
+  FLocalOtherDefines.Assign(FCompOptions.OtherDefines);
 
   UpdateStatusBar;
 end;
@@ -767,11 +771,13 @@ var
 begin
   //debugln(['TCompilerOtherOptionsFrame.WriteSettings ',DbgSName(AOptions)]);
   CurOptions := AOptions as TBaseCompilerOptions;
-  with CurOptions do
+  CurOptions.Conditionals := CondSynEdit.Lines.Text;
+  CurOptions.CustomOptions := memoCustomOptions.Text;
+  CurOptions.UseCommentsInCustomOptions := FUseComments;
+  if not CurOptions.OtherDefines.Equals(FLocalOtherDefines) then
   begin
-    Conditionals := CondSynEdit.Lines.Text;
-    CustomOptions := memoCustomOptions.Text;
-    UseCommentsInCustomOptions := FUseComments;
+    CurOptions.OtherDefines.Assign(FLocalOtherDefines);
+    CurOptions.IncreaseChangeStamp;
   end;
 end;
 

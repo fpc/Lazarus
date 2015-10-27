@@ -450,6 +450,7 @@ type
   private
     fBuilder: TLazarusBuilder;
     function DoBuildLazarusSub(Flags: TBuildLazarusFlags): TModalResult;
+    procedure ProjectOptionsHelper(AFilter: array of TAbstractIDEOptionsClass);
     // Global IDE events
     procedure HandleProcessIDECommand(Sender: TObject; Command: word;
                                   var Handled: boolean);
@@ -471,9 +472,9 @@ type
     // Environment options dialog events
     procedure DoLoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
     procedure DoSaveIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
-    procedure DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass;
+    function DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass;
       ACaption: String; AOptionsFilter: array of TAbstractIDEOptionsClass;
-      ASettings: TIDEOptionsEditorSettings); override;
+      ASettings: TIDEOptionsEditorSettings): Boolean; override;
 
     procedure DoEnvironmentOptionsBeforeRead(Sender: TObject);
     procedure DoEnvironmentOptionsBeforeWrite(Sender: TObject; Restore: boolean);
@@ -3509,11 +3510,6 @@ end;
 
 {------------------------------------------------------------------------------}
 
-procedure TMainIDE.mnuChgBuildModeClicked(Sender: TObject);
-begin
-  DoOpenIDEOptions(TCompilerPathOptionsFrame, '', [TProjectCompilerOptions], []);
-end;
-
 function TMainIDE.CreateDesignerForComponent(AnUnitInfo: TUnitInfo;
   AComponent: TComponent): TCustomForm;
 var
@@ -4097,16 +4093,38 @@ begin
   OpenMainUnit(-1,-1,[]);
 end;
 
-procedure TMainIDE.mnuProjectOptionsClicked(Sender: TObject);
+procedure TMainIDE.ProjectOptionsHelper(AFilter: array of TAbstractIDEOptionsClass);
+var
+  Capt: String;
 begin
   if Project1=nil then exit;
-  DoOpenIDEOptions(nil, Format(dlgProjectOptionsFor, [Project1.GetTitleOrName]),
-    [TProjectIDEOptions, TProjectCompilerOptions], []);
+  // This is kind of a hack. Copy OtherDefines from project to current
+  //  buildmode's compiler options and then back after they are modified.
+  // Only needed for projects, packages don't have buildmodes.
+  Project1.CompilerOptions.OtherDefines.Assign(Project1.OtherDefines);
+
+  Capt := Format(dlgProjectOptionsFor, [Project1.GetTitleOrName]);
+  if DoOpenIDEOptions(nil, Capt, AFilter, [])
+  and not Project1.OtherDefines.Equals(Project1.CompilerOptions.OtherDefines) then
+  begin
+    Project1.OtherDefines.Assign(Project1.CompilerOptions.OtherDefines);
+    Project1.Modified:=True;
+  end;
+end;
+
+procedure TMainIDE.mnuProjectOptionsClicked(Sender: TObject);
+begin
+  ProjectOptionsHelper([TProjectIDEOptions, TProjectCompilerOptions]);
+end;
+
+procedure TMainIDE.mnuChgBuildModeClicked(Sender: TObject);
+begin
+  ProjectOptionsHelper([TProjectCompilerOptions]);
 end;
 
 procedure TMainIDE.mnuBuildModeClicked(Sender: TObject);
 begin
-  DoOpenIDEOptions(TCompilerPathOptionsFrame, '', [TProjectCompilerOptions], []);
+  ProjectOptionsHelper([TProjectCompilerOptions]);
 end;
 
 function TMainIDE.UpdateProjectPOFile(AProject: TProject): TModalResult;
@@ -4648,9 +4666,9 @@ begin
     SaveDesktopSettings(AOptions as TEnvironmentOptions);
 end;
 
-procedure TMainIDE.DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass;
+function TMainIDE.DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass;
   ACaption: String; AOptionsFilter: array of TAbstractIDEOptionsClass;
-  ASettings: TIDEOptionsEditorSettings);
+  ASettings: TIDEOptionsEditorSettings): Boolean;
 var
   IDEOptionsDialog: TIDEOptionsDialog;
   OptionsFilter: TIDEOptionsEditorFilter;
@@ -4668,8 +4686,7 @@ begin
       else
         OptionsFilter[0] := TAbstractIDEEnvironmentOptions;
     end
-    else
-    begin
+    else begin
       SetLength(OptionsFilter, Length(AOptionsFilter));
       for i := 0 to Length(AOptionsFilter) - 1 do
         OptionsFilter[i] := AOptionsFilter[i];
@@ -4680,17 +4697,16 @@ begin
     IDEOptionsDialog.OnLoadIDEOptionsHook:=@DoLoadIDEOptions;
     IDEOptionsDialog.OnSaveIDEOptionsHook:=@DoSaveIDEOptions;
     IDEOptionsDialog.ReadAll;
-    if IDEOptionsDialog.ShowModal = mrOk then begin
-      IDEOptionsDialog.WriteAll(false);
-      DebugLn(['TMainIDE.DoOpenIDEOptions: Options saved, updating Palette and TaskBar.']);
+    Result := IDEOptionsDialog.ShowModal = mrOk;
+    IDEOptionsDialog.WriteAll(not Result);    // Restore if user cancelled.
+    if Result then
+    begin
+      DebugLn(['TMainIDE.DoOpenIDEOptions: Options saved, updating TaskBar.']);
       // Update TaskBarBehavior immediately.
       if EnvironmentOptions.Desktop.SingleTaskBarButton then
         Application.TaskBarBehavior := tbSingleButton
       else
         Application.TaskBarBehavior := tbDefault;
-    end else begin
-      // restore
-      IDEOptionsDialog.WriteAll(true);
     end;
   finally
     IDEOptionsDialog.Free;

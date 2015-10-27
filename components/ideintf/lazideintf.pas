@@ -307,12 +307,11 @@ type
     class function GetPrimaryConfigPath: String; virtual; abstract;
     class function GetSecondaryConfigPath: String; virtual; abstract;
     procedure CopySecondaryConfigFile(const AFilename: String); virtual; abstract;
-    procedure DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass = nil;
-      ACaption: String = ''); overload;
-    procedure DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass;
-      ACaption: String;
-      AOptionsFilter: array of TAbstractIDEOptionsClass;
-      ASettings: TIDEOptionsEditorSettings); overload; virtual; abstract;
+    function DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass = nil;
+      ACaption: String = ''): Boolean; overload;
+    function DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass;
+      ACaption: String; AOptionsFilter: array of TAbstractIDEOptionsClass;
+      ASettings: TIDEOptionsEditorSettings): Boolean; overload; virtual; abstract;
 
     // filenames, paths
     function CreateNewUniqueFilename(const Prefix, Ext: string;
@@ -654,9 +653,10 @@ begin
   Result:=DoNewFile(NewFileDescriptor,NewFilename,NewSource,NewFlags,nil);
 end;
 
-procedure TLazIDEInterface.DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass; ACaption: String);
+function TLazIDEInterface.DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass;
+  ACaption: String): Boolean;
 begin
-  DoOpenIDEOptions(AEditor, ACaption, [], []);
+  Result := DoOpenIDEOptions(AEditor, ACaption, [], []);
 end;
 
 procedure TLazIDEInterface.DoShowSearchResultsView(Show: boolean;

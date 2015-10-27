@@ -423,6 +423,7 @@ type
     fInheritedOptParseStamps: integer;
     FParsedOpts: TParsedCompilerOptions;
     FStorePathDelim: TPathDelimSwitch;
+    FOtherDefines: TStrings; // list of user selectable defines for custom options
     FFPCMsgFile: TFPCMsgFilePoolItem;
 
     // other tools
@@ -560,6 +561,7 @@ type
 
     // stored properties
     property StorePathDelim: TPathDelimSwitch read FStorePathDelim write FStorePathDelim;
+    property OtherDefines: TStrings read FOtherDefines;
 
     // compilation
     property CompilerPath: String read GetCompilerPath write SetCompilerPath;
@@ -1093,6 +1095,7 @@ constructor TBaseCompilerOptions.Create(const AOwner: TObject;
 begin
   inherited Create(AOwner);
   FParsedOpts := TParsedCompilerOptions.Create(Self);
+  FOtherDefines := TStringList.Create;
   FExecuteBefore := AToolClass.Create(Self);
   FExecuteBefore.OnChanged := @OnItemChanged;
   FExecuteAfter := AToolClass.Create(Self);
@@ -1118,6 +1121,7 @@ begin
   FreeAndNil(fBuildMacros);
   FreeThenNil(fExecuteBefore);
   FreeThenNil(fExecuteAfter);
+  FreeThenNil(FOtherDefines);
   FreeThenNil(FParsedOpts);
   inherited Destroy;
 end;
@@ -1507,7 +1511,8 @@ var
 var
   b: boolean;
   dit: TCompilerDbgSymbolType;
-  i: Integer;
+  i, Cnt: Integer;
+  s: String;
 begin
   { Load the compiler options from the XML file }
   p:=Path;
@@ -1671,6 +1676,15 @@ begin
   CustomOptions := LineBreaksToSystemLineBreaks(aXMLConfig.GetValue(p+'CustomOptions/Value', ''));
   UseCommentsInCustomOptions := aXMLConfig.GetValue(p+'ConfigFile/UseCommentsInCustomOptions/Value', false);
 
+  FOtherDefines.Clear;
+  Cnt := aXMLConfig.GetValue(p+'OtherDefines/Count', 0);
+  for i := 0 to Cnt-1 do
+  begin
+    s := aXMLConfig.GetValue(p+'OtherDefines/Define'+IntToStr(i)+'/Value', '');
+    if s <> '' then
+      FOtherDefines.Add(s);
+  end;
+
   { Compilation }
   CompilerPath := f(aXMLConfig.GetValue(p+'CompilerPath/Value',DefaultCompilerPath));
 
@@ -1729,6 +1743,7 @@ var
 
 var
   P, s: string;
+  i: Integer;
 begin
   { Save the compiler options to the XML file }
   p:=Path;
@@ -1851,6 +1866,11 @@ begin
   aXMLConfig.SetDeleteValue(p+'CustomOptions/Value',
                             LineBreaksToSystemLineBreaks(CustomOptions),''); // do not touch / \ characters
   aXMLConfig.SetDeleteValue(p+'ConfigFile/UseCommentsInCustomOptions/Value', UseCommentsInCustomOptions,false);
+
+  for i:=0 to FOtherDefines.Count-1 do
+    aXMLConfig.SetDeleteValue(p+'OtherDefines/Define'+IntToStr(i)+'/Value',
+                              FOtherDefines[i],'');
+  aXMLConfig.SetDeleteValue(p+'OtherDefines/Count',FOtherDefines.Count,0);
 
   { Compilation }
   aXMLConfig.SetDeleteValue(p+'CompilerPath/Value', f(CompilerPath),DefaultCompilerPath);
@@ -3396,6 +3416,7 @@ begin
   ClearInheritedOptions;
   ParsedOpts.Assign(CompOpts.ParsedOpts);
   FStorePathDelim := CompOpts.FStorePathDelim;
+  FOtherDefines.Assign(CompOpts.FOtherDefines);
 
   // compilation
   CompilerPath := CompOpts.CompilerPath;
@@ -3541,6 +3562,7 @@ begin
   if Done(Tool.AddDiff('ConfigFilePath',fConfigFilePath,CompOpts.fConfigFilePath)) then exit;
   if Done(Tool.AddDiff('StopAfterErrCount',fStopAfterErrCount,CompOpts.fStopAfterErrCount)) then exit;
   if Done(Tool.AddDiff('CustomOptions',CustomOptions,CompOpts.CustomOptions)) then exit;
+  if Done(Tool.AddDiff('OtherDefines',OtherDefines.Text,CompOpts.OtherDefines.Text)) then exit;
 
   // compilation
   if Tool<>nil then Tool.Path:='Compilation';
