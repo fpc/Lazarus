@@ -1058,6 +1058,7 @@ begin
   end;
   // save list
   MiscellaneousOptions.Save;
+  PkgLinks.SaveUserLinks(true);
 
   Result:=true;
 end;
