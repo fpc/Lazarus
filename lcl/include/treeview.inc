@@ -4217,6 +4217,55 @@ begin
   end;
 end;
 
+procedure TCustomTreeView.UpdateTooltip(X, Y: integer);
+const
+  cMaxHintWidth = 800; //some guess value
+var
+  Node: TTreeNode;
+  P: TPoint;
+  R: TRect;
+  OffsetLeft: integer;
+  SText: string;
+begin
+  if FHintWnd=nil then
+    FHintWnd:=THintWindow.Create(Self);
+
+  Node:=GetNodeAt(X, Y);
+  if Node=nil then
+  begin
+    FHintWnd.Hide;
+    exit;
+  end;
+
+  SText:=Node.Text;
+  OffsetLeft:=(Node.Level+1)*16 + 2;
+    //seems each level gives indent of 16pix
+    //this needs dec for ShowRoot=false, but i cannot guess, by 16pix?
+
+  if Assigned(FImages) then
+    if (not Node.Selected and (Node.ImageIndex>=0)) or
+       (Node.Selected and (Node.SelectedIndex>=0)) then
+      Inc(OffsetLeft, FImages.Width);
+
+  Canvas.Font.Assign(Self.Font);
+  if Canvas.TextWidth(SText)+OffsetLeft < ClientWidth then
+  begin
+    FHintWnd.Hide;
+    exit;
+  end;
+
+  R:=FHintWnd.CalcHintRect(cMaxHintWidth, SText, nil);
+
+  //show hint at edge of control, to not overlap node, to allow click node,
+  //also hint fontsize <> control fontsize
+  P:=Point(ClientWidth, Node.Top);
+  P:=ClientToScreen(P);
+  OffsetRect(R, P.X, P.Y);
+
+  FHintWnd.ActivateHint(R, SText);
+  FHintWnd.Invalidate; //for Windows
+end;
+
 function TCustomTreeView.GetSelection: TTreeNode;
 begin
   if RightClickSelect and Assigned(FRClickNode) then
@@ -5338,6 +5387,8 @@ begin
   inherited MouseMove(Shift, x, y);
   if (tvoAutoInsertMark in FOptions) then
     UpdateInsertMark(X,Y);
+  if (tvoToolTips in FOptions) then
+    UpdateTooltip(X, Y);
 end;
 
 procedure TCustomTreeView.MouseUp(Button: TMouseButton; Shift: TShiftState;

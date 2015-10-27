@@ -3248,6 +3248,7 @@ type
     FTreeLinePenStyle: TPenStyle;
     FExpandSignColor : TColor;
     FTreeNodes: TTreeNodes;
+    FHintWnd: THintWindow;
     procedure CanvasChanged(Sender: TObject);
     function GetAutoExpand: boolean;
     function GetBottomItem: TTreeNode;
@@ -3312,6 +3313,7 @@ type
     procedure UpdateMaxRight;
     procedure UpdateTopItem;
     procedure UpdateScrollbars;
+    procedure UpdateTooltip(X, Y: integer);
     procedure InternalSelectionChanged;
   protected
     FChangeTimer: TTimer;
