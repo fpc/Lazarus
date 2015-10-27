@@ -42,7 +42,7 @@ unit CompilerOptions;
 interface
 
 uses
-  typinfo, Classes, SysUtils, FileProcs, FileUtil, Laz2_XMLCfg, LazFileUtils,
+  Classes, SysUtils, FileProcs, FileUtil, Laz2_XMLCfg, LazFileUtils,
   AvgLvlTree, Laz2_DOM, LazUTF8,
   InterfaceBase, Forms, Controls, LCLProc, ExprEval,
   DefineTemplates, CodeToolsCfgScript, CodeToolManager, KeywordFuncLists,

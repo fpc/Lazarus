@@ -30,13 +30,16 @@ unit IDEOptionsDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLType, Controls, Forms, ComCtrls, Buttons,
-  ButtonPanel, ExtCtrls, StdCtrls, Dialogs, TreeFilterEdit,
+  Classes, SysUtils, LCLProc,
+  LCLType, Controls, Forms, ComCtrls, Buttons, ButtonPanel, ExtCtrls, StdCtrls,
+  Dialogs, TreeFilterEdit,
+  // IdeIntf
   IDEWindowIntf, IDEOptionsIntf, IDECommands, IDEHelpIntf, ProjectIntf,
-  EnvironmentOpts, LazarusIDEStrConsts, EditorOptions,
-  BuildModesManager, TransferMacros, project_save_options, Project,
-  ModeMatrixOpts, PackageDefs, PackageSystem, Compiler_ModeMatrix,
-  Compiler_Other_Options;
+  // IDE
+  EnvironmentOpts, EditorOptions, BuildModesManager, Compiler_ModeMatrix,
+  Project, LazarusIDEStrConsts,
+  // Packager
+  PackageDefs, PackageSystem;
 
 type
   TIDEOptsDlgAction = (

@@ -328,7 +328,7 @@ begin
       UpdateByTargetCPU(TargetCPU);
       UpdateByTargetOS(TargetOS);
       TargetProcComboBox.Text := ProcessorToCaption(TargetProcessor);
-      PkgDep:=(AOptions as TProjectCompilerOptions).LazProject.FindDependencyByName('LCL');
+      PkgDep:=TProjectCompilerOptions(AOptions).LazProject.FindDependencyByName('LCL');
       CurrentWidgetTypeLabel.Visible:=Assigned(PkgDep);
       LCLWidgetTypeLabel.Visible:=Assigned(PkgDep);
     end;

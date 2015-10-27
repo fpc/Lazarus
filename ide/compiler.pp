@@ -38,7 +38,7 @@ unit Compiler;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, contnrs, strutils, FileUtil,
+  Classes, SysUtils, LCLProc, Forms, Controls, contnrs, strutils,
   IDEExternToolIntf, IDEMsgIntf, LazIDEIntf, LazUTF8,
   IDECmdLine, LazarusIDEStrConsts, CompilerOptions, Project,
   DefineTemplates, TransferMacros, EnvironmentOpts, LazFileUtils;
