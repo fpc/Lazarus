@@ -5515,6 +5515,8 @@ procedure TCustomTreeView.MouseLeave;
 begin
   FStates:=FStates-[tvsDblClicked,tvsTripleClicked,tvsQuadClicked,
                     tvsEditOnMouseUp,tvsSingleSelectOnMouseUp];
+  if Assigned(FHintWnd) then
+    FHintWnd.Hide;
   inherited MouseLeave;
 end;
 
