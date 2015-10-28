@@ -13060,9 +13060,8 @@ procedure TIpHtmlInternalPanel.MouseUp(Button: TMouseButton; Shift: TShiftState;
 begin
   inherited;
   MouseIsDown := False;
-  if (abs(MouseDownX - X) < 4)
-  and (abs(MouseDownY - Y) < 4) then
-    if (Button = mbLeft) and (Hyper.HotNode <> nil) then
+  if (abs(MouseDownX - X) < 4) and (abs(MouseDownY - Y) < 4) then
+    if (Button = mbLeft) and (Shift = []) and (Hyper.HotNode <> nil) then
       {$IFDEF IP_LAZARUS}
       // to avoid references to invalid objects do it asynchronously
       Application.QueueAsyncCall(AsyncHotInvoke, 0)
