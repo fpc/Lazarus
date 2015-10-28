@@ -52,9 +52,10 @@ uses
 type
 
   TBookmarkCommandsStamp = record
+  private
+    BookmarksStamp: Int64;
   public
-    BookmarkChanged: Boolean;
-    function Changed: Boolean;
+    function Changed(ABookmarksStamp: Int64): Boolean;
   end;
 
   TFileCommandsStamp = record
@@ -438,14 +439,16 @@ end;
 
 { TBookmarkCommandsStamp }
 
-function TBookmarkCommandsStamp.Changed: Boolean;
+function TBookmarkCommandsStamp.Changed(ABookmarksStamp: Int64): Boolean;
 begin
-  Result := BookmarkChanged;
+  Result := not(
+        (BookmarksStamp = ABookmarksStamp)
+    );
 
   if not Result then
     Exit;
 
-  BookmarkChanged := True;
+  BookmarksStamp := ABookmarksStamp;
 end;
 
 { TFileCommandsStamp }
@@ -497,6 +500,7 @@ function TSourceEditorTabCommandsStamp.Changed(ASrcEdit: TSourceEditor): Boolean
 begin
   Result := not(
         (SrcEdit = ASrcEdit)
+    and (ASrcEdit <> nil)
     and (SrcEditLocked = ASrcEdit.IsLocked)
     and (SourceNotebook = ASrcEdit.SourceNotebook)
     and (PageIndex = ASrcEdit.SourceNotebook.PageIndex)
@@ -506,10 +510,13 @@ begin
   if not Result then Exit;
 
   SrcEdit := ASrcEdit;
-  SrcEditLocked := ASrcEdit.IsLocked;
-  SourceNotebook := ASrcEdit.SourceNotebook;
-  PageIndex := ASrcEdit.SourceNotebook.PageIndex;
-  PageCount := ASrcEdit.SourceNotebook.PageCount;
+  if ASrcEdit<>nil then
+  begin
+    SrcEditLocked := ASrcEdit.IsLocked;
+    SourceNotebook := ASrcEdit.SourceNotebook;
+    PageIndex := ASrcEdit.SourceNotebook.PageIndex;
+    PageCount := ASrcEdit.SourceNotebook.PageCount;
+  end;
 end;
 
 { TSourceEditorCommandsStamp }
@@ -517,9 +524,9 @@ end;
 function TSourceEditorCommandsStamp.Changed(ASrcEdit: TSourceEditor;
   ADisplayState: TDisplayState): Boolean;
 begin
-  Assert(Assigned(ASrcEdit), 'TSourceEditorCommandsStamp.Changed: ASrcEdit=Nil');
   Result := not(
         (SrcEdit = ASrcEdit)
+    and (ASrcEdit <> nil)
     and (DisplayState = ADisplayState)
     and (EditorComponentStamp = ASrcEdit.EditorComponent.ChangeStamp)
     and (EditorCaretStamp = ASrcEdit.EditorComponent.CaretStamp)
@@ -529,8 +536,11 @@ begin
 
   SrcEdit := ASrcEdit;
   DisplayState := ADisplayState;
-  EditorComponentStamp := ASrcEdit.EditorComponent.ChangeStamp;
-  EditorCaretStamp := ASrcEdit.EditorComponent.CaretStamp;
+  if ASrcEdit<>nil then
+  begin
+    EditorComponentStamp := ASrcEdit.EditorComponent.ChangeStamp;
+    EditorCaretStamp := ASrcEdit.EditorComponent.CaretStamp;
+  end;
 end;
 
 //==============================================================================

@@ -383,6 +383,7 @@ type
     UpdateEditorTabCommandsStamp: TSourceEditorTabCommandsStamp;
     UpdatePackageCommandsStamp: TPackageCommandsStamp;
     UpdateBookmarkCommandsStamp: TBookmarkCommandsStamp;
+    BookmarksStamp: Int64;
   public
     procedure UpdateMainIDECommands(Sender: TObject);
     procedure UpdateFileCommands(Sender: TObject);
@@ -3685,6 +3686,8 @@ var
     nb: TSourceNotebook;
   begin
     Result := False;
+    if ASrcEdit=nil then
+      Exit;
     ThisWin := SourceEditorManager.IndexOfSourceWindow(ASrcEdit.SourceNotebook);
     for i := 0 to SourceEditorManager.SourceWindowCount - 1 do begin
       nb:=SourceEditorManager.SourceWindows[i];
@@ -3705,11 +3708,18 @@ begin
   if not UpdateEditorTabCommandsStamp.Changed(ASrcEdit) then
     Exit;
 
-  PageIndex := ASrcEdit.SourceNotebook.PageIndex;
-  PageCount := ASrcEdit.SourceNotebook.PageCount;
+  if Assigned(ASrcEdit) then
+  begin
+    PageIndex := ASrcEdit.SourceNotebook.PageIndex;
+    PageCount := ASrcEdit.SourceNotebook.PageCount;
+  end else
+  begin
+    PageIndex := 0;
+    PageCount := 0;
+  end;
 
   {$IFnDEF SingleSrcWindow}
-  SrcEditMenuEditorLock.Checked := ASrcEdit.IsLocked;       // Editor locks
+  SrcEditMenuEditorLock.Checked := Assigned(ASrcEdit) and ASrcEdit.IsLocked;       // Editor locks
   // Multi win
   NBAvail := ToWindow();
   SrcEditMenuMoveToNewWindow.Visible := not NBAvail;
@@ -7971,7 +7981,7 @@ var
   BookMarkID, i, BookMarkX, BookMarkY: Integer;
   BookmarkAvail: Boolean;
 begin
-  if not UpdateBookmarkCommandsStamp.Changed then
+  if not UpdateBookmarkCommandsStamp.Changed(BookmarksStamp) then
     Exit;
 
   for BookMarkID:=0 to 9 do begin
@@ -10301,7 +10311,9 @@ Begin
   if SetMark then
     ActEdit.EditorComponent.SetBookMark(ID,NewXY.X,NewXY.Y);
 
-  UpdateBookmarkCommandsStamp.BookmarkChanged := True;
+  {$push}{$R-}  // range check off
+  Inc(BookmarksStamp);
+  {$pop}
 end;
 
 procedure TMainIDE.OnSrcNotebookEditorDoGotoBookmark(Sender: TObject; ID: Integer; Backward: Boolean);
