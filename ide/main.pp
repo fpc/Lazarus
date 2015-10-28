@@ -1117,6 +1117,7 @@ end;
 function TSourceEditorCommandsStamp.Changed(ASrcEdit: TSourceEditor;
   ADisplayState: TDisplayState): Boolean;
 begin
+  Assert(Assigned(ASrcEdit), 'TSourceEditorCommandsStamp.Changed: ASrcEdit=Nil');
   Result := not(
         (SrcEdit = ASrcEdit)
     and (DisplayState = ADisplayState)
