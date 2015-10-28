@@ -48,9 +48,7 @@
 }
 unit Main;
 
-{$mode objfpc}
-{$H+}
-{$MODESWITCH ADVANCEDRECORDS}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -166,56 +164,6 @@ type
     ctdNeedUpdate,
     ctdUpdating
     );
-
-  TFileCommandsStamp = record
-  private
-    SrcEdit: TSourceEditor;
-  public
-    function Changed(ASrcEdit: TSourceEditor): Boolean;
-  end;
-
-  TProjectCommandsStamp = record
-  private
-    UnitInfo: TUnitInfo;
-    ProjectChangeStamp: Int64;
-  public
-    function Changed(AUnitInfo: TUnitInfo): Boolean;
-  end;
-
-  TPackageCommandsStamp = record
-  private
-    UnitInfo: TUnitInfo;
-    PackagesChangeStamp: Int64;
-  public
-    function Changed(AUnitInfo: TUnitInfo): Boolean;
-  end;
-
-  TSourceEditorTabCommandsStamp = record
-  private
-    SrcEdit: TSourceEditor;
-    SrcEditLocked: Boolean;
-    SourceNotebook: TSourceNotebook;
-    PageIndex, PageCount: Integer;
-  public
-    function Changed(ASrcEdit: TSourceEditor): Boolean;
-  end;
-
-  TSourceEditorCommandsStamp = record
-  private
-    SrcEdit: TSourceEditor;
-    DisplayState: TDisplayState;
-    EditorComponentStamp: int64;
-    EditorCaretStamp: int64;
-  public
-    function Changed(ASrcEdit: TSourceEditor; ADisplayState: TDisplayState): Boolean;
-  end;
-
-  TBookmarkCommandsStamp = record
-  private
-    BookmarkChanged: Boolean;
-  public
-    function Changed: Boolean;
-  end;
 
   { TMainIDE }
 
@@ -1034,107 +982,6 @@ begin
     AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
   end;
 end;
-
-{ TBookmarkCommandsStamp }
-
-function TBookmarkCommandsStamp.Changed: Boolean;
-begin
-  Result := BookmarkChanged;
-
-  if not Result then
-    Exit;
-
-  BookmarkChanged := True;
-end;
-
-{ TPackageCommandsStamp }
-
-function TPackageCommandsStamp.Changed(AUnitInfo: TUnitInfo): Boolean;
-begin
-  Result := not(
-        (UnitInfo = AUnitInfo)
-    and (PackagesChangeStamp = PackageGraph.ChangeStamp)
-    );
-
-  if not Result then Exit;
-
-  UnitInfo := AUnitInfo;
-  PackagesChangeStamp := PackageGraph.ChangeStamp;
-end;
-
-{ TProjectCommandsStamp }
-
-function TProjectCommandsStamp.Changed(AUnitInfo: TUnitInfo): Boolean;
-begin
-  Result := not(
-        (UnitInfo = AUnitInfo)
-    and (ProjectChangeStamp = Project1.ChangeStamp)
-    );
-
-  if not Result then Exit;
-
-  UnitInfo := AUnitInfo;
-  ProjectChangeStamp := Project1.ChangeStamp;
-end;
-
-{ TSourceEditorTabCommandsStamp }
-
-function TSourceEditorTabCommandsStamp.Changed(ASrcEdit: TSourceEditor
-  ): Boolean;
-begin
-  Result := not(
-        (SrcEdit = ASrcEdit)
-    and (SrcEditLocked = ASrcEdit.IsLocked)
-    and (SourceNotebook = ASrcEdit.SourceNotebook)
-    and (PageIndex = ASrcEdit.SourceNotebook.PageIndex)
-    and (PageCount = ASrcEdit.SourceNotebook.PageCount)
-    );
-
-  if not Result then Exit;
-
-  SrcEdit := ASrcEdit;
-  SrcEditLocked := ASrcEdit.IsLocked;
-  SourceNotebook := ASrcEdit.SourceNotebook;
-  PageIndex := ASrcEdit.SourceNotebook.PageIndex;
-  PageCount := ASrcEdit.SourceNotebook.PageCount;
-end;
-
-{ TFileCommandsStamp }
-
-function TFileCommandsStamp.Changed(ASrcEdit: TSourceEditor): Boolean;
-begin
-  Result := not(
-        (SrcEdit = ASrcEdit)
-    );
-
-  if not Result then Exit;
-
-  SrcEdit := ASrcEdit;
-end;
-
-{ TSourceEditorCommandsStamp }
-
-function TSourceEditorCommandsStamp.Changed(ASrcEdit: TSourceEditor;
-  ADisplayState: TDisplayState): Boolean;
-begin
-  Assert(Assigned(ASrcEdit), 'TSourceEditorCommandsStamp.Changed: ASrcEdit=Nil');
-  Result := not(
-        (SrcEdit = ASrcEdit)
-    and (DisplayState = ADisplayState)
-    and (EditorComponentStamp = ASrcEdit.EditorComponent.ChangeStamp)
-    and (EditorCaretStamp = ASrcEdit.EditorComponent.CaretStamp)
-    );
-
-  if not Result then Exit;
-
-  SrcEdit := ASrcEdit;
-  DisplayState := ADisplayState;
-  EditorComponentStamp := ASrcEdit.EditorComponent.ChangeStamp;
-  EditorCaretStamp := ASrcEdit.EditorComponent.CaretStamp;
-end;
-
-//==============================================================================
-
 
 { TMainIDE }
 
