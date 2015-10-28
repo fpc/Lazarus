@@ -7791,7 +7791,7 @@ begin
       CurBlock := PIpHtmlRectListEntry(RectList[StartSelIndex]).Block;
       {if FAllSelected and (CurBlock <> nil) then
         break;}
-      if PtInRect(CurBlock.PageRect, FStartSel) then begin
+//      if PtInRect(CurBlock.PageRect, FStartSel) then begin
         R := PIpHtmlRectListEntry(RectList[StartSelIndex]).Rect;
         if R.Bottom = 0 then
         else
@@ -7809,7 +7809,7 @@ begin
         else
           if (R.Left >= FStartSel.x) and (R.Right <= FEndSel.x) then
             break;
-      end;
+//      end;
       Inc(StartSelIndex);
     end;
     if StartSelIndex >= RectList.Count then Exit;
