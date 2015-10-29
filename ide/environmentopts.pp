@@ -2554,6 +2554,8 @@ begin
   Result := TDesktopOpt.Create(FActiveDesktopName);
   FDesktops.Add(Result);
   Result.Assign(Desktop);
+  if Assigned(IDEDockMaster) then
+    Result.FDockedOpt.LoadDefaults;
 end;
 
 procedure TEnvironmentOptions.SetTestBuildDirectory(const AValue: string);

@@ -26,6 +26,7 @@ type
     FSettings: TAnchorDockSettings;
   public
     procedure LoadDefaultLayout;
+    procedure LoadLegacyAnchorDockOptions;
     procedure LoadLayoutFromConfig(Path: string; aXMLCfg: TRttiXMLConfig);
     procedure LoadLayoutFromFile(FileName: string);
 
@@ -34,6 +35,7 @@ type
   public
     constructor Create; override;
     destructor Destroy; override;
+    procedure LoadDefaults; override;
     procedure Load(Path: String; aXMLCfg: TRttiXMLConfig); override;
     procedure Save(Path: String; aXMLCfg: TRttiXMLConfig); override;
     procedure ImportSettingsFromIDE; override;
@@ -103,6 +105,7 @@ begin
       {$IF defined(VerboseAnchorDocking) or defined(VerboseAnchorDockRestore)}
       debugln(['TIDEAnchorDockMaster.LoadUserLayout loading default layout ...']);
       {$ENDIF}
+      LoadLegacyAnchorDockOptions;
       LoadDefaultLayout;
     end;
   except
@@ -133,6 +136,12 @@ begin
   end;
 end;
 
+procedure TAnchorDesktopOpt.LoadDefaults;
+begin
+  LoadDefaultLayout;
+  LoadLegacyAnchorDockOptions;
+end;
+
 procedure TAnchorDesktopOpt.ImportSettingsFromIDE;
 begin
   SaveMainLayoutToTree;
@@ -142,25 +151,6 @@ end;
 
 procedure TAnchorDesktopOpt.LoadLayoutFromConfig(Path: string;
   aXMLCfg: TRttiXMLConfig);
-
-  procedure LoadAnchorDockOptions;
-  var
-    Config: TConfigStorage;
-  begin
-    try
-      Config:=GetIDEConfigStorage('anchordockoptions.xml',true);
-      try
-        FSettings.LoadFromConfig(Config);
-      finally
-        Config.Free;
-      end;
-    except
-      on E: Exception do begin
-        DebugLn(['TAnchorDesktopOpt.LoadLayoutFromConfig - LoadAnchorDockOptions failed: ',E.Message]);
-      end;
-    end;
-  end;
-
 var
   FileVersion: Integer;
 begin
@@ -168,7 +158,7 @@ begin
   FTree.LoadFromConfig(Path+'MainConfig/', aXMLCfg);
   FRestoreLayouts.LoadFromConfig(Path+'Restores/', aXMLCfg);
   if (FileVersion = 0) then//backwards compatibility - read anchordockoptions.xml
-    LoadAnchorDockOptions
+    LoadLegacyAnchorDockOptions
   else
     FSettings.LoadFromConfig(Path+'Settings/', aXMLCfg);
 end;
@@ -182,6 +172,24 @@ begin
     LoadLayoutFromConfig('',Config);
   finally
     Config.Free;
+  end;
+end;
+
+procedure TAnchorDesktopOpt.LoadLegacyAnchorDockOptions;
+var
+  Config: TConfigStorage;
+begin
+  try
+    Config:=GetIDEConfigStorage('anchordockoptions.xml',true);
+    try
+      FSettings.LoadFromConfig(Config);
+    finally
+      Config.Free;
+    end;
+  except
+    on E: Exception do begin
+      DebugLn(['TAnchorDesktopOpt.LoadLayoutFromConfig - LoadAnchorDockOptions failed: ',E.Message]);
+    end;
   end;
 end;
 
