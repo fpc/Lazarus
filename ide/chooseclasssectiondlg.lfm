@@ -1,0 +1,45 @@
+object ChooseClassSectionDialog: TChooseClassSectionDialog
+  Left = 460
+  Height = 177
+  Top = 220
+  Width = 252
+  BorderStyle = bsDialog
+  Caption = 'ChooseClassSectionDialog'
+  ClientHeight = 177
+  ClientWidth = 252
+  KeyPreview = True
+  OnKeyPress = FormKeyPress
+  Position = poDesktopCenter
+  LCLVersion = '1.5'
+  object SectionsListBox: TListBox
+    Left = 10
+    Height = 117
+    Top = 10
+    Width = 232
+    Align = alClient
+    BorderSpacing.Left = 10
+    BorderSpacing.Top = 10
+    BorderSpacing.Right = 10
+    BorderSpacing.Bottom = 10
+    ItemHeight = 0
+    OnDblClick = SectionsListBoxDblClick
+    OnKeyPress = SectionsListBoxKeyPress
+    TabOrder = 0
+  end
+  object ButtonPanel: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 137
+    Width = 240
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 1
+    ShowButtons = [pbOK]
+  end
+end
