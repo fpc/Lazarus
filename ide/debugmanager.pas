@@ -885,28 +885,33 @@ begin
 end;
 
 procedure TDebugManager.mnuViewDebugDialogClick(Sender: TObject);
+var
+  xCommand: Integer;
 begin
-  if Sender is TIDEMenuItem
-  then begin
-    ViewDebugDialog(TDebugDialogType((Sender as TIDEMenuItem).Tag));
-  end;
+  if (Sender is TIDESpecialCommand) and (TIDESpecialCommand(Sender).Command<>nil) then
+    xCommand := TIDESpecialCommand(Sender).Command.Command
+  else
+  if Sender is TIDECommand then
+    xCommand := TIDECommand(Sender).Command
+  else
+    xCommand := -1;
 
-  if Sender is TIDECommand then begin
-    case TIDECommand(Sender).Command of
-      ecToggleWatches     : ViewDebugDialog(ddtWatches);
-      ecToggleBreakPoints : ViewDebugDialog(ddtBreakpoints);
-      ecToggleDebuggerOut : ViewDebugDialog(ddtOutput);
-      ecToggleLocals      : ViewDebugDialog(ddtLocals);
-      ecToggleCallStack   : ViewDebugDialog(ddtCallStack);
-      ecToggleRegisters   : ViewDebugDialog(ddtRegisters);
-      ecToggleAssembler   : ViewDebugDialog(ddtAssembler);
-      ecToggleDebugEvents : ViewDebugDialog(ddtEvents);
-      ecEvaluate          : ViewDebugDialog(ddtEvaluate);
-      ecInspect           : ViewDebugDialog(ddtInspect);
-      ecViewPseudoTerminal: ViewDebugDialog(ddtPseudoTerminal);
-      ecViewThreads       : ViewDebugDialog(ddtThreads);
-      ecViewHistory       : ViewDebugDialog(ddtHistory);
-    end;
+  case xCommand of
+    ecToggleWatches     : ViewDebugDialog(ddtWatches);
+    ecToggleBreakPoints : ViewDebugDialog(ddtBreakpoints);
+    ecToggleDebuggerOut : ViewDebugDialog(ddtOutput);
+    ecToggleLocals      : ViewDebugDialog(ddtLocals);
+    ecToggleCallStack   : ViewDebugDialog(ddtCallStack);
+    ecToggleRegisters   : ViewDebugDialog(ddtRegisters);
+    ecToggleAssembler   : ViewDebugDialog(ddtAssembler);
+    ecToggleDebugEvents : ViewDebugDialog(ddtEvents);
+    ecEvaluate          : ViewDebugDialog(ddtEvaluate);
+    ecInspect           : ViewDebugDialog(ddtInspect);
+    ecViewPseudoTerminal: ViewDebugDialog(ddtPseudoTerminal);
+    ecViewThreads       : ViewDebugDialog(ddtThreads);
+    ecViewHistory       : ViewDebugDialog(ddtHistory);
+  else
+    raise Exception.CreateFmt('IDE Internal error: TDebugManager.mnuViewDebugDialogClick, wrong command parameter %d.', [xCommand]);
   end;
 end;
 
