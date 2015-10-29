@@ -124,6 +124,13 @@ const
     ctnClassPublished  // pcsPublished
   );
 
+  InsertClassSectionToNewClassPart: array[TInsertClassSectionResult] of TNewClassPart = (
+    ncpPrivateProcs,
+    ncpProtectedProcs,
+    ncpPublicProcs,
+    ncpPublishedProcs
+  );
+
 type
   TCodeCompletionCodeTool = class;
 
@@ -207,10 +214,10 @@ type
     procedure AdjustCursor(OldCodePos: TCodePosition; OldTopLine: integer;
                           out NewPos: TCodeXYPosition; out NewTopLine: integer);
     procedure AddNeededUnitToMainUsesSection(AnUnitName: PChar);
-    procedure AddMethodCompatibleToProcType(AClassNode: TCodeTreeNode;
+    function AddMethodCompatibleToProcType(AClassNode: TCodeTreeNode;
                   const AnEventName: string; ProcContext: TFindContext; out
                   MethodDefinition: string; out MethodAttr: TProcHeadAttributes;
-                  SourceChangeCache: TSourceChangeCache);
+                  SourceChangeCache: TSourceChangeCache): Boolean;
     procedure AddProcedureCompatibleToProcType(
                   const NewProcName: string; ProcContext: TFindContext; out
                   MethodDefinition: string; out MethodAttr: TProcHeadAttributes;
@@ -1361,14 +1368,17 @@ begin
   Pointer(s):=nil;
 end;
 
-procedure TCodeCompletionCodeTool.AddMethodCompatibleToProcType(
+function TCodeCompletionCodeTool.AddMethodCompatibleToProcType(
   AClassNode: TCodeTreeNode; const AnEventName: string;
   ProcContext: TFindContext; out MethodDefinition: string; out
-  MethodAttr: TProcHeadAttributes; SourceChangeCache: TSourceChangeCache);
+  MethodAttr: TProcHeadAttributes; SourceChangeCache: TSourceChangeCache
+  ): Boolean;
 var
   CleanMethodDefinition: string;
   Beauty: TBeautifyCodeOptions;
+  MethodSection: TInsertClassSectionResult;
 begin
+  Result := False;
   MethodDefinition:='';
   MethodAttr:=[];
 
@@ -1400,8 +1410,10 @@ begin
   {$ENDIF}
   if not ProcExistsInCodeCompleteClass(CleanMethodDefinition) then begin
     // insert method definition into class
+    if not Beauty.GetRealEventMethodSection(MethodSection) then
+      Exit;
     AddClassInsertion(CleanMethodDefinition, MethodDefinition,
-                      AnEventName, ncpPublishedProcs);
+                      AnEventName, InsertClassSectionToNewClassPart[MethodSection]);
   end;
   MethodDefinition:=Beauty.AddClassAndNameToProc(MethodDefinition,
                    ExtractClassName(AClassNode,false,true), AnEventName);
@@ -1411,6 +1423,7 @@ begin
   // insert all missing proc bodies
   if not CreateMissingClassProcBodies(false) then
     RaiseException(ctsErrorDuringCreationOfNewProcBodies);
+  Result := True;
 end;
 
 procedure TCodeCompletionCodeTool.AddProcedureCompatibleToProcType(
@@ -2143,8 +2156,10 @@ begin
         if FullEventName='' then exit;
 
         // add published method and method body and right side of assignment
-        AddMethodCompatibleToProcType(AClassNode,FullEventName,ProcContext,
-          AMethodDefinition,AMethodAttr,SourceChangeCache);
+        if not AddMethodCompatibleToProcType(AClassNode,FullEventName,ProcContext,
+          AMethodDefinition,AMethodAttr,SourceChangeCache)
+        then
+          Exit;
         if not CompleteAssignment(FullEventName,AssignmentOperator,
           AddrOperatorPos,SemicolonPos,UserEventAtom)
         then
@@ -2291,8 +2306,10 @@ function TCodeCompletionCodeTool.CompleteLocalIdentifierByParameter(
     ProcContext:=CreateFindContext(TypeTool,TypeNode);
 
     // create new method
-    AddMethodCompatibleToProcType(AClassNode,Identifier,
-      ProcContext,AMethodDefinition,AMethodAttr,SourceChangeCache);
+    if not AddMethodCompatibleToProcType(AClassNode,Identifier,
+      ProcContext,AMethodDefinition,AMethodAttr,SourceChangeCache)
+    then
+      Exit;
 
     // apply the changes
     if not SourceChangeCache.Apply then

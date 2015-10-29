@@ -3645,6 +3645,10 @@ resourcestring
   lisAllBlocksLooksOk = 'All blocks look ok.';
   lisTheApplicationBundleWasCreatedFor = 'The Application Bundle was created for "%s"';
 
+  //codetools ChooseClassSectionDlg
+  lisChooseClassSectionDlgForMethodCaption = 'Insert new method to section';
+  lisEventMethodSectionLabel = 'Insert new event methods to section';
+
   // diff dialog
   lisDiffDlgFile1 = 'File1';
   lisDiffDlgOnlySelection = 'Only selection';

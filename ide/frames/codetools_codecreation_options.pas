@@ -34,15 +34,19 @@ type
   { TCodetoolsCodeCreationOptionsFrame }
 
   TCodetoolsCodeCreationOptionsFrame = class(TAbstractIDEOptionsEditor)
-    ForwardProcsInsertPolicyRadioGroup: TRadioGroup;
+    ForwardProcsInsertPolicyComboBox: TComboBox;
+    UsesInsertPolicyComboBox: TComboBox;
     ForwardProcsKeepOrderCheckBox: TCheckBox;
+    ForwardProcsInsertPolicyLabel: TLabel;
+    EventMethodSectionComboBox: TComboBox;
+    UsesInsertPolicyLabel: TLabel;
     TemplateFileBrowseButton: TButton;
     TemplateFileEdit: TEdit;
     TemplateFileLabel: TLabel;
     UpdateMultiProcSignaturesCheckBox: TCheckBox;
     UpdateOtherProcSignaturesCaseCheckBox: TCheckBox;
     GroupLocalVariablesCheckBox: TCheckBox;
-    UsesInsertPolicyRadioGroup: TRadioGroup;
+    EventMethodSectionLabel: TLabel;
     procedure TemplateFileBrowseButtonClick(Sender: TObject);
   private
   public
@@ -87,8 +91,8 @@ end;
 procedure TCodetoolsCodeCreationOptionsFrame.Setup(
   ADialog: TAbstractOptionsEditorDialog);
 begin
-  with ForwardProcsInsertPolicyRadioGroup do begin
-    Caption:=dlgForwardProcsInsertPolicy;
+  ForwardProcsInsertPolicyLabel.Caption:=dlgForwardProcsInsertPolicy;
+  with ForwardProcsInsertPolicyComboBox do begin
     with Items do begin
       BeginUpdate;
       Add(dlgLast);
@@ -100,8 +104,8 @@ begin
 
   ForwardProcsKeepOrderCheckBox.Caption:=dlgForwardProcsKeepOrder;
 
-  with UsesInsertPolicyRadioGroup do begin
-    Caption:=lisNewUnitsAreAddedToUsesSections;
+  UsesInsertPolicyLabel.Caption:=lisNewUnitsAreAddedToUsesSections;
+  with UsesInsertPolicyComboBox do begin
     with Items do begin
       BeginUpdate;
       Add(lisFirst);
@@ -109,6 +113,20 @@ begin
       Add(lisBehindRelated);
       Add(dlgCDTLast);
       Add(dlgAlphabetically);
+      EndUpdate;
+    end;
+  end;
+
+  EventMethodSectionLabel.Caption:=lisEventMethodSectionLabel;
+  with EventMethodSectionComboBox do begin
+    Assert(Ord(High(TInsertClassSectionResult)) = 3,  'TCodetoolsCodeCreationOptionsFrame.Setup: High(TInsertClassSectionResult) <> 3');
+    with Items do begin
+      BeginUpdate;
+      Add(lisPrivate);
+      Add(lisProtected);
+      Add(lisEMDPublic);
+      Add(lisEMDPublished);
+      Add(lisPromptForValue);
       EndUpdate;
     end;
   end;
@@ -134,24 +152,25 @@ begin
   with AOptions as TCodetoolsOptions do
   begin
     case ForwardProcBodyInsertPolicy of
-      fpipLast: ForwardProcsInsertPolicyRadioGroup.ItemIndex:=0;
-      fpipInFrontOfMethods: ForwardProcsInsertPolicyRadioGroup.ItemIndex:=1;
+      fpipLast: ForwardProcsInsertPolicyComboBox.ItemIndex:=0;
+      fpipInFrontOfMethods: ForwardProcsInsertPolicyComboBox.ItemIndex:=1;
     else
       // fpipBehindMethods
-      ForwardProcsInsertPolicyRadioGroup.ItemIndex:=2;
+      ForwardProcsInsertPolicyComboBox.ItemIndex:=2;
     end;
 
     ForwardProcsKeepOrderCheckBox.Checked := KeepForwardProcOrder;
 
     case UsesInsertPolicy of
-    uipFirst:             UsesInsertPolicyRadioGroup.ItemIndex:=0;
-    uipInFrontOfRelated:  UsesInsertPolicyRadioGroup.ItemIndex:=1;
-    uipBehindRelated:     UsesInsertPolicyRadioGroup.ItemIndex:=2;
-    uipLast:              UsesInsertPolicyRadioGroup.ItemIndex:=3;
+    uipFirst:             UsesInsertPolicyComboBox.ItemIndex:=0;
+    uipInFrontOfRelated:  UsesInsertPolicyComboBox.ItemIndex:=1;
+    uipBehindRelated:     UsesInsertPolicyComboBox.ItemIndex:=2;
+    uipLast:              UsesInsertPolicyComboBox.ItemIndex:=3;
     else
       //uipAlphabetically:
-                          UsesInsertPolicyRadioGroup.ItemIndex:=4;
+                          UsesInsertPolicyComboBox.ItemIndex:=4;
     end;
+    EventMethodSectionComboBox.ItemIndex := Ord(EventMethodSection);
 
     UpdateMultiProcSignaturesCheckBox.Checked:=UpdateMultiProcSignatures;
     UpdateOtherProcSignaturesCaseCheckBox.Checked:=UpdateOtherProcSignaturesCase;
@@ -166,7 +185,7 @@ procedure TCodetoolsCodeCreationOptionsFrame.WriteSettings(
 begin
   with AOptions as TCodetoolsOptions do
   begin
-    case ForwardProcsInsertPolicyRadioGroup.ItemIndex of
+    case ForwardProcsInsertPolicyComboBox.ItemIndex of
       0: ForwardProcBodyInsertPolicy := fpipLast;
       1: ForwardProcBodyInsertPolicy := fpipInFrontOfMethods;
       2: ForwardProcBodyInsertPolicy := fpipBehindMethods;
@@ -174,13 +193,15 @@ begin
 
     KeepForwardProcOrder := ForwardProcsKeepOrderCheckBox.Checked;
 
-    case UsesInsertPolicyRadioGroup.ItemIndex of
+    case UsesInsertPolicyComboBox.ItemIndex of
     0: UsesInsertPolicy:=uipFirst;
     1: UsesInsertPolicy:=uipInFrontOfRelated;
     2: UsesInsertPolicy:=uipBehindRelated;
     3: UsesInsertPolicy:=uipLast;
     else UsesInsertPolicy:=uipAlphabetically;
     end;
+
+    EventMethodSection := TInsertClassSection(EventMethodSectionComboBox.ItemIndex);
 
     UpdateMultiProcSignatures:=UpdateMultiProcSignaturesCheckBox.Checked;
     UpdateOtherProcSignaturesCase:=UpdateOtherProcSignaturesCaseCheckBox.Checked;
