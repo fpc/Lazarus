@@ -923,6 +923,20 @@ begin
 
   if not (csDesigning in AWidget.LCLObject.ComponentState) then
   begin
+    if (csNoFocus in TCustomForm(AWidget.LCLObject).ControlStyle) then
+    begin
+      {$IFDEF HASX11}
+      if ((QtVersionMajor = 4) and (QtVersionMinor >= 7)) or
+        (QtVersionMajor > 4) then
+      begin
+        if QtVersionMajor = 4 then
+          AWidget.setAttribute(132 {QtWA_X11DoNotAcceptFocus}, True)
+        else // Qt 5
+          AWidget.setAttribute(126 {QtWA_X11DoNotAcceptFocus}, True)
+      end;
+      {$ENDIF}
+      AWidget.setAttribute(QtWA_ShowWithoutActivating, True);
+    end;
     AWidget.setWindowFlags(Flags);
     if ABorderStyle in [bsDialog, bsNone, bsSingle] then
       AWidget.Resize(AWidget.LCLObject.Width, AWidget.LCLObject.Height)
