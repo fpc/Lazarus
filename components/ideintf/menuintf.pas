@@ -209,8 +209,6 @@ type
     procedure SetRightJustify(const AValue: boolean); virtual;
     procedure SetShowAlwaysCheckable(const AValue: boolean); virtual;
     procedure SetMenuItem(const AValue: TMenuItem); override;
-    procedure SetOnClickMethod(const AValue: TNotifyEvent); override;
-    procedure SetOnClickProc(const AValue: TNotifyProcedure); override;
   public
     property AutoCheck: boolean read FAutoCheck write SetAutoCheck default False;
     property Default: Boolean read FDefault write SetDefault default False;
@@ -1674,26 +1672,6 @@ begin
     end;
     MenuItem.GroupIndex:=GroupIndex;
   end;
-end;
-
-procedure TIDEMenuCommand.SetOnClickMethod(const AValue: TNotifyEvent);
-var
-  OldClick: TNotifyEvent;
-begin
-  OldClick:=OnClick;
-  inherited SetOnClickMethod(AValue);
-  if Assigned(Command) and (Command.OnExecute = OldClick) then
-    Command.OnExecute := OnClick;
-end;
-
-procedure TIDEMenuCommand.SetOnClickProc(const AValue: TNotifyProcedure);
-var
-  OldClick: TNotifyProcedure;
-begin
-  OldClick:=OnClickProc;
-  inherited SetOnClickProc(AValue);
-  if Assigned(Command) and (Command.OnExecuteProc = OldClick) then
-    Command.OnExecuteProc := OnClickProc;
 end;
 
 { TIDEMenuRoots }
