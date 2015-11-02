@@ -104,6 +104,11 @@ begin
   Application.{%H-}MainFormOnTaskBar := False;
   {$ENDIF}
 
+  {$IF (FPC_FULLVERSION >= 30101) AND DEFINED(MSWINDOWS) AND DECLARED(useheaptrace)}
+  // don't show empty heaptrc output dialog on windows
+  heaptrc.GlobalSkipIfNoLeaks := True;
+  {$ENDIF}
+
   Application.Initialize;
   LazIDEInstances.PerformCheck;
   if not LazIDEInstances.StartIDE then
