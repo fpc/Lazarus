@@ -5220,13 +5220,19 @@ begin
     // create new source with the new filename
     OldSourceCode:=AnUnitInfo.Source.Source;
     NewSource:=CodeToolBoss.CreateFile(NewFilename);
-    NewSource.Source:=OldSourceCode;
     if NewSource=nil then begin
       Result:=IDEMessageDialog(lisUnableToCreateFile,
         Format(lisCanNotCreateFile, [NewFilename]),
         mtError,[mbCancel,mbAbort]);
       exit;
     end;
+    NewSource.Source:=OldSourceCode;
+    if (AnUnitInfo.Source.DiskEncoding<>'') and (AnUnitInfo.Source.DiskEncoding<>EncodingUTF8)
+    then begin
+      NewSource.DiskEncoding:=AnUnitInfo.Source.DiskEncoding;
+      InputHistories.FileEncodings[NewFilename]:=NewSource.DiskEncoding;
+    end else
+      InputHistories.FileEncodings.Remove(NewFilename);
     // get final filename
     NewFilename:=NewSource.Filename;
     NewFilePath:=ExtractFilePath(NewFilename);
