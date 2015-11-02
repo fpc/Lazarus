@@ -910,6 +910,10 @@ resourcestring
   lisConversionError = 'Conversion error';
   lisUnableToConvertComponentTextIntoBinaryFormat = 'Unable to convert '
     +'component text into binary format:%s%s';
+  lisInsufficientEncoding = 'Insufficient encoding';
+  lisUnableToConvertToEncoding = 'Unable to convert to encoding "%s"';
+  lisSavingFileAsLoosesCharactersAtLineColumn = 'Saving file "%s" as "%s" '
+    +'looses characters at line %s, column %s.';
   lisNOTECouldNotCreateDefineTemplateForLazarusSources = 'NOTE: Could not '
     +'create Define Template for Lazarus Sources';
   lisInvalidExpressionHintTheMakeResourcestringFunction = 'Invalid expression.%s'

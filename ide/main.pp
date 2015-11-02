@@ -602,7 +602,7 @@ type
     procedure OnCodeBufferDecodeLoaded({%H-}Code: TCodeBuffer;
          const Filename: string; var Source, DiskEncoding, MemEncoding: string);
     procedure OnCodeBufferEncodeSaving(Code: TCodeBuffer;
-                                    const {%H-}Filename: string; var Source: string);
+                                    const Filename: string; var Source: string);
     function OnCodeToolBossGetMethodName(const Method: TMethod;
                                          PropOwner: TObject): String;
     procedure CodeToolBossPrepareTree(Sender: TObject);
@@ -8944,14 +8944,41 @@ end;
 
 procedure TMainIDE.OnCodeBufferEncodeSaving(Code: TCodeBuffer;
   const Filename: string; var Source: string);
+var
+  OldSource, NewSource, Msg: String;
+  i, Line, Col: Integer;
 begin
   if (Code.DiskEncoding<>'') and (Code.MemEncoding<>'')
   and (Code.DiskEncoding<>Code.MemEncoding) then begin
     {$IFDEF VerboseIDEEncoding}
     DebugLn(['TMainIDE.OnCodeBufferEncodeSaving Filename=',Code.Filename,' Mem=',Code.MemEncoding,' to Disk=',Code.DiskEncoding]);
     {$ENDIF}
+    OldSource:=Source;
     Source:=ConvertEncoding(Source,Code.MemEncoding,Code.DiskEncoding);
     //debugln(['TMainIDE.OnCodeBufferEncodeSaving ',dbgMemRange(PByte(Source),length(Source))]);
+    NewSource:=ConvertEncoding(Source,Code.DiskEncoding,Code.MemEncoding);
+    if OldSource<>NewSource then
+    begin
+      Line:=0;
+      for i:=1 to length(OldSource) do
+        if (i>length(NewSource)) or (OldSource[i]<>NewSource[i]) then
+        begin
+          SrcPosToLineCol(OldSource,i,Line,Col);
+          break;
+        end;
+      if Line=0 then
+        SrcPosToLineCol(OldSource,length(OldSource),Line,Col);
+      Msg:=Format(lisSavingFileAsLoosesCharactersAtLineColumn, [Filename, Code.
+          DiskEncoding, IntToStr(Line), IntToStr(Col)]);
+      if IDEMessageDialog(lisInsufficientEncoding,Msg,
+        mtWarning,[mbIgnore,mbCancel])<>mrIgnore
+      then begin
+        IDEMessagesWindow.AddCustomMessage(mluError,
+          Format(lisUnableToConvertToEncoding, [Code.DiskEncoding]),
+          Filename,Line,Col);
+        raise Exception.Create(Msg);
+      end;
+    end;
   end;
 end;
 
