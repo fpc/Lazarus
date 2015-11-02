@@ -70,7 +70,7 @@
       </Item11>
       <Item12>
         <Filename Value="source\sparta_hashutils.pas"/>
-        <UnitName Value="sparta_hashutils"/>
+        <UnitName Value="sparta_HashUtils"/>
       </Item12>
     </Files>
     <RequiredPkgs Count="1">

@@ -163,6 +163,9 @@ type
   { TSpartaMainIDE }
 
   TSpartaMainIDE = class(TObject)
+  public
+    procedure TryFreeFormData(Form: TCustomForm);
+
     procedure Screen_FormAdded(Sender: TObject; Form: TCustomForm);
     procedure Screen_FormDel(Sender: TObject; Form: TCustomForm);
 
@@ -961,7 +964,7 @@ begin
   end;
 end;
 
-procedure TSpartaMainIDE.Screen_FormDel(Sender: TObject; Form: TCustomForm);
+procedure TSpartaMainIDE.TryFreeFormData(Form: TCustomForm);
 var
   LSEWD: TSourceEditorWindowData;
   mpc: TModulePageControl;
@@ -971,6 +974,63 @@ var
   LIterator2: THashmap<TSourceEditorInterface, TModulePageControl, THash_TObject>.TIterator;
 {$ENDIF}
 begin
+{$IFNDEF USE_POPUP_PARENT_DESIGNER}
+  Form.ParentWindow := 0;
+  Application.ProcessMessages; // For TFrame - System Error. Code: 1400. Invalid window handle.
+{$ENDIF}
+
+  LFormData := FindDesignFormData(Form);
+  dsgForms.Remove(LFormData);
+
+  if Assigned(MainComponentsPalette) then
+    if MainComponentsPalette.Root = LookupRoot(Form) then
+      MainComponentsPalette.Root := nil;
+
+{$IFDEF USE_GENERICS_COLLECTIONS}
+  for LSEWD in SourceEditorWindows.Values do
+  begin
+    if LSEWD.ActiveDesignFormData <> nil then
+      if LSEWD.ActiveDesignFormData.Form.Form = Form then
+        LSEWD.FActiveDesignFormData := nil; // important - we can't call OnChange tab, because tab don't exist anymore
+
+    for mpc in LSEWD.FPageCtrlList.Values do
+      if mpc.DesignFormData <> nil then
+         if mpc.DesignFormData.Form.Form = Form then
+            mpc.DesignFormData := nil;
+  end;
+{$ELSE}
+  LIterator := SourceEditorWindows.Iterator;
+  if LIterator <> nil then
+  try
+    repeat
+      LSEWD := LIterator.Value;
+      if LSEWD.ActiveDesignFormData <> nil then
+        if LSEWD.ActiveDesignFormData.Form.Form = Form then
+          LSEWD.FActiveDesignFormData := nil; // important - we can't call OnChange tab, because tab don't exist anymore
+
+      LIterator2 := LSEWD.FPageCtrlList.Iterator;
+      if LIterator2 <> nil then
+      try
+        repeat
+          mpc := LIterator2.Value;
+          if mpc.DesignFormData <> nil then
+             if mpc.DesignFormData.Form.Form = Form then
+                mpc.DesignFormData := nil;
+        until not LIterator2.next;
+      finally
+        LIterator2.Free;
+      end;
+    until not LIterator.next;
+  finally
+    LIterator.Free;
+  end;
+{$ENDIF}
+
+  LFormData.Free;
+end;
+
+procedure TSpartaMainIDE.Screen_FormDel(Sender: TObject; Form: TCustomForm);
+begin
   if not IsFormDesign(Form) then
   begin
     if Form is TSourceEditorWindowInterface then
@@ -979,61 +1039,7 @@ begin
       Form.RemoveHandlerOnChangeBounds(spartaIDE.GlobalOnChangeBounds)
   end
   else
-  begin
-{$IFNDEF USE_POPUP_PARENT_DESIGNER}
-    Form.ParentWindow := 0;
-    Application.ProcessMessages; // For TFrame - System Error. Code: 1400. Invalid window handle.
-{$ENDIF}
-
-    LFormData := FindDesignFormData(Form);
-    dsgForms.Remove(LFormData);
-
-    if Assigned(MainComponentsPalette) then
-      if MainComponentsPalette.Root = LookupRoot(Form) then
-        MainComponentsPalette.Root := nil;
-
-{$IFDEF USE_GENERICS_COLLECTIONS}
-    for LSEWD in SourceEditorWindows.Values do
-    begin
-      if LSEWD.ActiveDesignFormData <> nil then
-        if LSEWD.ActiveDesignFormData.Form.Form = Form then
-          LSEWD.FActiveDesignFormData := nil; // important - we can't call OnChange tab, because tab don't exist anymore
-
-      for mpc in LSEWD.FPageCtrlList.Values do
-        if mpc.DesignFormData <> nil then
-           if mpc.DesignFormData.Form.Form = Form then
-              mpc.DesignFormData := nil;
-    end;
-{$ELSE}
-    LIterator := SourceEditorWindows.Iterator;
-    if LIterator <> nil then
-    try
-      repeat
-        LSEWD := LIterator.Value;
-        if LSEWD.ActiveDesignFormData <> nil then
-          if LSEWD.ActiveDesignFormData.Form.Form = Form then
-            LSEWD.FActiveDesignFormData := nil; // important - we can't call OnChange tab, because tab don't exist anymore
-
-        LIterator2 := LSEWD.FPageCtrlList.Iterator;
-        if LIterator2 <> nil then
-        try
-          repeat
-            mpc := LIterator2.Value;
-            if mpc.DesignFormData <> nil then
-               if mpc.DesignFormData.Form.Form = Form then
-                  mpc.DesignFormData := nil;
-          until not LIterator2.next;
-        finally
-          LIterator2.Free;
-        end;
-      until not LIterator.next;
-    finally
-      LIterator.Free;
-    end;
-{$ENDIF}
-
-    LFormData.Free;
-  end;
+    TryFreeFormData(Form);
 end;
 
 procedure TSpartaMainIDE.WindowCreate(Sender: TObject);

@@ -240,6 +240,9 @@ type
 
 implementation
 
+uses
+  sparta_MainIDE;
+
 type
   TFormHack = class(TForm);
 
@@ -478,7 +481,9 @@ begin
 
     DesignedForm.RealWidth := Width;
     DesignedForm.RealHeight := Height;
-  end;
+  end
+  else
+    spartaIDE.TryFreeFormData(Self);
 end;
 
 { TFakeCustomNonControl }
@@ -624,7 +629,9 @@ begin
 
     DesignedForm.RealWidth := Width;
     DesignedForm.RealHeight := Height;
-  end;
+  end
+  else
+    spartaIDE.TryFreeFormData(Self);
 end;
 
 procedure TFakeCustomNonControl.SetMediator(AValue: TDesignerMediator);
