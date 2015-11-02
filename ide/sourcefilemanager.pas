@@ -5233,6 +5233,7 @@ begin
       InputHistories.FileEncodings[NewFilename]:=NewSource.DiskEncoding;
     end else
       InputHistories.FileEncodings.Remove(NewFilename);
+
     // get final filename
     NewFilename:=NewSource.Filename;
     NewFilePath:=ExtractFilePath(NewFilename);
@@ -7443,11 +7444,11 @@ var
   MainUnitSrcEdit: TSourceEditor;
   MainUnitInfo: TUnitInfo;
   SaveDialog: TSaveDialog;
-  NewBuf: TCodeBuffer;
+  NewBuf, OldBuf: TCodeBuffer;
   TitleWasDefault: Boolean;
   NewLPIFilename, NewProgramFN, NewProgramName, AFilename, NewTargetFN: String;
   AText, ACaption, Ext: string;
-  OldSource, OldProjectDir, prDir: string;
+  OldSourceCode, OldProjectDir, prDir: string;
   i: Integer;
 begin
   Project1.BeginUpdate(false);
@@ -7572,6 +7573,7 @@ begin
     //DebugLn(['TLazSourceFileManager.ShowSaveProjectAsDialog NewLPI=',NewLPIFilename,' NewProgramName=',NewProgramName,' NewMainSource=',NewProgramFN]);
 
     // check if info file or source file already exists
+    // Note: if user confirms overwriting .lpi do not ask for overwriting .lpr
     if FileExistsUTF8(NewLPIFilename) then
     begin
       ACaption:=lisOverwriteFile;
@@ -7624,7 +7626,8 @@ begin
 
       // Save old source code, to prevent overwriting it,
       // if the file name didn't actually change.
-      OldSource := MainUnitInfo.Source.Source;
+      OldBuf := MainUnitInfo.Source;
+      OldSourceCode := OldBuf.Source;
 
       // switch MainUnitInfo.Source to new code
       NewBuf := CodeToolBoss.CreateFile(NewProgramFN);
@@ -7636,7 +7639,13 @@ begin
       end;
 
       // copy the source to the new buffer
-      NewBuf.Source:=OldSource;
+      NewBuf.Source:=OldSourceCode;
+      if (OldBuf.DiskEncoding<>'') and (OldBuf.DiskEncoding<>EncodingUTF8) then
+      begin
+        NewBuf.DiskEncoding:=OldBuf.DiskEncoding;
+        InputHistories.FileEncodings[NewProgramFN]:=NewBuf.DiskEncoding;
+      end else
+        InputHistories.FileEncodings[NewProgramFN]:='';
 
       // assign the new buffer to the MainUnit
       MainUnitInfo.Source:=NewBuf;
