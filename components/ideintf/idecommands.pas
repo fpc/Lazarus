@@ -813,7 +813,6 @@ procedure CreateStandardIDECommandScopes;
 
 function CompareIDEShortCuts(Data1, Data2: Pointer): integer;
 function CompareIDEShortCutKey1s(Data1, Data2: Pointer): integer;
-function CompareEvents(Event1, Event2: TNotifyEvent): Integer;
 function IdentToIDECommand(const Ident: string; var Cmd: longint): boolean;
 function IDECommandToIdent(Cmd: longint; var Ident: string): boolean;
 procedure GetIDEEditorCommandValues(Proc: TGetStrProc);
@@ -1287,7 +1286,7 @@ procedure TIDECommand.SetOnExecute(const aOnExecute: TNotifyEvent);
 var
   xUser: TIDESpecialCommand;
 begin
-  if CompareEvents(FOnExecute, aOnExecute) = 0 then Exit;
+  if CompareMethods(TMethod(FOnExecute), TMethod(aOnExecute)) then Exit;
   FOnExecute := aOnExecute;
   for xUser in FUsers do
     xUser.OnClick := FOnExecute;
@@ -1694,7 +1693,7 @@ end;
 
 procedure TIDESpecialCommand.SetOnClickMethod(const aOnClick: TNotifyEvent);
 begin
-  if CompareEvents(FOnClickMethod, aOnClick) = 0 then Exit;
+  if CompareMethods(TMethod(FOnClickMethod), TMethod(aOnClick)) then Exit;
   FOnClickMethod := aOnClick;
   if FCommand<> nil then
     FCommand.OnExecute:=aOnClick;
@@ -2179,16 +2178,6 @@ const
   // TSynPluginSyncroEdit - selecting
     (Value: ecIdePSyncroEdSelStart; Name: 'ecIdePSyncroEdSelStart')
   );
-
-function CompareEvents(Event1, Event2: TNotifyEvent): Integer;
-var
-  xMethod1: TMethod absolute Event1;
-  xMethod2: TMethod absolute Event2;
-begin
-  Result := ComparePointers(xMethod1.Code, xMethod2.Code);
-  if Result<>0 then Exit;
-  Result := ComparePointers(xMethod1.Data, xMethod2.Data);
-end;
 
 function IdentToIDECommand(const Ident: string; var Cmd: longint): boolean;
 begin
