@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-10-22 01:46+0300\n"
+"PO-Revision-Date: 2015-11-03 01:21+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -5521,6 +5521,10 @@ msgstr "Выберите файл сообщений FPC"
 msgid "Choose a Pascal file for indentation examples"
 msgstr "Выберите файл Паскаля для получения образцов отступов"
 
+#: lazarusidestrconsts.lischooseclasssectiondlgformethodcaption
+msgid "Insert new method to section"
+msgstr "Вставить новый метод в секцию"
+
 #: lazarusidestrconsts.lischoosecompilerexecutable
 msgid "Choose compiler executable (%s)"
 msgstr "Выберите исполнимый файл компилятора (%s)"
@@ -8788,6 +8792,10 @@ msgstr "Параметры журнала событий ..."
 #: lazarusidestrconsts.liseventlogsavetofile
 msgid "Save Events to File"
 msgstr "Сохранить события в файл"
+
+#: lazarusidestrconsts.liseventmethodsectionlabel
+msgid "Insert new event methods to section"
+msgstr "Вставлять новые методы событий в секцию"
 
 #: lazarusidestrconsts.liseventslogaddcomment
 msgid "Add Comment ..."

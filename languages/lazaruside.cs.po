@@ -5576,6 +5576,10 @@ msgstr "Vyberte soubor FPC zpráv"
 msgid "Choose a Pascal file for indentation examples"
 msgstr "Vyberte pascalovských soubor pro ukázku odsazení"
 
+#: lazarusidestrconsts.lischooseclasssectiondlgformethodcaption
+msgid "Insert new method to section"
+msgstr ""
+
 #: lazarusidestrconsts.lischoosecompilerexecutable
 msgid "Choose compiler executable (%s)"
 msgstr ""
@@ -8870,6 +8874,10 @@ msgstr "Volby záznamu událoastí ..."
 #: lazarusidestrconsts.liseventlogsavetofile
 msgid "Save Events to File"
 msgstr "Uložit události do souboru"
+
+#: lazarusidestrconsts.liseventmethodsectionlabel
+msgid "Insert new event methods to section"
+msgstr ""
 
 #: lazarusidestrconsts.liseventslogaddcomment
 msgid "Add Comment ..."

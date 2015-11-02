@@ -5677,6 +5677,10 @@ msgstr "Parinkite FPC pranešimo failą"
 msgid "Choose a Pascal file for indentation examples"
 msgstr "Lygiavimo pavyzdžiams parinkite paskalio failą"
 
+#: lazarusidestrconsts.lischooseclasssectiondlgformethodcaption
+msgid "Insert new method to section"
+msgstr ""
+
 #: lazarusidestrconsts.lischoosecompilerexecutable
 msgid "Choose compiler executable (%s)"
 msgstr ""
@@ -9040,6 +9044,10 @@ msgstr "Įvykių žurnalo parinktys…"
 #: lazarusidestrconsts.liseventlogsavetofile
 msgid "Save Events to File"
 msgstr "Įvykius įrašyti į failą"
+
+#: lazarusidestrconsts.liseventmethodsectionlabel
+msgid "Insert new event methods to section"
+msgstr ""
 
 #: lazarusidestrconsts.liseventslogaddcomment
 msgid "Add Comment ..."
