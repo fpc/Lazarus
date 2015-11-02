@@ -556,21 +556,18 @@ begin
       if AWinControl.HandleObjectShouldBeVisible and
         not (TCustomForm(AWinControl).FormStyle in fsAllStayOnTop) and
         not (fsModal in TCustomForm(AWinControl).FormState) and
+        (TCustomForm(AWinControl).FormStyle <> fsMDIChild) and
         (TCustomForm(AWinControl).PopupMode = pmAuto) and
         (TCustomForm(AWinControl).BorderStyle = bsNone) and
         (TCustomForm(AWinControl).PopupParent = nil) then
       begin
         W := QApplication_activeWindow;
-        if (W <> nil) and not QWidget_isModal(W) then
-        begin
-          Flags := QWidget_windowFlags(W);
-          if (Flags and QtWindowStaysOnTopHint <> QtWindowStaysOnTopHint) and
-            GetAlwaysOnTopX11(W) then
-          begin
-            Flags := Widget.windowFlags;
-            Widget.setWindowFlags(Flags or QtWindowStaysOnTopHint);
-          end;
-        end;
+        Flags := Widget.windowFlags;
+        if W <> nil then
+          Widget.setParent(W)
+        else
+          Widget.setParent(QApplication_desktop);
+        Widget.setWindowFlags(Flags or QtTool);
       end;
       {$ENDIF}
     end;
@@ -926,6 +923,20 @@ begin
 
   if not (csDesigning in AWidget.LCLObject.ComponentState) then
   begin
+    if (csNoFocus in TCustomForm(AWidget.LCLObject).ControlStyle) then
+    begin
+      {$IFDEF HASX11}
+      if ((QtVersionMajor = 4) and (QtVersionMinor >= 7)) or
+        (QtVersionMajor > 4) then
+      begin
+        if QtVersionMajor = 4 then
+          AWidget.setAttribute(132 {QtWA_X11DoNotAcceptFocus}, True)
+        else // Qt 5
+          AWidget.setAttribute(126 {QtWA_X11DoNotAcceptFocus}, True)
+      end;
+      {$ENDIF}
+      AWidget.setAttribute(QtWA_ShowWithoutActivating, True);
+    end;
     AWidget.setWindowFlags(Flags);
     if ABorderStyle in [bsDialog, bsNone, bsSingle] then
       AWidget.Resize(AWidget.LCLObject.Width, AWidget.LCLObject.Height)
