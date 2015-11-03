@@ -608,7 +608,7 @@ type
   TIDECommands = class
   private
     FCustomUpdateEvents: TMethodList;
-    FDontExecuteUpdateEventsUntil: Integer;
+    FDontExecuteUpdateEventsUntil: QWord;
 
     procedure ApplicationOnIdle({%H-}Sender: TObject; var {%H-}Done: Boolean);
   protected
