@@ -339,10 +339,12 @@ type
     // progress and error messages
     function ShowProgress(const SomeText: string;
       Step, MaxStep: integer): boolean; virtual; abstract; // False if canceled by user
+    function GetSelectedCompilerMessage: TMessageLine; virtual; abstract;
     function DoJumpToCompilerMessage(FocusEditor: boolean;
                               Msg: TMessageLine = nil // if nil then it jumps to first message
                               ): boolean; virtual; abstract;
-    procedure DoJumpToNextError(DirectionDown: boolean); virtual; abstract;
+    procedure DoJumpToNextCompilerMessage(aMinUrgency: TMessageLineUrgency; DirectionDown: boolean); virtual; abstract;
+    procedure DoJumpToNextError(DirectionDown: boolean);
     procedure DoShowMessagesView(BringToFront: boolean = true); virtual; abstract;
     function DoCheckFilesOnDisk(Instantaneous: boolean = false): TModalResult; virtual; abstract;
     // call this after changing TargetOS/TargetCPU of the ActiveProject
@@ -628,6 +630,11 @@ begin
   while FLazarusIDEHandlers[HandlerType].NextDownIndex(i) do
     TShowDesignerFormOfSourceFunction(FLazarusIDEHandlers[HandlerType][i])(Sender, AEditor,
                                                  AComponentPaletteClassSelected);
+end;
+
+procedure TLazIDEInterface.DoJumpToNextError(DirectionDown: boolean);
+begin
+  DoJumpToNextCompilerMessage(mluError, DirectionDown);
 end;
 
 constructor TLazIDEInterface.Create(TheOwner: TComponent);

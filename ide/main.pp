@@ -917,9 +917,10 @@ type
     function DoConvertDelphiPackage(const DelphiFilename: string): TModalResult;
 
     // message view
+    function GetSelectedCompilerMessage: TMessageLine; override;
     function DoJumpToCompilerMessage(FocusEditor: boolean; Msg: TMessageLine = nil
       ): boolean; override;
-    procedure DoJumpToNextError(DirectionDown: boolean); override;
+    procedure DoJumpToNextCompilerMessage(aMinUrgency: TMessageLineUrgency; DirectionDown: boolean); override;
     procedure DoShowMessagesView(BringToFront: boolean = true); override;
 
     // methods for debugging, compiling and external tools
@@ -8302,11 +8303,12 @@ begin
   end;
 end;
 
-procedure TMainIDE.DoJumpToNextError(DirectionDown: boolean);
+procedure TMainIDE.DoJumpToNextCompilerMessage(
+  aMinUrgency: TMessageLineUrgency; DirectionDown: boolean);
 var
   Msg: TMessageLine;
 begin
-  if not MessagesView.SelectNextUrgentMessage(mluError,true,DirectionDown) then
+  if not MessagesView.SelectNextUrgentMessage(aMinUrgency,true,DirectionDown) then
     exit;
   Msg:=MessagesView.GetSelectedLine;
   if Msg=nil then exit;
@@ -11891,6 +11893,11 @@ begin
     AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
   end;
   Result:=nil;
+end;
+
+function TMainIDE.GetSelectedCompilerMessage: TMessageLine;
+begin
+  Result:=MessagesView.GetSelectedLine;
 end;
 
 function TMainIDE.GetProjectFileWithDesigner(ADesigner: TIDesigner): TLazProjectFile;
