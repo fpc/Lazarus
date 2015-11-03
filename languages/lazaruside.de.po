@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-09-29 18:22+0100\n"
+"PO-Revision-Date: 2015-11-03 17:02+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "Language: de_DE\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Poedit 1.8.4\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
@@ -1854,7 +1854,7 @@ msgstr "Verarbeite Anweisung"
 
 #: lazarusidestrconsts.dlgforceuniqueinstancemodalerror
 msgid "The running Lazarus instance cannot accept any files."
-msgstr ""
+msgstr "Die laufende Lazarus-Instanz akzeptiert keine Dateien."
 
 #: lazarusidestrconsts.dlgforecolor
 msgid "Foreground"
@@ -2749,19 +2749,19 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgmultipleinstances
 msgid "Multiple Lazarus instances"
-msgstr ""
+msgstr "Mehrfache Lazarus-Instanzen"
 
 #: lazarusidestrconsts.dlgmultipleinstances_alwaysstartnew
 msgid "always start a new instance"
-msgstr ""
+msgstr "immer eine neue Instanz öffnen"
 
 #: lazarusidestrconsts.dlgmultipleinstances_forcesingleinstance
 msgid "do not allow multiple instances"
-msgstr ""
+msgstr "Mehrfache Instanzen nicht erlauben"
 
 #: lazarusidestrconsts.dlgmultipleinstances_openfilesinrunning
 msgid "open files in a running instance"
-msgstr ""
+msgstr "Dateien in einer laufenden Instanz öffnen"
 
 #: lazarusidestrconsts.dlgmultiselect
 msgid "Multi Select"
@@ -3138,6 +3138,10 @@ msgid ""
 "\n"
 "%s\n"
 msgstr ""
+"Die laufende Lazarus-Instanz akzeptiert keine Dateien.\n"
+"Wollen Sie sie in einer neuen IDE-Instanz öffnen?\n"
+"\n"
+"%s\n"
 
 #: lazarusidestrconsts.dlgrunninginstancenotrespondingerror
 msgid "Lazarus instance is running but not responding."
@@ -3267,7 +3271,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgsetpropertyvariableisprefix
 msgid "is prefix"
-msgstr ""
+msgstr "ist Präfix"
 
 #: lazarusidestrconsts.dlgsetpropertyvariableisprefixhint
 msgid "If checked, the \"Set property Variable\" is a prefix. Otherwise it is a fixed name."
@@ -3275,7 +3279,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgsetpropertyvariableuseconst
 msgid "use const"
-msgstr ""
+msgstr "verwende const"
 
 #: lazarusidestrconsts.dlgsetpropertyvariableuseconsthint
 msgid "If checked, the setter parameter is marked with \"const\"."
@@ -4185,7 +4189,7 @@ msgstr "Eigenschaft \"%s\" für %s hinzugefügt."
 
 #: lazarusidestrconsts.lisaddfcutf8
 msgid "Add -FcUTF8"
-msgstr ""
+msgstr "-FcUTF8 hinzufügen"
 
 #: lazarusidestrconsts.lisaddfcutf8hint
 msgid "May be needed if source files have non-ansistring literals."
@@ -4258,7 +4262,7 @@ msgstr "&Adresshaltepunkt ..."
 
 #: lazarusidestrconsts.lisaddsub
 msgid "Add >>"
-msgstr ""
+msgstr "Hinzuf.>>"
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
@@ -4610,7 +4614,7 @@ msgstr "Zeichen nicht hinzufügen"
 
 #: lazarusidestrconsts.lisautomaticallyusesinglepossibleident
 msgid "Automatically use single possible identifier"
-msgstr ""
+msgstr "Automatisch einen einfachen Bezeichner verwenden"
 
 #: lazarusidestrconsts.lisautomaticfeatures
 msgid "Completion and Hints"
@@ -5520,7 +5524,7 @@ msgstr "Geben Sie eine Pascal-Datei für die Einrückungsbeispiele an"
 
 #: lazarusidestrconsts.lischooseclasssectiondlgformethodcaption
 msgid "Insert new method to section"
-msgstr ""
+msgstr "Fügt neue Methode zu Abschnitt hinzu"
 
 #: lazarusidestrconsts.lischoosecompilerexecutable
 msgid "Choose compiler executable (%s)"
@@ -6960,7 +6964,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisconvshouldbefollowedbynumber
 msgid "\"$\" should be followed by a number: %s"
-msgstr ""
+msgstr "auf \"$\" sollte eine Zahl folgen: %s"
 
 #: lazarusidestrconsts.lisconvstoppedbecausethereispackage
 msgid "Stopped because there already is a package with the same name"
@@ -7448,7 +7452,7 @@ msgstr "Benutzerdefinierte Einstellungen"
 
 #: lazarusidestrconsts.liscustomoptions3
 msgid "Custom Options"
-msgstr ""
+msgstr "Benutzerdefinierte Einstellungen"
 
 #: lazarusidestrconsts.liscustomprogram
 msgid "Custom Program"
@@ -8372,11 +8376,9 @@ msgstr "Editor-Symbolleiste"
 
 #: lazarusidestrconsts.liseditortoolbarsettings
 msgid "Editor Toolbar Settings"
-msgstr ""
+msgstr "Editor-Symbolleisten-Einstellungen"
 
 #: lazarusidestrconsts.liseditortoolbarvisible
-#, fuzzy
-#| msgid "EditorToolbar is &visible"
 msgid "Editor Toolbar is &visible"
 msgstr "Editor-Symbolleiste ist sichtbar"
 
@@ -8798,7 +8800,7 @@ msgstr "Ereignisse in Datei speichern"
 
 #: lazarusidestrconsts.liseventmethodsectionlabel
 msgid "Insert new event methods to section"
-msgstr ""
+msgstr "Neue Ereignis-Methoden einfügen in Abschnitt"
 
 #: lazarusidestrconsts.liseventslogaddcomment
 msgid "Add Comment ..."
@@ -8905,7 +8907,7 @@ msgstr "Alle Elemente in Datei exportieren"
 #: lazarusidestrconsts.lisexportenvironmentoptions
 msgctxt "lazarusidestrconsts.lisexportenvironmentoptions"
 msgid "Export environment options"
-msgstr ""
+msgstr "Umgebungseinstellungen exportieren"
 
 #: lazarusidestrconsts.lisexporthtml
 msgid "Export as HTML"
@@ -8929,7 +8931,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisexportsub
 msgid "Export >>"
-msgstr ""
+msgstr "Export >>"
 
 #: lazarusidestrconsts.lisexpression
 msgid "Expression:"
@@ -9552,7 +9554,7 @@ msgstr "%sEs gibt %d weitere leere Gruppen. Alle löschen?"
 
 #: lazarusidestrconsts.lisgrouplocalvariables
 msgid "Group automatically defined local variables"
-msgstr ""
+msgstr "Automatisch definierte lokale Variablen gruppieren"
 
 #: lazarusidestrconsts.lisgroupnameemptyclearinstead
 msgid "The group name cannot be empty. Clear breakpoints' group(s)?"
@@ -12635,11 +12637,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lismmusesystemencoding
 msgid "Use system encoding"
-msgstr ""
+msgstr "Systemkodierung verwenden"
 
 #: lazarusidestrconsts.lismmusesystemencodinghint
 msgid "Disable support for UTF-8 default string encoding."
-msgstr ""
+msgstr "Unterstützung für UTF-8 Vorgabe-Zeichenkodierung deaktivieren"
 
 #: lazarusidestrconsts.lismmvalues
 msgid "Value \"%s\""
@@ -15086,7 +15088,7 @@ msgstr "Projekt-Quellverzeichnismarke"
 
 #: lazarusidestrconsts.lispromptforvalue
 msgid "Prompt for value"
-msgstr "Benutzer nach Daten fragen"
+msgstr "Benutzer nach Entscheidung fragen"
 
 #: lazarusidestrconsts.lisproperties
 msgid "Properties (replace or remove)"
@@ -15927,7 +15929,7 @@ msgstr "Leere Units/Packages anzeigen"
 
 #: lazarusidestrconsts.lisshowfpcmessagelinescompiled
 msgid "Show FPC message \"lines compiled\""
-msgstr ""
+msgstr "Zeige FPC-Nachricht \"Zeilen kompiliert\""
 
 #: lazarusidestrconsts.lisshowglyphsfor
 msgid "Show Glyphs for"
@@ -20232,4 +20234,3 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
-
