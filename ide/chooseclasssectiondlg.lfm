@@ -9,7 +9,7 @@ object ChooseClassSectionDialog: TChooseClassSectionDialog
   ClientWidth = 252
   KeyPreview = True
   OnKeyPress = FormKeyPress
-  Position = poDesktopCenter
+  Position = poScreenCenter
   LCLVersion = '1.5'
   object SectionsListBox: TListBox
     Left = 10
