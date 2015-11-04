@@ -1118,8 +1118,11 @@ function IntegerTypesOrderList: TTypeAliasOrderList;
 begin
   if FIntegerTypesOrderList=nil then
     FIntegerTypesOrderList:=TTypeAliasOrderList.Create([
-       'Int64', 'QWord', 'SizeInt', 'LongInt', 'LongWord', 'Integer', 'Cardinal',
-       'SmallInt', 'Word', 'ShortInt', 'Byte']);
+       'Int64', 'QWord',
+       'NativeInt', 'IntPtr', 'SizeInt', 'NativeUInt', 'UIntPtr',
+       'Int32', 'Integer', 'LongInt', 'UInt32', 'Cardinal', 'LongWord',
+       'Int16', 'SmallInt', 'UInt16', 'Word',
+       'Int8', 'ShortInt', 'UInt8', 'Byte']);
 
   Result := FIntegerTypesOrderList;
 end;
