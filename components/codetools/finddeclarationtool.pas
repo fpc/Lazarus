@@ -411,6 +411,8 @@ type
   private
     FList: array of string;
   public
+    constructor Create(const AliasNames: array of string);
+
     procedure Add(const AliasName: string);
     procedure Add(const AliasNames: array of string);
     procedure Insert(const AliasName: string; const Pos: Integer);
@@ -1106,45 +1108,37 @@ end;
 function BooleanTypesOrderList: TTypeAliasOrderList;
 begin
   if FBooleanTypesOrderList=nil then
-  begin
-    FBooleanTypesOrderList:=TTypeAliasOrderList.Create;
-    FBooleanTypesOrderList.Add([
+    FBooleanTypesOrderList:=TTypeAliasOrderList.Create([
        'LongBool', 'WordBool', 'Boolean', 'ByteBool']);
-  end;
+
   Result := FBooleanTypesOrderList;
 end;
 
 function IntegerTypesOrderList: TTypeAliasOrderList;
 begin
   if FIntegerTypesOrderList=nil then
-  begin
-    FIntegerTypesOrderList:=TTypeAliasOrderList.Create;
-    FIntegerTypesOrderList.Add([
+    FIntegerTypesOrderList:=TTypeAliasOrderList.Create([
        'Int64', 'QWord', 'SizeInt', 'LongInt', 'LongWord', 'Integer', 'Cardinal',
        'SmallInt', 'Word', 'ShortInt', 'Byte']);
-  end;
+
   Result := FIntegerTypesOrderList;
 end;
 
 function RealTypesOrderList: TTypeAliasOrderList;
 begin
   if FRealTypesOrderList=nil then
-  begin
-    FRealTypesOrderList:=TTypeAliasOrderList.Create;
-    FRealTypesOrderList.Add([
+    FRealTypesOrderList:=TTypeAliasOrderList.Create([
        'Extended', 'Double', 'Single']);
-  end;
+
   Result := FRealTypesOrderList;
 end;
 
 function StringTypesOrderList: TTypeAliasOrderList;
 begin
   if FStringTypesOrderList=nil then
-  begin
-    FStringTypesOrderList:=TTypeAliasOrderList.Create;
-    FStringTypesOrderList.Add([
+    FStringTypesOrderList:=TTypeAliasOrderList.Create([
        'string', 'AnsiString', 'WideString', 'ShortString', 'Char', 'WideChar', 'AnsiChar']);
-  end;
+
   Result := FStringTypesOrderList;
 end;
 
@@ -1425,6 +1419,17 @@ begin
 end;
 
 { TTypeAliasOrderList }
+
+constructor TTypeAliasOrderList.Create(const AliasNames: array of string);
+var
+  I: Integer;
+begin
+  inherited Create;
+
+  SetLength(FList, Length(AliasNames));
+  for I := Low(AliasNames) to High(AliasNames) do
+    FList[I] := AliasNames[I];
+end;
 
 procedure TTypeAliasOrderList.Add(const AliasNames: array of string);
 var
