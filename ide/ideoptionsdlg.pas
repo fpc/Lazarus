@@ -157,6 +157,7 @@ begin
   SettingsPanel.Constraints.MinHeight:=0;
   SetBuildModeVisibility(False);
   UseBuildModeCheckBox.Caption:=lisBuildModes;
+  FilterEdit.TextHint:=lisCEFilter;
 
   IDEDialogLayoutList.ApplyLayout(Self, Width, Height);
   Caption := dlgIDEOptions;
