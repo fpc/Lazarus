@@ -12,17 +12,14 @@ msgstr ""
 "X-Generator: Poedit 1.7.7\n"
 
 #: codystrconsts.crsaddassignmethod
-#| msgid "Add Assign method"
 msgid "Add Assign Method"
 msgstr "Добавить метод Assign"
 
 #: codystrconsts.crsaddassignmethod2
-#| msgid "Add Assign method ..."
 msgid "Add Assign Method ..."
 msgstr "Добавить метод Assign ..."
 
 #: codystrconsts.crsaddawithblock
-#| msgid "Add a \"With\" block"
 msgid "Add a \"With\" Block"
 msgstr "Добавить блок \"With\""
 
@@ -188,7 +185,6 @@ msgid "Cody - Find Overloads"
 msgstr "Найти перегруженные"
 
 #: codystrconsts.crscodyidentifierdictionary
-#| msgid "Cody Identifier Dictionary"
 msgid "Identifier Dictionary"
 msgstr "Словарь идентификаторов"
 
@@ -218,7 +214,6 @@ msgid "Continue"
 msgstr "Продолжить"
 
 #: codystrconsts.crscopydeclarationtoclipboard
-#| msgid "Copy declaration to clipboard"
 msgid "Copy declaration to Clipboard"
 msgstr "Копировать объявление в буфер обмена"
 
@@ -248,7 +243,6 @@ msgid "Select file to insert at cursor"
 msgstr "Выбор файла для вставки в месте расположения курсора"
 
 #: codystrconsts.crscutdeclarationtoclipboard
-#| msgid "Cut declaration to clipboard"
 msgid "Cut declaration to Clipboard"
 msgstr "Вырезать объявление в буфер обмена"
 
@@ -317,7 +311,6 @@ msgid "exact"
 msgstr "точное соответствие"
 
 #: codystrconsts.crsexplodeawithblock
-#| msgid "Explode a \"With\" block"
 msgid "Explode a \"With\" Block"
 msgstr "Раскрыть блок \"With\""
 
@@ -356,6 +349,10 @@ msgstr "Фильтр"
 #: codystrconsts.crsfindgdbbacktraceline
 msgid "Find GDB backtrace line"
 msgstr "Найти строку кода для стека вызовов GDB"
+
+#: codystrconsts.crsfindproceduremethodoverloads
+msgid "Find Procedure/Method Overloads"
+msgstr "Найти перегруженные процедуры/методы"
 
 #: codystrconsts.crsfindsourceofgdbbacktrace
 msgid "Find source of GDB backtrace"
@@ -435,12 +432,10 @@ msgid "In interface"
 msgstr "В секции Interface"
 
 #: codystrconsts.crsinsertcallinherited
-#| msgid "Insert call inherited"
 msgid "Insert Call Inherited"
 msgstr "Вставить вызов унаследованного"
 
 #: codystrconsts.crsinsertfileatcursor
-#| msgid "Insert File at Cursor ..."
 msgid "Insert File Contents at Cursor ..."
 msgstr "Вставить содержимое файла в месте расположения курсора ..."
 
@@ -449,7 +444,6 @@ msgid "Jump"
 msgstr "Перейти"
 
 #: codystrconsts.crsjumpto
-#| msgid "Jump to"
 msgid "&Jump to"
 msgstr "&Перейти"
 
@@ -578,7 +572,6 @@ msgid "Package \"%s\" not found. It should be in \"%s\"."
 msgstr "Пакет \"%s\" не найден. Он должен быть в \"%s\"."
 
 #: codystrconsts.crspackagesunitsidentifiersfile
-#| msgid "Packages: %s, Units: %s, Identifiers: %s%sFile: %s"
 msgid "Packages: %s, Units: %s, Identifiers: %s%sDatabase: %s"
 msgstr "Пакетов: %s, Модулей: %s, Идентификаторов: %s%sБаза данных: %s"
 
@@ -599,7 +592,6 @@ msgid "Please open a project first."
 msgstr "Сначала необходимо открыть проект."
 
 #: codystrconsts.crspleaseplacethecursorofthesourceeditoratanidentifie
-#| msgid "Please place the cursor of the source editor at an identifier in a statement.%sFor example on the MyVar in%sMyVar:=3;"
 msgid "Please place the cursor of the source editor at an identifier in a statement.%sFor example:%sMyVar:=3;"
 msgstr "Расположите курсор редактора исходного кода на идентификаторе в операторе.%sНапример:%sMyVar:=3;"
 
@@ -640,7 +632,6 @@ msgid "Project has no main source file."
 msgstr "В проекте отсутствует главный файл исходного кода."
 
 #: codystrconsts.crsprojectoutput
-#| msgid "Project output"
 msgid "Project Output"
 msgstr "Вывод проекта"
 
@@ -709,7 +700,6 @@ msgid "Select expression"
 msgstr "Выберите выражение"
 
 #: codystrconsts.crsshowcodetoolsnodeinfo
-#| msgid "Show CodeTools node info ..."
 msgid "Show CodeTools Node Info ..."
 msgstr "Показать сведения об элементе CodeTools ..."
 
@@ -730,7 +720,6 @@ msgid "Show Unit / Identifier Dictionary ..."
 msgstr "Показать словарь модулей/идентификаторов ..."
 
 #: codystrconsts.crsshowusedppufiles
-#| msgid "Show used .ppu files ..."
 msgid "Show Used .ppu Files ..."
 msgstr "Показать используемые файлы PPU ..."
 
@@ -826,6 +815,10 @@ msgstr "Модули"
 msgid "Unit shared libraries"
 msgstr "Динамические библиотеки модулей"
 
+#: codystrconsts.crsunitss
+msgid "Units: %s"
+msgstr "Модулей: %s"
+
 #: codystrconsts.crsunitstaticlibraries
 msgid "Unit static libraries"
 msgstr "Статические библиотеки модулей"
@@ -835,7 +828,6 @@ msgid "Used by"
 msgstr "Используется"
 
 #: codystrconsts.crsuseidentifier
-#| msgid "Use identifier"
 msgid "&Use identifier"
 msgstr "&Использовать идентификатор"
 
@@ -844,10 +836,10 @@ msgid "Uses"
 msgstr "Использует"
 
 #: codystrconsts.crsvirtualunit
-#| msgid "Virtual unit"
 msgid "Virtual Unit"
 msgstr "Виртуальный модуль"
 
 #: codystrconsts.crswhere
 msgid "Where"
 msgstr "Расположение"
+

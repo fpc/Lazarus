@@ -350,6 +350,10 @@ msgstr ""
 msgid "Find GDB backtrace line"
 msgstr "A GDB visszakövetés sorának megkeresése"
 
+#: codystrconsts.crsfindproceduremethodoverloads
+msgid "Find Procedure/Method Overloads"
+msgstr ""
+
 #: codystrconsts.crsfindsourceofgdbbacktrace
 msgid "Find source of GDB backtrace"
 msgstr "A GDB visszakövetés forrásának megkeresése"
@@ -810,6 +814,10 @@ msgstr "Unit-ok"
 #: codystrconsts.crsunitsharedlibraries
 msgid "Unit shared libraries"
 msgstr "Unit megosztott függvénytárai"
+
+#: codystrconsts.crsunitss
+msgid "Units: %s"
+msgstr ""
 
 #: codystrconsts.crsunitstaticlibraries
 msgid "Unit static libraries"

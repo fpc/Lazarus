@@ -138,7 +138,7 @@ begin
 
   // Find overloads
   CreateSourceCommand(CmdCatCodeTools,'FindProcOverloads',
-    'Find Procedure/Method Overloads',nil,@ShowFindOverloadsClicked);
+    crsFindProcedureMethodOverloads, nil, @ShowFindOverloadsClicked);
 
   // Refactor menu - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

@@ -351,6 +351,10 @@ msgstr ""
 msgid "Find GDB backtrace line"
 msgstr "Trovare la riga di backtrace GDB"
 
+#: codystrconsts.crsfindproceduremethodoverloads
+msgid "Find Procedure/Method Overloads"
+msgstr ""
+
 #: codystrconsts.crsfindsourceofgdbbacktrace
 msgid "Find source of GDB backtrace"
 msgstr "Trova il sorgente del backtrace GDB"
@@ -811,6 +815,10 @@ msgstr "Unit"
 #: codystrconsts.crsunitsharedlibraries
 msgid "Unit shared libraries"
 msgstr "Librerie condivise della unit"
+
+#: codystrconsts.crsunitss
+msgid "Units: %s"
+msgstr ""
 
 #: codystrconsts.crsunitstaticlibraries
 msgid "Unit static libraries"

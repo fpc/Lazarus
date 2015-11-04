@@ -78,6 +78,7 @@ resourcestring
   crsAddAssignMethod = 'Add Assign Method';
   crsShowCodeToolsNodeInfo = 'Show CodeTools Node Info ...';
   crsShowUnitIdentifierDictionary = 'Show Unit / Identifier Dictionary ...';
+  crsFindProcedureMethodOverloads = 'Find Procedure/Method Overloads';
   crsAddAssignMethod2 = 'Add Assign Method ...';
   crsCopyDeclarationToClipboard = 'Copy declaration to Clipboard';
   crsCutDeclarationToClipboard = 'Cut declaration to Clipboard';
@@ -275,6 +276,7 @@ resourcestring
   crsOnlyDescendantsOf = 'Only descendants of %s';
   crsScanning = 'Scanning ...';
   crsNoOverloadsFoundInProjectUnits = 'no overloads found in project units';
+  crsUnitsS = 'Units: %s';
   crsErrorCursorIsNotInAProjectUnit = 'Error: cursor is not in a project unit';
   crsOnlyNonMethods = 'Only non methods';
   crsAny = 'Any';
