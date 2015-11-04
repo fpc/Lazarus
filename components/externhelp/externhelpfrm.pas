@@ -1496,6 +1496,7 @@ begin
   with FileListBox do begin
     Name:='FileListBox';
     Align:=alClient;
+    BorderSpacing.Around:=6;
     Parent:=Self;
   end;
 
@@ -1503,6 +1504,7 @@ begin
   with ButtonPanel1 do begin
     Name:='ButtonPanel1';
     Align:=alBottom;
+    ShowBevel:=false;
     ShowButtons:=[pbOK,pbCancel];
     OKButton.OnClick:=@ButtonPanel1OKButtonClick;
     OKButton.ModalResult:=mrNone;
