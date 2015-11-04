@@ -396,6 +396,36 @@ type
   end;
 
 type
+
+  { TOperand }
+
+  TOperand = record
+    Expr: TExpressionType;
+    AliasType: TFindContext;
+  end;
+
+  //----------------------------------------------------------------------------
+  // TTypeAliasOrderList is used for comparing type aliases in binary operators
+
+  TTypeAliasOrderList = class
+  private
+    FList: array of string;
+  public
+    procedure Add(const AliasName: string);
+    procedure Add(const AliasNames: array of string);
+    procedure Insert(const AliasName: string; const Pos: Integer);
+    procedure InsertBefore(const AliasName, BeforeAlias: string);
+    procedure InsertAfter(const AliasName, AfterAlias: string);
+    procedure Delete(const Pos: Integer);
+    procedure Delete(const AliasName: string);
+    function IndexOf(const AliasName: string): Integer;
+    function Compare(const AliasName1, AliasName2: string): Integer;
+    function Compare(const Operand1, Operand2: TOperand;
+      Tool: TFindDeclarationTool; CleanPos: Integer): TOperand;
+
+    function CalcMemSize: PtrUInt;
+  end;
+type
   //----------------------------------------------------------------------------
   // TFoundProc is used for comparing overloaded procs
   PFoundProc = ^TFoundProc;
@@ -721,9 +751,9 @@ type
     function FindExpressionTypeOfPredefinedIdentifier(StartPos: integer;
       Params: TFindDeclarationParams): TExpressionType;
     function GetDefaultStringType: TExpressionTypeDesc;
-    function CalculateBinaryOperator(LeftOperand, RightOperand: TExpressionType;
+    function CalculateBinaryOperator(LeftOperand, RightOperand: TOperand;
       BinaryOperator: TAtomPosition;
-      Params: TFindDeclarationParams): TExpressionType;
+      Params: TFindDeclarationParams): TOperand;
     function GetParameterNode(Node: TCodeTreeNode): TCodeTreeNode;
     function GetExpressionTypeOfTypeIdentifier(
       Params: TFindDeclarationParams): TExpressionType;
@@ -1003,7 +1033,19 @@ function dbgs(const Flags: TFoundDeclarationFlags): string; overload;
 function dbgs(const vat: TVariableAtomType): string; overload;
 function dbgs(const Kind: TFDHelpersListKind): string; overload;
 
+
+function BooleanTypesOrderList: TTypeAliasOrderList;
+function IntegerTypesOrderList: TTypeAliasOrderList;
+function RealTypesOrderList: TTypeAliasOrderList;
+function StringTypesOrderList: TTypeAliasOrderList;
+
 implementation
+
+var
+  FBooleanTypesOrderList: TTypeAliasOrderList;
+  FIntegerTypesOrderList: TTypeAliasOrderList;
+  FRealTypesOrderList: TTypeAliasOrderList;
+  FStringTypesOrderList: TTypeAliasOrderList;
 
 type
 
@@ -1059,6 +1101,51 @@ end;
 function dbgs(const Kind: TFDHelpersListKind): string;
 begin
   WriteStr(Result, Kind);
+end;
+
+function BooleanTypesOrderList: TTypeAliasOrderList;
+begin
+  if FBooleanTypesOrderList=nil then
+  begin
+    FBooleanTypesOrderList:=TTypeAliasOrderList.Create;
+    FBooleanTypesOrderList.Add([
+       'LongBool', 'WordBool', 'Boolean', 'ByteBool']);
+  end;
+  Result := FBooleanTypesOrderList;
+end;
+
+function IntegerTypesOrderList: TTypeAliasOrderList;
+begin
+  if FIntegerTypesOrderList=nil then
+  begin
+    FIntegerTypesOrderList:=TTypeAliasOrderList.Create;
+    FIntegerTypesOrderList.Add([
+       'Int64', 'QWord', 'SizeInt', 'LongInt', 'LongWord', 'Integer', 'Cardinal',
+       'SmallInt', 'Word', 'ShortInt', 'Byte']);
+  end;
+  Result := FIntegerTypesOrderList;
+end;
+
+function RealTypesOrderList: TTypeAliasOrderList;
+begin
+  if FRealTypesOrderList=nil then
+  begin
+    FRealTypesOrderList:=TTypeAliasOrderList.Create;
+    FRealTypesOrderList.Add([
+       'Extended', 'Double', 'Single']);
+  end;
+  Result := FRealTypesOrderList;
+end;
+
+function StringTypesOrderList: TTypeAliasOrderList;
+begin
+  if FStringTypesOrderList=nil then
+  begin
+    FStringTypesOrderList:=TTypeAliasOrderList.Create;
+    FStringTypesOrderList.Add([
+       'string', 'AnsiString', 'WideString', 'ShortString', 'Char', 'WideChar', 'AnsiChar']);
+  end;
+  Result := FStringTypesOrderList;
 end;
 
 function ListOfPFindContextToStr(const ListOfPFindContext: TFPList): string;
@@ -1335,6 +1422,140 @@ begin
   end;
   ListOfPFindContext.Free;
   ListOfPFindContext:=nil;
+end;
+
+{ TTypeAliasOrderList }
+
+procedure TTypeAliasOrderList.Add(const AliasNames: array of string);
+var
+  S: string;
+begin
+  for S in AliasNames do
+    Add(S);
+end;
+
+procedure TTypeAliasOrderList.Add(const AliasName: string);
+begin
+  if IndexOf(AliasName) > -1 then Exit;
+
+  SetLength(FList, Length(FList)+1);
+  FList[High(FList)]:=AliasName;
+end;
+
+function TTypeAliasOrderList.CalcMemSize: PtrUInt;
+var
+  S: string;
+begin
+  Result :=
+    InstanceSize +
+    Length(FList)*SizeOf(Pointer);
+
+  for S in FList do
+    Result := Result + PtrUInt(Length(S)*SizeOf(Char));
+end;
+
+function TTypeAliasOrderList.Compare(const AliasName1, AliasName2: string
+  ): Integer;
+var
+  xAliasIndex1, xAliasIndex2: Integer;
+begin
+  xAliasIndex1 := IndexOf(AliasName1);
+  xAliasIndex2 := IndexOf(AliasName2);
+  if (xAliasIndex1=-1) and (xAliasIndex2=-1) then
+    Exit(0)
+  else if (xAliasIndex2=-1) then
+    Exit(-1)
+  else if (xAliasIndex1=-1) then
+    Exit(1)
+  else
+    Result := xAliasIndex1-xAliasIndex2;
+end;
+
+function TTypeAliasOrderList.Compare(const Operand1,
+  Operand2: TOperand; Tool: TFindDeclarationTool; CleanPos: Integer
+  ): TOperand;
+var
+  xCompRes: Integer;
+begin
+  //first compare base types
+  xCompRes := Compare(
+    Tool.FindExprTypeAsString(Operand1.Expr, CleanPos, nil),
+    Tool.FindExprTypeAsString(Operand2.Expr, CleanPos, nil));
+  //if base types are same, compare aliases
+  if xCompRes = 0 then
+    xCompRes := Compare(
+      Tool.FindExprTypeAsString(Operand1.Expr, CleanPos, @Operand1.AliasType),
+      Tool.FindExprTypeAsString(Operand2.Expr, CleanPos, @Operand2.AliasType));
+  if xCompRes > 0 then
+    Result := Operand2
+  else
+    Result := Operand1;
+end;
+
+procedure TTypeAliasOrderList.Delete(const Pos: Integer);
+var
+  I: Integer;
+begin
+  for I := Pos to High(FList)-1 do
+    FList[I] := FList[I+1];
+  SetLength(FList, Length(FList)-1);
+end;
+
+procedure TTypeAliasOrderList.Delete(const AliasName: string);
+var
+  xIndex: Integer;
+begin
+  xIndex := IndexOf(AliasName);
+  if xIndex<0 then Exit;
+  Delete(xIndex);
+end;
+
+function TTypeAliasOrderList.IndexOf(const AliasName: string): Integer;
+begin
+  for Result := Low(FList) to High(FList) do
+    if CompareText(AliasName, FList[Result]) = 0 then
+      Exit;
+  Result := -1;
+end;
+
+procedure TTypeAliasOrderList.Insert(const AliasName: string; const Pos: Integer
+  );
+var
+  I: Integer;
+begin
+  SetLength(FList, Length(FList)+1);
+  for I := High(FList) downto Pos+1 do
+    FList[I] := FList[I-1];
+  FList[Pos] := AliasName;
+end;
+
+procedure TTypeAliasOrderList.InsertAfter(const AliasName, AfterAlias: string);
+var
+  xIndex: Integer;
+begin
+  if IndexOf(AliasName) = -1 then
+  begin
+    xIndex := IndexOf(AfterAlias);
+    if xIndex >= 0 then
+      Insert(AliasName, xIndex+1)
+    else
+      Add(AliasName);
+  end;
+end;
+
+procedure TTypeAliasOrderList.InsertBefore(const AliasName, BeforeAlias: string
+  );
+var
+  xIndex: Integer;
+begin
+  if IndexOf(AliasName) = -1 then
+  begin
+    xIndex := IndexOf(BeforeAlias);
+    if xIndex >= 0 then
+      Insert(AliasName, xIndex)
+    else
+      Add(AliasName);
+  end;
 end;
 
 { TFDHelpersListItem }
@@ -6852,8 +7073,7 @@ function TFindDeclarationTool.FindExpressionResultType(
 }
 type
   TOperandAndOperator = record
-    Operand: TExpressionType;
-    AliasType: TFindContext;
+    Operand: TOperand;
     theOperator: TAtomPosition;
     OperatorLvl: integer;
   end;
@@ -6878,7 +7098,7 @@ var
          0      Integer   +
   }
   var
-    NewOperand: TExpressionType;
+    NewOperand: TOperand;
     LastPos: TAtomPosition;
   begin
     if StackPtr<=0 then begin
@@ -6904,11 +7124,6 @@ var
         Params);
       // put result on stack
       ExprStack[StackPtr-1]:=ExprStack[StackPtr];
-
-      // ToDo: handle alias in CalculateBinaryOperator
-      // => Workaround:
-      if NewOperand.Desc<>ExprStack[StackPtr-1].Operand.Desc then
-        ExprStack[StackPtr-1].AliasType:=CleanFindContext; // reset alias type
 
       dec(StackPtr);
       ExprStack[StackPtr].Operand:=NewOperand;
@@ -6965,11 +7180,11 @@ begin
     if StackPtr>High(ExprStack) then
       RaiseInternalErrorStack;
     StackEntry:=@ExprStack[StackPtr];
-    StackEntry^.Operand:=CurExprType;
+    StackEntry^.Operand.Expr:=CurExprType;
     if CurAliasType<>nil then
-      StackEntry^.AliasType:=CurAliasType^
+      StackEntry^.Operand.AliasType:=CurAliasType^
     else
-      StackEntry^.AliasType:=CleanFindContext;
+      StackEntry^.Operand.AliasType:=CleanFindContext;
     StackEntry^.theOperator.StartPos:=-1;
     StackEntry^.OperatorLvl:=5;
     // read operator
@@ -6982,9 +7197,9 @@ begin
     if (CurPos.EndPos>EndPos) or (CurExprType.Desc=xtNone) then begin
       // -> execute complete stack
       ExecuteStack(true);
-      Result:=ExprStack[StackPtr].Operand;
+      Result:=ExprStack[StackPtr].Operand.Expr;
       if CurAliasType<>nil then
-        AliasType^:=ExprStack[StackPtr].AliasType;
+        AliasType^:=ExprStack[StackPtr].Operand.AliasType;
       Params.Flags:=OldFlags;
       exit;
     end;
@@ -8955,6 +9170,8 @@ var
   OldFlags: TFindDeclarationFlags;
 begin
   Result:=CleanExpressionType;
+  if AliasType<>nil then
+    AliasType^:=CleanFindContext;
 
   if CurPos.StartPos=CurPos.EndPos then ReadNextAtom;
   // read unary operators which have no effect on the type: +, -, not
@@ -9185,10 +9402,11 @@ begin
 end;
 
 function TFindDeclarationTool.CalculateBinaryOperator(LeftOperand,
-  RightOperand: TExpressionType; BinaryOperator: TAtomPosition;
-  Params: TFindDeclarationParams): TExpressionType;
+  RightOperand: TOperand; BinaryOperator: TAtomPosition;
+  Params: TFindDeclarationParams): TOperand;
 begin
-  Result:=CleanExpressionType;
+  Result.Expr:=CleanExpressionType;
+  Result.AliasType:=CleanFindContext;
   {$IFDEF ShowExprEval}
   DebugLn('[TFindDeclarationTool.CalculateBinaryOperator] A',
   ' LeftOperand=',ExpressionTypeDescNames[LeftOperand.Desc],
@@ -9197,13 +9415,13 @@ begin
   );
   {$ENDIF}
   // convert Left and RightOperand contexts to expressiontype
-  if LeftOperand.Desc=xtContext then begin
-    LeftOperand:=LeftOperand.Context.Tool.ConvertNodeToExpressionType(
-                      LeftOperand.Context.Node,Params);
+  if LeftOperand.Expr.Desc=xtContext then begin
+    LeftOperand.Expr:=LeftOperand.Expr.Context.Tool.ConvertNodeToExpressionType(
+                      LeftOperand.Expr.Context.Node,Params);
   end;
-  if RightOperand.Desc=xtContext then begin
-    RightOperand:=RightOperand.Context.Tool.ConvertNodeToExpressionType(
-                      RightOperand.Context.Node,Params);
+  if RightOperand.Expr.Desc=xtContext then begin
+    RightOperand.Expr:=RightOperand.Expr.Context.Tool.ConvertNodeToExpressionType(
+                      RightOperand.Expr.Context.Node,Params);
   end;
 
 
@@ -9214,22 +9432,27 @@ begin
   then begin
     // Boolean operators
     // < > <= >= <> in is
-    Result.Desc:=xtBoolean;
+    Result.Expr.Desc:=xtBoolean;
   end
   else if (BinaryOperator.EndPos-BinaryOperator.StartPos=1)
   and (Src[BinaryOperator.StartPos]='/') then begin
     // real division /
-    Result.Desc:=xtConstReal;
+    Result:=RealTypesOrderList.Compare(LeftOperand, RightOperand, Self, BinaryOperator.EndPos);
+    if not(Result.Expr.Desc in xtAllRealTypes) then
+    begin
+      Result.Expr.Desc:=xtConstReal;
+      Result.AliasType:=CleanFindContext;
+    end;
   end
   else if WordIsOrdNumberOperator.DoItCaseInsensitive(Src,BinaryOperator.StartPos,
     BinaryOperator.EndPos-BinaryOperator.StartPos)
   then begin
     // ordinal number operator
     // or xor and mod div shl shr
-    if LeftOperand.Desc in xtAllBooleanTypes then
-      Result.Desc:=xtBoolean
+    if LeftOperand.Expr.Desc in xtAllBooleanTypes then
+      Result:=BooleanTypesOrderList.Compare(LeftOperand, RightOperand, Self, BinaryOperator.EndPos)
     else
-      Result.Desc:=xtConstOrdInteger;
+      Result:=IntegerTypesOrderList.Compare(LeftOperand, RightOperand, Self, BinaryOperator.EndPos);
   end
   else if WordIsNumberOperator.DoItCaseInsensitive(Src,BinaryOperator.StartPos,
     BinaryOperator.EndPos-BinaryOperator.StartPos)
@@ -9238,38 +9461,44 @@ begin
     // + - *
 
     if (Src[BinaryOperator.StartPos]='+')
-    and (LeftOperand.Desc in xtAllStringCompatibleTypes)
+    and (LeftOperand.Expr.Desc in xtAllStringCompatibleTypes)
     then begin
       // string/char '+'
-      if (RightOperand.Desc in xtAllStringCompatibleTypes)
+      if (RightOperand.Expr.Desc in xtAllStringCompatibleTypes)
       then
-        Result.Desc:=xtConstString
-      else begin
+      begin
+        Result:=StringTypesOrderList.Compare(LeftOperand, RightOperand, Self, BinaryOperator.EndPos);
+        if not(Result.Expr.Desc in xtAllStringTypes) then
+        begin
+          Result.Expr.Desc:=xtConstString;
+          Result.AliasType:=CleanFindContext;
+        end;
+      end else begin
         MoveCursorToCleanPos(BinaryOperator.EndPos);
         ReadNextAtom;
         RaiseExceptionFmt(ctsIncompatibleTypesGotExpected,
-                          ['char',ExpressionTypeDescNames[RightOperand.Desc]]);
+                          ['char',ExpressionTypeDescNames[RightOperand.Expr.Desc]]);
       end;
     end else if (Src[BinaryOperator.StartPos] in ['+','-','*'])
-    and (LeftOperand.Desc=xtContext)
-    and (LeftOperand.Context.Node<>nil)
-    and (LeftOperand.Context.Node.Desc=ctnSetType)
+    and (LeftOperand.Expr.Desc=xtContext)
+    and (LeftOperand.Expr.Context.Node<>nil)
+    and (LeftOperand.Expr.Context.Node.Desc=ctnSetType)
     then begin
       Result:=LeftOperand;
     end else begin
-      if (LeftOperand.Desc in xtAllRealTypes)
-      or (RightOperand.Desc in xtAllRealTypes) then
-        Result.Desc:=xtConstReal
-      else if (LeftOperand.Desc=xtPointer)
-      or (RightOperand.Desc=xtPointer)
-      or ((LeftOperand.Desc=xtContext)
-        and (LeftOperand.Context.Node.Desc=ctnPointerType))
-      or ((RightOperand.Desc=xtContext)
-        and (RightOperand.Context.Node.Desc=ctnPointerType))
+      if (LeftOperand.Expr.Desc in xtAllRealTypes)
+      or (RightOperand.Expr.Desc in xtAllRealTypes) then
+        Result:=RealTypesOrderList.Compare(LeftOperand, RightOperand, Self, BinaryOperator.EndPos)
+      else if (LeftOperand.Expr.Desc=xtPointer)
+      or (RightOperand.Expr.Desc=xtPointer)
+      or ((LeftOperand.Expr.Desc=xtContext)
+        and (LeftOperand.Expr.Context.Node.Desc=ctnPointerType))
+      or ((RightOperand.Expr.Desc=xtContext)
+        and (RightOperand.Expr.Context.Node.Desc=ctnPointerType))
       then
-        Result.Desc:=xtPointer
+        Result.Expr.Desc:=xtPointer
       else
-        Result.Desc:=xtConstOrdInteger;
+        Result:=IntegerTypesOrderList.Compare(LeftOperand, RightOperand, Self, BinaryOperator.EndPos);
     end;
   end else begin
     // ???
@@ -12528,6 +12757,12 @@ begin
   Items[0]:=ExprType;
 end;
 
+
+finalization
+  FreeAndNil(FBooleanTypesOrderList);
+  FreeAndNil(FIntegerTypesOrderList);
+  FreeAndNil(FRealTypesOrderList);
+  FreeAndNil(FStringTypesOrderList);
 
 end.
 
