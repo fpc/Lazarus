@@ -126,7 +126,7 @@ begin
       Add(lisProtected);
       Add(lisEMDPublic);
       Add(lisEMDPublished);
-      Add(lisPromptForValue);
+      Add(dlgEnvAsk);
       EndUpdate;
     end;
   end;
