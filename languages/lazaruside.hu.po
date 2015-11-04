@@ -168,7 +168,9 @@ msgid "Extended, Actions, right gutter half only"
 msgstr "Kibővített, műveletek csak a hasábköz jobb felén"
 
 #: lazarusidestrconsts.dlfmousesimplegutterlines
-msgid "Use line numers to select lines"
+#, fuzzy
+#| msgid "Use line numers to select lines"
+msgid "Use line numbers to select lines"
 msgstr "Sorszámok használata a sor kijelöléséhez"
 
 #: lazarusidestrconsts.dlfmousesimpleguttersect

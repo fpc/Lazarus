@@ -170,7 +170,9 @@ msgid "Extended, Actions, right gutter half only"
 msgstr "Étendu, actions, seulement sur la moitié de gouttière à droite"
 
 #: lazarusidestrconsts.dlfmousesimplegutterlines
-msgid "Use line numers to select lines"
+#, fuzzy
+#| msgid "Use line numers to select lines"
+msgid "Use line numbers to select lines"
 msgstr "Utiliser les numéros de lignes pour choisir les lignes"
 
 #: lazarusidestrconsts.dlfmousesimpleguttersect

@@ -175,7 +175,7 @@ msgid "Extended, Actions, right gutter half only"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplegutterlines
-msgid "Use line numers to select lines"
+msgid "Use line numbers to select lines"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimpleguttersect
