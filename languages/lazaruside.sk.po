@@ -10572,6 +10572,10 @@ msgstr ""
 msgid "Instead of compile package create a simple Makefile."
 msgstr ""
 
+#: lazarusidestrconsts.lisinsufficientencoding
+msgid "Insufficient encoding"
+msgstr ""
+
 #: lazarusidestrconsts.lisinteractive
 msgid "Interactive"
 msgstr ""
@@ -16604,6 +16608,10 @@ msgstr ""
 msgid "Save "
 msgstr "Uložiť"
 
+#: lazarusidestrconsts.lissavingfileasloosescharactersatlinecolumn
+msgid "Saving file \"%s\" as \"%s\" looses characters at line %s, column %s."
+msgstr ""
+
 #: lazarusidestrconsts.lisscalingfactor
 msgid "Scaling factor:"
 msgstr "Mierka:"
@@ -18430,6 +18438,10 @@ msgstr "Nemožno konvertovať súbor %s%s%s%sChyba: %s"
 #| msgid "Unable to convert text form data of file %s%s%s%s%sinto binary stream. (%s)"
 msgid "Unable to convert text form data of file %s\"%s\"%sinto binary stream. (%s)"
 msgstr "Nemožno konvertovať textové dáta formulára súboru %s%s%s%s%sdo binárneho streamu. (%s)"
+
+#: lazarusidestrconsts.lisunabletoconverttoencoding
+msgid "Unable to convert to encoding \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletocopyfile
 msgid "Unable to copy file"

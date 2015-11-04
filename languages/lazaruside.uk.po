@@ -10424,6 +10424,10 @@ msgstr "Встановлення/Видалення Пакунків"
 msgid "Instead of compile package create a simple Makefile."
 msgstr "Замість компілювання пакунку створити простий Makefile."
 
+#: lazarusidestrconsts.lisinsufficientencoding
+msgid "Insufficient encoding"
+msgstr ""
+
 #: lazarusidestrconsts.lisinteractive
 msgid "Interactive"
 msgstr "Інтерактивний"
@@ -16144,6 +16148,10 @@ msgstr ""
 msgid "Save "
 msgstr "Зберегти "
 
+#: lazarusidestrconsts.lissavingfileasloosescharactersatlinecolumn
+msgid "Saving file \"%s\" as \"%s\" looses characters at line %s, column %s."
+msgstr ""
+
 #: lazarusidestrconsts.lisscalingfactor
 msgid "Scaling factor:"
 msgstr "Масштабний фактор:"
@@ -17990,6 +17998,10 @@ msgstr "Не можу перевести файл %s%s%s%sПомилка: %s"
 #| msgid "Unable to convert text form data of file %s%s%s%s%sinto binary stream. (%s)"
 msgid "Unable to convert text form data of file %s\"%s\"%sinto binary stream. (%s)"
 msgstr "Не можу перетворити текстові дані форми файлу %s%s%s%s%sна двійковий потік. (%s)"
+
+#: lazarusidestrconsts.lisunabletoconverttoencoding
+msgid "Unable to convert to encoding \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletocopyfile
 msgid "Unable to copy file"

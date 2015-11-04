@@ -10466,6 +10466,10 @@ msgstr ""
 msgid "Instead of compile package create a simple Makefile."
 msgstr ""
 
+#: lazarusidestrconsts.lisinsufficientencoding
+msgid "Insufficient encoding"
+msgstr ""
+
 #: lazarusidestrconsts.lisinteractive
 msgid "Interactive"
 msgstr ""
@@ -16415,6 +16419,10 @@ msgstr ""
 msgid "Save "
 msgstr "Opslaan "
 
+#: lazarusidestrconsts.lissavingfileasloosescharactersatlinecolumn
+msgid "Saving file \"%s\" as \"%s\" looses characters at line %s, column %s."
+msgstr ""
+
 #: lazarusidestrconsts.lisscalingfactor
 msgid "Scaling factor:"
 msgstr "Schaal:"
@@ -18209,6 +18217,10 @@ msgstr "Kan het bestand \"%s\" niet convertere%sFout: %s"
 #| msgid "Unable to convert text form data of file %s%s%s%s%sinto binary stream. (%s)"
 msgid "Unable to convert text form data of file %s\"%s\"%sinto binary stream. (%s)"
 msgstr "Kan de tekst form data van bestand %s\"%s\"%sniet wijzigen in een binaire stream. (%s)."
+
+#: lazarusidestrconsts.lisunabletoconverttoencoding
+msgid "Unable to convert to encoding \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletocopyfile
 msgid "Unable to copy file"

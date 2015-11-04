@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-11-03 01:21+0300\n"
+"PO-Revision-Date: 2015-11-04 16:25+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -10162,6 +10162,10 @@ msgstr "Установка/удаление пакетов"
 msgid "Instead of compile package create a simple Makefile."
 msgstr "Вместо компиляции пакета создавать простой Makefile."
 
+#: lazarusidestrconsts.lisinsufficientencoding
+msgid "Insufficient encoding"
+msgstr "Неподходящая кодировка"
+
 #: lazarusidestrconsts.lisinteractive
 msgid "Interactive"
 msgstr "Интерактивный режим"
@@ -15735,6 +15739,10 @@ msgstr "Сохранить показанные сообщения в файл .
 msgid "Save "
 msgstr "Сохранить "
 
+#: lazarusidestrconsts.lissavingfileasloosescharactersatlinecolumn
+msgid "Saving file \"%s\" as \"%s\" looses characters at line %s, column %s."
+msgstr "Сохранение файла \"%s\" в \"%s\" приведёт к потере символов (строка %s, столбец %s)."
+
 #: lazarusidestrconsts.lisscalingfactor
 msgid "Scaling factor:"
 msgstr "Коэффициент масштабирования:"
@@ -17444,6 +17452,10 @@ msgstr "Невозможно преобразовать файл \"%s\"%sОши�
 #: lazarusidestrconsts.lisunabletoconverttextformdataoffileintobinarystream
 msgid "Unable to convert text form data of file %s\"%s\"%sinto binary stream. (%s)"
 msgstr "Невозможно преобразовать текстовые данные формы файла %s\"%s\"%sв двоичный поток. (%s)"
+
+#: lazarusidestrconsts.lisunabletoconverttoencoding
+msgid "Unable to convert to encoding \"%s\""
+msgstr "Невозможно провести преобразование в кодировку \"%s\""
 
 #: lazarusidestrconsts.lisunabletocopyfile
 msgid "Unable to copy file"

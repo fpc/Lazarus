@@ -10739,6 +10739,10 @@ msgstr "התקן/הסר חבילות"
 msgid "Instead of compile package create a simple Makefile."
 msgstr "במקום חבילה מהודרת צור קובץ  Makefile פשוט."
 
+#: lazarusidestrconsts.lisinsufficientencoding
+msgid "Insufficient encoding"
+msgstr ""
+
 #: lazarusidestrconsts.lisinteractive
 msgid "Interactive"
 msgstr "אינטראקטיבי"
@@ -16877,6 +16881,10 @@ msgstr ""
 msgid "Save "
 msgstr "שמור"
 
+#: lazarusidestrconsts.lissavingfileasloosescharactersatlinecolumn
+msgid "Saving file \"%s\" as \"%s\" looses characters at line %s, column %s."
+msgstr ""
+
 #: lazarusidestrconsts.lisscalingfactor
 msgid "Scaling factor:"
 msgstr "קנה מידה:"
@@ -18750,6 +18758,10 @@ msgstr "לא ניתן להמיר את הקובץ %s%s%s%sשגיאה: %s"
 #| msgid "Unable to convert text form data of file %s%s%s%s%sinto binary stream. (%s)"
 msgid "Unable to convert text form data of file %s\"%s\"%sinto binary stream. (%s)"
 msgstr "לא ניתן להמיר מידע טקסטואלי של הקובץ %s%s%s%s%s לזרם בינרי. (%s)"
+
+#: lazarusidestrconsts.lisunabletoconverttoencoding
+msgid "Unable to convert to encoding \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletocopyfile
 msgid "Unable to copy file"

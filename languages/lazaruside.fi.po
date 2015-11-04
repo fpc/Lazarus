@@ -10145,6 +10145,10 @@ msgstr "Asenna/Poista paketteja"
 msgid "Instead of compile package create a simple Makefile."
 msgstr "Paketin kääntämisen sijaan tee yksinkertainen Makefile."
 
+#: lazarusidestrconsts.lisinsufficientencoding
+msgid "Insufficient encoding"
+msgstr ""
+
 #: lazarusidestrconsts.lisinteractive
 msgid "Interactive"
 msgstr "Vuorovaikutteinen"
@@ -15659,6 +15663,10 @@ msgstr "Tallenna  näkyvät viestit tiedostoon ..."
 msgid "Save "
 msgstr "Tallenna "
 
+#: lazarusidestrconsts.lissavingfileasloosescharactersatlinecolumn
+msgid "Saving file \"%s\" as \"%s\" looses characters at line %s, column %s."
+msgstr ""
+
 #: lazarusidestrconsts.lisscalingfactor
 msgid "Scaling factor:"
 msgstr "Skaalauskerroin:"
@@ -17366,6 +17374,10 @@ msgstr "Ei voida muuntaa tiedostoa \"%s\"%sVirhe: %s"
 
 #: lazarusidestrconsts.lisunabletoconverttextformdataoffileintobinarystream
 msgid "Unable to convert text form data of file %s\"%s\"%sinto binary stream. (%s)"
+msgstr ""
+
+#: lazarusidestrconsts.lisunabletoconverttoencoding
+msgid "Unable to convert to encoding \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletocopyfile

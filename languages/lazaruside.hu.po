@@ -10162,6 +10162,10 @@ msgstr "Csomagok telepítése/eltávolítása"
 msgid "Instead of compile package create a simple Makefile."
 msgstr "Csomag fordítása helyett egy egyszerű Makefile létrehozása"
 
+#: lazarusidestrconsts.lisinsufficientencoding
+msgid "Insufficient encoding"
+msgstr ""
+
 #: lazarusidestrconsts.lisinteractive
 msgid "Interactive"
 msgstr "Interaktív"
@@ -15733,6 +15737,10 @@ msgstr "Megjelenített üzenetek mentése fájlba ..."
 msgid "Save "
 msgstr "Mentés "
 
+#: lazarusidestrconsts.lissavingfileasloosescharactersatlinecolumn
+msgid "Saving file \"%s\" as \"%s\" looses characters at line %s, column %s."
+msgstr ""
+
 #: lazarusidestrconsts.lisscalingfactor
 msgid "Scaling factor:"
 msgstr "Nagyítás:"
@@ -17442,6 +17450,10 @@ msgstr "A fájl nem alakítható át: \"%s\"%sHiba: %s"
 #: lazarusidestrconsts.lisunabletoconverttextformdataoffileintobinarystream
 msgid "Unable to convert text form data of file %s\"%s\"%sinto binary stream. (%s)"
 msgstr "A fájl szövegadata nem alakítható át bináris adatfolyammá:%s\"%s\"%s(%s)"
+
+#: lazarusidestrconsts.lisunabletoconverttoencoding
+msgid "Unable to convert to encoding \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletocopyfile
 msgid "Unable to copy file"

@@ -10349,6 +10349,10 @@ msgstr "パッケージをインストールもしくはアンインストール
 msgid "Instead of compile package create a simple Makefile."
 msgstr "コンパイルパッケージの代わりに簡単なMakefileを作成"
 
+#: lazarusidestrconsts.lisinsufficientencoding
+msgid "Insufficient encoding"
+msgstr ""
+
 #: lazarusidestrconsts.lisinteractive
 msgid "Interactive"
 msgstr "双方向的"
@@ -16042,6 +16046,10 @@ msgstr ""
 msgid "Save "
 msgstr "保存 "
 
+#: lazarusidestrconsts.lissavingfileasloosescharactersatlinecolumn
+msgid "Saving file \"%s\" as \"%s\" looses characters at line %s, column %s."
+msgstr ""
+
 #: lazarusidestrconsts.lisscalingfactor
 msgid "Scaling factor:"
 msgstr "スケーリング係数："
@@ -17868,6 +17876,10 @@ msgstr "ファイル %s%s%s%sを変換できません。エラー: %s"
 #| msgid "Unable to convert text form data of file %s%s%s%s%sinto binary stream. (%s)"
 msgid "Unable to convert text form data of file %s\"%s\"%sinto binary stream. (%s)"
 msgstr "ファイル%s%s%s%s%sのテキストフォームデータをバイナリストリームに変換できません。(%s)"
+
+#: lazarusidestrconsts.lisunabletoconverttoencoding
+msgid "Unable to convert to encoding \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletocopyfile
 msgid "Unable to copy file"

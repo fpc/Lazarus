@@ -10432,6 +10432,10 @@ msgstr "Įdiegti/išdiegti paketus"
 msgid "Instead of compile package create a simple Makefile."
 msgstr "Ne kompiliuoti paketą, o kurti paprastą „Makefile“."
 
+#: lazarusidestrconsts.lisinsufficientencoding
+msgid "Insufficient encoding"
+msgstr ""
+
 #: lazarusidestrconsts.lisinteractive
 msgid "Interactive"
 msgstr "Interaktyvus"
@@ -16161,6 +16165,10 @@ msgstr ""
 msgid "Save "
 msgstr "Įrašyti "
 
+#: lazarusidestrconsts.lissavingfileasloosescharactersatlinecolumn
+msgid "Saving file \"%s\" as \"%s\" looses characters at line %s, column %s."
+msgstr ""
+
 #: lazarusidestrconsts.lisscalingfactor
 msgid "Scaling factor:"
 msgstr "Santykinis mastelis:"
@@ -18017,6 +18025,10 @@ msgstr "Nepavyko konvertuoti failą %s%s%s%sKlaida: %s"
 #| msgid "Unable to convert text form data of file %s%s%s%s%sinto binary stream. (%s)"
 msgid "Unable to convert text form data of file %s\"%s\"%sinto binary stream. (%s)"
 msgstr "Nepavyko faile %s%s%s%s%sesantį tekstą konvertuoti į dvejetainį srautą. (%s)"
+
+#: lazarusidestrconsts.lisunabletoconverttoencoding
+msgid "Unable to convert to encoding \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletocopyfile
 msgid "Unable to copy file"

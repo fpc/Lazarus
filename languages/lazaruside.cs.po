@@ -10257,6 +10257,10 @@ msgstr "Instalovat/Odinstalovat balíčky"
 msgid "Instead of compile package create a simple Makefile."
 msgstr "Místo překladu balíčku vytvořte jednoduchý Makefile."
 
+#: lazarusidestrconsts.lisinsufficientencoding
+msgid "Insufficient encoding"
+msgstr ""
+
 #: lazarusidestrconsts.lisinteractive
 msgid "Interactive"
 msgstr "Interaktivní"
@@ -15864,6 +15868,10 @@ msgstr "Uložit Zobrazené Zprávy do Souboru..."
 msgid "Save "
 msgstr "Uložit "
 
+#: lazarusidestrconsts.lissavingfileasloosescharactersatlinecolumn
+msgid "Saving file \"%s\" as \"%s\" looses characters at line %s, column %s."
+msgstr ""
+
 #: lazarusidestrconsts.lisscalingfactor
 msgid "Scaling factor:"
 msgstr "Činitel zvětšení:"
@@ -17613,6 +17621,10 @@ msgstr "Nelze převést soubor \"%s\"%sChyba: %s"
 #, fuzzy
 msgid "Unable to convert text form data of file %s\"%s\"%sinto binary stream. (%s)"
 msgstr "Nelze převést textová data formuláře souboru %s\"%s\"%sdo binárního proudu. (%s)"
+
+#: lazarusidestrconsts.lisunabletoconverttoencoding
+msgid "Unable to convert to encoding \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletocopyfile
 msgid "Unable to copy file"
