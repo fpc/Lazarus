@@ -1485,11 +1485,20 @@ function TTypeAliasOrderList.Compare(const Operand1,
 var
   xCompRes: Integer;
 begin
-  //first compare base types
+  // first check if one of the operands is a constant -> if yes, automatically
+  // return the other
+  // (x := f + 1; should return always type of f)
+  if (Operand1.Expr.Desc in xtAllConstTypes) and not (Operand2.Expr.Desc in xtAllConstTypes) then
+    Exit(Operand2)
+  else
+  if (Operand2.Expr.Desc in xtAllConstTypes) and not (Operand1.Expr.Desc in xtAllConstTypes) then
+    Exit(Operand1);
+
+  // then compare base types
   xCompRes := Compare(
     Tool.FindExprTypeAsString(Operand1.Expr, CleanPos, nil),
     Tool.FindExprTypeAsString(Operand2.Expr, CleanPos, nil));
-  //if base types are same, compare aliases
+  // if base types are same, compare aliases
   if xCompRes = 0 then
     xCompRes := Compare(
       Tool.FindExprTypeAsString(Operand1.Expr, CleanPos, @Operand1.AliasType),
