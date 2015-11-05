@@ -435,6 +435,7 @@ type
     procedure SetUseFormActivate(AValue: Boolean);
     procedure FormActivate(Sender: TObject); // Connects to owning form.
     procedure FormDeactivate(Sender: TObject);
+    function IsTextHintStored: Boolean;
   protected
     fNeedUpdate: Boolean;
     fIsFirstUpdate: Boolean;
@@ -535,7 +536,7 @@ type
     property OnStartDrag;
     property OnUTF8KeyPress;
     property Text;
-    property TextHint;
+    property TextHint stored IsTextHintStored;
     property TextHintFontColor;
     property TextHintFontStyle;
   end;
@@ -2231,6 +2232,11 @@ procedure TCustomControlFilterEdit.InvalidateFilter;
 begin
   fNeedUpdate:=true;
   IdleConnected:=true;
+end;
+
+function TCustomControlFilterEdit.IsTextHintStored: Boolean;
+begin
+  Result := TextHint <> rsFilter;
 end;
 
 procedure TCustomControlFilterEdit.ResetFilter;
