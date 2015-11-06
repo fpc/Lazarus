@@ -3388,7 +3388,7 @@ begin
   Result:=FindEditor(Pkg);
   if Result<>nil then begin
     if DoDisableAutoSizing then
-      Result.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockMaster Delayed'){$ENDIF};
+      Result.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockMaster Delayed'){$ENDIF};
   end else begin
     Result:=TPackageEditorForm(TPackageEditorForm.NewInstance);
     {$IFDEF DebugDisableAutoSizing}
