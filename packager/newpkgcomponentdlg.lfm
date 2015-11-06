@@ -1,18 +1,19 @@
 object NewPkgComponentDialog: TNewPkgComponentDialog
-  Left = 250
+  Left = 396
   Height = 255
-  Top = 250
+  Top = 189
   Width = 343
+  BorderIcons = [biSystemMenu]
   Caption = 'NewPkgComponentDialog'
   ClientHeight = 255
   ClientWidth = 343
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.5'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 209
+    Height = 29
+    Top = 220
     Width = 331
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -22,30 +23,30 @@ object NewPkgComponentDialog: TNewPkgComponentDialog
     CloseButton.DefaultCaption = True
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
-    TabOrder = 0
+    TabOrder = 1
     ShowButtons = [pbOK, pbCancel, pbHelp]
+    ShowBevel = False
   end
-  object PkgsGroupBox: TGroupBox
+  object PkgsListBox: TListBox
     Left = 6
-    Height = 197
-    Top = 6
+    Height = 185
+    Top = 29
     Width = 331
     Align = alClient
     BorderSpacing.Around = 6
-    Caption = 'PkgsGroupBox'
-    ClientHeight = 178
-    ClientWidth = 327
-    TabOrder = 1
-    object PkgsListBox: TListBox
-      Left = 0
-      Height = 178
-      Top = 0
-      Width = 327
-      Align = alClient
-      ItemHeight = 0
-      ScrollWidth = 325
-      TabOrder = 0
-      TopIndex = -1
-    end
+    ItemHeight = 0
+    ScrollWidth = 329
+    TabOrder = 0
+    TopIndex = -1
+  end
+  object Label1: TLabel
+    Left = 6
+    Height = 17
+    Top = 6
+    Width = 331
+    Align = alTop
+    BorderSpacing.Around = 6
+    Caption = 'Label1'
+    ParentColor = False
   end
 end

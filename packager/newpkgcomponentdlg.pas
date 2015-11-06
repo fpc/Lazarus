@@ -39,7 +39,7 @@ type
 
   TNewPkgComponentDialog = class(TForm)
     ButtonPanel1: TButtonPanel;
-    PkgsGroupBox: TGroupBox;
+    Label1: TLabel;
     PkgsListBox: TListBox;
     procedure FormCreate(Sender: TObject);
   private
@@ -78,7 +78,7 @@ procedure TNewPkgComponentDialog.FormCreate(Sender: TObject);
 begin
   Caption:=lisCreateNewPackageComponent;
 
-  PkgsGroupBox.Caption:=lisPkgSelectAPackage;
+  Label1.Caption:=lisPkgSelectAPackage;
   FillPkgsListBox;
 end;
 
