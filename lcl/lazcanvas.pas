@@ -261,30 +261,24 @@ begin
   b.bottom := b.bottom-1;
   if pen.style = psSolid then
     for r := 1 to pen.width do
-      begin
-      with b do
-        begin
-        CheckLine (left,top,left,bottom);
-        CheckLine (left,bottom,right,bottom);
-        CheckLine (right,bottom,right,top);
-        CheckLine (right,top,left,top);
-        end;
-      DecRect (b);
-      end
-  else if pen.style <> psClear then
     begin
+      CheckLine (b.left,b.top,b.left,b.bottom);
+      CheckLine (b.left,b.bottom,b.right,b.bottom);
+      CheckLine (b.right,b.bottom,b.right,b.top);
+      CheckLine (b.right,b.top,b.left,b.top);
+      DecRect (b);
+    end
+  else if pen.style <> psClear then
+  begin
     if pen.style = psPattern then
       pattern := Pen.pattern
     else
       pattern := PenPatterns[pen.style];
-    with b do
-      begin
-      CheckPLine (left,top,left,bottom);
-      CheckPLine (left,bottom,right,bottom);
-      CheckPLine (right,bottom,right,top);
-      CheckPLine (right,top,left,top);
-      end;
-    end;
+    CheckPLine (b.left,b.top,b.left,b.bottom);
+    CheckPLine (b.left,b.bottom,b.right,b.bottom);
+    CheckPLine (b.right,b.bottom,b.right,b.top);
+    CheckPLine (b.right,b.top,b.left,b.top);
+  end;
 end;
 
 procedure TLazCanvas.DoRectangleFill(const Bounds: TRect);
@@ -303,35 +297,32 @@ begin
     Exit;
   end;
 
-//  if clipping then
-//    CheckRectClipping (ClipRect, B);
-  with b do
-    case Brush.style of
-      bsSolid : FillRectangleColor (self, left,top, right,bottom);
-      bsPattern : FillRectanglePattern (self, left,top, right,bottom, brush.pattern);
-      bsImage :
-        if assigned (brush.image) then
-          if RelativeBrushImage then
-            FillRectangleImageRel (self, left,top, right,bottom, brush.image)
-          else
-            FillRectangleImage (self, left,top, right,bottom, brush.image)
+  case Brush.style of
+    bsSolid : FillRectangleColor (self, b.left,b.top, b.right,b.bottom);
+    bsPattern : FillRectanglePattern (self, b.left,b.top, b.right,b.bottom, brush.pattern);
+    bsImage :
+      if assigned (brush.image) then
+        if RelativeBrushImage then
+          FillRectangleImageRel (self, b.left,b.top, b.right,b.bottom, brush.image)
         else
-          raise PixelCanvasException.Create (sErrNoImage);
-      bsBDiagonal : FillRectangleHashDiagonal (self, b, HashWidth);
-      bsFDiagonal : FillRectangleHashBackDiagonal (self, b, HashWidth);
-      bsCross :
-        begin
-        FillRectangleHashHorizontal (self, b, HashWidth);
-        FillRectangleHashVertical (self, b, HashWidth);
-        end;
-      bsDiagCross :
-        begin
-        FillRectangleHashDiagonal (self, b, HashWidth);
-        FillRectangleHashBackDiagonal (self, b, HashWidth);
-        end;
-      bsHorizontal : FillRectangleHashHorizontal (self, b, HashWidth);
-      bsVertical : FillRectangleHashVertical (self, b, HashWidth);
-    end;
+          FillRectangleImage (self, b.left,b.top, b.right,b.bottom, brush.image)
+      else
+        raise PixelCanvasException.Create (sErrNoImage);
+    bsBDiagonal : FillRectangleHashDiagonal (self, b, HashWidth);
+    bsFDiagonal : FillRectangleHashBackDiagonal (self, b, HashWidth);
+    bsCross :
+      begin
+      FillRectangleHashHorizontal (self, b, HashWidth);
+      FillRectangleHashVertical (self, b, HashWidth);
+      end;
+    bsDiagCross :
+      begin
+      FillRectangleHashDiagonal (self, b, HashWidth);
+      FillRectangleHashBackDiagonal (self, b, HashWidth);
+      end;
+    bsHorizontal : FillRectangleHashHorizontal (self, b, HashWidth);
+    bsVertical : FillRectangleHashVertical (self, b, HashWidth);
+  end;
 end;
 
 // unimplemented in FPC

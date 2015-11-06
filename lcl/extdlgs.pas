@@ -266,8 +266,7 @@ constructor TPreviewFileControl.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FCompStyle:=csPreviewFileControl;
-  with GetControlClassDefaultSize do
-    SetInitialBounds(0, 0, CX, CY);
+  SetInitialBounds(0, 0, GetControlClassDefaultSize.CX, GetControlClassDefaultSize.CY);
 end;
 
 { TPreviewFileDialog }

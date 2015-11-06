@@ -1944,8 +1944,7 @@ begin
   TabStop := True;
   FocusOnButtonClick := False;
 
-  with GetControlClassDefaultSize do
-    SetInitialBounds(0, 0, CX, CY);
+  SetInitialBounds(0, 0, GetControlClassDefaultSize.CX, GetControlClassDefaultSize.CY);
 
   with FButton do
   begin
