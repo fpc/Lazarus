@@ -30,14 +30,14 @@ unit fAbout;
 interface
 
 uses
-  Classes, Forms, Graphics, StdCtrls, Buttons, ExtCtrls, SysUtils;
+  Classes, Forms, Graphics, StdCtrls, Buttons, ExtCtrls, ButtonPanel, SysUtils;
 
 type
 
   { TfrmAboutBox }
 
   TfrmAboutBox = class(TForm)
-    bbOK:          TButton;
+    ButtonPanel1: TButtonPanel;
     pnlClient:     TPanel;
     imgOpenSource: TImage;
     mWarning:      TMemo;
@@ -106,7 +106,8 @@ var
 begin
   inherited;
 
-  SetObjectFontToSystemFont(Self);
+  //LCL already has 'default' font
+  //SetObjectFontToSystemFont(Self);
 
   Caption := lisAboutAboutJEDICodeFormat;
   mWhat.Text := Format(lisAboutVersion, [NativeLineBreak, NativeLineBreak,
