@@ -3387,7 +3387,8 @@ function TPackageEditors.CreateEditor(Pkg: TLazPackage;
 begin
   Result:=FindEditor(Pkg);
   if Result<>nil then begin
-    if DoDisableAutoSizing then
+    Result.DisableAutoSizing;
+    if not DoDisableAutoSizing then
       Result.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockMaster Delayed'){$ENDIF};
   end else begin
     Result:=TPackageEditorForm(TPackageEditorForm.NewInstance);
@@ -3414,7 +3415,8 @@ begin
   try
     IDEWindowCreators.ShowForm(Result, BringToFront);
   finally
-    Result.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockMaster Delayed'){$ENDIF};
+    if Result.AutoSizingLockCount > 0 then
+      Result.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockMaster Delayed'){$ENDIF};
   end;
 end;
 
