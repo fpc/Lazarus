@@ -410,10 +410,10 @@ begin
 
   FIgnoreRoot := AIgnoreRoot;
 
-  if AIgnoreRoot then
-    LazarusIDE.AddHandlerOnUpdateComponentPageControl(ComponentsPageCtrlChange);
+  //if AIgnoreRoot then
+  //  LazarusIDE.AddHandlerOnUpdateComponentPageControl(ComponentsPageCtrlChange);
+  //LazarusIDE.AddHandlerOnUpdateIDEComponentPalette(OnUpdateIDEComponentPalette);
 
-  LazarusIDE.AddHandlerOnUpdateIDEComponentPalette(OnUpdateIDEComponentPalette);
   IDEComponentPalette.AddHandlerComponentAdded(ComponentAdded);
   GlobalDesignHook.AddHandlerSetSelection(OnDesignSetSelection);
 
@@ -434,7 +434,7 @@ destructor TComponentsPalette.Destroy;
 begin
   if not FIgnoreRoot then
   begin
-    LazarusIDE.RemoveHandlerOnUpdateIDEComponentPalette(OnUpdateIDEComponentPalette);
+    //LazarusIDE.RemoveHandlerOnUpdateIDEComponentPalette(OnUpdateIDEComponentPalette);
     IDEComponentPalette.RemoveHandlerComponentAdded(ComponentAdded);
   end;
   FPages.Free;
