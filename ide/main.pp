@@ -8519,7 +8519,8 @@ begin
   end;
 
   // check if there is a valid parent
-  if (ParentControl=nil) and ARegComp.IsTControl then begin
+  if (ParentControl=nil) and ARegComp.ComponentClass.InheritsFrom(TControl) then
+  begin
     IDEMessageDialog(lisControlNeedsParent,
       Format(lisTheClassIsATControlAndCanNotBePastedOntoANonContro,[NewClassName,LineEnding]),
       mtError,[mbCancel]);
