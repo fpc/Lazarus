@@ -181,8 +181,6 @@ type
     lihtGetFPCFrontEndPath, // called when the IDE gets the path of the 'fpc' front end tool
     lihtShowDesignerFormOfSource, // called after showing a designer form for code editor (AEditor can be nil!)
     lihtShowSourceOfActiveDesignerForm, // called after showing a code of designer form
-    lihtUpdateIDEComponentPalette,
-    lihtUpdateComponentPageControl,
     lihtChangeToolStatus//called when IDEToolStatus has changed (e.g. itNone->itBuilder etc.)
     );
     
@@ -438,16 +436,6 @@ type
     procedure RemoveHandlerGetFPCFrontEndPath(
                                           const Handler: TGetFPCFrontEndPath);
     function CallHandlerGetFPCFrontEndPath(Sender: TObject; var Path: string): boolean;
-    procedure AddHandlerOnUpdateIDEComponentPalette(
-                           const OnUpdateIDEComponentPaletteEvent: TNotifyEvent;
-                           AsLast: boolean = false);
-    procedure RemoveHandlerOnUpdateIDEComponentPalette(
-                               const OnUpdateIDEComponentPaletteEvent: TNotifyEvent);
-    procedure AddHandlerOnUpdateComponentPageControl(
-                           const OnUpdateComponentPageControlEvent: TNotifyEvent;
-                           AsLast: boolean = false);
-    procedure RemoveHandlerOnUpdateComponentPageControl(
-                               const OnUpdateComponentPageControlEvent: TNotifyEvent);
     procedure AddHandlerOnShowDesignerFormOfSource(
                            const OnShowDesignerFormOfSourceEvent: TShowDesignerFormOfSourceFunction;
                            AsLast: boolean = false);
@@ -683,8 +671,7 @@ begin
 end;
 
 procedure TLazIDEInterface.DoCallBuildingFinishedHandler(
-  HandlerType: TLazarusIDEHandlerType; Sender: TObject; BuildSuccessful: Boolean
-  );
+  HandlerType: TLazarusIDEHandlerType; Sender: TObject; BuildSuccessful: Boolean);
 var
   I: Integer;
   xMethod: TLazBuildingFinishedEvent;
@@ -827,8 +814,7 @@ begin
 end;
 
 procedure TLazIDEInterface.AddHandlerOnProjectDependenciesCompiled(
-  const OnProjDependenciesCompiledEvent: TModalResultFunction; AsLast: boolean
-    );
+  const OnProjDependenciesCompiledEvent: TModalResultFunction; AsLast: boolean);
 begin
   AddHandler(lihtProjectDependenciesCompiled,
              TMethod(OnProjDependenciesCompiledEvent),AsLast);
@@ -886,8 +872,7 @@ begin
 end;
 
 procedure TLazIDEInterface.AddHandlerOnProjectBuildingFinished(
-  const OnProjBuildingFinishedEvent: TLazBuildingFinishedEvent; AsLast: boolean
-  );
+  const OnProjBuildingFinishedEvent: TLazBuildingFinishedEvent; AsLast: boolean);
 begin
   AddHandler(lihtProjectBuildingFinished,TMethod(OnProjBuildingFinishedEvent),AsLast);
 end;
@@ -928,30 +913,6 @@ begin
     then exit(false);
   end;
   Result:=true;
-end;
-
-procedure TLazIDEInterface.AddHandlerOnUpdateIDEComponentPalette(
-  const OnUpdateIDEComponentPaletteEvent: TNotifyEvent; AsLast: boolean);
-begin
-  AddHandler(lihtUpdateIDEComponentPalette,TMethod(OnUpdateIDEComponentPaletteEvent),AsLast);
-end;
-
-procedure TLazIDEInterface.RemoveHandlerOnUpdateIDEComponentPalette(
-  const OnUpdateIDEComponentPaletteEvent: TNotifyEvent);
-begin
-  RemoveHandler(lihtUpdateIDEComponentPalette,TMethod(OnUpdateIDEComponentPaletteEvent));
-end;
-
-procedure TLazIDEInterface.AddHandlerOnUpdateComponentPageControl(
-  const OnUpdateComponentPageControlEvent: TNotifyEvent; AsLast: boolean);
-begin
-  AddHandler(lihtUpdateComponentPageControl,TMethod(OnUpdateComponentPageControlEvent),AsLast);
-end;
-
-procedure TLazIDEInterface.RemoveHandlerOnUpdateComponentPageControl(
-  const OnUpdateComponentPageControlEvent: TNotifyEvent);
-begin
-  RemoveHandler(lihtUpdateComponentPageControl,TMethod(OnUpdateComponentPageControlEvent));
 end;
 
 procedure TLazIDEInterface.AddHandlerOnShowDesignerFormOfSource(
