@@ -1581,7 +1581,10 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWindow.GetScreenBounds(var ARect: TRect): Boolean;
 begin
-  Result := GetBounds(ARect);
+  if Window <> nil then
+    Result := GetBounds(ARect)
+  else
+    Result := inherited GetScreenBounds(ARect);
 end;
 
 {------------------------------------------------------------------------------
