@@ -57,16 +57,13 @@ begin
     if PaintRect.Top = PaintRect.Bottom then
       PaintRect.Bottom := PaintRect.Bottom + 1;
 
-    with PaintRect do
+    MinSize := Min(PaintRect.Right - PaintRect.Left, PaintRect.Bottom - PaintRect.Top);
+    if FShape in [stSquare, stRoundSquare, stCircle, stSquaredDiamond] then
     begin
-      MinSize := Min(Right - Left, Bottom - Top);
-      if FShape in [stSquare, stRoundSquare, stCircle, stSquaredDiamond] then
-      begin
-        Left := Left + ((Right - Left) - MinSize) div 2;
-        Top := Top + ((Bottom - Top) - MinSize) div 2;
-        Right := Left + MinSize;
-        Bottom := Top + MinSize;
-      end;
+      PaintRect.Left := PaintRect.Left + ((PaintRect.Right - PaintRect.Left) - MinSize) div 2;
+      PaintRect.Top := PaintRect.Top + ((PaintRect.Bottom - PaintRect.Top) - MinSize) div 2;
+      PaintRect.Right := PaintRect.Left + MinSize;
+      PaintRect.Bottom := PaintRect.Top + MinSize;
     end;
 
     case FShape of
@@ -78,117 +75,99 @@ begin
         Ellipse(PaintRect);
       stSquaredDiamond, stDiamond:
       begin
-        with PaintRect do
-        begin
-          P[0].x := Left;
-          P[0].y := (Top + Bottom) div 2;
-          P[1].x := (Left + Right) div 2;
-          P[1].y := Top;
-          P[2].x := Right - 1;
-          P[2].y := P[0].y;
-          P[3].x := P[1].x;
-          P[3].y := Bottom - 1;
-          Polygon(P);
-        end;
+        P[0].x := PaintRect.Left;
+        P[0].y := (PaintRect.Top + PaintRect.Bottom) div 2;
+        P[1].x := (PaintRect.Left + PaintRect.Right) div 2;
+        P[1].y := PaintRect.Top;
+        P[2].x := PaintRect.Right - 1;
+        P[2].y := P[0].y;
+        P[3].x := P[1].x;
+        P[3].y := PaintRect.Bottom - 1;
+        Polygon(P);
       end;
       stTriangle:
       begin
-        with Self do
-        begin
-          P[0].x := (Width - 1) div 2;
-          P[0].y := PenInc;
-          P[1].x := Width - PenInc - 1;
-          P[1].y := Height - PenInc - 1;
-          P[2].x := PenInc;
-          P[2].y := Height - PenInc - 1;
-          P[3].x := P[0].x;
-          P[3].y := P[0].y;
-          Polygon(P);
-        end;
+        P[0].x := (Width - 1) div 2;
+        P[0].y := PenInc;
+        P[1].x := Width - PenInc - 1;
+        P[1].y := Height - PenInc - 1;
+        P[2].x := PenInc;
+        P[2].y := Height - PenInc - 1;
+        P[3].x := P[0].x;
+        P[3].y := P[0].y;
+        Polygon(P);
       end;
       stTriangleDown:
       begin
-        with Self do
-        begin
-          P[0].x := (Width - 1) div 2;
-          P[0].y := Height - PenInc - 1;
-          P[1].x := Width - PenInc - 1;
-          P[1].y := PenInc;
-          P[2].x := PenInc;
-          P[2].y := PenInc;
-          P[3].x := P[0].x;
-          P[3].y := P[0].y;
-          Polygon(P);
-        end;
+        P[0].x := (Width - 1) div 2;
+        P[0].y := Height - PenInc - 1;
+        P[1].x := Width - PenInc - 1;
+        P[1].y := PenInc;
+        P[2].x := PenInc;
+        P[2].y := PenInc;
+        P[3].x := P[0].x;
+        P[3].y := P[0].y;
+        Polygon(P);
       end;
       stTriangleLeft:
       begin
-        with Self do
-        begin
-          P[0].x := PenInc;
-          P[0].y := Height div 2;
-          P[1].x := Width - PenInc - 1;
-          P[1].y := PenInc;
-          P[2].x := Width - PenInc - 1;
-          P[2].y := Height - PenInc - 1;
-          P[3].x := P[0].x;
-          P[3].y := P[0].y;
-          Polygon(P);
-        end;
+        P[0].x := PenInc;
+        P[0].y := Height div 2;
+        P[1].x := Width - PenInc - 1;
+        P[1].y := PenInc;
+        P[2].x := Width - PenInc - 1;
+        P[2].y := Height - PenInc - 1;
+        P[3].x := P[0].x;
+        P[3].y := P[0].y;
+        Polygon(P);
       end;
       stTriangleRight:
       begin
-        with Self do
-        begin
-          P[0].x := Width - PenInc - 1;
-          P[0].y := Height div 2;
-          P[1].x := PenInc;
-          P[1].y := PenInc;
-          P[2].x := PenInc;
-          P[2].y := Height - PenInc - 1;
-          P[3].x := P[0].x;
-          P[3].y := P[0].y;
-          Polygon(P);
-        end;
+        P[0].x := Width - PenInc - 1;
+        P[0].y := Height div 2;
+        P[1].x := PenInc;
+        P[1].y := PenInc;
+        P[2].x := PenInc;
+        P[2].y := Height - PenInc - 1;
+        P[3].x := P[0].x;
+        P[3].y := P[0].y;
+        Polygon(P);
       end;
       stStar,
       stStarDown:
       begin
-        with Self do
+        //radius if star scaled by height
+        RadiusBig := Trunc((Height-Pen.Width) / (1+cos(pi/5)));
+        //radius if star scaled by width
+        RadiusBig2 := Trunc((Width-Pen.Width) / (2*sin(pi*2/5)));
+
+        if RadiusBig<=RadiusBig2 then
         begin
-          //radius if star scaled by height
-          RadiusBig := Trunc((Height-Pen.Width) / (1+cos(pi/5)));
-          //radius if star scaled by width
-          RadiusBig2 := Trunc((Width-Pen.Width) / (2*sin(pi*2/5)));
-
-          if RadiusBig<=RadiusBig2 then
-          begin
-            if FShape=stStar then
-              PCenter.Y := RadiusBig+PenDec
-            else
-              PCenter.Y := Height-RadiusBig-PenDec;
-          end
+          if FShape=stStar then
+            PCenter.Y := RadiusBig+PenDec
           else
-          begin
-            RadiusBig := RadiusBig2;
-            PCenter.Y := Height div 2;
-          end;
-          PCenter.X := Width div 2;
-          RadiusSm := RadiusBig * 57 div 150;
-
-          for i := 0 to 4 do
-          begin
-            Alfa := GetStarAngle(i*2, FShape=stStarDown);
-            PStar[i*2].x := PCenter.X + Round(RadiusBig*cos(Alfa));
-            PStar[i*2].y := PCenter.Y - Round(RadiusBig*sin(Alfa));
-            Alfa:= GetStarAngle(i*2+1, FShape=stStarDown);
-            PStar[i*2+1].x := PCenter.X + Round(RadiusSm*cos(Alfa));
-            PStar[i*2+1].y := PCenter.Y - Round(RadiusSm*sin(Alfa));
-          end;
-
-          PStar[10] := PStar[0];
-          Polygon(PStar);
+            PCenter.Y := Height-RadiusBig-PenDec;
+        end
+        else
+        begin
+          RadiusBig := RadiusBig2;
+          PCenter.Y := Height div 2;
         end;
+        PCenter.X := Width div 2;
+        RadiusSm := RadiusBig * 57 div 150;
+
+        for i := 0 to 4 do
+        begin
+          Alfa := GetStarAngle(i*2, FShape=stStarDown);
+          PStar[i*2].x := PCenter.X + Round(RadiusBig*cos(Alfa));
+          PStar[i*2].y := PCenter.Y - Round(RadiusBig*sin(Alfa));
+          Alfa:= GetStarAngle(i*2+1, FShape=stStarDown);
+          PStar[i*2+1].x := PCenter.X + Round(RadiusSm*cos(Alfa));
+          PStar[i*2+1].y := PCenter.Y - Round(RadiusSm*sin(Alfa));
+        end;
+
+        PStar[10] := PStar[0];
+        Polygon(PStar);
       end;
     end;
   end;
