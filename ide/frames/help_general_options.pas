@@ -5,7 +5,7 @@ unit help_general_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, StdCtrls, ExtCtrls,
+  Classes, SysUtils, FileUtil, Forms, Controls, StdCtrls, ExtCtrls, EditBtn,
   IDEOptionsIntf, HelpOptions, IDEDialogs, LazarusIDEStrConsts, EnvironmentOpts,
   ObjectInspector, LazHelpIntf;
 
@@ -22,8 +22,7 @@ type
     Bevel6: TBevel;
     DatabasesListBox: TListBox;
     DataBasesPropsGroupBox: TGroupBox;
-    FPCDocHTMLBrowseButton: TButton;
-    FPCDocHTMLEdit: TEdit;
+    FPCDocHTMLEdit: TDirectoryEdit;
     FPCDocHTMLLabel: TLabel;
     lblMiddle1: TLabel;
     lblMiddle: TLabel;
@@ -32,7 +31,6 @@ type
     ViewerPropsGroupBox: TGroupBox;
     ViewersListBox: TListBox;
     procedure DatabasesListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
-    procedure FPCDocHTMLBrowseButtonClick(Sender: TObject);
     procedure ViewersListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
   private
     ViewersPropertiesGrid: TCustomPropertiesGrid;
@@ -55,15 +53,6 @@ implementation
 {$R *.lfm}
 
 { THelpGeneralOptionsFrame }
-
-procedure THelpGeneralOptionsFrame.FPCDocHTMLBrowseButtonClick(Sender: TObject);
-var
-  NewFilename: String;
-begin
-  NewFilename := LazSelectDirectory('FPC Doc HTML directory','');
-  if NewFilename = '' then Exit;
-  FPCDocHTMLEdit.Text := NewFilename;
-end;
 
 procedure THelpGeneralOptionsFrame.DatabasesListBoxSelectionChange(
   Sender: TObject; User: boolean);
