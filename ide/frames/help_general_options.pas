@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, StdCtrls, ExtCtrls, EditBtn,
-  IDEOptionsIntf, HelpOptions, IDEDialogs, LazarusIDEStrConsts, EnvironmentOpts,
+  IDEOptionsIntf, HelpOptions, LazarusIDEStrConsts, EnvironmentOpts,
   ObjectInspector, LazHelpIntf;
 
 type
