@@ -1,22 +1,22 @@
 {
  Test with:
-   ./finddeclarationtest --format=plain --suite=TTestFindDeclaration
-   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_Basic
-   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_With
-   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_NestedClasses
-   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_ClassHelper
-   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_TypeHelper
-   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_ObjCClass
-   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_ObjCCategory
+   ./testcodetools --format=plain --suite=TTestFindDeclaration
+   ./testcodetools --format=plain --suite=TestFindDeclaration_Basic
+   ./testcodetools --format=plain --suite=TestFindDeclaration_With
+   ./testcodetools --format=plain --suite=TestFindDeclaration_NestedClasses
+   ./testcodetools --format=plain --suite=TestFindDeclaration_ClassHelper
+   ./testcodetools --format=plain --suite=TestFindDeclaration_TypeHelper
+   ./testcodetools --format=plain --suite=TestFindDeclaration_ObjCClass
+   ./testcodetools --format=plain --suite=TestFindDeclaration_ObjCCategory
 
  FPC tests:
-   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_FPCTests
-   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_FPCTests --filemask=t*.pp
-   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_FPCTests --filemask=tchlp41.pp
+   ./testcodetools --format=plain --suite=TestFindDeclaration_FPCTests
+   ./testcodetools --format=plain --suite=TestFindDeclaration_FPCTests --filemask=t*.pp
+   ./testcodetools --format=plain --suite=TestFindDeclaration_FPCTests --filemask=tchlp41.pp
  Laz tests:
-   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_LazTests
-   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_LazTests --filemask=t*.pp
-   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_LazTests --filemask=tdefaultproperty1.pp
+   ./testcodetools --format=plain --suite=TestFindDeclaration_LazTests
+   ./testcodetools --format=plain --suite=TestFindDeclaration_LazTests --filemask=t*.pp
+   ./testcodetools --format=plain --suite=TestFindDeclaration_LazTests --filemask=tdefaultproperty1.pp
 }
 unit finddeclarationtests;
 

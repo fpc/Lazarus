@@ -9,7 +9,7 @@
       </Flags>
       <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
-      <Title Value="finddeclarationtest"/>
+      <Title Value="testcodetools"/>
       <UseAppBundle Value="False"/>
       <ResourceType Value="res"/>
     </General>
@@ -42,7 +42,7 @@
     </RequiredPackages>
     <Units Count="9">
       <Unit0>
-        <Filename Value="finddeclarationtest.lpr"/>
+        <Filename Value="testcodetools.lpr"/>
         <IsPartOfProject Value="True"/>
       </Unit0>
       <Unit1>
@@ -82,7 +82,7 @@
   <CompilerOptions>
     <Version Value="11"/>
     <Target>
-      <Filename Value="finddeclarationtest"/>
+      <Filename Value="testcodetools"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
