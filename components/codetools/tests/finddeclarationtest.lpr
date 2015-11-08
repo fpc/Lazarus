@@ -21,7 +21,7 @@ program finddeclarationtest;
 
 uses
   Classes, sysutils, consoletestrunner, dom, fpcunit, CodeToolManager,
-  CodeToolsConfig, LazLogger, fdtbase, fdt_classhelper,
+  CodeToolsConfig, LazLogger, finddeclarationtests, fdt_classhelper,
   {$IF FPC_FULLVERSION >= 30101}
   fdt_typehelper,
   {$ENDIF}

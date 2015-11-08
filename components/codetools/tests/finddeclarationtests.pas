@@ -18,7 +18,7 @@
    ./finddeclarationtest --format=plain --suite=TestFindDeclaration_LazTests --filemask=t*.pp
    ./finddeclarationtest --format=plain --suite=TestFindDeclaration_LazTests --filemask=tdefaultproperty1.pp
 }
-unit fdtbase;
+unit finddeclarationtests;
 
 {$mode objfpc}{$H+}
 
