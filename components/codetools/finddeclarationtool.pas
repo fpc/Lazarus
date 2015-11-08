@@ -407,11 +407,18 @@ type
   //----------------------------------------------------------------------------
   // TTypeAliasOrderList is used for comparing type aliases in binary operators
 
+  TTypeAliasItem = class
+  public
+    AliasName: string;
+    Position: Integer;
+  end;
+
   TTypeAliasOrderList = class
   private
-    FList: array of string;
+    FTree: TAVLTree;
   public
     constructor Create(const AliasNames: array of string);
+    destructor Destroy; override;
 
     procedure Add(const AliasName: string);
     procedure Add(const AliasNames: array of string);
@@ -424,9 +431,11 @@ type
     function Compare(const AliasName1, AliasName2: string): Integer;
     function Compare(const Operand1, Operand2: TOperand;
       Tool: TFindDeclarationTool; CleanPos: Integer): TOperand;
-
-    function CalcMemSize: PtrUInt;
   end;
+
+  function CompareTypeAliasItems(Item1, Item2: Pointer): Integer;
+  function CompareTypeAliasItemString(AliasName, Item: Pointer): Integer;
+
 type
   //----------------------------------------------------------------------------
   // TFoundProc is used for comparing overloaded procs
@@ -1268,6 +1277,22 @@ begin
     Result:=xtNone;
 end;
 
+function CompareTypeAliasItems(Item1, Item2: Pointer): Integer;
+var
+  xItem1: TTypeAliasItem absolute Item1;
+  xItem2: TTypeAliasItem absolute Item2;
+begin
+  Result := CompareIdentifiers(PChar(xItem1.AliasName), PChar(xItem2.AliasName));
+end;
+
+function CompareTypeAliasItemString(AliasName, Item: Pointer): Integer;
+var
+  xAliasName: PChar absolute AliasName;
+  xItem: TTypeAliasItem absolute Item;
+begin
+  Result := CompareIdentifiers(xAliasName, PChar(xItem.AliasName));
+end;
+
 function ExprTypeToString(const ExprType: TExpressionType): string;
 begin
   Result:='Desc='+ExpressionTypeDescNames[ExprType.Desc]
@@ -1424,42 +1449,31 @@ end;
 { TTypeAliasOrderList }
 
 constructor TTypeAliasOrderList.Create(const AliasNames: array of string);
-var
-  I: Integer;
 begin
   inherited Create;
 
-  SetLength(FList, Length(AliasNames));
-  for I := Low(AliasNames) to High(AliasNames) do
-    FList[I] := AliasNames[I];
+  FTree := TAVLTree.Create(@CompareTypeAliasItems);
+  Add(AliasNames);
 end;
 
 procedure TTypeAliasOrderList.Add(const AliasNames: array of string);
 var
-  S: string;
+  AliasName: string;
 begin
-  for S in AliasNames do
-    Add(S);
+  for AliasName in AliasNames do
+    Add(AliasName);
 end;
 
 procedure TTypeAliasOrderList.Add(const AliasName: string);
+var
+  NewItem: TTypeAliasItem;
 begin
   if IndexOf(AliasName) > -1 then Exit;
 
-  SetLength(FList, Length(FList)+1);
-  FList[High(FList)]:=AliasName;
-end;
-
-function TTypeAliasOrderList.CalcMemSize: PtrUInt;
-var
-  S: string;
-begin
-  Result :=
-    InstanceSize +
-    Length(FList)*SizeOf(Pointer);
-
-  for S in FList do
-    Result := Result + PtrUInt(Length(S)*SizeOf(Char));
+  NewItem := TTypeAliasItem.Create;
+  NewItem.AliasName := AliasName;
+  NewItem.Position := FTree.Count;
+  FTree.Add(NewItem);
 end;
 
 function TTypeAliasOrderList.Compare(const AliasName1, AliasName2: string
@@ -1511,11 +1525,21 @@ end;
 
 procedure TTypeAliasOrderList.Delete(const Pos: Integer);
 var
-  I: Integer;
+  xAVItem, xDelItem: TAVLTreeNode;
+  xItem: TTypeAliasItem;
 begin
-  for I := Pos to High(FList)-1 do
-    FList[I] := FList[I+1];
-  SetLength(FList, Length(FList)-1);
+  xDelItem := nil;
+  for xAVItem in FTree do
+  begin
+    xItem := TTypeAliasItem(xAVItem.Data);
+    if xItem.Position = Pos then
+      xDelItem := xAVItem
+    else if xItem.Position > Pos then
+      Dec(xItem.Position);
+  end;
+
+  if xDelItem<>nil then
+    FTree.FreeAndDelete(xDelItem);
 end;
 
 procedure TTypeAliasOrderList.Delete(const AliasName: string);
@@ -1527,23 +1551,42 @@ begin
   Delete(xIndex);
 end;
 
-function TTypeAliasOrderList.IndexOf(const AliasName: string): Integer;
+destructor TTypeAliasOrderList.Destroy;
 begin
-  for Result := Low(FList) to High(FList) do
-    if CompareText(AliasName, FList[Result]) = 0 then
-      Exit;
-  Result := -1;
+  FTree.FreeAndClear;
+  FTree.Free;
+
+  inherited Destroy;
+end;
+
+function TTypeAliasOrderList.IndexOf(const AliasName: string): Integer;
+var
+  xAVNode: TAVLTreeNode;
+begin
+  xAVNode := FTree.FindKey(PChar(AliasName), @CompareTypeAliasItemString);
+  if xAVNode<>nil then
+    Result := TTypeAliasItem(xAVNode.Data).Position
+  else
+    Result := -1;
 end;
 
 procedure TTypeAliasOrderList.Insert(const AliasName: string; const Pos: Integer
   );
 var
-  I: Integer;
+  xAVItem: TAVLTreeNode;
+  xItem, NewItem: TTypeAliasItem;
 begin
-  SetLength(FList, Length(FList)+1);
-  for I := High(FList) downto Pos+1 do
-    FList[I] := FList[I-1];
-  FList[Pos] := AliasName;
+  for xAVItem in FTree do
+  begin
+    xItem := TTypeAliasItem(xAVItem.Data);
+    if xItem.Position >= Pos then
+      Inc(xItem.Position);
+  end;
+
+  NewItem := TTypeAliasItem.Create;
+  NewItem.AliasName := AliasName;
+  NewItem.Position := Pos;
+  FTree.Add(NewItem);
 end;
 
 procedure TTypeAliasOrderList.InsertAfter(const AliasName, AfterAlias: string);
