@@ -18,7 +18,7 @@
    ./testcodetools --format=plain --suite=TestFindDeclaration_LazTests --filemask=t*.pp
    ./testcodetools --format=plain --suite=TestFindDeclaration_LazTests --filemask=tdefaultproperty1.pp
 }
-unit finddeclarationtests;
+unit FindDeclarationTests;
 
 {$mode objfpc}{$H+}
 
@@ -56,20 +56,7 @@ var
   BugsTestSuite: TTestSuite;
   FindDeclarationTestSuite: TTestSuite;
 
-procedure AddToBugsTestSuite(ATest: TTest);
-procedure AddToFindDeclarationTestSuite(ATestClass: TClass);
-
 implementation
-
-procedure AddToBugsTestSuite(ATest: TTest);
-begin
-  BugsTestSuite.AddTest(ATest);
-end;
-
-procedure AddToFindDeclarationTestSuite(ATestClass: TClass);
-begin
-  FindDeclarationTestSuite.AddTestSuiteFromClass(ATestClass);
-end;
 
 { TTestFindDeclaration }
 
@@ -313,9 +300,9 @@ initialization
   GetTestRegistry.TestName := 'All tests';
   BugsTestSuite := TTestSuite.Create('Bugs');
   GetTestRegistry.AddTest(BugsTestSuite);
-  FindDeclarationTestSuite := TTestSuite.Create('Parser');
+  FindDeclarationTestSuite := TTestSuite.Create('FindDeclaration');
   GetTestRegistry.AddTest(FindDeclarationTestSuite);
 
-  AddToFindDeclarationTestSuite(TTestFindDeclaration);
+  FindDeclarationTestSuite.AddTestSuiteFromClass(TTestFindDeclaration);
 end.
 

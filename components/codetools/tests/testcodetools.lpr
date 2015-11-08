@@ -21,7 +21,8 @@ program testcodetools;
 
 uses
   Classes, sysutils, consoletestrunner, dom, fpcunit, CodeToolManager,
-  CodeToolsConfig, LazLogger, finddeclarationtests, fdt_classhelper,
+  CodeToolsConfig, LazLogger, finddeclarationtests, RefactoringTests,
+  fdt_classhelper,
   {$IF FPC_FULLVERSION >= 30101}
   fdt_typehelper,
   {$ENDIF}
@@ -29,7 +30,7 @@ uses
   {$IFDEF Darwin}
   fdt_objccategory, fdt_objcclass,
   {$ENDIF}
-  fdt_basic, fdt_with;
+  fdt_basic, fdt_with, rt_explodewith;
 
 const
   ConfigFilename = 'codetools.config';
