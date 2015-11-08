@@ -32,6 +32,12 @@
   ToDo:
     - check if selection bounds on statement bounds
     - with statements
+
+  Explode With Blocks todos:
+    - check if selection bounds on statement bounds
+    - keep Begin..End in case
+    - support Expressions
+    - dialog in cody to replace a long expression with a short local variable
 }
 unit ExtractProcTool;
 
