@@ -4224,7 +4224,6 @@ var
   Node: TTreeNode;
   P: TPoint;
   R: TRect;
-  OffsetLeft: integer;
   SText: string;
 begin
   if FHintWnd=nil then
@@ -4237,28 +4236,19 @@ begin
     exit;
   end;
 
-  SText:=Node.Text;
-  OffsetLeft:=(Node.Level+1)*16 + 2;
-    //seems each level gives indent of 16pix
-    //this needs dec for ShowRoot=false, but i cannot guess, by 16pix?
-
-  if Assigned(FImages) then
-    if (not Node.Selected and (Node.ImageIndex>=0)) or
-       (Node.Selected and (Node.SelectedIndex>=0)) then
-      Inc(OffsetLeft, FImages.Width);
-
-  Canvas.Font.Assign(Self.Font);
-  if Canvas.TextWidth(SText)+OffsetLeft < ClientWidth then
+  //DisplayTextRight is increased by Indent/2 for l/r sides
+  if Node.DisplayTextRight - Indent div 4 < ClientWidth then
   begin
     FHintWnd.Hide;
     exit;
   end;
 
+  SText:=Node.Text;
   R:=FHintWnd.CalcHintRect(cMaxHintWidth, SText, nil);
 
   //show hint at edge of control, to not overlap node, to allow click node,
   //also hint fontsize <> control fontsize
-  P:=Point(ClientWidth, Node.Top);
+  P:=Point(ClientWidth, Node.Top-ScrolledTop);
   P:=ClientToScreen(P);
   OffsetRect(R, P.X, P.Y);
 
