@@ -3806,15 +3806,13 @@ var
 begin
   if InternalNeedBorder then begin
     R := Rect(0,0,ClientWidth-1, Clientheight-1);
-    with R, Canvas do begin
-      Pen.Color := fBorderColor;
-      Pen.Width := 1;
-      MoveTo(0,0);
-      LineTo(0,Bottom);
-      LineTo(Right, Bottom);
-      LineTo(Right, 0);
-      LineTo(0,0);
-    end;
+    Canvas.Pen.Color := fBorderColor;
+    Canvas.Pen.Width := 1;
+    Canvas.MoveTo(0,0);
+    Canvas.LineTo(0,R.Bottom);
+    Canvas.LineTo(R.Right, R.Bottom);
+    Canvas.LineTo(R.Right, 0);
+    Canvas.LineTo(0,0);
   end;
 end;
 
@@ -4215,30 +4213,27 @@ end;
 procedure TCustomGrid.DrawCellText(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState; aText: String);
 begin
-  with ARect do begin
-
-    dec(Right, constCellPadding);
-    case Canvas.TextStyle.Alignment of
-      Classes.taLeftJustify: Inc(Left, constCellPadding);
-      Classes.taRightJustify: Dec(Right, 1);
-    end;
-    case Canvas.TextStyle.Layout of
-      tlTop: Inc(Top, constCellPadding);
-      tlBottom: Dec(Bottom, constCellPadding);
-    end;
-
-    if Right<Left then
-      Right:=Left;
-    if Left>Right then
-      Left:=Right;
-    if Bottom<Top then
-      Bottom:=Top;
-    if Top>Bottom then
-      Top:=Bottom;
-
-    if (Left<>Right) and (Top<>Bottom) then
-      Canvas.TextRect(aRect,Left,Top, aText);
+  dec(ARect.Right, constCellPadding);
+  case Canvas.TextStyle.Alignment of
+    Classes.taLeftJustify: Inc(ARect.Left, constCellPadding);
+    Classes.taRightJustify: Dec(ARect.Right, 1);
   end;
+  case Canvas.TextStyle.Layout of
+    tlTop: Inc(ARect.Top, constCellPadding);
+    tlBottom: Dec(ARect.Bottom, constCellPadding);
+  end;
+
+  if ARect.Right<ARect.Left then
+    ARect.Right:=ARect.Left;
+  if ARect.Left>ARect.Right then
+    ARect.Left:=ARect.Right;
+  if ARect.Bottom<ARect.Top then
+    ARect.Bottom:=ARect.Top;
+  if ARect.Top>ARect.Bottom then
+    ARect.Top:=ARect.Bottom;
+
+  if (ARect.Left<>ARect.Right) and (ARect.Top<>ARect.Bottom) then
+    Canvas.TextRect(aRect,ARect.Left,ARect.Top, aText);
 end;
 
 procedure TCustomGrid.DrawGridCheckboxBitmaps(const aCol,aRow: Integer;
@@ -4263,15 +4258,13 @@ begin
   if (TitleStyle=tsNative) and not assigned(OnUserCheckboxBitmap) then begin
     Details := ThemeServices.GetElementDetails(arrtb[AState]);
     CSize := ThemeServices.GetDetailSize(Details);
-    with PaintRect do begin
-      case bmpAlign of
-        taCenter: Left := Trunc((aRect.Left + aRect.Right - CSize.cx)/2);
-        taLeftJustify: Left := ARect.Left + constCellPadding;
-        taRightJustify: Left := ARect.Right - CSize.Cx - constCellPadding - 1;
-      end;
-      Top  := Trunc((aRect.Top + aRect.Bottom - CSize.cy)/2);
-      PaintRect := Bounds(Left, Top, CSize.cx, CSize.cy);
+    case bmpAlign of
+      taCenter: PaintRect.Left := Trunc((aRect.Left + aRect.Right - CSize.cx)/2);
+      taLeftJustify: PaintRect.Left := ARect.Left + constCellPadding;
+      taRightJustify: PaintRect.Left := ARect.Right - CSize.Cx - constCellPadding - 1;
     end;
+    PaintRect.Top  := Trunc((aRect.Top + aRect.Bottom - CSize.cy)/2);
+    PaintRect := Bounds(PaintRect.Left, PaintRect.Top, CSize.cx, CSize.cy);
     ThemeServices.DrawElement(Canvas.Handle, Details, PaintRect, nil);
   end else begin
     ChkBitmap := GetImageForCheckBox(aCol, aRow, AState);
@@ -4993,25 +4986,21 @@ begin
   OldTopLeft := FTopLeft;
   Result:= False;
 
-  with FTopleft do begin
-    if CheckCols and (X>FixedCols) then begin
-      W := FGCache.ScrollWidth-ColWidths[aCol]-integer(PtrUInt(FGCache.AccumWidth[aCol]));
-      while (x>FixedCols)and(W+integer(PtrUInt(FGCache.AccumWidth[x]))>=ColWidths[x-1]) do
-      begin
-        Dec(x);
-      end;
+  if CheckCols and (FTopleft.X>FixedCols) then begin
+    W := FGCache.ScrollWidth-ColWidths[aCol]-integer(PtrUInt(FGCache.AccumWidth[aCol]));
+    while (FTopleft.x>FixedCols)and(W+integer(PtrUInt(FGCache.AccumWidth[FTopleft.x]))>=ColWidths[FTopleft.x-1]) do
+    begin
+      Dec(FTopleft.x);
     end;
   end;
 
-  with FTopleft do begin
-    if CheckRows and (Y > FixedRows) then begin
-      W := FGCache.ScrollHeight-RowHeights[aRow]-integer(PtrUInt(FGCache.AccumHeight[aRow]));
-      while (y>FixedRows)and(W+integer(PtrUInt(FGCache.AccumHeight[y]))>=RowHeights[y-1]) do
-      begin
-        Dec(y);
-      end;
-      //DebugLn('TCustomGrid.CheckTopLeft A ',DbgSName(Self),' FTopLeft=',dbgs(FTopLeft));
+  if CheckRows and (FTopleft.Y > FixedRows) then begin
+    W := FGCache.ScrollHeight-RowHeights[aRow]-integer(PtrUInt(FGCache.AccumHeight[aRow]));
+    while (FTopleft.y>FixedRows)and(W+integer(PtrUInt(FGCache.AccumHeight[FTopleft.y]))>=RowHeights[FTopleft.y-1]) do
+    begin
+      Dec(FTopleft.y);
     end;
+    //DebugLn('TCustomGrid.CheckTopLeft A ',DbgSName(Self),' FTopLeft=',dbgs(FTopLeft));
   end;
 
   Result := not PointIgual(OldTopleft,FTopLeft);
@@ -5309,15 +5298,14 @@ end;
 
 procedure TCustomGrid.CancelSelection;
 begin
-  with FRange do
-    if (Bottom-Top>0) or
-      ((Right-Left>0) and not (goRowSelect in Options)) then begin
-      InvalidateRange(FRange);
-      if goRowSelect in Options then
-        FRange:=Rect(FFixedCols, FRow, ColCount-1, FRow)
-      else
-        FRange:=Rect(FCol,FRow,FCol,FRow);
-    end;
+  if (FRange.Bottom-FRange.Top>0) or
+    ((FRange.Right-FRange.Left>0) and not (goRowSelect in Options)) then begin
+    InvalidateRange(FRange);
+    if goRowSelect in Options then
+      FRange:=Rect(FFixedCols, FRow, ColCount-1, FRow)
+    else
+      FRange:=Rect(FCol,FRow,FCol,FRow);
+  end;
   SelectActive := False;
 end;
 
@@ -5372,8 +5360,8 @@ end;
 procedure TCustomGrid.SetSelection(const AValue: TGridRect);
 begin
   if goRangeSelect in Options then
-  with AValue do begin
-    if (Left<0)and(Top<0)and(Right<0)and(Bottom<0) then
+  begin
+    if (AValue.Left<0)and(AValue.Top<0)and(AValue.Right<0)and(AValue.Bottom<0) then
       CancelSelection
     else begin
       fRange:=NormalizarRect(aValue);
@@ -5397,11 +5385,9 @@ var
 
   procedure FindPrevColumn;
   begin
-    with FSizing do begin
-      Dec(Index);
-      while (Index>FixedCols) and (ColWidths[Index]=0) do
-        Dec(Index);
-    end;
+    Dec(FSizing.Index);
+    while (FSizing.Index>FixedCols) and (ColWidths[FSizing.Index]=0) do
+      Dec(FSizing.Index);
   end;
 
 begin
@@ -7579,8 +7565,7 @@ begin
     SwapInt(ATop, ABottom);
 
   Result := CellRect(ALeft, ATop);
-  with CellRect(ARight, ABottom) do
-    Result.BottomRight := BottomRight;
+  Result.BottomRight := CellRect(ARight, ABottom).BottomRight;
 
   IntersectRect(Result, Result, FGCache.VisibleGrid);
 end;
