@@ -100,7 +100,7 @@ begin
         end;
         // check each marker
         Src:=Code.Source;
-        //debugln(['TTestRefactoring.TestExplodeWith ',copy(Src,NewStartPos,NewEndPos-NewStartPos)]);
+        //debugln(['TTestRefactoring.TestExplodeWith NewBlock=',copy(Src,NewStartPos,NewEndPos-NewStartPos)]);
         p:=NewStartPos;
         repeat
           CommentStartPos:=FindNextComment(Src,p,NewEndPos);

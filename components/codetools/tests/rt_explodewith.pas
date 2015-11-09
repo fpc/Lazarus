@@ -13,6 +13,8 @@ type
 
   TMyClass = class
   public
+    Parent: TMyClass;
+    Left: string;
     procedure DoSomething;
   end;
 
@@ -22,11 +24,16 @@ implementation
 
 procedure TMyClass.DoSomething;
 var
-  R: TRect;
+  R1: TRect;
 begin
-  R:=Rect(1,2,3,4);
-  with R do
-    {explodewith:R}Left:=4;
+  R1:=Rect(1,2,3,4);
+  with R1 do
+    {explodewith:R1}Left:=4;
+  if R1.Left= 4 then ;
+  with Parent do
+    {explodewith:Parent}Left:='A';
+  with Parent.Parent do
+    {explodewith:Parent}Left:='A';
 end;
 
 end.

@@ -1486,10 +1486,22 @@ begin
 
     // RemoveWithHeader
     SourceChangeCache.MainScanner:=Scanner;
-    if not FindBounds then exit;
-    if not RemoveWithHeader then exit;
-    if not UnindentAndEncloseSkippedCode then exit;
-    if not PrefixSubIdentifiers then exit;
+    if not FindBounds then begin
+      debugln(['TExtractProcTool.RemoveWithBlock FindBounds failed']);
+      exit;
+    end;
+    if not RemoveWithHeader then begin
+      debugln(['TExtractProcTool.RemoveWithBlock RemoveWithHeader failed']);
+      exit;
+    end;
+    if not UnindentAndEncloseSkippedCode then begin
+      debugln(['TExtractProcTool.RemoveWithBlock UnindentAndEncloseSkippedCode failed']);
+      exit;
+    end;
+    if not PrefixSubIdentifiers then begin
+      debugln(['TExtractProcTool.RemoveWithBlock PrefixSubIdentifiers failed']);
+      exit;
+    end;
 
     Result:=SourceChangeCache.Apply;
     //debugln(['TExtractProcTool.RemoveWithBlock SOURCE:']);
