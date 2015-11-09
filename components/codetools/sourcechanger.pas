@@ -297,8 +297,7 @@ type
     function Apply: boolean;
     function FindEntryInRange(FromPos, ToPos: integer): TSourceChangeCacheEntry;
     function FindEntryAtPos(APos: integer): TSourceChangeCacheEntry;
-    property BuffersToModify[Index: integer]: TCodeBuffer
-                                                        read GetBuffersToModify;
+    property BuffersToModify[Index: integer]: TCodeBuffer read GetBuffersToModify;
     function BuffersToModifyCount: integer;
     function BufferIsModified(ACode: TCodeBuffer): boolean;
     property OnBeforeApplyChanges: TOnBeforeApplyChanges
@@ -642,7 +641,8 @@ end;
 
 function TSourceChangeCache.FindEntryInRange(
   FromPos, ToPos: integer): TSourceChangeCacheEntry;
-var ANode: TAVLTreeNode;
+var
+  ANode: TAVLTreeNode;
   NextNode: TAVLTreeNode;
 begin
   ANode:=FEntries.Root;

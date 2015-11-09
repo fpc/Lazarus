@@ -242,13 +242,15 @@ type
     function MoveCursorToParameterSpecifier(DefinitionNode: TCodeTreeNode
                                             ): boolean;
     function GetFirstGroupVarNode(VarNode: TCodeTreeNode): TCodeTreeNode;
-    function FindEndOfWithVar(WithVarNode: TCodeTreeNode): integer;
     function NodeIsIdentifierInInterface(Node: TCodeTreeNode): boolean;
     function NodeCanHaveForwardType(TypeNode: TCodeTreeNode): boolean;
     function NodeIsForwardType(TypeNode: TCodeTreeNode): boolean;
     function FindForwardTypeNode(TypeNode: TCodeTreeNode;
                                  SearchFirst: boolean): TCodeTreeNode;
     function FindTypeOfForwardNode(TypeNode: TCodeTreeNode): TCodeTreeNode;
+    function FindEndOfWithExpr(WithVarNode: TCodeTreeNode): integer;
+    function ExtractWithBlockExpression(WithVarNode: TCodeTreeNode; Attr: TProcHeadAttributes = []): string;
+    function FindWithBlockStatement(WithVarNode: TCodeTreeNode): TCodeTreeNode;
 
     // arrays
     function ExtractArrayRange(ArrayNode: TCodeTreeNode;
@@ -2830,12 +2832,39 @@ begin
   end;
 end;
 
-function TPascalReaderTool.FindEndOfWithVar(WithVarNode: TCodeTreeNode): integer;
+function TPascalReaderTool.FindEndOfWithExpr(WithVarNode: TCodeTreeNode): integer;
 begin
+  if WithVarNode.Desc<>ctnWithVariable then exit(-1);
   MoveCursorToCleanPos(WithVarNode.StartPos);
+  ReadNextAtom;
   if not ReadTilVariableEnd(true,true) then exit(-1);
   UndoReadNextAtom;
   Result:=CurPos.EndPos;
+end;
+
+function TPascalReaderTool.ExtractWithBlockExpression(
+  WithVarNode: TCodeTreeNode; Attr: TProcHeadAttributes): string;
+var
+  EndPos: Integer;
+begin
+  EndPos:=FindEndOfWithExpr(WithVarNode);
+  if EndPos<1 then exit('');
+  Result:=ExtractCode(WithVarNode.StartPos,EndPos,Attr);
+end;
+
+function TPascalReaderTool.FindWithBlockStatement(WithVarNode: TCodeTreeNode
+  ): TCodeTreeNode;
+begin
+  Result:=WithVarNode;
+  repeat
+    if Result=nil then exit;
+    if Result.Desc<>ctnWithVariable then exit(nil);
+    if Result.FirstChild<>nil then begin
+      Result:=Result.FirstChild;
+      if Result.Desc=ctnWithStatement then exit;
+      exit(nil);
+    end;
+  until false;
 end;
 
 function TPascalReaderTool.NodeIsIdentifierInInterface(Node: TCodeTreeNode): boolean;
