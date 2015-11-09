@@ -41,7 +41,7 @@ interface
 
 uses
   Classes, SysUtils, AVL_Tree, SourceLog, KeywordFuncLists, FileProcs,
-  LazFileUtils, LazUTF8;
+  LazFileUtils, LazUTF8, strutils;
 
 //----------------------------------------------------------------------------
 { These functions are used by the codetools }
@@ -225,22 +225,49 @@ type
   private
     FFilename: string;
     FUnitName: string;
+    function GetFileUnitNameWithoutNamespace: string;
+    function GetIdentifierStartInUnitName: Integer;
   public
     constructor Create(const TheUnitName, TheFilename: string);
     property FileUnitName: string read FUnitName;
+    property FileUnitNameWithoutNamespace: string read GetFileUnitNameWithoutNamespace;
     property Filename: string read FFilename;
+    property IdentifierStartInUnitName: Integer read GetIdentifierStartInUnitName;
   end;
 
+  TNameSpaceInfo = class
+  private
+    FFilename: string;
+    FNamespace: string;
+    FIdentifierStartInUnitName: Integer;
+  public
+    constructor Create(const TheNamespace, TheFilename: string; TheIdentifierStartInUnitName: Integer);
+    property Filename: string read FFilename;
+    property Namespace: string read FNamespace;
+    property IdentifierStartInUnitName: Integer read FIdentifierStartInUnitName;
+  end;
+
+
+procedure AddToTreeOfUnitFilesOrNamespaces(
+  var TreeOfUnitFiles, TreeOfNameSpaces: TAVLTree;
+  const NameSpacePath, Filename: string;
+  CaseInsensitive, KeepDoubles: boolean);
 function GatherUnitFiles(const BaseDir, SearchPath,
-    Extensions: string; KeepDoubles, CaseInsensitive: boolean;
-    var TreeOfUnitFiles: TAVLTree): boolean;
+    Extensions, NameSpacePath: string; KeepDoubles, CaseInsensitive: boolean;
+    var TreeOfUnitFiles, TreeOfNamespaces: TAVLTree): boolean;
 procedure FreeTreeOfUnitFiles(TreeOfUnitFiles: TAVLTree);
 procedure AddToTreeOfUnitFiles(var TreeOfUnitFiles: TAVLTree;
-  const Filename: string;
+  const Filename, Unitname: string;
+  KeepDoubles: boolean);
+procedure AddToTreeOfNamespaces(var TreeOfNameSpaces: TAVLTree;
+  const FileName, UnitName, ParentNameSpacePath: string;
   KeepDoubles: boolean);
 function CompareUnitFileInfos(Data1, Data2: Pointer): integer;
+function CompareNameSpaceInfos(Data1, Data2: Pointer): integer;
 function CompareUnitNameAndUnitFileInfo(UnitnamePAnsiString,
                                         UnitFileInfo: Pointer): integer;
+function CompareNameSpaceAndNameSpaceInfo(NamespacePAnsiString,
+                                        NamespaceInfo: Pointer): integer;
 
 //-----------------------------------------------------------------------------
 // functions / procedures
@@ -5636,15 +5663,61 @@ begin
   System.Move(p^,Result[1],l);
 end;
 
-function GatherUnitFiles(const BaseDir, SearchPath,
-  Extensions: string; KeepDoubles, CaseInsensitive: boolean;
-  var TreeOfUnitFiles: TAVLTree): boolean;
+procedure AddToTreeOfUnitFilesOrNamespaces(var TreeOfUnitFiles,
+  TreeOfNameSpaces: TAVLTree; const NameSpacePath, Filename: string;
+  CaseInsensitive, KeepDoubles: boolean);
+
+  procedure FileAndNameSpaceFits(const UnitName: string; out FileNameFits, NameSpaceFits: Boolean);
+  var
+    CompareCaseInsensitive: Boolean;
+  begin
+    FileNameFits := False;
+    NameSpaceFits := False;
+    if NameSpacePath = '' then begin
+      //we search for files without namespace path
+      FileNameFits := pos('.', UnitName) = 0;
+      NameSpaceFits := not FileNameFits;
+      Exit;
+    end;
+    if Length(UnitName) < Length(NameSpacePath) then Exit;
+
+    CompareCaseInsensitive:=CaseInsensitive;
+    {$IFDEF Windows}
+    CompareCaseInsensitive:=true;
+    {$ENDIF}
+
+    if CompareText(PChar(UnitName), Length(NameSpacePath), PChar(NameSpacePath), Length(NameSpacePath), not CompareCaseInsensitive) = 0 then
+    begin
+      FileNameFits := PosEx('.', UnitName, Length(NameSpacePath)+1) = 0;
+      NameSpaceFits := not FileNameFits;
+    end;
+  end;
+
+var
+  FileNameFits, NameSpaceFits: Boolean;
+  UnitName: string;
+begin
+  UnitName := ExtractFileNameOnly(Filename);
+  FileAndNameSpaceFits(UnitName, FileNameFits, NameSpaceFits);
+  if FileNameFits then
+    AddToTreeOfUnitFiles(TreeOfUnitFiles,FileName,UnitName,
+                       KeepDoubles);
+  if NameSpaceFits then
+    AddToTreeOfNamespaces(TreeOfNamespaces,FileName,UnitName,NameSpacePath,
+                          KeepDoubles)
+end;
+
+function GatherUnitFiles(const BaseDir, SearchPath, Extensions,
+  NameSpacePath: string; KeepDoubles, CaseInsensitive: boolean;
+  var TreeOfUnitFiles, TreeOfNamespaces: TAVLTree): boolean;
 // BaseDir: base directory, used when SearchPath is relative
 // SearchPath: semicolon separated list of directories
 // Extensions: semicolon separated list of extensions (e.g. 'pas;.pp;ppu')
+// NameSpacePath: gather files only from this namespace path
 // KeepDoubles: false to return only the first match of each unit
 // CaseInsensitive: true to ignore case on comparing extensions
 // TreeOfUnitFiles: tree of TUnitFileInfo
+// TreeOfNamespaces: tree of TNameSpaceInfo
 var
   SearchedDirectories: TAVLTree; // tree of AnsiString
 
@@ -5760,8 +5833,8 @@ var
         then
           continue;
         if ExtensionFits(FileInfo.Name) then begin
-          AddToTreeOfUnitFiles(TreeOfUnitFiles,ADirectory+FileInfo.Name,
-                               KeepDoubles);
+          AddToTreeOfUnitFilesOrNamespaces(TreeOfUnitFiles, TreeOfNamespaces,
+            NameSpacePath, ADirectory+FileInfo.Name, CaseInsensitive, KeepDoubles);
         end;
       until FindNextUTF8(FileInfo)<>0;
     end;
@@ -5808,16 +5881,14 @@ begin
   TreeOfUnitFiles.Free;
 end;
 
-procedure AddToTreeOfUnitFiles(var TreeOfUnitFiles: TAVLTree;
-  const Filename: string; KeepDoubles: boolean);
+procedure AddToTreeOfUnitFiles(var TreeOfUnitFiles: TAVLTree; const Filename,
+  Unitname: string; KeepDoubles: boolean);
 var
-  AnUnitName: String;
   NewItem: TUnitFileInfo;
 begin
-  AnUnitName:=ExtractFileNameOnly(Filename);
   if (not KeepDoubles) then begin
     if (TreeOfUnitFiles<>nil)
-    and (TreeOfUnitFiles.FindKey(Pointer(AnUnitName),
+    and (TreeOfUnitFiles.FindKey(Pointer(UnitName),
                                  @CompareUnitNameAndUnitFileInfo)<>nil)
     then begin
       // an unit with the same name was already found and doubles are not
@@ -5828,8 +5899,36 @@ begin
   // add
   if TreeOfUnitFiles=nil then
     TreeOfUnitFiles:=TAVLTree.Create(@CompareUnitFileInfos);
-  NewItem:=TUnitFileInfo.Create(AnUnitName,Filename);
+  NewItem:=TUnitFileInfo.Create(UnitName,Filename);
   TreeOfUnitFiles.Add(NewItem);
+end;
+
+procedure AddToTreeOfNamespaces(var TreeOfNameSpaces: TAVLTree; const FileName,
+  UnitName, ParentNameSpacePath: string; KeepDoubles: boolean);
+var
+  AnNameSpace: String;
+  NewItem: TNameSpaceInfo;
+  PointPos: Integer;
+begin
+  PointPos := PosEx('.', UnitName, Length(ParentNameSpacePath)+1);
+  if PointPos = 0 then Exit;
+  AnNameSpace:=Copy(UnitName, Length(ParentNameSpacePath)+1, PointPos - Length(ParentNameSpacePath) - 1);
+  if AnNameSpace = '' then Exit;
+  if (not KeepDoubles) then begin
+    if (TreeOfNameSpaces<>nil)
+    and (TreeOfNameSpaces.FindKey(Pointer(AnNameSpace),
+                                 @CompareNameSpaceAndNameSpaceInfo)<>nil)
+    then begin
+      // a namespace with the same name was already found and doubles are not
+      // wanted
+      exit;
+    end;
+  end;
+  // add
+  if TreeOfNameSpaces=nil then
+    TreeOfNameSpaces:=TAVLTree.Create(@CompareNameSpaceInfos);
+  NewItem:=TNameSpaceInfo.Create(AnNameSpace,FileName,Length(ParentNameSpacePath)+1);
+  TreeOfNameSpaces.Add(NewItem);
 end;
 
 function CompareUnitFileInfos(Data1, Data2: Pointer): integer;
@@ -5838,11 +5937,26 @@ begin
                              PChar(TUnitFileInfo(Data2).FileUnitName));
 end;
 
+function CompareNameSpaceInfos(Data1, Data2: Pointer): integer;
+begin
+  Result:=CompareIdentifiers(PChar(TNameSpaceInfo(Data1).NameSpace),
+                             PChar(TNameSpaceInfo(Data2).NameSpace));
+end;
+
 function CompareUnitNameAndUnitFileInfo(UnitnamePAnsiString,
   UnitFileInfo: Pointer): integer;
 begin
-  Result:=CompareIdentifiers(PChar(UnitnamePAnsiString),
-                             PChar(TUnitFileInfo(UnitFileInfo).FileUnitName));
+  //do not use CompareIdentifiers - they compare only to the first "."
+  Result:=CompareText(PChar(UnitnamePAnsiString),
+                      PChar(TUnitFileInfo(UnitFileInfo).FileUnitName));
+end;
+
+function CompareNameSpaceAndNameSpaceInfo(NamespacePAnsiString,
+  NamespaceInfo: Pointer): integer;
+begin
+  //do not use CompareIdentifiers - they compare only to the first "."
+  Result:=CompareText(PChar(NamespacePAnsiString),
+                      PChar(TNameSpaceInfo(NamespaceInfo).NameSpace));
 end;
 
 function CountNeededLineEndsToAddForward(const Src: string;
@@ -5973,6 +6087,16 @@ begin
     Result:=CompareText(Txt1,Len1,Txt2,Len2,CaseSensitive);
 end;
 
+{ TNameSpaceInfo }
+
+constructor TNameSpaceInfo.Create(const TheNamespace, TheFilename: string;
+  TheIdentifierStartInUnitName: Integer);
+begin
+  FNamespace:=TheNamespace;
+  FFilename:=TheFilename;
+  FIdentifierStartInUnitName:=TheIdentifierStartInUnitName;
+end;
+
 { TUnitFileInfo }
 
 constructor TUnitFileInfo.Create(const TheUnitName, TheFilename: string);
@@ -5981,6 +6105,27 @@ begin
   FFilename:=TheFilename;
 end;
 
+function TUnitFileInfo.GetFileUnitNameWithoutNamespace: string;
+var
+  LastPoint: Integer;
+begin
+  LastPoint := LastDelimiter('.', FUnitName);
+  if LastPoint > 0 then
+    Result := Copy(FUnitName, LastPoint+1, High(Integer))
+  else
+    Result := FUnitName;
+end;
+
+function TUnitFileInfo.GetIdentifierStartInUnitName: Integer;
+var
+  LastPoint: Integer;
+begin
+  LastPoint := LastDelimiter('.', FUnitName);
+  if LastPoint > 0 then
+    Result := LastPoint+1
+  else
+    Result := 1;
+end;
 
 //=============================================================================
 

@@ -1993,6 +1993,7 @@ function TPascalParserTool.ReadUsesSection(ExceptionOnError: boolean): boolean;
 }
 var
   IsUses: Boolean;
+  LastUnitNode: TCodeTreeNode;
 begin
   Result:=false;
   IsUses:=CurNode.Desc=ctnUsesSection;
@@ -2016,8 +2017,14 @@ begin
     CurNode.Desc:=ctnUseUnit;
     repeat
       CurNode.EndPos:=CurPos.EndPos;
+      CreateChildNode;
+      LastUnitNode := CurNode;
+      CurNode.Desc:=ctnUseUnitClearName;
+      CurNode.EndPos:=CurNode.Parent.EndPos;
+      EndChildNode;
       ReadNextAtom;
       if CurPos.Flag<>cafPoint then break;
+      LastUnitNode.Desc:=ctnUseUnitNamespace;
       ReadNextAtom;
       AtomIsIdentifierSaveE;
     until false;

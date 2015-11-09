@@ -2191,7 +2191,16 @@ begin
     {$IFDEF CTDEBUG}
     DebugLn('TFindDeclarationTool.FindDeclaration D CursorNode=',NodeDescriptionAsString(CursorNode.Desc),' HasChildren=',dbgs(CursorNode.FirstChild<>nil));
     {$ENDIF}
-    if (CursorNode.Desc in [ctnUsesSection,ctnUseUnit]) then begin
+    if (CursorNode.Desc = ctnUseUnitNamespace) then begin
+      NewExprType.Desc:=xtContext;
+      NewExprType.Context.Node:=CursorNode;
+      NewExprType.Context.Tool:=Self;
+      CleanPosToCaret(CursorNode.StartPos, NewPos);
+      NewTopLine := NewPos.Y;
+      Result := True;
+      Exit;
+    end else
+    if (CursorNode.Desc in [ctnUsesSection,ctnUseUnitClearName]) then begin
       // in uses section
       //DebugLn(['TFindDeclarationTool.FindDeclaration IsUsesSection']);
       Result:=FindDeclarationInUsesSection(CursorNode,CleanCursorPos,
@@ -2751,7 +2760,10 @@ begin
     ReadNextAtom;
     if not UpAtomIs('USES') then
       RaiseUsesExpected;
-  end;
+  end else
+  if (UsesNode.Desc = ctnUseUnitClearName) then
+    MoveCursorToNodeStart(UsesNode.Parent);
+
   repeat
     ReadNextAtom;  // read name
     if CurPos.StartPos>CleanPos then break;
@@ -3261,11 +3273,20 @@ begin
         end;
       end;
 
-    ctnUseUnit:
+    ctnUseUnitNamespace:
+      begin
+        // hint for unit namespace in "uses" section
+        Result += 'namespace ';
+        MoveCursorToNodeStart(Node);
+        ReadNextAtom;
+        Result := Result + GetAtom;
+      end;
+
+    ctnUseUnitClearName:
       begin
         // hint for unit in "uses" section
         Result += 'unit ';
-        MoveCursorToNodeStart(Node);
+        MoveCursorToNodeStart(Node.Parent);
         Result := Result + ReadIdentifierWithDots;
       end
 
@@ -3974,6 +3995,55 @@ var
     //debugln(['SearchInHelpers END']);
   end;
 
+  function SearchInNamespaces(UsesNode, SourceNamespaceNode: TCodeTreeNode): Boolean;
+  var
+    UnitNode, ThisNamespaceNode, TargetNamespaceNode: TCodeTreeNode;
+    Match: Boolean;
+  begin
+    Result := False;
+    if UsesNode=nil then Exit;
+
+    UnitNode := UsesNode.LastChild;
+    while UnitNode<>nil do
+    begin
+      ThisNamespaceNode := SourceNamespaceNode.Parent.FirstChild;
+      TargetNamespaceNode := UnitNode.FirstChild;
+      Match := False;
+      while (ThisNamespaceNode<>nil) and (TargetNamespaceNode<>nil) do
+      begin
+        if CompareIdentifiers(
+          @Src[ThisNamespaceNode.StartPos],
+          @Src[TargetNamespaceNode.StartPos]) <> 0
+        then Break;
+
+        if (ThisNamespaceNode=SourceNamespaceNode) then
+        begin
+          Match := True;
+          Break;
+        end;
+
+        ThisNamespaceNode := ThisNamespaceNode.NextBrother;
+        TargetNamespaceNode := TargetNamespaceNode.NextBrother;
+      end;
+      if Match then
+      begin
+        //namespace paths match
+        if (TargetNamespaceNode.NextBrother<>nil)
+           and (
+             (Params.Identifier=nil) or
+              CompareSrcIdentifiers(TargetNamespaceNode.NextBrother.StartPos,Params.Identifier))
+        then begin
+          Params.SetResult(Self,TargetNamespaceNode.NextBrother);
+          Result:=CheckResult(true,true);
+          if not (fdfCollect in Flags) then
+            exit;
+        end;
+      end;
+
+      UnitNode := UnitNode.PriorBrother;
+    end;
+  end;
+
   function SearchNextNode: boolean;
   const
     AbortNoCacheResult = false;
@@ -4210,6 +4280,14 @@ begin
     Result:=FindIdentifierInInterface(Params.IdentifierTool,Params);
     CheckResult(Result,false);
     exit;
+  end;
+
+  if (ContextNode.Desc=ctnUseUnitNamespace) then
+  begin
+    //search in namespaces
+    if SearchInNamespaces(FindMainUsesNode, Params.ContextNode) then exit;
+    if SearchInNamespaces(FindImplementationUsesNode, Params.ContextNode) then exit;
+    Exit;
   end;
 
   // find class helper functions
@@ -6127,6 +6205,8 @@ begin
   ListOfPCodeXYPosition:=nil;
   BuildTreeAndGetCleanPos(CursorPos,CleanPos);
   Node:=FindDeepestNodeAtPos(CleanPos,true);
+  if Node.Desc in [ctnUseUnitNamespace,ctnUseUnitClearName] then
+    Node:=Node.Parent;
   if Node.Desc<>ctnUseUnit then
     RaiseException('This function needs the cursor at a unit in a uses clause');
   // cursor is on an used unit -> try to locate it
@@ -7333,19 +7413,20 @@ begin
     Node:=UsesNode.LastChild;
     while Node<>nil do begin
       if (fdfCollect in Params.Flags) then begin
-        CollectResult:=DoOnIdentifierFound(Params,Node);
+        CollectResult:=DoOnIdentifierFound(Params,Node.FirstChild);
         if CollectResult=ifrAbortSearch then begin
           Result:=false;
           exit;
         end else if CollectResult=ifrSuccess then begin
           Result:=true;
-          Params.SetResult(Self,Node);
+          Params.SetResult(Self,Node.FirstChild);
           exit;
         end;
       end else if CompareSrcIdentifiers(Node.StartPos,Params.Identifier) then begin
         // the searched identifier was a uses AUnitName, point to the identifier in
         // the uses section
-        Params.SetResult(Self,Node,Node.StartPos);
+        // if the unit name has a namespace defined point to the namespace
+        Params.SetResult(Self,Node.FirstChild);
         Result:=true;
         exit;
       end;
@@ -8525,7 +8606,7 @@ var
     {$IFDEF ShowExprEval}
     debugln(['  FindExpressionTypeOfTerm ResolveUseUnit used unit -> interface node ',dbgstr(ExprType.Context.Tool.ExtractNode(ExprType.Context.Node,[]))]);
     {$ENDIF}
-    AnUnitName:=aTool.ExtractUsedUnitName(ExprType.Context.Node,@InFilename);
+    AnUnitName:=aTool.ExtractUsedUnitName(ExprType.Context.Node.Parent,@InFilename);
     NewCodeTool:=aTool.FindCodeToolForUsedUnit(AnUnitName,InFilename,true);
     NewCodeTool.BuildInterfaceIdentifierCache(true);
     NewNode:=NewCodeTool.FindInterfaceNode;
@@ -8568,7 +8649,7 @@ var
         ExprType.Context.Node:=ExprType.Context.Tool.GetInterfaceNode;
       end;
     end
-    else if (ExprType.Context.Node.Desc=ctnUseUnit) then begin
+    else if (ExprType.Context.Node.Desc=ctnUseUnitClearName) then begin
       // uses unit name => interface of used unit
       ResolveUseUnit;
     end

@@ -169,12 +169,19 @@ type
     function GetNodeHash(ANode: TCodeTreeNode): string;
     function CompareParamList(CompareItem: TIdentifierListItem): integer;
     function CompareParamList(CompareItem: TIdentifierListSearchItem): integer;
-    function CalcMemSize: PtrUInt;
+    function CalcMemSize: PtrUInt; virtual;
   public
     property ParamTypeList: string read GetParamTypeList write SetParamTypeList;
     property ParamNameList: string read GetParamNameList write SetParamNameList;
     property ResultType: string read FResultType write SetResultType;
     property Node: TCodeTreeNode read GetNode write SetNode;
+  end;
+
+  TUnitNameSpaceIdentifierListItem = class(TIdentifierListItem)
+  public
+    UnitFileName: string;
+    IdentifierStartInUnitName: Integer;
+    function CalcMemSize: PtrUInt; override;
   end;
   
   TIdentifierListFlag = (
@@ -360,6 +367,9 @@ type
                                     // property names in source)
     FIDTFoundMethods: TAVLTree;// tree of TCodeTreeNodeExtension Txt=clean text
     FIDTTreeOfUnitFiles: TAVLTree;// tree of TUnitFileInfo
+    FIDTTreeOfUnitFiles_NamespacePath: string;
+    FIDTTreeOfUnitFiles_CaseInsensitive: Boolean;
+    FIDTTreeOfNamespaces: TAVLTree;// tree of TNameSpaceInfo
     procedure AddToTreeOfUnitFileInfo(const AFilename: string);
     procedure AddBaseConstant(const BaseName: PChar);
     procedure AddBaseType(const BaseName: PChar);
@@ -376,7 +386,7 @@ type
       const Context, GatherContext: TFindContext);
     procedure GatherUsefulIdentifiers(CleanPos: integer;
       const Context, GatherContext: TFindContext);
-    procedure GatherUnitnames;
+    procedure GatherUnitnames(const NameSpacePath: string = '');
     procedure GatherSourceNames(const Context: TFindContext);
     procedure GatherContextKeywords(const Context: TFindContext;
       CleanPos: integer; BeautifyCodeOptions: TBeautifyCodeOptions);
@@ -501,6 +511,14 @@ begin
       Result+=dbgs(f);
     end;
   Result:='['+Result+']';
+end;
+
+{ TUnitNameSpaceIdentifierListItem }
+
+function TUnitNameSpaceIdentifierListItem.CalcMemSize: PtrUInt;
+begin
+  Result := inherited CalcMemSize
+    +MemSizeString(UnitFileName);
 end;
 
 { TIdentifierList }
@@ -905,7 +923,8 @@ end;
 
 procedure TIdentCompletionTool.AddToTreeOfUnitFileInfo(const AFilename: string);
 begin
-  AddToTreeOfUnitFiles(FIDTTreeOfUnitFiles,AFilename,false);
+  AddToTreeOfUnitFilesOrNamespaces(FIDTTreeOfUnitFiles,FIDTTreeOfNamespaces,
+    FIDTTreeOfUnitFiles_NamespacePath,AFilename,FIDTTreeOfUnitFiles_CaseInsensitive,false);
 end;
 
 procedure TIdentCompletionTool.AddCompilerProcedure(const AProcName, AParameterList: PChar);
@@ -1225,7 +1244,7 @@ begin
   ctnRecordCase:
     Ident:=@FoundContext.Tool.Src[Params.NewCleanPos];
 
-  ctnUseUnit:
+  ctnUseUnitNamespace,ctnUseUnitClearName:
     if (FoundContext.Tool=Self) then begin
       Ident:=@Src[FoundContext.Node.StartPos];
     end;
@@ -1295,7 +1314,7 @@ procedure TIdentCompletionTool.GatherPredefinedIdentifiers(CleanPos: integer;
         CompilerFuncLevel,
         nil,
         nil,
-        ctnUseUnit);
+        ctnUseUnitClearName);
     CurrentIdentifierList.Add(NewItem);
   end;
 
@@ -1486,7 +1505,7 @@ begin
   end;
 end;
 
-procedure TIdentCompletionTool.GatherUnitnames;
+procedure TIdentCompletionTool.GatherUnitnames(const NameSpacePath: string);
 
   procedure GatherUnitsFromSet;
   begin
@@ -1499,10 +1518,11 @@ var
   BaseDir: String;
   ANode: TAVLTreeNode;
   UnitFileInfo: TUnitFileInfo;
-  NewItem: TIdentifierListItem;
+  NewItem: TUnitNameSpaceIdentifierListItem;
   UnitExt: String;
   SrcExt: String;
   CurSourceName: String;
+  NameSpaceInfo: TNameSpaceInfo;
 begin
   UnitPath:='';
   SrcPath:='';
@@ -1510,37 +1530,64 @@ begin
   //DebugLn('TIdentCompletionTool.GatherUnitnames UnitPath="',UnitPath,'" SrcPath="',SrcPath,'"');
   BaseDir:=ExtractFilePath(MainFilename);
   FIDTTreeOfUnitFiles:=nil;
+  FIDTTreeOfNamespaces:=nil;
   try
     // search in unitpath
+    FIDTTreeOfUnitFiles_CaseInsensitive := true;
+    FIDTTreeOfUnitFiles_NamespacePath := NameSpacePath;
     UnitExt:='pp;pas;ppu';
     if Scanner.CompilerMode=cmMacPas then
       UnitExt:=UnitExt+';p';
-    GatherUnitFiles(BaseDir,UnitPath,UnitExt,false,true,FIDTTreeOfUnitFiles);
+    GatherUnitFiles(BaseDir,UnitPath,UnitExt,NameSpacePath,false,true,FIDTTreeOfUnitFiles, FIDTTreeOfNamespaces);
     // search in srcpath
     SrcExt:='pp;pas';
     if Scanner.CompilerMode=cmMacPas then
       SrcExt:=SrcExt+';p';
-    GatherUnitFiles(BaseDir,SrcPath,SrcExt,false,true,FIDTTreeOfUnitFiles);
+    GatherUnitFiles(BaseDir,SrcPath,SrcExt,NameSpacePath,false,true,FIDTTreeOfUnitFiles, FIDTTreeOfNamespaces);
     // add unitlinks
     GatherUnitsFromSet;
     // create list
     CurSourceName:=GetSourceName;
-    ANode:=FIDTTreeOfUnitFiles.FindLowest;
-    while ANode<>nil do begin
-      UnitFileInfo:=TUnitFileInfo(ANode.Data);
-      if CompareIdentifiers(PChar(Pointer(UnitFileInfo.FileUnitName)),
-                            PChar(Pointer(CurSourceName)))<>0
-      then begin
-        NewItem:=TIdentifierListItem.Create(
-            icompCompatible,true,0,
-            CurrentIdentifierList.CreateIdentifier(UnitFileInfo.FileUnitName),
-            0,nil,nil,ctnUnit);
-        CurrentIdentifierList.Add(NewItem);
+    if FIDTTreeOfUnitFiles<> nil then
+    begin
+      ANode:=FIDTTreeOfUnitFiles.FindLowest;
+      while ANode<>nil do begin
+        UnitFileInfo:=TUnitFileInfo(ANode.Data);
+        if CompareText(PChar(Pointer(UnitFileInfo.FileUnitName)), Length(UnitFileInfo.FileUnitName),
+                       PChar(Pointer(CurSourceName)), Length(CurSourceName), False)<>0
+        then begin
+          // oooooo
+          NewItem:=TUnitNameSpaceIdentifierListItem.Create(
+              icompCompatible,true,0,
+              CurrentIdentifierList.CreateIdentifier(UnitFileInfo.FileUnitNameWithoutNamespace),
+              0,nil,nil,ctnUnit);
+          NewItem.UnitFileName := UnitFileInfo.Filename;
+          NewItem.IdentifierStartInUnitName := UnitFileInfo.IdentifierStartInUnitName;
+          if NewItem.IdentifierStartInUnitName < 1 then
+            NewItem.IdentifierStartInUnitName := 1;
+          CurrentIdentifierList.Add(NewItem);
+        end;
+        ANode:=FIDTTreeOfUnitFiles.FindSuccessor(ANode);
       end;
-      ANode:=FIDTTreeOfUnitFiles.FindSuccessor(ANode);
+    end;
+    if FIDTTreeOfNamespaces<>nil then
+    begin
+      ANode:=FIDTTreeOfNamespaces.FindLowest;
+      while ANode<>nil do begin
+        NameSpaceInfo:=TNameSpaceInfo(ANode.Data);
+        NewItem:=TUnitNameSpaceIdentifierListItem.Create(
+            icompCompatible,true,0,
+            CurrentIdentifierList.CreateIdentifier(NameSpaceInfo.NameSpace),
+            0,nil,nil,ctnUseUnitNamespace);
+        NewItem.UnitFileName := NameSpaceInfo.Filename;
+        NewItem.IdentifierStartInUnitName := NameSpaceInfo.IdentifierStartInUnitName;
+        CurrentIdentifierList.Add(NewItem);
+        ANode:=FIDTTreeOfNamespaces.FindSuccessor(ANode);
+      end;
     end;
   finally
     FreeTreeOfUnitFiles(FIDTTreeOfUnitFiles);
+    FreeTreeOfUnitFiles(FIDTTreeOfNamespaces);
   end;
 end;
 
@@ -2490,6 +2537,7 @@ var
   IdentStartXY: TCodeXYPosition;
   InFrontOfDirective: Boolean;
   ExprType: TExpressionType;
+  IdentifierPath: string;
   
   procedure CheckProcedureDeclarationContext;
   var
@@ -2551,6 +2599,18 @@ begin
         CurrentIdentifierList.StartAtom:=CurPos;
       end;
 
+      MoveCursorToCleanPos(IdentStartPos);
+      ReadPriorAtom;
+      IdentifierPath := '';
+      while CurPos.Flag = cafPoint do
+      begin
+        ReadPriorAtom;
+        if CurPos.Flag <> cafWord then
+          Break;
+        IdentifierPath := GetUpAtom + '.' + IdentifierPath;
+        ReadPriorAtom;
+      end;
+
       // find context
       {$IFDEF CTDEBUG}
       DebugLn('TIdentCompletionTool.GatherIdentifiers B',
@@ -2560,8 +2620,8 @@ begin
       {$ENDIF}
       GatherContext:=CreateFindContext(Self,CursorNode);
       CurrentIdentifierList.NewMemberVisibility:=GetClassVisibility(CursorNode);
-      if CursorNode.Desc in [ctnUsesSection,ctnUseUnit] then begin
-        GatherUnitNames;
+      if CursorNode.Desc in [ctnUsesSection,ctnUseUnit,ctnUseUnitNamespace,ctnUseUnitClearName] then begin
+        GatherUnitNames(IdentifierPath);
         MoveCursorToCleanPos(IdentEndPos);
         ReadNextAtom;
         if (CurPos.Flag=cafWord) and (not UpAtomIs('IN')) then begin

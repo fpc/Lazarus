@@ -322,10 +322,16 @@ begin
         s:='label';
       end;
 
-    ctnUnit, ctnUseUnit:
+    ctnUnit, ctnUseUnitClearName:
       begin
         AColor:=clBlack;
         s:='unit';
+      end;
+
+    ctnUseUnitNamespace:
+      begin
+        AColor:=clBlack;
+        s:='namespace';
       end;
 
     ctnNone:
@@ -544,13 +550,29 @@ function FindUnitName(IdentList: TIdentifierList;
   IdentItem: TIdentifierListItem): string;
 var
   CodeBuf: TCodeBuffer;
+  LastPointPos: Integer;
 begin
   Result:=IdentItem.Identifier;
-  CodeBuf:=CodeToolBoss.FindUnitSource(IdentList.StartContextPos.Code,Result,'');
-  if CodeBuf=nil then exit;
-  Result:=CodeToolBoss.GetSourceName(CodeBuf,true);
+  if IdentItem is TUnitNameSpaceIdentifierListItem then
+  begin
+    CodeBuf:=CodeToolBoss.FindFile(TUnitNameSpaceIdentifierListItem(IdentItem).UnitFileName);
+    if CodeBuf=nil then Exit;
+    Result:=CodeToolBoss.GetSourceName(CodeBuf,true);
+    Result:=Copy(CodeToolBoss.GetSourceName(CodeBuf,true), TUnitNameSpaceIdentifierListItem(IdentItem).IdentifierStartInUnitName, Length(IdentItem.Identifier));
+  end else
+  begin
+    CodeBuf:=CodeToolBoss.FindUnitSource(IdentList.StartContextPos.Code,Result,'');
+    if CodeBuf=nil then Exit;
+    Result:=CodeToolBoss.GetSourceName(CodeBuf,true);
+  end;
   if Result='' then
-    Result:=IdentItem.Identifier;
+    Result:=IdentItem.Identifier
+  else
+  begin
+    LastPointPos := LastDelimiter('.', Result);
+    if LastPointPos > 0 then
+      Result := Copy(Result, LastPointPos+1, High(Integer));
+  end;
 end;
 
 function GetIdentCompletionValue(aCompletion : TSynCompletion;
@@ -617,7 +639,7 @@ begin
         IsReadOnly:=IdentItem.IsPropertyReadOnly;
       end;
 
-    ctnUnit, ctnPackage, ctnLibrary:
+    ctnUnit, ctnPackage, ctnLibrary, ctnUseUnitNamespace:
       ValueType:=icvUnitName;
   end;
 
@@ -739,7 +761,7 @@ begin
   end;
 
   if CodeToolsOpts.IdentComplAddSemicolon and
-     (IdentItem.GetDesc=ctnUseUnit) and (AddChar<>'.') and
+     (IdentItem.GetDesc in [ctnUseUnitNamespace,ctnUseUnitClearName]) and (AddChar<>'.') and
      not IdentList.StartUpAtomBehindIs('.')//check if there is already a point
   then
     Result+='.';
