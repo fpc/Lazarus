@@ -3030,10 +3030,14 @@ end;
 
 function TPascalParserTool.ReadTilVariableEnd(
   ExceptionOnError, WithAsOperator: boolean): boolean;
-{ Examples:
+{ After reading CurPos is at atom behind variable.
+
+  Examples:
     A
+    A^
     A.B^.C[...].D(...).E
     (...).A
+    T(...).A
     @B
     inherited A
     A as B
@@ -3171,11 +3175,12 @@ begin
     end;
   end;
   // read statement
-  ReadNextAtom;
   if CreateNodes then begin
     CreateChildNode;
+    CurNode.StartPos:=CurPos.EndPos;
     CurNode.Desc:=ctnWithStatement;
   end;
+  ReadNextAtom;
   Result:=ReadTilStatementEnd(ExceptionOnError,CreateNodes);
   CloseNodes;
 end;
