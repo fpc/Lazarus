@@ -499,6 +499,7 @@ type
     function GetMinSize: Integer;
     function GetSizePriority: Integer;
     function GetReadOnly: Boolean;
+    function GetStoredWidth: Integer;
     function GetVisible: Boolean;
     function GetWidth: Integer;
     function IsAlignmentStored: boolean;
@@ -558,6 +559,7 @@ type
     procedure FillDefaultFont;
     function  IsDefault: boolean; virtual;
     property Grid: TCustomGrid read GetGrid;
+    property StoredWidth: Integer read GetStoredWidth;
     property WidthChanged: boolean read FWidthChanged;
 
   published
@@ -11381,6 +11383,14 @@ begin
     result := FReadOnly^;
 end;
 
+function TGridColumn.GetStoredWidth: Integer;
+begin
+  if FWidth=nil then
+    result := -1
+  else
+    result := FWidth^;
+end;
+
 function TGridColumn.GetValueChecked: string;
 begin
   if FValueChecked = nil then
@@ -11634,13 +11644,22 @@ procedure TGridColumn.SetWidth(const AValue: Integer);
 begin
   if (AValue=0) and not Visible then
     exit;
-  if FWidth = nil then begin
-    if AValue=GetDefaultWidth then
+  if AValue>0 then begin
+    if FWidth = nil then begin
+      if AValue=GetDefaultWidth then
+        exit;
+      New(FWidth)
+    end else if FWidth^ = AVAlue then
       exit;
-    New(FWidth)
-  end else if FWidth^ = AVAlue then
-    exit;
-  FWidth^ := AValue;
+    FWidth^ := AValue;
+  end else begin
+    // negative value is handed over - dispose FWidth to use DefaultWidth
+    if FWidth <> nil then begin
+      Dispose(FWidth);
+      FWidth := nil;
+    end else
+      exit;
+  end;
   FWidthChanged:=true;
   ColumnChanged;
 end;
