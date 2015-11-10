@@ -4637,8 +4637,20 @@ var
       ReadNextAtom;
       if (CurPos.Flag=cafPoint) or AtomIsChar('<') then begin
         // this is an expression, e.g. A.B or A<B>
+        Include(SubParams.Flags,fdfFindVariable);
         ExprType:=FindExpressionTypeOfTerm(CleanPos,-1,SubParams,false);
         if ExprType.Desc=xtContext then begin
+          if not (ExprType.Context.Node.Desc in [ctnTypeDefinition,ctnGenericType,ctnGenericParameter]) then
+          begin
+            // not a type
+            {$IFDEF ShowTriedBaseContexts}
+            debugln(['TFindDeclarationTool.FindBaseTypeOfNode.SearchIdentifier expression: type expected but found ',ExprTypeToString(ExprType)]);
+            {$ENDIF}
+            MoveCursorToCleanPos(IdentStart);
+            ReadNextAtom;
+            RaiseExceptionFmt(ctsStrExpectedButAtomFound,
+                              [ctsTypeIdentifier,GetAtom]);
+          end;
           Context:=ExprType.Context;
         end else begin
           IsPredefined:=true;
