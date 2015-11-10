@@ -559,6 +559,7 @@ type
     procedure FillDefaultFont;
     function  IsDefault: boolean; virtual;
     property Grid: TCustomGrid read GetGrid;
+    property DefaultWidth: Integer read GetDefaultWidth;
     property StoredWidth: Integer read GetStoredWidth;
     property WidthChanged: boolean read FWidthChanged;
 
