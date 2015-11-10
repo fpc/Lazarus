@@ -18,6 +18,7 @@ type
   TCustomClass = class(TBaseClass)
   public type
     TCustomSubClass = class(TBaseSubClass{declaration:fdt_nestedclasses.TBaseClass.TBaseSubClass})
+    public
       procedure DoSomething; override;
     end;
   end;
@@ -38,6 +39,10 @@ begin
 
 end;
 
-
+var
+  s: TCustomClass.TCustomSubClass;
+begin
+  s:=TCustomClass.TCustomSubClass{declaration:fdt_nestedclasses.TCustomClass.TCustomSubClass}.Create;
+  s.DoSomething{declaration:fdt_nestedclasses.TCustomClass.TCustomSubClass.DoSomething};
 end.
 
