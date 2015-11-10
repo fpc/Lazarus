@@ -5,7 +5,7 @@ interface
 
 // this must fail
 var
-  test: tudots.dot.next.ttest{declaration:-};
+  test: tudots.dot.next.ttest{ todo declaration:-};
 
 implementation
 
