@@ -237,12 +237,12 @@ type
 
   TNameSpaceInfo = class
   private
-    FFilename: string;
+    FUnitName: string;
     FNamespace: string;
     FIdentifierStartInUnitName: Integer;
   public
-    constructor Create(const TheNamespace, TheFilename: string; TheIdentifierStartInUnitName: Integer);
-    property Filename: string read FFilename;
+    constructor Create(const TheNamespace, TheUnitName: string; TheIdentifierStartInUnitName: Integer);
+    property UnitName: string read FUnitName;
     property Namespace: string read FNamespace;
     property IdentifierStartInUnitName: Integer read FIdentifierStartInUnitName;
   end;
@@ -260,7 +260,7 @@ procedure AddToTreeOfUnitFiles(var TreeOfUnitFiles: TAVLTree;
   const Filename, Unitname: string;
   KeepDoubles: boolean);
 procedure AddToTreeOfNamespaces(var TreeOfNameSpaces: TAVLTree;
-  const FileName, UnitName, ParentNameSpacePath: string;
+  const UnitName, ParentNameSpacePath: string;
   KeepDoubles: boolean);
 function CompareUnitFileInfos(Data1, Data2: Pointer): integer;
 function CompareNameSpaceInfos(Data1, Data2: Pointer): integer;
@@ -5703,7 +5703,7 @@ begin
     AddToTreeOfUnitFiles(TreeOfUnitFiles,FileName,UnitName,
                        KeepDoubles);
   if NameSpaceFits then
-    AddToTreeOfNamespaces(TreeOfNamespaces,FileName,UnitName,NameSpacePath,
+    AddToTreeOfNamespaces(TreeOfNamespaces,UnitName,NameSpacePath,
                           KeepDoubles)
 end;
 
@@ -5903,8 +5903,8 @@ begin
   TreeOfUnitFiles.Add(NewItem);
 end;
 
-procedure AddToTreeOfNamespaces(var TreeOfNameSpaces: TAVLTree; const FileName,
-  UnitName, ParentNameSpacePath: string; KeepDoubles: boolean);
+procedure AddToTreeOfNamespaces(var TreeOfNameSpaces: TAVLTree; const UnitName,
+  ParentNameSpacePath: string; KeepDoubles: boolean);
 var
   AnNameSpace: String;
   NewItem: TNameSpaceInfo;
@@ -5927,7 +5927,7 @@ begin
   // add
   if TreeOfNameSpaces=nil then
     TreeOfNameSpaces:=TAVLTree.Create(@CompareNameSpaceInfos);
-  NewItem:=TNameSpaceInfo.Create(AnNameSpace,FileName,Length(ParentNameSpacePath)+1);
+  NewItem:=TNameSpaceInfo.Create(AnNameSpace,UnitName,Length(ParentNameSpacePath)+1);
   TreeOfNameSpaces.Add(NewItem);
 end;
 
@@ -6089,11 +6089,11 @@ end;
 
 { TNameSpaceInfo }
 
-constructor TNameSpaceInfo.Create(const TheNamespace, TheFilename: string;
+constructor TNameSpaceInfo.Create(const TheNamespace, TheUnitName: string;
   TheIdentifierStartInUnitName: Integer);
 begin
   FNamespace:=TheNamespace;
-  FFilename:=TheFilename;
+  FUnitName:=TheUnitName;
   FIdentifierStartInUnitName:=TheIdentifierStartInUnitName;
 end;
 
