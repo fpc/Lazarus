@@ -483,7 +483,7 @@ begin
     DesignedForm.RealHeight := Height;
   end
   else
-    spartaIDE.TryFreeFormData(Self);
+    TSpartaMainIDE.TryFreeFormData(Self);
 end;
 
 { TFakeCustomNonControl }
@@ -631,7 +631,7 @@ begin
     DesignedForm.RealHeight := Height;
   end
   else
-    spartaIDE.TryFreeFormData(Self);
+    TSpartaMainIDE.TryFreeFormData(Self);
 end;
 
 procedure TFakeCustomNonControl.SetMediator(AValue: TDesignerMediator);

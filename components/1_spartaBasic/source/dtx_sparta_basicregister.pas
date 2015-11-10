@@ -49,7 +49,7 @@ begin
       Name := 'HideComponentPageControlButton';
       Parent := tbStandard;
       Enabled := True;
-      OnClick := spartaIDE.mnuHideHideComponentPageControlClicked;
+      OnClick := TSpartaMainIDE.mnuHideHideComponentPageControlClicked;
 
       ImageIndex := IDEImages.LoadImage(16, 'SHOW_PALETTE_DOWN');
       Hint := 'Show components';
@@ -101,8 +101,8 @@ begin
 
     BorderSpacing.Left := 3;
     Button.LoadGlyphFromResourceName(HINSTANCE, 'MENU_CLOSE');
-    OnButtonClick:=spartaIDE.eFilterClear;
-    OnChange := spartaIDE.eFilterChange;
+    OnButtonClick:=TSpartaMainIDE.eFilterClear;
+    OnChange := TSpartaMainIDE.eFilterChange;
   end
 end;
 
@@ -112,24 +112,24 @@ begin
   FormEditingHook.NonFormProxyDesignerForm[NonControlProxyDesignerFormId] := TFakeNonControl;
   FormEditingHook.NonFormProxyDesignerForm[FrameProxyDesignerFormId] := TFakeFrame;
 
-  Screen.AddHandlerFormAdded(spartaIDE.Screen_FormAdded);
-  Screen.AddHandlerRemoveForm(spartaIDE.Screen_FormDel);
+  Screen.AddHandlerFormAdded(TSpartaMainIDE.Screen_FormAdded);
+  Screen.AddHandlerRemoveForm(TSpartaMainIDE.Screen_FormDel);
 {$IFDEF USE_POPUP_PARENT_DESIGNER}
   TCustomForm(LazarusIDE.GetMainBar).AddHandlerOnBeforeDestruction(spartaIDE.OnBeforeClose);
 {$ENDIF}
-  SourceEditorManagerIntf.RegisterChangeEvent(semWindowCreate, spartaIDE.WindowCreate);
-  SourceEditorManagerIntf.RegisterChangeEvent(semWindowDestroy, spartaIDE.WindowDestroy);
-  SourceEditorManagerIntf.RegisterChangeEvent(semWindowShow, spartaIDE.WindowShow);
-  SourceEditorManagerIntf.RegisterChangeEvent(semWindowHide, spartaIDE.WindowHide);
-  SourceEditorManagerIntf.RegisterChangeEvent(semEditorActivate, spartaIDE.EditorActivated);
-  SourceEditorManagerIntf.RegisterChangeEvent(semEditorDestroy, spartaIDE.EditorDestroyed);
-  SourceEditorManagerIntf.RegisterChangeEvent(semEditorCreate, spartaIDE.EditorCreate);
+  SourceEditorManagerIntf.RegisterChangeEvent(semWindowCreate, TSpartaMainIDE.WindowCreate);
+  SourceEditorManagerIntf.RegisterChangeEvent(semWindowDestroy, TSpartaMainIDE.WindowDestroy);
+  SourceEditorManagerIntf.RegisterChangeEvent(semWindowShow, TSpartaMainIDE.WindowShow);
+  SourceEditorManagerIntf.RegisterChangeEvent(semWindowHide, TSpartaMainIDE.WindowHide);
+  SourceEditorManagerIntf.RegisterChangeEvent(semEditorActivate, TSpartaMainIDE.EditorActivated);
+  SourceEditorManagerIntf.RegisterChangeEvent(semEditorDestroy, TSpartaMainIDE.EditorDestroyed);
+  SourceEditorManagerIntf.RegisterChangeEvent(semEditorCreate, TSpartaMainIDE.EditorCreate);
 
-  LazarusIDE.AddHandlerOnShowDesignerFormOfSource(spartaIDE.OnShowDesignerForm);
-  LazarusIDE.AddHandlerOnShowSourceOfActiveDesignerForm(spartaIDE.OnShowSrcEditor);
+  LazarusIDE.AddHandlerOnShowDesignerFormOfSource(TSpartaMainIDE.OnShowDesignerForm);
+  LazarusIDE.AddHandlerOnShowSourceOfActiveDesignerForm(TSpartaMainIDE.OnShowSrcEditor);
 
-  GlobalDesignHook.AddHandlerShowMethod(spartaIDE.OnShowMethod);
-  GlobalDesignHook.AddHandlerRefreshPropertyValues(spartaIDE.OnDesignRefreshPropertyValues);
+  GlobalDesignHook.AddHandlerShowMethod(TSpartaMainIDE.OnShowMethod);
+  GlobalDesignHook.AddHandlerRefreshPropertyValues(TSpartaMainIDE.OnDesignRefreshPropertyValues);
 
 
   IDETabMaster := TDTXTabMaster.Create;
@@ -139,8 +139,8 @@ begin
 end;
 
 finalization
-  Screen.RemoveHandlerFormAdded(spartaIDE.Screen_FormAdded);
-  Screen.RemoveHandlerRemoveForm(spartaIDE.Screen_FormDel);
+  Screen.RemoveHandlerFormAdded(TSpartaMainIDE.Screen_FormAdded);
+  Screen.RemoveHandlerRemoveForm(TSpartaMainIDE.Screen_FormDel);
 
   IDETabMaster.Free;
   IDEComponentsMaster.Free;

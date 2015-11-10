@@ -164,45 +164,42 @@ type
 
   TSpartaMainIDE = class(TObject)
   public
-    procedure TryFreeFormData(Form: TCustomForm);
+    class procedure TryFreeFormData(Form: TCustomForm);
 
-    procedure Screen_FormAdded(Sender: TObject; Form: TCustomForm);
-    procedure Screen_FormDel(Sender: TObject; Form: TCustomForm);
+    class procedure Screen_FormAdded(Sender: TObject; Form: TCustomForm);
+    class procedure Screen_FormDel(Sender: TObject; Form: TCustomForm);
 
-    procedure WindowCreate(Sender: TObject);
-    procedure WindowDestroy(Sender: TObject);
-    procedure WindowShow(Sender: TObject);
-    procedure WindowHide(Sender: TObject);
+    class procedure WindowCreate(Sender: TObject);
+    class procedure WindowDestroy(Sender: TObject);
+    class procedure WindowShow(Sender: TObject);
+    class procedure WindowHide(Sender: TObject);
 
-    procedure EditorActivated(Sender: TObject);
-    procedure EditorDestroyed(Sender: TObject);
-    procedure EditorCreate(Sender: TObject);
+    class procedure EditorActivated(Sender: TObject);
+    class procedure EditorDestroyed(Sender: TObject);
+    class procedure EditorCreate(Sender: TObject);
 
+    class procedure TabChange(Sender: TObject);
 
-    procedure TabChange(Sender: TObject);
-
-    procedure GlobalOnChangeBounds(Sender: TObject);
-    procedure GlobalSNOnChangeBounds(Sender: TObject);
+    class procedure GlobalOnChangeBounds(Sender: TObject);
+    class procedure GlobalSNOnChangeBounds(Sender: TObject);
 {$IFDEF USE_POPUP_PARENT_DESIGNER}
-    procedure OnBeforeClose(Sender: TObject);
+    class procedure OnBeforeClose(Sender: TObject);
 {$ENDIF}
-
-    procedure OnShowDesignerForm(Sender: TObject; AEditor: TSourceEditorInterface;
+    class procedure OnShowDesignerForm(Sender: TObject; AEditor: TSourceEditorInterface;
                                  AComponentPaletteClassSelected: Boolean);
-    procedure OnShowSrcEditor(Sender: TObject);
+    class procedure OnShowSrcEditor(Sender: TObject);
 
-    procedure OnShowMethod(const Name: String);
-    procedure OnDesignRefreshPropertyValues;
+    class procedure OnShowMethod(const Name: String);
+    class procedure OnDesignRefreshPropertyValues;
 
     class function ComponentPageControl: TPageControl; static;
 
-    procedure eFilterChange(Sender: TObject);
-    procedure eFilterClear(Sender: TObject);
-    procedure mnuHideHideComponentPageControlClicked(Sender: TObject);
+    class procedure eFilterChange(Sender: TObject);
+    class procedure eFilterClear(Sender: TObject);
+    class procedure mnuHideHideComponentPageControlClicked(Sender: TObject);
   end;
 
 var
-  spartaIDE: TSpartaMainIDE = nil;
   Forms: Classes.TList; // normal forms
   dsgForms: Classes.TList; // design forms
 {$IFDEF USE_GENERICS_COLLECTIONS}
@@ -889,7 +886,7 @@ end;
 
 { TSpartaMainIDE }
 
-procedure TSpartaMainIDE.Screen_FormAdded(Sender: TObject; Form: TCustomForm);
+class procedure TSpartaMainIDE.Screen_FormAdded(Sender: TObject; Form: TCustomForm);
 var
   LSourceEditor: TSourceEditorInterface;
   LFormData: TDesignFormData;
@@ -929,7 +926,7 @@ begin
           Continue
         else
         begin
-          Screen.Forms[i].AddHandlerOnChangeBounds(spartaIDE.GlobalOnChangeBounds);
+          Screen.Forms[i].AddHandlerOnChangeBounds(GlobalOnChangeBounds);
 
           // if POPUP_WINDOWS is defined then show all forms on main form
           if (LazarusIDE.GetMainBar = Screen.Forms[i]) then
@@ -945,12 +942,12 @@ begin
 
     if Form is TSourceEditorWindowInterface then
     begin
-      Form.AddHandlerOnChangeBounds(spartaIDE.GlobalSNOnChangeBounds);
+      Form.AddHandlerOnChangeBounds(GlobalSNOnChangeBounds);
       Form.PopupMode := pmExplicit;
     end
     else
     begin
-      Form.AddHandlerOnChangeBounds(spartaIDE.GlobalOnChangeBounds);
+      Form.AddHandlerOnChangeBounds(GlobalOnChangeBounds);
 {$IFDEF POPUP_WINDOWS}
       Form.PopupMode := pmExplicit;
 {$ENDIF}
@@ -964,7 +961,7 @@ begin
   end;
 end;
 
-procedure TSpartaMainIDE.TryFreeFormData(Form: TCustomForm);
+class procedure TSpartaMainIDE.TryFreeFormData(Form: TCustomForm);
 var
   LSEWD: TSourceEditorWindowData;
   mpc: TModulePageControl;
@@ -1029,20 +1026,20 @@ begin
   LFormData.Free;
 end;
 
-procedure TSpartaMainIDE.Screen_FormDel(Sender: TObject; Form: TCustomForm);
+class procedure TSpartaMainIDE.Screen_FormDel(Sender: TObject; Form: TCustomForm);
 begin
   if not IsFormDesign(Form) then
   begin
     if Form is TSourceEditorWindowInterface then
-      Form.RemoveHandlerOnChangeBounds(spartaIDE.GlobalSNOnChangeBounds)
+      Form.RemoveHandlerOnChangeBounds(GlobalSNOnChangeBounds)
     else
-      Form.RemoveHandlerOnChangeBounds(spartaIDE.GlobalOnChangeBounds)
+      Form.RemoveHandlerOnChangeBounds(GlobalOnChangeBounds)
   end
   else
     TryFreeFormData(Form);
 end;
 
-procedure TSpartaMainIDE.WindowCreate(Sender: TObject);
+class procedure TSpartaMainIDE.WindowCreate(Sender: TObject);
 var
   LSourceEditorWindow: TSourceEditorWindowInterface;
 begin
@@ -1057,7 +1054,7 @@ begin
   end;
 end;
 
-procedure TSpartaMainIDE.WindowDestroy(Sender: TObject);
+class procedure TSpartaMainIDE.WindowDestroy(Sender: TObject);
 var
   p: Pointer;
   f: TDesignFormData absolute p;
@@ -1075,7 +1072,7 @@ begin
     LastActiveSourceEditorWindow := nil;
 end;
 
-procedure TSpartaMainIDE.WindowShow(Sender: TObject);
+class procedure TSpartaMainIDE.WindowShow(Sender: TObject);
 var
   LWindow: TSourceEditorWindowInterface;
   LWindowData: TSourceEditorWindowData;
@@ -1099,7 +1096,7 @@ begin
   LDesignedForm.ShowWindow;
 end;
 
-procedure TSpartaMainIDE.WindowHide(Sender: TObject);
+class procedure TSpartaMainIDE.WindowHide(Sender: TObject);
 var
   LWindow: TSourceEditorWindowInterface;
   LWindowData: TSourceEditorWindowData;
@@ -1124,7 +1121,7 @@ begin
   LDesignedForm.HideWindow;
 end;
 
-procedure TSpartaMainIDE.EditorActivated(Sender: TObject);
+class procedure TSpartaMainIDE.EditorActivated(Sender: TObject);
 var
   LDesigner: TIDesigner;
   LSourceEditor: TSourceEditorInterface;
@@ -1275,7 +1272,7 @@ begin
   end;
 end;
 
-procedure TSpartaMainIDE.EditorDestroyed(Sender: TObject);
+class procedure TSpartaMainIDE.EditorDestroyed(Sender: TObject);
 var
   LSourceEditor: TSourceEditorInterface;
   LPageCtrl: TModulePageControl;
@@ -1319,7 +1316,7 @@ begin
     LastActiveSourceEditor := nil;
 end;
 
-procedure TSpartaMainIDE.EditorCreate(Sender: TObject);
+class procedure TSpartaMainIDE.EditorCreate(Sender: TObject);
 
 var
   LSourceEditor: TSourceEditorInterface;
@@ -1345,7 +1342,7 @@ var
     LNewTabSheet.PageControl := Result;
     LNewTabSheet.Caption := 'Designer';
 
-    Result.OnChange := spartaIDE.TabChange;
+    Result.OnChange := TabChange;
 
     Result.Parent := LParent;
 
@@ -1359,7 +1356,7 @@ begin
     CreateModulePageControl;
 end;
 
-procedure TSpartaMainIDE.TabChange(Sender: TObject);
+class procedure TSpartaMainIDE.TabChange(Sender: TObject);
 var
   LActiveSourceWindow: TSourceEditorWindowInterface;
   w: TSourceEditorWindowInterface;
@@ -1463,7 +1460,7 @@ begin
   end;
 end;
 
-procedure TSpartaMainIDE.GlobalOnChangeBounds(Sender: TObject);
+class procedure TSpartaMainIDE.GlobalOnChangeBounds(Sender: TObject);
 var
   sewd: TSourceEditorWindowData;
 {$IFNDEF USE_GENERICS_COLLECTIONS}
@@ -1489,7 +1486,7 @@ begin
 {$ENDIF}
 end;
 
-procedure TSpartaMainIDE.GlobalSNOnChangeBounds(Sender: TObject);
+class procedure TSpartaMainIDE.GlobalSNOnChangeBounds(Sender: TObject);
 var
   LWindow: TSourceEditorWindowInterface;
   LWindowData: TSourceEditorWindowData;
@@ -1529,13 +1526,13 @@ begin
 end;
 
 {$IFDEF USE_POPUP_PARENT_DESIGNER}
-procedure TDesignerIDEBoss.OnBeforeClose(Sender: TObject);
+class procedure TDesignerIDEBoss.OnBeforeClose(Sender: TObject);
 begin
   isIdeDestroyed := True;
 end;
 {$ENDIF}
 
-procedure TSpartaMainIDE.OnShowDesignerForm(Sender: TObject; AEditor: TSourceEditorInterface;
+class procedure TSpartaMainIDE.OnShowDesignerForm(Sender: TObject; AEditor: TSourceEditorInterface;
                                  AComponentPaletteClassSelected: Boolean);
 var
   LForm: TDesignFormData;
@@ -1595,12 +1592,12 @@ begin
   IDETabMaster.ShowDesigner(SourceEditorManagerIntf.ActiveEditor);
 end;
 
-procedure TSpartaMainIDE.OnShowSrcEditor(Sender: TObject);
+class procedure TSpartaMainIDE.OnShowSrcEditor(Sender: TObject);
 begin
   IDETabMaster.ShowCode(Sender as TSourceEditorInterface);
 end;
 
-procedure TSpartaMainIDE.OnShowMethod(const Name: String);
+class procedure TSpartaMainIDE.OnShowMethod(const Name: String);
 var
   LForm: TDesignFormData;
   LSecondEditor: TSourceEditorInterface = nil;
@@ -1643,7 +1640,7 @@ begin
   end;
 end;
 
-procedure TSpartaMainIDE.OnDesignRefreshPropertyValues;
+class procedure TSpartaMainIDE.OnDesignRefreshPropertyValues;
 var
   LForm: TCustomForm;
   LSourceWindow: TSourceEditorWindowInterface;
@@ -1697,18 +1694,18 @@ begin
   Result := TPageControl(LazarusIDE.OwningComponent.FindComponent('ComponentPageControl'));
 end;
 
-procedure TSpartaMainIDE.eFilterChange(Sender: TObject);
+class procedure TSpartaMainIDE.eFilterChange(Sender: TObject);
 begin
   if not MainComponentsPalette.IsEmpty then
     MainComponentsPalette.Filter := TEditButton(Sender).Text;
 end;
 
-procedure TSpartaMainIDE.eFilterClear(Sender: TObject);
+class procedure TSpartaMainIDE.eFilterClear(Sender: TObject);
 begin
   TEditButton(Sender).Text:='';
 end;
 
-procedure TSpartaMainIDE.mnuHideHideComponentPageControlClicked(
+class procedure TSpartaMainIDE.mnuHideHideComponentPageControlClicked(
   Sender: TObject);
 var
   AMenuHeight, AHeight: Integer;
@@ -1747,7 +1744,7 @@ begin
 end;
 
 {$IFNDEF USE_GENERICS_COLLECTIONS}
-procedure FreeSourceEditorWindowsValues;
+class procedure FreeSourceEditorWindowsValues;
 var
   LIterator: THashmap<TSourceEditorWindowInterface, TSourceEditorWindowData, THash_TObject>.TIterator;
 begin
