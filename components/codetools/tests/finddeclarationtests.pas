@@ -232,12 +232,16 @@ var
   Info: TSearchRec;
   aFilename, Param, aFileMask: String;
   i: Integer;
+  Verbose: Boolean;
 begin
   aFileMask:='t*.p*';
+  Verbose:=false;
   for i:=1 to ParamCount do begin
     Param:=ParamStr(i);
     if LeftStr(Param,length(fmparam))=fmparam then
       aFileMask:=copy(Param,length(fmparam)+1,100);
+    if Param='-v' then
+      Verbose:=true;
   end;
   Directory:=AppendPathDelim(Directory);
 
@@ -246,6 +250,8 @@ begin
       if faDirectory and Info.Attr>0 then continue;
       aFilename:=Info.Name;
       if not FilenameIsPascalUnit(aFilename) then continue;
+      if Verbose then
+        debugln(['TTestFindDeclaration.TestFiles File="',aFilename,'"']);
       FindDeclarations(Directory+aFilename);
     until FindNextUTF8(Info)<>0;
   end;

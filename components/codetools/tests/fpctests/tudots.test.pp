@@ -5,12 +5,12 @@ interface
 
 // this must fail
 var
-  test: tudots.dot.next.ttest{ todo };
+  test: tudots.dot.next.ttest{declaration:-};
 
 implementation
 
 uses
-  tudots.dot.next{ todo declaration:tudots.dot.next};
+  tudots.dot.next{declaration:tudots.dot.next};
 
 end.
 
