@@ -473,6 +473,7 @@ var
   aPrinterName : string;
 begin
   Result:=-1;
+  //debugln(['TCUPSPrinter.PrintFile START ',aFileName]);
   if aFileName='' then
     raise Exception.Create('TCUPSPrinter.PrintFile missing Filename');
   if not CUPSLibInstalled then Exit;
@@ -490,6 +491,7 @@ begin
 
     {$IFDEF DebugCUPS}
     DebugOptions;
+    debugln(['TCUPSPrinter.PrintFile aPrinterName="',aPrinterName,'" aFileName="',aFileName,'" Size=',FileSizeUtf8(aFileName)]);
     {$ENDIF}
 
     Result:=cupsdyn.cupsPrintFile(PChar(aPrinterName),PChar(aFileName),
@@ -934,7 +936,7 @@ begin
       if Filename<>'' then
         CopyFile(FOutputFileName, FileName)
       else begin
-        CupsResult:=PrintFile(FOutputFileName+'1');
+        CupsResult:=PrintFile(FOutputFileName);
         if CupsResult<=0 then
           raise Exception.Create('CUPS printing: '+GetLastError);
       end;
