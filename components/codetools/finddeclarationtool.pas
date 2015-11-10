@@ -4606,12 +4606,10 @@ var
     TestContext: TFindContext;
     IdentStart: LongInt;
     SubParams: TFindDeclarationParams;
-    aNode: TCodeTreeNode;
-    AnUnitIdentifier: String;
-    UnitInFilename: AnsiString;
-    NewCode: TCodeBuffer;
+    ExprType: TExpressionType;
   begin
     IsPredefined:=false;
+
     SubParams:=TFindDeclarationParams.Create(Params);
     try
       SubParams.GenParams := Params.GenParams;
@@ -4621,7 +4619,6 @@ var
       {$ENDIF}
       SubParams.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound]
                       +(fdfGlobals*SubParams.Flags);
-      SubParams.SetIdentifier(Self,@Src[IdentStart],nil);
       SubParams.ContextNode:=StartNode.Parent;
       if (SubParams.ContextNode.Desc in (AllIdentifierDefinitions))
       then begin
@@ -4634,56 +4631,30 @@ var
       if SubParams.ContextNode.Desc=ctnProcedureHead then
         // skip search in proc parameters
         SubParams.ContextNode:=SubParams.ContextNode.Parent;
-      TypeFound:=FindIdentifierInContext(SubParams);
-      if TypeFound and (SubParams.NewNode.Desc=ctnUseUnit)
-      and (SubParams.NewCodeTool=Self)
-      then begin
-        {$IFDEF ShowTriedBaseContexts}
-        debugln(['TFindDeclarationTool.FindBaseTypeOfNode.SearchIdentifier is an entry in the uses section, getting tool...']);
-        {$ENDIF}
-        AnUnitIdentifier:=ExtractUsedUnitName(SubParams.NewNode,@UnitInFilename);
-        NewCode:=FindUnitSource(AnUnitIdentifier,UnitInFilename,true,SubParams.NewNode.StartPos);
-        if Assigned(FOnGetCodeToolForBuffer) then
-          SubParams.NewCodeTool:=FOnGetCodeToolForBuffer(Self,NewCode,false)
-        else if NewCode=TCodeBuffer(Scanner.MainCode) then
-          SubParams.NewCodeTool:=Self;
-        if (SubParams.NewCodeTool=nil) then begin
-          CurPos.StartPos:=-1;
-          RaiseException(Format('Unable to create codetool for "%s"',[NewCode.Filename]));
+
+      MoveCursorToCleanPos(CleanPos);
+      ReadNextAtom;
+      ReadNextAtom;
+      if (CurPos.Flag=cafPoint) or AtomIsChar('<') then begin
+        // this is an expression, e.g. A.B or A<B>
+        ExprType:=FindExpressionTypeOfTerm(CleanPos,-1,SubParams,false);
+        if ExprType.Desc=xtContext then begin
+          Context:=ExprType.Context;
+        end else begin
+          IsPredefined:=true;
         end;
-        SubParams.NewCodeTool.BuildTree(lsrImplementationStart);
-        SubParams.NewNode:=SubParams.NewCodeTool.Tree.Root;
+        exit;
       end;
+
+      SubParams.SetIdentifier(Self,@Src[IdentStart],nil);
+      TypeFound:=FindIdentifierInContext(SubParams);
       if TypeFound and (SubParams.NewNode.Desc in [ctnUnit,ctnLibrary,ctnPackage])
       then begin
         // identifier is a unit
-        // => check for AUnitName.typename
+        // => type expected
         MoveCursorToCleanPos(IdentStart);
         ReadNextAtom; // read AUnitName
-        if not ReadNextAtomIsChar('.') then
-          SaveRaiseCharExpectedButAtomFound('.');
-        ReadNextAtom; // read type identifier
-        IdentStart:=CurPos.StartPos;
-        {$IFDEF ShowTriedBaseContexts}
-        debugln(['TFindDeclarationTool.FindBaseTypeOfNode.SearchIdentifier searching identifier "',GetIdentifier(@Src[IdentStart]),'" in unit ...']);
-        {$ENDIF}
-        AtomIsIdentifierE;
-        SubParams.SetIdentifier(Self,@Src[IdentStart],nil);
-        SubParams.Flags:=[fdfExceptionOnNotFound];
-        if SubParams.NewCodeTool=Self then begin
-          // search in whole unit/program
-          aNode:=Tree.Root;
-          if aNode.Desc=ctnUnit then begin
-            aNode:=FindImplementationNode;
-            if aNode=nil then
-              aNode:=FindInterfaceNode;
-          end;
-          SubParams.ContextNode:=aNode;
-          TypeFound:=FindIdentifierInContext(SubParams);
-        end else begin
-          // search in interface
-          TypeFound:=SubParams.NewCodeTool.FindIdentifierInInterface(Self,SubParams);
-        end;
+        SaveRaiseCharExpectedButAtomFound('.');
       end;
       if TypeFound and (SubParams.NewNode.Desc=ctnGenericParameter) then begin
         TypeFound:=SubParams.FindGenericParamType;
@@ -4710,9 +4681,7 @@ var
       end else begin
         // predefined identifier
         IsPredefined:=true;
-        exit;
       end;
-      // ToDo: resolve sub classes
 
     finally
       SubParams.Free;
