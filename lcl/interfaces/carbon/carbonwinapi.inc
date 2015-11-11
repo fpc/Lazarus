@@ -1420,11 +1420,17 @@ begin
   Result := CheckDC(PaintDC, 'GetDCOriginRelativeToWindow');
   if Result then
   begin
-    DC := TCarbonDeviceContext(PaintDC);
-    affine := CGContextGetCTM(DC.CGContext);
-    TCarbonWidget(WindowHandle).GetBounds(r{%H-});
-    OriginDiff.x := Round(affine.tx);
-    OriginDiff.y := Round((r.Bottom - r.Top) - affine.ty);
+    if TCarbonWindow(WindowHandle).Window <> nil then
+    begin
+      DC := TCarbonDeviceContext(PaintDC);
+      affine := CGContextGetCTM(DC.CGContext);
+      TCarbonWidget(WindowHandle).GetBounds(r{%H-});
+      OriginDiff.x := Round(affine.tx);
+      OriginDiff.y := Round((r.Bottom - r.Top) - affine.ty);
+    end
+    else // for docked window
+      OriginDiff := Classes.Point(0, 0);
+
     Result := true;
   end;
 end;
