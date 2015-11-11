@@ -458,17 +458,16 @@ begin
       MonitorRect := Monitors[i].BoundsRect;
       if IntersectRect(Intersection, Rect, MonitorRect) then
       begin
-        with Intersection do
-          Square := Abs(Right - Left) * Abs(Bottom - Top);
+        Square := Abs(Intersection.Right - Intersection.Left)
+                * Abs(Intersection.Bottom - Intersection.Top);
         if Square > BestSquare then
         begin
           BestSquare := Square;
           Result := Monitors[i];
         end
       end;
-      with MonitorRect do
-        Distance := Min(Min(Abs(Rect.Left - Right), Abs(Rect.Right - Left)),
-                        Min(Abs(Rect.Top - Bottom), Abs(Rect.Bottom - Top)));
+      Distance := Min(Min(Abs(Rect.Left - MonitorRect.Right), Abs(Rect.Right - MonitorRect.Left)),
+                      Min(Abs(Rect.Top - MonitorRect.Bottom), Abs(Rect.Bottom - MonitorRect.Top)));
       if Distance < BestDistance then
       begin
         BestDistance := Distance;
