@@ -4739,11 +4739,11 @@ begin
     If lpRect <> nil then begin
       gdk_region_get_clipbox(PGDIObject(RGN)^.GDIRegionObject,
         @CRect);
-      With lpRect^,CRect do begin
-        Left   := X;
-        Top    := Y;
-        Right  := X + Width;
-        Bottom := Y + Height;
+      With lpRect^ do begin
+        Left   := CRect.X;
+        Top    := CRect.Y;
+        Right  := CRect.X + CRect.Width;
+        Bottom := CRect.Y + CRect.Height;
       end;
     end;
   end;
@@ -8283,6 +8283,7 @@ var
     {$IFNDEF Gtk2}
     PaintDC: HDC;
     DCOrigin: TPoint;
+    R: TRect;
     {$ENDIF}
   begin
     (* MG: old trick. Not used anymore, but it might be, that someday there
@@ -8347,10 +8348,10 @@ var
       then begin
         PaintDC := TLMPaint(AMessage).DC;
         DCOrigin := TGtkDeviceContext(PaintDC).Offset;
-        with GtkPaintData.Rect do
-          IntersectClipRect(PaintDC,
-                            Left - DCOrigin.X, Top - DCOrigin.Y,
-                            Right - DCOrigin.X, Bottom - DCOrigin.Y);
+        R:=GtkPaintData.Rect;
+        IntersectClipRect(PaintDC,
+                          R.Left - DCOrigin.X, R.Top - DCOrigin.Y,
+                          R.Right - DCOrigin.X, R.Bottom - DCOrigin.Y);
       end;
       {$EndIf}
       GtkPaintData.Free;
