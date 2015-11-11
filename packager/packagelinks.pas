@@ -86,12 +86,9 @@ type
     FFileDate: TDateTime;
     FFileDateValid: boolean;
     FFilename: string;
-    FLastCheck: TDateTime;
-    FLastCheckValid: boolean;
     FLastUsed: TDateTime;
     FLPLFileDate: TDateTime;
     FLPLFilename: string;
-    FNotFoundCount: integer;
     FOrigin: TPkgLinkOrigin;
     fReferenceCount: integer;
     procedure SetFilename(const AValue: string);
@@ -109,9 +106,6 @@ type
     property LPLFilename: string read FLPLFilename write FLPLFilename;
     property LPLFileDate: TDateTime read FLPLFileDate write FLPLFileDate;
     property AutoCheckExists: boolean read FAutoCheckExists write FAutoCheckExists;
-    property NotFoundCount: integer read FNotFoundCount write FNotFoundCount;
-    property LastCheckValid: boolean read FLastCheckValid write FLastCheckValid;
-    property LastCheck: TDateTime read FLastCheck write FLastCheck;
     property LPKFileDateValid: boolean read FFileDateValid write FFileDateValid;
     property LPKFileDate: TDateTime read FFileDate write FFileDate;
     property LastUsed: TDateTime read FLastUsed write FLastUsed;
@@ -637,14 +631,6 @@ begin
       NewPkgLink.AutoCheckExists:=
                       XMLConfig.GetValue(ItemPath+'AutoCheckExists/Value',true);
                       
-      NewPkgLink.LastCheckValid:=
-                      XMLConfig.GetValue(ItemPath+'LastCheckValid/Value',false);
-      if NewPkgLink.LastCheckValid then begin
-        NewPkgLink.LastCheckValid:=
-                 CfgStrToDate(XMLConfig.GetValue(ItemPath+'LastCheck/Value',''),
-                              NewPkgLink.FLastCheck);
-      end;
-      
       NewPkgLink.LPKFileDateValid:=
                        XMLConfig.GetValue(ItemPath+'FileDateValid/Value',false);
       if NewPkgLink.LPKFileDateValid then begin
@@ -653,8 +639,6 @@ begin
                                NewPkgLink.FFileDate);
       end;
       
-      NewPkgLink.NotFoundCount:=
-                           XMLConfig.GetValue(ItemPath+'NotFoundCount/Value',0);
       if not CfgStrToDate(XMLConfig.GetValue(ItemPath+'LastUsed/Value',''),
                             NewPkgLink.FLastUsed,LastUsedFormat)
       then
@@ -895,13 +879,6 @@ begin
       end;
       XMLConfig.SetDeleteValue(ItemPath+'Filename/Value',AFilename,'');
 
-      XMLConfig.SetDeleteValue(ItemPath+'LastCheckValid/Value',
-                               CurPkgLink.LastCheckValid,false);
-      if CurPkgLink.LastCheckValid then
-        XMLConfig.SetDeleteValue(ItemPath+'LastCheck/Value',
-                                 DateToCfgStr(CurPkgLink.LastCheck),'');
-      XMLConfig.SetDeleteValue(ItemPath+'NotFoundCount/Value',
-                               CurPkgLink.NotFoundCount,0);
       XMLConfig.SetDeleteValue(ItemPath+'LastUsed/Value',
                    DateToCfgStr(CurPkgLink.LastUsed,DateTimeAsCfgStrFormat),'');
     end;

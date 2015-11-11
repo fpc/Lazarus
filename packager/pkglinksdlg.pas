@@ -483,9 +483,6 @@ begin
       LPKFilename:=Link.LPKFilename;
       LPLFilename:=Link.LPLFilename;
       AutoCheckExists:=Link.AutoCheckExists;
-      NotFoundCount:=Link.NotFoundCount;
-      LastCheckValid:=Link.LastCheckValid;
-      LastCheck:=Link.LastCheck;
       LPKFileDateValid:=Link.LPKFileDateValid;
       LPKFileDate:=Link.LPKFileDate;
       LastUsed:=Link.LastUsed;
