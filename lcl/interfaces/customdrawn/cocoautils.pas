@@ -133,12 +133,10 @@ end;
 
 function CGRectToRect(const c:CGRect):TRect;
 begin
-  with Result do begin
-    Left:=round(c.origin.x);
-    Top:=round(c.origin.y);
-    Right:=round(c.origin.x+c.size.width);
-    Bottom:=round(c.origin.y+c.size.height);
-  end;
+  Result.Left:=round(c.origin.x);
+  Result.Top:=round(c.origin.y);
+  Result.Right:=round(c.origin.x+c.size.width);
+  Result.Bottom:=round(c.origin.y+c.size.height);
 end;
 
 function RectToNSRect(const r: TRect): NSRect;
