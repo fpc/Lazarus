@@ -461,13 +461,10 @@ const
     try
       NewBrush := CreatePatternBrush(Win32WidgetSet.DotsPatternBitmap);
       OldBrush := SelectObject(DC, NewBrush);
-      with ARect do
-      begin
-        DrawHorzLine(DC, Left, Right, Top);
-        DrawVertLine(DC, Top + LineSize, Bottom - LineSize, Left);
-        DrawHorzLine(DC, Left, Right, Bottom - LineSize);
-        DrawVertLine(DC, Top + LineSize, Bottom - LineSize, Right - LineSize);
-      end;
+      DrawHorzLine(DC, ARect.Left, ARect.Right, ARect.Top);
+      DrawVertLine(DC, ARect.Top + LineSize, ARect.Bottom - LineSize, ARect.Left);
+      DrawHorzLine(DC, ARect.Left, ARect.Right, ARect.Bottom - LineSize);
+      DrawVertLine(DC, ARect.Top + LineSize, ARect.Bottom - LineSize, ARect.Right - LineSize);
       DeleteObject(SelectObject(DC, OldBrush));
     finally
       ReleaseDC(0, DC);
