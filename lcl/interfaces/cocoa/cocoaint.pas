@@ -28,6 +28,8 @@ interface
 uses
   // rtl+ftl
   Types, Classes, SysUtils, Math, contnrs,
+  // fcl-image
+  fpreadpng, fpwritepng, fpimage, fpreadbmp, fpwritebmp,
   // carbon bindings
   MacOSAll,
   // interfacebase
@@ -50,9 +52,12 @@ type
     class function initWithFunc(afunc: TWSTimerProc): TCocoaTimerObject; message 'initWithFunc:';
   end;
 
-  TCocoaClipboardDataType = (ccdtText, ccdtCocoaStandard, ccdtNonStandard);
+  TCocoaClipboardDataType = (ccdtText,
+    ccdtCocoaStandard, // Formats supported natively by Mac OS X
+    ccdtBitmap,     // BMPs need conversion to PNG to work with other Mac OS X apps
+    ccdtNonStandard { Formats that will only work in LCL apps } );
 
-  TClipboardData = class(TObject) // TClipboardFormat is a reference to a TClipboardData
+  TCocoaClipboardData = class(TObject) // TClipboardFormat is a reference to a TClipboardData
   public
     MimeType: string;
     CocoaFormat: NSString;  // utilized for ccdtCocoaStandard and ccdtNonStandard
@@ -96,11 +101,11 @@ type
     // Clipboard
     PrimarySelection: NSPasteboard;
     SecondarySelection: NSPasteboard;
-    ClipboardFormats: TFPObjectList; // of TClipboardData
+    ClipboardFormats: TFPObjectList; // of TCocoaClipboardData
 
     procedure InitClipboard();
     procedure FreeClipboard();
-    function GetClipboardDataForFormat(AFormat: TClipboardFormat): TClipboardData;
+    function GetClipboardDataForFormat(AFormat: TClipboardFormat): TCocoaClipboardData;
 
     function PromptUser(const DialogCaption, DialogMessage: String;
       DialogType: longint; Buttons: PLongint; ButtonCount, DefaultIndex,

@@ -561,9 +561,9 @@ begin
   Result.func:=afunc;
 end;
 
-{ TClipboardData }
+{ TCocoaClipboardData }
 
-constructor TClipboardData.Create(AMimeType: string; ACocoaFormat: NSString; ADataType: TCocoaClipboardDataType);
+constructor TCocoaClipboardData.Create(AMimeType: string; ACocoaFormat: NSString; ADataType: TCocoaClipboardDataType);
 begin
   MimeType := AMimeType;
   CocoaFormat := ACocoaFormat;
