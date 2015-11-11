@@ -1218,7 +1218,7 @@ begin
         CGContextSaveGState(Context);
         CGContextSetRGBFillColor(Context, (c and $FF) * rgbkoef, ((c shr 8) and $FF)*rgbkoef,
           ((c shr 16) and $FF)*rgbkoef, 1);
-        with b do CGContextFillRect(Context, RectToCGRect(Bounds(0,0, Right-Left, Bottom-Top)));
+        CGContextFillRect(Context, RectToCGRect(Bounds(0,0, b.Right-b.Left, b.Bottom-b.Top)));
         CGContextRestoreGState(Context);
       end;
     end;
