@@ -5705,7 +5705,7 @@ begin
 
     // nothing found via dependencies
     // search in links
-    PkgLink:=PkgLinks.FindLinkWithPkgName(APackage.Name,IgnoreFiles,true);
+    PkgLink:=PkgLinks.FindLinkWithPkgName(APackage.Name,IgnoreFiles);
     if PkgLink<>nil then begin
       Result:=PkgLink.GetEffectiveFilename;
       exit;

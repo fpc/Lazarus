@@ -3296,7 +3296,7 @@ begin
   Link:=PkgLinks.AddUserLink(APackage);
   if Link<>nil then
   begin
-    debugln(['Hint: (lazarus) TPkgManager.AddPackageToGraph LinkLastUsed=',DateToCfgStr(Link.LastUsed),' ',dbgs(Link.Origin)]);
+    //debugln(['Hint: (lazarus) TPkgManager.AddPackageToGraph LinkLastUsed=',DateToCfgStr(Link.LastUsed,DateTimeAsCfgStrFormat),' ',dbgs(Link.Origin)]);
     PkgLinks.SaveUserLinks;
   end;
 
