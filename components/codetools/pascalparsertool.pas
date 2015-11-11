@@ -5820,7 +5820,7 @@ procedure TPascalParserTool.BuildSubTreeForProcHead(ProcNode: TCodeTreeNode;
 begin
   if ProcNode.Desc=ctnProcedureHead then
     ProcNode:=ProcNode.Parent;
-  if ProcNode.Desc<>ctnProcedure then
+  if not(ProcNode.Desc in [ctnProcedure,ctnProcedureType]) then
     RaiseException('INTERNAL ERROR: TPascalParserTool.BuildSubTreeForProcHead with FunctionResult');
   BuildSubTreeForProcHead(ProcNode);
   FunctionResult:=ProcNode.FirstChild.FirstChild;

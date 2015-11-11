@@ -2483,6 +2483,18 @@ begin
     MissingUnitName:='';
     if Params.NewNode=nil then exit;
     //DebugLn('TCodeCompletionCodeTool.CompleteLocalVariableAsParameter Proc/PropNode=',Params.NewNode.DescAsString,' ',copy(Params.NewCodeTool.Src,Params.NewNode.StartPos,50));
+
+    if Params.NewNode.Desc=ctnVarDefinition then
+    begin
+      try
+        ExprType:=Params.NewCodeTool.ConvertNodeToExpressionType(Params.NewNode,Params);
+        if (ExprType.Desc=xtContext) and (ExprType.Context.Node<>nil) then begin
+          Params.NewCodeTool:=ExprType.Context.Tool;
+          Params.NewNode:=ExprType.Context.Node;
+        end;
+      except
+      end;
+    end;
     ParameterNode:=Params.NewCodeTool.FindNthParameterNode(Params.NewNode,
                                                            ParameterIndex);
     if (ParameterNode=nil)

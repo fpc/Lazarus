@@ -10874,7 +10874,7 @@ begin
   {$IFDEF CheckNodeTool}CheckNodeTool(Node);{$ENDIF}
   Result:=nil;
   if Node=nil then exit;
-  if Node.Desc in [ctnProcedure] then begin
+  if Node.Desc in [ctnProcedure,ctnProcedureType] then begin
     ProcNode:=Node;
     //DebugLn('  FindNthParameterNode ProcNode="',copy(Params.NewCodeTool.Src,ProcNode.StartPos,ProcNode.EndPos-ProcNode.StartPos),'"');
     FunctionNode:=nil;
