@@ -4114,7 +4114,7 @@ var
   dv,dh: Boolean;
 begin
 
-  with Canvas, aRect do begin
+  with Canvas do begin
 
     // fixed cells
     if (gdFixed in aState) then begin
@@ -4136,13 +4136,13 @@ begin
             Pen.Color := cl3DHilight;
           if UseRightToLeftAlignment then begin
             //the light still on the left but need to new x
-            MoveTo(Right, Top);
-            LineTo(Left + 1, Top);
-            LineTo(Left + 1, Bottom);
+            MoveTo(aRect.Right, aRect.Top);
+            LineTo(aRect.Left + 1, aRect.Top);
+            LineTo(aRect.Left + 1, aRect.Bottom);
           end else begin
-            MoveTo(Right - 1, Top);
-            LineTo(Left, Top);
-            LineTo(Left, Bottom);
+            MoveTo(aRect.Right - 1, aRect.Top);
+            LineTo(aRect.Left, aRect.Top);
+            LineTo(aRect.Left, aRect.Bottom);
           end;
           if FTitleStyle=tsStandard then begin
             // more contrast
@@ -4151,13 +4151,13 @@ begin
             else
               Pen.Color := cl3DShadow;
             if UseRightToLeftAlignment then begin
-              MoveTo(Left+2, Bottom-2);
-              LineTo(Right, Bottom-2);
-              LineTo(Right, Top);
+              MoveTo(aRect.Left+2, aRect.Bottom-2);
+              LineTo(aRect.Right, aRect.Bottom-2);
+              LineTo(aRect.Right, aRect.Top);
             end else begin
-              MoveTo(Left+1, Bottom-2);
-              LineTo(Right-2, Bottom-2);
-              LineTo(Right-2, Top);
+              MoveTo(aRect.Left+1, aRect.Bottom-2);
+              LineTo(aRect.Right-2, aRect.Bottom-2);
+              LineTo(aRect.Right-2, aRect.Top);
             end;
           end;
         end;
@@ -4174,16 +4174,16 @@ begin
     // non-fixed cells
     if fGridLineWidth > 0 then begin
       if Dh then begin
-        MoveTo(Left, Bottom - 1);
-        LineTo(Right, Bottom - 1);
+        MoveTo(aRect.Left, aRect.Bottom - 1);
+        LineTo(aRect.Right, aRect.Bottom - 1);
       end;
       if Dv then begin
         if UseRightToLeftAlignment then begin
-          MoveTo(Left, Top);
-          LineTo(Left, Bottom);
+          MoveTo(aRect.Left, aRect.Top);
+          LineTo(aRect.Left, aRect.Bottom);
         end else begin
-          MoveTo(Right - 1, Top);
-          LineTo(Right - 1, Bottom);
+          MoveTo(aRect.Right - 1, aRect.Top);
+          LineTo(aRect.Right - 1, aRect.Bottom);
         end;
       end;
     end;
