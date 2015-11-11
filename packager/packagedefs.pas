@@ -273,7 +273,7 @@ type
                                 FileVersion: integer);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
       UsePathDelim: TPathDelimSwitch);
-    function MakeSense: boolean;
+    function IsMakingSense: boolean;
     function IsCompatible(const Version: TPkgVersion): boolean;
     function IsCompatible(const PkgName: string;
       const Version: TPkgVersion): boolean;
@@ -636,7 +636,7 @@ type
     procedure SaveToString(out s: string);
     // consistency
     procedure CheckInnerDependencies;
-    function MakeSense: boolean;
+    function IsMakingSense: boolean;
     procedure ConsistencyCheck;
     // paths, define templates
     function IsVirtual: boolean; override;
@@ -891,6 +891,7 @@ procedure PkgVersionLoadFromXMLConfig(Version: TPkgVersion;
   XMLConfig: TXMLConfig);
 
 function IsValidUnitName(AUnitName: String): Boolean; inline;
+function IsValidPkgName(APkgName: String): Boolean; inline;
 
 var
   Package1: TLazPackage; // don't use it - only for options dialog
@@ -905,6 +906,11 @@ implementation
 function IsValidUnitName(AUnitName: String): Boolean;
 begin
   Result := IsDottedIdentifier(AUnitName);
+end;
+
+function IsValidPkgName(APkgName: String): Boolean;
+begin
+  Result := IsValidIdent(APkgName);
 end;
 
 function PkgFileTypeIdentToType(const s: string): TPkgFileType;
@@ -998,7 +1004,7 @@ begin
     PkgDependency.LoadFromXMLConfig(XMLConfig,ThePath+'Item'+IntToStr(i+1)+'/',
                                     FileVersion);
     PkgDependency.HoldPackage:=HoldPackages;
-    if PkgDependency.MakeSense then
+    if PkgDependency.IsMakingSense then
       List.Add(PkgDependency)
     else
       PkgDependency.Free;
@@ -1347,7 +1353,7 @@ begin
   Result:=false;
   if CompareFileExt(AFilename,'.lpk',false)<>0 then exit;
   PkgName:=ExtractFileNameOnly(AFilename);
-  if (PkgName='') or (not IsValidUnitName(PkgName)) then exit;
+  if (PkgName='') or (not IsValidPkgName(PkgName)) then exit;
   Result:=true;
 end;
 
@@ -1940,9 +1946,9 @@ begin
   XMLConfig.SetDeleteValue(Path+'DefaultFilename/Prefer',PreferDefaultFilename,false);
 end;
 
-function TPkgDependency.MakeSense: boolean;
+function TPkgDependency.IsMakingSense: boolean;
 begin
-  Result:=IsValidUnitName(PackageName);
+  Result:=IsValidPkgName(PackageName);
   if Result
   and (pdfMinVersion in FFlags) and (pdfMaxVersion in FFlags)
   and (MinVersion.Compare(MaxVersion)>0) then
@@ -3050,10 +3056,10 @@ begin
   // ToDo: make some checks like deactivating double requirements
 end;
 
-function TLazPackage.MakeSense: boolean;
+function TLazPackage.IsMakingSense: boolean;
 begin
   Result:=false;
-  if (Name='') or (not IsValidUnitName(Name)) then exit;
+  if not IsValidPkgName(Name) then exit;
   Result:=true;
 end;
 

@@ -405,7 +405,6 @@ end;
 
 procedure TPackageLinksDialog.RescanGlobalLinks;
 begin
-  PkgLinks.ClearGlobalLinks;
   PkgLinks.UpdateGlobalLinks;
 end;
 

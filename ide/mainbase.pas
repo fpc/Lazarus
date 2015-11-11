@@ -1337,7 +1337,7 @@ begin
     CreateMenuSeparatorSection(mnuComponent,itmPkgOpening,'itmPkgOpening');
     ParentMI:=itmPkgOpening;
     CreateMenuItem(ParentMI,itmPkgNewPackage,'itmPkgNewPackage',lisMenuNewPackage);
-    CreateMenuItem(ParentMI,itmPkgOpenPackage,'itmPkgOpenPackage',lisMenuOpenPackage,'pkg_installed');
+    CreateMenuItem(ParentMI,itmPkgOpenLoadedPackage,'itmPkgOpenPackage',lisMenuOpenPackage,'pkg_installed');
     CreateMenuItem(ParentMI,itmPkgOpenPackageFile,'itmPkgOpenPackageFile',lisMenuOpenPackageFile,'pkg_open');
     CreateMenuItem(ParentMI,itmPkgOpenPackageOfCurUnit,'itmPkgOpenPackageOfCurUnit',lisMenuOpenPackageOfCurUnit);
     CreateMenuSubSection(ParentMI,itmPkgOpenRecent,'itmPkgOpenRecent',lisMenuOpenRecentPkg);
@@ -1674,7 +1674,7 @@ begin
 
     // package menu
     itmPkgNewPackage.Command:=GetCommand(ecNewPackage);
-    itmPkgOpenPackage.Command:=GetCommand(ecOpenPackage);
+    itmPkgOpenLoadedPackage.Command:=GetCommand(ecOpenPackage);
     itmPkgOpenPackageFile.Command:=GetCommand(ecOpenPackageFile);
     itmPkgOpenPackageOfCurUnit.Command:=GetCommand(ecOpenPackageOfCurUnit);
     itmPkgAddCurFileToPkg.Command:=GetCommand(ecAddCurFileToPkg);

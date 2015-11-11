@@ -315,7 +315,7 @@ type
     //mnuComponents: TIDEMenuSection;
       //itmPkgOpening: TIDEMenuSection;
         itmPkgNewPackage: TIDEMenuCommand;
-        itmPkgOpenPackage: TIDEMenuCommand;
+        itmPkgOpenLoadedPackage: TIDEMenuCommand;
         itmPkgOpenPackageFile: TIDEMenuCommand;
         itmPkgOpenPackageOfCurUnit: TIDEMenuCommand;
         //itmPkgOpenRecent: TIDEMenuSection;

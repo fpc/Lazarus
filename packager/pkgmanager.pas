@@ -145,7 +145,7 @@ type
     procedure MainIDEitmPkgOpenPackageOfCurUnitClicked(Sender: TObject);
     procedure MainIDEitmConfigCustomCompsClicked(Sender: TObject);
     procedure MainIDEitmOpenRecentPackageClicked(Sender: TObject);
-    procedure MainIDEitmPkgOpenPackageClicked(Sender: TObject);
+    procedure MainIDEitmPkgOpenLoadedPackageClicked(Sender: TObject);
     procedure MainIDEitmPkgNewPackageClick(Sender: TObject);
     procedure MainIDEitmPackageLinksClicked(Sender: TObject);
 
@@ -294,7 +294,7 @@ type
     // package editors
     function DoOpenPkgFile(PkgFile: TPkgFile): TModalResult;
     function DoNewPackage: TModalResult; override;
-    function DoShowOpenInstalledPckDlg: TModalResult; override;
+    function DoShowLoadedPkgDlg: TModalResult; override;
     function DoOpenPackage(APackage: TLazPackage; Flags: TPkgOpenFlags;
                            ShowAbort: boolean): TModalResult; override;
     function DoOpenPackageWithName(const APackageName: string;
@@ -633,7 +633,7 @@ begin
     copy(aFormName,1,length(PackageEditorWindowPrefix)))=0
   then begin
     APackageName:=copy(aFormName,length(PackageEditorWindowPrefix)+1,length(aFormName));
-    if (APackageName='') or not IsValidUnitName(APackageName) then exit;
+    if not IsValidPkgName(APackageName) then exit;
     NewDependency:=TPkgDependency.Create;
     try
       NewDependency.PackageName:=APackageName;
@@ -1045,9 +1045,9 @@ begin
   DoNewPackage;
 end;
 
-procedure TPkgManager.MainIDEitmPkgOpenPackageClicked(Sender: TObject);
+procedure TPkgManager.MainIDEitmPkgOpenLoadedPackageClicked(Sender: TObject);
 begin
-  DoShowOpenInstalledPckDlg;
+  DoShowLoadedPkgDlg;
 end;
 
 procedure TPkgManager.MainIDEitmPackageLinksClicked(Sender: TObject);
@@ -1178,7 +1178,7 @@ begin
       end;
 
       // check filename
-      if (NewPkgName='') or (not IsValidUnitName(NewPkgName)) then begin
+      if not IsValidPkgName(NewPkgName) then begin
         Result:=IDEMessageDialog(lisPkgMangInvalidPackageName,
           Format(lisPkgMangThePackageNameIsNotAValidPackageNamePleaseChooseAn,
                  [NewPkgName, LineEnding]),
@@ -1558,7 +1558,7 @@ begin
     StaticPackage:=PRegisteredPackage(StaticPackages[i]);
 
     // check package name
-    if (StaticPackage^.Name='') or (not IsValidUnitName(StaticPackage^.Name))
+    if not IsValidPkgName(StaticPackage^.Name)
     then begin
       DebugLn('Warning: (lazarus) [TPkgManager.LoadStaticCustomPackages] Invalid Package Name: "',
         BinaryStrToText(StaticPackage^.Name),'"');
@@ -2087,8 +2087,8 @@ var
 
       if CompareFilenames(NewFilename,OldFilename)<>0 then begin
         // file be copied/moved to another directory
-        debugln(['CollectFiles Old="',OldFilename,'"']);
-        debugln(['             New="',NewFilename,'"']);
+        debugln(['Hint: (lazarus) CollectFiles Old="',OldFilename,'"']);
+        debugln(['Hint: (lazarus) New="',NewFilename,'"']);
         inc(MoveFileCount);
         ChangedFilenames[OldFilename]:=NewFilename;
         AllChangedFilenames[OldFilename]:=NewFilename;
@@ -2532,7 +2532,7 @@ var
         r:=CopyFileWithErrorDialogs(OldFilename,NewFilename,[mbAbort,mbIgnore]);
       end;
       if not (r in [mrIgnore,mrOK]) then begin
-        debugln(['Error: MoveOrCopyFile: rename/copy failed: "',OldFilename,'" to "',NewFilename,'"']);
+        debugln(['Error: (lazarus) MoveOrCopyFile: rename/copy failed: "',OldFilename,'" to "',NewFilename,'"']);
         exit;
       end;
     end else begin
@@ -2760,7 +2760,7 @@ begin
 
   // check TargetDirectory
   if CheckDirectoryIsWritable(TargetDirectory)<>mrOk then begin
-    debugln(['TPkgManager.MoveFiles not writable TargetDirectory=',TargetDirectory]);
+    debugln(['Warning: (lazarus) TPkgManager.MoveFiles not writable TargetDirectory=',TargetDirectory]);
     exit;
   end;
 
@@ -2893,7 +2893,7 @@ begin
   else if Sender is TProjectInspectorForm then
     FilesEdit:=TProjectInspectorForm(Sender)
   else begin
-    debugln(['TPkgManager.CopyMoveFiles wrong Sender: ',DbgSName(Sender)]);
+    debugln(['Error: (lazarus) TPkgManager.CopyMoveFiles wrong Sender: ',DbgSName(Sender)]);
     exit;
   end;
   SelDirDlg:=TSelectDirectoryDialog.Create(nil);
@@ -2996,7 +2996,7 @@ procedure TPkgManager.ConnectMainBarEvents;
 begin
   with MainIDEBar do begin
     itmPkgNewPackage.OnClick :=@MainIDEitmPkgNewPackageClick;
-    itmPkgOpenPackage.OnClick :=@MainIDEitmPkgOpenPackageClicked;
+    itmPkgOpenLoadedPackage.OnClick :=@MainIDEitmPkgOpenLoadedPackageClicked;
     itmPkgOpenPackageFile.OnClick:=@MainIDEitmPkgOpenPackageFileClick;
     itmPkgOpenPackageOfCurUnit.OnClick :=@MainIDEitmPkgOpenPackageOfCurUnitClicked;
     itmPkgAddCurFileToPkg.OnClick:=@MainIDEitmPkgAddCurFileToPkgClick;
@@ -3107,7 +3107,7 @@ procedure TPkgManager.ProcessCommand(Command: word; var Handled: boolean);
 begin
   Handled:=true;
   case Command of
-  ecOpenPackage: MainIDEitmPkgOpenPackageClicked(Self);
+  ecOpenPackage: MainIDEitmPkgOpenLoadedPackageClicked(Self);
   ecOpenPackageFile: MainIDEitmPkgOpenPackageFileClick(Self);
   ecOpenPackageOfCurUnit: MainIDEitmPkgOpenPackageOfCurUnitClicked(Self);
   ecAddCurFileToPkg: MainIDEitmPkgAddCurFileToPkgClick(Self);
@@ -3249,9 +3249,10 @@ end;
 function TPkgManager.AddPackageToGraph(APackage: TLazPackage): TModalResult;
 var
   ConflictPkg: TLazPackage;
+  Link: TPackageLink;
 begin
   // check Package Name
-  if (APackage.Name='') or (not IsValidUnitName(APackage.Name)) then begin
+  if not IsValidPkgName(APackage.Name) then begin
     Result:=IDEMessageDialog(lisPkgMangInvalidPackageName2,
       Format(lisPkgMangThePackageNameOfTheFileIsInvalid,
              [APackage.Name, LineEnding, APackage.Filename]),
@@ -3292,8 +3293,12 @@ begin
 
   // save package file links
   //DebugLn(['TPkgManager.AddPackageToGraph ',APackage.Name]);
-  PkgLinks.AddUserLink(APackage);
-  PkgLinks.SaveUserLinks;
+  Link:=PkgLinks.AddUserLink(APackage);
+  if Link<>nil then
+  begin
+    debugln(['Hint: (lazarus) TPkgManager.AddPackageToGraph LinkLastUsed=',DateToCfgStr(Link.LastUsed),' ',dbgs(Link.Origin)]);
+    PkgLinks.SaveUserLinks;
+  end;
 
   Result:=mrOk;
 end;
@@ -3412,7 +3417,7 @@ begin
   try
     for i:=0 to RequiredPackages.Count-1 do begin
       PkgName:=Trim(RequiredPackages[i]);
-      if (PkgName='') or (not IsValidUnitName(PkgName)) then continue;
+      if not IsValidPkgName(PkgName) then continue;
       APackage:=PackageGraph.FindPackageWithName(PkgName,nil);
       if APackage=nil then begin
         DebugLn(['Error: (lazarus) [TPkgManager.AddProjectDependencies] package not found: ',PkgName]);
@@ -3499,7 +3504,7 @@ begin
   Result:=DoSavePackage(NewPackage,[psfSaveAs]);
 end;
 
-function TPkgManager.DoShowOpenInstalledPckDlg: TModalResult;
+function TPkgManager.DoShowLoadedPkgDlg: TModalResult;
 var
   APackage: TLazPackage;
 begin
@@ -3544,7 +3549,7 @@ var
   LoadResult: TLoadPackageResult;
 begin
   Result:=mrCancel;
-  if (APackageName='') or not IsValidUnitName(APackageName) then exit;
+  if not IsValidPkgName(APackageName) then exit;
   NewDependency:=TPkgDependency.Create;
   try
     NewDependency.PackageName:=APackageName;
@@ -3597,7 +3602,7 @@ begin
   // check filename
   AlternativePkgName:=ExtractFileNameOnly(AFilename);
   if (not (pofRevert in Flags))
-  and ((AlternativePkgName='') or (not IsValidUnitName(AlternativePkgName)))
+  and (not IsValidPkgName(AlternativePkgName))
   then begin
     DoQuestionDlg(lisPkgMangInvalidPackageFilename,
       Format(lisPkgMangThePackageFileNameInIsNotAValidLazarusPackageName,

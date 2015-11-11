@@ -803,6 +803,7 @@
       <Unit126>
         <Filename Value="mainbase.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="MainBase"/>
       </Unit126>
       <Unit127>
         <Filename Value="buildmanager.pas"/>

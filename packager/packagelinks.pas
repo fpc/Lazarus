@@ -99,7 +99,7 @@ type
   public
     constructor Create; override;
     destructor Destroy; override;
-    function MakeSense: boolean;
+    function IsMakingSense: boolean;
     function GetEffectiveFilename: string;
     procedure Reference;
     procedure Release;
@@ -158,11 +158,10 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    procedure ClearGlobalLinks;
     function GetUserLinkFile(WithPath: boolean = true): string;
     function GetGlobalLinkDirectory: string;
-    procedure UpdateGlobalLinks;
-    procedure UpdateUserLinks;
+    procedure UpdateGlobalLinks; // reloads the lpl files, keeping LastUsed dates
+    procedure UpdateUserLinks; // reloads user links and global LastUsed dates
     procedure UpdateAll;
     procedure RemoveOldUserLinks;
     procedure BeginUpdate;
@@ -311,9 +310,9 @@ begin
   inherited Destroy;
 end;
 
-function TPackageLink.MakeSense: boolean;
+function TPackageLink.IsMakingSense: boolean;
 begin
-  Result:=(Name<>'') and IsValidUnitName(Name)
+  Result:=IsValidPkgName(Name)
            and PackageFileNameIsValid(LPKFilename)
            and (CompareText(Name,ExtractFileNameOnly(LPKFilename))=0);
 end;
@@ -375,16 +374,10 @@ end;
 procedure TPackageLinks.Clear;
 begin
   QueueSaveUserLinks:=false;
-  ClearGlobalLinks;
+  FGlobalLinks.FreeAndClear;
   FUserLinksSortID.FreeAndClear;
   FUserLinksSortFile.Clear;
   FStates:=[plsUserLinksNeedUpdate,plsGlobalLinksNeedUpdate];
-end;
-
-procedure TPackageLinks.ClearGlobalLinks;
-begin
-  FGlobalLinks.FreeAndClear;
-  Include(FStates,plsGlobalLinksNeedUpdate);
 end;
 
 function TPackageLinks.GetUserLinkFile(WithPath: boolean): string;
@@ -455,14 +448,14 @@ var
   GlobalLinksDir: String;
   NewPkgName: string;
   PkgVersion: TPkgVersion;
-  CurPkgLink: TPackageLink;
+  CurPkgLink, OldPkgLink, OtherPkgLink: TPackageLink;
   sl: TStringListUTF8;
   LPLFilename: String;
   LPKFilename: string;
   Files: TStrings;
   i: Integer;
-  Node: TAvgLvlTreeNode;
-  NextNode: TAvgLvlTreeNode;
+  OldNode, OtherNode: TAvgLvlTreeNode;
+  UnmappedGlobalLinks, MappedGlobalLinks: TAvgLvlTree;
 begin
   if fUpdateLock>0 then begin
     Include(FStates,plsGlobalLinksNeedUpdate);
@@ -473,36 +466,21 @@ begin
   {$IFDEF VerboseGlobalPkgLinks}
   debugln(['TPackageLinks.UpdateGlobalLinks START']);
   {$ENDIF}
-  FGlobalLinks.FreeAndClear;
-  GlobalLinksDir:=GetGlobalLinkDirectory;
-
-  // delete old entries
-  Node:=FGlobalLinks.FindLowest;
-  while Node<>nil do begin
-    NextNode:=Node.Successor;
-    CurPkgLink:=TPackageLink(Node.Data);
-    if (not FileIsInDirectory(CurPkgLink.LPLFilename,GlobalLinksDir))
-    or (not FileExistsCached(CurPkgLink.LPLFilename))
-    or (FileAgeCached(CurPkgLink.LPLFilename)<>CurPkgLink.LPLFileDate) then begin
-      {$IFDEF VerboseGlobalPkgLinks}
-      debugln(['TPackageLinks.UpdateGlobalLinks Delete ',CurPkgLink.LPLFilename]);
-      {$ENDIF}
-      FGlobalLinks.Delete(Node);
-      CurPkgLink.Free;
-    end;
-    Node:=NextNode;
-  end;
-
+  UnmappedGlobalLinks:=FGlobalLinks;
+  FGlobalLinks:=TAvgLvlTree.Create(@ComparePackageLinks);
+  MappedGlobalLinks:=TAvgLvlTree.Create(@ComparePackageLinks);
   Files:=TStringListUTF8.Create;
   PkgVersion:=TPkgVersion.Create;
   try
+    GlobalLinksDir:=GetGlobalLinkDirectory;
+
     CodeToolBoss.DirectoryCachePool.GetListing(GlobalLinksDir,Files,false);
     for i:=0 to Files.Count-1 do begin
       LPLFilename:=GlobalLinksDir+Files[i];
       if CompareFileExt(LPLFilename,'lpl')<>0 then continue;
       if (not ParseFilename(Files[i],NewPkgName,PkgVersion))
       then begin
-        DebugLn('WARNING: suspicious pkg link file found (name): ',LPLFilename);
+        DebugLn('Warning: (lazarus) suspicious pkg link file found (name): ',LPLFilename);
         continue;
       end;
       LPKFilename:='';
@@ -510,18 +488,18 @@ begin
       try
         sl.LoadFromFile(LPLFilename);
         if sl.Count<=0 then begin
-          DebugLn('WARNING: pkg link file is empty: ',LPLFilename);
+          DebugLn('Warning: (lazarus) pkg link file is empty: ',LPLFilename);
           continue;
         end;
         LPKFilename:=GetForcedPathDelims(sl[0]);
       except
         on E: Exception do begin
-          DebugLn('WARNING: unable to read pkg link file: ',LPLFilename,' : ',E.Message);
+          DebugLn('Warning: (lazarus) unable to read pkg link file: ',LPLFilename,' : ',E.Message);
         end;
       end;
       sl.Free;
       if LPKFilename='' then begin
-        debugln(['TPackageLinks.UpdateGlobalLinks lpl file has empty first line: ',LPLFilename]);
+        debugln(['Warning: (lazarus) TPackageLinks.UpdateGlobalLinks lpl file has empty first line: ',LPLFilename]);
         continue;
       end;
       //debugln(['TPackageLinks.UpdateGlobalLinks NewFilename="',LPKFilename,'"']);
@@ -542,22 +520,62 @@ begin
       //debugln('TPackageLinks.UpdateGlobalLinks PkgName="',CurPkgLink.Name,'" ',
       //  ' PkgVersion=',CurPkgLink.Version.AsString,
       //  ' Filename="',CurPkgLink.LPKFilename,'"',
-      //  ' MakeSense=',dbgs(CurPkgLink.MakeSense));
-      if CurPkgLink.MakeSense then
-        FGlobalLinks.Add(CurPkgLink)
-      else begin
-        debugln('TPackageLinks.UpdateGlobalLinks Invalid lpl "',LPLFilename,'"'
+      //  ' MakeSense=',dbgs(CurPkgLink.IsMakingSense));
+      if CurPkgLink.IsMakingSense then begin
+        OldNode:=UnmappedGlobalLinks.Find(CurPkgLink);
+        if OldNode<>nil then begin
+          // keep LastUsed date for global link
+          OldPkgLink:=TPackageLink(OldNode.Data);
+          CurPkgLink.LastUsed:=OldPkgLink.LastUsed;
+          UnmappedGlobalLinks.Remove(OldPkgLink);
+          MappedGlobalLinks.Add(OldPkgLink);
+        end;
+        FGlobalLinks.Add(CurPkgLink);
+      end else begin
+        debugln('Warning: (lazarus) TPackageLinks.UpdateGlobalLinks Invalid lpl "',LPLFilename,'"'
           ,' PkgName="',CurPkgLink.Name,'" '
           ,' PkgVersion=',CurPkgLink.Version.AsString
-          ,' Filename="',CurPkgLink.LPKFilename,'"'
-          ,' MakeSense=',dbgs(CurPkgLink.MakeSense));
+          ,' Filename="',CurPkgLink.LPKFilename,'"');
         CurPkgLink.Release;
       end;
     end;
+
+    // map unmapped global links (e.g. a package version changed)
+    // Note: When the IDE knows several versions of a lpk it loads the last one
+    //       used (i.e. highest LastUsed date). When the version of the lpk
+    //       increased on disk (e.g. svn update or user installed a new Lazarus
+    //       version) the LastUsed date must be moved to the new lpk.
+    OldNode:=UnmappedGlobalLinks.FindLowest;
+    while OldNode<>nil do begin
+      OldPkgLink:=TPackageLink(OldNode.Data);
+      // this old lpl was not found in the new lpl files
+      //debugln(['TPackageLinks.UpdateGlobalLinks formerly used lpl '+OldPkgLink.IDAsString+' not found in new lpl directory -> searching new lpl ...']);
+      OldNode:=UnmappedGlobalLinks.FindSuccessor(OldNode);
+      OtherNode:=FindLeftMostNode(FGlobalLinks,OldPkgLink.Name);
+      while OtherNode<>nil do begin
+        OtherPkgLink:=TPackageLink(OtherNode.Data);
+        if CompareText(OtherPkgLink.Name,OldPkgLink.Name)<>0 then break;
+        OtherNode:=FGlobalLinks.FindSuccessor(OtherNode);
+        if MappedGlobalLinks.Find(OtherPkgLink)<>nil then continue;
+        // found a new lpl without an old lpl
+        MappedGlobalLinks.Remove(OldPkgLink);
+        UnmappedGlobalLinks.Add(OldPkgLink);
+        if OtherPkgLink.LastUsed<OldPkgLink.LastUsed then begin
+          debugln(['Hint: (lazarus) [TPackageLinks.UpdateGlobalLinks] using LastUsed date of '+OldPkgLink.IDAsString+' for new '+OtherPkgLink.IDAsString+' in '+OtherPkgLink.LPKFilename]);
+          OtherPkgLink.LastUsed:=OldPkgLink.LastUsed;
+        end;
+        break;
+      end;
+    end;
+
     //WriteLinkTree(FGlobalLinks);
   finally
     Files.Free;
     PkgVersion.Free;
+    UnmappedGlobalLinks.FreeAndClear;
+    UnmappedGlobalLinks.Free;
+    MappedGlobalLinks.FreeAndClear;
+    MappedGlobalLinks.Free;
   end;
 end;
 
@@ -572,8 +590,9 @@ var
   ItemPath: String;
   FileVersion: LongInt;
   LastUsedFormat: String;
-  OtherNode: TAvgLvlTreeNode;
+  OtherNode, ANode: TAvgLvlTreeNode;
   OtherLink: TPackageLink;
+  UnmappedGlobalLinks, MappedGlobalLinks: TAvgLvlTree;
 begin
   if fUpdateLock>0 then begin
     Include(FStates,plsUserLinksNeedUpdate);
@@ -597,7 +616,8 @@ begin
   XMLConfig:=nil;
   try
     XMLConfig:=TXMLConfig.Create(ConfigFilename);
-    
+
+    // load user links
     Path:='UserPkgLinks/';
     FileVersion:=XMLConfig.GetValue(Path+'Version',0);
     LinkCount:=XMLConfig.GetValue(Path+'Count',0);
@@ -612,7 +632,7 @@ begin
       NewPkgLink.Origin:=ploUser;
       NewPkgLink.Name:=XMLConfig.GetValue(ItemPath+'Name/Value','');
       PkgVersionLoadFromXMLConfig(NewPkgLink.Version,XMLConfig,ItemPath+'Version/',
-                                                          LazPkgXMLFileVersion);
+                                                          FileVersion);
       NewPkgLink.LPKFilename:=XMLConfig.GetValue(ItemPath+'Filename/Value','');
       NewPkgLink.AutoCheckExists:=
                       XMLConfig.GetValue(ItemPath+'AutoCheckExists/Value',true);
@@ -640,8 +660,8 @@ begin
       then
         NewPkgLink.FLastUsed := 0;
 
-      if not NewPkgLink.MakeSense then begin
-        debugln(['Warning: TPackageLinks.UpdateUserLinks invalid link: ',NewPkgLink.IDAsString]);
+      if not NewPkgLink.IsMakingSense then begin
+        debugln(['Warning: (lazarus) TPackageLinks.UpdateUserLinks invalid link: ',NewPkgLink.IDAsString]);
         NewPkgLink.Release;
         continue;
       end;
@@ -650,16 +670,16 @@ begin
         // a link to the same file
         OtherLink:=TPackageLink(OtherNode.Data);
         if ConsoleVerbosity>0 then
-          debugln(['Warning: TPackageLinks.UpdateUserLinks two links for file: ',NewPkgLink.LPKFilename,' A=',OtherLink.IDAsString,' B=',NewPkgLink.IDAsString]);
+          debugln(['Warning: (lazarus) TPackageLinks.UpdateUserLinks two links for file: ',NewPkgLink.LPKFilename,' A=',OtherLink.IDAsString,' B=',NewPkgLink.IDAsString]);
         if OtherLink.LastUsed<NewPkgLink.LastUsed then begin
           if ConsoleVerbosity>0 then
-            debugln(['Warning: TPackageLinks.UpdateUserLinks ignoring older link ',OtherLink.IDAsString]);
+            debugln(['Warning: (lazarus) TPackageLinks.UpdateUserLinks ignoring older link ',OtherLink.IDAsString]);
           FUserLinksSortID.RemovePointer(OtherLink);
           FUserLinksSortFile.Delete(OtherNode);
           OtherLink.Release;
         end else begin
           if ConsoleVerbosity>0 then
-            debugln(['Warning: TPackageLinks.UpdateUserLinks ignoring older link ',NewPkgLink.IDAsString]);
+            debugln(['Warning: (lazarus) TPackageLinks.UpdateUserLinks ignoring older link ',NewPkgLink.IDAsString]);
           NewPkgLink.Release;
           continue;
         end;
@@ -668,14 +688,95 @@ begin
       FUserLinksSortID.Add(NewPkgLink);
       FUserLinksSortFile.Add(NewPkgLink);
     end;
+
+    // load LastUsed dates of global links
+    Path:='GlobalPkgLinks/';
+    FileVersion:=XMLConfig.GetValue(Path+'Version',0);
+    LinkCount:=XMLConfig.GetValue(Path+'Count',0);
+    UnmappedGlobalLinks:=TAvgLvlTree.Create(@ComparePackageLinks);
+    MappedGlobalLinks:=TAvgLvlTree.Create(@ComparePackageLinks);
+    try
+      for i:=1 to LinkCount do begin
+        ItemPath:=Path+'Item'+IntToStr(i)+'/';
+        if not CfgStrToDate(XMLConfig.GetValue(ItemPath+'LastUsed/Value',''),
+                            NewPkgLink.FLastUsed,LastUsedFormat)
+        then begin
+          debugln(['Hint: (lazarus) [TPackageLinks.UpdateUserLinks] ignoring invalid entry '+ItemPath]);
+          continue;
+        end;
+        NewPkgLink:=TPackageLink.Create; // create temporary TPackageLink
+        NewPkgLink.Name:=XMLConfig.GetValue(ItemPath+'Name/Value','');
+        NewPkgLink.IsMakingSense;
+        PkgVersionLoadFromXMLConfig(NewPkgLink.Version,XMLConfig,ItemPath+'Version/',
+                                                          FileVersion);
+        if not IsValidPkgName(NewPkgLink.Name) then begin
+          debugln(['Hint: (lazarus) [TPackageLinks.UpdateUserLinks] ignoring invalid global link LastUsed of '+NewPkgLink.IDAsString]);
+          NewPkgLink.Free;
+          continue;
+        end;
+
+        OtherNode:=FGlobalLinks.Find(NewPkgLink);
+        if OtherNode<>nil then begin
+          // global link (.lpl) still exists -> load LastUsed date
+          OtherLink:=TPackageLink(OtherNode.Data);
+          MappedGlobalLinks.Add(NewPkgLink);
+          if OtherLink.LastUsed<NewPkgLink.LastUsed then
+            OtherLink.LastUsed:=NewPkgLink.LastUsed;
+          continue;
+        end;
+
+        // this global link does not exist (e.g. the version has changed)
+        // => check after all data was loaded
+        if UnmappedGlobalLinks.Find(NewPkgLink)<>nil then
+          NewPkgLink.Free
+        else
+          UnmappedGlobalLinks.Add(NewPkgLink);
+      end;
+
+      // map unmapped global links to new global links
+      // Note: When the IDE knows several versions of a lpk it loads the last one
+      //       used (i.e. highest LastUsed date). When the version of the lpk
+      //       increased on disk (e.g. svn update or user installed a new Lazarus
+      //       version) the LastUsed date must be moved to the new lpk.
+      ANode:=UnmappedGlobalLinks.FindLowest;
+      while ANode<>nil do begin
+        NewPkgLink:=TPackageLink(ANode.Data);
+        //debugln(['TPackageLinks.UpdateUserLinks LastUsed date of '+NewPkgLink.IDAsString+' has no lpl file -> searching a new lpl file ...']);
+        ANode:=UnmappedGlobalLinks.FindSuccessor(ANode);
+        // check all global links with same pkg name
+        OtherNode:=FindLeftMostNode(FGlobalLinks,NewPkgLink.Name);
+        while (OtherNode<>nil) do begin
+          OtherLink:=TPackageLink(OtherNode.Data);
+          if CompareText(OtherLink.Name,NewPkgLink.Name)<>0 then break;
+          OtherNode:=FGlobalLinks.FindSuccessor(OtherNode);
+          if MappedGlobalLinks.Find(OtherLink)<>nil then
+            continue;// this lpl LastUsed date was already set
+          // this lpl LastUsed date was not yet set => set it
+          UnmappedGlobalLinks.Remove(NewPkgLink);
+          MappedGlobalLinks.Add(NewPkgLink);
+          if OtherLink.LastUsed<NewPkgLink.LastUsed then begin
+            debugln(['Hint: (lazarus) [TPackageLinks.UpdateUserLinks] using LastUsed date of old '+NewPkgLink.IDAsString+' for '+OtherLink.IDAsString+' in '+OtherLink.LPKFilename]);
+            OtherLink.LastUsed:=NewPkgLink.LastUsed;
+          end;
+          break;
+        end;
+      end;
+
+    finally
+      MappedGlobalLinks.FreeAndClear;
+      MappedGlobalLinks.Free;
+      UnmappedGlobalLinks.FreeAndClear;
+      UnmappedGlobalLinks.Free;
+    end;
+
     XMLConfig.Modified:=false;
     XMLConfig.Free;
     
-    UserLinkLoadTime:=FileAgeUTF8(ConfigFilename);
+    UserLinkLoadTime:=FileAgeCached(ConfigFilename);
     UserLinkLoadTimeValid:=true;
   except
     on E: Exception do begin
-      DebugLn('NOTE: unable to read ',ConfigFilename,' ',E.Message);
+      DebugLn('Note: (lazarus) unable to read ',ConfigFilename,' ',E.Message);
       exit;
     end;
   end;
@@ -756,7 +857,7 @@ begin
   // check if file needs saving
   if not NeedSaveUserLinks(ConfigFilename) then exit;
   if ConsoleVerbosity>1 then
-    DebugLn(['TPackageLinks.SaveUserLinks saving ... ',ConfigFilename,' Modified=',Modified,' UserLinkLoadTimeValid=',UserLinkLoadTimeValid,' ',FileAgeUTF8(ConfigFilename)=UserLinkLoadTime,' Immediately=',Immediately]);
+    DebugLn(['Hint: (lazarus) TPackageLinks.SaveUserLinks saving ... ',ConfigFilename,' Modified=',Modified,' UserLinkLoadTimeValid=',UserLinkLoadTimeValid,' ',FileAgeUTF8(ConfigFilename)=UserLinkLoadTime,' Immediately=',Immediately]);
 
   if Immediately then begin
     QueueSaveUserLinks:=false;
@@ -771,14 +872,17 @@ begin
   try
     XMLConfig:=TXMLConfig.CreateClean(ConfigFilename);
 
+    // store user links
     Path:='UserPkgLinks/';
     XMLConfig.SetValue(Path+'Version',PkgLinksFileVersion);
     ANode:=FUserLinksSortID.FindLowest;
     i:=0;
     while ANode<>nil do begin
+      CurPkgLink:=TPackageLink(ANode.Data);
+      ANode:=FUserLinksSortID.FindSuccessor(ANode);
+
       inc(i);
       ItemPath:=Path+'Item'+IntToStr(i)+'/';
-      CurPkgLink:=TPackageLink(ANode.Data);
       XMLConfig.SetDeleteValue(ItemPath+'Name/Value',CurPkgLink.Name,'');
       //debugln(['TPackageLinks.SaveUserLinks ',CurPkgLink.Name,' ',dbgs(Pointer(CurPkgLink))]);
       PkgVersionSaveToXMLConfig(CurPkgLink.Version,XMLConfig,ItemPath+'Version/');
@@ -799,21 +903,38 @@ begin
       XMLConfig.SetDeleteValue(ItemPath+'NotFoundCount/Value',
                                CurPkgLink.NotFoundCount,0);
       XMLConfig.SetDeleteValue(ItemPath+'LastUsed/Value',
-                               DateToCfgStr(CurPkgLink.LastUsed,DateTimeAsCfgStrFormat),'');
-
-      ANode:=FUserLinksSortID.FindSuccessor(ANode);
+                   DateToCfgStr(CurPkgLink.LastUsed,DateTimeAsCfgStrFormat),'');
     end;
-    XMLConfig.SetDeleteValue(Path+'Count',FUserLinksSortID.Count,0);
-    
-    InvalidateFileStateCache;
+    XMLConfig.SetDeleteValue(Path+'Count',i,0);
+
+    // store LastUsed dates of global links
+    Path:='GlobalPkgLinks/';
+    XMLConfig.SetValue(Path+'Version',PkgLinksFileVersion);
+    i:=0;
+    ANode:=FGlobalLinks.FindLowest;
+    while ANode<>nil do begin
+      CurPkgLink:=TPackageLink(ANode.Data);
+      ANode:=FGlobalLinks.FindSuccessor(ANode);
+      if CurPkgLink.LastUsed<=0 then continue;
+
+      inc(i);
+      ItemPath:=Path+'Item'+IntToStr(i)+'/';
+      XMLConfig.SetDeleteValue(ItemPath+'Name/Value',CurPkgLink.Name,'');
+      PkgVersionSaveToXMLConfig(CurPkgLink.Version,XMLConfig,ItemPath+'Version/');
+      XMLConfig.SetDeleteValue(ItemPath+'LastUsed/Value',
+                   DateToCfgStr(CurPkgLink.LastUsed,DateTimeAsCfgStrFormat),'');
+    end;
+    XMLConfig.SetDeleteValue(Path+'Count',i,0);
+
+    InvalidateFileStateCache(ConfigFilename);
     XMLConfig.Flush;
     XMLConfig.Free;
 
-    UserLinkLoadTime:=FileAgeUTF8(ConfigFilename);
+    UserLinkLoadTime:=FileAgeCached(ConfigFilename);
     UserLinkLoadTimeValid:=true;
   except
     on E: Exception do begin
-      DebugLn('NOTE: unable to read ',ConfigFilename,' ',E.Message);
+      DebugLn('Note: (lazarus) unable to read ',ConfigFilename,' ',E.Message);
       exit;
     end;
   end;
@@ -886,8 +1007,8 @@ var
   {$ENDIF}
 begin
   Result:=nil;
-  if (Dependency=nil) or (not Dependency.MakeSense) then begin
-    DebugLn(['TPackageLinks.FindLinkWithDependencyInTree Dependency makes no sense']);
+  if (Dependency=nil) or (not Dependency.IsMakingSense) then begin
+    DebugLn(['Warning: (lazarus) TPackageLinks.FindLinkWithDependencyInTree Dependency makes no sense']);
     exit;
   end;
   {$IFDEF VerbosePkgLinkSameName}
@@ -1065,7 +1186,7 @@ begin
     NewLink.Reference;
     NewLink.AssignID(APackage);
     NewLink.LPKFilename:=APackage.Filename;
-    if NewLink.MakeSense then begin
+    if NewLink.IsMakingSense then begin
       FUserLinksSortID.Add(NewLink);
       FUserLinksSortFile.Add(NewLink);
       IncreaseChangeStamp;
@@ -1116,7 +1237,7 @@ begin
     NewLink.LPKFilename:=PkgFilename;
     if LPK<>nil then
       NewLink.Version.Assign(PkgVersion);
-    if NewLink.MakeSense then begin
+    if NewLink.IsMakingSense then begin
       FUserLinksSortID.Add(NewLink);
       FUserLinksSortFile.Add(NewLink);
       IncreaseChangeStamp;

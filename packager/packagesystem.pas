@@ -932,7 +932,7 @@ begin
         exit(mrCancel);
       end;
     end;
-    if not NewPackage.MakeSense then begin
+    if not NewPackage.IsMakingSense then begin
       DebugLn('Error: (lazarus) invalid package file "'+AFilename+'".');
       exit(mrCancel);
     end;
@@ -2137,7 +2137,7 @@ var
 begin
   for i:=0 to PkgList.Count-1 do begin
     PackageName:=PkgList[i];
-    if (PackageName='') or (not IsValidUnitName(PackageName)) then continue;
+    if not IsValidPkgName(PackageName) then continue;
     Dependency:=FindDependencyByNameInList(FirstAutoInstallDependency,
                                            pdlRequires,PackageName);
     //DebugLn('TLazPackageGraph.LoadAutoInstallPackages ',dbgs(Dependency),' ',PackageName);
