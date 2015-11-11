@@ -604,11 +604,8 @@ begin
     ADesc.Format := ricfRGBA;
   end;
 
-  with ABitmap.image.size do
-  begin
-    ADesc.Width := Round(width);
-    ADesc.Height := Round(Height);
-  end;
+  ADesc.Width := Round(ABitmap.image.size.width);
+  ADesc.Height := Round(ABitmap.image.size.Height);
 
   //ADesc.PaletteColorCount := 0;
 

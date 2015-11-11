@@ -321,13 +321,10 @@ end;
 
 function CGRectToRect(const c: CGRect): TRect;
 begin
-  with Result do
-  begin
-    Left := Round(c.origin.x);
-    Top := Round(c.origin.y);
-    Right := Round(c.origin.x + c.size.width);
-    Bottom := Round(c.origin.y + c.size.height);
-  end;
+  Result.Left := Round(c.origin.x);
+  Result.Top := Round(c.origin.y);
+  Result.Right := Round(c.origin.x + c.size.width);
+  Result.Bottom := Round(c.origin.y + c.size.height);
 end;
 
 function RectToNSRect(const r: TRect): NSRect;
@@ -338,24 +335,18 @@ end;
 
 function NSRectToRect(const NS: NSRect): TRect;
 begin
-  with Result do
-  begin
-    Left := Round(ns.origin.x);
-    Top := Round(ns.origin.y);
-    Right := Round(ns.origin.x + ns.size.width);
-    Bottom := Round(ns.origin.y + ns.size.height);
-  end;
+  Result.Left := Round(ns.origin.x);
+  Result.Top := Round(ns.origin.y);
+  Result.Right := Round(ns.origin.x + ns.size.width);
+  Result.Bottom := Round(ns.origin.y + ns.size.height);
 end;
 
 procedure NSToLCLRect(const ns: NSRect; ParentHeight: Single; out lcl: TRect);
 begin
-  with lcl do
-  begin
-    Left := Round(ns.origin.x);
-    Top := Round(ParentHeight - ns.size.height - ns.origin.y);
-    Right := Round(ns.origin.x + ns.size.width);
-    Bottom := Round(lcl.Top + ns.size.height);
-  end;
+  lcl.Left := Round(ns.origin.x);
+  lcl.Top := Round(ParentHeight - ns.size.height - ns.origin.y);
+  lcl.Right := Round(ns.origin.x + ns.size.width);
+  lcl.Bottom := Round(lcl.Top + ns.size.height);
 end;
 
 procedure LCLToNSRect(const lcl: TRect; ParentHeight: Single; out ns: NSRect);

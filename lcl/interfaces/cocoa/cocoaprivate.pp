@@ -2396,11 +2396,8 @@ end;
 
 procedure LCLViewExtension.lclRelativePos(var Left, Top: Integer);
 begin
-  with frame.origin do
-  begin
-    Left := Round(x);
-    Top := Round(y);
-  end;
+  Left := Round(frame.origin.x);
+  Top := Round(frame.origin.y);
 end;
 
 procedure LCLViewExtension.lclLocalToScreen(var X, Y:Integer);
@@ -2477,13 +2474,10 @@ var
   r: NSRect;
 begin
   r := bounds;
-  with Result do
-  begin
-    Left := 0;
-    Top := 0;
-    Right := Round(r.size.width);
-    Bottom := Round(r.size.height);
-  end;
+  Result.Left := 0;
+  Result.Top := 0;
+  Result.Right := Round(r.size.width);
+  Result.Bottom := Round(r.size.height);
 end;
 
 
