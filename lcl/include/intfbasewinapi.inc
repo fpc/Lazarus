@@ -1284,33 +1284,33 @@ function TWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices: Lon
 
   function GetTriangleBounds(const v1, v2, v3: TTriVertex): TRect;
   begin
-    with v1, Result do
+    with v1 do
     begin
-      Left := x;
-      Top := y;
-      BottomRight := TopLeft;
+      Result.Left := x;
+      Result.Top := y;
+      Result.BottomRight := Result.TopLeft;
     end;
-    with v2, Result do
+    with v2 do
     begin
-      if x < Left then
-        Left := x;
-      if x > Right then
-        Right := x;
-      if y < Top then
-        Top := y;
-      if y > Bottom then
-        Bottom := y;
+      if x < Result.Left then
+        Result.Left := x;
+      if x > Result.Right then
+        Result.Right := x;
+      if y < Result.Top then
+        Result.Top := y;
+      if y > Result.Bottom then
+        Result.Bottom := y;
     end;
-    with v3, Result do
+    with v3 do
     begin
-      if x < Left then
-        Left := x;
-      if x > Right then
-        Right := x;
-      if y < Top then
-        Top := y;
-      if y > Bottom then
-        Bottom := y;
+      if x < Result.Left then
+        Result.Left := x;
+      if x > Result.Right then
+        Result.Right := x;
+      if y < Result.Top then
+        Result.Top := y;
+      if y > Result.Bottom then
+        Result.Bottom := y;
     end;
   end;
 
