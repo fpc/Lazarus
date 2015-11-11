@@ -2749,7 +2749,9 @@ begin
     Config.AppendBasePath('Restores/');
     RestoreLayouts.SaveToConfig(Config);
     Config.UndoAppendBasePath;
+    {$IFDEF VerboseAnchorDocking}
     WriteDebugLayout('TAnchorDockMaster.SaveLayoutToConfig ',Tree.Root);
+    {$ENDIF}
     //DebugWriteChildAnchors(Tree.Root);
   finally
     Tree.Free;

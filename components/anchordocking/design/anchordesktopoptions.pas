@@ -215,7 +215,9 @@ begin
   FTree.SaveToConfig(Path+'MainConfig/', aXMLCfg);
   FRestoreLayouts.SaveToConfig(Path+'Restores/', aXMLCfg);
   FSettings.SaveToConfig(Path+'Settings/', aXMLCfg);
+  {$IFDEF VerboseAnchorDocking}
   WriteDebugLayout('TAnchorDesktopOpt.SaveLayoutToConfig ',FTree.Root);
+  {$ENDIF}
 end;
 
 procedure TAnchorDesktopOpt.SaveMainLayoutToTree;
@@ -241,8 +243,10 @@ begin
       if AForm=nil then continue;
       if SavedSites.IndexOf(AForm)>=0 then continue;
       SavedSites.Add(AForm);
+      {$IFDEF VerboseAnchorDocking}
       debugln(['TAnchorDesktopOpt.SaveMainLayoutToTree AForm=',DbgSName(AForm)]);
       DebugWriteChildAnchors(AForm,true,true);
+      {$ENDIF}
       if (AForm is TAnchorDockHostSite) then begin
         Site:=TAnchorDockHostSite(AForm);
         LayoutNode:=FTree.NewNode(FTree.Root);
