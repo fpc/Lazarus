@@ -39,7 +39,6 @@
     - support Expressions
     - with Canvas do with Self do (e.g. shape.inc)
     - dialog in cody to replace a long expression with a short local variable
-    - bug: grids.pas function TCustomGrid.ScrollToCell
     - bug: grids.pas function TCustomGrid.DrawCellGrid
     - bug: grids.pas function TCustomGrid.doColSizing
 }
@@ -1373,13 +1372,15 @@ var
       FromPos:=Max(FromPos,DeleteHeaderEndPos);
       ToPos:=Min(ToPos,DeleteFooterStartPos);
       if FromPos>=ToPos then exit;
-      if IndentWith>=IndentInnerWith then
+      if IndentWith>=IndentInnerWith then exit;
       // unindent
       FromPos:=FindLineEndOrCodeAfterPosition(FromPos,true,true);
       //debugln(['UnIndent FromPos=',CleanPosToStr(FromPos),' ToPos=',CleanPosToStr(ToPos),' Src="',dbgstr(Src,FromPos,ToPos),'"']);
       if not SourceChangeCache.IndentBlock(FromPos,ToPos,IndentWith-IndentInnerWith)
-      then
+      then begin
+        debugln(['UnindentAndEncloseSkippedCode.UnIndent failed: ']);
         exit(false);
+      end;
     end;
 
   var
