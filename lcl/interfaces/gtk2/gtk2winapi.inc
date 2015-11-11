@@ -2231,13 +2231,10 @@ begin
     
     Origin := DevCtx.Offset;
     try
-      with R do
-      begin
-        DrawHorzLine(Left, Top, Right-1);
-        DrawVertLine(Right-1, Top, Bottom-1);
-        DrawHorzLine(Right-1, Bottom-1, Left);
-        DrawVertLine(Left, Bottom-1, Top);
-      end;
+      DrawHorzLine(R.Left, R.Top, R.Right-1);
+      DrawVertLine(R.Right-1, R.Top, R.Bottom-1);
+      DrawHorzLine(R.Right-1, R.Bottom-1, R.Left);
+      DrawVertLine(R.Left, R.Bottom-1, R.Top);
 
       Result := True;
     finally
@@ -4456,7 +4453,7 @@ end;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint;
 var
-  CRect : TGDKRectangle;
+  ClipR : TGDKRectangle;
 begin
   Result := SIMPLEREGION;
   If lpRect <> nil then
@@ -4467,12 +4464,12 @@ begin
     Result := RegionType({%H-}PGDIObject(RGN)^.GDIRegionObject);
     If lpRect <> nil then begin
       gdk_region_get_clipbox({%H-}PGDIObject(RGN)^.GDIRegionObject,
-        @CRect);
-      With lpRect^,CRect do begin
-        Left   := X;
-        Top    := Y;
-        Right  := X + Width;
-        Bottom := Y + Height;
+        @ClipR);
+      With lpRect^ do begin
+        Left   := ClipR.X;
+        Top    := ClipR.Y;
+        Right  := ClipR.X + ClipR.Width;
+        Bottom := ClipR.Y + ClipR.Height;
       end;
     end;
   end;
