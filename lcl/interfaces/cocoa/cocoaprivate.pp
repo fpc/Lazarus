@@ -2619,13 +2619,10 @@ var
 begin
   wFrame := frame;
   cFrame := contentRectForFrameRect(wFrame);
-  with Result do
-  begin
-    Left := Round(cFrame.origin.x - wFrame.origin.x);
-    Top := Round(wFrame.origin.y + wFrame.size.height - cFrame.origin.y - cFrame.size.height);
-    Right := Left + Round(cFrame.size.width);
-    Bottom := Top + Round(cFrame.size.height);
-  end;
+  Result.Left := Round(cFrame.origin.x - wFrame.origin.x);
+  Result.Top := Round(wFrame.origin.y + wFrame.size.height - cFrame.origin.y - cFrame.size.height);
+  Result.Right := Result.Left + Round(cFrame.size.width);
+  Result.Bottom := Result.Top + Round(cFrame.size.height);
 end;
 
 { TCocoaListBox }
