@@ -2516,19 +2516,6 @@ begin
   Result := Cardinal(FSelection.Count);
 end;
 
-{function TTreeNodes.GetNode(ItemId: HTreeItem): TTreeNode;
-var
-  Item: TTVItem;
-begin
-  with Item do
-  begin
-    hItem := ItemId;
-    mask := TVIF_PARAM;
-  end;
-  if TreeView_GetItem(Handle, Item) then Result := TTreeNode(Item.lParam)
-  else Result := nil;
-end;}
-
 procedure TTreeNodes.SetItem(Index: Integer; AValue: TTreeNode);
 begin
   GetNodeFromIndex(Index).Assign(AValue);
