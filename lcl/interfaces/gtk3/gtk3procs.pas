@@ -355,56 +355,56 @@ end;
 
 function RectFromGtkAllocation(AGtkAllocation: TGtkAllocation): TRect;
 begin
-  with Result, AGtkAllocation do
+  with AGtkAllocation do
   begin
-    Left := x;
-    Top := y;
-    Right := Width + x;
-    Bottom := Height + y;
+    Result.Left := x;
+    Result.Top := y;
+    Result.Right := Width + x;
+    Result.Bottom := Height + y;
   end;
 end;
 
 function RectFromGdkRect(AGdkRect: TGdkRectangle): TRect;
 begin
-  with Result, AGdkRect do
+  with AGdkRect do
   begin
-    Left := x;
-    Top := y;
-    Right := Width + x;
-    Bottom := Height + y;
+    Result.Left := x;
+    Result.Top := y;
+    Result.Right := Width + x;
+    Result.Bottom := Height + y;
   end;
 end;
 
 function RectFromPangoRect(APangoRect: TPangoRectangle): TRect;
 begin
-  with Result, APangoRect do
+  with APangoRect do
   begin
-    Left := x div PANGO_SCALE;
-    Top := y div PANGO_SCALE;
-    Right := (Width div PANGO_SCALE) + (x div PANGO_SCALE);
-    Bottom := (Height div PANGO_SCALE) + (y div PANGO_SCALE);
+    Result.Left := x div PANGO_SCALE;
+    Result.Top := y div PANGO_SCALE;
+    Result.Right := (Width div PANGO_SCALE) + (x div PANGO_SCALE);
+    Result.Bottom := (Height div PANGO_SCALE) + (y div PANGO_SCALE);
   end;
 end;
 
 function GdkRectFromRect(R: TRect): TGdkRectangle;
 begin
-  with Result, R do
+  with Result do
   begin
-    x := Left;
-    y := Top;
-    width := Right-Left;
-    height := Bottom-Top;
+    x := R.Left;
+    y := R.Top;
+    width := R.Right-R.Left;
+    height := R.Bottom-R.Top;
   end;
 end;
 
 function GtkAllocationFromRect(R: TRect): TGtkAllocation;
 begin
-  with Result, R do
+  with Result do
   begin
-    x := Left;
-    y := Top;
-    width := Right-Left;
-    height := Bottom-Top;
+    x := R.Left;
+    y := R.Top;
+    width := R.Right-R.Left;
+    height := R.Bottom-R.Top;
   end;
 end;
 
