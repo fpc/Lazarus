@@ -39,8 +39,7 @@
     - support Expressions
     - with Canvas do with Self do (e.g. shape.inc)
     - dialog in cody to replace a long expression with a short local variable
-    - bug: grids.pas function TCustomGrid.DrawCellGrid
-    - bug: grids.pas function TCustomGrid.doColSizing
+    - bug: shape.inc : with Self do
 }
 unit ExtractProcTool;
 
