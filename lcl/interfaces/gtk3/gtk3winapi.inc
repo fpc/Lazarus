@@ -560,17 +560,17 @@ begin
   Result:=inherited DPtoLP(DC, Points, Count);
 end;
 
-function TGtk3WidgetSet.DrawFrameControl(DC: HDC; const Rect: TRect; uType,
+function TGtk3WidgetSet.DrawFrameControl(DC: HDC; const aRect: TRect; uType,
   uState: Cardinal): Boolean;
 begin
   {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
   DebugLn('WARNING: TGtk3WidgetSet.DrawFrameControl not implemented ...');
   {$ENDIF}
   Result := False;
-  // inherited DrawFrameControl(DC, Rect, uType, uState);
+  // inherited DrawFrameControl(DC, aRect, uType, uState);
 end;
 
-function TGtk3WidgetSet.DrawFocusRect(DC: HDC; const Rect: TRect): boolean;
+function TGtk3WidgetSet.DrawFocusRect(DC: HDC; const aRect: TRect): boolean;
 var
   Context: PGtkStyleContext;
   AValue: TGValue;
@@ -595,7 +595,7 @@ begin
       DebugLn('WARNING: TGtk3WidgetSet.DrawFocusRect drawing focus on non widget context isn''t implemented.');
       exit;
     end;
-    with Rect do
+    with aRect do
       gtk_render_focus(Context ,TGtk3DeviceContext(DC).Widget, Left, Top, Right - Left, Bottom - Top);
 
     Result := True;
