@@ -341,7 +341,7 @@ function PointToSmallPoint(const P : TPoint) : TSmallPoint; inline;
 function RGB(R, G, B : Byte) : TColorRef; inline;
 
 function ScrollWindow(hWnd: HWND; XAmount, YAmount: Integer; Rect, ClipRect: PRect): Boolean; inline;
-function SetRect(var ARect : TRect; xLeft,yTop,xRight,yBottom : Integer) : Boolean;
+function SetRect(var ARect : TRect; aLeft,aTop,aRight,aBottom : Integer) : Boolean;
 function SetRectEmpty(var ARect: TRect): Boolean;
 function SetScrollPos(Handle: HWND; nBar, nPos: Integer; bRedraw: Boolean): Integer;
 function SetScrollRange(Handle: HWND; nBar, nMinPos, nMaxPos: Integer; bRedraw: Boolean): Boolean;

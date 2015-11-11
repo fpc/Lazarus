@@ -1583,15 +1583,13 @@ end;
   Params:
   Returns:
  ------------------------------------------------------------------------------}
-function SetRect(var ARect : TRect; xLeft,yTop,xRight,yBottom : Integer) : Boolean;
+function SetRect(var ARect : TRect; aLeft,aTop,aRight,aBottom : Integer) : Boolean;
 begin
   Result := True;
-  with ARect do begin
-    Left := xLeft;
-    Top := yTop;
-    Right := xRight;
-    Bottom := yBottom;
-  end;
+  ARect.Left := aLeft;
+  ARect.Top := aTop;
+  ARect.Right := aRight;
+  ARect.Bottom := aBottom;
 End;
 
 {------------------------------------------------------------------------------
