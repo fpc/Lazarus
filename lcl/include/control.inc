@@ -3039,8 +3039,8 @@ begin
   if CheckPosition(Self) then
   DebugLn('[TControl.SetBoundsRect] ',Name,':',ClassName);
   {$ENDIF}
-  with ARect do
-    SetBounds(Left, Top, Max(Right - Left, 0), Max(Bottom - Top, 0));
+  SetBounds(ARect.Left, ARect.Top,
+    Max(ARect.Right - ARect.Left, 0), Max(ARect.Bottom - ARect.Top, 0));
 end;
 
 procedure TControl.SetBoundsRectForNewParent(const AValue: TRect);
@@ -3235,16 +3235,15 @@ procedure TControl.DoFloatMsg(ADockSource: TDragDockObject);
 var
   P: TPoint;
   FloatHost: TWinControl;
+  R: TRect;
 begin
   DebugLn(['TControl.DoFloatMsg ',DbgSName(Self),' Floating=',Floating]);
   if Floating and (Parent <> nil) then
   begin
     P := Parent.ClientToScreen(Point(Left, Top));
-    with ADockSource.DockRect do
-    begin
-      Parent.BoundsRect := Bounds(Left + Parent.Left - P.X, Top + Parent.Top - P.Y,
-        Right - Left + Parent.Width - Width,  Bottom - Top + Parent.Height - Height);
-    end;
+    R := ADockSource.DockRect;
+    Parent.BoundsRect := Bounds(R.Left + Parent.Left - P.X, R.Top + Parent.Top - P.Y,
+      R.Right - R.Left + Parent.Width - Width,  R.Bottom - R.Top + Parent.Height - Height);
   end else
   begin
     FloatHost := CreateFloatingDockSite(ADockSource.DockRect);
