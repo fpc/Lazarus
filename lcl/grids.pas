@@ -3368,12 +3368,11 @@ begin
       [X,Y,Left,Top,Right,Bottom,XInc,YInc,TLColOff,TLRowOff]);
     {$ENDIF}
 
-    with FTopLeft do
     if ((XInc=0)and(YInc=0)) or // the cell is already visible
-       ((X=aCol)and(Y=aRow)) or // the cell is visible by definition
-       ((X+XInc<0)or(Y+Yinc<0)) or // topleft can't be lower 0
-       ((X+XInc>=ColCount)) or // leftmost column can't be equal/higher than colcount
-       ((Y+Yinc>=RowCount)) // topmost column can't be equal/higher than rowcount
+       ((FTopLeft.X=aCol)and(FTopLeft.Y=aRow)) or // the cell is visible by definition
+       ((FTopLeft.X+XInc<0)or(FTopLeft.Y+Yinc<0)) or // topleft can't be lower 0
+       ((FTopLeft.X+XInc>=ColCount)) or // leftmost column can't be equal/higher than colcount
+       ((FTopLeft.Y+Yinc>=RowCount)) // topmost column can't be equal/higher than rowcount
     then
       Break;
     Inc(FTopLeft.x, XInc);
@@ -5272,7 +5271,7 @@ end;
 { Save to the cache the current visible grid (excluding fixed cells) }
 procedure TCustomGrid.CacheVisibleGrid;
 var
-  R: TRect;
+  CellR, GridR: TRect;
 begin
   with FGCache do begin
     VisibleGrid:=GetVisibleGrid;
@@ -5282,20 +5281,20 @@ begin
       ValidGrid := ValidRows and ValidCols;
     end;
     FullVisibleGrid := VisibleGrid;
-    if ValidGrid then
-      with FullVisibleGrid do begin
-        if goSmoothScroll in Options then begin
-          if TLColOff>0 then
-            Left := Min(Left+1, Right);
-          if TLRowOff>0 then
-            Top  := Min(Top+1, Bottom);
-        end;
-        R := CellRect(Right, Bottom);
-        if R.Right>(ClientWidth+GetBorderWidth) then
-          Right := Max(Right-1, Left);
-        if R.Bottom>(ClientHeight+GetBorderWidth) then
-          Bottom := Max(Bottom-1, Top);
+    if ValidGrid then begin
+      GridR := FullVisibleGrid;
+      if goSmoothScroll in Options then begin
+        if TLColOff>0 then
+          GridR.Left := Min(GridR.Left+1, GridR.Right);
+        if TLRowOff>0 then
+          GridR.Top  := Min(GridR.Top+1, GridR.Bottom);
       end;
+      CellR := CellRect(GridR.Right, GridR.Bottom);
+      if CellR.Right>(ClientWidth+GetBorderWidth) then
+        GridR.Right := Max(GridR.Right-1, GridR.Left);
+      if CellR.Bottom>(ClientHeight+GetBorderWidth) then
+        GridR.Bottom := Max(GridR.Bottom-1, GridR.Top);
+    end;
   end;
 end;
 
@@ -7824,6 +7823,7 @@ end;
 procedure TCustomGrid.EditorPos;
 var
   msg: TGridMessage;
+  CellR: TRect;
 begin
   {$ifdef dbgGrid} DebugLn('Grid.EditorPos INIT');{$endif}
   if FEditor<>nil then begin
@@ -7836,23 +7836,24 @@ begin
     FEditor.Dispatch(Msg);
 
     // send editor bounds
-    Msg.CellRect:=CellRect(FCol,FRow);
+    CellR:=CellRect(FCol,FRow);
 
-    with msg.CellRect do
-    if (Top<FGCache.FixedHeight) or (Top>FGCache.ClientHeight) or
-       (UseRightToLeftAlignment and ((Right-1>FlipX(FGCache.FixedWidth)) or (Right<0))) or
-       (not UseRightToLeftAlignment and ((Left<FGCache.FixedWidth) or (Left>FGCache.ClientWidth))) then
+    if (CellR.Top<FGCache.FixedHeight) or (CellR.Top>FGCache.ClientHeight) or
+       (UseRightToLeftAlignment and ((CellR.Right-1>FlipX(FGCache.FixedWidth)) or (CellR.Right<0))) or
+       (not UseRightToLeftAlignment and ((CellR.Left<FGCache.FixedWidth) or (CellR.Left>FGCache.ClientWidth)))
+    then
       // if editor will be out of sight, make the out of sight coords fixed
       // this should avoid range check errors on widgetsets that can't handle
       // high control coords (like GTK2)
-      Msg.CellRect := Bounds(-FEditor.Width-100, -FEditor.Height-100, Right-Left, Bottom-Top);
+      CellR := Bounds(-FEditor.Width-100, -FEditor.Height-100, CellR.Right-CellR.Left, CellR.Bottom-CellR.Top);
 
     if FEditorOptions and EO_AUTOSIZE = EO_AUTOSIZE then begin
       if EditorBorderStyle = bsNone then
-        InflateRect(Msg.CellRect, -1, -1);
-      FEditor.BoundsRect := Msg.CellRect;
+        InflateRect(CellR, -1, -1);
+      FEditor.BoundsRect := CellR;
     end else begin
       Msg.LclMsg.msg:=GM_SETBOUNDS;
+      Msg.CellRect:=CellR;
       Msg.Grid:=Self;
       Msg.Col:=FCol;
       Msg.Row:=FRow;
@@ -10806,7 +10807,7 @@ end;
 procedure TCustomStringGrid.Clean(aRect: TRect; CleanOptions: TGridZoneSet);
 begin
   with aRect do
-  Clean(Left, Top, Right, Bottom, CleanOptions);
+    Clean(Left, Top, Right, Bottom, CleanOptions);
 end;
 
 procedure TCustomStringGrid.Clean(StartCol, StartRow, EndCol, EndRow: integer;
