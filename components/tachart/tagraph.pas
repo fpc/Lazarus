@@ -825,7 +825,7 @@ begin
     FClipRect.Bottom -= Bottom;
   end;
 
-  with ClipRect do begin;
+  with ClipRect do begin
     FTitle.Measure(ADrawer, 1, Left, Right, Top);
     FFoot.Measure(ADrawer, -1, Left, Right, Bottom);
   end;

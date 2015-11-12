@@ -320,12 +320,10 @@ procedure TChartNavPanel.Paint;
 
   function GraphRect(ARect: TDoubleRect): TRect;
   begin
-    with ARect do begin
-      a := a * FScale + FOffset;
-      b := b * FScale + FOffset;
-      Result := Rect(
-        Round(a.X), Height - Round(b.Y), Round(b.X), Height - Round(a.Y));
-    end;
+    ARect.a := ARect.a * FScale + FOffset;
+    ARect.b := ARect.b * FScale + FOffset;
+    Result := Rect(
+      Round(ARect.a.X), Height - Round(ARect.b.Y), Round(ARect.b.X), Height - Round(ARect.a.Y));
   end;
 
 var
