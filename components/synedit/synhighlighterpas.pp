@@ -4226,7 +4226,7 @@ end; { TSynPasSyn.UseUserSettings }
 
 function TSynPasSyn.GetIdentChars: TSynIdentChars;
 begin
-  Result := ['_', '0'..'9', 'a'..'z', 'A'..'Z'];
+  Result := ['&', '_', '0'..'9', 'a'..'z', 'A'..'Z'];
 end;
 
 class function TSynPasSyn.GetLanguageName: string;

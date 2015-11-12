@@ -626,12 +626,7 @@ begin
   end;
 
   //Add the '&' character to prefixed identifiers
-  if (iliNeedsAmpersand in IdentItem.Flags) and
-     //check if there is already an '&' in front of this atom
-     ((IdentList.StartAtom.StartPos-1 > IdentList.StartContext.Tool.SrcLen) or  //StartPos-1 is out-of-scope
-      (IdentList.StartAtom.StartPos-1 < 1) or                                   //StartPos-1 is out-of-scope
-      (IdentList.StartContext.Tool.Src[IdentList.StartAtom.StartPos-1] <> '&')) //StartPos is in-scope and not &
-  then
+  if (iliNeedsAmpersand in IdentItem.Flags) then
     Result := '&' + Result;
 
   case ValueType of
