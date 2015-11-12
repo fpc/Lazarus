@@ -17,9 +17,13 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+    ***
+    This unit is a duplicate of AdvancedIPC.pp from FPC (added in 3.1.1).
+    It should be removed when support of older FPC versions is dropped.
+
  **********************************************************************}
 
-unit AdvancedIPC;
+unit LazAdvancedIPC;
 
 {$mode objfpc}
 {$H+}
