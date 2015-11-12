@@ -1694,6 +1694,8 @@ begin
   while (IdentStart<IdentEnd)
   and (not IsIdentStartChar[Source[IdentStart]]) do
     inc(IdentStart);
+  if (IdentStart>1) and (Source[IdentStart-1]='&') then
+    dec(IdentStart);
 end;
 
 function GetIdentStartPosition(const Source: string; Position: integer
@@ -1707,6 +1709,8 @@ begin
   while (Result<Position)
   and (not IsIdentStartChar[Source[Result]]) do
     inc(Result);
+  if (Result>1) and (Source[Result-1]='&') then
+    dec(Result);
 end;
 
 function GetIdentLen(Identifier: PChar): integer;
