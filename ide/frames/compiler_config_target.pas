@@ -232,8 +232,9 @@ begin
 
   // Update selection list for target processor
   sl:=TStringList.Create;
-  sl.Add('('+lisDefault+')');
   GetTargetProcessors(aTargetCPU,sl);
+  sl.Sort;
+  sl.Insert(0,'('+lisDefault+')');
   for i:=0 to sl.Count-1 do
     sl[i]:=ProcessorToCaption(sl[i]);
   TargetProcComboBox.Items.Assign(sl);
