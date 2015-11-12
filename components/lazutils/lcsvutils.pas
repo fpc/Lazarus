@@ -34,13 +34,13 @@ var
   leadPtr, tailPtr, wordPtr, X:Pchar;
   Line: TStringList = nil;
 
-  function SkipSet(aSet: TSoc): boolean;
+  function SkipSet(const aSet: TSoc): boolean;
   begin
     while (leadPtr<tailPtr) and (leadPtr^ in aSet) do Inc(leadPtr);
     result := leadPtr<tailPtr;
   end;
 
-  function FindSet(aSet: TSoc): boolean;
+  function FindSet(const aSet: TSoc): boolean;
   begin
     while (leadPtr<tailPtr) and (not (leadPtr^ in ASet)) do Inc(leadPtr);
     result := leadPtr<tailPtr;
@@ -122,7 +122,7 @@ var
           if (leadPtr>=tailPtr) or (leadPtr^ in [ADelimiter, #10, #13]) then begin
             isDelimiter := (leadPtr<tailPtr) and (leadPtr^=ADelimiter);
             if leadPtr<tailPtr then begin
-              if (leadPtr^=#13) and ((leadPtr+1)<tailPtr) and ((leadPtr+1)^=#10) then
+              if (leadPtr^=#13) and (leadPtr[1]=#10) then
                 Inc(endField);    // point to second byte of line ending
               Inc(endField);      // skip last byte of line ending or delimiter
             end;
@@ -192,11 +192,11 @@ var
         begin
           if CSVEncoding=ceUTF16be then
             ConvertToUTF16;
-          SetLength(W,(tailPtr-leadPtr) div 2 +1);
+          SetLength(W,(tailPtr-leadPtr) div 2);
           System.Move(leadPtr^,W[1],length(W)*2);
           Buffer := UTF8Encode(W);
           leadPtr := @Buffer[1];
-          BufLen := length(Buffer);
+          tailPtr := leadPtr+length(Buffer);
         end;
     end;
   end;
@@ -228,10 +228,10 @@ begin
   tailPtr := leadPtr + BufLen;
 
   ConvertEncoding;
+  // Note: BufLen now invalid and leadPtr points into Buffer, not neccesarily at Buffer[1]
 
   try
     wordPtr := leadPtr;                    // wordPtr always points to starting word or part
-    tailPtr := leadPtr + Length(Buffer);   // tailPtr is an end of buffer marker
     while leadPtr<tailPtr do begin
       // skip initial spaces
       SkipSet([' ']);
