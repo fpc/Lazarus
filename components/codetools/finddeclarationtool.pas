@@ -4488,7 +4488,7 @@ begin
   CurContextNode:=Params.ContextNode;
   if CurContextNode=nil then exit;
   if CurContextNode.Desc=ctnEnumerationType then
-    SearchEnumIdentifiers := not Scanner.ValueSequences.ValueIs('SCOPEDENUMS', '1', CurContextNode.StartPos)
+    SearchEnumIdentifiers := not (Scanner.GetDirectiveValueAt(sdScopedEnums, CurContextNode.StartPos) = '1')
   else
     SearchEnumIdentifiers := False;
   CurContextNode:=CurContextNode.FirstChild;
