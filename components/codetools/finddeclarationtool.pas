@@ -4482,13 +4482,18 @@ function TFindDeclarationTool.FindEnumInContext(
  }
 var OldContextNode, CurContextNode: TCodeTreeNode;
   CollectResult: TIdentifierFoundResult;
+  SearchEnumIdentifiers: Boolean;
 begin
   Result:=false;
   CurContextNode:=Params.ContextNode;
   if CurContextNode=nil then exit;
+  if CurContextNode.Desc=ctnEnumerationType then
+    SearchEnumIdentifiers := not Scanner.ValueSequences.ValueIs('SCOPEDENUMS', '1', CurContextNode.StartPos)
+  else
+    SearchEnumIdentifiers := False;
   CurContextNode:=CurContextNode.FirstChild;
   while CurContextNode<>nil do begin
-    if (CurContextNode.Desc=ctnEnumIdentifier) then begin
+    if SearchEnumIdentifiers and (CurContextNode.Desc=ctnEnumIdentifier) then begin
       if (fdfCollect in Params.Flags) then begin
         //debugln('TFindDeclarationTool.FindEnumInContext ',GetIdentifier(@Src[CurContextNode.StartPos]));
         CollectResult:=DoOnIdentifierFound(Params,CurContextNode);

@@ -348,6 +348,42 @@ type
       read GetIncFile write SetIncFile; default;
   end;
 
+  TValueSequenceItem = record
+    CleanPos: integer;
+    Value: string;
+  end;
+
+  TValueSequenceDirective = class
+  private
+    FDirectiveName: string;
+    FItems: array of TValueSequenceItem;
+  public
+    constructor Create(const ADirectiveName, AValue: string;
+      ACleanPos: integer);
+    procedure Add(const AValue: string; ACleanPos: integer);
+    function FindValue(const ACleanPos: integer; out Value: string): Boolean;
+
+    function CalcMemSize: PtrUInt;
+  end;
+
+  TValueSequences = class
+  private
+    FTree: TAVLTree;
+  public
+    constructor Create;
+    destructor Destroy; override;
+
+    procedure Add(const ADirectiveName, ADirectiveValue: string;
+      ACleanPos: Integer);
+    function FindValue(const ADirectiveName: string;
+      ACleanPos: Integer; out Value: string): Boolean;
+    function ValueIs(const ADirectiveName,  ADirectiveValue: string;
+      ACleanPos: Integer): boolean;
+    procedure Clear;
+
+    function CalcMemSize: PtrUInt;
+  end;
+
   { LinkScanner Token Types }
   TLSTokenType = (
     lsttNone,
@@ -479,6 +515,7 @@ type
     FDirectivesCapacity: integer;
     FDirectivesSorted: PPLSDirective; // array of PLSDirective to items of FDirectives
     FDirectiveName: shortstring;
+    FDirectiveCleanPos: integer;
     FDirectivesStored: boolean;
     FMacrosOn: boolean;
     FMissingIncludeFiles: TMissingIncludeFiles;
@@ -500,6 +537,7 @@ type
     function InternalIfDirective: boolean;
     procedure EndSkipping;
     procedure AddSkipComment(IsStart: boolean);
+    procedure SetDirectiveValueWithSequence(const ADirectiveValue: string);
 
     function IfdefDirective: boolean;
     function IfCDirective: boolean;
@@ -573,6 +611,7 @@ type
     SrcLen: integer; // length of current source
     Code: pointer;   // current code object (TCodeBuffer)
     Values: TExpressionEvaluator;
+    ValueSequences: TValueSequences;
     SrcFilename: string;// current parsed filename (= TCodeBuffer(Code).Filename)
     IsUnit: boolean;
     SourceName: string;
@@ -783,10 +822,29 @@ function dbgs(k: TSourceLinkKind): string; overload;
 function dbgs(s: TLSDirectiveState): string; overload;
 function dbgs(s: TLSDirectiveKind): string; overload;
 
+function CompValueSequence(Item1, Item2: Pointer): integer;
+function CompValueSequenceName(Name, Item: Pointer): integer;
+
 implementation
 
 
 // useful procs ----------------------------------------------------------------
+
+function CompValueSequence(Item1, Item2: Pointer): integer;
+var
+  xItem1: TValueSequenceDirective absolute Item1;
+  xItem2: TValueSequenceDirective absolute Item2;
+begin
+  Result := CompareIdentifiers(PChar(xItem1.FDirectiveName), PChar(xItem2.FDirectiveName));
+end;
+
+function CompValueSequenceName(Name, Item: Pointer): integer;
+var
+  xName: PChar absolute Name;
+  xItem: TValueSequenceDirective absolute Item;
+begin
+  Result := CompareIdentifiers(xName, PChar(xItem.FDirectiveName));
+end;
 
 function IndexOfCodeInUniqueList(ACode: Pointer;
   UniqueSortedCodeList: TList): integer;
@@ -953,6 +1011,155 @@ begin
   Result:=Dir1^.SrcPos-Dir2^.SrcPos;
   if Result<>0 then exit;
   Result:=Dir1^.CleanPos-Dir2^.CleanPos;
+end;
+
+{ TValueSequenceDirective }
+
+constructor TValueSequenceDirective.Create(const ADirectiveName, AValue: string;
+  ACleanPos: integer);
+begin
+  FDirectiveName := ADirectiveName;
+  SetLength(FItems, 1);
+  FItems[0].CleanPos := ACleanPos;
+  FItems[0].Value := AValue;
+end;
+
+procedure TValueSequenceDirective.Add(const AValue: string; ACleanPos: integer);
+begin
+  if ACleanPos <= FItems[High(FItems)].CleanPos then
+    raise Exception.Create('Internal error: TValueSequenceDirective.Add: ACleanPos not sorted.');
+  SetLength(FItems, Length(FItems)+1);
+  FItems[High(FItems)].CleanPos := ACleanPos;
+  FItems[High(FItems)].Value := AValue;
+end;
+
+function TValueSequenceDirective.CalcMemSize: PtrUInt;
+var
+  Item: TValueSequenceItem;
+begin
+  Result:=PtrUInt(InstanceSize)
+    +MemSizeString(FDirectiveName)
+    +PtrUInt(Length(FItems))*PtrUInt(SizeOf(TValueSequenceItem));
+
+  for Item in FItems do
+    Inc(Result, MemSizeString(Item.Value));
+end;
+
+function TValueSequenceDirective.FindValue(const ACleanPos: integer; out
+  Value: string): Boolean;
+
+  function BinarySearch: integer;
+  var
+    I, Max, Min: Integer;
+    ResIndex, ResCleanPos: integer;
+  begin
+    Max := High(FItems);
+    Min := 0;
+    ResIndex := -1;
+    ResCleanPos := -1;
+    while (Min <= Max) do
+    begin
+      I := (Max+Min) div 2;
+      if (FItems[I].CleanPos = ACleanPos) then
+        Exit(I)
+      else
+      if (FItems[I].CleanPos < ACleanPos) then
+      begin
+        if ResCleanPos < FItems[I].CleanPos then
+        begin
+          //store the closest
+          ResIndex := I;
+          ResCleanPos := FItems[I].CleanPos;
+        end;
+        Min := I + 1;
+      end else
+      begin
+        Max := I - 1;
+      end;
+    end;
+    Result := ResIndex;
+  end;
+var
+  ItemIndex: integer;
+begin
+  ItemIndex := BinarySearch;
+  Result := ItemIndex >= 0;
+  if Result then
+    Value := FItems[ItemIndex].Value
+  else
+    Value := '';
+end;
+
+{ TValueSequences }
+
+constructor TValueSequences.Create;
+begin
+  FTree := TAVLTree.Create(@CompValueSequence)
+end;
+
+procedure TValueSequences.Add(const ADirectiveName, ADirectiveValue: string;
+  ACleanPos: Integer);
+var
+  Node: TAVLTreeNode;
+  Item: TValueSequenceDirective;
+begin
+  Node := FTree.FindKey(PChar(ADirectiveName), @CompValueSequenceName);
+  if Node=nil then
+  begin
+    Item := TValueSequenceDirective.Create(ADirectiveName, ADirectiveValue, ACleanPos);
+    FTree.Add(Item);
+  end else
+  begin
+    TValueSequenceDirective(Node.Data).Add(ADirectiveValue, ACleanPos);
+  end;
+end;
+
+function TValueSequences.CalcMemSize: PtrUInt;
+var
+  Node: TAVLTreeNode;
+begin
+  Result:=PtrUInt(InstanceSize);
+
+  for Node in FTree do
+    Inc(Result, TValueSequenceDirective(Node.Data).CalcMemSize);
+end;
+
+procedure TValueSequences.Clear;
+begin
+  FTree.FreeAndClear;
+end;
+
+destructor TValueSequences.Destroy;
+begin
+  FTree.FreeAndClear;
+  FTree.Free;
+
+  inherited Destroy;
+end;
+
+function TValueSequences.FindValue(const ADirectiveName: string;
+  ACleanPos: Integer; out Value: string): Boolean;
+var
+  Node: TAVLTreeNode;
+begin
+  Node := FTree.FindKey(PChar(ADirectiveName), @CompValueSequenceName);
+  if Node<>nil then
+    Result := TValueSequenceDirective(Node.Data).FindValue(ACleanPos, Value)
+  else begin
+    Value := '';
+    Result := False;
+  end;
+end;
+
+function TValueSequences.ValueIs(const ADirectiveName, ADirectiveValue: string;
+  ACleanPos: Integer): boolean;
+var
+  Value: string;
+begin
+  if FindValue(ADirectiveName, ACleanPos, Value) then
+    Result := Value=ADirectiveValue
+  else
+    Result := False;
 end;
 
 { TLinkScanner }
@@ -1229,6 +1436,7 @@ begin
   inherited Create;
   FInitValues:=TExpressionEvaluator.Create;
   Values:=TExpressionEvaluator.Create;
+  ValueSequences:=TValueSequences.Create;
   IncreaseChangeStep;
   FSourceChangeSteps:=TFPList.Create;
   FMainCode:=nil;
@@ -1248,6 +1456,7 @@ begin
   FreeAndNil(FIncludeStack);
   FreeAndNil(FSourceChangeSteps);
   FreeAndNil(Values);
+  FreeAndNil(ValueSequences);
   FreeAndNil(FInitValues);
   ReAllocMem(FLinks,0);
   inherited Destroy;
@@ -1375,6 +1584,7 @@ begin
     if FDirectivesSorted<>nil then
       FDirectivesSorted[0]:=nil;
   end;
+  ValueSequences.Clear;
 end;
 
 procedure TLinkScanner.DemandStoreDirectives;
@@ -1522,6 +1732,7 @@ procedure TLinkScanner.HandleDirective;
 var DirStart, DirLen: integer;
   CurDirective: PLSDirective;
 begin
+  FDirectiveCleanPos:=CommentStartPos-CopiedSrcPos+CleanedLen;
   if StoreDirectives then begin
     if FDirectivesCount=FDirectivesCapacity then begin
       // grow
@@ -1535,7 +1746,7 @@ begin
     CurDirective^.Kind:=lsdkNone;
     CurDirective^.Code:=Code;
     CurDirective^.SrcPos:=CommentStartPos;
-    CurDirective^.CleanPos:=CommentStartPos-CopiedSrcPos+CleanedLen;
+    CurDirective^.CleanPos:=FDirectiveCleanPos;
     if FSkippingDirectives=lssdNone then
       CurDirective^.State:=lsdsActive
     else
@@ -2229,6 +2440,9 @@ begin
   if Values<>nil then
     Stats.Add('TLinkScanner.Values',
       Values.CalcMemSize(true,FInitValues));
+  if ValueSequences<>nil then
+    Stats.Add('TLinkScanner.ValueSequences',
+      ValueSequences.CalcMemSize);
   if FMissingIncludeFiles<>nil then
     Stats.Add('TLinkScanner.FMissingIncludeFiles',
       FMissingIncludeFiles.InstanceSize);
@@ -2985,9 +3199,9 @@ begin
   if FDirectiveName<>'' then begin
     if (SrcPos<=SrcLen) and (Src[SrcPos] in ['-','+']) then begin
       if Src[SrcPos]='-' then
-        Values.Variables[FDirectiveName]:='0'
+        SetDirectiveValueWithSequence('0')
       else
-        Values.Variables[FDirectiveName]:='1';
+        SetDirectiveValueWithSequence('1');
       inc(SrcPos);
       Result:=ReadNextSwitchDirective;
     end else begin
@@ -3079,7 +3293,8 @@ begin
         else if CompareIdentifiers(p,'REFERENCEINFO')=0 then Result:=LongSwitchDirective;
       'S':
         if CompareIdentifiers(p,'SETC')=0 then Result:=SetCDirective
-        else if CompareIdentifiers(p,'STACKFRAMES')=0 then Result:=LongSwitchDirective;
+        else if CompareIdentifiers(p,'STACKFRAMES')=0 then Result:=LongSwitchDirective
+        else if CompareIdentifiers(p,'SCOPEDENUMS')=0 then Result:=LongSwitchDirective;
       'T':
         if CompareIdentifiers(p,'THREADING')=0 then Result:=ThreadingDirective
         else if CompareIdentifiers(p,'TYPEADDRESS')=0 then Result:=LongSwitchDirective
@@ -3137,12 +3352,12 @@ begin
   while (SrcPos<=SrcLen) and IsWordChar[Src[SrcPos]] do
     inc(SrcPos);
   if CompareUpToken('ON',Src,ValStart,SrcPos) then
-    Values.Variables[FDirectiveName]:='1'
+    SetDirectiveValueWithSequence('1')
   else if CompareUpToken('OFF',Src,ValStart,SrcPos) then
-    Values.Variables[FDirectiveName]:='0'
+    SetDirectiveValueWithSequence('0')
   else if CompareUpToken('PRELOAD',Src,ValStart,SrcPos)
   and (FDirectiveName='ASSERTIONS') then
-    Values.Variables[FDirectiveName]:='PRELOAD'
+    SetDirectiveValueWithSequence('PRELOAD')
   else if (FDirectiveName='LOCALSYMBOLS') then
     // ignore "localsymbols <something>"
   else if (FDirectiveName='RANGECHECKS') then
@@ -4297,6 +4512,12 @@ begin
   FCompilerMode:=AValue;
   FCompilerModeSwitches:=DefaultCompilerModeSwitches[CompilerMode];
   FNestedComments:=cmsNested_comment in CompilerModeSwitches;
+end;
+
+procedure TLinkScanner.SetDirectiveValueWithSequence(const ADirectiveValue: string);
+begin
+  Values.Variables[FDirectiveName] := ADirectiveValue;
+  ValueSequences.Add(FDirectiveName, ADirectiveValue, FDirectiveCleanPos);
 end;
 
 function TLinkScanner.GetIgnoreMissingIncludeFiles: boolean;
