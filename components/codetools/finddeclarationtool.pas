@@ -8933,7 +8933,7 @@ var
       debugln(['  FindExpressionTypeOfTerm ResolveRoundBracketOpen subexpr="',dbgstr(Src,CurAtom.StartPos,CurAtomBracketEndPos-CurAtom.StartPos),'"']);
       {$ENDIF}
       ExprType:=FindExpressionResultType(Params,CurAtom.StartPos+1,
-                                         CurAtomBracketEndPos-1);
+                                         CurAtomBracketEndPos-1, AliasType);
     end;
   end;
 
