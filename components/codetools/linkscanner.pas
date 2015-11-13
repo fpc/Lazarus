@@ -1024,7 +1024,7 @@ var
   Item: TDirectiveSequenceItemValue;
 begin
   Result:=PtrUInt(InstanceSize)
-    +PtrUInt(Length(FItems))*PtrUInt(SizeOf(TDirectiveSequenceItem));
+    +PtrUInt(Length(FItems))*PtrUInt(SizeOf(TDirectiveSequenceItemValue));
 
   for Item in FItems do
     Inc(Result, MemSizeString(Item.Value));
