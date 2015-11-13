@@ -7549,6 +7549,8 @@ function TFindDeclarationTool.BuildInterfaceIdentifierCache(
     Node: TCodeTreeNode;
   begin
     Node:=ParentNode.FirstChild;
+    if (Node=nil) or (Scanner.GetDirectiveValueAt(sdScopedEnums, Node.StartPos) = '1') then
+      Exit;
     while Node<>nil do begin
       if Node.Desc=ctnEnumIdentifier then
         FInterfaceIdentifierCache.Add(@Src[Node.StartPos],Node,Node.StartPos);
