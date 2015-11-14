@@ -144,15 +144,17 @@ end;
 function TListViewFilterEdit.MatchesFilter(aData: TStringArray): Boolean;
 var
   i, EndInd: Integer;
+  FilterLC: string;
 begin
   if Filter='' then
     Exit(True);
+  FilterLC := UTF8LowerCase(Filter);
   if fByAllFields then
     EndInd := Pred(Length(aData))
   else
     EndInd := 0;
   for i := 0 to EndInd do begin
-    Result := Pos(Filter,UTF8LowerCase(aData[i]))>0;
+    Result := Pos(FilterLC,UTF8LowerCase(aData[i]))>0;
     if Result then
       Exit;
   end;

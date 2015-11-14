@@ -166,11 +166,12 @@ procedure TListFilterEdit.SortAndFilter;
 // Copy data from fOriginalData to fSortedData in sorted order
 var
   Origi, i: Integer;
-  s: string;
+  s, FilterLC: string;
   Pass, Done: Boolean;
 begin
   Done:=False;
   fSortedData.Clear;
+  FilterLC := UTF8LowerCase(Filter);
   for Origi:=0 to fOriginalData.Count-1 do begin
     s:=fOriginalData[Origi];
     // Filter with event handler if there is one.
@@ -180,7 +181,7 @@ begin
       Pass:=False;
     // Filter by item's title text if needed.
     if not (Pass or Done) then
-      Pass:=(Filter='') or (Pos(Filter,UTF8LowerCase(s))>0);
+      Pass:=(FilterLC='') or (Pos(FilterLC,UTF8LowerCase(s))>0);
     if Pass then begin
       i:=fSortedData.Count-1;       // Always sort the data.
       while i>=0 do begin
