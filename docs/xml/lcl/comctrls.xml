@@ -13668,9 +13668,11 @@ the comparision is case sensitive.
       <!-- property Visibility: public -->
       <element name="TTreeNode.ImageIndex">
         <short>
-          <var>ImageIndex</var> - the index of the image associated with the current node. Default -1 if no image</short>
+          <var>ImageIndex</var> - the image index of the current node if not selected. Default -1 for no image</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.ComCtrls.TTreeNode.SelectedIndex">TTreeNode.SelectedIndex</link>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.Index">
@@ -13748,9 +13750,11 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
       <!-- property Visibility: public -->
       <element name="TTreeNode.SelectedIndex">
         <short>
-          <var>SelectedIndex</var> - the index of the current node if selected: default - if not selected</short>
+          <var>SelectedIndex</var> - the image index of the current node if selected. Default -1 for no image</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.ComCtrls.TTreeNode.ImageIndex">TTreeNode.ImageIndex</link>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.SubTreeCount">
