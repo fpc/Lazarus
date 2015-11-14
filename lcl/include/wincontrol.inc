@@ -51,6 +51,18 @@ begin
       and (AControl.AnchorSide[akTop].Control=nil);
 end;
 
+function IsNotAligned(AControl: TControl; ASide: TAnchorKind): boolean;
+begin
+  Result:=(AControl.Align=alNone);
+  if not Result then Exit;
+  if ASide in [akLeft, akRight] then
+    Result:=(AControl.Anchors*[akLeft, akRight]=[akLeft])
+        and (AControl.AnchorSide[akLeft].Control=nil)
+  else
+    Result:=(AControl.Anchors*[akTop, akBottom]=[akTop])
+        and (AControl.AnchorSide[akBottom].Control=nil);
+end;
+
 {------------------------------------------------------------------------------
   Autosizing Helper classes
 -------------------------------------------------------------------------------}
@@ -838,7 +850,7 @@ begin
     Child:=WinControl.Controls[i];
     ChildData:=Children[Child];
     if not ChildData.Visible then continue;
-    if IsNotAligned(Child) then begin
+    if IsNotAligned(Child, Side) then begin
       // this is a non aligned control
       //DebugLn(['TAutoSizeCtrlData.DoMoveNonAlignedChilds Child=',DbgSName(Child),' Side=',dbgs(Side)]);
       if FindMinimum then begin
@@ -1198,27 +1210,32 @@ begin
       Child:=WinControl.Controls[i];
       ChildData:=Children[Child];
       if not Child.IsControlVisible then continue;
-      if not IsNotAligned(Child) then continue;
-      if MoveNonAlignedChildrenLeft
-      and (ChildData.Sides[akLeft].DistanceState[assddLeftTop]=assdfValid) then
-        MoveNonAlignedToLeft:=Max(MoveNonAlignedToLeft,
-                   Child.Left-ChildData.Sides[akLeft].Distance[assddLeftTop]);
-      { the below is only correct, if PreferredClientWidth is realized.
-      if (ChildData.Sides[akLeft].DistanceState[assddRightBottom]=assdfValid) then
-        MoveNonAlignedToLeft:=Min(MoveNonAlignedToLeft,
-          Child.Left
-          -(PreferredClientWidth
-            -ChildData.Sides[akLeft].Distance[assddRightBottom]));}
-      if MoveNonAlignedChildrenTop
-      and (ChildData.Sides[akTop].DistanceState[assddLeftTop]=assdfValid) then
-        MoveNonAlignedToTop:=Max(MoveNonAlignedToTop,
-                     Child.Top-ChildData.Sides[akTop].Distance[assddLeftTop]);
-      { the below is only correct, if PreferredClientWidth is realized.
-      if (ChildData.Sides[akTop].DistanceState[assddRightBottom]=assdfValid) then
-        MoveNonAlignedToTop:=Min(MoveNonAlignedToTop,
-          Child.Top
-          -(PreferredClientHeight
-            -ChildData.Sides[akTop].Distance[assddRightBottom]));}
+      if IsNotAligned(Child, akLeft) then
+      begin
+        if MoveNonAlignedChildrenLeft
+        and (ChildData.Sides[akLeft].DistanceState[assddLeftTop]=assdfValid) then
+          MoveNonAlignedToLeft:=Max(MoveNonAlignedToLeft,
+                     Child.Left-ChildData.Sides[akLeft].Distance[assddLeftTop]);
+        { the below is only correct, if PreferredClientWidth is realized.
+        if (ChildData.Sides[akLeft].DistanceState[assddRightBottom]=assdfValid) then
+          MoveNonAlignedToLeft:=Min(MoveNonAlignedToLeft,
+            Child.Left
+            -(PreferredClientWidth
+              -ChildData.Sides[akLeft].Distance[assddRightBottom]));}
+      end;
+      if IsNotAligned(Child, akTop) then
+      begin
+        if MoveNonAlignedChildrenTop
+        and (ChildData.Sides[akTop].DistanceState[assddLeftTop]=assdfValid) then
+          MoveNonAlignedToTop:=Max(MoveNonAlignedToTop,
+                       Child.Top-ChildData.Sides[akTop].Distance[assddLeftTop]);
+        { the below is only correct, if PreferredClientWidth is realized.
+        if (ChildData.Sides[akTop].DistanceState[assddRightBottom]=assdfValid) then
+          MoveNonAlignedToTop:=Min(MoveNonAlignedToTop,
+            Child.Top
+            -(PreferredClientHeight
+              -ChildData.Sides[akTop].Distance[assddRightBottom]));}
+      end;
     end;
     if MoveNonAlignedToLeft=Low(integer) then MoveNonAlignedToLeft:=0;
     if MoveNonAlignedToTop=Low(integer) then MoveNonAlignedToTop:=0;
