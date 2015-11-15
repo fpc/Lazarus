@@ -52,6 +52,7 @@ type
                              ofrForceSingleInstanceModalError, ofrNotResponding);
   TStartNewInstanceEvent = procedure(const aFiles: TStrings;
     var outResult: TStartNewInstanceResult) of object;
+  TGetCurrentProjectEvent = procedure(var outProjectFileName: string) of object;
 
   TMessageParam = record
     Name: string;
@@ -67,10 +68,12 @@ type
   TMainServer = class(TUniqueServer)
   private
     FStartNewInstanceEvent: TStartNewInstanceEvent;
+    FGetCurrentProjectEvent: TGetCurrentProjectEvent;
     FTimer: TTimer;
     FMsgStream: TMemoryStream;
 
     procedure DoStartNewInstance(const aMsgID: Integer; const aInParams: TMessageParams);
+    procedure DoGetCurrentProject(const aMsgID: Integer; const {%H-}aInParams: TMessageParams);
 
     procedure SimpleResponse(const aResponseToMsgID: Integer;
       const aResponseType: string; const aParams: array of TMessageParam);
@@ -78,7 +81,8 @@ type
     procedure DoCheckMessages;
     procedure CheckMessagesOnTimer(Sender: TObject);
 
-    procedure StartListening(const aStartNewInstanceEvent: TStartNewInstanceEvent);
+    procedure StartListening(const aStartNewInstanceEvent: TStartNewInstanceEvent;
+      const aGetCurrentProjectEvent: TGetCurrentProjectEvent);
     procedure StopListening;
 
   public
@@ -88,6 +92,7 @@ type
 
   TResponseClient = class(TIPCClient)
   public
+    function GetCurrentProjectFileName: string;
     function AllowStartNewInstance(
       const aFiles: TStrings; var outModalErrorMessage,
       outModalErrorForceUniqueMessage, outNotRespondingErrorMessage: string;
@@ -99,7 +104,6 @@ type
     FMainServer: TMainServer;//running IDE
     FStartIDE: Boolean;// = True;
     FForceNewInstance: Boolean;
-    FAllowOpenLastProject: Boolean;// = True;
     FFilesToOpen: TStrings;
 
     class procedure AddFilesToParams(const aFiles: TStrings;
@@ -131,11 +135,12 @@ type
 
     procedure StartServer;
     procedure StopServer;
-    procedure StartListening(const aStartNewInstanceEvent: TStartNewInstanceEvent);
+    procedure StartListening(const aStartNewInstanceEvent: TStartNewInstanceEvent;
+      const aGetCurrentProjectEvent: TGetCurrentProjectEvent);
     procedure StopListening;
 
     function StartIDE: Boolean;//can the IDE be started?
-    function AllowOpenLastProject: Boolean;//if a secondary IDE is starting, do NOT reopen last project!
+    function ProjectIsOpenInAnotherInstance(aProjectFileName: string): Boolean;
     function FilesToOpen: TStrings;
   end;
 
@@ -161,7 +166,9 @@ const
   PARAM_MODALERRORMESSAGE = 'modalerrormessage';
   PARAM_FORCEUNIQUEMODALERRORMESSAGE = 'forceuniquemodalerrormessage';
   PARAM_NOTRESPONDINGERRORMESSAGE = 'notrespondingerrormessage';
-
+  MESSAGE_GETOPENEDPROJECT = 'getopenedproject';
+  RESPONSE_GETOPENEDPROJECT = 'getopenedprojectResponse';
+  TIMEOUT_GETOPENEDPROJECT = 100;
 var
   FLazIDEInstances: TIDEInstances;
 
@@ -183,9 +190,45 @@ begin
   Result := FStartIDE;
 end;
 
-function TIDEInstances.AllowOpenLastProject: Boolean;
+function TIDEInstances.ProjectIsOpenInAnotherInstance(aProjectFileName: string
+  ): Boolean;
+var
+  xStartClient: TResponseClient;
+  I: Integer;
+  xServerIDs, xOpenedProjectFiles: TStringList;
+  xProjFileName: string;
 begin
-  Result := FAllowOpenLastProject;
+  aProjectFileName := ExtractFilePath(aProjectFileName)+ExtractFileNameOnly(aProjectFileName);
+
+  xStartClient := nil;
+  xServerIDs := nil;
+  xOpenedProjectFiles := nil;
+  try
+    xStartClient := TResponseClient.Create(nil);
+    xServerIDs := TStringList.Create;
+    xOpenedProjectFiles := TStringList.Create;
+
+    xStartClient.FindRunningServers(SERVERPREFIX_MAIN, xServerIDs);
+
+    for I := 0 to xServerIDs.Count-1 do
+    begin
+      if FMainServer.ServerID = xServerIDs[I] then
+        continue; // ignore current instance
+      xStartClient.ServerID := xServerIDs[I];
+      xProjFileName := xStartClient.GetCurrentProjectFileName;
+      if (xProjFileName='') then
+        continue;
+      xProjFileName := ExtractFilePath(xProjFileName)+ExtractFileNameOnly(xProjFileName);
+      if CompareFilenames(xProjFileName, aProjectFileName)=0 then
+        Exit(True);
+    end;
+  finally
+    xStartClient.Free;
+    xServerIDs.Free;
+    xOpenedProjectFiles.Free;
+  end;
+
+  Result := False;
 end;
 
 function TIDEInstances.FilesToOpen: TStrings;
@@ -195,11 +238,13 @@ begin
   Result := FFilesToOpen;
 end;
 
-procedure TIDEInstances.StartListening(const aStartNewInstanceEvent: TStartNewInstanceEvent);
+procedure TIDEInstances.StartListening(
+  const aStartNewInstanceEvent: TStartNewInstanceEvent;
+  const aGetCurrentProjectEvent: TGetCurrentProjectEvent);
 begin
   Assert(Assigned(FMainServer));
 
-  FMainServer.StartListening(aStartNewInstanceEvent);
+  FMainServer.StartListening(aStartNewInstanceEvent, aGetCurrentProjectEvent);
 end;
 
 procedure TIDEInstances.StartServer;
@@ -343,8 +388,6 @@ begin
       xStartClient.ServerID := xServerIDs[I];
       if xStartClient.ServerRunning then
       begin
-        //there are open Lazarus instances, do not reopen last project!
-        FAllowOpenLastProject := False;
         Result := xStartClient.AllowStartNewInstance(aFiles, outModalErrorMessage,
           outModalErrorForceUniqueMessage, outNotRespondingErrorMessage, outHandleBringToFront);
         if not(Result in [ofrModalError, ofrForceSingleInstanceModalError, ofrNotResponding]) then
@@ -417,7 +460,6 @@ begin
   inherited Create(aOwner);
 
   FStartIDE := True;
-  FAllowOpenLastProject := True;
 end;
 
 destructor TIDEInstances.Destroy;
@@ -622,10 +664,45 @@ begin
         outNotRespondingErrorMessage := TIDEInstances.GetMessageParam(xInParams, PARAM_NOTRESPONDINGERRORMESSAGE);
         outHandleBringToFront := StrToInt64Def(TIDEInstances.GetMessageParam(xInParams, PARAM_HANDLEBRINGTOFRONT), 0);
       end;
-    end else//no response, the IDE is modal and cannot accept messages
+    end else//no response
     begin
       DeleteRequest;
       Result := ofrNotResponding;
+    end;
+  finally
+    xStream.Free;
+  end;
+end;
+
+function TResponseClient.GetCurrentProjectFileName: string;
+var
+  xStream: TMemoryStream;
+  xMsgType: Integer;
+  xResponseType: string;
+  xOutParams, xInParams: TMessageParams;
+begin
+  Result := '';
+  xStream := TMemoryStream.Create;
+  try
+    xStream.Clear;
+    SetLength(xOutParams, 0);
+    TIDEInstances.BuildMessage(MESSAGE_GETOPENEDPROJECT, xOutParams, xStream);
+    xStream.Position := 0;
+    Self.PostRequest(MESSAGETYPE_XML, xStream);
+    xStream.Clear;
+    if PeekResponse(xStream, xMsgType{%H-}, TIMEOUT_GETOPENEDPROJECT) and
+       (xMsgType = MESSAGETYPE_XML) then
+    begin
+      xStream.Position := 0;
+      if TIDEInstances.ParseMessage(xStream, xResponseType, xInParams) and
+         (xResponseType = RESPONSE_GETOPENEDPROJECT) then
+      begin
+        Result := TIDEInstances.GetMessageParam(xInParams, PARAM_RESULT);
+      end;
+    end else//no response
+    begin
+      DeleteRequest;
+      Result := '';
     end;
   finally
     xStream.Free;
@@ -697,9 +774,11 @@ begin
   end;
 end;
 
-procedure TMainServer.StartListening(const aStartNewInstanceEvent: TStartNewInstanceEvent);
+procedure TMainServer.StartListening(
+  const aStartNewInstanceEvent: TStartNewInstanceEvent;
+  const aGetCurrentProjectEvent: TGetCurrentProjectEvent);
 begin
-  Assert((FTimer = nil) and Assigned(aStartNewInstanceEvent));
+  Assert((FTimer = nil) and Assigned(aStartNewInstanceEvent) and Assigned(aGetCurrentProjectEvent));
 
   FTimer := TTimer.Create(nil);
   FTimer.OnTimer := @CheckMessagesOnTimer;
@@ -707,6 +786,7 @@ begin
   FTimer.Enabled := True;
 
   FStartNewInstanceEvent := aStartNewInstanceEvent;
+  FGetCurrentProjectEvent := aGetCurrentProjectEvent;
 end;
 
 procedure TMainServer.StopListening;
@@ -724,13 +804,31 @@ var
 begin
   if Active then
   begin
-    if PeekRequest(FMsgStream, xMsgID{%H-}, xMsgType{%H-}) and
+    while
+       PeekRequest(FMsgStream, xMsgID{%H-}, xMsgType{%H-}) and
        (xMsgType = MESSAGETYPE_XML) and
-       (TIDEInstances.ParseMessage(FMsgStream, xMessageType, xParams)) and
-       (xMessageType = MESSAGE_STARTNEWINSTANCE)
-    then
-      DoStartNewInstance(xMsgID, xParams);
+       (TIDEInstances.ParseMessage(FMsgStream, xMessageType, xParams))
+    do
+      case xMessageType of
+        MESSAGE_STARTNEWINSTANCE: DoStartNewInstance(xMsgID, xParams);
+        MESSAGE_GETOPENEDPROJECT: DoGetCurrentProject(xMsgID, xParams);
+      end;
   end;
+end;
+
+procedure TMainServer.DoGetCurrentProject(const aMsgID: Integer;
+  const aInParams: TMessageParams);
+var
+  xResult: string;
+  xParams: TMessageParams;
+begin
+  xResult := '';
+  if Assigned(FStartNewInstanceEvent) then
+    FGetCurrentProjectEvent(xResult);
+
+  SetLength(xParams, 1);
+  xParams[0] := TIDEInstances.MessageParam(PARAM_RESULT, xResult);
+  SimpleResponse(aMsgID, RESPONSE_GETOPENEDPROJECT, xParams);
 end;
 
 initialization

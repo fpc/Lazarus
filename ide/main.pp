@@ -187,6 +187,7 @@ type
     procedure OIChangedTimerTimer(Sender: TObject);
     procedure LazInstancesStartNewInstance(const aFiles: TStrings;
       var Result: TStartNewInstanceResult);
+    procedure LazInstancesGetOpenedProjectFileName(var outProjectFileName: string);
   public
     // file menu
     procedure mnuNewUnitClicked(Sender: TObject);
@@ -1577,7 +1578,7 @@ begin
   fUserInputSinceLastIdle:=true; // Idle work gets done initially before user action.
   MainIDEBar.ApplicationIsActivate:=true;
   IDECommandList.AddCustomUpdateEvent(@UpdateMainIDECommands);
-  LazIDEInstances.StartListening(@LazInstancesStartNewInstance);
+  LazIDEInstances.StartListening(@LazInstancesStartNewInstance, @LazInstancesGetOpenedProjectFileName);
   IDECommandList.StartUpdateEvents;
   FIDEStarted:=true;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.StartIDE END');{$ENDIF}
@@ -2229,10 +2230,10 @@ begin
 
   // try loading last project if lazarus didn't fail last time
   if (not ProjectLoaded)
-  and (LazIDEInstances.AllowOpenLastProject)
   and (not SkipAutoLoadingLastProject)
   and (EnvironmentOptions.OpenLastProjectAtStart)
   and (EnvironmentOptions.LastSavedProjectFile<>'')
+  and (not LazIDEInstances.ProjectIsOpenInAnotherInstance(EnvironmentOptions.LastSavedProjectFile))
   and (EnvironmentOptions.LastSavedProjectFile<>RestoreProjectClosed)
   and (FileExistsCached(EnvironmentOptions.LastSavedProjectFile))
   then begin
@@ -10242,6 +10243,15 @@ procedure TMainIDE.JumpHistoryViewSelectionChanged(sender : TObject);
 begin
   SourceEditorManager.HistoryJump(self, jhaViewWindow);
   SourceEditorManager.ShowActiveWindowOnTop(True);
+end;
+
+procedure TMainIDE.LazInstancesGetOpenedProjectFileName(
+  var outProjectFileName: string);
+begin
+  if Project1<>nil then
+    outProjectFileName := Project1.MainFilename
+  else
+    outProjectFileName := '';
 end;
 
 procedure TMainIDE.OnSrcNotebookEditorActived(Sender: TObject);
