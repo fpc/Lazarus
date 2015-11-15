@@ -51,7 +51,7 @@ type
     function GetTarget: TObject;
     function GetCallbackObject: TObject;
     function GetCaptureControlCallback: ICommonCallBack;
-    function MouseUpDownEvent(Event: NSEvent): Boolean; virtual;
+    function MouseUpDownEvent(Event: NSEvent; AForceAsMouseUp: Boolean = False): Boolean; virtual;
     function KeyEvent(Event: NSEvent; AForceAsKeyDown: Boolean = False): Boolean; virtual;
     procedure MouseClick; virtual;
     function MouseMove(Event: NSEvent): Boolean; virtual;
@@ -108,7 +108,7 @@ type
   TLCLCustomControlCallback = class(TLCLCommonCallback)
   public
     function MouseMove(Event: NSEvent): Boolean; override;
-    function MouseUpDownEvent(Event: NSEvent): Boolean; override;
+    function MouseUpDownEvent(Event: NSEvent; AForceAsMouseUp: Boolean = False): Boolean; override;
   end;
 
   { TCocoaWSCustomControl }
@@ -159,9 +159,9 @@ begin
   Result:=True;
 end;
 
-function TLCLCustomControlCallback.MouseUpDownEvent(Event: NSEvent): Boolean;
+function TLCLCustomControlCallback.MouseUpDownEvent(Event: NSEvent; AForceAsMouseUp: Boolean = False): Boolean;
 begin
-  inherited MouseUpDownEvent(Event);
+  inherited MouseUpDownEvent(Event, AForceAsMouseUp);
   Result := True;
 end;
 
@@ -696,7 +696,7 @@ begin
   Result := MSGKIND[AButton][ClickCount];
 end;
 
-function TLCLCommonCallback.MouseUpDownEvent(Event: NSEvent): Boolean;
+function TLCLCommonCallback.MouseUpDownEvent(Event: NSEvent; AForceAsMouseUp: Boolean = False): Boolean;
 const
   MSGKINDUP: array[0..3] of Integer = (LM_LBUTTONUP, LM_RBUTTONUP, LM_MBUTTONUP, LM_XBUTTONUP);
 var
@@ -706,6 +706,7 @@ var
   MButton: NSInteger;
   lCaptureControlCallback: ICommonCallback;
   //Str: string;
+  lEventType: NSEventType;
 begin
   Result := False; // allow cocoa to handle message
 
@@ -742,8 +743,10 @@ begin
     MButton := 3;
   end;
 
-
-  case Event.type_ of
+  lEventType := Event.type_;
+  if AForceAsMouseUp then
+    lEventType := NSLeftMouseUp;
+  case lEventType of
     NSLeftMouseDown,
     NSRightMouseDown,
     NSOtherMouseDown:

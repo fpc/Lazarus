@@ -788,6 +788,7 @@ begin
   nr:=scr.documentVisibleRect;
   txt.setFrame(nr);
   txt.textContainer.setLineFragmentPadding(0);
+  txt.lclSetEnabled(True);
 
   // ToDo: This should be made selectable in the LCL
   txt.setAutomaticQuoteSubstitutionEnabled(False);

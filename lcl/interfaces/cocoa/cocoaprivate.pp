@@ -47,7 +47,7 @@ type
 
   ICommonCallback = interface
     // mouse events
-    function MouseUpDownEvent(Event: NSEvent): Boolean;
+    function MouseUpDownEvent(Event: NSEvent; AForceAsMouseUp: Boolean = False): Boolean;
     procedure MouseClick;
     function MouseMove(Event: NSEvent): Boolean;
     function KeyEvent(Event: NSEvent; AForceAsKeyDown: Boolean = False): Boolean;
@@ -111,7 +111,6 @@ type
   { LCLViewExtension }
 
   LCLViewExtension = objccategory(NSView)
-
     function lclInitWithCreateParams(const AParams: TCreateParams): id; message 'lclInitWithCreateParams:';
 
     function lclIsVisible: Boolean; message 'lclIsVisible'; reintroduce;
@@ -276,6 +275,7 @@ type
   TCocoaTextView = objcclass(NSTextView)
   public
     callback: ICommonCallback;
+    FEnabled: Boolean;
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
@@ -287,6 +287,21 @@ type
     procedure keyDown(event: NSEvent); override;
     procedure keyUp(event: NSEvent); override;
     procedure flagsChanged(event: NSEvent); override;
+    // mouse
+    procedure mouseDown(event: NSEvent); override;
+    procedure mouseUp(event: NSEvent); override;
+    {procedure rightMouseDown(event: NSEvent); override;
+    procedure rightMouseUp(event: NSEvent); override;
+    procedure otherMouseDown(event: NSEvent); override;
+    procedure otherMouseUp(event: NSEvent); override;
+
+    procedure mouseDragged(event: NSEvent); override;
+    procedure mouseEntered(event: NSEvent); override;
+    procedure mouseExited(event: NSEvent); override;
+    procedure mouseMoved(event: NSEvent); override;}
+    //
+    function lclIsEnabled: Boolean; override;
+    procedure lclSetEnabled(AEnabled: Boolean); override;
   end;
 
   { TCocoaPanel }
@@ -1941,6 +1956,37 @@ begin
     inherited resetCursorRects;
 end;
 
+procedure TCocoaTextView.mouseDown(event: NSEvent);
+begin
+  inherited mouseDown(event);
+  if callback <> nil then
+  begin
+    callback.MouseUpDownEvent(event);
+    // Cocoa doesn't call mouseUp for NSTextView, so we have to emulate it here :(
+    // See bug 29000
+    callback.MouseUpDownEvent(event, True);
+  end;
+end;
+
+procedure TCocoaTextView.mouseUp(event: NSEvent);
+begin
+  inherited mouseUp(event);
+  if callback <> nil then
+    callback.MouseUpDownEvent(event);
+end;
+
+function TCocoaTextView.lclIsEnabled: Boolean;
+begin
+  Result := FEnabled;
+  if Result and CocoaWidgetSet.IsControlDisabledDueToModal(Self) then Result := False;
+end;
+
+procedure TCocoaTextView.lclSetEnabled(AEnabled: Boolean);
+begin
+  FEnabled := AEnabled;
+end;
+//
+
 { TCocoaSecureTextField }
 
 function TCocoaSecureTextField.lclIsHandle: Boolean;
@@ -2479,7 +2525,6 @@ begin
   Result.Right := Round(r.size.width);
   Result.Bottom := Round(r.size.height);
 end;
-
 
 { LCLWindowExtension }
 
