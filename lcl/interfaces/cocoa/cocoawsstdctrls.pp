@@ -137,6 +137,8 @@ type
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
 
+    //class function GetCanUndo(const ACustomEdit: TCustomEdit): Boolean; override;
+    class function GetCaretPos(const ACustomEdit: TCustomEdit): TPoint; override;
     class function GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
 
@@ -787,6 +789,10 @@ begin
   txt.setFrame(nr);
   txt.textContainer.setLineFragmentPadding(0);
 
+  // ToDo: This should be made selectable in the LCL
+  txt.setAutomaticQuoteSubstitutionEnabled(False);
+  txt.setAutomaticTextReplacementEnabled(False);
+
   txt.callback := TLCLCommonCallback.Create(txt, AWinControl);
   ns := NSStringUtf8(AParams.Caption);
   txt.setString(ns);
@@ -807,8 +813,49 @@ begin
     Result := nil
 end;
 
-class function TCocoaWSCustomMemo.GetSelStart(const ACustomEdit: TCustomEdit
-  ): integer;
+class function TCocoaWSCustomMemo.GetCaretPos(const ACustomEdit: TCustomEdit): TPoint;
+var
+  txt: TCocoaTextView;
+  lValue: NSValue;
+  viewString: NSString;
+  paraStart: NSUInteger = 0;
+  paraEnd: NSUInteger = 0;
+  contentsEnd: NSUInteger = 0;
+  curLine: Integer = 0;
+begin
+  Result := Point(0, 0);
+  txt := MemoTextView(ACustomEdit);
+  if not Assigned(txt) then Exit;
+  lValue := NSValue(txt.selectedRanges.objectAtIndex(0));
+  if lValue = nil then Exit;
+
+  viewString := txt.string_;
+  Result.X := lValue.rangeValue.location;
+
+  // There is no simple function to do this in Cocoa :(
+  while (paraEnd < viewString.length) do
+  begin
+    viewString.getLineStart_end_contentsEnd_forRange(@paraStart,
+      @paraEnd, @contentsEnd, NSMakeRange(paraEnd, 0));
+
+    if (lValue.rangeValue.location >= paraStart) and
+       (lValue.rangeValue.location < paraEnd) then
+    begin
+      Break;
+    end
+    else
+      Result.X := Result.X - (paraEnd - paraStart);
+
+    Inc(curLine);
+  end;
+  Result.Y := curLine;
+
+  {This doesn't work :/
+  lineRange := viewString.lineRangeForRange(lValue.rangeValue);
+  Result.X := lineRange.location;}
+end;
+
+class function TCocoaWSCustomMemo.GetSelStart(const ACustomEdit: TCustomEdit): integer;
 var
   txt: TCocoaTextView;
 begin
