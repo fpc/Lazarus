@@ -156,7 +156,7 @@ begin
   Inherited Create(aOwner);
 
   FHeightInit:=Height;
-  FHeightDec:=NbOpts.Height;
+  FHeightDec:=NbOpts.Height+6;
 
   if WidgetSet.LCLPlatform = lpCarbon then
   begin  //Can't hide tabs with button on Carbon, so just expand dialog.
@@ -443,9 +443,9 @@ begin
   Constraints.MaxHeight:=Height;
 
   if not FBig then
-    btnReduc.Caption:='More ...'
+    btnReduc.Caption:='More >>'
   else
-    btnReduc.Caption:='Less ...';
+    btnReduc.Caption:='<< Less';
 end;
 
 procedure TdlgSelectPrinter.btnPrintCLICK(Sender: TObject);

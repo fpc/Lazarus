@@ -128,7 +128,7 @@ end;
 
 procedure RemoveQuotes(var s: String);
 begin
-  if (s[1] = '"') and (s[Length(s)] = '"') then
+  if (Length(s) > 1) and (s[1] = '"') and (s[Length(s)] = '"') then
     s := Copy(s, 2, Length(s) - 2);
 end;
 

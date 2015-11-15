@@ -17,7 +17,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, LResources, Graphics, Controls, StdCtrls,
-  LCLProc, LCLType, EditBtn, CheckLst, LazFileUtils, LazUTF8, AvgLvlTree;
+  LCLProc, LCLType, EditBtn, CheckLst, LazFileUtils, LazUTF8, AvgLvlTree,
+  Math;
 
 type
 
@@ -36,12 +37,16 @@ type
     fSortedData: TStringList;
     fCheckedItems: TStringMap;         // Only needed for TCheckListBox
     function CompareFNs(AFilename1,AFilename2: string): integer;
-    function GetFirstSelected: Integer;
     procedure SetFilteredListbox(const AValue: TCustomListBox);
-    procedure UnselectAll;
   protected
-    procedure MoveNext; override;
-    procedure MovePrev; override;
+    procedure EditEnter; override;
+    procedure MoveTo(AIndex: Integer; ASelect: Boolean);
+    procedure MoveNext(ASelect: Boolean = False); override;
+    procedure MovePrev(ASelect: Boolean = False); override;
+    procedure MovePageUp(ASelect: Boolean = False); override;
+    procedure MovePageDown(ASelect: Boolean = False); override;
+    procedure MoveHome(ASelect: Boolean = False); override;
+    procedure MoveEnd(ASelect: Boolean = False); override;
     function ReturnKeyHandled: Boolean; override;
     procedure SortAndFilter; override;
     procedure ApplyFilterCore; override;
@@ -56,7 +61,6 @@ type
   public
     property SelectionList: TStringList read fSelectionList;
     property Items: TStringList read fOriginalData;
-    property Data: TStringList read fOriginalData; deprecated 'Use property Items instead';
   published
     property FilteredListbox: TCustomListBox read fFilteredListbox write SetFilteredListbox;
   end;
@@ -94,6 +98,14 @@ begin
   inherited Destroy;
 end;
 
+procedure TListFilterEdit.EditEnter;
+begin
+  inherited EditEnter;
+  Exit;
+  if (fFilteredListbox.SelCount = 0) and (fFilteredListbox.Count > 0) then
+    fFilteredListbox.Selected[0] := True;
+end;
+
 procedure TListFilterEdit.RemoveItem(AItem: string);
 var
   i: Integer;
@@ -112,6 +124,18 @@ begin
     fCheckedItems.Add(AItem)
   else
     fCheckedItems.Remove(AItem);
+end;
+
+procedure TListFilterEdit.MoveEnd(ASelect: Boolean);
+begin
+  if fFilteredListbox.Items.Count > 0 then
+    MoveTo(fFilteredListbox.Items.Count-1, ASelect);
+end;
+
+procedure TListFilterEdit.MoveHome(ASelect: Boolean);
+begin
+  if fFilteredListbox.Items.Count > 0 then
+    MoveTo(0, ASelect);
 end;
 
 function TListFilterEdit.GetDefaultGlyph: TBitmap;
@@ -142,11 +166,12 @@ procedure TListFilterEdit.SortAndFilter;
 // Copy data from fOriginalData to fSortedData in sorted order
 var
   Origi, i: Integer;
-  s: string;
+  s, FilterLC: string;
   Pass, Done: Boolean;
 begin
   Done:=False;
   fSortedData.Clear;
+  FilterLC := UTF8LowerCase(Filter);
   for Origi:=0 to fOriginalData.Count-1 do begin
     s:=fOriginalData[Origi];
     // Filter with event handler if there is one.
@@ -156,7 +181,7 @@ begin
       Pass:=False;
     // Filter by item's title text if needed.
     if not (Pass or Done) then
-      Pass:=(Filter='') or (Pos(Filter,UTF8LowerCase(s))>0);
+      Pass:=(FilterLC='') or (Pos(FilterLC,UTF8LowerCase(s))>0);
     if Pass then begin
       i:=fSortedData.Count-1;       // Always sort the data.
       while i>=0 do begin
@@ -226,49 +251,94 @@ begin
   end;
 end;
 
-function TListFilterEdit.GetFirstSelected: Integer;
+procedure TListFilterEdit.MoveNext(ASelect: Boolean);
 var
   i: Integer;
 begin
-  Result := -1;
-  for i := 0 to fFilteredListbox.Count - 1 do
-    if fFilteredListbox.Selected[i] then
-      Exit(i);
+  if fFilteredListbox.Count = 0 then Exit;
+  if (fFilteredListbox.ItemIndex=0) and not fFilteredListbox.Selected[0] then
+    i := 0
+  else
+    i := fFilteredListbox.ItemIndex + 1;
+  if i >= fFilteredListbox.Count then
+    i := fFilteredListbox.Count-1;
+  MoveTo(i, ASelect);
 end;
 
-procedure TListFilterEdit.UnselectAll;
+procedure TListFilterEdit.MovePageDown(ASelect: Boolean);
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to fFilteredListbox.Count - 1 do
-    fFilteredListbox.Selected[i] := False;
+  if fFilteredListbox.Items.Count = 0 then
+    Exit;
+  I := fFilteredListbox.ItemIndex + Pred(fFilteredListbox.ClientHeight div fFilteredListbox.ItemHeight);
+  if (I < 0) or (I >= fFilteredListbox.Items.Count) then
+    I := fFilteredListbox.Items.Count-1;
+
+  MoveTo(I, ASelect);
 end;
 
-procedure TListFilterEdit.MoveNext;
+procedure TListFilterEdit.MovePageUp(ASelect: Boolean);
 var
-  i: Integer;
+  I: Integer;
 begin
-  i := GetFirstSelected + 1;
-  if fFilteredListbox.Count > 0 then begin
-    UnselectAll;
-    if i < fFilteredListbox.Count then
-      fFilteredListbox.Selected[i] := True
-    else
-      fFilteredListbox.Selected[0] := True;
-  end;
+  if fFilteredListbox.Items.Count = 0 then
+    Exit;
+  I := fFilteredListbox.ItemIndex - Pred(fFilteredListbox.ClientHeight div fFilteredListbox.ItemHeight);
+  if (I < 0) or (I >= fFilteredListbox.Items.Count) then
+    I := 0;
+
+  MoveTo(I, ASelect);
 end;
 
-procedure TListFilterEdit.MovePrev;
+procedure TListFilterEdit.MovePrev(ASelect: Boolean);
 var
   i: Integer;
 begin
-  i := GetFirstSelected - 1;
-  if fFilteredListbox.Count > 0 then begin
-    UnselectAll;
-    if i >= 0 then
-      fFilteredListbox.Selected[i] := True
-    else
-      fFilteredListbox.Selected[fFilteredListbox.Count-1] := True;
+  if fFilteredListbox.Count = 0 then Exit;
+  i := fFilteredListbox.ItemIndex - 1;
+  if i < 0 then
+    i := 0;
+  MoveTo(i, ASelect);
+end;
+
+procedure TListFilterEdit.MoveTo(AIndex: Integer; ASelect: Boolean);
+var
+  I, xOldItemIndex, xSelStart, xSelEnd: Integer;
+begin
+  fFilteredListbox.LockSelectionChange;
+  fFilteredListbox.Items.BeginUpdate;
+  try
+    if ASelect and fFilteredListbox.MultiSelect then
+    begin
+      xOldItemIndex := fFilteredListbox.ItemIndex;
+      xSelStart := xOldItemIndex;
+      xSelEnd := xOldItemIndex;
+      while (xSelStart>=0) and fFilteredListbox.Selected[xSelStart] do
+        Dec(xSelStart);
+      while (xSelEnd<fFilteredListbox.Count) and fFilteredListbox.Selected[xSelEnd] do
+        Inc(xSelEnd);
+      fFilteredListbox.ItemIndex := AIndex;
+      for I := Min(AIndex+1, xSelStart+1) to Max(AIndex-1, xSelEnd-1) do
+        fFilteredListbox.Selected[I] := True;
+      //Win32 sets ItemIndex to the last Selected[?] := True - in contrast to Gtk2 -> set selected again to work on all widgetsets
+      fFilteredListbox.Selected[AIndex] := True;
+    end else
+    begin
+      fFilteredListbox.ItemIndex := AIndex;
+      fFilteredListbox.Selected[AIndex] := True;
+    end;
+
+    if not fFilteredListbox.ItemFullyVisible(AIndex) then
+    begin
+      if fFilteredListbox.TopIndex < AIndex then
+        fFilteredListbox.TopIndex := AIndex - Pred(fFilteredListbox.ClientHeight div fFilteredListbox.ItemHeight)
+      else
+        fFilteredListbox.TopIndex := AIndex;
+    end;
+  finally
+    fFilteredListbox.UnlockSelectionChange;
+    fFilteredListbox.Items.EndUpdate;
   end;
 end;
 

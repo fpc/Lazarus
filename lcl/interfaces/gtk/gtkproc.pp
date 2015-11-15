@@ -277,8 +277,8 @@ var
 //==============================================================================
 // functions
 
-function RectFromGdkRect(AGdkRect: TGdkRectangle): TRect;
-function GdkRectFromRect(R: TRect): TGdkRectangle;
+function RectFromGdkRect(const AGdkRect: TGdkRectangle): TRect;
+function GdkRectFromRect(const R: TRect): TGdkRectangle;
 function AlignToGtkAlign(Align: TAlignment): gfloat;
 {$ifdef gtk2}
 function GtkScrollTypeToScrollCode(ScrollType: TGtkScrollType): LongWord;

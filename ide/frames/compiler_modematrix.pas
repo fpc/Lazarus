@@ -61,9 +61,11 @@ type
     BMMNewOutDirMenuItem: TMenuItem;
     MoveSepToolButton: TToolButton;
     DoSepToolButton: TToolButton;
-    AddOtherSepToolButton: TToolButton;
+    SystemEncodingSepToolButton: TToolButton;
     BMMAddLclWidgetButton: TToolButton;
     LCLMacroSepToolButton: TToolButton;
+    BMMSystemEncodingButton: TToolButton;
+    AddOtherSepToolButton: TToolButton;
     procedure BMMDeleteButtonClick(Sender: TObject);
     procedure BMMMoveDownButtonClick(Sender: TObject);
     procedure BMMMoveUpButtonClick(Sender: TObject);
@@ -83,6 +85,7 @@ type
     procedure GridShowHint(Sender: TObject; HintInfo: PHintInfo);
     procedure OnAddMacroMenuItemClick(Sender: TObject);
     procedure OnAddLCLWidgetTypeClick(Sender: TObject);
+    procedure BMMSystemEncodingButtonClick(Sender: TObject);
   private
     FDialog: TAbstractOptionsEditorDialog;
     FErrorColor: TColor;
@@ -102,6 +105,9 @@ type
     procedure AddLCLWidgetTypeValues(ParentMenu: TPopupMenu; Mcr: TLazBuildMacro);
     procedure AddMacroValues(ParentMI: TMenuItem; Mcr: TLazBuildMacro);
     function ActiveModeAsText: string;
+    function CheckAndUpdateSystemEncoding(UpdateIt: Boolean; out WasUpdated: Boolean): Boolean;
+    function HasSystemEncoding: Boolean;
+    function SupportSystemEncoding: Boolean;
     procedure DoWriteSettings;
     procedure FillMenus;
     procedure MoveRow(Direction: integer);
@@ -113,8 +119,6 @@ type
     procedure UpdateEnabledModesInGrid(Options: TBuildMatrixOptions;
                        StorageGroup: TGroupedMatrixGroup; var HasChanged: boolean);
     procedure UpdateGridStorageGroups;
-    function CheckAndUpdateUtf8RtlSupport(UpdateIt: Boolean;
-                                          out WasUpdated: Boolean): Boolean;
   protected
     procedure VisibleChanged; override;
   public
@@ -126,8 +130,6 @@ type
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     procedure RestoreSettings(AOptions: TAbstractIDEOptions); override;
-    function HasSupportForUtf8Rtl: Boolean;
-    function SupportUtf8Rtl: Boolean;
     procedure UpdateModes(UpdateGrid: boolean = true);
     procedure UpdateActiveMode;
   public
@@ -166,7 +168,7 @@ var
 implementation
 
 const
-  EnableUTF8RTL = '-dEnableUTF8RTL';
+  DisableUTF8RTL = '-dDisableUTF8RTL';
 
 function BuildMatrixOptionTypeCaption(Typ: TBuildMatrixOptionType): string;
 begin
@@ -539,6 +541,11 @@ begin
   BMMAddOtherPopupMenu.PopUp(p.x,p.y);
 end;
 
+procedure TCompOptModeMatrixFrame.BMMSystemEncodingButtonClick(Sender: TObject);
+begin
+  SupportSystemEncoding;
+end;
+
 procedure TCompOptModeMatrixFrame.GridEditingDone(Sender: TObject);
 begin
   //DebugLn(['TFrame1.GridEditingDone ']);
@@ -907,7 +914,7 @@ begin
     DoWriteSettings;
 end;
 
-function TCompOptModeMatrixFrame.CheckAndUpdateUtf8RtlSupport(UpdateIt: Boolean;
+function TCompOptModeMatrixFrame.CheckAndUpdateSystemEncoding(UpdateIt: Boolean;
   out WasUpdated: Boolean): Boolean;
 // Returns True if the support already was there.
 var
@@ -929,7 +936,7 @@ begin
       ValueRow := TGroupedMatrixValue(Target[i]);
       if not (ValueRow is TGroupedMatrixValue) then
         exit;
-      Result := (ValueRow.Typ = 'Custom') and (ValueRow.Value = EnableUTF8RTL);
+      Result := (ValueRow.Typ = 'Custom') and (ValueRow.Value = DisableUTF8RTL);
       if Result then
       begin
         AMode := ActiveModeAsText;
@@ -950,24 +957,23 @@ begin
   end;
 end;
 
-function TCompOptModeMatrixFrame.HasSupportForUtf8Rtl: Boolean;
+function TCompOptModeMatrixFrame.HasSystemEncoding: Boolean;
 var
   Dummy: Boolean;
 begin
-  Result := CheckAndUpdateUtf8RtlSupport(False, Dummy);
+  Result := CheckAndUpdateSystemEncoding(False, Dummy);
 end;
 
-function TCompOptModeMatrixFrame.SupportUtf8Rtl: Boolean;
-// Add a compiler flag to make FPC default string UTF-8,
-//  assign UTF-8 backends for Ansi...() functions etc.
+function TCompOptModeMatrixFrame.SupportSystemEncoding: Boolean;
+// Add a compiler flag to use system encoding for string.
 // Returns true if the flag was really added and did not exist earlier.
 var
   WasUpdated: Boolean;
 begin
-  Result := not CheckAndUpdateUtf8RtlSupport(True, WasUpdated);
+  Result := not CheckAndUpdateSystemEncoding(True, WasUpdated);
   if Result and not WasUpdated then
   begin
-    CreateNewOption(BuildMatrixOptionTypeCaption(bmotCustom), EnableUTF8RTL);
+    CreateNewOption(BuildMatrixOptionTypeCaption(bmotCustom), DisableUTF8RTL);
     UpdateModes;
   end;
 end;
@@ -1206,10 +1212,12 @@ begin
   BMMMoveDownButton.ImageIndex:=IDEImages.LoadImage(16,'arrow_down');
   BMMMoveDownButton.Hint:=lisMMMoveSelectedItemDown;
 
-  BMMUndoButton.Caption:=lisUndo;
+  BMMUndoButton.ShowCaption:=false;
+  BMMUndoButton.ImageIndex:=IDEImages.LoadImage(16,'menu_undo');
   BMMUndoButton.Hint:=lisMMUndoLastChangeToThisGrid;
 
-  BMMRedoToolButton.Caption:=lisRedo;
+  BMMRedoToolButton.ShowCaption:=false;
+  BMMRedoToolButton.ImageIndex:=IDEImages.LoadImage(16,'menu_redo');
   BMMRedoToolButton.Hint:=lisMMRedoLastUndoToThisGrid;
 
   BMMDeleteButton.Caption:=lisDelete;
@@ -1227,6 +1235,9 @@ begin
 
   BMMAddLclWidgetButton.Caption:=Format(fCaptionPatternMacroName,['LCLWidgetType']);
   BMMAddOtherButton.Caption:=lisAdd;
+
+  BMMSystemEncodingButton.Caption:=lisMMUseSystemEncoding;
+  BMMSystemEncodingButton.Hint:=lisMMUseSystemEncodingHint;
 
   UpdateButtons;
 end;

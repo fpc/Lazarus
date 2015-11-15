@@ -168,6 +168,7 @@ type
     --------------------------------------------------}
     procedure SetJobState(aJobId : LongInt; aOp : ipp_op_t);
     function PrintFile(aFileName: String): longint;
+    function GetLastError: string;
     procedure DebugOptions(AOPtions:Pcups_option_t=nil; n:Integer=0);
     function cupsGetOption(aKeyWord: string): String;
     function CopyOptions(out AOptions: Pcups_option_t): Integer;

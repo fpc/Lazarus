@@ -1600,6 +1600,7 @@ type
     property RowSelect: Boolean index Ord(lvpRowSelect) read GetProperty write SetProperty default False;
     property SelCount: Integer read GetSelCount;
     property Selected: TListItem read GetSelection write SetSelection;
+    property LastSelected: TListItem read FSelected;
     property TabStop default true;
     property TopItem: TListItem read GetTopItem;
     property ViewOrigin: TPoint read GetViewOrigin write SetViewOrigin;
@@ -3014,6 +3015,7 @@ type
   private
     FCount: integer;
     FSelection: TFPList;
+    FStartMultiSelected: TTreeNode; // node where user started multiselection
     FFirstMultiSelected: TTreeNode;
     FLastMultiSelected: TTreeNode;
     FKeepCollapsedNodes: boolean;
@@ -3094,6 +3096,7 @@ type
     procedure FreeAllNodeData;
     procedure SelectionsChanged(ANode: TTreeNode; const AIsSelected: Boolean);
     procedure SelectOnlyThis(Node: TTreeNode);
+    procedure MultiSelect(Node: TTreeNode; ClearWholeSelection: Boolean);
     procedure SortTopLevelNodes(SortProc: TTreeNodeCompare);
     procedure WriteDebugReport(const Prefix: string; AllNodes: boolean);
     property Count: Integer read GetCount;
@@ -3245,6 +3248,7 @@ type
     FTreeLinePenStyle: TPenStyle;
     FExpandSignColor : TColor;
     FTreeNodes: TTreeNodes;
+    FHintWnd: THintWindow;
     procedure CanvasChanged(Sender: TObject);
     function GetAutoExpand: boolean;
     function GetBottomItem: TTreeNode;
@@ -3309,6 +3313,7 @@ type
     procedure UpdateMaxRight;
     procedure UpdateTopItem;
     procedure UpdateScrollbars;
+    procedure UpdateTooltip(X, Y: integer);
     procedure InternalSelectionChanged;
   protected
     FChangeTimer: TTimer;
@@ -3342,6 +3347,7 @@ type
     function IsNodeVisible(ANode: TTreeNode): Boolean;
     function IsNodeHeightFullVisible(ANode: TTreeNode): Boolean;
     function IsInsertMarkVisible: boolean; virtual;
+    procedure MoveSelection(ANewNode: TTreeNode; ASelect: Boolean);
     procedure Change(Node: TTreeNode); virtual;
     procedure Collapse(Node: TTreeNode); virtual;
     procedure CreateWnd; override;
@@ -3481,8 +3487,12 @@ type
     procedure ClearInvisibleSelection;
     function StoreCurrentSelection: TStringList;
     procedure ApplyStoredSelection(ASelection: TStringList; FreeList: boolean = True);
-    procedure MoveToNextNode;
-    procedure MoveToPrevNode;
+    procedure MoveToNextNode(ASelect: Boolean = False);
+    procedure MoveToPrevNode(ASelect: Boolean = False);
+    procedure MovePageDown(ASelect: Boolean = False);
+    procedure MovePageUp(ASelect: Boolean = False);
+    procedure MoveHome(ASelect: Boolean = False);
+    procedure MoveEnd(ASelect: Boolean = False);
   public
     property BackgroundColor: TColor read FBackgroundColor write SetBackgroundColor default clWindow;
     property BorderWidth default 0;

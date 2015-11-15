@@ -163,9 +163,9 @@ begin
   ClipboardFormats.Free;
 end;
 
-function TCocoaWidgetSet.GetClipboardDataForFormat(AFormat: TClipboardFormat): TClipboardData;
+function TCocoaWidgetSet.GetClipboardDataForFormat(AFormat: TClipboardFormat): TCocoaClipboardData;
 begin
-  Result := TClipboardData(AFormat);
+  Result := TCocoaClipboardData(AFormat);
 end;
 
 {------------------------------------------------------------------------------

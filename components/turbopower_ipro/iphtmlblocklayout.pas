@@ -183,7 +183,13 @@ end;
 
 procedure TIpNodeBlockLayouter.Layout(RenderProps: TIpHtmlProps; TargetRect: TRect);
 begin
-  if EqualRect(TargetRect, FBlockOwner.PageRect) then Exit;
+  if EqualRect(TargetRect, FBlockOwner.PageRect) then
+    exit;
+
+  if FBlockOwner is TIpHtmlNodeBody then
+    RemoveLeadingLFs;
+  RemoveDuplicateLFs;
+
   if not RenderProps.IsEqualTo(Props) then
   begin
     Props.Assign(RenderProps);
@@ -505,7 +511,7 @@ begin
       FBlockDescent := PropA.tmDescent;
     end;
     if (FCurProps = nil) or not BIsEqualTo(FCurProps) then begin
-      FAl := Alignment;
+      FAl := self.Props.Alignment;      // was: FAl := Alignment
       FVAL := VAlignment;
       FBaseOffset := FontBaseline;
       aPrefor := Preformatted;
@@ -1358,25 +1364,63 @@ begin
   inherited Destroy;
 end;
 
+procedure GetAlignment(ANode: TIpHtmlNode; AProps: TIpHtmlProps; var Done: Boolean);
+begin
+  if (ANode is TIpHtmlNodeSpan) then
+  begin
+    if (ANode as TIpHtmlNodeSpan).Align <> haDefault then
+    begin
+      AProps.Alignment := (ANode as TIpHtmlNodeSpan).Align;
+      Done := true;
+    end;
+  end else
+  if (ANode is TIpHtmlNodeTableHeaderOrCell) then
+  begin
+    if (ANode as TIpHtmlNodeTableHeaderOrCell).Align <> haDefault then
+    begin
+      AProps.Alignment := (ANode as TIpHtmlNodeTableHeaderOrCell).Align;
+      Done := true;
+    end;
+  end;
+end;
+
 procedure TIpNodeTableElemLayouter.Layout(RenderProps: TIpHtmlProps; TargetRect: TRect);
 begin
   Props.Assign(RenderProps);
+
+  IterateParents(@GetAlignment);
+  if (Props.Alignment = haDefault) then
+  begin
+    if (FOwner is TIpHtmlNodeTD) then
+      Props.Alignment := haLeft
+    else
+    if (FOwner is TIpHtmlNodeTH) then
+      Props.Alignment := haCenter;
+  end;
+
+{
   if FTableElemOwner.Align <> haDefault then
     Props.Alignment := FTableElemOwner.Align
   else
     if FOwner is TIpHtmlNodeTH then
       Props.Alignment := haCenter;
+ }
+
   if FOwner is TIpHtmlNodeTH then
     Props.FontStyle := Props.FontStyle + [fsBold];
+
   if FTableElemOwner.NoWrap then
     Props.NoBreak := True;
+
   case FTableElemOwner.VAlign of
   hva3Default :;
   else
     Props.VAlignment := FTableElemOwner.VAlign;
   end;
+
   if FTableElemOwner.BgColor <> -1 then
     Props.BgColor := FTableElemOwner.BgColor;
+
   inherited Layout(Props, TargetRect);
 end;
 

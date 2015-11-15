@@ -6,9 +6,9 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LazFileUtils, LazFileCache, Controls, Dialogs,
-  Graphics, Buttons, StdCtrls, LCLType, IDEOptionsIntf, MacroIntf, IDEDialogs,
+  Buttons, StdCtrls, LCLType, IDEOptionsIntf, MacroIntf, IDEDialogs,
   CompOptsIntf, Project, CompilerOptions, LazarusIDEStrConsts, PathEditorDlg,
-  IDEProcs, CheckCompilerOpts, ShowCompilerOpts, PackageDefs, ImExportCompilerOpts;
+  IDEProcs, CheckCompilerOpts, ShowCompilerOpts, ImExportCompilerOpts;
 
 type
 

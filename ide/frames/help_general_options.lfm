@@ -6,14 +6,14 @@ object HelpGeneralOptionsFrame: THelpGeneralOptionsFrame
   ClientHeight = 500
   ClientWidth = 500
   TabOrder = 0
-  DesignLeft = 476
-  DesignTop = 241
+  DesignLeft = 422
+  DesignTop = 209
   object FPCDocHTMLLabel: TLabel
     AnchorSideTop.Control = Owner
     Left = 70
-    Height = 20
+    Height = 17
     Top = 0
-    Width = 132
+    Width = 134
     Caption = 'FPCDocHTMLLabel'
     Font.Style = [fsBold]
     ParentColor = False
@@ -26,7 +26,7 @@ object HelpGeneralOptionsFrame: THelpGeneralOptionsFrame
     AnchorSideRight.Control = lblViewers
     Left = 0
     Height = 3
-    Top = 69
+    Top = 63
     Width = 64
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -36,9 +36,9 @@ object HelpGeneralOptionsFrame: THelpGeneralOptionsFrame
     AnchorSideTop.Control = FPCDocHTMLEdit
     AnchorSideTop.Side = asrBottom
     Left = 70
-    Height = 20
-    Top = 60
-    Width = 72
+    Height = 17
+    Top = 56
+    Width = 77
     BorderSpacing.Top = 6
     Caption = 'lblViewers'
     Font.Style = [fsBold]
@@ -52,10 +52,10 @@ object HelpGeneralOptionsFrame: THelpGeneralOptionsFrame
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 148
+    Left = 153
     Height = 3
-    Top = 69
-    Width = 352
+    Top = 63
+    Width = 347
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
   end
@@ -78,7 +78,7 @@ object HelpGeneralOptionsFrame: THelpGeneralOptionsFrame
     AnchorSideRight.Control = lblDatabases
     Left = 0
     Height = 3
-    Top = 285
+    Top = 283
     Width = 64
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -88,9 +88,9 @@ object HelpGeneralOptionsFrame: THelpGeneralOptionsFrame
     AnchorSideTop.Control = lblMiddle1
     AnchorSideTop.Side = asrBottom
     Left = 70
-    Height = 20
+    Height = 17
     Top = 276
-    Width = 89
+    Width = 93
     Caption = 'lblDatabases'
     Font.Style = [fsBold]
     ParentColor = False
@@ -103,10 +103,10 @@ object HelpGeneralOptionsFrame: THelpGeneralOptionsFrame
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 165
+    Left = 169
     Height = 3
-    Top = 285
-    Width = 335
+    Top = 283
+    Width = 331
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
   end
@@ -127,7 +127,7 @@ object HelpGeneralOptionsFrame: THelpGeneralOptionsFrame
     AnchorSideRight.Control = FPCDocHTMLLabel
     Left = 0
     Height = 3
-    Top = 9
+    Top = 7
     Width = 64
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -140,43 +140,30 @@ object HelpGeneralOptionsFrame: THelpGeneralOptionsFrame
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 208
+    Left = 210
     Height = 3
-    Top = 9
-    Width = 292
+    Top = 7
+    Width = 290
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
   end
-  object FPCDocHTMLEdit: TEdit
+  object FPCDocHTMLEdit: TDirectoryEdit
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = FPCDocHTMLLabel
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = FPCDocHTMLBrowseButton
-    Left = 6
-    Height = 28
-    Top = 26
-    Width = 465
-    Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Left = 6
-    BorderSpacing.Top = 6
-    TabOrder = 0
-    Text = 'FPCDocHTMLEdit'
-  end
-  object FPCDocHTMLBrowseButton: TButton
-    AnchorSideTop.Control = FPCDocHTMLEdit
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = FPCDocHTMLEdit
-    AnchorSideBottom.Side = asrBottom
-    Left = 471
-    Height = 28
-    Top = 26
-    Width = 23
-    Anchors = [akTop, akRight, akBottom]
-    BorderSpacing.Right = 6
-    Caption = '...'
-    OnClick = FPCDocHTMLBrowseButtonClick
-    TabOrder = 1
+    Left = 6
+    Height = 27
+    Top = 23
+    Width = 488
+    ShowHidden = False
+    ButtonWidth = 50
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    MaxLength = 0
+    TabOrder = 0
   end
   object ViewersListBox: TListBox
     AnchorSideLeft.Control = Owner
@@ -185,15 +172,17 @@ object HelpGeneralOptionsFrame: THelpGeneralOptionsFrame
     AnchorSideRight.Control = lblMiddle
     AnchorSideBottom.Control = lblDatabases
     Left = 6
-    Height = 184
-    Top = 86
+    Height = 191
+    Top = 79
     Width = 210
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Around = 6
     ClickOnSelChange = False
     ItemHeight = 0
     OnSelectionChange = ViewersListBoxSelectionChange
-    TabOrder = 2
+    ScrollWidth = 208
+    TabOrder = 1
+    TopIndex = -1
   end
   object ViewerPropsGroupBox: TGroupBox
     AnchorSideLeft.Control = ViewersListBox
@@ -204,13 +193,13 @@ object HelpGeneralOptionsFrame: THelpGeneralOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = lblDatabases
     Left = 222
-    Height = 184
-    Top = 86
+    Height = 191
+    Top = 79
     Width = 272
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'ViewerPropsGroupBox'
-    TabOrder = 3
+    TabOrder = 2
   end
   object DatabasesListBox: TListBox
     AnchorSideLeft.Control = Owner
@@ -219,8 +208,8 @@ object HelpGeneralOptionsFrame: THelpGeneralOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 198
-    Top = 302
+    Height = 201
+    Top = 299
     Width = 210
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Left = 6
@@ -229,7 +218,9 @@ object HelpGeneralOptionsFrame: THelpGeneralOptionsFrame
     ClickOnSelChange = False
     ItemHeight = 0
     OnSelectionChange = DatabasesListBoxSelectionChange
-    TabOrder = 4
+    ScrollWidth = 208
+    TabOrder = 3
+    TopIndex = -1
   end
   object DataBasesPropsGroupBox: TGroupBox
     AnchorSideLeft.Control = DatabasesListBox
@@ -241,14 +232,14 @@ object HelpGeneralOptionsFrame: THelpGeneralOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 222
-    Height = 198
-    Top = 302
+    Height = 201
+    Top = 299
     Width = 272
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
     Caption = 'DataBasesPropsGroupBox'
-    TabOrder = 5
+    TabOrder = 4
   end
 end

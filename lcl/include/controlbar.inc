@@ -95,10 +95,10 @@ var bR2L: Boolean;
     aBand: TCtrlBand;
 begin
   bR2L := IsRightToLeft;
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomControlBar.AlignControlsToBands'){$ENDIF};
   for aBand in FVisiBands do
     AlignControlToBand(aBand, bR2L);
-  EnableAutoSizing;
+  EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomControlBar.AlignControlsToBands'){$ENDIF};
 end;
 
 procedure TCustomControlBar.AlignControlToBand(ABand: TCtrlBand; ARightToLeft: Boolean);
@@ -217,10 +217,10 @@ var i, aWidth: Integer;
 begin
   inherited CMBiDiModeChanged(Message);
   aWidth := Width;
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomControlBar.CMBiDiModeChanged'){$ENDIF};
   for i := 0 to FBands.Count - 1 do
     FBands[i].Left := abs(FBands[i].Left - aWidth) - FBands[i].Width;
-  EnableAutoSizing;
+  EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomControlBar.CMBiDiModeChanged'){$ENDIF};
 end;
 
 procedure TCustomControlBar.CMBorderChanged(var Message: TLMessage);

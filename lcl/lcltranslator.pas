@@ -536,6 +536,8 @@ begin
     begin
       for i := 0 to Screen.CustomFormCount-1 do
         LocalTranslator.UpdateTranslation(Screen.CustomForms[i]);
+      for i := 0 to Screen.DataModuleCount-1 do
+        LocalTranslator.UpdateTranslation(Screen.DataModules[i]);
     end;
   end;
 end;

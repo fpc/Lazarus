@@ -87,7 +87,7 @@ begin
     Exit;
 
   try
-    FillByte(pe, SizeOf(pe), 0);
+    FillByte(pe{%H-}, SizeOf(pe), 0);
     pe.dwSize := SizeOf(pe);
     if Process32FirstW(hShot, pe) then
     repeat

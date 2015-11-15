@@ -1476,8 +1476,7 @@ begin
       WideStr := QtDC.Metrics.elidedText(WideStr, QtElideRight, Right - Left, 0);
   end;
 
-  with ARect do
-    QtDC.DrawText(Left + Pt.X, Top + Pt.Y, Right-Left, Bottom-Top, F, @WideStr);
+  QtDC.DrawText(ARect.Left + Pt.X, ARect.Top + Pt.Y, ARect.Right-ARect.Left, ARect.Bottom-ARect.Top, F, @WideStr);
 end;
 
 {------------------------------------------------------------------------------

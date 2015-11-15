@@ -1113,8 +1113,7 @@ begin
   Self.WriteComment('Pushing and Setting current clip rect');
   Self.Write('clipsave');
   B := TxRectToBounds(FLazClipRect);
-  with B do
-    Self.Write(Format('%f %f %f %f rectclip',[fx, fy, fwidth, fheight],FFs));
+  Write(Format('%f %f %f %f rectclip',[B.fx, B.fy, B.fwidth, B.fheight],FFs));
   Include(FStatus, pcsClipSaved);
 end;
 
@@ -1820,18 +1819,12 @@ begin
   ellipsePath:='matrix currentmatrix %f %f translate %f %f scale 0 0 1 %d %d arc setmatrix';
 
   PixelsToPoints(RX,RY,r.fx,r.fy);
-  {choice between newpath and moveto beginning of arc
-   go with newpath for precision, does this violate any assumptions in code???
-   write(format('%d %d moveto',[x1+rx, y1]),Lst  # this also works}
-  with r do
-  begin
-    WriteB('newpath');
-    WriteB(Format(ellipsePath,[pp1.fx+fx,pp1.fy-fy,fx,fy,90,180],FFs));
-    WriteB(Format(ellipsePath,[pp1.fx+fx,pp2.fy+fy,fx,fy,180,270],FFs));
-    WriteB(Format(ellipsePath,[pp2.fx-fx,pp2.fy+fy,fx,fy,270,360],FFs));
-    WriteB(Format(ellipsePath,[pp2.fx-fx,pp1.fy-fy,fx,fy,0,90],FFs));
-    WriteB('closepath');
-  end;
+  WriteB('newpath');
+  WriteB(Format(ellipsePath,[pp1.fx+r.fx,pp1.fy-r.fy,r.fx,r.fy,90,180],FFs));
+  WriteB(Format(ellipsePath,[pp1.fx+r.fx,pp2.fy+r.fy,r.fx,r.fy,180,270],FFs));
+  WriteB(Format(ellipsePath,[pp2.fx-r.fx,pp2.fy+r.fy,r.fx,r.fy,270,360],FFs));
+  WriteB(Format(ellipsePath,[pp2.fx-r.fx,pp1.fy-r.fy,r.fx,r.fy,0,90],FFs));
+  WriteB('closepath');
 
   SetBrushFillPattern(True,True);
   

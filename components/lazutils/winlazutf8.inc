@@ -7,10 +7,10 @@ var
 var
   ArgsW: Array of WideString;
   ArgsWCount: Integer; // length(ArgsW)+1
-  {$IFDEF EnableUTF8RTL}
+  {$IF (FPC_FULLVERSION >= 30000) AND NOT DEFINED(DisableUTF8RTL)}
   ArgsUTF8: Array of String; // the ArgsW array as UTF8
   OldArgV: PPChar = nil;
-  {$ENDIF}
+  {$IFEND}
 
 //************ START "Stubs" that just call Ansi or Wide implementation
 
@@ -188,7 +188,7 @@ begin
   end;
   Dec(ArgsWCount);
 
-  {$IFDEF EnableUTF8RTL}
+  {$IF (FPC_FULLVERSION >= 30000) AND NOT DEFINED(DisableUTF8RTL)}
   if DefaultSystemCodePage=CP_UTF8 then begin
     SetLength(ArgsUTF8,length(ArgsW));
     OldArgV:=argv;
@@ -199,7 +199,7 @@ begin
       argv[i]:=PChar(ArgsUTF8[i]);
     end;
   end;
-  {$ENDIF}
+  {$IFEND}
 end;
 
 function ParamStrUtf8Wide(Param: Integer): String;
@@ -331,7 +331,7 @@ begin
 end;
 {$endif}
 
-{$IFDEF EnableUTF8RTL}
+{$IF (FPC_FULLVERSION >= 30000) AND NOT DEFINED(DisableUTF8RTL)}
 function GetLocaleStr(aLocaleID, aLCType: Longint; const Def: string): String;
 var
   L: Integer;
@@ -465,7 +465,7 @@ begin
   end else
     Result:=0;
 end;
-{$ENDIF}
+{$IFEND}
 
 procedure InitLazUtf8;
 begin
@@ -493,7 +493,7 @@ begin
       end;
     end;
   end;
-  {$ifdef EnableUTF8RTL}
+  {$IF (FPC_FULLVERSION >= 30000) AND NOT DEFINED(DisableUTF8RTL)}
   GetFormatSettingsUTF8(GetThreadLocale,FormatSettings);
   widestringmanager.UpperAnsiStringProc:=@UTF8UpperString;
   widestringmanager.LowerAnsiStringProc:=@UTF8LowerString;
@@ -506,16 +506,16 @@ begin
   // Does anyone need these two?
   //widestringmanager.StrLowerAnsiStringProc;
   //widestringmanager.StrUpperAnsiStringProc;
-  {$endif}
+  {$IFEND}
 end;
 
 procedure FinalizeLazUTF8;
-{$IFDEF EnableUTF8RTL}
+{$IF (FPC_FULLVERSION >= 30000) AND NOT DEFINED(DisableUTF8RTL)}
 var
   p: PPChar;
-{$ENDIF}
+{$IFEND}
 begin
-  {$IFDEF EnableUTF8RTL}
+  {$IF (FPC_FULLVERSION >= 30000) AND NOT DEFINED(DisableUTF8RTL)}
   // restore argv and free memory
   if OldArgV<>nil then
   begin
@@ -523,5 +523,5 @@ begin
     argv:=OldArgV;
     Freemem(p);
   end;
-  {$ENDIF}
+  {$IFEND}
 end;

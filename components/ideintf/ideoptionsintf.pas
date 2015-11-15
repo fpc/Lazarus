@@ -65,6 +65,7 @@ type
   public
     constructor Create; virtual;
     procedure StoreWindowPositions; virtual; abstract;
+    procedure LoadDefaults; virtual; abstract;
     procedure Load(Path: String; aXMLCfg: TRttiXMLConfig); virtual; abstract;
     procedure Save(Path: String; aXMLCfg: TRttiXMLConfig); virtual; abstract;
     procedure ImportSettingsFromIDE; virtual; abstract;

@@ -1735,6 +1735,7 @@ var
   Value, CurLine: string;
   NewBlockBegin, NewBlockEnd: TPoint;
   LogCaret: TPoint;
+  HighlighterIdentChars: TSynIdentChars;
 begin
   //debugln('TSynCompletion.Validate ',dbgsName(Sender),' ',dbgs(Shift),' Position=',dbgs(Position));
   F := Sender as TSynBaseCompletionForm;
@@ -1744,11 +1745,17 @@ begin
       BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TSynCompletion.Validate'){$ENDIF};
       BeginUpdate;
       try
+        if Editor.Highlighter<>nil then
+          HighlighterIdentChars := Editor.Highlighter.IdentChars
+        else
+          HighlighterIdentChars := [];
         LogCaret := LogicalCaretXY;
         NewBlockBegin:=LogCaret;
         CurLine:=Lines[NewBlockBegin.Y - 1];
         while (NewBlockBegin.X>1) and (NewBlockBegin.X-1<=length(CurLine))
-        and (IsIdentifierChar(@CurLine[NewBlockBegin.X-1])) do
+        and ((IsIdentifierChar(@CurLine[NewBlockBegin.X-1]))
+             or (CurLine[NewBlockBegin.X-1] in HighlighterIdentChars))
+        do
           dec(NewBlockBegin.X);
         //BlockBegin:=NewBlockBegin;
         if ssShift in Shift then begin
@@ -1759,7 +1766,9 @@ begin
           NewBlockEnd := LogCaret;
           CurLine:=Lines[NewBlockEnd.Y - 1];
           while (NewBlockEnd.X<=length(CurLine))
-          and (IsIdentifierChar(@CurLine[NewBlockEnd.X])) do
+          and ((IsIdentifierChar(@CurLine[NewBlockEnd.X]))
+               or (CurLine[NewBlockEnd.X] in HighlighterIdentChars))
+          do
             inc(NewBlockEnd.X);
         end;
         //debugln('TSynCompletion.Validate B Position=',dbgs(Position));

@@ -247,11 +247,6 @@ begin
   // we already handled IDEInstances, ignore it in lazarus EXE
   if (FCmdLineParams.IndexOf(ForceNewInstanceOpt) = -1) then
     FCmdLineParams.Add(ForceNewInstanceOpt);
-  // pass the AllowOpenLastProject parameter to lazarus EXE
-  if not LazIDEInstances.AllowOpenLastProject and
-     (FCmdLineParams.IndexOf(SkipLastProjectOpt) = -1)
-  then
-    FCmdLineParams.Add(SkipLastProjectOpt);
 
   // set primary config path
   PCP:=ExtractPrimaryConfigPath(FCmdLineParams);

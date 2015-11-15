@@ -173,6 +173,7 @@ type
     procedure SetTrashVariables(const AValue: Boolean);
     procedure SetUncertainOpt(const AValue: Boolean);
     procedure SetUseAnsiStr(const AValue: Boolean);
+    procedure SetUseCommentsInCustomOptions(AValue: Boolean);
     procedure SetUseExternalDbgSyms(const AValue: Boolean);
     procedure SetUseHeaptrc(const AValue: Boolean);
     procedure SetUseLineInfoUnit(const AValue: Boolean);
@@ -434,7 +435,8 @@ type
     property CustomConfigFile: Boolean read fCustomConfigFile write SetCustomConfigFile;
     property ConfigFilePath: String read fConfigFilePath write SetConfigFilePath;
     property CustomOptions: string read GetCustomOptions write SetCustomOptions;
-    property UseCommentsInCustomOptions: Boolean read fUseCommentsInCustomOptions write fUseCommentsInCustomOptions;
+    property UseCommentsInCustomOptions: Boolean read fUseCommentsInCustomOptions
+                                                write SetUseCommentsInCustomOptions;
 
     // execute other
     procedure SetAlternativeCompile(const Command: string; ScanFPCMsgs: boolean); virtual; abstract; // disable normal compile and call this instead
@@ -812,6 +814,13 @@ procedure TLazCompilerOptions.SetUseAnsiStr(const AValue: Boolean);
 begin
   if fUseAnsiStr=AValue then exit;
   fUseAnsiStr:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetUseCommentsInCustomOptions(AValue: Boolean);
+begin
+  if fUseCommentsInCustomOptions=AValue then Exit;
+  fUseCommentsInCustomOptions:=AValue;
   IncreaseChangeStamp;
 end;
 

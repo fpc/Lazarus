@@ -182,7 +182,7 @@ type
     function CheckForMsgId(p: PChar): boolean; // (MsgId) message
     function CheckForFileLineColMessage(p: PChar): boolean; // the normal messages: filename(y,x): Hint: ..
     function CheckForGeneralMessage(p: PChar): boolean; // Fatal: .., Error: ..., Panic: ..
-    function CheckForInfos(p: PChar): boolean;
+    function CheckForInfos(p: PChar): boolean; // e.g. Free Pascal Compiler version 2.6.4 [2014/02/26] for i386
     function CheckForCompilingState(p: PChar): boolean; // Compiling ..
     function CheckForAssemblingState(p: PChar): boolean; // Assembling ..
     function CheckForLinesCompiled(p: PChar): boolean; // ..lines compiled..
@@ -190,6 +190,7 @@ type
     function CheckForLineProgress(p: PChar): boolean; // 600 206.521/231.648 Kb Used
     function CheckForLoadFromUnit(p: PChar): Boolean;
     function CheckForWindresErrors(p: PChar): boolean;
+    function CheckForAssemblerErrors(p: PChar): boolean;
     function CreateMsgLine: TMessageLine;
     procedure AddLinkingMessages;
     procedure AddResourceMessages;
@@ -1470,6 +1471,28 @@ begin
   if CompStr('.exe', p) then
     inc(p, 4);
   MsgLine.Msg:='windres' + p;
+  AddMsgLine(MsgLine);
+end;
+
+function TIDEFPCParser.CheckForAssemblerErrors(p: PChar): boolean;
+// example:
+//   <stdin>:227:9: error: unsupported directive '.stabs'
+var
+  APos: PChar;
+  s: string;
+  MsgLine: TMessageLine;
+begin
+  Result:=false;
+  APos:=FindSubStrI('error: unsupported directive',p);
+  if APos=nil then exit;
+  Result:=true;
+  MsgLine:=CreateMsgLine;
+  MsgLine.SubTool:=SubToolFPCWindRes;
+  MsgLine.Urgency:=mluError;
+  s:=APos;
+  if Pos('.stabs',s)>0 then
+    s+='. Hint: Use another type of debug info.';
+  MsgLine.Msg:='assembler: '+s;
   AddMsgLine(MsgLine);
 end;
 
@@ -2826,6 +2849,8 @@ begin
   if CheckForLoadFromUnit(p) then exit;
   // check for windres errors
   if CheckForWindresErrors(p) then exit;
+  // check for linker errors
+  if CheckForAssemblerErrors(p) then exit;
 
   {$IFDEF VerboseFPCParser}
   debugln('TFPCParser.ReadLine UNKNOWN: ',Line);

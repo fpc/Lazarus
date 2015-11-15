@@ -816,72 +816,74 @@ var
   MatchPos,FirstMatchPos: TLazSearchMatchPos;
   TextEnd, DrawnTextLength: integer;
   ARect: TRect;
+  TV: TLazSearchResultTV;
 begin
   if Stage <> cdPostPaint then Exit;
 
-  With Sender as TLazSearchResultTV do
+  TV:=Sender as TLazSearchResultTV;
+  if [cdsSelected,cdsMarked] * State <> [] then
+    TV.Canvas.Font.Color := clHighlightText;
+
+  ARect:=Node.DisplayRect(true);
+  TV.Canvas.FillRect(ARect);
+
+  MatchObj := TLazSearchMatchPos(Node.Data);
+  if assigned(MatchObj) and (MatchObj is TLazSearchMatchPos) then
+    MatchPos:= TLazSearchMatchPos(Node.Data)
+  else
+    MatchPos:= nil;
+
+  if Assigned(MatchPos) then
   begin
-    if [cdsSelected,cdsMarked] * State <> [] then
-      Canvas.Font.Color := clHighlightText;
 
-    ARect:=Node.DisplayRect(true);
-    Canvas.FillRect(ARect);
+    FirstMatchPos:=MatchPos;
+    TheTop:= ARect.Top;
+    TextEnd:=ARect.Left;
+    DrawnTextLength:=0;
 
-    MatchObj := TLazSearchMatchPos(Node.Data);
-    if assigned(MatchObj) and (MatchObj is TLazSearchMatchPos) then
-      MatchPos:= TLazSearchMatchPos(Node.Data)
-    else
-      MatchPos:= nil;
-
-    if Assigned(MatchPos) then
-    begin
-
-      FirstMatchPos:=MatchPos;
-      TheTop:= ARect.Top;
-      TextEnd:=ARect.Left;
-      DrawnTextLength:=0;
-
-      CurPart:=MatchPos.ShownFilename+' ('+IntToStr(MatchPos.FileStartPos.Y)
-          +':'+IntToStr(MatchPos.FileStartPos.X);
+    CurPart:=MatchPos.ShownFilename+' ('+IntToStr(MatchPos.FileStartPos.Y)
+        +':'+IntToStr(MatchPos.FileStartPos.X);
+    MatchPos:=MatchPos.NextInThisLine;
+    SetBkMode(TV.Canvas.Handle, TRANSPARENT);
+    while assigned(MatchPos) do begin
+      CurPart:=CurPart+','+IntToStr(MatchPos.FileStartPos.X);
       MatchPos:=MatchPos.NextInThisLine;
-      SetBkMode(Canvas.Handle, TRANSPARENT);
-      while assigned(MatchPos) do begin
-        CurPart:=CurPart+','+IntToStr(MatchPos.FileStartPos.X);
-        MatchPos:=MatchPos.NextInThisLine;
+    end;
+    CurPart:=CurPart+') ';
+    TV.Canvas.TextOut(TextEnd, TheTop, CurPart);
+    TextEnd:= TextEnd + TV.Canvas.TextWidth(CurPart);
+
+    MatchPos:=FirstMatchPos;
+    while assigned(MatchPos) do begin
+      //debugln(['TSearchResultsView.TreeViewAdvancedCustomDrawItem MatchPos.TheText="',MatchPos.TheText,'" MatchPos.MatchStart=',MatchPos.MatchStart,' MatchPos.MatchLen=',MatchPos.MatchLen]);
+      // draw normal text
+      CurPart:=SpecialCharsToHex(copy(MatchPos.TheText,DrawnTextLength+1,MatchPos.MatchStart-1-DrawnTextLength));
+      DrawnTextLength:=MatchPos.MatchStart-1;
+      TV.Canvas.TextOut(TextEnd, TheTop, CurPart);
+      TextEnd:= TextEnd + TV.Canvas.TextWidth(CurPart);
+
+      // draw found text (matched)
+      CurPart:=SpecialCharsToHex(copy(MatchPos.TheText,DrawnTextLength+1,MatchPos.MatchLen));
+      DrawnTextLength:=DrawnTextLength+MatchPos.MatchLen;
+      if UTF8Length(CurPart)>MaxTextLen then
+        CurPart:=UTF8Copy(CurPart,1,MaxTextLen)+'...';
+      TV.Canvas.Font.Style:= TV.Canvas.Font.Style + [fsBold];
+      TV.Canvas.TextOut(TextEnd, TheTop, CurPart);
+      TextEnd:= TextEnd + TV.Canvas.TextWidth(CurPart);
+      TV.Canvas.Font.Style:= TV.Canvas.Font.Style - [fsBold];
+
+      if MatchPos.NextInThisLine=nil then begin
+        CurPart:=SpecialCharsToHex(copy(MatchPos.TheText, DrawnTextLength+1,Length(MatchPos.TheText)));
+        TV.Canvas.TextOut(TextEnd, TheTop, CurPart);
       end;
-      CurPart:=CurPart+') ';
-      Canvas.TextOut(TextEnd, TheTop, CurPart);
-      TextEnd:= TextEnd + Canvas.TextWidth(CurPart);
-
-      MatchPos:=FirstMatchPos;
-      while assigned(MatchPos) do begin
-        CurPart:=SpecialCharsToHex(copy(MatchPos.TheText,DrawnTextLength+1,MatchPos.MatchStart-1-DrawnTextLength));
-        DrawnTextLength:=MatchPos.MatchStart-1;
-        Canvas.TextOut(TextEnd, TheTop, CurPart);
-        TextEnd:= TextEnd + Canvas.TextWidth(CurPart);
-
-        CurPart:=SpecialCharsToHex(copy(MatchPos.TheText,DrawnTextLength+1,MatchPos.MatchLen));
-        DrawnTextLength:=DrawnTextLength+MatchPos.MatchLen;
-        if UTF8Length(CurPart)>MaxTextLen then
-          CurPart:=UTF8Copy(CurPart,1,MaxTextLen)+'...';
-        Canvas.Font.Style:= Canvas.Font.Style + [fsBold];
-        Canvas.TextOut(TextEnd, TheTop, CurPart);
-        TextEnd:= TextEnd + Canvas.TextWidth(CurPart);
-        Canvas.Font.Style:= Canvas.Font.Style - [fsBold];
-
-        if MatchPos.NextInThisLine=nil then begin
-          CurPart:=SpecialCharsToHex(copy(MatchPos.TheText, DrawnTextLength+1,Length(MatchPos.TheText)));
-          Canvas.TextOut(TextEnd, TheTop, CurPart);
-        end;
-        MatchPos:=MatchPos.NextInThisLine;
-      end;
-    end
-    else begin
-      // this is usually the filename only
-      // draw it here too, so that the correct colors are used
-      Canvas.TextOut(ARect.Left, ARect.Top, Node.Text);
-    end;//if
-  end;//with
+      MatchPos:=MatchPos.NextInThisLine;
+    end;
+  end
+  else begin
+    // this is usually the filename only
+    // draw it here too, so that the correct colors are used
+    TV.Canvas.TextOut(ARect.Left, ARect.Top, Node.Text);
+  end;//if
 end;//TreeViewDrawItem
 
 {Returns the Position within the source file from a properly formated search result}

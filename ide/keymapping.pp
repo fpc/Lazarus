@@ -452,6 +452,8 @@ begin
     // sourcenotebook
     ecNextEditor              : Result:= srkmecNextEditor;
     ecPrevEditor              : Result:= srkmecPrevEditor;
+    ecPrevEditorInHistory     : Result:= srkmecPrevEditorInHistory;
+    ecNextEditorInHistory     : Result:= srkmecNextEditorInHistory;
     ecMoveEditorLeft          : Result:= srkmecMoveEditorLeft;
     ecMoveEditorRight         : Result:= srkmecMoveEditorRight;
     ecMoveEditorLeftmost      : Result:= srkmecMoveEditorLeftmost;
@@ -1131,6 +1133,8 @@ begin
   // source notebook
   ecNextEditor:          SetSingle(VK_TAB,[ssCtrl]);
   ecPrevEditor:          SetSingle(VK_TAB,[ssShift,ssCtrl]);
+  ecPrevEditorInHistory: SetSingle(VK_OEM_3,[ssCtrl]);//~
+  ecNextEditorInHistory: SetSingle(VK_OEM_3,[ssShift,ssCtrl]);//~
   ecResetDebugger:       SetSingle(VK_UNKNOWN,[]);
   ecToggleBreakPoint:    SetSingle(VK_F5,[]);
   ecMoveEditorLeft:      SetSingle(VK_UNKNOWN,[]);
@@ -1566,6 +1570,8 @@ begin
   // source notebook
   ecNextEditor:          SetSingle(VK_F6,[],         VK_TAB,[ssCtrl]);
   ecPrevEditor:          SetSingle(VK_F6,[ssShift],  VK_TAB,[ssShift,ssCtrl]);
+  ecPrevEditorInHistory: SetSingle(VK_OEM_3,[ssCtrl]);//~
+  ecNextEditorInHistory: SetSingle(VK_OEM_3,[ssShift,ssCtrl]);//~
   ecResetDebugger:       SetSingle(VK_UNKNOWN,[]);
   ecToggleBreakPoint:    SetSingle(VK_UNKNOWN,[]);
   ecMoveEditorLeft:      SetSingle(VK_UNKNOWN,[]);
@@ -2874,6 +2880,8 @@ begin
   C:=Categories[AddCategory('SourceNotebook',srkmCatSrcNoteBook,IDECmdScopeSrcEdit)];
   AddDefault(C, 'Go to next editor', srkmecNextEditor, ecNextEditor);
   AddDefault(C, 'Go to prior editor', srkmecPrevEditor, ecPrevEditor);
+  AddDefault(C, 'Go to previous editor in history', srkmecPrevEditorInHistory, ecPrevEditorInHistory);
+  AddDefault(C, 'Go to next editor in history', srkmecNextEditorInHistory, ecNextEditorInHistory);
   AddDefault(C, 'Add break point', srkmecToggleBreakPoint, ecToggleBreakPoint);
   AddDefault(C, 'Remove break point', srkmecRemoveBreakPoint, ecRemoveBreakPoint);
   AddDefault(C, 'Move editor left', srkmecMoveEditorLeft, ecMoveEditorLeft);

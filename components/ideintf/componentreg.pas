@@ -135,7 +135,6 @@ type
     procedure AddToPalette; virtual;
     function CanBeCreatedInDesigner: boolean; virtual;
     function GetCreationClass: TComponentClass; virtual;
-    function IsTControl: boolean;
   public
     property ComponentClass: TComponentClass read FComponentClass;
     property OnGetCreationClass: TOnGetCreationClass read FOnGetCreationClass
@@ -642,11 +641,6 @@ begin
     OnGetCreationClass(Self,Result);
 end;
 
-function TRegisteredComponent.IsTControl: boolean;
-begin
-  Result:=ComponentClass.InheritsFrom(TControl);
-end;
-
 { TBaseComponentPage }
 
 constructor TBaseComponentPage.Create(const ThePageName: string);
@@ -1084,7 +1078,7 @@ var
   i, Vote: Integer;
 begin
   Vote:=1;
-  if HideControls and AComponent.IsTControl then
+  if HideControls and AComponent.ComponentClass.InheritsFrom(TControl) then
     Dec(Vote);
   i:=FHandlers[cphtUpdateVisible].Count;
   while FHandlers[cphtUpdateVisible].NextDownIndex(i) do

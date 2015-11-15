@@ -21,16 +21,12 @@ unit PasWString;
 // non utf-8 ansistring is rare in UNIXes and lconvencoding makes the executable big
 
 // sanity checks for defines
-{$IFDEF EnableUTF8RTL}
-  {$IF FPC_FULLVERSION<20701}
-    {$error UTF8 RTl requires fpc 2.7.1+}
+{$IF FPC_FULLVERSION >= 30000}
+  {$IFnDEF DisableUTF8RTL}
+    {$IFDEF PASWSTRING_SUPPORT_NONUTF8_ANSISTRING}
+      {$error UTF8 or not UTF8}
+    {$ENDIF}
   {$ENDIF}
-  {$IFDEF PASWSTRING_SUPPORT_NONUTF8_ANSISTRING}
-    {$error UTF8 or not UTF8}
-  {$ENDIF}
-{$ENDIF}
-
-{$IF FPC_FULLVERSION>=20701}
   {$DEFINE DisablePasWString}
 {$ENDIF}
 
@@ -41,13 +37,13 @@ uses
   {$ifdef PASWSTRING_SUPPORT_NONUTF8_ANSISTRING}, lconvencoding{$endif}
   ;
 
-{$IFNDEF DisablePasWString}
+{$IFnDEF DisablePasWString}
 procedure SetPasWidestringManager;
 {$ENDIF}
 
 implementation
 
-{$IFNDEF DisablePasWString}
+{$IFnDEF DisablePasWString}
 procedure fpc_rangeerror; [external name 'FPC_RANGEERROR'];
 
 function IsASCII(const s: string): boolean; inline;

@@ -1,3 +1,9 @@
+{
+  ToDo:
+    - Build file
+    - build modes of project as nodes with checkboxes
+    - run external tool
+}
 unit ProjectGroup;
 
 {$mode objfpc}{$H+}
@@ -8,31 +14,32 @@ uses
   Classes, SysUtils, contnrs,
   Laz2_XMLCfg,
   Controls, Forms, Dialogs, LazFileUtils, LazFileCache,
-  ProjectGroupIntf, PackageIntf, ProjectIntf, MenuIntf,
-  LazIDEIntf, IDEDialogs, CompOptsIntf;
+  PackageIntf, ProjectIntf, MenuIntf,
+  LazIDEIntf, IDEDialogs, CompOptsIntf, ProjectGroupIntf,
+  ProjectGroupStrConst;
 
 
-Type
+type
 
   { TIDECompileTarget }
 
   TIDECompileTarget = class(TCompileTarget)
   private
-    FTarget : TPersistent;
+    FTarget: TPersistent;
   protected
-    Procedure LoadPackage;
-    Procedure LoadProject;
-    Procedure LoadProjectGroup;
-    Function ProjectAction(AAction : TTargetAction) : TActionResult;
-    Function PackageAction(AAction : TTargetAction) : TActionResult;
-    Function ProjectGroupAction(AAction : TTargetAction) : TActionResult;
+    procedure LoadPackage;
+    procedure LoadProject;
+    procedure LoadProjectGroup;
+    function ProjectAction(AAction: TTargetAction): TActionResult;
+    function PackageAction(AAction: TTargetAction): TActionResult;
+    function ProjectGroupAction(AAction: TTargetAction): TActionResult;
     function GetIDEPackage: TIDEPackage; override;
     function GetLazProject: TLazProject; override;
     function GetProjectGroup: TProjectGroup; override;
     function PerformAction(AAction: TTargetAction): TActionResult; override;
   public
-    Procedure LoadTarget;
-    Procedure UnLoadTarget;
+    procedure LoadTarget;
+    procedure UnLoadTarget;
   end;
 
   // Since a project group iself is also a target, we need a target to represent
@@ -43,78 +50,84 @@ Type
   TProjectGroupTarget = Class(TIDECompileTarget)
   protected
     procedure SetTargetType(AValue: TTargetType); override;
-  Public
-    Constructor Create(AProjectGroup : TProjectGroup);
+  public
+    constructor Create(AProjectGroup: TProjectGroup);
   end;
 
-  TTargetEvent = Procedure(Sender : TObject; Target : TCompileTarget) of object;
-  TTargetExchangeEvent = Procedure(Sender : TObject; Target1,Target2 : TCompileTarget) of object;
+  TTargetEvent = procedure(Sender: TObject; Target: TCompileTarget) of object;
+  TTargetExchangeEvent = procedure(Sender: TObject; Target1,Target2: TCompileTarget) of object; // ToDo: use index
 
   { TIDEProjectGroup }
 
   TIDEProjectGroup = Class(TProjectGroup)
-  Private
+  private
     FOnFileNameChange: TNotifyEvent;
     FOnTargetActivated: TTargetEvent;
     FOnTargetAdded: TTargetEvent;
     FOnTargetDeleted: TTargetEvent;
     FOnTargetsExchanged: TTargetExchangeEvent;
-    FTargets : TFPObjectList;
-    FModified : Boolean;
+    FTargets: TFPObjectList;
+    FRemovedTargets: TFPObjectList;
+    FModified: Boolean;
   protected
     procedure SetFileName(AValue: String); override;
     function GetModified: Boolean; override;
-    function GetTarget(AIndex: Integer): TCompileTarget; override;
+    function GetTarget(Index: Integer): TCompileTarget; override;
     function GetTargetCount: Integer; override;
-  Public
-    Constructor Create;
-    Function AddTarget(Const AFileName: String): TCompileTarget; override;
-    Procedure RemoveTarget(T : TCompileTarget) ; override;
-    Procedure ExchangeTargets(ASource, ATarget: Integer); override;
-    Procedure ActivateTarget(T : TCompileTarget); override;
-    Function LoadFromFile(Options : TProjectGroupLoadOptions ) : Boolean;
-    Function SaveToFile : Boolean;
-    Property OnFileNameChange : TNotifyEvent Read FOnFileNameChange Write FOnFileNameChange;
-    Property OnTargetAdded : TTargetEvent Read FOnTargetAdded Write FOnTargetAdded;
-    Property OnTargetDeleted : TTargetEvent Read FOnTargetDeleted Write FOnTargetDeleted;
-    Property OnTargetActivated : TTargetEvent Read FOnTargetActivated Write FOnTargetActivated;
-    Property OnTargetsExchanged : TTargetExchangeEvent Read FOnTargetsExchanged Write FOnTargetsExchanged;
+    function GetRemovedTargetCount: Integer; override;
+    function GetRemovedTarget(Index: Integer): TCompileTarget; override;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function IndexOfTarget(const Target: TCompileTarget): Integer; override;
+    function IndexOfRemovedTarget(const Target: TCompileTarget): Integer; override;
+    function AddTarget(Const AFileName: String): TCompileTarget; override;
+    procedure RemoveTarget(Index: Integer); override;
+    procedure ExchangeTargets(ASource, ATarget: Integer); override; // ToDo: replace with MoveTarget
+    procedure ActivateTarget(T: TCompileTarget); override;
+    function LoadFromFile(Options: TProjectGroupLoadOptions): Boolean;
+    function SaveToFile: Boolean;
+    property OnFileNameChange: TNotifyEvent Read FOnFileNameChange Write FOnFileNameChange;
+    property OnTargetAdded: TTargetEvent Read FOnTargetAdded Write FOnTargetAdded;
+    property OnTargetDeleted: TTargetEvent Read FOnTargetDeleted Write FOnTargetDeleted;
+    property OnTargetActivated: TTargetEvent Read FOnTargetActivated Write FOnTargetActivated;
+    property OnTargetsExchanged: TTargetExchangeEvent Read FOnTargetsExchanged Write FOnTargetsExchanged;
   end;
 
   { TIDEProjectGroupManager }
 
   TIDEProjectGroupManager = Class(TProjectGroupManager)
   private
-    Function GetNewFileName: Boolean;
-  Protected
-    FProjectGroup : TIDEProjectGroup;
+    function GetNewFileName: Boolean;
   protected
-    Function CheckSaved : Boolean;
+    FProjectGroup: TIDEProjectGroup;
+  protected
+    function CheckSaved: Boolean;
     function GetCurrentProjectGroup: TProjectGroup; override;
-    Function ShowProjectGroupEditor : Boolean;
+    function ShowProjectGroupEditor: Boolean;
   public
     // Events for main menu
-    Procedure DoNewClick(Sender : TObject); virtual;
-    Procedure DoOpenClick(Sender : TObject); virtual;
-    Procedure DoSaveClick(Sender : TObject); virtual;
-    Procedure DoSaveAsClick(Sender : TObject); virtual;
+    procedure DoNewClick(Sender: TObject); virtual;
+    procedure DoOpenClick(Sender: TObject); virtual;
+    procedure DoSaveClick(Sender: TObject); virtual;
+    procedure DoSaveAsClick(Sender: TObject); virtual;
     // Public interface
-    Procedure LoadProjectGroup(AFileName: string; AOptions: TProjectGroupLoadOptions); override;
-    Procedure SaveProjectGroup; override;
+    procedure LoadProjectGroup(AFileName: string; AOptions: TProjectGroupLoadOptions); override;
+    procedure SaveProjectGroup; override;
   end;
 
   TEditProjectGroupOption = (epgoReusewindow);
   TEditProjectGroupOptions = Set of TEditProjectGroupOption;
 
-  TEditProjectGroupHandler = Procedure(AProjectGroup : TProjectGroup; Options : TEditProjectGroupOptions);
+  TEditProjectGroupHandler = procedure(AProjectGroup: TProjectGroup; Options: TEditProjectGroupOptions);
   // Method variant.
-  TEditProjectGroupEvent = Procedure(AProjectGroup : TProjectGroup; Options : TEditProjectGroupOptions) of object;
+  TEditProjectGroupEvent = procedure(AProjectGroup: TProjectGroup; Options: TEditProjectGroupOptions) of object;
 
 Var
-  OnEditProjectGroup : TEditProjectGroupHandler; // Takes precedence
-  OnEditProjectGroupEvent : TEditProjectGroupEvent;
+  OnEditProjectGroup: TEditProjectGroupHandler; // Takes precedence
+  OnEditProjectGroupEvent: TEditProjectGroupEvent;
 
-  IDEProjectGroupManager : TIDEProjectGroupManager;
+  IDEProjectGroupManager: TIDEProjectGroupManager;
   // Project group editor(s). Should probably move to MenuIntf
   ProjectGroupMenuRoot: TIDEMenuSection = nil;
     PGEditMenuSectionFiles, // e.g. sort files, clean up files
@@ -146,27 +159,9 @@ Var
 
 implementation
 
-Resourcestring
-  lisErrTargetDoesNotExist      = 'Target does not exist. Remove ?';
-  lisErrNoSuchFile              = 'Could not find target file'+sLineBreak+
-                                  '"%s"'+sLineBreak+
-                                  'What do you want to do ?';
-  lisRemoveTarget                = 'Remove target';
-  lisAbortLoadingProjectGroup    = 'Abort loading project group';
-  lisSkipAllTargets              = 'Remove all invalid targets';
-  lisErrOnlyProjectGroupAllowed  = 'Only target type "projectgroup" is allowed for root project group';
-  lisProjectGroupModified        = 'Project group modified';
-  lisProjectGroupModifiedConfirm = 'Project group "%s" is modified.'+sLineBreak+
-                                   'what do you want to do?';
-
-  lisSavePG  = 'Save project group';
-  lisDiscard = 'Discard changes';
-  lisAbort   = 'Abort';
-
-
 { TIDEProjectGroupManager }
 
-Function TIDEProjectGroupManager.CheckSaved: Boolean;
+function TIDEProjectGroupManager.CheckSaved: Boolean;
 begin
   Result:=Not Assigned(FProjectGroup);
   if Not Result then
@@ -201,7 +196,7 @@ begin
   Result:=FProjectGroup;
 end;
 
-Function TIDEProjectGroupManager.ShowProjectGroupEditor : Boolean;
+function TIDEProjectGroupManager.ShowProjectGroupEditor: Boolean;
 
 begin
   Result:=Assigned(FProjectGroup);
@@ -216,7 +211,7 @@ begin
     end;
 end;
 
-Procedure TIDEProjectGroupManager.DoNewClick(Sender: TObject);
+procedure TIDEProjectGroupManager.DoNewClick(Sender: TObject);
 begin
   if Not CheckSaved then
     Exit;
@@ -225,10 +220,10 @@ begin
   ShowProjectGroupEditor;
 end;
 
-Procedure TIDEProjectGroupManager.DoOpenClick(Sender: TObject);
+procedure TIDEProjectGroupManager.DoOpenClick(Sender: TObject);
 
 Var
-  F : TOpenDialog;
+  F: TOpenDialog;
 begin
   if Not CheckSaved then
     Exit;
@@ -246,40 +241,40 @@ begin
     end;
 end;
 
-Procedure TIDEProjectGroupManager.DoSaveClick(Sender: TObject);
+procedure TIDEProjectGroupManager.DoSaveClick(Sender: TObject);
 begin
   SaveProjectGroup;
 end;
 
-Function TIDEProjectGroupManager.GetNewFileName : Boolean;
+function TIDEProjectGroupManager.GetNewFileName: Boolean;
 Var
-  F : TSaveDialog;
+  F: TSaveDialog;
 begin
   Result:=False;
   F:=TSaveDialog.Create(Nil);
   With F do
-   try
-    FileName:=FProjectGroup.FileName;
-    InitIDEFileDialog(F);
-    F.Options:=[ofOverwritePrompt,ofPathMustExist,ofEnableSizing];
-    F.Filter:='Lazarus project group|*.lpg|All files|'+AllFilesMask;
-    F.DefaultExt:='.lpg';
-    Result:=F.Execute;
-    if Result then
-      FProjectGroup.FileName:=TrimAndExpandFilename(FileName);
-    StoreIDEFileDialog(F);
-   finally
-     F.Free;
-   end;
+    try
+      FileName:=FProjectGroup.FileName;
+      InitIDEFileDialog(F);
+      F.Options:=[ofOverwritePrompt,ofPathMustExist,ofEnableSizing];
+      F.Filter:=lisLazarusProjectGroup+'|*.lpg|'+lisAllFiles+'|'+AllFilesMask;
+      F.DefaultExt:='.lpg';
+      Result:=F.Execute;
+      if Result then
+        FProjectGroup.FileName:=TrimAndExpandFilename(FileName);
+      StoreIDEFileDialog(F);
+    finally
+      F.Free;
+    end;
 end;
 
-Procedure TIDEProjectGroupManager.DoSaveAsClick(Sender: TObject);
+procedure TIDEProjectGroupManager.DoSaveAsClick(Sender: TObject);
 begin
   if GetNewFileName then
     SaveProjectGroup;
 end;
 
-Procedure TIDEProjectGroupManager.LoadProjectGroup(AFileName: string;
+procedure TIDEProjectGroupManager.LoadProjectGroup(AFileName: string;
   AOptions: TProjectGroupLoadOptions);
 begin
   AFileName:=TrimAndExpandFilename(AFileName);
@@ -293,7 +288,7 @@ begin
     ShowProjectGroupEditor;
 end;
 
-Procedure TIDEProjectGroupManager.SaveProjectGroup;
+procedure TIDEProjectGroupManager.SaveProjectGroup;
 begin
   If Assigned(FProjectGroup) then
   begin
@@ -332,9 +327,9 @@ begin
   Result:=FModified;
 end;
 
-function TIDEProjectGroup.GetTarget(AIndex: Integer): TCompileTarget;
+function TIDEProjectGroup.GetTarget(Index: Integer): TCompileTarget;
 begin
-  Result:=TCompileTarget(FTargets[AIndex]);
+  Result:=TCompileTarget(FTargets[Index]);
 end;
 
 function TIDEProjectGroup.GetTargetCount: Integer;
@@ -342,13 +337,42 @@ begin
   Result:=FTargets.Count;
 end;
 
-Constructor TIDEProjectGroup.Create;
+function TIDEProjectGroup.GetRemovedTargetCount: Integer;
+begin
+  Result:=FRemovedTargets.Count;
+end;
+
+function TIDEProjectGroup.GetRemovedTarget(Index: Integer): TCompileTarget;
+begin
+  Result:=TCompileTarget(FRemovedTargets[Index]);
+end;
+
+constructor TIDEProjectGroup.Create;
 begin
   inherited Create;
   FTargets:=TFPObjectList.Create(True);
+  FRemovedTargets:=TFPObjectList.Create(True);
 end;
 
-Function TIDEProjectGroup.AddTarget(Const AFileName: String): TCompileTarget;
+destructor TIDEProjectGroup.Destroy;
+begin
+  FreeAndNil(FTargets);
+  FreeAndNil(FRemovedTargets);
+  inherited Destroy;
+end;
+
+function TIDEProjectGroup.IndexOfTarget(const Target: TCompileTarget): Integer;
+begin
+  Result:=FTargets.IndexOf(Target);
+end;
+
+function TIDEProjectGroup.IndexOfRemovedTarget(const Target: TCompileTarget
+  ): Integer;
+begin
+  Result:=FRemovedTargets.IndexOf(Target);
+end;
+
+function TIDEProjectGroup.AddTarget(const AFileName: String): TCompileTarget;
 begin
   Result:=Nil;
   if FileExistsCached(AFileName) then
@@ -362,14 +386,19 @@ begin
   end;
 end;
 
-Procedure TIDEProjectGroup.RemoveTarget(T: TCompileTarget);
+procedure TIDEProjectGroup.RemoveTarget(Index: Integer);
+var
+  Target: TCompileTarget;
 begin
-  If Assigned(FOnTargetDeleted) then
-    FOnTargetDeleted(Self,T);
-  inherited RemoveTarget(T);
+  Target:=Targets[Index];
+  FTargets.Delete(Index);
+  FRemovedTargets.Add(Target);
+  Target.Removed:=true;
+  if Assigned(FOnTargetDeleted) then
+    FOnTargetDeleted(Self,Target);
 end;
 
-Procedure TIDEProjectGroup.ExchangeTargets(ASource, ATarget: Integer);
+procedure TIDEProjectGroup.ExchangeTargets(ASource, ATarget: Integer);
 begin
   if ASource=ATarget then exit;
   if Assigned(FOnTargetsExchanged) then
@@ -378,7 +407,7 @@ begin
   FModified:=True;
 end;
 
-Procedure TIDEProjectGroup.ActivateTarget(T: TCompileTarget);
+procedure TIDEProjectGroup.ActivateTarget(T: TCompileTarget);
 begin
   if T.Active then exit;
   inherited ActivateTarget(T);
@@ -386,15 +415,15 @@ begin
     FOnTargetActivated(Self,T);
 end;
 
-Function TIDEProjectGroup.LoadFromFile(Options: TProjectGroupLoadOptions
+function TIDEProjectGroup.LoadFromFile(Options: TProjectGroupLoadOptions
   ): Boolean;
 Var
-  ARoot : String;
-  TargetFileName : String;
-  TargetPath : String;
-  XMLConfig : TXMLConfig;
-  I,ACount : Integer;
-  Target : TCompileTarget;
+  ARoot: String;
+  TargetFileName: String;
+  TargetPath: String;
+  XMLConfig: TXMLConfig;
+  I,ACount: Integer;
+  Target: TCompileTarget;
 begin
   TargetPath:=ExpandFileNameUTF8(ExtractFilePath(FileName));
   Result:=True;
@@ -460,14 +489,14 @@ begin
   end;
 end;
 
-Function TIDEProjectGroup.SaveToFile: Boolean;
+function TIDEProjectGroup.SaveToFile: Boolean;
 Var
-  TargetPath : String;
-  RelativeFileName : String;
-  ARoot : String;
-  XMLConfig : TXMLConfig;
-  I,ACount : Integer;
-  CompTarget : TCompileTarget;
+  TargetPath: String;
+  RelativeFileName: String;
+  ARoot: String;
+  XMLConfig: TXMLConfig;
+  I,ACount: Integer;
+  CompTarget: TCompileTarget;
 begin
   TargetPath:=ExtractFilePath(FileName);
   Result:=True;
@@ -509,58 +538,53 @@ end;
 
 { TIDECompileTarget }
 
-Procedure TIDECompileTarget.LoadTarget;
+procedure TIDECompileTarget.LoadTarget;
 begin
-  Case TargetType of
-    ttProject : LoadProject;
-    ttPackage : LoadPackage;
-    ttProjectGroup : LoadProjectGroup;
+  case TargetType of
+    ttProject: LoadProject;
+    ttPackage: LoadPackage;
+    ttProjectGroup: LoadProjectGroup;
   end;
 end;
 
-Procedure TIDECompileTarget.UnLoadTarget;
+procedure TIDECompileTarget.UnLoadTarget;
 begin
   if (FTarget<>Nil) and (FTarget is TProjectGroup) then
     FreeAndNil(FTarget);
   FTarget:=Nil;
 end;
 
-Procedure TIDECompileTarget.LoadPackage;
-
-Var
-  MR : TModalResult;
-  I : Integer;
-  Pkg : TIDEPackage;
-
+procedure TIDECompileTarget.LoadPackage;
+var
+  MR: TModalResult;
+  I: Integer;
+  Pkg: TIDEPackage;
 begin
   FTarget:=Nil;
   MR:=PackageEditingInterface.DoOpenPackageFile(Filename,
       [pofRevert, pofConvertMacros, pofDoNotOpenEditor],
       False);
-  If (MR=mrOK) then
-    begin
+  if (MR=mrOK) then
+  begin
     I:=0;
-    While (FTarget=Nil) and (I<PackageEditingInterface.GetPackageCount) do
-      begin
+    while (FTarget=Nil) and (I<PackageEditingInterface.GetPackageCount) do
+    begin
       Pkg:=PackageEditingInterface.GetPackages(I);
-      If CompareFilenames(Pkg.Filename,Self.Filename)=0 then
+      if CompareFilenames(Pkg.Filename,Self.Filename)=0 then
         FTarget:=Pkg; // ToDo: free notification
       Inc(I);
-      end;
     end;
+  end;
 end;
 
-Procedure TIDECompileTarget.LoadProject;
-
-Const
+procedure TIDECompileTarget.LoadProject;
+const
   Flags = [];
 {  Flags = [ofOnlyIfExists, ofProjectLoading, ofQuiet, ofVirtualFile,
            ofUseCache, ofMultiOpen, ofDoNotLoadResource,
            ofLoadHiddenResource, ofInternalFile];}
-
-Var
-  MR : TModalResult;
-
+var
+  MR: TModalResult;
 begin
   UnloadTarget;
   MR:=LazarusIDE.DoOpenProjectFile(FileName,Flags);
@@ -568,29 +592,27 @@ begin
     FTarget:=LazarusIDE.ActiveProject; // ToDo: free notification
 end;
 
-Procedure TIDECompileTarget.LoadProjectGroup;
-
-Var
-  PG : TIDEProjectGroup;
-
+procedure TIDECompileTarget.LoadProjectGroup;
+var
+  PG: TIDEProjectGroup;
 begin
   PG:=TIDEProjectGroup.Create;
   PG.FileName:=Self.FileName;
   PG.LoadFromFile([]);
 end;
 
-Function TIDECompileTarget.ProjectAction(AAction: TTargetAction): TActionResult;
-Var
-  F : TProjectBuildFlags;
+function TIDECompileTarget.ProjectAction(AAction: TTargetAction): TActionResult;
+var
+  F: TProjectBuildFlags;
 begin
   Result:=arOK;
-  If (LazarusIDE.ActiveProject.ProjectInfoFile<>LazProject.ProjectInfoFile) then
+  if (LazarusIDE.ActiveProject.ProjectInfoFile<>LazProject.ProjectInfoFile) then
     if  LazarusIDE.DoOpenProjectFile(FileName,[ofOnlyIfExists,ofQuiet,ofUseCache])<>mrOK then
       exit;
   // If action was open, we're now all set
-  Case AAction of
+  case AAction of
      taSettings :
-       ; // TODO : Need IDE integration
+       ; // TODO: Need IDE integration
      taCompileClean,
      taCompile :
        begin
@@ -600,24 +622,24 @@ begin
        LazarusIDE.DoBuildProject(crCompile,F);
        end;
      taRun :
-       ; // TODO : Need IDE integration
+       ; // TODO: Need IDE integration
   end;
 end;
 
-Function TIDECompileTarget.PackageAction(AAction: TTargetAction): TActionResult;
+function TIDECompileTarget.PackageAction(AAction: TTargetAction): TActionResult;
 Var
-  L : TObjectList;
+  L: TObjectList;
 begin
   Result:=arOK;
   if (AAction in [taOpen,taSettings]) then
     PackageEditingInterface.DoOpenPackageFile(FileName,[],False);
-  Case AAction of
+  case AAction of
      taSettings :
-       ; // TODO : Need IDE integration
+       ; // TODO: Need IDE integration
      taCompile :
-       ; // TODO : Need IDE integration
+       ; // TODO: Need IDE integration
      taCompileClean :
-       ; // TODO : Need IDE integration
+       ; // TODO: Need IDE integration
      taInstall :
        begin
        L:=TObjectList.Create(False);
@@ -629,11 +651,11 @@ begin
        end;
        end;
      taUninstall :
-       ; // TODO : Need IDE integration
+       ; // TODO: Need IDE integration
   end;
 end;
 
-Function TIDECompileTarget.ProjectGroupAction(AAction: TTargetAction
+function TIDECompileTarget.ProjectGroupAction(AAction: TTargetAction
   ): TActionResult;
 begin
   if AAction=taOpen then
@@ -667,10 +689,10 @@ function TIDECompileTarget.PerformAction(AAction: TTargetAction): TActionResult;
 begin
   if FTarget=Nil then
     LoadTarget;
-  Case TargetType of
-     ttProject : Result:=ProjectAction(AAction);
-     ttPackage : Result:=PackageAction(AAction);
-     ttProjectGroup : Result:=ProjectGroupAction(AAction);
+  case TargetType of
+     ttProject: Result:=ProjectAction(AAction);
+     ttPackage: Result:=PackageAction(AAction);
+     ttProjectGroup: Result:=ProjectGroupAction(AAction);
   end;
 end;
 

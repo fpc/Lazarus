@@ -15,13 +15,14 @@
   to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
   MA 02111-1307, USA.
 }
-program finddeclarationtest;
+program testcodetools;
 
 {$mode objfpc}{$H+}
 
 uses
   Classes, sysutils, consoletestrunner, dom, fpcunit, CodeToolManager,
-  CodeToolsConfig, LazLogger, fdtbase, fdt_classhelper,
+  CodeToolsConfig, LazLogger, finddeclarationtests, RefactoringTests,
+  fdt_classhelper,
   {$IF FPC_FULLVERSION >= 30101}
   fdt_typehelper,
   {$ENDIF}
@@ -29,7 +30,7 @@ uses
   {$IFDEF Darwin}
   fdt_objccategory, fdt_objcclass,
   {$ENDIF}
-  fdt_basic, fdt_with;
+  fdt_basic, fdt_with, rt_explodewith;
 
 const
   ConfigFilename = 'codetools.config';

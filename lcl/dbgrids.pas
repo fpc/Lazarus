@@ -1674,9 +1674,7 @@ begin
   {$ifdef dbgDBGrid}
   DebugLn('%s.IsEOF', [ClassName]);
   {$endif}
-  with FDatalink do
-    result :=
-      Active and DataSet.EOF;
+  Result := FDatalink.Active and FDatalink.DataSet.EOF;
 end;
 
 function TCustomDBGrid.ValidDataSet: boolean;
@@ -1684,13 +1682,13 @@ begin
   {$ifdef dbgDBGrid}
   DebugLn('%s.ValidDataSet', [ClassName]);
   {$endif}
-  result := FDatalink.Active And (FDatalink.DataSet<>nil)
+  Result := FDatalink.Active And (FDatalink.DataSet<>nil)
 end;
 
 function TCustomDBGrid.InsertCancelable: boolean;
 begin
   with FDatalink.DataSet do
-  Result := (State=dsInsert) and not (Modified or FDataLink.FModified);
+    Result := (State=dsInsert) and not (Modified or FDataLink.FModified);
 end;
 
 procedure TCustomDBGrid.StartUpdating;

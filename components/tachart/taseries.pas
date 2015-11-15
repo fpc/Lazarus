@@ -107,6 +107,8 @@ type
   { TPieSeries }
 
   TPieSeries = class(TCustomPieSeries)
+  public
+    property Radius;
   published
     property EdgePen;
     property Depth;

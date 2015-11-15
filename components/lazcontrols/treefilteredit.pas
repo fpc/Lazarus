@@ -79,8 +79,12 @@ type
     procedure OnBeforeTreeDestroy(Sender: TObject);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure MoveNext; override;
-    procedure MovePrev; override;
+    procedure MoveNext(ASelect: Boolean = False); override;
+    procedure MovePrev(ASelect: Boolean = False); override;
+    procedure MovePageUp(ASelect: Boolean = False); override;
+    procedure MovePageDown(ASelect: Boolean = False); override;
+    procedure MoveHome(ASelect: Boolean = False); override;
+    procedure MoveEnd(ASelect: Boolean = False); override;
     function ReturnKeyHandled: Boolean; override;
     procedure SortAndFilter; override;
     procedure ApplyFilterCore; override;
@@ -461,9 +465,11 @@ function TTreeFilterEdit.FilterTree(Node: TTreeNode): Boolean;
 // Returns True if Node or its siblings or child nodes have visible items.
 var
   Pass, Done: Boolean;
+  FilterLC: string;
 begin
   Result:=False;
   Done:=False;
+  FilterLC := UTF8LowerCase(Filter);
   while Node<>nil do
   begin
     // Call OnFilterItem handler.
@@ -473,7 +479,7 @@ begin
       Pass:=False;
     // Filter by item's title text if needed.
     if not (Pass or Done) then
-      Pass:=(Filter='') or (Pos(Filter,UTF8LowerCase(Node.Text))>0);
+      Pass:=(FilterLC='') or (Pos(FilterLC,UTF8LowerCase(Node.Text))>0);
     // Recursive call for child nodes.
     Node.Visible:=FilterTree(Node.GetFirstChild) or Pass;
     if Node.Visible then
@@ -578,6 +584,16 @@ begin
     end;
 end;
 
+procedure TTreeFilterEdit.MoveEnd(ASelect: Boolean);
+begin
+  fFilteredTreeview.MoveEnd(ASelect);
+end;
+
+procedure TTreeFilterEdit.MoveHome(ASelect: Boolean);
+begin
+  fFilteredTreeview.MoveHome(ASelect);
+end;
+
 function TTreeFilterEdit.GetCleanBranch(ARootNode: TTreeNode): TTreeFilterBranch;
 // Get a new or existing branch with data cleared for a given tree-node.
 begin
@@ -607,14 +623,24 @@ begin
     end;
 end;
 
-procedure TTreeFilterEdit.MoveNext;
+procedure TTreeFilterEdit.MoveNext(ASelect: Boolean);
 begin
-  fFilteredTreeview.MoveToNextNode;
+  fFilteredTreeview.MoveToNextNode(ASelect);
 end;
 
-procedure TTreeFilterEdit.MovePrev;
+procedure TTreeFilterEdit.MovePageDown(ASelect: Boolean);
 begin
-  fFilteredTreeview.MoveToPrevNode;
+  fFilteredTreeview.MovePageDown(ASelect);
+end;
+
+procedure TTreeFilterEdit.MovePageUp(ASelect: Boolean);
+begin
+  fFilteredTreeview.MovePageUp(ASelect);
+end;
+
+procedure TTreeFilterEdit.MovePrev(ASelect: Boolean);
+begin
+  fFilteredTreeview.MoveToPrevNode(ASelect);
 end;
 
 function TTreeFilterEdit.ReturnKeyHandled: Boolean;

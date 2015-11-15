@@ -933,6 +933,12 @@ begin
       ShowNode:=false;
     end;
 
+    //don't show child nodes of ctnUseUnit
+    if (CodeNode.Desc=ctnUseUnit)
+    then begin
+      ShowChilds:=false;
+    end;
+
     // don't show subs
     if CodeNode.Desc in [ctnConstant,ctnIdentifier,ctnRangedArrayType,
       ctnOpenArrayType,ctnOfConstType,ctnRangeType,ctnTypeType,ctnFileType,

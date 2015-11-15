@@ -9,7 +9,7 @@
       </Flags>
       <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
-      <Title Value="finddeclarationtest"/>
+      <Title Value="testcodetools"/>
       <UseAppBundle Value="False"/>
       <ResourceType Value="res"/>
     </General>
@@ -40,14 +40,15 @@
         <PackageName Value="fpcunitconsolerunner"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="9">
+    <Units Count="11">
       <Unit0>
-        <Filename Value="finddeclarationtest.lpr"/>
+        <Filename Value="testcodetools.lpr"/>
         <IsPartOfProject Value="True"/>
       </Unit0>
       <Unit1>
-        <Filename Value="fdtbase.pas"/>
+        <Filename Value="finddeclarationtests.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="FindDeclarationTests"/>
       </Unit1>
       <Unit2>
         <Filename Value="fdt_typehelper.pas"/>
@@ -77,12 +78,21 @@
         <Filename Value="fdt_with.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit8>
+      <Unit9>
+        <Filename Value="refactoringtests.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="RefactoringTests"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="rt_explodewith.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit10>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="11"/>
     <Target>
-      <Filename Value="finddeclarationtest"/>
+      <Filename Value="testcodetools"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>

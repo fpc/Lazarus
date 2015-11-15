@@ -67,7 +67,21 @@ type
                                    out CodeBuffer: Pointer): boolean; override;
     procedure AssignCodeToolBossError(Target: TCustomTextConverterTool); override;
   end;
-  
+
+  TLazIdentifierListItem = class(TIdentifierListItem)
+  private
+    FBeautified: Boolean;
+  public
+    procedure BeautifyIdentifier({%H-}IdentList: TIdentifierList); override;
+  end;
+
+  TLazUnitNameSpaceIdentifierListItem = class(TUnitNameSpaceIdentifierListItem)
+  private
+    FBeautified: Boolean;
+  public
+    procedure BeautifyIdentifier(IdentList: TIdentifierList); override;
+  end;
+
 procedure SetupTextConverters;
 procedure FreeTextConverters;
 
@@ -251,6 +265,7 @@ begin
         ACanvas.TextOut(x+1, y, 'PaintCompletionItem: BUG in codetools or misuse of PaintCompletionItem');
       exit;
     end;
+    IdentItem.BeautifyIdentifier(CodeToolBoss.IdentifierList);
     BackgroundColor:=ColorToRGB(ACanvas.Brush.Color);
     BGRed:=(BackgroundColor shr 16) and $ff;
     BGGreen:=(BackgroundColor shr 8) and $ff;
@@ -322,10 +337,16 @@ begin
         s:='label';
       end;
 
-    ctnUnit, ctnUseUnit:
+    ctnUnit, ctnUseUnitClearName:
       begin
         AColor:=clBlack;
         s:='unit';
+      end;
+
+    ctnUseUnitNamespace:
+      begin
+        AColor:=clBlack;
+        s:='namespace';
       end;
 
     ctnNone:
@@ -354,8 +375,6 @@ begin
     SetFontColor(ForegroundColor);
     ACanvas.Font.Style:=ACanvas.Font.Style+[fsBold];
     s:=IdentItem.Identifier;
-    with CodeToolBoss.SourceChangeCache.BeautifyCodeOptions do
-      WordExceptions.CheckExceptions(s);
     if MeasureOnly then
       Inc(Result.X, 1+ACanvas.TextWidth(s))
     else begin
@@ -540,19 +559,6 @@ begin
   end;
 end;
 
-function FindUnitName(IdentList: TIdentifierList;
-  IdentItem: TIdentifierListItem): string;
-var
-  CodeBuf: TCodeBuffer;
-begin
-  Result:=IdentItem.Identifier;
-  CodeBuf:=CodeToolBoss.FindUnitSource(IdentList.StartContextPos.Code,Result,'');
-  if CodeBuf=nil then exit;
-  Result:=CodeToolBoss.GetSourceName(CodeBuf,true);
-  if Result='' then
-    Result:=IdentItem.Identifier;
-end;
-
 function GetIdentCompletionValue(aCompletion : TSynCompletion;
   AddChar: TUTF8Char;
   out ValueType: TIdentComplValue; out CursorToLeft: integer): string;
@@ -571,7 +577,6 @@ var
   Indent: LongInt;
   StartContextPos: TCodeXYPosition;
   s: String;
-  IsWordPolicyExcept: Boolean;
 begin
   Result:='';
   CursorToLeft:=0;
@@ -586,6 +591,7 @@ begin
     exit;
   end;
 
+  IdentItem.BeautifyIdentifier(IdentList);
   CodeToolBoss.IdentItemCheckHasChilds(IdentItem);
 
   CanAddSemicolon:=CodeToolsOpts.IdentComplAddSemicolon and (AddChar<>';');
@@ -593,8 +599,6 @@ begin
   IsReadOnly:=false;
 
   Result:=IdentItem.Identifier;
-  with CodeToolBoss.SourceChangeCache.BeautifyCodeOptions do
-    IsWordPolicyExcept:=WordExceptions.CheckExceptions(Result);
 
   //debugln(['GetIdentCompletionValue IdentItem.GetDesc=',NodeDescriptionAsString(IdentItem.GetDesc),' IdentList.ContextFlags=',dbgs(IdentList.ContextFlags),' IdentItem.Node=',IdentItem.Node<>nil]);
 
@@ -617,17 +621,12 @@ begin
         IsReadOnly:=IdentItem.IsPropertyReadOnly;
       end;
 
-    ctnUnit, ctnPackage, ctnLibrary:
+    ctnUnit, ctnPackage, ctnLibrary, ctnUseUnitNamespace:
       ValueType:=icvUnitName;
   end;
 
   //Add the '&' character to prefixed identifiers
-  if (iliNeedsAmpersand in IdentItem.Flags) and
-     //check if there is already an '&' in front of this atom
-     ((IdentList.StartAtom.StartPos-1 > IdentList.StartContext.Tool.SrcLen) or  //StartPos-1 is out-of-scope
-      (IdentList.StartAtom.StartPos-1 < 1) or                                   //StartPos-1 is out-of-scope
-      (IdentList.StartContext.Tool.Src[IdentList.StartAtom.StartPos-1] <> '&')) //StartPos is in-scope and not &
-  then
+  if (iliNeedsAmpersand in IdentItem.Flags) then
     Result := '&' + Result;
 
   case ValueType of
@@ -699,10 +698,6 @@ begin
         //debugln(['GetIdentCompletionValue ',dbgstr(Result),' LineLen=',CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.LineLength]);
         CanAddSemicolon:=false;
       end;
-
-    icvUnitName:
-      if not IsWordPolicyExcept then
-        Result:=FindUnitName(IdentList,IdentItem);
   end;
 
   if CursorAtEnd then ;
@@ -739,7 +734,7 @@ begin
   end;
 
   if CodeToolsOpts.IdentComplAddSemicolon and
-     (IdentItem.GetDesc=ctnUseUnit) and (AddChar<>'.') and
+     (IdentItem.GetDesc in [ctnUseUnitNamespace,ctnUseUnitClearName]) and (AddChar<>'.') and
      not IdentList.StartUpAtomBehindIs('.')//check if there is already a point
   then
     Result+='.';
@@ -840,6 +835,50 @@ begin
   SynREEngine.ModifierStr:=ModifierStr;
   SynREEngine.Expression:=SeparatorRegExpr;
   SynREEngine.Split(TheText,Pieces);
+end;
+
+{ TLazIdentifierListItem }
+
+procedure TLazIdentifierListItem.BeautifyIdentifier(IdentList: TIdentifierList);
+begin
+  if FBeautified then
+    Exit;
+
+  CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.WordExceptions.CheckExceptions(Identifier);
+  FBeautified:=True;
+end;
+
+{ TLazUnitNameSpaceIdentifierListItem }
+
+procedure TLazUnitNameSpaceIdentifierListItem.BeautifyIdentifier(
+  IdentList: TIdentifierList);
+var
+  CodeBuf: TCodeBuffer;
+  LastPointPos: Integer;
+  NewIdentifier: string;
+begin
+  if FBeautified then
+    Exit;
+
+  NewIdentifier:=Identifier;
+  if not CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.WordExceptions.CheckExceptions(NewIdentifier) then
+  begin
+    CodeBuf:=CodeToolBoss.FindUnitSource(IdentList.StartContextPos.Code,FileUnitName,'');
+    if CodeBuf=nil then Exit;
+
+    NewIdentifier:=Copy(CodeToolBoss.GetSourceName(CodeBuf,true), IdentifierStartInUnitName, Length(Identifier));
+
+    if NewIdentifier='' then
+      NewIdentifier:=Identifier
+    else
+    begin
+      LastPointPos := LastDelimiter('.', NewIdentifier);
+      if LastPointPos > 0 then
+        NewIdentifier := Copy(NewIdentifier, LastPointPos+1, High(Integer));
+    end;
+  end;
+  Identifier := NewIdentifier;
+  FBeautified := True;
 end;
 
 { TLazTextConverterToolClasses }
@@ -964,6 +1003,8 @@ initialization
   REVarCountFunction:=@SynREVarCount;
   REReplaceProcedure:=@SynREReplace;
   RESplitFunction:=@SynRESplit;
+  CIdentifierListItem:=TLazIdentifierListItem;
+  CUnitNameSpaceIdentifierListItem:=TLazUnitNameSpaceIdentifierListItem;
 
 finalization
   FreeAndNil(SynREEngine);

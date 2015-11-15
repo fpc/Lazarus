@@ -44,7 +44,7 @@ begin
     R := UTF8ToUTF16(SUTF8);
 
     AssertEquals('UTF8ToUTF16 of unicode char: ' + IntToHex(U, 6) + ' error! ' + DbgWideStr(SUTF16) + ' ' + DbgWideStr(R),
-      SUTF16, R);
+      UTF8Encode(SUTF16), UTF8Encode(R));
   end;
   
   for I1 := 0 to High(Limits) do // test two char string with limit char values
@@ -60,7 +60,7 @@ begin
       
       AssertEquals('UTF8ToUTF16 of two unicode chars: ' +
         IntToHex(Limits[I1], 6) + IntToHex(Limits[I2], 6) + ' error!',
-        SUTF16, R);
+        UTF8Encode(SUTF16), UTF8Encode(R));
     end;
   end;
 end;
@@ -69,7 +69,7 @@ procedure TTestUnicode.TestUTF16ToUTF8;
 var
   U: Cardinal;
   I1, I2: Integer;
-  SUTF8, S1UTF8, R: UTF8String;
+  SUTF8, S1UTF8, R: String;
   SUTF16, S1UTF16: WideString;
 begin
   for U := 0 to $10FFFF do
@@ -80,7 +80,7 @@ begin
     SUTF16 := UnicodeToUTF16(U);
     R := UTF16ToUTF8(SUTF16);
 
-    AssertEquals('UTF16ToUTF8 of unicode char: ' + IntToHex(U, 6) + ' error! ' + DbgStr(SUTF16) + ' ' + DbgStr(R),
+    AssertEquals('UTF16ToUTF8 of unicode char: ' + IntToHex(U, 6) + ' error! "' + DbgStr(PChar(SUTF16),length(SUTF16)*2) + '" "' + DbgStr(R)+'"',
       SUTF8, R);
   end;
   
@@ -116,14 +116,21 @@ begin
 end;
 
 procedure TTestUnicode.TestUnicodeToUTF16;
+
+  procedure t(a,b: widestring);
+  begin
+    if a=b then exit;
+    AssertEquals(dbgstr(PChar(a),length(a)*2), dbgstr(PChar(b),length(b)*2));
+  end;
+
 begin
-  AssertEquals(#0, UnicodeToUTF16(0));
-  AssertEquals(#$D7FF, UnicodeToUTF16($D7FF));
-  AssertEquals(#$E000, UnicodeToUTF16($E000));
-  AssertEquals(#$FFFF, UnicodeToUTF16($FFFF));
-  AssertEquals(#$D800#$DC00, UnicodeToUTF16($10000));
-  AssertEquals(#$D800#$DC01, UnicodeToUTF16($10001));
-  AssertEquals(#$DBFF#$DFFD, UnicodeToUTF16($10FFFD));
+  t(widestring(#0), UnicodeToUTF16(0));
+  t(widestring(#$D7FF), UnicodeToUTF16($D7FF));
+  t(widestring(#$E000), UnicodeToUTF16($E000));
+  t(widestring(#$FFFF), UnicodeToUTF16($FFFF));
+  t(widestring(#$D800#$DC00), UnicodeToUTF16($10000));
+  t(widestring(#$D800#$DC01), UnicodeToUTF16($10001));
+  t(widestring(#$DBFF#$DFFD), UnicodeToUTF16($10FFFD));
 end;
 
 procedure TTestUnicode.TestUTF8CharacterToUnicode;

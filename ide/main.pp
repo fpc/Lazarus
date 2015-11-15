@@ -66,7 +66,7 @@ uses
   // CodeTools
   FileProcs, FindDeclarationTool, LinkScanner, BasicCodeTools, CodeToolsStructs,
   CodeToolManager, CodeCache, DefineTemplates, KeywordFuncLists, CodeTree,
-  StdCodeTools,
+  StdCodeTools, ChooseClassSectionDlg,
   // LazUtils
   // use lazutf8, lazfileutils and lazfilecache after FileProcs and FileUtil
   FileUtil, LazFileUtils, LazFileCache, LazUTF8, LazUTF8Classes, UTF8Process,
@@ -187,6 +187,7 @@ type
     procedure OIChangedTimerTimer(Sender: TObject);
     procedure LazInstancesStartNewInstance(const aFiles: TStrings;
       var Result: TStartNewInstanceResult);
+    procedure LazInstancesGetOpenedProjectFileName(var outProjectFileName: string);
   public
     // file menu
     procedure mnuNewUnitClicked(Sender: TObject);
@@ -376,13 +377,22 @@ type
     // see helpmanager.pas
 
     // Handlers to update commands. Can disable sub-items etc.
+  private
+    UpdateFileCommandsStamp: TFileCommandsStamp;
+    UpdateProjectCommandsStamp: TProjectCommandsStamp;
+    UpdateEditorCommandsStamp: TSourceEditorCommandsStamp;
+    UpdateEditorTabCommandsStamp: TSourceEditorTabCommandsStamp;
+    UpdatePackageCommandsStamp: TPackageCommandsStamp;
+    UpdateBookmarkCommandsStamp: TBookmarkCommandsStamp;
+    BookmarksStamp: Int64;
+  public
     procedure UpdateMainIDECommands(Sender: TObject);
-    procedure UpdateFileMenu(Sender: TObject);      // file menu
-    procedure UpdateEditMenu(Sender: TObject);      // edit menu
-    procedure UpdateSourceMenu(Sender: TObject);    // source menu
-    procedure UpdateProjectMenu(Sender: TObject);   // project menu
-    procedure UpdateRunMenu(Sender: TObject);       // run menu
-    procedure UpdatePackageMenu(Sender: TObject);   // package menu
+    procedure UpdateFileCommands(Sender: TObject);
+    procedure UpdateEditorCommands(Sender: TObject);
+    procedure UpdateBookmarkCommands(Sender: TObject);
+    procedure UpdateEditorTabCommands(Sender: TObject);
+    procedure UpdateProjectCommands(Sender: TObject);
+    procedure UpdatePackageCommands(Sender: TObject);
     // see pkgmanager.pas
 
     procedure mnuChgBuildModeClicked(Sender: TObject);
@@ -390,6 +400,7 @@ type
   private
     fBuilder: TLazarusBuilder;
     function DoBuildLazarusSub(Flags: TBuildLazarusFlags): TModalResult;
+    procedure ProjectOptionsHelper(AFilter: array of TAbstractIDEOptionsClass);
     // Global IDE events
     procedure HandleProcessIDECommand(Sender: TObject; Command: word;
                                   var Handled: boolean);
@@ -411,9 +422,9 @@ type
     // Environment options dialog events
     procedure DoLoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
     procedure DoSaveIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
-    procedure DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass;
+    function DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass;
       ACaption: String; AOptionsFilter: array of TAbstractIDEOptionsClass;
-      ASettings: TIDEOptionsEditorSettings); override;
+      ASettings: TIDEOptionsEditorSettings): Boolean; override;
 
     procedure DoEnvironmentOptionsBeforeRead(Sender: TObject);
     procedure DoEnvironmentOptionsBeforeWrite(Sender: TObject; Restore: boolean);
@@ -592,7 +603,7 @@ type
     procedure OnCodeBufferDecodeLoaded({%H-}Code: TCodeBuffer;
          const Filename: string; var Source, DiskEncoding, MemEncoding: string);
     procedure OnCodeBufferEncodeSaving(Code: TCodeBuffer;
-                                    const {%H-}Filename: string; var Source: string);
+                                    const Filename: string; var Source: string);
     function OnCodeToolBossGetMethodName(const Method: TMethod;
                                          PropOwner: TObject): String;
     procedure CodeToolBossPrepareTree(Sender: TObject);
@@ -907,9 +918,10 @@ type
     function DoConvertDelphiPackage(const DelphiFilename: string): TModalResult;
 
     // message view
+    function GetSelectedCompilerMessage: TMessageLine; override;
     function DoJumpToCompilerMessage(FocusEditor: boolean; Msg: TMessageLine = nil
       ): boolean; override;
-    procedure DoJumpToNextError(DirectionDown: boolean); override;
+    procedure DoJumpToNextCompilerMessage(aMinUrgency: TMessageLineUrgency; DirectionDown: boolean); override;
     procedure DoShowMessagesView(BringToFront: boolean = true); override;
 
     // methods for debugging, compiling and external tools
@@ -973,9 +985,6 @@ begin
     AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
   end;
 end;
-
-//==============================================================================
-
 
 { TMainIDE }
 
@@ -1569,8 +1578,8 @@ begin
   fUserInputSinceLastIdle:=true; // Idle work gets done initially before user action.
   MainIDEBar.ApplicationIsActivate:=true;
   IDECommandList.AddCustomUpdateEvent(@UpdateMainIDECommands);
-  LazIDEInstances.StartListening(@LazInstancesStartNewInstance);
-  IDECommandList.StartUpdateTimer;
+  LazIDEInstances.StartListening(@LazInstancesStartNewInstance, @LazInstancesGetOpenedProjectFileName);
+  IDECommandList.StartUpdateEvents;
   FIDEStarted:=true;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.StartIDE END');{$ENDIF}
 end;
@@ -1966,7 +1975,7 @@ procedure TMainIDE.MainIDEFormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   LazIDEInstances.StopServer;
-  IDECommandList.StopUpdateTimer;
+  IDECommandList.StopUpdateEvents;
   DoCallNotifyHandler(lihtIDEClose);
   SaveEnvironment(true);
   if IDEDockMaster<>nil then
@@ -2221,10 +2230,10 @@ begin
 
   // try loading last project if lazarus didn't fail last time
   if (not ProjectLoaded)
-  and (LazIDEInstances.AllowOpenLastProject)
   and (not SkipAutoLoadingLastProject)
   and (EnvironmentOptions.OpenLastProjectAtStart)
   and (EnvironmentOptions.LastSavedProjectFile<>'')
+  and (not LazIDEInstances.ProjectIsOpenInAnotherInstance(EnvironmentOptions.LastSavedProjectFile))
   and (EnvironmentOptions.LastSavedProjectFile<>RestoreProjectClosed)
   and (FileExistsCached(EnvironmentOptions.LastSavedProjectFile))
   then begin
@@ -2522,7 +2531,6 @@ end;
 procedure TMainIDE.SetupFileMenu;
 begin
   inherited SetupFileMenu;
-  mnuFile.OnClick:=@UpdateFileMenu;
   with MainIDEBar do begin
     itmFileNewUnit.OnClick := @mnuNewUnitClicked;
     itmFileNewForm.OnClick := @mnuNewFormClicked;
@@ -2547,7 +2555,6 @@ end;
 procedure TMainIDE.SetupEditMenu;
 begin
   inherited SetupEditMenu;
-  mnuEdit.OnClick:=@UpdateEditMenu;
   with MainIDEBar do begin
     itmEditUndo.OnClick:=@mnuEditUndoClicked;
     itmEditRedo.OnClick:=@mnuEditRedoClicked;
@@ -2611,7 +2618,6 @@ end;
 procedure TMainIDE.SetupSourceMenu;
 begin
   inherited SetupSourceMenu;
-  mnuSource.OnClick:=@UpdateSourceMenu;
   with MainIDEBar do begin
     itmSourceCommentBlock.OnClick:=@mnuSourceCommentBlockClicked;
     itmSourceUncommentBlock.OnClick:=@mnuSourceUncommentBlockClicked;
@@ -2669,7 +2675,6 @@ end;
 procedure TMainIDE.SetupProjectMenu;
 begin
   inherited SetupProjectMenu;
-  mnuProject.OnClick:=@UpdateProjectMenu;
   with MainIDEBar do begin
     itmProjectNew.OnClick := @mnuNewProjectClicked;
     itmProjectNewFromFile.OnClick := @mnuNewProjectFromFileClicked;
@@ -2693,7 +2698,6 @@ end;
 procedure TMainIDE.SetupRunMenu;
 begin
   inherited SetupRunMenu;
-  mnuRun.OnClick:=@UpdateRunMenu;
   with MainIDEBar do begin
     itmRunMenuCompile.OnClick := @mnuCompileProjectClicked;
     itmRunMenuBuild.OnClick := @mnuBuildProjectClicked;
@@ -2721,7 +2725,6 @@ end;
 procedure TMainIDE.SetupPackageMenu;
 begin
   inherited SetupPackageMenu;
-  mnuPackage.OnClick:=@UpdatePackageMenu;
 end;
 
 procedure TMainIDE.SetupToolsMenu;
@@ -3390,11 +3393,6 @@ end;
 
 {------------------------------------------------------------------------------}
 
-procedure TMainIDE.mnuChgBuildModeClicked(Sender: TObject);
-begin
-  DoOpenIDEOptions(TCompilerPathOptionsFrame, '', [TProjectCompilerOptions], []);
-end;
-
 function TMainIDE.CreateDesignerForComponent(AnUnitInfo: TUnitInfo;
   AComponent: TComponent): TCustomForm;
 var
@@ -3575,95 +3573,58 @@ end;
 
 {------------------------------------------------------------------------------}
 
-procedure TMainIDE.UpdateFileMenu(Sender: TObject);
+procedure TMainIDE.UpdateFileCommands(Sender: TObject);
 var
   ASrcEdit: TSourceEditor;
   AnUnitInfo: TUnitInfo;
 begin
   GetCurrentUnit(ASrcEdit,AnUnitInfo);
-  with MainIDEBar do begin
-    itmFileClose.Enabled := ASrcEdit<>nil;
-    itmFileCloseAll.Enabled := ASrcEdit<>nil;
-  end;
+  if not UpdateFileCommandsStamp.Changed(ASrcEdit) then
+    Exit;
+
+  IDECommandList.FindIDECommand(ecClose).Enabled := ASrcEdit<>nil;
+  IDECommandList.FindIDECommand(ecCloseAll).Enabled := ASrcEdit<>nil;
 end;
 
 procedure TMainIDE.UpdateMainIDECommands(Sender: TObject);
 begin
-  UpdateFileMenu(Sender);
-  UpdateEditMenu(Sender);
-  UpdateSourceMenu(Sender);
-  UpdateProjectMenu(Sender);
-  UpdateRunMenu(Sender);
-  UpdatePackageMenu(Sender);
+  UpdateFileCommands(Sender);
+  UpdateEditorCommands(Sender);
+  UpdateBookmarkCommands(Sender);
+  UpdateEditorTabCommands(Sender);
+  UpdateProjectCommands(Sender);
+  UpdatePackageCommands(Sender);
 end;
 
-procedure TMainIDE.UpdateEditMenu(Sender: TObject);
+procedure TMainIDE.UpdateEditorCommands(Sender: TObject);
 var
   ASrcEdit: TSourceEditor;
   AnUnitInfo: TUnitInfo;
   Editable: Boolean;
   SelAvail: Boolean;
   SelEditable: Boolean;
-  SrcEditorActive, DsgEditorActive: Boolean;
+  SrcEditorActive, DsgEditorActive, StringFound, IdentFound: Boolean;
   ActiveDesigner: TComponentEditorDesigner;
+  xAttr: TSynHighlighterAttributes;
+  xToken, CurWordAtCursor: string;
 begin
   GetCurrentUnit(ASrcEdit, AnUnitInfo);
+  if not UpdateEditorCommandsStamp.Changed(ASrcEdit, DisplayState) then
+    Exit;
+
   Editable := Assigned(ASrcEdit) and not ASrcEdit.ReadOnly;
   SelAvail := Assigned(ASrcEdit) and ASrcEdit.SelectionAvailable;
   SelEditable := Editable and SelAvail;
   SrcEditorActive := DisplayState = dsSource;
   DsgEditorActive := DisplayState = dsForm;
   ActiveDesigner := GetActiveDesignerSkipMainBar;
-  with MainIDEBar do
-  begin
-    if Assigned(ActiveDesigner) then
-    begin
-      // activate them when Designer start to support Undo/Redo
-      itmEditUndo.Enabled := DsgEditorActive and ActiveDesigner.CanUndo; {and not ActiveDesigner.ReadOnly}
-      itmEditRedo.Enabled := DsgEditorActive and ActiveDesigner.CanRedo; {and not ActiveDesigner.ReadOnly}
-      itmEditCut.Enabled := ActiveDesigner.CanCopy;
-      itmEditCopy.Enabled := itmEditCut.Enabled;
-      itmEditPaste.Enabled := ActiveDesigner.CanPaste;
-    end
-    else
-    begin
-      itmEditUndo.Enabled := Editable and SrcEditorActive and ASrcEdit.EditorComponent.CanUndo;
-      itmEditRedo.Enabled := Editable and SrcEditorActive and ASrcEdit.EditorComponent.CanRedo;
-      itmEditCut.Enabled := SelEditable;
-      itmEditCopy.Enabled := SelAvail;
-      itmEditPaste.Enabled := Editable;
-    end;
-  //itmEditSelect: TIDEMenuSection; [...]
-  //itmEditBlockActions: TIDEMenuSection;
-    itmEditIndentBlock.Enabled := Editable;
-    itmEditUnindentBlock.Enabled := Editable;
-    itmEditUpperCaseBlock.Enabled := SelEditable;
-    itmEditLowerCaseBlock.Enabled := SelEditable;
-    itmEditSwapCaseBlock.Enabled := SelEditable;
-    itmEditSortBlock.Enabled := SelEditable;
-    itmEditTabsToSpacesBlock.Enabled := SelEditable;
-    itmEditSelectionBreakLines.Enabled := SelEditable;
-    itmEditInsertCharacter.Enabled := Editable;
-  end;
-end;
 
-procedure TMainIDE.UpdateSourceMenu(Sender: TObject);
-var
-  ASrcEdit: TSourceEditor;
-  AnUnitInfo: TUnitInfo;
-  Editable, SelEditable, SelAvail, IdentFound, StringFound: Boolean;
-  xToken: string;
-  xAttr: TSynHighlighterAttributes;
-begin
-  Editable:=False;
-  SelAvail:=False;
-  StringFound:=False;
-  IdentFound:=False;
-  GetCurrentUnit(ASrcEdit,AnUnitInfo);
+  StringFound := False;
+  IdentFound := False;
+  CurWordAtCursor := '';
   if ASrcEdit<>nil then
   begin
-    Editable:=not ASrcEdit.ReadOnly;
-    SelAvail:=ASrcEdit.SelectionAvailable;
+    CurWordAtCursor := ASrcEdit.GetWordAtCurrentCaret;
     //it is faster to get information from SynEdit than from CodeTools
     if ASrcEdit.EditorComponent.GetHighlighterAttriAtRowCol(ASrcEdit.EditorComponent.CaretXY, xToken, xAttr) then
     begin
@@ -3671,70 +3632,162 @@ begin
       IdentFound := xAttr = ASrcEdit.EditorComponent.Highlighter.IdentifierAttribute;
     end;
   end;
-  SelEditable:=Editable and SelAvail;
-  with MainIDEBar do begin
-  //itmSourceBlockActions
-    itmSourceCommentBlock.Enabled:=SelEditable;
-    itmSourceUncommentBlock.Enabled:=SelEditable;
-    itmSourceEncloseBlock.Enabled:=SelEditable;
-    itmSourceEncloseInIFDEF.Enabled:=SelEditable;
-    itmSourceCompleteCode.Enabled:=Editable;
-    itmSourceUseUnit.Enabled:=Editable;
-  //itmSourceInsertions
-    //itmSourceInsertCVSKeyWord
-      itmSourceInsertCVSAuthor.Enabled:=Editable;
-      itmSourceInsertCVSDate.Enabled:=Editable;
-      itmSourceInsertCVSHeader.Enabled:=Editable;
-      itmSourceInsertCVSID.Enabled:=Editable;
-      itmSourceInsertCVSLog.Enabled:=Editable;
-      itmSourceInsertCVSName.Enabled:=Editable;
-      itmSourceInsertCVSRevision.Enabled:=Editable;
-      itmSourceInsertCVSSource.Enabled:=Editable;
-    //itmSourceInsertGeneral
-      itmSourceInsertGPLNotice.Enabled:=Editable;
-      itmSourceInsertGPLNoticeTranslated.Visible:=
-                                  Editable and (EnglishGPLNotice<>lisGPLNotice);
-      itmSourceInsertLGPLNotice.Enabled:=Editable;
-      itmSourceInsertLGPLNoticeTranslated.Visible:=
-                                Editable and (EnglishLGPLNotice<>lisLGPLNotice);
-      itmSourceInsertModifiedLGPLNotice.Enabled:=Editable;
-      itmSourceInsertModifiedLGPLNoticeTranslated.Visible:=
-                Editable and (EnglishModifiedLGPLNotice<>lisModifiedLGPLNotice);
-      itmSourceInsertMITNotice.Enabled:=Editable;
-      itmSourceInsertMITNoticeTranslated.Visible:=
-                                  Editable and (EnglishMITNotice<>lisMITNotice);
-      itmSourceInsertUsername.Enabled:=Editable;
-      itmSourceInsertDateTime.Enabled:=Editable;
-      itmSourceInsertChangeLogEntry.Enabled:=Editable;
-  //itmSourceRefactor
-    //itmRefactorCodeTools
-      itmRefactorRenameIdentifier.Enabled:=Editable and IdentFound;
-      itmRefactorExtractProc.Enabled:=Editable and SelAvail;
-      itmRefactorInvertAssignment.Enabled:=Editable and SelAvail;
-    //itmRefactorAdvanced
-      itmRefactorMakeResourceString.Enabled:=Editable and StringFound;
+
+  if Assigned(ActiveDesigner) then
+  begin
+    IDECommandList.FindIDECommand(ecUndo).Enabled := DsgEditorActive and ActiveDesigner.CanUndo; {and not ActiveDesigner.ReadOnly}
+    IDECommandList.FindIDECommand(ecRedo).Enabled := DsgEditorActive and ActiveDesigner.CanRedo; {and not ActiveDesigner.ReadOnly}
+    IDECommandList.FindIDECommand(ecCut).Enabled := ActiveDesigner.CanCopy;
+    IDECommandList.FindIDECommand(ecCopy).Enabled := ActiveDesigner.CanCopy;
+    IDECommandList.FindIDECommand(ecPaste).Enabled := ActiveDesigner.CanPaste;
+    IDECommandList.FindIDECommand(ecSelectAll).Enabled := Assigned(ActiveDesigner.Form) and (ActiveDesigner.Form.ComponentCount>0);
+  end
+  else
+  begin
+    IDECommandList.FindIDECommand(ecUndo).Enabled := Editable and SrcEditorActive and Assigned(ASrcEdit) and ASrcEdit.EditorComponent.CanUndo;
+    IDECommandList.FindIDECommand(ecRedo).Enabled := Editable and SrcEditorActive and Assigned(ASrcEdit) and ASrcEdit.EditorComponent.CanRedo;
+    IDECommandList.FindIDECommand(ecCut).Enabled := SelEditable;
+    IDECommandList.FindIDECommand(ecCopy).Enabled := SelAvail;
+    IDECommandList.FindIDECommand(ecPaste).Enabled := Editable;
+    IDECommandList.FindIDECommand(ecSelectAll).Enabled := Assigned(ASrcEdit) and (ASrcEdit.SourceText<>'');
   end;
+
+  IDECommandList.FindIDECommand(ecBlockIndent).Enabled := Editable;
+  IDECommandList.FindIDECommand(ecBlockUnindent).Enabled := Editable;
+  IDECommandList.FindIDECommand(ecSelectionUpperCase).Enabled := SelEditable;
+  IDECommandList.FindIDECommand(ecSelectionLowerCase).Enabled := SelEditable;
+  IDECommandList.FindIDECommand(ecSelectionSwapCase).Enabled := SelEditable;
+  IDECommandList.FindIDECommand(ecSelectionSort).Enabled := SelEditable;
+  IDECommandList.FindIDECommand(ecSelectionTabs2Spaces).Enabled := SelEditable;
+  IDECommandList.FindIDECommand(ecSelectionBreakLines).Enabled := SelEditable;
+  IDECommandList.FindIDECommand(ecSelectionComment).Enabled := SelEditable;
+  IDECommandList.FindIDECommand(ecSelectionUnComment).Enabled := SelEditable;
+  IDECommandList.FindIDECommand(ecSelectionEnclose).Enabled := SelEditable;
+  IDECommandList.FindIDECommand(ecSelectionEncloseIFDEF).Enabled := SelEditable;
+
+  IDECommandList.FindIDECommand(ecInsertCharacter).Enabled := Editable;
+  IDECommandList.FindIDECommand(ecCompleteCode).Enabled := Editable;
+  IDECommandList.FindIDECommand(ecUseUnit).Enabled := Editable;
+
+  IDECommandList.FindIDECommand(ecInsertCVSAuthor).Enabled := Editable;
+  IDECommandList.FindIDECommand(ecInsertCVSDate).Enabled := Editable;
+  IDECommandList.FindIDECommand(ecInsertCVSHeader).Enabled := Editable;
+  IDECommandList.FindIDECommand(ecInsertCVSID).Enabled := Editable;
+  IDECommandList.FindIDECommand(ecInsertCVSLog).Enabled := Editable;
+  IDECommandList.FindIDECommand(ecInsertCVSName).Enabled := Editable;
+  IDECommandList.FindIDECommand(ecInsertCVSRevision).Enabled := Editable;
+  IDECommandList.FindIDECommand(ecInsertCVSSource).Enabled := Editable;
+  IDECommandList.FindIDECommand(ecInsertGPLNotice).Enabled := Editable;
+  IDECommandList.FindIDECommand(ecInsertGPLNoticeTranslated).Visible := Editable and (EnglishGPLNotice<>lisGPLNotice);
+  IDECommandList.FindIDECommand(ecInsertLGPLNotice).Enabled := Editable;
+  IDECommandList.FindIDECommand(ecInsertLGPLNoticeTranslated).Visible := Editable and (EnglishLGPLNotice<>lisLGPLNotice);
+  IDECommandList.FindIDECommand(ecInsertModifiedLGPLNotice).Enabled := Editable;
+  IDECommandList.FindIDECommand(ecInsertModifiedLGPLNoticeTranslated).Visible := Editable and (EnglishModifiedLGPLNotice<>lisModifiedLGPLNotice);
+  IDECommandList.FindIDECommand(ecInsertMITNotice).Enabled := Editable;
+  IDECommandList.FindIDECommand(ecInsertMITNoticeTranslated).Visible := Editable and (EnglishMITNotice<>lisMITNotice);
+  IDECommandList.FindIDECommand(ecInsertUserName).Enabled := Editable;
+  IDECommandList.FindIDECommand(ecInsertDateTime).Enabled := Editable;
+  IDECommandList.FindIDECommand(ecInsertChangeLogEntry).Enabled := Editable;
+
+  IDECommandList.FindIDECommand(ecRenameIdentifier).Enabled := Editable and IdentFound;
+  IDECommandList.FindIDECommand(ecExtractProc).Enabled := SelEditable;
+  IDECommandList.FindIDECommand(ecInvertAssignment).Enabled := SelEditable;
+  IDECommandList.FindIDECommand(ecMakeResourceString).Enabled := Editable and StringFound;
+  IDECommandList.FindIDECommand(ecFindIdentifierRefs).Enabled := IdentFound;
+  IDECommandList.FindIDECommand(ecFindUsedUnitRefs).Enabled := IdentFound;
+  IDECommandList.FindIDECommand(ecFindOverloads).Enabled := IdentFound;
+  IDECommandList.FindIDECommand(ecShowAbstractMethods).Enabled := Editable;
+  IDECommandList.FindIDECommand(ecRemoveEmptyMethods).Enabled := Editable;
+
+  IDECommandList.FindIDECommand(ecFindDeclaration).Enabled := CurWordAtCursor<>'';
+  if CurWordAtCursor<>'' then
+    IDECommandList.FindIDECommand(ecFindDeclaration).Caption :=
+      Format(lisFindDeclarationOf, [CurWordAtCursor])
+  else
+    IDECommandList.FindIDECommand(ecFindDeclaration).Caption :=
+      uemFindDeclaration;
 end;
 
-procedure TMainIDE.UpdateProjectMenu(Sender: TObject);
+procedure TMainIDE.UpdateEditorTabCommands(Sender: TObject);
+var
+  ASrcEdit: TSourceEditor;
+  AnUnitInfo: TUnitInfo;
+
+  {$IFnDEF SingleSrcWindow}
+  function ToWindow(WinForFind: Boolean = False): Boolean;
+  var
+    i, ThisWin, SharedEditor: Integer;
+    nb: TSourceNotebook;
+  begin
+    Result := False;
+    if ASrcEdit=nil then
+      Exit;
+    ThisWin := SourceEditorManager.IndexOfSourceWindow(ASrcEdit.SourceNotebook);
+    for i := 0 to SourceEditorManager.SourceWindowCount - 1 do begin
+      nb:=SourceEditorManager.SourceWindows[i];
+      SharedEditor:=nb.IndexOfEditorInShareWith(ASrcEdit);
+      if (i <> ThisWin) and ((SharedEditor < 0) <> WinForFind) then begin
+        Result := True;
+        Break;
+      end;
+    end;
+  end;
+  {$ENDIF}
+
+var
+  NBAvail: Boolean;
+  PageIndex, PageCount: Integer;
+begin
+  GetCurrentUnit(ASrcEdit, AnUnitInfo);
+  if not UpdateEditorTabCommandsStamp.Changed(ASrcEdit) then
+    Exit;
+
+  if Assigned(ASrcEdit) then
+  begin
+    PageIndex := ASrcEdit.SourceNotebook.PageIndex;
+    PageCount := ASrcEdit.SourceNotebook.PageCount;
+  end else
+  begin
+    PageIndex := 0;
+    PageCount := 0;
+  end;
+
+  {$IFnDEF SingleSrcWindow}
+  SrcEditMenuEditorLock.Checked := Assigned(ASrcEdit) and ASrcEdit.IsLocked;       // Editor locks
+  // Multi win
+  NBAvail := ToWindow();
+  SrcEditMenuMoveToNewWindow.Visible := not NBAvail;
+  SrcEditMenuMoveToNewWindow.Enabled := PageCount > 1;
+  SrcEditMenuMoveToOtherWindow.Visible := NBAvail;
+  SrcEditMenuMoveToOtherWindowNew.Enabled := PageCount > 1;
+
+  SrcEditMenuCopyToNewWindow.Visible := not NBAvail;
+  SrcEditMenuCopyToOtherWindow.Visible := NBAvail;
+
+  SrcEditMenuFindInOtherWindow.Enabled := NBAvail;
+  {$ENDIF}
+
+  // editor layout
+  SrcEditMenuMoveEditorLeft.Enabled:= (PageCount>1);
+  SrcEditMenuMoveEditorRight.Enabled:= (PageCount>1);
+  SrcEditMenuMoveEditorFirst.Enabled:= (PageCount>1) and (PageIndex>0);
+  SrcEditMenuMoveEditorLast.Enabled:= (PageCount>1) and (PageIndex<(PageCount-1));
+end;
+
+procedure TMainIDE.UpdateProjectCommands(Sender: TObject);
 var
   ASrcEdit: TSourceEditor;
   AUnitInfo: TUnitInfo;
-  NotPartOfProj: Boolean;
 begin
   GetCurrentUnit(ASrcEdit,AUnitInfo);
-  NotPartOfProj:=Assigned(AUnitInfo) and not AUnitInfo.IsPartOfProject;
-  MainIDEBar.itmProjectAddTo.Enabled:=NotPartOfProj;
+  if not UpdateProjectCommandsStamp.Changed(AUnitInfo) then
+    Exit;
+
+  IDECommandList.FindIDECommand(ecAddCurUnitToProj).Enabled:=Assigned(AUnitInfo) and not AUnitInfo.IsPartOfProject;
+  IDECommandList.FindIDECommand(ecBuildManyModes).Enabled:=Project1.BuildModes.Count>1;
 end;
 
-procedure TMainIDE.UpdateRunMenu(Sender: TObject);
-begin
-  with MainIDEBar do begin
-    itmRunMenuBuildManyModes.Enabled:=Project1.BuildModes.Count>1;
-  end;
-end;
-
-procedure TMainIDE.UpdatePackageMenu(Sender: TObject);
+procedure TMainIDE.UpdatePackageCommands(Sender: TObject);
 var
   ASrcEdit: TSourceEditor;
   AUnitInfo: TUnitInfo;
@@ -3742,6 +3795,13 @@ var
   CanOpenPkgOfFile, CanAddCurFile: Boolean;
 begin
   GetCurrentUnit(ASrcEdit,AUnitInfo);
+  if Assigned(AUnitInfo) then
+  else
+    PkgFile := nil;
+
+  if not UpdatePackageCommandsStamp.Changed(AUnitInfo) then
+    Exit;
+
   if Assigned(AUnitInfo) then
   begin
     PkgFile:=PackageGraph.FindFileInAllPackages(AUnitInfo.Filename,true,
@@ -3925,16 +3985,38 @@ begin
   OpenMainUnit(-1,-1,[]);
 end;
 
-procedure TMainIDE.mnuProjectOptionsClicked(Sender: TObject);
+procedure TMainIDE.ProjectOptionsHelper(AFilter: array of TAbstractIDEOptionsClass);
+var
+  Capt: String;
 begin
   if Project1=nil then exit;
-  DoOpenIDEOptions(nil, Format(dlgProjectOptionsFor, [Project1.GetTitleOrName]),
-    [TProjectIDEOptions, TProjectCompilerOptions], []);
+  // This is kind of a hack. Copy OtherDefines from project to current
+  //  buildmode's compiler options and then back after they are modified.
+  // Only needed for projects, packages don't have buildmodes.
+  Project1.CompilerOptions.OtherDefines.Assign(Project1.OtherDefines);
+
+  Capt := Format(dlgProjectOptionsFor, [Project1.GetTitleOrName]);
+  if DoOpenIDEOptions(nil, Capt, AFilter, [])
+  and not Project1.OtherDefines.Equals(Project1.CompilerOptions.OtherDefines) then
+  begin
+    Project1.OtherDefines.Assign(Project1.CompilerOptions.OtherDefines);
+    Project1.Modified:=True;
+  end;
+end;
+
+procedure TMainIDE.mnuProjectOptionsClicked(Sender: TObject);
+begin
+  ProjectOptionsHelper([TProjectIDEOptions, TProjectCompilerOptions]);
+end;
+
+procedure TMainIDE.mnuChgBuildModeClicked(Sender: TObject);
+begin
+  ProjectOptionsHelper([TProjectCompilerOptions]);
 end;
 
 procedure TMainIDE.mnuBuildModeClicked(Sender: TObject);
 begin
-  DoOpenIDEOptions(TCompilerPathOptionsFrame, '', [TProjectCompilerOptions], []);
+  ProjectOptionsHelper([TProjectCompilerOptions]);
 end;
 
 function TMainIDE.UpdateProjectPOFile(AProject: TProject): TModalResult;
@@ -4476,9 +4558,9 @@ begin
     SaveDesktopSettings(AOptions as TEnvironmentOptions);
 end;
 
-procedure TMainIDE.DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass;
+function TMainIDE.DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass;
   ACaption: String; AOptionsFilter: array of TAbstractIDEOptionsClass;
-  ASettings: TIDEOptionsEditorSettings);
+  ASettings: TIDEOptionsEditorSettings): Boolean;
 var
   IDEOptionsDialog: TIDEOptionsDialog;
   OptionsFilter: TIDEOptionsEditorFilter;
@@ -4496,8 +4578,7 @@ begin
       else
         OptionsFilter[0] := TAbstractIDEEnvironmentOptions;
     end
-    else
-    begin
+    else begin
       SetLength(OptionsFilter, Length(AOptionsFilter));
       for i := 0 to Length(AOptionsFilter) - 1 do
         OptionsFilter[i] := AOptionsFilter[i];
@@ -4508,17 +4589,16 @@ begin
     IDEOptionsDialog.OnLoadIDEOptionsHook:=@DoLoadIDEOptions;
     IDEOptionsDialog.OnSaveIDEOptionsHook:=@DoSaveIDEOptions;
     IDEOptionsDialog.ReadAll;
-    if IDEOptionsDialog.ShowModal = mrOk then begin
-      IDEOptionsDialog.WriteAll(false);
-      DebugLn(['TMainIDE.DoOpenIDEOptions: Options saved, updating Palette and TaskBar.']);
+    Result := IDEOptionsDialog.ShowModal = mrOk;
+    IDEOptionsDialog.WriteAll(not Result);    // Restore if user cancelled.
+    if Result then
+    begin
+      DebugLn(['TMainIDE.DoOpenIDEOptions: Options saved, updating TaskBar.']);
       // Update TaskBarBehavior immediately.
       if EnvironmentOptions.Desktop.SingleTaskBarButton then
         Application.TaskBarBehavior := tbSingleButton
       else
         Application.TaskBarBehavior := tbDefault;
-    end else begin
-      // restore
-      IDEOptionsDialog.WriteAll(true);
     end;
   finally
     IDEOptionsDialog.Free;
@@ -5622,7 +5702,7 @@ begin
     CodeExplorerView.OnJumpToCode:=@OnCodeExplorerJumpToCode;
     CodeExplorerView.OnShowOptions:=@OnCodeExplorerShowOptions;
   end else if State=iwgfDisabled then
-    CodeExplorerView.DisableAutoSizing;
+    CodeExplorerView.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.DoShowCodeExplorer'){$ENDIF};
 
   if State>=iwgfShow then begin
     IDEWindowCreators.ShowForm(CodeExplorerView,State=iwgfShowOnTop);
@@ -5662,7 +5742,7 @@ begin
     IDEWindowCreators.CreateForm(RestrictionBrowserView,TRestrictionBrowserView,
       State=iwgfDisabled,OwningComponent)
   else if State=iwgfDisabled then
-    RestrictionBrowserView.DisableAutoSizing;
+    RestrictionBrowserView.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.DoShowRestrictionBrowser'){$ENDIF};
 
   RestrictionBrowserView.SetIssueName(RestrictedName);
   if State>=iwgfShow then
@@ -5676,7 +5756,7 @@ begin
     IDEWindowCreators.CreateForm(ComponentListForm,TComponentListForm,
        State=iwgfDisabled,OwningComponent);
   end else if State=iwgfDisabled then
-    ComponentListForm.DisableAutoSizing;
+    ComponentListForm.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.DoShowComponentList'){$ENDIF};
   if State>=iwgfShow then
     IDEWindowCreators.ShowForm(ComponentListForm,State=iwgfShowOnTop);
 end;
@@ -5688,7 +5768,7 @@ begin
       State=iwgfDisabled,OwningComponent);
     JumpHistoryViewWin.OnSelectionChanged := @JumpHistoryViewSelectionChanged;
   end else if State=iwgfDisabled then
-    JumpHistoryViewWin.DisableAutoSizing;
+    JumpHistoryViewWin.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.DoShowJumpHistory'){$ENDIF};
   if State>=iwgfShow then
     IDEWindowCreators.ShowForm(JumpHistoryViewWin,State=iwgfShowOnTop);
 end;
@@ -7927,6 +8007,42 @@ begin
     Application.BringToFront;
 end;
 
+procedure TMainIDE.UpdateBookmarkCommands(Sender: TObject);
+var
+  se: TSourceEditor;
+  MarkDesc: string;
+  MarkComand: TIDECommand;
+  BookMarkID, i, BookMarkX, BookMarkY: Integer;
+  BookmarkAvail: Boolean;
+begin
+  if not UpdateBookmarkCommandsStamp.Changed(BookmarksStamp) then
+    Exit;
+
+  for BookMarkID:=0 to 9 do begin
+    MarkDesc:=' '+IntToStr(BookMarkID);
+    BookmarkAvail:=False;
+    i := 0;
+    while i < SourceEditorManager.SourceEditorCount do begin
+      se:=SourceEditorManager.SourceEditors[i];
+      BookMarkX:=0; BookMarkY:=0;
+      if se.EditorComponent.GetBookMark(BookMarkID,BookMarkX,BookMarkY) then
+      begin
+        MarkDesc:=MarkDesc+': '+se.PageName+' ('+IntToStr(BookMarkY)+','+IntToStr(BookMarkX)+')';
+        BookmarkAvail:=True;
+        break;
+      end;
+      inc(i);
+    end;
+    // goto book mark item
+    MarkComand:=IDECommandList.FindIDECommand(ecGotoMarker0+BookMarkID);
+    MarkComand.Caption:=uemBookmarkN+MarkDesc;
+    MarkComand.Enabled:=BookmarkAvail;
+    // set book mark item
+    MarkComand:=IDECommandList.FindIDECommand(ecToggleMarker0+BookMarkID);
+    MarkComand.Caption:=uemToggleBookmark+MarkDesc;
+  end;
+end;
+
 procedure TMainIDE.SaveIncludeLinks;
 var
   AFilename: string;
@@ -8220,11 +8336,12 @@ begin
   end;
 end;
 
-procedure TMainIDE.DoJumpToNextError(DirectionDown: boolean);
+procedure TMainIDE.DoJumpToNextCompilerMessage(
+  aMinUrgency: TMessageLineUrgency; DirectionDown: boolean);
 var
   Msg: TMessageLine;
 begin
-  if not MessagesView.SelectNextUrgentMessage(mluError,true,DirectionDown) then
+  if not MessagesView.SelectNextUrgentMessage(aMinUrgency,true,DirectionDown) then
     exit;
   Msg:=MessagesView.GetSelectedLine;
   if Msg=nil then exit;
@@ -8318,7 +8435,7 @@ begin
        State=iwgfDisabled,LazarusIDE.OwningComponent);
     SearchresultsView.OnSelectionChanged := OnSearchResultsViewSelectionChanged;
   end else if State=iwgfDisabled then
-    SearchResultsView.DisableAutoSizing;
+    SearchResultsView.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.DoShowSearchResultsView'){$ENDIF};
   if State>=iwgfShow then
   begin
     IDEWindowCreators.ShowForm(SearchresultsView,State=iwgfShowOnTop);
@@ -8435,7 +8552,8 @@ begin
   end;
 
   // check if there is a valid parent
-  if (ParentControl=nil) and ARegComp.IsTControl then begin
+  if (ParentControl=nil) and ARegComp.ComponentClass.InheritsFrom(TControl) then
+  begin
     IDEMessageDialog(lisControlNeedsParent,
       Format(lisTheClassIsATControlAndCanNotBePastedOntoANonContro,[NewClassName,LineEnding]),
       mtError,[mbCancel]);
@@ -8862,14 +8980,41 @@ end;
 
 procedure TMainIDE.OnCodeBufferEncodeSaving(Code: TCodeBuffer;
   const Filename: string; var Source: string);
+var
+  OldSource, NewSource, Msg: String;
+  i, Line, Col: Integer;
 begin
   if (Code.DiskEncoding<>'') and (Code.MemEncoding<>'')
   and (Code.DiskEncoding<>Code.MemEncoding) then begin
     {$IFDEF VerboseIDEEncoding}
     DebugLn(['TMainIDE.OnCodeBufferEncodeSaving Filename=',Code.Filename,' Mem=',Code.MemEncoding,' to Disk=',Code.DiskEncoding]);
     {$ENDIF}
+    OldSource:=Source;
     Source:=ConvertEncoding(Source,Code.MemEncoding,Code.DiskEncoding);
     //debugln(['TMainIDE.OnCodeBufferEncodeSaving ',dbgMemRange(PByte(Source),length(Source))]);
+    NewSource:=ConvertEncoding(Source,Code.DiskEncoding,Code.MemEncoding);
+    if OldSource<>NewSource then
+    begin
+      Line:=0;
+      for i:=1 to length(OldSource) do
+        if (i>length(NewSource)) or (OldSource[i]<>NewSource[i]) then
+        begin
+          SrcPosToLineCol(OldSource,i,Line,Col);
+          break;
+        end;
+      if Line=0 then
+        SrcPosToLineCol(OldSource,length(OldSource),Line,Col);
+      Msg:=Format(lisSavingFileAsLoosesCharactersAtLineColumn, [Filename, Code.
+          DiskEncoding, IntToStr(Line), IntToStr(Col)]);
+      if IDEMessageDialog(lisInsufficientEncoding,Msg,
+        mtWarning,[mbIgnore,mbCancel])<>mrIgnore
+      then begin
+        IDEMessagesWindow.AddCustomMessage(mluError,
+          Format(lisUnableToConvertToEncoding, [Code.DiskEncoding]),
+          Filename,Line,Col);
+        raise Exception.Create(Msg);
+      end;
+    end;
   end;
 end;
 
@@ -10132,6 +10277,15 @@ begin
   SourceEditorManager.ShowActiveWindowOnTop(True);
 end;
 
+procedure TMainIDE.LazInstancesGetOpenedProjectFileName(
+  var outProjectFileName: string);
+begin
+  if Project1<>nil then
+    outProjectFileName := Project1.MainFilename
+  else
+    outProjectFileName := '';
+end;
+
 procedure TMainIDE.OnSrcNotebookEditorActived(Sender: TObject);
 var
   ActiveUnitInfo: TUnitInfo;
@@ -10199,7 +10353,6 @@ end;
 procedure TMainIDE.OnSrcNotebookEditorDoSetBookmark(Sender: TObject; ID: Integer; Toggle: Boolean);
 var
   ActEdit, OldEdit: TSourceEditor;
-  Cmd: TIDEMenuCommand;
   OldX, OldY: integer;
   NewXY: TPoint;
   SetMark: Boolean;
@@ -10229,8 +10382,10 @@ Begin
   end;
   if SetMark then
     ActEdit.EditorComponent.SetBookMark(ID,NewXY.X,NewXY.Y);
-  Cmd:=SrcEditSubMenuToggleBookmarks[ID] as TIDEMenuCommand;
-  Cmd.Checked := SetMark;
+
+  {$push}{$R-}  // range check off
+  Inc(BookmarksStamp);
+  {$pop}
 end;
 
 procedure TMainIDE.OnSrcNotebookEditorDoGotoBookmark(Sender: TObject; ID: Integer; Backward: Boolean);
@@ -11262,7 +11417,7 @@ procedure TMainIDE.CreateObjectInspector(aDisableAutoSize: boolean);
 begin
   if ObjectInspector1<>nil then begin
     if aDisableAutoSize then
-      ObjectInspector1.DisableAutoSizing;
+      ObjectInspector1.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.CreateObjectInspector'){$ENDIF};
     exit;
   end;
   IDEWindowCreators.CreateForm(ObjectInspector1,TObjectInspectorDlg,
@@ -11781,6 +11936,11 @@ begin
     AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
   end;
   Result:=nil;
+end;
+
+function TMainIDE.GetSelectedCompilerMessage: TMessageLine;
+begin
+  Result:=MessagesView.GetSelectedLine;
 end;
 
 function TMainIDE.GetProjectFileWithDesigner(ADesigner: TIDesigner): TLazProjectFile;

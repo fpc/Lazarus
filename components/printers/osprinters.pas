@@ -28,7 +28,6 @@ unit OSPrinters;
 
 interface
 
-
 {$IFDEF UNIX}
   {$IFDEF DARWIN}
     {$IFDEF LCLCarbon}

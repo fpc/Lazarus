@@ -71,8 +71,8 @@ function DestroyCaret(Handle : HWND): Boolean; override;
 function DestroyCursor(Handle: HCURSOR): Boolean; override;
 function DestroyIcon(Handle: HICON): Boolean; override;
 function DPtoLP(DC: HDC; var Points; Count: Integer): BOOL; override;
-function DrawFrameControl(DC: HDC; const Rect : TRect; uType, uState : Cardinal) : Boolean; override;
-function DrawFocusRect(DC: HDC; const Rect: TRect): boolean; override;
+function DrawFrameControl(DC: HDC; const aRect : TRect; uType, uState : Cardinal) : Boolean; override;
+function DrawFocusRect(DC: HDC; const aRect: TRect): boolean; override;
 function DrawEdge(DC: HDC; var ARect: TRect; Edge: Cardinal; grfFlags: Cardinal): Boolean; override;
 function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; override;
 

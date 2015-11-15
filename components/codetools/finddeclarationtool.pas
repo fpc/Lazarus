@@ -396,6 +396,47 @@ type
   end;
 
 type
+
+  { TOperand }
+
+  TOperand = record
+    Expr: TExpressionType;
+    AliasType: TFindContext;
+  end;
+
+  //----------------------------------------------------------------------------
+  // TTypeAliasOrderList is used for comparing type aliases in binary operators
+
+  TTypeAliasItem = class
+  public
+    AliasName: string;
+    Position: Integer;
+  end;
+
+  TTypeAliasOrderList = class
+  private
+    FTree: TAVLTree;
+  public
+    constructor Create(const AliasNames: array of string);
+    destructor Destroy; override;
+
+    procedure Add(const AliasName: string);
+    procedure Add(const AliasNames: array of string);
+    procedure Insert(const AliasName: string; const Pos: Integer);
+    procedure InsertBefore(const AliasName, BeforeAlias: string);
+    procedure InsertAfter(const AliasName, AfterAlias: string);
+    procedure Delete(const Pos: Integer);
+    procedure Delete(const AliasName: string);
+    function IndexOf(const AliasName: string): Integer;
+    function Compare(const AliasName1, AliasName2: string): Integer;
+    function Compare(const Operand1, Operand2: TOperand;
+      Tool: TFindDeclarationTool; CleanPos: Integer): TOperand;
+  end;
+
+  function CompareTypeAliasItems(Item1, Item2: Pointer): Integer;
+  function CompareTypeAliasItemString(AliasName, Item: Pointer): Integer;
+
+type
   //----------------------------------------------------------------------------
   // TFoundProc is used for comparing overloaded procs
   PFoundProc = ^TFoundProc;
@@ -721,9 +762,9 @@ type
     function FindExpressionTypeOfPredefinedIdentifier(StartPos: integer;
       Params: TFindDeclarationParams): TExpressionType;
     function GetDefaultStringType: TExpressionTypeDesc;
-    function CalculateBinaryOperator(LeftOperand, RightOperand: TExpressionType;
+    function CalculateBinaryOperator(LeftOperand, RightOperand: TOperand;
       BinaryOperator: TAtomPosition;
-      Params: TFindDeclarationParams): TExpressionType;
+      Params: TFindDeclarationParams): TOperand;
     function GetParameterNode(Node: TCodeTreeNode): TCodeTreeNode;
     function GetExpressionTypeOfTypeIdentifier(
       Params: TFindDeclarationParams): TExpressionType;
@@ -893,9 +934,9 @@ type
 
     // ancestors
     function FindClassAndAncestors(ClassNode: TCodeTreeNode;
-      out ListOfPFindContext: TFPList; ExceptionOnNotFound: boolean
+      var ListOfPFindContext: TFPList; ExceptionOnNotFound: boolean
       ): boolean; // without interfaces, recursive
-    function FindContextClassAndAncestors(const CursorPos: TCodeXYPosition;
+    function FindContextClassAndAncestorsAndExtendedClassOfHelper(const CursorPos: TCodeXYPosition;
       var ListOfPFindContext: TFPList): boolean; // without interfaces
     function FindAncestorOfClass(ClassNode: TCodeTreeNode;
       Params: TFindDeclarationParams; FindClassContext: boolean): boolean; // returns false for TObject, IInterface, IUnknown
@@ -1003,7 +1044,19 @@ function dbgs(const Flags: TFoundDeclarationFlags): string; overload;
 function dbgs(const vat: TVariableAtomType): string; overload;
 function dbgs(const Kind: TFDHelpersListKind): string; overload;
 
+
+function BooleanTypesOrderList: TTypeAliasOrderList;
+function IntegerTypesOrderList: TTypeAliasOrderList;
+function RealTypesOrderList: TTypeAliasOrderList;
+function StringTypesOrderList: TTypeAliasOrderList;
+
 implementation
+
+var
+  FBooleanTypesOrderList: TTypeAliasOrderList;
+  FIntegerTypesOrderList: TTypeAliasOrderList;
+  FRealTypesOrderList: TTypeAliasOrderList;
+  FStringTypesOrderList: TTypeAliasOrderList;
 
 type
 
@@ -1059,6 +1112,46 @@ end;
 function dbgs(const Kind: TFDHelpersListKind): string;
 begin
   WriteStr(Result, Kind);
+end;
+
+function BooleanTypesOrderList: TTypeAliasOrderList;
+begin
+  if FBooleanTypesOrderList=nil then
+    FBooleanTypesOrderList:=TTypeAliasOrderList.Create([
+       'LongBool', 'WordBool', 'Boolean', 'ByteBool']);
+
+  Result := FBooleanTypesOrderList;
+end;
+
+function IntegerTypesOrderList: TTypeAliasOrderList;
+begin
+  if FIntegerTypesOrderList=nil then
+    FIntegerTypesOrderList:=TTypeAliasOrderList.Create([
+       'Int64', 'QWord',
+       'NativeInt', 'IntPtr', 'SizeInt', 'NativeUInt', 'UIntPtr',
+       'Int32', 'Integer', 'LongInt', 'UInt32', 'Cardinal', 'LongWord',
+       'Int16', 'SmallInt', 'UInt16', 'Word',
+       'Int8', 'ShortInt', 'UInt8', 'Byte']);
+
+  Result := FIntegerTypesOrderList;
+end;
+
+function RealTypesOrderList: TTypeAliasOrderList;
+begin
+  if FRealTypesOrderList=nil then
+    FRealTypesOrderList:=TTypeAliasOrderList.Create([
+       'Extended', 'Double', 'Single']);
+
+  Result := FRealTypesOrderList;
+end;
+
+function StringTypesOrderList: TTypeAliasOrderList;
+begin
+  if FStringTypesOrderList=nil then
+    FStringTypesOrderList:=TTypeAliasOrderList.Create([
+       'string', 'AnsiString', 'WideString', 'ShortString', 'Char', 'WideChar', 'AnsiChar']);
+
+  Result := FStringTypesOrderList;
 end;
 
 function ListOfPFindContextToStr(const ListOfPFindContext: TFPList): string;
@@ -1182,6 +1275,22 @@ begin
     Result:=xtPChar
   else
     Result:=xtNone;
+end;
+
+function CompareTypeAliasItems(Item1, Item2: Pointer): Integer;
+var
+  xItem1: TTypeAliasItem absolute Item1;
+  xItem2: TTypeAliasItem absolute Item2;
+begin
+  Result := CompareIdentifiers(PChar(xItem1.AliasName), PChar(xItem2.AliasName));
+end;
+
+function CompareTypeAliasItemString(AliasName, Item: Pointer): Integer;
+var
+  xAliasName: PChar absolute AliasName;
+  xItem: TTypeAliasItem absolute Item;
+begin
+  Result := CompareIdentifiers(xAliasName, PChar(xItem.AliasName));
 end;
 
 function ExprTypeToString(const ExprType: TExpressionType): string;
@@ -1335,6 +1444,178 @@ begin
   end;
   ListOfPFindContext.Free;
   ListOfPFindContext:=nil;
+end;
+
+{ TTypeAliasOrderList }
+
+constructor TTypeAliasOrderList.Create(const AliasNames: array of string);
+begin
+  inherited Create;
+
+  FTree := TAVLTree.Create(@CompareTypeAliasItems);
+  Add(AliasNames);
+end;
+
+procedure TTypeAliasOrderList.Add(const AliasNames: array of string);
+var
+  AliasName: string;
+begin
+  for AliasName in AliasNames do
+    Add(AliasName);
+end;
+
+procedure TTypeAliasOrderList.Add(const AliasName: string);
+var
+  NewItem: TTypeAliasItem;
+begin
+  if IndexOf(AliasName) > -1 then Exit;
+
+  NewItem := TTypeAliasItem.Create;
+  NewItem.AliasName := AliasName;
+  NewItem.Position := FTree.Count;
+  FTree.Add(NewItem);
+end;
+
+function TTypeAliasOrderList.Compare(const AliasName1, AliasName2: string
+  ): Integer;
+var
+  xAliasIndex1, xAliasIndex2: Integer;
+begin
+  xAliasIndex1 := IndexOf(AliasName1);
+  xAliasIndex2 := IndexOf(AliasName2);
+  if (xAliasIndex1=-1) and (xAliasIndex2=-1) then
+    Exit(0)
+  else if (xAliasIndex2=-1) then
+    Exit(-1)
+  else if (xAliasIndex1=-1) then
+    Exit(1)
+  else
+    Result := xAliasIndex1-xAliasIndex2;
+end;
+
+function TTypeAliasOrderList.Compare(const Operand1,
+  Operand2: TOperand; Tool: TFindDeclarationTool; CleanPos: Integer
+  ): TOperand;
+var
+  xCompRes: Integer;
+begin
+  // first check if one of the operands is a constant -> if yes, automatically
+  // return the other
+  // (x := f + 1; should return always type of f)
+  if (Operand1.Expr.Desc in xtAllConstTypes) and not (Operand2.Expr.Desc in xtAllConstTypes) then
+    Exit(Operand2)
+  else
+  if (Operand2.Expr.Desc in xtAllConstTypes) and not (Operand1.Expr.Desc in xtAllConstTypes) then
+    Exit(Operand1);
+
+  // then compare base types
+  xCompRes := Compare(
+    Tool.FindExprTypeAsString(Operand1.Expr, CleanPos, nil),
+    Tool.FindExprTypeAsString(Operand2.Expr, CleanPos, nil));
+  // if base types are same, compare aliases
+  if xCompRes = 0 then
+    xCompRes := Compare(
+      Tool.FindExprTypeAsString(Operand1.Expr, CleanPos, @Operand1.AliasType),
+      Tool.FindExprTypeAsString(Operand2.Expr, CleanPos, @Operand2.AliasType));
+  if xCompRes > 0 then
+    Result := Operand2
+  else
+    Result := Operand1;
+end;
+
+procedure TTypeAliasOrderList.Delete(const Pos: Integer);
+var
+  xAVItem, xDelItem: TAVLTreeNode;
+  xItem: TTypeAliasItem;
+begin
+  xDelItem := nil;
+  for xAVItem in FTree do
+  begin
+    xItem := TTypeAliasItem(xAVItem.Data);
+    if xItem.Position = Pos then
+      xDelItem := xAVItem
+    else if xItem.Position > Pos then
+      Dec(xItem.Position);
+  end;
+
+  if xDelItem<>nil then
+    FTree.FreeAndDelete(xDelItem);
+end;
+
+procedure TTypeAliasOrderList.Delete(const AliasName: string);
+var
+  xIndex: Integer;
+begin
+  xIndex := IndexOf(AliasName);
+  if xIndex<0 then Exit;
+  Delete(xIndex);
+end;
+
+destructor TTypeAliasOrderList.Destroy;
+begin
+  FTree.FreeAndClear;
+  FTree.Free;
+
+  inherited Destroy;
+end;
+
+function TTypeAliasOrderList.IndexOf(const AliasName: string): Integer;
+var
+  xAVNode: TAVLTreeNode;
+begin
+  xAVNode := FTree.FindKey(PChar(AliasName), @CompareTypeAliasItemString);
+  if xAVNode<>nil then
+    Result := TTypeAliasItem(xAVNode.Data).Position
+  else
+    Result := -1;
+end;
+
+procedure TTypeAliasOrderList.Insert(const AliasName: string; const Pos: Integer
+  );
+var
+  xAVItem: TAVLTreeNode;
+  xItem, NewItem: TTypeAliasItem;
+begin
+  for xAVItem in FTree do
+  begin
+    xItem := TTypeAliasItem(xAVItem.Data);
+    if xItem.Position >= Pos then
+      Inc(xItem.Position);
+  end;
+
+  NewItem := TTypeAliasItem.Create;
+  NewItem.AliasName := AliasName;
+  NewItem.Position := Pos;
+  FTree.Add(NewItem);
+end;
+
+procedure TTypeAliasOrderList.InsertAfter(const AliasName, AfterAlias: string);
+var
+  xIndex: Integer;
+begin
+  if IndexOf(AliasName) = -1 then
+  begin
+    xIndex := IndexOf(AfterAlias);
+    if xIndex >= 0 then
+      Insert(AliasName, xIndex+1)
+    else
+      Add(AliasName);
+  end;
+end;
+
+procedure TTypeAliasOrderList.InsertBefore(const AliasName, BeforeAlias: string
+  );
+var
+  xIndex: Integer;
+begin
+  if IndexOf(AliasName) = -1 then
+  begin
+    xIndex := IndexOf(BeforeAlias);
+    if xIndex >= 0 then
+      Insert(AliasName, xIndex)
+    else
+      Add(AliasName);
+  end;
 end;
 
 { TFDHelpersListItem }
@@ -1910,7 +2191,16 @@ begin
     {$IFDEF CTDEBUG}
     DebugLn('TFindDeclarationTool.FindDeclaration D CursorNode=',NodeDescriptionAsString(CursorNode.Desc),' HasChildren=',dbgs(CursorNode.FirstChild<>nil));
     {$ENDIF}
-    if (CursorNode.Desc in [ctnUsesSection,ctnUseUnit]) then begin
+    if (CursorNode.Desc = ctnUseUnitNamespace) then begin
+      NewExprType.Desc:=xtContext;
+      NewExprType.Context.Node:=CursorNode;
+      NewExprType.Context.Tool:=Self;
+      CleanPosToCaret(CursorNode.StartPos, NewPos);
+      NewTopLine := NewPos.Y;
+      Result := True;
+      Exit;
+    end else
+    if (CursorNode.Desc in [ctnUsesSection,ctnUseUnitClearName]) then begin
       // in uses section
       //DebugLn(['TFindDeclarationTool.FindDeclaration IsUsesSection']);
       Result:=FindDeclarationInUsesSection(CursorNode,CleanCursorPos,
@@ -2470,7 +2760,10 @@ begin
     ReadNextAtom;
     if not UpAtomIs('USES') then
       RaiseUsesExpected;
-  end;
+  end else
+  if (UsesNode.Desc = ctnUseUnitClearName) then
+    MoveCursorToNodeStart(UsesNode.Parent);
+
   repeat
     ReadNextAtom;  // read name
     if CurPos.StartPos>CleanPos then break;
@@ -2980,11 +3273,20 @@ begin
         end;
       end;
 
-    ctnUseUnit:
+    ctnUseUnitNamespace:
+      begin
+        // hint for unit namespace in "uses" section
+        Result += 'namespace ';
+        MoveCursorToNodeStart(Node);
+        ReadNextAtom;
+        Result := Result + GetAtom;
+      end;
+
+    ctnUseUnitClearName:
       begin
         // hint for unit in "uses" section
         Result += 'unit ';
-        MoveCursorToNodeStart(Node);
+        MoveCursorToNodeStart(Node.Parent);
         Result := Result + ReadIdentifierWithDots;
       end
 
@@ -3693,6 +3995,55 @@ var
     //debugln(['SearchInHelpers END']);
   end;
 
+  function SearchInNamespaces(UsesNode, SourceNamespaceNode: TCodeTreeNode): Boolean;
+  var
+    UnitNode, ThisNamespaceNode, TargetNamespaceNode: TCodeTreeNode;
+    Match: Boolean;
+  begin
+    Result := False;
+    if UsesNode=nil then Exit;
+
+    UnitNode := UsesNode.LastChild;
+    while UnitNode<>nil do
+    begin
+      ThisNamespaceNode := SourceNamespaceNode.Parent.FirstChild;
+      TargetNamespaceNode := UnitNode.FirstChild;
+      Match := False;
+      while (ThisNamespaceNode<>nil) and (TargetNamespaceNode<>nil) do
+      begin
+        if CompareIdentifiers(
+          @Src[ThisNamespaceNode.StartPos],
+          @Src[TargetNamespaceNode.StartPos]) <> 0
+        then Break;
+
+        if (ThisNamespaceNode=SourceNamespaceNode) then
+        begin
+          Match := True;
+          Break;
+        end;
+
+        ThisNamespaceNode := ThisNamespaceNode.NextBrother;
+        TargetNamespaceNode := TargetNamespaceNode.NextBrother;
+      end;
+      if Match then
+      begin
+        //namespace paths match
+        if (TargetNamespaceNode.NextBrother<>nil)
+           and (
+             (Params.Identifier=nil) or
+              CompareSrcIdentifiers(TargetNamespaceNode.NextBrother.StartPos,Params.Identifier))
+        then begin
+          Params.SetResult(Self,TargetNamespaceNode.NextBrother);
+          Result:=CheckResult(true,true);
+          if not (fdfCollect in Flags) then
+            exit;
+        end;
+      end;
+
+      UnitNode := UnitNode.PriorBrother;
+    end;
+  end;
+
   function SearchNextNode: boolean;
   const
     AbortNoCacheResult = false;
@@ -3931,6 +4282,14 @@ begin
     exit;
   end;
 
+  if (ContextNode.Desc=ctnUseUnitNamespace) then
+  begin
+    //search in namespaces
+    if SearchInNamespaces(FindMainUsesNode, Params.ContextNode) then exit;
+    if SearchInNamespaces(FindImplementationUsesNode, Params.ContextNode) then exit;
+    Exit;
+  end;
+
   // find class helper functions
   SearchInHelpersInTheEnd := False;
   if (fdfSearchInHelpers in Flags)
@@ -4123,13 +4482,18 @@ function TFindDeclarationTool.FindEnumInContext(
  }
 var OldContextNode, CurContextNode: TCodeTreeNode;
   CollectResult: TIdentifierFoundResult;
+  SearchEnumIdentifiers: Boolean;
 begin
   Result:=false;
   CurContextNode:=Params.ContextNode;
   if CurContextNode=nil then exit;
+  if CurContextNode.Desc=ctnEnumerationType then
+    SearchEnumIdentifiers := not (Scanner.GetDirectiveValueAt(sdScopedEnums, CurContextNode.StartPos) = '1')
+  else
+    SearchEnumIdentifiers := False;
   CurContextNode:=CurContextNode.FirstChild;
   while CurContextNode<>nil do begin
-    if (CurContextNode.Desc=ctnEnumIdentifier) then begin
+    if SearchEnumIdentifiers and (CurContextNode.Desc=ctnEnumIdentifier) then begin
       if (fdfCollect in Params.Flags) then begin
         //debugln('TFindDeclarationTool.FindEnumInContext ',GetIdentifier(@Src[CurContextNode.StartPos]));
         CollectResult:=DoOnIdentifierFound(Params,CurContextNode);
@@ -4247,12 +4611,10 @@ var
     TestContext: TFindContext;
     IdentStart: LongInt;
     SubParams: TFindDeclarationParams;
-    aNode: TCodeTreeNode;
-    AnUnitIdentifier: String;
-    UnitInFilename: AnsiString;
-    NewCode: TCodeBuffer;
+    ExprType: TExpressionType;
   begin
     IsPredefined:=false;
+
     SubParams:=TFindDeclarationParams.Create(Params);
     try
       SubParams.GenParams := Params.GenParams;
@@ -4262,7 +4624,6 @@ var
       {$ENDIF}
       SubParams.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound]
                       +(fdfGlobals*SubParams.Flags);
-      SubParams.SetIdentifier(Self,@Src[IdentStart],nil);
       SubParams.ContextNode:=StartNode.Parent;
       if (SubParams.ContextNode.Desc in (AllIdentifierDefinitions))
       then begin
@@ -4275,56 +4636,42 @@ var
       if SubParams.ContextNode.Desc=ctnProcedureHead then
         // skip search in proc parameters
         SubParams.ContextNode:=SubParams.ContextNode.Parent;
-      TypeFound:=FindIdentifierInContext(SubParams);
-      if TypeFound and (SubParams.NewNode.Desc=ctnUseUnit)
-      and (SubParams.NewCodeTool=Self)
-      then begin
-        {$IFDEF ShowTriedBaseContexts}
-        debugln(['TFindDeclarationTool.FindBaseTypeOfNode.SearchIdentifier is an entry in the uses section, getting tool...']);
-        {$ENDIF}
-        AnUnitIdentifier:=ExtractUsedUnitName(SubParams.NewNode,@UnitInFilename);
-        NewCode:=FindUnitSource(AnUnitIdentifier,UnitInFilename,true,SubParams.NewNode.StartPos);
-        if Assigned(FOnGetCodeToolForBuffer) then
-          SubParams.NewCodeTool:=FOnGetCodeToolForBuffer(Self,NewCode,false)
-        else if NewCode=TCodeBuffer(Scanner.MainCode) then
-          SubParams.NewCodeTool:=Self;
-        if (SubParams.NewCodeTool=nil) then begin
-          CurPos.StartPos:=-1;
-          RaiseException(Format('Unable to create codetool for "%s"',[NewCode.Filename]));
+
+      MoveCursorToCleanPos(CleanPos);
+      ReadNextAtom;
+      ReadNextAtom;
+      if (CurPos.Flag=cafPoint) or AtomIsChar('<') then begin
+        // this is an expression, e.g. A.B or A<B>
+        Include(SubParams.Flags,fdfFindVariable);
+        ExprType:=FindExpressionTypeOfTerm(CleanPos,-1,SubParams,false);
+        if ExprType.Desc=xtContext then begin
+          if not (ExprType.Context.Node.Desc in [ctnTypeDefinition,ctnGenericType,ctnGenericParameter]) then
+          begin
+            // not a type
+            {$IFDEF ShowTriedBaseContexts}
+            debugln(['TFindDeclarationTool.FindBaseTypeOfNode.SearchIdentifier expression: type expected but found ',ExprTypeToString(ExprType)]);
+            {$ENDIF}
+            MoveCursorToCleanPos(IdentStart);
+            ReadNextAtom;
+            RaiseExceptionFmt(ctsStrExpectedButAtomFound,
+                              [ctsTypeIdentifier,GetAtom]);
+          end;
+          Context:=ExprType.Context;
+        end else begin
+          IsPredefined:=true;
         end;
-        SubParams.NewCodeTool.BuildTree(lsrImplementationStart);
-        SubParams.NewNode:=SubParams.NewCodeTool.Tree.Root;
+        exit;
       end;
+
+      SubParams.SetIdentifier(Self,@Src[IdentStart],nil);
+      TypeFound:=FindIdentifierInContext(SubParams);
       if TypeFound and (SubParams.NewNode.Desc in [ctnUnit,ctnLibrary,ctnPackage])
       then begin
         // identifier is a unit
-        // => check for AUnitName.typename
+        // => type expected
         MoveCursorToCleanPos(IdentStart);
         ReadNextAtom; // read AUnitName
-        if not ReadNextAtomIsChar('.') then
-          SaveRaiseCharExpectedButAtomFound('.');
-        ReadNextAtom; // read type identifier
-        IdentStart:=CurPos.StartPos;
-        {$IFDEF ShowTriedBaseContexts}
-        debugln(['TFindDeclarationTool.FindBaseTypeOfNode.SearchIdentifier searching identifier "',GetIdentifier(@Src[IdentStart]),'" in unit ...']);
-        {$ENDIF}
-        AtomIsIdentifierE;
-        SubParams.SetIdentifier(Self,@Src[IdentStart],nil);
-        SubParams.Flags:=[fdfExceptionOnNotFound];
-        if SubParams.NewCodeTool=Self then begin
-          // search in whole unit/program
-          aNode:=Tree.Root;
-          if aNode.Desc=ctnUnit then begin
-            aNode:=FindImplementationNode;
-            if aNode=nil then
-              aNode:=FindInterfaceNode;
-          end;
-          SubParams.ContextNode:=aNode;
-          TypeFound:=FindIdentifierInContext(SubParams);
-        end else begin
-          // search in interface
-          TypeFound:=SubParams.NewCodeTool.FindIdentifierInInterface(Self,SubParams);
-        end;
+        SaveRaiseCharExpectedButAtomFound('.');
       end;
       if TypeFound and (SubParams.NewNode.Desc=ctnGenericParameter) then begin
         TypeFound:=SubParams.FindGenericParamType;
@@ -4351,9 +4698,7 @@ var
       end else begin
         // predefined identifier
         IsPredefined:=true;
-        exit;
       end;
-      // ToDo: resolve sub classes
 
     finally
       SubParams.Free;
@@ -4950,7 +5295,7 @@ begin
 end;
 
 function TFindDeclarationTool.FindClassAndAncestors(ClassNode: TCodeTreeNode;
-  out ListOfPFindContext: TFPList; ExceptionOnNotFound: boolean): boolean;
+  var ListOfPFindContext: TFPList; ExceptionOnNotFound: boolean): boolean;
 var
   Params: TFindDeclarationParams;
 
@@ -4979,7 +5324,6 @@ var
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(ClassNode);{$ENDIF}
   Result:=false;
-  ListOfPFindContext:=nil;
   if (ClassNode=nil) or (not (ClassNode.Desc in AllClasses))
   or (ClassNode.Parent=nil)
   or (not (ClassNode.Parent.Desc in [ctnTypeDefinition,ctnGenericType])) then
@@ -5076,14 +5420,14 @@ begin
   end;
 end;
 
-function TFindDeclarationTool.FindContextClassAndAncestors(
-  const CursorPos: TCodeXYPosition; var ListOfPFindContext: TFPList
-  ): boolean;
+function TFindDeclarationTool.FindContextClassAndAncestorsAndExtendedClassOfHelper
+  (const CursorPos: TCodeXYPosition; var ListOfPFindContext: TFPList): boolean;
 // returns a list of nodes of AllClasses (ctnClass, ...)
 var
   CleanCursorPos: integer;
   ANode: TCodeTreeNode;
   ClassNode: TCodeTreeNode;
+  ExtendedClassExpr: TExpressionType;
 begin
   Result:=false;
   ListOfPFindContext:=nil;
@@ -5107,6 +5451,15 @@ begin
     if not FindClassAndAncestors(ClassNode,ListOfPFindContext,true)
     then exit;
     
+    //find extended class node
+    ExtendedClassExpr := FindExtendedExprOfHelper(ClassNode);
+    if ((ExtendedClassExpr.Desc=xtContext) and (ExtendedClassExpr.Context.Tool<>nil) and
+        (ExtendedClassExpr.Context.Node<>nil) and (ExtendedClassExpr.Context.Node.Desc=ctnClass)) then
+    begin
+      if not ExtendedClassExpr.Context.Tool.FindClassAndAncestors(ExtendedClassExpr.Context.Node,ListOfPFindContext,true)
+      then exit;
+    end;
+
     //debugln('TFindDeclarationTool.FindContextClassAndAncestors List: ',ListOfPFindContextToStr(ListOfPFindContext));
     
   finally
@@ -5838,6 +6191,8 @@ begin
   ListOfPCodeXYPosition:=nil;
   BuildTreeAndGetCleanPos(CursorPos,CleanPos);
   Node:=FindDeepestNodeAtPos(CleanPos,true);
+  if Node.Desc in [ctnUseUnitNamespace,ctnUseUnitClearName] then
+    Node:=Node.Parent;
   if Node.Desc<>ctnUseUnit then
     RaiseException('This function needs the cursor at a unit in a uses clause');
   // cursor is on an used unit -> try to locate it
@@ -6844,8 +7199,7 @@ function TFindDeclarationTool.FindExpressionResultType(
 }
 type
   TOperandAndOperator = record
-    Operand: TExpressionType;
-    AliasType: TFindContext;
+    Operand: TOperand;
     theOperator: TAtomPosition;
     OperatorLvl: integer;
   end;
@@ -6870,7 +7224,7 @@ var
          0      Integer   +
   }
   var
-    NewOperand: TExpressionType;
+    NewOperand: TOperand;
     LastPos: TAtomPosition;
   begin
     if StackPtr<=0 then begin
@@ -6896,11 +7250,6 @@ var
         Params);
       // put result on stack
       ExprStack[StackPtr-1]:=ExprStack[StackPtr];
-
-      // ToDo: handle alias in CalculateBinaryOperator
-      // => Workaround:
-      if NewOperand.Desc<>ExprStack[StackPtr-1].Operand.Desc then
-        ExprStack[StackPtr-1].AliasType:=CleanFindContext; // reset alias type
 
       dec(StackPtr);
       ExprStack[StackPtr].Operand:=NewOperand;
@@ -6957,11 +7306,11 @@ begin
     if StackPtr>High(ExprStack) then
       RaiseInternalErrorStack;
     StackEntry:=@ExprStack[StackPtr];
-    StackEntry^.Operand:=CurExprType;
+    StackEntry^.Operand.Expr:=CurExprType;
     if CurAliasType<>nil then
-      StackEntry^.AliasType:=CurAliasType^
+      StackEntry^.Operand.AliasType:=CurAliasType^
     else
-      StackEntry^.AliasType:=CleanFindContext;
+      StackEntry^.Operand.AliasType:=CleanFindContext;
     StackEntry^.theOperator.StartPos:=-1;
     StackEntry^.OperatorLvl:=5;
     // read operator
@@ -6974,9 +7323,9 @@ begin
     if (CurPos.EndPos>EndPos) or (CurExprType.Desc=xtNone) then begin
       // -> execute complete stack
       ExecuteStack(true);
-      Result:=ExprStack[StackPtr].Operand;
+      Result:=ExprStack[StackPtr].Operand.Expr;
       if CurAliasType<>nil then
-        AliasType^:=ExprStack[StackPtr].AliasType;
+        AliasType^:=ExprStack[StackPtr].Operand.AliasType;
       Params.Flags:=OldFlags;
       exit;
     end;
@@ -7050,19 +7399,20 @@ begin
     Node:=UsesNode.LastChild;
     while Node<>nil do begin
       if (fdfCollect in Params.Flags) then begin
-        CollectResult:=DoOnIdentifierFound(Params,Node);
+        CollectResult:=DoOnIdentifierFound(Params,Node.FirstChild);
         if CollectResult=ifrAbortSearch then begin
           Result:=false;
           exit;
         end else if CollectResult=ifrSuccess then begin
           Result:=true;
-          Params.SetResult(Self,Node);
+          Params.SetResult(Self,Node.FirstChild);
           exit;
         end;
       end else if CompareSrcIdentifiers(Node.StartPos,Params.Identifier) then begin
         // the searched identifier was a uses AUnitName, point to the identifier in
         // the uses section
-        Params.SetResult(Self,Node,Node.StartPos);
+        // if the unit name has a namespace defined point to the namespace
+        Params.SetResult(Self,Node.FirstChild);
         Result:=true;
         exit;
       end;
@@ -7199,6 +7549,8 @@ function TFindDeclarationTool.BuildInterfaceIdentifierCache(
     Node: TCodeTreeNode;
   begin
     Node:=ParentNode.FirstChild;
+    if (Node=nil) or (Scanner.GetDirectiveValueAt(sdScopedEnums, Node.StartPos) = '1') then
+      Exit;
     while Node<>nil do begin
       if Node.Desc=ctnEnumIdentifier then
         FInterfaceIdentifierCache.Add(@Src[Node.StartPos],Node,Node.StartPos);
@@ -8013,14 +8365,19 @@ var
             end;
             ProcNode:=ProcNode.Parent;
           end;
-        end else if (cmsResult in FLastCompilerModeSwitches)
-        and CompareSrcIdentifiers(CurAtom.StartPos,'RESULT') then begin
+        end else if CompareSrcIdentifiers(CurAtom.StartPos,'RESULT')
+        and (cmsResult in Scanner.CompilerModeSwitches) then begin
           // RESULT has a special meaning in a function
           // -> check if in a function
-          if fdfExtractOperand in Params.Flags then Params.AddOperandPart('Result');
+          if fdfExtractOperand in Params.Flags then
+            Params.AddOperandPart('Result');
           ProcNode:=StartNode;
-          while (ProcNode<>nil) and not NodeIsFunction(ProcNode) do
+          while (ProcNode<>nil) do begin
+            if (ProcNode.Desc=ctnProcedure)
+            and (NodeIsFunction(ProcNode) or NodeIsOperator(ProcNode)) then
+              break;
             ProcNode:=ProcNode.Parent;
+          end;
           if (ProcNode<>nil) then begin
             if IsEnd and (fdfFindVariable in StartFlags) then begin
               BuildSubTreeForProcHead(ProcNode);
@@ -8040,8 +8397,8 @@ var
             end else begin
               OldFlags:=Params.Flags;
               Params.Flags:=Params.Flags+[fdfFunctionResult,fdfFindChildren];
-              ExprType.Desc:=xtContext;
               ExprType.Context:=FindBaseTypeOfNode(Params,ProcNode);
+              ExprType.Desc:=xtContext;
               Params.Flags:=OldFlags;
               exit;
             end;
@@ -8237,7 +8594,7 @@ var
     {$IFDEF ShowExprEval}
     debugln(['  FindExpressionTypeOfTerm ResolveUseUnit used unit -> interface node ',dbgstr(ExprType.Context.Tool.ExtractNode(ExprType.Context.Node,[]))]);
     {$ENDIF}
-    AnUnitName:=aTool.ExtractUsedUnitName(ExprType.Context.Node,@InFilename);
+    AnUnitName:=aTool.ExtractUsedUnitName(ExprType.Context.Node.Parent,@InFilename);
     NewCodeTool:=aTool.FindCodeToolForUsedUnit(AnUnitName,InFilename,true);
     NewCodeTool.BuildInterfaceIdentifierCache(true);
     NewNode:=NewCodeTool.FindInterfaceNode;
@@ -8280,7 +8637,7 @@ var
         ExprType.Context.Node:=ExprType.Context.Tool.GetInterfaceNode;
       end;
     end
-    else if (ExprType.Context.Node.Desc=ctnUseUnit) then begin
+    else if (ExprType.Context.Node.Desc=ctnUseUnitClearName) then begin
       // uses unit name => interface of used unit
       ResolveUseUnit;
     end
@@ -8578,7 +8935,7 @@ var
       debugln(['  FindExpressionTypeOfTerm ResolveRoundBracketOpen subexpr="',dbgstr(Src,CurAtom.StartPos,CurAtomBracketEndPos-CurAtom.StartPos),'"']);
       {$ENDIF}
       ExprType:=FindExpressionResultType(Params,CurAtom.StartPos+1,
-                                         CurAtomBracketEndPos-1);
+                                         CurAtomBracketEndPos-1, AliasType);
     end;
   end;
 
@@ -8942,6 +9299,8 @@ var
   OldFlags: TFindDeclarationFlags;
 begin
   Result:=CleanExpressionType;
+  if AliasType<>nil then
+    AliasType^:=CleanFindContext;
 
   if CurPos.StartPos=CurPos.EndPos then ReadNextAtom;
   // read unary operators which have no effect on the type: +, -, not
@@ -9172,10 +9531,11 @@ begin
 end;
 
 function TFindDeclarationTool.CalculateBinaryOperator(LeftOperand,
-  RightOperand: TExpressionType; BinaryOperator: TAtomPosition;
-  Params: TFindDeclarationParams): TExpressionType;
+  RightOperand: TOperand; BinaryOperator: TAtomPosition;
+  Params: TFindDeclarationParams): TOperand;
 begin
-  Result:=CleanExpressionType;
+  Result.Expr:=CleanExpressionType;
+  Result.AliasType:=CleanFindContext;
   {$IFDEF ShowExprEval}
   DebugLn('[TFindDeclarationTool.CalculateBinaryOperator] A',
   ' LeftOperand=',ExpressionTypeDescNames[LeftOperand.Desc],
@@ -9184,13 +9544,13 @@ begin
   );
   {$ENDIF}
   // convert Left and RightOperand contexts to expressiontype
-  if LeftOperand.Desc=xtContext then begin
-    LeftOperand:=LeftOperand.Context.Tool.ConvertNodeToExpressionType(
-                      LeftOperand.Context.Node,Params);
+  if LeftOperand.Expr.Desc=xtContext then begin
+    LeftOperand.Expr:=LeftOperand.Expr.Context.Tool.ConvertNodeToExpressionType(
+                      LeftOperand.Expr.Context.Node,Params);
   end;
-  if RightOperand.Desc=xtContext then begin
-    RightOperand:=RightOperand.Context.Tool.ConvertNodeToExpressionType(
-                      RightOperand.Context.Node,Params);
+  if RightOperand.Expr.Desc=xtContext then begin
+    RightOperand.Expr:=RightOperand.Expr.Context.Tool.ConvertNodeToExpressionType(
+                      RightOperand.Expr.Context.Node,Params);
   end;
 
 
@@ -9201,22 +9561,27 @@ begin
   then begin
     // Boolean operators
     // < > <= >= <> in is
-    Result.Desc:=xtBoolean;
+    Result.Expr.Desc:=xtBoolean;
   end
   else if (BinaryOperator.EndPos-BinaryOperator.StartPos=1)
   and (Src[BinaryOperator.StartPos]='/') then begin
     // real division /
-    Result.Desc:=xtConstReal;
+    Result:=RealTypesOrderList.Compare(LeftOperand, RightOperand, Self, BinaryOperator.EndPos);
+    if not(Result.Expr.Desc in xtAllRealTypes) then
+    begin
+      Result.Expr.Desc:=xtConstReal;
+      Result.AliasType:=CleanFindContext;
+    end;
   end
   else if WordIsOrdNumberOperator.DoItCaseInsensitive(Src,BinaryOperator.StartPos,
     BinaryOperator.EndPos-BinaryOperator.StartPos)
   then begin
     // ordinal number operator
     // or xor and mod div shl shr
-    if LeftOperand.Desc in xtAllBooleanTypes then
-      Result.Desc:=xtBoolean
+    if LeftOperand.Expr.Desc in xtAllBooleanTypes then
+      Result:=BooleanTypesOrderList.Compare(LeftOperand, RightOperand, Self, BinaryOperator.EndPos)
     else
-      Result.Desc:=xtConstOrdInteger;
+      Result:=IntegerTypesOrderList.Compare(LeftOperand, RightOperand, Self, BinaryOperator.EndPos);
   end
   else if WordIsNumberOperator.DoItCaseInsensitive(Src,BinaryOperator.StartPos,
     BinaryOperator.EndPos-BinaryOperator.StartPos)
@@ -9225,38 +9590,44 @@ begin
     // + - *
 
     if (Src[BinaryOperator.StartPos]='+')
-    and (LeftOperand.Desc in xtAllStringCompatibleTypes)
+    and (LeftOperand.Expr.Desc in xtAllStringCompatibleTypes)
     then begin
       // string/char '+'
-      if (RightOperand.Desc in xtAllStringCompatibleTypes)
+      if (RightOperand.Expr.Desc in xtAllStringCompatibleTypes)
       then
-        Result.Desc:=xtConstString
-      else begin
+      begin
+        Result:=StringTypesOrderList.Compare(LeftOperand, RightOperand, Self, BinaryOperator.EndPos);
+        if not(Result.Expr.Desc in xtAllStringTypes) then
+        begin
+          Result.Expr.Desc:=xtConstString;
+          Result.AliasType:=CleanFindContext;
+        end;
+      end else begin
         MoveCursorToCleanPos(BinaryOperator.EndPos);
         ReadNextAtom;
         RaiseExceptionFmt(ctsIncompatibleTypesGotExpected,
-                          ['char',ExpressionTypeDescNames[RightOperand.Desc]]);
+                          ['char',ExpressionTypeDescNames[RightOperand.Expr.Desc]]);
       end;
     end else if (Src[BinaryOperator.StartPos] in ['+','-','*'])
-    and (LeftOperand.Desc=xtContext)
-    and (LeftOperand.Context.Node<>nil)
-    and (LeftOperand.Context.Node.Desc=ctnSetType)
+    and (LeftOperand.Expr.Desc=xtContext)
+    and (LeftOperand.Expr.Context.Node<>nil)
+    and (LeftOperand.Expr.Context.Node.Desc=ctnSetType)
     then begin
       Result:=LeftOperand;
     end else begin
-      if (LeftOperand.Desc in xtAllRealTypes)
-      or (RightOperand.Desc in xtAllRealTypes) then
-        Result.Desc:=xtConstReal
-      else if (LeftOperand.Desc=xtPointer)
-      or (RightOperand.Desc=xtPointer)
-      or ((LeftOperand.Desc=xtContext)
-        and (LeftOperand.Context.Node.Desc=ctnPointerType))
-      or ((RightOperand.Desc=xtContext)
-        and (RightOperand.Context.Node.Desc=ctnPointerType))
+      if (LeftOperand.Expr.Desc in xtAllRealTypes)
+      or (RightOperand.Expr.Desc in xtAllRealTypes) then
+        Result:=RealTypesOrderList.Compare(LeftOperand, RightOperand, Self, BinaryOperator.EndPos)
+      else if (LeftOperand.Expr.Desc=xtPointer)
+      or (RightOperand.Expr.Desc=xtPointer)
+      or ((LeftOperand.Expr.Desc=xtContext)
+        and (LeftOperand.Expr.Context.Node.Desc=ctnPointerType))
+      or ((RightOperand.Expr.Desc=xtContext)
+        and (RightOperand.Expr.Context.Node.Desc=ctnPointerType))
       then
-        Result.Desc:=xtPointer
+        Result.Expr.Desc:=xtPointer
       else
-        Result.Desc:=xtConstOrdInteger;
+        Result:=IntegerTypesOrderList.Compare(LeftOperand, RightOperand, Self, BinaryOperator.EndPos);
     end;
   end else begin
     // ???
@@ -10510,7 +10881,7 @@ begin
   {$IFDEF CheckNodeTool}CheckNodeTool(Node);{$ENDIF}
   Result:=nil;
   if Node=nil then exit;
-  if Node.Desc in [ctnProcedure] then begin
+  if Node.Desc in [ctnProcedure,ctnProcedureType] then begin
     ProcNode:=Node;
     //DebugLn('  FindNthParameterNode ProcNode="',copy(Params.NewCodeTool.Src,ProcNode.StartPos,ProcNode.EndPos-ProcNode.StartPos),'"');
     FunctionNode:=nil;
@@ -12515,6 +12886,12 @@ begin
   Items[0]:=ExprType;
 end;
 
+
+finalization
+  FreeAndNil(FBooleanTypesOrderList);
+  FreeAndNil(FIntegerTypesOrderList);
+  FreeAndNil(FRealTypesOrderList);
+  FreeAndNil(FStringTypesOrderList);
 
 end.
 

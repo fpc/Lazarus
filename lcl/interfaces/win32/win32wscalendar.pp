@@ -127,8 +127,7 @@ var
   ST: SystemTime;
 begin
   SendMessage(ACalendar.Handle, MCM_GETCURSEL, 0, LPARAM(@ST));
-  with ST do
-    Result := EncodeDate(WYear,WMonth,WDay);
+  Result := EncodeDate(ST.WYear,ST.WMonth,ST.WDay);
 end;
 
 class function TWin32WSCustomCalendar.HitTest(const ACalendar: TCustomCalendar;

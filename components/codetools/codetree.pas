@@ -80,8 +80,10 @@ const
   ctnVarDefinition      = 21;
   ctnConstDefinition    = 22;
   ctnGlobalProperty     = 23;
-  ctnUseUnit            = 24; // StartPos=unitname, EndPos=unitname+inFilename
+  ctnUseUnit            = 24; // StartPos=unit, EndPos=unitname+inFilename, children ctnUseUnitNamespace, ctnUseUnitClearName
   ctnVarArgs            = 25;
+  ctnUseUnitNamespace   = 26; // <namespace>.clearname.pas
+  ctnUseUnitClearName   = 27; // namespace.<clearname>.pas
 
   ctnClass              = 30;
   ctnClassInterface     = 31;
@@ -194,7 +196,7 @@ const
                          ctnInitialization,ctnFinalization];
   AllFindContextDescs = AllIdentifierDefinitions + AllCodeSections + AllClasses +
      [ctnProcedure];
-  AllPointContexts = AllClasses+AllSourceTypes+[ctnEnumerationType,ctnInterface,ctnImplementation,ctnTypeType];
+  AllPointContexts = AllClasses+AllSourceTypes+[ctnEnumerationType,ctnInterface,ctnImplementation,ctnTypeType,ctnUseUnitNamespace,ctnUseUnitClearName];
 
 
   // CodeTreeNodeSubDescriptors
@@ -397,6 +399,8 @@ begin
   ctnPackage: Result:='Package';
   ctnLibrary: Result:='Library';
   ctnUnit: Result:='Unit';
+  ctnUseUnitNamespace: Result:='Namespace';
+  ctnUseUnitClearName: Result:='Unit name without namespace';
   ctnInterface: Result:='Interface Section';
   ctnImplementation: Result:='Implementation';
   ctnInitialization: Result:='Initialization';

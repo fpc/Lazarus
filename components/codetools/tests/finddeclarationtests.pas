@@ -1,24 +1,24 @@
 {
  Test with:
-   ./finddeclarationtest --format=plain --suite=TTestFindDeclaration
-   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_Basic
-   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_With
-   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_NestedClasses
-   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_ClassHelper
-   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_TypeHelper
-   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_ObjCClass
-   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_ObjCCategory
+   ./testcodetools --format=plain --suite=TTestFindDeclaration
+   ./testcodetools --format=plain --suite=TestFindDeclaration_Basic
+   ./testcodetools --format=plain --suite=TestFindDeclaration_With
+   ./testcodetools --format=plain --suite=TestFindDeclaration_NestedClasses
+   ./testcodetools --format=plain --suite=TestFindDeclaration_ClassHelper
+   ./testcodetools --format=plain --suite=TestFindDeclaration_TypeHelper
+   ./testcodetools --format=plain --suite=TestFindDeclaration_ObjCClass
+   ./testcodetools --format=plain --suite=TestFindDeclaration_ObjCCategory
 
  FPC tests:
-   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_FPCTests
-   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_FPCTests --filemask=t*.pp
-   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_FPCTests --filemask=tchlp41.pp
+   ./testcodetools --format=plain --suite=TestFindDeclaration_FPCTests
+   ./testcodetools --format=plain --suite=TestFindDeclaration_FPCTests --filemask=t*.pp
+   ./testcodetools --format=plain --suite=TestFindDeclaration_FPCTests --filemask=tchlp41.pp
  Laz tests:
-   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_LazTests
-   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_LazTests --filemask=t*.pp
-   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_LazTests --filemask=tdefaultproperty1.pp
+   ./testcodetools --format=plain --suite=TestFindDeclaration_LazTests
+   ./testcodetools --format=plain --suite=TestFindDeclaration_LazTests --filemask=t*.pp
+   ./testcodetools --format=plain --suite=TestFindDeclaration_LazTests --filemask=tdefaultproperty1.pp
 }
-unit fdtbase;
+unit FindDeclarationTests;
 
 {$mode objfpc}{$H+}
 
@@ -56,20 +56,7 @@ var
   BugsTestSuite: TTestSuite;
   FindDeclarationTestSuite: TTestSuite;
 
-procedure AddToBugsTestSuite(ATest: TTest);
-procedure AddToFindDeclarationTestSuite(ATestClass: TClass);
-
 implementation
-
-procedure AddToBugsTestSuite(ATest: TTest);
-begin
-  BugsTestSuite.AddTest(ATest);
-end;
-
-procedure AddToFindDeclarationTestSuite(ATestClass: TClass);
-begin
-  FindDeclarationTestSuite.AddTestSuiteFromClass(ATestClass);
-end;
 
 { TTestFindDeclaration }
 
@@ -156,7 +143,7 @@ begin
       dec(IdentifierStartPos);
 
     //debugln(['TTestFindDeclaration.FindDeclarations params: ',dbgstr(Tool.Src,p,CommentP-p)]);
-    if Marker='declaration' then begin
+    if (Marker='declaration') then begin
       ExpectedPath:=copy(Src,PathPos,CommentP-1-PathPos);
       {$IFDEF VerboseFindDeclarationTests}
       debugln(['TTestFindDeclaration.FindDeclarations searching "',Marker,'" at ',Tool.CleanPosToStr(NameStartPos-1),' ExpectedPath=',ExpectedPath]);
@@ -187,7 +174,7 @@ begin
       end;
 
       // test identifier completion
-      if ExpectedPath<>'' then begin
+      if (ExpectedPath<>'') then begin
         if not CodeToolBoss.GatherIdentifiers(CursorPos.Code,CursorPos.X,CursorPos.Y)
         then begin
           if ExpectedPath<>'' then
@@ -245,12 +232,16 @@ var
   Info: TSearchRec;
   aFilename, Param, aFileMask: String;
   i: Integer;
+  Verbose: Boolean;
 begin
   aFileMask:='t*.p*';
+  Verbose:=false;
   for i:=1 to ParamCount do begin
     Param:=ParamStr(i);
     if LeftStr(Param,length(fmparam))=fmparam then
       aFileMask:=copy(Param,length(fmparam)+1,100);
+    if Param='-v' then
+      Verbose:=true;
   end;
   Directory:=AppendPathDelim(Directory);
 
@@ -259,6 +250,8 @@ begin
       if faDirectory and Info.Attr>0 then continue;
       aFilename:=Info.Name;
       if not FilenameIsPascalUnit(aFilename) then continue;
+      if Verbose then
+        debugln(['TTestFindDeclaration.TestFiles File="',aFilename,'"']);
       FindDeclarations(Directory+aFilename);
     until FindNextUTF8(Info)<>0;
   end;
@@ -313,9 +306,9 @@ initialization
   GetTestRegistry.TestName := 'All tests';
   BugsTestSuite := TTestSuite.Create('Bugs');
   GetTestRegistry.AddTest(BugsTestSuite);
-  FindDeclarationTestSuite := TTestSuite.Create('Parser');
+  FindDeclarationTestSuite := TTestSuite.Create('FindDeclaration');
   GetTestRegistry.AddTest(FindDeclarationTestSuite);
 
-  AddToFindDeclarationTestSuite(TTestFindDeclaration);
+  FindDeclarationTestSuite.AddTestSuiteFromClass(TTestFindDeclaration);
 end.
 

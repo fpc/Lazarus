@@ -31,7 +31,7 @@ uses
   Classes, SysUtils, math, AVL_Tree, LazLogger, Forms, Controls, Graphics,
   Dialogs, StdCtrls, ComCtrls, ExtCtrls, Buttons, LCLType, LazUTF8,
   CodeToolsCfgScript, KeywordFuncLists, LazarusIDEStrConsts,
-  IDEOptionsIntf, CompOptsIntf, IDECommands, LazIDEIntf, Project, PackageDefs,
+  IDEOptionsIntf, CompOptsIntf, IDECommands, PackageDefs,
   CompilerOptions, Compiler, AllCompilerOptions, DefinesGui,
   EditorOptions, SynEdit, SynEditKeyCmds, SynCompletion, SourceSynEditor;
 
@@ -42,6 +42,7 @@ type
   TCompilerOtherOptionsFrame = class(TAbstractIDEOptionsEditor)
     btnDefines: TBitBtn;
     btnAllOptions: TBitBtn;
+    btnFcUTF8: TBitBtn;
     grpCustomOptions: TGroupBox;
     grpConditionals: TGroupBox;
     CondStatusbar: TStatusBar;
@@ -50,15 +51,18 @@ type
     memoCustomOptions: TMemo;
     procedure btnAllOptionsClick(Sender: TObject);
     procedure btnDefinesClick(Sender: TObject);
+    procedure btnFcUTF8Click(Sender: TObject);
     procedure CondSynEditChange(Sender: TObject);
     procedure CondSynEditKeyPress(Sender: TObject; var {%H-}Key: char);
     procedure CondSynEditProcessUserCommand(Sender: TObject;
       var Command: TSynEditorCommand; var {%H-}AChar: TUTF8Char; {%H-}Data: pointer);
     procedure CondSynEditStatusChange(Sender: TObject; {%H-}Changes: TSynStatusChanges);
+    procedure memoCustomOptionsChange(Sender: TObject);
   private
     FCompOptions: TBaseCompilerOptions;
     FIdleConnected: Boolean;
     FIsPackage: boolean;
+    FLocalOtherDefines: TStrings;
     FCompletionHistory: TStrings;
     FCompletionValues: TStrings;
     FDefaultVariables: TCTCfgScriptVariables;
@@ -99,8 +103,7 @@ type
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
-    function HasSupportForUtf8Rtl: Boolean;
-    function SupportUtf8Rtl: Boolean;
+    function NoUtf8RtlSupportYet: Boolean;
     property StatusMessage: string read FStatusMessage write SetStatusMessage;
     property DefaultVariables: TCTCfgScriptVariables read FDefaultVariables;
     property CompletionValues: TStrings read FCompletionValues;
@@ -155,11 +158,11 @@ begin
     EditForm.OptionsReader := FOptionsReader;
     EditForm.OptionsThread := FOptionsThread;
     EditForm.CustomOptions := memoCustomOptions.Lines;
-    EditForm.DefinesCheckList.Items.Assign(Project1.OtherDefines);
+    EditForm.DefinesCheckList.Items.Assign(FLocalOtherDefines);
     EditForm.UseComments := FUseComments;
     if EditForm.ShowModal = mrOK then
     begin
-      Project1.OtherDefines.Assign(EditForm.DefinesCheckList.Items);
+      FLocalOtherDefines.Assign(EditForm.DefinesCheckList.Items);
       // Synchronize with custom options memo
       EditForm.ToCustomOptions(memoCustomOptions.Lines);
       memoCustomOptions.Invalidate;
@@ -173,21 +176,23 @@ begin
   end;
 end;
 
-function TCompilerOtherOptionsFrame.HasSupportForUtf8Rtl: Boolean;
+procedure TCompilerOtherOptionsFrame.btnFcUTF8Click(Sender: TObject);
 begin
-  Result := Pos(FcUTF8, memoCustomOptions.Text) > 0;
-end;
-
-function TCompilerOtherOptionsFrame.SupportUtf8Rtl: Boolean;
-// Add a compiler flag for WideString/UnicodeString/UTF8String literals.
-// Returns true if the flag was really added and did not exist earlier.
-begin
-  Result := not HasSupportForUtf8Rtl;
-  if Result then
+  if NoUtf8RtlSupportYet then
     memoCustomOptions.Lines.Add(FcUTF8);
 end;
 
+function TCompilerOtherOptionsFrame.NoUtf8RtlSupportYet: Boolean;
+begin
+  Result := Pos(FcUTF8, memoCustomOptions.Text) = 0;
+end;
+
 // Events dealing with conditionals SynEdit :
+
+procedure TCompilerOtherOptionsFrame.memoCustomOptionsChange(Sender: TObject);
+begin
+  btnFcUTF8.Enabled := NoUtf8RtlSupportYet;
+end;
 
 procedure TCompilerOtherOptionsFrame.CondSynEditChange(Sender: TObject);
 begin
@@ -669,6 +674,7 @@ end;
 constructor TCompilerOtherOptionsFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  FLocalOtherDefines:=TStringList.Create;
   FCompletionValues:=TStringList.Create;
   FCompletionHistory:=TStringList.Create;
   fDefaultVariables:=TCTCfgScriptVariables.Create;
@@ -698,10 +704,11 @@ begin
   IdleConnected:=false;
   FreeAndNil(fOptionsThread);
   FreeAndNil(FOptionsReader);
+  FreeAndNil(fEngine);
+  FreeAndNil(fDefaultVariables);
   FreeAndNil(FCompletionHistory);
   FreeAndNil(FCompletionValues);
-  FreeAndNil(fDefaultVariables);
-  FreeAndNil(fEngine);
+  FreeAndNil(FLocalOtherDefines);
   inherited Destroy;
 end;
 
@@ -722,6 +729,8 @@ begin
   grpConditionals.Caption := lisConditionals;
   btnAllOptions.Caption := lisDlgAllOptions;
   btnDefines.Caption := lisDlgDefines;
+  btnFcUTF8.Caption := lisAddFcUTF8;
+  btnFcUTF8.Hint := lisAddFcUTF8Hint;
 end;
 
 procedure TCompilerOtherOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -749,7 +758,9 @@ begin
 
   // Custom Options
   memoCustomOptions.Text := FCompOptions.CustomOptions;
+  memoCustomOptions.OnChange(Nil);
   FUseComments := FCompOptions.UseCommentsInCustomOptions;
+  FLocalOtherDefines.Assign(FCompOptions.OtherDefines);
 
   UpdateStatusBar;
 end;
@@ -760,11 +771,13 @@ var
 begin
   //debugln(['TCompilerOtherOptionsFrame.WriteSettings ',DbgSName(AOptions)]);
   CurOptions := AOptions as TBaseCompilerOptions;
-  with CurOptions do
+  CurOptions.Conditionals := CondSynEdit.Lines.Text;
+  CurOptions.CustomOptions := memoCustomOptions.Text;
+  CurOptions.UseCommentsInCustomOptions := FUseComments;
+  if not CurOptions.OtherDefines.Equals(FLocalOtherDefines) then
   begin
-    Conditionals := CondSynEdit.Lines.Text;
-    CustomOptions := memoCustomOptions.Text;
-    UseCommentsInCustomOptions := FUseComments;
+    CurOptions.OtherDefines.Assign(FLocalOtherDefines);
+    CurOptions.IncreaseChangeStamp;
   end;
 end;
 

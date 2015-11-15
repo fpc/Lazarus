@@ -2919,10 +2919,25 @@ procedure GetTargetProcessors(const TargetCPU: string; aList: TStrings);
     aList.Add('mips32');
     aList.Add('mips32r2');
   end;
+  
+  procedure AVR;
+  begin
+    aList.Add('AVR1');
+    aList.Add('AVR2');
+    aList.Add('AVR25');
+    aList.Add('AVR3');
+    aList.Add('AVR31');
+    aList.Add('AVR35');
+    aList.Add('AVR4');
+    aList.Add('AVR5');
+    aList.Add('AVR51');
+    aList.Add('AVR6');
+  end;
 
 begin
   case TargetCPU of
     'arm'    : Arm;
+    'avr'    : AVR;
     'i386'   : Intel_i386;
     'm68k'   : ;
     'powerpc': PowerPC;

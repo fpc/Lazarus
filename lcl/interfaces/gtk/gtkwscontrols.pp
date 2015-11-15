@@ -209,27 +209,27 @@ begin
   Widget := PGtkWidget(AWinControl.Handle);
   if (Widget <> nil) and (GtkWidgetIsA(Widget, gtk_window_get_type)) then
   begin
-    with Geometry, AWinControl do
+    with Geometry do
     begin
-      if Constraints.MinWidth > 0 then
-        min_width := Constraints.MinWidth
+      if AWinControl.Constraints.MinWidth > 0 then
+        min_width := AWinControl.Constraints.MinWidth
       else
         min_width := 1;
-      if Constraints.MaxWidth > 0 then
-        max_width := Constraints.MaxWidth
+      if AWinControl.Constraints.MaxWidth > 0 then
+        max_width := AWinControl.Constraints.MaxWidth
       else
         max_width := 32767;
-      if Constraints.MinHeight > 0 then
-        min_height := Constraints.MinHeight
+      if AWinControl.Constraints.MinHeight > 0 then
+        min_height := AWinControl.Constraints.MinHeight
       else
         min_height := 1;
-      if Constraints.MaxHeight > 0 then
-        max_height := Constraints.MaxHeight
+      if AWinControl.Constraints.MaxHeight > 0 then
+        max_height := AWinControl.Constraints.MaxHeight
       else
         max_height := 32767;
 
-      base_width := Width;
-      base_height := Height;
+      base_width := AWinControl.Width;
+      base_height := AWinControl.Height;
       width_inc := 1;
       height_inc := 1;
       min_aspect := 0;

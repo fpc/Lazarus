@@ -2726,7 +2726,7 @@ begin
   repeat
     CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
     if CurAtom='' then break;
-    //DebugLn(['TReplaceImplicitTypes.FindNextImplicitType AAA1 ',CurAtom]);
+    //DebugLn(['TReplaceImplicitTypes.FindNextImplicitType atom ',CurAtom]);
     if CurAtom=':' then begin
       // var, const, out declaration
       CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
@@ -4253,8 +4253,8 @@ var
     Identifier:=@Tool.Src[Position+Count];
     AVLNode:=NeededPointerTypes.FindKey(Identifier,
                                         @CompareImplicitTypeStringAndName);
-    DebugLn(['AddNeededPointerType ',GetIdentifier(Identifier),' Position=',Position,' Count=',Count]);
-    DebugLn(['AddNeededPointerType AAA1 ',copy(Tool.Src,Position,100)]);
+    DebugLn(['AddNeededPointerType Identifier ',GetIdentifier(Identifier),' Position=',Position,' Count=',Count]);
+    DebugLn(['AddNeededPointerType Position ',copy(Tool.Src,Position,100)]);
     if AVLNode<>nil then begin
       Item:=TImplicitType(AVLNode.Data);
       if Item.MaxPosition<Count then

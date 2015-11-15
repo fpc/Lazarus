@@ -30,8 +30,7 @@ constructor TIndustrialBase.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
   FAntiAliasingMode := amDontCare;
-  with GetControlClassDefaultSize do
-    SetInitialBounds(0, 0, cx, cy);
+  SetInitialBounds(0, 0, GetControlClassDefaultSize.cx, GetControlClassDefaultSize.cy);
   ControlStyle := ControlStyle - [csSetCaption];
 end;
 

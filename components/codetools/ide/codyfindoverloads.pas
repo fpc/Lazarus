@@ -477,7 +477,8 @@ begin
   // hide progress bar and update stats
   ProgressBar1.Visible:=false;
   RefreshButton.Enabled:=true;
-  ResultsGroupBox.Caption:=Format('Units: %s', [IntToStr(FUsesGraph.FilesTree.Count)]);
+  ResultsGroupBox.Caption:=Format(crsUnitsS, [IntToStr(FUsesGraph.FilesTree.
+    Count)]);
 
   if FUsesGraph=nil then
     exit;

@@ -80,6 +80,7 @@ type
     function TryRadius(ADrawer: IChartDrawer): TRect;
   protected
     procedure GetLegendItems(AItems: TChartLegendItems); override;
+    property Radius: Integer read FRadius;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;

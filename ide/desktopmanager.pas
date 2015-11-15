@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Types,
-  LCLType, LCLProc, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  LCLIntf, LCLType, LCLProc, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons, ButtonPanel, Menus, ComCtrls, ActnList,
   // LazUtils
   Laz2_XMLCfg,
@@ -61,10 +61,10 @@ type
     procedure ExportBitBtnClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure HelpButtonClick(Sender: TObject);
     procedure ImportActionClick(Sender: TObject);
     procedure MoveUpDownActionClick(Sender: TObject);
     procedure RenameActionClick(Sender: TObject);
-    procedure SaveActionHint(var HintStr: string; var CanShow: Boolean);
     procedure SaveActionClick(Sender: TObject);
     procedure SetActiveDesktopActionClick(Sender: TObject);
     procedure SetDebugDesktopActionClick(Sender: TObject);
@@ -354,6 +354,11 @@ begin
   ExportBitBtn.Caption := lisExportSub;
   ImportBitBtn.LoadGlyphFromStock(idButtonOpen);
   ImportBitBtn.Caption := lisImport;
+
+  ButtonPanel1.HelpButton.TabOrder := 0;
+  ExportBitBtn.TabOrder := 1;
+  ImportBitBtn.TabOrder := 2;
+  ButtonPanel1.OKButton.TabOrder := 3;
 end;
 
 procedure TDesktopForm.FormShow(Sender: TObject);
@@ -364,6 +369,11 @@ begin
   xIndex := DesktopListBox.Items.IndexOf(EnvironmentOptions.ActiveDesktopName);
   if xIndex >= 0 then
     DesktopListBox.ItemIndex := xIndex;
+end;
+
+procedure TDesktopForm.HelpButtonClick(Sender: TObject);
+begin
+  OpenUrl('http://wiki.freepascal.org/IDE_Window:_Desktops');
 end;
 
 procedure TDesktopForm.RefreshList(SelectName: string);
@@ -434,11 +444,6 @@ begin
     Desktops[dskIndex].Name := xDesktopName;
     RefreshList(xDesktopName);
   end;
-end;
-
-procedure TDesktopForm.SaveActionHint(var HintStr: string; var CanShow: Boolean);
-begin
-
 end;
 
 procedure TDesktopForm.DeleteActionClick(Sender: TObject);

@@ -827,6 +827,9 @@ resourcestring
     'The new unit is not yet in the unit search path.%sAdd directory %s?';
   lisisAlreadyPartOfTheProject = '%s is already part of the Project.';
   lisRemoveFromProject = 'Remove from Project';
+  lisShouldTheComponentBeAutoCreatedWhenTheApplicationS = 'Should the '
+    +'component "%s" be auto created when the application starts?';
+  lisAddToStartupComponents = 'Add to startup components?';
   lisCreateAProjectFirst = 'Create a project first!';
   lisTheTestDirectoryCouldNotBeFoundSeeIDEOpt = 'The Test Directory '
     +'could not be found:%s"%s"%s(see IDE options)';
@@ -907,6 +910,10 @@ resourcestring
   lisConversionError = 'Conversion error';
   lisUnableToConvertComponentTextIntoBinaryFormat = 'Unable to convert '
     +'component text into binary format:%s%s';
+  lisInsufficientEncoding = 'Insufficient encoding';
+  lisUnableToConvertToEncoding = 'Unable to convert to encoding "%s"';
+  lisSavingFileAsLoosesCharactersAtLineColumn = 'Saving file "%s" as "%s" '
+    +'looses characters at line %s, column %s.';
   lisNOTECouldNotCreateDefineTemplateForLazarusSources = 'NOTE: Could not '
     +'create Define Template for Lazarus Sources';
   lisInvalidExpressionHintTheMakeResourcestringFunction = 'Invalid expression.%s'
@@ -1618,7 +1625,7 @@ resourcestring
   dlfMouseSimpleGutterLeftDown = 'Standard, All actions (breakpoint, fold) on mouse down';
   dlfMouseSimpleGutterLeftUp = 'Extended, Actions (breakpoint, fold) on mouse up. Selection on mouse down and move';
   dlfMouseSimpleGutterLeftUpRight = 'Extended, Actions, right gutter half only';
-  dlfMouseSimpleGutterLines = 'Use line numers to select lines';
+  dlfMouseSimpleGutterLines = 'Use line numbers to select lines';
   dlfMouseSimpleTextSect = 'Text';
   dlfMouseSimpleTextSectDrag = 'Drag selection (copy/paste)';
   dlfMouseSimpleRightMoveCaret = 'Right mouse includes caret move';
@@ -2980,6 +2987,8 @@ resourcestring
   srkmecMoveEditorRight       = 'Move editor right';
   srkmecMoveEditorLeftmost    = 'Move editor leftmost';
   srkmecMoveEditorRightmost   = 'Move editor rightmost';
+  srkmecPrevEditorInHistory   = 'Go to previous editor in history';
+  srkmecNextEditorInHistory   = 'Go to next editor in history';
 
   srkmecNextSharedEditor         = 'Go to next editor with same Source';
   srkmecPrevSharedEditor         = 'Go to prior editor with same Source';
@@ -3639,6 +3648,10 @@ resourcestring
   lisInvalidMacrosIn = 'Invalid macros in "%s"';
   lisAllBlocksLooksOk = 'All blocks look ok.';
   lisTheApplicationBundleWasCreatedFor = 'The Application Bundle was created for "%s"';
+
+  //codetools ChooseClassSectionDlg
+  lisChooseClassSectionDlgForMethodCaption = 'Insert new method to section';
+  lisEventMethodSectionLabel = 'Insert new event methods to section';
 
   // diff dialog
   lisDiffDlgFile1 = 'File1';
@@ -5605,7 +5618,8 @@ resourcestring
     +'not-found errors. This can take a minute.';
   lisActive = 'Active';
   lisBuildModes = 'Build modes';
-  lisSetUTF8InRTL = 'Set UTF-8 in RTL';
+  lisAddFcUTF8 = 'Add -FcUTF8';
+  lisAddFcUTF8Hint = 'May be needed if source files have non-ansistring literals.';
   lisInSession = 'In session';
   lisTheDefaultModeMustBeStoredInProject =
     'The default mode must be stored in project, not in session.';
@@ -5972,6 +5986,8 @@ resourcestring
   lisMMCustomOption = 'Custom Option';
   lisMMIDEMacro = 'IDE Macro';
   lisMMOverrideOutputDirectory = 'Override output directory (-FU)';
+  lisMMUseSystemEncoding = 'Use system encoding';
+  lisMMUseSystemEncodingHint = 'Disable support for UTF-8 default string encoding.';
   lisPriority = 'Priority';
   lisUDScanningUnits = 'Scanning: %s units ...';
   lisUDFile = 'File: %s';

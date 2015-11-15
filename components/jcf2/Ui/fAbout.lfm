@@ -1,16 +1,13 @@
 object frmAboutBox: TfrmAboutBox
   Left = 326
-  Height = 432
+  Height = 394
   Top = 235
   Width = 483
-  ActiveControl = bbOK
+  BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'About JEDI Code Format'
-  ClientHeight = 432
+  ClientHeight = 394
   ClientWidth = 483
-  Font.CharSet = ANSI_CHARSET
-  Font.Height = -15
-  Font.Name = 'Segoe UI'
   KeyPreview = True
   OnCreate = FormCreate
   OnKeyUp = FormKeyUp
@@ -18,12 +15,12 @@ object frmAboutBox: TfrmAboutBox
   LCLVersion = '1.5'
   object pnlClient: TPanel
     Left = 0
-    Height = 393
+    Height = 353
     Top = 0
     Width = 483
-    Align = alTop
+    Align = alClient
     BevelOuter = bvNone
-    ClientHeight = 393
+    ClientHeight = 353
     ClientWidth = 483
     TabOrder = 0
     object imgOpenSource: TImage
@@ -418,16 +415,12 @@ object frmAboutBox: TfrmAboutBox
       AnchorSideRight.Side = asrBottom
       Cursor = crHandPoint
       Left = 11
-      Height = 20
-      Top = 309
+      Height = 17
+      Top = 303
       Width = 462
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 8
       Caption = 'hlHomePage'
-      Font.CharSet = ANSI_CHARSET
-      Font.Color = clBlack
-      Font.Height = -15
-      Font.Name = 'Segoe UI'
       ParentColor = False
       ParentFont = False
       WordWrap = True
@@ -443,12 +436,12 @@ object frmAboutBox: TfrmAboutBox
       AnchorSideRight.Side = asrBottom
       Cursor = crHandPoint
       Left = 11
-      Height = 40
+      Height = 34
       Top = 261
       Width = 462
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 8
-      Caption = 'This program is open source software. It is released under the Mozilla '#13#10'Public licence (MPL).  http://www.mozilla.org/MPL'
+      Caption = 'This program is open source software. It is released under the Mozilla Public licence (MPL). http://www.mozilla.org/MPL'
       ParentColor = False
       WordWrap = True
       OnClick = lblMPLClick
@@ -491,17 +484,21 @@ object frmAboutBox: TfrmAboutBox
       TabOrder = 1
     end
   end
-  object bbOK: TButton
-    AnchorSideLeft.Control = pnlClient
-    AnchorSideLeft.Side = asrCenter
-    Left = 191
-    Height = 25
-    Top = 400
-    Width = 100
-    Cancel = True
-    Caption = 'OK'
-    Default = True
-    ModalResult = 1
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 29
+    Top = 359
+    Width = 471
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 1
+    ShowButtons = [pbOK]
+    ShowBevel = False
   end
 end

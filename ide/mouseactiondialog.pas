@@ -28,12 +28,11 @@ type
     CaretCheck: TCheckBox;
     chkUpRestrict: TCheckListBox;
     ClickBox: TComboBox;
+    DirCheck: TCheckBox;
     PaintBox1: TPaintBox;
-    Panel1: TPanel;
     PriorLabel: TLabel;
     OptBox: TComboBox;
     CtrlCheck: TCheckBox;
-    DirCheck: TCheckBox;
     CapturePanel: TPanel;
     OptLabel: TLabel;
     Opt2Spin: TSpinEdit;

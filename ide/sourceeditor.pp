@@ -252,8 +252,6 @@ type
     procedure EditorMouseMoved(Sender: TObject; Shift: TShiftState; X,Y:Integer);
     procedure EditorMouseDown(Sender: TObject; Button: TMouseButton;
           Shift: TShiftState; X,Y: Integer);
-    procedure EditorMouseUp(Sender: TObject; {%H-}Button: TMouseButton;
-          {%H-}Shift: TShiftState; {%H-}X,{%H-}Y: Integer);
     procedure EditorMouseWheel(Sender: TObject; Shift: TShiftState;
          WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
     procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -579,6 +577,8 @@ type
   );
   TSourceNotebookUpdateFlags = set of TSourceNotebookUpdateFlag;
 
+  TBrowseEditorTabHistoryDialog = class;
+
   { TSourceNotebook }
 
   TSourceNotebook = class(TSourceEditorWindowInterface)
@@ -612,12 +612,10 @@ type
     procedure SrcEditMenuFindInWindowClicked(Sender: TObject);
     procedure SrcEditMenuMoveToExistingWindowClicked(Sender: TObject);
     procedure SrcPopUpMenuPopup(Sender: TObject);
-    procedure UpdateSrcPopUpMenu(SrcEdit: TSourceEditor);
     procedure StatusBarClick(Sender: TObject);
     procedure StatusBarDblClick(Sender: TObject);
     procedure StatusBarDrawPanel({%H-}AStatusBar: TStatusBar; APanel: TStatusPanel;
       const ARect: TRect);
-    procedure UpdateTabPopUpMenu(ASrcEdit: TSourceEditor);
     procedure TabPopUpMenuPopup(Sender: TObject);
   private
     FNotebook: TExtendedNotebook;
@@ -645,6 +643,7 @@ type
     FProcessingCommand: boolean;
     FSourceEditorList: TFPList; // list of TSourceEditor
     FHistoryList: TFPList; // list of TSourceEditor page order for when a window closes
+    FHistoryDlg: TBrowseEditorTabHistoryDialog;
     FStopBtnIdx: Integer;
   private
     FUpdateTabAndPageTimer: TTimer;
@@ -836,6 +835,22 @@ type
     property NotebookPages: TStrings read GetNotebookPages;
   end;
 
+  { TBrowseEditorTabHistoryDialog }
+
+  TBrowseEditorTabHistoryDialog = class(TForm)
+  private
+    FNotebook: TSourceNotebook;
+    FEditorList: TListBox;
+
+    procedure MoveInList(aForward: Boolean);
+  protected
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure KeyUp(var Key: Word; Shift: TShiftState); override;
+    procedure DoCreate; override;
+  public
+    procedure Show(aForward: Boolean); reintroduce;
+  end;
+
   TSrcEditMangerHandlerType = (
     semhtCopyPaste
     );
@@ -1004,8 +1019,8 @@ type
     procedure SetActiveSourceNotebook(const AValue: TSourceNotebook);
     function GetSourceNotebook(Index: integer): TSourceNotebook;
     procedure SetActiveSrcEditor(const AValue: TSourceEditor);
-
-    procedure UpdatePopUpMenus(Sender: TObject);
+    procedure SrcEditMenuProcedureJumpGetCaption(Sender: TObject; var ACaption,
+      {%H-}AHint: string);
   public
     // Windows
     function  SourceWindowWithEditor(const AEditor: TSourceEditorInterface): TSourceNotebook;
@@ -1701,6 +1716,161 @@ var
   SE1: TSourceEditorInterface absolute SrcEdit;
 begin
   Result:=CompareFilenames(AnsiString(FileNameStr),SE1.FileName);
+end;
+
+{ TBrowseEditorTabHistoryDialog }
+
+procedure TBrowseEditorTabHistoryDialog.DoCreate;
+begin
+  inherited DoCreate;
+
+  Assert(Owner is TSourceNotebook);
+  FNotebook := TSourceNotebook(Owner);
+
+  Caption := lisCoolbarSourceTab;
+  BorderIcons:=[];
+  BorderStyle:=bsSizeable;
+  KeyPreview := True;
+
+  FEditorList := TListBox.Create(Self);
+  FEditorList.Parent := Self;
+  FEditorList.Align := alClient;
+  {$IFDEF MSWINDOWS}//bsNone seems to work on Windows only
+  FEditorList.BorderStyle := bsNone;
+  {$ENDIF}
+end;
+
+procedure TBrowseEditorTabHistoryDialog.KeyDown(var Key: Word;
+  Shift: TShiftState);
+  function CommandUsed(Command: TIDECommand): Boolean;
+  begin
+    Result :=
+     ((Command.ShortcutA.Key1 = Key) and (Command.ShortcutA.Shift1 = Shift)) or
+     ((Command.ShortcutA.Key2 = Key) and (Command.ShortcutA.Shift2 = Shift));
+  end;
+var
+  xPrev, xNext: TIDECommand;
+begin
+  xPrev := IDECommandList.FindIDECommand(ecPrevEditorInHistory);
+  if CommandUsed(xPrev) then
+  begin
+    MoveInList(True);
+    Key := 0;
+  end else
+  begin
+    xNext := IDECommandList.FindIDECommand(ecNextEditorInHistory);
+    if CommandUsed(xNext) then
+    begin
+      MoveInList(False);
+      Key := 0;
+    end;
+  end;
+  inherited KeyDown(Key, Shift);
+end;
+
+procedure TBrowseEditorTabHistoryDialog.MoveInList(aForward: Boolean);
+begin
+  if aForward then
+  begin
+    if FEditorList.ItemIndex < FEditorList.Items.Count-1 then
+      FEditorList.ItemIndex := FEditorList.ItemIndex + 1
+    else
+      FEditorList.ItemIndex := 0;
+  end else
+  begin
+    if FEditorList.ItemIndex > 0 then
+      FEditorList.ItemIndex := FEditorList.ItemIndex - 1
+    else
+      FEditorList.ItemIndex := FEditorList.Items.Count - 1;
+  end;
+end;
+
+procedure TBrowseEditorTabHistoryDialog.KeyUp(var Key: Word; Shift: TShiftState
+  );
+begin
+  if Key = VK_CONTROL then
+  begin
+    Close;
+    if FEditorList.ItemIndex >= 0 then
+      FNotebook.PageIndex := TCustomPage(FEditorList.Items.Objects[FEditorList.ItemIndex]).PageIndex;
+    if (FNotebook.ActiveEditor<>nil) and
+      FNotebook.ActiveEditor.EditorControl.CanSetFocus
+    then
+      FNotebook.ActiveEditor.EditorControl.SetFocus;
+    Key := 0;
+  end;
+
+  inherited KeyUp(Key, Shift);
+end;
+
+procedure TBrowseEditorTabHistoryDialog.Show(aForward: Boolean);
+  procedure PlaceMe;
+  var
+    xWidth, xHeight: Integer;
+  begin
+    xWidth := Canvas.TextWidth('m')*20;
+    if FEditorList.ItemHeight>0 then//ItemHeight can be 0 the first time
+      xHeight := Min(10, FEditorList.Items.Count)*FEditorList.ItemHeight
+    else
+      xHeight := 200;
+    {$IFNDEF MSWINDOWS}
+    xHeight := xHeight + GetSystemMetrics(SM_CYBORDER)*2;
+    {$ENDIF}
+
+    SetBounds(
+      (FNotebook.Left+FNotebook.BoundsRect.Right-xWidth) div 2,
+      (FNotebook.Top+FNotebook.BoundsRect.Bottom-xHeight) div 2,
+      xWidth,
+      xHeight);
+  end;
+
+var
+  I: Integer;
+  xPage: TCustomPage;
+  xIndex: TAvgLvlTree;
+begin
+  if FNotebook.PageCount <= 1 then
+    Exit;
+
+  FEditorList.Items.BeginUpdate;
+  xIndex := TAvgLvlTree.Create;
+  try
+    FEditorList.Items.Clear;
+    for I := 0 to FNotebook.FHistoryList.Count-1 do
+    begin
+      xPage := TCustomPage(FNotebook.FHistoryList[I]);
+      FEditorList.Items.AddObject(xPage.Caption, xPage);
+      xIndex.Add(xPage);
+    end;
+
+    //add pages not in history to the right of the active page
+    for I := FNotebook.PageIndex+1 to FNotebook.PageCount-1 do
+    begin
+      xPage := FNotebook.NoteBookPage[I];
+      if xIndex.Find(xPage)=nil then
+        FEditorList.Items.AddObject(xPage.Caption, xPage);
+    end;
+    //add pages not in history to the left of the active page
+    for I := 0 to FNotebook.PageIndex-1 do
+    begin
+      xPage := FNotebook.NoteBookPage[I];
+      if xIndex.Find(xPage)=nil then
+        FEditorList.Items.AddObject(xPage.Caption, xPage);
+    end;
+  finally
+    xIndex.Free;
+    FEditorList.Items.EndUpdate;
+  end;
+
+  if aForward then
+    FEditorList.ItemIndex := 1
+  else
+    FEditorList.ItemIndex := FEditorList.Count-1;
+
+  PlaceMe;
+  Visible := True;
+  PlaceMe;
+  BringToFront;
 end;
 
 { TSourceEditorHintWindowManager }
@@ -3869,6 +4039,8 @@ Begin
   If Assigned(OnEditorChange) then
     OnEditorChange(Sender);
   UpdatePageName;
+  if Changes * [scCaretX, scCaretY, scSelection] <> [] then
+    IDECommandList.PostponeUpdateEvents;
 end;
 
 function TSourceEditor.SelectionAvailable: boolean;
@@ -4802,7 +4974,6 @@ Begin
       OnMouseMove := @EditorMouseMoved;
       OnMouseWheel := @EditorMouseWheel;
       OnMouseDown := @EditorMouseDown;
-      OnMouseUp := @EditorMouseUp;
       OnClickLink := Manager.OnClickLink;
       OnMouseLink := Manager.OnMouseLink;
       OnKeyDown := @EditorKeyDown;
@@ -5247,8 +5418,6 @@ begin
     // Navigating with mousebuttons between editors (eg jump history on btn 4/5)
     // can trigger the old editor to be refocused (while not visible)
   end;
-
-  IDECommandList.ExecuteUpdateEvents;
 end;
 
 procedure TSourceEditor.EditorActivateSyncro(Sender: TObject);
@@ -5335,15 +5504,6 @@ begin
 //  debugln('MouseMove in Editor',X,',',Y);
   if Assigned(OnMouseMove) then
     OnMouseMove(Self,Shift,X,Y);
-  if Shift*[ssLeft,ssRight]<>[] then
-    IDECommandList.PostponeUpdateEvents;
-end;
-
-procedure TSourceEditor.EditorMouseUp(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
-begin
-  if Button=mbLeft then
-    IDECommandList.ExecuteUpdateEvents;
 end;
 
 procedure TSourceEditor.EditorMouseWheel(Sender: TObject; Shift: TShiftState;
@@ -6021,6 +6181,8 @@ begin
   FHistoryList := TFPList.Create;
   FSrcEditsSortedForFilenames := TAvgLvlTree.Create(@CompareSrcEditIntfWithFilename);
 
+  FHistoryDlg := TBrowseEditorTabHistoryDialog.CreateNew(Self);
+
   OnDropFiles := @SourceNotebookDropFiles;
   AllowDropFiles:=true;
 
@@ -6331,8 +6493,6 @@ begin
     end;
     ASrcEdit:=Editors[PageIndex];
 
-    UpdateTabPopUpMenu(ASrcEdit);
-
     {$IFnDEF SingleSrcWindow}
     // Multi win
     ToWindow(SrcEditMenuMoveToOtherWindowList, 'MoveToWindow',
@@ -6466,7 +6626,13 @@ begin
     Assert((ASrcEdit=GetActiveSE), 'TSourceNotebook.SrcPopUpMenuPopup: ASrcEdit<>GetActiveSE');
     EditorComp:=ASrcEdit.EditorComponent;
 
-    UpdateSrcPopUpMenu(ASrcEdit);
+    SrcEditMenuReadOnly.Checked:=ASrcEdit.ReadOnly;
+    SrcEditMenuShowLineNumbers.Checked := ASrcEdit.EditorComponent.Gutter.LineNumberPart.Visible;
+    SrcEditMenuDisableI18NForLFM.Visible:=false;
+
+    UpdateHighlightMenuItems(ASrcEdit);
+    UpdateEncodingMenuItems(ASrcEdit);
+    UpdateLineEndingMenuItems(ASrcEdit);
 
     // ask Codetools
     CurFilename:=ASrcEdit.FileName;
@@ -6741,132 +6907,6 @@ begin
   end;
   for i := 0 to EditorCount - 1 do
     Editors[i].UpdateProjectFile;
-end;
-
-procedure TSourceNotebook.UpdateSrcPopUpMenu(SrcEdit: TSourceEditor);
-var
-  se: TSourceEditor;
-  BookMarkID, BookMarkX, BookMarkY: integer;
-  MarkDesc, ShortFileName, CurFilename: String;
-  MarkMenuItem: TIDEMenuItem;
-  MainCodeBuf: TCodeBuffer;
-  i: integer;
-  SelAvail, SelAvailAndWritable, StringFound, IdentFound: Boolean;
-  CurWordAtCursor: String;
-  CodeTool: TCodeTool;
-  CaretXY: TCodeXYPosition;
-  CleanPos: integer;
-  CodeNode: TCodeTreeNode;
-  ProcNode: TCodeTreeNode;
-  ProcName, xToken: String;
-  xAttr: TSynHighlighterAttributes;
-begin
-  // Clipboard section:
-  SrcEditMenuCut.Enabled := SrcEdit.SelectionAvailable and not SrcEdit.ReadOnly;
-  SrcEditMenuCopy.Enabled := SrcEdit.SelectionAvailable;
-  SrcEditMenuPaste.Enabled := not SrcEdit.ReadOnly;
-  SrcEditMenuSelectAll.Enabled:= SrcEdit.SourceText<>'';
-
-  // Files section: Readonly, ShowLineNumbers
-  SrcEditMenuReadOnly.Checked:=SrcEdit.ReadOnly;
-  SrcEditMenuShowLineNumbers.Checked := SrcEdit.EditorComponent.Gutter.LineNumberPart.Visible;
-  SrcEditMenuDisableI18NForLFM.Visible:=false;
-
-  UpdateHighlightMenuItems(SrcEdit);
-  UpdateEncodingMenuItems(SrcEdit);
-  UpdateLineEndingMenuItems(SrcEdit);
-
-  // add context specific menu items
-  CurFilename:=SrcEdit.FileName;
-  ShortFileName:=ExtractFileName(CurFilename);
-  SelAvail:=SrcEdit.EditorComponent.SelAvail;
-  SelAvailAndWritable:=SelAvail and (not SrcEdit.ReadOnly);
-  CurWordAtCursor:=SrcEdit.GetWordAtCurrentCaret;
-
-  // ask Codetools
-  MainCodeBuf:=nil;
-  if FilenameIsPascalUnit(ShortFileName)
-  or (CompareFileExt(ShortFileName,'.inc',true)=0) then
-    MainCodeBuf:=CodeToolBoss.GetMainCode(SrcEdit.CodeBuffer)
-  else if FilenameIsPascalSource(ShortFileName) then
-    MainCodeBuf:=SrcEdit.CodeBuffer;
-  CodeTool:=nil;
-  CaretXY:=CleanCodeXYPosition;
-  CaretXY.Code:=SrcEdit.CodeBuffer;
-  CaretXY.X:=SrcEdit.CursorTextXY.X;
-  CaretXY.Y:=SrcEdit.CursorTextXY.Y;
-  CodeNode:=nil;
-  if MainCodeBuf<>nil then begin
-    CodeToolBoss.Explore(MainCodeBuf,CodeTool,true);
-    if CodeTool<>nil then begin
-      CodeTool.CaretToCleanPos(CaretXY,CleanPos);
-      CodeNode:=CodeTool.FindDeepestNodeAtPos(CleanPos,false);
-    end;
-  end;
-
-  StringFound:=False;
-  IdentFound:=False;
-  //it is faster to get information from SynEdit than from CodeTools
-  if SrcEdit.EditorComponent.GetHighlighterAttriAtRowCol(SrcEdit.EditorComponent.CaretXY, xToken, xAttr) then
-  begin
-    StringFound := xAttr = SrcEdit.EditorComponent.Highlighter.StringAttribute;
-    IdentFound := xAttr = SrcEdit.EditorComponent.Highlighter.IdentifierAttribute;
-  end;
-
-  // bookmarks
-  for BookMarkID:=0 to 9 do begin
-    MarkDesc:=' '+IntToStr(BookMarkID);
-    SelAvail:=False;
-    i := 0;
-    while i < Manager.SourceEditorCount do begin
-      se:=Manager.SourceEditors[i];
-      BookMarkX:=0; BookMarkY:=0;
-      if se.EditorComponent.GetBookMark(BookMarkID,BookMarkX,BookMarkY) then
-      begin
-        MarkDesc:=MarkDesc+': '+se.PageName+' ('+IntToStr(BookMarkY)+','+IntToStr(BookMarkX)+')';
-        SelAvail:=True;
-        break;
-      end;
-      inc(i);
-    end;
-    // goto book mark item
-    MarkMenuItem:=SrcEditSubMenuGotoBookmarks[BookMarkID];
-    MarkMenuItem.Caption:=uemBookmarkN+MarkDesc;
-    MarkMenuItem.Enabled:=SelAvail;
-    // set book mark item
-    MarkMenuItem:=SrcEditSubMenuToggleBookmarks[BookMarkID];
-    MarkMenuItem.Caption:=uemToggleBookmark+MarkDesc;
-  end;
-
-  SrcEditMenuFindDeclaration.Enabled:=CurWordAtCursor<>'';
-  if CurWordAtCursor<>'' then
-    SrcEditMenuFindDeclaration.Caption:=Format(lisFindDeclarationOf, [
-      CurWordAtCursor])
-  else
-    SrcEditMenuFindDeclaration.Caption:=uemFindDeclaration;
-  SrcEditMenuFindIdentifierReferences.Enabled:=IdentFound;
-  SrcEditMenuFindUsedUnitReferences.Enabled:=IdentFound;
-  SrcEditMenuFindOverloads.Enabled:=IdentFound;
-  ProcName:='';
-  if CodeNode<>nil then begin
-    ProcNode:=CodeNode.GetNodeOfType(ctnProcedure);
-    if ProcNode<>nil then
-      ProcName:=CodeTool.ExtractProcName(ProcNode,[]);
-  end;
-  SrcEditMenuProcedureJump.Enabled:=(ProcName<>'');
-  if ProcName<>'' then
-    SrcEditMenuProcedureJump.Caption:=Format(lisJumpToProcedure, [ProcName])
-  else
-    SrcEditMenuProcedureJump.Caption:=uemProcedureJump;
-  // enable refactoring menu items
-  SrcEditMenuEncloseSelection.Enabled := SelAvailAndWritable;
-  SrcEditMenuEncloseInIFDEF.Enabled := SelAvailAndWritable;
-  SrcEditMenuExtractProc.Enabled := SelAvailAndWritable;
-  SrcEditMenuInvertAssignment.Enabled := SelAvailAndWritable;
-  SrcEditMenuRenameIdentifier.Enabled:=IdentFound and (not SrcEdit.ReadOnly);
-  SrcEditMenuShowAbstractMethods.Enabled:=not SrcEdit.ReadOnly;
-  SrcEditMenuShowEmptyMethods.Enabled:=not SrcEdit.ReadOnly;
-  SrcEditMenuMakeResourceString.Enabled:=not SrcEdit.ReadOnly and StringFound;
 end;
 
 procedure TSourceNotebook.UpdateEncodingMenuItems(SrcEdit: TSourceEditor);
@@ -7263,8 +7303,10 @@ begin
           FPageIndex := APageIndex + 1
         else
           FPageIndex := APageIndex - 1;
-      FNoteBook.PageIndex := FPageIndex;
-      Include(FUpdateFlags,ufPageIndexChanged);
+      if FUpdateLock = 0 then
+        ApplyPageIndex
+      else
+        Include(FUpdateFlags,ufPageIndexChanged);
     end;
     NotebookPages.Delete(APageIndex);
   end else begin
@@ -7554,10 +7596,10 @@ begin
   then
     exit;
 
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.MoveEditor'){$ENDIF};
   IncUpdateLock;
   try
-    DestWin.DisableAutoSizing;
+    DestWin.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.MoveEdito DestWinr'){$ENDIF};
     DestWin.IncUpdateLock;
     try
       Edit := FindSourceEditorWithPageIndex(OldPageIndex);
@@ -7578,11 +7620,11 @@ begin
       DestWin.UpdateStatusBar;
       DestWin.NotebookPageChanged(nil); // make sure page SynEdit willl be visible
     finally
-      DestWin.EnableAutoSizing;
+      DestWin.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.MoveEdito DestWinr'){$ENDIF};
       DestWin.DecUpdateLock;
     end;
   finally
-    EnableAutoSizing;
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.MoveEditor'){$ENDIF};
     DecUpdateLock
   end;
 
@@ -8204,51 +8246,6 @@ begin
   CheckCurrentCodeBufferChanged;
 End;
 
-procedure TSourceNotebook.UpdateTabPopUpMenu(ASrcEdit: TSourceEditor);
-  {$IFnDEF SingleSrcWindow}
-  function ToWindow(WinForFind: Boolean = False): Boolean;
-  var
-    i, ThisWin, SharedEditor: Integer;
-    nb: TSourceNotebook;
-  begin
-    Result := False;
-    ThisWin := Manager.IndexOfSourceWindow(self);
-    for i := 0 to Manager.SourceWindowCount - 1 do begin
-      nb:=Manager.SourceWindows[i];
-      SharedEditor:=nb.IndexOfEditorInShareWith(ASrcEdit);
-      if (i <> ThisWin) and ((SharedEditor < 0) <> WinForFind) then begin
-        Result := True;
-        Break;
-      end;
-    end;
-  end;
-  {$ENDIF}
-
-var
-  NBAvail: Boolean;
-begin
-  {$IFnDEF SingleSrcWindow}
-  SrcEditMenuEditorLock.Checked := ASrcEdit.IsLocked;       // Editor locks
-  // Multi win
-  NBAvail := ToWindow();
-  SrcEditMenuMoveToNewWindow.Visible := not NBAvail;
-  SrcEditMenuMoveToNewWindow.Enabled := PageCount > 1;
-  SrcEditMenuMoveToOtherWindow.Visible := NBAvail;
-  SrcEditMenuMoveToOtherWindowNew.Enabled := PageCount > 1;
-
-  SrcEditMenuCopyToNewWindow.Visible := not NBAvail;
-  SrcEditMenuCopyToOtherWindow.Visible := NBAvail;
-
-  SrcEditMenuFindInOtherWindow.Enabled := NBAvail;
-  {$ENDIF}
-
-  // editor layout
-  SrcEditMenuMoveEditorLeft.Enabled:= (PageCount>1);
-  SrcEditMenuMoveEditorRight.Enabled:= (PageCount>1);
-  SrcEditMenuMoveEditorFirst.Enabled:= (PageCount>1) and (PageIndex>0);
-  SrcEditMenuMoveEditorLast.Enabled:= (PageCount>1) and (PageIndex<(PageCount-1));
-end;
-
 function TSourceNotebook.FindPageWithEditor(
   ASourceEditor: TSourceEditor):integer;
 var
@@ -8473,6 +8470,12 @@ begin
 
   ecPrevEditor :
     PrevEditor;
+
+  ecPrevEditorInHistory :
+    FHistoryDlg.Show(True);
+
+  ecNextEditorInHistory:
+    FHistoryDlg.Show(False);
 
   ecMoveEditorLeft:
     MoveActivePageLeft;
@@ -9710,6 +9713,56 @@ begin
   end;
 end;
 
+procedure TSourceEditorManager.SrcEditMenuProcedureJumpGetCaption(
+  Sender: TObject; var ACaption, AHint: string);
+var
+  ShortFileName, CurFilename: String;
+  MainCodeBuf: TCodeBuffer;
+  CodeTool: TCodeTool;
+  CaretXY: TCodeXYPosition;
+  CleanPos: integer;
+  CodeNode: TCodeTreeNode;
+  ProcNode: TCodeTreeNode;
+  ProcName: String;
+  SrcEdit: TSourceEditor;
+begin
+  // ask Codetools
+  SrcEdit:=GetActiveSE;
+  if not Assigned(SrcEdit) then Exit;
+  CurFilename:=SrcEdit.FileName;
+  ShortFileName:=ExtractFileName(CurFilename);
+  MainCodeBuf:=nil;
+  if FilenameIsPascalUnit(ShortFileName)
+  or (CompareFileExt(ShortFileName,'.inc',true)=0) then
+    MainCodeBuf:=CodeToolBoss.GetMainCode(SrcEdit.CodeBuffer)
+  else if FilenameIsPascalSource(ShortFileName) then
+    MainCodeBuf:=SrcEdit.CodeBuffer;
+  CodeTool:=nil;
+  CaretXY:=CleanCodeXYPosition;
+  CaretXY.Code:=SrcEdit.CodeBuffer;
+  CaretXY.X:=SrcEdit.CursorTextXY.X;
+  CaretXY.Y:=SrcEdit.CursorTextXY.Y;
+  CodeNode:=nil;
+  if MainCodeBuf<>nil then begin
+    CodeToolBoss.Explore(MainCodeBuf,CodeTool,true);
+    if CodeTool<>nil then begin
+      CodeTool.CaretToCleanPos(CaretXY,CleanPos);
+      CodeNode:=CodeTool.FindDeepestNodeAtPos(CleanPos,false);
+    end;
+  end;
+
+  ProcName:='';
+  if CodeNode<>nil then begin
+    ProcNode:=CodeNode.GetNodeOfType(ctnProcedure);
+    if ProcNode<>nil then
+      ProcName:=CodeTool.ExtractProcName(ProcNode,[]);
+  end;
+  if ProcName<>'' then
+    ACaption:=Format(lisJumpToProcedure, [ProcName])
+  else
+    ACaption:=uemProcedureJump;
+end;
+
 function TSourceEditorManager.IndexOfSourceWindowWithID(const AnID: Integer): Integer;
 begin
   Result := SourceWindowCount - 1;
@@ -10245,6 +10298,7 @@ begin
     SrcEditMenuFindDeclaration.Command := GetCommand(ecFindDeclaration);
     {%region *** Submenu: Find Section *** }
       SrcEditMenuProcedureJump.Command          := GetCommand(ecFindProcedureDefinition);
+      SrcEditMenuProcedureJump.OnRequestCaptionHint := @SrcEditMenuProcedureJumpGetCaption;
       SrcEditMenuFindNextWordOccurrence.Command := GetCommand(ecFindNextWordOccurrence);
       SrcEditMenuFindPrevWordOccurrence.Command := GetCommand(ecFindPrevWordOccurrence);
       SrcEditMenuFindInFiles.Command            := GetCommand(ecFindInFiles);
@@ -10472,34 +10526,6 @@ begin
     if CodeToolBoss.SourceChangeCache.BufferIsModified(SourceEditors[i].CodeBuffer)
     then
       SourceEditors[i].EndGlobalUpdate;
-  end;
-end;
-
-procedure TSourceEditorManager.UpdatePopUpMenus(Sender: TObject);
-var
-  ASrcNB: TSourceNotebook;
-  I: Integer;
-begin
-  if Screen.ActiveCustomForm is TSourceNotebook then
-  begin
-    ASrcNB:=TSourceNotebook(Screen.ActiveCustomForm);
-  end else
-  begin
-    ASrcNB:=nil;
-    for I := 0 to Screen.CustomFormZOrderCount-1 do
-    if Screen.CustomFormsZOrdered[I] is TSourceNotebook then
-    begin
-      ASrcNB:=TSourceNotebook(Screen.CustomFormsZOrdered[I]);
-      Break;
-    end;
-  end;
-  if (ASrcNB=nil) and (SourceWindowCount > 0) then
-    ASrcNB:=SourceWindows[0];
-
-  if (ASrcNB<>nil) and (ASrcNB.GetActiveSE<>nil) then
-  begin
-    ASrcNB.UpdateSrcPopUpMenu(ASrcNB.GetActiveSE);
-    ASrcNB.UpdateTabPopUpMenu(ASrcNB.GetActiveSE);
   end;
 end;
 
@@ -10841,13 +10867,10 @@ begin
 
   Application.AddOnIdleHandler(@OnIdle);
   Application.AddOnUserInputHandler(@OnUserInput);
-
-  IDECommandList.AddCustomUpdateEvent(@UpdatePopUpMenus);
 end;
 
 destructor TSourceEditorManager.Destroy;
 begin
-  IDECommandList.RemoveCustomUpdateEvent(@UpdatePopUpMenus);
   FreeAndNil(FHints);
   SourceEditorMarks.OnAction := nil;
   Application.RemoveAllHandlersOfObject(Self);
@@ -10868,7 +10891,14 @@ var
   i: Integer;
 begin
   Result := TSourceNotebook(TSourceNotebook.NewInstance);
+  {$IFDEF DebugDisableAutoSizing}
+  if DoDisableAutoSizing then
+    Result.DisableAutoSizing('TAnchorDockMaster Delayed')
+  else
+    Result.DisableAutoSizing('TSourceEditorManager.CreateNewWindow');
+  {$ELSE}
   Result.DisableAutoSizing;
+  {$ENDIF};
   if AnID > 0 then
     Result.Create(Self, AnID)
   else
@@ -10887,7 +10917,7 @@ begin
   end;
   FChangeNotifyLists[semWindowCreate].CallNotifyEvents(Result);
   if not DoDisableAutoSizing then
-    Result.EnableAutoSizing;
+    Result.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceEditorManager.CreateNewWindow'){$ENDIF};
 end;
 
 function TSourceEditorManager.SenderToEditor(Sender: TObject): TSourceEditor;

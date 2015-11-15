@@ -825,7 +825,7 @@ begin
     FClipRect.Bottom -= Bottom;
   end;
 
-  with ClipRect do begin;
+  with ClipRect do begin
     FTitle.Measure(ADrawer, 1, Left, Right, Top);
     FFoot.Measure(ADrawer, -1, Left, Right, Bottom);
   end;
@@ -836,6 +836,8 @@ begin
 
   try
     PrepareAxis(ADrawer);
+    if Legend.Visible and not Legend.UseSidebar then
+      Legend.Prepare(ldd, FClipRect);
     if (FPrevLogicalExtent <> FLogicalExtent) and Assigned(OnExtentChanging) then
       OnExtentChanging(Self);
     ADrawer.DrawingBegin(ARect);

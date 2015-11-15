@@ -181,8 +181,6 @@ type
     lihtGetFPCFrontEndPath, // called when the IDE gets the path of the 'fpc' front end tool
     lihtShowDesignerFormOfSource, // called after showing a designer form for code editor (AEditor can be nil!)
     lihtShowSourceOfActiveDesignerForm, // called after showing a code of designer form
-    lihtUpdateIDEComponentPalette,
-    lihtUpdateComponentPageControl,
     lihtChangeToolStatus//called when IDEToolStatus has changed (e.g. itNone->itBuilder etc.)
     );
     
@@ -307,12 +305,11 @@ type
     class function GetPrimaryConfigPath: String; virtual; abstract;
     class function GetSecondaryConfigPath: String; virtual; abstract;
     procedure CopySecondaryConfigFile(const AFilename: String); virtual; abstract;
-    procedure DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass = nil;
-      ACaption: String = ''); overload;
-    procedure DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass;
-      ACaption: String;
-      AOptionsFilter: array of TAbstractIDEOptionsClass;
-      ASettings: TIDEOptionsEditorSettings); overload; virtual; abstract;
+    function DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass = nil;
+      ACaption: String = ''): Boolean; overload;
+    function DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass;
+      ACaption: String; AOptionsFilter: array of TAbstractIDEOptionsClass;
+      ASettings: TIDEOptionsEditorSettings): Boolean; overload; virtual; abstract;
 
     // filenames, paths
     function CreateNewUniqueFilename(const Prefix, Ext: string;
@@ -340,10 +337,12 @@ type
     // progress and error messages
     function ShowProgress(const SomeText: string;
       Step, MaxStep: integer): boolean; virtual; abstract; // False if canceled by user
+    function GetSelectedCompilerMessage: TMessageLine; virtual; abstract;
     function DoJumpToCompilerMessage(FocusEditor: boolean;
                               Msg: TMessageLine = nil // if nil then it jumps to first message
                               ): boolean; virtual; abstract;
-    procedure DoJumpToNextError(DirectionDown: boolean); virtual; abstract;
+    procedure DoJumpToNextCompilerMessage(aMinUrgency: TMessageLineUrgency; DirectionDown: boolean); virtual; abstract;
+    procedure DoJumpToNextError(DirectionDown: boolean);
     procedure DoShowMessagesView(BringToFront: boolean = true); virtual; abstract;
     function DoCheckFilesOnDisk(Instantaneous: boolean = false): TModalResult; virtual; abstract;
     // call this after changing TargetOS/TargetCPU of the ActiveProject
@@ -437,16 +436,6 @@ type
     procedure RemoveHandlerGetFPCFrontEndPath(
                                           const Handler: TGetFPCFrontEndPath);
     function CallHandlerGetFPCFrontEndPath(Sender: TObject; var Path: string): boolean;
-    procedure AddHandlerOnUpdateIDEComponentPalette(
-                           const OnUpdateIDEComponentPaletteEvent: TNotifyEvent;
-                           AsLast: boolean = false);
-    procedure RemoveHandlerOnUpdateIDEComponentPalette(
-                               const OnUpdateIDEComponentPaletteEvent: TNotifyEvent);
-    procedure AddHandlerOnUpdateComponentPageControl(
-                           const OnUpdateComponentPageControlEvent: TNotifyEvent;
-                           AsLast: boolean = false);
-    procedure RemoveHandlerOnUpdateComponentPageControl(
-                               const OnUpdateComponentPageControlEvent: TNotifyEvent);
     procedure AddHandlerOnShowDesignerFormOfSource(
                            const OnShowDesignerFormOfSourceEvent: TShowDesignerFormOfSourceFunction;
                            AsLast: boolean = false);
@@ -631,6 +620,11 @@ begin
                                                  AComponentPaletteClassSelected);
 end;
 
+procedure TLazIDEInterface.DoJumpToNextError(DirectionDown: boolean);
+begin
+  DoJumpToNextCompilerMessage(mluError, DirectionDown);
+end;
+
 constructor TLazIDEInterface.Create(TheOwner: TComponent);
 begin
   LazarusIDE:=Self;
@@ -654,9 +648,10 @@ begin
   Result:=DoNewFile(NewFileDescriptor,NewFilename,NewSource,NewFlags,nil);
 end;
 
-procedure TLazIDEInterface.DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass; ACaption: String);
+function TLazIDEInterface.DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass;
+  ACaption: String): Boolean;
 begin
-  DoOpenIDEOptions(AEditor, ACaption, [], []);
+  Result := DoOpenIDEOptions(AEditor, ACaption, [], []);
 end;
 
 procedure TLazIDEInterface.DoShowSearchResultsView(Show: boolean;
@@ -676,8 +671,7 @@ begin
 end;
 
 procedure TLazIDEInterface.DoCallBuildingFinishedHandler(
-  HandlerType: TLazarusIDEHandlerType; Sender: TObject; BuildSuccessful: Boolean
-  );
+  HandlerType: TLazarusIDEHandlerType; Sender: TObject; BuildSuccessful: Boolean);
 var
   I: Integer;
   xMethod: TLazBuildingFinishedEvent;
@@ -820,8 +814,7 @@ begin
 end;
 
 procedure TLazIDEInterface.AddHandlerOnProjectDependenciesCompiled(
-  const OnProjDependenciesCompiledEvent: TModalResultFunction; AsLast: boolean
-    );
+  const OnProjDependenciesCompiledEvent: TModalResultFunction; AsLast: boolean);
 begin
   AddHandler(lihtProjectDependenciesCompiled,
              TMethod(OnProjDependenciesCompiledEvent),AsLast);
@@ -879,8 +872,7 @@ begin
 end;
 
 procedure TLazIDEInterface.AddHandlerOnProjectBuildingFinished(
-  const OnProjBuildingFinishedEvent: TLazBuildingFinishedEvent; AsLast: boolean
-  );
+  const OnProjBuildingFinishedEvent: TLazBuildingFinishedEvent; AsLast: boolean);
 begin
   AddHandler(lihtProjectBuildingFinished,TMethod(OnProjBuildingFinishedEvent),AsLast);
 end;
@@ -921,30 +913,6 @@ begin
     then exit(false);
   end;
   Result:=true;
-end;
-
-procedure TLazIDEInterface.AddHandlerOnUpdateIDEComponentPalette(
-  const OnUpdateIDEComponentPaletteEvent: TNotifyEvent; AsLast: boolean);
-begin
-  AddHandler(lihtUpdateIDEComponentPalette,TMethod(OnUpdateIDEComponentPaletteEvent),AsLast);
-end;
-
-procedure TLazIDEInterface.RemoveHandlerOnUpdateIDEComponentPalette(
-  const OnUpdateIDEComponentPaletteEvent: TNotifyEvent);
-begin
-  RemoveHandler(lihtUpdateIDEComponentPalette,TMethod(OnUpdateIDEComponentPaletteEvent));
-end;
-
-procedure TLazIDEInterface.AddHandlerOnUpdateComponentPageControl(
-  const OnUpdateComponentPageControlEvent: TNotifyEvent; AsLast: boolean);
-begin
-  AddHandler(lihtUpdateComponentPageControl,TMethod(OnUpdateComponentPageControlEvent),AsLast);
-end;
-
-procedure TLazIDEInterface.RemoveHandlerOnUpdateComponentPageControl(
-  const OnUpdateComponentPageControlEvent: TNotifyEvent);
-begin
-  RemoveHandler(lihtUpdateComponentPageControl,TMethod(OnUpdateComponentPageControlEvent));
 end;
 
 procedure TLazIDEInterface.AddHandlerOnShowDesignerFormOfSource(

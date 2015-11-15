@@ -1201,7 +1201,7 @@ begin
   NewSelection:=TControlSelection.Create;
   NewComponents:=TFPList.Create;
   try
-    Form.DisableAutoSizing;
+    Form.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TDesigner.DoInsertFromStream'){$ENDIF};
     try
 
       // read component stream from clipboard
@@ -1230,7 +1230,7 @@ begin
         FOnPastedComponents(Self,FLookupRoot);
 
     finally
-      Form.EnableAutoSizing;
+      Form.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TDesigner.DoInsertFromStream'){$ENDIF};
     end;
   finally
     NewComponents.Free;
@@ -2000,6 +2000,7 @@ var
   Button: TMouseButton;
   Handled: Boolean;
   MouseDownControl: TControl;
+  p: types.TPoint;
 begin
   FHintTimer.Enabled := False;
   FHintWindow.Visible := False;
@@ -2060,13 +2061,13 @@ begin
   if (MouseDownComponent <> nil) and (MouseDownComponent is TControl) then
   begin
     MouseDownControl:=TControl(MouseDownComponent);
-    with MouseDownControl.ScreenToClient(Form.ClientToScreen(MouseDownPos)) do
-      if (csDesignInteractive in MouseDownControl.ControlStyle)
-      or (MouseDownControl.Perform(CM_DESIGNHITTEST, TheMessage.Keys, Longint(SmallPoint(X, Y))) > 0) then
-      begin
-        TControlAccess(MouseDownComponent).MouseDown(Button, Shift, X, Y);
-        Exit;
-      end;
+    p:=MouseDownControl.ScreenToClient(Form.ClientToScreen(MouseDownPos));
+    if (csDesignInteractive in MouseDownControl.ControlStyle)
+    or (MouseDownControl.Perform(CM_DESIGNHITTEST, TheMessage.Keys, Longint(SmallPoint(p.X, p.Y))) > 0) then
+    begin
+      TControlAccess(MouseDownComponent).MouseDown(Button, Shift, p.X, p.Y);
+      Exit;
+    end;
   end;
 
   if Mediator<>nil then begin
@@ -2271,7 +2272,7 @@ var
        NewLeft,NewTop,NewWidth,NewHeight,DisableAutoSize);
     if NewComponent=nil then exit;
     if DisableAutoSize and (NewComponent is TControl) then
-      TControl(NewComponent).EnableAutoSizing;
+      TControl(NewComponent).EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TDesigner.MouseUpOnControl'){$ENDIF};
     TheFormEditor.FixupReferences(NewComponent); // e.g. frame references a datamodule
 
     // modified
@@ -2380,6 +2381,7 @@ var
   i, j: Integer;
   SelectedPersistent: TSelectedControl;
   MouseDownControl: TControl;
+  p: types.TPoint;
 begin
   FHintTimer.Enabled := False;
   FHintWindow.Visible := False;
@@ -2418,13 +2420,13 @@ begin
   if (MouseDownComponent <> nil) and (MouseDownComponent is TControl) then
   begin
     MouseDownControl:=TControl(MouseDownComponent);
-    with MouseDownControl.ScreenToClient(Form.ClientToScreen(MouseUpPos)) do
-      if (csDesignInteractive in MouseDownControl.ControlStyle)
-      or (MouseDownControl.Perform(CM_DESIGNHITTEST, TheMessage.Keys, Longint(SmallPoint(X, Y))) > 0) then
-      begin
-        TControlAccess(MouseDownComponent).MouseUp(Button, Shift, X, Y);
-        Exit;
-      end;
+    p:=MouseDownControl.ScreenToClient(Form.ClientToScreen(MouseUpPos));
+    if (csDesignInteractive in MouseDownControl.ControlStyle)
+    or (MouseDownControl.Perform(CM_DESIGNHITTEST, TheMessage.Keys, Longint(SmallPoint(p.X, p.Y))) > 0) then
+    begin
+      TControlAccess(MouseDownComponent).MouseUp(Button, Shift, p.X, p.Y);
+      Exit;
+    end;
   end;
 
   if Mediator<>nil then
@@ -2545,6 +2547,7 @@ var
   Handled: Boolean;
   MouseMoveComponent: TComponent;
   MouseMoveControl: TControl;
+  p: types.TPoint;
 begin
   GetMouseMsgShift(TheMessage, Shift, Button);
 
@@ -2573,13 +2576,13 @@ begin
   if (MouseMoveComponent <> nil) and (MouseMoveComponent is TControl) then
   begin
     MouseMoveControl:=TControl(MouseMoveComponent);
-    with MouseMoveControl.ScreenToClient(Form.ClientToScreen(LastMouseMovePos)) do
-      if (csDesignInteractive in MouseMoveControl.ControlStyle)
-      or (MouseMoveControl.Perform(CM_DESIGNHITTEST, TheMessage.Keys, Longint(SmallPoint(X, Y))) > 0) then
-      begin
-        TControlAccess(MouseMoveComponent).MouseMove(Shift, X, Y);
-        Exit;
-      end;
+    p:=MouseMoveControl.ScreenToClient(Form.ClientToScreen(LastMouseMovePos));
+    if (csDesignInteractive in MouseMoveControl.ControlStyle)
+    or (MouseMoveControl.Perform(CM_DESIGNHITTEST, TheMessage.Keys, Longint(SmallPoint(p.X, p.Y))) > 0) then
+    begin
+      TControlAccess(MouseMoveComponent).MouseMove(Shift, p.X, p.Y);
+      Exit;
+    end;
   end;
 
   if Mediator <> nil then
@@ -4105,7 +4108,7 @@ begin
       lisSelectedAndChildControls, mrCancel]);
   if not (MsgResult in [mrYes,mrYesToAll]) then exit;
   HasChanged:=false;
-  Form.DisableAutoSizing;
+  Form.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TDesigner.OnResetPopupMenuClick'){$ENDIF};
   ResetComps:=TFPList.Create;
   try
     for i:=0 to ControlSelection.Count-1 do begin
@@ -4127,7 +4130,7 @@ begin
     end;
   finally
     ResetComps.Free;
-    Form.EnableAutoSizing;
+    Form.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TDesigner.OnResetPopupMenuClick'){$ENDIF};
     if HasChanged then
       Modified;
   end;

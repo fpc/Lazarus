@@ -538,6 +538,7 @@ begin
     ecSynMacroPlay, ecSynMacroRecord,
     ecToggleFormUnit..ecViewThreads, ecViewHistory,
     ecNextEditor, ecPrevEditor, ecNextWindow, ecPrevWindow,
+    ecPrevEditorInHistory, ecNextEditorInHistory,
     ecGotoEditor1..ecGotoEditor0:
       aEvent := TSynSkippedEvent.Create;
     else
@@ -1036,9 +1037,12 @@ procedure TMacroListView.btnPlayClick(Sender: TObject);
 var
   i: Integer;
   M: TEditorMacro;
+  se: TSourceEditorInterface;
 begin
   if ActiveEditorMacro <> nil then exit;
   if lbRecordedView.ItemIndex < 0 then exit;
+  se := SourceEditorManagerIntf.ActiveEditor;
+  if se = nil then Exit;
 
   i := 1;
   if chkRepeat.Enabled then i := edRepeat.Value;
@@ -1048,7 +1052,7 @@ begin
   M := CurrentEditorMacroList.Macros[lbRecordedView.ItemIndex];
   try
     while i > 0 do begin
-      M.PlaybackMacro(TCustomSynEdit(SourceEditorManagerIntf.ActiveEditor.EditorControl));
+      M.PlaybackMacro(TCustomSynEdit(se.EditorControl));
       Application.ProcessMessages;
       dec(i);
       if not FIsPlaying then break;
@@ -1093,19 +1097,20 @@ begin
 end;
 
 procedure TMacroListView.btnRecordClick(Sender: TObject);
+var
+  se: TSourceEditorInterface;
 begin
-  if (ActiveEditorMacro = nil) and (EditorMacroForRecording.State = emStopped) then begin
-    EditorMacroForRecording.RecordMacro(TCustomSynEdit(SourceEditorManagerIntf.ActiveEditor.EditorControl));
-  end
+  se := SourceEditorManagerIntf.ActiveEditor;
+  if se = nil then Exit;
+  if (ActiveEditorMacro = nil) and (EditorMacroForRecording.State = emStopped) then
+    EditorMacroForRecording.RecordMacro(TCustomSynEdit(se.EditorControl))
   else
-  if EditorMacroForRecording.State = emRecording then begin
-    EditorMacroForRecording.Pause;
-  end
+  if EditorMacroForRecording.State = emRecording then
+    EditorMacroForRecording.Pause
   else
-  if EditorMacroForRecording.State = emRecPaused then begin
+  if EditorMacroForRecording.State = emRecPaused then
     EditorMacroForRecording.Resume;
-  end;
-  SourceEditorManagerIntf.ActiveEditor.EditorControl.SetFocus;
+  se.EditorControl.SetFocus;
 end;
 
 procedure TMacroListView.btnRecordStopClick(Sender: TObject);
@@ -1341,7 +1346,9 @@ begin
   chkRepeat.Enabled  := IsStopped and (not FIsPlaying);
   edRepeat.Enabled   := IsStopped and (not FIsPlaying);
 
-  btnRecord.Enabled  := (RecState in [emStopped, emRecPaused, emRecording]) and (not FIsPlaying);
+  btnRecord.Enabled := Assigned(SourceEditorManagerIntf.ActiveEditor)
+                  and (RecState in [emStopped, emRecPaused, emRecording])
+                  and (not FIsPlaying);
   btnRecordStop.Enabled := (not IsStopped) or FIsPlaying;
 
   if (RecState = emRecording) then

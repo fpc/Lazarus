@@ -210,6 +210,7 @@ type
     FUpdateLock: integer;
     FVerbosity: TPkgVerbosityFlags;
     FFindFileCache: TLazPackageGraphFileCache;
+    FChangeStamp: Int64;
     function CreateDefaultPackage: TLazPackage;
     function GetCount: Integer;
     function GetPackages(Index: integer): TLazPackage;
@@ -229,6 +230,9 @@ type
                     var Note: string): TModalResult;
     procedure InvalidateStateFile(APackage: TLazPackage);
     procedure OnExtToolBuildStopped(Sender: TObject);
+    procedure PkgModify(Sender: TObject);
+  protected
+    procedure IncChangeStamp;
   public
     constructor Create;
     destructor Destroy; override;
@@ -442,6 +446,7 @@ type
     property Packages[Index: integer]: TLazPackage read GetPackages; default; // see Count for the number
     property UpdateLock: integer read FUpdateLock;
     property Verbosity: TPkgVerbosityFlags read FVerbosity write FVerbosity;
+    property ChangeStamp: Int64 read FChangeStamp;
 
     // base packages
     property FCLPackage: TLazPackage read FFCLPackage;
@@ -915,6 +920,7 @@ begin
       XMLConfig:=TXMLConfig.Create(nil);
       NewPackage:=TLazPackage.Create;
       NewPackage.Filename:=AFilename;
+      NewPackage.OnModifySilently := @PkgModify;
       Result:=LoadXMLConfigFromCodeBuffer(AFilename,XMLConfig,
                          Code,[lbfUpdateFromDisk,lbfRevert],ShowAbort);
       if Result<>mrOk then exit;
@@ -926,7 +932,7 @@ begin
         exit(mrCancel);
       end;
     end;
-    if not NewPackage.MakeSense then begin
+    if not NewPackage.IsMakingSense then begin
       DebugLn('Error: (lazarus) invalid package file "'+AFilename+'".');
       exit(mrCancel);
     end;
@@ -1113,6 +1119,7 @@ begin
   if FUpdateLock<=0 then RaiseException('TLazPackageGraph.EndUpdate');
   dec(FUpdateLock);
   if FUpdateLock=0 then begin
+    IncChangeStamp;
     if Assigned(OnEndUpdate) then OnEndUpdate(Self,fChanged);
   end;
 end;
@@ -1668,6 +1675,11 @@ begin
   end;
 end;
 
+procedure TLazPackageGraph.PkgModify(Sender: TObject);
+begin
+  IncChangeStamp;
+end;
+
 function TLazPackageGraph.DependencyExists(Dependency: TPkgDependency;
   Flags: TFindPackageFlags): boolean;
 begin
@@ -1704,6 +1716,7 @@ function TLazPackageGraph.CreateNewPackage(const Prefix: string): TLazPackage;
 begin
   BeginUpdate(true);
   Result:=TLazPackage.Create;
+  Result.OnModifySilently:=@PkgModify;
   Result.Name:=CreateUniquePkgName(Prefix,nil);
   AddPackage(Result);
   EndUpdate;
@@ -1939,7 +1952,9 @@ begin
     AddRequiredDependency(SynEditPackage.CreateDependencyWithOwner(Result));
 
     Modified:=false;
+    OnModifySilently:=@PkgModify;
   end;
+  IncChangeStamp;
 end;
 
 function TLazPackageGraph.GetCount: Integer;
@@ -2122,7 +2137,7 @@ var
 begin
   for i:=0 to PkgList.Count-1 do begin
     PackageName:=PkgList[i];
-    if (PackageName='') or (not IsValidUnitName(PackageName)) then continue;
+    if not IsValidPkgName(PackageName) then continue;
     Dependency:=FindDependencyByNameInList(FirstAutoInstallDependency,
                                            pdlRequires,PackageName);
     //DebugLn('TLazPackageGraph.LoadAutoInstallPackages ',dbgs(Dependency),' ',PackageName);
@@ -5157,6 +5172,16 @@ begin
   end;
 end;
 
+procedure TLazPackageGraph.IncChangeStamp;
+begin
+  if FUpdateLock = 0 then
+  begin
+    {$push}{$R-}  // range check off
+    Inc(FChangeStamp);
+    {$pop}
+  end;
+end;
+
 procedure TLazPackageGraph.SortDependencyListTopologicallyOld(
   var FirstDependency: TPkgDependency; TopLevelFirst: boolean);
 // Sort dependency list topologically.
@@ -5680,7 +5705,7 @@ begin
 
     // nothing found via dependencies
     // search in links
-    PkgLink:=PkgLinks.FindLinkWithPkgName(APackage.Name,IgnoreFiles,true);
+    PkgLink:=PkgLinks.FindLinkWithPkgName(APackage.Name,IgnoreFiles);
     if PkgLink<>nil then begin
       Result:=PkgLink.GetEffectiveFilename;
       exit;
@@ -5729,6 +5754,7 @@ begin
       UsageOptions.UnitPath:='';
 
       Modified:=false;
+      OnModifySilently:=@PkgModify;
       EndUpdate;
     end;
     AddPackage(BrokenPackage);

@@ -1011,28 +1011,28 @@ end;
 
 function TPaperSize.GetDefaultPaperRect(const AName: string;
   var APaperRect:TPaperRect): Integer;
+var
+  PR: TPaperRect;
 begin
   Result := IndexOfDefaultPaper(AName);
   if Result>=0 then
-  with FInternalPapers[Result].PaperRect do begin
-    if FOwnedPrinter.Orientation in [poPortrait, poReversePortrait] then
-    begin
-      APaperRect.PhysicalRect := PhysicalRect;
-      APaperRect.WorkRect     := WorkRect;
-    end else
-    begin
-      APaperRect.PhysicalRect.Left   := 0;
-      APaperRect.PhysicalRect.Top    := 0;
-      APaperRect.PhysicalRect.Right  := PhysicalRect.Bottom;
-      APaperRect.Physicalrect.Bottom := PhysicalRect.Right;
+  PR:=FInternalPapers[Result].PaperRect;
+  if FOwnedPrinter.Orientation in [poPortrait, poReversePortrait] then
+  begin
+    APaperRect.PhysicalRect := PR.PhysicalRect;
+    APaperRect.WorkRect     := PR.WorkRect;
+  end else
+  begin
+    APaperRect.PhysicalRect.Left   := 0;
+    APaperRect.PhysicalRect.Top    := 0;
+    APaperRect.PhysicalRect.Right  := PR.PhysicalRect.Bottom;
+    APaperRect.Physicalrect.Bottom := PR.PhysicalRect.Right;
 
-      APaperRect.WorkRect.Left   := WorkRect.Top;
-      APaperRect.WorkRect.Top    := PhysicalRect.Right-WorkRect.Right;
-      APaperRect.WorkRect.Right  := WorkRect.Bottom;
-      APaperRect.WorkRect.Bottom := PhysicalRect.Right-Workrect.Left;
-    end;
+    APaperRect.WorkRect.Left   := PR.WorkRect.Top;
+    APaperRect.WorkRect.Top    := PR.PhysicalRect.Right-PR.WorkRect.Right;
+    APaperRect.WorkRect.Right  := PR.WorkRect.Bottom;
+    APaperRect.WorkRect.Bottom := PR.PhysicalRect.Right-PR.Workrect.Left;
   end;
-
 end;
 
 function TPaperSize.GetPhysPaperHeight: Integer;
@@ -1335,11 +1335,13 @@ begin
 end;
 
 function TPrinterCanvas.GetRightMargin: Integer;
+var
+  PR: TPaperRect;
 begin
   if (fRightMargin=0) and (fPrinter<>nil) then
   begin
-    with fPrinter.Papersize.PaperRect do
-      Result := PhysicalRect.Right-WorkRect.Right;
+    PR:=fPrinter.Papersize.PaperRect;
+    Result := PR.PhysicalRect.Right-PR.WorkRect.Right;
   end else
     Result := fRightMargin;
 end;

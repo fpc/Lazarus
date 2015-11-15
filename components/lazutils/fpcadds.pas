@@ -16,10 +16,6 @@ unit FPCAdds;
 
 {$mode objfpc}{$H+}{$inline on}
 
-{$IF defined(EnableUTF8RTL) and (FPC_FULLVERSION<20701)}
-  {$error UTF8 RTL requires fpc 2.7.1+}
-{$ENDIF}
-
 interface
 
 uses
@@ -68,11 +64,11 @@ begin
 {$ENDIF}
 end;
 
-{$IFDEF EnableUTF8RTL}
+{$IF (FPC_FULLVERSION >= 30000) AND NOT DEFINED(DisableUTF8RTL)}
 initialization
   SetMultiByteConversionCodePage(CP_UTF8);
   // SetMultiByteFileSystemCodePage(CP_UTF8); not needed, this is the default under Windows
   SetMultiByteRTLFileSystemCodePage(CP_UTF8);
-{$ENDIF}
+{$IFEND}
 
 end.

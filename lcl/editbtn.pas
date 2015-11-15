@@ -435,6 +435,7 @@ type
     procedure SetUseFormActivate(AValue: Boolean);
     procedure FormActivate(Sender: TObject); // Connects to owning form.
     procedure FormDeactivate(Sender: TObject);
+    function IsTextHintStored: Boolean;
   protected
     fNeedUpdate: Boolean;
     fIsFirstUpdate: Boolean;
@@ -449,8 +450,12 @@ type
     procedure SortAndFilter; virtual; abstract;
     procedure ApplyFilter(Immediately: Boolean = False);
     procedure ApplyFilterCore; virtual; abstract;
-    procedure MoveNext; virtual; abstract;
-    procedure MovePrev; virtual; abstract;
+    procedure MoveNext(ASelect: Boolean = False); virtual; abstract;
+    procedure MovePrev(ASelect: Boolean = False); virtual; abstract;
+    procedure MovePageUp(ASelect: Boolean = False); virtual; abstract;
+    procedure MovePageDown(ASelect: Boolean = False); virtual; abstract;
+    procedure MoveHome(ASelect: Boolean = False); virtual; abstract;
+    procedure MoveEnd(ASelect: Boolean = False); virtual; abstract;
     function ReturnKeyHandled: Boolean; virtual; abstract;
     function GetDefaultGlyphName: String; override;
   public
@@ -531,7 +536,7 @@ type
     property OnStartDrag;
     property OnUTF8KeyPress;
     property Text;
-    property TextHint;
+    property TextHint stored IsTextHintStored;
     property TextHintFontColor;
     property TextHintFontStyle;
   end;
@@ -1939,8 +1944,7 @@ begin
   TabStop := True;
   FocusOnButtonClick := False;
 
-  with GetControlClassDefaultSize do
-    SetInitialBounds(0, 0, CX, CY);
+  SetInitialBounds(0, 0, GetControlClassDefaultSize.CX, GetControlClassDefaultSize.CY);
 
   with FButton do
   begin
@@ -2153,10 +2157,25 @@ begin
   Handled:=False;
   if Shift = [] then
     case Key of
-      VK_UP:     begin MovePrev; Handled:=True; end;
-      VK_DOWN:   begin MoveNext; Handled:=True; end;
       VK_RETURN: Handled:=ReturnKeyHandled;
     end;
+
+  if (Shift = []) or (Shift = [ssShift]) then
+  begin
+    case Key of
+      VK_UP:     begin MovePrev(ssShift in Shift); Handled:=True; end;
+      VK_DOWN:   begin MoveNext(ssShift in Shift); Handled:=True; end;
+      VK_PRIOR:  begin MovePageUp(ssShift in Shift); Handled:=True; end;
+      VK_NEXT:   begin MovePageDown(ssShift in Shift); Handled:=True; end;
+    end;
+  end;
+  if (Shift = [ssCtrl]) or (Shift = [ssCtrl, ssShift]) then
+  begin
+    case Key of
+      VK_HOME:   begin MoveHome(ssShift in Shift); Handled:=True; end;
+      VK_END:    begin MoveEnd(ssShift in Shift); Handled:=True; end;
+    end;
+  end;
   if Handled then
     Key:=VK_UNKNOWN
   else
@@ -2212,6 +2231,11 @@ procedure TCustomControlFilterEdit.InvalidateFilter;
 begin
   fNeedUpdate:=true;
   IdleConnected:=true;
+end;
+
+function TCustomControlFilterEdit.IsTextHintStored: Boolean;
+begin
+  Result := TextHint <> rsFilter;
 end;
 
 procedure TCustomControlFilterEdit.ResetFilter;

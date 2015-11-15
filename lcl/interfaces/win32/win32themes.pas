@@ -461,8 +461,7 @@ begin
             W := GetSystemMetrics(SM_CXVSCROLL);
             H := GetSystemMetrics(SM_CYHSCROLL);
             InflateRect(EmptyRect, -2, -2);
-            with EmptyRect do
-              EmptyRect := Rect(Right - W, Bottom - H, Right, Bottom);
+            EmptyRect := Rect(EmptyRect.Right - W, EmptyRect.Bottom - H, EmptyRect.Right, EmptyRect.Bottom);
             FillRect(DC, EmptyRect, GetSysColorBrush(COLOR_BTNFACE));
           end;
         end;

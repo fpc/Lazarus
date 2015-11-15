@@ -213,6 +213,7 @@ type
 
   TIDESynEditor = class(TSynEdit)
   private
+    FCaretStamp: Int64;
     FShowTopInfo: boolean;
     FSyncroEdit: TSynPluginSyncroEdit;
     FTemplateEdit: TSynPluginTemplateEdit;
@@ -278,6 +279,7 @@ type
     property  IsInMultiCaretMainExecution: Boolean read GetIsInMultiCaretMainExecution;
     property  IsInMultiCaretRepeatExecution: Boolean read GetIsInMultiCaretRepeatExecution;
     property  OnMultiCaretBeforeCommand: TSynMultiCaretBeforeCommand read GetOnMultiCaretBeforeCommand write SetOnMultiCaretBeforeCommand;
+    property CaretStamp: Int64 read FCaretStamp;
   end;
 
   TIDESynHighlighterPasRangeList = class(TSynHighlighterPasRangeList)
@@ -1484,6 +1486,10 @@ begin
   inherited DoOnStatusChange(Changes);
   if Changes * [scTopLine, scLinesInWindow] <> []then
       SrcSynCaretChanged(nil);
+  {$push}{$R-}  // range check off
+  if Changes * [scCaretX, scCaretY, scSelection] <> []then
+    Inc(FCaretStamp);
+  {$pop}
 end;
 
 procedure TIDESynEditor.GetTopInfoMarkupForLine(Sender: TObject; Line: integer;

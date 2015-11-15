@@ -268,10 +268,8 @@ end;
 
 Operator := (Value : TFloatPoint) : TPoint;
 begin
-  With Result do begin
-    X := Trunc(SimpleRoundTo(Value.X, 0));
-    Y := Trunc(SimpleRoundTo(Value.Y, 0));
-  end;
+  Result.X := Trunc(SimpleRoundTo(Value.X, 0));
+  Result.Y := Trunc(SimpleRoundTo(Value.Y, 0));
 end;
 
 Operator := (Value : TPoint) : TFloatPoint;

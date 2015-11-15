@@ -813,13 +813,10 @@ begin
                 ComboBoxHeight := (RDest.Right - Min(23, (ComboBoxWidth div 2) + 1)) + 2;
                 if RDest.Right - ComboBoxHeight < 8 then
                   ComboBoxHeight := Area.X + (Area.Width div 4);
-                with RDest do
-                begin
-                  gtk_paint_arrow(Style, Window, State, Shadow, @ClipArea, Widget,
-                    PChar(Detail), GTK_ARROW_UP, True, Left + ((Right - Left) div 4), Top + ((Bottom - Top) div 2) - 5, Min(8, Right - Left), Min(8, Bottom - Top));
-                  gtk_paint_arrow(Style, Window, State, Shadow, @ClipArea, Widget,
-                    PChar(Detail), GTK_ARROW_DOWN, True, Left + ((Right - Left) div 4), Top + ((Bottom - Top) div 2) + 1, Min(8, Right - Left), Min(8, Bottom - Top));
-                end;
+                gtk_paint_arrow(Style, Window, State, Shadow, @ClipArea, Widget,
+                  PChar(Detail), GTK_ARROW_UP, True, RDest.Left + ((RDest.Right - RDest.Left) div 4), RDest.Top + ((RDest.Bottom - RDest.Top) div 2) - 5, Min(8, RDest.Right - RDest.Left), Min(8, RDest.Bottom - RDest.Top));
+                gtk_paint_arrow(Style, Window, State, Shadow, @ClipArea, Widget,
+                  PChar(Detail), GTK_ARROW_DOWN, True, RDest.Left + ((RDest.Right - RDest.Left) div 4), RDest.Top + ((RDest.Bottom - RDest.Top) div 2) + 1, Min(8, RDest.Right - RDest.Left), Min(8, RDest.Bottom - RDest.Top));
               end;
             end;
           gptBox:

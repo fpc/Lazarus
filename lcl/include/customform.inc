@@ -1259,18 +1259,15 @@ procedure TCustomForm.MoveToDefaultPosition;
       Y := (Y - Source.Top) + ABounds.Top;
 
       // check that we are still in the desired monitor
-      with Target.BoundsRect do
-      begin
-        if X + Width > ABounds.Right then
-          X := ABounds.Right - Width;
-        if X < ABounds.Left then
-          X := ABounds.Left;
+      if X + Width > ABounds.Right then
+        X := ABounds.Right - Width;
+      if X < ABounds.Left then
+        X := ABounds.Left;
 
-        if Y + Height > ABounds.Bottom then
-          Y := ABounds.Bottom - Height;
-        if Y < ABounds.Top then
-          Y := ABounds.Top;
-      end;
+      if Y + Height > ABounds.Bottom then
+        Y := ABounds.Bottom - Height;
+      if Y < ABounds.Top then
+        Y := ABounds.Top;
     end
     else
     begin

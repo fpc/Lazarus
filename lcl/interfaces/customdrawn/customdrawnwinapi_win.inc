@@ -2356,11 +2356,9 @@ begin
     Result := customdrawn_winproc.GetWindowInfo(Handle, @Info);
     if Result then
     begin
-      with Info.rcWindow do
-      begin
-        Width := Right - Left;
-        Height := Bottom - Top;
-      end;
+      R:=Info.rcWindow;
+      Width := R.Right - R.Left;
+      Height := R.Bottom - R.Top;
       Width := Width - 2 * Integer(Info.cxWindowBorders);
       Height := Height - 2 * Integer(Info.cyWindowBorders);
       ExcludeCaption;
@@ -2368,18 +2366,14 @@ begin
       Exit;
     end;
     Result := Boolean(Windows.GetWindowRect(lHandle, @R));
-    with R do
-    begin
-      Width := Right - Left;
-      Height := Bottom - Top;
-    end;
+    Width := R.Right - R.Left;
+    Height := R.Bottom - R.Top;
   end
-  else
-    with WP.rcNormalPosition do
-    begin
-      Width := Right - Left;
-      Height := Bottom - Top;
-    end;
+  else begin
+    R:=WP.rcNormalPosition;
+    Width := R.Right - R.Left;
+    Height := R.Bottom - R.Top;
+  end;
 
   // convert top level lcl window coordinaties to win32 coord
   Info.dwStyle := DWORD(GetWindowLong(lHandle, GWL_STYLE));

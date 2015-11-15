@@ -111,21 +111,24 @@ var
 begin
   Dlg:=TForm.Create(nil);
   try
-    Dlg.DisableAutoSizing;
-    Dlg.Position:=poScreenCenter;
-    Dlg.AutoSize:=true;
-    Dlg.Caption:=adrsGeneralDockingOptions;
+    Dlg.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('ShowAnchorDockOptions'){$ENDIF};
+    try
+      Dlg.Position:=poScreenCenter;
+      Dlg.AutoSize:=true;
+      Dlg.Caption:=adrsGeneralDockingOptions;
 
-    OptsFrame:=TAnchorDockOptionsFrame.Create(Dlg);
-    OptsFrame.Align:=alClient;
-    OptsFrame.Parent:=Dlg;
-    OptsFrame.Master:=ADockMaster;
+      OptsFrame:=TAnchorDockOptionsFrame.Create(Dlg);
+      OptsFrame.Align:=alClient;
+      OptsFrame.Parent:=Dlg;
+      OptsFrame.Master:=ADockMaster;
 
-    BtnPanel:=TButtonPanel.Create(Dlg);
-    BtnPanel.ShowButtons:=[pbOK, pbCancel];
-    BtnPanel.OKButton.OnClick:=@OptsFrame.OkClick;
-    BtnPanel.Parent:=Dlg;
-    Dlg.EnableAutoSizing;
+      BtnPanel:=TButtonPanel.Create(Dlg);
+      BtnPanel.ShowButtons:=[pbOK, pbCancel];
+      BtnPanel.OKButton.OnClick:=@OptsFrame.OkClick;
+      BtnPanel.Parent:=Dlg;
+    finally
+      Dlg.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('ShowAnchorDockOptions'){$ENDIF};
+    end;
     Result:=Dlg.ShowModal;
   finally
     Dlg.Free;

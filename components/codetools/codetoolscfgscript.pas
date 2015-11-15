@@ -452,7 +452,7 @@ begin
   CheckCTCSVariable(Left);
   CheckCTCSVariable(Right);
   {$ENDIF}
-  //debugln(['CompareCTCSVariables AAA1 Left=',dbgs(Left),' Right=',dbgs(Right)]);
+  //debugln(['CompareCTCSVariables START Left=',dbgs(Left),' Right=',dbgs(Right)]);
   Result:=false;
   Equal:=false;
   LeftIsLowerThanRight:=false;

@@ -917,11 +917,8 @@ begin
                           SystemParametersInfo(SPI_GETFOCUSBORDERWIDTH, 0, @FocusBorderWidth, 0);
                           Inc(Offset, FocusBorderWidth);
                         end;
-                        with Control.ClientRect do
-                        begin
-                          R.Left := Left + Offset;
-                          R.Right := Right - Offset;
-                        end;
+                        R.Left := Control.ClientRect.Left + Offset;
+                        R.Right := Control.ClientRect.Right - Offset;
                       end
                       else
                       begin
@@ -931,14 +928,10 @@ begin
                           SystemParametersInfo(SPI_GETFOCUSBORDERHEIGHT, 0, @FocusBorderHeight, 0);
                           Inc(Offset, FocusBorderHeight);
                         end;
-                        with Control.ClientRect do
-                        begin
-                          R.Top := Top + Offset;
-                          R.Bottom := Bottom - Offset;
-                        end;
+                        R.Top := Control.ClientRect.Top + Offset;
+                        R.Bottom := Control.ClientRect.Bottom - Offset;
                       end;
-                      with R do
-                        Rgn := CreateRectRgn(Left, Top, Right, Bottom);
+                      Rgn := CreateRectRgn(R.Left, R.Top, R.Right, R.Bottom);
                       SelectClipRgn(PNMCustomDraw(LParam)^.hDC, Rgn);
                       Details := ThemeServices.GetElementDetails(ttbThumbTics);
                       ThemeServices.DrawParentBackground(AWinControl.Handle, PNMCustomDraw(LParam)^.hDC, @Details, False);

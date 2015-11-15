@@ -108,7 +108,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.ClipboardFormatToMimeType(FormatID: TClipboardFormat): string;
 var
-  lFormat: TClipboardData;
+  lFormat: TCocoaClipboardData;
 begin
   {$IFDEF VerboseClipboard}
     DebugLn('TCocoaWidgetSet.ClipboardFormatToMimeType FormatID: ' + DbgS(FormatID));
@@ -131,7 +131,7 @@ function TCocoaWidgetSet.ClipboardGetData(ClipboardType: TClipboardType;
   FormatID: TClipboardFormat; Stream: TStream): boolean;
 var
   pasteboard: NSPasteboard;
-  lFormat: TClipboardData;
+  lFormat: TCocoaClipboardData;
   lNSStr: NSString;
   // for text
   lStr: String;
@@ -139,6 +139,11 @@ var
   lNSData: NSData;
   lNSbytes: PByte;
   i: Integer;
+  // for bitmap
+  image: TFPCustomImage;
+  lTmpStream: TMemoryStream;
+  reader: TFPCustomImageReader;
+  writer: TFPCustomImageWriter;
 begin
   Result := False;
   {$IFDEF VerboseClipboard}
@@ -173,6 +178,31 @@ begin
     lNSbytes := lNSData.bytes;
     for i := 0 to lNSData.length-1 do
       Stream.WriteByte(lNSbytes[i]);
+  end;
+  // In Cocoa images are stored as PNG, convert to BMP for LCL app usage
+  ccdtBitmap:
+  begin
+    lNSData := pasteboard.dataForType(lFormat.CocoaFormat);
+    if lNSData = nil then Exit;
+    lNSbytes := lNSData.bytes;
+
+    Image := TFPMemoryImage.Create(10, 10);
+    Reader := TFPReaderPNG.Create;
+    Writer := TFPWriterBMP.Create;
+    lTmpStream := TMemoryStream.Create;
+    try
+      for i := 0 to lNSData.length-1 do
+        lTmpStream.WriteByte(lNSbytes[i]);
+      lTmpStream.Position := 0;
+
+      Image.LoadFromStream(lTmpStream, Reader);
+      Image.SaveToStream(Stream, Writer);
+    finally
+      Image.Free;
+      Reader.Free;
+      Writer.Free;
+      lTmpStream.Free;
+    end;
   end;
   end;
 
@@ -234,7 +264,7 @@ function TCocoaWidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
 var
   pasteboard: NSPasteboard;
   i: Integer;
-  lCurFormat: TClipboardData;
+  lCurFormat: TCocoaClipboardData;
   DataStream: TMemoryStream;
   FormatToOwn: NSString;
   FormatToOwnArray: NSArray;
@@ -243,6 +273,11 @@ var
   lNSText: NSString;
   // non-text
   lNSData: NSData;
+  // for bitmap
+  image: TFPCustomImage;
+  lTmpStream: TMemoryStream;
+  reader: TFPCustomImageReader;
+  writer: TFPCustomImageWriter;
 begin
   Result := False;
   {$IFDEF VerboseClipboard}
@@ -260,7 +295,7 @@ begin
   try
     for i := 0 to FormatCount-1 do
     begin
-      lCurFormat := TClipboardData(Formats[i]);
+      lCurFormat := TCocoaClipboardData(Formats[i]);
       if lCurFormat = nil then Continue;
       DataStream.Position := 0;
       DataStream.Size := 0;
@@ -292,6 +327,31 @@ begin
         pasteboard.setData_forType(lNSData, lCurFormat.CocoaFormat);
         //lNSData.release; // this causes a crash
       end;
+      ccdtBitmap:
+      begin
+        FormatToOwn := lCurFormat.CocoaFormat;
+        FormatToOwnArray := NSArray.arrayWithObjects_count(@FormatToOwn, 1);
+
+        Image := TFPMemoryImage.Create(10, 10);
+        Reader := TFPReaderBMP.Create;
+        Writer := TFPWriterPNG.Create;
+        lTmpStream := TMemoryStream.Create;
+        try
+          DataStream.Position := 0;
+          Image.LoadFromStream(DataStream, Reader);
+          Image.SaveToStream(lTmpStream, Writer);
+          lTmpStream.Position := 0;
+          lNSData := NSData.dataWithBytes_length(lTmpStream.Memory, lTmpStream.Size);
+          pasteboard.declareTypes_owner(FormatToOwnArray, nil);
+          pasteboard.setData_forType(lNSData, lCurFormat.CocoaFormat);
+          //lNSData.release;
+        finally
+          Image.Free;
+          Reader.Free;
+          Writer.Free;
+          lTmpStream.Free;
+        end;
+      end;
       end;
     end;
   finally
@@ -310,7 +370,7 @@ end;
 function TCocoaWidgetSet.ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat;
 var
   i: Integer;
-  lCurData: TClipboardData;
+  lCurData: TCocoaClipboardData;
   lNSStr: NSString = nil;
   lDataType: TCocoaClipboardDataType;
 begin
@@ -319,7 +379,7 @@ begin
   // Check first if it was already registered
   for i := 0 to ClipboardFormats.Count-1 do
   begin
-    lCurData := TClipboardData(ClipboardFormats.Items[i]);
+    lCurData := TCocoaClipboardData(ClipboardFormats.Items[i]);
     if lCurData.MimeType = AMimeType then
     begin
       Result := TClipboardFormat(lCurData);
@@ -346,6 +406,11 @@ begin
     lNSStr := NSPasteboardTypePNG;
     lDataType := ccdtCocoaStandard;
   end;
+  'image/bmp':
+  begin
+    lNSStr := NSPasteboardTypePNG;
+    lDataType := ccdtBitmap;
+  end;
   else
     lNSStr := NSStringUtf8(AMimeType);
     lDataType := ccdtNonStandard;
@@ -353,7 +418,7 @@ begin
 
   if lNSStr <> nil then
   begin
-    lCurData := TClipboardData.Create(AMimeType, lNSStr, lDataType);
+    lCurData := TCocoaClipboardData.Create(AMimeType, lNSStr, lDataType);
     ClipboardFormats.Add(lCurData);
     Result := TClipboardFormat(lCurData);
   end;

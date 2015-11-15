@@ -82,8 +82,8 @@ var
   var
     n: TDOMElement;
   begin
-    n := Doc.CreateElement(name);
-    n.AppendChild(Doc.CreateTextNode(value));
+    n := Doc.CreateElement(UTF8Decode(name));
+    n.AppendChild(Doc.CreateTextNode(UTF8Decode(value)));
     env.AppendChild(n);
   end;
 begin

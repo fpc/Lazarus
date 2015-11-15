@@ -220,6 +220,8 @@ const
   ecCopyEditorNextWindow    = ecFirstLazarus + 345;
   ecCopyEditorPrevWindow    = ecFirstLazarus + 346;
   ecCopyEditorNewWindow     = ecFirstLazarus + 347;
+  ecPrevEditorInHistory     = ecFirstLazarus + 348;
+  ecNextEditorInHistory     = ecFirstLazarus + 349;
 
   ecGotoEditor1             = ecFirstLazarus + 350;
   ecGotoEditor2             = ecGotoEditor1 + 1;
@@ -546,6 +548,9 @@ type
     function GetUserCount: Integer;
     procedure SetOnExecute(const aOnExecute: TNotifyEvent);
     procedure SetOnExecuteProc(const aOnExecuteProc: TNotifyProcedure);
+    procedure SetEnabled(const AEnabled: Boolean);
+    procedure SetVisible(const AVisible: Boolean);
+    procedure SetCaption(const ACaption: string);
   protected
     function GetLocalizedName: string; virtual;
     procedure SetLocalizedName(const AValue: string); virtual;
@@ -578,6 +583,10 @@ type
     procedure DoOnUpdate; overload;
     procedure DoOnUpdate(Sender: TObject); overload;
   public
+    property Enabled: Boolean write SetEnabled;
+    property Visible: Boolean write SetVisible;
+    property Caption: string write SetCaption;
+  public
     property Name: String read FName;
     property Command: word read FCommand;// see the ecXXX constants above
     property LocalizedName: string read GetLocalizedName write SetLocalizedName;
@@ -599,9 +608,9 @@ type
   TIDECommands = class
   private
     FCustomUpdateEvents: TMethodList;
-    FUpdateTimer: TTimer;
+    FDontExecuteUpdateEventsUntil: QWord;
 
-    procedure UpdateTimerTimer(Sender: TObject);
+    procedure ApplicationOnIdle({%H-}Sender: TObject; var {%H-}Done: Boolean);
   protected
     function GetCategory(Index: integer): TIDECommandCategory; virtual; abstract;
   public
@@ -624,10 +633,11 @@ type
             IDEWindowClass: TCustomFormClass = nil): TFPList; virtual; abstract; // list of TIDECommand
     function CategoryCount: integer; virtual; abstract;
   public
-    procedure StartUpdateTimer;
-    procedure StopUpdateTimer;
+    procedure StartUpdateEvents;
+    procedure StopUpdateEvents;
 
     procedure ExecuteUpdateEvents;
+    procedure CancelPostponeUpdateEvents;
     procedure PostponeUpdateEvents;
 
     procedure AddCustomUpdateEvent(const aEvent: TNotifyEvent);
@@ -637,6 +647,8 @@ type
   end;
 
   // MenuItem and ButtonCommand inherit from SpecialCommand.
+
+  TGetHintCaptionEvent = procedure(Sender: TObject; var ACaption, AHint: string) of object;
 
   TIDESpecialCommand = class(TPersistent)
   private
@@ -649,6 +661,7 @@ type
     FImageIndex: Integer;
     FOnClickMethod: TNotifyEvent;
     FOnClickProc: TNotifyProcedure;
+    FOnRequestCaption: TGetHintCaptionEvent;
     FVisible: Boolean;
   protected
     function GetCaption: string; virtual;
@@ -662,6 +675,8 @@ type
     procedure SetVisible(const aVisible: Boolean); virtual;
     procedure SetOnClickMethod(const aOnClick: TNotifyEvent); virtual;
     procedure SetOnClickProc(const aOnClickProc: TNotifyProcedure); virtual;
+    procedure SetOnRequestCaption(
+      const aOnRequestCaptionHint: TGetHintCaptionEvent); virtual;
     procedure SetResourceName(const aResourceName: string); virtual;
     procedure ShortCutsUpdated(const {%H-}aShortCut, {%H-}aShortCutKey2: TShortCut); virtual;
   public
@@ -670,6 +685,7 @@ type
   public
     procedure DoOnClick; overload;
     procedure DoOnClick(Sender: TObject); virtual; overload;
+    function DoOnRequestCaption(Sender: TObject): Boolean; virtual;
   public
     function GetCaptionWithShortCut: String; virtual;
     function GetHintOrCaptionWithShortCut: String; virtual;
@@ -687,6 +703,7 @@ type
 
     property OnClick: TNotifyEvent read FOnClickMethod write SetOnClickMethod;
     property OnClickProc: TNotifyProcedure read FOnClickProc write SetOnClickProc;
+    property OnRequestCaptionHint: TGetHintCaptionEvent read FOnRequestCaption write SetOnRequestCaption;
   end;
 
   TIDESpecialCommandEnumerator = class
@@ -796,7 +813,6 @@ procedure CreateStandardIDECommandScopes;
 
 function CompareIDEShortCuts(Data1, Data2: Pointer): integer;
 function CompareIDEShortCutKey1s(Data1, Data2: Pointer): integer;
-
 function IdentToIDECommand(const Ident: string; var Cmd: longint): boolean;
 function IDECommandToIdent(Cmd: longint; var Ident: string): boolean;
 procedure GetIDEEditorCommandValues(Proc: TGetStrProc);
@@ -1206,6 +1222,14 @@ begin
   Change;
 end;
 
+procedure TIDECommand.SetVisible(const AVisible: Boolean);
+var
+  xUser: TIDESpecialCommand;
+begin
+  for xUser in FUsers do
+    xUser.Visible := AVisible;
+end;
+
 procedure TIDECommand.UserAdded(const aUser: TIDESpecialCommand);
 begin
   FUsers.Add(aUser);
@@ -1262,7 +1286,7 @@ procedure TIDECommand.SetOnExecute(const aOnExecute: TNotifyEvent);
 var
   xUser: TIDESpecialCommand;
 begin
-  if FOnExecute = aOnExecute then Exit;
+  if CompareMethods(TMethod(FOnExecute), TMethod(aOnExecute)) then Exit;
   FOnExecute := aOnExecute;
   for xUser in FUsers do
     xUser.OnClick := FOnExecute;
@@ -1290,6 +1314,14 @@ begin
     Category.Add(Self);
   //DebugLn('TIDECommand.SetCategory ',dbgs(Assigned(OnChange)),' ',Name);
   Change;
+end;
+
+procedure TIDECommand.SetEnabled(const AEnabled: Boolean);
+var
+  xUser: TIDESpecialCommand;
+begin
+  for xUser in FUsers do
+    xUser.Enabled := AEnabled;
 end;
 
 function TIDECommand.AsShortCut: TShortCut;
@@ -1379,6 +1411,14 @@ begin
           and (CompareIDEShortCuts(@FShortcutB,@ACommand.FShortcutB)=0);
 end;
 
+procedure TIDECommand.SetCaption(const ACaption: string);
+var
+  xUser: TIDESpecialCommand;
+begin
+  for xUser in FUsers do
+    xUser.Caption := ACaption;
+end;
+
 procedure TIDECommand.ClearShortcutA;
 begin
   ShortcutA:=CleanIDEShortCut;
@@ -1416,23 +1456,24 @@ begin
   FCustomUpdateEvents.Add(TMethod(aEvent));
 end;
 
+procedure TIDECommands.ApplicationOnIdle(Sender: TObject; var Done: Boolean);
+begin
+  if (FDontExecuteUpdateEventsUntil > 0) and (GetTickCount64 < FDontExecuteUpdateEventsUntil) then
+    Exit;
+
+  ExecuteUpdateEvents;
+  FDontExecuteUpdateEventsUntil := 0;
+end;
+
 constructor TIDECommands.Create;
 begin
   inherited Create;
 
   FCustomUpdateEvents := TMethodList.Create;
-
-  //Updating the commands needs time and CPU power (codetools are called for some commands)
-  // -> use TTimer with a reasonable interval and not Application.OnIdle
-  FUpdateTimer := TTimer.Create(nil);
-  FUpdateTimer.Interval := 500;
-  FUpdateTimer.OnTimer := @UpdateTimerTimer;
-  FUpdateTimer.Enabled := False;
 end;
 
 destructor TIDECommands.Destroy;
 begin
-  FUpdateTimer.Free;
   FCustomUpdateEvents.Free;
   inherited Destroy;
 end;
@@ -1453,18 +1494,14 @@ begin
     Categories[i].DoOnUpdate;
 end;
 
-procedure TIDECommands.UpdateTimerTimer(Sender: TObject);
+procedure TIDECommands.CancelPostponeUpdateEvents;
 begin
-  ExecuteUpdateEvents;
+  FDontExecuteUpdateEventsUntil := 0;
 end;
 
 procedure TIDECommands.PostponeUpdateEvents;
 begin
-  if FUpdateTimer.Enabled then
-  begin
-    FUpdateTimer.Enabled := False;
-    FUpdateTimer.Enabled := True;
-  end;
+  FDontExecuteUpdateEventsUntil := GetTickCount64 + 500;
 end;
 
 procedure TIDECommands.RemoveCustomUpdateEvent(const aEvent: TNotifyEvent);
@@ -1472,14 +1509,14 @@ begin
   FCustomUpdateEvents.Remove(TMethod(aEvent));
 end;
 
-procedure TIDECommands.StartUpdateTimer;
+procedure TIDECommands.StartUpdateEvents;
 begin
-  FUpdateTimer.Enabled := True;
+  Application.AddOnIdleHandler(@ApplicationOnIdle, False);
 end;
 
-procedure TIDECommands.StopUpdateTimer;
+procedure TIDECommands.StopUpdateEvents;
 begin
-  FUpdateTimer.Enabled := False;
+  Application.RemoveOnIdleHandler(@ApplicationOnIdle);
 end;
 
 { TIDESpecialCommand }
@@ -1504,15 +1541,30 @@ end;
 procedure TIDESpecialCommand.DoOnClick(Sender: TObject);
 begin
   if Assigned(FOnClickProc) then
-    FOnClickProc(Self)
+    FOnClickProc(Sender)
   else
   if Assigned(FOnClickMethod) then
-    FOnClickMethod(Self);
+    FOnClickMethod(Sender);
 end;
 
 procedure TIDESpecialCommand.DoOnClick;
 begin
   DoOnClick(Self);
+end;
+
+function TIDESpecialCommand.DoOnRequestCaption(Sender: TObject): Boolean;
+var
+  xCaption, xHint: string;
+begin
+  Result := Assigned(FOnRequestCaption);
+  if Result then
+  begin
+    xCaption := Caption;
+    xHint := Hint;
+    FOnRequestCaption(Sender, xCaption, xHint);
+    Caption := xCaption;
+    Hint := xHint;
+  end;
 end;
 
 function TIDESpecialCommand.GetCaption: string;
@@ -1641,7 +1693,7 @@ end;
 
 procedure TIDESpecialCommand.SetOnClickMethod(const aOnClick: TNotifyEvent);
 begin
-  if FOnClickMethod = aOnClick then Exit;
+  if CompareMethods(TMethod(FOnClickMethod), TMethod(aOnClick)) then Exit;
   FOnClickMethod := aOnClick;
   if FCommand<> nil then
     FCommand.OnExecute:=aOnClick;
@@ -1653,6 +1705,19 @@ begin
   FOnClickProc := aOnClickProc;
   if FCommand<> nil then
     FCommand.OnExecuteProc:=aOnClickProc;
+end;
+
+procedure TIDESpecialCommand.SetOnRequestCaption(
+  const aOnRequestCaptionHint: TGetHintCaptionEvent);
+var
+  xUser: TIDESpecialCommand;
+begin
+  if FOnRequestCaption = aOnRequestCaptionHint then Exit;
+  FOnRequestCaption := aOnRequestCaptionHint;
+  if FCommand<> nil then
+    for xUser in FCommand.FUsers do
+      if xUser <> Self then
+        xUser.OnRequestCaptionHint:=aOnRequestCaptionHint;
 end;
 
 procedure TIDESpecialCommand.SetResourceName(const aResourceName: string);
@@ -1745,7 +1810,7 @@ begin
 end;
 
 const
-  IDEEditorCommandStrs: array[0..310] of TIdentMapEntry = (
+  IDEEditorCommandStrs: array[0..312] of TIdentMapEntry = (
   // search
     (Value: ecFind;                                   Name: 'ecFind'),
     (Value: ecFindAgain;                              Name: 'ecFindAgain'),
@@ -1915,6 +1980,8 @@ const
     (Value: ecCopyEditorNextWindow;                   Name: 'ecCopyEditorNextWindow'),
     (Value: ecCopyEditorPrevWindow;                   Name: 'ecCopyEditorPrevWindow'),
     (Value: ecCopyEditorNewWindow;                    Name: 'ecCopyEditorNewWindow'),
+    (Value: ecPrevEditorInHistory;                    Name: 'ecPrevEditorInHistory'),
+    (Value: ecNextEditorInHistory;                    Name: 'ecNextEditorInHistory'),
 
     (Value: ecGotoEditor1;                            Name: 'ecGotoEditor1'),
     (Value: ecGotoEditor2;                            Name: 'ecGotoEditor2'),

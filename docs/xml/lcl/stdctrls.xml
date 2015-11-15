@@ -5021,6 +5021,9 @@ Qt and Carbon have not implemented it.</descr>
       <notes><note>~remove this?</note><note>or to write the text it contains -&gt; Font.Color!???</note><note>of?</note><note>???</note><note>here???</note><note>OnDragOver?</note>
         </notes>
       </topic>
+    <element name="TCustomEdit.TextHint"><short>Default text shown when the Text property is empty and control has no focus.</short><descr>TextHint fills the TCustomEdit with the value assigned to it, whenever the control's Text property is empty and the control does not have focus.
+Hint only (and always if showhint = true) displays a baloontip when the mouse is over the control.</descr>
+      </element>
     </module>
     <!-- StdCtrls -->
   </package>

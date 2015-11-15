@@ -16,7 +16,7 @@ unit ToolBarIntf;
 interface
 
 uses
-  Classes, SysUtils, ComCtrls, IDECommands, MenuIntf;
+  Classes, SysUtils, Controls, ComCtrls, IDECommands, MenuIntf;
 
 type
   TIDEToolButton = class;
@@ -51,6 +51,8 @@ type
   TIDEToolButton = class(TToolButton)
   private
     FItem: TIDEButtonCommand;
+  protected
+    procedure DoOnShowHint(HintInfo: PHintInfo); override;
   public
     procedure DoOnAdded; virtual;
 
@@ -473,6 +475,13 @@ end;
 procedure TIDEToolButton.DoOnAdded;
 begin
   //override in descendants
+end;
+
+procedure TIDEToolButton.DoOnShowHint(HintInfo: PHintInfo);
+begin
+  inherited DoOnShowHint(HintInfo);
+  if Assigned(FItem) and FItem.DoOnRequestCaption(Self) then
+    HintInfo^.HintStr := FItem.GetHintOrCaptionWithShortCut;
 end;
 
 end.

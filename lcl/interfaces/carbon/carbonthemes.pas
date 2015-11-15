@@ -601,11 +601,8 @@ begin
         WindowShape:=nil;
         HIThemeGetWindowShape(BtnRect, WindowDrawInfo, kWindowCloseBoxRgn, WindowShape);
         HIShapeGetBounds(WindowShape, BtnRect);
-        with BtnRect.size do
-        begin
-          Result.cx := Round(width);
-          Result.cy := Round(height);
-        end;
+        Result.cx := Round(BtnRect.size.width);
+        Result.cy := Round(BtnRect.size.height);
       end else
         Result := inherited GetDetailSize(Details);
   else

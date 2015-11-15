@@ -574,8 +574,10 @@ var
   NewEntry: PInterfaceIdentCacheEntry;
   OldNode: TAVLTreeNode;
 begin
+  if (Identifier<>nil) and (Identifier^ = '&') then
+    Inc(Identifier);
   if (GetIdentLen(Identifier)=0) then
-    RaiseCatchableException('');
+    RaiseCatchableException('TInterfaceIdentifierCache.Add: empty identifier');
   if FItems=nil then
     FItems:=TAVLTree.Create(@CompareTInterfaceIdentCacheEntry);
   OldNode:=FindAVLNode(Identifier);

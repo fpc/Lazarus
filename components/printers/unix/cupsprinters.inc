@@ -255,7 +255,7 @@ begin
     if not CUPSLibInstalled then Exit;
     fcupsHttp:=httpConnect(cupsServer(),ippPort());
     if not Assigned(fcupsHttp) then
-       raise Exception.Create('Unable to contact server!');
+       raise Exception.Create('Unable to contact server: '+GetLastError);
   end;
 end;
 
@@ -467,33 +467,42 @@ begin
 end;
 {$ENDIF}
 
-//Print the file aFileName with a selected printer an options
+//Print the file aFileName with a selected printer and options
 function TCUPSPrinter.PrintFile(aFileName: String): longint;
 var
   aPrinterName : string;
 begin
   Result:=-1;
+  //debugln(['TCUPSPrinter.PrintFile START ',aFileName]);
+  if aFileName='' then
+    raise Exception.Create('TCUPSPrinter.PrintFile missing Filename');
   if not CUPSLibInstalled then Exit;
   aFileName:=ExpandFileNameUTF8(aFileName);
 
   if (Printers.Count>0) then
   begin
     if not Assigned(fcupsOptions) then
-        SetOptionsOfPrinter;
+      SetOptionsOfPrinter;
 
     if Assigned(fcupsPrinter) then
-       aPrinterName:=fcupsPrinter^.Name
+      aPrinterName:=fcupsPrinter^.Name
     else
-       aPrinterName:='';
+      aPrinterName:='';
 
     {$IFDEF DebugCUPS}
     DebugOptions;
+    debugln(['TCUPSPrinter.PrintFile aPrinterName="',aPrinterName,'" aFileName="',aFileName,'" Size=',FileSizeUtf8(aFileName)]);
     {$ENDIF}
 
     Result:=cupsdyn.cupsPrintFile(PChar(aPrinterName),PChar(aFileName),
                                   PChar(Self.Title),
                                   fcupsNumOpts,fcupsOptions);
   end;
+end;
+
+function TCUPSPrinter.GetLastError: string;
+begin
+  Result:=ippErrorString(cupsdyn.cupsLastError());
 end;
 
 function TCUPSPrinter.IsOptionValueValid(AKeyword, AValue: pchar): boolean;
@@ -846,14 +855,18 @@ end;
 procedure TCUPSPrinter.DoBeginDoc;
 var
   NewPath: String;
+  fs: TFileStream;
 
   function TryTemporaryPath(const Path: string): Boolean;
   var
     CurPath: String;
   begin
+    Result:=false;
     CurPath:=CleanAndExpandDirectory(Path);
-    Result:=DirPathExists(CurPath);
-    if Result then NewPath:=CurPath;
+    if CurPath='' then exit(false);
+    if not DirectoryIsWritable(CurPath) then exit;
+    NewPath:=CurPath;
+    Result:=true;
   end;
 
 begin
@@ -869,18 +882,29 @@ begin
 
   FOutputFileName := AppendPathDelim(NewPath)+
     'OutPrinter_'+FormatDateTime('yyyymmmddd-hhnnss',Now);
-    
+
   if RawMode then
     FOutputFileName := FOutputFileName + '.raw'
   else begin
     FOutputFileName := FOutputFileName + '.ps';
     TFilePrinterCanvas(Canvas).OutputFileName := FOutputFileName;
   end;
+
+  // test writing, on error this raises exception showing the user the filename
+  fs:=TFileStream.Create(FOutputFilename,fmCreate);
+  try
+    fs.Write(FOutputFilename[1],1);
+  finally
+    fs.free;
+  end;
+  DeleteFileUTF8(FOutputFilename);
 end;
 
 //If not aborted, send PostScript file to printer.
 //After, delete this file.
 procedure TCUPSPrinter.DoEndDoc(aAborted: Boolean);
+var
+  CupsResult: LongInt;
 begin
   inherited DoEndDoc(aAborted);
   dec(FBeginDocCount);
@@ -899,21 +923,28 @@ begin
     end;
     
   end else
-    TFilePrinterCanvas(Canvas).OutPutFileName:='';
-  
-  if not aAborted and FileExistsUTF8(FOutputFileName) then begin
+    TFilePrinterCanvas(Canvas).OutputFileName:='';
+
+  if not aAborted then begin
+    if not FileExistsUTF8(FOutputFileName) then
+      raise Exception.Create('Unable to write to "'+FOutputFileName+'"');
     {$IFDEF LogPrintoutFile}
     CopyFile(FOutputFileName, 'printjob'+ExtractFileExt(FOutputFileName));
     {$ENDIF}
-    {$IFNDEF DoNotPrint}
-    if Filename<>'' then
-      CopyFile(FOutputFileName, FileName)
-    else
-      PrintFile(FOutputFileName);
-    {$ENDIF}
-    DeleteFileUTF8(FOutputFilename);
+    try
+      {$IFNDEF DoNotPrint}
+      if Filename<>'' then
+        CopyFile(FOutputFileName, FileName)
+      else begin
+        CupsResult:=PrintFile(FOutputFileName);
+        if CupsResult<=0 then
+          raise Exception.Create('CUPS printing: '+GetLastError);
+      end;
+      {$ENDIF}
+    finally
+      DeleteFileUTF8(FOutputFilename);
+    end;
   end;
-
 end;
 
 procedure TCUPSPrinter.DoResetPrintersList;

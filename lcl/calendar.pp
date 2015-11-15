@@ -159,8 +159,7 @@ constructor TCustomCalendar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   fCompStyle := csCalendar;
-  with GetControlClassDefaultSize do
-    SetInitialBounds(0, 0, CX, CY);
+  SetInitialBounds(0, 0, GetControlClassDefaultSize.CX, GetControlClassDefaultSize.CY);
   FDisplaySettings := DefaultDisplaySettings;
   ControlStyle:=ControlStyle-[csTripleClicks,csQuadClicks,csAcceptsControls,csCaptureMouse];
   DateTime := Now;

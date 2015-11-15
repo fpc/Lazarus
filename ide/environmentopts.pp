@@ -39,7 +39,7 @@ uses
 {$endif}
   Classes, SysUtils, TypInfo, contnrs, Graphics, Controls, Forms, Dialogs,
   LCLProc, FileProcs, LazFileUtils, LazFileCache, LazConfigStorage,
-  Laz2_XMLCfg, LazUTF8,
+  Laz2_XMLCfg, LazUTF8, SourceChanger,
   // IDEIntf
   ProjectIntf, ObjectInspector, IDEWindowIntf, IDEOptionsIntf,
   ComponentReg, IDEExternToolIntf, MacroDefIntf, DbgIntfDebuggerBase,
@@ -499,6 +499,9 @@ type
     // Prevent repopulating Recent project files menu with example projects if it was already cleared up.
     FAlreadyPopulatedRecentFiles : Boolean;
 
+    //other recent settings
+    FLastEventMethodSectionPrompt: TInsertClassSectionResult;
+
     // backup
     FBackupInfoProjectFiles: TBackupInfo;
     FBackupInfoOtherFiles: TBackupInfo;
@@ -749,8 +752,12 @@ type
     property OpenLastProjectAtStart: boolean read FOpenLastProjectAtStart
                                              write FOpenLastProjectAtStart;
     property MultipleInstances: TIDEMultipleInstancesOption read FMultipleInstances
-                                                                write FMultipleInstances;
+                                                           write FMultipleInstances;
     property FileDialogFilter: string read FFileDialogFilter write FFileDialogFilter;
+
+    // other recent settings
+    property LastEventMethodSectionPrompt: TInsertClassSectionResult
+      read FLastEventMethodSectionPrompt write FLastEventMethodSectionPrompt;
 
     // backup
     property BackupInfoProjectFiles: TBackupInfo read FBackupInfoProjectFiles
@@ -1347,6 +1354,9 @@ begin
   FOpenLastProjectAtStart:=true;
   FMultipleInstances:=DefaultIDEMultipleInstancesOption;
 
+  // other recent settings
+  FLastEventMethodSectionPrompt:=InsertClassSectionToResult[DefaultEventMethodSection];
+
   // backup
   with FBackupInfoProjectFiles do begin
     BackupType:=bakSameName;
@@ -1745,6 +1755,11 @@ begin
 
     FAlreadyPopulatedRecentFiles := FXMLCfg.GetValue(Path+'Recent/AlreadyPopulated', false);
 
+    // other recent settings
+    FLastEventMethodSectionPrompt:=InsertClassSectionResultNameToSection(FXMLCfg.GetValue(
+      'Recent/EventMethodSectionPrompt/Value',
+      InsertClassSectionNames[DefaultEventMethodSection]));
+
     // Add example projects to an empty project list if examples have write access
     if (FRecentProjectFiles.count=0) and (not FAlreadyPopulatedRecentFiles) then begin
       AddRecentProjectInitial('examples/jpeg/',          'jpegexample.lpi');
@@ -2073,6 +2088,11 @@ begin
 
     FXMLCfg.SetDeleteValue(Path+'Recent/AlreadyPopulated', FAlreadyPopulatedRecentFiles, false);
 
+    // other recent settings
+    FXMLCfg.SetDeleteValue('Recent/EventMethodSectionPrompt/Value',
+      InsertClassSectionResultNames[FLastEventMethodSectionPrompt],
+      InsertClassSectionResultNames[InsertClassSectionToResult[DefaultEventMethodSection]]);
+
     // external tools
     fExternalUserTools.Save(FConfigStore,Path+'ExternalTools/');
     FXMLCfg.SetDeleteValue(Path+'ExternalTools/MaxInParallel',FMaxExtToolsInParallel,0);
@@ -2090,10 +2110,9 @@ begin
                              FAskForFilenameOnNewFile,false);
     FXMLCfg.SetDeleteValue(Path+'LowercaseDefaultFilename/Value',
                              FLowercaseDefaultFilename,true);
-    if FMultipleInstances = DefaultIDEMultipleInstancesOption then
-      FXMLCfg.DeletePath(Path+'MultipleInstances')
-    else
-      FXMLCfg.SetValue(Path+'MultipleInstances/Value',IDEMultipleInstancesOptionNames[FMultipleInstances]);
+    FXMLCfg.SetDeleteValue(Path+'MultipleInstances/Value',
+        IDEMultipleInstancesOptionNames[FMultipleInstances],
+        IDEMultipleInstancesOptionNames[DefaultIDEMultipleInstancesOption]);
 
     // fpdoc
     FXMLCfg.SetDeleteValue(Path+'LazDoc/Paths',FPDocPaths,'');
@@ -2535,6 +2554,8 @@ begin
   Result := TDesktopOpt.Create(FActiveDesktopName);
   FDesktops.Add(Result);
   Result.Assign(Desktop);
+  if Assigned(IDEDockMaster) then
+    Result.FDockedOpt.LoadDefaults;
 end;
 
 procedure TEnvironmentOptions.SetTestBuildDirectory(const AValue: string);
