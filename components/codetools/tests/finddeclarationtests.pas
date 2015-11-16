@@ -8,6 +8,7 @@
    ./testcodetools --format=plain --suite=TestFindDeclaration_TypeHelper
    ./testcodetools --format=plain --suite=TestFindDeclaration_ObjCClass
    ./testcodetools --format=plain --suite=TestFindDeclaration_ObjCCategory
+   ./testcodetools --format=plain --suite=TestFindDeclaration_Generics
 
  FPC tests:
    ./testcodetools --format=plain --suite=TestFindDeclaration_FPCTests
@@ -48,6 +49,7 @@ type
     procedure TestFindDeclaration_TypeHelper;
     procedure TestFindDeclaration_ObjCClass;
     procedure TestFindDeclaration_ObjCCategory;
+    procedure TestFindDeclaration_Generics;
     procedure TestFindDeclaration_FPCTests;
     procedure TestFindDeclaration_LazTests;
   end;
@@ -73,17 +75,22 @@ procedure TTestFindDeclaration.FindDeclarations(Filename: string);
     Result:='';
     while Node<>nil do begin
       case Node.Desc of
-      ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition:
+      ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition,ctnGenericName,ctnGenericParameter:
         PrependPath(GetIdentifier(@Tool.Src[Node.StartPos]),Result);
+      ctnGenericParams:
+        if Node.Parent.FirstChild.Desc=ctnGenericName then
+          PrependPath(GetIdentifier(@Tool.Src[Node.Parent.FirstChild.StartPos]),Result);
       ctnInterface,ctnUnit:
         PrependPath(Tool.GetSourceName(false),Result);
       ctnProcedure:
         PrependPath(Tool.ExtractProcName(Node,[]),Result);
       ctnProperty:
         PrependPath(Tool.ExtractPropName(Node,false),Result);
+      //else debugln(['NodeAsPath ',Node.DescAsString]);
       end;
       Node:=Node.Parent;
     end;
+    debugln(['NodeAsPath ',Result]);
   end;
 
 var
@@ -290,6 +297,11 @@ end;
 procedure TTestFindDeclaration.TestFindDeclaration_ObjCCategory;
 begin
   FindDeclarations('fdt_objccategory.pas');
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_Generics;
+begin
+  FindDeclarations('fdt_generics.pas');
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_FPCTests;

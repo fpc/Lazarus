@@ -1,3 +1,6 @@
+{
+  ./testcodetools --format=plain --suite=TestFindDeclaration_NestedClasses
+}
 unit fdt_nestedclasses;
 
 {$mode objfpc}{$H+}
