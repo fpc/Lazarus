@@ -7,8 +7,6 @@
 components/1_spartaBasic/dtx_spartabasic.lpk svneol=native#text/plain
 components/1_spartaBasic/dtx_spartabasic.pas svneol=native#text/plain
 components/1_spartaBasic/source/dtx_sparta_basicregister.pas svneol=native#text/plain
-components/1_spartaBasic/source/sparta.res -text
-components/1_spartaBasic/source/sparta_componentpalette.pas svneol=native#text/plain
 components/1_spartaBasic/source/sparta_designedform.pas svneol=native#text/plain
 components/1_spartaBasic/source/sparta_fakecustom.pas svneol=native#text/plain
 components/1_spartaBasic/source/sparta_fakeform.pas svneol=native#text/plain

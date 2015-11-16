@@ -22,7 +22,7 @@
         <CustomOptions Value="$(IDEBuildOptions)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="12">
+    <Files Count="11">
       <Item1>
         <Filename Value="source\dtx_sparta_basicregister.pas"/>
         <HasRegisterProc Value="True"/>
@@ -45,33 +45,29 @@
         <UnitName Value="SpartaAPI"/>
       </Item5>
       <Item6>
-        <Filename Value="source\sparta_componentpalette.pas"/>
-        <UnitName Value="sparta_ComponentPalette"/>
-      </Item6>
-      <Item7>
         <Filename Value="source\sparta_fakecustom.pas"/>
         <UnitName Value="sparta_FakeCustom"/>
-      </Item7>
-      <Item8>
+      </Item6>
+      <Item7>
         <Filename Value="source\sparta_fakeform.pas"/>
         <UnitName Value="sparta_FakeForm"/>
-      </Item8>
-      <Item9>
+      </Item7>
+      <Item8>
         <Filename Value="source\sparta_fakeframe.pas"/>
         <UnitName Value="sparta_FakeFrame"/>
-      </Item9>
-      <Item10>
+      </Item8>
+      <Item9>
         <Filename Value="source\sparta_fakenoncontrol.pas"/>
         <UnitName Value="sparta_FakeNonControl"/>
-      </Item10>
-      <Item11>
+      </Item9>
+      <Item10>
         <Filename Value="source\sparta_mainide.pas"/>
         <UnitName Value="sparta_MainIDE"/>
-      </Item11>
-      <Item12>
+      </Item10>
+      <Item11>
         <Filename Value="source\sparta_hashutils.pas"/>
         <UnitName Value="sparta_HashUtils"/>
-      </Item12>
+      </Item11>
     </Files>
     <RequiredPkgs Count="1">
       <Item1>

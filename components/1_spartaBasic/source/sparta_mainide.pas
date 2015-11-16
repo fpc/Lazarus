@@ -32,7 +32,7 @@ uses
 {$ELSE}
   ghashmap, sparta_HashUtils, gvector,
 {$ENDIF}
-  TypInfo, LCLIntf, LCLType, LMessages, sparta_FakeForm, sparta_FakeFrame, sparta_ComponentPalette, SpartaAPI;
+  TypInfo, LCLIntf, LCLType, LMessages, sparta_FakeForm, sparta_FakeFrame, SpartaAPI;
 
 const
   WM_SETNOFRAME = WM_USER;
@@ -191,12 +191,6 @@ type
 
     class procedure OnShowMethod(const Name: String);
     class procedure OnDesignRefreshPropertyValues;
-
-    class function ComponentPageControl: TPageControl; static;
-
-    class procedure eFilterChange(Sender: TObject);
-    class procedure eFilterClear(Sender: TObject);
-    class procedure mnuHideHideComponentPageControlClicked(Sender: TObject);
   end;
 
 var
@@ -208,8 +202,6 @@ var
   SourceEditorWindows: THashmap<TSourceEditorWindowInterface, TSourceEditorWindowData, THash_TObject>;
 {$ENDIF}
 
-  MainComponentsPalette: TComponentsPalette;
-  MainComponentsPaletteFilter: TEditButton;
   LastActiveSourceEditorWindow: TSourceEditorWindowInterface = nil;
   LastActiveSourceEditor: TSourceEditorInterface = nil;
 
@@ -979,10 +971,6 @@ begin
   LFormData := FindDesignFormData(Form);
   dsgForms.Remove(LFormData);
 
-  if Assigned(MainComponentsPalette) then
-    if MainComponentsPalette.Root = LookupRoot(Form) then
-      MainComponentsPalette.Root := nil;
-
 {$IFDEF USE_GENERICS_COLLECTIONS}
   for LSEWD in SourceEditorWindows.Values do
   begin
@@ -1687,60 +1675,6 @@ begin
     LFormData := FindDesignFormData(LForm);
     LFormData.RepaintFormImages;
   end;
-end;
-
-class function TSpartaMainIDE.ComponentPageControl: TPageControl;
-begin
-  Result := TPageControl(LazarusIDE.OwningComponent.FindComponent('ComponentPageControl'));
-end;
-
-class procedure TSpartaMainIDE.eFilterChange(Sender: TObject);
-begin
-  if not MainComponentsPalette.IsEmpty then
-    MainComponentsPalette.Filter := TEditButton(Sender).Text;
-end;
-
-class procedure TSpartaMainIDE.eFilterClear(Sender: TObject);
-begin
-  TEditButton(Sender).Text:='';
-end;
-
-class procedure TSpartaMainIDE.mnuHideHideComponentPageControlClicked(
-  Sender: TObject);
-var
-  AMenuHeight, AHeight: Integer;
-  LChildSite: TWinControl;
-begin
-  if TCustomForm(LazarusIDE.GetMainBar).DockManager = nil then
-    Exit;
-
-  // LChildSite := TCustomForm(LazarusIDE.GetMainBar).DockManager.GetChildSite; TODO
-
-  if LChildSite = nil then
-    Exit;
-
-  AMenuHeight := LCLIntf.GetSystemMetrics(SM_CYMENU);
-
-  // Hide
-  if (TCustomForm(LazarusIDE.GetMainBar).Height - LChildSite.Height) >= 85 then
-  begin
-    if AMenuHeight > 0 then
-      AHeight := AMenuHeight + TToolBar(LazarusIDE.OwningComponent.FindComponent('tbStandard')).Height + 4 {splitter width}
-    else
-      AHeight:=85;
-  end
-  // show
-  else
-  begin
-      if AMenuHeight > 0 then
-        AHeight := AMenuHeight + 85
-      else
-        AHeight:=85;
-
-    MainComponentsPaletteFilter.SetFocus;
-  end;
-
-  LChildSite.Height := TCustomForm(LazarusIDE.GetMainBar).Height - AHeight;
 end;
 
 {$IFNDEF USE_GENERICS_COLLECTIONS}
