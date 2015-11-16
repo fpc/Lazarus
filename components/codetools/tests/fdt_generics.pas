@@ -19,8 +19,11 @@ type
     CustomName: GenParam2;
   end;
 
+  { TGenAction }
+
   generic TGenAction<GenParam3> = class(specialize TGenCustomAction{declaration:fdt_generics.TGenCustomAction}<GenParam3>)
     ActionName: GenParam3;
+    procedure InitActionName;
   end;
 
   TIntegerAction = specialize TGenAction<integer>;
@@ -32,6 +35,13 @@ var
   Action: TIntegerAction;
 begin
   Action.ActionName{declaration:fdt_generics.TGenAction.ActionName}:=3;
+end;
+
+{ TGenAction }
+
+procedure TGenAction.InitActionName;
+begin
+  ActionName{declaration:fdt_generics.TGenAction.ActionName}:=3;
 end;
 
 end.
