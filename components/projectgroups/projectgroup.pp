@@ -116,18 +116,13 @@ type
     procedure SaveProjectGroup; override;
   end;
 
-  TEditProjectGroupOption = (epgoReusewindow);
-  TEditProjectGroupOptions = Set of TEditProjectGroupOption;
-
-  TEditProjectGroupHandler = procedure(AProjectGroup: TProjectGroup;
-                                       Options: TEditProjectGroupOptions);
+  TEditProjectGroupHandler = procedure(Sender: TObject; AProjectGroup: TProjectGroup);
   // Method variant.
-  TEditProjectGroupEvent = procedure(AProjectGroup: TProjectGroup;
-                                   Options: TEditProjectGroupOptions) of object;
+  TEditProjectGroupEvent = procedure(Sender: TObject; AProjectGroup: TProjectGroup) of object;
 
 var
-  OnEditProjectGroup: TEditProjectGroupHandler; // Takes precedence
-  OnEditProjectGroupEvent: TEditProjectGroupEvent;
+  OnShowProjectGroupEditor: TEditProjectGroupHandler; // Takes precedence
+  OnShowProjectGroupEditorEvent: TEditProjectGroupEvent; // method variant
 
   IDEProjectGroupManager: TIDEProjectGroupManager;
   // Project group editor(s). Should probably move to MenuIntf
@@ -203,10 +198,10 @@ begin
   Result:=Assigned(FProjectGroup);
   if Result then
   begin
-    if Assigned(OnEditProjectGroup) then
-      OnEditProjectGroup(FProjectGroup,[])
-    else if Assigned(OnEditProjectGroupEvent) then
-      OnEditProjectGroupEvent(FProjectGroup,[])
+    if Assigned(OnShowProjectGroupEditor) then
+      OnShowProjectGroupEditor(FProjectGroup,FProjectGroup)
+    else if Assigned(OnShowProjectGroupEditorEvent) then
+      OnShowProjectGroupEditorEvent(FProjectGroup,FProjectGroup)
     else
       Result:=False;
   end;

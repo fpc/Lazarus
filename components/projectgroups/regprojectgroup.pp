@@ -54,6 +54,10 @@ begin
   // ToDo: Close (package editor)
   cmdTargetRun:=RegisterIDEMenuCommand(Section,'TargetRun',lisTargetRun);// ToDo
   cmdTargetProperties:=RegisterIDEMenuCommand(Section,'TargetProperties',lisTargetProperties);// ToDo
+
+  Section:=RegisterIDEMenuSection(Root,'Misc');
+  PGEditMenuSectionMisc:=Section;
+
   // ToDo: Copy filename
   // ToDo: View source (project)
 

@@ -7,7 +7,7 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
   ClientHeight = 358
   ClientWidth = 646
   OnCreate = FormCreate
-  OnShow = FormShow
+  OnDestroy = FormDestroy
   LCLVersion = '1.5'
   object TBProjectGroup: TToolBar
     Left = 0

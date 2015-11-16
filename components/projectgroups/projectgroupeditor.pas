@@ -1,3 +1,10 @@
+{
+  Todo:
+    - close windows on IDE close
+    - activate project when project is opened
+    - deactivate project when project is closed
+    - make dockable
+}
 unit ProjectGroupEditor;
 
 {$mode objfpc}{$H+}
@@ -6,8 +13,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls, Menus,
-  ActnList, LazIDEIntf, PackageIntf, ProjectIntf, ProjectGroupIntf, MenuIntf,
-  IDEDialogs, LazFileUtils,
+  ActnList, LCLProc, LazIDEIntf, PackageIntf, ProjectIntf, ProjectGroupIntf,
+  MenuIntf, IDEDialogs, IDEWindowIntf, LazFileUtils, LazLogger,
   ProjectGroupStrConst, ProjectGroup;
 
 type
@@ -107,7 +114,7 @@ type
     procedure ATargetUninstallUpdate(Sender: TObject);
     procedure DoFileNameChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure FormShow(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure TVPGDblClick(Sender: TObject);
   private
     FProjectGroup: TProjectGroup;
@@ -149,6 +156,7 @@ type
   protected
     procedure Localize;
     procedure ShowProjectGroup;
+    procedure UpdateShowing; override;
   public
     property ProjectGroup: TProjectGroup Read FProjectGroup Write SetProjectGroup;
     property ActiveTarget: TCompileTarget Read GetActiveTarget;
@@ -156,7 +164,13 @@ type
 
 var
   ProjectGroupEditorForm: TProjectGroupEditorForm;
+  ProjectGroupEditorCreator: TIDEWindowCreator; // set by RegProjectGroup.Register
 
+const
+  ProjectGroupEditorName = 'ProjectGroupEditor';
+procedure ShowProjectGroupEditor(Sender: TObject; AProjectGroup: TProjectGroup);
+procedure CreateProjectGroupEditor(Sender: TObject; aFormName: string;
+                          var AForm: TCustomForm; DoDisableAutoSizing: boolean);
 procedure SetProjectGroupEditorCallBack;
 
 implementation
@@ -208,25 +222,31 @@ const
   piTargetCount  = 0;
   piActiveTarget = 1;
 
-procedure EditProjectGroup(AProjectGroup: TProjectGroup; Options: TEditProjectGroupOptions);
+procedure ShowProjectGroupEditor(Sender: TObject; AProjectGroup: TProjectGroup);
 begin
-  if epgoReusewindow in Options then
-  begin
-    If Not Assigned(ProjectGroupEditorForm) then
-      ProjectGroupEditorForm:=TProjectGroupEditorForm.Create(Application);
+  IDEWindowCreators.ShowForm(ProjectGroupEditorCreator.FormName,true);
+  if AProjectGroup<>nil then
     ProjectGroupEditorForm.ProjectGroup:=AProjectGroup;
-    ProjectGroupEditorForm.Show;
-  end else
-    With TProjectGroupEditorForm.Create(Nil) do
-    begin
-      ProjectGroup:=AProjectGroup;
-      Show;
-    end;
+end;
+
+procedure CreateProjectGroupEditor(Sender: TObject; aFormName: string;
+  var AForm: TCustomForm; DoDisableAutoSizing: boolean);
+begin
+  if CompareText(aFormName,ProjectGroupEditorName)<>0 then begin
+    DebugLn(['ERROR: CreateProjectGroupEditor: there is already a form with this name']);
+    exit;
+  end;
+  IDEWindowCreators.CreateForm(AForm,TProjectGroupEditorForm,DoDisableAutoSizing,
+    LazarusIDE.OwningComponent);
+  AForm.Name:=aFormName;
 end;
 
 procedure SetProjectGroupEditorCallBack;
 begin
-  OnEditProjectGroup:=@EditProjectGroup;
+  ProjectGroupEditorCreator:=IDEWindowCreators.Add(ProjectGroupEditorName,
+    @CreateProjectGroupEditor,nil,
+    '30%','30%','+30%','+40%','ProjectGroupEditor',alNone);
+  OnShowProjectGroupEditor:=@ShowProjectGroupEditor;
 end;
 
 { TProjectGroupEditorForm }
@@ -423,6 +443,8 @@ procedure TProjectGroupEditorForm.FormCreate(Sender: TObject);
   end;
 
 begin
+  if ProjectGroupEditorForm=nil then
+    ProjectGroupEditorForm:=Self;
   PGEditMenuSectionMisc.MenuItem:=PopupMenuMore.Items;
   SetItem(cmdTargetAdd,@AProjectGroupAddExistingExecute);
   SetItem(cmdTargetRemove,@AProjectGroupDeleteExecute);
@@ -434,9 +456,10 @@ begin
   SetItem(cmdTargetEarlier,@ATargetEarlierExecute);
 end;
 
-procedure TProjectGroupEditorForm.FormShow(Sender: TObject);
+procedure TProjectGroupEditorForm.FormDestroy(Sender: TObject);
 begin
-  Localize;
+  if ProjectGroupEditorForm=Self then
+    ProjectGroupEditorForm:=nil;
 end;
 
 procedure TProjectGroupEditorForm.TVPGDblClick(Sender: TObject);
@@ -851,6 +874,13 @@ begin
   else
     TVPG.Selected:=N;
   SBPG.Panels[piTargetCount].Text:=Format(lisTargetCount,[FProjectGroup.TargetCount]);
+end;
+
+procedure TProjectGroupEditorForm.UpdateShowing;
+begin
+  inherited UpdateShowing;
+  if IsVisible then
+    Localize;
 end;
 
 procedure TProjectGroupEditorForm.FillProjectGroupNode(AParent: TTreeNode;
