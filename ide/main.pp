@@ -2229,11 +2229,19 @@ begin
   end;
 
   // try loading last project if lazarus didn't fail last time
+  {debugln(['TMainIDE.SetupStartProject ProjectLoaded=',ProjectLoaded,
+    ' SkipAutoLoadingLastProject=',SkipAutoLoadingLastProject,
+    ' EnvironmentOptions.OpenLastProjectAtStart=',EnvironmentOptions.OpenLastProjectAtStart,
+    ' EnvironmentOptions.LastSavedProjectFile="',EnvironmentOptions.LastSavedProjectFile,'"',
+    ' RestoreProjectClosed=',RestoreProjectClosed,
+    ' FileExistsCached(EnvironmentOptions.LastSavedProjectFile)=',FileExistsCached(EnvironmentOptions.LastSavedProjectFile)
+    ]);}
   if (not ProjectLoaded)
   and (not SkipAutoLoadingLastProject)
   and (EnvironmentOptions.OpenLastProjectAtStart)
   and (EnvironmentOptions.LastSavedProjectFile<>'')
-  and (not LazIDEInstances.ProjectIsOpenInAnotherInstance(EnvironmentOptions.LastSavedProjectFile))
+  and ((EnvironmentOptions.MultipleInstances=mioAlwaysStartNew)
+    or (not LazIDEInstances.ProjectIsOpenInAnotherInstance(EnvironmentOptions.LastSavedProjectFile)))
   and (EnvironmentOptions.LastSavedProjectFile<>RestoreProjectClosed)
   and (FileExistsCached(EnvironmentOptions.LastSavedProjectFile))
   then begin
@@ -9308,13 +9316,15 @@ var
   xParams: TDoDropFilesAsyncParams;
   I: Integer;
 begin
+  if EnvironmentOptions.MultipleInstances = mioAlwaysStartNew then
+  begin
+    Result:=ofrStartNewInstance;
+    exit;
+  end;
+
   if aFiles.Count > 0 then
   begin
     //there are files to open
-    if EnvironmentOptions.MultipleInstances = mioAlwaysStartNew then
-    begin//the user wants to open them in new instance!
-      Result := ofrStartNewInstance;
-    end else
     if (not IsWindowEnabled(Application.MainForm.Handle) or//check that main is active
        (Application.ModalLevel > 0))//check that no modal window is opened
     then

@@ -185,7 +185,11 @@ const
     );
 
 type
-  TIDEMultipleInstancesOption = (mioAlwaysStartNew, mioOpenFilesInRunning, mioForceSingleInstance);
+  TIDEMultipleInstancesOption = (
+    mioAlwaysStartNew,
+    mioOpenFilesInRunning,
+    mioForceSingleInstance
+    );
 const
   IDEMultipleInstancesOptionNames: array[TIDEMultipleInstancesOption] of string = (
     'AlwaysStartNew',      // mioAlwaysStartNew
