@@ -1,0 +1,41 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Chronos <robie@centrum.cz>\n"
+"Language-Team: \n"
+"Language: cs\n"
+"X-Generator: Poedit 1.8.4\n"
+
+#: ideprinting.sdescrformatting
+msgid "Formatting"
+msgstr "Formátování"
+
+#: ideprinting.sdescrpfselection
+msgid "Print ..."
+msgstr "Tisknout ..."
+
+#: ideprinting.spfselectioncmd
+msgid "Print"
+msgstr "Tisknout"
+
+#: ideprinting.sprintfile
+msgid "Complete file"
+msgstr "Dokončit soubor"
+
+#: ideprinting.sprintselection
+msgid "Selected text"
+msgstr "Vybraný text"
+
+#: ideprinting.sprintsources
+msgid "Print sources"
+msgstr "Tisknout zdroje"
+
+#: ideprinting.sprintwhat
+msgid "What would you like to print ?"
+msgstr "Chcete tisknout?"
+
