@@ -90,7 +90,7 @@ procedure TTestFindDeclaration.FindDeclarations(Filename: string);
       end;
       Node:=Node.Parent;
     end;
-    debugln(['NodeAsPath ',Result]);
+    //debugln(['NodeAsPath ',Result]);
   end;
 
 var
@@ -191,6 +191,7 @@ begin
           i:=CodeToolBoss.IdentifierList.GetFilteredCount-1;
           while i>=0 do begin
             IdentItem:=CodeToolBoss.IdentifierList.FilteredItems[i];
+            //debugln(['TTestFindDeclaration.FindDeclarations ',IdentItem.Identifier]);
             l:=length(IdentItem.Identifier);
             if ((l=length(ExpectedPath)) or (ExpectedPath[length(ExpectedPath)-l]='.'))
             and (CompareText(IdentItem.Identifier,RightStr(ExpectedPath,l))=0)

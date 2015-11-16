@@ -3739,22 +3739,19 @@ var
     end;
   end;
   
-  function SearchInGenericParams(GenericNode: TCodeTreeNode): boolean;
+  function SearchInGenericParams(GenParamsNode: TCodeTreeNode): boolean;
   var
     Node: TCodeTreeNode;
   begin
     Result:=false;
-    Node:=GenericNode.FirstChild;
-    if Node=nil then exit;
-    Node:=Node.NextBrother;
-    if (Node=nil) or (Node.Desc<>ctnGenericParams) then exit;
-    Node:=Node.FirstChild;
+    if (GenParamsNode=nil) or (GenParamsNode.Desc<>ctnGenericParams) then exit;
+    Node:=GenParamsNode.FirstChild;
     while Node<>nil do begin
       if (fdfCollect in Flags)
       or CompareSrcIdentifiers(Node.StartPos,Params.Identifier)
       then begin
         {$IFDEF ShowTriedIdentifiers}
-        DebugLn('  SearchInGenericParams Identifier found="',GetIdentifier(Params.Identifier),'"');
+        DebugLn('  SearchInGenericParams Identifier found="',GetIdentifier(@Src[Node.StartPos]),'" at '+CleanPosToStr(Node.StartPos));
         {$ENDIF}
         // identifier found
         Params.SetResult(Self,Node);
@@ -3799,6 +3796,44 @@ var
         exit;
       end;
     end;
+    // search for enums
+    Params.ContextNode:=ContextNode;
+    if FindEnumInContext(Params) then begin
+      Result:=CheckResult(true,false);
+    end;
+  end;
+
+  function SearchInGenericType: boolean;
+  // returns: true if ok to exit
+  //          false if search should continue
+  var
+    NameNode: TCodeTreeNode;
+  begin
+    Result:=false;
+    NameNode:=ContextNode.FirstChild;
+    if NameNode=nil then exit;
+
+    // try type name
+    if (fdfCollect in Flags)
+    or CompareSrcIdentifiers(NameNode.StartPos,Params.Identifier)
+    then begin
+      {$IFDEF ShowTriedIdentifiers}
+      DebugLn('  Definition Identifier found="',GetIdentifier(Params.Identifier),'"');
+      {$ENDIF}
+      // identifier found
+      Params.SetResult(Self,ContextNode);
+      Result:=CheckResult(true,true);
+      if not (fdfCollect in Flags) then begin
+        if (fdfSkipClassForward in Flags)
+        and (ContextNode.LastChild.Desc in AllClasses)
+        and ((ctnsForwardDeclaration and ContextNode.LastChild.SubDesc)<>0)
+        then begin
+          FindNonForwardClass(Params);
+        end;
+        exit;
+      end;
+    end;
+
     // search for enums
     Params.ContextNode:=ContextNode;
     if FindEnumInContext(Params) then begin
@@ -4056,20 +4091,22 @@ var
       {$ENDIF}
       LastSearchedNode:=ContextNode;
 
-      if (ContextNode.Parent<>nil) and (ContextNode.Parent.Desc=ctnGenericType)
-      then begin
-        // after search in the generic, search in the generic parameter names
-        if SearchInGenericParams(ContextNode.Parent) then begin
-          FindIdentifierInContext:=true;
-          {$IFDEF ShowCollect}
-          if fdfCollect in Flags then
-            raise Exception.Create('fdfCollect must never return true');
-          {$ENDIF}
-          exit(AbortNoCacheResult);
-        end;
-      end;
-
       if (ContextNode.Desc in AllClasses) then begin
+        // after searching in a class definition ...
+
+        if (ContextNode.PriorBrother<>nil) and (ContextNode.PriorBrother.Desc=ctnGenericParams)
+        then begin
+          // before searching in the ancestors, search in the generic parameters
+          if SearchInGenericParams(ContextNode.PriorBrother) then begin
+            FindIdentifierInContext:=true;
+            {$IFDEF ShowCollect}
+            if fdfCollect in Flags then
+              raise Exception.Create('fdfCollect must never return true');
+            {$ENDIF}
+            exit(AbortNoCacheResult);
+          end;
+        end;
+
         //allow ctnRecordType and ctnTypeTypeBeforeHelper: they can have helpers!
         if (fdfSearchInAncestors in Flags) then begin
           // after searching in a class definition, search in its ancestors
@@ -4354,8 +4391,12 @@ begin
           MoveContextNodeToChildren;
 
         ctnTypeDefinition, ctnVarDefinition, ctnConstDefinition,
-        ctnGenericType, ctnGlobalProperty:
+        ctnGlobalProperty:
           if SearchInTypeVarConstGlobPropDefinition then exit;
+
+        ctnGenericType:
+          if SearchInGenericType then exit;
+        // ctnGenericParams: skip here, it was searched before searching the ancestors
 
         ctnIdentifier:
           if (ContextNode.Parent.Desc in [ctnConstDefinition,ctnVarDefinition])

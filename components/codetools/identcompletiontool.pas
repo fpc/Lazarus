@@ -1215,6 +1215,9 @@ begin
         end;
       end;
     end;
+
+  ctnGenericParameter:
+    Ident:=@FoundContext.Tool.Src[FoundContext.Node.StartPos];
   
   ctnVarDefinition,ctnConstDefinition,ctnEnumIdentifier,ctnLabel,ctnGlobalProperty:
     Ident:=@FoundContext.Tool.Src[FoundContext.Node.StartPos];
