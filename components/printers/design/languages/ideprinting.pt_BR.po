@@ -14,7 +14,6 @@ msgid "Formatting"
 msgstr "Formatando"
 
 #: ideprinting.sdescrpfselection
-#| msgid "Print..."
 msgid "Print ..."
 msgstr "Imprimir..."
 
