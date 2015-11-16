@@ -78,7 +78,6 @@ type
     property NewClass: TClass read FNewClass write SetNewClass;
   end;
 
-
 function ShowChangeClassDialog(ADesigner: TIDesigner;
   APersistent: TPersistent): TModalResult;
 function ChangePersistentClass(ADesigner: TIDesigner;

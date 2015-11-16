@@ -5,7 +5,6 @@ object ChangeClassDlg: TChangeClassDlg
   Width = 470
   ActiveControl = NewClassComboBox
   BorderIcons = [biSystemMenu, biMinimize]
-  BorderStyle = bsToolWindow
   Caption = 'ChangeClassDlg'
   ClientHeight = 350
   ClientWidth = 470
@@ -14,13 +13,13 @@ object ChangeClassDlg: TChangeClassDlg
   LCLVersion = '1.5'
   object OldGroupBox: TGroupBox
     Left = 6
-    Height = 299
+    Height = 304
     Top = 6
     Width = 228
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'OldGroupBox'
-    ClientHeight = 280
+    ClientHeight = 287
     ClientWidth = 224
     TabOrder = 0
     object OldClassLabel: TLabel
@@ -29,7 +28,7 @@ object ChangeClassDlg: TChangeClassDlg
       Left = 6
       Height = 15
       Top = 6
-      Width = 101
+      Width = 83
       BorderSpacing.Around = 6
       Caption = 'OldClassLabel'
       Font.Style = [fsBold]
@@ -45,25 +44,27 @@ object ChangeClassDlg: TChangeClassDlg
       AnchorSideBottom.Control = OldGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 247
+      Height = 254
       Top = 27
       Width = 212
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       ClickOnSelChange = False
       ItemHeight = 0
+      ScrollWidth = 210
       TabOrder = 0
+      TopIndex = -1
     end
   end
   object NewGroupBox: TGroupBox
     Left = 240
-    Height = 299
+    Height = 304
     Top = 6
     Width = 224
     Align = alRight
     BorderSpacing.Around = 6
     Caption = 'NewGroupBox'
-    ClientHeight = 280
+    ClientHeight = 287
     ClientWidth = 220
     TabOrder = 1
     object NewClassComboBox: TComboBox
@@ -72,7 +73,7 @@ object ChangeClassDlg: TChangeClassDlg
       AnchorSideRight.Control = NewGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 25
+      Height = 27
       Top = 2
       Width = 208
       Anchors = [akTop, akLeft, akRight]
@@ -96,8 +97,8 @@ object ChangeClassDlg: TChangeClassDlg
       AnchorSideBottom.Control = NewGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 244
-      Top = 30
+      Height = 249
+      Top = 32
       Width = 208
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Left = 6
@@ -106,13 +107,15 @@ object ChangeClassDlg: TChangeClassDlg
       BorderSpacing.Bottom = 6
       ClickOnSelChange = False
       ItemHeight = 0
+      ScrollWidth = 206
       TabOrder = 1
+      TopIndex = -1
     end
   end
   object BtnPanel: TButtonPanel
     Left = 6
-    Height = 33
-    Top = 311
+    Height = 28
+    Top = 316
     Width = 458
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
