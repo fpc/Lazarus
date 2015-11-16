@@ -122,14 +122,14 @@ type
     procedure DoTargetDeleted(Sender: TObject; Target: TCompileTarget);
     procedure DoTargetActivated(Sender: TObject; Target: TCompileTarget);
     procedure DoTargetExchanged(Sender: TObject; Target1, Target2: TCompileTarget);
-    function AllowPerform(ATargetAction: TTargetAction; AAction: TAction= Nil): Boolean;
+    function AllowPerform(ATargetAction: TPGTargetAction; AAction: TAction= Nil): Boolean;
     procedure ClearEventCallBacks(AProjectGroup: TProjectGroup);
     procedure SetEventCallBacks(AProjectGroup: TProjectGroup);
     // Some helpers
     procedure SetProjectGroup(AValue: TProjectGroup);
     procedure ShowDependencies(AParent: TTreeNode; AProjectGroup: TProjectGroup; T: TObject; Out PD: TTargetNodes);
     procedure ShowFileName;
-    procedure Perform(ATargetAction: TTargetAction);
+    procedure Perform(ATargetAction: TPGTargetAction);
     function GetActiveTarget: TCompileTarget;
     // Treeview Node management
     function FindNodeFromTarget(ATarget: TCompileTarget): TTreeNode;
@@ -163,7 +163,7 @@ implementation
 
 {$R *.lfm}
 
-Var
+var
   // Nodelist image indexes
   NIProjectGroup             : integer = 0;
   NITargets                  : integer = 1;
@@ -203,7 +203,7 @@ Var
   iiTargetActivate           : Integer = -1;
   iiTargetOpen               : Integer = -1;
 
-Const
+const
   // Status bar Panel indexes
   piTargetCount  = 0;
   piActiveTarget = 1;
@@ -235,8 +235,8 @@ procedure TProjectGroupEditorForm.ClearEventCallBacks(AProjectGroup: TProjectGro
 Var
   PG: TIDEProjectGroup;
 begin
-  if AProjectGroup is  TIDEProjectGroup then
-    PG:=AProjectGroup as  TIDEProjectGroup
+  if AProjectGroup is TIDEProjectGroup then
+    PG:=TIDEProjectGroup(AProjectGroup)
   else
     exit;
   PG.OnFileNameChange:=Nil;
@@ -251,7 +251,7 @@ Var
   PG: TIDEProjectGroup;
 begin
   if AProjectGroup is  TIDEProjectGroup then
-    PG:=AProjectGroup as  TIDEProjectGroup
+    PG:=TIDEProjectGroup(AProjectGroup)
   else
     exit;
   PG.OnFileNameChange:=@DoFileNameChange;
@@ -583,7 +583,7 @@ begin
   UpdateIDEMenuCommandFromAction(Sender,cmdTargetCompileClean);
 end;
 
-function TProjectGroupEditorForm.AllowPerform(ATargetAction: TTargetAction; AAction: TAction = Nil): Boolean;
+function TProjectGroupEditorForm.AllowPerform(ATargetAction: TPGTargetAction; AAction: TAction = Nil): Boolean;
 Var
   T: TCompileTarget;
 begin
@@ -593,7 +593,7 @@ begin
     AAction.Enabled:=Result;
 end;
 
-procedure TProjectGroupEditorForm.Perform(ATargetAction: TTargetAction);
+procedure TProjectGroupEditorForm.Perform(ATargetAction: TPGTargetAction);
 Var
   T: TNodeData;
 begin

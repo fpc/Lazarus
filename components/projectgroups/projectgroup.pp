@@ -30,13 +30,13 @@ type
     procedure LoadPackage;
     procedure LoadProject;
     procedure LoadProjectGroup;
-    function ProjectAction(AAction: TTargetAction): TActionResult;
-    function PackageAction(AAction: TTargetAction): TActionResult;
-    function ProjectGroupAction(AAction: TTargetAction): TActionResult;
+    function ProjectAction(AAction: TPGTargetAction): TPGActionResult;
+    function PackageAction(AAction: TPGTargetAction): TPGActionResult;
+    function ProjectGroupAction(AAction: TPGTargetAction): TPGActionResult;
     function GetIDEPackage: TIDEPackage; override;
     function GetLazProject: TLazProject; override;
     function GetProjectGroup: TProjectGroup; override;
-    function PerformAction(AAction: TTargetAction): TActionResult; override;
+    function PerformAction(AAction: TPGTargetAction): TPGActionResult; override;
   public
     procedure LoadTarget;
     procedure UnLoadTarget;
@@ -49,7 +49,7 @@ type
 
   TProjectGroupTarget = Class(TIDECompileTarget)
   protected
-    procedure SetTargetType(AValue: TTargetType); override;
+    procedure SetTargetType(AValue: TPGTargetType); override;
   public
     constructor Create(AProjectGroup: TProjectGroup);
   end;
@@ -119,11 +119,13 @@ type
   TEditProjectGroupOption = (epgoReusewindow);
   TEditProjectGroupOptions = Set of TEditProjectGroupOption;
 
-  TEditProjectGroupHandler = procedure(AProjectGroup: TProjectGroup; Options: TEditProjectGroupOptions);
+  TEditProjectGroupHandler = procedure(AProjectGroup: TProjectGroup;
+                                       Options: TEditProjectGroupOptions);
   // Method variant.
-  TEditProjectGroupEvent = procedure(AProjectGroup: TProjectGroup; Options: TEditProjectGroupOptions) of object;
+  TEditProjectGroupEvent = procedure(AProjectGroup: TProjectGroup;
+                                   Options: TEditProjectGroupOptions) of object;
 
-Var
+var
   OnEditProjectGroup: TEditProjectGroupHandler; // Takes precedence
   OnEditProjectGroupEvent: TEditProjectGroupEvent;
 
@@ -136,7 +138,7 @@ Var
     PGEditMenuSectionUse, // Target up/down
     PGEditMenuSectionMisc: TIDEMenuSection; // e.g. options
 
-Var
+var
   cmdOpenProjectGroup,
   cmdSaveProjectGroup,
   cmdCreateProjectGroup,
@@ -197,18 +199,17 @@ begin
 end;
 
 function TIDEProjectGroupManager.ShowProjectGroupEditor: Boolean;
-
 begin
   Result:=Assigned(FProjectGroup);
   if Result then
-    begin
+  begin
     if Assigned(OnEditProjectGroup) then
       OnEditProjectGroup(FProjectGroup,[])
     else if Assigned(OnEditProjectGroupEvent) then
       OnEditProjectGroupEvent(FProjectGroup,[])
-    Else
+    else
       Result:=False;
-    end;
+  end;
 end;
 
 procedure TIDEProjectGroupManager.DoNewClick(Sender: TObject);
@@ -221,8 +222,7 @@ begin
 end;
 
 procedure TIDEProjectGroupManager.DoOpenClick(Sender: TObject);
-
-Var
+var
   F: TOpenDialog;
 begin
   if Not CheckSaved then
@@ -247,7 +247,7 @@ begin
 end;
 
 function TIDEProjectGroupManager.GetNewFileName: Boolean;
-Var
+var
   F: TSaveDialog;
 begin
   Result:=False;
@@ -299,7 +299,7 @@ end;
 
 { TProjectGroupTarget }
 
-procedure TProjectGroupTarget.SetTargetType(AValue: TTargetType);
+procedure TProjectGroupTarget.SetTargetType(AValue: TPGTargetType);
 begin
   if (AValue<>ttProjectGroup) then
     Raise Exception.Create(lisErronlyProjectGroupAllowed);
@@ -601,7 +601,7 @@ begin
   PG.LoadFromFile([]);
 end;
 
-function TIDECompileTarget.ProjectAction(AAction: TTargetAction): TActionResult;
+function TIDECompileTarget.ProjectAction(AAction: TPGTargetAction): TPGActionResult;
 var
   F: TProjectBuildFlags;
 begin
@@ -626,7 +626,7 @@ begin
   end;
 end;
 
-function TIDECompileTarget.PackageAction(AAction: TTargetAction): TActionResult;
+function TIDECompileTarget.PackageAction(AAction: TPGTargetAction): TPGActionResult;
 Var
   L: TObjectList;
 begin
@@ -655,8 +655,8 @@ begin
   end;
 end;
 
-function TIDECompileTarget.ProjectGroupAction(AAction: TTargetAction
-  ): TActionResult;
+function TIDECompileTarget.ProjectGroupAction(AAction: TPGTargetAction
+  ): TPGActionResult;
 begin
   if AAction=taOpen then
     ProjectGroupManager.LoadProjectGroup(FileName,[])
@@ -685,7 +685,7 @@ begin
   Result:=TProjectGroup(FTarget);
 end;
 
-function TIDECompileTarget.PerformAction(AAction: TTargetAction): TActionResult;
+function TIDECompileTarget.PerformAction(AAction: TPGTargetAction): TPGActionResult;
 begin
   if FTarget=Nil then
     LoadTarget;

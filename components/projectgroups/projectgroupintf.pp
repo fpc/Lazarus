@@ -10,17 +10,17 @@ uses
   Classes, SysUtils, IDEOptionsIntf, PackageIntf, ProjectIntf, LazFileUtils;
 
 Type
-  TTargetType = (
+  TPGTargetType = (
     ttUnknown,
     ttProject,
     ttPackage,
     ttProjectGroup, // nested group
-    ttUnit,  // build/run file, parameters stored IDE directives
+    ttFile,  // build/run file, parameters stored IDE directives
     ttExternalTool
     );
-  TTargetTypes = set of TTargetType;
+  TPGTargetTypes = set of TPGTargetType;
 
-  TTargetAction = (
+  TPGTargetAction = (
     taOpen,
     taSettings,
     taCompile,
@@ -28,10 +28,10 @@ Type
     taRun,
     taInstall,
     taUninstall);
-  TTargetActions = set of TTargetAction;
+  TPGTargetActions = set of TPGTargetAction;
 
-  TActionResult = (arNotAllowed,arOK,arFailed);
-  TActionResults = set of TActionResult;
+  TPGActionResult = (arNotAllowed,arOK,arFailed);
+  TPGActionResults = set of TPGActionResult;
 
   TProjectGroup = class;
 
@@ -41,16 +41,16 @@ Type
   private
     FActive: Boolean;
     FFilename: string;
-    FTargetType: TTargetType;
+    FTargetType: TPGTargetType;
     FRemoved: boolean;
   protected
-    function PerformAction (AAction: TTargetAction): TActionResult; virtual; abstract;
-    function Perform (AAction: TTargetAction): TActionResult;
+    function PerformAction (AAction: TPGTargetAction): TPGActionResult; virtual; abstract;
+    function Perform (AAction: TPGTargetAction): TPGActionResult;
     // By default, return all allowed actions for target type.
-    function GetAllowedActions: TTargetActions; virtual;
+    function GetAllowedActions: TPGTargetActions; virtual;
     function GetLazProject: TLazProject; virtual; abstract;
     function GetProjectGroup: TProjectGroup; virtual; abstract;
-    procedure SetTargetType(AValue: TTargetType); virtual;
+    procedure SetTargetType(AValue: TPGTargetType); virtual;
     procedure SetFilename(const AValue: string); virtual;
     function GetIDEPackage: TIDEPackage; virtual; abstract;
     procedure SetRemoved(const AValue: boolean); virtual;
@@ -59,10 +59,10 @@ Type
   public
     property Filename: string read FFilename write SetFilename; // Absolute, not relative. (ToDo: store them relative)
     property Removed: boolean read FRemoved write SetRemoved;
-    property TargetType: TTargetType read FTargetType write SetTargetType;
+    property TargetType: TPGTargetType read FTargetType write SetTargetType;
     property Active: Boolean Read FActive;
     // Currently allowed actions.
-    property AllowedActions: TTargetActions Read GetAllowedActions;
+    property AllowedActions: TPGTargetActions Read GetAllowedActions;
     //
     property LazPackage: TIDEPackage read GetIDEPackage;
     property LazProject: TLazProject Read GetLazProject;
@@ -84,11 +84,11 @@ Type
     function GetRemovedTargetCount: Integer; virtual; abstract;
     function GetRemovedTarget(Index: Integer): TCompileTarget; virtual; abstract;
   public
-    function Perform(Index: Integer; AAction: TTargetAction): TActionResult;
-    function Perform(Const AFileName: String; AAction: TTargetAction): TActionResult;
-    function Perform(Target: TCompileTarget; AAction: TTargetAction): TActionResult; virtual;
-    function ActionAllowsFrom(Index: Integer; AAction: TTargetAction): Boolean; virtual;
-    function PerformFrom(AIndex: Integer; AAction: TTargetAction): TActionResult; virtual;
+    function Perform(Index: Integer; AAction: TPGTargetAction): TPGActionResult;
+    function Perform(Const AFileName: String; AAction: TPGTargetAction): TPGActionResult;
+    function Perform(Target: TCompileTarget; AAction: TPGTargetAction): TPGActionResult; virtual;
+    function ActionAllowsFrom(Index: Integer; AAction: TPGTargetAction): Boolean; virtual;
+    function PerformFrom(AIndex: Integer; AAction: TPGTargetAction): TPGActionResult; virtual;
     function IndexOfTarget(Const Target: TCompileTarget): Integer; virtual; abstract;
     function IndexOfTarget(Const AFilename: String): Integer; virtual;
     function IndexOfRemovedTarget(Const Target: TCompileTarget): Integer; virtual; abstract;
@@ -133,22 +133,22 @@ var
   ProjectGroupManager: TProjectGroupManager = nil;
 
 const
-  TargetActions: array[TTargetType] of TTargetActions = (
+  PGTargetActions: array[TPGTargetType] of TPGTargetActions = (
     [], // ttUnknown
     [taOpen,taSettings,taCompile,taCompileClean,taRun], // ttProject
     [taOpen,taSettings,taCompile,taCompileClean,taInstall,taUninstall], // ttPackage
     [taOpen,taCompile,taCompileClean], // ttProjectGroup
-    [taOpen,taCompile], // ttUnit
+    [taOpen,taCompile,taRun], // ttFile
     [taOpen,taRun] // ttExternalTool
   );
 
-function TargetTypeFromExtenstion(AExt: String): TTargetType;
-function TargetSupportsAction(ATarget: TTargetType; AAction: TTargetAction): Boolean;
-function ActionAllowsMulti(AAction: TTargetAction): Boolean;
+function TargetTypeFromExtenstion(AExt: String): TPGTargetType;
+function TargetSupportsAction(ATarget: TPGTargetType; AAction: TPGTargetAction): Boolean;
+function ActionAllowsMulti(AAction: TPGTargetAction): Boolean;
 
 implementation
 
-function TargetTypeFromExtenstion (AExt: String): TTargetType;
+function TargetTypeFromExtenstion (AExt: String): TPGTargetType;
 begin
   while (AExt<>'') and (AExt[1]='.') do
     Delete(AExt,1,1);
@@ -159,19 +159,19 @@ begin
     'lpg': Result:=ttProjectGroup;
     'pas',
     'pp',
-    'p'  : Result:=ttUnit;
+    'p'  : Result:=ttFile;
   else
     Result:=ttUnknown;
   end;
 end;
 
-function TargetSupportsAction(ATarget: TTargetType; AAction: TTargetAction
+function TargetSupportsAction(ATarget: TPGTargetType; AAction: TPGTargetAction
   ): Boolean;
 begin
-  Result:=AAction in TargetActions[ATarget];
+  Result:=AAction in PGTargetActions[ATarget];
 end;
 
-function ActionAllowsMulti(AAction: TTargetAction): Boolean;
+function ActionAllowsMulti(AAction: TPGTargetAction): Boolean;
 begin
   Result:=AAction in [taCompile,taCompileClean];
 end;
@@ -203,24 +203,24 @@ begin
   FFileName:=AValue;
 end;
 
-function TProjectGroup.Perform(Index: Integer; AAction: TTargetAction
-  ): TActionResult;
+function TProjectGroup.Perform(Index: Integer; AAction: TPGTargetAction
+  ): TPGActionResult;
 begin
   Result:=Perform(GetTarget(Index),AAction);
 end;
 
-function TProjectGroup.Perform(const AFileName: String; AAction: TTargetAction
-  ): TActionResult;
+function TProjectGroup.Perform(const AFileName: String; AAction: TPGTargetAction
+  ): TPGActionResult;
 begin
   Result:=Perform(IndexOfTarget(AFileName),AAction);
 end;
 
-function TProjectGroup.Perform(Target: TCompileTarget; AAction: TTargetAction): TActionResult;
+function TProjectGroup.Perform(Target: TCompileTarget; AAction: TPGTargetAction): TPGActionResult;
 begin
   Result:=Target.Perform(AAction);
 end;
 
-function TProjectGroup.ActionAllowsFrom(Index: Integer; AAction: TTargetAction
+function TProjectGroup.ActionAllowsFrom(Index: Integer; AAction: TPGTargetAction
   ): Boolean;
 Var
   C: Integer;
@@ -237,8 +237,8 @@ begin
   end;
 end;
 
-function TProjectGroup.PerformFrom(AIndex: Integer; AAction: TTargetAction
-  ): TActionResult;
+function TProjectGroup.PerformFrom(AIndex: Integer; AAction: TPGTargetAction
+  ): TPGActionResult;
 Var
   I: Integer;
 begin
@@ -303,12 +303,12 @@ end;
 
 { TCompileTarget }
 
-function TCompileTarget.GetAllowedActions: TTargetActions;
+function TCompileTarget.GetAllowedActions: TPGTargetActions;
 begin
-  Result:=TargetActions[TargetType];
+  Result:=PGTargetActions[TargetType];
 end;
 
-procedure TCompileTarget.SetTargetType(AValue: TTargetType);
+procedure TCompileTarget.SetTargetType(AValue: TPGTargetType);
 begin
   if FTargetType=AValue then Exit;
   FTargetType:=AValue;
@@ -339,7 +339,7 @@ begin
   FActive:=False;
 end;
 
-function TCompileTarget.Perform(AAction: TTargetAction): TActionResult;
+function TCompileTarget.Perform(AAction: TPGTargetAction): TPGActionResult;
 begin
   if Not (AAction in AllowedActions) then
     Result:=arNotAllowed
