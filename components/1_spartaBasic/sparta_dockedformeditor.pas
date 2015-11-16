@@ -2,12 +2,12 @@
   This source is only used to compile and install the package.
  }
 
-unit dtx_SpartaBasic;
+unit sparta_DockedFormEditor;
 
 interface
 
 uses
-  dtx_sparta_BasicRegister, sparta_DesignedForm, sparta_Resizer, 
+  sparta_reg_DockedFormEditor, sparta_DesignedForm, sparta_Resizer, 
   sparta_ResizerFrame, SpartaAPI, sparta_FakeCustom, sparta_FakeForm, 
   sparta_FakeFrame, sparta_FakeNonControl, sparta_MainIDE, sparta_HashUtils, 
   LazarusPackageIntf;
@@ -16,9 +16,10 @@ implementation
 
 procedure Register;
 begin
-  RegisterUnit('dtx_sparta_BasicRegister', @dtx_sparta_BasicRegister.Register);
+  RegisterUnit('sparta_reg_DockedFormEditor', 
+    @sparta_reg_DockedFormEditor.Register);
 end;
 
 initialization
-  RegisterPackage('dtx_SpartaBasic', @Register);
+  RegisterPackage('sparta_DockedFormEditor', @Register);
 end.

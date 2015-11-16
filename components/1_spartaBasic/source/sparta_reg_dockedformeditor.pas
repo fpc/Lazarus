@@ -10,7 +10,7 @@
   FreeSparta.com
 }
 
-unit dtx_sparta_BasicRegister;
+unit sparta_reg_DockedFormEditor;
 
 {$mode delphi}{$H+}
 

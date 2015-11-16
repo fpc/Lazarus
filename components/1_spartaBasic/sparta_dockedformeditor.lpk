@@ -2,7 +2,7 @@
 <CONFIG>
   <Package Version="4">
     <PathDelim Value="\"/>
-    <Name Value="dtx_SpartaBasic"/>
+    <Name Value="sparta_DockedFormEditor"/>
     <Type Value="RunAndDesignTime"/>
     <CompilerOptions>
       <Version Value="11"/>
@@ -24,9 +24,9 @@
     </CompilerOptions>
     <Files Count="11">
       <Item1>
-        <Filename Value="source\dtx_sparta_basicregister.pas"/>
+        <Filename Value="source\sparta_reg_dockedformeditor.pas"/>
         <HasRegisterProc Value="True"/>
-        <UnitName Value="dtx_sparta_BasicRegister"/>
+        <UnitName Value="sparta_reg_DockedFormEditor"/>
       </Item1>
       <Item2>
         <Filename Value="source\sparta_designedform.pas"/>
