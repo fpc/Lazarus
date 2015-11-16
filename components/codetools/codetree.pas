@@ -135,17 +135,18 @@ const
   ctnPointerType        = 85;
   ctnClassOfType        = 86;
   ctnVariantType        = 87;
-  ctnSpecialize         = 88;
-  ctnSpecializeType     = 89;
-  ctnSpecializeParams   = 90;
-  ctnGenericType        = 91;// 1st child = ctnGenericName, 2nd child = ctnGenericParams, 3th child = type
-  ctnGenericName        = 92; // parent = ctnGenericType
-  ctnGenericParams      = 93; // parent = ctnGenericType, children = ctnGenericParameter
-  ctnGenericParameter   = 94; // can has a child ctnGenericConstraint
-  ctnGenericConstraint  = 95; // parent = ctnGenericParameter
-  ctnReferenceTo        = 96; // 1st child = ctnProcedure
-  ctnConstant           = 97;
-  ctnHintModifier       = 98; // deprecated, platform, unimplemented, library, experimental
+  ctnSpecialize         = 88; // 1st child = ctnSpecializeType, 2nd child = ctnSpecializeParams
+  ctnSpecializeType     = 89; // parent = ctnSpecialize
+  ctnSpecializeParams   = 90; // list of ctnSpecializeParam, parent = ctnSpecialize
+  ctnSpecializeParam    = 91; // parent = ctnSpecializeParams
+  ctnGenericType        = 92;// 1st child = ctnGenericName, 2nd child = ctnGenericParams, 3th child = type
+  ctnGenericName        = 93; // parent = ctnGenericType
+  ctnGenericParams      = 94; // parent = ctnGenericType, children = ctnGenericParameter
+  ctnGenericParameter   = 95; // can has a child ctnGenericConstraint
+  ctnGenericConstraint  = 96; // parent = ctnGenericParameter
+  ctnReferenceTo        = 97; // 1st child = ctnProcedure
+  ctnConstant           = 98;
+  ctnHintModifier       = 99; // deprecated, platform, unimplemented, library, experimental
 
   ctnBeginBlock         =100;
   ctnAsmBlock           =101;
@@ -448,6 +449,7 @@ begin
   ctnSpecialize: Result:='Specialize Type';
   ctnSpecializeType: Result:='Specialize Typename';
   ctnSpecializeParams: Result:='Specialize Parameterlist';
+  ctnSpecializeParam: Result:='Specialize Parameter';
   ctnGenericType: Result:='Generic Type';
   ctnGenericName: Result:='Generic Type Name';
   ctnGenericParams: Result:='Generic Type Params';

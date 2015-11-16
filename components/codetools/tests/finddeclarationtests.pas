@@ -75,11 +75,10 @@ procedure TTestFindDeclaration.FindDeclarations(Filename: string);
     Result:='';
     while Node<>nil do begin
       case Node.Desc of
-      ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition,ctnGenericName,ctnGenericParameter:
+      ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition,ctnGenericParameter:
         PrependPath(GetIdentifier(@Tool.Src[Node.StartPos]),Result);
-      ctnGenericParams:
-        if Node.Parent.FirstChild.Desc=ctnGenericName then
-          PrependPath(GetIdentifier(@Tool.Src[Node.Parent.FirstChild.StartPos]),Result);
+      ctnGenericType:
+        PrependPath(GetIdentifier(@Tool.Src[Node.FirstChild.StartPos]),Result);
       ctnInterface,ctnUnit:
         PrependPath(Tool.GetSourceName(false),Result);
       ctnProcedure:

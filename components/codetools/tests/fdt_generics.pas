@@ -23,11 +23,15 @@ type
     ActionName: GenParam3;
   end;
 
+  TIntegerAction = specialize TGenAction<integer>;
+
 implementation
 
 procedure DoSomething;
+var
+  Action: TIntegerAction;
 begin
-
+  Action.ActionName{declaration:fdt_generics.TGenAction.ActionName}:=3;
 end;
 
 end.

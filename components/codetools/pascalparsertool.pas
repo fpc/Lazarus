@@ -5653,7 +5653,7 @@ begin
     CurNode.EndPos:=CurPos.EndPos;
   end;
   ReadNextAtom;
-  if Curpos.Flag=cafPoint then begin
+  while Curpos.Flag=cafPoint do begin
     // first identifier was unitname, now read the type
     ReadNextAtom;
     AtomIsIdentifierSaveE;
@@ -5676,13 +5676,22 @@ begin
     // read identifier (a parameter of the generic type)
     ReadNextAtom;
     AtomIsIdentifierSaveE;
+    if CreateChildNodes then begin
+      CreateChildNode;
+      CurNode.Desc:=ctnSpecializeParam;
+      CurNode.EndPos:=CurPos.EndPos;
+    end;
     ReadNextAtom;
-    if Curpos.Flag=cafPoint then begin
+    while Curpos.Flag=cafPoint do begin
       // first identifier was unitname, now read the type
       ReadNextAtom;
       AtomIsIdentifierSaveE;
+      if CreateChildNodes then
+        CurNode.EndPos:=CurPos.EndPos;
       ReadNextAtom;
     end;
+    if CreateChildNodes then
+      EndChildNode; // close ctnSpecializeParam
     if AtomIsChar('>') then
       break
     else if CurPos.Flag=cafComma then begin

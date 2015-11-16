@@ -6879,7 +6879,8 @@ begin
     if (IdentifierNode.FirstChild=nil) then begin
       MoveCursorToCleanPos(IdentifierNode.StartPos);
       ReadNextAtom;
-      ReadNextAtom;
+      if UpAtomIs('SPECIALIZE') then
+        ReadNextAtom;
       RaiseStringExpectedButAtomFound('class type');
     end;
     MoveCursorToCleanPos(IdentifierNode.FirstChild.StartPos);
@@ -6894,18 +6895,7 @@ begin
   try
     Params.Flags:=fdfDefaultForExpressions;
     Params.ContextNode:=IdentifierNode;
-    if CurPos.Flag in [cafRoundBracketClose,cafComma] then begin
-      // simple identifier
-      {$IFDEF ShowTriedContexts}
-      DebugLn('[TFindDeclarationTool.FindAncestorOfClass] ',
-      ' search ancestor class="',GetIdentifier(@Src[AncestorStartPos]),'" for class "',ExtractClassName(ClassNode,false),'"');
-      {$ENDIF}
-      Params.SetIdentifier(Self,@Src[AncestorStartPos],nil);
-      if not FindIdentifierInContext(Params) then
-        exit;
-      AncestorContext.Tool:=Params.NewCodeTool;
-      AncestorContext.Node:=Params.NewNode;
-    end else begin
+    if CurPos.Flag=cafPoint then begin
       // complex identifier
       {$IFDEF ShowTriedContexts}
       DebugLn(['[TFindDeclarationTool.FindAncestorOfClass] ',
@@ -6917,6 +6907,17 @@ begin
       if ExprType.Desc<>xtContext then
         RaiseExpected('type');
       AncestorContext:=ExprType.Context
+    end else begin
+      // simple identifier
+      {$IFDEF ShowTriedContexts}
+      DebugLn('[TFindDeclarationTool.FindAncestorOfClass] ',
+      ' search ancestor class="',GetIdentifier(@Src[AncestorStartPos]),'" for class "',ExtractClassName(ClassNode,false),'"');
+      {$ENDIF}
+      Params.SetIdentifier(Self,@Src[AncestorStartPos],nil);
+      if not FindIdentifierInContext(Params) then
+        exit;
+      AncestorContext.Tool:=Params.NewCodeTool;
+      AncestorContext.Node:=Params.NewNode;
     end;
   finally
     Params.Free;
