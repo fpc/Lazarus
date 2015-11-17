@@ -7,7 +7,8 @@ unit ProjectGroupIntf;
 interface
 
 uses
-  Classes, SysUtils, IDEOptionsIntf, PackageIntf, ProjectIntf, LazFileUtils;
+  Classes, SysUtils, IDEOptionsIntf, PackageIntf, ProjectIntf, LazFileUtils,
+  LazFileCache;
 
 Type
   TPGTargetType = (
@@ -73,12 +74,15 @@ Type
 
   TProjectGroup = class(TPersistent)
   private
+    FChangeStamp: int64;
     FFileName: String;
+    FLastSavedChangeStamp: int64;
     function GetActiveTarget: TCompileTarget;
     procedure SetActiveTarget(AValue: TCompileTarget);
+    procedure SetModified(AValue: Boolean);
   protected
     procedure SetFileName(AValue: String); virtual;
-    function GetModified: Boolean; virtual; abstract;
+    function GetModified: Boolean; virtual;
     function GetTargetCount: Integer; virtual; abstract;
     function GetTarget(Index: Integer): TCompileTarget; virtual; abstract;
     function GetRemovedTargetCount: Integer; virtual; abstract;
@@ -101,13 +105,15 @@ Type
     procedure ActivateTarget(Index: Integer);
     procedure ActivateTarget(Const AFileName: String);
     procedure ActivateTarget(Target: TCompileTarget); virtual;
+    procedure IncreaseChangeStamp;
     property FileName: String Read FFileName Write SetFileName; // absolute
     property Targets[Index: Integer]: TCompileTarget Read GetTarget;
     property TargetCount: Integer Read GetTargetCount;
     property RemovedTargets[Index: Integer]: TCompileTarget Read GetRemovedTarget;
     property RemovedTargetCount: Integer Read GetRemovedTargetCount;
     property ActiveTarget: TCompileTarget Read GetActiveTarget Write SetActiveTarget;
-    property Modified: Boolean Read GetModified;
+    property Modified: Boolean Read GetModified write SetModified;
+    property ChangeStamp: int64 read FChangeStamp;
   end;
 
   TProjectGroupLoadOption  = (
@@ -197,10 +203,23 @@ begin
   ActivateTarget(AValue);
 end;
 
+procedure TProjectGroup.SetModified(AValue: Boolean);
+begin
+  if AValue then
+    IncreaseChangeStamp
+  else
+    FLastSavedChangeStamp:=FChangeStamp;
+end;
+
 procedure TProjectGroup.SetFileName(AValue: String);
 begin
   if FFileName=AValue then Exit;
   FFileName:=AValue;
+end;
+
+function TProjectGroup.GetModified: Boolean;
+begin
+  Result:=FLastSavedChangeStamp<>FChangeStamp;
 end;
 
 function TProjectGroup.Perform(Index: Integer; AAction: TPGTargetAction
@@ -299,6 +318,11 @@ begin
       TD.Deactivate;
   end;
   Target.Activate;
+end;
+
+procedure TProjectGroup.IncreaseChangeStamp;
+begin
+  LUIncreaseChangeStamp64(FChangeStamp);
 end;
 
 { TCompileTarget }

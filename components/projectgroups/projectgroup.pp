@@ -47,7 +47,7 @@ type
 
   { TProjectGroupTarget }
 
-  TProjectGroupTarget = Class(TIDECompileTarget)
+  TProjectGroupTarget = class(TIDECompileTarget)
   protected
     procedure SetTargetType(AValue: TPGTargetType); override;
   public
@@ -59,7 +59,7 @@ type
 
   { TIDEProjectGroup }
 
-  TIDEProjectGroup = Class(TProjectGroup)
+  TIDEProjectGroup = class(TProjectGroup)
   private
     FOnFileNameChange: TNotifyEvent;
     FOnTargetActivated: TTargetEvent;
@@ -68,10 +68,8 @@ type
     FOnTargetsExchanged: TTargetExchangeEvent;
     FTargets: TFPObjectList;
     FRemovedTargets: TFPObjectList;
-    FModified: Boolean;
   protected
     procedure SetFileName(AValue: String); override;
-    function GetModified: Boolean; override;
     function GetTarget(Index: Integer): TCompileTarget; override;
     function GetTargetCount: Integer; override;
     function GetRemovedTargetCount: Integer; override;
@@ -179,7 +177,7 @@ begin
            end;
          mrNo :
            begin
-           FProjectGroup.FModified:=False;
+           FProjectGroup.Modified:=False;
            Result:=True;
            end
        else
@@ -313,13 +311,9 @@ procedure TIDEProjectGroup.SetFileName(AValue: String);
 begin
   if FileName=AValue then Exit;
   inherited SetFileName(AValue);
+  IncreaseChangeStamp;
   if Assigned(FOnFileNameChange) then
     FOnFileNameChange(Self);
-end;
-
-function TIDEProjectGroup.GetModified: Boolean;
-begin
-  Result:=FModified;
 end;
 
 function TIDEProjectGroup.GetTarget(Index: Integer): TCompileTarget;
@@ -375,7 +369,7 @@ begin
     Result:=TIDECompileTarget.Create;
     Result.FileName:=AFileName;
     FTargets.Add(Result);
-    FModified:=True;
+    IncreaseChangeStamp;
     If Assigned(FOnTargetAdded) then
       FOnTargetAdded(Self,Result);
   end;
@@ -399,7 +393,7 @@ begin
   if Assigned(FOnTargetsExchanged) then
     FOnTargetsExchanged(Self,GetTarget(ASource),GetTarget(ATarget));
   FTargets.Exchange(ASource,ATarget);
-  FModified:=True;
+  IncreaseChangeStamp;
 end;
 
 procedure TIDEProjectGroup.ActivateTarget(T: TCompileTarget);
@@ -518,7 +512,7 @@ begin
           end;
         end;
       XMLConfig.Flush;
-      FModified:=False;
+      Modified:=False;
     finally
       XMLConfig.Free;
     end;
