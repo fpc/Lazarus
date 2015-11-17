@@ -13,28 +13,31 @@ interface
 uses
   Classes, SysUtils, contnrs,
   Laz2_XMLCfg,
-  Controls, Forms, Dialogs, LazFileUtils, LazFileCache,
+  Controls, Forms, Dialogs, LCLProc, LazFileUtils, LazFileCache,
   PackageIntf, ProjectIntf, MenuIntf,
   LazIDEIntf, IDEDialogs, CompOptsIntf, ProjectGroupIntf,
-  ProjectGroupStrConst;
+  ProjectGroupStrConst, FileProcs;
 
 
 type
-
   { TIDECompileTarget }
 
-  TIDECompileTarget = class(TCompileTarget)
+  TIDECompileTarget = class(TPGCompileTarget)
   private
     FTarget: TPersistent;
+    FFiles: TStringList;
+    FRequiredPackages: TObjectList; // list of TPGDependency
   protected
+    function GetFileCount: integer; override;
+    function GetFiles(Index: integer): string; override;
+    function GetRequiredPackageCount: integer; override;
+    function GetRequiredPackages(Index: integer): TPGDependency; override;
     procedure LoadPackage;
     procedure LoadProject;
     procedure LoadProjectGroup;
     function ProjectAction(AAction: TPGTargetAction): TPGActionResult;
     function PackageAction(AAction: TPGTargetAction): TPGActionResult;
     function ProjectGroupAction(AAction: TPGTargetAction): TPGActionResult;
-    function GetIDEPackage: TIDEPackage; override;
-    function GetLazProject: TLazProject; override;
     function GetProjectGroup: TProjectGroup; override;
     function PerformAction(AAction: TPGTargetAction): TPGActionResult; override;
   public
@@ -54,8 +57,8 @@ type
     constructor Create(AProjectGroup: TProjectGroup);
   end;
 
-  TTargetEvent = procedure(Sender: TObject; Target: TCompileTarget) of object;
-  TTargetExchangeEvent = procedure(Sender: TObject; Target1,Target2: TCompileTarget) of object; // ToDo: use index
+  TTargetEvent = procedure(Sender: TObject; Target: TPGCompileTarget) of object;
+  TTargetExchangeEvent = procedure(Sender: TObject; Target1,Target2: TPGCompileTarget) of object; // ToDo: use index
 
   { TIDEProjectGroup }
 
@@ -70,19 +73,19 @@ type
     FRemovedTargets: TFPObjectList;
   protected
     procedure SetFileName(AValue: String); override;
-    function GetTarget(Index: Integer): TCompileTarget; override;
+    function GetTarget(Index: Integer): TPGCompileTarget; override;
     function GetTargetCount: Integer; override;
     function GetRemovedTargetCount: Integer; override;
-    function GetRemovedTarget(Index: Integer): TCompileTarget; override;
+    function GetRemovedTarget(Index: Integer): TPGCompileTarget; override;
   public
     constructor Create;
     destructor Destroy; override;
-    function IndexOfTarget(const Target: TCompileTarget): Integer; override;
-    function IndexOfRemovedTarget(const Target: TCompileTarget): Integer; override;
-    function AddTarget(Const AFileName: String): TCompileTarget; override;
+    function IndexOfTarget(const Target: TPGCompileTarget): Integer; override;
+    function IndexOfRemovedTarget(const Target: TPGCompileTarget): Integer; override;
+    function AddTarget(Const AFileName: String): TPGCompileTarget; override;
     procedure RemoveTarget(Index: Integer); override;
     procedure ExchangeTargets(ASource, ATarget: Integer); override; // ToDo: replace with MoveTarget
-    procedure ActivateTarget(T: TCompileTarget); override;
+    procedure ActivateTarget(T: TPGCompileTarget); override;
     function LoadFromFile(Options: TProjectGroupLoadOptions): Boolean;
     function SaveToFile: Boolean;
     property OnFileNameChange: TNotifyEvent Read FOnFileNameChange Write FOnFileNameChange;
@@ -325,9 +328,9 @@ begin
     FOnFileNameChange(Self);
 end;
 
-function TIDEProjectGroup.GetTarget(Index: Integer): TCompileTarget;
+function TIDEProjectGroup.GetTarget(Index: Integer): TPGCompileTarget;
 begin
-  Result:=TCompileTarget(FTargets[Index]);
+  Result:=TPGCompileTarget(FTargets[Index]);
 end;
 
 function TIDEProjectGroup.GetTargetCount: Integer;
@@ -340,9 +343,9 @@ begin
   Result:=FRemovedTargets.Count;
 end;
 
-function TIDEProjectGroup.GetRemovedTarget(Index: Integer): TCompileTarget;
+function TIDEProjectGroup.GetRemovedTarget(Index: Integer): TPGCompileTarget;
 begin
-  Result:=TCompileTarget(FRemovedTargets[Index]);
+  Result:=TPGCompileTarget(FRemovedTargets[Index]);
 end;
 
 constructor TIDEProjectGroup.Create;
@@ -359,34 +362,34 @@ begin
   inherited Destroy;
 end;
 
-function TIDEProjectGroup.IndexOfTarget(const Target: TCompileTarget): Integer;
+function TIDEProjectGroup.IndexOfTarget(const Target: TPGCompileTarget): Integer;
 begin
   Result:=FTargets.IndexOf(Target);
 end;
 
-function TIDEProjectGroup.IndexOfRemovedTarget(const Target: TCompileTarget
+function TIDEProjectGroup.IndexOfRemovedTarget(const Target: TPGCompileTarget
   ): Integer;
 begin
   Result:=FRemovedTargets.IndexOf(Target);
 end;
 
-function TIDEProjectGroup.AddTarget(const AFileName: String): TCompileTarget;
+function TIDEProjectGroup.AddTarget(const AFileName: String): TPGCompileTarget;
 begin
   Result:=Nil;
-  if FileExistsCached(AFileName) then
-  begin
-    Result:=TIDECompileTarget.Create;
-    Result.FileName:=AFileName;
-    FTargets.Add(Result);
-    IncreaseChangeStamp;
-    If Assigned(FOnTargetAdded) then
-      FOnTargetAdded(Self,Result);
-  end;
+  if not FilenameIsAbsolute(AFileName) then
+    RaiseGDBException(AFileName);
+  if not FileExistsCached(AFileName) then exit;
+  Result:=TIDECompileTarget.Create;
+  Result.FileName:=AFileName;
+  FTargets.Add(Result);
+  IncreaseChangeStamp;
+  If Assigned(FOnTargetAdded) then
+    FOnTargetAdded(Self,Result);
 end;
 
 procedure TIDEProjectGroup.RemoveTarget(Index: Integer);
 var
-  Target: TCompileTarget;
+  Target: TPGCompileTarget;
 begin
   Target:=Targets[Index];
   FTargets.Delete(Index);
@@ -405,7 +408,7 @@ begin
   IncreaseChangeStamp;
 end;
 
-procedure TIDEProjectGroup.ActivateTarget(T: TCompileTarget);
+procedure TIDEProjectGroup.ActivateTarget(T: TPGCompileTarget);
 begin
   if T.Active then exit;
   inherited ActivateTarget(T);
@@ -421,7 +424,7 @@ Var
   TargetPath: String;
   XMLConfig: TXMLConfig;
   I,ACount: Integer;
-  Target: TCompileTarget;
+  Target: TPGCompileTarget;
 begin
   TargetPath:=ExpandFileNameUTF8(ExtractFilePath(FileName));
   Result:=True;
@@ -494,7 +497,7 @@ Var
   ARoot: String;
   XMLConfig: TXMLConfig;
   I,ACount: Integer;
-  CompTarget: TCompileTarget;
+  CompTarget: TPGCompileTarget;
 begin
   TargetPath:=ExtractFilePath(FileName);
   Result:=True;
@@ -547,9 +550,38 @@ end;
 
 procedure TIDECompileTarget.UnLoadTarget;
 begin
-  if (FTarget<>Nil) and (FTarget is TProjectGroup) then
+  if FTarget<>nil then
     FreeAndNil(FTarget);
-  FTarget:=Nil;
+  if FFiles<>nil then
+    FreeAndNil(FFiles);
+  if FRequiredPackages<>nil then
+    FreeAndNil(FRequiredPackages);
+end;
+
+function TIDECompileTarget.GetFileCount: integer;
+begin
+  if FFiles=nil then
+    Result:=0
+  else
+    Result:=FFiles.Count;
+end;
+
+function TIDECompileTarget.GetFiles(Index: integer): string;
+begin
+  Result:=FFiles[Index];
+end;
+
+function TIDECompileTarget.GetRequiredPackageCount: integer;
+begin
+  if FRequiredPackages<>nil then
+    Result:=FRequiredPackages.Count
+  else
+    Result:=0;
+end;
+
+function TIDECompileTarget.GetRequiredPackages(Index: integer): TPGDependency;
+begin
+  Result:=TPGDependency(FRequiredPackages[Index]);
 end;
 
 procedure TIDECompileTarget.LoadPackage;
@@ -557,37 +589,48 @@ var
   MR: TModalResult;
   I: Integer;
   Pkg: TIDEPackage;
+  PkgName: String;
 begin
   FTarget:=Nil;
-  MR:=PackageEditingInterface.DoOpenPackageFile(Filename,
-      [pofRevert, pofConvertMacros, pofDoNotOpenEditor],
-      False);
-  if (MR=mrOK) then
-  begin
-    I:=0;
-    while (FTarget=Nil) and (I<PackageEditingInterface.GetPackageCount) do
-    begin
-      Pkg:=PackageEditingInterface.GetPackages(I);
-      if CompareFilenames(Pkg.Filename,Self.Filename)=0 then
-        FTarget:=Pkg; // ToDo: free notification
-      Inc(I);
+  PkgName:=ExtractFileUnitname(Filename,true);
+  if PkgName='' then begin
+    debugln(['Warning: (lazarus) [TIDECompileTarget.LoadPackage] invalid package filename "',Filename,'"']);
+    exit;
+  end;
+
+  Pkg:=PackageEditingInterface.FindPackageWithName(PkgName);
+  if Pkg=nil then begin
+    MR:=PackageEditingInterface.DoOpenPackageFile(Filename,
+        [pofDoNotOpenEditor],False);
+    if MR<>mrOk then begin
+      debugln(['Warning: (lazarus) [TIDECompileTarget.LoadPackage] DoOpenPackageFile failed on file "',Filename,'"']);
+      exit;
+    end;
+    Pkg:=PackageEditingInterface.FindPackageWithName(PkgName);
+    if Pkg=nil then begin
+      debugln(['Warning: (lazarus) [TIDECompileTarget.LoadPackage] DoOpenPackageFile failed pkgname="',PkgName,'" on file "',Filename,'"']);
+      exit;
     end;
   end;
+  if CompareFilenames(Pkg.Filename,Filename)<>0 then begin
+    debugln(['Warning: (lazarus) [TIDECompileTarget.LoadPackage] there is already a package with that name: wanted="',Filename,'" loaded="',Pkg.Filename,'"']);
+    exit;
+  end;
+
+  // load list of file
+  FFiles:=TStringList.Create;
+  for i:=0 to Pkg.FileCount-1 do
+    FFiles.Add(Pkg.Files[i].Filename);
+
+  // load list of required package
+  FRequiredPackages:=TObjectList.Create;
+  // ToDo
 end;
 
 procedure TIDECompileTarget.LoadProject;
-const
-  Flags = [];
-{  Flags = [ofOnlyIfExists, ofProjectLoading, ofQuiet, ofVirtualFile,
-           ofUseCache, ofMultiOpen, ofDoNotLoadResource,
-           ofLoadHiddenResource, ofInternalFile];}
-var
-  MR: TModalResult;
 begin
   UnloadTarget;
-  MR:=LazarusIDE.DoOpenProjectFile(FileName,Flags);
-  if (MR=mrOK) then
-    FTarget:=LazarusIDE.ActiveProject; // ToDo: free notification
+  // ToDo
 end;
 
 procedure TIDECompileTarget.LoadProjectGroup;
@@ -603,34 +646,42 @@ function TIDECompileTarget.ProjectAction(AAction: TPGTargetAction): TPGActionRes
 var
   F: TProjectBuildFlags;
 begin
-  Result:=arOK;
-  if (LazarusIDE.ActiveProject.ProjectInfoFile<>LazProject.ProjectInfoFile) then
-    if  LazarusIDE.DoOpenProjectFile(FileName,[ofOnlyIfExists,ofQuiet,ofUseCache])<>mrOK then
-      exit;
-  // If action was open, we're now all set
-  case AAction of
-     taSettings :
-       ; // TODO: Need IDE integration
-     taCompileClean,
-     taCompile :
-       begin
-       F:=[];
-       if (AAction=taCompileClean) then
-         Include(F,pbfCleanCompile);
-       LazarusIDE.DoBuildProject(crCompile,F);
-       end;
-     taRun :
-       ; // TODO: Need IDE integration
+  Result:=arFailed;
+
+  // ToDo: if project loaded
+  if (LazarusIDE.ActiveProject<>nil)
+  and (CompareFilenames(LazarusIDE.ActiveProject.ProjectInfoFile,Filename)=0)
+  then begin
+    // project loaded => use IDE functions
+    // ToDo
+    case AAction of
+       taSettings :
+         ; // TODO: Need IDE integration
+       taCompileClean,
+       taCompile :
+         begin
+           F:=[];
+           if (AAction=taCompileClean) then
+             Include(F,pbfCleanCompile);
+           if LazarusIDE.DoBuildProject(crCompile,F)=mrOk then
+             exit(arOK);
+         end;
+       taRun :
+         ; // TODO: Need IDE integration
+    end;
+  end else begin
+    // project not loaded => use lazbuild
+    // ToDo
   end;
 end;
 
 function TIDECompileTarget.PackageAction(AAction: TPGTargetAction): TPGActionResult;
-Var
-  L: TObjectList;
 begin
-  Result:=arOK;
+  Result:=arFailed;
+
   if (AAction in [taOpen,taSettings]) then
-    PackageEditingInterface.DoOpenPackageFile(FileName,[],False);
+    if PackageEditingInterface.DoOpenPackageFile(FileName,[pofDoNotOpenEditor],False)<>mrOk then
+      exit;
   case AAction of
      taSettings :
        ; // TODO: Need IDE integration
@@ -639,15 +690,7 @@ begin
      taCompileClean :
        ; // TODO: Need IDE integration
      taInstall :
-       begin
-       L:=TObjectList.Create(False);
-       try
-         L.Add(LazPackage);
-         PackageEditingInterface.InstallPackages(L,[]);
-       finally
-         L.Free;
-       end;
-       end;
+       ; // TODO: Need IDE integration
      taUninstall :
        ; // TODO: Need IDE integration
   end;
@@ -660,20 +703,6 @@ begin
     ProjectGroupManager.LoadProjectGroup(FileName,[])
   else
     Result:=GetProjectGroup.PerformFrom(0,AAction);
-end;
-
-function TIDECompileTarget.GetIDEPackage: TIDEPackage;
-begin
-  If FTarget=Nil then
-    LoadTarget;
-  Result:=TIDEPackage(FTarget);
-end;
-
-function TIDECompileTarget.GetLazProject: TLazProject;
-begin
-  If FTarget=Nil then
-    LoadTarget;
-  Result:=TLazProject(FTarget);
 end;
 
 function TIDECompileTarget.GetProjectGroup: TProjectGroup;

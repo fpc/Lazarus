@@ -16,7 +16,7 @@ Type
     ttProject,
     ttPackage,
     ttProjectGroup, // nested group
-    ttFile,  // build/run file, parameters stored IDE directives
+    ttPascalFile,  // build/run file, parameters stored IDE directives
     ttExternalTool
     );
   TPGTargetTypes = set of TPGTargetType;
@@ -36,27 +36,33 @@ Type
 
   TProjectGroup = class;
 
-  { TCompileTarget - a node in the tree, e.g. a project, package or group }
+  TPGDependency = class
+  public
+    PackageName: string;
+  end;
 
-  TCompileTarget = class
+  { TPGCompileTarget - a node in the tree, see TPGTargetType }
+
+  TPGCompileTarget = class
   private
     FActive: Boolean;
     FFilename: string;
     FTargetType: TPGTargetType;
     FRemoved: boolean;
   protected
-    function PerformAction (AAction: TPGTargetAction): TPGActionResult; virtual; abstract;
-    function Perform (AAction: TPGTargetAction): TPGActionResult;
-    // By default, return all allowed actions for target type.
-    function GetAllowedActions: TPGTargetActions; virtual;
-    function GetLazProject: TLazProject; virtual; abstract;
+    function GetAllowedActions: TPGTargetActions; virtual; // By default, return all allowed actions for target type.
+    function GetFileCount: integer; virtual; abstract;
+    function GetFiles(Index: integer): string; virtual; abstract;
     function GetProjectGroup: TProjectGroup; virtual; abstract;
-    procedure SetTargetType(AValue: TPGTargetType); virtual;
-    procedure SetFilename(const AValue: string); virtual;
-    function GetIDEPackage: TIDEPackage; virtual; abstract;
-    procedure SetRemoved(const AValue: boolean); virtual;
+    function GetRequiredPackageCount: integer; virtual; abstract;
+    function GetRequiredPackages(Index: integer): TPGDependency; virtual; abstract;
+    function Perform (AAction: TPGTargetAction): TPGActionResult;
+    function PerformAction (AAction: TPGTargetAction): TPGActionResult; virtual; abstract;
     procedure Activate; virtual;
     procedure DeActivate; virtual;
+    procedure SetFilename(const AValue: string); virtual;
+    procedure SetRemoved(const AValue: boolean); virtual;
+    procedure SetTargetType(AValue: TPGTargetType); virtual;
   public
     property Filename: string read FFilename write SetFilename; // Absolute, not relative. (ToDo: store them relative)
     property Removed: boolean read FRemoved write SetRemoved;
@@ -65,9 +71,11 @@ Type
     // Currently allowed actions.
     property AllowedActions: TPGTargetActions Read GetAllowedActions;
     //
-    property LazPackage: TIDEPackage read GetIDEPackage;
-    property LazProject: TLazProject Read GetLazProject;
     property ProjectGroup: TProjectGroup Read GetProjectGroup;
+    property Files[Index: integer]: string read GetFiles;
+    property FileCount: integer read GetFileCount;
+    property RequiredPackages[Index: integer]: TPGDependency read GetRequiredPackages;
+    property RequiredPackageCount: integer read GetRequiredPackageCount;
   end;
 
   { TProjectGroup }
@@ -77,41 +85,41 @@ Type
     FChangeStamp: int64;
     FFileName: String;
     FLastSavedChangeStamp: int64;
-    function GetActiveTarget: TCompileTarget;
-    procedure SetActiveTarget(AValue: TCompileTarget);
+    function GetActiveTarget: TPGCompileTarget;
+    procedure SetActiveTarget(AValue: TPGCompileTarget);
     procedure SetModified(AValue: Boolean);
   protected
     procedure SetFileName(AValue: String); virtual;
     function GetModified: Boolean; virtual;
     function GetTargetCount: Integer; virtual; abstract;
-    function GetTarget(Index: Integer): TCompileTarget; virtual; abstract;
+    function GetTarget(Index: Integer): TPGCompileTarget; virtual; abstract;
     function GetRemovedTargetCount: Integer; virtual; abstract;
-    function GetRemovedTarget(Index: Integer): TCompileTarget; virtual; abstract;
+    function GetRemovedTarget(Index: Integer): TPGCompileTarget; virtual; abstract;
   public
     function Perform(Index: Integer; AAction: TPGTargetAction): TPGActionResult;
     function Perform(Const AFileName: String; AAction: TPGTargetAction): TPGActionResult;
-    function Perform(Target: TCompileTarget; AAction: TPGTargetAction): TPGActionResult; virtual;
+    function Perform(Target: TPGCompileTarget; AAction: TPGTargetAction): TPGActionResult; virtual;
     function ActionAllowsFrom(Index: Integer; AAction: TPGTargetAction): Boolean; virtual;
     function PerformFrom(AIndex: Integer; AAction: TPGTargetAction): TPGActionResult; virtual;
-    function IndexOfTarget(Const Target: TCompileTarget): Integer; virtual; abstract;
+    function IndexOfTarget(Const Target: TPGCompileTarget): Integer; virtual; abstract;
     function IndexOfTarget(Const AFilename: String): Integer; virtual;
-    function IndexOfRemovedTarget(Const Target: TCompileTarget): Integer; virtual; abstract;
+    function IndexOfRemovedTarget(Const Target: TPGCompileTarget): Integer; virtual; abstract;
     function IndexOfRemovedTarget(Const AFilename: String): Integer; virtual;
-    function AddTarget(Const AFileName: String): TCompileTarget; virtual; abstract;
+    function AddTarget(Const AFileName: String): TPGCompileTarget; virtual; abstract;
     procedure ExchangeTargets(ASource, ATarget: Integer); virtual; abstract;
     procedure RemoveTarget(Index: Integer); virtual; abstract;
     procedure RemoveTarget(Const AFileName: String);
-    procedure RemoveTarget(Target: TCompileTarget);
+    procedure RemoveTarget(Target: TPGCompileTarget);
     procedure ActivateTarget(Index: Integer);
     procedure ActivateTarget(Const AFileName: String);
-    procedure ActivateTarget(Target: TCompileTarget); virtual;
+    procedure ActivateTarget(Target: TPGCompileTarget); virtual;
     procedure IncreaseChangeStamp;
     property FileName: String Read FFileName Write SetFileName; // absolute
-    property Targets[Index: Integer]: TCompileTarget Read GetTarget;
+    property Targets[Index: Integer]: TPGCompileTarget Read GetTarget;
     property TargetCount: Integer Read GetTargetCount;
-    property RemovedTargets[Index: Integer]: TCompileTarget Read GetRemovedTarget;
+    property RemovedTargets[Index: Integer]: TPGCompileTarget Read GetRemovedTarget;
     property RemovedTargetCount: Integer Read GetRemovedTargetCount;
-    property ActiveTarget: TCompileTarget Read GetActiveTarget Write SetActiveTarget;
+    property ActiveTarget: TPGCompileTarget Read GetActiveTarget Write SetActiveTarget;
     property Modified: Boolean Read GetModified write SetModified;
     property ChangeStamp: int64 read FChangeStamp;
   end;
@@ -144,7 +152,7 @@ const
     [taOpen,taSettings,taCompile,taCompileClean,taRun], // ttProject
     [taOpen,taSettings,taCompile,taCompileClean,taInstall,taUninstall], // ttPackage
     [taOpen,taCompile,taCompileClean], // ttProjectGroup
-    [taOpen,taCompile,taRun], // ttFile
+    [taOpen,taCompile,taRun], // ttPascalFile
     [taOpen,taRun] // ttExternalTool
   );
 
@@ -165,7 +173,7 @@ begin
     'lpg': Result:=ttProjectGroup;
     'pas',
     'pp',
-    'p'  : Result:=ttFile;
+    'p'  : Result:=ttPascalFile;
   else
     Result:=ttUnknown;
   end;
@@ -185,7 +193,7 @@ end;
 
 { TProjectGroup }
 
-function TProjectGroup.GetActiveTarget: TCompileTarget;
+function TProjectGroup.GetActiveTarget: TPGCompileTarget;
 Var
   I: Integer;
 begin
@@ -198,7 +206,7 @@ begin
   Result:=Nil;
 end;
 
-procedure TProjectGroup.SetActiveTarget(AValue: TCompileTarget);
+procedure TProjectGroup.SetActiveTarget(AValue: TPGCompileTarget);
 begin
   ActivateTarget(AValue);
 end;
@@ -234,7 +242,7 @@ begin
   Result:=Perform(IndexOfTarget(AFileName),AAction);
 end;
 
-function TProjectGroup.Perform(Target: TCompileTarget; AAction: TPGTargetAction): TPGActionResult;
+function TProjectGroup.Perform(Target: TPGCompileTarget; AAction: TPGTargetAction): TPGActionResult;
 begin
   Result:=Target.Perform(AAction);
 end;
@@ -243,7 +251,7 @@ function TProjectGroup.ActionAllowsFrom(Index: Integer; AAction: TPGTargetAction
   ): Boolean;
 Var
   C: Integer;
-  T: TCompileTarget;
+  T: TPGCompileTarget;
 begin
   Result:=ActionAllowsMulti(AAction);
   C:=TargetCount;
@@ -290,7 +298,7 @@ begin
   RemoveTarget(IndexOfTarget(AFileName))
 end;
 
-procedure TProjectGroup.RemoveTarget(Target: TCompileTarget);
+procedure TProjectGroup.RemoveTarget(Target: TPGCompileTarget);
 begin
   RemoveTarget(IndexOfTarget(Target))
 end;
@@ -305,10 +313,10 @@ begin
   ActivateTarget(IndexOfTarget(AFileName));
 end;
 
-procedure TProjectGroup.ActivateTarget(Target: TCompileTarget);
+procedure TProjectGroup.ActivateTarget(Target: TPGCompileTarget);
 var
   I: Integer;
-  TD: TCompileTarget;
+  TD: TPGCompileTarget;
 begin
   if Target.Active then exit;
   for I:=0 to TargetCount-1 do
@@ -325,27 +333,27 @@ begin
   LUIncreaseChangeStamp64(FChangeStamp);
 end;
 
-{ TCompileTarget }
+{ TPGCompileTarget }
 
-function TCompileTarget.GetAllowedActions: TPGTargetActions;
+function TPGCompileTarget.GetAllowedActions: TPGTargetActions;
 begin
   Result:=PGTargetActions[TargetType];
 end;
 
-procedure TCompileTarget.SetTargetType(AValue: TPGTargetType);
+procedure TPGCompileTarget.SetTargetType(AValue: TPGTargetType);
 begin
   if FTargetType=AValue then Exit;
   FTargetType:=AValue;
 end;
 
-procedure TCompileTarget.SetFilename(const AValue: string);
+procedure TPGCompileTarget.SetFilename(const AValue: string);
 begin
   if FFileName=AValue then Exit;
   FFileName:=AValue;
   TargetType:=TargetTypeFromExtenstion(ExtractFileExt(AValue));
 end;
 
-procedure TCompileTarget.SetRemoved(const AValue: boolean);
+procedure TPGCompileTarget.SetRemoved(const AValue: boolean);
 begin
   if Removed=AValue then exit;
   FRemoved:=AValue;
@@ -353,17 +361,17 @@ begin
     Deactivate;
 end;
 
-procedure TCompileTarget.Activate;
+procedure TPGCompileTarget.Activate;
 begin
   FActive:=True;
 end;
 
-procedure TCompileTarget.DeActivate;
+procedure TPGCompileTarget.DeActivate;
 begin
   FActive:=False;
 end;
 
-function TCompileTarget.Perform(AAction: TPGTargetAction): TPGActionResult;
+function TPGCompileTarget.Perform(AAction: TPGTargetAction): TPGActionResult;
 begin
   if Not (AAction in AllowedActions) then
     Result:=arNotAllowed

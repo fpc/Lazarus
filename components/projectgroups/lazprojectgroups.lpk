@@ -41,10 +41,13 @@ Modified LGPL-2."/>
         <UnitName Value="ProjectGroupStrConst"/>
       </Item6>
     </Files>
-    <RequiredPkgs Count="1">
+    <RequiredPkgs Count="2">
       <Item1>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="CodeTools"/>
       </Item1>
+      <Item2>
+        <PackageName Value="IDEIntf"/>
+      </Item2>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>
