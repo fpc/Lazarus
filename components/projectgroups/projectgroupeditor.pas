@@ -134,7 +134,7 @@ type
     procedure SetEventCallBacks(AProjectGroup: TProjectGroup);
     // Some helpers
     procedure SetProjectGroup(AValue: TProjectGroup);
-    procedure ShowDependencies(AParent: TTreeNode; AProjectGroup: TProjectGroup; T: TObject; Out PD: TTargetNodes);
+    procedure ShowDependencies(AParent: TTreeNode; AProjectGroup: TProjectGroup; T: TPGCompileTarget; Out PD: TTargetNodes);
     procedure ShowFileName;
     procedure Perform(ATargetAction: TPGTargetAction);
     function GetActiveTarget: TPGCompileTarget;
@@ -919,19 +919,23 @@ begin
 end;
 
 procedure TProjectGroupEditorForm.ShowDependencies(AParent: TTreeNode;
-  AProjectGroup: TProjectGroup; T: TObject; out PD: TTargetNodes);
+  AProjectGroup: TProjectGroup; T: TPGCompileTarget; out PD: TTargetNodes);
 Var
-  L: TfPList;
-  I: Integer;
-  P: TIDEPackage;
+  i: Integer;
+  Pkg: TIDEPackage;
+  PkgName: String;
 begin
   PD[False]:=CreateNode(AParent,lisNodeDependencies,ntDependencies,Nil,AProjectGroup);
   PD[True]:=CreateNode(AParent,lisNodeRemovedDependencies,ntRemovedDependencies,Nil,AProjectGroup);
-  PackageEditingInterface.GetRequiredPackages(T,L,[pirCompileOrder]);
-  For I:=0 to L.Count-1 do
+  For i:=0 to T.RequiredPackageCount-1 do
   begin
-    P:=TIDEPackage(L[i]);
-    CreateNode(PD[False],P.Name,ntDependency,Nil,AProjectGroup);
+    PkgName:=T.RequiredPackages[i].PackageName;
+    Pkg:=PackageEditingInterface.FindPackageWithName(PkgName);
+    if Pkg<>nil then begin
+      CreateNode(PD[False],Pkg.Name,ntDependency,Nil,AProjectGroup);
+    end else begin
+      CreateNode(PD[False],PKgName,ntDependency,Nil,AProjectGroup);
+    end;
   end;
 end;
 

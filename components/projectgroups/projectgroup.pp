@@ -592,6 +592,7 @@ var
   PkgName: String;
 begin
   FTarget:=Nil;
+
   PkgName:=ExtractFileUnitname(Filename,true);
   if PkgName='' then begin
     debugln(['Warning: (lazarus) [TIDECompileTarget.LoadPackage] invalid package filename "',Filename,'"']);
@@ -628,9 +629,28 @@ begin
 end;
 
 procedure TIDECompileTarget.LoadProject;
+var
+  AProject: TLazProject;
+  i: Integer;
+  ProjFile: TLazProjectFile;
 begin
   UnloadTarget;
-  // ToDo
+
+  AProject:=LazarusIDE.ActiveProject;
+  if (AProject<>nil) and (CompareFilenames(AProject.ProjectInfoFile,Filename)=0)
+  then begin
+    // load from active project
+    FFiles:=TStringList.Create;
+    for i:=0 to AProject.FileCount-1 do begin
+      ProjFile:=AProject.Files[i];
+      if ProjFile.IsPartOfProject then
+        FFiles.Add(ProjFile.Filename);
+    end;
+    // ToDo: dependencies
+  end else begin
+    // load from .lpi file
+    // ToDo
+  end;
 end;
 
 procedure TIDECompileTarget.LoadProjectGroup;
