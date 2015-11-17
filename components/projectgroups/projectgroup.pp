@@ -689,7 +689,7 @@ begin
     // load dependencies from active project
     PkgList:=nil;
     try
-      PackageEditingInterface.GetRequiredPackages(AProject,PkgList,[pirCompileOrder]);
+      PackageEditingInterface.GetRequiredPackages(AProject,PkgList,[pirNotRecursive,pirCompileOrder]);
       if PkgList<>nil then begin
         for i:=0 to PkgList.Count-1 do begin
           Pkg:=TIDEPackage(PkgList[i]);
