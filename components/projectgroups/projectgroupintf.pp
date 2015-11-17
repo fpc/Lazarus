@@ -219,6 +219,7 @@ end;
 procedure TProjectGroup.SetActiveTarget(AValue: TPGCompileTarget);
 begin
   ActivateTarget(AValue);
+  IncreaseChangeStamp;
 end;
 
 procedure TProjectGroup.SetModified(AValue: Boolean);
@@ -233,6 +234,7 @@ procedure TProjectGroup.SetFileName(AValue: String);
 begin
   if FFileName=AValue then Exit;
   FFileName:=AValue;
+  IncreaseChangeStamp;
 end;
 
 function TProjectGroup.GetModified: Boolean;

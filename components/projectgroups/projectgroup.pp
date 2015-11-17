@@ -42,8 +42,8 @@ type
     function GetProjectGroup: TProjectGroup; override;
     function PerformAction(AAction: TPGTargetAction): TPGActionResult; override;
   public
-    procedure LoadTarget;
-    procedure UnLoadTarget;
+    procedure LoadTarget; virtual;
+    procedure UnLoadTarget; virtual;
   end;
 
   // Since a project group iself is also a target, we need a target to represent
@@ -56,6 +56,8 @@ type
     procedure SetTargetType(AValue: TPGTargetType); override;
   public
     constructor Create(AProjectGroup: TProjectGroup);
+    procedure LoadTarget; override;
+    procedure UnLoadTarget; override;
   end;
 
   TTargetEvent = procedure(Sender: TObject; Target: TPGCompileTarget) of object;
@@ -432,8 +434,10 @@ begin
       F.Filter:=lisLazarusProjectGroup+'|*.lpg|'+lisAllFiles+'|'+AllFilesMask;
       F.DefaultExt:='.lpg';
       Result:=F.Execute;
-      if Result then
+      if Result then begin
         FProjectGroup.FileName:=TrimAndExpandFilename(FileName);
+
+      end;
       StoreIDEFileDialog(F);
     finally
       F.Free;
@@ -483,10 +487,20 @@ begin
   inherited SetTargetType(AValue);
 end;
 
-Constructor TProjectGroupTarget.Create(AProjectGroup: TProjectGroup);
+constructor TProjectGroupTarget.Create(AProjectGroup: TProjectGroup);
 begin
   FTarget:=AProjectGroup;
   TargetType:=ttProjectGroup;
+end;
+
+procedure TProjectGroupTarget.LoadTarget;
+begin
+
+end;
+
+procedure TProjectGroupTarget.UnLoadTarget;
+begin
+
 end;
 
 { TIDEProjectGroup }
@@ -494,8 +508,9 @@ end;
 procedure TIDEProjectGroup.SetFileName(AValue: String);
 begin
   if FileName=AValue then Exit;
+  debugln(['TIDEProjectGroup.SetFileName Old=',Filename,' New=',AValue]);
   inherited SetFileName(AValue);
-  IncreaseChangeStamp;
+  debugln(['TIDEProjectGroup.SetFileName Now=',Filename]);
   if Assigned(FOnFileNameChange) then
     FOnFileNameChange(Self);
 end;
@@ -612,7 +627,7 @@ begin
         TargetFileName:=XMLConfig.GetValue(Format(ARoot+'/Targets/Target%d/FileName',[i]),'');
         TargetFileName:=TrimFilename(SetDirSeparators(TargetFileName));
         if not FilenameIsAbsolute(TargetFileName) then
-          TargetFileName:=BaseDir+TargetFileName;
+          TargetFileName:=TrimFilename(BaseDir+TargetFileName);
         If (TargetFileName<>'') and FileExistsCached(TargetFileName) then begin
           Target:=AddTarget(TargetFileName);
           (Target as TIDECompileTarget).LoadTarget;
