@@ -421,12 +421,12 @@ function TIDEProjectGroup.LoadFromFile(Options: TProjectGroupLoadOptions
 Var
   ARoot: String;
   TargetFileName: String;
-  TargetPath: String;
+  BaseDir: String;
   XMLConfig: TXMLConfig;
   I,ACount: Integer;
   Target: TPGCompileTarget;
 begin
-  TargetPath:=ExpandFileNameUTF8(ExtractFilePath(FileName));
+  BaseDir:=AppendPathDelim(ExpandFileNameUTF8(ExtractFilePath(FileName)));
   Result:=True;
   try
     XMLConfig := TXMLConfig.Create(FileName);
@@ -440,7 +440,7 @@ begin
         TargetFileName:=XMLConfig.GetValue(Format(ARoot+'/Targets/Target%d/FileName',[i]),'');
         TargetFileName:=TrimFilename(SetDirSeparators(TargetFileName));
         if not FilenameIsAbsolute(TargetFileName) then
-          TargetFileName:=TargetPath+TargetFileName;
+          TargetFileName:=BaseDir+TargetFileName;
         If (TargetFileName<>'') and FileExistsCached(TargetFileName) then
           Target:=AddTarget(TargetFileName)
         else if (pgloRemoveInvalid in Options) then
@@ -624,7 +624,7 @@ begin
     FFiles.Add(Pkg.Files[i].Filename);
 
   // load list of required package
-  FRequiredPackages:=TObjectList.Create;
+  FRequiredPackages:=TObjectList.Create(True);
   // ToDo
 end;
 
@@ -636,6 +636,7 @@ var
 begin
   UnloadTarget;
 
+  debugln(['TIDECompileTarget.LoadProject ',Filename]);
   AProject:=LazarusIDE.ActiveProject;
   if (AProject<>nil) and (CompareFilenames(AProject.ProjectInfoFile,Filename)=0)
   then begin

@@ -153,6 +153,7 @@ type
     function SelectedTarget: TPGCompileTarget;
     function SelectedNodeType: TPGCompileTarget;
     procedure UpdateIDEMenuCommandFromAction(Sender: TObject; Item: TIDEMenuCommand);
+    procedure UpdateStatusBarTargetCount;
   protected
     procedure Localize;
     procedure ShowProjectGroup;
@@ -330,7 +331,8 @@ end;
 
 procedure TProjectGroupEditorForm.AProjectGroupSaveUpdate(Sender: TObject);
 begin
-  (Sender as TAction).Enabled:=FProjectGroup.Modified or (FProjectGroup.FileName='');
+  (Sender as TAction).Enabled:=(FProjectGroup<>nil)
+    and (FProjectGroup.Modified or (FProjectGroup.FileName=''));
   UpdateIDEMenuCommandFromAction(Sender,cmdSaveProjectGroup);
 end;
 
@@ -431,6 +433,17 @@ begin
   Item.Visible:=(Sender as TAction).Visible;
 end;
 
+procedure TProjectGroupEditorForm.UpdateStatusBarTargetCount;
+var
+  Cnt: Integer;
+begin
+  if FProjectGroup<>nil then
+    Cnt:=FProjectGroup.TargetCount
+  else
+    Cnt:=0;
+  SBPG.Panels[piTargetCount].Text:=Format(lisTargetCount, [Cnt]);
+end;
+
 procedure TProjectGroupEditorForm.FormCreate(Sender: TObject);
 
   procedure SetItem(Item: TIDEMenuCommand; AnOnClick: TNotifyEvent;
@@ -467,12 +480,12 @@ Var
   ND: TNodeData;
 begin
   ND:=SelectedNodeData;
-  if Not (Assigned(ND) and (ND.NodeType=ntTarget)) then
-    begin
+  if (ND<>nil) and (ND.NodeType<>ntTarget) then
+  begin
     ND.ProjectGroup.ActivateTarget(ND.Target);
     if (ND.ProjectGroup<>FProjectGroup) then // No callback, fake it.
-      DotargetActivated(ND.ProjectGroup,ND.Target);
-    end;
+      DoTargetActivated(ND.ProjectGroup,ND.Target);
+  end;
 end;
 
 procedure TProjectGroupEditorForm.DoTargetAdded(Sender: TObject;
@@ -481,12 +494,12 @@ Var
   PG: TProjectGroup;
   N: TTreeNode;
 begin
-  PG:=sender as TProjectGroup;
+  PG:=Sender as TProjectGroup;
   // ToDo: use of FTargetNodes is wrong if PG<>FProjectGroup
   N:=CreateNode(FTargetNodes[False],DisplayFileName(PG,ntTarget,Target.Filename),ntTarget,Target,PG);
   FillTargetNode(N,PG,Target);
   TVPG.Selected:=N;
-  SBPG.Panels[piTargetCount].Text:=Format(lisTargetCount,[FProjectGroup.TargetCount]);
+  UpdateStatusBarTargetCount;
 end;
 
 procedure TProjectGroupEditorForm.DoTargetDeleted(Sender: TObject;
@@ -495,13 +508,13 @@ Var
   PG: TProjectGroup;
   N: TTreeNode;
 begin
-  PG:=sender as TProjectGroup;
+  PG:=Sender as TProjectGroup;
   N:=FindNodeFromTarget(Target);
   TVPG.Items.Delete(N);
   // MVC TOD: The use of FTargetNodes is not correct when PG<>FProjectGroup
   CreateNode(FTargetNodes[True],DisplayFileName(PG,ntRemovedTarget,Target.Filename),ntRemovedTarget,Target,PG);
   TVPG.Selected:=FNPG;
-  SBPG.Panels[piTargetCount].Text:=Format(lisTargetCount,[FProjectGroup.TargetCount]);
+  UpdateStatusBarTargetCount;
 end;
 
 procedure TProjectGroupEditorForm.DoTargetActivated(Sender: TObject;
@@ -555,6 +568,7 @@ procedure TProjectGroupEditorForm.AProjectGroupSaveExecute(Sender: TObject);
 Var
   P: String;
 begin
+  if FProjectGroup=nil then exit;
   P:=FProjectGroup.FileName;
   ProjectGroupManager.SaveProjectGroup;
   if CompareFilenames(ExtractFilePath(P),ExtractFilePath(FProjectGroup.FileName))<>0 then
@@ -563,6 +577,7 @@ end;
 
 procedure TProjectGroupEditorForm.AProjectGroupAddExistingExecute(Sender: TObject);
 begin
+  if FProjectGroup=nil then exit;
   InitIDEFileDialog(OpenDialogTarget);
   With OpenDialogTarget do
   begin
@@ -640,6 +655,7 @@ procedure TProjectGroupEditorForm.AProjectGroupDeleteExecute(Sender: TObject);
 Var
   T: TPGCompileTarget;
 begin
+  if FProjectGroup=nil then exit;
   T:=SelectedTarget;
   FProjectGroup.RemoveTarget(T);
 end;
@@ -648,6 +664,7 @@ procedure TProjectGroupEditorForm.AProjectGroupDeleteUpdate(Sender: TObject);
 Var
   T: TPGCompileTarget;
 begin
+  if FProjectGroup=nil then exit;
   T:=SelectedTarget;
   (Sender as TAction).Enabled:=(T<>Nil) and (T<>FProjectGroupTarget) and Not T.Removed;
   UpdateIDEMenuCommandFromAction(Sender,cmdTargetRemove);
@@ -830,13 +847,17 @@ procedure TProjectGroupEditorForm.ShowFileName;
 Var
   N: String;
 begin
-  N:=FProjectGroup.FileName;
+  if FProjectGroup=nil then
+    N:=''
+  else
+    N:=FProjectGroup.FileName;
   if (N='') then
     Caption:=lisNewProjectGroup
   else
     Caption:=Format(LisProjectGroup,[DisplayFileName(FprojectGroup,ntProjectGroup,N)]);
   if Assigned(FNPG) then
-    FNPG.Text:=DisplayFileName(FProjectGroup,ntProjectGroup,FProjectGroup.FileName);
+    if FProjectGroup<>nil then
+      FNPG.Text:=DisplayFileName(FProjectGroup,ntProjectGroup,FProjectGroup.FileName);
 end;
 
 function TProjectGroupEditorForm.FindNodeFromTarget(ATarget: TPGCompileTarget): TTreeNode;
@@ -863,17 +884,22 @@ begin
   TVPG.Items.Clear;
   FTargetNodes[False]:=Nil;
   FTargetNodes[True]:=Nil;
-  FNPG:=CreateNode(Nil,DisplayFileName(FProjectGroup,ntProjectGroup,FProjectGroup.FileName),ntProjectGroup,FProjectGroupTarget,FProjectGroup);
-  FillProjectGroupNode(FNPG,FProjectGroup,FTargetNodes);
-  N:=FindNodeFromTarget(FActiveTarget);
-  if (N=Nil) then
+  if FProjectGroup<>nil then begin
+    FNPG:=CreateNode(Nil,
+      DisplayFileName(FProjectGroup,ntProjectGroup,FProjectGroup.FileName),
+      ntProjectGroup,FProjectGroupTarget,FProjectGroup);
+    FillProjectGroupNode(FNPG,FProjectGroup,FTargetNodes);
+    N:=FindNodeFromTarget(FActiveTarget);
+    if (N=Nil) then
     begin
-    FActiveTarget:=FProjectGroupTarget;
-    TVPG.Selected:=FNPG;
-    end
-  else
-    TVPG.Selected:=N;
-  SBPG.Panels[piTargetCount].Text:=Format(lisTargetCount,[FProjectGroup.TargetCount]);
+      FActiveTarget:=FProjectGroupTarget;
+      TVPG.Selected:=FNPG;
+    end else
+      TVPG.Selected:=N;
+  end else begin
+    FNPG:=nil;
+  end;
+  UpdateStatusBarTargetCount;
 end;
 
 procedure TProjectGroupEditorForm.UpdateShowing;
