@@ -693,6 +693,10 @@ type
     FRight: TSpacingSize;
     FTop: TSpacingSize;
     FDefault: PControlBorderSpacingDefault;
+    function GetControlHeight: Integer;
+    function GetControlLeft: Integer;
+    function GetControlTop: Integer;
+    function GetControlWidth: Integer;
     function IsAroundStored: boolean;
     function IsBottomStored: boolean;
     function IsInnerBorderStored: boolean;
@@ -731,6 +735,10 @@ type
     property InnerBorder: Integer read FInnerBorder write SetInnerBorder stored IsInnerBorderStored default 0;
     property CellAlignHorizontal: TControlCellAlign read FCellAlignHorizontal write SetCellAlignHorizontal default ccaFill;
     property CellAlignVertical: TControlCellAlign read FCellAlignVertical write SetCellAlignVertical default ccaFill;
+    property ControlLeft: Integer read GetControlLeft;
+    property ControlTop: Integer read GetControlTop;
+    property ControlWidth: Integer read GetControlWidth;
+    property ControlHeight: Integer read GetControlHeight;
   end;
 
 
@@ -3461,6 +3469,38 @@ begin
   if FControl <> nil then
     FControl.DoBorderSpacingChange(Self,InnerSpaceChanged);
   if Assigned(OnChange) then OnChange(Self);
+end;
+
+function TControlBorderSpacing.GetControlHeight: Integer;
+begin
+  if FControl<>nil then
+    Result := FControl.Height+Around*2+Top+Bottom
+  else
+    Result := 0;
+end;
+
+function TControlBorderSpacing.GetControlLeft: Integer;
+begin
+  if FControl<>nil then
+    Result := FControl.Left-Around-Left
+  else
+    Result := 0;
+end;
+
+function TControlBorderSpacing.GetControlTop: Integer;
+begin
+  if FControl<>nil then
+    Result := FControl.Top-Around-Top
+  else
+    Result := 0;
+end;
+
+function TControlBorderSpacing.GetControlWidth: Integer;
+begin
+  if FControl<>nil then
+    Result := FControl.Width+Around*2+Left+Right
+  else
+    Result := 0;
 end;
 
 { TControlChildSizing }
