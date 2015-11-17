@@ -6688,7 +6688,7 @@ begin
   if Interactive then
   begin
     if IDEQuestionDialog(lisBuilding, lisTheIDEIsStillBuilding,
-      mtConfirmation, [mrAbort, lisKMAbortBuilding, mrNo, lisContinueBuilding])
+      mtConfirmation, [mrAbort, lisKMAbortBuilding, 'IsDefault', mrNo, lisContinueBuilding])
       <> mrAbort
     then
       exit;
