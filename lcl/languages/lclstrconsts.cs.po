@@ -423,7 +423,7 @@ msgstr "Vložit"
 
 #: lclstrconsts.rsduplicateiconformat
 msgid "Duplicate icon format."
-msgstr "Zdvojit formát ikony."
+msgstr "Duplicitní formát ikony."
 
 #: lclstrconsts.rseditrecordhint
 msgid "Edit"
