@@ -180,6 +180,7 @@ type
     procedure UpdateScrollbars;
     class function GetControlClassDefaultSize: TSize; override;
     procedure ScrollBy(DeltaX, DeltaY: Integer); override;
+    procedure ScrollInView(AControl: TControl);
   published
     property HorzScrollBar: TControlScrollBar read FHorzScrollBar write SetHorzScrollBar;
     property VertScrollBar: TControlScrollBar read FVertScrollBar write SetVertScrollBar;

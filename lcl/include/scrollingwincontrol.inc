@@ -257,6 +257,32 @@ begin
     inherited ScrollBy(DeltaX, DeltaY);
 end;
 
+procedure TScrollingWinControl.ScrollInView(AControl: TControl);
+var
+  xRect: TRect;
+begin
+  if AControl=nil then
+    Exit;
+  xRect := AControl.BoundsRect;
+  OffsetRect(xRect, -HorzScrollBar.Position, -VertScrollBar.Position);
+  if xRect.Left < 0 then
+    HorzScrollBar.Position := HorzScrollBar.Position + xRect.Left
+  else if xRect.Right > ClientWidth then
+  begin
+    if xRect.Right - xRect.Left > ClientWidth then
+      xRect.Right := xRect.Left + ClientWidth;
+    HorzScrollBar.Position := HorzScrollBar.Position + xRect.Right - ClientWidth;
+  end;
+  if xRect.Top < 0 then
+    VertScrollBar.Position := VertScrollBar.Position + xRect.Top
+  else if xRect.Bottom > ClientHeight then
+  begin
+    if xRect.Bottom - xRect.Top > ClientHeight then
+      xRect.Bottom := xRect.Top + ClientHeight;
+    VertScrollBar.Position := VertScrollBar.Position + xRect.Bottom - ClientHeight;
+  end;
+end;
+
 procedure TScrollingWinControl.ScrollbarHandler(ScrollKind: TScrollBarKind;
   OldPosition: Integer);
 begin
