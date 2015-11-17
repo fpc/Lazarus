@@ -293,6 +293,7 @@ end;
 
 procedure TProjectGroupEditorForm.SetProjectGroup(AValue: TProjectGroup);
 begin
+  debugln(['TProjectGroupEditorForm.SetProjectGroup START ',FProjectGroup=AValue]);
   if FProjectGroup=AValue then Exit;
   if ProjectGroup<>nil then
   begin
