@@ -36,9 +36,12 @@ Type
 
   TProjectGroup = class;
 
+  { TPGDependency }
+
   TPGDependency = class
   public
     PackageName: string;
+    constructor Create(const aPkgName: string);
   end;
 
   { TPGCompileTarget - a node in the tree, see TPGTargetType }
@@ -188,6 +191,13 @@ end;
 function ActionAllowsMulti(AAction: TPGTargetAction): Boolean;
 begin
   Result:=AAction in [taCompile,taCompileClean];
+end;
+
+{ TPGDependency }
+
+constructor TPGDependency.Create(const aPkgName: string);
+begin
+  PackageName:=aPkgName;
 end;
 
 
