@@ -495,6 +495,7 @@ Var
   N: TTreeNode;
 begin
   PG:=Sender as TProjectGroup;
+  (Target as TIDECompileTarget).LoadTarget;
   // ToDo: use of FTargetNodes is wrong if PG<>FProjectGroup
   N:=CreateNode(FTargetNodes[False],DisplayFileName(PG,ntTarget,Target.Filename),ntTarget,Target,PG);
   FillTargetNode(N,PG,Target);

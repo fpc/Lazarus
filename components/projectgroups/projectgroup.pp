@@ -211,7 +211,6 @@ end;
 procedure TIDEProjectGroupManager.DoNewClick(Sender: TObject);
 var
   AProject: TLazProject;
-  T: TIDECompileTarget;
 begin
   if Not CheckSaved then
     Exit;
@@ -222,8 +221,7 @@ begin
   AProject:=LazarusIDE.ActiveProject;
   if (AProject<>nil) and FilenameIsAbsolute(AProject.ProjectInfoFile)
   and FileExistsCached(AProject.ProjectInfoFile) then begin
-    T:=FProjectGroup.AddTarget(AProject.ProjectInfoFile) as TIDECompileTarget;
-    if T<>nil then T.LoadTarget;
+    FProjectGroup.AddTarget(AProject.ProjectInfoFile);
   end;
 
   ShowProjectGroupEditor;
@@ -653,8 +651,8 @@ begin
       if ProjFile.IsPartOfProject then
         FFiles.Add(ProjFile.Filename);
     end;
-    // ToDo: dependencies
 
+    // load dependencies from active project
     PkgList:=nil;
     try
       PackageEditingInterface.GetRequiredPackages(AProject,PkgList,[pirCompileOrder]);
@@ -671,6 +669,8 @@ begin
     end;
   end else begin
     // load from .lpi file
+
+    LazarusIDE.ActiveProject;
     // ToDo
   end;
 end;
