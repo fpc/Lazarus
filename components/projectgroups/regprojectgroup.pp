@@ -71,15 +71,20 @@ procedure Register;
 begin
   RegisterStandardProjectGroupMenuItems;
   IDEProjectGroupManager:=TIDEProjectGroupManager.Create;
+  IDEProjectGroupManager.Options.LoadSafe;
 
   cmdCreateProjectGroup:=RegisterIDEMenuCommand(itmProjectNewSection,
     'NewProjectGroup',lisNewProjectGroup,@IDEProjectGroupManager.DoNewClick);
   cmdOpenProjectGroup:=RegisterIDEMenuCommand(itmProjectOpenSection,
     'OpenProjectGroup',lisOpenProjectGroup,@IDEProjectGroupManager.DoOpenClick);
+  OpenRecentProjectGroupSubMenu:=RegisterIDESubMenu(itmProjectOpenSection,
+    'OpenRecentProjectGroup',lisOpenRecentProjectGroup);
   cmdSaveProjectGroup:=RegisterIDEMenuCommand(itmProjectSaveSection,
     'SaveProjectGroup',lisSaveProjectGroup,@IDEProjectGroupManager.DoSaveClick);
   cmdSaveProjectGroupAs:=RegisterIDEMenuCommand(itmProjectSaveSection,
     'SaveProjectGroupAs',lisSaveProjectGroupAs,@IDEProjectGroupManager.DoSaveAsClick);
+
+  IDEProjectGroupManager.UpdateRecentProjectGroupMenu;
 
   ProjectGroupManager:=IDEProjectGroupManager;
   SetProjectGroupEditorCallBack;

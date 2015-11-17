@@ -11,13 +11,13 @@ unit ProjectGroup;
 interface
 
 uses
-  Classes, SysUtils, contnrs,
-  Laz2_XMLCfg,
-  Controls, Forms, Dialogs, LCLProc, LazFileUtils, LazFileCache,
-  PackageIntf, ProjectIntf, MenuIntf,
-  LazIDEIntf, IDEDialogs, CompOptsIntf, ProjectGroupIntf,
+  Classes, SysUtils, contnrs, Laz2_XMLCfg, Controls, Forms, Dialogs, LCLProc,
+  LazFileUtils, LazFileCache, LazConfigStorage, PackageIntf, ProjectIntf,
+  MenuIntf, LazIDEIntf, IDEDialogs, CompOptsIntf, BaseIDEIntf, ProjectGroupIntf,
   ProjectGroupStrConst, FileProcs, CodeToolManager, CodeCache;
 
+const
+  PGOptionsFileName = 'projectgroupsoptions.xml';
 
 type
   { TIDECompileTarget }
@@ -96,10 +96,35 @@ type
     property OnTargetsExchanged: TTargetExchangeEvent Read FOnTargetsExchanged Write FOnTargetsExchanged;
   end;
 
+  { TIDEProjectGroupOptions }
+
+  TIDEProjectGroupOptions = class
+  private
+    FChangeStamp: integer;
+    FLastSavedChangeStamp: integer;
+    FRecentProjectGroups: TStringList;
+    function GetModified: boolean;
+    procedure SetModified(AValue: boolean);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure SaveSafe;
+    procedure LoadSafe;
+    procedure SaveToFile(aFilename: string);
+    procedure LoadFromFile(aFilename: string);
+    // recent project groups
+    property RecentProjectGroups: TStringList read FRecentProjectGroups;
+    procedure AddToRecentProjectGroups(aFilename: string);
+    procedure IncreaseChangeStamp;
+    property ChangeStamp: integer read FChangeStamp;
+    property Modified: boolean read GetModified write SetModified;
+  end;
+
   { TIDEProjectGroupManager }
 
   TIDEProjectGroupManager = Class(TProjectGroupManager)
   private
+    FOptions: TIDEProjectGroupOptions;
     function GetNewFileName: Boolean;
   protected
     FProjectGroup: TIDEProjectGroup;
@@ -108,14 +133,20 @@ type
     function GetCurrentProjectGroup: TProjectGroup; override;
     function ShowProjectGroupEditor: Boolean;
   public
+    constructor Create;
+    destructor Destroy; override;
+    procedure UpdateRecentProjectGroupMenu;
     // Events for main menu
-    procedure DoNewClick(Sender: TObject); virtual;
-    procedure DoOpenClick(Sender: TObject); virtual;
-    procedure DoSaveClick(Sender: TObject); virtual;
-    procedure DoSaveAsClick(Sender: TObject); virtual;
+    procedure DoNewClick(Sender: TObject);
+    procedure DoOpenClick(Sender: TObject);
+    procedure DoOpenRecentClick(Sender: TObject);
+    procedure DoSaveClick(Sender: TObject);
+    procedure DoSaveAsClick(Sender: TObject);
     // Public interface
     procedure LoadProjectGroup(AFileName: string; AOptions: TProjectGroupLoadOptions); override;
     procedure SaveProjectGroup; override;
+  public
+    property Options: TIDEProjectGroupOptions read FOptions;
   end;
 
   TEditProjectGroupHandler = procedure(Sender: TObject; AProjectGroup: TProjectGroup);
@@ -154,9 +185,99 @@ var
   cmdTargetProperties,
   cmdTargetUninstall: TIDEMenuCommand;
 
+  OpenRecentProjectGroupSubMenu: TIDEMenuSection;
 
 
 implementation
+
+{ TIDEProjectGroupOptions }
+
+function TIDEProjectGroupOptions.GetModified: boolean;
+begin
+  Result:=FLastSavedChangeStamp<>FChangeStamp
+end;
+
+procedure TIDEProjectGroupOptions.SetModified(AValue: boolean);
+begin
+  if AValue then
+    IncreaseChangeStamp
+  else
+    FLastSavedChangeStamp:=FChangeStamp;
+end;
+
+constructor TIDEProjectGroupOptions.Create;
+begin
+  FRecentProjectGroups:=TStringList.Create;
+end;
+
+destructor TIDEProjectGroupOptions.Destroy;
+begin
+  FreeAndNil(FRecentProjectGroups);
+  inherited Destroy;
+end;
+
+procedure TIDEProjectGroupOptions.SaveSafe;
+begin
+  try
+    SaveToFile(PGOptionsFileName);
+    Modified:=false;
+  except
+    on E: Exception do
+      debugln(['Error: (lazarus) [TIDEProjectGroupOptions.SaveSafe] ',E.Message]);
+  end;
+end;
+
+procedure TIDEProjectGroupOptions.LoadSafe;
+begin
+  try
+    LoadFromFile(PGOptionsFileName);
+  except
+    on E: Exception do
+      debugln(['Error: (lazarus) [TIDEProjectGroupOptions.LoadSafe] ',E.Message]);
+  end;
+  Modified:=false;
+end;
+
+procedure TIDEProjectGroupOptions.SaveToFile(aFilename: string);
+var
+  Cfg: TConfigStorage;
+begin
+  Cfg:=GetIDEConfigStorage(aFilename,false);
+  try
+    Cfg.SetValue('RecentProjectGroups/',FRecentProjectGroups);
+  finally
+    Cfg.Free;
+  end;
+end;
+
+procedure TIDEProjectGroupOptions.LoadFromFile(aFilename: string);
+var
+  Cfg: TConfigStorage;
+begin
+  Cfg:=GetIDEConfigStorage(aFilename,true);
+  try
+    Cfg.GetValue('RecentProjectGroups/',FRecentProjectGroups);
+  finally
+    Cfg.Free;
+  end;
+end;
+
+procedure TIDEProjectGroupOptions.AddToRecentProjectGroups(aFilename: string);
+var
+  i: Integer;
+begin
+  FRecentProjectGroups.Insert(0,aFilename);
+  for i:=FRecentProjectGroups.Count-1 downto 1 do
+    if CompareFilenames(FRecentProjectGroups[i],aFilename)=0 then
+      FRecentProjectGroups.Delete(i);
+  while FRecentProjectGroups.Count>30 do
+    FRecentProjectGroups.Delete(FRecentProjectGroups.Count-1);
+end;
+
+procedure TIDEProjectGroupOptions.IncreaseChangeStamp;
+begin
+  LUIncreaseChangeStamp(FChangeStamp);
+end;
 
 { TIDEProjectGroupManager }
 
@@ -209,6 +330,39 @@ begin
   end;
 end;
 
+constructor TIDEProjectGroupManager.Create;
+begin
+  FOptions:=TIDEProjectGroupOptions.Create;
+end;
+
+destructor TIDEProjectGroupManager.Destroy;
+begin
+  FreeAndNil(FOptions);
+  inherited Destroy;
+end;
+
+procedure TIDEProjectGroupManager.UpdateRecentProjectGroupMenu;
+var
+  i: Integer;
+  Item: TIDEMenuItem;
+  aFilename: String;
+begin
+  i:=0;
+  while i<Options.RecentProjectGroups.Count do begin
+    aFilename:=Options.RecentProjectGroups[i];
+    if i<OpenRecentProjectGroupSubMenu.Count then begin
+      Item:=OpenRecentProjectGroupSubMenu[i];
+      Item.Caption:=aFilename;
+    end
+    else begin
+      Item:=RegisterIDEMenuCommand(OpenRecentProjectGroupSubMenu,'OpenRecentProjectGroup'+IntToStr(i),aFilename,@DoOpenRecentClick);
+    end;
+    inc(i);
+  end;
+  while i<OpenRecentProjectGroupSubMenu.Count do
+    OpenRecentProjectGroupSubMenu[i].Free;
+end;
+
 procedure TIDEProjectGroupManager.DoNewClick(Sender: TObject);
 var
   AProject: TLazProject;
@@ -246,6 +400,17 @@ begin
     finally
       F.Free;
     end;
+end;
+
+procedure TIDEProjectGroupManager.DoOpenRecentClick(Sender: TObject);
+var
+  Item: TIDEMenuCommand;
+  aFilename: String;
+begin
+  Item:=Sender as TIDEMenuCommand;
+  aFilename:=Item.Caption;
+  debugln(['TIDEProjectGroupManager.DoOpenRecentClick ',aFilename]);
+  LoadProjectGroup(aFilename,[]);
 end;
 
 procedure TIDEProjectGroupManager.DoSaveClick(Sender: TObject);
@@ -288,6 +453,11 @@ begin
   if Not CheckSaved then
     Exit;
   FreeAndNil(FProjectGroup);
+
+  Options.AddToRecentProjectGroups(AFileName);
+  Options.SaveSafe;
+  UpdateRecentProjectGroupMenu;
+
   FProjectGroup:=TIDEProjectGroup.Create;
   FProjectGroup.FileName:=AFileName;
   FProjectGroup.LoadFromFile(AOptions);
