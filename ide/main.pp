@@ -3760,7 +3760,7 @@ begin
     Exit;
 
   IDECommandList.FindIDECommand(ecAddCurUnitToProj).Enabled:=Assigned(AUnitInfo) and not AUnitInfo.IsPartOfProject;
-  IDECommandList.FindIDECommand(ecBuildManyModes).Enabled:=Project1.BuildModes.Count>1;
+  IDECommandList.FindIDECommand(ecBuildManyModes).Enabled:=(Project1<>nil) and (Project1.BuildModes.Count>1);
 end;
 
 procedure TMainIDE.UpdatePackageCommands(Sender: TObject);

@@ -60,43 +60,43 @@ type
 
   TFileCommandsStamp = record
   private
-    SrcEdit: TSourceEditor;
+    FSrcEdit: TSourceEditor;
   public
     function Changed(ASrcEdit: TSourceEditor): Boolean;
   end;
 
   TProjectCommandsStamp = record
   private
-    UnitInfo: TUnitInfo;
-    ProjectChangeStamp: Int64;
+    FUnitInfo: TUnitInfo;
+    FProjectChangeStamp: Int64;
   public
     function Changed(AUnitInfo: TUnitInfo): Boolean;
   end;
 
   TPackageCommandsStamp = record
   private
-    UnitInfo: TUnitInfo;
-    PackagesChangeStamp: Int64;
+    FUnitInfo: TUnitInfo;
+    FPackagesChangeStamp: Int64;
   public
     function Changed(AUnitInfo: TUnitInfo): Boolean;
   end;
 
   TSourceEditorTabCommandsStamp = record
   private
-    SrcEdit: TSourceEditor;
-    SrcEditLocked: Boolean;
-    SourceNotebook: TSourceNotebook;
-    PageIndex, PageCount: Integer;
+    FSrcEdit: TSourceEditor;
+    FSrcEditLocked: Boolean;
+    FSourceNotebook: TSourceNotebook;
+    FPageIndex, FPageCount: Integer;
   public
     function Changed(ASrcEdit: TSourceEditor): Boolean;
   end;
 
   TSourceEditorCommandsStamp = record
   private
-    SrcEdit: TSourceEditor;
-    DisplayState: TDisplayState;
-    EditorComponentStamp: int64;
-    EditorCaretStamp: int64;
+    FSrcEdit: TSourceEditor;
+    FDisplayState: TDisplayState;
+    FEditorComponentStamp: int64;
+    FEditorCaretStamp: int64;
   public
     function Changed(ASrcEdit: TSourceEditor; ADisplayState: TDisplayState): Boolean;
   end;
@@ -456,27 +456,33 @@ end;
 function TFileCommandsStamp.Changed(ASrcEdit: TSourceEditor): Boolean;
 begin
   Result := not(
-        (SrcEdit = ASrcEdit)
+        (FSrcEdit = ASrcEdit)
     );
 
   if not Result then Exit;
 
-  SrcEdit := ASrcEdit;
+  FSrcEdit := ASrcEdit;
 end;
 
 { TProjectCommandsStamp }
 
 function TProjectCommandsStamp.Changed(AUnitInfo: TUnitInfo): Boolean;
+var
+  CurProjectChangeStamp: Integer;
 begin
+  if Project1=nil then
+    CurProjectChangeStamp := LUInvalidChangeStamp
+  else
+    CurProjectChangeStamp := Project1.ChangeStamp;
   Result := not(
-        (UnitInfo = AUnitInfo)
-    and (ProjectChangeStamp = Project1.ChangeStamp)
+        (FUnitInfo = AUnitInfo)
+    and (FProjectChangeStamp = CurProjectChangeStamp)
     );
 
   if not Result then Exit;
 
-  UnitInfo := AUnitInfo;
-  ProjectChangeStamp := Project1.ChangeStamp;
+  FUnitInfo := AUnitInfo;
+  FProjectChangeStamp := CurProjectChangeStamp;
 end;
 
 { TPackageCommandsStamp }
@@ -484,14 +490,14 @@ end;
 function TPackageCommandsStamp.Changed(AUnitInfo: TUnitInfo): Boolean;
 begin
   Result := not(
-        (UnitInfo = AUnitInfo)
-    and (PackagesChangeStamp = PackageGraph.ChangeStamp)
+        (FUnitInfo = AUnitInfo)
+    and (FPackagesChangeStamp = PackageGraph.ChangeStamp)
     );
 
   if not Result then Exit;
 
-  UnitInfo := AUnitInfo;
-  PackagesChangeStamp := PackageGraph.ChangeStamp;
+  FUnitInfo := AUnitInfo;
+  FPackagesChangeStamp := PackageGraph.ChangeStamp;
 end;
 
 { TSourceEditorTabCommandsStamp }
@@ -499,23 +505,23 @@ end;
 function TSourceEditorTabCommandsStamp.Changed(ASrcEdit: TSourceEditor): Boolean;
 begin
   Result := not(
-        (SrcEdit = ASrcEdit)
+        (FSrcEdit = ASrcEdit)
     and (ASrcEdit <> nil)
-    and (SrcEditLocked = ASrcEdit.IsLocked)
-    and (SourceNotebook = ASrcEdit.SourceNotebook)
-    and (PageIndex = ASrcEdit.SourceNotebook.PageIndex)
-    and (PageCount = ASrcEdit.SourceNotebook.PageCount)
+    and (FSrcEditLocked = ASrcEdit.IsLocked)
+    and (FSourceNotebook = ASrcEdit.SourceNotebook)
+    and (FPageIndex = ASrcEdit.SourceNotebook.PageIndex)
+    and (FPageCount = ASrcEdit.SourceNotebook.PageCount)
     );
 
   if not Result then Exit;
 
-  SrcEdit := ASrcEdit;
+  FSrcEdit := ASrcEdit;
   if ASrcEdit<>nil then
   begin
-    SrcEditLocked := ASrcEdit.IsLocked;
-    SourceNotebook := ASrcEdit.SourceNotebook;
-    PageIndex := ASrcEdit.SourceNotebook.PageIndex;
-    PageCount := ASrcEdit.SourceNotebook.PageCount;
+    FSrcEditLocked := ASrcEdit.IsLocked;
+    FSourceNotebook := ASrcEdit.SourceNotebook;
+    FPageIndex := ASrcEdit.SourceNotebook.PageIndex;
+    FPageCount := ASrcEdit.SourceNotebook.PageCount;
   end;
 end;
 
@@ -525,21 +531,21 @@ function TSourceEditorCommandsStamp.Changed(ASrcEdit: TSourceEditor;
   ADisplayState: TDisplayState): Boolean;
 begin
   Result := not(
-        (SrcEdit = ASrcEdit)
+        (FSrcEdit = ASrcEdit)
     and (ASrcEdit <> nil)
-    and (DisplayState = ADisplayState)
-    and (EditorComponentStamp = ASrcEdit.EditorComponent.ChangeStamp)
-    and (EditorCaretStamp = ASrcEdit.EditorComponent.CaretStamp)
+    and (FDisplayState = ADisplayState)
+    and (FEditorComponentStamp = ASrcEdit.EditorComponent.ChangeStamp)
+    and (FEditorCaretStamp = ASrcEdit.EditorComponent.CaretStamp)
     );
 
   if not Result then Exit;
 
-  SrcEdit := ASrcEdit;
-  DisplayState := ADisplayState;
+  FSrcEdit := ASrcEdit;
+  FDisplayState := ADisplayState;
   if ASrcEdit<>nil then
   begin
-    EditorComponentStamp := ASrcEdit.EditorComponent.ChangeStamp;
-    EditorCaretStamp := ASrcEdit.EditorComponent.CaretStamp;
+    FEditorComponentStamp := ASrcEdit.EditorComponent.ChangeStamp;
+    FEditorCaretStamp := ASrcEdit.EditorComponent.CaretStamp;
   end;
 end;
 
