@@ -206,11 +206,20 @@ begin
 end;
 
 procedure TIDEProjectGroupManager.DoNewClick(Sender: TObject);
+var
+  AProject: TLazProject;
 begin
   if Not CheckSaved then
     Exit;
   FreeAndNil(FProjectGroup);
   FProjectGroup:=TIDEProjectGroup.Create;
+
+  // add current project
+  AProject:=LazarusIDE.ActiveProject;
+  if (AProject<>nil) and FilenameIsAbsolute(AProject.ProjectInfoFile)
+  and FileExistsCached(AProject.ProjectInfoFile) then
+    FProjectGroup.AddTarget(AProject.ProjectInfoFile);
+
   ShowProjectGroupEditor;
 end;
 
