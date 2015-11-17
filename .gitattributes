@@ -6148,6 +6148,7 @@ images/components/tfilenameedit.png -text svneol=unset#image/png
 images/components/tfiltercombobox.png -text
 images/components/tfinddialog.png -text svneol=unset#image/png
 images/components/tfloatspinedit.png -text svneol=unset#image/png
+images/components/tflowpanel.png -text svneol=unset#image/png
 images/components/tfontdialog.png -text svneol=unset#image/png
 images/components/tframe.png -text svneol=unset#image/png
 images/components/tgroupbox.png -text svneol=unset#image/png
@@ -6756,6 +6757,7 @@ lcl/include/customdbcombobox.inc svneol=native#text/pascal
 lcl/include/customdblistbox.inc svneol=native#text/pascal
 lcl/include/customdockform.inc svneol=native#text/pascal
 lcl/include/customedit.inc svneol=native#text/pascal
+lcl/include/customflowpanel.inc svneol=native#text/pascal
 lcl/include/customform.inc svneol=native#text/pascal
 lcl/include/customframe.inc svneol=native#text/pascal
 lcl/include/customgroupbox.inc svneol=native#text/pascal

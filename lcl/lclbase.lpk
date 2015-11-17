@@ -27,7 +27,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Minor="5"/>
-    <Files Count="283">
+    <Files Count="284">
       <Item1>
         <Filename Value="checklst.pas"/>
         <UnitName Value="CheckLst"/>
@@ -98,7 +98,7 @@
       </Item17>
       <Item18>
         <Filename Value="extgraphics.pas"/>
-        <UnitName Value="extgraphics"/>
+        <UnitName Value="ExtGraphics"/>
       </Item18>
       <Item19>
         <Filename Value="filectrl.pp"/>
@@ -226,7 +226,7 @@
       </Item49>
       <Item50>
         <Filename Value="maps.pp"/>
-        <UnitName Value="maps"/>
+        <UnitName Value="Maps"/>
       </Item50>
       <Item51>
         <Filename Value="maskedit.pp"/>
@@ -250,7 +250,7 @@
       </Item55>
       <Item56>
         <Filename Value="postscriptunicode.pas"/>
-        <UnitName Value="postscriptunicode"/>
+        <UnitName Value="PostScriptUnicode"/>
       </Item56>
       <Item57>
         <Filename Value="printers.pas"/>
@@ -1073,31 +1073,31 @@
       </Item260>
       <Item261>
         <Filename Value="lazcanvas.pas"/>
-        <UnitName Value="lazcanvas"/>
+        <UnitName Value="LazCanvas"/>
       </Item261>
       <Item262>
         <Filename Value="lazdialogs.pas"/>
-        <UnitName Value="lazdialogs"/>
+        <UnitName Value="LazDialogs"/>
       </Item262>
       <Item263>
         <Filename Value="lazregions.pas"/>
-        <UnitName Value="lazregions"/>
+        <UnitName Value="LazRegions"/>
       </Item263>
       <Item264>
         <Filename Value="customdrawn_common.pas"/>
-        <UnitName Value="customdrawn_common"/>
+        <UnitName Value="CustomDrawn_Common"/>
       </Item264>
       <Item265>
         <Filename Value="customdrawncontrols.pas"/>
-        <UnitName Value="customdrawncontrols"/>
+        <UnitName Value="CustomDrawnControls"/>
       </Item265>
       <Item266>
         <Filename Value="customdrawndrawers.pas"/>
-        <UnitName Value="customdrawndrawers"/>
+        <UnitName Value="CustomDrawnDrawers"/>
       </Item266>
       <Item267>
         <Filename Value="lazdeviceapis.pas"/>
-        <UnitName Value="lazdeviceapis"/>
+        <UnitName Value="LazDeviceApis"/>
       </Item267>
       <Item268>
         <Filename Value="ldocktree.pas"/>
@@ -1109,11 +1109,11 @@
       </Item269>
       <Item270>
         <Filename Value="customdrawn_winxp.pas"/>
-        <UnitName Value="customdrawn_winxp"/>
+        <UnitName Value="CustomDrawn_WinXP"/>
       </Item270>
       <Item271>
         <Filename Value="customdrawn_android.pas"/>
-        <UnitName Value="customdrawn_android"/>
+        <UnitName Value="CustomDrawn_Android"/>
       </Item271>
       <Item272>
         <Filename Value="include/sysenvapis_win.inc"/>
@@ -1154,7 +1154,7 @@
       </Item280>
       <Item281>
         <Filename Value="customdrawn_mac.pas"/>
-        <UnitName Value="customdrawn_mac"/>
+        <UnitName Value="CustomDrawn_Mac"/>
       </Item281>
       <Item282>
         <Filename Value="forms/calcform.pas"/>
@@ -1164,6 +1164,10 @@
         <Filename Value="lcltranslator.pas"/>
         <UnitName Value="LCLTranslator"/>
       </Item283>
+      <Item284>
+        <Filename Value="include/customflowpanel.inc"/>
+        <Type Value="Include"/>
+      </Item284>
     </Files>
     <LazDoc Paths="../docs/xml/lcl"/>
     <i18n>
