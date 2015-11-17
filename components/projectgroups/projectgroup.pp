@@ -437,41 +437,43 @@ begin
       ACount:=XMLConfig.GetValue(ARoot+'/Targets/Count',0);
       I:=0;
       While Result and (I<ACount) do
-        begin
+      begin
         Target:=Nil;
         TargetFileName:=XMLConfig.GetValue(Format(ARoot+'/Targets/Target%d/FileName',[i]),'');
         TargetFileName:=TrimFilename(SetDirSeparators(TargetFileName));
         if not FilenameIsAbsolute(TargetFileName) then
           TargetFileName:=BaseDir+TargetFileName;
-        If (TargetFileName<>'') and FileExistsCached(TargetFileName) then
-          Target:=AddTarget(TargetFileName)
+        If (TargetFileName<>'') and FileExistsCached(TargetFileName) then begin
+          Target:=AddTarget(TargetFileName);
+          (Target as TIDECompileTarget).LoadTarget;
+        end
         else if (pgloRemoveInvalid in Options) then
-          begin
+        begin
           Target:=AddTarget(TargetFileName);
           Target.Removed:=True;
-          end
+        end
         else if (pgloSkipInvalid in options) then
           // Do nothing
         else if (pgloErrorInvalid in options) then
           Result:=False
         else
-          Case IDEQuestionDialog(lisErrTargetDoesNotExist,
+          case IDEQuestionDialog(lisErrTargetDoesNotExist,
               Format(lisErrNoSuchFile,[TargetFileName]),mtWarning,
               [mrYes,lisRemoveTarget,
                mrNo,lisAbortLoadingProjectGroup,
                mrYesToAll,lisSkipAllTargets],'') of
-             mrYes :
-               begin
+           mrYes :
+             begin
                Target:=AddTarget(TargetFileName);
                Target.Removed:=True;
-               end;
-             mrNo:
-               Result:=False;
-             mrYesToAll:
-               begin
+             end;
+           mrNo:
+             Result:=False;
+           mrYesToAll:
+             begin
                Target:=AddTarget(TargetFileName);
                Target.Removed:=True;
-               end;
+             end;
           else
             Result:=False;
           end;
@@ -479,7 +481,7 @@ begin
           if XMLConfig.GetValue(Format(ARoot+'/Targets/Target%d/Active',[i]),False) then
             ActivateTarget(Target);
         Inc(I);
-        end;
+      end;
     finally
       XMLConfig.Free;
     end;
@@ -671,7 +673,7 @@ var
 begin
   UnloadTarget;
 
-  debugln(['TIDECompileTarget.LoadProject ',Filename]);
+  //debugln(['TIDECompileTarget.LoadProject ',Filename]);
   FFiles:=TStringList.Create;
   FRequiredPackages:=TObjectList.Create(True);
 
@@ -709,7 +711,6 @@ begin
         // load list of files from lpi
         Path:='ProjectOptions/Units/';
         Cnt:=xml.GetValue(Path+'Count',0);
-        debugln(['TIDECompileTarget.LoadProject ',Cnt]);
         for i:=0 to Cnt-1 do begin
           SubPath:=Path+'Unit'+IntToStr(i)+'/';
           if xml.GetValue(SubPath+'IsPartOfProject/Value','')<>'True' then
