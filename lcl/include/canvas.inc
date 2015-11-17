@@ -460,7 +460,7 @@ end;
 
 procedure TCanvas.DoGetTextSize(Text: string; var w, h: integer);
 var
-  TxtSize: tagSIZE;
+  TxtSize: TSize;
 begin
   TxtSize:=TextExtent(Text);
   w:=TxtSize.cx;
