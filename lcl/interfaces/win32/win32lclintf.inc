@@ -391,8 +391,13 @@ begin
     try
       Result := IDCANCEL;
       TaskDialogIndirect(@TaskConfig, @Result, nil, nil);
-      if (Result = IDCANCEL) and Assigned(Buttons.CancelButton) then
-        Result := Buttons.CancelButton.ModalResult;
+      if (Result = IDCANCEL) then
+      begin
+        if Assigned(Buttons.CancelButton) then
+          Result := Buttons.CancelButton.ModalResult
+        else
+          Result := mrCancel;
+      end;
     finally
       RestoreApplicationState(State);
       for i := 0 to TaskConfig.cButtons - 1 do

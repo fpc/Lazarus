@@ -924,7 +924,6 @@ begin
     end;
     if DialogButtons.DefaultButton = nil then
       DialogButtons.DefaultButton := DialogButtons.FindButton([mrYes, mrOk, mrYesToAll, mrAll, mrRetry, mrCancel, mrNo, mrNoToAll, mrAbort, mrIgnore]);
-    DialogButtons.CancelButton := DialogButtons.FindButton([mrCancel, mrAbort, mrNo, mrIgnore, mrNoToAll, mrYes, mrOk, mrRetry, mrAll, mrYesToAll]);
     Result := WidgetSet.AskUser(aCaption, ConvertLineEndings(aMsg),
       DialogIds[DlgType], DialogButtons, HelpCtx);
   finally
