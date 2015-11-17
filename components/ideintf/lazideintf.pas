@@ -458,6 +458,8 @@ type
     property LastFormActivated: TCustomForm read FLastFormActivated write FLastFormActivated;
   end;
 
+  { TIDETabMaster }
+
   TIDETabMaster = class
   protected
     function GetTabDisplayState: TTabDisplayState; virtual; abstract;
@@ -471,6 +473,7 @@ type
 
     procedure ShowCode(ASourceEditor: TSourceEditorInterface); virtual; abstract;
     procedure ShowDesigner(ASourceEditor: TSourceEditorInterface; AIndex: Integer = 0); virtual; abstract;
+
     procedure ShowForm(AForm: TCustomForm); virtual; abstract;
   end;
 

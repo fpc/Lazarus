@@ -16,7 +16,7 @@ uses
   Controls, Forms, Dialogs, LCLProc, LazFileUtils, LazFileCache,
   PackageIntf, ProjectIntf, MenuIntf,
   LazIDEIntf, IDEDialogs, CompOptsIntf, ProjectGroupIntf,
-  ProjectGroupStrConst, FileProcs;
+  ProjectGroupStrConst, FileProcs, CodeToolManager, CodeCache;
 
 
 type
@@ -27,6 +27,7 @@ type
     FTarget: TPersistent;
     FFiles: TStringList;
     FRequiredPackages: TObjectList; // list of TPGDependency
+    function LoadXML(aFilename: string; Quiet: boolean): TXMLConfig;
   protected
     function GetFileCount: integer; override;
     function GetFiles(Index: integer): string; override;
@@ -559,6 +560,35 @@ begin
     FreeAndNil(FRequiredPackages);
 end;
 
+function TIDECompileTarget.LoadXML(aFilename: string; Quiet: boolean
+  ): TXMLConfig;
+var
+  Code: TCodeBuffer;
+begin
+  Result:=nil;
+  aFilename:=TrimFilename(aFilename);
+  if (aFilename='') or (not FilenameIsAbsolute(aFilename)) then begin
+    debugln(['Error: (lazarus) [TIDECompileTarget.LoadXML] invalid filename "',aFilename,'"']);
+    exit;
+  end;
+  Code:=CodeToolBoss.LoadFile(aFilename,true,false);
+  if Code=nil then begin
+    debugln(['Error: (lazarus) [TIDECompileTarget.LoadXML] unable to load file "',aFilename,'"']);
+    if not Quiet then
+      IDEMessageDialog('Read error','Unable to load file "'+aFilename+'"',mtError,[mbOk]);
+    exit;
+  end;
+  try
+    Result:=TXMLConfig.CreateWithSource(aFilename,Code.Source);
+  except
+    on E: Exception do begin
+      debugln(['Error: (lazarus) [TIDECompileTarget.LoadXML] xml syntax error in "',aFilename,'": '+E.Message]);
+      if not Quiet then
+        IDEMessageDialog('Read error','XML syntax error in file "'+aFilename+'": '+E.Message,mtError,[mbOk]);
+    end;
+  end;
+end;
+
 function TIDECompileTarget.GetFileCount: integer;
 begin
   if FFiles=nil then
@@ -632,15 +662,19 @@ end;
 procedure TIDECompileTarget.LoadProject;
 var
   AProject: TLazProject;
-  i: Integer;
+  i, Cnt: Integer;
   ProjFile: TLazProjectFile;
   PkgList: TFPList;
   Pkg: TIDEPackage;
-  PkgName: String;
+  PkgName, Path, SubPath, CurFilename: String;
+  xml: TXMLConfig;
 begin
   UnloadTarget;
 
   debugln(['TIDECompileTarget.LoadProject ',Filename]);
+  FFiles:=TStringList.Create;
+  FRequiredPackages:=TObjectList.Create(True);
+
   AProject:=LazarusIDE.ActiveProject;
   if (AProject<>nil) and (CompareFilenames(AProject.ProjectInfoFile,Filename)=0)
   then begin
@@ -657,7 +691,6 @@ begin
     try
       PackageEditingInterface.GetRequiredPackages(AProject,PkgList,[pirCompileOrder]);
       if PkgList<>nil then begin
-        FRequiredPackages:=TObjectList.Create(True);
         for i:=0 to PkgList.Count-1 do begin
           Pkg:=TIDEPackage(PkgList[i]);
           PkgName:=ExtractFileUnitname(Pkg.Filename,true);
@@ -670,8 +703,35 @@ begin
   end else begin
     // load from .lpi file
 
-    LazarusIDE.ActiveProject;
-    // ToDo
+    xml:=LoadXML(Filename,true);
+    try
+      if xml<>nil then begin
+        // load list of files from lpi
+        Path:='ProjectOptions/Units/';
+        Cnt:=xml.GetValue(Path+'Count',0);
+        debugln(['TIDECompileTarget.LoadProject ',Cnt]);
+        for i:=0 to Cnt-1 do begin
+          SubPath:=Path+'Unit'+IntToStr(i)+'/';
+          if xml.GetValue(SubPath+'IsPartOfProject/Value','')<>'True' then
+            continue;
+          CurFilename:=xml.GetValue(SubPath+'Filename/Value','');
+          if CurFilename='' then continue;
+          FFiles.Add(CurFilename);
+        end;
+
+        // load list of RequiredPackages from lpi
+        Path:='ProjectOptions/RequiredPackages/';
+        Cnt:=xml.GetValue(Path+'Count',0);
+        for i:=1 to Cnt do begin
+          SubPath:=Path+'Item'+IntToStr(i)+'/';
+          PkgName:=xml.GetValue(SubPath+'PackageName/Value','');
+          if PkgName='' then continue;
+          FRequiredPackages.Add(TPGDependency.Create(PkgName));
+        end;
+      end;
+    finally
+      xml.Free;
+    end;
   end;
 end;
 
