@@ -11646,7 +11646,7 @@ procedure TGridColumn.SetWidth(const AValue: Integer);
 begin
   if (AValue=0) and not Visible then
     exit;
-  if AValue>0 then begin
+  if AValue>=0 then begin
     if FWidth = nil then begin
       if AValue=GetDefaultWidth then
         exit;
