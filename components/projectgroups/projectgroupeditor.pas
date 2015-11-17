@@ -1,5 +1,6 @@
 {
   Todo:
+    - show * when modified
     - close windows on IDE close
     - activate project when project is opened
     - deactivate project when project is closed
@@ -112,7 +113,7 @@ type
     procedure ATargetLaterUpdate(Sender: TObject);
     procedure ATargetUninstallExecute(Sender: TObject);
     procedure ATargetUninstallUpdate(Sender: TObject);
-    procedure DoFileNameChange(Sender: TObject);
+    procedure OnProjectGroupFileNameChanged(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure TVPGDblClick(Sender: TObject);
@@ -125,10 +126,11 @@ type
     // Project group callbacks
     procedure ConfigNode(Node: TTreeNode; Const ACaption: String;
       ANodeData: TNodeData);
-    procedure DoTargetAdded(Sender: TObject; Target: TPGCompileTarget);
-    procedure DoTargetDeleted(Sender: TObject; Target: TPGCompileTarget);
-    procedure DoTargetActivated(Sender: TObject; Target: TPGCompileTarget);
-    procedure DoTargetExchanged(Sender: TObject; Target1, Target2: TPGCompileTarget);
+    procedure OnProjectGroupDestroy(Sender: TObject);
+    procedure OnTargetAdded(Sender: TObject; Target: TPGCompileTarget);
+    procedure OnTargetDeleted(Sender: TObject; Target: TPGCompileTarget);
+    procedure OnTargetActivated(Sender: TObject; Target: TPGCompileTarget);
+    procedure OnTargetExchanged(Sender: TObject; Target1, Target2: TPGCompileTarget);
     function AllowPerform(ATargetAction: TPGTargetAction; AAction: TAction= Nil): Boolean;
     procedure ClearEventCallBacks(AProjectGroup: TProjectGroup);
     procedure SetEventCallBacks(AProjectGroup: TProjectGroup);
@@ -269,6 +271,7 @@ begin
     PG:=TIDEProjectGroup(AProjectGroup)
   else
     exit;
+  PG.RemoveAllHandlersOfObject(Self);
   PG.OnFileNameChange:=Nil;
   PG.OnTargetAdded:=Nil;
   PG.OnTargetDeleted:=Nil;
@@ -280,15 +283,16 @@ procedure TProjectGroupEditorForm.SetEventCallBacks(AProjectGroup: TProjectGroup
 Var
   PG: TIDEProjectGroup;
 begin
-  if AProjectGroup is  TIDEProjectGroup then
+  if AProjectGroup is TIDEProjectGroup then
     PG:=TIDEProjectGroup(AProjectGroup)
   else
     exit;
-  PG.OnFileNameChange:=@DoFileNameChange;
-  PG.OnTargetAdded:=@DoTargetAdded;
-  PG.OnTargetDeleted:=@DoTargetDeleted;
-  PG.OnTargetActivated:=@DoTargetActivated;
-  PG.OnTargetsExchanged:=@DoTargetExchanged;
+  PG.AddHandlerOnDestroy(@OnProjectGroupDestroy);
+  PG.OnFileNameChange:=@OnProjectGroupFileNameChanged;
+  PG.OnTargetAdded:=@OnTargetAdded;
+  PG.OnTargetDeleted:=@OnTargetDeleted;
+  PG.OnTargetActivated:=@OnTargetActivated;
+  PG.OnTargetsExchanged:=@OnTargetExchanged;
 end;
 
 procedure TProjectGroupEditorForm.SetProjectGroup(AValue: TProjectGroup);
@@ -432,7 +436,7 @@ begin
   UpdateIDEMenuCommandFromAction(Sender,cmdTargetUninstall);
 end;
 
-procedure TProjectGroupEditorForm.DoFileNameChange(Sender: TObject);
+procedure TProjectGroupEditorForm.OnProjectGroupFileNameChanged(Sender: TObject);
 var
   TVNode: TTreeNode;
   NodeData: TNodeData;
@@ -515,11 +519,11 @@ begin
   begin
     ND.ProjectGroup.ActivateTarget(ND.Target);
     if (ND.ProjectGroup<>FProjectGroup) then // No callback, fake it.
-      DoTargetActivated(ND.ProjectGroup,ND.Target);
+      OnTargetActivated(ND.ProjectGroup,ND.Target);
   end;
 end;
 
-procedure TProjectGroupEditorForm.DoTargetAdded(Sender: TObject;
+procedure TProjectGroupEditorForm.OnTargetAdded(Sender: TObject;
   Target: TPGCompileTarget);
 Var
   PG: TProjectGroup;
@@ -534,7 +538,7 @@ begin
   UpdateStatusBarTargetCount;
 end;
 
-procedure TProjectGroupEditorForm.DoTargetDeleted(Sender: TObject;
+procedure TProjectGroupEditorForm.OnTargetDeleted(Sender: TObject;
   Target: TPGCompileTarget);
 Var
   PG: TProjectGroup;
@@ -549,7 +553,7 @@ begin
   UpdateStatusBarTargetCount;
 end;
 
-procedure TProjectGroupEditorForm.DoTargetActivated(Sender: TObject;
+procedure TProjectGroupEditorForm.OnTargetActivated(Sender: TObject;
   Target: TPGCompileTarget);
 Var
   NC,NA: TTreeNode;
@@ -569,7 +573,7 @@ begin
   SBPG.Panels[piActiveTarget].Text:=Format(lisActiveTarget,[N]);
 end;
 
-procedure TProjectGroupEditorForm.DoTargetExchanged(Sender: TObject; Target1,
+procedure TProjectGroupEditorForm.OnTargetExchanged(Sender: TObject; Target1,
   Target2: TPGCompileTarget);
 Var
   S,N1,N2: TTreeNode;
@@ -843,6 +847,13 @@ begin
     Node.StateIndex:=NSIActive
   else
     Node.StateIndex:=-1;
+end;
+
+procedure TProjectGroupEditorForm.OnProjectGroupDestroy(Sender: TObject);
+begin
+  if Sender=FProjectGroup then begin
+    ProjectGroup:=nil;
+  end;
 end;
 
 function TProjectGroupEditorForm.CreateNode(AParent: TTreeNode;

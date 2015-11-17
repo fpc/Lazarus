@@ -8,7 +8,7 @@ interface
 
 uses
   Classes, SysUtils, IDEOptionsIntf, PackageIntf, ProjectIntf, LazFileUtils,
-  LazFileCache;
+  LazFileCache, LazMethodList;
 
 Type
   TPGTargetType = (
@@ -81,10 +81,15 @@ Type
     property RequiredPackageCount: integer read GetRequiredPackageCount;
   end;
 
+  TProjectGroupHandler = (
+    pghDestroy
+    );
+
   { TProjectGroup }
 
   TProjectGroup = class(TPersistent)
   private
+    FHandlers: array[TProjectGroupHandler] of TMethodList;
     FChangeStamp: int64;
     FFileName: String;
     FLastSavedChangeStamp: int64;
@@ -98,7 +103,14 @@ Type
     function GetTarget(Index: Integer): TPGCompileTarget; virtual; abstract;
     function GetRemovedTargetCount: Integer; virtual; abstract;
     function GetRemovedTarget(Index: Integer): TPGCompileTarget; virtual; abstract;
+    procedure DoCallNotifyHandler(HandlerType: TProjectGroupHandler;
+                                  Sender: TObject); overload;
+    procedure AddHandler(HandlerType: TProjectGroupHandler;
+                         const AMethod: TMethod; AsLast: boolean = false);
+    procedure RemoveHandler(HandlerType: TProjectGroupHandler;
+                            const AMethod: TMethod);
   public
+    destructor Destroy; override;
     function Perform(Index: Integer; AAction: TPGTargetAction): TPGActionResult;
     function Perform(Const AFileName: String; AAction: TPGTargetAction): TPGActionResult;
     function Perform(Target: TPGCompileTarget; AAction: TPGTargetAction): TPGActionResult; virtual;
@@ -125,6 +137,10 @@ Type
     property ActiveTarget: TPGCompileTarget Read GetActiveTarget Write SetActiveTarget;
     property Modified: Boolean Read GetModified write SetModified;
     property ChangeStamp: int64 read FChangeStamp;
+    // handlers
+    procedure RemoveAllHandlersOfObject(AnObject: TObject);
+    procedure AddHandlerOnDestroy(const OnDestroy: TNotifyEvent; AsLast: boolean = false);
+    procedure RemoveHandlerOnDestroy(const OnDestroy: TNotifyEvent);
   end;
 
   TProjectGroupLoadOption  = (
@@ -242,6 +258,32 @@ begin
   Result:=FLastSavedChangeStamp<>FChangeStamp;
 end;
 
+procedure TProjectGroup.DoCallNotifyHandler(HandlerType: TProjectGroupHandler;
+  Sender: TObject);
+begin
+  FHandlers[HandlerType].CallNotifyEvents(Sender);
+end;
+
+procedure TProjectGroup.AddHandler(HandlerType: TProjectGroupHandler;
+  const AMethod: TMethod; AsLast: boolean);
+begin
+  if FHandlers[HandlerType]=nil then
+    FHandlers[HandlerType]:=TMethodList.Create;
+  FHandlers[HandlerType].Add(AMethod,AsLast);
+end;
+
+procedure TProjectGroup.RemoveHandler(HandlerType: TProjectGroupHandler;
+  const AMethod: TMethod);
+begin
+  FHandlers[HandlerType].Remove(AMethod);
+end;
+
+destructor TProjectGroup.Destroy;
+begin
+  DoCallNotifyHandler(pghDestroy,Self);
+  inherited Destroy;
+end;
+
 function TProjectGroup.Perform(Index: Integer; AAction: TPGTargetAction
   ): TPGActionResult;
 begin
@@ -343,6 +385,25 @@ end;
 procedure TProjectGroup.IncreaseChangeStamp;
 begin
   LUIncreaseChangeStamp64(FChangeStamp);
+end;
+
+procedure TProjectGroup.RemoveAllHandlersOfObject(AnObject: TObject);
+var
+  HandlerType: TProjectGroupHandler;
+begin
+  for HandlerType in TProjectGroupHandler do
+    FHandlers[HandlerType].RemoveAllMethodsOfObject(AnObject);
+end;
+
+procedure TProjectGroup.AddHandlerOnDestroy(const OnDestroy: TNotifyEvent;
+  AsLast: boolean);
+begin
+  AddHandler(pghDestroy,TMethod(OnDestroy),AsLast);
+end;
+
+procedure TProjectGroup.RemoveHandlerOnDestroy(const OnDestroy: TNotifyEvent);
+begin
+  RemoveHandler(pghDestroy,TMethod(OnDestroy));
 end;
 
 { TPGCompileTarget }

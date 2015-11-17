@@ -667,6 +667,7 @@ begin
             ActivateTarget(Target);
         Inc(I);
       end;
+      Modified:=false;
     finally
       XMLConfig.Free;
     end;
