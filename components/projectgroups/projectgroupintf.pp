@@ -53,10 +53,11 @@ Type
     FTargetType: TPGTargetType;
     FRemoved: boolean;
   protected
+    FParent: TPGCompileTarget;
+    FProjectGroup: TProjectGroup;
     function GetAllowedActions: TPGTargetActions; virtual; // By default, return all allowed actions for target type.
     function GetFileCount: integer; virtual; abstract;
     function GetFiles(Index: integer): string; virtual; abstract;
-    function GetProjectGroup: TProjectGroup; virtual; abstract;
     function GetRequiredPackageCount: integer; virtual; abstract;
     function GetRequiredPackages(Index: integer): TPGDependency; virtual; abstract;
     function Perform (AAction: TPGTargetAction): TPGActionResult;
@@ -67,6 +68,8 @@ Type
     procedure SetRemoved(const AValue: boolean); virtual;
     procedure SetTargetType(AValue: TPGTargetType); virtual;
   public
+    constructor Create(aParent: TPGCompileTarget);
+    property Parent: TPGCompileTarget read FParent;
     property Filename: string read FFilename write SetFilename; // Absolute, not relative. (ToDo: store them relative)
     property Removed: boolean read FRemoved write SetRemoved;
     property TargetType: TPGTargetType read FTargetType write SetTargetType;
@@ -74,7 +77,7 @@ Type
     // Currently allowed actions.
     property AllowedActions: TPGTargetActions Read GetAllowedActions;
     //
-    property ProjectGroup: TProjectGroup Read GetProjectGroup;
+    property ProjectGroup: TProjectGroup Read FProjectGroup; // set if TargetType is ttProjectGroup
     property Files[Index: integer]: string read GetFiles;
     property FileCount: integer read GetFileCount;
     property RequiredPackages[Index: integer]: TPGDependency read GetRequiredPackages;
@@ -97,6 +100,8 @@ Type
     procedure SetActiveTarget(AValue: TPGCompileTarget);
     procedure SetModified(AValue: Boolean);
   protected
+    FCompileTarget: TPGCompileTarget;
+    FParent: TProjectGroup;
     procedure SetFileName(AValue: String); virtual;
     function GetModified: Boolean; virtual;
     function GetTargetCount: Integer; virtual; abstract;
@@ -111,11 +116,16 @@ Type
                             const AMethod: TMethod);
   public
     destructor Destroy; override;
+    property FileName: String Read FFileName Write SetFileName; // absolute
+    property CompileTarget: TPGCompileTarget read FCompileTarget;
+    property Parent: TProjectGroup read FParent;
+    // actions
     function Perform(Index: Integer; AAction: TPGTargetAction): TPGActionResult;
     function Perform(Const AFileName: String; AAction: TPGTargetAction): TPGActionResult;
     function Perform(Target: TPGCompileTarget; AAction: TPGTargetAction): TPGActionResult; virtual;
     function ActionAllowsFrom(Index: Integer; AAction: TPGTargetAction): Boolean; virtual;
     function PerformFrom(AIndex: Integer; AAction: TPGTargetAction): TPGActionResult; virtual;
+    // targets
     function IndexOfTarget(Const Target: TPGCompileTarget): Integer; virtual; abstract;
     function IndexOfTarget(Const AFilename: String): Integer; virtual;
     function IndexOfRemovedTarget(Const Target: TPGCompileTarget): Integer; virtual; abstract;
@@ -128,15 +138,17 @@ Type
     procedure ActivateTarget(Index: Integer);
     procedure ActivateTarget(Const AFileName: String);
     procedure ActivateTarget(Target: TPGCompileTarget); virtual;
-    procedure IncreaseChangeStamp;
-    property FileName: String Read FFileName Write SetFileName; // absolute
     property Targets[Index: Integer]: TPGCompileTarget Read GetTarget;
     property TargetCount: Integer Read GetTargetCount;
     property RemovedTargets[Index: Integer]: TPGCompileTarget Read GetRemovedTarget;
     property RemovedTargetCount: Integer Read GetRemovedTargetCount;
     property ActiveTarget: TPGCompileTarget Read GetActiveTarget Write SetActiveTarget;
+  public
+    // modified
+    procedure IncreaseChangeStamp;
     property Modified: Boolean Read GetModified write SetModified;
     property ChangeStamp: int64 read FChangeStamp;
+  public
     // handlers
     procedure RemoveAllHandlersOfObject(AnObject: TObject);
     procedure AddHandlerOnDestroy(const OnDestroy: TNotifyEvent; AsLast: boolean = false);
@@ -147,7 +159,8 @@ Type
     pgloRemoveInvalid, // Mark non-existing targets from group as removed.
     pgloSkipInvalid, // Ignore non-existing, add as-is.
     pgloErrorInvalid, // Stop with error on non-existing.
-    pgloSkipDialog // do not show Project Group editor.
+    pgloSkipDialog, // do not show Project Group editor.
+    pgloLoadRecursively // load all sub nodes
   );
   TProjectGroupLoadOptions = set of TProjectGroupLoadOption;
 
@@ -417,6 +430,11 @@ procedure TPGCompileTarget.SetTargetType(AValue: TPGTargetType);
 begin
   if FTargetType=AValue then Exit;
   FTargetType:=AValue;
+end;
+
+constructor TPGCompileTarget.Create(aParent: TPGCompileTarget);
+begin
+  FParent:=aParent;
 end;
 
 procedure TPGCompileTarget.SetFilename(const AValue: string);

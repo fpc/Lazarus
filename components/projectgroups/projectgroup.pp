@@ -24,7 +24,6 @@ type
 
   TIDECompileTarget = class(TPGCompileTarget)
   private
-    FTarget: TPersistent;
     FFiles: TStringList;
     FRequiredPackages: TObjectList; // list of TPGDependency
     function LoadXML(aFilename: string; Quiet: boolean): TXMLConfig;
@@ -35,14 +34,13 @@ type
     function GetRequiredPackages(Index: integer): TPGDependency; override;
     procedure LoadPackage;
     procedure LoadProject;
-    procedure LoadProjectGroup;
+    procedure LoadProjectGroup(Recursively: boolean);
     function ProjectAction(AAction: TPGTargetAction): TPGActionResult;
     function PackageAction(AAction: TPGTargetAction): TPGActionResult;
     function ProjectGroupAction(AAction: TPGTargetAction): TPGActionResult;
-    function GetProjectGroup: TProjectGroup; override;
     function PerformAction(AAction: TPGTargetAction): TPGActionResult; override;
   public
-    procedure LoadTarget; virtual;
+    procedure LoadTarget(Recursively: boolean); virtual;
     procedure UnLoadTarget; virtual;
   end;
 
@@ -55,9 +53,7 @@ type
   protected
     procedure SetTargetType(AValue: TPGTargetType); override;
   public
-    constructor Create(AProjectGroup: TProjectGroup);
-    procedure LoadTarget; override;
-    procedure UnLoadTarget; override;
+    constructor Create(aParent: TPGCompileTarget);
   end;
 
   TTargetEvent = procedure(Sender: TObject; Target: TPGCompileTarget) of object;
@@ -81,7 +77,7 @@ type
     function GetRemovedTargetCount: Integer; override;
     function GetRemovedTarget(Index: Integer): TPGCompileTarget; override;
   public
-    constructor Create;
+    constructor Create(aCompileTarget: TIDECompileTarget);
     destructor Destroy; override;
     function IndexOfTarget(const Target: TPGCompileTarget): Integer; override;
     function IndexOfRemovedTarget(const Target: TPGCompileTarget): Integer; override;
@@ -372,7 +368,7 @@ begin
   if Not CheckSaved then
     Exit;
   FreeAndNil(FProjectGroup);
-  FProjectGroup:=TIDEProjectGroup.Create;
+  FProjectGroup:=TIDEProjectGroup.Create(nil);
 
   // add current project
   AProject:=LazarusIDE.ActiveProject;
@@ -397,7 +393,7 @@ begin
       F.Options:=[ofFileMustExist,ofEnableSizing];
       F.Filter:='Lazarus project group|*.lpg|All files|'+AllFilesMask;
       if F.Execute then
-        LoadProjectGroup(FileName,[]);
+        LoadProjectGroup(FileName,[pgloLoadRecursively]);
       StoreIDEFileDialog(F);
     finally
       F.Free;
@@ -412,7 +408,7 @@ begin
   Item:=Sender as TIDEMenuCommand;
   aFilename:=Item.Caption;
   debugln(['TIDEProjectGroupManager.DoOpenRecentClick ',aFilename]);
-  LoadProjectGroup(aFilename,[]);
+  LoadProjectGroup(aFilename,[pgloLoadRecursively]);
 end;
 
 procedure TIDEProjectGroupManager.DoSaveClick(Sender: TObject);
@@ -462,7 +458,7 @@ begin
   Options.SaveSafe;
   UpdateRecentProjectGroupMenu;
 
-  FProjectGroup:=TIDEProjectGroup.Create;
+  FProjectGroup:=TIDEProjectGroup.Create(nil);
   FProjectGroup.FileName:=AFileName;
   FProjectGroup.LoadFromFile(AOptions);
   If not (pgloSkipDialog in AOptions) then
@@ -487,20 +483,10 @@ begin
   inherited SetTargetType(AValue);
 end;
 
-constructor TProjectGroupTarget.Create(AProjectGroup: TProjectGroup);
+constructor TProjectGroupTarget.Create(aParent: TPGCompileTarget);
 begin
-  FTarget:=AProjectGroup;
+  inherited Create(aParent);
   TargetType:=ttProjectGroup;
-end;
-
-procedure TProjectGroupTarget.LoadTarget;
-begin
-
-end;
-
-procedure TProjectGroupTarget.UnLoadTarget;
-begin
-
 end;
 
 { TIDEProjectGroup }
@@ -535,9 +521,14 @@ begin
   Result:=TPGCompileTarget(FRemovedTargets[Index]);
 end;
 
-constructor TIDEProjectGroup.Create;
+constructor TIDEProjectGroup.Create(aCompileTarget: TIDECompileTarget);
 begin
   inherited Create;
+  if aCompileTarget=nil then begin
+    FCompileTarget:=TProjectGroupTarget.Create(nil);
+  end else begin
+    FCompileTarget:=aCompileTarget;
+  end;
   FTargets:=TFPObjectList.Create(True);
   FRemovedTargets:=TFPObjectList.Create(True);
 end;
@@ -546,6 +537,8 @@ destructor TIDEProjectGroup.Destroy;
 begin
   FreeAndNil(FTargets);
   FreeAndNil(FRemovedTargets);
+  if FParent=nil then
+    FreeAndNil(FCompileTarget);
   inherited Destroy;
 end;
 
@@ -566,7 +559,7 @@ begin
   if not FilenameIsAbsolute(AFileName) then
     RaiseGDBException(AFileName);
   if not FileExistsCached(AFileName) then exit;
-  Result:=TIDECompileTarget.Create;
+  Result:=TIDECompileTarget.Create(CompileTarget);
   Result.FileName:=AFileName;
   FTargets.Add(Result);
   IncreaseChangeStamp;
@@ -612,9 +605,20 @@ Var
   XMLConfig: TXMLConfig;
   I,ACount: Integer;
   Target: TPGCompileTarget;
+  aGroup: TProjectGroup;
 begin
-  BaseDir:=AppendPathDelim(ExpandFileNameUTF8(ExtractFilePath(FileName)));
-  Result:=True;
+  Result:=false;
+  if not FilenameIsAbsolute(TargetFileName) then exit;
+  if not FileExistsCached(Filename) then exit;
+
+  aGroup:=Parent;
+  while aGroup<>nil do begin
+    if CompareFilenames(aGroup.FileName,Filename)=0 then
+      exit; // circular
+    aGroup:=aGroup.Parent;
+  end;
+
+  BaseDir:=AppendPathDelim(ExtractFilePath(FileName));
   try
     XMLConfig := TXMLConfig.Create(FileName);
     try
@@ -630,7 +634,8 @@ begin
           TargetFileName:=TrimFilename(BaseDir+TargetFileName);
         If (TargetFileName<>'') and FileExistsCached(TargetFileName) then begin
           Target:=AddTarget(TargetFileName);
-          (Target as TIDECompileTarget).LoadTarget;
+          if pgloLoadRecursively in Options then
+            (Target as TIDECompileTarget).LoadTarget(true);
         end
         else if (pgloRemoveInvalid in Options) then
         begin
@@ -671,11 +676,11 @@ begin
     finally
       XMLConfig.Free;
     end;
+    Result:=true;
   except
     on E: Exception do begin
       IDEMessageDialog('Read Error','Error reading project group file "'+Filename+'"'#13+E.Message,
         mtError,[mbOk]);
-      Result:=false;
     end;
   end;
 end;
@@ -729,19 +734,17 @@ end;
 
 { TIDECompileTarget }
 
-procedure TIDECompileTarget.LoadTarget;
+procedure TIDECompileTarget.LoadTarget(Recursively: boolean);
 begin
   case TargetType of
     ttProject: LoadProject;
     ttPackage: LoadPackage;
-    ttProjectGroup: LoadProjectGroup;
+    ttProjectGroup: LoadProjectGroup(Recursively);
   end;
 end;
 
 procedure TIDECompileTarget.UnLoadTarget;
 begin
-  if FTarget<>nil then
-    FreeAndNil(FTarget);
   if FFiles<>nil then
     FreeAndNil(FFiles);
   if FRequiredPackages<>nil then
@@ -810,7 +813,10 @@ var
   Pkg: TIDEPackage;
   PkgName: String;
 begin
-  FTarget:=Nil;
+  if FFiles<>nil then exit; // already loaded
+
+  FFiles:=TStringList.Create;
+  FRequiredPackages:=TObjectList.Create(True);
 
   PkgName:=ExtractFileUnitname(Filename,true);
   if PkgName='' then begin
@@ -838,12 +844,10 @@ begin
   end;
 
   // load list of file
-  FFiles:=TStringList.Create;
   for i:=0 to Pkg.FileCount-1 do
     FFiles.Add(Pkg.Files[i].Filename);
 
   // load list of required package
-  FRequiredPackages:=TObjectList.Create(True);
   // ToDo
 end;
 
@@ -857,7 +861,7 @@ var
   PkgName, Path, SubPath, CurFilename: String;
   xml: TXMLConfig;
 begin
-  UnloadTarget;
+  if FFiles<>nil then exit; // already loaded
 
   //debugln(['TIDECompileTarget.LoadProject ',Filename]);
   FFiles:=TStringList.Create;
@@ -922,13 +926,19 @@ begin
   end;
 end;
 
-procedure TIDECompileTarget.LoadProjectGroup;
+procedure TIDECompileTarget.LoadProjectGroup(Recursively: boolean);
 var
   PG: TIDEProjectGroup;
+  Flags: TProjectGroupLoadOptions;
 begin
-  PG:=TIDEProjectGroup.Create;
+  if ProjectGroup<>nil then exit;
+  PG:=TIDEProjectGroup.Create(Self);
+  FProjectGroup:=PG;
   PG.FileName:=Self.FileName;
-  PG.LoadFromFile([]);
+  Flags:=[];
+  if Recursively then
+    Include(Flags,pgloLoadRecursively);
+  PG.LoadFromFile(Flags);
 end;
 
 function TIDECompileTarget.ProjectAction(AAction: TPGTargetAction): TPGActionResult;
@@ -991,20 +1001,11 @@ begin
   if AAction=taOpen then
     ProjectGroupManager.LoadProjectGroup(FileName,[])
   else
-    Result:=GetProjectGroup.PerformFrom(0,AAction);
-end;
-
-function TIDECompileTarget.GetProjectGroup: TProjectGroup;
-begin
-  If FTarget=Nil then
-    LoadTarget;
-  Result:=TProjectGroup(FTarget);
+    Result:=ProjectGroup.PerformFrom(0,AAction);
 end;
 
 function TIDECompileTarget.PerformAction(AAction: TPGTargetAction): TPGActionResult;
 begin
-  if FTarget=Nil then
-    LoadTarget;
   case TargetType of
      ttProject: Result:=ProjectAction(AAction);
      ttPackage: Result:=PackageAction(AAction);

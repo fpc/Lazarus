@@ -119,7 +119,6 @@ type
     procedure TVPGDblClick(Sender: TObject);
   private
     FProjectGroup: TProjectGroup;
-    FProjectGroupTarget: TPGCompileTarget;
     FNPG: TTreeNode;
     FActiveTarget: TPGCompileTarget;
     FTargetNodes: TTargetNodes;
@@ -303,11 +302,9 @@ begin
   begin
     ClearEventCallBacks(ProjectGroup);
   end;
-  FreeAndNil(FProjectGroupTarget);
   FProjectGroup:=AValue;
   if ProjectGroup<>nil then begin
     SetEventCallBacks(ProjectGroup);
-    FProjectGroupTarget:=TProjectGroupTarget.Create(AValue);
   end;
   FActiveTarget:=Nil;
   ShowProjectGroup;
@@ -530,7 +527,6 @@ Var
   N: TTreeNode;
 begin
   PG:=Sender as TProjectGroup;
-  (Target as TIDECompileTarget).LoadTarget;
   // ToDo: use of FTargetNodes is wrong if PG<>FProjectGroup
   N:=CreateNode(FTargetNodes[False],ntTarget,Target,PG);
   FillTargetNode(N,PG,Target);
@@ -702,7 +698,7 @@ Var
 begin
   if FProjectGroup=nil then exit;
   T:=SelectedTarget;
-  (Sender as TAction).Enabled:=(T<>Nil) and (T<>FProjectGroupTarget) and Not T.Removed;
+  (Sender as TAction).Enabled:=(T<>Nil) and (T<>ProjectGroup.CompileTarget) and Not T.Removed;
   UpdateIDEMenuCommandFromAction(Sender,cmdTargetRemove);
 end;
 
@@ -967,12 +963,12 @@ begin
     if FProjectGroup<>nil then begin
       FNPG:=CreateNode(Nil,
         DisplayFileName(FProjectGroup,ntProjectGroup,FProjectGroup.FileName),
-        ntProjectGroup,FProjectGroupTarget,FProjectGroup);
+        ntProjectGroup,ProjectGroup.CompileTarget,FProjectGroup);
       FillProjectGroupNode(FNPG,FProjectGroup,FTargetNodes);
       N:=FindNodeFromTarget(FActiveTarget);
       if (N=Nil) then
       begin
-        FActiveTarget:=FProjectGroupTarget;
+        FActiveTarget:=ProjectGroup.CompileTarget;
         TVPG.Selected:=FNPG;
       end else
         TVPG.Selected:=N;
