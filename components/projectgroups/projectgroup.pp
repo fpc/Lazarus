@@ -15,7 +15,8 @@ uses
   Classes, SysUtils, contnrs, Laz2_XMLCfg, Controls, Forms, Dialogs, LCLProc,
   LazFileUtils, LazFileCache, LazConfigStorage, PackageIntf, ProjectIntf,
   MenuIntf, LazIDEIntf, IDEDialogs, CompOptsIntf, BaseIDEIntf, IDECommands,
-  ProjectGroupIntf, ProjectGroupStrConst, FileProcs, CodeToolManager, CodeCache;
+  IDEExternToolIntf, MacroIntf, ProjectGroupIntf, ProjectGroupStrConst,
+  FileProcs, CodeToolManager, CodeCache;
 
 const
   PGOptionsFileName = 'projectgroupsoptions.xml';
@@ -198,6 +199,7 @@ var
   OpenRecentProjectGroupSubMenu: TIDEMenuSection;
 
 function LoadXML(aFilename: string; Quiet: boolean): TXMLConfig;
+function GetLazBuildFilename: string;
 
 implementation
 
@@ -227,6 +229,15 @@ begin
         IDEMessageDialog('Read error','XML syntax error in file "'+aFilename+'": '+E.Message,mtError,[mbOk]);
     end;
   end;
+end;
+
+function GetLazBuildFilename: string;
+begin
+  Result:='$(LazarusDir)'+PathDelim+'$MakeExe(lazbuild)';
+  IDEMacros.SubstituteMacros(Result);
+  if FileExistsCached(Result) then
+    exit;
+  Result:=''; // ToDo
 end;
 
 { TIDEProjectGroupOptions }
@@ -643,6 +654,7 @@ begin
   FTargets.Delete(Index);
   FTargets.OwnsObjects:=true;
   FRemovedTargets.Add(Target);
+  Modified:=true;
   Target.Removed:=true;
   if Assigned(FOnTargetDeleted) then
     FOnTargetDeleted(Self,Target);
@@ -996,6 +1008,10 @@ end;
 function TIDECompileTarget.ProjectAction(AAction: TPGTargetAction): TPGActionResult;
 var
   F: TProjectBuildFlags;
+  Tool: TAbstractExternalTool;
+  aTitle, aCompileHint, LazBuildFilename, WorkingDir: String;
+  Params: TStringList;
+  FPCParser: TFPCParser;
 begin
   Result:=arFailed;
 
@@ -1046,7 +1062,40 @@ begin
     taCompileClean:
       begin
         // run lazbuild as external tool
+        aTitle:='Compile Project '+ExtractFileNameOnly(Filename);
+        aCompileHint:='Project Group: '+Parent.Filename+LineEnding;
 
+        LazBuildFilename:='';
+        WorkingDir:=ExtractFilePath(Filename);
+        Params:=TStringList.Create;
+        if AAction=taCompileClean then
+          Params.Add('-B');
+        Params.Add(Filename);
+
+        Tool:=ExternalToolList.Add(aTitle);
+        Tool.Reference(Self,ClassName);
+        try
+          Tool.Data:=TIDEExternalToolData.Create('Other Project','',Filename);
+          Tool.FreeData:=true;
+          Tool.Hint:=aCompileHint;
+          Tool.Process.Executable:=LazBuildFilename;
+          Tool.Process.Parameters:=Params;
+          Tool.Process.CurrentDirectory:=WorkingDir;
+          FPCParser:=TFPCParser(Tool.AddParsers(SubToolFPC));
+          FPCParser.HideHintsSenderNotUsed:=true; //not AProject.CompilerOptions.ShowHintsForSenderNotUsed;
+          FPCParser.HideHintsUnitNotUsedInMainSource:=true; //not AProject.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc;
+          //if (not AProject.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc)
+          //and (AProject.MainFilename<>'') then
+          //  FPCParser.FilesToIgnoreUnitNotUsed.Add(AProject.MainFilename);
+          Tool.AddParsers(SubToolMake);
+          Tool.Execute;
+          Tool.WaitForExit;
+          if Tool.ErrorMessage='' then
+            Result:=arOK;
+        finally
+          Tool.Release(Self);
+          Params.Free;
+        end;
       end;
     taRun:
       begin
