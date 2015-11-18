@@ -13,10 +13,10 @@ interface
 
 uses
   Classes, SysUtils, contnrs, Laz2_XMLCfg, Controls, Forms, Dialogs, LCLProc,
-  LazFileUtils, LazFileCache, LazConfigStorage, PackageIntf, ProjectIntf,
-  MenuIntf, LazIDEIntf, IDEDialogs, CompOptsIntf, BaseIDEIntf, IDECommands,
-  IDEExternToolIntf, MacroIntf, ProjectGroupIntf, ProjectGroupStrConst,
-  FileProcs, CodeToolManager, CodeCache;
+  LazFileUtils, LazFileCache, LazConfigStorage, FileUtil, PackageIntf,
+  ProjectIntf, MenuIntf, LazIDEIntf, IDEDialogs, CompOptsIntf, BaseIDEIntf,
+  IDECommands, IDEExternToolIntf, MacroIntf, ProjectGroupIntf,
+  ProjectGroupStrConst, FileProcs, CodeToolManager, CodeCache;
 
 const
   PGOptionsFileName = 'projectgroupsoptions.xml';
@@ -233,11 +233,13 @@ end;
 
 function GetLazBuildFilename: string;
 begin
+  // first check the lazbuild executable in the lazarus directory
   Result:='$(LazarusDir)'+PathDelim+'$MakeExe(lazbuild)';
   IDEMacros.SubstituteMacros(Result);
   if FileExistsCached(Result) then
     exit;
-  Result:=''; // ToDo
+  // then search in PATH
+  Result:=FindDefaultExecutablePath('lazbuild'+ExeExt);
 end;
 
 { TIDEProjectGroupOptions }
@@ -1065,7 +1067,13 @@ begin
         aTitle:='Compile Project '+ExtractFileNameOnly(Filename);
         aCompileHint:='Project Group: '+Parent.Filename+LineEnding;
 
-        LazBuildFilename:='';
+        LazBuildFilename:=GetLazBuildFilename;
+        if LazBuildFilename='' then begin
+          IDEMessageDialog('lazbuild not found','The lazbuild'+ExeExt+' was not found.'
+            ,mtError,[mbOk]);
+          exit(arFailed);
+        end;
+
         WorkingDir:=ExtractFilePath(Filename);
         Params:=TStringList.Create;
         if AAction=taCompileClean then
