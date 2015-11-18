@@ -37,6 +37,8 @@ type
     function ProjectAction(AAction: TPGTargetAction): TPGActionResult;
     function PackageAction(AAction: TPGTargetAction): TPGActionResult;
     function ProjectGroupAction(AAction: TPGTargetAction): TPGActionResult;
+    function PascalFileAction(AAction: TPGTargetAction): TPGActionResult;
+    function ExternalToolAction(AAction: TPGTargetAction): TPGActionResult;
     function PerformAction(AAction: TPGTargetAction): TPGActionResult; override;
   public
     procedure LoadTarget(Recursively: boolean); virtual;
@@ -1021,18 +1023,59 @@ end;
 function TIDECompileTarget.ProjectGroupAction(AAction: TPGTargetAction
   ): TPGActionResult;
 begin
-  if AAction=taOpen then
-    ProjectGroupManager.LoadProjectGroup(FileName,[])
-  else
-    Result:=ParentProjectGroup.PerformFrom(0,AAction);
+  Result:=arFailed;
+
+  case AAction of
+  taOpen: ProjectGroupManager.LoadProjectGroup(FileName,[]);
+  taSettings: ;
+  taCompile: ;
+  taCompileClean: ;
+  taRun: ;
+  taInstall: ;
+  taUninstall: ;
+  end;
+end;
+
+function TIDECompileTarget.PascalFileAction(AAction: TPGTargetAction
+  ): TPGActionResult;
+begin
+  Result:=arFailed;
+  debugln(['TIDECompileTarget.PascalFileAction ToDo']);
+  case AAction of
+  taOpen: ;
+  taSettings: ;
+  taCompile: ;
+  taCompileClean: ;
+  taRun: ;
+  taInstall: ;
+  taUninstall: ;
+  end;
+end;
+
+function TIDECompileTarget.ExternalToolAction(AAction: TPGTargetAction
+  ): TPGActionResult;
+begin
+  Result:=arFailed;
+  debugln(['TIDECompileTarget.ExternalToolAction ToDo']);
+  case AAction of
+  taOpen: ;
+  taSettings: ;
+  taCompile: ;
+  taCompileClean: ;
+  taRun: ;
+  taInstall: ;
+  taUninstall: ;
+  end;
 end;
 
 function TIDECompileTarget.PerformAction(AAction: TPGTargetAction): TPGActionResult;
 begin
   case TargetType of
-     ttProject: Result:=ProjectAction(AAction);
-     ttPackage: Result:=PackageAction(AAction);
-     ttProjectGroup: Result:=ProjectGroupAction(AAction);
+    ttProject: Result:=ProjectAction(AAction);
+    ttPackage: Result:=PackageAction(AAction);
+    ttProjectGroup: Result:=ProjectGroupAction(AAction);
+    ttPascalFile: Result:=PascalFileAction(AAction);
+    ttExternalTool: Result:=ExternalToolAction(AAction);
   end;
 end;
 

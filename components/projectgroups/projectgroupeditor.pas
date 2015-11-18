@@ -358,9 +358,9 @@ Var
   PG: TProjectGroup;
 begin
   T:=SelectedNodeData;
-  if (T=nil) or (T.Target=nil) then
+  if (T=nil) or (T.Target=nil) or (T.Target.Parent=nil) then
     exit;
-  PG:=T.Target.ParentProjectGroup;
+  PG:=T.Target.Parent.ProjectGroup;
   if PG=nil then exit;
   I:=PG.IndexOfTarget(T.Target);
   J:=I-1;
@@ -376,9 +376,9 @@ Var
 begin
   I:=-1;
   T:=SelectedNodeData;
-  if (T=nil) or (T.Target=nil) then
+  if (T=nil) or (T.Target=nil) or (T.Target.Parent=nil) then
     exit;
-  PG:=T.Target.ParentProjectGroup;
+  PG:=T.Target.Parent.ProjectGroup;
   if PG=nil then exit;
   I:=PG.IndexOfTarget(T.Target);
   (Sender as TAction).Enabled:=I>0;
@@ -392,9 +392,9 @@ Var
   PG: TProjectGroup;
 begin
   T:=SelectedNodeData;
-  if (T=nil) or (T.Target=nil) then
+  if (T=nil) or (T.Target=nil) or (T.Target.Parent=nil) then
     exit;
-  PG:=T.Target.ParentProjectGroup;
+  PG:=T.Target.Parent.ProjectGroup;
   if PG=nil then exit;
   I:=PG.IndexOfTarget(T.Target);
   J:=I+1;
@@ -409,9 +409,9 @@ Var
   PG: TProjectGroup;
 begin
   T:=SelectedNodeData;
-  if (T=nil) or (T.Target=nil) then
+  if (T=nil) or (T.Target=nil) or (T.Target.Parent=nil) then
     exit;
-  PG:=T.Target.ParentProjectGroup;
+  PG:=T.Target.Parent.ProjectGroup;
   if PG=nil then exit;
   I:=PG.IndexOfTarget(T.Target);
   (Sender as TAction).Enabled:=I+1<PG.TargetCount;
@@ -503,28 +503,48 @@ procedure TProjectGroupEditorForm.TVPGDblClick(Sender: TObject);
 Var
   ND: TNodeData;
   aFilename: String;
+  PG: TProjectGroup;
 begin
   ND:=SelectedNodeData;
   //debugln(['TProjectGroupEditorForm.TVPGDblClick ',DbgSName(Sender),' ',TVPG.Selected.Text,' ',ND<>nil]);
   if ND=nil then exit;
   case ND.NodeType of
-  ntUnknown: ;
   ntProjectGroup: ;
-  ntTargets: ;
-  ntRemovedTargets: ;
-  ntTarget: ;
-  ntRemovedTarget: ;
+  ntTarget:
+    begin
+      // activate target and open in IDE
+      PG:=ND.Target.Parent.ProjectGroup;
+      if PG=nil then exit;
+      PG.ActivateTarget(ND.Target);
+      case ND.Target.TargetType of
+      ttProject,ttPackage,ttPascalFile:
+        PG.Perform(ND.Target,taOpen);
+      end;
+    end;
+  ntRemovedTarget:
+    begin
+      PG:=ND.Target.Parent.ProjectGroup;
+      if PG=nil then exit;
+      case ND.Target.TargetType of
+      ttProject,ttPackage,ttPascalFile:
+        PG.Perform(ND.Target,taOpen);
+      end;
+    end;
   ntFiles: ;
   ntFile:
     begin
+      // open file in source editor
       aFilename:=ND.Value;
       //debugln(['TProjectGroupEditorForm.TVPGDblClick File=',aFilename]);
       if aFilename='' then exit;
       LazarusIDE.DoOpenEditorFile(aFilename,-1,-1,[ofAddToRecent,
         ofRegularFile,ofDoNotLoadResource,ofOnlyIfExists]);
     end;
-  ntDependencies: ;
-  ntDependency: ;
+  ntDependency:
+    begin
+      // ToDo: open package editor
+
+    end;
   end;
 end;
 
@@ -645,7 +665,7 @@ begin
   ND:=SelectedNodeData;
   if (ND=nil) or (ND.Target=nil) then
     exit;
-  ND.Target.ParentProjectGroup.ActivateTarget(ND.Target);
+  ND.Target.Activate(true);
 end;
 
 procedure TProjectGroupEditorForm.ATargetCompileCleanExecute(Sender: TObject);
@@ -675,7 +695,10 @@ Var
 begin
   ND:=SelectedNodeData;
   if (ND=nil) or (ND.Target=nil) then exit;
-  ND.Target.ParentProjectGroup.Perform(ND.Target,ATargetAction);
+  if ND.Target.ProjectGroup<>nil then
+    ND.Target.ProjectGroup.Perform(ND.Target,ATargetAction)
+  else if ND.Target.Parent.ProjectGroup<>nil then
+    ND.Target.Parent.ProjectGroup.Perform(ND.Target,ATargetAction);
 end;
 
 procedure TProjectGroupEditorForm.ATargetCompileExecute(Sender: TObject);
@@ -1145,7 +1168,7 @@ begin
     Case T.TargetType of
       ttProject: FillProjectNode(AParent,T);
       ttPackage: FillPackageNode(AParent,T);
-      ttProjectGroup: FillProjectgroupNode(AParent,T.ParentProjectGroup,PN);
+      ttProjectGroup: FillProjectgroupNode(AParent,T.ProjectGroup,PN);
     end;
   finally
     TVPG.EndUpdate;

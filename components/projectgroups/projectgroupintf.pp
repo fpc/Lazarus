@@ -54,7 +54,6 @@ Type
     FRemoved: boolean;
   protected
     FParent: TPGCompileTarget;
-    FParentProjectGroup: TProjectGroup;
     FProjectGroup: TProjectGroup;
     function GetAllowedActions: TPGTargetActions; virtual; // By default, return all allowed actions for target type.
     function GetFileCount: integer; virtual; abstract;
@@ -63,13 +62,14 @@ Type
     function GetRequiredPackages(Index: integer): TPGDependency; virtual; abstract;
     function Perform(AAction: TPGTargetAction): TPGActionResult;
     function PerformAction(AAction: TPGTargetAction): TPGActionResult; virtual; abstract;
-    procedure Activate; virtual;
-    procedure DeActivate; virtual;
     procedure SetFilename(const AValue: string); virtual;
     procedure SetRemoved(const AValue: boolean); virtual;
     procedure SetTargetType(AValue: TPGTargetType); virtual;
+    procedure DoDeactivateChildren;
   public
     constructor Create(aParent: TPGCompileTarget);
+    procedure Activate(DeactivateChildren: boolean); virtual;
+    procedure DeActivate(DeactivateParents: boolean); virtual;
     property Parent: TPGCompileTarget read FParent;
     property Filename: string read FFilename write SetFilename; // Absolute, not relative. (ToDo: store them relative)
     property Removed: boolean read FRemoved write SetRemoved;
@@ -78,7 +78,6 @@ Type
     // Currently allowed actions.
     property AllowedActions: TPGTargetActions Read GetAllowedActions;
     //
-    property ParentProjectGroup: TProjectGroup Read FParentProjectGroup;
     property ProjectGroup: TProjectGroup read FProjectGroup; // set if TargetType is ttProjectGroup
     property Files[Index: integer]: string read GetFiles;
     property FileCount: integer read GetFileCount;
@@ -250,7 +249,6 @@ end;
 procedure TProjectGroup.SetActiveTarget(AValue: TPGCompileTarget);
 begin
   ActivateTarget(AValue);
-  IncreaseChangeStamp;
 end;
 
 procedure TProjectGroup.SetModified(AValue: Boolean);
@@ -385,18 +383,8 @@ begin
 end;
 
 procedure TProjectGroup.ActivateTarget(Target: TPGCompileTarget);
-var
-  I: Integer;
-  TD: TPGCompileTarget;
 begin
-  if Target.Active then exit;
-  for I:=0 to TargetCount-1 do
-  begin
-    TD:=GetTarget(I);
-    if TD.Active then
-      TD.Deactivate;
-  end;
-  Target.Activate;
+  Target.Activate(true);
 end;
 
 procedure TProjectGroup.IncreaseChangeStamp;
@@ -436,6 +424,14 @@ begin
   FTargetType:=AValue;
 end;
 
+procedure TPGCompileTarget.DoDeactivateChildren;
+var
+  i: Integer;
+begin
+  for i:=0 to ProjectGroup.TargetCount-1 do
+    ProjectGroup.Targets[i].DeActivate(false);
+end;
+
 constructor TPGCompileTarget.Create(aParent: TPGCompileTarget);
 begin
   FParent:=aParent;
@@ -447,25 +443,51 @@ begin
   FFileName:=AValue;
   TargetType:=TargetTypeFromExtenstion(ExtractFileExt(AValue));
   if ProjectGroup<>nil then
-   ProjectGroup.FileName:=Filename;
+    ProjectGroup.FileName:=Filename;
 end;
 
 procedure TPGCompileTarget.SetRemoved(const AValue: boolean);
 begin
   if Removed=AValue then exit;
   FRemoved:=AValue;
-  If FRemoved then
-    Deactivate;
+  if FRemoved then
+    Deactivate(true);
 end;
 
-procedure TPGCompileTarget.Activate;
+procedure TPGCompileTarget.Activate(DeactivateChildren: boolean);
+var
+  OldActive: TPGCompileTarget;
+  PG: TProjectGroup;
 begin
+  if DeactivateChildren then
+    DoDeactivateChildren;
+  if Active then exit;
+  if Parent<>nil then
+  begin
+    PG:=Parent.ProjectGroup;
+    if PG<>nil then
+    begin
+      OldActive:=PG.ActiveTarget;
+      if OldActive<>nil then
+        OldActive.DeActivate(false);
+    end;
+    Parent.Activate(false);
+    PG.IncreaseChangeStamp;
+  end;
   FActive:=True;
 end;
 
-procedure TPGCompileTarget.DeActivate;
+procedure TPGCompileTarget.DeActivate(DeactivateParents: boolean);
 begin
+  if not Active then exit;
+  if ProjectGroup<>nil then
+  begin
+    ProjectGroup.IncreaseChangeStamp;
+    DoDeactivateChildren;
+  end;
   FActive:=False;
+  if DeactivateParents and (Parent<>nil) then
+    Parent.DeActivate(true);
 end;
 
 function TPGCompileTarget.Perform(AAction: TPGTargetAction): TPGActionResult;
