@@ -359,7 +359,7 @@ end;
 procedure TProjectGroupEditorForm.ATargetEarlierExecute(Sender: TObject);
 Var
   T: TNodeData;
-  I,J: Integer;
+  I: Integer;
   PG: TProjectGroup;
 begin
   T:=SelectedNodeData;
@@ -368,9 +368,8 @@ begin
   PG:=T.Target.Parent.ProjectGroup;
   if PG=nil then exit;
   I:=PG.IndexOfTarget(T.Target);
-  J:=I-1;
-  if J>=0 then
-    PG.ExchangeTargets(I,J);
+  if I>0 then
+    PG.ExchangeTargets(I,I-1);
 end;
 
 procedure TProjectGroupEditorForm.ATargetEarlierUpdate(Sender: TObject);
@@ -395,7 +394,7 @@ end;
 procedure TProjectGroupEditorForm.ATargetLaterExecute(Sender: TObject);
 Var
   T: TNodeData;
-  I,J: Integer;
+  I: Integer;
   PG: TProjectGroup;
 begin
   T:=SelectedNodeData;
@@ -404,9 +403,9 @@ begin
   PG:=T.Target.Parent.ProjectGroup;
   if PG=nil then exit;
   I:=PG.IndexOfTarget(T.Target);
-  J:=I+1;
-  if (J<PG.TargetCount) then
-    PG.ExchangeTargets(I,J);
+  if I<0 then exit;
+  if (I+1<PG.TargetCount) then
+    PG.ExchangeTargets(I,I+1);
 end;
 
 procedure TProjectGroupEditorForm.ATargetLaterUpdate(Sender: TObject);
@@ -421,9 +420,8 @@ begin
   if (T<>nil) and (T.Target<>nil) and (T.Target.Parent<>nil) then
   begin
     PG:=T.Target.Parent.ProjectGroup;
-    if PG<>nil then begin
+    if PG<>nil then
       I:=PG.IndexOfTarget(T.Target);
-    end;
   end;
   (Sender as TAction).Enabled:=(PG<>nil) and (I+1<PG.TargetCount);
   UpdateIDEMenuCommandFromAction(Sender,cmdTargetLater);
