@@ -34,12 +34,11 @@ begin
   cmdTargetCompileClean:=RegisterIDEMenuCommand(Section,'TargetCompileClean',lisTargetCompileClean);// ToDo
   // ToDo: clean ... -> clean up dialog
   // ToDo: compile all from here
-  // ToDo: compile all clean from here
   // ToDo: set build mode of all projects
 
   Section:=RegisterIDEMenuSection(Root,'AddRemove');
   PGEditMenuSectionAddRemove:=Section;
-  cmdTargetAdd:=RegisterIDEMenuCommand(Section,'TargetAdd',lisTargetAdd);// ToDo
+  cmdTargetAdd:=RegisterIDEMenuCommand(Section,'TargetAdd',lisTargetAdd);
   cmdTargetRemove:=RegisterIDEMenuCommand(Section,'TargetRemove',lisTargetRemove);// ToDo
 
   Section:=RegisterIDEMenuSection(Root,'Use');
@@ -48,17 +47,17 @@ begin
   cmdTargetUninstall:=RegisterIDEMenuCommand(Section,'TargetUninstall',lisTargetUninstall);// ToDo
   cmdTargetEarlier:=RegisterIDEMenuCommand(Section,'TargetEarlier',lisTargetEarlier);// ToDo: Ctrl+Up
   cmdTargetLater:=RegisterIDEMenuCommand(Section,'TargetLater',lisTargetLater);// ToDo: Ctrl+Down
-  cmdTargetActivate:=RegisterIDEMenuCommand(Section,'TargetActivate',lisTargetActivate);// ToDo
-  cmdTargetOpen:=RegisterIDEMenuCommand(Section,'TargetOpen',lisTargetOpen);// ToDo
+  cmdTargetActivate:=RegisterIDEMenuCommand(Section,'TargetActivate',lisTargetActivate);
+  cmdTargetOpen:=RegisterIDEMenuCommand(Section,'TargetOpen',lisTargetOpen);
   // ToDo: Save
   // ToDo: Close (package editor)
-  cmdTargetRun:=RegisterIDEMenuCommand(Section,'TargetRun',lisTargetRun);// ToDo
+  cmdTargetRun:=RegisterIDEMenuCommand(Section,'TargetRun',lisTargetRun);
   cmdTargetProperties:=RegisterIDEMenuCommand(Section,'TargetProperties',lisTargetProperties);// ToDo
 
   Section:=RegisterIDEMenuSection(Root,'Misc');
   PGEditMenuSectionMisc:=Section;
 
-  // ToDo: Copy filename
+  cmdTargetCopyFilename:=RegisterIDEMenuCommand(Section,'CopyFilename',lisTargetCopyFilename);
   // ToDo: View source (project)
 
   // ToDo: find in files

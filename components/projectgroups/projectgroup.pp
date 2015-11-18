@@ -192,7 +192,8 @@ var
   cmdTargetOpen,
   cmdTargetRun,
   cmdTargetProperties,
-  cmdTargetUninstall: TIDEMenuCommand;
+  cmdTargetUninstall,
+  cmdTargetCopyFilename: TIDEMenuCommand;
 
   OpenRecentProjectGroupSubMenu: TIDEMenuSection;
 

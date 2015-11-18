@@ -14,9 +14,9 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls, Menus,
-  ActnList, LCLProc, LazIDEIntf, PackageIntf, ProjectIntf, ProjectGroupIntf,
-  MenuIntf, IDEDialogs, IDEWindowIntf, LazFileUtils, LazLogger,
-  ProjectGroupStrConst, ProjectGroup;
+  ActnList, LCLProc, Clipbrd, LazIDEIntf, PackageIntf, ProjectIntf,
+  ProjectGroupIntf, MenuIntf, IDEDialogs, IDEWindowIntf, LazFileUtils,
+  LazLogger, ProjectGroupStrConst, ProjectGroup;
 
 type
   TNodeType = (ntUnknown,
@@ -45,6 +45,7 @@ type
   { TProjectGroupEditorForm }
 
   TProjectGroupEditorForm = class(TForm)
+    ATargetCopyFilename: TAction;
     AProjectGroupAddExisting: TAction;
     ATargetCompile: TAction;
     ATargetCompileClean: TAction;
@@ -99,6 +100,8 @@ type
     procedure ATargetCompileUpdate(Sender: TObject);
     procedure AProjectGroupDeleteExecute(Sender: TObject);
     procedure AProjectGroupDeleteUpdate(Sender: TObject);
+    procedure ATargetCopyFilenameExecute(Sender: TObject);
+    procedure ATargetCopyFilenameUpdate(Sender: TObject);
     procedure ATargetInstallExecute(Sender: TObject);
     procedure ATargetInstallUpdate(Sender: TObject);
     procedure ATargetOpenExecute(Sender: TObject);
@@ -499,6 +502,7 @@ begin
   SetItem(cmdTargetUnInstall,@ATargetUnInstallExecute);
   SetItem(cmdTargetLater,@ATargetLaterExecute);
   SetItem(cmdTargetEarlier,@ATargetEarlierExecute);
+  SetItem(cmdTargetCopyFilename,@ATargetCopyFilenameExecute);
 end;
 
 procedure TProjectGroupEditorForm.FormDestroy(Sender: TObject);
@@ -718,8 +722,8 @@ procedure TProjectGroupEditorForm.AProjectGroupDeleteExecute(Sender: TObject);
 Var
   T: TPGCompileTarget;
 begin
-  if FProjectGroup=nil then exit;
   T:=SelectedTarget;
+  if T=nil then exit;
   FProjectGroup.RemoveTarget(T);
 end;
 
@@ -727,10 +731,34 @@ procedure TProjectGroupEditorForm.AProjectGroupDeleteUpdate(Sender: TObject);
 Var
   T: TPGCompileTarget;
 begin
-  if FProjectGroup=nil then exit;
   T:=SelectedTarget;
   (Sender as TAction).Enabled:=(T<>Nil) and (T<>ProjectGroup.CompileTarget) and Not T.Removed;
   UpdateIDEMenuCommandFromAction(Sender,cmdTargetRemove);
+end;
+
+procedure TProjectGroupEditorForm.ATargetCopyFilenameExecute(Sender: TObject);
+var
+  ND: TNodeData;
+  aFilename: String;
+begin
+  ND:=SelectedNodeData;
+  if ND=nil then exit;
+  if ND.Target<>nil then
+    aFilename:=ND.Target.Filename
+  else if ND.NodeType=ntFile then
+    aFilename:=ND.Value
+  else
+    exit;
+  Clipboard.AsText:=aFilename;
+end;
+
+procedure TProjectGroupEditorForm.ATargetCopyFilenameUpdate(Sender: TObject);
+var
+  ND: TNodeData;
+begin
+  ND:=SelectedNodeData;
+  (Sender as TAction).Enabled:=(ND<>nil) and (ND.NodeType in [ntTarget,ntProjectGroup,ntFile]);
+  UpdateIDEMenuCommandFromAction(Sender,cmdTargetCopyFilename);
 end;
 
 procedure TProjectGroupEditorForm.ATargetInstallExecute(Sender: TObject);
@@ -740,7 +768,7 @@ end;
 
 procedure TProjectGroupEditorForm.ATargetInstallUpdate(Sender: TObject);
 begin
-  AllowPerform(taInstall,Sender as Taction);
+  AllowPerform(taInstall,Sender as TAction);
   UpdateIDEMenuCommandFromAction(Sender,cmdTargetInstall);
 end;
 
@@ -793,7 +821,7 @@ begin
   For I:=0 to TVPG.Items.Count-1 do
     begin
     N:=TVPG.Items[I];
-    TNodeData(N.Data).Free; // Would be nide to have a FreeAndNilData method in TTreeNode.
+    TNodeData(N.Data).Free; // Would be nice to have a FreeAndNilData method in TTreeNode.
     N.Data:=Nil;
     end;
 end;
