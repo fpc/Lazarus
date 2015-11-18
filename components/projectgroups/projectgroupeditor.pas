@@ -669,7 +669,7 @@ Var
   T: TPGCompileTarget;
 begin
   T:=SelectedTarget;
-  Result:=Assigned(T) and (ATargetAction in T.AllowedActions);
+  Result:=Assigned(T) and (not T.Removed) and (ATargetAction in T.AllowedActions);
   If Assigned(AAction) then
     AAction.Enabled:=Result;
 end;
@@ -736,7 +736,8 @@ var
   ND: TNodeData;
 begin
   ND:=SelectedNodeData;
-  (Sender as TAction).Enabled:=(ND<>nil) and (ND.NodeType in [ntTarget,ntProjectGroup,ntFile]);
+  (Sender as TAction).Enabled:=(ND<>nil)
+    and ((ND.Target<>nil) or (ND.NodeType in [ntFile]));
   UpdateIDEMenuCommandFromAction(Sender,cmdTargetCopyFilename);
 end;
 
