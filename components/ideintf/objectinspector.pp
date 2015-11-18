@@ -295,6 +295,7 @@ type
     FActiveRowBmp: TCustomBitmap;
     FFirstClickTime: DWORD;
     FKeySearchText: string;
+    FHideClassNames: Boolean;
 
     // hint stuff
     FHintTimer: TTimer;
@@ -507,6 +508,7 @@ type
     property TopY: integer read FTopY write SetTopY default 0;
     property Favorites: TOIFavoriteProperties read FFavorites write SetFavorites;
     property Filter : TTypeKinds read FFilter write SetFilter;
+    property HideClassNames: Boolean read FHideClassNames write FHideClassNames;
   end;
 
 
@@ -1859,6 +1861,8 @@ begin
   end;
   if PropEditor is TClassPropertyEditor then
     (PropEditor as TClassPropertyEditor).SubPropsTypeFilter := FFilter;
+  if PropEditor is TClassPropertyEditor then
+    (PropEditor as TClassPropertyEditor).HideClassName:=FHideClassNames;
   NewRow := TOIPropertyGridRow.Create(Self, PropEditor, nil, WidgetSets);
   FRows.Add(NewRow);
   if FRows.Count>1 then begin
@@ -1983,6 +1987,8 @@ var NewRow:TOIPropertyGridRow;
 begin
   if PropEditor is TClassPropertyEditor then
     (PropEditor as TClassPropertyEditor).SubPropsTypeFilter := FFilter;
+  if PropEditor is TClassPropertyEditor then
+    (PropEditor as TClassPropertyEditor).HideClassName:=FHideClassNames;
   NewRow:=TOIPropertyGridRow.Create(Self,PropEditor,FExpandingRow, []);
   NewIndex:=FExpandingRow.Index+1+FExpandingRow.ChildCount;
   NewRow.FIndex:=NewIndex;
