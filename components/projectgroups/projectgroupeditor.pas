@@ -27,12 +27,13 @@ type
                ntRemovedTarget,
                ntFiles,
                ntFile,
-               ntRemovedFiles,
-               ntRemovedFile,
+               //ntRemovedFiles,
+               //ntRemovedFile,
                ntDependencies,
-               ntDependency,
-               ntRemovedDependencies,
-               ntRemovedDependency);
+               ntDependency
+               //ntRemovedDependencies,
+               //ntRemovedDependency
+               );
 
   TNodeData = class(TObject)
     NodeType: TNodeType;
@@ -196,12 +197,12 @@ var
   NIRemovedTargetProjectGroup: integer = 5;
   NIFiles                    : integer = 16;
   NIFile                     : integer = 17;
-  NIRemovedFiles             : integer = 18;
-  NIRemovedFile              : integer = 17;
+  //NIRemovedFiles             : integer = 18;
+  //NIRemovedFile              : integer = 17;
   NIDependencies             : integer = 1;
   NIDependency               : integer = 1;
-  NIRemovedDependencies      : integer = 2;
-  NIRemovedDependency        : integer = 2;
+  //NIRemovedDependencies      : integer = 2;
+  //NIRemovedDependency        : integer = 2;
 
   // Node state image index
   NSIActive                  : Integer = 20; // State index for active.
@@ -357,9 +358,6 @@ begin
     exit;
   I:=T.ProjectGroup.IndexOfTarget(T.Target);
   J:=I-1;
-  // Find previous not removed target
-  While (J>=0) and (T.ProjectGroup.Targets[J].Removed) do
-    Dec(J);
   if J>=0 then
     T.ProjectGroup.ExchangeTargets(I,J);
 end;
@@ -374,13 +372,10 @@ begin
   T:=SelectedNodeData;
   B:=Assigned(T) and (T.NodeType=ntTarget) and Assigned(T.Target);
   If B then
-    begin
+  begin
     I:=T.ProjectGroup.IndexOfTarget(T.Target)-1;
-    // Find previous not removed target
-    While (I>=0) and (T.ProjectGroup.Targets[i].Removed) do
-      Dec(I);
     B:=(I>=0)
-    end;
+  end;
   (Sender as TAction).Enabled:=B;
   UpdateIDEMenuCommandFromAction(Sender,cmdTargetEarlier);
 end;
@@ -395,9 +390,6 @@ begin
     exit;
   I:=T.ProjectGroup.IndexOfTarget(T.Target);
   J:=I+1;
-  // Find next not removed target
-  While (J<T.ProjectGroup.TargetCount) and (T.ProjectGroup.Targets[J].Removed) do
-    Inc(J);
   if (J<T.ProjectGroup.TargetCount) then
     T.ProjectGroup.ExchangeTargets(I,J);
 end;
@@ -413,9 +405,6 @@ begin
   if B then
     begin
     I:=T.ProjectGroup.IndexOfTarget(T.Target)+1;
-    // Find next not removed target
-    While (I<T.ProjectGroup.TargetCount) and (T.ProjectGroup.Targets[i].Removed) do
-      Inc(I);
     B:=(I<T.ProjectGroup.TargetCount);
     end;
   (Sender as TAction).Enabled:=B;
@@ -786,12 +775,12 @@ begin
         end;
     ntFiles: Result:=NIFiles;
     ntFile: Result:=NIFile;
-    ntRemovedFiles: Result:=NIRemovedFiles;
-    ntRemovedFile: Result:=NIRemovedFile;
+    //ntRemovedFiles: Result:=NIRemovedFiles;
+    //ntRemovedFile: Result:=NIRemovedFile;
     ntDependencies: Result:=NIDependencies;
     ntDependency: Result:=NIDependency;
-    ntRemovedDependencies: Result:=NIRemovedDependencies;
-    ntRemovedDependency: Result:=NIRemovedDependency;
+    //ntRemovedDependencies: Result:=NIRemovedDependencies;
+    //ntRemovedDependency: Result:=NIRemovedDependency;
   else
     Result:=-1;
   end;
@@ -895,7 +884,7 @@ begin
     //debugln(['TProjectGroupEditorForm.DisplayFileName PGBaseDir="',PGBaseDir,'" File="',AFileName,'" "',Result,'"']);
   end else
     Result:=AFileName;
-  if not (NodeType in [ntFile, ntRemovedFile]) then
+  if NodeType<>ntFile then
     Result:=ChangeFileExt(Result,'');
 end;
 
@@ -1031,7 +1020,7 @@ Var
   PkgName: String;
 begin
   PD[False]:=CreateNode(AParent,lisNodeDependencies,ntDependencies,Nil,AProjectGroup);
-  PD[True]:=CreateNode(AParent,lisNodeRemovedDependencies,ntRemovedDependencies,Nil,AProjectGroup);
+  PD[True]:=nil; //CreateNode(AParent,lisNodeRemovedDependencies,ntRemovedDependencies,Nil,AProjectGroup);
   For i:=0 to T.RequiredPackageCount-1 do
   begin
     PkgName:=T.RequiredPackages[i].PackageName;
@@ -1052,7 +1041,7 @@ begin
   TVPG.BeginUpdate;
   try
     PF[False]:=CreateNode(AParent,lisNodeFiles,ntFiles,Nil,AProjectGroup);
-    PF[True]:=CreateNode(AParent,lisNodeRemovedFiles,ntFiles,Nil,AProjectGroup);
+    PF[True]:=nil; //CreateNode(AParent,lisNodeRemovedFiles,ntFiles,Nil,AProjectGroup);
     // TODO Ideally, we can show removed files
     For I:=0 to T.FileCount-1 do
       CreateNode(PF[False],DisplayFileName(AProjectGroup,
@@ -1073,7 +1062,7 @@ begin
   TVPG.BeginUpdate;
   try
     PF[False]:=CreateNode(AParent,lisNodeFiles,ntFiles,Nil,AProjectGroup);
-    PF[True]:=CreateNode(AParent,lisNodeRemovedFiles,ntFiles,Nil,AProjectGroup);
+    PF[True]:=nil; //CreateNode(AParent,lisNodeRemovedFiles,ntFiles,Nil,AProjectGroup);
     // ToDo Ideally, we can show removed files
     For I:=0 to T.FileCount-1 do
       CreateNode(PF[False],DisplayFileName(AProjectGroup,
