@@ -876,7 +876,7 @@ var
   ProjFile: TLazProjectFile;
   PkgList: TFPList;
   Pkg: TIDEPackage;
-  PkgName, Path, SubPath, CurFilename: String;
+  PkgName, Path, SubPath, CurFilename, BaseDir: String;
   xml: TXMLConfig;
 begin
   if FFiles<>nil then exit; // already loaded
@@ -892,8 +892,8 @@ begin
     FFiles:=TStringList.Create;
     for i:=0 to AProject.FileCount-1 do begin
       ProjFile:=AProject.Files[i];
-      if ProjFile.IsPartOfProject then
-        FFiles.Add(ProjFile.Filename);
+      if not ProjFile.IsPartOfProject then continue;
+      FFiles.Add(ProjFile.Filename);
     end;
 
     // load dependencies from active project
@@ -917,6 +917,7 @@ begin
     try
       if xml<>nil then begin
         // load list of files from lpi
+        BaseDir:=ExtractFilePath(Filename);
         Path:='ProjectOptions/Units/';
         Cnt:=xml.GetValue(Path+'Count',0);
         for i:=0 to Cnt-1 do begin
@@ -925,6 +926,8 @@ begin
             continue;
           CurFilename:=xml.GetValue(SubPath+'Filename/Value','');
           if CurFilename='' then continue;
+          if not FilenameIsAbsolute(CurFilename) then
+            CurFilename:=TrimFilename(BaseDir+CurFilename);
           FFiles.Add(CurFilename);
         end;
 

@@ -505,7 +505,7 @@ Var
   aFilename: String;
 begin
   ND:=SelectedNodeData;
-  debugln(['TProjectGroupEditorForm.TVPGDblClick ',DbgSName(Sender),' ',TVPG.Selected.Text,' ',ND<>nil]);
+  //debugln(['TProjectGroupEditorForm.TVPGDblClick ',DbgSName(Sender),' ',TVPG.Selected.Text,' ',ND<>nil]);
   if ND=nil then exit;
   case ND.NodeType of
   ntUnknown: ;
@@ -517,10 +517,11 @@ begin
   ntFiles: ;
   ntFile:
     begin
-      aFilename:=GetTVNodeFilename(TVPG.Selected);
-      debugln(['TProjectGroupEditorForm.TVPGDblClick File=',aFilename]);
+      aFilename:=ND.Value;
+      //debugln(['TProjectGroupEditorForm.TVPGDblClick File=',aFilename]);
       if aFilename='' then exit;
-      LazarusIDE.DoOpenEditorFile(aFilename,-1,-1,[ofAddToRecent]);
+      LazarusIDE.DoOpenEditorFile(aFilename,-1,-1,[ofAddToRecent,
+        ofRegularFile,ofDoNotLoadResource,ofOnlyIfExists]);
     end;
   ntDependencies: ;
   ntDependency: ;
