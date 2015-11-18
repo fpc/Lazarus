@@ -129,7 +129,7 @@ type
     procedure OnProjectGroupDestroy(Sender: TObject);
     procedure OnTargetAdded(Sender: TObject; Target: TPGCompileTarget);
     procedure OnTargetDeleted(Sender: TObject; Target: TPGCompileTarget);
-    procedure OnTargetActivated(Sender: TObject; Target: TPGCompileTarget);
+    procedure OnTargetActiveChanged(Sender: TObject; Target: TPGCompileTarget);
     procedure OnTargetExchanged(Sender: TObject; Target1, Target2: TPGCompileTarget);
     function AllowPerform(ATargetAction: TPGTargetAction; AAction: TAction= Nil): Boolean;
     procedure ClearEventCallBacks(AProjectGroup: TProjectGroup);
@@ -278,7 +278,7 @@ begin
   PG.OnFileNameChange:=Nil;
   PG.OnTargetAdded:=Nil;
   PG.OnTargetDeleted:=Nil;
-  PG.OnTargetActivated:=Nil;
+  PG.OnTargetActiveChanged:=Nil;
   PG.OnTargetsExchanged:=Nil;
 end;
 
@@ -294,7 +294,7 @@ begin
   PG.OnFileNameChange:=@OnProjectGroupFileNameChanged;
   PG.OnTargetAdded:=@OnTargetAdded;
   PG.OnTargetDeleted:=@OnTargetDeleted;
-  PG.OnTargetActivated:=@OnTargetActivated;
+  PG.OnTargetActiveChanged:=@OnTargetActiveChanged;
   PG.OnTargetsExchanged:=@OnTargetExchanged;
 end;
 
@@ -512,14 +512,8 @@ begin
   ntProjectGroup: ;
   ntTarget:
     begin
-      // activate target and open in IDE
-      PG:=ND.Target.Parent.ProjectGroup;
-      if PG=nil then exit;
-      PG.ActivateTarget(ND.Target);
-      case ND.Target.TargetType of
-      ttProject,ttPackage,ttPascalFile:
-        PG.Perform(ND.Target,taOpen);
-      end;
+      // activate target
+      ND.Target.Activate;
     end;
   ntRemovedTarget:
     begin
@@ -572,7 +566,7 @@ begin
   UpdateStatusBarTargetCount;
 end;
 
-procedure TProjectGroupEditorForm.OnTargetActivated(Sender: TObject;
+procedure TProjectGroupEditorForm.OnTargetActiveChanged(Sender: TObject;
   Target: TPGCompileTarget);
 Var
   OldActiveTVNode,NewActiveTVNode: TTreeNode;
@@ -665,7 +659,7 @@ begin
   ND:=SelectedNodeData;
   if (ND=nil) or (ND.Target=nil) then
     exit;
-  ND.Target.Activate(true);
+  ND.Target.Activate;
 end;
 
 procedure TProjectGroupEditorForm.ATargetCompileCleanExecute(Sender: TObject);
@@ -1165,7 +1159,7 @@ begin
       T:=TargetFromNode(AParent);
     if T=Nil then
       exit;
-    Case T.TargetType of
+    case T.TargetType of
       ttProject: FillProjectNode(AParent,T);
       ttPackage: FillPackageNode(AParent,T);
       ttProjectGroup: FillProjectgroupNode(AParent,T.ProjectGroup,PN);

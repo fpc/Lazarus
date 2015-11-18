@@ -40,6 +40,7 @@ type
     function PascalFileAction(AAction: TPGTargetAction): TPGActionResult;
     function ExternalToolAction(AAction: TPGTargetAction): TPGActionResult;
     function PerformAction(AAction: TPGTargetAction): TPGActionResult; override;
+    procedure ActiveChanged(Sender: TPGCompileTarget); override;
   public
     procedure LoadTarget(Recursively: boolean); virtual;
     procedure UnLoadTarget; virtual;
@@ -64,8 +65,9 @@ type
 
   TIDEProjectGroup = class(TProjectGroup)
   private
+    FActiveTarget: TPGCompileTarget;
     FOnFileNameChange: TNotifyEvent;
-    FOnTargetActivated: TTargetEvent;
+    FOnTargetActiveChanged: TTargetEvent;
     FOnTargetAdded: TTargetEvent;
     FOnTargetDeleted: TTargetEvent;
     FOnTargetsExchanged: TTargetExchangeEvent;
@@ -77,6 +79,8 @@ type
     function GetTargetCount: Integer; override;
     function GetRemovedTargetCount: Integer; override;
     function GetRemovedTarget(Index: Integer): TPGCompileTarget; override;
+    function GetActiveTarget: TPGCompileTarget; override;
+    procedure SetActiveTarget(AValue: TPGCompileTarget); override;
   public
     constructor Create(aCompileTarget: TIDECompileTarget);
     destructor Destroy; override;
@@ -85,13 +89,13 @@ type
     function AddTarget(Const AFileName: String): TPGCompileTarget; override;
     procedure RemoveTarget(Index: Integer); override;
     procedure ExchangeTargets(ASource, ATarget: Integer); override; // ToDo: replace with MoveTarget
-    procedure ActivateTarget(T: TPGCompileTarget); override;
+    procedure ActiveTargetChanged(T: TPGCompileTarget);
     function LoadFromFile(Options: TProjectGroupLoadOptions): Boolean;
     function SaveToFile: Boolean;
     property OnFileNameChange: TNotifyEvent Read FOnFileNameChange Write FOnFileNameChange;
     property OnTargetAdded: TTargetEvent Read FOnTargetAdded Write FOnTargetAdded;
     property OnTargetDeleted: TTargetEvent Read FOnTargetDeleted Write FOnTargetDeleted;
-    property OnTargetActivated: TTargetEvent Read FOnTargetActivated Write FOnTargetActivated;
+    property OnTargetActiveChanged: TTargetEvent Read FOnTargetActiveChanged Write FOnTargetActiveChanged;
     property OnTargetsExchanged: TTargetExchangeEvent Read FOnTargetsExchanged Write FOnTargetsExchanged;
   end;
 
@@ -567,6 +571,20 @@ begin
   Result:=TPGCompileTarget(FRemovedTargets[Index]);
 end;
 
+function TIDEProjectGroup.GetActiveTarget: TPGCompileTarget;
+begin
+  Result:=FActiveTarget;
+end;
+
+procedure TIDEProjectGroup.SetActiveTarget(AValue: TPGCompileTarget);
+begin
+  if AValue=FActiveTarget then exit;
+  if FActiveTarget<>nil then
+    FActiveTarget.DeActivate;
+  if AValue<>nil then
+    AValue.Activate;
+end;
+
 constructor TIDEProjectGroup.Create(aCompileTarget: TIDECompileTarget);
 begin
   inherited Create;
@@ -634,12 +652,16 @@ begin
   IncreaseChangeStamp;
 end;
 
-procedure TIDEProjectGroup.ActivateTarget(T: TPGCompileTarget);
+procedure TIDEProjectGroup.ActiveTargetChanged(T: TPGCompileTarget);
 begin
-  if T.Active then exit;
-  inherited ActivateTarget(T);
-  If Assigned(FOnTargetActivated) then
-    FOnTargetActivated(Self,T);
+  if T.Active then begin
+    FActiveTarget:=T;
+  end else begin
+    if FActiveTarget=T then
+      FActiveTarget:=nil;
+  end;
+  if Assigned(FOnTargetActiveChanged) then
+    FOnTargetActiveChanged(Self,T);
 end;
 
 function TIDEProjectGroup.LoadFromFile(Options: TProjectGroupLoadOptions
@@ -715,7 +737,7 @@ begin
           end;
         if Assigned(Target) and Not Target.Removed then
           if XMLConfig.GetValue(Format(ARoot+'/Targets/Target%d/Active',[i]),False) then
-            ActivateTarget(Target);
+            Target.Activate;
         Inc(I);
       end;
     finally
@@ -1077,6 +1099,11 @@ begin
     ttPascalFile: Result:=PascalFileAction(AAction);
     ttExternalTool: Result:=ExternalToolAction(AAction);
   end;
+end;
+
+procedure TIDECompileTarget.ActiveChanged(Sender: TPGCompileTarget);
+begin
+  (GetRootProjectGroup as TIDEProjectGroup).ActiveTargetChanged(Sender);
 end;
 
 end.

@@ -66,10 +66,14 @@ Type
     procedure SetRemoved(const AValue: boolean); virtual;
     procedure SetTargetType(AValue: TPGTargetType); virtual;
     procedure DoDeactivateChildren;
+    procedure ActiveChanged(Sender: TPGCompileTarget); virtual; abstract;
+    procedure DoActivate(DeactivateChildren: boolean);
+    procedure DoDeActivate(DeactivateParents: boolean);
   public
     constructor Create(aParent: TPGCompileTarget);
-    procedure Activate(DeactivateChildren: boolean); virtual;
-    procedure DeActivate(DeactivateParents: boolean); virtual;
+    procedure Activate;
+    procedure DeActivate;
+    function GetRootProjectGroup: TProjectGroup;
     property Parent: TPGCompileTarget read FParent;
     property Filename: string read FFilename write SetFilename; // Absolute, not relative. (ToDo: store them relative)
     property Removed: boolean read FRemoved write SetRemoved;
@@ -97,8 +101,6 @@ Type
     FChangeStamp: int64;
     FFileName: String;
     FLastSavedChangeStamp: int64;
-    function GetActiveTarget: TPGCompileTarget;
-    procedure SetActiveTarget(AValue: TPGCompileTarget);
     procedure SetModified(AValue: Boolean);
   protected
     FCompileTarget: TPGCompileTarget;
@@ -115,6 +117,8 @@ Type
                          const AMethod: TMethod; AsLast: boolean = false);
     procedure RemoveHandler(HandlerType: TProjectGroupHandler;
                             const AMethod: TMethod);
+    function GetActiveTarget: TPGCompileTarget; virtual; abstract;
+    procedure SetActiveTarget(AValue: TPGCompileTarget); virtual; abstract;
   public
     destructor Destroy; override;
     property FileName: String Read FFileName Write SetFileName; // absolute
@@ -136,9 +140,6 @@ Type
     procedure RemoveTarget(Index: Integer); virtual; abstract;
     procedure RemoveTarget(Const AFileName: String);
     procedure RemoveTarget(Target: TPGCompileTarget);
-    procedure ActivateTarget(Index: Integer);
-    procedure ActivateTarget(Const AFileName: String);
-    procedure ActivateTarget(Target: TPGCompileTarget); virtual;
     property Targets[Index: Integer]: TPGCompileTarget Read GetTarget;
     property TargetCount: Integer Read GetTargetCount;
     property RemovedTargets[Index: Integer]: TPGCompileTarget Read GetRemovedTarget;
@@ -230,26 +231,7 @@ begin
   PackageName:=aPkgName;
 end;
 
-
 { TProjectGroup }
-
-function TProjectGroup.GetActiveTarget: TPGCompileTarget;
-Var
-  I: Integer;
-begin
-  I:=0;
-  for i:=0 to TargetCount-1 do
-  begin
-    Result:=GetTarget(I);
-    if Result.Active then exit;
-  end;
-  Result:=Nil;
-end;
-
-procedure TProjectGroup.SetActiveTarget(AValue: TPGCompileTarget);
-begin
-  ActivateTarget(AValue);
-end;
 
 procedure TProjectGroup.SetModified(AValue: Boolean);
 begin
@@ -372,21 +354,6 @@ begin
   RemoveTarget(IndexOfTarget(Target))
 end;
 
-procedure TProjectGroup.ActivateTarget(Index: Integer);
-begin
-  ActivateTarget(GetTarget(Index));
-end;
-
-procedure TProjectGroup.ActivateTarget(const AFileName: String);
-begin
-  ActivateTarget(IndexOfTarget(AFileName));
-end;
-
-procedure TProjectGroup.ActivateTarget(Target: TPGCompileTarget);
-begin
-  Target.Activate(true);
-end;
-
 procedure TProjectGroup.IncreaseChangeStamp;
 begin
   LUIncreaseChangeStamp64(FChangeStamp);
@@ -428,8 +395,45 @@ procedure TPGCompileTarget.DoDeactivateChildren;
 var
   i: Integer;
 begin
+  if ProjectGroup=nil then exit;
   for i:=0 to ProjectGroup.TargetCount-1 do
-    ProjectGroup.Targets[i].DeActivate(false);
+    ProjectGroup.Targets[i].DoDeActivate(false);
+end;
+
+procedure TPGCompileTarget.DoActivate(DeactivateChildren: boolean);
+var
+  OldActive: TPGCompileTarget;
+  PG: TProjectGroup;
+begin
+  if DeactivateChildren then
+    DoDeactivateChildren;
+  if Active then exit;
+  if Parent<>nil then
+  begin
+    PG:=Parent.ProjectGroup;
+    if PG<>nil then
+    begin
+      OldActive:=PG.ActiveTarget;
+      if OldActive<>nil then
+        OldActive.DoDeActivate(false);
+    end;
+    Parent.DoActivate(false);
+    PG.IncreaseChangeStamp;
+  end;
+  FActive:=True;
+end;
+
+procedure TPGCompileTarget.DoDeActivate(DeactivateParents: boolean);
+begin
+  if not Active then exit;
+  if ProjectGroup<>nil then
+  begin
+    ProjectGroup.IncreaseChangeStamp;
+    DoDeactivateChildren;
+  end;
+  FActive:=False;
+  if DeactivateParents and (Parent<>nil) then
+    Parent.DoDeActivate(true);
 end;
 
 constructor TPGCompileTarget.Create(aParent: TPGCompileTarget);
@@ -451,43 +455,30 @@ begin
   if Removed=AValue then exit;
   FRemoved:=AValue;
   if FRemoved then
-    Deactivate(true);
+    Deactivate;
 end;
 
-procedure TPGCompileTarget.Activate(DeactivateChildren: boolean);
-var
-  OldActive: TPGCompileTarget;
-  PG: TProjectGroup;
+procedure TPGCompileTarget.Activate;
 begin
-  if DeactivateChildren then
-    DoDeactivateChildren;
   if Active then exit;
-  if Parent<>nil then
-  begin
-    PG:=Parent.ProjectGroup;
-    if PG<>nil then
-    begin
-      OldActive:=PG.ActiveTarget;
-      if OldActive<>nil then
-        OldActive.DeActivate(false);
-    end;
-    Parent.Activate(false);
-    PG.IncreaseChangeStamp;
-  end;
-  FActive:=True;
+  DoActivate(true);
+  ActiveChanged(Self);
 end;
 
-procedure TPGCompileTarget.DeActivate(DeactivateParents: boolean);
+procedure TPGCompileTarget.DeActivate;
 begin
   if not Active then exit;
-  if ProjectGroup<>nil then
-  begin
-    ProjectGroup.IncreaseChangeStamp;
-    DoDeactivateChildren;
-  end;
-  FActive:=False;
-  if DeactivateParents and (Parent<>nil) then
-    Parent.DeActivate(true);
+  DoDeActivate(true);
+  ActiveChanged(Self);
+end;
+
+function TPGCompileTarget.GetRootProjectGroup: TProjectGroup;
+var
+  aTarget: TPGCompileTarget;
+begin
+  aTarget:=Self;
+  while (aTarget.Parent<>nil) do aTarget:=aTarget.Parent;
+  Result:=aTarget.ProjectGroup;
 end;
 
 function TPGCompileTarget.Perform(AAction: TPGTargetAction): TPGActionResult;
