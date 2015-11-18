@@ -604,6 +604,8 @@ begin
 end;
 
 procedure TProjectGroupEditorForm.AProjectGroupAddExistingExecute(Sender: TObject);
+var
+  aTarget: TIDECompileTarget;
 begin
   if FProjectGroup=nil then exit;
   InitIDEFileDialog(OpenDialogTarget);
@@ -613,7 +615,8 @@ begin
     Filter:='Lazarus projects|*.lpi|Lazarus packages|*.lpk|Lazarus project groups|*.lpg';
     If Execute then
     begin
-      FProjectGroup.AddTarget(FileName);
+      aTarget:=FProjectGroup.AddTarget(FileName) as TIDECompileTarget;
+      aTarget.LoadTarget(true);
     end;
   end;
   StoreIDEFileDialog(OpenDialogTarget);
