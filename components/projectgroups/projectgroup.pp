@@ -26,7 +26,6 @@ type
   private
     FFiles: TStringList;
     FRequiredPackages: TObjectList; // list of TPGDependency
-    function LoadXML(aFilename: string; Quiet: boolean): TXMLConfig;
   protected
     function GetFileCount: integer; override;
     function GetFiles(Index: integer): string; override;
@@ -185,8 +184,37 @@ var
 
   OpenRecentProjectGroupSubMenu: TIDEMenuSection;
 
+function LoadXML(aFilename: string; Quiet: boolean): TXMLConfig;
 
 implementation
+
+function LoadXML(aFilename: string; Quiet: boolean): TXMLConfig;
+var
+  Code: TCodeBuffer;
+begin
+  Result:=nil;
+  aFilename:=TrimFilename(aFilename);
+  if (aFilename='') or (not FilenameIsAbsolute(aFilename)) then begin
+    debugln(['Error: (lazarus) [TIDECompileTarget.LoadXML] invalid filename "',aFilename,'"']);
+    exit;
+  end;
+  Code:=CodeToolBoss.LoadFile(aFilename,true,false);
+  if Code=nil then begin
+    debugln(['Error: (lazarus) [TIDECompileTarget.LoadXML] unable to load file "',aFilename,'"']);
+    if not Quiet then
+      IDEMessageDialog('Read error','Unable to load file "'+aFilename+'"',mtError,[mbOk]);
+    exit;
+  end;
+  try
+    Result:=TXMLConfig.CreateWithSource(aFilename,Code.Source);
+  except
+    on E: Exception do begin
+      debugln(['Error: (lazarus) [TIDECompileTarget.LoadXML] xml syntax error in "',aFilename,'": '+E.Message]);
+      if not Quiet then
+        IDEMessageDialog('Read error','XML syntax error in file "'+aFilename+'": '+E.Message,mtError,[mbOk]);
+    end;
+  end;
+end;
 
 { TIDEProjectGroupOptions }
 
@@ -496,9 +524,7 @@ end;
 procedure TIDEProjectGroup.SetFileName(AValue: String);
 begin
   if FileName=AValue then Exit;
-  debugln(['TIDEProjectGroup.SetFileName Old=',Filename,' New=',AValue]);
   inherited SetFileName(AValue);
-  debugln(['TIDEProjectGroup.SetFileName Now=',Filename]);
   if Assigned(FOnFileNameChange) then
     FOnFileNameChange(Self);
 end;
@@ -622,12 +648,12 @@ begin
 
   BaseDir:=AppendPathDelim(ExtractFilePath(FileName));
   try
-    XMLConfig := TXMLConfig.Create(FileName);
+    XMLConfig := LoadXML(Filename,pgloSkipDialog in Options);
     try
       ARoot:='ProjectGroup';
       ACount:=XMLConfig.GetValue(ARoot+'/Targets/Count',0);
       I:=0;
-      While Result and (I<ACount) do
+      While (I<ACount) do
       begin
         Target:=Nil;
         TargetFileName:=XMLConfig.GetValue(Format(ARoot+'/Targets/Target%d/FileName',[i]),'');
@@ -647,7 +673,7 @@ begin
         else if (pgloSkipInvalid in options) then
           // Do nothing
         else if (pgloErrorInvalid in options) then
-          Result:=False
+          exit
         else
           case IDEQuestionDialog(lisErrTargetDoesNotExist,
               Format(lisErrNoSuchFile,[TargetFileName]),mtWarning,
@@ -660,22 +686,22 @@ begin
                Target.Removed:=True;
              end;
            mrNo:
-             Result:=False;
+             exit;
            mrYesToAll:
              begin
                Target:=AddTarget(TargetFileName);
                Target.Removed:=True;
              end;
           else
-            Result:=False;
+            exit;
           end;
         if Assigned(Target) and Not Target.Removed then
           if XMLConfig.GetValue(Format(ARoot+'/Targets/Target%d/Active',[i]),False) then
             ActivateTarget(Target);
         Inc(I);
       end;
-      Modified:=false;
     finally
+      Modified:=false;
       XMLConfig.Free;
     end;
     Result:=true;
@@ -753,35 +779,6 @@ begin
     FreeAndNil(FRequiredPackages);
 end;
 
-function TIDECompileTarget.LoadXML(aFilename: string; Quiet: boolean
-  ): TXMLConfig;
-var
-  Code: TCodeBuffer;
-begin
-  Result:=nil;
-  aFilename:=TrimFilename(aFilename);
-  if (aFilename='') or (not FilenameIsAbsolute(aFilename)) then begin
-    debugln(['Error: (lazarus) [TIDECompileTarget.LoadXML] invalid filename "',aFilename,'"']);
-    exit;
-  end;
-  Code:=CodeToolBoss.LoadFile(aFilename,true,false);
-  if Code=nil then begin
-    debugln(['Error: (lazarus) [TIDECompileTarget.LoadXML] unable to load file "',aFilename,'"']);
-    if not Quiet then
-      IDEMessageDialog('Read error','Unable to load file "'+aFilename+'"',mtError,[mbOk]);
-    exit;
-  end;
-  try
-    Result:=TXMLConfig.CreateWithSource(aFilename,Code.Source);
-  except
-    on E: Exception do begin
-      debugln(['Error: (lazarus) [TIDECompileTarget.LoadXML] xml syntax error in "',aFilename,'": '+E.Message]);
-      if not Quiet then
-        IDEMessageDialog('Read error','XML syntax error in file "'+aFilename+'": '+E.Message,mtError,[mbOk]);
-    end;
-  end;
-end;
-
 function TIDECompileTarget.GetFileCount: integer;
 begin
   if FFiles=nil then
@@ -815,6 +812,7 @@ var
   Pkg: TIDEPackage;
   PkgName: String;
 begin
+  debugln(['TIDECompileTarget.LoadPackage ',Filename]);
   if FFiles<>nil then exit; // already loaded
 
   FFiles:=TStringList.Create;
@@ -863,6 +861,7 @@ var
   PkgName, Path, SubPath, CurFilename: String;
   xml: TXMLConfig;
 begin
+  debugln(['TIDECompileTarget.LoadProject ',Filename]);
   if FFiles<>nil then exit; // already loaded
 
   FFiles:=TStringList.Create;
@@ -932,6 +931,7 @@ var
   PG: TIDEProjectGroup;
   Flags: TProjectGroupLoadOptions;
 begin
+  debugln(['TIDECompileTarget.LoadProjectGroup ',Filename]);
   if ProjectGroup<>nil then exit;
   PG:=TIDEProjectGroup.Create(Self);
   FProjectGroup:=PG;

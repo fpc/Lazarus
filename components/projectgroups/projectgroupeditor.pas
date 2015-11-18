@@ -889,7 +889,7 @@ begin
     //if CompareFilenames(PGBaseDir,AFileName)=0 then
     //  exit(ExtractFileName(aFilename));
     Result:=ExtractRelativePath(PGBaseDir,AFileName);
-    debugln(['TProjectGroupEditorForm.DisplayFileName PGBaseDir="',PGBaseDir,'" File="',AFileName,'" "',Result,'"']);
+    //debugln(['TProjectGroupEditorForm.DisplayFileName PGBaseDir="',PGBaseDir,'" File="',AFileName,'" "',Result,'"']);
   end else
     Result:=AFileName;
   if not (NodeType in [ntFile, ntRemovedFile]) then
