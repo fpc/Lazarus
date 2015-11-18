@@ -54,6 +54,7 @@ Type
     FRemoved: boolean;
   protected
     FParent: TPGCompileTarget;
+    FParentProjectGroup: TProjectGroup;
     FProjectGroup: TProjectGroup;
     function GetAllowedActions: TPGTargetActions; virtual; // By default, return all allowed actions for target type.
     function GetFileCount: integer; virtual; abstract;
@@ -77,7 +78,8 @@ Type
     // Currently allowed actions.
     property AllowedActions: TPGTargetActions Read GetAllowedActions;
     //
-    property ProjectGroup: TProjectGroup Read FProjectGroup; // set if TargetType is ttProjectGroup
+    property ParentProjectGroup: TProjectGroup Read FParentProjectGroup;
+    property ProjectGroup: TProjectGroup read FProjectGroup; // set if TargetType is ttProjectGroup
     property Files[Index: integer]: string read GetFiles;
     property FileCount: integer read GetFileCount;
     property RequiredPackages[Index: integer]: TPGDependency read GetRequiredPackages;
@@ -264,6 +266,8 @@ begin
   if FFileName=AValue then Exit;
   FFileName:=AValue;
   IncreaseChangeStamp;
+  if CompileTarget<>nil then
+    CompileTarget.Filename:=Filename;
 end;
 
 function TProjectGroup.GetModified: Boolean;
@@ -442,6 +446,8 @@ begin
   if FFileName=AValue then Exit;
   FFileName:=AValue;
   TargetType:=TargetTypeFromExtenstion(ExtractFileExt(AValue));
+  if ProjectGroup<>nil then
+   ProjectGroup.FileName:=Filename;
 end;
 
 procedure TPGCompileTarget.SetRemoved(const AValue: boolean);

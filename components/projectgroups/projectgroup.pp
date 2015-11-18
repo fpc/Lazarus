@@ -46,13 +46,13 @@ type
   // Since a project group iself is also a target, we need a target to represent
   // the root projectgroup.
 
-  { TProjectGroupTarget }
+  { TRootProjectGroupTarget }
 
-  TProjectGroupTarget = class(TIDECompileTarget)
+  TRootProjectGroupTarget = class(TIDECompileTarget)
   protected
     procedure SetTargetType(AValue: TPGTargetType); override;
   public
-    constructor Create(aParent: TPGCompileTarget);
+    constructor Create(aOwner: TProjectGroup);
   end;
 
   TTargetEvent = procedure(Sender: TObject; Target: TPGCompileTarget) of object;
@@ -504,19 +504,21 @@ begin
     end;
 end;
 
-{ TProjectGroupTarget }
+{ TRootProjectGroupTarget }
 
-procedure TProjectGroupTarget.SetTargetType(AValue: TPGTargetType);
+procedure TRootProjectGroupTarget.SetTargetType(AValue: TPGTargetType);
 begin
   if (AValue<>ttProjectGroup) then
     Raise Exception.Create(lisErronlyProjectGroupAllowed);
   inherited SetTargetType(AValue);
 end;
 
-constructor TProjectGroupTarget.Create(aParent: TPGCompileTarget);
+constructor TRootProjectGroupTarget.Create(aOwner: TProjectGroup);
 begin
-  inherited Create(aParent);
+  inherited Create(nil);
   TargetType:=ttProjectGroup;
+  FProjectGroup:=aOwner;
+  Filename:=ProjectGroup.FileName;
 end;
 
 { TIDEProjectGroup }
@@ -553,7 +555,7 @@ constructor TIDEProjectGroup.Create(aCompileTarget: TIDECompileTarget);
 begin
   inherited Create;
   if aCompileTarget=nil then begin
-    FCompileTarget:=TProjectGroupTarget.Create(nil);
+    FCompileTarget:=TRootProjectGroupTarget.Create(Self);
   end else begin
     FCompileTarget:=aCompileTarget;
   end;
@@ -773,6 +775,8 @@ end;
 
 procedure TIDECompileTarget.UnLoadTarget;
 begin
+  if FProjectGroup<>nil then
+    FreeAndNil(FProjectGroup);
   if FFiles<>nil then
     FreeAndNil(FFiles);
   if FRequiredPackages<>nil then
@@ -1002,7 +1006,7 @@ begin
   if AAction=taOpen then
     ProjectGroupManager.LoadProjectGroup(FileName,[])
   else
-    Result:=ProjectGroup.PerformFrom(0,AAction);
+    Result:=ParentProjectGroup.PerformFrom(0,AAction);
 end;
 
 function TIDECompileTarget.PerformAction(AAction: TPGTargetAction): TPGActionResult;
