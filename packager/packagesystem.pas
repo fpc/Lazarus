@@ -173,7 +173,7 @@ type
 
   { TLazPackageGraph }
 
-  TLazPackageGraph = class
+  TLazPackageGraph = class(TPackageGraphInterface)
   private
     FAbortRegistration: boolean;
     fChanged: boolean;
@@ -208,9 +208,9 @@ type
     FLazControlsPackage: TLazPackage;
     FTree: TAVLTree; // sorted tree of TLazPackage
     FUpdateLock: integer;
+    FLockedChangeStamp: int64;
     FVerbosity: TPkgVerbosityFlags;
     FFindFileCache: TLazPackageGraphFileCache;
-    FChangeStamp: Int64;
     function CreateDefaultPackage: TLazPackage;
     function GetCount: Integer;
     function GetPackages(Index: integer): TLazPackage;
@@ -232,7 +232,7 @@ type
     procedure OnExtToolBuildStopped(Sender: TObject);
     procedure PkgModify(Sender: TObject);
   protected
-    procedure IncChangeStamp;
+    procedure IncChangeStamp; override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -446,7 +446,6 @@ type
     property Packages[Index: integer]: TLazPackage read GetPackages; default; // see Count for the number
     property UpdateLock: integer read FUpdateLock;
     property Verbosity: TPkgVerbosityFlags read FVerbosity write FVerbosity;
-    property ChangeStamp: Int64 read FChangeStamp;
 
     // base packages
     property FCLPackage: TLazPackage read FFCLPackage;
@@ -1109,6 +1108,7 @@ begin
   inc(FUpdateLock);
   if FUpdateLock=1 then begin
     fChanged:=Change;
+    FLockedChangeStamp:=0;
     if Assigned(OnBeginUpdate) then OnBeginUpdate(Self);
   end else
     fChanged:=fChanged or Change;
@@ -1119,7 +1119,8 @@ begin
   if FUpdateLock<=0 then RaiseException('TLazPackageGraph.EndUpdate');
   dec(FUpdateLock);
   if FUpdateLock=0 then begin
-    IncChangeStamp;
+    if FLockedChangeStamp>0 then
+      IncChangeStamp;
     if Assigned(OnEndUpdate) then OnEndUpdate(Self,fChanged);
   end;
 end;
@@ -5174,12 +5175,12 @@ end;
 
 procedure TLazPackageGraph.IncChangeStamp;
 begin
+  {$push}{$R-}  // range check off
   if FUpdateLock = 0 then
-  begin
-    {$push}{$R-}  // range check off
-    Inc(FChangeStamp);
-    {$pop}
-  end;
+    Inc(FChangeStamp)
+  else
+    Inc(FLockedChangeStamp)
+  {$pop}
 end;
 
 procedure TLazPackageGraph.SortDependencyListTopologicallyOld(

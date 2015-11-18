@@ -1192,6 +1192,7 @@ begin
 
   // package graph
   PackageGraph:=TLazPackageGraph.Create;
+  PackageGraphInterface:=PackageGraph;
   PackageGraph.OnAddPackage:=@PackageGraphAddPackage;
   PackageGraph.OnCheckInterPkgFiles:=@PackageGraphCheckInterPkgFiles;
   PackageGraph.Verbosity:=PkgGraphVerbosity;

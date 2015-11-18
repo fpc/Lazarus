@@ -2922,6 +2922,7 @@ begin
 
   // package graph
   PackageGraph:=TLazPackageGraph.Create;
+  PackageGraphInterface:=PackageGraph;
   PackageGraph.OnAddPackage:=@PackageGraphAddPackage;
   PackageGraph.OnBeforeCompilePackages:=@DoBeforeCompilePackages;
   PackageGraph.OnBeginUpdate:=@PackageGraphBeginUpdate;
