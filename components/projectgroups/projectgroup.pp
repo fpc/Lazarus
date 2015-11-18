@@ -1,5 +1,6 @@
 {
   ToDo:
+    - save/restore Active target
     - Build file
     - build modes of project as nodes with checkboxes
     - run external tool
@@ -13,8 +14,8 @@ interface
 uses
   Classes, SysUtils, contnrs, Laz2_XMLCfg, Controls, Forms, Dialogs, LCLProc,
   LazFileUtils, LazFileCache, LazConfigStorage, PackageIntf, ProjectIntf,
-  MenuIntf, LazIDEIntf, IDEDialogs, CompOptsIntf, BaseIDEIntf, ProjectGroupIntf,
-  ProjectGroupStrConst, FileProcs, CodeToolManager, CodeCache;
+  MenuIntf, LazIDEIntf, IDEDialogs, CompOptsIntf, BaseIDEIntf, IDECommands,
+  ProjectGroupIntf, ProjectGroupStrConst, FileProcs, CodeToolManager, CodeCache;
 
 const
   PGOptionsFileName = 'projectgroupsoptions.xml';
@@ -999,10 +1000,11 @@ begin
   and (CompareFilenames(LazarusIDE.ActiveProject.ProjectInfoFile,Filename)=0)
   then begin
     // project loaded => use IDE functions
-    // ToDo
     case AAction of
        taSettings :
-         ; // TODO: Need IDE integration
+         begin
+           ExecuteIDECommand(Self,ecProjectOptions);
+         end;
        taCompileClean,
        taCompile :
          begin
