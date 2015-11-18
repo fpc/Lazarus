@@ -15,7 +15,7 @@ uses
   Classes, SysUtils, contnrs, Laz2_XMLCfg, Controls, Forms, Dialogs, LCLProc,
   LazFileUtils, LazFileCache, LazConfigStorage, FileUtil, PackageIntf,
   ProjectIntf, MenuIntf, LazIDEIntf, IDEDialogs, CompOptsIntf, BaseIDEIntf,
-  IDECommands, IDEExternToolIntf, MacroIntf, ProjectGroupIntf,
+  IDECommands, IDEExternToolIntf, MacroIntf, IDEMsgIntf, ProjectGroupIntf,
   ProjectGroupStrConst, FileProcs, CodeToolManager, CodeCache;
 
 const
@@ -1064,6 +1064,8 @@ begin
     taCompileClean:
       begin
         // run lazbuild as external tool
+        IDEMessagesWindow.Clear;
+
         aTitle:='Compile Project '+ExtractFileNameOnly(Filename);
         aCompileHint:='Project Group: '+Parent.Filename+LineEnding;
 
