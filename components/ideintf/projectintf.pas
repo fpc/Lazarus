@@ -17,7 +17,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LazFileUtils, Controls, Forms, AvgLvlTree,
-  NewItemIntf, ProjPackIntf, CompOptsIntf, ObjInspStrConsts;
+  NewItemIntf, ProjPackIntf, CompOptsIntf, ObjInspStrConsts, LazFileCache;
 
 const
   FileDescGroupName = 'File';
@@ -387,6 +387,7 @@ type
     procedure SetFPDocPaths(const AValue: string);
     procedure SetUseAppBundle(AValue: Boolean);
   protected
+    FChangeStamp: integer;
     FFlags: TProjectFlags;
     FResources: TObject;
     FRunParameters: TAbstractRunParamsOptions;
@@ -411,6 +412,7 @@ type
     constructor Create({%H-}ProjectDescription: TProjectDescriptor); virtual; reintroduce;
     destructor Destroy; override;
     procedure Clear; virtual;
+    procedure IncreaseChangeStamp; inline;
     function IsVirtual: boolean; virtual; abstract;
     function CreateProjectFile(const Filename: string): TLazProjectFile; virtual; abstract;
     procedure AddFile(ProjectFile: TLazProjectFile;
@@ -431,6 +433,7 @@ type
     function GetDefaultTitle: string; // extract name from lpi file name
     function GetTitleOrName: string; // GetTitle, if this is '' then GetDefaultTitle
   public
+    property ChangeStamp: integer read FChangeStamp;
     property MainFileID: Integer read GetMainFileID write SetMainFileID;
     property Files[Index: integer]: TLazProjectFile read GetFiles;
     property FileCount: integer read GetFileCount;
@@ -1141,6 +1144,11 @@ function TLazProject.GetTitleOrName: string;
 begin
   Result:=GetTitle;
   if Result='' then Result:=GetDefaultTitle;
+end;
+
+procedure TLazProject.IncreaseChangeStamp;
+begin
+  LUIncreaseChangeStamp(FChangeStamp);
 end;
 
 { TLazProjectFile }

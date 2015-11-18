@@ -721,7 +721,6 @@ type
     FAllEditorsInfoList: TUnitEditorInfoList;
     FAllEditorsInfoMap: TMap;
     FAutoCreateForms: boolean;
-    FChangeStamp: integer;
     FChangeStampSaved: integer;
     FEnableI18NForLFM: boolean;
     FLastCompileComplete: boolean;
@@ -894,8 +893,6 @@ type
     function SomethingModified(CheckData, CheckSession: boolean; Verbose: boolean = false): boolean;
     function SomeDataModified(Verbose: boolean = false): boolean;
     function SomeSessionModified(Verbose: boolean = false): boolean;
-    procedure IncreaseChangeStamp; inline;
-    property ChangeStamp: integer read FChangeStamp;
     procedure MainSourceFilenameChanged;
     procedure GetUnitsChangedOnDisk(var AnUnitList: TFPList);
     function HasProjectInfoFileChangedOnDisk: boolean;
@@ -5235,11 +5232,6 @@ begin
     end;
   end;
   Result:=false;
-end;
-
-procedure TProject.IncreaseChangeStamp;
-begin
-  LUIncreaseChangeStamp(FChangeStamp);
 end;
 
 procedure TProject.MainSourceFilenameChanged;
