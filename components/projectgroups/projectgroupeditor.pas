@@ -374,13 +374,15 @@ Var
   I: Integer;
   PG: TProjectGroup;
 begin
-  I:=-1;
+  I:=0;
   T:=SelectedNodeData;
-  if (T=nil) or (T.Target=nil) or (T.Target.Parent=nil) then
-    exit;
-  PG:=T.Target.Parent.ProjectGroup;
-  if PG=nil then exit;
-  I:=PG.IndexOfTarget(T.Target);
+  if (T<>nil) and (T.Target<>nil) and (T.Target.Parent<>nil) then
+  begin
+    PG:=T.Target.Parent.ProjectGroup;
+    if PG<>nil then begin
+      I:=PG.IndexOfTarget(T.Target);
+    end;
+  end;
   (Sender as TAction).Enabled:=I>0;
   UpdateIDEMenuCommandFromAction(Sender,cmdTargetEarlier);
 end;
@@ -409,12 +411,16 @@ Var
   PG: TProjectGroup;
 begin
   T:=SelectedNodeData;
-  if (T=nil) or (T.Target=nil) or (T.Target.Parent=nil) then
-    exit;
-  PG:=T.Target.Parent.ProjectGroup;
-  if PG=nil then exit;
-  I:=PG.IndexOfTarget(T.Target);
-  (Sender as TAction).Enabled:=I+1<PG.TargetCount;
+  I:=-1;
+  PG:=nil;
+  if (T<>nil) and (T.Target<>nil) and (T.Target.Parent<>nil) then
+  begin
+    PG:=T.Target.Parent.ProjectGroup;
+    if PG<>nil then begin
+      I:=PG.IndexOfTarget(T.Target);
+    end;
+  end;
+  (Sender as TAction).Enabled:=(PG<>nil) and (I+1<PG.TargetCount);
   UpdateIDEMenuCommandFromAction(Sender,cmdTargetLater);
 end;
 
