@@ -830,9 +830,9 @@ var
   Pkg: TIDEPackage;
   PkgName: String;
 begin
-  debugln(['TIDECompileTarget.LoadPackage ',Filename]);
   if FFiles<>nil then exit; // already loaded
 
+  debugln(['TIDECompileTarget.LoadPackage ',Filename]);
   FFiles:=TStringList.Create;
   FRequiredPackages:=TObjectList.Create(True);
 
@@ -879,9 +879,9 @@ var
   PkgName, Path, SubPath, CurFilename: String;
   xml: TXMLConfig;
 begin
-  debugln(['TIDECompileTarget.LoadProject ',Filename]);
   if FFiles<>nil then exit; // already loaded
 
+  debugln(['TIDECompileTarget.LoadProject ',Filename]);
   FFiles:=TStringList.Create;
   FRequiredPackages:=TObjectList.Create(True);
 
@@ -949,8 +949,9 @@ var
   PG: TIDEProjectGroup;
   Flags: TProjectGroupLoadOptions;
 begin
-  debugln(['TIDECompileTarget.LoadProjectGroup ',Filename]);
   if ProjectGroup<>nil then exit;
+
+  debugln(['TIDECompileTarget.LoadProjectGroup ',Filename]);
   PG:=TIDEProjectGroup.Create(Self);
   FProjectGroup:=PG;
   PG.FileName:=Self.FileName;

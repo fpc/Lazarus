@@ -525,12 +525,6 @@ begin
   ntDependencies: ;
   ntDependency: ;
   end;
-  {if (ND<>nil) and (ND.NodeType<>ntTarget) then
-  begin
-    ND.ProjectGroup.ActivateTarget(ND.Target);
-    if (ND.ProjectGroup<>FProjectGroup) then // No callback, fake it.
-      OnTargetActivated(ND.ProjectGroup,ND.Target);
-  end;}
 end;
 
 procedure TProjectGroupEditorForm.OnTargetAdded(Sender: TObject;
@@ -538,7 +532,7 @@ procedure TProjectGroupEditorForm.OnTargetAdded(Sender: TObject;
 Var
   N: TTreeNode;
 begin
-  // ToDo: use of FTargetNodes is wrong if PG<>FProjectGroup
+  (Target as TIDECompileTarget).LoadTarget(true);
   N:=CreateTargetNode(FTargetNodes[False],ntTarget,Target);
   FillTargetNode(N,Target);
   TVPG.Selected:=N;
@@ -552,7 +546,6 @@ Var
 begin
   N:=FindNodeFromTarget(Target);
   TVPG.Items.Delete(N);
-  // ToDo: The use of FTargetNodes is not correct when PG<>FProjectGroup
   CreateTargetNode(FTargetNodes[True],ntRemovedTarget,Target);
   TVPG.Selected:=FProjectGroupTVNode;
   UpdateStatusBarTargetCount;
@@ -1094,7 +1087,7 @@ begin
     Pkg:=PackageEditingInterface.FindPackageWithName(PkgName);
     if Pkg<>nil then
       PkgName:=Pkg.Name;
-    CreateSubNode(PD[False],ntDependency,T,Pkg.Name);
+    CreateSubNode(PD[False],ntDependency,T,PkgName);
   end;
 end;
 
