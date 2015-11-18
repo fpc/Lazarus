@@ -4,6 +4,8 @@
     - Build file
     - build modes of project as nodes with checkboxes
     - run external tool
+    - update files when project/package changes in IDE
+    - update dependencies when changed in IDE
 }
 unit ProjectGroup;
 
@@ -61,7 +63,7 @@ type
   end;
 
   TTargetEvent = procedure(Sender: TObject; Target: TPGCompileTarget) of object;
-  TTargetExchangeEvent = procedure(Sender: TObject; Target1,Target2: TPGCompileTarget) of object; // ToDo: use index
+  TTargetExchangeEvent = procedure(Sender: TObject; Target1,Target2: TPGCompileTarget) of object;
 
   { TIDEProjectGroup }
 
@@ -90,7 +92,7 @@ type
     function IndexOfRemovedTarget(const Target: TPGCompileTarget): Integer; override;
     function AddTarget(Const AFileName: String): TPGCompileTarget; override;
     procedure RemoveTarget(Index: Integer); override;
-    procedure ExchangeTargets(ASource, ATarget: Integer); override; // ToDo: replace with MoveTarget
+    procedure ExchangeTargets(ASource, ATarget: Integer); override;
     procedure ActiveTargetChanged(T: TPGCompileTarget);
     function LoadFromFile(Options: TProjectGroupLoadOptions): Boolean;
     function SaveToFile: Boolean;
@@ -870,8 +872,9 @@ procedure TIDECompileTarget.LoadPackage;
 var
   MR: TModalResult;
   I: Integer;
-  Pkg: TIDEPackage;
+  Pkg, RequiredPkg: TIDEPackage;
   PkgName: String;
+  PkgList: TFPList;
 begin
   if FFiles<>nil then exit; // already loaded
 
@@ -909,7 +912,18 @@ begin
     FFiles.Add(Pkg.Files[i].Filename);
 
   // load list of required package
-  // ToDo
+  PkgList:=nil;
+  try
+    PackageEditingInterface.GetRequiredPackages(Pkg,PkgList,[pirNotRecursive]);
+    if PkgList<>nil then
+      for i:=0 to PkgList.Count-1 do begin
+        RequiredPkg:=TIDEPackage(PkgList[i]);
+        PkgName:=ExtractFileUnitname(RequiredPkg.Filename,true);
+        FRequiredPackages.Add(TPGDependency.Create(PkgName));
+      end;
+  finally
+    PkgList.Free;
+  end;
 end;
 
 procedure TIDECompileTarget.LoadProject;
@@ -1017,7 +1031,6 @@ var
 begin
   Result:=arFailed;
 
-  // ToDo: if project loaded
   if (LazarusIDE.ActiveProject<>nil)
   and (CompareFilenames(LazarusIDE.ActiveProject.ProjectInfoFile,Filename)=0)
   then begin
@@ -1148,11 +1161,8 @@ begin
   case AAction of
   taOpen: ProjectGroupManager.LoadProjectGroup(FileName,[]);
   taSettings: ;
-  taCompile: ;
-  taCompileClean: ;
-  taRun: ;
-  taInstall: ;
-  taUninstall: ;
+  taCompile,
+  taCompileClean: ;// ToDo
   end;
 end;
 
@@ -1161,14 +1171,13 @@ function TIDECompileTarget.PascalFileAction(AAction: TPGTargetAction
 begin
   Result:=arFailed;
   debugln(['TIDECompileTarget.PascalFileAction ToDo']);
+  // ToDo
   case AAction of
   taOpen: ;
   taSettings: ;
   taCompile: ;
   taCompileClean: ;
   taRun: ;
-  taInstall: ;
-  taUninstall: ;
   end;
 end;
 
@@ -1177,14 +1186,12 @@ function TIDECompileTarget.ExternalToolAction(AAction: TPGTargetAction
 begin
   Result:=arFailed;
   debugln(['TIDECompileTarget.ExternalToolAction ToDo']);
+  // ToDo
   case AAction of
-  taOpen: ;
   taSettings: ;
   taCompile: ;
   taCompileClean: ;
   taRun: ;
-  taInstall: ;
-  taUninstall: ;
   end;
 end;
 

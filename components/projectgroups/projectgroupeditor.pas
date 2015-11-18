@@ -1,10 +1,9 @@
 {
   Todo:
-    - show * when modified
+    - save on save all
     - close windows on IDE close
     - activate project when project is opened
     - deactivate project when project is closed
-    - make dockable
 }
 unit ProjectGroupEditor;
 
@@ -328,7 +327,7 @@ procedure TProjectGroupEditorForm.Localize;
     if AImageIndex<>-1 then
       A.ImageIndex:=AImageIndex;
     If Assigned(mnu) then
-      Mnu.OnClick:=A.OnExecute; // ToDo Enabled and visible don't play well with actions...
+      Mnu.OnClick:=A.OnExecute;
   end;
 
 begin
@@ -910,7 +909,7 @@ var
   NodeData: TNodeData;
 begin
   ShowFileName;
-  // ToDo: update nodes
+  // update all nodes with file names
   TVPG.BeginUpdate;
   TVNode:=TVPG.Items.GetFirstNode;
   while TVNode<>nil do begin
@@ -1155,7 +1154,6 @@ begin
   try
     PF[False]:=CreateSectionNode(AParent,lisNodeFiles,ntFiles);
     PF[True]:=nil; //CreateNode(AParent,lisNodeRemovedFiles,ntFiles,Nil,AProjectGroup);
-    // TODO Ideally, we can show removed files
     for i:=0 to T.FileCount-1 do
       CreateSubNode(PF[False],ntFile,T,T.Files[i]);
     ShowDependencies(AParent,T,PD);
@@ -1175,7 +1173,6 @@ begin
   try
     PF[False]:=CreateSectionNode(AParent,lisNodeFiles,ntFiles);
     PF[True]:=nil; //CreateNode(AParent,lisNodeRemovedFiles,ntFiles,Nil,AProjectGroup);
-    // ToDo Ideally, we can show removed files
     for i:=0 to T.FileCount-1 do
       CreateSubNode(PF[False],ntFile,T,T.Files[i]);
     ShowDependencies(AParent,T,PD);

@@ -31,7 +31,7 @@ begin
   Section:=RegisterIDEMenuSection(Root,'Compile');
   PGEditMenuSectionCompile:=Section;
   cmdTargetCompile:=RegisterIDEMenuCommand(Section,'TargetCompile',lisTargetCompile);// ToDo: caption: compile "target"
-  cmdTargetCompileClean:=RegisterIDEMenuCommand(Section,'TargetCompileClean',lisTargetCompileClean);// ToDo
+  cmdTargetCompileClean:=RegisterIDEMenuCommand(Section,'TargetCompileClean',lisTargetCompileClean);
   // ToDo: clean ... -> clean up dialog
   // ToDo: compile all from here
   // ToDo: set build mode of all projects
@@ -39,7 +39,8 @@ begin
   Section:=RegisterIDEMenuSection(Root,'AddRemove');
   PGEditMenuSectionAddRemove:=Section;
   cmdTargetAdd:=RegisterIDEMenuCommand(Section,'TargetAdd',lisTargetAdd);
-  cmdTargetRemove:=RegisterIDEMenuCommand(Section,'TargetRemove',lisTargetRemove);// ToDo
+  cmdTargetRemove:=RegisterIDEMenuCommand(Section,'TargetRemove',lisTargetRemove);
+  // ToDo: re-add
 
   Section:=RegisterIDEMenuSection(Root,'Use');
   PGEditMenuSectionUse:=Section;
@@ -49,10 +50,8 @@ begin
   cmdTargetLater:=RegisterIDEMenuCommand(Section,'TargetLater',lisTargetLater);// ToDo: Ctrl+Down
   cmdTargetActivate:=RegisterIDEMenuCommand(Section,'TargetActivate',lisTargetActivate);
   cmdTargetOpen:=RegisterIDEMenuCommand(Section,'TargetOpen',lisTargetOpen);
-  // ToDo: Save
-  // ToDo: Close (package editor)
   cmdTargetRun:=RegisterIDEMenuCommand(Section,'TargetRun',lisTargetRun);
-  cmdTargetProperties:=RegisterIDEMenuCommand(Section,'TargetProperties',lisTargetProperties);// ToDo
+  cmdTargetProperties:=RegisterIDEMenuCommand(Section,'TargetProperties',lisTargetProperties);
 
   Section:=RegisterIDEMenuSection(Root,'Misc');
   PGEditMenuSectionMisc:=Section;

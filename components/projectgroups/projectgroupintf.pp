@@ -75,7 +75,7 @@ Type
     procedure DeActivate;
     function GetRootProjectGroup: TProjectGroup;
     property Parent: TPGCompileTarget read FParent;
-    property Filename: string read FFilename write SetFilename; // Absolute, not relative. (ToDo: store them relative)
+    property Filename: string read FFilename write SetFilename; // Absolute, not relative.
     property Removed: boolean read FRemoved write SetRemoved;
     property TargetType: TPGTargetType read FTargetType write SetTargetType;
     property Active: Boolean Read FActive;
