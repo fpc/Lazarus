@@ -3385,6 +3385,7 @@ components/projectgroups/projectgroup.pp svneol=native#text/plain
 components/projectgroups/projectgroupeditor.lfm svneol=native#text/plain
 components/projectgroups/projectgroupeditor.pas svneol=native#text/plain
 components/projectgroups/projectgroupintf.pp svneol=native#text/plain
+components/projectgroups/projectgroupstrconst.pas svneol=native#text/plain
 components/projectgroups/regprojectgroup.pp svneol=native#text/plain
 components/projecttemplates/Makefile svneol=native#text/plain
 components/projecttemplates/Makefile.compiled svneol=native#text/plain
