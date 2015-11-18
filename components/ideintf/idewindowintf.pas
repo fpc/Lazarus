@@ -1727,14 +1727,21 @@ end;
 procedure TSimpleWindowLayoutList.ApplyAndShow(Sender: TObject; AForm: TCustomForm;
   BringToFront: boolean; AMoveToVisbleMode: TLayoutMoveToVisbleMode);
 
-  function IsAnyCornerVisible(AForm: TCustomForm): Boolean;
+  function IsAnyCornerVisible(AForm: TCustomForm; AThreshold: Integer = 50): Boolean;
   var
     Overlap: TRect;
+    I: Integer;
   begin
-    Overlap:=Rect(0,0,0,0);
-    IntersectRect(Overlap, AForm.BoundsRect, AForm.Monitor.WorkareaRect);
-    Result := (Overlap.Bottom > Overlap.Top + 1) and
-              (Overlap.Right > Overlap.Left + 1);
+    Result := False;
+    for I := 0 to Screen.MonitorCount-1 do
+    begin
+      Overlap:=Rect(0,0,0,0);
+      IntersectRect(Overlap, AForm.BoundsRect, Screen.Monitors[I].WorkareaRect);
+      if (Overlap.Bottom > Overlap.Top + Min(AForm.Height, AThreshold)) and
+         (Overlap.Right > Overlap.Left + Min(AForm.Width, AThreshold))
+      then
+        Exit(True);
+    end;
   end;
 
 var
@@ -2353,7 +2360,7 @@ begin
       if AChangeVisibility then
       begin
         if ALayout.Visible or (AForm=Application.MainForm) then
-          ShowForm(AForm,true)
+          ShowForm(AForm,true,vmOnlyMoveOffScreenToVisible)
         else if AForm.Visible then
           AForm.Close;
       end else
