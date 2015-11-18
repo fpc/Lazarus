@@ -725,6 +725,10 @@ type
   public
     property Control: TControl read FControl;
     property Space[Kind: TAnchorKind]: integer read GetSpace write SetSpace;
+    property ControlLeft: Integer read GetControlLeft;
+    property ControlTop: Integer read GetControlTop;
+    property ControlWidth: Integer read GetControlWidth;
+    property ControlHeight: Integer read GetControlHeight;
   published
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property Left: TSpacingSize read FLeft write SetLeft stored IsLeftStored;
@@ -735,10 +739,6 @@ type
     property InnerBorder: Integer read FInnerBorder write SetInnerBorder stored IsInnerBorderStored default 0;
     property CellAlignHorizontal: TControlCellAlign read FCellAlignHorizontal write SetCellAlignHorizontal default ccaFill;
     property CellAlignVertical: TControlCellAlign read FCellAlignVertical write SetCellAlignVertical default ccaFill;
-    property ControlLeft: Integer read GetControlLeft;
-    property ControlTop: Integer read GetControlTop;
-    property ControlWidth: Integer read GetControlWidth;
-    property ControlHeight: Integer read GetControlHeight;
   end;
 
 
