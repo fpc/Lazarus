@@ -62,6 +62,8 @@ type
     AProjectGroupSave: TAction;
     ActionListMain: TActionList;
     ImageListMain: TImageList;
+    PMIRunMenuItem: TMenuItem;
+    PMICopyFilenameMenuItem: TMenuItem;
     PMIOPen: TMenuItem;
     PMISaveAs: TMenuItem;
     PMIProperties: TMenuItem;
@@ -771,7 +773,7 @@ end;
 
 procedure TProjectGroupEditorForm.ATargetRunUpdate(Sender: TObject);
 begin
-  AllowPerform(taRun,Sender as Taction);
+  AllowPerform(taRun,Sender as TAction);
   UpdateIDEMenuCommandFromAction(Sender,cmdTargetRun);
 end;
 

@@ -975,6 +975,12 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
     Images = ImageListMain
     left = 208
     top = 152
+    object PMICopyFilenameMenuItem: TMenuItem
+      Caption = 'Copy Filename'
+    end
+    object PMIRunMenuItem: TMenuItem
+      Action = ATargetRun
+    end
     object PMICompile: TMenuItem
       Action = ATargetCompile
       Bitmap.Data = {

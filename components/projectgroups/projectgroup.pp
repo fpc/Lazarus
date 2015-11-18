@@ -1015,7 +1015,9 @@ begin
              exit(arOK);
          end;
        taRun :
-         ; // TODO: Need IDE integration
+         begin
+           LazarusIDE.DoRunProject;
+         end;
     end;
   end else begin
     // project not loaded => use lazbuild
