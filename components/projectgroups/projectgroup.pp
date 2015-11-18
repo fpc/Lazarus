@@ -638,7 +638,10 @@ var
   Target: TPGCompileTarget;
 begin
   Target:=Targets[Index];
+  Target.DeActivate;
+  FTargets.OwnsObjects:=false;
   FTargets.Delete(Index);
+  FTargets.OwnsObjects:=true;
   FRemovedTargets.Add(Target);
   Target.Removed:=true;
   if Assigned(FOnTargetDeleted) then

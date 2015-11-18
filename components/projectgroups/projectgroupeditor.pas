@@ -702,8 +702,8 @@ Var
   T: TPGCompileTarget;
 begin
   T:=SelectedTarget;
-  if T=nil then exit;
-  FProjectGroup.RemoveTarget(T);
+  if (T=nil) or (T.Parent=nil) then exit;
+  T.Parent.ProjectGroup.RemoveTarget(T);
 end;
 
 procedure TProjectGroupEditorForm.AProjectGroupDeleteUpdate(Sender: TObject);
@@ -711,7 +711,7 @@ Var
   T: TPGCompileTarget;
 begin
   T:=SelectedTarget;
-  (Sender as TAction).Enabled:=(T<>Nil) and (T<>ProjectGroup.CompileTarget) and Not T.Removed;
+  (Sender as TAction).Enabled:=(T<>nil) and (T<>ProjectGroup.CompileTarget) and Not T.Removed;
   UpdateIDEMenuCommandFromAction(Sender,cmdTargetRemove);
 end;
 

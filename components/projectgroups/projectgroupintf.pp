@@ -454,8 +454,6 @@ procedure TPGCompileTarget.SetRemoved(const AValue: boolean);
 begin
   if Removed=AValue then exit;
   FRemoved:=AValue;
-  if FRemoved then
-    Deactivate;
 end;
 
 procedure TPGCompileTarget.Activate;
