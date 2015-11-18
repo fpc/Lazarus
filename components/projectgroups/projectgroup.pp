@@ -364,6 +364,7 @@ end;
 procedure TIDEProjectGroupManager.DoNewClick(Sender: TObject);
 var
   AProject: TLazProject;
+  aTarget: TIDECompileTarget;
 begin
   if Not CheckSaved then
     Exit;
@@ -374,7 +375,8 @@ begin
   AProject:=LazarusIDE.ActiveProject;
   if (AProject<>nil) and FilenameIsAbsolute(AProject.ProjectInfoFile)
   and FileExistsCached(AProject.ProjectInfoFile) then begin
-    FProjectGroup.AddTarget(AProject.ProjectInfoFile);
+    aTarget:=FProjectGroup.AddTarget(AProject.ProjectInfoFile) as TIDECompileTarget;
+    aTarget.LoadTarget(true);
   end;
 
   ShowProjectGroupEditor;
@@ -608,7 +610,7 @@ Var
   aGroup: TProjectGroup;
 begin
   Result:=false;
-  if not FilenameIsAbsolute(TargetFileName) then exit;
+  if not FilenameIsAbsolute(FileName) then exit;
   if not FileExistsCached(Filename) then exit;
 
   aGroup:=Parent;
@@ -863,7 +865,6 @@ var
 begin
   if FFiles<>nil then exit; // already loaded
 
-  //debugln(['TIDECompileTarget.LoadProject ',Filename]);
   FFiles:=TStringList.Create;
   FRequiredPackages:=TObjectList.Create(True);
 

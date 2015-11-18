@@ -119,11 +119,11 @@ type
     procedure TVPGDblClick(Sender: TObject);
   private
     FProjectGroup: TProjectGroup;
-    FNPG: TTreeNode;
+    FProjectGroupTVNode: TTreeNode;
     FActiveTarget: TPGCompileTarget;
     FTargetNodes: TTargetNodes;
     // Project group callbacks
-    procedure ConfigNode(Node: TTreeNode; Const ACaption: String;
+    procedure InitTVNode(Node: TTreeNode; Const ACaption: String;
       ANodeData: TNodeData);
     procedure OnProjectGroupDestroy(Sender: TObject);
     procedure OnTargetAdded(Sender: TObject; Target: TPGCompileTarget);
@@ -440,16 +440,12 @@ var
 begin
   ShowFileName;
   // ToDo: update nodes
-  debugln(['TProjectGroupEditorForm.DoFileNameChange START']);
   TVPG.BeginUpdate;
   TVNode:=TVPG.Items.GetFirstNode;
   while TVNode<>nil do begin
     NodeData:=TNodeData(TVNode.Data);
-    debugln(['TProjectGroupEditorForm.DoFileNameChange AAA1 NodeData=',DbgSName(NodeData),' Text=',TVNode.Text]);
     if NodeData is TNodeData then begin
-      debugln(['TProjectGroupEditorForm.DoFileNameChange AAA2 NodeType=',dbgs(NodeData.NodeType),' PGFile=',NodeData.ProjectGroup.Filename,' ',NodeData.Target<>nil]);
       if NodeData.Target<>nil then begin
-        debugln(['TProjectGroupEditorForm.DoFileNameChange AAA3 TargetFile=',NodeData.Target.Filename]);
         TVNode.Text:=DisplayFileName(NodeData);
       end;
     end;
@@ -543,9 +539,9 @@ begin
   PG:=Sender as TProjectGroup;
   N:=FindNodeFromTarget(Target);
   TVPG.Items.Delete(N);
-  // MVC TOD: The use of FTargetNodes is not correct when PG<>FProjectGroup
+  // ToDo: The use of FTargetNodes is not correct when PG<>FProjectGroup
   CreateNode(FTargetNodes[True],ntRemovedTarget,Target,PG);
-  TVPG.Selected:=FNPG;
+  TVPG.Selected:=FProjectGroupTVNode;
   UpdateStatusBarTargetCount;
 end;
 
@@ -590,8 +586,8 @@ begin
   NT1:=N1.Text;
   ND2:=TNodeData(N2.Data);
   NT2:=N2.Text;
-  ConfigNode(N1,NT2,ND2);
-  ConfigNode(N2,NT1,ND1);
+  InitTVNode(N1,NT2,ND2);
+  InitTVNode(N2,NT1,ND1);
   if (S<>Nil) then
     TVPG.Selected:=S;
 end;
@@ -756,7 +752,7 @@ Var
   N: TTreeNode;
   I: Integer;
 begin
-  FNPG:=Nil;
+  FProjectGroupTVNode:=Nil;
   FTargetNodes[False]:=Nil;
   FTargetNodes[True]:=Nil;
   For I:=0 to TVPG.Items.Count-1 do
@@ -831,7 +827,7 @@ begin
     Result:=Nil;
 end;
 
-procedure TProjectGroupEditorForm.ConfigNode(Node: TTreeNode;
+procedure TProjectGroupEditorForm.InitTVNode(Node: TTreeNode;
   const ACaption: String; ANodeData: TNodeData);
 begin
   Node.Data:=ANodeData;
@@ -863,7 +859,7 @@ begin
   ND.NodeType:=ANodeType;
   ND.ProjectGroup:=AProjectGroup;
   ND.Target:=ANodeData;
-  ConfigNode(Result,'',ND);
+  InitTVNode(Result,'',ND);
 end;
 
 function TProjectGroupEditorForm.CreateNode(AParent: TTreeNode;
@@ -877,6 +873,7 @@ begin
   ND.ProjectGroup:=AProjectGroup;
   ND.Target:=ANodeData;
   Result:=TVPG.Items.AddChild(AParent,DisplayFileName(ND));
+  InitTVNode(Result,'',ND);
 end;
 
 function TProjectGroupEditorForm.DisplayFileName(AProjectGroup: TProjectGroup;
@@ -929,9 +926,9 @@ begin
     Caption:=lisNewProjectGroup
   else
     Caption:=Format(LisProjectGroup,[DisplayFileName(FprojectGroup,ntProjectGroup,N)]);
-  if Assigned(FNPG) then
+  if Assigned(FProjectGroupTVNode) then
     if FProjectGroup<>nil then
-      FNPG.Text:=DisplayFileName(FProjectGroup,ntProjectGroup,FProjectGroup.FileName);
+      FProjectGroupTVNode.Text:=DisplayFileName(FProjectGroup,ntProjectGroup,FProjectGroup.FileName);
 end;
 
 function TProjectGroupEditorForm.FindNodeFromTarget(ATarget: TPGCompileTarget): TTreeNode;
@@ -955,25 +952,25 @@ Var
 begin
   TVPG.BeginUpdate;
   try
-    ShowFileName; // Needs FNPG
+    ShowFileName; // Needs FProjectGroupTVNode
     FreeNodeData;
     TVPG.Items.Clear;
     FTargetNodes[False]:=Nil;
     FTargetNodes[True]:=Nil;
     if FProjectGroup<>nil then begin
-      FNPG:=CreateNode(Nil,
+      FProjectGroupTVNode:=CreateNode(Nil,
         DisplayFileName(FProjectGroup,ntProjectGroup,FProjectGroup.FileName),
         ntProjectGroup,ProjectGroup.CompileTarget,FProjectGroup);
-      FillProjectGroupNode(FNPG,FProjectGroup,FTargetNodes);
+      FillProjectGroupNode(FProjectGroupTVNode,FProjectGroup,FTargetNodes);
       N:=FindNodeFromTarget(FActiveTarget);
       if (N=Nil) then
       begin
         FActiveTarget:=ProjectGroup.CompileTarget;
-        TVPG.Selected:=FNPG;
+        TVPG.Selected:=FProjectGroupTVNode;
       end else
         TVPG.Selected:=N;
     end else begin
-      FNPG:=nil;
+      FProjectGroupTVNode:=nil;
     end;
     UpdateStatusBarTargetCount;
   finally
