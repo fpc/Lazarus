@@ -119,7 +119,6 @@ type
     procedure ATargetLaterUpdate(Sender: TObject);
     procedure ATargetUninstallExecute(Sender: TObject);
     procedure ATargetUninstallUpdate(Sender: TObject);
-    procedure OnProjectGroupFileNameChanged(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure TVPGDblClick(Sender: TObject);
@@ -132,6 +131,7 @@ type
     procedure InitTVNode(Node: TTreeNode; Const ACaption: String;
       ANodeData: TNodeData);
     procedure OnProjectGroupDestroy(Sender: TObject);
+    procedure OnProjectGroupFileNameChanged(Sender: TObject);
     procedure OnTargetAdded(Sender: TObject; Target: TPGCompileTarget);
     procedure OnTargetDeleted(Sender: TObject; Target: TPGCompileTarget);
     procedure OnTargetActiveChanged(Sender: TObject; Target: TPGCompileTarget);
@@ -438,27 +438,6 @@ procedure TProjectGroupEditorForm.ATargetUninstallUpdate(Sender: TObject);
 begin
   AllowPerform(taUninstall,Sender as TAction);
   UpdateIDEMenuCommandFromAction(Sender,cmdTargetUninstall);
-end;
-
-procedure TProjectGroupEditorForm.OnProjectGroupFileNameChanged(Sender: TObject);
-var
-  TVNode: TTreeNode;
-  NodeData: TNodeData;
-begin
-  ShowFileName;
-  // ToDo: update nodes
-  TVPG.BeginUpdate;
-  TVNode:=TVPG.Items.GetFirstNode;
-  while TVNode<>nil do begin
-    NodeData:=TNodeData(TVNode.Data);
-    if NodeData is TNodeData then begin
-      if NodeData.NodeType in [ntTarget] then begin
-        TVNode.Text:=DisplayFileName(NodeData);
-      end;
-    end;
-    TVNode:=TVNode.GetNext;
-  end;
-  TVPG.EndUpdate;
 end;
 
 procedure TProjectGroupEditorForm.UpdateIDEMenuCommandFromAction(
@@ -815,15 +794,16 @@ Var
   N: TTreeNode;
   I: Integer;
 begin
+  FActiveTarget:=nil;
   FProjectGroupTVNode:=Nil;
   FTargetNodes[False]:=Nil;
   FTargetNodes[True]:=Nil;
   For I:=0 to TVPG.Items.Count-1 do
-    begin
+  begin
     N:=TVPG.Items[I];
     TNodeData(N.Data).Free; // Would be nice to have a FreeAndNilData method in TTreeNode.
     N.Data:=Nil;
-    end;
+  end;
 end;
 
 function TProjectGroupEditorForm.GetNodeIndex(ANodeType: TNodeType; ANodeData: TPGCompileTarget): Integer;
@@ -923,6 +903,27 @@ begin
   if Sender=FProjectGroup then begin
     ProjectGroup:=nil;
   end;
+end;
+
+procedure TProjectGroupEditorForm.OnProjectGroupFileNameChanged(Sender: TObject);
+var
+  TVNode: TTreeNode;
+  NodeData: TNodeData;
+begin
+  ShowFileName;
+  // ToDo: update nodes
+  TVPG.BeginUpdate;
+  TVNode:=TVPG.Items.GetFirstNode;
+  while TVNode<>nil do begin
+    NodeData:=TNodeData(TVNode.Data);
+    if NodeData is TNodeData then begin
+      if NodeData.NodeType in [ntTarget] then begin
+        TVNode.Text:=DisplayFileName(NodeData);
+      end;
+    end;
+    TVNode:=TVNode.GetNext;
+  end;
+  TVPG.EndUpdate;
 end;
 
 function TProjectGroupEditorForm.CreateSectionNode(AParent: TTreeNode;
@@ -1059,8 +1060,8 @@ Var
 begin
   TVPG.BeginUpdate;
   try
-    ShowFileName; // Needs FProjectGroupTVNode
     FreeNodeData;
+    ShowFileName; // Needs FProjectGroupTVNode
     TVPG.Items.Clear;
     FTargetNodes[False]:=Nil;
     FTargetNodes[True]:=Nil;

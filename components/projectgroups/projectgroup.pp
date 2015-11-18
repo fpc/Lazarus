@@ -1004,7 +1004,8 @@ begin
     case AAction of
        taSettings :
          begin
-           ExecuteIDECommand(Self,ecProjectOptions);
+           if ExecuteIDECommand(Self,ecProjectOptions) then
+             Result:=arOK;
          end;
        taCompileClean,
        taCompile :
@@ -1017,12 +1018,42 @@ begin
          end;
        taRun :
          begin
-           LazarusIDE.DoRunProject;
+           if LazarusIDE.DoRunProject=mrOk then
+             Result:=arOk;
          end;
     end;
   end else begin
     // project not loaded => use lazbuild
-    // ToDo
+    case AAction of
+    taOpen:
+      begin
+        // open project
+        if LazarusIDE.DoOpenProjectFile(Filename,[ofAddToRecent])=mrOk then
+          Result:=arOk;
+      end;
+    taSettings:
+      begin
+        // open project, then show options
+        if LazarusIDE.DoOpenProjectFile(Filename,[ofAddToRecent])<>mrOk then
+          exit(arFailed);
+        if ExecuteIDECommand(Self,ecProjectOptions) then
+          Result:=arOK;
+      end;
+    taCompile,
+    taCompileClean:
+      begin
+        // run lazbuild as external tool
+
+      end;
+    taRun:
+      begin
+        // open project, then run
+        if LazarusIDE.DoOpenProjectFile(Filename,[ofAddToRecent])<>mrOk then
+          exit(arFailed);
+        if LazarusIDE.DoRunProject=mrOk then
+          Result:=arOk;
+      end;
+    end;
   end;
 end;
 
