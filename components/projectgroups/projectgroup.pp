@@ -100,8 +100,10 @@ type
     FChangeStamp: integer;
     FLastSavedChangeStamp: integer;
     FRecentProjectGroups: TStringList;
+    FShowTargetPaths: boolean;
     function GetModified: boolean;
     procedure SetModified(AValue: boolean);
+    procedure SetShowTargetPaths(AValue: boolean);
   public
     constructor Create;
     destructor Destroy; override;
@@ -109,12 +111,15 @@ type
     procedure LoadSafe;
     procedure SaveToFile(aFilename: string);
     procedure LoadFromFile(aFilename: string);
-    // recent project groups
-    property RecentProjectGroups: TStringList read FRecentProjectGroups;
-    procedure AddToRecentProjectGroups(aFilename: string);
+    // changestamp
     procedure IncreaseChangeStamp;
     property ChangeStamp: integer read FChangeStamp;
     property Modified: boolean read GetModified write SetModified;
+    // recent project groups
+    property RecentProjectGroups: TStringList read FRecentProjectGroups;
+    procedure AddToRecentProjectGroups(aFilename: string);
+    // misc
+    property ShowTargetPaths: boolean read FShowTargetPaths write SetShowTargetPaths;
   end;
 
   { TIDEProjectGroupManager }
@@ -231,6 +236,13 @@ begin
     FLastSavedChangeStamp:=FChangeStamp;
 end;
 
+procedure TIDEProjectGroupOptions.SetShowTargetPaths(AValue: boolean);
+begin
+  if FShowTargetPaths=AValue then Exit;
+  FShowTargetPaths:=AValue;
+  IncreaseChangeStamp;
+end;
+
 constructor TIDEProjectGroupOptions.Create;
 begin
   FRecentProjectGroups:=TStringList.Create;
@@ -271,6 +283,7 @@ begin
   Cfg:=GetIDEConfigStorage(aFilename,false);
   try
     Cfg.SetValue('RecentProjectGroups/',FRecentProjectGroups);
+    Cfg.SetDeleteValue('ShowTargetPaths/',ShowTargetPaths,false);
   finally
     Cfg.Free;
   end;
@@ -283,6 +296,7 @@ begin
   Cfg:=GetIDEConfigStorage(aFilename,true);
   try
     Cfg.GetValue('RecentProjectGroups/',FRecentProjectGroups);
+    ShowTargetPaths:=Cfg.GetValue('ShowTargetPaths/',false);
   finally
     Cfg.Free;
   end;

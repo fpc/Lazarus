@@ -928,15 +928,20 @@ var
 begin
   Result:='';
   if aTarget=nil then exit('?');
-  if aTarget.Parent<>nil then
-    BaseDir:=ExtractFilePath(aTarget.Parent.Filename)
-  else
-    BaseDir:='';
-  Result:=aTarget.Filename;
-  if Result='' then
-    Result:='?'
-  else
-    Result:=CreateRelativePath(Result,BaseDir);
+  if IDEProjectGroupManager.Options.ShowTargetPaths then
+  begin
+    if aTarget.Parent<>nil then
+      BaseDir:=ExtractFilePath(aTarget.Parent.Filename)
+    else
+      BaseDir:='';
+    Result:=aTarget.Filename;
+    if Result='' then
+      Result:='?'
+    else
+      Result:=CreateRelativePath(Result,BaseDir);
+  end else begin
+    Result:=ExtractFileNameOnly(aTarget.Filename);
+  end;
 end;
 
 function TProjectGroupEditorForm.DisplayFileName(Node: TTreeNode): string;
@@ -950,18 +955,23 @@ function TProjectGroupEditorForm.DisplayFileName(NodeData: TNodeData): string;
 var
   BaseDir: String;
 begin
-  Result:='';
-  if NodeData.ParentTarget<>nil then
-    BaseDir:=ExtractFilePath(NodeData.ParentTarget.Filename)
-  else
-    BaseDir:='';
-  if NodeData.Target<>nil then
-    Result:=NodeData.Target.Filename;
-  debugln(['TProjectGroupEditorForm.DisplayFileName ',dbgs(NodeData.NodeType),' BaseDir=',BaseDir,' File=',Result]);
-  if Result='' then
-    Result:='?'
-  else
-    Result:=CreateRelativePath(Result,BaseDir);
+  if (NodeData.Target<>nil)
+  and (not IDEProjectGroupManager.Options.ShowTargetPaths) then
+  begin
+    Result:=ExtractFileNameOnly(NodeData.Target.Filename);
+  end else begin
+    Result:='';
+    if NodeData.ParentTarget<>nil then
+      BaseDir:=ExtractFilePath(NodeData.ParentTarget.Filename)
+    else
+      BaseDir:='';
+    if NodeData.Target<>nil then
+      Result:=NodeData.Target.Filename;
+    if Result='' then
+      Result:='?'
+    else
+      Result:=CreateRelativePath(Result,BaseDir);
+  end;
 end;
 
 procedure TProjectGroupEditorForm.ShowFileName;

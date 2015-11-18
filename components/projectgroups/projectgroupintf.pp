@@ -61,8 +61,8 @@ Type
     function GetFiles(Index: integer): string; virtual; abstract;
     function GetRequiredPackageCount: integer; virtual; abstract;
     function GetRequiredPackages(Index: integer): TPGDependency; virtual; abstract;
-    function Perform (AAction: TPGTargetAction): TPGActionResult;
-    function PerformAction (AAction: TPGTargetAction): TPGActionResult; virtual; abstract;
+    function Perform(AAction: TPGTargetAction): TPGActionResult;
+    function PerformAction(AAction: TPGTargetAction): TPGActionResult; virtual; abstract;
     procedure Activate; virtual;
     procedure DeActivate; virtual;
     procedure SetFilename(const AValue: string); virtual;
