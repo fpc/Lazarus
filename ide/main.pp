@@ -2423,19 +2423,51 @@ function TMainIDE.GetActiveDesignerSkipMainBar: TComponentEditorDesigner;
 // returns the designer that is currently active
 // the MainIDEBar is ignored
 var
-  ActForm: TCustomForm;
+  ActForm, ActParentForm: TCustomForm;
   ActControl: TWinControl;
+
+  function TryGetDesignerFromForm(AForm: TCustomForm;
+    out ADesigner: TComponentEditorDesigner): Boolean;
+  begin
+    if Assigned(IDETabMaster) and (AForm is TSourceEditorWindowInterface)
+      and (IDETabMaster.TabDisplayState=tdsDesign)
+    then
+      ADesigner := TComponentEditorDesigner(TSourceEditorWindowInterface(AForm).
+        ActiveEditor.GetDesigner(True))
+    else
+      ADesigner := nil;
+
+    Result := ADesigner <> nil;
+  end;
+
 begin
   ActForm:=Screen.ActiveCustomForm;
-  if ActForm=MainIDEBar then
+
+  if ActForm = nil then
+    Exit(nil);
+
+  if TryGetDesignerFromForm(ActForm, Result) then
+    Exit; // docked design form has focus (inside SourceEditorWindow)
+
+  ActControl:=ActForm.ActiveControl;
+  if ActControl<>nil then
   begin
-    ActControl:=ActForm.ActiveControl;
-    if (ActControl<>nil) and (GetFirstParentForm(ActControl)<>MainIDEBar) then
-      exit(nil); // a docked form has focus
-    if Screen.CustomFormZOrderCount < 2 then exit(nil);
-    ActForm:=Screen.CustomFormsZOrdered[1];
+    ActParentForm := GetFirstParentForm(ActControl);
+    if TryGetDesignerFromForm(ActParentForm, Result) then
+      Exit; // docked design form has focus (inside docked SourceEditorWindow)
+
+    if ActForm=MainIDEBar then
+      if (ActParentForm<>MainIDEBar) then
+        Exit(nil); // a docked form has focus
   end;
-  if (ActForm<>nil) and (ActForm.Designer is TComponentEditorDesigner) then
+
+  if ActForm=MainIDEBar then
+    if Screen.CustomFormZOrderCount < 2 then
+      Exit(nil)
+    else
+      ActForm:=Screen.CustomFormsZOrdered[1];
+
+  if (ActForm.Designer is TComponentEditorDesigner) then
     Result := TComponentEditorDesigner(ActForm.Designer)
   else
     Result := nil;
