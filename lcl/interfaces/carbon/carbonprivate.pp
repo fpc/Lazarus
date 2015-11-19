@@ -262,6 +262,8 @@ type
     procedure CreateWidget(const AParams: TCreateParams); override;
     procedure DestroyWidget; override;
   public
+    procedure AddToWidget(AParent: TCarbonWidget); override;
+
     procedure ControlAdded; override;
     procedure BoundsChanged; override;
 
@@ -582,6 +584,30 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCarbonDesignWindow.AddToWidget
+
+  Override to perform docked design window
+ ------------------------------------------------------------------------------}
+procedure TCarbonDesignWindow.AddToWidget(AParent: TCarbonWidget);
+begin
+  inherited AddToWidget(AParent);
+
+  if not Assigned(fWindowRef) then
+  begin
+    HIViewRemoveFromSuperview(FDesignControl);
+    OSError(HIViewAddSubview(HIViewGetFirstSubview(FScrollView), FDesignControl),
+      Self, 'AddToWidget', SViewAddView);
+    BringDesignerToFront;
+  end else
+  begin
+    HIViewRemoveFromSuperview(FDesignControl);
+    OSError(HIViewAddSubview(fWinContent, FDesignControl), Self, 'AddToWidget',
+      SViewAddView);
+    BringDesignerToFront;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonDesignWindow.ControlAdded
 
   Notifies about control added
@@ -602,7 +628,11 @@ var
 begin
   inherited;
 
-  GetClientRect(R{%H-});
+  if Assigned(FWindowRef) then
+    GetClientRect(R{%H-})
+  else
+    GetScreenBounds(R{%H-});
+
   OffsetRect(R, -R.Left, -R.Top);
   OSError(HIViewSetFrame(FDesignControl, RectToCGRect(R)),
     Self, SSetBounds, SViewFrame);
