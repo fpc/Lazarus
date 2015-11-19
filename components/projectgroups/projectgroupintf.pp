@@ -37,6 +37,14 @@ Type
 
   TProjectGroup = class;
 
+  { TPGBuildMode }
+
+  TPGBuildMode = class
+    Name: string;
+    Compile: boolean;
+    constructor Create(const aName: string; aCompile: boolean);
+  end;
+
   { TPGDependency }
 
   TPGDependency = class
@@ -57,6 +65,8 @@ Type
     FParent: TPGCompileTarget;
     FProjectGroup: TProjectGroup;
     function GetAllowedActions: TPGTargetActions; virtual; // By default, return all allowed actions for target type.
+    function GetBuildModeCount: integer; virtual; abstract;
+    function GetBuildModes(Index: integer): TPGBuildMode; virtual; abstract;
     function GetFileCount: integer; virtual; abstract;
     function GetFiles(Index: integer): string; virtual; abstract;
     function GetRequiredPackageCount: integer; virtual; abstract;
@@ -85,6 +95,8 @@ Type
     property AllowedActions: TPGTargetActions Read GetAllowedActions;
     //
     property ProjectGroup: TProjectGroup read FProjectGroup; // set if TargetType is ttProjectGroup
+    property BuildModes[Index: integer]: TPGBuildMode read GetBuildModes;
+    property BuildModeCount: integer read GetBuildModeCount;
     property Files[Index: integer]: string read GetFiles;
     property FileCount: integer read GetFileCount;
     property RequiredPackages[Index: integer]: TPGDependency read GetRequiredPackages;
@@ -224,6 +236,14 @@ end;
 function ActionAllowsMulti(AAction: TPGTargetAction): Boolean;
 begin
   Result:=AAction in [taCompile,taCompileClean];
+end;
+
+{ TPGBuildMode }
+
+constructor TPGBuildMode.Create(const aName: string; aCompile: boolean);
+begin
+  Name:=aName;
+  Compile:=aCompile;
 end;
 
 { TPGDependency }

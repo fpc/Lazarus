@@ -18,26 +18,29 @@ uses
   LazLogger, ProjectGroupStrConst, ProjectGroup;
 
 type
-  TNodeType = (ntUnknown,
-               ntProjectGroup,
-               ntTargets,
-               ntRemovedTargets,
-               ntTarget,
-               ntRemovedTarget,
-               ntFiles,
-               ntFile,
-               //ntRemovedFiles,
-               //ntRemovedFile,
-               ntDependencies,
-               ntDependency
-               //ntRemovedDependencies,
-               //ntRemovedDependency
-               );
+  TNodeType = (
+    ntUnknown,
+    ntProjectGroup,
+    ntTargets,
+    ntRemovedTargets,
+    ntTarget,
+    ntRemovedTarget,
+    ntBuildModes,
+    ntBuildMode,
+    ntFiles,
+    ntFile,
+    //ntRemovedFiles,
+    //ntRemovedFile,
+    ntDependencies,
+    ntDependency
+    //ntRemovedDependencies,
+    //ntRemovedDependency
+    );
 
   TNodeData = class(TObject)
     NodeType: TNodeType;
     Target, ParentTarget: TPGCompileTarget;
-    Value: string; // ntFile = Filename, ntDependency = PkgName
+    Value: string; // ntFile = Filename, ntDependency = PkgName, ntBuildMode = BuildMode name
   end;
   TTargetNodes = Array[Boolean] of TTreeNode;
 
@@ -208,6 +211,8 @@ var
   NIRemovedTargetProject     : integer = 3;
   NIRemovedTargetPackage     : integer = 4;
   NIRemovedTargetProjectGroup: integer = 5;
+  NIBuildModes               : integer = 16;
+  NIBuildMode                : integer = 17;
   NIFiles                    : integer = 16;
   NIFile                     : integer = 17;
   //NIRemovedFiles             : integer = 18;
@@ -540,7 +545,6 @@ begin
         PG.Perform(ND.Target,taOpen);
       end;
     end;
-  ntFiles: ;
   ntFile:
     begin
       // open file in source editor
@@ -844,7 +848,8 @@ begin
   end;
 end;
 
-function TProjectGroupEditorForm.GetNodeIndex(ANodeType: TNodeType; ANodeData: TPGCompileTarget): Integer;
+function TProjectGroupEditorForm.GetNodeIndex(ANodeType: TNodeType;
+  ANodeData: TPGCompileTarget): Integer;
 begin
   Case ANodeType of
     ntProjectGroup: Result:=NIProjectGroup;
@@ -862,6 +867,8 @@ begin
           ttPackage: Result:=NIRemovedTargetPackage;
           ttProjectGroup: Result:=NIRemovedTargetProjectGroup;
         end;
+    ntBuildModes: Result:=NIBuildModes;
+    ntBuildMode: Result:=NIBuildMode;
     ntFiles: Result:=NIFiles;
     ntFile: Result:=NIFile;
     //ntRemovedFiles: Result:=NIRemovedFiles;
@@ -1187,16 +1194,25 @@ end;
 procedure TProjectGroupEditorForm.FillProjectNode(AParent: TTreeNode;
   T: TPGCompileTarget);
 Var
-  PF,PD: TTargetNodes;
+  FileNodes,DepNodes: TTargetNodes;
   i: Integer;
+  BuildModeNode: TTreeNode;
 begin
   TVPG.BeginUpdate;
   try
-    PF[False]:=CreateSectionNode(AParent,lisNodeFiles,ntFiles);
-    PF[True]:=nil; //CreateNode(AParent,lisNodeRemovedFiles,ntFiles,Nil,AProjectGroup);
+    // buildmodes
+    if T.BuildModeCount>0 then begin
+      BuildModeNode:=CreateSectionNode(AParent,lisNodeBuildModes,ntBuildModes);
+      for i:=0 to T.BuildModeCount-1 do
+        CreateSubNode(BuildModeNode,ntBuildMode,T,T.BuildModes[i].Name);
+    end;
+    // files
+    FileNodes[False]:=CreateSectionNode(AParent,lisNodeFiles,ntFiles);
+    FileNodes[True]:=nil; //CreateNode(AParent,lisNodeRemovedFiles,ntFiles,Nil,AProjectGroup);
     for i:=0 to T.FileCount-1 do
-      CreateSubNode(PF[False],ntFile,T,T.Files[i]);
-    ShowDependencies(AParent,T,PD);
+      CreateSubNode(FileNodes[False],ntFile,T,T.Files[i]);
+    // dependencies
+    ShowDependencies(AParent,T,DepNodes);
     // TODO: Build mode info Not available ?
   finally
     TVPG.EndUpdate;

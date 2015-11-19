@@ -49,6 +49,7 @@ Resourcestring
   lisProjectGroup            = 'Project group %s';
   lisNodeTargets             = 'Targets';
   lisNodeRemovedTargets      = 'Removed targets';
+  lisNodeBuildModes          = 'Build Modes';
   lisNodeFiles               = 'Files';
   lisNodeRemovedFiles        = 'Removed files';
   lisNodeDependencies        = 'Dependencies';

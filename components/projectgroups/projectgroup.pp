@@ -28,10 +28,13 @@ type
 
   TIDECompileTarget = class(TPGCompileTarget)
   private
+    FBuildModes: TObjectList;
     FFiles: TStringList;
     FRequiredPackages: TObjectList; // list of TPGDependency
     function CompileUsingLazBuild(const AAction: TPGTargetAction): TPGActionResult;
   protected
+    function GetBuildModeCount: integer; override;
+    function GetBuildModes(Index: integer): TPGBuildMode; override;
     function GetFileCount: integer; override;
     function GetFiles(Index: integer): string; override;
     function GetRequiredPackageCount: integer; override;
@@ -724,6 +727,7 @@ begin
           Target:=AddTarget(TargetFileName);
           if pgloLoadRecursively in Options then
             (Target as TIDECompileTarget).LoadTarget(true);
+          // ToDo: load buildmode flags
         end
         else if (pgloRemoveInvalid in Options) then
         begin
@@ -835,6 +839,8 @@ procedure TIDECompileTarget.UnLoadTarget;
 begin
   if (FProjectGroup<>nil) and not (Self is TRootProjectGroupTarget) then
     FreeAndNil(FProjectGroup);
+  if FBuildModes<>nil then
+    FreeAndNil(FBuildModes);
   if FFiles<>nil then
     FreeAndNil(FFiles);
   if FRequiredPackages<>nil then
@@ -914,6 +920,19 @@ begin
     Tool.Release(Self);
     Params.Free;
   end;
+end;
+
+function TIDECompileTarget.GetBuildModeCount: integer;
+begin
+  if FBuildModes=nil then
+    Result:=0
+  else
+    Result:=FBuildModes.Count;
+end;
+
+function TIDECompileTarget.GetBuildModes(Index: integer): TPGBuildMode;
+begin
+  Result:=TPGBuildMode(FBuildModes[Index]);
 end;
 
 function TIDECompileTarget.GetFileCount: integer;
@@ -1007,12 +1026,13 @@ var
   ProjFile: TLazProjectFile;
   PkgList: TFPList;
   Pkg: TIDEPackage;
-  PkgName, Path, SubPath, CurFilename, BaseDir: String;
+  PkgName, Path, SubPath, CurFilename, BaseDir, BuildMode: String;
   xml: TXMLConfig;
 begin
   if FFiles<>nil then exit; // already loaded
 
-  debugln(['TIDECompileTarget.LoadProject ',Filename]);
+  //debugln(['TIDECompileTarget.LoadProject ',Filename]);
+  FBuildModes:=TObjectList.Create(True);
   FFiles:=TStringList.Create;
   FRequiredPackages:=TObjectList.Create(True);
 
@@ -1069,6 +1089,17 @@ begin
           PkgName:=xml.GetValue(SubPath+'PackageName/Value','');
           if PkgName='' then continue;
           FRequiredPackages.Add(TPGDependency.Create(PkgName));
+        end;
+
+        // load build modes
+        Path:='ProjectOptions/BuildModes/';
+        Cnt:=xml.GetValue(Path+'Count',0);
+        for i:=1 to Cnt do begin
+          SubPath:=Path+'Item'+IntToStr(i)+'/';
+          BuildMode:=xml.GetValue(SubPath+'Name','');
+          // ToDo: load/store compile in lpg
+          if BuildMode<>'' then
+            FBuildModes.Add(TPGBuildMode.Create(BuildMode,false));
         end;
       end;
     finally
