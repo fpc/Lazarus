@@ -2,10 +2,6 @@ unit RegProjectGroup;
 
 {$mode objfpc}{$H+}
 
-{$IFNDEF IwrotethiscodePG}
-  {$ERROR This package is under construction}
-{$ENDIF}
-
 interface
 
 uses
