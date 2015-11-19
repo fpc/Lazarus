@@ -1767,7 +1767,7 @@ begin
     AForm:=Screen.Forms[i];
     //debugln(['TMainIDEBase.UpdateWindowMenu ',DbgSName(AForm),' Vis=',AForm.IsVisible,' Des=',DbgSName(AForm.Designer)]);
     if (not AForm.IsVisible) or (AForm=MainIDEBar) or (AForm=SplashForm)
-    or (AForm.Designer<>nil) or (WindowsList.IndexOf(AForm)>=0) then
+    or IsFormDesign(AForm) or (WindowsList.IndexOf(AForm)>=0) then
       continue;
     if IDEDockMaster<>nil then
     begin
@@ -1790,7 +1790,7 @@ begin
     // in the 'bring to front' list
     CurMenuItem := GetMenuItem(i, itmWindowLists);
     if EnvironmentOptions.Desktop.IDENameForDesignedFormList
-    and (TCustomForm(WindowsList[i]).Designer<>nil) then
+    and IsFormDesign(TWinControl(WindowsList[i])) then
       CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Name
     else
        CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Caption;
@@ -1799,7 +1799,7 @@ begin
     // in the 'center' list
     CurMenuItem := GetMenuItem(i, itmCenterWindowLists);
     if EnvironmentOptions.Desktop.IDENameForDesignedFormList
-    and (TCustomForm(WindowsList[i]).Designer<>nil) then
+    and IsFormDesign(TWinControl(WindowsList[i])) then
       CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Name
     else
       CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Caption;

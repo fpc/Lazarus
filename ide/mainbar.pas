@@ -527,7 +527,7 @@ begin
     begin
       AForm:=Screen.CustomForms[i];
       if (AForm.Parent=nil) and (AForm<>Self) and (AForm.IsVisible)
-      and (AForm.Designer=nil) and (not (csDesigning in AForm.ComponentState))
+      and not IsFormDesign(AForm)
       and not (fsModal in AForm.FormState) then
         inc(FormCount);
     end;

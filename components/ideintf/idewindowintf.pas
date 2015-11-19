@@ -1843,7 +1843,7 @@ begin
     begin
       // do not change Visible property while designing form. issue #20602
       // we save it into ARestoreVisible before any changes from here.
-      if (csDesigning in AForm.ComponentState) and (AForm.Designer <> nil) then
+      if IsFormDesign(AForm) then
         ARestoreVisible := AForm.Visible;
 
       if (AMoveToVisbleMode = vmAlwaysMoveToVisible) or
@@ -1854,11 +1854,11 @@ begin
       else
         AForm.ShowOnTop;
 
-      if (csDesigning in AForm.ComponentState) and (AForm.Designer <> nil) then
+      if IsFormDesign(AForm) then
         AForm.Visible := ARestoreVisible;
     end else
     begin
-      if (csDesigning in AForm.ComponentState) and (AForm.Designer <> nil) then
+      if IsFormDesign(AForm) then
         ARestoreVisible := AForm.Visible;
 
       AForm.Visible := True;
@@ -1879,7 +1879,7 @@ begin
         end;
       end;
 
-      if (csDesigning in AForm.ComponentState) and (AForm.Designer <> nil) then
+      if IsFormDesign(AForm) then
         AForm.Visible := ARestoreVisible;
     end;
   end;
@@ -2289,18 +2289,18 @@ begin
   // auto create a layout storage for every shown form
   Layout:=SimpleLayoutStorage.ItemByFormID(AForm.Name);
   if Layout=nil then begin
-    if not (csDesigning in AForm.ComponentState) then
+    if not IsFormDesign(AForm) then
       SimpleLayoutStorage.CreateWindowLayout(AForm);
   end
   else
     Layout.Form:=AForm;
 
-  if (IDEDockMaster<>nil) and (not (csDesigning in AForm.ComponentState))
+  if (IDEDockMaster<>nil) and (not IsFormDesign(AForm))
   and (FindWithName(AForm.Name)<>nil) then
     // show dockable if it has a creator and is not a designer form
     IDEDockMaster.ShowForm(AForm,BringToFront)
   else
-    if (IDETabMaster <> nil) and (csDesigning in AForm.ComponentState) then
+    if (IDETabMaster <> nil) and IsFormDesign(AForm) then
       IDETabMaster.ShowForm(AForm)
     else
       SimpleLayoutStorage.ApplyAndShow(Self,AForm,BringToFront,AMoveToVisbleMode);

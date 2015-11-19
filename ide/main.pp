@@ -2412,7 +2412,7 @@ begin
   for i:=0 to Screen.CustomFormCount-1 do begin
     AForm:=Screen.CustomForms[i];
     if AForm=MainIDEBar then continue;
-    if AForm.Designer<>nil then continue;
+    if IsFormDesign(AForm) then continue;
     if AForm.Parent<>nil then continue;
     if not AForm.CloseQuery then exit(false);
   end;
@@ -7929,7 +7929,7 @@ begin
   for i:=0 to HiddenWindowsOnRun.Count-1 do
   begin
     AForm:=TCustomForm(HiddenWindowsOnRun[i]);
-    if (AForm.Designer <> nil) or (csDesigning in AForm.ComponentState) then
+    if IsFormDesign(AForm) then
     begin
       {$IFDEF DEBUGHIDEIDEWINDOWSONRUN}
       DebugLn('TMainIDE.HideIDE: HIDING VIA LCLINTF ',dbgsName(AForm),' WindowState ',dbgs(AForm.WindowState),
@@ -7984,7 +7984,7 @@ begin
   for i := HiddenWindowsOnRun.Count - 1 downto 0 do
   begin
     AForm:=TCustomForm(HiddenWindowsOnRun[i]);
-    if (csDesigning in AForm.ComponentState) or (AForm.Designer <> nil) then
+    if IsFormDesign(AForm) then
     begin
       {$IFDEF DEBUGHIDEIDEWINDOWSONRUN}
       DebugLn('TMainIDE.UnhideIDE: Showing LCLIntf AForm ',dbgsName(AForm),
@@ -11574,7 +11574,7 @@ begin
     begin
       AForm:=Screen.CustomFormsZOrdered[i];
       if (AForm.Parent=nil) and (AForm<>MainIDEBar) and (AForm.IsVisible)
-      and (AForm.Designer=nil) and (not (csDesigning in AForm.ComponentState))
+      and not IsFormDesign(AForm)
       and not (fsModal in AForm.FormState) then
         LastActivatedWindows.Add(AForm);
     end;
