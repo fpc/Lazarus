@@ -35,7 +35,7 @@ const
 
 const
   IDEToolCompilePackage = 'Package';
-  IDEToolCompileProject = 'Project';
+  IDEToolCompileProject = 'Project'; // the active project
   IDEToolCompileIDE     = 'IDE';
 type
 

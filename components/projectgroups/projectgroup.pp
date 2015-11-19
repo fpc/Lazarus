@@ -30,6 +30,7 @@ type
   private
     FFiles: TStringList;
     FRequiredPackages: TObjectList; // list of TPGDependency
+    function CompileUsingLazBuild(const AAction: TPGTargetAction): TPGActionResult;
   protected
     function GetFileCount: integer; override;
     function GetFiles(Index: integer): string; override;
@@ -842,6 +843,75 @@ begin
     FreeAndNil(FRequiredPackages);
 end;
 
+function TIDECompileTarget.CompileUsingLazBuild(const AAction: TPGTargetAction
+  ): TPGActionResult;
+var
+  FPCParser: TFPCParser;
+  Params: TStringList;
+  WorkingDir: String;
+  LazBuildFilename: String;
+  CompileHint: String;
+  ToolTitle, ToolKind: String;
+  Tool: TAbstractExternalTool;
+begin
+  Result:=arFailed;
+  case TargetType of
+  ttProject:
+    begin
+      ToolTitle:='Compile Project '+ExtractFileNameOnly(Filename);
+      ToolKind:='Other Project';
+    end;
+  ttPackage:
+    begin
+      ToolTitle:='Compile Package '+ExtractFileNameOnly(Filename);
+      ToolKind:='Package';
+    end;
+  else exit;
+  end;
+
+  CompileHint:='Project Group: '+Parent.Filename+LineEnding;
+
+  LazBuildFilename:=GetLazBuildFilename;
+  if LazBuildFilename='' then begin
+    IDEMessageDialog('lazbuild not found', 'The lazbuild'+ExeExt+' was not '
+      +'found.'
+      , mtError, [mbOk]);
+    exit(arFailed);
+  end;
+
+  WorkingDir:=ExtractFilePath(Filename);
+  Params:=TStringList.Create;
+  if AAction=taCompileClean then
+    Params.Add('-B');
+  Params.Add(Filename);
+
+  Tool:=ExternalToolList.Add(ToolTitle);
+  Tool.Reference(Self, ClassName);
+  try
+    Tool.Data:=TIDEExternalToolData.Create(ToolKind, ExtractFileNameOnly(
+      Filename), Filename);
+    Tool.FreeData:=true;
+    Tool.Hint:=CompileHint;
+    Tool.Process.Executable:=LazBuildFilename;
+    Tool.Process.Parameters:=Params;
+    Tool.Process.CurrentDirectory:=WorkingDir;
+    FPCParser:=TFPCParser(Tool.AddParsers(SubToolFPC));
+    FPCParser.HideHintsSenderNotUsed:=true; //not AProject.CompilerOptions.ShowHintsForSenderNotUsed;
+    FPCParser.HideHintsUnitNotUsedInMainSource:=true; //not AProject.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc;
+    //if (not AProject.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc)
+    //and (AProject.MainFilename<>'') then
+    //  FPCParser.FilesToIgnoreUnitNotUsed.Add(AProject.MainFilename);
+    Tool.AddParsers(SubToolMake);
+    Tool.Execute;
+    Tool.WaitForExit;
+    if Tool.ErrorMessage='' then
+      Result:=arOK;
+  finally
+    Tool.Release(Self);
+    Params.Free;
+  end;
+end;
+
 function TIDECompileTarget.GetFileCount: integer;
 begin
   if FFiles=nil then
@@ -1024,10 +1094,6 @@ end;
 function TIDECompileTarget.ProjectAction(AAction: TPGTargetAction): TPGActionResult;
 var
   F: TProjectBuildFlags;
-  Tool: TAbstractExternalTool;
-  aTitle, aCompileHint, LazBuildFilename, WorkingDir: String;
-  Params: TStringList;
-  FPCParser: TFPCParser;
 begin
   Result:=arFailed;
 
@@ -1048,7 +1114,7 @@ begin
            if (AAction=taCompileClean) then
              Include(F,pbfCleanCompile);
            if LazarusIDE.DoBuildProject(crCompile,F)=mrOk then
-             exit(arOK);
+             Result:=arOK;
          end;
        taRun :
          begin
@@ -1059,66 +1125,22 @@ begin
   end else begin
     // project not loaded => use lazbuild
     case AAction of
-    taOpen:
+    taOpen,taSettings:
       begin
         // open project
-        if LazarusIDE.DoOpenProjectFile(Filename,[ofAddToRecent])=mrOk then
-          Result:=arOk;
-      end;
-    taSettings:
-      begin
-        // open project, then show options
         if LazarusIDE.DoOpenProjectFile(Filename,[ofAddToRecent])<>mrOk then
           exit(arFailed);
-        if ExecuteIDECommand(Self,ecProjectOptions) then
-          Result:=arOK;
+        if AAction=taSettings then
+          if not ExecuteIDECommand(Self,ecProjectOptions) then
+            Result:=arFailed;
+        Result:=arOK;
       end;
     taCompile,
     taCompileClean:
       begin
         // run lazbuild as external tool
         IDEMessagesWindow.Clear;
-
-        aTitle:='Compile Project '+ExtractFileNameOnly(Filename);
-        aCompileHint:='Project Group: '+Parent.Filename+LineEnding;
-
-        LazBuildFilename:=GetLazBuildFilename;
-        if LazBuildFilename='' then begin
-          IDEMessageDialog('lazbuild not found','The lazbuild'+ExeExt+' was not found.'
-            ,mtError,[mbOk]);
-          exit(arFailed);
-        end;
-
-        WorkingDir:=ExtractFilePath(Filename);
-        Params:=TStringList.Create;
-        if AAction=taCompileClean then
-          Params.Add('-B');
-        Params.Add(Filename);
-
-        Tool:=ExternalToolList.Add(aTitle);
-        Tool.Reference(Self,ClassName);
-        try
-          Tool.Data:=TIDEExternalToolData.Create('Other Project','',Filename);
-          Tool.FreeData:=true;
-          Tool.Hint:=aCompileHint;
-          Tool.Process.Executable:=LazBuildFilename;
-          Tool.Process.Parameters:=Params;
-          Tool.Process.CurrentDirectory:=WorkingDir;
-          FPCParser:=TFPCParser(Tool.AddParsers(SubToolFPC));
-          FPCParser.HideHintsSenderNotUsed:=true; //not AProject.CompilerOptions.ShowHintsForSenderNotUsed;
-          FPCParser.HideHintsUnitNotUsedInMainSource:=true; //not AProject.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc;
-          //if (not AProject.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc)
-          //and (AProject.MainFilename<>'') then
-          //  FPCParser.FilesToIgnoreUnitNotUsed.Add(AProject.MainFilename);
-          Tool.AddParsers(SubToolMake);
-          Tool.Execute;
-          Tool.WaitForExit;
-          if Tool.ErrorMessage='' then
-            Result:=arOK;
-        finally
-          Tool.Release(Self);
-          Params.Free;
-        end;
+        Result:=CompileUsingLazBuild(AAction);
       end;
     taRun:
       begin
@@ -1136,20 +1158,19 @@ function TIDECompileTarget.PackageAction(AAction: TPGTargetAction): TPGActionRes
 begin
   Result:=arFailed;
 
-  if (AAction in [taOpen,taSettings]) then
-    if PackageEditingInterface.DoOpenPackageFile(FileName,[pofDoNotOpenEditor],False)<>mrOk then
-      exit;
   case AAction of
-     taSettings :
-       ; // TODO: Need IDE integration
-     taCompile :
-       ; // TODO: Need IDE integration
-     taCompileClean :
-       ; // TODO: Need IDE integration
-     taInstall :
-       ; // TODO: Need IDE integration
-     taUninstall :
-       ; // TODO: Need IDE integration
+  taOpen,
+  taSettings:
+    begin
+      if PackageEditingInterface.DoOpenPackageFile(FileName,[],False)<>mrOk then
+        exit(arFailed);
+      if AAction=taSettings then ;
+      Result:=arOK;
+    end;
+  taCompile,
+  taCompileClean: ; // ToDo compile package
+  taInstall: ;  // ToDo install
+  taUninstall: ; // ToDo uninstall
   end;
 end;
 

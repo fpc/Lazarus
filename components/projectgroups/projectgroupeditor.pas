@@ -497,7 +497,7 @@ begin
   //debugln(['TProjectGroupEditorForm.TVPGDblClick ',DbgSName(Sender),' ',TVPG.Selected.Text,' ',ND<>nil]);
   if ND=nil then exit;
   case ND.NodeType of
-  ntProjectGroup: ;
+  ntProjectGroup,
   ntTarget:
     begin
       // activate target
