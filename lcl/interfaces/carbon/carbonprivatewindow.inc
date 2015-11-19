@@ -1689,7 +1689,7 @@ procedure TCarbonWindow.ShowHide(AVisible: Boolean);
 begin
   //DebugLn('TCarbonWindow.ShowHide ' + DbgSName(LCLobject),' ', DbgS(AVisible));
   if Assigned(fWindowRef) then begin
-    if AVisible or (csDesigning in LCLobject.ComponentState) then
+    if AVisible then
     begin
       MacOSAll.ShowWindow(fWindowRef);
     end
