@@ -64,7 +64,7 @@ type
     ImageListMain: TImageList;
     PMIRunMenuItem: TMenuItem;
     PMICopyFilenameMenuItem: TMenuItem;
-    PMIOPen: TMenuItem;
+    PMIOpen: TMenuItem;
     PMISaveAs: TMenuItem;
     PMIProperties: TMenuItem;
     PMILater: TMenuItem;
@@ -120,6 +120,7 @@ type
     procedure ATargetUninstallUpdate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure PopupMenuMorePopup(Sender: TObject);
     procedure TVPGDblClick(Sender: TObject);
   private
     FProjectGroup: TProjectGroup;
@@ -485,6 +486,24 @@ procedure TProjectGroupEditorForm.FormDestroy(Sender: TObject);
 begin
   if ProjectGroupEditorForm=Self then
     ProjectGroupEditorForm:=nil;
+end;
+
+procedure TProjectGroupEditorForm.PopupMenuMorePopup(Sender: TObject);
+var
+  ND: TNodeData;
+  AllowedActions: TPGTargetActions;
+begin
+  ND:=SelectedNodeData;
+  if (ND<>nil) and (ND.Target<>nil) then begin
+    AllowedActions:=PGTargetActions[ND.Target.TargetType];
+  end else begin
+    AllowedActions:=[taOpen,taSettings];
+  end;
+  PMIOpen.Visible:=taOpen in AllowedActions;
+  PMIProperties.Visible:=taSettings in AllowedActions;
+  PMICompile.Visible:=taCompile in AllowedActions;
+  PMICompileClean.Visible:=taCompileClean in AllowedActions;
+  PMIRunMenuItem.Visible:=taRun in AllowedActions;
 end;
 
 procedure TProjectGroupEditorForm.TVPGDblClick(Sender: TObject);

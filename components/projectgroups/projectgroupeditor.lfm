@@ -826,6 +826,7 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
   end
   object PopupMenuMore: TPopupMenu
     Images = ImageListMain
+    OnPopup = PopupMenuMorePopup
     left = 208
     top = 96
     object PMISaveAs: TMenuItem
@@ -1218,7 +1219,7 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       }
     end
-    object PMIOPen: TMenuItem
+    object PMIOpen: TMenuItem
       Action = ATargetOpen
     end
     object PMIProperties: TMenuItem

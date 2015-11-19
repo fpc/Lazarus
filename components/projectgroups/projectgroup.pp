@@ -1164,11 +1164,14 @@ begin
     begin
       if PackageEditingInterface.DoOpenPackageFile(FileName,[],False)<>mrOk then
         exit(arFailed);
-      if AAction=taSettings then ;
       Result:=arOK;
     end;
   taCompile,
-  taCompileClean: ; // ToDo compile package
+  taCompileClean:
+    begin
+      // compile independent of active project => use lazbuild
+      Result:=CompileUsingLazBuild(AAction);
+    end;
   taInstall: ;  // ToDo install
   taUninstall: ; // ToDo uninstall
   end;
