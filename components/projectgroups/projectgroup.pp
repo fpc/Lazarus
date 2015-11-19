@@ -1184,7 +1184,7 @@ begin
       Result:=CompileUsingLazBuild(AAction);
       if Result<>arOK then exit;
       if AAction=taCompileFromHere then
-        PerformNextTarget(taCompileFromHere);
+        Result:=PerformNextTarget(taCompileFromHere);
     end;
   taInstall: ;  // ToDo install
   taUninstall: ; // ToDo uninstall
@@ -1201,7 +1201,11 @@ begin
   taSettings: ;
   taCompile,
   taCompileClean,
-  taCompileFromHere: ;// ToDo
+  taCompileFromHere:
+    begin
+      if AAction=taCompileFromHere then
+        Result:=PerformNextTarget(taCompileFromHere);
+    end;
   end;
 end;
 
@@ -1216,7 +1220,11 @@ begin
   taSettings: ;
   taCompile,
   taCompileClean,
-  taCompileFromHere: ;
+  taCompileFromHere:
+    begin
+      if AAction=taCompileFromHere then
+        Result:=PerformNextTarget(taCompileFromHere);
+    end;
   taRun: ;
   end;
 end;
@@ -1231,7 +1239,11 @@ begin
   taSettings: ;
   taCompile,
   taCompileClean,
-  taCompileFromHere: ;
+  taCompileFromHere:
+    begin
+      if AAction=taCompileFromHere then
+        Result:=PerformNextTarget(taCompileFromHere);
+    end;
   taRun: ;
   end;
 end;
