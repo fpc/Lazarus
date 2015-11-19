@@ -142,13 +142,13 @@ type
   protected
     FProjectGroup: TIDEProjectGroup;
   protected
-    function CheckSaved: Boolean;
     function GetCurrentProjectGroup: TProjectGroup; override;
     function ShowProjectGroupEditor: Boolean;
   public
     constructor Create;
     destructor Destroy; override;
     procedure UpdateRecentProjectGroupMenu;
+    function CheckSaved: Boolean;
     // Events for main menu
     procedure DoNewClick(Sender: TObject);
     procedure DoOpenClick(Sender: TObject);
@@ -347,32 +347,26 @@ end;
 
 function TIDEProjectGroupManager.CheckSaved: Boolean;
 begin
-  Result:=Not Assigned(FProjectGroup);
-  if Not Result then
+  if (FProjectGroup=nil) or (not FProjectGroup.Modified) then exit(true);
+  case IDEQuestionDialog(lisProjectGroupModified,
+                         Format(lisProjectGroupModifiedConfirm,[FProjectGroup.FileName]),
+                         mtWarning,
+                         [mrYes,lisSavePG,
+                          mrNo,lisDiscard,
+                          mrAbort,lisAbort],'') of
+  mrYes :
     begin
-    Result:=Not FProjectGroup.Modified;
-    If Not Result then
-      // For some reason, only 2 buttons are shown ???
-      Case IDEQuestionDialog(lisProjectGroupModified,
-                             Format(lisProjectGroupModifiedConfirm,[FProjectGroup.FileName]),
-                             mtWarning,
-                             [mrYes,lisSavePG,
-                              mrNo,lisDiscard,
-                              mrAbort,lisAbort],'') of
-         mrYes :
-           begin
-           SaveProjectGroup;
-           Result:=true;
-           end;
-         mrNo :
-           begin
-           FProjectGroup.Modified:=False;
-           Result:=True;
-           end
-       else
-         Result:=False;
-       end;
+      SaveProjectGroup;
+      Result:=true;
     end;
+  mrNo :
+    begin
+      FProjectGroup.Modified:=False;
+      Result:=True;
+    end
+  else
+    Result:=False;
+  end;
 end;
 
 function TIDEProjectGroupManager.GetCurrentProjectGroup: TProjectGroup;

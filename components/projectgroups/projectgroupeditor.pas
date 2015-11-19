@@ -1,5 +1,6 @@
 {
   Todo:
+    - ask save on exit
     - save on save all
     - close windows on IDE close
     - activate project when project is opened
@@ -118,6 +119,7 @@ type
     procedure ATargetLaterUpdate(Sender: TObject);
     procedure ATargetUninstallExecute(Sender: TObject);
     procedure ATargetUninstallUpdate(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure PopupMenuMorePopup(Sender: TObject);
@@ -436,6 +438,12 @@ procedure TProjectGroupEditorForm.ATargetUninstallUpdate(Sender: TObject);
 begin
   AllowPerform(taUninstall,Sender as TAction);
   UpdateIDEMenuCommandFromAction(Sender,cmdTargetUninstall);
+end;
+
+procedure TProjectGroupEditorForm.FormCloseQuery(Sender: TObject;
+  var CanClose: boolean);
+begin
+  CanClose:=IDEProjectGroupManager.CheckSaved;
 end;
 
 procedure TProjectGroupEditorForm.UpdateIDEMenuCommandFromAction(

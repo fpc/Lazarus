@@ -6,6 +6,7 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
   Caption = 'ProjectGroupEditorForm'
   ClientHeight = 358
   ClientWidth = 646
+  OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   LCLVersion = '1.5'
