@@ -8,7 +8,7 @@ interface
 
 uses
   Classes, SysUtils, IDEOptionsIntf, PackageIntf, ProjectIntf, LazFileUtils,
-  LazFileCache, LazMethodList;
+  LazFileCache, LazMethodList, LazLogger;
 
 Type
   TPGTargetType = (
@@ -26,6 +26,7 @@ Type
     taSettings,
     taCompile,
     taCompileClean,
+    taCompileFromHere,
     taRun,
     taInstall,
     taUninstall);
@@ -74,6 +75,7 @@ Type
     procedure Activate;
     procedure DeActivate;
     function GetRootProjectGroup: TProjectGroup;
+    function GetNext: TPGCompileTarget;
     property Parent: TPGCompileTarget read FParent;
     property Filename: string read FFilename write SetFilename; // Absolute, not relative.
     property Removed: boolean read FRemoved write SetRemoved;
@@ -183,11 +185,11 @@ var
 const
   PGTargetActions: array[TPGTargetType] of TPGTargetActions = (
     [], // ttUnknown
-    [taOpen,taSettings,taCompile,taCompileClean,taRun], // ttProject
-    [taOpen,taSettings,taCompile,taCompileClean,taInstall,taUninstall], // ttPackage
-    [taOpen,taCompile,taCompileClean], // ttProjectGroup
-    [taOpen,taCompile,taRun], // ttPascalFile
-    [taOpen,taRun] // ttExternalTool
+    [taOpen,taSettings,taCompile,taCompileClean,taCompileFromHere,taRun], // ttProject
+    [taOpen,taSettings,taCompile,taCompileClean,taCompileFromHere,taInstall,taUninstall], // ttPackage
+    [taOpen,taCompile,taCompileClean,taCompileFromHere], // ttProjectGroup
+    [taOpen,taCompile,taCompileFromHere,taRun], // ttPascalFile
+    [taOpen,taCompile,taCompileClean,taCompileFromHere,taRun] // ttExternalTool
   );
 
 function TargetTypeFromExtenstion(AExt: String): TPGTargetType;
@@ -481,6 +483,33 @@ begin
   aTarget:=Self;
   while (aTarget.Parent<>nil) do aTarget:=aTarget.Parent;
   Result:=aTarget.ProjectGroup;
+end;
+
+function TPGCompileTarget.GetNext: TPGCompileTarget;
+var
+  aTarget: TPGCompileTarget;
+  PG: TProjectGroup;
+  i: Integer;
+begin
+  // check first child
+  if (ProjectGroup<>nil) and (ProjectGroup.TargetCount>0) then begin
+    Result:=ProjectGroup.Targets[0];
+    exit(Result);
+  end;
+  // check next sibling
+  aTarget:=Self;
+  while aTarget.Parent<>nil do begin
+    PG:=aTarget.Parent.ProjectGroup;
+    if PG<>nil then begin
+      i:=PG.IndexOfTarget(aTarget);
+      if (i>=0) and (i+1<PG.TargetCount) then begin
+        Result:=PG.Targets[i+1];
+        exit(Result);
+      end;
+    end;
+    aTarget:=aTarget.Parent;
+  end;
+  Result:=nil;
 end;
 
 function TPGCompileTarget.Perform(AAction: TPGTargetAction): TPGActionResult;

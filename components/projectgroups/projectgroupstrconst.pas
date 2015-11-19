@@ -30,6 +30,7 @@ Resourcestring
   lisTargetRemove       = 'Remove target';
   lisTargetCompile      = 'Compile';
   lisTargetCompileClean = 'Compile clean';
+  lisTargetCompileFromHere = 'Compile from here';
   lisTargetInstall      = 'Install';
   lisTargetUnInstall    = 'Uninstall';
   lisTargetActivate     = 'Activate target';

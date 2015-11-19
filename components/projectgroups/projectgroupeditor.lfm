@@ -26,32 +26,32 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
       Action = AProjectGroupSave
     end
     object TBAdd: TToolButton
-      Left = 106
+      Left = 117
       Top = 2
       Action = AProjectGroupAddExisting
     end
     object TBNewTarget: TToolButton
-      Left = 34
+      Left = 37
       Top = 2
       Action = AProjectGroupAddNew
     end
     object TBDelete: TToolButton
-      Left = 136
+      Left = 150
       Top = 2
       Action = AProjectGroupDelete
     end
     object TBCompile: TToolButton
-      Left = 189
+      Left = 208
       Top = 2
       Action = ATargetCompile
     end
     object TBCompileClean: TToolButton
-      Left = 241
+      Left = 268
       Top = 2
       Action = ATargetCompileClean
     end
     object ToolButton1: TToolButton
-      Left = 326
+      Left = 367
       Height = 46
       Top = 2
       Width = 10
@@ -59,31 +59,31 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
       Style = tbsSeparator
     end
     object TBTargetUp: TToolButton
-      Left = 390
+      Left = 435
       Top = 2
       Action = ATargetEarlier
     end
     object TBTargetLater: TToolButton
-      Left = 434
+      Left = 483
       Top = 2
       Action = ATargetLater
     end
     object TBMore: TToolButton
-      Left = 471
+      Left = 523
       Top = 2
       Caption = 'More...'
       DropdownMenu = PopupMenuMore
       Style = tbsDropDown
     end
     object TBActivate: TToolButton
-      Left = 336
+      Left = 377
       Top = 2
       Action = ATargetActivate
     end
   end
   object TVPG: TTreeView
     Left = 0
-    Height = 291
+    Height = 295
     Top = 48
     Width = 646
     Align = alClient
@@ -100,8 +100,8 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
   end
   object SBPG: TStatusBar
     Left = 0
-    Height = 19
-    Top = 339
+    Height = 15
+    Top = 343
     Width = 646
     Panels = <    
       item
@@ -933,6 +933,12 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
       OnExecute = ATargetCompileCleanExecute
       OnUpdate = ATargetCompileCleanUpdate
     end
+    object ATargetCompileFromHere: TAction
+      Category = 'TargetAction'
+      Caption = 'Compile from here'
+      OnExecute = ATargetCompileFromHereExecute
+      OnUpdate = ATargetCompileFromHereUpdate
+    end
     object ATargetProperties: TAction
       Category = 'TargetAction'
       Caption = 'Properties'
@@ -1102,6 +1108,9 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
         FF00FFFFFF000000000000000000000000000000000000000000BE7A45FFBE7A
         45FFBE7A45FF0000000000000000000000000000000000000000
       }
+    end
+    object PMICompileFromHere: TMenuItem
+      Action = ATargetCompileFromHere
     end
     object PMIDelete: TMenuItem
       Action = AProjectGroupDelete

@@ -45,6 +45,7 @@ type
     function PascalFileAction(AAction: TPGTargetAction): TPGActionResult;
     function ExternalToolAction(AAction: TPGTargetAction): TPGActionResult;
     function PerformAction(AAction: TPGTargetAction): TPGActionResult; override;
+    function PerformNextTarget(AAction: TPGTargetAction): TPGActionResult;
     procedure ActiveChanged(Sender: TPGCompileTarget); override;
   public
     procedure LoadTarget(Recursively: boolean); virtual;
@@ -193,6 +194,7 @@ var
   cmdTargetLater,
   cmdTargetCompile,
   cmdTargetCompileClean,
+  cmdTargetCompileFromHere,
   cmdTargetInstall,
   cmdTargetOpen,
   cmdTargetRun,
@@ -1108,14 +1110,17 @@ begin
            if ExecuteIDECommand(Self,ecProjectOptions) then
              Result:=arOK;
          end;
+       taCompile,
        taCompileClean,
-       taCompile :
+       taCompileFromHere:
          begin
            F:=[];
            if (AAction=taCompileClean) then
              Include(F,pbfCleanCompile);
            if LazarusIDE.DoBuildProject(crCompile,F)=mrOk then
              Result:=arOK;
+           if AAction=taCompileFromHere then
+             PerformNextTarget(taCompileFromHere);
          end;
        taRun :
          begin
@@ -1137,11 +1142,15 @@ begin
         Result:=arOK;
       end;
     taCompile,
-    taCompileClean:
+    taCompileClean,
+    taCompileFromHere:
       begin
         // run lazbuild as external tool
         IDEMessagesWindow.Clear;
         Result:=CompileUsingLazBuild(AAction);
+        if Result<>arOK then exit;
+        if AAction=taCompileFromHere then
+          PerformNextTarget(taCompileFromHere);
       end;
     taRun:
       begin
@@ -1168,10 +1177,14 @@ begin
       Result:=arOK;
     end;
   taCompile,
-  taCompileClean:
+  taCompileClean,
+  taCompileFromHere:
     begin
       // compile independent of active project => use lazbuild
       Result:=CompileUsingLazBuild(AAction);
+      if Result<>arOK then exit;
+      if AAction=taCompileFromHere then
+        PerformNextTarget(taCompileFromHere);
     end;
   taInstall: ;  // ToDo install
   taUninstall: ; // ToDo uninstall
@@ -1187,7 +1200,8 @@ begin
   taOpen: ProjectGroupManager.LoadProjectGroup(FileName,[]);
   taSettings: ;
   taCompile,
-  taCompileClean: ;// ToDo
+  taCompileClean,
+  taCompileFromHere: ;// ToDo
   end;
 end;
 
@@ -1200,8 +1214,9 @@ begin
   case AAction of
   taOpen: ;
   taSettings: ;
-  taCompile: ;
-  taCompileClean: ;
+  taCompile,
+  taCompileClean,
+  taCompileFromHere: ;
   taRun: ;
   end;
 end;
@@ -1214,8 +1229,9 @@ begin
   // ToDo
   case AAction of
   taSettings: ;
-  taCompile: ;
-  taCompileClean: ;
+  taCompile,
+  taCompileClean,
+  taCompileFromHere: ;
   taRun: ;
   end;
 end;
@@ -1229,6 +1245,24 @@ begin
     ttPascalFile: Result:=PascalFileAction(AAction);
     ttExternalTool: Result:=ExternalToolAction(AAction);
   end;
+end;
+
+function TIDECompileTarget.PerformNextTarget(AAction: TPGTargetAction
+  ): TPGActionResult;
+var
+  aTarget: TIDECompileTarget;
+begin
+  aTarget:=TIDECompileTarget(GetNext);
+  while (aTarget<>nil) do
+  begin
+    if AAction in aTarget.AllowedActions then
+    begin
+      Result:=aTarget.PerformAction(AAction);
+      exit;
+    end;
+    aTarget:=TIDECompileTarget(aTarget.GetNext);
+  end;
+  Result:=arOK;
 end;
 
 procedure TIDECompileTarget.ActiveChanged(Sender: TPGCompileTarget);

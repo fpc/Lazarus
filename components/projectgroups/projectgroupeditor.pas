@@ -1,5 +1,6 @@
 {
   Todo:
+    - new button enable
     - close windows on IDE close
     - activate project when project is opened
     - deactivate project when project is closed
@@ -43,6 +44,7 @@ type
   { TProjectGroupEditorForm }
 
   TProjectGroupEditorForm = class(TForm)
+    ATargetCompileFromHere: TAction;
     ATargetCopyFilename: TAction;
     AProjectGroupAddExisting: TAction;
     ATargetCompile: TAction;
@@ -61,6 +63,7 @@ type
     AProjectGroupSave: TAction;
     ActionListMain: TActionList;
     ImageListMain: TImageList;
+    PMICompileFromHere: TMenuItem;
     PMIRunMenuItem: TMenuItem;
     PMICopyFilenameMenuItem: TMenuItem;
     PMIOpen: TMenuItem;
@@ -95,6 +98,8 @@ type
     procedure ATargetCompileCleanExecute(Sender: TObject);
     procedure ATargetCompileCleanUpdate(Sender: TObject);
     procedure ATargetCompileExecute(Sender: TObject);
+    procedure ATargetCompileFromHereExecute(Sender: TObject);
+    procedure ATargetCompileFromHereUpdate(Sender: TObject);
     procedure ATargetCompileUpdate(Sender: TObject);
     procedure AProjectGroupDeleteExecute(Sender: TObject);
     procedure AProjectGroupDeleteUpdate(Sender: TObject);
@@ -300,7 +305,7 @@ end;
 
 procedure TProjectGroupEditorForm.SetProjectGroup(AValue: TProjectGroup);
 begin
-  debugln(['TProjectGroupEditorForm.SetProjectGroup START ',FProjectGroup=AValue,' new=',DbgSName(AValue)]);
+  //debugln(['TProjectGroupEditorForm.SetProjectGroup START ',FProjectGroup=AValue,' new=',DbgSName(AValue)]);
   if FProjectGroup=AValue then Exit;
   if ProjectGroup<>nil then
   begin
@@ -476,6 +481,7 @@ begin
   SetItem(cmdTargetRemove,@AProjectGroupDeleteExecute);
   SetItem(cmdTargetCompile,@ATargetCompileExecute);
   SetItem(cmdTargetCompileClean,@ATargetCompileCleanExecute);
+  SetItem(cmdTargetCompileFromHere,@ATargetCompileFromHereExecute);
   SetItem(cmdTargetInstall,@ATargetInstallExecute);
   SetItem(cmdTargetUnInstall,@ATargetUnInstallExecute);
   SetItem(cmdTargetLater,@ATargetLaterExecute);
@@ -708,6 +714,18 @@ end;
 procedure TProjectGroupEditorForm.ATargetCompileExecute(Sender: TObject);
 begin
   Perform(taCompile);
+end;
+
+procedure TProjectGroupEditorForm.ATargetCompileFromHereExecute(Sender: TObject
+  );
+begin
+  Perform(taCompileFromHere);
+end;
+
+procedure TProjectGroupEditorForm.ATargetCompileFromHereUpdate(Sender: TObject);
+begin
+  AllowPerform(taCompileFromHere,Sender as TAction);
+  UpdateIDEMenuCommandFromAction(Sender,cmdTargetCompile);
 end;
 
 procedure TProjectGroupEditorForm.ATargetCompileUpdate(Sender: TObject);

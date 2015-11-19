@@ -28,8 +28,8 @@ begin
   PGEditMenuSectionCompile:=Section;
   cmdTargetCompile:=RegisterIDEMenuCommand(Section,'TargetCompile',lisTargetCompile);// ToDo: caption: compile "target"
   cmdTargetCompileClean:=RegisterIDEMenuCommand(Section,'TargetCompileClean',lisTargetCompileClean);
+  cmdTargetCompileFromHere:=RegisterIDEMenuCommand(Section,'TargetCompileFromHere',lisTargetCompileFromHere);
   // ToDo: clean ... -> clean up dialog
-  // ToDo: compile all from here
   // ToDo: set build mode of all projects
 
   Section:=RegisterIDEMenuSection(Root,'AddRemove');
