@@ -180,6 +180,7 @@ type
     procedure FetchUnitPath(aPhase: TExtToolParserSyncPhase; MsgWorkerDir: String);
     function FileExists(const Filename: string; aSynchronized: boolean): boolean;
     function CheckForMsgId(p: PChar): boolean; // (MsgId) message
+    function CheckFollowUpMessage(p: PChar): boolean;
     function CheckForFileLineColMessage(p: PChar): boolean; // the normal messages: filename(y,x): Hint: ..
     function CheckForGeneralMessage(p: PChar): boolean; // Fatal: .., Error: ..., Panic: ..
     function CheckForInfos(p: PChar): boolean; // e.g. Free Pascal Compiler version 2.6.4 [2014/02/26] for i386
@@ -190,6 +191,7 @@ type
     function CheckForLineProgress(p: PChar): boolean; // 600 206.521/231.648 Kb Used
     function CheckForLoadFromUnit(p: PChar): Boolean;
     function CheckForWindresErrors(p: PChar): boolean;
+    function CheckForLinkerErrors(p: PChar): boolean;
     function CheckForAssemblerErrors(p: PChar): boolean;
     function CreateMsgLine: TMessageLine;
     procedure AddLinkingMessages;
@@ -1474,6 +1476,23 @@ begin
   AddMsgLine(MsgLine);
 end;
 
+function TIDEFPCParser.CheckForLinkerErrors(p: PChar): boolean;
+const
+  pat: String = 'Undefined symbols for architecture';
+var
+  MsgLine: TMessageLine;
+begin
+  if CompareMem(PChar(pat),p,length(pat)) then begin
+    Result:=true;
+    MsgLine:=CreateMsgLine;
+    MsgLine.MsgID:=0;
+    MsgLine.SubTool:=SubToolFPCLinker;
+    MsgLine.Urgency:=mluError;
+    MsgLine.Msg:='linker: '+p;
+    inherited AddMsgLine(MsgLine);
+  end;
+end;
+
 function TIDEFPCParser.CheckForAssemblerErrors(p: PChar): boolean;
 // example:
 //   <stdin>:227:9: error: unsupported directive '.stabs'
@@ -2614,6 +2633,28 @@ begin
   AddMsgLine(MsgLine);
 end;
 
+function TIDEFPCParser.CheckFollowUpMessage(p: PChar): boolean;
+var
+  i: Integer;
+  LastMsgLine, MsgLine: TMessageLine;
+begin
+  if (p^=' ') then begin
+    i:=Tool.WorkerMessages.Count-1;
+    if i<0 then exit;
+    LastMsgLine:=Tool.WorkerMessages[i];
+    if LastMsgLine.SubTool=SubToolFPCLinker then begin
+      // a follow up line of the linker output
+      Result:=true;
+      MsgLine:=CreateMsgLine;
+      MsgLine.MsgID:=0;
+      MsgLine.SubTool:=SubToolFPCLinker;
+      MsgLine.Urgency:=LastMsgLine.Urgency;
+      MsgLine.Msg:='linker: '+p;
+      inherited AddMsgLine(MsgLine);
+    end;
+  end;
+end;
+
 function TIDEFPCParser.CheckForFileLineColMessage(p: PChar): boolean;
 { filename(line,column) Hint: message
   filename(line,column) Hint: (msgid) message
@@ -2823,7 +2864,10 @@ begin
     while p^ in [' '] do inc(p);
   end;
 
-  if p^ in [#0..#31,' '] then exit; // not a fpc message
+  if p^ in [#0..#31,' '] then begin
+    CheckFollowUpMessage(p);
+    exit; // not a fpc message
+  end;
 
   Handled:=true;
 
@@ -2850,6 +2894,8 @@ begin
   // check for windres errors
   if CheckForWindresErrors(p) then exit;
   // check for linker errors
+  if CheckForLinkerErrors(p) then exit;
+  // check for assembler errors
   if CheckForAssemblerErrors(p) then exit;
 
   {$IFDEF VerboseFPCParser}
