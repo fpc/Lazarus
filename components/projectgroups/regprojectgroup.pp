@@ -88,5 +88,8 @@ begin
   SetProjectGroupEditorCallBack;
 end;
 
+finalization
+  FreeAndNil(IDEProjectGroupManager);
+
 end.
 

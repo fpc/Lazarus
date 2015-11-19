@@ -49,6 +49,7 @@ type
   public
     procedure LoadTarget(Recursively: boolean); virtual;
     procedure UnLoadTarget; virtual;
+    destructor Destroy; override;
   end;
 
   // Since a project group iself is also a target, we need a target to represent
@@ -395,6 +396,7 @@ end;
 
 destructor TIDEProjectGroupManager.Destroy;
 begin
+  FreeAndNil(FProjectGroup);
   FreeAndNil(FOptions);
   inherited Destroy;
 end;
@@ -469,7 +471,7 @@ var
 begin
   Item:=Sender as TIDEMenuCommand;
   aFilename:=Item.Caption;
-  debugln(['TIDEProjectGroupManager.DoOpenRecentClick ',aFilename]);
+  //debugln(['TIDEProjectGroupManager.DoOpenRecentClick ',aFilename]);
   LoadProjectGroup(aFilename,[pgloLoadRecursively]);
 end;
 
@@ -523,17 +525,17 @@ begin
   FProjectGroup:=TIDEProjectGroup.Create(nil);
   FProjectGroup.FileName:=AFileName;
   FProjectGroup.LoadFromFile(AOptions);
-  If not (pgloSkipDialog in AOptions) then
+  if not (pgloSkipDialog in AOptions) then
     ShowProjectGroupEditor;
 end;
 
 procedure TIDEProjectGroupManager.SaveProjectGroup;
 begin
-  If Assigned(FProjectGroup) then
+  if Assigned(FProjectGroup) then
   begin
-    If (FProjectGroup.FileName<>'') or GetNewFileName then
+    if (FProjectGroup.FileName<>'') or GetNewFileName then
       FProjectGroup.SaveToFile;
-    end;
+  end;
 end;
 
 { TRootProjectGroupTarget }
@@ -639,7 +641,7 @@ begin
   Result.FileName:=AFileName;
   FTargets.Add(Result);
   IncreaseChangeStamp;
-  If Assigned(FOnTargetAdded) then
+  if Assigned(FOnTargetAdded) then
     FOnTargetAdded(Self,Result);
 end;
 
@@ -829,12 +831,18 @@ end;
 
 procedure TIDECompileTarget.UnLoadTarget;
 begin
-  if FProjectGroup<>nil then
+  if (FProjectGroup<>nil) and not (Self is TRootProjectGroupTarget) then
     FreeAndNil(FProjectGroup);
   if FFiles<>nil then
     FreeAndNil(FFiles);
   if FRequiredPackages<>nil then
     FreeAndNil(FRequiredPackages);
+end;
+
+destructor TIDECompileTarget.Destroy;
+begin
+  UnLoadTarget;
+  inherited Destroy;
 end;
 
 function TIDECompileTarget.CompileUsingLazBuild(const AAction: TPGTargetAction
@@ -1010,7 +1018,6 @@ begin
   if (AProject<>nil) and (CompareFilenames(AProject.ProjectInfoFile,Filename)=0)
   then begin
     // load from active project
-    FFiles:=TStringList.Create;
     for i:=0 to AProject.FileCount-1 do begin
       ProjFile:=AProject.Files[i];
       if not ProjFile.IsPartOfProject then continue;

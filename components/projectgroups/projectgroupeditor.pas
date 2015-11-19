@@ -1,7 +1,5 @@
 {
   Todo:
-    - ask save on exit
-    - save on save all
     - close windows on IDE close
     - activate project when project is opened
     - deactivate project when project is closed
@@ -277,10 +275,8 @@ procedure TProjectGroupEditorForm.ClearEventCallBacks(AProjectGroup: TProjectGro
 Var
   PG: TIDEProjectGroup;
 begin
-  if AProjectGroup is TIDEProjectGroup then
-    PG:=TIDEProjectGroup(AProjectGroup)
-  else
-    exit;
+  debugln(['TProjectGroupEditorForm.ClearEventCallBacks ']);
+  PG:=AProjectGroup as TIDEProjectGroup;
   PG.RemoveAllHandlersOfObject(Self);
   PG.OnFileNameChange:=Nil;
   PG.OnTargetAdded:=Nil;
@@ -293,10 +289,7 @@ procedure TProjectGroupEditorForm.SetEventCallBacks(AProjectGroup: TProjectGroup
 Var
   PG: TIDEProjectGroup;
 begin
-  if AProjectGroup is TIDEProjectGroup then
-    PG:=TIDEProjectGroup(AProjectGroup)
-  else
-    exit;
+  PG:=AProjectGroup as TIDEProjectGroup;
   PG.AddHandlerOnDestroy(@OnProjectGroupDestroy);
   PG.OnFileNameChange:=@OnProjectGroupFileNameChanged;
   PG.OnTargetAdded:=@OnTargetAdded;
@@ -307,7 +300,7 @@ end;
 
 procedure TProjectGroupEditorForm.SetProjectGroup(AValue: TProjectGroup);
 begin
-  debugln(['TProjectGroupEditorForm.SetProjectGroup START ',FProjectGroup=AValue]);
+  debugln(['TProjectGroupEditorForm.SetProjectGroup START ',FProjectGroup=AValue,' new=',DbgSName(AValue)]);
   if FProjectGroup=AValue then Exit;
   if ProjectGroup<>nil then
   begin
@@ -492,6 +485,8 @@ end;
 
 procedure TProjectGroupEditorForm.FormDestroy(Sender: TObject);
 begin
+  debugln(['TProjectGroupEditorForm.FormDestroy ',ProjectGroup<>nil]);
+  ProjectGroup:=nil;
   if ProjectGroupEditorForm=Self then
     ProjectGroupEditorForm:=nil;
 end;

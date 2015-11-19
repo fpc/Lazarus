@@ -276,8 +276,12 @@ begin
 end;
 
 destructor TProjectGroup.Destroy;
+var
+  HandlerType: TProjectGroupHandler;
 begin
   DoCallNotifyHandler(pghDestroy,Self);
+  for HandlerType:=Low(FHandlers) to High(FHandlers) do
+    FreeAndNil(FHandlers[HandlerType]);
   inherited Destroy;
 end;
 
