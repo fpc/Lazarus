@@ -1738,9 +1738,11 @@ procedure RestoreFocusState(FocusState: TFocusState);
 type
   TGetDesignerFormEvent =
     function(APersistent: TPersistent): TCustomForm of object;
+  TIsFormDesignFunction = function(AForm: TWinControl): boolean;
 
 var
   OnGetDesignerForm: TGetDesignerFormEvent = nil;
+  IsFormDesign: TIsFormDesignFunction = nil;
 
 function GetParentForm(Control: TControl; TopForm: Boolean = True): TCustomForm;
 function GetFirstParentForm(Control:TControl): TCustomForm;
@@ -2114,6 +2116,16 @@ begin
   ImageList.Draw(Canvas,AX,AY,AIndex,ADrawEffect);
 end;
 
+function IsFormDesignFunction(AForm: TWinControl): boolean;
+var
+  LForm: TCustomForm absolute AForm;
+begin
+  if (AForm = nil) or not (AForm is TCustomForm) then
+    Exit(False);
+  Result := (csDesignInstance in LForm.ComponentState)
+     or ((csDesigning in LForm.ComponentState) and (LForm.Designer <> nil));
+end;
+
 initialization
   RegisterPropertyToSkip(TForm, 'OldCreateOrder', 'VCL compatibility property', '');
   RegisterPropertyToSkip(TForm, 'TextHeight', 'VCL compatibility property', '');
@@ -2121,6 +2133,7 @@ initialization
   RegisterPropertyToSkip(TForm, 'TransparentColorValue', 'VCL compatibility property', '');
   LCLProc.OwnerFormDesignerModifiedProc:=@IfOwnerIsFormThenDesignerModified;
   ThemesImageDrawEvent:=@ImageDrawEvent;
+  IsFormDesign := @IsFormDesignFunction;
   Screen:=TScreen.Create(nil);
   Application:=TApplication.Create(nil);
 

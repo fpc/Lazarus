@@ -174,7 +174,7 @@ begin
   if (QtVersionMajor = 4) and (QtVersionMinor >= 6) then
     QCoreApplication_setAttribute(QtAA_ImmediateWidgetCreation, True);
   {$ENDIF}
-  if csDesigning in AWinControl.ComponentState then
+  if IsFormDesign(AWinControl) or (csDesigning in AWinControl.ComponentState) then
     QtMainWindow := TQtDesignWidget.Create(AWinControl, AParams)
   else
     QtMainWindow := TQtMainWindow.Create(AWinControl, AParams);
