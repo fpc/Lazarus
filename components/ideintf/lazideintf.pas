@@ -21,6 +21,55 @@ uses
   IDEExternToolIntf, SrcEditorIntf, IDEWindowIntf;
 
 type
+  TIDEDirective = (
+    idedNone,
+    idedBuildCommand,  // Filename plus params to build the file
+                       //   default is '$(CompPath) $(EdFile)'
+    idedBuildWorkingDir,// Working directory for building. Default is the
+                       //   directory of the file
+    idedBuildScan,     // Flags controlling what messages should be scanned for
+                       //   during building. See TIDEDirBuildScanFlag.
+    idedRunCommand,    // Filename plus params to run the file
+                       //   default is '$NameOnly($(EdFile))'
+    idedRunWorkingDir, // Working directory for building. Default is the
+                       //   directory of the file
+    idedRunFlags       // Flags for run. See TIDEDirRunFlag
+    );
+  TIDEDirectives = set of TIDEDirective;
+
+  TIDEDirBuildScanFlag = (
+    idedbsfNone,
+    idedbsfFPC, // scan for FPC messages. FPC+ means on (default) and FPC- off.
+    idedbsfMake // scan for MAKE messages. MAKE- means on (default) and MAKE- off.
+    );
+  TIDEDirBuildScanFlags = set of TIDEDirBuildScanFlag;
+
+  TIDEDirRunFlag = (
+    idedrfNone,
+    idedrfBuildBeforeRun // BUILD+ means on (default), BUILD- means off
+    );
+  TIDEDirRunFlags = set of TIDEDirRunFlag;
+const
+  IDEDirectiveNames: array[TIDEDirective] of string = (
+    '',
+    'BuildCommand',
+    'BuildWorkingDir',
+    'BuildScan',
+    'RunCommand',
+    'RunWorkingDir',
+    'RunFlags'
+    );
+  IDEDirBuildScanFlagNames: array[TIDEDirBuildScanFlag] of string = (
+    '',
+    'FPC',
+    'MAKE'
+    );
+  IDEDirRunFlagNames: array[TIDEDirRunFlag] of string = (
+    '',
+    'BUILD'
+    );
+
+type
   // open file flags
   // Normally you don't need to pass any flags.
   TOpenFlag = (
@@ -285,7 +334,9 @@ type
     procedure DoDropFiles(Sender: TObject; const FileNames: array of String;
       WindowIndex: integer = -1); virtual; abstract;
     function DoConfigureBuildFile: TModalResult; virtual; abstract;
-    function DoBuildFile({%H-}ShowAbort: Boolean): TModalResult; virtual; abstract;
+    function DoBuildFile({%H-}ShowAbort: Boolean;
+      Filename: string = '' // if empty use active source editor file
+      ): TModalResult; virtual; abstract;
     function DoRunFile: TModalResult; virtual; abstract;
 
     // project

@@ -817,10 +817,10 @@ type
     function DoExampleManager: TModalResult; override;
     function DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult; override;
     function DoBuildAdvancedLazarus(ProfileNames: TStringList): TModalResult;
-    function DoBuildFile({%H-}ShowAbort: Boolean): TModalResult; override;
+    function DoBuildFile({%H-}ShowAbort: Boolean; Filename: string = ''): TModalResult; override;
     function DoRunFile: TModalResult; override;
     function DoConfigureBuildFile: TModalResult; override;
-    function GetIDEDirectives(AnUnitInfo: TUnitInfo;
+    function GetIDEDirectives(aFilename: string;
                               DirectiveList: TStrings): TModalResult;
     function FilterIDEDirective(Tool: TStandardCodeTool;
                                 StartPos, {%H-}EndPos: integer): boolean;
@@ -7266,7 +7266,8 @@ begin
   end;
 end;
 
-function TMainIDE.DoBuildFile(ShowAbort: Boolean): TModalResult;
+function TMainIDE.DoBuildFile(ShowAbort: Boolean; Filename: string
+  ): TModalResult;
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
@@ -7277,13 +7278,19 @@ var
   ProgramFilename: string;
   Params: string;
   ExtTool: TIDEExternalToolOptions;
-  Filename: String;
   OldToolStatus: TIDEToolStatus;
 begin
   Result:=mrCancel;
   if ToolStatus<>itNone then exit;
   ActiveSrcEdit:=nil;
-  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
+  ActiveUnitInfo:=nil;
+  if Filename='' then begin
+    if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
+    Filename:=ActiveUnitInfo.Filename;
+  end else begin
+    Filename:=TrimAndExpandFilename(Filename);
+    if Filename='' then exit;
+  end;
   Result:=DoSaveProject([]);
   if Result<>mrOk then exit;
   if ExternalTools.RunningCount=0 then
@@ -7292,7 +7299,7 @@ begin
   OldToolStatus:=ToolStatus;
   ToolStatus:=itBuilder;
   try
-    Result:=GetIDEDirectives(ActiveUnitInfo,DirectiveList);
+    Result:=GetIDEDirectives(Filename,DirectiveList);
     if Result<>mrOk then exit;
 
     // get values from directive list
@@ -7301,7 +7308,7 @@ begin
                                          IDEDirectiveNames[idedBuildWorkingDir],
                                          '');
     if BuildWorkingDir='' then
-      BuildWorkingDir:=ExtractFilePath(ActiveUnitInfo.Filename);
+      BuildWorkingDir:=ExtractFilePath(Filename);
     if not GlobalMacroList.SubstituteStr(BuildWorkingDir) then begin
       Result:=mrCancel;
       exit;
@@ -7331,7 +7338,7 @@ begin
 
     ExtTool:=TIDEExternalToolOptions.Create;
     try
-      ExtTool.Title:='Build File '+ActiveUnitInfo.Filename;
+      ExtTool.Title:='Build File '+Filename;
       ExtTool.WorkingDirectory:=BuildWorkingDir;
       ExtTool.CmdLineParams:=Params;
       ExtTool.Executable:=ProgramFilename;
@@ -7381,7 +7388,7 @@ begin
   end;
   DirectiveList:=TStringList.Create;
   try
-    Result:=GetIDEDirectives(ActiveUnitInfo,DirectiveList);
+    Result:=GetIDEDirectives(ActiveUnitInfo.Filename,DirectiveList);
     if Result<>mrOk then exit;
 
     if ActiveUnitInfo.Source.LineCount>0 then
@@ -7460,7 +7467,7 @@ begin
   end;
   DirectiveList:=TStringList.Create;
   try
-    Result:=GetIDEDirectives(ActiveUnitInfo,DirectiveList);
+    Result:=GetIDEDirectives(ActiveUnitInfo.Filename,DirectiveList);
     if Result<>mrOk then exit;
 
     BuildFileDialog:=TBuildFileDialog.Create(nil);
@@ -7510,23 +7517,29 @@ begin
   Result:=mrOk;
 end;
 
-function TMainIDE.GetIDEDirectives(AnUnitInfo: TUnitInfo;
-  DirectiveList: TStrings): TModalResult;
+function TMainIDE.GetIDEDirectives(aFilename: string; DirectiveList: TStrings
+  ): TModalResult;
 var
-  CodeResult: Boolean;
+  AnUnitInfo: TUnitInfo;
+  Code: TCodeBuffer;
 begin
   Result:=mrCancel;
-  if FilenameIsPascalSource(AnUnitInfo.Filename) then begin
+  if FilenameIsPascalSource(aFilename) then begin
     // parse source for IDE directives (i.e. % comments)
-    CodeResult:=CodeToolBoss.GetIDEDirectives(AnUnitInfo.Source,DirectiveList,@FilterIDEDirective);
-    if not CodeResult then begin
+    Result:=LoadCodeBuffer(Code,aFilename,[lbfUpdateFromDisk],false);
+    if Result<>mrOk then exit;
+    if not CodeToolBoss.GetIDEDirectives(Code,DirectiveList,@FilterIDEDirective)
+    then begin
       DoJumpToCodeToolBossError;
       exit;
     end;
-  end else begin
+  end else if Project1<>nil then begin
+    AnUnitInfo:=Project1.UnitInfoWithFilename(aFilename);
+    if AnUnitInfo=nil then exit;
     StringToStringList(AnUnitInfo.CustomData['IDEDirectives'],DirectiveList);
     //DebugLn(['TMainIDE.GetIDEDirectives ',dbgstr(DirectiveList.Text)]);
-  end;
+  end else
+    exit;
   Result:=mrOk;
 end;
 
