@@ -6091,7 +6091,7 @@ procedure TCustomGrid.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
 
   function DoAutoEdit: boolean;
   begin
-    result := FAutoEdit and EditingAllowed(FCol) and
+    result := FAutoEdit and not(csNoFocus in ControlStyle) and EditingAllowed(FCol) and
       (FGCache.ClickCell.X=Col) and (FGCache.ClickCell.Y=Row);
     if result then begin
       SelectEditor;
@@ -6113,7 +6113,7 @@ begin
   DebugLn('Mouse was in ', dbgs(FGCache.HotGridZone));
   {$ENDIF}
 
-  if not Focused then begin
+  if not Focused and not(csNoFocus in ControlStyle) then begin
     SetFocus;
     if not Focused then begin
       {$ifDef dbgGrid} DebugLnExit('TCustomGrid.MouseDown EXIT: Focus not allowed'); {$Endif}
