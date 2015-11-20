@@ -151,7 +151,6 @@ procedure SwitchBuildMode(aBuildModeID: string);
 begin
   OnSaveIDEOptionsHook(Nil, Project1.CompilerOptions);    // Save changes
   Project1.ActiveBuildModeID := aBuildModeID;             // Switch
-  IncreaseBuildMacroChangeStamp;
   OnLoadIDEOptionsHook(Nil, Project1.CompilerOptions);    // Load options
 end;
 

@@ -384,12 +384,15 @@ type
 
   { TProjectBuildModes }
 
+  { TLazProjectBuildModes }
+
   TLazProjectBuildModes = class(TComponent)
   protected
     FChangeStamp: integer;
     function GetLazBuildModes(Index: integer): TLazProjectBuildMode; virtual; abstract;
   public
     function Count: integer; virtual; abstract;
+    function IndexOf(anIdentifier: string): integer;
     property ChangeStamp: integer read FChangeStamp;
     property BuildModes[Index: integer]: TLazProjectBuildMode read GetLazBuildModes;
   end;
@@ -436,6 +439,7 @@ type
     FFlags: TProjectFlags;
     FResources: TObject;
     FRunParameters: TAbstractRunParamsOptions;
+    function GetActiveBuildModeID: string; virtual; abstract;
     function GetFileCount: integer; virtual; abstract;
     function GetFiles(Index: integer): TLazProjectFile; virtual; abstract;
     function GetMainFile: TLazProjectFile; virtual; abstract;
@@ -444,6 +448,7 @@ type
     function GetLazBuildModes: TLazProjectBuildModes; virtual; abstract;
     function GetProjectInfoFile: string; virtual; abstract;
     function GetUseManifest: boolean; virtual; abstract;
+    procedure SetActiveBuildModeID(AValue: string); virtual; abstract;
     procedure SetExecutableType(const AValue: TProjectExecutableType); virtual;
     procedure SetFlags(const AValue: TProjectFlags); virtual;
     procedure SetMainFileID(const AValue: Integer); virtual; abstract;
@@ -479,6 +484,8 @@ type
     function GetDefaultTitle: string; // extract name from lpi file name
     function GetTitleOrName: string; // GetTitle, if this is '' then GetDefaultTitle
   public
+    property ActiveBuildModeID: string read GetActiveBuildModeID
+                                       write SetActiveBuildModeID;
     property ChangeStamp: integer read FChangeStamp;
     property Files[Index: integer]: TLazProjectFile read GetFiles;
     property FileCount: integer read GetFileCount;
@@ -712,6 +719,15 @@ begin
   for Result:=Low(TCompilationExecutableType) to High(TCompilationExecutableType)
   do if CompareText(s,CompilationExecutableTypeNames[Result])=0 then exit;
   Result:=cetProgram;
+end;
+
+{ TLazProjectBuildModes }
+
+function TLazProjectBuildModes.IndexOf(anIdentifier: string): integer;
+begin
+  Result:=Count-1;
+  while (Result>=0) and (CompareText(BuildModes[Result].Identifier,anIdentifier)<>0)
+  do dec(Result);
 end;
 
 { TProjectFileDescriptor }

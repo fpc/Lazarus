@@ -31,7 +31,7 @@ type
     FBuildModes: TObjectList;
     FFiles: TStringList;
     FRequiredPackages: TObjectList; // list of TPGDependency
-    function CompileUsingLazBuild(const AAction: TPGTargetAction): TPGActionResult;
+    function CompileUsingLazBuild(const AAction: TPGTargetAction; aBuildMode: string = ''): TPGActionResult;
   protected
     function GetBuildModeCount: integer; override;
     function GetBuildModes(Index: integer): TPGBuildMode; override;
@@ -899,8 +899,8 @@ begin
   PG.Modified:=true;
 end;
 
-function TIDECompileTarget.CompileUsingLazBuild(const AAction: TPGTargetAction
-  ): TPGActionResult;
+function TIDECompileTarget.CompileUsingLazBuild(const AAction: TPGTargetAction;
+  aBuildMode: string): TPGActionResult;
 var
   FPCParser: TFPCParser;
   Params: TStringList;
@@ -915,6 +915,8 @@ begin
   ttProject:
     begin
       ToolTitle:='Compile Project '+ExtractFileNameOnly(Filename);
+      if aBuildMode<>'' then
+        ToolTitle+=', build mode "'+aBuildMode+'"';
       ToolKind:='Other Project';
     end;
   ttPackage:
@@ -939,6 +941,8 @@ begin
   Params:=TStringList.Create;
   if AAction=taCompileClean then
     Params.Add('-B');
+  if aBuildMode<>'' then
+    Params.Add('--build-mode='+aBuildMode);
   Params.Add(Filename);
 
   Tool:=ExternalToolList.Add(ToolTitle);
@@ -1108,7 +1112,7 @@ begin
       PkgList.Free;
     end;
 
-    // ToDo: load buildmodes
+    // load buildmodes
     for i:=0 to AProject.LazBuildModes.Count-1 do begin
       LazBuildMode:=AProject.LazBuildModes.BuildModes[i];
       FBuildModes.Add(TPGBuildMode.Create(Self,LazBuildMode.Identifier,false));
@@ -1150,7 +1154,7 @@ begin
         for i:=1 to Cnt do begin
           SubPath:=Path+'Item'+IntToStr(i)+'/';
           BuildMode:=xml.GetValue(SubPath+'Name','');
-          // ToDo: load/store compile in lpg
+          // load/store compile in lpg
           if BuildMode<>'' then
             FBuildModes.Add(TPGBuildMode.Create(Self,BuildMode,false));
         end;
@@ -1214,6 +1218,8 @@ end;
 function TIDECompileTarget.ProjectAction(AAction: TPGTargetAction): TPGActionResult;
 var
   F: TProjectBuildFlags;
+  i: Integer;
+  aMode: TPGBuildMode;
 begin
   Result:=arFailed;
 
@@ -1222,28 +1228,57 @@ begin
   then begin
     // project loaded => use IDE functions
     case AAction of
-       taSettings :
-         begin
-           if ExecuteIDECommand(Self,ecProjectOptions) then
-             Result:=arOK;
+     taSettings :
+       begin
+         if not ExecuteIDECommand(Self,ecProjectOptions) then
+           Result:=arOK;
+       end;
+     taCompile,
+     taCompileClean,
+     taCompileFromHere:
+       begin
+         // check toolstatus
+         if LazarusIDE.ToolStatus<>itNone then begin
+           IDEMessageDialog('Be patient!','There is still another build in progress.',
+             mtInformation,[mbOk]);
+           exit;
          end;
-       taCompile,
-       taCompileClean,
-       taCompileFromHere:
-         begin
-           F:=[];
-           if (AAction=taCompileClean) then
-             Include(F,pbfCleanCompile);
-           if LazarusIDE.DoBuildProject(crCompile,F)=mrOk then
-             Result:=arOK;
-           if AAction=taCompileFromHere then
-             PerformNextTarget(taCompileFromHere);
+
+         // save project
+         if LazarusIDE.DoSaveProject([])<>mrOk then exit;
+
+         F:=[];
+         if (AAction=taCompileClean) then
+           Include(F,pbfCleanCompile);
+         if BuildModeCount>0 then begin
+           for i:=0 to BuildModeCount-1 do begin
+             aMode:=BuildModes[i];
+             if not aMode.Compile then continue;
+             // switch build mode
+             LazarusIDE.ActiveProject.ActiveBuildModeID:=aMode.Identifier;
+             if LazarusIDE.ActiveProject.ActiveBuildModeID<>aMode.Identifier
+             then begin
+               IDEMessageDialog('Build mode not found','Build mode "'+aMode.Identifier+'" not found.',mtError,[mbOk]);
+               exit;
+             end;
+             // compile project in active buildmode
+             if LazarusIDE.DoBuildProject(crCompile,F)<>mrOk then
+               exit;
+           end;
+         end else begin
+           // compile default buildmode
+           if LazarusIDE.DoBuildProject(crCompile,F)<>mrOk then
+             exit;
          end;
-       taRun :
-         begin
-           if LazarusIDE.DoRunProject=mrOk then
-             Result:=arOk;
-         end;
+         Result:=arOK;
+         if AAction=taCompileFromHere then
+           Result:=PerformNextTarget(taCompileFromHere);
+       end;
+     taRun :
+       begin
+         if LazarusIDE.DoRunProject<>mrOk then exit;
+         Result:=arOk;
+       end;
     end;
   end else begin
     // project not loaded => use lazbuild
@@ -1252,30 +1287,57 @@ begin
       begin
         // open project
         if LazarusIDE.DoOpenProjectFile(Filename,[ofAddToRecent])<>mrOk then
-          exit(arFailed);
+          exit;
         if AAction=taSettings then
           if not ExecuteIDECommand(Self,ecProjectOptions) then
-            Result:=arFailed;
+            exit;
         Result:=arOK;
       end;
     taCompile,
     taCompileClean,
     taCompileFromHere:
       begin
-        // run lazbuild as external tool
-        IDEMessagesWindow.Clear;
-        Result:=CompileUsingLazBuild(AAction);
-        if Result<>arOK then exit;
+        // check toolstatus
+        if LazarusIDE.ToolStatus<>itNone then begin
+          IDEMessageDialog('Be patient!','There is still another build in progress.',
+            mtInformation,[mbOk]);
+          exit;
+        end;
+
+        // save project
+        if LazarusIDE.DoSaveProject([])<>mrOk then exit;
+
+        LazarusIDE.ToolStatus:=itBuilder;
+        try
+          if BuildModeCount>0 then begin
+            for i:=0 to BuildModeCount-1 do begin
+              aMode:=BuildModes[i];
+              if not aMode.Compile then continue;
+              // run lazbuild as external tool
+              Result:=CompileUsingLazBuild(AAction,aMode.Identifier);
+              if Result<>arOK then exit;
+             end;
+          end else begin
+            IDEMessagesWindow.Clear;
+            // run lazbuild as external tool
+            Result:=CompileUsingLazBuild(AAction);
+            if Result<>arOK then exit;
+          end;
+        finally
+          LazarusIDE.ToolStatus:=itNone;
+        end;
+        Result:=arOK;
         if AAction=taCompileFromHere then
-          PerformNextTarget(taCompileFromHere);
+          Result:=PerformNextTarget(taCompileFromHere);
       end;
     taRun:
       begin
         // open project, then run
         if LazarusIDE.DoOpenProjectFile(Filename,[ofAddToRecent])<>mrOk then
-          exit(arFailed);
-        if LazarusIDE.DoRunProject=mrOk then
-          Result:=arOk;
+          exit;
+        if LazarusIDE.DoRunProject<>mrOk then
+          exit;
+        Result:=arOk;
       end;
     end;
   end;

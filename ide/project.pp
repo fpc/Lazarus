@@ -765,7 +765,6 @@ type
     FProjectWriteFlags: TProjectWriteFlags;
     FSaveSessionInLPI: Boolean;
     procedure ClearBuildModes;
-    function GetActiveBuildModeID: string;
     function GetAllEditorsInfo(Index: Integer): TUnitEditorInfo;
     function GetCompilerOptions: TProjectCompilerOptions;
     function GetBaseCompilerOptions: TBaseCompilerOptions;
@@ -792,7 +791,6 @@ type
                                const OldUnitName, NewUnitName: string;
                                CheckIfAllowed: boolean; var Allowed: boolean);
     procedure SetActiveBuildMode(const AValue: TProjectBuildMode);
-    procedure SetActiveBuildModeID(aIdent: string);
     procedure SetAutoOpenDesignerFormsDisabled(const AValue: boolean);
     procedure SetEnableI18N(const AValue: boolean);
     procedure SetEnableI18NForLFM(const AValue: boolean);
@@ -836,21 +834,23 @@ type
     procedure SaveToSession;
     function DoWrite(Filename: String; IsLpi: Boolean): TModalResult;
   protected
+    function GetActiveBuildModeID: string; override;
     function GetDefineTemplates: TProjPackDefineTemplates;
+    function GetFiles(Index: integer): TLazProjectFile; override;
+    function GetLazBuildModes: TLazProjectBuildModes; override;
     function GetMainFile: TLazProjectFile; override;
     function GetMainFileID: Integer; override;
-    procedure SetMainFileID(const AValue: Integer); override;
-    function GetLazBuildModes: TLazProjectBuildModes; override;
-    function GetFiles(Index: integer): TLazProjectFile; override;
-    procedure SetFlags(const AValue: TProjectFlags); override;
     function GetModified: boolean; override;
     function GetProjectInfoFile: string; override;
-    procedure SetProjectInfoFile(const NewFilename: string); override;
-    procedure SetSessionStorage(const AValue: TProjectSessionStorage); override;
-    procedure SetModified(const AValue: boolean); override;
-    procedure SetSessionModified(const AValue: boolean); override;
-    procedure SetExecutableType(const AValue: TProjectExecutableType); override;
     function GetUseManifest: boolean; override;
+    procedure SetActiveBuildModeID(aIdent: string); override;
+    procedure SetExecutableType(const AValue: TProjectExecutableType); override;
+    procedure SetFlags(const AValue: TProjectFlags); override;
+    procedure SetMainFileID(const AValue: Integer); override;
+    procedure SetModified(const AValue: boolean); override;
+    procedure SetProjectInfoFile(const NewFilename: string); override;
+    procedure SetSessionModified(const AValue: boolean); override;
+    procedure SetSessionStorage(const AValue: TProjectSessionStorage); override;
     procedure SetUseManifest(AValue: boolean); override;
   protected
     // special unit lists
@@ -1030,8 +1030,6 @@ type
   public
     property ActiveBuildMode: TProjectBuildMode read FActiveBuildMode
                                                 write SetActiveBuildMode;
-    property ActiveBuildModeID: string read GetActiveBuildModeID
-                                      write SetActiveBuildModeID;
     property ActiveWindowIndexAtStart: integer read FActiveWindowIndexAtStart
                                                write FActiveWindowIndexAtStart;
     property AutoCreateForms: boolean read FAutoCreateForms write FAutoCreateForms;
@@ -5078,8 +5076,6 @@ begin
   begin
     if BuildModes[i].Identifier=aIdent then
     begin
-      // Force setting active mode. Values may be assigned, looks like active mode
-      ActiveBuildMode:=Nil;                       // is already set but it is not
       ActiveBuildMode:=BuildModes[i];
       Break;
     end;
