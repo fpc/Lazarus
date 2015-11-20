@@ -1,9 +1,10 @@
 {
   Todo:
-    - new button enable
-    - close windows on IDE close
+    - new button: call new item dialog
     - activate project when project is opened
     - deactivate project when project is closed
+    - show active build mode
+    - compile a single build mode
 }
 unit ProjectGroupEditor;
 
@@ -214,8 +215,8 @@ var
   NIRemovedTargetProject     : integer = 3;
   NIRemovedTargetPackage     : integer = 4;
   NIRemovedTargetProjectGroup: integer = 5;
-  NIBuildModes               : integer = 16;
-  NIBuildMode                : integer = 17;
+  NIBuildModes               : integer = 12;
+  NIBuildMode                : integer = 12;
   NIFiles                    : integer = 16;
   NIFile                     : integer = 17;
   //NIRemovedFiles             : integer = 18;
@@ -691,8 +692,10 @@ begin
   InitIDEFileDialog(OpenDialogTarget);
   With OpenDialogTarget do
   begin
-    // TODO: Needs to be fetched from central set of strings
-    Filter:='Lazarus projects|*.lpi|Lazarus packages|*.lpk|Lazarus project groups|*.lpg';
+    Filter:='Lazarus projects (*.lpi)|*.lpi'
+     +'|Lazarus packages (*.lpk)|*.lpk'
+     +'|Lazarus project groups (*.lpg)|*.lpg'
+     +'|Pascal file (*.pas;*.pp;*.p)|*.pas;*.pp;*.p';
     If Execute then
     begin
       aTarget:=FProjectGroup.AddTarget(FileName) as TIDECompileTarget;
@@ -890,7 +893,7 @@ end;
 function TProjectGroupEditorForm.GetNodeImageIndex(ANodeType: TNodeType;
   ANodeData: TPGCompileTarget): Integer;
 begin
-  Case ANodeType of
+  case ANodeType of
     ntProjectGroup: Result:=NIProjectGroup;
     ntTargets: Result:=NITargets;
     ntRemovedTargets: Result:=NIRemovedTargerts;
@@ -899,12 +902,14 @@ begin
           ttProject: Result:=NITargetProject;
           ttPackage: Result:=NITargetPackage;
           ttProjectGroup: Result:=NITargetProjectGroup;
+          ttPascalFile: Result:=NIFile;
         end;
     ntRemovedTarget:
         Case ANodeData.TargetType of
           ttProject: Result:=NIRemovedTargetProject;
           ttPackage: Result:=NIRemovedTargetPackage;
           ttProjectGroup: Result:=NIRemovedTargetProjectGroup;
+          ttPascalFile: Result:=NIFile;
         end;
     ntBuildModes: Result:=NIBuildModes;
     ntBuildMode: Result:=NIBuildMode;
@@ -1318,6 +1323,7 @@ begin
       ttProject: FillProjectNode(AParent,T);
       ttPackage: FillPackageNode(AParent,T);
       ttProjectGroup: FillProjectgroupNode(AParent,T.ProjectGroup,PN);
+      ttPascalFile: ;
     end;
   finally
     TVPG.EndUpdate;

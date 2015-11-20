@@ -487,7 +487,7 @@ begin
     try
       InitIDEFileDialog(F);
       F.Options:=[ofFileMustExist,ofEnableSizing];
-      F.Filter:='Lazarus project group|*.lpg|All files|'+AllFilesMask;
+      F.Filter:='Lazarus project group (*.lpg)|*.lpg|All files|'+AllFilesMask;
       if F.Execute then
         LoadProjectGroup(FileName,[pgloLoadRecursively]);
       StoreIDEFileDialog(F);
@@ -528,7 +528,6 @@ begin
       Result:=F.Execute;
       if Result then begin
         FProjectGroup.FileName:=TrimAndExpandFilename(FileName);
-
       end;
       StoreIDEFileDialog(F);
     finally
@@ -1392,11 +1391,15 @@ function TIDECompileTarget.PascalFileAction(AAction: TPGTargetAction
   ): TPGActionResult;
 begin
   Result:=arFailed;
-  debugln(['TIDECompileTarget.PascalFileAction ToDo']);
-  // ToDo
   case AAction of
-  taOpen: ;
-  taSettings: ;
+  taOpen,
+  taSettings:
+    begin
+      if LazarusIDE.DoOpenEditorFile(Filename,-1,-1,[ofAddToRecent])<>mrOK then
+        exit;
+      if AAction=taSettings then
+        ;
+    end;
   taCompile,
   taCompileClean,
   taCompileFromHere:
