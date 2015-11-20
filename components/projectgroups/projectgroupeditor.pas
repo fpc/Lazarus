@@ -177,6 +177,7 @@ type
     function SelectedTarget: TPGCompileTarget;
     function GetTVNodeFilename(TVNode: TTreeNode): string;
     function GetBuildMode(TVNode: TTreeNode): TPGBuildMode;
+    function GetNearestTargget(TVNode: TTreeNode): TPGCompileTarget;
     function SelectedNodeType: TPGCompileTarget;
     procedure UpdateIDEMenuCommandFromAction(Sender: TObject; Item: TIDEMenuCommand);
     procedure UpdateStatusBarTargetCount;
@@ -770,10 +771,23 @@ end;
 
 function TProjectGroupEditorForm.AllowPerform(ATargetAction: TPGTargetAction; AAction: TAction = Nil): Boolean;
 Var
-  T: TPGCompileTarget;
+  ND: TNodeData;
+  aTarget: TPGCompileTarget;
 begin
-  T:=SelectedTarget;
-  Result:=Assigned(T) and (not T.Removed) and (ATargetAction in T.AllowedActions);
+  Result:=false;
+  ND:=SelectedNodeData;
+  if ND<>nil then begin
+    if ND.Target<>nil then begin
+      Result:=(not ND.Target.Removed) and (ATargetAction in ND.Target.AllowedActions);
+    end else begin
+      aTarget:=GetNearestTargget(TVPG.Selected);
+      case ND.NodeType of
+      ntBuildMode:
+        Result:=(not aTarget.Removed)
+          and (ATargetAction in [taCompile,taCompileClean,taCompileFromHere,taRun]);
+      end;
+    end;
+  end;
   If Assigned(AAction) then
     AAction.Enabled:=Result;
 end;
@@ -781,10 +795,20 @@ end;
 procedure TProjectGroupEditorForm.Perform(ATargetAction: TPGTargetAction);
 Var
   ND: TNodeData;
+  aTarget: TPGCompileTarget;
 begin
   ND:=SelectedNodeData;
-  if (ND=nil) or (ND.Target=nil) then exit;
-  ND.Target.GetOwnerProjectGroup.Perform(ND.Target,ATargetAction)
+  if (ND=nil) then exit;
+  aTarget:=ND.Target;
+  if aTarget<>nil then
+    aTarget.GetOwnerProjectGroup.Perform(aTarget,ATargetAction)
+  else begin
+    aTarget:=GetNearestTargget(TVPG.Selected);
+    case ND.NodeType of
+    ntBuildMode:
+      aTarget.PerformBuildModeAction(ATargetAction,ND.Value);
+    end;
+  end;
 end;
 
 procedure TProjectGroupEditorForm.ATargetCompileExecute(Sender: TObject);
@@ -1008,6 +1032,20 @@ begin
     end;
     TVNode:=TVNode.Parent;
   end;
+end;
+
+function TProjectGroupEditorForm.GetNearestTargget(TVNode: TTreeNode
+  ): TPGCompileTarget;
+begin
+  Result:=nil;
+  while (TVNode<>nil) do begin
+    if (TVNode.Data<>nil) then begin
+      Result:=TNodeData(TVNode.Data).Target;
+      if Result<>nil then exit;
+    end;
+    TVNode:=TVNode.Parent;
+  end;
+  Result:=nil;
 end;
 
 function TProjectGroupEditorForm.SelectedNodeType: TPGCompileTarget;

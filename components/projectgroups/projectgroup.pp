@@ -43,7 +43,7 @@ type
     procedure LoadProject_GroupSettings(XMLConfig: TXMLConfig; aPath: string);
     procedure SaveProject_GroupSettings(XMLConfig: TXMLConfig; aPath: string);
     procedure LoadProjectGroup(Recursively: boolean);
-    function ProjectAction(AAction: TPGTargetAction): TPGActionResult;
+    function ProjectAction(AAction: TPGTargetAction; StartBuildMode: string = ''): TPGActionResult;
     function PackageAction(AAction: TPGTargetAction): TPGActionResult;
     function ProjectGroupAction(AAction: TPGTargetAction): TPGActionResult;
     function PascalFileAction(AAction: TPGTargetAction): TPGActionResult;
@@ -58,6 +58,8 @@ type
     procedure SaveGroupSettings(XMLConfig: TXMLConfig; aPath: string);
     procedure UnLoadTarget; virtual;
     procedure Modified; override;
+    function PerformBuildModeAction(AAction: TPGTargetAction;
+      aModeIdentifier: string): TPGActionResult; override;
   end;
 
   // Since a project group iself is also a target, we need a target to represent
@@ -896,6 +898,13 @@ begin
   PG.Modified:=true;
 end;
 
+function TIDECompileTarget.PerformBuildModeAction(AAction: TPGTargetAction;
+  aModeIdentifier: string): TPGActionResult;
+begin
+  if TargetType<>ttProject then exit(arNotAllowed);
+  Result:=ProjectAction(AAction,aModeIdentifier);
+end;
+
 function TIDECompileTarget.CompileUsingLazBuild(const AAction: TPGTargetAction;
   aBuildMode: string): TPGActionResult;
 var
@@ -1223,18 +1232,31 @@ begin
   PG.LoadFromFile(Flags);
 end;
 
-function TIDECompileTarget.ProjectAction(AAction: TPGTargetAction): TPGActionResult;
+function TIDECompileTarget.ProjectAction(AAction: TPGTargetAction;
+  StartBuildMode: string): TPGActionResult;
 var
   F: TProjectBuildFlags;
   i: Integer;
   aMode: TPGBuildMode;
+  aProject: TLazProject;
 begin
   Result:=arFailed;
 
-  if (LazarusIDE.ActiveProject<>nil)
-  and (CompareFilenames(LazarusIDE.ActiveProject.ProjectInfoFile,Filename)=0)
+  aProject:=LazarusIDE.ActiveProject;
+  if (aProject<>nil)
+  and (CompareFilenames(aProject.ProjectInfoFile,Filename)=0)
   then begin
     // project loaded => use IDE functions
+
+    if StartBuildMode<>'' then begin
+      // switch to build mode
+      if CompareText(StartBuildMode,aProject.ActiveBuildModeID)<>0 then
+      begin
+        if not CheckIDEIsReadyForBuild then exit;
+        aProject.ActiveBuildModeID:=StartBuildMode;
+      end;
+    end;
+
     case AAction of
      taSettings :
        begin
@@ -1252,13 +1274,20 @@ begin
          F:=[];
          if (AAction=taCompileClean) then
            Include(F,pbfCleanCompile);
-         if BuildModeCount>0 then begin
-           for i:=0 to BuildModeCount-1 do begin
+         if BuildModeCount>1 then begin
+           i:=0;
+           if StartBuildMode<>'' then begin
+             i:=aProject.LazBuildModes.IndexOf(StartBuildMode);
+             if i<0 then exit;
+           end;
+           while i<BuildModeCount do begin
              aMode:=BuildModes[i];
-             if not aMode.Compile then continue;
+             inc(i);
+             debugln(['TIDECompileTarget.ProjectAction ',(aMode.Identifier<>StartBuildMode),' ',aMode.Identifier,' StartBuildMode=',StartBuildMode,' ',AAction=taCompileFromHere]);
+             if (aMode.Identifier<>StartBuildMode) and (not aMode.Compile) then continue;
              // switch build mode
-             LazarusIDE.ActiveProject.ActiveBuildModeID:=aMode.Identifier;
-             if LazarusIDE.ActiveProject.ActiveBuildModeID<>aMode.Identifier
+             aProject.ActiveBuildModeID:=aMode.Identifier;
+             if aProject.ActiveBuildModeID<>aMode.Identifier
              then begin
                IDEMessageDialog('Build mode not found','Build mode "'+aMode.Identifier+'" not found.',mtError,[mbOk]);
                exit;
@@ -1266,6 +1295,9 @@ begin
              // compile project in active buildmode
              if LazarusIDE.DoBuildProject(crCompile,F)<>mrOk then
                exit;
+             if (StartBuildMode<>'') and (AAction<>taCompileFromHere) then
+               exit(arOK);
+             StartBuildMode:='';
            end;
          end else begin
            // compile default buildmode
@@ -1307,13 +1339,24 @@ begin
         LazarusIDE.ToolStatus:=itBuilder;
         try
           if BuildModeCount>0 then begin
-            for i:=0 to BuildModeCount-1 do begin
+            IDEMessagesWindow.Clear;
+            i:=0;
+            if StartBuildMode<>'' then begin
+              while (i<BuildModeCount) and (CompareText(BuildModes[i].Identifier,StartBuildMode)<>0)
+              do inc(i);
+            end;
+            while i<BuildModeCount do begin
               aMode:=BuildModes[i];
-              if not aMode.Compile then continue;
+              inc(i);
+              if (aMode.Identifier<>StartBuildMode) and (not aMode.Compile) then continue;
               // run lazbuild as external tool
               Result:=CompileUsingLazBuild(AAction,aMode.Identifier);
               if Result<>arOK then exit;
-             end;
+
+              if (StartBuildMode<>'') and (AAction<>taCompileFromHere) then
+                exit(arOK);
+              StartBuildMode:='';
+            end;
           end else begin
             IDEMessagesWindow.Clear;
             // run lazbuild as external tool

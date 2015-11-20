@@ -101,6 +101,7 @@ Type
     function GetNext(SkipChildren: boolean): TPGCompileTarget;
     function IndexOfBuildMode(aName: string): integer;
     function FindBuildMode(aName: string): TPGBuildMode;
+    function PerformBuildModeAction(AAction: TPGTargetAction; aModeIdentifier: string): TPGActionResult; virtual; abstract;
     procedure Modified; virtual; abstract;
     property Parent: TPGCompileTarget read FParent;
     property Filename: string read FFilename write SetFilename; // Absolute, not relative.

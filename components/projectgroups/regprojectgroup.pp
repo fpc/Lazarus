@@ -26,7 +26,7 @@ begin
 
   Section:=RegisterIDEMenuSection(Root,'Compile');
   PGEditMenuSectionCompile:=Section;
-  cmdTargetCompile:=RegisterIDEMenuCommand(Section,'TargetCompile',lisTargetCompile);// ToDo: caption: compile "target"
+  cmdTargetCompile:=RegisterIDEMenuCommand(Section,'TargetCompile',lisTargetCompile);
   cmdTargetCompileClean:=RegisterIDEMenuCommand(Section,'TargetCompileClean',lisTargetCompileClean);
   cmdTargetCompileFromHere:=RegisterIDEMenuCommand(Section,'TargetCompileFromHere',lisTargetCompileFromHere);
   // ToDo: clean ... -> clean up dialog
