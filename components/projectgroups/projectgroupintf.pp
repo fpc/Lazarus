@@ -36,21 +36,33 @@ Type
   TPGActionResults = set of TPGActionResult;
 
   TProjectGroup = class;
+  TPGCompileTarget = class;
 
   { TPGBuildMode }
 
   TPGBuildMode = class
-    Name: string;
-    Compile: boolean;
-    constructor Create(const aName: string; aCompile: boolean);
+  private
+    FCompile: boolean;
+    FName: string;
+    FTarget: TPGCompileTarget;
+    procedure SetCompile(AValue: boolean);
+  public
+    constructor Create(aTarget: TPGCompileTarget; const aName: string; aCompile: boolean);
+    property Target: TPGCompileTarget read FTarget;
+    property Name: string read FName;
+    property Compile: boolean read FCompile write SetCompile;
   end;
 
   { TPGDependency }
 
   TPGDependency = class
+  private
+    FPackageName: string;
+    FTarget: TPGCompileTarget;
   public
-    PackageName: string;
-    constructor Create(const aPkgName: string);
+    constructor Create(aTarget: TPGCompileTarget; const aPkgName: string);
+    property Target: TPGCompileTarget read FTarget;
+    property PackageName: string read FPackageName;
   end;
 
   { TPGCompileTarget - a node in the tree, see TPGTargetType }
@@ -84,8 +96,12 @@ Type
     constructor Create(aParent: TPGCompileTarget);
     procedure Activate;
     procedure DeActivate;
+    function GetOwnerProjectGroup: TProjectGroup;
     function GetRootProjectGroup: TProjectGroup;
     function GetNext: TPGCompileTarget;
+    function IndexOfBuildMode(aName: string): integer;
+    function FindBuildMode(aName: string): TPGBuildMode;
+    procedure Modified; virtual; abstract;
     property Parent: TPGCompileTarget read FParent;
     property Filename: string read FFilename write SetFilename; // Absolute, not relative.
     property Removed: boolean read FRemoved write SetRemoved;
@@ -240,17 +256,28 @@ end;
 
 { TPGBuildMode }
 
-constructor TPGBuildMode.Create(const aName: string; aCompile: boolean);
+procedure TPGBuildMode.SetCompile(AValue: boolean);
 begin
-  Name:=aName;
-  Compile:=aCompile;
+  if FCompile=AValue then Exit;
+  FCompile:=AValue;
+  Target.Modified;
+end;
+
+constructor TPGBuildMode.Create(aTarget: TPGCompileTarget; const aName: string;
+  aCompile: boolean);
+begin
+  FTarget:=aTarget;
+  FName:=aName;
+  FCompile:=aCompile;
 end;
 
 { TPGDependency }
 
-constructor TPGDependency.Create(const aPkgName: string);
+constructor TPGDependency.Create(aTarget: TPGCompileTarget;
+  const aPkgName: string);
 begin
-  PackageName:=aPkgName;
+  FTarget:=aTarget;
+  FPackageName:=aPkgName;
 end;
 
 { TProjectGroup }
@@ -496,6 +523,19 @@ begin
   ActiveChanged(Self);
 end;
 
+function TPGCompileTarget.GetOwnerProjectGroup: TProjectGroup;
+var
+  aTarget: TPGCompileTarget;
+begin
+  aTarget:=Self;
+  while (aTarget<>nil) do begin
+    Result:=aTarget.ProjectGroup;
+    if Result<>nil then exit;
+    aTarget:=aTarget.Parent;
+  end;
+  Result:=nil;
+end;
+
 function TPGCompileTarget.GetRootProjectGroup: TProjectGroup;
 var
   aTarget: TPGCompileTarget;
@@ -530,6 +570,24 @@ begin
     aTarget:=aTarget.Parent;
   end;
   Result:=nil;
+end;
+
+function TPGCompileTarget.IndexOfBuildMode(aName: string): integer;
+begin
+  Result:=BuildModeCount-1;
+  while (Result>=0) and (CompareText(aName,BuildModes[Result].Name)<>0) do
+    dec(Result);
+end;
+
+function TPGCompileTarget.FindBuildMode(aName: string): TPGBuildMode;
+var
+  i: Integer;
+begin
+  i:=IndexOfBuildMode(aName);
+  if i>=0 then
+    Result:=BuildModes[i]
+  else
+    Result:=nil;
 end;
 
 function TPGCompileTarget.Perform(AAction: TPGTargetAction): TPGActionResult;

@@ -41,6 +41,8 @@ type
     function GetRequiredPackages(Index: integer): TPGDependency; override;
     procedure LoadPackage;
     procedure LoadProject;
+    procedure LoadProject_GroupSettings(XMLConfig: TXMLConfig; aPath: string);
+    procedure SaveProject_GroupSettings(XMLConfig: TXMLConfig; aPath: string);
     procedure LoadProjectGroup(Recursively: boolean);
     function ProjectAction(AAction: TPGTargetAction): TPGActionResult;
     function PackageAction(AAction: TPGTargetAction): TPGActionResult;
@@ -52,8 +54,11 @@ type
     procedure ActiveChanged(Sender: TPGCompileTarget); override;
   public
     procedure LoadTarget(Recursively: boolean); virtual;
+    procedure LoadGroupSettings(XMLConfig: TXMLConfig; aPath: string);
+    procedure SaveGroupSettings(XMLConfig: TXMLConfig; aPath: string);
     procedure UnLoadTarget; virtual;
     destructor Destroy; override;
+    procedure Modified; override;
   end;
 
   // Since a project group iself is also a target, we need a target to represent
@@ -208,6 +213,7 @@ var
   OpenRecentProjectGroupSubMenu: TIDEMenuSection;
 
 function LoadXML(aFilename: string; Quiet: boolean): TXMLConfig;
+function CreateXML(aFilename: string; Quiet: boolean): TXMLConfig;
 function GetLazBuildFilename: string;
 
 implementation
@@ -220,6 +226,8 @@ begin
   aFilename:=TrimFilename(aFilename);
   if (aFilename='') or (not FilenameIsAbsolute(aFilename)) then begin
     debugln(['Error: (lazarus) [TIDECompileTarget.LoadXML] invalid filename "',aFilename,'"']);
+    if not Quiet then
+      IDEMessageDialog('Invalid File','Invalid xml file name "'+aFilename+'"',mtError,[mbOk]);
     exit;
   end;
   Code:=CodeToolBoss.LoadFile(aFilename,true,false);
@@ -236,6 +244,25 @@ begin
       debugln(['Error: (lazarus) [TIDECompileTarget.LoadXML] xml syntax error in "',aFilename,'": '+E.Message]);
       if not Quiet then
         IDEMessageDialog('Read error','XML syntax error in file "'+aFilename+'": '+E.Message,mtError,[mbOk]);
+    end;
+  end;
+end;
+
+function CreateXML(aFilename: string; Quiet: boolean): TXMLConfig;
+begin
+  Result:=nil;
+  aFilename:=TrimFilename(aFilename);
+  if (aFilename='') or (not FilenameIsAbsolute(aFilename)) then begin
+    debugln(['Error: (lazarus) [TIDECompileTarget.CreateXML] invalid filename "',aFilename,'"']);
+    exit;
+  end;
+  try
+    Result:=TXMLConfig.CreateClean(aFilename);
+  except
+    on E: Exception do begin
+      debugln(['Error: (lazarus) [TIDECompileTarget.CreateXML] unable to create file "',aFilename,'": '+E.Message]);
+      if not Quiet then
+        IDEMessageDialog('Write error','Unable to create file "'+aFilename+'": '+E.Message,mtError,[mbOk]);
     end;
   end;
 end;
@@ -692,10 +719,10 @@ function TIDEProjectGroup.LoadFromFile(Options: TProjectGroupLoadOptions
 Var
   ARoot: String;
   TargetFileName: String;
-  BaseDir: String;
+  BaseDir, APath: String;
   XMLConfig: TXMLConfig;
-  I,ACount: Integer;
-  Target: TPGCompileTarget;
+  i,ACount: Integer;
+  Target: TIDECompileTarget;
   aGroup: TProjectGroup;
 begin
   Result:=false;
@@ -715,23 +742,23 @@ begin
     try
       ARoot:='ProjectGroup';
       ACount:=XMLConfig.GetValue(ARoot+'/Targets/Count',0);
-      I:=0;
-      While (I<ACount) do
+      for i:=0 to ACount-1 do
       begin
         Target:=Nil;
-        TargetFileName:=XMLConfig.GetValue(Format(ARoot+'/Targets/Target%d/FileName',[i]),'');
+        APath:=Format(ARoot+'/Targets/Target%d/',[i]);
+        TargetFileName:=XMLConfig.GetValue(APath+'FileName','');
         TargetFileName:=TrimFilename(SetDirSeparators(TargetFileName));
         if not FilenameIsAbsolute(TargetFileName) then
           TargetFileName:=TrimFilename(BaseDir+TargetFileName);
         If (TargetFileName<>'') and FileExistsCached(TargetFileName) then begin
-          Target:=AddTarget(TargetFileName);
+          Target:=TIDECompileTarget(AddTarget(TargetFileName));
           if pgloLoadRecursively in Options then
-            (Target as TIDECompileTarget).LoadTarget(true);
+            Target.LoadTarget(true);
           // ToDo: load buildmode flags
         end
         else if (pgloRemoveInvalid in Options) then
         begin
-          Target:=AddTarget(TargetFileName);
+          Target:=TIDECompileTarget(AddTarget(TargetFileName));
           Target.Removed:=True;
         end
         else if (pgloSkipInvalid in options) then
@@ -746,23 +773,20 @@ begin
                mrYesToAll,lisSkipAllTargets],'') of
            mrYes :
              begin
-               Target:=AddTarget(TargetFileName);
+               Target:=TIDECompileTarget(AddTarget(TargetFileName));
                Target.Removed:=True;
              end;
            mrNo:
              exit;
            mrYesToAll:
              begin
-               Target:=AddTarget(TargetFileName);
+               Target:=TIDECompileTarget(AddTarget(TargetFileName));
                Target.Removed:=True;
              end;
           else
             exit;
           end;
-        if Assigned(Target) and Not Target.Removed then
-          if XMLConfig.GetValue(Format(ARoot+'/Targets/Target%d/Active',[i]),False) then
-            Target.Activate;
-        Inc(I);
+        Target.LoadGroupSettings(XMLConfig,APath);
       end;
     finally
       Modified:=false;
@@ -781,35 +805,29 @@ function TIDEProjectGroup.SaveToFile: Boolean;
 Var
   TargetPath: String;
   RelativeFileName: String;
-  ARoot: String;
+  ARoot, APath: String;
   XMLConfig: TXMLConfig;
-  I,ACount: Integer;
-  CompTarget: TPGCompileTarget;
+  i,ACount: Integer;
+  aTarget: TIDECompileTarget;
 begin
   TargetPath:=ExtractFilePath(FileName);
   Result:=True;
   try
-    XMLConfig := TXMLConfig.Create(FileName);
+    XMLConfig := CreateXML(FileName,false);
     try
       ARoot:='ProjectGroup';
       ACount:=0;
-      For I:=0 to TargetCount-1 do
-        if not GetTarget(I).Removed then
-          Inc(ACount);
-      XMLConfig.Clear;
-      XMLConfig.SetValue(ARoot+'/Targets/Count',ACount);
-      I:=0;
-      ACount:=0;
-      For I:=0 to TargetCount-1 do
-        begin
-        CompTarget:=GetTarget(I);
-        If not CompTarget.Removed then
-          begin
-          RelativeFileName:=ExtractRelativepath(TargetPath,CompTarget.FileName);
-          XMLConfig.SetValue(Format(ARoot+'/Targets/Target%d/FileName',[ACount]),RelativeFileName);
-          Inc(ACount);
-          end;
-        end;
+      For i:=0 to TargetCount-1 do
+      begin
+        aTarget:=TIDECompileTarget(GetTarget(i));
+        if aTarget.Removed then continue;
+        APath:=Format(ARoot+'/Targets/Target%d/',[ACount]);
+        RelativeFileName:=ExtractRelativepath(TargetPath,aTarget.FileName);
+        XMLConfig.SetDeleteValue(APath+'FileName',RelativeFileName,'');
+        aTarget.SaveGroupSettings(XMLConfig,APath);
+        Inc(ACount);
+      end;
+      XMLConfig.SetDeleteValue(ARoot+'/Targets/Count',ACount,0);
       XMLConfig.Flush;
       Modified:=False;
     finally
@@ -835,6 +853,26 @@ begin
   end;
 end;
 
+procedure TIDECompileTarget.LoadGroupSettings(XMLConfig: TXMLConfig;
+  aPath: string);
+begin
+  case TargetType of
+    ttProject: LoadProject_GroupSettings(XMLConfig,aPath);
+  end;
+  if not Removed then
+    if XMLConfig.GetValue(APath+'Active',False) then
+      Activate;
+end;
+
+procedure TIDECompileTarget.SaveGroupSettings(XMLConfig: TXMLConfig;
+  aPath: string);
+begin
+  case TargetType of
+    ttProject: SaveProject_GroupSettings(XMLConfig,aPath);
+  end;
+  XMLConfig.SetDeleteValue(APath+'Active',Active and not Removed,False);
+end;
+
 procedure TIDECompileTarget.UnLoadTarget;
 begin
   if (FProjectGroup<>nil) and not (Self is TRootProjectGroupTarget) then
@@ -851,6 +889,14 @@ destructor TIDECompileTarget.Destroy;
 begin
   UnLoadTarget;
   inherited Destroy;
+end;
+
+procedure TIDECompileTarget.Modified;
+var
+  PG: TProjectGroup;
+begin
+  PG:=GetOwnerProjectGroup;
+  PG.Modified:=true;
 end;
 
 function TIDECompileTarget.CompileUsingLazBuild(const AAction: TPGTargetAction
@@ -1012,7 +1058,7 @@ begin
       for i:=0 to PkgList.Count-1 do begin
         RequiredPkg:=TIDEPackage(PkgList[i]);
         PkgName:=ExtractFileUnitname(RequiredPkg.Filename,true);
-        FRequiredPackages.Add(TPGDependency.Create(PkgName));
+        FRequiredPackages.Add(TPGDependency.Create(Self,PkgName));
       end;
   finally
     PkgList.Free;
@@ -1054,12 +1100,14 @@ begin
         for i:=0 to PkgList.Count-1 do begin
           Pkg:=TIDEPackage(PkgList[i]);
           PkgName:=ExtractFileUnitname(Pkg.Filename,true);
-          FRequiredPackages.Add(TPGDependency.Create(PkgName));
+          FRequiredPackages.Add(TPGDependency.Create(Self,PkgName));
         end;
       end;
     finally
       PkgList.Free;
     end;
+
+    // ToDo: load buildmodes
   end else begin
     // load from .lpi file
 
@@ -1088,7 +1136,7 @@ begin
           SubPath:=Path+'Item'+IntToStr(i)+'/';
           PkgName:=xml.GetValue(SubPath+'PackageName/Value','');
           if PkgName='' then continue;
-          FRequiredPackages.Add(TPGDependency.Create(PkgName));
+          FRequiredPackages.Add(TPGDependency.Create(Self,PkgName));
         end;
 
         // load build modes
@@ -1099,12 +1147,45 @@ begin
           BuildMode:=xml.GetValue(SubPath+'Name','');
           // ToDo: load/store compile in lpg
           if BuildMode<>'' then
-            FBuildModes.Add(TPGBuildMode.Create(BuildMode,false));
+            FBuildModes.Add(TPGBuildMode.Create(Self,BuildMode,false));
         end;
       end;
     finally
       xml.Free;
     end;
+  end;
+end;
+
+procedure TIDECompileTarget.LoadProject_GroupSettings(XMLConfig: TXMLConfig;
+  aPath: string);
+var
+  Cnt, i: Integer;
+  SubPath, aName: String;
+  aMode: TPGBuildMode;
+begin
+  Cnt:=XMLConfig.GetValue(aPath+'BuildModes/Count',0);
+  for i:=1 to Cnt do begin
+    SubPath:=aPath+'Mode'+IntToStr(i)+'/';
+    aName:=XMLConfig.GetValue(SubPath+'Name','');
+    aMode:=FindBuildMode(aName);
+    if aMode=nil then continue;
+    aMode.Compile:=XMLConfig.GetValue(SubPath+'Compile',false);
+  end;
+end;
+
+procedure TIDECompileTarget.SaveProject_GroupSettings(XMLConfig: TXMLConfig;
+  aPath: string);
+var
+  i: Integer;
+  SubPath: String;
+  aMode: TPGBuildMode;
+begin
+  XMLConfig.SetDeleteValue(aPath+'BuildModes/Count',BuildModeCount,0);
+  for i:=1 to BuildModeCount do begin
+    SubPath:=aPath+'Mode'+IntToStr(i)+'/';
+    aMode:=BuildModes[i-1];
+    XMLConfig.SetDeleteValue(SubPath+'Name',aMode.Name,'');
+    XMLConfig.SetDeleteValue(SubPath+'Compile',aMode.Compile,false);
   end;
 end;
 

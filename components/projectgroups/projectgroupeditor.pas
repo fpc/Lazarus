@@ -1201,7 +1201,7 @@ begin
   TVPG.BeginUpdate;
   try
     // buildmodes
-    if T.BuildModeCount>0 then begin
+    if T.BuildModeCount>1 then begin
       BuildModeNode:=CreateSectionNode(AParent,lisNodeBuildModes,ntBuildModes);
       for i:=0 to T.BuildModeCount-1 do
         CreateSubNode(BuildModeNode,ntBuildMode,T,T.BuildModes[i].Name);
