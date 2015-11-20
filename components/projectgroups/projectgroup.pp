@@ -4,6 +4,17 @@
     - run external tool
     - update files when project/package changes in IDE
     - update dependencies when changed in IDE
+    - re-add removed targets
+    - update items when project/package changes in IDE
+    - show active build mode, active project
+    - find in files
+    - find references in files
+    - action to easily install/uninstall a package
+    - clean function, like the Run / Clean up and buold dialog
+    - "New" button to create a package/project/file and add to project groups
+    - drag and drop within the editor
+    - save session in project group, allowing to quickly switch the active project
+    - load sub projects in IDE to use code navigation for files not in the active project
 }
 unit ProjectGroup;
 

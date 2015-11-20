@@ -3,9 +3,6 @@
     - activate project when project is opened
     - deactivate project when project is closed
     - show active build mode
-    - compile a single build mode
-    - Is Activate needed?
-    - Is New button needed?
 }
 unit ProjectGroupEditor;
 
