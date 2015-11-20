@@ -530,7 +530,7 @@ end;
 procedure TProjectGroupEditorForm.TVPGDblClick(Sender: TObject);
 Var
   ND: TNodeData;
-  aFilename: String;
+  aFilename, PkgName: String;
   PG: TProjectGroup;
 begin
   ND:=SelectedNodeData;
@@ -563,8 +563,13 @@ begin
     end;
   ntDependency:
     begin
-      // ToDo: open package editor
-
+      // open package editor
+      PkgName:=ND.Value;
+      if PackageEditingInterface.DoOpenPackageWithName(PkgName,[pofAddToRecent],false)<>mrOk
+      then begin
+        IDEMessageDialog('Package not found','Package "'+PkgName+'" not found.',mtError,[mbOk]);
+        exit;
+      end;
     end;
   end;
 end;
