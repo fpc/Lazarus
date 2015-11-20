@@ -1,8 +1,6 @@
 {
   ToDo:
     - save/restore Active target
-    - Build file
-    - build modes of project as nodes with checkboxes
     - run external tool
     - update files when project/package changes in IDE
     - update dependencies when changed in IDE
@@ -54,11 +52,11 @@ type
     function PerformNextTarget(AAction: TPGTargetAction): TPGActionResult;
     procedure ActiveChanged(Sender: TPGCompileTarget); override;
   public
+    destructor Destroy; override;
     procedure LoadTarget(Recursively: boolean); virtual;
     procedure LoadGroupSettings(XMLConfig: TXMLConfig; aPath: string);
     procedure SaveGroupSettings(XMLConfig: TXMLConfig; aPath: string);
     procedure UnLoadTarget; virtual;
-    destructor Destroy; override;
     procedure Modified; override;
   end;
 
@@ -754,7 +752,6 @@ begin
           Target:=TIDECompileTarget(AddTarget(TargetFileName));
           if pgloLoadRecursively in Options then
             Target.LoadTarget(true);
-          // ToDo: load buildmode flags
         end
         else if (pgloRemoveInvalid in Options) then
         begin
@@ -1373,19 +1370,34 @@ end;
 
 function TIDECompileTarget.ProjectGroupAction(AAction: TPGTargetAction
   ): TPGActionResult;
+var
+  i: Integer;
+  aTarget: TIDECompileTarget;
 begin
   Result:=arFailed;
 
   case AAction of
-  taOpen: ProjectGroupManager.LoadProjectGroup(FileName,[]);
+  taOpen:
+    ProjectGroupManager.LoadProjectGroup(FileName,[]);
   taSettings: ;
   taCompile,
-  taCompileClean,
+  taCompileClean:
+    begin
+      for i:=0 to ProjectGroup.TargetCount-1 do begin
+        aTarget:=TIDECompileTarget(ProjectGroup.Targets[i]);
+        if AAction in aTarget.AllowedActions then
+          if aTarget.PerformAction(AAction)<>arOk then
+            exit;
+      end;
+    end;
   taCompileFromHere:
     begin
-      // todo: compile all targets
-      if AAction=taCompileFromHere then
-        Result:=PerformNextTarget(taCompileFromHere);
+      if ProjectGroupAction(taCompile)<>arOK then
+        exit;
+      Result:=arOK;
+      aTarget:=TIDECompileTarget(GetNext(true));
+      if aTarget=nil then exit;
+      Result:=aTarget.PerformAction(taCompileFromHere);
     end;
   end;
 end;
@@ -1460,7 +1472,7 @@ function TIDECompileTarget.PerformNextTarget(AAction: TPGTargetAction
 var
   aTarget: TIDECompileTarget;
 begin
-  aTarget:=TIDECompileTarget(GetNext);
+  aTarget:=TIDECompileTarget(GetNext(false));
   while (aTarget<>nil) do
   begin
     if AAction in aTarget.AllowedActions then
@@ -1468,7 +1480,7 @@ begin
       Result:=aTarget.PerformAction(AAction);
       exit;
     end;
-    aTarget:=TIDECompileTarget(aTarget.GetNext);
+    aTarget:=TIDECompileTarget(aTarget.GetNext(false));
   end;
   Result:=arOK;
 end;

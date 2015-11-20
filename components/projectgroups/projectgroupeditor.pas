@@ -1,10 +1,11 @@
 {
   Todo:
-    - new button: call new item dialog
     - activate project when project is opened
     - deactivate project when project is closed
     - show active build mode
     - compile a single build mode
+    - Is Activate needed?
+    - Is New button needed?
 }
 unit ProjectGroupEditor;
 
@@ -293,7 +294,7 @@ procedure TProjectGroupEditorForm.ClearEventCallBacks(AProjectGroup: TProjectGro
 Var
   PG: TIDEProjectGroup;
 begin
-  debugln(['TProjectGroupEditorForm.ClearEventCallBacks ']);
+  //debugln(['TProjectGroupEditorForm.ClearEventCallBacks ']);
   PG:=AProjectGroup as TIDEProjectGroup;
   PG.RemoveAllHandlersOfObject(Self);
   PG.OnFileNameChange:=Nil;
@@ -1293,7 +1294,6 @@ begin
       CreateSubNode(FileNodes[False],ntFile,T,T.Files[i]);
     // dependencies
     ShowDependencies(AParent,T,DepNodes);
-    // TODO: Build mode info Not available ?
   finally
     TVPG.EndUpdate;
   end;

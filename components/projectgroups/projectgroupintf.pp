@@ -98,7 +98,7 @@ Type
     procedure DeActivate;
     function GetOwnerProjectGroup: TProjectGroup;
     function GetRootProjectGroup: TProjectGroup;
-    function GetNext: TPGCompileTarget;
+    function GetNext(SkipChildren: boolean): TPGCompileTarget;
     function IndexOfBuildMode(aName: string): integer;
     function FindBuildMode(aName: string): TPGBuildMode;
     procedure Modified; virtual; abstract;
@@ -545,14 +545,15 @@ begin
   Result:=aTarget.ProjectGroup;
 end;
 
-function TPGCompileTarget.GetNext: TPGCompileTarget;
+function TPGCompileTarget.GetNext(SkipChildren: boolean): TPGCompileTarget;
 var
   aTarget: TPGCompileTarget;
   PG: TProjectGroup;
   i: Integer;
 begin
   // check first child
-  if (ProjectGroup<>nil) and (ProjectGroup.TargetCount>0) then begin
+  if (not SkipChildren) and (ProjectGroup<>nil) and (ProjectGroup.TargetCount>0)
+  then begin
     Result:=ProjectGroup.Targets[0];
     exit(Result);
   end;

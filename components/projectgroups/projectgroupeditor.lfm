@@ -34,6 +34,7 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
       Left = 37
       Top = 2
       Action = AProjectGroupAddNew
+      Visible = False
     end
     object TBDelete: TToolButton
       Left = 150
@@ -79,6 +80,7 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
       Left = 377
       Top = 2
       Action = ATargetActivate
+      Visible = False
     end
   end
   object TVPG: TTreeView
