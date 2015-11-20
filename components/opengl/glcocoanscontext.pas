@@ -6,9 +6,6 @@
 
   Author: Mattias Gaertner
 
-  Bug: The opengl drawing is wrong. See example testopenglcontext1.
-    Maybe fixed when attributes are supported and/or SwapBuffers.
-
   ToDo:
     use custom pixelformat
       attributes: doublebufferd, version, ...
@@ -49,10 +46,10 @@ function CreateOpenGLContextAttrList(DoubleBuffered: boolean;
 
 const
   // missing constants in FPC 3.1.1 rev 31197 and below
-  NSOpenGLPFAProfile            = 99;
+  NSOpenGLPFAOpenGLProfile            = 99; //cr: name changed to match https://developer.apple.com/library/mac/documentation//Cocoa/Reference/ApplicationKit/Classes/NSOpenGLPixelFormat_Class/index.html
   NSOpenGLProfileLegacy         = $1000;
   NSOpenGLProfileVersion3_2Core = $3200;
-  NSOpenGLProfileVersion4_1Core = $4100;
+  NSOpenGLProfileVersion4_1Core = $4100; //requires OSX SDK 10.10 or later, https://github.com/google/gxui/issues/98
 
 type
   TDummyNoWarnObjCNotUsed = objc.BOOL;
@@ -63,6 +60,7 @@ type
   TCocoaOpenGLView = objcclass(NSOpenGLView)
   public
     Owner: TWinControl;
+    //nsGL: NSOpenGLContext;
     callback: TLCLCommonCallback;
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
@@ -110,10 +108,13 @@ begin
 end;
 
 procedure LOpenGLSwapBuffers(Handle: HWND);
+//var
+//  View: TCocoaOpenGLView;  //TCocoaOpenGLView
 begin
   if Handle=0 then exit;
-  // ToDo
   glFlush();
+  // View:=TCocoaOpenGLView(Handle);
+  // View.nsGL.flushBuffer;
 end;
 
 function LOpenGLMakeCurrent(Handle: HWND): boolean;
@@ -123,7 +124,6 @@ begin
   if Handle=0 then exit(false);
   CGLContext:=GetCGLContextObj(Handle);
   Result:=CGLSetCurrentContext(CGLContext)=kCGLNoError;
-  //Result:=true;
 end;
 
 function LOpenGLReleaseContext(Handle: HWND): boolean;
@@ -151,50 +151,36 @@ var
   p: NSView;
   ns: NSRect;
   aNSOpenGLContext: NSOpenGLContext;
-   CGLContext: CGLContextObj;
+  CGLContext: CGLContextObj;
 begin
   Result:=0;
-
   p := nil;
   if (AParams.WndParent <> 0) then
     p := CocoaUtils.GetNSObjectView(NSObject(AParams.WndParent));
-
-
-  //CGLContext:=GetCGLContextObj(AParams.WndParent);
-  //CGLSetCurrentContext(CGLContext);
-
   if Assigned(p) then
     LCLToNSRect(types.Bounds(AParams.X, AParams.Y, AParams.Width, AParams.Height),
       p.frame.size.height, ns)
   else
     ns := GetNSRect(AParams.X, AParams.Y, AParams.Width, AParams.Height);
-
   Attrs:=CreateOpenGLContextAttrList(DoubleBuffered,MajorVersion,MinorVersion, MultiSampling,AlphaBits,DepthBits,StencilBits,AUXBuffers);
   try
     PixFmt:=NSOpenGLPixelFormat(NSOpenGLPixelFormat.alloc).initWithAttributes(Attrs);
     aNSOpenGLContext:=NSOpenGLContext(NSOpenGLContext.alloc).initWithFormat_shareContext(PixFmt,nil);
-    debugln(['LOpenGLCreateContext ',aNSOpenGLContext<>nil]);
+    if aNSOpenGLContext  = nil then
+    	debugln(['LOpenGLCreateContext Error']);
     View := TCocoaOpenGLView(TCocoaOpenGLView.alloc).initWithFrame_pixelFormat(ns,PixFmt);
-
-    //View := TCocoaOpenGLView(TCocoaOpenGLView.alloc).initWithFrame(ns);
-    //CGLContext:=GetCGLContextObj(AParams.WndParent);
-  //
-    //View := TCocoaOpenGLView(TCocoaOpenGLView(TCocoaOpenGLView.alloc).lclInitWithCreateParams(AParams));
     if not Assigned(View) then Exit;
   finally
     FreeMem(Attrs);
   end;
-
   View.setHidden(AParams.Style and WS_VISIBLE = 0);
-
   if Assigned(p) then
     p.addSubview(View);
   SetViewDefaults(View);
   View.Owner:=AWinControl;
+  //View.nsGL := aNSOpenGLContext;
   View.callback:=TLCLCommonCallback.Create(View, AWinControl);
-
-    //View.setPixelFormat(PixFmt);
-
+  //View.setPixelFormat(PixFmt);
   Result:=TLCLIntfHandle(View);
 end;
 
@@ -210,7 +196,7 @@ function CreateOpenGLContextAttrList(DoubleBuffered: boolean; MajorVersion,
   AUXBuffers: cardinal): NSOpenGLPixelFormatAttributePtr;
 var
   p: integer;
-procedure Addx(i: NSOpenGLPixelFormatAttribute);
+procedure AddUInt32(i: NSOpenGLPixelFormatAttribute);
   begin
     if Result<>nil then
       Result[p]:=i;
@@ -219,75 +205,50 @@ procedure Addx(i: NSOpenGLPixelFormatAttribute);
 
   procedure CreateList;
   begin
-    Addx(NSOpenGLPFAAccelerated);
-    Addx(NSOpenGLPFAProfile);
-    Addx(NSOpenGLProfileLegacy);
-    Addx(NSOpenGLPFAColorSize); Addx(24);
-    Addx(NSOpenGLPFAAlphaSize); Addx(8);
-    Addx(NSOpenGLPFAMinimumPolicy);
-    Addx(NSOpenGLPFADepthSize);  Addx(24);
-    if MultiSampling > 1 then
-    begin
-      Addx(NSOpenGLPFAMultisample);
-      Addx(NSOpenGLPFASampleBuffers); Addx(1);
-      Addx(NSOpenGLPFASamples); Addx(MultiSampling);
-    end;
-    if StencilBits>0 then
-    begin
-      Addx(NSOpenGLPFAStencilSize);  Addx(StencilBits);
-    end;
-    if AUXBuffers>0 then
-    begin
-      Addx(NSOpenGLPFAAuxBuffers);  Addx(AUXBuffers);
-    end;
-      Addx(0); // end of list
-    (*
-
-    Addx(NSOpenGLPFAProfile);
-    if (MajorVersion=3) and (MinorVersion=2) then
-      Addx(NSOpenGLProfileVersion3_2Core)
-    else if (MajorVersion=4) and (MinorVersion=1) then
-      Addx(NSOpenGLProfileVersion4_1Core)
+    //see https://developer.apple.com/library/mac/documentation//Cocoa/Reference/ApplicationKit/Classes/NSOpenGLPixelFormat_Class/index.html
+    //AddUInt32(NSOpenGLPFAAccelerated);  // <- comment out: we can run in software if hardware is not available
+    //AddUInt32(NSOpenGLPFAOpenGLProfile); //Versions beyond 'Legacy' appear to break CULL_FACE and DEPTH_BUFFER, legacy seems to be default, so comment out whole instruction
+    //if (MajorVersion>=4) and (MinorVersion>=1)
+    //  AddUInt32(NSOpenGLProfileVersion4_1Core);
+    //else if (MajorVersion>=3) and (MinorVersion>=2) then
+    //     AddUInt32(NSOpenGLProfileVersion3_2Core);
+    //else
+    //AddUInt32(NSOpenGLProfileLegacy); // NSOpenGLProfileLegacy is default and sufficient, later versions depend on SDK we are building against
+    AddUInt32(NSOpenGLPFAOpenGLProfile);
+    if (MajorVersion>=4) and (MinorVersion>=1) then
+       AddUInt32(NSOpenGLProfileVersion4_1Core) //OpenGL 4.1, GLSL 4.1
+    else if (MajorVersion>=3) and (MinorVersion>=2) then
+        AddUInt32(NSOpenGLProfileVersion3_2Core)
     else
-      Addx(NSOpenGLProfileLegacy);
-
-    //Addx(NSOpenGLPFAColorSize);  Addx(24);
-    //Addx(NSOpenGLPFADepthSize);  Addx(16);
-    Addx(NSOpenGLPFADoubleBuffer);
-    Addx(0);
-    exit;
-    Addx(NSOpenGLPFAAccelerated);
-    if DoubleBuffered then
-      Addx(NSOpenGLPFADoubleBuffer);
-    //if (MajorVersion>=3) and (MinorVersion>=2) then
-    //   Addx(NSOpenGLPFA);
-    Addx(NSOpenGLPFANoRecovery);
-    Addx(NSOpenGLPFAMaximumPolicy);
-    Addx(NSOpenGLPFASingleRenderer);
-    Addx(NSOpenGLPFAColorSize);  Addx(32); //CR 24
-    if AlphaBits>0 then
-    begin
-      Addx(NSOpenGLPFAAlphaSize);  Addx(AlphaBits);
+        AddUInt32(NSOpenGLProfileLegacy); //OpenGL 2.1, GLSL 1.2
+    AddUInt32(NSOpenGLPFAColorSize); AddUInt32(24);
+    if DepthBits > 0 then begin
+       AddUInt32(NSOpenGLPFADepthSize);  AddUInt32(32);
     end;
-    if DepthBits>0 then
-    begin
-      Addx(NSOpenGLPFADepthSize);  Addx(DepthBits);
+    if AlphaBits>0 then begin
+      AddUInt32(NSOpenGLPFAAlphaSize);  AddUInt32(AlphaBits);
+    end;
+    AddUInt32(NSOpenGLPFAAccelerated);
+    if MultiSampling > 1 then begin
+      AddUInt32(NSOpenGLPFAMultisample);
+      AddUInt32(NSOpenGLPFASampleBuffers); AddUInt32(1);
+      AddUInt32(NSOpenGLPFASamples); AddUInt32(MultiSampling);
     end;
     if StencilBits>0 then
     begin
-      Addx(NSOpenGLPFAStencilSize);  Addx(StencilBits);
+      AddUInt32(NSOpenGLPFAStencilSize);  AddUInt32(StencilBits);
     end;
     if AUXBuffers>0 then
     begin
-      Addx(NSOpenGLPFAAuxBuffers);  Addx(AUXBuffers);
+      AddUInt32(NSOpenGLPFAAuxBuffers);  AddUInt32(AUXBuffers);
     end;
-    if MultiSampling > 1 then
-    begin
-      Addx(NSOpenGLPFAMultisample);
-      Addx(NSOpenGLPFASampleBuffers); Addx(1);
-      Addx(NSOpenGLPFASamples); Addx(MultiSampling);
-    end;
-    Addx(0); // end of list  *)
+    //if DoubleBuffered then //requires fix for nsGL
+    //   AddUInt32(NSOpenGLPFADoubleBuffer); //this doen't work with Lazarus
+    AddUInt32(NSOpenGLPFAMaximumPolicy); //allows future changes to make attributes more demanding, e.g. add multisampling
+
+
+    AddUInt32(NSOpenGLPFANoRecovery); //see apple web page: "not generally useful" but might help with multisample
+    AddUInt32(0); // end of list
   end;
 
 begin
@@ -309,7 +270,9 @@ begin
   Result:=CGLContextObj(View.openGLContext.CGLContextObj);
 end;
 
-(*function CreateCGLContextAttrList(DoubleBuffered: boolean; MultiSampling,
+(*
+//these functions are commented out: this was an attempt to use CGL, porting NSOpenGLView instead was more successful
+function CreateCGLContextAttrList(DoubleBuffered: boolean; MultiSampling,
   AlphaBits, DepthBits, StencilBits, AUXBuffers: cardinal): PInteger;
 var
   p: integer;
