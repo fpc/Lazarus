@@ -817,9 +817,9 @@ type
     function DoExampleManager: TModalResult; override;
     function DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult; override;
     function DoBuildAdvancedLazarus(ProfileNames: TStringList): TModalResult;
-    function DoBuildFile({%H-}ShowAbort: Boolean): TModalResult;
-    function DoRunFile: TModalResult;
-    function DoConfigBuildFile: TModalResult;
+    function DoBuildFile({%H-}ShowAbort: Boolean): TModalResult; override;
+    function DoRunFile: TModalResult; override;
+    function DoConfigureBuildFile: TModalResult; override;
     function GetIDEDirectives(AnUnitInfo: TUnitInfo;
                               DirectiveList: TStrings): TModalResult;
     function FilterIDEDirective(Tool: TStandardCodeTool;
@@ -4240,7 +4240,7 @@ end;
 
 procedure TMainIDE.mnuConfigBuildFileClicked(Sender: TObject);
 begin
-  DoConfigBuildFile;
+  DoConfigureBuildFile;
 end;
 
 procedure TMainIDE.mnuRunParametersClicked(Sender: TObject);
@@ -7433,7 +7433,7 @@ begin
   end;
 end;
 
-function TMainIDE.DoConfigBuildFile: TModalResult;
+function TMainIDE.DoConfigureBuildFile: TModalResult;
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;

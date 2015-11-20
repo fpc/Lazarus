@@ -216,7 +216,7 @@ const
     [taOpen,taSettings,taCompile,taCompileClean,taCompileFromHere,taRun], // ttProject
     [taOpen,taSettings,taCompile,taCompileClean,taCompileFromHere,taInstall,taUninstall], // ttPackage
     [taOpen,taCompile,taCompileClean,taCompileFromHere], // ttProjectGroup
-    [taOpen,taCompile,taCompileFromHere,taRun], // ttPascalFile
+    [taOpen,taSettings,taCompile,taCompileFromHere,taRun], // ttPascalFile
     [taOpen,taCompile,taCompileClean,taCompileFromHere,taRun] // ttExternalTool
   );
 

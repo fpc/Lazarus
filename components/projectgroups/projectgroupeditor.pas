@@ -583,6 +583,7 @@ var
   aMode: TPGBuildMode;
 begin
   TVNode:=TVPG.GetNodeAt(X,Y);
+  if TVNode=nil then exit;
   ND:=TNodeData(TVNode.Data);
   if ND=nil then exit;
   if mbLeft=Button then begin
@@ -1095,7 +1096,10 @@ begin
     else
       Result:=CreateRelativePath(Result,BaseDir);
   end else begin
-    Result:=ExtractFileNameOnly(aTarget.Filename);
+    if aTarget.TargetType in [ttPascalFile] then
+      Result:=ExtractFileName(aTarget.Filename)
+    else
+      Result:=ExtractFileNameOnly(aTarget.Filename);
   end;
 end;
 

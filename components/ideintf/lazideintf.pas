@@ -284,6 +284,9 @@ type
                        out Component: TComponent): TModalResult; virtual; abstract;
     procedure DoDropFiles(Sender: TObject; const FileNames: array of String;
       WindowIndex: integer = -1); virtual; abstract;
+    function DoConfigureBuildFile: TModalResult; virtual; abstract;
+    function DoBuildFile({%H-}ShowAbort: Boolean): TModalResult; virtual; abstract;
+    function DoRunFile: TModalResult; virtual; abstract;
 
     // project
     property ActiveProject: TLazProject read GetActiveProject;

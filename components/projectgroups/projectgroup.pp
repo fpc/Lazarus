@@ -31,6 +31,7 @@ type
     FBuildModes: TObjectList;
     FFiles: TStringList;
     FRequiredPackages: TObjectList; // list of TPGDependency
+    function CheckIDEIsReadyForBuild: boolean;
     function CompileUsingLazBuild(const AAction: TPGTargetAction; aBuildMode: string = ''): TPGActionResult;
   protected
     function GetBuildModeCount: integer; override;
@@ -971,6 +972,17 @@ begin
   end;
 end;
 
+function TIDECompileTarget.CheckIDEIsReadyForBuild: boolean;
+begin
+  // check toolstatus
+  if LazarusIDE.ToolStatus<>itNone then begin
+    IDEMessageDialog('Be patient!', 'There is still another build in progress.',
+      mtInformation, [mbOk]);
+    exit(false);
+  end;
+  Result:=true;
+end;
+
 function TIDECompileTarget.GetBuildModeCount: integer;
 begin
   if FBuildModes=nil then
@@ -1236,13 +1248,7 @@ begin
      taCompileClean,
      taCompileFromHere:
        begin
-         // check toolstatus
-         if LazarusIDE.ToolStatus<>itNone then begin
-           IDEMessageDialog('Be patient!','There is still another build in progress.',
-             mtInformation,[mbOk]);
-           exit;
-         end;
-
+         if not CheckIDEIsReadyForBuild then exit;
          // save project
          if LazarusIDE.DoSaveProject([])<>mrOk then exit;
 
@@ -1296,12 +1302,7 @@ begin
     taCompileClean,
     taCompileFromHere:
       begin
-        // check toolstatus
-        if LazarusIDE.ToolStatus<>itNone then begin
-          IDEMessageDialog('Be patient!','There is still another build in progress.',
-            mtInformation,[mbOk]);
-          exit;
-        end;
+        if not CheckIDEIsReadyForBuild then exit;
 
         // save project
         if LazarusIDE.DoSaveProject([])<>mrOk then exit;
@@ -1358,6 +1359,7 @@ begin
   taCompileClean,
   taCompileFromHere:
     begin
+      if not CheckIDEIsReadyForBuild then exit;
       // compile independent of active project => use lazbuild
       Result:=CompileUsingLazBuild(AAction);
       if Result<>arOK then exit;
@@ -1381,6 +1383,7 @@ begin
   taCompileClean,
   taCompileFromHere:
     begin
+      // todo: compile all targets
       if AAction=taCompileFromHere then
         Result:=PerformNextTarget(taCompileFromHere);
     end;
@@ -1395,19 +1398,34 @@ begin
   taOpen,
   taSettings:
     begin
-      if LazarusIDE.DoOpenEditorFile(Filename,-1,-1,[ofAddToRecent])<>mrOK then
+      if LazarusIDE.DoOpenEditorFile(Filename,-1,-1,[ofAddToRecent,ofRegularFile])<>mrOK then
         exit;
       if AAction=taSettings then
-        ;
+        if LazarusIDE.DoConfigureBuildFile<>mrOk then exit;
+      Result:=arOK;
     end;
   taCompile,
   taCompileClean,
   taCompileFromHere:
     begin
+      if not CheckIDEIsReadyForBuild then exit;
+      if LazarusIDE.DoOpenEditorFile(Filename,-1,-1,[ofAddToRecent,ofRegularFile])<>mrOK then
+        exit;
+      if LazarusIDE.DoBuildFile(false)<>mrOK then
+        exit;
+      Result:=arOK;
       if AAction=taCompileFromHere then
         Result:=PerformNextTarget(taCompileFromHere);
     end;
-  taRun: ;
+  taRun:
+    begin
+      if not CheckIDEIsReadyForBuild then exit;
+      if LazarusIDE.DoOpenEditorFile(Filename,-1,-1,[ofAddToRecent,ofRegularFile])<>mrOK then
+        exit;
+      if LazarusIDE.DoRunFile<>mrOK then
+        exit;
+      Result:=arOK;
+    end;
   end;
 end;
 
