@@ -337,7 +337,8 @@ type
     function DoBuildFile({%H-}ShowAbort: Boolean;
       Filename: string = '' // if empty use active source editor file
       ): TModalResult; virtual; abstract;
-    function DoRunFile: TModalResult; virtual; abstract;
+    function DoRunFile(Filename: string = '' // if empty use active source editor file
+      ): TModalResult; virtual; abstract;
 
     // project
     property ActiveProject: TLazProject read GetActiveProject;

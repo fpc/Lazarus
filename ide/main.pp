@@ -818,7 +818,7 @@ type
     function DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult; override;
     function DoBuildAdvancedLazarus(ProfileNames: TStringList): TModalResult;
     function DoBuildFile({%H-}ShowAbort: Boolean; Filename: string = ''): TModalResult; override;
-    function DoRunFile: TModalResult; override;
+    function DoRunFile(Filename: string = ''): TModalResult; override;
     function DoConfigureBuildFile: TModalResult; override;
     function GetIDEDirectives(aFilename: string;
                               DirectiveList: TStrings): TModalResult;
@@ -7284,15 +7284,23 @@ begin
   if ToolStatus<>itNone then exit;
   ActiveSrcEdit:=nil;
   ActiveUnitInfo:=nil;
-  if Filename='' then begin
-    if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
-    Filename:=ActiveUnitInfo.Filename;
-  end else begin
-    Filename:=TrimAndExpandFilename(Filename);
-    if Filename='' then exit;
-  end;
   Result:=DoSaveProject([]);
   if Result<>mrOk then exit;
+  if Filename='' then begin
+    if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
+    if not FilenameIsAbsolute(ActiveUnitInfo.Filename) then begin
+      Result:=DoSaveEditorFile(ActiveSrcEdit,[sfCheckAmbiguousFiles]);
+      if Result<>mrOk then exit;
+    end;
+    Filename:=ActiveUnitInfo.Filename;
+  end else begin
+    Filename:=TrimFilename(Filename);
+    if not FilenameIsAbsolute(Filename) then begin
+      IDEMessageDialog('Error','Unable to run file "'+Filename+'". Please save it first.',
+        mtError,[mbOk]);
+      exit;
+    end;
+  end;
   if ExternalTools.RunningCount=0 then
     IDEMessagesWindow.Clear;
   DirectiveList:=TStringList.Create;
@@ -7361,7 +7369,7 @@ begin
   end;
 end;
 
-function TMainIDE.DoRunFile: TModalResult;
+function TMainIDE.DoRunFile(Filename: string): TModalResult;
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
@@ -7377,22 +7385,36 @@ var
   Params: string;
   ExtTool: TIDEExternalToolOptions;
   DirectiveList: TStringList;
+  Code: TCodeBuffer;
 begin
   Result:=mrCancel;
   if ToolStatus<>itNone then exit;
   ActiveSrcEdit:=nil;
-  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
-  if not FilenameIsAbsolute(ActiveUnitInfo.Filename) then begin
-    Result:=DoSaveEditorFile(ActiveSrcEdit,[sfCheckAmbiguousFiles]);
-    if Result<>mrOk then exit;
+  ActiveUnitInfo:=nil;
+  if Filename='' then begin
+    if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
+    if not FilenameIsAbsolute(ActiveUnitInfo.Filename) then begin
+      Result:=DoSaveEditorFile(ActiveSrcEdit,[sfCheckAmbiguousFiles]);
+      if Result<>mrOk then exit;
+    end;
+    Filename:=ActiveUnitInfo.Filename;
+  end else begin
+    Filename:=TrimFilename(Filename);
+    if not FilenameIsAbsolute(Filename) then begin
+      IDEMessageDialog('Error','Unable to run file "'+Filename+'". Please save it first.',
+        mtError,[mbOk]);
+      exit;
+    end;
   end;
   DirectiveList:=TStringList.Create;
   try
-    Result:=GetIDEDirectives(ActiveUnitInfo.Filename,DirectiveList);
+    Result:=GetIDEDirectives(Filename,DirectiveList);
     if Result<>mrOk then exit;
 
-    if ActiveUnitInfo.Source.LineCount>0 then
-      FirstLine:=ActiveUnitInfo.Source.GetLine(0,false)
+    Code:=CodeToolBoss.LoadFile(Filename,true,false);
+    if Code=nil then exit;
+    if Code.LineCount>0 then
+      FirstLine:=Code.GetLine(0,false)
     else
       FirstLine:='';
     HasShebang:=copy(FirstLine,1,2)='#!';
@@ -7409,7 +7431,7 @@ begin
     RunWorkingDir:=GetIDEStringDirective(DirectiveList,
                                        IDEDirectiveNames[idedRunWorkingDir],'');
     if RunWorkingDir='' then
-      RunWorkingDir:=ExtractFilePath(ActiveUnitInfo.Filename);
+      RunWorkingDir:=ExtractFilePath(Filename);
     if not GlobalMacroList.SubstituteStr(RunWorkingDir) then begin
       Result:=mrCancel;
       exit;
@@ -7419,8 +7441,8 @@ begin
     else
       DefRunCommand:=IDEDirDefaultRunCommand;
     RunCommand:=GetIDEStringDirective(DirectiveList,
-                                    IDEDirectiveNames[idedRunCommand],
-                                    DefRunCommand);
+                                      IDEDirectiveNames[idedRunCommand],
+                                      DefRunCommand);
     if (not GlobalMacroList.SubstituteStr(RunCommand)) then
       exit(mrCancel);
     if (RunCommand='') then
