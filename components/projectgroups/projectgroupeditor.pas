@@ -130,6 +130,8 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure PopupMenuMorePopup(Sender: TObject);
     procedure TVPGDblClick(Sender: TObject);
+    procedure TVPGMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
   private
     FProjectGroup: TProjectGroup;
     FProjectGroupTVNode: TTreeNode;
@@ -167,10 +169,11 @@ type
     procedure FillProjectNode(AParent: TTreeNode; T: TPGCompileTarget);
     procedure FillTargetNode(AParent: TTreeNode; T: TPGCompileTarget);
     procedure FillProjectGroupNode(AParent: TTreeNode; AProjectGroup: TProjectGroup; Out TargetNodes: TTargetNodes);
-    function GetNodeIndex(ANodeType: TNodeType; ANodeData: TPGCompileTarget ): Integer;
+    function GetNodeImageIndex(ANodeType: TNodeType; ANodeData: TPGCompileTarget ): Integer;
     function SelectedNodeData: TNodeData;
     function SelectedTarget: TPGCompileTarget;
     function GetTVNodeFilename(TVNode: TTreeNode): string;
+    function GetBuildMode(TVNode: TTreeNode): TPGBuildMode;
     function SelectedNodeType: TPGCompileTarget;
     procedure UpdateIDEMenuCommandFromAction(Sender: TObject; Item: TIDEMenuCommand);
     procedure UpdateStatusBarTargetCount;
@@ -224,6 +227,10 @@ var
 
   // Node state image index
   NSIActive                  : Integer = 20; // State index for active.
+
+  // overlay index
+  NSIChecked                 : Integer = 22;
+  NSIUnchecked               : Integer = 23;
 
   // Action image indexes
   iiProjectGroupSave         : Integer = -1;
@@ -562,6 +569,33 @@ begin
   end;
 end;
 
+procedure TProjectGroupEditorForm.TVPGMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  TVNode: TTreeNode;
+  ND: TNodeData;
+  aMode: TPGBuildMode;
+begin
+  TVNode:=TVPG.GetNodeAt(X,Y);
+  ND:=TNodeData(TVNode.Data);
+  if ND=nil then exit;
+  if mbLeft=Button then begin
+    if (ND.NodeType=ntBuildMode) and ([ssShift,ssCtrl]*Shift=[]) then
+    begin
+      if (TVNode.DisplayStateIconLeft<X) and (X<TVNode.DisplayIconLeft) then
+      begin
+        if TVNode.StateIndex=NSIChecked then
+          TVNode.StateIndex:=NSIUnchecked
+        else
+          TVNode.StateIndex:=NSIChecked;
+        aMode:=GetBuildMode(TVNode);
+        if aMode<>nil then
+          aMode.Compile:=TVNode.StateIndex=NSIChecked;
+      end;
+    end;
+  end;
+end;
+
 procedure TProjectGroupEditorForm.OnTargetAdded(Sender: TObject;
   Target: TPGCompileTarget);
 Var
@@ -848,7 +882,7 @@ begin
   end;
 end;
 
-function TProjectGroupEditorForm.GetNodeIndex(ANodeType: TNodeType;
+function TProjectGroupEditorForm.GetNodeImageIndex(ANodeType: TNodeType;
   ANodeData: TPGCompileTarget): Integer;
 begin
   Case ANodeType of
@@ -918,6 +952,24 @@ begin
   end;
 end;
 
+function TProjectGroupEditorForm.GetBuildMode(TVNode: TTreeNode): TPGBuildMode;
+var
+  ND: TNodeData;
+begin
+  Result:=nil;
+  if TVNode=nil then exit;
+  ND:=TNodeData(TVNode.Data);
+  if (ND=nil) or (ND.NodeType<>ntBuildMode) then exit;
+  while TVNode<>nil do begin
+    if (TVNode.Data<>nil) and (TNodeData(TVNode.Data).Target<>nil) then
+    begin
+      Result:=TNodeData(TVNode.Data).Target.FindBuildMode(ND.Value);
+      exit;
+    end;
+    TVNode:=TVNode.Parent;
+  end;
+end;
+
 function TProjectGroupEditorForm.SelectedNodeType: TPGCompileTarget;
 Var
   N: TNodeData;
@@ -935,7 +987,7 @@ begin
   Node.Data:=ANodeData;
   If (ACaption<>'') then
     Node.Text:=ACaption;
-  Node.ImageIndex:=GetNodeIndex(ANodeData.NodeType,ANodeData.Target);
+  Node.ImageIndex:=GetNodeImageIndex(ANodeData.NodeType,ANodeData.Target);
   Node.SelectedIndex:=Node.ImageIndex;
   if Assigned(ANodeData.Target) and ANodeData.Target.Active then
     Node.StateIndex:=NSIActive
@@ -1196,15 +1248,24 @@ procedure TProjectGroupEditorForm.FillProjectNode(AParent: TTreeNode;
 Var
   FileNodes,DepNodes: TTargetNodes;
   i: Integer;
-  BuildModeNode: TTreeNode;
+  BuildModeNode, TVNode: TTreeNode;
+  aMode: TPGBuildMode;
 begin
   TVPG.BeginUpdate;
   try
     // buildmodes
-    if T.BuildModeCount>1 then begin
+    if T.BuildModeCount>1 then
+    begin
       BuildModeNode:=CreateSectionNode(AParent,lisNodeBuildModes,ntBuildModes);
       for i:=0 to T.BuildModeCount-1 do
-        CreateSubNode(BuildModeNode,ntBuildMode,T,T.BuildModes[i].Identifier);
+      begin
+        aMode:=T.BuildModes[i];
+        TVNode:=CreateSubNode(BuildModeNode,ntBuildMode,T,aMode.Identifier);
+        if aMode.Compile then
+          TVNode.StateIndex:=NSIChecked
+        else
+          TVNode.StateIndex:=NSIUnchecked;
+      end;
     end;
     // files
     FileNodes[False]:=CreateSectionNode(AParent,lisNodeFiles,ntFiles);
