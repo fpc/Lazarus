@@ -1418,9 +1418,7 @@ begin
   taRun:
     begin
       if not CheckIDEIsReadyForBuild then exit;
-      if LazarusIDE.DoOpenEditorFile(Filename,-1,-1,[ofAddToRecent,ofRegularFile])<>mrOK then
-        exit;
-      if LazarusIDE.DoRunFile<>mrOK then
+      if LazarusIDE.DoRunFile(Filename)<>mrOK then
         exit;
       Result:=arOK;
     end;
