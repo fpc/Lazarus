@@ -395,7 +395,6 @@ type
     procedure UpdatePackageCommands(Sender: TObject);
     // see pkgmanager.pas
 
-    procedure mnuChgBuildModeClicked(Sender: TObject);
     procedure ToolBarOptionsClick(Sender: TObject);
   private
     fBuilder: TLazarusBuilder;
@@ -4015,11 +4014,6 @@ end;
 procedure TMainIDE.mnuProjectOptionsClicked(Sender: TObject);
 begin
   ProjectOptionsHelper([TProjectIDEOptions, TProjectCompilerOptions]);
-end;
-
-procedure TMainIDE.mnuChgBuildModeClicked(Sender: TObject);
-begin
-  ProjectOptionsHelper([TProjectCompilerOptions]);
 end;
 
 procedure TMainIDE.mnuBuildModeClicked(Sender: TObject);
