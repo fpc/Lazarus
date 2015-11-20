@@ -541,15 +541,23 @@ begin
   ntProjectGroup,
   ntTarget:
     begin
-      // activate target
-      ND.Target.Activate;
+      PG:=ND.Target.GetOwnerProjectGroup;
+      if PG=nil then exit;
+      case ND.Target.TargetType of
+      ttProject,
+      ttPackage,
+      ttPascalFile:
+        PG.Perform(ND.Target,taOpen)
+      end;
     end;
   ntRemovedTarget:
     begin
-      PG:=ND.Target.Parent.ProjectGroup;
+      PG:=ND.Target.GetOwnerProjectGroup;
       if PG=nil then exit;
       case ND.Target.TargetType of
-      ttProject,ttPackage,ttPascalFile:
+      ttProject,
+      ttPackage,
+      ttPascalFile:
         PG.Perform(ND.Target,taOpen);
       end;
     end;
@@ -752,10 +760,7 @@ Var
 begin
   ND:=SelectedNodeData;
   if (ND=nil) or (ND.Target=nil) then exit;
-  if ND.Target.ProjectGroup<>nil then
-    ND.Target.ProjectGroup.Perform(ND.Target,ATargetAction)
-  else if ND.Target.Parent.ProjectGroup<>nil then
-    ND.Target.Parent.ProjectGroup.Perform(ND.Target,ATargetAction);
+  ND.Target.GetOwnerProjectGroup.Perform(ND.Target,ATargetAction)
 end;
 
 procedure TProjectGroupEditorForm.ATargetCompileExecute(Sender: TObject);
