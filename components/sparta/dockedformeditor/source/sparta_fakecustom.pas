@@ -278,10 +278,10 @@ begin
         2: Result := LClientRect.Right;
         3: Result := LClientRect.Bottom;
       end;
-    end;
-  end;
-  //else
-  //Result := inherited GetPublishedBounds(AIndex);
+    end
+    else
+      Result := 0; //inherited GetPublishedBounds(AIndex);
+  end
 end;
 
 procedure TDesignedNonControlFormImpl.SetPublishedBounds(AIndex: Integer;
@@ -625,7 +625,7 @@ begin
       Width := LClientRect.Right;
       Height := LClientRect.Bottom;
     end else
-      ;//WriteLn('o kurwa eh');
+      Width := 1;
 
     DesignedForm.RealWidth := Width;
     DesignedForm.RealHeight := Height;
