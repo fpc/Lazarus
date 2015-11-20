@@ -573,19 +573,11 @@ type
 
   { TProjectBuildMode }
 
-  TProjectBuildMode = class(TComponent)
+  TProjectBuildMode = class(TLazProjectBuildMode)
   private
-    FChangeStamp: int64;
-    fSavedChangeStamp: int64;
     FCompilerOptions: TProjectCompilerOptions;
-    FIdentifier: string;
-    FInSession: boolean;
-    fOnChanged: TMethodList;
-    function GetModified: boolean;
-    procedure SetIdentifier(const AValue: string);
-    procedure SetInSession(const AValue: boolean);
-    procedure OnItemChanged(Sender: TObject);
-    procedure SetModified(const AValue: boolean);
+  protected
+    function GetLazCompilerOptions: TLazCompilerOptions; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -599,28 +591,18 @@ type
     procedure SaveMacroValuesAtOldPlace(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                               IsDefault: Boolean; var Cnt: integer);
-    property ChangeStamp: int64 read FChangeStamp;
-    procedure IncreaseChangeStamp;
-    procedure AddOnChangedHandler(const Handler: TNotifyEvent);
-    procedure RemoveOnChangedHandler(const Handler: TNotifyEvent);
-    function GetCaption: string;
-    function GetIndex: integer;
+    function GetCaption: string; override;
+    function GetIndex: integer; override;
   public
-    property Name; // See Identifier for the name of the buildmode
-    property InSession: boolean read FInSession write SetInSession;
-    property Identifier: string read FIdentifier write SetIdentifier;// arbitrary string
-    property Modified: boolean read GetModified write SetModified;
-
     // copied by Assign, compared by Equals, cleared by Clear
     property CompilerOptions: TProjectCompilerOptions read FCompilerOptions;
   end;
 
   { TProjectBuildModes }
 
-  TProjectBuildModes = class(TComponent)
+  TProjectBuildModes = class(TLazProjectBuildModes)
   private
     FAssigning: Boolean;
-    FChangeStamp: integer;
     FSessionMatrixOptions: TBuildMatrixOptions;
     FSharedMatrixOptions: TBuildMatrixOptions;
     fSavedChangeStamp: int64;
@@ -645,6 +627,8 @@ type
     // Used by SaveToXMLConfig
     procedure SaveSessionData(const Path: string);
     procedure SaveSharedMatrixOptions(const Path: string);
+  protected
+    function GetLazBuildModes(Index: integer): TLazProjectBuildMode; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -657,7 +641,7 @@ type
     function Find(Identifier: string): TProjectBuildMode;
     function Add(Identifier: string): TProjectBuildMode;
     procedure Move(FromIndex, ToIndex: integer);
-    function Count: integer;
+    function Count: integer; override;
     procedure IncreaseChangeStamp;
     procedure AddOnChangedHandler(const Handler: TNotifyEvent);
     procedure RemoveOnChangedHandler(const Handler: TNotifyEvent);
@@ -856,6 +840,7 @@ type
     function GetMainFile: TLazProjectFile; override;
     function GetMainFileID: Integer; override;
     procedure SetMainFileID(const AValue: Integer); override;
+    function GetLazBuildModes: TLazProjectBuildModes; override;
     function GetFiles(Index: integer): TLazProjectFile; override;
     procedure SetFlags(const AValue: TProjectFlags); override;
     function GetModified: boolean; override;
@@ -5766,6 +5751,11 @@ begin
   MainUnitID:=AValue;
 end;
 
+function TProject.GetLazBuildModes: TLazProjectBuildModes;
+begin
+  Result:=FBuildModes;
+end;
+
 procedure TProject.AddToList(AnUnitInfo: TUnitInfo; ListType: TUnitInfoList);
 begin
   // add to list if AnUnitInfo is not in list
@@ -6588,55 +6578,14 @@ end;
 
 { TProjectBuildMode }
 
-procedure TProjectBuildMode.SetInSession(const AValue: boolean);
+function TProjectBuildMode.GetLazCompilerOptions: TLazCompilerOptions;
 begin
-  if FInSession=AValue then exit;
-  FInSession:=AValue;
-  {$IFDEF VerboseIDEModified}
-  debugln(['TProjectBuildMode.SetInSession ',AValue]);
-  {$ENDIF}
-  IncreaseChangeStamp;
-end;
-
-procedure TProjectBuildMode.OnItemChanged(Sender: TObject);
-begin
-  {$IFDEF VerboseIDEModified}
-  debugln(['TProjectBuildMode.OnItemChanged ',DbgSName(Sender)]);
-  {$ENDIF}
-  IncreaseChangeStamp;
-end;
-
-procedure TProjectBuildMode.SetModified(const AValue: boolean);
-begin
-  if AValue then
-    IncreaseChangeStamp
-  else begin
-    fSavedChangeStamp:=FChangeStamp;
-    FCompilerOptions.Modified:=false;
-  end;
-end;
-
-procedure TProjectBuildMode.SetIdentifier(const AValue: string);
-begin
-  if FIdentifier=AValue then exit;
-  FIdentifier:=AValue;
-  {$IFDEF VerboseIDEModified}
-  debugln(['TProjectBuildMode.SetIdentifier ',AValue]);
-  {$ENDIF}
-  IncreaseChangeStamp;
-end;
-
-function TProjectBuildMode.GetModified: boolean;
-begin
-  Result:=fSavedChangeStamp<>FChangeStamp;
+  Result:=FCompilerOptions;
 end;
 
 constructor TProjectBuildMode.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  fOnChanged:=TMethodList.Create;
-  FChangeStamp:=CTInvalidChangeStamp64;
-  fSavedChangeStamp:=FChangeStamp;
   FCompilerOptions:=TProjectCompilerOptions.Create(LazProject);
   FCompilerOptions.AddOnChangedHandler(@OnItemChanged);
   FCompilerOptions.FBuildMode:=Self;
@@ -6644,7 +6593,6 @@ end;
 
 destructor TProjectBuildMode.Destroy;
 begin
-  FreeAndNil(fOnChanged);
   FreeAndNil(FCompilerOptions);
   inherited Destroy;
 end;
@@ -6717,28 +6665,6 @@ begin
     SaveMacroValuesAtOldPlace(XMLConfig, SubPath+'MacroValues/');
     CompilerOptions.SaveToXMLConfig(XMLConfig,SubPath+'CompilerOptions/');
   end;
-end;
-
-procedure TProjectBuildMode.IncreaseChangeStamp;
-begin
-  {$IFDEF VerboseIDEModified}
-  if not Modified then begin
-    debugln(['TProjectBuildMode.IncreaseChangeStamp ']);
-    CTDumpStack;
-  end;
-  {$ENDIF}
-  CTIncreaseChangeStamp64(FChangeStamp);
-  if fOnChanged<>nil then fOnChanged.CallNotifyEvents(Self);
-end;
-
-procedure TProjectBuildMode.AddOnChangedHandler(const Handler: TNotifyEvent);
-begin
-  fOnChanged.Add(TMethod(Handler));
-end;
-
-procedure TProjectBuildMode.RemoveOnChangedHandler(const Handler: TNotifyEvent);
-begin
-  fOnChanged.Remove(TMethod(Handler));
 end;
 
 function TProjectBuildMode.GetCaption: string;
@@ -7223,6 +7149,12 @@ begin
   SharedMatrixOptions.SaveToXMLConfig(FXMLConfig, Path+'BuildModes/SharedMatrixOptions/',@IsSharedMode);
 end;
 
+function TProjectBuildModes.GetLazBuildModes(Index: integer
+  ): TLazProjectBuildMode;
+begin
+  Result:=TLazProjectBuildMode(fItems[Index]);
+end;
+
 // SaveToXMLConfig itself
 procedure TProjectBuildModes.SaveProjOptsToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string; SaveSession: boolean);
@@ -7257,6 +7189,7 @@ begin
       Items[i].SaveToXMLConfig(FXMLConfig, Path, false, Cnt);
   FXMLConfig.SetDeleteValue(Path+'BuildModes/Count',Cnt,0);
 end;
+
 
 initialization
   RegisterIDEOptionsGroup(GroupProject, TProjectIDEOptions);

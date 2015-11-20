@@ -17,7 +17,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LazFileUtils, Controls, Forms, AvgLvlTree,
-  NewItemIntf, ProjPackIntf, CompOptsIntf, ObjInspStrConsts, LazFileCache;
+  NewItemIntf, ProjPackIntf, CompOptsIntf, ObjInspStrConsts, LazFileCache,
+  LazMethodList;
 
 const
   FileDescGroupName = 'File';
@@ -349,6 +350,50 @@ type
       Read fIncludeSystemVariables Write fIncludeSystemVariables;
   end;
 
+  { TLazProjectBuildMode }
+
+  TLazProjectBuildMode = class(TComponent)
+  private
+    FChangeStamp: int64;
+    fSavedChangeStamp: int64;
+    fOnChanged: TMethodList;
+    function GetModified: boolean;
+    procedure SetIdentifier(AValue: string);
+    procedure SetInSession(AValue: boolean);
+    procedure SetModified(AValue: boolean);
+  protected
+    FIdentifier: string;
+    FInSession: boolean;
+    procedure OnItemChanged(Sender: TObject);
+    function GetLazCompilerOptions: TLazCompilerOptions; virtual; abstract;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    property ChangeStamp: int64 read FChangeStamp;
+    procedure IncreaseChangeStamp;
+    procedure AddOnChangedHandler(const Handler: TNotifyEvent);
+    procedure RemoveOnChangedHandler(const Handler: TNotifyEvent);
+    function GetCaption: string; virtual; abstract;
+    function GetIndex: integer; virtual; abstract;
+    property Name; // See Identifier for the name of the buildmode
+    property InSession: boolean read FInSession write SetInSession;
+    property Identifier: string read FIdentifier write SetIdentifier;// arbitrary string
+    property Modified: boolean read GetModified write SetModified;
+    property LazCompilerOptions: TLazCompilerOptions read GetLazCompilerOptions;
+  end;
+
+  { TProjectBuildModes }
+
+  TLazProjectBuildModes = class(TComponent)
+  protected
+    FChangeStamp: integer;
+    function GetLazBuildModes(Index: integer): TLazProjectBuildMode; virtual; abstract;
+  public
+    function Count: integer; virtual; abstract;
+    property ChangeStamp: integer read FChangeStamp;
+    property BuildModes[Index: integer]: TLazProjectBuildMode read GetLazBuildModes;
+  end;
+
   { TLazProject - interface class to a Lazarus project }
 
   TProjectFileSearchFlag = (
@@ -396,6 +441,7 @@ type
     function GetMainFile: TLazProjectFile; virtual; abstract;
     function GetMainFileID: Integer; virtual; abstract;
     function GetModified: boolean; virtual; abstract;
+    function GetLazBuildModes: TLazProjectBuildModes; virtual; abstract;
     function GetProjectInfoFile: string; virtual; abstract;
     function GetUseManifest: boolean; virtual; abstract;
     procedure SetExecutableType(const AValue: TProjectExecutableType); virtual;
@@ -434,9 +480,9 @@ type
     function GetTitleOrName: string; // GetTitle, if this is '' then GetDefaultTitle
   public
     property ChangeStamp: integer read FChangeStamp;
-    property MainFileID: Integer read GetMainFileID write SetMainFileID;
     property Files[Index: integer]: TLazProjectFile read GetFiles;
     property FileCount: integer read GetFileCount;
+    property MainFileID: Integer read GetMainFileID write SetMainFileID;
     property MainFile: TLazProjectFile read GetMainFile;
     property Title: String read FTitle write SetTitle;
     property Flags: TProjectFlags read FFlags write SetFlags;
@@ -444,6 +490,7 @@ type
                  write SetExecutableType;// read from MainFile, not saved to lpi
     property ProjectInfoFile: string read GetProjectInfoFile write SetProjectInfoFile;
     property ProjectSessionFile: string read FProjectSessionFile write SetProjectSessionFile;
+    property LazBuildModes: TLazProjectBuildModes read GetLazBuildModes;
     property SessionStorage: TProjectSessionStorage read FSessionStorage write SetSessionStorage;
     // project data (not units, session), units have their own Modified
     property Modified: boolean read GetModified write SetModified;
@@ -1001,6 +1048,87 @@ end;
 function TProjectDescriptor.CreateStartFiles(AProject: TLazProject): TModalResult;
 begin
   Result:=mrOk;
+end;
+
+{ TLazProjectBuildMode }
+
+function TLazProjectBuildMode.GetModified: boolean;
+begin
+  Result:=fSavedChangeStamp<>FChangeStamp;
+end;
+
+procedure TLazProjectBuildMode.SetIdentifier(AValue: string);
+begin
+  if FIdentifier=AValue then exit;
+  FIdentifier:=AValue;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TLazProjectBuildMode.SetIdentifier ',AValue]);
+  {$ENDIF}
+  IncreaseChangeStamp;
+end;
+
+procedure TLazProjectBuildMode.SetInSession(AValue: boolean);
+begin
+  if FInSession=AValue then exit;
+  FInSession:=AValue;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TLazProjectBuildMode.SetInSession ',AValue]);
+  {$ENDIF}
+  IncreaseChangeStamp;
+end;
+
+procedure TLazProjectBuildMode.OnItemChanged(Sender: TObject);
+begin
+  {$IFDEF VerboseIDEModified}
+  debugln(['TLazProjectBuildMode.OnItemChanged ',DbgSName(Sender)]);
+  {$ENDIF}
+  IncreaseChangeStamp;
+end;
+
+procedure TLazProjectBuildMode.SetModified(AValue: boolean);
+begin
+  if AValue then
+    IncreaseChangeStamp
+  else begin
+    fSavedChangeStamp:=FChangeStamp;
+    LazCompilerOptions.Modified:=false;
+  end;
+end;
+
+constructor TLazProjectBuildMode.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  fOnChanged:=TMethodList.Create;
+  FChangeStamp:=LUInvalidChangeStamp64;
+  fSavedChangeStamp:=FChangeStamp;
+end;
+
+destructor TLazProjectBuildMode.Destroy;
+begin
+  FreeAndNil(fOnChanged);
+  inherited Destroy;
+end;
+
+procedure TLazProjectBuildMode.IncreaseChangeStamp;
+begin
+  {$IFDEF VerboseIDEModified}
+  if not Modified then begin
+    debugln(['TLazProjectBuildMode.IncreaseChangeStamp ']);
+  end;
+  {$ENDIF}
+  LUIncreaseChangeStamp64(FChangeStamp);
+  if fOnChanged<>nil then fOnChanged.CallNotifyEvents(Self);
+end;
+
+procedure TLazProjectBuildMode.AddOnChangedHandler(const Handler: TNotifyEvent);
+begin
+  fOnChanged.Add(TMethod(Handler));
+end;
+
+procedure TLazProjectBuildMode.RemoveOnChangedHandler(
+  const Handler: TNotifyEvent);
+begin
+  fOnChanged.Remove(TMethod(Handler));
 end;
 
 { TLazProject }
