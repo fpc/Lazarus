@@ -1182,6 +1182,7 @@ begin
     else
       Result:=CreateRelativePath(Result,BaseDir);
   end else begin
+    debugln(['TProjectGroupEditorForm.DisplayFileName ',aTarget.Filename,' ',aTarget.TargetType=ttPascalFile]);
     if aTarget.TargetType in [ttPascalFile] then
       Result:=ExtractFileName(aTarget.Filename)
     else
@@ -1203,7 +1204,10 @@ begin
   if (NodeData.Target<>nil)
   and (not IDEProjectGroupManager.Options.ShowTargetPaths) then
   begin
-    Result:=ExtractFileNameOnly(NodeData.Target.Filename);
+    if NodeData.Target.TargetType in [ttPascalFile] then
+      Result:=ExtractFileName(NodeData.Target.Filename)
+    else
+      Result:=ExtractFileNameOnly(NodeData.Target.Filename);
   end else begin
     Result:='';
     if NodeData.ParentTarget<>nil then
