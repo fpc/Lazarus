@@ -14,7 +14,7 @@ uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls, Menus,
   ActnList, LCLProc, Clipbrd, LazIDEIntf, PackageIntf, ProjectIntf,
   ProjectGroupIntf, MenuIntf, IDEDialogs, IDEWindowIntf, LazFileUtils,
-  LazLogger, ProjectGroupStrConst, ProjectGroup;
+  LazLogger, LazFileCache, ProjectGroupStrConst, ProjectGroup;
 
 type
   TNodeType = (
@@ -46,6 +46,7 @@ type
   { TProjectGroupEditorForm }
 
   TProjectGroupEditorForm = class(TForm)
+    AProjectGroupReload: TAction;
     ATargetCompileFromHere: TAction;
     ATargetCopyFilename: TAction;
     AProjectGroupAddExisting: TAction;
@@ -93,7 +94,9 @@ type
     TBTargetLater: TToolButton;
     TBMore: TToolButton;
     TBActivate: TToolButton;
+    TBReload: TToolButton;
     TVPG: TTreeView;
+    procedure AProjectGroupReloadExecute(Sender: TObject);
     procedure ATargetActivateExecute(Sender: TObject);
     procedure ATargetActivateUpdate(Sender: TObject);
     procedure AProjectGroupAddExistingExecute(Sender: TObject);
@@ -753,6 +756,25 @@ begin
   if (ND=nil) or (ND.Target=nil) then
     exit;
   ND.Target.Activate;
+end;
+
+procedure TProjectGroupEditorForm.AProjectGroupReloadExecute(Sender: TObject);
+var
+  PG: TIDEProjectGroup;
+begin
+  if ProjectGroup=nil then exit;
+  if FileExistsCached(ProjectGroup.FileName) then
+  begin
+    PG:=TIDEProjectGroup(ProjectGroup);
+    if PG.Modified then begin
+      IDEMessageDialog('Need save','Please save your changes before reloading the project group.',
+        mtError,[mbOK]);
+      exit;
+    end;
+    ProjectGroup:=nil;
+    PG.LoadFromFile([pgloLoadRecursively]);
+    ProjectGroup:=PG;
+  end;
 end;
 
 procedure TProjectGroupEditorForm.ATargetCompileCleanExecute(Sender: TObject);

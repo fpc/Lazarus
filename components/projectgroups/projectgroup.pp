@@ -1,7 +1,5 @@
 {
   ToDo:
-    - save/restore Active target
-    - run external tool
     - update files when project/package changes in IDE
     - update dependencies when changed in IDE
     - re-add removed targets
@@ -111,6 +109,7 @@ type
   public
     constructor Create(aCompileTarget: TIDECompileTarget);
     destructor Destroy; override;
+    procedure Clear;
     function IndexOfTarget(const Target: TPGCompileTarget): Integer; override;
     function IndexOfRemovedTarget(const Target: TPGCompileTarget): Integer; override;
     function AddTarget(Const AFileName: String): TPGCompileTarget; override;
@@ -658,9 +657,13 @@ destructor TIDEProjectGroup.Destroy;
 begin
   FreeAndNil(FTargets);
   FreeAndNil(FRemovedTargets);
-  if FParent=nil then
-    FreeAndNil(FCompileTarget);
   inherited Destroy;
+end;
+
+procedure TIDEProjectGroup.Clear;
+begin
+  FTargets.Clear;
+  FRemovedTargets.Clear;
 end;
 
 function TIDEProjectGroup.IndexOfTarget(const Target: TPGCompileTarget): Integer;
@@ -739,6 +742,8 @@ begin
   Result:=false;
   if not FilenameIsAbsolute(FileName) then exit;
   if not FileExistsCached(Filename) then exit;
+
+  Clear;
 
   aGroup:=Parent;
   while aGroup<>nil do begin
