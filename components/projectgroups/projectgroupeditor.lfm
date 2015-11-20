@@ -99,6 +99,7 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
     TabOrder = 1
     OnDblClick = TVPGDblClick
     OnMouseDown = TVPGMouseDown
+    OnSelectionChanged = TVPGSelectionChanged
     Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
   end
   object SBPG: TStatusBar

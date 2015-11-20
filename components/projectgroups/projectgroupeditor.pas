@@ -134,6 +134,7 @@ type
     procedure TVPGDblClick(Sender: TObject);
     procedure TVPGMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure TVPGSelectionChanged(Sender: TObject);
   private
     FProjectGroup: TProjectGroup;
     FProjectGroupTVNode: TTreeNode;
@@ -612,6 +613,29 @@ begin
   end;
 end;
 
+procedure TProjectGroupEditorForm.TVPGSelectionChanged(Sender: TObject);
+var
+  TVNode: TTreeNode;
+  ND: TNodeData;
+  s: String;
+begin
+  TVNode:=TVPG.Selected;
+  s:='';
+  if (TVNode<>nil) and (TVNode.Data<>nil) then begin
+    ND:=TNodeData(TVNode.Data);
+    if ND.Target<>nil then begin
+      s:=ND.Target.Filename;
+    end else begin
+      case ND.NodeType of
+      ntBuildMode: s:='Build Mode "'+ND.Value+'"';
+      ntFile: s:=ND.Value;
+      end;
+    end;
+  end;
+
+  SBPG.Panels[piActiveTarget].Text:=s;
+end;
+
 procedure TProjectGroupEditorForm.OnTargetAdded(Sender: TObject;
   Target: TPGCompileTarget);
 Var
@@ -640,7 +664,6 @@ procedure TProjectGroupEditorForm.OnTargetActiveChanged(Sender: TObject;
   Target: TPGCompileTarget);
 Var
   OldActiveTVNode,NewActiveTVNode: TTreeNode;
-  N: String;
 begin
   OldActiveTVNode:=FindNodeFromTarget(FActiveTarget);
   NewActiveTVNode:=FindNodeFromTarget(Target);
@@ -652,8 +675,8 @@ begin
       NewActiveTVNode.StateIndex:=NSIActive;
     FActiveTarget:=Target;
   end;
-  N:=DisplayFileName(Target);
-  SBPG.Panels[piActiveTarget].Text:=Format(lisActiveTarget,[N]);
+  //N:=DisplayFileName(Target);
+  //SBPG.Panels[piActiveTarget].Text:=Format(lisActiveTarget,[N]);
 end;
 
 procedure TProjectGroupEditorForm.OnTargetExchanged(Sender: TObject; Target1,
