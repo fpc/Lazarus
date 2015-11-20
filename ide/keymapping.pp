@@ -218,6 +218,8 @@ function KeySchemeNameToSchemeType(const SchemeName: string): TKeyMapScheme;
 
 function ShiftStateToCfgStr(Shift: TShiftState): string;
 function KeyValuesToCfgStr(const ShortcutA, ShortcutB: TIDEShortCut): string;
+function KeyValuesToCaptionStr(const ShortcutA, ShortcutB: TIDEShortCut;
+  Brackets: Char = '['): String;
 function CfgStrToShiftState(const s: string): TShiftState;
 
 function CompareLoadedKeyCommands(Data1, Data2: Pointer): integer;
@@ -799,6 +801,35 @@ begin
 
       end;
   end;
+end;
+
+function KeyValuesToCaptionStr(const ShortcutA, ShortcutB: TIDEShortCut;
+  Brackets: Char): String;
+  function AddBrakets(S: String): String;
+  begin
+    if Brackets = '[' then
+      Result := '[' + S + ']'
+    else if Brackets = '(' then
+      Result := '(' + S + ')'
+    else if Brackets > #0 then
+      Result := Brackets + S + Brackets
+    else
+      Result := S;
+  end;
+begin
+  Result := '';
+  if (ShortcutA.Key1 = VK_UNKNOWN) and (ShortcutB.Key1 = VK_UNKNOWN) then
+    Result := Result{ + lisNone2 }
+  else
+  if (ShortcutA.Key1 = VK_UNKNOWN) then
+    Result := Result + AddBrakets(KeyAndShiftStateToEditorKeyString(ShortcutB))
+  else
+  if (ShortcutB.Key1 = VK_UNKNOWN) then
+    Result := Result + AddBrakets(KeyAndShiftStateToEditorKeyString(ShortcutA))
+  else
+    Result := Result + AddBrakets(KeyAndShiftStateToEditorKeyString(ShortcutA))
+                     + '  '+lisOr+'  ' +
+                       AddBrakets(KeyAndShiftStateToEditorKeyString(ShortcutB));
 end;
 
 function IDEShortCutEmpty(const Key: TIDEShortCut): boolean;

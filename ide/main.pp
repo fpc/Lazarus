@@ -322,7 +322,7 @@ type
     procedure mnuViewFormsClicked(Sender: TObject);
     procedure mnuViewProjectSourceClicked(Sender: TObject);
     procedure mnuProjectOptionsClicked(Sender: TObject);
-    procedure mnuBuildModeClicked(Sender: TObject);
+    procedure mnuBuildModeClicked(Sender: TObject); override;
 
     // run menu
     procedure mnuCompileProjectClicked(Sender: TObject);
@@ -2698,7 +2698,6 @@ begin
     itmProjectViewUnits.OnClick := @mnuViewUnitsClicked;
     itmProjectViewForms.OnClick := @mnuViewFormsClicked;
     itmProjectViewSource.OnClick := @mnuViewProjectSourceClicked;
-    itmProjectBuildMode.OnClick := @mnuBuildModeClicked;
   end;
 end;
 
@@ -3785,6 +3784,7 @@ procedure TMainIDE.UpdateProjectCommands(Sender: TObject);
 var
   ASrcEdit: TSourceEditor;
   AUnitInfo: TUnitInfo;
+  xCmd: TIDECommand;
 begin
   GetCurrentUnit(ASrcEdit,AUnitInfo);
   if not UpdateProjectCommandsStamp.Changed(AUnitInfo) then
@@ -3792,6 +3792,15 @@ begin
 
   IDECommandList.FindIDECommand(ecAddCurUnitToProj).Enabled:=Assigned(AUnitInfo) and not AUnitInfo.IsPartOfProject;
   IDECommandList.FindIDECommand(ecBuildManyModes).Enabled:=(Project1<>nil) and (Project1.BuildModes.Count>1);
+
+  xCmd := IDECommandList.FindIDECommand(ecProjectChangeBuildMode);
+  if Assigned(Project1) then
+    xCmd.Hint :=
+      Trim(lisChangeBuildMode + ' ' + KeyValuesToCaptionStr(xCmd.ShortcutA, xCmd.ShortcutB, '(')) + sLineBreak +
+      Format('[%s]', [Project1.ActiveBuildMode.GetCaption])
+  else
+    xCmd.Hint :=
+      Trim(lisChangeBuildMode + ' ' + KeyValuesToCaptionStr(xCmd.ShortcutA, xCmd.ShortcutB, '('));
 end;
 
 procedure TMainIDE.UpdatePackageCommands(Sender: TObject);
@@ -7885,7 +7894,6 @@ begin
   end;
   MainIDEBar.Caption := NewCaption;
   Application.Title := NewTitle;
-  TSetBuildModeToolButton.UpdateHints;
 end;
 
 procedure TMainIDE.HideIDE;

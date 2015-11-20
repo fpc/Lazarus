@@ -126,6 +126,7 @@ type
     procedure mnuWindowItemClick(Sender: TObject); virtual;
     procedure mnuCenterWindowItemClick(Sender: TObject); virtual;
     procedure mnuWindowSourceItemClick(Sender: TObject); virtual;
+    procedure mnuBuildModeClicked(Sender: TObject); virtual; abstract;
 
     procedure UpdateWindowMenu;
 
@@ -211,8 +212,6 @@ type
     procedure mnuSetBuildModeClick(Sender: TObject);
   public
     procedure DoOnAdded; override;
-
-    class procedure UpdateHints;
   end;
 
   { TOpenFileToolButton }
@@ -480,7 +479,6 @@ begin
   DropdownMenu := TPopupMenu.Create(Self);
   DropdownMenu.OnPopup := @RefreshMenu;
   Style := tbsDropDown;
-  UpdateHints;
 end;
 
 procedure TSetBuildModeToolButton.mnuSetBuildModeClick(Sender: TObject);
@@ -541,16 +539,6 @@ begin
   // remove unused menuitems
   while aMenu.Items.Count > CurIndex do
     aMenu.Items[aMenu.Items.Count - 1].Free;
-end;
-
-class procedure TSetBuildModeToolButton.UpdateHints;
-const
-  cActiveBuildMode = '[%s]';
-begin
-  if Assigned(Project1) then
-    MainIDEBar.itmProjectBuildMode.Hint :=
-      lisChangeBuildMode + MainIDEBar.itmProjectBuildMode.GetShortcut + sLineBreak +
-      Format(cActiveBuildMode, [Project1.ActiveBuildMode.GetCaption]);
 end;
 
 { TJumpToSectionToolButton }
@@ -1275,7 +1263,6 @@ begin
     CreateMenuItem(ParentMI,itmProjectViewUnits,'itmProjectViewUnits',lisMenuViewUnits, 'menu_view_units');
     CreateMenuItem(ParentMI,itmProjectViewForms,'itmProjectViewForms',lisMenuViewForms, 'menu_view_forms');
     CreateMenuItem(ParentMI,itmProjectViewSource,'itmProjectViewSource',lisMenuViewProjectSource, 'menu_project_viewsource');
-    CreateMenuItem(ParentMI,itmProjectBuildMode,'itmProjectBuildMode',lisChangeBuildMode+' ...', 'menu_compiler_options');
   end;
 end;
 
@@ -1648,7 +1635,10 @@ begin
     itmProjectViewUnits.Command:=GetCommand(ecViewProjectUnits);
     itmProjectViewForms.Command:=GetCommand(ecViewProjectForms);
     itmProjectViewSource.Command:=GetCommand(ecViewProjectSource);
-    itmProjectBuildMode.Command:=GetCommand(ecProjectChangeBuildMode,TSetBuildModeToolButton);
+    GetCmdAndBtn(ecProjectChangeBuildMode, xBtnItem);
+    xBtnItem.ToolButtonClass:=TSetBuildModeToolButton;
+    xBtnItem.ImageIndex := IDEImages.LoadImage(16, 'menu_compiler_options');
+    xBtnItem.OnClick := @mnuBuildModeClicked;
 
     // run menu
     itmRunMenuCompile.Command:=GetCommand(ecCompile);

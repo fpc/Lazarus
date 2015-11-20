@@ -551,6 +551,7 @@ type
     procedure SetEnabled(const AEnabled: Boolean);
     procedure SetVisible(const AVisible: Boolean);
     procedure SetCaption(const ACaption: string);
+    procedure SetHint(const AHint: string);
   protected
     function GetLocalizedName: string; virtual;
     procedure SetLocalizedName(const AValue: string); virtual;
@@ -586,6 +587,7 @@ type
     property Enabled: Boolean write SetEnabled;
     property Visible: Boolean write SetVisible;
     property Caption: string write SetCaption;
+    property Hint: string write SetHint;
   public
     property Name: String read FName;
     property Command: word read FCommand;// see the ecXXX constants above
@@ -815,6 +817,7 @@ function CompareIDEShortCuts(Data1, Data2: Pointer): integer;
 function CompareIDEShortCutKey1s(Data1, Data2: Pointer): integer;
 function IdentToIDECommand(const Ident: string; var Cmd: longint): boolean;
 function IDECommandToIdent(Cmd: longint; var Ident: string): boolean;
+function IDECommandToIdent(Cmd: longint): string;
 procedure GetIDEEditorCommandValues(Proc: TGetStrProc);
 
 implementation
@@ -1322,6 +1325,14 @@ var
 begin
   for xUser in FUsers do
     xUser.Enabled := AEnabled;
+end;
+
+procedure TIDECommand.SetHint(const AHint: string);
+var
+  xUser: TIDESpecialCommand;
+begin
+  for xUser in FUsers do
+    xUser.Hint := AHint;
 end;
 
 function TIDECommand.AsShortCut: TShortCut;
@@ -2187,6 +2198,13 @@ end;
 function IDECommandToIdent(Cmd: longint; var Ident: string): boolean;
 begin
   Result := IntToIdent(Cmd, Ident, IDEEditorCommandStrs);
+end;
+
+function IDECommandToIdent(Cmd: longint): string;
+begin
+  Result := '';
+  if not IDECommandToIdent(Cmd, Result) then
+    raise Exception.CreateFmt('IDECommandToIdent: command %d not found', [Cmd]);
 end;
 
 procedure GetIDEEditorCommandValues(Proc: TGetStrProc);

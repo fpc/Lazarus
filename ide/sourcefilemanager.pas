@@ -69,6 +69,8 @@ type
   private
     FUnitInfo: TUnitInfo;
     FProjectChangeStamp: Int64;
+    FCompilerParseStamp: integer;
+    FBuildMacroChangeStamp: integer;
   public
     function Changed(AUnitInfo: TUnitInfo): Boolean;
   end;
@@ -477,12 +479,16 @@ begin
   Result := not(
         (FUnitInfo = AUnitInfo)
     and (FProjectChangeStamp = CurProjectChangeStamp)
+    and (FCompilerParseStamp = CompilerParseStamp)
+    and (FBuildMacroChangeStamp = BuildMacroChangeStamp)
     );
 
   if not Result then Exit;
 
   FUnitInfo := AUnitInfo;
   FProjectChangeStamp := CurProjectChangeStamp;
+  FCompilerParseStamp := CompilerParseStamp;
+  FBuildMacroChangeStamp := BuildMacroChangeStamp;
 end;
 
 { TPackageCommandsStamp }
