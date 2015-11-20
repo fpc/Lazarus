@@ -46,7 +46,8 @@ type
 
   TIDEDirRunFlag = (
     idedrfNone,
-    idedrfBuildBeforeRun // BUILD+ means on (default), BUILD- means off
+    idedrfBuildBeforeRun, // BUILD+ means on (default for non script), BUILD- means off
+    idedrfMessages // show output in Messages window
     );
   TIDEDirRunFlags = set of TIDEDirRunFlag;
 const
@@ -66,7 +67,8 @@ const
     );
   IDEDirRunFlagNames: array[TIDEDirRunFlag] of string = (
     '',
-    'BUILD'
+    'BUILD',
+    'MESSAGES'
     );
 
 type

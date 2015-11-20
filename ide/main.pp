@@ -7419,13 +7419,14 @@ begin
       FirstLine:='';
     HasShebang:=copy(FirstLine,1,2)='#!';
     DefRunFlags:=IDEDirRunFlagDefValues;
-    if HasShebang then Exclude(DefRunFlags,idedrfBuildBeforeRun);
+    if HasShebang then
+      Exclude(DefRunFlags,idedrfBuildBeforeRun);
     RunFlags:=GetIDEDirRunFlagFromString(
       GetIDEStringDirective(DirectiveList,IDEDirectiveNames[idedRunFlags],''),
       DefRunFlags);
     AlwaysBuildBeforeRun:=idedrfBuildBeforeRun in RunFlags;
     if AlwaysBuildBeforeRun then begin
-      Result:=DoBuildFile(true);
+      Result:=DoBuildFile(true,Filename);
       if Result<>mrOk then exit;
     end;
     RunWorkingDir:=GetIDEStringDirective(DirectiveList,
@@ -7437,7 +7438,7 @@ begin
       exit;
     end;
     if HasShebang then
-      DefRunCommand:='instantfpc'+ExeExt+' '+ActiveUnitInfo.Filename
+      DefRunCommand:='instantfpc'+ExeExt+' '+Filename
     else
       DefRunCommand:=IDEDirDefaultRunCommand;
     RunCommand:=GetIDEStringDirective(DirectiveList,
@@ -7454,10 +7455,12 @@ begin
 
     ExtTool:=TIDEExternalToolOptions.Create;
     try
-      ExtTool.Title:='Run File '+ActiveUnitInfo.Filename;
+      ExtTool.Title:='Run File '+Filename;
       ExtTool.WorkingDirectory:=RunWorkingDir;
       ExtTool.CmdLineParams:=Params;
       ExtTool.Executable:=ProgramFilename;
+      if idedrfMessages in RunFlags then
+        ExtTool.Scanners.Add(SubToolDefault);
       if RunExternalTool(ExtTool) then
         Result:=mrOk
       else

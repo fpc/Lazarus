@@ -28,7 +28,7 @@ const
   SubToolMake = 'make';
   SubToolMakePriority = 1000; // higher than FPC
 
-  SubToolDefault = 'External Tool';
+  SubToolDefault = 'External Tool'; // this parser simply writes all output to Messages window
   SubToolDefaultPriority = 0;
 
   AbortedExitCode = 12321;
