@@ -1074,6 +1074,7 @@ var
   Pkg: TIDEPackage;
   PkgName, Path, SubPath, CurFilename, BaseDir, BuildMode: String;
   xml: TXMLConfig;
+  LazBuildMode: TLazProjectBuildMode;
 begin
   if FFiles<>nil then exit; // already loaded
 
@@ -1108,6 +1109,10 @@ begin
     end;
 
     // ToDo: load buildmodes
+    for i:=0 to AProject.LazBuildModes.Count-1 do begin
+      LazBuildMode:=AProject.LazBuildModes.BuildModes[i];
+      FBuildModes.Add(TPGBuildMode.Create(Self,LazBuildMode.Identifier,false));
+    end;
   end else begin
     // load from .lpi file
 
@@ -1184,7 +1189,7 @@ begin
   for i:=1 to BuildModeCount do begin
     SubPath:=aPath+'Mode'+IntToStr(i)+'/';
     aMode:=BuildModes[i-1];
-    XMLConfig.SetDeleteValue(SubPath+'Name',aMode.Name,'');
+    XMLConfig.SetDeleteValue(SubPath+'Name',aMode.Identifier,'');
     XMLConfig.SetDeleteValue(SubPath+'Compile',aMode.Compile,false);
   end;
 end;

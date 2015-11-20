@@ -1204,7 +1204,7 @@ begin
     if T.BuildModeCount>1 then begin
       BuildModeNode:=CreateSectionNode(AParent,lisNodeBuildModes,ntBuildModes);
       for i:=0 to T.BuildModeCount-1 do
-        CreateSubNode(BuildModeNode,ntBuildMode,T,T.BuildModes[i].Name);
+        CreateSubNode(BuildModeNode,ntBuildMode,T,T.BuildModes[i].Identifier);
     end;
     // files
     FileNodes[False]:=CreateSectionNode(AParent,lisNodeFiles,ntFiles);

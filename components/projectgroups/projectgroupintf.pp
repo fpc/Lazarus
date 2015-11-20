@@ -43,13 +43,13 @@ Type
   TPGBuildMode = class
   private
     FCompile: boolean;
-    FName: string;
+    FIdentifier: string;
     FTarget: TPGCompileTarget;
     procedure SetCompile(AValue: boolean);
   public
-    constructor Create(aTarget: TPGCompileTarget; const aName: string; aCompile: boolean);
+    constructor Create(aTarget: TPGCompileTarget; const anIdentifier: string; aCompile: boolean);
     property Target: TPGCompileTarget read FTarget;
-    property Name: string read FName;
+    property Identifier: string read FIdentifier;
     property Compile: boolean read FCompile write SetCompile;
   end;
 
@@ -263,11 +263,11 @@ begin
   Target.Modified;
 end;
 
-constructor TPGBuildMode.Create(aTarget: TPGCompileTarget; const aName: string;
+constructor TPGBuildMode.Create(aTarget: TPGCompileTarget; const anIdentifier: string;
   aCompile: boolean);
 begin
   FTarget:=aTarget;
-  FName:=aName;
+  FIdentifier:=anIdentifier;
   FCompile:=aCompile;
 end;
 
@@ -575,7 +575,7 @@ end;
 function TPGCompileTarget.IndexOfBuildMode(aName: string): integer;
 begin
   Result:=BuildModeCount-1;
-  while (Result>=0) and (CompareText(aName,BuildModes[Result].Name)<>0) do
+  while (Result>=0) and (CompareText(aName,BuildModes[Result].Identifier)<>0) do
     dec(Result);
 end;
 
