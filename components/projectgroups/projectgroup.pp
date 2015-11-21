@@ -2,7 +2,7 @@
   ToDo:
     - update files when project/package/file changes in IDE
     - update dependencies when changed in IDE
-    - re-add removed targets
+    - update if files changed on disk
     - show active build mode, active project
     - find in files
     - "New" button to create a package/project/file and add to project groups
