@@ -4631,7 +4631,7 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
       <!-- function Visibility: public -->
       <element name="TCustomGrid.MouseToGridZone">
         <short>
-          <var>MouseToGridZone</var> - convert muse coordinates to a gid zone</short>
+          <var>MouseToGridZone</var> - convert mouse coordinates to a grid zone</short>
         <descr/>
         <errors/>
         <seealso/>
