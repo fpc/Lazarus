@@ -360,7 +360,7 @@ begin
     if ARightToLeft then inc(aFlags, DT_RTLREADING);
     with ThemeServices.GetTextExtent(ACanvas.Handle, aDetails, ACaption, aFlags, nil) do begin
       aTextSize.cx := Right;
-      aTextSize.cy := Bottom + 2 * cFocusBorder;
+      aTextSize.cy := ACanvas.TextExtent(ACaption).cy;
     end;
     aCaptionPoint.Y := (ARect.Bottom + ARect.Top - aTextSize.cy) div 2;
     aCheckBoxPoint.Y := (ARect.Bottom + ARect.Top - CheckBoxSize.cy) div 2;
