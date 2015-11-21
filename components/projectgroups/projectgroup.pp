@@ -193,7 +193,7 @@ var
   OnShowProjectGroupEditorEvent: TEditProjectGroupEvent; // method variant
 
   IDEProjectGroupManager: TIDEProjectGroupManager;
-  // Project group editor(s). Should probably move to MenuIntf
+
   ProjectGroupMenuRoot: TIDEMenuSection = nil;
     PGEditMenuSectionFiles, // e.g. sort files, clean up files
     PGEditMenuSectionAddRemove, // e.g. add unit, add dependency
@@ -1394,7 +1394,7 @@ begin
 
         LazarusIDE.ToolStatus:=itBuilder;
         try
-          if BuildModeCount>0 then begin
+          if BuildModeCount>1 then begin
             IDEMessagesWindow.Clear;
             i:=0;
             if StartBuildMode<>'' then begin
