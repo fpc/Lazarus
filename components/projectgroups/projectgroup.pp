@@ -687,6 +687,8 @@ begin
 end;
 
 function TIDEProjectGroup.AddTarget(const AFileName: String): TPGCompileTarget;
+var
+  Root: TIDEProjectGroup;
 begin
   Result:=Nil;
   if not FilenameIsAbsolute(AFileName) then
@@ -696,13 +698,15 @@ begin
   Result.FileName:=AFileName;
   FTargets.Add(Result);
   IncreaseChangeStamp;
-  if Assigned(FOnTargetAdded) then
-    FOnTargetAdded(Self,Result);
+  Root:=TIDEProjectGroup(GetRootGroup);
+  if Assigned(Root.OnTargetAdded) then
+    Root.OnTargetAdded(Self,Result);
 end;
 
 procedure TIDEProjectGroup.RemoveTarget(Index: Integer);
 var
   Target: TPGCompileTarget;
+  Root: TIDEProjectGroup;
 begin
   Target:=Targets[Index];
   Target.DeActivate;
@@ -712,20 +716,26 @@ begin
   FRemovedTargets.Add(Target);
   Modified:=true;
   Target.Removed:=true;
-  if Assigned(FOnTargetDeleted) then
-    FOnTargetDeleted(Self,Target);
+  Root:=TIDEProjectGroup(GetRootGroup);
+  if Assigned(Root.OnTargetDeleted) then
+    Root.OnTargetDeleted(Self,Target);
 end;
 
 procedure TIDEProjectGroup.ExchangeTargets(ASource, ATarget: Integer);
+var
+  Root: TIDEProjectGroup;
 begin
   if ASource=ATarget then exit;
   FTargets.Exchange(ASource,ATarget);
-  if Assigned(FOnTargetsExchanged) then
-    FOnTargetsExchanged(Self,GetTarget(ASource),GetTarget(ATarget));
+  Root:=TIDEProjectGroup(GetRootGroup);
+  if Assigned(Root.OnTargetsExchanged) then
+    Root.OnTargetsExchanged(Self,GetTarget(ASource),GetTarget(ATarget));
   IncreaseChangeStamp;
 end;
 
 procedure TIDEProjectGroup.ActiveTargetChanged(T: TPGCompileTarget);
+var
+  Root: TIDEProjectGroup;
 begin
   if T.Active then begin
     FActiveTarget:=T;
@@ -733,8 +743,9 @@ begin
     if FActiveTarget=T then
       FActiveTarget:=nil;
   end;
-  if Assigned(FOnTargetActiveChanged) then
-    FOnTargetActiveChanged(Self,T);
+  Root:=TIDEProjectGroup(GetRootGroup);
+  if Assigned(Root.OnTargetActiveChanged) then
+    Root.OnTargetActiveChanged(Self,T);
 end;
 
 function TIDEProjectGroup.LoadFromFile(Options: TProjectGroupLoadOptions

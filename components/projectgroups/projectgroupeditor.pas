@@ -645,6 +645,7 @@ Var
   N: TTreeNode;
 begin
   (Target as TIDECompileTarget).LoadTarget(true);
+  if Sender<>ProjectGroup then exit; // ToDo: sub groups
   N:=CreateTargetNode(FTargetNodes[False],ntTarget,Target);
   FillTargetNode(N,Target);
   TVPG.Selected:=N;
@@ -656,6 +657,7 @@ procedure TProjectGroupEditorForm.OnTargetDeleted(Sender: TObject;
 Var
   N: TTreeNode;
 begin
+  if Sender<>ProjectGroup then exit; // ToDo: sub groups
   N:=FindTVNodeOfTarget(Target);
   TVPG.Items.Delete(N);
   CreateTargetNode(FTargetNodes[True],ntRemovedTarget,Target);
@@ -1103,6 +1105,7 @@ var
   TVNode: TTreeNode;
   NodeData: TNodeData;
 begin
+  if Sender<>ProjectGroup then exit; // ToDo: sub groups
   ShowFileName;
   // update all nodes with file names
   TVPG.BeginUpdate;

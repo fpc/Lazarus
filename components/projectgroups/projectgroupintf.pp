@@ -152,6 +152,7 @@ Type
     procedure SetActiveTarget(AValue: TPGCompileTarget); virtual; abstract;
   public
     destructor Destroy; override;
+    function GetRootGroup: TProjectGroup;
     property FileName: String Read FFileName Write SetFileName; // absolute
     property CompileTarget: TPGCompileTarget read FCompileTarget;
     property Parent: TProjectGroup read FParent;
@@ -333,6 +334,13 @@ begin
   for HandlerType:=Low(FHandlers) to High(FHandlers) do
     FreeAndNil(FHandlers[HandlerType]);
   inherited Destroy;
+end;
+
+function TProjectGroup.GetRootGroup: TProjectGroup;
+begin
+  Result:=Self;
+  while Result.Parent<>nil do
+    Result:=Result.Parent;
 end;
 
 function TProjectGroup.Perform(Index: Integer; AAction: TPGTargetAction
