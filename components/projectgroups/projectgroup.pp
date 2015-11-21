@@ -693,6 +693,8 @@ begin
   Result:=Nil;
   if not FilenameIsAbsolute(AFileName) then
     RaiseGDBException(AFileName);
+  if CompareFilenames(AFileName,FileName)=0 then
+    raise Exception.Create('Invalid cycle. A project group cannot have itself as target.');
   if not FileExistsCached(AFileName) then exit;
   Result:=TIDECompileTarget.Create(CompileTarget);
   Result.FileName:=AFileName;
