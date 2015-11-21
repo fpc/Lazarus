@@ -159,7 +159,9 @@ type
     procedure Perform(ATargetAction: TPGTargetAction);
     function GetActiveTarget: TPGCompileTarget;
     // Treeview Node management
-    function FindNodeFromTarget(ATarget: TPGCompileTarget): TTreeNode;
+    function FindTVNodeOfTarget(ATarget: TPGCompileTarget): TTreeNode;
+    function FindBuildModeNodeRecursively(TVNode: TTreeNode; aMode: string): TTreeNode;
+    function FindTVNodeOfBuildMode(aMode: TPGBuildMode): TTreeNode;
     procedure FreeNodeData;
     class function TargetFromNode(N: TTreeNode): TPGCompileTarget;
     function DisplayFileName(aTarget: TPGCompileTarget): string;
@@ -654,7 +656,7 @@ procedure TProjectGroupEditorForm.OnTargetDeleted(Sender: TObject;
 Var
   N: TTreeNode;
 begin
-  N:=FindNodeFromTarget(Target);
+  N:=FindTVNodeOfTarget(Target);
   TVPG.Items.Delete(N);
   CreateTargetNode(FTargetNodes[True],ntRemovedTarget,Target);
   TVPG.Selected:=FProjectGroupTVNode;
@@ -666,8 +668,8 @@ procedure TProjectGroupEditorForm.OnTargetActiveChanged(Sender: TObject;
 Var
   OldActiveTVNode,NewActiveTVNode: TTreeNode;
 begin
-  OldActiveTVNode:=FindNodeFromTarget(FActiveTarget);
-  NewActiveTVNode:=FindNodeFromTarget(Target);
+  OldActiveTVNode:=FindTVNodeOfTarget(FActiveTarget);
+  NewActiveTVNode:=FindTVNodeOfTarget(Target);
   if (OldActiveTVNode<>NewActiveTVNode) then
   begin
     if Assigned(OldActiveTVNode) then
@@ -687,8 +689,8 @@ Var
   ND1,ND2: TNodeData;
   NT1,NT2: TCaption;
 begin
-  N1:=FindNodeFromTarget( Target1);
-  N2:=FindNodeFromTarget(Target2);
+  N1:=FindTVNodeOfTarget( Target1);
+  N2:=FindTVNodeOfTarget(Target2);
   If (N1=Nil) or (N2=Nil) then
     exit;
   ND1:=TNodeData(N1.Data);
@@ -721,6 +723,8 @@ end;
 procedure TProjectGroupEditorForm.AProjectGroupAddExistingExecute(Sender: TObject);
 var
   aTarget: TIDECompileTarget;
+  aMode: TPGBuildMode;
+  TVNode: TTreeNode;
 begin
   if FProjectGroup=nil then exit;
   InitIDEFileDialog(OpenDialogTarget);
@@ -734,6 +738,13 @@ begin
     begin
       aTarget:=FProjectGroup.AddTarget(FileName) as TIDECompileTarget;
       aTarget.LoadTarget(true);
+      if aTarget.BuildModeCount>0 then begin
+        aMode:=aTarget.BuildModes[0];
+        aMode.Compile:=true;
+        // ToDo: implement changed notification
+        TVNode:=FindTVNodeOfBuildMode(aMode);
+        TVNode.StateIndex:=NSIChecked;
+      end;
     end;
   end;
   StoreIDEFileDialog(OpenDialogTarget);
@@ -1239,7 +1250,7 @@ begin
     FProjectGroupTVNode.Text:=DisplayFileName(FProjectGroupTVNode);
 end;
 
-function TProjectGroupEditorForm.FindNodeFromTarget(ATarget: TPGCompileTarget): TTreeNode;
+function TProjectGroupEditorForm.FindTVNodeOfTarget(ATarget: TPGCompileTarget): TTreeNode;
 Var
   I: Integer;
 begin
@@ -1253,6 +1264,37 @@ begin
       Result:=Nil;
     Inc(I);
   end;
+end;
+
+function TProjectGroupEditorForm.FindBuildModeNodeRecursively(
+  TVNode: TTreeNode; aMode: string): TTreeNode;
+var
+  ND: TNodeData;
+begin
+  Result:=nil;
+  if TVNode=nil then exit;
+  if (TVNode.Data=nil) then exit;
+  ND:=TNodeData(TVNode.Data);
+  if (ND.NodeType=ntBuildMode) and (CompareText(ND.Value,aMode)=0) then
+    exit(TVNode);
+  TVNode:=TVNode.GetFirstChild;
+  while TVNode<>nil do begin
+    Result:=FindBuildModeNodeRecursively(TVNode,aMode);
+    if Result<>nil then exit;
+    TVNode:=TVNode.GetNextSibling;
+  end;
+end;
+
+function TProjectGroupEditorForm.FindTVNodeOfBuildMode(aMode: TPGBuildMode
+  ): TTreeNode;
+begin
+  Result:=nil;
+  if aMode=nil then exit;
+  // find project node
+  Result:=FindTVNodeOfTarget(aMode.Target);
+  if Result=nil then exit;
+  // find build mdoe node
+  Result:=FindBuildModeNodeRecursively(Result,aMode.Identifier);
 end;
 
 procedure TProjectGroupEditorForm.ShowProjectGroup;
@@ -1270,7 +1312,7 @@ begin
       FProjectGroupTVNode:=CreateTargetNode(Nil,
         ntProjectGroup,ProjectGroup.CompileTarget);
       FillProjectGroupNode(FProjectGroupTVNode,FProjectGroup,FTargetNodes);
-      N:=FindNodeFromTarget(FActiveTarget);
+      N:=FindTVNodeOfTarget(FActiveTarget);
       if (N=Nil) then
       begin
         FActiveTarget:=ProjectGroup.CompileTarget;
