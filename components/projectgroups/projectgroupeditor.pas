@@ -1193,7 +1193,7 @@ begin
     else
       Result:=CreateRelativePath(Result,BaseDir);
   end else begin
-    debugln(['TProjectGroupEditorForm.DisplayFileName ',aTarget.Filename,' ',aTarget.TargetType=ttPascalFile]);
+    //debugln(['TProjectGroupEditorForm.DisplayFileName ',aTarget.Filename,' ',aTarget.TargetType=ttPascalFile]);
     if aTarget.TargetType in [ttPascalFile] then
       Result:=ExtractFileName(aTarget.Filename)
     else

@@ -411,6 +411,8 @@ end;
 procedure TProjectGroup.IncreaseChangeStamp;
 begin
   LUIncreaseChangeStamp64(FChangeStamp);
+  if Parent<>nil then
+    Parent.IncreaseChangeStamp;
 end;
 
 procedure TProjectGroup.RemoveAllHandlersOfObject(AnObject: TObject);

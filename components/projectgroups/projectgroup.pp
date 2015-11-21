@@ -1,6 +1,6 @@
 {
   ToDo:
-    - update files when project/package changes in IDE
+    - update files when project/package/file changes in IDE
     - update dependencies when changed in IDE
     - re-add removed targets
     - update items when project/package changes in IDE
@@ -655,6 +655,8 @@ begin
     FCompileTarget:=TRootProjectGroupTarget.Create(Self);
   end else begin
     FCompileTarget:=aCompileTarget;
+    if FCompileTarget.Parent<>nil then
+      FParent:=FCompileTarget.Parent.ProjectGroup;
   end;
   FTargets:=TFPObjectList.Create(True);
   FRemovedTargets:=TFPObjectList.Create(True);
@@ -831,12 +833,14 @@ Var
   XMLConfig: TXMLConfig;
   i,ACount: Integer;
   aTarget: TIDECompileTarget;
+  SubPG: TIDEProjectGroup;
 begin
-  TargetPath:=ExtractFilePath(FileName);
   Result:=True;
+  // save .lpg
   try
     XMLConfig := CreateXML(FileName,false);
     try
+      TargetPath:=ExtractFilePath(FileName);
       ARoot:='ProjectGroup';
       ACount:=0;
       For i:=0 to TargetCount-1 do
@@ -851,7 +855,6 @@ begin
       end;
       XMLConfig.SetDeleteValue(ARoot+'/Targets/Count',ACount,0);
       XMLConfig.Flush;
-      Modified:=False;
     finally
       XMLConfig.Free;
     end;
@@ -862,6 +865,22 @@ begin
       Result:=false;
     end;
   end;
+  if not Result then exit;
+  // save nested .plg
+  For i:=0 to TargetCount-1 do
+  begin
+    aTarget:=TIDECompileTarget(GetTarget(i));
+    if aTarget.Removed then continue;
+    if aTarget.TargetType=ttProjectGroup then
+    begin
+      SubPG:=TIDEProjectGroup(aTarget.ProjectGroup);
+      if not SubPG.SaveToFile then
+        exit(false);
+    end;
+  end;
+
+  Modified:=False;
+  Result:=true;
 end;
 
 { TIDECompileTarget }
@@ -1265,6 +1284,7 @@ var
 begin
   Result:=arFailed;
 
+  debugln(['TIDECompileTarget.ProjectAction ',Filename]);
   aProject:=LazarusIDE.ActiveProject;
   if (aProject<>nil)
   and (CompareFilenames(aProject.ProjectInfoFile,Filename)=0)
@@ -1356,7 +1376,7 @@ begin
       begin
         if not CheckIDEIsReadyForBuild then exit;
 
-        // save project
+        // save files
         if LazarusIDE.DoSaveProject([])<>mrOk then exit;
 
         LazarusIDE.ToolStatus:=itBuilder;
@@ -1455,6 +1475,7 @@ begin
           if aTarget.PerformAction(AAction)<>arOk then
             exit;
       end;
+      Result:=arOk;
     end;
   taCompileFromHere:
     begin
