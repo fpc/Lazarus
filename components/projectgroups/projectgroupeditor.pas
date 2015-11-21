@@ -684,29 +684,17 @@ end;
 
 procedure TProjectGroupEditorForm.OnTargetExchanged(Sender: TObject; Target1,
   Target2: TPGCompileTarget);
-Var
-  S,N1,N2: TTreeNode;
-  ND1,ND2: TNodeData;
-  NT1,NT2: TCaption;
+var
+  N1, N2: TTreeNode;
+  OldIndex: Integer;
 begin
-  N1:=FindTVNodeOfTarget( Target1);
+  N1:=FindTVNodeOfTarget(Target1);
   N2:=FindTVNodeOfTarget(Target2);
   If (N1=Nil) or (N2=Nil) then
     exit;
-  ND1:=TNodeData(N1.Data);
-  if TVPG.Selected=N1 then
-    S:=N2
-  else if TVPG.Selected=N2 then
-    S:=N1
-  else
-    S:=Nil;
-  NT1:=N1.Text;
-  ND2:=TNodeData(N2.Data);
-  NT2:=N2.Text;
-  InitTVNode(N1,NT2,ND2);
-  InitTVNode(N2,NT1,ND1);
-  if (S<>Nil) then
-    TVPG.Selected:=S;
+  OldIndex:=N1.Index;
+  N1.Index:=N2.Index;
+  N2.Index:=OldIndex;
 end;
 
 procedure TProjectGroupEditorForm.AProjectGroupSaveExecute(Sender: TObject);

@@ -719,9 +719,9 @@ end;
 procedure TIDEProjectGroup.ExchangeTargets(ASource, ATarget: Integer);
 begin
   if ASource=ATarget then exit;
+  FTargets.Exchange(ASource,ATarget);
   if Assigned(FOnTargetsExchanged) then
     FOnTargetsExchanged(Self,GetTarget(ASource),GetTarget(ATarget));
-  FTargets.Exchange(ASource,ATarget);
   IncreaseChangeStamp;
 end;
 
