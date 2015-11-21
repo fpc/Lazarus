@@ -30,6 +30,7 @@ uses
 
 const
   PGOptionsFileName = 'projectgroupsoptions.xml';
+  PGFileVersion = 1;
 
 type
   { TIDECompileTarget }
@@ -856,6 +857,7 @@ begin
     try
       TargetPath:=ExtractFilePath(FileName);
       ARoot:='ProjectGroup';
+      XMLConfig.SetValue(ARoot+'/FileVersion',PGFileVersion);
       ACount:=0;
       For i:=0 to TargetCount-1 do
       begin
