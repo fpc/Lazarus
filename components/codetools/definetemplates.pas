@@ -1239,10 +1239,11 @@ begin
         break;
       BaseDir:=ChompPathDelim(ExtractFilePath(copy(BaseDir,1,BaseDirLen-1)));
       BaseDirLen:=length(BaseDir);
+      if (BaseDir='') or (BaseDir[length(BaseDir)]=PathDelim) then break;
     end;
   end;
   // create relative paths
-  if BaseDir<>'' then
+  if (BaseDir<>'') then
     for i:=0 to Result.Count-1 do begin
       Filename:=Result[i];
       Filename:=copy(Filename,BaseDirLen+1,length(Filename));
