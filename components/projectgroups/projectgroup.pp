@@ -97,6 +97,7 @@ type
     FOnTargetActiveChanged: TTargetEvent;
     FOnTargetAdded: TTargetEvent;
     FOnTargetDeleted: TTargetEvent;
+    FOnTargetReadded: TTargetEvent;
     FOnTargetsExchanged: TTargetExchangeEvent;
     FTargets: TFPObjectList;
     FRemovedTargets: TFPObjectList;
@@ -115,6 +116,7 @@ type
     function IndexOfTarget(const Target: TPGCompileTarget): Integer; override;
     function IndexOfRemovedTarget(const Target: TPGCompileTarget): Integer; override;
     function AddTarget(Const AFileName: String): TPGCompileTarget; override;
+    procedure ReAddTarget(Target: TPGCompileTarget); override;
     procedure RemoveTarget(Index: Integer); override;
     procedure ExchangeTargets(ASource, ATarget: Integer); override;
     procedure ActiveTargetChanged(T: TPGCompileTarget);
@@ -123,6 +125,7 @@ type
     property OnFileNameChange: TNotifyEvent Read FOnFileNameChange Write FOnFileNameChange;
     property OnTargetAdded: TTargetEvent Read FOnTargetAdded Write FOnTargetAdded;
     property OnTargetDeleted: TTargetEvent Read FOnTargetDeleted Write FOnTargetDeleted;
+    property OnTargetReadded: TTargetEvent Read FOnTargetReadded Write FOnTargetReadded;
     property OnTargetActiveChanged: TTargetEvent Read FOnTargetActiveChanged Write FOnTargetActiveChanged;
     property OnTargetsExchanged: TTargetExchangeEvent Read FOnTargetsExchanged Write FOnTargetsExchanged;
   end;
@@ -707,6 +710,23 @@ begin
     Root.OnTargetAdded(Self,Result);
 end;
 
+procedure TIDEProjectGroup.ReAddTarget(Target: TPGCompileTarget);
+var
+  Root: TIDEProjectGroup;
+begin
+  if (Target=nil) or (not Target.Removed) then
+    raise Exception.Create('');
+  FRemovedTargets.OwnsObjects:=false;
+  FRemovedTargets.Remove(Target);
+  FRemovedTargets.OwnsObjects:=true;
+  FTargets.Add(Target);
+  Target.Removed:=false;
+  Modified:=true;
+  Root:=TIDEProjectGroup(GetRootGroup);
+  if Assigned(Root.OnTargetReadded) then
+    Root.OnTargetReadded(Self,Target);
+end;
+
 procedure TIDEProjectGroup.RemoveTarget(Index: Integer);
 var
   Target: TPGCompileTarget;
@@ -718,8 +738,8 @@ begin
   FTargets.Delete(Index);
   FTargets.OwnsObjects:=true;
   FRemovedTargets.Add(Target);
-  Modified:=true;
   Target.Removed:=true;
+  Modified:=true;
   Root:=TIDEProjectGroup(GetRootGroup);
   if Assigned(Root.OnTargetDeleted) then
     Root.OnTargetDeleted(Self,Target);

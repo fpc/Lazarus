@@ -168,6 +168,7 @@ Type
     function IndexOfRemovedTarget(Const Target: TPGCompileTarget): Integer; virtual; abstract;
     function IndexOfRemovedTarget(Const AFilename: String): Integer; virtual;
     function AddTarget(Const AFileName: String): TPGCompileTarget; virtual; abstract;
+    procedure ReAddTarget(Target: TPGCompileTarget); virtual; abstract;
     procedure ExchangeTargets(ASource, ATarget: Integer); virtual; abstract;
     procedure RemoveTarget(Index: Integer); virtual; abstract;
     procedure RemoveTarget(Const AFileName: String);
