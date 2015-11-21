@@ -159,6 +159,7 @@ type
   TIDEProjectGroupManager = Class(TProjectGroupManager)
   private
     FOptions: TIDEProjectGroupOptions;
+    procedure AddToRecentGroups(aFilename: string);
     function GetNewFileName: Boolean;
   protected
     FProjectGroup: TIDEProjectGroup;
@@ -546,6 +547,13 @@ begin
     end;
 end;
 
+procedure TIDEProjectGroupManager.AddToRecentGroups(aFilename: string);
+begin
+  Options.AddToRecentProjectGroups(AFileName);
+  Options.SaveSafe;
+  UpdateRecentProjectGroupMenu;
+end;
+
 procedure TIDEProjectGroupManager.DoSaveAsClick(Sender: TObject);
 begin
   if GetNewFileName then
@@ -560,10 +568,7 @@ begin
     Exit;
   FreeAndNil(FProjectGroup);
 
-  Options.AddToRecentProjectGroups(AFileName);
-  Options.SaveSafe;
-  UpdateRecentProjectGroupMenu;
-
+  AddToRecentGroups(AFileName);
   FProjectGroup:=TIDEProjectGroup.Create(nil);
   FProjectGroup.FileName:=AFileName;
   FProjectGroup.LoadFromFile(AOptions);
@@ -575,8 +580,10 @@ procedure TIDEProjectGroupManager.SaveProjectGroup;
 begin
   if Assigned(FProjectGroup) then
   begin
-    if (FProjectGroup.FileName<>'') or GetNewFileName then
+    if (FProjectGroup.FileName<>'') or GetNewFileName then begin
       FProjectGroup.SaveToFile;
+      AddToRecentGroups(FProjectGroup.FileName);
+    end;
   end;
 end;
 
