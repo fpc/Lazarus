@@ -7,7 +7,7 @@ var
 var
   ArgsW: Array of WideString;
   ArgsWCount: Integer; // length(ArgsW)+1
-  {$IF (FPC_FULLVERSION >= 30000) AND NOT DEFINED(DisableUTF8RTL)}
+  {$IF (FPC_FULLVERSION >= 30000) AND NOT DEFINED(DisableUTF8RTL) AND NOT DEFINED(WINCE)}
   ArgsUTF8: Array of String; // the ArgsW array as UTF8
   OldArgV: PPChar = nil;
   {$IFEND}
@@ -51,7 +51,7 @@ begin
 end;
 {$endif}
 
-{$ifndef wince}
+{$IF (FPC_FULLVERSION >= 30000) AND NOT DEFINED(DisableUTF8RTL) AND NOT DEFINED(WINCE)}
 procedure SetupArgvAsUtf8;
 var
   i: Integer;
