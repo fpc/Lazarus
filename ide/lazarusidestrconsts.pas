@@ -255,13 +255,15 @@ resourcestring
   lisConfigDirectory = 'Lazarus config directory';
 
   lisPkgMacroPackageDirectoryParameterIsPackageID = 'Package directory. '
-    +'Parameter is package ID';
+    +'Parameter is package ID, e.g. "Name" or "Name 1.0"';
   lisPkgMacroPackageSourceSearchPathParameterIsPackageID = 'Package source '
-    +'search path. Parameter is package ID';
+    +'search path. Parameter is package ID, e.g. "Name" or "Name 1.0"';
   lisPkgMacroPackageUnitSearchPathParameterIsPackageID = 'Package unit search '
-    +'path. Parameter is package ID';
+    +'path. Parameter is package ID, e.g. "Name" or "Name 1.0"';
   lisPkgMacroPackageIncludeFilesSearchPathParameterIsPackageID = 'Package '
-    +'include files search path. Parameter is package ID';
+    +'include files search path. Parameter is package ID, e.g. "Name" or "Name 1.0"';
+  lisPkgMacroPackageNameParameterIsPackageID = 'Package name. Parameter is package ID, e.g. "Name" or "Name 1.0"';
+  lisPkgMacroPackageOutputDirectoryParameterIsPackageID = 'Package output directory. Parameter is package ID, e.g. "Name" or "Name 1.0"';
 
   // main bar menu
   lisMenuFile = '&File';

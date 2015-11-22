@@ -2229,24 +2229,42 @@ begin
     end;
   end;
 
+  if s = '' then
+  begin
   // check local macros
-  if SysUtils.CompareText(MacroName,'PkgOutDir')=0 then begin
-    Handled:=true;
-    if Data=CompilerOptionMacroNormal then
-      s:=CompilerOptions.ParsedOpts.GetParsedValue(pcosOutputDir)
-    else
-      s:=CompilerOptions.ParsedOpts.GetParsedPIValue(pcosOutputDir);
-    exit;
-  end
-  else if SysUtils.CompareText(MacroName,'PkgDir')=0 then begin
-    Handled:=true;
-    s:=FDirectory;
-    exit;
-  end
-  else if SysUtils.CompareText(MacroName,'PkgName')=0 then begin
-    Handled:=true;
-    s:=Name;
-    exit;
+    if SysUtils.CompareText(MacroName,'PkgOutDir')=0 then begin
+      Handled:=true;
+      if Data=CompilerOptionMacroNormal then
+        s:=CompilerOptions.ParsedOpts.GetParsedValue(pcosOutputDir)
+      else
+        s:=CompilerOptions.ParsedOpts.GetParsedPIValue(pcosOutputDir);
+      exit;
+    end
+    else if SysUtils.CompareText(MacroName,'PkgDir')=0 then begin
+      Handled:=true;
+      s:=FDirectory;
+      exit;
+    end
+    else if SysUtils.CompareText(MacroName,'PkgName')=0 then begin
+      Handled:=true;
+      s:=Name;
+      exit;
+    end
+    else if SysUtils.CompareText(MacroName,'PkgIncPath')=0 then begin
+      Handled:=true;
+      s:=GetIncludePath(false);
+      exit;
+    end
+    else if SysUtils.CompareText(MacroName,'PkgSrcPath')=0 then begin
+      Handled:=true;
+      s:=SourceDirectories.CreateSearchPathFromAllFiles;
+      exit;
+    end
+    else if SysUtils.CompareText(MacroName,'PkgUnitPath')=0 then begin
+      Handled:=true;
+      s:=GetUnitPath(false);
+      exit;
+    end;
   end;
 
   // check global macros

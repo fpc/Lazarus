@@ -2973,6 +2973,8 @@ begin
     'PKGINCPATH',nil,@PackageGraph.MacroFunctionCTPkgIncPath);
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
     'PKGNAME',nil,@PackageGraph.MacroFunctionCTPkgName);
+  CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
+    'PKGOUTDIR',nil,@PackageGraph.MacroFunctionCTPkgOutDir);
 
   LazPackageDescriptors:=TLazPackageDescriptors.Create;
   LazPackageDescriptors.AddDefaultPackageDescriptors;

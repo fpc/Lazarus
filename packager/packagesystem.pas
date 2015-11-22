@@ -251,11 +251,16 @@ type
                                       var {%H-}Abort: boolean): string;
     function MacroFunctionPkgIncPath(const s: string; const {%H-}Data: PtrInt;
                                      var {%H-}Abort: boolean): string;
+    function MacroFunctionPkgName(const s: string; const {%H-}Data: PtrInt;
+                                     var {%H-}Abort: boolean): string;
+    function MacroFunctionPkgOutDir(const s: string; const {%H-}Data: PtrInt;
+                                     var {%H-}Abort: boolean): string;
     function MacroFunctionCTPkgDir(Data: Pointer): boolean;
     function MacroFunctionCTPkgSrcPath(Data: Pointer): boolean;
     function MacroFunctionCTPkgUnitPath(Data: Pointer): boolean;
     function MacroFunctionCTPkgIncPath(Data: Pointer): boolean;
     function MacroFunctionCTPkgName(Data: Pointer): boolean;
+    function MacroFunctionCTPkgOutDir(Data: Pointer): boolean;
     function GetPackageFromMacroParameter(const TheID: string;
                                           out APackage: TLazPackage): boolean;
   public
@@ -1027,6 +1032,12 @@ begin
     GlobalMacroList.Add(TTransferMacro.Create('PkgIncPath','',
       lisPkgMacroPackageIncludeFilesSearchPathParameterIsPackageID,
       @MacroFunctionPkgIncPath,[]));
+    GlobalMacroList.Add(TTransferMacro.Create('PkgName','',
+      lisPkgMacroPackageNameParameterIsPackageID,
+      @MacroFunctionPkgName,[]));
+    GlobalMacroList.Add(TTransferMacro.Create('PkgOutDir','',
+      lisPkgMacroPackageOutputDirectoryParameterIsPackageID,
+      @MacroFunctionPkgOutDir,[]));
   end;
 end;
 
@@ -1182,6 +1193,23 @@ begin
     Result:='';
 end;
 
+function TLazPackageGraph.MacroFunctionPkgName(const s: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  Result := s;
+end;
+
+function TLazPackageGraph.MacroFunctionPkgOutDir(const s: string;
+  const Data: PtrInt; var Abort: boolean): string;
+var
+  APackage: TLazPackage;
+begin
+  if GetPackageFromMacroParameter(s,APackage) then
+    Result:=APackage.GetOutputDirectory
+  else
+    Result:='';
+end;
+
 function TLazPackageGraph.MacroFunctionCTPkgDir(Data: Pointer): boolean;
 var
   FuncData: PReadFunctionData;
@@ -1233,6 +1261,17 @@ begin
   FuncData:=PReadFunctionData(Data);
   FuncData^.Result:=GetIdentifier(PChar(FuncData^.Param));
   Result:=true;
+end;
+
+function TLazPackageGraph.MacroFunctionCTPkgOutDir(Data: Pointer): boolean;
+var
+  FuncData: PReadFunctionData;
+  APackage: TLazPackage;
+begin
+  FuncData:=PReadFunctionData(Data);
+  Result:=GetPackageFromMacroParameter(FuncData^.Param,APackage);
+  if Result then
+    FuncData^.Result:=APackage.GetOutputDirectory;
 end;
 
 function TLazPackageGraph.GetPackageFromMacroParameter(const TheID: string;
