@@ -4078,7 +4078,8 @@ begin
     Caption := '';
     Height := InfoBoxHeight;
     Parent := Self;
-    BevelOuter := bvLowered;
+    BevelOuter := bvNone;
+    BevelInner := bvNone;
     Align := alBottom;
     PopupMenu := MainPopupMenu;
     Visible := FShowInfoBox;
