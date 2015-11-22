@@ -1295,6 +1295,8 @@ begin
   else
     UnitSrc:=ctdusPPUNormal;
   if GetUnitSourceCacheValue(UnitSrc,AnUnitname,Result) then begin
+    //if AnUnitName='lazmkunit.ppu' then
+    //  debugln(['TCTDirectoryCache.FindCompiledUnitInCompletePath cached ',Result]);
     // found in cache
     if Result<>'' then begin
       // unit found
@@ -1308,7 +1310,8 @@ begin
     // search in unit path
     UnitPath:=Strings[ctdcsUnitPath];
     Result:=Pool.FindCompiledUnitInPath(Directory,UnitPath,AnUnitname,AnyCase);
-    //debugln(['TCTDirectoryCache.FindCompiledUnitInCompletePath CurDir="',Directory,'" UnitPath="',UnitPath,'" AnUnitname="',AnUnitname,'" Result=',Result]);
+    //if AnUnitName='lazmkunit.ppu' then
+    //  debugln(['TCTDirectoryCache.FindCompiledUnitInCompletePath CurDir="',Directory,'" UnitPath="',UnitPath,'" AnUnitname="',AnUnitname,'" Result=',Result]);
     if Result='' then begin
       // search in unit set
       Result:=FindCompiledUnitInUnitSet(AnUnitname);
@@ -1800,7 +1803,7 @@ end;
 function TCTDirectoryListing.CalcMemSize: PtrUInt;
 begin
   Result:=PtrUInt(InstanceSize)
-    +SizeOf(Pointer)*Count  // Starts
+  {%H-}+SizeOf(Pointer)*Count  // Starts
     +PtrUInt(Size); // Files
 end;
 

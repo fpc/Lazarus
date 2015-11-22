@@ -1041,7 +1041,10 @@ function RunFPCVerbose(const CompilerFilename, TestFilename: string;
                        out Defines, Undefines: TStringToStringTree;
                        const Options: string = ''): boolean;
 function GatherUnitsInSearchPaths(SearchPaths: TStrings;
-                    const OnProgress: TDefinePoolProgress): TStringToStringTree; // unit names to full file name
+                    const OnProgress: TDefinePoolProgress;
+                    CheckFPMkInst: boolean = false): TStringToStringTree; // unit names to full file name
+function GatherUnitSourcesInDirectory(Directory: string;
+                    MaxLevel: integer = 1): TStringToStringTree; // unit names to full file name
 procedure AdjustFPCSrcRulesForPPUPaths(Units: TStringToStringTree;
                                        Rules: TFPCSourceRules);
 function GatherUnitsInFPCSources(Files: TStringList;
@@ -1735,24 +1738,46 @@ begin
 end;
 
 function GatherUnitsInSearchPaths(SearchPaths: TStrings;
-  const OnProgress: TDefinePoolProgress): TStringToStringTree;
+  const OnProgress: TDefinePoolProgress; CheckFPMkInst: boolean
+  ): TStringToStringTree;
 { returns a stringtree,
   where name is unitname and value is the full file name
 
   SearchPaths are searched from last to start
   first found wins
-  pas, pp, p wins vs ppu
+  pas, pp, p replaces ppu
+
+  check for each UnitPath of the form
+    lib/fpc/<FPCVer>/units/<FPCTarget>/<name>/
+  if there is lib/fpc/<FPCVer>/fpmkinst/><FPCTarget>/<name>.fpm
+  and search line SourcePath=<directory>
+  and search source files in this directory including subdirectories
 }
+
+  function SearchPriorPathDelim(var p: integer; const Filename: string): boolean; inline;
+  begin
+    repeat
+      dec(p);
+      if p<1 then exit(false)
+    until Filename[p]=PathDelim;
+    Result:=true;
+  end;
+
 var
   i: Integer;
   Directory: String;
-  FileCount: Integer;
+  FileCount, p, EndPos, FPCTargetEndPos: Integer;
   Abort: boolean;
   FileInfo: TSearchRec;
   ShortFilename: String;
   Filename: String;
   Ext: String;
-  Unit_Name: String;
+  Unit_Name, PkgName, FPMFilename, FPMSourcePath, Line, SrcFilename: String;
+  AVLNode: TAVLTreeNode;
+  S2SItem: PStringToStringTreeItem;
+  FPMToUnitTree: TStringToPointerTree;// pkgname to TStringToStringTree (unitname to source filename)
+  sl: TStringListUTF8;
+  PkgUnitToFilename: TStringToStringTree;
 begin
   Result:=TStringToStringTree.Create(false);
   FileCount:=0;
@@ -1785,6 +1810,122 @@ begin
     end;
     FindCloseUTF8(FileInfo);
   end;
+
+  if CheckFPMkInst then begin
+    // try to resolve .ppu files via fpmkinst .fpm files
+    FPMToUnitTree:=nil;
+    try
+      AVLNode:=Result.Tree.FindLowest;
+      while AVLNode<>nil do begin
+        S2SItem:=PStringToStringTreeItem(AVLNode.Data);
+        Unit_Name:=S2SItem^.Name;
+        Filename:=S2SItem^.Value; // trimmed and expanded filename
+        //if Pos('lazmkunit',Filename)>0 then
+        //  debugln(['GatherUnitsInSearchPaths ===== ',Filename]);
+        AVLNode:=Result.Tree.FindSuccessor(AVLNode);
+        if CompareFileExt(Filename,'ppu',false)<>0 then continue;
+        // check if filename has the form
+        //                  /something/lib/fpc/<FPCVer>/units/<FPCTarget>/<pkgname>/
+        // and if there is  /something/lib/fpc/<FPCVer>/fpmkinst/><FPCTarget>/<pkgname>.fpm
+        p:=length(Filename);
+        if not SearchPriorPathDelim(p,Filename) then exit;
+        // <pkgname>
+        EndPos:=p;
+        if not SearchPriorPathDelim(p,Filename) then exit;
+        PkgName:=copy(Filename,p+1,EndPos-p-1);
+        if PkgName='' then continue;
+        FPCTargetEndPos:=p;
+        if not SearchPriorPathDelim(p,Filename) then exit;
+        // <fpctarget>
+        EndPos:=p;
+        if not SearchPriorPathDelim(p,Filename) then exit;
+        // 'units'
+        if (EndPos-p<>6) or (CompareIdentifiers(@Filename[p+1],'units')<>0) then
+          continue;
+        FPMFilename:=copy(Filename,1,p)+'fpmkinst'
+                    +copy(Filename,EndPos,FPCTargetEndPos-EndPos+1)+PkgName+'.fpm';
+        if FPMToUnitTree=nil then begin
+          FPMToUnitTree:=TStringToPointerTree.Create(false);
+          FPMToUnitTree.FreeValues:=true;
+        end;
+        if not FPMToUnitTree.Contains(PkgName) then begin
+          FPMSourcePath:='';
+          if FileExistsCached(FPMFilename) then begin
+            //debugln(['GatherUnitsInSearchPaths Found .fpm: ',FPMFilename]);
+            sl:=TStringListUTF8.Create;
+            try
+              try
+                sl.LoadFromFile(FPMFilename);
+                for i:=0 to sl.Count-1 do begin
+                  Line:=sl[i];
+                  if LeftStr(Line,length('SourcePath='))='SourcePath=' then
+                  begin
+                    FPMSourcePath:=TrimAndExpandDirectory(copy(Line,length('SourcePath=')+1,length(Line)));
+                    break;
+                  end;
+                end;
+              except
+                on E: Exception do
+                  debugln(['Warning: (lazarus) [GatherUnitsInSearchPaths] ',E.Message]);
+              end;
+            finally
+              sl.Free;
+            end;
+          end;
+          if FPMSourcePath<>'' then begin
+            PkgUnitToFilename:=GatherUnitSourcesInDirectory(FPMSourcePath,5);
+            FPMToUnitTree[PkgName]:=PkgUnitToFilename;
+            //debugln(['GatherUnitsInSearchPaths Pkg=',PkgName,' UnitsFound=',PkgUnitToFilename.Count]);
+          end else
+            FPMToUnitTree[PkgName]:=nil; // mark as not found
+        end;
+
+        PkgUnitToFilename:=TStringToStringTree(FPMToUnitTree[PkgName]);
+        if PkgUnitToFilename=nil then continue;
+        SrcFilename:=PkgUnitToFilename[Unit_Name];
+        if SrcFilename<>'' then begin
+          // unit source found in fppkg -> replace ppu with src file
+          //debugln(['GatherUnitsInSearchPaths ppu=',Filename,' -> fppkg src=',SrcFilename]);
+          Result[Unit_Name]:=SrcFilename;
+        end;
+      end;
+    finally
+      FPMToUnitTree.Free;
+    end;
+  end;
+end;
+
+function GatherUnitSourcesInDirectory(Directory: string; MaxLevel: integer
+  ): TStringToStringTree;
+
+  procedure Traverse(Dir: string; Tree: TStringToStringTree; Lvl: integer);
+  var
+    Info: TSearchRec;
+    Filename: RawByteString;
+    AnUnitName: String;
+  begin
+    if FindFirstUTF8(Directory+AllFilesMask,faAnyFile,Info)=0 then begin
+      repeat
+        Filename:=Info.Name;
+        if (Filename='') or (Filename='.') or (Filename='..') then continue;
+        if faDirectory and Info.Attr>0 then begin
+          if Lvl<MaxLevel then
+            Traverse(Dir+Filename+PathDelim,Tree,Lvl+1);
+        end else if FilenameIsPascalUnit(Filename) then begin
+          AnUnitName:=ExtractFileNameOnly(Filename);
+          if not Tree.Contains(AnUnitName) then
+            Tree[AnUnitName]:=Dir+Filename;
+        end;
+      until FindNextUTF8(Info)<>0;
+    end;
+    FindCloseUTF8(Info);
+  end;
+
+begin
+  Result:=TStringToStringTree.Create(false);
+  if MaxLevel<1 then exit;
+  Directory:=AppendPathDelim(Directory);
+  Traverse(Directory,Result,1);
 end;
 
 procedure AdjustFPCSrcRulesForPPUPaths(Units: TStringToStringTree;
@@ -8050,8 +8191,9 @@ begin
           ConfigFiles.Add(Filename,CfgFileExists,CfgFileDate);
         end;
       // gather all units in all unit search paths
-      if (UnitPaths<>nil) and (UnitPaths.Count>0) then
-        Units:=GatherUnitsInSearchPaths(UnitPaths,OnProgress)
+      if (UnitPaths<>nil) and (UnitPaths.Count>0) then begin
+        Units:=GatherUnitsInSearchPaths(UnitPaths,OnProgress,true);
+      end
       else begin
         if CTConsoleVerbosity>=-1 then
           debugln(['Warning: [TFPCTargetConfigCache.Update] no unit paths: ',Compiler,' ',ExtraOptions]);
@@ -9317,12 +9459,13 @@ var
 begin
   Result:='';
   {$IFDEF ShowTriedUnits}
-  debugln(['TFPCUnitSetCache.GetUnitSrcFile Unit="',AnUnitName,'" MustHavePPU=',MustHavePPU,' SkipPPUCheckIfNoneExists=',SkipPPUCheckIfNoneExists]);
+  debugln(['TFPCUnitSetCache.GetUnitSrcFile Unit="',AnUnitName,'" SrcSearchRequiresPPU=',SrcSearchRequiresPPU,' SkipPPUCheckIfTargetIsSourceOnly=',SkipPPUCheckIfTargetIsSourceOnly]);
   {$ENDIF}
   Tree:=GetUnitToSourceTree(false);
   ConfigCache:=GetConfigCache(false);
   if (ConfigCache.Units<>nil) then begin
     UnitInFPCPath:=ConfigCache.Units[AnUnitName];
+    //if Pos('lazmkunit',AnUnitName)>0 then debugln(['TFPCUnitSetCache.GetUnitSrcFile UnitInFPCPath=',UnitInFPCPath]);
     if (CompareFileExt(UnitInFPCPath,'ppu',false)=0) then begin
       // there is a ppu
     end else if UnitInFPCPath<>'' then begin

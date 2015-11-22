@@ -2888,6 +2888,7 @@ begin
     NewCompiledUnitname:=AnUnitName+'.ppu';
     CompiledFilename:=DirectoryCache.FindCompiledUnitInCompletePath(
                                                      NewCompiledUnitname,false);
+    //debugln(['TFindDeclarationTool.FindUnitSource UnitName=',NewUnitName,' ',NewCompiledUnitname,' CompiledFilename=',CompiledFilename]);
   end else begin
     CompiledFilename:='';
   end;
