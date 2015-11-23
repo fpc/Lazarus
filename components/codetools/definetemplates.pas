@@ -1901,7 +1901,7 @@ function GatherUnitSourcesInDirectory(Directory: string; MaxLevel: integer
   procedure Traverse(Dir: string; Tree: TStringToStringTree; Lvl: integer);
   var
     Info: TSearchRec;
-    Filename: RawByteString;
+    Filename: String;
     AnUnitName: String;
   begin
     if FindFirstUTF8(Directory+AllFilesMask,faAnyFile,Info)=0 then begin
