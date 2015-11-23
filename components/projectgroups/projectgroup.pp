@@ -7,6 +7,8 @@
     - upate menu items enabled state
     - "find" as in the Messages window
     - find in files
+    - options: show file names with relative paths
+    - options: show icons, show text, show icons+text
     - "New" button to create a package/project/file and add to project groups
     - clean function, like the Run / Clean up and build dialog
     - drag and drop within the editor
