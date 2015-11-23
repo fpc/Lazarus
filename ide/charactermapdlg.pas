@@ -58,7 +58,7 @@ type
     TabSheet1: TTabSheet;
     TabSheet2: TTabSheet;
     procedure cbUniRangeSelect(Sender: TObject);
-    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure HelpButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
