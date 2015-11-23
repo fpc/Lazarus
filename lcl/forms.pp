@@ -84,7 +84,6 @@ type
     FIncrement: TScrollBarInc;
     FKind: TScrollBarKind;
     FPage: TScrollBarInc;
-    FPosition: Integer;
     FRange: Integer; // if AutoScroll=true this is the needed size of the child controls
     FSmooth: Boolean;
     FTracking: Boolean;
@@ -93,6 +92,7 @@ type
     FOldScrollInfoValid: Boolean;
   protected
     FControl: TWinControl;
+    FPosition, FPrevPosition: Integer;
     function ControlHandle: HWnd; virtual;
     function GetAutoScroll: boolean; virtual;
     function GetIncrement: TScrollBarInc; virtual;
@@ -108,7 +108,8 @@ type
     procedure ScrollHandler(var Message: TLMScroll);
     procedure SetIncrement(const AValue: TScrollBarInc); virtual;
     procedure SetPage(const AValue: TScrollBarInc); virtual;
-    procedure SetPosition(const Value: Integer); virtual;
+    procedure SetPosition(const Value: Integer);
+    procedure SetControlPosition; virtual;
     procedure SetRange(const AValue: Integer); virtual;
     procedure SetSmooth(const AValue: Boolean); virtual;
     procedure SetTracking(const AValue: Boolean);

@@ -11,6 +11,11 @@
 
 { TMemoScrollbar }
 
+procedure TMemoScrollbar.SetControlPosition;
+begin
+  //TCustomMemo(FControl).ScrollBy(FPosition - FPrevPosition); No good!
+end;
+
 function TMemoScrollbar.GetHorzScrollBar: TControlScrollBar;
 begin
   Result:=TCustomMemo(FControl).HorzScrollBar;

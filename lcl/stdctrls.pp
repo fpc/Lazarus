@@ -804,6 +804,7 @@ type
 
   TMemoScrollbar = class(TControlScrollBar)
   protected
+    procedure SetControlPosition; override;
     function GetHorzScrollBar: TControlScrollBar; override;
     function GetVertScrollBar: TControlScrollBar; override;
   public

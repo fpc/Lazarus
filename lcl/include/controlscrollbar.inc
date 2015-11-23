@@ -24,7 +24,7 @@ const
 
 procedure TControlScrollBar.SetPosition(const Value: Integer);
 var
-  OldPosition, MaxPos: Integer;
+  MaxPos: Integer;
   ScrollInfo: TScrollInfo;
 begin
   if csLoading in FControl.ComponentState then
@@ -70,11 +70,11 @@ begin
   if Value = FPosition then
     exit;
 
-  // scroll logical client area of FControl
-  OldPosition := FPosition;
+  // now actually set the position
+  FPrevPosition := FPosition;
   FPosition := Value;
-  if FControl is TScrollingWinControl then
-    TScrollingWinControl(FControl).ScrollbarHandler(Kind, OldPosition);
+  // scroll logical client area of FControl
+  SetControlPosition;
 
   // check that the new position is also set on the scrollbar
   if HandleAllocated and (GetScrollPos(ControlHandle, IntfBarKind[Kind]) <> FPosition) then
@@ -92,6 +92,12 @@ begin
 
     FPosition := SetScrollInfo(ControlHandle, IntfBarKind[Kind], ScrollInfo, ScrollBarShouldBeVisible);
   end;
+end;
+
+procedure TControlScrollBar.SetControlPosition;
+begin
+  if FControl is TScrollingWinControl then
+    TScrollingWinControl(FControl).ScrollbarHandler(Kind, FPrevPosition);
 end;
 
 function TControlScrollBar.GetIncrement: TScrollBarInc;
