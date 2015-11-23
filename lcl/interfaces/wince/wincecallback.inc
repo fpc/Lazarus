@@ -936,19 +936,28 @@ Var
     end;
   end;
 
-  function HandleUnicodeChar(AChar: Word): boolean;
+  // returns false if the UnicodeChar is not handled
+  function HandleUnicodeChar(var AChar: Word): boolean;
   var
-    UTF8Char: TUTF8Char;
+    OldUTF8Char, UTF8Char: TUTF8Char;
+    WS: WideString;
   begin
     Result := false;
-    UTF8Char := UTF8Encode(widestring(WideChar(AChar)));
-    lWinControl := WindowInfo^.WinControl;
+    UTF8Char := UTF16ToUTF8(widestring(WideChar(AChar)));
+    OldUTF8Char := UTF8Char;
     if Assigned(lWinControl) then
     begin
-      Result:= lWinControl.IntfUTF8KeyPress(UTF8Char, 1, False);
-
-      if UTF8Char='' then
-        Result:= true;
+      Result := lWinControl.IntfUTF8KeyPress(UTF8Char, 1, False);
+      // if somewhere key is changed then don't perform a regular keypress
+      Result := Result or (UTF8Char <> OldUTF8Char);
+      if OldUTF8Char <> UTF8Char then
+      begin
+        WS := UTF8ToUTF16(UTF8Char);
+        if Length(WS) > 0 then
+          AChar := Word(WS[1])
+        else
+          AChar := 0;
+      end;
     end;
   end;
 
@@ -1059,23 +1068,29 @@ begin
     end;
     WM_CHAR:
     begin
-     if not HandleUnicodeChar(Word(WParam)) then
+      // first send a IntfUTF8KeyPress to the LCL
+      // if the key was not handled send a CN_CHAR for AnsiChar<=#127
+      OrgCharCode := Word(WParam);
+      if not HandleUnicodeChar(OrgCharCode) then
       begin
-      PLMsg:=@LMChar;
-      with LMChar Do
+        PLMsg:=@LMChar;
+        with LMChar Do
+        begin
+          Msg := CN_CHAR;
+          KeyData := LParam;
+          CharCode := Word(Char(WideChar(WParam)));
+          OrgCharCode := CharCode;
+          Result := 0;
+          //DebugLn(Format('WM_CHAR KeyData= %d CharCode= %d ',[KeyData,CharCode]));
+        end;
+        WinProcess := false;
+      end
+      else
       begin
-        Msg := CN_CHAR;
-        KeyData := LParam;
-        CharCode := Word(Char(WideChar(WParam)));
-        OrgCharCode := CharCode;
-        Result := 0;
-        //DebugLn(Format('WM_CHAR KeyData= %d CharCode= %d ',[KeyData,CharCode]));
+        WParam := OrgCharCode;
+        WinProcess := OrgCharCode<>0;
       end;
-      WinProcess := false;
-    end
-     else
-       WinProcess := true;
-   end;
+    end;
     WM_MENUCHAR:
     begin
       PLMsg^.Result := FindMenuItemAccelerator(chr(LOWORD(WParam)), LParam);
