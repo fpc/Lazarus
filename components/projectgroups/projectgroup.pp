@@ -4,6 +4,8 @@
     - update dependencies when changed in IDE
     - update if files changed on disk
     - show active build mode, active project
+    - upate menu items enabled state
+    - "find" as in the Messages window
     - find in files
     - "New" button to create a package/project/file and add to project groups
     - clean function, like the Run / Clean up and build dialog
