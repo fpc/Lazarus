@@ -19,6 +19,7 @@
     - load sub projects in IDE to use code navigation for files not in the active project
     - find references in files
 
+    - menu item: open project in new IDE instance
     - add menu items for project for all project inspector functions.
     - add menu items for package for all package editor functions.
     - add root node for packages: when opening a package editor add node instead
