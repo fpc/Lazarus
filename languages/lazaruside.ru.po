@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-11-04 23:45+0300\n"
+"PO-Revision-Date: 2015-11-24 01:12+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -14070,20 +14070,28 @@ msgid "Virtual Unit"
 msgstr "Виртуальный модуль"
 
 #: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
-msgid "Package directory. Parameter is package ID"
-msgstr "Каталог пакета. Параметром является идентификатор пакета"
+msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr "Каталог пакета. Параметром является идентификатор пакета, например, \"Имя\" или \"Имя 1.0\""
 
 #: lazarusidestrconsts.lispkgmacropackageincludefilessearchpathparameterispackageid
-msgid "Package include files search path. Parameter is package ID"
-msgstr "Путь поиска включаемых файлов пакета. Параметром является идентификатор пакета"
+msgid "Package include files search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr "Путь поиска включаемых файлов пакета. Параметром является идентификатор пакета, например, \"Имя\" или \"Имя 1.0\""
+
+#: lazarusidestrconsts.lispkgmacropackagenameparameterispackageid
+msgid "Package name. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr "Имя пакета. Параметром является идентификатор пакета, например, \"Имя\" или \"Имя 1.0\""
+
+#: lazarusidestrconsts.lispkgmacropackageoutputdirectoryparameterispackageid
+msgid "Package output directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr "Каталог вывода пакета. Параметром является идентификатор пакета, например, \"Имя\" или \"Имя 1.0\""
 
 #: lazarusidestrconsts.lispkgmacropackagesourcesearchpathparameterispackageid
-msgid "Package source search path. Parameter is package ID"
-msgstr "Путь поиска файлов исходного кода пакета. Параметром является идентификатор пакета"
+msgid "Package source search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr "Путь поиска файлов исходного кода пакета. Параметром является идентификатор пакета, например, \"Имя\" или \"Имя 1.0\""
 
 #: lazarusidestrconsts.lispkgmacropackageunitsearchpathparameterispackageid
-msgid "Package unit search path. Parameter is package ID"
-msgstr "Путь поиска модулей пакета. Параметром является идентификатор пакета"
+msgid "Package unit search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr "Путь поиска модулей пакета. Параметром является идентификатор пакета, например, \"Имя\" или \"Имя 1.0\""
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforpackagepackage
 msgid "%sAdding new Dependency for package %s: package %s"
