@@ -167,10 +167,11 @@ type
     function CreateSectionNode(AParent: TTreeNode; Const ACaption: String; ANodeType: TNodeType): TTreeNode;
     function CreateTargetNode(AParent: TTreeNode; ANodeType: TNodeType; aTarget: TPGCompileTarget): TTreeNode;
     function CreateSubNode(AParent: TTreeNode; ANodeType: TNodeType; aParentTarget: TPGCompileTarget; aValue: string): TTreeNode;
+    procedure ClearChildNodes(TVNode: TTreeNode);
     procedure FillPackageNode(TVNode: TTreeNode; T: TPGCompileTarget);
     procedure FillProjectNode(TVNode: TTreeNode; T: TPGCompileTarget);
     procedure FillTargetNode(TVNode: TTreeNode; T: TPGCompileTarget);
-    procedure FillProjectGroupNode(AParent: TTreeNode; AProjectGroup: TProjectGroup; Out TargetNodes: TTargetNodes);
+    procedure FillProjectGroupNode(TVNode: TTreeNode; AProjectGroup: TProjectGroup; Out TargetNodes: TTargetNodes);
     function GetNodeImageIndex(ANodeType: TNodeType; ANodeData: TPGCompileTarget ): Integer;
     function SelectedNodeData: TNodeData;
     function SelectedTarget: TPGCompileTarget;
@@ -757,7 +758,7 @@ begin
       begin
         aTarget:=FProjectGroup.AddTarget(FileName) as TIDECompileTarget;
         aTarget.LoadTarget(true);
-        if aTarget.BuildModeCount>0 then begin
+        if aTarget.BuildModeCount>1 then begin
           aMode:=aTarget.BuildModes[0];
           aMode.Compile:=true;
           // ToDo: implement changed notification
@@ -1195,6 +1196,31 @@ begin
   InitTVNode(Result,'',ND);
 end;
 
+procedure TProjectGroupEditorForm.ClearChildNodes(TVNode: TTreeNode);
+
+  procedure FreeChildrenNodeData(aTVNode: TTreeNode);
+  var
+    i: Integer;
+    ChildNode: TTreeNode;
+  begin
+    if aTVNode=nil then exit;
+    for i:=0 to aTVNode.Count-1 do
+    begin
+      ChildNode:=aTVNode[i];
+      if ChildNode.Data<>nil then
+      begin
+        TObject(ChildNode.Data).Free;
+        ChildNode.Data:=nil;
+      end;
+      FreeChildrenNodeData(ChildNode);
+    end;
+  end;
+
+begin
+  FreeChildrenNodeData(TVNode);
+  TVNode.DeleteChildren;
+end;
+
 function TProjectGroupEditorForm.DisplayFileName(aTarget: TPGCompileTarget
   ): string;
 var
@@ -1356,34 +1382,35 @@ begin
     Localize;
 end;
 
-procedure TProjectGroupEditorForm.FillProjectGroupNode(AParent: TTreeNode;
+procedure TProjectGroupEditorForm.FillProjectGroupNode(TVNode: TTreeNode;
   AProjectGroup: TProjectGroup; out TargetNodes: TTargetNodes);
 Const
   TNT: Array[Boolean] of TNodeType = (ntTarget,ntRemovedTarget);
 Var
   T: TPGCompileTarget;
-  TTN,TN: TTreeNode;
+  aTargetsNode,TN: TTreeNode;
   I: Integer;
 begin
   TVPG.BeginUpdate;
   try
-    TTN:=CreateSectionNode(AParent,lisNodeTargets,ntTargets);
-    TargetNodes[False]:=TTN;
-    TargetNodes[True]:=CreateSectionNode(AParent,lisNodeRemovedTargets,ntTargets);
+    ClearChildNodes(TVNode);
+    aTargetsNode:=CreateSectionNode(TVNode,lisNodeTargets,ntTargets);
+    TargetNodes[False]:=aTargetsNode;
+    TargetNodes[True]:=CreateSectionNode(TVNode,lisNodeRemovedTargets,ntTargets);
     // 2 Passes: one to show all nodes, one to fill them with target-specific data.
     // Display all nodes
     For I:=0 to AProjectGroup.TargetCount-1 do
     begin
       T:=AProjectGroup.Targets[i];
-      TN:=CreateTargetNode(TargetNodes[T.Removed],TNT[T.Removed],T);
+      CreateTargetNode(TargetNodes[T.Removed],TNT[T.Removed],T);
     end;
     // Fill all nodes.
-    For I:=0 to TTN.Count-1 do
+    For I:=0 to aTargetsNode.Count-1 do
     begin
-      TN:=TTN.Items[i];
+      TN:=aTargetsNode.Items[i];
       FillTargetNode(TN,TargetFromNode(TN));
     end;
-    AParent.Expand(False);
+    TVNode.Expand(False);
     TargetNodes[False].Expand(False);
     TargetNodes[True].Expand(False);
   finally
@@ -1420,6 +1447,8 @@ Var
 begin
   TVPG.BeginUpdate;
   try
+    ClearChildNodes(TVNode);
+
     // buildmodes
     if T.BuildModeCount>1 then
     begin
@@ -1454,6 +1483,7 @@ Var
 begin
   TVPG.BeginUpdate;
   try
+    ClearChildNodes(TVNode);
     PF[False]:=CreateSectionNode(TVNode,lisNodeFiles,ntFiles);
     PF[True]:=nil; //CreateNode(TVNode,lisNodeRemovedFiles,ntFiles,Nil,AProjectGroup);
     for i:=0 to T.FileCount-1 do
@@ -1471,6 +1501,7 @@ Var
 begin
   TVPG.BeginUpdate;
   try
+    ClearChildNodes(TVNode);
     If T=Nil then
       T:=TargetFromNode(TVNode);
     if T=Nil then

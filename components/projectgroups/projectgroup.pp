@@ -2,7 +2,7 @@
   ToDo:
     - update files when project/package/file changes in IDE
     - update dependencies when changed in IDE
-    - update if files changed on disk
+    - update when files changed on disk
     - show active build mode, active project
     - upate menu items enabled state
     - "find" as in the Messages window
@@ -18,6 +18,11 @@
     - save session in project group, allowing to quickly switch the active project
     - load sub projects in IDE to use code navigation for files not in the active project
     - find references in files
+
+    - add menu items for project for all project inspector functions.
+    - add menu items for package for all package editor functions.
+    - add root node for packages: when opening a package editor add node instead
+    - multiple project groups in editor
 }
 unit ProjectGroup;
 
