@@ -836,6 +836,8 @@ begin
 
   try
     PrepareAxis(ADrawer);
+    if Legend.Visible and not Legend.UseSidebar then
+      Legend.Prepare(ldd, FClipRect);
     if (FPrevLogicalExtent <> FLogicalExtent) and Assigned(OnExtentChanging) then
       OnExtentChanging(Self);
     ADrawer.DrawingBegin(ARect);
