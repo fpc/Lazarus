@@ -1292,7 +1292,7 @@ begin
     CreateMenuItem(ParentMI,itmRunMenuRunToCursor,'itmRunMenuRunToCursor',lisMenuRunToCursor,'menu_run_cursor');
     CreateMenuItem(ParentMI,itmRunMenuStop,'itmRunMenuStop',lisStop,'menu_stop', False);
 
-    CreateMenuItem(ParentMI,itmRunMenuAttach,'itmRunMenuAttach',srkmecAttach,'', False);
+    CreateMenuItem(ParentMI,itmRunMenuAttach,'itmRunMenuAttach',srkmecAttach+' ...','', False);
     CreateMenuItem(ParentMI,itmRunMenuDetach,'itmRunMenuDetach',srkmecDetach,'', False);
 
     CreateMenuItem(ParentMI,itmRunMenuRunParameters,'itmRunMenuRunParameters',lisMenuRunParameters, 'menu_run_parameters');
@@ -1332,7 +1332,7 @@ begin
     CreateMenuSeparatorSection(mnuComponent,itmPkgUnits,'itmPkgUnits');
     ParentMI:=itmPkgUnits;
     CreateMenuItem(ParentMI,itmPkgAddCurFileToPkg,'itmPkgAddCurFileToPkg',lisMenuAddCurFileToPkg,'pkg_add');
-    CreateMenuItem(ParentMI, itmPkgAddNewComponentToPkg, 'itmPkgAddNewComponentToPkg', lisMenuNewComponent, 'pkg_add');
+    CreateMenuItem(ParentMI, itmPkgAddNewComponentToPkg, 'itmPkgAddNewComponentToPkg', lisMenuNewComponent+' ...', 'pkg_add');
 
     CreateMenuSeparatorSection(mnuComponent,itmPkgGraphSection,'itmPkgGraphSection');
     ParentMI:=itmPkgGraphSection;
