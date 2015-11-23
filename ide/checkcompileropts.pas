@@ -72,8 +72,8 @@ type
     OutputTreeView: TTreeView;
     Splitter1: TSplitter;
     TestMemo: TMemo;
-    TestGroupbox: TGroupBox;
-    OutputGroupBox: TGroupBox;
+    LabelTest: TLabel;
+    LabelOutput: TLabel;
     procedure ApplicationOnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure CopyOutputMenuItemClick(Sender: TObject);
   private
@@ -262,7 +262,7 @@ var
   CompilerFiles: TStrings;
 begin
   FTest:=cotCheckCompilerExe;
-  TestGroupbox.Caption:=dlgCCOTestCheckingCompiler;
+  LabelTest.Caption:=dlgCCOTestCheckingCompiler;
   try
     CheckIfFileIsExecutable(CompilerFilename);
   except
@@ -304,7 +304,7 @@ var
 begin
   // compile bogus file
   FTest:=cotCompileBogusFiles;
-  TestGroupbox.Caption:=dlgCCOTestCompilingEmptyFile;
+  LabelTest.Caption:=dlgCCOTestCompilingEmptyFile;
   
   // get Test directory
   TestDir:=AppendPathDelim(LazarusIDE.GetTestBuildDirectory);
@@ -418,7 +418,7 @@ var
   CfgCount: Integer;
 begin
   FTest:=cotCheckCompilerConfig;
-  TestGroupbox.Caption:=dlgCCOTestCheckingCompilerConfig;
+  LabelTest.Caption:=dlgCCOTestCheckingCompilerConfig;
 
   CfgCount:=0;
   for i:=0 to CfgCache.ConfigFiles.Count-1 do begin
@@ -500,7 +500,7 @@ function TCheckCompilerOptsDlg.CheckMissingFPCPPUs(
   
 begin
   FTest:=cotCheckMissingFPCPPUs;
-  TestGroupbox.Caption:=dlgCCOTestMissingPPU;
+  LabelTest.Caption:=dlgCCOTestMissingPPU;
 
   Result:=mrCancel;
 
@@ -560,7 +560,7 @@ begin
   if CfgCache.Units=nil then exit(mrOK);
 
   FTest:=cotCheckCompilerDate;
-  TestGroupbox.Caption:=dlgCCOTestCompilerDate;
+  LabelTest.Caption:=dlgCCOTestCompilerDate;
 
   Result:=mrCancel;
   
@@ -672,7 +672,7 @@ var
   WarnedDirectories: TStringList;
 begin
   FTest:=cotCheckFPCUnitPathsContainSources;
-  TestGroupbox.Caption:=dlgCCOTestSrcInPPUPaths;
+  LabelTest.Caption:=dlgCCOTestSrcInPPUPaths;
 
   Result:=mrCancel;
   WarnedDirectories:=TStringList.Create;
@@ -957,7 +957,7 @@ begin
     CompilerFiles.Free;
     CompileTool.Free;
     FTest:=cotNone;
-    TestGroupbox.Caption:=dlgCCOTest;
+    LabelTest.Caption:=dlgCCOTest;
     FPC_PPUs.Free;
     Target_PPUs.Free;
   end;
@@ -969,8 +969,8 @@ begin
   inherited Create(TheOwner);
   IdleConnected:=true;
   Caption:=dlgCCOCaption;
-  TestGroupbox.Caption:=dlgCCOTest;
-  OutputGroupBox.Caption:=dlgCCOResults;
+  LabelTest.Caption:=dlgCCOTest;
+  LabelOutput.Caption:=dlgCCOResults;
   CopyOutputMenuItem.Caption:=lisCCOCopyOutputToCliboard;
 end;
 
