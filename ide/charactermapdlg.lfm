@@ -1,30 +1,35 @@
 object CharacterMapDialog: TCharacterMapDialog
   Left = 370
-  Height = 432
+  Height = 477
   Top = 128
-  Width = 484
+  Width = 593
   ActiveControl = PageControl1
   BorderStyle = bsSizeToolWin
   Caption = 'CharacterMapDialog'
-  ClientHeight = 432
-  ClientWidth = 484
+  ClientHeight = 477
+  ClientWidth = 593
   FormStyle = fsStayOnTop
   KeyPreview = True
   OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.5'
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 32
-    Top = 394
-    Width = 472
+    Height = 29
+    Top = 442
+    Width = 581
     OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
     OKButton.Enabled = False
     HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
     HelpButton.OnClick = HelpButtonClick
     CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
     CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     CancelButton.Enabled = False
     TabOrder = 0
     ShowButtons = [pbClose, pbHelp]
@@ -37,9 +42,9 @@ object CharacterMapDialog: TCharacterMapDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel
     Left = 6
-    Height = 382
+    Height = 430
     Top = 6
-    Width = 472
+    Width = 581
     ActivePage = TabSheet1
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
@@ -47,8 +52,8 @@ object CharacterMapDialog: TCharacterMapDialog
     TabOrder = 1
     object TabSheet1: TTabSheet
       Caption = 'ANSI'
-      ClientHeight = 359
-      ClientWidth = 468
+      ClientHeight = 399
+      ClientWidth = 577
       object CharInfoLabel: TLabel
         AnchorSideLeft.Control = TabSheet1
         AnchorSideTop.Side = asrBottom
@@ -57,9 +62,9 @@ object CharacterMapDialog: TCharacterMapDialog
         AnchorSideBottom.Control = TabSheet1
         AnchorSideBottom.Side = asrBottom
         Left = 6
-        Height = 14
-        Top = 339
-        Width = 456
+        Height = 17
+        Top = 376
+        Width = 565
         Anchors = [akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
         Caption = 'CharInfoLabel'
@@ -72,9 +77,9 @@ object CharacterMapDialog: TCharacterMapDialog
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = CharInfoLabel
         Left = 0
-        Height = 333
+        Height = 370
         Top = 0
-        Width = 468
+        Width = 577
         Anchors = [akTop, akLeft, akRight, akBottom]
         ColCount = 17
         DefaultColWidth = 16
@@ -88,16 +93,16 @@ object CharacterMapDialog: TCharacterMapDialog
     end
     object TabSheet2: TTabSheet
       Caption = 'Unicode'
-      ClientHeight = 359
-      ClientWidth = 468
+      ClientHeight = 399
+      ClientWidth = 577
       object UnicodeCharInfoLabel: TLabel
         AnchorSideLeft.Control = Owner
         AnchorSideTop.Control = cbUniRange
         AnchorSideTop.Side = asrCenter
         Left = 6
-        Height = 14
-        Top = 336
-        Width = 124
+        Height = 17
+        Top = 369
+        Width = 150
         BorderSpacing.Around = 6
         Caption = 'UnicodeCharInfoLabel'
         ParentColor = False
@@ -109,9 +114,9 @@ object CharacterMapDialog: TCharacterMapDialog
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = cbUniRange
         Left = 0
-        Height = 327
+        Height = 356
         Top = 0
-        Width = 468
+        Width = 577
         Anchors = [akTop, akLeft, akRight, akBottom]
         ColCount = 16
         DefaultColWidth = 16
@@ -129,12 +134,13 @@ object CharacterMapDialog: TCharacterMapDialog
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = TabSheet2
         AnchorSideBottom.Side = asrBottom
-        Left = 250
-        Height = 20
-        Top = 333
+        Left = 359
+        Height = 31
+        Top = 362
         Width = 212
         Anchors = [akRight, akBottom]
         BorderSpacing.Around = 6
+        DropDownCount = 25
         ItemHeight = 0
         OnSelect = cbUniRangeSelect
         Style = csDropDownList

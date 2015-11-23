@@ -58,6 +58,7 @@ type
     TabSheet1: TTabSheet;
     TabSheet2: TTabSheet;
     procedure cbUniRangeSelect(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure HelpButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -138,6 +139,17 @@ begin
    inc(cnt);
   end;
   StringGrid2.AutoSizeColumns;
+end;
+
+procedure TCharacterMapDialog.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key=VK_ESCAPE then
+  begin
+    Close;
+    Key:= 0;
+    Exit
+  end;
 end;
 
 procedure TCharacterMapDialog.FormShow(Sender: TObject);
