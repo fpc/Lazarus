@@ -3002,6 +3002,7 @@ components/lazutils/lazutf8sysutils.pas svneol=native#text/pascal
 components/lazutils/lazutilities.pas svneol=native#text/plain
 components/lazutils/lazutils.lpk svneol=native#text/plain
 components/lazutils/lazutils.pas svneol=native#text/pascal
+components/lazutils/lazutils_defines.inc svneol=native#text/plain
 components/lazutils/lazutilsstrconsts.pas svneol=native#text/pascal
 components/lazutils/lconvencoding.pas svneol=native#text/pascal
 components/lazutils/lcsvutils.pas svneol=native#text/pascal
