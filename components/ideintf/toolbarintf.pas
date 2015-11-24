@@ -94,6 +94,7 @@ type
     function FindItemByName(const aName: string): TIDEButtonCommand;
     function FindItemByMenuPathOrName(var aName: string): TIDEButtonCommand;
     function FindItemByCommand(const aCommand: TIDECommand): TIDEButtonCommand;
+    function FindItemByCommand(const aCommand: Word): TIDEButtonCommand;
     property Items[Index: Integer]: TIDEToolButtonCategory read GetItems; default;
   end;
 
@@ -454,6 +455,19 @@ begin
   for i := 0 to Count-1 do
     for l := 0 to Items[i].ButtonCount-1 do
       if Items[i].Buttons[l].Command = aCommand then
+        Exit(Items[i].Buttons[l]);
+
+  Result := nil;
+end;
+
+function TIDEToolButtonCategories.FindItemByCommand(const aCommand: Word
+  ): TIDEButtonCommand;
+var
+  i, l: Integer;
+begin
+  for i := 0 to Count-1 do
+    for l := 0 to Items[i].ButtonCount-1 do
+      if Items[i].Buttons[l].Command.Command = aCommand then
         Exit(Items[i].Buttons[l]);
 
   Result := nil;
