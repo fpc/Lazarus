@@ -761,6 +761,7 @@ begin
             if (xOldIndex>=0) and (xOldIndex<>xNewIndex) then
               TCustomTabControl(FNotebook).Pages.Move(xOldIndex, xNewIndex);
           end;
+          xEditor.UpdateProjectFile; // updates FNewEditorInfo.PageIndex
           Inc(xNewIndex);
           xBtn := TPackageTabButton.Create(Self);
           xBtn.Height := xLbl.Height;
