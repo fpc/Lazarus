@@ -37,19 +37,6 @@ end;
 
 //*************** START WideString impementations
 
-//fpc 2.6.0 does not have StrLen for WideChar.
-//Remove this when we have 2.6.4 or higher
-{$if FPC_FULLVERSION < 20602}
-function StrLen(PW: PWideChar): SizeInt; overload;
-var
-  i: SizeInt;
-begin
-  i:=0;
-  if assigned(PW) then
-    while (PW[i] <> #0) do inc(i);
-  Result := i;
-end;
-{$endif}
 
 {$IF (FPC_FULLVERSION >= 30000) AND NOT DEFINED(DisableUTF8RTL) AND NOT DEFINED(WINCE)}
 procedure SetupArgvAsUtf8;

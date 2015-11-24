@@ -656,21 +656,6 @@ begin
     Result := Integer(GetLastError);
 end;
 
-//fpc 2.6.0 does not have StrLen for WideChar.
-//Remove this when we have 2.6.4 or higher
-{$if FPC_FULLVERSION < 20602}
-function StrLen(PW: PWideChar): SizeInt; overload;
-var
-  i: SizeInt;
-begin
-  i:=0;
-  if assigned(PW) then
-    while (PW[i] <> #0) do inc(i);
-  Result := i;
-end;
-{$endif}
-
-
 {$IFDEF WINCE}
 // In WinCE these API calls are in Windows unit
 function GetWindowsSpecialDirW(ID :  Integer) : String;
