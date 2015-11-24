@@ -7,7 +7,7 @@ var
 var
   ArgsW: Array of WideString;
   ArgsWCount: Integer; // length(ArgsW)+1
-  {$IF (FPC_FULLVERSION >= 30000) AND NOT DEFINED(DisableUTF8RTL) AND NOT DEFINED(WINCE)}
+  {$IF DEFINED(UTF8_RTL) AND NOT DEFINED(WINCE)}
   ArgsUTF8: Array of String; // the ArgsW array as UTF8
   OldArgV: PPChar = nil;
   {$IFEND}
@@ -38,7 +38,7 @@ end;
 //*************** START WideString impementations
 
 
-{$IF (FPC_FULLVERSION >= 30000) AND NOT DEFINED(DisableUTF8RTL) AND NOT DEFINED(WINCE)}
+{$IF DEFINED(UTF8_RTL) AND NOT DEFINED(WINCE)}
 procedure SetupArgvAsUtf8;
 var
   i: Integer;
@@ -192,7 +192,7 @@ begin
   //Note:
   //On WinCe Argsv is a static function, so we cannot change it.
   //This might change in the future if Argsv on WinCE will be declared as a function variable
-  {$IF (FPC_FULLVERSION >= 30000) AND NOT DEFINED(DisableUTF8RTL) AND NOT DEFINED(WINCE)}
+  {$IF DEFINED(UTF8_RTL) AND NOT DEFINED(WINCE)}
   if DefaultSystemCodePage=CP_UTF8 then
     SetupArgvAsUtf8;
   {$IFEND}
@@ -327,7 +327,7 @@ begin
 end;
 {$endif}
 
-{$IF (FPC_FULLVERSION >= 30000) AND NOT DEFINED(DisableUTF8RTL)}
+{$IFDEF UTF8_RTL}
 function GetLocaleStr(aLocaleID, aLCType: Longint; const Def: string): String;
 var
   L: Integer;
@@ -493,7 +493,7 @@ begin
   end else
     Result:=0;
 end;
-{$IFEND}
+{$ENDIF}
 
 procedure InitLazUtf8;
 begin
@@ -521,7 +521,7 @@ begin
       end;
     end;
   end;
-  {$IF (FPC_FULLVERSION >= 30000) AND NOT DEFINED(DisableUTF8RTL)}
+  {$IFDEF UTF8_RTL}
   {$ifndef wince}
   GetFormatSettingsUTF8(GetThreadLocale,FormatSettings);
   {$else}
@@ -542,12 +542,12 @@ begin
 end;
 
 procedure FinalizeLazUTF8;
-{$IF (FPC_FULLVERSION >= 30000) AND NOT DEFINED(DisableUTF8RTL)}
+{$IFDEF UTF8_RTL}
 var
   p: PPChar;
-{$IFEND}
+{$ENDIF}
 begin
-  {$IF (FPC_FULLVERSION >= 30000) AND NOT DEFINED(DisableUTF8RTL) AND NOT DEFINED(WINCE)}
+  {$IF DEFINED(UTF8_RTL) AND NOT DEFINED(WINCE)}
   // restore argv and free memory
   if OldArgV<>nil then
   begin

@@ -13,17 +13,18 @@ unit LConvEncoding;
 
 {$mode objfpc}{$H+}
 
+{$i lazutils_defines.inc}
+
 interface
 
 { $Define DisableAsianCodePages}
-{$if FPC_FULLVERSION >= 30000}
-  {$Define HasCP} // AnsiString has codepage
-  {$IFnDEF DisableUTF8RTL}
+//{$if FPC_FULLVERSION >= 30000}
+  {$IFDEF UTF8_RTL}
     // Windows provides conversion functions.
     // Unix: unit cwstring provides conversion functions which are used by default UTF-8 encoding system.
     {$Define UseSystemCPConv} // use system conversions
   {$ENDIF}
-{$IFEND}
+//{$IFEND}
 {$ifdef UseLCPConv}{$undef UseSystemCPConv}{$endif}
 
 uses
@@ -77,11 +78,11 @@ const
 function GuessEncoding(const s: string): string;
 
 function ConvertEncodingFromUTF8(const s, ToEncoding: string; out Encoded: boolean
-  {$ifdef HasCP}; SetTargetCodePage: boolean = false{$endif}): string;
+  {$ifdef FPC_HAS_CPSTRING}; SetTargetCodePage: boolean = false{$endif}): string;
 function ConvertEncodingToUTF8(const s, FromEncoding: string; out Encoded: boolean): string;
 // For UTF8 use the above functions, they save you one parameter
 function ConvertEncoding(const s, FromEncoding, ToEncoding: string
-  {$ifdef HasCP}; SetTargetCodePage: boolean = false{$endif}): string;
+  {$ifdef FPC_HAS_CPSTRING}; SetTargetCodePage: boolean = false{$endif}): string;
 
 // This routine should obtain the encoding utilized by ansistring in the RTL
 function GetDefaultTextEncoding: string;
@@ -93,7 +94,7 @@ function NormalizeEncoding(const Encoding: string): string;
 
 type
   TConvertEncodingFunction = function(const s: string): string;
-  {$ifdef HasCP}
+  {$ifdef FPC_HAS_CPSTRING}
   TConvertUTF8ToEncodingFunc = function(const s: string; SetTargetCodePage: boolean = false): RawByteString;
   {$else}
   TConvertUTF8ToEncodingFunc = function(const s: string): string;
@@ -129,7 +130,7 @@ function UCS2LEToUTF8(const s: string): string; // UCS2-LE 2byte little endian
 function UCS2BEToUTF8(const s: string): string; // UCS2-BE 2byte big endian
 
 function UTF8ToUTF8BOM(const s: string): string; // UTF8 with BOM
-{$ifdef HasCP}
+{$ifdef FPC_HAS_CPSTRING}
 function UTF8ToISO_8859_1(const s: string; SetTargetCodePage: boolean = false): RawByteString; // central europe
 function UTF8ToISO_8859_2(const s: string; SetTargetCodePage: boolean = false): RawByteString; // eastern europe
 function UTF8ToISO_8859_15(const s: string; SetTargetCodePage: boolean = false): RawByteString; // Western European languages
@@ -189,7 +190,7 @@ function CP950ToUTF8(const s: string): string;      // Chinese Complex
 
 function DBCSToUTF8(const s: string; CodeP: integer): string;
 
-{$ifdef HasCP}
+{$ifdef FPC_HAS_CPSTRING}
 function UTF8ToCP932(const s: string; SetTargetCodePage: boolean = false): RawByteString; // Japanese
 function UTF8ToCP936(const s: string; SetTargetCodePage: boolean = false): RawByteString; // Chinese, essentially the same as GB 2312 and a predecessor to GB 18030
 function UTF8ToCP949(const s: string; SetTargetCodePage: boolean = false): RawByteString; // Korea
@@ -6761,7 +6762,8 @@ begin
   end;
 end;
 
-{$if FPC_FULLVERSION >= 20701}
+//{$if FPC_FULLVERSION >= 20701}
+{$IFDEF FPC_HAS_CPSTRING}
 procedure InternalUTF8ToCP(const s: string; TargetCodePage: TSystemCodePage;
   SetTargetCodePage: boolean;
   const UTF8CharConvFunc: TUnicodeToCharID;
@@ -7288,11 +7290,11 @@ end;
 
 
 function ConvertEncodingFromUTF8(const s, ToEncoding: string; out Encoded: boolean
-  {$ifdef HasCP}; SetTargetCodePage: boolean = false{$endif}): string;
+  {$ifdef FPC_HAS_CPSTRING}; SetTargetCodePage: boolean = false{$endif}): string;
 var
   ATo: string;
 
-  {$ifdef HasCP}
+  {$ifdef FPC_HAS_CPSTRING}
   procedure CheckKeepCP; inline;
   begin
     if SetTargetCodePage then
@@ -7306,33 +7308,33 @@ begin
   ATo:=NormalizeEncoding(ToEncoding);
 
   if ATo=EncodingUTF8BOM then begin Result:=UTF8ToUTF8BOM(s); exit; end;
-  if ATo=EncodingCPIso1 then begin Result:=UTF8ToISO_8859_1(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
-  if ATo=EncodingCPIso15 then begin Result:=UTF8ToISO_8859_15(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
-  if ATo=EncodingCPIso2 then begin Result:=UTF8ToISO_8859_2(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
-  if ATo=EncodingCP1250 then begin Result:=UTF8ToCP1250(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
-  if ATo=EncodingCP1251 then begin Result:=UTF8ToCP1251(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
-  if ATo=EncodingCP1252 then begin Result:=UTF8ToCP1252(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
-  if ATo=EncodingCP1253 then begin Result:=UTF8ToCP1253(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
-  if ATo=EncodingCP1254 then begin Result:=UTF8ToCP1254(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
-  if ATo=EncodingCP1255 then begin Result:=UTF8ToCP1255(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
-  if ATo=EncodingCP1256 then begin Result:=UTF8ToCP1256(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
-  if ATo=EncodingCP1257 then begin Result:=UTF8ToCP1257(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
-  if ATo=EncodingCP1258 then begin Result:=UTF8ToCP1258(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
-  if ATo=EncodingCP437 then begin Result:=UTF8ToCP437(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
-  if ATo=EncodingCP850 then begin Result:=UTF8ToCP850(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
-  if ATo=EncodingCP852 then begin Result:=UTF8ToCP852(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
-  if ATo=EncodingCP866 then begin Result:=UTF8ToCP866(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
-  if ATo=EncodingCP874 then begin Result:=UTF8ToCP874(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCPIso1 then begin Result:=UTF8ToISO_8859_1(s{$ifdef FPC_HAS_CPSTRING},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCPIso15 then begin Result:=UTF8ToISO_8859_15(s{$ifdef FPC_HAS_CPSTRING},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCPIso2 then begin Result:=UTF8ToISO_8859_2(s{$ifdef FPC_HAS_CPSTRING},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP1250 then begin Result:=UTF8ToCP1250(s{$ifdef FPC_HAS_CPSTRING},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP1251 then begin Result:=UTF8ToCP1251(s{$ifdef FPC_HAS_CPSTRING},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP1252 then begin Result:=UTF8ToCP1252(s{$ifdef FPC_HAS_CPSTRING},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP1253 then begin Result:=UTF8ToCP1253(s{$ifdef FPC_HAS_CPSTRING},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP1254 then begin Result:=UTF8ToCP1254(s{$ifdef FPC_HAS_CPSTRING},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP1255 then begin Result:=UTF8ToCP1255(s{$ifdef FPC_HAS_CPSTRING},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP1256 then begin Result:=UTF8ToCP1256(s{$ifdef FPC_HAS_CPSTRING},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP1257 then begin Result:=UTF8ToCP1257(s{$ifdef FPC_HAS_CPSTRING},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP1258 then begin Result:=UTF8ToCP1258(s{$ifdef FPC_HAS_CPSTRING},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP437 then begin Result:=UTF8ToCP437(s{$ifdef FPC_HAS_CPSTRING},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP850 then begin Result:=UTF8ToCP850(s{$ifdef FPC_HAS_CPSTRING},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP852 then begin Result:=UTF8ToCP852(s{$ifdef FPC_HAS_CPSTRING},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP866 then begin Result:=UTF8ToCP866(s{$ifdef FPC_HAS_CPSTRING},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP874 then begin Result:=UTF8ToCP874(s{$ifdef FPC_HAS_CPSTRING},SetTargetCodePage{$endif}); exit; end;
   {$IFnDEF DisableAsianCodePages}
-  if ATo=EncodingCP936 then begin Result:=UTF8ToCP936(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
-  if ATo=EncodingCP950 then begin Result:=UTF8ToCP950(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
-  if ATo=EncodingCP949 then begin Result:=UTF8ToCP949(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
-  if ATo=EncodingCP932 then begin Result:=UTF8ToCP932(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP936 then begin Result:=UTF8ToCP936(s{$ifdef FPC_HAS_CPSTRING},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP950 then begin Result:=UTF8ToCP950(s{$ifdef FPC_HAS_CPSTRING},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP949 then begin Result:=UTF8ToCP949(s{$ifdef FPC_HAS_CPSTRING},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCP932 then begin Result:=UTF8ToCP932(s{$ifdef FPC_HAS_CPSTRING},SetTargetCodePage{$endif}); exit; end;
   {$ENDIF}
-  if ATo=EncodingCPKOI8 then begin Result:=UTF8ToKOI8(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
-  if ATo=EncodingCPMac then begin Result:=UTF8ToMacintosh(s{$ifdef HasCP},SetTargetCodePage{$endif}); exit; end;
-  if ATo=EncodingUCS2LE then begin {$ifdef HasCP}CheckKeepCP;{$endif} Result:=UTF8ToUCS2LE(s); exit; end;
-  if ATo=EncodingUCS2BE then begin {$ifdef HasCP}CheckKeepCP;{$endif} Result:=UTF8ToUCS2BE(s); exit; end;
+  if ATo=EncodingCPKOI8 then begin Result:=UTF8ToKOI8(s{$ifdef FPC_HAS_CPSTRING},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingCPMac then begin Result:=UTF8ToMacintosh(s{$ifdef FPC_HAS_CPSTRING},SetTargetCodePage{$endif}); exit; end;
+  if ATo=EncodingUCS2LE then begin {$ifdef FPC_HAS_CPSTRING}CheckKeepCP;{$endif} Result:=UTF8ToUCS2LE(s); exit; end;
+  if ATo=EncodingUCS2BE then begin {$ifdef FPC_HAS_CPSTRING}CheckKeepCP;{$endif} Result:=UTF8ToUCS2BE(s); exit; end;
 
   if (ATo=GetDefaultTextEncoding) and Assigned(ConvertUTF8ToAnsi) then begin
     Result:=ConvertUTF8ToAnsi(s);
@@ -7388,7 +7390,7 @@ begin
 end;
 
 function ConvertEncoding(const s, FromEncoding, ToEncoding: string
-  {$ifdef HasCP}; SetTargetCodePage: boolean{$endif}): string;
+  {$ifdef FPC_HAS_CPSTRING}; SetTargetCodePage: boolean{$endif}): string;
 var
   AFrom, ATo, SysEnc : String;
   Encoded : Boolean;
@@ -7416,7 +7418,7 @@ begin
   //DebugLn(['ConvertEncoding ',AFrom,' ',ATo]);
 
   if AFrom=EncodingUTF8 then begin
-    Result:=ConvertEncodingFromUTF8(s, ATo, Encoded{$ifdef HasCP}, SetTargetCodePage{$endif});
+    Result:=ConvertEncodingFromUTF8(s, ATo, Encoded{$ifdef FPC_HAS_CPSTRING}, SetTargetCodePage{$endif});
     if Encoded then exit;
   end
   else
@@ -7428,7 +7430,7 @@ begin
   begin
     Result:=ConvertEncodingToUTF8(s, AFrom, Encoded);
     if Encoded then
-      Result:=ConvertEncodingFromUTF8(Result, ATo, Encoded{$ifdef HasCP}, SetTargetCodePage{$endif});
+      Result:=ConvertEncodingFromUTF8(Result, ATo, Encoded{$ifdef FPC_HAS_CPSTRING}, SetTargetCodePage{$endif});
     if Encoded then exit;
   end;
 

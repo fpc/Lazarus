@@ -16,13 +16,16 @@ unit PasWString;
 
 {$mode objfpc}
 {$inline on}
+{$i lazutils_defines.inc}
+
 //{$define PASWSTRING_VERBOSE}
 //{.$define PASWSTRING_SUPPORT_NONUTF8_ANSISTRING} disabled by default because
 // non utf-8 ansistring is rare in UNIXes and lconvencoding makes the executable big
 
 // sanity checks for defines
-{$IF FPC_FULLVERSION >= 30000}
-  {$IFnDEF DisableUTF8RTL}
+//{$IF FPC_FULLVERSION >= 30000}
+{$IFnDEF NO_CP_RTL}
+  {$IFDEF UTF8_RTL}
     {$IFDEF PASWSTRING_SUPPORT_NONUTF8_ANSISTRING}
       {$error UTF8 or not UTF8}
     {$ENDIF}

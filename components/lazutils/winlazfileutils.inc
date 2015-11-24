@@ -542,12 +542,9 @@ end;
 {$IF DEFINED(WinCE) OR (FPC_FULLVERSION>=30000)}
   {$define FindData_W}
 {$IFEND}
-{$IF (FPC_FULLVERSION >= 30000) AND NOT DEFINED(DisableUTF8RTL)}
-  {$DEFINE ReallyUseUTF8RTL}
-{$IFEND}
 
 function FindMatch(var f: TSearchRec) : Longint;
-{$IFnDEF ReallyUseUTF8RTL}
+{$IFDEF ACP_RTL}
 var
   Dummy: String;
 {$ENDIF}
@@ -569,7 +566,7 @@ begin
     in win32 it is the ansi structure with a utf-8 string
     in wince it is a wide structure }
   {$ifdef FindData_W}
-  {$IFDEF ReallyUseUTF8RTL}
+  {$IFnDEF ACP_RTL}
   f.Name:=UTF8Encode(UnicodeString(F.FindData.cFileName));
   {$ELSE}
   Dummy := '';
