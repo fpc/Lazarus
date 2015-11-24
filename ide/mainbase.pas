@@ -462,12 +462,12 @@ procedure TOpenFileToolButton.RefreshMenu(Sender: TObject);
 begin
   DropdownMenu.Items.Clear;
 
-  // first add 8 recent projects
-  AddFiles(EnvironmentOptions.RecentProjectFiles, 8, @mnuProjectFile);
+  // first add recent projects
+  AddFiles(EnvironmentOptions.RecentProjectFiles, EnvironmentOptions.MaxRecentProjectFiles, @mnuProjectFile);
   // add a separator
   DropdownMenu.Items.AddSeparator;
-  // add 12 recent files
-  AddFiles(EnvironmentOptions.RecentOpenFiles, 12, @mnuOpenFile);
+  // then add recent files
+  AddFiles(EnvironmentOptions.RecentOpenFiles, EnvironmentOptions.MaxRecentOpenFiles, @mnuOpenFile);
 end;
 
 { TSetBuildModeToolButton }
