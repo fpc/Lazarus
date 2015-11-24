@@ -362,9 +362,11 @@ begin
 end;
 
 function GetCurrentDirWide: String;
+{$ifndef WinCE}
 var
   w   : WideString;
   res : Integer;
+  {$endif}
 begin
   {$ifdef WinCE}
   Result := '\';
@@ -382,10 +384,12 @@ end;
 
 procedure GetDirWide(DriveNr: Byte; var Dir: String);
 {This procedure may not be threadsafe, because SetCurrentDirectory isn't}
+{$ifndef WinCE}
 var
   w, D: WideString;
   SavedDir: WideString;
   res : Integer;
+{$endif}
 begin
   {$ifdef WinCE}
   Dir := '\';
@@ -1021,9 +1025,11 @@ end;
 
 
 function FileIsHardLink(const AFilename: string): boolean;
+{$ifndef wince}
 var
   H: THandle;
   FileInfo: BY_HANDLE_FILE_INFORMATION;
+  {$endif}
 begin
   Result := false;
   {$ifndef wince}
