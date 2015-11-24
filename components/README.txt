@@ -149,6 +149,9 @@ multithreadprocs
 opengl
   An OpenGL control.
 
+packagetabs
+  Replacement of source editor tabs/pages with buttons sorted by package and name.
+
 paradox
   Support for Paradox databases.
   
