@@ -358,6 +358,7 @@ type
     function GetProjectFileForProjectEditor(AEditor: TSourceEditorInterface): TLazProjectFile; virtual; abstract;
     function DoCallProjectChangedHandler(HandlerType: TLazarusIDEHandlerType;
                                          AProject: TLazProject): TModalResult;
+    function DoAddUnitToProject(AEditor: TSourceEditorInterface): TModalResult; virtual; abstract;
 
     // configs
     class function GetPrimaryConfigPath: String; virtual; abstract;

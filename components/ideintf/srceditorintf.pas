@@ -15,7 +15,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, Laz2_XMLCfg, LCLType, Forms, Controls,
-  Graphics, ProjectIntf, IDECommands;
+  ComCtrls, Graphics, ProjectIntf, IDECommands;
   
 type
   TSourceMarklingType = (
@@ -85,6 +85,8 @@ type
     function GetLines: TStrings; virtual; abstract;
     function GetLineText: string; virtual; abstract;
     function GetModified: Boolean; virtual; abstract;
+    function GetPageCaption: string; virtual; abstract;
+    function GetPageName: string; virtual; abstract;
     function GetReadOnly: Boolean; virtual; abstract;
     function GetSelection: string; virtual; abstract;
     function GetSelEnd: Integer; virtual; abstract;
@@ -152,6 +154,13 @@ type
     function GetProjectFile: TLazProjectFile; virtual; abstract;
     procedure UpdateProjectFile; virtual; abstract;
     function GetDesigner(LoadForm: boolean): TIDesigner; virtual; abstract;
+
+    // editor commands
+    procedure DoEditorExecuteCommand(EditorCommand: word); virtual; abstract;
+
+    // move/copy to another SourceEditorWindow
+    procedure MoveToWindow(AWindowIndex: Integer); virtual; abstract;
+    procedure CopyToWindow(AWindowIndex: Integer); virtual; abstract;
   public
     property BlockBegin: TPoint read GetBlockBegin write SetBlockBegin;
     property BlockEnd: TPoint read GetBlockEnd write SetBlockEnd;
@@ -162,6 +171,8 @@ type
     property FileName: string read GetFileName;
     property Lines: TStrings read GetLines write SetLines;// the whole file
     property CurrentLineText: string read GetLineText write SetLineText;// source of current line
+    property PageCaption: string read GetPageCaption;// the beatified unit name with modifiers ('*', '#') as it is shown in tab caption
+    property PageName: string read GetPageName;// the beatified unit name
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
     property Selection: string read GetSelection write SetSelection;
     property SelEnd: Integer read GetSelEnd write SetSelEnd;
@@ -205,12 +216,21 @@ type
     function GetCompletionPlugins(Index: integer): TSourceEditorCompletionPlugin; virtual; abstract;
     function GetItems(Index: integer): TSourceEditorInterface; virtual; abstract;
     procedure SetActiveEditor(const AValue: TSourceEditorInterface); virtual; abstract;
+    function GetWindowID: Integer; virtual; abstract;
   public
+    procedure IncUpdateLock; virtual; abstract;
+    procedure DecUpdateLock; virtual; abstract;
+    function IndexOfEditorInShareWith(AnOtherEditor: TSourceEditorInterface): Integer; virtual; abstract;
     function SourceEditorIntfWithFilename(const Filename: string): TSourceEditorInterface; virtual; abstract;
     property ActiveEditor: TSourceEditorInterface read GetActiveEditor write SetActiveEditor;
     function Count: integer; virtual; abstract;
     property Items[Index: integer]: TSourceEditorInterface read GetItems; default;
     property ActiveCompletionPlugin: TSourceEditorCompletionPlugin read GetActiveCompletionPlugin;
+    // The number in the Form.Caption minus 1 (0-based), if multiple Win are open
+    property WindowID: Integer read GetWindowID;
+    // Editor Page Caption update
+    procedure AddUpdateEditorPageCaptionHandler(AEvent: TNotifyEvent; const AsLast: Boolean = True); virtual; abstract;
+    procedure RemoveUpdateEditorPageCaptionHandler(AEvent: TNotifyEvent); virtual; abstract;
   end;
 
   TsemChangeReason = (
@@ -259,11 +279,15 @@ type
                                     virtual; abstract;
     function GetMarklingProducers(Index: integer): TSourceMarklingProducer;
                                   virtual; abstract;
+    function GetShowTabs: Boolean; virtual; abstract;
+    procedure SetShowTabs(const AShowTabs: Boolean); virtual; abstract;
+    function GetTabPosition: TTabPosition; virtual; abstract;
   public
     // List of SourceEditorWindows
     function SourceWindowWithEditor(const AEditor: TSourceEditorInterface): TSourceEditorWindowInterface;
              virtual; abstract;
     function  IndexOfSourceWindowWithID(const AnID: Integer): Integer; virtual; abstract;
+    procedure ShowActiveWindowOnTop(Focus: Boolean = False); virtual; abstract;
     function SourceWindowCount: integer; virtual; abstract;
     property SourceWindows[Index: integer]: TSourceEditorWindowInterface
              read GetSourceWindows;
@@ -316,6 +340,8 @@ type
     procedure UnregisterMarklingProducer(aProducer: TSourceMarklingProducer); virtual; abstract;
     procedure InvalidateMarklingsOfAllFiles(aProducer: TSourceMarklingProducer); virtual; abstract;
     procedure InvalidateMarklings(aProducer: TSourceMarklingProducer; aFilename: string); virtual; abstract;
+    property ShowTabs: Boolean read GetShowTabs write SetShowTabs;
+    property TabPosition: TTabPosition read GetTabPosition;
   end;
 
 

@@ -721,6 +721,7 @@ type
     function DoResetToolStatus(AFlags: TResetToolFlags): boolean; override;
 
     // files/units
+    function DoAddUnitToProject(AEditor: TSourceEditorInterface): TModalResult; override;
     function DoNewFile(NewFileDescriptor: TProjectFileDescriptor;
         var NewFilename: string; NewSource: string;
         NewFlags: TNewFlags; NewOwner: TObject): TModalResult; override;
@@ -6244,6 +6245,12 @@ end;
 function TMainIDE.DoAddActiveUnitToProject: TModalResult;
 begin
   Result:=SourceFileMgr.AddActiveUnitToProject;
+end;
+
+function TMainIDE.DoAddUnitToProject(AEditor: TSourceEditorInterface
+  ): TModalResult;
+begin
+  Result := SourceFileMgr.AddUnitToProject(AEditor);
 end;
 
 function TMainIDE.DoRemoveFromProjectDialog: TModalResult;

@@ -208,6 +208,7 @@ type
       Files: TStringList; MultiSelect: boolean;
       var MultiSelectCheckedState: Boolean): TModalResult;
 
+    function AddUnitToProject(const AEditor: TSourceEditorInterface): TModalResult;
     function AddActiveUnitToProject: TModalResult;
     function RemoveFromProjectDialog: TModalResult;
     function InitNewProject(ProjectDesc: TProjectDescriptor): TModalResult;
@@ -1672,6 +1673,144 @@ begin
   EnvironmentOptions.AddToRecentProjectFiles(AFilename);
   MainIDE.SetRecentProjectFilesMenu;
   MainIDE.SaveEnvironment;
+end;
+
+function TLazSourceFileManager.AddUnitToProject(
+  const AEditor: TSourceEditorInterface): TModalResult;
+var
+  ActiveSourceEditor: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  s, ShortUnitName, LFMFilename, LFMType, LFMComponentName,
+    LFMClassName: string;
+  OkToAdd: boolean;
+  Owners: TFPList;
+  i: Integer;
+  APackage: TLazPackage;
+  MsgResult: TModalResult;
+  LFMCode: TCodeBuffer;
+begin
+  Result:=mrCancel;
+  if AEditor<>nil then
+  begin
+    ActiveSourceEditor := AEditor as TSourceEditor;
+    if not MainIDE.BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[ctfUseGivenSourceEditor]) then exit;
+  end else
+  begin
+    ActiveSourceEditor:=nil;
+    if not MainIDE.BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]) then exit;
+  end;
+  if (ActiveUnitInfo=nil) then exit;
+  if ActiveUnitInfo.IsPartOfProject then begin
+    if not ActiveUnitInfo.IsVirtual then
+      s:=Format(lisTheFile, [ActiveUnitInfo.Filename])
+    else
+      s:=Format(lisTheFile, [ActiveSourceEditor.PageName]);
+    s:=Format(lisisAlreadyPartOfTheProject, [s]);
+    IDEMessageDialog(lisInformation, s, mtInformation, [mbOk]);
+    exit;
+  end;
+  if not ActiveUnitInfo.IsVirtual then
+    s:='"'+ActiveUnitInfo.Filename+'"'
+  else
+    s:='"'+ActiveSourceEditor.PageName+'"';
+  if (ActiveUnitInfo.SrcUnitName<>'')
+  and (Project1.IndexOfUnitWithName(ActiveUnitInfo.SrcUnitName,true,ActiveUnitInfo)>=0) then
+  begin
+    IDEMessageDialog(lisInformation, Format(
+      lisUnableToAddToProjectBecauseThereIsAlreadyAUnitWith, [s]),
+      mtInformation, [mbOk]);
+    exit;
+  end;
+
+  Owners:=PkgBoss.GetPossibleOwnersOfUnit(ActiveUnitInfo.Filename,[]);
+  try
+    if (Owners<>nil) then begin
+      for i:=0 to Owners.Count-1 do begin
+        if TObject(Owners[i]) is TLazPackage then begin
+          APackage:=TLazPackage(Owners[i]);
+          MsgResult:=IDEQuestionDialog(lisAddPackageRequirement,
+            Format(lisTheUnitBelongsToPackage, [APackage.IDAsString]),
+            mtConfirmation, [mrYes, lisAddPackageToProject2,
+                            mrIgnore, lisAddUnitNotRecommended, mrCancel],'');
+          case MsgResult of
+            mrYes:
+              begin
+                PkgBoss.AddProjectDependency(Project1,APackage);
+                exit;
+              end;
+            mrIgnore: ;
+          else
+            exit;
+          end;
+        end;
+      end;
+    end;
+  finally
+    Owners.Free;
+  end;
+
+  if FilenameIsPascalUnit(ActiveUnitInfo.Filename)
+  and (EnvironmentOptions.CharcaseFileAction<>ccfaIgnore) then
+  begin
+    // ask user to apply naming conventions
+    Result:=RenameUnitLowerCase(ActiveUnitInfo,true);
+    if Result=mrIgnore then Result:=mrOk;
+    if Result<>mrOk then begin
+      DebugLn('AddActiveUnitToProject A RenameUnitLowerCase failed ',ActiveUnitInfo.Filename);
+      exit;
+    end;
+  end;
+
+  if IDEMessageDialog(lisConfirmation, Format(lisAddToProject, [s]),
+    mtConfirmation, [mbYes, mbCancel]) in [mrOk, mrYes]
+  then begin
+    OkToAdd:=True;
+    if FilenameIsPascalUnit(ActiveUnitInfo.Filename) then
+      OkToAdd:=CheckDirIsInSearchPath(ActiveUnitInfo,False,False)
+    else if CompareFileExt(ActiveUnitInfo.Filename,'inc',false)=0 then
+      OkToAdd:=CheckDirIsInSearchPath(ActiveUnitInfo,False,True);
+    if OkToAdd then begin
+      ActiveUnitInfo.IsPartOfProject:=true;
+      Project1.Modified:=true;
+      if (FilenameIsPascalUnit(ActiveUnitInfo.Filename))
+      and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
+      then begin
+        ActiveUnitInfo.ReadUnitNameFromSource(false);
+        ShortUnitName:=ActiveUnitInfo.CreateUnitName;
+        if (ShortUnitName<>'') then begin
+          if CodeToolBoss.AddUnitToMainUsesSection(Project1.MainUnitInfo.Source,ShortUnitName,'')
+          then
+            Project1.MainUnitInfo.Modified:=true;
+        end;
+      end;
+    end;
+  end;
+
+  if Project1.AutoCreateForms
+  and (pfMainUnitHasCreateFormStatements in Project1.Flags)
+  and FilenameIsPascalUnit(ActiveUnitInfo.Filename) then
+  begin
+    UpdateUnitInfoResourceBaseClass(ActiveUnitInfo,true);
+    if ActiveUnitInfo.ResourceBaseClass in [pfcbcForm,pfcbcDataModule] then
+    begin
+      LFMFilename:=ActiveUnitInfo.UnitResourceFileformat.GetUnitResourceFilename(ActiveUnitInfo.Filename,true);
+      if LoadCodeBuffer(LFMCode,LFMFilename,[lbfUpdateFromDisk],false)=mrOk then
+      begin
+        // read lfm header
+        ReadLFMHeader(LFMCode.Source,LFMType,LFMComponentName,LFMClassName);
+        if (LFMComponentName<>'')
+        and (LFMClassName<>'') then begin
+          if IDEMessageDialog(lisAddToStartupComponents,
+            Format(lisShouldTheComponentBeAutoCreatedWhenTheApplicationS, [
+              LFMComponentName]),
+            mtInformation,[mbYes,mbNo])=mrYes then
+          begin
+            Project1.AddCreateFormToProjectFile(LFMClassName,LFMComponentName);
+          end;
+        end;
+      end;
+    end;
+  end;
 end;
 
 procedure TLazSourceFileManager.UpdateSourceNames;
@@ -3324,133 +3463,8 @@ begin
 end;
 
 function TLazSourceFileManager.AddActiveUnitToProject: TModalResult;
-var
-  ActiveSourceEditor: TSourceEditor;
-  ActiveUnitInfo: TUnitInfo;
-  s, ShortUnitName, LFMFilename, LFMType, LFMComponentName,
-    LFMClassName: string;
-  OkToAdd: boolean;
-  Owners: TFPList;
-  i: Integer;
-  APackage: TLazPackage;
-  MsgResult: TModalResult;
-  LFMCode: TCodeBuffer;
 begin
-  Result:=mrCancel;
-  ActiveSourceEditor:=nil;
-  if not MainIDE.BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]) then exit;
-  if (ActiveUnitInfo=nil) then exit;
-  if ActiveUnitInfo.IsPartOfProject then begin
-    if not ActiveUnitInfo.IsVirtual then
-      s:=Format(lisTheFile, [ActiveUnitInfo.Filename])
-    else
-      s:=Format(lisTheFile, [ActiveSourceEditor.PageName]);
-    s:=Format(lisisAlreadyPartOfTheProject, [s]);
-    IDEMessageDialog(lisInformation, s, mtInformation, [mbOk]);
-    exit;
-  end;
-  if not ActiveUnitInfo.IsVirtual then
-    s:='"'+ActiveUnitInfo.Filename+'"'
-  else
-    s:='"'+ActiveSourceEditor.PageName+'"';
-  if (ActiveUnitInfo.SrcUnitName<>'')
-  and (Project1.IndexOfUnitWithName(ActiveUnitInfo.SrcUnitName,true,ActiveUnitInfo)>=0) then
-  begin
-    IDEMessageDialog(lisInformation, Format(
-      lisUnableToAddToProjectBecauseThereIsAlreadyAUnitWith, [s]),
-      mtInformation, [mbOk]);
-    exit;
-  end;
-
-  Owners:=PkgBoss.GetPossibleOwnersOfUnit(ActiveUnitInfo.Filename,[]);
-  try
-    if (Owners<>nil) then begin
-      for i:=0 to Owners.Count-1 do begin
-        if TObject(Owners[i]) is TLazPackage then begin
-          APackage:=TLazPackage(Owners[i]);
-          MsgResult:=IDEQuestionDialog(lisAddPackageRequirement,
-            Format(lisTheUnitBelongsToPackage, [APackage.IDAsString]),
-            mtConfirmation, [mrYes, lisAddPackageToProject2,
-                            mrIgnore, lisAddUnitNotRecommended, mrCancel],'');
-          case MsgResult of
-            mrYes:
-              begin
-                PkgBoss.AddProjectDependency(Project1,APackage);
-                exit;
-              end;
-            mrIgnore: ;
-          else
-            exit;
-          end;
-        end;
-      end;
-    end;
-  finally
-    Owners.Free;
-  end;
-
-  if FilenameIsPascalUnit(ActiveUnitInfo.Filename)
-  and (EnvironmentOptions.CharcaseFileAction<>ccfaIgnore) then
-  begin
-    // ask user to apply naming conventions
-    Result:=RenameUnitLowerCase(ActiveUnitInfo,true);
-    if Result=mrIgnore then Result:=mrOk;
-    if Result<>mrOk then begin
-      DebugLn('AddActiveUnitToProject A RenameUnitLowerCase failed ',ActiveUnitInfo.Filename);
-      exit;
-    end;
-  end;
-
-  if IDEMessageDialog(lisConfirmation, Format(lisAddToProject, [s]),
-    mtConfirmation, [mbYes, mbCancel]) in [mrOk, mrYes]
-  then begin
-    OkToAdd:=True;
-    if FilenameIsPascalUnit(ActiveUnitInfo.Filename) then
-      OkToAdd:=CheckDirIsInSearchPath(ActiveUnitInfo,False,False)
-    else if CompareFileExt(ActiveUnitInfo.Filename,'inc',false)=0 then
-      OkToAdd:=CheckDirIsInSearchPath(ActiveUnitInfo,False,True);
-    if OkToAdd then begin
-      ActiveUnitInfo.IsPartOfProject:=true;
-      Project1.Modified:=true;
-      if (FilenameIsPascalUnit(ActiveUnitInfo.Filename))
-      and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
-      then begin
-        ActiveUnitInfo.ReadUnitNameFromSource(false);
-        ShortUnitName:=ActiveUnitInfo.CreateUnitName;
-        if (ShortUnitName<>'') then begin
-          if CodeToolBoss.AddUnitToMainUsesSection(Project1.MainUnitInfo.Source,ShortUnitName,'')
-          then
-            Project1.MainUnitInfo.Modified:=true;
-        end;
-      end;
-    end;
-  end;
-
-  if Project1.AutoCreateForms
-  and (pfMainUnitHasCreateFormStatements in Project1.Flags)
-  and FilenameIsPascalUnit(ActiveUnitInfo.Filename) then
-  begin
-    UpdateUnitInfoResourceBaseClass(ActiveUnitInfo,true);
-    if ActiveUnitInfo.ResourceBaseClass in [pfcbcForm,pfcbcDataModule] then
-    begin
-      LFMFilename:=ActiveUnitInfo.UnitResourceFileformat.GetUnitResourceFilename(ActiveUnitInfo.Filename,true);
-      if LoadCodeBuffer(LFMCode,LFMFilename,[lbfUpdateFromDisk],false)=mrOk then
-      begin
-        // read lfm header
-        ReadLFMHeader(LFMCode.Source,LFMType,LFMComponentName,LFMClassName);
-        if (LFMComponentName<>'')
-        and (LFMClassName<>'') then begin
-          if IDEMessageDialog(lisAddToStartupComponents,
-            Format(lisShouldTheComponentBeAutoCreatedWhenTheApplicationS, [
-              LFMComponentName]),
-            mtInformation,[mbYes,mbNo])=mrYes then
-          begin
-            Project1.AddCreateFormToProjectFile(LFMClassName,LFMComponentName);
-          end;
-        end;
-      end;
-    end;
-  end;
+  Result := AddUnitToProject(nil);
 end;
 
 function TLazSourceFileManager.RemoveFromProjectDialog: TModalResult;
