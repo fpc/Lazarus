@@ -89,6 +89,7 @@ type
     function AddButton(const aCategory: TIDEToolButtonCategory; const aName: string;
       const aCommand: TIDECommand): TIDEButtonCommand; overload;
     function AddButton(const aCommand: TIDECommand): TIDEButtonCommand; overload;
+    function FindCategory(const aName: string): TIDEToolButtonCategory;
     function FindCreateCategory(const aName, aDescription: string): TIDEToolButtonCategory;
     function FindItemByName(const aName: string): TIDEButtonCommand;
     function FindItemByMenuPathOrName(var aName: string): TIDEButtonCommand;
@@ -145,7 +146,7 @@ end;
 function RegisterIDEButtonCommand(const aCategory: TIDEToolButtonCategory;
   const aName: string; const aCommand: TIDECommand): TIDEButtonCommand;
 begin
-  Result := IDEToolButtonCategories.AddButton(aCategory,  aName,  aCommand);
+  Result := IDEToolButtonCategories.AddButton(aCategory, aName, aCommand);
 end;
 
 function RegisterIDEButtonCommand(const aCommand: TIDECommand): TIDEButtonCommand;
@@ -396,6 +397,18 @@ begin
   FButtonNames.Free;
   FCategories.Free;
   inherited Destroy;
+end;
+
+function TIDEToolButtonCategories.FindCategory(const aName: string
+  ): TIDEToolButtonCategory;
+var
+  i: Integer;
+begin
+  i := FCategories.IndexOf(aName);
+  if (i>=0) and (FCategories.Objects[i]<>nil) then
+    Result := FCategories.Objects[i] as TIDEToolButtonCategory
+  else
+    Result := nil;
 end;
 
 function TIDEToolButtonCategories.FindItemByMenuPathOrName(var aName: string
