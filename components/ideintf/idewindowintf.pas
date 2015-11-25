@@ -441,7 +441,7 @@ type
     function GetForm(aFormName: string; AutoCreate: boolean;
                                DisableAutoSizing: boolean = false): TCustomForm;
     procedure ShowForm(AForm: TCustomForm; BringToFront: boolean;
-                       AMoveToVisbleMode: TLayoutMoveToVisbleMode = vmAlwaysMoveToVisible); overload;
+                       AMoveToVisbleMode: TLayoutMoveToVisbleMode = vmOnlyMoveOffScreenToVisible); overload;
     function ShowForm(AFormName: string; BringToFront: boolean): TCustomForm; overload;
     procedure CreateForm(var AForm; AFormClass: TCustomFormClass;
                          DoDisableAutoSizing: boolean; TheOwner: TComponent); // utility function to create a form with delayed autosizing
