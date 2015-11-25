@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils, Types, Contnrs, Controls, SrcEditorIntf, StdCtrls, Buttons,
   ComCtrls, Forms, LazFileUtils, PackageIntf, Graphics, Menus, LazIDEIntf,
-  ExtCtrls, IDEImagesIntf, LMessages, Math, Laz2_XMLCfg, IDECommands;
+  ExtCtrls, IDEImagesIntf, LMessages, Math, Laz2_XMLCfg, IDECommands, LCLIntf;
 
 type
   TPackageTabButton = class(TSpeedButton)
