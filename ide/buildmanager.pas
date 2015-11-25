@@ -1657,8 +1657,13 @@ begin
   FilePath:=ExtractFilePath(Filename);
   FileExt:=ExtractFileExt(Filename);
   FileNameOnly:=ExtractFilenameOnly(Filename);
-  if BackupInfo.SubDirectory<>'' then begin
-    SubDir:=FilePath+BackupInfo.SubDirectory;
+  SubDir:=BackupInfo.SubDirectory;
+  if BackupInfo.SubDirectory<>'' then
+    GlobalMacroList.SubstituteStr(SubDir);
+  debugln(['TBuildManager.BackupFile SubDir="',SubDir,'"']);
+  if SubDir<>'' then begin
+    if not FilenameIsAbsolute(SubDir) then
+      SubDir:=TrimFilename(FilePath+SubDir);
     Result:=ForceDirectoryInteractive(SubDir,[mbRetry,mbIgnore]);
     if Result=mrCancel then exit;
     if Result=mrIgnore then Result:=mrOk;
