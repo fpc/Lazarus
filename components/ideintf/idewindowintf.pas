@@ -266,7 +266,7 @@ type
   TLayoutMoveToVisbleMode = (
     vmAlwaysMoveToVisible,
     vmNeverMoveToVisible,
-    vmOnlyMoveOffScreenToVisible   // Only make visible, if fully offscreen (no part of the windov is on screen)
+    vmOnlyMoveOffScreenToVisible   // Only make visible, if offscreen (with a threshold)
   );
 
   TSimpleWindowLayoutList = class
@@ -282,7 +282,7 @@ type
     procedure Delete(Index: Integer);
     procedure ApplyAndShow(Sender: TObject; AForm: TCustomForm;
                            BringToFront: boolean;
-                           AMoveToVisbleMode: TLayoutMoveToVisbleMode = vmAlwaysMoveToVisible);
+                           AMoveToVisbleMode: TLayoutMoveToVisbleMode = vmOnlyMoveOffScreenToVisible);
     procedure StoreWindowPositions;
     procedure SetDefaultPosition(const AForm: TCustomForm);
     procedure CopyItemsFrom(SrcList: TSimpleWindowLayoutList);
