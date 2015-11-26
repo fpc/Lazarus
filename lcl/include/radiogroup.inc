@@ -221,8 +221,6 @@ begin
         ARadioButton.Parent := Self;
       end;
       FHiddenButton.Parent:=Self;
-      if HandleAllocated then
-        FHiddenButton.HandleNeeded;
 
       // the checked and unchecked states can be applied only after all other
       for i := 0 to FItems.Count-1 do
@@ -234,6 +232,8 @@ begin
       //FHiddenButton must remain the last item in Controls[], so that Controls[] is in sync with Items[]
       Self.RemoveControl(FHiddenButton);
       Self.InsertControl(FHiddenButton);
+      if HandleAllocated then
+        FHiddenButton.HandleNeeded;
       FHiddenButton.Checked := (FItemIndex = -1);
       UpdateTabStops;
     end;
