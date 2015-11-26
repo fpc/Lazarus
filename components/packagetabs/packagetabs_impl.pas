@@ -355,8 +355,8 @@ begin
   VertScrollBar.Smooth := False;
   HorzScrollBar.Tracking := True;
   VertScrollBar.Tracking := True;
-  HorzScrollBar.Increment := 50;
-  VertScrollBar.Increment := 50;
+  HorzScrollBar.Increment := TPackageTabButton.GetControlClassDefaultSize.cy;
+  VertScrollBar.Increment := TPackageTabButton.GetControlClassDefaultSize.cy;
   HorzScrollBar.Visible := False;
 end;
 
@@ -686,7 +686,7 @@ end;
 procedure TPackageTabPanel.RecreateToolBar;
 var
   I, L, xPkgIndex, xNewIndex, xOldIndex: Integer;
-  xBtn: TPackageTabButton;
+  xBtn, xActBtn: TPackageTabButton;
   xPackages: TStringList;
   xPackage: TIDEPackage;
   xEditor, xOldActive: TSourceEditorInterface;
@@ -774,6 +774,8 @@ begin
           xBtn.ControlStyle := xBtn.ControlStyle + [csDoubleClicks];
           xBtn.PopupMenu := FTabButtonMenu;
           xBtn.Down := xEditor = xOldActive;
+          if xBtn.Down then
+            xActBtn := xBtn;
           xBtn.IsOtherFile := xPackages[I][1] = High(Char); // ToDo: do it better...
         end;
       end;
@@ -786,6 +788,9 @@ begin
 
     if Assigned(xOldActive) and (xOldActive <> FWindow.ActiveEditor) then // the pageorder change could change activeeditor
       FWindow.ActiveEditor := xOldActive;
+
+    if (xActBtn<>nil) and (FPanel is TPackageTabScrollBox) then
+      TPackageTabScrollBox(FPanel).ScrollInView(xActBtn);
   finally
     FWindow.EnableAlign;
     FWindow.DecUpdateLock;
