@@ -1727,18 +1727,26 @@ end;
 procedure TSimpleWindowLayoutList.ApplyAndShow(Sender: TObject; AForm: TCustomForm;
   BringToFront: boolean; AMoveToVisbleMode: TLayoutMoveToVisbleMode);
 
-  function IsAnyCornerVisible(AForm: TCustomForm; AThreshold: Integer = 50): Boolean;
+  function IsFormMovable(AForm: TCustomForm; BorderX: Integer = 100;
+    BorderTop: Integer = 0; BorderBottom: Integer = 50): Boolean;
   var
-    Overlap: TRect;
     I: Integer;
+    xFormRect, xWA, xRectLT, xRectRT, xRectCT: TRect;
   begin
+    xFormRect := AForm.BoundsRect;
     Result := False;
     for I := 0 to Screen.MonitorCount-1 do
     begin
-      Overlap:=Rect(0,0,0,0);
-      IntersectRect(Overlap, AForm.BoundsRect, Screen.Monitors[I].WorkareaRect);
-      if (Overlap.Bottom > Overlap.Top + Min(AForm.Height, AThreshold)) and
-         (Overlap.Right > Overlap.Left + Min(AForm.Width, AThreshold))
+      xWA := Screen.Monitors[I].WorkareaRect;
+      //the user must be able to move the window
+      // - that means we check the topleft, topcenter and topright coordinates of the form
+      //   if they are movable
+      xRectLT := Rect(xWA.Left-BorderX, xWA.Top-BorderTop, xWA.Right-BorderX, xWA.Bottom-BorderBottom);
+      xRectCT := Rect(xWA.Left, xWA.Top-BorderTop, xWA.Right, xWA.Bottom-BorderBottom);
+      xRectRT := Rect(xWA.Left+BorderX, xWA.Top-BorderTop, BorderX, xWA.Bottom-BorderBottom);
+      if PtInRect(xRectLT, xFormRect.TopLeft)
+      or PtInRect(xRectCT, Point((xFormRect.Left+xFormRect.Right) div 2, AForm.Top))
+      or PtInRect(xRectRT, Point(xFormRect.Right, AForm.Top))
       then
         Exit(True);
     end;
@@ -1836,7 +1844,7 @@ begin
       NewBounds.Right:=Max(NewBounds.Left+100,NewBounds.Right);
       NewBounds.Bottom:=Max(NewBounds.Top+100,NewBounds.Bottom);
       AForm.BoundsRect:=NewBounds;
-      AMoveToVisbleMode := vmAlwaysMoveToVisible;
+      AMoveToVisbleMode := vmOnlyMoveOffScreenToVisible;
     end;
   finally
     if (AForm.WindowState in [wsNormal,wsMaximized]) and BringToFront then
@@ -1848,7 +1856,7 @@ begin
 
       if (AMoveToVisbleMode = vmAlwaysMoveToVisible) or
          ( (AMoveToVisbleMode = vmOnlyMoveOffScreenToVisible) and
-           (not IsAnyCornerVisible(AForm)) )
+           (not IsFormMovable(AForm)) )
       then
         AForm.EnsureVisible(true)
       else
@@ -1871,7 +1879,7 @@ begin
             AForm.Visible := False;
           if (AMoveToVisbleMode = vmAlwaysMoveToVisible) or
              ( (AMoveToVisbleMode = vmOnlyMoveOffScreenToVisible) and
-               (not IsAnyCornerVisible(AForm)) )
+               (not IsFormMovable(AForm)) )
           then
             AForm.EnsureVisible(true)
           else
