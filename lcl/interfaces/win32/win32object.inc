@@ -362,14 +362,10 @@ begin
           break;
         end;
         TranslateMessage(@AMessage);
-{$IFDEF WindowsUnicodeSupport}
         if UnicodeEnabledOS then
           DispatchMessageW(@AMessage)
         else
           DispatchMessage(@AMessage);
-{$ELSE}
-        DispatchMessage(@AMessage);
-{$ENDIF}
       end;
     end else
     if retVal = WAIT_TIMEOUT then
@@ -472,14 +468,10 @@ procedure TWin32WidgetSet.AppSetTitle(const ATitle: string);
 begin
   if FAppHandle <> 0 then
   begin
-    {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS then
       Windows.SetWindowTextW(FAppHandle, PWideChar(UTF8ToUTF16(ATitle)))
     else
       Windows.SetWindowText(FAppHandle, PChar(Utf8ToAnsi(ATitle)));
-    {$else}
-    Windows.SetWindowText(FAppHandle, PChar(ATitle));
-    {$endif}
   end;
 end;
 
@@ -534,12 +526,7 @@ begin
     lcApplicationWindow: Result := LCL_CAPABILITY_YES;
     lcLMHelpSupport: Result := LCL_CAPABILITY_YES;
     lcNeedMininimizeAppWithMainForm: Result := LCL_CAPABILITY_NO;
-    lcSendsUTF8KeyPress:
-      {$ifdef WindowsUnicodeSupport}
-      Result := LCL_CAPABILITY_YES;
-      {$else}
-      Result := LCL_CAPABILITY_NO;
-      {$endif}
+    lcSendsUTF8KeyPress: Result := LCL_CAPABILITY_YES;
   else
     Result := inherited;
   end;
@@ -686,7 +673,6 @@ procedure TWin32WidgetSet.CreateAppHandle;
 var
   SysMenu: HMENU;
 begin
-  {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
     FAppHandle := CreateWindowW(@ClsNameW,
       PWideChar(UTF8ToUTF16(Application.Title)),
@@ -700,13 +686,6 @@ begin
       0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
       0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
       0, 0, HWND(nil), HMENU(nil), HInstance, nil);
-  {$else}
-  FAppHandle := CreateWindow(@ClsName, PChar(Application.Title), WS_POPUP or
-    WS_CLIPSIBLINGS or WS_SYSMENU or WS_MINIMIZEBOX,
-    0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
-    0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
-    0, 0, HWND(nil), HMENU(nil), HInstance, nil);
-  {$endif}
   AllocWindowInfo(FAppHandle);
   // remove useless menuitems from sysmenu
   SysMenu := Windows.GetSystemMenu(FAppHandle, False);

@@ -1030,10 +1030,8 @@ var
   L: LongWord;
   I, C: Integer;
   DropForm: TWinControl;
-{$IFDEF WindowsUnicodeSupport}
   AnsiBuffer: string;
   WideBuffer: WideString;
-{$ENDIF}
 begin
   Drop := HDROP(WParam);
   try
@@ -1043,7 +1041,6 @@ begin
     SetLength(Files, C);
     for I := 0 to C - 1 do
     begin
-      {$IFDEF WindowsUnicodeSupport}
       if UnicodeEnabledOS then
       begin
         L := DragQueryFileW(Drop, I, nil, 0); // get I. file name length
@@ -1060,11 +1057,6 @@ begin
         SetLength(WideBuffer, L);
         Files[I] := ANSIToUTF8(AnsiBuffer);
       end;
-      {$ELSE}
-      L := DragQueryFile(Drop, I, nil, 0); // get I. file name length
-      SetLength(Files[I], L);
-      DragQueryFile(Drop, I, PChar(Files[I]), L + 1);
-      {$ENDIF}
     end;
 
     if Length(Files) > 0 then
@@ -1198,7 +1190,6 @@ end;
 
 procedure TWindowProcHelper.DoMsgChar(var WinResult: LResult);
 begin
-  {$ifdef WindowsUnicodeSupport}
   // first send a IntfUTF8KeyPress to the LCL
   // if the key was not handled send a CN_CHAR for AnsiChar<=#127
   OrgCharCode := Word(WParam);
@@ -1220,17 +1211,6 @@ begin
   end
   else
     WParam := OrgCharCode;
-  {$else}
-  PLMsg := @LMChar;
-  with LMChar do
-  begin
-    Msg := CN_CHAR;
-    KeyData := LParam;
-    CharCode := Word(WParam);
-    WinResult := 0;
-  end;
-  WinProcess := false;
-  {$endif}
 end;
 
 procedure TWindowProcHelper.DoCmdCheckBoxParam;
@@ -2455,7 +2435,6 @@ begin
     begin
       // if key not yet processed, let windows process it
       WinProcess := LMChar.Result = 0;
-      {$IFDEF WindowsUnicodeSupport}
       if UnicodeEnabledOS then
       begin
         // if charcode was modified by LCL, convert ansi char
@@ -2465,7 +2444,6 @@ begin
           WParam := Word(WideChar(LMChar.CharCode));
       end
       else
-      {$ENDIF}
         WParam := LMChar.CharCode;
     end;
 

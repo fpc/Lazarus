@@ -177,9 +177,7 @@ var
   AErrorCode: Cardinal;
   NCCreateParams: TNCCreateParams;
   WindowClass, DummyClass: WndClass;
-{$ifdef WindowsUnicodeSupport}
   WindowClassW, DummyClassW: WndClassW;
-{$endif}
 begin
   NCCreateParams.DefWndProc := nil;
   NCCreateParams.WinControl := AWinControl;
@@ -191,7 +189,6 @@ begin
     begin
       if SubClass then
       begin
-      {$ifdef WindowsUnicodeSupport}
         if UnicodeEnabledOS then
         begin
           if GetClassInfoW(System.HInstance, PWideChar(WideString(pClassName)), @WindowClassW) then
@@ -211,7 +208,6 @@ begin
           end;
         end
         else
-      {$endif}
         begin
           if GetClassInfo(System.HInstance, pClassName, @WindowClass) then
           begin
@@ -231,7 +227,6 @@ begin
         end;
       end;
 
-      {$ifdef WindowsUnicodeSupport}
       if UnicodeEnabledOS then
         Window := CreateWindowExW(FlagsEx, PWideChar(WideString(pClassName)),
           PWideChar(UTF8ToUTF16(WindowTitle)), Flags,
@@ -240,11 +235,6 @@ begin
         Window := CreateWindowEx(FlagsEx, pClassName,
           PChar(Utf8ToAnsi(WindowTitle)), Flags,
           Left, Top, Width, Height, Parent, 0, HInstance, @NCCreateParams);
-      {$else}
-        Window := CreateWindowEx(FlagsEx, pClassName,
-          PChar(WindowTitle), Flags,
-          Left, Top, Width, Height, Parent, 0, HInstance, @NCCreateParams);
-      {$endif}
 
       if Window = 0 then
       begin
@@ -504,14 +494,10 @@ end;
 class procedure TWin32WSWinControl.SetText(const AWinControl: TWinControl; const AText: string);
 begin
   if not WSCheckHandleAllocated(AWincontrol, 'SetText') then Exit;
-{$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
     SendMessageW(AWinControl.Handle, WM_SETTEXT, 0, LPARAM(PWideChar(UTF8ToUTF16(AText))))
   else
     SendMessage(AWinControl.Handle, WM_SETTEXT, 0, LPARAM(PChar(Utf8ToAnsi(AText))));
-{$else}
-  SendMessage(AWinControl.Handle, WM_SETTEXT, 0, LPARAM(PChar(AText)));
-{$endif}
 end;
 
 class procedure TWin32WSWinControl.SetCursor(const AWinControl: TWinControl; const ACursor: HCursor);

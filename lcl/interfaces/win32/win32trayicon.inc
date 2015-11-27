@@ -156,13 +156,10 @@ end;
 class function TWin32WSCustomTrayIcon.AddIcon(ATrayIcon: TCustomTrayIcon): Boolean;
 var
   tnida: TNotifyIconDataA;
-  {$ifdef WindowsUnicodeSupport}
   tnidw: TNotifyIconDataW2;
   AnsiBuffer: ansistring;
   WideBuffer: widestring;
-  {$endif}
 begin
-  {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
   begin
     // Fill TNotifyIconDataW
@@ -204,22 +201,6 @@ begin
 
     Result := Shell_NotifyIconA(NIM_ADD, @tnida);
   end;
-  {$else}
-  // Fill TNotifyIconDataA
-  FillChar(tnida, SizeOf(tnida), 0);
-  tnida.cbSize := SizeOf(TNotifyIconDataA);
-  tnida.hWnd := ATrayIcon.Handle;
-  tnida.uID := uIDTrayIcon;
-  tnida.uFlags := NIF_MESSAGE or NIF_ICON;
-  if (ATrayIcon.Hint <> '') then tnida.uFlags := tnida.uFlags or NIF_TIP;
-  tnida.uCallbackMessage := WM_USER + uIDTrayIcon;
-  tnida.hIcon := ATrayIcon.Icon.Handle;
-
-  StrLCopy(@tnida.szTip, PChar(ATrayIcon.Hint), 127);
-
-  //  Create Taskbar icon
-  Result := Shell_NotifyIconA(NIM_ADD, @tnida);
-  {$endif}
 end;
 
 {*******************************************************************
@@ -308,13 +289,10 @@ end;
 class procedure TWin32WSCustomTrayIcon.InternalUpdate(const ATrayIcon: TCustomTrayIcon);
 var
   tnida: TNotifyIconDataA;
-  {$ifdef WindowsUnicodeSupport}
   tnidw: TNotifyIconDataW2;
   AnsiBuffer: ansistring;
   WideBuffer: widestring;
-  {$endif}
 begin
-  {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
   begin
     // Fill TNotifyIconDataW
@@ -351,19 +329,6 @@ begin
 
     Shell_NotifyIconA(NIM_MODIFY, @tnida);
   end;
-  {$else}
-  // Fill TNotifyIconDataA
-  FillChar(tnida, SizeOf(tnida), 0);
-  tnida.cbSize := SizeOf(TNotifyIconDataA);
-  tnida.hWnd := ATrayIcon.Handle;
-  tnida.uID := uIDTrayIcon;
-  tnida.uFlags := NIF_TIP;
-
-  StrLCopy(@tnida.szTip, PChar(ATrayIcon.Hint), 127);
-
-  //  Create Taskbar icon
-  Shell_NotifyIconA(NIM_MODIFY, @tnida);
-  {$endif}
 end;
 
 {*******************************************************************

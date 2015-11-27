@@ -133,10 +133,8 @@ var
   BitmapRect: Windows.RECT;
   ButtonImageList: BUTTON_IMAGELIST;
   I: integer;
-  {$IFDEF WindowsUnicodeSupport}
   ButtonCaptionA: string;
   ButtonCaptionW: widestring;
-  {$ENDIF}
 
   procedure DrawBitmap(AState: TButtonState; UseThemes, AlphaDraw: Boolean);
   const
@@ -253,7 +251,6 @@ var
       SetBkMode(TmpDC, TRANSPARENT);
       if BitBtn.UseRightToLeftReading then
         SetTextAlign(TmpDC, OldTextAlign or TA_RTLREADING);
-      {$IFDEF WindowsUnicodeSupport}
       if UnicodeEnabledOS then
       begin
         ButtonCaptionW := UTF8ToUTF16(ButtonCaption);
@@ -263,9 +260,6 @@ var
         ButtonCaptionA := Utf8ToAnsi(ButtonCaption);
         DrawState(TmpDC, 0, nil, LPARAM(ButtonCaptionA), 0, XDestText, YDestText, 0, 0, TextFlags);
       end;
-      {$ELSE}
-      DrawState(TmpDC, 0, nil, LPARAM(ButtonCaption), 0, XDestText, YDestText, 0, 0, TextFlags);
-      {$ENDIF}
     end
     else
     begin

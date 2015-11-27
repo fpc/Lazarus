@@ -100,11 +100,7 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.FontCanUTF8(Font: HFont): boolean;
 begin
-  {$ifdef WindowsUnicodeSupport}
-    Result := True;
-  {$else}
-    Result := False;
-  {$endif}
+  Result := True;
 end;
 
 procedure TWin32WidgetSet.HandleProcessEvent(AData: PtrInt; AFlags: dword);

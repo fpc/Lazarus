@@ -294,7 +294,6 @@ var
 begin
   Flags := WS_CHILD or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
   Parent := TWin32WidgetSet(WidgetSet).AppHandle;
-  {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
     PreferredSizeStatusBar := CreateWindowExW(0, STATUSCLASSNAMEW,
       nil, Flags,
@@ -302,10 +301,6 @@ begin
   else
     PreferredSizeStatusBar := CreateWindowEx(0, STATUSCLASSNAME, nil,
       Flags, 0, 0, 0, 0, Parent,0 , HInstance, nil);
-  {$else}
-    PreferredSizeStatusBar := CreateWindowEx(0, STATUSCLASSNAME, nil,
-      Flags, 0, 0, 0, 0, Parent, 0, HInstance, nil);
-  {$endif}
   GetWindowRect(PreferredSizeStatusBar, R);
   PreferredStatusBarHeight := R.Bottom - R.Top;
   DestroyWindow(PreferredSizeStatusBar);
@@ -348,14 +343,10 @@ begin
   else
     WParam := WParam or StatusPanel.Index;
   if StatusPanel.StatusBar.UseRightToLeftReading then WParam := WParam or SBT_RTLREADING;
-  {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS then
       Windows.SendMessageW(StatusPanel.StatusBar.Handle, SB_SETTEXTW, WParam, LPARAM(PWideChar(UTF8ToUTF16(Text))))
     else
       Windows.SendMessage(StatusPanel.StatusBar.Handle, SB_SETTEXT, WParam, LPARAM(PChar(Utf8ToAnsi(Text))));
-  {$else}
-    Windows.SendMessage(StatusPanel.StatusBar.Handle, SB_SETTEXT, WParam, LPARAM(PChar(Text)));
-  {$endif}
 end;
 
 procedure UpdateStatusBarPanelWidths(const StatusBar: TStatusBar);
@@ -558,14 +549,10 @@ begin
       WParam := SB_SIMPLEID or SBT_RTLREADING
     else
       WParam := SB_SIMPLEID;
-  {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS then
       Windows.SendMessageW(AStatusBar.Handle, SB_SETTEXTW, WParam, LPARAM(PWideChar(UTF8ToUTF16(AStatusBar.SimpleText))))
     else
       Windows.SendMessage(AStatusBar.Handle, SB_SETTEXT, WParam, LPARAM(PChar(Utf8ToAnsi(AStatusBar.SimpleText))))
-  {$else}
-    Windows.SendMessage(AStatusBar.Handle, SB_SETTEXT, WParam, LPARAM(PChar(AStatusBar.SimpleText)))
-  {$endif}
   end
   else
     UpdateStatusBarPanel(AStatusBar.Panels[PanelIndex]);

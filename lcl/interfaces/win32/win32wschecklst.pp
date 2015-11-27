@@ -184,10 +184,8 @@ class procedure TWin32WSCustomCheckListBox.DefaultWndHandler(
     OldColor: COLORREF;
     OldBkMode: Integer;
     sz: TSize;
-  {$ifdef WindowsUnicodeSupport}
     AnsiBuffer: string;
     WideBuffer: widestring;
-  {$endif}
   begin
     Selected := (Data^.itemState and ODS_SELECTED) > 0;
     Enabled := CheckListBox.Enabled and CheckListBox.ItemEnabled[Data^.itemID];
@@ -243,7 +241,6 @@ class procedure TWin32WSCustomCheckListBox.DefaultWndHandler(
         OldColor := TColorRef(CheckListBox.GetDefaultColor(dctFont));
       OldColor := Windows.SetTextColor(Data^._HDC, ColorToRGB(TColor(OldColor)));
     end;
-  {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS then
     begin
       WideBuffer := UTF8ToUTF16(CheckListBox.Items[Data^.ItemID]);
@@ -256,10 +253,6 @@ class procedure TWin32WSCustomCheckListBox.DefaultWndHandler(
       Windows.DrawText(Data^._HDC, PChar(AnsiBuffer), -1,
        TextRect, TextFlags);
     end;
-  {$else}
-    Windows.DrawText(Data^._HDC, PChar(CheckListBox.Items[Data^.ItemID]), -1,
-      TextRect, TextFlags);
-  {$endif}
     // restore old colors
     Windows.SetTextColor(Data^._HDC, OldColor);
     Windows.SetBkMode(Data^._HDC, OldBkMode);
