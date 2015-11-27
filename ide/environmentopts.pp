@@ -376,7 +376,7 @@ type
 
   { TEnvironmentOptions - class for storing environment options }
 
-  TEnvironmentOptions = class(TAbstractIDEEnvironmentOptions)
+  TEnvironmentOptions = class(TIDEEnvironmentOptions)
   private
     // config file
     FFilename: string;
@@ -739,16 +739,18 @@ type
     property RecentOpenFiles: TStringList read FRecentOpenFiles;
     property MaxRecentOpenFiles: integer read FMaxRecentOpenFiles
                                          write FMaxRecentOpenFiles;
-    procedure AddToRecentOpenFiles(const AFilename: string);
-    procedure RemoveFromRecentOpenFiles(const AFilename: string);
+    procedure AddToRecentOpenFiles(const AFilename: string); override;
+    procedure RemoveFromRecentOpenFiles(const AFilename: string); override;
     property RecentProjectFiles: TStringList read FRecentProjectFiles;
     property MaxRecentProjectFiles: integer read FMaxRecentProjectFiles
                                             write FMaxRecentProjectFiles;
-    procedure AddToRecentProjectFiles(const AFilename: string);
-    procedure RemoveFromRecentProjectFiles(const AFilename: string);
+    procedure AddToRecentProjectFiles(const AFilename: string); override;
+    procedure RemoveFromRecentProjectFiles(const AFilename: string); override;
     property RecentPackageFiles: TStringList read FRecentPackageFiles;
     property MaxRecentPackageFiles: integer read FMaxRecentPackageFiles
                                          write FMaxRecentPackageFiles;
+    procedure AddToRecentPackageFiles(const AFilename: string); override;
+    procedure RemoveFromRecentPackageFiles(const AFilename: string); override;
     property LastSavedProjectFile: string read FLastSavedProjectFile
                      write FLastSavedProjectFile; { if empty then create new project,
                                                     if '-' then do not load/create any project }
@@ -2194,8 +2196,23 @@ begin
 end;
 
 procedure TEnvironmentOptions.AddToRecentOpenFiles(const AFilename: string);
+var
+  Allow: Boolean;
 begin
-  AddToRecentList(AFilename,FRecentOpenFiles,FMaxRecentOpenFiles,rltFile);
+  Allow := True;
+  DoAddToRecentOpenFiles(AFilename, Allow);
+  if Allow then
+    AddToRecentList(AFilename,FRecentOpenFiles,FMaxRecentOpenFiles,rltFile);
+end;
+
+procedure TEnvironmentOptions.AddToRecentPackageFiles(const AFilename: string);
+var
+  Allow: Boolean;
+begin
+  Allow := True;
+  DoAddToRecentPackageFiles(AFilename, Allow);
+  if Allow then
+    AddToRecentList(AFilename,FRecentPackageFiles,FMaxRecentPackageFiles,rltFile);
 end;
 
 procedure TEnvironmentOptions.RemoveFromRecentOpenFiles(const AFilename: string);
@@ -2203,9 +2220,20 @@ begin
   RemoveFromRecentList(AFilename,FRecentOpenFiles,rltFile);
 end;
 
-procedure TEnvironmentOptions.AddToRecentProjectFiles(const AFilename: string);
+procedure TEnvironmentOptions.RemoveFromRecentPackageFiles(
+  const AFilename: string);
 begin
-  AddToRecentList(AFilename,FRecentProjectFiles,FMaxRecentProjectFiles,rltFile);
+  RemoveFromRecentList(AFilename,FRecentPackageFiles,rltFile);
+end;
+
+procedure TEnvironmentOptions.AddToRecentProjectFiles(const AFilename: string);
+var
+  Allow: Boolean;
+begin
+  Allow := True;
+  DoAddToRecentProjectFiles(AFilename, Allow);
+  if Allow then
+    AddToRecentList(AFilename,FRecentProjectFiles,FMaxRecentProjectFiles,rltFile);
   {$ifdef Windows}
   SHAddToRecentDocs(SHARD_PATHW, PWideChar(UTF8ToUTF16(AFileName)));
   {$endif}

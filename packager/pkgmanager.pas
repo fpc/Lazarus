@@ -3039,8 +3039,7 @@ end;
 
 procedure TPkgManager.AddToMenuRecentPackages(const Filename: string);
 begin
-  AddToRecentList(Filename,EnvironmentOptions.RecentPackageFiles,
-                  EnvironmentOptions.MaxRecentPackageFiles,rltFile);
+  EnvironmentOptions.AddToRecentPackageFiles(Filename);
   SetRecentPackagesMenu;
   MainIDE.SaveEnvironment;
 end;
