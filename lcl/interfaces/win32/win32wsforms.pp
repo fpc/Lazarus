@@ -214,13 +214,15 @@ end;
 
 { TWin32WSScrollingWinControl }
 
-function ScrollWindowPtr(hWnd:HWND; XAmount:longint; YAmount:longint; lpRect: pointer; lpClipRect: pointer):WINBOOL; stdcall; external 'user32' name 'ScrollWindow';
+function ScrollWindowPtr(hWnd: HWND; dx: longint; dy: longint;
+  prcScroll: pointer; prcClip: pointer; hrgnUpdate: HRGN; prcUpdate: LPRECT;
+  flags: UINT): WINBOOL; stdcall; external 'user32' name 'ScrollWindowEx';
 
 class procedure TWin32WSScrollingWinControl.ScrollBy(const AWinControl: TScrollingWinControl;
   const DeltaX, DeltaY: integer);
 begin
   if Windows.IsWindowVisible(AWinControl.Handle) then
-    ScrollWindowPtr(AWinControl.Handle, DeltaX, DeltaY, nil, nil);
+    ScrollWindowPtr(AWinControl.Handle, DeltaX, DeltaY, nil, nil, 0, nil, 0);
 end;
 
 { TWin32WSCustomForm }
