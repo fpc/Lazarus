@@ -245,13 +245,20 @@ var
 begin
   {$ifdef WinCE}
   Result := UTF8ToSys(s);
-  {$else}
-  Result := UTF8ToSys(s);
+  {$else WinCE}
+  {$ifndef NO_CP_RTL}
+  Result := UTF8ToWinCP(s);
+  {$else NO_CP_RTL}
+  Result := UTF8ToSys(s); // Kept for compatibility
+  {$endif NO_CP_RTL}
   Dst := AllocMem((Length(Result) + 1) * SizeOf(Char));
   if CharToOEM(PChar(Result), Dst) then
     Result := StrPas(Dst);
   FreeMem(Dst);
-  {$endif}
+  {$ifndef NO_CP_RTL}
+  SetCodePage(RawByteString(Result), CP_OEMCP, False);
+  {$endif NO_CP_RTL}
+  {$endif WinCE}
 end;
 
 {$IFDEF MSWindows}
