@@ -161,14 +161,11 @@ end;
 { TWin32WSOpenPictureDialog }
 
 class function TWin32WSOpenPictureDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
-{$ifdef UseVistaDialogs}
 var
   Dialog: IFileOpenDialog;
   fos: FILEOPENDIALOGOPTIONS;
-{$endif}
 begin
   Result := inherited CreateHandle(ACommonDialog);
-  {$ifdef UseVistaDialogs}
   //if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
   if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) then
   begin
@@ -180,7 +177,6 @@ begin
     end;
   end
   else
-  {$endif}
     AddPreviewControl(ACommonDialog, LPOPENFILENAME(Result));
 end;
 
@@ -208,14 +204,11 @@ end;
 
 class function TWin32WSSavePictureDialog.CreateHandle(
   const ACommonDialog: TCommonDialog): THandle;
-{$ifdef UseVistaDialogs}
 var
   Dialog: IFileSaveDialog;
   fos: FILEOPENDIALOGOPTIONS;
-{$endif}
 begin
   Result := inherited CreateHandle(ACommonDialog);
-  {$ifdef UseVistaDialogs}
   //if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
   if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) then
   begin
@@ -227,7 +220,6 @@ begin
     end;
   end
   else
-  {$endif}
     AddPreviewControl(ACommonDialog, LPOPENFILENAME(Result));
 end;
 

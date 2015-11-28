@@ -247,7 +247,6 @@ type
   PROPERTYKEY = _tagpropertykey;
   REFPROPERTYKEY = ^PROPERTYKEY;
   REFPROPVARIANT = ^TPROPVARIANT;
-{$ifdef UseVistaDialogs}
   IEnumShellItems = interface(IUnknown)
     ['{70629033-e363-4a28-a567-0db78006e6d7}']
     function Next(celt: ULONG; out rgelt: IShellItem; var pceltFetched: ULONG): HResult; stdcall;
@@ -355,7 +354,6 @@ type
     function GetProperties(var ppStore: IPropertyStore): HResult; stdcall;
     function ApplyProperties(psi: IShellItem; pStore: IPropertyStore; hwnd: HWND; pSink: IFileOperationProgressSink): HResult; stdcall;
   end;
-{$endif}
 
 // AlphaBlend is only defined for win98&2k and up
 // load dynamic and use ownfunction if not defined
