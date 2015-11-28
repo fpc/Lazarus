@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils, ToolBarIntf, IDEImagesIntf, Graphics, PackageIntf,
   Menus, LazIDEIntf, ProjectIntf, Laz2_XMLCfg, IDEOptionsIntf,
-  IDECommands, ComCtrls;
+  IDECommands, ComCtrls, IDEMsgIntf, favoritesstr;
 
 type
   TFavoritesHandler = class
@@ -164,9 +164,9 @@ begin
     xAddToFav := TFileNameMenuItem.Create(Self);
     xAddToFav.FileName := xProj.ProjectInfoFile;
     if not FavHandler.IsInFavoriteProjects(xProj.ProjectInfoFile) then
-      xAddToFav.Caption := Format('Add to favorites: %s', [xProj.ProjectInfoFile]) // To-Do: localize
+      xAddToFav.Caption := Format(sAddToFavoritesS, [xProj.ProjectInfoFile])
     else
-      xAddToFav.Caption := Format('Remove from favorites: %s', [xProj.ProjectInfoFile]); // To-Do: localize
+      xAddToFav.Caption := Format(sRemoveFromFavoritesS, [xProj.ProjectInfoFile]);
     xAddToFav.OnClick := @mnuAddRemoveActiveProject;
     xM.Insert(xMIndex, xAddToFav);
     Inc(xMIndex);

@@ -9,6 +9,7 @@
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
+        <OtherUnitFiles Value="."/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <CodeGeneration>
@@ -30,13 +31,22 @@
     <Description Value="Creates a third section (on the top) in the Open tool button drop-down menu where you can register your favorite projects."/>
     <License Value="GPL-2"/>
     <Version Minor="1" Release="1"/>
-    <Files Count="1">
+    <Files Count="2">
       <Item1>
         <Filename Value="favorites_impl.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="favorites_impl"/>
       </Item1>
+      <Item2>
+        <Filename Value="favoritesstr.pas"/>
+        <UnitName Value="favoritesstr"/>
+      </Item2>
     </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+      <EnableI18NForLFM Value="True"/>
+    </i18n>
     <RequiredPkgs Count="2">
       <Item1>
         <PackageName Value="IDEIntf"/>

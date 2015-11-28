@@ -7,7 +7,7 @@ unit favorites;
 interface
 
 uses
-  favorites_impl, LazarusPackageIntf;
+  favorites_impl, favoritesstr, LazarusPackageIntf;
 
 implementation
 
