@@ -32,7 +32,8 @@ interface
 uses
   Classes, SysUtils, Types, Contnrs, Controls, SrcEditorIntf, StdCtrls, Buttons,
   ComCtrls, Forms, LazFileUtils, PackageIntf, Graphics, Menus, LazIDEIntf,
-  ExtCtrls, IDEImagesIntf, LMessages, Math, Laz2_XMLCfg, IDECommands, LCLIntf;
+  ExtCtrls, IDEImagesIntf, LMessages, Math, Laz2_XMLCfg, IDECommands, LCLIntf,
+  IDEOptionsIntf;
 
 type
   TPackageTabButton = class(TSpeedButton)
@@ -500,7 +501,7 @@ begin
   FWindow := AParentWindow;
   FNoteBook := FWindow.GetNotebook;
 
-  FTabPosition := SourceEditorManagerIntf.TabPosition;
+  FTabPosition := IDEEditorOptions.TabPosition;
   FRecreateToolBar := TRecreateToolBarStamps.Create;
 
   FWindow.AddUpdateEditorPageCaptionHandler(@DoEditorPageUpdated);
@@ -580,9 +581,9 @@ begin
   if FAppIdleLocked then
     Exit;
 
-  if FTabPosition <> SourceEditorManagerIntf.TabPosition then
+  if FTabPosition <> IDEEditorOptions.TabPosition then
   begin
-    FTabPosition := SourceEditorManagerIntf.TabPosition;
+    FTabPosition := IDEEditorOptions.TabPosition;
     RecreatePanel;
   end;
 
@@ -969,13 +970,15 @@ procedure TPackageTabPanel.TabButtonMouseDown(Sender: TObject;
 var
   xBtn: TPackageTabButton;
 begin
+  xBtn := (Sender as TPackageTabButton);
+  if (not IDEEnvironmentOptions.UseDoubleClickToCloseTabs and (Button = mbMiddle))
+  or (    IDEEnvironmentOptions.UseDoubleClickToCloseTabs and (Button = mbLeft) and (ssDouble in Shift))
+  then begin
+    LazarusIDE.DoCloseEditorFile(xBtn.Editor, [cfSaveFirst]);
+  end else
   if (Button = mbLeft) then
   begin
-    xBtn := (Sender as TPackageTabButton);
-    if (ssDouble in Shift) then
-      LazarusIDE.DoCloseEditorFile(xBtn.Editor, [cfSaveFirst])
-    else
-      FWindow.ActiveEditor := xBtn.Editor;
+    FWindow.ActiveEditor := xBtn.Editor;
   end;
 end;
 
