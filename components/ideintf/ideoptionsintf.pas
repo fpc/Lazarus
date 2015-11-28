@@ -148,12 +148,6 @@ type
     procedure RemoveHandlerAddToRecentProjectFiles(Handler: TOnAddToRecent);
     procedure AddHandlerAddToRecentPackageFiles(Handler: TOnAddToRecent; const AsFirst: boolean = true); // AsFirst means: first to call
     procedure RemoveHandlerAddToRecentPackageFiles(Handler: TOnAddToRecent);
-  protected
-    function GetUseDoubleClickToCloseTabs: Boolean; virtual; abstract;
-  public
-    // read-only access to options needed by external packages.
-    // feel free to extend when needed
-    property UseDoubleClickToCloseTabs: Boolean read GetUseDoubleClickToCloseTabs;
   end;
 
   TIDEEditorOptions = class(TAbstractIDEEnvironmentOptions)

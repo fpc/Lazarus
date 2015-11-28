@@ -261,7 +261,6 @@ var
 begin
   FMaxItems:=50000;
   ResultsNoteBook.Options:= ResultsNoteBook.Options+[nboShowCloseButtons];
-  ResultsNoteBook.ControlStyle:=ResultsNoteBook.ControlStyle+[csDoubleClicks];
   ResultsNoteBook.Update;
 
   Name:=NonModalIDEWindowNames[nmiwSearchResultsViewName];
@@ -369,9 +368,8 @@ procedure TSearchResultsView.ResultsNoteBookMouseDown(Sender: TObject; Button: T
 var
   TabIndex: LongInt;
 begin
-  if (not EnvironmentOptions.UseDoubleClickToCloseTabs and (Button = mbMiddle))
-  or (    EnvironmentOptions.UseDoubleClickToCloseTabs and (Button = mbLeft) and (ssDouble in Shift))
-  then begin
+  if (Button = mbMiddle) then
+  begin
     TabIndex := ResultsNoteBook.TabIndexAtClientPos(Point(X,Y));
     if TabIndex >= 0 then
       ResultsNoteBookClosetabclicked(ResultsNoteBook.Page[TabIndex]);

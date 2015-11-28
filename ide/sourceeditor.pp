@@ -6312,7 +6312,6 @@ Begin
       ShowTabs := True;
     if ShowTabs then
       TabPosition := EditorOpts.TabPosition;
-    ControlStyle := ControlStyle + [csDoubleClicks];
     OnChange := @NotebookPageChanged;
     OnCloseTabClicked  := @CloseTabClicked;
     OnMouseDown:=@NotebookMouseDown;
@@ -8358,9 +8357,8 @@ procedure TSourceNotebook.NotebookMouseDown(Sender: TObject; Button: TMouseButto
 var
   TabIndex: Integer;
 begin
-  if (not EnvironmentOptions.UseDoubleClickToCloseTabs and (Button = mbMiddle))
-  or (    EnvironmentOptions.UseDoubleClickToCloseTabs and (Button = mbLeft) and (ssDouble in Shift))
-  then begin
+  if (Button = mbMiddle) then
+  begin
     TabIndex:=FNotebook.TabIndexAtClientPos(Point(X,Y));
     if TabIndex>=0 then
       CloseClicked(NoteBookPage[TabIndex],
