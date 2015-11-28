@@ -928,7 +928,7 @@ begin
       Fn := IncludeTrailingPathDelimiter(CurDir) + Fn
     else
     begin
-      if (Fn[1] = DirectorySeparator) then Delete(Fn,1,1);
+      if (Length(Fn) > 0) and (Fn[1] = DirectorySeparator) then Delete(Fn,1,1);
       Fn := IncludeTrailingPathDelimiter(BaseDir) + Fn;
     end;
 
