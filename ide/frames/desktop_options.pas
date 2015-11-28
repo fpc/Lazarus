@@ -54,6 +54,7 @@ type
     ImportDesktopButton: TButton;
     PanelGlyphsButtonsOptions: TPanel;
     PanelGlyphsMenusOptions: TPanel;
+    PreferDoubleClickCloseTabCheckBox: TCheckBox;
     rbMenuGlyphShowAlways: TRadioButton;
     rbMenuGlyphShowNever: TRadioButton;
     rbMenuGlyphShowSystem: TRadioButton;
@@ -117,6 +118,8 @@ begin
   lblMouseAction.Caption := dlgMouseAction;
   PreferDoubleClickCheckBox.Caption := dlgPreferDoubleClickOverSingleClick;
   PreferDoubleClickCheckBox.Hint := dlgCurrentlyRespectedByMessagesWindow;
+  PreferDoubleClickCloseTabCheckBox.Caption := dlgPreferDoubleClickOverMiddleClickToClose;
+  PreferDoubleClickCloseTabCheckBox.Hint := dlgCurrentlyRespectedByNotebookWindow;
 
   // hints
   lblHints.Caption := dlgDesktopHints;
@@ -163,6 +166,7 @@ begin
 
     // mouse action
     PreferDoubleClickCheckBox.Checked := MsgViewDblClickJumps;
+    PreferDoubleClickCloseTabCheckBox.Checked := UseDoubleClickToCloseTabs;
 
     // hints
     ShowHintsForMainSpeedButtonsCheckBox.Checked:=ShowHintsForMainSpeedButtons;
@@ -200,6 +204,7 @@ begin
 
     // mouse action
     MsgViewDblClickJumps := PreferDoubleClickCheckBox.Checked;
+    UseDoubleClickToCloseTabs := PreferDoubleClickCloseTabCheckBox.Checked;
 
     // hints
     ShowHintsForMainSpeedButtons:=ShowHintsForMainSpeedButtonsCheckBox.Checked;

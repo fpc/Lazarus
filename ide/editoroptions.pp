@@ -1294,7 +1294,7 @@ type
 
   { TEditorOptions - Editor Options object used to hold the editor options }
 
-  TEditorOptions = class(TAbstractIDEEnvironmentOptions)
+  TEditorOptions = class(TIDEEditorOptions)
   private
     FBlockTabIndent: Integer;
     FCompletionLongLineHintInMSec: Integer;
@@ -1416,6 +1416,8 @@ type
 
     FDefaultValues: TEditorOptions;
 
+  protected
+    function GetTabPosition: TTabPosition; override;
   public
     class function GetGroupCaption:string; override;
     class function GetInstance: TAbstractIDEOptions; override;
@@ -5736,6 +5738,11 @@ begin
   finally
     ASynEdit.EndUpdate;
   end;
+end;
+
+function TEditorOptions.GetTabPosition: TTabPosition;
+begin
+  Result := fTabPosition;
 end;
 
 procedure TEditorOptions.GetSynEditPreviewSettings(APreviewEditor: TObject);

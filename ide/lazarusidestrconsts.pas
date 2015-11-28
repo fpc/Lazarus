@@ -1279,6 +1279,9 @@ resourcestring
   dlgPreferDoubleClickOverSingleClick = 'Prefer double-click over single-click';
   dlgCurrentlyRespectedByMessagesWindow = 'Currently respected by messages window, '
     +'jump history and search results.';
+  dlgPreferDoubleClickOverMiddleClickToClose = 'Prefer double-click over middle-click when closing tabs';
+  dlgCurrentlyRespectedByNotebookWindow = 'Currently respected by source notebook '
+    +'and search results.';
   lisExportEnvironmentOptions = 'Export environment options';
   lisImportEnvironmentOptions = 'Import environment options';
 

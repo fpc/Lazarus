@@ -907,7 +907,6 @@ type
     procedure DoWindowHide(AWindow: TSourceNotebook);
     function GetShowTabs: Boolean; override;
     procedure SetShowTabs(const AShowTabs: Boolean); override;
-    function GetTabPosition: TTabPosition; override;
   public
     procedure BeginAutoFocusLock;
     procedure EndAutoFocusLock;
@@ -6313,6 +6312,7 @@ Begin
       ShowTabs := True;
     if ShowTabs then
       TabPosition := EditorOpts.TabPosition;
+    ControlStyle := ControlStyle + [csDoubleClicks];
     OnChange := @NotebookPageChanged;
     OnCloseTabClicked  := @CloseTabClicked;
     OnMouseDown:=@NotebookMouseDown;
@@ -8358,7 +8358,9 @@ procedure TSourceNotebook.NotebookMouseDown(Sender: TObject; Button: TMouseButto
 var
   TabIndex: Integer;
 begin
-  if (Button = mbMiddle) then begin
+  if (not EnvironmentOptions.UseDoubleClickToCloseTabs and (Button = mbMiddle))
+  or (    EnvironmentOptions.UseDoubleClickToCloseTabs and (Button = mbLeft) and (ssDouble in Shift))
+  then begin
     TabIndex:=FNotebook.TabIndexAtClientPos(Point(X,Y));
     if TabIndex>=0 then
       CloseClicked(NoteBookPage[TabIndex],
@@ -9065,11 +9067,6 @@ function TSourceEditorManagerBase.GetSourceWindows(Index: integer
   ): TSourceEditorWindowInterface;
 begin
   Result := TSourceEditorWindowInterface(FSourceWindowList[Index]);
-end;
-
-function TSourceEditorManagerBase.GetTabPosition: TTabPosition;
-begin
-  Result := EditorOpts.TabPosition;
 end;
 
 procedure TSourceEditorManagerBase.DoWindowFocused(AWindow: TSourceNotebook);

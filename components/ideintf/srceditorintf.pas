@@ -15,7 +15,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, Laz2_XMLCfg, LCLType, Forms, Controls,
-  ComCtrls, Graphics, ProjectIntf, IDECommands;
+  Graphics, ProjectIntf, IDECommands;
   
 type
   TSourceMarklingType = (
@@ -281,7 +281,6 @@ type
                                   virtual; abstract;
     function GetShowTabs: Boolean; virtual; abstract;
     procedure SetShowTabs(const AShowTabs: Boolean); virtual; abstract;
-    function GetTabPosition: TTabPosition; virtual; abstract;
   public
     // List of SourceEditorWindows
     function SourceWindowWithEditor(const AEditor: TSourceEditorInterface): TSourceEditorWindowInterface;
@@ -341,7 +340,6 @@ type
     procedure InvalidateMarklingsOfAllFiles(aProducer: TSourceMarklingProducer); virtual; abstract;
     procedure InvalidateMarklings(aProducer: TSourceMarklingProducer; aFilename: string); virtual; abstract;
     property ShowTabs: Boolean read GetShowTabs write SetShowTabs;
-    property TabPosition: TTabPosition read GetTabPosition;
   end;
 
 

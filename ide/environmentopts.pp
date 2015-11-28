@@ -393,6 +393,9 @@ type
     FShowButtonGlyphs: TApplicationShowGlyphs;
     FShowMenuGlyphs: TApplicationShowGlyphs;
 
+    // global tabs
+    FUseDoubleClickToCloseTabs: boolean;
+
     // auto save
     FAutoSaveEditorFiles: boolean;
     FAutoSaveProject: boolean;
@@ -572,6 +575,8 @@ type
     procedure InitXMLCfg(CleanConfig: boolean);
     procedure FileUpdated;
     procedure SetTestBuildDirectory(const AValue: string);
+  protected
+    function GetUseDoubleClickToCloseTabs: Boolean; override;
   public
     class function GetGroupCaption:string; override;
     class function GetInstance: TAbstractIDEOptions; override;
@@ -811,6 +816,10 @@ type
     property MsgViewFilters: TLMsgViewFilters read FMsgViewFilters;
     property MsgColors[u: TMessageLineUrgency]: TColor read GetMsgColors write SetMsgColors;
     property MsgViewShowFPCMsgLinesCompiled: Boolean read FMsgViewShowFPCMsgLinesCompiled write FMsgViewShowFPCMsgLinesCompiled;
+
+    //global tab handling
+    property UseDoubleClickToCloseTabs: Boolean
+      read FUseDoubleClickToCloseTabs write FUseDoubleClickToCloseTabs;
 
     // glyphs
     property ShowButtonGlyphs: TApplicationShowGlyphs read FShowButtonGlyphs write FShowButtonGlyphs;
@@ -1327,6 +1336,9 @@ begin
   FMsgViewFilters:=TLMsgViewFilters.Create(nil);
   FMsgViewShowFPCMsgLinesCompiled:=false;
 
+  // global tabs
+  FUseDoubleClickToCloseTabs := False;
+
   // glyphs
   FShowButtonGlyphs := sbgSystem;
   FShowMenuGlyphs := sbgSystem;
@@ -1745,6 +1757,9 @@ begin
     MsgViewFilters.LoadFromXMLConfig(FXMLCfg,'MsgView/Filters/');
     FMsgViewShowFPCMsgLinesCompiled:=FXMLCfg.GetValue(Path+'MsgView/FPCMsg/ShowLinesCompiled',false);
 
+    // global tabs
+    FUseDoubleClickToCloseTabs:=FXMLCfg.GetValue(Path+'UseDoubleClickToCloseTabs/Value',false);
+
     // glyphs
     FShowButtonGlyphs := TApplicationShowGlyphs(FXMLCfg.GetValue(Path+'ShowButtonGlyphs/Value',
       Ord(sbgSystem)));
@@ -2079,6 +2094,9 @@ begin
       fMsgColors[u],clDefault);
     MsgViewFilters.SaveToXMLConfig(FXMLCfg,'MsgView/Filters/');
     FXMLCfg.SetDeleteValue(Path+'MsgView/FPCMsg/ShowLinesCompiled',FMsgViewShowFPCMsgLinesCompiled,false);
+
+    // global tabs
+    FXMLCfg.SetDeleteValue(Path+'UseDoubleClickToCloseTabs/Value',FUseDoubleClickToCloseTabs,false);
 
     // glyphs
     FXMLCfg.SetDeleteValue(Path+'ShowButtonGlyphs/Value',Ord(FShowButtonGlyphs), Ord(sbgSystem));
@@ -2750,6 +2768,11 @@ end;
 function TEnvironmentOptions.GetTestBuildDirectory: string;
 begin
   Result:=FParseValues[eopTestBuildDirectory].UnparsedValue;
+end;
+
+function TEnvironmentOptions.GetUseDoubleClickToCloseTabs: Boolean;
+begin
+  Result := FUseDoubleClickToCloseTabs;
 end;
 
 procedure TEnvironmentOptions.SetDebuggerEventLogColors(AIndex: TDBGEventType; const AValue: TDebuggerEventLogColor);

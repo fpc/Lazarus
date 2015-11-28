@@ -14,9 +14,9 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     AnchorSideTop.Control = AutoSaveProjectCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 17
-    Top = 347
-    Width = 164
+    Height = 15
+    Top = 327
+    Width = 150
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'AutoSaveIntervalInSecsLabel'
@@ -29,9 +29,9 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     AnchorSideTop.Control = PanelGlyphsButtonsOptions
     AnchorSideTop.Side = asrCenter
     Left = 6
-    Height = 17
-    Top = 184
-    Width = 64
+    Height = 15
+    Top = 185
+    Width = 57
     BorderSpacing.Left = 6
     Caption = 'lblButtons'
     Font.Style = [fsBold]
@@ -43,9 +43,9 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     AnchorSideTop.Control = PanelGlyphsMenusOptions
     AnchorSideTop.Side = asrCenter
     Left = 6
-    Height = 17
-    Top = 210
-    Width = 56
+    Height = 15
+    Top = 207
+    Width = 50
     BorderSpacing.Left = 6
     Caption = 'lblMenus'
     Font.Style = [fsBold]
@@ -57,38 +57,38 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     AnchorSideTop.Control = lblCheckAndAutoSave
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 22
-    Top = 253
-    Width = 260
+    Height = 19
+    Top = 245
+    Width = 241
     BorderSpacing.Left = 6
     Caption = 'CheckDiskChangesWithLoadingCheckBox'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 0
+    TabOrder = 7
   end
   object ShowHintsForComponentPaletteCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = ShowHintsForMainSpeedButtonsCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 22
-    Top = 133
-    Width = 266
+    Height = 19
+    Top = 140
+    Width = 246
     BorderSpacing.Left = 6
     Caption = 'ShowHintsForComponentPaletteCheckBox'
-    TabOrder = 1
+    TabOrder = 4
   end
   object ShowHintsForMainSpeedButtonsCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = lblHints
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 22
-    Top = 111
-    Width = 268
+    Height = 19
+    Top = 121
+    Width = 246
     BorderSpacing.Left = 6
     Caption = 'ShowHintsForMainSpeedButtonsCheckBox'
-    TabOrder = 2
+    TabOrder = 3
   end
   object LanguageComboBox: TComboBox
     AnchorSideLeft.Control = Owner
@@ -98,17 +98,17 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 23
-    Top = 20
+    Top = 18
     Width = 584
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 3
     BorderSpacing.Right = 6
-    ItemHeight = 17
+    ItemHeight = 15
     ParentShowHint = False
     ShowHint = True
     Style = csDropDownList
-    TabOrder = 3
+    TabOrder = 0
   end
   object AutoSaveIntervalInSecsComboBox: TComboBox
     AnchorSideLeft.Control = Owner
@@ -118,19 +118,19 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 23
-    Top = 370
+    Top = 348
     Width = 584
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
     Enabled = False
-    ItemHeight = 17
+    ItemHeight = 15
     Items.Strings = (
       '1200'
       '600'
       '300'
       '120'
     )
-    TabOrder = 4
+    TabOrder = 11
     Visible = False
   end
   object AutoSaveProjectCheckBox: TCheckBox
@@ -138,15 +138,15 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     AnchorSideTop.Control = AutoSaveEditorFilesCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 22
-    Top = 319
-    Width = 174
+    Height = 19
+    Top = 302
+    Width = 159
     BorderSpacing.Left = 6
     Caption = 'AutoSaveProjectCheckBox'
     Enabled = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 5
+    TabOrder = 10
     Visible = False
   end
   object AutoSaveEditorFilesCheckBox: TCheckBox
@@ -154,15 +154,15 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     AnchorSideTop.Control = AskSavingOnlySessionCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 22
-    Top = 297
-    Width = 193
+    Height = 19
+    Top = 283
+    Width = 176
     BorderSpacing.Left = 6
     Caption = 'AutoSaveEditorFilesCheckBox'
     Enabled = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 6
+    TabOrder = 9
     Visible = False
   end
   object ImportDesktopButton: TButton
@@ -172,8 +172,8 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 299
-    Height = 29
-    Top = 419
+    Height = 25
+    Top = 395
     Width = 291
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -183,7 +183,7 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     OnClick = ImportDesktopButtonClick
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 7
+    TabOrder = 13
   end
   object ExportDesktopButton: TButton
     AnchorSideLeft.Control = Owner
@@ -191,8 +191,8 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = lblCenter
     Left = 6
-    Height = 29
-    Top = 419
+    Height = 25
+    Top = 395
     Width = 287
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -203,7 +203,7 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     OnClick = ExportDesktopButtonClick
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 8
+    TabOrder = 12
   end
   object PanelGlyphsButtonsOptions: TPanel
     AnchorSideLeft.Control = lblButtons
@@ -212,10 +212,10 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 76
-    Height = 23
-    Top = 181
-    Width = 514
+    Left = 69
+    Height = 19
+    Top = 183
+    Width = 521
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Left = 6
@@ -224,15 +224,15 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     BevelOuter = bvNone
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 3
-    ClientHeight = 23
-    ClientWidth = 514
-    TabOrder = 9
+    ClientHeight = 19
+    ClientWidth = 521
+    TabOrder = 5
     object rbBtnGlyphShowSystem: TRadioButton
       AnchorSideRight.Side = asrBottom
       Left = 0
-      Height = 23
+      Height = 19
       Top = 0
-      Width = 161
+      Width = 147
       Caption = 'rbBtnGlyphShowSystem'
       Checked = True
       TabOrder = 0
@@ -240,18 +240,18 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     end
     object rbBtnGlyphShowNever: TRadioButton
       AnchorSideLeft.Side = asrCenter
-      Left = 161
-      Height = 23
+      Left = 147
+      Height = 19
       Top = 0
-      Width = 154
+      Width = 140
       Caption = 'rbBtnGlyphShowNever'
       TabOrder = 1
     end
     object rbBtnGlyphShowAlways: TRadioButton
-      Left = 315
-      Height = 23
+      Left = 287
+      Height = 19
       Top = 0
-      Width = 159
+      Width = 146
       Caption = 'rbBtnGlyphShowAlways'
       TabOrder = 2
     end
@@ -262,10 +262,10 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 76
-    Height = 23
-    Top = 207
-    Width = 514
+    Left = 69
+    Height = 19
+    Top = 205
+    Width = 521
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 3
@@ -273,16 +273,16 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     BevelOuter = bvNone
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 3
-    ClientHeight = 23
-    ClientWidth = 514
-    TabOrder = 10
+    ClientHeight = 19
+    ClientWidth = 521
+    TabOrder = 6
     object rbMenuGlyphShowSystem: TRadioButton
       AnchorSideRight.Control = PanelGlyphsMenusOptions
       AnchorSideRight.Side = asrBottom
       Left = 0
-      Height = 23
+      Height = 19
       Top = 0
-      Width = 174
+      Width = 160
       Caption = 'rbMenuGlyphShowSystem'
       Checked = True
       TabOrder = 0
@@ -290,18 +290,18 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     end
     object rbMenuGlyphShowNever: TRadioButton
       AnchorSideLeft.Side = asrCenter
-      Left = 174
-      Height = 23
+      Left = 160
+      Height = 19
       Top = 0
-      Width = 167
+      Width = 153
       Caption = 'rbMenuGlyphShowNever'
       TabOrder = 1
     end
     object rbMenuGlyphShowAlways: TRadioButton
-      Left = 341
-      Height = 23
+      Left = 313
+      Height = 19
       Top = 0
-      Width = 172
+      Width = 159
       Caption = 'rbMenuGlyphShowAlways'
       TabOrder = 2
     end
@@ -313,7 +313,7 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 296
     Height = 5
-    Top = 416
+    Top = 392
     Width = 5
     AutoSize = False
     ParentColor = False
@@ -323,33 +323,33 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     AnchorSideTop.Control = CheckDiskChangesWithLoadingCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 22
-    Top = 275
-    Width = 207
+    Height = 19
+    Top = 264
+    Width = 190
     BorderSpacing.Left = 6
     Caption = 'AskSavingOnlySessionCheckBox'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 11
+    TabOrder = 8
   end
   object PreferDoubleClickCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = lblMouseAction
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 22
-    Top = 66
-    Width = 183
+    Height = 19
+    Top = 62
+    Width = 167
     BorderSpacing.Left = 6
     Caption = 'PreferDoubleClickCheckBox'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 12
+    TabOrder = 1
   end
   object lblLanguage: TDividerBevel
     AnchorSideTop.Control = Owner
     Left = 0
-    Height = 17
+    Height = 15
     Top = 0
     Width = 590
     Caption = 'Language'
@@ -362,8 +362,8 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     AnchorSideTop.Control = PanelGlyphsMenusOptions
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 17
-    Top = 236
+    Height = 15
+    Top = 230
     Width = 597
     Caption = 'Check and Auto Save Files'
     Anchors = [akTop, akLeft, akRight]
@@ -376,8 +376,8 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     AnchorSideTop.Control = AutoSaveIntervalInSecsComboBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 17
-    Top = 399
+    Height = 15
+    Top = 377
     Width = 597
     Caption = 'Import / Export'
     Anchors = [akTop, akLeft, akRight]
@@ -390,8 +390,8 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     AnchorSideTop.Control = ShowHintsForComponentPaletteCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 17
-    Top = 161
+    Height = 15
+    Top = 165
     Width = 597
     Caption = 'Show Glyphs for'
     Anchors = [akTop, akLeft, akRight]
@@ -401,11 +401,11 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     ParentFont = False
   end
   object lblHints: TDividerBevel
-    AnchorSideTop.Control = PreferDoubleClickCheckBox
+    AnchorSideTop.Control = PreferDoubleClickCloseTabCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 17
-    Top = 94
+    Height = 15
+    Top = 106
     Width = 597
     Caption = 'Hints'
     Anchors = [akTop, akLeft, akRight]
@@ -418,8 +418,8 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     AnchorSideTop.Control = LanguageComboBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 17
-    Top = 49
+    Height = 15
+    Top = 47
     Width = 597
     Caption = 'Mouse Action'
     Anchors = [akTop, akLeft, akRight]
@@ -427,5 +427,19 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     Font.Style = [fsBold]
     ParentColor = False
     ParentFont = False
+  end
+  object PreferDoubleClickCloseTabCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = PreferDoubleClickCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 19
+    Top = 81
+    Width = 216
+    BorderSpacing.Left = 6
+    Caption = 'PreferDoubleClickCloseTabCheckBox'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 2
   end
 end

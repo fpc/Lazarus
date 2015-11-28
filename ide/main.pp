@@ -1311,6 +1311,7 @@ begin
   LoadFileDialogFilter;
 
   EditorOpts := TEditorOptions.Create;
+  IDEEditorOptions := EditorOpts;
   EditorOpts.OnBeforeRead := @DoEditorOptionsBeforeRead;
   EditorOpts.OnAfterWrite := @DoEditorOptionsAfterWrite;
   SetupIDECommands;

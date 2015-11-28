@@ -148,6 +148,21 @@ type
     procedure RemoveHandlerAddToRecentProjectFiles(Handler: TOnAddToRecent);
     procedure AddHandlerAddToRecentPackageFiles(Handler: TOnAddToRecent; const AsFirst: boolean = true); // AsFirst means: first to call
     procedure RemoveHandlerAddToRecentPackageFiles(Handler: TOnAddToRecent);
+  protected
+    function GetUseDoubleClickToCloseTabs: Boolean; virtual; abstract;
+  public
+    // read-only access to options needed by external packages.
+    // feel free to extend when needed
+    property UseDoubleClickToCloseTabs: Boolean read GetUseDoubleClickToCloseTabs;
+  end;
+
+  TIDEEditorOptions = class(TAbstractIDEEnvironmentOptions)
+  protected
+    function GetTabPosition: TTabPosition; virtual; abstract;
+  public
+    // read-only access to options needed by external packages.
+    // feel free to extend when needed
+    property TabPosition: TTabPosition read GetTabPosition;
   end;
 
   TOnLoadIDEOptions = procedure(Sender: TObject; AOptions: TAbstractIDEOptions) of object;
@@ -267,6 +282,7 @@ function IDEEditorGroups: TIDEOptionsGroupList;
 
 var
   IDEEnvironmentOptions: TIDEEnvironmentOptions;
+  IDEEditorOptions: TIDEEditorOptions;
 
 const
   // Font style used by filter
