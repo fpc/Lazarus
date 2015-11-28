@@ -21,5 +21,8 @@
 // valuable for investigation of message trees / interrelations
 { $define MSG_DEBUG}
 
+{$IFNDEF DisableUseVistaDialogs}
+//please keep this settings because of issue #29105
 {$DEFINE UseVistaDialogs}
+{$ENDIF}
 {.$DEFINE RedirectDestroyMessages}
