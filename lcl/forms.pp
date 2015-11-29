@@ -167,7 +167,6 @@ type
     procedure WMHScroll(var Message : TLMHScroll); message LM_HScroll;
     procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
     procedure ComputeScrollbars; virtual;
-    //procedure ScrollbarHandler(ScrollKind: TScrollBarKind; OldPosition: Integer); virtual;
     procedure SetAutoScroll(Value: Boolean); virtual;
     procedure Loaded; override;
     procedure Resizing(State: TWindowState); virtual;

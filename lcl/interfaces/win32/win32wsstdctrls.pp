@@ -1438,8 +1438,7 @@ end;
 class procedure TWin32WSCustomMemo.ScrollBy(const AWinControl: TWinControl;
   DeltaX, DeltaY: integer);
 begin
-  SendMessage(AWinControl.Handle, EN_HSCROLL, 0, -DeltaX);
-  SendMessage(AWinControl.Handle, EN_VSCROLL, 0, -DeltaY);  // or EM_LINESCROLL
+  SendMessage(AWinControl.Handle, EM_LINESCROLL, -DeltaX, -DeltaY);
 end;
 
 { TWin32WSCustomStaticText }
