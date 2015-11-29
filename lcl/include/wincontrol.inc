@@ -4706,11 +4706,14 @@ begin
       MouseEventMessage.Y := P.Y;
       Control.Dispatch(MouseEventMessage);
       MouseMessage.Result := MouseEventMessage.Result;
+      Result := (MouseMessage.Result <> 0);
     end
     else
+    begin
       MouseMessage.Result := Control.Perform(MouseMessage.Msg, WParam(MouseMessage.Keys),
                              LParam(Integer(PointToSmallPoint(P))));
-    Result := True;
+      Result := True;
+    end;
   end;
 end;
 
