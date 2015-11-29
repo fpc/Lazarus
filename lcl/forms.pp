@@ -92,7 +92,7 @@ type
     FOldScrollInfoValid: Boolean;
   protected
     FControl: TWinControl;
-    FPosition, FPrevPosition: Integer;
+    FPosition: Integer;
     function ControlHandle: HWnd; virtual;
     function GetAutoScroll: boolean; virtual;
     function GetIncrement: TScrollBarInc; virtual;
@@ -109,7 +109,6 @@ type
     procedure SetIncrement(const AValue: TScrollBarInc); virtual;
     procedure SetPage(const AValue: TScrollBarInc); virtual;
     procedure SetPosition(const Value: Integer);
-    procedure SetControlPosition; virtual;
     procedure SetRange(const AValue: Integer); virtual;
     procedure SetSmooth(const AValue: Boolean); virtual;
     procedure SetTracking(const AValue: Boolean);
@@ -168,8 +167,7 @@ type
     procedure WMHScroll(var Message : TLMHScroll); message LM_HScroll;
     procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
     procedure ComputeScrollbars; virtual;
-    procedure ScrollbarHandler(ScrollKind: TScrollBarKind;
-                               OldPosition: Integer); virtual;
+    //procedure ScrollbarHandler(ScrollKind: TScrollBarKind; OldPosition: Integer); virtual;
     procedure SetAutoScroll(Value: Boolean); virtual;
     procedure Loaded; override;
     procedure Resizing(State: TWindowState); virtual;
@@ -1798,7 +1796,7 @@ implementation
 {$endif}
 
 uses
-  WSForms; // Widgetset uses circle is allowed
+  WSControls, WSForms; // Widgetset uses circle is allowed
 
 var
   HandlingException: Boolean = False;

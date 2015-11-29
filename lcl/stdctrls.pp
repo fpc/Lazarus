@@ -804,7 +804,6 @@ type
 
   TMemoScrollbar = class(TControlScrollBar)
   protected
-    procedure SetControlPosition; override;
     function GetHorzScrollBar: TControlScrollBar; override;
     function GetVertScrollBar: TControlScrollBar; override;
   public
@@ -857,6 +856,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Append(const Value: String);
+    procedure ScrollBy(DeltaX, DeltaY: Integer); override;
   public
     property Lines: TStrings read FLines write SetLines;
     property HorzScrollBar: TMemoScrollBar read FHorzScrollBar write SetHorzScrollBar;

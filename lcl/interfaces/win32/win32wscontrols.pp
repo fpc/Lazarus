@@ -81,6 +81,7 @@ type
     class procedure Invalidate(const AWinControl: TWinControl); override;
     class procedure PaintTo(const AWinControl: TWinControl; ADC: HDC; X, Y: Integer); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
+    class procedure ScrollBy(const AWinControl: TWinControl; DeltaX, DeltaY: integer); override;
   end;
 
   { TWin32WSGraphicControl }
@@ -584,6 +585,17 @@ const
 begin
   Windows.SetWindowPos(AWinControl.Handle, 0, 0, 0, 0, 0,
     SWP_NOSIZE or SWP_NOMOVE or SWP_NOZORDER or SWP_NOACTIVATE or VisibilityToFlag[AWinControl.HandleObjectShouldBeVisible])
+end;
+
+function ScrollWindowPtr(hWnd: HWND; dx: longint; dy: longint;
+  prcScroll: pointer; prcClip: pointer; hrgnUpdate: HRGN; prcUpdate: LPRECT;
+  flags: UINT): WINBOOL; stdcall; external 'user32' name 'ScrollWindowEx';
+
+class procedure TWin32WSWinControl.ScrollBy(const AWinControl: TWinControl;
+  DeltaX, DeltaY: integer);
+begin
+  if Windows.IsWindowVisible(AWinControl.Handle) then
+    ScrollWindowPtr(AWinControl.Handle, DeltaX, DeltaY, nil, nil, 0, nil, 0);
 end;
 
 { TWin32WSDragImageList }

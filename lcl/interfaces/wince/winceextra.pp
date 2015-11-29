@@ -63,7 +63,6 @@ const
   WM_HIBERNATE = $03FF;
 
 
-
 function DrawState(dc:HDC ; hbr : HBRUSH ; func: DRAWSTATEPROC ; lp:LPARAM; wp:WPARAM;x,y,cx,cy:integer;flags:UINT) : boolean;
 function GetTopWindow(hWnd:HWND):HWND;
 
@@ -80,13 +79,9 @@ function ImageList_Copy(himlDst: HIMAGELIST; iDst: longint; himlSrc: HIMAGELIST;
 function ImageList_Copy(himlDst: HIMAGELIST; iDst: longint; himlSrc: HIMAGELIST; Src: longint; uFlags: UINT): BOOL; cdecl; external KernelDLL;
 {$endif}
 
-{$ifdef win32}
-function ScrollWindowPtr(hWnd:HWND; XAmount:longint; YAmount:longint; lpRect: pointer; lpClipRect: pointer):WINBOOL; stdcall; external 'user32' name 'ScrollWindow';
-{$else}
-function ScrollWindowPtr(hWnd:HWND; dx:longint; dy:longint; prcScroll: lpRECT; prcClip: lpRECT;
-  hrgnUpdate: HRGN; prcUpdate: LPRECT; flags:UINT):longint; cdecl; external KernelDll name 'ScrollWindowEx';
-{$endif}
-
+function ScrollWindowPtr(hWnd: HWND; dx: longint; dy: longint; prcScroll: lpRECT; prcClip: lpRECT;
+  hrgnUpdate: HRGN; prcUpdate: LPRECT; flags: UINT): longint; cdecl;
+  external {$ifdef win32}'user32'{$else}KernelDll{$endif} name 'ScrollWindowEx';
 
 
 const

@@ -88,8 +88,8 @@ type
     class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
     class procedure SetShape(const AWinControl: TWinControl; const AShape: HBITMAP); override;
-    class procedure PaintTo(const AWinControl: TWinControl; ADC: HDC; X, Y: Integer); override;
 
+    class procedure PaintTo(const AWinControl: TWinControl; ADC: HDC; X, Y: Integer); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 

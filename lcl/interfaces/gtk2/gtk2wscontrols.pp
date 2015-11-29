@@ -91,11 +91,11 @@ type
     class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
     class procedure SetShape(const AWinControl: TWinControl; const AShape: HBITMAP); override;
-    class procedure PaintTo(const AWinControl: TWinControl; ADC: HDC; X, Y: Integer); override;
-
-    class procedure ShowHide(const AWinControl: TWinControl); override;
-
     class procedure SetBiDiMode(const AWinControl: TWinControl; UseRightToLeftAlign, {%H-}UseRightToLeftReading, {%H-}UseRightToLeftScrollBar : Boolean); override;
+
+    class procedure PaintTo(const AWinControl: TWinControl; ADC: HDC; X, Y: Integer); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
+    class procedure ScrollBy(const AWinControl: TWinControl; DeltaX, DeltaY: integer); override;
   end;
 
   { TGtk2WSGraphicControl }
@@ -623,6 +623,39 @@ begin
   // other methods use ShowHide also, can't move code
   Gtk2WidgetSet.SetVisible(AWinControl, AWinControl.HandleObjectShouldBeVisible);
   InvalidateLastWFPResult(AWinControl, AWinControl.BoundsRect);
+end;
+
+class procedure TGtk2WSWinControl.ScrollBy(const AWinControl: TWinControl;
+  DeltaX, DeltaY: integer);
+var
+  Scrolled: PGtkScrolledWindow;
+  Adjustment: PGtkAdjustment;
+  h, v: Double;
+  NewPos: Double;
+begin
+  if not AWinControl.HandleAllocated then exit;
+  Scrolled := GTK_SCROLLED_WINDOW({%H-}Pointer(AWinControl.Handle));
+  if not GTK_IS_SCROLLED_WINDOW(Scrolled) then
+    exit;
+  Adjustment := gtk_scrolled_window_get_hadjustment(Scrolled);
+  if Adjustment <> nil then
+  begin
+    h := gtk_adjustment_get_value(Adjustment);
+    NewPos := Adjustment^.upper - Adjustment^.page_size;
+    if h - DeltaX <= NewPos then
+      NewPos := h - DeltaX;
+    gtk_adjustment_set_value(Adjustment, NewPos);
+  end;
+  Adjustment := gtk_scrolled_window_get_vadjustment(Scrolled);
+  if Adjustment <> nil then
+  begin
+    v := gtk_adjustment_get_value(Adjustment);
+    NewPos := Adjustment^.upper - Adjustment^.page_size;
+    if v - DeltaY <= NewPos then
+      NewPos := v - DeltaY;
+    gtk_adjustment_set_value(Adjustment, NewPos);
+  end;
+  AWinControl.Invalidate;
 end;
 
 class procedure TGtk2WSWinControl.SetBounds(const AWinControl: TWinControl;

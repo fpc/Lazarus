@@ -2163,6 +2163,7 @@ type
     procedure DisableAlign;
     procedure EnableAlign;
     procedure ReAlign; // realign all children
+    procedure ScrollBy_WS(DeltaX, DeltaY: Integer);
     procedure ScrollBy(DeltaX, DeltaY: Integer); virtual;
     procedure WriteLayoutDebugReport(const Prefix: string); override;
     procedure AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy;

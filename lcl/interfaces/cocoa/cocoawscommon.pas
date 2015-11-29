@@ -100,6 +100,7 @@ type
     class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
     class procedure Invalidate(const AWinControl: TWinControl); override;
+    // class procedure ScrollBy(const AWinControl: TWinControl; DeltaX, DeltaY: integer); override;
   end;
 
 

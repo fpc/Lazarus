@@ -6131,6 +6131,14 @@ begin
   AdjustSize;
 end;
 
+procedure TWinControl.ScrollBy_WS(DeltaX, DeltaY: Integer);
+begin
+  if HandleAllocated and IsWindowVisible(Handle) then
+    TWSWinControlClass(WidgetSetClass).ScrollBy(Self, DeltaX, DeltaY)
+  else
+    ScrollBy(DeltaX, DeltaY);
+end;
+
 procedure TWinControl.ScrollBy(DeltaX, DeltaY: Integer);
 var
   i: Integer;

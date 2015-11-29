@@ -89,6 +89,7 @@ type
 
     class procedure ConstraintsChange(const AWinControl: TWinControl); override;
     class procedure PaintTo(const AWinControl: TWinControl; ADC: HDC; X, Y: Integer); override;
+    class procedure ScrollBy(const AWinControl: TWinControl; DeltaX, DeltaY: integer); override;
   end;
 
   { TQtWSGraphicControl }
@@ -433,6 +434,17 @@ begin
   finally
     Pixmap.Free;
   end;
+end;
+
+class procedure TQtWSWinControl.ScrollBy(const AWinControl: TWinControl;
+  DeltaX, DeltaY: integer);
+var
+  Widget: TQtCustomControl;
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'ScrollBy') then
+    Exit;
+  Widget := TQtCustomControl(AWinControl.Handle);
+  Widget.viewport.scroll(DeltaX, DeltaY);
 end;
 
 {------------------------------------------------------------------------------

@@ -70,11 +70,14 @@ begin
   if Value = FPosition then
     exit;
 
-  // now actually set the position
-  FPrevPosition := FPosition;
-  FPosition := Value;
   // scroll logical client area of FControl
-  SetControlPosition;
+  if Kind = sbVertical then
+    FControl.ScrollBy(0, FPosition - Value)
+  else
+    FControl.ScrollBy(FPosition - Value, 0);
+
+  // now actually set the position
+  FPosition := Value;
 
   // check that the new position is also set on the scrollbar
   if HandleAllocated and (GetScrollPos(ControlHandle, IntfBarKind[Kind]) <> FPosition) then
@@ -92,12 +95,6 @@ begin
 
     FPosition := SetScrollInfo(ControlHandle, IntfBarKind[Kind], ScrollInfo, ScrollBarShouldBeVisible);
   end;
-end;
-
-procedure TControlScrollBar.SetControlPosition;
-begin
-  if FControl is TScrollingWinControl then
-    TScrollingWinControl(FControl).ScrollbarHandler(Kind, FPrevPosition);
 end;
 
 function TControlScrollBar.GetIncrement: TScrollBarInc;

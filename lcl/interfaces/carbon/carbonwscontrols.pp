@@ -85,6 +85,7 @@ type
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
     class procedure Invalidate(const AWinControl: TWinControl); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
+    class procedure ScrollBy(const AWinControl: TWinControl; DeltaX, DeltaY: integer); override;
   end;
 
   { TCarbonWSGraphicControl }
@@ -379,6 +380,15 @@ begin
   TCarbonWidget(AWinControl.Handle).ShowHide(AWinControl.HandleObjectShouldBeVisible);
 end;
 
+class procedure TCarbonWSWinControl.ScrollBy(const AWinControl: TWinControl;
+  DeltaX, DeltaY: integer);
+begin
+  if not CheckHandle(AWinControl, Self, 'ScrollBy') then Exit;
+
+  TCarbonWidget(AWinControl.Handle).ScrollBy(DeltaX, DeltaY);
+  AWinControl.Invalidate;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCarbonWSWinControl.CreateHandle
   Params:  AWinControl - LCL control
@@ -457,8 +467,8 @@ end;
 
   Retrieves the client bounding rect of control in Carbon interface
  ------------------------------------------------------------------------------}
-class function TCarbonWSWinControl.GetClientBounds(const AWinControl: TWinControl;
-  var ARect: TRect): Boolean;
+class function TCarbonWSWinControl.GetClientBounds(
+  const AWincontrol: TWinControl; var ARect: TRect): Boolean;
 begin
   Result := False;
   if not CheckHandle(AWinControl, Self, 'GetClientBounds') then Exit;
@@ -473,8 +483,8 @@ end;
 
   Retrieves the client rect of control in Carbon interface
  ------------------------------------------------------------------------------}
-class function TCarbonWSWinControl.GetClientRect(const AWinControl: TWinControl;
-  var ARect: TRect): Boolean;
+class function TCarbonWSWinControl.GetClientRect(
+  const AWincontrol: TWinControl; var ARect: TRect): Boolean;
 begin
   Result := False;
   if not CheckHandle(AWinControl, Self, 'GetClientRect') then Exit;

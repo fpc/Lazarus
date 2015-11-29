@@ -15,13 +15,6 @@
 
 {off $DEFINE DEBUG_MEMO}
 
-{------------------------------------------------------------------------------
-  Method: TCustomMemo.Create
-  Params: 
-  Returns: 
-
-  Constructor for the class
- ------------------------------------------------------------------------------}
 constructor TCustomMemo.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -36,13 +29,6 @@ begin
   AutoSize := False;
 end;
 
-{------------------------------------------------------------------------------
-  Method: TCustomMemo.Destroy
-  Params:  None
-  Returns: Nothing
-
-  Destructor for the class.
- ------------------------------------------------------------------------------}
 destructor TCustomMemo.Destroy;
 begin
   FreeThenNil(FLines);
@@ -51,20 +37,16 @@ begin
   inherited Destroy;
 end;
 
-{------------------------------------------------------------------------------
-  Method: TCustomMemo.Append
-  Params: 
-  Returns: 
-
- ------------------------------------------------------------------------------}
 procedure TCustomMemo.Append(const Value: String);
 begin
   Lines.Add(Value);
 end;
 
-{------------------------------------------------------------------------------
-  procedure TCustomMemo.SetHorzScrollBar(const AValue: TMemoScrollBar);
- ------------------------------------------------------------------------------}
+procedure TCustomMemo.ScrollBy(DeltaX, DeltaY: Integer);
+begin
+  ScrollBy_WS(DeltaX, DeltaY);
+end;
+
 procedure TCustomMemo.SetHorzScrollBar(const AValue: TMemoScrollBar);
 begin
   if FHorzScrollBar=AValue then exit;
@@ -79,9 +61,6 @@ begin
   TWSCustomMemoClass(WidgetSetClass).SetCaretPos(Self, Value);
 end;
 
-{------------------------------------------------------------------------------
-  procedure TCustomMemo.SetVertScrollBar(const AValue: TMemoScrollBar);
- ------------------------------------------------------------------------------}
 procedure TCustomMemo.SetVertScrollBar(const AValue: TMemoScrollBar);
 begin
   if FVertScrollBar=AValue then exit;
@@ -213,12 +192,6 @@ begin
   inherited;
 end;
 
-{------------------------------------------------------------------------------
-  Method: TCustomMemo.SetLines
-  Params: 
-  Returns: 
-
- ------------------------------------------------------------------------------}
 procedure TCustomMemo.SetLines(const Value: TStrings);
 begin
   if (Value <> nil) then
@@ -235,9 +208,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  procedure TCustomMemo.SetScrollbars(const Value : TScrollStyle);
- ------------------------------------------------------------------------------}
 procedure TCustomMemo.SetScrollBars(const Value: TScrollStyle);
 begin
   if Value <> FScrollbars then begin
@@ -247,9 +217,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  procedure TCustomMemo.Loaded;
- ------------------------------------------------------------------------------}
 procedure TCustomMemo.Loaded;
 begin
   inherited Loaded;
@@ -302,12 +269,6 @@ begin
     TWSCustomMemoClass(WidgetSetClass).SetWantTabs(Self, NewWantTabs);
 end;
 
-{------------------------------------------------------------------------------
-  Method: TCustomMemo.SetWordWrap
-  Params: 
-  Returns: 
-
- ------------------------------------------------------------------------------}
 procedure TCustomMemo.SetWordWrap(const Value: boolean);
 begin
   if Value <> FWordWrap then

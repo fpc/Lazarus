@@ -195,6 +195,7 @@ type
     class procedure SetCaretPos(const ACustomEdit: TCustomEdit; const NewPos: TPoint); override;
     class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
+    class procedure ScrollBy(const AWinControl: TWinControl; DeltaX, DeltaY: integer); override;
   end;
 
   { TWin32WSEdit }
@@ -1432,6 +1433,13 @@ class procedure TWin32WSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo; c
 begin
   // TODO: check if can be done without recreation
   RecreateWnd(ACustomMemo);
+end;
+
+class procedure TWin32WSCustomMemo.ScrollBy(const AWinControl: TWinControl;
+  DeltaX, DeltaY: integer);
+begin
+  SendMessage(AWinControl.Handle, EN_HSCROLL, 0, -DeltaX);
+  SendMessage(AWinControl.Handle, EN_VSCROLL, 0, -DeltaY);  // or EM_LINESCROLL
 end;
 
 { TWin32WSCustomStaticText }

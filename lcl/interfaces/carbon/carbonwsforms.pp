@@ -39,7 +39,6 @@ type
   TCarbonWSScrollingWinControl = class(TWSScrollingWinControl)
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure ScrollBy(const AWinControl: TScrollingWinControl; const DeltaX, DeltaY: integer); override;
   end;
 
   { TCarbonWSScrollBox }
@@ -128,21 +127,6 @@ class function TCarbonWSScrollingWinControl.CreateHandle(const AWinControl: TWin
   const AParams: TCreateParams): TLCLIntfHandle;
 begin
   Result := TLCLIntfHandle(TCarbonScrollingWinControl.Create(AWinControl, AParams));
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonWSScrollingWinControl.ScrollBy
-  Params:  AWinControl - LCL scrolling win control
-           DX, DY      -
-
-  Scrolls the content of the passed window
- ------------------------------------------------------------------------------}
-class procedure TCarbonWSScrollingWinControl.ScrollBy(const AWinControl: TScrollingWinControl; const DeltaX, DeltaY: integer);
-begin
-  if not CheckHandle(AWinControl, Self, 'ScrollBy') then Exit;
-
-  TCarbonWidget(AWinControl.Handle).ScrollBy(DeltaX, DeltaY);
-  AWinControl.Invalidate;
 end;
 
 { TCarbonWSCustomForm }
