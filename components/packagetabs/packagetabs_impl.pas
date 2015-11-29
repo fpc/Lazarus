@@ -772,7 +772,6 @@ begin
           xBtn.Parent := FPanel;
           xBtn.Editor := xEditor;
           xBtn.OnMouseDown := @TabButtonMouseDown;
-          xBtn.ControlStyle := xBtn.ControlStyle + [csDoubleClicks];
           xBtn.PopupMenu := FTabButtonMenu;
           xBtn.Down := xEditor = xOldActive;
           if xBtn.Down then
@@ -971,14 +970,9 @@ var
   xBtn: TPackageTabButton;
 begin
   xBtn := (Sender as TPackageTabButton);
-  if (not IDEEnvironmentOptions.UseDoubleClickToCloseTabs and (Button = mbMiddle))
-  or (    IDEEnvironmentOptions.UseDoubleClickToCloseTabs and (Button = mbLeft) and (ssDouble in Shift))
-  then begin
-    LazarusIDE.DoCloseEditorFile(xBtn.Editor, [cfSaveFirst]);
-  end else
-  if (Button = mbLeft) then
-  begin
-    FWindow.ActiveEditor := xBtn.Editor;
+  case Button of
+    mbLeft: FWindow.ActiveEditor := xBtn.Editor;
+    mbMiddle: LazarusIDE.DoCloseEditorFile(xBtn.Editor, [cfSaveFirst]);
   end;
 end;
 
