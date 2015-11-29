@@ -589,17 +589,9 @@ end;
 
 class procedure TWin32WSWinControl.ScrollBy(const AWinControl: TWinControl;
   DeltaX, DeltaY: integer);
-var
-  ScrollArea, ClipArea: TRect;
-  ScrollFlags: Integer;
 begin
   if Windows.IsWindowVisible(AWinControl.Handle) then
-  begin
-    ScrollArea := AWinControl.ClientRect; // the whole area -> client rect
-    ClipArea := AWinControl.ClientRect; // the scroll area without fixed items (e.g. the header row in grids etc.) - currently not supported by the LCL
-    ScrollFlags := SW_INVALIDATE or SW_ERASE;
-    ScrollWindowEx(AWinControl.Handle, DeltaX, DeltaY, @ScrollArea, @ClipArea, 0, nil, ScrollFlags);
-  end;
+    ScrollWindowEx(AWinControl.Handle, DeltaX, DeltaY, nil, nil, 0, nil, SW_INVALIDATE or SW_ERASE);
 end;
 
 { TWin32WSDragImageList }
