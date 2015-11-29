@@ -587,15 +587,19 @@ begin
     SWP_NOSIZE or SWP_NOMOVE or SWP_NOZORDER or SWP_NOACTIVATE or VisibilityToFlag[AWinControl.HandleObjectShouldBeVisible])
 end;
 
-function ScrollWindowPtr(hWnd: HWND; dx: longint; dy: longint;
-  prcScroll: pointer; prcClip: pointer; hrgnUpdate: HRGN; prcUpdate: LPRECT;
-  flags: UINT): WINBOOL; stdcall; external 'user32' name 'ScrollWindowEx';
-
 class procedure TWin32WSWinControl.ScrollBy(const AWinControl: TWinControl;
   DeltaX, DeltaY: integer);
+var
+  ScrollArea, ClipArea: TRect;
+  ScrollFlags: Integer;
 begin
   if Windows.IsWindowVisible(AWinControl.Handle) then
-    ScrollWindowPtr(AWinControl.Handle, DeltaX, DeltaY, nil, nil, 0, nil, 0);
+  begin
+    ScrollArea := AWinControl.ClientRect; // the whole area -> client rect
+    ClipArea := AWinControl.ClientRect; // the scroll area without fixed items (e.g. the header row in grids etc.) - currently not supported by the LCL
+    ScrollFlags := SW_INVALIDATE or SW_ERASE;
+    ScrollWindowEx(AWinControl.Handle, DeltaX, DeltaY, @ScrollArea, @ClipArea, 0, nil, ScrollFlags);
+  end;
 end;
 
 { TWin32WSDragImageList }
