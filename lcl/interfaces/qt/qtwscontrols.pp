@@ -124,9 +124,10 @@ const
  { True  } QtRightToLeft
   );
 implementation
-{$IFDEF VerboseQtResize}
+{$IF DEFINED(VerboseQtResize) OR DEFINED(VerboseQt)}
 uses LCLProc;
 {$ENDIF}
+
 {------------------------------------------------------------------------------
   Method: TQtWSCustomControl.CreateHandle
   Params:  None
@@ -443,8 +444,15 @@ var
 begin
   if not WSCheckHandleAllocated(AWinControl, 'ScrollBy') then
     Exit;
-  Widget := TQtCustomControl(AWinControl.Handle);
-  Widget.viewport.scroll(DeltaX, DeltaY);
+  if TQtWidget(AWinControl.Handle) is TQtCustomControl then
+  begin
+    Widget := TQtCustomControl(AWinControl.Handle);
+    Widget.viewport.scroll(DeltaX, DeltaY);
+  end
+  {$IFDEF VerboseQt}
+  else
+    DebugLn(Format('WARNING: TQtWSWinControl.ScrollBy(): Qt widget handle %s is not TQtCustomControl',[DbgSName(TQtWidget(AWinControl.Handle))]));
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
