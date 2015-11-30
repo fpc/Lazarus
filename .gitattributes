@@ -1298,6 +1298,7 @@ components/favorites/favoritesstr.pas svneol=native#text/pascal
 components/favorites/languages/favoritesstr.de.po svneol=native#text/plain
 components/favorites/languages/favoritesstr.hu.po svneol=native#text/plain
 components/favorites/languages/favoritesstr.po svneol=native#text/plain
+components/favorites/languages/favoritesstr.ru.po svneol=native#text/plain
 components/filebrowser/frmconfigfilebrowser.lfm svneol=native#text/plain
 components/filebrowser/frmconfigfilebrowser.pp svneol=native#text/plain
 components/filebrowser/frmfilebrowser.lfm svneol=native#text/plain
