@@ -175,7 +175,6 @@ type
     class procedure SetWantReturns(const ACustomMemo: TCustomMemo; const NewWantReturns: boolean); override;
     class procedure SetWantTabs(const ACustomMemo: TCustomMemo; const NewWantTabs: boolean); override;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
-    class procedure ScrollBy(const AWinControl: TWinControl; DeltaX, DeltaY: integer); override;
   end;
 
   { TQtWSEdit }
@@ -820,12 +819,6 @@ begin
   if not WSCheckHandleAllocated(ACustomMemo, 'SetWordWrap') then
     Exit;
   TQtTextEdit(ACustomMemo.Handle).setLineWrapMode(WordWrapMap[NewWordWrap]);
-end;
-
-class procedure TQtWSCustomMemo.ScrollBy(const AWinControl: TWinControl;
-  DeltaX, DeltaY: integer);
-begin
-  ;  // Do nothing.
 end;
 
 { TQtWSCustomEdit }
