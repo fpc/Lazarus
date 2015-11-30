@@ -434,7 +434,8 @@ procedure TFindDialog.SetFindText(const AValue: string);
 begin
   if FFindText = AValue then exit;
   FFindText:=AValue;
-  TFindDialogForm(FFindForm).EditFind.Text := AValue;
+  If Assigned(FFindForm) then
+    TFindDialogForm(FFindForm).EditFind.Text := AValue;
 end;
 
 procedure TFindDialog.SetLeft(const AValue: Integer);
