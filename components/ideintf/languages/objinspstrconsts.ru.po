@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-06-17 02:54+0300\n"
+"PO-Revision-Date: 2015-12-01 00:30+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -712,7 +712,7 @@ msgstr "Запись"
 
 #: objinspstrconsts.oisremovefromfavorites
 msgid "Remove from Favorites"
-msgstr "Удалить из Избранного"
+msgstr "Удалить из избранного"
 
 #: objinspstrconsts.oisrestricted
 msgid "Restricted"
@@ -1570,3 +1570,4 @@ msgstr "Переместить вкладку влево"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Переместить вкладку вправо"
+

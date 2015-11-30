@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-11-24 01:12+0300\n"
+"PO-Revision-Date: 2015-12-01 00:21+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -2207,12 +2207,16 @@ msgid "1 (quick, debugger friendly)"
 msgstr "1 (быстро и дружественно к отладчику)"
 
 #: lazarusidestrconsts.dlglevel2opt
-msgid "2 (quick optimizations)"
-msgstr "2 (быстрые оптимизации)"
+msgid "2 (-O1 + quick optimizations)"
+msgstr "2 (-O1 + быстрые оптимизации)"
 
 #: lazarusidestrconsts.dlglevel3opt
-msgid "3 (slow optimizations)"
-msgstr "3 (медленные оптимизации)"
+msgid "3 (-O2 + slow optimizations)"
+msgstr "3 (-O2 + медленные оптимизации)"
+
+#: lazarusidestrconsts.dlglevel4opt
+msgid "4 (-O3 + aggressive optimizations, beware)"
+msgstr "4 (-O3 + агрессивные оптимизации, будьте осторожны)"
 
 #: lazarusidestrconsts.dlglevelnoneopt
 msgid "0 (no optimization)"
