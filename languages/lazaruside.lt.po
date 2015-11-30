@@ -2253,15 +2253,19 @@ msgstr "1 lygis (įprastų instrukcijų sekos keičiamos greitesniais ekvivalent
 
 #: lazarusidestrconsts.dlglevel2opt
 #, fuzzy
-#| msgid "Level 2 (Level 1 + quick optimizations)"
-msgid "2 (quick optimizations)"
+#| msgid "2 (quick optimizations)"
+msgid "2 (-O1 + quick optimizations)"
 msgstr "2 lygis (1 lygis + registro duomenų bereikalingų pakartotinų įkėlimų eliminavimas)"
 
 #: lazarusidestrconsts.dlglevel3opt
 #, fuzzy
-#| msgid "Level 3 (Level 2 + slow optimizations)"
-msgid "3 (slow optimizations)"
+#| msgid "3 (slow optimizations)"
+msgid "3 (-O2 + slow optimizations)"
 msgstr "3 lygis (2 lygis + kitos, ilgai daromos optimizacijos)"
+
+#: lazarusidestrconsts.dlglevel4opt
+msgid "4 (-O3 + aggressive optimizations, beware)"
+msgstr ""
 
 #: lazarusidestrconsts.dlglevelnoneopt
 #, fuzzy

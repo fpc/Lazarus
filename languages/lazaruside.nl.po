@@ -2276,11 +2276,15 @@ msgid "1 (quick, debugger friendly)"
 msgstr ""
 
 #: lazarusidestrconsts.dlglevel2opt
-msgid "2 (quick optimizations)"
+msgid "2 (-O1 + quick optimizations)"
 msgstr ""
 
 #: lazarusidestrconsts.dlglevel3opt
-msgid "3 (slow optimizations)"
+msgid "3 (-O2 + slow optimizations)"
+msgstr ""
+
+#: lazarusidestrconsts.dlglevel4opt
+msgid "4 (-O3 + aggressive optimizations, beware)"
 msgstr ""
 
 #: lazarusidestrconsts.dlglevelnoneopt
