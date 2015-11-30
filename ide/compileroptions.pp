@@ -2858,11 +2858,8 @@ begin
   if SmallerCode then
     OptimizeSwitches := OptimizeSwitches + 's';
   { OptimizationLevel     1 = Level 1    2 = Level 2    3 = Level 3 }
-  case (OptimizationLevel) of
-    1:  OptimizeSwitches := OptimizeSwitches + '1';
-    2:  OptimizeSwitches := OptimizeSwitches + '2';
-    3:  OptimizeSwitches := OptimizeSwitches + '3';
-  end;
+  if OptimizationLevel>0 then
+    OptimizeSwitches := OptimizeSwitches + IntToStr(OptimizationLevel);
   if OptimizeSwitches<>'' then
     switches := switches + ' -O'+OptimizeSwitches;
 

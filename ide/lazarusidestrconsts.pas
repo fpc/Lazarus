@@ -2215,8 +2215,9 @@ resourcestring
   lisSmallerRatherThanFaster = 'Smaller rather than faster';
   dlgLevelNoneOpt = '0 (no optimization)';
   dlgLevel1Opt = '1 (quick, debugger friendly)';
-  dlgLevel2Opt = '2 (quick optimizations)';
-  dlgLevel3Opt = '3 (slow optimizations)';
+  dlgLevel2Opt = '2 (-O1 + quick optimizations)';
+  dlgLevel3Opt = '3 (-O2 + slow optimizations)';
+  dlgLevel4Opt = '4 (-O3 + aggressive optimizations, beware)';
   dlgTargetOS = 'Target OS';
   dlgTargetCPUFamily = 'Target CPU family';
   dlgCOInfoForGDB = 'Info for GDB';

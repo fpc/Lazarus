@@ -277,7 +277,7 @@ begin
   // Create Release mode
   NewMode:=fBuildModes.Add(ReleaseModeName);
   AssignAndSetBooleans(NewMode, False);
-  NewMode.CompilerOptions.OptimizationLevel:=3;       // Optimization
+  NewMode.CompilerOptions.OptimizationLevel:=3;       // Optimization, slow, but safe, -O4 is dangerous
   NewMode.CompilerOptions.DebugInfoType:=dsAuto;      // Debug
 
   FillBuildModesGrid;               // show
