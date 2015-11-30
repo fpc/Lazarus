@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-11-03 17:02+0100\n"
+"PO-Revision-Date: 2015-11-29 18:40+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -169,8 +169,6 @@ msgid "Extended, Actions, right gutter half only"
 msgstr "Erweitert, Aktionen, nur rechte Randhälfte"
 
 #: lazarusidestrconsts.dlfmousesimplegutterlines
-#, fuzzy
-#| msgid "Use line numers to select lines"
 msgid "Use line numbers to select lines"
 msgstr "Zeilennummern verwenden zur Zeilenauswahl"
 
@@ -3147,7 +3145,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgrunninginstancenotrespondingerror
 msgid "Lazarus instance is running but not responding."
-msgstr ""
+msgstr "Lazarus-Instanz läuft, reagiert aber nicht."
 
 #: lazarusidestrconsts.dlgrunodisplay
 msgid "Display (not for win32, e.g. 198.112.45.11:0, x.org:1, hydra:0.1)"
@@ -13766,7 +13764,7 @@ msgstr "Neue Pfade für abhängige Packages und Projekte"
 
 #: lazarusidestrconsts.lispckoptsauthor
 msgid "Author"
-msgstr "Autor:"
+msgstr "Autor"
 
 #: lazarusidestrconsts.lispckoptsautomaticallyrebuildasneeded
 msgid "Automatically rebuild as needed"
@@ -13810,7 +13808,7 @@ msgstr "Bibliothek"
 
 #: lazarusidestrconsts.lispckoptslicense
 msgid "License"
-msgstr "Lizenz:"
+msgstr "Lizenz"
 
 #: lazarusidestrconsts.lispckoptslinker
 msgid "Linker"
@@ -14069,14 +14067,10 @@ msgid "Virtual Unit"
 msgstr "Virtuelle Unit"
 
 #: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
-#, fuzzy
-#| msgid "Package directory. Parameter is package ID"
 msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
 msgstr "Package-Verzeichnis. Parameter ist die Package-ID"
 
 #: lazarusidestrconsts.lispkgmacropackageincludefilessearchpathparameterispackageid
-#, fuzzy
-#| msgid "Package include files search path. Parameter is package ID"
 msgid "Package include files search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
 msgstr "Package-Includedateien-Suchpfad. Parameter ist die Package-ID."
 
@@ -14089,14 +14083,10 @@ msgid "Package output directory. Parameter is package ID, e.g. \"Name\" or \"Nam
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmacropackagesourcesearchpathparameterispackageid
-#, fuzzy
-#| msgid "Package source search path. Parameter is package ID"
 msgid "Package source search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
 msgstr "Package-Quellcode-Suchpfad. Parameter ist die Package-ID."
 
 #: lazarusidestrconsts.lispkgmacropackageunitsearchpathparameterispackageid
-#, fuzzy
-#| msgid "Package unit search path. Parameter is package ID"
 msgid "Package unit search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
 msgstr "Package-Unitsuchpfad. Parameter ist die Package-ID."
 
@@ -14645,11 +14635,11 @@ msgstr "Package-Links"
 
 #: lazarusidestrconsts.lispldshowgloballinksin
 msgid "Show global links in "
-msgstr ""
+msgstr "Zeige globale Links in"
 
 #: lazarusidestrconsts.lispldshowuserlinksin
 msgid "Show user links in "
-msgstr ""
+msgstr "Zeige Benutzer-Links in"
 
 #: lazarusidestrconsts.lisplduser
 msgid "User"
@@ -15365,7 +15355,7 @@ msgstr "Unit-Pfad entfernen?"
 
 #: lazarusidestrconsts.lisremoveuses
 msgid "Remove uses \"%s\""
-msgstr ""
+msgstr "\"%s\" aus uses-Abschnitt entfernen"
 
 #: lazarusidestrconsts.lisrename
 msgctxt "lazarusidestrconsts.lisrename"
@@ -20264,4 +20254,3 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
-
