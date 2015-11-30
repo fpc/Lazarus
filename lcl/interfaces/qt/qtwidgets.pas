@@ -8379,7 +8379,10 @@ begin
   else
     LMScroll.Msg := LM_VSCROLL;
 
-  LMScroll.Pos := getSliderPosition;
+  if SliderPressed then
+    LMScroll.Pos := getSliderPosition
+  else
+    LMScroll.Pos := getValue;
 
   SliderAction := SliderActions[Action];
 

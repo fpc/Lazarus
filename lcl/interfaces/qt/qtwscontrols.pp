@@ -441,6 +441,8 @@ class procedure TQtWSWinControl.ScrollBy(const AWinControl: TWinControl;
   DeltaX, DeltaY: integer);
 var
   Widget: TQtCustomControl;
+  ABar: TQtScrollBar;
+  APosition: Integer;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'ScrollBy') then
     Exit;
@@ -448,6 +450,39 @@ begin
   begin
     Widget := TQtCustomControl(AWinControl.Handle);
     Widget.viewport.scroll(DeltaX, DeltaY);
+  end else
+  if TQtWidget(AWinControl.Handle) is TQtAbstractScrollArea then
+  begin
+    ABar := TQtAbstractScrollArea(AWinControl.Handle).horizontalScrollBar;
+    if ABar = nil then
+      exit;
+    if ABar.getTracking then
+      APosition := ABar.getSliderPosition
+    else
+      APosition := ABar.getValue;
+    if DeltaX <> 0 then
+    begin
+      APosition += -DeltaX;
+      if ABar.getTracking then
+        ABar.setSliderPosition(APosition)
+      else
+        ABar.setValue(APosition);
+    end;
+    ABar := TQtAbstractScrollArea(AWinControl.Handle).verticalScrollBar;
+    if ABar = nil then
+      exit;
+    if ABar.getTracking then
+      APosition := ABar.getSliderPosition
+    else
+      APosition := ABar.getValue;
+    if DeltaY <> 0 then
+    begin
+      APosition += -DeltaY;
+      if ABar.getTracking then
+        ABar.setSliderPosition(APosition)
+      else
+        ABar.setValue(APosition);
+    end;
   end
   {$IFDEF VerboseQt}
   else
