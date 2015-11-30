@@ -155,56 +155,56 @@ end;
 procedure TCustomFlowPanel.AlignControls(AControl: TControl;
   var RemainingClientRect: TRect);
 const
-  XIncDir:     array[TFlowStyle] of Integer = (1, -1,  1, -1,  1,  1, -1, -1);
-  YIncDir:     array[TFlowStyle] of Integer = (1,  1, -1, -1,  1, -1,  1, -1);
-  YDeltaConst: array[TFlowStyle] of Integer = (0,  0, -1, -1,  0,  0,  0,  0);
-  XDeltaConst: array[TFlowStyle] of Integer = (0,  0,  0,  0,  0,  0, -1, -1);
+  cXIncDir:     array[TFlowStyle] of Integer = (1, -1,  1, -1,  1,  1, -1, -1);
+  cYIncDir:     array[TFlowStyle] of Integer = (1,  1, -1, -1,  1, -1,  1, -1);
+  cYDeltaConst: array[TFlowStyle] of Integer = (0,  0, -1, -1,  0,  0,  0,  0);
+  cXDeltaConst: array[TFlowStyle] of Integer = (0,  0,  0,  0,  0,  0, -1, -1);
 var
   I, L: Integer;
-  MaxHeight, MaxWidth: Integer;
-  YDelta, XDelta: Integer;
-  Position: TPoint;
-  Size, GroupSize: TSize;
-  Control: TControl;
-  ConBS: TControlBorderSpacing;
-  ForceWrap, ForbidWrap: Boolean;
+  xMaxHeight, xMaxWidth: Integer;
+  xPosition: TPoint;
+  xSize, xGroupSize: TSize;
+  xControl: TControl;
+  xConBS: TControlBorderSpacing;
+  xForceWrap, xForbidWrap: Boolean;
 begin
+  if ControlCount = 0 then
+    Exit;
+
   DisableAlign;
   try
-  if ControlCount > 0 then
-  begin
-    MaxHeight := 0;
-    MaxWidth := 0;
+    xMaxHeight := 0;
+    xMaxWidth := 0;
     AdjustClientRect(RemainingClientRect);
     case FFlowStyle of
       fsLeftRightTopBottom,
       fsTopBottomLeftRight:
-        Position := RemainingClientRect.TopLeft;
+        xPosition := RemainingClientRect.TopLeft;
       fsRightLeftTopBottom,
       fsTopBottomRightLeft:
-        Position := Point(RemainingClientRect.Right, RemainingClientRect.Top);
+        xPosition := Point(RemainingClientRect.Right, RemainingClientRect.Top);
       fsLeftRightBottomTop,
       fsBottomTopLeftRight:
-        Position := Point(RemainingClientRect.Left, RemainingClientRect.Bottom);
+        xPosition := Point(RemainingClientRect.Left, RemainingClientRect.Bottom);
       fsRightLeftBottomTop,
       fsBottomTopRightLeft:
-        Position := RemainingClientRect.BottomRight;
+        xPosition := RemainingClientRect.BottomRight;
     end;
 
     for I := 0 to FControlList.Count - 1 do
     begin
-      Control := FControlList[I].Control;
-      ConBS := Control.BorderSpacing;
-      if not Control.Visible and not (csDesigning in ComponentState) then
+      xControl := FControlList[I].Control;
+      xConBS := xControl.BorderSpacing;
+      if not xControl.Visible and not (csDesigning in ComponentState) then
         continue;
 
-      Size.cx := ConBS.ControlWidth;
-      Size.cy := ConBS.ControlHeight;
-      GroupSize := Size;
+      xSize.cx := xConBS.ControlWidth;
+      xSize.cy := xConBS.ControlHeight;
+      xGroupSize := xSize;
 
-      ForceWrap := (I > 0) and (FControlList[I-1].WrapAfter = waForce);
-      ForbidWrap := (I > 0) and (FControlList[I-1].WrapAfter = waForbid);
-      if not ForceWrap
+      xForceWrap := (I > 0) and (FControlList[I-1].WrapAfter = waForce);
+      xForbidWrap := (I > 0) and (FControlList[I-1].WrapAfter = waForbid);
+      if not xForceWrap
       and ((I = 0) or not(FControlList[I-1].WrapAfter in [waAvoid, waForbid])) then
       begin
         for L := I to FControlList.Count-2 do
@@ -213,9 +213,9 @@ begin
           begin
             case FFlowStyle of
               fsLeftRightTopBottom, fsLeftRightBottomTop, fsRightLeftTopBottom, fsRightLeftBottomTop:
-                Inc(GroupSize.cx, FControlList[L+1].Control.BorderSpacing.ControlWidth);
+                Inc(xGroupSize.cx, FControlList[L+1].Control.BorderSpacing.ControlWidth);
               fsTopBottomLeftRight, fsTopBottomRightLeft, fsBottomTopLeftRight, fsBottomTopRightLeft:
-                Inc(GroupSize.cy, FControlList[L+1].Control.BorderSpacing.ControlHeight);
+                Inc(xGroupSize.cy, FControlList[L+1].Control.BorderSpacing.ControlHeight);
             end;
           end else
             break;
@@ -224,64 +224,61 @@ begin
       case FFlowStyle of
         fsLeftRightTopBottom,
         fsLeftRightBottomTop:
-          if (MaxHeight > 0) and FAutoWrap and not ForbidWrap
-          and (ForceWrap or (Position.X + GroupSize.cx >= RemainingClientRect.Right)) then
+          if (xMaxHeight > 0) and FAutoWrap and not xForbidWrap
+          and (xForceWrap or (xPosition.X + xGroupSize.cx >= RemainingClientRect.Right)) then
           begin
-            Inc(Position.Y, MaxHeight * YIncDir[FFlowStyle]);
-            MaxHeight := 0;
-            Position.X := RemainingClientRect.Left;
+            Inc(xPosition.Y, xMaxHeight * cYIncDir[FFlowStyle]);
+            xMaxHeight := 0;
+            xPosition.X := RemainingClientRect.Left;
           end;
         fsRightLeftTopBottom,
         fsRightLeftBottomTop:
           begin
-            Dec(Position.X, GroupSize.cx);
-            if (MaxHeight > 0) and FAutoWrap and not ForbidWrap
-            and (ForceWrap or (Position.X <= 0)) then
+            Dec(xPosition.X, xGroupSize.cx);
+            if (xMaxHeight > 0) and FAutoWrap and not xForbidWrap
+            and (xForceWrap or (xPosition.X <= 0)) then
             begin
-              Inc(Position.Y, MaxHeight * YIncDir[FFlowStyle]);
-              MaxHeight := 0;
-              Position.X := RemainingClientRect.Right - Size.cx;
+              Inc(xPosition.Y, xMaxHeight * cYIncDir[FFlowStyle]);
+              xMaxHeight := 0;
+              xPosition.X := RemainingClientRect.Right - xSize.cx;
             end;
           end;
         fsTopBottomLeftRight,
         fsTopBottomRightLeft:
-          if (MaxWidth > 0) and FAutoWrap and not ForbidWrap
-          and (ForceWrap or (Position.Y + GroupSize.cy >= RemainingClientRect.Bottom)) then
+          if (xMaxWidth > 0) and FAutoWrap and not xForbidWrap
+          and (xForceWrap or (xPosition.Y + xGroupSize.cy >= RemainingClientRect.Bottom)) then
           begin
-            Inc(Position.X, MaxWidth * XIncDir[FFlowStyle]);
-            MaxWidth := 0;
-            Position.Y := RemainingClientRect.Top;
+            Inc(xPosition.X, xMaxWidth * cXIncDir[FFlowStyle]);
+            xMaxWidth := 0;
+            xPosition.Y := RemainingClientRect.Top;
           end;
         fsBottomTopLeftRight,
         fsBottomTopRightLeft:
           begin
-            Dec(Position.Y, GroupSize.cy);
-            if (MaxWidth > 0) and FAutoWrap and not ForbidWrap
-            and (ForceWrap or (Position.Y <= 0)) then
+            Dec(xPosition.Y, xGroupSize.cy);
+            if (xMaxWidth > 0) and FAutoWrap and not xForbidWrap
+            and (xForceWrap or (xPosition.Y <= 0)) then
             begin
-              Inc(Position.X, MaxWidth * XIncDir[FFlowStyle]);
-              MaxWidth := 0;
-              Position.Y := RemainingClientRect.Bottom - Size.cy;
+              Inc(xPosition.X, xMaxWidth * cXIncDir[FFlowStyle]);
+              xMaxWidth := 0;
+              xPosition.Y := RemainingClientRect.Bottom - xSize.cy;
             end;
           end;
       end;
-      YDelta := YDeltaConst[FFlowStyle] * Size.cy;
-      XDelta := XDeltaConst[FFlowStyle] * Size.cx;
-      if Size.cy > MaxHeight then
-        MaxHeight := Size.cy;
-      if Size.cx > MaxWidth then
-        MaxWidth := Size.cx;
-      Control.SetBounds(
-        Position.X + ConBS.Left + ConBS.Around + XDelta,
-        Position.Y + ConBS.Top + ConBS.Around + YDelta,
-        Size.cx - (ConBS.Left + ConBS.Right + ConBS.Around*2),
-        Size.cy - (ConBS.Top + ConBS.Bottom + ConBS.Around*2));
+      if xSize.cy > xMaxHeight then
+        xMaxHeight := xSize.cy;
+      if xSize.cx > xMaxWidth then
+        xMaxWidth := xSize.cx;
+      xControl.SetBounds(
+        xPosition.X + xConBS.Left + xConBS.Around + cXDeltaConst[FFlowStyle] * xSize.cx,
+        xPosition.Y + xConBS.Top + xConBS.Around + cYDeltaConst[FFlowStyle] * xSize.cy,
+        xSize.cx - (xConBS.Left + xConBS.Right + xConBS.Around*2),
+        xSize.cy - (xConBS.Top + xConBS.Bottom + xConBS.Around*2));
       if FFlowStyle in [fsLeftRightTopBottom, fsLeftRightBottomTop] then
-        Inc(Position.X, Size.cx * XIncDir[FFlowStyle])
+        Inc(xPosition.X, xSize.cx * cXIncDir[FFlowStyle])
       else if FFlowStyle in [fsTopBottomLeftRight, fsTopBottomRightLeft] then
-        Inc(Position.Y, Size.cy + YIncDir[FFlowStyle]);
+        Inc(xPosition.Y, xSize.cy + cYIncDir[FFlowStyle]);
     end;
-  end;
   finally
     EnableAlign;
   end;
