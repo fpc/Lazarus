@@ -3320,6 +3320,7 @@ components/printers/images/tprintdialog.png -text svneol=unset#image/png
 components/printers/images/tprintersetupdialog.png -text svneol=unset#image/png
 components/printers/languages/printer4lazstrconst.cs.po svneol=native#text/plain
 components/printers/languages/printer4lazstrconst.de.po svneol=native#text/plain
+components/printers/languages/printer4lazstrconst.hu.po svneol=native#text/plain
 components/printers/languages/printer4lazstrconst.po svneol=native#text/plain
 components/printers/languages/printer4lazstrconst.ru.po svneol=native#text/plain
 components/printers/osprinters.pas svneol=native#text/pascal

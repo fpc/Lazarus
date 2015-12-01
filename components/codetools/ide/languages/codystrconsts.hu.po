@@ -46,7 +46,7 @@ msgstr "... és további %s azonosító"
 
 #: codystrconsts.crsany
 msgid "Any"
-msgstr ""
+msgstr "Bármi"
 
 #: codystrconsts.crsawindowforthelazarusideitcanbedockedlikethecodeexp
 msgid "A window for the Lazarus IDE. It can be docked like the Code Explorer or the FPDoc Editor. This also creates a menu item in the View menu and a short cut."
@@ -182,7 +182,7 @@ msgstr "Kód-csomópont információ"
 
 #: codystrconsts.crscodyfindoverloads
 msgid "Cody - Find Overloads"
-msgstr ""
+msgstr "Cody - Felültöltések keresése"
 
 #: codystrconsts.crscodyidentifierdictionary
 msgid "Identifier Dictionary"
@@ -195,11 +195,11 @@ msgstr "Általános"
 
 #: codystrconsts.crscompatibility
 msgid "Compatibility"
-msgstr ""
+msgstr "Kompatibilitás"
 
 #: codystrconsts.crscompatible
 msgid "compatible"
-msgstr ""
+msgstr "kompatibilis"
 
 #: codystrconsts.crsconfigurenewidewindow
 msgid "Configure new IDE window"
@@ -288,7 +288,7 @@ msgstr "Unit törlése?"
 
 #: codystrconsts.crsdistance
 msgid "Distance"
-msgstr ""
+msgstr "Távolság"
 
 #: codystrconsts.crsdvisakeyword
 msgid "\"%s\" is a keyword."
@@ -300,15 +300,15 @@ msgstr "Hiba: %s"
 
 #: codystrconsts.crserrorcursorisnotinaprojectunit
 msgid "Error: cursor is not in a project unit"
-msgstr ""
+msgstr "Hiba: A kurzor nem a projekt egyik unit-jában van"
 
 #: codystrconsts.crserrorneedsourceeditoratprocedurecallordeclaration
 msgid "Error: Need source editor at procedure call or declaration"
-msgstr ""
+msgstr "Hiba: A forráskódszerkesztőnek eljáráshívásnál vagy deklarációnál kell állnia"
 
 #: codystrconsts.crsexact
 msgid "exact"
-msgstr ""
+msgstr "pontos"
 
 #: codystrconsts.crsexplodeawithblock
 msgid "Explode a \"With\" Block"
@@ -344,7 +344,7 @@ msgstr "(Szűrő)"
 
 #: codystrconsts.crsfilter2
 msgid "Filter"
-msgstr ""
+msgstr "Szűrő"
 
 #: codystrconsts.crsfindgdbbacktraceline
 msgid "Find GDB backtrace line"
@@ -352,7 +352,7 @@ msgstr "A GDB visszakövetés sorának megkeresése"
 
 #: codystrconsts.crsfindproceduremethodoverloads
 msgid "Find Procedure/Method Overloads"
-msgstr ""
+msgstr "Eljárás/metódus felültöltések keresése"
 
 #: codystrconsts.crsfindsourceofgdbbacktrace
 msgid "Find source of GDB backtrace"
@@ -380,7 +380,7 @@ msgstr "&Súgó"
 
 #: codystrconsts.crshideabstractmethodsandmethodsofclassinterfaces
 msgid "Hide abstract methods and methods of class interfaces"
-msgstr ""
+msgstr "Absztrakt metódusok és osztályfelületek metódusainak elrejtése"
 
 #: codystrconsts.crshideunitsofotherprojects
 msgid "Hide units of other projects"
@@ -409,7 +409,7 @@ msgstr "Ha az azonosító a kidolgozás szakaszhoz lett adva és a szükséges u
 
 #: codystrconsts.crsifuncheckedlistalsoprocedureswithsamenameandincomp
 msgid "If unchecked list also procedures with same name and incompatible parameter lists."
-msgstr ""
+msgstr "Ha nincs bejelölve a lista az azonos nevű, de eltérő paraméterekkel rendelkező eljárásokat is tartalmazza."
 
 #: codystrconsts.crsimpossibledependency
 msgid "Impossible dependency"
@@ -421,7 +421,7 @@ msgstr "itt: \"%s\""
 
 #: codystrconsts.crsincompatible
 msgid "incompatible"
-msgstr ""
+msgstr "nem kompatibilis"
 
 #: codystrconsts.crsinimplementation
 msgid "In implementation"
@@ -445,11 +445,11 @@ msgstr "Ugrás"
 
 #: codystrconsts.crsjumpto
 msgid "&Jump to"
-msgstr "Ugrás ide"
+msgstr "Ugrás"
 
 #: codystrconsts.crsjumpto2
 msgid "Jump to"
-msgstr ""
+msgstr "Ugrás"
 
 #: codystrconsts.crskbytes
 msgid "kbytes"
@@ -497,7 +497,7 @@ msgstr "hiányzik ..."
 
 #: codystrconsts.crsname
 msgid "Name"
-msgstr ""
+msgstr "Név"
 
 #: codystrconsts.crsnoneselected
 msgid "none selected"
@@ -505,7 +505,7 @@ msgstr "semmi nincs kijelölve"
 
 #: codystrconsts.crsnooverloadsfoundinprojectunits
 msgid "no overloads found in project units"
-msgstr ""
+msgstr "nem találhatók felültöltések a projekt unit-jaiban"
 
 #: codystrconsts.crsnoproject
 msgid "No project"
@@ -525,19 +525,19 @@ msgstr "A vágólapon"
 
 #: codystrconsts.crsonlydescendantsof
 msgid "Only descendants of %s"
-msgstr ""
+msgstr "Csak %s leszármazottai"
 
 #: codystrconsts.crsonlymethods
 msgid "Only methods"
-msgstr ""
+msgstr "Csak metódusok"
 
 #: codystrconsts.crsonlynonmethods
 msgid "Only non methods"
-msgstr ""
+msgstr "Metódusok nélkül"
 
 #: codystrconsts.crsonlyprocedureswithcompatibleparameters
 msgid "Only procedures with compatible parameters"
-msgstr ""
+msgstr "Csak egyező paraméterekkel rendelkező eljárások"
 
 #: codystrconsts.crsoptions
 msgid "Options"
@@ -581,7 +581,7 @@ msgstr "Azonos nevű csomag"
 
 #: codystrconsts.crsparseerror
 msgid "Parse error"
-msgstr ""
+msgstr "Feldolgozási hiba"
 
 #: codystrconsts.crspastelinesofagdbbacktrace
 msgid "Paste lines of a gdb backtrace:"
@@ -661,7 +661,7 @@ msgstr "Frissítés"
 
 #: codystrconsts.crsrelations
 msgid "Relations:"
-msgstr ""
+msgstr "Kapcsolatok:"
 
 #: codystrconsts.crsreport
 msgid "Report"
@@ -681,11 +681,11 @@ msgstr "Mentés fájlba: %s"
 
 #: codystrconsts.crsscanning
 msgid "Scanning ..."
-msgstr ""
+msgstr "Ellenőrzés ..."
 
 #: codystrconsts.crsscanningsunits
 msgid "Scanning: %s units ..."
-msgstr ""
+msgstr "Ellenőrzés: %s unit ..."
 
 #: codystrconsts.crssearching
 msgid "searching ..."
@@ -817,7 +817,7 @@ msgstr "Unit megosztott függvénytárai"
 
 #: codystrconsts.crsunitss
 msgid "Units: %s"
-msgstr ""
+msgstr "Unit-ok: %s"
 
 #: codystrconsts.crsunitstaticlibraries
 msgid "Unit static libraries"

@@ -64,7 +64,7 @@ msgstr "Az aktív jelentés nyomtatása közvetlenül (vagyis előnézet nélkü
 
 #: maincalleditor.cerhintthumbnails
 msgid "This Action will Load and Preview a thumbnails Report"
-msgstr "Ez a művelet betölti és megjeleníti a jelentés bélyegképét"
+msgstr "Ez a művelet betölti és megjeleníti a \"Bélyegképek\" jelentést"
 
 #: maincalleditor.cerindex
 msgctxt "maincalleditor.cerindex"
@@ -217,3 +217,4 @@ msgstr "Tesztek"
 #: tfrmmain.menuitem9.caption
 msgid "Export"
 msgstr "Exportálás"
+
