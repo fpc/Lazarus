@@ -587,11 +587,19 @@ begin
     SWP_NOSIZE or SWP_NOMOVE or SWP_NOZORDER or SWP_NOACTIVATE or VisibilityToFlag[AWinControl.HandleObjectShouldBeVisible])
 end;
 
+function ScrollWindowPtr(hWnd: HWND; XAmount: longint; YAmount: longint; lpRect: pointer;
+  lpClipRect: pointer): WINBOOL; stdcall; external 'user32' name 'ScrollWindow';
+//function ScrollWindowPtr(hWnd: HWND; dx: longint; dy: longint;
+//  prcScroll: pointer; prcClip: pointer; hrgnUpdate: HRGN; prcUpdate: LPRECT;
+//  flags: UINT): WINBOOL; stdcall; external 'user32' name 'ScrollWindowEx';
+
 class procedure TWin32WSWinControl.ScrollBy(const AWinControl: TWinControl;
   DeltaX, DeltaY: integer);
 begin
   if Windows.IsWindowVisible(AWinControl.Handle) then
-    ScrollWindowEx(AWinControl.Handle, DeltaX, DeltaY, nil, nil, 0, nil, SW_INVALIDATE or SW_ERASE);
+    ScrollWindowPtr(AWinControl.Handle, DeltaX, DeltaY, nil, nil);
+    // ScrollWindowEx does not work here for some reason.
+    //ScrollWindowPtr(AWinControl.Handle, DeltaX, DeltaY, nil, nil, 0, nil, SW_INVALIDATE or SW_ERASE);
 end;
 
 { TWin32WSDragImageList }
