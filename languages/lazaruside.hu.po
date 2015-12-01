@@ -3023,7 +3023,7 @@ msgstr "Hasábköz tippek megjelenítése"
 #: lazarusidestrconsts.dlgshowhint
 msgctxt "lazarusidestrconsts.dlgshowhint"
 msgid "Show hints"
-msgstr "Tanácsok megjelenítése"
+msgstr "Tippek megjelenítése"
 
 #: lazarusidestrconsts.dlgshowingwindows
 msgid "Showing Windows"
@@ -3776,7 +3776,7 @@ msgstr "Dokumentáció:"
 
 #: lazarusidestrconsts.lisaboutide
 msgid "About IDE"
-msgstr "Az IDE névjegye"
+msgstr "Az IDE adatai"
 
 #: lazarusidestrconsts.lisaboutlazarus
 msgid "About Lazarus"
@@ -10871,7 +10871,7 @@ msgstr "Építés megszakítása"
 
 #: lazarusidestrconsts.lismenuaboutfpc
 msgid "About FPC"
-msgstr "A(z) FPC névjegye"
+msgstr "Az FPC adatai"
 
 #: lazarusidestrconsts.lismenuaddbreakpoint
 msgid "Add &Breakpoint"
@@ -14034,15 +14034,15 @@ msgstr "Metódus nevének másolása a vágólapra"
 
 #: lazarusidestrconsts.lisplistfilterany
 msgid "Filter by matching any part of method"
-msgstr "Szűrés metódus rész egyezésre"
+msgstr "Szűrés: egyezés a metódus nevének bármely részén"
 
 #: lazarusidestrconsts.lisplistfilterstart
 msgid "Filter by matching with start of method"
-msgstr "Szűrés metódus kezdetére"
+msgstr "Szűrés: egyezés a metódus nevének elején"
 
 #: lazarusidestrconsts.lisplistjumptoselection
 msgid "Jump To Selection"
-msgstr "Ugrás a kijelöléshez"
+msgstr "Ugrás a kijelölthöz"
 
 #: lazarusidestrconsts.lisplistnone
 msgid "<None>"
@@ -15991,7 +15991,7 @@ msgstr "A(z) \"%s\"%sfuttató alkalmazás nem létezik, vagy nem futtatható.%sE
 
 #: lazarusidestrconsts.listhelazarusdirectorycontainsthesourcesoftheideandth
 msgid "The Lazarus directory contains the sources of the IDE and the package files of LCL and many standard packages. For example it contains the file \"ide%slazarus.lpi\". The translation files are located there too."
-msgstr "A Lazarus könyvtára tartalmazza az IDE forrásait, az LCL csomagok fájljait, és sok alapvető csomagok. Például tartalmazza az \"ide%slazarus.lpi\" fájlt. A fordítások fájljai is ott találhatók."
+msgstr "A Lazarus könyvtára tartalmazza az IDE forrásait, az LCL csomagok fájljait, és sok alapvető csomagot. Tartalmazza például az \"ide%slazarus.lpi\" fájlt. A fordítások fájljai is ott találhatók."
 
 #: lazarusidestrconsts.listhelazarusdirectorydoesnotlookcorrect
 msgid "The Lazarus directory \"%s\" does not look correct:%s%s"
@@ -16239,7 +16239,7 @@ msgstr "E unit-ok nem találhatók:"
 
 #: lazarusidestrconsts.listhesourcesofthefreepascalpackagesarerequiredforbro
 msgid "The sources of the Free Pascal packages are required for browsing and code completion. For example it has the file \"%s\"."
-msgstr "A Free Pascal csomag forrásaira szükség van a böngészéshez és a kódkiegészítéshez. Mert az tartalmazza például az \"%s\" fájlt."
+msgstr "A Free Pascal csomag forrásaira szükség van a böngészéshez és a kódkiegészítéshez. Az tartalmazza például a(z) \"%s\" fájlt."
 
 #: lazarusidestrconsts.listhetargetisnotwritable
 msgid "The target %s is not writable."
