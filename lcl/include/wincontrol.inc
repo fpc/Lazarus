@@ -6147,9 +6147,14 @@ var
   i: Integer;
 begin
   // scroll inner controls
-  for i := 0 to ControlCount - 1 do
-    with Controls[i] do
-      SetBounds(Left + DeltaX, Top + DeltaY, Width, Height);
+  DisableAutoSizing;
+  try
+    for i := 0 to ControlCount - 1 do
+      with Controls[i] do
+        SetBounds(Left + DeltaX, Top + DeltaY, Width, Height);
+  finally
+    EnableAutoSizing;
+  end;
 end;
 
 {------------------------------------------------------------------------------
