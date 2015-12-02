@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-11-29 18:40+0100\n"
+"PO-Revision-Date: 2015-12-02 19:51+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -1316,7 +1316,7 @@ msgstr "Var/Type (lokal)"
 
 #: lazarusidestrconsts.dlgdrawcomponentsnamebelowit
 msgid "Draw the component's name below it."
-msgstr ""
+msgstr "Den Komponentennamen darunter zeichnen."
 
 #: lazarusidestrconsts.dlgedback
 msgid "Back"
@@ -2207,20 +2207,16 @@ msgid "1 (quick, debugger friendly)"
 msgstr "Stufe 1 (schnell, debuggerfreundlich)"
 
 #: lazarusidestrconsts.dlglevel2opt
-#, fuzzy
-#| msgid "2 (quick optimizations)"
 msgid "2 (-O1 + quick optimizations)"
-msgstr "Stufe 2 (Stufe 1 + schnelle Opt.)"
+msgstr "Stufe 2 (-O1 + schnelle Opt.)"
 
 #: lazarusidestrconsts.dlglevel3opt
-#, fuzzy
-#| msgid "3 (slow optimizations)"
 msgid "3 (-O2 + slow optimizations)"
-msgstr "Stufe 3 (Stufe 2 + langsame Opt.)"
+msgstr "Stufe 3 (-O2 + langsame Opt.)"
 
 #: lazarusidestrconsts.dlglevel4opt
 msgid "4 (-O3 + aggressive optimizations, beware)"
-msgstr ""
+msgstr "Stufe 4 (-O3 + aggressive Opt. , Vorsicht)"
 
 #: lazarusidestrconsts.dlglevelnoneopt
 msgid "0 (no optimization)"
@@ -8218,7 +8214,7 @@ msgstr "unverändert"
 
 #: lazarusidestrconsts.lisdonotcheckifanotherideinstanceisalreadyrunning
 msgid "%sDo not check if another IDE instance is already running"
-msgstr ""
+msgstr "%sNicht prüfen, ob eine andere Lazarus-Instanz bereits läuft"
 
 #: lazarusidestrconsts.lisdonotclosetheproject
 msgid "Do not close the project"
@@ -8906,7 +8902,7 @@ msgstr "Export ..."
 
 #: lazarusidestrconsts.lisexportall
 msgid "Export all"
-msgstr ""
+msgstr "Alle exportieren"
 
 #: lazarusidestrconsts.lisexportallitemstofile
 msgid "Export All Items to File"
@@ -8935,7 +8931,7 @@ msgstr "Package-Liste exportieren (*.xml)"
 
 #: lazarusidestrconsts.lisexportselected
 msgid "Export selected"
-msgstr ""
+msgstr "Ausgewählte exportieren"
 
 #: lazarusidestrconsts.lisexportsub
 msgid "Export >>"
@@ -13082,7 +13078,7 @@ msgstr " des Projektinspektors"
 
 #: lazarusidestrconsts.lisoifaddtofavoriteproperties
 msgid "Add to favorite properties"
-msgstr ""
+msgstr "Zu Favoriteneigenschaften hinzufügen"
 
 #: lazarusidestrconsts.lisoifchooseabaseclassforthefavoriteproperty
 msgid "Choose a base class for the favorite property \"%s\"."
@@ -13094,7 +13090,7 @@ msgstr "Klasse \"%s\" nicht gefunden."
 
 #: lazarusidestrconsts.lisoifremovefromfavoriteproperties
 msgid "Remove from favorite properties"
-msgstr ""
+msgstr "Aus Favoriteneigenschaften entfernen"
 
 #: lazarusidestrconsts.lisoipautoinstalldynamic
 msgid "auto install dynamic"
@@ -14084,11 +14080,11 @@ msgstr "Package-Includedateien-Suchpfad. Parameter ist die Package-ID."
 
 #: lazarusidestrconsts.lispkgmacropackagenameparameterispackageid
 msgid "Package name. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr ""
+msgstr "Package-Name. Parameter ist Package ID, z.B. \"Name\" oder \"Name 1.0\""
 
 #: lazarusidestrconsts.lispkgmacropackageoutputdirectoryparameterispackageid
 msgid "Package output directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr ""
+msgstr "Package-Ausgabeverzeichnis. Parameter ist Package ID, z.B. \"Name\" oder \"Name 1.0\""
 
 #: lazarusidestrconsts.lispkgmacropackagesourcesearchpathparameterispackageid
 msgid "Package source search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
@@ -14305,6 +14301,8 @@ msgid ""
 "The package %s is already open in the IDE.\n"
 "You cannot save a package with the same name.\n"
 msgstr ""
+"Das Package %s ist bereits in der IDE geöffnet.\n"
+"Sie können kein Package mit dem selben Namen speichern.\n"
 
 #: lazarusidestrconsts.lispkgmangsavepackage
 msgid "Save package?"
@@ -17047,7 +17045,7 @@ msgstr "Titel (für Voreinstellung leerlassen)"
 
 #: lazarusidestrconsts.listitleopencomponenticon24x24
 msgid "Choose a component icon 24x24"
-msgstr ""
+msgstr "Ein Komponenten-Icon 24x24 wählen"
 
 #: lazarusidestrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
@@ -17928,7 +17926,7 @@ msgstr "Zur Liste \"%s\" hinzufügen"
 #: lazarusidestrconsts.lisuserdefinedmarkupkeygroup
 msgctxt "lazarusidestrconsts.lisuserdefinedmarkupkeygroup"
 msgid "User defined text markup"
-msgstr ""
+msgstr "Benutzerdefinierte Texthervorhebung"
 
 #: lazarusidestrconsts.lisuserdefinedmarkupkeyremove
 msgid "Remove from list \"%s\""
@@ -20262,4 +20260,3 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
-
