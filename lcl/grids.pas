@@ -6898,15 +6898,23 @@ begin
       end else
         TabCheckEditorKey;
     VK_LEFT:
-      if Relaxed then
-        MoveSel(True, -cBidiMove[UseRightToLeftAlignment], 0)
-      else
-        MoveSel(True, 0,-1);
+      //Don't move to another cell is user is editing
+      if not FEditorKey then
+      begin
+        if Relaxed then
+          MoveSel(True, -cBidiMove[UseRightToLeftAlignment], 0)
+        else
+          MoveSel(True, 0,-1);
+      end;
     VK_RIGHT:
-      if Relaxed then
-        MoveSel(True, cBidiMove[UseRightToLeftAlignment], 0)
-      else
-        MoveSel(True, 0, 1);
+      //Don't move to another cell is user is editing
+      if not FEditorKey then
+      begin
+        if Relaxed then
+          MoveSel(True, cBidiMove[UseRightToLeftAlignment], 0)
+        else
+          MoveSel(True, 0, 1);
+      end;
     VK_UP:
         MoveSel(True, 0, -1);
     VK_DOWN:

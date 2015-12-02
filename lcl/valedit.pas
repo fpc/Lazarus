@@ -1190,7 +1190,10 @@ begin
   end;
   Result:=inherited GetDefaultEditor(Column);
   //Need this to be able to intercept VK_Delete in the editor
-  EditorOptions := EditorOptions or EO_HOOKKEYDOWN;
+  if (KeyDelete in KeyOptions) then
+    EditorOptions := EditorOptions or EO_HOOKKEYDOWN
+  else
+    EditorOptions := EditorOptions and (not EO_HOOKKEYDOWN);
   if Column=1 then
   begin
     ItemProp := nil;
