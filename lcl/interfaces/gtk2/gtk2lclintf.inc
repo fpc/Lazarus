@@ -975,6 +975,13 @@ var
 begin
   Result := mrNone;
   ReleaseCapture;
+
+  if (Length(DialogMessage)>1000) then
+  begin
+    Result:=inherited;
+    exit;
+  end;
+
   ADialogResult := mrCancel;
   case DialogType of
     idDialogWarning: GtkDialogType := GTK_MESSAGE_WARNING;
