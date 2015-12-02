@@ -3964,6 +3964,8 @@ end;
 
 function TLazSourceFileManager.CloseProject: TModalResult;
 begin
+  if Project1=nil then exit(mrOk);
+
   //debugln('TLazSourceFileManager.CloseProject A');
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.CloseProject A');{$ENDIF}
   Result:=DebugBoss.DoStopProject;
@@ -3997,6 +3999,7 @@ begin
   FreeThenNil(Project1);
   if IDEMessagesWindow<>nil then IDEMessagesWindow.Clear;
 
+  MainIDE.UpdateCaption;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.CloseProject C');{$ENDIF}
   Result:=mrOk;
   //debugln('TLazSourceFileManager.CloseProject end ',CodeToolBoss.ConsistencyCheck);
