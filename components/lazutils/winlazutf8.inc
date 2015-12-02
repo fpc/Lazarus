@@ -208,7 +208,11 @@ begin
   else
   begin
     if (Param <= ArgsWCount) then
+      {$IFDEF ACP_RTL}
+      Result := String(UnicodeString(ArgsW[Param]))
+      {$ELSE}
       Result := Utf8Encode(ArgsW[Param])
+      {$ENDIF ACP_RTL}
     else
       Result := '';
   end;
