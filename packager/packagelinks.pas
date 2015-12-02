@@ -474,7 +474,7 @@ var
   CurPkgLink, OldPkgLink, OtherPkgLink: TPackageLink;
   sl: TStringListUTF8;
   LPLFilename: String;
-  LPKFilename: string;
+  LPKFilename, LazDir: string;
   Files: TStrings;
   i: Integer;
   OldNode, OtherNode: TAvgLvlTreeNode;
@@ -498,6 +498,7 @@ begin
     GlobalLinksDir:=GetGlobalLinkDirectory;
 
     CodeToolBoss.DirectoryCachePool.GetListing(GlobalLinksDir,Files,false);
+    LazDir:=EnvironmentOptions.GetParsedLazarusDirectory;
     for i:=0 to Files.Count-1 do begin
       LPLFilename:=GlobalLinksDir+Files[i];
       if CompareFileExt(LPLFilename,'lpl')<>0 then continue;
@@ -535,10 +536,10 @@ begin
       CurPkgLink.Name:=NewPkgName;
       CurPkgLink.Version.Assign(PkgVersion);
       IDEMacros.SubstituteMacros(LPKFilename);
-      //debugln(['TPackageLinks.UpdateGlobalLinks EnvironmentOptions.LazarusDirectory=',EnvironmentOptions.LazarusDirectory]);
+      //debugln(['TPackageLinks.UpdateGlobalLinks EnvironmentOptions.LazarusDirectory=',LazDir]);
       LPKFilename:=TrimFilename(LPKFilename);
-      if (FileIsInDirectory(LPKFilename,EnvironmentOptions.GetParsedLazarusDirectory)) then
-        LPKFilename:=CreateRelativePath(LPKFilename,EnvironmentOptions.GetParsedLazarusDirectory);
+      if (FileIsInDirectory(LPKFilename,LazDir)) then
+        LPKFilename:=CreateRelativePath(LPKFilename,LazDir);
       CurPkgLink.LPKFilename:=LPKFilename;
       //debugln('TPackageLinks.UpdateGlobalLinks PkgName="',CurPkgLink.Name,'" ',
       //  ' PkgVersion=',CurPkgLink.Version.AsString,
@@ -550,7 +551,7 @@ begin
           // keep LastUsed date for global link
           OldPkgLink:=TPackageLink(OldNode.Data);
           CurPkgLink.LastUsed:=OldPkgLink.LastUsed;
-          UnmappedGlobalLinks.Remove(OldPkgLink);
+          UnmappedGlobalLinks.Delete(OldNode);
           MappedGlobalLinks.Add(OldPkgLink);
           //if CompareText(OldPkgLink.Name,'lclbase')=0 then
           //  debugln(['TPackageLinks.UpdateGlobalLinks keeping LastUsed of '+OldPkgLink.Name,' ',DateToCfgStr(OldPkgLink.LastUsed,DateTimeAsCfgStrFormat)]);
@@ -582,9 +583,10 @@ begin
         if CompareText(OtherPkgLink.Name,OldPkgLink.Name)<>0 then break;
         OtherNode:=FGlobalLinks.FindSuccessor(OtherNode);
         if MappedGlobalLinks.Find(OtherPkgLink)<>nil then continue;
-        // found a new lpl without an old lpl
-        MappedGlobalLinks.Remove(OldPkgLink);
-        UnmappedGlobalLinks.Add(OldPkgLink);
+        // found a new lpl for the old lpl
+        if not UnmappedGlobalLinks.Remove(OldPkgLink) then
+          debugln(['TPackageLinks.UpdateGlobalLinks inconsistency UnmappedGlobalLinks.Remove']);
+        MappedGlobalLinks.Add(OldPkgLink);
         if OtherPkgLink.LastUsed<OldPkgLink.LastUsed then begin
           debugln(['Hint: (lazarus) [TPackageLinks.UpdateGlobalLinks] using LastUsed date of '+OldPkgLink.IDAsString+' for new '+OtherPkgLink.IDAsString+' in '+OtherPkgLink.LPKFilename]);
           OtherPkgLink.LastUsed:=OldPkgLink.LastUsed;
