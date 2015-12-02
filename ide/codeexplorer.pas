@@ -198,6 +198,8 @@ type
     ImgIDUnit: Integer;
     ImgIDVariable: Integer;
     ImgIDHint: Integer;
+    procedure ClearCodeTreeView;
+    procedure ClearDirectivesTreeView;
     function GetCodeFilter: string;
     function GetCurrentPage: TCodeExplorerPage;
     function GetDirectivesFilter: string;
@@ -594,7 +596,19 @@ begin
   if not (cevCheckOnIdle in FFlags) then exit;
   if (Screen.ActiveCustomForm<>nil)
   and (fsModal in Screen.ActiveCustomForm.FormState) then
+  begin
+    // do not update while a modal form is shown, except for clear
+    if SourceEditorManagerIntf=nil then exit;
+    if SourceEditorManagerIntf.SourceEditorCount=0 then
+    begin
+      Exclude(FFlags,cevCheckOnIdle);
+      FLastCodeValid:=false;
+      ClearCodeTreeView;
+      FDirectivesFilename:='';
+      ClearDirectivesTreeView;
+    end;
     exit;
+  end;
   if not IsVisible then exit;
   Exclude(FFlags,cevCheckOnIdle);
   case CurrentPage of
@@ -805,6 +819,25 @@ end;
 function TCodeExplorerView.GetCodeFilter: string;
 begin
   Result:=CodeFilterEdit.Text;
+end;
+
+procedure TCodeExplorerView.ClearCodeTreeView;
+var
+  f: TCEObserverCategory;
+  c: TCodeExplorerCategory;
+begin
+  for c:=low(TCodeExplorerCategory) to high(TCodeExplorerCategory) do
+    fCategoryNodes[c]:=nil;
+  fObserverNode:=nil;
+  for f:=low(TCEObserverCategory) to high(TCEObserverCategory) do
+    fObserverCatNodes[f]:=nil;
+  fSurroundingNode:=nil;
+  CodeTreeview.Items.Clear;
+end;
+
+procedure TCodeExplorerView.ClearDirectivesTreeView;
+begin
+  DirectivesTreeView.Items.Clear;
 end;
 
 function TCodeExplorerView.GetCurrentPage: TCodeExplorerPage;
@@ -2035,8 +2068,6 @@ procedure TCodeExplorerView.RefreshCode(OnlyVisible: boolean);
 var
   OldExpanded: TTreeNodeExpandedState;
   ACodeTool: TCodeTool;
-  c: TCodeExplorerCategory;
-  f: TCEObserverCategory;
   SrcEdit: TSourceEditorInterface;
   Filename: String;
   Code: TCodeBuffer;
@@ -2142,14 +2173,8 @@ begin
       if not CurFollowNode then
         OldExpanded:=TTreeNodeExpandedState.Create(CodeTreeView);
 
-      for c:=low(TCodeExplorerCategory) to high(TCodeExplorerCategory) do
-        fCategoryNodes[c]:=nil;
-      fObserverNode:=nil;
-      for f:=low(TCEObserverCategory) to high(TCEObserverCategory) do
-        fObserverCatNodes[f]:=nil;
-      fSurroundingNode:=nil;
+      ClearCodeTreeView;
 
-      CodeTreeview.Items.Clear;
       if (ACodeTool<>nil) and (ACodeTool.Tree<>nil) and (ACodeTool.Tree.Root<>nil)
       then begin
         CreateIdentifierNodes(ACodeTool,ACodeTool.Tree.Root,nil,nil,true);
@@ -2251,12 +2276,10 @@ begin
     DirectivesTreeView.BeginUpdate;
     OldExpanded:=TTreeNodeExpandedState.Create(DirectivesTreeView);
 
-    if (ADirectivesTool=nil) or (ADirectivesTool.Tree=nil)
-    or (ADirectivesTool.Tree.Root=nil) then
+    ClearDirectivesTreeView;
+    if (ADirectivesTool<>nil) and (ADirectivesTool.Tree<>nil)
+    and (ADirectivesTool.Tree.Root<>nil) then
     begin
-      DirectivesTreeView.Items.Clear;
-    end else begin
-      DirectivesTreeView.Items.Clear;
       CreateDirectiveNodes(ADirectivesTool,ADirectivesTool.Tree.Root,nil,nil,true);
     end;
 
