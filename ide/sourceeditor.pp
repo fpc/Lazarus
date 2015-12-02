@@ -7284,9 +7284,12 @@ var
 begin
   // Todo: Move to manager, include window changes
   SrcEdit:=GetActiveSE;
-  if SrcEdit = nil then Exit;
-  if FLastCodeBuffer=SrcEdit.CodeBuffer then exit;
-  FLastCodeBuffer:=SrcEdit.CodeBuffer;
+  if SrcEdit <> nil then
+  begin
+    if FLastCodeBuffer=SrcEdit.CodeBuffer then exit;
+    FLastCodeBuffer:=SrcEdit.CodeBuffer;
+  end else if FLastCodeBuffer=nil then
+    exit;
   if assigned(Manager) and Assigned(Manager.OnCurrentCodeBufferChanged) then
     Manager.OnCurrentCodeBufferChanged(Self);
 end;

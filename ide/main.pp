@@ -10661,8 +10661,8 @@ end;
 
 procedure TMainIDE.OnSrcNotebookCurCodeBufferChanged(Sender: TObject);
 begin
-  if SourceEditorManager.SourceEditorCount = 0 then Exit;
-  if CodeExplorerView<>nil then CodeExplorerView.CurrentCodeBufferChanged;
+  if CodeExplorerView<>nil then
+    CodeExplorerView.CurrentCodeBufferChanged;
 end;
 
 procedure TMainIDE.OnSrcNotebookShowHintForSource(SrcEdit: TSourceEditor;
