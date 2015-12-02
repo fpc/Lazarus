@@ -498,7 +498,7 @@ begin
 end;
 
 
-function ShowPromptDialog(const DialogCaption,
+function DefaultPromptDialog(const DialogCaption,
   DialogMessage: String;
   DialogType: longint; Buttons: PLongint;
   ButtonCount, DefaultIndex, EscapeResult: Longint;
@@ -815,7 +815,7 @@ begin
 end;
 
 
-function ShowQuestionDialog(const aCaption, aMsg: string; DlgType: LongInt;
+function DefaultQuestionDialog(const aCaption, aMsg: string; DlgType: LongInt;
   Buttons: TDialogButtons; HelpCtx: Longint): LongInt;
 { Show a dialog with aCaption as Title, aMsg as Text, DlgType as Icon,
   HelpCtx as Help context and Buttons to define the shown buttons and their
