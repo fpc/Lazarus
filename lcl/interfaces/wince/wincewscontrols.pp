@@ -452,16 +452,10 @@ end;
 
 class procedure TWinCEWSWinControl.ScrollBy(const AWinControl: TWinControl;
   DeltaX, DeltaY: integer);
-var
-  rgn: HRGN;
-  rect: trect;
 begin
-  rgn := 0; //roozbeh : seems to be ok?
-  // GetClipRgn(AWinControl.Handle,rgn);
-  // roozbeh:which flags really are required?!
   if Windows.IsWindowVisible(AWinControl.Handle) then
-    ScrollWindowPtr(AWinControl.Handle, DeltaX, DeltaY, nil, nil,
-      rgn, nil, SW_INVALIDATE or SW_ERASE or SW_SCROLLCHILDREN);
+    ScrollWindowEx(AWinControl.Handle, DeltaX, DeltaY, nil, nil, 0, nil,
+      SW_INVALIDATE or SW_ERASE or SW_SCROLLCHILDREN);
 end;
 
 { TWinCEWSDragImageList }
