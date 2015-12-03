@@ -38,7 +38,6 @@ type
 
   TWin32WSScrollingWinControl = class(TWSScrollingWinControl)
   published
-    class procedure ScrollBy(const AWinControl: TWinControl; DeltaX, DeltaY: integer); override;
   end;
 
   { TWin32WSScrollBox }
@@ -118,16 +117,6 @@ implementation
 type
   TWinControlAccess = class(TWinControl)
   end;
-
-{ TWin32WSScrollingWinControl }
-
-class procedure TWin32WSScrollingWinControl.ScrollBy(
-  const AWinControl: TWinControl; DeltaX, DeltaY: integer);
-begin
-  if Windows.IsWindowVisible(AWinControl.Handle) then
-    ScrollWindowEx(AWinControl.Handle, DeltaX, DeltaY, nil, nil, 0, nil,
-      SW_INVALIDATE or SW_ERASE or SW_SCROLLCHILDREN);
-end;
 
 { TWin32WSScrollBox }
 

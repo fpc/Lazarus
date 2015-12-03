@@ -592,7 +592,7 @@ class procedure TWin32WSWinControl.ScrollBy(const AWinControl: TWinControl;
 begin
   if Windows.IsWindowVisible(AWinControl.Handle) then
     ScrollWindowEx(AWinControl.Handle, DeltaX, DeltaY, nil, nil, 0, nil,
-      SW_INVALIDATE or SW_ERASE);
+      SW_INVALIDATE or SW_ERASE or SW_SCROLLCHILDREN);
 end;
 
 { TWin32WSDragImageList }
