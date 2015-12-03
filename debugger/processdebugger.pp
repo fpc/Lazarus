@@ -47,7 +47,7 @@ type
 
   TProcessDebugger = class(TDebugger)
   private
-    FProcess: TProcess;
+    FProcess: TProcessUTF8;
     procedure ProcessDestroyed(Sender: TObject);
     function  ProcessEnvironment(const {%H-}AVariable: String; const {%H-}ASet: Boolean): Boolean;
     function  ProcessRun: Boolean;

@@ -25,7 +25,7 @@ unit ProcessList;
 interface
 
 uses
-  Classes, SysUtils, Process, LCLProc;
+  Classes, SysUtils, LCLProc, UTF8Process;
   
 type
   { The TProcessList is used by the IDE to store all running programs and
@@ -37,16 +37,16 @@ type
     FItems: TList; // list of TProcess
     FFreeing: Boolean; // set wehn freeing stopped processes
     function GetCount: integer;
-    function GetItems(Index: integer): TProcess;
+    function GetItems(Index: integer): TProcessUTF8;
   public
     constructor Create;
     destructor Destroy; override;
-    function Add(NewProcess: TProcess): integer;
+    function Add(NewProcess: TProcessUTF8): integer;
     procedure Clear;
     procedure FreeStoppedProcesses;
   public
     property Count: integer read GetCount;
-    property Items[Index: integer]: TProcess read GetItems; default;
+    property Items[Index: integer]: TProcessUTF8 read GetItems; default;
   end;
   
 function GetDefaultProcessList: TProcessList;
@@ -69,9 +69,9 @@ begin
   Result:=FItems.Count;
 end;
 
-function TProcessList.GetItems(Index: integer): TProcess;
+function TProcessList.GetItems(Index: integer): TProcessUTF8;
 begin
-  Result:=TProcess(FItems[Index]);
+  Result:=TProcessUTF8(FItems[Index]);
 end;
 
 constructor TProcessList.Create;
@@ -87,7 +87,7 @@ begin
   inherited Destroy;
 end;
 
-function TProcessList.Add(NewProcess: TProcess): integer;
+function TProcessList.Add(NewProcess: TProcessUTF8): integer;
 begin
   Result:=FItems.Add(NewProcess);
 end;
@@ -103,7 +103,7 @@ end;
 
 procedure TProcessList.FreeStoppedProcesses;
 var
-  AProcess: TProcess;
+  AProcess: TProcessUTF8;
   i: Integer;
 begin
   // waitonexit or free may trigger another idle
