@@ -184,6 +184,7 @@ type
     class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
+    class procedure ScrollBy(const AWinControl: TWinControl; DeltaX, DeltaY: integer); override;
   end;
 
   { TWinCEWSEdit }
@@ -1134,6 +1135,12 @@ class procedure TWinCEWSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo; c
 begin
   // TODO: check if can be done without recreation
   RecreateWnd(ACustomMemo);
+end;
+
+class procedure TWinCEWSCustomMemo.ScrollBy(const AWinControl: TWinControl;
+  DeltaX, DeltaY: integer);
+begin
+  SendMessage(AWinControl.Handle, EM_LINESCROLL, -DeltaX, -DeltaY);
 end;
 
 { TWinCEWSCustomStaticText }
