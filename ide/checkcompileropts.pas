@@ -33,7 +33,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Dialogs, FileUtil,
-  Clipbrd, StdCtrls, Process, AVL_Tree, Menus, ExtCtrls, ButtonPanel, ComCtrls,
+  Clipbrd, StdCtrls, AVL_Tree, Menus, ExtCtrls, ButtonPanel, ComCtrls,
   // codetools
   CodeToolManager, FileProcs, LazFileCache, LazFileUtils, LazUTF8,
   DefineTemplates, CodeToolsStructs,

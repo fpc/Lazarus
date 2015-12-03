@@ -48,7 +48,7 @@ type
   end;
 
 function CreateApplicationBundle(const Filename: String; Title: String = ''; Recreate: boolean = false): TModalResult;
-function CreateAppBundleSymbolicLink(const Filename: String; Recreate: boolean = false): TModalResult;
+function CreateAppBundleSymbolicLink(const {%H-}Filename: String; {%H-}Recreate: boolean = false): TModalResult;
   
 const
   ApplicationBundleExt = '.app';
