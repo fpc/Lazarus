@@ -16,7 +16,7 @@ uses
   TTProfile, TTRASTER, TTTables, TTTypes, EasyLazFreeType, LazLoggerBase, 
   LazLoggerDummy, LazClasses, LazFreeTypeFontCollection, LazConfigStorage, 
   UTF8Process, laz2_xpath, LazLoggerProfiling, FPCAdds, LazUtilities, 
-  lazfglhash, lcsvutils, lazCollections, LazListClasses, 
+  lazfglhash, lcsvutils, lazCollections, 
   LazFreeTypeFPImageDrawer, LookupStringList, LazarusPackageIntf;
 
 implementation
