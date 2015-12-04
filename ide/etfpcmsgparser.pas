@@ -1581,6 +1581,7 @@ begin
     if aFPCVersion<>FPC_FullVersion then begin
       // unexpected FPC version => always show
       MsgLine.Urgency:=mluImportant;
+      FPC_FullVersion:=aFPCVersion;
     end;
   end;
   AddMsgLine(MsgLine);
