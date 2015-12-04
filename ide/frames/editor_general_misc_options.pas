@@ -39,7 +39,7 @@ type
   { TEditorGeneralMiscOptionsFrame }
 
   TEditorGeneralMiscOptionsFrame = class(TAbstractIDEOptionsEditor)
-    EditorTrimSpaceTypeCheckBox: TComboBox;
+    EditorTrimSpaceTypeComboBox: TComboBox;
     EditorOptionsGroupBox: TCheckGroup;
     EditorTrimSpaceTypeLabel: TLabel;
     procedure EditorOptionsGroupBoxItemClick(Sender: TObject; {%H-}Index: integer);
@@ -87,10 +87,10 @@ begin
     Items.Add(dlgUseMinimumIme);
     {$ENDIF}
   end;
-  EditorTrimSpaceTypeCheckBox.Items.Add(dlgTrimSpaceTypeLeaveLine);
-  EditorTrimSpaceTypeCheckBox.Items.Add(dlgTrimSpaceTypeEditLine);
-  EditorTrimSpaceTypeCheckBox.Items.Add(dlgTrimSpaceTypeCaretMove);
-  EditorTrimSpaceTypeCheckBox.Items.Add(dlgTrimSpaceTypePosOnly);
+  EditorTrimSpaceTypeComboBox.Items.Add(dlgTrimSpaceTypeLeaveLine);
+  EditorTrimSpaceTypeComboBox.Items.Add(dlgTrimSpaceTypeEditLine);
+  EditorTrimSpaceTypeComboBox.Items.Add(dlgTrimSpaceTypeCaretMove);
+  EditorTrimSpaceTypeComboBox.Items.Add(dlgTrimSpaceTypePosOnly);
   EditorTrimSpaceTypeLabel.Caption := dlgTrimSpaceTypeCaption;
 end;
 
@@ -110,7 +110,7 @@ begin
       Checked[5] := UseMinimumIme;
       {$ENDIF}
     end;
-    EditorTrimSpaceTypeCheckBox.ItemIndex := ord(TrimSpaceType);
+    EditorTrimSpaceTypeComboBox.ItemIndex := ord(TrimSpaceType);
   end;
 end;
 
@@ -136,7 +136,7 @@ begin
       SynEditOptions2 := SynEditOptions2 + [eoFoldedCopyPaste]
     else
       SynEditOptions2 := SynEditOptions2 - [eoFoldedCopyPaste];
-    TrimSpaceType := TSynEditStringTrimmingType(EditorTrimSpaceTypeCheckBox.ItemIndex);
+    TrimSpaceType := TSynEditStringTrimmingType(EditorTrimSpaceTypeComboBox.ItemIndex);
     {$IFDEF WinIME}
     UseMinimumIme := EditorOptionsGroupBox.Checked[5];
     {$ENDIF}
