@@ -19,7 +19,7 @@ unit UTF8Process;
 
 {$mode objfpc}{$H+}
 
-{$DEFINE UseOldTProcess}
+{ $DEFINE UseOldTProcess}
 
 {$IFNDEF UseOldTProcess}
   {$IFDEF MSWINDOWS}
@@ -353,15 +353,16 @@ Const
                       (HIGH_PRIORITY_CLASS,IDLE_PRIORITY_CLASS,
                        NORMAL_PRIORITY_CLASS,REALTIME_PRIORITY_CLASS);
 
-function WStrAsP(s: UnicodeString): PWideChar; inline;
+function WStrAsUniquePWideChar(s: UnicodeString): PWideChar; inline;
 begin
+  UniqueString(s);
   if s<>'' then
     Result:=PWideChar(s)
   else
     Result:=nil;
 end;
 
-Function GetStartupFlags (P : TProcess): Cardinal;
+Function GetStartupFlags (P : TProcessUTF8): Cardinal;
 
 begin
   Result:=0;
@@ -379,10 +380,10 @@ begin
     Result:=Result or startf_USEFILLATTRIBUTE;
 end;
 
-Function GetCreationFlags(P : TProcess) : Cardinal;
+Function GetCreationFlags(P : TProcessUTF8) : Cardinal;
 
 begin
-  Result:=0;
+  Result:=CREATE_UNICODE_ENVIRONMENT;
   if poNoConsole in P.Options then
     Result:=Result or Detached_Process;
   if poNewConsole in P.Options then
@@ -447,7 +448,7 @@ begin
   TA.nLength := SizeOf(TA);
 end;
 
-Procedure InitStartupInfo(P : TProcess; Out SI : STARTUPINFOW);
+Procedure InitStartupInfo(P : TProcessUTF8; Out SI : STARTUPINFOW);
 
 Const
   SWC : Array [TShowWindowOptions] of Cardinal =
@@ -622,13 +623,11 @@ begin
       CreatePipes(HI{%H-},HO{%H-},HE{%H-},FStartupInfo,Not(poStdErrToOutPut in Options), PipeBufferSize);
     Try
       // Beware: CreateProcess can alter the strings
-      UniqueString(WName);
-      UniqueString(WCommandLine);
-      UniqueString(WDir);
+      // Beware: nil is not the same as a pointer to a #0
+      PWName:=WStrAsUniquePWideChar(WName);
+      PWCommandLine:=WStrAsUniquePWideChar(WCommandLine);
+      PWDir:=WStrAsUniquePWideChar(WDir);
 
-      PWName:=WStrAsP(WName);
-      PWCommandLine:=WStrAsP(WCommandLine);
-      PWDir:=WStrAsP(WDir);
       If Not CreateProcessW (PWName,PWCommandLine,@FProcessAttributes,@FThreadAttributes,
                    InheritHandles,FCreationFlags,FEnv,PWDir,FStartupInfo,
                    fProcessInformation{%H-}) then
