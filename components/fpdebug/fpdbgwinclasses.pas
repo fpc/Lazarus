@@ -49,7 +49,7 @@ uses
   FpDbgInfo,
   FpDbgLoader,
   DbgIntfBaseTypes,
-  LazLoggerBase;
+  LazLoggerBase, UTF8Process;
 
 type
 
@@ -84,7 +84,7 @@ type
   private
     FInfo: TCreateProcessDebugInfo;
     FPauseRequested: boolean;
-    FProcProcess: TProcess;
+    FProcProcess: TProcessUTF8;
     FJustStarted: boolean;
     function GetFullProcessImageName(AProcessHandle: THandle): string;
     function GetModuleFileName(AModuleHandle: THandle): string;
@@ -453,10 +453,10 @@ end;
 class function TDbgWinProcess.StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
   AOnLog: TOnLog; ReDirectOutput: boolean): TDbgProcess;
 var
-  AProcess: TProcess;
+  AProcess: TProcessUTF8;
 begin
   result := nil;
-  AProcess := TProcess.Create(nil);
+  AProcess := TProcessUTF8.Create(nil);
   try
     AProcess.Options:=[poDebugProcess, poNewProcessGroup];
     AProcess.Executable:=AFilename;
