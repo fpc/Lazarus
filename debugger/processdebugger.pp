@@ -115,11 +115,14 @@ begin
   SetState(dsInit);
   FProcess := TDBGProcess.Create(nil);
   try
+    ShowMessage('AAA1 FileName='+FileName);
     TDBGProcess(FProcess).OnDestroy := @ProcessDestroyed;
     GetDefaultProcessList.Add(FProcess);
 
     FProcess.Executable := FileName;
     SplitCmdLineParams(Arguments,FProcess.Parameters);
+    ShowMessage('AAA2 Params='+FProcess.Parameters.Text);
+    ShowMessage('AAA3 WorkingDir='+WorkingDir);
     FProcess.CurrentDirectory := WorkingDir;
     FProcess.Environment.Assign(Environment);
     if ShowConsole

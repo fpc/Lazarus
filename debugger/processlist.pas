@@ -34,7 +34,7 @@ type
     zombies. }
   TProcessList = class
   private
-    FItems: TList; // list of TProcess
+    FItems: TList; // list of TProcessUTF8
     FFreeing: Boolean; // set wehn freeing stopped processes
     function GetCount: integer;
     function GetItems(Index: integer): TProcessUTF8;
