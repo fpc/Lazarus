@@ -233,7 +233,7 @@ begin
   else
     Result := s;
   FreeMem(Dst);
-  Result := SysToUTF8(Result);
+  Result := WinCPToUTF8(Result);
   {$endif}
 end;
 
