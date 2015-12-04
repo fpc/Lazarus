@@ -729,7 +729,7 @@ begin
   CopySecondaryConfigFile(DefaultCodeToolsOptsFile);
   if (not FileExistsCached(ConfFileName)) then begin
     debugln('Looking for code tools config file:  "' + ConfFileName + '"');
-    debugln(UTF8ToConsole(lisCompilerNOTECodetoolsConfigFileNotFoundUsingDefaults));
+    debugln(lisCompilerNOTECodetoolsConfigFileNotFoundUsingDefaults);
   end;
   FFilename:=ConfFilename;
 end;
