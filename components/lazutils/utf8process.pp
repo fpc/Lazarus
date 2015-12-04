@@ -19,11 +19,27 @@ unit UTF8Process;
 
 {$mode objfpc}{$H+}
 
+{$DEFINE UseOldTProcess}
+
+{$IFNDEF UseOldTProcess}
+  {$IFDEF MSWINDOWS}
+    {$DEFINE UseTProcessW}
+  {$ELSE}
+    {$DEFINE UseTProcessAlias}
+  {$ENDIF}
+{$ENDIF}
+
+
 interface
 
 uses
-  Classes, SysUtils, Process, FileUtil, LazFileUtils, LazUTF8, LazUtilsStrConsts;
+  Classes, SysUtils, Process,
+  {$IF defined(UseSeparateTProcessW) or defined(UseTProcessW)}
+  pipes,
+  {$ENDIF}
+  FileUtil, LazFileUtils, LazUTF8, LazUtilsStrConsts;
 
+  {$IFDEF UseOldTProcess}
 type
   { TProcessUTF8 }
 
@@ -60,6 +76,29 @@ type
     property Executable: string read FExecutableUTF8 Write SetExecutableUTF8;
     property Parameters: TStrings read FParametersUTF8 write SetParametersUTF8;
   end;
+  {$ENDIF}
+
+  {$IFDEF UseTProcessW}
+const
+  SNoCommandLine        = 'Cannot execute empty command-line';
+  SErrCannotExecute     = 'Failed to execute %s : %d';
+type
+  { TProcessUTF8 }
+
+  TProcessUTF8 = class(TProcess)
+  protected
+    procedure SetProcessHandle(aProcessHandle : THandle);
+    procedure SetThreadHandle(aThreadHandle : THandle);
+    procedure SetProcessID(aProcessID : Integer);
+  public
+    procedure Execute; override;
+  end;
+  {$ENDIF}
+
+  {$IFDEF UseTProcessAlias}
+type
+  TProcessUTF8 = type TProcess;
+  {$ENDIF}
 
 procedure RunCmdFromPath(ProgramFilename, CmdLineParameters: string);
 function FindFilenameOfCmd(ProgramFilename: string): string;
@@ -97,7 +136,7 @@ var
   {$ENDIF}
 begin
   {$IFnDEF WinCE}
-  if GetProcessAffinityMask(GetCurrentProcess, ProcessAffinityMask, SystemAffinityMask)
+  if GetProcessAffinityMask(GetCurrentProcess, ProcessAffinityMask{%H-}, SystemAffinityMask{%H-})
   then begin
     Result := 0;
     for i := 0 to 31 do begin
@@ -109,7 +148,7 @@ begin
   end;
   {$ENDIF}
   //can't get the affinity mask so we just report the total number of processors
-  GetSystemInfo(SystemInfo);
+  GetSystemInfo(SystemInfo{%H-});
   Result := SystemInfo.dwNumberOfProcessors;
 end;
 {$ELSEIF defined(UNTESTEDsolaris)}
@@ -139,8 +178,67 @@ end;
   end;
 {$ENDIF}
 
-{$WARN SYMBOL_DEPRECATED OFF}
+function FindFilenameOfCmd(ProgramFilename: string): string;
+begin
+  Result:=TrimFilename(ProgramFilename);
+  if not FilenameIsAbsolute(Result) then begin
+    if Pos(PathDelim,Result)>0 then begin
+      // with sub directory => relative to current directory
+      Result:=CleanAndExpandFilename(Result);
+    end else begin
+      // search in PATH
+      Result:=FindDefaultExecutablePath(Result);
+    end;
+  end;
+  if (Result<>'') and not FileExistsUTF8(Result) then
+    Result:='';
+end;
 
+// Runs a short command which should point to an executable in
+// the environment PATH
+// For example: ProgramFilename=ls CmdLineParameters=-l /home
+// Will locate and execute the file /bin/ls
+// If the command isn't found, an exception will be raised
+procedure RunCmdFromPath(ProgramFilename, CmdLineParameters: string);
+var
+  OldProgramFilename: String;
+  BrowserProcess: TProcessUTF8;
+begin
+  OldProgramFilename:=ProgramFilename;
+  ProgramFilename:=FindFilenameOfCmd(ProgramFilename);
+
+  if ProgramFilename='' then
+    raise EFOpenError.Create(Format(lrsProgramFileNotFound, [OldProgramFilename]));
+  if not FileIsExecutable(ProgramFilename) then
+    raise EFOpenError.Create(Format(lrsCanNotExecute, [ProgramFilename]));
+
+  // run
+  BrowserProcess := TProcessUTF8.Create(nil);
+  try
+    BrowserProcess.InheritHandles:=false;
+    // Encloses the executable with "" if its name has spaces
+    if Pos(' ',ProgramFilename)>0 then
+      ProgramFilename:='"'+ProgramFilename+'"';
+
+    {$Push}
+    {$WARN SYMBOL_DEPRECATED OFF}
+    BrowserProcess.CommandLine := ProgramFilename;
+    if CmdLineParameters<>'' then
+      BrowserProcess.CommandLine := BrowserProcess.CommandLine + ' ' + CmdLineParameters;
+    {$Pop}
+    BrowserProcess.Execute;
+  finally
+    BrowserProcess.Free;
+  end;
+end;
+
+procedure Register;
+begin
+  RegisterComponents('System',[TProcessUTF8]);
+end;
+
+{$IFDEF UseOldTProcess}
+{$WARN SYMBOL_DEPRECATED OFF}
 { TProcessUTF8 }
 
 procedure TProcessUTF8.SetApplicationNameUTF8(const AValue: string);
@@ -247,60 +345,317 @@ begin
   inherited Execute;
 end;
 
-function FindFilenameOfCmd(ProgramFilename: string): string;
+{$ENDIF}
+
+{$IFDEF UseTProcessW}
+Const
+  PriorityConstants : Array [TProcessPriority] of Cardinal =
+                      (HIGH_PRIORITY_CLASS,IDLE_PRIORITY_CLASS,
+                       NORMAL_PRIORITY_CLASS,REALTIME_PRIORITY_CLASS);
+
+function WStrAsP(s: UnicodeString): PWideChar; inline;
 begin
-  Result:=TrimFilename(ProgramFilename);
-  if not FilenameIsAbsolute(Result) then begin
-    if Pos(PathDelim,Result)>0 then begin
-      // with sub directory => relative to current directory
-      Result:=CleanAndExpandFilename(Result);
-    end else begin
-      // search in PATH
-      Result:=FindDefaultExecutablePath(Result);
-    end;
-  end;
-  if (Result<>'') and not FileExistsUTF8(Result) then
-    Result:='';
+  if s<>'' then
+    Result:=PWideChar(s)
+  else
+    Result:=nil;
 end;
 
-// Runs a short command which should point to an executable in
-// the environment PATH
-// For example: ProgramFilename=ls CmdLineParameters=-l /home
-// Will locate and execute the file /bin/ls
-// If the command isn't found, an exception will be raised
-procedure RunCmdFromPath(ProgramFilename, CmdLineParameters: string);
+Function GetStartupFlags (P : TProcess): Cardinal;
+
+begin
+  Result:=0;
+  if poUsePipes in P.Options then
+     Result:=Result or Startf_UseStdHandles;
+  if suoUseShowWindow in P.StartupOptions then
+    Result:=Result or startf_USESHOWWINDOW;
+  if suoUSESIZE in P.StartupOptions then
+    Result:=Result or startf_usesize;
+  if suoUsePosition in P.StartupOptions then
+    Result:=Result or startf_USEPOSITION;
+  if suoUSECOUNTCHARS in P.Startupoptions then
+    Result:=Result or startf_usecountchars;
+  if suoUsefIllAttribute in P.StartupOptions then
+    Result:=Result or startf_USEFILLATTRIBUTE;
+end;
+
+Function GetCreationFlags(P : TProcess) : Cardinal;
+
+begin
+  Result:=0;
+  if poNoConsole in P.Options then
+    Result:=Result or Detached_Process;
+  if poNewConsole in P.Options then
+    Result:=Result or Create_new_console;
+  if poNewProcessGroup in P.Options then
+    Result:=Result or CREATE_NEW_PROCESS_GROUP;
+  If poRunSuspended in P.Options Then
+    Result:=Result or Create_Suspended;
+  if poDebugProcess in P.Options Then
+    Result:=Result or DEBUG_PROCESS;
+  if poDebugOnlyThisProcess in P.Options Then
+    Result:=Result or DEBUG_ONLY_THIS_PROCESS;
+  if poDefaultErrorMode in P.Options Then
+    Result:=Result or CREATE_DEFAULT_ERROR_MODE;
+  result:=result or PriorityConstants[P.Priority];
+end;
+
+Function MaybeQuote(Const S : String) : String;
+
+begin
+  If (Pos(' ',S)<>0) then
+    Result:='"'+S+'"'
+  else
+     Result:=S;
+end;
+
+Function MaybeQuoteIfNotQuoted(Const S : String) : String;
+
+begin
+  If (Pos(' ',S)<>0) and (pos('"',S)=0) then
+    Result:='"'+S+'"'
+  else
+     Result:=S;
+end;
+
+Function StringsToWChars(List : TStrings): pointer;
+
 var
-  OldProgramFilename: String;
-  BrowserProcess: TProcessUTF8;
+  EnvBlock: UnicodeString;
+  I: Integer;
+
 begin
-  OldProgramFilename:=ProgramFilename;
-  ProgramFilename:=FindFilenameOfCmd(ProgramFilename);
+  EnvBlock := '';
+  For I:=0 to List.Count-1 do
+    EnvBlock := EnvBlock + UTF8Decode(List[i]) + #0;
+  EnvBlock := EnvBlock + #0;
+  GetMem(Result, Length(EnvBlock)*2);
+  CopyMemory(Result, @EnvBlock[1], Length(EnvBlock)*2);
+end;
 
-  if ProgramFilename='' then
-    raise EFOpenError.Create(Format(lrsProgramFileNotFound, [OldProgramFilename]));
-  if not FileIsExecutable(ProgramFilename) then
-    raise EFOpenError.Create(Format(lrsCanNotExecute, [ProgramFilename]));
+Procedure InitProcessAttributes(Out PA : TSecurityAttributes);
 
-  // run
-  BrowserProcess := TProcessUTF8.Create(nil);
-  try
-    BrowserProcess.InheritHandles:=false;
-    // Encloses the executable with "" if its name has spaces
-    if Pos(' ',ProgramFilename)>0 then
-      ProgramFilename:='"'+ProgramFilename+'"';
+begin
+  FillChar(PA{%H-},SizeOf(PA),0);
+  PA.nLength := SizeOf(PA);
+end;
 
-    BrowserProcess.CommandLine := ProgramFilename;
-    if CmdLineParameters<>'' then
-      BrowserProcess.CommandLine := BrowserProcess.CommandLine + ' ' + CmdLineParameters;
-    BrowserProcess.Execute;
-  finally
-    BrowserProcess.Free;
+Procedure InitThreadAttributes(Out TA : TSecurityAttributes);
+
+begin
+  FillChar(TA{%H-},SizeOf(TA),0);
+  TA.nLength := SizeOf(TA);
+end;
+
+Procedure InitStartupInfo(P : TProcess; Out SI : STARTUPINFOW);
+
+Const
+  SWC : Array [TShowWindowOptions] of Cardinal =
+             (0,SW_HIDE,SW_Maximize,SW_Minimize,SW_Restore,SW_Show,
+             SW_ShowDefault,SW_ShowMaximized,SW_ShowMinimized,
+               SW_showMinNOActive,SW_ShowNA,SW_ShowNoActivate,SW_ShowNormal);
+
+begin
+  FillChar(SI{%H-},SizeOf(SI),0);
+  SI.dwFlags:=GetStartupFlags(P);
+  if P.ShowWindow<>swoNone then
+   SI.dwFlags:=SI.dwFlags or Startf_UseShowWindow
+  else
+    SI.dwFlags:=SI.dwFlags and not Startf_UseShowWindow;
+  SI.wShowWindow:=SWC[P.ShowWindow];
+  if (poUsePipes in P.Options) then
+    begin
+    SI.dwFlags:=SI.dwFlags or Startf_UseStdHandles;
+    end;
+  if P.FillAttribute<>0 then
+    begin
+    SI.dwFlags:=SI.dwFlags or Startf_UseFillAttribute;
+    SI.dwFillAttribute:=P.FillAttribute;
+    end;
+   SI.dwXCountChars:=P.WindowColumns;
+   SI.dwYCountChars:=P.WindowRows;
+   SI.dwYsize:=P.WindowHeight;
+   SI.dwXsize:=P.WindowWidth;
+   SI.dwy:=P.WindowTop;
+   SI.dwX:=P.WindowLeft;
+end;
+
+{ The handles that are to be passed to the child process must be
+  inheritable. On the other hand, only non-inheritable handles
+  allow the sending of EOF when the write-end is closed. This
+  function is used to duplicate the child process's ends of the
+  handles into inheritable ones, leaving the parent-side handles
+  non-inheritable.
+}
+function DuplicateHandleFP(var handle: THandle): Boolean;
+
+var
+  oldHandle: THandle;
+begin
+  oldHandle := handle;
+  Result := DuplicateHandle
+  ( GetCurrentProcess(),
+    oldHandle,
+    GetCurrentProcess(),
+    @handle,
+    0,
+    true,
+    DUPLICATE_SAME_ACCESS
+  );
+  if Result then
+    Result := CloseHandle(oldHandle);
+end;
+
+
+Procedure CreatePipes(Var HI,HO,HE : Thandle; Var SI : TStartupInfoW; CE : Boolean; APipeBufferSize : Cardinal);
+
+begin
+  CreatePipeHandles(SI.hStdInput,HI, APipeBufferSize);
+  DuplicateHandleFP(SI.hStdInput);
+  CreatePipeHandles(HO,Si.hStdOutput, APipeBufferSize);
+  DuplicateHandleFP(   Si.hStdOutput);
+  if CE then begin
+    CreatePipeHandles(HE,SI.hStdError, APipeBufferSize);
+    DuplicateHandleFP(   SI.hStdError);
+    end
+  else
+    begin
+    SI.hStdError:=SI.hStdOutput;
+    HE:=HO;
+    end;
+end;
+
+type
+  TProcessClassTemplate = class(TComponent)
+  private
+    {%H-}FProcessOptions : TProcessOptions;
+    {%H-}FStartupOptions : TStartupOptions;
+    FProcessID : Integer;
+    {%H-}FTerminalProgram: String;
+    {%H-}FThreadID : Integer;
+    FProcessHandle : Thandle;
+    FThreadHandle : Thandle;
   end;
+
+{ TProcessUTF8 }
+
+procedure TProcessUTF8.SetProcessHandle(aProcessHandle: THandle);
+var
+  o: TProcessClassTemplate;
+begin
+  o:=TProcessClassTemplate.Create(nil);
+  PHANDLE(Pointer(Self)+(@o.FProcessHandle-Pointer(o)))^:=aProcessHandle;
+  if aProcessHandle<>ProcessHandle then
+    raise Exception.Create('TProcessUTF8.SetProcessHandle failed');
+  o.Free;
 end;
 
-procedure Register;
+procedure TProcessUTF8.SetThreadHandle(aThreadHandle: THandle);
+var
+  o: TProcessClassTemplate;
 begin
-  RegisterComponents('System',[TProcessUTF8]);
+  o:=TProcessClassTemplate.Create(nil);
+  PHANDLE(Pointer(Self)+(@o.FThreadHandle-Pointer(o)))^:=aThreadHandle;
+  if aThreadHandle<>ThreadHandle then
+    raise Exception.Create('TProcessUTF8.SetThreadHandle failed');
+  o.Free;
 end;
+
+procedure TProcessUTF8.SetProcessID(aProcessID: Integer);
+var
+  o: TProcessClassTemplate;
+begin
+  o:=TProcessClassTemplate.Create(nil);
+  PHANDLE(Pointer(Self)+(@o.FProcessID-Pointer(o)))^:=aProcessID;
+  if aProcessID<>ProcessID then
+    raise Exception.Create('TProcessUTF8.SetProcessID failed');
+  o.Free;
+end;
+
+procedure TProcessUTF8.Execute;
+Var
+  i : Integer;
+  WName,WDir,WCommandLine : UnicodeString;
+  PWName,PWDir,PWCommandLine : PWideChar;
+  FEnv: pointer;
+  FCreationFlags : Cardinal;
+  FProcessAttributes : TSecurityAttributes;
+  FThreadAttributes : TSecurityAttributes;
+  FProcessInformation : TProcessInformation;
+  FStartupInfo : STARTUPINFOW;
+  HI,HO,HE : THandle;
+  Cmd : String;
+
+begin
+  WName:='';
+  WCommandLine:='';
+  WDir:='';
+
+  if (ApplicationName{%H-}='') and (CommandLine{%H-}='') and (Executable='') then
+    Raise EProcess.Create(SNoCommandline);
+  if (ApplicationName{%H-}<>'') then
+    begin
+    WName:=UTF8Decode(ApplicationName{%H-});
+    WCommandLine:=UTF8Decode(CommandLine{%H-});
+    end
+  else If (CommandLine{%H-}<>'') then
+    WCommandLine:=UTF8Decode(CommandLine{%H-})
+  else if (Executable<>'') then
+    begin
+    Cmd:=MaybeQuoteIfNotQuoted(Executable);
+    For I:=0 to Parameters.Count-1 do
+      Cmd:=Cmd+' '+MaybeQuoteIfNotQuoted(Parameters[i]);
+    WCommandLine:=UTF8Decode(Cmd);
+    end;
+  If CurrentDirectory<>'' then
+    WDir:=UTF8Decode(CurrentDirectory);
+  if Environment.Count<>0 then
+    FEnv:=StringsToWChars(Environment)
+  else
+    FEnv:=Nil;
+  Try
+    FCreationFlags:=GetCreationFlags(Self);
+    InitProcessAttributes(FProcessAttributes);
+    InitThreadAttributes(FThreadAttributes);
+    InitStartupInfo(Self,FStartupInfo);
+    If poUsePipes in Options then
+      CreatePipes(HI{%H-},HO{%H-},HE{%H-},FStartupInfo,Not(poStdErrToOutPut in Options), PipeBufferSize);
+    Try
+      // Beware: CreateProcess can alter the strings
+      UniqueString(WName);
+      UniqueString(WCommandLine);
+      UniqueString(WDir);
+
+      PWName:=WStrAsP(WName);
+      PWCommandLine:=WStrAsP(WCommandLine);
+      PWDir:=WStrAsP(WDir);
+      If Not CreateProcessW (PWName,PWCommandLine,@FProcessAttributes,@FThreadAttributes,
+                   InheritHandles,FCreationFlags,FEnv,PWDir,FStartupInfo,
+                   fProcessInformation{%H-}) then
+        Raise EProcess.CreateFmt(SErrCannotExecute,[CommandLine{%H-},GetLastError]);
+      SetProcessHandle(FProcessInformation.hProcess);
+      SetThreadHandle(FProcessInformation.hThread);
+      SetProcessID(FProcessINformation.dwProcessID);
+    Finally
+      if POUsePipes in Options then
+        begin
+        FileClose(FStartupInfo.hStdInput);
+        FileClose(FStartupInfo.hStdOutput);
+        if Not (poStdErrToOutPut in Options) then
+          FileClose(FStartupInfo.hStdError);
+        CreateStreams(HI,HO,HE);
+        end;
+    end;
+    FRunning:=True;
+  Finally
+    If FEnv<>Nil then
+      FreeMem(FEnv);
+  end;
+  if not (csDesigning in ComponentState) and // This would hang the IDE !
+     (poWaitOnExit in Options) and
+      not (poRunSuspended in Options) then
+    WaitOnExit;
+end;
+{$ENDIF}
 
 end.
