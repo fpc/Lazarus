@@ -5271,7 +5271,7 @@ end;
 { Save to the cache the current visible grid (excluding fixed cells) }
 procedure TCustomGrid.CacheVisibleGrid;
 var
-  CellR, GridR: TRect;
+  CellR: TRect;
 begin
   with FGCache do begin
     VisibleGrid:=GetVisibleGrid;
@@ -5282,18 +5282,17 @@ begin
     end;
     FullVisibleGrid := VisibleGrid;
     if ValidGrid then begin
-      GridR := FullVisibleGrid;
       if goSmoothScroll in Options then begin
         if TLColOff>0 then
-          GridR.Left := Min(GridR.Left+1, GridR.Right);
+          FullVisibleGrid.Left := Min(FullVisibleGrid.Left+1, FullVisibleGrid.Right);
         if TLRowOff>0 then
-          GridR.Top  := Min(GridR.Top+1, GridR.Bottom);
+          FullVisibleGrid.Top  := Min(FullVisibleGrid.Top+1, FullVisibleGrid.Bottom);
       end;
-      CellR := CellRect(GridR.Right, GridR.Bottom);
+      CellR := CellRect(FullVisibleGrid.Right, FullVisibleGrid.Bottom);
       if CellR.Right>(ClientWidth+GetBorderWidth) then
-        GridR.Right := Max(GridR.Right-1, GridR.Left);
+        FullVisibleGrid.Right := Max(FullVisibleGrid.Right-1, FullVisibleGrid.Left);
       if CellR.Bottom>(ClientHeight+GetBorderWidth) then
-        GridR.Bottom := Max(GridR.Bottom-1, GridR.Top);
+        FullVisibleGrid.Bottom := Max(FullVisibleGrid.Bottom-1, FullVisibleGrid.Top);
     end;
   end;
 end;
