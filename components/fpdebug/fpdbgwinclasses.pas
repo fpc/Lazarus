@@ -159,55 +159,62 @@ begin
   log('FpDbg-ERROR: %s', [GetLastErrorText], dllDebug);
 end;
 
-function QueryFullProcessImageName(hProcess:HANDLE; dwFlags: DWord; lpExeName:LPTSTR; var lpdwSize:DWORD):BOOL; stdcall; external 'kernel32' name 'QueryFullProcessImageNameA';
+function QueryFullProcessImageName(hProcess:HANDLE; dwFlags: DWord; lpExeName:LPWSTR; var lpdwSize:DWORD):BOOL; stdcall; external 'kernel32' name 'QueryFullProcessImageNameW';
 
 function TDbgWinProcess.GetFullProcessImageName(AProcessHandle: THandle): string;
 var
-  s: string;
+  u: UnicodeString;
   len: DWORD;
 begin
   len := MAX_PATH;
-  SetLength(S, len);
-  if QueryFullProcessImageName(AProcessHandle, 0, @S[1], len)
-  then SetLength(S, len)
-  else begin
-    S := '';
+  SetLength(u, len);
+  if QueryFullProcessImageName(AProcessHandle, 0, @u[1], len)
+  then begin
+    SetLength(u, len);
+    Result:=UTF8Encode(u);
+  end else begin
+    Result := '';
     LogLastError;
   end;
-  result := s;
 end;
 
 function TDbgWinProcess.GetModuleFileName(AModuleHandle: THandle): string;
 var
+  u: UnicodeString;
   s: string;
   len: Integer;
   hMod: THandle;
-  _GetFinalPathNameByHandle: function(hFile: HANDLE; lpFilename:LPTSTR; cchFilePath, dwFlags: DWORD):DWORD; stdcall;
+  _GetFinalPathNameByHandle: function(hFile: HANDLE; lpFilename:LPWSTR; cchFilePath, dwFlags: DWORD):DWORD; stdcall;
 begin
   result := '';
-  // GetFinalPathNameByHandle is only available on Windows Vista / Server 2008
-  _GetFinalPathNameByHandle := nil;
 
   // normally you would load a lib, but since kernel32 is
   // always loaded we can use this (and we don't have to free it
   hMod := GetModuleHandle(kernel32);
   if hMod = 0 then Exit; //????
 
-  pointer(_GetFinalPathNameByHandle) := GetProcAddress(hMod, 'GetFinalPathNameByHandleA');
+  // GetFinalPathNameByHandle is only available on Windows Vista / Server 2008
+  _GetFinalPathNameByHandle := nil;
+  pointer(_GetFinalPathNameByHandle) := GetProcAddress(hMod, 'GetFinalPathNameByHandleW');
   if assigned(_GetFinalPathNameByHandle) then begin
-    SetLength(S, MAX_PATH);
+    SetLength(u, MAX_PATH);
 
-    len := _GetFinalPathNameByHandle(AModuleHandle, @S[1], MAX_PATH, 0);
+    len := _GetFinalPathNameByHandle(AModuleHandle, @u[1], MAX_PATH, 0);
+    s:='';
     if len > 0
-    then SetLength(S, len - 1)
-    else begin
-      S := '';
+    then begin
+      SetLength(u, len - 1);
+      if (u<>'') and (u[length(u)]=#0) then
+      begin
+        // On some older Windows versions there's a bug in GetFinalPathNameByHandleW,
+        // which leads to a trailing #0.
+        Delete(u,length(u),1);
+      end;
+      s:=UTF8Encode(u);
+    end else begin
+      u := '';
       LogLastError;
     end;
-    // On some older Windows versions there's a bug in GetFinalPathNameByHandleA,
-    // which leads to a trailing #0.
-    if strutils.RightStr(S,1) =#0 then
-      SetLength(S,length(S)-1);
     // Remove the \\?\ prefix
     Delete(S,1,4);
     result := S;
@@ -261,7 +268,7 @@ begin
 
   s := TDbgWinProcess(AProcess).GetProcFilename(AProcess, AInfo.lpImageName, AInfo.fUnicode, AInfo.hFile);
   if s <> ''
-  then SetName(s);
+  then SetFileName(s);
 
   LoadInfo;
 end;
@@ -873,7 +880,7 @@ begin
 
   s := GetProcFilename(Self, AInfo.lpImageName, AInfo.fUnicode, 0);
   if s <> ''
-  then SetName(s);
+  then SetFileName(s);
 end;
 
 function TDbgWinProcess.GetInstructionPointerRegisterValue: TDbgPtr;
