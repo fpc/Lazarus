@@ -17,6 +17,7 @@ uses
   FpDbgLinuxExtra,
   FpDbgInfo,
   FpDbgUtil,
+  UTF8Process,
   LazLoggerBase;
 
 type
@@ -245,7 +246,7 @@ type
   private
     FStatus: cint;
     FProcessStarted: boolean;
-    FProcProcess: TProcess;
+    FProcProcess: TProcessUTF8;
     FIsTerminating: boolean;
     FExceptionSignal: PtrUInt;
     FMasterPtyFd: cint;
@@ -586,7 +587,7 @@ class function TDbgLinuxProcess.StartInstance(AFileName: string; AParams, AnEnvi
   AOnLog: TOnLog; ReDirectOutput: boolean): TDbgProcess;
 var
   PID: TPid;
-  AProcess: TProcess;
+  AProcess: TProcessUTF8;
   AMasterPtyFd: cint;
   AnExecutabeFilename: string;
 begin
@@ -620,7 +621,7 @@ begin
     GConsoleTty:=AConsoleTty;
     end;
 
-  AProcess := TProcess.Create(nil);
+  AProcess := TProcessUTF8.Create(nil);
   try
     AProcess.OnForkEvent:=@OnForkEvent;
     AProcess.Executable:=AnExecutabeFilename;
