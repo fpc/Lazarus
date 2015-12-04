@@ -28,7 +28,7 @@ var CompileHelper: TCompileHelper;
 
 implementation
 
-function ReadOutput(AProcess:TProcess): TStringList;
+function ReadOutput(AProcess:TProcessUTF8): TStringList;
 const
   TIME_OUT = 300;
   READ_BYTES = 1024;
