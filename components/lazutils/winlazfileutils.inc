@@ -544,10 +544,6 @@ end;
 {$IFEND}
 
 function FindMatch(var f: TSearchRec) : Longint;
-{$IFDEF ACP_RTL}
-var
-  Dummy: String;
-{$ENDIF}
 begin
   { Find file with correct attribute }
   While (F.FindData.dwFileAttributes and cardinal(F.ExcludeAttr))<>0 do
@@ -566,12 +562,10 @@ begin
     in win32 it is the ansi structure with a utf-8 string
     in wince it is a wide structure }
   {$ifdef FindData_W}
-  {$IFnDEF ACP_RTL}
-  f.Name:=UTF8Encode(UnicodeString(F.FindData.cFileName));
+  {$IFDEF ACP_RTL}
+  f.Name:=String(UnicodeString(F.FindData.cFileName));
   {$ELSE}
-  Dummy := '';
-  Insert(UTF8Encode(UnicodeString(F.FindData.cFileName)), Dummy, 1);
-  f.Name := Dummy;
+  f.Name:=UTF8Encode(UnicodeString(F.FindData.cFileName));
   {$ENDIF}
   {$else}
   f.Name:=F.FindData.cFileName;
@@ -624,7 +618,11 @@ begin
   Rslt.ExcludeAttr:=(not Attr) and ($1e);
                  { $1e = faHidden or faSysFile or faVolumeID or faDirectory }
   { FindFirstFile is a Win32 Call }
-  Rslt.FindHandle:=Windows.FindFirstFileW( PWideChar(UTF8Decode(Path)),find{%H-});
+  {$IFDEF ACP_RTL}
+  Rslt.FindHandle:=Windows.FindFirstFileW(PWideChar(WideString(Path)),find{%H-});
+  {$ELSE}
+  Rslt.FindHandle:=Windows.FindFirstFileW(PWideChar(UTF8Decode(Path)),find{%H-});
+  {$ENDIF}
   If Rslt.FindHandle=Windows.Invalid_Handle_value then
   begin
     Result:=GetLastError;
