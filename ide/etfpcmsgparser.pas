@@ -2837,8 +2837,13 @@ begin
   if Line='' then exit;
   if FPC_FullVersion>=20701 then
     Line:=LazUTF8.ConsoleToUTF8(Line)
-  else
+  else begin
+    {$IFDEF MSWINDOWS}
+    Line:=LazUTF8.WinCPToUTF8(Line);
+    {$ELSE}
     Line:=LazUTF8.SysToUTF8(Line);
+    {$ENDIF}
+  end;
   p:=PChar(Line);
   fOutputIndex:=OutputIndex;
   fMsgID:=0;
