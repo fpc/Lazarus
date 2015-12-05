@@ -355,7 +355,7 @@ Const
                       (HIGH_PRIORITY_CLASS,IDLE_PRIORITY_CLASS,
                        NORMAL_PRIORITY_CLASS,REALTIME_PRIORITY_CLASS);
 
-function WStrAsUniquePWideChar(s: UnicodeString): PWideChar; inline;
+function WStrAsUniquePWideChar(var s: UnicodeString): PWideChar; inline;
 begin
   UniqueString(s);
   if s<>'' then
