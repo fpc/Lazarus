@@ -99,7 +99,8 @@ type
 
   {$IFDEF UseTProcessAlias}
 type
-  TProcessUTF8 = type TProcess;
+  TProcessUTF8 = class(TProcess)
+  end;
   {$ENDIF}
 
 procedure RunCmdFromPath(ProgramFilename, CmdLineParameters: string);
