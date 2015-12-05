@@ -1661,7 +1661,6 @@ begin
   SubDir:=BackupInfo.SubDirectory;
   if BackupInfo.SubDirectory<>'' then
     GlobalMacroList.SubstituteStr(SubDir);
-  debugln(['TBuildManager.BackupFile SubDir="',SubDir,'"']);
   if SubDir<>'' then begin
     if not FilenameIsAbsolute(SubDir) then
       SubDir:=TrimFilename(FilePath+SubDir);
