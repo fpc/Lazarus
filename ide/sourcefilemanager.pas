@@ -6884,12 +6884,13 @@ function TLazSourceFileManager.LoadComponentDependencyHidden(
   end;
 
 var
-  Quiet: Boolean;
+  Quiet, HideAbort: Boolean;
   LFMFilename: string;
 begin
   Result:=mrCancel;
   AComponentClass:=nil;
   Quiet:=([ofProjectLoading,ofQuiet]*Flags<>[]);
+  HideAbort:=not (ofProjectLoading in Flags);
 
   if (AComponentClassName='') or (not IsValidIdent(AComponentClassName)) then
   begin
@@ -6899,10 +6900,9 @@ begin
 
   // check for cycles
   if AnUnitInfo.LoadingComponent then begin
-    Result:=IDEQuestionDialog(lisCodeTemplError,
+    Result:=IDEQuestionDialogAb(lisCodeTemplError,
       Format(lisUnableToLoadTheComponentClassBecauseItDependsOnIts, [AComponentClassName]),
-      mtError, [mrCancel, lisCancelLoadingThisComponent,
-               mrAbort, lisAbortWholeLoading]);
+      mtError, [mrCancel, lisCancelLoadingThisComponent],HideAbort);
     exit;
   end;
 
@@ -6936,12 +6936,12 @@ begin
       Result:=mrCancel;
     if Result=mrAbort then exit;
     if Result<>mrOk then begin
-      Result:=IDEQuestionDialog(lisCodeTemplError,
+      Result:=IDEQuestionDialogAb(lisCodeTemplError,
         Format(lisUnableToFindTheComponentClassItIsNotRegisteredViaR, [
           AComponentClassName, LineEnding, LineEnding, LineEnding, AnUnitInfo.Filename]),
         mtError, [mrCancel, lisCancelLoadingThisComponent,
-                 mrAbort, lisAbortWholeLoading,
-                 mrIgnore, lisIgnoreUseTFormAsAncestor]);
+                 mrIgnore, lisIgnoreUseTFormAsAncestor],
+                 HideAbort);
     end;
   finally
     AnUnitInfo.LoadingComponent:=false;
