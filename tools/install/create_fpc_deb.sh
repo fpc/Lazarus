@@ -222,10 +222,11 @@ if [ "$PackageName" = "fpc" ]; then
   if test -z "$BINUTILSPREFIX"
   then
     # need up to date samplecfg that chains cross compiler additions
-    grep 'fpc-cross.cfg' $DebianInstallDir/lib/fpc/$FPCVersion/samplecfg &>/dev/null || \
+    SampleCfg=$DebianInstallDir/lib/fpc/$FPCVersion/samplecfg  
+    grep 'fpc-cross.cfg' "$SampleCfg" &>/dev/null || \
       sed -i -e "/^FPCPATH=/aFPCPARENT=\"\`dirname \"\$1\"\`\"
-;/^#ENDIF NEEDCROSSBINUTILS/i#include \$FPCPARENT/fpc-cross.cfg"  $DebianInstallDir/lib/fpc/$FPCVersion/samplecfg
-    else cat > $DebianInstallDir/lib/fpc/$FPCVersion/fpc${TARGET_SUFFIX}.cfg <<CROSS
+;/^#ENDIF NEEDCROSSBINUTILS/i#include \$FPCPARENT/fpc-cross.cfg"  "$SampleCfg"
+  else cat > $DebianInstallDir/lib/fpc/$FPCVersion/fpc${TARGET_SUFFIX}.cfg <<CROSS
 # Detect $TARGET compiles
 #IF \$fpc-target = $TARGET
  -XP$BINUTILSPREFIX
