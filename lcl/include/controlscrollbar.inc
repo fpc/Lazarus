@@ -24,7 +24,7 @@ const
 
 procedure TControlScrollBar.SetPosition(const Value: Integer);
 var
-  MaxPos: Integer;
+  MaxPos, PrevPosition: Integer;
   ScrollInfo: TScrollInfo;
 begin
   if csLoading in FControl.ComponentState then
@@ -70,14 +70,14 @@ begin
   if Value = FPosition then
     exit;
 
+  PrevPosition := FPosition;
+  // position has to be set before FControl.ScrollBy !!!
+  FPosition := Value;
   // scroll logical client area of FControl
   if Kind = sbVertical then
-    FControl.ScrollBy(0, FPosition - Value)
+    FControl.ScrollBy(0, PrevPosition - FPosition)
   else
-    FControl.ScrollBy(FPosition - Value, 0);
-
-  // now actually set the position
-  FPosition := Value;
+    FControl.ScrollBy(PrevPosition - FPosition, 0);
 
   // check that the new position is also set on the scrollbar
   if HandleAllocated and (GetScrollPos(ControlHandle, IntfBarKind[Kind]) <> FPosition) then
