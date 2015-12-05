@@ -654,7 +654,7 @@ begin
       end;
     end;
     FMsgMemo.Visible:=true;
-  end else
+  end else if FMsgMemo<>nil then
     FMsgMemo.Visible:=false;
 
   // calculate the width we need to display the buttons
