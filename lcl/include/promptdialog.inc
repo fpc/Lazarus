@@ -705,7 +705,7 @@ begin
          reqWidth, reqHeight);
 
   // position memo
-  if FMsgMemo.Visible then
+  if (FMsgMemo<>nil) and FMsgMemo.Visible then
     FMsgMemo.BoundsRect:=TextBox;
 
   // position buttons
