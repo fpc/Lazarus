@@ -19,7 +19,9 @@ unit UTF8Process;
 
 {$mode objfpc}{$H+}
 
-{ $DEFINE UseOldTProcess}
+{$IF FPC_FULLVERSION<20701}
+  {$DEFINE UseOldTProcess}
+{$ENDIF}
 
 {$IFNDEF UseOldTProcess}
   {$IFDEF MSWINDOWS}
