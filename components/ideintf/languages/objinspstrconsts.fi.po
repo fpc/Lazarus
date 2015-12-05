@@ -150,7 +150,7 @@ msgstr "Tämä hakee ja korvaa kaikki otsikot tietokannasta. Jatka?"
 
 #: objinspstrconsts.dpeunabletoretrievefieldsdefinitions
 msgid "Unable to retrieve fields definition from dataset."
-msgstr ""
+msgstr "Kenttämäärittelyjen haku tietokannasta ei onnistu."
 
 #: objinspstrconsts.fescalculated
 msgid "&Calculated"
@@ -254,7 +254,7 @@ msgstr "Lisää"
 
 #: objinspstrconsts.itcssearchandreplace
 msgid "Search and replace"
-msgstr ""
+msgstr "Etsi ja korvaa"
 
 #: objinspstrconsts.liisaddvalue
 msgid "Add value"
@@ -286,7 +286,7 @@ msgstr "Aseta arvo"
 
 #: objinspstrconsts.lisunabletofindparserfortool
 msgid "Unable to find parser for tool \"%s\""
-msgstr ""
+msgstr "Jäsentäjää työkalulle \"%s\" ei löydy"
 
 #: objinspstrconsts.nbcesaddpage
 msgid "Add Page"
@@ -411,11 +411,11 @@ msgstr "Poista?"
 
 #: objinspstrconsts.oischangeclass
 msgid "Change Class ..."
-msgstr ""
+msgstr "Vaihda luokka ..."
 
 #: objinspstrconsts.oischangeparent
 msgid "Change Parent"
-msgstr ""
+msgstr "Vaihda emo ..."
 
 #: objinspstrconsts.oischar
 msgid "Char"
@@ -689,7 +689,7 @@ msgstr "Tallenna kuva"
 
 #: objinspstrconsts.oispressakey
 msgid "Press a key ..."
-msgstr ""
+msgstr "Paina jotain näppäintä ..."
 
 #: objinspstrconsts.oisproperties
 msgid "Properties"
@@ -713,7 +713,7 @@ msgstr "Rajoitettu"
 
 #: objinspstrconsts.oisreverttoinherited
 msgid "Revert to inherited"
-msgstr ""
+msgstr "Palauta perittyyn arvoon"
 
 #: objinspstrconsts.oissamplemasks
 msgid "Sample Masks:"
