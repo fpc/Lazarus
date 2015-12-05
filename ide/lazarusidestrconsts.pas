@@ -3606,11 +3606,11 @@ resourcestring
   lisUnableToOpenDesignerTheClassDoesNotDescendFromADes = 'Unable to open '
     +'designer.%sThe class %s does not descend from a designable class like '
     +'TForm or TDataModule.';
+  lisIgnoreUseAsAncestor = 'Ignore, use %s as ancestor';
   lisUnableToLoadTheComponentClassBecauseItDependsOnIts = 'Unable to load the '
     +'component class "%s", because it depends on itself.';
   lisCancelLoadingThisComponent = 'Cancel loading this component';
   lisAbortWholeLoading = 'Abort whole loading';
-  lisIgnoreUseTFormAsAncestor = 'Ignore, use TForm as ancestor';
   lisTheResourceClassDescendsFromProbablyThisIsATypoFor = 'The resource '
     +'class "%s" descends from "%s". Probably this is a typo for TForm.';
 

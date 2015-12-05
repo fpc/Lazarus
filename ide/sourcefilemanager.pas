@@ -263,7 +263,8 @@ type
     function LoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
         const AComponentClassName: string; Flags: TOpenFlags; MustHaveLFM: boolean;
         out AComponentClass: TComponentClass; out ComponentUnitInfo: TUnitInfo;
-        out AncestorClass: TComponentClass): TModalResult;
+        out AncestorClass: TComponentClass;
+        const IgnoreBtnText: string = ''): TModalResult;
     function LoadIDECodeBuffer(var ACodeBuffer: TCodeBuffer;
         const AFilename: string; Flags: TLoadBufferFlags; ShowAbort: boolean): TModalResult;
   public
@@ -6309,9 +6310,9 @@ function TLazSourceFileManager.LoadAncestorDependencyHidden(AnUnitInfo: TUnitInf
   out AncestorClass: TComponentClass;
   out AncestorUnitInfo: TUnitInfo): TModalResult;
 var
-  AncestorClassName: String;
+  AncestorClassName, IgnoreBtnText: String;
   CodeBuf: TCodeBuffer;
-  GrandAncestorClass: TComponentClass;
+  GrandAncestorClass, DefAncestorClass: TComponentClass;
 begin
   AncestorClassName:='';
   AncestorClass:=nil;
@@ -6339,9 +6340,22 @@ begin
   end;
 
   // try loading the ancestor first (unit, lfm and component instance)
+
+  if AnUnitInfo.UnitResourceFileformat<>nil then
+    DefAncestorClass:=AnUnitInfo.UnitResourceFileformat.DefaultComponentClass;
+  // use TForm as default ancestor
+  if DefAncestorClass=nil then
+    DefAncestorClass:=BaseFormEditor1.StandardDesignerBaseClasses[DesignerBaseClassId_TForm];
+
   if (AncestorClass=nil) then begin
+    IgnoreBtnText:='';
+    if DefAncestorClass<>nil then
+      IgnoreBtnText:=Format(lisIgnoreUseAsAncestor, [DefAncestorClass.ClassName]
+        );
+
     Result:=LoadComponentDependencyHidden(AnUnitInfo,AncestorClassName,
-             OpenFlags,false,AncestorClass,AncestorUnitInfo,GrandAncestorClass);
+             OpenFlags,false,AncestorClass,AncestorUnitInfo,GrandAncestorClass,
+             IgnoreBtnText);
     if Result<>mrOk then begin
       DebugLn(['TLazSourceFileManager.LoadAncestorDependencyHidden DoLoadComponentDependencyHidden failed AnUnitInfo=',AnUnitInfo.Filename]);
     end;
@@ -6349,11 +6363,7 @@ begin
     mrAbort: exit;
     mrOk: ;
     mrIgnore:
-      begin
-        if AnUnitInfo.UnitResourceFileformat<>nil then
-          AncestorClass:=AnUnitInfo.UnitResourceFileformat.DefaultComponentClass;
-        AncestorUnitInfo:=nil;
-      end;
+      AncestorUnitInfo:=nil;
     else
       // cancel
       Result:=mrCancel;
@@ -6361,10 +6371,9 @@ begin
     end;
   end;
 
-  // use TForm as default ancestor
-  if AncestorClass=nil then
-    AncestorClass:=BaseFormEditor1.StandardDesignerBaseClasses[DesignerBaseClassId_TForm];
   //DebugLn('TLazSourceFileManager.LoadAncestorDependencyHidden Filename="',AnUnitInfo.Filename,'" AncestorClassName=',AncestorClassName,' AncestorClass=',dbgsName(AncestorClass));
+  if AncestorClass=nil then
+    AncestorClass:=DefAncestorClass;
   Result:=mrOk;
 end;
 
@@ -6787,8 +6796,8 @@ end;
 function TLazSourceFileManager.LoadComponentDependencyHidden(
   AnUnitInfo: TUnitInfo; const AComponentClassName: string; Flags: TOpenFlags;
   MustHaveLFM: boolean; out AComponentClass: TComponentClass; out
-  ComponentUnitInfo: TUnitInfo; out AncestorClass: TComponentClass
-  ): TModalResult;
+  ComponentUnitInfo: TUnitInfo; out AncestorClass: TComponentClass;
+  const IgnoreBtnText: string): TModalResult;
 { Possible results:
   mrOk:
    - AComponentClass<>nil and ComponentUnitInfo<>nil
@@ -6885,7 +6894,7 @@ function TLazSourceFileManager.LoadComponentDependencyHidden(
 
 var
   Quiet, HideAbort: Boolean;
-  LFMFilename: string;
+  LFMFilename, MsgText: string;
 begin
   Result:=mrCancel;
   AComponentClass:=nil;
@@ -6914,9 +6923,9 @@ begin
     {$endif}
     Result:=FindComponentClass(AnUnitInfo,AComponentClassName,Quiet,
       ComponentUnitInfo,AComponentClass,LFMFilename,AncestorClass);
-    {$if defined(VerboseFormEditor) or defined(VerboseLFMSearch)}
+    { $if defined(VerboseFormEditor) or defined(VerboseLFMSearch)}
     debugln('TLazSourceFileManager.LoadComponentDependencyHidden ',AnUnitInfo.Filename,' AComponentClassName=',AComponentClassName,' AComponentClass=',dbgsName(AComponentClass),' AncestorClass=',DbgSName(AncestorClass),' LFMFilename=',LFMFilename);
-    {$endif}
+    { $endif}
 
     //- AComponentClass<>nil and ComponentUnitInfo<>nil
     //   designer component
@@ -6936,12 +6945,17 @@ begin
       Result:=mrCancel;
     if Result=mrAbort then exit;
     if Result<>mrOk then begin
-      Result:=IDEQuestionDialogAb(lisCodeTemplError,
-        Format(lisUnableToFindTheComponentClassItIsNotRegisteredViaR, [
-          AComponentClassName, LineEnding, LineEnding, LineEnding, AnUnitInfo.Filename]),
-        mtError, [mrCancel, lisCancelLoadingThisComponent,
-                 mrIgnore, lisIgnoreUseTFormAsAncestor],
-                 HideAbort);
+      MsgText:=Format(lisUnableToFindTheComponentClassItIsNotRegisteredViaR, [
+          AComponentClassName, LineEnding, LineEnding, LineEnding, AnUnitInfo.Filename]);
+      if IgnoreBtnText<>'' then
+        Result:=IDEQuestionDialogAb(lisCodeTemplError,
+                  MsgText, mtError,
+                  [mrCancel, lisCancelLoadingThisComponent,
+                   mrIgnore, IgnoreBtnText],
+                   HideAbort)
+      else
+        Result:=IDEQuestionDialogAb(lisCodeTemplError,
+          MsgText,mtError,[mrCancel, lisCancelLoadingThisComponent],HideAbort);
     end;
   finally
     AnUnitInfo.LoadingComponent:=false;
