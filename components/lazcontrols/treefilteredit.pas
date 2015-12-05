@@ -71,7 +71,8 @@ type
     fBranches: TBranchList;         // Items under these nodes can be sorted.
     fExpandAllInitially: Boolean;   // Expand all levels when searched for the first time.
     fIsFirstTime: Boolean;          // Needed for fExpandAllInitially.
-    fTempSelected: Boolean;
+    // First node that matched the filter. Will be selected if old selection is hidden.
+    fFirstPassedNode: TTreeNode;
     fOnGetImageIndex: TImageIndexEvent;
     procedure SetFilteredTreeview(const AValue: TCustomTreeview);
     procedure SetShowDirHierarchy(const AValue: Boolean);
@@ -469,7 +470,7 @@ var
 begin
   Result:=False;
   Done:=False;
-  FilterLC := UTF8LowerCase(Filter);
+  FilterLC:=UTF8LowerCase(Filter);
   while Node<>nil do
   begin
     // Call OnFilterItem handler.
@@ -480,6 +481,8 @@ begin
     // Filter by item's title text if needed.
     if not (Pass or Done) then
       Pass:=(FilterLC='') or (Pos(FilterLC,UTF8LowerCase(Node.Text))>0);
+    if Pass and (fFirstPassedNode=Nil) then
+      fFirstPassedNode:=Node;
     // Recursive call for child nodes.
     Node.Visible:=FilterTree(Node.GetFirstChild) or Pass;
     if Node.Visible then
@@ -526,7 +529,8 @@ begin
       fBranches[i].ApplyFilter;
   end
   else begin                             // Apply filter for the whole tree.
-    if fExpandAllInitially and fIsFirstTime then begin
+    if fExpandAllInitially and fIsFirstTime then
+    begin
       fFilteredTreeview.FullExpand;
       fIsFirstTime := False;
     end;
@@ -541,33 +545,42 @@ var
   ANode: TTreeNode;
 begin
   if fFilteredTreeview = nil then Exit;
+  fFirstPassedNode:=Nil;
   ANode:=fFilteredTreeview.Selected;
   if (ANode=nil) then Exit;
-  if fTempSelected and (ANode=fFilteredTreeview.Items.GetFirstVisibleNode) then Exit;
+  if ANode=fFilteredTreeview.Items.GetFirstVisibleNode then Exit;
   fSelectionList.Clear;       // Clear old selection only if there is new one.
   fSelectionList.Add(ANode.Text);
 end;
 
 procedure TTreeFilterEdit.RestoreSelection;
 var
-  ANode: TTreeNode;
+  ANode, SelectNode: TTreeNode;
   CurText: string;
-  i: Integer;
 begin
-  fTempSelected:=fSelectionList.Count>0;
-  for i:=fSelectionList.Count-1 downto 0 do begin
-    CurText:=fSelectionList[i];
+  SelectNode:=Nil;
+  // ToDo: support more than one items or otherwise clean the code.
+  Assert(fSelectionList.Count < 2,
+    'TTreeFilterEdit.RestoreSelection: fSelectionList has more than one items.');
+  if fSelectionList.Count > 0 then
+  begin
+    CurText:=fSelectionList[0];
     ANode:=fFilteredTreeview.Items.GetFirstVisibleNode;
     while (ANode<>nil) and (ANode.Text<>CurText) do
       ANode:=ANode.GetNextVisible;
-    if ANode<>nil then begin                // Selection found
-      fFilteredTreeview.Selected:=ANode;
-      fSelectionList.Delete(i);
-      fTempSelected:=False;
+    if Assigned(ANode) then                 // Selection found
+    begin
+      SelectNode:=ANode;
+      fSelectionList.Delete(0);
     end;
   end;
-  if fTempSelected then  // Original selection will be restored later.
-    fFilteredTreeview.Selected:=fFilteredTreeview.Items.GetFirstVisibleNode;
+  if Assigned(SelectNode) then  // Original selection will be restored later.
+    ANode:=SelectNode
+  else if Assigned(fFirstPassedNode) then
+    ANode:=fFirstPassedNode
+  else
+    ANode:=fFilteredTreeview.Items.GetFirstVisibleNode;
+  fFilteredTreeview.Selected:=ANode;
 end;
 
 function TTreeFilterEdit.GetExistingBranch(ARootNode: TTreeNode): TTreeFilterBranch;
@@ -578,7 +591,8 @@ begin
   Result := Nil;
   if not Assigned(fBranches) then Exit;
   for i := 0 to fBranches.Count-1 do
-    if fBranches[i].fRootNode = ARootNode then begin
+    if fBranches[i].fRootNode = ARootNode then
+    begin
       Result := fBranches[i];
       Break;
     end;
