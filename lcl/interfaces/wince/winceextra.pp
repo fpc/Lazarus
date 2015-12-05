@@ -79,11 +79,6 @@ function ImageList_Copy(himlDst: HIMAGELIST; iDst: longint; himlSrc: HIMAGELIST;
 function ImageList_Copy(himlDst: HIMAGELIST; iDst: longint; himlSrc: HIMAGELIST; Src: longint; uFlags: UINT): BOOL; cdecl; external KernelDLL;
 {$endif}
 
-function ScrollWindowPtr(hWnd: HWND; dx: longint; dy: longint; prcScroll: lpRECT; prcClip: lpRECT;
-  hrgnUpdate: HRGN; prcUpdate: LPRECT; flags: UINT): longint; cdecl;
-  external {$ifdef win32}'user32'{$else}KernelDll{$endif} name 'ScrollWindowEx';
-
-
 const
   // BlendOp flags
   AC_SRC_OVER = $00;
