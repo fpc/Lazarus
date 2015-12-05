@@ -14,7 +14,7 @@ uses
 var
   fpdoc: String = 'fpdoc';
   ArgParams: String;
-  CSSFile: String;
+  CSSFile: String = 'fpdoc.css';
   EnvParams: String;
   fpdocfooter: String;
   FPCDocsPath: String;
@@ -23,6 +23,7 @@ var
   RTLPrefix: String;
   FCLPrefix: String;
   WarningsCount: Integer;
+  Verbosity: integer = 0;
 
 const
   PackageName   = 'lcl';
@@ -46,8 +47,8 @@ begin
   WriteLn('Usage for '+ ExtractFileName(ParamStr(0)), ':');
   WriteLn;
   Writeln('    --css-file <value> (CHM format only) CSS file to be used by fpdoc');
-  Writeln('                       for the layout of the help pages.');
-  WriteLn('    --fpdoc <value>    The full path to fpdoc to use. Default is "fpdoc"');
+  Writeln('                       for the layout of the help pages. Default is "',CSSFile,'"');
+  WriteLn('    --fpdoc <value>    The full path to fpdoc to use. Default is "',fpdoc,'"');
   WriteLn('    --fpcdocs <value>  The directory that contains the fcl and rtl .xct files.');
   WriteLn('                       Use this to make help that contains links to the rtl and fcl');
   WriteLn('    --footer <value>   Filename of a file to use a footer used in the generated pages.');
@@ -57,6 +58,7 @@ begin
   WriteLn('    --outfmt html|chm  Use value as the format fpdoc will use. Default is "html"');
   WriteLn('    --showcmd          Print the command that would be run instead if running it.');
   WriteLn('    --warnings         Show warnings while working.');
+  WriteLn('    --verbose          be more verbose');
   WriteLn;
   WriteLn('The following are environment variables that will override the above params if set:');
   WriteLn('     FPDOCFORMAT, FPDOCPARAMS, FPDOC, FPDOCFOOTER, FPCDOCS, RTLLINKPREFIX, FCLLINKPREFIX');
@@ -89,9 +91,10 @@ begin
   Options[7].Name:='warnings';
   Options[8].Name:='css-file';
   Options[8].Has_arg:=1;
+  Options[9].Name:='verbose';
   OptIndex:=0;
   repeat
-    c := GetLongOpts('help:arg:fpdoc:outfmt:showcmd:fpcdocs:footer:warnings:css-file', @Options[0], OptIndex);
+    c := GetLongOpts('help arg: fpdoc: outfmt: showcmd fpcdocs: footer: warnings css-file verbose', @Options[0], OptIndex);
     case c of
       #0:
          begin
@@ -106,6 +109,7 @@ begin
              6:  fpdocfooter := OptArg;
              7:  WarningsCount:=0;
              8:  CssFile := OptArg;
+             9:  inc(Verbosity);
            else
              WriteLn('Unknown Value: ', OptIndex);
            end;
@@ -214,6 +218,8 @@ var
   I: Integer;
   XMLFile: String;
 begin
+  if Verbosity>0 then
+    writeln('PasSrcDir="',PasSrcDir,'"');
   FileList := TStringList.Create;
   InputList := TStringList.Create;
   AddFilesToList(PasSrcDir, '.pas', FileList);
@@ -267,6 +273,8 @@ begin
     Process.Options := Process.Options + [poWaitOnExit];
     Process.CurrentDirectory := WorkDir;
     Process.CommandLine := CmdLine;
+    if Verbosity>0 then
+      writeln('Command="',Process.CommandLine,'"');
     try
       Process.Execute;
     except
@@ -285,7 +293,10 @@ end;
 begin
   ReadOptions;
   if Not DirectoryExistsUTF8(PackageName) then
+  begin
+    writeln('Creating directory "',PackageName,'"');
     mkdir(PackageName);
+  end;
   InitVars;
   MakeFileList;
   Run;

@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -7,7 +7,7 @@
       <Flags>
         <LRSInOutputDirectory Value="False"/>
       </Flags>
-      <SessionStorage Value="InProjectDir"/>
+      <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
       <Title Value="build_lcl_docs"/>
     </General>
@@ -41,7 +41,7 @@
       <Unit0>
         <Filename Value="build_lcl_docs.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="build_lcl_docs"/>
+        <UnitName Value="update_lcl_docs"/>
       </Unit0>
     </Units>
   </ProjectOptions>
@@ -53,8 +53,5 @@
         <UseAnsiStrings Value="False"/>
       </SyntaxOptions>
     </Parsing>
-    <Other>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
 </CONFIG>
