@@ -25,7 +25,7 @@ unit codetools_codecreation_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, ExtCtrls, StdCtrls, Dialogs,
+  Classes, SysUtils, FileUtil, Forms, ExtCtrls, StdCtrls, Dialogs, EditBtn,
   SourceChanger, CodeToolsOptions, LazarusIDEStrConsts, IDEOptionsIntf,
   IDEDialogs;
 
@@ -35,19 +35,17 @@ type
 
   TCodetoolsCodeCreationOptionsFrame = class(TAbstractIDEOptionsEditor)
     ForwardProcsInsertPolicyComboBox: TComboBox;
+    TemplateFileEdit: TFileNameEdit;
     UsesInsertPolicyComboBox: TComboBox;
     ForwardProcsKeepOrderCheckBox: TCheckBox;
     ForwardProcsInsertPolicyLabel: TLabel;
     EventMethodSectionComboBox: TComboBox;
     UsesInsertPolicyLabel: TLabel;
-    TemplateFileBrowseButton: TButton;
-    TemplateFileEdit: TEdit;
     TemplateFileLabel: TLabel;
     UpdateMultiProcSignaturesCheckBox: TCheckBox;
     UpdateOtherProcSignaturesCaseCheckBox: TCheckBox;
     GroupLocalVariablesCheckBox: TCheckBox;
     EventMethodSectionLabel: TLabel;
-    procedure TemplateFileBrowseButtonClick(Sender: TObject);
   private
   public
     function GetTitle: String; override;
@@ -62,26 +60,6 @@ implementation
 {$R *.lfm}
 
 { TCodetoolsCodeCreationOptionsFrame }
-
-procedure TCodetoolsCodeCreationOptionsFrame.TemplateFileBrowseButtonClick(
-  Sender: TObject);
-var
-  OpenDialog: TOpenDialog;
-begin
-  OpenDialog:=TOpenDialog.Create(nil);
-  try
-    InitIDEFileDialog(OpenDialog);
-    OpenDialog.Title:=lisChooseAFileWithCodeToolsTemplates;
-    OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist];
-    OpenDialog.Filter:=dlgFilterCodetoolsTemplateFile+' (*.xml)|*.xml|'+dlgFilterAll+
-      '|'+GetAllFilesMask;
-    if OpenDialog.Execute then
-      TemplateFileEdit.Text:=OpenDialog.FileName;
-  finally
-    StoreIDEFileDialog(OpenDialog);
-    OpenDialog.Free;
-  end;
-end;
 
 function TCodetoolsCodeCreationOptionsFrame.GetTitle: String;
 begin
@@ -142,8 +120,11 @@ begin
   {$IFNDEF EnableCodeCompleteTemplates}
   TemplateFileLabel.Enabled:=false;
   TemplateFileEdit.Enabled:=false;
-  TemplateFileBrowseButton.Enabled:=false;
   {$ENDIF}
+
+  TemplateFileEdit.DialogTitle:=lisChooseAFileWithCodeToolsTemplates;
+  TemplateFileEdit.Filter:=dlgFilterCodetoolsTemplateFile+' (*.xml)|*.xml|'+
+    dlgFilterAll+'|'+GetAllFilesMask;
 end;
 
 procedure TCodetoolsCodeCreationOptionsFrame.ReadSettings(
