@@ -366,7 +366,7 @@ procedure TFPDocRun.AddFilesToList(Dir: String; List: TStrings);
 var
   FRec: TSearchRec;
 begin
-  Dir:=AppendPathDelim(Dir);
+  Dir:=AppendPathDelim(TrimFilename(Dir));
   if FindFirstUTF8(Dir+AllFilesMask, faAnyFile, FRec)=0 then
     repeat
       //WriteLn('Checking file ' +FRec.Name);
@@ -406,7 +406,7 @@ begin
   FileList.Sort;
   for I := 0 to FileList.Count-1 do
   begin
-    XMLFile := XMLSrcDir+ExtractFileNameOnly(FileList[I])+'.xml';
+    XMLFile := AppendPathDelim(XMLSrcDir)+ExtractFileNameOnly(FileList[I])+'.xml';
     if FileExistsUTF8(XMLFile) then
     begin
       InputList.Add(CreateRelativePath(FileList[I],OutDir) + ParseParams);
@@ -471,7 +471,8 @@ begin
   begin
     Writeln('WorkDirectory:',OutDir);
     WriteLn(CmdLine);
-    Exit;
+    writeln('Not executing, simulation ended. Stop');
+    Halt(0);
   end;
   {$IFDEF MSWINDOWS}fpdoc := ChangeFileExt(fpdoc,'.exe');{$ENDIF}
   if not FileInEnvPATH(FPDocExe) then
@@ -489,6 +490,8 @@ begin
       writeln('Command="',Process.CommandLine,'"');
     try
       Process.Execute;
+      if Process.ExitCode<>0 then
+        raise Exception.Create('fpdoc failed with code '+IntToStr(Process.ExitCode));
     except
       if WarningsCount >= 0 then
         WriteLn('Error running fpdoc, command line: '+CmdLine)
@@ -497,6 +500,8 @@ begin
     end;
     if WarningsCount < -1 then
       WriteLn(abs(WarningsCount+1), ' Warnings hidden. Use --warnings to see them all.');
+    if not FileExistsUTF8(XCTFile) then
+      raise Exception.Create('File not found: '+XCTFile);
   finally
     Process.Free;
   end;
@@ -548,9 +553,18 @@ var
 begin
   ReadOptions;
 
+  {Run:=TFPDocRun.Create('lazutils');
+  Run.UsedPkgs.Add('rtl');
+  Run.UsedPkgs.Add('fcl');
+  Run.XMLSrcDir := '..'+PathDelim+'xml'+PathDelim+'lazutils';
+  Run.PasSrcDir := '..'+PathDelim+'..'+PathDelim+'components'+PathDelim+'lazutils';
+  Run.Execute;
+  Run.Free;}
+
   Run:=TFPDocRun.Create('lcl');
   Run.UsedPkgs.Add('rtl');
   Run.UsedPkgs.Add('fcl');
+  //Run.UsedPkgs.Add('lazutils');
   Run.XMLSrcDir := '..'+PathDelim+'xml'+PathDelim+'lcl'+PathDelim;
   Run.PasSrcDir := '..'+PathDelim+'..'+PathDelim+'lcl'+PathDelim;
   Run.IncludePath := Run.PasSrcDir+PathDelim+'include';
