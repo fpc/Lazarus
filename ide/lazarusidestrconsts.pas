@@ -277,8 +277,6 @@ resourcestring
   lisMenuTools = '&Tools';
   lisMenuWindow = '&Window';
   lisMenuHelp = '&Help';
-  lisThisBuildModeNowSetsUTF8InRTL = 'This build mode now sets UTF-8 in RTL.%s'
-    +' Flags are in pages "Custom Options" and "Additions and Overrides".';
   lisThisWillAllowChangingAllBuildModesAtOnceNotImpleme = 'This will allow '
     +'changing all build modes at once. Not implemented yet.';
   
@@ -5887,9 +5885,6 @@ resourcestring
 
   //Toolbar options
   lisToolbarOptions = 'Toolbar';
-  lisToolbarOptionsToolbarsVisible = 'Toolbars visible';
-  lisToolbarOptionsStandardVisible = 'Standard toolbar visible';
-  lisToolbarOptionsViewDebugVisible = 'Debug toolbar visible';
   lisToolbarOptionsHighLight = 'Highlight toolbars buttons';
   lisToolbarOptionsRaise = 'Raise toolbars';
 
