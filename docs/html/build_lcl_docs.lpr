@@ -309,7 +309,7 @@ begin
     Params+=' --output='+ ChangeFileExt(PackageName, '.chm')
               +' --auto-toc --auto-index --make-searchable';
     if CSSFile<>'' then
-      Params+=' --css-file='+CreateRelativePath(CSSFile,OutDir);
+      Params+=' --css-file='+ExtractFileName(CSSFile); // the css file is copied to the OutDir
   end;
 
   if EnvParams<>'' then
@@ -398,6 +398,8 @@ begin
 end;
 
 procedure TFPDocRun.CreateOuputDir;
+var
+  TargetCSSFile: String;
 begin
   if ord(Step)>=ord(frsOutDirCreated) then
     raise Exception.Create('TFPDocRun.CreateOuputDir not again');
@@ -409,6 +411,16 @@ begin
     writeln('Creating directory "',OutDir,'"');
     if not CreateDirUTF8(OutDir) then
       raise Exception.Create('unable to create directory "'+OutDir+'"');
+  end;
+
+  if (OutFormat='chm') and (CSSFile<>'') then
+  begin
+    TargetCSSFile:=AppendPathDelim(OutDir)+ExtractFileName(CSSFile);
+    if CompareFilenames(TargetCSSFile,CSSFile)<>0 then
+    begin
+      if not CopyFile(CSSFile,TargetCSSFile) then
+        raise Exception.Create('unable to copy css file: CSSfile="'+CSSFile+'" to "'+TargetCSSFile+'"');
+    end;
   end;
 
   FStep:=frsOutDirCreated;
