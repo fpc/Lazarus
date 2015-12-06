@@ -9893,9 +9893,9 @@ msgstr "Bináris fájlok kihagyása"
 msgid "Ignore this exception type"
 msgstr "E kivétel típus figyelmen kívül hagyása"
 
-#: lazarusidestrconsts.lisignoreusetformasancestor
-msgid "Ignore, use TForm as ancestor"
-msgstr "Kihagyás, TForm használata ősként"
+#: lazarusidestrconsts.lisignoreuseasancestor
+msgid "Ignore, use %s as ancestor"
+msgstr ""
 
 #: lazarusidestrconsts.lisimitateindentationofcurrentunitprojectorpackage
 msgid "Imitate indentation of current unit, project or package"
@@ -16944,10 +16944,6 @@ msgstr "A(z) \"%s\" unit keresési útvonala tartalmazza a(z) \"%s\" könyvtára
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "A(z) \"%s\" munkakönyvtár nem létezik.%sEllenőrizze a munkakönyvtárat a menüben itt: Futtatás -> Futtatási paraméterek"
 
-#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inrtl
-msgid "This build mode now sets UTF-8 in RTL.%s Flags are in pages \"Custom Options\" and \"Additions and Overrides\"."
-msgstr "Ezen építési mód bekapcsolja az UTF-8 támogatást az RTL-ben.%s Részletek az \"Egyéni beállítások\" és a \"Kiegészítések és felülbírálások\" lapokon."
-
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
 msgid "This component already contains a class with the name %s."
 msgstr "Ez a komponens már tartalmaz egy osztályt %s névvel."
@@ -17101,18 +17097,6 @@ msgstr "Eszköztárak gombjainak kiemelése"
 #: lazarusidestrconsts.listoolbaroptionsraise
 msgid "Raise toolbars"
 msgstr "Eszköztárak kiemelése"
-
-#: lazarusidestrconsts.listoolbaroptionsstandardvisible
-msgid "Standard toolbar visible"
-msgstr "Az alap eszköztár látható"
-
-#: lazarusidestrconsts.listoolbaroptionstoolbarsvisible
-msgid "Toolbars visible"
-msgstr "Látható eszköztárak"
-
-#: lazarusidestrconsts.listoolbaroptionsviewdebugvisible
-msgid "Debug toolbar visible"
-msgstr "A hibakeresési eszköztár látható"
 
 #: lazarusidestrconsts.listoolhasnoexecutable
 msgid "tool \"%s\" has no executable"

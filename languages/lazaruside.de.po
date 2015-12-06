@@ -9896,9 +9896,9 @@ msgstr "Binärdateien übergehen"
 msgid "Ignore this exception type"
 msgstr "Diesen Ausnahmetyp übergehen"
 
-#: lazarusidestrconsts.lisignoreusetformasancestor
-msgid "Ignore, use TForm as ancestor"
-msgstr "Übergehen, TForm als Vorfahr verwenden"
+#: lazarusidestrconsts.lisignoreuseasancestor
+msgid "Ignore, use %s as ancestor"
+msgstr ""
 
 #: lazarusidestrconsts.lisimitateindentationofcurrentunitprojectorpackage
 msgid "Imitate indentation of current unit, project or package"
@@ -16941,10 +16941,6 @@ msgstr "Der Unitsuchpfad von \"%s\" enthält das Quellverzeichnis \"%s\" des Pac
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "Das Arbeitsverzeichnis \"%s\" fehlt.%sBitte prüfen Sie das Arbeitsverzeichnis im Menü Start > Startparameter."
 
-#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inrtl
-msgid "This build mode now sets UTF-8 in RTL.%s Flags are in pages \"Custom Options\" and \"Additions and Overrides\"."
-msgstr ""
-
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
 msgid "This component already contains a class with the name %s."
 msgstr "Diese Komponente enthält bereits eine Klasse mit dem Namen %s."
@@ -17097,18 +17093,6 @@ msgstr "Symbolleisten-Schaltflächen hervorheben"
 
 #: lazarusidestrconsts.listoolbaroptionsraise
 msgid "Raise toolbars"
-msgstr ""
-
-#: lazarusidestrconsts.listoolbaroptionsstandardvisible
-msgid "Standard toolbar visible"
-msgstr "Standard-Symbolleiste sichtbar"
-
-#: lazarusidestrconsts.listoolbaroptionstoolbarsvisible
-msgid "Toolbars visible"
-msgstr "Symbolleisten sichtbar"
-
-#: lazarusidestrconsts.listoolbaroptionsviewdebugvisible
-msgid "Debug toolbar visible"
 msgstr ""
 
 #: lazarusidestrconsts.listoolhasnoexecutable
@@ -20260,3 +20244,4 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
+

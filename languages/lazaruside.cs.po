@@ -9895,9 +9895,9 @@ msgstr "Ignorovat binární"
 msgid "Ignore this exception type"
 msgstr "Ignorovat tento typ výjimky"
 
-#: lazarusidestrconsts.lisignoreusetformasancestor
-msgid "Ignore, use TForm as ancestor"
-msgstr "Ignorovat, použít TForm jako předka"
+#: lazarusidestrconsts.lisignoreuseasancestor
+msgid "Ignore, use %s as ancestor"
+msgstr ""
 
 #: lazarusidestrconsts.lisimitateindentationofcurrentunitprojectorpackage
 msgid "Imitate indentation of current unit, project or package"
@@ -16942,10 +16942,6 @@ msgstr "Cesta hledání jednotek \"%s\" obsahuje zdrojový adresář \"%s\" bal�
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "Pracovní adresář \"%s\" neexistuje.%sProsím, zkontrolujte pracovní adresář vNabídka > Spustit > Parametry spuštění."
 
-#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inrtl
-msgid "This build mode now sets UTF-8 in RTL.%s Flags are in pages \"Custom Options\" and \"Additions and Overrides\"."
-msgstr "Tento režim sestavení nyní nastavuje UTF-8 v RTL.%s Příznaky jsou na stránkách \"Vlastní volby\" a \"Přídavky a přepisy\"."
-
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
 msgid "This component already contains a class with the name %s."
 msgstr "Tato komponenta už obsahuje třídu s názvem %s."
@@ -17099,18 +17095,6 @@ msgstr "Zvýraznit tlačítka nástrojových panelů"
 #: lazarusidestrconsts.listoolbaroptionsraise
 msgid "Raise toolbars"
 msgstr "Vyvolat nástrojové panely"
-
-#: lazarusidestrconsts.listoolbaroptionsstandardvisible
-msgid "Standard toolbar visible"
-msgstr "Běžný nástrojový panel viditelný"
-
-#: lazarusidestrconsts.listoolbaroptionstoolbarsvisible
-msgid "Toolbars visible"
-msgstr "Viditelné nástrojové panely"
-
-#: lazarusidestrconsts.listoolbaroptionsviewdebugvisible
-msgid "Debug toolbar visible"
-msgstr "Ladící nástrojový panel viditelný"
 
 #: lazarusidestrconsts.listoolhasnoexecutable
 msgid "tool \"%s\" has no executable"

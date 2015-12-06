@@ -2647,22 +2647,27 @@ msgid "Messages"
 msgstr "Viestit"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentdebug
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentdebug"
 msgid "Debug"
 msgstr "Virheenjäljitys"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgenterror
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgenterror"
 msgid "Error"
 msgstr "Virhe"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentfatal
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentfatal"
 msgid "Fatal"
 msgstr "Tuhoisa"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgenthint
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgenthint"
 msgid "Hint"
 msgstr "Vihje"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentimportant
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentimportant"
 msgid "Important"
 msgstr "Tärkeä"
 
@@ -2671,10 +2676,12 @@ msgid "Normal"
 msgstr "Normaali"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentnote
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentnote"
 msgid "Note"
 msgstr "Huom."
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentpanic
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentpanic"
 msgid "Panic"
 msgstr "Paniikki"
 
@@ -2683,6 +2690,7 @@ msgid "Time and statistics"
 msgstr "Aika ja tilastot"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentverbose
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentverbose"
 msgid "Verbose"
 msgstr "Monisanainen"
 
@@ -2695,6 +2703,7 @@ msgid "Verbose 3"
 msgstr "Monisanainen 3"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentwarning
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentwarning"
 msgid "Warning"
 msgstr "Varoitus"
 
@@ -4031,6 +4040,7 @@ msgid "Abandon changes?"
 msgstr "Hylkää muutokset?"
 
 #: lazarusidestrconsts.lisabort
+msgctxt "lazarusidestrconsts.lisabort"
 msgid "Abort"
 msgstr "Keskeytä"
 
@@ -4661,6 +4671,7 @@ msgid "Border space"
 msgstr "Reuna-alue"
 
 #: lazarusidestrconsts.lisbottom
+msgctxt "lazarusidestrconsts.lisbottom"
 msgid "Bottom"
 msgstr "Alhaalla"
 
@@ -6971,10 +6982,12 @@ msgid "Toolbars border style"
 msgstr "Työkalupalkin kehyksen tyyli"
 
 #: lazarusidestrconsts.liscoolbarborderstyleitem0
+msgctxt "lazarusidestrconsts.liscoolbarborderstyleitem0"
 msgid "None"
 msgstr "Ei yhtään"
 
 #: lazarusidestrconsts.liscoolbarborderstyleitem1
+msgctxt "lazarusidestrconsts.liscoolbarborderstyleitem1"
 msgid "Single"
 msgstr "Yksittäinen"
 
@@ -6983,10 +6996,12 @@ msgid "Clear selection"
 msgstr "Tyhjennä valinta"
 
 #: lazarusidestrconsts.liscoolbarcodeexplorer
+msgctxt "lazarusidestrconsts.liscoolbarcodeexplorer"
 msgid "Code Explorer"
 msgstr "Koodin tutkija"
 
 #: lazarusidestrconsts.liscoolbarcodetemplates
+msgctxt "lazarusidestrconsts.liscoolbarcodetemplates"
 msgid "Code Templates"
 msgstr "Koodimallit"
 
@@ -7019,6 +7034,7 @@ msgid "Simple"
 msgstr "Yksinkertainen"
 
 #: lazarusidestrconsts.liscoolbargrabstyleitem1
+msgctxt "lazarusidestrconsts.liscoolbargrabstyleitem1"
 msgid "Double"
 msgstr "Kaksois"
 
@@ -7035,6 +7051,7 @@ msgid "Gripper"
 msgstr "Pihdit"
 
 #: lazarusidestrconsts.liscoolbargrabstyleitem5
+msgctxt "lazarusidestrconsts.liscoolbargrabstyleitem5"
 msgid "Button"
 msgstr "Nappi"
 
@@ -7047,6 +7064,7 @@ msgid "IDE Main Menu"
 msgstr "IDE päävalikko"
 
 #: lazarusidestrconsts.liscoolbarmessages
+msgctxt "lazarusidestrconsts.liscoolbarmessages"
 msgid "Messages"
 msgstr "Viestit"
 
@@ -7083,6 +7101,7 @@ msgid "Please select a toolbar first!"
 msgstr "Valitse ensin työkalupalkki!"
 
 #: lazarusidestrconsts.liscoolbarsourceeditor
+msgctxt "lazarusidestrconsts.liscoolbarsourceeditor"
 msgid "Source Editor"
 msgstr "Lähdekoodieditori"
 
@@ -7579,6 +7598,7 @@ msgid "Disable/Enable updates for the entire window"
 msgstr "Estä/salli päivitykset koko ikkunalle"
 
 #: lazarusidestrconsts.lisdebug
+msgctxt "lazarusidestrconsts.lisdebug"
 msgid "Debug"
 msgstr "Virheenjäljitys"
 
@@ -9799,9 +9819,9 @@ msgstr "Jätä huomiotta binaarit"
 msgid "Ignore this exception type"
 msgstr "Ohita tämän tyyppiset poikkeukset"
 
-#: lazarusidestrconsts.lisignoreusetformasancestor
-msgid "Ignore, use TForm as ancestor"
-msgstr "Jätä huomiotta, käytä TForm kantaluokkana"
+#: lazarusidestrconsts.lisignoreuseasancestor
+msgid "Ignore, use %s as ancestor"
+msgstr ""
 
 #: lazarusidestrconsts.lisimitateindentationofcurrentunitprojectorpackage
 msgid "Imitate indentation of current unit, project or package"
@@ -16789,10 +16809,6 @@ msgstr "Käännösyksikön hakupolku \"%s\":lle sisältää lähdehakemiston \"%
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "Työhakemistoa \"%s\" ei ole olemassa.%sTarkista työhakemisto valikosta Suorita > Suoritusparametrit."
 
-#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inrtl
-msgid "This build mode now sets UTF-8 in RTL.%s Flags are in pages \"Custom Options\" and \"Additions and Overrides\"."
-msgstr ""
-
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
 msgid "This component already contains a class with the name %s."
 msgstr "Komponentilla on jo luokka nimeltä %s."
@@ -16947,18 +16963,6 @@ msgstr "Korosta työkalupalkin napit"
 msgid "Raise toolbars"
 msgstr "Nosta työkalupalkit"
 
-#: lazarusidestrconsts.listoolbaroptionsstandardvisible
-msgid "Standard toolbar visible"
-msgstr ""
-
-#: lazarusidestrconsts.listoolbaroptionstoolbarsvisible
-msgid "Toolbars visible"
-msgstr ""
-
-#: lazarusidestrconsts.listoolbaroptionsviewdebugvisible
-msgid "Debug toolbar visible"
-msgstr ""
-
 #: lazarusidestrconsts.listoolhasnoexecutable
 msgid "tool \"%s\" has no executable"
 msgstr "työkalulla \"%s\" ei ole suoritettavaa ohjelmaa"
@@ -16984,6 +16988,7 @@ msgid "tool stopped with exit code %s. Use context menu to get more information.
 msgstr "työkalu lopetti koodilla %s. Lisää tietoa pikavalikosta."
 
 #: lazarusidestrconsts.listop
+msgctxt "lazarusidestrconsts.listop"
 msgid "Top"
 msgstr "Ylhäällä"
 

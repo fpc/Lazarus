@@ -10118,9 +10118,9 @@ msgstr "Ignorar binários"
 msgid "Ignore this exception type"
 msgstr "Ignorar este tipo de exceção"
 
-#: lazarusidestrconsts.lisignoreusetformasancestor
-msgid "Ignore, use TForm as ancestor"
-msgstr "Ignorar, usar TForm como ancestral"
+#: lazarusidestrconsts.lisignoreuseasancestor
+msgid "Ignore, use %s as ancestor"
+msgstr ""
 
 #: lazarusidestrconsts.lisimitateindentationofcurrentunitprojectorpackage
 msgid "Imitate indentation of current unit, project or package"
@@ -17419,10 +17419,6 @@ msgstr "O caminho de busca unidade de %s%s%s contém o diretório fonte %s%s%s d
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "O diretório de trabalho %s%s%s não existe.%sFavor verificar no Menu -> Executar -> Parâmetros de Execução."
 
-#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inrtl
-msgid "This build mode now sets UTF-8 in RTL.%s Flags are in pages \"Custom Options\" and \"Additions and Overrides\"."
-msgstr ""
-
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
 msgid "This component already contains a class with the name %s."
 msgstr ""
@@ -17579,18 +17575,6 @@ msgstr ""
 
 #: lazarusidestrconsts.listoolbaroptionsraise
 msgid "Raise toolbars"
-msgstr ""
-
-#: lazarusidestrconsts.listoolbaroptionsstandardvisible
-msgid "Standard toolbar visible"
-msgstr ""
-
-#: lazarusidestrconsts.listoolbaroptionstoolbarsvisible
-msgid "Toolbars visible"
-msgstr ""
-
-#: lazarusidestrconsts.listoolbaroptionsviewdebugvisible
-msgid "Debug toolbar visible"
 msgstr ""
 
 #: lazarusidestrconsts.listoolhasnoexecutable

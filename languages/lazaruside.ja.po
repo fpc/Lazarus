@@ -10080,9 +10080,9 @@ msgstr "バイナリーを無視"
 msgid "Ignore this exception type"
 msgstr "この例外型を無視"
 
-#: lazarusidestrconsts.lisignoreusetformasancestor
-msgid "Ignore, use TForm as ancestor"
-msgstr "無視し、TFormを先祖型に使用"
+#: lazarusidestrconsts.lisignoreuseasancestor
+msgid "Ignore, use %s as ancestor"
+msgstr ""
 
 #: lazarusidestrconsts.lisimitateindentationofcurrentunitprojectorpackage
 msgid "Imitate indentation of current unit, project or package"
@@ -17361,10 +17361,6 @@ msgstr "%s%s%sのユニット検索パスはパッケージ %sのソースディ
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "作業ディレクトリ %s%s%s が存在しません。%sメニュー>実行>実行パラメータで作業ディレクトリをチェックしてください。"
 
-#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inrtl
-msgid "This build mode now sets UTF-8 in RTL.%s Flags are in pages \"Custom Options\" and \"Additions and Overrides\"."
-msgstr ""
-
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
 msgid "This component already contains a class with the name %s."
 msgstr "このコンポーネントは既に %s という名前のクラスを含んでいます。"
@@ -17519,18 +17515,6 @@ msgstr ""
 
 #: lazarusidestrconsts.listoolbaroptionsraise
 msgid "Raise toolbars"
-msgstr ""
-
-#: lazarusidestrconsts.listoolbaroptionsstandardvisible
-msgid "Standard toolbar visible"
-msgstr ""
-
-#: lazarusidestrconsts.listoolbaroptionstoolbarsvisible
-msgid "Toolbars visible"
-msgstr ""
-
-#: lazarusidestrconsts.listoolbaroptionsviewdebugvisible
-msgid "Debug toolbar visible"
 msgstr ""
 
 #: lazarusidestrconsts.listoolhasnoexecutable
