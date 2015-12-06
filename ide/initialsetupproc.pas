@@ -843,8 +843,11 @@ begin
     // Windows-only locations:
     if (GetDefaultSrcOSForTargetOS(GetCompiledTargetOS)='win') then begin
       // check make in fpc.exe directory
-      if CheckFile(SetDirSeparators('$Path($(CompPath))/make.exe'),Result)
+      if CheckFile(SetDirSeparators('$Path($(CompPath))\make.exe'),Result)
       then exit;
+      // check $(LazarusDir)\fpc\bin\i386-win32\fpc.exe
+      if CheckFile(SetDirSeparators('$(LazarusDir)\fpc\bin\$(TargetCPU)-$(TargetOS)\make.exe'),Result)
+        then exit;
     end;
 
     // check history
