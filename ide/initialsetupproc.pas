@@ -468,10 +468,10 @@ begin
     if CheckFile(AFilename,Result) then exit;
 
     // search fpc(.exe) in PATH
-    if CheckFile(GetDefaultCompilerFilename,Result) then exit;
+    if CheckFile('fpc'+ExeExt,Result) then exit;
 
     // search ppccpu(.exe) in PATH
-    if CheckFile(FindDefaultCompilerPath,Result) then exit;
+    if CheckFile(GetDefaultCompilerFilename,Result) then exit;
 
     // check history
     Files:=EnvironmentOptions.CompilerFileHistory;
