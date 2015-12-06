@@ -26,13 +26,22 @@ var
 
 type
   TFPDocRunStep = (
-   frsCreated,
-   frsVarsInitialized,
-   frsFilesGathered,
-   frsOutDirCreated,
-   frsFPDocExecuted,
-   frsComplete
-   );
+    frsCreated,
+    frsVarsInitialized,
+    frsFilesGathered,
+    frsOutDirCreated,
+    frsFPDocExecuted,
+    frsCopiedToXCTDir,
+    frsComplete
+    );
+  TFPDocRunOption = (
+    foCopyToXCTDir  // copy the created chm and xct file to the xct directory
+    );
+  TFPDocRunOptions = set of TFPDocRunOption;
+const
+  DefaultFPDocRunOptions = [foCopyToXCTDir];
+
+type
 
   { TFPDocRun }
 
@@ -40,43 +49,54 @@ type
   private
     FCSSFile: String;
     FFooterFilename: String;
+    FFPDocExe: String;
     FIncludePath: string;
     FInputFile: string;
+    FOptions: TFPDocRunOptions;
+    FOutDir: string;
+    FOutFormat: String;
     FPackageName: string;
     FPasSrcDir: string;
     FStep: TFPDocRunStep;
+    FUsedPkgs: TStringList;
     FXCTDir: string;
+    FXCTFile: string;
     FXMLSrcDir: string;
     procedure SetCSSFile(AValue: String);
     procedure SetFooterFilename(AValue: String);
     procedure SetIncludePath(AValue: string);
     procedure SetInputFile(AValue: string);
+    procedure SetOutDir(AValue: string);
     procedure SetPasSrcDir(AValue: string);
     procedure SetXCTDir(AValue: string);
     procedure SetXMLSrcDir(AValue: string);
   public
-    OutDir: string;
-    FPDocExe: String;
     Params: String;
     ParseParams: string;
-    OutFormat: String;
-    UsedPkgs: TStringList; // e.g. 'rtl','fcl', 'lazutils'
     constructor Create(aPackageName: string);
     destructor Destroy; override;
     procedure InitVars;
     procedure AddFilesToList(Dir: String; List: TStrings);
     procedure FindSourceFiles;
     procedure CreateOuputDir;
-    procedure Run;
-    property PackageName: string read FPackageName;
-    property XMLSrcDir: string read FXMLSrcDir write SetXMLSrcDir;
-    property PasSrcDir: string read FPasSrcDir write SetPasSrcDir;
-    property IncludePath: string read FIncludePath write SetIncludePath;// semicolon separated search path
-    property InputFile: string read FInputFile write SetInputFile; // relative to OutDir, automatically created
+    procedure RunFPDoc;
+    procedure CopyToXCTDir;
+    procedure Execute;
+    property Options: TFPDocRunOptions read FOptions write FOptions default DefaultFPDocRunOptions;
     property CSSFile: String read FCSSFile write SetCSSFile;
     property FooterFilename: String read FFooterFilename write SetFooterFilename; // ToDo
-    property XCTDir: string read FXCTDir write SetXCTDir;
+    property FPDocExe: String read FFPDocExe write FFPDocExe;
+    property IncludePath: string read FIncludePath write SetIncludePath;// semicolon separated search path
+    property InputFile: string read FInputFile write SetInputFile; // relative to OutDir, automatically created
+    property OutDir: string read FOutDir write SetOutDir;
+    property OutFormat: String read FOutFormat write FOutFormat;
+    property PackageName: string read FPackageName;
+    property PasSrcDir: string read FPasSrcDir write SetPasSrcDir;
     property Step: TFPDocRunStep read FStep;
+    property UsedPkgs: TStringList read FUsedPkgs; // e.g. 'rtl','fcl', 'lazutils'
+    property XCTDir: string read FXCTDir write SetXCTDir;
+    property XMLSrcDir: string read FXMLSrcDir write SetXMLSrcDir;
+    property XCTFile: string read FXCTFile;
   end;
 
 procedure GetEnvDef(var S: String; DefaultValue: String; EnvName: String);
@@ -196,6 +216,13 @@ begin
   FInputFile:=AValue;
 end;
 
+procedure TFPDocRun.SetOutDir(AValue: string);
+begin
+  AValue:=TrimAndExpandFilename(AValue);
+  if FOutDir=AValue then Exit;
+  FOutDir:=AValue;
+end;
+
 procedure TFPDocRun.SetIncludePath(AValue: string);
 begin
   if FIncludePath=AValue then Exit;
@@ -240,14 +267,15 @@ end;
 constructor TFPDocRun.Create(aPackageName: string);
 begin
   FPackageName:=aPackageName;
-  UsedPkgs:=TStringList.Create;
+  FOptions:=DefaultFPDocRunOptions;
+  fUsedPkgs:=TStringList.Create;
   InputFile := 'inputfile.txt';
-  OutDir:=TrimAndExpandFilename(PackageName);
+  OutDir:=PackageName;
   FPDocExe:=TrimFilename(DefaultFPDocExe);
-  CSSFile:=TrimFilename(DefaultCSSFile);
-  Params := DefaultFPDocParams;
+  CSSFile:=DefaultCSSFile;
+  Params:=DefaultFPDocParams;
   OutFormat:=DefaultOutFormat;
-  FooterFilename:=TrimFilename(DefaultFooterFilename);
+  FooterFilename:=DefaultFooterFilename;
   XCTDir:=DefaultXCTDir;
 
   FStep:=frsCreated;
@@ -255,7 +283,7 @@ end;
 
 destructor TFPDocRun.Destroy;
 begin
-  FreeAndNil(UsedPkgs);
+  FreeAndNil(fUsedPkgs);
   inherited Destroy;
 end;
 
@@ -276,7 +304,9 @@ begin
     ParseParams+=' -Fi'+CreateRelativePath(IncludeDir,OutDir);
   end;
 
-  Params += ' --content='+PackageName+'.xct'
+  FXCTFile:=AppendPathDelim(OutDir)+PackageName+'.xct';
+
+  Params += ' --content='+CreateRelativePath(XCTFile,OutDir)
           + ' --package='+PackageName
           + ' --descr='+CreateRelativePath(AppendPathDelim(XMLSrcDir)+PackageName+'.xml',OutDir)
           + ' --format='+OutFormat;
@@ -426,7 +456,7 @@ begin
   FStep:=frsOutDirCreated;
 end;
 
-procedure TFPDocRun.Run;
+procedure TFPDocRun.RunFPDoc;
 var
   Process: TProcess;
   CmdLine: String;
@@ -471,6 +501,45 @@ begin
     Process.Free;
   end;
 
+  FStep:=frsFPDocExecuted;
+end;
+
+procedure TFPDocRun.CopyToXCTDir;
+var
+  TargetXCTFile, SrcCHMFile, TargetCHMFile: String;
+begin
+  if ord(Step)>=ord(frsCopiedToXCTDir) then
+    raise Exception.Create('TFPDocRun.CopyToXCTDir not again');
+  if ord(Step)<ord(frsFPDocExecuted) then
+    RunFPDoc;
+
+  if (foCopyToXCTDir in Options)
+  and (CompareFilenames(ChompPathDelim(OutDir),ChompPathDelim(XCTDir))<>0) then
+  begin
+    TargetXCTFile:=AppendPathDelim(XCTDir)+ExtractFileName(XCTFile);
+    if not CopyFile(XCTFile,TargetXCTFile) then
+      raise Exception.Create('unable to copy xct file: "'+XCTFile+'" to "'+TargetXCTFile+'"');
+    writeln('Created ',TargetXCTFile);
+    if OutFormat='chm' then
+    begin
+      SrcCHMFile:=AppendPathDelim(OutDir)+PackageName+'.chm';
+      TargetCHMFile:=AppendPathDelim(XCTDir)+PackageName+'.chm';
+      if not CopyFile(SrcCHMFile,TargetCHMFile) then
+        raise Exception.Create('unable to copy chm file: "'+SrcCHMFile+'" to "'+TargetCHMFile+'"');
+      writeln('Created ',TargetCHMFile);
+    end;
+  end;
+
+  FStep:=frsCopiedToXCTDir;
+end;
+
+procedure TFPDocRun.Execute;
+begin
+  if ord(Step)>=ord(frsComplete) then
+    raise Exception.Create('TFPDocRun.Execute not again');
+  if ord(Step)<ord(frsCopiedToXCTDir) then
+    CopyToXCTDir;
+
   FStep:=frsComplete;
 end;
 
@@ -485,7 +554,7 @@ begin
   Run.XMLSrcDir := '..'+PathDelim+'xml'+PathDelim+'lcl'+PathDelim;
   Run.PasSrcDir := '..'+PathDelim+'..'+PathDelim+'lcl'+PathDelim;
   Run.IncludePath := Run.PasSrcDir+PathDelim+'include';
-  Run.Run;
+  Run.Execute;
   Run.Free;
 end.
 
