@@ -51,7 +51,7 @@ type
   TStartNewInstanceResult = (ofrStartNewInstance, ofrDoNotStart, ofrModalError,
                              ofrForceSingleInstanceModalError, ofrNotResponding);
   TStartNewInstanceEvent = procedure(const aFiles: TStrings;
-    var outResult: TStartNewInstanceResult) of object;
+    var outResult: TStartNewInstanceResult; var outSourceWindowHandle: HWND) of object;
   TGetCurrentProjectEvent = procedure(var outProjectFileName: string) of object;
 
   TMessageParam = record
@@ -737,6 +737,7 @@ var
   xResult: TStartNewInstanceResult;
   xFiles: TStrings;
   xParams: TMessageParams;
+  xSourceWindowHandle: HWND = 0;
 begin
   xResult := ofrStartNewInstance;
   if Assigned(FStartNewInstanceEvent) then
@@ -744,7 +745,7 @@ begin
     xFiles := TStringList.Create;
     try
       TIDEInstances.AddFilesFromParams(aInParams, xFiles);
-      FStartNewInstanceEvent(xFiles, xResult);
+      FStartNewInstanceEvent(xFiles, xResult, xSourceWindowHandle);
     finally
       xFiles.Free;
     end;
@@ -752,7 +753,7 @@ begin
 
   SetLength(xParams, 5);
   xParams[0] := TIDEInstances.MessageParam(PARAM_RESULT, IntToStr(Ord(xResult)));
-  xParams[1] := TIDEInstances.MessageParam(PARAM_HANDLEBRINGTOFRONT, IntToStr(Application.MainFormHandle));
+  xParams[1] := TIDEInstances.MessageParam(PARAM_HANDLEBRINGTOFRONT, IntToStr(xSourceWindowHandle)); // do not use Application.MainFormHandle here - it steals focus from active source editor
   xParams[2] := TIDEInstances.MessageParam(PARAM_MODALERRORMESSAGE, dlgRunningInstanceModalError);
   xParams[3] := TIDEInstances.MessageParam(PARAM_FORCEUNIQUEMODALERRORMESSAGE, dlgForceUniqueInstanceModalError);
   xParams[4] := TIDEInstances.MessageParam(PARAM_NOTRESPONDINGERRORMESSAGE, dlgRunningInstanceNotRespondingError);
