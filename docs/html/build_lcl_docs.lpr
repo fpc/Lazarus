@@ -9,7 +9,8 @@ program update_lcl_docs;
 {$ENDIF}
 
 uses
-  Classes, Sysutils, GetOpts, LazFileUtils, FileUtil, UTF8Process, Process;
+  Classes, Sysutils, GetOpts, LazFileUtils, FileUtil, UTF8Process, LazUtilities,
+  Process;
 
 var
   DefaultFPDocExe: string = 'fpdoc';
@@ -18,44 +19,64 @@ var
   Verbosity: integer;
   ShowCmd: Boolean;
   EnvParams: String;
-  XCTDir: String;
+  DefaultXCTDir: String;
   DefaultFPDocParams: string = '';
   DefaultOutFormat: string = 'html';
-  DefaultFooterFilename: string;
+  DefaultFooterFilename: string; // ToDo
+
 type
+  TFPDocRunStep = (
+   frsCreated,
+   frsVarsInitialized,
+   frsFilesGathered,
+   frsOutDirCreated,
+   frsFPDocExecuted,
+   frsComplete
+   );
 
   { TFPDocRun }
 
   TFPDocRun = class
   private
-    FFPDocParams: string;
-    FInputFileList: string;
+    FCSSFile: String;
+    FFooterFilename: String;
+    FIncludePath: string;
+    FInputFile: string;
     FPackageName: string;
     FPasSrcDir: string;
+    FStep: TFPDocRunStep;
+    FXCTDir: string;
     FXMLSrcDir: string;
-    procedure SetFPDocParams(AValue: string);
-    procedure SetInputFileList(AValue: string);
+    procedure SetCSSFile(AValue: String);
+    procedure SetFooterFilename(AValue: String);
+    procedure SetIncludePath(AValue: string);
+    procedure SetInputFile(AValue: string);
     procedure SetPasSrcDir(AValue: string);
+    procedure SetXCTDir(AValue: string);
     procedure SetXMLSrcDir(AValue: string);
   public
+    OutDir: string;
     FPDocExe: String;
-    CSSFile: String;
     Params: String;
-    FooterFilename: String;
+    ParseParams: string;
     OutFormat: String;
     UsedPkgs: TStringList; // e.g. 'rtl','fcl', 'lazutils'
     constructor Create(aPackageName: string);
     destructor Destroy; override;
     procedure InitVars;
     procedure AddFilesToList(Dir: String; List: TStrings);
-    procedure MakeFileList;
+    procedure FindSourceFiles;
     procedure CreateOuputDir;
     procedure Run;
     property PackageName: string read FPackageName;
     property XMLSrcDir: string read FXMLSrcDir write SetXMLSrcDir;
     property PasSrcDir: string read FPasSrcDir write SetPasSrcDir;
-    property Input_FileList_Filename: string read FInputFileList write SetInputFileList;
-    property FPDocParams: string read FFPDocParams write SetFPDocParams;
+    property IncludePath: string read FIncludePath write SetIncludePath;// semicolon separated search path
+    property InputFile: string read FInputFile write SetInputFile; // relative to OutDir, automatically created
+    property CSSFile: String read FCSSFile write SetCSSFile;
+    property FooterFilename: String read FFooterFilename write SetFooterFilename; // ToDo
+    property XCTDir: string read FXCTDir write SetXCTDir;
+    property Step: TFPDocRunStep read FStep;
   end;
 
 procedure GetEnvDef(var S: String; DefaultValue: String; EnvName: String);
@@ -136,7 +157,7 @@ begin
              2:  DefaultFPDocExe := OptArg;
              3:  DefaultOutFormat := OptArg;
              4:  ShowCmd := True;
-             5:  XCTDir := OptArg;
+             5:  DefaultXCTDir := OptArg;
              6:  DefaultFooterFilename := OptArg;
              7:  WarningsCount:=0;
              8:  DefaultCssFile := OptArg;
@@ -157,9 +178,7 @@ begin
   GetEnvDef(EnvParams, '', 'FPDOCPARAMS');
   GetEnvDef(DefaultFPDocExe, DefaultFPDocExe, 'FPDOC');
   GetEnvDef(DefaultFooterFilename, '', 'FPDOCFOOTER');
-  GetEnvDef(XCTDir, XCTDir, 'FPCDOCS');
-
-  XCTDir:=TrimAndExpandDirectory(XCTDir);
+  GetEnvDef(DefaultXCTDir, DefaultXCTDir, 'FPCDOCS');
 
   if DefaultOutFormat = '' then
   begin
@@ -170,25 +189,101 @@ end;
 
 { TFPDocRun }
 
-procedure TFPDocRun.InitVars;
-var
-  Pkg, Prefix: String;
+procedure TFPDocRun.SetInputFile(AValue: string);
 begin
+  AValue:=TrimFilename(AValue);
+  if FInputFile=AValue then Exit;
+  FInputFile:=AValue;
+end;
+
+procedure TFPDocRun.SetIncludePath(AValue: string);
+begin
+  if FIncludePath=AValue then Exit;
+  FIncludePath:=AValue;
+end;
+
+procedure TFPDocRun.SetCSSFile(AValue: String);
+begin
+  AValue:=TrimAndExpandFilename(AValue);
+  if FCSSFile=AValue then Exit;
+  FCSSFile:=AValue;
+end;
+
+procedure TFPDocRun.SetFooterFilename(AValue: String);
+begin
+  AValue:=TrimAndExpandFilename(AValue);
+  if FFooterFilename=AValue then Exit;
+  FFooterFilename:=AValue;
+end;
+
+procedure TFPDocRun.SetPasSrcDir(AValue: string);
+begin
+  AValue:=TrimAndExpandFilename(AValue);
+  if FPasSrcDir=AValue then Exit;
+  FPasSrcDir:=AValue;
+end;
+
+procedure TFPDocRun.SetXCTDir(AValue: string);
+begin
+  AValue:=TrimAndExpandFilename(AValue);
+  if FXCTDir=AValue then Exit;
+  FXCTDir:=AValue;
+end;
+
+procedure TFPDocRun.SetXMLSrcDir(AValue: string);
+begin
+  AValue:=TrimAndExpandFilename(AValue);
+  if FXMLSrcDir=AValue then Exit;
+  FXMLSrcDir:=AValue;
+end;
+
+constructor TFPDocRun.Create(aPackageName: string);
+begin
+  FPackageName:=aPackageName;
+  UsedPkgs:=TStringList.Create;
+  InputFile := 'inputfile.txt';
+  OutDir:=TrimAndExpandFilename(PackageName);
   FPDocExe:=TrimFilename(DefaultFPDocExe);
   CSSFile:=TrimFilename(DefaultCSSFile);
-  XMLSrcDir := '..'+PathDelim+'..'+PathDelim+'xml'+PathDelim+PackageName+PathDelim;
-  PasSrcDir := '..'+PathDelim+'..'+PathDelim+PackageName+PathDelim;
-  Input_FileList_Filename := 'inputfile.txt';
-  FPDocParams := ' --content='+PackageName+'.xct'
-                + ' --package='+PackageName
-                + ' --descr='+XMLSrcDir+PackageName+'.xml'
-                + ' --input=@'+Input_FileList_Filename+' ';
-  Params:=DefaultFPDocParams;
+  Params := DefaultFPDocParams;
   OutFormat:=DefaultOutFormat;
   FooterFilename:=TrimFilename(DefaultFooterFilename);
+  XCTDir:=DefaultXCTDir;
 
+  FStep:=frsCreated;
+end;
 
-  Params+=' --format='+OutFormat+' ';
+destructor TFPDocRun.Destroy;
+begin
+  FreeAndNil(UsedPkgs);
+  inherited Destroy;
+end;
+
+procedure TFPDocRun.InitVars;
+var
+  Pkg, Prefix, IncludeDir: String;
+  p: Integer;
+begin
+  if ord(Step)>=ord(frsVarsInitialized) then
+    raise Exception.Create('TFPDocRun.InitVars not again');
+
+  // add IncludePath to ParseParams
+  p:=1;
+  while p<=length(IncludePath) do begin
+    IncludeDir:=GetNextDelimitedItem(IncludePath,';',p);
+    if IncludeDir='' then continue;
+    IncludeDir:=TrimAndExpandFilename(ChompPathDelim(IncludeDir));
+    ParseParams+=' -Fi'+CreateRelativePath(IncludeDir,OutDir);
+  end;
+
+  Params += ' --content='+PackageName+'.xct'
+          + ' --package='+PackageName
+          + ' --descr='+CreateRelativePath(AppendPathDelim(XMLSrcDir)+PackageName+'.xml',OutDir)
+          + ' --format='+OutFormat;
+  if FilenameIsAbsolute(InputFile) then
+    Params += ' --input=@'+CreateRelativePath(InputFile,OutDir)
+  else
+    Params += ' --input=@'+InputFile;
 
   if XCTDir <> '' then
   begin
@@ -203,7 +298,7 @@ begin
         Prefix:='';
       GetEnvDef(Prefix, Prefix, UpperCase(Pkg)+'LINKPREFIX');
 
-      Params+=' --import='+TrimFilename(XCTDir+PathDelim+LowerCase(Pkg)+'.xct');
+      Params+=' --import='+CreateRelativePath(AppendPathDelim(XCTDir)+LowerCase(Pkg)+'.xct',OutDir);
       if Prefix<>'' then
         Params+=','+Prefix;
     end;
@@ -211,23 +306,42 @@ begin
   
   if OutFormat='chm' then
   begin
-    if CSSFile='' then CSSFile:='..'+PathDelim+'fpdoc.css'; //css file is chm only
     Params+=' --output='+ ChangeFileExt(PackageName, '.chm')
-              +' --auto-toc --auto-index --make-searchable'
-              +' --css-file='+CSSFile+' ';
+              +' --auto-toc --auto-index --make-searchable';
+    if CSSFile<>'' then
+      Params+=' --css-file='+CreateRelativePath(CSSFile,OutDir);
   end;
+
+  if EnvParams<>'' then
+    Params += ' '+EnvParams;
+
+  if Verbosity>0 then
+  begin
+    writeln('Verbose Params: ------------------');
+    writeln('FPDocExe=',FPDocExe);
+    writeln('OutFormat=',OutFormat);
+    writeln('CSSFile=',CSSFile);
+    writeln('FooterFilename=',FooterFilename);
+    writeln('InputFile=',InputFile);
+    writeln('OutDir=',OutDir);
+    writeln('ParseParams=',ParseParams);
+    writeln('FPDocParams=',Params);
+    writeln('----------------------------------');
+  end;
+
+  FStep:=frsVarsInitialized;
 end;
 
 procedure TFPDocRun.AddFilesToList(Dir: String; List: TStrings);
 var
   FRec: TSearchRec;
-  SubDirs: String; // we do not want the PasSrcDir in this string but the subfolders only
 begin
   Dir:=AppendPathDelim(Dir);
   if FindFirstUTF8(Dir+AllFilesMask, faAnyFile, FRec)=0 then
     repeat
       //WriteLn('Checking file ' +FRec.Name);
       if (FRec.Name='') or (FRec.Name='.') or (FRec.Name='..') then continue;
+      if (FRec.Name='fpmake.pp') then continue;
       if ((FRec.Attr and faDirectory) <> 0) then
       begin
         AddFilesToList(Dir+FRec.Name, List);
@@ -235,22 +349,24 @@ begin
       end
       else if FilenameIsPascalUnit(FRec.Name) then
       begin
-        SubDirs := AppendPathDelim(Copy(Dir, Length(PasSrcDir)+1, Length(Dir)));
-        if Length(SubDirs) = 1 then
-          SubDirs:='';
-        List.Add(SubDirs+FRec.Name);
+        List.Add(Dir+FRec.Name);
       end;
     until FindNextUTF8(FRec)<>0;
   FindCloseUTF8(FRec);
 end;
 
-procedure TFPDocRun.MakeFileList;
+procedure TFPDocRun.FindSourceFiles;
 var
   FileList: TStringList;
   InputList: TStringList;
   I: Integer;
   XMLFile: String;
 begin
+  if ord(Step)>=ord(frsFilesGathered) then
+    raise Exception.Create('TFPDocRun.FindSourceFiles not again');
+  if ord(Step)<ord(frsVarsInitialized) then
+    InitVars;
+
   if Verbosity>0 then
     writeln('PasSrcDir="',PasSrcDir,'"');
   FileList := TStringList.Create;
@@ -260,11 +376,11 @@ begin
   FileList.Sort;
   for I := 0 to FileList.Count-1 do
   begin
-    XMLFile := XMLSrcDir+ChangeFileExt(FileList[I],'.xml');
-    if FileExistsUTF8(PackageName+PathDelim+XMLFile) and (filelist[i]<>'fpmake.pp') then
+    XMLFile := XMLSrcDir+ExtractFileNameOnly(FileList[I])+'.xml';
+    if FileExistsUTF8(XMLFile) then
     begin
-      InputList.Add('..'+PathDelim+PasSrcDir+FileList[I] + ' -Fi..'+PathDelim+PasSrcDir+'include');
-      Params:=Params+' --descr='+XMLSrcDir+ChangeFileExt(FileList[I],'.xml');
+      InputList.Add(CreateRelativePath(FileList[I],OutDir) + ParseParams);
+      Params:=Params+' --descr='+CreateRelativePath(XMLFile,OutDir);
     end
     else
     begin
@@ -275,34 +391,43 @@ begin
     end;
   end;
   FileList.Free;
-  InputList.SaveToFile(PackageName+PathDelim+Input_FileList_Filename);
+  InputList.SaveToFile(InputFile);
   InputList.Free;
+
+  FStep:=frsFilesGathered;
 end;
 
 procedure TFPDocRun.CreateOuputDir;
-var
-  OutDir: String;
 begin
-  OutDir:=PackageName;
+  if ord(Step)>=ord(frsOutDirCreated) then
+    raise Exception.Create('TFPDocRun.CreateOuputDir not again');
+  if ord(Step)<ord(frsFilesGathered) then
+    FindSourceFiles;
+
   if Not DirectoryExistsUTF8(OutDir) then
   begin
     writeln('Creating directory "',OutDir,'"');
     if not CreateDirUTF8(OutDir) then
       raise Exception.Create('unable to create directory "'+OutDir+'"');
   end;
+
+  FStep:=frsOutDirCreated;
 end;
 
 procedure TFPDocRun.Run;
 var
   Process: TProcess;
   CmdLine: String;
-  WorkDir: String;
 begin
-  CmdLine := FPDocExe + FPDocParams + Params + EnvParams;
-  WorkDir := GetCurrentDirUTF8+PathDelim+PackageName;
+  if ord(Step)>=ord(frsFPDocExecuted) then
+    raise Exception.Create('TFPDocRun.Run not again');
+  if ord(Step)<ord(frsOutDirCreated) then
+    CreateOuputDir;
+
+  CmdLine := FPDocExe + Params;
   if ShowCmd then
   begin
-    Writeln('WorkDirectory:',WorkDir);
+    Writeln('WorkDirectory:',OutDir);
     WriteLn(CmdLine);
     Exit;
   end;
@@ -316,7 +441,7 @@ begin
   Process := TProcessUTF8.Create(nil);
   try
     Process.Options := Process.Options + [poWaitOnExit];
-    Process.CurrentDirectory := WorkDir;
+    Process.CurrentDirectory := OutDir;
     Process.CommandLine := CmdLine;
     if Verbosity>0 then
       writeln('Command="',Process.CommandLine,'"');
@@ -333,42 +458,8 @@ begin
   finally
     Process.Free;
   end;
-end;
 
-procedure TFPDocRun.SetFPDocParams(AValue: string);
-begin
-  if FFPDocParams=AValue then Exit;
-  FFPDocParams:=AValue;
-end;
-
-procedure TFPDocRun.SetInputFileList(AValue: string);
-begin
-  if FInputFileList=AValue then Exit;
-  FInputFileList:=AValue;
-end;
-
-procedure TFPDocRun.SetPasSrcDir(AValue: string);
-begin
-  if FPasSrcDir=AValue then Exit;
-  FPasSrcDir:=AValue;
-end;
-
-procedure TFPDocRun.SetXMLSrcDir(AValue: string);
-begin
-  if FXMLSrcDir=AValue then Exit;
-  FXMLSrcDir:=AValue;
-end;
-
-constructor TFPDocRun.Create(aPackageName: string);
-begin
-  UsedPkgs:=TStringList.Create;
-  FPackageName:=aPackageName;
-end;
-
-destructor TFPDocRun.Destroy;
-begin
-  FreeAndNil(UsedPkgs);
-  inherited Destroy;
+  FStep:=frsComplete;
 end;
 
 var
@@ -379,12 +470,10 @@ begin
   Run:=TFPDocRun.Create('lcl');
   Run.UsedPkgs.Add('rtl');
   Run.UsedPkgs.Add('fcl');
-
-  Run.InitVars;
-  Run.MakeFileList;
-  Run.CreateOuputDir;
+  Run.XMLSrcDir := '..'+PathDelim+'xml'+PathDelim+'lcl'+PathDelim;
+  Run.PasSrcDir := '..'+PathDelim+'..'+PathDelim+'lcl'+PathDelim;
+  Run.IncludePath := Run.PasSrcDir+PathDelim+'include';
   Run.Run;
-
   Run.Free;
 end.
 
