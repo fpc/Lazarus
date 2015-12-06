@@ -184,7 +184,7 @@ begin
   Result:=FCHMSearchPath;
   if Result='' then
   begin
-    Result := '$(LazarusDir)/docs/html;$(LazarusDir)/docs/chm';
+    Result := '$(LazarusDir)/docs/chm;$(LazarusDir)/docs/html';
     IDEMacros.SubstituteMacros(Result);
     Result:=MinimizeSearchPath(SetDirSeparators(Result));
   end;
