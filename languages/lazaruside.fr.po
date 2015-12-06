@@ -9918,9 +9918,9 @@ msgstr "Ignorer les binaires"
 msgid "Ignore this exception type"
 msgstr "Ignorer ce type d'exception"
 
-#: lazarusidestrconsts.lisignoreusetformasancestor
-msgid "Ignore, use TForm as ancestor"
-msgstr "Ignorer, employer \"TForm\" comme ancêtre "
+#: lazarusidestrconsts.lisignoreuseasancestor
+msgid "Ignore, use %s as ancestor"
+msgstr ""
 
 #: lazarusidestrconsts.lisimitateindentationofcurrentunitprojectorpackage
 msgid "Imitate indentation of current unit, project or package"
@@ -16981,10 +16981,6 @@ msgstr "Le chemin de recherche d'unité \"%s\" contient le répertoire des codes
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "Le  répertoire de travail \"%s\" n'existe pas.%sVeuillez vérifier le répertoire de travail dans le menu Exécuter>Paramètres d'exécution."
 
-#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inrtl
-msgid "This build mode now sets UTF-8 in RTL.%s Flags are in pages \"Custom Options\" and \"Additions and Overrides\"."
-msgstr ""
-
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
 msgid "This component already contains a class with the name %s."
 msgstr "Ce composant contient déjà une classe nommée %s."
@@ -17138,18 +17134,6 @@ msgstr "Surligner les boutons des barres d'outils"
 #: lazarusidestrconsts.listoolbaroptionsraise
 msgid "Raise toolbars"
 msgstr "Hisser les barres d'outils"
-
-#: lazarusidestrconsts.listoolbaroptionsstandardvisible
-msgid "Standard toolbar visible"
-msgstr "Barre d'outils standard visible"
-
-#: lazarusidestrconsts.listoolbaroptionstoolbarsvisible
-msgid "Toolbars visible"
-msgstr "Barres d'outils visibles"
-
-#: lazarusidestrconsts.listoolbaroptionsviewdebugvisible
-msgid "Debug toolbar visible"
-msgstr "Barre d'outils de débogage visible"
 
 #: lazarusidestrconsts.listoolhasnoexecutable
 msgid "tool \"%s\" has no executable"

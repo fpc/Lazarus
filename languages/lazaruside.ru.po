@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-12-01 00:21+0300\n"
+"PO-Revision-Date: 2015-12-06 23:50+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -9891,9 +9891,9 @@ msgstr "Игнорировать двоичные файлы"
 msgid "Ignore this exception type"
 msgstr "Игнорировать этот тип исключений"
 
-#: lazarusidestrconsts.lisignoreusetformasancestor
-msgid "Ignore, use TForm as ancestor"
-msgstr "Игнорировать, использовать TForm как предка"
+#: lazarusidestrconsts.lisignoreuseasancestor
+msgid "Ignore, use %s as ancestor"
+msgstr "Игнорировать, использовать %s как предка"
 
 #: lazarusidestrconsts.lisimitateindentationofcurrentunitprojectorpackage
 msgid "Imitate indentation of current unit, project or package"
@@ -16944,10 +16944,6 @@ msgstr "Путь поиска модулей \"%s\" содержит катал�
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "Рабочий каталог \"%s\" не существует.%sПроверьте его в меню Запуск -> Параметры запуска."
 
-#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inrtl
-msgid "This build mode now sets UTF-8 in RTL.%s Flags are in pages \"Custom Options\" and \"Additions and Overrides\"."
-msgstr "Этот режим сборки теперь задаёт использование UTF-8 в RTL.%sФлаги находятся на страницах \"Параметры пользователя\" и \"Дополнения и перекрытия\"."
-
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
 msgid "This component already contains a class with the name %s."
 msgstr "Этот компонент уже содержит класс с именем %s."
@@ -17101,18 +17097,6 @@ msgstr "Выделить кнопки на инструментальных па
 #: lazarusidestrconsts.listoolbaroptionsraise
 msgid "Raise toolbars"
 msgstr "Приподнять инструментальные панели"
-
-#: lazarusidestrconsts.listoolbaroptionsstandardvisible
-msgid "Standard toolbar visible"
-msgstr "Показывать стандартную инструментальную панель"
-
-#: lazarusidestrconsts.listoolbaroptionstoolbarsvisible
-msgid "Toolbars visible"
-msgstr "Показывать инструментальные панели"
-
-#: lazarusidestrconsts.listoolbaroptionsviewdebugvisible
-msgid "Debug toolbar visible"
-msgstr "Показывать инструментальную панель отладки"
 
 #: lazarusidestrconsts.listoolhasnoexecutable
 msgid "tool \"%s\" has no executable"
