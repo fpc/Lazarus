@@ -102,7 +102,7 @@ begin
   fCHMSearchPath := Path;
   if fCHMSearchPath = '' then
   begin
-    fCHMSearchPath := '$(LazarusDir)/docs/html;$(LazarusDir)/docs/chm';
+    fCHMSearchPath := '$(LazarusDir)/docs/chm;$(LazarusDir)/docs/html';
     IDEMacros.SubstituteMacros(fCHMSearchPath);
     fCHMSearchPath := MinimizeSearchPath(SetDirSeparators(fCHMSearchPath));
   end;

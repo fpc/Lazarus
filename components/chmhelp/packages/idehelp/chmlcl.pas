@@ -55,8 +55,16 @@ procedure RegisterLclHelpDatabase;
 var
   FPDocNode: THelpNode;
   DirItem: THelpDBISourceDirectory;
+  DefaultHelpDB: THelpDatabase;
 begin
   if Assigned(LCLHelpDatabase) then Exit;
+
+  // remove default help
+  DefaultHelpDB:=HelpDatabases.FindDatabase('LCLUnits');
+  if DefaultHelpDB<>nil then
+    DefaultHelpDB.Free;
+
+  // register our own help
   LCLHelpDatabase := TLclChmHelpDatabase(
     HelpDatabases.CreateHelpDatabase(sLclUnits, TLclChmHelpDatabase, True));
 
