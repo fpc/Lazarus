@@ -483,6 +483,7 @@ begin
   Package := APackage;
   Files := TStringList.Create;
   Files.Sorted := True;
+  Files.Duplicates := dupAccept;
 end;
 
 destructor TPackageItem.Destroy;
@@ -727,7 +728,7 @@ begin
         xPkgIndex := xPackages.IndexOf(xPackageName);
         if xPkgIndex < 0 then
           xPkgIndex := xPackages.AddObject(xPackageName, TPackageItem.Create(xPackage));
-        TPackageItem(xPackages.Objects[xPkgIndex]).Files.AddObject(ExtractFileNameOnly(xEditor.FileName), xEditor);
+        TPackageItem(xPackages.Objects[xPkgIndex]).Files.AddObject(xEditor.PageCaption, xEditor);
       end;
 
       xNewIndex := 0;
