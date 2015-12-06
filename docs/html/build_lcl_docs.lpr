@@ -20,15 +20,14 @@ var
   FPCDocsPath: String;
   OutFormat: String;
   ShowCmd: Boolean;
-  RTLPrefix: String;
-  FCLPrefix: String;
+  UsedPkgs: TStringList; // e.g. 'rtl','fcl', 'lazutils'
   WarningsCount: Integer;
   Verbosity: integer = 0;
 
 const
   PackageName   = 'lcl';
-  XMLSrcDir     = '..'+PathDelim+'..'+PathDelim+'xml'+PathDelim+'lcl'+PathDelim;
-  PasSrcDir     = '..'+PathDelim+'..'+PathDelim+'lcl'+PathDelim;
+  XMLSrcDir     = '..'+PathDelim+'..'+PathDelim+'xml'+PathDelim+PackageName+PathDelim;
+  PasSrcDir     = '..'+PathDelim+'..'+PathDelim+PackageName+PathDelim;
   InputFileList = 'inputfile.txt';
   FPDocParams   = ' --content='+PackageName+'.xct'
                 + ' --package='+PackageName
@@ -49,8 +48,8 @@ begin
   Writeln('    --css-file <value> (CHM format only) CSS file to be used by fpdoc');
   Writeln('                       for the layout of the help pages. Default is "',CSSFile,'"');
   WriteLn('    --fpdoc <value>    The full path to fpdoc to use. Default is "',fpdoc,'"');
-  WriteLn('    --fpcdocs <value>  The directory that contains the fcl and rtl .xct files.');
-  WriteLn('                       Use this to make help that contains links to the rtl and fcl');
+  WriteLn('    --fpcdocs <value>  The directory that contains the required .xct files.');
+  WriteLn('                       Use this to make help that contains links to rtl and fcl');
   WriteLn('    --footer <value>   Filename of a file to use a footer used in the generated pages.');
   WriteLn('    --help             Show this message');
   WriteLn('    --arg <value>      Passes value to fpdoc as an arg. Use this option as');
@@ -61,7 +60,7 @@ begin
   WriteLn('    --verbose          be more verbose');
   WriteLn;
   WriteLn('The following are environment variables that will override the above params if set:');
-  WriteLn('     FPDOCFORMAT, FPDOCPARAMS, FPDOC, FPDOCFOOTER, FPCDOCS, RTLLINKPREFIX, FCLLINKPREFIX');
+  WriteLn('     FPDOCFORMAT, FPDOCPARAMS, FPDOC, FPDOCFOOTER, FPCDOCS, RTLLINKPREFIX, FCLLINKPREFIX, <Pkg>LINKPREFIX, ...');
   WriteLn;
   Halt(0);
 end;
@@ -124,12 +123,14 @@ begin
 end;
   
 procedure InitVars;
+var
+  Pkg, Prefix: String;
 begin
   // see if any are set or set them to a default value
   GetEnvDef(OutFormat,   OutFormat,  'FPDOCFORMAT');
   GetEnvDef(EnvParams,   '',         'FPDOCPARAMS');
 
-  GetEnvDef(fpdoc,       fpdoc,    'FPDOC');
+  GetEnvDef(fpdoc,       fpdoc,      'FPDOC');
 
   GetEnvDef(fpdocfooter, '',         'FPDOCFOOTER');
   fpdocfooter:=TrimFilename(fpdocfooter);
@@ -142,39 +143,32 @@ begin
 
   if FPCDocsPath <> '' then
   begin
-    if OutFormat = 'html' then
+    for Pkg in UsedPkgs do
     begin
-      GetEnvDef(RTLPrefix, '../rtl/', 'RTLLINKPREFIX');
-      GetEnvDef(FCLPrefix, '../fcl/', 'FCLLINKPREFIX');
-    end
-    else if OutFormat = 'chm' then
-    begin
-      GetEnvDef(RTLPrefix, 'ms-its:rtl.chm::/', 'RTLLINKPREFIX');
-      GetEnvDef(FCLPrefix, 'ms-its:fcl.chm::/', 'FCLLINKPREFIX');
-    end
-    else
-    begin
-      GetEnvDef(RTLPrefix, '', 'RTLLINKPREFIX');
-      GetEnvDef(FCLPrefix, '', 'FCLLINKPREFIX');
+      Prefix:='';
+      if OutFormat = 'html' then
+        Prefix:='../'+Lowercase(Pkg)+'/'
+      else if OutFormat = 'chm' then
+        Prefix:='ms-its:'+LowerCase(Pkg)+'.chm::/'
+      else
+        Prefix:='';
+      GetEnvDef(Prefix, Prefix, UpperCase(Pkg)+'LINKPREFIX');
+
+      ArgParams+=' --import='+TrimFilename(FPCDocsPath+PathDelim+LowerCase(Pkg)+'.xct');
+      if Prefix<>'' then
+        ArgParams+=','+Prefix;
     end;
-    
-    if (RTLPrefix<>'') and (RTLPrefix[1]<>',') then
-      RTLPrefix := ','+RTLPrefix;
-    if (FCLPrefix<>'') and (FCLPrefix[1]<>',') then
-      FCLPrefix := ','+FCLPrefix;
-    ArgParams:=ArgParams+ ' --import='+TrimFilename(FPCDocsPath+PathDelim+'rtl.xct')+RTLPrefix
-                        + ' --import='+TrimFilename(FPCDocsPath+PathDelim+'fcl.xct')+FCLPrefix;
   end;
   
   if OutFormat='chm' then
   begin
     if CSSFile='' then CSSFile:='..'+PathDelim+'fpdoc.css'; //css file is chm only
-    ArgParams:=ArgParams+' --output='+ ChangeFileExt(PackageName, '.chm')
-                          +' --auto-toc --auto-index --make-searchable'
-                          +' --css-file='+CSSFile+' ';
+    ArgParams+=' --output='+ ChangeFileExt(PackageName, '.chm')
+              +' --auto-toc --auto-index --make-searchable'
+              +' --css-file='+CSSFile+' ';
   end;
   
-  ArgParams:=ArgParams+' --format='+OutFormat+' ';
+  ArgParams+=' --format='+OutFormat+' ';
 end;
 
 procedure AddFilesToList(Dir: String; Ext: String; List: TStrings);
@@ -203,7 +197,7 @@ begin
   FindCloseUTF8(FRec);
 end;
 
-function FileInPath(FileName: String): Boolean;
+function FileInEnvPATH(FileName: String): Boolean;
 var
   FullFilename: String;
 begin
@@ -262,9 +256,9 @@ begin
     Exit;
   end;
   {$IFDEF MSWINDOWS}fpdoc := ChangeFileExt(fpdoc,'.exe');{$ENDIF}
-  if not FileInPath(fpdoc) then
+  if not FileInEnvPATH(fpdoc) then
   begin
-    WriteLn('Error: fpdoc cannot be found. Please add the directory it is in to the PATH ',
+    WriteLn('Error: fpdoc cannot be found. Please add its location to the PATH ',
             'or set it with --fpdoc path',PathDelim,'to',PathDelim,'fpdoc'{$IFDEF MSWINDOWS},'.exe'{$ENDIF});
     Halt(1);
   end;
@@ -291,6 +285,10 @@ begin
 end;
 
 begin
+  UsedPkgs:=TStringList.Create;
+  UsedPkgs.Add('rtl');
+  UsedPkgs.Add('fcl');
+
   ReadOptions;
   if Not DirectoryExistsUTF8(PackageName) then
   begin
@@ -300,5 +298,7 @@ begin
   InitVars;
   MakeFileList;
   Run;
+
+  UsedPkgs.Free;
 end.
 
