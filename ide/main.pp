@@ -186,7 +186,7 @@ type
     procedure HandleSelectFrame(Sender: TObject; var AComponentClass: TComponentClass);
     procedure OIChangedTimerTimer(Sender: TObject);
     procedure LazInstancesStartNewInstance(const aFiles: TStrings;
-      var Result: TStartNewInstanceResult);
+      var Result: TStartNewInstanceResult; var outSourceWindowHandle: HWND);
     procedure LazInstancesGetOpenedProjectFileName(var outProjectFileName: string);
   public
     // file menu
@@ -9400,7 +9400,7 @@ begin
 end;
 
 procedure TMainIDE.LazInstancesStartNewInstance(const aFiles: TStrings;
-  var Result: TStartNewInstanceResult);
+  var Result: TStartNewInstanceResult; var outSourceWindowHandle: HWND);
 var
   xParams: TDoDropFilesAsyncParams;
   I: Integer;
@@ -9432,6 +9432,11 @@ begin
     else
       Result := ofrStartNewInstance;
   end;
+
+  if  (SourceEditorManager.ActiveSourceWindow <> nil)
+  and (SourceEditorManager.ActiveSourceWindow.HandleAllocated)
+  then
+    outSourceWindowHandle := SourceEditorManager.ActiveSourceWindow.Handle;
 
   if Result in [ofrStartNewInstance, ofrModalError, ofrForceSingleInstanceModalError]  then
     Exit;
