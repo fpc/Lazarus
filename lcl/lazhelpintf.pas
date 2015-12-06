@@ -1157,7 +1157,7 @@ begin
           if (FileItem.FileMatches(Filename)) then begin
             CreateNodeQueryListAndAdd(FileItem.Node,PascalContext,ListOfNodes,true);
             {$IFNDEF DisableChecks}
-            debugln('THelpDatabase.GetNodesForPascalContexts C FileItem.ClassName=',FileItem.ClassName,' Filename=',Filename,' ',dbgs(ListOfNodes.Count));
+            debugln(['THelpDatabase.GetNodesForPascalContexts C ID="',ID,'" ',i+1,'/',ListOfPascalHelpContextList.Count,' FileItem.ClassName=',FileItem.ClassName,' Filename=',Filename,' ',ListOfNodes.Count]);
             {$ENDIF}
           end;
         end;
