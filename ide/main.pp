@@ -1399,6 +1399,15 @@ begin
     ShowSetupDialog:=true;
   end;
 
+  // check 'make' utility
+  debugln(['TMainIDE.SetupInteractive ',EnvironmentOptions.GetParsedMakeFilename]);
+  if (not ShowSetupDialog)
+  and (CheckMakeExeQuality(EnvironmentOptions.GetParsedMakeFilename,Note)<>sddqCompatible)
+  then begin
+    debugln(['Warning: incompatible make utility: ',EnvironmentOptions.GetParsedMakeFilename]);
+    ShowSetupDialog:=true;
+  end;
+
   // show setup dialog
   if ShowSetupDialog then begin
     OldLazDir:=EnvironmentOptions.LazarusDirectory;

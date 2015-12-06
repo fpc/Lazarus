@@ -778,6 +778,7 @@ begin
   // Windows-only locations:
   if (GetDefaultSrcOSForTargetOS(GetCompiledTargetOS)='win') then begin
     // under Windows, make.exe is in the same directory as fpc.exe
+    // other make.exe are often incompatible
     if not FileExistsCached(ExtractFilePath(AFilename)+'fpc.exe') then begin
       Note:=Format(lisThereIsNoFpcExeInTheDirectoryOfUsuallyTheMakeExecu, [
         ExtractFilename(AFilename)]);
