@@ -390,7 +390,7 @@ var
   FileList: TStringList;
   InputList: TStringList;
   I: Integer;
-  XMLFile: String;
+  XMLFile, Filename: String;
 begin
   if ord(Step)>=ord(frsFilesGathered) then
     raise Exception.Create('TFPDocRun.FindSourceFiles not again');
@@ -421,7 +421,11 @@ begin
     end;
   end;
   FileList.Free;
-  InputList.SaveToFile(InputFile);
+
+  Filename:=InputFile;
+  if not FilenameIsAbsolute(Filename) then
+    Filename:=TrimFilename(AppendPathDelim(OutDir)+Filename);
+  InputList.SaveToFile(Filename);
   InputList.Free;
 
   FStep:=frsFilesGathered;
@@ -553,18 +557,18 @@ var
 begin
   ReadOptions;
 
-  {Run:=TFPDocRun.Create('lazutils');
+  Run:=TFPDocRun.Create('lazutils');
   Run.UsedPkgs.Add('rtl');
   Run.UsedPkgs.Add('fcl');
   Run.XMLSrcDir := '..'+PathDelim+'xml'+PathDelim+'lazutils';
   Run.PasSrcDir := '..'+PathDelim+'..'+PathDelim+'components'+PathDelim+'lazutils';
   Run.Execute;
-  Run.Free;}
+  Run.Free;
 
   Run:=TFPDocRun.Create('lcl');
   Run.UsedPkgs.Add('rtl');
   Run.UsedPkgs.Add('fcl');
-  //Run.UsedPkgs.Add('lazutils');
+  Run.UsedPkgs.Add('lazutils');
   Run.XMLSrcDir := '..'+PathDelim+'xml'+PathDelim+'lcl'+PathDelim;
   Run.PasSrcDir := '..'+PathDelim+'..'+PathDelim+'lcl'+PathDelim;
   Run.IncludePath := Run.PasSrcDir+PathDelim+'include';
