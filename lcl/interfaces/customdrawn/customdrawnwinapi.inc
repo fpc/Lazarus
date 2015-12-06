@@ -1136,7 +1136,7 @@ begin
         end
         else if (DFCS_BUTTONPUSH and uState) <> 0 then
         begin
-          GetDefaultDrawer().DrawButton(LazDC, lSize, lState, TCDButtonStateEx(lControlStateEx));
+          GetDefaultDrawer().DrawButton(LazDC, Point(0,0), lSize, lState, TCDButtonStateEx(lControlStateEx));
         end
         else if (DFCS_BUTTONRADIOIMAGE and uState) <> 0 then
         begin

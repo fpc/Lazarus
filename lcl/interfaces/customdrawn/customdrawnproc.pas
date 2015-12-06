@@ -10,7 +10,7 @@ uses
   Types, Classes, SysUtils,
   fpimage, fpcanvas, Math,
   // LazUtils
-  fileutil,
+  LazFileUtils,
   {$ifndef CD_UseNativeText}
   // LazFreeType
   TTTypes, LazFreeTypeIntfDrawer, LazFreeType, EasyLazFreeType, IniFiles,
@@ -534,8 +534,8 @@ begin
         lControlStateEx.Font := lWinControl.Font;
         lControlStateEx.Caption := lWinControl.Caption;
         lControlStateEx.ParentRGBColor := lWinControl.GetRGBColorResolvingParent();
-        GetDefaultDrawer().DrawGroupBox(lControlCanvas, Size(lWinControl.Width, lWinControl.Height),
-          [], lControlStateEx);
+        GetDefaultDrawer().DrawGroupBox(lControlCanvas, Point(0,0),
+          Size(lWinControl.Width, lWinControl.Height), [], lControlStateEx);
       finally
         lControlStateEx.Free;
         lControlCanvas.RestoreState(-1);
