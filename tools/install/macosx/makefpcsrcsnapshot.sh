@@ -89,11 +89,12 @@ fi
 
 # copy sources
 mkdir -p $INSTALLDIR/fpcsrc
-$SVN export $FPCSOURCEDIR/rtl $INSTALLDIR/fpcsrc/rtl
+for dir in rtl compiler packages utils; do
+  $SVN export $FPCSOURCEDIR/$dir $INSTALLDIR/fpcsrc/$dir
+done
 if [ -d $FPCSOURCEDIR/fcl ] ; then
   $SVN export $FPCSOURCEDIR/fcl $INSTALLDIR/fpcsrc/fcl
 fi
-$SVN export $FPCSOURCEDIR/packages $INSTALLDIR/fpcsrc/packages
 
 # fill in packproj template.
 
@@ -105,12 +106,12 @@ sed -e "s|_FPCSRCDIR_|$FPCSVNDIR|g" -e "s|_DATESTAMP_|$DATESTAMP|g" \
 # build package
 $FREEZE -v $INSTALLDIR/$PACKPROJ
 
-DMGFILE=~/pkg/fpcsrc-$FPCFULLVERSION-$DATESTAMP-$FPCARCH-macosx.dmg
+DMGFILE=~/pkg/fpcsrc-$FPCFULLVERSION-$DATESTAMP-$PPCARCH-macosx.dmg
 rm -rf $DMGFILE
 
 $HDIUTIL create -anyowners -volname fpcsrc-$FPCVERSION -imagekey zlib-level=9 -format UDZO -srcfolder $INSTALLDIR/build $DMGFILE
 
 if [ -e $DMGFILE ]; then
   #todo: update lazarus snapshot web page
-  echo "$DMGFILE fpcsrc-$FPCFULLVERSION-*-$FPCARCH-macosx.dmg" >> $UPDATELIST
+  echo "$DMGFILE fpcsrc-$FPCFULLVERSION-*-$PPCARCH-macosx.dmg" >> $UPDATELIST
 fi
