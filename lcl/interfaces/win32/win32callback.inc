@@ -1087,7 +1087,7 @@ begin
     WinProcess := not lWinControl.IntfUTF8KeyPress(UTF8Char, 1, False);
     // if somewhere key is changed then don't perform a regular keypress
     Result := not WinProcess or (UTF8Char <> OldUTF8Char);
-    if UTF8Char <> OldUTF8Char then
+    if Result then
     begin
       WS := UTF8ToUTF16(UTF8Char);
       if Length(WS) > 0 then
