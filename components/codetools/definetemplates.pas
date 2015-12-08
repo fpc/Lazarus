@@ -1904,7 +1904,7 @@ function GatherUnitSourcesInDirectory(Directory: string; MaxLevel: integer
     Filename: String;
     AnUnitName: String;
   begin
-    if FindFirstUTF8(Directory+AllFilesMask,faAnyFile,Info)=0 then begin
+    if FindFirstUTF8(Dir+AllFilesMask,faAnyFile,Info)=0 then begin
       repeat
         Filename:=Info.Name;
         if (Filename='') or (Filename='.') or (Filename='..') then continue;
