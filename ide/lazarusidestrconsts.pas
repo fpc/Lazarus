@@ -4703,7 +4703,8 @@ resourcestring
 
   // character map
   lisCharacterMap = 'Character Map';
-  
+  lisRange = 'Range';
+
   // codetools defines value dialog
   lisCTDefChooseDirectory = 'Choose Directory';
   lisCTDefCodeToolsDirectoryValues = 'CodeTools Directory Values';

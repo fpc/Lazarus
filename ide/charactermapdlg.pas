@@ -51,6 +51,7 @@ type
     ButtonPanel: TButtonPanel;
     CharInfoLabel: TLabel;
     cbUniRange: TComboBox;
+    RangeLabel: TLabel;
     UnicodeCharInfoLabel: TLabel;
     PageControl1: TPageControl;
     StringGrid1: TStringGrid;
@@ -62,6 +63,10 @@ type
     procedure HelpButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure StringGrid1SelectCell(Sender: TObject; aCol, aRow: Integer;
+      var CanSelect: Boolean);
+    procedure StringGrid2SelectCell(Sender: TObject; aCol, aRow: Integer;
+      var CanSelect: Boolean);
     procedure StringGridKeyPress(Sender: TObject; var Key: char);
     procedure StringGridMouseDown(Sender: TObject; Button: TMouseButton;
       {%H-}Shift: TShiftState; X, Y: Integer);
@@ -71,6 +76,8 @@ type
       Y: Integer);
   private
     FOnInsertCharacter: TOnInsertCharacterEvent;
+    procedure DoStatusGrid1(ACol, ARow: integer);
+    procedure DoStatusGrid2(ACol, ARow: integer);
     procedure FillCharMap;
   public
     property OnInsertCharacter: TOnInsertCharacterEvent read FOnInsertCharacter
@@ -100,6 +107,7 @@ end;
 procedure TCharacterMapDialog.FormCreate(Sender: TObject);
 begin
   Caption := lisCharacterMap;
+  RangeLabel.Caption := lisRange;
   ButtonPanel.HelpButton.Caption:=lisMenuHelp;
   ButtonPanel.CloseButton.Caption:=lisBtnClose;
 
@@ -168,6 +176,18 @@ begin
   cbUniRangeSelect(nil);
 end;
 
+procedure TCharacterMapDialog.StringGrid1SelectCell(Sender: TObject; aCol,
+  aRow: Integer; var CanSelect: Boolean);
+begin
+  DoStatusGrid1(aCol, aRow);
+end;
+
+procedure TCharacterMapDialog.StringGrid2SelectCell(Sender: TObject; aCol,
+  aRow: Integer; var CanSelect: Boolean);
+begin
+  DoStatusGrid2(aCol, aRow);
+end;
+
 procedure TCharacterMapDialog.StringGridKeyPress(Sender: TObject; var Key: char);
 var
   sg: TStringGrid;
@@ -197,24 +217,24 @@ begin
   end;
 end;
 
+procedure TCharacterMapDialog.DoStatusGrid1(ACol, ARow: integer);
+var
+  N: integer;
+begin
+  N := ACol-1 + (ARow-1)*16 + 32;
+  CharInfoLabel.Caption := Format('Decimal: %s, Hex: $%s', [IntToStr(N), IntToHex(N, 2)]);
+end;
+
 procedure TCharacterMapDialog.StringGrid1MouseMove(Sender: TObject;
   Shift: TShiftState; X, Y: Integer);
 var
-  CharOrd: Byte;
   Row, Col: Integer;
 begin
   if StringGrid1.MouseToGridZone(X, Y) = gzNormal then
   begin
     Col:=0; Row:=0;
     StringGrid1.MouseToCell(X, Y, Col, Row);
-    if StringGrid1.Cells[Col, Row] <> '' then
-    begin
-      CharOrd := Ord(UTF8ToAnsi(StringGrid1.Cells[Col, Row])[1]);
-      CharInfoLabel.Caption := 'Decimal = ' + IntToStr(CharOrd) +
-                               ', Hex = $'  + HexStr(CharOrd, 2);
-    end 
-    else
-      CharInfoLabel.Caption := '-';
+    DoStatusGrid1(Col, Row);
   end
   else
   begin
@@ -222,22 +242,31 @@ begin
   end;
 end;
 
+procedure TCharacterMapDialog.DoStatusGrid2(ACol, ARow: integer);
+var
+  S: Cardinal;
+  tmp, tmp2: String;
+  i: Integer;
+begin
+  if cbUniRange.ItemIndex<0 then exit;
+  S:=UnicodeBlocks[cbUniRange.ItemIndex].S+(ACol)+(ARow*16);
+  tmp:=UnicodeToUTF8(S);
+  tmp2:='';
+  for i:=1 to Length(tmp) do
+    tmp2:=tmp2+'$'+IntToHex(Ord(tmp[i]),2);
+  UnicodeCharInfoLabel.Caption:='U+'+inttohex(S,4)+', UTF-8: '+tmp2;
+end;
+
 procedure TCharacterMapDialog.StringGrid2MouseMove(Sender: TObject;
   Shift: TShiftState; X, Y: Integer);
-var  Row, Col, i: Integer;
-     S:Cardinal;
-     tmp,tmp2:String;
+var
+  Row, Col: Integer;
 begin
   if StringGrid2.MouseToGridZone(X, Y) = gzNormal then
   begin
     Col:=0; Row:=0;
     StringGrid2.MouseToCell(X, Y, Col, Row);
-    S:=UnicodeBlocks[cbUniRange.ItemIndex].S+(Col)+(Row*16);
-    tmp:=UnicodeToUTF8(S);
-    tmp2:='';
-    for i:=1 to Length(tmp) do
-      tmp2:=tmp2+'$'+IntToHex(Ord(tmp[i]),2);
-    UnicodeCharInfoLabel.Caption:='U+'+inttohex(S,4)+', UTF-8 = '+tmp2;
+    DoStatusGrid2(Col, Row);
   end
   else
   begin
