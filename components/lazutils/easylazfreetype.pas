@@ -1138,7 +1138,8 @@ procedure TFreeTypeFont.DiscardInstance;
 begin
   if FInstanceCreated then
   begin
-    TT_Done_Instance(FInstance);
+    if FreeTypeInitialized then
+      TT_Done_Instance(FInstance);
     FInstanceCreated := false;
     FGlyphTable.FreeAndClear;
   end;
