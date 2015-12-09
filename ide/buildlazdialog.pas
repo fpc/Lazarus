@@ -951,13 +951,9 @@ begin
     fs:=TFileStreamUTF8.Create(Filename,fmCreate);
     try
       if fExtraOptions<>'' then begin
-        {$IFDEF MSWindows}
-        // Under Windows FPC expects console codepage for command line params
+        // FPC expects console codepage for command line params
         // and system codepage in config files
         OptionsAsText:=UTF8ToWinCP(BreakExtraOptions);
-        {$ELSE}
-        OptionsAsText:=UTF8ToSys(BreakExtraOptions);
-        {$ENDIF}
         fs.Write(OptionsAsText[1],length(OptionsAsText));
       end;
     finally
