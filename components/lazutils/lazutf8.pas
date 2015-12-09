@@ -314,29 +314,6 @@ begin
   {$ENDIF}
 end;
 
-function WinCPToUTF8(const s: string): string;
-begin
-  if NeedRTLAnsi and (not IsASCII(s)) then
-  begin
-    Result:=AnsiToUTF8(s);
-    {$ifdef FPC_HAS_CPSTRING}
-    // prevent UTF8 codepage appear in the strings - we don't need codepage
-    // conversion magic in LCL code
-    SetCodePage(RawByteString(Result), StringCodePage(s), False);
-    {$endif}
-  end
-  else
-    Result:=s;
-end;
-
-function UTF8ToWinCP(const s: string): string;
-begin
-  if NeedRTLAnsi and (not IsASCII(s)) then
-    Result:=UTF8ToAnsi(s)
-  else
-    Result:=s;
-end;
-
 function GetEnvironmentStringUTF8(Index: Integer): string;
 begin
   {$IFDEF FPC_RTL_UNICODE}
