@@ -3358,7 +3358,8 @@ begin
   end;
 
   // optional: hint modifier
-  ReadHintModifiers([cafSemicolon,cafEqual]);
+  if CurPos.Flag<>cafSemicolon then
+    ReadHintModifiers([cafSemicolon,cafEqual]);
 
   if (ParentNode.Desc=ctnVarSection) then begin
     // optional: initial value
@@ -3762,7 +3763,8 @@ begin
         SaveRaiseStringExpectedButAtomFound(ctsStringConstant);
       ReadConstant(true,false,[]);
       // read hint modifier
-      ReadHintModifiers;
+      if CurPos.Flag<>cafSemicolon then
+        ReadHintModifiers;
       // read ;
       if CurPos.Flag<>cafSemicolon then
         SaveRaiseCharExpectedButAtomFound(';');
@@ -3903,7 +3905,8 @@ begin
   end;
   ReadConstExpr;
   // optional: hint modifier
-  ReadHintModifiers;
+  if CurPos.Flag<>cafSemicolon then
+    ReadHintModifiers;
   if CurPos.Flag=cafSemicolon then begin
     if (CurNode.Parent.Desc=ctnConstSection)
     and (CurNode.Parent.Parent.Desc in AllCodeSections) then begin
@@ -3993,7 +3996,8 @@ begin
   ReadNextAtom;
   ParseType(CurPos.StartPos);
   // read hint modifier
-  ReadHintModifiers;
+  if CurPos.Flag<>cafSemicolon then
+    ReadHintModifiers;
   // read ;
   if CurPos.Flag<>cafSemicolon then
     SaveRaiseCharExpectedButAtomFound(';');
