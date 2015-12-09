@@ -52,13 +52,12 @@ function SysToUTF8(const AFormatSettings: TFormatSettings): TFormatSettings; ove
 function ConsoleToUTF8(const s: string): string;
 // converts UTF8 string to console encoding (used by Write, WriteLn)
 function UTF8ToConsole(const s: string): string;
-{$IFDEF MSWindows}
+
 // for all Windows supporting 8bit codepages (e.g. not WinCE)
 // converts string in Windows code page to UTF8 (used with some Windows specific functions)
 function WinCPToUTF8(const s: string): string;
 // converts UTF8 string to Windows code page encoding (used by Write, WriteLn)
 function UTF8ToWinCP(const s: string): string;
-{$ENDIF}
 
 function ParamStrUTF8(Param: Integer): string;
 
@@ -313,6 +312,29 @@ begin
     Result.ShortDayNames[i] := UTF8ToSys(AFormatSettings.ShortDayNames[i]);
   end;
   {$ENDIF}
+end;
+
+function WinCPToUTF8(const s: string): string;
+begin
+  if NeedRTLAnsi and (not IsASCII(s)) then
+  begin
+    Result:=AnsiToUTF8(s);
+    {$ifdef FPC_HAS_CPSTRING}
+    // prevent UTF8 codepage appear in the strings - we don't need codepage
+    // conversion magic in LCL code
+    SetCodePage(RawByteString(Result), StringCodePage(s), False);
+    {$endif}
+  end
+  else
+    Result:=s;
+end;
+
+function UTF8ToWinCP(const s: string): string;
+begin
+  if NeedRTLAnsi and (not IsASCII(s)) then
+    Result:=UTF8ToAnsi(s)
+  else
+    Result:=s;
 end;
 
 function GetEnvironmentStringUTF8(Index: Integer): string;
