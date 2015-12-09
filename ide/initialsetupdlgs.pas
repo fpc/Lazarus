@@ -1317,12 +1317,10 @@ begin
   UpdateDebuggerNote;
 
   // select first error
-  if PropertiesTreeView.Selected=nil then begin
-    Node:=FirstErrorNode;
-    if Node=nil then
-      Node:=TVNodeLazarus;
-    PropertiesTreeView.Selected:=Node;
-  end;
+  Node:=FirstErrorNode;
+  if Node=nil then
+    Node:=TVNodeLazarus;
+  PropertiesTreeView.Selected:=Node;
 end;
 
 end.
