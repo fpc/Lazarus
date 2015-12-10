@@ -1105,6 +1105,7 @@ msgid "Copy word on copy none"
 msgstr "Копіювати слово при порожньому копіюванні"
 
 #: lazarusidestrconsts.dlgcorange
+msgctxt "lazarusidestrconsts.dlgcorange"
 msgid "Range"
 msgstr "Діапазон"
 
@@ -15636,6 +15637,12 @@ msgstr "Вийти"
 #: lazarusidestrconsts.lisquitlazarus
 msgid "&Quit Lazarus"
 msgstr "&Вийти з Lazarus"
+
+#: lazarusidestrconsts.lisrange
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisrange"
+msgid "Range"
+msgstr "Діапазон"
 
 #: lazarusidestrconsts.lisreaderror
 msgid "Read Error"

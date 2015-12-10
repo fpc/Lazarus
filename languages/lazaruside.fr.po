@@ -1090,6 +1090,7 @@ msgid "Copy word on copy none"
 msgstr "Copier le mot si rien à copier"
 
 #: lazarusidestrconsts.dlgcorange
+msgctxt "lazarusidestrconsts.dlgcorange"
 msgid "Range"
 msgstr "Intervalle"
 
@@ -15266,6 +15267,12 @@ msgstr "Quitter"
 #: lazarusidestrconsts.lisquitlazarus
 msgid "&Quit Lazarus"
 msgstr "&Quitter Lazarus"
+
+#: lazarusidestrconsts.lisrange
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisrange"
+msgid "Range"
+msgstr "Intervalle"
 
 #: lazarusidestrconsts.lisreaderror
 msgid "Read Error"

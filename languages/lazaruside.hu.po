@@ -1088,6 +1088,7 @@ msgid "Copy word on copy none"
 msgstr "Kifejezés másolása, ha nincs kijelölve semmi"
 
 #: lazarusidestrconsts.dlgcorange
+msgctxt "lazarusidestrconsts.dlgcorange"
 msgid "Range"
 msgstr "Tartomány"
 
@@ -15229,6 +15230,12 @@ msgstr "Kilépés"
 #: lazarusidestrconsts.lisquitlazarus
 msgid "&Quit Lazarus"
 msgstr "Kilépés a Lazarus-ból"
+
+#: lazarusidestrconsts.lisrange
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisrange"
+msgid "Range"
+msgstr "Tartomány"
 
 #: lazarusidestrconsts.lisreaderror
 msgid "Read Error"

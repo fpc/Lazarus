@@ -1137,6 +1137,7 @@ msgid "Copy word on copy none"
 msgstr "העתק מילה בהעתקת כלום"
 
 #: lazarusidestrconsts.dlgcorange
+msgctxt "lazarusidestrconsts.dlgcorange"
 msgid "Range"
 msgstr "טווח"
 
@@ -16346,6 +16347,12 @@ msgstr "יציאה"
 #| msgid "Quit Lazarus"
 msgid "&Quit Lazarus"
 msgstr "צא מלזרוס"
+
+#: lazarusidestrconsts.lisrange
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisrange"
+msgid "Range"
+msgstr "טווח"
 
 #: lazarusidestrconsts.lisreaderror
 msgid "Read Error"

@@ -1081,6 +1081,7 @@ msgid "Copy word on copy none"
 msgstr "Kopioi sana, kun valittuna ei mitään"
 
 #: lazarusidestrconsts.dlgcorange
+msgctxt "lazarusidestrconsts.dlgcorange"
 msgid "Range"
 msgstr "Alue"
 
@@ -15101,6 +15102,12 @@ msgstr "Poistu"
 #: lazarusidestrconsts.lisquitlazarus
 msgid "&Quit Lazarus"
 msgstr "&Poistu Lazaruksesta"
+
+#: lazarusidestrconsts.lisrange
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisrange"
+msgid "Range"
+msgstr "Alue"
 
 #: lazarusidestrconsts.lisreaderror
 msgid "Read Error"

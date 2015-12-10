@@ -1090,6 +1090,7 @@ msgid "Copy word on copy none"
 msgstr "非選択時にも複写範囲を自動設定"
 
 #: lazarusidestrconsts.dlgcorange
+msgctxt "lazarusidestrconsts.dlgcorange"
 msgid "Range"
 msgstr "範囲"
 
@@ -15542,6 +15543,12 @@ msgstr "終了"
 #: lazarusidestrconsts.lisquitlazarus
 msgid "&Quit Lazarus"
 msgstr "Lazarus を終了(&Q)"
+
+#: lazarusidestrconsts.lisrange
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisrange"
+msgid "Range"
+msgstr "範囲"
 
 #: lazarusidestrconsts.lisreaderror
 msgid "Read Error"

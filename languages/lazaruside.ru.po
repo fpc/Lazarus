@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-12-06 23:50+0300\n"
+"PO-Revision-Date: 2015-12-11 01:54+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -1089,6 +1089,7 @@ msgid "Copy word on copy none"
 msgstr "Копировать слово при пустом копировании"
 
 #: lazarusidestrconsts.dlgcorange
+msgctxt "lazarusidestrconsts.dlgcorange"
 msgid "Range"
 msgstr "Диапазона"
 
@@ -15229,6 +15230,11 @@ msgstr "Выход"
 #: lazarusidestrconsts.lisquitlazarus
 msgid "&Quit Lazarus"
 msgstr "В&ыход из Lazarus"
+
+#: lazarusidestrconsts.lisrange
+msgctxt "lazarusidestrconsts.lisrange"
+msgid "Range"
+msgstr "Диапазон"
 
 #: lazarusidestrconsts.lisreaderror
 msgid "Read Error"

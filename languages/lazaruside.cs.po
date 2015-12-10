@@ -1090,6 +1090,7 @@ msgid "Copy word on copy none"
 msgstr "Kopírovat slovo při kopírování žádného"
 
 #: lazarusidestrconsts.dlgcorange
+msgctxt "lazarusidestrconsts.dlgcorange"
 msgid "Range"
 msgstr "Rozsah"
 
@@ -15227,6 +15228,12 @@ msgstr "Ukončit"
 #: lazarusidestrconsts.lisquitlazarus
 msgid "&Quit Lazarus"
 msgstr "Ukončit Lazarus"
+
+#: lazarusidestrconsts.lisrange
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisrange"
+msgid "Range"
+msgstr "Rozsah"
 
 #: lazarusidestrconsts.lisreaderror
 msgid "Read Error"

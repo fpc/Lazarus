@@ -1094,6 +1094,7 @@ msgid "Copy word on copy none"
 msgstr "Copia la parola se non c'è selezione"
 
 #: lazarusidestrconsts.dlgcorange
+msgctxt "lazarusidestrconsts.dlgcorange"
 msgid "Range"
 msgstr "Intervallo"
 
@@ -15295,6 +15296,12 @@ msgstr "Esci"
 #: lazarusidestrconsts.lisquitlazarus
 msgid "&Quit Lazarus"
 msgstr "&Esci da Lazarus"
+
+#: lazarusidestrconsts.lisrange
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisrange"
+msgid "Range"
+msgstr "Intervallo"
 
 #: lazarusidestrconsts.lisreaderror
 msgid "Read Error"

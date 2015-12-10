@@ -1107,6 +1107,7 @@ msgid "Copy word on copy none"
 msgstr "Kai kopijuojant nieks nepažymėta- kopijuoti žodį"
 
 #: lazarusidestrconsts.dlgcorange
+msgctxt "lazarusidestrconsts.dlgcorange"
 msgid "Range"
 msgstr "Rėžį"
 
@@ -15649,6 +15650,12 @@ msgstr "Baigti darbą"
 #: lazarusidestrconsts.lisquitlazarus
 msgid "&Quit Lazarus"
 msgstr "&Baigti Lazarus darbą"
+
+#: lazarusidestrconsts.lisrange
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisrange"
+msgid "Range"
+msgstr "Rėžį"
 
 #: lazarusidestrconsts.lisreaderror
 msgid "Read Error"
