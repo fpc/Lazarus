@@ -47,11 +47,9 @@ type
     constructor Create(aOwner: TComponent); override;
   end;
 
-  TPackageTabLabel = class(TLabel)
+  TGroupTabLabel = class(TLabel)
   private
     FLeftClickPopupBlock: QWord;
-  public
-    Package: TIDEPackage;
   protected
     procedure CalculatePreferredSize(var PreferredWidth,
       PreferredHeight: integer; WithThemeSpace: Boolean); override;
@@ -61,6 +59,15 @@ type
   public
     constructor Create(aOwner: TComponent); override;
   end;
+  TGroupTabLabelClass = class of TGroupTabLabel;
+
+  TPackageTabLabel = class(TGroupTabLabel)
+  public
+    Package: TIDEPackage;
+  end;
+
+  TProjectTabLabel = class(TGroupTabLabel);
+  TOtherTabLabel = class(TGroupTabLabel);
 
   TPackageTabScrollBox = class(TScrollBox)
   protected
@@ -78,6 +85,7 @@ type
   TPackageItem = class
   public
     Package: TIDEPackage;
+    GroupTabLabel: TGroupTabLabelClass;
     Files: TStringList;
 
     constructor Create(APackage: TIDEPackage);
@@ -126,6 +134,7 @@ type
     FTabLabelMenuCloseAllGroup: TMenuItem;
     FTabLabelMenuPkgSep: TMenuItem;
     FTabLabelMenuOpenPackage: TMenuItem;
+    FTabLabelMenuViewProjectSource: TMenuItem;
     FTabButtonMenu: TPopupMenu;
     FTabButtonMenuClose: TMenuItem;
     FTabButtonMenuLock: TMenuItemCommand;
@@ -160,10 +169,11 @@ type
     procedure TabButtonMenuFindInClick(Sender: TObject);
     procedure TabButtonMenuPopup(Sender: TObject);
     procedure TabButtonMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
+      {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
     procedure TabLabelCloseAllGroupClick(Sender: TObject);
     procedure TabLabelMenuOpenPackageClick(Sender: TObject);
     procedure TabLabelMenuPopup(Sender: TObject);
+    procedure TabLabelMenuViewProjectSourceClick(Sender: TObject);
   public
     constructor Create(AParentWindow: TSourceEditorWindowInterface); reintroduce;
     destructor Destroy; override;
@@ -423,9 +433,9 @@ begin
   PreferredWidth := PreferredWidth + 6;
 end;
 
-{ TPackageTabLabel }
+{ TGroupTabLabel }
 
-constructor TPackageTabLabel.Create(aOwner: TComponent);
+constructor TGroupTabLabel.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
 
@@ -436,7 +446,7 @@ begin
   Cursor := crHandPoint;
 end;
 
-procedure TPackageTabLabel.CalculatePreferredSize(var PreferredWidth,
+procedure TGroupTabLabel.CalculatePreferredSize(var PreferredWidth,
   PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
   inherited CalculatePreferredSize(PreferredWidth, PreferredHeight,
@@ -446,7 +456,7 @@ begin
   PreferredWidth := PreferredWidth + 8;
 end;
 
-procedure TPackageTabLabel.MouseDown(Button: TMouseButton; Shift: TShiftState;
+procedure TGroupTabLabel.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
   xPt: Types.TPoint;
@@ -462,14 +472,14 @@ begin
   end;
 end;
 
-procedure TPackageTabLabel.MouseEnter;
+procedure TGroupTabLabel.MouseEnter;
 begin
   inherited MouseEnter;
 
   Font.Style := Font.Style + [fsUnderline];
 end;
 
-procedure TPackageTabLabel.MouseLeave;
+procedure TGroupTabLabel.MouseLeave;
 begin
   inherited MouseLeave;
 
@@ -525,6 +535,11 @@ begin
   FTabLabelMenuOpenPackage.OnClick := @TabLabelMenuOpenPackageClick;
   FTabLabelMenuOpenPackage.ImageIndex := IDEImages.LoadImage(16, 'pkg_open');
   FTabLabelMenu.Items.Add(FTabLabelMenuOpenPackage);
+  FTabLabelMenuViewProjectSource := TMenuItem.Create(Self);
+  FTabLabelMenuViewProjectSource.Caption := 'View project source'; // ToDo: localize
+  FTabLabelMenuViewProjectSource.OnClick := @TabLabelMenuViewProjectSourceClick;
+  FTabLabelMenuViewProjectSource.ImageIndex := IDEImages.LoadImage(16, 'menu_project_viewsource');
+  FTabLabelMenu.Items.Add(FTabLabelMenuViewProjectSource);
 
   FTabButtonMenu := TPopupMenu.Create(Self);
   FTabButtonMenu.Images := IDEImages.Images_16;
@@ -692,7 +707,7 @@ var
   xPackages: TStringList;
   xPackage: TIDEPackage;
   xEditor, xOldActive: TSourceEditorInterface;
-  xLbl: TPackageTabLabel;
+  xLbl: TGroupTabLabel;
   xPkgItem: TPackageItem;
   xPackageName: string;
 begin
@@ -737,13 +752,24 @@ begin
         xPkgItem := TPackageItem(xPackages.Objects[I]);
 
         xPackageName := xPackages[I];
-        if xPackageName[1] in [Low(Char), High(Char)] then
-          Delete(xPackageName, 1, 1);
-        xLbl := TPackageTabLabel.Create(Self);
+        case xPackageName[1] of
+          Low(Char):
+          begin
+            Delete(xPackageName, 1, 1);
+            xLbl := TProjectTabLabel.Create(Self);
+          end;
+          High(Char):
+          begin
+            Delete(xPackageName, 1, 1);
+            xLbl := TOtherTabLabel.Create(Self);
+          end;
+        else
+          xLbl := TPackageTabLabel.Create(Self);
+          TPackageTabLabel(xLbl).Package := xPkgItem.Package;
+        end;
         xLbl.Caption := xPackageName;
         xLbl.Parent := FPanel;
         xLbl.PopupMenu := FTabLabelMenu;
-        xLbl.Package := xPkgItem.Package;
         xLbl.Height := TPackageTabButton.GetControlClassDefaultSize.cy;
         if FPanel is TPackageTabScrollBox then
         begin
@@ -1021,11 +1047,22 @@ end;
 
 procedure TPackageTabPanel.TabLabelMenuPopup(Sender: TObject);
 var
-  xLbl: TPackageTabLabel;
+  xLbl: TGroupTabLabel;
 begin
-  xLbl := (FTabLabelMenu.PopupComponent as TPackageTabLabel);
-  FTabLabelMenuPkgSep.Visible := xLbl.Package<>nil;
-  FTabLabelMenuOpenPackage.Visible := xLbl.Package<>nil;
+  xLbl := (FTabLabelMenu.PopupComponent as TGroupTabLabel);
+  FTabLabelMenuOpenPackage.Visible := (xLbl is TPackageTabLabel);
+  FTabLabelMenuViewProjectSource.Visible := (xLbl is TProjectTabLabel);
+  FTabLabelMenuPkgSep.Visible :=
+    FTabLabelMenuOpenPackage.Visible or FTabLabelMenuViewProjectSource.Visible;
+end;
+
+procedure TPackageTabPanel.TabLabelMenuViewProjectSourceClick(Sender: TObject);
+var
+  xCmd: TIDECommand;
+begin
+  xCmd := IDECommandList.FindIDECommand(ecViewProjectSource);
+  Assert(xCmd<>nil);
+  xCmd.Execute(Sender);
 end;
 
 { TPackageTabPanels }
