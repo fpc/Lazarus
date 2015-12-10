@@ -549,7 +549,6 @@ type
     procedure SetOnExecute(const aOnExecute: TNotifyEvent);
     procedure SetOnExecuteProc(const aOnExecuteProc: TNotifyProcedure);
     procedure SetEnabled(const AEnabled: Boolean);
-    procedure SetVisible(const AVisible: Boolean);
     procedure SetCaption(const ACaption: string);
     procedure SetHint(const AHint: string);
   protected
@@ -585,9 +584,9 @@ type
     procedure DoOnUpdate(Sender: TObject); overload;
   public
     property Enabled: Boolean write SetEnabled;
-    property Visible: Boolean write SetVisible;
     property Caption: string write SetCaption;
     property Hint: string write SetHint;
+    // don't add Visible property here - it is not generic. Tool buttons should never be hidden programmatically
   public
     property Name: String read FName;
     property Command: word read FCommand;// see the ecXXX constants above
@@ -664,8 +663,10 @@ type
     FOnClickMethod: TNotifyEvent;
     FOnClickProc: TNotifyProcedure;
     FOnRequestCaption: TGetHintCaptionEvent;
-    FVisible: Boolean;
+    FSyncProperties: Boolean;
+    FBlockSync: Integer;
   protected
+    function SyncAvailable: Boolean; virtual;
     function GetCaption: string; virtual;
     procedure SetCommand(const AValue: TIDECommand); virtual;
     procedure SetName(const aName: string); virtual;
@@ -674,7 +675,6 @@ type
     procedure SetChecked(const aChecked: Boolean); virtual;
     procedure SetHint(const aHint: string); virtual;
     procedure SetImageIndex(const aImageIndex: Integer); virtual;
-    procedure SetVisible(const aVisible: Boolean); virtual;
     procedure SetOnClickMethod(const aOnClick: TNotifyEvent); virtual;
     procedure SetOnClickProc(const aOnClickProc: TNotifyProcedure); virtual;
     procedure SetOnRequestCaption(
@@ -688,20 +688,24 @@ type
     procedure DoOnClick; overload;
     procedure DoOnClick(Sender: TObject); virtual; overload;
     function DoOnRequestCaption(Sender: TObject): Boolean; virtual;
+
+    procedure BlockSync;
+    procedure UnblockSync;
   public
     function GetCaptionWithShortCut: String; virtual;
     function GetHintOrCaptionWithShortCut: String; virtual;
     function GetShortcut: String; virtual;
 
     property Command: TIDECommand read FCommand write SetCommand;
+    property SyncProperties: Boolean read FSyncProperties write FSyncProperties;
     property Name: string read FName write SetName;
     property Caption: string read GetCaption write SetCaption;
     property Hint: string read FHint write SetHint;
     property Enabled: Boolean read FEnabled write SetEnabled;
     property Checked: Boolean read FChecked write SetChecked;
-    property Visible: Boolean read FVisible write SetVisible;
     property ImageIndex: Integer read FImageIndex write SetImageIndex;
     property ResourceName: string write SetResourceName;
+    // don't add Visible property here - it is not generic. Tool buttons should never be hidden programmatically
 
     property OnClick: TNotifyEvent read FOnClickMethod write SetOnClickMethod;
     property OnClickProc: TNotifyProcedure read FOnClickProc write SetOnClickProc;
@@ -1225,14 +1229,6 @@ begin
   Change;
 end;
 
-procedure TIDECommand.SetVisible(const AVisible: Boolean);
-var
-  xUser: TIDESpecialCommand;
-begin
-  for xUser in FUsers do
-    xUser.Visible := AVisible;
-end;
-
 procedure TIDECommand.UserAdded(const aUser: TIDESpecialCommand);
 begin
   FUsers.Add(aUser);
@@ -1292,7 +1288,15 @@ begin
   if CompareMethods(TMethod(FOnExecute), TMethod(aOnExecute)) then Exit;
   FOnExecute := aOnExecute;
   for xUser in FUsers do
-    xUser.OnClick := FOnExecute;
+    if xUser.SyncProperties then
+    begin
+      xUser.BlockSync;
+      try
+        xUser.OnClick := aOnExecute;
+      finally
+        xUser.UnblockSync;
+      end;
+    end;
 end;
 
 procedure TIDECommand.SetOnExecuteProc(const aOnExecuteProc: TNotifyProcedure);
@@ -1302,7 +1306,15 @@ begin
   if FOnExecuteProc = aOnExecuteProc then Exit;
   FOnExecuteProc := aOnExecuteProc;
   for xUser in FUsers do
-    xUser.OnClickProc := FOnExecuteProc;
+    if xUser.SyncProperties then
+    begin
+      xUser.BlockSync;
+      try
+        xUser.OnClickProc := aOnExecuteProc;
+      finally
+        xUser.UnblockSync;
+      end;
+    end;
 end;
 
 procedure TIDECommand.SetCategory(const AValue: TIDECommandCategory);
@@ -1324,7 +1336,15 @@ var
   xUser: TIDESpecialCommand;
 begin
   for xUser in FUsers do
-    xUser.Enabled := AEnabled;
+    if xUser.SyncProperties then
+    begin
+      xUser.BlockSync;
+      try
+        xUser.Enabled := AEnabled;
+      finally
+        xUser.UnblockSync;
+      end;
+    end;
 end;
 
 procedure TIDECommand.SetHint(const AHint: string);
@@ -1332,7 +1352,15 @@ var
   xUser: TIDESpecialCommand;
 begin
   for xUser in FUsers do
-    xUser.Hint := AHint;
+    if xUser.SyncProperties then
+    begin
+      xUser.BlockSync;
+      try
+        xUser.Hint := AHint;
+      finally
+        xUser.UnblockSync;
+      end;
+    end;
 end;
 
 function TIDECommand.AsShortCut: TShortCut;
@@ -1427,7 +1455,15 @@ var
   xUser: TIDESpecialCommand;
 begin
   for xUser in FUsers do
-    xUser.Caption := ACaption;
+    if xUser.SyncProperties then
+    begin
+      xUser.BlockSync;
+      try
+        xUser.Caption := ACaption;
+      finally
+        xUser.UnblockSync;
+      end;
+    end;
 end;
 
 procedure TIDECommand.ClearShortcutA;
@@ -1536,10 +1572,15 @@ constructor TIDESpecialCommand.Create(const aName: string);
 begin
   inherited Create;
 
+  FSyncProperties:=true;
   FName := aName;
   FEnabled:=true;
-  FVisible:=true;
   FImageIndex:=-1;
+end;
+
+procedure TIDESpecialCommand.BlockSync;
+begin
+  Inc(FBlockSync);
 end;
 
 destructor TIDESpecialCommand.Destroy;
@@ -1618,10 +1659,17 @@ var
 begin
   if FCaption=aCaption then Exit;
   FCaption := aCaption;
-  if FCommand<> nil then
+  if (FCommand<> nil) and SyncAvailable then
     for xUser in FCommand.FUsers do
-      if xUser <> Self then
-        xUser.Caption:=aCaption;
+      if (xUser <> Self) and xUser.SyncProperties then
+      begin
+        xUser.BlockSync;
+        try
+          xUser.Caption:=aCaption;
+        finally
+          xUser.UnblockSync;
+        end;
+      end;
 end;
 
 procedure TIDESpecialCommand.SetChecked(const aChecked: Boolean);
@@ -1630,10 +1678,17 @@ var
 begin
   if FChecked=aChecked then Exit;
   FChecked := aChecked;
-  if FCommand<> nil then
+  if (FCommand<> nil) and SyncAvailable then
     for xUser in FCommand.FUsers do
-      if xUser <> Self then
-        xUser.Checked:=aChecked;
+      if (xUser <> Self) and xUser.SyncProperties then
+      begin
+        xUser.BlockSync;
+        try
+          xUser.Checked:=aChecked;
+        finally
+          xUser.UnblockSync;
+        end;
+      end;
 end;
 
 procedure TIDESpecialCommand.SetCommand(const AValue: TIDECommand);
@@ -1667,10 +1722,17 @@ var
 begin
   if FEnabled=aEnabled then Exit;
   FEnabled := aEnabled;
-  if FCommand<> nil then
+  if (FCommand<> nil) and SyncAvailable then
     for xUser in FCommand.FUsers do
-      if xUser <> Self then
-        xUser.Enabled:=aEnabled;
+      if (xUser <> Self) and xUser.SyncProperties then
+      begin
+        xUser.BlockSync;
+        try
+          xUser.Enabled:=aEnabled;
+        finally
+          xUser.UnblockSync;
+        end;
+      end;
 end;
 
 procedure TIDESpecialCommand.SetHint(const aHint: string);
@@ -1679,10 +1741,17 @@ var
 begin
   if FHint=aHint then Exit;
   FHint := aHint;
-  if FCommand<> nil then
+  if (FCommand<> nil) and SyncAvailable then
     for xUser in FCommand.FUsers do
-      if xUser <> Self then
-        xUser.Hint:=aHint;
+      if (xUser <> Self) and xUser.SyncProperties then
+      begin
+        xUser.BlockSync;
+        try
+          xUser.Hint:=aHint;
+        finally
+          xUser.UnblockSync;
+        end;
+      end;
 end;
 
 procedure TIDESpecialCommand.SetImageIndex(const aImageIndex: Integer);
@@ -1691,10 +1760,17 @@ var
 begin
   if FImageIndex=aImageIndex then Exit;
   FImageIndex := aImageIndex;
-  if FCommand<> nil then
+  if (FCommand<> nil) and SyncAvailable then
     for xUser in FCommand.FUsers do
-      if xUser <> Self then
-        xUser.ImageIndex:=aImageIndex;
+      if (xUser <> Self) and xUser.SyncProperties then
+      begin
+        xUser.BlockSync;
+        try
+          xUser.ImageIndex:=aImageIndex;
+        finally
+          xUser.UnblockSync;
+        end;
+      end;
 end;
 
 procedure TIDESpecialCommand.SetName(const aName: string);
@@ -1706,7 +1782,7 @@ procedure TIDESpecialCommand.SetOnClickMethod(const aOnClick: TNotifyEvent);
 begin
   if CompareMethods(TMethod(FOnClickMethod), TMethod(aOnClick)) then Exit;
   FOnClickMethod := aOnClick;
-  if FCommand<> nil then
+  if (FCommand<> nil) and SyncAvailable then
     FCommand.OnExecute:=aOnClick;
 end;
 
@@ -1714,7 +1790,7 @@ procedure TIDESpecialCommand.SetOnClickProc(const aOnClickProc: TNotifyProcedure
 begin
   if FOnClickProc = aOnClickProc then Exit;
   FOnClickProc := aOnClickProc;
-  if FCommand<> nil then
+  if (FCommand<> nil) and SyncAvailable then
     FCommand.OnExecuteProc:=aOnClickProc;
 end;
 
@@ -1725,10 +1801,17 @@ var
 begin
   if FOnRequestCaption = aOnRequestCaptionHint then Exit;
   FOnRequestCaption := aOnRequestCaptionHint;
-  if FCommand<> nil then
+  if (FCommand<> nil) and SyncAvailable then
     for xUser in FCommand.FUsers do
-      if xUser <> Self then
-        xUser.OnRequestCaptionHint:=aOnRequestCaptionHint;
+      if (xUser <> Self) and xUser.SyncProperties then
+      begin
+        xUser.BlockSync;
+        try
+          xUser.OnRequestCaptionHint:=aOnRequestCaptionHint;
+        finally
+          xUser.UnblockSync;
+        end;
+      end;
 end;
 
 procedure TIDESpecialCommand.SetResourceName(const aResourceName: string);
@@ -1745,16 +1828,14 @@ begin
   //nothing here, override in descendants
 end;
 
-procedure TIDESpecialCommand.SetVisible(const aVisible: Boolean);
-var
-  xUser: TIDESpecialCommand;
+function TIDESpecialCommand.SyncAvailable: Boolean;
 begin
-  if FVisible=aVisible then Exit;
-  FVisible := aVisible;
-  if FCommand<> nil then
-    for xUser in FCommand.FUsers do
-      if xUser <> Self then
-        xUser.Visible:=aVisible;
+  Result := FSyncProperties and (FBlockSync=0);
+end;
+
+procedure TIDESpecialCommand.UnblockSync;
+begin
+  Dec(FBlockSync);
 end;
 
 { TIDESpecialCommandEnumerator }

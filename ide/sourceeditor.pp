@@ -10401,9 +10401,13 @@ begin
 
     {$IFnDEF SingleSrcWindow}
     SrcEditMenuEditorLock.Command           := GetCommand(ecLockEditor);
+    SrcEditMenuMoveToNewWindow.SyncProperties := False;
     SrcEditMenuMoveToNewWindow.Command      := GetCommand(ecMoveEditorNewWindow);
+    SrcEditMenuMoveToOtherWindowNew.SyncProperties := False;
     SrcEditMenuMoveToOtherWindowNew.Command := GetCommand(ecMoveEditorNewWindow);
+    SrcEditMenuCopyToNewWindow.SyncProperties := False;
     SrcEditMenuCopyToNewWindow.Command      := GetCommand(ecCopyEditorNewWindow);
+    SrcEditMenuCopyToOtherWindowNew.SyncProperties := False;
     SrcEditMenuCopyToOtherWindowNew.Command := GetCommand(ecCopyEditorNewWindow);
     {$ENDIF}
   {%endregion}
