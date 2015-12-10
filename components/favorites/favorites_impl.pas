@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils, ToolBarIntf, IDEImagesIntf, Graphics, PackageIntf,
   Menus, LazIDEIntf, ProjectIntf, Laz2_XMLCfg, IDEOptionsIntf,
-  IDECommands, ComCtrls, IDEMsgIntf, favoritesstr;
+  IDECommands, ComCtrls, favoritesstr;
 
 type
   TFavoritesHandler = class
