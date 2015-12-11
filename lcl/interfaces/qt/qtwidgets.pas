@@ -606,7 +606,6 @@ type
     {abstractscrollarea events}
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     {viewport events}
-    procedure SetNoMousePropagation(Sender: QWidgetH; const ANoMousePropagation: Boolean); override;
     function ScrollViewEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     function getWindowState: QtWindowStates; override;
   end;
@@ -6421,13 +6420,6 @@ begin
   Result := inherited EventFilter(Sender, Event);
 end;
 
-procedure TQtWindowArea.SetNoMousePropagation(Sender: QWidgetH;
-  const ANoMousePropagation: Boolean);
-begin
-  {must be overrided, see issue #29159}
-  QWidget_setAttribute(Sender, QtWA_NoMousePropagation, ANoMousePropagation);
-end;
-
 function TQtWindowArea.ScrollViewEventFilter(Sender: QObjectH; Event: QEventH
   ): Boolean; cdecl;
 var
@@ -6993,6 +6985,9 @@ begin
           end;
         end;
       end;
+      {$IFDEF QTSCROLLABLEFORMS}
+      QEventMouseMove: ; // issue #29159
+      {$ENDIF}
       QEventMouseButtonPress,
       QEventMouseButtonRelease,
       QEventMouseButtonDblClick:
