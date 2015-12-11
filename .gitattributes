@@ -5126,9 +5126,6 @@ examples/docking/project1.res -text
 examples/docking/unit1.lfm svneol=native#text/plain
 examples/docking/unit1.pas svneol=native#text/pascal
 examples/dockmanager/README.txt svneol=native#text/plain
-examples/dockmanager/design/easydockmgrdsgn.lpk svneol=native#text/plain
-examples/dockmanager/design/easydockmgrdsgn.pas svneol=native#text/plain
-examples/dockmanager/design/registereasydockmgr.pas svneol=native#text/plain
 examples/dockmanager/docs/easydocksite.xml svneol=LF#text/xml eol=lf
 examples/dockmanager/docs/fdockbook.xml svneol=LF#text/xml eol=lf
 examples/dockmanager/docs/ffloatingsite.xml svneol=LF#text/xml eol=lf
