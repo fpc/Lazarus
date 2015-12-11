@@ -84,7 +84,6 @@ type
     FIncrement: TScrollBarInc;
     FKind: TScrollBarKind;
     FPage: TScrollBarInc;
-    FPosition: Integer;
     FRange: Integer; // if AutoScroll=true this is the needed size of the child controls
     FSmooth: Boolean;
     FTracking: Boolean;
@@ -93,6 +92,7 @@ type
     FOldScrollInfoValid: Boolean;
   protected
     FControl: TWinControl;
+    FPosition: Integer;
     function ControlHandle: HWnd; virtual;
     function GetAutoScroll: boolean; virtual;
     function GetIncrement: TScrollBarInc; virtual;
@@ -108,7 +108,7 @@ type
     procedure ScrollHandler(var Message: TLMScroll);
     procedure SetIncrement(const AValue: TScrollBarInc); virtual;
     procedure SetPage(const AValue: TScrollBarInc); virtual;
-    procedure SetPosition(const Value: Integer); virtual;
+    procedure SetPosition(const Value: Integer);
     procedure SetRange(const AValue: Integer); virtual;
     procedure SetSmooth(const AValue: Boolean); virtual;
     procedure SetTracking(const AValue: Boolean);
@@ -166,9 +166,8 @@ type
     procedure WMSize(var Message: TLMSize); message LM_Size;
     procedure WMHScroll(var Message : TLMHScroll); message LM_HScroll;
     procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
+    procedure WMMouseWheel(var Message: TLMMouseEvent); message LM_MOUSEWHEEL;
     procedure ComputeScrollbars; virtual;
-    procedure ScrollbarHandler(ScrollKind: TScrollBarKind;
-                               OldPosition: Integer); virtual;
     procedure SetAutoScroll(Value: Boolean); virtual;
     procedure Loaded; override;
     procedure Resizing(State: TWindowState); virtual;
@@ -180,6 +179,7 @@ type
     procedure UpdateScrollbars;
     class function GetControlClassDefaultSize: TSize; override;
     procedure ScrollBy(DeltaX, DeltaY: Integer); override;
+    procedure ScrollInView(AControl: TControl);
   published
     property HorzScrollBar: TControlScrollBar read FHorzScrollBar write SetHorzScrollBar;
     property VertScrollBar: TControlScrollBar read FVertScrollBar write SetVertScrollBar;
@@ -1796,7 +1796,7 @@ implementation
 {$endif}
 
 uses
-  WSForms; // Widgetset uses circle is allowed
+  WSControls, WSForms; // Widgetset uses circle is allowed
 
 var
   HandlingException: Boolean = False;

@@ -52,7 +52,6 @@ var
   WChar: WPARAM;
 begin
   WChar:=WPARAM(Ord(Ch[1]));
-  {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then begin
     if Length(Ch)>1 then begin
       S := UTF8ToUTF16(Ch);
@@ -63,7 +62,6 @@ begin
     exit;
   end else
     WChar := WPARAM(Ord(UTF8ToAnsi(Ch)[1]));
-  {$endif}
   PostMessage(AEditor.Handle, WM_CHAR, WChar, 0);
 end;
 

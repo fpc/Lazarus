@@ -34,8 +34,6 @@ type
 
   TWinCEWSScrollingWinControl = class(TWSScrollingWinControl)
   published
-    class procedure ScrollBy(const AWinControl: TScrollingWinControl;
-      const DeltaX, DeltaY: integer); override;
   end;
 
   { TWinCEWSScrollBox }
@@ -145,26 +143,6 @@ begin
   // create window
   FinishCreateWindow(AWinControl, Params, false);
   Result := Params.Window;
-end;
-
-{ TWinCEWSScrollingWinControl }
-
-class procedure TWinCEWSScrollingWinControl.ScrollBy(const AWinControl: TScrollingWinControl;
-  const DeltaX, DeltaY: integer);
-var
-  rgn: HRGN;
-  rect: trect;
-begin
-  rgn := 0; //roozbeh : seems to be ok?
-  // GetClipRgn(AWinControl.Handle,rgn);
-  // roozbeh:which flags really are required?!
-  if Windows.IsWindowVisible(AWinControl.Handle) then
-    {$ifdef win32}
-    ScrollWindowPtr(AWinControl.Handle, DeltaX, DeltaY, nil, nil);
-    {$else}
-    ScrollWindowPtr(AWinControl.Handle, DeltaX, DeltaY, nil, nil,
-      rgn, nil, SW_INVALIDATE or SW_ERASE or SW_SCROLLCHILDREN);
-    {$endif}
 end;
 
 { TWinCEWSCustomForm }

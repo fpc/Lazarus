@@ -52,16 +52,16 @@ type
 
   TCDWSScrollBox = class(TWSScrollBox)
   published
-//    class procedure ScrollBy(const AWinControl: TScrollingWinControl;
-//      const DeltaX, DeltaY: integer); override;
+//    class procedure ScrollBy(const AWinControl: TWinControl;
+//      DeltaX, DeltaY: integer); override;
   end;
 
   { TCDWSCustomFrame }
 
   TCDWSCustomFrame = class(TWSCustomFrame)
   published
-//    class procedure ScrollBy(const AWinControl: TScrollingWinControl;
-//      const DeltaX, DeltaY: integer); override;
+//    class procedure ScrollBy(const AWinControl: TWinControl;
+//      DeltaX, DeltaY: integer); override;
   end;
 
   { TCDWSFrame }

@@ -248,22 +248,33 @@ end;
 
 procedure TScrollingWinControl.ScrollBy(DeltaX, DeltaY: Integer);
 begin
-  if HandleAllocated and IsWindowVisible(Handle) then
-  begin
-    TWSScrollingWinControlClass(WidgetSetClass).ScrollBy(Self, DeltaX, DeltaY);
-    //Invalidate;
-  end
-  else
-    inherited ScrollBy(DeltaX, DeltaY);
+  ScrollBy_WS(DeltaX, DeltaY);
 end;
 
-procedure TScrollingWinControl.ScrollbarHandler(ScrollKind: TScrollBarKind;
-  OldPosition: Integer);
+procedure TScrollingWinControl.ScrollInView(AControl: TControl);
+var
+  xRect: TRect;
 begin
-  if ScrollKind = sbVertical then
-    ScrollBy(0, OldPosition - FVertScrollBar.Position)
-  else
-    ScrollBy(OldPosition - FHorzScrollBar.Position, 0);
+  if AControl=nil then
+    Exit;
+  xRect := AControl.BoundsRect;
+  OffsetRect(xRect, -HorzScrollBar.Position, -VertScrollBar.Position);
+  if xRect.Left < 0 then
+    HorzScrollBar.Position := HorzScrollBar.Position + xRect.Left
+  else if xRect.Right > ClientWidth then
+  begin
+    if xRect.Right - xRect.Left > ClientWidth then
+      xRect.Right := xRect.Left + ClientWidth;
+    HorzScrollBar.Position := HorzScrollBar.Position + xRect.Right - ClientWidth;
+  end;
+  if xRect.Top < 0 then
+    VertScrollBar.Position := VertScrollBar.Position + xRect.Top
+  else if xRect.Bottom > ClientHeight then
+  begin
+    if xRect.Bottom - xRect.Top > ClientHeight then
+      xRect.Bottom := xRect.Top + ClientHeight;
+    VertScrollBar.Position := VertScrollBar.Position + xRect.Bottom - ClientHeight;
+  end;
 end;
 
 procedure TScrollingWinControl.Loaded;
@@ -291,6 +302,18 @@ procedure TScrollingWinControl.WMHScroll(var Message : TLMHScroll);
 begin
   //DebugLn(['TScrollingWinControl.WMHScroll ',dbgsName(Self)]);
   HorzScrollbar.ScrollHandler(Message);
+end;
+
+procedure TScrollingWinControl.WMMouseWheel(var Message: TLMMouseEvent);
+begin
+  // support VertScrollBar.Increment on Windows.
+  // The code has no meaning on other OS because scrolling is handled there directly by the OS
+  if Mouse.WheelScrollLines > 0 then
+    Message.WheelDelta :=
+      (Min(High(Message.WheelDelta), Max(Low(Message.WheelDelta),
+        (VertScrollBar.Increment * Message.WheelDelta))) div 120) * 120;
+
+  inherited WMMouseWheel(Message);
 end;
 
 constructor TScrollingWinControl.Create(TheOwner : TComponent);

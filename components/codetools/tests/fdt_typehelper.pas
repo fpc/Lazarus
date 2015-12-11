@@ -1,5 +1,5 @@
 {
-  ./finddeclarationtest --format=plain --suite=TestFindDeclaration_TypeHelper
+  ./testcodetools --format=plain --suite=TestFindDeclaration_TypeHelper
 }
 unit fdt_typehelper;
 

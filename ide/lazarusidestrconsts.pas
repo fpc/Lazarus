@@ -255,13 +255,15 @@ resourcestring
   lisConfigDirectory = 'Lazarus config directory';
 
   lisPkgMacroPackageDirectoryParameterIsPackageID = 'Package directory. '
-    +'Parameter is package ID';
+    +'Parameter is package ID, e.g. "Name" or "Name 1.0"';
   lisPkgMacroPackageSourceSearchPathParameterIsPackageID = 'Package source '
-    +'search path. Parameter is package ID';
+    +'search path. Parameter is package ID, e.g. "Name" or "Name 1.0"';
   lisPkgMacroPackageUnitSearchPathParameterIsPackageID = 'Package unit search '
-    +'path. Parameter is package ID';
+    +'path. Parameter is package ID, e.g. "Name" or "Name 1.0"';
   lisPkgMacroPackageIncludeFilesSearchPathParameterIsPackageID = 'Package '
-    +'include files search path. Parameter is package ID';
+    +'include files search path. Parameter is package ID, e.g. "Name" or "Name 1.0"';
+  lisPkgMacroPackageNameParameterIsPackageID = 'Package name. Parameter is package ID, e.g. "Name" or "Name 1.0"';
+  lisPkgMacroPackageOutputDirectoryParameterIsPackageID = 'Package output directory. Parameter is package ID, e.g. "Name" or "Name 1.0"';
 
   // main bar menu
   lisMenuFile = '&File';
@@ -275,8 +277,6 @@ resourcestring
   lisMenuTools = '&Tools';
   lisMenuWindow = '&Window';
   lisMenuHelp = '&Help';
-  lisThisBuildModeNowSetsUTF8InRTL = 'This build mode now sets UTF-8 in RTL.%s'
-    +' Flags are in pages "Custom Options" and "Additions and Overrides".';
   lisThisWillAllowChangingAllBuildModesAtOnceNotImpleme = 'This will allow '
     +'changing all build modes at once. Not implemented yet.';
   
@@ -2213,8 +2213,9 @@ resourcestring
   lisSmallerRatherThanFaster = 'Smaller rather than faster';
   dlgLevelNoneOpt = '0 (no optimization)';
   dlgLevel1Opt = '1 (quick, debugger friendly)';
-  dlgLevel2Opt = '2 (quick optimizations)';
-  dlgLevel3Opt = '3 (slow optimizations)';
+  dlgLevel2Opt = '2 (-O1 + quick optimizations)';
+  dlgLevel3Opt = '3 (-O2 + slow optimizations)';
+  dlgLevel4Opt = '4 (-O3 + aggressive optimizations, beware)';
   dlgTargetOS = 'Target OS';
   dlgTargetCPUFamily = 'Target CPU family';
   dlgCOInfoForGDB = 'Info for GDB';
@@ -3605,11 +3606,11 @@ resourcestring
   lisUnableToOpenDesignerTheClassDoesNotDescendFromADes = 'Unable to open '
     +'designer.%sThe class %s does not descend from a designable class like '
     +'TForm or TDataModule.';
+  lisIgnoreUseAsAncestor = 'Ignore, use %s as ancestor';
   lisUnableToLoadTheComponentClassBecauseItDependsOnIts = 'Unable to load the '
     +'component class "%s", because it depends on itself.';
   lisCancelLoadingThisComponent = 'Cancel loading this component';
   lisAbortWholeLoading = 'Abort whole loading';
-  lisIgnoreUseTFormAsAncestor = 'Ignore, use TForm as ancestor';
   lisTheResourceClassDescendsFromProbablyThisIsATypoFor = 'The resource '
     +'class "%s" descends from "%s". Probably this is a typo for TForm.';
 
@@ -4702,7 +4703,8 @@ resourcestring
 
   // character map
   lisCharacterMap = 'Character Map';
-  
+  lisRange = 'Range';
+
   // codetools defines value dialog
   lisCTDefChooseDirectory = 'Choose Directory';
   lisCTDefCodeToolsDirectoryValues = 'CodeTools Directory Values';
@@ -5884,9 +5886,6 @@ resourcestring
 
   //Toolbar options
   lisToolbarOptions = 'Toolbar';
-  lisToolbarOptionsToolbarsVisible = 'Toolbars visible';
-  lisToolbarOptionsStandardVisible = 'Standard toolbar visible';
-  lisToolbarOptionsViewDebugVisible = 'Debug toolbar visible';
   lisToolbarOptionsHighLight = 'Highlight toolbars buttons';
   lisToolbarOptionsRaise = 'Raise toolbars';
 

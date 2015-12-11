@@ -48,16 +48,17 @@ type
 
   TWatchPropertyDlg = class(TForm)
     ButtonPanel: TButtonPanel;
+    chkAllowFunc: TCheckBox;
+    chkEnabled: TCheckBox;
     chkUseInstanceClass: TCheckBox;
+    lblDigits: TLabel;
     lblExpression: TLabel;
     lblRepCount: TLabel;
-    lblDigits: TLabel;
-    chkEnabled: TCHeckbox;
-    chkAllowFunc: TCheckbox;
+    PanelTop: TPanel;
     rgStyle: TRadioGroup;
+    txtDigits: TEdit;
     txtExpression: TEdit;
     txtRepCount: TEdit;
-    txtDigits: TEdit;
     procedure btnHelpClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
   private

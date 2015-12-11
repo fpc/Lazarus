@@ -1086,6 +1086,7 @@ msgid "Copy word on copy none"
 msgstr "Copiar palabra al Copiar Nada"
 
 #: lazarusidestrconsts.dlgcorange
+msgctxt "lazarusidestrconsts.dlgcorange"
 msgid "Range"
 msgstr "Rango"
 
@@ -2222,12 +2223,20 @@ msgid "1 (quick, debugger friendly)"
 msgstr "1 (rápido y amigable con el depurador)"
 
 #: lazarusidestrconsts.dlglevel2opt
-msgid "2 (quick optimizations)"
+#, fuzzy
+#| msgid "2 (quick optimizations)"
+msgid "2 (-O1 + quick optimizations)"
 msgstr "2 (optimizaciones rápidas)"
 
 #: lazarusidestrconsts.dlglevel3opt
-msgid "3 (slow optimizations)"
+#, fuzzy
+#| msgid "3 (slow optimizations)"
+msgid "3 (-O2 + slow optimizations)"
 msgstr "3 (optimizaciones lentas)"
+
+#: lazarusidestrconsts.dlglevel4opt
+msgid "4 (-O3 + aggressive optimizations, beware)"
+msgstr ""
 
 #: lazarusidestrconsts.dlglevelnoneopt
 msgid "0 (no optimization)"
@@ -9920,9 +9929,9 @@ msgstr "Ignorar binarios"
 msgid "Ignore this exception type"
 msgstr "Ignorar este tipo de excepción"
 
-#: lazarusidestrconsts.lisignoreusetformasancestor
-msgid "Ignore, use TForm as ancestor"
-msgstr "Ignorar, usar TForm como ascendente"
+#: lazarusidestrconsts.lisignoreuseasancestor
+msgid "Ignore, use %s as ancestor"
+msgstr ""
 
 #: lazarusidestrconsts.lisimitateindentationofcurrentunitprojectorpackage
 msgid "Imitate indentation of current unit, project or package"
@@ -14108,19 +14117,35 @@ msgid "Virtual Unit"
 msgstr "Unidad virtual"
 
 #: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
-msgid "Package directory. Parameter is package ID"
+#, fuzzy
+#| msgid "Package directory. Parameter is package ID"
+msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
 msgstr "Directorio paquete. Parametro es ID paquete"
 
 #: lazarusidestrconsts.lispkgmacropackageincludefilessearchpathparameterispackageid
-msgid "Package include files search path. Parameter is package ID"
+#, fuzzy
+#| msgid "Package include files search path. Parameter is package ID"
+msgid "Package include files search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
 msgstr "Path busqueda inclusion de paquete. Parametro es ID paquete"
 
+#: lazarusidestrconsts.lispkgmacropackagenameparameterispackageid
+msgid "Package name. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr ""
+
+#: lazarusidestrconsts.lispkgmacropackageoutputdirectoryparameterispackageid
+msgid "Package output directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr ""
+
 #: lazarusidestrconsts.lispkgmacropackagesourcesearchpathparameterispackageid
-msgid "Package source search path. Parameter is package ID"
+#, fuzzy
+#| msgid "Package source search path. Parameter is package ID"
+msgid "Package source search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
 msgstr "Path busqueda fuentes de paquete. Parametro es ID paquete"
 
 #: lazarusidestrconsts.lispkgmacropackageunitsearchpathparameterispackageid
-msgid "Package unit search path. Parameter is package ID"
+#, fuzzy
+#| msgid "Package unit search path. Parameter is package ID"
+msgid "Package unit search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
 msgstr "Path busqueda unidad de paquete. Parametro es ID paquete"
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforpackagepackage
@@ -15253,6 +15278,12 @@ msgstr "Salir"
 #: lazarusidestrconsts.lisquitlazarus
 msgid "&Quit Lazarus"
 msgstr "Salir de Lazarus"
+
+#: lazarusidestrconsts.lisrange
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisrange"
+msgid "Range"
+msgstr "Rango"
 
 #: lazarusidestrconsts.lisreaderror
 msgid "Read Error"
@@ -16969,10 +17000,6 @@ msgstr "La ruta de búsqueda de Unidades de \"%s\" contiene el directorio de fue
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "El directorio de trabajo \"%s\" no existe.%sPor favor, verifique el directorio de trabajo en el Menu > Ejecutar > Parámetros de Ejecución."
 
-#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inrtl
-msgid "This build mode now sets UTF-8 in RTL.%s Flags are in pages \"Custom Options\" and \"Additions and Overrides\"."
-msgstr ""
-
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
 msgid "This component already contains a class with the name %s."
 msgstr "Este componente ya contiene una clase con el nombre %s."
@@ -17126,18 +17153,6 @@ msgstr ""
 
 #: lazarusidestrconsts.listoolbaroptionsraise
 msgid "Raise toolbars"
-msgstr ""
-
-#: lazarusidestrconsts.listoolbaroptionsstandardvisible
-msgid "Standard toolbar visible"
-msgstr ""
-
-#: lazarusidestrconsts.listoolbaroptionstoolbarsvisible
-msgid "Toolbars visible"
-msgstr ""
-
-#: lazarusidestrconsts.listoolbaroptionsviewdebugvisible
-msgid "Debug toolbar visible"
 msgstr ""
 
 #: lazarusidestrconsts.listoolhasnoexecutable

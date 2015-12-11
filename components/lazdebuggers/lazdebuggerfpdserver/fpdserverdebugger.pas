@@ -22,7 +22,7 @@ uses
   lazCollections,
   lazutf8sysutils,
   strutils,
-  SysUtils;
+  SysUtils, UTF8Process;
 
 type
   TThreadedQueueString = specialize TLazThreadedQueue<string>;
@@ -290,7 +290,7 @@ type
     FSocketThread: TFPDSocketThread;
     FDebugServerStartedAsChild: boolean;
     FIsConnected: boolean;
-    FDebugProcess: TProcess;
+    FDebugProcess: TProcessUTF8;
     // This is a list of all commands send to the fpdebug-server, to handle the (asynchrounous)
     // callback when a command is a succes or failure.
     FCommandList: TFPDSendCommandList;
@@ -1129,7 +1129,7 @@ begin
     port := -1;
     if pos('gdb', LowerCase(ExtractFileName(ExternalDebugger)))>0 then
       ShowMessage('The name of the external debugger contains ''gdb''. The currently selected FPDebug-debugger can not work in combination with gdb. The debugger will most likely fail to start.');
-    FDebugProcess := TProcess.Create(nil);
+    FDebugProcess := TProcessUTF8.Create(nil);
     try
       try
         FDebugProcess.Executable:=ExternalDebugger;

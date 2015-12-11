@@ -23,8 +23,8 @@ unit SVNUpdateForm;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  ComCtrls, ButtonPanel, Process, Buttons, Menus, LCLProc;
+  Classes, SysUtils, FileUtil, UTF8Process, LResources, Forms, Controls,
+  Graphics, Dialogs, ComCtrls, ButtonPanel, Process, Buttons, Menus, LCLProc;
 
 type
 
@@ -170,7 +170,7 @@ end;
 
 procedure TSVNUpdateFrm.Execute(Data: PtrInt);
 var
-  AProcess: TProcess;
+  AProcess: TProcessUTF8;
   n: LongInt;
   MemStream: TMemoryStream;
   BytesRead: LongInt;
@@ -180,7 +180,7 @@ begin
   MemStream := TMemoryStream.Create;
   BytesRead := 0;
 
-  AProcess := TProcess.Create(nil);
+  AProcess := TProcessUTF8.Create(nil);
   AProcess.CommandLine := SVNExecutable + ' update "' + RepositoryPath + '" --non-interactive';
   debugln('TSVNUpdateFrm.Execute CommandLine ' + AProcess.CommandLine);
   AProcess.Options := [poUsePipes, poStdErrToOutput];

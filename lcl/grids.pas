@@ -5271,7 +5271,7 @@ end;
 { Save to the cache the current visible grid (excluding fixed cells) }
 procedure TCustomGrid.CacheVisibleGrid;
 var
-  CellR, GridR: TRect;
+  CellR: TRect;
 begin
   with FGCache do begin
     VisibleGrid:=GetVisibleGrid;
@@ -5282,18 +5282,17 @@ begin
     end;
     FullVisibleGrid := VisibleGrid;
     if ValidGrid then begin
-      GridR := FullVisibleGrid;
       if goSmoothScroll in Options then begin
         if TLColOff>0 then
-          GridR.Left := Min(GridR.Left+1, GridR.Right);
+          FullVisibleGrid.Left := Min(FullVisibleGrid.Left+1, FullVisibleGrid.Right);
         if TLRowOff>0 then
-          GridR.Top  := Min(GridR.Top+1, GridR.Bottom);
+          FullVisibleGrid.Top  := Min(FullVisibleGrid.Top+1, FullVisibleGrid.Bottom);
       end;
-      CellR := CellRect(GridR.Right, GridR.Bottom);
+      CellR := CellRect(FullVisibleGrid.Right, FullVisibleGrid.Bottom);
       if CellR.Right>(ClientWidth+GetBorderWidth) then
-        GridR.Right := Max(GridR.Right-1, GridR.Left);
+        FullVisibleGrid.Right := Max(FullVisibleGrid.Right-1, FullVisibleGrid.Left);
       if CellR.Bottom>(ClientHeight+GetBorderWidth) then
-        GridR.Bottom := Max(GridR.Bottom-1, GridR.Top);
+        FullVisibleGrid.Bottom := Max(FullVisibleGrid.Bottom-1, FullVisibleGrid.Top);
     end;
   end;
 end;
@@ -6091,7 +6090,7 @@ procedure TCustomGrid.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
 
   function DoAutoEdit: boolean;
   begin
-    result := FAutoEdit and EditingAllowed(FCol) and
+    result := FAutoEdit and not(csNoFocus in ControlStyle) and EditingAllowed(FCol) and
       (FGCache.ClickCell.X=Col) and (FGCache.ClickCell.Y=Row);
     if result then begin
       SelectEditor;
@@ -6113,7 +6112,7 @@ begin
   DebugLn('Mouse was in ', dbgs(FGCache.HotGridZone));
   {$ENDIF}
 
-  if not Focused then begin
+  if not Focused and not(csNoFocus in ControlStyle) then begin
     SetFocus;
     if not Focused then begin
       {$ifDef dbgGrid} DebugLnExit('TCustomGrid.MouseDown EXIT: Focus not allowed'); {$Endif}
@@ -6898,15 +6897,23 @@ begin
       end else
         TabCheckEditorKey;
     VK_LEFT:
-      if Relaxed then
-        MoveSel(True, -cBidiMove[UseRightToLeftAlignment], 0)
-      else
-        MoveSel(True, 0,-1);
+      //Don't move to another cell is user is editing
+      if not FEditorKey then
+      begin
+        if Relaxed then
+          MoveSel(True, -cBidiMove[UseRightToLeftAlignment], 0)
+        else
+          MoveSel(True, 0,-1);
+      end;
     VK_RIGHT:
-      if Relaxed then
-        MoveSel(True, cBidiMove[UseRightToLeftAlignment], 0)
-      else
-        MoveSel(True, 0, 1);
+      //Don't move to another cell is user is editing
+      if not FEditorKey then
+      begin
+        if Relaxed then
+          MoveSel(True, cBidiMove[UseRightToLeftAlignment], 0)
+        else
+          MoveSel(True, 0, 1);
+      end;
     VK_UP:
         MoveSel(True, 0, -1);
     VK_DOWN:
@@ -11646,7 +11653,7 @@ procedure TGridColumn.SetWidth(const AValue: Integer);
 begin
   if (AValue=0) and not Visible then
     exit;
-  if AValue>0 then begin
+  if AValue>=0 then begin
     if FWidth = nil then begin
       if AValue=GetDefaultWidth then
         exit;

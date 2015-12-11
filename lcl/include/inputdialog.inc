@@ -19,7 +19,7 @@ begin
     Result := Screen.PrimaryMonitor;
 end;
 
-function ShowInputDialog(const InputCaption, InputPrompt : String;
+function DefaultInputDialog(const InputCaption, InputPrompt : String;
   MaskInput : Boolean; var Value : String) : Boolean;
 var
   Form: TForm;

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-11-04 23:45+0300\n"
+"PO-Revision-Date: 2015-12-11 01:54+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -1089,6 +1089,7 @@ msgid "Copy word on copy none"
 msgstr "Копировать слово при пустом копировании"
 
 #: lazarusidestrconsts.dlgcorange
+msgctxt "lazarusidestrconsts.dlgcorange"
 msgid "Range"
 msgstr "Диапазона"
 
@@ -2207,12 +2208,16 @@ msgid "1 (quick, debugger friendly)"
 msgstr "1 (быстро и дружественно к отладчику)"
 
 #: lazarusidestrconsts.dlglevel2opt
-msgid "2 (quick optimizations)"
-msgstr "2 (быстрые оптимизации)"
+msgid "2 (-O1 + quick optimizations)"
+msgstr "2 (-O1 + быстрые оптимизации)"
 
 #: lazarusidestrconsts.dlglevel3opt
-msgid "3 (slow optimizations)"
-msgstr "3 (медленные оптимизации)"
+msgid "3 (-O2 + slow optimizations)"
+msgstr "3 (-O2 + медленные оптимизации)"
+
+#: lazarusidestrconsts.dlglevel4opt
+msgid "4 (-O3 + aggressive optimizations, beware)"
+msgstr "4 (-O3 + агрессивные оптимизации, будьте осторожны)"
 
 #: lazarusidestrconsts.dlglevelnoneopt
 msgid "0 (no optimization)"
@@ -9887,9 +9892,9 @@ msgstr "Игнорировать двоичные файлы"
 msgid "Ignore this exception type"
 msgstr "Игнорировать этот тип исключений"
 
-#: lazarusidestrconsts.lisignoreusetformasancestor
-msgid "Ignore, use TForm as ancestor"
-msgstr "Игнорировать, использовать TForm как предка"
+#: lazarusidestrconsts.lisignoreuseasancestor
+msgid "Ignore, use %s as ancestor"
+msgstr "Игнорировать, использовать %s как предка"
 
 #: lazarusidestrconsts.lisimitateindentationofcurrentunitprojectorpackage
 msgid "Imitate indentation of current unit, project or package"
@@ -14070,20 +14075,28 @@ msgid "Virtual Unit"
 msgstr "Виртуальный модуль"
 
 #: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
-msgid "Package directory. Parameter is package ID"
-msgstr "Каталог пакета. Параметром является идентификатор пакета"
+msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr "Каталог пакета. Параметром является идентификатор пакета, например, \"Имя\" или \"Имя 1.0\""
 
 #: lazarusidestrconsts.lispkgmacropackageincludefilessearchpathparameterispackageid
-msgid "Package include files search path. Parameter is package ID"
-msgstr "Путь поиска включаемых файлов пакета. Параметром является идентификатор пакета"
+msgid "Package include files search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr "Путь поиска включаемых файлов пакета. Параметром является идентификатор пакета, например, \"Имя\" или \"Имя 1.0\""
+
+#: lazarusidestrconsts.lispkgmacropackagenameparameterispackageid
+msgid "Package name. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr "Имя пакета. Параметром является идентификатор пакета, например, \"Имя\" или \"Имя 1.0\""
+
+#: lazarusidestrconsts.lispkgmacropackageoutputdirectoryparameterispackageid
+msgid "Package output directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr "Каталог вывода пакета. Параметром является идентификатор пакета, например, \"Имя\" или \"Имя 1.0\""
 
 #: lazarusidestrconsts.lispkgmacropackagesourcesearchpathparameterispackageid
-msgid "Package source search path. Parameter is package ID"
-msgstr "Путь поиска файлов исходного кода пакета. Параметром является идентификатор пакета"
+msgid "Package source search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr "Путь поиска файлов исходного кода пакета. Параметром является идентификатор пакета, например, \"Имя\" или \"Имя 1.0\""
 
 #: lazarusidestrconsts.lispkgmacropackageunitsearchpathparameterispackageid
-msgid "Package unit search path. Parameter is package ID"
-msgstr "Путь поиска модулей пакета. Параметром является идентификатор пакета"
+msgid "Package unit search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr "Путь поиска модулей пакета. Параметром является идентификатор пакета, например, \"Имя\" или \"Имя 1.0\""
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforpackagepackage
 msgid "%sAdding new Dependency for package %s: package %s"
@@ -15217,6 +15230,11 @@ msgstr "Выход"
 #: lazarusidestrconsts.lisquitlazarus
 msgid "&Quit Lazarus"
 msgstr "В&ыход из Lazarus"
+
+#: lazarusidestrconsts.lisrange
+msgctxt "lazarusidestrconsts.lisrange"
+msgid "Range"
+msgstr "Диапазон"
 
 #: lazarusidestrconsts.lisreaderror
 msgid "Read Error"
@@ -16932,10 +16950,6 @@ msgstr "Путь поиска модулей \"%s\" содержит катал�
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "Рабочий каталог \"%s\" не существует.%sПроверьте его в меню Запуск -> Параметры запуска."
 
-#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inrtl
-msgid "This build mode now sets UTF-8 in RTL.%s Flags are in pages \"Custom Options\" and \"Additions and Overrides\"."
-msgstr "Этот режим сборки теперь задаёт использование UTF-8 в RTL.%sФлаги находятся на страницах \"Параметры пользователя\" и \"Дополнения и перекрытия\"."
-
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
 msgid "This component already contains a class with the name %s."
 msgstr "Этот компонент уже содержит класс с именем %s."
@@ -17089,18 +17103,6 @@ msgstr "Выделить кнопки на инструментальных па
 #: lazarusidestrconsts.listoolbaroptionsraise
 msgid "Raise toolbars"
 msgstr "Приподнять инструментальные панели"
-
-#: lazarusidestrconsts.listoolbaroptionsstandardvisible
-msgid "Standard toolbar visible"
-msgstr "Показывать стандартную инструментальную панель"
-
-#: lazarusidestrconsts.listoolbaroptionstoolbarsvisible
-msgid "Toolbars visible"
-msgstr "Показывать инструментальные панели"
-
-#: lazarusidestrconsts.listoolbaroptionsviewdebugvisible
-msgid "Debug toolbar visible"
-msgstr "Показывать инструментальную панель отладки"
 
 #: lazarusidestrconsts.listoolhasnoexecutable
 msgid "tool \"%s\" has no executable"

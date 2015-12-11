@@ -51,6 +51,7 @@ components/tfilenameedit.png
 components/tfiltercombobox.png
 components/tfinddialog.png
 components/tfloatspinedit.png
+components/tflowpanel.png
 components/tfontdialog.png
 components/tframe.png
 components/tgroupbox.png

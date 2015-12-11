@@ -135,6 +135,7 @@ type
     class procedure Invalidate(const AWinControl: TWinControl); virtual;
     class procedure PaintTo(const AWinControl: TWinControl; ADC: HDC; X, Y: Integer); virtual;
     class procedure ShowHide(const AWinControl: TWinControl); virtual; //TODO: rename to SetVisible(control, visible)
+    class procedure ScrollBy(const AWinControl: TWinControl; DeltaX, DeltaY: integer); virtual;
   end;
   TWSWinControlClass = class of TWSWinControl;
 
@@ -387,6 +388,11 @@ end;
 
 class procedure TWSWinControl.ShowHide(const AWinControl: TWinControl);
 begin
+end;
+
+class procedure TWSWinControl.ScrollBy(const AWinControl: TWinControl; DeltaX, DeltaY: integer);
+begin
+  AWinControl.Invalidate;
 end;
 
 { TWSDragImageList }

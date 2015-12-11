@@ -8,6 +8,7 @@
    ./testcodetools --format=plain --suite=TestFindDeclaration_TypeHelper
    ./testcodetools --format=plain --suite=TestFindDeclaration_ObjCClass
    ./testcodetools --format=plain --suite=TestFindDeclaration_ObjCCategory
+   ./testcodetools --format=plain --suite=TestFindDeclaration_Generics
 
  FPC tests:
    ./testcodetools --format=plain --suite=TestFindDeclaration_FPCTests
@@ -48,6 +49,7 @@ type
     procedure TestFindDeclaration_TypeHelper;
     procedure TestFindDeclaration_ObjCClass;
     procedure TestFindDeclaration_ObjCCategory;
+    procedure TestFindDeclaration_Generics;
     procedure TestFindDeclaration_FPCTests;
     procedure TestFindDeclaration_LazTests;
   end;
@@ -73,17 +75,21 @@ procedure TTestFindDeclaration.FindDeclarations(Filename: string);
     Result:='';
     while Node<>nil do begin
       case Node.Desc of
-      ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition:
+      ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition,ctnGenericParameter:
         PrependPath(GetIdentifier(@Tool.Src[Node.StartPos]),Result);
+      ctnGenericType:
+        PrependPath(GetIdentifier(@Tool.Src[Node.FirstChild.StartPos]),Result);
       ctnInterface,ctnUnit:
         PrependPath(Tool.GetSourceName(false),Result);
       ctnProcedure:
         PrependPath(Tool.ExtractProcName(Node,[]),Result);
       ctnProperty:
         PrependPath(Tool.ExtractPropName(Node,false),Result);
+      //else debugln(['NodeAsPath ',Node.DescAsString]);
       end;
       Node:=Node.Parent;
     end;
+    //debugln(['NodeAsPath ',Result]);
   end;
 
 var
@@ -184,6 +190,7 @@ begin
           i:=CodeToolBoss.IdentifierList.GetFilteredCount-1;
           while i>=0 do begin
             IdentItem:=CodeToolBoss.IdentifierList.FilteredItems[i];
+            //debugln(['TTestFindDeclaration.FindDeclarations ',IdentItem.Identifier]);
             l:=length(IdentItem.Identifier);
             if ((l=length(ExpectedPath)) or (ExpectedPath[length(ExpectedPath)-l]='.'))
             and (CompareText(IdentItem.Identifier,RightStr(ExpectedPath,l))=0)
@@ -290,6 +297,11 @@ end;
 procedure TTestFindDeclaration.TestFindDeclaration_ObjCCategory;
 begin
   FindDeclarations('fdt_objccategory.pas');
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_Generics;
+begin
+  FindDeclarations('fdt_generics.pas');
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_FPCTests;

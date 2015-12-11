@@ -21,9 +21,4 @@
 // valuable for investigation of message trees / interrelations
 { $define MSG_DEBUG}
 
-{$IFNDEF DisableWindowsUnicodeSupport}
-// Enable WindowsUnicodeSupport for fpc 2.2.1 and higher
-{$DEFINE WindowsUnicodeSupport}
-{$ENDIF DisableWindowsUnicodeSupport}
-{$DEFINE UseVistaDialogs}
 {.$DEFINE RedirectDestroyMessages}

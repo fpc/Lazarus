@@ -1363,7 +1363,7 @@ type
       AnOffset: Integer = -1): TDisassemblerAddress;
   public
     constructor Create(AnEntryRangeMap: TDBGDisassemblerEntryMap);
-    destructor Destroy;
+    destructor Destroy; override;
     function DisassembleRange(ALinesBefore,
       ALinesAfter: integer; AStartAddr: TDBGPtr; AnEndAddr: TDBGPtr): boolean;
     property OnDoDisassembleRange: TDoDisassembleRangeProc read FOnDoDisassembleRange write FOnDoDisassembleRange;

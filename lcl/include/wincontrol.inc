@@ -870,14 +870,6 @@ begin
       end else begin
         SetFixedLeftTop(ChildData,Side,Child.GetSidePosition(Side)-MoveDiff);
       end;
-    {end else if (Child.Align=alNone) and (Side in Child.Anchors) then begin
-      // e.g. Align=alNone, Anchors=[akLeft,akTop,akRight]
-      if FindMinimum then begin
-        // no auto move
-      end else begin
-        // don't move, but use them for bounds computation
-        SetFixedLeftTop(ChildData,Side,Child.GetSidePosition(Side));
-      end;}
     end else if (Child.Align=alCustom)
     and (Side in AnchorAlign[alCustom]) then begin
       if FindMinimum then begin
@@ -4714,11 +4706,14 @@ begin
       MouseEventMessage.Y := P.Y;
       Control.Dispatch(MouseEventMessage);
       MouseMessage.Result := MouseEventMessage.Result;
+      Result := (MouseMessage.Result <> 0);
     end
     else
+    begin
       MouseMessage.Result := Control.Perform(MouseMessage.Msg, WParam(MouseMessage.Keys),
                              LParam(Integer(PointToSmallPoint(P))));
-    Result := True;
+      Result := True;
+    end;
   end;
 end;
 
@@ -6139,14 +6134,27 @@ begin
   AdjustSize;
 end;
 
+procedure TWinControl.ScrollBy_WS(DeltaX, DeltaY: Integer);
+begin
+  if HandleAllocated and IsWindowVisible(Handle) then
+    TWSWinControlClass(WidgetSetClass).ScrollBy(Self, DeltaX, DeltaY)
+  else
+    ScrollBy(DeltaX, DeltaY);
+end;
+
 procedure TWinControl.ScrollBy(DeltaX, DeltaY: Integer);
 var
   i: Integer;
 begin
   // scroll inner controls
-  for i := 0 to ControlCount - 1 do
-    with Controls[i] do
-      SetBounds(Left + DeltaX, Top + DeltaY, Width, Height);
+  DisableAutoSizing;
+  try
+    for i := 0 to ControlCount - 1 do
+      with Controls[i] do
+        SetBounds(Left + DeltaX, Top + DeltaY, Width, Height);
+  finally
+    EnableAutoSizing;
+  end;
 end;
 
 {------------------------------------------------------------------------------

@@ -571,6 +571,7 @@ type
   TClassPropertyEditor = class(TPropertyEditor)
   private
     FSubPropsTypeFilter: TTypeKinds;
+    FHideClassName: Boolean;
     procedure SetSubPropsTypeFilter(const AValue: TTypeKinds);
     function EditorFilter(const AEditor: TPropertyEditor): Boolean;
   protected
@@ -584,6 +585,7 @@ type
 
     property SubPropsTypeFilter: TTypeKinds
       read FSubPropsTypeFilter write SetSubPropsTypeFilter default tkAny;
+    property HideClassName: Boolean read FHideClassName write FHideClassName;
   end;
 
 { TMethodPropertyEditor
@@ -4222,7 +4224,7 @@ end;
 
 function TClassPropertyEditor.GetValue: ansistring;
 begin
-  Result:='(' + GetPropType^.Name + ')';
+  if not FHideClassName then Result:='(' + GetPropType^.Name + ')';
 end;
 
 procedure TClassPropertyEditor.SetSubPropsTypeFilter(const AValue: TTypeKinds);

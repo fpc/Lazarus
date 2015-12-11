@@ -488,12 +488,6 @@ function TEditorKeymappingOptionsFrame.KeyMappingRelationToCaption(
   KeyRelation: TKeyCommandRelation): String;
 const
   MaxLength = 60;
-
-  function AddBrakets(S: String): String;
-  begin
-    Result := '[' + S + ']';
-  end;
-
 begin
   with KeyRelation do
   begin
@@ -502,18 +496,7 @@ begin
       Result := UTF8Copy(LocalizedName, 1, MaxLength)+'...';
     if Result <> '' then
       Result := Result + '  ';
-    if (ShortcutA.Key1 = VK_UNKNOWN) and (ShortcutB.Key1 = VK_UNKNOWN) then
-      Result := Result{ + lisNone2 }
-    else
-    if (ShortcutA.Key1 = VK_UNKNOWN) then
-      Result := Result + AddBrakets(KeyAndShiftStateToEditorKeyString(ShortcutB))
-    else
-    if (ShortcutB.Key1 = VK_UNKNOWN) then
-      Result := Result + AddBrakets(KeyAndShiftStateToEditorKeyString(ShortcutA))
-    else
-      Result := Result + AddBrakets(KeyAndShiftStateToEditorKeyString(ShortcutA))
-                       + '  '+lisOr+'  ' +
-                         AddBrakets(KeyAndShiftStateToEditorKeyString(ShortcutB));
+    Result := Result + KeyValuesToCaptionStr(ShortcutA, ShortcutB, '[');
   end;
 end;
 

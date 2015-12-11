@@ -185,7 +185,6 @@ begin
     if PtrUInt(TCI.lParam) = PtrUInt(AWinControl) then
     begin
       TCI.mask := TCIF_TEXT;
-{$ifdef WindowsUnicodeSupport}
       if UnicodeEnabledOS then
       begin
         TCI.pszText := PChar(PWideChar(UTF8ToUTF16(AText)));
@@ -196,10 +195,6 @@ begin
         TCI.pszText := PChar(UTF8ToAnsi(AText));
         Windows.SendMessage(TabControlHandle, TCM_SETITEM, RealIndex, LPARAM(@TCI));
       end;
-{$else}
-      TCI.pszText := PChar(AText);
-      Windows.SendMessage(TabControlHandle, TCM_SETITEM, RealIndex, LPARAM(@TCI));
-{$endif}
       LCLControlSizeNeedsUpdate(TabControl, True);
     end;
   end;
@@ -344,7 +339,6 @@ begin
       // store object as extra, so we can verify we got the right page later
       TCI.lParam := PtrInt(AChild);
       TCI.iImage := ATabControl.GetImageIndex(ATabControl.TabToPageIndex(AIndex));
-  {$ifdef WindowsUnicodeSupport}
       if UnicodeEnabledOS then
       begin
         TCI.pszText := PChar(PWideChar(UTF8ToUTF16(AChild.Caption)));
@@ -355,10 +349,6 @@ begin
         TCI.pszText := PChar(Utf8ToAnsi(AChild.Caption));
         Windows.SendMessage(Handle, TCM_INSERTITEM, AIndex, LPARAM(@TCI));
       end;
-  {$else}
-      TCI.pszText := PChar(AChild.Caption);
-      Windows.SendMessage(Handle, TCM_INSERTITEM, AIndex, LPARAM(@TCI));
-  {$endif}
     end;
     // clientrect possible changed, adding first tab, or deleting last
     // windows should send a WM_SIZE message because of this, but it doesn't
@@ -382,17 +372,12 @@ begin
 
   Index := AChild.VisibleIndex;
   TCI.Mask := TCIF_IMAGE or TCIF_PARAM;
-  {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
     Windows.SendMessage(ATabControl.Handle, TCM_GETITEMW, Windows.WPARAM(Index), LParam(@TCI))
   else
     Windows.SendMessage(ATabControl.Handle, TCM_GETITEM, Windows.WPARAM(Index), LParam(@TCI));
-  {$else}
-  Windows.SendMessage(ATabControl.Handle, TCM_GETITEM, Windows.WPARAM(Index), LParam(@TCI));
-  {$endif}
   Windows.SendMessage(ATabControl.Handle, TCM_DELETEITEM, Windows.WPARAM(Index), 0);
   TCI.Mask := TCI.Mask or TCIF_TEXT;
-  {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
   begin
     TCI.pszText := PChar(PWideChar(UTF8ToUTF16(AChild.Caption)));
@@ -403,10 +388,6 @@ begin
     TCI.pszText := PChar(Utf8ToAnsi(AChild.Caption));
     Windows.SendMessage(ATabControl.Handle, TCM_INSERTITEM, NewIndex, LPARAM(@TCI));
   end;
-  {$else}
-  TCI.pszText := PChar(AChild.Caption);
-  Windows.SendMessage(ATabControl.Handle, TCM_INSERTITEM, NewIndex, LPARAM(@TCI));
-  {$endif}
   if LCLControlSizeNeedsUpdate(ATabControl, True) then
     AdjustSizeTabControlPages(ATabControl);
 end;
@@ -487,7 +468,6 @@ begin
       TCI.Mask := TCIF_TEXT or TCIF_PARAM or TCIF_IMAGE;
       TCI.lParam := PtrUInt(APage);
       TCI.iImage := ATabControl.GetImageIndex(I);
-{$ifdef WindowsUnicodeSupport}
       if UnicodeEnabledOS then
       begin
         TCI.pszText := PChar(PWideChar(UTF8ToUTF16(APage.Caption)));
@@ -498,10 +478,6 @@ begin
         TCI.pszText := PChar(Utf8ToAnsi(APage.Caption));
         Windows.SendMessage(WinHandle, TCM_INSERTITEM, RealIndex, LPARAM(@TCI));
       end;
-{$else}
-      TCI.pszText := PChar(APage.Caption);
-      Windows.SendMessage(WinHandle, TCM_INSERTITEM, RealIndex, LPARAM(@TCI));
-{$endif}
     end;
     Inc(RealIndex);
   end;

@@ -2535,7 +2535,7 @@ var
   P: TPoint;
   procedure doMouseDown;
   begin
-    if not Focused then
+    if not Focused and not(csNoFocus in ControlStyle) then
       SetFocus;
     if assigned(OnMouseDown) then
       OnMouseDown(Self, Button, Shift, X, Y);

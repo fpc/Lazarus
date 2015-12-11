@@ -101,8 +101,8 @@ function CheckExecutable(const OldFilename,
 function CheckDirPathExists(const Dir,
   ErrorCaption, ErrorMsg: string): TModalResult;
 function ChooseSymlink(var Filename: string; AskOnSymlink: boolean): TModalResult;
-function CreateSymlinkInteractive(const LinkFilename, TargetFilename: string;
-                                  ErrorButtons: TMsgDlgButtons = []): TModalResult;
+function CreateSymlinkInteractive(const {%H-}LinkFilename, {%H-}TargetFilename: string;
+                                  {%H-}ErrorButtons: TMsgDlgButtons = []): TModalResult;
 function ForceDirectoryInteractive(Directory: string;
                                    ErrorButtons: TMsgDlgButtons = []): TModalResult;
 function DeleteFileInteractive(const Filename: string;

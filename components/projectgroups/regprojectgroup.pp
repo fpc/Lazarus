@@ -2,10 +2,6 @@ unit RegProjectGroup;
 
 {$mode objfpc}{$H+}
 
-{$IFNDEF IwrotethiscodePG}
-  {$ERROR This package is under construction}
-{$ENDIF}
-
 interface
 
 uses
@@ -30,17 +26,17 @@ begin
 
   Section:=RegisterIDEMenuSection(Root,'Compile');
   PGEditMenuSectionCompile:=Section;
-  cmdTargetCompile:=RegisterIDEMenuCommand(Section,'TargetCompile',lisTargetCompile);// ToDo: caption: compile "target"
-  cmdTargetCompileClean:=RegisterIDEMenuCommand(Section,'TargetCompileClean',lisTargetCompileClean);// ToDo
+  cmdTargetCompile:=RegisterIDEMenuCommand(Section,'TargetCompile',lisTargetCompile);
+  cmdTargetCompileClean:=RegisterIDEMenuCommand(Section,'TargetCompileClean',lisTargetCompileClean);
+  cmdTargetCompileFromHere:=RegisterIDEMenuCommand(Section,'TargetCompileFromHere',lisTargetCompileFromHere);
   // ToDo: clean ... -> clean up dialog
-  // ToDo: compile all from here
-  // ToDo: compile all clean from here
   // ToDo: set build mode of all projects
 
   Section:=RegisterIDEMenuSection(Root,'AddRemove');
   PGEditMenuSectionAddRemove:=Section;
-  cmdTargetAdd:=RegisterIDEMenuCommand(Section,'TargetAdd',lisTargetAdd);// ToDo
-  cmdTargetRemove:=RegisterIDEMenuCommand(Section,'TargetRemove',lisTargetRemove);// ToDo
+  cmdTargetAdd:=RegisterIDEMenuCommand(Section,'TargetAdd',lisTargetAdd);
+  cmdTargetRemove:=RegisterIDEMenuCommand(Section,'TargetRemove',lisTargetRemove);
+  // ToDo: re-add
 
   Section:=RegisterIDEMenuSection(Root,'Use');
   PGEditMenuSectionUse:=Section;
@@ -48,13 +44,15 @@ begin
   cmdTargetUninstall:=RegisterIDEMenuCommand(Section,'TargetUninstall',lisTargetUninstall);// ToDo
   cmdTargetEarlier:=RegisterIDEMenuCommand(Section,'TargetEarlier',lisTargetEarlier);// ToDo: Ctrl+Up
   cmdTargetLater:=RegisterIDEMenuCommand(Section,'TargetLater',lisTargetLater);// ToDo: Ctrl+Down
-  cmdTargetActivate:=RegisterIDEMenuCommand(Section,'TargetActivate',lisTargetActivate);// ToDo
-  cmdTargetOpen:=RegisterIDEMenuCommand(Section,'TargetOpen',lisTargetOpen);// ToDo
-  // ToDo: Save
-  // ToDo: Close (package editor)
-  cmdTargetRun:=RegisterIDEMenuCommand(Section,'TargetRun',lisTargetRun);// ToDo
-  cmdTargetProperties:=RegisterIDEMenuCommand(Section,'TargetProperties',lisTargetProperties);// ToDo
-  // ToDo: Copy filename
+  cmdTargetActivate:=RegisterIDEMenuCommand(Section,'TargetActivate',lisTargetActivate);
+  cmdTargetOpen:=RegisterIDEMenuCommand(Section,'TargetOpen',lisTargetOpen);
+  cmdTargetRun:=RegisterIDEMenuCommand(Section,'TargetRun',lisTargetRun);
+  cmdTargetProperties:=RegisterIDEMenuCommand(Section,'TargetProperties',lisTargetProperties);
+
+  Section:=RegisterIDEMenuSection(Root,'Misc');
+  PGEditMenuSectionMisc:=Section;
+
+  cmdTargetCopyFilename:=RegisterIDEMenuCommand(Section,'CopyFilename',lisTargetCopyFilename);
   // ToDo: View source (project)
 
   // ToDo: find in files
@@ -67,19 +65,27 @@ procedure Register;
 begin
   RegisterStandardProjectGroupMenuItems;
   IDEProjectGroupManager:=TIDEProjectGroupManager.Create;
+  IDEProjectGroupManager.Options.LoadSafe;
 
   cmdCreateProjectGroup:=RegisterIDEMenuCommand(itmProjectNewSection,
     'NewProjectGroup',lisNewProjectGroup,@IDEProjectGroupManager.DoNewClick);
   cmdOpenProjectGroup:=RegisterIDEMenuCommand(itmProjectOpenSection,
     'OpenProjectGroup',lisOpenProjectGroup,@IDEProjectGroupManager.DoOpenClick);
+  OpenRecentProjectGroupSubMenu:=RegisterIDESubMenu(itmProjectOpenSection,
+    'OpenRecentProjectGroup',lisOpenRecentProjectGroup);
   cmdSaveProjectGroup:=RegisterIDEMenuCommand(itmProjectSaveSection,
     'SaveProjectGroup',lisSaveProjectGroup,@IDEProjectGroupManager.DoSaveClick);
   cmdSaveProjectGroupAs:=RegisterIDEMenuCommand(itmProjectSaveSection,
     'SaveProjectGroupAs',lisSaveProjectGroupAs,@IDEProjectGroupManager.DoSaveAsClick);
 
+  IDEProjectGroupManager.UpdateRecentProjectGroupMenu;
+
   ProjectGroupManager:=IDEProjectGroupManager;
   SetProjectGroupEditorCallBack;
 end;
+
+finalization
+  FreeAndNil(IDEProjectGroupManager);
 
 end.
 

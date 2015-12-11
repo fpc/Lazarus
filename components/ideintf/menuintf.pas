@@ -48,6 +48,7 @@ type
     FTag: Integer;
     FUserTag: PtrUInt;
     FLastVisibleActive: boolean;
+    FVisible: Boolean;
     procedure MenuItemDestroy(Sender: TObject);
     procedure BitmapChange(Sender: TObject);
   protected
@@ -62,7 +63,7 @@ type
     procedure SetImageIndex(const AValue: Integer); override;
     procedure SetMenuItem(const AValue: TMenuItem); virtual;
     procedure SetSection(const AValue: TIDEMenuSection); virtual;
-    procedure SetVisible(const AValue: Boolean); override;
+    procedure SetVisible(const AValue: Boolean); virtual;
     procedure ClearMenuItems; virtual;
     procedure ShortCutsUpdated(const aShortCut, aShortCutKey2: TShortCut); override;
   public
@@ -90,6 +91,7 @@ type
     property AutoFreeMenuItem: boolean read FAutoFreeMenuItem write FAutoFreeMenuItem;
     property Tag: Integer read FTag write FTag;
     property UserTag: PtrUInt read FUserTag write FUserTag;
+    property Visible: Boolean read FVisible write SetVisible;
   end;
   TIDEMenuItemClass = class of TIDEMenuItem;
 
@@ -611,16 +613,21 @@ var
   xUser: TIDESpecialCommand;
 begin
   inherited SetCommand(AValue);
-  //copy properties to other command users
-  if AValue<>nil then
+  //copy properties to other command users to support legacy code
+  if (AValue<>nil) and SyncAvailable then
     for I := 0 to AValue.UserCount-1 do
       if AValue.Users[I] <> Self then
       begin
         xUser:=AValue.Users[I];
-        xUser.Caption:=Caption;
-        xUser.Hint:=Hint;
-        xUser.ImageIndex:=ImageIndex;
-        xUser.Enabled:=Enabled;
+        xUser.BlockSync;
+        try
+          xUser.Caption:=Caption;
+          xUser.Hint:=Hint;
+          xUser.ImageIndex:=ImageIndex;
+          xUser.Enabled:=Enabled;
+        finally
+          xUser.UnblockSync;
+        end;
       end;
 end;
 
@@ -681,7 +688,7 @@ var
 begin
   if Visible=AValue then exit;
   OldVisibleActive:=VisibleActive;
-  inherited SetVisible(AValue);
+  FVisible:=AValue;
   if MenuItem<>nil then
     MenuItem.Visible:=Visible;
   if (VisibleActive<>OldVisibleActive) and (Section<>nil) then
@@ -717,6 +724,7 @@ end;
 constructor TIDEMenuItem.Create(const TheName: string);
 begin
   inherited Create(TheName);
+  FVisible:=true;
   FSize:=1;
   FMenuItemClass:=TMenuItem;
   FSectionIndex:=-1;

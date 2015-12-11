@@ -40,7 +40,7 @@
         <PackageName Value="fpcunitconsolerunner"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="11">
+    <Units Count="12">
       <Unit0>
         <Filename Value="testcodetools.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -87,6 +87,10 @@
         <Filename Value="rt_explodewith.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit10>
+      <Unit11>
+        <Filename Value="fdt_generics.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit11>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

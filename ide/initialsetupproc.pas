@@ -468,10 +468,10 @@ begin
     if CheckFile(AFilename,Result) then exit;
 
     // search fpc(.exe) in PATH
-    if CheckFile(GetDefaultCompilerFilename,Result) then exit;
+    if CheckFile('fpc'+ExeExt,Result) then exit;
 
     // search ppccpu(.exe) in PATH
-    if CheckFile(FindDefaultCompilerPath,Result) then exit;
+    if CheckFile(GetDefaultCompilerFilename,Result) then exit;
 
     // check history
     Files:=EnvironmentOptions.CompilerFileHistory;
@@ -778,6 +778,7 @@ begin
   // Windows-only locations:
   if (GetDefaultSrcOSForTargetOS(GetCompiledTargetOS)='win') then begin
     // under Windows, make.exe is in the same directory as fpc.exe
+    // other make.exe are often incompatible
     if not FileExistsCached(ExtractFilePath(AFilename)+'fpc.exe') then begin
       Note:=Format(lisThereIsNoFpcExeInTheDirectoryOfUsuallyTheMakeExecu, [
         ExtractFilename(AFilename)]);
@@ -842,8 +843,11 @@ begin
     // Windows-only locations:
     if (GetDefaultSrcOSForTargetOS(GetCompiledTargetOS)='win') then begin
       // check make in fpc.exe directory
-      if CheckFile(SetDirSeparators('$Path($(CompPath))/make.exe'),Result)
+      if CheckFile(SetDirSeparators('$Path($(CompPath))\make.exe'),Result)
       then exit;
+      // check $(LazarusDir)\fpc\bin\i386-win32\fpc.exe
+      if CheckFile(SetDirSeparators('$(LazarusDir)\fpc\bin\$(TargetCPU)-$(TargetOS)\make.exe'),Result)
+        then exit;
     end;
 
     // check history

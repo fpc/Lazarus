@@ -89,6 +89,7 @@ type
 
     class procedure ConstraintsChange(const AWinControl: TWinControl); override;
     class procedure PaintTo(const AWinControl: TWinControl; ADC: HDC; X, Y: Integer); override;
+    class procedure ScrollBy(const AWinControl: TWinControl; DeltaX, DeltaY: integer); override;
   end;
 
   { TQtWSGraphicControl }
@@ -123,9 +124,10 @@ const
  { True  } QtRightToLeft
   );
 implementation
-{$IFDEF VerboseQtResize}
+{$IF DEFINED(VerboseQtResize) OR DEFINED(VerboseQt)}
 uses LCLProc;
 {$ENDIF}
+
 {------------------------------------------------------------------------------
   Method: TQtWSCustomControl.CreateHandle
   Params:  None
@@ -433,6 +435,59 @@ begin
   finally
     Pixmap.Free;
   end;
+end;
+
+class procedure TQtWSWinControl.ScrollBy(const AWinControl: TWinControl;
+  DeltaX, DeltaY: integer);
+var
+  Widget: TQtCustomControl;
+  ABar: TQtScrollBar;
+  APosition: Integer;
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'ScrollBy') then
+    Exit;
+  if TQtWidget(AWinControl.Handle) is TQtCustomControl then
+  begin
+    Widget := TQtCustomControl(AWinControl.Handle);
+    Widget.viewport.scroll(DeltaX, DeltaY);
+  end else
+  if TQtWidget(AWinControl.Handle) is TQtAbstractScrollArea then
+  begin
+    ABar := TQtAbstractScrollArea(AWinControl.Handle).horizontalScrollBar;
+    if ABar = nil then
+      exit;
+    if ABar.getTracking then
+      APosition := ABar.getSliderPosition
+    else
+      APosition := ABar.getValue;
+    if DeltaX <> 0 then
+    begin
+      APosition += -DeltaX;
+      if ABar.getTracking then
+        ABar.setSliderPosition(APosition)
+      else
+        ABar.setValue(APosition);
+    end;
+    ABar := TQtAbstractScrollArea(AWinControl.Handle).verticalScrollBar;
+    if ABar = nil then
+      exit;
+    if ABar.getTracking then
+      APosition := ABar.getSliderPosition
+    else
+      APosition := ABar.getValue;
+    if DeltaY <> 0 then
+    begin
+      APosition += -DeltaY;
+      if ABar.getTracking then
+        ABar.setSliderPosition(APosition)
+      else
+        ABar.setValue(APosition);
+    end;
+  end
+  {$IFDEF VerboseQt}
+  else
+    DebugLn(Format('WARNING: TQtWSWinControl.ScrollBy(): Qt widget handle %s is not TQtCustomControl',[DbgSName(TQtWidget(AWinControl.Handle))]));
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------

@@ -20,6 +20,7 @@ uses
   FpDbgInfo,
   MacOSAll,
   FpDbgUtil,
+  UTF8Process,
   LazLoggerBase;
 
 type
@@ -125,7 +126,7 @@ type
     FStatus: cint;
     FProcessStarted: boolean;
     FTaskPort: mach_port_name_t;
-    FProcProcess: TProcess;
+    FProcProcess: TProcessUTF8;
     FIsTerminating: boolean;
     FExceptionSignal: PtrUInt;
     FMasterPtyFd: cint;
@@ -710,7 +711,7 @@ end;
 class function TDbgDarwinProcess.StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AOnLog: TOnLog; ReDirectOutput: boolean): TDbgProcess;
 var
   PID: TPid;
-  AProcess: TProcess;
+  AProcess: TProcessUTF8;
   AnExecutabeFilename: string;
   AMasterPtyFd: cint;
 begin
@@ -751,7 +752,7 @@ begin
       end;
     end;
 
-  AProcess := TProcess.Create(nil);
+  AProcess := TProcessUTF8.Create(nil);
   try
     AProcess.OnForkEvent:=@OnForkEvent;
     AProcess.Executable:=AnExecutabeFilename;

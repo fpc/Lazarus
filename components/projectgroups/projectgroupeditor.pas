@@ -1,3 +1,9 @@
+{
+  Todo:
+    - activate project when project is opened
+    - deactivate project when project is closed
+    - show active build mode
+}
 unit ProjectGroupEditor;
 
 {$mode objfpc}{$H+}
@@ -6,36 +12,39 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls, Menus,
-  ActnList, LazIDEIntf, PackageIntf, ProjectIntf, ProjectGroupIntf, MenuIntf,
-  IDEDialogs, LazFileUtils,
-  ProjectGroupStrConst, ProjectGroup;
+  ActnList, LCLProc, Clipbrd, LazIDEIntf, PackageIntf, ProjectIntf,
+  ProjectGroupIntf, MenuIntf, IDEDialogs, IDEWindowIntf, LazFileUtils,
+  LazLogger, LazFileCache, ProjectGroupStrConst, ProjectGroup;
 
 type
-  TNodeType = (ntUnknown,
-               ntProjectGroup,
-               ntTargets,
-               ntRemovedTargets,
-               ntTarget,
-               ntRemovedTarget,
-               ntFiles,
-               ntFile,
-               ntRemovedFiles,
-               ntRemovedFile,
-               ntDependencies,
-               ntDependency,
-               ntRemovedDependencies,
-               ntRemovedDependency);
+  TNodeType = (
+    ntUnknown,
+    ntProjectGroup,
+    ntTargets,
+    ntRemovedTargets,
+    ntTarget,
+    ntRemovedTarget,
+    ntBuildModes,
+    ntBuildMode,
+    ntFiles,
+    ntFile,
+    ntDependencies,
+    ntDependency
+    );
 
   TNodeData = class(TObject)
     NodeType: TNodeType;
-    Target: TCompileTarget;
-    ProjectGroup: TProjectGroup; // projectgroup to which target belongs
+    Target, ParentTarget: TPGCompileTarget;
+    Value: string; // ntFile = Filename, ntDependency = PkgName, ntBuildMode = BuildMode name
   end;
   TTargetNodes = Array[Boolean] of TTreeNode;
 
   { TProjectGroupEditorForm }
 
   TProjectGroupEditorForm = class(TForm)
+    AProjectGroupReload: TAction;
+    ATargetCompileFromHere: TAction;
+    ATargetCopyFilename: TAction;
     AProjectGroupAddExisting: TAction;
     ATargetCompile: TAction;
     ATargetCompileClean: TAction;
@@ -53,7 +62,10 @@ type
     AProjectGroupSave: TAction;
     ActionListMain: TActionList;
     ImageListMain: TImageList;
-    PMIOPen: TMenuItem;
+    PMICompileFromHere: TMenuItem;
+    PMIRunMenuItem: TMenuItem;
+    PMICopyFilenameMenuItem: TMenuItem;
+    PMIOpen: TMenuItem;
     PMISaveAs: TMenuItem;
     PMIProperties: TMenuItem;
     PMILater: TMenuItem;
@@ -78,16 +90,22 @@ type
     TBTargetLater: TToolButton;
     TBMore: TToolButton;
     TBActivate: TToolButton;
+    TBReload: TToolButton;
     TVPG: TTreeView;
+    procedure AProjectGroupReloadExecute(Sender: TObject);
     procedure ATargetActivateExecute(Sender: TObject);
     procedure ATargetActivateUpdate(Sender: TObject);
     procedure AProjectGroupAddExistingExecute(Sender: TObject);
     procedure ATargetCompileCleanExecute(Sender: TObject);
     procedure ATargetCompileCleanUpdate(Sender: TObject);
     procedure ATargetCompileExecute(Sender: TObject);
+    procedure ATargetCompileFromHereExecute(Sender: TObject);
+    procedure ATargetCompileFromHereUpdate(Sender: TObject);
     procedure ATargetCompileUpdate(Sender: TObject);
     procedure AProjectGroupDeleteExecute(Sender: TObject);
     procedure AProjectGroupDeleteUpdate(Sender: TObject);
+    procedure ATargetCopyFilenameExecute(Sender: TObject);
+    procedure ATargetCopyFilenameUpdate(Sender: TObject);
     procedure ATargetInstallExecute(Sender: TObject);
     procedure ATargetInstallUpdate(Sender: TObject);
     procedure ATargetOpenExecute(Sender: TObject);
@@ -105,65 +123,91 @@ type
     procedure ATargetLaterUpdate(Sender: TObject);
     procedure ATargetUninstallExecute(Sender: TObject);
     procedure ATargetUninstallUpdate(Sender: TObject);
-    procedure DoFileNameChange(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
-    procedure FormShow(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure PopupMenuMorePopup(Sender: TObject);
     procedure TVPGDblClick(Sender: TObject);
+    procedure TVPGMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure TVPGSelectionChanged(Sender: TObject);
   private
     FProjectGroup: TProjectGroup;
-    FProjectGroupTarget: TCompileTarget;
-    FNPG: TTreeNode;
-    FActiveTarget: TCompileTarget;
+    FProjectGroupTVNode: TTreeNode;
+    FActiveTarget: TPGCompileTarget;
     FTargetNodes: TTargetNodes;
     // Project group callbacks
-    procedure ConfigNode(Node: TTreeNode; Const ACaption: String;
+    procedure InitTVNode(Node: TTreeNode; Const ACaption: String;
       ANodeData: TNodeData);
-    procedure DoTargetAdded(Sender: TObject; Target: TCompileTarget);
-    procedure DoTargetDeleted(Sender: TObject; Target: TCompileTarget);
-    procedure DoTargetActivated(Sender: TObject; Target: TCompileTarget);
-    procedure DoTargetExchanged(Sender: TObject; Target1, Target2: TCompileTarget);
-    function AllowPerform(ATargetAction: TTargetAction; AAction: TAction= Nil): Boolean;
+    procedure OnProjectGroupDestroy(Sender: TObject);
+    procedure OnProjectGroupFileNameChanged(Sender: TObject);
+    procedure OnTargetAdded(Sender: TObject; Target: TPGCompileTarget);
+    procedure OnTargetReadded(Sender: TObject; Target: TPGCompileTarget);
+    procedure OnTargetDeleted(Sender: TObject; Target: TPGCompileTarget);
+    procedure OnTargetActiveChanged(Sender: TObject; Target: TPGCompileTarget);
+    procedure OnTargetExchanged(Sender: TObject; Target1, Target2: TPGCompileTarget);
+    function AllowPerform(ATargetAction: TPGTargetAction; AAction: TAction= Nil): Boolean;
     procedure ClearEventCallBacks(AProjectGroup: TProjectGroup);
     procedure SetEventCallBacks(AProjectGroup: TProjectGroup);
     // Some helpers
     procedure SetProjectGroup(AValue: TProjectGroup);
-    procedure ShowDependencies(AParent: TTreeNode; AProjectGroup: TProjectGroup; T: TObject; Out PD: TTargetNodes);
+    procedure ShowDependencies(AParent: TTreeNode; T: TPGCompileTarget; Out PD: TTargetNodes);
     procedure ShowFileName;
-    procedure Perform(ATargetAction: TTargetAction);
-    function GetActiveTarget: TCompileTarget;
+    procedure Perform(ATargetAction: TPGTargetAction);
+    function GetActiveTarget: TPGCompileTarget;
     // Treeview Node management
-    function FindNodeFromTarget(ATarget: TCompileTarget): TTreeNode;
+    function FindTVNodeOfTarget(ATarget: TPGCompileTarget): TTreeNode;
+    function FindBuildModeNodeRecursively(TVNode: TTreeNode; aMode: string): TTreeNode;
+    function FindTVNodeOfBuildMode(aMode: TPGBuildMode): TTreeNode;
     procedure FreeNodeData;
-    class function TargetFromNode(N: TTreeNode): TCompileTarget;
-    function DisplayFileName(AProjectGroup: TProjectGroup;NodeType: TNodeType; AFileName: String): String;
-    function CreateNode(AParent: TTreeNode; Const ACaption: String; ANodeType: TNodeType; ANodeData: TCompileTarget; AProjectGroup: TProjectGroup): TTreeNode;
-    procedure FillPackageNode(AParent: TTreeNode; AProjectGroup: TProjectGroup; T: TIDEPackage);
-    procedure FillProjectNode(AParent: TTreeNode; AProjectGroup: TProjectGroup; T: TLazProject);
-    procedure FillTargetNode(AParent: TTreeNode; AProjectGroup: TProjectGroup; T: TCompileTarget);
-    procedure FillProjectGroupNode(AParent: TTreeNode; AProjectGroup: TProjectGroup; Out TargetNodes: TTargetNodes);
-    function GetNodeIndex(ANodeType: TNodeType; ANodeData: TCompileTarget ): Integer;
+    class function TargetFromNode(N: TTreeNode): TPGCompileTarget;
+    function DisplayFileName(aTarget: TPGCompileTarget): string;
+    function DisplayFileName(Node: TTreeNode): string;
+    function DisplayFileName(NodeData: TNodeData): string;
+    function CreateSectionNode(AParent: TTreeNode; Const ACaption: String; ANodeType: TNodeType): TTreeNode;
+    function CreateTargetNode(AParent: TTreeNode; ANodeType: TNodeType; aTarget: TPGCompileTarget): TTreeNode;
+    function CreateSubNode(AParent: TTreeNode; ANodeType: TNodeType; aParentTarget: TPGCompileTarget; aValue: string): TTreeNode;
+    procedure ClearChildNodes(TVNode: TTreeNode);
+    procedure FillPackageNode(TVNode: TTreeNode; T: TPGCompileTarget);
+    procedure FillProjectNode(TVNode: TTreeNode; T: TPGCompileTarget);
+    procedure FillTargetNode(TVNode: TTreeNode; T: TPGCompileTarget);
+    procedure FillProjectGroupNode(TVNode: TTreeNode; AProjectGroup: TProjectGroup; Out TargetNodes: TTargetNodes);
+    function GetNodeImageIndex(ANodeType: TNodeType; ANodeData: TPGCompileTarget ): Integer;
     function SelectedNodeData: TNodeData;
-    function SelectedTarget: TCompileTarget;
-    function SelectedNodeType: TCompileTarget;
+    function SelectedTarget: TPGCompileTarget;
+    function GetTVNodeFilename(TVNode: TTreeNode): string;
+    function GetBuildMode(TVNode: TTreeNode): TPGBuildMode;
+    function GetNearestTargget(TVNode: TTreeNode): TPGCompileTarget;
+    function SelectedNodeType: TPGCompileTarget;
     procedure UpdateIDEMenuCommandFromAction(Sender: TObject; Item: TIDEMenuCommand);
+    procedure UpdateStatusBarTargetCount;
   protected
     procedure Localize;
     procedure ShowProjectGroup;
+    procedure UpdateShowing; override;
   public
     property ProjectGroup: TProjectGroup Read FProjectGroup Write SetProjectGroup;
-    property ActiveTarget: TCompileTarget Read GetActiveTarget;
+    property ActiveTarget: TPGCompileTarget Read GetActiveTarget;
   end;
 
 var
   ProjectGroupEditorForm: TProjectGroupEditorForm;
+  ProjectGroupEditorCreator: TIDEWindowCreator; // set by RegProjectGroup.Register
 
+const
+  ProjectGroupEditorName = 'ProjectGroupEditor';
+procedure ShowProjectGroupEditor(Sender: TObject; AProjectGroup: TProjectGroup);
+procedure CreateProjectGroupEditor(Sender: TObject; aFormName: string;
+                          var AForm: TCustomForm; DoDisableAutoSizing: boolean);
 procedure SetProjectGroupEditorCallBack;
+
+function dbgs(NodeType: TNodeType): string; overload;
 
 implementation
 
 {$R *.lfm}
 
-Var
+var
   // Nodelist image indexes
   NIProjectGroup             : integer = 0;
   NITargets                  : integer = 1;
@@ -174,17 +218,23 @@ Var
   NIRemovedTargetProject     : integer = 3;
   NIRemovedTargetPackage     : integer = 4;
   NIRemovedTargetProjectGroup: integer = 5;
+  NIBuildModes               : integer = 12;
+  NIBuildMode                : integer = 12;
   NIFiles                    : integer = 16;
   NIFile                     : integer = 17;
-  NIRemovedFiles             : integer = 18;
-  NIRemovedFile              : integer = 17;
+  //NIRemovedFiles             : integer = 18;
+  //NIRemovedFile              : integer = 17;
   NIDependencies             : integer = 1;
   NIDependency               : integer = 1;
-  NIRemovedDependencies      : integer = 2;
-  NIRemovedDependency        : integer = 2;
+  //NIRemovedDependencies      : integer = 2;
+  //NIRemovedDependency        : integer = 2;
 
   // Node state image index
   NSIActive                  : Integer = 20; // State index for active.
+
+  // overlay index
+  NSIChecked                 : Integer = 22;
+  NSIUnchecked               : Integer = 23;
 
   // Action image indexes
   iiProjectGroupSave         : Integer = -1;
@@ -203,30 +253,41 @@ Var
   iiTargetActivate           : Integer = -1;
   iiTargetOpen               : Integer = -1;
 
-Const
+const
   // Status bar Panel indexes
   piTargetCount  = 0;
   piActiveTarget = 1;
 
-procedure EditProjectGroup(AProjectGroup: TProjectGroup; Options: TEditProjectGroupOptions);
+procedure ShowProjectGroupEditor(Sender: TObject; AProjectGroup: TProjectGroup);
 begin
-  if epgoReusewindow in Options then
-  begin
-    If Not Assigned(ProjectGroupEditorForm) then
-      ProjectGroupEditorForm:=TProjectGroupEditorForm.Create(Application);
+  IDEWindowCreators.ShowForm(ProjectGroupEditorCreator.FormName,true);
+  if AProjectGroup<>nil then
     ProjectGroupEditorForm.ProjectGroup:=AProjectGroup;
-    ProjectGroupEditorForm.Show;
-  end else
-    With TProjectGroupEditorForm.Create(Nil) do
-    begin
-      ProjectGroup:=AProjectGroup;
-      Show;
-    end;
+end;
+
+procedure CreateProjectGroupEditor(Sender: TObject; aFormName: string;
+  var AForm: TCustomForm; DoDisableAutoSizing: boolean);
+begin
+  if CompareText(aFormName,ProjectGroupEditorName)<>0 then begin
+    DebugLn(['ERROR: CreateProjectGroupEditor: there is already a form with this name']);
+    exit;
+  end;
+  IDEWindowCreators.CreateForm(AForm,TProjectGroupEditorForm,DoDisableAutoSizing,
+    LazarusIDE.OwningComponent);
+  AForm.Name:=aFormName;
 end;
 
 procedure SetProjectGroupEditorCallBack;
 begin
-  OnEditProjectGroup:=@EditProjectGroup;
+  ProjectGroupEditorCreator:=IDEWindowCreators.Add(ProjectGroupEditorName,
+    @CreateProjectGroupEditor,nil,
+    '30%','30%','+30%','+40%','ProjectGroupEditor',alNone);
+  OnShowProjectGroupEditor:=@ShowProjectGroupEditor;
+end;
+
+function dbgs(NodeType: TNodeType): string;
+begin
+  str(NodeType,Result);
 end;
 
 { TProjectGroupEditorForm }
@@ -235,14 +296,14 @@ procedure TProjectGroupEditorForm.ClearEventCallBacks(AProjectGroup: TProjectGro
 Var
   PG: TIDEProjectGroup;
 begin
-  if AProjectGroup is  TIDEProjectGroup then
-    PG:=AProjectGroup as  TIDEProjectGroup
-  else
-    exit;
+  //debugln(['TProjectGroupEditorForm.ClearEventCallBacks ']);
+  PG:=AProjectGroup as TIDEProjectGroup;
+  PG.RemoveAllHandlersOfObject(Self);
   PG.OnFileNameChange:=Nil;
   PG.OnTargetAdded:=Nil;
   PG.OnTargetDeleted:=Nil;
-  PG.OnTargetActivated:=Nil;
+  PG.OnTargetReadded:=Nil;
+  PG.OnTargetActiveChanged:=Nil;
   PG.OnTargetsExchanged:=Nil;
 end;
 
@@ -250,29 +311,27 @@ procedure TProjectGroupEditorForm.SetEventCallBacks(AProjectGroup: TProjectGroup
 Var
   PG: TIDEProjectGroup;
 begin
-  if AProjectGroup is  TIDEProjectGroup then
-    PG:=AProjectGroup as  TIDEProjectGroup
-  else
-    exit;
-  PG.OnFileNameChange:=@DoFileNameChange;
-  PG.OnTargetAdded:=@DoTargetAdded;
-  PG.OnTargetDeleted:=@DoTargetDeleted;
-  PG.OnTargetActivated:=@DoTargetActivated;
-  PG.OnTargetsExchanged:=@DoTargetExchanged;
+  PG:=AProjectGroup as TIDEProjectGroup;
+  PG.AddHandlerOnDestroy(@OnProjectGroupDestroy);
+  PG.OnFileNameChange:=@OnProjectGroupFileNameChanged;
+  PG.OnTargetAdded:=@OnTargetAdded;
+  PG.OnTargetDeleted:=@OnTargetDeleted;
+  PG.OnTargetReadded:=@OnTargetReadded;
+  PG.OnTargetActiveChanged:=@OnTargetActiveChanged;
+  PG.OnTargetsExchanged:=@OnTargetExchanged;
 end;
 
 procedure TProjectGroupEditorForm.SetProjectGroup(AValue: TProjectGroup);
 begin
+  //debugln(['TProjectGroupEditorForm.SetProjectGroup START ',FProjectGroup=AValue,' new=',DbgSName(AValue)]);
   if FProjectGroup=AValue then Exit;
   if ProjectGroup<>nil then
   begin
     ClearEventCallBacks(ProjectGroup);
   end;
-  FreeAndNil(FProjectGroupTarget);
   FProjectGroup:=AValue;
   if ProjectGroup<>nil then begin
     SetEventCallBacks(ProjectGroup);
-    FProjectGroupTarget:=TProjectGroupTarget.Create(AValue);
   end;
   FActiveTarget:=Nil;
   ShowProjectGroup;
@@ -287,7 +346,7 @@ procedure TProjectGroupEditorForm.Localize;
     if AImageIndex<>-1 then
       A.ImageIndex:=AImageIndex;
     If Assigned(mnu) then
-      Mnu.OnClick:=A.OnExecute; // ToDo Enabled and visible don't play well with actions...
+      Mnu.OnClick:=A.OnExecute;
   end;
 
 begin
@@ -310,82 +369,79 @@ end;
 
 procedure TProjectGroupEditorForm.AProjectGroupSaveUpdate(Sender: TObject);
 begin
-  (Sender as TAction).Enabled:=FProjectGroup.Modified or (FProjectGroup.FileName='');
+  (Sender as TAction).Enabled:=(FProjectGroup<>nil)
+    and (FProjectGroup.Modified or (FProjectGroup.FileName=''));
   UpdateIDEMenuCommandFromAction(Sender,cmdSaveProjectGroup);
 end;
 
 procedure TProjectGroupEditorForm.ATargetEarlierExecute(Sender: TObject);
 Var
   T: TNodeData;
-  I,J: Integer;
+  I: Integer;
+  PG: TProjectGroup;
 begin
   T:=SelectedNodeData;
-  If not Assigned(T) then
+  if (T=nil) or (T.Target=nil) or (T.Target.Parent=nil) then
     exit;
-  I:=T.ProjectGroup.IndexOfTarget(T.Target);
-  J:=I-1;
-  // Find previous not removed target
-  While (J>=0) and (T.ProjectGroup.Targets[J].Removed) do
-    Dec(J);
-  if J>=0 then
-    T.ProjectGroup.ExchangeTargets(I,J);
+  PG:=T.Target.Parent.ProjectGroup;
+  if PG=nil then exit;
+  I:=PG.IndexOfTarget(T.Target);
+  if I>0 then
+    PG.ExchangeTargets(I,I-1);
 end;
 
 procedure TProjectGroupEditorForm.ATargetEarlierUpdate(Sender: TObject);
 Var
   T: TNodeData;
   I: Integer;
-  B: Boolean;
+  PG: TProjectGroup;
 begin
-  I:=-1;
+  I:=0;
   T:=SelectedNodeData;
-  B:=Assigned(T) and (T.NodeType=ntTarget) and Assigned(T.Target);
-  If B then
-    begin
-    I:=T.ProjectGroup.IndexOfTarget(T.Target)-1;
-    // Find previous not removed target
-    While (I>=0) and (T.ProjectGroup.Targets[i].Removed) do
-      Dec(I);
-    B:=(I>=0)
+  if (T<>nil) and (T.Target<>nil) and (T.Target.Parent<>nil) then
+  begin
+    PG:=T.Target.Parent.ProjectGroup;
+    if PG<>nil then begin
+      I:=PG.IndexOfTarget(T.Target);
     end;
-  (Sender as TAction).Enabled:=B;
+  end;
+  (Sender as TAction).Enabled:=I>0;
   UpdateIDEMenuCommandFromAction(Sender,cmdTargetEarlier);
 end;
 
 procedure TProjectGroupEditorForm.ATargetLaterExecute(Sender: TObject);
 Var
   T: TNodeData;
-  I,J: Integer;
+  I: Integer;
+  PG: TProjectGroup;
 begin
   T:=SelectedNodeData;
-  If Not Assigned(T) then
+  if (T=nil) or (T.Target=nil) or (T.Target.Parent=nil) then
     exit;
-  I:=T.ProjectGroup.IndexOfTarget(T.Target);
-  J:=I+1;
-  // Find next not removed target
-  While (J<T.ProjectGroup.TargetCount) and (T.ProjectGroup.Targets[J].Removed) do
-    Inc(J);
-  if (J<T.ProjectGroup.TargetCount) then
-    T.ProjectGroup.ExchangeTargets(I,J);
+  PG:=T.Target.Parent.ProjectGroup;
+  if PG=nil then exit;
+  I:=PG.IndexOfTarget(T.Target);
+  if I<0 then exit;
+  if (I+1<PG.TargetCount) then
+    PG.ExchangeTargets(I,I+1);
 end;
 
 procedure TProjectGroupEditorForm.ATargetLaterUpdate(Sender: TObject);
 Var
   T: TNodeData;
   I: Integer;
-  B: Boolean;
+  PG: TProjectGroup;
 begin
   T:=SelectedNodeData;
-  B:=Assigned(T) and (T.NodeType=ntTarget) and Assigned(T.Target);
-  if B then
-    begin
-    I:=T.ProjectGroup.IndexOfTarget(T.Target)+1;
-    // Find next not removed target
-    While (I<T.ProjectGroup.TargetCount) and (T.ProjectGroup.Targets[i].Removed) do
-      Inc(I);
-    B:=(I<T.ProjectGroup.TargetCount);
-    end;
-  (Sender as TAction).Enabled:=B;
+  I:=-1;
+  PG:=nil;
+  if (T<>nil) and (T.Target<>nil) and (T.Target.Parent<>nil) then
+  begin
+    PG:=T.Target.Parent.ProjectGroup;
+    if PG<>nil then
+      I:=PG.IndexOfTarget(T.Target);
+  end;
+  (Sender as TAction).Enabled:=(PG<>nil) and (I+1<PG.TargetCount);
   UpdateIDEMenuCommandFromAction(Sender,cmdTargetLater);
 end;
 
@@ -400,15 +456,28 @@ begin
   UpdateIDEMenuCommandFromAction(Sender,cmdTargetUninstall);
 end;
 
-procedure TProjectGroupEditorForm.DoFileNameChange(Sender: TObject);
+procedure TProjectGroupEditorForm.FormCloseQuery(Sender: TObject;
+  var CanClose: boolean);
 begin
-  ShowFileName;
+  CanClose:=IDEProjectGroupManager.CheckSaved;
 end;
 
-procedure TProjectGroupEditorForm.UpdateIDEMenuCommandFromAction(Sender: TObject; Item: TIDEMenuCommand);
+procedure TProjectGroupEditorForm.UpdateIDEMenuCommandFromAction(
+  Sender: TObject; Item: TIDEMenuCommand);
 begin
   Item.Enabled:=(Sender as TAction).Enabled;
   Item.Visible:=(Sender as TAction).Visible;
+end;
+
+procedure TProjectGroupEditorForm.UpdateStatusBarTargetCount;
+var
+  Cnt: Integer;
+begin
+  if FProjectGroup<>nil then
+    Cnt:=FProjectGroup.TargetCount
+  else
+    Cnt:=0;
+  SBPG.Panels[piTargetCount].Text:=Format(lisTargetCount, [Cnt]);
 end;
 
 procedure TProjectGroupEditorForm.FormCreate(Sender: TObject);
@@ -423,115 +492,242 @@ procedure TProjectGroupEditorForm.FormCreate(Sender: TObject);
   end;
 
 begin
+  if ProjectGroupEditorForm=nil then
+    ProjectGroupEditorForm:=Self;
   PGEditMenuSectionMisc.MenuItem:=PopupMenuMore.Items;
   SetItem(cmdTargetAdd,@AProjectGroupAddExistingExecute);
   SetItem(cmdTargetRemove,@AProjectGroupDeleteExecute);
   SetItem(cmdTargetCompile,@ATargetCompileExecute);
   SetItem(cmdTargetCompileClean,@ATargetCompileCleanExecute);
+  SetItem(cmdTargetCompileFromHere,@ATargetCompileFromHereExecute);
   SetItem(cmdTargetInstall,@ATargetInstallExecute);
   SetItem(cmdTargetUnInstall,@ATargetUnInstallExecute);
   SetItem(cmdTargetLater,@ATargetLaterExecute);
   SetItem(cmdTargetEarlier,@ATargetEarlierExecute);
+  SetItem(cmdTargetCopyFilename,@ATargetCopyFilenameExecute);
 end;
 
-procedure TProjectGroupEditorForm.FormShow(Sender: TObject);
+procedure TProjectGroupEditorForm.FormDestroy(Sender: TObject);
 begin
-  Localize;
+  debugln(['TProjectGroupEditorForm.FormDestroy ',ProjectGroup<>nil]);
+  ProjectGroup:=nil;
+  if ProjectGroupEditorForm=Self then
+    ProjectGroupEditorForm:=nil;
+end;
+
+procedure TProjectGroupEditorForm.PopupMenuMorePopup(Sender: TObject);
+var
+  ND: TNodeData;
+  AllowedActions: TPGTargetActions;
+begin
+  ND:=SelectedNodeData;
+  if (ND<>nil) and (ND.Target<>nil) then begin
+    AllowedActions:=PGTargetActions[ND.Target.TargetType];
+  end else begin
+    AllowedActions:=[taOpen,taSettings];
+  end;
+  PMIOpen.Visible:=taOpen in AllowedActions;
+  PMIProperties.Visible:=taSettings in AllowedActions;
+  PMICompile.Visible:=taCompile in AllowedActions;
+  PMICompileClean.Visible:=taCompileClean in AllowedActions;
+  PMIRunMenuItem.Visible:=taRun in AllowedActions;
 end;
 
 procedure TProjectGroupEditorForm.TVPGDblClick(Sender: TObject);
 Var
   ND: TNodeData;
+  aFilename, PkgName: String;
+  PG: TProjectGroup;
 begin
   ND:=SelectedNodeData;
-  if Not (Assigned(ND) and (ND.NodeType=ntTarget)) then
+  //debugln(['TProjectGroupEditorForm.TVPGDblClick ',DbgSName(Sender),' ',TVPG.Selected.Text,' ',ND<>nil]);
+  if ND=nil then exit;
+  case ND.NodeType of
+  ntProjectGroup,
+  ntTarget:
     begin
-    ND.ProjectGroup.ActivateTarget(ND.Target);
-    if (ND.ProjectGroup<>FProjectGroup) then // No callback, fake it.
-      DotargetActivated(ND.ProjectGroup,ND.Target);
+      PG:=ND.Target.GetOwnerProjectGroup;
+      if PG=nil then exit;
+      case ND.Target.TargetType of
+      ttProject,
+      ttPackage,
+      ttPascalFile:
+        PG.Perform(ND.Target,taOpen)
+      end;
     end;
+  ntRemovedTarget:
+    begin
+      PG:=ND.Target.GetOwnerProjectGroup;
+      if PG=nil then exit;
+      case ND.Target.TargetType of
+      ttProject,
+      ttPackage,
+      ttPascalFile:
+        PG.Perform(ND.Target,taOpen);
+      end;
+    end;
+  ntFile:
+    begin
+      // open file in source editor
+      aFilename:=ND.Value;
+      //debugln(['TProjectGroupEditorForm.TVPGDblClick File=',aFilename]);
+      if aFilename='' then exit;
+      LazarusIDE.DoOpenEditorFile(aFilename,-1,-1,[ofAddToRecent,
+        ofRegularFile,ofDoNotLoadResource,ofOnlyIfExists]);
+    end;
+  ntDependency:
+    begin
+      // open package editor
+      PkgName:=ND.Value;
+      if PackageEditingInterface.DoOpenPackageWithName(PkgName,[pofAddToRecent],false)<>mrOk
+      then begin
+        IDEMessageDialog('Package not found','Package "'+PkgName+'" not found.',mtError,[mbOk]);
+        exit;
+      end;
+    end;
+  end;
 end;
 
-procedure TProjectGroupEditorForm.DoTargetAdded(Sender: TObject;
-  Target: TCompileTarget);
+procedure TProjectGroupEditorForm.TVPGMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  TVNode: TTreeNode;
+  ND: TNodeData;
+  aMode: TPGBuildMode;
+begin
+  TVNode:=TVPG.GetNodeAt(X,Y);
+  if TVNode=nil then exit;
+  ND:=TNodeData(TVNode.Data);
+  if ND=nil then exit;
+  if mbLeft=Button then begin
+    if (ND.NodeType=ntBuildMode) and ([ssShift,ssCtrl]*Shift=[]) then
+    begin
+      if (TVNode.DisplayStateIconLeft<X) and (X<TVNode.DisplayIconLeft) then
+      begin
+        if TVNode.StateIndex=NSIChecked then
+          TVNode.StateIndex:=NSIUnchecked
+        else
+          TVNode.StateIndex:=NSIChecked;
+        aMode:=GetBuildMode(TVNode);
+        if aMode<>nil then
+          aMode.Compile:=TVNode.StateIndex=NSIChecked;
+      end;
+    end;
+  end;
+end;
+
+procedure TProjectGroupEditorForm.TVPGSelectionChanged(Sender: TObject);
+var
+  TVNode: TTreeNode;
+  ND: TNodeData;
+  s: String;
+begin
+  TVNode:=TVPG.Selected;
+  s:='';
+  if (TVNode<>nil) and (TVNode.Data<>nil) then begin
+    ND:=TNodeData(TVNode.Data);
+    if ND.Target<>nil then begin
+      s:=ND.Target.Filename;
+    end else begin
+      case ND.NodeType of
+      ntBuildMode: s:='Build Mode "'+ND.Value+'"';
+      ntFile: s:=ND.Value;
+      end;
+    end;
+  end;
+
+  SBPG.Panels[piActiveTarget].Text:=s;
+end;
+
+procedure TProjectGroupEditorForm.OnTargetAdded(Sender: TObject;
+  Target: TPGCompileTarget);
 Var
-  PG: TProjectGroup;
   N: TTreeNode;
 begin
-  PG:=sender as TProjectGroup;
-  // ToDo: use of FTargetNodes is wrong if PG<>FProjectGroup
-  N:=CreateNode(FTargetNodes[False],DisplayFileName(PG,ntTarget,Target.Filename),ntTarget,Target,PG);
-  FillTargetNode(N,PG,Target);
+  (Target as TIDECompileTarget).LoadTarget(true);
+  if Sender<>ProjectGroup then exit; // ToDo: sub groups
+  N:=CreateTargetNode(FTargetNodes[False],ntTarget,Target);
+  FillTargetNode(N,Target);
   TVPG.Selected:=N;
-  SBPG.Panels[piTargetCount].Text:=Format(lisTargetCount,[FProjectGroup.TargetCount]);
+  UpdateStatusBarTargetCount;
 end;
 
-procedure TProjectGroupEditorForm.DoTargetDeleted(Sender: TObject;
-  Target: TCompileTarget);
+procedure TProjectGroupEditorForm.OnTargetReadded(Sender: TObject;
+  Target: TPGCompileTarget);
+var
+  N, NewNode: TTreeNode;
+begin
+  if Sender<>ProjectGroup then exit; // ToDo: sub groups
+  N:=FindTVNodeOfTarget(Target);
+  TVPG.BeginUpdate;
+  try
+    TVPG.Items.Delete(N);
+    NewNode:=CreateTargetNode(FTargetNodes[False],ntTarget,Target);
+    FillTargetNode(NewNode,Target);
+    TVPG.Selected:=FProjectGroupTVNode;
+  finally
+    TVPG.EndUpdate;
+  end;
+  UpdateStatusBarTargetCount;
+end;
+
+procedure TProjectGroupEditorForm.OnTargetDeleted(Sender: TObject;
+  Target: TPGCompileTarget);
 Var
-  PG: TProjectGroup;
   N: TTreeNode;
 begin
-  PG:=sender as TProjectGroup;
-  N:=FindNodeFromTarget(Target);
-  TVPG.Items.Delete(N);
-  // MVC TOD: The use of FTargetNodes is not correct when PG<>FProjectGroup
-  CreateNode(FTargetNodes[True],DisplayFileName(PG,ntRemovedTarget,Target.Filename),ntRemovedTarget,Target,PG);
-  TVPG.Selected:=FNPG;
-  SBPG.Panels[piTargetCount].Text:=Format(lisTargetCount,[FProjectGroup.TargetCount]);
+  if Sender<>ProjectGroup then exit; // ToDo: sub groups
+  N:=FindTVNodeOfTarget(Target);
+  TVPG.BeginUpdate;
+  try
+    TVPG.Items.Delete(N);
+    CreateTargetNode(FTargetNodes[True],ntRemovedTarget,Target);
+    TVPG.Selected:=FProjectGroupTVNode;
+  finally
+    TVPG.EndUpdate;
+  end;
+  UpdateStatusBarTargetCount;
 end;
 
-procedure TProjectGroupEditorForm.DoTargetActivated(Sender: TObject;
-  Target: TCompileTarget);
+procedure TProjectGroupEditorForm.OnTargetActiveChanged(Sender: TObject;
+  Target: TPGCompileTarget);
 Var
-  NC,NA: TTreeNode;
-  N: String;
+  OldActiveTVNode,NewActiveTVNode: TTreeNode;
 begin
-  NC:=FindNodeFromTarget(FActiveTarget);
-  NA:=FindNodeFromTarget(Target);
-  if (NC<>NA) then
-    begin
-    if Assigned(NC) then
-      NC.StateIndex:=-1;
-    If Assigned(NA) then
-      NA.StateIndex:=NSIActive;
+  OldActiveTVNode:=FindTVNodeOfTarget(FActiveTarget);
+  NewActiveTVNode:=FindTVNodeOfTarget(Target);
+  if (OldActiveTVNode<>NewActiveTVNode) then
+  begin
+    if Assigned(OldActiveTVNode) then
+      OldActiveTVNode.StateIndex:=-1;
+    if Assigned(NewActiveTVNode) then
+      NewActiveTVNode.StateIndex:=NSIActive;
     FActiveTarget:=Target;
-    end;
-  N:=DisplayFileName(FProjectGroup,ntTarget,Target.FileName);
-  SBPG.Panels[piActiveTarget].Text:=Format(lisActiveTarget,[N]);
+  end;
+  //N:=DisplayFileName(Target);
+  //SBPG.Panels[piActiveTarget].Text:=Format(lisActiveTarget,[N]);
 end;
 
-procedure TProjectGroupEditorForm.DoTargetExchanged(Sender: TObject; Target1,
-  Target2: TCompileTarget);
-Var
-  S,N1,N2: TTreeNode;
-  ND1,ND2: TNodeData;
-  NT1,NT2: TCaption;
+procedure TProjectGroupEditorForm.OnTargetExchanged(Sender: TObject; Target1,
+  Target2: TPGCompileTarget);
+var
+  N1, N2: TTreeNode;
+  OldIndex: Integer;
 begin
-  N1:=FindNodeFromTarget( Target1);
-  N2:=FindNodeFromTarget(Target2);
+  N1:=FindTVNodeOfTarget(Target1);
+  N2:=FindTVNodeOfTarget(Target2);
   If (N1=Nil) or (N2=Nil) then
     exit;
-  ND1:=TNodeData(N1.Data);
-  if TVPG.Selected=N1 then
-    S:=N2
-  else if TVPG.Selected=N2 then
-    S:=N1
-  else
-    S:=Nil;
-  NT1:=N1.Text;
-  ND2:=TNodeData(N2.Data);
-  NT2:=N2.Text;
-  ConfigNode(N1,NT2,ND2);
-  ConfigNode(N2,NT1,ND1);
-  if (S<>Nil) then
-    TVPG.Selected:=S;
+  OldIndex:=N1.Index;
+  N1.Index:=N2.Index;
+  N2.Index:=OldIndex;
 end;
 
 procedure TProjectGroupEditorForm.AProjectGroupSaveExecute(Sender: TObject);
 Var
   P: String;
 begin
+  if FProjectGroup=nil then exit;
   P:=FProjectGroup.FileName;
   ProjectGroupManager.SaveProjectGroup;
   if CompareFilenames(ExtractFilePath(P),ExtractFilePath(FProjectGroup.FileName))<>0 then
@@ -539,23 +735,45 @@ begin
 end;
 
 procedure TProjectGroupEditorForm.AProjectGroupAddExistingExecute(Sender: TObject);
+var
+  aTarget: TIDECompileTarget;
+  aMode: TPGBuildMode;
+  TVNode: TTreeNode;
 begin
-  InitIDEFileDialog(OpenDialogTarget);
-  With OpenDialogTarget do
+  if FProjectGroup=nil then exit;
+
+  aTarget:=TIDECompileTarget(SelectedTarget);
+  if (aTarget<>nil) and aTarget.Removed then
   begin
-    // TODO: Needs to be fetched from central set of strings
-    Filter:='Lazarus projects|*.lpi|Lazarus packages|*.lpk|Lazarus project groups|*.lpg';
-    If Execute then
+    aTarget.Parent.ProjectGroup.ReAddTarget(aTarget);
+  end else begin
+    InitIDEFileDialog(OpenDialogTarget);
+    With OpenDialogTarget do
     begin
-      FProjectGroup.AddTarget(FileName);
+      Filter:='Lazarus projects (*.lpi)|*.lpi'
+       +'|Lazarus packages (*.lpk)|*.lpk'
+       +'|Lazarus project groups (*.lpg)|*.lpg'
+       +'|Pascal file (*.pas;*.pp;*.p)|*.pas;*.pp;*.p';
+      If Execute then
+      begin
+        aTarget:=FProjectGroup.AddTarget(FileName) as TIDECompileTarget;
+        aTarget.LoadTarget(true);
+        if aTarget.BuildModeCount>1 then begin
+          aMode:=aTarget.BuildModes[0];
+          aMode.Compile:=true;
+          // ToDo: implement changed notification
+          TVNode:=FindTVNodeOfBuildMode(aMode);
+          TVNode.StateIndex:=NSIChecked;
+        end;
+      end;
     end;
+    StoreIDEFileDialog(OpenDialogTarget);
   end;
-  StoreIDEFileDialog(OpenDialogTarget);
 end;
 
 procedure TProjectGroupEditorForm.ATargetActivateUpdate(Sender: TObject);
 Var
-  T: TCompileTarget;
+  T: TPGCompileTarget;
 begin
   T:=SelectedTarget;
   (Sender as TAction).Enabled:=Assigned(T) and Not T.Active;
@@ -564,12 +782,31 @@ end;
 
 procedure TProjectGroupEditorForm.ATargetActivateExecute(Sender: TObject);
 Var
-  T: TNodeData;
+  ND: TNodeData;
 begin
-  T:=SelectedNodeData;
-  if not (Assigned(T) and Assigned(T.Target) and Assigned(T.ProjectGroup)) then
+  ND:=SelectedNodeData;
+  if (ND=nil) or (ND.Target=nil) then
     exit;
-  T.ProjectGroup.ActivateTarget(T.Target);
+  ND.Target.Activate;
+end;
+
+procedure TProjectGroupEditorForm.AProjectGroupReloadExecute(Sender: TObject);
+var
+  PG: TIDEProjectGroup;
+begin
+  if ProjectGroup=nil then exit;
+  if FileExistsCached(ProjectGroup.FileName) then
+  begin
+    PG:=TIDEProjectGroup(ProjectGroup);
+    if PG.Modified then begin
+      IDEMessageDialog('Need save','Please save your changes before reloading the project group.',
+        mtError,[mbOK]);
+      exit;
+    end;
+    ProjectGroup:=nil;
+    PG.LoadFromFile([pgloLoadRecursively]);
+    ProjectGroup:=PG;
+  end;
 end;
 
 procedure TProjectGroupEditorForm.ATargetCompileCleanExecute(Sender: TObject);
@@ -583,28 +820,63 @@ begin
   UpdateIDEMenuCommandFromAction(Sender,cmdTargetCompileClean);
 end;
 
-function TProjectGroupEditorForm.AllowPerform(ATargetAction: TTargetAction; AAction: TAction = Nil): Boolean;
+function TProjectGroupEditorForm.AllowPerform(ATargetAction: TPGTargetAction; AAction: TAction = Nil): Boolean;
 Var
-  T: TCompileTarget;
+  ND: TNodeData;
+  aTarget: TPGCompileTarget;
 begin
-  T:=SelectedTarget;
-  Result:=Assigned(T) and (ATargetAction in T.AllowedActions);
+  Result:=false;
+  ND:=SelectedNodeData;
+  if ND<>nil then begin
+    if ND.Target<>nil then begin
+      Result:=(not ND.Target.Removed) and (ATargetAction in ND.Target.AllowedActions);
+    end else begin
+      aTarget:=GetNearestTargget(TVPG.Selected);
+      case ND.NodeType of
+      ntBuildMode:
+        Result:=(not aTarget.Removed)
+          and (ATargetAction in [taCompile,taCompileClean,taCompileFromHere,taRun]);
+      end;
+    end;
+  end;
   If Assigned(AAction) then
     AAction.Enabled:=Result;
 end;
 
-procedure TProjectGroupEditorForm.Perform(ATargetAction: TTargetAction);
+procedure TProjectGroupEditorForm.Perform(ATargetAction: TPGTargetAction);
 Var
-  T: TNodeData;
+  ND: TNodeData;
+  aTarget: TPGCompileTarget;
 begin
-  T:=SelectedNodeData;
-  if Assigned(T) and Assigned(T.Target) and Assigned(T.ProjectGroup) then
-    T.ProjectGroup.Perform(T.Target,ATargetAction);
+  ND:=SelectedNodeData;
+  if (ND=nil) then exit;
+  aTarget:=ND.Target;
+  if aTarget<>nil then
+    aTarget.GetOwnerProjectGroup.Perform(aTarget,ATargetAction)
+  else begin
+    aTarget:=GetNearestTargget(TVPG.Selected);
+    case ND.NodeType of
+    ntBuildMode:
+      aTarget.PerformBuildModeAction(ATargetAction,ND.Value);
+    end;
+  end;
 end;
 
 procedure TProjectGroupEditorForm.ATargetCompileExecute(Sender: TObject);
 begin
   Perform(taCompile);
+end;
+
+procedure TProjectGroupEditorForm.ATargetCompileFromHereExecute(Sender: TObject
+  );
+begin
+  Perform(taCompileFromHere);
+end;
+
+procedure TProjectGroupEditorForm.ATargetCompileFromHereUpdate(Sender: TObject);
+begin
+  AllowPerform(taCompileFromHere,Sender as TAction);
+  UpdateIDEMenuCommandFromAction(Sender,cmdTargetCompile);
 end;
 
 procedure TProjectGroupEditorForm.ATargetCompileUpdate(Sender: TObject);
@@ -615,19 +887,46 @@ end;
 
 procedure TProjectGroupEditorForm.AProjectGroupDeleteExecute(Sender: TObject);
 Var
-  T: TCompileTarget;
+  T: TPGCompileTarget;
 begin
   T:=SelectedTarget;
-  FProjectGroup.RemoveTarget(T);
+  if (T=nil) or (T.Parent=nil) then exit;
+  T.Parent.ProjectGroup.RemoveTarget(T);
 end;
 
 procedure TProjectGroupEditorForm.AProjectGroupDeleteUpdate(Sender: TObject);
 Var
-  T: TCompileTarget;
+  T: TPGCompileTarget;
 begin
   T:=SelectedTarget;
-  (Sender as TAction).Enabled:=(T<>Nil) and (T<>FProjectGroupTarget) and Not T.Removed;
+  (Sender as TAction).Enabled:=(T<>nil) and (T<>ProjectGroup.CompileTarget) and Not T.Removed;
   UpdateIDEMenuCommandFromAction(Sender,cmdTargetRemove);
+end;
+
+procedure TProjectGroupEditorForm.ATargetCopyFilenameExecute(Sender: TObject);
+var
+  ND: TNodeData;
+  aFilename: String;
+begin
+  ND:=SelectedNodeData;
+  if ND=nil then exit;
+  if ND.Target<>nil then
+    aFilename:=ND.Target.Filename
+  else if ND.NodeType=ntFile then
+    aFilename:=ND.Value
+  else
+    exit;
+  Clipboard.AsText:=aFilename;
+end;
+
+procedure TProjectGroupEditorForm.ATargetCopyFilenameUpdate(Sender: TObject);
+var
+  ND: TNodeData;
+begin
+  ND:=SelectedNodeData;
+  (Sender as TAction).Enabled:=(ND<>nil)
+    and ((ND.Target<>nil) or (ND.NodeType in [ntFile]));
+  UpdateIDEMenuCommandFromAction(Sender,cmdTargetCopyFilename);
 end;
 
 procedure TProjectGroupEditorForm.ATargetInstallExecute(Sender: TObject);
@@ -637,7 +936,7 @@ end;
 
 procedure TProjectGroupEditorForm.ATargetInstallUpdate(Sender: TObject);
 begin
-  AllowPerform(taInstall,Sender as Taction);
+  AllowPerform(taInstall,Sender as TAction);
   UpdateIDEMenuCommandFromAction(Sender,cmdTargetInstall);
 end;
 
@@ -670,7 +969,7 @@ end;
 
 procedure TProjectGroupEditorForm.ATargetRunUpdate(Sender: TObject);
 begin
-  AllowPerform(taRun,Sender as Taction);
+  AllowPerform(taRun,Sender as TAction);
   UpdateIDEMenuCommandFromAction(Sender,cmdTargetRun);
 end;
 
@@ -684,20 +983,22 @@ Var
   N: TTreeNode;
   I: Integer;
 begin
-  FNPG:=Nil;
+  FActiveTarget:=nil;
+  FProjectGroupTVNode:=Nil;
   FTargetNodes[False]:=Nil;
   FTargetNodes[True]:=Nil;
   For I:=0 to TVPG.Items.Count-1 do
-    begin
+  begin
     N:=TVPG.Items[I];
-    TNodeData(N.Data).Free; // Would be nide to have a FreeAndNilData method in TTreeNode.
+    TNodeData(N.Data).Free; // Would be nice to have a FreeAndNilData method in TTreeNode.
     N.Data:=Nil;
-    end;
+  end;
 end;
 
-function TProjectGroupEditorForm.GetNodeIndex(ANodeType: TNodeType; ANodeData: TCompileTarget): Integer;
+function TProjectGroupEditorForm.GetNodeImageIndex(ANodeType: TNodeType;
+  ANodeData: TPGCompileTarget): Integer;
 begin
-  Case ANodeType of
+  case ANodeType of
     ntProjectGroup: Result:=NIProjectGroup;
     ntTargets: Result:=NITargets;
     ntRemovedTargets: Result:=NIRemovedTargerts;
@@ -706,21 +1007,25 @@ begin
           ttProject: Result:=NITargetProject;
           ttPackage: Result:=NITargetPackage;
           ttProjectGroup: Result:=NITargetProjectGroup;
+          ttPascalFile: Result:=NIFile;
         end;
     ntRemovedTarget:
         Case ANodeData.TargetType of
           ttProject: Result:=NIRemovedTargetProject;
           ttPackage: Result:=NIRemovedTargetPackage;
           ttProjectGroup: Result:=NIRemovedTargetProjectGroup;
+          ttPascalFile: Result:=NIFile;
         end;
+    ntBuildModes: Result:=NIBuildModes;
+    ntBuildMode: Result:=NIBuildMode;
     ntFiles: Result:=NIFiles;
     ntFile: Result:=NIFile;
-    ntRemovedFiles: Result:=NIRemovedFiles;
-    ntRemovedFile: Result:=NIRemovedFile;
+    //ntRemovedFiles: Result:=NIRemovedFiles;
+    //ntRemovedFile: Result:=NIRemovedFile;
     ntDependencies: Result:=NIDependencies;
     ntDependency: Result:=NIDependency;
-    ntRemovedDependencies: Result:=NIRemovedDependencies;
-    ntRemovedDependency: Result:=NIRemovedDependency;
+    //ntRemovedDependencies: Result:=NIRemovedDependencies;
+    //ntRemovedDependency: Result:=NIRemovedDependency;
   else
     Result:=-1;
   end;
@@ -737,7 +1042,7 @@ begin
     Result:=Nil;
 end;
 
-function TProjectGroupEditorForm.SelectedTarget: TCompileTarget;
+function TProjectGroupEditorForm.SelectedTarget: TPGCompileTarget;
 Var
   N: TNodeData;
 begin
@@ -748,7 +1053,53 @@ begin
     Result:=Nil;
 end;
 
-function TProjectGroupEditorForm.SelectedNodeType: TCompileTarget;
+function TProjectGroupEditorForm.GetTVNodeFilename(TVNode: TTreeNode): string;
+var
+  ND: TNodeData;
+begin
+  Result:='';
+  if (TVNode=nil) then exit;
+  ND:=TNodeData(TVNode.Data);
+  if (ND.Target<>nil) then
+    exit(ND.Target.Filename);
+  case ND.NodeType of
+  ntFile: Result:=ND.Value;
+  end;
+end;
+
+function TProjectGroupEditorForm.GetBuildMode(TVNode: TTreeNode): TPGBuildMode;
+var
+  ND: TNodeData;
+begin
+  Result:=nil;
+  if TVNode=nil then exit;
+  ND:=TNodeData(TVNode.Data);
+  if (ND=nil) or (ND.NodeType<>ntBuildMode) then exit;
+  while TVNode<>nil do begin
+    if (TVNode.Data<>nil) and (TNodeData(TVNode.Data).Target<>nil) then
+    begin
+      Result:=TNodeData(TVNode.Data).Target.FindBuildMode(ND.Value);
+      exit;
+    end;
+    TVNode:=TVNode.Parent;
+  end;
+end;
+
+function TProjectGroupEditorForm.GetNearestTargget(TVNode: TTreeNode
+  ): TPGCompileTarget;
+begin
+  Result:=nil;
+  while (TVNode<>nil) do begin
+    if (TVNode.Data<>nil) then begin
+      Result:=TNodeData(TVNode.Data).Target;
+      if Result<>nil then exit;
+    end;
+    TVNode:=TVNode.Parent;
+  end;
+  Result:=nil;
+end;
+
+function TProjectGroupEditorForm.SelectedNodeType: TPGCompileTarget;
 Var
   N: TNodeData;
 begin
@@ -759,13 +1110,13 @@ begin
     Result:=Nil;
 end;
 
-procedure TProjectGroupEditorForm.ConfigNode(Node: TTreeNode;
+procedure TProjectGroupEditorForm.InitTVNode(Node: TTreeNode;
   const ACaption: String; ANodeData: TNodeData);
 begin
   Node.Data:=ANodeData;
   If (ACaption<>'') then
     Node.Text:=ACaption;
-  Node.ImageIndex:=GetNodeIndex(ANodeData.NodeType,ANodeData.Target);
+  Node.ImageIndex:=GetNodeImageIndex(ANodeData.NodeType,ANodeData.Target);
   Node.SelectedIndex:=Node.ImageIndex;
   if Assigned(ANodeData.Target) and ANodeData.Target.Active then
     Node.StateIndex:=NSIActive
@@ -773,187 +1124,406 @@ begin
     Node.StateIndex:=-1;
 end;
 
-function TProjectGroupEditorForm.CreateNode(AParent: TTreeNode;
-  const ACaption: String; ANodeType: TNodeType; ANodeData: TCompileTarget;
-  AProjectGroup: TProjectGroup): TTreeNode;
+procedure TProjectGroupEditorForm.OnProjectGroupDestroy(Sender: TObject);
+begin
+  if Sender=FProjectGroup then begin
+    ProjectGroup:=nil;
+  end;
+end;
+
+procedure TProjectGroupEditorForm.OnProjectGroupFileNameChanged(Sender: TObject);
+var
+  TVNode: TTreeNode;
+  NodeData: TNodeData;
+begin
+  if Sender<>ProjectGroup then exit; // ToDo: sub groups
+  ShowFileName;
+  // update all nodes with file names
+  TVPG.BeginUpdate;
+  TVNode:=TVPG.Items.GetFirstNode;
+  while TVNode<>nil do begin
+    NodeData:=TNodeData(TVNode.Data);
+    if NodeData is TNodeData then begin
+      if NodeData.NodeType in [ntTarget] then begin
+        TVNode.Text:=DisplayFileName(NodeData);
+      end;
+    end;
+    TVNode:=TVNode.GetNext;
+  end;
+  TVPG.EndUpdate;
+end;
+
+function TProjectGroupEditorForm.CreateSectionNode(AParent: TTreeNode;
+  const ACaption: String; ANodeType: TNodeType): TTreeNode;
 Var
   ND: TNodeData;
 begin
-  Result:=TVPG.Items.AddChild(AParent,ACaption);
   ND:=TNodeData.Create;
   ND.NodeType:=ANodeType;
-  ND.ProjectGroup:=AProjectGroup;
-  ND.Target:=ANodeData;
-  ConfigNode(Result,'',ND);
+  Result:=TVPG.Items.AddChild(AParent,ACaption);
+  InitTVNode(Result,'',ND);
 end;
 
-function TProjectGroupEditorForm.DisplayFileName(AProjectGroup: TProjectGroup;NodeType: TNodeType; AFileName: String): String;
-Var
-  P: String;
+function TProjectGroupEditorForm.CreateTargetNode(AParent: TTreeNode;
+  ANodeType: TNodeType; aTarget: TPGCompileTarget): TTreeNode;
+var
+  ND: TNodeData;
 begin
-  if Assigned(AProjectGroup) then
-    P:=ExtractFilePath(AProjectGroup.FileName)
-  else
-    P:='';
-  if (P<>'') then
-    Result:=ExtractRelativePath(P,AFileName)
-  else
-    Result:=AFileName;
-  if not (NodeType in [ntFile, ntRemovedFile]) then
-    Result:=ChangeFileExt(Result,'');
+  ND:=TNodeData.Create;
+  ND.NodeType:=ANodeType;
+  ND.Target:=aTarget;
+  if aTarget<>nil then
+    ND.ParentTarget:=aTarget.Parent;
+  Result:=TVPG.Items.AddChild(AParent,DisplayFileName(ND));
+  InitTVNode(Result,'',ND);
+end;
+
+function TProjectGroupEditorForm.CreateSubNode(AParent: TTreeNode;
+  ANodeType: TNodeType; aParentTarget: TPGCompileTarget; aValue: string
+  ): TTreeNode;
+var
+  ND: TNodeData;
+  aCaption: String;
+begin
+  ND:=TNodeData.Create;
+  ND.NodeType:=ANodeType;
+  ND.ParentTarget:=aParentTarget;
+  ND.Value:=aValue;
+  aCaption:=aValue;
+  if ANodeType=ntFile then
+    aCaption:=CreateRelativePath(aCaption,ExtractFilePath(aParentTarget.Filename));
+  Result:=TVPG.Items.AddChild(AParent,aCaption);
+  InitTVNode(Result,'',ND);
+end;
+
+procedure TProjectGroupEditorForm.ClearChildNodes(TVNode: TTreeNode);
+
+  procedure FreeChildrenNodeData(aTVNode: TTreeNode);
+  var
+    i: Integer;
+    ChildNode: TTreeNode;
+  begin
+    if aTVNode=nil then exit;
+    for i:=0 to aTVNode.Count-1 do
+    begin
+      ChildNode:=aTVNode[i];
+      if ChildNode.Data<>nil then
+      begin
+        TObject(ChildNode.Data).Free;
+        ChildNode.Data:=nil;
+      end;
+      FreeChildrenNodeData(ChildNode);
+    end;
+  end;
+
+begin
+  FreeChildrenNodeData(TVNode);
+  TVNode.DeleteChildren;
+end;
+
+function TProjectGroupEditorForm.DisplayFileName(aTarget: TPGCompileTarget
+  ): string;
+var
+  BaseDir: String;
+begin
+  Result:='';
+  if aTarget=nil then exit('?');
+  if IDEProjectGroupManager.Options.ShowTargetPaths then
+  begin
+    if aTarget.Parent<>nil then
+      BaseDir:=ExtractFilePath(aTarget.Parent.Filename)
+    else
+      BaseDir:='';
+    Result:=aTarget.Filename;
+    if Result='' then
+      Result:='?'
+    else
+      Result:=CreateRelativePath(Result,BaseDir);
+  end else begin
+    //debugln(['TProjectGroupEditorForm.DisplayFileName ',aTarget.Filename,' ',aTarget.TargetType=ttPascalFile]);
+    if aTarget.TargetType in [ttPascalFile] then
+      Result:=ExtractFileName(aTarget.Filename)
+    else
+      Result:=ExtractFileNameOnly(aTarget.Filename);
+  end;
+end;
+
+function TProjectGroupEditorForm.DisplayFileName(Node: TTreeNode): string;
+begin
+  Result:='';
+  if (Node=nil) or (Node.Data=nil) then exit;
+  Result:=DisplayFileName(TNodeData(Node.Data));
+end;
+
+function TProjectGroupEditorForm.DisplayFileName(NodeData: TNodeData): string;
+var
+  BaseDir: String;
+begin
+  if (NodeData.Target<>nil)
+  and (not IDEProjectGroupManager.Options.ShowTargetPaths) then
+  begin
+    if NodeData.Target.TargetType in [ttPascalFile] then
+      Result:=ExtractFileName(NodeData.Target.Filename)
+    else
+      Result:=ExtractFileNameOnly(NodeData.Target.Filename);
+  end else begin
+    Result:='';
+    if NodeData.ParentTarget<>nil then
+      BaseDir:=ExtractFilePath(NodeData.ParentTarget.Filename)
+    else
+      BaseDir:='';
+    if NodeData.Target<>nil then
+      Result:=NodeData.Target.Filename;
+    if Result='' then
+      Result:='?'
+    else
+      Result:=CreateRelativePath(Result,BaseDir);
+  end;
 end;
 
 procedure TProjectGroupEditorForm.ShowFileName;
 Var
   N: String;
 begin
-  N:=FProjectGroup.FileName;
+  if FProjectGroup=nil then
+    N:=''
+  else
+    N:=FProjectGroup.FileName;
   if (N='') then
     Caption:=lisNewProjectGroup
   else
-    Caption:=Format(LisProjectGroup,[DisplayFileName(FprojectGroup,ntProjectGroup,N)]);
-  if Assigned(FNPG) then
-    FNPG.Text:=DisplayFileName(FProjectGroup,ntProjectGroup,FProjectGroup.FileName);
+    Caption:=Format(LisProjectGroup,[DisplayFileName(FProjectGroup.CompileTarget)]);
+  if Assigned(FProjectGroupTVNode) then
+    FProjectGroupTVNode.Text:=DisplayFileName(FProjectGroupTVNode);
 end;
 
-function TProjectGroupEditorForm.FindNodeFromTarget(ATarget: TCompileTarget): TTreeNode;
+function TProjectGroupEditorForm.FindTVNodeOfTarget(ATarget: TPGCompileTarget): TTreeNode;
 Var
   I: Integer;
 begin
-  I:=0;
   Result:=Nil;
+  if ATarget=nil then exit;
+  I:=0;
   While (Result=Nil) and (I<TVPG.Items.Count) do
-    begin
+  begin
     Result:=TVPG.Items[I];
     If Not (Assigned(Result.Data) and (TNodeData(Result.Data).Target=ATarget)) then
       Result:=Nil;
     Inc(I);
-    end;
+  end;
+end;
+
+function TProjectGroupEditorForm.FindBuildModeNodeRecursively(
+  TVNode: TTreeNode; aMode: string): TTreeNode;
+var
+  ND: TNodeData;
+begin
+  Result:=nil;
+  if TVNode=nil then exit;
+  if (TVNode.Data=nil) then exit;
+  ND:=TNodeData(TVNode.Data);
+  if (ND.NodeType=ntBuildMode) and (CompareText(ND.Value,aMode)=0) then
+    exit(TVNode);
+  TVNode:=TVNode.GetFirstChild;
+  while TVNode<>nil do begin
+    Result:=FindBuildModeNodeRecursively(TVNode,aMode);
+    if Result<>nil then exit;
+    TVNode:=TVNode.GetNextSibling;
+  end;
+end;
+
+function TProjectGroupEditorForm.FindTVNodeOfBuildMode(aMode: TPGBuildMode
+  ): TTreeNode;
+begin
+  Result:=nil;
+  if aMode=nil then exit;
+  // find project node
+  Result:=FindTVNodeOfTarget(aMode.Target);
+  if Result=nil then exit;
+  // find build mdoe node
+  Result:=FindBuildModeNodeRecursively(Result,aMode.Identifier);
 end;
 
 procedure TProjectGroupEditorForm.ShowProjectGroup;
 Var
   N: TTreeNode;
 begin
-  ShowFileName; // Needs FNPG
-  FreeNodeData;
-  TVPG.Items.Clear;
-  FTargetNodes[False]:=Nil;
-  FTargetNodes[True]:=Nil;
-  FNPG:=CreateNode(Nil,DisplayFileName(FProjectGroup,ntProjectGroup,FProjectGroup.FileName),ntProjectGroup,FProjectGroupTarget,FProjectGroup);
-  FillProjectGroupNode(FNPG,FProjectGroup,FTargetNodes);
-  N:=FindNodeFromTarget(FActiveTarget);
-  if (N=Nil) then
-    begin
-    FActiveTarget:=FProjectGroupTarget;
-    TVPG.Selected:=FNPG;
-    end
-  else
-    TVPG.Selected:=N;
-  SBPG.Panels[piTargetCount].Text:=Format(lisTargetCount,[FProjectGroup.TargetCount]);
+  TVPG.BeginUpdate;
+  try
+    FreeNodeData;
+    ShowFileName; // Needs FProjectGroupTVNode
+    TVPG.Items.Clear;
+    FTargetNodes[False]:=Nil;
+    FTargetNodes[True]:=Nil;
+    if FProjectGroup<>nil then begin
+      FProjectGroupTVNode:=CreateTargetNode(Nil,
+        ntProjectGroup,ProjectGroup.CompileTarget);
+      FillProjectGroupNode(FProjectGroupTVNode,FProjectGroup,FTargetNodes);
+      N:=FindTVNodeOfTarget(FActiveTarget);
+      if (N=Nil) then
+      begin
+        FActiveTarget:=ProjectGroup.CompileTarget;
+        TVPG.Selected:=FProjectGroupTVNode;
+      end else
+        TVPG.Selected:=N;
+    end else begin
+      FProjectGroupTVNode:=nil;
+    end;
+    UpdateStatusBarTargetCount;
+  finally
+    TVPG.EndUpdate;
+  end;
 end;
 
-procedure TProjectGroupEditorForm.FillProjectGroupNode(AParent: TTreeNode;
+procedure TProjectGroupEditorForm.UpdateShowing;
+begin
+  inherited UpdateShowing;
+  if IsVisible then
+    Localize;
+end;
+
+procedure TProjectGroupEditorForm.FillProjectGroupNode(TVNode: TTreeNode;
   AProjectGroup: TProjectGroup; out TargetNodes: TTargetNodes);
 Const
   TNT: Array[Boolean] of TNodeType = (ntTarget,ntRemovedTarget);
 Var
-  T: TCompileTarget;
-  TTN,TN: TTreeNode;
+  T: TPGCompileTarget;
+  aTargetsNode,TN: TTreeNode;
   I: Integer;
 begin
-  TTN:=CreateNode(AParent,lisNodeTargets,ntTargets,Nil,AProjectGroup);
-  TargetNodes[False]:=TTN;
-  TargetNodes[True]:=CreateNode(AParent,lisNodeRemovedTargets,ntTargets,Nil,AProjectGroup);
-  // 2 Passes: one to show all nodes, one to fill them with target-specific data.
-  // Display all nodes
-  For I:=0 to AProjectGroup.TargetCount-1 do
-  begin
-    T:=AProjectGroup.Targets[i];
-    TN:=CreateNode(TargetNodes[T.Removed],DisplayFileName(AProjectGroup,TNT[T.Removed],T.FileName),TNT[T.Removed],T,AProjectGroup);
-  end;
-  // Fill all nodes.
-  For I:=0 to TTN.Count-1 do
-  begin
-    TN:=TTN.Items[i];
-    try
-      FillTargetNode(TN,AProjectGroup,TargetFromNode(TN));
-    except
-      On E: Exception do
-        Application.ShowException(E);
+  TVPG.BeginUpdate;
+  try
+    ClearChildNodes(TVNode);
+    aTargetsNode:=CreateSectionNode(TVNode,lisNodeTargets,ntTargets);
+    TargetNodes[False]:=aTargetsNode;
+    TargetNodes[True]:=CreateSectionNode(TVNode,lisNodeRemovedTargets,ntTargets);
+    // 2 Passes: one to show all nodes, one to fill them with target-specific data.
+    // Display all nodes
+    For I:=0 to AProjectGroup.TargetCount-1 do
+    begin
+      T:=AProjectGroup.Targets[i];
+      CreateTargetNode(TargetNodes[T.Removed],TNT[T.Removed],T);
     end;
+    // Fill all nodes.
+    For I:=0 to aTargetsNode.Count-1 do
+    begin
+      TN:=aTargetsNode.Items[i];
+      FillTargetNode(TN,TargetFromNode(TN));
+    end;
+    TVNode.Expand(False);
+    TargetNodes[False].Expand(False);
+    TargetNodes[True].Expand(False);
+  finally
+    TVPG.EndUpdate;
   end;
-  AParent.Expand(False);
-  TargetNodes[False].Expand(False);
-  TargetNodes[True].Expand(False);
 end;
 
 procedure TProjectGroupEditorForm.ShowDependencies(AParent: TTreeNode;
-  AProjectGroup: TProjectGroup; T: TObject; out PD: TTargetNodes);
+  T: TPGCompileTarget; out PD: TTargetNodes);
 Var
-  L: TfPList;
-  I: Integer;
-  P: TIDEPackage;
+  i: Integer;
+  Pkg: TIDEPackage;
+  PkgName: String;
 begin
-  PD[False]:=CreateNode(AParent,lisNodeDependencies,ntDependencies,Nil,AProjectGroup);
-  PD[True]:=CreateNode(AParent,lisNodeRemovedDependencies,ntRemovedDependencies,Nil,AProjectGroup);
-  PackageEditingInterface.GetRequiredPackages(T,L,[pirCompileOrder]);
-  For I:=0 to L.Count-1 do
+  PD[False]:=CreateSectionNode(AParent,lisNodeDependencies,ntDependencies);
+  PD[True]:=nil; //CreateNode(AParent,lisNodeRemovedDependencies,ntRemovedDependencies,Nil,AProjectGroup);
+  For i:=0 to T.RequiredPackageCount-1 do
   begin
-    P:=TIDEPackage(L[i]);
-    CreateNode(PD[False],P.Name,ntDependency,Nil,AProjectGroup);
+    PkgName:=T.RequiredPackages[i].PackageName;
+    Pkg:=PackageEditingInterface.FindPackageWithName(PkgName);
+    if Pkg<>nil then
+      PkgName:=Pkg.Name;
+    CreateSubNode(PD[False],ntDependency,T,PkgName);
   end;
 end;
 
-procedure TProjectGroupEditorForm.FillProjectNode(AParent: TTreeNode; AProjectGroup: TProjectGroup; T: TLazProject);
+procedure TProjectGroupEditorForm.FillProjectNode(TVNode: TTreeNode;
+  T: TPGCompileTarget);
 Var
-  PF,PD: TTargetNodes;
-  I: Integer;
+  FileNodes,DepNodes: TTargetNodes;
+  i: Integer;
+  BuildModeNode, SubTVNode: TTreeNode;
+  aMode: TPGBuildMode;
 begin
-  PF[False]:=CreateNode(AParent,lisNodeFiles,ntFiles,Nil,AProjectGroup);
-  PF[True]:=CreateNode(AParent,lisNodeRemovedFiles,ntFiles,Nil,AProjectGroup);
-  // TODO Ideally, we can show removed files
-  For I:=0 to T.FileCount-1 do
-    CreateNode(PF[False],DisplayFileName(AProjectGroup,ntFile,T.Files[i].Filename),ntFile,Nil,AProjectGroup);
-  ShowDependencies(AParent,AProjectGroup,T,PD);
-  // TODO: Build mode info Not available ?
+  TVPG.BeginUpdate;
+  try
+    ClearChildNodes(TVNode);
+
+    // buildmodes
+    if T.BuildModeCount>1 then
+    begin
+      BuildModeNode:=CreateSectionNode(TVNode,lisNodeBuildModes,ntBuildModes);
+      for i:=0 to T.BuildModeCount-1 do
+      begin
+        aMode:=T.BuildModes[i];
+        SubTVNode:=CreateSubNode(BuildModeNode,ntBuildMode,T,aMode.Identifier);
+        if aMode.Compile then
+          SubTVNode.StateIndex:=NSIChecked
+        else
+          SubTVNode.StateIndex:=NSIUnchecked;
+      end;
+    end;
+    // files
+    FileNodes[False]:=CreateSectionNode(TVNode,lisNodeFiles,ntFiles);
+    FileNodes[True]:=nil; //CreateNode(TVNode,lisNodeRemovedFiles,ntFiles,Nil,AProjectGroup);
+    for i:=0 to T.FileCount-1 do
+      CreateSubNode(FileNodes[False],ntFile,T,T.Files[i]);
+    // dependencies
+    ShowDependencies(TVNode,T,DepNodes);
+  finally
+    TVPG.EndUpdate;
+  end;
 end;
 
-procedure TProjectGroupEditorForm.FillPackageNode(AParent: TTreeNode; AProjectGroup: TProjectGroup; T: TIDEPackage);
+procedure TProjectGroupEditorForm.FillPackageNode(TVNode: TTreeNode;
+  T: TPGCompileTarget);
 Var
   PF,PD: TTargetNodes;
-  I: Integer;
+  i: Integer;
 begin
-  PF[False]:=CreateNode(AParent,lisNodeFiles,ntFiles,Nil,AProjectGroup);
-  PF[True]:=CreateNode(AParent,lisNodeRemovedFiles,ntFiles,Nil,AProjectGroup);
-  // ToDo Ideally, we can show removed files
-  For I:=0 to T.FileCount-1 do
-    CreateNode(PF[False],DisplayFileName(AProjectGroup,ntFile,T.Files[i].Filename),ntFile,Nil,AProjectGroup);
-  ShowDependencies(AParent,AProjectGroup,T,PD);
+  TVPG.BeginUpdate;
+  try
+    ClearChildNodes(TVNode);
+    PF[False]:=CreateSectionNode(TVNode,lisNodeFiles,ntFiles);
+    PF[True]:=nil; //CreateNode(TVNode,lisNodeRemovedFiles,ntFiles,Nil,AProjectGroup);
+    for i:=0 to T.FileCount-1 do
+      CreateSubNode(PF[False],ntFile,T,T.Files[i]);
+    ShowDependencies(TVNode,T,PD);
+  finally
+    TVPG.EndUpdate;
+  end;
 end;
 
-procedure TProjectGroupEditorForm.FillTargetNode(AParent: TTreeNode; AProjectGroup: TProjectGroup; T: TCompileTarget);
+procedure TProjectGroupEditorForm.FillTargetNode(TVNode: TTreeNode;
+  T: TPGCompileTarget);
 Var
   PN: TTargetNodes;
 begin
-  If T=Nil then
-    T:=TargetFromNode(AParent);
-  if T=Nil then
-    exit;
-  Case T.TargetType of
-    ttProject: FillProjectNode(AParent,AProjectGroup,T.LazProject);
-    ttPackage: FillPackageNode(AParent,AProjectGroup,T.LazPackage);
-    ttProjectGroup: FillProjectgroupNode(AParent,T.ProjectGroup,PN);
+  TVPG.BeginUpdate;
+  try
+    ClearChildNodes(TVNode);
+    If T=Nil then
+      T:=TargetFromNode(TVNode);
+    if T=Nil then
+      exit;
+    case T.TargetType of
+      ttProject: FillProjectNode(TVNode,T);
+      ttPackage: FillPackageNode(TVNode,T);
+      ttProjectGroup: FillProjectgroupNode(TVNode,T.ProjectGroup,PN);
+      ttPascalFile: ;
+    end;
+  finally
+    TVPG.EndUpdate;
   end;
 end;
 
-function TProjectGroupEditorForm.GetActiveTarget: TCompileTarget;
+function TProjectGroupEditorForm.GetActiveTarget: TPGCompileTarget;
 begin
   Result:=FActiveTarget;
 end;
 
 class function TProjectGroupEditorForm.TargetFromNode(N: TTreeNode
-  ): TCompileTarget;
+  ): TPGCompileTarget;
 begin
   if (N<>Nil) and (N.Data<>Nil) then
     Result:=TNodeData(N.Data).Target

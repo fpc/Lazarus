@@ -498,7 +498,7 @@ begin
 end;
 
 
-function ShowPromptDialog(const DialogCaption,
+function DefaultPromptDialog(const DialogCaption,
   DialogMessage: String;
   DialogType: longint; Buttons: PLongint;
   ButtonCount, DefaultIndex, EscapeResult: Longint;
@@ -549,9 +549,10 @@ type
     FButtons: TList;
     FBitmap: TCustomBitmap;
     FBitmapX, FBitmapY: Integer;
+    FMsgMemo: TMemo;
   public
-    TextBox : TRect;
-    TextStyle : TTextStyle;
+    TextBox: TRect;
+    TextStyle: TTextStyle;
     MessageTxt: String;
     constructor CreateQuestionDlg(const aCaption, aMsg: string;
       DlgType: LongInt; Buttons: TDialogButtons; HelpCtx: Longint);
@@ -569,8 +570,11 @@ var
 begin
   inherited Paint;
   // draw the text
-  Canvas.Brush := Brush;
-  Canvas.TextRect(TextBox, TextBox.Left, TextBox.Top, MessageTxt, TextStyle);
+  if FMsgMemo=nil then
+  begin
+    Canvas.Brush := Brush;
+    Canvas.TextRect(TextBox, TextBox.Left, TextBox.Top, MessageTxt, TextStyle);
+  end;
   // draw the icon
   if Assigned (FBitmap) then
   begin
@@ -598,7 +602,7 @@ var
   CurBtnPos: Integer;
   CurBtnSize: TPoint;
   MinBtnWidth: Integer; // minimum width for a single button
-  MinBtnHeight: Integer; // minimum height for a single button
+  MinBtnHeight, MaxHeight: Integer; // minimum height for a single button
 
   function GetButtonSize(AButton: TBitBtn): TPoint;
   begin
@@ -627,10 +631,31 @@ begin
   // calculate the width & height we need to display the Message
   if MessageTxt = '' then
     MessageTxt := '   ';
-  TextBox := Rect(0, 0, Screen.Width div 2, Screen.Height - 100);
+  TextBox := Rect(0, 0, Screen.Width div 2, Screen.Height);
   Flags := DT_CalcRect or DT_WordBreak;
   SelectObject(Canvas.Handle, Screen.SystemFont.Reference.Handle);
   DrawText(Canvas.Handle, PChar(MessageTxt), Length(MessageTxt), TextBox, Flags);
+
+  MaxHeight:=200;//Min(Screen.Height-100,(Screen.Height*4) div 5);
+  if TextBox.Bottom>MaxHeight then
+  begin
+    // does not fit onto the screen => use a TMemo
+    TextBox.Bottom:=MaxHeight;
+    if FMsgMemo=nil then
+    begin
+      FMsgMemo:=TMemo.Create(Self);
+      with FMsgMemo do
+      begin
+        WordWrap:=true;
+        ReadOnly:=true;
+        ScrollBars:=ssAutoBoth;
+        Text:=MessageTxt;
+        Parent:=Self;
+      end;
+    end;
+    FMsgMemo.Visible:=true;
+  end else if FMsgMemo<>nil then
+    FMsgMemo.Visible:=false;
 
   // calculate the width we need to display the buttons
   MinBtnWidth:=Max(25,MinimumDialogButtonWidth);
@@ -678,6 +703,10 @@ begin
   // set size of form
   SetBounds((Screen.Width - reqWidth-10) div 2, (Screen.Height - reqHeight-50) div 2,
          reqWidth, reqHeight);
+
+  // position memo
+  if (FMsgMemo<>nil) and FMsgMemo.Visible then
+    FMsgMemo.BoundsRect:=TextBox;
 
   // position buttons
   CurBtnPos := ButtonLeft;
@@ -786,7 +815,7 @@ begin
 end;
 
 
-function ShowQuestionDialog(const aCaption, aMsg: string; DlgType: LongInt;
+function DefaultQuestionDialog(const aCaption, aMsg: string; DlgType: LongInt;
   Buttons: TDialogButtons; HelpCtx: Longint): LongInt;
 { Show a dialog with aCaption as Title, aMsg as Text, DlgType as Icon,
   HelpCtx as Help context and Buttons to define the shown buttons and their
@@ -924,7 +953,6 @@ begin
     end;
     if DialogButtons.DefaultButton = nil then
       DialogButtons.DefaultButton := DialogButtons.FindButton([mrYes, mrOk, mrYesToAll, mrAll, mrRetry, mrCancel, mrNo, mrNoToAll, mrAbort, mrIgnore]);
-    DialogButtons.CancelButton := DialogButtons.FindButton([mrCancel, mrAbort, mrNo, mrIgnore, mrNoToAll, mrYes, mrOk, mrRetry, mrAll, mrYesToAll]);
     Result := WidgetSet.AskUser(aCaption, ConvertLineEndings(aMsg),
       DialogIds[DlgType], DialogButtons, HelpCtx);
   finally

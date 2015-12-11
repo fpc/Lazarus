@@ -23,7 +23,7 @@ unit SVNClasses;
 interface
 
 uses
-  Classes, SysUtils, ComCtrls, FileUtil, LCLProc, Controls,
+  Classes, SysUtils, ComCtrls, FileUtil, UTF8Process, LCLProc, Controls,
   XMLRead, DOM, Process, StdCtrls, Forms, fgl;
 
 resourcestring
@@ -145,7 +145,7 @@ implementation
 
 procedure CmdLineToMemo(CmdLine: string; Memo: TMemo);
 var
-  AProcess: TProcess;
+  AProcess: TProcessUTF8;
   BytesRead: LongInt;
   n: LongInt;
   M: TMemoryStream;
@@ -167,7 +167,7 @@ var
   end;
 
 begin
-  AProcess := TProcess.Create(nil);
+  AProcess := TProcessUTF8.Create(nil);
   AProcess.CommandLine := CmdLine;
   debugln('CmdLineToMemo commandline=', AProcess.CommandLine);
   AProcess.Options := AProcess.Options + [poUsePipes, poStdErrToOutput];
@@ -380,11 +380,11 @@ end;
 
 function ExecuteSvnReturnXml(ACommand: string): TXMLDocument;
 var
-  AProcess: TProcess;
+  AProcess: TProcessUTF8;
   M: TMemoryStream;
   n, BytesRead: Integer;
 begin
-  AProcess := TProcess.Create(nil);
+  AProcess := TProcessUTF8.Create(nil);
   AProcess.CommandLine := SVNExecutable + ' ' + ACommand;
   debugln('TSVNLogFrm.ExecuteSvnReturnXml CommandLine ' + AProcess.CommandLine);
   AProcess.Options := AProcess.Options + [poUsePipes, poStdErrToOutput];

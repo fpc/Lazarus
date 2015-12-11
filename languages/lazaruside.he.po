@@ -1137,6 +1137,7 @@ msgid "Copy word on copy none"
 msgstr "העתק מילה בהעתקת כלום"
 
 #: lazarusidestrconsts.dlgcorange
+msgctxt "lazarusidestrconsts.dlgcorange"
 msgid "Range"
 msgstr "טווח"
 
@@ -2311,15 +2312,19 @@ msgstr "רמה 1 (מהיר ומנפה שגיאות ידידותי)"
 
 #: lazarusidestrconsts.dlglevel2opt
 #, fuzzy
-#| msgid "Level 2 (Level 1 + quick optimizations)"
-msgid "2 (quick optimizations)"
+#| msgid "2 (quick optimizations)"
+msgid "2 (-O1 + quick optimizations)"
 msgstr "רמה 2 (רמה 1 + אופטימיזציה מהירה)"
 
 #: lazarusidestrconsts.dlglevel3opt
 #, fuzzy
-#| msgid "Level 3 (Level 2 + slow optimizations)"
-msgid "3 (slow optimizations)"
+#| msgid "3 (slow optimizations)"
+msgid "3 (-O2 + slow optimizations)"
 msgstr "רמה 3 (רמה 2 + אופטימיזציה איטית)"
+
+#: lazarusidestrconsts.dlglevel4opt
+msgid "4 (-O3 + aggressive optimizations, beware)"
+msgstr ""
 
 #: lazarusidestrconsts.dlglevelnoneopt
 #, fuzzy
@@ -10456,9 +10461,9 @@ msgstr "התעלם מבינארי"
 msgid "Ignore this exception type"
 msgstr "התעלם מסוג חריגות זה"
 
-#: lazarusidestrconsts.lisignoreusetformasancestor
-msgid "Ignore, use TForm as ancestor"
-msgstr "התעלם, השתמש ב TForm כמחלקה הראשונית"
+#: lazarusidestrconsts.lisignoreuseasancestor
+msgid "Ignore, use %s as ancestor"
+msgstr ""
 
 #: lazarusidestrconsts.lisimitateindentationofcurrentunitprojectorpackage
 msgid "Imitate indentation of current unit, project or package"
@@ -15028,19 +15033,27 @@ msgid "Virtual Unit"
 msgstr "יחידה ווירטואלית"
 
 #: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
-msgid "Package directory. Parameter is package ID"
+msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmacropackageincludefilessearchpathparameterispackageid
-msgid "Package include files search path. Parameter is package ID"
+msgid "Package include files search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr ""
+
+#: lazarusidestrconsts.lispkgmacropackagenameparameterispackageid
+msgid "Package name. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr ""
+
+#: lazarusidestrconsts.lispkgmacropackageoutputdirectoryparameterispackageid
+msgid "Package output directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmacropackagesourcesearchpathparameterispackageid
-msgid "Package source search path. Parameter is package ID"
+msgid "Package source search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmacropackageunitsearchpathparameterispackageid
-msgid "Package unit search path. Parameter is package ID"
+msgid "Package unit search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforpackagepackage
@@ -16334,6 +16347,12 @@ msgstr "יציאה"
 #| msgid "Quit Lazarus"
 msgid "&Quit Lazarus"
 msgstr "צא מלזרוס"
+
+#: lazarusidestrconsts.lisrange
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisrange"
+msgid "Range"
+msgstr "טווח"
 
 #: lazarusidestrconsts.lisreaderror
 msgid "Read Error"
@@ -18210,10 +18229,6 @@ msgstr "נתיב חיפוש היחידות של %s%s%s מכיל את תיקיי�
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "תיקיית העבודה %s%s%s לא קיימת. בדוק את תיקיית העבודה ב Menu > Run > Run parameters."
 
-#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inrtl
-msgid "This build mode now sets UTF-8 in RTL.%s Flags are in pages \"Custom Options\" and \"Additions and Overrides\"."
-msgstr ""
-
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
 msgid "This component already contains a class with the name %s."
 msgstr ""
@@ -18374,18 +18389,6 @@ msgstr ""
 
 #: lazarusidestrconsts.listoolbaroptionsraise
 msgid "Raise toolbars"
-msgstr ""
-
-#: lazarusidestrconsts.listoolbaroptionsstandardvisible
-msgid "Standard toolbar visible"
-msgstr ""
-
-#: lazarusidestrconsts.listoolbaroptionstoolbarsvisible
-msgid "Toolbars visible"
-msgstr ""
-
-#: lazarusidestrconsts.listoolbaroptionsviewdebugvisible
-msgid "Debug toolbar visible"
 msgstr ""
 
 #: lazarusidestrconsts.listoolhasnoexecutable

@@ -3358,7 +3358,8 @@ begin
   end;
 
   // optional: hint modifier
-  ReadHintModifiers([cafSemicolon,cafEqual]);
+  if CurPos.Flag<>cafSemicolon then
+    ReadHintModifiers([cafSemicolon,cafEqual]);
 
   if (ParentNode.Desc=ctnVarSection) then begin
     // optional: initial value
@@ -3762,7 +3763,8 @@ begin
         SaveRaiseStringExpectedButAtomFound(ctsStringConstant);
       ReadConstant(true,false,[]);
       // read hint modifier
-      ReadHintModifiers;
+      if CurPos.Flag<>cafSemicolon then
+        ReadHintModifiers;
       // read ;
       if CurPos.Flag<>cafSemicolon then
         SaveRaiseCharExpectedButAtomFound(';');
@@ -3903,7 +3905,8 @@ begin
   end;
   ReadConstExpr;
   // optional: hint modifier
-  ReadHintModifiers;
+  if CurPos.Flag<>cafSemicolon then
+    ReadHintModifiers;
   if CurPos.Flag=cafSemicolon then begin
     if (CurNode.Parent.Desc=ctnConstSection)
     and (CurNode.Parent.Parent.Desc in AllCodeSections) then begin
@@ -3993,7 +3996,8 @@ begin
   ReadNextAtom;
   ParseType(CurPos.StartPos);
   // read hint modifier
-  ReadHintModifiers;
+  if CurPos.Flag<>cafSemicolon then
+    ReadHintModifiers;
   // read ;
   if CurPos.Flag<>cafSemicolon then
     SaveRaiseCharExpectedButAtomFound(';');
@@ -5653,7 +5657,7 @@ begin
     CurNode.EndPos:=CurPos.EndPos;
   end;
   ReadNextAtom;
-  if Curpos.Flag=cafPoint then begin
+  while Curpos.Flag=cafPoint do begin
     // first identifier was unitname, now read the type
     ReadNextAtom;
     AtomIsIdentifierSaveE;
@@ -5676,13 +5680,22 @@ begin
     // read identifier (a parameter of the generic type)
     ReadNextAtom;
     AtomIsIdentifierSaveE;
+    if CreateChildNodes then begin
+      CreateChildNode;
+      CurNode.Desc:=ctnSpecializeParam;
+      CurNode.EndPos:=CurPos.EndPos;
+    end;
     ReadNextAtom;
-    if Curpos.Flag=cafPoint then begin
+    while Curpos.Flag=cafPoint do begin
       // first identifier was unitname, now read the type
       ReadNextAtom;
       AtomIsIdentifierSaveE;
+      if CreateChildNodes then
+        CurNode.EndPos:=CurPos.EndPos;
       ReadNextAtom;
     end;
+    if CreateChildNodes then
+      EndChildNode; // close ctnSpecializeParam
     if AtomIsChar('>') then
       break
     else if CurPos.Flag=cafComma then begin

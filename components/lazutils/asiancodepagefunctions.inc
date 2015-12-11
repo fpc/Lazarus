@@ -130,7 +130,7 @@ begin
 end;
 {$endif}
 
-{$ifdef HASCP}
+{$ifdef FPC_HAS_CPSTRING}
 procedure InternalUTF8ToDBCS(const s: string; TargetCodePage: TSystemCodePage;
   SetTargetCodePage: boolean;
   {$IfNDef UseSystemCPConv}const UTF8CharConvFunc: TUnicodeToCharID;{$endif}

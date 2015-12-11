@@ -62,7 +62,6 @@ type
   protected
   public
 //    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-//    class procedure ScrollBy(const AWinControl: TScrollingWinControl; const DeltaX, DeltaY: integer); override;
   end;
 
   { TCocoaWSScrollBox }

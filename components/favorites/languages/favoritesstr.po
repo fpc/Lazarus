@@ -1,0 +1,11 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: favoritesstr.saddtofavoritess
+msgid "Add to favorites: %s"
+msgstr ""
+
+#: favoritesstr.sremovefromfavoritess
+msgid "Remove from favorites: %s"
+msgstr ""
+

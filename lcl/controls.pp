@@ -693,6 +693,10 @@ type
     FRight: TSpacingSize;
     FTop: TSpacingSize;
     FDefault: PControlBorderSpacingDefault;
+    function GetControlHeight: Integer;
+    function GetControlLeft: Integer;
+    function GetControlTop: Integer;
+    function GetControlWidth: Integer;
     function IsAroundStored: boolean;
     function IsBottomStored: boolean;
     function IsInnerBorderStored: boolean;
@@ -721,6 +725,10 @@ type
   public
     property Control: TControl read FControl;
     property Space[Kind: TAnchorKind]: integer read GetSpace write SetSpace;
+    property ControlLeft: Integer read GetControlLeft;
+    property ControlTop: Integer read GetControlTop;
+    property ControlWidth: Integer read GetControlWidth;
+    property ControlHeight: Integer read GetControlHeight;
   published
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property Left: TSpacingSize read FLeft write SetLeft stored IsLeftStored;
@@ -2155,6 +2163,7 @@ type
     procedure DisableAlign;
     procedure EnableAlign;
     procedure ReAlign; // realign all children
+    procedure ScrollBy_WS(DeltaX, DeltaY: Integer);
     procedure ScrollBy(DeltaX, DeltaY: Integer); virtual;
     procedure WriteLayoutDebugReport(const Prefix: string); override;
     procedure AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy;
@@ -3461,6 +3470,38 @@ begin
   if FControl <> nil then
     FControl.DoBorderSpacingChange(Self,InnerSpaceChanged);
   if Assigned(OnChange) then OnChange(Self);
+end;
+
+function TControlBorderSpacing.GetControlHeight: Integer;
+begin
+  if FControl<>nil then
+    Result := FControl.Height+Around*2+Top+Bottom
+  else
+    Result := 0;
+end;
+
+function TControlBorderSpacing.GetControlLeft: Integer;
+begin
+  if FControl<>nil then
+    Result := FControl.Left-Around-Left
+  else
+    Result := 0;
+end;
+
+function TControlBorderSpacing.GetControlTop: Integer;
+begin
+  if FControl<>nil then
+    Result := FControl.Top-Around-Top
+  else
+    Result := 0;
+end;
+
+function TControlBorderSpacing.GetControlWidth: Integer;
+begin
+  if FControl<>nil then
+    Result := FControl.Width+Around*2+Left+Right
+  else
+    Result := 0;
 end;
 
 { TControlChildSizing }

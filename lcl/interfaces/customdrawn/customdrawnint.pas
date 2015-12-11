@@ -38,7 +38,7 @@ uses
   {$endif}
   {$ifdef WinCE}aygshell,{$endif}
   // LazUtils
-  fileutil, lazutf8,
+  LazFileUtils, lazutf8,
   {$ifndef CD_UseNativeText}
   // LazFreeType
   LazFreeTypeIntfDrawer, LazFreeType, EasyLazFreeType, IniFiles,

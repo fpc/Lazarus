@@ -1041,12 +1041,9 @@ end;
 function GetControlText(AHandle: HWND): string;
 var
   TextLen: dword;
-{$ifdef WindowsUnicodeSupport}
   AnsiBuffer: string;
   WideBuffer: WideString;
-{$endif}  
 begin
-{$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
   begin
     TextLen := Windows.GetWindowTextLengthW(AHandle);
@@ -1065,13 +1062,6 @@ begin
     SetLength(AnsiBuffer, TextLen);
     Result := AnsiToUtf8(AnsiBuffer);
   end;
-
- {$else}
-  TextLen := GetWindowTextLength(AHandle);
-  SetLength(Result, TextLen);
-  GetWindowText(AHandle, PChar(Result), TextLen + 1);
-
- {$endif}
 end;
 
 procedure FillRawImageDescriptionColors(var ADesc: TRawImageDescription);
@@ -1663,10 +1653,7 @@ begin
   DefaultWindowInfo.DrawItemIndex := -1;
   WindowInfoAtom := Windows.GlobalAddAtom('WindowInfo');
   ChangedMenus := TFPList.Create;
-
-  {$ifdef WindowsUnicodeSupport}
   UnicodeEnabledOS := (Win32Platform = VER_PLATFORM_WIN32_NT);
-  {$endif}
   if WindowsVersion = wvUnknown then
     UpdateWindowsVersion;
 end;

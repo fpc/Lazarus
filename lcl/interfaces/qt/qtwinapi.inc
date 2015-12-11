@@ -3602,7 +3602,8 @@ begin
     // POS
     if (ScrollInfo.fMask and SIF_POS) <> 0 then
     begin
-      if QtScrollBar.ChildOfComplexWidget = ccwAbstractScrollArea then
+      // if QtScrollBar.ChildOfComplexWidget = ccwAbstractScrollArea then
+      if QtScrollBar.SliderPressed then
         ScrollInfo.nPos := QtScrollBar.getSliderPosition
       else
         ScrollInfo.nPos := QtScrollBar.getValue;

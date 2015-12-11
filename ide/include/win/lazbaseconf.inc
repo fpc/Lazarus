@@ -148,7 +148,7 @@ begin
   // the last part of the path returned by GetAppConfigDir is the application
   // name. Replace that by 'lazarus', to make sure that lazbuild uses
   // the same primary config path
-  PrimaryConfigPath:= ExtractFilePath(ChompPathDelim(SysToUTF8(GetAppConfigDir(False)))) + 'lazarus';
+  PrimaryConfigPath:= ExtractFilePath(ChompPathDelim(GetAppConfigDirUTF8(False))) + 'lazarus';
   SecondaryConfigPath:=ChompPathDelim(ProgramDirectory);
   DefaultFPCSrcDirs[1] := AppendPathDelim(ProgramDirectory) + 'fpcsrc';
   DefaultLazarusSrcDirs[1] := DefaultDrive + '\lazarus';

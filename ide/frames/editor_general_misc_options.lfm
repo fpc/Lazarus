@@ -10,9 +10,9 @@ object EditorGeneralMiscOptionsFrame: TEditorGeneralMiscOptionsFrame
   DesignLeft = 138
   DesignTop = 138
   object EditorTrimSpaceTypeLabel: TLabel
-    AnchorSideLeft.Control = EditorTrimSpaceTypeCheckBox
+    AnchorSideLeft.Control = EditorTrimSpaceTypeComboBox
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = EditorTrimSpaceTypeCheckBox
+    AnchorSideTop.Control = EditorTrimSpaceTypeComboBox
     AnchorSideTop.Side = asrCenter
     Left = 156
     Height = 15
@@ -50,7 +50,7 @@ object EditorGeneralMiscOptionsFrame: TEditorGeneralMiscOptionsFrame
     OnItemClick = EditorOptionsGroupBoxItemClick
     TabOrder = 0
   end
-  object EditorTrimSpaceTypeCheckBox: TComboBox
+  object EditorTrimSpaceTypeComboBox: TComboBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = EditorOptionsGroupBox
     AnchorSideTop.Side = asrBottom

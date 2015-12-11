@@ -798,11 +798,8 @@ var
   NewInd, NewRow: Integer;
   Line: String;
 begin
-  if not ((KeyName = '') and (Value = '')) then begin
-    Line := Value;
-    Insert(Strings.NameValueSeparator, Line, 1);
-    Insert(KeyName, Line, 1);
-  end
+  if not ((KeyName = '') and (Value = '')) then
+    Line := KeyName + Strings.NameValueSeparator + Value
   else
     Line := '';
   if (Row > Strings.Count) or ((Row - FixedRows) >= Strings.Count)
@@ -847,9 +844,7 @@ begin
   end
   else if (Length(Values) = 1) then
     AKey := Values[0];
-  Insert(Strings.NameValueSeparator, AValue, 1);
-  Insert(AKey, AValue, 1);
-  Strings.InsertItem(Index, AValue);
+  Strings.InsertItem(Index, AKey + Strings.NameValueSeparator + AValue);
 end;
 
 procedure TValueListEditor.ExchangeColRow(IsColumn: Boolean; index, WithIndex: Integer);
@@ -1190,7 +1185,10 @@ begin
   end;
   Result:=inherited GetDefaultEditor(Column);
   //Need this to be able to intercept VK_Delete in the editor
-  EditorOptions := EditorOptions or EO_HOOKKEYDOWN;
+  if (KeyDelete in KeyOptions) then
+    EditorOptions := EditorOptions or EO_HOOKKEYDOWN
+  else
+    EditorOptions := EditorOptions and (not EO_HOOKKEYDOWN);
   if Column=1 then
   begin
     ItemProp := nil;

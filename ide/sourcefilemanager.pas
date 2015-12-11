@@ -60,43 +60,45 @@ type
 
   TFileCommandsStamp = record
   private
-    SrcEdit: TSourceEditor;
+    FSrcEdit: TSourceEditor;
   public
     function Changed(ASrcEdit: TSourceEditor): Boolean;
   end;
 
   TProjectCommandsStamp = record
   private
-    UnitInfo: TUnitInfo;
-    ProjectChangeStamp: Int64;
+    FUnitInfo: TUnitInfo;
+    FProjectChangeStamp: Int64;
+    FCompilerParseStamp: integer;
+    FBuildMacroChangeStamp: integer;
   public
     function Changed(AUnitInfo: TUnitInfo): Boolean;
   end;
 
   TPackageCommandsStamp = record
   private
-    UnitInfo: TUnitInfo;
-    PackagesChangeStamp: Int64;
+    FUnitInfo: TUnitInfo;
+    FPackagesChangeStamp: Int64;
   public
     function Changed(AUnitInfo: TUnitInfo): Boolean;
   end;
 
   TSourceEditorTabCommandsStamp = record
   private
-    SrcEdit: TSourceEditor;
-    SrcEditLocked: Boolean;
-    SourceNotebook: TSourceNotebook;
-    PageIndex, PageCount: Integer;
+    FSrcEdit: TSourceEditor;
+    FSrcEditLocked: Boolean;
+    FSourceNotebook: TSourceNotebook;
+    FPageIndex, FPageCount: Integer;
   public
     function Changed(ASrcEdit: TSourceEditor): Boolean;
   end;
 
   TSourceEditorCommandsStamp = record
   private
-    SrcEdit: TSourceEditor;
-    DisplayState: TDisplayState;
-    EditorComponentStamp: int64;
-    EditorCaretStamp: int64;
+    FSrcEdit: TSourceEditor;
+    FDisplayState: TDisplayState;
+    FEditorComponentStamp: int64;
+    FEditorCaretStamp: int64;
   public
     function Changed(ASrcEdit: TSourceEditor; ADisplayState: TDisplayState): Boolean;
   end;
@@ -206,6 +208,7 @@ type
       Files: TStringList; MultiSelect: boolean;
       var MultiSelectCheckedState: Boolean): TModalResult;
 
+    function AddUnitToProject(const AEditor: TSourceEditorInterface): TModalResult;
     function AddActiveUnitToProject: TModalResult;
     function RemoveFromProjectDialog: TModalResult;
     function InitNewProject(ProjectDesc: TProjectDescriptor): TModalResult;
@@ -260,7 +263,8 @@ type
     function LoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
         const AComponentClassName: string; Flags: TOpenFlags; MustHaveLFM: boolean;
         out AComponentClass: TComponentClass; out ComponentUnitInfo: TUnitInfo;
-        out AncestorClass: TComponentClass): TModalResult;
+        out AncestorClass: TComponentClass;
+        const IgnoreBtnText: string = ''): TModalResult;
     function LoadIDECodeBuffer(var ACodeBuffer: TCodeBuffer;
         const AFilename: string; Flags: TLoadBufferFlags; ShowAbort: boolean): TModalResult;
   public
@@ -456,27 +460,37 @@ end;
 function TFileCommandsStamp.Changed(ASrcEdit: TSourceEditor): Boolean;
 begin
   Result := not(
-        (SrcEdit = ASrcEdit)
+        (FSrcEdit = ASrcEdit)
     );
 
   if not Result then Exit;
 
-  SrcEdit := ASrcEdit;
+  FSrcEdit := ASrcEdit;
 end;
 
 { TProjectCommandsStamp }
 
 function TProjectCommandsStamp.Changed(AUnitInfo: TUnitInfo): Boolean;
+var
+  CurProjectChangeStamp: Integer;
 begin
+  if Project1=nil then
+    CurProjectChangeStamp := LUInvalidChangeStamp
+  else
+    CurProjectChangeStamp := Project1.ChangeStamp;
   Result := not(
-        (UnitInfo = AUnitInfo)
-    and (ProjectChangeStamp = Project1.ChangeStamp)
+        (FUnitInfo = AUnitInfo)
+    and (FProjectChangeStamp = CurProjectChangeStamp)
+    and (FCompilerParseStamp = CompilerParseStamp)
+    and (FBuildMacroChangeStamp = BuildMacroChangeStamp)
     );
 
   if not Result then Exit;
 
-  UnitInfo := AUnitInfo;
-  ProjectChangeStamp := Project1.ChangeStamp;
+  FUnitInfo := AUnitInfo;
+  FProjectChangeStamp := CurProjectChangeStamp;
+  FCompilerParseStamp := CompilerParseStamp;
+  FBuildMacroChangeStamp := BuildMacroChangeStamp;
 end;
 
 { TPackageCommandsStamp }
@@ -484,14 +498,14 @@ end;
 function TPackageCommandsStamp.Changed(AUnitInfo: TUnitInfo): Boolean;
 begin
   Result := not(
-        (UnitInfo = AUnitInfo)
-    and (PackagesChangeStamp = PackageGraph.ChangeStamp)
+        (FUnitInfo = AUnitInfo)
+    and (FPackagesChangeStamp = PackageGraph.ChangeStamp)
     );
 
   if not Result then Exit;
 
-  UnitInfo := AUnitInfo;
-  PackagesChangeStamp := PackageGraph.ChangeStamp;
+  FUnitInfo := AUnitInfo;
+  FPackagesChangeStamp := PackageGraph.ChangeStamp;
 end;
 
 { TSourceEditorTabCommandsStamp }
@@ -499,23 +513,23 @@ end;
 function TSourceEditorTabCommandsStamp.Changed(ASrcEdit: TSourceEditor): Boolean;
 begin
   Result := not(
-        (SrcEdit = ASrcEdit)
+        (FSrcEdit = ASrcEdit)
     and (ASrcEdit <> nil)
-    and (SrcEditLocked = ASrcEdit.IsLocked)
-    and (SourceNotebook = ASrcEdit.SourceNotebook)
-    and (PageIndex = ASrcEdit.SourceNotebook.PageIndex)
-    and (PageCount = ASrcEdit.SourceNotebook.PageCount)
+    and (FSrcEditLocked = ASrcEdit.IsLocked)
+    and (FSourceNotebook = ASrcEdit.SourceNotebook)
+    and (FPageIndex = ASrcEdit.SourceNotebook.PageIndex)
+    and (FPageCount = ASrcEdit.SourceNotebook.PageCount)
     );
 
   if not Result then Exit;
 
-  SrcEdit := ASrcEdit;
+  FSrcEdit := ASrcEdit;
   if ASrcEdit<>nil then
   begin
-    SrcEditLocked := ASrcEdit.IsLocked;
-    SourceNotebook := ASrcEdit.SourceNotebook;
-    PageIndex := ASrcEdit.SourceNotebook.PageIndex;
-    PageCount := ASrcEdit.SourceNotebook.PageCount;
+    FSrcEditLocked := ASrcEdit.IsLocked;
+    FSourceNotebook := ASrcEdit.SourceNotebook;
+    FPageIndex := ASrcEdit.SourceNotebook.PageIndex;
+    FPageCount := ASrcEdit.SourceNotebook.PageCount;
   end;
 end;
 
@@ -525,21 +539,21 @@ function TSourceEditorCommandsStamp.Changed(ASrcEdit: TSourceEditor;
   ADisplayState: TDisplayState): Boolean;
 begin
   Result := not(
-        (SrcEdit = ASrcEdit)
+        (FSrcEdit = ASrcEdit)
     and (ASrcEdit <> nil)
-    and (DisplayState = ADisplayState)
-    and (EditorComponentStamp = ASrcEdit.EditorComponent.ChangeStamp)
-    and (EditorCaretStamp = ASrcEdit.EditorComponent.CaretStamp)
+    and (FDisplayState = ADisplayState)
+    and (FEditorComponentStamp = ASrcEdit.EditorComponent.ChangeStamp)
+    and (FEditorCaretStamp = ASrcEdit.EditorComponent.CaretStamp)
     );
 
   if not Result then Exit;
 
-  SrcEdit := ASrcEdit;
-  DisplayState := ADisplayState;
+  FSrcEdit := ASrcEdit;
+  FDisplayState := ADisplayState;
   if ASrcEdit<>nil then
   begin
-    EditorComponentStamp := ASrcEdit.EditorComponent.ChangeStamp;
-    EditorCaretStamp := ASrcEdit.EditorComponent.CaretStamp;
+    FEditorComponentStamp := ASrcEdit.EditorComponent.ChangeStamp;
+    FEditorCaretStamp := ASrcEdit.EditorComponent.CaretStamp;
   end;
 end;
 
@@ -1660,6 +1674,144 @@ begin
   EnvironmentOptions.AddToRecentProjectFiles(AFilename);
   MainIDE.SetRecentProjectFilesMenu;
   MainIDE.SaveEnvironment;
+end;
+
+function TLazSourceFileManager.AddUnitToProject(
+  const AEditor: TSourceEditorInterface): TModalResult;
+var
+  ActiveSourceEditor: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  s, ShortUnitName, LFMFilename, LFMType, LFMComponentName,
+    LFMClassName: string;
+  OkToAdd: boolean;
+  Owners: TFPList;
+  i: Integer;
+  APackage: TLazPackage;
+  MsgResult: TModalResult;
+  LFMCode: TCodeBuffer;
+begin
+  Result:=mrCancel;
+  if AEditor<>nil then
+  begin
+    ActiveSourceEditor := AEditor as TSourceEditor;
+    if not MainIDE.BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[ctfUseGivenSourceEditor]) then exit;
+  end else
+  begin
+    ActiveSourceEditor:=nil;
+    if not MainIDE.BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]) then exit;
+  end;
+  if (ActiveUnitInfo=nil) then exit;
+  if ActiveUnitInfo.IsPartOfProject then begin
+    if not ActiveUnitInfo.IsVirtual then
+      s:=Format(lisTheFile, [ActiveUnitInfo.Filename])
+    else
+      s:=Format(lisTheFile, [ActiveSourceEditor.PageName]);
+    s:=Format(lisisAlreadyPartOfTheProject, [s]);
+    IDEMessageDialog(lisInformation, s, mtInformation, [mbOk]);
+    exit;
+  end;
+  if not ActiveUnitInfo.IsVirtual then
+    s:='"'+ActiveUnitInfo.Filename+'"'
+  else
+    s:='"'+ActiveSourceEditor.PageName+'"';
+  if (ActiveUnitInfo.SrcUnitName<>'')
+  and (Project1.IndexOfUnitWithName(ActiveUnitInfo.SrcUnitName,true,ActiveUnitInfo)>=0) then
+  begin
+    IDEMessageDialog(lisInformation, Format(
+      lisUnableToAddToProjectBecauseThereIsAlreadyAUnitWith, [s]),
+      mtInformation, [mbOk]);
+    exit;
+  end;
+
+  Owners:=PkgBoss.GetPossibleOwnersOfUnit(ActiveUnitInfo.Filename,[]);
+  try
+    if (Owners<>nil) then begin
+      for i:=0 to Owners.Count-1 do begin
+        if TObject(Owners[i]) is TLazPackage then begin
+          APackage:=TLazPackage(Owners[i]);
+          MsgResult:=IDEQuestionDialog(lisAddPackageRequirement,
+            Format(lisTheUnitBelongsToPackage, [APackage.IDAsString]),
+            mtConfirmation, [mrYes, lisAddPackageToProject2,
+                            mrIgnore, lisAddUnitNotRecommended, mrCancel],'');
+          case MsgResult of
+            mrYes:
+              begin
+                PkgBoss.AddProjectDependency(Project1,APackage);
+                exit;
+              end;
+            mrIgnore: ;
+          else
+            exit;
+          end;
+        end;
+      end;
+    end;
+  finally
+    Owners.Free;
+  end;
+
+  if FilenameIsPascalUnit(ActiveUnitInfo.Filename)
+  and (EnvironmentOptions.CharcaseFileAction<>ccfaIgnore) then
+  begin
+    // ask user to apply naming conventions
+    Result:=RenameUnitLowerCase(ActiveUnitInfo,true);
+    if Result=mrIgnore then Result:=mrOk;
+    if Result<>mrOk then begin
+      DebugLn('AddActiveUnitToProject A RenameUnitLowerCase failed ',ActiveUnitInfo.Filename);
+      exit;
+    end;
+  end;
+
+  if IDEMessageDialog(lisConfirmation, Format(lisAddToProject, [s]),
+    mtConfirmation, [mbYes, mbCancel]) in [mrOk, mrYes]
+  then begin
+    OkToAdd:=True;
+    if FilenameIsPascalUnit(ActiveUnitInfo.Filename) then
+      OkToAdd:=CheckDirIsInSearchPath(ActiveUnitInfo,False,False)
+    else if CompareFileExt(ActiveUnitInfo.Filename,'inc',false)=0 then
+      OkToAdd:=CheckDirIsInSearchPath(ActiveUnitInfo,False,True);
+    if OkToAdd then begin
+      ActiveUnitInfo.IsPartOfProject:=true;
+      Project1.Modified:=true;
+      if (FilenameIsPascalUnit(ActiveUnitInfo.Filename))
+      and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
+      then begin
+        ActiveUnitInfo.ReadUnitNameFromSource(false);
+        ShortUnitName:=ActiveUnitInfo.CreateUnitName;
+        if (ShortUnitName<>'') then begin
+          if CodeToolBoss.AddUnitToMainUsesSection(Project1.MainUnitInfo.Source,ShortUnitName,'')
+          then
+            Project1.MainUnitInfo.Modified:=true;
+        end;
+      end;
+    end;
+  end;
+
+  if Project1.AutoCreateForms
+  and (pfMainUnitHasCreateFormStatements in Project1.Flags)
+  and FilenameIsPascalUnit(ActiveUnitInfo.Filename) then
+  begin
+    UpdateUnitInfoResourceBaseClass(ActiveUnitInfo,true);
+    if ActiveUnitInfo.ResourceBaseClass in [pfcbcForm,pfcbcDataModule] then
+    begin
+      LFMFilename:=ActiveUnitInfo.UnitResourceFileformat.GetUnitResourceFilename(ActiveUnitInfo.Filename,true);
+      if LoadCodeBuffer(LFMCode,LFMFilename,[lbfUpdateFromDisk],false)=mrOk then
+      begin
+        // read lfm header
+        ReadLFMHeader(LFMCode.Source,LFMType,LFMComponentName,LFMClassName);
+        if (LFMComponentName<>'')
+        and (LFMClassName<>'') then begin
+          if IDEMessageDialog(lisAddToStartupComponents,
+            Format(lisShouldTheComponentBeAutoCreatedWhenTheApplicationS, [
+              LFMComponentName]),
+            mtInformation,[mbYes,mbNo])=mrYes then
+          begin
+            Project1.AddCreateFormToProjectFile(LFMClassName,LFMComponentName);
+          end;
+        end;
+      end;
+    end;
+  end;
 end;
 
 procedure TLazSourceFileManager.UpdateSourceNames;
@@ -3312,133 +3464,8 @@ begin
 end;
 
 function TLazSourceFileManager.AddActiveUnitToProject: TModalResult;
-var
-  ActiveSourceEditor: TSourceEditor;
-  ActiveUnitInfo: TUnitInfo;
-  s, ShortUnitName, LFMFilename, LFMType, LFMComponentName,
-    LFMClassName: string;
-  OkToAdd: boolean;
-  Owners: TFPList;
-  i: Integer;
-  APackage: TLazPackage;
-  MsgResult: TModalResult;
-  LFMCode: TCodeBuffer;
 begin
-  Result:=mrCancel;
-  ActiveSourceEditor:=nil;
-  if not MainIDE.BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]) then exit;
-  if (ActiveUnitInfo=nil) then exit;
-  if ActiveUnitInfo.IsPartOfProject then begin
-    if not ActiveUnitInfo.IsVirtual then
-      s:=Format(lisTheFile, [ActiveUnitInfo.Filename])
-    else
-      s:=Format(lisTheFile, [ActiveSourceEditor.PageName]);
-    s:=Format(lisisAlreadyPartOfTheProject, [s]);
-    IDEMessageDialog(lisInformation, s, mtInformation, [mbOk]);
-    exit;
-  end;
-  if not ActiveUnitInfo.IsVirtual then
-    s:='"'+ActiveUnitInfo.Filename+'"'
-  else
-    s:='"'+ActiveSourceEditor.PageName+'"';
-  if (ActiveUnitInfo.SrcUnitName<>'')
-  and (Project1.IndexOfUnitWithName(ActiveUnitInfo.SrcUnitName,true,ActiveUnitInfo)>=0) then
-  begin
-    IDEMessageDialog(lisInformation, Format(
-      lisUnableToAddToProjectBecauseThereIsAlreadyAUnitWith, [s]),
-      mtInformation, [mbOk]);
-    exit;
-  end;
-
-  Owners:=PkgBoss.GetPossibleOwnersOfUnit(ActiveUnitInfo.Filename,[]);
-  try
-    if (Owners<>nil) then begin
-      for i:=0 to Owners.Count-1 do begin
-        if TObject(Owners[i]) is TLazPackage then begin
-          APackage:=TLazPackage(Owners[i]);
-          MsgResult:=IDEQuestionDialog(lisAddPackageRequirement,
-            Format(lisTheUnitBelongsToPackage, [APackage.IDAsString]),
-            mtConfirmation, [mrYes, lisAddPackageToProject2,
-                            mrIgnore, lisAddUnitNotRecommended, mrCancel],'');
-          case MsgResult of
-            mrYes:
-              begin
-                PkgBoss.AddProjectDependency(Project1,APackage);
-                exit;
-              end;
-            mrIgnore: ;
-          else
-            exit;
-          end;
-        end;
-      end;
-    end;
-  finally
-    Owners.Free;
-  end;
-
-  if FilenameIsPascalUnit(ActiveUnitInfo.Filename)
-  and (EnvironmentOptions.CharcaseFileAction<>ccfaIgnore) then
-  begin
-    // ask user to apply naming conventions
-    Result:=RenameUnitLowerCase(ActiveUnitInfo,true);
-    if Result=mrIgnore then Result:=mrOk;
-    if Result<>mrOk then begin
-      DebugLn('AddActiveUnitToProject A RenameUnitLowerCase failed ',ActiveUnitInfo.Filename);
-      exit;
-    end;
-  end;
-
-  if IDEMessageDialog(lisConfirmation, Format(lisAddToProject, [s]),
-    mtConfirmation, [mbYes, mbCancel]) in [mrOk, mrYes]
-  then begin
-    OkToAdd:=True;
-    if FilenameIsPascalUnit(ActiveUnitInfo.Filename) then
-      OkToAdd:=CheckDirIsInSearchPath(ActiveUnitInfo,False,False)
-    else if CompareFileExt(ActiveUnitInfo.Filename,'inc',false)=0 then
-      OkToAdd:=CheckDirIsInSearchPath(ActiveUnitInfo,False,True);
-    if OkToAdd then begin
-      ActiveUnitInfo.IsPartOfProject:=true;
-      Project1.Modified:=true;
-      if (FilenameIsPascalUnit(ActiveUnitInfo.Filename))
-      and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
-      then begin
-        ActiveUnitInfo.ReadUnitNameFromSource(false);
-        ShortUnitName:=ActiveUnitInfo.CreateUnitName;
-        if (ShortUnitName<>'') then begin
-          if CodeToolBoss.AddUnitToMainUsesSection(Project1.MainUnitInfo.Source,ShortUnitName,'')
-          then
-            Project1.MainUnitInfo.Modified:=true;
-        end;
-      end;
-    end;
-  end;
-
-  if Project1.AutoCreateForms
-  and (pfMainUnitHasCreateFormStatements in Project1.Flags)
-  and FilenameIsPascalUnit(ActiveUnitInfo.Filename) then
-  begin
-    UpdateUnitInfoResourceBaseClass(ActiveUnitInfo,true);
-    if ActiveUnitInfo.ResourceBaseClass in [pfcbcForm,pfcbcDataModule] then
-    begin
-      LFMFilename:=ActiveUnitInfo.UnitResourceFileformat.GetUnitResourceFilename(ActiveUnitInfo.Filename,true);
-      if LoadCodeBuffer(LFMCode,LFMFilename,[lbfUpdateFromDisk],false)=mrOk then
-      begin
-        // read lfm header
-        ReadLFMHeader(LFMCode.Source,LFMType,LFMComponentName,LFMClassName);
-        if (LFMComponentName<>'')
-        and (LFMClassName<>'') then begin
-          if IDEMessageDialog(lisAddToStartupComponents,
-            Format(lisShouldTheComponentBeAutoCreatedWhenTheApplicationS, [
-              LFMComponentName]),
-            mtInformation,[mbYes,mbNo])=mrYes then
-          begin
-            Project1.AddCreateFormToProjectFile(LFMClassName,LFMComponentName);
-          end;
-        end;
-      end;
-    end;
-  end;
+  Result := AddUnitToProject(nil);
 end;
 
 function TLazSourceFileManager.RemoveFromProjectDialog: TModalResult;
@@ -3938,6 +3965,8 @@ end;
 
 function TLazSourceFileManager.CloseProject: TModalResult;
 begin
+  if Project1=nil then exit(mrOk);
+
   //debugln('TLazSourceFileManager.CloseProject A');
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.CloseProject A');{$ENDIF}
   Result:=DebugBoss.DoStopProject;
@@ -3971,6 +4000,7 @@ begin
   FreeThenNil(Project1);
   if IDEMessagesWindow<>nil then IDEMessagesWindow.Clear;
 
+  MainIDE.UpdateCaption;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.CloseProject C');{$ENDIF}
   Result:=mrOk;
   //debugln('TLazSourceFileManager.CloseProject end ',CodeToolBoss.ConsistencyCheck);
@@ -6280,9 +6310,9 @@ function TLazSourceFileManager.LoadAncestorDependencyHidden(AnUnitInfo: TUnitInf
   out AncestorClass: TComponentClass;
   out AncestorUnitInfo: TUnitInfo): TModalResult;
 var
-  AncestorClassName: String;
+  AncestorClassName, IgnoreBtnText: String;
   CodeBuf: TCodeBuffer;
-  GrandAncestorClass: TComponentClass;
+  GrandAncestorClass, DefAncestorClass: TComponentClass;
 begin
   AncestorClassName:='';
   AncestorClass:=nil;
@@ -6310,9 +6340,22 @@ begin
   end;
 
   // try loading the ancestor first (unit, lfm and component instance)
+
+  if AnUnitInfo.UnitResourceFileformat<>nil then
+    DefAncestorClass:=AnUnitInfo.UnitResourceFileformat.DefaultComponentClass;
+  // use TForm as default ancestor
+  if DefAncestorClass=nil then
+    DefAncestorClass:=BaseFormEditor1.StandardDesignerBaseClasses[DesignerBaseClassId_TForm];
+
   if (AncestorClass=nil) then begin
+    IgnoreBtnText:='';
+    if DefAncestorClass<>nil then
+      IgnoreBtnText:=Format(lisIgnoreUseAsAncestor, [DefAncestorClass.ClassName]
+        );
+
     Result:=LoadComponentDependencyHidden(AnUnitInfo,AncestorClassName,
-             OpenFlags,false,AncestorClass,AncestorUnitInfo,GrandAncestorClass);
+             OpenFlags,false,AncestorClass,AncestorUnitInfo,GrandAncestorClass,
+             IgnoreBtnText);
     if Result<>mrOk then begin
       DebugLn(['TLazSourceFileManager.LoadAncestorDependencyHidden DoLoadComponentDependencyHidden failed AnUnitInfo=',AnUnitInfo.Filename]);
     end;
@@ -6320,11 +6363,7 @@ begin
     mrAbort: exit;
     mrOk: ;
     mrIgnore:
-      begin
-        if AnUnitInfo.UnitResourceFileformat<>nil then
-          AncestorClass:=AnUnitInfo.UnitResourceFileformat.DefaultComponentClass;
-        AncestorUnitInfo:=nil;
-      end;
+      AncestorUnitInfo:=nil;
     else
       // cancel
       Result:=mrCancel;
@@ -6332,10 +6371,9 @@ begin
     end;
   end;
 
-  // use TForm as default ancestor
-  if AncestorClass=nil then
-    AncestorClass:=BaseFormEditor1.StandardDesignerBaseClasses[DesignerBaseClassId_TForm];
   //DebugLn('TLazSourceFileManager.LoadAncestorDependencyHidden Filename="',AnUnitInfo.Filename,'" AncestorClassName=',AncestorClassName,' AncestorClass=',dbgsName(AncestorClass));
+  if AncestorClass=nil then
+    AncestorClass:=DefAncestorClass;
   Result:=mrOk;
 end;
 
@@ -6758,8 +6796,8 @@ end;
 function TLazSourceFileManager.LoadComponentDependencyHidden(
   AnUnitInfo: TUnitInfo; const AComponentClassName: string; Flags: TOpenFlags;
   MustHaveLFM: boolean; out AComponentClass: TComponentClass; out
-  ComponentUnitInfo: TUnitInfo; out AncestorClass: TComponentClass
-  ): TModalResult;
+  ComponentUnitInfo: TUnitInfo; out AncestorClass: TComponentClass;
+  const IgnoreBtnText: string): TModalResult;
 { Possible results:
   mrOk:
    - AComponentClass<>nil and ComponentUnitInfo<>nil
@@ -6855,12 +6893,13 @@ function TLazSourceFileManager.LoadComponentDependencyHidden(
   end;
 
 var
-  Quiet: Boolean;
-  LFMFilename: string;
+  Quiet, HideAbort: Boolean;
+  LFMFilename, MsgText: string;
 begin
   Result:=mrCancel;
   AComponentClass:=nil;
   Quiet:=([ofProjectLoading,ofQuiet]*Flags<>[]);
+  HideAbort:=not (ofProjectLoading in Flags);
 
   if (AComponentClassName='') or (not IsValidIdent(AComponentClassName)) then
   begin
@@ -6870,10 +6909,9 @@ begin
 
   // check for cycles
   if AnUnitInfo.LoadingComponent then begin
-    Result:=IDEQuestionDialog(lisCodeTemplError,
+    Result:=IDEQuestionDialogAb(lisCodeTemplError,
       Format(lisUnableToLoadTheComponentClassBecauseItDependsOnIts, [AComponentClassName]),
-      mtError, [mrCancel, lisCancelLoadingThisComponent,
-               mrAbort, lisAbortWholeLoading]);
+      mtError, [mrCancel, lisCancelLoadingThisComponent],HideAbort);
     exit;
   end;
 
@@ -6885,9 +6923,9 @@ begin
     {$endif}
     Result:=FindComponentClass(AnUnitInfo,AComponentClassName,Quiet,
       ComponentUnitInfo,AComponentClass,LFMFilename,AncestorClass);
-    {$if defined(VerboseFormEditor) or defined(VerboseLFMSearch)}
+    { $if defined(VerboseFormEditor) or defined(VerboseLFMSearch)}
     debugln('TLazSourceFileManager.LoadComponentDependencyHidden ',AnUnitInfo.Filename,' AComponentClassName=',AComponentClassName,' AComponentClass=',dbgsName(AComponentClass),' AncestorClass=',DbgSName(AncestorClass),' LFMFilename=',LFMFilename);
-    {$endif}
+    { $endif}
 
     //- AComponentClass<>nil and ComponentUnitInfo<>nil
     //   designer component
@@ -6907,12 +6945,17 @@ begin
       Result:=mrCancel;
     if Result=mrAbort then exit;
     if Result<>mrOk then begin
-      Result:=IDEQuestionDialog(lisCodeTemplError,
-        Format(lisUnableToFindTheComponentClassItIsNotRegisteredViaR, [
-          AComponentClassName, LineEnding, LineEnding, LineEnding, AnUnitInfo.Filename]),
-        mtError, [mrCancel, lisCancelLoadingThisComponent,
-                 mrAbort, lisAbortWholeLoading,
-                 mrIgnore, lisIgnoreUseTFormAsAncestor]);
+      MsgText:=Format(lisUnableToFindTheComponentClassItIsNotRegisteredViaR, [
+          AComponentClassName, LineEnding, LineEnding, LineEnding, AnUnitInfo.Filename]);
+      if IgnoreBtnText<>'' then
+        Result:=IDEQuestionDialogAb(lisCodeTemplError,
+                  MsgText, mtError,
+                  [mrCancel, lisCancelLoadingThisComponent,
+                   mrIgnore, IgnoreBtnText],
+                   HideAbort)
+      else
+        Result:=IDEQuestionDialogAb(lisCodeTemplError,
+          MsgText,mtError,[mrCancel, lisCancelLoadingThisComponent],HideAbort);
     end;
   finally
     AnUnitInfo.LoadingComponent:=false;

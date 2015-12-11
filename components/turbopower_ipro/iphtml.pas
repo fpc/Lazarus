@@ -7775,7 +7775,7 @@ end;
 function TIpHtml.GetSelectionBlocks(out StartSelIndex,EndSelIndex: Integer): boolean;
 var
   R : TRect;
-  CurBlock: TIpHtmlNodeBlock;
+  //CurBlock: TIpHtmlNodeBlock;
 begin
   Result := false;
 
@@ -7783,12 +7783,12 @@ begin
   and ((FStartSel.x < 0) or (FEndSel.x < 0)) then Exit;
 
   if not FAllSelected then begin
-    CurBlock := nil;
+    //CurBlock := nil;
     // search blocks that intersect the selection
     // 1.- find first block that intersects upleft point of sel. (start from 0)
     StartSelIndex := 0;
     while StartSelIndex < RectList.Count do begin
-      CurBlock := PIpHtmlRectListEntry(RectList[StartSelIndex]).Block;
+      //CurBlock := PIpHtmlRectListEntry(RectList[StartSelIndex]).Block;
       {if FAllSelected and (CurBlock <> nil) then
         break;}
 //      if PtInRect(CurBlock.PageRect, FStartSel) then begin

@@ -316,6 +316,7 @@ end;
 constructor TBuildManager.Create(AOwner: TComponent);
 begin
   EnvironmentOptions := TEnvironmentOptions.Create;
+  IDEEnvironmentOptions := EnvironmentOptions;
   EnvironmentOptions.IsGlobalMode:=@EnvironmentOptionsIsGlobalMode;
   DefaultCfgVars:=TCTCfgScriptVariables.Create;
   DefaultCfgVarsBuildMacroStamp:=CTInvalidChangeStamp;
@@ -1657,8 +1658,12 @@ begin
   FilePath:=ExtractFilePath(Filename);
   FileExt:=ExtractFileExt(Filename);
   FileNameOnly:=ExtractFilenameOnly(Filename);
-  if BackupInfo.SubDirectory<>'' then begin
-    SubDir:=FilePath+BackupInfo.SubDirectory;
+  SubDir:=BackupInfo.SubDirectory;
+  if BackupInfo.SubDirectory<>'' then
+    GlobalMacroList.SubstituteStr(SubDir);
+  if SubDir<>'' then begin
+    if not FilenameIsAbsolute(SubDir) then
+      SubDir:=TrimFilename(FilePath+SubDir);
     Result:=ForceDirectoryInteractive(SubDir,[mbRetry,mbIgnore]);
     if Result=mrCancel then exit;
     if Result=mrIgnore then Result:=mrOk;
@@ -1920,9 +1925,9 @@ begin
     if Prog<>'' then begin
       List:=nil;
       try
-        if ConsoleVerbosity>=0 then
+        if ConsoleVerbosity>0 then
           debugln(['Hint: (lazarus) TBuildManager.MacroFuncInstantFPCCache ',Prog]);
-        List:=RunTool(Prog,'--get-cache','',ConsoleVerbosity<0);
+        List:=RunTool(Prog,'--get-cache','',ConsoleVerbosity<1);
         if (List<>nil) and (List.Count>0) then
           FMacroInstantFPCCache:=List[0];
         List.Free;
@@ -1933,7 +1938,7 @@ begin
         end;
       end;
     end;
-    if ConsoleVerbosity>=0 then
+    if ConsoleVerbosity>=1 then
       debugln(['Hint: (lazarus) [TBuildManager.MacroFuncInstantFPCCache] ',FMacroInstantFPCCache]);
   end;
   Result:=FMacroInstantFPCCache;

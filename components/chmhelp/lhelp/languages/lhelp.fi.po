@@ -19,7 +19,7 @@ msgstr "Ei pysty hallitsemaan tämän tyyppistä sisältöä. \"%s\" url:%s%s"
 
 #: lhelpstrconsts.slhelp_close
 msgid "&Close"
-msgstr ""
+msgstr "&Sulje"
 
 #: lhelpstrconsts.slhelp_contents
 msgid "Contents"
@@ -27,7 +27,7 @@ msgstr "Sisältö"
 
 #: lhelpstrconsts.slhelp_contextshowthehelpinformationrelatedtothiscontext
 msgid "    --context  :  Show the help information related to this context"
-msgstr ""
+msgstr "    --context  :  Näytä tähän sisältöön liittyvät avusteet"
 
 #: lhelpstrconsts.slhelp_copy
 msgid "Copy"
@@ -35,11 +35,11 @@ msgstr "Kopio"
 
 #: lhelpstrconsts.slhelp_exit
 msgid "E&xit"
-msgstr "Poistu"
+msgstr "&Poistu"
 
 #: lhelpstrconsts.slhelp_file
 msgid "&File"
-msgstr "Tiedosto"
+msgstr "&Tiedosto"
 
 #: lhelpstrconsts.slhelp_find
 msgid "Find"
@@ -47,19 +47,19 @@ msgstr "Hae"
 
 #: lhelpstrconsts.slhelp_help
 msgid "&Help"
-msgstr "Ohje"
+msgstr "&Ohje"
 
 #: lhelpstrconsts.slhelp_helpfileschmchmallfiles
 msgid "Help files (*.chm)|*.chm|All files (*.*)|*"
-msgstr ""
+msgstr "Avuste tiedostot (*.chm)|*.chm|Kaikki tiedostot (*.*)|*"
 
 #: lhelpstrconsts.slhelp_helpshowthisinformation
 msgid "    --help     :  Show this information"
-msgstr ""
+msgstr "    --help     :  Näytä tämä avuste"
 
 #: lhelpstrconsts.slhelp_hidestarthiddenbutacceptcommunicationsviaipc
 msgid "    --hide     :  Start hidden but accept communications via IPC"
-msgstr ""
+msgstr "    --hide     :  Käynnistä piilotettuna mutta salli yhteys IPC:n kautta"
 
 #: lhelpstrconsts.slhelp_index
 msgid "Index"
@@ -67,11 +67,11 @@ msgstr "Hakemisto"
 
 #: lhelpstrconsts.slhelp_indexloading
 msgid "Index Loading ..."
-msgstr ""
+msgstr "Hakemistoa ladataan ..."
 
 #: lhelpstrconsts.slhelp_ipcnamethenameoftheipcservertolistenonforprogramsw
 msgid "    --ipcname  :  The name of the IPC server to listen on for%s              programs who wish to control the viewer"
-msgstr ""
+msgstr "    --ipcname  :  IPC palvelimen nimi, kuuntelee%s              ohjelmia mitkä tahtovat ohjata tiedoston näyttäjää"
 
 #: lhelpstrconsts.slhelp_keyword
 msgid "Keyword:"
@@ -91,7 +91,7 @@ msgstr "LHelp (CHM tiedoston näyttäjä)%sVersion %s%sCopyright (C) Andrew Hain
 
 #: lhelpstrconsts.slhelp_lhelpoptions
 msgid "  LHelp options:"
-msgstr ""
+msgstr "  LHelp asetukset:"
 
 #: lhelpstrconsts.slhelp_loadedinms
 msgid "Loaded: %s in %sms"
@@ -99,11 +99,11 @@ msgstr "Ladattu: %s  %s ms"
 
 #: lhelpstrconsts.slhelp_loading
 msgid "Loading: %s"
-msgstr ""
+msgstr "Ladataan: %s"
 
 #: lhelpstrconsts.slhelp_noresults
 msgid "No Results"
-msgstr ""
+msgstr "Ei tuloksia"
 
 #: lhelpstrconsts.slhelp_notfound
 msgid "%s not found!"
@@ -119,15 +119,15 @@ msgstr "Avaa..."
 
 #: lhelpstrconsts.slhelp_openexistingfile
 msgid "Open existing file"
-msgstr ""
+msgstr "Avaa olemassa oleva tiedosto"
 
 #: lhelpstrconsts.slhelp_opennewfileinseparatetab
 msgid "Open new file in separate tab"
-msgstr ""
+msgstr "Avaa uusi tiedosto toisessa välilehdessä"
 
 #: lhelpstrconsts.slhelp_opennewtabwithstatusbar
 msgid "Open new tab with status bar"
-msgstr ""
+msgstr "Avaa uusi välilehti statuspalkin kanssa"
 
 #: lhelpstrconsts.slhelp_openrecent
 msgid "Open Recent"
@@ -163,19 +163,19 @@ msgstr "Tuetut URL tyyppi(/tyypit): (%s)"
 
 #: lhelpstrconsts.slhelp_tableofcontentsloading
 msgid "Table of Contents Loading ..."
-msgstr ""
+msgstr "Sisällysluettelo ladataan ..."
 
 #: lhelpstrconsts.slhelp_tableofcontentsloadingpleasewait
 msgid "Table of Contents Loading. Please Wait ..."
-msgstr ""
+msgstr "Sisällysluettelo ladataan. Odota ..."
 
 #: lhelpstrconsts.slhelp_untitled
 msgid "untitled"
-msgstr ""
+msgstr "nimetön"
 
 #: lhelpstrconsts.slhelp_usagelhelpfilenamecontextidhideipcnamelhelpmyapp
 msgid "    Usage: lhelp [[filename] [--context id] [--hide] [--ipcname lhelp-myapp]]"
-msgstr ""
+msgstr "    Käyttö: lhelp [[tiedosto] [--context id] [--hide] [--ipcname lhelp-myapp]]"
 
 #: lhelpstrconsts.slhelp_view
 msgid "&View"

@@ -730,6 +730,8 @@ and then check the result to see if the user made a valid choice and pressed the
 The available filters and their description are separated by pipe symbols. <br/>
 
 To set this property during runtime assign a value like: "All files|*.*|Lazarus Project files|*.lpr"<br/>
+
+An entry can contain multiple masks separated by semicolon, e.g. "Pascal units|*.pas;*.pp;*.p"<br/>
         </descr>
       </element>
       <!-- property Visibility: published -->

@@ -1570,3 +1570,4 @@ msgstr "Fül mozgatása eggyel balra"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Fül mozgatása eggyel jobbra"
+

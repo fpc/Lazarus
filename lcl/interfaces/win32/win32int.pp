@@ -296,11 +296,7 @@ initialization
     MouseDownTime := GetTickCount - 5000
   else
     MouseDownTime := 0;
-  {$IFDEF WindowsUnicodeSupport}
   SystemCharSetIsUTF8:=true;
-  {$ELSE}
-  SystemCharSetIsUTF8:=false;
-  {$ENDIF}
 
   if (Win32MajorVersion = 4) and (Win32MinorVersion = 0)
   then MMenuItemInfoSize := W95_MENUITEMINFO_SIZE

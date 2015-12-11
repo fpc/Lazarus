@@ -1123,6 +1123,7 @@ msgid "Copy word on copy none"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcorange
+msgctxt "lazarusidestrconsts.dlgcorange"
 msgid "Range"
 msgstr "Rozsah"
 
@@ -2288,14 +2289,18 @@ msgid "1 (quick, debugger friendly)"
 msgstr "Úroveň 1 (rýchle a priateľské debugeru)"
 
 #: lazarusidestrconsts.dlglevel2opt
-msgid "2 (quick optimizations)"
+msgid "2 (-O1 + quick optimizations)"
 msgstr ""
 
 #: lazarusidestrconsts.dlglevel3opt
 #, fuzzy
-#| msgid "Level 3 (Level 2 + slow optimizations)"
-msgid "3 (slow optimizations)"
+#| msgid "3 (slow optimizations)"
+msgid "3 (-O2 + slow optimizations)"
 msgstr "Úroveň 3 (Úroveň 2 + pomalé optimalizácie)"
+
+#: lazarusidestrconsts.dlglevel4opt
+msgid "4 (-O3 + aggressive optimizations, beware)"
+msgstr ""
 
 #: lazarusidestrconsts.dlglevelnoneopt
 #, fuzzy
@@ -10293,9 +10298,9 @@ msgstr "Ignorovať binárky"
 msgid "Ignore this exception type"
 msgstr ""
 
-#: lazarusidestrconsts.lisignoreusetformasancestor
-msgid "Ignore, use TForm as ancestor"
-msgstr "Ignorovať použitie TForm ako predka"
+#: lazarusidestrconsts.lisignoreuseasancestor
+msgid "Ignore, use %s as ancestor"
+msgstr ""
 
 #: lazarusidestrconsts.lisimitateindentationofcurrentunitprojectorpackage
 msgid "Imitate indentation of current unit, project or package"
@@ -14783,19 +14788,27 @@ msgid "Virtual Unit"
 msgstr "Virtuálna jednotka"
 
 #: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
-msgid "Package directory. Parameter is package ID"
+msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmacropackageincludefilessearchpathparameterispackageid
-msgid "Package include files search path. Parameter is package ID"
+msgid "Package include files search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr ""
+
+#: lazarusidestrconsts.lispkgmacropackagenameparameterispackageid
+msgid "Package name. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr ""
+
+#: lazarusidestrconsts.lispkgmacropackageoutputdirectoryparameterispackageid
+msgid "Package output directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmacropackagesourcesearchpathparameterispackageid
-msgid "Package source search path. Parameter is package ID"
+msgid "Package source search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmacropackageunitsearchpathparameterispackageid
-msgid "Package unit search path. Parameter is package ID"
+msgid "Package unit search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforpackagepackage
@@ -16070,6 +16083,12 @@ msgstr ""
 #| msgid "Quit Lazarus"
 msgid "&Quit Lazarus"
 msgstr "Skončiť Lazarus"
+
+#: lazarusidestrconsts.lisrange
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisrange"
+msgid "Range"
+msgstr "Rozsah"
 
 #: lazarusidestrconsts.lisreaderror
 msgid "Read Error"
@@ -17893,10 +17912,6 @@ msgstr "Cesta hľadania jednotiek %s%s%s obsahuje zdrojový adresár %s%s%s bal�
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "Pracovný adresár %s%s%s neexistuje.%sProsím skontrolujte pracovný adresár v Spustiť > Parametre spustenia."
 
-#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inrtl
-msgid "This build mode now sets UTF-8 in RTL.%s Flags are in pages \"Custom Options\" and \"Additions and Overrides\"."
-msgstr ""
-
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
 msgid "This component already contains a class with the name %s."
 msgstr ""
@@ -18053,18 +18068,6 @@ msgstr ""
 
 #: lazarusidestrconsts.listoolbaroptionsraise
 msgid "Raise toolbars"
-msgstr ""
-
-#: lazarusidestrconsts.listoolbaroptionsstandardvisible
-msgid "Standard toolbar visible"
-msgstr ""
-
-#: lazarusidestrconsts.listoolbaroptionstoolbarsvisible
-msgid "Toolbars visible"
-msgstr ""
-
-#: lazarusidestrconsts.listoolbaroptionsviewdebugvisible
-msgid "Debug toolbar visible"
 msgstr ""
 
 #: lazarusidestrconsts.listoolhasnoexecutable

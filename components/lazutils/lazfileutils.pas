@@ -4,7 +4,7 @@
 unit LazFileUtils;
 
 {$mode objfpc}{$H+}
-
+{$i lazutils_defines.inc}
 interface
 
 uses

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-11-03 17:02+0100\n"
+"PO-Revision-Date: 2015-12-02 19:51+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -169,8 +169,6 @@ msgid "Extended, Actions, right gutter half only"
 msgstr "Erweitert, Aktionen, nur rechte Randhälfte"
 
 #: lazarusidestrconsts.dlfmousesimplegutterlines
-#, fuzzy
-#| msgid "Use line numers to select lines"
 msgid "Use line numbers to select lines"
 msgstr "Zeilennummern verwenden zur Zeilenauswahl"
 
@@ -1091,6 +1089,7 @@ msgid "Copy word on copy none"
 msgstr "Ohne Markierung Wort kopieren"
 
 #: lazarusidestrconsts.dlgcorange
+msgctxt "lazarusidestrconsts.dlgcorange"
 msgid "Range"
 msgstr "Bereich"
 
@@ -1318,7 +1317,7 @@ msgstr "Var/Type (lokal)"
 
 #: lazarusidestrconsts.dlgdrawcomponentsnamebelowit
 msgid "Draw the component's name below it."
-msgstr ""
+msgstr "Den Komponentennamen darunter zeichnen."
 
 #: lazarusidestrconsts.dlgedback
 msgid "Back"
@@ -2209,12 +2208,16 @@ msgid "1 (quick, debugger friendly)"
 msgstr "Stufe 1 (schnell, debuggerfreundlich)"
 
 #: lazarusidestrconsts.dlglevel2opt
-msgid "2 (quick optimizations)"
-msgstr "Stufe 2 (Stufe 1 + schnelle Opt.)"
+msgid "2 (-O1 + quick optimizations)"
+msgstr "Stufe 2 (-O1 + schnelle Opt.)"
 
 #: lazarusidestrconsts.dlglevel3opt
-msgid "3 (slow optimizations)"
-msgstr "Stufe 3 (Stufe 2 + langsame Opt.)"
+msgid "3 (-O2 + slow optimizations)"
+msgstr "Stufe 3 (-O2 + langsame Opt.)"
+
+#: lazarusidestrconsts.dlglevel4opt
+msgid "4 (-O3 + aggressive optimizations, beware)"
+msgstr "Stufe 4 (-O3 + aggressive Opt. , Vorsicht)"
 
 #: lazarusidestrconsts.dlglevelnoneopt
 msgid "0 (no optimization)"
@@ -3147,7 +3150,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgrunninginstancenotrespondingerror
 msgid "Lazarus instance is running but not responding."
-msgstr ""
+msgstr "Lazarus-Instanz läuft, reagiert aber nicht."
 
 #: lazarusidestrconsts.dlgrunodisplay
 msgid "Display (not for win32, e.g. 198.112.45.11:0, x.org:1, hydra:0.1)"
@@ -8212,7 +8215,7 @@ msgstr "unverändert"
 
 #: lazarusidestrconsts.lisdonotcheckifanotherideinstanceisalreadyrunning
 msgid "%sDo not check if another IDE instance is already running"
-msgstr ""
+msgstr "%sNicht prüfen, ob eine andere Lazarus-Instanz bereits läuft"
 
 #: lazarusidestrconsts.lisdonotclosetheproject
 msgid "Do not close the project"
@@ -8900,7 +8903,7 @@ msgstr "Export ..."
 
 #: lazarusidestrconsts.lisexportall
 msgid "Export all"
-msgstr ""
+msgstr "Alle exportieren"
 
 #: lazarusidestrconsts.lisexportallitemstofile
 msgid "Export All Items to File"
@@ -8929,7 +8932,7 @@ msgstr "Package-Liste exportieren (*.xml)"
 
 #: lazarusidestrconsts.lisexportselected
 msgid "Export selected"
-msgstr ""
+msgstr "Ausgewählte exportieren"
 
 #: lazarusidestrconsts.lisexportsub
 msgid "Export >>"
@@ -9894,9 +9897,9 @@ msgstr "Binärdateien übergehen"
 msgid "Ignore this exception type"
 msgstr "Diesen Ausnahmetyp übergehen"
 
-#: lazarusidestrconsts.lisignoreusetformasancestor
-msgid "Ignore, use TForm as ancestor"
-msgstr "Übergehen, TForm als Vorfahr verwenden"
+#: lazarusidestrconsts.lisignoreuseasancestor
+msgid "Ignore, use %s as ancestor"
+msgstr ""
 
 #: lazarusidestrconsts.lisimitateindentationofcurrentunitprojectorpackage
 msgid "Imitate indentation of current unit, project or package"
@@ -13076,7 +13079,7 @@ msgstr " des Projektinspektors"
 
 #: lazarusidestrconsts.lisoifaddtofavoriteproperties
 msgid "Add to favorite properties"
-msgstr ""
+msgstr "Zu Favoriteneigenschaften hinzufügen"
 
 #: lazarusidestrconsts.lisoifchooseabaseclassforthefavoriteproperty
 msgid "Choose a base class for the favorite property \"%s\"."
@@ -13088,7 +13091,7 @@ msgstr "Klasse \"%s\" nicht gefunden."
 
 #: lazarusidestrconsts.lisoifremovefromfavoriteproperties
 msgid "Remove from favorite properties"
-msgstr ""
+msgstr "Aus Favoriteneigenschaften entfernen"
 
 #: lazarusidestrconsts.lisoipautoinstalldynamic
 msgid "auto install dynamic"
@@ -13766,7 +13769,7 @@ msgstr "Neue Pfade für abhängige Packages und Projekte"
 
 #: lazarusidestrconsts.lispckoptsauthor
 msgid "Author"
-msgstr "Autor:"
+msgstr "Autor"
 
 #: lazarusidestrconsts.lispckoptsautomaticallyrebuildasneeded
 msgid "Automatically rebuild as needed"
@@ -13810,7 +13813,7 @@ msgstr "Bibliothek"
 
 #: lazarusidestrconsts.lispckoptslicense
 msgid "License"
-msgstr "Lizenz:"
+msgstr "Lizenz"
 
 #: lazarusidestrconsts.lispckoptslinker
 msgid "Linker"
@@ -14069,19 +14072,27 @@ msgid "Virtual Unit"
 msgstr "Virtuelle Unit"
 
 #: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
-msgid "Package directory. Parameter is package ID"
+msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
 msgstr "Package-Verzeichnis. Parameter ist die Package-ID"
 
 #: lazarusidestrconsts.lispkgmacropackageincludefilessearchpathparameterispackageid
-msgid "Package include files search path. Parameter is package ID"
+msgid "Package include files search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
 msgstr "Package-Includedateien-Suchpfad. Parameter ist die Package-ID."
 
+#: lazarusidestrconsts.lispkgmacropackagenameparameterispackageid
+msgid "Package name. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr "Package-Name. Parameter ist Package ID, z.B. \"Name\" oder \"Name 1.0\""
+
+#: lazarusidestrconsts.lispkgmacropackageoutputdirectoryparameterispackageid
+msgid "Package output directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr "Package-Ausgabeverzeichnis. Parameter ist Package ID, z.B. \"Name\" oder \"Name 1.0\""
+
 #: lazarusidestrconsts.lispkgmacropackagesourcesearchpathparameterispackageid
-msgid "Package source search path. Parameter is package ID"
+msgid "Package source search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
 msgstr "Package-Quellcode-Suchpfad. Parameter ist die Package-ID."
 
 #: lazarusidestrconsts.lispkgmacropackageunitsearchpathparameterispackageid
-msgid "Package unit search path. Parameter is package ID"
+msgid "Package unit search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
 msgstr "Package-Unitsuchpfad. Parameter ist die Package-ID."
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforpackagepackage
@@ -14291,6 +14302,8 @@ msgid ""
 "The package %s is already open in the IDE.\n"
 "You cannot save a package with the same name.\n"
 msgstr ""
+"Das Package %s ist bereits in der IDE geöffnet.\n"
+"Sie können kein Package mit dem selben Namen speichern.\n"
 
 #: lazarusidestrconsts.lispkgmangsavepackage
 msgid "Save package?"
@@ -14629,11 +14642,11 @@ msgstr "Package-Links"
 
 #: lazarusidestrconsts.lispldshowgloballinksin
 msgid "Show global links in "
-msgstr ""
+msgstr "Zeige globale Links in"
 
 #: lazarusidestrconsts.lispldshowuserlinksin
 msgid "Show user links in "
-msgstr ""
+msgstr "Zeige Benutzer-Links in"
 
 #: lazarusidestrconsts.lisplduser
 msgid "User"
@@ -15215,6 +15228,12 @@ msgstr "Schliessen"
 msgid "&Quit Lazarus"
 msgstr "Lazarus beenden"
 
+#: lazarusidestrconsts.lisrange
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisrange"
+msgid "Range"
+msgstr "Bereich"
+
 #: lazarusidestrconsts.lisreaderror
 msgid "Read Error"
 msgstr "Lesefehler"
@@ -15349,7 +15368,7 @@ msgstr "Unit-Pfad entfernen?"
 
 #: lazarusidestrconsts.lisremoveuses
 msgid "Remove uses \"%s\""
-msgstr ""
+msgstr "\"%s\" aus uses-Abschnitt entfernen"
 
 #: lazarusidestrconsts.lisrename
 msgctxt "lazarusidestrconsts.lisrename"
@@ -16929,10 +16948,6 @@ msgstr "Der Unitsuchpfad von \"%s\" enthält das Quellverzeichnis \"%s\" des Pac
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "Das Arbeitsverzeichnis \"%s\" fehlt.%sBitte prüfen Sie das Arbeitsverzeichnis im Menü Start > Startparameter."
 
-#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inrtl
-msgid "This build mode now sets UTF-8 in RTL.%s Flags are in pages \"Custom Options\" and \"Additions and Overrides\"."
-msgstr ""
-
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
 msgid "This component already contains a class with the name %s."
 msgstr "Diese Komponente enthält bereits eine Klasse mit dem Namen %s."
@@ -17033,7 +17048,7 @@ msgstr "Titel (für Voreinstellung leerlassen)"
 
 #: lazarusidestrconsts.listitleopencomponenticon24x24
 msgid "Choose a component icon 24x24"
-msgstr ""
+msgstr "Ein Komponenten-Icon 24x24 wählen"
 
 #: lazarusidestrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
@@ -17085,18 +17100,6 @@ msgstr "Symbolleisten-Schaltflächen hervorheben"
 
 #: lazarusidestrconsts.listoolbaroptionsraise
 msgid "Raise toolbars"
-msgstr ""
-
-#: lazarusidestrconsts.listoolbaroptionsstandardvisible
-msgid "Standard toolbar visible"
-msgstr "Standard-Symbolleiste sichtbar"
-
-#: lazarusidestrconsts.listoolbaroptionstoolbarsvisible
-msgid "Toolbars visible"
-msgstr "Symbolleisten sichtbar"
-
-#: lazarusidestrconsts.listoolbaroptionsviewdebugvisible
-msgid "Debug toolbar visible"
 msgstr ""
 
 #: lazarusidestrconsts.listoolhasnoexecutable
@@ -17914,7 +17917,7 @@ msgstr "Zur Liste \"%s\" hinzufügen"
 #: lazarusidestrconsts.lisuserdefinedmarkupkeygroup
 msgctxt "lazarusidestrconsts.lisuserdefinedmarkupkeygroup"
 msgid "User defined text markup"
-msgstr ""
+msgstr "Benutzerdefinierte Texthervorhebung"
 
 #: lazarusidestrconsts.lisuserdefinedmarkupkeyremove
 msgid "Remove from list \"%s\""

@@ -26,7 +26,7 @@ uses
   Classes, SysUtils, Process, LCLProc,
   Forms, Controls, Dialogs, ComCtrls, StdCtrls, ButtonPanel, ExtCtrls, Menus,
   // LazUtils
-  FileUtil, LazFileUtils, LazConfigStorage,
+  FileUtil, LazFileUtils, LazConfigStorage, UTF8Process,
   // IDEIntf
   LazIDEIntf, BaseIDEIntf,
   // LazSvn
@@ -173,9 +173,9 @@ end;
 
 procedure TSVNStatusFrm.ExecuteSvnCommand(ACommand: String; AFile: String);
 var
-  AProcess: TProcess;
+  AProcess: TProcessUTF8;
 begin
-  AProcess := TProcess.Create(nil);
+  AProcess := TProcessUTF8.Create(nil);
 
   if pos(RepositoryPath, AFile) <> 0 then
     AProcess.CommandLine := SVNExecutable + ' ' + ACommand + ' "' + AFile + '"'

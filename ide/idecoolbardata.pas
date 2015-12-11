@@ -273,16 +273,16 @@ begin
   ToolBarOpts.Break := False;
   with ToolBarOpts.ButtonNames do
   begin
-    Add('IDEMainMenu/File/itmFileNew/itmFileNewForm');
-    Add('IDEMainMenu/File/itmFileNew/itmFileNewUnit');
+    Add('NewForm');
+    Add('NewUnit');
     Add(cIDEToolbarDivider);
-    Add('IDEMainMenu/File/itmFileOpenSave/itmFileOpen');
-    Add('IDEMainMenu/File/itmFileOpenSave/itmFileSave');
-    Add('IDEMainMenu/File/itmFileOpenSave/itmFileSaveAll');
+    Add('Open');
+    Add('Save');
+    Add('SaveAll');
     Add(cIDEToolbarDivider);
-    Add('IDEMainMenu/View/itmViewMainWindows/itmViewToggleFormUnit');
+    Add('Toggle between Unit and Form');
     Add(cIDEToolbarDivider);
-    Add('IDEMainMenu/Tools/itmSecondaryTools/itmToolManageDesktops');
+    Add('Manage desktops');
   end;
   FToolBars.Add(ToolBarOpts);
 
@@ -292,16 +292,16 @@ begin
   ToolBarOpts.Break := True;
   with ToolBarOpts.ButtonNames do
   begin
-    Add('IDEMainMenu/Project/itmProjectAddRemoveSection/itmProjectViewUnits');
-    Add('IDEMainMenu/Project/itmProjectAddRemoveSection/itmProjectViewForms');
+    Add('View Units');
+    Add('View Forms');
     Add(cIDEToolbarDivider);
-    Add('IDEMainMenu/Project/itmProjectAddRemoveSection/itmProjectBuildMode');
-    Add('IDEMainMenu/Run/itmRunnning/itmRunMenuRun');
-    Add('IDEMainMenu/Run/itmRunnning/itmRunMenuPause');
-    Add('IDEMainMenu/Run/itmRunnning/itmRunMenuStop');
-    Add('IDEMainMenu/Run/itmRunnning/itmRunMenuStepOver');
-    Add('IDEMainMenu/Run/itmRunnning/itmRunMenuStepInto');
-    Add('IDEMainMenu/Run/itmRunnning/itmRunMenuStepOut');
+    Add('Change build mode');
+    Add('Run program');
+    Add('Pause program');
+    Add('Stop program');
+    Add('Step over');
+    Add('Step into');
+    Add('Step out');
   end;
   FToolBars.Add(ToolBarOpts);
 end;

@@ -89,10 +89,12 @@ type
     function AddButton(const aCategory: TIDEToolButtonCategory; const aName: string;
       const aCommand: TIDECommand): TIDEButtonCommand; overload;
     function AddButton(const aCommand: TIDECommand): TIDEButtonCommand; overload;
+    function FindCategory(const aName: string): TIDEToolButtonCategory;
     function FindCreateCategory(const aName, aDescription: string): TIDEToolButtonCategory;
     function FindItemByName(const aName: string): TIDEButtonCommand;
     function FindItemByMenuPathOrName(var aName: string): TIDEButtonCommand;
     function FindItemByCommand(const aCommand: TIDECommand): TIDEButtonCommand;
+    function FindItemByCommand(const aCommand: Word): TIDEButtonCommand;
     property Items[Index: Integer]: TIDEToolButtonCategory read GetItems; default;
   end;
 
@@ -145,7 +147,7 @@ end;
 function RegisterIDEButtonCommand(const aCategory: TIDEToolButtonCategory;
   const aName: string; const aCommand: TIDECommand): TIDEButtonCommand;
 begin
-  Result := IDEToolButtonCategories.AddButton(aCategory,  aName,  aCommand);
+  Result := IDEToolButtonCategories.AddButton(aCategory, aName, aCommand);
 end;
 
 function RegisterIDEButtonCommand(const aCommand: TIDECommand): TIDEButtonCommand;
@@ -398,6 +400,18 @@ begin
   inherited Destroy;
 end;
 
+function TIDEToolButtonCategories.FindCategory(const aName: string
+  ): TIDEToolButtonCategory;
+var
+  i: Integer;
+begin
+  i := FCategories.IndexOf(aName);
+  if (i>=0) and (FCategories.Objects[i]<>nil) then
+    Result := FCategories.Objects[i] as TIDEToolButtonCategory
+  else
+    Result := nil;
+end;
+
 function TIDEToolButtonCategories.FindItemByMenuPathOrName(var aName: string
   ): TIDEButtonCommand;
 var
@@ -441,6 +455,19 @@ begin
   for i := 0 to Count-1 do
     for l := 0 to Items[i].ButtonCount-1 do
       if Items[i].Buttons[l].Command = aCommand then
+        Exit(Items[i].Buttons[l]);
+
+  Result := nil;
+end;
+
+function TIDEToolButtonCategories.FindItemByCommand(const aCommand: Word
+  ): TIDEButtonCommand;
+var
+  i, l: Integer;
+begin
+  for i := 0 to Count-1 do
+    for l := 0 to Items[i].ButtonCount-1 do
+      if Items[i].Buttons[l].Command.Command = aCommand then
         Exit(Items[i].Buttons[l]);
 
   Result := nil;

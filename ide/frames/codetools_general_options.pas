@@ -26,8 +26,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, StdCtrls, Buttons,
-  Dialogs, ExtCtrls, Graphics,
-  IDEDialogs,
+  Dialogs, ExtCtrls, Graphics, EditBtn,
   CodeToolsOptions, LazarusIDEStrConsts, IDEOptionsIntf;
 
 type
@@ -40,9 +39,8 @@ type
     IndentOnPasteCheckBox: TCheckBox;
     IndentOnLineBreakCheckBox: TCheckBox;
     IndentContextSensitiveCheckBox: TCheckBox;
-    IndentFileButton: TButton;
     CursorBeyondEOLCheckBox: TCheckBox;
-    IndentFileEdit: TEdit;
+    IndentFileEdit: TFileNameEdit;
     IndentationGroupBox: TGroupBox;
     JumpCenteredCheckBox: TCheckBox;
     JumpingGroupBox: TGroupBox;
@@ -52,7 +50,6 @@ type
     procedure GeneralAutoIndentMouseEnter(Sender: TObject);
     procedure GeneralAutoIndentMouseLeave(Sender: TObject);
     procedure IndentOnLineBreakCheckBoxChange(Sender: TObject);
-    procedure IndentFileButtonClick(Sender: TObject);
     procedure IndentOnPasteCheckBoxChange(Sender: TObject);
   private
     FDialog: TAbstractOptionsEditorDialog;
@@ -71,22 +68,6 @@ implementation
 
 { TCodetoolsGeneralOptionsFrame }
 
-procedure TCodetoolsGeneralOptionsFrame.IndentFileButtonClick(Sender: TObject);
-var
-  OpenDialog: TOpenDialog;
-begin
-  OpenDialog:=TOpenDialog.Create(nil);
-  try
-    InitIDEFileDialog(OpenDialog);
-    OpenDialog.Title:=lisChooseAPascalFileForIndentationExamples;
-    OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist];
-    if OpenDialog.Execute then
-      IndentFileEdit.Text:=OpenDialog.FileName;
-  finally
-    OpenDialog.Free;
-  end;
-end;
-
 procedure TCodetoolsGeneralOptionsFrame.IndentOnPasteCheckBoxChange(Sender: TObject);
 begin
   VisualizeIndentEnabled;
@@ -99,7 +80,6 @@ begin
   e:=IndentOnLineBreakCheckBox.Checked or IndentOnPasteCheckBox.Checked;
   IndentFileLabel.Enabled:=e;
   IndentFileEdit.Enabled:=e;
-  IndentFileButton.Enabled:=e;
   IndentContextSensitiveCheckBox.Enabled:=e;
 end;
 
@@ -146,11 +126,12 @@ begin
   IndentOnLineBreakCheckBox.Caption:=lisOnBreakLineIEReturnOrEnterKey;
   IndentOnPasteCheckBox.Caption:=lisOnPasteFromClipboard;
   IndentFileLabel.Caption:=lisExampleFile;
-  IndentFileButton.Caption:=lisPathEditBrowse;
   IndentContextSensitiveCheckBox.Caption:=lisContextSensitive;
   IndentContextSensitiveCheckBox.ShowHint:=true;
   IndentContextSensitiveCheckBox.Hint:=
     lisImitateIndentationOfCurrentUnitProjectOrPackage;
+  IndentFileEdit.DialogTitle:=lisChooseAPascalFileForIndentationExamples;
+  IndentFileEdit.Filter:=dlgFilterPascalFile+'|*.pas;*.pp;*.inc';
 end;
 
 procedure TCodetoolsGeneralOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);

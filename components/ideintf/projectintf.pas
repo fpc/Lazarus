@@ -17,7 +17,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LazFileUtils, Controls, Forms, AvgLvlTree,
-  NewItemIntf, ProjPackIntf, CompOptsIntf, ObjInspStrConsts;
+  NewItemIntf, ProjPackIntf, CompOptsIntf, ObjInspStrConsts, LazFileCache,
+  LazMethodList;
 
 const
   FileDescGroupName = 'File';
@@ -349,6 +350,53 @@ type
       Read fIncludeSystemVariables Write fIncludeSystemVariables;
   end;
 
+  { TLazProjectBuildMode }
+
+  TLazProjectBuildMode = class(TComponent)
+  private
+    FChangeStamp: int64;
+    fSavedChangeStamp: int64;
+    fOnChanged: TMethodList;
+    function GetModified: boolean;
+    procedure SetIdentifier(AValue: string);
+    procedure SetInSession(AValue: boolean);
+    procedure SetModified(AValue: boolean);
+  protected
+    FIdentifier: string;
+    FInSession: boolean;
+    procedure OnItemChanged(Sender: TObject);
+    function GetLazCompilerOptions: TLazCompilerOptions; virtual; abstract;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    property ChangeStamp: int64 read FChangeStamp;
+    procedure IncreaseChangeStamp;
+    procedure AddOnChangedHandler(const Handler: TNotifyEvent);
+    procedure RemoveOnChangedHandler(const Handler: TNotifyEvent);
+    function GetCaption: string; virtual; abstract;
+    function GetIndex: integer; virtual; abstract;
+    property Name; // See Identifier for the name of the buildmode
+    property InSession: boolean read FInSession write SetInSession;
+    property Identifier: string read FIdentifier write SetIdentifier;// arbitrary string
+    property Modified: boolean read GetModified write SetModified;
+    property LazCompilerOptions: TLazCompilerOptions read GetLazCompilerOptions;
+  end;
+
+  { TProjectBuildModes }
+
+  { TLazProjectBuildModes }
+
+  TLazProjectBuildModes = class(TComponent)
+  protected
+    FChangeStamp: integer;
+    function GetLazBuildModes(Index: integer): TLazProjectBuildMode; virtual; abstract;
+  public
+    function Count: integer; virtual; abstract;
+    function IndexOf(anIdentifier: string): integer;
+    property ChangeStamp: integer read FChangeStamp;
+    property BuildModes[Index: integer]: TLazProjectBuildMode read GetLazBuildModes;
+  end;
+
   { TLazProject - interface class to a Lazarus project }
 
   TProjectFileSearchFlag = (
@@ -387,16 +435,20 @@ type
     procedure SetFPDocPaths(const AValue: string);
     procedure SetUseAppBundle(AValue: Boolean);
   protected
+    FChangeStamp: integer;
     FFlags: TProjectFlags;
     FResources: TObject;
     FRunParameters: TAbstractRunParamsOptions;
+    function GetActiveBuildModeID: string; virtual; abstract;
     function GetFileCount: integer; virtual; abstract;
     function GetFiles(Index: integer): TLazProjectFile; virtual; abstract;
     function GetMainFile: TLazProjectFile; virtual; abstract;
     function GetMainFileID: Integer; virtual; abstract;
     function GetModified: boolean; virtual; abstract;
+    function GetLazBuildModes: TLazProjectBuildModes; virtual; abstract;
     function GetProjectInfoFile: string; virtual; abstract;
     function GetUseManifest: boolean; virtual; abstract;
+    procedure SetActiveBuildModeID(AValue: string); virtual; abstract;
     procedure SetExecutableType(const AValue: TProjectExecutableType); virtual;
     procedure SetFlags(const AValue: TProjectFlags); virtual;
     procedure SetMainFileID(const AValue: Integer); virtual; abstract;
@@ -411,6 +463,7 @@ type
     constructor Create({%H-}ProjectDescription: TProjectDescriptor); virtual; reintroduce;
     destructor Destroy; override;
     procedure Clear; virtual;
+    procedure IncreaseChangeStamp; inline;
     function IsVirtual: boolean; virtual; abstract;
     function CreateProjectFile(const Filename: string): TLazProjectFile; virtual; abstract;
     procedure AddFile(ProjectFile: TLazProjectFile;
@@ -431,9 +484,12 @@ type
     function GetDefaultTitle: string; // extract name from lpi file name
     function GetTitleOrName: string; // GetTitle, if this is '' then GetDefaultTitle
   public
-    property MainFileID: Integer read GetMainFileID write SetMainFileID;
+    property ActiveBuildModeID: string read GetActiveBuildModeID
+                                       write SetActiveBuildModeID;
+    property ChangeStamp: integer read FChangeStamp;
     property Files[Index: integer]: TLazProjectFile read GetFiles;
     property FileCount: integer read GetFileCount;
+    property MainFileID: Integer read GetMainFileID write SetMainFileID;
     property MainFile: TLazProjectFile read GetMainFile;
     property Title: String read FTitle write SetTitle;
     property Flags: TProjectFlags read FFlags write SetFlags;
@@ -441,6 +497,7 @@ type
                  write SetExecutableType;// read from MainFile, not saved to lpi
     property ProjectInfoFile: string read GetProjectInfoFile write SetProjectInfoFile;
     property ProjectSessionFile: string read FProjectSessionFile write SetProjectSessionFile;
+    property LazBuildModes: TLazProjectBuildModes read GetLazBuildModes;
     property SessionStorage: TProjectSessionStorage read FSessionStorage write SetSessionStorage;
     // project data (not units, session), units have their own Modified
     property Modified: boolean read GetModified write SetModified;
@@ -662,6 +719,15 @@ begin
   for Result:=Low(TCompilationExecutableType) to High(TCompilationExecutableType)
   do if CompareText(s,CompilationExecutableTypeNames[Result])=0 then exit;
   Result:=cetProgram;
+end;
+
+{ TLazProjectBuildModes }
+
+function TLazProjectBuildModes.IndexOf(anIdentifier: string): integer;
+begin
+  Result:=Count-1;
+  while (Result>=0) and (CompareText(BuildModes[Result].Identifier,anIdentifier)<>0)
+  do dec(Result);
 end;
 
 { TProjectFileDescriptor }
@@ -1000,6 +1066,87 @@ begin
   Result:=mrOk;
 end;
 
+{ TLazProjectBuildMode }
+
+function TLazProjectBuildMode.GetModified: boolean;
+begin
+  Result:=fSavedChangeStamp<>FChangeStamp;
+end;
+
+procedure TLazProjectBuildMode.SetIdentifier(AValue: string);
+begin
+  if FIdentifier=AValue then exit;
+  FIdentifier:=AValue;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TLazProjectBuildMode.SetIdentifier ',AValue]);
+  {$ENDIF}
+  IncreaseChangeStamp;
+end;
+
+procedure TLazProjectBuildMode.SetInSession(AValue: boolean);
+begin
+  if FInSession=AValue then exit;
+  FInSession:=AValue;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TLazProjectBuildMode.SetInSession ',AValue]);
+  {$ENDIF}
+  IncreaseChangeStamp;
+end;
+
+procedure TLazProjectBuildMode.OnItemChanged(Sender: TObject);
+begin
+  {$IFDEF VerboseIDEModified}
+  debugln(['TLazProjectBuildMode.OnItemChanged ',DbgSName(Sender)]);
+  {$ENDIF}
+  IncreaseChangeStamp;
+end;
+
+procedure TLazProjectBuildMode.SetModified(AValue: boolean);
+begin
+  if AValue then
+    IncreaseChangeStamp
+  else begin
+    fSavedChangeStamp:=FChangeStamp;
+    LazCompilerOptions.Modified:=false;
+  end;
+end;
+
+constructor TLazProjectBuildMode.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  fOnChanged:=TMethodList.Create;
+  FChangeStamp:=LUInvalidChangeStamp64;
+  fSavedChangeStamp:=FChangeStamp;
+end;
+
+destructor TLazProjectBuildMode.Destroy;
+begin
+  FreeAndNil(fOnChanged);
+  inherited Destroy;
+end;
+
+procedure TLazProjectBuildMode.IncreaseChangeStamp;
+begin
+  {$IFDEF VerboseIDEModified}
+  if not Modified then begin
+    debugln(['TLazProjectBuildMode.IncreaseChangeStamp ']);
+  end;
+  {$ENDIF}
+  LUIncreaseChangeStamp64(FChangeStamp);
+  if fOnChanged<>nil then fOnChanged.CallNotifyEvents(Self);
+end;
+
+procedure TLazProjectBuildMode.AddOnChangedHandler(const Handler: TNotifyEvent);
+begin
+  fOnChanged.Add(TMethod(Handler));
+end;
+
+procedure TLazProjectBuildMode.RemoveOnChangedHandler(
+  const Handler: TNotifyEvent);
+begin
+  fOnChanged.Remove(TMethod(Handler));
+end;
+
 { TLazProject }
 
 procedure TLazProject.SetFlags(const AValue: TProjectFlags);
@@ -1141,6 +1288,11 @@ function TLazProject.GetTitleOrName: string;
 begin
   Result:=GetTitle;
   if Result='' then Result:=GetDefaultTitle;
+end;
+
+procedure TLazProject.IncreaseChangeStamp;
+begin
+  LUIncreaseChangeStamp(FChangeStamp);
 end;
 
 { TLazProjectFile }

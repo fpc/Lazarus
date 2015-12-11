@@ -164,7 +164,7 @@ type
     property RedirectConsoleOutput: boolean read FRedirectConsoleOutput write FRedirectConsoleOutput;
     property ConsoleTty: string read FConsoleTty write FConsoleTty;
     // With this parameter set a 'next' will only stop if the current
-    // instruction is the first inststruction of a line according to the
+    // instruction is the first instruction of a line according to the
     // debuginfo.
     // Due to a bug in fpc's debug-info, the line info for the first instruction
     // of a line, sometimes points the the prior line. This setting hides the
@@ -697,7 +697,7 @@ begin
       begin
         FCurrentProcess.LoadInfo;
         if not FCurrentProcess.DbgInfo.HasInfo then
-          Log('No Dwarf-debug information available. The debugger will not function properly.',dllInfo);
+          Log('No Dwarf-debug information available. The debugger will not function properly. [CurrentProcess='+dbgsname(FCurrentProcess)+',DbgInfo='+dbgsname(FCurrentProcess.DbgInfo)+']',dllInfo);
 
         DoOnDebugInfoLoaded(self);
 

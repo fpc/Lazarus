@@ -7,114 +7,195 @@ unit ProjectGroupIntf;
 interface
 
 uses
-  Classes, SysUtils, IDEOptionsIntf, PackageIntf, ProjectIntf, LazFileUtils;
+  Classes, SysUtils, IDEOptionsIntf, PackageIntf, ProjectIntf, LazFileUtils,
+  LazFileCache, LazMethodList, LazLogger;
 
 Type
-  TTargetType = (
+  TPGTargetType = (
     ttUnknown,
     ttProject,
     ttPackage,
     ttProjectGroup, // nested group
-    ttUnit,  // build/run file, parameters stored IDE directives
+    ttPascalFile,  // build/run file, parameters stored IDE directives
     ttExternalTool
     );
-  TTargetTypes = set of TTargetType;
+  TPGTargetTypes = set of TPGTargetType;
 
-  TTargetAction = (
+  TPGTargetAction = (
     taOpen,
     taSettings,
     taCompile,
     taCompileClean,
+    taCompileFromHere,
     taRun,
     taInstall,
     taUninstall);
-  TTargetActions = set of TTargetAction;
+  TPGTargetActions = set of TPGTargetAction;
 
-  TActionResult = (arNotAllowed,arOK,arFailed);
-  TActionResults = set of TActionResult;
+  TPGActionResult = (arNotAllowed,arOK,arFailed);
+  TPGActionResults = set of TPGActionResult;
 
   TProjectGroup = class;
+  TPGCompileTarget = class;
 
-  { TCompileTarget - a node in the tree, e.g. a project, package or group }
+  { TPGBuildMode }
 
-  TCompileTarget = class
+  TPGBuildMode = class
+  private
+    FCompile: boolean;
+    FIdentifier: string;
+    FTarget: TPGCompileTarget;
+    procedure SetCompile(AValue: boolean);
+  public
+    constructor Create(aTarget: TPGCompileTarget; const anIdentifier: string; aCompile: boolean);
+    property Target: TPGCompileTarget read FTarget;
+    property Identifier: string read FIdentifier;
+    property Compile: boolean read FCompile write SetCompile;
+  end;
+
+  { TPGDependency }
+
+  TPGDependency = class
+  private
+    FPackageName: string;
+    FTarget: TPGCompileTarget;
+  public
+    constructor Create(aTarget: TPGCompileTarget; const aPkgName: string);
+    property Target: TPGCompileTarget read FTarget;
+    property PackageName: string read FPackageName;
+  end;
+
+  { TPGCompileTarget - a node in the tree, see TPGTargetType }
+
+  TPGCompileTarget = class
   private
     FActive: Boolean;
     FFilename: string;
-    FTargetType: TTargetType;
+    FTargetType: TPGTargetType;
     FRemoved: boolean;
   protected
-    function PerformAction (AAction: TTargetAction): TActionResult; virtual; abstract;
-    function Perform (AAction: TTargetAction): TActionResult;
-    // By default, return all allowed actions for target type.
-    function GetAllowedActions: TTargetActions; virtual;
-    function GetLazProject: TLazProject; virtual; abstract;
-    function GetProjectGroup: TProjectGroup; virtual; abstract;
-    procedure SetTargetType(AValue: TTargetType); virtual;
+    FParent: TPGCompileTarget;
+    FProjectGroup: TProjectGroup;
+    function GetAllowedActions: TPGTargetActions; virtual; // By default, return all allowed actions for target type.
+    function GetBuildModeCount: integer; virtual; abstract;
+    function GetBuildModes(Index: integer): TPGBuildMode; virtual; abstract;
+    function GetFileCount: integer; virtual; abstract;
+    function GetFiles(Index: integer): string; virtual; abstract;
+    function GetRequiredPackageCount: integer; virtual; abstract;
+    function GetRequiredPackages(Index: integer): TPGDependency; virtual; abstract;
+    function Perform(AAction: TPGTargetAction): TPGActionResult;
+    function PerformAction(AAction: TPGTargetAction): TPGActionResult; virtual; abstract;
     procedure SetFilename(const AValue: string); virtual;
-    function GetIDEPackage: TIDEPackage; virtual; abstract;
     procedure SetRemoved(const AValue: boolean); virtual;
-    procedure Activate; virtual;
-    procedure DeActivate; virtual;
+    procedure SetTargetType(AValue: TPGTargetType); virtual;
+    procedure DoDeactivateChildren;
+    procedure ActiveChanged(Sender: TPGCompileTarget); virtual; abstract;
+    procedure DoActivate(DeactivateChildren: boolean);
+    procedure DoDeActivate(DeactivateParents: boolean);
   public
-    property Filename: string read FFilename write SetFilename; // Absolute, not relative. (ToDo: store them relative)
+    constructor Create(aParent: TPGCompileTarget);
+    procedure Activate;
+    procedure DeActivate;
+    function GetOwnerProjectGroup: TProjectGroup;
+    function GetRootProjectGroup: TProjectGroup;
+    function GetNext(SkipChildren: boolean): TPGCompileTarget;
+    function IndexOfBuildMode(aName: string): integer;
+    function FindBuildMode(aName: string): TPGBuildMode;
+    function PerformBuildModeAction(AAction: TPGTargetAction; aModeIdentifier: string): TPGActionResult; virtual; abstract;
+    procedure Modified; virtual; abstract;
+    property Parent: TPGCompileTarget read FParent;
+    property Filename: string read FFilename write SetFilename; // Absolute, not relative.
     property Removed: boolean read FRemoved write SetRemoved;
-    property TargetType: TTargetType read FTargetType write SetTargetType;
+    property TargetType: TPGTargetType read FTargetType write SetTargetType;
     property Active: Boolean Read FActive;
     // Currently allowed actions.
-    property AllowedActions: TTargetActions Read GetAllowedActions;
+    property AllowedActions: TPGTargetActions Read GetAllowedActions;
     //
-    property LazPackage: TIDEPackage read GetIDEPackage;
-    property LazProject: TLazProject Read GetLazProject;
-    property ProjectGroup: TProjectGroup Read GetProjectGroup;
+    property ProjectGroup: TProjectGroup read FProjectGroup; // set if TargetType is ttProjectGroup
+    property BuildModes[Index: integer]: TPGBuildMode read GetBuildModes;
+    property BuildModeCount: integer read GetBuildModeCount;
+    property Files[Index: integer]: string read GetFiles;
+    property FileCount: integer read GetFileCount;
+    property RequiredPackages[Index: integer]: TPGDependency read GetRequiredPackages;
+    property RequiredPackageCount: integer read GetRequiredPackageCount;
   end;
+
+  TProjectGroupHandler = (
+    pghDestroy
+    );
 
   { TProjectGroup }
 
   TProjectGroup = class(TPersistent)
   private
+    FHandlers: array[TProjectGroupHandler] of TMethodList;
+    FChangeStamp: int64;
     FFileName: String;
-    function GetActiveTarget: TCompileTarget;
-    procedure SetActiveTarget(AValue: TCompileTarget);
+    FLastSavedChangeStamp: int64;
+    procedure SetModified(AValue: Boolean);
   protected
+    FCompileTarget: TPGCompileTarget;
+    FParent: TProjectGroup;
     procedure SetFileName(AValue: String); virtual;
-    function GetModified: Boolean; virtual; abstract;
+    function GetModified: Boolean; virtual;
     function GetTargetCount: Integer; virtual; abstract;
-    function GetTarget(Index: Integer): TCompileTarget; virtual; abstract;
+    function GetTarget(Index: Integer): TPGCompileTarget; virtual; abstract;
     function GetRemovedTargetCount: Integer; virtual; abstract;
-    function GetRemovedTarget(Index: Integer): TCompileTarget; virtual; abstract;
+    function GetRemovedTarget(Index: Integer): TPGCompileTarget; virtual; abstract;
+    procedure DoCallNotifyHandler(HandlerType: TProjectGroupHandler;
+                                  Sender: TObject); overload;
+    procedure AddHandler(HandlerType: TProjectGroupHandler;
+                         const AMethod: TMethod; AsLast: boolean = false);
+    procedure RemoveHandler(HandlerType: TProjectGroupHandler;
+                            const AMethod: TMethod);
+    function GetActiveTarget: TPGCompileTarget; virtual; abstract;
+    procedure SetActiveTarget(AValue: TPGCompileTarget); virtual; abstract;
   public
-    function Perform(Index: Integer; AAction: TTargetAction): TActionResult;
-    function Perform(Const AFileName: String; AAction: TTargetAction): TActionResult;
-    function Perform(Target: TCompileTarget; AAction: TTargetAction): TActionResult; virtual;
-    function ActionAllowsFrom(Index: Integer; AAction: TTargetAction): Boolean; virtual;
-    function PerformFrom(AIndex: Integer; AAction: TTargetAction): TActionResult; virtual;
-    function IndexOfTarget(Const Target: TCompileTarget): Integer; virtual; abstract;
+    destructor Destroy; override;
+    function GetRootGroup: TProjectGroup;
+    property FileName: String Read FFileName Write SetFileName; // absolute
+    property CompileTarget: TPGCompileTarget read FCompileTarget;
+    property Parent: TProjectGroup read FParent;
+    // actions
+    function Perform(Index: Integer; AAction: TPGTargetAction): TPGActionResult;
+    function Perform(Const AFileName: String; AAction: TPGTargetAction): TPGActionResult;
+    function Perform(Target: TPGCompileTarget; AAction: TPGTargetAction): TPGActionResult; virtual;
+    function ActionAllowsFrom(Index: Integer; AAction: TPGTargetAction): Boolean; virtual;
+    function PerformFrom(AIndex: Integer; AAction: TPGTargetAction): TPGActionResult; virtual;
+    // targets
+    function IndexOfTarget(Const Target: TPGCompileTarget): Integer; virtual; abstract;
     function IndexOfTarget(Const AFilename: String): Integer; virtual;
-    function IndexOfRemovedTarget(Const Target: TCompileTarget): Integer; virtual; abstract;
+    function IndexOfRemovedTarget(Const Target: TPGCompileTarget): Integer; virtual; abstract;
     function IndexOfRemovedTarget(Const AFilename: String): Integer; virtual;
-    function AddTarget(Const AFileName: String): TCompileTarget; virtual; abstract;
+    function AddTarget(Const AFileName: String): TPGCompileTarget; virtual; abstract;
+    procedure ReAddTarget(Target: TPGCompileTarget); virtual; abstract;
     procedure ExchangeTargets(ASource, ATarget: Integer); virtual; abstract;
     procedure RemoveTarget(Index: Integer); virtual; abstract;
     procedure RemoveTarget(Const AFileName: String);
-    procedure RemoveTarget(Target: TCompileTarget);
-    procedure ActivateTarget(Index: Integer);
-    procedure ActivateTarget(Const AFileName: String);
-    procedure ActivateTarget(Target: TCompileTarget); virtual;
-    property FileName: String Read FFileName Write SetFileName; // absolute
-    property Targets[Index: Integer]: TCompileTarget Read GetTarget;
+    procedure RemoveTarget(Target: TPGCompileTarget);
+    property Targets[Index: Integer]: TPGCompileTarget Read GetTarget;
     property TargetCount: Integer Read GetTargetCount;
-    property RemovedTargets[Index: Integer]: TCompileTarget Read GetRemovedTarget;
+    property RemovedTargets[Index: Integer]: TPGCompileTarget Read GetRemovedTarget;
     property RemovedTargetCount: Integer Read GetRemovedTargetCount;
-    property ActiveTarget: TCompileTarget Read GetActiveTarget Write SetActiveTarget;
-    property Modified: Boolean Read GetModified;
+    property ActiveTarget: TPGCompileTarget Read GetActiveTarget Write SetActiveTarget;
+  public
+    // modified
+    procedure IncreaseChangeStamp;
+    property Modified: Boolean Read GetModified write SetModified;
+    property ChangeStamp: int64 read FChangeStamp;
+  public
+    // handlers
+    procedure RemoveAllHandlersOfObject(AnObject: TObject);
+    procedure AddHandlerOnDestroy(const OnDestroy: TNotifyEvent; AsLast: boolean = false);
+    procedure RemoveHandlerOnDestroy(const OnDestroy: TNotifyEvent);
   end;
 
   TProjectGroupLoadOption  = (
     pgloRemoveInvalid, // Mark non-existing targets from group as removed.
     pgloSkipInvalid, // Ignore non-existing, add as-is.
     pgloErrorInvalid, // Stop with error on non-existing.
-    pgloSkipDialog // do not show Project Group editor.
+    pgloSkipDialog, // do not show Project Group editor.
+    pgloLoadRecursively // load all sub nodes
   );
   TProjectGroupLoadOptions = set of TProjectGroupLoadOption;
 
@@ -133,22 +214,22 @@ var
   ProjectGroupManager: TProjectGroupManager = nil;
 
 const
-  TargetActions: array[TTargetType] of TTargetActions = (
+  PGTargetActions: array[TPGTargetType] of TPGTargetActions = (
     [], // ttUnknown
-    [taOpen,taSettings,taCompile,taCompileClean,taRun], // ttProject
-    [taOpen,taSettings,taCompile,taCompileClean,taInstall,taUninstall], // ttPackage
-    [taOpen,taCompile,taCompileClean], // ttProjectGroup
-    [taOpen,taCompile], // ttUnit
-    [taOpen,taRun] // ttExternalTool
+    [taOpen,taSettings,taCompile,taCompileClean,taCompileFromHere,taRun], // ttProject
+    [taOpen,taSettings,taCompile,taCompileClean,taCompileFromHere,taInstall,taUninstall], // ttPackage
+    [taOpen,taCompile,taCompileClean,taCompileFromHere], // ttProjectGroup
+    [taOpen,taSettings,taCompile,taCompileFromHere,taRun], // ttPascalFile
+    [taOpen,taCompile,taCompileClean,taCompileFromHere,taRun] // ttExternalTool
   );
 
-function TargetTypeFromExtenstion(AExt: String): TTargetType;
-function TargetSupportsAction(ATarget: TTargetType; AAction: TTargetAction): Boolean;
-function ActionAllowsMulti(AAction: TTargetAction): Boolean;
+function TargetTypeFromExtenstion(AExt: String): TPGTargetType;
+function TargetSupportsAction(ATarget: TPGTargetType; AAction: TPGTargetAction): Boolean;
+function ActionAllowsMulti(AAction: TPGTargetAction): Boolean;
 
 implementation
 
-function TargetTypeFromExtenstion (AExt: String): TTargetType;
+function TargetTypeFromExtenstion (AExt: String): TPGTargetType;
 begin
   while (AExt<>'') and (AExt[1]='.') do
     Delete(AExt,1,1);
@@ -159,72 +240,132 @@ begin
     'lpg': Result:=ttProjectGroup;
     'pas',
     'pp',
-    'p'  : Result:=ttUnit;
+    'p'  : Result:=ttPascalFile;
   else
     Result:=ttUnknown;
   end;
 end;
 
-function TargetSupportsAction(ATarget: TTargetType; AAction: TTargetAction
+function TargetSupportsAction(ATarget: TPGTargetType; AAction: TPGTargetAction
   ): Boolean;
 begin
-  Result:=AAction in TargetActions[ATarget];
+  Result:=AAction in PGTargetActions[ATarget];
 end;
 
-function ActionAllowsMulti(AAction: TTargetAction): Boolean;
+function ActionAllowsMulti(AAction: TPGTargetAction): Boolean;
 begin
   Result:=AAction in [taCompile,taCompileClean];
 end;
 
+{ TPGBuildMode }
+
+procedure TPGBuildMode.SetCompile(AValue: boolean);
+begin
+  if FCompile=AValue then Exit;
+  FCompile:=AValue;
+  Target.Modified;
+end;
+
+constructor TPGBuildMode.Create(aTarget: TPGCompileTarget; const anIdentifier: string;
+  aCompile: boolean);
+begin
+  FTarget:=aTarget;
+  FIdentifier:=anIdentifier;
+  FCompile:=aCompile;
+end;
+
+{ TPGDependency }
+
+constructor TPGDependency.Create(aTarget: TPGCompileTarget;
+  const aPkgName: string);
+begin
+  FTarget:=aTarget;
+  FPackageName:=aPkgName;
+end;
 
 { TProjectGroup }
 
-function TProjectGroup.GetActiveTarget: TCompileTarget;
-Var
-  I: Integer;
+procedure TProjectGroup.SetModified(AValue: Boolean);
 begin
-  I:=0;
-  for i:=0 to TargetCount-1 do
-  begin
-    Result:=GetTarget(I);
-    if Result.Active then exit;
-  end;
-  Result:=Nil;
-end;
-
-procedure TProjectGroup.SetActiveTarget(AValue: TCompileTarget);
-begin
-  ActivateTarget(AValue);
+  if AValue then
+    IncreaseChangeStamp
+  else
+    FLastSavedChangeStamp:=FChangeStamp;
 end;
 
 procedure TProjectGroup.SetFileName(AValue: String);
 begin
   if FFileName=AValue then Exit;
   FFileName:=AValue;
+  IncreaseChangeStamp;
+  if CompileTarget<>nil then
+    CompileTarget.Filename:=Filename;
 end;
 
-function TProjectGroup.Perform(Index: Integer; AAction: TTargetAction
-  ): TActionResult;
+function TProjectGroup.GetModified: Boolean;
+begin
+  Result:=FLastSavedChangeStamp<>FChangeStamp;
+end;
+
+procedure TProjectGroup.DoCallNotifyHandler(HandlerType: TProjectGroupHandler;
+  Sender: TObject);
+begin
+  FHandlers[HandlerType].CallNotifyEvents(Sender);
+end;
+
+procedure TProjectGroup.AddHandler(HandlerType: TProjectGroupHandler;
+  const AMethod: TMethod; AsLast: boolean);
+begin
+  if FHandlers[HandlerType]=nil then
+    FHandlers[HandlerType]:=TMethodList.Create;
+  FHandlers[HandlerType].Add(AMethod,AsLast);
+end;
+
+procedure TProjectGroup.RemoveHandler(HandlerType: TProjectGroupHandler;
+  const AMethod: TMethod);
+begin
+  FHandlers[HandlerType].Remove(AMethod);
+end;
+
+destructor TProjectGroup.Destroy;
+var
+  HandlerType: TProjectGroupHandler;
+begin
+  DoCallNotifyHandler(pghDestroy,Self);
+  for HandlerType:=Low(FHandlers) to High(FHandlers) do
+    FreeAndNil(FHandlers[HandlerType]);
+  inherited Destroy;
+end;
+
+function TProjectGroup.GetRootGroup: TProjectGroup;
+begin
+  Result:=Self;
+  while Result.Parent<>nil do
+    Result:=Result.Parent;
+end;
+
+function TProjectGroup.Perform(Index: Integer; AAction: TPGTargetAction
+  ): TPGActionResult;
 begin
   Result:=Perform(GetTarget(Index),AAction);
 end;
 
-function TProjectGroup.Perform(const AFileName: String; AAction: TTargetAction
-  ): TActionResult;
+function TProjectGroup.Perform(const AFileName: String; AAction: TPGTargetAction
+  ): TPGActionResult;
 begin
   Result:=Perform(IndexOfTarget(AFileName),AAction);
 end;
 
-function TProjectGroup.Perform(Target: TCompileTarget; AAction: TTargetAction): TActionResult;
+function TProjectGroup.Perform(Target: TPGCompileTarget; AAction: TPGTargetAction): TPGActionResult;
 begin
   Result:=Target.Perform(AAction);
 end;
 
-function TProjectGroup.ActionAllowsFrom(Index: Integer; AAction: TTargetAction
+function TProjectGroup.ActionAllowsFrom(Index: Integer; AAction: TPGTargetAction
   ): Boolean;
 Var
   C: Integer;
-  T: TCompileTarget;
+  T: TPGCompileTarget;
 begin
   Result:=ActionAllowsMulti(AAction);
   C:=TargetCount;
@@ -237,8 +378,8 @@ begin
   end;
 end;
 
-function TProjectGroup.PerformFrom(AIndex: Integer; AAction: TTargetAction
-  ): TActionResult;
+function TProjectGroup.PerformFrom(AIndex: Integer; AAction: TPGTargetAction
+  ): TPGActionResult;
 Var
   I: Integer;
 begin
@@ -271,75 +412,198 @@ begin
   RemoveTarget(IndexOfTarget(AFileName))
 end;
 
-procedure TProjectGroup.RemoveTarget(Target: TCompileTarget);
+procedure TProjectGroup.RemoveTarget(Target: TPGCompileTarget);
 begin
   RemoveTarget(IndexOfTarget(Target))
 end;
 
-procedure TProjectGroup.ActivateTarget(Index: Integer);
+procedure TProjectGroup.IncreaseChangeStamp;
 begin
-  ActivateTarget(GetTarget(Index));
+  LUIncreaseChangeStamp64(FChangeStamp);
+  if Parent<>nil then
+    Parent.IncreaseChangeStamp;
 end;
 
-procedure TProjectGroup.ActivateTarget(const AFileName: String);
-begin
-  ActivateTarget(IndexOfTarget(AFileName));
-end;
-
-procedure TProjectGroup.ActivateTarget(Target: TCompileTarget);
+procedure TProjectGroup.RemoveAllHandlersOfObject(AnObject: TObject);
 var
-  I: Integer;
-  TD: TCompileTarget;
+  HandlerType: TProjectGroupHandler;
 begin
-  if Target.Active then exit;
-  for I:=0 to TargetCount-1 do
-  begin
-    TD:=GetTarget(I);
-    if TD.Active then
-      TD.Deactivate;
-  end;
-  Target.Activate;
+  for HandlerType in TProjectGroupHandler do
+    FHandlers[HandlerType].RemoveAllMethodsOfObject(AnObject);
 end;
 
-{ TCompileTarget }
-
-function TCompileTarget.GetAllowedActions: TTargetActions;
+procedure TProjectGroup.AddHandlerOnDestroy(const OnDestroy: TNotifyEvent;
+  AsLast: boolean);
 begin
-  Result:=TargetActions[TargetType];
+  AddHandler(pghDestroy,TMethod(OnDestroy),AsLast);
 end;
 
-procedure TCompileTarget.SetTargetType(AValue: TTargetType);
+procedure TProjectGroup.RemoveHandlerOnDestroy(const OnDestroy: TNotifyEvent);
+begin
+  RemoveHandler(pghDestroy,TMethod(OnDestroy));
+end;
+
+{ TPGCompileTarget }
+
+function TPGCompileTarget.GetAllowedActions: TPGTargetActions;
+begin
+  Result:=PGTargetActions[TargetType];
+end;
+
+procedure TPGCompileTarget.SetTargetType(AValue: TPGTargetType);
 begin
   if FTargetType=AValue then Exit;
   FTargetType:=AValue;
 end;
 
-procedure TCompileTarget.SetFilename(const AValue: string);
+procedure TPGCompileTarget.DoDeactivateChildren;
+var
+  i: Integer;
+begin
+  if ProjectGroup=nil then exit;
+  for i:=0 to ProjectGroup.TargetCount-1 do
+    ProjectGroup.Targets[i].DoDeActivate(false);
+end;
+
+procedure TPGCompileTarget.DoActivate(DeactivateChildren: boolean);
+var
+  OldActive: TPGCompileTarget;
+  PG: TProjectGroup;
+begin
+  if DeactivateChildren then
+    DoDeactivateChildren;
+  if Active then exit;
+  if Parent<>nil then
+  begin
+    PG:=Parent.ProjectGroup;
+    if PG<>nil then
+    begin
+      OldActive:=PG.ActiveTarget;
+      if OldActive<>nil then
+        OldActive.DoDeActivate(false);
+    end;
+    Parent.DoActivate(false);
+    PG.IncreaseChangeStamp;
+  end;
+  FActive:=True;
+end;
+
+procedure TPGCompileTarget.DoDeActivate(DeactivateParents: boolean);
+begin
+  if not Active then exit;
+  if ProjectGroup<>nil then
+  begin
+    ProjectGroup.IncreaseChangeStamp;
+    DoDeactivateChildren;
+  end;
+  FActive:=False;
+  if DeactivateParents and (Parent<>nil) then
+    Parent.DoDeActivate(true);
+end;
+
+constructor TPGCompileTarget.Create(aParent: TPGCompileTarget);
+begin
+  FParent:=aParent;
+end;
+
+procedure TPGCompileTarget.SetFilename(const AValue: string);
 begin
   if FFileName=AValue then Exit;
   FFileName:=AValue;
   TargetType:=TargetTypeFromExtenstion(ExtractFileExt(AValue));
+  if ProjectGroup<>nil then
+    ProjectGroup.FileName:=Filename;
 end;
 
-procedure TCompileTarget.SetRemoved(const AValue: boolean);
+procedure TPGCompileTarget.SetRemoved(const AValue: boolean);
 begin
   if Removed=AValue then exit;
   FRemoved:=AValue;
-  If FRemoved then
-    Deactivate;
 end;
 
-procedure TCompileTarget.Activate;
+procedure TPGCompileTarget.Activate;
 begin
-  FActive:=True;
+  if Active then exit;
+  DoActivate(true);
+  ActiveChanged(Self);
 end;
 
-procedure TCompileTarget.DeActivate;
+procedure TPGCompileTarget.DeActivate;
 begin
-  FActive:=False;
+  if not Active then exit;
+  DoDeActivate(true);
+  ActiveChanged(Self);
 end;
 
-function TCompileTarget.Perform(AAction: TTargetAction): TActionResult;
+function TPGCompileTarget.GetOwnerProjectGroup: TProjectGroup;
+var
+  aTarget: TPGCompileTarget;
+begin
+  aTarget:=Self;
+  while (aTarget<>nil) do begin
+    Result:=aTarget.ProjectGroup;
+    if Result<>nil then exit;
+    aTarget:=aTarget.Parent;
+  end;
+  Result:=nil;
+end;
+
+function TPGCompileTarget.GetRootProjectGroup: TProjectGroup;
+var
+  aTarget: TPGCompileTarget;
+begin
+  aTarget:=Self;
+  while (aTarget.Parent<>nil) do aTarget:=aTarget.Parent;
+  Result:=aTarget.ProjectGroup;
+end;
+
+function TPGCompileTarget.GetNext(SkipChildren: boolean): TPGCompileTarget;
+var
+  aTarget: TPGCompileTarget;
+  PG: TProjectGroup;
+  i: Integer;
+begin
+  // check first child
+  if (not SkipChildren) and (ProjectGroup<>nil) and (ProjectGroup.TargetCount>0)
+  then begin
+    Result:=ProjectGroup.Targets[0];
+    exit(Result);
+  end;
+  // check next sibling
+  aTarget:=Self;
+  while aTarget.Parent<>nil do begin
+    PG:=aTarget.Parent.ProjectGroup;
+    if PG<>nil then begin
+      i:=PG.IndexOfTarget(aTarget);
+      if (i>=0) and (i+1<PG.TargetCount) then begin
+        Result:=PG.Targets[i+1];
+        exit(Result);
+      end;
+    end;
+    aTarget:=aTarget.Parent;
+  end;
+  Result:=nil;
+end;
+
+function TPGCompileTarget.IndexOfBuildMode(aName: string): integer;
+begin
+  Result:=BuildModeCount-1;
+  while (Result>=0) and (CompareText(aName,BuildModes[Result].Identifier)<>0) do
+    dec(Result);
+end;
+
+function TPGCompileTarget.FindBuildMode(aName: string): TPGBuildMode;
+var
+  i: Integer;
+begin
+  i:=IndexOfBuildMode(aName);
+  if i>=0 then
+    Result:=BuildModes[i]
+  else
+    Result:=nil;
+end;
+
+function TPGCompileTarget.Perform(AAction: TPGTargetAction): TPGActionResult;
 begin
   if Not (AAction in AllowedActions) then
     Result:=arNotAllowed

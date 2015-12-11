@@ -59,7 +59,7 @@ uses
   MemCheck,
 {$ENDIF}
   // fpc packages
-  Math, Classes, SysUtils, Process, TypInfo, types, strutils, AVL_Tree,
+  Math, Classes, SysUtils, TypInfo, types, strutils, AVL_Tree,
   // LCL
   LCLProc, LCLType, LCLIntf, LResources, ComCtrls, HelpIntfs, InterfaceBase,
   Forms, Buttons, Menus, Controls, GraphType, Graphics, ExtCtrls, Dialogs,
@@ -186,7 +186,7 @@ type
     procedure HandleSelectFrame(Sender: TObject; var AComponentClass: TComponentClass);
     procedure OIChangedTimerTimer(Sender: TObject);
     procedure LazInstancesStartNewInstance(const aFiles: TStrings;
-      var Result: TStartNewInstanceResult);
+      var Result: TStartNewInstanceResult; var outSourceWindowHandle: HWND);
     procedure LazInstancesGetOpenedProjectFileName(var outProjectFileName: string);
   public
     // file menu
@@ -322,7 +322,7 @@ type
     procedure mnuViewFormsClicked(Sender: TObject);
     procedure mnuViewProjectSourceClicked(Sender: TObject);
     procedure mnuProjectOptionsClicked(Sender: TObject);
-    procedure mnuBuildModeClicked(Sender: TObject);
+    procedure mnuBuildModeClicked(Sender: TObject); override;
 
     // run menu
     procedure mnuCompileProjectClicked(Sender: TObject);
@@ -395,7 +395,6 @@ type
     procedure UpdatePackageCommands(Sender: TObject);
     // see pkgmanager.pas
 
-    procedure mnuChgBuildModeClicked(Sender: TObject);
     procedure ToolBarOptionsClick(Sender: TObject);
   private
     fBuilder: TLazarusBuilder;
@@ -722,6 +721,7 @@ type
     function DoResetToolStatus(AFlags: TResetToolFlags): boolean; override;
 
     // files/units
+    function DoAddUnitToProject(AEditor: TSourceEditorInterface): TModalResult; override;
     function DoNewFile(NewFileDescriptor: TProjectFileDescriptor;
         var NewFilename: string; NewSource: string;
         NewFlags: TNewFlags; NewOwner: TObject): TModalResult; override;
@@ -801,7 +801,7 @@ type
     procedure DoCompile;
     procedure DoQuickCompile;
     function DoInitProjectRun: TModalResult; override;
-    function DoRunProject: TModalResult;
+    function DoRunProject: TModalResult; override;
     function DoSaveProjectToTestDirectory(Flags: TSaveFlags): TModalResult;
     function QuitIDE: boolean;
 
@@ -818,10 +818,10 @@ type
     function DoExampleManager: TModalResult; override;
     function DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult; override;
     function DoBuildAdvancedLazarus(ProfileNames: TStringList): TModalResult;
-    function DoBuildFile({%H-}ShowAbort: Boolean): TModalResult;
-    function DoRunFile: TModalResult;
-    function DoConfigBuildFile: TModalResult;
-    function GetIDEDirectives(AnUnitInfo: TUnitInfo;
+    function DoBuildFile({%H-}ShowAbort: Boolean; Filename: string = ''): TModalResult; override;
+    function DoRunFile(Filename: string = ''): TModalResult; override;
+    function DoConfigureBuildFile: TModalResult; override;
+    function GetIDEDirectives(aFilename: string;
                               DirectiveList: TStrings): TModalResult;
     function FilterIDEDirective(Tool: TStandardCodeTool;
                                 StartPos, {%H-}EndPos: integer): boolean;
@@ -1311,6 +1311,7 @@ begin
   LoadFileDialogFilter;
 
   EditorOpts := TEditorOptions.Create;
+  IDEEditorOptions := EditorOpts;
   EditorOpts.OnBeforeRead := @DoEditorOptionsBeforeRead;
   EditorOpts.OnAfterWrite := @DoEditorOptionsAfterWrite;
   SetupIDECommands;
@@ -1395,6 +1396,15 @@ begin
   and (CheckDebuggerQuality(EnvironmentOptions.GetParsedDebuggerFilename, Note)<>sddqCompatible)
   then begin
     debugln(['Warning: missing GDB exe',EnvironmentOptions.GetParsedLazarusDirectory]);
+    ShowSetupDialog:=true;
+  end;
+
+  // check 'make' utility
+  debugln(['TMainIDE.SetupInteractive ',EnvironmentOptions.GetParsedMakeFilename]);
+  if (not ShowSetupDialog)
+  and (CheckMakeExeQuality(EnvironmentOptions.GetParsedMakeFilename,Note)<>sddqCompatible)
+  then begin
+    debugln(['Warning: incompatible make utility: ',EnvironmentOptions.GetParsedMakeFilename]);
     ShowSetupDialog:=true;
   end;
 
@@ -2229,11 +2239,19 @@ begin
   end;
 
   // try loading last project if lazarus didn't fail last time
+  {debugln(['TMainIDE.SetupStartProject ProjectLoaded=',ProjectLoaded,
+    ' SkipAutoLoadingLastProject=',SkipAutoLoadingLastProject,
+    ' EnvironmentOptions.OpenLastProjectAtStart=',EnvironmentOptions.OpenLastProjectAtStart,
+    ' EnvironmentOptions.LastSavedProjectFile="',EnvironmentOptions.LastSavedProjectFile,'"',
+    ' RestoreProjectClosed=',RestoreProjectClosed,
+    ' FileExistsCached(EnvironmentOptions.LastSavedProjectFile)=',FileExistsCached(EnvironmentOptions.LastSavedProjectFile)
+    ]);}
   if (not ProjectLoaded)
   and (not SkipAutoLoadingLastProject)
   and (EnvironmentOptions.OpenLastProjectAtStart)
   and (EnvironmentOptions.LastSavedProjectFile<>'')
-  and (not LazIDEInstances.ProjectIsOpenInAnotherInstance(EnvironmentOptions.LastSavedProjectFile))
+  and ((EnvironmentOptions.MultipleInstances=mioAlwaysStartNew)
+    or (not LazIDEInstances.ProjectIsOpenInAnotherInstance(EnvironmentOptions.LastSavedProjectFile)))
   and (EnvironmentOptions.LastSavedProjectFile<>RestoreProjectClosed)
   and (FileExistsCached(EnvironmentOptions.LastSavedProjectFile))
   then begin
@@ -2691,7 +2709,6 @@ begin
     itmProjectViewUnits.OnClick := @mnuViewUnitsClicked;
     itmProjectViewForms.OnClick := @mnuViewFormsClicked;
     itmProjectViewSource.OnClick := @mnuViewProjectSourceClicked;
-    itmProjectBuildMode.OnClick := @mnuBuildModeClicked;
   end;
 end;
 
@@ -3678,13 +3695,17 @@ begin
   IDECommandList.FindIDECommand(ecInsertCVSRevision).Enabled := Editable;
   IDECommandList.FindIDECommand(ecInsertCVSSource).Enabled := Editable;
   IDECommandList.FindIDECommand(ecInsertGPLNotice).Enabled := Editable;
-  IDECommandList.FindIDECommand(ecInsertGPLNoticeTranslated).Visible := Editable and (EnglishGPLNotice<>lisGPLNotice);
+  IDECommandList.FindIDECommand(ecInsertGPLNoticeTranslated).Enabled := Editable;
+  MainIDEBar.itmSourceInsertGPLNoticeTranslated.Visible := (EnglishGPLNotice<>lisGPLNotice);
   IDECommandList.FindIDECommand(ecInsertLGPLNotice).Enabled := Editable;
-  IDECommandList.FindIDECommand(ecInsertLGPLNoticeTranslated).Visible := Editable and (EnglishLGPLNotice<>lisLGPLNotice);
+  IDECommandList.FindIDECommand(ecInsertLGPLNoticeTranslated).Enabled := Editable;
+  MainIDEBar.itmSourceInsertLGPLNoticeTranslated.Visible := (EnglishLGPLNotice<>lisLGPLNotice);
   IDECommandList.FindIDECommand(ecInsertModifiedLGPLNotice).Enabled := Editable;
-  IDECommandList.FindIDECommand(ecInsertModifiedLGPLNoticeTranslated).Visible := Editable and (EnglishModifiedLGPLNotice<>lisModifiedLGPLNotice);
+  IDECommandList.FindIDECommand(ecInsertModifiedLGPLNoticeTranslated).Enabled := Editable;
+  MainIDEBar.itmSourceInsertModifiedLGPLNoticeTranslated.Visible := (EnglishModifiedLGPLNotice<>lisModifiedLGPLNotice);
   IDECommandList.FindIDECommand(ecInsertMITNotice).Enabled := Editable;
-  IDECommandList.FindIDECommand(ecInsertMITNoticeTranslated).Visible := Editable and (EnglishMITNotice<>lisMITNotice);
+  IDECommandList.FindIDECommand(ecInsertMITNoticeTranslated).Enabled := Editable;
+  MainIDEBar.itmSourceInsertMITNoticeTranslated.Visible := (EnglishMITNotice<>lisMITNotice);
   IDECommandList.FindIDECommand(ecInsertUserName).Enabled := Editable;
   IDECommandList.FindIDECommand(ecInsertDateTime).Enabled := Editable;
   IDECommandList.FindIDECommand(ecInsertChangeLogEntry).Enabled := Editable;
@@ -3778,13 +3799,23 @@ procedure TMainIDE.UpdateProjectCommands(Sender: TObject);
 var
   ASrcEdit: TSourceEditor;
   AUnitInfo: TUnitInfo;
+  xCmd: TIDECommand;
 begin
   GetCurrentUnit(ASrcEdit,AUnitInfo);
   if not UpdateProjectCommandsStamp.Changed(AUnitInfo) then
     Exit;
 
   IDECommandList.FindIDECommand(ecAddCurUnitToProj).Enabled:=Assigned(AUnitInfo) and not AUnitInfo.IsPartOfProject;
-  IDECommandList.FindIDECommand(ecBuildManyModes).Enabled:=Project1.BuildModes.Count>1;
+  IDECommandList.FindIDECommand(ecBuildManyModes).Enabled:=(Project1<>nil) and (Project1.BuildModes.Count>1);
+
+  xCmd := IDECommandList.FindIDECommand(ecProjectChangeBuildMode);
+  if Assigned(Project1) then
+    xCmd.Hint :=
+      Trim(lisChangeBuildMode + ' ' + KeyValuesToCaptionStr(xCmd.ShortcutA, xCmd.ShortcutB, '(')) + sLineBreak +
+      Format('[%s]', [Project1.ActiveBuildMode.GetCaption])
+  else
+    xCmd.Hint :=
+      Trim(lisChangeBuildMode + ' ' + KeyValuesToCaptionStr(xCmd.ShortcutA, xCmd.ShortcutB, '('));
 end;
 
 procedure TMainIDE.UpdatePackageCommands(Sender: TObject);
@@ -4007,11 +4038,6 @@ end;
 procedure TMainIDE.mnuProjectOptionsClicked(Sender: TObject);
 begin
   ProjectOptionsHelper([TProjectIDEOptions, TProjectCompilerOptions]);
-end;
-
-procedure TMainIDE.mnuChgBuildModeClicked(Sender: TObject);
-begin
-  ProjectOptionsHelper([TProjectCompilerOptions]);
 end;
 
 procedure TMainIDE.mnuBuildModeClicked(Sender: TObject);
@@ -4238,7 +4264,7 @@ end;
 
 procedure TMainIDE.mnuConfigBuildFileClicked(Sender: TObject);
 begin
-  DoConfigBuildFile;
+  DoConfigureBuildFile;
 end;
 
 procedure TMainIDE.mnuRunParametersClicked(Sender: TObject);
@@ -6235,6 +6261,12 @@ begin
   Result:=SourceFileMgr.AddActiveUnitToProject;
 end;
 
+function TMainIDE.DoAddUnitToProject(AEditor: TSourceEditorInterface
+  ): TModalResult;
+begin
+  Result := SourceFileMgr.AddUnitToProject(AEditor);
+end;
+
 function TMainIDE.DoRemoveFromProjectDialog: TModalResult;
 Begin
   Result:=SourceFileMgr.RemoveFromProjectDialog;
@@ -6712,7 +6744,7 @@ begin
   if Interactive then
   begin
     if IDEQuestionDialog(lisBuilding, lisTheIDEIsStillBuilding,
-      mtConfirmation, [mrAbort, lisKMAbortBuilding, mrNo, lisContinueBuilding])
+      mtConfirmation, [mrAbort, lisKMAbortBuilding, 'IsDefault', mrNo, lisContinueBuilding])
       <> mrAbort
     then
       exit;
@@ -7255,7 +7287,8 @@ begin
   end;
 end;
 
-function TMainIDE.DoBuildFile(ShowAbort: Boolean): TModalResult;
+function TMainIDE.DoBuildFile(ShowAbort: Boolean; Filename: string
+  ): TModalResult;
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
@@ -7266,22 +7299,36 @@ var
   ProgramFilename: string;
   Params: string;
   ExtTool: TIDEExternalToolOptions;
-  Filename: String;
   OldToolStatus: TIDEToolStatus;
 begin
   Result:=mrCancel;
   if ToolStatus<>itNone then exit;
   ActiveSrcEdit:=nil;
-  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
+  ActiveUnitInfo:=nil;
   Result:=DoSaveProject([]);
   if Result<>mrOk then exit;
+  if Filename='' then begin
+    if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
+    if not FilenameIsAbsolute(ActiveUnitInfo.Filename) then begin
+      Result:=DoSaveEditorFile(ActiveSrcEdit,[sfCheckAmbiguousFiles]);
+      if Result<>mrOk then exit;
+    end;
+    Filename:=ActiveUnitInfo.Filename;
+  end else begin
+    Filename:=TrimFilename(Filename);
+    if not FilenameIsAbsolute(Filename) then begin
+      IDEMessageDialog('Error','Unable to run file "'+Filename+'". Please save it first.',
+        mtError,[mbOk]);
+      exit;
+    end;
+  end;
   if ExternalTools.RunningCount=0 then
     IDEMessagesWindow.Clear;
   DirectiveList:=TStringList.Create;
   OldToolStatus:=ToolStatus;
   ToolStatus:=itBuilder;
   try
-    Result:=GetIDEDirectives(ActiveUnitInfo,DirectiveList);
+    Result:=GetIDEDirectives(Filename,DirectiveList);
     if Result<>mrOk then exit;
 
     // get values from directive list
@@ -7290,7 +7337,7 @@ begin
                                          IDEDirectiveNames[idedBuildWorkingDir],
                                          '');
     if BuildWorkingDir='' then
-      BuildWorkingDir:=ExtractFilePath(ActiveUnitInfo.Filename);
+      BuildWorkingDir:=ExtractFilePath(Filename);
     if not GlobalMacroList.SubstituteStr(BuildWorkingDir) then begin
       Result:=mrCancel;
       exit;
@@ -7320,7 +7367,7 @@ begin
 
     ExtTool:=TIDEExternalToolOptions.Create;
     try
-      ExtTool.Title:='Build File '+ActiveUnitInfo.Filename;
+      ExtTool.Title:='Build File '+Filename;
       ExtTool.WorkingDirectory:=BuildWorkingDir;
       ExtTool.CmdLineParams:=Params;
       ExtTool.Executable:=ProgramFilename;
@@ -7343,7 +7390,7 @@ begin
   end;
 end;
 
-function TMainIDE.DoRunFile: TModalResult;
+function TMainIDE.DoRunFile(Filename: string): TModalResult;
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
@@ -7359,50 +7406,65 @@ var
   Params: string;
   ExtTool: TIDEExternalToolOptions;
   DirectiveList: TStringList;
+  Code: TCodeBuffer;
 begin
   Result:=mrCancel;
   if ToolStatus<>itNone then exit;
   ActiveSrcEdit:=nil;
-  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
-  if not FilenameIsAbsolute(ActiveUnitInfo.Filename) then begin
-    Result:=DoSaveEditorFile(ActiveSrcEdit,[sfCheckAmbiguousFiles]);
-    if Result<>mrOk then exit;
+  ActiveUnitInfo:=nil;
+  if Filename='' then begin
+    if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
+    if not FilenameIsAbsolute(ActiveUnitInfo.Filename) then begin
+      Result:=DoSaveEditorFile(ActiveSrcEdit,[sfCheckAmbiguousFiles]);
+      if Result<>mrOk then exit;
+    end;
+    Filename:=ActiveUnitInfo.Filename;
+  end else begin
+    Filename:=TrimFilename(Filename);
+    if not FilenameIsAbsolute(Filename) then begin
+      IDEMessageDialog('Error','Unable to run file "'+Filename+'". Please save it first.',
+        mtError,[mbOk]);
+      exit;
+    end;
   end;
   DirectiveList:=TStringList.Create;
   try
-    Result:=GetIDEDirectives(ActiveUnitInfo,DirectiveList);
+    Result:=GetIDEDirectives(Filename,DirectiveList);
     if Result<>mrOk then exit;
 
-    if ActiveUnitInfo.Source.LineCount>0 then
-      FirstLine:=ActiveUnitInfo.Source.GetLine(0,false)
+    Code:=CodeToolBoss.LoadFile(Filename,true,false);
+    if Code=nil then exit;
+    if Code.LineCount>0 then
+      FirstLine:=Code.GetLine(0,false)
     else
       FirstLine:='';
     HasShebang:=copy(FirstLine,1,2)='#!';
     DefRunFlags:=IDEDirRunFlagDefValues;
-    if HasShebang then Exclude(DefRunFlags,idedrfBuildBeforeRun);
+    if HasShebang then
+      Exclude(DefRunFlags,idedrfBuildBeforeRun);
     RunFlags:=GetIDEDirRunFlagFromString(
       GetIDEStringDirective(DirectiveList,IDEDirectiveNames[idedRunFlags],''),
       DefRunFlags);
     AlwaysBuildBeforeRun:=idedrfBuildBeforeRun in RunFlags;
     if AlwaysBuildBeforeRun then begin
-      Result:=DoBuildFile(true);
+      Result:=DoBuildFile(true,Filename);
       if Result<>mrOk then exit;
     end;
     RunWorkingDir:=GetIDEStringDirective(DirectiveList,
                                        IDEDirectiveNames[idedRunWorkingDir],'');
     if RunWorkingDir='' then
-      RunWorkingDir:=ExtractFilePath(ActiveUnitInfo.Filename);
+      RunWorkingDir:=ExtractFilePath(Filename);
     if not GlobalMacroList.SubstituteStr(RunWorkingDir) then begin
       Result:=mrCancel;
       exit;
     end;
     if HasShebang then
-      DefRunCommand:='instantfpc'+ExeExt+' '+ActiveUnitInfo.Filename
+      DefRunCommand:='instantfpc'+ExeExt+' '+Filename
     else
       DefRunCommand:=IDEDirDefaultRunCommand;
     RunCommand:=GetIDEStringDirective(DirectiveList,
-                                    IDEDirectiveNames[idedRunCommand],
-                                    DefRunCommand);
+                                      IDEDirectiveNames[idedRunCommand],
+                                      DefRunCommand);
     if (not GlobalMacroList.SubstituteStr(RunCommand)) then
       exit(mrCancel);
     if (RunCommand='') then
@@ -7414,10 +7476,12 @@ begin
 
     ExtTool:=TIDEExternalToolOptions.Create;
     try
-      ExtTool.Title:='Run File '+ActiveUnitInfo.Filename;
+      ExtTool.Title:='Run File '+Filename;
       ExtTool.WorkingDirectory:=RunWorkingDir;
       ExtTool.CmdLineParams:=Params;
       ExtTool.Executable:=ProgramFilename;
+      if idedrfMessages in RunFlags then
+        ExtTool.Scanners.Add(SubToolDefault);
       if RunExternalTool(ExtTool) then
         Result:=mrOk
       else
@@ -7431,7 +7495,7 @@ begin
   end;
 end;
 
-function TMainIDE.DoConfigBuildFile: TModalResult;
+function TMainIDE.DoConfigureBuildFile: TModalResult;
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
@@ -7449,7 +7513,7 @@ begin
   end;
   DirectiveList:=TStringList.Create;
   try
-    Result:=GetIDEDirectives(ActiveUnitInfo,DirectiveList);
+    Result:=GetIDEDirectives(ActiveUnitInfo.Filename,DirectiveList);
     if Result<>mrOk then exit;
 
     BuildFileDialog:=TBuildFileDialog.Create(nil);
@@ -7499,23 +7563,29 @@ begin
   Result:=mrOk;
 end;
 
-function TMainIDE.GetIDEDirectives(AnUnitInfo: TUnitInfo;
-  DirectiveList: TStrings): TModalResult;
+function TMainIDE.GetIDEDirectives(aFilename: string; DirectiveList: TStrings
+  ): TModalResult;
 var
-  CodeResult: Boolean;
+  AnUnitInfo: TUnitInfo;
+  Code: TCodeBuffer;
 begin
   Result:=mrCancel;
-  if FilenameIsPascalSource(AnUnitInfo.Filename) then begin
+  if FilenameIsPascalSource(aFilename) then begin
     // parse source for IDE directives (i.e. % comments)
-    CodeResult:=CodeToolBoss.GetIDEDirectives(AnUnitInfo.Source,DirectiveList,@FilterIDEDirective);
-    if not CodeResult then begin
+    Result:=LoadCodeBuffer(Code,aFilename,[lbfUpdateFromDisk],false);
+    if Result<>mrOk then exit;
+    if not CodeToolBoss.GetIDEDirectives(Code,DirectiveList,@FilterIDEDirective)
+    then begin
       DoJumpToCodeToolBossError;
       exit;
     end;
-  end else begin
+  end else if Project1<>nil then begin
+    AnUnitInfo:=Project1.UnitInfoWithFilename(aFilename);
+    if AnUnitInfo=nil then exit;
     StringToStringList(AnUnitInfo.CustomData['IDEDirectives'],DirectiveList);
     //DebugLn(['TMainIDE.GetIDEDirectives ',dbgstr(DirectiveList.Text)]);
-  end;
+  end else
+    exit;
   Result:=mrOk;
 end;
 
@@ -7883,7 +7953,6 @@ begin
   end;
   MainIDEBar.Caption := NewCaption;
   Application.Title := NewTitle;
-  TSetBuildModeToolButton.UpdateHints;
 end;
 
 procedure TMainIDE.HideIDE;
@@ -9335,18 +9404,20 @@ begin
 end;
 
 procedure TMainIDE.LazInstancesStartNewInstance(const aFiles: TStrings;
-  var Result: TStartNewInstanceResult);
+  var Result: TStartNewInstanceResult; var outSourceWindowHandle: HWND);
 var
   xParams: TDoDropFilesAsyncParams;
   I: Integer;
 begin
+  if EnvironmentOptions.MultipleInstances = mioAlwaysStartNew then
+  begin
+    Result:=ofrStartNewInstance;
+    exit;
+  end;
+
   if aFiles.Count > 0 then
   begin
     //there are files to open
-    if EnvironmentOptions.MultipleInstances = mioAlwaysStartNew then
-    begin//the user wants to open them in new instance!
-      Result := ofrStartNewInstance;
-    end else
     if (not IsWindowEnabled(Application.MainForm.Handle) or//check that main is active
        (Application.ModalLevel > 0))//check that no modal window is opened
     then
@@ -9365,6 +9436,11 @@ begin
     else
       Result := ofrStartNewInstance;
   end;
+
+  if  (SourceEditorManager.ActiveSourceWindow <> nil)
+  and (SourceEditorManager.ActiveSourceWindow.HandleAllocated)
+  then
+    outSourceWindowHandle := SourceEditorManager.ActiveSourceWindow.Handle;
 
   if Result in [ofrStartNewInstance, ofrModalError, ofrForceSingleInstanceModalError]  then
     Exit;
@@ -10603,8 +10679,8 @@ end;
 
 procedure TMainIDE.OnSrcNotebookCurCodeBufferChanged(Sender: TObject);
 begin
-  if SourceEditorManager.SourceEditorCount = 0 then Exit;
-  if CodeExplorerView<>nil then CodeExplorerView.CurrentCodeBufferChanged;
+  if CodeExplorerView<>nil then
+    CodeExplorerView.CurrentCodeBufferChanged;
 end;
 
 procedure TMainIDE.OnSrcNotebookShowHintForSource(SrcEdit: TSourceEditor;

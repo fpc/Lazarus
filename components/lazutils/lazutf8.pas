@@ -18,13 +18,12 @@ unit LazUTF8;
 
 {$mode objfpc}{$H+}{$inline on}
 
-{$IF (FPC_FULLVERSION >= 30000) AND NOT DEFINED(DisableUTF8RTL)}
-  {$DEFINE ReallyUseUTF8RTL}
-{$IFEND}
+{$i lazutils_defines.inc}
+
 interface
 
 uses
-  {$IFDEF ReallyUseUTF8RTL}
+  {$IFDEF UTF8_RTL}
   {$ifdef unix}
   cwstring, // UTF8 RTL on Unix requires this. Must be used although it pulls in clib.
   {$endif}
@@ -42,8 +41,8 @@ function NeedRTLAnsi: boolean;// true if system encoding is not UTF-8
 procedure SetNeedRTLAnsi(NewValue: boolean);
 
 // UTF8ToSys works like UTF8ToAnsi but more independent of widestringmanager
-function UTF8ToSys(const s: string): string; overload; {$IFDEF ReallyUseUTF8RTL}inline;{$ENDIF}
-function UTF8ToSys(const AFormatSettings: TFormatSettings): TFormatSettings; overload; {$IFDEF ReallyUseUTF8RTL}inline;{$ENDIF}
+function UTF8ToSys(const s: string): string; overload; {$IFDEF UTF8_RTL}inline;{$ENDIF}
+function UTF8ToSys(const AFormatSettings: TFormatSettings): TFormatSettings; overload; {$IFDEF UTF8_RTL}inline;{$ENDIF}
 
 // SysToUTF8 works like AnsiToUTF8 but more independent of widestringmanager
 function SysToUTF8(const s: string): string; overload;
@@ -53,13 +52,12 @@ function SysToUTF8(const AFormatSettings: TFormatSettings): TFormatSettings; ove
 function ConsoleToUTF8(const s: string): string;
 // converts UTF8 string to console encoding (used by Write, WriteLn)
 function UTF8ToConsole(const s: string): string;
-{$IFDEF MSWindows}
+
 // for all Windows supporting 8bit codepages (e.g. not WinCE)
 // converts string in Windows code page to UTF8 (used with some Windows specific functions)
 function WinCPToUTF8(const s: string): string;
 // converts UTF8 string to Windows code page encoding (used by Write, WriteLn)
 function UTF8ToWinCP(const s: string): string;
-{$ENDIF}
 
 function ParamStrUTF8(Param: Integer): string;
 
@@ -251,7 +249,7 @@ end;
 
 function UTF8ToSys(const s: string): string;
 begin
-  {$IFDEF ReallyUseUTF8RTL}
+  {$IFDEF UTF8_RTL}
   Result:=s;
   {$ELSE}
   if NeedRTLAnsi and (not IsASCII(s)) then
@@ -263,7 +261,7 @@ end;
 
 function SysToUTF8(const s: string): string;
 begin
-  {$IFDEF ReallyUseUTF8RTL}
+  {$IFDEF UTF8_RTL}
   Result:=s;
   {$ELSE}
   if NeedRTLAnsi and (not IsASCII(s)) then
@@ -297,13 +295,13 @@ begin
 end;
 
 function UTF8ToSys(const AFormatSettings: TFormatSettings): TFormatSettings;
-{$IFnDEF ReallyUseUTF8RTL}
+{$IFnDEF UTF8_RTL}
 var
   i: Integer;
 {$ENDIF}
 begin
   Result := AFormatSettings;
-  {$IFnDEF ReallyUseUTF8RTL}
+  {$IFnDEF UTF8_RTL}
   Result.CurrencyString := UTF8ToSys(AFormatSettings.CurrencyString);
   for i:=1 to 12 do begin
     Result.LongMonthNames[i] := UTF8ToSys(AFormatSettings.LongMonthNames[i]);

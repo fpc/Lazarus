@@ -40,7 +40,6 @@ type
     class procedure  SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure ScrollBy(const AWinControl: TScrollingWinControl; const DeltaX, DeltaY: integer); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
   end;
 
@@ -183,13 +182,6 @@ begin
   Result := TLCLIntfHandle(PtrUInt(Frame));
   Set_RC_Name(AWinControl, PGtkWidget(Frame));
   SetCallBacks(PGtkWidget(Frame), WidgetInfo);
-end;
-
-class procedure TGtkWSScrollingWinControl.ScrollBy(const AWinControl: TScrollingWinControl;
-  const DeltaX, DeltaY: integer);
-begin
-  {$IFDEF VerboseGtkToDos}{$note implement me}{$ENDIF}
-  AWinControl.Invalidate;
 end;
 
 class procedure TGtkWSScrollingWinControl.SetColor(

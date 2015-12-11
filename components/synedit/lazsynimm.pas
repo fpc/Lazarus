@@ -789,18 +789,13 @@ begin
               if (FLeftPosForTarget < 0) or (FLeftPosForTarget > xy.x) then
                 FLeftPosForTarget := xy.x;
               inc(i);
-              while longword(i) < ImeCount do begin
-                if (ord(p[i]) <> ATTR_TARGET_CONVERTED) or (i = ImeCount-1) then begin
-                  if (ord(p[i]) = ATTR_TARGET_CONVERTED) then
-                    inc(i);
-                  xy.x := x + CharToByte(x, i);
-                  FImeBlockSelection2.EndLineBytePos := xy;
-                  if (FRightPosForTarget < 0) or (FRightPosForTarget > xy.x) then
-                    FRightPosForTarget := xy.x;
-                  break;
-                end;
+
+              while (longword(i) < ImeCount) and (ord(p[i]) = ATTR_TARGET_CONVERTED) do
                 inc(i);
-              end;
+              xy.x := x + CharToByte(x, i);
+              FImeBlockSelection2.EndLineBytePos := xy;
+              if (FRightPosForTarget < 0) or (FRightPosForTarget < xy.x) then
+                FRightPosForTarget := xy.x;
               //break;
             end;
 
@@ -811,18 +806,13 @@ begin
                 FLeftPosForTarget := xy.x;
               FImeBlockSelection3.StartLineBytePos := xy;
               inc(i);
-              while longword(i) < ImeCount do begin
-                if (ord(p[i]) <> ATTR_TARGET_NOTCONVERTED) or (i = ImeCount-1) then begin
-                  if (ord(p[i]) = ATTR_TARGET_NOTCONVERTED) then
-                    inc(i);
-                  xy.x := x + CharToByte(x, i);
-                  FImeBlockSelection3.EndLineBytePos := xy;
-                  if (FRightPosForTarget < 0) or (FRightPosForTarget > xy.x) then
-                    FRightPosForTarget := xy.x;
-                  break;
-                end;
+
+              while (longword(i) < ImeCount) and (ord(p[i]) = ATTR_TARGET_NOTCONVERTED) do
                 inc(i);
-              end;
+              xy.x := x + CharToByte(x, i);
+              FImeBlockSelection3.EndLineBytePos := xy;
+              if (FRightPosForTarget < 0) or (FRightPosForTarget < xy.x) then
+                FRightPosForTarget := xy.x;
               //break;
             end;
 
@@ -837,8 +827,9 @@ begin
         if (FLeftPosForTarget > 0) and FAdjustLeftCharForTargets then begin
           FLeftPosForTarget := ViewedTextBuffer.LogicalToPhysicalPos
             (Point(FLeftPosForTarget, FImeBlockSelection.FirstLineBytePos.Y)).x;
-          FRightPosForTarget := ViewedTextBuffer.LogicalToPhysicalPos
-            (Point(FRightPosForTarget, FImeBlockSelection.FirstLineBytePos.Y)).x;
+          if FRightPosForTarget > 0 then
+            FRightPosForTarget := ViewedTextBuffer.LogicalToPhysicalPos
+              (Point(FRightPosForTarget, FImeBlockSelection.FirstLineBytePos.Y)).x;
           EnsureLeftChar;
         end;
       end;

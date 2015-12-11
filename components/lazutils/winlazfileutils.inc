@@ -362,9 +362,11 @@ begin
 end;
 
 function GetCurrentDirWide: String;
+{$ifndef WinCE}
 var
   w   : WideString;
   res : Integer;
+  {$endif}
 begin
   {$ifdef WinCE}
   Result := '\';
@@ -382,10 +384,12 @@ end;
 
 procedure GetDirWide(DriveNr: Byte; var Dir: String);
 {This procedure may not be threadsafe, because SetCurrentDirectory isn't}
+{$ifndef WinCE}
 var
   w, D: WideString;
   SavedDir: WideString;
   res : Integer;
+{$endif}
 begin
   {$ifdef WinCE}
   Dir := '\';
@@ -538,15 +542,8 @@ end;
 {$IF DEFINED(WinCE) OR (FPC_FULLVERSION>=30000)}
   {$define FindData_W}
 {$IFEND}
-{$IF (FPC_FULLVERSION >= 30000) AND NOT DEFINED(DisableUTF8RTL)}
-  {$DEFINE ReallyUseUTF8RTL}
-{$IFEND}
 
 function FindMatch(var f: TSearchRec) : Longint;
-{$IFnDEF ReallyUseUTF8RTL}
-var
-  Dummy: String;
-{$ENDIF}
 begin
   { Find file with correct attribute }
   While (F.FindData.dwFileAttributes and cardinal(F.ExcludeAttr))<>0 do
@@ -565,12 +562,10 @@ begin
     in win32 it is the ansi structure with a utf-8 string
     in wince it is a wide structure }
   {$ifdef FindData_W}
-  {$IFDEF ReallyUseUTF8RTL}
-  f.Name:=UTF8Encode(UnicodeString(F.FindData.cFileName));
+  {$IFDEF ACP_RTL}
+  f.Name:=String(UnicodeString(F.FindData.cFileName));
   {$ELSE}
-  Dummy := '';
-  Insert(UTF8Encode(UnicodeString(F.FindData.cFileName)), Dummy, 1);
-  f.Name := Dummy;
+  f.Name:=UTF8Encode(UnicodeString(F.FindData.cFileName));
   {$ENDIF}
   {$else}
   f.Name:=F.FindData.cFileName;
@@ -623,7 +618,11 @@ begin
   Rslt.ExcludeAttr:=(not Attr) and ($1e);
                  { $1e = faHidden or faSysFile or faVolumeID or faDirectory }
   { FindFirstFile is a Win32 Call }
-  Rslt.FindHandle:=Windows.FindFirstFileW( PWideChar(UTF8Decode(Path)),find{%H-});
+  {$IFDEF ACP_RTL}
+  Rslt.FindHandle:=Windows.FindFirstFileW(PWideChar(WideString(Path)),find{%H-});
+  {$ELSE}
+  Rslt.FindHandle:=Windows.FindFirstFileW(PWideChar(UTF8Decode(Path)),find{%H-});
+  {$ENDIF}
   If Rslt.FindHandle=Windows.Invalid_Handle_value then
   begin
     Result:=GetLastError;
@@ -655,21 +654,6 @@ begin
   else
     Result := Integer(GetLastError);
 end;
-
-//fpc 2.6.0 does not have StrLen for WideChar.
-//Remove this when we have 2.6.4 or higher
-{$if FPC_FULLVERSION < 20602}
-function StrLen(PW: PWideChar): SizeInt; overload;
-var
-  i: SizeInt;
-begin
-  i:=0;
-  if assigned(PW) then
-    while (PW[i] <> #0) do inc(i);
-  Result := i;
-end;
-{$endif}
-
 
 {$IFDEF WINCE}
 // In WinCE these API calls are in Windows unit
@@ -942,7 +926,7 @@ begin
       Fn := IncludeTrailingPathDelimiter(CurDir) + Fn
     else
     begin
-      if (Fn[1] = DirectorySeparator) then Delete(Fn,1,1);
+      if (Length(Fn) > 0) and (Fn[1] = DirectorySeparator) then Delete(Fn,1,1);
       Fn := IncludeTrailingPathDelimiter(BaseDir) + Fn;
     end;
 
@@ -1036,9 +1020,11 @@ end;
 
 
 function FileIsHardLink(const AFilename: string): boolean;
+{$ifndef wince}
 var
   H: THandle;
   FileInfo: BY_HANDLE_FILE_INFORMATION;
+  {$endif}
 begin
   Result := false;
   {$ifndef wince}

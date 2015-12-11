@@ -975,7 +975,14 @@ var
 begin
   Result := mrNone;
   ReleaseCapture;
-  ADialogResult := mrNone;
+
+  if (Length(DialogMessage)>1000) then
+  begin
+    Result:=inherited;
+    exit;
+  end;
+
+  ADialogResult := mrCancel;
   case DialogType of
     idDialogWarning: GtkDialogType := GTK_MESSAGE_WARNING;
     idDialogError: GtkDialogType := GTK_MESSAGE_ERROR;
@@ -1000,11 +1007,6 @@ begin
       CancelID := X;
       ADialogResult := DlgBtn.ModalResult;
     end;
-
-    if (ADialogResult = mrNone) and
-      (Buttons[X].ModalResult in [mrCancel, mrAbort, mrIgnore, mrNo, mrNoToAll])
-    then
-      ADialogResult := Buttons[X].ModalResult;
   end;
 
 

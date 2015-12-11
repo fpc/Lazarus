@@ -86,6 +86,7 @@ type
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure Invalidate(const AWinControl: TWinControl); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
+    class procedure ScrollBy(const AWinControl: TWinControl; DeltaX, DeltaY: integer); override;
   end;
 
   { TWinCEWSGraphicControl }
@@ -447,6 +448,14 @@ class procedure TWinCEWSWinControl.ShowHide(const AWinControl: TWinControl);
 begin
   // other methods also use ShowHide, can't move code
   TWinCEWidgetSet(WidgetSet).ShowHide(AWinControl);
+end;
+
+class procedure TWinCEWSWinControl.ScrollBy(const AWinControl: TWinControl;
+  DeltaX, DeltaY: integer);
+begin
+  if Windows.IsWindowVisible(AWinControl.Handle) then
+    ScrollWindowEx(AWinControl.Handle, DeltaX, DeltaY, nil, nil, 0, nil,
+      SW_INVALIDATE or SW_ERASE or SW_SCROLLCHILDREN);
 end;
 
 { TWinCEWSDragImageList }

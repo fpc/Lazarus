@@ -274,7 +274,6 @@ type
         itmProjectViewUnits: TIDEMenuCommand;
         itmProjectViewForms: TIDEMenuCommand;
         itmProjectViewSource: TIDEMenuCommand;
-        itmProjectBuildMode: TIDEMenuCommand;
 
     // run menu
     //mnuRun: TIDEMenuSection;

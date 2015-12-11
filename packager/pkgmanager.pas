@@ -2922,6 +2922,7 @@ begin
 
   // package graph
   PackageGraph:=TLazPackageGraph.Create;
+  PackageGraphInterface:=PackageGraph;
   PackageGraph.OnAddPackage:=@PackageGraphAddPackage;
   PackageGraph.OnBeforeCompilePackages:=@DoBeforeCompilePackages;
   PackageGraph.OnBeginUpdate:=@PackageGraphBeginUpdate;
@@ -2972,6 +2973,8 @@ begin
     'PKGINCPATH',nil,@PackageGraph.MacroFunctionCTPkgIncPath);
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
     'PKGNAME',nil,@PackageGraph.MacroFunctionCTPkgName);
+  CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
+    'PKGOUTDIR',nil,@PackageGraph.MacroFunctionCTPkgOutDir);
 
   LazPackageDescriptors:=TLazPackageDescriptors.Create;
   LazPackageDescriptors.AddDefaultPackageDescriptors;
@@ -3036,8 +3039,7 @@ end;
 
 procedure TPkgManager.AddToMenuRecentPackages(const Filename: string);
 begin
-  AddToRecentList(Filename,EnvironmentOptions.RecentPackageFiles,
-                  EnvironmentOptions.MaxRecentPackageFiles,rltFile);
+  EnvironmentOptions.AddToRecentPackageFiles(Filename);
   SetRecentPackagesMenu;
   MainIDE.SaveEnvironment;
 end;

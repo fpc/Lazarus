@@ -38,8 +38,6 @@ type
 
   TWin32WSScrollingWinControl = class(TWSScrollingWinControl)
   published
-    class procedure ScrollBy(const AWinControl: TScrollingWinControl;
-      const DeltaX, DeltaY: integer); override;
   end;
 
   { TWin32WSScrollBox }
@@ -210,17 +208,6 @@ begin
   {$IFDEF NewScrollingLayer}
   CreateScrollingLayer(Result);
   {$ENDIF}
-end;
-
-{ TWin32WSScrollingWinControl }
-
-function ScrollWindowPtr(hWnd:HWND; XAmount:longint; YAmount:longint; lpRect: pointer; lpClipRect: pointer):WINBOOL; stdcall; external 'user32' name 'ScrollWindow';
-
-class procedure TWin32WSScrollingWinControl.ScrollBy(const AWinControl: TScrollingWinControl;
-  const DeltaX, DeltaY: integer);
-begin
-  if Windows.IsWindowVisible(AWinControl.Handle) then
-    ScrollWindowPtr(AWinControl.Handle, DeltaX, DeltaY, nil, nil);
 end;
 
 { TWin32WSCustomForm }

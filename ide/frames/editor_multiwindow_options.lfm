@@ -363,13 +363,15 @@ object EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
       ParentColor = False
     end
     object EditorTabPositionCheckBox: TComboBox
-      AnchorSideLeft.Control = pnlNBTabs
+      AnchorSideLeft.Control = EditorTabPositionLabel
+      AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = chkCtrlMiddleCloseOthers
       AnchorSideTop.Side = asrBottom
       Left = 0
       Height = 21
       Top = 54
       Width = 150
+      BorderSpacing.Left = 5
       BorderSpacing.Top = 3
       ItemHeight = 13
       Style = csDropDownList

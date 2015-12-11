@@ -163,6 +163,7 @@ type
   strict private
     FAdditionalAngle: Double;
     FArrow: TChartArrow;
+    FLinkDistance: Integer;
     FAttachment: TChartMarkAttachment;
     FAutoMargins: Boolean;
     FFrame: _TFramePen;
@@ -177,6 +178,7 @@ type
     procedure SetFrame(AValue: _TFramePen);
     procedure SetLabelBrush(AValue: _TLabelBrush);
     procedure SetLabelFont(AValue: TFont);
+    procedure SetLinkDistance(AValue: Integer);
     procedure SetLinkPen(AValue: _TLinkPen);
     procedure SetStyle(AValue: TSeriesMarksStyle);
     procedure SetYIndex(AValue: Integer);
@@ -214,6 +216,7 @@ type
     property Format: String read FFormat write SetFormat;
     property Frame: _TFramePen read FFrame write SetFrame;
     property LabelBrush: _TLabelBrush read FLabelBrush write SetLabelBrush;
+    property LinkDistance: Integer read FLinkDistance write SetLinkDistance default 0;
     property LinkPen: _TLinkPen read FLinkPen write SetLinkPen;
     property Style: TSeriesMarksStyle read FStyle write SetStyle;
     property YIndex: Integer read FYIndex write SetYIndex default 0;
@@ -259,6 +262,7 @@ type
     property Format;
     property Frame;
     property LabelBrush;
+    property LinkDistance;
     property LinkPen;
     property OverlapPolicy;
     property Style default smsNone;
@@ -606,6 +610,7 @@ begin
       Self.FAutoMargins := FAutoMargins;
       Self.FAttachment := FAttachment;
       Self.FDistance := FDistance;
+      Self.FLinkDistance := FLinkDistance;
       Self.FFormat := FFormat;
       Self.FFrame.Assign(FFrame);
       // FPC miscompiles virtual calls to generic type arguments,
@@ -655,10 +660,18 @@ end;
 
 procedure TGenericChartMarks.DrawLink(
   ADrawer: IChartDrawer; ADataPoint, ALabelCenter: TPoint);
+var
+  phi: Double;
 begin
+  if ADataPoint = ALabelCenter then exit;
+
+  with (ADataPoint - ALabelCenter) do phi := ArcTan2(Y, X);
+  if (FLinkDistance <> 0) then
+    ADataPoint := ADataPoint + Point(round(FLinkDistance*cos(phi)), -round(FLinkDistance*sin(phi)));
+
   inherited;
-  with (ADataPoint - ALabelCenter) do
-    Arrow.Draw(ADrawer, ADataPoint, ArcTan2(Y, X), GetLinkPen);
+
+  Arrow.Draw(ADrawer, ADataPoint, phi, GetLinkPen);
 end;
 
 function TGenericChartMarks.GetDistanceToCenter: Boolean;
@@ -766,6 +779,13 @@ procedure TGenericChartMarks.SetLabelFont(AValue: TFont);
 begin
   if FLabelFont = AValue then exit;
   FLabelFont.Assign(AValue);
+  StyleChanged(Self);
+end;
+
+procedure TGenericChartMarks.SetLinkDistance(AValue: Integer);
+begin
+  if FLinkDistance = AValue then exit;
+  FLinkDistance := AValue;
   StyleChanged(Self);
 end;
 

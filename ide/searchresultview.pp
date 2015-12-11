@@ -368,7 +368,8 @@ procedure TSearchResultsView.ResultsNoteBookMouseDown(Sender: TObject; Button: T
 var
   TabIndex: LongInt;
 begin
-  if (Button = mbMiddle) then begin
+  if (Button = mbMiddle) then
+  begin
     TabIndex := ResultsNoteBook.TabIndexAtClientPos(Point(X,Y));
     if TabIndex >= 0 then
       ResultsNoteBookClosetabclicked(ResultsNoteBook.Page[TabIndex]);

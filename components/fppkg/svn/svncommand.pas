@@ -36,7 +36,7 @@ interface
 uses
   Classes, SysUtils,
   process,
-  FileUtil;
+  FileUtil, UTF8Process;
 
 function ExecuteSvnCommand(const Command: string; Output: TStream): integer;
 function ExecuteSvnCommand(const Command: string): integer;
@@ -61,7 +61,7 @@ end;
 
 function ExecuteSvnCommand(const Command: string; Output: TStream): integer;
 var
-  SvnProcess: TProcess;
+  SvnProcess: TProcessUTF8;
   
   function ReadOutput: boolean;
   // returns true if output was actually read
@@ -89,7 +89,7 @@ var
 begin
   if SvnExecutable='' then InitializeSvnExecutable;
 
-  SvnProcess := TProcess.Create(nil);
+  SvnProcess := TProcessUTF8.Create(nil);
   try
     SvnProcess.CommandLine := SvnExecutable + ' ' + Command;
     SvnProcess.Options := [poUsePipes];

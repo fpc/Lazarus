@@ -347,8 +347,18 @@ type
     property Items[Index: integer]: TPackageDescriptor read GetItems; default;
   end;
 
+  TPackageGraphInterface = class
+  protected
+    FChangeStamp: Int64;
+  protected
+    procedure IncChangeStamp; virtual;
+  public
+    property ChangeStamp: Int64 read FChangeStamp;
+  end;
+
 var
   PackageDescriptors: TPackageDescriptors; // will be set by the IDE
+  PackageGraphInterface: TPackageGraphInterface; // must be set along with PackageSystem.PackageGraph
 
 
 procedure RegisterPackageDescriptor(PkgDesc: TPackageDescriptor);
@@ -391,6 +401,15 @@ end;
 function PackageDescriptorStd: TPackageDescriptor;
 begin
   Result:=PackageDescriptors.FindByName(PkgDescNameStandard);
+end;
+
+{ TPackageGraphInterface }
+
+procedure TPackageGraphInterface.IncChangeStamp;
+begin
+  {$push}{$R-}  // range check off
+  Inc(FChangeStamp);
+  {$pop}
 end;
 
 { TPackageDescriptor }

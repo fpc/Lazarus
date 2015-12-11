@@ -6,8 +6,8 @@ object CompilerCodegenOptionsFrame: TCompilerCodegenOptionsFrame
   ClientHeight = 523
   ClientWidth = 601
   TabOrder = 0
-  DesignLeft = 290
-  DesignTop = 90
+  DesignLeft = 343
+  DesignTop = 220
   object grpUnitStyle: TGroupBox
     AnchorSideLeft.Control = grpOptimizations
     AnchorSideTop.Control = grpOptimizations
@@ -16,7 +16,7 @@ object CompilerCodegenOptionsFrame: TCompilerCodegenOptionsFrame
     AnchorSideBottom.Side = asrBottom
     Left = 0
     Height = 74
-    Top = 185
+    Top = 208
     Width = 146
     AutoSize = True
     BorderSpacing.Top = 5
@@ -60,7 +60,7 @@ object CompilerCodegenOptionsFrame: TCompilerCodegenOptionsFrame
     AnchorSideBottom.Side = asrBottom
     Left = 153
     Height = 80
-    Top = 185
+    Top = 208
     Width = 448
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -133,13 +133,16 @@ object CompilerCodegenOptionsFrame: TCompilerCodegenOptionsFrame
   object grpOptimizationLevels: TGroupBox
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 128
+    Height = 151
     Top = 0
     Width = 601
     Align = alTop
     AutoSize = True
     Caption = 'grpOptimizationLevels'
-    ClientHeight = 111
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 3
+    ChildSizing.VerticalSpacing = 2
+    ClientHeight = 134
     ClientWidth = 597
     TabOrder = 2
     object radOptLevelNone: TRadioButton
@@ -150,8 +153,6 @@ object CompilerCodegenOptionsFrame: TCompilerCodegenOptionsFrame
       Top = 3
       Width = 124
       BorderSpacing.Left = 6
-      BorderSpacing.Top = 3
-      BorderSpacing.Right = 6
       Caption = 'radOptLevelNone'
       Checked = True
       TabOrder = 0
@@ -163,11 +164,9 @@ object CompilerCodegenOptionsFrame: TCompilerCodegenOptionsFrame
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 24
-      Top = 30
-      Width = 210
-      BorderSpacing.Top = 3
-      BorderSpacing.Right = 6
-      Caption = '1 (quick, debugger friendly) (-O1)'
+      Top = 29
+      Width = 101
+      Caption = 'radOptLevel1'
       TabOrder = 1
     end
     object radOptLevel2: TRadioButton
@@ -176,10 +175,8 @@ object CompilerCodegenOptionsFrame: TCompilerCodegenOptionsFrame
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 24
-      Top = 57
+      Top = 55
       Width = 101
-      BorderSpacing.Top = 3
-      BorderSpacing.Right = 6
       Caption = 'radOptLevel2'
       TabOrder = 2
     end
@@ -189,13 +186,21 @@ object CompilerCodegenOptionsFrame: TCompilerCodegenOptionsFrame
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 24
-      Top = 84
+      Top = 81
       Width = 101
-      BorderSpacing.Top = 3
-      BorderSpacing.Right = 6
-      BorderSpacing.Bottom = 3
       Caption = 'radOptLevel3'
       TabOrder = 3
+    end
+    object radOptLevel4: TRadioButton
+      AnchorSideLeft.Control = radOptLevelNone
+      AnchorSideTop.Control = radOptLevel3
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 24
+      Top = 107
+      Width = 101
+      Caption = 'radOptLevel4'
+      TabOrder = 4
     end
   end
   object grpLinking: TGroupBox
@@ -206,7 +211,7 @@ object CompilerCodegenOptionsFrame: TCompilerCodegenOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 98
-    Top = 270
+    Top = 293
     Width = 601
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -261,7 +266,7 @@ object CompilerCodegenOptionsFrame: TCompilerCodegenOptionsFrame
   object grpOptimizations: TGroupBox
     Left = 0
     Height = 47
-    Top = 133
+    Top = 156
     Width = 601
     Align = alTop
     AutoSize = True

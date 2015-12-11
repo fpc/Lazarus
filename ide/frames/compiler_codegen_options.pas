@@ -31,6 +31,7 @@ type
     radOptLevel1: TRadioButton;
     radOptLevel2: TRadioButton;
     radOptLevel3: TRadioButton;
+    radOptLevel4: TRadioButton;
     radOptLevelNone: TRadioButton;
   public
     function GetTitle: string; override;
@@ -68,6 +69,7 @@ begin
   radOptLevel1.Caption := dlgLevel1Opt + ' (-O1)';
   radOptLevel2.Caption := dlgLevel2Opt + ' (-O2)';
   radOptLevel3.Caption := dlgLevel3Opt + ' (-O3)';
+  radOptLevel4.Caption := dlgLevel4Opt + ' (-O4)';
 
   grpOptimizations.Caption := dlgOtherOptimizations;
   chkOptSmaller.Caption := lisSmallerRatherThanFaster + ' (-Os)';
@@ -97,6 +99,7 @@ begin
       1: radOptLevel1.Checked := True;
       2: radOptLevel2.Checked := True;
       3: radOptLevel3.Checked := True;
+      4: radOptLevel4.Checked := True;
       else
         radOptLevelNone.Checked := True;
     end;
@@ -142,6 +145,9 @@ begin
     else
     if (radOptLevel3.Checked) then
       OptimizationLevel := 3
+    else
+    if (radOptLevel4.Checked) then
+      OptimizationLevel := 4
     else
       OptimizationLevel := 0;
 

@@ -17,11 +17,13 @@ unit ShellCtrls;
 
 {$mode objfpc}{$H+}
 
+{.$define debug_shellctrls}
+
 interface
 
 uses
   Classes, SysUtils, Forms, Graphics, LCLType, AvgLvlTree,
-  ComCtrls, FileUtil, LazFileUtils, LazUtf8, LCLStrConsts;
+  ComCtrls, FileUtil, LazFileUtils, LazUtf8, LCLStrConsts, LCLProc;
 
 {$if defined(Windows) or defined(darwin)}
 {$define CaseInsensitiveFilenames}
@@ -947,9 +949,16 @@ var
   IsRoot: Boolean;
 begin
   if (Items.Count = 0) then Exit;
-  //writeln('GetFirstVisibleNode.Text = "',Items.GetFirstVisibleNode.Text,'"');
+  {$ifdef debug_shellctrls}
+  debugln(['TCustomShellTreeView.Refresh: GetFirstVisibleNode.Text = "',Items.GetFirstVisibleNode.Text,'"']);
+  {$endif}
+
   IsRoot := (ANode = nil) or ((ANode = Items.GetFirstVisibleNode) and (GetRootPath <> ''));
-  //writeln('IsRoot = ',IsRoot);
+  {$ifdef debug_shellctrls}
+  debugln(['IsRoot = ',IsRoot]);
+  {$endif}
+
+
   if (ANode = nil) and (GetRootPath <> '') then ANode := Items.GetFirstVisibleNode;
   if IsRoot then
   begin
@@ -957,7 +966,11 @@ begin
       RootNodeText := ANode.Text  //this may differ from FRoot, so don't use FRoot here
     else
       RootNodeText := GetRootPath;
-    //writeln('IsRoot = TRUE, RootNodeText = "',RootNodeText,'"');
+    {$ifdef debug_shellctrls}
+    debugln(['IsRoot = TRUE, RootNodeText = "',RootNodeText,'"']);
+    {$endif}
+
+
     FRoot := #0; //invalidate FRoot
     SetRoot(RootNodeText); //re-initialize the entire tree
   end
@@ -1010,13 +1023,17 @@ var
   begin
     Result := False;
     Attr := FileGetAttrUtf8(Fn);
-    //writeln('TCustomShellTreeView.SetPath.Exists: Attr = ', Attr);
+    {$ifdef debug_shellctrls}
+    debugln(['TCustomShellTreeView.SetPath.Exists: Attr = ', Attr]);
+    {$endif}
     if (Attr = -1) then Exit;
     if not (otNonFolders in FObjectTypes) then
       Result := ((Attr and faDirectory) > 0)
     else
       Result := True;
-    //writeln('TCustomShellTreeView.SetPath.Exists: Result = ',Result);
+    {$ifdef debug_shellctrls}
+    debugln(['TCustomShellTreeView.SetPath.Exists: Result = ',Result]);
+    {$endif}
   end;
 
   function PathIsDriveRoot({%H-}Path: String): Boolean;  {$if not (defined(windows) and not defined(wince))}inline;{$endif}
@@ -1068,7 +1085,9 @@ var
             //don't check if Fn now is "higher up the tree" than the current root
             if (RelPath = '') or ((Length(RelPath) > 1) and (RelPath[1] = '.') and (RelPath[2] = '.')) then
             begin
-              //writeln('Fn is higher: ',Fn);
+              {$ifdef debug_shellctrls}
+              debugln(['TCustomShellTreeView.SetPath.ContainsHidden: Fn is higher: ',Fn]);
+              {$endif}
               Continue;
             end;
             {$if defined(windows) and not defined(wince)}
@@ -1078,7 +1097,9 @@ var
             if (Attr <> -1) and ((Attr and faHidden) > 0) and not PathIsDriveRoot(Fn) then
             begin
               Result := True;
-              //writeln('TCustomShellTreeView.SetPath.Exists: a subdir is hidden: Result := False');
+              {$ifdef debug_shellctrls}
+              debugln(['TCustomShellTreeView.SetPath.Exists: a subdir is hidden: Result := False']);
+              {$endif}
               Break;
             end;
           end;
@@ -1092,8 +1113,9 @@ var
 begin
   RelPath := '';
 
-  //writeln('SetPath: GetRootPath = "',getrootpath,'"',' AValue=',AValue);
-
+  {$ifdef debug_shellctrls}
+  debugln(['SetPath: GetRootPath = "',getrootpath,'"',' AValue=',AValue]);
+  {$endif}
   if (GetRootPath <> '') then
     //FRoot is already Expanded in SetRoot, just add PathDelim if needed
     FQRootPath := AppendPathDelim(GetRootPath)
@@ -1102,12 +1124,11 @@ begin
   RootIsAbsolute := (FQRootPath = '') or (FQRootPath = PathDelim)
                     or ((Length(FQRootPath) = 3) and (FQRootPath[2] = ':') and (FQRootPath[3] = PathDelim));
 
-  //writeln('SetPath: FQRootPath = ',fqrootpath);
-  //writeln('SetPath: RootIsAbsolute = ',RootIsAbsolute);
-
-  //IsRelPath := not FileNameIsAbsolute(AValue);
-
-  //writeln('SetPath: IsRelPath = ',not FileNameIsAbsolute(AValue));
+  {$ifdef debug_shellctrls}
+  debugln(['SetPath: FQRootPath = ',fqrootpath]);
+  debugln(['SetPath: RootIsAbsolute = ',RootIsAbsolute]);
+  debugln(['SetPath: FilenameIsAbsolute = ',FileNameIsAbsolute(AValue)]);
+  {$endif}
 
   if not FileNameIsAbsolute(AValue) then
   begin
@@ -1139,11 +1160,12 @@ begin
   //RelPath := CreateRelativePath(AValue, FQRootPath, False);
   IsRelPath := (FQRootPath = '') or TryCreateRelativePath(AValue, FQRootPath, False, True, RelPath);
 
-  //writeln('TCustomShellTreeView.SetPath: ');
-  //writeln('  IsRelPath = ',IsRelPath);
-  //writeln('  RelPath = "',RelPath,'"');
-  //writeln('  FQRootPath = "',FQRootPath,'"');
-
+  {$ifdef debug_shellctrls}
+  debugln('TCustomShellTreeView.SetPath: ');
+  debugln(['  IsRelPath = ',IsRelPath]);
+  debugln(['  RelPath = "',RelPath,'"']);
+  debugln(['  FQRootPath = "',FQRootPath,'"']);
+  {$endif}
 
   if (not IsRelpath) or ((RelPath <> '') and ((Length(RelPath) > 1) and (RelPath[1] = '.') and (RelPath[2] = '.'))) then
   begin
@@ -1154,10 +1176,15 @@ begin
 
   if (RelPath = '') and (FQRootPath = '') then
     RelPath := AValue;
-  //writeln('RelPath = ',RelPath);
+  {$ifdef debug_shellctrls}
+  debugln(['RelPath = ',RelPath]);
+  {$endif}
+
   if (RelPath = '') then
   begin
-    //writeln('Root selected');
+    {$ifdef debug_shellctrls}
+    debugln('Root selected');
+    {$endif}
     Node := Items.GetFirstVisibleNode;
     if Assigned(Node) then
     begin
@@ -1183,30 +1210,41 @@ begin
     Exit;
   end;
 
-  //for i := 0 to sl.Count - 1 do writeln('sl[',i:2,']="',sl[i],'"');
+  {$ifdef debug_shellctrls}
+  for i := 0 to sl.Count - 1 do debugln(['sl[',i,']="',sl[i],'"']);
+  {$endif}
+
 
 
   BeginUpdate;
   try
     Node := Items.GetFirstVisibleNode;
-    //if assigned(node) then writeln('GetFirstVisibleNode = ',GetAdjustedNodeText(Node));
-    //Root node doesn't have Siblings in this case, we need one level deeper
+    {$ifdef debug_shellctrls}
+    if assigned(node) then debugln(['GetFirstVisibleNode = ',GetAdjustedNodeText(Node)]);
+    {$endif}
+    //Root node doesn't have Siblings in this case, we need one level down the tree
     if (GetRootPath <> '') and Assigned(Node) then
     begin
-      //writeln('Root node doesn''t have Siblings');
+      {$ifdef debug_shellctrls}
+      debugln('Root node doesn''t have Siblings');
+      {$endif}
       Node := Node.GetFirstVisibleChild;
-      //writeln('Node = ',GetAdjustedNodeText(Node));
-      if RootIsAbsolute then sl.Delete(0);
+      {$ifdef debug_shellctrls}
+      debugln(['Node = ',GetAdjustedNodeText(Node)]);
+      {$endif}
+      //I don't know why I wrote this in r44893, but it seems to be wrong so I comment it out
+      //for the time being (2015-12-05: BB)
+      //if RootIsAbsolute then sl.Delete(0);
     end;
 
     for i := 0 to sl.Count-1 do
     begin
-      {
-      write('i=',i,' sl[',i,']=',sl[i],' ');
-      if Node <> nil then write('GetAdjustedNodeText = ',GetAdjustedNodeText(Node))
-      else  write('Node = NIL');
-      writeln;
-      }
+      {$ifdef debug_shellctrls}
+      DbgOut(['i=',i,' sl[',i,']=',sl[i],' ']);
+      if Node <> nil then DbgOut(['GetAdjustedNodeText = ',GetAdjustedNodeText(Node)])
+      else  DbgOut('Node = NIL');
+      debugln;
+      {$endif}
       while (Node <> Nil) and
             {$IF defined(CaseInsensitiveFilenames) or defined(NotLiteralFilenames)}
             (Utf8LowerCase(GetAdjustedNodeText(Node)) <> Utf8LowerCase(sl[i]))
@@ -1215,13 +1253,15 @@ begin
             {$ENDIF}
             do
             begin
-              //write('  i=',i,' "',GetAdjustedNodeText(Node),' <> ',sl[i],' -> GetNextVisibleSibling -> ');
+              {$ifdef debug_shellctrls}
+              DbgOut(['  i=',i,' "',GetAdjustedNodeText(Node),' <> ',sl[i],' -> GetNextVisibleSibling -> ']);
+              {$endif}
               Node := Node.GetNextVisibleSibling;
-              {
-              if Node <> nil then write('GetAdjustedNodeText = ',GetAdjustedNodeText(Node))
-              else  write('Node = NIL');
-              writeln;
-              }
+              {$ifdef debug_shellctrls}
+              if Node <> nil then DbgOut(['GetAdjustedNodeText = ',GetAdjustedNodeText(Node)])
+              else DbgOut('Node = NIL');
+              debugln;
+              {$endif}
             end;
       if Node <> Nil then
       begin
@@ -1371,7 +1411,7 @@ procedure TCustomShellListView.Resize;
 begin
   inherited Resize;
   {$ifdef DEBUG_SHELLCTRLS}
-    WriteLn(':>TCustomShellListView.HandleResize');
+    debugln(':>TCustomShellListView.HandleResize');
   {$endif}
 
   // The correct check is with count,
@@ -1396,9 +1436,9 @@ begin
   end;
 
   {$ifdef DEBUG_SHELLCTRLS}
-    WriteLn(':<TCustomShellListView.HandleResize C0.Width=',
+    debugln([':<TCustomShellListView.HandleResize C0.Width=',
      Column[0].Width, ' C1.Width=', Column[1].Width,
-     ' C2.Width=', Column[2].Width);
+     ' C2.Width=', Column[2].Width]);
   {$endif}
 end;
 

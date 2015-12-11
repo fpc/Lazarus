@@ -1,32 +1,36 @@
 object CharacterMapDialog: TCharacterMapDialog
   Left = 370
-  Height = 432
+  Height = 477
   Top = 128
-  Width = 484
-  ActiveControl = PageControl1
+  Width = 593
   BorderStyle = bsSizeToolWin
   Caption = 'CharacterMapDialog'
-  ClientHeight = 432
-  ClientWidth = 484
+  ClientHeight = 477
+  ClientWidth = 593
   FormStyle = fsStayOnTop
   KeyPreview = True
   OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.7'
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 32
-    Top = 394
-    Width = 472
+    Height = 36
+    Top = 435
+    Width = 581
     OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
     OKButton.Enabled = False
     HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
     HelpButton.OnClick = HelpButtonClick
     CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
     CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     CancelButton.Enabled = False
-    TabOrder = 0
+    TabOrder = 1
     ShowButtons = [pbClose, pbHelp]
     ShowBevel = False
   end
@@ -37,18 +41,18 @@ object CharacterMapDialog: TCharacterMapDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel
     Left = 6
-    Height = 382
+    Height = 423
     Top = 6
-    Width = 472
+    Width = 581
     ActivePage = TabSheet1
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     TabIndex = 0
-    TabOrder = 1
+    TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'ANSI'
-      ClientHeight = 359
-      ClientWidth = 468
+      ClientHeight = 390
+      ClientWidth = 577
       object CharInfoLabel: TLabel
         AnchorSideLeft.Control = TabSheet1
         AnchorSideTop.Side = asrBottom
@@ -57,9 +61,9 @@ object CharacterMapDialog: TCharacterMapDialog
         AnchorSideBottom.Control = TabSheet1
         AnchorSideBottom.Side = asrBottom
         Left = 6
-        Height = 14
-        Top = 339
-        Width = 456
+        Height = 17
+        Top = 367
+        Width = 565
         Anchors = [akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
         Caption = 'CharInfoLabel'
@@ -72,32 +76,34 @@ object CharacterMapDialog: TCharacterMapDialog
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = CharInfoLabel
         Left = 0
-        Height = 333
+        Height = 361
         Top = 0
-        Width = 468
+        Width = 577
         Anchors = [akTop, akLeft, akRight, akBottom]
         ColCount = 17
         DefaultColWidth = 16
-        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goSmoothScroll]
+        DefaultDrawing = False
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goDrawFocusSelected, goSmoothScroll]
         RowCount = 15
         TabOrder = 0
         OnKeyPress = StringGridKeyPress
         OnMouseDown = StringGridMouseDown
         OnMouseMove = StringGrid1MouseMove
+        OnSelectCell = StringGrid1SelectCell
       end
     end
     object TabSheet2: TTabSheet
       Caption = 'Unicode'
-      ClientHeight = 359
-      ClientWidth = 468
+      ClientHeight = 390
+      ClientWidth = 577
       object UnicodeCharInfoLabel: TLabel
         AnchorSideLeft.Control = Owner
         AnchorSideTop.Control = cbUniRange
         AnchorSideTop.Side = asrCenter
         Left = 6
-        Height = 14
-        Top = 336
-        Width = 124
+        Height = 17
+        Top = 362
+        Width = 147
         BorderSpacing.Around = 6
         Caption = 'UnicodeCharInfoLabel'
         ParentColor = False
@@ -109,36 +115,51 @@ object CharacterMapDialog: TCharacterMapDialog
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = cbUniRange
         Left = 0
-        Height = 327
+        Height = 351
         Top = 0
-        Width = 468
+        Width = 577
         Anchors = [akTop, akLeft, akRight, akBottom]
         ColCount = 16
         DefaultColWidth = 16
+        DefaultDrawing = False
         FixedCols = 0
         FixedRows = 0
-        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goSmoothScroll]
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goDrawFocusSelected, goSmoothScroll]
         RowCount = 15
         TabOrder = 0
         OnKeyPress = StringGridKeyPress
         OnMouseDown = StringGridMouseDown
         OnMouseMove = StringGrid2MouseMove
+        OnSelectCell = StringGrid2SelectCell
       end
       object cbUniRange: TComboBox
         AnchorSideRight.Control = TabSheet2
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = TabSheet2
         AnchorSideBottom.Side = asrBottom
-        Left = 250
-        Height = 20
-        Top = 333
-        Width = 212
+        Left = 280
+        Height = 27
+        Top = 357
+        Width = 291
         Anchors = [akRight, akBottom]
         BorderSpacing.Around = 6
-        ItemHeight = 0
+        DropDownCount = 25
+        ItemHeight = 23
         OnSelect = cbUniRangeSelect
         Style = csDropDownList
         TabOrder = 1
+      end
+      object RangeLabel: TLabel
+        AnchorSideTop.Control = cbUniRange
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = cbUniRange
+        Left = 231
+        Height = 17
+        Top = 362
+        Width = 43
+        Anchors = [akTop, akRight]
+        Caption = 'Range'
+        ParentColor = False
       end
     end
   end

@@ -1,136 +1,25 @@
 object WatchPropertyDlg: TWatchPropertyDlg
-  Left = 542
-  Height = 203
-  Top = 214
-  Width = 420
-  ActiveControl = chkAllowFunc
-  AutoSize = True
+  Left = 513
+  Height = 270
+  Top = 271
+  Width = 428
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Watch Properties'
-  ClientHeight = 203
-  ClientWidth = 420
+  ClientHeight = 270
+  ClientWidth = 428
   Constraints.MinWidth = 400
   Position = poScreenCenter
-  LCLVersion = '1.1'
-  object lblExpression: TLabel
-    AnchorSideTop.Control = txtExpression
-    AnchorSideTop.Side = asrCenter
-    Left = 6
-    Height = 15
-    Top = 10
-    Width = 58
-    BorderSpacing.Left = 6
-    Caption = 'Expression:'
-    ParentColor = False
-  end
-  object lblRepCount: TLabel
-    AnchorSideTop.Control = txtRepCount
-    AnchorSideTop.Side = asrCenter
-    Left = 6
-    Height = 15
-    Top = 39
-    Width = 75
-    BorderSpacing.Left = 6
-    Caption = 'Repeat Count:'
-    ParentColor = False
-  end
-  object lblDigits: TLabel
-    AnchorSideLeft.Control = txtRepCount
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = txtDigits
-    AnchorSideTop.Side = asrCenter
-    Left = 159
-    Height = 15
-    Top = 39
-    Width = 33
-    BorderSpacing.Left = 12
-    Caption = 'Digits:'
-    ParentColor = False
-  end
-  object txtExpression: TEdit
-    AnchorSideLeft.Control = lblExpression
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideRight.Side = asrBottom
-    Left = 70
-    Height = 23
-    Top = 6
-    Width = 344
-    Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Left = 6
-    BorderSpacing.Top = 6
-    BorderSpacing.Right = 6
-    TabOrder = 1
-  end
-  object txtRepCount: TEdit
-    AnchorSideLeft.Control = lblRepCount
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = txtExpression
-    AnchorSideTop.Side = asrBottom
-    Left = 87
-    Height = 23
-    Top = 35
-    Width = 60
-    BorderSpacing.Left = 6
-    BorderSpacing.Top = 6
-    TabOrder = 2
-    Text = '0'
-  end
-  object txtDigits: TEdit
-    AnchorSideLeft.Control = lblDigits
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = txtRepCount
-    AnchorSideTop.Side = asrCenter
-    Left = 198
-    Height = 23
-    Top = 35
-    Width = 60
-    BorderSpacing.Left = 6
-    BorderSpacing.Top = 6
-    TabOrder = 3
-    Text = '0'
-  end
-  object chkEnabled: TCheckBox
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = txtRepCount
-    AnchorSideTop.Side = asrBottom
-    Left = 6
-    Height = 19
-    Top = 64
-    Width = 62
-    BorderSpacing.Left = 6
-    BorderSpacing.Top = 6
-    Caption = 'Enabled'
-    TabOrder = 4
-  end
-  object chkAllowFunc: TCheckBox
-    AnchorSideLeft.Control = chkEnabled
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = txtRepCount
-    AnchorSideTop.Side = asrBottom
-    Left = 98
-    Height = 19
-    Top = 64
-    Width = 128
-    AllowGrayed = True
-    BorderSpacing.Left = 30
-    BorderSpacing.Top = 6
-    Caption = 'Allow Function Calls'
-    TabOrder = 0
-  end
+  LCLVersion = '1.5'
   object rgStyle: TRadioGroup
-    AnchorSideTop.Control = chkEnabled
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 87
-    Top = 89
-    Width = 408
-    Anchors = [akTop, akLeft, akRight]
+    Top = 142
+    Width = 416
+    Align = alClient
     AutoFill = True
     AutoSize = True
     BorderSpacing.Left = 6
-    BorderSpacing.Top = 6
     BorderSpacing.Right = 6
     Caption = 'Style'
     ChildSizing.LeftRightSpacing = 6
@@ -141,8 +30,8 @@ object WatchPropertyDlg: TWatchPropertyDlg
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 3
-    ClientHeight = 69
-    ClientWidth = 404
+    ClientHeight = 68
+    ClientWidth = 412
     Columns = 3
     ItemIndex = 7
     Items.Strings = (
@@ -156,16 +45,13 @@ object WatchPropertyDlg: TWatchPropertyDlg
       'Default'
       'Memory Dump'
     )
-    TabOrder = 6
+    TabOrder = 1
   end
   object ButtonPanel: TButtonPanel
-    AnchorSideTop.Control = rgStyle
-    AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 15
-    Top = 182
-    Width = 408
-    Anchors = [akTop, akLeft, akRight, akBottom]
+    Height = 29
+    Top = 235
+    Width = 416
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     OKButton.OnClick = btnOKClick
@@ -177,21 +63,135 @@ object WatchPropertyDlg: TWatchPropertyDlg
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
-    TabOrder = 7
+    TabOrder = 2
     ShowButtons = [pbOK, pbCancel, pbHelp]
     ShowBevel = False
   end
-  object chkUseInstanceClass: TCheckBox
-    AnchorSideLeft.Control = chkAllowFunc
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = chkAllowFunc
-    AnchorSideTop.Side = asrCenter
-    Left = 232
-    Height = 19
-    Top = 64
-    Width = 129
-    BorderSpacing.Left = 6
-    Caption = 'chkUseInstanceClass'
-    TabOrder = 5
+  object PanelTop: TPanel
+    Left = 0
+    Height = 142
+    Top = 0
+    Width = 428
+    Align = alTop
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 142
+    ClientWidth = 428
+    TabOrder = 0
+    object lblExpression: TLabel
+      AnchorSideLeft.Control = PanelTop
+      AnchorSideTop.Control = txtExpression
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 17
+      Top = 11
+      Width = 78
+      BorderSpacing.Left = 6
+      Caption = 'Expression:'
+      ParentColor = False
+    end
+    object txtExpression: TEdit
+      AnchorSideLeft.Control = lblExpression
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideRight.Control = PanelTop
+      AnchorSideRight.Side = asrBottom
+      Left = 90
+      Height = 27
+      Top = 6
+      Width = 332
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      TabOrder = 0
+    end
+    object lblRepCount: TLabel
+      AnchorSideLeft.Control = PanelTop
+      AnchorSideTop.Control = txtRepCount
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 17
+      Top = 44
+      Width = 95
+      BorderSpacing.Left = 6
+      Caption = 'Repeat Count:'
+      ParentColor = False
+    end
+    object txtRepCount: TEdit
+      AnchorSideLeft.Control = lblRepCount
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = txtExpression
+      AnchorSideTop.Side = asrBottom
+      Left = 107
+      Height = 27
+      Top = 39
+      Width = 60
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      TabOrder = 1
+      Text = '0'
+    end
+    object txtDigits: TEdit
+      AnchorSideLeft.Control = lblDigits
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = txtRepCount
+      AnchorSideTop.Side = asrCenter
+      Left = 228
+      Height = 27
+      Top = 39
+      Width = 60
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      TabOrder = 2
+      Text = '0'
+    end
+    object lblDigits: TLabel
+      AnchorSideLeft.Control = txtRepCount
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = lblRepCount
+      AnchorSideTop.Side = asrCenter
+      Left = 179
+      Height = 17
+      Top = 44
+      Width = 43
+      BorderSpacing.Left = 12
+      Caption = 'Digits:'
+      ParentColor = False
+    end
+    object chkEnabled: TCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 24
+      Top = 64
+      Width = 80
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      Caption = 'Enabled'
+      TabOrder = 3
+    end
+    object chkAllowFunc: TCheckBox
+      AnchorSideLeft.Control = chkEnabled
+      AnchorSideTop.Control = chkEnabled
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 24
+      Top = 88
+      Width = 160
+      AllowGrayed = True
+      Caption = 'Allow Function Calls'
+      TabOrder = 4
+    end
+    object chkUseInstanceClass: TCheckBox
+      AnchorSideLeft.Control = chkEnabled
+      AnchorSideTop.Control = chkAllowFunc
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 24
+      Top = 112
+      Width = 165
+      BorderSpacing.Bottom = 6
+      Caption = 'chkUseInstanceClass'
+      TabOrder = 5
+    end
   end
 end
