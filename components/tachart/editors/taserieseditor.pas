@@ -23,14 +23,12 @@ interface
 
   procedure Register;
 
-resourcestring
-  sesSeriesEditorTitle = 'Edit series';
 
 implementation
 
 uses
   Classes, ComponentEditors, Forms, Menus, PropEdits, SysUtils,
-  TAGraph, TASubcomponentsEditor;
+  TAChartStrConsts, TAGraph, TASubcomponentsEditor;
 
 type
   { TSeriesComponentEditor }

@@ -17,14 +17,11 @@ interface
 
 procedure Register;
 
-resourcestring
-  tasToolsEditorTitle = 'Edit tools';
-
 implementation
 
 uses
   Classes, ComponentEditors, Forms, PropEdits, SysUtils,
-  TATools, TASubcomponentsEditor;
+  TAChartStrConsts, TATools, TASubcomponentsEditor;
 
 type
   { TToolsComponentEditor }

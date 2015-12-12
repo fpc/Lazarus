@@ -194,14 +194,12 @@ type
 
   procedure Register;
 
-resourcestring
-  tasAxisTransformsEditorTitle = 'Edit axis transformations';
 
 implementation
 
 uses
   ComponentEditors, Forms, Math, PropEdits,
-  TAMath, TASubcomponentsEditor;
+  TAChartStrConsts, TAMath, TASubcomponentsEditor;
 
 type
   { TAxisTransformsComponentEditor }

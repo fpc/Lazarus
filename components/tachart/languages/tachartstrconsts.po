@@ -1,0 +1,63 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: tachartstrconsts.descolor
+msgid "Color"
+msgstr ""
+
+#: tachartstrconsts.desdatapointeditor
+msgid "DataPoints editor"
+msgstr ""
+
+#: tachartstrconsts.destext
+msgid "Text"
+msgstr ""
+
+#: tachartstrconsts.rsadd
+msgid "Add"
+msgstr ""
+
+#: tachartstrconsts.rsareaseries
+msgid "Area series"
+msgstr ""
+
+#: tachartstrconsts.rsbarseries
+msgid "Bar series"
+msgstr ""
+
+#: tachartstrconsts.rsdelete
+msgid "Delete"
+msgstr ""
+
+#: tachartstrconsts.rslineseries
+msgid "Line series"
+msgstr ""
+
+#: tachartstrconsts.rsmovedown
+msgid "Down"
+msgstr ""
+
+#: tachartstrconsts.rsmoveup
+msgid "Up"
+msgstr ""
+
+#: tachartstrconsts.rspieseries
+msgid "Pie series"
+msgstr ""
+
+#: tachartstrconsts.sesserieseditortitle
+msgid "Edit series"
+msgstr ""
+
+#: tachartstrconsts.tasaxistransformseditortitle
+msgid "Edit axis transformations"
+msgstr ""
+
+#: tachartstrconsts.tasfailedsubcomponentrename
+msgid "Failed to rename components: %s"
+msgstr ""
+
+#: tachartstrconsts.tastoolseditortitle
+msgid "Edit tools"
+msgstr ""
+

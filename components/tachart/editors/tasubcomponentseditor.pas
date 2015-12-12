@@ -93,15 +93,9 @@ implementation
 
 uses
   IDEImagesIntf, Math, SysUtils,
-  TAChartUtils;
+  TAChartStrConsts, TAChartUtils;
 
 {$R *.lfm}
-
-resourcestring
-  rsAdd = 'Add';
-  rsDelete = 'Delete';
-  rsMoveUp = 'Up';
-  rsMoveDown = 'Down';
 
 { TComponentListPropertyEditor }
 

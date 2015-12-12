@@ -50,14 +50,10 @@ procedure Register;
 implementation
 
 uses
-  LCLIntf, Math, PropEdits, TAChartUtils, TASources;
+  LCLIntf, Math, PropEdits,
+  TAChartStrConsts, TAChartUtils, TASources;
 
 {$R *.lfm}
-
-resourcestring
-  rsDatapointEditor = 'DataPoints editor';
-  rsColor = 'Color';
-  rsText = 'Text';
 
 type
   TDataPointsPropertyEditor = class(TPropertyEditor)
@@ -133,9 +129,9 @@ end;
 
 procedure TDataPointsEditorForm.FormCreate(Sender: TObject);
 begin
-  Caption := rsDatapointEditor;
-  sgData.Columns[2].Title.Caption := rsColor;
-  sgData.Columns[3].Title.Caption := rsText;
+  Caption := desDatapointEditor;
+  sgData.Columns[2].Title.Caption := desColor;
+  sgData.Columns[3].Title.Caption := desText;
 end;
 
 procedure TDataPointsEditorForm.miInsertRowClick(Sender: TObject);

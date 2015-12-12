@@ -1,7 +1,0 @@
-msgid ""
-msgstr "Content-Type: text/plain; charset=UTF-8"
-
-#: taserieseditor.sesserieseditortitle
-msgid "Edit series"
-msgstr ""
-

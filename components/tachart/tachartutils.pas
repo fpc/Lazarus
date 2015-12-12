@@ -329,13 +329,11 @@ var
   DrawData: TDrawDataRegistry;
   ShowMessageProc: TShowMessageProc;
 
-resourcestring
-  tasFailedSubcomponentRename = 'Failed to rename components: %s';
 
 implementation
 
 uses
-  StrUtils, TypInfo;
+  StrUtils, TypInfo, TAChartStrConsts;
 
 const
   ORIENTATION_UNITS_PER_DEG = 10;
