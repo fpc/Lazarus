@@ -6986,7 +6986,13 @@ begin
         end;
       end;
       {$IFDEF QTSCROLLABLEFORMS}
-      QEventMouseMove: ; // issue #29159
+      QEventMouseMove: // issue #29159
+      begin
+        if IsMdiChild then
+          Result := inherited EventFilter(Sender, Event)
+        else
+          Result := False;
+      end;
       {$ENDIF}
       QEventMouseButtonPress,
       QEventMouseButtonRelease,
