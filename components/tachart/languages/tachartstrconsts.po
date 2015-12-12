@@ -21,16 +21,88 @@ msgstr ""
 msgid "Area series"
 msgstr ""
 
+#: tachartstrconsts.rsautoscale
+msgid "Auto scale"
+msgstr ""
+
 #: tachartstrconsts.rsbarseries
 msgid "Bar series"
+msgstr ""
+
+#: tachartstrconsts.rsboxandwhiskerseries
+msgid "Box-and-whiskers series"
+msgstr ""
+
+#: tachartstrconsts.rsbsplineseries
+msgid "B-Spline series"
+msgstr ""
+
+#: tachartstrconsts.rsbubbleseries
+msgid "Bubble series"
+msgstr ""
+
+#: tachartstrconsts.rscolormapseries
+msgid "Color map series"
+msgstr ""
+
+#: tachartstrconsts.rsconstantline
+msgid "Constant line"
+msgstr ""
+
+#: tachartstrconsts.rscubicsplineseries
+msgid "Cubic spline series"
+msgstr ""
+
+#: tachartstrconsts.rscumulativenormaldistribution
+msgid "Cumulative normal distribution"
+msgstr ""
+
+#: tachartstrconsts.rsdatapointclick
+msgid "Data point click"
+msgstr ""
+
+#: tachartstrconsts.rsdatapointcrosshair
+msgid "Data point crosshair"
+msgstr ""
+
+#: tachartstrconsts.rsdatapointdrag
+msgid "Data point drag"
+msgstr ""
+
+#: tachartstrconsts.rsdatapointhint
+msgid "Data point hint"
 msgstr ""
 
 #: tachartstrconsts.rsdelete
 msgid "Delete"
 msgstr ""
 
+#: tachartstrconsts.rsdistancemeasurement
+msgid "Distance measurement"
+msgstr ""
+
+#: tachartstrconsts.rsfunctionseries
+msgid "Function series"
+msgstr ""
+
+#: tachartstrconsts.rsleastsquaresfitseries
+msgid "Least-squares fit series"
+msgstr ""
+
+#: tachartstrconsts.rslinear
+msgid "Linear"
+msgstr ""
+
 #: tachartstrconsts.rslineseries
 msgid "Line series"
+msgstr ""
+
+#: tachartstrconsts.rslogarithmic
+msgid "Logarithmic"
+msgstr ""
+
+#: tachartstrconsts.rsmanhattanplotseries
+msgid "Manhattan plot series"
 msgstr ""
 
 #: tachartstrconsts.rsmovedown
@@ -41,8 +113,57 @@ msgstr ""
 msgid "Up"
 msgstr ""
 
+#: tachartstrconsts.rsopenhighlowcloseseries
+msgid "Open-high-low-close series"
+msgstr ""
+
+#: tachartstrconsts.rspanningbyclick
+msgid "Panning by click"
+msgstr ""
+
+#: tachartstrconsts.rspanningbydrag
+msgid "Panning by drag"
+msgstr ""
+
+#: tachartstrconsts.rspanningbymousewheel
+msgid "Panning by mouse wheel"
+msgstr ""
+
+#: tachartstrconsts.rsparametriccurveseries
+msgid "Parametric curve series"
+msgstr ""
+
 #: tachartstrconsts.rspieseries
 msgid "Pie series"
+msgstr ""
+
+#: tachartstrconsts.rspolarseries
+msgid "Polar series"
+msgstr ""
+
+#: tachartstrconsts.rsreticule
+msgid "Reticule"
+msgstr ""
+
+#: tachartstrconsts.rsuserdefined
+msgctxt "tachartstrconsts.rsuserdefined"
+msgid "User-defined"
+msgstr ""
+
+#: tachartstrconsts.rsuserdrawnseries
+msgid "User-drawn series"
+msgstr ""
+
+#: tachartstrconsts.rszoombyclick
+msgid "Zoom by click"
+msgstr ""
+
+#: tachartstrconsts.rszoombydrag
+msgid "Zoom by drag"
+msgstr ""
+
+#: tachartstrconsts.rszoombymousewheel
+msgid "Zoom by mouse-wheel"
 msgstr ""
 
 #: tachartstrconsts.sesserieseditortitle

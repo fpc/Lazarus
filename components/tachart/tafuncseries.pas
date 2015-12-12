@@ -381,7 +381,7 @@ implementation
 
 uses
   ipf, GraphType, IntfGraphics, Math, StrUtils, SysUtils,
-  TAGeometry, TAGraph, TAMath;
+  TAChartStrConsts, TAGeometry, TAGraph, TAMath;
 
 const
   DEF_PARAM_MIN = 0.0;
@@ -1940,12 +1940,12 @@ begin
 end;
 
 initialization
-  RegisterSeriesClass(TFuncSeries, 'Function series');
-  RegisterSeriesClass(TParametricCurveSeries, 'Parametric curve series');
-  RegisterSeriesClass(TBSplineSeries, 'B-Spline series');
-  RegisterSeriesClass(TCubicSplineSeries, 'Cubic spline series');
-  RegisterSeriesClass(TFitSeries, 'Least-squares fit series');
-  RegisterSeriesClass(TColorMapSeries, 'Color map series');
+  RegisterSeriesClass(TFuncSeries, @rsFunctionSeries);
+  RegisterSeriesClass(TParametricCurveSeries, @rsParametricCurveSeries);
+  RegisterSeriesClass(TBSplineSeries, @rsBSplineSeries);
+  RegisterSeriesClass(TCubicSplineSeries, @rsCubicSplineSeries);
+  RegisterSeriesClass(TFitSeries, @rsLeastSquaresFitSeries);
+  RegisterSeriesClass(TColorMapSeries, @rsColorMapSeries);
 
 end.
 

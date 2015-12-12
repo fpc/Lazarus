@@ -344,7 +344,7 @@ implementation
 
 uses
   GraphMath, GraphType, IntfGraphics, LResources, Math, PropEdits, SysUtils,
-  TADrawerCanvas, TAGeometry, TAGraph, TAMath, TAStyles;
+  TAChartStrConsts, TADrawerCanvas, TAGeometry, TAGraph, TAMath, TAStyles;
 
 { TLineSeries }
 
@@ -1496,14 +1496,14 @@ begin
 end;
 
 initialization
-  RegisterSeriesClass(TLineSeries, 'Line series');
-  RegisterSeriesClass(TAreaSeries, 'Area series');
-  RegisterSeriesClass(TBarSeries, 'Bar series');
-  RegisterSeriesClass(TPieSeries, 'Pie series');
-  RegisterSeriesClass(TUserDrawnSeries, 'User-drawn series');
-  RegisterSeriesClass(TConstantLine, 'Constant line');
-  RegisterSeriesClass(TManhattanSeries, 'Manhattan plot series');
-  {$WARNINGS OFF}RegisterSeriesClass(TLine, '');{$WARNINGS ON}
+  RegisterSeriesClass(TLineSeries, @rsLineSeries);
+  RegisterSeriesClass(TAreaSeries, @rsAreaSeries);
+  RegisterSeriesClass(TBarSeries, @rsBarSeries);
+  RegisterSeriesClass(TPieSeries, @rsPieSeries);
+  RegisterSeriesClass(TUserDrawnSeries, @rsUserDrawnSeries);
+  RegisterSeriesClass(TConstantLine, @rsConstantLine);
+  RegisterSeriesClass(TManhattanSeries, @rsManhattanPlotSeries);
+//  {$WARNINGS OFF}RegisterSeriesClass(TLine, nil);{$WARNINGS ON}
   SkipObsoleteProperties;
 
 end.

@@ -256,6 +256,23 @@ type
     property Item[AIndex: Integer]: TElem read GetItem; default;
   end;
 
+  PStr = ^String;  // PString is declared in system and in objpas!
+
+  TClassRegistryItem = class
+    FClass: TClass;
+    FCaption: PStr;
+    constructor Create(AClass: TClass; ACaption: PStr);
+  end;
+
+  TClassRegistry = class(TFPList)
+  public
+    destructor Destroy; override;
+    procedure Clear;
+    function GetCaption(AIndex: Integer): String;
+    function GetClass(AIndex: Integer): TClass;
+    function IndexOfClass(AClass: TClass): Integer;
+  end;
+
 const
   PUB_INT_SET_ALL = '';
   PUB_INT_SET_EMPTY = '-';
@@ -968,6 +985,55 @@ begin
     SetLength(FData, j);
   end;
 end;
+
+
+{ TClassRegistryItem }
+
+constructor TClassRegistryItem.Create(AClass: TClass; ACaption: PStr);
+begin
+  FClass := AClass;
+  FCaption := ACaption;
+end;
+
+
+{ TClassRegistry }
+
+destructor TClassRegistry.Destroy;
+begin
+  Clear;
+  inherited;
+end;
+
+procedure TClassRegistry.Clear;
+var
+  i: Integer;
+begin
+  for i:= Count-1 downto 0 do
+    TObject(Items[i]).Free;
+  inherited;
+end;
+
+function TClassRegistry.GetCaption(AIndex: Integer): String;
+var
+  P: PStr;
+begin
+  P := TClassRegistryItem(Items[AIndex]).FCaption;
+  if P = nil then Result := '' else Result := P^;
+end;
+
+function TClassRegistry.GetClass(AIndex: Integer): TClass;
+begin
+  Result := TClassRegistryItem(Items[AIndex]).FClass;
+end;
+
+function TClassRegistry.IndexOfClass(AClass: TClass): Integer;
+begin
+  for Result := 0 to Count-1 do
+    if TClassRegistryItem(Items[Result]).FClass = AClass then
+      exit;
+  Result := -1;
+end;
+
 
 initialization
 

@@ -123,7 +123,7 @@ implementation
 
 uses
   GraphMath, Math, SysUtils, Types,
-  TAChartAxis, TACustomSeries, TAGeometry;
+  TAChartStrConsts, TAChartAxis, TACustomSeries, TAGeometry;
 
 const
   DEF_DISTANCE_FORMAT = '%0:.9g';
@@ -407,7 +407,7 @@ end;
 
 initialization
 
-  RegisterChartToolClass(TDataPointDistanceTool, 'Distance measurement');
+  RegisterChartToolClass(TDataPointDistanceTool, @rsDistanceMeasurement);
 
 end.
 

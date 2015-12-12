@@ -31,19 +31,91 @@ msgstr "Hinzuf."
 
 #: tachartstrconsts.rsareaseries
 msgid "Area series"
-msgstr "Flächen-Diagramm"
+msgstr "Fläche-Diagramm"
+
+#: tachartstrconsts.rsautoscale
+msgid "Auto scale"
+msgstr "Auto-Skalierung"
 
 #: tachartstrconsts.rsbarseries
 msgid "Bar series"
 msgstr "Säulen/Balken-Diagramm"
 
+#: tachartstrconsts.rsboxandwhiskerseries
+msgid "Box-and-whiskers series"
+msgstr "Box-und-Whisker-Plot"
+
+#: tachartstrconsts.rsbsplineseries
+msgid "B-Spline series"
+msgstr "B-Spline"
+
+#: tachartstrconsts.rsbubbleseries
+msgid "Bubble series"
+msgstr "Blasen-Diagramm"
+
+#: tachartstrconsts.rscolormapseries
+msgid "Color map series"
+msgstr "Farbkarten-Plot"
+
+#: tachartstrconsts.rsconstantline
+msgid "Constant line"
+msgstr "Konstante Linie"
+
+#: tachartstrconsts.rscubicsplineseries
+msgid "Cubic spline series"
+msgstr "Kubischer Spline"
+
+#: tachartstrconsts.rscumulativenormaldistribution
+msgid "Cumulative normal distribution"
+msgstr "Kumulative Normalverteilung"
+
+#: tachartstrconsts.rsdatapointclick
+msgid "Data point click"
+msgstr "Klick auf Datenpunkt"
+
+#: tachartstrconsts.rsdatapointcrosshair
+msgid "Data point crosshair"
+msgstr "Fadenkreuz für Datenpunkte"
+
+#: tachartstrconsts.rsdatapointdrag
+msgid "Data point drag"
+msgstr "Datenpunkt verschieben"
+
+#: tachartstrconsts.rsdatapointhint
+msgid "Data point hint"
+msgstr "Datenpunkt-Hinweis"
+
 #: tachartstrconsts.rsdelete
 msgid "Delete"
 msgstr "Entf."
 
+#: tachartstrconsts.rsdistancemeasurement
+msgid "Distance measurement"
+msgstr "Distanzmessung"
+
+#: tachartstrconsts.rsfunctionseries
+msgid "Function series"
+msgstr "Funktions-Diagramm"
+
+#: tachartstrconsts.rsleastsquaresfitseries
+msgid "Least-squares fit series"
+msgstr "Fit"
+
+#: tachartstrconsts.rslinear
+msgid "Linear"
+msgstr "Linear"
+
 #: tachartstrconsts.rslineseries
 msgid "Line series"
 msgstr "Linien-Diagramm"
+
+#: tachartstrconsts.rslogarithmic
+msgid "Logarithmic"
+msgstr "Logarithmisch"
+
+#: tachartstrconsts.rsmanhattanplotseries
+msgid "Manhattan plot series"
+msgstr "Manhatten-Plot"
 
 #: tachartstrconsts.rsmovedown
 msgid "Down"
@@ -53,9 +125,58 @@ msgstr "Ab"
 msgid "Up"
 msgstr "Auf"
 
+#: tachartstrconsts.rsopenhighlowcloseseries
+msgid "Open-high-low-close series"
+msgstr "Öffnung-Höchst-Tiefst-Geschlossen"
+
+#: tachartstrconsts.rspanningbyclick
+msgid "Panning by click"
+msgstr "Verschieben durch Klicken"
+
+#: tachartstrconsts.rspanningbydrag
+msgid "Panning by drag"
+msgstr "Verschieben durch Ziehen"
+
+#: tachartstrconsts.rspanningbymousewheel
+msgid "Panning by mouse wheel"
+msgstr "Verschieben mit Mausrad"
+
+#: tachartstrconsts.rsparametriccurveseries
+msgid "Parametric curve series"
+msgstr "Parametrische Kurve"
+
 #: tachartstrconsts.rspieseries
 msgid "Pie series"
 msgstr "Torten-Diagramm"
+
+#: tachartstrconsts.rspolarseries
+msgid "Polar series"
+msgstr "Polar-Diagramm"
+
+#: tachartstrconsts.rsreticule
+msgid "Reticule"
+msgstr "Fadenkreuz"
+
+#: tachartstrconsts.rsuserdefined
+msgctxt "tachartstrconsts.rsuserdefined"
+msgid "User-defined"
+msgstr "Benutzerdefiniert"
+
+#: tachartstrconsts.rsuserdrawnseries
+msgid "User-drawn series"
+msgstr "Benutzer-definiertes Diagramm"
+
+#: tachartstrconsts.rszoombyclick
+msgid "Zoom by click"
+msgstr "Zoomen durch Klicken"
+
+#: tachartstrconsts.rszoombydrag
+msgid "Zoom by drag"
+msgstr "Zommen durch Ziehen"
+
+#: tachartstrconsts.rszoombymousewheel
+msgid "Zoom by mouse-wheel"
+msgstr "Zoomen mit Mausrad"
 
 #: tachartstrconsts.sesserieseditortitle
 msgid "Edit series"
