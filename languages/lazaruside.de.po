@@ -5737,7 +5737,7 @@ msgstr "S&chließen"
 #: lazarusidestrconsts.liscloseall
 msgctxt "lazarusidestrconsts.liscloseall"
 msgid "Close All"
-msgstr "Alle auswählen"
+msgstr "Alle schließen"
 
 #: lazarusidestrconsts.liscloseallchecked
 msgid "Close All Checked"
@@ -19235,7 +19235,7 @@ msgstr "Cursor an den Beginn des Texts in der Zeile setzen"
 
 #: lazarusidestrconsts.srkmeclockeditor
 msgid "Lock Editor"
-msgstr "Sperr-Editor"
+msgstr "Editor sperren"
 
 #: lazarusidestrconsts.srkmecmakeresourcestring
 msgid "Make Resource String"
