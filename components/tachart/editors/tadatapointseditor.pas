@@ -18,6 +18,9 @@ uses
   Graphics, Dialogs;
 
 type
+
+  { TDataPointsEditorForm }
+
   TDataPointsEditorForm = class(TForm)
     ButtonPanel1: TButtonPanel;
     cdItemColor: TColorDialog;
@@ -25,6 +28,7 @@ type
     miDeleteRow: TMenuItem;
     pmRows: TPopupMenu;
     sgData: TStringGrid;
+    procedure FormCreate(Sender: TObject);
     procedure miDeleteRowClick(Sender: TObject);
     procedure miInsertRowClick(Sender: TObject);
     procedure pmRowsPopup(Sender: TObject);
@@ -49,6 +53,11 @@ uses
   LCLIntf, Math, PropEdits, TAChartUtils, TASources;
 
 {$R *.lfm}
+
+resourcestring
+  rsDatapointEditor = 'DataPoints editor';
+  rsColor = 'Color';
+  rsText = 'Text';
 
 type
   TDataPointsPropertyEditor = class(TPropertyEditor)
@@ -120,6 +129,13 @@ begin
   end;
   if InRange(FCurrentRow, 1, sgData.RowCount - 1) then
     sgData.DeleteRow(FCurrentRow);
+end;
+
+procedure TDataPointsEditorForm.FormCreate(Sender: TObject);
+begin
+  Caption := rsDatapointEditor;
+  sgData.Columns[2].Title.Caption := rsColor;
+  sgData.Columns[3].Title.Caption := rsText;
 end;
 
 procedure TDataPointsEditorForm.miInsertRowClick(Sender: TObject);

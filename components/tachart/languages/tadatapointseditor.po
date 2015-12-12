@@ -1,0 +1,15 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: tadatapointseditor.rscolor
+msgid "Color"
+msgstr ""
+
+#: tadatapointseditor.rsdatapointeditor
+msgid "DataPoints editor"
+msgstr ""
+
+#: tadatapointseditor.rstext
+msgid "Text"
+msgstr ""
+

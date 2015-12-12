@@ -3,6 +3,7 @@
   <Package Version="4">
     <PathDelim Value="\"/>
     <Name Value="TAChartLazarusPkg"/>
+    <Type Value="RunAndDesignTime"/>
     <AddToProjectUsesSection Value="True"/>
     <Author Value="Luís Rodrigues (lr@neei.uevora.pt), Philippe Martinole, Alexander Klenin"/>
     <CompilerOptions>
@@ -237,7 +238,11 @@
       </Item47>
     </Files>
     <LazDoc Paths="$(LazarusDir)\components\tachart\fpdoc"/>
-    <Type Value="RunAndDesignTime"/>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+      <EnableI18NForLFM Value="True"/>
+    </i18n>
     <RequiredPkgs Count="3">
       <Item1>
         <PackageName Value="IDEIntf"/>

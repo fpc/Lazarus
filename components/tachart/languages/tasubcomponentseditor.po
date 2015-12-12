@@ -1,0 +1,19 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: tasubcomponentseditor.rsadd
+msgid "Add"
+msgstr ""
+
+#: tasubcomponentseditor.rsdelete
+msgid "Delete"
+msgstr ""
+
+#: tasubcomponentseditor.rsmovedown
+msgid "Down"
+msgstr ""
+
+#: tasubcomponentseditor.rsmoveup
+msgid "Up"
+msgstr ""
+

@@ -1,0 +1,7 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: tachartutils.tasfailedsubcomponentrename
+msgid "Failed to rename components: %s"
+msgstr ""
+
