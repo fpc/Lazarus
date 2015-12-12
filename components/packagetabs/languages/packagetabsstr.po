@@ -1,0 +1,27 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: packagetabsstr.scloneto
+msgid "Clone To"
+msgstr ""
+
+#: packagetabsstr.sfindinotherwindow
+msgid "Find In Other Window"
+msgstr ""
+
+#: packagetabsstr.smoveto
+msgid "Move To"
+msgstr ""
+
+#: packagetabsstr.snewwindow
+msgid "New Window"
+msgstr ""
+
+#: packagetabsstr.sopenpackage
+msgid "Open package"
+msgstr ""
+
+#: packagetabsstr.sother
+msgid "Other"
+msgstr ""
+

@@ -33,7 +33,7 @@ uses
   Classes, SysUtils, Types, Contnrs, Controls, SrcEditorIntf, StdCtrls, Buttons,
   ComCtrls, Forms, LazFileUtils, PackageIntf, Graphics, Menus, LazIDEIntf,
   ExtCtrls, IDEImagesIntf, LMessages, Math, Laz2_XMLCfg, IDECommands, LCLIntf,
-  IDEOptionsIntf;
+  IDEOptionsIntf, packagetabsstr;
 
 type
   TPackageTabButton = class(TSpeedButton)
@@ -523,7 +523,7 @@ begin
   FTabLabelMenu.Images := IDEImages.Images_16;
   FTabLabelMenu.OnPopup := @TabLabelMenuPopup;
   FTabLabelMenuCloseAllGroup := TMenuItem.Create(Self);
-  FTabLabelMenuCloseAllGroup.Caption := 'Close all'; // ToDo: localize
+  FTabLabelMenuCloseAllGroup.Caption := IDECommandList.FindIDECommand(ecCloseAll).LocalizedName;
   FTabLabelMenuCloseAllGroup.OnClick := @TabLabelCloseAllGroupClick;
   FTabLabelMenuCloseAllGroup.ImageIndex := IDEImages.LoadImage(16, 'menu_close_all');
   FTabLabelMenu.Items.Add(FTabLabelMenuCloseAllGroup);
@@ -531,12 +531,12 @@ begin
   FTabLabelMenuPkgSep.Caption := '-';
   FTabLabelMenu.Items.Add(FTabLabelMenuPkgSep);
   FTabLabelMenuOpenPackage := TMenuItem.Create(Self);
-  FTabLabelMenuOpenPackage.Caption := 'Open package'; // ToDo: localize
+  FTabLabelMenuOpenPackage.Caption := sOpenPackage;
   FTabLabelMenuOpenPackage.OnClick := @TabLabelMenuOpenPackageClick;
   FTabLabelMenuOpenPackage.ImageIndex := IDEImages.LoadImage(16, 'pkg_open');
   FTabLabelMenu.Items.Add(FTabLabelMenuOpenPackage);
   FTabLabelMenuViewProjectSource := TMenuItem.Create(Self);
-  FTabLabelMenuViewProjectSource.Caption := 'View project source'; // ToDo: localize
+  FTabLabelMenuViewProjectSource.Caption := IDECommandList.FindIDECommand(ecViewProjectSource).LocalizedName;
   FTabLabelMenuViewProjectSource.OnClick := @TabLabelMenuViewProjectSourceClick;
   FTabLabelMenuViewProjectSource.ImageIndex := IDEImages.LoadImage(16, 'menu_project_viewsource');
   FTabLabelMenu.Items.Add(FTabLabelMenuViewProjectSource);
@@ -545,12 +545,12 @@ begin
   FTabButtonMenu.Images := IDEImages.Images_16;
   FTabButtonMenu.OnPopup := @TabButtonMenuPopup;
   FTabButtonMenuClose := TMenuItem.Create(Self);
-  FTabButtonMenuClose.Caption := 'Close'; // ToDo: localize
+  FTabButtonMenuClose.Caption := IDECommandList.FindIDECommand(ecClose).LocalizedName;
   FTabButtonMenuClose.OnClick := @TabButtonMenuCloseClick;
   FTabButtonMenuClose.ImageIndex := IDEImages.LoadImage(16, 'menu_close');
   FTabButtonMenu.Items.Add(FTabButtonMenuClose);
   FTabButtonMenuLock := TMenuItemCommand.Create(Self);
-  FTabButtonMenuLock.Caption := 'Lock Editor'; // ToDo: localize
+  FTabButtonMenuLock.Caption := IDECommandList.FindIDECommand(ecLockEditor).LocalizedName;
   FTabButtonMenuLock.IDECommand := ecLockEditor;
   FTabButtonMenuLock.OnClick := @MenuItemCommandClick;
   FTabButtonMenu.Items.Add(FTabButtonMenuLock);
@@ -559,7 +559,7 @@ begin
   FTabButtonMenuProjSep.Caption := '-';
   FTabButtonMenu.Items.Add(FTabButtonMenuProjSep);
   FTabButtonMenuAddToProject := TMenuItem.Create(Self);
-  FTabButtonMenuAddToProject.Caption := 'Add to project'; // ToDo: localize
+  FTabButtonMenuAddToProject.Caption := IDECommandList.FindIDECommand(ecAddCurUnitToProj).LocalizedName;
   FTabButtonMenuAddToProject.OnClick := @TabButtonMenuAddToProjectClick;
   FTabButtonMenuAddToProject.ImageIndex := IDEImages.LoadImage(16, 'menu_project_add');
   FTabButtonMenu.Items.Add(FTabButtonMenuAddToProject);
@@ -568,25 +568,25 @@ begin
   FTabButtonMenuMoveCloneSep.Caption := '-';
   FTabButtonMenu.Items.Add(FTabButtonMenuMoveCloneSep);
   FTabButtonMenuMoveTo := TMenuItem.Create(Self);
-  FTabButtonMenuMoveTo.Caption := 'Move To'; // ToDo: localize
+  FTabButtonMenuMoveTo.Caption := sMoveTo;
   FTabButtonMenu.Items.Add(FTabButtonMenuMoveTo);
   FTabButtonMenuMoveToNew := TMenuItemCommand.Create(Self);
-  FTabButtonMenuMoveToNew.Caption := 'New Window'; // ToDo: localize
+  FTabButtonMenuMoveToNew.Caption := sNewWindow;
   FTabButtonMenuMoveToNew.IDECommand := ecMoveEditorNewWindow;
   FTabButtonMenuMoveToNew.NeedsActiveEditor := True;
   FTabButtonMenuMoveToNew.OnClick := @MenuItemCommandClick;
   FTabButtonMenuMoveTo.Add(FTabButtonMenuMoveToNew);
   FTabButtonMenuCloneTo := TMenuItem.Create(Self);
-  FTabButtonMenuCloneTo.Caption := 'Clone To'; // ToDo: localize
+  FTabButtonMenuCloneTo.Caption := sCloneTo;
   FTabButtonMenu.Items.Add(FTabButtonMenuCloneTo);
   FTabButtonMenuCloneToNew := TMenuItemCommand.Create(Self);
-  FTabButtonMenuCloneToNew.Caption := 'New Window'; // ToDo: localize
+  FTabButtonMenuCloneToNew.Caption := sNewWindow;
   FTabButtonMenuCloneToNew.IDECommand := ecCopyEditorNewWindow;
   FTabButtonMenuCloneToNew.NeedsActiveEditor := True;
   FTabButtonMenuCloneToNew.OnClick := @MenuItemCommandClick;
   FTabButtonMenuCloneTo.Add(FTabButtonMenuCloneToNew);
   FTabButtonMenuFindIn := TMenuItem.Create(Self);
-  FTabButtonMenuFindIn.Caption := 'Find In Other Window'; // ToDo: localize
+  FTabButtonMenuFindIn.Caption := sFindInOtherWindow;
   FTabButtonMenu.Items.Add(FTabButtonMenuFindIn);
 
   Application.AddOnIdleHandler(@AppOnIdle, False);
@@ -738,7 +738,7 @@ begin
           if (xPackage<>nil) and (xPackage.Name<>'') then
             xPackageName := xPackage.Name
           else
-            xPackageName := High(Char)+'Other'; // ToDo: localize, better sorting...
+            xPackageName := High(Char) + sOther; // ToDo: better sorting...
         end;
         xPkgIndex := xPackages.IndexOf(xPackageName);
         if xPkgIndex < 0 then

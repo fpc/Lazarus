@@ -30,13 +30,22 @@
     <Description Value="Replacement of source editor tabs/pages with buttons sorted by package and name."/>
     <License Value="GPL-2"/>
     <Version Minor="1" Release="1"/>
-    <Files Count="1">
+    <Files Count="2">
       <Item1>
         <Filename Value="packagetabs_impl.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="packagetabs_impl"/>
       </Item1>
+      <Item2>
+        <Filename Value="packagetabsstr.pas"/>
+        <UnitName Value="packagetabsstr"/>
+      </Item2>
     </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+      <EnableI18NForLFM Value="True"/>
+    </i18n>
     <RequiredPkgs Count="2">
       <Item1>
         <PackageName Value="IDEIntf"/>

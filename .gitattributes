@@ -3204,9 +3204,12 @@ components/opengl/openglcontext.pas svneol=native#text/plain
 components/opengl/openglcontext.res -text
 components/opengl/topenglcontrol.xpm svneol=native#text/plain
 components/packagetabs/README.txt svneol=native#text/plain
+components/packagetabs/languages/packagetabsstr.hu.po svneol=native#text/plain
+components/packagetabs/languages/packagetabsstr.po svneol=native#text/plain
 components/packagetabs/packagetabs.lpk svneol=native#text/plain
 components/packagetabs/packagetabs.pas svneol=native#text/pascal
 components/packagetabs/packagetabs_impl.pas svneol=native#text/pascal
+components/packagetabs/packagetabsstr.pas svneol=native#text/pascal
 components/paradox/README.txt svneol=native#text/plain
 components/paradox/demo/frmmain.lfm svneol=native#text/plain
 components/paradox/demo/frmmain.pp svneol=native#text/plain
