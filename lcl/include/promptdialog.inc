@@ -551,7 +551,9 @@ type
     FBitmapX, FBitmapY: Integer;
     FMsgMemo: TMemo;
   protected
+    function GetCloseModalResult: TModalResult;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure WMCloseQuery(var message: TLMessage); message LM_CLOSEQUERY;
   public
     TextBox: TRect;
     TextStyle: TTextStyle;
@@ -729,6 +731,16 @@ begin
   Result := inherited ShowModal;
 end;
 
+procedure TQuestionDlg.WMCloseQuery(var message: TLMessage);
+begin
+  if fsModal in FFormState then
+    ModalResult := GetCloseModalResult
+  else
+    Close;
+  // Always return 0, because we destroy the window ourselves
+  Message.Result:= 0;
+end;
+
 constructor TQuestionDlg.CreateQuestionDlg(const aCaption, aMsg: string;
   DlgType: LongInt; Buttons: TDialogButtons; HelpCtx: Longint);
 var
@@ -817,11 +829,25 @@ begin
   inherited Destroy;
 end;
 
+function TQuestionDlg.GetCloseModalResult: TModalResult;
+var
+  I: Integer;
+begin
+  Result := mrCancel;
+  if FButtons<>nil then
+    for I := 0 to FButtons.Count-1 do
+      if TCustomButton(FButtons[I]).Cancel then
+      begin
+        Result := TCustomButton(FButtons[I]).ModalResult;
+        break;
+      end;
+end;
+
 procedure TQuestionDlg.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   if Key = VK_ESCAPE then
   begin
-    ModalResult := mrCancel;
+    ModalResult := GetCloseModalResult;
     Key := 0;
   end;
 
