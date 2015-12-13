@@ -13734,13 +13734,14 @@ var
   RowHeight: Integer;
   item: QTreeWidgetItemH;
   itemChild: QTreeWidgetItemH;
-  v,v2: QVariantH;
+  v,v2,v3: QVariantH;
   WStr, TempStr: WideString;
   ASelected: Boolean;
   ImgList: TCustomImageList;
   AImageIndex: TImageIndex;
   Bmp: TBitmap;
   AOk: Boolean;
+  AIcon: QIconH;
 begin
   {do not set items during design time}
   if csDesigning in LCLObject.ComponentState then
@@ -13831,9 +13832,25 @@ begin
             if (AImageIndex < 0) then
             begin
               v2 := QVariant_create;
-              QTreeWidgetItem_setData(item, 0, QtListViewOwnerDataRole, v2);
-              QVariant_destroy(v2);
-              QTreeWidgetItem_setIcon(item, 0, nil);
+              AIcon := QIcon_create;
+              try
+                QTreeWidgetItem_data(item, v2, 0, QtListViewOwnerDataRole);
+                if not QVariant_isNull(v2) then
+                begin
+                  v3 := QVariant_create;
+                  try
+                    QTreeWidgetItem_setData(item, 0, QtListViewOwnerDataRole, v3);
+                  finally
+                    QVariant_destroy(v3);
+                  end;
+                end;
+                QTreeWidgetItem_icon(item, AIcon, 0);
+                if not QIcon_isNull(AIcon) then
+                  QTreeWidgetItem_setIcon(item, 0, nil);
+              finally
+                QVariant_destroy(v2);
+                QIcon_destroy(AIcon);
+              end;
             end;
           end;
 
