@@ -1,0 +1,45 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 1.7.7\n"
+
+#: packagetabsstr.saddtoproject
+msgid "Add To Project"
+msgstr "Добавить к проекту"
+
+#: packagetabsstr.scloneto
+msgid "Clone To"
+msgstr "Клонировать в"
+
+#: packagetabsstr.scopyfilepathtoclipboard
+msgid "Copy File Path To Clipboard"
+msgstr "Копировать путь к файлу в буфер обмена"
+
+#: packagetabsstr.sfindinotherwindow
+msgid "Find In Other Window"
+msgstr "Найти в другом окне"
+
+#: packagetabsstr.smoveto
+msgid "Move To"
+msgstr "Переместить в"
+
+#: packagetabsstr.snewwindow
+msgid "New Window"
+msgstr "Новое окно"
+
+#: packagetabsstr.sopenpackage
+msgid "Open package"
+msgstr "Открыть пакет"
+
+#: packagetabsstr.sother
+msgid "Other"
+msgstr "Прочие"
+

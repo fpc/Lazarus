@@ -7,7 +7,7 @@ unit packagetabs;
 interface
 
 uses
-  packagetabs_impl, LazarusPackageIntf;
+  packagetabs_impl, packagetabsstr, LazarusPackageIntf;
 
 implementation
 

@@ -33,7 +33,7 @@ uses
   Classes, SysUtils, Types, Contnrs, Controls, SrcEditorIntf, StdCtrls, Buttons,
   ComCtrls, Forms, LazFileUtils, PackageIntf, Graphics, Menus, LazIDEIntf,
   ExtCtrls, IDEImagesIntf, LMessages, Math, Laz2_XMLCfg, IDECommands, LCLIntf,
-  IDEOptionsIntf;
+  IDEOptionsIntf, packagetabsstr, Clipbrd;
 
 type
   TPackageTabButton = class(TSpeedButton)
@@ -47,11 +47,9 @@ type
     constructor Create(aOwner: TComponent); override;
   end;
 
-  TPackageTabLabel = class(TLabel)
+  TGroupTabLabel = class(TLabel)
   private
     FLeftClickPopupBlock: QWord;
-  public
-    Package: TIDEPackage;
   protected
     procedure CalculatePreferredSize(var PreferredWidth,
       PreferredHeight: integer; WithThemeSpace: Boolean); override;
@@ -61,6 +59,15 @@ type
   public
     constructor Create(aOwner: TComponent); override;
   end;
+  TGroupTabLabelClass = class of TGroupTabLabel;
+
+  TPackageTabLabel = class(TGroupTabLabel)
+  public
+    Package: TIDEPackage;
+  end;
+
+  TProjectTabLabel = class(TGroupTabLabel);
+  TOtherTabLabel = class(TGroupTabLabel);
 
   TPackageTabScrollBox = class(TScrollBox)
   protected
@@ -78,6 +85,7 @@ type
   TPackageItem = class
   public
     Package: TIDEPackage;
+    GroupTabLabel: TGroupTabLabelClass;
     Files: TStringList;
 
     constructor Create(APackage: TIDEPackage);
@@ -124,11 +132,14 @@ type
     FAppIdleLocked: Boolean;
     FTabLabelMenu: TPopupMenu;
     FTabLabelMenuCloseAllGroup: TMenuItem;
+    FTabLabelCopyToClipboard: TMenuItem;
     FTabLabelMenuPkgSep: TMenuItem;
     FTabLabelMenuOpenPackage: TMenuItem;
+    FTabLabelMenuViewProjectSource: TMenuItem;
     FTabButtonMenu: TPopupMenu;
     FTabButtonMenuClose: TMenuItem;
     FTabButtonMenuLock: TMenuItemCommand;
+    FTabButtonCopyToClipboard: TMenuItem;
     FTabButtonMenuProjSep: TMenuItem;
     FTabButtonMenuAddToProject: TMenuItem;
     FTabButtonMenuMoveCloneSep: TMenuItem;
@@ -158,12 +169,15 @@ type
     procedure TabButtonMenuCloseClick(Sender: TObject);
     procedure TabButtonMenuMoveToClick(Sender: TObject);
     procedure TabButtonMenuFindInClick(Sender: TObject);
+    procedure TabButtonCopyToClipboardClick(Sender: TObject);
     procedure TabButtonMenuPopup(Sender: TObject);
     procedure TabButtonMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
+      {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
     procedure TabLabelCloseAllGroupClick(Sender: TObject);
+    procedure TabLabelCopyToClipboardClick(Sender: TObject);
     procedure TabLabelMenuOpenPackageClick(Sender: TObject);
     procedure TabLabelMenuPopup(Sender: TObject);
+    procedure TabLabelMenuViewProjectSourceClick(Sender: TObject);
   public
     constructor Create(AParentWindow: TSourceEditorWindowInterface); reintroduce;
     destructor Destroy; override;
@@ -423,9 +437,9 @@ begin
   PreferredWidth := PreferredWidth + 6;
 end;
 
-{ TPackageTabLabel }
+{ TGroupTabLabel }
 
-constructor TPackageTabLabel.Create(aOwner: TComponent);
+constructor TGroupTabLabel.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
 
@@ -436,7 +450,7 @@ begin
   Cursor := crHandPoint;
 end;
 
-procedure TPackageTabLabel.CalculatePreferredSize(var PreferredWidth,
+procedure TGroupTabLabel.CalculatePreferredSize(var PreferredWidth,
   PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
   inherited CalculatePreferredSize(PreferredWidth, PreferredHeight,
@@ -446,7 +460,7 @@ begin
   PreferredWidth := PreferredWidth + 8;
 end;
 
-procedure TPackageTabLabel.MouseDown(Button: TMouseButton; Shift: TShiftState;
+procedure TGroupTabLabel.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
   xPt: Types.TPoint;
@@ -462,14 +476,14 @@ begin
   end;
 end;
 
-procedure TPackageTabLabel.MouseEnter;
+procedure TGroupTabLabel.MouseEnter;
 begin
   inherited MouseEnter;
 
   Font.Style := Font.Style + [fsUnderline];
 end;
 
-procedure TPackageTabLabel.MouseLeave;
+procedure TGroupTabLabel.MouseLeave;
 begin
   inherited MouseLeave;
 
@@ -513,7 +527,7 @@ begin
   FTabLabelMenu.Images := IDEImages.Images_16;
   FTabLabelMenu.OnPopup := @TabLabelMenuPopup;
   FTabLabelMenuCloseAllGroup := TMenuItem.Create(Self);
-  FTabLabelMenuCloseAllGroup.Caption := 'Close all'; // ToDo: localize
+  FTabLabelMenuCloseAllGroup.Caption := IDECommandList.FindIDECommand(ecCloseAll).LocalizedName;
   FTabLabelMenuCloseAllGroup.OnClick := @TabLabelCloseAllGroupClick;
   FTabLabelMenuCloseAllGroup.ImageIndex := IDEImages.LoadImage(16, 'menu_close_all');
   FTabLabelMenu.Items.Add(FTabLabelMenuCloseAllGroup);
@@ -521,30 +535,43 @@ begin
   FTabLabelMenuPkgSep.Caption := '-';
   FTabLabelMenu.Items.Add(FTabLabelMenuPkgSep);
   FTabLabelMenuOpenPackage := TMenuItem.Create(Self);
-  FTabLabelMenuOpenPackage.Caption := 'Open package'; // ToDo: localize
+  FTabLabelMenuOpenPackage.Caption := sOpenPackage;
   FTabLabelMenuOpenPackage.OnClick := @TabLabelMenuOpenPackageClick;
   FTabLabelMenuOpenPackage.ImageIndex := IDEImages.LoadImage(16, 'pkg_open');
   FTabLabelMenu.Items.Add(FTabLabelMenuOpenPackage);
+  FTabLabelMenuViewProjectSource := TMenuItem.Create(Self);
+  FTabLabelMenuViewProjectSource.Caption := IDECommandList.FindIDECommand(ecViewProjectSource).LocalizedName;
+  FTabLabelMenuViewProjectSource.OnClick := @TabLabelMenuViewProjectSourceClick;
+  FTabLabelMenuViewProjectSource.ImageIndex := IDEImages.LoadImage(16, 'menu_project_viewsource');
+  FTabLabelMenu.Items.Add(FTabLabelMenuViewProjectSource);
+  FTabLabelCopyToClipboard := TMenuItem.Create(Self);
+  FTabLabelCopyToClipboard.Caption := sCopyFilePathToClipboard;
+  FTabLabelCopyToClipboard.OnClick := @TabLabelCopyToClipboardClick;
+  FTabLabelMenu.Items.Add(FTabLabelCopyToClipboard);
 
   FTabButtonMenu := TPopupMenu.Create(Self);
   FTabButtonMenu.Images := IDEImages.Images_16;
   FTabButtonMenu.OnPopup := @TabButtonMenuPopup;
   FTabButtonMenuClose := TMenuItem.Create(Self);
-  FTabButtonMenuClose.Caption := 'Close'; // ToDo: localize
+  FTabButtonMenuClose.Caption := IDECommandList.FindIDECommand(ecClose).LocalizedName;
   FTabButtonMenuClose.OnClick := @TabButtonMenuCloseClick;
   FTabButtonMenuClose.ImageIndex := IDEImages.LoadImage(16, 'menu_close');
   FTabButtonMenu.Items.Add(FTabButtonMenuClose);
   FTabButtonMenuLock := TMenuItemCommand.Create(Self);
-  FTabButtonMenuLock.Caption := 'Lock Editor'; // ToDo: localize
+  FTabButtonMenuLock.Caption := IDECommandList.FindIDECommand(ecLockEditor).LocalizedName;
   FTabButtonMenuLock.IDECommand := ecLockEditor;
   FTabButtonMenuLock.OnClick := @MenuItemCommandClick;
   FTabButtonMenu.Items.Add(FTabButtonMenuLock);
+  FTabButtonCopyToClipboard := TMenuItem.Create(Self);
+  FTabButtonCopyToClipboard.Caption := sCopyFilePathToClipboard;
+  FTabButtonCopyToClipboard.OnClick := @TabButtonCopyToClipboardClick;
+  FTabButtonMenu.Items.Add(FTabButtonCopyToClipboard);
 
   FTabButtonMenuProjSep := TMenuItem.Create(Self);
   FTabButtonMenuProjSep.Caption := '-';
   FTabButtonMenu.Items.Add(FTabButtonMenuProjSep);
   FTabButtonMenuAddToProject := TMenuItem.Create(Self);
-  FTabButtonMenuAddToProject.Caption := 'Add to project'; // ToDo: localize
+  FTabButtonMenuAddToProject.Caption := sAddToProject;
   FTabButtonMenuAddToProject.OnClick := @TabButtonMenuAddToProjectClick;
   FTabButtonMenuAddToProject.ImageIndex := IDEImages.LoadImage(16, 'menu_project_add');
   FTabButtonMenu.Items.Add(FTabButtonMenuAddToProject);
@@ -553,25 +580,25 @@ begin
   FTabButtonMenuMoveCloneSep.Caption := '-';
   FTabButtonMenu.Items.Add(FTabButtonMenuMoveCloneSep);
   FTabButtonMenuMoveTo := TMenuItem.Create(Self);
-  FTabButtonMenuMoveTo.Caption := 'Move To'; // ToDo: localize
+  FTabButtonMenuMoveTo.Caption := sMoveTo;
   FTabButtonMenu.Items.Add(FTabButtonMenuMoveTo);
   FTabButtonMenuMoveToNew := TMenuItemCommand.Create(Self);
-  FTabButtonMenuMoveToNew.Caption := 'New Window'; // ToDo: localize
+  FTabButtonMenuMoveToNew.Caption := sNewWindow;
   FTabButtonMenuMoveToNew.IDECommand := ecMoveEditorNewWindow;
   FTabButtonMenuMoveToNew.NeedsActiveEditor := True;
   FTabButtonMenuMoveToNew.OnClick := @MenuItemCommandClick;
   FTabButtonMenuMoveTo.Add(FTabButtonMenuMoveToNew);
   FTabButtonMenuCloneTo := TMenuItem.Create(Self);
-  FTabButtonMenuCloneTo.Caption := 'Clone To'; // ToDo: localize
+  FTabButtonMenuCloneTo.Caption := sCloneTo;
   FTabButtonMenu.Items.Add(FTabButtonMenuCloneTo);
   FTabButtonMenuCloneToNew := TMenuItemCommand.Create(Self);
-  FTabButtonMenuCloneToNew.Caption := 'New Window'; // ToDo: localize
+  FTabButtonMenuCloneToNew.Caption := sNewWindow;
   FTabButtonMenuCloneToNew.IDECommand := ecCopyEditorNewWindow;
   FTabButtonMenuCloneToNew.NeedsActiveEditor := True;
   FTabButtonMenuCloneToNew.OnClick := @MenuItemCommandClick;
   FTabButtonMenuCloneTo.Add(FTabButtonMenuCloneToNew);
   FTabButtonMenuFindIn := TMenuItem.Create(Self);
-  FTabButtonMenuFindIn.Caption := 'Find In Other Window'; // ToDo: localize
+  FTabButtonMenuFindIn.Caption := sFindInOtherWindow;
   FTabButtonMenu.Items.Add(FTabButtonMenuFindIn);
 
   Application.AddOnIdleHandler(@AppOnIdle, False);
@@ -692,7 +719,7 @@ var
   xPackages: TStringList;
   xPackage: TIDEPackage;
   xEditor, xOldActive: TSourceEditorInterface;
-  xLbl: TPackageTabLabel;
+  xLbl: TGroupTabLabel;
   xPkgItem: TPackageItem;
   xPackageName: string;
 begin
@@ -723,7 +750,7 @@ begin
           if (xPackage<>nil) and (xPackage.Name<>'') then
             xPackageName := xPackage.Name
           else
-            xPackageName := High(Char)+'Other'; // ToDo: localize, better sorting...
+            xPackageName := High(Char) + sOther; // ToDo: better sorting...
         end;
         xPkgIndex := xPackages.IndexOf(xPackageName);
         if xPkgIndex < 0 then
@@ -737,13 +764,31 @@ begin
         xPkgItem := TPackageItem(xPackages.Objects[I]);
 
         xPackageName := xPackages[I];
-        if xPackageName[1] in [Low(Char), High(Char)] then
-          Delete(xPackageName, 1, 1);
-        xLbl := TPackageTabLabel.Create(Self);
+        case xPackageName[1] of
+          Low(Char):
+          begin
+            Delete(xPackageName, 1, 1);
+            xLbl := TProjectTabLabel.Create(Self);
+            if LazarusIDE.ActiveProject <> nil then
+            begin
+              xLbl.Hint := LazarusIDE.ActiveProject.MainFile.Filename;
+              xLbl.ShowHint := True;
+            end;
+          end;
+          High(Char):
+          begin
+            Delete(xPackageName, 1, 1);
+            xLbl := TOtherTabLabel.Create(Self);
+          end;
+        else
+          xLbl := TPackageTabLabel.Create(Self);
+          TPackageTabLabel(xLbl).Package := xPkgItem.Package;
+          xLbl.Hint := xPkgItem.Package.Filename;
+          xLbl.ShowHint := True;
+        end;
         xLbl.Caption := xPackageName;
         xLbl.Parent := FPanel;
         xLbl.PopupMenu := FTabLabelMenu;
-        xLbl.Package := xPkgItem.Package;
         xLbl.Height := TPackageTabButton.GetControlClassDefaultSize.cy;
         if FPanel is TPackageTabScrollBox then
         begin
@@ -839,6 +884,14 @@ begin
     TPackageTabScrollBox(FPanel).ScrollInView(xActBtn);
 
   FSetActiveEditor := False;
+end;
+
+procedure TPackageTabPanel.TabButtonCopyToClipboardClick(Sender: TObject);
+var
+  xBtn: TPackageTabButton;
+begin
+  xBtn := (FTabButtonMenu.PopupComponent as TPackageTabButton);
+  Clipboard.AsText := xBtn.Editor.FileName;
 end;
 
 procedure TPackageTabPanel.TabButtonMenuAddToProjectClick(Sender: TObject);
@@ -1011,6 +1064,22 @@ begin
   end;
 end;
 
+procedure TPackageTabPanel.TabLabelCopyToClipboardClick(Sender: TObject);
+var
+  xFileName: string;
+begin
+  if (FTabLabelMenu.PopupComponent is TPackageTabLabel) then
+    xFileName := (FTabLabelMenu.PopupComponent as TPackageTabLabel).Package.Filename
+  else
+  if (FTabLabelMenu.PopupComponent is TProjectTabLabel) then
+    xFileName := LazarusIDE.ActiveProject.MainFile.Filename
+  else
+    xFileName := '';
+
+  if xFileName<>'' then
+    Clipboard.AsText := xFileName;
+end;
+
 procedure TPackageTabPanel.TabLabelMenuOpenPackageClick(Sender: TObject);
 var
   xLbl: TPackageTabLabel;
@@ -1021,11 +1090,23 @@ end;
 
 procedure TPackageTabPanel.TabLabelMenuPopup(Sender: TObject);
 var
-  xLbl: TPackageTabLabel;
+  xLbl: TGroupTabLabel;
 begin
-  xLbl := (FTabLabelMenu.PopupComponent as TPackageTabLabel);
-  FTabLabelMenuPkgSep.Visible := xLbl.Package<>nil;
-  FTabLabelMenuOpenPackage.Visible := xLbl.Package<>nil;
+  xLbl := (FTabLabelMenu.PopupComponent as TGroupTabLabel);
+  FTabLabelMenuOpenPackage.Visible := (xLbl is TPackageTabLabel);
+  FTabLabelMenuViewProjectSource.Visible := (xLbl is TProjectTabLabel);
+  FTabLabelMenuPkgSep.Visible :=
+    FTabLabelMenuOpenPackage.Visible or FTabLabelMenuViewProjectSource.Visible;
+  FTabLabelCopyToClipboard.Visible := not(xLbl is TOtherTabLabel);
+end;
+
+procedure TPackageTabPanel.TabLabelMenuViewProjectSourceClick(Sender: TObject);
+var
+  xCmd: TIDECommand;
+begin
+  xCmd := IDECommandList.FindIDECommand(ecViewProjectSource);
+  Assert(xCmd<>nil);
+  xCmd.Execute(Sender);
 end;
 
 { TPackageTabPanels }
