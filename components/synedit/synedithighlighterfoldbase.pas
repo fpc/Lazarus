@@ -256,7 +256,9 @@ type
   TSynCustomHighlighterRange = class
   private
     FCodeFoldStackSize: integer; // EndLevel
+    FNestFoldStackSize: integer; // EndLevel
     FMinimumCodeFoldBlockLevel: integer;
+    FMinimumNestFoldBlockLevel: integer;
     FRangeType: Pointer;
     FTop: TSynCustomCodeFoldBlock;
   public
@@ -273,9 +275,12 @@ type
     property FoldRoot: TSynCustomCodeFoldBlock read FTop write FTop;
   public
     property RangeType: Pointer read FRangeType write FRangeType;
-    property CodeFoldStackSize: integer read FCodeFoldStackSize;
+    property CodeFoldStackSize: integer read FCodeFoldStackSize; // excl disabled, only IncreaseLevel
     property MinimumCodeFoldBlockLevel: integer
       read FMinimumCodeFoldBlockLevel write FMinimumCodeFoldBlockLevel;
+    property NestFoldStackSize: integer read FCodeFoldStackSize; // all, incl disabled (not IncreaseLevel)
+    property MinimumNestFoldBlockLevel: integer
+      read FMinimumNestFoldBlockLevel; // write FMinimumNestFoldBlockLevel;
     property Top: TSynCustomCodeFoldBlock read FTop;
   end;
   TSynCustomHighlighterRangeClass = class of TSynCustomHighlighterRange;
@@ -298,9 +303,11 @@ type
     procedure DoFoldConfigChanged(Sender: TObject); virtual;
   private
     FCodeFoldRange: TSynCustomHighlighterRange;
+    FIsCollectingNodeInfo: boolean;
     fRanges: TSynCustomHighlighterRanges;
     FRootCodeFoldBlock: TSynCustomCodeFoldBlock;
     FFoldNodeInfoList: TLazSynFoldNodeInfoList;
+    FCollectingNodeInfoList: TLazSynFoldNodeInfoList;
     procedure ClearFoldNodeList;
   protected
     // "Range"
@@ -312,9 +319,17 @@ type
       write FRootCodeFoldBlock;
 
     // Open/Close Folds
+    procedure GetTokenBounds(out LogX1,LogX2: Integer); virtual;
     function StartCodeFoldBlock(ABlockType: Pointer;
               IncreaseLevel: Boolean = true): TSynCustomCodeFoldBlock; virtual;
     procedure EndCodeFoldBlock(DecreaseLevel: Boolean = True); virtual;
+    procedure CollectNodeInfo(FinishingABlock : Boolean; ABlockType: Pointer;
+              LevelChanged: Boolean); virtual;
+    procedure DoInitNode(var Node: TSynFoldNodeInfo;
+                       //EndOffs: Integer;
+                       FinishingABlock: Boolean;
+                       ABlockType: Pointer; aActions: TSynFoldActions;
+                       AIsFold: Boolean); virtual;
 
     // Info about Folds
     function CreateFoldNodeInfoList: TLazSynFoldNodeInfoList; virtual;
@@ -324,6 +339,8 @@ type
     // Info about Folds, on currently set line/range (simply forwarding to range
     function MinimumCodeFoldBlockLevel: integer; virtual;
     function CurrentCodeFoldBlockLevel: integer; virtual;
+
+    property IsCollectingNodeInfo : boolean read FIsCollectingNodeInfo;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1077,7 +1094,14 @@ end;
 
 procedure TSynCustomFoldHighlighter.InitFoldNodeInfo(AList: TLazSynFoldNodeInfoList; Line: TLineIdx);
 begin
-  AList.Invalidate;
+  FIsCollectingNodeInfo := True;
+  try
+    FCollectingNodeInfoList := TLazSynFoldNodeInfoList(AList);
+    StartAtLineIndex(Line);
+    NextToEol;
+  finally
+    FIsCollectingNodeInfo := False;
+  end;
 end;
 
 function TSynCustomFoldHighlighter.CreateFoldNodeInfoList: TLazSynFoldNodeInfoList;
@@ -1106,15 +1130,134 @@ begin
   end;
 end;
 
+procedure TSynCustomFoldHighlighter.GetTokenBounds(out LogX1, LogX2: Integer);
+var p : pchar; L : integer;
+begin
+  GetTokenEx(p,L);
+  LogX1 := GetTokenPos;
+  LogX2 := LogX1 + L ;
+end;
+
 function TSynCustomFoldHighlighter.StartCodeFoldBlock(ABlockType: Pointer;
   IncreaseLevel: Boolean = True): TSynCustomCodeFoldBlock;
 begin
+  if FIsCollectingNodeInfo then
+    CollectNodeInfo(False, ABlockType, IncreaseLevel);
+
   Result:=CodeFoldRange.Add(ABlockType, IncreaseLevel);
 end;
 
 procedure TSynCustomFoldHighlighter.EndCodeFoldBlock(DecreaseLevel: Boolean = True);
 begin
+  if FIsCollectingNodeInfo then
+    CollectNodeInfo(True, nil, DecreaseLevel);
+
   CodeFoldRange.Pop(DecreaseLevel);
+end;
+
+procedure TSynCustomFoldHighlighter.CollectNodeInfo(FinishingABlock: Boolean;
+  ABlockType: Pointer; LevelChanged: Boolean);
+var
+  //DecreaseLevel,
+  BlockTypeEnabled, BlockConfExists: Boolean;
+  act: TSynFoldActions;
+  nd: TSynFoldNodeInfo;
+begin
+  if not IsCollectingNodeInfo then exit;
+
+  BlockConfExists := (PtrUInt(ABlockType) < FoldConfigCount);
+  BlockTypeEnabled := False;
+  if BlockConfExists then
+    BlockTypeEnabled := FFoldConfig[PtrUInt(ABlockType)].Enabled;
+
+  //Start
+  if not FinishingABlock then
+  begin
+    act := [sfaOpen, sfaOpenFold]; // todo deprecate sfaOpenFold
+    if BlockTypeEnabled then
+      act := act + FFoldConfig[PtrUInt(ABlockType)].FoldActions
+    else
+    if not BlockConfExists then
+      act := act + [sfaFold];
+    DoInitNode(nd, FinishingABlock, ABlockType, act, True);
+  end
+  else
+  //Finish
+  begin
+    act := [sfaClose, sfaCloseFold]; // todo deprecate sfaCloseFold
+    if BlockTypeEnabled then
+      act := act + FFoldConfig[PtrUInt(ABlockType)].FoldActions
+    else
+    if not BlockConfExists then
+      act := act + [sfaFold];
+    act := act - [sfaFoldFold, sfaFoldHide]; // it is closing tag
+    DoInitNode(nd, FinishingABlock, ABlockType, act, LevelChanged);
+  end;
+
+  FCollectingNodeInfoList.Add(nd);
+end;
+
+procedure TSynCustomFoldHighlighter.DoInitNode(var Node: TSynFoldNodeInfo;
+  FinishingABlock: Boolean; ABlockType: Pointer;
+  aActions: TSynFoldActions; AIsFold: Boolean);
+var
+  OneLine: Boolean;
+  EndOffs, i: Integer;
+  nd: PSynFoldNodeInfo;
+  LogX1V: integer; //used for vertical line in nested color markup
+  LogX1, LogX2: Integer;
+
+begin
+  GetTokenBounds(LogX1, LogX2);
+
+  aActions := aActions + [sfaMultiLine];
+  if FinishingABlock then
+    EndOffs := -1
+  else
+    EndOffs := +1;
+  Node.LineIndex := LineIndex;
+  Node.LogXStart := LogX1;
+  Node.LogXEnd := LogX2;
+  Node.FoldType := ABlockType;
+  Node.FoldTypeCompatible := ABlockType;
+  Node.FoldAction := aActions;
+  node.FoldGroup := 1;//FOLDGROUP_PASCAL;
+  Node.FoldLvlStart := CodeFoldRange.CodeFoldStackSize; // If "not AIsFold" then the node has no foldlevel of its own
+  Node.NestLvlStart := CodeFoldRange.NestFoldStackSize;
+  OneLine := (EndOffs < 0) and (Node.FoldLvlStart > CodeFoldRange.MinimumCodeFoldBlockLevel);
+  Node.NestLvlEnd := Node.NestLvlStart + EndOffs;
+  if not (sfaFold in aActions) then
+    EndOffs := 0;
+  Node.FoldLvlEnd := Node.FoldLvlStart + EndOffs;
+  if OneLine then begin // find opening node
+    i := FCollectingNodeInfoList.CountAll - 1;
+    nd := FCollectingNodeInfoList.ItemPointer[i];
+    while (i >= 0) and
+          ( (nd^.FoldType <> node.FoldType) or
+            (nd^.FoldGroup <> node.FoldGroup) or
+            (not (sfaOpenFold in nd^.FoldAction)) or
+            (nd^.FoldLvlEnd <> Node.FoldLvlStart)
+          )
+    do begin
+      dec(i);
+      nd := FCollectingNodeInfoList.ItemPointer[i];
+    end;
+    if i >= 0 then begin
+      nd^.FoldAction  := nd^.FoldAction + [sfaOneLineOpen, sfaSingleLine] - [sfaMultiLine];
+      Node.FoldAction := Node.FoldAction + [sfaOneLineClose, sfaSingleLine] - [sfaMultiLine];
+      if (sfaFoldHide in nd^.FoldAction) then begin
+        assert(sfaFold in nd^.FoldAction, 'sfaFoldHide without sfaFold');
+        // one liner: hide-able / not fold-able
+        nd^.FoldAction  := nd^.FoldAction - [sfaFoldFold];
+        Node.FoldAction := Node.FoldAction - [sfaFoldFold];
+      end else begin
+        // one liner: nether hide-able nore fold-able
+        nd^.FoldAction  := nd^.FoldAction - [sfaOpenFold, sfaFold, sfaFoldFold];
+        Node.FoldAction := Node.FoldAction - [sfaCloseFold, sfaFold, sfaFoldFold];
+      end;
+    end;
+  end;
+
 end;
 
 procedure TSynCustomFoldHighlighter.CreateRootCodeFoldBlock;
@@ -1360,6 +1503,7 @@ begin
     exit(nil);
   end;
   Result := FTop.Child[ABlockType];
+  inc(FNestFoldStackSize);
   if IncreaseLevel then
     inc(FCodeFoldStackSize);
   FTop:=Result;
@@ -1372,10 +1516,14 @@ begin
   //debugln('TSynCustomHighlighterRange.Pop');
   if assigned(FTop.Parent) then begin
     FTop := FTop.Parent;
-    if DecreaseLevel then
+    dec(FNestFoldStackSize);
+    if FMinimumNestFoldBlockLevel > FNestFoldStackSize then
+      FMinimumNestFoldBlockLevel := FNestFoldStackSize;
+    if DecreaseLevel then begin
       dec(FCodeFoldStackSize);
-    if FMinimumCodeFoldBlockLevel > FCodeFoldStackSize then
-      FMinimumCodeFoldBlockLevel := FCodeFoldStackSize;
+      if FMinimumCodeFoldBlockLevel > FCodeFoldStackSize then
+        FMinimumCodeFoldBlockLevel := FCodeFoldStackSize;
+    end;
   end;
 end;
 
