@@ -886,7 +886,7 @@ var
   CurBtnValue: TModalResult;
   CurBtnCaption, CurOptions: String;
   HasOptions: Boolean;
-  IsDefault: Boolean;
+  IsDefault, IsCancel: Boolean;
   NewButton: TDialogButton;
 begin
   DialogButtons := TDialogButtons.Create(TDialogButton);
@@ -924,6 +924,7 @@ begin
         // get options
         CurOptions := '';
         IsDefault := False;
+        IsCancel := False;
         if (i <= High(Buttons)) then
         begin
           HasOptions := True;
@@ -940,12 +941,20 @@ begin
           end;
           if HasOptions then
           begin
-            if SysUtils.CompareText(CurOptions,'isdefault')<>0 then
+            if SysUtils.CompareText(CurOptions,'isdefault')=0 then
+            begin
+              if DialogButtons.DefaultButton <> nil then
+                raise Exception.Create('TQuestionDlg.CreateQuestionDlg only one button can be default');
+              IsDefault := True;
+            end else
+            if SysUtils.CompareText(CurOptions,'iscancel')=0 then
+            begin
+              if DialogButtons.CancelButton <> nil then
+                raise Exception.Create('TQuestionDlg.CreateQuestionDlg only one button can be cancel');
+              IsCancel := True;
+            end else
               raise Exception.Create('TQuestionDlg.CreateQuestionDlg option expected at '
                 +IntToStr(i)+' but "'+CurOptions+'" found.');
-            if DialogButtons.DefaultButton <> nil then
-              raise Exception.Create('TQuestionDlg.CreateQuestionDlg only one button can be default');
-            IsDefault := True;
             inc(i);
           end;
         end;
@@ -976,6 +985,8 @@ begin
         end;
         if IsDefault then
           DialogButtons.DefaultButton := NewButton;
+        if IsCancel then
+          DialogButtons.CancelButton := NewButton;
       end
       else
         raise Exception.Create('TQuestionDlg.Create: invalid Buttons parameter '+dbgs(i));
