@@ -817,6 +817,8 @@ begin
       Caption := CurBtn.Caption;
       Parent := Self;
       Default := CurBtn.Default;
+      if Default then
+        ActiveControl := NewButton;
       Cancel := CurBtn.Cancel;
     end;
     if FButtons = nil then
