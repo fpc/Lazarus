@@ -1,0 +1,195 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: tachartlazaruspkg\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: se\n"
+"X-Generator: Poedit 1.8.6\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: tachartstrconsts.descolor
+msgid "Color"
+msgstr "Färg"
+
+#: tachartstrconsts.desdatapointeditor
+msgid "DataPoints editor"
+msgstr "Redigera datapunkter"
+
+#: tachartstrconsts.destext
+msgid "Text"
+msgstr "Text"
+
+#: tachartstrconsts.rsadd
+msgid "Add"
+msgstr "Lägg till"
+
+#: tachartstrconsts.rsareaseries
+msgid "Area series"
+msgstr "Områdesdiagram"
+
+#: tachartstrconsts.rsautoscale
+msgid "Auto scale"
+msgstr "Autoskala"
+
+#: tachartstrconsts.rsbarseries
+msgid "Bar series"
+msgstr "Stapeldiagram"
+
+#: tachartstrconsts.rsboxandwhiskerseries
+msgid "Box-and-whiskers series"
+msgstr "Box-and-whiskers diagram"
+
+#: tachartstrconsts.rsbsplineseries
+msgid "B-Spline series"
+msgstr "B-Spline diagram"
+
+#: tachartstrconsts.rsbubbleseries
+msgid "Bubbel series"
+msgstr "Bubbeldiagram"
+
+#: tachartstrconsts.rscolormapseries
+msgid "Color map series"
+msgstr "Färglandskap"
+
+#: tachartstrconsts.rsconstantline
+msgid "Constant line"
+msgstr "Konstant linje"
+
+#: tachartstrconsts.rscubicsplineseries
+msgid "Cubic spline series"
+msgstr "Kubisk spline"
+
+#: tachartstrconsts.rscumulativenormaldistribution
+msgid "Cumulative normal distribution"
+msgstr "Kumulativ normalfördelning"
+
+#: tachartstrconsts.rsdatapointclick
+msgid "Data point click"
+msgstr "Klicka på datapunkt"
+
+#: tachartstrconsts.rsdatapointcrosshair
+msgid "Data point crosshair"
+msgstr "Hårkors för datapunkter"
+
+#: tachartstrconsts.rsdatapointdrag
+msgid "Data point drag"
+msgstr "Flytta datapunkt"
+
+#: tachartstrconsts.rsdatapointhint
+msgid "Data point hint"
+msgstr "Datapunkt tips"
+
+#: tachartstrconsts.rsdelete
+msgid "Delete"
+msgstr "Radera"
+
+#: tachartstrconsts.rsdistancemeasurement
+msgid "Distance measurement"
+msgstr "Avståndsmätning"
+
+#: tachartstrconsts.rsfunctionseries
+msgid "Function series"
+msgstr "Funktionskurva"
+
+#: tachartstrconsts.rsleastsquaresfitseries
+msgid "Least-squares fit series"
+msgstr "Least-squares fit kurva"
+
+#: tachartstrconsts.rslinear
+msgid "Linear"
+msgstr "Linjär"
+
+#: tachartstrconsts.rslineseries
+msgid "Line series"
+msgstr "Linjediagram"
+
+#: tachartstrconsts.rslogarithmic
+msgid "Logarithmic"
+msgstr "Logaritmisk"
+
+#: tachartstrconsts.rsmanhattanplotseries
+msgid "Manhattan plot series"
+msgstr "Manhattan plot"
+
+#: tachartstrconsts.rsmovedown
+msgid "Down"
+msgstr "Ner"
+
+#: tachartstrconsts.rsmoveup
+msgid "Up"
+msgstr "Upp"
+
+#: tachartstrconsts.rsopenhighlowcloseseries
+msgid "Open-high-low-close series"
+msgstr "Först-högst-lägst-sist kurva"
+
+#: tachartstrconsts.rspanningbyclick
+msgid "Panning by click"
+msgstr "Panorera med klick"
+
+#: tachartstrconsts.rspanningbydrag
+msgid "Panning by drag"
+msgstr "Panorera med drag"
+
+#: tachartstrconsts.rspanningbymousewheel
+msgid "Panning by mouse wheel"
+msgstr "Panorera med mushjul"
+
+#: tachartstrconsts.rsparametriccurveseries
+msgid "Parametric curve series"
+msgstr "parametrisk kurva"
+
+#: tachartstrconsts.rspieseries
+msgid "Pie series"
+msgstr "Cirkeldiagram"
+
+#: tachartstrconsts.rspolarseries
+msgid "Polar series"
+msgstr "Polardiagram"
+
+#: tachartstrconsts.rsreticule
+msgid "Reticule"
+msgstr "Hårkors"
+
+#: tachartstrconsts.rsuserdefined
+msgctxt "tachartstrconsts.rsuserdefined"
+msgid "User-defined"
+msgstr "Användardefinierad"
+
+#: tachartstrconsts.rsuserdrawnseries
+msgid "User-drawn series"
+msgstr "Användardefinierat diagram"
+
+#: tachartstrconsts.rszoombyclick
+msgid "Zoom by click"
+msgstr "Zooma med klick"
+
+#: tachartstrconsts.rszoombydrag
+msgid "Zoom by drag"
+msgstr "Zooma med drag"
+
+#: tachartstrconsts.rszoombymousewheel
+msgid "Zoom by mouse-wheel"
+msgstr "Zooma med mushjul"
+
+#: tachartstrconsts.sesserieseditortitle
+msgid "Edit series"
+msgstr "Redigera diagram"
+
+#: tachartstrconsts.tasaxistransformseditortitle
+msgid "Edit axis transformations"
+msgstr "Redigera axelomvandlingar"
+
+#: tachartstrconsts.tasfailedsubcomponentrename
+#, c-format
+msgid "Failed to rename components: %s"
+msgstr "Namnbyte av komponent misslyckades: %s"
+
+#: tachartstrconsts.tastoolseditortitle
+msgid "Edit tools"
+msgstr "Redigera verktyg"
