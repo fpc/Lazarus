@@ -23,7 +23,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Graphics, LCLType, AvgLvlTree,
-  ComCtrls, FileUtil, LazFileUtils, LazUtf8, LCLStrConsts, LCLProc;
+  ComCtrls, LCLProc, FileUtil, LazFileUtils, LazUtf8, LCLStrConsts;
 
 {$if defined(Windows) or defined(darwin)}
 {$define CaseInsensitiveFilenames}
