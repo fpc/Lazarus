@@ -287,9 +287,7 @@ var
 {$I win32winapi.inc}
 {$I win32lclintf.inc}
 
-const
-  W95_MENUITEMINFO_SIZE = 44;
-  
+
 initialization
   { initialize mousedownclick to far before double click time }
   if GetTickCount > 5000 then
@@ -298,9 +296,7 @@ initialization
     MouseDownTime := 0;
   SystemCharSetIsUTF8:=true;
 
-  if (Win32MajorVersion = 4) and (Win32MinorVersion = 0)
-  then MMenuItemInfoSize := W95_MENUITEMINFO_SIZE
-  else MMenuItemInfoSize := sizeof(MENUITEMINFO);
+  MMenuItemInfoSize := sizeof(MENUITEMINFO);
   
   // Vista with classic theme is buggy with Windows.SetPixel() 
   // http://bugs.freepascal.org/view.php?id=15822

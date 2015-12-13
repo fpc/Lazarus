@@ -1639,7 +1639,6 @@ begin
   DefaultWindowInfo.DrawItemIndex := -1;
   WindowInfoAtom := Windows.GlobalAddAtom('WindowInfo');
   ChangedMenus := TFPList.Create;
-  //UnicodeEnabledOS := (Win32Platform = VER_PLATFORM_WIN32_NT);
   if WindowsVersion = wvUnknown then
     UpdateWindowsVersion;
 end;
