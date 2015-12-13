@@ -11629,13 +11629,13 @@ var
   VHeight: Integer; // viewport height
   RowHeight: Integer;
   item: QListWidgetItemH;
-  v: QVariantH;
+  v, v2, v3: QVariantH;
   WStr: WideString;
   DataStr: WideString;
   ImgList: TCustomImageList;
   AImageIndex: TImageIndex;
   Bmp: TBitmap;
-  v2: QVariantH;
+  AIcon: QIconH;
   AOk: Boolean;
 begin
 
@@ -11709,9 +11709,25 @@ begin
           if (AImageIndex < 0) then
           begin
             v2 := QVariant_create;
-            QListWidgetItem_setData(item, QtListViewOwnerDataRole, v2);
-            QVariant_destroy(v2);
-            QListWidgetItem_setIcon(item, nil);
+            AIcon := QIcon_create;
+            try
+              QListWidgetItem_data(item, v2, QtListViewOwnerDataRole);
+              if not QVariant_isNull(v2) then
+              begin
+                v3 := QVariant_create;
+                try
+                  QListWidgetItem_setData(item, QtListViewOwnerDataRole, v3);
+                finally
+                  QVariant_destroy(v3);
+                end;
+              end;
+              QListWidgetItem_icon(item, AIcon);
+              if not QIcon_isNull(AIcon) then
+                QListWidgetItem_setIcon(item, nil);
+            finally
+              QVariant_destroy(v2);
+              QIcon_destroy(AIcon);
+            end;
           end;
         end;
 
