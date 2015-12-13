@@ -1,8 +1,16 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
+#: packagetabsstr.saddtoproject
+msgid "Add To Project"
+msgstr ""
+
 #: packagetabsstr.scloneto
 msgid "Clone To"
+msgstr ""
+
+#: packagetabsstr.scopyfilepathtoclipboard
+msgid "Copy File Path To Clipboard"
 msgstr ""
 
 #: packagetabsstr.sfindinotherwindow

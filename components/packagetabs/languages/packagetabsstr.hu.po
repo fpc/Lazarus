@@ -11,11 +11,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.4\n"
 
+#: packagetabsstr.saddtoproject
+#, fuzzy
+#| msgid "Add To Project"
+msgid "Add To Project"
+msgstr "Hozzáadás a projekthez"
+
 #: packagetabsstr.scloneto
 #, fuzzy
 #| msgid "Clone To"
 msgid "Clone To"
 msgstr "Klónozás"
+
+#: packagetabsstr.scopyfilepathtoclipboard
+msgid "Copy File Path To Clipboard"
+msgstr ""
 
 #: packagetabsstr.sfindinotherwindow
 msgid "Find In Other Window"
