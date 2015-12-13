@@ -8,7 +8,7 @@ REM This script should be executed after adding new resource strings and after
 REM udating the translated .po files.
 REM
 REM This script
-REM - converts all compiled .rst files to .po files,
+REM - converts all compiled .rsj (.rst if .rsj is not found) files to .po files,
 REM - updates all translated xx.po files
 REM
 
@@ -31,39 +31,81 @@ if not exist tools\updatepofiles.exe goto Exit_Error
 :SkipTools
 
 echo Updating language files ...
+echo.
 
 echo on
 
-@REM IDE
-@set IDE_RST=units\%ArchOsWS%\LazarusIDEStrConsts.rst
-tools\updatepofiles %IDE_RST% languages\lazaruside.po
-@if exist %IDE_RST% echo RST found
+@echo Updating IDE
+@set IDE_RSJ=units\%ArchOsWS%\LazarusIDEStrConsts.rsj
+@if exist %IDE_RSJ% goto IDE_update
+@echo RSJ file NOT found. Searching for RST.
+@set IDE_RSJ=units\%ArchOsWS%\LazarusIDEStrConsts.rst
+@if not exist %IDE_RSJ% goto SkipIDE
+:IDE_update
+@tools\updatepofiles %IDE_RSJ% languages\lazaruside.po
+@echo Translation file %IDE_RSJ% found.
+:SkipIDE
+@echo.
 
-@REM Debugger dialogs
-@set DBGD_RST=units\%ArchOsWS%\DebuggerStrConst.rst
-tools\updatepofiles %DBGD_RST% languages\debuggerstrconst.po
-@if exist %DBGD_RST% echo RST found
+@echo Updating Debugger dialogs
+@set DBGD_RSJ=units\%ArchOsWS%\DebuggerStrConst.rsj
+@if exist %DBGD_RSJ% goto DBGD_update
+@echo RSJ file NOT found. Searching for RST.
+@set DBGD_RSJ=units\%ArchOsWS%\DebuggerStrConst.rst
+@if not exist %DBGD_RSJ% goto SkipDBGD
+:DBGD_update
+@tools\updatepofiles %DBGD_RSJ% languages\debuggerstrconst.po
+@echo Translation file %DBGD_RSJ% found.
+:SkipDBGD
+@echo.
 
-@REM LazDataDesktop
-@set LazDataDesktop_RST=tools\lazdatadesktop\lib\%ArchOS%\lazdatadeskstr.rst
-tools\updatepofiles %LazDataDesktop_RST% tools\lazdatadesktop\languages\lazdatadesktop.po
-@if exist %LazDataDesktop_RST% echo RST found
+@echo Updating LazDataDesktop
+@set LazDataDesktop_RSJ=tools\lazdatadesktop\lib\%ArchOS%\lazdatadeskstr.rsj
+@if exist %LazDataDesktop_RSJ% goto LazDataDesktop_update
+@echo RSJ file NOT found. Searching for RST.
+@set LazDataDesktop_RSJ=tools\lazdatadesktop\lib\%ArchOS%\lazdatadeskstr.rst
+@if not exist %LazDataDesktop_RSJ% goto SkipLazDataDesktop
+:LazDataDesktop_update
+@tools\updatepofiles %LazDataDesktop_RSJ% tools\lazdatadesktop\languages\lazdatadesktop.po
+@echo Translation file %LazDataDesktop_RSJ% found.
+:SkipLazDataDesktop
+@echo.
 
-@REM LazDoc
-@set LazDoc_RST=doceditor\units\%ArchOS%\lazdemsg.rst
-tools\updatepofiles %LazDoc_RST% doceditor\languages\lazde.po
-@if exist %LazDoc_RST% echo RST found
+@echo Updating LazDoc
+@set LazDoc_RSJ=doceditor\units\%ArchOS%\lazdemsg.rsj
+@if exist %LazDoc_RSJ% goto LazDoc_update
+@echo RSJ file NOT found. Searching for RST.
+@set LazDoc_RSJ=doceditor\units\%ArchOS%\lazdemsg.rst
+@if not exist %LazDoc_RSJ% goto SkipLazDoc
+:LazDoc_update
+@tools\updatepofiles %LazDoc_RSJ% doceditor\languages\lazde.po
+@echo Translation file %LazDoc_RSJ% found.
+:SkipLazDoc
+@echo.
 
-@REM LazExplorer
-@set LazExplorer_RST=examples\lazresexplorer\lib\%ArchOS%\reconstsunit.rst
-tools\updatepofiles %LazExplorer_RST% examples\lazresexplorer\languages\resexplorer.po
-@if exist %LazExplorer_RST% echo RST found
+@echo Updating LazExplorer
+@set LazExplorer_RSJ=examples\lazresexplorer\lib\%ArchOS%\reconstsunit.rsj
+@if exist %LazExplorer_RSJ% goto LazExplorer_update
+@echo RSJ file NOT found. Searching for RST.
+@set LazExplorer_RSJ=examples\lazresexplorer\lib\%ArchOS%\reconstsunit.rst
+@if not exist %LazExplorer_RSJ% goto SkipLazExplorer
+:LazExplorer_update
+@tools\updatepofiles %LazExplorer_RSJ% examples\lazresexplorer\languages\resexplorer.po
+@echo Translation file %LazExplorer_RSJ% found.
+:SkipLazExplorer
+@echo.
 
-@REM LazReport editor sample
-@set LREditor_RST=components\lazreport\samples\editor\maincalleditor.rst
-if not exist %LREditor_RST% goto SkipLREditor
-tools\updatepofiles %LREditor_RST% components\lazreport\samples\editor\languages\calleditorwithpkg.po
+@echo Updating LazReport editor sample
+@set LREditor_RSJ=components\lazreport\samples\editor\maincalleditor.rsj
+@if exist %LREditor_RSJ% goto LREditor_update
+@echo RSJ file NOT found. Searching for RST.
+@set LREditor_RSJ=components\lazreport\samples\editor\maincalleditor.rst
+@if not exist %LREditor_RSJ% goto SkipLREditor
+:LREditor_update
+@tools\updatepofiles %LREditor_RSJ% components\lazreport\samples\editor\languages\calleditorwithpkg.po
+@echo Translation file %LREditor_RSJ% found.
 :SkipLREditor
+@echo.
 
 @goto Exit
 

@@ -1152,9 +1152,9 @@ end;
 
 procedure TPOFile.UpdateStrings(InputLines: TStrings; SType: TStringsType);
 var
-  i,j,n: integer;
+  i, j, n: integer;
   p: LongInt;
-  Identifier, Value,Line: string;
+  Identifier, Value, Line: string;
   Ch: Char;
   MultiLinedValue: boolean;
 
@@ -1168,6 +1168,41 @@ var
       Line := '';
     n := Length(Line);
     p := 1;
+  end;
+
+  procedure NormalizeValue;
+  begin
+    if MultiLinedValue then begin
+      // check that we end on lineending, multilined
+      // resource strings from rst usually do not end
+      // in lineending, fix here.
+      if not (Value[Length(Value)] in [#13,#10]) then
+        Value := Value + LineEnding;
+
+      //treat #10#13 sequences as #13#10 for consistency,
+      //e.g. #10#13#13#13#10#13#10 should become #13#10#13#13#10#13#10
+      p:=2;
+      while p<=Length(Value) do begin
+        if (Value[p]=#13) and (Value[p-1]=#10) then begin
+          Value[p]:=#10;
+          Value[p-1]:=#13;
+        end;
+        // further analysis shouldn't affect found #13#10 pair
+        if (Value[p]=#10) and (Value[p-1]=#13) then
+          inc(p);
+        inc(p);
+      end;
+      Value := AdjustLineBreaks(Value);
+    end;
+    // po requires special characters as #number
+    p:=1;
+    while p<=length(Value) do begin
+      j := UTF8CharacterLength(pchar(@Value[p]));
+      if (j=1) and (Value[p] in [#0..#9,#11,#12,#14..#31,#127..#255]) then
+        Value := copy(Value,1,p-1)+'#'+IntToStr(ord(Value[p]))+copy(Value,p+1,length(Value))
+      else
+        inc(p,j);
+    end;
   end;
 
   procedure UpdateFromRsj;
@@ -1185,6 +1220,7 @@ var
         JsonItems := JsonData.Arrays['strings'];
         for K := 0 to JsonItems.Count - 1 do
         begin
+          MultiLinedValue := false;
           JsonItem := JsonItems.Items[K] as TJSONObject;
           Data:=JsonItem.Find('sourcebytes');
           if Data is TJSONArray then begin
@@ -1192,11 +1228,25 @@ var
             // while 'value' contains the string encoded as UTF16 with \u hexcodes.
             SourceBytes := TJSONArray(Data);
             SetLength(Value,SourceBytes.Count);
-            for L := 1 to length(Value) do
+            for L := 1 to length(Value) do begin
               Value[L] := chr(SourceBytes.Integers[L-1]);
-          end else
+              if Value[L] in [#13,#10] then
+                MultilinedValue := True;
+            end;
+          end else begin
             Value:=JsonItem.Get('value');
-          UpdateItem(JsonItem.Get('name'), Value);
+            // check if the value we got is multilined
+            L := 1;
+            while (L<=Length(Value)) and (MultiLinedValue = false) do begin
+              if Value[L] in [#13,#10] then
+                MultilinedValue := True;
+              inc(L);
+            end;
+          end;
+          if Value<>'' then begin
+            NormalizeValue;
+            UpdateItem(JsonItem.Get('name'), Value);
+          end;
         end;
       finally
         JsonData.Free;
@@ -1288,38 +1338,7 @@ begin
             end;
 
             if Value<>'' then begin
-              if MultiLinedValue then begin
-                // check that we end on lineending, multilined
-                // resource strings from rst usually do not end
-                // in lineending, fix here.
-                if not (Value[Length(Value)] in [#13,#10]) then
-                  Value := Value + LineEnding;
-
-                //treat #10#13 sequences as #13#10 for consistency,
-                //e.g. #10#13#13#13#10#13#10 should become #13#10#13#13#10#13#10
-                p:=2;
-                while p<=Length(Value) do begin
-                  if (Value[p]=#13) and (Value[p-1]=#10) then begin
-                    Value[p]:=#10;
-                    Value[p-1]:=#13;
-                  end;
-                  // further analysis shouldn't affect found #13#10 pair
-                  if (Value[p]=#10) and (Value[p-1]=#13) then
-                    inc(p);
-                  inc(p);
-                end;
-                Value := AdjustLineBreaks(Value);
-              end;
-              // po requires special characters as #number
-              p:=1;
-              while p<=length(Value) do begin
-                j := UTF8CharacterLength(pchar(@Value[p]));
-                if (j=1) and (Value[p] in [#0..#9,#11,#12,#14..#31,#127..#255]) then
-                  Value := copy(Value,1,p-1)+'#'+IntToStr(ord(Value[p]))+copy(Value,p+1,length(Value))
-                else
-                  inc(p,j);
-              end;
-
+              NormalizeValue;
               UpdateItem(Identifier, Value);
             end;
 
