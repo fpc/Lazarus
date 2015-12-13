@@ -550,6 +550,8 @@ type
     FBitmap: TCustomBitmap;
     FBitmapX, FBitmapY: Integer;
     FMsgMemo: TMemo;
+  protected
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
   public
     TextBox: TRect;
     TextStyle: TTextStyle;
@@ -742,6 +744,7 @@ begin
   Position := poScreenCenter;
   MessageTxt := ConvertLineEndings(aMsg);
   HelpContext := HelpCtx;
+  KeyPreview := True;
 
   // Initialize TextStyle
   FillChar(TextStyle, SizeOf(TTextStyle), 0);
@@ -812,6 +815,17 @@ begin
   FreeAndNil(FButtons);
   FreeAndNil(FBitmap);
   inherited Destroy;
+end;
+
+procedure TQuestionDlg.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then
+  begin
+    ModalResult := mrCancel;
+    Key := 0;
+  end;
+
+  inherited KeyDown(Key, Shift);
 end;
 
 
