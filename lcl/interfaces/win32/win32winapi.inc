@@ -1271,7 +1271,6 @@ function TWin32WidgetSet.EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont;
 var
   FontName: String;
   LFW: LogFontW;
-  LFA: LogFontA absolute LFW;
   Rec: TProcRedirRec;
 begin
   FontName := lpLogFont^.lfFaceName;
@@ -2037,7 +2036,6 @@ function TWin32WidgetSet.GetTextExtentExPoint(DC: HDC; Str: PChar;
   Count, MaxWidth: Integer; MaxCount, PartialWidths: PInteger; var Size: TSize): Boolean;
 var
   LCLStr: string;
-  s: AnsiString;
   w: WideString;
 begin
   // use temp buffer, if count is set, there might be no null terminator

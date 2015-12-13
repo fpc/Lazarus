@@ -585,7 +585,6 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.WinRegister: Boolean;
 var
-  WindowClass: WndClass;
   WindowClassW: WndClassW;
 begin
   with WindowClassW do

@@ -147,7 +147,6 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32ListStringList.Get(Index: Integer): String;
 Var
-  s: string;
   w: widestring;
 begin
   if (Index < 0) Or (Index >= Count) then

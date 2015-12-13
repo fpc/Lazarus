@@ -1025,7 +1025,6 @@ var
   L: LongWord;
   I, C: Integer;
   DropForm: TWinControl;
-  AnsiBuffer: string;
   WideBuffer: WideString;
 begin
   Drop := HDROP(WParam);
