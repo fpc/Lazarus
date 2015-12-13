@@ -3543,7 +3543,7 @@ procedure TvEntityWithPenBrushAndFont.Render(ADest: TFPCustomCanvas;
   AMulY: Double; ADoDraw: Boolean);
 begin
   inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
-  ApplyFontToCanvas(ADest, ARenderInfo, AMulX);
+  ApplyFontToCanvas(ADest, ARenderInfo, AMulX);         // wp: why not AMulY ?
 end;
 
 function TvEntityWithPenBrushAndFont.GenerateDebugTree(
@@ -4346,12 +4346,14 @@ procedure TvText.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; A
     Result := Round(ADestY + AmulY * ACoord);
   end;
 
+const
+  LINE_SPACING = 0.5;  // fraction of font height for line spacing
 var
   i: Integer;
   //
   LowerDim: T3DPoint;
   XAnchorAdjustment: Integer;
-  lLongestLine, lLineWidth, lFontSizePx: Integer;
+  lLongestLine, lLineWidth, lFontSizePx, lFontDescenderPx: Integer;
   lText: string;
   {$ifdef USE_LCL_CANVAS}
   ACanvas: TCanvas absolute ADest;
@@ -4392,9 +4394,9 @@ begin
     // We need to keep the order of lines drawing correct regardless of
     // the drawing direction
     if AMulY < 0 then
-      LowerDim.Y := CoordToCanvasY(Y) + lFontSizePx * 1.2 * (Value.Count - i)
+      lowerDim.Y := CoordToCanvasY(Y) + lFontSizePx * (1 + LINE_SPACING) * (Value.Count - i) * AMulY
     else
-      LowerDim.Y := CoordToCanvasY(Y) + lFontSizePx * 1.2 * i;
+      LowerDim.Y := CoordToCanvasY(Y) + lFontSizePx * (1 + LINE_SPACING) * i * AMulY;
 
     ADest.Font.FPColor := AdjustColorToBackground(Font.Color, ARenderInfo);
     lText := Value.Strings[i];
@@ -6694,7 +6696,7 @@ begin
       if Style <> nil then
         Style.ApplyIntoEntity(lText);
 
-      lText.Render(ADest, lEntityRenderInfo, CurX, ADestY + lHeight_px, AMulX, AMulY, ADoDraw);
+      lText.Render(ADest, lEntityRenderInfo, CurX, ADestY, AMulX, AMulY, ADoDraw);
       lText.CalculateBoundingBox(ADest, lLeft, lTop, lRight, lBottom);
       lCurWidth := lCurWidth + Abs(lRight - lLeft);
       lFirstText := False;
