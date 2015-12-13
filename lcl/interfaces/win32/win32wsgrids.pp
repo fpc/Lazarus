@@ -52,17 +52,12 @@ var
   WChar: WPARAM;
 begin
   WChar:=WPARAM(Ord(Ch[1]));
-  if UnicodeEnabledOS then begin
-    if Length(Ch)>1 then begin
-      S := UTF8ToUTF16(Ch);
-      if S='' then WChar := WPARAM(Ord('?'))
-      else         WChar := WPARAM(S[1]);
-    end;
-    PostMessageW(AEditor.Handle, WM_CHAR, WChar, 0);
-    exit;
-  end else
-    WChar := WPARAM(Ord(UTF8ToAnsi(Ch)[1]));
-  PostMessage(AEditor.Handle, WM_CHAR, WChar, 0);
+  if Length(Ch)>1 then begin
+    S := UTF8ToUTF16(Ch);
+    if S='' then WChar := WPARAM(Ord('?'))
+    else         WChar := WPARAM(S[1]);
+  end;
+  PostMessageW(AEditor.Handle, WM_CHAR, WChar, 0);
 end;
 
 end.

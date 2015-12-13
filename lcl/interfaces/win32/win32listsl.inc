@@ -119,12 +119,8 @@ var
 begin
   for Counter := 0 To TheStrings.Count - 1 Do
   begin
-    if UnicodeEnabledOS then
-     AnIndex := Windows.SendMessageW(FWin32List, FFlagAddString, 0,
-      LPARAM(PWideChar(UTF8ToUTF16(TheStrings[Counter])))) //Insert
-    else
-     AnIndex := Windows.SendMessage(FWin32List, FFlagAddString, 0,
-      LPARAM(PChar(Utf8ToAnsi(TheStrings[Counter])))); //Insert
+    AnIndex := Windows.SendMessageW(FWin32List, FFlagAddString, 0,
+      LPARAM(PWideChar(UTF8ToUTF16(TheStrings[Counter])))); //Insert
     PutObject(AnIndex, TheStrings.Objects[Counter]);
   end;
 end;
@@ -158,18 +154,9 @@ begin
     raise Exception.Create('Out of bounds.')
   else
   begin
-    if UnicodeEnabledOS then
-    begin
-      SetLength(w, Windows.SendMessageW(FWin32List, FFlagGetTextLen, Index, 0));
-      Windows.SendMessageW(FWin32List, FFlagGetText, Index, LPARAM(PWideChar(w)));
-      Result := UTF16ToUTF8(w);
-    end
-    else
-    begin
-      SetLength(s, Windows.SendMessage(FWin32List, FFlagGetTextLen, Index, 0));
-      Windows.SendMessage(FWin32List, FFlagGetText, Index, LPARAM(PChar(s)));
-      Result := AnsiToUtf8(s);
-    end;
+    SetLength(w, Windows.SendMessageW(FWin32List, FFlagGetTextLen, Index, 0));
+    Windows.SendMessageW(FWin32List, FFlagGetText, Index, LPARAM(PWideChar(w)));
+    Result := UTF16ToUTF8(w);
   end;
 end;
 
@@ -235,17 +222,11 @@ begin
   FLastInsertedIndex := Index;
   if FSorted then
   begin
-    if UnicodeEnabledOS then
-      FLastInsertedIndex := Windows.SendMessageW(FWin32List, FFlagAddString, 0, LPARAM(PWideChar(UTF8ToUTF16(S))))
-    else
-      FLastInsertedIndex := Windows.SendMessage(FWin32List, FFlagAddString, 0, LPARAM(PChar(Utf8ToAnsi(S))));
+    FLastInsertedIndex := Windows.SendMessageW(FWin32List, FFlagAddString, 0, LPARAM(PWideChar(UTF8ToUTF16(S))));
   end
   else
   begin
-    if UnicodeEnabledOS then
-      Windows.SendMessageW(FWin32List, FFlagInsertString, Index, LPARAM(PWideChar(UTF8ToUTF16(S))))
-    else
-      Windows.SendMessage(FWin32List, FFlagInsertString, Index, LPARAM(PChar(Utf8ToAnsi(S))));
+    Windows.SendMessageW(FWin32List, FFlagInsertString, Index, LPARAM(PWideChar(UTF8ToUTF16(S))));
   end;
 
   if (FFlagSetCaretIndex <> 0) and (GetCount = 1) then

@@ -694,9 +694,7 @@ function TWin32WidgetSet.ClipboardRegisterFormat(const AMimeType: String
   ): TClipboardFormat;
 begin
   if AMimeType=PredefinedClipboardMimeTypes[pcfText] then
-    if UnicodeEnabledOS
-      then Result := Windows.CF_UNICODETEXT
-      else Result := Windows.CF_TEXT
+    Result := Windows.CF_UNICODETEXT
   else if (AMimeType=PredefinedClipboardMimeTypes[pcfBitmap]) then
     Result := Windows.CF_BITMAP
   else
@@ -840,24 +838,15 @@ begin
   TempLogFont := LogFont;
   if FontName = DefFontData.Name then
   begin
-    if UnicodeEnabledOS then
-      TempLogFontW.lfFaceName := UTF8ToUTF16(FMetrics.lfMessageFont.lfFaceName) // FMetrics must be UTF16
-    else
-      Move(FMetrics.lfMessageFont.lfFaceName, TempLogFont.lfFaceName, LF_FACESIZE);
+    TempLogFontW.lfFaceName := UTF8ToUTF16(FMetrics.lfMessageFont.lfFaceName); // FMetrics must be UTF16
     if TempLogFont.lfHeight = 0 then
       TempLogFont.lfHeight := FMetrics.lfMessageFont.lfHeight;
   end
   else
   begin
-  if UnicodeEnabledOS then
-    TempLogFontW.lfFaceName := UTF8ToUTF16(FontName)
-  else
-    TempLogFont.lfFaceName := Utf8ToAnsi(FontName);
+    TempLogFontW.lfFaceName := UTF8ToUTF16(FontName);
   end;
-  if UnicodeEnabledOS then
-    Result := Windows.CreateFontIndirectW(@TempLogFontW)
-  else
-    Result := Windows.CreateFontIndirectA(@TempLogFont)
+  Result := Windows.CreateFontIndirectW(@TempLogFontW);
 end;
 
 {------------------------------------------------------------------------------
@@ -1117,18 +1106,10 @@ begin
     move(str^, PChar(s)^, count);
   end;
   // the length of utf8 vs Wide/Ansi the strings differ, so recalc.
-  if UnicodeEnabledOS then
-  begin
-    W := UTF8ToUTF16(s);
-    len := Length(W);
-    Result := Windows.DrawTextW(DC, PWideChar(W), len, @Rect, Flags);
-  end
-  else
-  begin
-    S := Utf8ToAnsi(S);
-    len := Length(S);
-    Result := Windows.DrawText(DC, PChar(S), len, @Rect, Flags);
-  end;
+  W := UTF8ToUTF16(s);
+  len := Length(W);
+  Result := Windows.DrawTextW(DC, PWideChar(W), len, @Rect, Flags);
+
 
   // Theoretically, we need to augment the returned rect by the text overhang
   // The overhang is returned in the abcC field as documented in the
@@ -1152,10 +1133,7 @@ begin
     begin
 
       paABC := @aABC;
-      if UnicodeEnabledOS then
-        res := GetCharABCWidthsW(DC, Uint(W[len]), Uint(W[len]), paABC)
-      else
-        res := GetCharABCWidthsA(DC, ord(s[len]), ord(s[len]), paABC);
+      res := GetCharABCWidthsW(DC, Uint(W[len]), Uint(W[len]), paABC);
 
      if res then
        Rect.Right := Rect.Right + Abs(aABC.abcC);
@@ -1302,18 +1280,9 @@ begin
   LFW.lfPitchAndFamily := lpLogFont^.lfPitchAndFamily;
   Rec.LParam := LParam;
   Rec.CallBack := CallBack;
-  if UnicodeEnabledOS then
-  begin
-    LFW.lfFaceName := UTF8ToUTF16(FontName);
-    Result := LongInt(Windows.EnumFontFamiliesExW(DC,
-      LFW, windows.FontEnumExProc(@EnumExProcRedirW), Windows.LParam(@Rec), Flags));
-  end
-  else
-  begin
-    LFA.lfFaceName := Utf8ToAnsi(FontName);
-    Result := LongInt(Windows.EnumFontFamiliesExA(DC,
-      LFA, windows.FontEnumExProc(@EnumExProcRedirA), Windows.LParam(@Rec), Flags));
-  end;
+  LFW.lfFaceName := UTF8ToUTF16(FontName);
+  Result := LongInt(Windows.EnumFontFamiliesExW(DC,
+    LFW, windows.FontEnumExProc(@EnumExProcRedirW), Windows.LParam(@Rec), Flags));
 end;
 
 {------------------------------------------------------------------------------
@@ -1390,18 +1359,9 @@ begin
     move(str^, PChar(s)^, count);
   end;
   // the length of utf8 vs Wide/Ansi the strings differ, so recalc.
-  if UnicodeEnabledOS 
-  then
-  begin
-    // TODO: use the real number of chars (and not the lenght)
-    W := UTF8ToUTF16(S);
-    Result := Windows.ExtTextOutW(DC, X, Y, Options, LPRECT(Rect), PWideChar(W), Length(W), Dx);
-  end                                        
-  else
-  begin
-    S := Utf8ToAnsi(S);
-    Result := Windows.ExtTextOut(DC, X, Y, Options, LPRECT(Rect), PChar(S), Length(S), Dx);
-  end;
+  // TODO: use the real number of chars (and not the lenght)
+  W := UTF8ToUTF16(S);
+  Result := Windows.ExtTextOutW(DC, X, Y, Options, LPRECT(Rect), PWideChar(W), Length(W), Dx);
 end;
 
 {------------------------------------------------------------------------------
@@ -1883,19 +1843,12 @@ var
 begin
   if (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfoEx)) then
   begin
-    if UnicodeEnabledOS then
-    begin
-      LocalInfo.cbSize := SizeOf(TMonitorInfoExW);
-      Result := MultiMon.GetMonitorInfo(hMonitor, @LocalInfo);
-      lpmi^.rcMonitor := LocalInfo.rcMonitor;
-      lpmi^.rcWork := LocalInfo.rcWork;
-      lpmi^.dwFlags := LocalInfo.dwFlags;
-      PMonitorInfoEx(lpmi)^.szDevice := UTF16ToUTF8(LocalInfo.szDevice);
-    end
-    else begin
-      PMonitorInfoEx(lpmi)^.szDevice := AnsiToUtf8(PMonitorInfoEx(lpmi)^.szDevice);
-      Result := True;
-    end;
+    LocalInfo.cbSize := SizeOf(TMonitorInfoExW);
+    Result := MultiMon.GetMonitorInfo(hMonitor, @LocalInfo);
+    lpmi^.rcMonitor := LocalInfo.rcMonitor;
+    lpmi^.rcWork := LocalInfo.rcWork;
+    lpmi^.dwFlags := LocalInfo.dwFlags;
+    PMonitorInfoEx(lpmi)^.szDevice := UTF16ToUTF8(LocalInfo.szDevice);
   end
   else
     Result := MultiMon.GetMonitorInfo(hMonitor, LPMonitorInfo(lpmi));
@@ -1917,7 +1870,7 @@ var
 begin
   if GetObjectType(GDIObj) = OBJ_FONT then
   begin
-    if (UnicodeEnabledOS) and (BufSize = Sizeof(LOGFONTA)) then
+    if (BufSize = Sizeof(LOGFONTA)) then
     begin
       BufSize := SizeOf(LogFontW);
       Result := Windows.GetObjectW(GDIObj, BufSize, @LFW);
@@ -2096,19 +2049,10 @@ begin
     move(str^, PChar(LCLStr)^, count);
   end;
   // the length of utf8 vs Wide/Ansi the strings differ, so recalc.
-  if UnicodeEnabledOS then
-  begin
-    // TODO: use the real number of chars (and not the length)
-    w := UTF8ToUTF16(LCLStr);
-    Result := Windows.GetTextExtentExPointW(DC, PWideChar(W), Length(W),
-      MaxWidth, MaxCount, PartialWidths, Size);
-  end
-  else
-  begin
-    s := Utf8ToAnsi(LCLStr);
-    Result := Windows.GetTextExtentExPoint(DC, pchar(s), length(s),
-      MaxWidth, MaxCount, PartialWidths, Size);
-  end;
+  // TODO: use the real number of chars (and not the length)
+  w := UTF8ToUTF16(LCLStr);
+  Result := Windows.GetTextExtentExPointW(DC, PWideChar(W), Length(W),
+    MaxWidth, MaxCount, PartialWidths, Size);
 end;
 
 {------------------------------------------------------------------------------
@@ -2136,19 +2080,9 @@ begin
     move(str^, PChar(s)^, count);
   end;
   // the length of utf8 vs Wide/Ansi the strings differ, so recalc.
-  if UnicodeEnabledOS then
-  begin
-    // TODO: use the real number of chars (and not the length)
-    w := UTF8ToUTF16(S);
-    Result := Windows.GetTextExtentPoint32W(DC, PWideChar(W), Length(W), @Size);
-  end else
-  begin
-    // Important: Althougth the MSDN Docs point that GetTextExtentPoint32W
-    // works under Windows 9x, tests showed that this function produces
-    // a wrong output
-    s := Utf8ToAnsi(s);
-    Result := Windows.GetTextExtentPoint32(DC, pchar(s), length(s), @Size);
-  end;
+  // TODO: use the real number of chars (and not the length)
+  w := UTF8ToUTF16(S);
+  Result := Windows.GetTextExtentPoint32W(DC, PWideChar(W), Length(W), @Size);
 end;
 
 {------------------------------------------------------------------------------
@@ -2189,10 +2123,7 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.GetWindowLong(Handle: HWND; Int: Integer): PtrInt;
 begin
-  if UnicodeEnabledOS then
-    Result := Windows.GetWindowLongPtrW(Handle, int)
-  else
-    Result := Windows.GetWindowLongPtr(Handle, int);
+  Result := Windows.GetWindowLongPtrW(Handle, int);
 end;
 
 {------------------------------------------------------------------------------
@@ -2644,10 +2575,7 @@ end;
 function TWin32WidgetSet.PeekMessage(var LPMsg: TMsg; Handle: HWND;
   WMsgFilterMin, WMsgFilterMax, WRemoveMsg: UINT): Boolean;
 begin
-    if UnicodeEnabledOS then
-      Result := Boolean(Windows.PeekMessageW(@LPMsg, Handle, WMsgFilterMin, WMsgFilterMax, WRemoveMsg))
-    else
-      Result := Boolean(Windows.PeekMessage(@LPMsg, Handle, WMsgFilterMin, WMsgFilterMax, WRemoveMsg));
+  Result := Boolean(Windows.PeekMessageW(@LPMsg, Handle, WMsgFilterMin, WMsgFilterMax, WRemoveMsg));
 end;
 
 function TWin32WidgetSet.Pie(DC: HDC; EllipseX1, EllipseY1, EllipseX2,
@@ -3325,10 +3253,7 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.SetWindowLong(Handle: HWND; Idx: Integer; NewLong: PtrInt): PtrInt;
 begin
-  if UnicodeEnabledOS then
-    Result := Windows.SetWindowLongPtrW(Handle, Idx, NewLong)
-  else
-    Result := Windows.SetWindowLongPtr(Handle, Idx, NewLong);
+  Result := Windows.SetWindowLongPtrW(Handle, Idx, NewLong);
 end;
 
 {------------------------------------------------------------------------------

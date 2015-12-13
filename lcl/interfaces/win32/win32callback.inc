@@ -81,9 +81,7 @@ begin
   PrevWndProc := GetWin32WindowInfo(Window)^.DefWndProc;
   if (PrevWndProc = nil) or (PrevWndProc = @WindowProc) // <- prevent recursion
   then begin
-    if UnicodeEnabledOS
-    then Result := Windows.DefWindowProcW(Window, Msg, WParam, LParam)
-    else Result := Windows.DefWindowProc(Window, Msg, WParam, LParam)
+    Result := Windows.DefWindowProcW(Window, Msg, WParam, LParam)
   end
   else begin
     // combobox child edit weirdness: combobox handling WM_SIZE will compare text
@@ -96,10 +94,7 @@ begin
         IsComboboxAndHasEdit(Window);
     if setComboWindow then
       ComboBoxHandleSizeWindow := Window;
-    if UnicodeEnabledOS then
-      Result := Windows.CallWindowProcW(PrevWndProc, Window, Msg, WParam, LParam)
-    else
-      Result := Windows.CallWindowProc(PrevWndProc, Window, Msg, WParam, LParam);
+    Result := Windows.CallWindowProcW(PrevWndProc, Window, Msg, WParam, LParam);
     if setComboWindow then
       ComboBoxHandleSizeWindow := 0;
   end;
@@ -1041,22 +1036,11 @@ begin
     SetLength(Files, C);
     for I := 0 to C - 1 do
     begin
-      if UnicodeEnabledOS then
-      begin
-        L := DragQueryFileW(Drop, I, nil, 0); // get I. file name length
-        SetLength(WideBuffer, L);
-        L := DragQueryFileW(Drop, I, @WideBuffer[1], L + 1);
-        SetLength(WideBuffer, L);
-        Files[I] := UTF16ToUTF8(WideBuffer);
-      end
-      else
-      begin
-        L := DragQueryFile(Drop, I, nil, 0); // get I. file name length
-        SetLength(AnsiBuffer, L);
-        L := DragQueryFile(Drop, I, @AnsiBuffer[1], L + 1);
-        SetLength(WideBuffer, L);
-        Files[I] := ANSIToUTF8(AnsiBuffer);
-      end;
+      L := DragQueryFileW(Drop, I, nil, 0); // get I. file name length
+      SetLength(WideBuffer, L);
+      L := DragQueryFileW(Drop, I, @WideBuffer[1], L + 1);
+      SetLength(WideBuffer, L);
+      Files[I] := UTF16ToUTF8(WideBuffer);
     end;
 
     if Length(Files) > 0 then
@@ -1200,10 +1184,7 @@ begin
     begin
       Msg := CN_CHAR;
       KeyData := LParam;
-      if UnicodeEnabledOS then
-        CharCode := Word(Char(WideChar(WParam)))
-      else
-        CharCode := Word(WParam);
+      CharCode := Word(Char(WideChar(WParam)));
       OrgCharCode := CharCode;
       WinResult := 0;
     end;
@@ -2435,16 +2416,11 @@ begin
     begin
       // if key not yet processed, let windows process it
       WinProcess := LMChar.Result = 0;
-      if UnicodeEnabledOS then
-      begin
-        // if charcode was modified by LCL, convert ansi char
-        // to unicode char, if not change was made WParam has
-        // the right unicode char so just use it.
-        if (LMChar.Result = 1) or (OrgCharCode <> LMChar.CharCode) then
-          WParam := Word(WideChar(LMChar.CharCode));
-      end
-      else
-        WParam := LMChar.CharCode;
+      // if charcode was modified by LCL, convert ansi char
+      // to unicode char, if not change was made WParam has
+      // the right unicode char so just use it.
+      if (LMChar.Result = 1) or (OrgCharCode <> LMChar.CharCode) then
+        WParam := Word(WideChar(LMChar.CharCode));
     end;
 
     CN_KEYDOWN, CN_KEYUP, CN_SYSKEYDOWN, CN_SYSKEYUP:
@@ -2678,9 +2654,7 @@ begin
       end;
     end;
   else
-    if UnicodeEnabledOS
-    then Result := Windows.DefWindowProcW(Window, Msg, WParam, LParam)
-    else Result := Windows.DefWindowProc(Window, Msg, WParam, LParam);
+    Result := Windows.DefWindowProcW(Window, Msg, WParam, LParam)
   end;
 end;
 

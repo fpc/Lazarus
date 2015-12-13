@@ -160,46 +160,26 @@ var
   AnsiBuffer: ansistring;
   WideBuffer: widestring;
 begin
-  if UnicodeEnabledOS then
+  // Fill TNotifyIconDataW
+  FillChar(tnidw, SizeOf(tnidw), 0);
+  tnidw.cbSize := SizeOf(tnidw);
+  tnidw.hWnd := ATrayIcon.Handle;
+  tnidw.uID := uIDTrayIcon;
+  tnidw.uFlags := NIF_MESSAGE or NIF_ICON;
+  if (ATrayIcon.Hint <> '') then tnidw.uFlags := tnidw.uFlags or NIF_TIP;
+  tnidw.uCallbackMessage := WM_USER + uIDTrayIcon;
+  tnidw.hIcon := ATrayIcon.Icon.Handle;
+
+  WideBuffer := UTF8ToUTF16(ATrayIcon.Hint);
+  WideStrLCopy(@tnidw.szTip, PWideChar(WideBuffer), 127);
+
+  Result := Shell_NotifyIconW(NIM_ADD, @tnidw);
+  if not Result then
   begin
-    // Fill TNotifyIconDataW
-    FillChar(tnidw, SizeOf(tnidw), 0);
-    tnidw.cbSize := SizeOf(tnidw);
-    tnidw.hWnd := ATrayIcon.Handle;
-    tnidw.uID := uIDTrayIcon;
-    tnidw.uFlags := NIF_MESSAGE or NIF_ICON;
-    if (ATrayIcon.Hint <> '') then tnidw.uFlags := tnidw.uFlags or NIF_TIP;
-    tnidw.uCallbackMessage := WM_USER + uIDTrayIcon;
-    tnidw.hIcon := ATrayIcon.Icon.Handle;
-
-    WideBuffer := UTF8ToUTF16(ATrayIcon.Hint);
-    WideStrLCopy(@tnidw.szTip, PWideChar(WideBuffer), 127);
-
-    Result := Shell_NotifyIconW(NIM_ADD, @tnidw);
-    if not Result then
-    begin
-      // Try old version of TNotifyIconDataW
-      tnidw.cbSize := SizeOf(TNotifyIconDataW);
-      WideStrLCopy(@tnidw.szTip, PWideChar(WideBuffer), 63);
-      Result := Shell_NotifyIconW(NIM_MODIFY, @tnidw);
-    end;
-  end
-  else
-  begin
-    // Fill TNotifyIconDataA
-    FillChar(tnida, SizeOf(tnida), 0);
-    tnida.cbSize := SizeOf(TNotifyIconDataA);
-    tnida.hWnd := ATrayIcon.Handle;
-    tnida.uID := uIDTrayIcon;
-    tnida.uFlags := NIF_MESSAGE or NIF_ICON;
-    if (ATrayIcon.Hint <> '') then tnida.uFlags := tnida.uFlags or NIF_TIP;
-    tnida.uCallbackMessage := WM_USER + uIDTrayIcon;
-    tnida.hIcon := ATrayIcon.Icon.Handle;
-
-    AnsiBuffer := UTF8ToAnsi(ATrayIcon.Hint);
-    StrLCopy(@tnida.szTip, PChar(AnsiBuffer), 127);
-
-    Result := Shell_NotifyIconA(NIM_ADD, @tnida);
+    // Try old version of TNotifyIconDataW
+    tnidw.cbSize := SizeOf(TNotifyIconDataW);
+    WideStrLCopy(@tnidw.szTip, PWideChar(WideBuffer), 63);
+    Result := Shell_NotifyIconW(NIM_MODIFY, @tnidw);
   end;
 end;
 
@@ -293,41 +273,23 @@ var
   AnsiBuffer: ansistring;
   WideBuffer: widestring;
 begin
-  if UnicodeEnabledOS then
+  // Fill TNotifyIconDataW
+  FillChar(tnidw, SizeOf(tnidw), 0);
+  tnidw.cbSize := SizeOf(tnidw);
+  tnidw.hWnd := ATrayIcon.Handle;
+  tnidw.uID := uIDTrayIcon;
+  tnidw.hIcon := ATrayIcon.Icon.Handle;
+  tnidw.uFlags := NIF_TIP or NIF_ICON;
+
+  WideBuffer := UTF8ToUTF16(ATrayIcon.Hint);
+  WideStrLCopy(@tnidw.szTip, PWideChar(WideBuffer), 127);
+
+  if not Shell_NotifyIconW(NIM_MODIFY, @tnidw) then
   begin
-    // Fill TNotifyIconDataW
-    FillChar(tnidw, SizeOf(tnidw), 0);
-    tnidw.cbSize := SizeOf(tnidw);
-    tnidw.hWnd := ATrayIcon.Handle;
-    tnidw.uID := uIDTrayIcon;
-    tnidw.hIcon := ATrayIcon.Icon.Handle;
-    tnidw.uFlags := NIF_TIP or NIF_ICON;
-
-    WideBuffer := UTF8ToUTF16(ATrayIcon.Hint);
-    WideStrLCopy(@tnidw.szTip, PWideChar(WideBuffer), 127);
-
-    if not Shell_NotifyIconW(NIM_MODIFY, @tnidw) then
-    begin
-      // Try old version of TNotifyIconDataW
-      tnidw.cbSize := SizeOf(TNotifyIconDataW);
-      WideStrLCopy(@tnidw.szTip, PWideChar(WideBuffer), 63);
-      Shell_NotifyIconW(NIM_MODIFY, @tnidw);
-    end;
-  end
-  else
-  begin
-    // Fill TNotifyIconDataA
-    FillChar(tnida, SizeOf(tnida), 0);
-    tnida.cbSize := SizeOf(TNotifyIconDataA);
-    tnida.hWnd := ATrayIcon.Handle;
-    tnida.uID := uIDTrayIcon;
-    tnida.hIcon := ATrayIcon.Icon.Handle;
-    tnida.uFlags := NIF_TIP or NIF_ICON;
-
-    AnsiBuffer := UTF8ToAnsi(ATrayIcon.Hint);
-    StrLCopy(@tnida.szTip, PChar(AnsiBuffer), 127);
-
-    Shell_NotifyIconA(NIM_MODIFY, @tnida);
+    // Try old version of TNotifyIconDataW
+    tnidw.cbSize := SizeOf(TNotifyIconDataW);
+    WideStrLCopy(@tnidw.szTip, PWideChar(WideBuffer), 63);
+    Shell_NotifyIconW(NIM_MODIFY, @tnidw);
   end;
 end;
 
@@ -347,9 +309,6 @@ var
   NotifyData: TNotifyIconDataW2;
   w: WideString;
 begin
-  Result := UnicodeEnabledOS;
-  if not Result then exit;
-
   NotifyData.cbSize:=SizeOf(NotifyData);
   NotifyData.hWnd := ATrayIcon.Handle;
   NotifyData.uID := uIDTrayIcon;

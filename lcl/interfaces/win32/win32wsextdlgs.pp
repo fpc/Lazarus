@@ -143,16 +143,8 @@ begin
      not (ofOldStyleDialog in TPreviewFileDialog(ACommonDialog).Options) then
     with OFN^ do
     begin
-      if UnicodeEnabledOS then
-      begin
-        lpTemplateName := AllocMem(Length(ResName) * 2 + 2);
-        Move(PChar(ResName)^, lpTemplateName^, Length(ResName) * 2);
-      end
-      else
-      begin
-        lpTemplateName := AllocMem(Length(ResName) + 1);
-        Move(PChar(AnsiString(ResName))^, lpTemplateName^, Length(ResName));
-      end;
+      lpTemplateName := AllocMem(Length(ResName) * 2 + 2);
+      Move(PChar(ResName)^, lpTemplateName^, Length(ResName) * 2);
       Flags := Flags or OFN_ENABLETEMPLATE;
       lpfnHook := LPOFNHOOKPROC(@OpenPictureDialogCallBack);
     end;

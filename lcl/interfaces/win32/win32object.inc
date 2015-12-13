@@ -82,18 +82,8 @@ begin
     {$endif}
     DestroyWindow(FAppHandle);
   end;
-
-  if UnicodeEnabledOS then
-  begin
-    Windows.UnregisterClassW(@ClsNameW, System.HInstance);
-    Windows.UnregisterClassW(@ClsHintNameW, System.HInstance);
-  end
-  else
-  begin
-    Windows.UnregisterClass(@ClsName, System.HInstance);
-    Windows.UnregisterClass(@ClsHintName, System.HInstance);
-  end;
-
+  Windows.UnregisterClassW(@ClsNameW, System.HInstance);
+  Windows.UnregisterClassW(@ClsHintNameW, System.HInstance);
   if FDefaultFont <> 0 then
     Windows.DeleteObject(FDefaultFont);
   inherited Destroy;
@@ -362,10 +352,7 @@ begin
           break;
         end;
         TranslateMessage(@AMessage);
-        if UnicodeEnabledOS then
-          DispatchMessageW(@AMessage)
-        else
-          DispatchMessage(@AMessage);
+        DispatchMessageW(@AMessage);
       end;
     end else
     if retVal = WAIT_TIMEOUT then
@@ -468,10 +455,7 @@ procedure TWin32WidgetSet.AppSetTitle(const ATitle: string);
 begin
   if FAppHandle <> 0 then
   begin
-    if UnicodeEnabledOS then
-      Windows.SetWindowTextW(FAppHandle, PWideChar(UTF8ToUTF16(ATitle)))
-    else
-      Windows.SetWindowText(FAppHandle, PChar(Utf8ToAnsi(ATitle)));
+    Windows.SetWindowTextW(FAppHandle, PWideChar(UTF8ToUTF16(ATitle)));
   end;
 end;
 
@@ -604,68 +588,34 @@ var
   WindowClass: WndClass;
   WindowClassW: WndClassW;
 begin
-  if UnicodeEnabledOS then
+  with WindowClassW do
+  begin
+    Style := CS_DBLCLKS;
+    LPFnWndProc := @WindowProc;
+    CbClsExtra := 0;
+    CbWndExtra := 0;
+    hInstance := System.HInstance;
+    hIcon := Windows.LoadIcon(MainInstance, 'MAINICON');
+    if hIcon = 0 then
+     hIcon := Windows.LoadIcon(0, IDI_APPLICATION);
+    hCursor := Windows.LoadCursor(0, IDC_ARROW);
+    hbrBackground := 0;
+    LPSzMenuName := nil;
+    LPSzClassName := @ClsNameW;
+  end;
+  Result := Windows.RegisterClassW(@WindowClassW) <> 0;
+  if Result then
   begin
     with WindowClassW do
     begin
-      Style := CS_DBLCLKS;
-      LPFnWndProc := @WindowProc;
-      CbClsExtra := 0;
-      CbWndExtra := 0;
-      hInstance := System.HInstance;
-      hIcon := Windows.LoadIcon(MainInstance, 'MAINICON');
-      if hIcon = 0 then
-       hIcon := Windows.LoadIcon(0, IDI_APPLICATION);
-      hCursor := Windows.LoadCursor(0, IDC_ARROW);
+      style := style or CS_SAVEBITS;
+      if WindowsVersion >= wvXP then
+        style := style or CS_DROPSHADOW;
+      hIcon := 0;
       hbrBackground := 0;
-      LPSzMenuName := nil;
-      LPSzClassName := @ClsNameW;
+      LPSzClassName := @ClsHintNameW;
     end;
     Result := Windows.RegisterClassW(@WindowClassW) <> 0;
-    if Result then
-    begin
-      with WindowClassW do
-      begin
-        style := style or CS_SAVEBITS;
-        if WindowsVersion >= wvXP then
-          style := style or CS_DROPSHADOW;
-        hIcon := 0;
-        hbrBackground := 0;
-        LPSzClassName := @ClsHintNameW;
-      end;
-      Result := Windows.RegisterClassW(@WindowClassW) <> 0;
-    end;
-  end
-  else begin
-    with WindowClass do
-    begin
-      Style := CS_DBLCLKS{CS_HRedraw or CS_VRedraw};
-      LPFnWndProc := @WindowProc;
-      CbClsExtra := 0;
-      CbWndExtra := 0;
-      hInstance := System.HInstance;
-      hIcon := Windows.LoadIcon(MainInstance, 'MAINICON');
-      if hIcon = 0 then
-       hIcon := Windows.LoadIcon(0, IDI_APPLICATION);
-      hCursor := Windows.LoadCursor(0, IDC_ARROW);
-      hbrBackground := 0;
-      LPSzMenuName := nil;
-      LPSzClassName := @ClsName; 
-    end;
-    Result := Windows.RegisterClass(@WindowClass) <> 0;
-    if Result then
-    begin
-      with WindowClass do
-      begin
-        style := style or CS_SAVEBITS;
-        if WindowsVersion >= wvXP then
-          style := style or CS_DROPSHADOW;
-        hIcon := 0;
-        hbrBackground := 0;
-        LPSzClassName := @ClsHintName;
-      end;
-      Result := Windows.RegisterClass(@WindowClass) <> 0;
-    end;
   end;
 end;
 
@@ -673,19 +623,12 @@ procedure TWin32WidgetSet.CreateAppHandle;
 var
   SysMenu: HMENU;
 begin
-  if UnicodeEnabledOS then
-    FAppHandle := CreateWindowW(@ClsNameW,
-      PWideChar(UTF8ToUTF16(Application.Title)),
-      WS_POPUP or WS_CLIPSIBLINGS or WS_SYSMENU or WS_MINIMIZEBOX,
-      0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
-      0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
-      0, 0, HWND(nil), HMENU(nil), HInstance, nil)
-  else
-    FAppHandle := CreateWindow(@ClsName, PChar(Utf8ToAnsi(Application.Title)),
-      WS_POPUP or WS_CLIPSIBLINGS or WS_SYSMENU or WS_MINIMIZEBOX,
-      0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
-      0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
-      0, 0, HWND(nil), HMENU(nil), HInstance, nil);
+  FAppHandle := CreateWindowW(@ClsNameW,
+    PWideChar(UTF8ToUTF16(Application.Title)),
+    WS_POPUP or WS_CLIPSIBLINGS or WS_SYSMENU or WS_MINIMIZEBOX,
+    0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
+    0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
+    0, 0, HWND(nil), HMENU(nil), HInstance, nil);
   AllocWindowInfo(FAppHandle);
   // remove useless menuitems from sysmenu
   SysMenu := Windows.GetSystemMenu(FAppHandle, False);

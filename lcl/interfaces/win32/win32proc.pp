@@ -160,8 +160,6 @@ var
   DefaultWindowInfo: TWin32WindowInfo;
   WindowInfoAtom: ATOM;
   ChangedMenus: TFPList; // list of HWNDs which menus needs to be redrawn
-  UnicodeEnabledOS: Boolean = False;
-
   WindowsVersion: TWindowsVersion = wvUnknown;
 
 
@@ -1044,24 +1042,12 @@ var
   AnsiBuffer: string;
   WideBuffer: WideString;
 begin
-  if UnicodeEnabledOS then
-  begin
-    TextLen := Windows.GetWindowTextLengthW(AHandle);
-    SetLength(WideBuffer, TextLen);
-    if TextLen > 0 // Never give Windows the chance to write to System.emptychar
-    then TextLen := Windows.GetWindowTextW(AHandle, PWideChar(WideBuffer), TextLen + 1);
-    SetLength(WideBuffer, TextLen);
-    Result := UTF16ToUTF8(WideBuffer);
-  end
-  else
-  begin
-    TextLen := Windows.GetWindowTextLength(AHandle);
-    SetLength(AnsiBuffer, TextLen);
-    if TextLen > 0 // Never give Windows the chance to write to System.emptychar
-    then TextLen := Windows.GetWindowText(AHandle, PTChar(AnsiBuffer), TextLen + 1);
-    SetLength(AnsiBuffer, TextLen);
-    Result := AnsiToUtf8(AnsiBuffer);
-  end;
+  TextLen := Windows.GetWindowTextLengthW(AHandle);
+  SetLength(WideBuffer, TextLen);
+  if TextLen > 0 // Never give Windows the chance to write to System.emptychar
+  then TextLen := Windows.GetWindowTextW(AHandle, PWideChar(WideBuffer), TextLen + 1);
+  SetLength(WideBuffer, TextLen);
+  Result := UTF16ToUTF8(WideBuffer);
 end;
 
 procedure FillRawImageDescriptionColors(var ADesc: TRawImageDescription);
@@ -1653,7 +1639,7 @@ begin
   DefaultWindowInfo.DrawItemIndex := -1;
   WindowInfoAtom := Windows.GlobalAddAtom('WindowInfo');
   ChangedMenus := TFPList.Create;
-  UnicodeEnabledOS := (Win32Platform = VER_PLATFORM_WIN32_NT);
+  //UnicodeEnabledOS := (Win32Platform = VER_PLATFORM_WIN32_NT);
   if WindowsVersion = wvUnknown then
     UpdateWindowsVersion;
 end;

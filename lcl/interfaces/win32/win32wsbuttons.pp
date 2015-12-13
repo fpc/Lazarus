@@ -251,15 +251,8 @@ var
       SetBkMode(TmpDC, TRANSPARENT);
       if BitBtn.UseRightToLeftReading then
         SetTextAlign(TmpDC, OldTextAlign or TA_RTLREADING);
-      if UnicodeEnabledOS then
-      begin
-        ButtonCaptionW := UTF8ToUTF16(ButtonCaption);
-        DrawStateW(TmpDC, 0, nil, LPARAM(ButtonCaptionW), 0, XDestText, YDestText, 0, 0, TextFlags);
-      end
-      else begin
-        ButtonCaptionA := Utf8ToAnsi(ButtonCaption);
-        DrawState(TmpDC, 0, nil, LPARAM(ButtonCaptionA), 0, XDestText, YDestText, 0, 0, TextFlags);
-      end;
+      ButtonCaptionW := UTF8ToUTF16(ButtonCaption);
+      DrawStateW(TmpDC, 0, nil, LPARAM(ButtonCaptionW), 0, XDestText, YDestText, 0, 0, TextFlags);
     end
     else
     begin
