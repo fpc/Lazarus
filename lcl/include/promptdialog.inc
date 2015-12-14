@@ -924,41 +924,52 @@ begin
         end;
 
         // get options
-        CurOptions := '';
-        IsDefault := False;
-        IsCancel := False;
-        if (i <= High(Buttons)) then
+        if (SysUtils.CompareText(CurBtnCaption,'isdefault')=0)
+        or (SysUtils.CompareText(CurBtnCaption,'iscancel')=0) then
         begin
           HasOptions := True;
-          case Buttons[i].VType of
-            vtString: CurOptions := Buttons[i].VString^;
-            vtAnsiString: CurOptions := AnsiString(Buttons[i].VAnsiString);
-            vtChar: CurOptions := Buttons[i].VChar;
-            vtPChar: CurOptions := Buttons[i].VPChar;
-            vtPWideChar: CurOptions := Buttons[i].VPWideChar;
-            vtWideChar: CurOptions := AnsiString(Buttons[i].VWideChar);
-            vtWidestring: CurOptions := AnsiString(WideString(Buttons[i].VWideString));
-          else
-            HasOptions := False;
-          end;
-          if HasOptions then
+          CurOptions := CurBtnCaption;
+          CurBtnCaption := '';
+        end else
+        begin
+          CurOptions := '';
+          HasOptions := False;
+          if (i <= High(Buttons)) then
           begin
-            if SysUtils.CompareText(CurOptions,'isdefault')=0 then
-            begin
-              if DialogButtons.DefaultButton <> nil then
-                raise Exception.Create('TQuestionDlg.CreateQuestionDlg only one button can be default');
-              IsDefault := True;
-            end else
-            if SysUtils.CompareText(CurOptions,'iscancel')=0 then
-            begin
-              if DialogButtons.CancelButton <> nil then
-                raise Exception.Create('TQuestionDlg.CreateQuestionDlg only one button can be cancel');
-              IsCancel := True;
-            end else
-              raise Exception.Create('TQuestionDlg.CreateQuestionDlg option expected at '
-                +IntToStr(i)+' but "'+CurOptions+'" found.');
+            HasOptions := True;
+            case Buttons[i].VType of
+              vtString: CurOptions := Buttons[i].VString^;
+              vtAnsiString: CurOptions := AnsiString(Buttons[i].VAnsiString);
+              vtChar: CurOptions := Buttons[i].VChar;
+              vtPChar: CurOptions := Buttons[i].VPChar;
+              vtPWideChar: CurOptions := Buttons[i].VPWideChar;
+              vtWideChar: CurOptions := AnsiString(Buttons[i].VWideChar);
+              vtWidestring: CurOptions := AnsiString(WideString(Buttons[i].VWideString));
+            else
+              HasOptions := False;
+              dec(i); // prevent the following inc(i)
+            end;
             inc(i);
           end;
+        end;
+        IsDefault := False;
+        IsCancel := False;
+        if HasOptions then
+        begin
+          if SysUtils.CompareText(CurOptions,'isdefault')=0 then
+          begin
+            if DialogButtons.DefaultButton <> nil then
+              raise Exception.Create('TQuestionDlg.CreateQuestionDlg only one button can be default');
+            IsDefault := True;
+          end else
+          if SysUtils.CompareText(CurOptions,'iscancel')=0 then
+          begin
+            if DialogButtons.CancelButton <> nil then
+              raise Exception.Create('TQuestionDlg.CreateQuestionDlg only one button can be cancel');
+            IsCancel := True;
+          end else
+            raise Exception.Create('TQuestionDlg.CreateQuestionDlg option expected at '
+              +IntToStr(i)+' but "'+CurOptions+'" found.');
         end;
 
         if CurBtnCaption = '' then
