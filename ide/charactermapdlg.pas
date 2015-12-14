@@ -64,9 +64,9 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure StringGrid1SelectCell(Sender: TObject; aCol, aRow: Integer;
-      var CanSelect: Boolean);
+      var {%H-}CanSelect: Boolean);
     procedure StringGrid2SelectCell(Sender: TObject; aCol, aRow: Integer;
-      var CanSelect: Boolean);
+      var {%H-}CanSelect: Boolean);
     procedure StringGridKeyPress(Sender: TObject; var Key: char);
     procedure StringGridMouseDown(Sender: TObject; Button: TMouseButton;
       {%H-}Shift: TShiftState; X, Y: Integer);
