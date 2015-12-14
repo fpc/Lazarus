@@ -621,107 +621,117 @@ var
   end;
 
 begin
-  FillChar(TextStyle, SizeOf(TTextStyle), 0);
+  BeginAutoSizing;
+  try
+    FillChar(TextStyle, SizeOf(TTextStyle), 0);
 
-  with TextStyle do
-  begin
-    Clipping   := True;
-    Wordbreak  := True;
-    SystemFont := True;
-    Opaque     := False;
-  end;
-
-  // calculate the width & height we need to display the Message
-  if MessageTxt = '' then
-    MessageTxt := '   ';
-  TextBox := Rect(0, 0, Screen.Width div 2, Screen.Height);
-  Flags := DT_CalcRect or DT_WordBreak;
-  SelectObject(Canvas.Handle, Screen.SystemFont.Reference.Handle);
-  DrawText(Canvas.Handle, PChar(MessageTxt), Length(MessageTxt), TextBox, Flags);
-
-  MaxHeight:=200;//Min(Screen.Height-100,(Screen.Height*4) div 5);
-  if TextBox.Bottom>MaxHeight then
-  begin
-    // does not fit onto the screen => use a TMemo
-    TextBox.Bottom:=MaxHeight;
-    if FMsgMemo=nil then
+    with TextStyle do
     begin
-      FMsgMemo:=TMemo.Create(Self);
-      with FMsgMemo do
+      Clipping   := True;
+      Wordbreak  := True;
+      SystemFont := True;
+      Opaque     := False;
+    end;
+
+    // calculate the width & height we need to display the Message
+    if MessageTxt = '' then
+      MessageTxt := '   ';
+    TextBox := Rect(0, 0, Screen.Width div 2, Screen.Height);
+    Flags := DT_CalcRect or DT_WordBreak;
+    SelectObject(Canvas.Handle, Screen.SystemFont.Reference.Handle);
+    DrawText(Canvas.Handle, PChar(MessageTxt), Length(MessageTxt), TextBox, Flags);
+
+    MaxHeight:=200;//Min(Screen.Height-100,(Screen.Height*4) div 5);
+    if TextBox.Bottom>MaxHeight then
+    begin
+      // does not fit onto the screen => use a TMemo
+      TextBox.Bottom:=MaxHeight;
+      if FMsgMemo=nil then
       begin
-        WordWrap:=true;
-        ReadOnly:=true;
-        ScrollBars:=ssAutoBoth;
-        Text:=MessageTxt;
-        Parent:=Self;
+        FMsgMemo:=TMemo.Create(Self);
+        with FMsgMemo do
+        begin
+          WordWrap:=true;
+          ReadOnly:=true;
+          ScrollBars:=ssAutoBoth;
+          Text:=MessageTxt;
+          Anchors:=[akLeft,akTop,akRight,akBottom];
+          Parent:=Self;
+        end;
       end;
-    end;
-    FMsgMemo.Visible:=true;
-  end else if FMsgMemo<>nil then
-    FMsgMemo.Visible:=false;
-
-  // calculate the width we need to display the buttons
-  MinBtnWidth:=Max(25,MinimumDialogButtonWidth);
-  MinBtnHeight:=Max(15,MinimumDialogButtonHeight);
-  reqBtnWidth := 0;
-
-  if FButtons <> nil then
-    for i := 0 to FButtons.Count - 1 do
+      FMsgMemo.Visible:=true;
+      BorderStyle := bsSizeable;
+    end else if FMsgMemo<>nil then
     begin
-      CurButton := TBitBtn(FButtons[i]);
-      CurBtnSize:=GetButtonSize(CurButton);
-      if i > 0 then Inc(reqBtnWidth, cBtnDist);
-      Inc(reqBtnWidth, CurBtnSize.X);
+      FMsgMemo.Visible:=false;
+      BorderStyle := bsDialog;
     end;
 
-  // calculate the width of the dialog
-  if FBitmap <> nil then
-    cMinLeft := cLabelSpacing + max(20, FBitmap.Width) + cLabelSpacing
-  else
-    cMinLeft := cLabelSpacing;
-  reqWidth:= reqBtnWidth + 2 * cBtnDist;
-  if reqWidth < (TextBox.Right + cMinLeft + cLabelSpacing) then
-    reqWidth:= TextBox.Right + cMinLeft + cLabelSpacing;
-  ButtonLeft := ((reqWidth - reqBtnWidth) div 2);
+    // calculate the width we need to display the buttons
+    MinBtnWidth:=Max(25,MinimumDialogButtonWidth);
+    MinBtnHeight:=Max(15,MinimumDialogButtonHeight);
+    reqBtnWidth := 0;
 
-  // calculate the height of the dialog
-  reqHeight:= TextBox.Bottom;
-  if (FBitmap <> nil) and (FBitmap.Height > reqHeight) then
-    reqHeight := FBitmap.Height;
-  // ToDo: CurBtnSize may not be initialized.
-  inc(reqHeight, CurBtnSize.Y + 3 * cLabelSpacing);
+    if FButtons <> nil then
+      for i := 0 to FButtons.Count - 1 do
+      begin
+        CurButton := TBitBtn(FButtons[i]);
+        CurBtnSize:=GetButtonSize(CurButton);
+        if i > 0 then Inc(reqBtnWidth, cBtnDist);
+        Inc(reqBtnWidth, CurBtnSize.X);
+      end;
 
-  // calculate the text position
-  OffsetRect(TextBox,
-             ((reqWidth-cMinLeft-TextBox.Right-cLabelSpacing) div 2) + cMinLeft,
-             cLabelSpacing);
+    // calculate the width of the dialog
+    if FBitmap <> nil then
+      cMinLeft := cLabelSpacing + max(20, FBitmap.Width) + cLabelSpacing
+    else
+      cMinLeft := cLabelSpacing;
+    reqWidth:= reqBtnWidth + 2 * cBtnDist;
+    if reqWidth < (TextBox.Right + cMinLeft + cLabelSpacing) then
+      reqWidth:= TextBox.Right + cMinLeft + cLabelSpacing;
+    ButtonLeft := ((reqWidth - reqBtnWidth) div 2);
 
-  // calculate the icon position
-  if FBitmap <> nil then
-  begin
-    FBitmapX := cLabelSpacing;
-    FBitmapY := (reqHeight - CurBtnSize.Y - FBitmap.Height - cLabelSpacing) div 2;
+    // calculate the height of the dialog
+    reqHeight:= TextBox.Bottom;
+    if (FBitmap <> nil) and (FBitmap.Height > reqHeight) then
+      reqHeight := FBitmap.Height;
+    // ToDo: CurBtnSize may not be initialized.
+    inc(reqHeight, CurBtnSize.Y + 3 * cLabelSpacing);
+
+    // calculate the text position
+    OffsetRect(TextBox,
+               ((reqWidth-cMinLeft-TextBox.Right-cLabelSpacing) div 2) + cMinLeft,
+               cLabelSpacing);
+
+    // calculate the icon position
+    if FBitmap <> nil then
+    begin
+      FBitmapX := cLabelSpacing;
+      FBitmapY := (reqHeight - CurBtnSize.Y - FBitmap.Height - cLabelSpacing) div 2;
+    end;
+
+    // set size of form
+    SetBounds((Screen.Width - reqWidth-10) div 2, (Screen.Height - reqHeight-50) div 2,
+           reqWidth, reqHeight);
+
+    // position memo
+    if (FMsgMemo<>nil) and FMsgMemo.Visible then
+      FMsgMemo.BoundsRect:=TextBox;
+
+    // position buttons
+    CurBtnPos := ButtonLeft;
+    if FButtons <> nil then
+      for i := 0 to FButtons.Count-1 do
+      begin
+        CurButton := TBitBtn(Components[i]);
+        CurBtnSize := GetButtonSize(CurButton);
+        CurButton.SetBounds(CurBtnPos, ClientHeight - CurBtnSize.Y - cLabelSpacing,
+                            CurBtnSize.X, CurBtnSize.Y);
+        inc(CurBtnPos, CurButton.Width + cBtnDist);
+      end;
+  finally
+    EndAutoSizing;
   end;
-
-  // set size of form
-  SetBounds((Screen.Width - reqWidth-10) div 2, (Screen.Height - reqHeight-50) div 2,
-         reqWidth, reqHeight);
-
-  // position memo
-  if (FMsgMemo<>nil) and FMsgMemo.Visible then
-    FMsgMemo.BoundsRect:=TextBox;
-
-  // position buttons
-  CurBtnPos := ButtonLeft;
-  if FButtons <> nil then
-    for i := 0 to FButtons.Count-1 do
-    begin
-      CurButton := TBitBtn(Components[i]);
-      CurBtnSize := GetButtonSize(CurButton);
-      CurButton.SetBounds(CurBtnPos, ClientHeight - CurBtnSize.Y - cLabelSpacing,
-                          CurBtnSize.X, CurBtnSize.Y);
-      inc(CurBtnPos, CurButton.Width + cBtnDist);
-    end;
 end;
 
 function TQuestionDlg.ShowModal: TModalResult;
