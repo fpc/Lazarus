@@ -1985,6 +1985,9 @@ procedure TOICustomPropertyGrid.AddSubEditor(PropEditor:TPropertyEditor);
 var NewRow:TOIPropertyGridRow;
   NewIndex:integer;
 begin
+  if not EditorFilter(PropEditor) then
+    Exit;
+
   if PropEditor is TClassPropertyEditor then
     (PropEditor as TClassPropertyEditor).SubPropsTypeFilter := FFilter;
   if PropEditor is TClassPropertyEditor then
