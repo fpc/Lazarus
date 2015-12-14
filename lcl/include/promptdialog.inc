@@ -605,7 +605,8 @@ var
   CurBtnPos: Integer;
   CurBtnSize: TPoint;
   MinBtnWidth: Integer; // minimum width for a single button
-  MinBtnHeight, MaxHeight: Integer; // minimum height for a single button
+  MinBtnHeight, MaxHeight,
+    ScrollBarWidth: Integer; // minimum height for a single button
 
   function GetButtonSize(AButton: TBitBtn): TPoint;
   begin
@@ -659,6 +660,8 @@ begin
           Parent:=Self;
         end;
       end;
+      ScrollBarWidth:=LCLIntf.GetSystemMetrics(SM_CXVSCROLL);
+      inc(TextBox.Right,ScrollBarWidth);
       FMsgMemo.Visible:=true;
       BorderStyle := bsSizeable;
     end else if FMsgMemo<>nil then
