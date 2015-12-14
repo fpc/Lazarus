@@ -11637,6 +11637,7 @@ var
   Bmp: TBitmap;
   AIcon: QIconH;
   AOk: Boolean;
+  ASize: TSize;
 begin
 
   {do not set items during design time}
@@ -11675,6 +11676,13 @@ begin
         ImgList := TCustomListViewHack(LCLObject).SmallImages;
         if Assigned(ImgList) then
         begin
+          QListWidgetItem_sizeHint(item, @ASize);
+          if (ASize.cx <> ImgList.Width) or (ASize.cx <> ImgList.Height) then
+          begin
+            ASize.cx := ImgList.Width;
+            ASize.cy := ImgList.Height;
+            QListWidgetItem_setSizeHint(item, @ASize);
+          end;
           AImageIndex := TCustomListViewHack(LCLObject).Items[TopItem].ImageIndex;
           if (ImgList.Count > 0) and
             ((AImageIndex >= 0) and (AImageIndex < ImgList.Count)) then
@@ -13742,6 +13750,7 @@ var
   Bmp: TBitmap;
   AOk: Boolean;
   AIcon: QIconH;
+  ASize: TSize;
 begin
   {do not set items during design time}
   if csDesigning in LCLObject.ComponentState then
@@ -13773,7 +13782,6 @@ begin
 
         TopItem := getRow(item);
         RowHeight := getRowHeight(TopItem);
-
         if (TopItem < 0) or (TopItem > TCustomListViewHack(LCLObject).Items.Count - 1) then
           continue;
 
@@ -13798,6 +13806,13 @@ begin
           ImgList := TCustomListViewHack(LCLObject).SmallImages;
           if Assigned(ImgList) then
           begin
+            QTreeWidgetItem_sizeHint(item, @ASize, 0);
+            if (ASize.cx <> ImgList.Width) or (ASize.cx <> ImgList.Height) then
+            begin
+              ASize.cx := ImgList.Width;
+              ASize.cy := ImgList.Height;
+              QTreeWidgetItem_setSizeHint(item, 0, @ASize);
+            end;
             AImageIndex := TCustomListViewHack(LCLObject).Items[TopItem].ImageIndex;
             if (ImgList.Count > 0) and
               ((AImageIndex >= 0) and (AImageIndex < ImgList.Count)) then
