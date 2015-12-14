@@ -205,7 +205,11 @@ begin
 end;
 
 destructor TSVGPathTokenizer.Destroy;
+var
+  i: Integer;
 begin
+  for i:=Tokens.Count-1 downto 0 do
+    Tokens[i].Free;
   Tokens.Free;
 
   inherited Destroy;
@@ -905,6 +909,7 @@ function TvSVGVectorialReader.ReadSVGPenStyleWithKeyAndValue(AKey,
   AValue: string; ADestEntity: TvEntityWithPen): TvSetPenBrushAndFontElements;
 var
   OldAlpha: Word;
+  arr: TDoubleArray;
 begin
   Result := [];
   if AKey = 'stroke' then
@@ -937,6 +942,10 @@ begin
     'round':
     'square': ADestEntity.Pen;
     end;}
+  end
+  else if AKey = 'stroke-dasharray' then
+  begin
+    arr := ReadSpaceSeparatedFloats(AValue, ',');
   end;
 end;
 
@@ -1458,6 +1467,7 @@ begin
   lEntityName := LowerCase(ANode.NodeName);
   case lEntityName of
     'circle': Result := ReadCircleFromNode(ANode, AData, ADoc);
+    'defs': ReadDefsFromNode(ANode, AData, ADoc);
     'ellipse': Result := ReadEllipseFromNode(ANode, AData, ADoc);
     'frame': Result := ReadFrameFromNode(ANode, AData, ADoc);
     'g': ReadLayerFromNode(ANode, AData, ADoc);
