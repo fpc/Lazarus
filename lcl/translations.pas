@@ -175,8 +175,8 @@ type
     // used by pochecker /pohelper
   public
     procedure CheckFormatArguments;
-    procedure CleanUp; // removes previous ID from non-fuzzy entries
-                       // and badformat flags if appropriate
+    procedure CleanUp; { removes previous ID from non-fuzzy entries
+                         and badformat flags if appropriate }
     property PoName: String read FPoName;
     property PoRename: String write FPoName;
     property NrTranslated: Integer read FNrTranslated;
@@ -190,8 +190,8 @@ type
     property Count: Integer read GetCount;
     property Header: TPOFileItem read FHeader;
     property FormatChecked: boolean read FFormatChecked;
-
   end;
+
   EPOFileError = class(Exception)
   public
     ResFileName: string;
@@ -474,7 +474,7 @@ begin
       BasePOFile := TPOFile.Create;
     BasePOFile.Tag:=1;
 
-    // Update po file with lrt or/and rst RSTFiles
+    // Update po file with lrt,rst/rsj of RSTFiles
     for i:=0 to RSTFiles.Count-1 do begin
       Filename:=RSTFiles[i];
       if (CompareFileExt(Filename,'.lrt')=0) or
@@ -1205,7 +1205,7 @@ var
     end;
   end;
 
-  procedure UpdateFromRsj;
+  procedure UpdateFromRSJ;
   var
     Parser: TJSONParser;
     JsonItems, SourceBytes: TJSONArray;
@@ -1260,10 +1260,11 @@ begin
   ClearModuleList;
   UntagAll;
   if SType = stRsj then
-    UpdateFromRsj
+    // .rsj file
+    UpdateFromRSJ
   else
   begin
-    // for each string in lrt/rst list check if it's already in PO
+    // for each string in lrt/rst/rsj list check if it's already in PO
     // if not add it
     MultilinedValue := false;
     Value := '';
@@ -1278,14 +1279,14 @@ begin
         // empty line
       else
       if SType=stLrt then begin
-
+        // .lrt file
         p:=Pos('=',Line);
         Value :=copy(Line,p+1,n-p); //if p=0, that's OK, all the string
         Identifier:=copy(Line,1,p-1);
         UpdateItem(Identifier, Value);
 
       end else begin
-        // rst file
+        // .rst file
         if Line[1]='#' then begin
           // rst file: comment
 
