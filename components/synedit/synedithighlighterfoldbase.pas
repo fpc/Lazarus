@@ -1178,7 +1178,7 @@ begin
       act := act + FFoldConfig[PtrUInt(ABlockType)].FoldActions
     else
     if not BlockConfExists then
-      act := act + [sfaFold];
+      act := act + [sfaFold, sfaFoldFold];
     DoInitNode(nd, FinishingABlock, ABlockType, act, True);
   end
   else
@@ -1189,7 +1189,7 @@ begin
       act := act + FFoldConfig[PtrUInt(ABlockType)].FoldActions
     else
     if not BlockConfExists then
-      act := act + [sfaFold];
+      act := act + [sfaFold, sfaFoldFold];
     act := act - [sfaFoldFold, sfaFoldHide]; // it is closing tag
     DoInitNode(nd, FinishingABlock, ABlockType, act, LevelChanged);
   end;
