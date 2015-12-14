@@ -4347,7 +4347,7 @@ procedure TvText.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; A
   end;
 
 const
-  LINE_SPACING = 0.5;  // fraction of font height for line spacing
+  LINE_SPACING = 0.2;  // fraction of font height for line spacing
 var
   i: Integer;
   //
@@ -4374,7 +4374,7 @@ begin
   lLongestLine := 0;
   for i := 0 to Value.Count - 1 do
   begin
-    lLineWidth := ACanvas.TextWidth(Value.Strings[i]);
+    lLineWidth := ACanvas.TextWidth(Value.Strings[i]);   // contains multiplier
     if lLineWidth > lLongestLine then
       lLongestLine := lLineWidth;
   end;
@@ -4388,7 +4388,7 @@ begin
   // TvText supports multiple lines
   for i := 0 to Value.Count - 1 do
   begin
-    lFontSizePx := Font.Size;
+    lFontSizePx := Font.Size;        // is without multiplier!
     if lFontSizePx = 0 then lFontSizePx := 10;
 
     // We need to keep the order of lines drawing correct regardless of
@@ -6361,7 +6361,9 @@ procedure TvEntityWithSubEntities.Render(ADest: TFPCustomCanvas; var ARenderInfo
   ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double; ADoDraw: Boolean);
 var
   lEntity: TvEntity;
+  rinfo: TvRenderInfo;
 begin
+  rinfo := ARenderInfo;
   inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
   lEntity := GetFirstEntity();
   while lEntity <> nil do
@@ -6374,8 +6376,17 @@ begin
     // Render
     lEntity.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMuly, ADoDraw);
 
+    CalcEntityCanvasMinMaxXY_With2Points(rinfo,
+      ARenderInfo.EntityCanvasMinXY.X,
+      ARenderInfo.EntityCanvasMinXY.Y,
+      ARenderInfo.EntityCanvasMaxXY.X,
+      ARenderInfo.EntityCanvasMaxXY.Y
+    );
+
     lEntity := GetNextEntity();
   end;
+
+  ARenderInfo := rinfo;
 end;
 
 function TvEntityWithSubEntities.GenerateDebugTree(
