@@ -325,7 +325,7 @@ type
     procedure EndCodeFoldBlock(DecreaseLevel: Boolean = True); virtual;
     procedure CollectNodeInfo(FinishingABlock : Boolean; ABlockType: Pointer;
               LevelChanged: Boolean); virtual;
-    procedure DoInitNode(var Node: TSynFoldNodeInfo;
+    procedure DoInitNode(out Node: TSynFoldNodeInfo;
                        //EndOffs: Integer;
                        FinishingABlock: Boolean;
                        ABlockType: Pointer; aActions: TSynFoldActions;
@@ -1197,14 +1197,14 @@ begin
   FCollectingNodeInfoList.Add(nd);
 end;
 
-procedure TSynCustomFoldHighlighter.DoInitNode(var Node: TSynFoldNodeInfo;
+procedure TSynCustomFoldHighlighter.DoInitNode(out Node: TSynFoldNodeInfo;
   FinishingABlock: Boolean; ABlockType: Pointer;
   aActions: TSynFoldActions; AIsFold: Boolean);
 var
   OneLine: Boolean;
   EndOffs, i: Integer;
   nd: PSynFoldNodeInfo;
-  LogX1V: integer; //used for vertical line in nested color markup
+  //LogX1V: integer; //used for vertical line in nested color markup
   LogX1, LogX2: Integer;
 
 begin
