@@ -6273,7 +6273,11 @@ begin
 end;
 
 destructor TvEntityWithSubEntities.Destroy;
+var
+  i: Integer;
 begin
+  for i:= FElements.Count-1 downto 0 do
+    TvEntity(FElements[i]).Free;
   FElements.Free;
   inherited Destroy;
 end;
