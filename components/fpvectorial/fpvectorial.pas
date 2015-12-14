@@ -642,6 +642,7 @@ type
   TvCircle = class(TvEntityWithPenAndBrush)
   public
     Radius: Double;
+    procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = True); override;
   end;
@@ -4542,6 +4543,15 @@ end;
 
 { TvCircle }
 
+procedure TvCircle.CalculateBoundingBox(ADest: TFPCustomCanvas;
+  var ALeft, ATop, ARight, ABottom: Double);
+begin
+  ALeft := X - Radius;
+  ARight := X + Radius;
+  ATop := Y + Radius;
+  ABottom := Y - Radius;
+end;
+
 procedure TvCircle.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double; ADoDraw: Boolean);
 
@@ -4555,14 +4565,18 @@ procedure TvCircle.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
     Result := Round(ADestY + AmulY * ACoord);
   end;
 
+var
+  x1, y1, x2, y2: Integer;
 begin
   inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
-  ADest.Ellipse(
-    CoordToCanvasX(X - Radius),
-    CoordToCanvasY(Y - Radius),
-    CoordToCanvasX(X + Radius),
-    CoordToCanvasY(Y + Radius)
-    );
+
+  x1 := CoordToCanvasX(X - Radius);
+  y1 := CoordToCanvasY(Y - Radius);
+  x2 := CoordToCanvasX(X + Radius);
+  y2 := CoordToCanvasY(Y + Radius);
+  ADest.Ellipse(x1, y1, x2, y2);
+
+  CalcEntityCanvasMinMaxXY_With2Points(ARenderInfo, x1, y1, x2, y2);
 end;
 
 { TvCircularArc }
@@ -4693,8 +4707,8 @@ begin
   // First do the trivial
   ALeft := X - HorzHalfAxis;
   ARight := X + HorzHalfAxis;
-  ATop := Y - VertHalfAxis;
-  ABottom := Y + VertHalfAxis;
+  ATop := Y - VertHalfAxis;       // wp: shouldn't this be "+" ...
+  ABottom := Y + VertHalfAxis;    // ... and this "-" ?
   {
     To calculate the bounding rectangle we can do this:
 
@@ -7793,6 +7807,7 @@ procedure TvVectorialPage.Render(ADest: TFPCustomCanvas;
 var
   i: Integer;
   CurEntity: TvEntity;
+  rinfo: TvRenderInfo;
 begin
   {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
   WriteLn(':>DrawFPVectorialToCanvas');
@@ -7808,7 +7823,19 @@ begin
 
     RenderInfo.BackgroundColor := BackgroundColor;
     CurEntity.Render(ADest, RenderInfo, ADestX, ADestY, AMulX, AMulY);
+
+    if i = 0 then
+      rInfo := RenderInfo
+    else
+    begin
+      rInfo.EntityCanvasMinXY.X := Min(rInfo.EntityCanvasMinXY.X, RenderInfo.EntityCanvasMinXY.X);
+      rInfo.EntityCanvasMinXY.Y := Min(rInfo.EntityCanvasMinXY.Y, RenderInfo.EntityCanvasMinXY.Y);
+      rInfo.EntityCanvasMaxXY.X := Max(rInfo.EntityCanvasMaxXY.X, RenderInfo.EntityCanvasMaxXY.X);
+      rInfo.EntityCanvasMaxXY.Y := Max(rInfo.EntityCanvasMaxXY.Y, RenderInfo.EntityCanvasMaxXY.Y);
+    end;
   end;
+
+  RenderInfo := rInfo;
 
   {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
   WriteLn(':<DrawFPVectorialToCanvas');
