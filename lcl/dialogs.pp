@@ -22,7 +22,7 @@ interface
 
 uses
   // RTL + FCL + LCL
-  Types, typinfo, Classes, SysUtils,
+  Types, typinfo, Classes, SysUtils, LMessages,
   LResources, LCLIntf, InterfaceBase, LCLStrConsts, LCLType, LCLProc, Forms,
   Controls, Themes, GraphType, Graphics, Buttons, ButtonPanel, StdCtrls,
   ExtCtrls, LCLClasses, ClipBrd,

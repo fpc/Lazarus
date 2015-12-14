@@ -550,6 +550,9 @@ type
     FBitmap: TCustomBitmap;
     FBitmapX, FBitmapY: Integer;
     FMsgMemo: TMemo;
+  protected
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure WMCloseQuery(var message: TLMessage); message LM_CLOSEQUERY;
   public
     TextBox: TRect;
     TextStyle: TTextStyle;
@@ -727,6 +730,20 @@ begin
   Result := inherited ShowModal;
 end;
 
+procedure TQuestionDlg.WMCloseQuery(var message: TLMessage);
+begin
+  if fsModal in FFormState then
+  begin
+    if CancelControl <> nil then
+      CancelControl.ExecuteCancelAction
+    else
+      ModalResult := mrCancel;
+  end else
+    Close;
+  // Always return 0, because we destroy the window ourselves
+  Message.Result := 0;
+end;
+
 constructor TQuestionDlg.CreateQuestionDlg(const aCaption, aMsg: string;
   DlgType: LongInt; Buttons: TDialogButtons; HelpCtx: Longint);
 var
@@ -742,6 +759,7 @@ begin
   Position := poScreenCenter;
   MessageTxt := ConvertLineEndings(aMsg);
   HelpContext := HelpCtx;
+  KeyPreview := True;
 
   // Initialize TextStyle
   FillChar(TextStyle, SizeOf(TTextStyle), 0);
@@ -799,6 +817,8 @@ begin
       Caption := CurBtn.Caption;
       Parent := Self;
       Default := CurBtn.Default;
+      if Default then
+        ActiveControl := NewButton;
       Cancel := CurBtn.Cancel;
     end;
     if FButtons = nil then
@@ -812,6 +832,17 @@ begin
   FreeAndNil(FButtons);
   FreeAndNil(FBitmap);
   inherited Destroy;
+end;
+
+procedure TQuestionDlg.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_ESCAPE) and (CancelControl = nil) then
+  begin
+    ModalResult := mrCancel;
+    Key := 0;
+  end;
+
+  inherited KeyDown(Key, Shift);
 end;
 
 
@@ -857,7 +888,7 @@ var
   CurBtnValue: TModalResult;
   CurBtnCaption, CurOptions: String;
   HasOptions: Boolean;
-  IsDefault: Boolean;
+  IsDefault, IsCancel: Boolean;
   NewButton: TDialogButton;
 begin
   DialogButtons := TDialogButtons.Create(TDialogButton);
@@ -895,6 +926,7 @@ begin
         // get options
         CurOptions := '';
         IsDefault := False;
+        IsCancel := False;
         if (i <= High(Buttons)) then
         begin
           HasOptions := True;
@@ -911,12 +943,20 @@ begin
           end;
           if HasOptions then
           begin
-            if SysUtils.CompareText(CurOptions,'isdefault')<>0 then
+            if SysUtils.CompareText(CurOptions,'isdefault')=0 then
+            begin
+              if DialogButtons.DefaultButton <> nil then
+                raise Exception.Create('TQuestionDlg.CreateQuestionDlg only one button can be default');
+              IsDefault := True;
+            end else
+            if SysUtils.CompareText(CurOptions,'iscancel')=0 then
+            begin
+              if DialogButtons.CancelButton <> nil then
+                raise Exception.Create('TQuestionDlg.CreateQuestionDlg only one button can be cancel');
+              IsCancel := True;
+            end else
               raise Exception.Create('TQuestionDlg.CreateQuestionDlg option expected at '
                 +IntToStr(i)+' but "'+CurOptions+'" found.');
-            if DialogButtons.DefaultButton <> nil then
-              raise Exception.Create('TQuestionDlg.CreateQuestionDlg only one button can be default');
-            IsDefault := True;
             inc(i);
           end;
         end;
@@ -947,6 +987,8 @@ begin
         end;
         if IsDefault then
           DialogButtons.DefaultButton := NewButton;
+        if IsCancel then
+          DialogButtons.CancelButton := NewButton;
       end
       else
         raise Exception.Create('TQuestionDlg.Create: invalid Buttons parameter '+dbgs(i));
