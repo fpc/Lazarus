@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils, Types, Contnrs, Controls, SrcEditorIntf, StdCtrls, Buttons,
   ComCtrls, Forms, LazFileUtils, PackageIntf, Graphics, Menus, LazIDEIntf,
-  ExtCtrls, IDEImagesIntf, LMessages, Math, Laz2_XMLCfg, IDECommands, LCLIntf,
+  ExtCtrls, IDEImagesIntf, Laz2_XMLCfg, IDECommands, LCLIntf,
   IDEOptionsIntf, packagetabsstr, Clipbrd;
 
 type
@@ -71,7 +71,6 @@ type
 
   TPackageTabScrollBox = class(TScrollBox)
   protected
-    procedure WMMouseWheel(var Message: TLMMouseEvent); message LM_MOUSEWHEEL;
     procedure DoAlignControls;
   public
     constructor Create(AOwner: TComponent); override;
@@ -402,16 +401,6 @@ begin
   finally
     EnableAlign;
   end;
-end;
-
-procedure TPackageTabScrollBox.WMMouseWheel(var Message: TLMMouseEvent);
-begin
-  if Mouse.WheelScrollLines > 0 then
-  begin
-    Message.WheelDelta := (Min(High(Message.WheelDelta), Max(Low(Message.WheelDelta), (VertScrollBar.Increment * Message.WheelDelta))) div 120) * 120;
-  end;
-
-  inherited WMMouseWheel(Message);
 end;
 
 { TPackageTabButton }
