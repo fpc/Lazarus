@@ -8336,7 +8336,7 @@ procedure TvVectorialDocument.ReadFromFile(AFileName: string);
 var
   lFormat: TvVectorialFormat;
 begin
-  lFormat := GetFormatFromExtension(ExtractFileExt(AFileName));
+  lFormat := GetFormatFromExtension(AFileName);
   ReadFromFile(AFileName, lFormat);
 end;
 
