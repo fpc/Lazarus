@@ -933,7 +933,7 @@ begin
   end
   else if AKey = 'stroke-opacity' then
   begin
-    ADestEntity.Pen.Color.Alpha := Round(StrToFloat(AValue)*$FFFF);
+    ADestEntity.Pen.Color.Alpha := Round(StrToFloat(AValue, FPointSeparator)*$FFFF);
   end
   else if AKey = 'stroke-linecap' then
   begin

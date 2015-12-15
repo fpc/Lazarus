@@ -1374,6 +1374,7 @@ type
     MinX, MinY, MinZ, MaxX, MaxY, MaxZ: Double;
     // Other basic document information
     BackgroundColor: TFPColor;
+    AdjustPenColorToBackground: Boolean;
     RenderInfo: TvRenderInfo; // Prepared by the reader with info on how to draw the page
     { Base methods }
     constructor Create(AOwner: TvVectorialDocument); virtual;
@@ -1399,7 +1400,8 @@ type
     procedure RenderPageBorder(ADest: TFPCustomCanvas;
       ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); virtual; abstract;
     procedure Render(ADest: TFPCustomCanvas;
-      ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); virtual; abstract;
+      ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0;
+      ADoDraw: Boolean = true); virtual; abstract;
     procedure AutoFit(ADest: TFPCustomCanvas; AWidth, AHeight: Integer; out ADeltaX, ADeltaY: Integer; out AZoom: Double); virtual; abstract;
     { Debug methods }
     procedure GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer); virtual; abstract;
@@ -1480,8 +1482,8 @@ type
     procedure DrawBackground(ADest: TFPCustomCanvas); override;
     procedure RenderPageBorder(ADest: TFPCustomCanvas;
       ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
-    procedure Render(ADest: TFPCustomCanvas;
-      ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
+    procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0; ADestY: Integer = 0;
+      AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = true); override;
     procedure AutoFit(ADest: TFPCustomCanvas; AWidth, AHeight: Integer; out ADeltaX, ADeltaY: Integer; out AZoom: Double); override;
     { Debug methods }
     procedure GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer); override;
@@ -1524,8 +1526,8 @@ type
     procedure DrawBackground(ADest: TFPCustomCanvas); override;
     procedure RenderPageBorder(ADest: TFPCustomCanvas;
       ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
-    procedure Render(ADest: TFPCustomCanvas;
-      ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
+    procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0; ADestY: Integer = 0;
+      AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = true); override;
     procedure AutoFit(ADest: TFPCustomCanvas; AWidth, AHeight: Integer; out ADeltaX, ADeltaY: Integer; out AZoom: Double); override;
     { Debug methods }
     procedure GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer); override;
@@ -3169,7 +3171,7 @@ begin
   ARenderInfo.EntityCanvasMinXY := Point(INVALID_RENDERINFO_CANVAS_XY, INVALID_RENDERINFO_CANVAS_XY);
   ARenderInfo.EntityCanvasMaxXY := Point(INVALID_RENDERINFO_CANVAS_XY, INVALID_RENDERINFO_CANVAS_XY);
   //ARenderInfo.BackgroundColor := colBlack; Don't change this because otherwise we lose the value set by the page
-  ARenderInfo.AdjustPenColorToBackground := True;
+  //ARenderInfo.AdjustPenColorToBackground := True;    dto.
   ARenderInfo.Selected := False;
   ARenderInfo.ForceRenderBlock := False;
 end;
@@ -3940,6 +3942,8 @@ var
   ACanvas: TCanvas absolute ADest;
   {$endif}
 begin
+  inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
+
   PosX := 0;
   PosY := 0;
   ADest.Brush.Style := bsClear;
@@ -3973,7 +3977,8 @@ begin
   {$endif}
 
   // useful in some paths, like stars!
-  RenderInternalPolygon(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
+  if ADoDraw then
+    RenderInternalPolygon(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
 
   //
   // For other paths, draw more carefully
@@ -3991,7 +3996,9 @@ begin
     begin
       CoordX := CoordToCanvasX(Cur2DSegment.X);
       CoordY := CoordToCanvasY(Cur2DSegment.Y);
-      ADest.MoveTo(CoordX, CoordY);
+      if ADoDraw then
+        ADest.MoveTo(CoordX, CoordY);
+      CalcEntityCanvasMinMaxXY(ARenderInfo, CoordX, CoordY);
       PosX := Cur2DSegment.X;
       PosY := Cur2DSegment.Y;
       {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
@@ -4119,20 +4126,21 @@ begin
       ADest.Brush.Style := Brush.Style;
       CalcEntityCanvasMinMaxXY_With2Points(ARenderInfo, CoordX, CoordY, CoordX4, CoordY4);
 
+      if ADoDraw then
+      begin
       // Arc draws counterclockwise
-      if ADoDraw and Cur2DArcSegment.ClockwiseArcFlag then
-      begin
-        ACanvas.Arc(
-          EllipseRect.Left, EllipseRect.Top, EllipseRect.Right, EllipseRect.Bottom,
-          CoordX4, CoordY4, CoordX, CoordY);
-      end
-      else if ADoDraw then
-      begin
-        ACanvas.Arc(
-          EllipseRect.Left, EllipseRect.Top, EllipseRect.Right, EllipseRect.Bottom,
-          CoordX, CoordY, CoordX4, CoordY4);
+        if Cur2DArcSegment.ClockwiseArcFlag then
+        begin
+          ACanvas.Arc(
+            EllipseRect.Left, EllipseRect.Top, EllipseRect.Right, EllipseRect.Bottom,
+            CoordX4, CoordY4, CoordX, CoordY);
+        end else
+        begin
+          ACanvas.Arc(
+            EllipseRect.Left, EllipseRect.Top, EllipseRect.Right, EllipseRect.Bottom,
+            CoordX, CoordY, CoordX4, CoordY4);
+        end;
       end;
-
       PosX := Cur2DArcSegment.X;
       PosY := Cur2DArcSegment.Y;
 
@@ -4787,12 +4795,13 @@ begin
     // Conrollpoint of secondpart endpoint
     PointList[6] := PointList[0];   // Endpoint of
      // Back to the startpoint
-    ALCLDest.PolyBezier(Pointlist[0]);
+     if ADoDraw then
+      ALCLDest.PolyBezier(Pointlist[0]);
   end
   else
   {$endif}
   begin
-    ADest.Ellipse(x1, y1, x2, y2);
+    if ADoDraw then ADest.Ellipse(x1, y1, x2, y2);
   end;
   // Apply brush gradient
   if x1 > x2 then
@@ -4808,6 +4817,8 @@ begin
     y2 := dk;
   end;
   DrawBrushGradient(ADest, ARenderInfo, x1, y1, x2, y2, ADestX, ADestY, AMulX, AMulY);
+
+  CalcEntityCanvasMinMaxXY_With2Points(ARenderInfo, x1, y1, x2, y2);
 end;
 
 { TvRectangle }
@@ -4846,14 +4857,19 @@ begin
   y1 := CoordToCanvasY(fy1);
   y2 := CoordToCanvasY(fy2);
 
-  {$ifdef USE_LCL_CANVAS}
-  if (RX = 0) and (RY = 0) then
+  if ADoDraw then
+  begin
+    {$ifdef USE_LCL_CANVAS}
+    if (RX = 0) and (RY = 0) then
+      ADest.Rectangle(x1, y1, x2, y2)
+    else
+      LCLIntf.RoundRect(TCanvas(ADest).Handle, x1, y1, x2, y2, Round(rx), Round(ry));
+    {$else}
     ADest.Rectangle(x1, y1, x2, y2)
-  else
-    LCLIntf.RoundRect(TCanvas(ADest).Handle, x1, y1, x2, y2, Round(rx), Round(ry));
-  {$else}
-  ADest.Rectangle(x1, y1, x2, y2)
-  {$endif}
+    {$endif}
+  end;
+
+  CalcEntityCanvasMinMaxXY_With2Points(ARenderInfo, x1, y1, x2, y2);
 end;
 
 function TvRectangle.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
@@ -4912,9 +4928,11 @@ begin
   begin
     lPoints[i].X := CoordToCanvasX(Points[i].X);
     lPoints[i].Y := CoordToCanvasY(Points[i].Y);
+    CalcEntityCanvasMinMaxXY(ARenderInfo, lPoints[i].X, lPoints[i].Y);
   end;
 
-  ADest.Polygon(lPoints);
+  if ADoDraw then
+    ADest.Polygon(lPoints);
 end;
 
 { TvAlignedDimension }
@@ -4938,6 +4956,7 @@ var
   {$ifdef USE_LCL_CANVAS}
   ALCLDest: TCanvas absolute ADest;
   {$endif}
+  txt: String;
 begin
   ADest.Pen.FPColor := AdjustColorToBackground(colBlack, ARenderInfo);
   ADest.Pen.Width := 1;
@@ -4964,12 +4983,14 @@ begin
     Points[0] := Point(CoordToCanvasX(DimensionLeft.X), CoordToCanvasY(DimensionLeft.Y));
     Points[1] := Point(Points[0].X + 7, Points[0].Y - 3);
     Points[2] := Point(Points[0].X + 7, Points[0].Y + 3);
-    ADest.Polygon(Points);
+    CalcEntityCanvasMinMaxXY(ARenderInfo, Points[0].X, Points[1].Y);
+    if ADoDraw then ADest.Polygon(Points);
     // Right arrow
     Points[0] := Point(CoordToCanvasX(DimensionRight.X), CoordToCanvasY(DimensionRight.Y));
     Points[1] := Point(Points[0].X - 7, Points[0].Y - 3);
     Points[2] := Point(Points[0].X - 7, Points[0].Y + 3);
-    ADest.Polygon(Points);
+    CalcEntityCanvasMinMaxXY(ARenderInfo, Points[0].X, Points[2].Y);
+    if ADoDraw then ADest.Polygon(Points);
     ADest.Brush.Style := bsClear;
     // Dimension text
     Points[0].X := CoordToCanvasX((DimensionLeft.X+DimensionRight.X)/2);
@@ -4978,7 +4999,12 @@ begin
     ADest.Font.Size := 10;
     ADest.Font.Orientation := 0;
     ADest.Font.FPColor := AdjustColorToBackground(colBlack, ARenderInfo);
-    ADest.TextOut(Points[0].X, Points[0].Y-Round(ADest.Font.Size*1.5), Format('%.1f', [LowerDim.X]));
+    txt := Format('%.1f', [LowerDim.X]);
+    if ADoDraw then
+      ADest.TextOut(Points[0].X, Points[0].Y-Round(ADest.Font.Size*1.5), txt);
+    CalcEntityCanvasMinMaxXY_With2Points(ARenderInfo,
+      Points[0].X, Points[0].Y - round(ADest.Font.Size*1.5),
+      Points[0].X + ADest.TextWidth(txt), Points[0].Y);
   end
   else
   begin
@@ -4999,12 +5025,14 @@ begin
     Points[0] := Point(CoordToCanvasX(UpperDim.X), CoordToCanvasY(UpperDim.Y));
     Points[1] := Point(Points[0].X + Round(AMulX), Points[0].Y - Round(AMulY*3));
     Points[2] := Point(Points[0].X - Round(AMulX), Points[0].Y - Round(AMulY*3));
-    ADest.Polygon(Points);
+    if ADoDraw then ADest.Polygon(Points);
+    CalcEntityCanvasMinMaxXY(ARenderInfo, Points[1].X, Points[0].Y);
     // Lower arrow
     Points[0] := Point(CoordToCanvasX(LowerDim.X), CoordToCanvasY(LowerDim.Y));
     Points[1] := Point(Points[0].X + Round(AMulX), Points[0].Y + Round(AMulY*3));
     Points[2] := Point(Points[0].X - Round(AMulX), Points[0].Y + Round(AMulY*3));
-    ADest.Polygon(Points);
+    if ADoDraw then ADest.Polygon(Points);
+    CalcEntityCanvasMinMaxXY(ARenderInfo, Points[2].X, Points[0].Y);
     ADest.Brush.Style := bsClear;
     // Dimension text
     Points[0].X := CoordToCanvasX(DimensionLeft.X);
@@ -5014,8 +5042,14 @@ begin
     ADest.Font.Size := 10;
     ADest.Font.Orientation := 900;
     ADest.Font.FPColor := AdjustColorToBackground(colBlack, ARenderInfo);
-    ADest.TextOut(Points[0].X-Round(ADest.Font.Size*1.5), Points[0].Y, Format('%.1f', [LowerDim.Y]));
+    txt := Format('%.1f', [LowerDim.Y]);
+    if ADoDraw then
+      ADest.TextOut(Points[0].X-Round(ADest.Font.Size*1.5), Points[0].Y, txt);
     ADest.Font.Orientation := 0;
+    CalcEntityCanvasMinMaxXY_With2Points(ARenderInfo,
+      Points[0].X - Round(ADest.Font.Size*1.5), Points[0].Y,
+      Points[0].X, Points[0].Y + ADest.TextWidth(txt)
+      );
   end;
   SetLength(Points, 0);
 
@@ -5090,51 +5124,54 @@ begin
   Points[1] := Rotate2DPoint(Points[1], Point(CoordToCanvasX(Center.X),  CoordToCanvasY(Center.Y)), lAngle);
   Points[2] := Rotate2DPoint(Points[2], Point(CoordToCanvasX(Center.X),  CoordToCanvasY(Center.Y)), lAngle);
 
-  if not IsDiameter then
+  if ADoDraw then
   begin
-    // Basic line
-    ADest.MoveTo(CoordToCanvasX(Center.X), CoordToCanvasY(Center.Y));
-    ADest.LineTo(CoordToCanvasX(DimensionLeft.X), CoordToCanvasY(DimensionLeft.Y));
+    if not IsDiameter then
+    begin
+      // Basic line
+      ADest.MoveTo(CoordToCanvasX(Center.X), CoordToCanvasY(Center.Y));
+      ADest.LineTo(CoordToCanvasX(DimensionLeft.X), CoordToCanvasY(DimensionLeft.Y));
 
-    // Draw the arrow
-    ADest.Polygon(Points);
-    ADest.Brush.Style := bsClear;
+      // Draw the arrow
+      ADest.Polygon(Points);
+      ADest.Brush.Style := bsClear;
 
-    // Dimension text
-    Points[0].X := CoordToCanvasX(Center.X);
-    Points[0].Y := CoordToCanvasY(Center.Y);
-    ADest.Font.Size := 10;
-    ADest.Font.FPColor := AdjustColorToBackground(colBlack, ARenderInfo);
-    ADest.TextOut(Points[0].X, Points[0].Y, Format('%.1f', [lRadius]));
-  end
-  else
-  begin
-    // Basic line
-    ADest.MoveTo(CoordToCanvasX(DimensionLeft.X), CoordToCanvasY(DimensionLeft.Y));
-    ADest.LineTo(CoordToCanvasX(DimensionRight.X), CoordToCanvasY(DimensionRight.Y));
+      // Dimension text
+      Points[0].X := CoordToCanvasX(Center.X);
+      Points[0].Y := CoordToCanvasY(Center.Y);
+      ADest.Font.Size := 10;
+      ADest.Font.FPColor := AdjustColorToBackground(colBlack, ARenderInfo);
+      ADest.TextOut(Points[0].X, Points[0].Y, Format('%.1f', [lRadius]));
+    end
+    else
+    begin
+      // Basic line
+      ADest.MoveTo(CoordToCanvasX(DimensionLeft.X), CoordToCanvasY(DimensionLeft.Y));
+      ADest.LineTo(CoordToCanvasX(DimensionRight.X), CoordToCanvasY(DimensionRight.Y));
 
-    // Draw the first arrow
-    ADest.Polygon(Points);
-    ADest.Brush.Style := bsClear;
+      // Draw the first arrow
+      ADest.Polygon(Points);
+      ADest.Brush.Style := bsClear;
 
-    // And the second
-    Points[0] := Point(CoordToCanvasX(Center.X + lRadius),     CoordToCanvasY(Center.Y));
-    Points[1] := Point(CoordToCanvasX(Center.X + lRadius*0.8), CoordToCanvasY(Center.Y - lRadius*0.1));
-    Points[2] := Point(CoordToCanvasX(Center.X + lRadius*0.8), CoordToCanvasY(Center.Y + lRadius*0.1));
-    // Now rotate it to the actual position
-    Points[0] := Rotate2DPoint(Points[0], Point(CoordToCanvasX(Center.X), CoordToCanvasY(Center.Y)),  lAngle + Pi);
-    Points[1] := Rotate2DPoint(Points[1], Point(CoordToCanvasX(Center.X),  CoordToCanvasY(Center.Y)), lAngle + Pi);
-    Points[2] := Rotate2DPoint(Points[2], Point(CoordToCanvasX(Center.X),  CoordToCanvasY(Center.Y)), lAngle + Pi);
-    //
-    ADest.Polygon(Points);
-    ADest.Brush.Style := bsClear;
+      // And the second
+      Points[0] := Point(CoordToCanvasX(Center.X + lRadius),     CoordToCanvasY(Center.Y));
+      Points[1] := Point(CoordToCanvasX(Center.X + lRadius*0.8), CoordToCanvasY(Center.Y - lRadius*0.1));
+      Points[2] := Point(CoordToCanvasX(Center.X + lRadius*0.8), CoordToCanvasY(Center.Y + lRadius*0.1));
+      // Now rotate it to the actual position
+      Points[0] := Rotate2DPoint(Points[0], Point(CoordToCanvasX(Center.X), CoordToCanvasY(Center.Y)),  lAngle + Pi);
+      Points[1] := Rotate2DPoint(Points[1], Point(CoordToCanvasX(Center.X),  CoordToCanvasY(Center.Y)), lAngle + Pi);
+      Points[2] := Rotate2DPoint(Points[2], Point(CoordToCanvasX(Center.X),  CoordToCanvasY(Center.Y)), lAngle + Pi);
+      //
+      ADest.Polygon(Points);
+      ADest.Brush.Style := bsClear;
 
-    // Dimension text
-    Points[0].X := CoordToCanvasX(Center.X);
-    Points[0].Y := CoordToCanvasY(Center.Y);
-    ADest.Font.Size := 10;
-    ADest.Font.FPColor := AdjustColorToBackground(colBlack, ARenderInfo);
-    ADest.TextOut(Points[0].X, Points[0].Y, Format('%.1f', [lRadius * 2]));
+      // Dimension text
+      Points[0].X := CoordToCanvasX(Center.X);
+      Points[0].Y := CoordToCanvasY(Center.Y);
+      ADest.Font.Size := 10;
+      ADest.Font.FPColor := AdjustColorToBackground(colBlack, ARenderInfo);
+      ADest.TextOut(Points[0].X, Points[0].Y, Format('%.1f', [lRadius * 2]));
+    end;
   end;
 
   SetLength(Points, 0);
@@ -5179,6 +5216,7 @@ var
   {$ifdef USE_LCL_CANVAS}
   ALCLDest: TCanvas absolute ADest;
   {$endif}
+  txt: String;
 begin
   ADest.Pen.FPColor := colYellow;//AdjustColorToBackground(colBlack, ARenderInfo);
   ADest.Pen.Width := 1;
@@ -5189,11 +5227,12 @@ begin
   //ADest.Line(CoordToCanvasX(BaseRight.X), CoordToCanvasY(BaseRight.Y), CoordToCanvasX(DimensionRight.X), CoordToCanvasY(DimensionRight.Y));
 
   // Now the arc
-  ALCLDest.Arc(
-    CoordToCanvasX(BaseLeft.X - ArcRadius), CoordToCanvasY(BaseLeft.Y - ArcRadius),
-    CoordToCanvasX(BaseLeft.X + ArcRadius), CoordToCanvasY(BaseLeft.Y + ArcRadius),
-    CoordToCanvasX(DimensionRight.X), CoordToCanvasY(DimensionRight.Y),
-    CoordToCanvasX(DimensionLeft.X),  CoordToCanvasY(DimensionLeft.Y));
+  if ADoDraw then
+    ALCLDest.Arc(
+      CoordToCanvasX(BaseLeft.X - ArcRadius), CoordToCanvasY(BaseLeft.Y - ArcRadius),
+      CoordToCanvasX(BaseLeft.X + ArcRadius), CoordToCanvasY(BaseLeft.Y + ArcRadius),
+      CoordToCanvasX(DimensionRight.X), CoordToCanvasY(DimensionRight.Y),
+      CoordToCanvasX(DimensionLeft.X),  CoordToCanvasY(DimensionLeft.Y));
 
   // Now the arrows
   SetLength(Points, 3);
@@ -5209,7 +5248,8 @@ begin
   Points[1] := Point(CoordToCanvasX(lTriangleCorner.X), CoordToCanvasY(lTriangleCorner.Y));
   lTriangleCorner := Rotate3DPointInXY(lTriangleCenter, ArcLeft, - Pi * 10 / 180);
   Points[2] := Point(CoordToCanvasX(lTriangleCorner.X), CoordToCanvasY(lTriangleCorner.Y));
-  ADest.Polygon(Points);
+  if ADoDraw then
+    ADest.Polygon(Points);
 
   // Right Arrow
   Points[0] := Point(CoordToCanvasX(ArcRight.X), CoordToCanvasY(ArcRight.Y));
@@ -5220,7 +5260,8 @@ begin
   lTriangleCorner := Rotate3DPointInXY(lTriangleCenter, ArcRight, - Pi * 10 / 180);
   Points[2] := Point(CoordToCanvasX(lTriangleCorner.X), CoordToCanvasY(lTriangleCorner.Y));
   ADest.Polygon(Points);
-  ADest.Brush.Style := bsClear;
+  if ADoDraw then
+    ADest.Brush.Style := bsClear;
 
   // Dimension text
   Points[0].X := CoordToCanvasX(TextPos.X);
@@ -5228,7 +5269,9 @@ begin
   ADest.Font.Size := 10;
   ADest.Font.Orientation := 0;
   ADest.Font.FPColor := colYellow;//AdjustColorToBackground(colBlack, ARenderInfo);
-  ADest.TextOut(Points[0].X, Points[0].Y-Round(ADest.Font.Size*1.5), Format('%.1fº', [ArcValue]));
+  txt := Format('%.1fº', [ArcValue]);
+  if ADoDraw then
+    ADest.TextOut(Points[0].X, Points[0].Y-Round(ADest.Font.Size*1.5), txt);
 end;
 
 procedure TvArcDimension.CalculateExtraArcInfo;
@@ -5428,7 +5471,8 @@ begin
     if lFinalW < 0 then lFinalW := lFinalW * -1;
     lFinalH := Round(Height * AMulY);
     if lFinalH < 0 then lFinalH := lFinalH * -1;
-    TCanvas(ADest).StretchDraw(Bounds(lFinalX, lFinalY, lFinalW, lFinalH), lBitmap);
+    if ADoDraw then
+      TCanvas(ADest).StretchDraw(Bounds(lFinalX, lFinalY, lFinalW, lFinalH), lBitmap);
   finally
     lImageWriter.Free;
     lMemoryStream.Free;
@@ -5546,7 +5590,7 @@ begin
   lPoints[1].Y := CoordToCanvasY(lPointE.Y);
   lPoints[2].X := CoordToCanvasX(lPointF.X);
   lPoints[2].Y := CoordToCanvasY(lPointF.Y);
-  ADest.Polygon(lPoints);
+  if ADoDraw then ADest.Polygon(lPoints);
 end;
 
 { TvFormulaElement }
@@ -5719,95 +5763,96 @@ begin
   LeftC := CoordToCanvasX(Left);
   TopC := CoordToCanvasY(Top);
 
-  case Kind of
-    fekVariable: ADest.TextOut(LeftC, TopC, Text);
-    fekEqual:    ADest.TextOut(LeftC, TopC, '=');
-    fekSubtraction: ADest.TextOut(LeftC, TopC, '-');
-    fekMultiplication:
-    begin
-      // Don't draw anything, leave an empty space, it looks better
-      //ADest.TextOut(LeftC, TopC, 'x'); // × -> Unicode times symbol
-    end;
-    fekSum:      ADest.TextOut(LeftC, TopC, '+');
-    fekPlusMinus:ADest.TextOut(LeftC, TopC, '±');
-    fekLessThan: ADest.TextOut(LeftC, TopC, '<');
-    fekLessOrEqualThan: ADest.TextOut(LeftC, TopC, '≤');
-    fekGreaterThan: ADest.TextOut(LeftC, TopC, '>');
-    fekGreaterOrEqualThan: ADest.TextOut(LeftC, TopC, '≥');
-    fekHorizontalLine: ADest.Line(LeftC, TopC, CoordToCanvasX(Left+Width), TopC);
-    // Complex ones
-    fekFraction:
-    begin
-      Formula.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
-      AdjacentFormula.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
+  if ADoDraw then
+    case Kind of
+      fekVariable: ADest.TextOut(LeftC, TopC, Text);
+      fekEqual:    ADest.TextOut(LeftC, TopC, '=');
+      fekSubtraction: ADest.TextOut(LeftC, TopC, '-');
+      fekMultiplication:
+      begin
+        // Don't draw anything, leave an empty space, it looks better
+        //ADest.TextOut(LeftC, TopC, 'x'); // × -> Unicode times symbol
+      end;
+      fekSum:      ADest.TextOut(LeftC, TopC, '+');
+      fekPlusMinus:ADest.TextOut(LeftC, TopC, '±');
+      fekLessThan: ADest.TextOut(LeftC, TopC, '<');
+      fekLessOrEqualThan: ADest.TextOut(LeftC, TopC, '≤');
+      fekGreaterThan: ADest.TextOut(LeftC, TopC, '>');
+      fekGreaterOrEqualThan: ADest.TextOut(LeftC, TopC, '≥');
+      fekHorizontalLine: ADest.Line(LeftC, TopC, CoordToCanvasX(Left+Width), TopC);
+      // Complex ones
+      fekFraction:
+      begin
+        Formula.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
+        AdjacentFormula.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
 
-      // Division line
-      lPt[0].X := CoordToCanvasX(Formula.Left);
-      lPt[1].X := CoordToCanvasX(Formula.Left + Formula.Width);
-      lPt[0].Y := CoordToCanvasY(Formula.Top - Formula.Height);
-      lPt[1].Y := CoordToCanvasY(Formula.Top - Formula.Height);
-      ADest.Line(lPt[0].X, lPt[0].Y, lPt[1].X, lPt[1].Y);
-    end;
-    fekRoot:
-    begin
-      Formula.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
+        // Division line
+        lPt[0].X := CoordToCanvasX(Formula.Left);
+        lPt[1].X := CoordToCanvasX(Formula.Left + Formula.Width);
+        lPt[0].Y := CoordToCanvasY(Formula.Top - Formula.Height);
+        lPt[1].Y := CoordToCanvasY(Formula.Top - Formula.Height);
+        ADest.Line(lPt[0].X, lPt[0].Y, lPt[1].X, lPt[1].Y);
+      end;
+      fekRoot:
+      begin
+        Formula.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
 
-      // Root drawing
-      lPt[0].X := CoordToCanvasX(Left);
-      lPt[0].Y := CoordToCanvasY(Top - Formula.Height * 0.7 + 5);
-      // diagonal down
-      lPt[1].X := CoordToCanvasX(Left + 5);
-      lPt[1].Y := CoordToCanvasY(Top - Formula.Height * 0.7);
-      // up
-      lPt[2].X := CoordToCanvasX(Left + 5);
-      lPt[2].Y := CoordToCanvasY(Top);
-      // straight right
-      lPt[3].X := CoordToCanvasX(Left + Formula.Width);
-      lPt[3].Y := CoordToCanvasY(Top);
-      //
-      ADest.Polyline(lPt);
-    end;
-    fekPower:
-    begin
-      Formula.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
-      // The superscripted power
-      lOldFontSize := ADest.Font.Size;
-      if lOldFontSize = 0 then ADest.Font.Size := 5
-      else ADest.Font.Size := lOldFontSize div 2;
-      AdjacentFormula.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
-      ADest.Font.Size := lOldFontSize;
-    end;
-    fekSubscript:
-    begin
-      Formula.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
-      // The subscripted item
-      lOldFontSize := ADest.Font.Size;
-      if lOldFontSize = 0 then ADest.Font.Size := 5
-      else ADest.Font.Size := lOldFontSize div 2;
-      AdjacentFormula.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
-      ADest.Font.Size := lOldFontSize;
-    end;
-    fekSummation:
-    begin
-      // Draw the summation symbol
-      lOldFontSize := ADest.Font.Size;
-      ADest.Font.Size := 15;
-      lStr := #$E2#$88#$91; // Unicode Character 'N-ARY SUMMATION' (U+2211)
-      ADest.TextOut(LeftC, TopC, lStr);
-      ADest.Font.Size := lOldFontSize;
+        // Root drawing
+        lPt[0].X := CoordToCanvasX(Left);
+        lPt[0].Y := CoordToCanvasY(Top - Formula.Height * 0.7 + 5);
+        // diagonal down
+        lPt[1].X := CoordToCanvasX(Left + 5);
+        lPt[1].Y := CoordToCanvasY(Top - Formula.Height * 0.7);
+        // up
+        lPt[2].X := CoordToCanvasX(Left + 5);
+        lPt[2].Y := CoordToCanvasY(Top);
+        // straight right
+        lPt[3].X := CoordToCanvasX(Left + Formula.Width);
+        lPt[3].Y := CoordToCanvasY(Top);
+        //
+        ADest.Polyline(lPt);
+      end;
+      fekPower:
+      begin
+        Formula.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
+        // The superscripted power
+        lOldFontSize := ADest.Font.Size;
+        if lOldFontSize = 0 then ADest.Font.Size := 5
+        else ADest.Font.Size := lOldFontSize div 2;
+        AdjacentFormula.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
+        ADest.Font.Size := lOldFontSize;
+      end;
+      fekSubscript:
+      begin
+        Formula.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
+        // The subscripted item
+        lOldFontSize := ADest.Font.Size;
+        if lOldFontSize = 0 then ADest.Font.Size := 5
+        else ADest.Font.Size := lOldFontSize div 2;
+        AdjacentFormula.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
+        ADest.Font.Size := lOldFontSize;
+      end;
+      fekSummation:
+      begin
+        // Draw the summation symbol
+        lOldFontSize := ADest.Font.Size;
+        ADest.Font.Size := 15;
+        lStr := #$E2#$88#$91; // Unicode Character 'N-ARY SUMMATION' (U+2211)
+        ADest.TextOut(LeftC, TopC, lStr);
+        ADest.Font.Size := lOldFontSize;
 
-      // Draw the bottom/main formula
-      Formula.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
+        // Draw the bottom/main formula
+        Formula.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
 
-      // Draw the top formula
-      AdjacentFormula.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
+        // Draw the top formula
+        AdjacentFormula.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
+      end;
+      fekFormula:
+      begin
+        // Draw the formula
+        Formula.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
+      end;
     end;
-    fekFormula:
-    begin
-      // Draw the formula
-      Formula.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
-    end;
-  end;
 end;
 
 procedure TvFormulaElement.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
@@ -6380,9 +6425,11 @@ procedure TvEntityWithSubEntities.Render(ADest: TFPCustomCanvas; var ARenderInfo
 var
   lEntity: TvEntity;
   rinfo: TvRenderInfo;
+  isFirst: Boolean;
 begin
   rinfo := ARenderInfo;
   inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
+  isFirst := true;
   lEntity := GetFirstEntity();
   while lEntity <> nil do
   begin
@@ -6394,12 +6441,17 @@ begin
     // Render
     lEntity.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMuly, ADoDraw);
 
-    CalcEntityCanvasMinMaxXY_With2Points(rinfo,
-      ARenderInfo.EntityCanvasMinXY.X,
-      ARenderInfo.EntityCanvasMinXY.Y,
-      ARenderInfo.EntityCanvasMaxXY.X,
-      ARenderInfo.EntityCanvasMaxXY.Y
-    );
+    if isFirst then
+    begin
+      rinfo := ARenderInfo;
+      isFirst := false;
+    end else
+      CalcEntityCanvasMinMaxXY_With2Points(rinfo,
+        ARenderInfo.EntityCanvasMinXY.X,
+        ARenderInfo.EntityCanvasMinXY.Y,
+        ARenderInfo.EntityCanvasMaxXY.X,
+        ARenderInfo.EntityCanvasMaxXY.Y
+      );
 
     lEntity := GetNextEntity();
   end;
@@ -7074,6 +7126,7 @@ constructor TvPage.Create(AOwner: TvVectorialDocument);
 begin
   inherited Create;
   FOwner := AOwner;
+  AdjustPenColorToBackground := true;
 end;
 
 destructor TvPage.Destroy;
@@ -7801,9 +7854,13 @@ end;
   use this function like this:
 
   ASource.Render(ADest, 0, ASource.Height, 1.0, -1.0);
+
+  Set ADoDraw to falses in order to just get the bounding box of all entities
+  on the page in RenderInfo.EnitityCanvasMinXY/EntityCanvasMaxXY.
 }
 procedure TvVectorialPage.Render(ADest: TFPCustomCanvas;
-  ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double);
+  ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double;
+  ADoDraw: Boolean = true);
 var
   i: Integer;
   CurEntity: TvEntity;
@@ -7822,7 +7879,9 @@ begin
     CurEntity := GetEntity(i);
 
     RenderInfo.BackgroundColor := BackgroundColor;
-    CurEntity.Render(ADest, RenderInfo, ADestX, ADestY, AMulX, AMulY);
+    RenderInfo.AdjustPenColorToBackground := AdjustPenColorToBackground;
+
+    CurEntity.Render(ADest, RenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
 
     if i = 0 then
       rInfo := RenderInfo
@@ -8027,7 +8086,7 @@ begin
 end;
 
 procedure TvTextPageSequence.Render(ADest: TFPCustomCanvas; ADestX: Integer;
-  ADestY: Integer; AMulX: Double; AMulY: Double);
+  ADestY: Integer; AMulX: Double; AMulY: Double; ADoDraw: Boolean = true);
 
   function CoordToCanvasX(ACoord: Double): Integer;
   begin
@@ -8063,7 +8122,7 @@ begin
     CurEntity.Y := 0;
     lHeight_px := CurEntity.GetEntityFeatures(ADest).DrawsUpwardHeightAdjustment;
     RenderInfo.BackgroundColor := BackgroundColor;
-    CurEntity.Render(ADest, RenderInfo, ADestX, CurY_px + lHeight_px, AMulX, AMulY);
+    CurEntity.Render(ADest, RenderInfo, ADestX, CurY_px + lHeight_px, AMulX, AMulY, ADoDraw);
     // Store the old position in X/Y but don't use it, we use this to debug out the position
     CurEntity.X := ADestX;
     CurEntity.Y := CurY_px;
