@@ -711,7 +711,7 @@ begin
     // -> Adjust the position
     // add the upper frame with the caption
     DC := Windows.GetDC(Handle);
-    SelectObject(DC, TheWinControl.Font.Handle);
+    SelectObject(DC, TheWinControl.Font.Reference.Handle);
     Windows.GetTextMetrics(DC, TM);
     ORect.Top := TM.TMHeight + 3;
     Windows.ReleaseDC(Handle, DC);
@@ -1039,7 +1039,6 @@ end;
 function GetControlText(AHandle: HWND): string;
 var
   TextLen: dword;
-  AnsiBuffer: string;
   WideBuffer: WideString;
 begin
   TextLen := Windows.GetWindowTextLengthW(AHandle);

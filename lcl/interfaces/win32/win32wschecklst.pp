@@ -184,7 +184,6 @@ class procedure TWin32WSCustomCheckListBox.DefaultWndHandler(
     OldColor: COLORREF;
     OldBkMode: Integer;
     sz: TSize;
-    AnsiBuffer: string;
     WideBuffer: widestring;
   begin
     Selected := (Data^.itemState and ODS_SELECTED) > 0;

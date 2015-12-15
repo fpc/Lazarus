@@ -133,7 +133,6 @@ var
   BitmapRect: Windows.RECT;
   ButtonImageList: BUTTON_IMAGELIST;
   I: integer;
-  ButtonCaptionA: string;
   ButtonCaptionW: widestring;
 
   procedure DrawBitmap(AState: TButtonState; UseThemes, AlphaDraw: Boolean);

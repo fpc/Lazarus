@@ -235,7 +235,6 @@ end;
 function StringSize(const aCaption: String; const aHDC: HDC): TSize;
 var
   tmpRect: Windows.RECT;
-  AnsiBuffer: ansistring;
   WideBuffer: widestring;
 begin
   FillChar(tmpRect, SizeOf(tmpRect), 0);
@@ -969,7 +968,6 @@ var
   IsRightToLeft: Boolean;
   etoFlags: Cardinal;
   dtFlags: DWord;
-  AnsiBuffer: ansistring;
   WideBuffer: widestring;
   LeftSpace, RightSpace: Integer;
 begin
@@ -1238,7 +1236,6 @@ end;
 procedure UpdateCaption(const AMenuItem: TMenuItem; ACaption: String);
 var
   MenuInfo: MENUITEMINFO;     // TMenuItemInfoA and TMenuItemInfoW have same size and same structure type
-  AnsiBuffer: ansistring;
   WideBuffer: widestring;
 begin
   if (AMenuItem.Parent = nil) or not AMenuItem.Parent.HandleAllocated then
@@ -1301,7 +1298,6 @@ var
   ParentMenuHandle: HMenu;
   ParentOfParent: HMenu;
   CallMenuRes: Boolean;
-  AnsiBuffer: ansistring;
   WideBuffer: widestring;
 begin
   ParentMenuHandle := AMenuItem.Parent.Handle;

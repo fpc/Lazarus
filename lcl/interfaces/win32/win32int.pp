@@ -290,8 +290,8 @@ var
 
 initialization
   { initialize mousedownclick to far before double click time }
-  if GetTickCount > 5000 then
-    MouseDownTime := GetTickCount - 5000
+  if GetTickCount64 > 5000 then
+    MouseDownTime := GetTickCount64 - 5000
   else
     MouseDownTime := 0;
   SystemCharSetIsUTF8:=true;

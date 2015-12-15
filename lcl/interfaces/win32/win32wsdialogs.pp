@@ -583,7 +583,6 @@ var
   DialogRec: POpenFileDialogRec;
   OpenFile: LPOPENFILENAME;
   Filter, FileName, InitialDir, DefaultExt: String;
-  FileNameBuffer: PChar;
   FileNameWide: WideString;
   FileNameWideBuffer: PWideChar;
   FileNameBufferSize: Integer;
@@ -1133,7 +1132,6 @@ var
   Options : TOpenOptions;
   InitialDir : string;
   Buffer : PChar;
-  bi : TBrowseInfo;
   iidl : PItemIDList;
   biw : TBROWSEINFOW;
   Bufferw : PWideChar absolute Buffer;

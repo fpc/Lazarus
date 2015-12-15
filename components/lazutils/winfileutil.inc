@@ -18,7 +18,7 @@ begin
     Result := UTF16ToUTF8(WideResult);
   end
   else
-    Result:=SysToUTF8(SysUtils.ExtractShortPathName(UTF8ToSys(FileName)));
+    Result:=LazUTF8.SysToUTF8(SysUtils.ExtractShortPathName(LazUTF8.UTF8ToSys(FileName)));
   {$endif}
 end;
 

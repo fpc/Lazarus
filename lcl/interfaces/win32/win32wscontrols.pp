@@ -177,7 +177,6 @@ var
   lhFont: HFONT;
   AErrorCode: Cardinal;
   NCCreateParams: TNCCreateParams;
-  WindowClass, DummyClass: WndClass;
   WindowClassW, DummyClassW: WndClassW;
 begin
   NCCreateParams.DefWndProc := nil;

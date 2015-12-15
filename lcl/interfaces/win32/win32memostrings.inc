@@ -66,7 +66,6 @@ function TWin32MemoStrings.Get(Index: Integer): string;
 var
   len: Integer;
   WideBuffer: WideString;
-  AnsiBuffer: string;
 begin
   len := GetLineLength(Index);
   if len=0 then

@@ -155,9 +155,7 @@ end;
 
 class function TWin32WSCustomTrayIcon.AddIcon(ATrayIcon: TCustomTrayIcon): Boolean;
 var
-  tnida: TNotifyIconDataA;
   tnidw: TNotifyIconDataW2;
-  AnsiBuffer: ansistring;
   WideBuffer: widestring;
 begin
   // Fill TNotifyIconDataW
@@ -268,9 +266,7 @@ end;
 *******************************************************************}
 class procedure TWin32WSCustomTrayIcon.InternalUpdate(const ATrayIcon: TCustomTrayIcon);
 var
-  tnida: TNotifyIconDataA;
   tnidw: TNotifyIconDataW2;
-  AnsiBuffer: ansistring;
   WideBuffer: widestring;
 begin
   // Fill TNotifyIconDataW
