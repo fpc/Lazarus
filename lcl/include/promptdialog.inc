@@ -597,16 +597,15 @@ var
   Flags: Cardinal;
   i: Integer;
   CurButton: TBitBtn;
-  reqBtnWidth: Integer;
-  reqWidth: LongInt;
+  reqBtnWidth, reqBtnHeight: Integer;
+  reqWidth, reqHeight: Integer;
   cMinLeft: Integer;
   ButtonLeft: Integer;
-  reqHeight: LongInt;
   CurBtnPos: Integer;
   CurBtnSize: TPoint;
   MinBtnWidth: Integer; // minimum width for a single button
-  MinBtnHeight, MaxHeight,
-    ScrollBarWidth: Integer; // minimum height for a single button
+  MinBtnHeight, MaxHeight, cBtnYSpacing,
+    ScrollBarWidth, cBorderWidth: Integer; // minimum height for a single button
 
   function GetButtonSize(AButton: TBitBtn): TPoint;
   begin
@@ -642,8 +641,27 @@ begin
     SelectObject(Canvas.Handle, Screen.SystemFont.Reference.Handle);
     DrawText(Canvas.Handle, PChar(MessageTxt), Length(MessageTxt), TextBox, Flags);
 
-    MaxHeight:=200;//Min(Screen.Height-100,(Screen.Height*4) div 5);
-    if TextBox.Bottom>MaxHeight then
+    MaxHeight:=Monitor.WorkareaRect.Bottom-Monitor.WorkareaRect.Top
+      -GetSystemMetrics(SM_CYCAPTION)-GetSystemMetrics(SM_CYSIZEFRAME)*2
+      -GetSystemMetrics(SM_CYDLGFRAME)*2; // LCL needs client size of form
+
+    // calculate the width we need to display the buttons
+    MinBtnWidth:=Max(25,MinimumDialogButtonWidth);
+    MinBtnHeight:=Max(15,MinimumDialogButtonHeight);
+    reqBtnWidth := 0;
+    reqBtnHeight := 0;
+    if (FButtons <> nil) and (FButtons.Count > 0) then
+      for i := 0 to FButtons.Count - 1 do
+      begin
+        CurButton := TBitBtn(FButtons[i]);
+        CurBtnSize:=GetButtonSize(CurButton);
+        if i > 0 then Inc(reqBtnWidth, cBtnDist);
+        Inc(reqBtnWidth, CurBtnSize.X);
+        reqBtnHeight:=Max(reqBtnHeight, CurBtnSize.Y);
+      end;
+
+    cBtnYSpacing := reqBtnHeight + 3 * cLabelSpacing;
+    if TextBox.Bottom>(MaxHeight-cBtnYSpacing) then
     begin
       // does not fit onto the screen => use a TMemo
       TextBox.Bottom:=MaxHeight;
@@ -658,10 +676,13 @@ begin
           Text:=MessageTxt;
           Anchors:=[akLeft,akTop,akRight,akBottom];
           Parent:=Self;
+          BorderStyle:=bsNone;
+          Color:=ColorToRGB(clBtnFace); // Gtk2 needs ColorToRGB
         end;
       end;
       ScrollBarWidth:=LCLIntf.GetSystemMetrics(SM_CXVSCROLL);
-      inc(TextBox.Right,ScrollBarWidth);
+      cBorderWidth:=LCLIntf.GetSystemMetrics(SM_CXBORDER)*12; // there is some memo text padding I don't know how to exactly get - use approximate border (better more then less)
+      inc(TextBox.Right,ScrollBarWidth+cBorderWidth);
       FMsgMemo.Visible:=true;
       BorderStyle := bsSizeable;
     end else if FMsgMemo<>nil then
@@ -670,20 +691,6 @@ begin
       BorderStyle := bsDialog;
     end;
 
-    // calculate the width we need to display the buttons
-    MinBtnWidth:=Max(25,MinimumDialogButtonWidth);
-    MinBtnHeight:=Max(15,MinimumDialogButtonHeight);
-    reqBtnWidth := 0;
-
-    if FButtons <> nil then
-      for i := 0 to FButtons.Count - 1 do
-      begin
-        CurButton := TBitBtn(FButtons[i]);
-        CurBtnSize:=GetButtonSize(CurButton);
-        if i > 0 then Inc(reqBtnWidth, cBtnDist);
-        Inc(reqBtnWidth, CurBtnSize.X);
-      end;
-
     // calculate the width of the dialog
     if FBitmap <> nil then
       cMinLeft := cLabelSpacing + max(20, FBitmap.Width) + cLabelSpacing
@@ -691,15 +698,22 @@ begin
       cMinLeft := cLabelSpacing;
     reqWidth:= reqBtnWidth + 2 * cBtnDist;
     if reqWidth < (TextBox.Right + cMinLeft + cLabelSpacing) then
-      reqWidth:= TextBox.Right + cMinLeft + cLabelSpacing;
+      reqWidth:= TextBox.Right + cMinLeft + cLabelSpacing
+    else
+      TextBox.Right := reqWidth - cMinLeft - cLabelSpacing;
     ButtonLeft := ((reqWidth - reqBtnWidth) div 2);
 
     // calculate the height of the dialog
     reqHeight:= TextBox.Bottom;
     if (FBitmap <> nil) and (FBitmap.Height > reqHeight) then
       reqHeight := FBitmap.Height;
-    // ToDo: CurBtnSize may not be initialized.
-    inc(reqHeight, CurBtnSize.Y + 3 * cLabelSpacing);
+
+    inc(reqHeight, cBtnYSpacing);
+    if reqHeight > MaxHeight then
+    begin
+      Dec(TextBox.Bottom, reqHeight-MaxHeight);
+      reqHeight := MaxHeight;
+    end;
 
     // calculate the text position
     OffsetRect(TextBox,
@@ -713,9 +727,11 @@ begin
       FBitmapY := (reqHeight - CurBtnSize.Y - FBitmap.Height - cLabelSpacing) div 2;
     end;
 
-    // set size of form
-    SetBounds((Screen.Width - reqWidth-10) div 2, (Screen.Height - reqHeight-50) div 2,
-           reqWidth, reqHeight);
+    // set size&position of form
+    SetBounds(
+      (Monitor.WorkareaRect.Left + Monitor.WorkareaRect.Right - reqWidth) div 2,
+      Monitor.WorkareaRect.Top + (MaxHeight - reqHeight) div 2,
+      reqWidth, reqHeight);
 
     // position memo
     if (FMsgMemo<>nil) and FMsgMemo.Visible then
@@ -769,7 +785,7 @@ begin
   inherited CreateNew(nil, 1);
   PopupMode := pmAuto;
   BorderStyle := bsDialog;
-  Position := poScreenCenter;
+  Position := poDesigned;
   MessageTxt := ConvertLineEndings(aMsg);
   HelpContext := HelpCtx;
   KeyPreview := True;
