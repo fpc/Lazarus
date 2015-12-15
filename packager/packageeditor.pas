@@ -3259,6 +3259,7 @@ begin
   else
     Moved := LazPackage.MoveRequiredDependencyDown(FSingleSelectedDep);
   if not Moved then exit;
+  LazPackage.ModifySilently;
   RequiredBranch:=FilterEdit.GetExistingBranch(FRequiredPackagesNode);
   OldIndex:=RequiredBranch.Items.IndexOf(FSingleSelectedDep.PackageName);
   Assert(OldIndex<>-1, 'TPackageEditorForm.DoMoveDependency: "'+FSingleSelectedDep.PackageName+'" not found in FilterBranch.');
