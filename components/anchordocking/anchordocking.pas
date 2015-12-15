@@ -1793,7 +1793,8 @@ var
     end;
     if Parent=nil then begin
       Site.WindowState:=Node.WindowState;
-    end;
+    end else
+      Site.WindowState:=wsNormal;
   end;
 
   function GetNodeSite(Node: TAnchorDockLayoutTreeNode): TAnchorDockHostSite;
