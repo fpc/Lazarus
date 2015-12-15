@@ -3241,7 +3241,7 @@ begin
   if (NewIndex<0) or (NewIndex>=LazPackage.FileCount) then exit;
   FilesBranch:=FilterEdit.GetExistingBranch(FFilesNode);
   LazPackage.MoveFile(OldIndex,NewIndex);
-  FilesBranch.MoveFile(OldIndex,NewIndex);
+  FilesBranch.Move(OldIndex,NewIndex);
   UpdatePEProperties;
   UpdateStatusBar;
   FilterEdit.InvalidateFilter;
@@ -3249,16 +3249,24 @@ end;
 
 procedure TPackageEditorForm.DoMoveDependency(Offset: integer);
 var
-  OldSelection: TStringList;
+  OldIndex, NewIndex: Integer;
+  RequiredBranch: TTreeFilterBranch;
+  Moved: Boolean;
 begin
-  ItemsTreeView.BeginUpdate;
-  OldSelection:=ItemsTreeView.StoreCurrentSelection;
+  if (LazPackage=nil) or (FSingleSelectedDep=nil) then exit;
   if Offset<0 then
-    PackageGraph.MoveRequiredDependencyUp(FSingleSelectedDep)
+    Moved := LazPackage.MoveRequiredDependencyUp(FSingleSelectedDep)
   else
-    PackageGraph.MoveRequiredDependencyDown(FSingleSelectedDep);
-  ItemsTreeView.ApplyStoredSelection(OldSelection);
-  ItemsTreeView.EndUpdate;
+    Moved := LazPackage.MoveRequiredDependencyDown(FSingleSelectedDep);
+  if not Moved then exit;
+  RequiredBranch:=FilterEdit.GetExistingBranch(FRequiredPackagesNode);
+  OldIndex:=RequiredBranch.Items.IndexOf(FSingleSelectedDep.PackageName);
+  Assert(OldIndex<>-1, 'TPackageEditorForm.DoMoveDependency: "'+FSingleSelectedDep.PackageName+'" not found in FilterBranch.');
+  NewIndex:=OldIndex+Offset;
+  RequiredBranch.Move(OldIndex,NewIndex);
+  UpdatePEProperties;
+  UpdateStatusBar;
+  FilterEdit.InvalidateFilter;
 end;
 
 procedure TPackageEditorForm.DoSortFiles;

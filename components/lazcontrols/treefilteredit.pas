@@ -55,7 +55,9 @@ type
     function GetData(AIndex: integer): TObject;
     procedure ClearNodeData;
     procedure InvalidateBranch;
-    procedure MoveFile(CurIndex, NewIndex: integer);
+    procedure Move(CurIndex, NewIndex: integer);
+  public
+    property Items: TStringList read fOriginalData;
   end;
 
   TBranchList = specialize TFPGObjectList<TTreeFilterBranch>;
@@ -397,7 +399,7 @@ begin
   ApplyFilter;
 end;
 
-procedure TTreeFilterBranch.MoveFile(CurIndex, NewIndex: integer);
+procedure TTreeFilterBranch.Move(CurIndex, NewIndex: integer);
 begin
   fOriginalData.Move(CurIndex, NewIndex);
 end;

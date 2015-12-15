@@ -294,10 +294,10 @@ type
       ListType: TPkgDependencyList);
     procedure RemoveFromList(var FirstDependency: TPkgDependency;
       ListType: TPkgDependencyList);
-    procedure MoveUpInList(var FirstDependency: TPkgDependency;
-      ListType: TPkgDependencyList);
-    procedure MoveDownInList(var FirstDependency: TPkgDependency;
-      ListType: TPkgDependencyList);
+    function MoveUpInList(var FirstDependency: TPkgDependency;
+      ListType: TPkgDependencyList): Boolean;
+    function MoveDownInList(var FirstDependency: TPkgDependency;
+      ListType: TPkgDependencyList): Boolean;
     function MakeFilenameRelativeToOwner(const AFilename: string): string;
     function FindDefaultFilename: string;
   public
@@ -708,8 +708,8 @@ type
     procedure DeleteRequiredDependency(Dependency: TPkgDependency);
     procedure DeleteRemovedDependency(Dependency: TPkgDependency);
     procedure RemoveRemovedDependency(Dependency: TPkgDependency);
-    procedure MoveRequiredDependencyUp(Dependency: TPkgDependency);
-    procedure MoveRequiredDependencyDown(Dependency: TPkgDependency);
+    function MoveRequiredDependencyUp(Dependency: TPkgDependency): Boolean;
+    function MoveRequiredDependencyDown(Dependency: TPkgDependency): Boolean;
     function CreateDependencyWithOwner(NewOwner: TObject;
                                WithMinVersion: boolean = false): TPkgDependency;
     function Requires(APackage: TLazPackage): boolean;
@@ -2095,12 +2095,12 @@ begin
   PrevDependency[ListType]:=nil;
 end;
 
-procedure TPkgDependency.MoveUpInList(var FirstDependency: TPkgDependency;
-  ListType: TPkgDependencyList);
+function TPkgDependency.MoveUpInList(var FirstDependency: TPkgDependency;
+  ListType: TPkgDependencyList): Boolean;
 var
   OldPrev: TPkgDependency;
 begin
-  if (FirstDependency=Self) or (PrevDependency[ListType]=nil) then exit;
+  if (FirstDependency=Self) or (PrevDependency[ListType]=nil) then exit(False);
   OldPrev:=PrevDependency[ListType];
   if OldPrev.PrevDependency[ListType]<>nil then
     OldPrev.PrevDependency[ListType].NextDependency[ListType]:=Self;
@@ -2111,14 +2111,15 @@ begin
   NextDependency[ListType]:=OldPrev;
   OldPrev.PrevDependency[ListType]:=Self;
   if FirstDependency=OldPrev then FirstDependency:=Self;
+  Result:=True;
 end;
 
-procedure TPkgDependency.MoveDownInList(var FirstDependency: TPkgDependency;
-  ListType: TPkgDependencyList);
+function TPkgDependency.MoveDownInList(var FirstDependency: TPkgDependency;
+  ListType: TPkgDependencyList): Boolean;
 var
   OldNext: TPkgDependency;
 begin
-  if (NextDependency[ListType]=nil) then exit;
+  if (NextDependency[ListType]=nil) then exit(False);
   OldNext:=NextDependency[ListType];
   if OldNext.NextDependency[ListType]<>nil then
     OldNext.NextDependency[ListType].PrevDependency[ListType]:=Self;
@@ -2129,6 +2130,7 @@ begin
   PrevDependency[ListType]:=OldNext;
   OldNext.NextDependency[ListType]:=Self;
   if FirstDependency=Self then FirstDependency:=OldNext;
+  Result:=True;
 end;
 
 function TPkgDependency.MakeFilenameRelativeToOwner(const AFilename: string): string;
@@ -3624,14 +3626,14 @@ begin
   Dependency.Free;
 end;
 
-procedure TLazPackage.MoveRequiredDependencyUp(Dependency: TPkgDependency);
+function TLazPackage.MoveRequiredDependencyUp(Dependency: TPkgDependency): Boolean;
 begin
-  Dependency.MoveUpInList(FFirstRequiredDependency,pdlRequires);
+  Result := Dependency.MoveUpInList(FFirstRequiredDependency,pdlRequires);
 end;
 
-procedure TLazPackage.MoveRequiredDependencyDown(Dependency: TPkgDependency);
+function TLazPackage.MoveRequiredDependencyDown(Dependency: TPkgDependency): Boolean;
 begin
-  Dependency.MoveDownInList(FFirstRequiredDependency,pdlRequires);
+  Result := Dependency.MoveDownInList(FFirstRequiredDependency,pdlRequires);
 end;
 
 function TLazPackage.CreateDependencyWithOwner(NewOwner: TObject;
