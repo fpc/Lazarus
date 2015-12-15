@@ -1,0 +1,184 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: tachartstrconsts.descolor
+msgid "Color"
+msgstr "Väri"
+
+#: tachartstrconsts.desdatapointeditor
+msgid "DataPoints editor"
+msgstr "Datapisteiden muokkain"
+
+#: tachartstrconsts.destext
+msgid "Text"
+msgstr "Teksti"
+
+#: tachartstrconsts.rsadd
+msgid "Add"
+msgstr "Lisää"
+
+#: tachartstrconsts.rsareaseries
+msgid "Area series"
+msgstr "Aluekuvaaja"
+
+#: tachartstrconsts.rsautoscale
+msgid "Auto scale"
+msgstr "Automaattinen skaalaus"
+
+#: tachartstrconsts.rsbarseries
+msgid "Bar series"
+msgstr "Pylväskuvaaja"
+
+#: tachartstrconsts.rsboxandwhiskerseries
+msgid "Box-and-whiskers series"
+msgstr "Laatikko-jana kuvaaja"
+
+#: tachartstrconsts.rsbsplineseries
+msgid "B-Spline series"
+msgstr "B-käyrä kuvaaja"
+
+#: tachartstrconsts.rsbubbleseries
+msgid "Bubble series"
+msgstr "Kuplakuvaaja"
+
+#: tachartstrconsts.rscolormapseries
+msgid "Color map series"
+msgstr "Värikarttakuvaaja"
+
+#: tachartstrconsts.rsconstantline
+msgid "Constant line"
+msgstr "Kiinteä viiva"
+
+#: tachartstrconsts.rscubicsplineseries
+msgid "Cubic spline series"
+msgstr "Kuutiokäyräkuvaaja"
+
+#: tachartstrconsts.rscumulativenormaldistribution
+msgid "Cumulative normal distribution"
+msgstr "Kumulatiivinen normaalijakauma"
+
+#: tachartstrconsts.rsdatapointclick
+msgid "Data point click"
+msgstr "Datapisteen klikkaus"
+
+#: tachartstrconsts.rsdatapointcrosshair
+msgid "Data point crosshair"
+msgstr "Datapisteen tähtäin"
+
+#: tachartstrconsts.rsdatapointdrag
+msgid "Data point drag"
+msgstr "Datapisteen vetäminen"
+
+#: tachartstrconsts.rsdatapointhint
+msgid "Data point hint"
+msgstr "Datapisteen vihje"
+
+#: tachartstrconsts.rsdelete
+msgid "Delete"
+msgstr "Poista"
+
+#: tachartstrconsts.rsdistancemeasurement
+msgid "Distance measurement"
+msgstr "Etäisyysmittaus"
+
+#: tachartstrconsts.rsfunctionseries
+msgid "Function series"
+msgstr "Funktiokuvaaja"
+
+#: tachartstrconsts.rsleastsquaresfitseries
+msgid "Least-squares fit series"
+msgstr "Pienimpään neliösummaan sopiva kuvaaja"
+
+#: tachartstrconsts.rslinear
+msgid "Linear"
+msgstr "Lineaarinen"
+
+#: tachartstrconsts.rslineseries
+msgid "Line series"
+msgstr "Viivakuvaaja"
+
+#: tachartstrconsts.rslogarithmic
+msgid "Logarithmic"
+msgstr "Logaritminen"
+
+#: tachartstrconsts.rsmanhattanplotseries
+msgid "Manhattan plot series"
+msgstr "Manhattan-kuvaaja"
+
+#: tachartstrconsts.rsmovedown
+msgid "Down"
+msgstr "Alas"
+
+#: tachartstrconsts.rsmoveup
+msgid "Up"
+msgstr "Ylös"
+
+#: tachartstrconsts.rsopenhighlowcloseseries
+msgid "Open-high-low-close series"
+msgstr ""
+
+#: tachartstrconsts.rspanningbyclick
+msgid "Panning by click"
+msgstr "Vieritys klikkaamalla"
+
+#: tachartstrconsts.rspanningbydrag
+msgid "Panning by drag"
+msgstr "Vieritys vetämällä"
+
+#: tachartstrconsts.rspanningbymousewheel
+msgid "Panning by mouse wheel"
+msgstr "Vieritys hiiren rullalla"
+
+#: tachartstrconsts.rsparametriccurveseries
+msgid "Parametric curve series"
+msgstr ""
+
+#: tachartstrconsts.rspieseries
+msgid "Pie series"
+msgstr "Piirakkakuvaaja"
+
+#: tachartstrconsts.rspolarseries
+msgid "Polar series"
+msgstr "Napakuvaaja"
+
+#: tachartstrconsts.rsreticule
+msgid "Reticule"
+msgstr "Ristikko"
+
+#: tachartstrconsts.rsuserdefined
+msgctxt "tachartstrconsts.rsuserdefined"
+msgid "User-defined"
+msgstr "Käyttäjän määrittelemä"
+
+#: tachartstrconsts.rsuserdrawnseries
+msgid "User-drawn series"
+msgstr "Käyttäjän piirtämä kuvaaja"
+
+#: tachartstrconsts.rszoombyclick
+msgid "Zoom by click"
+msgstr "Zoomaus klikkaamalla"
+
+#: tachartstrconsts.rszoombydrag
+msgid "Zoom by drag"
+msgstr "Zoomaus vetämällä"
+
+#: tachartstrconsts.rszoombymousewheel
+msgid "Zoom by mouse-wheel"
+msgstr "Zoomaus hiiren rullalla"
+
+#: tachartstrconsts.sesserieseditortitle
+msgid "Edit series"
+msgstr "Muokkaa kuvaajia"
+
+#: tachartstrconsts.tasaxistransformseditortitle
+msgid "Edit axis transformations"
+msgstr "Muokkaa akselimuunnoksia"
+
+#: tachartstrconsts.tasfailedsubcomponentrename
+msgid "Failed to rename components: %s"
+msgstr "Uudelleennimeäminen epäonnistui komponenteissa: %s"
+
+#: tachartstrconsts.tastoolseditortitle
+msgid "Edit tools"
+msgstr "Muokkaustyökalut"
+
