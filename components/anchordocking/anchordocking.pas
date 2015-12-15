@@ -265,6 +265,7 @@ type
     function DockAnotherControl(Sibling, NewControl: TControl; DockAlign: TAlign;
                                 Inside: boolean): boolean; virtual;
     procedure CreatePages; virtual;
+    procedure FreePages; virtual;
     function DockSecondPage(NewControl: TControl): boolean; virtual;
     function DockAnotherPage(NewControl: TControl; InFrontOf: TControl): boolean; virtual;
     procedure AddCleanControl(AControl: TControl; TheAlign: TAlign = alNone);
@@ -1743,6 +1744,7 @@ var
     aManager: TAnchorDockManager;
     NewBounds: TRect;
     aMonitor: TMonitor;
+    aHostSite: TAnchorDockHostSite;
   begin
     if Parent=nil then begin
       if (Node.Monitor>=0) and (Node.Monitor<Screen.MonitorCount) then
@@ -1788,13 +1790,17 @@ var
       Site.HostDockSite:=Parent;
     end;
     if Site is TAnchorDockHostSite then begin
-      TAnchorDockHostSite(Site).Header.HeaderPosition:=Node.HeaderPosition;
-      TAnchorDockHostSite(Site).DockRestoreBounds:=NewBounds;
+      aHostSite:=TAnchorDockHostSite(Site);
+      aHostSite.Header.HeaderPosition:=Node.HeaderPosition;
+      aHostSite.DockRestoreBounds:=NewBounds;
+      if (Node.NodeType<>adltnPages) and (aHostSite.Pages<>nil) then
+        aHostSite.FreePages;
     end;
     if Parent=nil then begin
       Site.WindowState:=Node.WindowState;
-    end else
+    end else begin
       Site.WindowState:=wsNormal;
+    end;
   end;
 
   function GetNodeSite(Node: TAnchorDockLayoutTreeNode): TAnchorDockHostSite;
@@ -1813,11 +1819,13 @@ var
     AControl: TControl;
     Site: TAnchorDockHostSite;
     Splitter: TAnchorDockSplitter;
-    i: Integer;
+    i, j: Integer;
     Side: TAnchorKind;
     AnchorControl: TControl;
     ChildNode: TAnchorDockLayoutTreeNode;
     NewBounds: TRect;
+    aPageName: String;
+    aPage: TCustomPage;
   begin
     Result:=nil;
     if Scale and SrcRectValid(Node.WorkAreaRect) then
@@ -1952,20 +1960,30 @@ var
       debugln(['TAnchorDockMaster.RestoreLayout.Restore Pages Node.Name=',Node.Name,' ChildCount=',Node.Count]);
       {$ENDIF}
       Site.BeginUpdateLayout;
+      j:=0;
       try
         SetupSite(Site,Node,Parent);
         Site.FSiteType:=adhstPages;
         Site.Header.Parent:=nil;
-        Site.CreatePages;
+        if Site.Pages=nil then
+          Site.CreatePages;
         for i:=0 to Node.Count-1 do begin
-          Site.Pages.Pages.Add(Node[i].Name);
-          AControl:=Restore(Node[i],Site.Pages.Page[i]);
+          aPageName:=Node[i].Name;
+          if j>=Site.Pages.PageCount then
+            Site.Pages.Pages.Add(aPageName);
+          aPage:=Site.Pages.Page[j];
+          inc(j);
+          aPage.Caption:=aPageName;
+          AControl:=Restore(Node[i],aPage);
           if AControl=nil then continue;
           AControl.Align:=alClient;
           for Side:=Low(TAnchorKind) to high(TAnchorKind) do
             AControl.AnchorSide[Side].Control:=nil;
         end;
       finally
+        while Site.Pages.PageCount>j do
+          Site.Pages.Page[Site.Pages.PageCount-1].Free;
+        Site.SimplifyPages;
         Site.EndUpdateLayout;
       end;
       Result:=Site;
@@ -3736,6 +3754,11 @@ begin
   FPages.Align:=alClient;
 end;
 
+procedure TAnchorDockHostSite.FreePages;
+begin
+  FreeAndNil(FPages);
+end;
+
 function TAnchorDockHostSite.DockSecondPage(NewControl: TControl): boolean;
 var
   OldControl: TControl;
@@ -4105,7 +4128,7 @@ begin
       if SiteType=adhstPages then
         FSiteType:=adhstOneControl;
       // free Pages
-      FreeAndNil(FPages);
+      FreePages;
       if SiteType=adhstOneControl then
         SimplifyOneControl;
     finally
@@ -4117,7 +4140,7 @@ begin
   end else if Pages.PageCount=0 then begin
     //debugln(['TAnchorDockHostSite.SimplifyPages "',Caption,'" PageCount=0 Self=',dbgs(Pointer(Self))]);
     FSiteType:=adhstNone;
-    FreeAndNil(FPages);
+    FreePages;
     DockMaster.NeedSimplify(Self);
   end;
 end;
@@ -5111,7 +5134,7 @@ begin
     debugln(['TAnchorDockHostSite.Destroy Component ',i,'/',ComponentCount,' ',DbgSName(Components[i])]);
   for i:=0 to ControlCount-1 do
     debugln(['TAnchorDockHostSite.Destroy Control ',i,'/',ControlCount,' ',DbgSName(Controls[i])]);}
-  FreeAndNil(FPages);
+  FreePages;
   inherited Destroy;
 end;
 
