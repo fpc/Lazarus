@@ -782,7 +782,7 @@ type
     function FindEnumerationTypeOfSetType(SetTypeNode: TCodeTreeNode;
       out Context: TFindContext): boolean;
     function FindElementTypeOfArrayType(ArrayNode: TCodeTreeNode;
-      out ExprType: TExpressionType): boolean;
+      out ExprType: TExpressionType; AliasType: PFindContext): boolean;
     function CheckOperatorEnumerator(Params: TFindDeclarationParams;
       const FoundContext: TFindContext): TIdentifierFoundResult;
     function CheckModifierEnumeratorCurrent({%H-}Params: TFindDeclarationParams;
@@ -11619,9 +11619,9 @@ begin
           end;
         ctnRangedArrayType,ctnOpenArrayType:
           if TermExprType.Context.Tool.FindElementTypeOfArrayType(
-                                  TermExprType.Context.Node,ExprType)
+                                  TermExprType.Context.Node,ExprType,@AliasType)
           then begin
-            Result:=FindExprTypeAsString(ExprType,TermPos.StartPos);
+            Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,@AliasType);
           end;
         else
           RaiseTermHasNoIterator;
@@ -11949,13 +11949,15 @@ begin
 end;
 
 function TFindDeclarationTool.FindElementTypeOfArrayType(
-  ArrayNode: TCodeTreeNode; out ExprType: TExpressionType): boolean;
+  ArrayNode: TCodeTreeNode; out ExprType: TExpressionType;
+  AliasType: PFindContext): boolean;
 var
   Params: TFindDeclarationParams;
   p: LongInt;
 begin
   Result:=false;
   ExprType:=CleanExpressionType;
+  AliasType^:=CleanFindContext;
   if (ArrayNode=nil) then exit;
   if (ArrayNode.Desc<>ctnOpenArrayType) and (ArrayNode.Desc<>ctnRangedArrayType)
   then exit;
@@ -11976,7 +11978,7 @@ begin
     Params.ContextNode:=ArrayNode;
     p:=CurPos.StartPos;
     Params.SetIdentifier(Self,@Src[p],nil);
-    ExprType:=FindExpressionResultType(Params,p,-1);
+    ExprType:=FindExpressionResultType(Params,p,-1,AliasType);
     Result:=true;
   finally
     Params.Free;
