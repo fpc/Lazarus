@@ -1444,6 +1444,9 @@ begin
       // layouts and pages with only one child
       // => move grandchildren up and delete childnode
       ReplaceWithChildren(ChildNode);
+    end else begin
+      // unknown, maybe crap from older versions
+      DeleteNode(ChildNode);
     end;
 
     i:=Min(i,Count)-1;
