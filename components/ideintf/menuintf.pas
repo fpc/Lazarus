@@ -34,17 +34,15 @@ type
     A menu item in one of the IDE's menus.
     This is only the base class for TIDEMenuSection and TIDEMenuCommand }
     
-  { TIDEMenuItem }
-
   TIDEMenuItem = class(TIDESpecialCommand)
   private
     FAutoFreeMenuItem: boolean;
     FBitmap: TBitmap;
     FMenuItem: TMenuItem;
     FMenuItemClass: TMenuItemClass;
-    FSection: TIDEMenuSection;
-    FSectionIndex: Integer;
-    FSize: integer;
+    FSection: TIDEMenuSection; // parent section
+    FSectionIndex: Integer;// index in parent section
+    FSize: integer; // size of this item including separators and children in parent section (e.g. a submenu has size=1)
     FTag: Integer;
     FUserTag: PtrUInt;
     FLastVisibleActive: boolean;
@@ -75,9 +73,9 @@ type
     function GetPath: string;
     function GetRoot: TIDEMenuItem;
     function VisibleActive: boolean; virtual;
-    function GetContainerSection: TIDEMenuSection;
-    function GetContainerMenuItem: TMenuItem;
-    function Size: integer; virtual;
+    function GetContainerSection: TIDEMenuSection; // returns nearest sub menu section
+    function GetContainerMenuItem: TMenuItem; // returns nearest sub menu
+    function Size: integer; virtual; // size of this item including separators and children in parent section (e.g. a submenu has size=1)
     function HasAsParent(Item: TIDEMenuItem): boolean;
     procedure WriteDebugReport(const Prefix: string;
                                MenuItemDebugReport: boolean); virtual;
@@ -100,9 +98,7 @@ type
     separators.
     If no children are visible, the section will not be visible.
     }
-    
-  { TIDEMenuSection }
-  
+
   TIDEMenuSectionState = (
     imssClearing
     );
@@ -999,7 +995,7 @@ var
           GetRoot.WriteDebugReport(' Top ',true);
           debugln('TIDEMenuSection.UpdateNeedTopSeparator CREATE TopSeparator Name="',Name,'" ContainerMenuIndex ** FORCED VALUE ** FROM ContainerMenuItem.Count=',dbgs(ContainerMenuItem.Count));
           {$ENDIF}
-          // there's no yet available room for new FTopSeparator.fixes #17321.
+          // there's not yet available room for new FTopSeparator.fixes #17321.
           ContainerMenuIndex := ContainerMenuItem.Count;
         end;
         ContainerMenuItem.Insert(ContainerMenuIndex,FTopSeparator);
@@ -1012,7 +1008,8 @@ var
   // - this section is imbedded (not ChildrenAsSubMenu)
   // - and this section is visible
   // - and this section has visible children
-  // - and there is a visible menu item behind and it has no top separator
+  // - and there is a visible menu item behind
+  // - and the visible menu item is not an embedded section (that creates its own separator)
   var
     ItemBehind: TIDEMenuItem;
     i: Integer;
@@ -1021,7 +1018,7 @@ var
     NewNeedBottomSeparator:=false;
     //debugln('TIDEMenuSection.UpdateNeedBottomSeparator Name="',Name,'" ChildrenAsSubMenu=',dbgs(ChildrenAsSubMenu),' Section=',dbgs(Section<>nil),' VisibleActive=',dbgs(VisibleActive));
     if (not ChildrenAsSubMenu) and (Section<>nil) and VisibleActive then begin
-      // check for any visible item in front
+      // check for any visible item behind
       i:=SectionIndex+1;
       while i<Section.Count do begin
         ItemBehind:=Section[i];
