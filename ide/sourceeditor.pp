@@ -6884,7 +6884,7 @@ var
   CurCaption: String;
   IDEMenuItem: TIDEMenuItem;
 begin
-  SrcEditSubMenuHighlighter.ChildsAsSubMenu:=true;
+  SrcEditSubMenuHighlighter.ChildrenAsSubMenu:=true;
   i:=0;
   for h:=Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do begin
     CurName:='Highlighter'+IntToStr(i);
@@ -6917,7 +6917,7 @@ const
     'CRLF (Win, DOS)'
   );
 begin
-  SrcEditSubMenuLineEnding.ChildsAsSubMenu:=true;
+  SrcEditSubMenuLineEnding.ChildrenAsSubMenu:=true;
   if (SrcEdit<>nil) and (SrcEdit.CodeBuffer<>nil) then
     FileEndings:=SrcEdit.CodeBuffer.DiskLineEnding
   else
@@ -6976,7 +6976,7 @@ var
   IDEMenuItem: TIDEMenuItem;
   SysEncoding: String;
 begin
-  SrcEditSubMenuEncoding.ChildsAsSubMenu:=true;
+  SrcEditSubMenuEncoding.ChildrenAsSubMenu:=true;
   Encoding:='';
   if SrcEdit<>nil then begin
     if SrcEdit.CodeBuffer<>nil then
