@@ -596,7 +596,7 @@ begin
                                                  'Change class',lisDlgChangeClass);
     DesignerMenuChangeParent:=RegisterIDEMenuSection(DesignerMenuSectionMisc,
                                                  'Change parent');
-    DesignerMenuChangeParent.ChildsAsSubMenu:=true;
+    DesignerMenuChangeParent.ChildrenAsSubMenu:=true;
     DesignerMenuChangeParent.Caption:=lisChangeParent;
     DesignerMenuViewLFM:=RegisterIDEMenuCommand(DesignerMenuSectionMisc,
                                                 'View LFM',lisViewSourceLfm);
