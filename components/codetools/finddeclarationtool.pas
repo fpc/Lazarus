@@ -11746,7 +11746,7 @@ begin
     {$IFDEF ShowForInEval}
     DebugLn(['TFindDeclarationTool.FindEnumeratorOfClass EnumeratorContext=',FindContextToString(EnumeratorContext)]);
     {$ENDIF}
-    if (EnumeratorContext.Node=nil) or (EnumeratorContext.Node.Desc<>ctnClass)
+    if (EnumeratorContext.Node=nil) or not(EnumeratorContext.Node.Desc in [ctnClass,ctnRecordType])
     then begin
       if ExceptionOnNotFound then begin
         ProcTool.MoveCursorToCleanPos(ProcNode.StartPos);
