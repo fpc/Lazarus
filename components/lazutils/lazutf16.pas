@@ -36,6 +36,7 @@ function UTF16CharacterToUnicode(p: PWideChar; out CharLen: integer): Cardinal;
 function UnicodeToUTF16(u: cardinal): widestring;
 function IsUTF16CharValid(AChar, ANextChar: WideChar): Boolean;
 function IsUTF16StringValid(AWideStr: widestring): Boolean;
+function Utf16StringReplace(const S, OldPattern, NewPattern: WideString;  Flags: TReplaceFlags): WideString;
 
 function UnicodeLowercase(u: cardinal): cardinal;
 function UTF8LowerCaseViaTables(const s: string): string;
@@ -141,6 +142,46 @@ begin
     if not Result then Exit;
   end;
 end;
+
+//Same as SysUtil.StringReplace but for WideStrings/UncodeStrings, since it's not available in fpc yet
+function Utf16StringReplace(const S, OldPattern, NewPattern: WideString;  Flags: TReplaceFlags): WideString;
+var
+  Srch, OldP, RemS: WideString; // Srch and OldP can contain WideUpperCase versions of S,OldPattern
+  P: Integer;
+begin
+  Srch:=S;
+  OldP:=OldPattern;
+  if rfIgnoreCase in Flags then
+  begin
+    Srch:=WideUpperCase(Srch);
+    OldP:=WideUpperCase(OldP);
+  end;
+  RemS:=S;
+  Result:='';
+  while (Length(Srch)<>0) do
+  begin
+    P:=Pos(OldP, Srch);
+    if P=0 then
+    begin
+      Result:=Result+RemS;
+      Srch:='';
+    end
+    else
+    begin
+      Result:=Result+Copy(RemS,1,P-1)+NewPattern;
+      P:=P+Length(OldP);
+      RemS:=Copy(RemS,P,Length(RemS)-P+1);
+      if not (rfReplaceAll in Flags) then
+      begin
+        Result:=Result+RemS;
+        Srch:='';
+      end
+      else
+        Srch:=Copy(Srch,P,Length(Srch)-P+1);
+    end;
+  end;
+end;
+
 
 // Lowercase Unicode Tables which match UTF-16 but also UTF-32
 var
