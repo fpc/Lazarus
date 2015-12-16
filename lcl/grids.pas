@@ -3567,7 +3567,10 @@ begin
     Canvas.Pen.Mode := pmCopy;
     GetSelectedState(aState, IsSelected);
     if IsSelected then begin
-      Canvas.Brush.Color := SelectedColor;
+      if FEditorMode and (FEditor<>nil) then
+        Canvas.Brush.Color := FEditor.Color
+      else
+        Canvas.Brush.Color := SelectedColor;
       SetCanvasFont(GetColumnFont(aCol, False));
       if not IsCellButtonColumn(point(aCol,aRow)) then
         Canvas.Font.Color := clHighlightText;
@@ -7831,6 +7834,7 @@ procedure TCustomGrid.EditorPos;
 var
   msg: TGridMessage;
   CellR: TRect;
+  EditorTop: integer;
 begin
   {$ifdef dbgGrid} DebugLn('Grid.EditorPos INIT');{$endif}
   if FEditor<>nil then begin
@@ -7855,8 +7859,21 @@ begin
       CellR := Bounds(-FEditor.Width-100, -FEditor.Height-100, CellR.Right-CellR.Left, CellR.Bottom-CellR.Top);
 
     if FEditorOptions and EO_AUTOSIZE = EO_AUTOSIZE then begin
-      if EditorBorderStyle = bsNone then
-        InflateRect(CellR, -1, -1);
+      if EditorBorderStyle = bsNone then begin
+        Inc(CellR.Left); // << to have the correct Y-coordinate: Gtk2 needs Inc; Qt+Win32 require no Inc; << some WS-dependent fix needed
+        Dec(CellR.Right);
+        Dec(CellR.Bottom);
+        if (FEditor = FStringEditor) then begin
+          FEditor.Height := Canvas.TextHeight(' ');
+          case GetColumnLayout(FCol, False) of
+          tlTop: EditorTop:=CellR.Top+constCellPadding;
+          tlCenter: EditorTop:=CellR.Top+(CellR.Bottom-CellR.Top-FEditor.Height) div 2;
+          tlBottom: EditorTop:=CellR.Bottom-constCellPadding-FEditor.Height+1;
+          end;
+          if EditorTop>CellR.Top then CellR.Top:=EditorTop;
+          CellR.Bottom:=CellR.Top+FEditor.Height;
+        end;
+      end;
       FEditor.BoundsRect := CellR;
     end else begin
       Msg.LclMsg.msg:=GM_SETBOUNDS;
