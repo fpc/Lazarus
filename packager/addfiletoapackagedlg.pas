@@ -51,13 +51,9 @@ type
 
   TAddFileToAPackageDialog = class(TForm)
     BtnPanel: TButtonPanel;
-    HasRegisterProcCheckBox: TCheckBox;
-    FileTypeRadioGroup: TRadioGroup;
-    UnitNameEdit: TEdit;
     FileNameEdit: TEdit;
     FileGroupBox: TGroupBox;
     PackagesGroupBox: TGroupBox;
-    UnitNameLabel: TLabel;
     PackagesComboBox: TComboBox;
     ShowAllCheckBox: TCheckBox;
     procedure AddFileToAPackageDlgClose(Sender: TObject;
@@ -67,47 +63,31 @@ type
     procedure PackagesGroupBoxResize(Sender: TObject);
     procedure ShowAllCheckBoxClick(Sender: TObject);
   private
-    FOnGetIDEFileInfo: TGetIDEFileStateEvent;
     fPackages: TAVLTree;// tree of TLazPackage
-    function GetFileType: TPkgFileType;
     function GetFilename: string;
-    function GetHasRegisterProc: boolean;
-    function GetUnitName: string;
-    procedure SetFileType(const AValue: TPkgFileType);
     procedure SetFilename(const AValue: string);
-    procedure SetHasRegisterProc(const AValue: boolean);
-    procedure SetUnitName(const AValue: string);
     procedure SetupComponents;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure UpdateAvailablePackages;
     property Filename: string read GetFilename write SetFilename;
-    property Unit_Name: string read GetUnitName write SetUnitName;
-    property FileType: TPkgFileType read GetFileType write SetFileType;
-    property HasRegisterProc: boolean read GetHasRegisterProc write SetHasRegisterProc;
-    property OnGetIDEFileInfo: TGetIDEFileStateEvent read FOnGetIDEFileInfo write FOnGetIDEFileInfo;
   end;
 
 
-function ShowAddFileToAPackageDlg(const Filename, AUnitName: string;
-  HasRegisterProc: boolean; OnGetIDEFileInfo: TGetIDEFileStateEvent): TModalResult;
+function ShowAddFileToAPackageDlg(const Filename: string): TModalResult;
 
 
 implementation
 
 {$R *.lfm}
 
-function ShowAddFileToAPackageDlg(const Filename, AUnitName: string;
-  HasRegisterProc: boolean; OnGetIDEFileInfo: TGetIDEFileStateEvent): TModalResult;
+function ShowAddFileToAPackageDlg(const Filename: string): TModalResult;
 var
   AddFileToAPackageDialog: TAddFileToAPackageDialog;
 begin
   AddFileToAPackageDialog:=TAddFileToAPackageDialog.Create(nil);
   AddFileToAPackageDialog.Filename:=Filename;
-  AddFileToAPackageDialog.Unit_Name:=AUnitName;
-  AddFileToAPackageDialog.HasRegisterProc:=HasRegisterProc;
-  AddFileToAPackageDialog.OnGetIDEFileInfo:=OnGetIDEFileInfo;
   AddFileToAPackageDialog.UpdateAvailablePackages;
   Result:=AddFileToAPackageDialog.ShowModal;
   AddFileToAPackageDialog.Free;
@@ -130,10 +110,8 @@ procedure TAddFileToAPackageDialog.OkButtonClick(Sender: TObject);
 var
   PkgID: TLazPackageID;
   APackage: TLazPackage;
-  PkgFile: TPkgFile;
-  FileFlags: TPkgFileFlags;
-  AddType: TAddToPkgType;
   aFilename: String;
+  NewUnitPaths, NewIncPaths: String;
 begin
   aFilename:=Filename;
   PkgID:=TLazPackageID.Create;
@@ -162,31 +140,14 @@ begin
       exit;
     end;
 
-    // check if file is already in the package
-    PkgFile:=APackage.FindPkgFile(aFilename,true,false);
-    if PkgFile<>nil then begin
-      MessageDlg(lisPkgMangFileIsAlreadyInPackage,
-        Format(lisAF2PTheFileIsAlreadyInThePackage,[aFilename,LineEnding,APackage.IDAsString]),
-        mtError,[mbCancel],0);
-      exit;
-    end;
-
-    // check filename
-    if FilenameIsPascalSource(aFilename) then
-      AddType:=d2ptUnit
-    else
-      AddType:=d2ptFile;
-    if not CheckAddingUnitFilename(APackage,AddType,
-      OnGetIDEFileInfo,aFilename) then exit;
-
     // ok -> add file to package
     APackage.BeginUpdate;
-    FileFlags:=[];
-    if FileType in PkgFileUnitTypes then
-      Include(FileFlags,pffAddToPkgUsesSection);
-    if HasRegisterProc then
-      Include(FileFlags,pffHasRegisterProc);
-    APackage.AddFile(aFilename,Unit_Name,FileType,FileFlags,cpNormal);
+    NewUnitPaths:='';
+    NewIncPaths:='';
+    APackage.AddFileByName(aFilename, NewUnitPaths, NewIncPaths);
+    // extend unit and include search path
+    if not APackage.ExtendUnitSearchPath(NewUnitPaths) then exit;
+    if not APackage.ExtendIncSearchPath(NewIncPaths) then exit;
     if APackage.Editor<>nil then APackage.Editor.UpdateAll(true);
     APackage.EndUpdate;
 
@@ -208,128 +169,26 @@ begin
 end;
 
 procedure TAddFileToAPackageDialog.SetupComponents;
-var
-  pft: TPkgFileType;
 begin
   FileGroupBox.Caption:=lisFile;
   FileNameEdit.Text:='';
-  UnitNameLabel.Caption:=lisAF2PUnitName;
-  UnitNameEdit.Text:='';
-  HasRegisterProcCheckBox.Caption:=lisAF2PHasRegisterProcedure;
   PackagesGroupBox.Caption:=lisAF2PDestinationPackage;
   ShowAllCheckBox.Caption:=lisAF2PShowAll;
   BtnPanel.OkButton.Caption:=lisMenuOk;
   BtnPanel.OkButton.OnClick:=@OkButtonClick;
   BtnPanel.OkButton.ModalResult:=mrNone;
   BtnPanel.HelpButton.OnClick:=@HelpButtonClick;
-
-  with FileTypeRadioGroup do begin
-    Caption:=lisAF2PFileType;
-    with Items do begin
-      BeginUpdate;
-      for pft:=Low(TPkgFileType) to High(TPkgFileType) do begin
-        if pft in PkgFileUnitTypes then continue;
-        Add(GetPkgFileTypeLocalizedName(pft));
-      end;
-      EndUpdate;
-    end;
-    ItemIndex:=0;
-    Columns:=2;
-  end;
 end;
 
 procedure TAddFileToAPackageDialog.SetFilename(const AValue: string);
-var
-  NewPFT: TPkgFileType;
 begin
   if FileNameEdit.Text=AValue then exit;
   FileNameEdit.Text:=AValue;
-  if FilenameIsPascalUnit(AValue) then
-    NewPFT:=pftUnit
-  else if CompareFileExt(AValue,'.lfm',true)=0 then
-    NewPFT:=pftLFM
-  else if CompareFileExt(AValue,'.lrs',true)=0 then
-    NewPFT:=pftLRS
-  else if CompareFileExt(AValue,'.inc',true)=0 then
-    NewPFT:=pftInclude
-  else if FileIsText(AValue) then
-    NewPFT:=pftText
-  else
-    NewPFT:=pftBinary;
-  FileType:=NewPFT;
-end;
-
-procedure TAddFileToAPackageDialog.SetHasRegisterProc(const AValue: boolean);
-begin
-  if HasRegisterProc=AValue then exit;
-  HasRegisterProcCheckBox.Checked:=AValue;
-end;
-
-procedure TAddFileToAPackageDialog.SetUnitName(const AValue: string);
-begin
-  if Unit_Name=AValue then exit;
-  UnitNameEdit.Text:=AValue;
 end;
 
 function TAddFileToAPackageDialog.GetFilename: string;
 begin
   Result:=FileNameEdit.Text;
-end;
-
-function TAddFileToAPackageDialog.GetFileType: TPkgFileType;
-var
-  i: Integer;
-  CurPFT: TPkgFileType;
-begin
-  if FileTypeRadioGroup.Visible then begin
-    i:=0;
-    for CurPFT:=Low(TPkgFileType) to High(TPkgFileType) do begin
-      if CurPFT in PkgFileUnitTypes then continue;
-      if FileTypeRadioGroup.ItemIndex=i then begin
-        Result:=CurPFT;
-        exit;
-      end;
-      inc(i);
-    end;
-    Result:=pftText;
-  end else begin
-    Result:=pftUnit;
-  end;
-end;
-
-function TAddFileToAPackageDialog.GetHasRegisterProc: boolean;
-begin
-  Result:=HasRegisterProcCheckBox.Checked;
-end;
-
-function TAddFileToAPackageDialog.GetUnitName: string;
-begin
-  Result:=UnitNameEdit.Text;
-end;
-
-procedure TAddFileToAPackageDialog.SetFileType(const AValue: TPkgFileType);
-var
-  ShowUnitProps: Boolean;
-  i: Integer;
-  CurPFT: TPkgFileType;
-begin
-  if FileType=AValue then exit;
-  i:=0;
-  for CurPFT:=Low(TPkgFileType) to High(TPkgFileType) do begin
-    if CurPFT in PkgFileUnitTypes then continue;
-    if CurPFT=AValue then break;
-    inc(i);
-  end;
-  if i<FileTypeRadioGroup.Items.Count then
-    FileTypeRadioGroup.ItemIndex:=i
-  else
-    FileTypeRadioGroup.ItemIndex:=-1;
-
-  ShowUnitProps:=(AValue in PkgFileUnitTypes);
-  UnitNameLabel.Visible:=ShowUnitProps;
-  UnitNameEdit.Visible:=ShowUnitProps;
-  HasRegisterProcCheckBox.Visible:=ShowUnitProps;
-  FileTypeRadioGroup.Visible:=not ShowUnitProps;
 end;
 
 constructor TAddFileToAPackageDialog.Create(TheOwner: TComponent);

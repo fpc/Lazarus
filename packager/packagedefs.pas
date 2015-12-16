@@ -37,14 +37,20 @@ unit PackageDefs;
 interface
 
 uses
-  Classes, SysUtils, contnrs, typinfo, LCLProc, LCLType, LResources, Graphics,
-  Forms, FileProcs, FileUtil, AVL_Tree, LazConfigStorage, Laz2_XMLCfg,
-  LazFileUtils, LazFileCache, LazUTF8, BasicCodeTools, CodeToolsCfgScript,
-  DefineTemplates, CodeToolManager, CodeCache, CodeToolsStructs, PropEdits,
-  LazIDEIntf, MacroIntf, MacroDefIntf, PackageIntf, IDEOptionsIntf, ProjPackBase,
+  // FCL, LCL
+  Classes, SysUtils, contnrs, typinfo, AVL_Tree,
+  LCLProc, LCLType, LResources, Graphics, Controls, Forms, Dialogs,
+  // Codetools
+  FileProcs, FileUtil, LazConfigStorage, Laz2_XMLCfg, BasicCodeTools,
+  DefineTemplates, CodeToolManager, CodeCache, CodeToolsCfgScript, CodeToolsStructs,
+  // LazUtils
+  LazFileUtils, LazFileCache, LazUTF8,
+  // IDEIntf
+  PropEdits, LazIDEIntf, MacroIntf, MacroDefIntf, PackageIntf, IDEOptionsIntf,
+  ProjPackBase, IDEDialogs, ComponentReg,
+  // IDE
   EditDefineTree, CompilerOptions, CompOptsModes, IDEOptionDefs,
-  LazarusIDEStrConsts, IDEProcs, ComponentReg, TransferMacros,
-  FileReferenceList, PublishModule;
+  LazarusIDEStrConsts, IDEProcs, TransferMacros, FileReferenceList, PublishModule;
 
 type
   TLazPackage = class;
@@ -639,6 +645,8 @@ type
     function IsMakingSense: boolean;
     procedure ConsistencyCheck;
     // paths, define templates
+    function ExtendUnitSearchPath(NewUnitPaths: string): boolean;
+    function ExtendIncSearchPath(NewIncPaths: string): boolean;
     function IsVirtual: boolean; override;
     function HasDirectory: boolean;
     function HasStaticDirectory: boolean;
@@ -682,6 +690,8 @@ type
     function AddFile(const NewFilename, NewUnitName: string;
                      NewFileType: TPkgFileType; NewFlags: TPkgFileFlags;
                      CompPriorityCat: TComponentPriorityCategory): TPkgFile;
+    function AddFileByName(aFilename: string;
+                           var NewUnitPaths, NewIncPaths: String): Boolean;
     function AddRemovedFile(const NewFilename, NewUnitName: string;
                      NewFileType: TPkgFileType; NewFlags: TPkgFileFlags;
                      CompPriorityCat: TComponentPriorityCategory): TPkgFile;
@@ -3160,6 +3170,50 @@ begin
   CheckList(FComponents,true,true,true);
 end;
 
+function TLazPackage.ExtendUnitSearchPath(NewUnitPaths: string): boolean;
+var
+  CurUnitPaths: String;
+  r: TModalResult;
+begin
+  CurUnitPaths:=CompilerOptions.ParsedOpts.GetParsedValue(pcosUnitPath);
+  NewUnitPaths:=RemoveSearchPaths(NewUnitPaths,CurUnitPaths);
+  if NewUnitPaths<>'' then begin
+    NewUnitPaths:=CreateRelativeSearchPath(NewUnitPaths,Directory);
+    r:=IDEMessageDialog(lisExtendUnitPath,
+      Format(lisExtendUnitSearchPathOfPackageWith, [Name, #13,
+        NewUnitPaths]), mtConfirmation, [mbYes, mbNo, mbCancel]);
+    case r of
+    mrYes: CompilerOptions.OtherUnitFiles:=
+                   MergeSearchPaths(CompilerOptions.OtherUnitFiles,NewUnitPaths);
+    mrNo: ;
+    else exit(false);
+    end;
+  end;
+  Result:=true;
+end;
+
+function TLazPackage.ExtendIncSearchPath(NewIncPaths: string): boolean;
+var
+  CurIncPaths: String;
+  r: TModalResult;
+begin
+  CurIncPaths:=CompilerOptions.ParsedOpts.GetParsedValue(pcosIncludePath);
+  NewIncPaths:=RemoveSearchPaths(NewIncPaths,CurIncPaths);
+  if NewIncPaths<>'' then begin
+    NewIncPaths:=CreateRelativeSearchPath(NewIncPaths,Directory);
+    r:=IDEMessageDialog(lisExtendIncludePath,
+      Format(lisExtendIncludeFileSearchPathOfPackageWith, [Name, #13,
+        NewIncPaths]), mtConfirmation, [mbYes, mbNo, mbCancel]);
+    case r of
+    mrYes: CompilerOptions.IncludePath:=
+                       MergeSearchPaths(CompilerOptions.IncludePath,NewIncPaths);
+    mrNo: ;
+    else exit(false);
+    end;
+  end;
+  Result:=true;
+end;
+
 function TLazPackage.IndexOfPkgComponent(PkgComponent: TPkgComponent): integer;
 begin
   Result:=FComponents.IndexOf(PkgComponent);
@@ -3356,6 +3410,44 @@ begin
   FFiles.Add(Result);
   //debugln(['TLazPackage.AddFile Is=',Result.Filename,' Should=',NewFilename]);
   Modified:=true;
+end;
+
+function TLazPackage.AddFileByName(aFilename: string;
+  var NewUnitPaths, NewIncPaths: String): Boolean;
+var
+  NewFileType: TPkgFileType;
+  NewUnitName: String;
+  HasRegister: Boolean;
+  NewFlags: TPkgFileFlags;
+  Code: TCodeBuffer;
+  CurDir: String;
+begin
+  Result := True;
+  aFilename:=CleanAndExpandFilename(aFileName);
+  if not FileExistsUTF8(aFilename) then Exit(False);
+  if DirPathExists(aFilename) then Exit(False);
+  if FindPkgFile(aFilename,true,false)<>nil then Exit(False);
+  NewFileType:=FileNameToPkgFileType(aFilename);
+  NewFlags:=[];
+  HasRegister:=false;
+  NewUnitName:='';
+  if (NewFileType=pftUnit) then begin
+    Code:=CodeToolBoss.LoadFile(aFilename,true,false);
+    NewUnitName:=CodeToolBoss.GetSourceName(Code,false);
+    if NewUnitName='' then
+      NewUnitName:=ExtractFileNameOnly(aFilename);
+    if FindUsedUnit(NewUnitName)=nil then
+      Include(NewFlags,pffAddToPkgUsesSection);
+    CodeToolBoss.HasInterfaceRegisterProc(Code,HasRegister);
+    if HasRegister then
+      Include(NewFlags,pffHasRegisterProc);
+  end;
+  AddFile(aFilename,NewUnitName,NewFileType,NewFlags,cpNormal);
+  CurDir:=ChompPathDelim(ExtractFilePath(aFilename));
+  if NewFileType=pftUnit then
+    NewUnitPaths:=MergeSearchPaths(NewUnitPaths,CurDir)
+  else
+    NewIncPaths:=MergeSearchPaths(NewIncPaths,CurDir);
 end;
 
 function TLazPackage.AddRemovedFile(const NewFilename, NewUnitName: string;
