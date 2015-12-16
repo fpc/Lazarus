@@ -31,6 +31,8 @@ resourcestring
   desDatapointEditor = 'DataPoints editor';
   desColor = 'Color';
   desText = 'Text';
+  desInsertRow = 'Insert row';
+  desDeleteRow = 'Delete row';
 
   // Subcomponents editor
   rsAdd = 'Add';
@@ -47,12 +49,12 @@ resourcestring
   rsPanningByDrag = 'Panning by drag';
   rsPanningByClick = 'Panning by click';
   rsPanningByMousewheel = 'Panning by mouse wheel';
-  rsReticule = 'Reticule';
+  //rsReticule = 'Reticule';
   rsDataPointClick = 'Data point click';
   rsDataPointDrag = 'Data point drag';
   rsDataPointHint = 'Data point hint';
   rsDataPointCrossHair = 'Data point crosshair';
-  rsUserDefined = 'User-defined';
+  rsUserDefinedTool = 'User-defined';
   rsDistanceMeasurement = 'Distance measurement';
 
   // Transformations
@@ -61,6 +63,7 @@ resourcestring
   rsCumulativeNormalDistribution = 'Cumulative normal distribution';
   rsLinear = 'Linear';
   rsLogarithmic = 'Logarithmic';
+  rsUserDefined = 'User-defined';
 
   // ChartUtils
   tasFailedSubcomponentRename = 'Failed to rename components: %s';

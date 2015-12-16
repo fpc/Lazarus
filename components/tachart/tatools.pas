@@ -1974,7 +1974,7 @@ initialization
   RegisterChartToolClass(TDataPointDragTool, @rsDataPointDrag);
   RegisterChartToolClass(TDataPointHintTool, @rsDataPointHint);
   RegisterChartToolClass(TDataPointCrosshairTool, @rsDataPointCrosshair);
-  RegisterChartToolClass(TUserDefinedTool, @rsUserDefined);
+  RegisterChartToolClass(TUserDefinedTool, @rsUserDefinedTool);
 
 finalization
 

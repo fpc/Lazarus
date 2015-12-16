@@ -1,206 +1,203 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Project-Id-Version: tachartlazaruspkg\n"
+"Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: de\n"
-"X-Generator: Poedit 1.8.6\n"
-"X-Poedit-SourceCharset: UTF-8\n"
+"Language: ru\n"
+"X-Generator: Poedit 1.7.7\n"
 
 #: tachartstrconsts.descolor
 msgid "Color"
-msgstr "Farbe"
+msgstr "Цвет"
 
 #: tachartstrconsts.desdatapointeditor
 msgid "DataPoints editor"
-msgstr "Datenpunkt-Editor"
+msgstr "Редактор величин"
 
 #: tachartstrconsts.desdeleterow
 msgid "Delete row"
-msgstr ""
+msgstr "Удалить строку"
 
 #: tachartstrconsts.desinsertrow
 msgid "Insert row"
-msgstr ""
+msgstr "Вставить строку"
 
 #: tachartstrconsts.destext
 msgid "Text"
-msgstr "Text"
+msgstr "Текст"
 
 #: tachartstrconsts.rsadd
 msgid "Add"
-msgstr "Hinzuf."
+msgstr "Добавить"
 
 #: tachartstrconsts.rsareaseries
 msgid "Area series"
-msgstr "Fläche-Diagramm"
+msgstr "Диаграмма с областями"
 
 #: tachartstrconsts.rsautoscale
 msgid "Auto scale"
-msgstr "Auto-Skalierung"
+msgstr "Автоматический масштаб"
 
 #: tachartstrconsts.rsbarseries
 msgid "Bar series"
-msgstr "Säulen/Balken-Diagramm"
+msgstr "Гистограмма"
 
 #: tachartstrconsts.rsboxandwhiskerseries
 msgid "Box-and-whiskers series"
-msgstr "Box-und-Whisker-Plot"
+msgstr "Диаграмма размаха"
 
 #: tachartstrconsts.rsbsplineseries
 msgid "B-Spline series"
-msgstr "B-Spline"
+msgstr "Диаграмма с B-сплайнами"
 
 #: tachartstrconsts.rsbubbleseries
 msgid "Bubble series"
-msgstr "Blasen-Diagramm"
+msgstr "Пузырьковая диаграмма"
 
 #: tachartstrconsts.rscolormapseries
 msgid "Color map series"
-msgstr "Farbkarten-Plot"
+msgstr "Диаграмма с картой цветов"
 
 #: tachartstrconsts.rsconstantline
 msgid "Constant line"
-msgstr "Konstante Linie"
+msgstr "Линия постоянной"
 
 #: tachartstrconsts.rscubicsplineseries
 msgid "Cubic spline series"
-msgstr "Kubischer Spline"
+msgstr "Диаграмма с кубическими сплайнами"
 
 #: tachartstrconsts.rscumulativenormaldistribution
 msgid "Cumulative normal distribution"
-msgstr "Kumulative Normalverteilung"
+msgstr "Масштаб нормального распределения"
 
 #: tachartstrconsts.rsdatapointclick
 msgid "Data point click"
-msgstr "Klick auf Datenpunkt"
+msgstr "Щелчок по величине"
 
 #: tachartstrconsts.rsdatapointcrosshair
 msgid "Data point crosshair"
-msgstr "Fadenkreuz für Datenpunkte"
+msgstr "Перекрестие для величины"
 
 #: tachartstrconsts.rsdatapointdrag
 msgid "Data point drag"
-msgstr "Datenpunkt verschieben"
+msgstr "Перетаскивание величины"
 
 #: tachartstrconsts.rsdatapointhint
 msgid "Data point hint"
-msgstr "Datenpunkt-Hinweis"
+msgstr "Всплывающая подсказка для величины"
 
 #: tachartstrconsts.rsdelete
 msgid "Delete"
-msgstr "Entf."
+msgstr "Удалить"
 
 #: tachartstrconsts.rsdistancemeasurement
 msgid "Distance measurement"
-msgstr "Distanzmessung"
+msgstr "Измерение расстояния"
 
 #: tachartstrconsts.rsfunctionseries
 msgid "Function series"
-msgstr "Funktions-Diagramm"
+msgstr "Диаграмма по функции"
 
 #: tachartstrconsts.rsleastsquaresfitseries
 msgid "Least-squares fit series"
-msgstr "Fit"
+msgstr "Диаграмма по методу наименьших квадратов"
 
 #: tachartstrconsts.rslinear
 msgid "Linear"
-msgstr "Linear"
+msgstr "Линейный масштаб"
 
 #: tachartstrconsts.rslineseries
 msgid "Line series"
-msgstr "Linien-Diagramm"
+msgstr "График"
 
 #: tachartstrconsts.rslogarithmic
 msgid "Logarithmic"
-msgstr "Logarithmisch"
+msgstr "Логарифмический масштаб"
 
 #: tachartstrconsts.rsmanhattanplotseries
 msgid "Manhattan plot series"
-msgstr "Manhatten-Plot"
+msgstr "Манхэттенская диаграмма"
 
 #: tachartstrconsts.rsmovedown
 msgid "Down"
-msgstr "Ab"
+msgstr "Вниз"
 
 #: tachartstrconsts.rsmoveup
 msgid "Up"
-msgstr "Auf"
+msgstr "Вверх"
 
 #: tachartstrconsts.rsopenhighlowcloseseries
 msgid "Open-high-low-close series"
-msgstr "Öffnung-Höchst-Tiefst-Geschlossen"
+msgstr "Биржевая диаграмма"
 
 #: tachartstrconsts.rspanningbyclick
 msgid "Panning by click"
-msgstr "Verschieben durch Klicken"
+msgstr "Панорамирование щелчком"
 
 #: tachartstrconsts.rspanningbydrag
 msgid "Panning by drag"
-msgstr "Verschieben durch Ziehen"
+msgstr "Панорамирование перетаскиванием"
 
 #: tachartstrconsts.rspanningbymousewheel
 msgid "Panning by mouse wheel"
-msgstr "Verschieben mit Mausrad"
+msgstr "Панорамирование колёсиком мыши"
 
 #: tachartstrconsts.rsparametriccurveseries
 msgid "Parametric curve series"
-msgstr "Parametrische Kurve"
+msgstr "Диаграмма с параметрическими кривыми"
 
 #: tachartstrconsts.rspieseries
 msgid "Pie series"
-msgstr "Torten-Diagramm"
+msgstr "Круговая диаграмма"
 
 #: tachartstrconsts.rspolarseries
 msgid "Polar series"
-msgstr "Polar-Diagramm"
+msgstr "Лепестковая диаграмма"
 
 #: tachartstrconsts.rsuserdefined
 msgctxt "tachartstrconsts.rsuserdefined"
 msgid "User-defined"
-msgstr "Benutzerdefiniert"
+msgstr "Пользовательский масштаб"
 
 #: tachartstrconsts.rsuserdefinedtool
-#, fuzzy
 msgctxt "tachartstrconsts.rsuserdefinedtool"
 msgid "User-defined"
-msgstr "Benutzerdefiniert"
+msgstr "Пользовательское средство"
 
 #: tachartstrconsts.rsuserdrawnseries
 msgid "User-drawn series"
-msgstr "Benutzer-definiertes Diagramm"
+msgstr "Пользовательская диаграмма"
 
 #: tachartstrconsts.rszoombyclick
 msgid "Zoom by click"
-msgstr "Zoomen durch Klicken"
+msgstr "Изменение масштаба щелчком"
 
 #: tachartstrconsts.rszoombydrag
 msgid "Zoom by drag"
-msgstr "Zommen durch Ziehen"
+msgstr "Изменение масштаба перетаскиванием"
 
 #: tachartstrconsts.rszoombymousewheel
 msgid "Zoom by mouse-wheel"
-msgstr "Zoomen mit Mausrad"
+msgstr "Изменение масштаба колёсиком мыши"
 
 #: tachartstrconsts.sesserieseditortitle
 msgid "Edit series"
-msgstr "Datenreihe bearbeiten"
+msgstr "Редактор диаграмм"
 
 #: tachartstrconsts.tasaxistransformseditortitle
 msgid "Edit axis transformations"
-msgstr "Achsentransformation bearbeiten"
+msgstr "Редактор масштабов осей"
 
 #: tachartstrconsts.tasfailedsubcomponentrename
 msgid "Failed to rename components: %s"
-msgstr "Fehler beim Umbenennen von Komponenten: %s"
+msgstr "Невозможно переименовать компоненты: %s"
 
 #: tachartstrconsts.tastoolseditortitle
 msgid "Edit tools"
-msgstr "Werkzeuge bearbeiten"
+msgstr "Редактор средств диаграмм"
 

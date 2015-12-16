@@ -132,6 +132,8 @@ begin
   Caption := desDatapointEditor;
   sgData.Columns[2].Title.Caption := desColor;
   sgData.Columns[3].Title.Caption := desText;
+  miInsertRow.Caption := desInsertRow;
+  miDeleteRow.Caption := desDeleteRow;
 end;
 
 procedure TDataPointsEditorForm.miInsertRowClick(Sender: TObject);

@@ -9,6 +9,14 @@ msgstr "Väri"
 msgid "DataPoints editor"
 msgstr "Datapisteiden muokkain"
 
+#: tachartstrconsts.desdeleterow
+msgid "Delete row"
+msgstr ""
+
+#: tachartstrconsts.desinsertrow
+msgid "Insert row"
+msgstr ""
+
 #: tachartstrconsts.destext
 msgid "Text"
 msgstr "Teksti"
@@ -141,12 +149,14 @@ msgstr "Piirakkakuvaaja"
 msgid "Polar series"
 msgstr "Napakuvaaja"
 
-#: tachartstrconsts.rsreticule
-msgid "Reticule"
-msgstr "Ristikko"
-
 #: tachartstrconsts.rsuserdefined
 msgctxt "tachartstrconsts.rsuserdefined"
+msgid "User-defined"
+msgstr "Käyttäjän määrittelemä"
+
+#: tachartstrconsts.rsuserdefinedtool
+#, fuzzy
+msgctxt "tachartstrconsts.rsuserdefinedtool"
 msgid "User-defined"
 msgstr "Käyttäjän määrittelemä"
 

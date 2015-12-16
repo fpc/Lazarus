@@ -20,6 +20,14 @@ msgstr "Färg"
 msgid "DataPoints editor"
 msgstr "Redigera datapunkter"
 
+#: tachartstrconsts.desdeleterow
+msgid "Delete row"
+msgstr ""
+
+#: tachartstrconsts.desinsertrow
+msgid "Insert row"
+msgstr ""
+
 #: tachartstrconsts.destext
 msgid "Text"
 msgstr "Text"
@@ -49,7 +57,9 @@ msgid "B-Spline series"
 msgstr "B-Spline diagram"
 
 #: tachartstrconsts.rsbubbleseries
-msgid "Bubbel series"
+#, fuzzy
+#| msgid "Bubbel series"
+msgid "Bubble series"
 msgstr "Bubbeldiagram"
 
 #: tachartstrconsts.rscolormapseries
@@ -152,12 +162,14 @@ msgstr "Cirkeldiagram"
 msgid "Polar series"
 msgstr "Polardiagram"
 
-#: tachartstrconsts.rsreticule
-msgid "Reticule"
-msgstr "Hårkors"
-
 #: tachartstrconsts.rsuserdefined
 msgctxt "tachartstrconsts.rsuserdefined"
+msgid "User-defined"
+msgstr "Användardefinierad"
+
+#: tachartstrconsts.rsuserdefinedtool
+#, fuzzy
+msgctxt "tachartstrconsts.rsuserdefinedtool"
 msgid "User-defined"
 msgstr "Användardefinierad"
 
@@ -193,3 +205,4 @@ msgstr "Namnbyte av komponent misslyckades: %s"
 #: tachartstrconsts.tastoolseditortitle
 msgid "Edit tools"
 msgstr "Redigera verktyg"
+

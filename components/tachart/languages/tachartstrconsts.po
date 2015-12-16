@@ -9,6 +9,14 @@ msgstr ""
 msgid "DataPoints editor"
 msgstr ""
 
+#: tachartstrconsts.desdeleterow
+msgid "Delete row"
+msgstr ""
+
+#: tachartstrconsts.desinsertrow
+msgid "Insert row"
+msgstr ""
+
 #: tachartstrconsts.destext
 msgid "Text"
 msgstr ""
@@ -141,12 +149,13 @@ msgstr ""
 msgid "Polar series"
 msgstr ""
 
-#: tachartstrconsts.rsreticule
-msgid "Reticule"
-msgstr ""
-
 #: tachartstrconsts.rsuserdefined
 msgctxt "tachartstrconsts.rsuserdefined"
+msgid "User-defined"
+msgstr ""
+
+#: tachartstrconsts.rsuserdefinedtool
+msgctxt "tachartstrconsts.rsuserdefinedtool"
 msgid "User-defined"
 msgstr ""
 
