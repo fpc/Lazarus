@@ -4307,10 +4307,6 @@ msgstr "Cél csomag"
 msgid "File type"
 msgstr "Fájltípus"
 
-#: lazarusidestrconsts.lisaf2phasregisterprocedure
-msgid "Has Register procedure"
-msgstr "Van \"Register\" eljárása"
-
 #: lazarusidestrconsts.lisaf2pinvalidpackage
 msgid "Invalid Package"
 msgstr "Érvénytelen csomag"
@@ -4332,18 +4328,9 @@ msgctxt "lazarusidestrconsts.lisaf2pshowall"
 msgid "Show all"
 msgstr "Összes megjelenítése"
 
-#: lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage
-msgctxt "lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage"
-msgid "The file \"%s\"%sis already in the package %s."
-msgstr "A(z) \"%s\"%sfájl már a(z) %s csomagban van."
-
 #: lazarusidestrconsts.lisaf2pthepackageisreadonly
 msgid "The package %s is read only."
 msgstr "A(z) %s csomag csak olvasható"
-
-#: lazarusidestrconsts.lisaf2punitname
-msgid "Unit name: "
-msgstr "Unit-név:"
 
 #: lazarusidestrconsts.lisafilealreadyexistsreplaceit
 msgid "A file \"%s\" already exists.%sReplace it?"

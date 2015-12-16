@@ -4502,10 +4502,6 @@ msgstr "Doelpakket"
 msgid "File type"
 msgstr "Bestandstype"
 
-#: lazarusidestrconsts.lisaf2phasregisterprocedure
-msgid "Has Register procedure"
-msgstr "Heeft Register procedure"
-
 #: lazarusidestrconsts.lisaf2pinvalidpackage
 msgid "Invalid Package"
 msgstr "Ongeldig Package"
@@ -4533,20 +4529,9 @@ msgctxt "lazarusidestrconsts.lisaf2pshowall"
 msgid "Show all"
 msgstr "Toon alles"
 
-#: lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage
-msgctxt "lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage"
-msgid "The file \"%s\"%sis already in the package %s."
-msgstr ""
-
 #: lazarusidestrconsts.lisaf2pthepackageisreadonly
 msgid "The package %s is read only."
 msgstr "Het package %s is niet wijzigbaar"
-
-#: lazarusidestrconsts.lisaf2punitname
-#, fuzzy
-#| msgid "Unit Name: "
-msgid "Unit name: "
-msgstr "Unitnaam: "
 
 #: lazarusidestrconsts.lisafilealreadyexistsreplaceit
 #, fuzzy

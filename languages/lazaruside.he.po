@@ -4587,10 +4587,6 @@ msgstr "חבילת היעד"
 msgid "File type"
 msgstr "סוג הקובץ"
 
-#: lazarusidestrconsts.lisaf2phasregisterprocedure
-msgid "Has Register procedure"
-msgstr "פרוצדורת רישום קיימת"
-
 #: lazarusidestrconsts.lisaf2pinvalidpackage
 msgid "Invalid Package"
 msgstr "חבילה שגויה"
@@ -4618,23 +4614,10 @@ msgctxt "lazarusidestrconsts.lisaf2pshowall"
 msgid "Show all"
 msgstr "הצג הכל"
 
-#: lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage
-#, fuzzy,badformat
-#| msgid "The file %s%s%s%sis already in the package %s."
-msgctxt "lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage"
-msgid "The file \"%s\"%sis already in the package %s."
-msgstr "הקובץ s%s%s% כבר נמצא בחבילה s%."
-
 #: lazarusidestrconsts.lisaf2pthepackageisreadonly
 #, fuzzy,badformat
 msgid "The package %s is read only."
 msgstr "החבילה s% היא לקריאה בלבד."
-
-#: lazarusidestrconsts.lisaf2punitname
-#, fuzzy
-#| msgid "Unit Name: "
-msgid "Unit name: "
-msgstr "שם יחידה:"
 
 #: lazarusidestrconsts.lisafilealreadyexistsreplaceit
 #, fuzzy,badformat

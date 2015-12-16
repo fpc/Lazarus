@@ -4545,10 +4545,6 @@ msgstr "Cieľový balíček"
 msgid "File type"
 msgstr "Typ súboru"
 
-#: lazarusidestrconsts.lisaf2phasregisterprocedure
-msgid "Has Register procedure"
-msgstr "Má procedúru Register"
-
 #: lazarusidestrconsts.lisaf2pinvalidpackage
 msgid "Invalid Package"
 msgstr "Neplatný balíček"
@@ -4576,22 +4572,9 @@ msgctxt "lazarusidestrconsts.lisaf2pshowall"
 msgid "Show all"
 msgstr "Zobraziť všetko"
 
-#: lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage
-#, fuzzy,badformat
-#| msgid "The file %s%s%s%sis already in the package %s."
-msgctxt "lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage"
-msgid "The file \"%s\"%sis already in the package %s."
-msgstr "Súbor %s%s%s%sis už je v balíčku %s."
-
 #: lazarusidestrconsts.lisaf2pthepackageisreadonly
 msgid "The package %s is read only."
 msgstr "Balíček %s je len na čítanie."
-
-#: lazarusidestrconsts.lisaf2punitname
-#, fuzzy
-#| msgid "Unit Name: "
-msgid "Unit name: "
-msgstr "Meno jednotky:"
 
 #: lazarusidestrconsts.lisafilealreadyexistsreplaceit
 #, fuzzy,badformat

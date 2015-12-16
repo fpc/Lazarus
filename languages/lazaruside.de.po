@@ -4309,10 +4309,6 @@ msgstr "Ziel-Package"
 msgid "File type"
 msgstr "Dateityp"
 
-#: lazarusidestrconsts.lisaf2phasregisterprocedure
-msgid "Has Register procedure"
-msgstr "Besitzt Register-Prozedur"
-
 #: lazarusidestrconsts.lisaf2pinvalidpackage
 msgid "Invalid Package"
 msgstr "Ungültiges Package"
@@ -4334,18 +4330,9 @@ msgctxt "lazarusidestrconsts.lisaf2pshowall"
 msgid "Show all"
 msgstr "Alle anzeigen"
 
-#: lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage
-msgctxt "lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage"
-msgid "The file \"%s\"%sis already in the package %s."
-msgstr "Die Datei \"%s\"%sbefindet sich bereits im Package %s."
-
 #: lazarusidestrconsts.lisaf2pthepackageisreadonly
 msgid "The package %s is read only."
 msgstr "Das Package %s ist schreibgeschützt."
-
-#: lazarusidestrconsts.lisaf2punitname
-msgid "Unit name: "
-msgstr "Unit-Name: "
 
 #: lazarusidestrconsts.lisafilealreadyexistsreplaceit
 msgid "A file \"%s\" already exists.%sReplace it?"

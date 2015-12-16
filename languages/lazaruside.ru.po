@@ -4308,10 +4308,6 @@ msgstr "Целевой пакет"
 msgid "File type"
 msgstr "Тип файла"
 
-#: lazarusidestrconsts.lisaf2phasregisterprocedure
-msgid "Has Register procedure"
-msgstr "Имеет процедуру Register"
-
 #: lazarusidestrconsts.lisaf2pinvalidpackage
 msgid "Invalid Package"
 msgstr "Неверный пакет"
@@ -4333,18 +4329,9 @@ msgctxt "lazarusidestrconsts.lisaf2pshowall"
 msgid "Show all"
 msgstr "Показать все"
 
-#: lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage
-msgctxt "lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage"
-msgid "The file \"%s\"%sis already in the package %s."
-msgstr "Файл \"%s\"%sуже имеется в пакете %s."
-
 #: lazarusidestrconsts.lisaf2pthepackageisreadonly
 msgid "The package %s is read only."
 msgstr "Пакет %s только для чтения."
-
-#: lazarusidestrconsts.lisaf2punitname
-msgid "Unit name: "
-msgstr "Имя модуля: "
 
 #: lazarusidestrconsts.lisafilealreadyexistsreplaceit
 msgid "A file \"%s\" already exists.%sReplace it?"

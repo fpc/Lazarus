@@ -4565,10 +4565,6 @@ msgstr "目标包"
 msgid "File type"
 msgstr "文件类型"
 
-#: lazarusidestrconsts.lisaf2phasregisterprocedure
-msgid "Has Register procedure"
-msgstr "已经注册的过程函数"
-
 #: lazarusidestrconsts.lisaf2pinvalidpackage
 msgid "Invalid Package"
 msgstr "无效的包"
@@ -4596,22 +4592,9 @@ msgctxt "lazarusidestrconsts.lisaf2pshowall"
 msgid "Show all"
 msgstr "显示所有"
 
-#: lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage
-#, fuzzy,badformat
-#| msgid "The file %s%s%s%sis already in the package %s."
-msgctxt "lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage"
-msgid "The file \"%s\"%sis already in the package %s."
-msgstr "文件%s%s%s%s已经在包%s中."
-
 #: lazarusidestrconsts.lisaf2pthepackageisreadonly
 msgid "The package %s is read only."
 msgstr "包 %s 为只读."
-
-#: lazarusidestrconsts.lisaf2punitname
-#, fuzzy
-#| msgid "Unit Name: "
-msgid "Unit name: "
-msgstr "单元名: "
 
 #: lazarusidestrconsts.lisafilealreadyexistsreplaceit
 #, fuzzy,badformat
