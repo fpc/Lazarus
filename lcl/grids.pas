@@ -7867,7 +7867,7 @@ begin
           FEditor.Height := Canvas.TextHeight(' ');
           case GetColumnLayout(FCol, False) of
           tlTop: EditorTop:=CellR.Top+constCellPadding;
-          tlCenter: EditorTop:=CellR.Top+(CellR.Bottom-CellR.Top-FEditor.Height) div 2;
+          tlCenter: EditorTop:=CellR.Top+(CellR.Bottom-CellR.Top-FEditor.Height+1) div 2;
           tlBottom: EditorTop:=CellR.Bottom-constCellPadding-FEditor.Height+1;
           end;
           if EditorTop>CellR.Top then CellR.Top:=EditorTop;
