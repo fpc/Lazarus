@@ -7860,7 +7860,7 @@ begin
 
     if FEditorOptions and EO_AUTOSIZE = EO_AUTOSIZE then begin
       if EditorBorderStyle = bsNone then begin
-        Inc(CellR.Left); // << to have the correct Y-coordinate: Gtk2 needs Inc; Qt+Win32 require no Inc; << some WS-dependent fix needed
+        Inc(CellR.Left); // << to have the correct Left-coordinate: Gtk2 needs Inc; Qt+Win32 require no Inc; << some WS-dependent fix needed
         Dec(CellR.Right);
         Dec(CellR.Bottom);
         if (FEditor = FStringEditor) then begin
