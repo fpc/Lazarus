@@ -392,8 +392,10 @@ end;
 
 function TDbgCallstackEntry.GetSymbol: TFpDbgSymbol;
 begin
-  if not FIsSymbolResolved then
+  if not FIsSymbolResolved then begin
     FSymbol := FThread.Process.FindSymbol(FAnAddress);
+    FIsSymbolResolved := FSymbol <> nil
+  end;
   result := FSymbol;
 end;
 
@@ -481,7 +483,8 @@ end;
 
 destructor TDbgCallstackEntry.Destroy;
 begin
-  FRegisterValueList.Free;
+  FreeAndNil(FRegisterValueList);
+  FreeAndNil(FSymbol);
   inherited Destroy;
 end;
 
