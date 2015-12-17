@@ -117,6 +117,7 @@ type
     Color: TFPColor;
     Style: TFPPenStyle;
     Width: Integer;
+    Pattern: array of LongWord;
   end;
   PvPen = ^TvPen;
 
@@ -3343,8 +3344,15 @@ procedure TvEntityWithPen.ApplyPenToCanvas(ADest: TFPCustomCanvas;
   ARenderInfo: TvRenderInfo; APen: TvPen);
 begin
   ADest.Pen.FPColor := AdjustColorToBackground(APen.Color, ARenderInfo);
-  ADest.Pen.Width := 1;//APen.Width;
+  ADest.Pen.Width := Max(1, APen.Width);   // wp: why was here "1;//APen.Width;" ???
   ADest.Pen.Style := APen.Style;
+  {$ifdef USE_LCL_CANVAS}
+  if (APen.Style = psPattern) then
+  begin
+    TCanvas(ADest).Pen.SetPattern(APen.Pattern);
+    if APen.Width = 1 then TCanvas(ADest).Pen.Cosmetic := false;
+  end;
+  {$endif}
 end;
 
 procedure TvEntityWithPen.AssignPen(APen: TvPen);
@@ -3949,7 +3957,7 @@ begin
   ADest.Brush.Style := bsClear;
 
   ADest.MoveTo(ADestX, ADestY);
-
+                           {
   // Set the path Pen and Brush options
   ADest.Pen.Style := Pen.Style;
   ADest.Pen.Width := Round(Pen.Width * AMulX);
@@ -3957,8 +3965,12 @@ begin
   if (Pen.Width <= 2) and (ADest.Pen.Width > 2) then ADest.Pen.Width := 2;
   if (Pen.Width <= 5) and (ADest.Pen.Width > 5) then ADest.Pen.Width := 5;
   ADest.Pen.FPColor := AdjustColorToBackground(Pen.Color, ARenderInfo);
+  {$ifdef USE_LCL_CANVAS}
+  if (Pen.Style = psPattern)  then
+    ACanvas.Pen.SetPattern(Pen.Pattern);
+  {$endif}
   ADest.Brush.FPColor := Brush.Color;
-
+                            }
   // Prepare the Clipping Region, if any
   {$ifdef USE_CANVAS_CLIP_REGION}
   if ClipPath <> nil then
