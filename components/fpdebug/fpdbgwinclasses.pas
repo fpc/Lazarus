@@ -992,7 +992,7 @@ begin
   if Lib.DbgInfo.HasInfo
   then FSymInstances.Remove(Lib);
   FLibMap.Delete(ID);
-  // TODO: Free lib ???
+  Lib.Free;
 end;
 
 { TDbgWinBreakpoint }
