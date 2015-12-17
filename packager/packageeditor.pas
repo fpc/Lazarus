@@ -54,6 +54,14 @@ const
   PackageEditorMenuFilesRootName = 'PackageEditorFiles';
   PackageEditorWindowPrefix = 'PackageEditor_';
 var
+  // General actions for the Files and Required packages root nodes.
+  // Duplicates actions found under the "Add" button.
+  PkgEditMenuAddDiskFile: TIDEMenuCommand;
+  PkgEditMenuAddDiskFiles: TIDEMenuCommand;
+  PkgEditMenuAddNewFile: TIDEMenuCommand;
+  PkgEditMenuAddNewComp: TIDEMenuCommand;
+  PkgEditMenuAddNewReqr: TIDEMenuCommand;
+
   // selected files
   PkgEditMenuOpenFile: TIDEMenuCommand;
   PkgEditMenuRemoveFile: TIDEMenuCommand;
@@ -224,7 +232,6 @@ type
     UsePopupMenu: TPopupMenu;
     ItemsPopupMenu: TPopupMenu;
     MorePopupMenu: TPopupMenu;
-    procedure AddBitBtnClick(Sender: TObject);
     procedure AddToProjectClick(Sender: TObject);
     procedure AddToUsesPkgSectionCheckBoxChange(Sender: TObject);
     procedure ApplyDependencyButtonClick(Sender: TObject);
@@ -255,6 +262,7 @@ type
     procedure ItemsTreeViewDragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
     procedure ItemsTreeViewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure mnuAddDiskFileClick(Sender: TObject);
     procedure mnuAddDiskFilesClick(Sender: TObject);
     procedure mnuAddNewCompClick(Sender: TObject);
     procedure mnuAddNewReqrClick(Sender: TObject);
@@ -553,6 +561,12 @@ begin
   // register the section for operations on selected files
   PkgEditMenuSectionFile:=RegisterIDEMenuSection(PackageEditorMenuFilesRoot,'File');
   AParent:=PkgEditMenuSectionFile;
+  PkgEditMenuAddDiskFile:=RegisterIDEMenuCommand(AParent,'Add disk file',lisPckEditAddFilesFromFileSystem);
+  PkgEditMenuAddDiskFiles:=RegisterIDEMenuCommand(AParent,'Add disk files',lisAddFilesInDirectory);
+  PkgEditMenuAddNewFile:=RegisterIDEMenuCommand(AParent,'New file',lisA2PNewFile);
+  PkgEditMenuAddNewComp:=RegisterIDEMenuCommand(AParent,'New component',lisA2PNewComponent);
+  PkgEditMenuAddNewReqr:=RegisterIDEMenuCommand(AParent,'New requirement',lisProjAddNewRequirement);
+  //
   PkgEditMenuOpenFile:=RegisterIDEMenuCommand(AParent,'Open File',lisOpen);
   PkgEditMenuRemoveFile:=RegisterIDEMenuCommand(AParent,'Remove File',lisPckEditRemoveFile);
   PkgEditMenuReAddFile:=RegisterIDEMenuCommand(AParent,'ReAdd File',lisPckEditReAddFile);
@@ -681,7 +695,8 @@ begin
 end;
 
 type
-  PackageSelType = (pstFile, pstDir, pstDep, pstRemFile, pstRemDep);
+  PackageSelType = (pstFile, pstDir, pstDep, pstFilesNode, pstReqPackNode,
+                    pstRemFile, pstRemDep);
   PackageSelTypes = set of PackageSelType;
 
 procedure TPackageEditorForm.ItemsPopupMenuPopup(Sender: TObject);
@@ -721,8 +736,12 @@ var
             Include(UserSelection, pstDep);
         end;
       end
-      else if IsDirectoryNode(TVNode) or (TVNode=FFilesNode) then
-        Include(UserSelection, pstDir);
+      else if IsDirectoryNode(TVNode) then
+        Include(UserSelection, pstDir)
+      else if TVNode=FFilesNode then
+        Include(UserSelection, pstFilesNode)
+      else if TVNode=FRequiredPackagesNode then
+        Include(UserSelection, pstReqPackNode);
     end;
   end;
 
@@ -784,11 +803,24 @@ begin
     CollectSelected;
     Writable := not LazPackage.ReadOnly;
 
-    // items for selected files, under section PkgEditMenuSectionFile
-    PkgEditMenuSectionFile.Visible := UserSelection*[pstFile,pstRemFile,pstDep,pstRemDep] <> [];
+    // items for Files node and for selected files, under section PkgEditMenuSectionFile
+    PkgEditMenuSectionFile.Visible := not (pstDir in UserSelection);
     if PkgEditMenuSectionFile.Visible then
     begin
-      SetItem(PkgEditMenuOpenFile, @OpenFileMenuItemClick);
+      // Files root node
+      SetItem(PkgEditMenuAddDiskFile, @mnuAddDiskFileClick, UserSelection=[pstFilesNode],
+              Writable);
+      SetItem(PkgEditMenuAddDiskFiles, @mnuAddDiskFilesClick, UserSelection=[pstFilesNode],
+              Writable);
+      SetItem(PkgEditMenuAddNewFile, @mnuAddNewFileClick, UserSelection=[pstFilesNode],
+              Writable);
+      SetItem(PkgEditMenuAddNewComp, @mnuAddNewCompClick, UserSelection=[pstFilesNode],
+              Writable);
+      SetItem(PkgEditMenuAddNewReqr, @mnuAddNewReqrClick, UserSelection=[pstReqPackNode],
+              Writable);
+      // selected files
+      SetItem(PkgEditMenuOpenFile, @OpenFileMenuItemClick,
+              UserSelection*[pstFilesNode,pstReqPackNode]=[]);
       SetItem(PkgEditMenuReAddFile, @ReAddMenuItemClick, UserSelection=[pstRemFile]);
       SetItem(PkgEditMenuCopyMoveToDirectory, @CopyMoveToDirMenuItemClick,
               (UserSelection=[pstFile]) and LazPackage.HasDirectory);
@@ -801,7 +833,7 @@ begin
     end;
 
     // items for directories, under section PkgEditMenuSectionDirectory
-    PkgEditMenuSectionDirectory.Visible := UserSelection=[pstDir];
+    PkgEditMenuSectionDirectory.Visible := UserSelection<=[pstDir,pstFilesNode];
     if PkgEditMenuSectionDirectory.Visible then
     begin
       SetItem(PkgEditMenuExpandDirectory, @ExpandDirectoryMenuItemClick);
@@ -908,8 +940,6 @@ begin
   try
     Writable:=(not LazPackage.ReadOnly);
 
-    //PkgEditMenuSectionFileType.Clear;
-
     // under section PkgEditMenuSectionFiles
     SetItem(PkgEditMenuFindInFiles,@FindInFilesMenuItemClick);
     SetItem(PkgEditMenuSortFiles,@SortFilesMenuItemClick,(LazPackage.FileCount>1),Writable);
@@ -1003,7 +1033,7 @@ begin
   else if Key = VK_DELETE then
     RemoveBitBtnClick(Nil)
   else if Key = VK_INSERT then
-    AddBitBtnClick(Nil)
+    mnuAddDiskFileClick(Nil)
   else
     Handled := False;
 
@@ -1568,7 +1598,7 @@ begin
     NewIncPaths:=MergeSearchPaths(NewIncPaths,CurDir);
 end;
 
-procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
+procedure TPackageEditorForm.mnuAddDiskFileClick(Sender: TObject);
 var
   OpenDialog: TOpenDialog;
   i: Integer;

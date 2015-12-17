@@ -15,7 +15,7 @@ object PackageEditorForm: TPackageEditorForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnDropFiles = FormDropFiles
-  LCLVersion = '1.5'
+  LCLVersion = '1.7'
   object ToolBar: TToolBar
     Left = 0
     Height = 48
@@ -354,7 +354,7 @@ object PackageEditorForm: TPackageEditorForm
     object mnuAddDiskFile: TMenuItem
       Caption = 'Add file...'
       Default = True
-      OnClick = AddBitBtnClick
+      OnClick = mnuAddDiskFileClick
     end
     object MenuItem1: TMenuItem
       Caption = '-'
