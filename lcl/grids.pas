@@ -12206,6 +12206,8 @@ begin
 
     VK_END, VK_HOME:
       ;
+    VK_ESCAPE:
+      FGrid.EditorHide;
     else
       doEditorKeyDown;
   end;
