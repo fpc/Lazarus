@@ -23,11 +23,11 @@ msgstr "Datenpunkt-Editor"
 
 #: tachartstrconsts.desdeleterow
 msgid "Delete row"
-msgstr ""
+msgstr "Zeile löschen"
 
 #: tachartstrconsts.desinsertrow
 msgid "Insert row"
-msgstr ""
+msgstr "Zeile einfügen"
 
 #: tachartstrconsts.destext
 msgid "Text"
@@ -167,7 +167,6 @@ msgid "User-defined"
 msgstr "Benutzerdefiniert"
 
 #: tachartstrconsts.rsuserdefinedtool
-#, fuzzy
 msgctxt "tachartstrconsts.rsuserdefinedtool"
 msgid "User-defined"
 msgstr "Benutzerdefiniert"
@@ -203,4 +202,3 @@ msgstr "Fehler beim Umbenennen von Komponenten: %s"
 #: tachartstrconsts.tastoolseditortitle
 msgid "Edit tools"
 msgstr "Werkzeuge bearbeiten"
-

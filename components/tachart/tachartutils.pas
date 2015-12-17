@@ -260,8 +260,10 @@ type
 
   TClassRegistryItem = class
     FClass: TClass;
-    FCaption: PStr;
-    constructor Create(AClass: TClass; ACaption: PStr);
+    FCaption: String;
+    FCaptionPtr: PStr;
+    constructor Create(AClass: TClass; const ACaption: String);
+    constructor CreateRes(AClass: TClass; ACaptionPtr: PStr);
   end;
 
   TClassRegistry = class(TFPList)
@@ -989,10 +991,17 @@ end;
 
 { TClassRegistryItem }
 
-constructor TClassRegistryItem.Create(AClass: TClass; ACaption: PStr);
+constructor TClassRegistryItem.Create(AClass: TClass; const ACaption: String);
 begin
   FClass := AClass;
   FCaption := ACaption;
+end;
+
+constructor TClassRegistryItem.CreateRes(AClass: TClass; ACaptionPtr: PStr);
+begin
+  FClass := AClass;
+  FCaptionPtr := ACaptionPtr;
+  if FCaptionPtr <> nil then FCaption := ACaptionPtr^;
 end;
 
 
@@ -1015,10 +1024,12 @@ end;
 
 function TClassRegistry.GetCaption(AIndex: Integer): String;
 var
-  P: PStr;
+  item: TClassRegistryItem;
 begin
-  P := TClassRegistryItem(Items[AIndex]).FCaption;
-  if P = nil then Result := '' else Result := P^;
+  item := TClassRegistryItem(Items[AIndex]);
+  if item.FCaptionPtr <> nil then
+    Result := item.FCaptionPtr^ else
+    Result := item.FCaption;
 end;
 
 function TClassRegistry.GetClass(AIndex: Integer): TClass;

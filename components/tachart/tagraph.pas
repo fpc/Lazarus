@@ -447,7 +447,8 @@ type
   end;
 
 procedure Register;
-procedure RegisterSeriesClass(ASeriesClass: TSeriesClass; const ACaption: PStr);
+procedure RegisterSeriesClass(ASeriesClass: TSeriesClass; const ACaption: String); overload;
+procedure RegisterSeriesClass(ASeriesClass: TSeriesClass; ACaptionPtr: PStr); overload;
 
 var
   SeriesClassRegistry: TClassRegistry = nil;
@@ -480,11 +481,16 @@ begin
   end;
 end;
 
-procedure RegisterSeriesClass(
-  ASeriesClass: TSeriesClass; const ACaption: PStr);
+procedure RegisterSeriesClass(ASeriesClass: TSeriesClass; const ACaption: String);
 begin
   if SeriesClassRegistry.IndexOfClass(ASeriesClass) < 0 then
     SeriesClassRegistry.Add(TClassRegistryItem.Create(ASeriesClass, ACaption));
+end;
+
+procedure RegisterSeriesClass(ASeriesClass: TSeriesClass; ACaptionPtr: PStr);
+begin
+  if SeriesClassRegistry.IndexOfClass(ASeriesClass) < 0 then
+    SeriesClassRegistry.Add(TClassRegistryItem.CreateRes(ASeriesClass, ACaptionPtr));
 end;
 
 procedure WriteComponentToStream(AStream: TStream; AComponent: TComponent);

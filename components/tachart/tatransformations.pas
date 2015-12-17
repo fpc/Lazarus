@@ -194,6 +194,10 @@ type
 
   procedure Register;
 
+  procedure RegisterAxisTransformClass(AAxisTransformClass: TAxisTransformClass;
+    const ACaption: String); overload;
+  procedure RegisterAxisTransformClass(AAxisTransformClass: TAxisTransformClass;
+    ACaptionPtr: PStr); overload;
 
 implementation
 
@@ -255,12 +259,22 @@ begin
     TChartAxisTransformations, TAxisTransformsComponentEditor);
 end;
 
-procedure RegisterAxisTransformClass(
-  AAxisTransformClass: TAxisTransformClass; const ACaption: PStr);
+procedure RegisterAxisTransformClass(AAxisTransformClass: TAxisTransformClass;
+  const ACaption: String);
 begin
   RegisterClass(AAxisTransformClass);
-  if AxisTransformsClassRegistry.IndexOfClass(AAxisTransformClass) < 0 then
-    AxisTransformsClassRegistry.Add(TClassRegistryItem.Create(AAxisTransformClass, ACaption));
+  with AxisTransformsClassRegistry do
+    if IndexOfClass(AAxisTransformClass) < 0 then
+      Add(TClassRegistryItem.Create(AAxisTransformClass, ACaption));
+end;
+
+procedure RegisterAxisTransformClass(AAxisTransformClass: TAxisTransformClass;
+  ACaptionPtr: PStr);
+begin
+  RegisterClass(AAxisTransformClass);
+  with AxisTransformsClassRegistry do
+    if IndexOfClass(AAxisTransformClass) < 0 then
+      Add(TClassRegistryItem.CreateRes(AAxisTransformClass, ACaptionPtr));
 end;
 
 { TAxisTransformList }

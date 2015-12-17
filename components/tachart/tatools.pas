@@ -573,10 +573,14 @@ type
   end;
 
   procedure Register;
-  procedure RegisterChartToolClass(AToolClass: TChartToolClass; ACaption: PStr);
+
+  procedure RegisterChartToolClass(AToolClass: TChartToolClass;
+    const ACaption: String); overload;
+  procedure RegisterChartToolClass(AToolClass: TChartToolClass;
+    ACaptionPtr: PStr); overload;
 
 var
-  ToolsClassRegistry: TClassRegistry;
+  ToolsClassRegistry: TClassRegistry = nil;
 
 implementation
 
@@ -610,11 +614,19 @@ begin
   RegisterComponents(CHART_COMPONENT_IDE_PAGE, [TChartToolset]);
 end;
 
-procedure RegisterChartToolClass(AToolClass: TChartToolClass; ACaption: PStr);
+procedure RegisterChartToolClass(AToolClass: TChartToolClass;
+  const ACaption: String);
 begin
   RegisterClass(AToolClass);
   if ToolsClassRegistry.IndexOfClass(AToolClass) < 0 then
     ToolsClassRegistry.Add(TClassRegistryItem.Create(AToolClass, ACaption));
+end;
+
+procedure RegisterChartToolClass(AToolClass: TChartToolClass; ACaptionPtr: PStr);
+begin
+  RegisterClass(AToolClass);
+  if ToolsClassRegistry.IndexOfClass(AToolClass) < 0 then
+    ToolsClassRegistry.Add(TClassRegistryItem.CreateRes(AToolClass, ACaptionPtr));
 end;
 
 { TDataPointTool.TPointRef }
