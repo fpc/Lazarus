@@ -73,6 +73,7 @@ interface
 {$DEFINE VerboseCompletionAdds}
 {off $DEFINE VerboseUpdateProcBodySignatures}
 {off $DEFINE VerboseCompleteMethod}
+{off $DEFINE VerboseCreateMissingClassProcBodies}
 {off $DEFINE VerboseCompleteLocalVarAssign}
 {off $DEFINE VerboseCompleteEventAssign}
 {off $DEFINE EnableCodeCompleteTemplates}
@@ -8852,12 +8853,12 @@ var
   ProcsCopied: boolean;
   OnlyNode: TCodeTreeNode;
 begin
-  {$IFDEF CTDEBUG}
+  {$IF defined(CTDEBUG) or defined(VerboseCreateMissingClassProcBodies)}
   DebugLn('TCodeCompletionCodeTool.CreateMissingClassProcBodies Gather existing method bodies ... ');
   {$ENDIF}
   if CodeCompleteClassNode.Desc in AllClassInterfaces then begin
     // interfaces have no implementations
-    {$IFDEF CTDEBUG}
+    {$IF defined(CTDEBUG) or defined(VerboseCreateMissingClassProcBodies)}
     debugln(['TCodeCompletionCodeTool.CreateMissingClassProcBodies interface ',CodeCompleteClassNode.DescAsString]);
     {$ENDIF}
     exit(true);
@@ -8870,12 +8871,17 @@ begin
   ClassProcs:=nil;
   ProcBodyNodes:=nil;
   try
-    //debugln(['TCodeCompletionCodeTool.CreateMissingClassProcBodies get class procs of ',CodeCompleteClassNode.DescAsString]);
+    {$IFDEF VerboseCreateMissingClassProcBodies}
+    debugln(['TCodeCompletionCodeTool.CreateMissingClassProcBodies get class procs of ',CodeCompleteClassNode.DescAsString]);
+    {$ENDIF}
     ClassProcs:=GatherClassProcDefinitions(CodeCompleteClassNode,true);
-    //debugln(['TCodeCompletionCodeTool.CreateMissingClassProcBodies get bodies of ',CodeCompleteClassNode.DescAsString]);
+    {$IFDEF VerboseCreateMissingClassProcBodies}
+    debugln(['TCodeCompletionCodeTool.CreateMissingClassProcBodies get bodies of ',CodeCompleteClassNode.DescAsString]);
+    {$ENDIF}
     ProcBodyNodes:=GatherClassProcBodies(CodeCompleteClassNode);
 
-    {AnAVLNode:=ClassProcs.FindLowest;
+    {$IFDEF VerboseCreateMissingClassProcBodies}
+    AnAVLNode:=ClassProcs.FindLowest;
     while AnAVLNode<>nil do begin
       DebugLn(' Gathered ProcDef ',TCodeTreeNodeExtension(AnAVLNode.Data).Txt);
       AnAVLNode:=ClassProcs.FindSuccessor(AnAVLNode);
@@ -8884,12 +8890,13 @@ begin
     while AnAVLNode<>nil do begin
       DebugLn(' Gathered ProcBody ',TCodeTreeNodeExtension(AnAVLNode.Data).Txt);
       AnAVLNode:=ProcBodyNodes.FindSuccessor(AnAVLNode);
-    end;}
+    end;
+    {$ENDIF}
 
     // find topmost and bottommost proc body
     FindTopMostAndBottomMostProcBodies;
 
-    {$IFDEF CTDEBUG}
+    {$IF defined(CTDEBUG) or defined(VerboseCreateMissingClassProcBodies)}
     DebugLn('TCodeCompletionCodeTool.CreateMissingClassProcBodies Gather existing method declarations ... ');
     {$ENDIF}
     TheClassName:=ExtractClassName(CodeCompleteClassNode,false);
@@ -8904,7 +8911,9 @@ begin
         OnlyNode:=nil
       else
         OnlyNode:=FCompletingCursorNode;
-      //debugln(['TCodeCompletionCodeTool.CreateMissingClassProcBodies Beauty.UpdateAllMethodSignatures=',Beauty.UpdateAllMethodSignatures,' ',OnlyNode<>nil]);
+      {$IFDEF VerboseCreateMissingClassProcBodies}
+      debugln(['TCodeCompletionCodeTool.CreateMissingClassProcBodies Beauty.UpdateAllMethodSignatures=',Beauty.UpdateAllMethodSignatures,' ',OnlyNode<>nil]);
+      {$ENDIF}
       if not UpdateProcBodySignatures(ClassProcs,ProcBodyNodes,ProcAttrDefToBody,
         ProcsCopied,OnlyNode)
       then exit;
@@ -8914,19 +8923,23 @@ begin
 
     CurNode:=FirstExistingProcBody;
     
-    {AnAVLNode:=ClassProcs.FindLowest;
+    {$IFDEF VerboseCreateMissingClassProcBodies}
+    AnAVLNode:=ClassProcs.FindLowest;
     while AnAVLNode<>nil do begin
       DebugLn(' SignaturesUpdated ProcDef ',TCodeTreeNodeExtension(AnAVLNode.Data).Txt);
       AnAVLNode:=ClassProcs.FindSuccessor(AnAVLNode);
-    end;}
+    end;
+    {$ENDIF}
     
     AddNewPropertyAccessMethodsToClassProcs(ClassProcs,TheClassName);
 
-    {AnAVLNode:=ClassProcs.FindLowest;
+    {$IFDEF VerboseCreateMissingClassProcBodies}
+    AnAVLNode:=ClassProcs.FindLowest;
     while AnAVLNode<>nil do begin
       DebugLn(' AfterPropsCompleted ',TCodeTreeNodeExtension(AnAVLNode.Data).Txt);
       AnAVLNode:=ClassProcs.FindSuccessor(AnAVLNode);
-    end;}
+    end;
+    {$ENDIF}
 
     if MethodInsertPolicy=mipClassOrder then begin
       // insert in ClassOrder -> get a definition position for every method
@@ -8949,7 +8962,8 @@ begin
       ClassProcs.OnCompare:=@CompareCodeTreeNodeExtWithPos;
     end;
 
-    {AnAVLNode:=ClassProcs.FindLowest;
+    {$IFDEF VerboseCreateMissingClassProcBodies}
+    AnAVLNode:=ClassProcs.FindLowest;
     while AnAVLNode<>nil do begin
       DebugLn(' BeforeAddMissing ProcDef "',TCodeTreeNodeExtension(AnAVLNode.Data).Txt,'"');
       AnAVLNode:=ClassProcs.FindSuccessor(AnAVLNode);
@@ -8958,16 +8972,19 @@ begin
     while AnAVLNode<>nil do begin
       DebugLn(' BeforeAddMissing ProcBody "',TCodeTreeNodeExtension(AnAVLNode.Data).Txt,'"');
       AnAVLNode:=ProcBodyNodes.FindSuccessor(AnAVLNode);
-    end; }
+    end;
+    {$ENDIF}
 
     // search for missing proc bodies
     if (ProcBodyNodes.Count=0) then begin
       // there were no old proc bodies of the class -> start class
-      {$IFDEF CTDEBUG}
+      {$IF defined(CTDEBUG) or defined(VerboseCreateMissingClassProcBodies)}
       DebugLn('TCodeCompletionCodeTool.CreateMissingClassProcBodies Starting class in implementation ');
       {$ENDIF}
       FindInsertPointForNewClass(InsertPos,Indent);
-      //debugln(['TCodeCompletionCodeTool.CreateMissingClassProcBodies Indent=',Indent,' InsertPos=',dbgstr(copy(Src,InsertPos-10,10)),'|',dbgstr(copy(Src,InsertPos,10))]);
+      {$IFDEF VerboseCreateMissingClassProcBodies}
+      debugln(['TCodeCompletionCodeTool.CreateMissingClassProcBodies Indent=',Indent,' InsertPos=',dbgstr(copy(Src,InsertPos-10,10)),'|',dbgstr(copy(Src,InsertPos,10))]);
+      {$ENDIF}
       InsertClassMethodsComment(InsertPos,Indent);
 
       // insert all proc bodies
@@ -8983,7 +9000,7 @@ begin
       // there were old class procs already
       // -> search a good Insert Position behind or in front of
       //    another proc body of this class
-      {$IFDEF CTDEBUG}
+      {$IF defined(CTDEBUG) or defined(VerboseCreateMissingClassProcBodies)}
       DebugLn('TCodeCompletionCodeTool.CreateMissingClassProcBodies  Insert missing bodies between existing ... ClassProcs.Count=',dbgs(ClassProcs.Count));
       {$ENDIF}
 
@@ -8997,9 +9014,13 @@ begin
       while (MissingNode<>nil) do begin
         ANodeExt:=TCodeTreeNodeExtension(MissingNode.Data);
         ExistingNode:=ProcBodyNodes.Find(MissingNode.Data);
-        //DebugLn(['TCodeCompletionCodeTool.CreateMissingClassProcBodies ANodeExt.Txt=',ANodeExt.Txt,' ExistingNode=',ExistingNode<>nil]);
+        {$IFDEF VerboseCreateMissingClassProcBodies}
+        DebugLn(['TCodeCompletionCodeTool.CreateMissingClassProcBodies ANodeExt.Txt=',ANodeExt.Txt,' ExistingNode=',ExistingNode<>nil]);
+        {$ENDIF}
         if ExistingNode=nil then begin
-          //DebugLn(['TCodeCompletionCodeTool.CreateMissingClassProcBodies ANodeExt.Txt=',ANodeExt.Txt,' ExistingNode=',TCodeTreeNodeExtension(ExistingNode.Data).Txt]);
+          {$IFDEF VerboseCreateMissingClassProcBodies}
+          DebugLn(['TCodeCompletionCodeTool.CreateMissingClassProcBodies ANodeExt.Txt=',ANodeExt.Txt,' ExistingNode=',TCodeTreeNodeExtension(ExistingNode.Data).Txt]);
+          {$ENDIF}
           // MissingNode does not have a body -> insert proc body
           case MethodInsertPolicy of
           mipAlphabetically:
