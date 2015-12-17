@@ -316,7 +316,7 @@ end;
 function TCodeToolsOptions.FindDefaultCompilerFilename: string;
 begin
   Result:=SearchFileInPath(GetDefaultCompilerFilename,'',
-                           GetEnvironmentVariableUTF8('PATH'),':',ctsfcDefault);
+                           GetEnvironmentVariableUTF8('PATH'),PathSeparator,ctsfcDefault);
 end;
 
 procedure TCodeToolsOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;

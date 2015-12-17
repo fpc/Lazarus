@@ -486,7 +486,7 @@ begin
     {$ELSE}
     Flags:=[sffDontSearchInBasePath];
     {$ENDIF}
-    Result:=SearchFileInPath(Result,'',LazUTF8.GetEnvironmentVariableUTF8('PATH'),':',Flags);
+    Result:=SearchFileInPath(Result,'',LazUTF8.GetEnvironmentVariableUTF8('PATH'),PathSeparator,Flags);
   end;
   // resolve links
   Result:=GetPhysicalFilename(Result,pfeOriginal);
