@@ -37,7 +37,7 @@ uses
   LCLType, LCLProc, Menus, Dialogs, FileUtil, LazFileUtils, LazFileCache, ExtCtrls,
   contnrs,
   // IDEIntf CodeTools
-  CodeToolManager,
+  CodeToolManager, CodeCache,
   TreeFilterEdit,
   IDEImagesIntf, MenuIntf, LazIDEIntf, ProjectIntf, CodeToolsStructs,
   FormEditingIntf, PackageIntf, IDEHelpIntf, IDEOptionsIntf,
