@@ -1245,9 +1245,9 @@ end;
 destructor TDbgThread.Destroy;
 begin
   FProcess.ThreadDestroyed(Self);
-  FRegisterValueList.Free;
+  FreeAndNil(FRegisterValueList);
   ClearCallStack;
-  FCallStackEntryList.Free;
+  FreeAndNil(FCallStackEntryList);
   inherited;
 end;
 

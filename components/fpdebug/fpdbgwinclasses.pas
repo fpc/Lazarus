@@ -496,9 +496,10 @@ function TDbgWinProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread;
 begin
   if assigned(AThread) then
   begin
-    if not FThreadMap.HasId(AThread.ID) then
+    if not FThreadMap.HasId(AThread.ID) then begin
       AThread.Free;
-    else begin
+      exit(false);
+    end else begin
       AThread.NextIsSingleStep:=SingleStep;
       if SingleStep or assigned(FCurrentBreakpoint) then
         TDbgWinThread(AThread).SetSingleStep;
@@ -511,9 +512,8 @@ begin
    EXCEPTION_SINGLE_STEP: begin
      Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_CONTINUE);
    end
-  else begin
-     Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_EXCEPTION_NOT_HANDLED);
-   end;
+  else
+    Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_EXCEPTION_NOT_HANDLED);
   end;
   result := true;
 end;
