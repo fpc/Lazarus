@@ -6766,6 +6766,7 @@ lcl/include/buttons.inc svneol=native#text/pascal
 lcl/include/canvas.inc svneol=native#text/pascal
 lcl/include/checkbox.inc svneol=native#text/pascal
 lcl/include/clipbrd.inc svneol=native#text/pascal
+lcl/include/clipbrd_html.inc svneol=native#text/plain
 lcl/include/colorbutton.inc svneol=native#text/pascal
 lcl/include/comboex.inc svneol=native#text/plain
 lcl/include/commondialog.inc svneol=native#text/pascal
