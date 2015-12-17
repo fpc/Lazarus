@@ -212,7 +212,7 @@ begin
     Result:=Executable
   else
     Result:=SearchFileInPath(Executable,'',
-                             GetEnvironmentVariableUTF8('PATH'),':',
+                             GetEnvironmentVariableUTF8('PATH'),PathSeparator,
                              [sffDontSearchInBasePath]);
   Result:=TrimFilename(Result);
 end;
