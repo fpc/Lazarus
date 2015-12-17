@@ -39,7 +39,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  LCLType, Controls, StdCtrls, Grids, LazUTF8,
+  LCLType, Types, Controls, StdCtrls, Grids, LazUTF8, Graphics,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSControls, WSFactory;
 
@@ -50,6 +50,8 @@ type
   published
     class procedure SendCharToEditor(AEditor:TWinControl; Ch: TUTF8Char); virtual;
     class function InvalidateStartY(const FixedHeight, RowOffset: Integer): integer; virtual;
+    class function GetEditorBoundsFromCellRect(ACanvas: TCanvas;
+      const ACellRect: TRect; const AColumnLayout: TTextLayout): TRect; virtual;
   end;
   TWSCustomGridClass = class of TWSCustomgrid;
 
@@ -106,7 +108,16 @@ begin
       EditorTextChanged(Col, Row, GMsg.Value);
 end;
 
-class function TWSCustomGrid.InvalidateStartY(const FixedHeight, RowOffset: Integer): Integer;
+class function TWSCustomGrid.GetEditorBoundsFromCellRect(ACanvas: TCanvas;
+  const ACellRect: TRect; const AColumnLayout: TTextLayout): TRect;
+begin
+  Result := ACellRect;
+  Dec(Result.Right);
+  Dec(Result.Bottom);
+end;
+
+class function TWSCustomGrid.InvalidateStartY(const FixedHeight,
+  RowOffset: Integer): integer;
 begin
   result := FixedHeight;
 end;
