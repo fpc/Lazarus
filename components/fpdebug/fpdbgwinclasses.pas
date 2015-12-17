@@ -496,10 +496,14 @@ function TDbgWinProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread;
 begin
   if assigned(AThread) then
   begin
-    AThread.NextIsSingleStep:=SingleStep;
-    if SingleStep or assigned(FCurrentBreakpoint) then
-      TDbgWinThread(AThread).SetSingleStep;
-    AThread.BeforeContinue;
+    if not FThreadMap.HasId(AThread.ID) then
+      AThread.Free;
+    else begin
+      AThread.NextIsSingleStep:=SingleStep;
+      if SingleStep or assigned(FCurrentBreakpoint) then
+        TDbgWinThread(AThread).SetSingleStep;
+      AThread.BeforeContinue;
+    end;
   end;
 
   case MDebugEvent.Exception.ExceptionRecord.ExceptionCode of
