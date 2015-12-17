@@ -6946,6 +6946,7 @@ begin
         EditorShow(False);               // Will show popup menu in the editor.
     VK_F2:
       if not FEditorKey and EditingAllowed(FCol) then begin
+        SelectEditor;
         EditorShow(False);
         Key:=0;
       end ;
