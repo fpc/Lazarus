@@ -3567,7 +3567,10 @@ begin
     Canvas.Pen.Mode := pmCopy;
     GetSelectedState(aState, IsSelected);
     if IsSelected then begin
-      Canvas.Brush.Color := SelectedColor;
+      if FEditorMode and (FEditor<>nil) then
+        Canvas.Brush.Color := FEditor.Color
+      else
+        Canvas.Brush.Color := SelectedColor;
       SetCanvasFont(GetColumnFont(aCol, False));
       if not IsCellButtonColumn(point(aCol,aRow)) then
         Canvas.Font.Color := clHighlightText;
@@ -7855,8 +7858,10 @@ begin
       CellR := Bounds(-FEditor.Width-100, -FEditor.Height-100, CellR.Right-CellR.Left, CellR.Bottom-CellR.Top);
 
     if FEditorOptions and EO_AUTOSIZE = EO_AUTOSIZE then begin
-      if EditorBorderStyle = bsNone then
-        InflateRect(CellR, -1, -1);
+      if (FEditor = FStringEditor) and (EditorBorderStyle = bsNone) then begin
+        CellR := TWSCustomGridClass(WidgetSetClass).
+          GetEditorBoundsFromCellRect(Canvas, CellR, GetColumnLayout(FCol, False));
+      end;
       FEditor.BoundsRect := CellR;
     end else begin
       Msg.LclMsg.msg:=GM_SETBOUNDS;
