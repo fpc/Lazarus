@@ -2959,6 +2959,8 @@ begin
 
       // TDbgDwarfProcSymbol
       Result := Cu.DwarfSymbolClassMap.CreateProcSymbol(CU, Iter.DataPtr, AAddress);
+      if Result<>nil then
+        break;
     finally
       Iter.Free;
     end;
