@@ -189,7 +189,8 @@ type
 implementation
 
 uses
-  FPCanvas, Math, SysUtils, TACustomSource, TAGeometry, TAGraph, TAMath;
+  FPCanvas, Math, SysUtils,
+  TAChartStrConsts, TACustomSource, TAGeometry, TAGraph, TAMath;
 
 type
 
@@ -939,8 +940,8 @@ end;
 
 
 initialization
-  RegisterSeriesClass(TBubbleSeries, 'Bubble series');
-  RegisterSeriesClass(TBoxAndWhiskerSeries, 'Box-and-whiskers series');
-  RegisterSeriesClass(TOpenHighLowCloseSeries, 'Open-high-low-close series');
+  RegisterSeriesClass(TBubbleSeries, @rsBubbleSeries);
+  RegisterSeriesClass(TBoxAndWhiskerSeries, @rsBoxAndWhiskerSeries);
+  RegisterSeriesClass(TOpenHighLowCloseSeries, @rsOpenHighLowCloseSeries);
 
 end.

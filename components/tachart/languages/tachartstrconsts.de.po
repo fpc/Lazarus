@@ -1,0 +1,204 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Project-Id-Version: tachartlazaruspkg\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"X-Generator: Poedit 1.8.6\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: tachartstrconsts.descolor
+msgid "Color"
+msgstr "Farbe"
+
+#: tachartstrconsts.desdatapointeditor
+msgid "DataPoints editor"
+msgstr "Datenpunkt-Editor"
+
+#: tachartstrconsts.desdeleterow
+msgid "Delete row"
+msgstr "Zeile löschen"
+
+#: tachartstrconsts.desinsertrow
+msgid "Insert row"
+msgstr "Zeile einfügen"
+
+#: tachartstrconsts.destext
+msgid "Text"
+msgstr "Text"
+
+#: tachartstrconsts.rsadd
+msgid "Add"
+msgstr "Hinzuf."
+
+#: tachartstrconsts.rsareaseries
+msgid "Area series"
+msgstr "Fläche-Diagramm"
+
+#: tachartstrconsts.rsautoscale
+msgid "Auto scale"
+msgstr "Auto-Skalierung"
+
+#: tachartstrconsts.rsbarseries
+msgid "Bar series"
+msgstr "Säulen/Balken-Diagramm"
+
+#: tachartstrconsts.rsboxandwhiskerseries
+msgid "Box-and-whiskers series"
+msgstr "Box-und-Whisker-Plot"
+
+#: tachartstrconsts.rsbsplineseries
+msgid "B-Spline series"
+msgstr "B-Spline"
+
+#: tachartstrconsts.rsbubbleseries
+msgid "Bubble series"
+msgstr "Blasen-Diagramm"
+
+#: tachartstrconsts.rscolormapseries
+msgid "Color map series"
+msgstr "Farbkarten-Plot"
+
+#: tachartstrconsts.rsconstantline
+msgid "Constant line"
+msgstr "Konstante Linie"
+
+#: tachartstrconsts.rscubicsplineseries
+msgid "Cubic spline series"
+msgstr "Kubischer Spline"
+
+#: tachartstrconsts.rscumulativenormaldistribution
+msgid "Cumulative normal distribution"
+msgstr "Kumulative Normalverteilung"
+
+#: tachartstrconsts.rsdatapointclick
+msgid "Data point click"
+msgstr "Klick auf Datenpunkt"
+
+#: tachartstrconsts.rsdatapointcrosshair
+msgid "Data point crosshair"
+msgstr "Fadenkreuz für Datenpunkte"
+
+#: tachartstrconsts.rsdatapointdrag
+msgid "Data point drag"
+msgstr "Datenpunkt verschieben"
+
+#: tachartstrconsts.rsdatapointhint
+msgid "Data point hint"
+msgstr "Datenpunkt-Hinweis"
+
+#: tachartstrconsts.rsdelete
+msgid "Delete"
+msgstr "Entf."
+
+#: tachartstrconsts.rsdistancemeasurement
+msgid "Distance measurement"
+msgstr "Distanzmessung"
+
+#: tachartstrconsts.rsfunctionseries
+msgid "Function series"
+msgstr "Funktions-Diagramm"
+
+#: tachartstrconsts.rsleastsquaresfitseries
+msgid "Least-squares fit series"
+msgstr "Fit"
+
+#: tachartstrconsts.rslinear
+msgid "Linear"
+msgstr "Linear"
+
+#: tachartstrconsts.rslineseries
+msgid "Line series"
+msgstr "Linien-Diagramm"
+
+#: tachartstrconsts.rslogarithmic
+msgid "Logarithmic"
+msgstr "Logarithmisch"
+
+#: tachartstrconsts.rsmanhattanplotseries
+msgid "Manhattan plot series"
+msgstr "Manhatten-Plot"
+
+#: tachartstrconsts.rsmovedown
+msgid "Down"
+msgstr "Ab"
+
+#: tachartstrconsts.rsmoveup
+msgid "Up"
+msgstr "Auf"
+
+#: tachartstrconsts.rsopenhighlowcloseseries
+msgid "Open-high-low-close series"
+msgstr "Öffnung-Höchst-Tiefst-Geschlossen"
+
+#: tachartstrconsts.rspanningbyclick
+msgid "Panning by click"
+msgstr "Verschieben durch Klicken"
+
+#: tachartstrconsts.rspanningbydrag
+msgid "Panning by drag"
+msgstr "Verschieben durch Ziehen"
+
+#: tachartstrconsts.rspanningbymousewheel
+msgid "Panning by mouse wheel"
+msgstr "Verschieben mit Mausrad"
+
+#: tachartstrconsts.rsparametriccurveseries
+msgid "Parametric curve series"
+msgstr "Parametrische Kurve"
+
+#: tachartstrconsts.rspieseries
+msgid "Pie series"
+msgstr "Torten-Diagramm"
+
+#: tachartstrconsts.rspolarseries
+msgid "Polar series"
+msgstr "Polar-Diagramm"
+
+#: tachartstrconsts.rsuserdefined
+msgctxt "tachartstrconsts.rsuserdefined"
+msgid "User-defined"
+msgstr "Benutzerdefiniert"
+
+#: tachartstrconsts.rsuserdefinedtool
+msgctxt "tachartstrconsts.rsuserdefinedtool"
+msgid "User-defined"
+msgstr "Benutzerdefiniert"
+
+#: tachartstrconsts.rsuserdrawnseries
+msgid "User-drawn series"
+msgstr "Benutzer-definiertes Diagramm"
+
+#: tachartstrconsts.rszoombyclick
+msgid "Zoom by click"
+msgstr "Zoomen durch Klicken"
+
+#: tachartstrconsts.rszoombydrag
+msgid "Zoom by drag"
+msgstr "Zommen durch Ziehen"
+
+#: tachartstrconsts.rszoombymousewheel
+msgid "Zoom by mouse-wheel"
+msgstr "Zoomen mit Mausrad"
+
+#: tachartstrconsts.sesserieseditortitle
+msgid "Edit series"
+msgstr "Datenreihe bearbeiten"
+
+#: tachartstrconsts.tasaxistransformseditortitle
+msgid "Edit axis transformations"
+msgstr "Achsentransformation bearbeiten"
+
+#: tachartstrconsts.tasfailedsubcomponentrename
+msgid "Failed to rename components: %s"
+msgstr "Fehler beim Umbenennen von Komponenten: %s"
+
+#: tachartstrconsts.tastoolseditortitle
+msgid "Edit tools"
+msgstr "Werkzeuge bearbeiten"

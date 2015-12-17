@@ -1,0 +1,203 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 1.7.7\n"
+
+#: tachartstrconsts.descolor
+msgid "Color"
+msgstr "Цвет"
+
+#: tachartstrconsts.desdatapointeditor
+msgid "DataPoints editor"
+msgstr "Редактор величин"
+
+#: tachartstrconsts.desdeleterow
+msgid "Delete row"
+msgstr "Удалить строку"
+
+#: tachartstrconsts.desinsertrow
+msgid "Insert row"
+msgstr "Вставить строку"
+
+#: tachartstrconsts.destext
+msgid "Text"
+msgstr "Текст"
+
+#: tachartstrconsts.rsadd
+msgid "Add"
+msgstr "Добавить"
+
+#: tachartstrconsts.rsareaseries
+msgid "Area series"
+msgstr "Диаграмма с областями"
+
+#: tachartstrconsts.rsautoscale
+msgid "Auto scale"
+msgstr "Автоматический масштаб"
+
+#: tachartstrconsts.rsbarseries
+msgid "Bar series"
+msgstr "Гистограмма"
+
+#: tachartstrconsts.rsboxandwhiskerseries
+msgid "Box-and-whiskers series"
+msgstr "Диаграмма размаха"
+
+#: tachartstrconsts.rsbsplineseries
+msgid "B-Spline series"
+msgstr "Диаграмма с B-сплайнами"
+
+#: tachartstrconsts.rsbubbleseries
+msgid "Bubble series"
+msgstr "Пузырьковая диаграмма"
+
+#: tachartstrconsts.rscolormapseries
+msgid "Color map series"
+msgstr "Диаграмма с картой цветов"
+
+#: tachartstrconsts.rsconstantline
+msgid "Constant line"
+msgstr "Линия постоянной"
+
+#: tachartstrconsts.rscubicsplineseries
+msgid "Cubic spline series"
+msgstr "Диаграмма с кубическими сплайнами"
+
+#: tachartstrconsts.rscumulativenormaldistribution
+msgid "Cumulative normal distribution"
+msgstr "Масштаб нормального распределения"
+
+#: tachartstrconsts.rsdatapointclick
+msgid "Data point click"
+msgstr "Щелчок по величине"
+
+#: tachartstrconsts.rsdatapointcrosshair
+msgid "Data point crosshair"
+msgstr "Перекрестие для величины"
+
+#: tachartstrconsts.rsdatapointdrag
+msgid "Data point drag"
+msgstr "Перетаскивание величины"
+
+#: tachartstrconsts.rsdatapointhint
+msgid "Data point hint"
+msgstr "Всплывающая подсказка для величины"
+
+#: tachartstrconsts.rsdelete
+msgid "Delete"
+msgstr "Удалить"
+
+#: tachartstrconsts.rsdistancemeasurement
+msgid "Distance measurement"
+msgstr "Измерение расстояния"
+
+#: tachartstrconsts.rsfunctionseries
+msgid "Function series"
+msgstr "Диаграмма по функции"
+
+#: tachartstrconsts.rsleastsquaresfitseries
+msgid "Least-squares fit series"
+msgstr "Диаграмма по методу наименьших квадратов"
+
+#: tachartstrconsts.rslinear
+msgid "Linear"
+msgstr "Линейный масштаб"
+
+#: tachartstrconsts.rslineseries
+msgid "Line series"
+msgstr "График"
+
+#: tachartstrconsts.rslogarithmic
+msgid "Logarithmic"
+msgstr "Логарифмический масштаб"
+
+#: tachartstrconsts.rsmanhattanplotseries
+msgid "Manhattan plot series"
+msgstr "Манхэттенская диаграмма"
+
+#: tachartstrconsts.rsmovedown
+msgid "Down"
+msgstr "Вниз"
+
+#: tachartstrconsts.rsmoveup
+msgid "Up"
+msgstr "Вверх"
+
+#: tachartstrconsts.rsopenhighlowcloseseries
+msgid "Open-high-low-close series"
+msgstr "Биржевая диаграмма"
+
+#: tachartstrconsts.rspanningbyclick
+msgid "Panning by click"
+msgstr "Панорамирование щелчком"
+
+#: tachartstrconsts.rspanningbydrag
+msgid "Panning by drag"
+msgstr "Панорамирование перетаскиванием"
+
+#: tachartstrconsts.rspanningbymousewheel
+msgid "Panning by mouse wheel"
+msgstr "Панорамирование колёсиком мыши"
+
+#: tachartstrconsts.rsparametriccurveseries
+msgid "Parametric curve series"
+msgstr "Диаграмма с параметрическими кривыми"
+
+#: tachartstrconsts.rspieseries
+msgid "Pie series"
+msgstr "Круговая диаграмма"
+
+#: tachartstrconsts.rspolarseries
+msgid "Polar series"
+msgstr "Лепестковая диаграмма"
+
+#: tachartstrconsts.rsuserdefined
+msgctxt "tachartstrconsts.rsuserdefined"
+msgid "User-defined"
+msgstr "Пользовательский масштаб"
+
+#: tachartstrconsts.rsuserdefinedtool
+msgctxt "tachartstrconsts.rsuserdefinedtool"
+msgid "User-defined"
+msgstr "Пользовательское средство"
+
+#: tachartstrconsts.rsuserdrawnseries
+msgid "User-drawn series"
+msgstr "Пользовательская диаграмма"
+
+#: tachartstrconsts.rszoombyclick
+msgid "Zoom by click"
+msgstr "Изменение масштаба щелчком"
+
+#: tachartstrconsts.rszoombydrag
+msgid "Zoom by drag"
+msgstr "Изменение масштаба перетаскиванием"
+
+#: tachartstrconsts.rszoombymousewheel
+msgid "Zoom by mouse-wheel"
+msgstr "Изменение масштаба колёсиком мыши"
+
+#: tachartstrconsts.sesserieseditortitle
+msgid "Edit series"
+msgstr "Редактор диаграмм"
+
+#: tachartstrconsts.tasaxistransformseditortitle
+msgid "Edit axis transformations"
+msgstr "Редактор масштабов осей"
+
+#: tachartstrconsts.tasfailedsubcomponentrename
+msgid "Failed to rename components: %s"
+msgstr "Невозможно переименовать компоненты: %s"
+
+#: tachartstrconsts.tastoolseditortitle
+msgid "Edit tools"
+msgstr "Редактор средств диаграмм"
+

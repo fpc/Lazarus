@@ -146,7 +146,7 @@ implementation
 
 uses
   Math,
-  TACustomSource, TAGeometry, TAGraph;
+  TAChartStrConsts, TACustomSource, TAGeometry, TAGraph;
 
 { TPieSlice }
 
@@ -673,7 +673,7 @@ end;
 
 initialization
 
-  RegisterSeriesClass(TPolarSeries, 'Polar series');
+  RegisterSeriesClass(TPolarSeries, @rsPolarSeries);
 
 end.
 

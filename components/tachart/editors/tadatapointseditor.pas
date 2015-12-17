@@ -18,6 +18,9 @@ uses
   Graphics, Dialogs;
 
 type
+
+  { TDataPointsEditorForm }
+
   TDataPointsEditorForm = class(TForm)
     ButtonPanel1: TButtonPanel;
     cdItemColor: TColorDialog;
@@ -25,6 +28,7 @@ type
     miDeleteRow: TMenuItem;
     pmRows: TPopupMenu;
     sgData: TStringGrid;
+    procedure FormCreate(Sender: TObject);
     procedure miDeleteRowClick(Sender: TObject);
     procedure miInsertRowClick(Sender: TObject);
     procedure pmRowsPopup(Sender: TObject);
@@ -46,7 +50,8 @@ procedure Register;
 implementation
 
 uses
-  LCLIntf, Math, PropEdits, TAChartUtils, TASources;
+  LCLIntf, Math, PropEdits,
+  TAChartStrConsts, TAChartUtils, TASources;
 
 {$R *.lfm}
 
@@ -120,6 +125,15 @@ begin
   end;
   if InRange(FCurrentRow, 1, sgData.RowCount - 1) then
     sgData.DeleteRow(FCurrentRow);
+end;
+
+procedure TDataPointsEditorForm.FormCreate(Sender: TObject);
+begin
+  Caption := desDatapointEditor;
+  sgData.Columns[2].Title.Caption := desColor;
+  sgData.Columns[3].Title.Caption := desText;
+  miInsertRow.Caption := desInsertRow;
+  miDeleteRow.Caption := desDeleteRow;
 end;
 
 procedure TDataPointsEditorForm.miInsertRowClick(Sender: TObject);

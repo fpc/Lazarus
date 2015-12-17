@@ -3,10 +3,10 @@ object DataPointsEditorForm: TDataPointsEditorForm
   Height = 303
   Top = 235
   Width = 357
-  Caption = 'DataPoints editor'
   ClientHeight = 303
   ClientWidth = 357
-  LCLVersion = '0.9.31'
+  OnCreate = FormCreate
+  LCLVersion = '1.7'
   object sgData: TStringGrid
     Left = 0
     Height = 257
@@ -18,32 +18,28 @@ object DataPointsEditorForm: TDataPointsEditorForm
       item
         Alignment = taRightJustify
         Title.Alignment = taCenter
-        Title.Caption = 'X'
         Title.Font.Style = [fsBold]
-        Title.PrefixOption = poNone
+        Title.Caption = 'X'
         Width = 80
       end    
       item
         Alignment = taRightJustify
         Title.Alignment = taCenter
-        Title.Caption = 'Y'
         Title.Font.Style = [fsBold]
-        Title.PrefixOption = poNone
+        Title.Caption = 'Y'
         Width = 80
       end    
       item
         ButtonStyle = cbsEllipsis
         Title.Alignment = taCenter
-        Title.Caption = 'Color'
         Title.Font.Style = [fsBold]
-        Title.PrefixOption = poNone
+        Title.Caption = 'Color'
         Width = 80
       end    
       item
         Title.Alignment = taCenter
-        Title.Caption = 'Text'
         Title.Font.Style = [fsBold]
-        Title.PrefixOption = poNone
+        Title.Caption = 'Text'
         Width = 81
       end>
     DefaultColWidth = 32
@@ -66,9 +62,13 @@ object DataPointsEditorForm: TDataPointsEditorForm
     Top = 263
     Width = 345
     OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
     CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
     CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel]
   end

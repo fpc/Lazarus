@@ -17,14 +17,11 @@ interface
 
 procedure Register;
 
-resourcestring
-  tasToolsEditorTitle = 'Edit tools';
-
 implementation
 
 uses
   Classes, ComponentEditors, Forms, PropEdits, SysUtils,
-  TATools, TASubcomponentsEditor;
+  TAChartStrConsts, TATools, TASubcomponentsEditor;
 
 type
   { TToolsComponentEditor }
@@ -116,7 +113,7 @@ var
   i: Integer;
 begin
   for i := 0 to ToolsClassRegistry.Count - 1 do
-    AddSubcomponentClass(ToolsClassRegistry[i], i);
+    AddSubcomponentClass(ToolsClassRegistry.GetCaption(i), i);
 end;
 
 function TToolsEditorForm.GetChildrenList: TFPList;
@@ -127,7 +124,7 @@ end;
 function TToolsEditorForm.MakeSubcomponent(
   AOwner: TComponent; ATag: Integer): TComponent;
 begin
-  Result := TChartToolClass(ToolsClassRegistry.Objects[ATag]).Create(AOwner);
+  Result := TChartToolClass(ToolsClassRegistry.GetClass(ATag)).Create(AOwner);
 end;
 
 end.

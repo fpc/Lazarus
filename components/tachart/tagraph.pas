@@ -447,10 +447,11 @@ type
   end;
 
 procedure Register;
-procedure RegisterSeriesClass(ASeriesClass: TSeriesClass; const ACaption: string);
+procedure RegisterSeriesClass(ASeriesClass: TSeriesClass; const ACaption: String); overload;
+procedure RegisterSeriesClass(ASeriesClass: TSeriesClass; ACaptionPtr: PStr); overload;
 
 var
-  SeriesClassRegistry: TStringList;
+  SeriesClassRegistry: TClassRegistry = nil;
   OnInitBuiltinTools: function(AChart: TChart): TBasicChartToolset;
 
 implementation
@@ -474,17 +475,22 @@ var
 begin
   RegisterComponents(CHART_COMPONENT_IDE_PAGE, [TChart]);
   for i := 0 to SeriesClassRegistry.Count - 1 do begin
-    sc := TSeriesClass(SeriesClassRegistry.Objects[i]);
+    sc := TSeriesClass(SeriesClassRegistry.GetClass(i));
     RegisterClass(sc);
     RegisterNoIcon([sc]);
   end;
 end;
 
-procedure RegisterSeriesClass(
-  ASeriesClass: TSeriesClass; const ACaption: String);
+procedure RegisterSeriesClass(ASeriesClass: TSeriesClass; const ACaption: String);
 begin
-  if SeriesClassRegistry.IndexOfObject(TObject(ASeriesClass)) < 0 then
-    SeriesClassRegistry.AddObject(ACaption, TObject(ASeriesClass));
+  if SeriesClassRegistry.IndexOfClass(ASeriesClass) < 0 then
+    SeriesClassRegistry.Add(TClassRegistryItem.Create(ASeriesClass, ACaption));
+end;
+
+procedure RegisterSeriesClass(ASeriesClass: TSeriesClass; ACaptionPtr: PStr);
+begin
+  if SeriesClassRegistry.IndexOfClass(ASeriesClass) < 0 then
+    SeriesClassRegistry.Add(TClassRegistryItem.CreateRes(ASeriesClass, ACaptionPtr));
 end;
 
 procedure WriteComponentToStream(AStream: TStream; AComponent: TComponent);
@@ -987,7 +993,7 @@ begin
     exit;
   end;
   for i := 0 to SeriesClassRegistry.Count - 1 do begin
-    AClass := TSeriesClass(SeriesClassRegistry.Objects[i]);
+    AClass := TSeriesClass(SeriesClassRegistry.GetClass(i));
     if AClass.ClassNameIs(AClassName) then exit;
   end;
   AClass := nil;
@@ -1896,7 +1902,7 @@ end;
 
 initialization
   SkipObsoleteChartProperties;
-  SeriesClassRegistry := TStringList.Create;
+  SeriesClassRegistry := TClassRegistry.Create;
   ShowMessageProc := @ShowMessage;
 
 finalization

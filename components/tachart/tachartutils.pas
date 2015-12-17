@@ -256,6 +256,25 @@ type
     property Item[AIndex: Integer]: TElem read GetItem; default;
   end;
 
+  PStr = ^String;  // PString is declared in system and in objpas!
+
+  TClassRegistryItem = class
+    FClass: TClass;
+    FCaption: String;
+    FCaptionPtr: PStr;
+    constructor Create(AClass: TClass; const ACaption: String);
+    constructor CreateRes(AClass: TClass; ACaptionPtr: PStr);
+  end;
+
+  TClassRegistry = class(TFPList)
+  public
+    destructor Destroy; override;
+    procedure Clear;
+    function GetCaption(AIndex: Integer): String;
+    function GetClass(AIndex: Integer): TClass;
+    function IndexOfClass(AClass: TClass): Integer;
+  end;
+
 const
   PUB_INT_SET_ALL = '';
   PUB_INT_SET_EMPTY = '-';
@@ -329,13 +348,11 @@ var
   DrawData: TDrawDataRegistry;
   ShowMessageProc: TShowMessageProc;
 
-resourcestring
-  tasFailedSubcomponentRename = 'Failed to rename components: %s';
 
 implementation
 
 uses
-  StrUtils, TypInfo;
+  StrUtils, TypInfo, TAChartStrConsts;
 
 const
   ORIENTATION_UNITS_PER_DEG = 10;
@@ -970,6 +987,64 @@ begin
     SetLength(FData, j);
   end;
 end;
+
+
+{ TClassRegistryItem }
+
+constructor TClassRegistryItem.Create(AClass: TClass; const ACaption: String);
+begin
+  FClass := AClass;
+  FCaption := ACaption;
+end;
+
+constructor TClassRegistryItem.CreateRes(AClass: TClass; ACaptionPtr: PStr);
+begin
+  FClass := AClass;
+  FCaptionPtr := ACaptionPtr;
+  if FCaptionPtr <> nil then FCaption := ACaptionPtr^;
+end;
+
+
+{ TClassRegistry }
+
+destructor TClassRegistry.Destroy;
+begin
+  Clear;
+  inherited;
+end;
+
+procedure TClassRegistry.Clear;
+var
+  i: Integer;
+begin
+  for i:= Count-1 downto 0 do
+    TObject(Items[i]).Free;
+  inherited;
+end;
+
+function TClassRegistry.GetCaption(AIndex: Integer): String;
+var
+  item: TClassRegistryItem;
+begin
+  item := TClassRegistryItem(Items[AIndex]);
+  if item.FCaptionPtr <> nil then
+    Result := item.FCaptionPtr^ else
+    Result := item.FCaption;
+end;
+
+function TClassRegistry.GetClass(AIndex: Integer): TClass;
+begin
+  Result := TClassRegistryItem(Items[AIndex]).FClass;
+end;
+
+function TClassRegistry.IndexOfClass(AClass: TClass): Integer;
+begin
+  for Result := 0 to Count-1 do
+    if TClassRegistryItem(Items[Result]).FClass = AClass then
+      exit;
+  Result := -1;
+end;
+
 
 initialization
 
