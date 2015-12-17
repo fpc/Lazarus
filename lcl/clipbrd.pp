@@ -137,6 +137,7 @@ function CF_Picture: TClipboardFormat;
 function CF_MetaFilePict: TClipboardFormat;
 function CF_Object: TClipboardFormat;
 function CF_Component: TClipboardFormat;
+function CF_HTML: TClipboardformat;
 
 type
   TClipboardData = record
@@ -162,6 +163,8 @@ type
     function AssignToGraphic(Dest: TGraphic; FormatID: TClipboardFormat): boolean;
     //procedure AssignToMetafile(Dest: TMetafile);
     procedure AssignToPicture(Dest: TPicture);
+    function DoGetAsHtml(ExtractFragmentOnly: Boolean): String;
+    function GetAsHtml: String;
     function GetAsText: string;
     function GetFormatCount: Integer;
     function GetFormats(Index: Integer): TClipboardFormat;
@@ -170,6 +173,7 @@ type
       CreateIfNotExists: boolean): integer;
     procedure InternalOnRequest(const RequestedFormatID: TClipboardFormat;
       AStream: TStream);
+    procedure SetAsHtml(const Html: String);
     procedure SetAsText(const Value: string);
     function SetBuffer(FormatID: TClipboardFormat;
                        var Buffer; Size: Integer): Boolean;
@@ -208,6 +212,7 @@ type
     procedure SupportedFormats(var AFormatCount: integer;
                                var FormatList: PClipboardFormat);
     function GetTextBuf(Buffer: PChar; BufSize: Integer): Integer;
+    function GetAsHtmlFragment: String;
     function HasFormat(FormatID: TClipboardFormat): Boolean;
     function HasFormatName(const FormatName: string): Boolean;
     function HasPictureFormat: boolean;
@@ -220,6 +225,7 @@ type
                                   FormatList: PClipboardFormat): Boolean;
     procedure SetTextBuf(Buffer: PChar);
     property AsText: string read GetAsText write SetAsText;
+    property AsHtml: String read GetAsHtml write SetAsHtml;
     property ClipboardType: TClipboardType read FClipboardType;
     property FormatCount: Integer read GetFormatCount;
     property Formats[Index: Integer]: TClipboardFormat read GetFormats;
@@ -240,6 +246,9 @@ function RegisterClipboardFormat(const Format: string): TClipboardFormat;
 
 
 implementation
+
+uses
+  fasthtmlparser, LazUTF8;
 
 var
   FClipboards: array[TClipboardType] of TClipboard;

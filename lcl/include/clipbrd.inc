@@ -14,6 +14,8 @@
   The clipboard is able to work with the windows and gtk behaviour/features.
 }
 
+{$I clipbrd_html.inc}
+
 { TClipboard }
 
 constructor TClipboard.Create;
@@ -767,6 +769,111 @@ begin
       if List<>nil then FreeMem(List);
     end else
       Result:=0;
+  end;
+end;
+
+{ Retrieves html formatted text from the clipboard. If ExtractFragmentOnly is
+  true then only the relevant html fragment is returned, the rest of the html
+  string is dropped. This features exists only for Windows. }
+function TClipboard.DoGetAsHtml(ExtractFragmentOnly: Boolean): String;
+var
+  stream: TMemoryStream;
+  bom: TBOM;
+  US: UnicodeString;
+begin
+  Result := '';
+  if (CF_HTML = 0) or not HasFormat(CF_HTML) then
+    exit;
+
+  stream := TMemoryStream.Create;
+  try
+    if not GetFormat(CF_HTML, stream) then
+      exit;
+
+    stream.Write(#0#0, Length(#0#0));
+
+    bom := GetBomFromStream(stream);
+    case Bom of
+      bomUtf8:
+        begin
+          stream.Position := 3;
+          SetLength(Result, stream.Size - 3);
+          stream.Read(Result, stream.Size - 3);
+          //ClipBoard may return a larger stream than the size of the string
+          //this gets rid of it, since the string will end in a #0 (wide)char
+          Result := PAnsiChar(Result);
+        end;
+      bomUTF16LE:
+        begin
+          stream.Position := 2;
+          SetLength(US, stream.Size - 2);
+          stream.Read(US[1], stream.Size - 2);
+          //ClipBoard may return a larger stream than the size of the string
+          //this gets rid of it, since the string will end in a #0 (wide)char
+          US := PWideChar(US);
+          Result := Utf16ToUtf8(US);
+        end;
+      bomUtf16BE:
+        begin
+          //this may need swapping of WideChars????
+          stream.Position := 2;
+          SetLength(US, stream.Size - 2);
+          stream.Read(US[1], stream.Size - 2);
+          //ClipBoard may return a larger stream than the size of the string
+          //this gets rid of it, since the string will end in a #0 (wide)char
+          US := PWideChar(US);
+          Result := Utf16ToUtf8(US);
+        end;
+      bomUndefined:
+        begin
+          //assume the first byte is part of the string and it is some AnsiString
+          //CF_HTML returns a string encoded as UTF-8 on Windows
+          Result := PAnsiChar(Stream.Memory);
+        end;
+    end;
+
+    if (Result <> '') then begin
+      if ExtractFragmentOnly then
+        Result := ExtractHtmlFragmentFromClipBoardHtml(Result)
+     {$IFDEF WINDOWS}
+      else
+        Result := ExtractHtmlFromClipboardHtml(Result);
+     {$ENDIF}
+    end;
+
+  finally
+    stream.Free;
+  end;
+end;
+
+function TClipboard.GetAsHtml: String;
+begin
+  Result := DoGetAsHtml(false);
+end;
+
+function TClipboard.GetAsHtmlFragment: String;
+begin
+  Result := DoGetAsHtml(true);
+end;
+
+{ Adds html-formatted text to the clipboard. It must be valid html.
+  In case of Windows, a specific header is added. }
+procedure TClipboard.SetAsHtml(const Html: String);
+var
+  stream: TStream;
+begin
+  if CF_HTML = 0 then
+    exit;
+  {$IFDEF WINDOWS}
+  stream := TStringStream.Create(InsertClipHeader(Html));
+  {$ELSE}
+  stream := TStringStream.Create(Html);
+  {$ENDIF}
+  try
+    stream.Position := 0;
+    Clipboard.AddFormat(CF_HTML, stream);
+  finally
+    stream.Free;
   end;
 end;
 
