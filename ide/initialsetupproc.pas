@@ -483,7 +483,7 @@ begin
     ShortCompFile:='fpc'+ExeExt;
 
     // check $(LazarusDir)\fpc\3.0.0\bin\i386-win32\fpc.exe
-    if CheckFile(SetDirSeparators('$(LazarusDir)/fpc/'+GetCompiledFPCVersion+'/bin/'+GetCompiledTargetCPU+'-'+GetCompiledTargetOS+'/')+ShortCompFile,Result)
+    if CheckFile(SetDirSeparators('$(LazarusDir)/fpc/'+{$I %FPCVERSION%}+'/bin/'+GetCompiledTargetCPU+'-'+GetCompiledTargetOS+'/')+ShortCompFile,Result)
       then exit;
 
     // check $(LazarusDir)\fpc\bin\i386-win32\fpc.exe
