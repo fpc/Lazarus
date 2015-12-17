@@ -6622,6 +6622,13 @@ begin
   EditorSetValue;
   if ParentChanged then
     Editor.Parent:=Self;
+  if FEditor=FStringEditor then
+  begin
+    if FCol<Columns.Count then
+      FStringEditor.Alignment:=Columns[FCol].Alignment
+    else
+      FStringEditor.Alignment:=taLeftJustify;
+  end;
   Editor.Visible:=True;
   if Focused and Editor.CanFocus then
     Editor.SetFocus;
