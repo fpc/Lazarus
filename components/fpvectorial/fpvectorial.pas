@@ -566,6 +566,7 @@ type
     procedure AppendLineToSegment(AX, AY: Double);
     procedure AppendEllipticalArc(ARadX, ARadY, AXAxisRotation, ADestX, ADestY: Double; ALeftmostEllipse, AClockwiseArcFlag: Boolean); // See http://www.w3.org/TR/SVG/paths.html#PathDataEllipticalArcCommands
     procedure AppendEllipticalArcWithCenter(ARadX, ARadY, AXAxisRotation, ADestX, ADestY, ACenterX, ACenterY: Double; AClockwiseArcFlag: Boolean); // See http://www.w3.org/TR/SVG/paths.html#PathDataEllipticalArcCommands
+    function GetLineIntersectionPoints(ACoord: Double; ACoordIsX: Boolean): TDoubleDynArray; override;
     procedure Move(ADeltaX, ADeltaY: Double); override;
     procedure MoveSubpart(ADeltaX, ADeltaY: Double; ASubpart: Cardinal); override;
     function  MoveToSubpart(ASubpart: Cardinal): TPathSegment;
@@ -3429,7 +3430,7 @@ procedure TvEntityWithPenAndBrush.DrawBrushGradient(ADest: TFPCustomCanvas;
   end;
 
 var
-  i: Integer;
+  i, j: Integer;
   lPoints: TDoubleDynArray;
   lCanvasPts: array[0..1] of Integer;
   lColor, lColor1, lColor2: TFPColor;
@@ -3444,11 +3445,17 @@ begin
     begin
       lPoints := GetLineIntersectionPoints(CanvasToCoordY(i), False);
       if Length(lPoints) < 2 then Continue;
-      lCanvasPts[0] := CoordToCanvasX(lPoints[0]); lCanvasPts[1] := CoordToCanvasX(lPoints[1]);
       lColor := MixColors(lColor1, lColor2, i-y1, y2-y1);
       ADest.Pen.FPColor := lColor;
       ADest.Pen.Style := psSolid;
-      ADest.Line(lCanvasPts[0], i, lCanvasPts[1], i);
+      j := 0;
+      while j < Length(lPoints) do
+      begin
+        lCanvasPts[0] := CoordToCanvasX(lPoints[j]);
+        lCanvasPts[1] := CoordToCanvasX(lPoints[j+1]);
+        ADest.Line(lCanvasPts[0], i, lCanvasPts[1], i);
+        inc(j, 2);
+      end;
     end;
   end
   else if Brush.Kind = bkHorizontalGradient then
@@ -3457,11 +3464,17 @@ begin
     begin
       lPoints := GetLineIntersectionPoints(CanvasToCoordX(i), True);
       if Length(lPoints) < 2 then Continue;
-      lCanvasPts[0] := CoordToCanvasY(lPoints[0]); lCanvasPts[1] := CoordToCanvasY(lPoints[1]);
       lColor := MixColors(lColor1, lColor2, i-x1, x2-x1);
       ADest.Pen.FPColor := lColor;
       ADest.Pen.Style := psSolid;
-      ADest.Line(i, lCanvasPts[0], i, lCanvasPts[1]);
+      j := 0;
+      while (j+1 < Length(lPoints)) do
+      begin
+        lCanvasPts[0] := CoordToCanvasY(lPoints[j]);
+        lCanvasPts[1] := CoordToCanvasY(lPoints[j+1]);
+        ADest.Line(i, lCanvasPts[0], i, lCanvasPts[1]);
+        inc(j , 2);
+      end;
     end;
   end;
 end;
@@ -3915,17 +3928,96 @@ begin
   end;
 end;
 
+{ Only correct for straight segments. This must have been checked before! }
+function TPath.GetLineIntersectionPoints(ACoord: Double;
+  ACoordIsX: Boolean): TDoubleDynArray;
+const
+  COUNT = 100;
+var
+  seg: TPathSegment;
+  seg2D: T2DSegment; // absolute seg;
+  j: Integer;
+  p, p1, p2: T3DPoint;
+  n: Integer;
+begin
+  SetLength(Result, COUNT);
+  PrepareForSequentialReading;
+  n := 0;
+  if ACoordIsX then
+    for j:=0 to Len-1 do
+    begin
+      seg := TPathSegment(Next);
+      if seg.GetStartPoint(p) and (seg is T2DSegment) then
+      begin
+        seg2D := T2DSegment(seg);
+        if p.X < seg2D.X then begin
+          p1 := Make2DPoint(p.X, p.Y);
+          p2 := Make2DPoint(seg2D.X, seg2D.Y);
+        end else
+        begin
+          p1 := Make2DPoint(seg2D.X, seg2D.Y);
+          p2 := Make2DPoint(p.X, p.Y);
+        end;
+        if (p1.X < ACoord) and (ACoord <= p2.X) then
+        begin
+          if n >= Length(Result) then
+            SetLength(Result, Length(Result) + COUNT);
+          if (p1.X = p2.X) then
+            Result[n] := p1.Y else
+            Result[n] := p1.Y + (ACoord - p1.X) * (p2.Y - p1.Y) / (p2.X - p1.X);
+          inc(n);
+        end;
+      end;
+    end
+  else
+    for j := 0 to Len-1 do
+    begin
+      seg := TPathSegment(Next);
+      if seg.GetStartPoint(p) and (seg is T2DSegment) then
+      begin
+        seg2D := T2DSegment(seg);
+        if p.Y < seg2D.Y then
+        begin
+          p1 := Make2DPoint(p.X, p.Y);
+          p2 := Make2DPoint(seg2D.X, seg2D.Y);
+        end else
+        begin
+          p1 := Make2DPoint(seg2D.X, seg2D.Y);
+          p2 := Make2DPoint(p.X, p.Y);
+        end;
+        if (p1.Y < ACoord) and (ACoord <= p2.Y) then
+        begin
+          if n >= Length(Result) then
+            SetLength(Result, Length(Result) + COUNT);
+          if (p1.Y = p2.Y) then
+            Result[n] := p1.X else
+            Result[n] := p1.X + (ACoord - p1.Y) * (p2.X - p1.x) / (p2.Y - p1.Y);
+          inc(n);
+        end;
+      end;
+    end;
+  SetLength(Result, n);
+end;
+
 procedure TPath.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double; ADoDraw: Boolean);
 
-  function CoordToCanvasX(ACoord: Double): Integer;
+  function HasStraightSegmentsOnly: Boolean;
+  var
+    seg: TPathSegment;
+    j: Integer;
   begin
-    Result := Round(ADestX + AmulX * ACoord);
-  end;
-
-  function CoordToCanvasY(ACoord: Double): Integer;
-  begin
-    Result := Round(ADestY + AmulY * ACoord);
+    Result := true;
+    PrepareForSequentialReading;
+    for j := 0 to Len - 1 do
+    begin
+      seg := TPathSegment(Next());
+      if seg.SegmentType in [st2DBezier, st3dBezier, st2DEllipticalArc] then
+      begin
+        Result := false;
+        exit;
+      end;
+    end;
   end;
 
 var
@@ -3936,6 +4028,7 @@ var
   Cur2DSegment: T2DSegment absolute CurSegment;
   Cur2DBSegment: T2DBezierSegment absolute CurSegment;
   Cur2DArcSegment: T2DEllipticalArcSegment absolute CurSegment;
+  x1, y1, x2, y2: Integer;
   // For bezier
   CoordX2, CoordY2, CoordX3, CoordY3, CoordX4, CoordY4: Integer;
   //t: Double;
@@ -3954,7 +4047,7 @@ begin
 
   PosX := 0;
   PosY := 0;
-  ADest.Brush.Style := bsClear;
+//  ADest.Brush.Style := bsClear;
 
   ADest.MoveTo(ADestX, ADestY);
                            {
@@ -3992,6 +4085,29 @@ begin
   if ADoDraw then
     RenderInternalPolygon(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
 
+  {$IFDEF USE_LCL_CANVAS}
+  if ADoDraw and (Brush.Kind in [bkHorizontalGradient, bkVerticalGradient]) and
+    HasStraightSegmentsOnly then
+  begin
+    x1 := MaxInt;
+    y1 := MaxInt;
+    x2 := -MaxInt;
+    y2 := -MaxInt;
+    PrepareForSequentialReading;
+    for j := 0 to Len - 1 do
+    begin
+      CurSegment := TPathSegment(Next);
+      CoordX := CoordToCanvasX(Cur2DSegment.X, ADestX, AMulX);
+      CoordY := CoordToCanvasY(Cur2DSegment.Y, ADestY, AMulY);
+      x1 := Min(x1, CoordX);
+      y1 := Min(y1, CoordY);
+      x2 := Max(x2, CoordX);
+      y2 := Max(y2, CoordY);
+    end;
+    DrawBrushGradient(ADest, ARenderInfo, x1, y1, x2, y2, ADestX, ADestY, AMulX, AMulY);
+  end;
+  {$ENDIF}
+
   //
   // For other paths, draw more carefully
   //
@@ -4006,8 +4122,8 @@ begin
     case CurSegment.SegmentType of
     stMoveTo:
     begin
-      CoordX := CoordToCanvasX(Cur2DSegment.X);
-      CoordY := CoordToCanvasY(Cur2DSegment.Y);
+      CoordX := CoordToCanvasX(Cur2DSegment.X, ADestX, AMulX);
+      CoordY := CoordToCanvasY(Cur2DSegment.Y, ADestY, AMulY);
       if ADoDraw then
         ADest.MoveTo(CoordX, CoordY);
       CalcEntityCanvasMinMaxXY(ARenderInfo, CoordX, CoordY);
@@ -4021,11 +4137,10 @@ begin
     st2DLineWithPen:
     begin
       ADest.Pen.FPColor := AdjustColorToBackground(T2DSegmentWithPen(Cur2DSegment).Pen.Color, ARenderInfo);
-
-      CoordX := CoordToCanvasX(PosX);
-      CoordY := CoordToCanvasY(PosY);
-      CoordX2 := CoordToCanvasX(Cur2DSegment.X);
-      CoordY2 := CoordToCanvasY(Cur2DSegment.Y);
+      CoordX := CoordToCanvasX(PosX, ADestX, AMulX);
+      CoordY := CoordToCanvasY(PosY, ADestY, AMulY);
+      CoordX2 := CoordToCanvasX(Cur2DSegment.X, ADestX, AMulX);
+      CoordY2 := CoordToCanvasY(Cur2DSegment.Y, ADestY, AMulY);
       CalcEntityCanvasMinMaxXY_With2Points(ARenderInfo, CoordX, CoordY, CoordX2, CoordY2);
       if ADoDraw then
         ADest.Line(CoordX, CoordY, CoordX2, CoordY2);
@@ -4041,10 +4156,10 @@ begin
     end;
     st2DLine, st3DLine:
     begin
-      CoordX := CoordToCanvasX(PosX);
-      CoordY := CoordToCanvasY(PosY);
-      CoordX2 := CoordToCanvasX(Cur2DSegment.X);
-      CoordY2 := CoordToCanvasY(Cur2DSegment.Y);
+      CoordX := CoordToCanvasX(PosX, ADestX, AMulX);
+      CoordY := CoordToCanvasY(PosY, ADestY, AMulY);
+      CoordX2 := CoordToCanvasX(Cur2DSegment.X, ADestX, AMulX);
+      CoordY2 := CoordToCanvasY(Cur2DSegment.Y, ADestY, AMulY);
       CalcEntityCanvasMinMaxXY_With2Points(ARenderInfo, CoordX, CoordY, CoordX2, CoordY2);
       if ADoDraw then
         ADest.Line(CoordX, CoordY, CoordX2, CoordY2);
@@ -4058,14 +4173,14 @@ begin
       lines between this parts }
     st2DBezier, st3DBezier:
     begin
-      CoordX := CoordToCanvasX(PosX);
-      CoordY := CoordToCanvasY(PosY);
-      CoordX2 := CoordToCanvasX(Cur2DBSegment.X2);
-      CoordY2 := CoordToCanvasY(Cur2DBSegment.Y2);
-      CoordX3 := CoordToCanvasX(Cur2DBSegment.X3);
-      CoordY3 := CoordToCanvasY(Cur2DBSegment.Y3);
-      CoordX4 := CoordToCanvasX(Cur2DBSegment.X);
-      CoordY4 := CoordToCanvasY(Cur2DBSegment.Y);
+      CoordX := CoordToCanvasX(PosX, ADestX, AMulX);
+      CoordY := CoordToCanvasY(PosY, ADestY, AMulY);
+      CoordX2 := CoordToCanvasX(Cur2DBSegment.X2, ADestX, AMulX);
+      CoordY2 := CoordToCanvasY(Cur2DBSegment.Y2, ADestY, AMulY);
+      CoordX3 := CoordToCanvasX(Cur2DBSegment.X3, ADestX, AMulX);
+      CoordY3 := CoordToCanvasY(Cur2DBSegment.Y3, ADestY, AMulY);
+      CoordX4 := CoordToCanvasX(Cur2DBSegment.X, ADestX, AMulX);
+      CoordY4 := CoordToCanvasY(Cur2DBSegment.Y, ADestY, AMulY);
       SetLength(lPoints, 0);
       CalcEntityCanvasMinMaxXY_With2Points(ARenderInfo, CoordX, CoordY, CoordX2, CoordY2);
       CalcEntityCanvasMinMaxXY_With2Points(ARenderInfo, CoordX3, CoordY3, CoordX4, CoordY4);
@@ -4112,21 +4227,21 @@ begin
     // done!
     st2DEllipticalArc:
     begin
-      CoordX := CoordToCanvasX(PosX);
-      CoordY := CoordToCanvasY(PosY);
-      CoordX2 := CoordToCanvasX(Cur2DArcSegment.RX);
-      CoordY2 := CoordToCanvasY(Cur2DArcSegment.RY);
-      CoordX3 := CoordToCanvasX(Cur2DArcSegment.XRotation);
-      CoordX4 := CoordToCanvasX(Cur2DArcSegment.X);
-      CoordY4 := CoordToCanvasY(Cur2DArcSegment.Y);
+      CoordX := CoordToCanvasX(PosX, ADestX, AMulX);
+      CoordY := CoordToCanvasY(PosY, ADestY, AMulY);
+      CoordX2 := CoordToCanvasX(Cur2DArcSegment.RX, ADestX, AMulX);
+      CoordY2 := CoordToCanvasY(Cur2DArcSegment.RY, ADestY, AMulY);
+      CoordX3 := CoordToCanvasX(Cur2DArcSegment.XRotation, ADestX, AMulX);
+      CoordX4 := CoordToCanvasX(Cur2DArcSegment.X, ADestX, AMulX);
+      CoordY4 := CoordToCanvasY(Cur2DArcSegment.Y, ADestY, AMulY);
       SetLength(lPoints, 0);
 
       Cur2DArcSegment.CalculateEllipseBoundingBox(nil, BoxLeft, BoxTop, BoxRight, BoxBottom);
 
-      EllipseRect.Left := CoordToCanvasX(BoxLeft);
-      EllipseRect.Top := CoordToCanvasY(BoxTop);
-      EllipseRect.Right := CoordToCanvasX(BoxRight);
-      EllipseRect.Bottom := CoordToCanvasY(BoxBottom);
+      EllipseRect.Left := CoordToCanvasX(BoxLeft, ADestX, AMulX);
+      EllipseRect.Top := CoordToCanvasY(BoxTop, ADestY, AMulY);
+      EllipseRect.Right := CoordToCanvasX(BoxRight, ADestX, AMulX);
+      EllipseRect.Bottom := CoordToCanvasY(BoxBottom, ADestY, AMulY);
 
       {$ifdef FPVECTORIAL_TOCANVAS_ELLIPSE_VISUALDEBUG}
       ACanvas.Pen.Color := clRed;
