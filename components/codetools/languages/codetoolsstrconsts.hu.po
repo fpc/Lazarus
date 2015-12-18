@@ -958,3 +958,4 @@ msgstr "Vezérlőkészlet könyvtára"
 #: codetoolsstrconsts.ctswordnotfound
 msgid "\"%s\" not found"
 msgstr "\"%s\" nem található"
+

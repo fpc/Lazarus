@@ -97,7 +97,6 @@ msgid "class node without parent node"
 msgstr "Klassenknoten ohne Elternknoten"
 
 #: codetoolsstrconsts.ctsclassnotfound
-#| msgid "class %s%s%s not found"
 msgid "class \"%s\" not found"
 msgstr "Klasse \"%s\" nicht gefunden"
 
@@ -306,7 +305,6 @@ msgid "expected end., but %s found"
 msgstr "\"End.\" erwartet aber %s gefunden"
 
 #: codetoolsstrconsts.ctsendofsourcenotfound
-#| msgid "End of source not found"
 msgid "End of source not found."
 msgstr "Ende des Quelltexts nicht gefunden"
 
@@ -557,12 +555,10 @@ msgid "interface directory"
 msgstr "Interface-Verzeichnis"
 
 #: codetoolsstrconsts.ctsinvalidclassname
-#| msgid "invalid class name=%s%s%s"
 msgid "invalid class name=\"%s\""
 msgstr "ungültiger Klassenname=\"%s\""
 
 #: codetoolsstrconsts.ctsinvalidclassname2
-#| msgid "invalid class name %s%s%s"
 msgid "invalid class name \"%s\""
 msgstr "ungültiger Klassenname \"%s\""
 
@@ -591,12 +587,10 @@ msgid "invalid type"
 msgstr "ungültiger Typ"
 
 #: codetoolsstrconsts.ctsinvalidvariablename
-#| msgid "invalid variable name %s%s%s"
 msgid "invalid variable name \"%s\""
 msgstr "ungültiger Variablenname \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
-#| msgid "invalid variable type %s%s%s"
 msgid "invalid variable type \"%s\""
 msgstr "ungültiger Variablentyp \"%s\""
 
@@ -629,6 +623,7 @@ msgid "method name"
 msgstr "Methodenname"
 
 #: codetoolsstrconsts.ctsmethodsignaturesnotfoundinclass
+#, fuzzy,badformat
 msgid "Method signature %s not found in class"
 msgstr "Methodensignatur nicht in Klasse gefunden"
 
@@ -795,6 +790,7 @@ msgid "Runtime library"
 msgstr "Laufzeitbibliothek"
 
 #: codetoolsstrconsts.ctsscannedfiles
+#, fuzzy,badformat
 msgid "Scanned files: %s"
 msgstr "Gescannte Dateien: 5s"
 
@@ -823,7 +819,6 @@ msgid "source is not unit"
 msgstr "Quelle ist keine Unit"
 
 #: codetoolsstrconsts.ctssourcenotfoundunit
-#| msgid "source not found: unit %s"
 msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "Quelltext nicht gefunden: Unit %s. Überprüfen Sie das FPC-Quelltextverzeichnis."
 
@@ -836,7 +831,6 @@ msgid "SrcPath Initialization"
 msgstr "Quellpfad-Initialisierung"
 
 #: codetoolsstrconsts.ctsstrexpectedbutatomfound
-#| msgid "%s expected, but %s found"
 msgid "expected %s, but %s found"
 msgstr "%s erwartet aber %s gefunden"
 

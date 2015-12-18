@@ -96,7 +96,6 @@ msgid "class node without parent node"
 msgstr "описание класса без предка"
 
 #: codetoolsstrconsts.ctsclassnotfound
-#| msgid "class %s%s%s not found"
 msgid "class \"%s\" not found"
 msgstr "класс \"%s\" не найден"
 
@@ -305,7 +304,6 @@ msgid "expected end., but %s found"
 msgstr "ожидается end., но найдено %s"
 
 #: codetoolsstrconsts.ctsendofsourcenotfound
-#| msgid "End of source not found"
 msgid "End of source not found."
 msgstr "Не найден конец исходного кода."
 
@@ -556,12 +554,10 @@ msgid "interface directory"
 msgstr "каталог интерфейса"
 
 #: codetoolsstrconsts.ctsinvalidclassname
-#| msgid "invalid class name=%s%s%s"
 msgid "invalid class name=\"%s\""
 msgstr "неверное имя класса=\"%s\""
 
 #: codetoolsstrconsts.ctsinvalidclassname2
-#| msgid "invalid class name %s%s%s"
 msgid "invalid class name \"%s\""
 msgstr "неверное имя класса \"%s\""
 
@@ -590,12 +586,10 @@ msgid "invalid type"
 msgstr "неверный тип"
 
 #: codetoolsstrconsts.ctsinvalidvariablename
-#| msgid "invalid variable name %s%s%s"
 msgid "invalid variable name \"%s\""
 msgstr "неверное имя переменной \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
-#| msgid "invalid variable type %s%s%s"
 msgid "invalid variable type \"%s\""
 msgstr "неверный тип переменной \"%s\""
 
@@ -822,7 +816,6 @@ msgid "source is not unit"
 msgstr "исходный код не является модулем"
 
 #: codetoolsstrconsts.ctssourcenotfoundunit
-#| msgid "source not found: unit %s"
 msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "не найден исходный код: модуль %s. Проверьте путь к исходному коду FPC."
 
@@ -835,7 +828,6 @@ msgid "SrcPath Initialization"
 msgstr "Инициализация путей к исходному коду"
 
 #: codetoolsstrconsts.ctsstrexpectedbutatomfound
-#| msgid "%s expected, but %s found"
 msgid "expected %s, but %s found"
 msgstr "ожидается %s, но найдено %s"
 
@@ -966,3 +958,4 @@ msgstr "Каталог виджетов"
 #: codetoolsstrconsts.ctswordnotfound
 msgid "\"%s\" not found"
 msgstr "\"%s\" не найдено"
+
