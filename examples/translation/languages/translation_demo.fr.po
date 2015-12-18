@@ -1,75 +1,76 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: Translation_Demo\n"
+"Project-Id-Version: lazaruside\n"
+"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
+"PO-Revision-Date: 2015-12-18 09:27+0100\n"
+"Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language: fr_FR\n"
 "MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.6.3\n"
-"Language: fr\n"
+"X-Generator: Poedit 1.8.6\n"
 
 #: stringsunit.rsbeer
 msgctxt "stringsunit.rsbeer"
 msgid "Beer"
-msgstr "bière"
+msgstr "Bière"
 
 #: stringsunit.rseight
 msgid "Eight"
-msgstr "huit"
+msgstr "Huit"
 
 #: stringsunit.rsfive
 msgid "Five"
-msgstr "cinq"
+msgstr "Cinq"
 
 #: stringsunit.rsfour
 msgid "Four"
-msgstr "quatre"
+msgstr "Quatre"
 
 #: stringsunit.rsnine
 msgid "Nine"
-msgstr "neuf"
+msgstr "Neuf"
 
 #: stringsunit.rsone
 msgid "One"
-msgstr "un"
+msgstr "Un"
 
 #: stringsunit.rsseven
 msgid "Seven"
-msgstr "sept"
+msgstr "Sept"
 
 #: stringsunit.rssix
 msgid "Six"
-msgstr "six"
+msgstr "Six"
 
 #: stringsunit.rssumofselectednumbers
 msgid "Sum of selected numbers: %s"
-msgstr "Somme des nombres choisis: %s"
+msgstr "Somme des nombres choisis : %s"
 
 #: stringsunit.rsthree
 msgid "Three"
-msgstr "trois"
+msgstr "Trois"
 
 #: stringsunit.rstodayis
 msgctxt "stringsunit.rstodayis"
 msgid "Today is %s"
-msgstr "Aujourd'hui est %s."
+msgstr "Aujourd'hui, nous sommes le %s."
 
 #: stringsunit.rstwo
 msgid "Two"
-msgstr "deux"
+msgstr "Deux"
 
 #: stringsunit.rswater
 msgctxt "stringsunit.rswater"
 msgid "Water"
-msgstr "eau"
+msgstr "Eau"
 
 #: stringsunit.rswine
 msgctxt "stringsunit.rswine"
 msgid "Wine"
-msgstr "vin"
+msgstr "Vin"
 
 #: stringsunit.rsyouselected
 msgctxt "stringsunit.rsyouselected"
@@ -79,56 +80,56 @@ msgstr "Vous avez choisi %s."
 #: stringsunit.rsyouselectedat
 msgctxt "stringsunit.rsyouselectedat"
 msgid "You selected %0:s at %1:s."
-msgstr "A %1:s, vous avez choisi %0:s."
+msgstr "À %1:s, vous avez choisi %0:s."
 
 #: tform2.caption
 msgid "Second Form"
-msgstr "Deuxième forme"
+msgstr "Deuxième fiche"
 
 #: tform2.checkgroup.caption
 msgctxt "tform2.checkgroup.caption"
 msgid "Several items"
-msgstr "Plusieurs articles"
+msgstr "Plusieurs éléments"
 
 #: tform2.groupbox1.caption
 msgid "Please select"
-msgstr "S'il vous plaît sélectionnez"
+msgstr "Veuillez choisir"
 
 #: tform2.lblmoney.caption
 msgid "LblMoney"
-msgstr ""
+msgstr "LblArgent"
 
 #: tform2.lblsum.caption
 msgid "LblSum"
-msgstr ""
+msgstr "LblSomme"
 
 #: tform2.lbltodayis.caption
 msgid "LblTodayIs"
-msgstr ""
+msgstr "LblAujourdHui"
 
 #: tform2.radiogroup.caption
 msgctxt "tform2.radiogroup.caption"
 msgid "Single item"
-msgstr "Un seul article"
+msgstr "Un seul élément"
 
 #: tlocalizedform.caption
 msgid "LocalizedForm"
-msgstr ""
+msgstr "FicheTraduite"
 
 #: tmainform.button1.caption
 msgctxt "tmainform.button1.caption"
 msgid "Open second form"
-msgstr "Ouverte deuxième forme "
+msgstr "Ouvrir la deuxième fiche"
 
 #: tmainform.button2.caption
 msgctxt "tmainform.button2.caption"
 msgid "What did you select?"
-msgstr "Qu'avez-vous choisi?"
+msgstr "Qu'avez-vous choisi ?"
 
 #: tmainform.caption
 msgctxt "tmainform.caption"
 msgid "Translation demo"
-msgstr "Démo de traduction"
+msgstr "Démonstration de traduction"
 
 #: tmainform.label1.caption
 msgctxt "tmainform.label1.caption"
@@ -138,10 +139,10 @@ msgstr "Choisir la langue"
 #: tmainform.lblcurrentselection.caption
 msgctxt "tmainform.lblcurrentselection.caption"
 msgid "No drink selected."
-msgstr "Aucune boisson est sélectionné."
+msgstr "Aucune boisson n'est sélectionnée."
 
 #: tmainform.rgdrinks.caption
 msgctxt "tmainform.rgdrinks.caption"
 msgid "Please select a drink"
-msgstr "S'il vous plaît sélectionner un verre"
+msgstr "Veuillez choisir une boisson"
 

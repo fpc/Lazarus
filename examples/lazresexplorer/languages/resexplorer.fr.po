@@ -1,0 +1,118 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: lazaruside\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2015-12-18 09:27+0100\n"
+"Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.6\n"
+
+#: reconstsunit.sabout
+msgid "About ..."
+msgstr "À propos de..."
+
+#: reconstsunit.sallfilesexcutablefilesexeexedlldlldll
+msgid "All files (*.*)|*.*|Excutable files (*.exe)|*.exe|DLL (*.dll)|*.dll"
+msgstr "Tous les fichiers (*.*)|*.*|Exécutables (*.exe)|*.exe|DLL (*.dll)|*.dll"
+
+#: reconstsunit.sallfilessharedlibsoso
+msgid "All files (*)|*|Shared libraries (*.so)|*.so"
+msgstr "Tous les fichiers (*)|*|Bibliothèques partagées (*.so)|*.so"
+
+#: reconstsunit.sbuilddate
+msgid "Build date: "
+msgstr "Date de création :"
+
+#: reconstsunit.scarbonwidgetset
+msgid "Carbon widget set"
+msgstr "Jeu graphique Carbon"
+
+#: reconstsunit.sexit
+msgid "Exit"
+msgstr "Quitter"
+
+#: reconstsunit.sfile
+msgid "File"
+msgstr "Fichier"
+
+#: reconstsunit.sfpcversion
+msgid "FPC version: "
+msgstr "Version FPC :"
+
+#: reconstsunit.sfpguiwidgetset
+msgid "FpGUI widget set"
+msgstr "Jeu graphique FpGUI"
+
+#: reconstsunit.sgtk2widgetset
+msgid "GTK 2 widget set"
+msgstr "Jeu graphique GTK 2"
+
+#: reconstsunit.sgtkwidgetset
+msgid "GTK widget set"
+msgstr "Jeu graphique GTK 1"
+
+#: reconstsunit.shelp
+msgid "Help"
+msgstr "Aide"
+
+#: reconstsunit.simage
+msgid "Image"
+msgstr "Image"
+
+#: reconstsunit.slclversion
+msgid "LCL Version: "
+msgstr "Version LCL :"
+
+#: reconstsunit.slicense
+msgid "This program is free software under GNU GPL 2 license, see COPYING file"
+msgstr "Ce programme est libre et édité sous la licence GNU GPL 2 (voir le fichier COPYING)"
+
+#: reconstsunit.sopen
+msgid "Open ..."
+msgstr "Ouvrir..."
+
+#: reconstsunit.sotherguiwidgetset
+msgid "Other gui"
+msgstr "Autre GUI"
+
+#: reconstsunit.sqtwidgetset
+msgid "QT widget set"
+msgstr "Jeu graphique QT"
+
+#: reconstsunit.sresourceexplorer
+msgid "Resource explorer"
+msgstr "Explorateur de ressources"
+
+#: reconstsunit.sresources
+msgid "Resources"
+msgstr "Ressources"
+
+#: reconstsunit.ssaveresource
+msgid "Save resource ..."
+msgstr "Enregistrement de ressource..."
+
+#: reconstsunit.sstrings
+msgid "Strings"
+msgstr "Chaînes"
+
+#: reconstsunit.stargetcpu
+msgid "Target CPU: "
+msgstr "Processeur cible :"
+
+#: reconstsunit.stargetos
+msgid "Target OS: "
+msgstr "OS cible :"
+
+#: reconstsunit.swin32_64widgetset
+msgid "Win32/Win64 widget set"
+msgstr "Jeu graphique Win32/Win64"
+
+#: reconstsunit.swincewidgetset
+msgid "WinCE widget set"
+msgstr "Jeu graphique WinCE"
+
