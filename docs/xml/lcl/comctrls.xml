@@ -18804,6 +18804,8 @@ the comparision is case sensitive.
         <short>Show/Hide caption</short>
         <descr>The ToolBar.ShowCaptions has precendence. Hiding will only work if ToolBar.List is true.</descr>
       </element>
+    <element name="TToolBar.DropDownWidth"><short>Width of the drop down arrow button.</short><descr>Use a negative value (-1) for theme default.</descr>
+      </element>
     </module>
     <!-- ComCtrls -->
   </package>

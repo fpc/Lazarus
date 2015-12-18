@@ -142,7 +142,8 @@ begin
   MoveUpButton.Caption:=lisUp;
   MoveDownButton.Caption:=lisDown;
 
-  ExtraButton.Caption:=lisMoreSub;
+  ExtraButton.Caption:=lisMore;
+  ExtraButton.Style:=tbsButtonDrop;
   MenuItemClone.Caption:=lisClone;
   MenuItemExport.Caption:=lisDlgExport;
   MenuItemImport.Caption:=lisDlgImport;

@@ -1949,7 +1949,8 @@ type
     tbsCheck,     // check item (click to toggle state, can be grouped)
     tbsDropDown,  // button with dropdown button to show a popup menu
     tbsSeparator, // space holder
-    tbsDivider    // space holder with line
+    tbsDivider,   // space holder with line
+    tbsButtonDrop // button with arrow (not separated from each other)
   );
     
   TToolButtonFlag =
@@ -2016,6 +2017,7 @@ type
   protected const
     cDefSeparatorWidth = 8;
     cDefDividerWidth = 5;
+    cDefButtonDropDecArrowWidth = 2;
   protected
     FToolBar: TToolBar;
     class procedure WSRegisterClass; override;
@@ -2136,6 +2138,7 @@ type
     FDisabledImageChangeLink: TChangeLink;
     FDisabledImages: TCustomImageList;
     FDropDownWidth: integer;
+    FThemeDropDownWidth: integer;
     FDropDownButton: TToolButton;
     FFlat: Boolean;
     FHotImageChangeLink: TChangeLink;
@@ -2161,6 +2164,7 @@ type
     procedure SetButtonHeight(const AValue: Integer);
     procedure SetButtonWidth(const AValue: Integer);
     procedure SetDisabledImages(const AValue: TCustomImageList);
+    procedure SetDropDownWidth(const aDropDownWidth: Integer);
     procedure SetFlat(const AValue: Boolean);
     procedure SetHotImages(const AValue: TCustomImageList);
     procedure SetImages(const AValue: TCustomImageList);
@@ -2180,6 +2184,7 @@ type
   protected const
     cDefButtonWidth = 23;
     cDefButtonHeight = 22;
+    cDropDownWidth = -1;
   protected
     FPrevVertical: Boolean;
     function IsVertical: Boolean; virtual;
@@ -2212,6 +2217,7 @@ type
     function GetEnumerator: TToolBarEnumerator;
     procedure SetButtonSize(NewButtonWidth, NewButtonHeight: integer);
     function CanFocus: Boolean; override;
+    function GetRealDropDownWidth: Integer;
   public
     property ButtonCount: Integer read GetButtonCount;
     property Buttons[Index: Integer]: TToolButton read GetButton;
@@ -2234,6 +2240,7 @@ type
     property DragCursor;
     property DragKind;
     property DragMode;
+    property DropDownWidth: Integer read FDropDownWidth write SetDropDownWidth default cDropDownWidth;
     property EdgeBorders default [ebTop];
     property EdgeInner;
     property EdgeOuter;

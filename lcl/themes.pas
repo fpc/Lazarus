@@ -1972,14 +1972,18 @@ end;
 procedure TThemeServices.DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect = nil);
 
   procedure DrawDropDownArrow(const DropDownButtonRect: TRect);
+  const
+    cArrowWidth = 10;
   var
     ArrowRect: TRect;
     Points: array[1..3] of TPoint;
     OldBrush, Brush: HBrush;
   begin
     ArrowRect := DropDownButtonRect;
-    ArrowRect.Left := DropDownButtonRect.Left + 3;
-    ArrowRect.Right := Max(DropDownButtonRect.Right - 3, ArrowRect.Left);
+    ArrowRect.Left := (DropDownButtonRect.Left+DropDownButtonRect.Right-cArrowWidth-1) div 2;
+    ArrowRect.Right := ArrowRect.Left+cArrowWidth;
+    ArrowRect.Left := ArrowRect.Left + 3;
+    ArrowRect.Right := Max(ArrowRect.Right - 3, ArrowRect.Left);
     ArrowRect.Top := (DropDownButtonRect.Top + DropDownButtonRect.Bottom +
                       ArrowRect.Left - ArrowRect.Right) div 2;
     ArrowRect.Bottom := ArrowRect.Top + Min(2, ArrowRect.Right - ArrowRect.Left);
@@ -2383,15 +2387,6 @@ begin
     Canvas.TextRect(R, R.Left, R.Top, S, TXTStyle);
     Canvas.Font.Color := clBtnShadow;
     OffsetRect(R, -1, -1);
-  end
-  else
-  begin
-    // if pushed, move text 1 pixel right and down
-    if IsPushed(Details) then
-    begin
-      Inc(R.Left, 1);
-      Inc(R.Top, 1);
-    end;
   end;
   if (Details.Element = teTreeview) and (Details.Part = TVP_TREEITEM) then
   begin

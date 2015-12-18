@@ -467,7 +467,7 @@ begin
                                     'EnvironmentOptions/CompilerFilename/Value');
     if CheckFile(AFilename,Result) then exit;
 
-    // check if there are compiler in environment variable PP
+    // check environment variable PP
     AFileName := GetEnvironmentVariableUTF8('PP');
     if CheckFile(AFilename,Result) then exit;
 
@@ -734,7 +734,7 @@ begin
                                  'EnvironmentOptions/FPCSourceDirectory/Value');
     if Check(AFilename,Result) then exit;
 
-    // check if there are source in environment variable FPCDIR
+    // check environment variable FPCDIR
     AFileName := GetEnvironmentVariableUTF8('FPCDIR');
     if Check(AFilename,Result) then exit;
 
