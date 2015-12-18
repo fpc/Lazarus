@@ -2383,15 +2383,6 @@ begin
     Canvas.TextRect(R, R.Left, R.Top, S, TXTStyle);
     Canvas.Font.Color := clBtnShadow;
     OffsetRect(R, -1, -1);
-  end
-  else
-  begin
-    // if pushed, move text 1 pixel right and down
-    if IsPushed(Details) then
-    begin
-      Inc(R.Left, 1);
-      Inc(R.Top, 1);
-    end;
   end;
   if (Details.Element = teTreeview) and (Details.Part = TVP_TREEITEM) then
   begin
