@@ -410,7 +410,6 @@ type
     procedure AbortBuild; virtual; abstract;
 
     // search results
-    procedure DoShowSearchResultsView(Show: boolean; BringToFront: boolean = False); deprecated;
     procedure DoShowSearchResultsView(State: TIWGetFormState = iwgfShowOnTop); virtual; abstract;
 
     // designer
@@ -714,22 +713,6 @@ function TLazIDEInterface.DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorCla
   ACaption: String): Boolean;
 begin
   Result := DoOpenIDEOptions(AEditor, ACaption, [], []);
-end;
-
-procedure TLazIDEInterface.DoShowSearchResultsView(Show: boolean;
-  BringToFront: boolean);
-var
-  State: TIWGetFormState;
-begin
-  if Show then begin
-    if BringToFront then
-      State:=iwgfShowOnTop
-    else
-      State:=iwgfShow;
-  end else begin
-    State:=iwgfEnabled;
-  end;
-  DoShowSearchResultsView(State);
 end;
 
 procedure TLazIDEInterface.DoCallBuildingFinishedHandler(
