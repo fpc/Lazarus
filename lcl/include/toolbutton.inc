@@ -84,7 +84,7 @@ begin
     //  therefore the condition is always met.
     if Enabled and not(GetTickCount64 < FLastDropDownTick + 100) then
     begin
-      if (Style = tbsDropDown) and (FToolBar <> nil) and (X > ClientWidth - FToolBar.FDropDownWidth) then
+      if (Style = tbsDropDown) and (FToolBar <> nil) and (X > ClientWidth - FToolBar.GetRealDropDownWidth) then
         Include(NewFlags, tbfArrowPressed)
       else
         Include(NewFlags, tbfPressed);
@@ -302,7 +302,7 @@ begin
     if Style in [tbsDropDown, tbsButtonDrop] then
     begin
       DropDownButtonRect := ButtonRect;
-      DropDownButtonRect.Left := Max(0, DropDownButtonRect.Right-FToolBar.FDropDownWidth);
+      DropDownButtonRect.Left := Max(0, DropDownButtonRect.Right-FToolBar.GetRealDropDownWidth);
       MainBtnRect.Right := DropDownButtonRect.Left;
       if Style = tbsDropDown then
         ButtonRect := MainBtnRect
@@ -1103,8 +1103,8 @@ begin
       PreferredWidth := Max(PreferredWidth, FToolBar.ButtonWidth);
       PreferredHeight := Max(PreferredHeight, FToolBar.ButtonHeight);
       case Style of
-        tbsDropDown: inc(PreferredWidth, FToolBar.FDropDownWidth);
-        tbsButtonDrop:  inc(PreferredWidth, FToolBar.FDropDownWidth-cDefButtonDropDecArrowWidth);
+        tbsDropDown: inc(PreferredWidth, FToolBar.GetRealDropDownWidth);
+        tbsButtonDrop:  inc(PreferredWidth, FToolBar.GetRealDropDownWidth-cDefButtonDropDecArrowWidth);
       end;
     end
     else
