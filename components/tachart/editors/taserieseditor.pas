@@ -23,14 +23,12 @@ interface
 
   procedure Register;
 
-resourcestring
-  sesSeriesEditorTitle = 'Edit series';
 
 implementation
 
 uses
   Classes, ComponentEditors, Forms, Menus, PropEdits, SysUtils,
-  TAGraph, TASubcomponentsEditor;
+  TAChartStrConsts, TAGraph, TASubcomponentsEditor;
 
 type
   { TSeriesComponentEditor }
@@ -120,7 +118,7 @@ var
   i: Integer;
 begin
   for i := 0 to SeriesClassRegistry.Count - 1 do
-    AddSubcomponentClass(SeriesClassRegistry[i], i);
+    AddSubcomponentClass(SeriesClassRegistry.GetCaption(i), i);
 end;
 
 function TSeriesEditorForm.GetChildrenList: TFPList;
@@ -131,7 +129,7 @@ end;
 function TSeriesEditorForm.MakeSubcomponent(
   AOwner: TComponent; ATag: Integer): TComponent;
 begin
-  Result := TSeriesClass(SeriesClassRegistry.Objects[ATag]).Create(AOwner);
+  Result := TSeriesClass(SeriesClassRegistry.GetClass(ATag)).Create(AOwner);
 end;
 
 end.

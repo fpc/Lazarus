@@ -4,7 +4,7 @@ unit QtWSFactory;
 
 interface
 uses
-  Classes, Controls, ComCtrls, Calendar, StdCtrls, Spin,
+  Classes, Controls, ComCtrls, Calendar, StdCtrls, Spin, Grids,
   Dialogs, ExtCtrls, Buttons, CheckLst, Forms, Menus, RubberBand, PairSplitter,
   WSLCLClasses;
 
@@ -111,6 +111,7 @@ uses
  QtWSPairSplitter,
  QtWSSpin,
  QtWSStdCtrls,
+ QtWSGrids,
  QtWSDesigner;
 
 // imglist
@@ -502,7 +503,8 @@ end;
 
 function RegisterCustomGrid: Boolean; alias : 'WSRegisterCustomGrid';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomGrid, TQtWSCustomGrid);
+  Result := True;
 end;
 
 function RegisterMenuItem: Boolean; alias : 'WSRegisterMenuItem';

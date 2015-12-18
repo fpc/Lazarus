@@ -1098,6 +1098,7 @@ begin
   TabPosition:=Node.TabPosition;
   BoundSplitterPos:=Node.BoundSplitterPos;
   WorkAreaRect:=Node.WorkAreaRect;
+  Monitor:=Node.Monitor;
   for a:=low(TAnchorKind) to high(TAnchorKind) do
     Anchors[a]:=Node.Anchors[a];
   while Count>Node.Count do Nodes[Count-1].Free;

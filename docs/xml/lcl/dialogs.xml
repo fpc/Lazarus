@@ -2774,29 +2774,14 @@ or you can make your own set.</descr>
       <!-- function Visibility: default -->
       <element name="QuestionDlg">
         <short>Show a question to the user and get a response</short>
-        <descr>QuestionDlg has the same functionality as MessageDlg <br/>
-
-except for the parameter Buttons which is of a different type. <br/>
-
-You can define your own captions and return values of this function.<br/>
-          <br/>
-
-
-Buttons is a list of TModalResult (defined as constants [mrNone..MrYesToAll] in <link id="Controls"/>
-
-) and strings. <br/>
-
-For each TModalResult a button is
- created. <br/>
-
-To set a custom caption, add a string after a button.<br/>
-          <br/>
-
-
-
-The default TModalResults defined in controls.pp (mrNone..mrLast) <br/>
-
-doesn't need a caption. The default captions will be used.</descr>
+        <descr><p>QuestionDlg has the same functionality as MessageDlg except for the parameter Buttons which is of a different type. <br/>
+You can define your own captions and return values of this function.
+</p><p>Buttons is a list of TModalResult (defined as constants [mrNone..MrYesToAll] in <link id="Controls"/>) and strings. <br/>
+For each TModalResult a button is created. <br/>
+To set a custom caption, add a string after a button. You can use the special string parameters 'isdefault' and 'iscancel' to setup the default and cancel buttons.
+</p><p>The default TModalResults defined in controls.pp (mrNone..mrLast) don't need a caption. The default captions will be used.
+</p>
+        </descr>
         <errors/>
         <seealso>
           <link id="MessageDlg"/>

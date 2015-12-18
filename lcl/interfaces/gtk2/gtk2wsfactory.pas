@@ -570,8 +570,8 @@ end;
 
 function RegisterCustomGrid: Boolean; alias : 'WSRegisterCustomGrid';
 begin
-  RegisterWSComponent(TCustomGrid, TGtk2WSCustomGrid); { GTK1 }
-//  RegisterWSComponent(TCustomGrid, TGtk2WSCustomGrid);
+  //RegisterWSComponent(TCustomGrid, TGtkWSCustomGrid); { GTK1 }
+  RegisterWSComponent(TCustomGrid, TGtk2WSCustomGrid);
   Result := True;
 end;
 

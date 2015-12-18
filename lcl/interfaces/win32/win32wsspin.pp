@@ -164,23 +164,13 @@ begin
     HotTracking := False;
     SystemParametersInfo(SPI_GETHOTTRACKING, 0, @HotTracking, 0);
     UpDownFlags := WS_CHILD or WS_CLIPSIBLINGS or UDS_ALIGNRIGHT or UDS_ARROWKEYS or
-      UpDownHotStyle[HotTracking] or ((WS_VISIBLE or WS_DISABLED) and Flags);
-    if UnicodeEnabledOS then
-    begin
-      Window := CreateWindowExW(FlagsEx, PWideChar(WideString(EditClsName)),
-                  PWideChar(UTF8ToUTF16(StrCaption)), Flags,
-                  Left, Top, Width, Height, Parent, HMENU(nil), HInstance, nil);
-      UpDown := CreateWindowExW(0, UPDOWN_CLASSW, nil, UpDownFlags,
-        0, 0, 8, Height, Parent, HMENU(nil), HInstance, nil);
-    end
-    else
-    begin
-      Window := CreateWindowEx(FlagsEx, @EditClsName[0],
-                  PChar(Utf8ToAnsi(StrCaption)), Flags,
-                  Left, Top, Width, Height, Parent, HMENU(nil), HInstance, nil);
-      UpDown := CreateWindowEx(0, UPDOWN_CLASSA, nil, UpDownFlags,
-        0, 0, 8, Height, Parent, HMENU(nil), HInstance, nil);
-    end;
+    UpDownHotStyle[HotTracking] or ((WS_VISIBLE or WS_DISABLED) and Flags);
+    Window := CreateWindowExW(FlagsEx, PWideChar(WideString(EditClsName)),
+                PWideChar(UTF8ToUTF16(StrCaption)), Flags,
+                Left, Top, Width, Height, Parent, HMENU(nil), HInstance, nil);
+    UpDown := CreateWindowExW(0, UPDOWN_CLASSW, nil, UpDownFlags,
+      0, 0, 8, Height, Parent, HMENU(nil), HInstance, nil);
+
     Windows.SendMessage(UpDown, UDM_SETBUDDY, WPARAM(Window), 0);
   end;
   // create window
@@ -191,10 +181,7 @@ begin
   // init updown control
   Info := AllocWindowInfo(UpDown);
   Info^.AWinControl := AWinControl;
-  if UnicodeEnabledOS then
-    Info^.DefWndProc := Windows.WNDPROC(SetWindowLongPtrW(UpDown, GWL_WNDPROC, PtrInt(@SpinUpDownWndProc)))
-  else
-  Info^.DefWndProc := Windows.WNDPROC(SetWindowLongPtr(UpDown, GWL_WNDPROC, PtrInt(@SpinUpDownWndProc)));
+  Info^.DefWndProc := Windows.WNDPROC(SetWindowLongPtrW(UpDown, GWL_WNDPROC, PtrInt(@SpinUpDownWndProc)));
   SetProp(UpDown, 'WinControl', PtrUInt(AWinControl));
   Result := Params.Window;
 end;

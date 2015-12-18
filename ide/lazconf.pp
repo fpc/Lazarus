@@ -92,7 +92,6 @@ procedure GetDefaultTestBuildDirs(List: TStrings);
 function CreateCompilerTestPascalFilename: string;
 
 function FindDefaultExecutablePath(const Executable: string): string;
-function GetDefaultCompilerFilename: string; // e.g. ppc386.exe
 procedure GetDefaultCompilerFilenames(List: TStrings); // list of standard paths of compiler on various distributions
 function FindDefaultCompilerPath: string; // full path of GetDefaultCompilerFilename
 function FindDefaultMakePath: string; // full path of "make"
@@ -213,7 +212,7 @@ begin
     Result:=Executable
   else
     Result:=SearchFileInPath(Executable,'',
-                             GetEnvironmentVariableUTF8('PATH'),':',
+                             GetEnvironmentVariableUTF8('PATH'),PathSeparator,
                              [sffDontSearchInBasePath]);
   Result:=TrimFilename(Result);
 end;
@@ -442,11 +441,6 @@ begin
   or (CompareText(TargetOS,'openbsd')=0)
   then
     Result:=ExtractFilePath(Result)+lowercase(ExtractFileName(Result));
-end;
-
-function GetDefaultCompilerFilename: string;
-begin
-  Result:=DefineTemplates.GetDefaultCompilerFilename;
 end;
 
 function GetDefaultLazarusSrcDirectories: TStringList;

@@ -496,10 +496,15 @@ function TDbgWinProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread;
 begin
   if assigned(AThread) then
   begin
-    AThread.NextIsSingleStep:=SingleStep;
-    if SingleStep or assigned(FCurrentBreakpoint) then
-      TDbgWinThread(AThread).SetSingleStep;
-    AThread.BeforeContinue;
+    if not FThreadMap.HasId(AThread.ID) then begin
+      AThread.Free;
+      exit(false);
+    end else begin
+      AThread.NextIsSingleStep:=SingleStep;
+      if SingleStep or assigned(FCurrentBreakpoint) then
+        TDbgWinThread(AThread).SetSingleStep;
+      AThread.BeforeContinue;
+    end;
   end;
 
   case MDebugEvent.Exception.ExceptionRecord.ExceptionCode of
@@ -507,9 +512,8 @@ begin
    EXCEPTION_SINGLE_STEP: begin
      Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_CONTINUE);
    end
-  else begin
-     Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_EXCEPTION_NOT_HANDLED);
-   end;
+  else
+    Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_EXCEPTION_NOT_HANDLED);
   end;
   result := true;
 end;
@@ -988,7 +992,7 @@ begin
   if Lib.DbgInfo.HasInfo
   then FSymInstances.Remove(Lib);
   FLibMap.Delete(ID);
-  // TODO: Free lib ???
+  Lib.Free;
 end;
 
 { TDbgWinBreakpoint }

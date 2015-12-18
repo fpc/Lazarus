@@ -4418,10 +4418,6 @@ msgstr "Пакунок призначення"
 msgid "File type"
 msgstr "Тип файлу"
 
-#: lazarusidestrconsts.lisaf2phasregisterprocedure
-msgid "Has Register procedure"
-msgstr "Має процедуру Register"
-
 #: lazarusidestrconsts.lisaf2pinvalidpackage
 msgid "Invalid Package"
 msgstr "Неправильний пакунок"
@@ -4447,20 +4443,9 @@ msgctxt "lazarusidestrconsts.lisaf2pshowall"
 msgid "Show all"
 msgstr "Показувати всі"
 
-#: lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage
-#, fuzzy,badformat
-#| msgid "The file %s%s%s%sis already in the package %s."
-msgctxt "lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage"
-msgid "The file \"%s\"%sis already in the package %s."
-msgstr "Файл %s%s%s%sвже в пакунку %s."
-
 #: lazarusidestrconsts.lisaf2pthepackageisreadonly
 msgid "The package %s is read only."
 msgstr "Пакунок %s тільки для читання."
-
-#: lazarusidestrconsts.lisaf2punitname
-msgid "Unit name: "
-msgstr "Назва модуля: "
 
 #: lazarusidestrconsts.lisafilealreadyexistsreplaceit
 #, fuzzy,badformat

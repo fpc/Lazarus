@@ -1205,6 +1205,7 @@ function TCompilerOptReader.ReadCategorySelections(aChar: Char): TStringList;
 // Get the selection list for a category using "fpc -i+char", for new FPC versions.
 begin
   Result:=RunTool(fCompilerExecutable, fParsedTarget + ' -i' + aChar);
+  Result.Sort;
 end;
 
 function TCompilerOptReader.ReadAndParseOptions: TModalResult;

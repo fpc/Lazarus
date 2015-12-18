@@ -1291,12 +1291,19 @@ begin
 
   // Make executable
   UpdateMakeExeCandidates;
-  if IsFirstStart or (EnvironmentOptions.MakeFilename='') then
+  if IsFirstStart
+  or (EnvironmentOptions.MakeFilename='')
+  or (not FileExistsCached(EnvironmentOptions.GetParsedMakeFilename)) then
   begin
     // first start => choose first best candidate
     Candidate:=GetFirstCandidate(FCandidates[sddtMakeExeFilename]);
     if Candidate<>nil then
-      EnvironmentOptions.MakeFilename:=Candidate.Caption;
+      EnvironmentOptions.MakeFilename:=Candidate.Caption
+    else begin // second chance => better an incomplete instead of none (especially for windows)
+      Candidate:=GetFirstCandidate(FCandidates[sddtMakeExeFilename], sddqIncomplete);
+      if Candidate<>nil then
+        EnvironmentOptions.MakeFilename:=Candidate.Caption;
+    end;
   end;
   MakeExeComboBox.Text:=EnvironmentOptions.MakeFilename;
   fLastParsedMakeExe:='. .';

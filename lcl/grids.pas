@@ -3567,7 +3567,10 @@ begin
     Canvas.Pen.Mode := pmCopy;
     GetSelectedState(aState, IsSelected);
     if IsSelected then begin
-      Canvas.Brush.Color := SelectedColor;
+      if FEditorMode and (FEditor<>nil) then
+        Canvas.Brush.Color := FEditor.Color
+      else
+        Canvas.Brush.Color := SelectedColor;
       SetCanvasFont(GetColumnFont(aCol, False));
       if not IsCellButtonColumn(point(aCol,aRow)) then
         Canvas.Font.Color := clHighlightText;
@@ -6619,6 +6622,13 @@ begin
   EditorSetValue;
   if ParentChanged then
     Editor.Parent:=Self;
+  if FEditor=FStringEditor then
+  begin
+    if FCol<Columns.Count then
+      FStringEditor.Alignment:=Columns[FCol].Alignment
+    else
+      FStringEditor.Alignment:=taLeftJustify;
+  end;
   Editor.Visible:=True;
   if Focused and Editor.CanFocus then
     Editor.SetFocus;
@@ -6943,6 +6953,7 @@ begin
         EditorShow(False);               // Will show popup menu in the editor.
     VK_F2:
       if not FEditorKey and EditingAllowed(FCol) then begin
+        SelectEditor;
         EditorShow(False);
         Key:=0;
       end ;
@@ -7855,8 +7866,10 @@ begin
       CellR := Bounds(-FEditor.Width-100, -FEditor.Height-100, CellR.Right-CellR.Left, CellR.Bottom-CellR.Top);
 
     if FEditorOptions and EO_AUTOSIZE = EO_AUTOSIZE then begin
-      if EditorBorderStyle = bsNone then
-        InflateRect(CellR, -1, -1);
+      if (FEditor = FStringEditor) and (EditorBorderStyle = bsNone) then begin
+        CellR := TWSCustomGridClass(WidgetSetClass).
+          GetEditorBoundsFromCellRect(Canvas, CellR, GetColumnLayout(FCol, False));
+      end;
       FEditor.BoundsRect := CellR;
     end else begin
       Msg.LclMsg.msg:=GM_SETBOUNDS;
@@ -9582,6 +9595,8 @@ begin
     end;
     VK_END, VK_HOME:
       ;
+    VK_ESCAPE:
+      FGrid.EditorHide;
     else
       doEditorKeyDown;
   end;
@@ -12198,6 +12213,8 @@ begin
 
     VK_END, VK_HOME:
       ;
+    VK_ESCAPE:
+      FGrid.EditorHide;
     else
       doEditorKeyDown;
   end;

@@ -747,6 +747,10 @@ function TSynXMLSyn.GetFoldConfigInstance(Index: Integer): TSynCustomFoldConfig;
 begin
   Result := inherited GetFoldConfigInstance(Index);
   Result.Enabled := True;
+  if TXmlCodeFoldBlockType(Index) in [cfbtXmlNode] then begin
+    Result.SupportedModes := Result.SupportedModes + [fmMarkup];
+    Result.Modes := Result.Modes + [fmMarkup];
+  end;
 end;
 
 procedure TSynXMLSyn.IdentProc;

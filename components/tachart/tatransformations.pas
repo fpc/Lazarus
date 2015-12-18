@@ -194,14 +194,16 @@ type
 
   procedure Register;
 
-resourcestring
-  tasAxisTransformsEditorTitle = 'Edit axis transformations';
+  procedure RegisterAxisTransformClass(AAxisTransformClass: TAxisTransformClass;
+    const ACaption: String); overload;
+  procedure RegisterAxisTransformClass(AAxisTransformClass: TAxisTransformClass;
+    ACaptionPtr: PStr); overload;
 
 implementation
 
 uses
   ComponentEditors, Forms, Math, PropEdits,
-  TAMath, TASubcomponentsEditor;
+  TAChartStrConsts, TAMath, TASubcomponentsEditor;
 
 type
   { TAxisTransformsComponentEditor }
@@ -240,7 +242,7 @@ type
   end;
 
 var
-  AxisTransformsClassRegistry: TStringList;
+  AxisTransformsClassRegistry: TClassRegistry;
 
 procedure Register;
 var
@@ -248,7 +250,7 @@ var
 begin
   with AxisTransformsClassRegistry do
     for i := 0 to Count - 1 do
-      RegisterNoIcon([TAxisTransformClass(Objects[i])]);
+      RegisterNoIcon([TAxisTransformClass(GetClass(i))]);
   RegisterComponents(CHART_COMPONENT_IDE_PAGE, [TChartAxisTransformations]);
   RegisterPropertyEditor(
     TypeInfo(TAxisTransformList), TChartAxisTransformations,
@@ -257,11 +259,22 @@ begin
     TChartAxisTransformations, TAxisTransformsComponentEditor);
 end;
 
-procedure RegisterAxisTransformClass(
-  AAxisTransformClass: TAxisTransformClass; const ACaption: String);
+procedure RegisterAxisTransformClass(AAxisTransformClass: TAxisTransformClass;
+  const ACaption: String);
 begin
   RegisterClass(AAxisTransformClass);
-  AxisTransformsClassRegistry.AddObject(ACaption, TObject(AAxisTransformClass));
+  with AxisTransformsClassRegistry do
+    if IndexOfClass(AAxisTransformClass) < 0 then
+      Add(TClassRegistryItem.Create(AAxisTransformClass, ACaption));
+end;
+
+procedure RegisterAxisTransformClass(AAxisTransformClass: TAxisTransformClass;
+  ACaptionPtr: PStr);
+begin
+  RegisterClass(AAxisTransformClass);
+  with AxisTransformsClassRegistry do
+    if IndexOfClass(AAxisTransformClass) < 0 then
+      Add(TClassRegistryItem.CreateRes(AAxisTransformClass, ACaptionPtr));
 end;
 
 { TAxisTransformList }
@@ -323,7 +336,7 @@ var
   i: Integer;
 begin
   for i := 0 to AxisTransformsClassRegistry.Count - 1 do
-    AddSubcomponentClass(AxisTransformsClassRegistry[i], i);
+    AddSubcomponentClass(AxisTransformsClassRegistry.GetCaption(i), i);
 end;
 
 function TAxisTransformsEditorForm.GetChildrenList: TFPList;
@@ -335,7 +348,7 @@ function TAxisTransformsEditorForm.MakeSubcomponent(
   AOwner: TComponent; ATag: Integer): TComponent;
 begin
   with AxisTransformsClassRegistry do
-    Result := TAxisTransformClass(Objects[ATag]).Create(AOwner);
+    Result := TAxisTransformClass(GetClass(ATag)).Create(AOwner);
 end;
 
 { TAxisTransform }
@@ -790,13 +803,13 @@ end;
 
 initialization
 
-  AxisTransformsClassRegistry := TStringList.Create;
-  RegisterAxisTransformClass(TAutoScaleAxisTransform, 'Auto scale');
+  AxisTransformsClassRegistry := TClassRegistry.Create;
+  RegisterAxisTransformClass(TAutoScaleAxisTransform, @rsAutoScale);
   RegisterAxisTransformClass(
-    TCumulNormDistrAxisTransform, 'Cumulative normal distribution');
-  RegisterAxisTransformClass(TLinearAxisTransform, 'Linear');
-  RegisterAxisTransformClass(TLogarithmAxisTransform, 'Logarithmic');
-  RegisterAxisTransformClass(TUserDefinedAxisTransform, 'User defined');
+    TCumulNormDistrAxisTransform, @rsCumulativeNormalDistribution);
+  RegisterAxisTransformClass(TLinearAxisTransform, @rsLinear);
+  RegisterAxisTransformClass(TLogarithmAxisTransform, @rsLogarithmic);
+  RegisterAxisTransformClass(TUserDefinedAxisTransform, @rsUserDefined);
 
 finalization
 

@@ -145,6 +145,8 @@ begin
   if Assigned(FOrigOnPopup) then
     FOrigOnPopup(Sender);
 
+  if DropdownMenu.Images=nil then
+    DropdownMenu.Images := IDEImages.Images_16;
   xM := DropdownMenu.Items;
 
   xMIndex := 0;
@@ -164,9 +166,14 @@ begin
     xAddToFav := TFileNameMenuItem.Create(Self);
     xAddToFav.FileName := xProj.ProjectInfoFile;
     if not FavHandler.IsInFavoriteProjects(xProj.ProjectInfoFile) then
-      xAddToFav.Caption := Format(sAddToFavoritesS, [xProj.ProjectInfoFile])
-    else
+    begin
+      xAddToFav.Caption := Format(sAddToFavoritesS, [xProj.ProjectInfoFile]);
+      xAddToFav.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
+    end else
+    begin
       xAddToFav.Caption := Format(sRemoveFromFavoritesS, [xProj.ProjectInfoFile]);
+      xAddToFav.ImageIndex := IDEImages.LoadImage(16, 'laz_delete');
+    end;
     xAddToFav.OnClick := @mnuAddRemoveActiveProject;
     xM.Insert(xMIndex, xAddToFav);
     Inc(xMIndex);

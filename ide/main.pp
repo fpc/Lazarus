@@ -1141,9 +1141,11 @@ begin
   ParseGuiCmdLineParams(SkipAutoLoadingLastProject, StartedByStartLazarus,
     EnableRemoteControl, ShowSplashScreen, ShowSetupDialog);
 
-  DebugLn('TMainIDE.ParseCmdLineOptions:');
-  Debugln('  PrimaryConfigPath="',GetPrimaryConfigPath,'"');
-  Debugln('  SecondaryConfigPath="',GetSecondaryConfigPath,'"');
+  if ConsoleVerbosity>=0 then
+  begin
+    Debugln('Hint: (lazarus) [TMainIDE.ParseCmdLineOptions] PrimaryConfigPath="',GetPrimaryConfigPath,'"');
+    Debugln('Hint: (lazarus) [TMainIDE.ParseCmdLineOptions] SecondaryConfigPath="',GetSecondaryConfigPath,'"');
+  end;
 end;
 
 procedure TMainIDE.LoadGlobalOptions;
@@ -1205,13 +1207,13 @@ begin
   // read language and lazarusdir paramters, needed for translation
   if Application.HasOption('language') then
   begin
-    debugln('TMainIDE.LoadGlobalOptions overriding language with command line: ',
+    debugln('Hint: (lazarus) [TMainIDE.LoadGlobalOptions] overriding language with command line: ',
       Application.GetOptionValue('language'));
     EnvironmentOptions.LanguageID := Application.GetOptionValue('language');
   end;
   if Application.HasOption('lazarusdir') then
   begin
-    debugln('TMainIDE.LoadGlobalOptions overriding Lazarusdir with command line: ',
+    debugln('Hint: (lazarus) [TMainIDE.LoadGlobalOptions] overriding Lazarusdir with command line: ',
       Application.GetOptionValue('lazarusdir'));
     EnvironmentOptions.Lazarusdirectory:= Application.GetOptionValue('lazarusdir');
   end;
@@ -1251,10 +1253,10 @@ begin
     // => either the user forgot to pass a --pcp
     //    or the user uninstalled and installed to another directory
     // => warn
-    debugln(['TMainIDE.LoadGlobalOptions ']);
-    debugln(['  LastCalled="',LastCalled,'"']);
-    debugln(['  CurPrgName="',CurPrgName,'"']);
-    debugln(['  AltPrgName="',AltPrgName,'"']);
+    debugln(['Hint: (lazarus) [TMainIDE.LoadGlobalOptions]']);
+    debugln(['Hint: (lazarus) LastCalled="',LastCalled,'"']);
+    debugln(['Hint: (lazarus) CurPrgName="',CurPrgName,'"']);
+    debugln(['Hint: (lazarus) AltPrgName="',AltPrgName,'"']);
     MsgResult := IDEQuestionDialog(lisIncorrectConfigurationDirectoryFound,
         SimpleFormat(lisIDEConficurationFoundMayBelongToOtherLazarus,
         [LineEnding, GetSecondConfDirWarning, GetPrimaryConfigPath,
@@ -1363,7 +1365,7 @@ begin
   if (not ShowSetupDialog)
   and (CheckLazarusDirectoryQuality(EnvironmentOptions.GetParsedLazarusDirectory,Note)<>sddqCompatible)
   then begin
-    debugln(['Warning: incompatible Lazarus directory: ',EnvironmentOptions.GetParsedLazarusDirectory]);
+    debugln(['Warning: (lazarus) incompatible Lazarus directory: ',EnvironmentOptions.GetParsedLazarusDirectory]);
     ShowSetupDialog:=true;
   end;
 
@@ -1372,7 +1374,7 @@ begin
   and (CheckCompilerQuality(EnvironmentOptions.GetParsedCompilerFilename,Note,
                        CodeToolBoss.FPCDefinesCache.TestFilename)=sddqInvalid)
   then begin
-    debugln(['Warning: invalid compiler: ',EnvironmentOptions.GetParsedCompilerFilename]);
+    debugln(['Warning: (lazarus) invalid compiler: ',EnvironmentOptions.GetParsedCompilerFilename]);
     ShowSetupDialog:=true;
   end;
 
@@ -1384,7 +1386,7 @@ begin
     if CheckFPCSrcDirQuality(EnvironmentOptions.GetParsedFPCSourceDirectory,Note,
       CfgCache.GetFPCVer)=sddqInvalid
     then begin
-      debugln(['Warning: invalid fpc source directory: ',EnvironmentOptions.GetParsedFPCSourceDirectory]);
+      debugln(['Warning: (lazarus) invalid fpc source directory: ',EnvironmentOptions.GetParsedFPCSourceDirectory]);
       ShowSetupDialog:=true;
     end;
   end;
@@ -1395,16 +1397,15 @@ begin
       or (EnvironmentOptions.DebuggerConfig.DebuggerClass='TGDBMIDebugger'))
   and (CheckDebuggerQuality(EnvironmentOptions.GetParsedDebuggerFilename, Note)<>sddqCompatible)
   then begin
-    debugln(['Warning: missing GDB exe',EnvironmentOptions.GetParsedLazarusDirectory]);
+    debugln(['Warning: (lazarus) missing GDB exe',EnvironmentOptions.GetParsedLazarusDirectory]);
     ShowSetupDialog:=true;
   end;
 
   // check 'make' utility
-  debugln(['TMainIDE.SetupInteractive ',EnvironmentOptions.GetParsedMakeFilename]);
   if (not ShowSetupDialog)
   and (CheckMakeExeQuality(EnvironmentOptions.GetParsedMakeFilename,Note)<>sddqCompatible)
   then begin
-    debugln(['Warning: incompatible make utility: ',EnvironmentOptions.GetParsedMakeFilename]);
+    debugln(['Warning: (lazarus) incompatible make utility: ',EnvironmentOptions.GetParsedMakeFilename]);
     ShowSetupDialog:=true;
   end;
 
@@ -1603,7 +1604,8 @@ begin
   if Assigned(ExternalTools) then
     ExternalTools.TerminateAll;
 
-  DebugLn('[TMainIDE.Destroy] A ');
+  if ConsoleVerbosity>0 then
+    DebugLn('Hint: (lazarus) [TMainIDE.Destroy]');
 
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy A ');{$ENDIF}
   if Assigned(MainIDEBar) then begin
@@ -1676,7 +1678,8 @@ begin
   // free control selection
   FreeThenNil(TheControlSelection);
 
-  DebugLn('[TMainIDE.Destroy] B  -> inherited Destroy... ',ClassName);
+  if ConsoleVerbosity>=0 then
+    DebugLn('Hint: (lazarus) [TMainIDE.Destroy] B  -> inherited Destroy... ',ClassName);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy B ');{$ENDIF}
   FreeThenNil(MainBuildBoss);
   inherited Destroy;
@@ -1684,7 +1687,8 @@ begin
 
   FreeThenNil(IDEProtocolOpts);
   FreeThenNil(fBuilder);
-  DebugLn('[TMainIDE.Destroy] END');
+  if ConsoleVerbosity>=0 then
+    DebugLn('Hint: (lazarus) [TMainIDE.Destroy] END');
 end;
 
 procedure TMainIDE.CreateOftenUsedForms;
@@ -2197,13 +2201,13 @@ procedure TMainIDE.SetupStartProject;
 
   function AskIfLoadLastFailingProject: boolean;
   begin
-    debugln(['AskIfLoadLastFailingProject START']);
+    debugln(['Hint: (lazarus) AskIfLoadLastFailingProject START']);
     Result:=IDEQuestionDialog(lisOpenProject2,
       Format(lisAnErrorOccuredAtLastStartupWhileLoadingLoadThisPro,
              [EnvironmentOptions.LastSavedProjectFile, LineEnding+LineEnding]),
       mtWarning,
       [mrYes, lisOpenProjectAgain, mrNoToAll, lisStartWithANewProject])=mrYes;
-    debugln(['AskIfLoadLastFailingProject END ',dbgs(Result)]);
+    debugln(['Hint: (lazarus) AskIfLoadLastFailingProject END ',dbgs(Result)]);
   end;
 
 var
@@ -2308,7 +2312,7 @@ begin
     Begin
       AFilename:=CleanAndExpandFilename(CmdLineFiles.Strings[i]);
       if not FileExistsCached(AFilename) then begin
-        debugln(['WARNING: command line file not found: "',AFilename,'"']);
+        debugln(['Warning: (lazarus) command line file not found: "',AFilename,'"']);
         continue;
       end;
       if Project1=nil then begin
@@ -2344,7 +2348,8 @@ procedure TMainIDE.SetupRemoteControl;
 var
   Filename: String;
 begin
-  debugln(['TMainIDE.SetupRemoteControl ']);
+  if ConsoleVerbosity>=0 then
+    debugln(['TMainIDE.SetupRemoteControl ']);
   // delete old remote commands
   Filename:=GetRemoteControlFilename;
   if FileExistsUTF8(Filename) then
@@ -2407,7 +2412,7 @@ begin
     AForm:=Screen.CustomForms[i];
     if (AForm<>MainIDEBar)
     and ((AForm.Owner=MainIDEBar) or (AForm.Owner=Self)) then begin
-      DebugLn(['TMainIDE.FreeIDEWindows ',dbgsName(AForm)]);
+      DebugLn(['Hint: (lazarus) [TMainIDE.FreeIDEWindows] ',dbgsName(AForm)]);
       AForm.Free;
     end;
     i:=Math.Min(i,Screen.CustomFormCount)-1;
@@ -4065,7 +4070,7 @@ begin
 
   POFilename := MainBuildBoss.GetProjectTargetFilename(AProject);
   if POFilename='' then begin
-    DebugLn(['TMainIDE.UpdateProjectPOFile unable to get project target filename']);
+    DebugLn(['Warning: (lazarus) [TMainIDE.UpdateProjectPOFile] unable to get project target filename']);
     exit;
   end;
   POFilename:=ChangeFileExt(POFilename, '.po');
@@ -4551,7 +4556,8 @@ end;
 
 procedure TMainIDE.LoadDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
 begin
-  DebugLn(['* TMainIDE.LoadDesktopSettings']);
+  if ConsoleVerbosity>0 then
+    DebugLn(['Hint: (lazarus) TMainIDE.LoadDesktopSettings']);
   if ObjectInspector1<>nil then
     TheEnvironmentOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
   if MessagesView<>nil then
@@ -4561,7 +4567,8 @@ end;
 procedure TMainIDE.SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
 // Called also before reading EnvironmentOptions
 begin
-  DebugLn(['* TMainIDE.SaveDesktopSettings']);
+  if ConsoleVerbosity>0 then
+    DebugLn(['Hint: (lazarus) TMainIDE.SaveDesktopSettings']);
   EnvironmentOptions.Desktop.ImportSettingsFromIDE;
 
   if ObjectInspector1<>nil then
@@ -4570,7 +4577,8 @@ end;
 
 procedure TMainIDE.DoLoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
 begin
-  DebugLn(['** TMainIDE.OnLoadIDEOptions: ', AOptions.ClassName]);
+  if ConsoleVerbosity>0 then
+    DebugLn(['Hint: (lazarus) TMainIDE.OnLoadIDEOptions: ', AOptions.ClassName]);
   // ToDo: Figure out why this is not called.
   if AOptions is TEnvironmentOptions then
     LoadDesktopSettings(AOptions as TEnvironmentOptions);
@@ -4578,7 +4586,8 @@ end;
 
 procedure TMainIDE.DoSaveIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
 begin
-  DebugLn(['** TMainIDE.OnSaveIDEOptions: ', AOptions.ClassName]);
+  if ConsoleVerbosity>0 then
+    DebugLn(['Hint: (lazarus) TMainIDE.OnSaveIDEOptions: ', AOptions.ClassName]);
   // ToDo: Figure out why this is not called.
   if AOptions is TEnvironmentOptions then
     SaveDesktopSettings(AOptions as TEnvironmentOptions);
@@ -4619,7 +4628,8 @@ begin
     IDEOptionsDialog.WriteAll(not Result);    // Restore if user cancelled.
     if Result then
     begin
-      DebugLn(['TMainIDE.DoOpenIDEOptions: Options saved, updating TaskBar.']);
+      if ConsoleVerbosity>0 then
+        DebugLn(['Hint: (lazarus) TMainIDE.DoOpenIDEOptions: Options saved, updating TaskBar.']);
       // Update TaskBarBehavior immediately.
       if EnvironmentOptions.Desktop.SingleTaskBarButton then
         Application.TaskBarBehavior := tbSingleButton
@@ -5067,7 +5077,7 @@ var
     try
       CTResult:=CodeToolBoss.FindUsedUnitFiles(RootUnitInfo.Source,CurUnitFilenames);
       if not CTResult then begin
-        DebugLn(['TMainIDE.DoFixupComponentReferences.FindUsedUnits failed parsing ',RootUnitInfo.Filename]);
+        DebugLn(['Error: (lazarus) [TMainIDE.DoFixupComponentReferences.FindUsedUnits] failed parsing ',RootUnitInfo.Filename]);
         // ignore the error. This was just a fallback search.
       end;
       if (CurUnitFilenames<>nil) then begin
@@ -5088,7 +5098,7 @@ var
         CTResult:=CodeToolBoss.FindUsedUnitFiles(Project1.MainUnitInfo.Source,
           CurUnitFilenames);
         if not CTResult then begin
-          DebugLn(['TMainIDE.DoFixupComponentReferences.FindUsedUnits failed parsing ',Project1.MainUnitInfo.Filename]);
+          DebugLn(['Error: (lazarus) [TMainIDE.DoFixupComponentReferences.FindUsedUnits] failed parsing ',Project1.MainUnitInfo.Filename]);
           // ignore the error. This was just a fallback search.
         end;
         if (CurUnitFilenames<>nil) then begin
@@ -5111,7 +5121,7 @@ var
         // load the lfm file
         ModalResult:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText],true);
         if ModalResult<>mrOk then begin
-          debugln('TMainIDE.DoFixupComponentReferences Failed loading ',LFMFilename);
+          debugln('Error: (lazarus) [TMainIDE.DoFixupComponentReferences] Failed loading ',LFMFilename);
           if ModalResult=mrAbort then break;
         end else begin
           // read the LFM component name
@@ -5149,7 +5159,7 @@ var
       end;
     end;
 
-    DebugLn(['FindUnitFilename missing: ',aComponentName]);
+    DebugLn(['Warning: (lazarus) FindUnitFilename missing: ',aComponentName]);
     Result:='';
   end;
 
@@ -5166,7 +5176,7 @@ var
     // load lfm
     UnitFilename:=FindUnitFilename(RefRootName);
     if UnitFilename='' then begin
-      DebugLn(['TMainIDE.DoFixupComponentReferences.LoadDependencyHidden failed to find lfm for "',RefRootName,'"']);
+      DebugLn(['Error: (lazarus) [TMainIDE.DoFixupComponentReferences.LoadDependencyHidden] failed to find lfm for "',RefRootName,'"']);
       exit(mrCancel);
     end;
     // ToDo: use UnitResources
@@ -5175,7 +5185,7 @@ var
       LFMFilename:=ChangeFileExt(UnitFilename,'.dfm');
     ModalResult:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText],false);
     if ModalResult<>mrOk then begin
-      debugln('TMainIDE.DoFixupComponentReferences Failed loading ',LFMFilename);
+      debugln('Error: (lazarus) [TMainIDE.DoFixupComponentReferences] Failed loading ',LFMFilename);
       exit(mrCancel);
     end;
 
@@ -5191,7 +5201,7 @@ var
     begin
       ModalResult := LoadCodeBuffer(UnitCode, UnitFileName, [lbfCheckIfText],false);
       if ModalResult<>mrOk then begin
-        debugln('TMainIDE.DoFixupComponentReferences Failed loading ',UnitFilename);
+        debugln('Error: (lazarus) [TMainIDE.DoFixupComponentReferences] Failed loading ',UnitFilename);
         exit(mrCancel);
       end;
       RefUnitInfo.Source := UnitCode;
@@ -5242,7 +5252,7 @@ begin
     CurRoot:=CurRoot.Owner;
   RootUnitInfo:=Project1.UnitWithComponent(CurRoot);
   if RootUnitInfo=nil then begin
-    debugln(['TMainIDE.DoFixupComponentReferences WARNING: component without unitinfo: ',DbgSName(RootComponent),' CurRoot=',DbgSName(CurRoot)]);
+    debugln(['Warning: (lazarus) [TMainIDE.DoFixupComponentReferences] component without unitinfo: ',DbgSName(RootComponent),' CurRoot=',DbgSName(CurRoot)]);
     exit;
   end;
 
@@ -5267,7 +5277,7 @@ begin
         ReferenceInstanceNames.Clear;
         GetFixupInstanceNames(CurRoot,RefRootName,ReferenceInstanceNames);
 
-        DebugLn(['TMainIDE.DoFixupComponentReferences UNRESOLVED BEFORE loading ',j,' Root=',dbgsName(CurRoot),' RefRoot=',RefRootName,' Refs="',Trim(ReferenceInstanceNames.Text),'"']);
+        DebugLn(['Note: (lazarus) [TMainIDE.DoFixupComponentReferences] UNRESOLVED BEFORE loading ',j,' Root=',dbgsName(CurRoot),' RefRoot=',RefRootName,' Refs="',Trim(ReferenceInstanceNames.Text),'"']);
 
         // load the referenced component
         LoadResult:=LoadDependencyHidden(RefRootName);
@@ -5281,7 +5291,7 @@ begin
           // ToDo: give a nice error message and give user the choice between
           // a) ignore and loose the references
           // b) undo the opening (close the designer forms)
-          DebugLn(['TMainIDE.DoFixupComponentReferences failed loading component ',RefRootName]);
+          DebugLn(['Error: (lazarus) [TMainIDE.DoFixupComponentReferences] failed loading component ',RefRootName]);
           Result:=mrCancel;
         end;
       end;
@@ -5292,7 +5302,7 @@ begin
       GlobalFixupReferences;
     except
       on E: Exception do begin
-        DebugLn(['TMainIDE.DoFixupComponentReferences GlobalFixupReferences ',E.Message]);
+        DebugLn(['Error: (lazarus) [TMainIDE.DoFixupComponentReferences] GlobalFixupReferences ',E.Message]);
         DumpExceptionBackTrace;
       end;
     end;
@@ -5309,7 +5319,7 @@ begin
           continue;
         ReferenceInstanceNames.Clear;
         GetFixupInstanceNames(CurRoot,RefRootName,ReferenceInstanceNames);
-        DebugLn(['TMainIDE.DoFixupComponentReferences UNRESOLVED AFTER loading ',j,' ',dbgsName(CurRoot),' RefRoot=',RefRootName,' Refs="',Trim(ReferenceInstanceNames.Text),'"']);
+        DebugLn(['Warning: (lazarus) [TMainIDE.DoFixupComponentReferences] UNRESOLVED AFTER loading ',j,' ',dbgsName(CurRoot),' RefRoot=',RefRootName,' Refs="',Trim(ReferenceInstanceNames.Text),'"']);
 
         // forget the rest of the dangling references
         RemoveFixupReferences(CurRoot,RefRootName);
@@ -5471,14 +5481,14 @@ begin
   CurResult:=DoCallModalFunctionHandler(lihtSavingAll);
   if CurResult=mrAbort then begin
     if ConsoleVerbosity>0 then
-      debugln(['TMainIDE.DoSaveAll DoCallModalFunctionHandler(lihtSavingAll) failed']);
+      debugln(['Error: (lazarus) [TMainIDE.DoSaveAll] DoCallModalFunctionHandler(lihtSavingAll) failed']);
     exit(mrAbort);
   end;
   if CurResult<>mrOk then Result:=mrCancel;
   CurResult:=DoSaveProject(Flags);
   if CurResult<>mrOK then begin
     if ConsoleVerbosity>0 then
-      debugln(['TMainIDE.DoSaveAll DoSaveProject failed']);
+      debugln(['Error: (lazarus) [TMainIDE.DoSaveAll] DoSaveProject failed']);
   end;
   SaveEnvironment(true);
   SaveIncludeLinks;
@@ -5489,7 +5499,7 @@ begin
   CurResult:=DoCallModalFunctionHandler(lihtSavedAll);
   if CurResult<>mrOK then begin
     if ConsoleVerbosity>0 then
-      debugln(['TMainIDE.DoSaveAll DoCallModalFunctionHandler(lihtSavedAll) failed']);
+      debugln(['Error: (lazarus) [TMainIDE.DoSaveAll] DoCallModalFunctionHandler(lihtSavedAll) failed']);
   end;
   if CurResult=mrAbort then
     Result:=mrAbort
@@ -5576,11 +5586,11 @@ begin
     begin
       aFilename:=UnitList[i];
       if not FileExistsUTF8(aFilename) then continue;
-      debugln(['TMainIDE.DoSelectFrame Filename="',aFilename,'"']);
+      //debugln(['TMainIDE.DoSelectFrame Filename="',aFilename,'"']);
       if DoOpenComponent(aFilename,
         [ofOnlyIfExists,ofLoadHiddenResource,ofUseCache],[],AComponent)<>mrOk
       then exit;
-      debugln(['TMainIDE.DoSelectFrame AncestorComponent=',DbgSName(AComponent)]);
+      //debugln(['TMainIDE.DoSelectFrame AncestorComponent=',DbgSName(AComponent)]);
       Result := TComponentClass(AComponent.ClassType);
       exit;
     end;
@@ -6148,7 +6158,7 @@ begin
 
   // check if it is a directory
   if DirPathExistsCached(AFileName) then begin
-    debugln(['TMainIDE.DoOpenProjectFile file is a directory']);
+    debugln(['Error: (lazarus) [TMainIDE.DoOpenProjectFile] file is a directory']);
     exit;
   end;
 
@@ -6163,7 +6173,7 @@ begin
   DiskFilename:=CodeToolBoss.DirectoryCachePool.FindDiskFilename(AFilename);
   if DiskFilename<>AFilename then begin
     // the case is different
-    DebugLn(['TMainIDE.DoOpenProjectFile Fixing file name: ',AFilename,' -> ',DiskFilename]);
+    DebugLn(['Warning: (lazarus) [TMainIDE.DoOpenProjectFile] Fixing file name: ',AFilename,' -> ',DiskFilename]);
     AFilename:=DiskFilename;
   end;
 
@@ -6296,7 +6306,7 @@ begin
   Result:=mrCancel;
   if not (ToolStatus in [itNone,itDebugger,itBuilder]) then begin
     if ConsoleVerbosity>0 then
-      DebugLn('TMainIDE.DoSaveForBuild ToolStatus forbids it: ',dbgs(ToolStatus));
+      DebugLn('Error: (lazarus) [TMainIDE.DoSaveForBuild] ToolStatus forbids it: ',dbgs(ToolStatus));
     Result:=mrAbort;
     exit;
   end;
@@ -6314,14 +6324,14 @@ begin
   Project1.UpdateExecutableType;
   if Result<>mrOk then begin
     if ConsoleVerbosity>0 then
-      DebugLn('TMainIDE.DoSaveForBuild project saving failed');
+      DebugLn('Error: (lazarus) [TMainIDE.DoSaveForBuild] project saving failed');
     exit;
   end;
 
   Result:=PkgBoss.DoSaveAllPackages([]);
   if Result<>mrOK then
     if ConsoleVerbosity>0 then
-      debugln(['TMainIDE.DoSaveForBuild PkgBoss.DoSaveAllPackages failed']);
+      debugln(['Error: (lazarus) [TMainIDE.DoSaveForBuild] PkgBoss.DoSaveAllPackages failed']);
 
   // get non IDE disk changes
   InvalidateFileStateCache;
@@ -6444,13 +6454,13 @@ var
   StartTime: TDateTime;
 begin
   if DoAbortBuild(true)<>mrOK then begin
-    debugln(['TMainIDE.DoBuildProject DoAbortBuild failed']);
+    debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] DoAbortBuild failed']);
     exit(mrCancel);
   end;
 
   Result:=SourceFileMgr.PrepareForCompileWithMsg;
   if Result<>mrOk then begin
-    debugln(['TMainIDE.DoBuildProject PrepareForCompile failed']);
+    debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] PrepareForCompile failed']);
     exit;
   end;
 
@@ -6460,7 +6470,7 @@ begin
     // warn if nothing to do
     Result:=CheckCompileReasons(AReason,Project1.CompilerOptions,false);
     if Result<>mrOk then begin
-      debugln(['TMainIDE.DoBuildProject CheckCompileReasons negative']);
+      debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] CheckCompileReasons negative']);
       exit;
     end;
   end;
@@ -6479,7 +6489,7 @@ begin
   try
     Result:=DoSaveForBuild(AReason);
     if Result<>mrOk then begin
-      debugln(['TMainIDE.DoBuildProject DoSaveForBuild failed']);
+      debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] DoSaveForBuild failed']);
       exit;
     end;
 
@@ -6498,7 +6508,7 @@ begin
     // now building can start: call handler
     Result:=DoCallModalFunctionHandler(lihtProjectBuilding);
     if Result<>mrOk then begin
-      debugln(['TMainIDE.DoBuildProject handler lihtProjectBuilding negative']);
+      debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] handler lihtProjectBuilding negative']);
       exit;
     end;
 
@@ -6515,7 +6525,7 @@ begin
     if not (pbfDoNotCompileDependencies in Flags) then begin
       Result:=DoCallModalFunctionHandler(lihtProjectDependenciesCompiling);
       if Result<>mrOk then begin
-        debugln(['TMainIDE.DoBuildProject handler lihtProjectDependenciesCompiling negative']);
+        debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] handler lihtProjectDependenciesCompiling negative']);
         exit;
       end;
       PkgFlags:=[pcfDoNotSaveEditorFiles];
@@ -6524,12 +6534,12 @@ begin
       Result:=PkgBoss.DoCompileProjectDependencies(Project1,PkgFlags);
       if Result <> mrOk then
       begin
-        debugln(['TMainIDE.DoBuildProject PkgBoss.DoCompileProjectDependencies failed']);
+        debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] PkgBoss.DoCompileProjectDependencies failed']);
         exit;
       end;
       Result:=DoCallModalFunctionHandler(lihtProjectDependenciesCompiled);
       if Result<>mrOk then begin
-        debugln(['TMainIDE.DoBuildProject handler lihtProjectDependenciesCompiled negative']);
+        debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] handler lihtProjectDependenciesCompiled negative']);
         exit;
       end;
     end;
@@ -6538,7 +6548,7 @@ begin
     Result:=DoWarnAmbiguousFiles;
     if Result<>mrOk then
     begin
-      debugln(['TMainIDE.DoBuildProject DoWarnAmbiguousFiles negative']);
+      debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] DoWarnAmbiguousFiles negative']);
       exit;
     end;
 
@@ -6552,13 +6562,13 @@ begin
       if  (pbfOnlyIfNeeded in Flags)
       and (not (pfAlwaysBuild in Project1.Flags)) then begin
         if Result=mrNo then begin
-          debugln(['TMainIDE.DoBuildProject MainBuildBoss.DoCheckIfProjectNeedsCompilation nothing to be done']);
+          debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] MainBuildBoss.DoCheckIfProjectNeedsCompilation nothing to be done']);
           Result:=mrOk;
           exit;
         end;
         if Result<>mrYes then
         begin
-          debugln(['TMainIDE.DoBuildProject MainBuildBoss.DoCheckIfProjectNeedsCompilation failed']);
+          debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] MainBuildBoss.DoCheckIfProjectNeedsCompilation failed']);
           exit;
         end;
       end;
@@ -6580,7 +6590,7 @@ begin
       end;
       Result:=ForceDirectoryInteractive(UnitOutputDirectory,[mbRetry]);
       if Result<>mrOk then begin
-        debugln(['TMainIDE.DoBuildProject ForceDirectoryInteractive "',UnitOutputDirectory,'" failed']);
+        debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] ForceDirectoryInteractive "',UnitOutputDirectory,'" failed']);
         exit;
       end;
     end;
@@ -6598,7 +6608,7 @@ begin
       end;
       Result:=ForceDirectoryInteractive(TargetExeDirectory,[mbRetry]);
       if Result<>mrOk then begin
-        debugln(['TMainIDE.DoBuildProject ForceDirectoryInteractive "',TargetExeDirectory,'" failed']);
+        debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] ForceDirectoryInteractive "',TargetExeDirectory,'" failed']);
         exit;
       end;
     end;
@@ -6609,12 +6619,12 @@ begin
     then begin
       Result:=CreateApplicationBundle(TargetExeName, Project1.GetTitleOrName);
       if not (Result in [mrOk,mrIgnore]) then begin
-        debugln(['TMainIDE.DoBuildProject CreateApplicationBundle "',TargetExeName,'" failed']);
+        debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] CreateApplicationBundle "',TargetExeName,'" failed']);
         exit;
       end;
       Result:=CreateAppBundleSymbolicLink(TargetExeName);
       if not (Result in [mrOk,mrIgnore]) then begin
-        debugln(['TMainIDE.DoBuildProject CreateAppBundleSymbolicLink "',TargetExeName,'" failed']);
+        debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] CreateAppBundleSymbolicLink "',TargetExeName,'" failed']);
         exit;
       end;
     end;
@@ -6622,7 +6632,7 @@ begin
     // update project resource files
     if not Project1.ProjResources.Regenerate(Project1.MainFilename, False, True, TargetExeDirectory)
     then begin
-      debugln(['TMainIDE.DoBuildProject ProjResources.Regenerate failed']);
+      debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] ProjResources.Regenerate failed']);
       exit;
     end;
 
@@ -6636,7 +6646,7 @@ begin
                aCompileHint);
         if Result<>mrOk then
         begin
-          debugln(['TMainIDE.DoBuildProject CompilerOptions.ExecuteBefore.Execute failed']);
+          debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] CompilerOptions.ExecuteBefore.Execute failed']);
           exit;
         end;
       end;
@@ -6659,7 +6669,7 @@ begin
         // write state file, to avoid building clean every time
         Result:=Project1.SaveStateFile(CompilerFilename,CompilerParams,false);
         if Result<>mrOk then begin
-          debugln(['TMainIDE.DoBuildProject SaveStateFile before compile failed']);
+          debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] SaveStateFile before compile failed']);
           exit;
         end;
 
@@ -6670,28 +6680,28 @@ begin
                                 pbfSkipLinking in Flags,
                                 pbfSkipAssembler in Flags,aCompileHint);
         if ConsoleVerbosity>=0 then
-          debugln(['TMainIDE.DoBuildProject compiler time in s: ',(Now-StartTime)*86400]);
+          debugln(['Hint: (lazarus) [TMainIDE.DoBuildProject] compiler time in s: ',(Now-StartTime)*86400]);
         DoCallBuildingFinishedHandler(lihtProjectBuildingFinished, Self, Result=mrOk);
         if Result<>mrOk then begin
           // save state, so that next time the project is not compiled clean
           Project1.LastCompilerFilename:=CompilerFilename;
           Project1.LastCompilerParams:=CompilerParams;
           Project1.LastCompilerFileDate:=FileAgeCached(CompilerFilename);
-          debugln(['TMainIDE.DoBuildProject Compile failed']);
+          debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] Compile failed']);
           exit;
         end;
         // compilation succeded -> write state file
         IsComplete:=[pbfSkipLinking,pbfSkipAssembler,pbfSkipTools]*Flags=[];
         Result:=Project1.SaveStateFile(CompilerFilename,CompilerParams,IsComplete);
         if Result<>mrOk then begin
-          debugln(['TMainIDE.DoBuildProject SaveStateFile after compile failed']);
+          debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] SaveStateFile after compile failed']);
           exit;
         end;
 
         // update project .po file
         Result:=UpdateProjectPOFile(Project1);
         if Result<>mrOk then begin
-          debugln(['TMainIDE.DoBuildProject UpdateProjectPOFile failed']);
+          debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] UpdateProjectPOFile failed']);
           exit;
         end;
 
@@ -6716,7 +6726,7 @@ begin
                             lisProject2+lisExecutingCommandAfter,aCompileHint);
         if Result<>mrOk then
         begin
-          debugln(['TMainIDE.DoBuildProject CompilerOptions.ExecuteAfter.Execute failed']);
+          debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] CompilerOptions.ExecuteAfter.Execute failed']);
           exit;
         end;
       end;
@@ -6790,7 +6800,7 @@ begin
             (Project1.RunParameterOptions.HostApplicationFilename<>''))
           and (pfRunnable in Project1.Flags) and (Project1.MainUnitID >= 0) )
   then begin
-    debugln(['TMainIDE.DoInitProjectRun Project can not run:',
+    debugln(['Error: (lazarus) [TMainIDE.DoInitProjectRun] Project can not run:',
       ' pfRunnable=',pfRunnable in Project1.Flags,
       ' MainUnitID=',Project1.MainUnitID,
       ' Launchable=',(Project1.CompilerOptions.ExecutableType=cetProgram) or
@@ -6816,13 +6826,15 @@ begin
   end;
 
   // Build project first
-  debugln('TMainIDE.DoInitProjectRun Check build ...');
+  if ConsoleVerbosity>0 then
+    debugln('Hint: (lazarus) TMainIDE.DoInitProjectRun Check build ...');
   if DoBuildProject(crRun,[pbfOnlyIfNeeded]) <> mrOk then
     Exit;
 
   // Check project build
   ProgramFilename := MainBuildBoss.GetProjectTargetFilename(Project1);
-  DebugLn(['TMainIDE.DoInitProjectRun ProgramFilename=',ProgramFilename]);
+  if ConsoleVerbosity>0 then
+    DebugLn(['Hint: (lazarus) TMainIDE.DoInitProjectRun ProgramFilename=',ProgramFilename]);
   if ((DebugClass = nil) or DebugClass.RequiresLocalExecutable)
      and not FileExistsUTF8(ProgramFilename)
   then begin
@@ -6841,7 +6853,7 @@ end;
 
 function TMainIDE.DoRunProject: TModalResult;
 begin
-  DebugLn('[TMainIDE.DoRunProject] INIT');
+  DebugLn('Hint: (lazarus) [TMainIDE.DoRunProject] INIT');
 
   if (DoInitProjectRun <> mrOK)
   or (ToolStatus <> itDebugger)
@@ -6849,13 +6861,13 @@ begin
     Result := mrAbort;
     Exit;
   end;
-  debugln('[TMainIDE.DoRunProject] Debugger=',EnvironmentOptions.DebuggerConfig.DebuggerClass);
+  debugln('Hint: (lazarus) [TMainIDE.DoRunProject] Debugger=',EnvironmentOptions.DebuggerConfig.DebuggerClass);
 
   Result := mrCancel;
 
   Result := DebugBoss.StartDebugging;
 
-  DebugLn('[TMainIDE.DoRunProject] END');
+  DebugLn('Hint: (lazarus) [TMainIDE.DoRunProject] END');
 end;
 
 procedure TMainIDE.DoRestart;
@@ -6901,13 +6913,13 @@ const
          ' --lazarus-pid='+IntToStr(GetProcessID) + ' '+
          GetCommandLineParameters(Params, False);
 
-      DebugLn('CommandLine 1 : %s', [CmdLine]);
+      DebugLn('Hint: (lazarus) CommandLine 1 : %s', [CmdLine]);
 
       if (pos(PrimaryConfPathOptLong, CmdLine) = 0) and
          (pos(PrimaryConfPathOptShort, CmdLine) = 0) then
         CmdLine := CmdLine + ' "' + PrimaryConfPathOptLong + GetPrimaryConfigPath+'"';
 
-      DebugLn('CommandLine 2 : %s', [CmdLine]);
+      DebugLn('Hint: (lazarus) CommandLine 2 : %s', [CmdLine]);
       StartLazProcess.CommandLine := CmdLine;
       StartLazProcess.Execute;
     finally
@@ -6918,7 +6930,7 @@ const
 
 var CanClose: boolean;
 begin
-  DebugLn(['TMainIDE.DoRestart ']);
+  DebugLn(['Hint: (lazarus) TMainIDE.DoRestart ']);
   CanClose:=true;
   MainIDEBar.OnCloseQuery(Self, CanClose);
   if not CanClose then exit;
@@ -6956,7 +6968,7 @@ procedure TMainIDE.DoExecuteRemoteControl;
   begin
     if (Files=nil) or (Files.Count=0) then exit;
     ProjectLoaded:=Project1<>nil;
-    DebugLn(['TMainIDE.DoExecuteRemoteControl.OpenFiles ProjectLoaded=',ProjectLoaded]);
+    DebugLn(['Hint: (lazarus) TMainIDE.DoExecuteRemoteControl.OpenFiles ProjectLoaded=',ProjectLoaded]);
 
     // open project (only the last in the list)
     AProjectFilename:='';
@@ -6969,7 +6981,7 @@ procedure TMainIDE.DoExecuteRemoteControl;
         Files.Delete(i); // remove from the list
         AProjectFilename:=CleanAndExpandFilename(AProjectFilename);
         if FileExistsUTF8(AProjectFilename) then begin
-          DebugLn(['TMainIDE.DoExecuteRemoteControl.OpenFiles AProjectFilename="',AProjectFilename,'"']);
+          DebugLn(['Hint: (lazarus) TMainIDE.DoExecuteRemoteControl.OpenFiles AProjectFilename="',AProjectFilename,'"']);
           if (Project1<>nil)
           and (CompareFilenames(AProjectFilename,Project1.ProjectInfoFile)=0)
           then begin
@@ -6992,7 +7004,7 @@ procedure TMainIDE.DoExecuteRemoteControl;
     if Files<>nil then begin
       for i:=0 to Files.Count-1 do begin
         AFilename:=CleanAndExpandFilename(Files.Strings[i]);
-        DebugLn(['TMainIDE.DoExecuteRemoteControl.OpenFiles AFilename="',AFilename,'"']);
+        DebugLn(['Hint: (lazarus) TMainIDE.DoExecuteRemoteControl.OpenFiles AFilename="',AFilename,'"']);
         if CompareFileExt(AFilename,'.lpk',false)=0 then begin
           if PkgBoss.DoOpenPackageFile(AFilename,[pofAddToRecent],true)=mrAbort
           then
@@ -7027,7 +7039,7 @@ begin
       try
         List.LoadFromFile(Filename);
       except
-        DebugLn(['TMainIDE.DoExecuteRemoteControl reading file failed: ',Filename]);
+        DebugLn(['Error: (lazarus) TMainIDE.DoExecuteRemoteControl reading file failed: ',Filename]);
       end;
       DeleteFileUTF8(Filename);
       FRemoteControlFileAge:=-1;
@@ -7121,13 +7133,13 @@ begin
 
   Result:=DoSaveAll([sfDoNotSaveVirtualFiles]);
   if Result<>mrOk then begin
-    DebugLn('TMainIDE.DoBuildLazarus: failed because saving failed');
+    DebugLn('Error: (lazarus) TMainIDE.DoBuildLazarus: failed because saving failed');
     exit;
   end;
 
   Result:=DoCallModalFunctionHandler(lihtLazarusBuilding);
   if Result<>mrOk then begin
-    debugln(['TMainIDE.DoBuildLazarusSub handler lihtLazarusBuilding negative']);
+    debugln(['Error: (lazarus) TMainIDE.DoBuildLazarusSub handler lihtLazarusBuilding negative']);
     exit;
   end;
 
@@ -7158,7 +7170,7 @@ begin
         fBuilder.PackageOptions:='';
         Result:=fBuilder.MakeLazarus(BuildLazProfiles.Current, [blfDontBuild]);
         if Result<>mrOk then begin
-          DebugLn('TMainIDE.DoBuildLazarus: Clean all failed.');
+          DebugLn('Error: (lazarus) TMainIDE.DoBuildLazarus: Clean all failed.');
           exit;
         end;
       end;
@@ -7167,14 +7179,14 @@ begin
     // compile auto install static packages
     Result:=PkgBoss.DoCompileAutoInstallPackages(PkgCompileFlags+[pcfDoNotSaveEditorFiles],false);
     if Result<>mrOk then begin
-      DebugLn('TMainIDE.DoBuildLazarusSub: Compile AutoInstall Packages failed.');
+      DebugLn('Error: (lazarus) TMainIDE.DoBuildLazarusSub: Compile AutoInstall Packages failed.');
       exit;
     end;
 
     // create uses section addition for lazarus.pp
     Result:=PkgBoss.DoSaveAutoInstallConfig;
     if Result<>mrOk then begin
-      DebugLn('TMainIDE.DoBuildLazarus: Save AutoInstall Config failed.');
+      DebugLn('Error: (lazarus) TMainIDE.DoBuildLazarus: Save AutoInstall Config failed.');
       exit;
     end;
 
@@ -7191,7 +7203,7 @@ begin
                      InheritedOptionStrings[icoUnitPath],
                      CompiledUnitExt,'IDE');
     if Result<>mrOk then begin
-      DebugLn('TMainIDE.DoBuildLazarus: Check UnitPath for ambiguous pascal files failed.');
+      DebugLn('Error: (lazarus) TMainIDE.DoBuildLazarus: Check UnitPath for ambiguous pascal files failed.');
       exit;
     end;
 
@@ -7200,7 +7212,7 @@ begin
     Result:=fBuilder.SaveIDEMakeOptions(BuildLazProfiles.Current,
                IDEBuildFlags-[blfDontClean]+[blfBackupOldExe]);
     if Result<>mrOk then begin
-      DebugLn('TMainIDE.DoBuildLazarus: Save IDEMake options failed.');
+      DebugLn('Error: (lazarus) TMainIDE.DoBuildLazarus: Save IDEMake options failed.');
       exit;
     end;
 
@@ -7525,7 +7537,7 @@ begin
       BuildFileDialog.Filename:=
         CreateRelativePath(ActiveUnitInfo.Filename,Project1.ProjectDirectory);
       if BuildFileDialog.ShowModal<>mrOk then begin
-        DebugLn(['TMainIDE.DoConfigBuildFile cancelled']);
+        DebugLn(['Error: (lazarus) TMainIDE.DoConfigBuildFile cancelled']);
         Result:=mrCancel;
         exit;
       end;
@@ -8214,7 +8226,7 @@ begin
     DoJumpToCodePosition(AEditor, ActiveUnitInfo,
       NewSource, NewX, NewY, NewTopLine, [jfAddJumpPoint, jfFocusEditor]);
   end else begin
-    DebugLn(['TMainIDE.OnPropHookShowMethod failed finding the method in code']);
+    DebugLn(['Error: (lazarus) TMainIDE.OnPropHookShowMethod failed finding the method in code']);
     DoJumpToCodeToolBossError;
     raise Exception.Create(lisUnableToShowMethod+' '+lisPleaseFixTheErrorInTheMessageWindow);
   end;
@@ -8606,7 +8618,8 @@ var
   BinCompStream: TMemoryStream;
   c: Char;
 begin
-  DebugLn('TMainIDE.OnDesignerPasteComponent A');
+  if ConsoleVerbosity>0 then
+    DebugLn('Hint: (lazarus) TMainIDE.OnDesignerPasteComponent A');
 
   // check the class of the new component
   NewClassName:=FindLFMClassName(TxtCompStream);
@@ -8653,7 +8666,7 @@ begin
     FormEditor1.CreateChildComponentsFromStream(BinCompStream,
                 ARegComp.ComponentClass,LookupRoot,ParentControl,NewComponents);
     if NewComponents.Count=0 then begin
-      DebugLn('TMainIDE.OnDesignerPasteComponent FAILED FormEditor1.CreateChildComponentFromStream');
+      DebugLn('Error: (lazarus) TMainIDE.OnDesignerPasteComponent FAILED FormEditor1.CreateChildComponentFromStream');
       exit;
     end;
 
@@ -9248,7 +9261,7 @@ begin
     FuncData^.Result:=Project1.CompilerOptions.GetUnitPath(false)
   else begin
     FuncData^.Result:='<unknown parameter for CodeTools Macro project:"'+Param+'">';
-    debugln('TMainIDE.MacroFunctionProject WARNING: ',FuncData^.Result);
+    debugln('Warning: (lazarus) TMainIDE.MacroFunctionProject: ',FuncData^.Result);
   end;
 end;
 
@@ -9283,7 +9296,7 @@ var
 begin
   Result:=mrCancel;
   if NewSource=nil then begin
-    DebugLn(['TMainIDE.DoJumpToCodePosition ERROR: missing NewSource']);
+    DebugLn(['Error: (lazarus) TMainIDE.DoJumpToCodePosition missing NewSource']);
     DumpStack;
     exit;
   end;
@@ -9502,7 +9515,8 @@ begin
   if (Screen.GetCurrentModalForm<>nil) or (CodeToolBoss.ErrorMessage='') then
   begin
     SourceFileMgr.UpdateSourceNames;
-    debugln('TMainIDE.DoJumpToCodeToolBossError No errormessage');
+    if ConsoleVerbosity>0 then
+      debugln('Note: (lazarus) TMainIDE.DoJumpToCodeToolBossError No errormessage');
     exit;
   end;
   // syntax error -> show error and jump
@@ -9696,7 +9710,7 @@ begin
     Result:=ShowFindRenameIdentifierDialog(DeclarationUnitInfo.Source.Filename,
       DeclarationCaretXY,true,Rename,nil);
     if Result<>mrOk then begin
-      debugln('TMainIDE.DoFindRenameIdentifier failed: user cancelled dialog');
+      debugln('Error: (lazarus) TMainIDE.DoFindRenameIdentifier failed: user cancelled dialog');
       exit;
     end;
 
@@ -9740,7 +9754,7 @@ begin
     // add user defined extra files
     Result:=AddExtraFiles(Files);
     if Result<>mrOk then begin
-      debugln('TMainIDE.DoFindRenameIdentifier unable to add user defined extra files');
+      debugln('Error: (lazarus) TMainIDE.DoFindRenameIdentifier unable to add user defined extra files');
       exit;
     end;
 
@@ -9750,7 +9764,7 @@ begin
     if CodeToolBoss.ErrorMessage<>'' then
       DoJumpToCodeToolBossError;
     if Result<>mrOk then begin
-      debugln('TMainIDE.DoFindRenameIdentifier GatherIdentifierReferences failed');
+      debugln('Error: (lazarus) TMainIDE.DoFindRenameIdentifier GatherIdentifierReferences failed');
       exit;
     end;
 
@@ -9759,7 +9773,7 @@ begin
     Result:=GatherFPDocReferencesForPascalFiles(Files,DeclarationUnitInfo.Source,
                                   DeclarationCaretXY,ListOfLazFPDocNode);
     if Result<>mrOk then begin
-      debugln('TMainIDE.DoFindRenameIdentifier GatherFPDocReferences failed');
+      debugln('Error: (lazarus) TMainIDE.DoFindRenameIdentifier GatherFPDocReferences failed');
       exit;
     end;
     {$ENDIF}
@@ -9784,7 +9798,7 @@ begin
           Identifier,Options.RenameTo, DeclarationUnitInfo.Source, @DeclarationCaretXY)
         then begin
           DoJumpToCodeToolBossError;
-          debugln('TMainIDE.DoFindRenameIdentifier unable to commit');
+          debugln('Error: (lazarus) TMainIDE.DoFindRenameIdentifier unable to commit');
           Result:=mrCancel;
           exit;
         end;
@@ -10964,7 +10978,8 @@ var
             FRenamingComponents:=TFPList.Create;
           FRenamingComponents.Add(InheritedComponent);
           try
-            DebugLn(['RenameInheritedComponents ',dbgsName(InheritedComponent),' Owner=',dbgsName(InheritedComponent.Owner)]);
+            if ConsoleVerbosity>0 then
+              DebugLn(['Hint: (lazarus) RenameInheritedComponents ',dbgsName(InheritedComponent),' Owner=',dbgsName(InheritedComponent.Owner)]);
             if Simulate then begin
               // only check if rename is possible
               if (InheritedComponent.Owner<>nil)
@@ -11034,7 +11049,8 @@ var
                        Root,AComponent,Root.ClassName,NewName,PropInfo^.Name);
         if (CurMethodName=NewMethodName) then continue;
         // auto rename it
-        DebugLn(['RenameMethods OldMethodName="',DefaultName,'" NewMethodName="',NewMethodName,'"']);
+        if ConsoleVerbosity>0 then
+          DebugLn(['Hint: (lazarus) RenameMethods OldMethodName="',DefaultName,'" NewMethodName="',NewMethodName,'"']);
 
         // rename/create published method in source
         CTResult:=CodeToolBoss.RenamePublishedMethod(ActiveUnitInfo.Source,
@@ -11051,7 +11067,7 @@ var
         end else begin
           // unable to rename method in source
           // this is just a nice to have feature -> ignore the error
-          DebugLn(['TMainIDE.OnDesignerRenameComponent.RenameMethods failed OldMethodName="',CurMethodName,'" NewMethodName="',NewMethodName,'" Error=',CodeToolBoss.ErrorMessage]);
+          DebugLn(['Error: (lazarus) TMainIDE.OnDesignerRenameComponent.RenameMethods failed OldMethodName="',CurMethodName,'" NewMethodName="',NewMethodName,'" Error=',CodeToolBoss.ErrorMessage]);
         end;
       end;
       ApplyCodeToolChanges;
@@ -11070,7 +11086,7 @@ var
   s: String;
   OldOpenEditorsOnCodeToolChange: Boolean;
 begin
-  DebugLn('TMainIDE.OnDesignerRenameComponent Old=',AComponent.Name,':',AComponent.ClassName,' New=',NewName,' Owner=',dbgsName(AComponent.Owner));
+  DebugLn('Hint: (lazarus) TMainIDE.OnDesignerRenameComponent Old=',AComponent.Name,':',AComponent.ClassName,' New=',NewName,' Owner=',dbgsName(AComponent.Owner));
   if (not IsValidIdent(NewName)) or (NewName='') then
     raise Exception.Create(Format(lisComponentNameIsNotAValidIdentifier, [Newname]));
   if WordIsKeyWord.DoItCaseInsensitive(PChar(NewName))
@@ -11202,7 +11218,7 @@ var
 begin
   ADesigner:=TDesigner(Sender);
   GetDesignerUnit(ADesigner,ASrcEdit,AnUnitInfo);
-  debugln('TMainIDE.OnDesignerViewLFM ',AnUnitInfo.Filename);
+  debugln('Hint: (lazarus) TMainIDE.OnDesignerSaveAsXML ',AnUnitInfo.Filename);
 
   SaveAsFileExt:='.xml';
   SaveAsFilename:=ChangeFileExt(AnUnitInfo.Filename,SaveAsFileExt);
@@ -12204,7 +12220,7 @@ begin
       Result:=FormEditor1.CreateNewJITMethod(ActiveUnitInfo.Component,
                                              AMethodName);
     end else begin
-      DebugLn(['TMainIDE.OnPropHookCreateMethod failed adding method "'+AMethodName+'" to source']);
+      DebugLn(['Error: (lazarus) TMainIDE.OnPropHookCreateMethod failed adding method "'+AMethodName+'" to source']);
       DoJumpToCodeToolBossError;
       raise Exception.Create(lisUnableToCreateNewMethod+' '+lisPleaseFixTheErrorInTheMessageWindow);
     end;
@@ -12256,7 +12272,7 @@ begin
     DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo,
       NewSource, NewX, NewY, NewTopLine, [jfAddJumpPoint, jfFocusEditor]);
   end else begin
-    DebugLn(['TMainIDE.OnPropHookShowMethod failed finding the method in code']);
+    DebugLn(['Error: (lazarus) TMainIDE.OnPropHookShowMethod failed finding the method in code']);
     DoJumpToCodeToolBossError;
     raise Exception.Create(lisUnableToShowMethod+' '+lisPleaseFixTheErrorInTheMessageWindow);
   end;
@@ -12381,7 +12397,8 @@ var
   ClassUnitInfo: TUnitInfo;
   i: Integer;
 begin
-  DebugLn('TMainIDE.OnPropHookPersistentAdded A ',dbgsName(APersistent));
+  if ConsoleVerbosity>0 then
+    DebugLn('Hint: (lazarus) TMainIDE.OnPropHookPersistentAdded A ',dbgsName(APersistent));
   ADesigner:=nil;
   if APersistent is TComponent then
     AComponent:=TComponent(APersistent)
@@ -12391,7 +12408,7 @@ begin
   if (RegComp=nil) and (AComponent<>nil) then begin
     ClassUnitInfo:=Project1.UnitWithComponentClass(TComponentClass(APersistent.ClassType));
     if ClassUnitInfo=nil then begin
-      DebugLn('TMainIDE.OnPropHookPersistentAdded ',APersistent.ClassName,
+      DebugLn('Error: (lazarus) TMainIDE.OnPropHookPersistentAdded ',APersistent.ClassName,
               ' not registered');
       exit;
     end;
@@ -12455,7 +12472,7 @@ var
   AComponent: TComponent;
 begin
   if APersistent=nil then exit;
-  DebugLn('TMainIDE.OnPropHookDeletePersistent A ',dbgsName(APersistent));
+  DebugLn('Hint: (lazarus) TMainIDE.OnPropHookDeletePersistent A ',dbgsName(APersistent));
   if APersistent is TComponent then begin
     AComponent:=TComponent(APersistent);
     ADesigner:=TDesigner(FindRootDesigner(AComponent));
@@ -12481,7 +12498,7 @@ begin
   // find the current unit
   AnUnitInfo:=Project1.UnitWithComponent(TComponent(GlobalDesignHook.LookupRoot));
   if AnUnitInfo=nil then begin
-    DebugLn(['TMainIDE.OnPropHookObjectPropertyChanged LookupRoot not found']);
+    DebugLn(['Error: (lazarus) TMainIDE.OnPropHookObjectPropertyChanged LookupRoot not found']);
     exit;
   end;
   // find the reference unit
@@ -12491,7 +12508,7 @@ begin
     if ReferenceDesigner=nil then exit;
     ReferenceUnitInfo:=Project1.UnitWithComponent(ReferenceDesigner.LookupRoot);
     if ReferenceUnitInfo=nil then begin
-      DebugLn(['TMainIDE.OnPropHookObjectPropertyChanged reference LookupRoot not found']);
+      DebugLn(['Error: (lazarus) TMainIDE.OnPropHookObjectPropertyChanged reference LookupRoot not found']);
       exit;
     end;
     if ReferenceUnitInfo<>AnUnitInfo then begin
@@ -12530,7 +12547,7 @@ begin
   if not (GlobalDesignHook.LookupRoot is TComponent) then exit;
   AnUnitInfo:=Project1.UnitWithComponent(TComponent(GlobalDesignHook.LookupRoot));
   if AnUnitInfo=nil then begin
-    DebugLn(['TMainIDE.OnPropHookAddDependency LookupRoot not found']);
+    DebugLn(['Error: (lazarus) TMainIDE.OnPropHookAddDependency LookupRoot not found']);
     exit;
   end;
 
@@ -12660,7 +12677,7 @@ end;
 procedure TMainIDE.mnuEditSortBlockClicked(Sender: TObject);
 begin
   // MG: sometimes the function does nothing
-  debugln(['TMainIDE.mnuEditSortBlockClicked ',DbgSName(FindOwnerControl(GetFocus))]);
+  debugln(['Hint: (lazarus) TMainIDE.mnuEditSortBlockClicked ',DbgSName(FindOwnerControl(GetFocus))]);
   DoSourceEditorCommand(ecSelectionSort);
 end;
 

@@ -309,16 +309,8 @@ begin
 
   lvc.Mask := LVCF_TEXT;
 
-  if UnicodeEnabledOS then
-  begin
-    lvc.pszText := PChar(PWideChar(UTF8ToUTF16(AColumn.Caption)));
-    SendMessage(ALV.Handle, LVM_INSERTCOLUMNW, WPARAM(AIndex), LPARAM(@lvc));
-  end
-  else
-  begin
-    lvc.pszText := PChar(Utf8ToAnsi(AColumn.Caption));
-    ListView_InsertColumn(ALV.Handle, AIndex, lvc);
-  end;
+  lvc.pszText := PChar(PWideChar(UTF8ToUTF16(AColumn.Caption)));
+  SendMessage(ALV.Handle, LVM_INSERTCOLUMNW, WPARAM(AIndex), LPARAM(@lvc));
 end;
 
 class procedure TWin32WSCustomListView.ColumnMove(const ALV: TCustomListView; const AOldIndex, ANewIndex: Integer; const AColumn: TListColumn);
@@ -400,16 +392,8 @@ begin
 
   lvc.Mask := LVCF_TEXT;
 
-  if UnicodeEnabledOS then
-  begin
-    lvc.pszText := PChar(PWideChar(UTF8ToUTF16(AColumn.Caption)));
-    SendMessage(ALV.Handle, LVM_SETCOLUMNW, WPARAM(AIndex), LPARAM(@lvc));
-  end
-  else
-  begin
-    lvc.pszText := PChar(Utf8ToAnsi(ACaption));
-    ListView_SetColumn(ALV.Handle, AIndex, lvc);
-  end;
+  lvc.pszText := PChar(PWideChar(UTF8ToUTF16(AColumn.Caption)));
+  SendMessage(ALV.Handle, LVM_SETCOLUMNW, WPARAM(AIndex), LPARAM(@lvc));
 end;
 
 class procedure TWin32WSCustomListView.ColumnSetImage(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AImageIndex: Integer);
@@ -623,16 +607,8 @@ begin
   lvi.iSubItem := 0;
   lvi.lParam := LPARAM(AItem);
 
-  if UnicodeEnabledOS then
-  begin
-    lvi.pszText := PChar(PWideChar(UTF8ToUTF16(AItem.Caption)));
-    SendMessage(ALV.Handle, LVM_INSERTITEMW, 0, LPARAM(@lvi));
-  end
-  else
-  begin
-    lvi.pszText := PChar(Utf8ToAnsi(AItem.Caption));
-    ListView_InsertItem(ALV.Handle, lvi);
-  end;
+  lvi.pszText := PChar(PWideChar(UTF8ToUTF16(AItem.Caption)));
+  SendMessage(ALV.Handle, LVM_INSERTITEMW, 0, LPARAM(@lvi));
 end;
 
 class procedure TWin32WSCustomListView.ItemSetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AChecked: Boolean);
@@ -700,16 +676,11 @@ begin
   if not WSCheckHandleAllocated(ALV, 'ItemSetText')
   then Exit;
 
-    if UnicodeEnabledOS then
-    begin
-      _gnu_lvi.iSubItem := ASubIndex;
-      _gnu_lvi.pszText := PChar(PWideChar(UTF8ToUTF16(AText)));
+  _gnu_lvi.iSubItem := ASubIndex;
+  _gnu_lvi.pszText := PChar(PWideChar(UTF8ToUTF16(AText)));
 
-      SendMessage(ALV.Handle, LVM_SETITEMTEXTW, WPARAM(AIndex), LPARAM(@_gnu_lvi));
-    end
-    else
-      ListView_SetItemText(ALV.Handle, AIndex, ASubIndex, PChar(Utf8ToAnsi(AText)));
-  // autosize is an *exteme* performance bottleneck, even if WM_SETREDRAW
+  SendMessage(ALV.Handle, LVM_SETITEMTEXTW, WPARAM(AIndex), LPARAM(@_gnu_lvi));
+  // autosize is an *extreme* performance bottleneck, even if WM_SETREDRAW
   // was set to false it will ignore this and still redraw all columns.
   // We will therefore postpone all autosizing until EndUpdate where we do
   // it only once per column.

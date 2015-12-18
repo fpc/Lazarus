@@ -4564,10 +4564,6 @@ msgstr "Pakiet docelowy"
 msgid "File type"
 msgstr "Typ pliku"
 
-#: lazarusidestrconsts.lisaf2phasregisterprocedure
-msgid "Has Register procedure"
-msgstr "Ma procedurę Register"
-
 #: lazarusidestrconsts.lisaf2pinvalidpackage
 msgid "Invalid Package"
 msgstr "Błędny pakiet"
@@ -4595,20 +4591,9 @@ msgctxt "lazarusidestrconsts.lisaf2pshowall"
 msgid "Show all"
 msgstr "Pokaż wszystkie"
 
-#: lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage
-msgctxt "lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage"
-msgid "The file \"%s\"%sis already in the package %s."
-msgstr ""
-
 #: lazarusidestrconsts.lisaf2pthepackageisreadonly
 msgid "The package %s is read only."
 msgstr "Pakiet %s jest dostępny tylko do odczytu"
-
-#: lazarusidestrconsts.lisaf2punitname
-#, fuzzy
-#| msgid "Unit Name: "
-msgid "Unit name: "
-msgstr "Nazwa modułu:"
 
 #: lazarusidestrconsts.lisafilealreadyexistsreplaceit
 #, fuzzy,badformat

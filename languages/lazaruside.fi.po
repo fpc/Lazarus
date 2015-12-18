@@ -4271,10 +4271,6 @@ msgstr "Kohdepaketti"
 msgid "File type"
 msgstr "Tiedoston tyyppi"
 
-#: lazarusidestrconsts.lisaf2phasregisterprocedure
-msgid "Has Register procedure"
-msgstr "Sisältää Register-aliohjelman"
-
 #: lazarusidestrconsts.lisaf2pinvalidpackage
 msgid "Invalid Package"
 msgstr "Kelvoton paketti"
@@ -4296,18 +4292,9 @@ msgctxt "lazarusidestrconsts.lisaf2pshowall"
 msgid "Show all"
 msgstr "Näytä kaikki"
 
-#: lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage
-msgctxt "lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage"
-msgid "The file \"%s\"%sis already in the package %s."
-msgstr "Tiedosto \"%s\"%son jo paketissa %s."
-
 #: lazarusidestrconsts.lisaf2pthepackageisreadonly
 msgid "The package %s is read only."
 msgstr "Pakettia %s voidaan vain lukea."
-
-#: lazarusidestrconsts.lisaf2punitname
-msgid "Unit name: "
-msgstr "Käännösyksikön nimi: "
 
 #: lazarusidestrconsts.lisafilealreadyexistsreplaceit
 msgid "A file \"%s\" already exists.%sReplace it?"

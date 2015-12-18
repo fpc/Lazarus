@@ -6433,7 +6433,9 @@ begin
   BeginEventProcessing;
   try
     if (QEvent_Type(Event) in [QEventContextMenu, QEventHoverEnter, QEventPaint,
-                               QEventHoverMove, QEventHoverLeave, QEventHide]) then
+                               QEventHoverMove, QEventHoverLeave, QEventHide,
+                               {must be added, see issue #29159}
+                               QEventMouseMove]) then
     begin
       Result := inherited EventFilter(Sender, Event);
     end else
@@ -6983,6 +6985,16 @@ begin
           end;
         end;
       end;
+      {$IFDEF QTSCROLLABLEFORMS}
+      QEventMouseMove: // issue #29159
+      begin
+        if IsMdiChild or
+          (Assigned(LCLObject) and (csDesigning in LCLObject.ComponentState)) then
+          Result := inherited EventFilter(Sender, Event)
+        else
+          Result := False;
+      end;
+      {$ENDIF}
       QEventMouseButtonPress,
       QEventMouseButtonRelease,
       QEventMouseButtonDblClick:
@@ -11617,14 +11629,15 @@ var
   VHeight: Integer; // viewport height
   RowHeight: Integer;
   item: QListWidgetItemH;
-  v: QVariantH;
+  v, v2, v3: QVariantH;
   WStr: WideString;
   DataStr: WideString;
   ImgList: TCustomImageList;
   AImageIndex: TImageIndex;
   Bmp: TBitmap;
-  v2: QVariantH;
+  AIcon: QIconH;
   AOk: Boolean;
+  ASize: TSize;
 begin
 
   {do not set items during design time}
@@ -11663,6 +11676,13 @@ begin
         ImgList := TCustomListViewHack(LCLObject).SmallImages;
         if Assigned(ImgList) then
         begin
+          QListWidgetItem_sizeHint(item, @ASize);
+          if (ASize.cx <> ImgList.Width) or (ASize.cx <> ImgList.Height) then
+          begin
+            ASize.cx := ImgList.Width;
+            ASize.cy := ImgList.Height;
+            QListWidgetItem_setSizeHint(item, @ASize);
+          end;
           AImageIndex := TCustomListViewHack(LCLObject).Items[TopItem].ImageIndex;
           if (ImgList.Count > 0) and
             ((AImageIndex >= 0) and (AImageIndex < ImgList.Count)) then
@@ -11697,9 +11717,25 @@ begin
           if (AImageIndex < 0) then
           begin
             v2 := QVariant_create;
-            QListWidgetItem_setData(item, QtListViewOwnerDataRole, v2);
-            QVariant_destroy(v2);
-            QListWidgetItem_setIcon(item, nil);
+            AIcon := QIcon_create;
+            try
+              QListWidgetItem_data(item, v2, QtListViewOwnerDataRole);
+              if not QVariant_isNull(v2) then
+              begin
+                v3 := QVariant_create;
+                try
+                  QListWidgetItem_setData(item, QtListViewOwnerDataRole, v3);
+                finally
+                  QVariant_destroy(v3);
+                end;
+              end;
+              QListWidgetItem_icon(item, AIcon);
+              if not QIcon_isNull(AIcon) then
+                QListWidgetItem_setIcon(item, nil);
+            finally
+              QVariant_destroy(v2);
+              QIcon_destroy(AIcon);
+            end;
           end;
         end;
 
@@ -13706,13 +13742,15 @@ var
   RowHeight: Integer;
   item: QTreeWidgetItemH;
   itemChild: QTreeWidgetItemH;
-  v,v2: QVariantH;
+  v,v2,v3: QVariantH;
   WStr, TempStr: WideString;
   ASelected: Boolean;
   ImgList: TCustomImageList;
   AImageIndex: TImageIndex;
   Bmp: TBitmap;
   AOk: Boolean;
+  AIcon: QIconH;
+  ASize: TSize;
 begin
   {do not set items during design time}
   if csDesigning in LCLObject.ComponentState then
@@ -13744,7 +13782,6 @@ begin
 
         TopItem := getRow(item);
         RowHeight := getRowHeight(TopItem);
-
         if (TopItem < 0) or (TopItem > TCustomListViewHack(LCLObject).Items.Count - 1) then
           continue;
 
@@ -13769,6 +13806,13 @@ begin
           ImgList := TCustomListViewHack(LCLObject).SmallImages;
           if Assigned(ImgList) then
           begin
+            QTreeWidgetItem_sizeHint(item, @ASize, 0);
+            if (ASize.cx <> ImgList.Width) or (ASize.cx <> ImgList.Height) then
+            begin
+              ASize.cx := ImgList.Width;
+              ASize.cy := ImgList.Height;
+              QTreeWidgetItem_setSizeHint(item, 0, @ASize);
+            end;
             AImageIndex := TCustomListViewHack(LCLObject).Items[TopItem].ImageIndex;
             if (ImgList.Count > 0) and
               ((AImageIndex >= 0) and (AImageIndex < ImgList.Count)) then
@@ -13803,9 +13847,25 @@ begin
             if (AImageIndex < 0) then
             begin
               v2 := QVariant_create;
-              QTreeWidgetItem_setData(item, 0, QtListViewOwnerDataRole, v2);
-              QVariant_destroy(v2);
-              QTreeWidgetItem_setIcon(item, 0, nil);
+              AIcon := QIcon_create;
+              try
+                QTreeWidgetItem_data(item, v2, 0, QtListViewOwnerDataRole);
+                if not QVariant_isNull(v2) then
+                begin
+                  v3 := QVariant_create;
+                  try
+                    QTreeWidgetItem_setData(item, 0, QtListViewOwnerDataRole, v3);
+                  finally
+                    QVariant_destroy(v3);
+                  end;
+                end;
+                QTreeWidgetItem_icon(item, AIcon, 0);
+                if not QIcon_isNull(AIcon) then
+                  QTreeWidgetItem_setIcon(item, 0, nil);
+              finally
+                QVariant_destroy(v2);
+                QIcon_destroy(AIcon);
+              end;
             end;
           end;
 

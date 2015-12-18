@@ -903,17 +903,19 @@ begin
   begin
     if Down then
     begin // checked states
-      if FMouseInControl then
+      if (tbfPressed in FToolButtonFlags) and FMouseInControl then
+        inc(ToolDetail, 2) // ttbButtonPressed
+      else if FMouseInControl then
         inc(ToolDetail, 5) // ttbButtonCheckedHot
       else
-        inc(ToolDetail, 4) // ttbButtonChecked
+        inc(ToolDetail, 4);// ttbButtonChecked
     end
     else
     begin
       if (tbfPressed in FToolButtonFlags) and FMouseInControl then
-        inc(ToolDetail, 2) else // ttbButtonPressed
-      if FMouseInControl then
-        inc(ToolDetail, 1); // ttbButtonHot
+        inc(ToolDetail, 2) // ttbButtonPressed
+      else if FMouseInControl then
+        inc(ToolDetail, 1);// ttbButtonHot
     end;
   end;
   Result := ThemeServices.GetElementDetails(ToolDetail);

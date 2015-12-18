@@ -909,7 +909,7 @@ procedure TMainIDEBase.CreateMenuSeparatorSection(
   const AName: String);
 begin
   Section:=RegisterIDEMenuSection(ParentSection,AName);
-  Section.ChildsAsSubMenu := false;
+  Section.ChildrenAsSubMenu := false;
 end;
 
 procedure TMainIDEBase.CreateMenuSubSection(ParentSection: TIDEMenuSection;
@@ -1402,7 +1402,7 @@ begin
     // Populated later with a list of editor names
     CreateMenuSeparatorSection(mnuWindow,itmWindowLists,'itmWindowLists');
     CreateMenuSeparatorSection(mnuWindow,itmCenterWindowLists,'itmCenterWindowLists');
-    itmCenterWindowLists.ChildsAsSubMenu:=true;
+    itmCenterWindowLists.ChildrenAsSubMenu:=true;
     itmCenterWindowLists.Caption:=lisCenterALostWindow;
     CreateMenuSeparatorSection(mnuWindow,itmTabLists,'itmTabLists');
     CreateMenuSubSection(itmTabLists,itmTabListProject,'itmTabListProject', dlgEnvProject);

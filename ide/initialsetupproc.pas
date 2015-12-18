@@ -471,7 +471,7 @@ begin
     if CheckFile('fpc'+ExeExt,Result) then exit;
 
     // search ppccpu(.exe) in PATH
-    if CheckFile(GetDefaultCompilerFilename,Result) then exit;
+    if CheckFile(GetDefaultCompilerFilename(GetCompiledTargetCPU),Result) then exit;
 
     // check history
     Files:=EnvironmentOptions.CompilerFileHistory;
@@ -480,10 +480,14 @@ begin
         if CheckFile(Files[i],Result) then exit;
 
     // check paths with versions
-    ShortCompFile:=GetDefaultCompilerFilename;
+    ShortCompFile:='fpc'+ExeExt;
+
+    // check $(LazarusDir)\fpc\3.0.0\bin\i386-win32\fpc.exe
+    if CheckFile(SetDirSeparators('$(LazarusDir)/fpc/'+{$I %FPCVERSION%}+'/bin/'+GetCompiledTargetCPU+'-'+GetCompiledTargetOS+'/')+ShortCompFile,Result)
+      then exit;
 
     // check $(LazarusDir)\fpc\bin\i386-win32\fpc.exe
-    if CheckFile(SetDirSeparators('$(LazarusDir)/fpc/bin/$(TargetCPU)-$(TargetOS)/')+ShortCompFile,Result)
+    if CheckFile(SetDirSeparators('$(LazarusDir)/fpc/bin/'+GetCompiledTargetCPU+'-'+GetCompiledTargetOS+'/')+ShortCompFile,Result)
       then exit;
 
     // check common directories

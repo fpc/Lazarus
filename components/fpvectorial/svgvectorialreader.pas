@@ -130,9 +130,11 @@ type
     function ReadTextFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
     function ReadUseFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
     //
+    procedure StringToPenPattern(const AStr: String; var APen: TvPen);
     function  StringWithUnitToFloat(AStr: string; ACoordKind: TSVGCoordinateKind = sckUnknown;
       ADefaultUnit: TSVGUnit = suPX; ATargetUnit: TSVGUnit = suPX): Double;
     function  StringFloatZeroToOneToWord(AStr: string): Word;
+
     procedure ConvertSVGCoordinatesToFPVCoordinates(
       const AData: TvVectorialPage;
       const ASrcX, ASrcY: Double; var ADestX, ADestY: Double;
@@ -147,6 +149,7 @@ type
       ADoViewBoxAdjust: Boolean = True);
     procedure AutoDetectDocSize(var ALeft, ATop, ARight, ABottom: Double; ABaseNode: TDOMNode);
     function SVGColorValueStrToWord(AStr: string): Word;
+
   public
     { General reading methods }
     constructor Create; override;
@@ -205,7 +208,11 @@ begin
 end;
 
 destructor TSVGPathTokenizer.Destroy;
+var
+  i: Integer;
 begin
+  for i:=Tokens.Count-1 downto 0 do
+    Tokens[i].Free;
   Tokens.Free;
 
   inherited Destroy;
@@ -928,7 +935,7 @@ begin
   end
   else if AKey = 'stroke-opacity' then
   begin
-    ADestEntity.Pen.Color.Alpha := Round(StrToFloat(AValue)*$FFFF);
+    ADestEntity.Pen.Color.Alpha := Round(StrToFloat(AValue, FPointSeparator)*$FFFF);
   end
   else if AKey = 'stroke-linecap' then
   begin
@@ -937,7 +944,9 @@ begin
     'round':
     'square': ADestEntity.Pen;
     end;}
-  end;
+  end
+  else if AKey = 'stroke-dasharray' then
+    StringToPenPattern(AValue, ADestEntity.Pen);
 end;
 
 function TvSVGVectorialReader.ReadSVGBrushStyleWithKeyAndValue(AKey,
@@ -1458,6 +1467,7 @@ begin
   lEntityName := LowerCase(ANode.NodeName);
   case lEntityName of
     'circle': Result := ReadCircleFromNode(ANode, AData, ADoc);
+    'defs': ReadDefsFromNode(ANode, AData, ADoc);
     'ellipse': Result := ReadEllipseFromNode(ANode, AData, ADoc);
     'frame': Result := ReadFrameFromNode(ANode, AData, ADoc);
     'g': ReadLayerFromNode(ANode, AData, ADoc);
@@ -2839,6 +2849,47 @@ begin
   lInsert.Y := lInsert.Y - AData.Height;
 
   Result := lInsert;
+end;
+
+procedure TvSVGVectorialReader.StringToPenPattern(const AStr: String;
+  var APen: TvPen);
+var
+  float_patt: TDoubleArray;
+  patt: array of LongWord;
+  i: Integer;
+begin
+  float_patt := ReadSpaceSeparatedFloats(AStr, ',');
+  if Length(float_patt) < 2 then
+    exit;
+
+  SetLength(patt, Length(float_patt));
+  for i:=0 to High(patt) do
+  begin
+    if float_patt[i] < 0 then
+      raise Exception.CreateFmt('Incorrect value in stroke-dasharray "%s"', [AStr]);
+    patt[i] := round(float_patt[i]);
+  end;
+
+  case Length(patt) of
+    2: if patt[1] = 5 then
+         case patt[0] of
+           3: begin APen.Style := psDot;  exit; end;     // stroke-dasharray: 3, 5
+           9: begin APen.Style := psDash; exit; end;     // stroke-dasharray: 9, 5
+         end;
+    4: if (patt[0] = 9) and (patt[1] = 5) and (patt[2] = 3) and (patt[3] = 5) then
+       begin                             // stroke-dasharray: 9, 5, 3, 5
+         APen.Style := psDashDot;
+         exit;
+       end;
+    6: if (patt[0] = 9) and (patt[1] = 5) and (patt[2] = 3) and (patt[3] = 5) and
+          (patt[4] = 3) and (patt[5] = 5)
+       then begin                       // stroke-dasharray: 9, 5, 3, 5, 3, 5
+         APen.Style := psDashDotDot;
+         exit;
+       end;
+  end;
+  APen.Style := psPattern;
+  APen.Pattern := patt;
 end;
 
 function TvSVGVectorialReader.StringWithUnitToFloat(AStr: string;

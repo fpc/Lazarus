@@ -145,8 +145,6 @@ type
     function GetImplementationSource(const Filename, SourceName, ResourceName: string): string;override;
   end;
 
-  { TSQLFileDescriptor }
-
   { TJSFileDescriptor }
 
   TJSFileDescriptor = class(TProjectFileDescriptor)
@@ -405,6 +403,7 @@ begin
 
   // compiler options
   AProject.LazCompilerOptions.Win32GraphicApp:=false;
+  AProject.LazCompilerOptions.UnitOutputDirectory:='lib'+PathDelim+'$(TargetCPU)-$(TargetOS)';
   AProject.Flags := AProject.Flags - [pfMainUnitHasCreateFormStatements];
   AProject.Flags := AProject.Flags - [pfRunnable];
   Result:= mrOK;
@@ -496,6 +495,7 @@ begin
   AProject.AddPackageDependency('WebLaz');
   // compiler options
   AProject.LazCompilerOptions.Win32GraphicApp:=false;
+  AProject.LazCompilerOptions.UnitOutputDirectory:='lib'+PathDelim+'$(TargetCPU)-$(TargetOS)';
   AProject.Flags := AProject.Flags - [pfMainUnitHasCreateFormStatements];
   Result:= mrOK;
 end;
@@ -656,6 +656,7 @@ begin
   // compiler options
   AProject.LazCompilerOptions.Win32GraphicApp:=false;
   AProject.ExecutableType:=petLibrary;
+  AProject.LazCompilerOptions.UnitOutputDirectory:='lib'+PathDelim+'$(TargetCPU)-$(TargetOS)';
   AProject.Flags := AProject.Flags - [pfMainUnitHasCreateFormStatements];
   AProject.Flags := AProject.Flags - [pfRunnable];
   Result:= mrOK;
@@ -738,6 +739,7 @@ begin
   AProject.AddPackageDependency('WebLaz');
   // compiler options
   AProject.LazCompilerOptions.Win32GraphicApp:=false;
+  AProject.LazCompilerOptions.UnitOutputDirectory:='lib'+PathDelim+'$(TargetCPU)-$(TargetOS)';
   AProject.Flags := AProject.Flags - [pfMainUnitHasCreateFormStatements];
   Result:= mrOK;
 end;
@@ -803,6 +805,7 @@ begin
 
   // compiler options
   AProject.LazCompilerOptions.Win32GraphicApp:=false;
+  AProject.LazCompilerOptions.UnitOutputDirectory:='lib'+PathDelim+'$(TargetCPU)-$(TargetOS)';
   AProject.Flags := AProject.Flags - [pfMainUnitHasCreateFormStatements];
   Result:= mrOK;
 end;
@@ -910,6 +913,7 @@ begin
 
   // compiler options
   AProject.LazCompilerOptions.Win32GraphicApp:=false;
+  AProject.LazCompilerOptions.UnitOutputDirectory:='lib'+PathDelim+'$(TargetCPU)-$(TargetOS)';
   AProject.Flags := AProject.Flags - [pfMainUnitHasCreateFormStatements];
   Result:= mrOK;
 end;

@@ -4387,10 +4387,6 @@ msgstr "到達対象パッケージ"
 msgid "File type"
 msgstr "ファイルのタイプ"
 
-#: lazarusidestrconsts.lisaf2phasregisterprocedure
-msgid "Has Register procedure"
-msgstr "Register手続きを保有"
-
 #: lazarusidestrconsts.lisaf2pinvalidpackage
 msgid "Invalid Package"
 msgstr "無効なパッケージ"
@@ -4416,20 +4412,9 @@ msgctxt "lazarusidestrconsts.lisaf2pshowall"
 msgid "Show all"
 msgstr "すべて表示"
 
-#: lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage
-#, fuzzy,badformat
-#| msgid "The file %s%s%s%sis already in the package %s."
-msgctxt "lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage"
-msgid "The file \"%s\"%sis already in the package %s."
-msgstr "ファイル %s%s%s%sは既にパッケージ%sにあります。"
-
 #: lazarusidestrconsts.lisaf2pthepackageisreadonly
 msgid "The package %s is read only."
 msgstr "パッケージ %s は読み込み専用です。"
-
-#: lazarusidestrconsts.lisaf2punitname
-msgid "Unit name: "
-msgstr "ユニット名: "
 
 #: lazarusidestrconsts.lisafilealreadyexistsreplaceit
 #, fuzzy,badformat

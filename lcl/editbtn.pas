@@ -1695,7 +1695,7 @@ begin
     Exit;
   if Assigned(FOnButtonClick) then
     FOnButtonClick(Self);
-  //derived controls that override ButtonClick tipically run a dialog after calling inherited,
+  //derived controls that override ButtonClick typically run a dialog after calling inherited,
   //in that case selecting the text now does not make sense at all (and looks silly)
   //it's up to the derived control to implement this focus and select if wanted
   if TMethod(@Self.ButtonClick).Code = Pointer(@TCustomEditButton.ButtonClick) then

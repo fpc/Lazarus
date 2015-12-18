@@ -27,6 +27,12 @@ if [ "@"$FPCTARGET == "@" ]; then
   fi
 fi
 
+RSEXT="rst"
+FPCVER=`fpc -iV`
+if [ "$FPCVER" \> "2.7.0" ]; then
+  RSEXT="rsj"
+fi
+
 RSTFILES=(
   ". lazarusidestrconsts lazaruside"
   ". debuggerstrconst"
@@ -44,9 +50,9 @@ for idx in ${!RSTFILES[@]}; do
   RSTFILE=${LINE[1]}  
   POFILE=${LINE[2]:-$RSTFILE}
    
-  RST=$(find $RSTDIR -name $RSTFILE.rst)
+  RST=$(find $RSTDIR -name $RSTFILE.$RSEXT)
   if [ -n "$RST" ]; then
-    RST=`find $RSTDIR -name $RSTFILE.rst | xargs ls -1t | head -1`;
+    RST=`find $RSTDIR -name $RSTFILE.$RSEXT | xargs ls -1t | head -1`;
   
     if [ -n "$RST" ]; then
       POFileFull=$RSTDIR/languages/$POFILE.po

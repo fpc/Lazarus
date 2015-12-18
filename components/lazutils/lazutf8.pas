@@ -91,8 +91,14 @@ function UTF8Pos(const SearchForText, SearchInText: string; StartPos: SizeInt = 
 function UTF8PosP(SearchForText: PChar; SearchForTextLen: SizeInt;
   SearchInText: PChar; SearchInTextLen: SizeInt): PChar;
 function UTF8Copy(const s: string; StartCharIndex, CharCount: PtrInt): string;
+{$IFnDEF NO_CP_RTL}
+procedure UTF8Delete(var s: Utf8String; StartCharIndex, CharCount: PtrInt);
+{$ENDIF}
 procedure UTF8Delete(var s: String; StartCharIndex, CharCount: PtrInt);
-procedure UTF8Insert(const source: String; var s: string; StartCharIndex: PtrInt);
+{$IFnDEF NO_CP_RTL}
+procedure UTF8Insert(const source: Utf8String; var s: Utf8String; StartCharIndex: PtrInt);
+{$ENDIF}
+procedure UTF8Insert(const source: String; var s: String; StartCharIndex: PtrInt);
 function UTF8StringReplace(const S, OldPattern, NewPattern: String;
   Flags: TReplaceFlags; ALanguage: string=''): String;
 
@@ -887,6 +893,25 @@ begin
   end;
 end;
 
+{$IFnDEF NO_CP_RTL}
+procedure UTF8Delete(var s: Utf8String; StartCharIndex, CharCount: PtrInt);
+var
+  tmp: String;
+begin
+  {$IFDEF ACP_RTL}
+  { change code page without converting the data }
+  SetCodePage(RawByteString(tmp), CP_UTF8, False);
+  {$ENDIF}
+  tmp := s;
+  { keep refcount to 1 if it was 1, to avoid unnecessary copies }
+  s := '';
+  UTF8Delete(tmp,StartCharIndex,CharCount);
+  { same as above }
+  s := tmp;
+  tmp := '';
+end;
+{$ENDIF NO_ACP_RTL}
+
 procedure UTF8Delete(var s: String; StartCharIndex, CharCount: PtrInt);
 var
   StartBytePos: PChar;
@@ -905,7 +930,20 @@ begin
   end;
 end;
 
-procedure UTF8Insert(const source: String; var s: string; StartCharIndex: PtrInt);
+{$IFnDEF NO_CP_RTL}
+{It's simper to copy the code from the variant with String parameters than writing a wrapper}
+procedure UTF8Insert(const source: UTF8String; var s: UTF8string;
+  StartCharIndex: PtrInt);
+var
+  StartBytePos: PChar;
+begin
+  StartBytePos:=UTF8CharStart(PChar(s),length(s),StartCharIndex-1);
+  if StartBytePos <> nil then
+    Insert(source, s, StartBytePos-PChar(s)+1);
+end;
+{$ENDIF NO_CP_RTL}
+
+procedure UTF8Insert(const source: String; var s: String; StartCharIndex: PtrInt);
 var
   StartBytePos: PChar;
 begin

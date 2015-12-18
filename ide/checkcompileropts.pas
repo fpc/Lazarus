@@ -276,7 +276,7 @@ begin
 
   // check if there are several compilers in path
   CompilerFiles:=SearchAllFilesInPath(GetDefaultCompilerFilename,'',
-              GetEnvironmentVariableUTF8('PATH'),':',[sffDontSearchInBasePath]);
+              GetEnvironmentVariableUTF8('PATH'),PathSeparator,[sffDontSearchInBasePath]);
   try
     ResolveLinksInFileList(CompilerFiles,false);
     RemoveDoubles(CompilerFiles);
