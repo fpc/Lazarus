@@ -2378,8 +2378,8 @@ begin
   //  nil,@CreateIDEWindow,'250','200','','');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwProjectInspector],
     nil,@CreateIDEWindow,'200','150','+300','+400');
-  IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwSearchResultsViewName],
-    nil,@CreateIDEWindow,'250','250','+70%','+300');
+  //IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwSearchResultsViewName],
+  //  nil,@CreateIDEWindow,'250','250','+70%','+300');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwAnchorEditor],
     nil,@CreateIDEWindow,'250','250','','');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwTabOrderEditor],
@@ -5828,8 +5828,8 @@ begin
   end;
 end;
 
-procedure TMainIDE.CreateIDEWindow(Sender: TObject; aFormName: string; var
-  AForm: TCustomForm; DoDisableAutoSizing: boolean);
+procedure TMainIDE.CreateIDEWindow(Sender: TObject; aFormName: string;
+  var AForm: TCustomForm; DoDisableAutoSizing: boolean);
 
   function ItIs(Prefix: string): boolean;
   begin
