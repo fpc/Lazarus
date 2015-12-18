@@ -894,6 +894,8 @@ function TvSVGVectorialReader.ReadSVGFontStyleWithKeyAndValue(AKey,
   AValue: string; ADestEntity: TvEntityWithPenBrushAndFont; ADestStyle: TvStyle = nil): TvSetPenBrushAndFontElements;
 var
   lLowerValue: String;
+  p: Integer;
+  fntName: String;
 begin
   Result := [];
   lLowerValue := LowerCase(AValue);
@@ -924,14 +926,21 @@ begin
   end
   else if AKey = 'font-size' then
   begin
-    if ADestEntity <> nil then ADestEntity.Font.Size := Round(StringWithUnitToFloat(AValue, sckXSize, suPX, suPT));
-    if ADestStyle <> nil then ADestStyle.Font.Size := Round(StringWithUnitToFloat(AValue, sckXSize, suPX, suPT));
+    if ADestEntity <> nil then ADestEntity.Font.Size := Round(StringWithUnitToFloat(AValue, sckXSize, suPT, suPT));
+    if ADestStyle <> nil then ADestStyle.Font.Size := Round(StringWithUnitToFloat(AValue, sckXSize, suPT, suPT));
     Result := Result + [spbfFontSize];
   end
   else if AKey = 'font-family' then
   begin
-    if ADestEntity <> nil then ADestEntity.Font.Name := AValue;
-    if ADestStyle <> nil then ADestStyle.Font.Name := AValue;
+    // Extract the font name
+    // To do: Check if font name exists in system. Use replacement fonts which
+    // may follow after the comma.
+    p := pos(',', AValue);
+    if p = 0 then
+      fntName := AValue else
+      fntName := trim(Copy(AValue, 1, p-1));
+    if ADestEntity <> nil then ADestEntity.Font.Name := fntName;
+    if ADestStyle <> nil then ADestStyle.Font.Name := fntName;
     Result := Result + [spbfFontName];
   end
   else if AKey = 'font-weight' then
@@ -1054,7 +1063,7 @@ begin
     // brush
     (AStr = 'fill') or (AStr = 'fill-opacity') or
     // font
-    (AStr = 'font-size') or (AStr = 'fill-family') or
+    (AStr = 'font-size') or (AStr = 'font-family') or
     (AStr = 'font-weight') or (AStr = 'text-anchor');
 end;
 

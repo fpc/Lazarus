@@ -3525,6 +3525,7 @@ var
   {$endif}
   lFPColor: TFPColor;
 begin
+  ADest.Font.Name := AFont.Name;
   if AFont.Size = 0 then AFont.Size := 10;
   ADest.Font.Size := Round(AmulX * AFont.Size);
   ADest.Font.Bold := AFont.Bold;
@@ -4105,13 +4106,14 @@ begin
       y2 := Max(y2, CoordY);
     end;
     DrawBrushGradient(ADest, ARenderInfo, x1, y1, x2, y2, ADestX, ADestY, AMulX, AMulY);
+    // Reset pen!
+    inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
   end;
   {$ENDIF}
 
   //
   // For other paths, draw more carefully
   //
-  ADest.Pen.Style := Pen.Style;
   PrepareForSequentialReading;
 
   for j := 0 to Len - 1 do
@@ -6760,7 +6762,6 @@ end;
 constructor TvParagraph.Create(APage: TvPage);
 begin
   inherited Create(APage);
-
 end;
 
 destructor TvParagraph.Destroy;
