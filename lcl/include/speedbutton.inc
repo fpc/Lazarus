@@ -1046,12 +1046,7 @@ function TCustomSpeedButton.DrawGlyph(ACanvas: TCanvas; const AClient: TRect;
   BiDiFlags: Longint): TRect;
 begin
   if Assigned(FGlyph) then
-  begin
-    if (AState = bsDown) or (Down = true) then
-      Result := FGlyph.Draw(ACanvas, AClient, point(AOffset.x + 1, AOffset.y + 1), AState, ATransparent, BiDiFlags)
-    else
-      Result := FGlyph.Draw(ACanvas, AClient, AOffset, AState, ATransparent, BiDiFlags);
-  end
+    Result := FGlyph.Draw(ACanvas, AClient, AOffset, AState, ATransparent, BiDiFlags)
   else
     Result := Rect(0,0,0,0);
 end;
