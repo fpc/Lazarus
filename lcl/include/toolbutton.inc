@@ -390,17 +390,7 @@ begin
 
     // draw icon
     if (ImgList<>nil) then
-    begin
-      // Down=True causes the details to be in Checked state (rather than Pushed)
-      // That caused downed checkbuttons to draw an image without offset. see bug rep #16975
-      if ThemeServices.IsPushed(Details) or ThemeServices.IsChecked(Details) then
-      begin
-        inc(IconPos.X);
-        inc(IconPos.Y);
-      end;
-      
       ImgList.Draw(Canvas, IconPos.X, IconPos.Y, ImgIndex, Enabled);
-    end;
 
     // draw text
     if (TextSize.cx > 0) then
