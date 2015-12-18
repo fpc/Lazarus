@@ -144,3 +144,4 @@ msgstr "Nincs ital kiválasztva"
 msgctxt "TMAINFORM.RGDRINKS.CAPTION"
 msgid "Please select a drink"
 msgstr "Válasszon italt!"
+
