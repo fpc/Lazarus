@@ -467,6 +467,10 @@ begin
                                     'EnvironmentOptions/CompilerFilename/Value');
     if CheckFile(AFilename,Result) then exit;
 
+    // check environment variable PP
+    AFileName := GetEnvironmentVariableUTF8('PP');
+    if CheckFile(AFilename,Result) then exit;
+
     // search fpc(.exe) in PATH
     if CheckFile('fpc'+ExeExt,Result) then exit;
 
@@ -728,6 +732,10 @@ begin
     // check the secondary options
     AFilename:=GetValueFromSecondaryConfig(EnvOptsConfFileName,
                                  'EnvironmentOptions/FPCSourceDirectory/Value');
+    if Check(AFilename,Result) then exit;
+
+    // check environment variable FPCDIR
+    AFileName := GetEnvironmentVariableUTF8('FPCDIR');
     if Check(AFilename,Result) then exit;
 
     // check history
