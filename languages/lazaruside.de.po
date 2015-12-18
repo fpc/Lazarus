@@ -4265,10 +4265,6 @@ msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
 msgid "&Address Breakpoint ..."
 msgstr "&Adresshaltepunkt ..."
 
-#: lazarusidestrconsts.lisaddsub
-msgid "Add >>"
-msgstr "Hinzuf.>>"
-
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
 msgstr "Zum Include-Suchpfad hinzufügen?"
@@ -12686,11 +12682,6 @@ msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Weiter"
 
-#: lazarusidestrconsts.lismoresub
-msgctxt "lazarusidestrconsts.lismoresub"
-msgid "More >>"
-msgstr "Mehr ..."
-
 #: lazarusidestrconsts.lismove
 msgid "Move"
 msgstr "Verschieben"
@@ -17832,6 +17823,10 @@ msgstr "URL im Wiki (die Basis-URL ist %s)"
 msgid "Usage message (-h option)"
 msgstr "Ausgabe für den Aufruf (Parameter -h)"
 
+#: lazarusidestrconsts.lisuse
+msgid "Use"
+msgstr ""
+
 #: lazarusidestrconsts.lisuseandclose
 msgid "Use and close"
 msgstr "Verwenden und schließen"
@@ -17917,11 +17912,6 @@ msgstr "Liste \"%s\" umschalten"
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
 msgstr "Heimatverzeichnis des Users"
-
-#: lazarusidestrconsts.lisusesub
-msgctxt "lazarusidestrconsts.lisusesub"
-msgid "Use >>"
-msgstr "Nutzung ..."
 
 #: lazarusidestrconsts.lisuseunit
 msgctxt "lazarusidestrconsts.lisuseunit"

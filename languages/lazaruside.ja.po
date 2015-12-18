@@ -4343,10 +4343,6 @@ msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
 msgid "&Address Breakpoint ..."
 msgstr "アドレスブレークポイント(&A) ..."
 
-#: lazarusidestrconsts.lisaddsub
-msgid "Add >>"
-msgstr ""
-
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
 msgstr ""
@@ -12863,11 +12859,6 @@ msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "その他"
 
-#: lazarusidestrconsts.lismoresub
-msgctxt "lazarusidestrconsts.lismoresub"
-msgid "More >>"
-msgstr "その他 >>"
-
 #: lazarusidestrconsts.lismove
 msgid "Move"
 msgstr ""
@@ -18320,6 +18311,10 @@ msgstr ""
 msgid "Usage message (-h option)"
 msgstr "使用メッセージ（-hオプション）"
 
+#: lazarusidestrconsts.lisuse
+msgid "Use"
+msgstr ""
+
 #: lazarusidestrconsts.lisuseandclose
 msgid "Use and close"
 msgstr "使用して閉じる"
@@ -18405,11 +18400,6 @@ msgstr "リスト \"%s\"をトグル"
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
 msgstr "ユーザーのhomeディレクトリ"
-
-#: lazarusidestrconsts.lisusesub
-msgctxt "lazarusidestrconsts.lisusesub"
-msgid "Use >>"
-msgstr "使用 >>"
 
 #: lazarusidestrconsts.lisuseunit
 msgctxt "lazarusidestrconsts.lisuseunit"

@@ -4269,10 +4269,6 @@ msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
 msgid "&Address Breakpoint ..."
 msgstr "Adresa bodu přerušení ..."
 
-#: lazarusidestrconsts.lisaddsub
-msgid "Add >>"
-msgstr "Přidat >>"
-
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
 msgstr "Přidat do cesty hledání \"include\"?"
@@ -12681,11 +12677,6 @@ msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Více"
 
-#: lazarusidestrconsts.lismoresub
-msgctxt "lazarusidestrconsts.lismoresub"
-msgid "More >>"
-msgstr "Více >>"
-
 #: lazarusidestrconsts.lismove
 msgid "Move"
 msgstr "Přesunout"
@@ -17833,6 +17824,10 @@ msgstr "URL na wiki (základní url je %s)"
 msgid "Usage message (-h option)"
 msgstr "Zpráva o použití (volba -h)"
 
+#: lazarusidestrconsts.lisuse
+msgid "Use"
+msgstr ""
+
 #: lazarusidestrconsts.lisuseandclose
 msgid "Use and close"
 msgstr "Použít a zavřít"
@@ -17918,11 +17913,6 @@ msgstr "Přepnout na seznamu \"%s\""
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
 msgstr "Uživatelský domovský adresář"
-
-#: lazarusidestrconsts.lisusesub
-msgctxt "lazarusidestrconsts.lisusesub"
-msgid "Use >>"
-msgstr "Použít >>"
 
 #: lazarusidestrconsts.lisuseunit
 msgctxt "lazarusidestrconsts.lisuseunit"

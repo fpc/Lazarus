@@ -4374,10 +4374,6 @@ msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
 msgid "&Address Breakpoint ..."
 msgstr "&Точка зупинки за Адресою ..."
 
-#: lazarusidestrconsts.lisaddsub
-msgid "Add >>"
-msgstr ""
-
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
 msgstr ""
@@ -12941,11 +12937,6 @@ msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Більше"
 
-#: lazarusidestrconsts.lismoresub
-msgctxt "lazarusidestrconsts.lismoresub"
-msgid "More >>"
-msgstr "Більше >>"
-
 #: lazarusidestrconsts.lismove
 msgid "Move"
 msgstr ""
@@ -18438,6 +18429,10 @@ msgstr ""
 msgid "Usage message (-h option)"
 msgstr "Повідомлення використання (опція -h)"
 
+#: lazarusidestrconsts.lisuse
+msgid "Use"
+msgstr ""
+
 #: lazarusidestrconsts.lisuseandclose
 msgid "Use and close"
 msgstr ""
@@ -18524,11 +18519,6 @@ msgstr ""
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
 msgstr "Домашня тека користувача"
-
-#: lazarusidestrconsts.lisusesub
-msgctxt "lazarusidestrconsts.lisusesub"
-msgid "Use >>"
-msgstr "Використати >>"
 
 #: lazarusidestrconsts.lisuseunit
 msgctxt "lazarusidestrconsts.lisuseunit"

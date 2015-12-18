@@ -4360,10 +4360,6 @@ msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
 msgid "&Address Breakpoint ..."
 msgstr "&Endereço do Ponto de Parada ..."
 
-#: lazarusidestrconsts.lisaddsub
-msgid "Add >>"
-msgstr ""
-
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
 msgstr ""
@@ -12901,11 +12897,6 @@ msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Mais"
 
-#: lazarusidestrconsts.lismoresub
-msgctxt "lazarusidestrconsts.lismoresub"
-msgid "More >>"
-msgstr "Mais >>"
-
 #: lazarusidestrconsts.lismove
 msgid "Move"
 msgstr ""
@@ -18382,6 +18373,10 @@ msgstr ""
 msgid "Usage message (-h option)"
 msgstr "Mensagem forma de uso (opção -h)"
 
+#: lazarusidestrconsts.lisuse
+msgid "Use"
+msgstr ""
+
 #: lazarusidestrconsts.lisuseandclose
 msgid "Use and close"
 msgstr "Usar e fechar"
@@ -18467,11 +18462,6 @@ msgstr "Alternar na lista \"%s\""
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
 msgstr "Diretório padrão do usuário"
-
-#: lazarusidestrconsts.lisusesub
-msgctxt "lazarusidestrconsts.lisusesub"
-msgid "Use >>"
-msgstr "Usar >>"
 
 #: lazarusidestrconsts.lisuseunit
 msgctxt "lazarusidestrconsts.lisuseunit"

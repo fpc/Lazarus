@@ -4376,10 +4376,6 @@ msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
 msgid "&Address Breakpoint ..."
 msgstr "&Adreso stabdos taškas…"
 
-#: lazarusidestrconsts.lisaddsub
-msgid "Add >>"
-msgstr ""
-
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
 msgstr ""
@@ -12954,11 +12950,6 @@ msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Daugiau"
 
-#: lazarusidestrconsts.lismoresub
-msgctxt "lazarusidestrconsts.lismoresub"
-msgid "More >>"
-msgstr "Daugiau >>"
-
 #: lazarusidestrconsts.lismove
 msgid "Move"
 msgstr ""
@@ -18465,6 +18456,10 @@ msgstr ""
 msgid "Usage message (-h option)"
 msgstr "Pranešimas apie naudojimą (-h parinktis)"
 
+#: lazarusidestrconsts.lisuse
+msgid "Use"
+msgstr ""
+
 #: lazarusidestrconsts.lisuseandclose
 msgid "Use and close"
 msgstr ""
@@ -18551,11 +18546,6 @@ msgstr ""
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
 msgstr "Naudotojo pradžios aplankas"
-
-#: lazarusidestrconsts.lisusesub
-msgctxt "lazarusidestrconsts.lisusesub"
-msgid "Use >>"
-msgstr "Naudoti >>"
 
 #: lazarusidestrconsts.lisuseunit
 msgctxt "lazarusidestrconsts.lisuseunit"

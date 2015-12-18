@@ -4227,10 +4227,6 @@ msgstr "Osoite:"
 msgid "&Address Breakpoint ..."
 msgstr "&Osoite-keskeytyskohta ..."
 
-#: lazarusidestrconsts.lisaddsub
-msgid "Add >>"
-msgstr "Lisää >>"
-
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
 msgstr "Lisätäänkö include-hakupolkuun?"
@@ -12577,11 +12573,6 @@ msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Lisää"
 
-#: lazarusidestrconsts.lismoresub
-msgctxt "lazarusidestrconsts.lismoresub"
-msgid "More >>"
-msgstr "Muut >>"
-
 #: lazarusidestrconsts.lismove
 msgid "Move"
 msgstr "Siirrä"
@@ -17699,6 +17690,10 @@ msgstr ""
 msgid "Usage message (-h option)"
 msgstr "Käyttöopastus (-h valinta)"
 
+#: lazarusidestrconsts.lisuse
+msgid "Use"
+msgstr ""
+
 #: lazarusidestrconsts.lisuseandclose
 msgid "Use and close"
 msgstr "Käytä ja sulje"
@@ -17784,11 +17779,6 @@ msgstr "Vaihda luettelosta \"%s\""
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
 msgstr "Käyttäjän kotihakemisto"
-
-#: lazarusidestrconsts.lisusesub
-msgctxt "lazarusidestrconsts.lisusesub"
-msgid "Use >>"
-msgstr "Käytä >>"
 
 #: lazarusidestrconsts.lisuseunit
 msgid "Add Unit to Uses Section"

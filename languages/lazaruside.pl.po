@@ -4514,10 +4514,6 @@ msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
 msgid "&Address Breakpoint ..."
 msgstr "Pułapka adresu ..."
 
-#: lazarusidestrconsts.lisaddsub
-msgid "Add >>"
-msgstr ""
-
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
 msgstr ""
@@ -13249,13 +13245,6 @@ msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Więcej"
 
-#: lazarusidestrconsts.lismoresub
-#, fuzzy
-#| msgid "More ..."
-msgctxt "lazarusidestrconsts.lismoresub"
-msgid "More >>"
-msgstr "Więcej ..."
-
 #: lazarusidestrconsts.lismove
 msgid "Move"
 msgstr ""
@@ -18670,6 +18659,10 @@ msgstr ""
 msgid "Usage message (-h option)"
 msgstr ""
 
+#: lazarusidestrconsts.lisuse
+msgid "Use"
+msgstr ""
+
 #: lazarusidestrconsts.lisuseandclose
 msgid "Use and close"
 msgstr ""
@@ -18756,11 +18749,6 @@ msgstr ""
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
 msgstr "Katalog domowy użytkownika"
-
-#: lazarusidestrconsts.lisusesub
-msgctxt "lazarusidestrconsts.lisusesub"
-msgid "Use >>"
-msgstr "Zastosuj >"
 
 #: lazarusidestrconsts.lisuseunit
 msgctxt "lazarusidestrconsts.lisuseunit"

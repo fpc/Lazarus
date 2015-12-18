@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-12-11 01:54+0300\n"
+"PO-Revision-Date: 2015-12-19 02:47+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -4263,10 +4263,6 @@ msgstr "Адрес:"
 msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
 msgid "&Address Breakpoint ..."
 msgstr "Точка останова по &адресу ..."
-
-#: lazarusidestrconsts.lisaddsub
-msgid "Add >>"
-msgstr "Добавить >>"
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
@@ -12691,11 +12687,6 @@ msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Подробнее"
 
-#: lazarusidestrconsts.lismoresub
-msgctxt "lazarusidestrconsts.lismoresub"
-msgid "More >>"
-msgstr "Прочие >>"
-
 #: lazarusidestrconsts.lismove
 msgid "Move"
 msgstr "Переместить"
@@ -17834,6 +17825,10 @@ msgstr "Адрес страницы Wiki (базовый - %s)"
 msgid "Usage message (-h option)"
 msgstr "Сообщение со справкой (параметр -h)"
 
+#: lazarusidestrconsts.lisuse
+msgid "Use"
+msgstr "Использовать"
+
 #: lazarusidestrconsts.lisuseandclose
 msgid "Use and close"
 msgstr "Применить и закрыть"
@@ -17919,11 +17914,6 @@ msgstr "Переключить для списка \"%s\""
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
 msgstr "Домашний каталог пользователя"
-
-#: lazarusidestrconsts.lisusesub
-msgctxt "lazarusidestrconsts.lisusesub"
-msgid "Use >>"
-msgstr "Использовать >>"
 
 #: lazarusidestrconsts.lisuseunit
 msgctxt "lazarusidestrconsts.lisuseunit"
@@ -20239,4 +20229,3 @@ msgstr "Только чтение"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Сведения о версии"
-

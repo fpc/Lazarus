@@ -4263,10 +4263,6 @@ msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
 msgid "&Address Breakpoint ..."
 msgstr "Töréspont adott címen ..."
 
-#: lazarusidestrconsts.lisaddsub
-msgid "Add >>"
-msgstr "Hozzáadás >>"
-
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
 msgstr "Hozzáadás az include keresési útvonalakhoz?"
@@ -12691,11 +12687,6 @@ msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Tovább"
 
-#: lazarusidestrconsts.lismoresub
-msgctxt "lazarusidestrconsts.lismoresub"
-msgid "More >>"
-msgstr "Továbbiak >>"
-
 #: lazarusidestrconsts.lismove
 msgid "Move"
 msgstr "Áthelyezés"
@@ -17835,6 +17826,10 @@ msgstr "URL a wiki-n (az alap url: %s)"
 msgid "Usage message (-h option)"
 msgstr "Használati útmutató (-h kapcsoló)"
 
+#: lazarusidestrconsts.lisuse
+msgid "Use"
+msgstr ""
+
 #: lazarusidestrconsts.lisuseandclose
 msgid "Use and close"
 msgstr "Használat és bezárás"
@@ -17920,11 +17915,6 @@ msgstr "Váltás a listán: \"%s\""
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
 msgstr "Felhasználó saját könyvtára"
-
-#: lazarusidestrconsts.lisusesub
-msgctxt "lazarusidestrconsts.lisusesub"
-msgid "Use >>"
-msgstr "Használat >>"
 
 #: lazarusidestrconsts.lisuseunit
 msgctxt "lazarusidestrconsts.lisuseunit"
