@@ -557,6 +557,7 @@ type
     procedure SetAutoScroll(Value: Boolean); override;
     procedure DoAddActionList(List: TCustomActionList);
     procedure DoRemoveActionList(List: TCustomActionList);
+    procedure ProcessResource;virtual;
   protected
     // drag and dock
     procedure BeginAutoDrag; override;
