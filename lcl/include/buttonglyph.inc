@@ -93,29 +93,19 @@ begin
   AEffect := gdeNormal;
   case State of
     bsDisabled:
-     begin
-       if NumGlyphs > 1 then
-         AStoredState := State
-       else
-         AEffect := gdeDisabled;
-      end;
-    bsDown:
-      begin
-        if NumGlyphs > 2 then
-          AStoredState := State
-        else
-          AEffect := gdeShadowed;
-      end;
-    bsExclusive:
-      if NumGlyphs > 3 then
+      if NumGlyphs > 1 then
         AStoredState := State
       else
-        AEffect := gdeNormal;
+        AEffect := gdeDisabled;
+    bsDown:
+      if NumGlyphs > 2 then
+        AStoredState := State;
+    bsExclusive:
+      if NumGlyphs > 3 then
+        AStoredState := State;
     bsHot:
       if NumGlyphs > 4 then
         AStoredState := State
-      else
-        AEffect := gdeHighlighted;
   end;
   AIndex := FImageIndexes[AStoredState];
 end;
