@@ -1906,14 +1906,17 @@ begin
 
   SaveBitBtn    := CreateToolButton('SaveBitBtn', lisMenuSave, lisPckEditSavePackage, 'laz_save', @SaveBitBtnClick);
   CompileBitBtn := CreateToolButton('CompileBitBtn', lisCompile, lisPckEditCompilePackage, 'pkg_compile', @CompileBitBtnClick);
-  UseBitBtn     := CreateToolButton('UseBitBtn', lisUseSub, lisClickToSeeTheChoices, 'pkg_install', nil);
+  UseBitBtn     := CreateToolButton('UseBitBtn', lisUse, lisClickToSeeTheChoices, 'pkg_install', nil);
+  UseBitBtn.Style:=tbsButtonDrop;
   CreateDivider;
-  AddBitBtn     := CreateToolButton('AddBitBtn', lisAddSub, lisClickToSeeTheChoices, 'laz_add', nil);
+  AddBitBtn     := CreateToolButton('AddBitBtn', lisAdd, lisClickToSeeTheChoices, 'laz_add', nil);
+  AddBitBtn.Style:=tbsButtonDrop;
   RemoveBitBtn  := CreateToolButton('RemoveBitBtn', lisRemove, lisPckEditRemoveSelectedItem, 'laz_delete', @RemoveBitBtnClick);
   CreateDivider;
   OptionsBitBtn := CreateToolButton('OptionsBitBtn', lisOptions, lisPckEditEditGeneralOptions, 'pkg_properties', @OptionsBitBtnClick);
   HelpBitBtn    := CreateToolButton('HelpBitBtn', GetButtonCaption(idButtonHelp), lisMenuOnlineHelp, 'menu_help', @HelpBitBtnClick);
-  MoreBitBtn    := CreateToolButton('MoreBitBtn', lisMoreSub, lisPkgEdMoreFunctionsForThePackage, '', nil);
+  MoreBitBtn    := CreateToolButton('MoreBitBtn', lisMore, lisPkgEdMoreFunctionsForThePackage, '', nil);
+  MoreBitBtn.Style:=tbsButtonDrop;
 
   UseBitBtn.DropdownMenu := UsePopupMenu;
   AddBitBtn.DropdownMenu := AddPopupMenu;

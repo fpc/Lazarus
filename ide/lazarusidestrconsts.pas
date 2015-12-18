@@ -126,7 +126,6 @@ resourcestring
   lisLess = 'Less';
   lisMore = 'More';
   lisDlgMore = 'More ...';
-  lisMoreSub = 'More >>';
   lisDefault = 'Default';
   lisClone = 'Clone';
   lisExport = 'Export';
@@ -4459,8 +4458,7 @@ resourcestring
   lisPckEditAddFilesFromFileSystem = 'Add Files from File System';
   lisPckEditAddOtherItems = 'Add other items';
   lisPckEditRemoveSelectedItem = 'Remove selected item';
-  lisUseSub = 'Use >>';
-  lisAddSub = 'Add >>';
+  lisUse = 'Use';
   lisClickToSeeTheChoices = 'Click to see the choices';
   lisPckEditEditGeneralOptions = 'Edit general options';
   lisPkgEdMoreFunctionsForThePackage = 'More functions for the package';

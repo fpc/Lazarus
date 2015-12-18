@@ -997,7 +997,8 @@ begin
   ToolBar.Images            := IDEImages.Images_16;
   FilterEdit.OnGetImageIndex:=@OnTreeViewGetImageIndex;
 
-  AddBitBtn     := CreateToolButton('AddBitBtn', lisAddSub, lisClickToSeeTheChoices, 'laz_add', nil);
+  AddBitBtn     := CreateToolButton('AddBitBtn', lisAdd, lisClickToSeeTheChoices, 'laz_add', nil);
+  AddBitBtn.Style:=tbsButtonDrop;
   RemoveBitBtn  := CreateToolButton('RemoveBitBtn', lisRemove, lisPckEditRemoveSelectedItem, 'laz_delete', @RemoveBitBtnClick);
   CreateDivider;
   OptionsBitBtn := CreateToolButton('OptionsBitBtn', lisOptions, lisPckEditEditGeneralOptions, 'menu_environment_options', @OptionsBitBtnClick);
