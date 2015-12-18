@@ -100,9 +100,9 @@ begin
 
   FLastDropDownTick := 0;
   if (Button = mbLeft) and Enabled and
-     (Style in [tbsButton, tbsDropDown]) then
+     (Style in [tbsButton, tbsDropDown, tbsButtonDrop]) then
   begin
-    if ((Style = tbsButton) and (tbfPressed in NewFlags) or
+    if ((Style in [tbsButton, tbsButtonDrop]) and (tbfPressed in NewFlags) or
         (Style = tbsDropDown) and (tbfArrowPressed in NewFlags)) and
        CheckMenuDropdown then
     begin
@@ -147,7 +147,7 @@ begin
       if not PtInRect(Rect(0,0,Width,Height), Pt) then
         SetMouseInControl(false);
     end;
-    if (Style in [tbsButton, tbsDropDown]) then
+    if (Style in [tbsButton, tbsDropDown, tbsButtonDrop]) then
       Down := False;
     //button is pressed, but DropdownMenu was not shown
     if FMouseInControl and (FLastDropDownTick = 0) and Pressed then
@@ -181,11 +181,22 @@ procedure TToolButton.Paint;
     Details: TThemedElementDetails;
     ArrowState: TThemedToolBar;
   begin
-    ArrowState := TThemedToolBar(ord(ttbSplitButtonDropDownNormal) + OwnerDetails.State - 1);
-    if (tbfArrowPressed in FToolButtonFlags) and FMouseInControl and Enabled then
-      ArrowState := ttbSplitButtonDropDownPressed;
+    if Style = tbsButtonDrop then
+    begin
+      if Enabled then
+        ArrowState := ttbSplitButtonDropDownNormal
+      else
+        ArrowState := ttbSplitButtonDropDownDisabled;
+    end else
+    begin
+      ArrowState := TThemedToolBar(ord(ttbSplitButtonDropDownNormal) + OwnerDetails.State - 1);
+      if (tbfArrowPressed in FToolButtonFlags) and FMouseInControl and Enabled then
+        ArrowState := ttbSplitButtonDropDownPressed;
+    end;
     Details := ThemeServices.GetElementDetails(ArrowState);
-    if ((FToolBar <> nil) and not FToolBar.Flat) and (Details.State in [1, 4]) then
+    if (FToolBar <> nil) and (not FToolBar.Flat)
+    and (Style <> tbsButtonDrop) and (Details.State in [1, 4])
+    then
       Details.State := 2;
     ThemeServices.DrawElement(Canvas.Handle, Details, DropDownButtonRect);
   end;
@@ -255,6 +266,7 @@ procedure TToolButton.Paint;
 var
   PaintRect: TRect;
   ButtonRect: TRect;
+  MainBtnRect: TRect;
   DropDownButtonRect: TRect;
   TextSize: TSize;
   TextPos: TPoint;
@@ -269,13 +281,14 @@ begin
     PaintRect := ClientRect; // the whole paint area
 
     // calculate button area(s)
+    MainBtnRect := PaintRect;
     ButtonRect := PaintRect;
     Details := GetButtonDrawDetail;
 
     // OnDrawItem
     if Assigned(FToolBar.OnPaintButton) then
     begin
-      if (Style in [tbsButton, tbsDropDown, tbsCheck]) then
+      if (Style in [tbsButton, tbsDropDown, tbsButtonDrop, tbsCheck]) then
       begin
         TempDetails := Details;
         if ((FToolBar <> nil) and not FToolBar.Flat) and (TempDetails.State in [1, 4]) then
@@ -286,11 +299,15 @@ begin
       exit;
     end;
 
-    if Style = tbsDropDown then
+    if Style in [tbsDropDown, tbsButtonDrop] then
     begin
       DropDownButtonRect := ButtonRect;
       DropDownButtonRect.Left := Max(0, DropDownButtonRect.Right-FToolBar.FDropDownWidth);
-      ButtonRect.Right := DropDownButtonRect.Left;
+      MainBtnRect.Right := DropDownButtonRect.Left;
+      if Style = tbsDropDown then
+        ButtonRect := MainBtnRect
+      else
+        Inc(MainBtnRect.Right, cDefButtonDropDecArrowWidth); // tbsButtonDrop ignore extra space between button and arrow
     end
     else
       DropDownButtonRect := Rect(0,0,0,0);
@@ -298,7 +315,7 @@ begin
     // calculate text size
     TextSize.cx:=0;
     TextSize.cy:=0;
-    if (Style in [tbsButton, tbsDropDown, tbsCheck]) and (FToolBar.ShowCaptions) and
+    if (Style in [tbsButton, tbsDropDown, tbsButtonDrop, tbsCheck]) and (FToolBar.ShowCaptions) and
       ((FToolbar.List and ShowCaption) or not FToolBar.List) and //Allow hide caption only in list mode
       (Caption <> '') then
       TextSize := GetTextSize;
@@ -323,34 +340,34 @@ begin
         if FToolBar.List then
         begin
           // icon left of text
-          IconPos.X:=(ButtonRect.Left+ButtonRect.Right-IconSize.x-TextSize.cx-2) div 2;
-          IconPos.Y:=(ButtonRect.Top+ButtonRect.Bottom-IconSize.y) div 2;
+          IconPos.X:=(MainBtnRect.Left+MainBtnRect.Right-IconSize.x-TextSize.cx-2) div 2;
+          IconPos.Y:=(MainBtnRect.Top+MainBtnRect.Bottom-IconSize.y) div 2;
           TextPos.X:=IconPos.X+IconSize.X+2;
-          TextPos.Y:=(ButtonRect.Top+ButtonRect.Bottom-TextSize.cy) div 2;
+          TextPos.Y:=(MainBtnRect.Top+MainBtnRect.Bottom-TextSize.cy) div 2;
         end else
         begin
           // icon above text
-          IconPos.X:=(ButtonRect.Left+ButtonRect.Right-IconSize.x) div 2;
-          IconPos.Y:=(ButtonRect.Top+ButtonRect.Bottom-IconSize.y-TextSize.cy-2) div 2;
-          TextPos.X:=(ButtonRect.Left+ButtonRect.Right-TextSize.cx) div 2;
+          IconPos.X:=(MainBtnRect.Left+MainBtnRect.Right-IconSize.x) div 2;
+          IconPos.Y:=(MainBtnRect.Top+MainBtnRect.Bottom-IconSize.y-TextSize.cy-2) div 2;
+          TextPos.X:=(MainBtnRect.Left+MainBtnRect.Right-TextSize.cx) div 2;
           TextPos.Y:=IconPos.Y+IconSize.Y+2;
         end;
       end else
       begin
         // only text
-        TextPos.X:=(ButtonRect.Left+ButtonRect.Right-TextSize.cx) div 2;
-        TextPos.Y:=(ButtonRect.Top+ButtonRect.Bottom-TextSize.cy) div 2;
+        TextPos.X:=(MainBtnRect.Left+MainBtnRect.Right-TextSize.cx) div 2;
+        TextPos.Y:=(MainBtnRect.Top+MainBtnRect.Bottom-TextSize.cy) div 2;
       end;
     end else
     if IconSize.x>0 then
     begin
       // only icon
-      IconPos.X:=(ButtonRect.Left+ButtonRect.Right-IconSize.x) div 2;
-      IconPos.Y:=(ButtonRect.Top+ButtonRect.Bottom-IconSize.y) div 2;
+      IconPos.X:=(MainBtnRect.Left+MainBtnRect.Right-IconSize.x) div 2;
+      IconPos.Y:=(MainBtnRect.Top+MainBtnRect.Bottom-IconSize.y) div 2;
     end;
 
     // draw button
-    if (Style in [tbsButton, tbsDropDown, tbsCheck]) then
+    if (Style in [tbsButton, tbsDropDown, tbsButtonDrop, tbsCheck]) then
     begin
       // non-Flat toolbars come from old windows where you was able to set how
       // to draw it by adjusting toolbar window options
@@ -385,7 +402,7 @@ begin
     end;
 
     // draw dropdown button
-    if Style in [tbsDropDown] then
+    if Style in [tbsDropDown, tbsButtonDrop] then
       DrawDropDownArrow(Details, DropDownButtonRect);
 
     // draw icon
@@ -395,8 +412,8 @@ begin
     // draw text
     if (TextSize.cx > 0) then
     begin
-      ButtonRect.Left := TextPos.X;
-      ButtonRect.Top := TextPos.Y;
+      MainBtnRect.Left := TextPos.X;
+      MainBtnRect.Top := TextPos.Y;
       // if State is disabled then change to PushButtonDisabled since
       // ToolButtonDisabled text looks not disabled though windows native toolbutton
       // text drawn with disabled look. For other widgetsets there is no difference which
@@ -404,7 +421,7 @@ begin
       TempDetails := Details;
       if TempDetails.State = 4 then
         TempDetails := ThemeServices.GetElementDetails(tbPushButtonDisabled);
-      ThemeServices.DrawText(Canvas, TempDetails, Caption, ButtonRect,
+      ThemeServices.DrawText(Canvas, TempDetails, Caption, MainBtnRect,
         DT_LEFT or DT_TOP, 0);
     end;
 
@@ -823,7 +840,7 @@ begin
   TheIndex := -1;
   if (ImageIndex < 0) or (FToolBar = nil) then Exit;
   
-  if Style in [tbsButton, tbsDropDown, tbsCheck] then
+  if Style in [tbsButton, tbsDropDown, tbsButtonDrop, tbsCheck] then
   begin
     TheIndex := ImageIndex;
     if Enabled and FMouseInControl then
@@ -927,13 +944,13 @@ begin
   if AParent is TToolBar then
   begin
     if not TToolBar(AParent).IsVertical then begin
-      if Style in [tbsButton,tbsDropDown,tbsCheck] then
+      if Style in [tbsButton,tbsDropDown,tbsButtonDrop,tbsCheck] then
         NewWidth := TToolBar(AParent).ButtonWidth
       else
         NewWidth := Width;
       NewHeight := TToolBar(AParent).ButtonHeight;
     end else begin
-      if Style in [tbsButton,tbsDropDown,tbsCheck] then
+      if Style in [tbsButton,tbsDropDown,tbsButtonDrop,tbsCheck] then
         NewHeight := TToolBar(AParent).ButtonHeight
       else
         NewHeight := Height;
@@ -1019,7 +1036,7 @@ begin
     // calculate text size
     TextSize.cx := 0;
     TextSize.cy := 0;
-    if (Style in [tbsButton, tbsDropDown, tbsCheck]) and (FToolBar.ShowCaptions) and
+    if (Style in [tbsButton, tbsDropDown, tbsButtonDrop, tbsCheck]) and (FToolBar.ShowCaptions) and
        //Allow hide caption only in list mode
        ((FToolBar.List and ShowCaption) or not FToolBar.List) then
     begin
@@ -1035,7 +1052,7 @@ begin
 
     // calculate icon size
     IconSize := Point(0, 0);
-    if (Style in [tbsButton, tbsDropDown, tbsCheck]) then
+    if (Style in [tbsButton, tbsDropDown, tbsButtonDrop, tbsCheck]) then
     begin
       GetCurrentIcon(ImgList, ImgIndex);
       if Assigned(ImgList) then
@@ -1079,14 +1096,16 @@ begin
     //DebugLn(['TToolButton.CalculatePreferredSize Preferred=',PreferredWidth,',',PreferredHeight,' Icon=',IconPos.Y,'+',IconSize.Y,' Text=',TextPos.Y,'+',TextSize.cy]);
 
     // add button frame
-    if (Style in [tbsButton, tbsDropDown, tbsCheck]) then
+    if (Style in [tbsButton, tbsDropDown, tbsButtonDrop, tbsCheck]) then
     begin
       inc(PreferredWidth, 4);
       inc(PreferredHeight, 4);
       PreferredWidth := Max(PreferredWidth, FToolBar.ButtonWidth);
       PreferredHeight := Max(PreferredHeight, FToolBar.ButtonHeight);
-      if Style = tbsDropDown then
-        inc(PreferredWidth, FToolBar.FDropDownWidth);
+      case Style of
+        tbsDropDown: inc(PreferredWidth, FToolBar.FDropDownWidth);
+        tbsButtonDrop:  inc(PreferredWidth, FToolBar.FDropDownWidth-cDefButtonDropDecArrowWidth);
+      end;
     end
     else
     if Style = tbsDivider then

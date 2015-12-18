@@ -1949,7 +1949,8 @@ type
     tbsCheck,     // check item (click to toggle state, can be grouped)
     tbsDropDown,  // button with dropdown button to show a popup menu
     tbsSeparator, // space holder
-    tbsDivider    // space holder with line
+    tbsDivider,   // space holder with line
+    tbsButtonDrop // button with arrow (not separated from each other)
   );
     
   TToolButtonFlag =
@@ -2016,6 +2017,7 @@ type
   protected const
     cDefSeparatorWidth = 8;
     cDefDividerWidth = 5;
+    cDefButtonDropDecArrowWidth = 2;
   protected
     FToolBar: TToolBar;
     class procedure WSRegisterClass; override;
