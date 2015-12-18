@@ -659,6 +659,8 @@ type
     procedure ShowDesignerForm(AForm: TCustomForm);
     procedure DoViewAnchorEditor(State: TIWGetFormState = iwgfShowOnTop);
     procedure DoViewTabOrderEditor(State: TIWGetFormState = iwgfShowOnTop);
+    // ProcedureList
+    procedure DoViewProcedureList(State: TIWGetFormState = iwgfShowOnTop);
     // editor and environment options
     procedure LoadDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
     procedure SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
@@ -919,8 +921,7 @@ type
 
     // message view
     function GetSelectedCompilerMessage: TMessageLine; override;
-    function DoJumpToCompilerMessage(FocusEditor: boolean; Msg: TMessageLine = nil
-      ): boolean; override;
+    function DoJumpToCompilerMessage(FocusEditor: boolean; Msg: TMessageLine = nil): boolean; override;
     procedure DoJumpToNextCompilerMessage(aMinUrgency: TMessageLineUrgency; DirectionDown: boolean); override;
     procedure DoShowMessagesView(BringToFront: boolean = true); override;
 
@@ -3005,7 +3006,7 @@ end;
 
 procedure TMainIDE.mnuSearchProcedureList(Sender: TObject);
 begin
-  ProcedureList.ExecuteProcedureList(Sender);
+  DoViewProcedureList;
 end;
 
 procedure TMainIDE.mnuSetFreeBookmark(Sender: TObject);
@@ -3515,7 +3516,7 @@ procedure TMainIDE.DoViewAnchorEditor(State: TIWGetFormState);
 begin
   if AnchorDesigner=nil then
     IDEWindowCreators.CreateForm(AnchorDesigner,TAnchorDesigner,
-       State=iwgfDisabled,LazarusIDE.OwningComponent)
+       State=iwgfDisabled, LazarusIDE.OwningComponent)
   else if State=iwgfDisabled then
     AnchorDesigner.DisableAlign;
   if State>=iwgfShow then
@@ -3526,11 +3527,22 @@ procedure TMainIDE.DoViewTabOrderEditor(State: TIWGetFormState);
 begin
   if TabOrderDialog=nil then
     IDEWindowCreators.CreateForm(TabOrderDialog,TTabOrderDialog,
-       State=iwgfDisabled,LazarusIDE.OwningComponent)
+       State=iwgfDisabled, LazarusIDE.OwningComponent)
   else if State=iwgfDisabled then
     TabOrderDialog.DisableAlign;
   if State>=iwgfShow then
     IDEWindowCreators.ShowForm(TabOrderDialog,State=iwgfShowOnTop);
+end;
+
+procedure TMainIDE.DoViewProcedureList(State: TIWGetFormState);
+begin
+  if ProcListView=nil then
+    IDEWindowCreators.CreateForm(ProcListView,TProcedureListForm,
+       State=iwgfDisabled, LazarusIDE.OwningComponent)
+  else if State=iwgfDisabled then
+    ProcListView.DisableAlign;
+  if State>=iwgfShow then
+    IDEWindowCreators.ShowForm(ProcListView, State=iwgfShowOnTop);
 end;
 
 procedure TMainIDE.SetToolStatus(const AValue: TIDEToolStatus);
