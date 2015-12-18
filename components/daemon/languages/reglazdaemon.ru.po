@@ -10,7 +10,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: reglazdaemon.sdaemonappdescr
-#| msgid "Daemon (service) application are non-gui applications that run in the background."
 msgid "Daemon (service) application is a non-gui application that runs in the background."
 msgstr "Приложение-демон (служба) является приложением без графического интерфейса пользователя, работающим в фоновом режиме."
 
