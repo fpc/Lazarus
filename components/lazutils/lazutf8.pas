@@ -898,17 +898,18 @@ procedure UTF8Delete(var s: Utf8String; StartCharIndex, CharCount: PtrInt);
 var
   tmp: String;
 begin
-  {$IFDEF ACP_RTL}
+  tmp := RawByteString(s);
+  {.$IFDEF ACP_RTL}
   { change code page without converting the data }
   SetCodePage(RawByteString(tmp), CP_UTF8, False);
-  {$ENDIF}
-  tmp := s;
+  {.$ENDIF}
   { keep refcount to 1 if it was 1, to avoid unnecessary copies }
   s := '';
   UTF8Delete(tmp,StartCharIndex,CharCount);
   { same as above }
-  s := tmp;
+  s := RawByteString(tmp);
   tmp := '';
+  SetCodePage(RawByteString(s), CP_UTF8, False);
 end;
 {$ENDIF NO_ACP_RTL}
 
