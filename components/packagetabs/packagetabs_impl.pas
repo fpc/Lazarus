@@ -33,7 +33,7 @@ uses
   Classes, SysUtils, Types, Contnrs, Controls, SrcEditorIntf, StdCtrls, Buttons,
   ComCtrls, Forms, LazFileUtils, PackageIntf, Graphics, Menus, LazIDEIntf,
   ExtCtrls, IDEImagesIntf, Laz2_XMLCfg, IDECommands, LCLIntf,
-  IDEOptionsIntf, packagetabsstr, Clipbrd;
+  IDEOptionsIntf, packagetabsstr, Clipbrd, LCLProc;
 
 type
   TPackageTabButton = class(TSpeedButton)
@@ -81,14 +81,26 @@ type
     constructor Create(aOwner: TComponent); override;
   end;
 
-  TPackageItem = class
+  TGroupType = (gtProject, gtPackage, gtOther);
+  TGroupItem = class
   public
+    &Type: TGroupType;
+    Title: string;
     Package: TIDEPackage;
     GroupTabLabel: TGroupTabLabelClass;
     Files: TStringList;
 
-    constructor Create(APackage: TIDEPackage);
+    constructor Create(AType: TGroupType; const ATitle: string; APackage: TIDEPackage);
     destructor Destroy; override;
+  end;
+
+  TGroupList = class(TObjectList)
+  private
+    function GetPackage(Index: Integer): TGroupItem;
+  public
+    function Find(AType: TGroupType; APackage: TIDEPackage; out Index: Integer): Boolean;
+    property Items[Index: Integer]: TGroupItem read GetPackage;
+    function Add(AItem: TGroupItem): Integer;
   end;
 
   TMenuItemCommand = class(TMenuItem)
@@ -210,6 +222,9 @@ type
       ANoteBook: TPageControl):integer;
   end;
 
+function CompareGroupItem(const AGroupItem: TGroupItem; AType: TGroupType; APackage: TIDEPackage): Integer;
+function CompareGroupItem(const AGroupItem1, AGroupItem2: TGroupItem): Integer;
+
 procedure Register;
 
 implementation
@@ -217,9 +232,64 @@ implementation
 var
   xPackageTabPanels: TPackageTabPanels = nil;
 
+function CompareGroupItem(const AGroupItem: TGroupItem; AType: TGroupType;
+  APackage: TIDEPackage): Integer;
+begin
+  Result := Ord(AType)-Ord(AGroupItem.&Type);
+  if Result<>0 then
+    Exit;
+  if AType = gtPackage then
+    Result := ComparePointers(AGroupItem.Package, APackage);
+end;
+
+function CompareGroupItem(const AGroupItem1, AGroupItem2: TGroupItem): Integer;
+begin
+  Result := CompareGroupItem(AGroupItem1, AGroupItem2.&Type, AGroupItem2.Package);
+end;
+
 procedure Register;
 begin
   xPackageTabPanels := TPackageTabPanels.Create(nil);
+end;
+
+{ TGroupList }
+
+function TGroupList.Add(AItem: TGroupItem): Integer;
+begin
+  if Find(AItem.&Type,AItem.Package, Result) then
+    raise Exception.Create('TGroupList.Add: the same item is already in the list.');
+  Self.Insert(Result,AItem);
+end;
+
+function TGroupList.GetPackage(Index: Integer): TGroupItem;
+begin
+  Result := TGroupItem(inherited GetItem(Index));
+end;
+
+function TGroupList.Find(AType: TGroupType; APackage: TIDEPackage; out
+  Index: Integer): Boolean;
+var
+  L, R, I, xCompareRes: Integer;
+begin
+  Result := False;
+  L := 0;
+  R := Count-1;
+  while L<=R do
+  begin
+    I := L+(R-L) div 2;
+    xCompareRes := CompareGroupItem(Items[I], AType, APackage);
+    if (xCompareRes>0) then
+      L := I+1
+    else begin
+      R := I-1;
+      if xCompareRes=0 then
+      begin
+        Result := True;
+        L := I; // forces end of while loop
+      end;
+    end;
+  end;
+  Index := L;
 end;
 
 { TSourceEditorWindowInterfaceHelper }
@@ -479,17 +549,20 @@ begin
   Font.Style := Font.Style - [fsUnderline];
 end;
 
-{ TPackageItem }
+{ TGroupItem }
 
-constructor TPackageItem.Create(APackage: TIDEPackage);
+constructor TGroupItem.Create(AType: TGroupType; const ATitle: string;
+  APackage: TIDEPackage);
 begin
+  &Type := AType;
+  Title := ATitle;
   Package := APackage;
   Files := TStringList.Create;
   Files.Sorted := True;
   Files.Duplicates := dupAccept;
 end;
 
-destructor TPackageItem.Destroy;
+destructor TGroupItem.Destroy;
 begin
   Files.Free;
   inherited Destroy;
@@ -705,12 +778,13 @@ procedure TPackageTabPanel.RecreateToolBar;
 var
   I, L, xPkgIndex, xNewIndex, xOldIndex: Integer;
   xBtn, xActBtn: TPackageTabButton;
-  xPackages: TStringList;
+  xPackages: TGroupList;
   xPackage: TIDEPackage;
   xEditor, xOldActive: TSourceEditorInterface;
   xLbl: TGroupTabLabel;
-  xPkgItem: TPackageItem;
-  xPackageName: string;
+  xPkgItem: TGroupItem;
+  xGroupTitle: string;
+  xGroupType: TGroupType;
 begin
   FRecreateToolBar.FLastFiles.Clear;
   FWindow.IncUpdateLock;
@@ -720,43 +794,43 @@ begin
     for I := FPanel.ControlCount-1 downto 0 do
       FPanel.Controls[I].Free;
 
-    xPackages := TStringList.Create;
+    xPackages := TGroupList.Create;
     try
-      xPackages.Sorted := True;
-      xPackages.Duplicates := dupIgnore;
-      xPackages.OwnsObjects := True;
-
       for I := 0 to FWindow.Count-1 do
       begin
         xEditor := FWindow.Items[I];
         FRecreateToolBar.FLastFiles.Add(xEditor.FileName);
         xPackage := nil;
         if xEditor.GetProjectFile.IsPartOfProject then
-          xPackageName := Low(Char)+LazarusIDE.ActiveProject.GetTitleOrName // ToDo: better sorting...
-        else
+        begin
+          xGroupType := gtProject;
+          xGroupTitle := LazarusIDE.ActiveProject.GetTitleOrName
+        end else
         begin
           PackageEditingInterface.GetPackageOfSourceEditor(xPackage, xEditor);
           if (xPackage<>nil) and (xPackage.Name<>'') then
-            xPackageName := xPackage.Name
-          else
-            xPackageName := High(Char) + sOther; // ToDo: better sorting...
+          begin
+            xGroupType := gtPackage;
+            xGroupTitle := xPackage.Name;
+          end else
+          begin
+            xGroupType := gtOther;
+            xGroupTitle := sOther;
+          end;
         end;
-        xPkgIndex := xPackages.IndexOf(xPackageName);
-        if xPkgIndex < 0 then
-          xPkgIndex := xPackages.AddObject(xPackageName, TPackageItem.Create(xPackage));
-        TPackageItem(xPackages.Objects[xPkgIndex]).Files.AddObject(xEditor.PageCaption, xEditor);
+        if not xPackages.Find(xGroupType, xPackage, xPkgIndex) then
+          xPkgIndex := xPackages.Add(TGroupItem.Create(xGroupType, xGroupTitle, xPackage));
+        xPackages.Items[xPkgIndex].Files.AddObject(xEditor.PageCaption, xEditor);
       end;
 
       xNewIndex := 0;
       for I := 0 to xPackages.Count-1 do
       begin
-        xPkgItem := TPackageItem(xPackages.Objects[I]);
+        xPkgItem := xPackages.Items[I];
 
-        xPackageName := xPackages[I];
-        case xPackageName[1] of
-          Low(Char):
+        case xPkgItem.&Type of
+          gtProject:
           begin
-            Delete(xPackageName, 1, 1);
             xLbl := TProjectTabLabel.Create(Self);
             if LazarusIDE.ActiveProject <> nil then
             begin
@@ -764,18 +838,19 @@ begin
               xLbl.ShowHint := True;
             end;
           end;
-          High(Char):
+          gtOther:
           begin
-            Delete(xPackageName, 1, 1);
             xLbl := TOtherTabLabel.Create(Self);
           end;
-        else
-          xLbl := TPackageTabLabel.Create(Self);
-          TPackageTabLabel(xLbl).Package := xPkgItem.Package;
-          xLbl.Hint := xPkgItem.Package.Filename;
-          xLbl.ShowHint := True;
+          gtPackage:
+          begin
+            xLbl := TPackageTabLabel.Create(Self);
+            TPackageTabLabel(xLbl).Package := xPkgItem.Package;
+            xLbl.Hint := xPkgItem.Package.Filename;
+            xLbl.ShowHint := True;
+          end;
         end;
-        xLbl.Caption := xPackageName;
+        xLbl.Caption := xPkgItem.Title;
         xLbl.Parent := FPanel;
         xLbl.PopupMenu := FTabLabelMenu;
         xLbl.Height := TPackageTabButton.GetControlClassDefaultSize.cy;
@@ -811,7 +886,7 @@ begin
           xBtn.Down := xEditor = xOldActive;
           if xBtn.Down then
             xActBtn := xBtn;
-          xBtn.IsOtherFile := xPackages[I][1] = High(Char); // ToDo: do it better...
+          xBtn.IsOtherFile := xPkgItem.&Type = gtOther;
         end;
       end;
     finally
