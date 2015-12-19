@@ -148,3 +148,4 @@ msgstr "Eredmények XML-ként"
 #: guitestrunner.stshtree
 msgid "Testcase tree"
 msgstr "Teszt-esetek fája"
+

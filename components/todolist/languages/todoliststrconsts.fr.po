@@ -9,11 +9,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Poedit 1.8.6\n"
 
 #: todoliststrconsts.dlgfiltercsv
 msgid "CSV files"
-msgstr ""
+msgstr "Fichier CSV"
 
 #: todoliststrconsts.dlgfropts
 msgid "Options"

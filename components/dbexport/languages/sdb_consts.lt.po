@@ -72,17 +72,17 @@ msgid "Could not open dataset for exporting: %s"
 msgstr "Eksportuojant nepavyko atverti duomenų: %s"
 
 #: sdb_consts.sexecute
-#| msgid "Execute..."
 msgid "Execute ..."
 msgstr "Vykdyti…"
 
 #: sdb_consts.snrecordsexported
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Succesfully exported %d records."
 msgid "Successfully exported %d records."
 msgstr "Sėkmingai eksportuota laukų: %s."
 
 #: sdb_consts.sprogress
+#, fuzzy,badformat
 msgid "Exporting %d records"
 msgstr "Eksportuojama įrašų: %s"
 

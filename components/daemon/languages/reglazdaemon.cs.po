@@ -11,9 +11,7 @@ msgstr ""
 "X-Generator: Poedit 1.5.5\n"
 
 #: reglazdaemon.sdaemonappdescr
-msgid ""
-"Daemon (service) application is a non-gui application that runs in the "
-"background."
+msgid "Daemon (service) application is a non-gui application that runs in the background."
 msgstr "Démon (služba) je aplikace bez gui která beží na pozadí systému."
 
 #: reglazdaemon.sdaemonappname
@@ -43,3 +41,4 @@ msgstr "Démon mapper"
 #: reglazdaemon.sdaemonname
 msgid "Daemon Module"
 msgstr "Démon Modul"
+

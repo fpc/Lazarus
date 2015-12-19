@@ -95,7 +95,7 @@ msgid "class node without parent node"
 msgstr "nó classe sem nó pai"
 
 #: codetoolsstrconsts.ctsclassnotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "class %s%s%s not found"
 msgid "class \"%s\" not found"
 msgstr "classe %s%s%s não encontrada"
@@ -305,7 +305,6 @@ msgid "expected end., but %s found"
 msgstr "esperado \"end.\", mas %s encontrado"
 
 #: codetoolsstrconsts.ctsendofsourcenotfound
-#| msgid "End of source not found"
 msgid "End of source not found."
 msgstr "Final do fonte não encontrado."
 
@@ -556,13 +555,13 @@ msgid "interface directory"
 msgstr "diretório da interface"
 
 #: codetoolsstrconsts.ctsinvalidclassname
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "invalid class name=%s%s%s"
 msgid "invalid class name=\"%s\""
 msgstr "nome de classe inválida=%s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidclassname2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "invalid class name %s%s%s"
 msgid "invalid class name \"%s\""
 msgstr "nome de classe inválida %s%s%s"
@@ -592,13 +591,13 @@ msgid "invalid type"
 msgstr "tipo inválido"
 
 #: codetoolsstrconsts.ctsinvalidvariablename
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "invalid variable name %s%s%s"
 msgid "invalid variable name \"%s\""
 msgstr "nome de variável inválida %s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "invalid variable type %s%s%s"
 msgid "invalid variable type \"%s\""
 msgstr "tipo variável inválido %s%s%s"
@@ -826,7 +825,6 @@ msgid "source is not unit"
 msgstr "fonte não é uma unidade"
 
 #: codetoolsstrconsts.ctssourcenotfoundunit
-#| msgid "source not found: unit %s"
 msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "fonte não encontrado: unidade %s. Verifique o seu diretório dos fontes FPC."
 

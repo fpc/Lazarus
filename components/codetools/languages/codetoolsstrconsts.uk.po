@@ -97,7 +97,7 @@ msgid "class node without parent node"
 msgstr "опис класу без предка"
 
 #: codetoolsstrconsts.ctsclassnotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "class %s%s%s not found"
 msgid "class \"%s\" not found"
 msgstr "не знайдений клас %s%s%s"
@@ -557,13 +557,13 @@ msgid "interface directory"
 msgstr "тека інтерфейсу"
 
 #: codetoolsstrconsts.ctsinvalidclassname
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "invalid class name=%s%s%s"
 msgid "invalid class name=\"%s\""
 msgstr "неправильне ім'я класу=%s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidclassname2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "invalid class name %s%s%s"
 msgid "invalid class name \"%s\""
 msgstr "неправильне ім'я класу %s%s%s"
@@ -593,13 +593,13 @@ msgid "invalid type"
 msgstr "неправильний тип"
 
 #: codetoolsstrconsts.ctsinvalidvariablename
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "invalid variable name %s%s%s"
 msgid "invalid variable name \"%s\""
 msgstr "неправильне ім'я змінної %s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "invalid variable type %s%s%s"
 msgid "invalid variable type \"%s\""
 msgstr "неправильний тип змінної %s%s%s"
@@ -947,6 +947,7 @@ msgid "unknown section keyword %s found"
 msgstr "знайдене невідоме ключове слово секції %s"
 
 #: codetoolsstrconsts.ctsunknownsubdescriptor
+#, fuzzy,badformat
 msgid "(unknown subdescriptor %s)"
 msgstr "(Невідомий субдескриптор)"
 

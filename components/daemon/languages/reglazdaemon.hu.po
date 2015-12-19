@@ -42,3 +42,4 @@ msgstr "Démon gyűjtő"
 #: reglazdaemon.sdaemonname
 msgid "Daemon Module"
 msgstr "Démon modul"
+

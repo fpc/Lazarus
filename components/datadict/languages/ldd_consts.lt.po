@@ -172,7 +172,6 @@ msgid "Configuration"
 msgstr "Sąranka"
 
 #: ldd_consts.smenuconfprojdatadict
-#| msgid "Set..."
 msgid "Set ..."
 msgstr "Nustatyti…"
 

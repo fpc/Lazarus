@@ -98,7 +98,7 @@ msgid "class node without parent node"
 msgstr "brakuje nazwy przodka"
 
 #: codetoolsstrconsts.ctsclassnotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "class %s%s%s not found"
 msgid "class \"%s\" not found"
 msgstr "Nie znaleziono klasy %s%s%s"
@@ -560,13 +560,13 @@ msgid "interface directory"
 msgstr "katalog interfejsu"
 
 #: codetoolsstrconsts.ctsinvalidclassname
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "invalid class name=%s%s%s"
 msgid "invalid class name=\"%s\""
 msgstr "błędna nazwa klasy=%s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidclassname2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "invalid class name %s%s%s"
 msgid "invalid class name \"%s\""
 msgstr "błędna nazwa klasy %s%s%s"
@@ -596,13 +596,13 @@ msgid "invalid type"
 msgstr "błędny typ"
 
 #: codetoolsstrconsts.ctsinvalidvariablename
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "invalid variable name %s%s%s"
 msgid "invalid variable name \"%s\""
 msgstr "błędna nazwa zmiennej %s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "invalid variable type %s%s%s"
 msgid "invalid variable type \"%s\""
 msgstr "błędny typ zmiennej %s%s%s"

@@ -11,16 +11,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.8.6\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: leakinfo.calltraceprefix
-msgid "Call trace for block "
-msgstr "Appeler le suivi pour le bloc "
+#: favoritesstr.saddtofavoritess
+msgid "Add to favorites: %s"
+msgstr "Ajouter aux favoris :%s"
 
-#: leakinfo.rawtraceprefix
-msgid "Stack trace:"
-msgstr "Suivi de pile :"
-
-#: leakinfo.rsstacktrace
-msgid "Stack trace"
-msgstr "Suivi de pile"
+#: favoritesstr.sremovefromfavoritess
+msgid "Remove from favorites: %s"
+msgstr "Retirer des favoris :%s"
 

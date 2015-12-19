@@ -140,7 +140,7 @@ msgid ""
 "Please set a data dictionary for the project\n"
 msgstr ""
 "Žádný datový slovník není aktivní.\n"
-"\vProsím nastavte datový slovník pro projekt\n"
+"vProsím nastavte datový slovník pro projekt\n"
 
 #: ldd_consts.serrselectdd
 msgid "Please select a known data dictionary"
@@ -209,3 +209,4 @@ msgstr "Varování: Žádná definice v datovém slovníku pro pole %s"
 #: ldd_consts.swrongselection
 msgid "Wrong selection count : %d"
 msgstr "Špatný výběr: %d"
+

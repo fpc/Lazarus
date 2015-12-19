@@ -73,7 +73,6 @@ msgid "Could not open dataset for exporting: %s"
 msgstr "Не можу відкрити набір даних для експорту: %s"
 
 #: sdb_consts.sexecute
-#| msgid "Execute..."
 msgid "Execute ..."
 msgstr "Виконати ..."
 
