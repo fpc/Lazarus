@@ -2781,7 +2781,19 @@ For each TModalResult a button is created. <br/>
 To set a custom caption, add a string after a button. You can use the special string parameters 'isdefault' and 'iscancel' to setup the default and cancel buttons.
 </p><p>The default TModalResults defined in controls.pp (mrNone..mrLast) don't need a caption. The default captions will be used.
 </p>
-        </descr>
+case QuestionDlg('COPYING',
+                   'Abort?',
+                   mtConfirmation,
+                   [mrNo, '&amp;No','IsDefault',
+                   mrYes,'&amp;Yes'],0) 
+of
+   mrYes : ShowMessage('You clicked Yes');
+   mrNo : ShowMessage('You clicked No');
+else
+  // mrCancel
+  ShowMessage('You cancelled the dialog.');
+end;
+</descr>
         <errors/>
         <seealso>
           <link id="MessageDlg"/>

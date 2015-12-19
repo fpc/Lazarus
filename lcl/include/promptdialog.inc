@@ -911,11 +911,32 @@ end;
 
 function QuestionDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
             Buttons: array of const; HelpCtx: Longint): TModalResult;
+
+  function GetNextCaption(var i: integer; out aCaption: string): boolean;
+  begin
+    aCaption:='';
+    if (i > High(Buttons)) then exit(false);
+    Result:=true;
+    case Buttons[i].VType of
+      vtString: aCaption := Buttons[i].VString^;
+      vtAnsiString: aCaption := AnsiString(Buttons[i].VAnsiString);
+      vtChar: aCaption := Buttons[i].VChar;
+      vtPChar: aCaption := Buttons[i].VPChar;
+      vtPWideChar: aCaption := Buttons[i].VPWideChar;
+      vtWideChar: aCaption := AnsiString(Buttons[i].VWideChar);
+      vtWidestring: aCaption := AnsiString(WideString(Buttons[i].VWideString));
+    else
+      Result:=false;
+    end;
+    if Result then
+      inc(i);
+  end;
+
 var
   DialogButtons: TDialogButtons;
   i: integer;
   CurBtnValue: TModalResult;
-  CurBtnCaption, CurOptions: String;
+  CurBtnCaption, CurOptions, CurCaption: String;
   HasOptions: Boolean;
   IsDefault, IsCancel: Boolean;
   NewButton: TDialogButton;
@@ -934,71 +955,26 @@ begin
         CurBtnValue := Buttons[i].VInteger;
         inc(i);
 
-        // get button caption
+        // get button caption and flags
         CurBtnCaption := '';
-        if (i <= High(Buttons)) then
-        begin
-          case Buttons[i].VType of
-            vtString: CurBtnCaption := Buttons[i].VString^;
-            vtAnsiString: CurBtnCaption := AnsiString(Buttons[i].VAnsiString);
-            vtChar: CurBtnCaption := Buttons[i].VChar;
-            vtPChar: CurBtnCaption := Buttons[i].VPChar;
-            vtPWideChar: CurBtnCaption := Buttons[i].VPWideChar;
-            vtWideChar: CurBtnCaption := AnsiString(Buttons[i].VWideChar);
-            vtWidestring: CurBtnCaption := AnsiString(WideString(Buttons[i].VWideString));
-          else
-            dec(i); // prevent the following inc(i)
-          end;
-          inc(i);
-        end;
-
-        // get options
-        if (SysUtils.CompareText(CurBtnCaption,'isdefault')=0)
-        or (SysUtils.CompareText(CurBtnCaption,'iscancel')=0) then
-        begin
-          HasOptions := True;
-          CurOptions := CurBtnCaption;
-          CurBtnCaption := '';
-        end else
-        begin
-          CurOptions := '';
-          HasOptions := False;
-          if (i <= High(Buttons)) then
-          begin
-            HasOptions := True;
-            case Buttons[i].VType of
-              vtString: CurOptions := Buttons[i].VString^;
-              vtAnsiString: CurOptions := AnsiString(Buttons[i].VAnsiString);
-              vtChar: CurOptions := Buttons[i].VChar;
-              vtPChar: CurOptions := Buttons[i].VPChar;
-              vtPWideChar: CurOptions := Buttons[i].VPWideChar;
-              vtWideChar: CurOptions := AnsiString(Buttons[i].VWideChar);
-              vtWidestring: CurOptions := AnsiString(WideString(Buttons[i].VWideString));
-            else
-              HasOptions := False;
-              dec(i); // prevent the following inc(i)
-            end;
-            inc(i);
-          end;
-        end;
         IsDefault := False;
         IsCancel := False;
-        if HasOptions then
+        while GetNextCaption(i,CurCaption) do
         begin
-          if SysUtils.CompareText(CurOptions,'isdefault')=0 then
-          begin
+          if (SysUtils.CompareText(CurCaption,'isdefault')=0) then begin
             if DialogButtons.DefaultButton <> nil then
               raise Exception.Create('TQuestionDlg.CreateQuestionDlg only one button can be default');
-            IsDefault := True;
-          end else
-          if SysUtils.CompareText(CurOptions,'iscancel')=0 then
-          begin
+            IsDefault:=true;
+          end
+          else if (SysUtils.CompareText(CurCaption,'iscancel')=0) then begin
             if DialogButtons.CancelButton <> nil then
               raise Exception.Create('TQuestionDlg.CreateQuestionDlg only one button can be cancel');
-            IsCancel := True;
-          end else
-            raise Exception.Create('TQuestionDlg.CreateQuestionDlg option expected at '
-              +IntToStr(i)+' but "'+CurOptions+'" found.');
+            IsCancel:=true
+          end
+          else if CurBtnCaption='' then
+            CurBtnCaption:=CurCaption
+          else
+            raise Exception.Create('TQuestionDlg.CreateQuestionDlg option expected at '+IntToStr(i)+', but found "'+CurCaption+'"');
         end;
 
         if CurBtnCaption = '' then
