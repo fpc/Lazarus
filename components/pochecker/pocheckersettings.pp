@@ -166,6 +166,9 @@ const
   pWindowsGeometry = 'General/WindowsGeometry/';
   pMasterPoFiles = 'MasterPoFiles/';
   pMasterPoSelection = 'MasterPoSelection/';
+  {$IFDEF POCHECKERSTANDALONE}
+  pExternalEditor = 'ExternalEditor/';
+  {$ENDIF}
 
 var
   DefaultRect: TRect;

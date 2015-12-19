@@ -819,7 +819,10 @@ end;
 {$IFDEF POCHECKERSTANDALONE}
 function TPoCheckerForm.GetTranslationsSearchPath: String;
 var
-  EnvVar, CfgLocal, CfgGlobal, AppPath: String;
+  EnvVar, CfgLocal, CfgGlobal: String;
+  {$if defined(windows) and not defined(wince)}
+  AppPath: String;
+  {$ENDIF}
 begin
   Result := FPoCheckerSettings.LangPath;
   EnvVar := GetEnvironmentVariableUtf8('pochecker-langpath');
@@ -890,7 +893,7 @@ begin
   Lang := GetEnvironmentVariableUTF8('LANG');
   T := '';
   if Lang = '' then
-    LCLGetLanguageIDs(Lang, T);
+    LazGetLanguageIDs(Lang, T);
   if Lang <> '' then
   begin
     //debugln('TPoCheckerForm.GetTranslations: Lang = ',Lang);
