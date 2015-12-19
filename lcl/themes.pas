@@ -1887,7 +1887,7 @@ begin
       if Details.Part = RP_GRIPPERVERT then
         Result.cx := 30;
     teToolBar:
-      if Details.Part = TP_SPLITBUTTONDROPDOWN then
+      if Details.Part in [TP_SPLITBUTTONDROPDOWN, TP_DROPDOWNBUTTON] then
         Result.cx := 12;
     teTreeView:
       if Details.Part in [TVP_GLYPH, TVP_HOTGLYPH] then

@@ -567,24 +567,40 @@ function TGtk2ThemeServices.GetDetailSize(Details: TThemedElementDetails): TSize
 var
   AValue: TGValue;
 begin
-  if (Details.Element = teTreeView) and (Byte(Details.Part) in [TVP_GLYPH, TVP_HOTGLYPH]) then
-  begin
-    FillChar(AValue{%H-}, SizeOf(AValue), 0);
-    g_value_init(@AValue, G_TYPE_INT);
-    gtk_widget_style_get_property(GetStyleWidget(lgsTreeView), 'expander-size', @AValue);
-    Result := Size(AValue.data[0].v_int, AValue.data[0].v_int);
-  end else
-  if (Details.Element = teButton) and (Byte(Details.Part) in [BP_CHECKBOX, BP_RADIOBUTTON]) then
-  begin
-    FillChar(AValue{%H-}, SizeOf(AValue), 0);
-    g_value_init(@AValue, G_TYPE_INT);
-    if Details.Part = BP_CHECKBOX then
-      gtk_widget_style_get_property(GetStyleWidget(lgsCheckbox),'indicator-size', @AValue)
+  case Details.Element of
+    teTreeView:
+      if (Byte(Details.Part) in [TVP_GLYPH, TVP_HOTGLYPH]) then
+      begin
+        FillChar(AValue{%H-}, SizeOf(AValue), 0);
+        g_value_init(@AValue, G_TYPE_INT);
+        gtk_widget_style_get_property(GetStyleWidget(lgsTreeView), 'expander-size', @AValue);
+        Result := Size(AValue.data[0].v_int, AValue.data[0].v_int);
+      end else
+        Result := GetBaseDetailsSize(Details);
+    teButton:
+      if (Byte(Details.Part) in [BP_CHECKBOX, BP_RADIOBUTTON]) then
+      begin
+        FillChar(AValue{%H-}, SizeOf(AValue), 0);
+        g_value_init(@AValue, G_TYPE_INT);
+        if Details.Part = BP_CHECKBOX then
+          gtk_widget_style_get_property(GetStyleWidget(lgsCheckbox),'indicator-size', @AValue)
+        else
+          gtk_widget_style_get_property(GetStyleWidget(lgsRadioButton),'indicator-size', @AValue);
+        Result := Size(AValue.data[0].v_int, AValue.data[0].v_int);
+      end else
+        Result := GetBaseDetailsSize(Details);
+    {$IFDEF LINUX} // fix tbsButtonDrop arrow outside button bounds
+    teToolBar:
+      if (Details.Part = TP_DROPDOWNBUTTON) then
+      begin
+        Result.cy := -1;
+        Result.cx := 15;
+      end else
+        Result := GetBaseDetailsSize(Details);
+    {$ENDIF}
     else
-      gtk_widget_style_get_property(GetStyleWidget(lgsRadioButton),'indicator-size', @AValue);
-    Result := Size(AValue.data[0].v_int, AValue.data[0].v_int);
-  end else
-    Result := GetBaseDetailsSize(Details);
+      Result := GetBaseDetailsSize(Details);
+  end;
 end;
 
 function TGtk2ThemeServices.GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean;

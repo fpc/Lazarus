@@ -2139,6 +2139,7 @@ type
     FDisabledImages: TCustomImageList;
     FDropDownWidth: integer;
     FThemeDropDownWidth: integer;
+    FThemeButtonDropWidth: integer;
     FDropDownButton: TToolButton;
     FFlat: Boolean;
     FHotImageChangeLink: TChangeLink;
@@ -2218,6 +2219,7 @@ type
     procedure SetButtonSize(NewButtonWidth, NewButtonHeight: integer);
     function CanFocus: Boolean; override;
     function GetRealDropDownWidth: Integer;
+    function GetRealButtonDropWidth: Integer;
   public
     property ButtonCount: Integer read GetButtonCount;
     property Buttons[Index: Integer]: TToolButton read GetButton;

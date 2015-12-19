@@ -302,7 +302,13 @@ begin
     if Style in [tbsDropDown, tbsButtonDrop] then
     begin
       DropDownButtonRect := ButtonRect;
-      DropDownButtonRect.Left := Max(0, DropDownButtonRect.Right-FToolBar.GetRealDropDownWidth);
+      if Style = tbsDropDown then
+        DropDownButtonRect.Left := DropDownButtonRect.Right-FToolBar.GetRealDropDownWidth
+      else
+      begin
+        DropDownButtonRect.Left := DropDownButtonRect.Right-FToolBar.GetRealButtonDropWidth;
+        DropDownButtonRect.Right := DropDownButtonRect.Left + FToolBar.GetRealDropDownWidth;
+      end;
       MainBtnRect.Right := DropDownButtonRect.Left;
       if Style = tbsDropDown then
         ButtonRect := MainBtnRect
@@ -1104,7 +1110,7 @@ begin
       PreferredHeight := Max(PreferredHeight, FToolBar.ButtonHeight);
       case Style of
         tbsDropDown: inc(PreferredWidth, FToolBar.GetRealDropDownWidth);
-        tbsButtonDrop:  inc(PreferredWidth, FToolBar.GetRealDropDownWidth-cDefButtonDropDecArrowWidth);
+        tbsButtonDrop:  inc(PreferredWidth, FToolBar.GetRealButtonDropWidth-cDefButtonDropDecArrowWidth);
       end;
     end
     else

@@ -789,6 +789,15 @@ begin
         inc(Result.cx);
         inc(Result.cy);
       end;
+    {$IFDEF LINUX} // fix tbsButtonDrop arrow outside button bounds
+    teToolBar:
+      if (Details.Part = TP_DROPDOWNBUTTON) then
+      begin
+        Result.cy := -1;
+        Result.cx := 14;
+      end else
+        Result := inherited;
+    {$ENDIF}
     else
       Result := inherited;
   end;
