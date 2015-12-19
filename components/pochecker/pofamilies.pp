@@ -272,7 +272,7 @@ end;
 
 
 
-{function CompareFormatArgs(S1, S2: String): Boolean;
+(*function CompareFormatArgs(S1, S2: String): Boolean;
 var
   Extr1, Extr2: String;
   ArgErr1, ArgErr2: Integer;
@@ -310,7 +310,7 @@ begin
     end;
     //writeln('CompareFormatArgs: Result = ',Result);
   end;
-end;}
+end;*)
 
 { TStat }
 

@@ -30,14 +30,14 @@ type
     UnTranslatedShape: TShape;
     FuzzyShape: TShape;
     procedure FormActivate(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure ListViewMouseMove(Sender: TObject; Shift: TShiftState; X,
+    procedure ListViewMouseMove(Sender: TObject; {%H-}Shift: TShiftState; X,
       Y: Integer);
-    procedure ListViewMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+    procedure ListViewMouseUp(Sender: TObject; {%H-}Button: TMouseButton;
+      {%H-}Shift: TShiftState; X, Y: Integer);
   private
     { private declarations }
     FPoFamilyStats: TPoFamilyStats;
@@ -50,7 +50,7 @@ type
     procedure AddToListView(AStat: TStat; ABmp: TBitmap);
     procedure DrawGraphs(Cnt: PtrInt);
     procedure MaybeOpenInLazIDE(const Fn: String);
-    procedure MaybeOpenInExternalEditor(const Fn: String);
+    procedure MaybeOpenInExternalEditor(const {%H-}Fn: String);
   public
     { public declarations }
     property PoFamilyStats: TPoFamilyStats read FPoFamilyStats write FPoFamilyStats;
