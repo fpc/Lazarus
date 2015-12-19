@@ -3557,6 +3557,24 @@ begin
 end;
 
 procedure TCustomGrid.PrepareCanvas(aCol, aRow: Integer; aState: TGridDrawState);
+  function GetNotSelectedColor: TColor;
+  begin
+    Result := GetColumnColor(aCol, gdFixed in AState);
+    if (gdFixed in AState) and (gdHot in aState) then
+      Result := FFixedHotColor;
+    if not (gdFixed in AState) and (FAlternateColor<>Result) then  begin
+      if Result=Color then begin
+        // column color = grid Color, Allow override color
+        // 1. default color after fixed rows
+        // 2. always use absolute alternate color based in odd & even row
+        if (FAltColorStartNormal and Odd(ARow-FixedRows)) {(1)} or
+           (not FAltColorStartNormal and Odd(ARow)) {(2)} then
+            Result := FAlternateColor;
+      end;
+    end;
+    if (gdRowHighlight in aState) and not (gdFixed in AState) then
+      Result := ColorToRGB(Result) xor $1F1F1F
+  end;
 var
   AColor: TColor;
   CurrentTextStyle: TTextStyle;
@@ -3567,8 +3585,13 @@ begin
     Canvas.Pen.Mode := pmCopy;
     GetSelectedState(aState, IsSelected);
     if IsSelected then begin
-      if FEditorMode and (FEditor<>nil) then
+      if FEditorMode and (FEditor<>nil)
+      and (((FEditor=FStringEditor) and (FStringEditor.BorderStyle=bsNone))
+         or (FEditor=FButtonStringEditor))
+      then
         Canvas.Brush.Color := FEditor.Color
+      else if FEditorMode and (FEditor=FPicklistEditor) then
+        Canvas.Brush.Color := GetNotSelectedColor
       else
         Canvas.Brush.Color := SelectedColor;
       SetCanvasFont(GetColumnFont(aCol, False));
@@ -3576,22 +3599,7 @@ begin
         Canvas.Font.Color := clHighlightText;
       FLastFont:=nil;
     end else begin
-      AColor := GetColumnColor(aCol, gdFixed in AState);
-      if (gdFixed in AState) and (gdHot in aState) then
-        aColor := FFixedHotColor;
-      if not (gdFixed in AState) and (FAlternateColor<>AColor) then  begin
-        if AColor=Color then begin
-          // column color = grid Color, Allow override color
-          // 1. default color after fixed rows
-          // 2. always use absolute alternate color based in odd & even row
-          if (FAltColorStartNormal and Odd(ARow-FixedRows)) {(1)} or
-             (not FAltColorStartNormal and Odd(ARow)) {(2)} then
-              AColor := FAlternateColor;
-        end;
-      end;
-      if (gdRowHighlight in aState) and not (gdFixed in AState) then
-        Canvas.Brush.Color := ColorToRGB(AColor) xor $1F1F1F
-      else Canvas.Brush.Color := AColor;
+      Canvas.Brush.Color := GetNotSelectedColor;
       SetCanvasFont(GetColumnFont(aCol, ((gdFixed in aState) and (aRow < FFixedRows))));
     end;
     CurrentTextStyle := DefaultTextStyle;
@@ -7869,6 +7877,9 @@ begin
       if (FEditor = FStringEditor) and (EditorBorderStyle = bsNone) then begin
         CellR := TWSCustomGridClass(WidgetSetClass).
           GetEditorBoundsFromCellRect(Canvas, CellR, GetColumnLayout(FCol, False));
+      end else begin
+        if goHorzLine in Options then Dec(CellR.Bottom);
+        if goVertLine in Options then Dec(CellR.Right);
       end;
       FEditor.BoundsRect := CellR;
     end else begin
