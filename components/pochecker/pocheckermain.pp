@@ -27,7 +27,8 @@ uses
   Classes, SysUtils, FileUtil, LazFileUtils, Forms, Controls, Graphics, Dialogs,
   StdCtrls, CheckLst, Buttons, ExtCtrls, ComCtrls, Types,
   LCLType, LazUTF8, Translations,
-  {$IFnDEF POCHECKERSTANDALONE}
+  {$IFDEF POCHECKERSTANDALONE}
+  {$ELSE}
   {IDEIntf,} MenuIntf,
   {$ENDIF}
   PoFamilies, ResultDlg, pocheckerconsts, PoCheckerSettings,
@@ -890,7 +891,7 @@ begin
   Lang := GetEnvironmentVariableUTF8('LANG');
   T := '';
   if Lang = '' then
-    LCLGetLanguageIDs(Lang, T);
+    LazGetLanguageIDs(Lang, T);
   if Lang <> '' then
   begin
     //debugln('TPoCheckerForm.GetTranslations: Lang = ',Lang);
