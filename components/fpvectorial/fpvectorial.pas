@@ -3437,6 +3437,7 @@ var
 begin
   if not (Brush.Kind in [bkVerticalGradient, bkHorizontalGradient]) then
     Exit;
+
   lColor1 := Brush.Gradient_colors[1];
   lColor2 := Brush.Gradient_colors[0];
   if Brush.Kind = bkVerticalGradient then
@@ -4106,14 +4107,13 @@ begin
       y2 := Max(y2, CoordY);
     end;
     DrawBrushGradient(ADest, ARenderInfo, x1, y1, x2, y2, ADestX, ADestY, AMulX, AMulY);
-    // Reset pen!
-    inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
   end;
   {$ENDIF}
 
   //
   // For other paths, draw more carefully
   //
+  ApplyPenToCanvas(ADest, ARenderInfo, Pen);
   PrepareForSequentialReading;
 
   for j := 0 to Len - 1 do
@@ -4132,7 +4132,7 @@ begin
       PosX := Cur2DSegment.X;
       PosY := Cur2DSegment.Y;
       {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
-      Write(Format(' M%d,%d', [CoordY, CoordY]));
+      Write(Format(' M%d,%d', [CoordX, CoordY]));
       {$endif}
     end;
     // This element can override temporarely the Pen
@@ -4153,7 +4153,7 @@ begin
       ADest.Pen.FPColor := Pen.Color;
 
       {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
-      Write(Format(' L%d,%d', [CoordToCanvasX(Cur2DSegment.X), CoordToCanvasY(Cur2DSegment.Y)]));
+      Write(Format(' L%d,%d', [CoordX2, CoordY2]));
       {$endif}
     end;
     st2DLine, st3DLine:
@@ -4168,7 +4168,7 @@ begin
       PosX := Cur2DSegment.X;
       PosY := Cur2DSegment.Y;
       {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
-      Write(Format(' L%d,%d', [CoordX, CoordY]));
+      Write(Format(' L%d,%d', [CoordX2, CoordY2]));
       {$endif}
     end;
     { To draw a bezier we need to divide the interval in parts and make
@@ -4203,10 +4203,10 @@ begin
 
       {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
       Write(Format(' ***C%d,%d %d,%d %d,%d %d,%d',
-        [CoordToCanvasX(PosX), CoordToCanvasY(PosY),
-         CoordToCanvasX(Cur2DBSegment.X2), CoordToCanvasY(Cur2DBSegment.Y2),
-         CoordToCanvasX(Cur2DBSegment.X3), CoordToCanvasY(Cur2DBSegment.Y3),
-         CoordToCanvasX(Cur2DBSegment.X), CoordToCanvasY(Cur2DBSegment.Y)]));
+        [CoordToCanvasX(PosX, ADestX, AMulX), CoordToCanvasY(PosY, ADestY, AMulY),
+         CoordToCanvasX(Cur2DBSegment.X2, ADestX, AMulX), CoordToCanvasY(Cur2DBSegment.Y2, ADestY, AMulY),
+         CoordToCanvasX(Cur2DBSegment.X3, ADestX, AMulX), CoordToCanvasY(Cur2DBSegment.Y3, ADestY, AMulY),
+         CoordToCanvasX(Cur2DBSegment.X, ADestX, AMulX), CoordToCanvasY(Cur2DBSegment.Y, ADestY, AMulY)]));
       {$endif}
     end;
     // Alligned Ellipse equation:

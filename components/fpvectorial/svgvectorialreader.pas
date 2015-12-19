@@ -2752,6 +2752,9 @@ var
   patt: array of LongWord;
   i: Integer;
 begin
+  if AStr = 'none' then
+    exit;
+
   float_patt := ReadSpaceSeparatedFloats(AStr, ',');
   if Length(float_patt) < 2 then
     exit;
