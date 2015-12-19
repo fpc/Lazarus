@@ -1981,7 +1981,7 @@ procedure TvSVGVectorialReader.ReadNextPathCommand(ACurTokenType: TSVGTokenType;
   var i: Integer; var CurX, CurY: Double; AData: TvVectorialPage;
   ADoc: TvVectorialDocument);
 var
-  X, Y, X2, Y2, X3, Y3, XQ, YQ: Double;
+  X, Y, X2, Y2, X3, Y3, XQ, YQ, tmp: Double;
   LargeArcFlag, SweepFlag, LeftmostEllipse, ClockwiseArc: Boolean;
   lCurTokenType: TSVGTokenType;
   lDebugStr: String;
@@ -2037,38 +2037,39 @@ begin
   else if lCurTokenType in [sttLineTo, sttRelativeLineTo, sttHorzLineTo,
     sttRelativeHorzLineTo, sttVertLineTo, sttRelativeVertLineTo] then
   begin
-    X := FSVGPathTokenizer.Tokens.Items[i+1].Value;
-    if not (lCurTokenType in [sttHorzLineTo, sttRelativeHorzLineTo, sttVertLineTo, sttRelativeVertLineTo]) then
+    if lCurTokenType in [sttLineTo, sttRelativeLineTo] then
+    begin
+      X := FSVGPathTokenizer.Tokens.Items[i+1].Value;
       Y := FSVGPathTokenizer.Tokens.Items[i+2].Value;
-
-    // "l" LineTo uses relative coordenates in SVG
-    if lCurTokenType in [sttRelativeLineTo, sttRelativeHorzLineTo, sttRelativeVertLineTo] then
+      if lCurTokenType = sttLineTo then
+        ConvertSVGCoordinatesToFPVCoordinates(AData, X,Y, CurX,CurY)
+      else
+      begin
+        ConvertSVGDeltaToFPVDelta(AData, X,Y, X,Y);
+        CurX := CurX + X;
+        CurY := CurY + Y;
+      end;
+      inc(i, 3);
+    end else
+    if lCurTokenType in [sttHorzLineTo, sttVertLineTo] then
     begin
-      ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
-      CurX := CurX + X;
-      CurY := CurY + Y;
-    end
-    else
+      tmp := FSVGPathTokenizer.Tokens.Items[i+1].Value;
+      ConvertSVGCoordinatesToFPVCoordinates(AData, tmp, tmp, X, Y);
+      if lCurTokenType = sttHorzLineTo then
+        CurX := X else
+        CurY := Y;
+      inc(i, 2);
+    end else
+    if lCurTokenType in [sttRelativeHorzLineTo, sttRelativeVertLineTo] then
     begin
-      ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
-      CurX := X;
-      CurY := Y;
+      tmp := FSVGPathTokenizer.Tokens.Items[i+1].Value;
+      ConvertSVGDeltaToFPVDelta(AData, tmp, tmp, X, Y);
+      if lCurTokenType = sttRelativeHorzLineTo then
+        CurX := CurX + X else
+        CurY := CurY + Y;
+      inc(i, 2);
     end;
-
-    // horizontal and vertical line corrections
-    if lCurTokenType in [sttHorzLineTo, sttRelativeHorzLineTo] then
-      Y := 0
-    else if lCurTokenType in [sttVertLineTo, sttRelativeVertLineTo] then
-    begin
-      Y := X;
-      X := 0;
-    end;
-
     AData.AddLineToPath(CurX, CurY);
-
-    if not (lCurTokenType in [sttHorzLineTo, sttRelativeHorzLineTo, sttVertLineTo, sttRelativeVertLineTo]) then
-      Inc(i, 3)
-    else Inc(i, 2);
   end
   // --------------
   // Cubic Bezier
