@@ -75,8 +75,10 @@ begin
     'OpenRecentProjectGroup',lisOpenRecentProjectGroup);
   cmdSaveProjectGroup:=RegisterIDEMenuCommand(itmProjectSaveSection,
     'SaveProjectGroup',lisSaveProjectGroup,@IDEProjectGroupManager.DoSaveClick);
+  cmdSaveProjectGroup.Enabled:=false;
   cmdSaveProjectGroupAs:=RegisterIDEMenuCommand(itmProjectSaveSection,
     'SaveProjectGroupAs',lisSaveProjectGroupAs,@IDEProjectGroupManager.DoSaveAsClick);
+  cmdSaveProjectGroupAs.Enabled:=false;
 
   IDEProjectGroupManager.UpdateRecentProjectGroupMenu;
 
