@@ -127,19 +127,19 @@ end;
 procedure TToolButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
-  Pressed: Boolean;
+  ButtonPressed, ArrowPressed: Boolean;
   Pt: TPoint;
   NewFlags: TToolButtonFlags;
 begin
   //DebugLn(['TToolButton.MouseUp ',Name,':',ClassName,' ',dbgs(ord(Button)),' ',X,',',Y]);
   FLastDown := False;
   NewFlags := FToolButtonFlags;
-  Pressed := (Button = mbLeft) and ([tbfArrowPressed, tbfPressed] * NewFlags <> []);
-  if Pressed then
-  begin
+  ButtonPressed := (Button = mbLeft) and (tbfPressed in NewFlags);
+  ArrowPressed := (Button = mbLeft) and (tbfArrowPressed in NewFlags);
+  if ButtonPressed then
     Exclude(NewFlags, tbfPressed);
+  if ArrowPressed then
     Exclude(NewFlags, tbfArrowPressed);
-  end;
   if (tbfMouseInArrow in NewFlags) and PointInArrow(X, Y) then
     Exclude(NewFlags, tbfMouseInArrow);
 
@@ -162,11 +162,16 @@ begin
     if (Style in [tbsButton, tbsDropDown, tbsButtonDrop]) then
       Down := False;
     //button is pressed, but DropdownMenu was not shown
-    if FMouseInControl and (FLastDropDownTick = 0) and Pressed then
+    if FMouseInControl and (FLastDropDownTick = 0) then
     begin
-      if (Style = tbsCheck) then
-        Down := not Down;
-      Click;
+      if ButtonPressed then
+      begin
+        if (Style = tbsCheck) then
+          Down := not Down;
+        Click;
+      end else
+      if ArrowPressed then
+        ArrowClick;
       //DON'T USE the tool button (Self) after the click call because it could
       //have been destroyed in the OnClick event handler (e.g. Lazarus IDE does it)!
     end;
@@ -511,6 +516,12 @@ begin
     if (not CheckDefaults) or (ImageIndex<0) then
       ImageIndex := NewAction.ImageIndex;
   end;
+end;
+
+procedure TToolButton.ArrowClick;
+begin
+  if Assigned(FOnArrowClick) then
+    FOnArrowClick(Self);
 end;
 
 function TToolButton.GetActionLinkClass: TControlActionLinkClass;

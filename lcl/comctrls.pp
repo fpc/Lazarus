@@ -1988,6 +1988,7 @@ type
     FMarked: Boolean;
     FMenuItem: TMenuItem;
     FMouseInControl: boolean;
+    FOnArrowClick: TNotifyEvent;
     FShowCaption: boolean;
     FStyle: TToolButtonStyle;
     FToolButtonFlags: TToolButtonFlags;
@@ -2056,6 +2057,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     function CheckMenuDropdown: Boolean; virtual;
     procedure Click; override;
+    procedure ArrowClick; virtual;
     procedure GetCurrentIcon(var ImageList: TCustomImageList;
                              var TheIndex: integer); virtual;
     procedure GetPreferredSize(var PreferredWidth, PreferredHeight: integer;
@@ -2080,6 +2082,7 @@ type
     property Indeterminate: Boolean read FIndeterminate write SetIndeterminate default False;
     property Marked: Boolean read FMarked write SetMarked default False;
     property MenuItem: TMenuItem read FMenuItem write SetMenuItem;
+    property OnArrowClick: TNotifyEvent read FOnArrowClick write FOnArrowClick;
     property OnClick;
     property OnContextPopup;
     property OnDragDrop;
