@@ -1197,6 +1197,7 @@ type
     procedure EditingDone; override;
 
     { Exposed procs }
+    procedure AdjustInnerCellRect(var ARect: TRect);
     procedure AutoAdjustColumns;
     procedure BeginUpdate;
     function  CellRect(ACol, ARow: Integer): TRect;
@@ -5120,6 +5121,13 @@ begin
     OnUserCheckboxBitmap(Self, aCol, aRow, CheckBoxView, Result);
 end;
 
+procedure TCustomGrid.AdjustInnerCellRect(var ARect: TRect);
+begin
+  if (GridLineWidth>0) then begin
+    if goHorzLine in Options then Dec(ARect.Bottom);
+    if goVertLine in Options then Dec(ARect.Right);
+  end;
+end;
 
 function TCustomGrid.GetColumns: TGridColumns;
 begin
@@ -7874,13 +7882,11 @@ begin
       CellR := Bounds(-FEditor.Width-100, -FEditor.Height-100, CellR.Right-CellR.Left, CellR.Bottom-CellR.Top);
 
     if FEditorOptions and EO_AUTOSIZE = EO_AUTOSIZE then begin
-      if (FEditor = FStringEditor) and (EditorBorderStyle = bsNone) then begin
+      if (FEditor = FStringEditor) and (EditorBorderStyle = bsNone) then
         CellR := TWSCustomGridClass(WidgetSetClass).
-          GetEditorBoundsFromCellRect(Canvas, CellR, GetColumnLayout(FCol, False));
-      end else begin
-        if goHorzLine in Options then Dec(CellR.Bottom);
-        if goVertLine in Options then Dec(CellR.Right);
-      end;
+          GetEditorBoundsFromCellRect(Canvas, CellR, GetColumnLayout(FCol, False))
+      else
+        AdjustInnerCellRect(CellR);
       FEditor.BoundsRect := CellR;
     end else begin
       Msg.LclMsg.msg:=GM_SETBOUNDS;
@@ -12100,12 +12106,14 @@ begin
 end;
 
 procedure TButtonCellEditor.msg_SetBounds(var Msg: TGridMessage);
+var
+  r: TRect;
 begin
-  with Msg.CellRect do begin
-    if Right-Left>DEFBUTTONWIDTH then
-      Left:=Right-DEFBUTTONWIDTH;
-    SetBounds(Left, Top, Right-Left, Bottom-Top);
-  End;
+  r := Msg.CellRect;
+  FGrid.AdjustInnerCellRect(r);
+  if r.Right-r.Left>DEFBUTTONWIDTH then
+    r.Left:=r.Right-DEFBUTTONWIDTH;
+  SetBounds(r.Left, r.Top, r.Right-r.Left, r.Bottom-r.Top);
 end;
 
 procedure TButtonCellEditor.msg_SetPos(var Msg: TGridMessage);
@@ -12407,9 +12415,12 @@ begin
 end;
 
 procedure TCompositeCellEditor.msg_SetBounds(var Msg: TGridMessage);
+var
+   r: TRect;
 begin
-  with Msg.CellRect do
-    SetBounds(Left, Top, Right-Left, Bottom-Top);
+  r := Msg.CellRect;
+  FGrid.AdjustInnerCellRect(r);
+  SetBounds(r.Left, r.Top, r.Right-r.Left, r.Bottom-r.Top);
 end;
 
 procedure TCompositeCellEditor.msg_SetMask(var Msg: TGridMessage);
