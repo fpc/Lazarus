@@ -979,17 +979,16 @@ begin
   fLastParsedCompiler:=EnvironmentOptions.GetParsedCompilerFilename;
   //debugln(['TInitialSetupDialog.UpdateCompilerNote ',fLastParsedCompiler]);
 
-  // check compiler again
-  CfgCache:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
-                                             fLastParsedCompiler,'','','',true);
-  CfgCache.Update(CodeToolBoss.FPCDefinesCache.TestFilename);
-  BuildBoss.SetBuildTargetIDE;
-
   Quality:=CheckCompilerQuality(fLastParsedCompiler,Note,
                                 CodeToolBoss.FPCDefinesCache.TestFilename);
   if Quality<>sddqInvalid then begin
     CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
       fLastParsedCompiler,'','','',true);
+    // check compiler again
+    CfgCache:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
+                                               fLastParsedCompiler,'','','',true);
+    CfgCache.Update(CodeToolBoss.FPCDefinesCache.TestFilename);
+    BuildBoss.SetBuildTargetIDE;
   end;
 
   case Quality of
