@@ -84,7 +84,7 @@ begin
     //  therefore the condition is always met.
     if Enabled and not(GetTickCount64 < FLastDropDownTick + 100) then
     begin
-      if (Style = tbsDropDown) and (FToolBar <> nil) and (X > ClientWidth - FToolBar.GetRealDropDownWidth) then
+      if PointInArrow(X, Y) then
         Include(NewFlags, tbfArrowPressed)
       else
         Include(NewFlags, tbfPressed);
@@ -95,6 +95,8 @@ begin
       Invalidate;
     end;
   end;
+
+  FLastDown := Down;
 
   inherited MouseDown(Button, Shift, X, Y);
 
@@ -127,13 +129,23 @@ procedure TToolButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
 var
   Pressed: Boolean;
   Pt: TPoint;
+  NewFlags: TToolButtonFlags;
 begin
   //DebugLn(['TToolButton.MouseUp ',Name,':',ClassName,' ',dbgs(ord(Button)),' ',X,',',Y]);
-  Pressed := (Button = mbLeft) and ([tbfArrowPressed, tbfPressed] * FToolButtonFlags <> []);
+  FLastDown := False;
+  NewFlags := FToolButtonFlags;
+  Pressed := (Button = mbLeft) and ([tbfArrowPressed, tbfPressed] * NewFlags <> []);
   if Pressed then
   begin
-    Exclude(FToolButtonFlags, tbfPressed);
-    Exclude(FToolButtonFlags, tbfArrowPressed);
+    Exclude(NewFlags, tbfPressed);
+    Exclude(NewFlags, tbfArrowPressed);
+  end;
+  if (tbfMouseInArrow in NewFlags) and PointInArrow(X, Y) then
+    Exclude(NewFlags, tbfMouseInArrow);
+
+  if NewFlags <> FToolButtonFlags then
+  begin
+    FToolButtonFlags := NewFlags;
     Invalidate;
   end;
 
@@ -191,7 +203,10 @@ procedure TToolButton.Paint;
     begin
       ArrowState := TThemedToolBar(ord(ttbSplitButtonDropDownNormal) + OwnerDetails.State - 1);
       if (tbfArrowPressed in FToolButtonFlags) and FMouseInControl and Enabled then
-        ArrowState := ttbSplitButtonDropDownPressed;
+        ArrowState := ttbSplitButtonDropDownPressed
+      else
+      if (FToolButtonFlags*[tbfMouseInArrow,tbfPressed] = [tbfPressed]) and not FLastDown then
+        ArrowState := ttbSplitButtonDropDownHot;
     end;
     Details := ThemeServices.GetElementDetails(ArrowState);
     if (FToolBar <> nil) and (not FToolBar.Flat)
@@ -445,6 +460,13 @@ begin
   inherited Paint;
 end;
 
+function TToolButton.PointInArrow(const X, Y: Integer): Boolean;
+begin
+  Result := (Style = tbsDropDown) and (FToolBar <> nil)
+    and (Y >= 0) and (Y <= ClientHeight)
+    and (X > ClientWidth - FToolBar.GetRealDropDownWidth) and (X <= ClientWidth);
+end;
+
 procedure TToolButton.Loaded;
 begin
   inherited Loaded;
@@ -535,12 +557,35 @@ procedure TToolButton.MouseLeave;
 begin
   // DebugLn('TToolButton.MouseLeave ',Name);
   inherited MouseLeave;
-  if (not MouseCapture) and ([tbfPressed, tbfArrowPressed] * FToolButtonFlags <> []) then
+  if (not MouseCapture) and ([tbfPressed, tbfArrowPressed, tbfMouseInArrow] * FToolButtonFlags <> []) then
   begin
     Exclude(FToolButtonFlags, tbfPressed);
     Exclude(FToolButtonFlags, tbfArrowPressed);
+    Exclude(FToolButtonFlags, tbfMouseInArrow);
   end;
   SetMouseInControl(false);
+end;
+
+procedure TToolButton.MouseMove(Shift: TShiftState; X, Y: Integer);
+var
+  NewFlags: TToolButtonFlags;
+begin
+  inherited MouseMove(Shift, X, Y);
+
+  if (not MouseCapture) and (Style = tbsDropDown) and (FToolBar <> nil) then
+  begin
+    NewFlags := FToolButtonFlags;
+    if PointInArrow(X, Y) then
+      Include(NewFlags, tbfMouseInArrow)
+    else
+      Exclude(NewFlags, tbfMouseInArrow);
+
+    if NewFlags <> FToolButtonFlags then
+    begin
+      FToolButtonFlags := NewFlags;
+      Invalidate;
+    end;
+  end;
 end;
 
 procedure TToolButton.SetDown(Value: Boolean);

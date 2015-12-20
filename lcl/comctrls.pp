@@ -1956,7 +1956,8 @@ type
   TToolButtonFlag =
   (
     tbfPressed,     // set while mouse is pressed on button
-    tbfArrowPressed // set while mouse is pressed on arrow button
+    tbfArrowPressed,// set while mouse is pressed on arrow button
+    tbfMouseInArrow // set while mouse is on arrow button
   );
   TToolButtonFlags = set of TToolButtonFlag;
 
@@ -1993,6 +1994,7 @@ type
     FUpdateCount: Integer;
     FWrap: Boolean;
     FLastDropDownTick: QWord;
+    FLastDown: Boolean;
     procedure GetGroupBounds(var StartIndex, EndIndex: integer);
     function GetIndex: Integer;
     function GetTextSize: TSize;
@@ -2027,6 +2029,7 @@ type
     procedure AssignTo(Dest: TPersistent); override;
     procedure BeginUpdate; virtual;
     procedure EndUpdate; virtual;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseEnter; override;
@@ -2059,6 +2062,7 @@ type
                                Raw: boolean = false;
                                WithThemeSpace: boolean = true); override;
     property Index: Integer read GetIndex;
+    function PointInArrow(const X, Y: Integer): Boolean;
   published
     property Action;
     property AllowAllUp: Boolean read FAllowAllUp write FAllowAllUp default False;
