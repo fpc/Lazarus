@@ -774,8 +774,10 @@ end;
 
 { Retrieves html formatted text from the clipboard. If ExtractFragmentOnly is
   true then only the relevant html fragment is returned, the rest of the html
-  string is dropped. This features exists only for Windows. }
-function TClipboard.DoGetAsHtml(ExtractFragmentOnly: Boolean): String;
+  string is dropped. The Office applications in Windows and Linux write the
+  full html code which can be retrieved with ExtractFragmentOnly = false.
+  In case of Windows, the MS header is automatically removed.}
+function TClipboard.GetAsHtml(ExtractFragmentOnly: Boolean): String;
 var
   stream: TMemoryStream;
   bom: TBOM;
@@ -846,32 +848,38 @@ begin
   end;
 end;
 
-function TClipboard.GetAsHtml: String;
-begin
-  Result := DoGetAsHtml(false);
-end;
-
-function TClipboard.GetAsHtmlFragment: String;
-begin
-  Result := DoGetAsHtml(true);
-end;
-
-{ Adds html-formatted text to the clipboard. It must be valid html.
-  In case of Windows, a specific header is added. }
-procedure TClipboard.SetAsHtml(const Html: String);
+{ Adds html-formatted text to the clipboard. The main Office applications in
+  Windows and Linux require a valid and complete html text (i.e. with <html>
+  and <body> tags).
+  In case of Windows, a specific header must be added (AddWindowsHeader = true),
+  otherwise the format will not be recognized by the clipboard. }
+procedure TClipboard.SetAsHtml(const Html: String; const PlainText: String; {%H-}AddWindowsHeader: Boolean);
 var
   stream: TStream;
 begin
   if CF_HTML = 0 then
     exit;
   {$IFDEF WINDOWS}
-  stream := TStringStream.Create(InsertClipHeader(Html));
+  if AddWindowsHeader then
+    stream := TStringStream.Create(InsertClipHeader(Html)) else
+    stream := TStringStream.Create(Html);
   {$ELSE}
   stream := TStringStream.Create(Html);
   {$ENDIF}
   try
+    //Clear the clipboard before adding Html to it,
+    //otherwise external applications will only ever see the first copy.
+    ClipBoard.Clear;
     stream.Position := 0;
     Clipboard.AddFormat(CF_HTML, stream);
+    if (PlainText <> '') then
+    begin
+      stream.Size := 0;
+      stream.Position := 0;
+      stream.WriteAnsiString(PlainText);
+      stream.Position := 0;
+      ClipBoard.AddFormat(CF_TEXT, stream);
+    end;
   finally
     stream.Free;
   end;

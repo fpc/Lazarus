@@ -163,8 +163,6 @@ type
     function AssignToGraphic(Dest: TGraphic; FormatID: TClipboardFormat): boolean;
     //procedure AssignToMetafile(Dest: TMetafile);
     procedure AssignToPicture(Dest: TPicture);
-    function DoGetAsHtml(ExtractFragmentOnly: Boolean): String;
-    function GetAsHtml: String;
     function GetAsText: string;
     function GetFormatCount: Integer;
     function GetFormats(Index: Integer): TClipboardFormat;
@@ -173,7 +171,6 @@ type
       CreateIfNotExists: boolean): integer;
     procedure InternalOnRequest(const RequestedFormatID: TClipboardFormat;
       AStream: TStream);
-    procedure SetAsHtml(const Html: String);
     procedure SetAsText(const Value: string);
     function SetBuffer(FormatID: TClipboardFormat;
                        var Buffer; Size: Integer): Boolean;
@@ -198,6 +195,7 @@ type
     function FindPictureFormatID: TClipboardFormat;
     function FindFormatID(const FormatName: string): TClipboardFormat;
     //function GetAsHandle(Format: integer): THandle;
+    function GetAsHtml(ExtractFragmentOnly: Boolean): String;
     function GetComponent(Owner, Parent: TComponent): TComponent;
     procedure GetComponent(var RootComponent: TComponent;
                           OnFindComponentClass: TFindComponentClassEvent;
@@ -212,12 +210,12 @@ type
     procedure SupportedFormats(var AFormatCount: integer;
                                var FormatList: PClipboardFormat);
     function GetTextBuf(Buffer: PChar; BufSize: Integer): Integer;
-    function GetAsHtmlFragment: String;
     function HasFormat(FormatID: TClipboardFormat): Boolean;
     function HasFormatName(const FormatName: string): Boolean;
     function HasPictureFormat: boolean;
     procedure Open;
     //procedure SetAsHandle(Format: integer; Value: THandle);
+    procedure SetAsHtml(const Html: String; const PlainText: String; {%H-}AddWindowsHeader: Boolean);
     function SetComponent(Component: TComponent): Boolean;
     function SetComponentAsText(Component: TComponent): Boolean;
     function SetFormat(FormatID: TClipboardFormat; Stream: TStream): Boolean;
@@ -225,7 +223,6 @@ type
                                   FormatList: PClipboardFormat): Boolean;
     procedure SetTextBuf(Buffer: PChar);
     property AsText: string read GetAsText write SetAsText;
-    property AsHtml: String read GetAsHtml write SetAsHtml;
     property ClipboardType: TClipboardType read FClipboardType;
     property FormatCount: Integer read GetFormatCount;
     property Formats[Index: Integer]: TClipboardFormat read GetFormats;
@@ -255,6 +252,7 @@ var
 
 
 {$I clipbrd.inc}
+
 
 function RegisterClipboardFormat(const Format: string): TClipboardFormat;
 begin
