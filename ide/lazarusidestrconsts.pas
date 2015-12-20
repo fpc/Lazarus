@@ -5309,6 +5309,8 @@ resourcestring
   lisDoNotCompileDependencies = 'do not compile dependencies';
   lisAddPackageSToListOfInstalledPackagesCombineWithBui = 'add package(s) to '
     +'list of installed packages (combine with --build-ide to rebuild IDE).';
+  lisAddPackageSToListOfKnownPackages = 'add package(s) to '
+    +'list of known packages.';
   lisBuildIDEWithPackages = 'build IDE with packages';
   lisShowVersionAndExit = 'show version and exit';
   lisBeLessVerboseCanBeGivenMultipleTimes = 'be less verbose, can be given '

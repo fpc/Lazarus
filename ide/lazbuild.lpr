@@ -52,6 +52,8 @@ type
   TLazBuildApplication = class(TCustomApplication)
   private
     FAddPackage: boolean;
+    FAddPackageLink: boolean;
+    FAddPackageLinkList: string;
     FBuildAll: boolean;
     FBuildIDE: boolean;
     FBuildIDEOptions: string;
@@ -122,7 +124,11 @@ type
 
     // Adding packages to list of to-be-installed packages in the IDE.
     // The packages can then be installed by recompiling the IDE (because we're using static packages)
-    function AddPackagesToInstallList(const PackageNamesOrFiles: TStringList): boolean;
+    function AddPackagesToInstallList(const PackageNamesOrFiles: TStringList;
+                                 ALinkOnly: Boolean = false): boolean;
+
+    // Adding packages to list of known packages in the IDE.
+    function AddPackagesToLinkList(const APackageNamesOrFiles: string): boolean;
 
     // IDE
     function BuildLazarusIDE: boolean;
@@ -150,6 +156,8 @@ type
     procedure Error(ErrorCode: Byte; const ErrorMsg: string);
 
     property AddPackage: boolean read FAddPackage write FAddPackage; // add package to installed pacakge in IDE (UserIDE)
+    property AddPackageLink: boolean read FAddPackageLink write FAddPackageLink; // add package to pacakge list
+    property AddPackageLinkList: string read FAddPackageLinkList write FAddPackageLinkList;
     property BuildAll: boolean read FBuildAll write FBuildAll;// build all files of project/package
     property BuildRecursive: boolean read FBuildRecursive // apply BuildAll flag to dependencies
                                      write FBuildRecursive;
@@ -1019,7 +1027,7 @@ begin
 end;
 
 function TLazBuildApplication.AddPackagesToInstallList(
-  const PackageNamesOrFiles: TStringList): boolean;
+  const PackageNamesOrFiles: TStringList; ALinkOnly: Boolean): boolean;
 var
   i: integer;
   Package: TLazPackage;
@@ -1032,7 +1040,8 @@ begin
   Result:=false;
   if not Init then exit;
 
-  LoadMiscellaneousOptions;
+  if not ALinkOnly then
+    LoadMiscellaneousOptions;
 
   ErrorMsg:='';
   ErrCode:=ErrorPackageNameInvalid;
@@ -1062,17 +1071,24 @@ begin
       ErrCode:=ErrorLoadPackageFailed;
       continue;
     end;
-    if Package.PackageType in [lptRunTime,lptRunTimeOnly] then
+    if not ALinkOnly and (Package.PackageType in [lptRunTime,lptRunTimeOnly]) then
     begin
       ErrorMsg+='Package '+PackageNamesOrFiles[i]+' is only for runtime.'+LineEnding;
+      continue;
+    end else if ALinkOnly and (Package.PackageType = lptDesignTime) then
+    begin
+      ErrorMsg+='Package '+PackageNamesOrFiles[i]+' is only for designtime.'+LineEnding;
       continue;
     end;
     PackageName:=Package.Name;
     // set it as (static) autoinstall: select for installation
-    if ConsoleVerbosity>=0 then
-      debugln(['Hint: (lazarus) adding package "'+PkgFilename+'" to install list of IDE']);
-    if MiscellaneousOptions.BuildLazProfiles.StaticAutoInstallPackages.IndexOf(PackageName)<0 then
-      MiscellaneousOptions.BuildLazProfiles.StaticAutoInstallPackages.Add(PackageName);
+    if not ALinkOnly then
+    begin
+      if ConsoleVerbosity>=0 then
+        debugln(['Hint: (lazarus) adding package "'+PkgFilename+'" to install list of IDE']);
+      if MiscellaneousOptions.BuildLazProfiles.StaticAutoInstallPackages.IndexOf(PackageName)<0 then
+        MiscellaneousOptions.BuildLazProfiles.StaticAutoInstallPackages.Add(PackageName);
+    end;
   end;
   if ErrorMsg<>'' then begin
     ErrorMsg:=UTF8Trim(ErrorMsg);
@@ -1080,10 +1096,26 @@ begin
     exit;
   end;
   // save list
-  MiscellaneousOptions.Save;
+  if not ALinkOnly then
+    MiscellaneousOptions.Save;
   PkgLinks.SaveUserLinks(true);
 
   Result:=true;
+end;
+
+function TLazBuildApplication.AddPackagesToLinkList(
+  const APackageNamesOrFiles: string): boolean;
+var
+  LPackageNamesOrFiles: TStringList;
+begin
+  LPackageNamesOrFiles := TStringList.Create;
+  LPackageNamesOrFiles.LineBreak := ';';
+  LPackageNamesOrFiles.Text := APackageNamesOrFiles;
+  try
+    Result := AddPackagesToInstallList(LPackageNamesOrFiles, true);
+  finally
+    LPackageNamesOrFiles.Free;
+  end;
 end;
 
 function TLazBuildApplication.Init: boolean;
@@ -1430,6 +1462,16 @@ begin
     end;
   end;
 
+  // Add user-requested packages to IDE packages links list:
+  if AddPackageLink then begin
+    if not AddPackagesToLinkList(AddPackageLinkList) then begin
+      if ConsoleVerbosity>=-1 then
+        debugln('Error (lazarus) Adding package(s) link failed: ',Files.Text);
+      ExitCode := ErrorBuildFailed;
+      exit;
+    end;
+  end;
+
   if BuildIDE then begin
     if not BuildLazarusIDE then begin
       ExitCode := ErrorBuildFailed;
@@ -1489,6 +1531,7 @@ begin
     LongOptions.Add('scp:');
     LongOptions.Add('language:');
     LongOptions.Add('add-package');
+    LongOptions.Add('add-package-link:');
     LongOptions.Add('build-all');
     LongOptions.Add('build-ide:');
     LongOptions.Add('recursive');
@@ -1522,9 +1565,17 @@ begin
         writeln('Parameter: build-ide=',BuildIDEOptions);
     end;
 
+    // Add package to list of known packages (link only)
+    if HasOption('add-package-link') then begin
+      AddPackageLink:=true;
+      AddPackageLinkList:=GetOptionValue('add-package-link');
+      if ConsoleVerbosity>=0 then
+        writeln('Parameter: add-package-link=', AddPackageLinkList);
+    end;
+
     // files
     Files.Assign(NonOptions);
-    if (Files.Count=0) and (not BuildIDE) then begin
+    if (Files.Count=0) and (not BuildIDE) and (not AddPackageLink) then begin
       writeln('Error: missing file');
       WriteUsage;
       exit;
@@ -1704,6 +1755,8 @@ begin
 
   writeln('--add-package');
   w(space+lisAddPackageSToListOfInstalledPackagesCombineWithBui);
+  writeln('--add-package-link');
+  w(space+lisAddPackageSToListOfKnownPackages);
   writeln('--create-makefile');
   w(space+lisInsteadOfCompilePackageCreateASimpleMakefile);
   writeln('');
