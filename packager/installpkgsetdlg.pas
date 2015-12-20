@@ -37,13 +37,18 @@ unit InstallPkgSetDlg;
 interface
 
 uses
-  Classes, SysUtils, contnrs, LCLProc, Forms, Controls, Graphics, Dialogs,
-  KeywordFuncLists, BasicCodeTools, StdCtrls, Buttons, FileUtil, ExtCtrls,
-  ComCtrls, LCLType, ImgList, AvgLvlTree, Laz2_XMLCfg, LazUTF8,
-  LazFileUtils, TreeFilterEdit, PackageIntf, IDEImagesIntf, IDEHelpIntf,
-  IDEDialogs, IDEWindowIntf, LazarusIDEStrConsts, EnvironmentOpts, InputHistory,
-  LazConf, IDEProcs, PackageDefs, PackageSystem, PackageLinks,
-  LPKCache;
+  Classes, SysUtils, contnrs,
+  LCLType, LCLProc, Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons,
+  ExtCtrls, ComCtrls, ImgList, TreeFilterEdit,
+  // Codetools
+  KeywordFuncLists, BasicCodeTools,
+  // LazUtils
+  FileUtil, LazFileUtils, LazUTF8, AvgLvlTree, Laz2_XMLCfg,
+  // IdeIntf
+  PackageIntf, IDEImagesIntf, IDEHelpIntf, IDEDialogs, IDEWindowIntf,
+  // IDE
+  LazarusIDEStrConsts, EnvironmentOpts, InputHistory,
+  LazConf, IDEProcs, PackageDefs, PackageSystem, PackageLinks, LPKCache;
 
 type
   TOnCheckInstallPackageList =
@@ -890,148 +895,199 @@ begin
 end;
 
 procedure TInstallPkgSetDialog.AddToInstall;
+
+  function SelectionOk(aPackageID: TLazPackageID): Boolean;
+  var
+    APackage: TLazPackage;
+    ConflictDep: TPkgDependency;
+    i: Integer;
+  begin
+    // check if already in list
+    if NewInstalledPackagesContains(aPackageID) then begin
+      MessageDlg(lisDuplicate,
+        Format(lisThePackageIsAlreadyInTheList, [aPackageID.Name]),
+        mtError, [mbCancel],0);
+      exit(false);
+    end;
+    // check if a package with same name is already in the list
+    i:=IndexOfNewInstalledPkgByName(aPackageID.Name);
+    if i>=0 then begin
+      MessageDlg(lisConflict,
+        Format(lisThereIsAlreadyAPackageInTheList, [aPackageID.Name]),
+        mtError,[mbCancel],0);
+      exit(false);
+    end;
+    // check if package is loaded and has some attributes that prevents
+    // installation in the IDE
+    APackage:=PackageGraph.FindPackageWithID(aPackageID);
+    if APackage<>nil then begin
+      if APackage.PackageType in [lptRunTime,lptRunTimeOnly] then begin
+        IDEMessageDialog(lisNotADesigntimePackage,
+          Format(lisThePackageIsNotADesignTimePackageItCanNotBeInstall,
+                 [APackage.IDAsString]),
+          mtError, [mbCancel]);
+        exit(false);
+      end;
+      ConflictDep:=PackageGraph.FindRuntimePkgOnlyRecursively(
+        APackage.FirstRequiredDependency);
+      if ConflictDep<>nil then begin
+        IDEMessageDialog(lisNotADesigntimePackage,
+          Format(lisThePackageCanNotBeInstalledBecauseItRequiresWhichI,
+            [APackage.Name, ConflictDep.AsString]),
+          mtError, [mbCancel]);
+        exit(false);
+      end;
+    end;
+    Result:=true;
+  end;
+
 var
-  i: Integer;
+  i, j: Integer;
+  NewSelectedIndex, LastNonSelectedIndex: Integer;
   NewPackageID: TLazPackageID;
-  j: LongInt;
-  APackage: TLazPackage;
   Additions: TObjectList;
+  AddedPkgNames: TStringList;
   TVNode: TTreeNode;
   PkgName: String;
-  ConflictDep: TPkgDependency;
+  FilteredBranch: TTreeFilterBranch;
 begin
+  NewSelectedIndex:=-1;
+  LastNonSelectedIndex:=-1;
   Additions:=TObjectList.Create(false);
+  AddedPkgNames:=TStringList.Create;
   NewPackageID:=TLazPackageID.Create;
+  FilteredBranch := AvailableFilterEdit.GetExistingBranch(Nil); // All items are top level.
   try
-    for i:=0 to AvailableTreeView.Items.TopLvlCount-1 do begin
+    for i:=0 to AvailableTreeView.Items.TopLvlCount-1 do
+    begin
       TVNode:=AvailableTreeView.Items.TopLvlItems[i];
-      if not TVNode.MultiSelected then continue;
-      PkgName:=TVNode.Text;
-      // check string
-      if not NewPackageID.StringToID(PkgName) then begin
-        TVNode.Selected:=false;
-        debugln('TInstallPkgSetDialog.AddToInstallButtonClick invalid ID: ',
-                PkgName);
+      if not TVNode.MultiSelected then begin
+        LastNonSelectedIndex:=i;
         continue;
       end;
-      // check if already in list
-      if NewInstalledPackagesContains(NewPackageID) then begin
-        MessageDlg(lisDuplicate,
-          Format(lisThePackageIsAlreadyInTheList, [NewPackageID.Name]), mtError,
-          [mbCancel],0);
+      NewSelectedIndex:=i+1; // Will have the next index after the selected one.
+      PkgName:=TVNode.Text;
+      // Convert package name to ID and check it
+      if not NewPackageID.StringToID(PkgName) then begin
+        TVNode.Selected:=false;
+        DebugLn('TInstallPkgSetDialog.AddToInstall invalid ID: ', PkgName);
+        continue;
+      end;
+      if not SelectionOk(NewPackageID) then begin
         TVNode.Selected:=false;
         exit;
       end;
-      // check if a package with same name is already in the list
-      j:=IndexOfNewInstalledPkgByName(NewPackageID.Name);
-      if j>=0 then begin
-        MessageDlg(lisConflict,
-          Format(lisThereIsAlreadyAPackageInTheList, [NewPackageID.Name]),
-          mtError,[mbCancel],0);
-        TVNode.Selected:=false;
-        exit;
-      end;
-      // check if package is loaded and has some attributes that prevents
-      // installation in the IDE
-      APackage:=PackageGraph.FindPackageWithID(NewPackageID);
-      if APackage<>nil then begin
-        if APackage.PackageType in [lptRunTime,lptRunTimeOnly] then begin
-          IDEMessageDialog(lisNotADesigntimePackage,
-            Format(lisThePackageIsNotADesignTimePackageItCanNotBeInstall, [
-              APackage.IDAsString]), mtError,
-            [mbCancel]);
-          TVNode.Selected:=false;
-          exit;
-        end;
-        ConflictDep:=PackageGraph.FindRuntimePkgOnlyRecursively(
-          APackage.FirstRequiredDependency);
-        if ConflictDep<>nil then begin
-          IDEMessageDialog(lisNotADesigntimePackage,
-            Format(lisThePackageCanNotBeInstalledBecauseItRequiresWhichI, [
-              APackage.Name, ConflictDep.AsString]),
-            mtError,[mbCancel]);
-          TVNode.Selected:=false;
-          exit;
-        end;
-      end;
-
       // ok => add to list
       Additions.Add(NewPackageID);
       NewPackageID:=TLazPackageID.Create;
+      AddedPkgNames.Add(PkgName);
     end;
-    // all ok => add to list
+    // all ok => add to installed packages
     for i:=0 to Additions.Count-1 do
       FNewInstalledPackages.Add(Additions[i]);
-    Additions.Clear;
+    for i:=0 to AddedPkgNames.Count-1 do begin
+      j:=FilteredBranch.Items.IndexOf(AddedPkgNames[i]);
+      Assert(j<>-1, 'TInstallPkgSetDialog.AddToInstall: '+AddedPkgNames[i]+' not found in Filter items.');
+      FilteredBranch.Items.Delete(j);
+    end;
+    // Don't call UpdateAvailablePackages here, only the selected nodes were removed.
     UpdateNewInstalledPackages;
-    UpdateAvailablePackages;
     UpdateButtonStates;
+    if ((NewSelectedIndex=-1) or (NewSelectedIndex=AvailableTreeView.Items.TopLvlCount)) then
+      NewSelectedIndex:=LastNonSelectedIndex;
+    if NewSelectedIndex<>-1 then
+      AvailableTreeView.Items.TopLvlItems[NewSelectedIndex].Selected:=True;
+    AvailableFilterEdit.InvalidateFilter;
   finally
-    // clean up
     NewPackageID.Free;
-    for i:=0 to Additions.Count-1 do
-      TObject(Additions[i]).Free;
+    AddedPkgNames.Free;
     Additions.Free;
   end;
 end;
 
 procedure TInstallPkgSetDialog.AddToUninstall;
+
+  function SelectionOk(aPackageID: TLazPackageID): Boolean;
+  var
+    APackage: TLazPackage;
+  begin
+    APackage:=PackageGraph.FindPackageWithID(aPackageID);
+    if APackage<>nil then begin
+      // check if package is a base package
+      if PackageGraph.IsStaticBasePackage(APackage.Name) then begin
+        MessageDlg(lisUninstallImpossible,
+          Format(lisThePackageCanNotBeUninstalledBecauseItIsNeededByTh, [
+            APackage.Name]), mtError, [mbCancel], 0);
+        exit(false);
+      end;
+    end;
+    Result:=true;
+  end;
+
 var
-  i: Integer;
-  OldPackageID: TLazPackageID;
-  APackage: TLazPackage;
+  i, j: Integer;
+  NewSelectedIndex, LastNonSelectedIndex: Integer;
+  DelPackageID, PackID: TLazPackageID;
   Deletions: TObjectList;
-  DelPackageID: TLazPackageID;
-  j: LongInt;
+  DeletedPkgNames: TStringList;
   TVNode: TTreeNode;
   PkgName: String;
+  FilteredBranch: TTreeFilterBranch;
 begin
-  OldPackageID := nil;
+  NewSelectedIndex:=-1;
+  LastNonSelectedIndex:=-1;
   Deletions:=TObjectList.Create(true);
+  DeletedPkgNames:=TStringList.Create;
+  DelPackageID:=TLazPackageID.Create;
+  FilteredBranch := InstalledFilterEdit.GetExistingBranch(Nil); // All items are top level.
   try
     for i:=0 to InstallTreeView.Items.TopLvlCount-1 do begin
       TVNode:=InstallTreeView.Items.TopLvlItems[i];
-      if not TVNode.MultiSelected then continue;
-      if OldPackageID = nil then
-        OldPackageID:=TLazPackageID.Create;
-      PkgName:=TVNode.Text;
-      if not OldPackageID.StringToID(PkgName) then begin
-        TVNode.Selected:=false;
-        debugln('TInstallPkgSetDialog.AddToUninstallButtonClick invalid ID: ',
-                PkgName);
+      if not TVNode.MultiSelected then begin
+        LastNonSelectedIndex:=i;
         continue;
       end;
-      // ok => add to deletions
-      Deletions.Add(OldPackageID);
-      DelPackageID:=OldPackageID;
-      OldPackageID := nil;
-      // get package
-      APackage:=PackageGraph.FindPackageWithID(DelPackageID);
-      if APackage<>nil then begin
-        // check if package is a base package
-        if PackageGraph.IsStaticBasePackage(APackage.Name) then begin
-          TVNode.Selected:=false;
-          MessageDlg(lisUninstallImpossible,
-            Format(lisThePackageCanNotBeUninstalledBecauseItIsNeededByTh, [
-              APackage.Name]), mtError, [mbCancel], 0);
-          exit;
-        end;
+      NewSelectedIndex:=i+1; // Will have the next index after the selected one.
+      PkgName:=TVNode.Text;
+      if not DelPackageID.StringToID(PkgName) then begin
+        TVNode.Selected:=false;
+        debugln('TInstallPkgSetDialog.AddToUninstall invalid ID: ', PkgName);
+        continue;
       end;
+      if not SelectionOk(DelPackageID) then begin
+        TVNode.Selected:=false;
+        exit;
+      end;
+      // ok => add to deletions
+      Deletions.Add(DelPackageID);
+      DelPackageID:=TLazPackageID.Create;
+      DeletedPkgNames.Add(PkgName);
     end;
 
-    // ok => remove from list
+    // ok => remove from installed packages
     InstallTreeView.Selected:=nil;
     for i:=0 to Deletions.Count-1 do begin
-      DelPackageID:=TLazPackageID(Deletions[i]);
-      j:=IndexOfNewInstalledPackageID(DelPackageID);
+      PackID:=TLazPackageID(Deletions[i]);
+      j:=IndexOfNewInstalledPackageID(PackID);
       FNewInstalledPackages.Delete(j);
     end;
+    for i:=0 to DeletedPkgNames.Count-1 do begin
+      j:=FilteredBranch.Items.IndexOf(DeletedPkgNames[i]);
+      Assert(j<>-1, 'TInstallPkgSetDialog.AddToUninstall: '+DeletedPkgNames[i]+' not found in Filter items.');
+      FilteredBranch.Items.Delete(j);
+    end;
 
-    UpdateNewInstalledPackages;
+    // Don't call UpdateNewInstalledPackages here, only the selected nodes were removed.
     UpdateAvailablePackages;
     UpdateButtonStates;
+    if ((NewSelectedIndex=-1) or (NewSelectedIndex=InstallTreeView.Items.TopLvlCount)) then
+      NewSelectedIndex:=LastNonSelectedIndex;
+    if NewSelectedIndex<>-1 then
+      InstallTreeView.Items.TopLvlItems[NewSelectedIndex].Selected:=True;
+    InstalledFilterEdit.InvalidateFilter;
   finally
-    OldPackageID.Free;
+    DelPackageID.Free;
+    DeletedPkgNames.Free;
     Deletions.Free;
   end;
 end;
