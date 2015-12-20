@@ -88,6 +88,8 @@ type
   end;
   PtagPD = ^tagPD;
 
+
+  {
   _PRINTER_DEFAULTSA = record
        pDatatype : LPSTR;
        pDevMode : LPDEVMODE;
@@ -96,6 +98,7 @@ type
   PRINTER_DEFAULTSA = _PRINTER_DEFAULTSA;
   PPRINTER_DEFAULTSA = ^_PRINTER_DEFAULTSA;
   LPPRINTER_DEFAULTSA = ^_PRINTER_DEFAULTSA;
+  }
 
   _PRINTER_DEFAULTSW = record
     pDatatype: pwidechar;
@@ -103,6 +106,7 @@ type
     DesiredAccess: ACCESS_MASK;
   end;
   LPPRINTER_DEFAULTSW = ^_PRINTER_DEFAULTSW;
+
 
   _PRINTER_INFO_2A = record
        pServerName : LPTSTR;
@@ -134,6 +138,8 @@ type
   PRINTER_INFO_2 = PRINTER_INFO_2A;
   PPRINTER_INFO_2 = ^PRINTER_INFO_2;
   LPPRINTER_INFO_2 = ^PRINTER_INFO_2;
+
+
 
   _PRINTER_INFO_2W = record
        pServerName : LPWSTR;
@@ -183,6 +189,7 @@ type
   PPRINTER_INFO_4 = ^PRINTER_INFO_4;
   LPPRINTER_INFO_4 = ^PRINTER_INFO_4;
 
+
   _PRINTER_INFO_4W = record
        pPrinterName : LPWSTR;
        pServerName : LPWSTR;
@@ -209,7 +216,6 @@ type
     DefaultPaper: Short;
     DefaultBin: short;
     DevModeW: PDeviceModeW;
-    DevModeA: PDeviceModeA;
     DevModeSize: integer;
     destructor Destroy; override;
   end;
@@ -222,15 +228,15 @@ function DeviceCapabilitiesW(pDevice, pPort: PWideChar; fwCapability: word;
 function GetProfileString(lpAppName: PChar; lpKeyName: PChar; lpDefault: PChar;
   lpReturnedString: PChar; nSize: DWORD): DWORD; stdcall; external 'kernel32' Name 'GetProfileStringA';
 
-function PrintDlg(lppd: PtagPD): BOOL; stdcall; external 'comdlg32.dll' Name 'PrintDlgA';
+//function PrintDlg(lppd: PtagPD): BOOL; stdcall; external 'comdlg32.dll' Name 'PrintDlgA';
 function PrintDlgW(lppd: PTagPD): BOOL; stdcall; external 'comdlg32.dll' name 'PrintDlgW';
-function PageSetupDlg(lppd: PtagPSD): BOOL; stdcall; external 'comdlg32.dll' Name 'PageSetupDlgA';
+//function PageSetupDlg(lppd: PtagPSD): BOOL; stdcall; external 'comdlg32.dll' Name 'PageSetupDlgA';
 function PageSetupDlgW(lppd: PtagPSD): BOOL; stdcall; external 'comdlg32.dll' Name 'PageSetupDlgW';
 function CommDlgExtendedError: DWORD; stdcall; external 'comdlg32.dll' Name 'CommDlgExtendedError';
 
-function CreateIC(lpszDriver, lpszDevice, lpszOutput: PChar; lpdvmInit: PDeviceMode): HDC; stdcall; external 'gdi32.dll' Name 'CreateICA';
+//function CreateIC(lpszDriver, lpszDevice, lpszOutput: PChar; lpdvmInit: PDeviceMode): HDC; stdcall; external 'gdi32.dll' Name 'CreateICA';
 function CreateICW(lpszDriver, lpszDevice, lpszOutput: pwidechar; lpdvmInit: PDeviceModeW): HDC; stdcall; external 'gdi32.dll' Name 'CreateICW';
-function CreateDC(lpszDriver, lpszDevice, lpszOutput: PChar; lpdvmInit: PDeviceMode): HDC; stdcall; external 'gdi32.dll' Name 'CreateDCA';
+//function CreateDC(lpszDriver, lpszDevice, lpszOutput: PChar; lpdvmInit: PDeviceMode): HDC; stdcall; external 'gdi32.dll' Name 'CreateDCA';
 function CreateDCW(lpszDriver, lpszDevice, lpszOutput: pwidechar; lpdvmInit: PDeviceModeW): HDC; stdcall; external 'gdi32.dll' Name 'CreateDCW';
 
 function DeleteDC(DC: HDC): BOOL; stdcall; external 'gdi32.dll' Name 'DeleteDC';
@@ -242,12 +248,12 @@ function AbortDoc(DC: HDC): integer; stdcall; external 'gdi32.dll' Name 'AbortDo
 function GlobalFree(HMem: HGlobal): HGlobal; stdcall; external 'kernel32.dll' Name 'GlobalFree';
 
 // todo: remove when WinSpool.pp will be released with fpc
-function OpenPrinter(_para1:LPSTR; _para2:PHANDLE; _para3:LPPRINTER_DEFAULTSA):BOOL;stdcall; external LibWinSpool name 'OpenPrinterA';
+//function OpenPrinter(_para1:LPSTR; _para2:PHANDLE; _para3:LPPRINTER_DEFAULTSA):BOOL;stdcall; external LibWinSpool name 'OpenPrinterA';
 function OpenPrinterW(_para1:pwidechar; _para2:PHANDLE; _para3:LPPRINTER_DEFAULTSW):BOOL;stdcall; external LibWinSpool name 'OpenPrinterW';
 function ClosePrinter(_para1:HANDLE):BOOL;stdcall; external LibWinSpool Name 'ClosePrinter';
-function DocumentProperties(_para1:HWND; _para2:HANDLE; _para3:LPSTR; _para4:PDEVMODE; _para5:PDEVMODE; _para6:DWORD):LONG;stdcall; external LibWinSpool name 'DocumentPropertiesA';
+//function DocumentProperties(_para1:HWND; _para2:HANDLE; _para3:LPSTR; _para4:PDEVMODE; _para5:PDEVMODE; _para6:DWORD):LONG;stdcall; external LibWinSpool name 'DocumentPropertiesA';
 function DocumentPropertiesW(_para1:HWND; _para2:HANDLE; _para3:pwidechar; _para4:PDEVMODEW; _para5:PDEVMODEW; _para6:DWORD):LONG;stdcall; external LibWinSpool name 'DocumentPropertiesW';
-function EnumPrinters(_para1:DWORD; _para2:LPSTR; _para3:DWORD; _para4:PBYTE; _para5:DWORD; _para6:PDWORD; _para7:PDWORD):BOOL;stdcall; external LibWinSpool name 'EnumPrintersA';
+//function EnumPrinters(_para1:DWORD; _para2:LPSTR; _para3:DWORD; _para4:PBYTE; _para5:DWORD; _para6:PDWORD; _para7:PDWORD):BOOL;stdcall; external LibWinSpool name 'EnumPrintersA';
 function EnumPrintersW(_para1:DWORD; _para2:Pwidechar; _para3:DWORD; _para4:PBYTE; _para5:DWORD; _para6:PDWORD; _para7:PDWORD):BOOL;stdcall; external LibWinSpool name 'EnumPrintersW';
 function GetPrinter(_para1:HANDLE; _para2:DWORD; _para3:PBYTE; _para4:DWORD; _para5:PDWORD):BOOL;stdcall; external LibWinSpool name 'GetPrinterA';
 function StartDocPrinter(hPrinter: THANDLE; Level: DWORD; DocInfo: PByte): DWORD; stdcall; external LibWinSpool Name 'StartDocPrinterA';
@@ -263,7 +269,6 @@ implementation
 
 destructor TPrinterDevice.Destroy;
 begin
-  ReallocMem(DevModeA, 0);
   ReallocMem(DevModeW, 0);
   inherited Destroy;
 end;

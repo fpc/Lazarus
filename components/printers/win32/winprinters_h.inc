@@ -22,8 +22,6 @@
 uses
   Classes, SysUtils,Printers,LCLType,{Forms,}Windows;//,dialogs;
 
-const
-  UseUnicode: Boolean = True;  //Determined at runtime
 
 Type
   THandleType = (htNone, htIC, htDC);
