@@ -5042,8 +5042,6 @@ var
   ActiveUnitInfo: TUnitInfo;
   PkgFile: TPkgFile;
   Filename: String;
-  TheUnitName: String;
-  HasRegisterProc: Boolean;
 begin
   MainIDE.GetCurrentUnitInfo(ActiveSourceEditor,ActiveUnitInfo);
   if ActiveSourceEditor=nil then exit(mrAbort);
@@ -5074,19 +5072,8 @@ begin
       mtWarning,[mbIgnore,mbCancel]);
     if Result<>mrIgnore then exit;
   end;
-  
-  TheUnitName:='';
-  HasRegisterProc:=false;
-  if FilenameIsPascalUnit(Filename) then begin
-    Result:=DoGetUnitRegisterInfo(Filename,TheUnitName,HasRegisterProc,false);
-    if Result<>mrOk then begin
-      debugln(['Error: (lazarus) [TPkgManager.DoAddActiveUnitToAPackage] DoGetUnitRegisterInfo failed']);
-      exit;
-    end;
-  end;
-  
-  Result:=ShowAddFileToAPackageDlg(Filename,TheUnitName,HasRegisterProc,
-                                   @MainIDE.GetIDEFileState);
+
+  Result:=ShowAddFileToAPackageDlg(Filename);
 end;
 
 function TPkgManager.DoNewPackageComponent: TModalResult;

@@ -320,7 +320,6 @@ type
     FFirstNodeData: array[TPENodeType] of TPENodeData;
     fUpdateLock: integer;
     fForcedFlags: TPEFlags;
-    function AddOneFile(aFilename: string; var NewUnitPaths, NewIncPaths: String): TModalResult;
     procedure DoAddNewFile(NewItem: TNewIDEItemTemplate);
     procedure FreeNodeData(Typ: TPENodeType);
     function CreateNodeData(Typ: TPENodeType; aName: string; aRemoved: boolean): TPENodeData;
@@ -1456,11 +1455,11 @@ begin
     NewUnitPaths:='';
     NewIncPaths:='';
     for i:=0 to high(Filenames) do
-      if not (AddOneFile(FileNames[i], NewUnitPaths, NewIncPaths) in [mrOk, mrIgnore]) then break;
+      LazPackage.AddFileByName(FileNames[i], NewUnitPaths, NewIncPaths);
     //UpdateAll(false);
     // extend unit and include search path
-    if not ExtendUnitSearchPath(NewUnitPaths) then exit;
-    if not ExtendIncSearchPath(NewIncPaths) then exit;
+    if not LazPackage.ExtendUnitSearchPath(NewUnitPaths) then exit;
+    if not LazPackage.ExtendIncSearchPath(NewIncPaths) then exit;
   finally
     EndUpdate;
   end;
@@ -1557,47 +1556,6 @@ begin
   DoUseUnitsInDirectory(false);
 end;
 
-function TPackageEditorForm.AddOneFile(aFilename: string;
-  var NewUnitPaths, NewIncPaths: String): TModalResult;
-var
-  NewFileType: TPkgFileType;
-  NewUnitName: String;
-  HasRegister: Boolean;
-  NewFlags: TPkgFileFlags;
-  Code: TCodeBuffer;
-  CurDir: String;
-begin
-  Result := mrOK;
-  aFilename:=CleanAndExpandFilename(aFileName);
-  if not FileExistsUTF8(aFilename) then Exit(mrIgnore);
-  if DirPathExists(aFilename) then Exit(mrIgnore);
-  if LazPackage.FindPkgFile(aFilename,true,false)<>nil then Exit(mrIgnore);
-  NewFileType:=FileNameToPkgFileType(aFilename);
-  NewFlags:=[];
-  HasRegister:=false;
-  NewUnitName:='';
-  if (NewFileType=pftUnit) then begin
-    Code:=CodeToolBoss.LoadFile(aFilename,true,false);
-    NewUnitName:=CodeToolBoss.GetSourceName(Code,false);
-    if NewUnitName='' then
-      NewUnitName:=ExtractFileNameOnly(aFilename);
-    if LazPackage.FindUsedUnit(NewUnitName)=nil then
-      Include(NewFlags,pffAddToPkgUsesSection);
-    CodeToolBoss.HasInterfaceRegisterProc(Code,HasRegister);
-    if HasRegister then
-      Include(NewFlags,pffHasRegisterProc);
-  end;
-  {$IFDEF VerbosePkgEditDrag}
-  debugln(['TPackageEditorForm.FormDropFiles Adding files: ',aFilename,' Unit=',NewUnitName,' Type=',PkgFileTypeIdents[NewFileType],' use=',pffAddToPkgUsesSection in NewFlags,' hasregister=',pffHasRegisterProc in NewFlags]);
-  {$ENDIF}
-  LazPackage.AddFile(aFilename,NewUnitName,NewFileType,NewFlags,cpNormal);
-  CurDir:=ChompPathDelim(ExtractFilePath(aFilename));
-  if NewFileType=pftUnit then
-    NewUnitPaths:=MergeSearchPaths(NewUnitPaths,CurDir)
-  else
-    NewIncPaths:=MergeSearchPaths(NewIncPaths,CurDir);
-end;
-
 procedure TPackageEditorForm.mnuAddDiskFileClick(Sender: TObject);
 var
   OpenDialog: TOpenDialog;
@@ -1619,15 +1577,15 @@ begin
       +'|'+dlgFilterLazarusPackage+' (*.lpk)|*.lpk'
       +'|'+dlgFilterLazarusProjectSource+' (*.lpr)|*.lpr';
     if OpenDialog.Execute then begin
+      InputHistories.StoreFileDialogSettings(OpenDialog);
       NewUnitPaths:='';
       NewIncPaths:='';
       for i:=0 to OpenDialog.Files.Count-1 do
-        if not (AddOneFile(OpenDialog.Files[i], NewUnitPaths, NewIncPaths) in [mrOk, mrIgnore]) then break;
-      InputHistories.StoreFileDialogSettings(OpenDialog);
+        LazPackage.AddFileByName(OpenDialog.Files[i], NewUnitPaths, NewIncPaths);
       //UpdateAll(false);
       // extend unit and include search path
-      if not ExtendUnitSearchPath(NewUnitPaths) then exit;
-      if not ExtendIncSearchPath(NewIncPaths) then exit;
+      if not LazPackage.ExtendUnitSearchPath(NewUnitPaths) then exit;
+      if not LazPackage.ExtendIncSearchPath(NewIncPaths) then exit;
     end;
   finally
     OpenDialog.Free;
@@ -3065,47 +3023,13 @@ begin
 end;
 
 function TPackageEditorForm.ExtendUnitSearchPath(NewUnitPaths: string): boolean;
-var
-  CurUnitPaths: String;
-  r: TModalResult;
 begin
-  CurUnitPaths:=LazPackage.CompilerOptions.ParsedOpts.GetParsedValue(pcosUnitPath);
-  NewUnitPaths:=RemoveSearchPaths(NewUnitPaths,CurUnitPaths);
-  if NewUnitPaths<>'' then begin
-    NewUnitPaths:=CreateRelativeSearchPath(NewUnitPaths,LazPackage.Directory);
-    r:=IDEMessageDialog(lisExtendUnitPath,
-      Format(lisExtendUnitSearchPathOfPackageWith, [LazPackage.Name, #13,
-        NewUnitPaths]), mtConfirmation, [mbYes, mbNo, mbCancel]);
-    case r of
-    mrYes: LazPackage.CompilerOptions.OtherUnitFiles:=
-      MergeSearchPaths(LazPackage.CompilerOptions.OtherUnitFiles,NewUnitPaths);
-    mrNo: ;
-    else exit(false);
-    end;
-  end;
-  Result:=true;
+  Result:=LazPackage.ExtendUnitSearchPath(NewUnitPaths);
 end;
 
 function TPackageEditorForm.ExtendIncSearchPath(NewIncPaths: string): boolean;
-var
-  CurIncPaths: String;
-  r: TModalResult;
 begin
-  CurIncPaths:=LazPackage.CompilerOptions.ParsedOpts.GetParsedValue(pcosIncludePath);
-  NewIncPaths:=RemoveSearchPaths(NewIncPaths,CurIncPaths);
-  if NewIncPaths<>'' then begin
-    NewIncPaths:=CreateRelativeSearchPath(NewIncPaths,LazPackage.Directory);
-    r:=IDEMessageDialog(lisExtendIncludePath,
-      Format(lisExtendIncludeFileSearchPathOfPackageWith, [LazPackage.Name, #13,
-        NewIncPaths]), mtConfirmation, [mbYes, mbNo, mbCancel]);
-    case r of
-    mrYes: LazPackage.CompilerOptions.IncludePath:=
-      MergeSearchPaths(LazPackage.CompilerOptions.IncludePath,NewIncPaths);
-    mrNo: ;
-    else exit(false);
-    end;
-  end;
-  Result:=true;
+  Result:=LazPackage.ExtendIncSearchPath(NewIncPaths);
 end;
 
 function TPackageEditorForm.FilesEditTreeView: TTreeView;

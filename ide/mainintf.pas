@@ -59,9 +59,13 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, LCLType, LCLIntf, Buttons, Menus, SysUtils,
-  typinfo, Controls, Graphics, ExtCtrls, Dialogs, FileUtil, Forms,
-  LazFileUtils, CodeToolManager, CodeCache, AVL_Tree, SynEditKeyCmds,
+  Classes, SysUtils, typinfo, AVL_Tree,
+  LCLType, LCLIntf, Buttons, Menus, Controls, Graphics, ExtCtrls, Dialogs, Forms,
+  SynEditKeyCmds,
+  // Codetools
+  CodeToolManager, CodeCache,
+  // LazUtils
+  FileUtil, LazFileUtils,
   // IDEIntf
   PropEdits, ObjectInspector, MenuIntf, SrcEditorIntf, ProjectIntf,
   CompOptsIntf, LazIDEIntf, IDEDialogs, IDEWindowIntf,

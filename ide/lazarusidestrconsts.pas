@@ -4284,9 +4284,6 @@ resourcestring
   lisAF2PPackageNotFound = 'Package "%s" not found.';
   lisAF2PPackageIsReadOnly = 'Package is read only';
   lisAF2PThePackageIsReadOnly = 'The package %s is read only.';
-  lisAF2PTheFileIsAlreadyInThePackage = 'The file "%s"%sis already in the package %s.';
-  lisAF2PUnitName = 'Unit name: ';
-  lisAF2PHasRegisterProcedure = 'Has Register procedure';
   lisAF2PFileType = 'File type';
   lisPEExpandDirectory = 'Expand directory';
   lisPECollapseDirectory = 'Collapse directory';
