@@ -184,6 +184,7 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     ParentShowHint = False
     ShowHint = True
     TabOrder = 12
+    Visible = False
   end
   object ExportDesktopButton: TButton
     AnchorSideLeft.Control = Owner
@@ -204,6 +205,7 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     ParentShowHint = False
     ShowHint = True
     TabOrder = 11
+    Visible = False
   end
   object PanelGlyphsButtonsOptions: TPanel
     AnchorSideLeft.Control = lblButtons
@@ -385,6 +387,7 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     Font.Style = [fsBold]
     ParentColor = False
     ParentFont = False
+    Visible = False
   end
   object lblGlyphs: TDividerBevel
     AnchorSideTop.Control = ShowHintsForComponentPaletteCheckBox
