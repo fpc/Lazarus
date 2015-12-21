@@ -1372,6 +1372,8 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.DoConstraintsChange(Sender : TObject);
 begin
+  Width:=Constraints.MinMaxWidth(Width);
+  Height:=Constraints.MinMaxHeight(Height);
   AdjustSize;
 end;
 
