@@ -3,13 +3,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-12 15:04+0100\n"
-"PO-Revision-Date: 2015-04-29 08:23+0100\n"
+"PO-Revision-Date: 2015-12-19 15:48+0100\n"
 "Last-Translator: Yann Mérignac <yann.merignac@laposte.net>\n"
 "Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Poedit 1.8.6\n"
 
 #: lhelpstrconsts.slhelp_about
 msgid "About"
@@ -29,7 +29,7 @@ msgstr "Impossible de prendre en charge ce type de contenu. \"%s\" pour l'URL :%
 
 #: lhelpstrconsts.slhelp_close
 msgid "&Close"
-msgstr ""
+msgstr "&Fermer"
 
 #: lhelpstrconsts.slhelp_contents
 msgid "Contents"
@@ -133,11 +133,11 @@ msgstr "Ouvrir un fichier existant"
 
 #: lhelpstrconsts.slhelp_opennewfileinseparatetab
 msgid "Open new file in separate tab"
-msgstr ""
+msgstr "Ouvrir un nouveau fichier dans onglet séparé"
 
 #: lhelpstrconsts.slhelp_opennewtabwithstatusbar
 msgid "Open new tab with status bar"
-msgstr ""
+msgstr "Ouvrir un nouvel onglet avec la barre d'état"
 
 #: lhelpstrconsts.slhelp_openrecent
 msgid "Open Recent"

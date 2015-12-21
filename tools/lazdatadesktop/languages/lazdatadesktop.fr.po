@@ -1,16 +1,15 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Project-Id-Version: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
+"POT-Creation-Date: 2015-04-14 07:54+0100\n"
+"PO-Revision-Date: 2015-12-19 15:58+0100\n"
+"Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: fr_FR\n"
-"X-Generator: Poedit 1.8\n"
+"Language: fr\n"
+"X-Generator: Poedit 1.8.6\n"
 
 #: lazdatadeskstr.eoaddterminator
 msgid "Add terminator"
@@ -189,8 +188,6 @@ msgid "Save SQL statement to file"
 msgstr "Enregistrer du code SQL"
 
 #: lazdatadeskstr.simportdictinto
-#, fuzzy
-#| msgid "Import datadictionary"
 msgid "Import data dictionary"
 msgstr "Importer un dictionnaire de données"
 
@@ -356,8 +353,6 @@ msgid "Open"
 msgstr "Ouvrir"
 
 #: lazdatadeskstr.sld_actionopenrecentdatadicth
-#, fuzzy
-#| msgid "Open selected recent datadictionary"
 msgid "Open selected recent data dictionary"
 msgstr "Ouvrir le dictionnaire de données sélectionné récent"
 
@@ -378,10 +373,8 @@ msgid "Save &as"
 msgstr "Enregistrer sous..."
 
 #: lazdatadeskstr.sld_actionsaveash
-#, fuzzy
-#| msgid "Save datadictionary as"
 msgid "Save data dictionary as"
-msgstr "Enregistrer un dictionnaire de données sous"
+msgstr "Enregistrer le dictionnaire de données sous"
 
 #: lazdatadeskstr.sld_actionsaveh
 msgid "Save Data Dictionary"
@@ -461,8 +454,6 @@ msgid "Host"
 msgstr "Hôte"
 
 #: lazdatadeskstr.sld_importupdatedatadictionary
-#, fuzzy
-#| msgid "Import/Update datadictionary"
 msgid "Import/Update data dictionary"
 msgstr "Importer/Mettre à jour un dictionnaire de données"
 
@@ -612,10 +603,8 @@ msgid "New connection"
 msgstr "Nouvelle connexion"
 
 #: lazdatadeskstr.snewdictionary
-#, fuzzy
-#| msgid "New database"
 msgid "New data dictionary"
-msgstr "Nouvelle base de données "
+msgstr "Nouveau dictionnaire de données"
 
 #: lazdatadeskstr.snewdomain
 msgid "Create new domain"
@@ -679,8 +668,6 @@ msgid "Database"
 msgstr "Base de données "
 
 #: lazdatadeskstr.snodedatadictionary
-#, fuzzy
-#| msgid "Datadictionary"
 msgid "Data dictionary"
 msgstr "Dictionnaire de données"
 

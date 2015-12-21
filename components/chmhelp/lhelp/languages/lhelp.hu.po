@@ -190,3 +190,4 @@ msgstr "    Használat: lhelp [[fájlnév] [--context azonosító] [--hide] [--i
 #: lhelpstrconsts.slhelp_view
 msgid "&View"
 msgstr "&Nézet"
+
