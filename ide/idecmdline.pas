@@ -315,7 +315,7 @@ var
   i      : integer;
   AValue : String;
 begin
-  for i:= 1 to ParamsAndCfgCount do
+  for i:=1 to ParamsAndCfgCount do
   begin
     //DebugLn(['ParseNoGuiCmdLineParams ',i,' "',ParamsAndCfgStr(i),'"']);
     if ParamIsOptionPlusValue(i, PrimaryConfPathOptLong, AValue) then

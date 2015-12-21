@@ -176,7 +176,7 @@ type
     procedure IteratePackages(MustExist: boolean; Event: TIteratePackagesEvent;
                               Origins: TPkgLinkOrigins = AllPkgLinkOrigins);
     function AddUserLink(APackage: TLazPackage): TPackageLink;
-    function AddUserLink(const PkgFilename, PkgName: string): TPackageLink;// do not this use if package is open in IDE
+    function AddUserLink(const PkgFilename, PkgName: string): TPackageLink;// do not use this if package is open in IDE
     procedure RemoveUserLink(Link: TPackageLink);
     procedure RemoveUserLinks(APackageID: TLazPackageID);
     procedure IncreaseChangeStamp;

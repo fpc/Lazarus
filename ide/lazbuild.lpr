@@ -46,29 +46,34 @@ uses
   BuildProfileManager, BuildManager, BaseBuildManager, ModeMatrixOpts;
   
 type
+  TPkgAction = (
+    lpaBuild, // build package, default
+    lpaInstall, // install package
+    lpaAddPkgLinks // register, no build
+    );
 
   { TLazBuildApplication }
 
   TLazBuildApplication = class(TCustomApplication)
   private
-    FAddPackage: boolean;
     FBuildAll: boolean;
     FBuildIDE: boolean;
     FBuildIDEOptions: string;
     FBuildModeOverride: String;
     FBuildRecursive: boolean;
-    fCompilerOverride: String;
     fCompilerInCfg: string;
-    FCreateMakefile: boolean;
-    fLazarusDirOverride : String;
-    fLazarusDirInCfg: string;
+    fCompilerOverride: String;
     fCPUOverride: String;
-    FMaxProcessCount: integer;
-    fOSOverride: String;
-    FPkgGraphVerbosity: TPkgVerbosityFlags;
-    FSkipDependencies: boolean;
+    FCreateMakefile: boolean;
     fInitialized: boolean;
     fInitResult: boolean;
+    fLazarusDirInCfg: string;
+    fLazarusDirOverride : String;
+    FMaxProcessCount: integer;
+    fOSOverride: String;
+    FPackageAction: TPkgAction;
+    FPkgGraphVerbosity: TPkgVerbosityFlags;
+    FSkipDependencies: boolean;
     fWidgetsetOverride: String;
 
     // codetools
@@ -123,6 +128,7 @@ type
     // Adding packages to list of to-be-installed packages in the IDE.
     // The packages can then be installed by recompiling the IDE (because we're using static packages)
     function AddPackagesToInstallList(const PackageNamesOrFiles: TStringList): boolean;
+    function AddCmdLinePackageLinks(const PackageNamesOrFiles: TStringList): boolean;
 
     // IDE
     function BuildLazarusIDE: boolean;
@@ -149,7 +155,7 @@ type
     procedure WriteUsage;
     procedure Error(ErrorCode: Byte; const ErrorMsg: string);
 
-    property AddPackage: boolean read FAddPackage write FAddPackage; // add package to installed pacakge in IDE (UserIDE)
+    property PackageAction: TPkgAction read FPackageAction write FPackageAction;
     property BuildAll: boolean read FBuildAll write FBuildAll;// build all files of project/package
     property BuildRecursive: boolean read FBuildRecursive // apply BuildAll flag to dependencies
                                      write FBuildRecursive;
@@ -365,6 +371,11 @@ begin
   begin
     // Check for packages if the specified name is a valid identifier
     if IsValidIdent(OriginalFileName) then begin
+      if PackageAction=lpaAddPkgLinks then begin
+        Error(ErrorFileNotFound,'lpk file expected, but '+OriginalFilename+' found');
+        Exit;
+      end;
+
       // Initialize package graph with base packages etc:
       if not Init then exit;
       // Apparently not found, could be a known but not installed package
@@ -376,12 +387,10 @@ begin
       end
       else begin
         // We found a package link
-        if AddPackage then begin
-          // this is handled in AddPackagesToInstallList
-          Result:=true;
-        end
-        else
-          Result:=BuildPackage(Package.LPKFilename)
+        case PackageAction of
+        lpaBuild: Result:=BuildPackage(Package.LPKFilename);
+        lpaInstall: Result:=true; // this is handled in AddPackagesToInstallList
+        end;
       end;
     end
     else begin
@@ -392,14 +401,13 @@ begin
   end
   else begin
     // File exists:
-    if CompareFileExt(Filename,'.lpk')=0 then
-      if AddPackage then begin
-        // this is handled in AddPackagesToInstallList
-        Result:=true;
-      end
-      else
-        Result:=BuildPackage(Filename)
-    else if CompareFileExt(Filename,'.lpi')=0 then
+    if CompareFileExt(Filename,'.lpk')=0 then begin
+      case PackageAction of
+      lpaBuild: Result:=BuildPackage(Filename);
+      lpaInstall: Result:=true; // this is handled in AddPackagesToInstallList
+      lpaAddPkgLinks: Result:=true;
+      end;
+    end else if CompareFileExt(Filename,'.lpi')=0 then
       Result:=BuildProject(Filename)
     else if CompareFileExt(Filename,'.lpr')=0 then begin
       Filename:=ChangeFileExt(Filename,'.lpi');
@@ -1042,7 +1050,7 @@ begin
     PackageName:='';
     PkgFilename:='';
     if CompareFileExt(PackageNamesOrFiles[i],'.lpk')=0 then
-      PkgFilename:=PackageNamesOrFiles[i]
+      PkgFilename:=ExpandFileNameUTF8(PackageNamesOrFiles[i])
     else if IsValidIdent(PackageNamesOrFiles[i]) then begin
       PackageLink:=PkgLinks.FindLinkWithPkgName(PackageNamesOrFiles[i]);
       if PackageLink=nil then
@@ -1083,6 +1091,48 @@ begin
   MiscellaneousOptions.Save;
   PkgLinks.SaveUserLinks(true);
 
+  Result:=true;
+end;
+
+function TLazBuildApplication.AddCmdLinePackageLinks(
+  const PackageNamesOrFiles: TStringList): boolean;
+var
+  ErrorMsg, PkgFilename: String;
+  i, ErrCode: Integer;
+  Package: TLazPackage;
+begin
+  Result:=false;
+  if not Init then exit;
+
+  ErrorMsg:='';
+  ErrCode:=ErrorLoadPackageFailed;
+  for i:=0 to PackageNamesOrFiles.Count -1 do
+  begin
+    // Look for package name in all known packages
+    PkgFilename:=PackageNamesOrFiles[i];
+    if CompareFileExt(PkgFilename,'.lpk')<>0 then begin
+      ErrorMsg+=PkgFilename+' is not a package, so it is not registered.'+LineEnding;
+      continue;
+    end;
+    PkgFilename:=ExpandFileNameUTF8(PkgFilename);
+
+    Package:=LoadPackage(PkgFilename);
+    if Package=nil then
+    begin
+      ErrorMsg+='Could not load '+PkgFilename+', so it is not registered.'+LineEnding;
+      continue;
+    end;
+    if ConsoleVerbosity>=0 then
+      debugln(['Hint: (lazarus) registering package link "'+PkgFilename+'".']);
+    PkgLinks.AddUserLink(Package);
+  end;
+  if ErrorMsg<>'' then begin
+    ErrorMsg:=UTF8Trim(ErrorMsg);
+    Error(ErrCode,ErrorMsg);
+    exit;
+  end;
+
+  PkgLinks.SaveUserLinks(true);
   Result:=true;
 end;
 
@@ -1421,10 +1471,18 @@ begin
   end;
 
   // Add user-requested packages to IDE install list:
-  if AddPackage then begin
+  case PackageAction of
+  lpaInstall:
     if not AddPackagesToInstallList(Files) then begin
       if ConsoleVerbosity>=-1 then
-        debugln('Error (lazarus) Adding package(s) failed: ',Files.Text);
+        debugln('Error: (lazarus) Installing package(s) failed: ',Files.Text);
+      ExitCode := ErrorBuildFailed;
+      exit;
+    end;
+  lpaAddPkgLinks:
+    if not AddCmdLinePackageLinks(Files) then begin
+      if ConsoleVerbosity>=-1 then
+        debugln('Error: (lazarus) Adding package(s) links failed: ',Files.Text);
       ExitCode := ErrorBuildFailed;
       exit;
     end;
@@ -1446,6 +1504,7 @@ var
   LongOptions: TStringList;
   i: Integer;
   p: String;
+  FilesNeeded: Boolean;
 begin
   Result:=false;
   if (ToolParamCount<=0)
@@ -1489,6 +1548,7 @@ begin
     LongOptions.Add('scp:');
     LongOptions.Add('language:');
     LongOptions.Add('add-package');
+    LongOptions.Add('add-package-link');
     LongOptions.Add('build-all');
     LongOptions.Add('build-ide:');
     LongOptions.Add('recursive');
@@ -1511,30 +1571,52 @@ begin
       exit;
     end;
 
+    FilesNeeded:=true;
+
     if HasOption('verbose-pkgsearch') then
       Include(fPkgGraphVerbosity,pvPkgSearch);
+
+    // PackageAction: register lpk files
+    if HasOption('add-package-link') then begin
+      if ConsoleVerbosity>=0 then
+        writeln('Parameter: add-package-link');
+      if PackageAction<>lpaBuild then begin
+        writeln('Error: invalid combination of package actions');
+        WriteUsage;
+        exit;
+      end;
+      FilesNeeded:=false;
+      PackageAction:=lpaAddPkgLinks;
+    end;
+
+    // PackageAction: install lpk files
+    if HasOption('add-package') then begin
+      if ConsoleVerbosity>=0 then
+        writeln('Parameter: add-package');
+      if PackageAction<>lpaBuild then begin
+        writeln('Error: invalid combination of package actions');
+        WriteUsage;
+        exit;
+      end;
+      PackageAction:=lpaInstall;
+      FilesNeeded:=false;
+    end;
 
     // building IDE
     if HasOption('build-ide') then begin
       BuildIDE:=true;
       BuildIDEOptions:=GetOptionValue('build-ide');
+      FilesNeeded:=false;
       if ConsoleVerbosity>=0 then
         writeln('Parameter: build-ide=',BuildIDEOptions);
     end;
 
     // files
     Files.Assign(NonOptions);
-    if (Files.Count=0) and (not BuildIDE) then begin
+    if FilesNeeded and (Files.Count=0) then begin
       writeln('Error: missing file');
       WriteUsage;
       exit;
-    end;
-
-    // Add package to list of to be installed packages
-    if HasOption('add-package') then begin
-      AddPackage:=true;
-      if ConsoleVerbosity>=0 then
-        writeln('Parameter: add-package');
     end;
 
     // primary config path
@@ -1649,7 +1731,7 @@ begin
       CreateMakefile := true;
       if ConsoleVerbosity>=0 then
         writeln('Parameter: create-makefile');
-      if AddPackage then
+      if PackageAction<>lpaBuild then
         Error(ErrorPackageNameInvalid,'You can not combine --create-makefile and --add-package');
     end;
   finally
@@ -1704,6 +1786,8 @@ begin
 
   writeln('--add-package');
   w(space+lisAddPackageSToListOfInstalledPackagesCombineWithBui);
+  writeln('--add-package-link=<.lpk file>');
+  w(space+lisOnlyRegisterTheLazarusPackageFilesLpkDoNotBuild);
   writeln('--create-makefile');
   w(space+lisInsteadOfCompilePackageCreateASimpleMakefile);
   writeln('');
@@ -1754,7 +1838,7 @@ end;
 
 procedure TLazBuildApplication.Error(ErrorCode: Byte; const ErrorMsg: string);
 begin
-  writeln('ERROR: ',LineBreaksToSystemLineBreaks(ErrorMsg));
+  writeln('Error: (lazbuild) ',LineBreaksToSystemLineBreaks(ErrorMsg));
   Halt(ErrorCode);
 end;
 

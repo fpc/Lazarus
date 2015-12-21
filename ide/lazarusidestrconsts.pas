@@ -5730,6 +5730,8 @@ resourcestring
   dlgNoAvailableUnits = 'No available units to add.';
   lisInsteadOfCompilePackageCreateASimpleMakefile = 'Instead of compile '
     +'package create a simple Makefile.';
+  lisOnlyRegisterTheLazarusPackageFilesLpkDoNotBuild = 'Only register the '
+    +'Lazarus package files (.lpk). Do not build.';
 
   // Custom form editor
   lisCFEAnExceptionOccuredDuringDeletionOf = 'An exception occured during '
