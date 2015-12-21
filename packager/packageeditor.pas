@@ -1915,7 +1915,7 @@ begin
   CreateDivider;
   OptionsBitBtn := CreateToolButton('OptionsBitBtn', lisOptions, lisPckEditEditGeneralOptions, 'pkg_properties', @OptionsBitBtnClick);
   HelpBitBtn    := CreateToolButton('HelpBitBtn', GetButtonCaption(idButtonHelp), lisMenuOnlineHelp, 'menu_help', @HelpBitBtnClick);
-  MoreBitBtn    := CreateToolButton('MoreBitBtn', lisMore, lisPkgEdMoreFunctionsForThePackage, '', nil);
+  MoreBitBtn    := CreateToolButton('MoreBitBtn', lisMoreSub, lisPkgEdMoreFunctionsForThePackage, '', nil);
   MoreBitBtn.Style:=tbsButtonDrop;
 
   UseBitBtn.DropdownMenu := UsePopupMenu;

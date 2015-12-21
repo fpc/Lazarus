@@ -125,6 +125,7 @@ resourcestring
   lisOptions = 'Options';
   lisLess = 'Less';
   lisMore = 'More';
+  lisMoreSub = 'More';
   lisDlgMore = 'More ...';
   lisDefault = 'Default';
   lisClone = 'Clone';
