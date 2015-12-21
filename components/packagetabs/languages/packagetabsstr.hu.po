@@ -12,44 +12,33 @@ msgstr ""
 "X-Generator: Poedit 1.5.4\n"
 
 #: packagetabsstr.saddtoproject
-#, fuzzy
-#| msgid "Add To Project"
 msgid "Add To Project"
 msgstr "Hozzáadás a projekthez"
 
 #: packagetabsstr.scloneto
-#, fuzzy
-#| msgid "Clone To"
 msgid "Clone To"
 msgstr "Klónozás"
 
 #: packagetabsstr.scopyfilepathtoclipboard
 msgid "Copy File Path To Clipboard"
-msgstr ""
+msgstr "Fájl útvonalának másolása a vágólapra"
 
 #: packagetabsstr.sfindinotherwindow
 msgid "Find In Other Window"
 msgstr "Keresés másik ablakban"
 
 #: packagetabsstr.smoveto
-#, fuzzy
-#| msgid "Move To"
 msgid "Move To"
 msgstr "Áthelyezés"
 
 #: packagetabsstr.snewwindow
-#, fuzzy
-#| msgid "New Window"
 msgid "New Window"
 msgstr "Új ablak"
 
 #: packagetabsstr.sopenpackage
-#, fuzzy
-#| msgid "Open package"
 msgid "Open package"
 msgstr "Csomag megnyitása"
 
 #: packagetabsstr.sother
 msgid "Other"
 msgstr "Egyéb"
-
