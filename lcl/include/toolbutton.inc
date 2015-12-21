@@ -295,6 +295,7 @@ var
   ImgList: TCustomImageList;
   ImgIndex: integer;
   Details, TempDetails: TThemedElementDetails;
+  ImgEffect: TGraphicsDrawEffect;
 begin
   if (FToolBar<>nil) and (ClientWidth>0) and (ClientHeight>0) then
   begin
@@ -348,7 +349,7 @@ begin
 
     // calculate icon size
     IconSize := Point(0,0);
-    GetCurrentIcon(ImgList, ImgIndex);
+    GetCurrentIcon(ImgList, ImgIndex, ImgEffect);
     if (ImgList<>nil) then
     begin
       IconSize := Point(ImgList.Width, ImgList.Height);
@@ -433,7 +434,7 @@ begin
 
     // draw icon
     if (ImgList<>nil) then
-      ImgList.Draw(Canvas, IconPos.X, IconPos.Y, ImgIndex, Enabled);
+      ImgList.Draw(Canvas, IconPos.X, IconPos.Y, ImgIndex, ImgEffect);
 
     // draw text
     if (TextSize.cx > 0) then
@@ -896,32 +897,43 @@ begin
 end;
 
 procedure TToolButton.GetCurrentIcon(var ImageList: TCustomImageList;
-  var TheIndex: integer);
+  var TheIndex: integer; var TheEffect: TGraphicsDrawEffect);
+var
+  UseAutoEffects: Integer;
 begin
   ImageList := nil;
   TheIndex := -1;
+  TheEffect := gdeNormal;
+  UseAutoEffects := ThemeServices.GetOption(toUseGlyphEffects);
   if (ImageIndex < 0) or (FToolBar = nil) then Exit;
   
   if Style in [tbsButton, tbsDropDown, tbsButtonDrop, tbsCheck] then
   begin
     TheIndex := ImageIndex;
-    if Enabled and FMouseInControl then
-      // if mouse over button then use HotImages
-      ImageList := FToolBar.HotImages
-    else
-    if not Enabled then
-      // if button disabled then use HotImages
-      ImageList := FToolBar.DisabledImages;
-    if (ImageList = nil) or (ImageList.Count <= ImageIndex) then
+    ImageList := FToolBar.Images;
+    if (FToolButtonFlags*[tbfPressed,tbfArrowPressed] = [tbfPressed]) then
     begin
-      // if no special icon available, then try the default Images
-      ImageList := FToolBar.Images;
-      if (ImageList = nil) or (ImageList.Count <= ImageIndex) then
-      begin
-        // no icon available
-        ImageList := nil;
-        TheIndex := -1;
-      end;
+      // if button pressed then use PressedImages // Maybe To-Do ?
+      {if (FToolBar.PressedImages <> nil) and (ImageIndex < FToolBar.PressedImages.Count) then
+        ImageList := FToolBar.DisabledImages
+      else} if UseAutoEffects > 0 then
+        TheEffect := gdeShadowed;
+    end else
+    if Enabled and FMouseInControl then
+    begin
+      // if mouse over button then use HotImages
+      if (FToolBar.HotImages <> nil) and (ImageIndex < FToolBar.HotImages.Count) then
+        ImageList := FToolBar.HotImages
+      else if UseAutoEffects > 0 then
+        TheEffect := gdeHighlighted;
+    end else
+    if not Enabled then
+    begin
+      // if button disabled then use DisabledImages
+      if (FToolBar.DisabledImages <> nil) and (ImageIndex < FToolBar.DisabledImages.Count) then
+        ImageList := FToolBar.DisabledImages
+      else
+        TheEffect := gdeDisabled;
     end;
   end;
 end;
@@ -1089,6 +1101,7 @@ var
   IconPos: TPoint;
   ImgList: TCustomImageList;
   ImgIndex: integer;
+  ImgEffect: TGraphicsDrawEffect;
 begin
   if Assigned(FToolBar) then
   begin
@@ -1116,7 +1129,7 @@ begin
     IconSize := Point(0, 0);
     if (Style in [tbsButton, tbsDropDown, tbsButtonDrop, tbsCheck]) then
     begin
-      GetCurrentIcon(ImgList, ImgIndex);
+      GetCurrentIcon(ImgList, ImgIndex, ImgEffect);
       if Assigned(ImgList) then
       begin
         IconSize := Point(ImgList.Width, ImgList.Height);

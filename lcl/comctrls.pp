@@ -2059,7 +2059,8 @@ type
     procedure Click; override;
     procedure ArrowClick; virtual;
     procedure GetCurrentIcon(var ImageList: TCustomImageList;
-                             var TheIndex: integer); virtual;
+                             var TheIndex: integer;
+                             var TheEffect: TGraphicsDrawEffect); virtual;
     procedure GetPreferredSize(var PreferredWidth, PreferredHeight: integer;
                                Raw: boolean = false;
                                WithThemeSpace: boolean = true); override;

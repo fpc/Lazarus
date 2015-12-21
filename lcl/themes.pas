@@ -414,7 +414,8 @@ type
 
   TThemeOption = (
     toShowButtonImages, // show images on buttons
-    toShowMenuImages    // show images on menus
+    toShowMenuImages,   // show images on menus
+    toUseGlyphEffects   // use hot/down effects on (button) glyphs
   );
 
   // TThemeServices is a small foot print class to provide the user with pure
@@ -1914,6 +1915,17 @@ begin
   case AOption of
     toShowButtonImages: Result := 1;
     toShowMenuImages: Result := 1;
+    toUseGlyphEffects:
+    begin
+      // toUseGlyphEffects seems to be OS-dependent.
+      //   Linux: yes
+      //   Win, OSX: no
+      {$IFDEF LINUX}
+      Result := 1;
+      {$ELSE}
+      Result := 0;
+      {$ENDIF}
+    end;
   else
     Result := 0;
   end;
