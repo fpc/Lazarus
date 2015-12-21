@@ -215,7 +215,8 @@ type
     function HasPictureFormat: boolean;
     procedure Open;
     //procedure SetAsHandle(Format: integer; Value: THandle);
-    procedure SetAsHtml(const Html: String; const PlainText: String; {%H-}AddWindowsHeader: Boolean);
+    procedure SetAsHtml(Html: String);
+    procedure SetAsHtml(Html: String; const PlainText: String);
     function SetComponent(Component: TComponent): Boolean;
     function SetComponentAsText(Component: TComponent): Boolean;
     function SetFormat(FormatID: TClipboardFormat; Stream: TStream): Boolean;
