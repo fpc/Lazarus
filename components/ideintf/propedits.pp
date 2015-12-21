@@ -1182,7 +1182,7 @@ type
                       InstanceMethod:ShortString; TypeData:PTypeData) of object;
   // components
   TPropHookGetComponent = function(const ComponentPath: String):TComponent of object;
-  TPropHookGetComponentName = function(AComponent: TComponent):ShortString of object;
+  TPropHookGetComponentName = function(AComponent: TComponent):String of object;
   TPropHookGetComponentNames = procedure(TypeData: PTypeData;
                                          Proc: TGetStrProc) of object;
   TPropHookGetRootClassName = function:ShortString of object;
@@ -1309,7 +1309,7 @@ type
                         InstanceMethod: ShortString;  TypeData: PTypeData);
     // components
     function GetComponent(const ComponentPath: string): TComponent;
-    function GetComponentName(AComponent: TComponent): ShortString;
+    function GetComponentName(AComponent: TComponent): String;
     procedure GetComponentNames(TypeData: PTypeData; const Proc: TGetStrProc);
     function GetRootClassName: ShortString;
     function GetAncestorInstance(const InstProp: TInstProp;
@@ -4351,7 +4351,7 @@ class function TMethodPropertyEditor.GetDefaultMethodName(Root,
   PropName: shortstring): shortstring;
 // returns the default name for a new method
 var I: Integer;
-  Postfix: String;
+  Postfix: shortstring;
 begin
   Result:='';
   if Root=nil then exit;
@@ -5709,8 +5709,7 @@ begin
   end;
 end;
 
-function TPropertyEditorHook.GetComponent(const ComponentPath: string
-  ): TComponent;
+function TPropertyEditorHook.GetComponent(const ComponentPath: string): TComponent;
 var
   i: Integer;
 begin
@@ -5726,10 +5725,10 @@ begin
     Result := TComponent(LookupRoot).FindComponent(ComponentPath);
 end;
 
-function TPropertyEditorHook.GetComponentName(AComponent: TComponent
-  ): ShortString;
+function TPropertyEditorHook.GetComponentName(AComponent: TComponent): String;
 var
   i: Integer;
+  CompName, ParentName: String;
   Handler: TPropHookGetComponentName;
 begin
   Result := '';
@@ -5741,10 +5740,24 @@ begin
     Handler := TPropHookGetComponentName(FHandlers[htGetComponentName][i]);
     Result := Handler(AComponent);
   end;
-  if Result = '' then begin
-    Result := AComponent.Name;
+  if Result = '' then
+  begin
+    CompName := AComponent.Name;
     if (AComponent.Owner<>LookupRoot) and (AComponent.Owner<>nil) then
-      Result:=AComponent.Owner.Name+'.'+Result;
+      ParentName := AComponent.Owner.Name;
+    if CompName='' then
+      DebugLn('TPropertyEditorHook.GetComponentName: AComponent.Name is empty, '+
+              'AComponent.Owner.Name="' + ParentName+'".');
+    if ParentName='' then
+      DebugLn('TPropertyEditorHook.GetComponentName: AComponent.Owner.Name is empty.');
+
+    Result := CompName;
+    if ParentName<>'' then
+    begin
+      Result := ParentName;
+      if CompName<>'' then
+        Result := Result+'.'+CompName;
+    end;
   end;
 end;
 
