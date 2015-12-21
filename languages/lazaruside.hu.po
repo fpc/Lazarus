@@ -9879,7 +9879,7 @@ msgstr "E kivétel típus figyelmen kívül hagyása"
 
 #: lazarusidestrconsts.lisignoreuseasancestor
 msgid "Ignore, use %s as ancestor"
-msgstr ""
+msgstr "Kihagyás, %s használata ősként"
 
 #: lazarusidestrconsts.lisimitateindentationofcurrentunitprojectorpackage
 msgid "Imitate indentation of current unit, project or package"
@@ -12685,13 +12685,13 @@ msgstr "&Módosítás"
 #: lazarusidestrconsts.lismore
 msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
-msgstr "Tovább"
+msgstr "Továbbiak"
 
 #: lazarusidestrconsts.lismoresub
 #, fuzzy
 msgctxt "lazarusidestrconsts.lismoresub"
 msgid "More"
-msgstr "Tovább"
+msgstr "Továbbiak"
 
 #: lazarusidestrconsts.lismove
 msgid "Move"
@@ -15220,7 +15220,6 @@ msgid "&Quit Lazarus"
 msgstr "Kilépés a Lazarus-ból"
 
 #: lazarusidestrconsts.lisrange
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisrange"
 msgid "Range"
 msgstr "Tartomány"
@@ -17838,7 +17837,7 @@ msgstr "Használati útmutató (-h kapcsoló)"
 
 #: lazarusidestrconsts.lisuse
 msgid "Use"
-msgstr ""
+msgstr "Használat"
 
 #: lazarusidestrconsts.lisuseandclose
 msgid "Use and close"
