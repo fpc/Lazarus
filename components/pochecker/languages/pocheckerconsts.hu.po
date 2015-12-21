@@ -319,11 +319,11 @@ msgstr "Eredeti"
 
 #: pocheckerconsts.spercfuzzy
 msgid "%s: %4.1f%% fuzzy strings."
-msgstr "%s: %4.1f%% bizonytalan szövegek."
+msgstr "%s: %4.1f%% bizonytalan szöveg."
 
 #: pocheckerconsts.sperctranslated
 msgid "%s: %4.1f%% translated strings."
-msgstr "%s: %4.1f%% lefordított szövegek."
+msgstr "%s: %4.1f%% lefordított szöveg."
 
 #: pocheckerconsts.spercuntranslated
 msgid "%s: %4.1f%% untranslated strings."
