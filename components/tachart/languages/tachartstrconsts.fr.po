@@ -1,0 +1,203 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2015-04-14 07:54+0100\n"
+"PO-Revision-Date: 2015-12-20 18:09+0100\n"
+"Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"X-Generator: Poedit 1.8.6\n"
+
+#: tachartstrconsts.descolor
+msgid "Color"
+msgstr "Couleur"
+
+#: tachartstrconsts.desdatapointeditor
+msgid "DataPoints editor"
+msgstr "Éditeur de points de données"
+
+#: tachartstrconsts.desdeleterow
+msgid "Delete row"
+msgstr "Supprimer la ligne"
+
+#: tachartstrconsts.desinsertrow
+msgid "Insert row"
+msgstr "Insérer une ligne"
+
+#: tachartstrconsts.destext
+msgid "Text"
+msgstr "Texte"
+
+#: tachartstrconsts.rsadd
+msgid "Add"
+msgstr "Ajouter"
+
+#: tachartstrconsts.rsareaseries
+msgid "Area series"
+msgstr "Séries de surfaces"
+
+#: tachartstrconsts.rsautoscale
+msgid "Auto scale"
+msgstr "Échelle automatique"
+
+#: tachartstrconsts.rsbarseries
+msgid "Bar series"
+msgstr "Séries de barres"
+
+#: tachartstrconsts.rsboxandwhiskerseries
+msgid "Box-and-whiskers series"
+msgstr "Séries de boîtes à moustaches"
+
+#: tachartstrconsts.rsbsplineseries
+msgid "B-Spline series"
+msgstr "Séries de B-Splines"
+
+#: tachartstrconsts.rsbubbleseries
+msgid "Bubble series"
+msgstr "Séries de bulles"
+
+#: tachartstrconsts.rscolormapseries
+msgid "Color map series"
+msgstr "Séries de cartes de couleur"
+
+#: tachartstrconsts.rsconstantline
+msgid "Constant line"
+msgstr "Ligne constante"
+
+#: tachartstrconsts.rscubicsplineseries
+msgid "Cubic spline series"
+msgstr "Séries de splines cubiques"
+
+#: tachartstrconsts.rscumulativenormaldistribution
+msgid "Cumulative normal distribution"
+msgstr "Répartition de distribution normale"
+
+#: tachartstrconsts.rsdatapointclick
+msgid "Data point click"
+msgstr "Clic de point de donnée"
+
+#: tachartstrconsts.rsdatapointcrosshair
+msgid "Data point crosshair"
+msgstr "Viseur de point de donnée"
+
+#: tachartstrconsts.rsdatapointdrag
+msgid "Data point drag"
+msgstr "Glissement de point de donnée"
+
+#: tachartstrconsts.rsdatapointhint
+msgid "Data point hint"
+msgstr "Indicateur de point de données"
+
+#: tachartstrconsts.rsdelete
+msgid "Delete"
+msgstr "Supprimer"
+
+#: tachartstrconsts.rsdistancemeasurement
+msgid "Distance measurement"
+msgstr "Mesure des distances"
+
+#: tachartstrconsts.rsfunctionseries
+msgid "Function series"
+msgstr "Séries de fonctions"
+
+#: tachartstrconsts.rsleastsquaresfitseries
+msgid "Least-squares fit series"
+msgstr "Séries de moindres carrés ajustés"
+
+#: tachartstrconsts.rslinear
+msgid "Linear"
+msgstr "Linéaire"
+
+#: tachartstrconsts.rslineseries
+msgid "Line series"
+msgstr "Séries de lignes"
+
+#: tachartstrconsts.rslogarithmic
+msgid "Logarithmic"
+msgstr "Logarithmique"
+
+#: tachartstrconsts.rsmanhattanplotseries
+msgid "Manhattan plot series"
+msgstr "Séries de points de Manhattan"
+
+#: tachartstrconsts.rsmovedown
+msgid "Down"
+msgstr "Bas"
+
+#: tachartstrconsts.rsmoveup
+msgid "Up"
+msgstr "Haut"
+
+#: tachartstrconsts.rsopenhighlowcloseseries
+msgid "Open-high-low-close series"
+msgstr "Séries ouverture-max-min-clôture"
+
+#: tachartstrconsts.rspanningbyclick
+msgid "Panning by click"
+msgstr "Panoramique par clic"
+
+#: tachartstrconsts.rspanningbydrag
+msgid "Panning by drag"
+msgstr "Panoramique par glissement"
+
+#: tachartstrconsts.rspanningbymousewheel
+msgid "Panning by mouse wheel"
+msgstr "Panoramique par molette de la souris"
+
+#: tachartstrconsts.rsparametriccurveseries
+msgid "Parametric curve series"
+msgstr "Séries de courbes paramétriques"
+
+#: tachartstrconsts.rspieseries
+msgid "Pie series"
+msgstr "Séries de camemberts"
+
+#: tachartstrconsts.rspolarseries
+msgid "Polar series"
+msgstr "Séries polaires"
+
+#: tachartstrconsts.rsuserdefined
+msgctxt "tachartstrconsts.rsuserdefined"
+msgid "User-defined"
+msgstr "Défini par l'utilisateur"
+
+#: tachartstrconsts.rsuserdefinedtool
+msgctxt "tachartstrconsts.rsuserdefinedtool"
+msgid "User-defined"
+msgstr "Défini par l'utilisateur"
+
+#: tachartstrconsts.rsuserdrawnseries
+msgid "User-drawn series"
+msgstr "Séries personnalisées"
+
+#: tachartstrconsts.rszoombyclick
+msgid "Zoom by click"
+msgstr "Zoom sur clic"
+
+#: tachartstrconsts.rszoombydrag
+msgid "Zoom by drag"
+msgstr "Zoom sur déplacement"
+
+#: tachartstrconsts.rszoombymousewheel
+msgid "Zoom by mouse-wheel"
+msgstr "Zoom sur molette de la souris"
+
+#: tachartstrconsts.sesserieseditortitle
+msgid "Edit series"
+msgstr "Éditer les séries"
+
+#: tachartstrconsts.tasaxistransformseditortitle
+msgid "Edit axis transformations"
+msgstr "Éditer les transformations d'axes"
+
+#: tachartstrconsts.tasfailedsubcomponentrename
+msgid "Failed to rename components: %s"
+msgstr "Impossible de renommer les composants : %s"
+
+#: tachartstrconsts.tastoolseditortitle
+msgid "Edit tools"
+msgstr "Éditer les outils"
+

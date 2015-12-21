@@ -3,13 +3,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-14 07:54+0100\n"
-"PO-Revision-Date: 2015-04-14 07:54+0100\n"
+"PO-Revision-Date: 2015-12-19 15:58+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Poedit 1.8.6\n"
 
 #: codystrconsts.crsaddassignmethod
 msgid "Add Assign Method"
@@ -46,7 +46,7 @@ msgstr "... et %s identificateurs"
 
 #: codystrconsts.crsany
 msgid "Any"
-msgstr ""
+msgstr "Tous"
 
 #: codystrconsts.crsawindowforthelazarusideitcanbedockedlikethecodeexp
 msgid "A window for the Lazarus IDE. It can be docked like the Code Explorer or the FPDoc Editor. This also creates a menu item in the View menu and a short cut."
@@ -182,7 +182,7 @@ msgstr "Information de nœud de code"
 
 #: codystrconsts.crscodyfindoverloads
 msgid "Cody - Find Overloads"
-msgstr ""
+msgstr "Cody - Chercher les surcharges"
 
 #: codystrconsts.crscodyidentifierdictionary
 msgid "Identifier Dictionary"
@@ -195,11 +195,11 @@ msgstr "Général"
 
 #: codystrconsts.crscompatibility
 msgid "Compatibility"
-msgstr ""
+msgstr "Compatibilité"
 
 #: codystrconsts.crscompatible
 msgid "compatible"
-msgstr ""
+msgstr "compatible"
 
 #: codystrconsts.crsconfigurenewidewindow
 msgid "Configure new IDE window"
@@ -288,7 +288,7 @@ msgstr "Faut-il supprimer l'unité ?"
 
 #: codystrconsts.crsdistance
 msgid "Distance"
-msgstr ""
+msgstr "Distance"
 
 #: codystrconsts.crsdvisakeyword
 msgid "\"%s\" is a keyword."
@@ -300,15 +300,15 @@ msgstr "Erreur : %s"
 
 #: codystrconsts.crserrorcursorisnotinaprojectunit
 msgid "Error: cursor is not in a project unit"
-msgstr ""
+msgstr "Erreur : le curseur n'est pas une unité de projet"
 
 #: codystrconsts.crserrorneedsourceeditoratprocedurecallordeclaration
 msgid "Error: Need source editor at procedure call or declaration"
-msgstr ""
+msgstr "Erreur : besoin d'un éditeur de source lors de l'appel ou de la déclaration d'une procédure"
 
 #: codystrconsts.crsexact
 msgid "exact"
-msgstr ""
+msgstr "exact"
 
 #: codystrconsts.crsexplodeawithblock
 msgid "Explode a \"With\" Block"
@@ -344,7 +344,7 @@ msgstr "(Filtre)"
 
 #: codystrconsts.crsfilter2
 msgid "Filter"
-msgstr ""
+msgstr "Filtre"
 
 #: codystrconsts.crsfindgdbbacktraceline
 msgid "Find GDB backtrace line"
@@ -352,7 +352,7 @@ msgstr "Chercher une ligne de la trace de \"GDB\""
 
 #: codystrconsts.crsfindproceduremethodoverloads
 msgid "Find Procedure/Method Overloads"
-msgstr ""
+msgstr "Chercher les surcharges de procédures/méthodes"
 
 #: codystrconsts.crsfindsourceofgdbbacktrace
 msgid "Find source of GDB backtrace"
@@ -380,7 +380,7 @@ msgstr "&Aide"
 
 #: codystrconsts.crshideabstractmethodsandmethodsofclassinterfaces
 msgid "Hide abstract methods and methods of class interfaces"
-msgstr ""
+msgstr "Cacher les méthodes abstraites et celles des interfaces de classes"
 
 #: codystrconsts.crshideunitsofotherprojects
 msgid "Hide units of other projects"
@@ -409,7 +409,7 @@ msgstr "Si l'identificateur est ajouté à la section implémentation et qu'une 
 
 #: codystrconsts.crsifuncheckedlistalsoprocedureswithsamenameandincomp
 msgid "If unchecked list also procedures with same name and incompatible parameter lists."
-msgstr ""
+msgstr "Si décoché, indiquer aussi les procédures portant le même nom et aux paramètres incompatibles."
 
 #: codystrconsts.crsimpossibledependency
 msgid "Impossible dependency"
@@ -421,7 +421,7 @@ msgstr "dans \"%s\""
 
 #: codystrconsts.crsincompatible
 msgid "incompatible"
-msgstr ""
+msgstr "incompatible"
 
 #: codystrconsts.crsinimplementation
 msgid "In implementation"
@@ -449,7 +449,7 @@ msgstr "&Aller à"
 
 #: codystrconsts.crsjumpto2
 msgid "Jump to"
-msgstr ""
+msgstr "Aller à"
 
 #: codystrconsts.crskbytes
 msgid "kbytes"
@@ -497,7 +497,7 @@ msgstr "manquant..."
 
 #: codystrconsts.crsname
 msgid "Name"
-msgstr ""
+msgstr "Nom"
 
 #: codystrconsts.crsnoneselected
 msgid "none selected"
@@ -505,7 +505,7 @@ msgstr "Aucun sélectionné"
 
 #: codystrconsts.crsnooverloadsfoundinprojectunits
 msgid "no overloads found in project units"
-msgstr ""
+msgstr "pas de surcharges trouvées dans les unités du projet"
 
 #: codystrconsts.crsnoproject
 msgid "No project"
@@ -525,19 +525,19 @@ msgstr "Dans le presse-papier"
 
 #: codystrconsts.crsonlydescendantsof
 msgid "Only descendants of %s"
-msgstr ""
+msgstr "Seulement les descendants de %s"
 
 #: codystrconsts.crsonlymethods
 msgid "Only methods"
-msgstr ""
+msgstr "Seulement les méthodes"
 
 #: codystrconsts.crsonlynonmethods
 msgid "Only non methods"
-msgstr ""
+msgstr "Pas les méthodes"
 
 #: codystrconsts.crsonlyprocedureswithcompatibleparameters
 msgid "Only procedures with compatible parameters"
-msgstr ""
+msgstr "Seulement les procédures avec des paramètres compatibles"
 
 #: codystrconsts.crsoptions
 msgid "Options"
@@ -581,7 +581,7 @@ msgstr "Paquet portant le même nom"
 
 #: codystrconsts.crsparseerror
 msgid "Parse error"
-msgstr ""
+msgstr "Erreur de lecture"
 
 #: codystrconsts.crspastelinesofagdbbacktrace
 msgid "Paste lines of a gdb backtrace:"
@@ -661,7 +661,7 @@ msgstr "Rafraîchir"
 
 #: codystrconsts.crsrelations
 msgid "Relations:"
-msgstr ""
+msgstr "Relations :"
 
 #: codystrconsts.crsreport
 msgid "Report"
@@ -681,11 +681,11 @@ msgstr "Enregistrer dans le fichier %s"
 
 #: codystrconsts.crsscanning
 msgid "Scanning ..."
-msgstr ""
+msgstr "Parcours..."
 
 #: codystrconsts.crsscanningsunits
 msgid "Scanning: %s units ..."
-msgstr ""
+msgstr "Parcours : %s unités..."
 
 #: codystrconsts.crssearching
 msgid "searching ..."
@@ -817,7 +817,7 @@ msgstr "Bibliothèques des unités partagées"
 
 #: codystrconsts.crsunitss
 msgid "Units: %s"
-msgstr ""
+msgstr "Unités : %s"
 
 #: codystrconsts.crsunitstaticlibraries
 msgid "Unit static libraries"

@@ -2739,6 +2739,7 @@ components/lazreport/source/addons/lrspreadsheetexport/images/TlrSpreadSheetExpo
 components/lazreport/source/addons/lrspreadsheetexport/images/img.txt svneol=native#text/plain
 components/lazreport/source/addons/lrspreadsheetexport/images/mk_res.sh svneol=native#text/plain
 components/lazreport/source/addons/lrspreadsheetexport/languages/le_e_spreadsheet_consts.de.po svneol=native#text/plain
+components/lazreport/source/addons/lrspreadsheetexport/languages/le_e_spreadsheet_consts.fr.po svneol=native#text/plain
 components/lazreport/source/addons/lrspreadsheetexport/languages/le_e_spreadsheet_consts.hu.po svneol=native#text/plain
 components/lazreport/source/addons/lrspreadsheetexport/languages/le_e_spreadsheet_consts.po svneol=native#text/plain
 components/lazreport/source/addons/lrspreadsheetexport/languages/le_e_spreadsheet_consts.ru.po svneol=native#text/plain
@@ -4098,6 +4099,7 @@ components/tachart/icons/trandomchartsource.png -text svneol=unset#images/png
 components/tachart/icons/tuserdefinedchartsource.png -text svneol=unset#images/png
 components/tachart/languages/tachartstrconsts.de.po svneol=native#text/plain
 components/tachart/languages/tachartstrconsts.fi.po svneol=native#text/plain
+components/tachart/languages/tachartstrconsts.fr.po svneol=native#text/plain
 components/tachart/languages/tachartstrconsts.po svneol=native#text/plain
 components/tachart/languages/tachartstrconsts.ru.po svneol=native#text/plain
 components/tachart/languages/tachartstrconsts.se.po svneol=native#text/plain

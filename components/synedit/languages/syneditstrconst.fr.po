@@ -9,7 +9,7 @@ msgstr ""
 "Last-Translator: Yann Mérignac <yann.merignac@laposte.net>\n"
 "Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language: fr\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Poedit 1.8.6\n"
 
 #: syneditstrconst.syns_attrannotation
 msgid "Annotation"
@@ -524,10 +524,8 @@ msgid "Drag Selection"
 msgstr "Déplacer la sélection"
 
 #: syneditstrconst.syns_emcstartdragmove_opt
-#, fuzzy
-#| msgid "Caret on up if not dragged, No Caret on up if not dragged"
 msgid "\"Caret on up if not dragged\",yes,no"
-msgstr "Curseur sur place s'il n'est pas déplacé ; pas de curseur sur place s'il est déplacé"
+msgstr "Curseur sur place s'il n'est pas déplacé : oui, non"
 
 #: syneditstrconst.syns_emcstartlineselections
 msgid "Line Selection"
