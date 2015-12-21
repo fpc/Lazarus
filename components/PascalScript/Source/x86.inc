@@ -389,7 +389,7 @@ var
               TempStr := StringOfChar(AnsiChar(#0),4);
               Pointer((@TempStr[1])^) := Pointer(fvar.Dta^);
             {$IFDEF FPC}
-            {$IF FPC_FULLVERSION < 30000}
+            {$IF FPC_FULLVERSION < 30101}
               // pass dyn. array on stack
               UseReg := false;
             {$ELSE}
