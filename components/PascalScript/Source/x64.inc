@@ -542,11 +542,7 @@ _XMM0: Double;
               Result := True;
               exit;
             end else begin
-            {$IFDEF FPC}
-              StoreReg(IPointer(FVar.Dta));
-            {$ELSE}
               StoreReg(IPointer(FVar.Dta^));
-            {$ENDIF}
             end;
           end;
         btRecord:
