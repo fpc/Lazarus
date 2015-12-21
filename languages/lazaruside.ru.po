@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-12-19 02:47+0300\n"
+"PO-Revision-Date: 2015-12-22 01:11+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -12687,6 +12687,11 @@ msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Подробнее"
 
+#: lazarusidestrconsts.lismoresub
+msgctxt "lazarusidestrconsts.lismoresub"
+msgid "More"
+msgstr "Прочие"
+
 #: lazarusidestrconsts.lismove
 msgid "Move"
 msgstr "Переместить"
@@ -13165,6 +13170,10 @@ msgstr "Только сообщения, отвечающие регулярно
 #: lazarusidestrconsts.lisonlymessageswiththesefpcidscommaseparated
 msgid "Only messages with these FPC IDs (comma separated):"
 msgstr "Только сообщения со следующими FPC ID (разделяются запятыми):"
+
+#: lazarusidestrconsts.lisonlyregisterthelazaruspackagefileslpkdonotbuild
+msgid "Only register the Lazarus package files (.lpk). Do not build."
+msgstr "Только зарегистрировать файлы пакета Lazarus (.lpk), не собирать."
 
 #: lazarusidestrconsts.lisonlysearchforwholewords
 msgid "Only search for whole words"

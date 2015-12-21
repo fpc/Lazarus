@@ -12687,6 +12687,12 @@ msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Tovább"
 
+#: lazarusidestrconsts.lismoresub
+#, fuzzy
+msgctxt "lazarusidestrconsts.lismoresub"
+msgid "More"
+msgstr "Tovább"
+
 #: lazarusidestrconsts.lismove
 msgid "Move"
 msgstr "Áthelyezés"
@@ -13165,6 +13171,10 @@ msgstr "Csak ezen reguláris kifejezéshez illeszkedő üzenetek:"
 #: lazarusidestrconsts.lisonlymessageswiththesefpcidscommaseparated
 msgid "Only messages with these FPC IDs (comma separated):"
 msgstr "Csak ezen FPC azonosítókhoz illeszkedő üzenetek (vesszővel elválasztva):"
+
+#: lazarusidestrconsts.lisonlyregisterthelazaruspackagefileslpkdonotbuild
+msgid "Only register the Lazarus package files (.lpk). Do not build."
+msgstr ""
 
 #: lazarusidestrconsts.lisonlysearchforwholewords
 msgid "Only search for whole words"

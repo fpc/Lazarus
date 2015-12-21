@@ -12677,6 +12677,12 @@ msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Více"
 
+#: lazarusidestrconsts.lismoresub
+#, fuzzy
+msgctxt "lazarusidestrconsts.lismoresub"
+msgid "More"
+msgstr "Více"
+
 #: lazarusidestrconsts.lismove
 msgid "Move"
 msgstr "Přesunout"
@@ -13155,6 +13161,10 @@ msgstr "Pouze zprávy vyhovující tomuto regulárnímu výrazu:"
 #: lazarusidestrconsts.lisonlymessageswiththesefpcidscommaseparated
 msgid "Only messages with these FPC IDs (comma separated):"
 msgstr "Pouze zprávy s těmito FPC ID (oddělené čárkou):"
+
+#: lazarusidestrconsts.lisonlyregisterthelazaruspackagefileslpkdonotbuild
+msgid "Only register the Lazarus package files (.lpk). Do not build."
+msgstr ""
 
 #: lazarusidestrconsts.lisonlysearchforwholewords
 msgid "Only search for whole words"

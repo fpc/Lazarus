@@ -13245,6 +13245,12 @@ msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Więcej"
 
+#: lazarusidestrconsts.lismoresub
+#, fuzzy
+msgctxt "lazarusidestrconsts.lismoresub"
+msgid "More"
+msgstr "Więcej"
+
 #: lazarusidestrconsts.lismove
 msgid "Move"
 msgstr ""
@@ -13732,6 +13738,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisonlymessageswiththesefpcidscommaseparated
 msgid "Only messages with these FPC IDs (comma separated):"
+msgstr ""
+
+#: lazarusidestrconsts.lisonlyregisterthelazaruspackagefileslpkdonotbuild
+msgid "Only register the Lazarus package files (.lpk). Do not build."
 msgstr ""
 
 #: lazarusidestrconsts.lisonlysearchforwholewords

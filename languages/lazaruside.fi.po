@@ -12573,6 +12573,12 @@ msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Lisää"
 
+#: lazarusidestrconsts.lismoresub
+#, fuzzy
+msgctxt "lazarusidestrconsts.lismoresub"
+msgid "More"
+msgstr "Lisää"
+
 #: lazarusidestrconsts.lismove
 msgid "Move"
 msgstr "Siirrä"
@@ -13049,6 +13055,10 @@ msgstr "Vain säännöllisen lausekkeen kanssa täsmäävät viestit:"
 #: lazarusidestrconsts.lisonlymessageswiththesefpcidscommaseparated
 msgid "Only messages with these FPC IDs (comma separated):"
 msgstr "Vain viestit näiden FPC ID:n kanssa (pilkulla erotettu):"
+
+#: lazarusidestrconsts.lisonlyregisterthelazaruspackagefileslpkdonotbuild
+msgid "Only register the Lazarus package files (.lpk). Do not build."
+msgstr ""
 
 #: lazarusidestrconsts.lisonlysearchforwholewords
 msgid "Only search for whole words"
