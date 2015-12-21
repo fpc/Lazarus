@@ -20238,3 +20238,4 @@ msgstr "Только чтение"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Сведения о версии"
+
