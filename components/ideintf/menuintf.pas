@@ -1079,7 +1079,6 @@ var
 var
   i: Integer;
 begin
-  if (Section <> nil) and not Section.Visible then exit;
   if (FInvalidChildStartIndex>FInvalidChildEndIndex) then exit;
   if FUpdateLock>0 then begin
     exit;
