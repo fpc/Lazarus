@@ -1071,8 +1071,7 @@ begin
       except
       end;
     end;
-    if HelpLang<>'' then
-      TranslateResourceStrings(ProgramDirectory(true), HelpLang);
+    TranslateResourceStrings(ProgramDirectory(true), HelpLang);
 
     AHelp := TStringList.Create;
     AddHelp([lislazarusOptionsProjectFilename]);
