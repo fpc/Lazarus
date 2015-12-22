@@ -1428,6 +1428,7 @@ var
 begin
   dlg:=TCheckMarkDialog.CreateWithMenuItem(nil, aMI, aGroupIndexArr, aShadowMenu);
   try
+    dlg.PopupMode := pmAuto;
     mr:=dlg.ShowModal;
     if mr = mrOK then
       begin
