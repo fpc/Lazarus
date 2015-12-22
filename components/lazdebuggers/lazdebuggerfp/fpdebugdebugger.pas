@@ -1752,7 +1752,8 @@ begin
     inherited DoState(OldState);
     if not (State in [dsPause, dsInternalPause]) then
       begin
-      FWatchEvalList.Clear;
+      if Assigned(FWatchEvalList) then
+        FWatchEvalList.Clear;
       FWatchAsyncQueued := False;
       end;
   finally
