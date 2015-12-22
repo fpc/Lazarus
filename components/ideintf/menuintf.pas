@@ -990,13 +990,10 @@ var
         {$ENDIF}
         if ContainerMenuIndex>ContainerMenuItem.Count then
         begin
-          {$IFDEF VerboseMenuIntf}
           debugln('TIDEMenuSection.UpdateNeedTopSeparator CREATE TopSeparator Name="',Name,'" ContainerMenuIndex=',dbgs(ContainerMenuIndex),' ContainerMenuItem.Count=',dbgs(ContainerMenuItem.Count));
           GetRoot.WriteDebugReport(' Top ',true);
           debugln('TIDEMenuSection.UpdateNeedTopSeparator CREATE TopSeparator Name="',Name,'" ContainerMenuIndex ** FORCED VALUE ** FROM ContainerMenuItem.Count=',dbgs(ContainerMenuItem.Count));
-          {$ENDIF}
-          // there's not yet available room for new FTopSeparator.fixes #17321.
-          ContainerMenuIndex := ContainerMenuItem.Count;
+          RaiseGDBException('TIDEMenuSection.UpdateNeedTopSeparator inconsistency');
         end;
         ContainerMenuItem.Insert(ContainerMenuIndex,FTopSeparator);
       end;
@@ -1057,7 +1054,7 @@ var
         // BottomSeparator is not needed anymore
         FreeAndNil(FBottomSeparator);
         {$IFDEF VerboseMenuIntf}
-        debugln('TIDEMenuSection.UpdateMenuStructure FREE BottomSeparator Name="',Name,'"');
+        debugln('TIDEMenuSection.UpdateNeedBottomSeparator FREE BottomSeparator Name="',Name,'"');
         {$ENDIF}
       end else begin
         // BottomSeparator is needed
@@ -1065,11 +1062,12 @@ var
         FBottomSeparator.AddHandlerOnDestroy(@SeparatorDestroy);
         FBottomSeparator.Caption:='-';
         {$IFDEF VerboseMenuIntf}
-        debugln('TIDEMenuSection.UpdateMenuStructure CREATE BottomSeparator Name="',Name,'" ContainerMenuIndex=',dbgs(ContainerMenuIndex),' ContainerMenuItem.Count=',dbgs(ContainerMenuItem.Count));
+        debugln('TIDEMenuSection.UpdateNeedBottomSeparator CREATE BottomSeparator Name="',Name,'" ContainerMenuIndex=',dbgs(ContainerMenuIndex),' ContainerMenuItem.Count=',dbgs(ContainerMenuItem.Count));
         {$ENDIF}
         if ContainerMenuIndex>ContainerMenuItem.Count then begin
-          debugln('TIDEMenuSection.UpdateMenuStructure CREATE BottomSeparator Name="',Name,'" ContainerMenuIndex=',dbgs(ContainerMenuIndex),' ContainerMenuItem.Count=',dbgs(ContainerMenuItem.Count));
+          debugln('TIDEMenuSection.UpdateNeedBottomSeparator CREATE BottomSeparator Name="',Name,'" ContainerMenuIndex=',dbgs(ContainerMenuIndex),' ContainerMenuItem.Count=',dbgs(ContainerMenuItem.Count));
           GetRoot.WriteDebugReport(' Bottom ',true);
+          RaiseGDBException('TIDEMenuSection.UpdateNeedBottomSeparator inconsistency');
         end;
         ContainerMenuItem.Insert(ContainerMenuIndex,FBottomSeparator);
       end;
