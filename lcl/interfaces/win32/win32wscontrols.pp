@@ -560,7 +560,7 @@ end;
 class procedure TWin32WSWinControl.ScrollBy(const AWinControl: TWinControl;
   DeltaX, DeltaY: integer);
 begin
-  if Windows.IsWindowVisible(AWinControl.Handle) then
+  if AWinControl.HandleAllocated then
     ScrollWindowEx(AWinControl.Handle, DeltaX, DeltaY, nil, nil, 0, nil,
       SW_INVALIDATE or SW_ERASE or SW_SCROLLCHILDREN);
 end;
