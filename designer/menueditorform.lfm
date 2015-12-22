@@ -1,89 +1,274 @@
-object MainMenuEditorForm: TMainMenuEditorForm
-  Left = 395
-  Height = 220
-  Top = 480
-  Width = 600
-  Caption = 'MainMenuEditorForm'
-  ClientHeight = 220
-  ClientWidth = 600
+object MenuDesigner: TMenuDesigner
+  Left = 846
+  Height = 345
+  Top = 497
+  Width = 730
+  Caption = 'MenuDesigner'
+  ClientHeight = 345
+  ClientWidth = 730
+  Constraints.MinHeight = 345
+  Constraints.MinWidth = 730
   FormStyle = fsStayOnTop
-  OnClose = FormClose
+  KeyPreview = True
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '1.1'
-  object MenuScrollBox: TScrollBox
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = Owner
-    AnchorSideRight.Control = List_menus
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
+  ShowHint = True
+  LCLVersion = '1.4.4.0'
+  object LeftPanel: TPanel
     Left = 0
-    Height = 220
+    Height = 345
     Top = 0
-    Width = 382
-    HorzScrollBar.Page = 378
-    HorzScrollBar.Tracking = True
-    VertScrollBar.Page = 216
-    VertScrollBar.Tracking = True
-    Align = alClient
-    ClientHeight = 216
-    ClientWidth = 378
+    Width = 204
+    Align = alLeft
+    AutoSize = True
+    ClientHeight = 345
+    ClientWidth = 204
+    Constraints.MinHeight = 345
+    Constraints.MinWidth = 204
     TabOrder = 0
-    object Panel: TPanel
-      AnchorSideLeft.Control = MenuScrollBox
-      AnchorSideTop.Control = MenuScrollBox
-      AnchorSideBottom.Side = asrBottom
-      Left = 0
-      Height = 212
-      Top = 0
-      Width = 200
-      BevelOuter = bvNone
-      TabOrder = 0
-    end
-  end
-  object Panel_MenuList: TPanel
-    Left = 387
-    Height = 220
-    Top = 0
-    Width = 213
-    Align = alRight
-    ClientHeight = 220
-    ClientWidth = 213
-    TabOrder = 1
-    object Label_menus: TLabel
-      AnchorSideLeft.Control = List_menus
+    object ButtonsGroupBox: TGroupBox
       AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Control = List_menus
-      Left = 8
-      Height = 15
-      Top = 11
-      Width = 65
-      Anchors = [akLeft, akBottom]
-      Caption = 'Label_menus'
-      ParentColor = False
-    end
-    object List_menus: TListBox
-      AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Control = Panel_MenuList
-      AnchorSideBottom.Side = asrBottom
-      Left = 8
-      Height = 181
-      Top = 32
-      Width = 194
-      Anchors = [akTop, akLeft, akRight, akBottom]
+      Left = 7
+      Height = 98
+      Top = 7
+      Width = 190
+      Align = alTop
+      AutoSize = True
       BorderSpacing.Around = 6
-      ItemHeight = 0
-      OnClick = List_menusClick
+      Caption = 'ButtonsGroupBox'
+      ClientHeight = 78
+      ClientWidth = 186
       TabOrder = 0
+      object MoveItemUpButton: TSpeedButton
+        AnchorSideLeft.Control = ButtonsGroupBox
+        AnchorSideTop.Control = ButtonsGroupBox
+        Left = 6
+        Height = 30
+        Top = 6
+        Width = 30
+        BorderSpacing.Around = 6
+        ShowCaption = False
+        ParentFont = False
+      end
+      object MoveItemDownButton: TSpeedButton
+        AnchorSideLeft.Control = ButtonsGroupBox
+        AnchorSideTop.Control = MoveItemUpButton
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 30
+        Top = 42
+        Width = 30
+        BorderSpacing.Around = 6
+        ShowCaption = False
+        ParentFont = False
+      end
+      object AddSeparatorAboveButton: TSpeedButton
+        AnchorSideLeft.Control = MoveItemUpButton
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = ButtonsGroupBox
+        Left = 42
+        Height = 30
+        Top = 6
+        Width = 30
+        BorderSpacing.Around = 6
+        ShowCaption = False
+        ParentFont = False
+      end
+      object AddSeparatorBelowButton: TSpeedButton
+        AnchorSideLeft.Control = MoveItemDownButton
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = AddSeparatorAboveButton
+        AnchorSideTop.Side = asrBottom
+        Left = 42
+        Height = 30
+        Top = 42
+        Width = 30
+        ShowCaption = False
+        ParentFont = False
+      end
+      object DeleteItemButton: TSpeedButton
+        AnchorSideLeft.Control = AddSeparatorAboveButton
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = ButtonsGroupBox
+        Left = 78
+        Height = 30
+        Top = 24
+        Width = 30
+        BorderSpacing.Top = 24
+        ShowCaption = False
+        ParentFont = False
+      end
+      object AddItemAboveButton: TSpeedButton
+        AnchorSideLeft.Control = DeleteItemButton
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = ButtonsGroupBox
+        Left = 114
+        Height = 30
+        Top = 6
+        Width = 30
+        BorderSpacing.Around = 6
+        ShowCaption = False
+        ParentFont = False
+      end
+      object AddItemBelowButton: TSpeedButton
+        AnchorSideLeft.Control = DeleteItemButton
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = AddItemAboveButton
+        AnchorSideTop.Side = asrBottom
+        Left = 114
+        Height = 30
+        Top = 42
+        Width = 30
+        BorderSpacing.Around = 6
+        ShowCaption = False
+        ParentFont = False
+      end
+      object AddSubMenuButton: TSpeedButton
+        AnchorSideLeft.Control = AddItemAboveButton
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = ButtonsGroupBox
+        Left = 150
+        Height = 30
+        Top = 24
+        Width = 30
+        BorderSpacing.Top = 24
+        ShowCaption = False
+        ParentFont = False
+      end
     end
-  end
-  object Splitter_BoxPanel: TSplitter
-    Left = 382
-    Height = 220
-    Top = 0
-    Width = 5
-    Align = alRight
-    ResizeAnchor = akRight
+    object StatisticsGroupBox: TGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 7
+      Height = 137
+      Top = 111
+      Width = 190
+      Align = alTop
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'StatisticsGroupBox'
+      ClientHeight = 117
+      ClientWidth = 186
+      Color = clBtnFace
+      ParentColor = False
+      TabOrder = 1
+      object CaptionedItemsCountLabel: TLabel
+        AnchorSideLeft.Control = StatisticsGroupBox
+        AnchorSideTop.Control = StatisticsGroupBox
+        AnchorSideRight.Control = StatisticsGroupBox
+        AnchorSideRight.Side = asrBottom
+        Left = 12
+        Height = 15
+        Top = 6
+        Width = 168
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = False
+        BorderSpacing.Left = 6
+        BorderSpacing.Around = 6
+        Caption = 'CaptionedItemsCountLabel'
+        Color = clBtnFace
+        ParentColor = False
+        ParentFont = False
+        Transparent = False
+      end
+      object ShortcutItemsCountLabel: TLabel
+        AnchorSideLeft.Control = StatisticsGroupBox
+        AnchorSideTop.Control = CaptionedItemsCountLabel
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = StatisticsGroupBox
+        AnchorSideRight.Side = asrBottom
+        Left = 12
+        Height = 15
+        Top = 27
+        Width = 168
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = False
+        BorderSpacing.Left = 6
+        BorderSpacing.Around = 6
+        Caption = 'ShortcutItemsCountLabel'
+        Color = clBtnFace
+        ParentColor = False
+        ParentFont = False
+        Transparent = False
+      end
+      object DeepestNestingLevelLabel: TLabel
+        AnchorSideLeft.Control = StatisticsGroupBox
+        AnchorSideTop.Control = ShortcutItemsCountLabel
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = StatisticsGroupBox
+        AnchorSideRight.Side = asrBottom
+        Left = 12
+        Height = 15
+        Top = 48
+        Width = 168
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = False
+        BorderSpacing.Left = 6
+        BorderSpacing.Around = 6
+        Caption = 'DeepestNestingLevelLabel'
+        Color = clBtnFace
+        ParentColor = False
+        ParentFont = False
+        Transparent = False
+      end
+      object IconCountLabel: TLabel
+        AnchorSideLeft.Control = StatisticsGroupBox
+        AnchorSideTop.Control = DeepestNestingLevelLabel
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = StatisticsGroupBox
+        AnchorSideRight.Side = asrBottom
+        Left = 12
+        Height = 15
+        Top = 69
+        Width = 168
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = False
+        BorderSpacing.Left = 6
+        BorderSpacing.Around = 6
+        Caption = 'IconCountLabel'
+        Color = clBtnFace
+        ParentColor = False
+        ParentFont = False
+        Transparent = False
+      end
+      object PopupAssignmentsCountLabel: TLabel
+        AnchorSideLeft.Control = StatisticsGroupBox
+        AnchorSideTop.Control = IconCountLabel
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = StatisticsGroupBox
+        AnchorSideRight.Side = asrBottom
+        Left = 12
+        Height = 15
+        Top = 90
+        Width = 168
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = False
+        BorderSpacing.Left = 6
+        BorderSpacing.Bottom = 6
+        BorderSpacing.Around = 6
+        Caption = 'PopupAssignmentsCountLabel'
+        Color = clBtnFace
+        ParentColor = False
+        ParentFont = False
+        Transparent = False
+      end
+    end
+    object HelpButton: TBitBtn
+      AnchorSideLeft.Control = LeftPanel
+      AnchorSideTop.Control = StatisticsGroupBox
+      AnchorSideTop.Side = asrBottom
+      AnchorSideBottom.Control = LeftPanel
+      AnchorSideBottom.Side = asrBottom
+      Left = 13
+      Height = 25
+      Top = 307
+      Width = 75
+      Anchors = [akLeft, akBottom]
+      BorderSpacing.Around = 12
+      DefaultCaption = True
+      Kind = bkHelp
+      OnClick = HelpButtonClick
+      TabOrder = 2
+    end
   end
 end

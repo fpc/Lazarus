@@ -4521,6 +4521,7 @@ designer/framedesigner.pas svneol=native#text/pascal
 designer/jitforms.pp svneol=native#text/pascal
 designer/menueditorform.lfm svneol=native#text/pascal
 designer/menueditorform.pas svneol=native#text/pascal
+designer/menushadows.pp svneol=native#text/pascal
 designer/noncontroldesigner.pas svneol=native#text/pascal
 designer/objinspext.pas svneol=native#text/pascal
 designer/scalecompsdlg.lfm svneol=native#text/plain
@@ -6305,6 +6306,14 @@ images/designer/Order_back_one.png -text
 images/designer/Order_forward_one.png -text
 images/designer/Order_move_back.png -text
 images/designer/Order_move_front.png -text
+images/designer/add_item_above.png -text svneol=unset#image/png
+images/designer/add_item_below.png -text svneol=unset#image/png
+images/designer/add_item_left.png -text svneol=unset#image/png
+images/designer/add_item_right.png -text svneol=unset#image/png
+images/designer/add_sep_above.png -text svneol=unset#image/png
+images/designer/add_sep_below.png -text svneol=unset#image/png
+images/designer/add_submenu_below.png -text svneol=unset#image/png
+images/designer/add_submenu_right.png -text svneol=unset#image/png
 images/designer/align.png -text
 images/designer/anchor_bottom.png -text svneol=unset#image/png
 images/designer/anchor_center_horizontal.png -text svneol=unset#image/png
