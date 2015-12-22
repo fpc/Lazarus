@@ -73,6 +73,12 @@ begin
   PrevPosition := FPosition;
   // position has to be set before FControl.ScrollBy !!!
   FPosition := Value;
+
+  {calling scrollby when handle is invisible produces infinite loop with win32 and qt widgetsets.
+   see issue #29194}
+  if HandleAllocated and not IsWindowVisible(ControlHandle) then
+    exit;
+
   // scroll logical client area of FControl
   if Kind = sbVertical then
     FControl.ScrollBy(0, PrevPosition - FPosition)
