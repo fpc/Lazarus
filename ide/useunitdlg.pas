@@ -30,11 +30,11 @@ unit UseUnitDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, Buttons,
-  ButtonPanel, Dialogs, LCLProc, FileProcs, Graphics, LCLType,
-  SourceEditor, LazIDEIntf, IDEImagesIntf, LazarusIDEStrConsts, ProjectIntf,
-  Project, CodeCache, CodeToolManager, IdentCompletionTool, CodeTree,
-  ListFilterEdit, LinkScanner;
+  Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, Buttons, ButtonPanel,
+  Dialogs, LCLProc, FileProcs, Graphics, LCLType, SourceEditor, LazIDEIntf,
+  IDEImagesIntf, LazarusIDEStrConsts, ProjectIntf, IDEWindowIntf, Project,
+  CodeCache, CodeToolManager, IdentCompletionTool, CodeTree, ListFilterEdit,
+  LinkScanner;
 
 type
 
@@ -146,6 +146,7 @@ end;
 procedure TUseUnitDialog.FormCreate(Sender: TObject);
 begin
   // Internationalization
+  IDEDialogLayoutList.ApplyLayout(Self,500,460);
   Caption := dlgUseUnitCaption;
   AllUnitsCheckBox.Caption := dlgShowAllUnits;
   SectionRadioGroup.Caption := dlgInsertSection;
@@ -161,6 +162,7 @@ end;
 
 procedure TUseUnitDialog.FormDestroy(Sender: TObject);
 begin
+  IDEDialogLayoutList.SaveLayout(Self);
   FOtherUnits.Free;
   FProjUnits.Free;
   FImplUsedUnits.Free;
