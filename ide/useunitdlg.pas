@@ -34,7 +34,7 @@ uses
   Dialogs, LCLProc, FileProcs, Graphics, LCLType, SourceEditor, LazIDEIntf,
   IDEImagesIntf, LazarusIDEStrConsts, ProjectIntf, IDEWindowIntf, Project,
   CodeCache, CodeToolManager, IdentCompletionTool, CodeTree, ListFilterEdit,
-  LinkScanner;
+  LinkScanner, CodeToolsOptions;
 
 type
 
@@ -47,6 +47,7 @@ type
     UnitsListBox: TListBox;
     SectionRadioGroup: TRadioGroup;
     procedure AllUnitsCheckBoxChange(Sender: TObject);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure SectionRadioGroupClick(Sender: TObject);
@@ -153,7 +154,10 @@ begin
   SectionRadioGroup.Items.Clear;
   SectionRadioGroup.Items.Add(dlgInsertInterface);
   SectionRadioGroup.Items.Add(dlgInsertImplementation);
-  SectionRadioGroup.ItemIndex:=0;
+  if CodeToolsOpts.UsesSectionPreferInterface then
+    SectionRadioGroup.ItemIndex:=0
+  else
+    SectionRadioGroup.ItemIndex:=1;
   ButtonPanel1.OKButton.Caption:=lisMenuOk;
   ButtonPanel1.CancelButton.Caption:=lisCancel;
   UnitImgInd := IDEImages.LoadImage(16, 'item_unit');
@@ -162,7 +166,6 @@ end;
 
 procedure TUseUnitDialog.FormDestroy(Sender: TObject);
 begin
-  IDEDialogLayoutList.SaveLayout(Self);
   FOtherUnits.Free;
   FProjUnits.Free;
   FImplUsedUnits.Free;
@@ -202,6 +205,14 @@ begin
   if Visible then
     FilterEdit.SetFocus;
   FilterEdit.InvalidateFilter;
+end;
+
+procedure TUseUnitDialog.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  CodeToolsOpts.UsesSectionPreferInterface:=SectionRadioGroup.ItemIndex=0;
+  IDEDialogLayoutList.SaveLayout(Self);
+  CodeToolsOpts.Save;
 end;
 
 procedure TUseUnitDialog.UnitsListBoxDblClick(Sender: TObject);
