@@ -53,7 +53,7 @@ var
 begin
   Result:=ACellRect;
   Inc(Result.Left);
-  Dec(Result.Right);
+  Dec(Result.Right, 2);
   Dec(Result.Bottom);
   TextHeight := ACanvas.TextHeight(' ');
   case AColumnLayout of
