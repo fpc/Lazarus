@@ -473,9 +473,14 @@ type
   { TQtViewPort }
   
   TQtViewPort = class(TQtWidget)
+  private
+    {when our viewport is invisible then we must keep track of scrolling. issue #29239}
+    FInvisibleX: integer;
+    FInvisibleY: integer;
   public
     function CanPaintBackground: Boolean; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+    procedure InitializeWidget; override;
     procedure scroll(dx, dy: integer; ARect: PRect = nil); override;
     procedure stackUnder(AWidget: QWidgetH); override;
   end;
@@ -16085,6 +16090,18 @@ begin
       ' Event=', EventTypeToStr(Event),' inUpdate=',inUpdate);
   {$endif}
   case QEvent_type(Event) of
+    QEventShow,
+    QEventShowToParent:
+    begin
+      {Qt does not track scrolled offset of widget when it''s not visible.issue #29239}
+      if (FInvisibleX <> 0) or (FInvisibleY <> 0) then
+      begin
+        QWidget_scroll(Widget, FInvisibleX, FInvisibleY);
+        FInvisibleX := 0;
+        FInvisibleY := 0;
+      end;
+      Result := inherited EventFilter(Sender, Event);
+    end;
     QEventResize:
     begin
       // immediate update clientRect !
@@ -16167,9 +16184,21 @@ begin
   end;
 end;
 
+procedure TQtViewPort.InitializeWidget;
+begin
+  FInvisibleX := 0;
+  FInvisibleY := 0;
+  inherited InitializeWidget;
+end;
+
 procedure TQtViewPort.scroll(dx, dy: integer; ARect: PRect = nil);
 begin
-  inherited scroll(dx, dy, ARect);
+  if not getVisible then
+  begin
+    FInvisibleX += dx;
+    FInvisibleY += dy;
+  end else
+    inherited scroll(dx, dy, ARect);
   FScrollX := FScrollX + dx;
   FScrollY := FScrollY + dy;
 end;
