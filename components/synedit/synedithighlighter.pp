@@ -1480,7 +1480,7 @@ end;
 
 function TSynCustomHighlighter.GetIdentChars: TSynIdentChars;
 begin
-  Result := [#33..#255];
+  Result := ['_', 'A'..'Z', 'a'..'z', '0'..'9'];
 end;
 
 function TSynCustomHighlighter.GetEndOfLineAttribute: TSynHighlighterAttributes;
