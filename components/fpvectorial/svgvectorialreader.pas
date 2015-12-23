@@ -1981,7 +1981,7 @@ procedure TvSVGVectorialReader.ReadNextPathCommand(ACurTokenType: TSVGTokenType;
   var i: Integer; var CurX, CurY: Double; AData: TvVectorialPage;
   ADoc: TvVectorialDocument);
 var
-  X, Y, X2, Y2, X3, Y3, XQ, YQ, tmp: Double;
+  X, Y, X2, Y2, X3, Y3, XQ, YQ, Xnew, Ynew, cx, cy, phi, tmp: Double;
   LargeArcFlag, SweepFlag, LeftmostEllipse, ClockwiseArc: Boolean;
   lCurTokenType: TSVGTokenType;
   lDebugStr: String;
@@ -2225,29 +2225,64 @@ begin
   begin
     X2 := FSVGPathTokenizer.Tokens.Items[i+1].Value; // RX
     Y2 := FSVGPathTokenizer.Tokens.Items[i+2].Value; // RY
-    X3 := FSVGPathTokenizer.Tokens.Items[i+3].Value; // RotationX
-    X3 := X3 * Pi / 180; // degrees to radians conversion
+    phi := FSVGPathTokenizer.Tokens.Items[i+3].Value; // RotationX
+    phi := DegToRad(phi);  // degrees to radians conversion
     LargeArcFlag := Round(FSVGPathTokenizer.Tokens.Items[i+4].Value) = 1;
     SweepFlag := Round(FSVGPathTokenizer.Tokens.Items[i+5].Value) = 1;
     X := FSVGPathTokenizer.Tokens.Items[i+6].Value;  // X
     Y := FSVGPathTokenizer.Tokens.Items[i+7].Value;  // Y
 
-    // non-coordinate values
+    {
+    if lCurTokenType = sttRelativeEllipticArcTo then
+    begin
+      Xnew := CurX + X;
+      Ynew := CurY + Y;
+    end else
+    begin
+      Xnew := CurX;
+      Ynew := CurY;
+    end;
+
+    CalcEllipseCenter(CurX, CurY, Xnew, Ynew, X2, Y2, phi, LargeArcFlag, SweepFlag, cx, cy, tmp);
+    ConvertSVGCoordinatesToFPVCoordinates(AData, cx, cy, cx, cy);
+     }
+    // non-coordinate values (radii)
     ConvertSVGDeltaToFPVDelta(AData, X2, Y2, X2, Y2);
+    if X2 < 0 then X2 := -X2;
+    if Y2 < 0 then Y2 := -Y2;
 
     // Careful that absolute coordinates require using ConvertSVGCoordinatesToFPVCoordinates
     if lCurTokenType in [sttRelativeEllipticArcTo] then
-    begin
-      ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
-    end
+      ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y)
     else
-    begin
       ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
+
+    if lCurTokenType = sttRelativeEllipticArcTo then
+    begin
+      Xnew := CurX + X;
+      Ynew := CurY + Y;
+    end else
+    begin
+      Xnew := CurX;
+      Ynew := CurY;
     end;
 
+    if CalcEllipseCenter(CurX, CurY, Xnew, Ynew, X2, Y2, -phi, LargeArcFlag, SweepFlag, cx, cy, tmp) then
+      AData.AddEllipticalArcWithCenterToPath(X2*tmp, Y2*tmp, -phi, Xnew, Ynew, cx, cy, SweepFlag)
+    else
+      // Use a straight segment in case of no solution existing for the ellipse center
+      AData.AddLineToPath(Xnew, Ynew);
+
+    CurX := Xnew;
+    CurY := Ynew;
+
+    {
     // Convert SVG flags to fpvectorial flags
     LeftmostEllipse := (LargeArcFlag and (not SweepFlag))
       or ((not LargeArcFlag) and SweepFlag);
+    if (Y > CurY) or ((Y = CurY) and (X > CurX)) then
+      LeftMostEllipse := not LeftMostEllipse;
+      // if Y = CurY then "LeftMost" is to be understood as "TopMost"
     ClockwiseArc := SweepFlag;
 
     if lCurTokenType = sttRelativeEllipticArcTo then
@@ -2262,6 +2297,7 @@ begin
       CurX := X;
       CurY := Y;
     end;
+     }
 
     Inc(i, 8);
   end

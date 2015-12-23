@@ -24,6 +24,7 @@ unit fpvectorial;
 {.$define FPVECTORIAL_TOCANVAS_DEBUG}
 {.$define FPVECTORIAL_DEBUG_BLOCKS}
 {$define FPVECTORIAL_AUTOFIT_DEBUG}
+{.$define FPVECTORIAL_TOCANVAS_ELLIPSE_VISUALDEBUG}
 
 interface
 
@@ -1452,6 +1453,7 @@ type
     procedure AddBezierToPath(AX1, AY1, AX2, AY2, AX3, AY3: Double); overload;
     procedure AddBezierToPath(AX1, AY1, AZ1, AX2, AY2, AZ2, AX3, AY3, AZ3: Double); overload;
     procedure AddEllipticalArcToPath(ARadX, ARadY, AXAxisRotation, ADestX, ADestY: Double; ALeftmostEllipse, AClockwiseArcFlag: Boolean); // See http://www.w3.org/TR/SVG/paths.html#PathDataEllipticalArcCommands
+    procedure AddEllipticalArcWithCenterToPath(ARadX, ARadY, AXAxisRotation, ADestX, ADestY, ACenterX, ACenterY: Double; AClockwiseArcFlag: Boolean);
     procedure SetBrushColor(AColor: TFPColor);
     procedure SetBrushStyle(AStyle: TFPBrushStyle);
     procedure SetPenColor(AColor: TFPColor);
@@ -2625,6 +2627,7 @@ end;
 
 { T2DEllipticalArcSegment }
 
+// wp: no longer needed...
 function T2DEllipticalArcSegment.AlignedEllipseCenterEquationT1(
   AParam: Double): Double;
 var
@@ -2639,6 +2642,7 @@ begin
   if Result < 0 then Result := -1* Result;
 end;
 
+// wp: no longer needed...
 procedure T2DEllipticalArcSegment.CalculateCenter;
 var
   XStart, YStart, lT1: Double;
@@ -2694,7 +2698,7 @@ begin
   CX1 := RotatedCenter.X;
   CY1 := RotatedCenter.Y;
 
-  // The other ellipse is simetrically positioned
+  // The other ellipse is symmetrically positioned
   if (CX1 > Xstart) then
     CX2 := X - (CX1-Xstart)
   else
@@ -2777,8 +2781,8 @@ begin
   begin
     ALeft := CX-RX;
     ARight := CX+RX;
-    ATop := CY-RY;
-    ABottom := CY+RY;
+    ATop := CY+RY;
+    ABottom := CY-RY;
   end
   else
   begin
@@ -2807,11 +2811,18 @@ begin
     y2 := CY + RY*Sin(t2)*Cos(XRotation)+RX*Cos(t2)*Sin(XRotation);
     y3 := CY + RY*Sin(t3)*Cos(XRotation)+RX*Cos(t3)*Sin(XRotation);
 
+    ATop := Max(y1, y2);
+    ATop := Max(ATop, y3);
+
+    ABottom := Min(y1, y2);
+    ABottom := Min(ABottom, y3);
+    {
     ATop := Min(y1, y2);
     ATop := Min(ATop, y3);
 
     ABottom := Max(y1, y2);
     ABottom := Max(ABottom, y3);
+    }
   end;
 end;
 
@@ -4004,7 +4015,7 @@ end;
 procedure TPath.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double; ADoDraw: Boolean);
 
-  function HasStraightSegmentsOnly: Boolean;
+  function CanFill: Boolean;
   var
     seg: TPathSegment;
     j: Integer;
@@ -4087,33 +4098,40 @@ begin
   if ADoDraw then
     RenderInternalPolygon(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
 
-  {$IFDEF USE_LCL_CANVAS}
-  if ADoDraw and (Brush.Kind in [bkHorizontalGradient, bkVerticalGradient]) and
-    HasStraightSegmentsOnly then
+  if CanFill then
   begin
-    x1 := MaxInt;
-    y1 := MaxInt;
-    x2 := -MaxInt;
-    y2 := -MaxInt;
-    PrepareForSequentialReading;
-    for j := 0 to Len - 1 do
+    // Manually fill polygon with gradient
+    {$IFDEF USE_LCL_CANVAS}
+    if ADoDraw and (Brush.Kind in [bkHorizontalGradient, bkVerticalGradient]) then
     begin
-      CurSegment := TPathSegment(Next);
-      CoordX := CoordToCanvasX(Cur2DSegment.X, ADestX, AMulX);
-      CoordY := CoordToCanvasY(Cur2DSegment.Y, ADestY, AMulY);
-      x1 := Min(x1, CoordX);
-      y1 := Min(y1, CoordY);
-      x2 := Max(x2, CoordX);
-      y2 := Max(y2, CoordY);
+      x1 := MaxInt;
+      y1 := MaxInt;
+      x2 := -MaxInt;
+      y2 := -MaxInt;
+      PrepareForSequentialReading;
+      for j := 0 to Len - 1 do
+      begin
+        CurSegment := TPathSegment(Next);
+        CoordX := CoordToCanvasX(Cur2DSegment.X, ADestX, AMulX);
+        CoordY := CoordToCanvasY(Cur2DSegment.Y, ADestY, AMulY);
+        x1 := Min(x1, CoordX);
+        y1 := Min(y1, CoordY);
+        x2 := Max(x2, CoordX);
+        y2 := Max(y2, CoordY);
+      end;
+      DrawBrushGradient(ADest, ARenderInfo, x1, y1, x2, y2, ADestX, ADestY, AMulX, AMulY);
     end;
-    DrawBrushGradient(ADest, ARenderInfo, x1, y1, x2, y2, ADestX, ADestY, AMulX, AMulY);
-  end;
-  {$ENDIF}
+    {$ENDIF}
+  end
+  else
+    // Paths with curved segments cannot be filled properly at the moment.
+    // Better to have no fill at all...
+    Brush.Style := bsClear;
 
   //
   // For other paths, draw more carefully
   //
-  ApplyPenToCanvas(ADest, ARenderInfo, Pen);
+  ApplyPenToCanvas(ADest, ARenderInfo, Pen);  // Restore pen
   PrepareForSequentialReading;
 
   for j := 0 to Len - 1 do
@@ -4253,7 +4271,8 @@ begin
       {$endif}
 
       ADest.Brush.Style := Brush.Style;
-      CalcEntityCanvasMinMaxXY_With2Points(ARenderInfo, CoordX, CoordY, CoordX4, CoordY4);
+      CalcEntityCanvasMinMaxXY_With2Points(ARenderInfo,
+        EllipseRect.Left, EllipseRect.Top, EllipseRect.Right, EllipseRect.Bottom);
 
       if ADoDraw then
       begin
@@ -7688,6 +7707,27 @@ begin
   segment.XRotation := AXAxisRotation;
   segment.LeftmostEllipse := ALeftmostEllipse;
   segment.ClockwiseArcFlag := AClockwiseArcFlag;
+
+  AppendSegmentToTmpPath(segment);
+end;
+
+procedure TvVectorialPage.AddEllipticalArcWithCenterToPath(ARadX, ARadY,
+  AXAxisRotation, ADestX, ADestY, ACenterX, ACenterY: Double;
+  AClockwiseArcFlag: Boolean);
+var
+  segment: T2DEllipticalArcSegment;
+begin
+  segment := T2DEllipticalArcSegment.Create;
+  segment.SegmentType := st2DEllipticalArc;
+  segment.X := ADestX;
+  segment.Y := ADestY;
+  segment.RX := ARadX;
+  segment.RY := ARadY;
+  segment.XRotation := AXAxisRotation;
+  segment.CX := ACenterX;
+  segment.CY := ACenterY;
+  segment.ClockwiseArcFlag := AClockwiseArcFlag;
+  segment.CenterSetByUser := true;
 
   AppendSegmentToTmpPath(segment);
 end;

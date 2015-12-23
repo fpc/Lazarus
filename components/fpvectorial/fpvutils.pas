@@ -60,6 +60,8 @@ function BezierEquation_GetLength(P1, P2, P3, P4: T3DPoint; AMaxT: Double = 1; A
 function BezierEquation_GetT_ForLength(P1, P2, P3, P4: T3DPoint; ALength: Double; ASteps: Integer = 30): Double;
 function BezierEquation_GetPointAndTangentForLength(P1, P2, P3, P4: T3DPoint;
   ADistance: Double; out AX, AY, ATangentAngle: Double; ASteps: Integer = 30): Boolean;
+function CalcEllipseCenter(x1,y1, x2,y2, rx,ry, phi: Double; fa, fs: Boolean;
+  out cx,cy, lambda: Double): Boolean;
 procedure ConvertPathToPoints(APath: TPath; ADestX, ADestY: Integer; AMulX, AMulY: Double; var Points: TPointsArray);
 function Rotate2DPoint(P, RotCenter: TPoint; alpha:double): TPoint;
 function Rotate3DPointInXY(P, RotCenter: T3DPoint; alpha:double): T3DPoint;
@@ -376,6 +378,73 @@ begin
   Result := True;
 end;
 
+// Calculate center of ellipse defined by two points on its perimeter, the
+// major and minor axes, and the "sweep" and "large-angle" flags.
+// Calculation follows the SVG implementation notes
+// see: http://www.w3.org/TR/SVG/implnote.html#ArcImplementationNotes
+// - (x1, y1) absolute coordinates of start point of arc
+// - (x2, y2) absolute coordinates of end point of arc
+// - rx, ry: radii of major and minor ellipse axes. Must be > 0. Use abs() if necessary.
+// - phi: rotation angle of ellipse
+// - fa: large arc flag (false = small arc, true = large arc)
+// - fs: sweep flag (false = counterclockwise, true = clockwise)
+// - cx, cy: Center coordinates of ellipse
+// - Function result is false if the center cannot be calculated
+function CalcEllipseCenter(x1,y1, x2,y2, rx,ry, phi: Double; fa, fs: Boolean;
+  out cx,cy, lambda: Double): Boolean;
+const
+  EPS = 1E-9;
+var
+  sinphi, cosphi: Extended;
+  x1p, x2p, y1p, y2p: Double;  // x1', x2', y1', y2'
+  cxp, cyp: Double;            // cx', cy'
+  m: Double;
+begin
+  Result := false;
+  if (rx = 0) or (ry = 0) then
+    exit;
+
+  rx := abs(rx);  // only positive radii!
+  ry := abs(ry);
+  SinCos(phi, sinphi, cosphi);
+
+  // (F.6.5.1) in above document
+  x1p :=  (cosphi*(x1-x2) + sinphi*(y1-y2)) / 2;
+  y1p := -(sinphi*(x1-x2) + cosphi*(y1-y2)) / 2;
+
+  lambda := sqr(x1p/rx) + sqr(y1p/ry);
+  if lambda > 1 then
+  begin
+    // If the distance of the points is too large in relation to the ellipse
+    // size there is no solution. SVG Implemantation Notes request in this case
+    // that the ellipse is magnified so much that a solution exists.
+    lambda := sqrt(lambda);
+    rx := rx * lambda;
+    ry := ry * lambda;
+  end else
+    lambda := 1.0;
+
+  // (F.6.5.2)
+  m := (sqr(rx)*sqr(Ry) - sqr(rx)*sqr(y1p) - sqr(ry)*sqr(x1p)) / (sqr(rx)*sqr(y1p) + sqr(ry)*sqr(x1p));
+  if SameValue(m, 0.0, EPS) then
+    m := 0
+  else if m < 0 then
+    exit;
+    // Exit if point distance is too large and return "false" - but this
+    // should no happen after having applied lambda!
+  m := sqrt(m);                  // Positive root for fa <> fs
+  if fa = fs then m := -m;       // Negative root for fa = fs.
+  cxp := m * rx / ry * y1p;
+  cyp := m * ry / rx * x1p;
+
+  // (F.6.5.3)
+  cx := cosphi*cxp - sinphi*cyp + (x1 + x2) / 2;
+  cy := sinphi*cxp + cosphi*cyp + (y1 + y2) / 2;
+
+  // If the function gets here we have a valid ellipse center in cx,cy
+  Result := true;
+end;
+
 procedure ConvertPathToPoints(APath: TPath; ADestX, ADestY: Integer; AMulX, AMulY: Double; var Points: TPointsArray);
 var
   i, LastPoint: Integer;
@@ -508,14 +577,12 @@ function SolveNumericallyAngle(ANumericalEquation: TNumericalEquation;
 var
   lError, lErr1, lErr2, lErr3, lErr4: Double;
   lParam1, lParam2: Double;
-  lIterations: Integer;
   lCount: Integer;
 begin
   lErr1 := ANumericalEquation(0);
   lErr2 := ANumericalEquation(Pi/2);
   lErr3 := ANumericalEquation(Pi);
   lErr4 := ANumericalEquation(3*Pi/2);
-
   // Choose the place to start
   if (lErr1 < lErr2) and (lErr1 < lErr3) and (lErr1 < lErr4) then
   begin
@@ -527,7 +594,7 @@ begin
     lParam1 := 0;
     lParam2 := Pi;
   end
-  else if (lErr2 < lErr3) and (lErr2 < lErr4) then
+  else if (lErr2 < lErr3) and (lErr2 < lErr4) then      // wp: same as above!
   begin
     lParam1 := Pi/2;
     lParam2 := 3*Pi/2;
