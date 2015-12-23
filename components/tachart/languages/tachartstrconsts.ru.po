@@ -105,7 +105,7 @@ msgstr "Диаграмма по функции"
 
 #: tachartstrconsts.rsinvalidlogbase
 msgid "Logarithm base must be > 0 and <> 1."
-msgstr ""
+msgstr "Основание логарифма должно быть больше нуля и не равно единице."
 
 #: tachartstrconsts.rsleastsquaresfitseries
 msgid "Least-squares fit series"
@@ -204,4 +204,3 @@ msgstr "Невозможно переименовать компоненты: %s
 #: tachartstrconsts.tastoolseditortitle
 msgid "Edit tools"
 msgstr "Редактор средств диаграмм"
-
