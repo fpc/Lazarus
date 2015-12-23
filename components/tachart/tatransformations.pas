@@ -656,6 +656,8 @@ end;
 procedure TLogarithmAxisTransform.SetBase(AValue: Double);
 begin
   if FBase = AValue then exit;
+  if (AValue <= 0) or (AValue = 1.0) then
+    raise Exception.Create(rsInvalidLogBase);
   FBase := AValue;
   Changed;
 end;

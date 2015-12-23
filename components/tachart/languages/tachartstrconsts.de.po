@@ -105,6 +105,10 @@ msgstr "Distanzmessung"
 msgid "Function series"
 msgstr "Funktions-Diagramm"
 
+#: tachartstrconsts.rsinvalidlogbase
+msgid "Logarithm base must be > 0 and <> 1."
+msgstr "Die Logarithmus-Basis muss größer als 0 und darf nicht gleich 1 sein."
+
 #: tachartstrconsts.rsleastsquaresfitseries
 msgid "Least-squares fit series"
 msgstr "Fit"

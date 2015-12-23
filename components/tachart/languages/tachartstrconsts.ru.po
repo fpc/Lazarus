@@ -103,6 +103,10 @@ msgstr "Измерение расстояния"
 msgid "Function series"
 msgstr "Диаграмма по функции"
 
+#: tachartstrconsts.rsinvalidlogbase
+msgid "Logarithm base must be > 0 and <> 1."
+msgstr ""
+
 #: tachartstrconsts.rsleastsquaresfitseries
 msgid "Least-squares fit series"
 msgstr "Диаграмма по методу наименьших квадратов"

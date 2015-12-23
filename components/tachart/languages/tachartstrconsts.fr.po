@@ -103,6 +103,10 @@ msgstr "Mesure des distances"
 msgid "Function series"
 msgstr "Séries de fonctions"
 
+#: tachartstrconsts.rsinvalidlogbase
+msgid "Logarithm base must be > 0 and <> 1."
+msgstr ""
+
 #: tachartstrconsts.rsleastsquaresfitseries
 msgid "Least-squares fit series"
 msgstr "Séries de moindres carrés ajustés"
