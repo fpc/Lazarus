@@ -3586,12 +3586,12 @@ begin
     Canvas.Pen.Mode := pmCopy;
     GetSelectedState(aState, IsSelected);
     if IsSelected then begin
-      if FEditorMode and (FEditor<>nil)
+      if FEditorMode and (aCol = Self.Col)
       and (((FEditor=FStringEditor) and (FStringEditor.BorderStyle=bsNone))
          or (FEditor=FButtonStringEditor))
       then
         Canvas.Brush.Color := FEditor.Color
-      else if FEditorMode and (FEditor=FPicklistEditor) then
+      else if FEditorMode and (aCol = Self.Col) and (FEditor=FPicklistEditor) then
         Canvas.Brush.Color := GetNotSelectedColor
       else
         Canvas.Brush.Color := SelectedColor;
