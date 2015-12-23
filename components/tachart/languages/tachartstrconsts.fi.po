@@ -93,6 +93,10 @@ msgstr "Etäisyysmittaus"
 msgid "Function series"
 msgstr "Funktiokuvaaja"
 
+#: tachartstrconsts.rsinvalidlogbase
+msgid "Logarithm base must be > 0 and <> 1."
+msgstr ""
+
 #: tachartstrconsts.rsleastsquaresfitseries
 msgid "Least-squares fit series"
 msgstr "Pienimpään neliösummaan sopiva kuvaaja"
