@@ -3780,7 +3780,7 @@ end;
 
 class function TPostH2PasTools.ClassDescription: string;
 begin
-  Result := Format(h2pPostH2PasASetOfCommonToolsToRunAfterH2pasPhReplace, [#13, #13, #13, #13, #13, #13, #13, #13, #13, #13, #13, #13, #13, #13, #13])
+  Result := Format(h2pPostH2PasASetOfCommonToolsToRunAfterH2pasPhReplace, [#13, #13, #13, #13, #13, #13, #13, #13, #13, #13, #13, #13, #13, #13, #13, #13])
     ;
 end;
 
@@ -4462,7 +4462,7 @@ end;
 
 class function TConvertEnumsToTypeDef.ClassDescription: string;
 begin
-  Result := h2pGiveAnoymousCEnumsATypedefName;
+  Result := h2pGiveAnonymousCEnumsATypedefName;
 end;
 
 function TConvertEnumsToTypeDef.Execute(aText: TIDETextConverter
