@@ -8,7 +8,6 @@ object MenuDesigner: TMenuDesigner
   ClientWidth = 730
   Constraints.MinHeight = 345
   Constraints.MinWidth = 730
-  FormStyle = fsStayOnTop
   KeyPreview = True
   OnCreate = FormCreate
   OnDestroy = FormDestroy
