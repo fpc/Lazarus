@@ -12011,73 +12011,723 @@ msgstr "Konfigurasi paket terinstalasi ..."
 msgid "Menu Editor ..."
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditorcreatesubmenu
-msgid "Create Submenu"
-msgstr "Buat Submenu"
-
-#: lazarusidestrconsts.lismenueditordeletefromtemplate
-#, fuzzy
-#| msgid "Delete From Template..."
-msgid "Delete From Template ..."
-msgstr "Hapus Dari Template..."
-
-#: lazarusidestrconsts.lismenueditordeleteitem
-msgid "Delete Item"
-msgstr "Hapus Item"
-
-#: lazarusidestrconsts.lismenueditorhandleonclickevent
-msgid "Handle OnClick Event"
+#: lazarusidestrconsts.lismenueditoracceleratorkeysneedschanging
+msgid "Accelerator(&&) key \"%s\" needs changing "
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditorinsertfromtemplate
+#: lazarusidestrconsts.lismenueditoracomponentwithnameexists
+msgid "A component with the name %s already exists"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoraddanewitemaboveselecteditem
+msgid "Add a new item above selected item"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoraddanewitemafterselecteditem
+msgid "Add a new item after selected item"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoraddanewitembeforeselecteditem
+msgid "Add a new item before selected item"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoraddanewitembelowselecteditem
+msgid "Add a new item below selected item"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoraddaniconfromthemenusimagelist
+msgid "Add an icon from the menu's ImageList"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoraddanonclickeventtoselecteditem
+msgid "Add an OnClick event to selected item"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoraddaseparatorafterselecteditem
+msgid "Add a separator after selected item"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoraddaseparatorbeforeselecteditem
+msgid "Add a separator before selected item"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoraddasubmenuattherightofselecteditem
+msgid "Add a submenu at the right of selected item"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoraddasubmenubelowselecteditem
+msgid "Add a submenu below selected item"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoraddfromtemplate
+msgid "&Add from template ..."
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoraddiconfroms
+msgid "Add icon from %s"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoraddiconfroms2
+msgid "Add icon from %s ..."
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoraddimagelisticon
+msgid "Add imagelist &icon"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoraddimagelisticon2
+msgid "Add imagelist icon"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoradditemsonebyone
+msgid "Add items one by one"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoraddnewitemabove
+msgid "&Add new item above"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoraddnewitemafter
+msgid "Add ne&w item after"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoraddnewitembefore
+msgid "&Add new item before"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoraddnewitembelow
+msgid "Add ne&w item below"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoraddonclickhandler
+msgid "Add &OnClick handler"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoraddseparatorafter
+msgid "Add separator &after"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoraddseparatorbefore
+msgid "Add separator &before"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoraddsubmenubelow
+msgid "Add &submenu below"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoraddsubmenuright
+msgid "Add &submenu right"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoranewmenutemplatehasbeensaved
+msgid "A new menu template described as \"%s\" has been saved based on %s, with %d sub items"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorbasiceditmenutemplate
+msgid "&Edit,Basic edit menu,&Undo,Ctrl+Z,&Redo,,-,,Select &All,Ctrl+A,C&ut,Ctrl+X,C&opy,Ctrl+C,P&aste,Ctrl+V,Paste &Special,,-,,F&ind,,R&eplace,,&Go to ...,,"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorbasicfilemenutemplate
+msgid "&File,Basic file menu,&New,,&Open ...,,&Save,,Save &As,,-,,&Print,,P&rint Setup ...,,-,,E&xit,,"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorbasichelpmenutemplate
+msgid "&Help,Basic help menu,Help &Contents,F1,Help &Index,,&Online Help,,-,,&Licence Information,,&Check for Updates,,-,,&About,,"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorbasicwindowmenutemplate
+msgid "&Window,Basic window menu,&New Window,,&Tile,,&Cascade,,&Arrange all,,-,,&Hide,,&Show,,"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorcanceldeletion
+msgid "Cancel deletion"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorcaption
+msgid "Caption"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorcaptioncannotbeblank
+msgid "Caption cannot be blank"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorcaptioneditemsd
+msgid "Captioned items: %d"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorcaptioneditemsna
+msgid "Captioned items: n/a"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorcaptionshouldnotbeblank
+msgid "Caption should not be blank"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorchangeconflictingaccelerators
+msgid "Change conflicting accelerator \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorchangeimagelisticon
+msgid "Change imagelist &icon"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorchangeshortcutcaptionforcomponent
+msgid "Change %s for %s"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorchangeshortcutconflicts
+msgid "Change shortcut conflict \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorchangetheshortcutfors
+msgid "Change the shortCut for %s"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorchangetheshortcutkey2fors
+msgid "Change the shortCutKey2 for %s"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorcheckmarkandradioitemprops
+msgid "%s \"%s\" - Check mark and RadioItem properties"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorcheckmarkradioitem
+msgid "Checkmark && &radioitem ..."
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorchoosetemplatetodelete
+msgid "Choose template to delete"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorchoosetemplatetoinsert
+msgid "Choose template to insert"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorclickanongreyeditemtoedititsshortcut
+msgid "Click a non-greyed item to edit its shortcut"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorclose
 #, fuzzy
-#| msgid "Insert From Template..."
-msgid "Insert From Template ..."
-msgstr "Sisipkan Dari Template..."
+msgctxt "lazarusidestrconsts.lismenueditorclose"
+msgid "&Close"
+msgstr "&Tutup"
 
-#: lazarusidestrconsts.lismenueditorinsertnewitemafter
-msgid "Insert New Item (after)"
-msgstr "Sisipkan Item baru (setelah)"
+#: lazarusidestrconsts.lismenueditorcomponentisunexpectedkind
+msgid "Component is unexpected kind"
+msgstr ""
 
-#: lazarusidestrconsts.lismenueditorinsertnewitembefore
-msgid "Insert New Item (before)"
-msgstr "Sisipkan Item Baru (sebelum)"
+#: lazarusidestrconsts.lismenueditorcomponentisunnamed
+msgid "component is unnamed"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorconflictresolutioncomplete
+msgid "<conflict resolution complete>"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditordditems
+msgid "%d (%d items)"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditordeepestnestedmenuleveld
+msgid "Deepest nested menu level: %d"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditordeepestnestedmenulevelna
+msgid "Deepest nested menu level: n/a"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditordeleteallsubitems
+msgid "Delete all subitems"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditordeleteitem
+#, fuzzy
+#| msgid "Delete Item"
+msgid "&Delete item"
+msgstr "Hapus Item"
+
+#: lazarusidestrconsts.lismenueditordeletemenutemplate
+msgid "&Delete menu template ..."
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditordeletepreviouslysavedmenutemplate
+msgid "Delete previously saved menu template"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditordeletesavedmenutemplate
+msgid "Delete saved menu template"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditordeleteselectedmenutemplate
+msgid "Delete selected menu template"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditordeletetheselecteditem
+msgid "Delete the selected item"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditordeletethisitemanditssubitems
+msgid "Delete this item and its subitems?"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditordeletingitemwithasubmenu
+msgid "Deleting item with a submenu"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditordeletingthisitemwilldeleteallsubitemstoo
+msgid "Deleting this item will delete all subitems too."
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditordiscoverandresolveanyconflictingshortcuts
+msgid "Discover and resolve any conflicting shortcuts"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditordisplayalistofbothshortcutsandacceleratorkeys
+msgid "Display a list of both shortcuts and accelerator keys"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditordisplayalistofmenuitemshortcuts
+msgid "Display a list of menuitem shortcuts"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditordisplaypreviewaspopupmenu
+msgid "Display preview as &Popup menu"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditordoyouwanttoaddmenuitemsonebyone
+msgid "Do you want to add menu items one by one,"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoreditcaption
+msgid "Edit &Caption"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoreditcheckmarkprops
+msgid "Edit Check mark and RadioItem properties"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoreditingcaptionofs
+msgid "Editing Caption of %s"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoreditingsdots
+msgid "To resolve conflict edit %s.%s"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoreditingsfors
+msgid "Editing %s for %s"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoreditingssnomenuitemselected
+msgid "Editing %s.%s - no menu item selected"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoreditingssnomenuitemselected2
+msgid "Editing %s.%s - no menuitem selected"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoredittheselecteditemscaption
+msgid "Edit the selected item's Caption"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorenteramenudescription
+msgid "Enter a menu &Description:"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorenteranewshortcutfors
+msgid "Enter a new ShortCut for %s"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorenteranewshortcutkey2fors
+msgid "Enter a new ShortCutKey2 for %s"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorexistingsavedtemplates
+msgid "Existing saved templates"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorfurthershortcutconflict
+msgid "Further shortcut conflict"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorgethelptousethiseditor
+msgid "Get help to use this editor"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorgrabkey
+msgid "&Grab key"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorgroupindexdropdownshowsanyexistinggroups
+msgid "&GroupIndex (dropdown shows any existing groups)"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorgroupindexmenuitems
+msgid "GroupIndex,MenuItems"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorinadequatedescription
+msgid "Inadequate Description"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorinitialmenupopulation
+msgid "Initial menu population"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorinsertmenutemplateinto
+msgid "Insert menu template into "
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorinsertselectedmenutemplate
+msgid "Insert selected menu template"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorisnotassigned
+msgid "is not assigned"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoritemswithicond
+msgid "Items with icon: %d"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoritemswithiconna
+msgid "Items with icon: n/a"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorlistshortcutsandaccelerators
+msgid "List shortcuts and &accelerators for %s ..."
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorlistshortcutsfors
+msgid "List shortcuts for %s ..."
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditormanagecheckmarksandradiogroups
+msgid "Manage check marks and radiogroups"
+msgstr ""
 
 #: lazarusidestrconsts.lismenueditormenueditor
 msgid "Menu Editor"
 msgstr "Editor Menu"
 
+#: lazarusidestrconsts.lismenueditormenueditornomenuisselected
+msgid "Menu Editor - no menu is selected"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditormenuitemshortcutconflictsin
+msgid "Menuitem shortcut conflicts in "
+msgstr ""
+
 #: lazarusidestrconsts.lismenueditormovedown
 msgid "Move Down (or right)"
 msgstr "Turun (atau kanan)"
+
+#: lazarusidestrconsts.lismenueditormoveitemdown
+msgid "Mo&ve item down"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditormoveitemleft
+msgid "&Move item left"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditormoveitemright
+msgid "Mo&ve item right"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditormoveitemup
+msgid "&Move item up"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditormoveselecteditemdown
+msgctxt "lazarusidestrconsts.lismenueditormoveselecteditemdown"
+msgid "Move selected item down"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditormoveselecteditemtotheleft
+msgid "Move selected item to the left"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditormoveselecteditemtotheright
+msgid "Move selected item to the right"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditormoveselecteditemup
+msgctxt "lazarusidestrconsts.lismenueditormoveselecteditemup"
+msgid "Move selected item up"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditormoveseparatedeleteinsertitems
+msgid "Move Divide Delete  Add  items"
+msgstr ""
 
 #: lazarusidestrconsts.lismenueditormoveup
 msgid "Move Up (or left)"
 msgstr "Naik (atau kiri)"
 
-#: lazarusidestrconsts.lismenueditornewtemplatedescription
-#, fuzzy
-#| msgid "New Template Description..."
-msgid "New Template Description ..."
-msgstr "Deskripsi Template Baru..."
+#: lazarusidestrconsts.lismenueditornomenuselected
+msgid "(no menu selected)"
+msgstr ""
 
-#: lazarusidestrconsts.lismenueditorsaveastemplate
-#, fuzzy
-#| msgid "Save As Template..."
-msgid "Save As Template ..."
-msgstr "Simpan Sebagai Template..."
+#: lazarusidestrconsts.lismenueditornone
+msgid "<none>"
+msgstr ""
 
-#: lazarusidestrconsts.lismenueditorselectmenu
-msgid "Select Menu:"
-msgstr "Pilih Menu:"
+#: lazarusidestrconsts.lismenueditornonenone
+msgid "<none>,<none>"
+msgstr ""
 
-#: lazarusidestrconsts.lismenueditorselecttemplate
-msgid "Select Template:"
-msgstr "Pilih Template:"
+#: lazarusidestrconsts.lismenueditornoshortcutconflictsfound
+msgid "<no shortcut conflicts found>"
+msgstr ""
 
-#: lazarusidestrconsts.lismenueditortemplatepreview
-msgid "Template Preview"
-msgstr "Peninjauan Template"
+#: lazarusidestrconsts.lismenueditornoshortcutconflictsremain
+msgid "<no shortcut conflicts remain>"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditornoshortcutconflictstoresolve
+msgid "<no shortcut conflicts to resolve>"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditornotegroupindexdhasonlyoneradioitemitisnotyetagroup
+msgid " Note: GroupIndex %d has only one RadioItem (it is not yet a group)"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditornousersavedtemplates
+msgid "No user-saved templates"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditornumberofdropdownitemsforeachmenubaritem
+msgid "Number of dropdown items for each menubar item"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditornumberofinitialmenubaritems
+msgid "Number of initial menubar items"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditornumberofinitialpopupmenuitems
+msgid "Number of initial popup menu items"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoronlystandarddefaulttemplatesareavailable
+msgid "Only standard default templates are available."
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditororclickheadertosortbythatcolumn
+msgid "  or click header to sort by that column"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditororstartwithaskeletonmenuofseveralitems
+msgid "Or start with a skeleton menu of several items?"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorpickaniconfroms
+msgid "Pick an icon from %s"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorpopupassignmentsd
+msgid "Popup assignments: %d"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorpopupassignmentsna
+msgid "Popup assignments n/a"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorremainingconflicts0
+msgid "Remaining conflicts: 0"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorremainingconflictsd
+msgid "Remaining conflicts: %d"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorremoveallseparators
+msgid "&Remove all separators"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorremoveeveryseparatorinthissubmenu
+msgid "Remove every separator in this submenu"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorresolvedconflicts0
+msgid "Resolved conflicts: 0"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorresolvedconflictsd
+msgid "Resolved conflicts: %d"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorresolveselectedconflict
+msgid "Resolve selected conflict"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorresolveshortcutconflicts
+msgid "&Resolve shortcut conflicts ..."
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorsavedtemplates
+msgid "Saved templates"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorsavemenuasatemplate
+msgid "&Save menu as a template ..."
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorsavemenuastemplate
+msgid "Save menu as template"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorsavemenuastemplateforfutureuse
+msgid "Save menu as template for future use"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorsavemenushownasanewtemplate
+msgid "Save menu shown as a new template"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorsavethismenulayoutforfuturereuse
+msgid "Save this menu layout for future reuse"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorsconflictswiths
+msgid "%s conflicts with %s"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorseparators
+msgid "Se&parators"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorshortcutconflictsfoundinitiallyd
+msgid "Shortcut conflicts found initially: %d"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorshortcutitemsd
+msgid "Shortcut items: %d"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorshortcutitemsna
+msgid "Shortcut items: n/a"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorshortcutnotyetchanged
+msgid "Shortcut not yet changed"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorshortcutpropertywithshortcut
+msgid "Shortcut,Property with shortcut"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorshortcutpropertywithshortcutaccelerator
+msgid "Shortcut,Property with shortcut/accelerator"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorshortcuts
+msgid "Shortcuts"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorshortcuts2
+msgid "Shortc&uts"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorshortcutsandacceleratorkeys
+msgid "Shortcuts and Accelerator keys"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorshortcutsassociatedwithmenusandactionsd
+msgid "Shortcuts associated with Menus and Actions (%d)"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorshortcutsdandacceleratorkeysd
+msgid "Shortcuts (%d) and Accelerator keys (%d)"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorshortcutsusedins
+msgid "Shortcuts used in %s"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorshowmenueditortmenuparameterisnil
+msgid "ShowMenuEditor: TMenu parameter is nil"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorsins
+msgid "\"%s\" in %s"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorsisalreadyinuse
+msgid "\"%s\" is already in use in %s as a shortcut.%sTry a different shortcut."
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorsisnotasufficientdescriptionpleaseexpand
+msgid "Please expand: \"%s\" is not a sufficient Description"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorsomewidgetsetsdonotallowseparatorsinthemainmenubar
+msgid "Some widgetsets do not allow separators in the main menubar"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorsshortcuts
+msgid "%s: Shortcuts"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorsshortcutsacceleratorkeys
+msgid "%s: Shortcuts & accelerator keys"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorsshortcutsandacceleratorkeys
+msgid "%s: Shortcuts and accelerator keys"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorsshortcutsummary
+msgid "%s: Shortcut summary"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorsssonclicks
+msgid "%s.%s.%s - OnClick: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorstandardtemplates
+msgid "Standard templates"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorstartingtocreateamenu
+msgid "Starting to create a menu"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorstartwithseveralitems
+msgid "Start with several items"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditortemplatedescription
+msgid "Template description:"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditortemplates
+msgid "&Templates"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditortemplatesaved
+msgid "Template saved"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditortherearenousersavedmenutemplates
+msgid "There are no user-saved menu templates."
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditortsclistgetscanlistcompnameinvalidindexdforfscanlis
+msgid "TSCList.GetScanListCompName: invalid index %d for FScanList"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoruseamenutemplatetoconstructmenuitemshere
+msgid "Use a menu template to construct menu items here"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoryouhavetochangetheshortcutfromsstoavoidaconflict
+msgid "You have to change the shortcut from %s%sto avoid a conflict"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoryoumustentertextforthecaption
+msgid "You must enter text for the Caption"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuencloseinifdef
 msgid "Enclose in $IFDEF ..."
@@ -13141,10 +13791,12 @@ msgid "missing macro name"
 msgstr ""
 
 #: lazarusidestrconsts.lismmmoveselecteditemdown
+msgctxt "lazarusidestrconsts.lismmmoveselecteditemdown"
 msgid "Move selected item down"
 msgstr ""
 
 #: lazarusidestrconsts.lismmmoveselecteditemup
+msgctxt "lazarusidestrconsts.lismmmoveselecteditemup"
 msgid "Move selected item up"
 msgstr ""
 
