@@ -45,7 +45,7 @@ msgid "Add missing brackets around macro values"
 msgstr ""
 
 #: h2passtrconsts.h2paddmissingh2pasifdefsforfunctionbodies
-msgid "Add missing h2pas IFDEFs for function bodies"
+msgid "Add missing H2Pas IFDEFs for function bodies"
 msgstr ""
 
 #: h2passtrconsts.h2paddmissingpointertypeslikepppchar
@@ -57,11 +57,11 @@ msgid "Add new tool"
 msgstr ""
 
 #: h2passtrconsts.h2paddsearchandreplacetoolbeforeh2pas
-msgid "Add \"search and replace\" tool before h2pas"
+msgid "Add \"search and replace\" tool before H2Pas"
 msgstr ""
 
 #: h2passtrconsts.h2paddthesehfilestoh2pasproject
-msgid "Add these .h files to h2pas project?%s%s%s"
+msgid "Add these .h files to H2Pas project?%s%s%s"
 msgstr ""
 
 #: h2passtrconsts.h2paddunitstousessection
@@ -69,7 +69,7 @@ msgid "Add units to uses section"
 msgstr ""
 
 #: h2passtrconsts.h2pafterh2pas
-msgid "After h2pas"
+msgid "After H2Pas"
 msgstr ""
 
 #: h2passtrconsts.h2pambiguousmerges
@@ -77,7 +77,7 @@ msgid "Ambiguous merges:%s%s"
 msgstr ""
 
 #: h2passtrconsts.h2pbeforeh2pas
-msgid "Before h2pas"
+msgid "Before H2Pas"
 msgstr ""
 
 #: h2passtrconsts.h2pcancel
@@ -113,11 +113,11 @@ msgid "&Close"
 msgstr ""
 
 #: h2passtrconsts.h2pcommentfunctionsthataretoocomplexforh2pas
-msgid "Comment functions that are too complex for h2pas"
+msgid "Comment functions that are too complex for H2Pas"
 msgstr ""
 
 #: h2passtrconsts.h2pcommentmacrosthataretoocomplexforh2pas
-msgid "Comment macros that are too complex for h2pas"
+msgid "Comment macros that are too complex for H2Pas"
 msgstr ""
 
 #: h2passtrconsts.h2pconfirmdelete
@@ -129,11 +129,11 @@ msgid "Confirm removal"
 msgstr ""
 
 #: h2passtrconsts.h2pconversionsafterrunningh2pas
-msgid "Conversions after running h2pas"
+msgid "Conversions after running H2Pas"
 msgstr ""
 
 #: h2passtrconsts.h2pconversionsbeforerunningh2pas
-msgid "Conversions before running h2pas"
+msgid "Conversions before running H2Pas"
 msgstr ""
 
 #: h2passtrconsts.h2pconvertfunctiontypestopointers
@@ -245,7 +245,7 @@ msgid "File information"
 msgstr ""
 
 #: h2passtrconsts.h2pfilenameofh2pasprogram
-msgid "Filename of h2pas program"
+msgid "Filename of H2Pas program"
 msgstr ""
 
 #: h2passtrconsts.h2pfilenotfound
@@ -280,8 +280,8 @@ msgstr ""
 msgid "Fix open arrays%sReplace \"array of )\" with \"array of const)\""
 msgstr ""
 
-#: h2passtrconsts.h2pgiveanoymouscenumsatypedefname
-msgid "Give anoymous c enums a typedef name"
+#: h2passtrconsts.h2pgiveanonymouscenumsatypedefname
+msgid "Give anonymous C enums a typedef name"
 msgstr ""
 
 #: h2passtrconsts.h2ph2pas
@@ -289,19 +289,19 @@ msgid "H2Pas ..."
 msgstr "H2Pas…"
 
 #: h2passtrconsts.h2ph2pasoptions
-msgid "h2pas Options"
+msgid "H2Pas Options"
 msgstr ""
 
 #: h2passtrconsts.h2ph2pasprogrampath
-msgid "h2pas program path"
+msgid "H2Pas program path"
 msgstr ""
 
 #: h2passtrconsts.h2ph2pasproject
-msgid "h2pas project"
+msgid "H2Pas project"
 msgstr ""
 
 #: h2passtrconsts.h2ph2pasprojecth2ph2pallfiles
-msgid "h2pas project (*.h2p)|*.h2p|All files (*.*)|%s"
+msgid "H2Pas project (*.h2p)|*.h2p|All files (*.*)|%s"
 msgstr ""
 
 #: h2passtrconsts.h2ph2pastool
@@ -413,11 +413,11 @@ msgid "Please enable at least one c header file that is not merged."
 msgstr ""
 
 #: h2passtrconsts.h2pposth2pasasetofcommontoolstorunafterh2pasphreplace
-msgid "Post H2Pas - a set of common tools to run after h2pas%sphReplaceUnitFilenameWithUnitName - Replace \"unit filename;\" with \"unit name;\"%sphRemoveIncludeDirectives - Remove include directivesphRemoveSystemTypes - Remove type redefinitons like PLongint%sphFixH2PasMissingIFDEFsInUnit - add missing IFDEFs for function bodies%sphReduceCompilerDirectivesInUnit - removes unneeded directives%sphRemoveRedefinedPointerTypes - Remove redefined pointer types%sphRemoveEmptyTypeVarConstSections - Remove empty type/var/const sections%sphReplaceImplicitTypes - Search implicit types in parameters and add types for them%sphFixArrayOfParameterType - Replace \"array of )\" with \"array of const)\"%sphRemoveRedefinitionsInUnit - Removes redefinitions of types, variables, constants and resourcestrings%sphFixAliasDefinitionsInUnit - fix section type of alias definitions%sphReplaceConstFunctionsInUnit - replace simple assignment functions with constants%sphReplaceTypeCastFunctionsInUnit - replace simple type cast functions with types%sphFixForwardDefinitions - fix forward definitions by reordering%sphAddUnitsToUsesSection - add units to uses section%s"
+msgid "Post H2Pas - a set of common tools to run after H2Pas%sphReplaceUnitFilenameWithUnitName - Replace \"unit filename;\" with \"unit name;\"%sphRemoveIncludeDirectives - Remove include directives%sphRemoveSystemTypes - Remove type redefinitons like PLongint%sphFixH2PasMissingIFDEFsInUnit - Add missing IFDEFs for function bodies%sphReduceCompilerDirectivesInUnit - Removes unneeded directives%sphRemoveRedefinedPointerTypes - Remove redefined pointer types%sphRemoveEmptyTypeVarConstSections - Remove empty type/var/const sections%sphReplaceImplicitTypes - Search implicit types in parameters and add types for them%sphFixArrayOfParameterType - Replace \"array of )\" with \"array of const)\"%sphRemoveRedefinitionsInUnit - Removes redefinitions of types, variables, constants and resourcestrings%sphFixAliasDefinitionsInUnit - Fix section type of alias definitions%sphReplaceConstFunctionsInUnit - Replace simple assignment functions with constants%sphReplaceTypeCastFunctionsInUnit - Replace simple type cast functions with types%sphFixForwardDefinitions - Fix forward definitions by reordering%sphAddUnitsToUsesSection - Add units to uses section%s"
 msgstr ""
 
 #: h2passtrconsts.h2ppreh2pasasetofcommontoolstorunbeforeh2pasphremovec
-msgid "Pre H2Pas - a set of common tools to run before h2pas%sphRemoveCPlusPlusExternCTool - Remove C++ 'extern \"C\"' lines%sphRemoveEmptyCMacrosTool - Remove empty C macros%sphReplaceEdgedBracketPairWithStar - Replace [] with *%sphReplace0PointerWithNULL - Replace macro values 0 pointer like (char *)0%sphConvertFunctionTypesToPointers - Convert function types to pointers%sphConvertEnumsToTypeDef - Convert anonymous enums to typedef enums%sphCommentComplexCMacros - Comment macros too complex for h2pas%sphCommentComplexCFunctions - Comment functions too complex for h2pas%s"
+msgid "Pre H2Pas - a set of common tools to run before H2Pas%sphRemoveCPlusPlusExternCTool - Remove C++ 'extern \"C\"' lines%sphRemoveEmptyCMacrosTool - Remove empty C macros%sphReplaceEdgedBracketPairWithStar - Replace [] with *%sphReplace0PointerWithNULL - Replace macro values 0 pointer like (char *)0%sphConvertFunctionTypesToPointers - Convert function types to pointers%sphConvertEnumsToTypeDef - Convert anonymous enums to typedef enums%sphCommentComplexCMacros - Comment macros too complex for H2Pas%sphCommentComplexCFunctions - Comment functions too complex for H2Pas%s"
 msgstr ""
 
 #: h2passtrconsts.h2pprpackallrecords1bytealignment
@@ -509,11 +509,11 @@ msgid "replacing of NULL with nil failed"
 msgstr ""
 
 #: h2passtrconsts.h2prunh2pas
-msgid "Run h2pas"
+msgid "Run H2Pas"
 msgstr ""
 
 #: h2passtrconsts.h2prunh2pasandcompile
-msgid "Run h2pas and compile"
+msgid "Run H2Pas and compile"
 msgstr ""
 
 #: h2passtrconsts.h2psaveandexit
