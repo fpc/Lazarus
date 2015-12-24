@@ -543,16 +543,17 @@ begin
         not (TCustomForm(AWinControl).FormStyle in fsAllStayOnTop) and
         not (fsModal in TCustomForm(AWinControl).FormState) and
         (TCustomForm(AWinControl).FormStyle <> fsMDIChild) and
-        (TCustomForm(AWinControl).PopupMode = pmAuto) and
-        (TCustomForm(AWinControl).BorderStyle = bsNone) and
-        (TCustomForm(AWinControl).PopupParent = nil) then
+        (((TCustomForm(AWinControl).PopupMode = pmAuto) and
+          (QApplication_activeWindow <> nil)) or
+         ((TCustomForm(AWinControl).PopupMode = pmExplicit) and
+          (TCustomForm(AWinControl).PopupParent <> nil))) then
       begin
-        W := QApplication_activeWindow;
-        Flags := Widget.windowFlags;
-        if W <> nil then
-          Widget.setParent(W)
+        if (TCustomForm(AWinControl).PopupMode = pmAuto) then
+          W := QApplication_activeWindow
         else
-          Widget.setParent(QApplication_desktop);
+          W := TQtWidget(TCustomForm(AWinControl).PopupParent.Handle).Widget;
+        Flags := Widget.windowFlags;
+        Widget.setParent(W);
         Widget.setWindowFlags(Flags or QtTool);
       end;
       {$ENDIF}
