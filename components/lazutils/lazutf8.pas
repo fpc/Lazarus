@@ -55,9 +55,9 @@ function UTF8ToConsole(const s: string): string;
 
 // for all Windows supporting 8bit codepages (e.g. not WinCE)
 // converts string in Windows code page to UTF8 (used with some Windows specific functions)
-function WinCPToUTF8(const s: string): string;
+function WinCPToUTF8(const s: string): string; {$ifdef WinCe}inline;{$endif}
 // converts UTF8 string to Windows code page encoding (used by Write, WriteLn)
-function UTF8ToWinCP(const s: string): string;
+function UTF8ToWinCP(const s: string): string; {$ifdef WinCe}inline;{$endif}
 
 function ParamStrUTF8(Param: Integer): string;
 
