@@ -221,6 +221,7 @@ begin
 
   TextConverterToolClasses.RegisterClass(TPostH2PasTools);
   TextConverterToolClasses.RegisterClass(TReplaceUnitFilenameWithUnitName);
+  TextConverterToolClasses.RegisterClass(TRemoveIncludeDirectives);
   TextConverterToolClasses.RegisterClass(TRemoveDoubleSemicolons);
   TextConverterToolClasses.RegisterClass(TRemoveSystemTypes);
   TextConverterToolClasses.RegisterClass(TRemoveRedefinedPointerTypes);
