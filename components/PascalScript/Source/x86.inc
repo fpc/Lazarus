@@ -1,7 +1,5 @@
 { implementation of x86         abi }
-{$ifdef FPC}
-{$define PS_ARRAY_ON_STACK}
-{$endif}
+
 function RealFloatCall_Register(p: Pointer;
   _EAX, _EDX, _ECX: Cardinal;
   StackData: Pointer;
@@ -390,9 +388,16 @@ var
             {$IFDEF PS_DYNARRAY}
               TempStr := StringOfChar(AnsiChar(#0),4);
               Pointer((@TempStr[1])^) := Pointer(fvar.Dta^);
-            {$IFDEF PS_ARRAY_ON_STACK}
-            UseReg := false;
+            {$IFDEF FPC}
+            {$IF FPC_FULLVERSION < 30101}
+              // pass dyn. array on stack
+              UseReg := false;
+            {$ELSE}
+              // pass dyn. arrays in registers when i386 register calling conventions are used
+              // more details -> FPC r30870
+              UseReg := CallingConv = cdRegister;
             {$ENDIF}
+            {$ENDIF ~FPC}
             {$ELSE}
               Exit;
             {$ENDIF}
