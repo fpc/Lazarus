@@ -359,7 +359,7 @@ end;
 
 function TSynPoSyn.GetIdentChars: TSynIdentChars;
 begin
-  Result := inherited GetIdentChars; //TSynValidStringChars;
+  Result := [#33..#255];
 end;
 
 class function TSynPoSyn.GetLanguageName: string;
