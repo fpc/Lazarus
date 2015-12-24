@@ -62,6 +62,8 @@ function BezierEquation_GetPointAndTangentForLength(P1, P2, P3, P4: T3DPoint;
   ADistance: Double; out AX, AY, ATangentAngle: Double; ASteps: Integer = 30): Boolean;
 function CalcEllipseCenter(x1,y1, x2,y2, rx,ry, phi: Double; fa, fs: Boolean;
   out cx,cy, lambda: Double): Boolean;
+function CalcEllipsePointAngle(x,y, rx,ry, cx,cy, phi: Double): Double;
+procedure CalcEllipsePoint(angle, rx,ry, cx,cy, phi: Double; out x,y: Double);
 procedure ConvertPathToPoints(APath: TPath; ADestX, ADestY: Integer; AMulX, AMulY: Double; var Points: TPointsArray);
 function Rotate2DPoint(P, RotCenter: TPoint; alpha:double): TPoint;
 function Rotate3DPointInXY(P, RotCenter: T3DPoint; alpha:double): T3DPoint;
@@ -409,8 +411,8 @@ begin
   SinCos(phi, sinphi, cosphi);
 
   // (F.6.5.1) in above document
-  x1p :=  (cosphi*(x1-x2) + sinphi*(y1-y2)) / 2;
-  y1p := -(sinphi*(x1-x2) + cosphi*(y1-y2)) / 2;
+  x1p := ( cosphi*(x1-x2) + sinphi*(y1-y2)) / 2;
+  y1p := (-sinphi*(x1-x2) + cosphi*(y1-y2)) / 2;
 
   lambda := sqr(x1p/rx) + sqr(y1p/ry);
   if lambda > 1 then
@@ -425,8 +427,9 @@ begin
     lambda := 1.0;
 
   // (F.6.5.2)
-  m := (sqr(rx)*sqr(Ry) - sqr(rx)*sqr(y1p) - sqr(ry)*sqr(x1p)) / (sqr(rx)*sqr(y1p) + sqr(ry)*sqr(x1p));
+  m := (sqr(rx*ry) - sqr(rx*y1p) - sqr(ry*x1p)) / (sqr(rx*y1p) + sqr(ry*x1p));
   if SameValue(m, 0.0, EPS) then
+    // Prevent a crash caused by a tiny negative sqrt argument due to rounding error.
     m := 0
   else if m < 0 then
     exit;
@@ -434,8 +437,8 @@ begin
     // should no happen after having applied lambda!
   m := sqrt(m);                  // Positive root for fa <> fs
   if fa = fs then m := -m;       // Negative root for fa = fs.
-  cxp := m * rx / ry * y1p;
-  cyp := m * ry / rx * x1p;
+  cxp :=  m * rx / ry * y1p;
+  cyp := -m * ry / rx * x1p;
 
   // (F.6.5.3)
   cx := cosphi*cxp - sinphi*cyp + (x1 + x2) / 2;
@@ -443,6 +446,43 @@ begin
 
   // If the function gets here we have a valid ellipse center in cx,cy
   Result := true;
+end;
+
+{ Calculates the arc angle (in radians) of the point (x,y) on the perimeter of
+  an ellipse with radii rx,ry and center cx,cy. phi is the rotation angle of
+  the ellipse major axis with the x axis.
+  The result is in the range 0 .. 2pi}
+function CalcEllipsePointAngle(x,y, rx,ry, cx,cy, phi: Double): Double;
+var
+  p: T3DPoint;
+begin
+  // Rotate ellipse back to align its major axis with the x axis
+  P := Rotate3dPointInXY(Make3dPoint(x-cx, y-cy, 0), Make3dPoint(0, 0, 0), phi);
+  // Correctly speaking, above line should use -phi, instead of phi. But
+  // Make3DPointInXY seems to define the angle in the opposite way.
+  Result := arctan2(P.Y, P.X);
+  if Result < 0 then Result := TWO_PI + Result;
+end;
+
+{ Calculates the x,y coordinates of a point on an ellipse defined by these
+  parameters:
+  - rx, ry: major and minor radius
+  - phi: rotation angle of the ellipse (angle between major axis and x axis)
+  - angle: angle from ellipse center between x axis and the point
+
+   parameterized:
+     x = Cx + RX*cos(t)*cos(phi) - RY*sin(t)*sin(phi)  [1]
+     y = Cy + RY*sin(t)*cos(phi) + RX*cos(t)*sin(phi)  [2]        }
+procedure CalcEllipsePoint(angle, rx,ry, cx,cy, phi: Double; out x,y: Double);
+var
+  P: T3dPoint;
+  cost, sint: Extended;
+  cosphi, sinphi: Extended;
+begin
+  SinCos(angle, sint, cost);
+  SinCos(phi, sinphi, cosphi);
+  x := cx + rx*cost*cosphi - ry*sint*sinphi;
+  y := cy + ry*sint*cosphi + rx*cost*sinphi;
 end;
 
 procedure ConvertPathToPoints(APath: TPath; ADestX, ADestY: Integer; AMulX, AMulY: Double; var Points: TPointsArray);
@@ -508,6 +548,8 @@ end;
 
 // Rotates a point P around RotCenter
 // alpha angle in radians
+// Be CAREFUL: the angle used here grows in clockwise direction. This is
+// against mathematical convention!
 function Rotate3DPointInXY(P, RotCenter: T3DPoint; alpha:double): T3DPoint;
 var
   sinus, cosinus : Extended;
@@ -602,7 +644,7 @@ begin
   else
   begin
     lParam1 := Pi;
-    lParam2 := 2*Pi;
+    lParam2 := TWO_PI;
   end;
 
   // Iterate as many times necessary to get the best answer!

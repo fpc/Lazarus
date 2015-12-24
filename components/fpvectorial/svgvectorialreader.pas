@@ -2263,19 +2263,23 @@ begin
       Ynew := CurY + Y;
     end else
     begin
-      Xnew := CurX;
-      Ynew := CurY;
+      Xnew := X;
+      Ynew := Y;
     end;
 
-    if CalcEllipseCenter(CurX, CurY, Xnew, Ynew, X2, Y2, -phi, LargeArcFlag, SweepFlag, cx, cy, tmp) then
-      AData.AddEllipticalArcWithCenterToPath(X2*tmp, Y2*tmp, -phi, Xnew, Ynew, cx, cy, SweepFlag)
+    // in svg the y axis increases downward, in fpv upward. Therefore, angles
+    // change their sign!
+    phi := -phi;
+    SweepFlag := not SweepFlag;  // i.e. "clockwise" turns into "counter-clockwise"!
+
+    if CalcEllipseCenter(CurX, CurY, Xnew, Ynew, X2, Y2, phi, LargeArcFlag, SweepFlag, cx, cy, tmp) then
+      AData.AddEllipticalArcWithCenterToPath(X2*tmp, Y2*tmp, phi, Xnew, Ynew, cx, cy, SweepFlag)
     else
       // Use a straight segment in case of no solution existing for the ellipse center
       AData.AddLineToPath(Xnew, Ynew);
 
     CurX := Xnew;
     CurY := Ynew;
-
     {
     // Convert SVG flags to fpvectorial flags
     LeftmostEllipse := (LargeArcFlag and (not SweepFlag))
