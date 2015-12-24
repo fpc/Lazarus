@@ -779,10 +779,16 @@ begin
       not (csDesigning in AForm.ComponentState) and
       not (AForm.FormStyle in fsAllStayOnTop) and
       not (fsModal in AForm.FormState) and
-      (AForm.PopupMode = pmExplicit) and
-      (AForm.PopupParent = nil) then
+      (((AForm.PopupMode = pmAuto) and
+        (Screen.ActiveCustomForm <> nil)) or
+       ((AForm.PopupMode = pmExplicit) and
+        (AForm.PopupParent <> nil)))
+    then
     begin
-      SetPopupParent(AForm, AForm.PopupMode, AForm.PopupParent);
+      if (AForm.PopupMode = pmAuto) then
+        SetPopupParent(AForm, AForm.PopupMode, Screen.ActiveCustomForm)
+      else
+        SetPopupParent(AForm, AForm.PopupMode, AForm.PopupParent);
     end;
     {$ENDIF}
 
