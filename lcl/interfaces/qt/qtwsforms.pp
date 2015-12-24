@@ -191,7 +191,7 @@ begin
           not (csDesigning in AForm.ComponentState))
        {$endif} then
       QtMainWindow.setShowInTaskBar(False);
-    if Assigned(AForm.PopupParent) then
+    if Assigned(AForm.PopupParent) and AForm.PopupParent.HandleAllocated then
       PopupParent := TQtWidget(AForm.PopupParent.Handle).Widget
     else
       PopupParent := nil;
@@ -334,7 +334,9 @@ class procedure TQtWSCustomForm.SetPopupParent(const ACustomForm: TCustomForm;
 var
   PopupParent: QWidgetH;
 begin
-  if Assigned(APopupParent) then
+  if not ACustomForm.HandleAllocated or (csDestroying in ACustomForm.ComponentState) then
+    exit;
+  if Assigned(APopupParent) and APopupParent.HandleAllocated then
     PopupParent := TQtWidget(APopupParent.Handle).Widget
   else
     PopupParent := nil;
