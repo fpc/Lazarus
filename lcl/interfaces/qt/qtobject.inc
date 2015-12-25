@@ -1248,10 +1248,11 @@ begin
     try
       ColorRef := TColorRef(ColorToRGB(AColor));
       QColor_fromRgb(@Color, Red(ColorRef), Green(ColorRef), Blue(ColorRef));
-      QPainter_setPen(Painter, @Color);
+      QPainter_setPen(Painter, PQColor(@Color));
       QPainter_drawPoint(Painter, X,Y);
     finally
       QPainter_setPen(Painter, Pen);
+      QPen_destroy(Pen);
     end;
   end;
 end;
