@@ -84,8 +84,8 @@ type
     class procedure SetBorderIcons(const AForm: TCustomForm;
                                    const ABorderIcons: TBorderIcons); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
-    class procedure SetPopupParent(const ACustomForm: TCustomForm;
-       const APopupMode: TPopupMode; const APopupParent: TCustomForm); override;
+    class procedure SetRealPopupParent(const ACustomForm: TCustomForm;
+       const APopupParent: TCustomForm); override;
   end;
 
   { TGtk2WSForm }
@@ -680,7 +680,7 @@ var
   {$IFDEF HASX}
   TempGdkWindow: PGdkWindow;
   {$ENDIF}
-  AForm: TCustomForm;
+  AForm, APopupParent: TCustomForm;
   GtkWindow: PGtkWindow;
   Geometry: TGdkGeometry;
 
@@ -778,17 +778,11 @@ begin
     if AWinControl.HandleObjectShouldBeVisible and
       not (csDesigning in AForm.ComponentState) and
       not (AForm.FormStyle in fsAllStayOnTop) and
-      not (fsModal in AForm.FormState) and
-      (((AForm.PopupMode = pmAuto) and
-        (Screen.ActiveCustomForm <> nil)) or
-       ((AForm.PopupMode = pmExplicit) and
-        (AForm.PopupParent <> nil)))
-    then
+      not (fsModal in AForm.FormState) then
     begin
-      if (AForm.PopupMode = pmAuto) then
-        SetPopupParent(AForm, AForm.PopupMode, Screen.ActiveCustomForm)
-      else
-        SetPopupParent(AForm, AForm.PopupMode, AForm.PopupParent);
+      APopupParent := AForm.GetRealPopupParent;
+      if (APopupParent <> nil) then
+        SetRealPopupParent(AForm, APopupParent);
     end;
     {$ENDIF}
 
@@ -848,27 +842,13 @@ begin
   TGtk2WSWinControl.SetColor(AWinControl);
 end;
 
-class procedure TGtk2WSCustomForm.SetPopupParent(const ACustomForm: TCustomForm;
-  const APopupMode: TPopupMode; const APopupParent: TCustomForm);
-var
-  PopupParent: TCustomForm;
+class procedure TGtk2WSCustomForm.SetRealPopupParent(
+  const ACustomForm: TCustomForm; const APopupParent: TCustomForm);
 begin
-  if not WSCheckHandleAllocated(ACustomForm, 'SetPopupParent') then Exit;
+  if not WSCheckHandleAllocated(ACustomForm, 'SetRealPopupParent') then Exit;
 
-  case APopupMode of
-    pmNone:
-      PopupParent := nil;
-    pmAuto:
-      PopupParent := Screen.ActiveForm;
-    pmExplicit:
-    begin
-      PopupParent := APopupParent;
-      if PopupParent = nil then
-        PopupParent := Application.MainForm;
-    end;
-  end;
-  if PopupParent <> nil then
-    gtk_window_set_transient_for({%H-}PGtkWindow(ACustomForm.Handle), {%H-}PGtkWindow(PopupParent.Handle))
+  if APopupParent <> nil then
+    gtk_window_set_transient_for({%H-}PGtkWindow(ACustomForm.Handle), {%H-}PGtkWindow(APopupParent.Handle))
   else
     gtk_window_set_transient_for({%H-}PGtkWindow(ACustomForm.Handle), nil);
 end;

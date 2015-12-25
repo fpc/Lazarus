@@ -388,9 +388,9 @@ type
   );
 
   TPopupMode = (
-    pmNone,     // default behavior - popup to mainform/taskbar window
-    pmAuto,     // popup to active form and same as pmNone if no active form
-    pmExplicit  // popup to PopupParent and same as pmNone if not exists
+    pmNone,     // modal: popup to mainform/taskbar window; non-modal: no window parent
+    pmAuto,     // modal & non-modal: popup to active form or if not available, to main form
+    pmExplicit  // modal & non-modal: popup to PopupParent or if not available, to main form
   );
 
   TCloseEvent = procedure(Sender: TObject; var CloseAction: TCloseAction) of object;
@@ -595,6 +595,7 @@ type
     function FormIsUpdating: boolean; override;
     function GetFormImage: TBitmap;
     function GetRolesForControl(AControl: TControl): TControlRolesForForm;
+    function GetRealPopupParent: TCustomForm;
     procedure Hide;
     procedure IntfDropFiles(const FileNames: array of String);
     procedure IntfHelp(AComponent: TComponent);

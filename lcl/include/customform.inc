@@ -360,10 +360,11 @@ begin
   if FPopupMode <> AValue then
   begin
     FPopupMode := AValue;
-    if FPopupMode = pmAuto then
-      PopupParent := nil;
+    if (FPopupMode = pmAuto) and (PopupParent <> nil) then
+      PopupParent := nil
+    else
     if not (csDesigning in ComponentState) and HandleAllocated then
-      TWSCustomFormClass(WidgetSetClass).SetPopupParent(Self, PopupMode, PopupParent);
+      TWSCustomFormClass(WidgetSetClass).SetRealPopupParent(Self, GetRealPopupParent);
   end;
 end;
 
@@ -380,7 +381,7 @@ begin
       FPopupMode := pmExplicit;
     end;
     if not (csDesigning in ComponentState) and HandleAllocated then
-      TWSCustomFormClass(WidgetSetClass).SetPopupParent(Self, PopupMode, PopupParent);
+      TWSCustomFormClass(WidgetSetClass).SetRealPopupParent(Self, GetRealPopupParent);
   end;
 end;
 
@@ -1475,6 +1476,31 @@ begin
   end;
 end;
 
+function TCustomForm.GetRealPopupParent: TCustomForm;
+begin
+  Result := nil;
+  if (fsModal in FormState) or // always set WndParent of modal windows
+     (PopupMode in [pmAuto, pmExplicit]) // set WndParent of non-modal windows only for pmAuto, pmExplicit
+  then
+  begin
+    case PopupMode of
+      pmAuto:
+      begin
+        Result := Screen.ActiveForm;
+        if (Result<>nil) and (Result.FormStyle = fsSplash) then // ignore fsSplash
+          Result := nil;
+      end;
+      pmExplicit: Result := PopupParent;
+    end;
+    if (Result = nil) or not Result.HandleAllocated then
+      Result := Application.MainForm;
+  end;
+  if (Result <> nil) and not Result.HandleAllocated then
+    Result := nil;
+  if (Result = Self) then
+    Result := nil;
+end;
+
 procedure TCustomForm.DoAutoSize;
 begin
   //DebugLn(['TCustomForm.DoAutoSize ',DbgSName(Self),' ',WindowState=wsNormal,' ',fsDisableAutoSize in FFormState,' ',dbgs(BoundsRect),' ',dbgs(ClientRect)]);
@@ -2044,6 +2070,8 @@ end;
   TCustomForm CreateParams
 ------------------------------------------------------------------------------}
 procedure TCustomForm.CreateParams(var Params : TCreateParams);
+var
+  APopupParent: TCustomForm;
 begin
   inherited CreateParams(Params);
   with Params do
@@ -2055,15 +2083,9 @@ begin
       begin
         if (Application.MainForm <> Self) then
         begin
-          case PopupMode of
-            pmNone:;
-            pmAuto:
-              if (Screen.ActiveForm <> nil) then
-                WndParent := Screen.ActiveForm.Handle;
-            pmExplicit:
-              if (PopupParent <> nil) then
-                WndParent := PopupParent.Handle;
-          end;
+          APopupParent := GetRealPopupParent;
+          if APopupParent <> nil then
+            WndParent := APopupParent.Handle;
         end;
         if (WndParent = 0) and
            (((Self = Application.MainForm) and Application.MainFormOnTaskBar) or (GetEffectiveShowInTaskBar = stAlways)) then

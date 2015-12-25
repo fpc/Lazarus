@@ -1500,13 +1500,13 @@
         </notes>
       </element>
       <element name="TPopupMode.pmNone">
-        <short>default behavior - popup to mainform/taskbar window</short>
+        <short>modal: popup to mainform/taskbar window; non-modal: no window parent</short>
       </element>
       <element name="TPopupMode.pmAuto">
-        <short>popup to active form, and same as pmNone if no active form</short>
+        <short>modal &amp; non-modal: popup to active form or if not available, to main form</short>
       </element>
       <element name="TPopupMode.pmExplicit">
-        <short>popup to PopupParent, and same as pmNone if not exists</short>
+        <short>modal &amp; non-modal: popup to PopupParent or if not available, to main form</short>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TCloseEvent">

@@ -79,8 +79,8 @@ type
     class procedure SetBorderIcons(const AForm: TCustomForm;
                                    const ABorderIcons: TBorderIcons); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
-    class procedure SetPopupParent(const ACustomForm: TCustomForm;
-       const APopupMode: TPopupMode; const APopupParent: TCustomForm); override;
+    class procedure SetRealPopupParent(const ACustomForm: TCustomForm;
+       const APopupParent: TCustomForm); override;
   end;
 
   { TGtkWSForm }
@@ -526,23 +526,13 @@ begin
   TGtkWSWinControl.SetColor(AWinControl);
 end;
 
-class procedure TGtkWSCustomForm.SetPopupParent(const ACustomForm: TCustomForm;
-  const APopupMode: TPopupMode; const APopupParent: TCustomForm);
-var
-  PopupParent: TCustomForm;
+class procedure TGtkWSCustomForm.SetRealPopupParent(
+  const ACustomForm: TCustomForm; const APopupParent: TCustomForm);
 begin
-  if not WSCheckHandleAllocated(ACustomForm, 'SetPopupParent') then Exit;
+  if not WSCheckHandleAllocated(ACustomForm, 'SetRealPopupParent') then Exit;
 
-  case APopupMode of
-    pmNone:
-      PopupParent := nil;
-    pmAuto:
-      PopupParent := Screen.ActiveForm;
-    pmExplicit:
-      PopupParent := APopupParent;
-  end;
-  if PopupParent <> nil then
-    gtk_window_set_transient_for(PGtkWindow(ACustomForm.Handle), PGtkWindow(PopupParent.Handle))
+  if APopupParent <> nil then
+    gtk_window_set_transient_for(PGtkWindow(ACustomForm.Handle), PGtkWindow(APopupParent.Handle))
   else
     gtk_window_set_transient_for(PGtkWindow(ACustomForm.Handle), nil);
 end;
