@@ -708,11 +708,10 @@ begin
     Searcher.FTargetDir:=TrimFilename(SetDirSeparators(TargetDir));
     // Don't even try to copy to a subdirectory of SourceDir.
     if {$if defined(Windows) or defined(darwin)}AnsiStartsText{$ELSE}AnsiStartsStr{$ENDIF}
-                                                 (SourceDir, TargetDir) then Exit;
+                            (Searcher.FSourceDir, Searcher.FTargetDir) then Exit;
     Searcher.Search(SourceDir);
-    Result:=True;
-  finally
     Result:=Searcher.FCopyFailedCount=0;
+  finally
     Searcher.Free;
   end;
 end;
