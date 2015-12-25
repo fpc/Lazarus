@@ -36,13 +36,15 @@ type
     procedure sgDataDrawCell(
       ASender: TObject; ACol, ARow: Integer; ARect: TRect;
       AState: TGridDrawState);
+    procedure sgDataPrepareCanvas(sender: TObject; aCol, aRow: Integer;
+      aState: TGridDrawState);
   strict private
     FCurrentRow: Integer;
     FDataPoints: TStrings;
     FYCount: Integer;
   public
     procedure InitData(AYCount: Integer; ADataPoints: TStrings);
-    procedure ExtractData;
+    procedure ExtractData(out AModified: Boolean);
   end;
 
 procedure Register;
@@ -72,11 +74,13 @@ end;
 
 { TDataPointsEditorForm }
 
-procedure TDataPointsEditorForm.ExtractData;
+procedure TDataPointsEditorForm.ExtractData(out AModified: Boolean);
 var
   i: Integer;
   s: String;
+  oldDataPoints: String;
 begin
+  oldDataPoints := FDataPoints.Text;
   FDataPoints.BeginUpdate;
   try
     FDataPoints.Clear;
@@ -91,6 +95,7 @@ begin
     end;
   finally
     FDataPoints.EndUpdate;
+    AModified := FDataPoints.Text <> oldDataPoints;
   end;
 end;
 
@@ -174,17 +179,33 @@ begin
   sgData.Canvas.Rectangle(ARect);
 end;
 
+procedure TDataPointsEditorForm.sgDataPrepareCanvas(sender: TObject; aCol,
+  aRow: Integer; aState: TGridDrawState);
+var
+  ts: TTextStyle;
+begin
+  if ACol = 0 then begin
+    ts := TStringGrid(Sender).Canvas.TextStyle;
+    ts.Alignment := taRightJustify;
+    TStringGrid(Sender).Canvas.TextStyle := ts;
+  end;
+end;
+
 { TDataPointsPropertyEditor }
 
 procedure TDataPointsPropertyEditor.Edit;
+var
+  dataModified: Boolean;
 begin
   with TDataPointsEditorForm.Create(nil) do
     try
       InitData(
         (GetComponent(0) as TListChartSource).YCount,
         GetObjectValue as TStrings);
-      if ShowModal = mrOK then
-        ExtractData;
+      if ShowModal = mrOK then begin
+        ExtractData(dataModified);
+        if dataModified then Modified;
+      end;
     finally
       Free;
     end;

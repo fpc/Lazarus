@@ -43,11 +43,12 @@ object DataPointsEditorForm: TDataPointsEditorForm
         Width = 81
       end>
     DefaultColWidth = 32
-    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowMoving, goEditing, goAutoAddRows, goRowSelect, goAlwaysShowEditor, goSmoothScroll, goFixedRowNumbering]
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowMoving, goEditing, goAutoAddRows, goAlwaysShowEditor, goSmoothScroll, goFixedRowNumbering]
     PopupMenu = pmRows
     TabOrder = 0
     OnDrawCell = sgDataDrawCell
     OnButtonClick = sgDataButtonClick
+    OnPrepareCanvas = sgDataPrepareCanvas
     ColWidths = (
       32
       80
