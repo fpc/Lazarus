@@ -704,8 +704,11 @@ begin
     Flags:=Flags+[cffCreateDestDirectory];
     Searcher.FFlags:=Flags;
     Searcher.FCopyFailedCount:=0;
-    Searcher.FSourceDir:=SetDirSeparators(SourceDir);
-    Searcher.FTargetDir:=SetDirSeparators(TargetDir);
+    Searcher.FSourceDir:=TrimFilename(SetDirSeparators(SourceDir));
+    Searcher.FTargetDir:=TrimFilename(SetDirSeparators(TargetDir));
+    // Don't even try to copy to a subdirectory of SourceDir.
+    if {$if defined(Windows) or defined(darwin)}AnsiStartsText{$ELSE}AnsiStartsStr{$ENDIF}
+                                                 (SourceDir, TargetDir) then Exit;
     Searcher.Search(SourceDir);
     Result:=True;
   finally
