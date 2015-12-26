@@ -381,6 +381,8 @@ var
   R: TRect;
   {$IFDEF HASX11}
   APopupParent: TCustomForm;
+  ActiveWin: HWND;
+  W: QWidgetH;
   {$ENDIF}
   Flags: Cardinal;
 
