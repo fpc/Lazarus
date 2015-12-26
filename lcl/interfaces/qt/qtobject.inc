@@ -1233,26 +1233,42 @@ end;
 procedure TQtWidgetSet.DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor);
 var
   Color: TQColor;
+  AQColor: QColorH;
   ColorRef: TColorRef;
   Pen: QPenH;
   Painter: QPainterH;
+  ADevType: Integer;
 begin
   if IsValidDC(CanvasHandle) then
   begin
     // WriteLn('TQtWidgetSet.DCSetPixel X=',X,' Y=',Y, ' AColor=',dbghex(AColor),' rgb ? ',dbgHex(ColorToRGB(AColor)));
     Painter := TQtDeviceContext(CanvasHandle).Widget;
-    {Save current pen.Better save copy of pen instead of
-     using painter save/restore, or saved Pen in devicecontext which
-     may be null. Issue #27620}
-    Pen := QPen_create(QPainter_pen(Painter));
-    try
+    ADevType := QPaintDevice_devType(QPaintEngine_paintDevice(QPainter_paintEngine(Painter)));
+    {qt private PaintDeviceFlags 2 = QPixmap 3 = QImage. issue #29256}
+    if ((ADevType = 2) or (ADevType = 3)) and
+     (TQtDeviceContext(CanvasHandle).vImage <> nil) and
+      (TQtDeviceContext(CanvasHandle).vImage.Handle <> nil) then
+    begin
       ColorRef := TColorRef(ColorToRGB(AColor));
       QColor_fromRgb(@Color, Red(ColorRef), Green(ColorRef), Blue(ColorRef));
-      QPainter_setPen(Painter, PQColor(@Color));
-      QPainter_drawPoint(Painter, X,Y);
-    finally
-      QPainter_setPen(Painter, Pen);
-      QPen_destroy(Pen);
+      AQColor := QColor_create(PQColor(@Color));
+      QImage_setPixel(TQtDeviceContext(CanvasHandle).vImage.Handle, X, Y, QColor_rgb(AQColor));
+      QColor_destroy(AQColor);
+    end else
+    begin
+      {Save current pen.Better save copy of pen instead of
+       using painter save/restore, or saved Pen in devicecontext which
+       may be null. Issue #27620}
+      Pen := QPen_create(QPainter_pen(Painter));
+      try
+        ColorRef := TColorRef(ColorToRGB(AColor));
+        QColor_fromRgb(@Color, Red(ColorRef), Green(ColorRef), Blue(ColorRef));
+        QPainter_setPen(Painter, PQColor(@Color));
+        QPainter_drawPoint(Painter, X,Y);
+      finally
+        QPainter_setPen(Painter, Pen);
+        QPen_destroy(Pen);
+      end;
     end;
   end;
 end;
