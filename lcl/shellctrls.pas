@@ -656,10 +656,16 @@ begin
   else MaskStr := AMask;
 
   // The string list implements support for multiple masks separated
-  // by semi-comma ";"
+  // by semi-colon ";"
   MaskStrings := TStringList.Create;
   FileTree:=TAvgLvlTree.Create(@STVCompareFiles);
   try
+    {$ifdef NotLiteralFilenames}
+    MaskStrings.CaseSensitive := False;
+    {$else}
+    MaskStrings.CaseSensitive := True;
+    {$endif}
+
     MaskStrings.Delimiter := ';';
     MaskStrings.DelimitedText := MaskStr;
 
