@@ -32,7 +32,7 @@ unit FileUtil;
 interface
 
 uses
-  Classes, SysUtils, strutils,
+  Classes, SysUtils,
   Masks, LazUTF8, LazFileUtils;
   
 {$if defined(Windows) or defined(darwin)}

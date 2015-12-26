@@ -696,6 +696,7 @@ end;
 function CopyDirTree(const SourceDir, TargetDir: string; Flags: TCopyFileFlags=[]): Boolean;
 var
   Searcher: TCopyDirTree;
+  Dummy: String;
 begin
   Result:=False;
   Searcher:=TCopyDirTree.Create;
@@ -704,11 +705,13 @@ begin
     Flags:=Flags+[cffCreateDestDirectory];
     Searcher.FFlags:=Flags;
     Searcher.FCopyFailedCount:=0;
-    Searcher.FSourceDir:=TrimFilename(SetDirSeparators(SourceDir));
-    Searcher.FTargetDir:=TrimFilename(SetDirSeparators(TargetDir));
+    Searcher.FSourceDir:=LazFileUtils.TrimFilename(SetDirSeparators(SourceDir));
+    Searcher.FTargetDir:=LazFileUtils.TrimFilename(SetDirSeparators(TargetDir));
+
     // Don't even try to copy to a subdirectory of SourceDir.
-    if {$if defined(Windows) or defined(darwin)}AnsiStartsText{$ELSE}AnsiStartsStr{$ENDIF}
-                            (Searcher.FSourceDir, Searcher.FTargetDir) then Exit;
+    if TryCreateRelativePath(LazFileUtils.ExpandFilenameUtf8(Searcher.FSourceDir),
+      LazFileUtils.ExpandFilenameUtf8(Searcher.FTargetDir), False, True, {%H-}Dummy) then Exit;
+
     Searcher.Search(SourceDir);
     Result:=Searcher.FCopyFailedCount=0;
   finally
