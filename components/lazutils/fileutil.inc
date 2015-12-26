@@ -712,7 +712,7 @@ begin
     // Don't even try to copy to a subdirectory of SourceDir.
     B := TryCreateRelativePath(LazFileUtils.ExpandFilenameUtf8(Searcher.FSourceDir),
       LazFileUtils.ExpandFilenameUtf8(Searcher.FTargetDir), False, True, RelPath);
-    if B and not ((Copy(RelPath,1,2) <> '..') and (RelPath <> '')) then Exit;
+    if B and ((Copy(RelPath,1,2) = '..') or (RelPath = '')) then Exit;
 
     Searcher.Search(SourceDir);
     Result:=Searcher.FCopyFailedCount=0;
