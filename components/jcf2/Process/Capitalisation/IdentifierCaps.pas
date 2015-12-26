@@ -136,7 +136,7 @@ begin
   begin
     Result := True;
     if psMessage <> '' then
-      psMessage := psMessage + NativeLineBreak;
+      psMessage := psMessage + '.   ';
 
     psMessage := psMessage + 'Non-identifier caps: ';
 

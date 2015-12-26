@@ -95,7 +95,7 @@ const
   PAST_END     = 0;
   ROOFSLOPE    = 5; // the plateau slopes a bit up to a point /\
   INCREASE_TO_RIGHT_FACTOR = 15; // and it also slopes to the right
-  WIDTH_SCORE_FACTOR = 5;
+  //WIDTH_SCORE_FACTOR = 5;
   TO_FAR_SCORE_FACTOR = 10;
   FAR_TO_FAR_SCORE_FACTOR = 0.3;
   FIRST_TOKENS = 3;
@@ -252,7 +252,7 @@ const
   HALF_GOOD = 5;
 
   GOOD1 = 10;
-  GOOD2 = 20;
+  //GOOD2 = 20;
   GOOD3 = 30;
   GOOD4 = 40;
   GOOD5 = 50;
@@ -540,7 +540,7 @@ begin
       end;
       ttComment:
       begin
-        if Pos(WideString(NativeLineBreak), lt.SourceCode) <= 0 then
+        if Pos(NativeLineBreak, lt.SourceCode) <= 0 then
           liPos := liPos + Length(lt.SourceCode)
         else
           liPos := LastLineLength(lt.SourceCode);

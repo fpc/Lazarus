@@ -43,7 +43,7 @@ function FileGetSize(const FileName: string): Int64;
 
 procedure ShellExecEx(const FileName: string; const Parameters: string = '');
 function GetTickCount: Cardinal;
-function IsMultiByte(const pcChar: WideChar): Boolean;
+function IsMultiByte(const {%H-}pcChar: Char): Boolean;
 
 function IsWinServer2008R2: Boolean;
 function IsWin7: Boolean;
@@ -161,14 +161,10 @@ begin
 {$endif}
 end;
 
-function IsMultiByte(const pcChar: WideChar): Boolean;
+function IsMultiByte(const pcChar: Char): Boolean;
 begin
-{$ifdef MSWINDOWS}
-  Result := IsDBCSLeadByte(Byte(pcChar));
-{$else}
+  //Result := IsDBCSLeadByte(Byte(pcChar));
   Result := False;
-  // TODO: ?
-{$endif}
 end;
 
 function IsWinServer2008R2: Boolean;

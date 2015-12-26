@@ -48,7 +48,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure imgOpenSourceClick(Sender: TObject);
     procedure lblMPLClick(Sender: TObject);
-    procedure FormKeyUp(Sender: TObject; var Key: word; Shift: TShiftState);
+    procedure FormKeyUp(Sender: TObject; var {%H-}Key: word; {%H-}Shift: TShiftState);
     procedure hlHomePageClick(Sender: TObject);
     procedure lblMPLMouseEnter(Sender: TObject);
     procedure lblMPLMouseLeave(Sender: TObject);
@@ -65,30 +65,15 @@ implementation
 {$endif}
 
 uses
-  { delphi }
-  {$ifndef fpc}
-    Windows, ShellAPI, URLMon,
-  {$else}
-    LCLIntf,
-  {$endif}
+  LCLIntf,
   { local }
-  JcfVersionConsts, JcfFontSetFunctions, JcfStringUtils, jcfuiconsts;
+  JcfVersionConsts, JcfStringUtils, jcfuiconsts;
 
-{$ifdef fpc}
 procedure ShowURL(const ps: string);
 begin
-  // do it silent
+  // do it silently
   OpenURL(ps);
 end;
-{$else}
-procedure ShowURL(const ps: string);
-var
-  lws: WideString;
-begin
-  lws := ps;
-  HLinkNavigateString(nil, pWideChar(lws));
-end;
-{$endif}
 
 procedure TfrmAboutBox.imgOpenSourceClick(Sender: TObject);
 begin

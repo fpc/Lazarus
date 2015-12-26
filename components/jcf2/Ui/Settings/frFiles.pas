@@ -49,9 +49,9 @@ type
     procedure FrameResize(Sender: TObject);
   public
     function GetTitle: String; override;
-    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
-    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
-    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings({%H-}AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings({%H-}AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
@@ -96,7 +96,7 @@ begin
 
     { from the file, about itself}
     lblDate.Caption := Format(lisFrFilesDateFileWritten,
-      [FormatDateTime(ShortDateFormat + ' ' + ShortTimeFormat,
+      [FormatDateTime(DefaultFormatSettings.ShortDateFormat + ' ' + DefaultFormatSettings.ShortTimeFormat,
       FormatSettings.WriteDateTime)]);
     lblVersion.Caption := Format(lisFrFilesVersionThatWroteThisFile, [FormatSettings.WriteVersion]);
     mDescription.Text  := FormatSettings.Description;

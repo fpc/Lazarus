@@ -190,7 +190,7 @@ var
   wRes: word;
   lbFileIsChanged: boolean;
   lsOutType: string;
-  lsSourceCode: WideString;
+  lsSourceCode: String;
   leContentType: TFileContentType;
 begin
   // do checks
@@ -403,7 +403,7 @@ begin
   {$ELSE}
   lsSearch := psDir + '*.*';
   {$ENDIF}
-  FillChar(rSearch, Sizeof(TSearchRec), 0);
+  FillChar(rSearch{%H-}, Sizeof(TSearchRec), 0);
   bDone := (FindFirst(lsSearch, 0, rSearch) <> 0);
 
   while not bDone do
@@ -438,7 +438,7 @@ begin
   lsSearch := psDir + '*.*';
   {$ENDIF}
   
-  FillChar(rSearch, Sizeof(TSearchRec), 0);
+  FillChar(rSearch{%H-}, Sizeof(TSearchRec), 0);
   bDone := (FindFirst(lsSearch, faDirectory, rSearch) <> 0);
 
   while not bDone do

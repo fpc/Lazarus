@@ -65,7 +65,6 @@ type
     constructor Create;
     destructor Destroy; override;
 
-
     function Count: integer;
 
     function Add(const piValue: integer): integer;
@@ -108,7 +107,7 @@ end;
 
 function TIntList.Add(const piValue: integer): integer;
 begin
-  Result := fcList.Add(Pointer(PtrInt(piValue)));
+  Result := fcList.Add({%H-}Pointer(PtrInt(piValue)));
 end;
 
 procedure TIntList.Clear;
@@ -121,15 +120,14 @@ begin
   Result := fcList.Count;
 end;
 
-
 function TIntList.GetItem(const piIndex: integer): integer;
 begin
-  Result := integer(PtrInt(fcList.Items[piIndex]));
+  Result := integer({%H-}PtrInt(fcList.Items[piIndex]));
 end;
 
 procedure TIntList.SetItem(const piIndex, piValue: integer);
 begin
-  fcList.Items[piIndex] := Pointer(PtrInt(piValue));
+  fcList.Items[piIndex] := {%H-}Pointer(PtrInt(piValue));
 end;
 
 procedure TIntList.ChangeValue(const liIndex, liDelta: integer);

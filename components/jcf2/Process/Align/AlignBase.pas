@@ -55,13 +55,13 @@ type
     { API for descendant classes }
     function TokenIsAligned(const pt: TSourceToken): boolean; virtual; abstract;
     function TokenEndsStatement(const pt: TSourceToken): boolean; virtual; abstract;
-    function IsTokenInContext(const pt: TSourceToken): boolean; virtual;
-    function TokenEndsAlignment(const pt: TSourceToken): boolean; virtual;
+    function IsTokenInContext(const {%H-}pt: TSourceToken): boolean; virtual;
+    function TokenEndsAlignment(const {%H-}pt: TSourceToken): boolean; virtual;
 
       { override this to let the child class see the tokens as they come
       this is used by the align vars to detect the first non-white space token after the : }
 
-    procedure OnTokenRead(const pt: TSourceToken); virtual;
+    procedure OnTokenRead(const {%H-}pt: TSourceToken); virtual;
     procedure ResetState; virtual;
 
     function EnabledVisitSourceToken(const pcNode: TObject): boolean; override;
@@ -277,8 +277,6 @@ begin
     end;
   end;
 end;
-
-
 
 procedure TAlignBase.OnTokenRead(const pt: TSourceToken);
 begin

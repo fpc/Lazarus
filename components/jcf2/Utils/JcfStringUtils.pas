@@ -97,20 +97,22 @@ const
 function CharInSet(const C: Char; const testSet: TSysCharSet): Boolean;
 {$ENDIF}
 {$ENDIF}
-function CharIsControl(const C: Char): Boolean;
 function CharIsAlpha(const C: Char): Boolean;
 function CharIsAlphaNum(const C: Char): Boolean;
+function CharIsWordChar(const c: Char): Boolean;
+function CharIsControl(const C: Char): Boolean;
 function CharIsDigit(const C: Char): Boolean;
 function CharIsReturn(const C: Char): Boolean;
 function CharIsWhiteSpace(const C: Char): Boolean;
-
-function CharUpper(const C: Char): Char; 
+function CharIsWhiteSpaceNoReturn(const c: Char): boolean;
+function CharIsPuncChar(const c: Char): boolean;
 
 function StrIsAlpha(const S: string): Boolean;
 function StrIsAlphaNum(const S: string): Boolean;
+function CharIsHexDigitDot(const c: Char): Boolean;
+function CharIsBinDigit(const c: Char): Boolean;
 
 function StrTrimQuotes(const S: string): string;
-
 function StrAfter(const SubStr, S: string): string;
 function StrBefore(const SubStr, S: string): string;
 function StrChopRight(const S: string; N: Integer): string;
@@ -145,7 +147,7 @@ function IntToStrZeroPad(Value, Count: Integer): String;
 function StrPadLeft(const pcOriginal: string;
   const piDesiredLength: integer; const pcPad: Char): string;
 
-function WideStringReplace(const S, OldPattern, NewPattern: WideString; Flags: TReplaceFlags): WideString;
+//function WideStringReplace(const S, OldPattern, NewPattern: WideString; Flags: TReplaceFlags): WideString;
 
 function PathExtractFileNameNoExt(const Path: string): string;
 
@@ -187,6 +189,11 @@ begin
   Result := CharIsAlpha(C) or CharIsDigit(C);
 end;
 
+function CharIsWordChar(const c: Char): Boolean;
+begin
+  Result := CharIsAlpha(c) or (c = '_');
+end;
+
 function CharIsControl(const C: Char): Boolean;
 begin
   Result := C <= #31;
@@ -207,10 +214,22 @@ begin
   Result := CharInSet(C, NativeWhiteSpace) ;
 end;
 
-function CharUpper(const C: Char): Char;
+function CharIsWhiteSpaceNoReturn(const c: Char): boolean;
 begin
-  // Paul: original code used char case table
-  Result := UpCase(C);
+  Result := False;
+  if (c = #0) or CharIsReturn(c) then exit;
+  // Result := CharIsWhiteSpace(c) and (c <> AnsiLineFeed) and (c <> AnsiCarriageReturn);
+  Result := (ord(c) <= Ord(NativeSpace));
+end;
+
+function CharIsPuncChar(const c: Char): boolean;
+begin
+  Result := False;
+  if CharIsWhiteSpace(c) then exit;
+  if CharIsAlphaNum(c) then exit;
+  if CharIsReturn(c) then exit;
+  if CharIsControl(c) then exit;
+  Result := True;
 end;
 
 function StrIsAlpha(const S: string): Boolean;
@@ -239,6 +258,23 @@ begin
       Result := False;
       break;
     end;
+end;
+
+function CharIsHexDigitDot(const c: Char): Boolean;
+const
+  HexDigits: set of AnsiChar = [
+    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+    'A', 'B', 'C', 'D', 'E', 'F',
+    'a', 'b', 'c', 'd', 'e', 'f'];
+begin
+  Result := (c in HexDigits) or (c = '.');
+end;
+
+function CharIsBinDigit(const c: Char): Boolean;
+const
+  BinDigits: set of AnsiChar = ['0','1'];
+begin
+  Result := (c in BinDigits);
 end;
 
 function StrTrimQuotes(const S: string): string;
@@ -508,7 +544,7 @@ begin
 end;
 
 // Based on FreePascal version of StringReplace
-function WideStringReplace(const S, OldPattern, NewPattern: WideString; Flags: TReplaceFlags): WideString;
+{function WideStringReplace(const S, OldPattern, NewPattern: WideString; Flags: TReplaceFlags): WideString;
 var
   Srch, OldP, RemS: WideString; // Srch and Oldp can contain uppercase versions of S,OldPattern
   P: Integer;
@@ -545,7 +581,7 @@ begin
     end;
   end;
 end;
-
+}
 function PadNumber(const pi: integer): string;
 begin
   Result := IntToStrZeroPad(pi, 3);

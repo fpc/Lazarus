@@ -139,14 +139,14 @@ begin
   end;
 
   fsCurrentUnitName := pciUnit.FileName;
-  fcConverter.InputCode := UTF8ToUTF16(ReadFromIDE(pciUnit));
+  fcConverter.InputCode := ReadFromIDE(pciUnit);
 
   // now convert
   fcConverter.Convert;
   fsCurrentUnitName := '';
   if not ConvertError then
   begin
-    WriteToIDE(pciUnit, UTF16ToUTF8(fcConverter.OutputCode));
+    WriteToIDE(pciUnit, fcConverter.OutputCode);
     SendStatusMessage(pciUnit.FileName, 'Formatted unit', mtProgress, -1, -1);
     Inc(fiConvertCount);
   end;
@@ -169,7 +169,7 @@ begin
     exit;
 
   lcSourceLines := TStringList.Create;
-  lcSourceLines.Text := UTF16ToUTF8(fcConverter.InputCode);
+  lcSourceLines.Text := fcConverter.InputCode;
   lcDestLines := TStringList.Create;
   lcDestLines.Text := psText;
   lcSameStart := TStringList.Create;

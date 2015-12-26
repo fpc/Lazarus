@@ -50,11 +50,11 @@ type
     { these are called when visiting interior nodes before and after thier children
       Must return true if the visited node is deleted, or if nodes are inserted before it
       ie if the curent node's index is not correct and the same after the visit}
-    procedure PreVisitParseTreeNode(const pcNode: TObject); virtual;
-    procedure PostVisitParseTreeNode(const pcNode: TObject); virtual;
+    procedure PreVisitParseTreeNode(const {%H-}pcNode: TObject); virtual;
+    procedure PostVisitParseTreeNode(const {%H-}pcNode: TObject); virtual;
 
     { this is called when visiting a leaf node (ie a source token) }
-    function VisitSourceToken(const pcToken: TObject): Boolean; virtual;
+    function VisitSourceToken(const {%H-}pcToken: TObject): Boolean; virtual;
 
     function FinalSummary(out psMessage: string): boolean; virtual;
     function IsIncludedInSettings: boolean; virtual;

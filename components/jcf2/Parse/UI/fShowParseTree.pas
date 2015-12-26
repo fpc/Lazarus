@@ -64,11 +64,10 @@ type
     procedure cbShowWhiteSpaceClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure lvTokensClick(Sender: TObject);
-    procedure lvTokensSelectItem(Sender: TObject; Item: TListItem;
-      Selected: boolean);
+    procedure lvTokensSelectItem(Sender: TObject; {%H-}Item: TListItem; {%H-}Selected: boolean);
     procedure lvTokensDblClick(Sender: TObject);
     procedure tvParseTreeDblClick(Sender: TObject);
-    procedure FormKeyUp(Sender: TObject; var Key: word; Shift: TShiftState);
+    procedure FormKeyUp(Sender: TObject; var Key: word; {%H-}Shift: TShiftState);
     procedure FormCreate(Sender: TObject);
   private
     fcRootNode: TParseTreeNode;

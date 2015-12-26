@@ -202,7 +202,7 @@ end;
 
 procedure TfmJCFNotepad.DoFileOpen(const psFileName: string);
 var
-  lsFileContents: WideString;
+  lsFileContents: String;
 begin
   if psFileName = '' then
     exit;

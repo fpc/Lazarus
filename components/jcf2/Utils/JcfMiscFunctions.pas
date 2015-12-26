@@ -60,7 +60,7 @@ function Float2Str(const d: double): string;
 {not really a file fn - string file name manipulation}
 function SetFileNameExtension(const psFileName, psExt: string): string;
 
-procedure AdvanceTextPos(const AText: WideString; var ARow, ACol: integer);
+procedure AdvanceTextPos(const AText: String; var ARow, ACol: integer);
 function LastLineLength(const AString: string): integer;
 
 { split into lines at CrLf or Lf}
@@ -104,9 +104,10 @@ var
   code: integer;
 begin
   // de-localise the string if need be
-  if (DecimalSeparator <> '.') and (Pos(DecimalSeparator, s) > 0) then
+  if (DefaultFormatSettings.DecimalSeparator <> '.')
+  and (Pos(DefaultFormatSettings.DecimalSeparator, s) > 0) then
   begin
-    StrReplace(s, DecimalSeparator, '.');
+    StrReplace(s, DefaultFormatSettings.DecimalSeparator, '.');
   end;
 
   Val(s, Result, Code);
@@ -120,10 +121,10 @@ function Float2Str(const d: double): string;
 var
   OrgSep: char;
 begin
-  OrgSep := DecimalSeparator;
-  DecimalSeparator := '.';
+  OrgSep := DefaultFormatSettings.DecimalSeparator;
+  DefaultFormatSettings.DecimalSeparator := '.';
   Result := FloatToStr(d);
-  DecimalSeparator := OrgSep;
+  DefaultFormatSettings.DecimalSeparator := OrgSep;
 end;
 
 
@@ -214,11 +215,11 @@ begin
   end;
 end;
 
-procedure PosLastAndCount(const ASubString, AString: WideString;
+procedure PosLastAndCount(const ASubString, AString: String;
   out ALastPos: integer; out ACount: integer);
 var
   {This gets the last occurrence and count in one go. It saves time}
-  LastChar1: WideChar;
+  LastChar1: Char;
   Index1:    integer;
   Index2:    integer;
   Index3:    integer;
@@ -269,7 +270,7 @@ end;
   - if the text contains newlines, then add on to the Y pos, and
     set the X pos to the text length after the last newline }
 {AdemBaba}
-procedure AdvanceTextPos(const AText: WideString; var ARow, ACol: integer);
+procedure AdvanceTextPos(const AText: String; var ARow, ACol: integer);
 var
   Length1: integer;
   Count1:  integer;
@@ -303,7 +304,7 @@ begin
         Inc(ARow, Length1);
     end;
     else
-      PosLastAndCount(WideChar(NativeLineBreak), AText, Pos1, Count1);
+      PosLastAndCount(NativeLineBreak, AText, Pos1, Count1);
       if Pos1 <= 0 then
         Inc(ARow, Length1)
       else
