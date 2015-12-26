@@ -441,9 +441,23 @@ begin
         (QtWidgetSet.WindowManagerName = 'xfwm4') or
         (QtWidgetSet.WindowManagerName = 'metacity') then
       begin
-        APopupParent := TCustomForm(AWinControl).GetRealPopupParent;
-        if APopupParent <> nil then
-          QWidget_setParent(Widget.Widget, TQtWidget(APopupParent.Handle).Widget);
+        W := nil;
+        ActiveWin := GetActiveWindow;
+        if ActiveWin <> 0 then
+        begin
+          if Assigned(TQtWidget(ActiveWin).LCLObject) then
+          begin
+            if (TQtWidget(ActiveWin).LCLObject is TCustomForm) then
+            begin
+              with TCustomForm(TQtWidget(ActiveWin).LCLObject) do
+              begin
+                if Visible and (FormStyle <> fsSplash) then
+                  W := TQtWidget(Handle).Widget;
+              end;
+            end;
+          end;
+        end;
+        QWidget_setParent(Widget.Widget, W);
       end else
         QWidget_setParent(Widget.Widget, QApplication_desktop());
       {$endif}
