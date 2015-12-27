@@ -1303,9 +1303,17 @@ msgstr "Semmi"
 msgid "Add Images"
 msgstr "Képek hozzáadása"
 
+#: objinspstrconsts.sccsiledtopendialogn
+msgid "New Image"
+msgstr ""
+
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
 msgstr "Átlátszó szín:"
+
+#: objinspstrconsts.sccsiledtreplace
+msgid "&Replace ..."
+msgstr ""
 
 #: objinspstrconsts.sccsiledtsave
 msgctxt "objinspstrconsts.sccsiledtsave"
@@ -1526,6 +1534,10 @@ msgstr "Bekérés"
 #: objinspstrconsts.s_addassingle
 msgid "Add as single"
 msgstr "Hozzáadás single-ként"
+
+#: objinspstrconsts.s_confirm_clear
+msgid "Are you sure to clear image list?"
+msgstr ""
 
 #: objinspstrconsts.s_splitimage
 msgid "Split image"

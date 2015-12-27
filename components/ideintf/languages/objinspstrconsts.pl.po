@@ -1354,9 +1354,17 @@ msgstr ""
 msgid "Add Images"
 msgstr ""
 
+#: objinspstrconsts.sccsiledtopendialogn
+msgid "New Image"
+msgstr ""
+
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
 msgstr "Kolor przezroczystości:"
+
+#: objinspstrconsts.sccsiledtreplace
+msgid "&Replace ..."
+msgstr ""
 
 #: objinspstrconsts.sccsiledtsave
 #, fuzzy
@@ -1586,6 +1594,10 @@ msgstr "Przechwyć klawisz"
 
 #: objinspstrconsts.s_addassingle
 msgid "Add as single"
+msgstr ""
+
+#: objinspstrconsts.s_confirm_clear
+msgid "Are you sure to clear image list?"
 msgstr ""
 
 #: objinspstrconsts.s_splitimage

@@ -1303,9 +1303,17 @@ msgstr "Нет"
 msgid "Add Images"
 msgstr "Добавить изображения"
 
+#: objinspstrconsts.sccsiledtopendialogn
+msgid "New Image"
+msgstr ""
+
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
 msgstr "Прозрачный цвет:"
+
+#: objinspstrconsts.sccsiledtreplace
+msgid "&Replace ..."
+msgstr ""
 
 #: objinspstrconsts.sccsiledtsave
 msgctxt "objinspstrconsts.sccsiledtsave"
@@ -1526,6 +1534,10 @@ msgstr "Захватить клавишу"
 #: objinspstrconsts.s_addassingle
 msgid "Add as single"
 msgstr "Добавить как одно"
+
+#: objinspstrconsts.s_confirm_clear
+msgid "Are you sure to clear image list?"
+msgstr ""
 
 #: objinspstrconsts.s_splitimage
 msgid "Split image"

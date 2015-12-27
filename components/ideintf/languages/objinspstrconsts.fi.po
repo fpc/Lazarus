@@ -1296,9 +1296,17 @@ msgstr "Ei mitään"
 msgid "Add Images"
 msgstr "Lisää Kuvat"
 
+#: objinspstrconsts.sccsiledtopendialogn
+msgid "New Image"
+msgstr ""
+
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
 msgstr "Läpinäkyvä väri:"
+
+#: objinspstrconsts.sccsiledtreplace
+msgid "&Replace ..."
+msgstr ""
 
 #: objinspstrconsts.sccsiledtsave
 msgctxt "objinspstrconsts.sccsiledtsave"
@@ -1519,6 +1527,10 @@ msgstr "Sieppaa näppäin"
 #: objinspstrconsts.s_addassingle
 msgid "Add as single"
 msgstr "Lisää yksittäisenä"
+
+#: objinspstrconsts.s_confirm_clear
+msgid "Are you sure to clear image list?"
+msgstr ""
 
 #: objinspstrconsts.s_splitimage
 msgid "Split image"
