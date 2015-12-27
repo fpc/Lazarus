@@ -546,9 +546,9 @@ begin
         APopupParent := TCustomForm(AWinControl).GetRealPopupParent;
         if (APopupParent <> nil) then
         begin
-          Flags := Widget.windowFlags;
           Widget.setParent(TQtWidget(APopupParent.Handle).Widget);
-          Widget.setWindowFlags(Flags or QtTool);
+          {use direct X11 call instead of QtTool flag.issue #29253}
+          SetTransientForHint(Widget.Widget, TQtWidget(APopupParent.Handle).Widget);
         end;
       end;
       {$ENDIF}
