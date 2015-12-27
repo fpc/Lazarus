@@ -756,6 +756,41 @@ The format CF_TEXT is handled by AsText and SetTextBuf. Use those functions inst
         <descr/>
         <seealso/>
       </element>
+      <!-- procedure Visibility: public -->
+      <element name="TClipboard.SetAsHtml">
+        <short>Puts a HTML string on the clipboard.<short/>
+        <descr>Puts a HTML string on the clipboard. On Windows it will automatically insert a
+               ClipBoard Header.
+               The procedure can also (optionally) set a provided plaintext representation
+               of the HTLM on the ClipBoard.<descr/>
+        <errors/>
+        <seealso/>
+      <!-- argument Visibility: default -->
+      <element name="TClipboard.SetAsHtml.HTML">
+        <short>The Html string that shall be put on the ClipBoard<short/>
+      </element>
+      <element name="TClipboard.SetAsHtml.PlainText">
+        <short>Optional plain text (string) representation of the HTML<short/>
+        <descr>The optioal string paramater PlainText is meant to be a plain text representation
+               of the HTM string. The user is responsible for the contents of this variable.
+               The value of PlainText can later be retrieved via the
+               <link id="#TClipBoard.AsText">AsText</link> property.
+               If PlainText is an empty string, no plain text is added to the ClipBoard, nor is the
+               current plain text content of the ClipBoard cleared.</descr>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TClipboard.GetAsHtml">
+        <short>Retrieves the HTML content of the clipboard (if available)<short/>
+        <descr>Retrieves the HTML content of the clipboard (if available).
+               On Windows it will automatically remove the clipboard header that Windows inserts.
+               The resulting HTML string will be UTF-8 encoded.<descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TClipboard.GetAsHtml.Result">
+        <short>The HTML content of the clipboard as a string. Empty string if the function fails.</short>
+      </element>
       <!-- property Visibility: public -->
       <element name="TClipboard.ClipboardType">
         <short>
