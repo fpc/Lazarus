@@ -67,13 +67,15 @@ type
   { TSVGPathTokenizer }
 
   TSVGPathTokenizer = class
+  protected
+    Tokens: TSVGTokenList;
   public
     FPointSeparator, FCommaSeparator: TFormatSettings;
-    Tokens: TSVGTokenList;
     ExtraDebugStr: string;
     constructor Create;
-    Destructor Destroy; override;
+    destructor Destroy; override;
     procedure AddToken(AStr: string);
+    procedure ClearTokens;
     procedure TokenizePathString(AStr: string);
     procedure TokenizeFunctions(AStr: string);
     function DebugOutTokensAsString: string;
@@ -208,13 +210,9 @@ begin
 end;
 
 destructor TSVGPathTokenizer.Destroy;
-var
-  i: Integer;
 begin
-  for i:=Tokens.Count-1 downto 0 do
-    Tokens[i].Free;
+  ClearTokens;
   Tokens.Free;
-
   inherited Destroy;
 end;
 
@@ -276,6 +274,15 @@ begin
   end;
 
   Tokens.Add(lToken);
+end;
+
+procedure TSVGPathTokenizer.ClearTokens;
+var
+  i: Integer;
+begin
+  for i := Tokens.Count-1 downto 0 do
+    Tokens[i].Free;
+  Tokens.Clear;
 end;
 
 procedure TSVGPathTokenizer.TokenizePathString(AStr: string);
@@ -1954,7 +1961,7 @@ var
   lDebugStr: String;
   lTmpTokenType: TSVGTokenType;
 begin
-  FSVGPathTokenizer.Tokens.Clear;
+  FSVGPathTokenizer.ClearTokens;
   FSVGPathTokenizer.TokenizePathString(AStr);
   //lDebugStr := FSVGPathTokenizer.DebugOutTokensAsString();
   CurX := 0;
@@ -2325,7 +2332,7 @@ var
   X, Y: Double;
   FirstPtX, FirstPtY, CurX, CurY: Double;
 begin
-  FSVGPathTokenizer.Tokens.Clear;
+  FSVGPathTokenizer.ClearTokens;
   FSVGPathTokenizer.TokenizePathString(AStr);
   CurX := 0;
   CurY := 0;
@@ -3059,9 +3066,13 @@ begin
 end;
 
 destructor TvSVGVectorialReader.Destroy;
+var
+  i: Integer;
 begin
   FLayerStylesKeys.Free;
   FLayerStylesValues.Free;
+
+  for i:=FBrushDefs.Count-1 downto 0 do TObject(FBrushDefs[i]).Free;
   FBrushDefs.Free;
   FSVGPathTokenizer.Free;
 
