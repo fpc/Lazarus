@@ -18,10 +18,13 @@ type
 
   { TAbstractProjectResource }
   TAbstractProjectResource = class
-  protected
+  private
     FModified: boolean;
     FOnModified: TNotifyEvent;
     procedure SetModified(const AValue: boolean);
+  protected
+    // This resource is used when reading project default options.
+    FIsDefaultOption: Boolean;
   public
     constructor Create; virtual;
 
@@ -33,6 +36,7 @@ type
 
     property Modified: boolean read FModified write SetModified;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
+    property IsDefaultOption: Boolean read FIsDefaultOption;
   end;
 
   TAbstractProjectResourceClass = class of TAbstractProjectResource;
