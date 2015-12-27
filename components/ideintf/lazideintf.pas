@@ -297,7 +297,7 @@ type
     property ToolStatus: TLazToolStatus read FToolStatus write SetToolStatus;
 
     // the main window with the IDE menu
-    function GetMainBar: TComponent; virtual; abstract;
+    function GetMainBar: TForm; virtual; abstract;
     property MainBarSubTitle: string read FMainBarSubTitle write SetMainBarSubTitle;
 
     // find file
