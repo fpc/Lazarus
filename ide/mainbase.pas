@@ -137,7 +137,7 @@ type
     procedure StartIDE; virtual; abstract;
     destructor Destroy; override;
     procedure CreateOftenUsedForms; virtual; abstract;
-    function GetMainBar: TComponent; override;
+    function GetMainBar: TForm; override;
     procedure SetRecentProjectFilesMenu;
     procedure SetRecentFilesMenu;
     function BeginCodeTool(var ActiveSrcEdit: TSourceEditor;
@@ -705,7 +705,7 @@ begin
   ActiveUnitInfo:=AnUnitInfo;
 end;
 
-function TMainIDEBase.GetMainBar: TComponent;
+function TMainIDEBase.GetMainBar: TForm;
 begin
   Result:=MainIDEBar;
 end;
