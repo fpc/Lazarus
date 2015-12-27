@@ -27,7 +27,7 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, Dialogs,
   ActnList, ExtCtrls, Buttons, StdCtrls, ObjInspStrConsts,
   ComponentEditors, PropEdits, PropEditUtils, DBActns, StdActns, LCLIntf,
-  LCLType, Graphics, Menus, ComCtrls, contnrs;
+  LCLType, Graphics, Menus, ComCtrls, contnrs, IDEWindowIntf;
 
 type
   TActStdPropItem = class;
@@ -1076,6 +1076,7 @@ begin
       SetActionList(AActionList);
     end;
   end;
+  SetPopupModeParentForPropertyEditor(AEditor);
   AEditor.ShowOnTop;
 end;
 

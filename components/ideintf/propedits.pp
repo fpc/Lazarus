@@ -30,7 +30,7 @@ uses
   FileUtil, FileCtrl, ObjInspStrConsts, PropEditUtils, Themes,
   // Forms with .lfm files
   FrmSelectProps, StringsPropEditDlg, KeyValPropEditDlg, CollectionPropEditForm,
-  FileFilterPropEditor;
+  FileFilterPropEditor, IDEWindowIntf;
 
 const
   MaxIdentLength: Byte = 63;
@@ -4160,6 +4160,7 @@ begin
   if CollectionForm = nil then
     CollectionForm := TCollectionPropertyEditorForm.Create(Application);
   CollectionForm.SetCollection(ACollection, OwnerPersistent, PropName);
+  SetPopupModeParentForPropertyEditor(CollectionForm);
   CollectionForm.EnsureVisible;
   Result:=CollectionForm;
 end;

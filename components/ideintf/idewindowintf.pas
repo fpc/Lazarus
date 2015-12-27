@@ -504,6 +504,8 @@ procedure MakeIDEWindowDockSite(AForm: TCustomForm);
 procedure CloseAllForms;
 function IDEWindowsGlobalOptions: TIDEWindowsGlobalOptions;
 
+procedure SetPopupModeParentForPropertyEditor(const AEditorDlg: TCustomForm);
+
 procedure Register;
 
 implementation
@@ -513,6 +515,14 @@ uses
 
 var
   FIDEWindowsGlobalOptions: TIDEWindowsGlobalOptions = nil;
+
+procedure SetPopupModeParentForPropertyEditor(const AEditorDlg: TCustomForm);
+begin
+  if IDEDockMaster<>nil then
+    AEditorDlg.PopupParent:=LazarusIDE.GetMainBar// sets PopupMode:=pmExplicit automatically
+  else
+    AEditorDlg.PopupMode:=pmNone;
+end;
 
 function StrToIDEWindowPlacement(const s: string): TIDEWindowPlacement;
 begin
