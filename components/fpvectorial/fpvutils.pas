@@ -22,7 +22,7 @@ unit fpvutils;
 interface
 
 uses
-  Classes, SysUtils, Math,
+  Classes, SysUtils, Math, Types,
   {$ifdef USE_LCL_CANVAS}
   Graphics, LCLIntf, LCLType,
   {$endif}
@@ -31,7 +31,7 @@ uses
 
 type
   T10Strings = array[0..9] of shortstring;
-  TPointsArray = array of TPoint;
+//  TPointsArray = array of TPoint;
   TFPVUByteArray = array of Byte;
 
   TNumericalEquation = function (AParameter: Double): Double of object; // return the error
@@ -64,6 +64,8 @@ function CalcEllipseCenter(x1,y1, x2,y2, rx,ry, phi: Double; fa, fs: Boolean;
   out cx,cy, lambda: Double): Boolean;
 function CalcEllipsePointAngle(x,y, rx,ry, cx,cy, phi: Double): Double;
 procedure CalcEllipsePoint(angle, rx,ry, cx,cy, phi: Double; out x,y: Double);
+procedure ConvertPathToPolygons(APath: TPath; ADestX, ADestY: Integer; AMulX, AMulY: Double;
+  var PolygonPoints: TPointsArray; var PolygonStartIndexes: TIntegerDynArray);
 procedure ConvertPathToPoints(APath: TPath; ADestX, ADestY: Integer; AMulX, AMulY: Double; var Points: TPointsArray);
 function Rotate2DPoint(P, RotCenter: TPoint; alpha:double): TPoint;
 function Rotate3DPointInXY(P, RotCenter: T3DPoint; alpha:double): T3DPoint;
@@ -483,6 +485,92 @@ begin
   SinCos(phi, sinphi, cosphi);
   x := cx + rx*cost*cosphi - ry*sint*sinphi;
   y := cy + ry*sint*cosphi + rx*cost*sinphi;
+end;
+
+{ Converts a path to one or more polygons. The polygon vertices are returned
+  in "PolygonPoints"; they are given in canvas units (pixels).
+  Since the path can contain several polygons the start index of each polygon
+  is returned in "PolygonStartIndexes". }
+procedure ConvertPathToPolygons(APath: TPath;
+  ADestX, ADestY: Integer; AMulX, AMulY: Double;
+  var PolygonPoints: TPointsArray;
+  var PolygonStartIndexes: TIntegerDynArray);
+const
+  POINT_BUFFER = 100;
+var
+  i, j: Integer;
+  numPoints: Integer;
+  numPolygons: Integer;
+  coordX, coordY: Integer;
+  coordX2, coordY2, coordX3, coordY3, coordX4, coordY4: Integer;
+  // temporary point arrays
+  pts: array of TPoint;
+  pts3D: T3dPointsArray;
+  // Segments
+  curSegment: TPathSegment;
+  cur2DSegment: T2DSegment absolute curSegment;
+  cur2DBSegment: T2DBezierSegment absolute curSegment;
+  cur2DArcSegment: T2DEllipticalArcSegment absolute curSegment;
+begin
+  if (APath = nil) then
+  begin
+    SetLength(PolygonPoints, 0);
+    SetLength(PolygonStartIndexes, 0);
+    exit;
+  end;
+
+  SetLength(PolygonPoints, POINT_BUFFER);
+  SetLength(PolygonStartIndexes, POINT_BUFFER);
+  numPoints := 0;
+  numPolygons := 0;
+
+  APath.PrepareForSequentialReading;
+  for i := 0 to APath.Len - 1 do
+  begin
+    curSegment := TPathSegment(APath.Next);
+
+    case curSegment.SegmentType of
+      stMoveTo:
+        begin
+          if i <> 0 then
+            raise Exception.Create('Path must start with a "MoveTo" command');
+
+          // Store current length of points array as polygon start index
+          if numPolygons >= Length(PolygonStartIndexes) then
+            SetLength(PolygonstartIndexes, Length(PolygonStartIndexes) + POINT_BUFFER);
+          PolygonStartIndexes[numPolygons] := numPoints;
+          inc(numPolygons);
+
+          // Store current point as first point of a new polygon
+          coordX := CoordToCanvasX(cur2DSegment.X, ADestX, AMulX);
+          coordY := CoordToCanvasY(cur2DSegment.Y, ADestY, AMulY);
+          if numPoints >= Length(PolygonPoints) then
+            SetLength(PolygonPoints, Length(PolygonPoints) + POINT_BUFFER);
+          PolygonPoints[numPoints] := Point(coordX, coordY);
+          inc(numPoints);
+        end;
+
+      st2DLine, st3DLine, st2DLineWithPen:
+        begin
+          // Add current point to current polygon
+          coordX := CoordToCanvasX(cur2DSegment.X, ADestX, AMulX);
+          coordY := CoordToCanvasY(cur2DSegment.Y, ADestY, AMulY);
+          if numPoints >= Length(PolygonPoints) then
+            SetLength(PolygonPoints, Length(PolygonPoints) + POINT_BUFFER);
+          PolygonPoints[numPoints] := Point(coordX, coordY);
+          inc(numPoints);
+        end;
+
+      st2DBezier, st3DBezier, st2DEllipticalArc:
+        begin
+          SetLength(PolygonPoints, numPoints);
+          curSegment.AddToPoints(ADestX, ADestY, AMulX, AMulY, PolygonPoints);
+          numPoints := Length(PolygonPoints);
+        end;
+    end;
+  end;
+  SetLength(PolygonPoints, numPoints);
+  SetLength(PolygonStartIndexes, numPolygons);
 end;
 
 procedure ConvertPathToPoints(APath: TPath; ADestX, ADestY: Integer; AMulX, AMulY: Double; var Points: TPointsArray);

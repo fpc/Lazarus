@@ -275,6 +275,7 @@ type
   P3DPoint = ^T3DPoint;
 
   T3DPointsArray = array of T3DPoint;
+  TPointsArray = array of TPoint;
 
   TSegmentType = (
     st2DLine, st2DLineWithPen, st2DBezier,
@@ -303,6 +304,8 @@ type
     procedure Rotate(AAngle: Double; ABase: T3DPoint); virtual; // Angle in radians
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); virtual;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; virtual;
+    // rendering
+    procedure AddToPoints(ADestX, ADestY: Integer; AMulX, AMulY: Double; var Points: TPointsArray); virtual;
   end;
 
   {@@
@@ -325,6 +328,8 @@ type
     procedure Move(ADeltaX, ADeltaY: Double); override;
     procedure Rotate(AAngle: Double; ABase: T3DPoint); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
+    // rendering
+    procedure AddToPoints(ADestX, ADestY: Integer; AMulX, AMulY: Double; var Points: TPointsArray); override;
   end;
 
   T2DSegmentWithPen = class(T2DSegment)
@@ -356,6 +361,8 @@ type
     // edition methods
     procedure Move(ADeltaX, ADeltaY: Double); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
+    // rendering
+    procedure AddToPoints(ADestX, ADestY: Integer; AMulX, AMulY: Double; var Points: TPointsArray); override;
   end;
 
   { T3DSegment }
@@ -368,6 +375,8 @@ type
     }
     X, Y, Z: Double;
     procedure Move(ADeltaX, ADeltaY: Double); override;
+    // rendering
+    procedure AddToPoints(ADestX, ADestY: Integer; AMulX, AMulY: Double; var Points: TPointsArray); override;
   end;
 
   { T3DBezierSegment }
@@ -398,6 +407,7 @@ type
     procedure CalculateCenter;
     procedure CalculateEllipseBoundingBox(ADest: TFPCustomCanvas; out ALeft, ATop, ARight, ABottom: Double);
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
+    procedure AddToPoints(ADestX, ADestY: Integer; AMulX, AMulY: Double; var Points: TPointsArray); override;
   end;
 
   TvFindEntityResult = (vfrNotFound, vfrFound, vfrSubpartFound);
@@ -497,11 +507,14 @@ type
 
   { TvEntityWithPenAndBrush }
 
+  TvClipMode = (vcmNonzeroWindingRule, vcmEvenOddRule);
+
   TvEntityWithPenAndBrush = class(TvEntityWithPen)
   public
     {@@ The global Brush for the entire entity. In the case of paths, individual
         elements might be able to override this setting. }
     Brush: TvBrush;
+    WindingRule: TvClipMode;
     constructor Create(APage: TvPage); override;
     procedure ApplyBrushToCanvas(ADest: TFPCustomCanvas); overload;
     procedure ApplyBrushToCanvas(ADest: TFPCustomCanvas; ABrush: TvBrush); overload;
@@ -541,8 +554,6 @@ type
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = True); override;
   end;
-
-  TvClipMode = (vcmNonzeroWindingRule, vcmEvenOddRule);
 
   TPath = class(TvEntityWithPenAndBrush)
   private
@@ -2934,6 +2945,24 @@ begin
   Result := ADestRoutine(lStr, APageItem);
 end;
 
+procedure T2DEllipticalArcSegment.AddToPoints(ADestX, ADestY: Integer;
+  AMulX, AMulY: Double; var Points: TPointsArray);
+var
+  pts3D: T3DPointsArray;
+  i, n: Integer;
+begin
+  SetLength(pts3d, 0);
+  PolyApproximate(pts3D);
+  n := Length(Points);
+  SetLength(Points, n + Length(pts3D) - 1);  // we don't need the start point --> -1
+  for i:=1 to High(pts3D) do    // i=0 is end point of prev segment -> we can skip it.
+  begin
+    Points[n].X := CoordToCanvasX(pts3D[i].X, ADestX, AMulX);
+    Points[n].Y := CoordToCanvasY(pts3D[i].Y, ADestY, AMulY);
+    inc(n);
+  end;
+end;
+
 { TvVerticalFormulaStack }
 
 function TvVerticalFormulaStack.CalculateHeight(ADest: TFPCustomCanvas): Double;
@@ -3074,6 +3103,13 @@ begin
   Result := ADestRoutine(lStr, APageItem);
 end;
 
+procedure TPathSegment.AddToPoints(ADestX, ADestY: Integer; AMulX, AMulY: Double;
+  var Points: TPointsArray);
+begin
+  // Override by descendants
+end;
+
+
 { T2DSegment }
 
 function T2DSegment.GetLength: Double;
@@ -3122,6 +3158,17 @@ begin
   Result := ADestRoutine(lStr, APageItem);
 end;
 
+procedure T2DSegment.AddToPoints(ADestX, ADestY: Integer; AMulX, AMulY: Double;
+  var Points: TPointsArray);
+var
+  n: Integer;
+begin
+  n := Length(Points);
+  SetLength(Points, n + 1);
+  Points[n].X := CoordToCanvasX(Points[n].X, ADestX, AMulX);
+  Points[n].Y := CoordToCanvasY(Points[n].Y, ADestY, AMulY);
+end;
+
 { T2DBezierSegment }
 
 function T2DBezierSegment.GetLength: Double;
@@ -3164,12 +3211,60 @@ begin
   Result := ADestRoutine(lStr, APageItem);
 end;
 
+procedure T2DBezierSegment.AddToPoints(ADestX, ADestY: Integer; AMulX, AMulY: Double;
+  var Points: TPointsArray);
+var
+  pts: TPointsArray;
+  coordX, coordY, coord2X, coord2Y, coord3X, coord3Y, coord4X, coord4Y: Integer;
+  i, n: Integer;
+begin
+  if not (Previous is T2DSegment) then
+    raise Exception.Create('T2DBezierSegment must follow a T2DSegment.');
+
+  coordX := CoordToCanvasX(T2DSegment(Previous).X, ADestX, AMulX);  // start pt
+  coordY := CoordToCanvasY(T2DSegment(Previous).Y, ADestY, AMulY);
+  coord4X := CoordToCanvasX(X, ADestX, AMulX);   // end pt
+  coord4Y := CoordToCanvasY(Y, ADestY, AMulY);
+  coord2X := CoordToCanvasX(X2, ADestX, AMulX);  // ctrl pt 1
+  coord2Y := CoordToCanvasY(Y2, ADestY, AMulY);
+  coord3X := CoordToCanvasX(X3, ADestX, AMulX);  // ctrl pt 2
+  coord3Y := CoordToCanvasY(Y3, ADestY, AMulY);
+
+  SetLength(pts, 0);
+  AddBezierToPoints(
+    Make2DPoint(coordX, coordY),
+    Make2DPoint(coord2X, coord2Y),
+    Make2DPoint(coord3X, coord3Y),
+    Make2DPoint(coord4X, coord4Y),
+    pts);
+
+  n := Length(Points);
+  SetLength(Points, n + Length(pts) - 1);  // we don't need the start point --> -1
+  for i:=1 to High(pts) do     // begin at 1 to skip the start point
+  begin
+    Points[n] := pts[i];
+    inc(n);
+  end;
+end;
+
 { T3DSegment }
 
 procedure T3DSegment.Move(ADeltaX, ADeltaY: Double);
 begin
   X := X + ADeltaX;
   Y := Y + ADeltaY;
+end;
+
+{ This is preliminary... }
+procedure T3DSegment.AddToPoints(ADestX, ADestY: Integer; AMulX, AMulY: Double;
+  var Points: TPointsArray);
+var
+  n: Integer;
+begin
+  n := Length(Points);
+  SetLength(Points, n + 1);
+  Points[n].X := CoordToCanvasX(Points[n].X, ADestX, AMulX);
+  Points[n].Y := CoordToCanvasY(Points[n].Y, ADestY, AMulY);
 end;
 
 { T3DBezierSegment }
@@ -4105,6 +4200,112 @@ begin
   SetLength(Result, n);
 end;
 
+procedure TPath.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
+  ADestX, ADestY: Integer; AMulX, AMulY: Double; ADoDraw: Boolean);
+var
+  polygonPoints: TPointsArray;
+  polygonStart: TIntegerDynArray;
+  i: Integer;
+  j, n: Integer;
+  x1, y1, x2, y2: Integer;
+  ACanvas: TCanvas absolute ADest;
+  coordX, coordY: Integer;
+  curSegment: TPathSegment;
+  cur2DSegment: T2DSegment absolute curSegment;
+begin
+  inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
+
+  ConvertPathToPolygons(self, ADestX, ADestY, AMulX, AMulY, polygonPoints, polygonStart);
+  x1 := MaxInt;
+  y1 := maxInt;
+  x2 := -MaxInt;
+  y2 := -MaxInt;
+  for i := 0 to High(polygonPoints) do
+  begin
+    x1 := min(x1, polygonPoints[i].X);
+    y1 := min(y1, polygonPoints[i].Y);
+    x2 := max(x2, polygonPoints[i].X);
+    y2 := max(y2, polygonPoints[i].Y);
+  end;
+  CalcEntityCanvasMinMaxXY_With2Points(ARenderInfo, x1, y1, x2, y2);
+
+  if ADoDraw then
+  begin
+    // (1) draw background only
+    ADest.Pen.Style := psClear;
+    if (Length(polygonPoints) > 2) then
+      case Brush.Kind of
+        bkSimpleBrush:
+          if Brush.Style <> bsClear then
+          begin
+            {$IFDEF USE_LCL_CANVAS}
+            for i := 0 to High(polygonStart) do
+            begin
+              j := polygonStart[i];
+              if i = High(polygonStart) then
+                n := Length(polygonPoints) - j
+              else
+                n := polygonStart[i+1] - polygonStart[i] + 1;
+            end;
+            ACanvas.Polygon(@polygonPoints[j], n, WindingRule = vcmNonZeroWindingRule);
+            {$ELSE}
+            ADest.Polygon(polygonPoints);
+            {$ENDIF}
+          end;
+        else  // gradients
+          DrawBrushGradient(ADest, ARenderInfo, x1, y1, x2, y2, ADestX, ADestY, AMulX, AMulY);
+          // to do: multiple polygons!
+      end;
+
+    // (2) draw border, take care of the segments with modified pen
+    ADest.Brush.Style := bsClear;               // We will paint no background
+    ApplyPenToCanvas(ADest, ARenderInfo, Pen);  // Restore pen
+
+    PrepareForSequentialReading;
+    for j := 0 to Len - 1 do
+    begin
+      curSegment := TPathSegment(Next);
+      case curSegment.SegmentType of
+        stMoveTo:
+          begin
+            inc(i);
+            coordX := CoordToCanvasX(cur2DSegment.X, ADestX, AMulX);
+            coordY := CoordToCanvasY(cur2DSegment.Y, ADestY, AMulY);
+            ADest.MoveTo(coordX, coordY);
+          end;
+        st2DLineWithPen, st2DLine, st3DLine:
+          begin
+            coordX := CoordToCanvasX(cur2DSegment.X, ADestX, AMulX);
+            coordY := CoordToCanvasY(cur2DSegment.Y, ADestY, AMulY);
+            if curSegment.SegmentType = st2DLineWithPen then
+            begin
+              ADest.Pen.FPColor := AdjustColorToBackground(T2DSegmentWithPen(Cur2DSegment).Pen.Color, ARenderInfo);
+              ADest.Pen.Width := T2DSegmentWithPen(cur2DSegment).Pen.Width;
+              ADest.Pen.Style := T2DSegmentWithPen(cur2DSegment).Pen.Style;
+              ADest.LineTo(coordX, coordY);
+              ApplyPenToCanvas(ADest, ARenderInfo, Pen);
+            end else
+              ADest.LineTo(coordX, coordY);
+          end;
+        st2DBezier, st3DBezier, st2DEllipticalArc:
+          begin
+            coordX := CoordToCanvasX(T2DSegment(curSegment.Previous).X, ADestX, AMulX);
+            coordY := CoordToCanvasY(T2DSegment(curSegment.Previous).Y, ADestY, AMulY);
+            SetLength(PolygonPoints, 1);
+            PolygonPoints[0] := Point(coordX, coordY);
+            curSegment.AddToPoints(ADestX, ADestY, AMulX, AMulY, PolygonPoints);
+            ADest.PolyLine(PolygonPoints);
+            coordX := PolygonPoints[High(PolygonPoints)].X;
+            coordY := PolygonPoints[High(PolygonPoints)].Y;
+            ADest.MoveTo(coordX, coordY);
+          end;
+      end;
+    end;
+  end;
+end;
+
+
+(*
 procedure TPath.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double; ADoDraw: Boolean);
 
@@ -4159,7 +4360,7 @@ begin
 //  ADest.Brush.Style := bsClear;
 
   ADest.MoveTo(ADestX, ADestY);
-                           (*
+                           {
   // Set the path Pen and Brush options
   ADest.Pen.Style := Pen.Style;
   ADest.Pen.Width := Round(Pen.Width * AMulX);
@@ -4172,7 +4373,7 @@ begin
     ACanvas.Pen.SetPattern(Pen.Pattern);
   {$endif}
   ADest.Brush.FPColor := Brush.Color;
-                            *)
+                            }
   // Prepare the Clipping Region, if any
   {$ifdef USE_CANVAS_CLIP_REGION}
   if ClipPath <> nil then
@@ -4499,7 +4700,7 @@ begin
   end;
   {$endif}
 end;
-
+                             *)
 procedure TPath.RenderInternalPolygon(ADest: TFPCustomCanvas;
   ARenderInfo: TvRenderInfo; ADestX: Integer; ADestY: Integer; AMulX: Double;
   AMulY: Double);

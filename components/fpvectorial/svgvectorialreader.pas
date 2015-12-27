@@ -879,6 +879,13 @@ begin
 
     Result := Result + [spbfBrushColor, spbfBrushStyle];
   end
+  else if AKey = 'fill-rule' then
+  begin
+    if AValue = 'evenodd' then
+      ADestEntity.WindingRule := vcmEvenOddRule else
+    if AValue = 'nonzero' then
+      ADestEntity.WindingRule  := vcmNonzeroWindingRule;  // to do: "inherit" missing here
+  end
   else if AKey = 'fill-opacity' then
     ADestEntity.Brush.Color.Alpha := StringFloatZeroToOneToWord(AValue)
   // For linear gradient => stop-color:rgb(255,255,0);stop-opacity:1
