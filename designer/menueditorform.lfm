@@ -13,7 +13,7 @@ object MenuDesigner: TMenuDesigner
   OnDestroy = FormDestroy
   Position = poScreenCenter
   ShowHint = True
-  LCLVersion = '1.4.4.0'
+  LCLVersion = '1.7'
   object LeftPanel: TPanel
     Left = 0
     Height = 345

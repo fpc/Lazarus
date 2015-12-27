@@ -28,7 +28,7 @@ interface
 uses
   Buttons, Classes, ComponentEditors, Controls, ExtCtrls, Forms,
   Graphics, LazarusIDEStrConsts, LazIDEIntf, LCLintf, LCLProc, Menus,
-  MenuShadows, PropEdits, StdCtrls, SysUtils, FormEditingIntf;
+  MenuShadows, PropEdits, StdCtrls, SysUtils, FormEditingIntf, IDEWindowIntf;
 
 type
 
@@ -143,11 +143,7 @@ begin
   if (aMenu = nil) then
     RaiseGDBException(lisMenuEditorShowMenuEditorTMenuParameterIsNil);
   MenuDesigner.SetMenu(aMenu, nil);
-  MenuDesigner.PopupParent:=GetParentForm(FormEditingHook.GetCurrentObjectInspector, True);
-  if MenuDesigner.PopupParent<>nil then
-    MenuDesigner.PopupMode:=pmExplicit
-  else
-    MenuDesigner.PopupMode:=pmNone;
+  SetPopupModeParentForPropertyEditor(MenuDesigner);
   MenuDesigner.ShowOnTop;
 end;
 
