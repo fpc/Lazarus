@@ -95,8 +95,8 @@ type
     class procedure SetFormStyle(const AForm: TCustomform; const AFormStyle, AOldFormStyle: TFormStyle); override;
     class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
-    class procedure SetPopupParent(const ACustomForm: TCustomForm;
-      const APopupMode: TPopupMode; const APopupParent: TCustomForm); override;
+    class procedure SetRealPopupParent(const ACustomForm: TCustomForm;
+      const APopupParent: TCustomForm); override;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
     class procedure SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition); override;
     class function GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor; override;
@@ -387,20 +387,20 @@ begin
   {$ENDIF}
 end;
 
-class procedure TGtk3WSCustomForm.SetPopupParent(const ACustomForm: TCustomForm;
-  const APopupMode: TPopupMode; const APopupParent: TCustomForm);
+class procedure TGtk3WSCustomForm.SetRealPopupParent(
+  const ACustomForm: TCustomForm; const APopupParent: TCustomForm);
 begin
-  if not WSCheckHandleAllocated(ACustomForm, 'ShowPopupParent') then
+  if not WSCheckHandleAllocated(ACustomForm, 'SetRealPopupParent') then
     Exit;
   {$IFDEF GTK3DEBUGCORE}
-  DebugLn('TGtk3WSCustomForm.SetPopupParent');
+  DebugLn('TGtk3WSCustomForm.SetRealPopupParent');
   {$ENDIF}
 end;
 
 class procedure TGtk3WSCustomForm.SetAlphaBlend(const ACustomForm: TCustomForm;
   const AlphaBlend: Boolean; const Alpha: Byte);
 begin
-  if not WSCheckHandleAllocated(ACustomForm, 'ShowAlphaBlend') then
+  if not WSCheckHandleAllocated(ACustomForm, 'SetAlphaBlend') then
     Exit;
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('TGtk3WSCustomForm.SetAlphaBlend');

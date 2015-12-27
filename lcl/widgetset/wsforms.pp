@@ -86,8 +86,8 @@ type
     class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); virtual;
     class procedure ShowModal(const ACustomForm: TCustomForm); virtual;
     class procedure SetModalResult(const ACustomForm: TCustomForm; ANewValue: TModalResult); virtual;
-    class procedure SetPopupParent(const ACustomForm: TCustomForm;
-      const APopupMode: TPopupMode; const APopupParent: TCustomForm); virtual;
+    class procedure SetRealPopupParent(const ACustomForm: TCustomForm;
+      const APopupParent: TCustomForm); virtual;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); virtual;
     class procedure SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition); virtual;
     class function GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor; override;
@@ -199,8 +199,8 @@ class procedure TWSCustomForm.SetModalResult(const ACustomForm: TCustomForm;
 begin
 end;
 
-class procedure TWSCustomForm.SetPopupParent(const ACustomForm: TCustomForm;
-  const APopupMode: TPopupMode; const APopupParent: TCustomForm);
+class procedure TWSCustomForm.SetRealPopupParent(
+  const ACustomForm: TCustomForm; const APopupParent: TCustomForm);
 begin
 end;
 

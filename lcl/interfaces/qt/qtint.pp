@@ -246,6 +246,7 @@ type
   function X11Raise(AHandle: HWND): boolean;
   function X11GetActiveWindow: QWidgetH;
   function GetWindowManager: String;
+  function SetTransientForHint(Widget: QWidgetH; ATransientWin: QWidgetH): boolean;
   procedure SetSkipX11Taskbar(Widget: QWidgetH; const ASkipTaskBar: Boolean);
   {check if XWindow have _NET_WM_STATE_ABOVE and our form doesn''t know anything about it}
   function GetAlwaysOnTopX11(Widget: QWidgetH): boolean;

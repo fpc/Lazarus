@@ -80,8 +80,8 @@ type
     class procedure SetFormBorderStyle(const AForm: TCustomForm; const AFormBorderStyle: TFormBorderStyle); override;
     class procedure SetFormStyle(const AForm: TCustomform; const AFormStyle, AOldFormStyle: TFormStyle); override;
     class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); override;
-    class procedure SetPopupParent(const ACustomForm: TCustomForm;
-       const APopupMode: TPopupMode; const APopupParent: TCustomForm); override;
+    class procedure SetRealPopupParent(const ACustomForm: TCustomForm;
+       const APopupParent: TCustomForm); override;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
     class procedure ShowHide(const AWinControl: TWinControl); override; //TODO: rename to SetVisible(control, visible)
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
@@ -145,7 +145,7 @@ class function TQtWSCustomForm.CreateHandle(const AWinControl: TWinControl;
 var
   QtMainWindow: TQtMainWindow;
   Str: WideString;
-  PopupParent: QWidgetH;
+  APopupParent: TCustomForm;
   AForm: TCustomForm;
 begin
   {$ifdef VerboseQt}
@@ -191,11 +191,9 @@ begin
           not (csDesigning in AForm.ComponentState))
        {$endif} then
       QtMainWindow.setShowInTaskBar(False);
-    if Assigned(AForm.PopupParent) and AForm.PopupParent.HandleAllocated then
-      PopupParent := TQtWidget(AForm.PopupParent.Handle).Widget
-    else
-      PopupParent := nil;
-    QtMainWindow.setPopupParent(AForm.PopupMode, PopupParent);
+    APopupParent := AForm.GetRealPopupParent;
+    if APopupParent<>nil then
+      QtMainWindow.setRealPopupParent(TQtWidget(APopupParent.Handle).Widget);
   end;
 
   {$IFDEF HASX11}
@@ -329,18 +327,18 @@ begin
     TQtWidget(AForm.Handle).setWindowIcon(nil);
 end;
 
-class procedure TQtWSCustomForm.SetPopupParent(const ACustomForm: TCustomForm;
-  const APopupMode: TPopupMode; const APopupParent: TCustomForm);
+class procedure TQtWSCustomForm.SetRealPopupParent(
+  const ACustomForm: TCustomForm; const APopupParent: TCustomForm);
 var
   PopupParent: QWidgetH;
 begin
   if not ACustomForm.HandleAllocated or (csDestroying in ACustomForm.ComponentState) then
     exit;
-  if Assigned(APopupParent) and APopupParent.HandleAllocated then
+  if Assigned(APopupParent) then
     PopupParent := TQtWidget(APopupParent.Handle).Widget
   else
     PopupParent := nil;
-  TQtMainWindow(ACustomForm.Handle).setPopupParent(APopupMode, PopupParent);
+  TQtMainWindow(ACustomForm.Handle).setRealPopupParent(PopupParent);
 end;
 
 {------------------------------------------------------------------------------
@@ -382,6 +380,7 @@ var
   Widget: TQtMainWindow;
   R: TRect;
   {$IFDEF HASX11}
+  APopupParent: TCustomForm;
   ActiveWin: HWND;
   W: QWidgetH;
   {$ENDIF}
@@ -524,7 +523,7 @@ begin
         not (fsModal in TForm(AWinControl).FormState) and
         (TForm(AWinControl).FormStyle <> fsMDIChild) and
         (QApplication_activeModalWidget() <> nil) then
-          TQtMainWindow(Widget).setPopupParent(pmExplicit,
+          TQtMainWindow(Widget).setRealPopupParent(
             QApplication_activeModalWidget());
     end else
     begin
@@ -542,18 +541,15 @@ begin
       if AWinControl.HandleObjectShouldBeVisible and
         not (TCustomForm(AWinControl).FormStyle in fsAllStayOnTop) and
         not (fsModal in TCustomForm(AWinControl).FormState) and
-        (TCustomForm(AWinControl).FormStyle <> fsMDIChild) and
-        (TCustomForm(AWinControl).PopupMode = pmAuto) and
-        (TCustomForm(AWinControl).BorderStyle = bsNone) and
-        (TCustomForm(AWinControl).PopupParent = nil) then
+        (TCustomForm(AWinControl).FormStyle <> fsMDIChild) then
       begin
-        W := QApplication_activeWindow;
-        Flags := Widget.windowFlags;
-        if W <> nil then
-          Widget.setParent(W)
-        else
-          Widget.setParent(QApplication_desktop);
-        Widget.setWindowFlags(Flags or QtTool);
+        APopupParent := TCustomForm(AWinControl).GetRealPopupParent;
+        if (APopupParent <> nil) then
+        begin
+          Widget.setParent(TQtWidget(APopupParent.Handle).Widget);
+          {use direct X11 call instead of QtTool flag.issue #29253}
+          SetTransientForHint(Widget.Widget, TQtWidget(APopupParent.Handle).Widget);
+        end;
       end;
       {$ENDIF}
     end;
