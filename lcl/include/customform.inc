@@ -360,7 +360,7 @@ begin
   if FPopupMode <> AValue then
   begin
     FPopupMode := AValue;
-    if (FPopupMode = pmAuto) and (PopupParent <> nil) then
+    if (FPopupMode in [pmAuto, pmNone]) and (PopupParent <> nil) then
       PopupParent := nil
     else
     if not (csDesigning in ComponentState) and HandleAllocated then
