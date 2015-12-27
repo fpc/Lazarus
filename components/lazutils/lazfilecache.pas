@@ -72,7 +72,7 @@ type
     function FileIsWritableCached(const AFilename: string): boolean;
     function FileIsTextCached(const AFilename: string): boolean;
     function FileAgeCached(const AFileName: string): Longint;
-    function GetPhysicalFilenameCached(const AFileName: string; EmptyOnError: boolean): string;
+    function GetPhysicalFilenameCached(const AFileName: string; {%H-}EmptyOnError: boolean): string;
     function FindFile(const Filename: string;
                       CreateIfNotExists: boolean): TFileStateCacheItem;
     function Check(const Filename: string; AFlag: TFileStateCacheItemFlag;

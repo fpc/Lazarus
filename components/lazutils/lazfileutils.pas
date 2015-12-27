@@ -106,7 +106,7 @@ Function FileCreateUtf8(Const FileName : String; ShareMode : Integer; Rights : C
 function FileSizeUtf8(const Filename: string): int64;
 function GetFileDescription(const AFilename: string): string;
 function ReadAllLinks(const Filename: string;
-                      ExceptionOnError: boolean): string; // if a link is broken returns ''
+                 {%H-}ExceptionOnError: boolean): string; // if a link is broken returns ''
 function TryReadAllLinks(const Filename: string): string; // if a link is broken returns Filename
 function GetShellLinkTarget(const FileName: string): string;
 
