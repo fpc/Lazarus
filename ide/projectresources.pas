@@ -38,7 +38,7 @@ interface
 
 uses
   // RTL + LCL
-  Classes, SysUtils, Contnrs, resource, reswriter, fgl,
+  Classes, SysUtils, resource, reswriter, fgl,
   Controls, LCLProc, LResources, Dialogs,
   // LazUtils
   LazFileUtils, AvgLvlTree, Laz2_XMLCfg,

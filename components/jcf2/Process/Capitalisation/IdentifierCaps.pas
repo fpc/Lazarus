@@ -57,7 +57,6 @@ uses
   { delphi }
   {$IFNDEF FPC}Windows,{$ENDIF} SysUtils,
   { local }
-  JcfStringUtils,
   SourceToken, Tokens, ParseTreeNodeType,
   JcfSettings, FormatFlags, TokenUtils;
 
