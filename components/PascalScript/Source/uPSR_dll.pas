@@ -79,8 +79,8 @@ var
   h, i: Longint;
   ph: PLoadedDll;
   dllhandle: THandle;
+  {$IFnDEF UNIX}
   loadwithalteredsearchpath: Boolean;
-  {$IFNDEF UNIX}
   Filename: String;
   {$ENDIF}
 begin
@@ -91,7 +91,9 @@ begin
   h := makehash(s2);
   s3 := copy(s, 1, pos(tbtchar(#0), s)-1);
   delete(s, 1, length(s3)+1);
+  {$IFnDEF UNIX}
   loadwithalteredsearchpath := bytebool(s[3]);
+  {$ENDIF}
   i := 2147483647; // maxint
   dllhandle := 0;
   repeat
@@ -106,7 +108,7 @@ begin
         exit;
       end;
       {$IFDEF UNIX}
-	  dllhandle := LoadLibrary(PChar(s2));
+      dllhandle := LoadLibrary(PChar(s2));
       {$ELSE}
       {$IFDEF UNICODE}
       if Copy(s2, 1, 6) = '<utf8>' then

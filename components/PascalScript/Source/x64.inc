@@ -328,7 +328,7 @@ var
   _RAX: IPointer;
 _XMM0: Double;
   Registers: TRegisters;
-{$IFNDEF WINDOWS}
+{$IFnDEF WINDOWS}
   RegUsageFloat: Byte;
 {$ENDIF}
   RegUsage: Byte;
@@ -504,9 +504,9 @@ _XMM0: Double;
         btRecord,
         btInterface,
         btClass,
-        {$IFNDEF PS_NOWIDESTRING} btUnicodeString, btWideString, btWideChar, {$ENDIF} btU8, btS8, btU16,
+        {$IFnDEF PS_NOWIDESTRING} btUnicodeString, btWideString, btWideChar, {$ENDIF} btU8, btS8, btU16,
         btS16, btU32, btS32, btSingle, btDouble, btExtended, btString, btPChar, btChar, btCurrency
-        {$IFNDEF PS_NOINT64}, bts64{$ENDIF}:
+        {$IFnDEF PS_NOINT64}, bts64{$ENDIF}:
           begin
             Varptr := fvar.Dta;
           end;
@@ -572,7 +572,9 @@ _XMM0: Double;
         btS8: begin
             StoreReg(IPointer(byte(fVar^.dta^)));
           end;
+        {$IFnDEF PS_NOWIDESTRING}
         btWideChar,
+        {$ENDIF}
         btu16, btS16: begin
             StoreReg(IPointer(word(fVar^.dta^)));
           end;
@@ -590,9 +592,11 @@ _XMM0: Double;
           begin
             StoreReg(IPointer(fvar^.dta^));
           end;
+        {$IFnDEF PS_NOWIDESTRING}
         btWideString: begin
             StoreReg(IPointer(fvar^.dta^));
           end;
+        {$ENDIF}
         btUnicodeString: begin
             StoreReg(IPointer(fvar^.dta^));
           end;
@@ -605,10 +609,12 @@ _XMM0: Double;
             FreeMem(p);
           end;
 
+        {$IFnDEF PS_NOINT64}
         bts64:
           begin
             StoreReg(IPointer(int64(fvar^.dta^)));
         end;
+        {$ENDIF}
       end; {case}
     end;
     Result := True;
@@ -623,7 +629,7 @@ begin
   if res <> nil then
     res.VarParam := true;
   try
-{$IFNDEF WINDOWS}
+{$IFnDEF WINDOWS}
     (*_RSI := 0;
     _RDI := 0;
     _XMM4 := 0;
@@ -646,7 +652,10 @@ begin
    if assigned(res) then begin
     case res^.aType.BaseType of
       {$IFDEF x64_string_result_as_varparameter}
-      btstring, btWideString, btUnicodeString,
+      btstring, btUnicodeString,
+      {$IFnDEF PS_NOWIDESTRING}
+      btWideString,
+      {$ENDIF}
       {$ENDIF}
       btInterface, btArray, btVariant, btStaticArray:
         GetPtr(res);
@@ -663,10 +672,13 @@ begin
       if not GetPtr(rp(Params[I])) then Exit;
     end;
     if assigned(res) then begin
-{$IFNDEF PS_RESBEFOREPARAMETERS}
+{$IFnDEF PS_RESBEFOREPARAMETERS}
       case res^.aType.BaseType of
         {$IFDEF x64_string_result_as_varparameter}
-        btstring, btWideString, btUnicodeString,
+        btstring, btUnicodeString,
+        {$IFnDEF PS_NOWIDESTRING}
+        btWideString,
+        {$ENDIF}
         {$ENDIF}
         btInterface, btArray, btVariant, btStaticArray:
           GetPtr(res);
@@ -705,20 +717,31 @@ begin
         btDouble:      tbtdouble(res.Dta^) := _XMM0;
         btExtended:    tbtextended(res.Dta^) := _XMM0;
         btchar,btU8, btS8:    tbtu8(res.dta^) := _RAX;
-        btWideChar, btu16, bts16:  tbtu16(res.dta^) := _RAX;
+        {$IFnDEF PS_NOWIDESTRING}
+        btWideChar,
+        {$ENDIF}
+        btu16, bts16:  tbtu16(res.dta^) := _RAX;
         btClass : IPointer(res.dta^) := _RAX;
         btu32,bts32:   tbtu32(res.dta^) := _RAX;
         btPChar:       pansichar(res.dta^) := Pansichar(_RAX);
+        {$IFnDEF PS_NOINT64}
         bts64: tbts64(res.dta^) := Int64(_RAX);
         btCurrency:    tbts64(res.Dta^) := Int64(_RAX);
+        {$ENDIF}
         btInterface,
         btVariant,
         {$IFDEF x64_string_result_as_varparameter}
-        btWidestring,btUnicodestring, btstring ,
+        {$IFnDEF PS_NOWIDESTRING}
+        btWidestring,
+        {$ENDIF}
+        btUnicodestring, btstring ,
         {$ENDIF}
         btStaticArray, btArray:;
-        {$IFNDEF x64_string_result_as_varparameter}
-        btUnicodeString, btWideString, btstring:  Int64(res.dta^) := _RAX;
+        {$IFnDEF x64_string_result_as_varparameter}
+        {$IFnDEF PS_NOWIDESTRING}
+        btWideString,
+        {$ENDIF}
+        btUnicodeString, btstring:  Int64(res.dta^) := _RAX;
         {$ENDIF}
       else
         exit;

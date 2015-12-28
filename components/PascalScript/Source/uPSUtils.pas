@@ -65,13 +65,13 @@ const
 
   btVariant         = 16;
 
-{$IFNDEF PS_NOINT64}
+{$IFnDEF PS_NOINT64}
   btS64             = 17;
 {$ENDIF}
 
   btChar            = 18;
 
-{$IFNDEF PS_NOWIDESTRING}
+{$IFnDEF PS_NOWIDESTRING}
   btWideString      = 19;
 
   btWideChar        = 20;
@@ -301,13 +301,13 @@ type
 
   tbtCurrency = Currency;
 
-{$IFNDEF PS_NOINT64}
+{$IFnDEF PS_NOINT64}
 
   tbts64 = int64;
 {$ENDIF}
 
   tbtchar = {$IFDEF DELPHI4UP}AnsiChar{$ELSE}CHAR{$ENDIF};
-{$IFNDEF PS_NOWIDESTRING}
+{$IFnDEF PS_NOWIDESTRING}
 
   tbtwidestring = widestring;
   tbtunicodestring = {$IFDEF DELPHI2009UP}UnicodeString{$ELSE}widestring{$ENDIF};
@@ -353,7 +353,7 @@ type
     function GetItem(Nr: Cardinal): Pointer;
     procedure SetItem(Nr: Cardinal; P: Pointer);
   public
-    {$IFNDEF PS_NOSMARTLIST}
+    {$IFnDEF PS_NOSMARTLIST}
 
     procedure Recreate;
     {$ENDIF}
@@ -618,7 +618,7 @@ function GRLW(var s: TbtString): TbtString;
 const
 
   FCapacityInc = 32;
-{$IFNDEF PS_NOSMARTLIST}
+{$IFnDEF PS_NOSMARTLIST}
 
   FMaxCheckCount = (FCapacityInc div 4) * 64;
 {$ENDIF}
@@ -776,7 +776,7 @@ begin
   inherited Create;
   FCount := 0;
   FCapacity := 16;
-  {$IFNDEF PS_NOSMARTLIST}
+  {$IFnDEF PS_NOSMARTLIST}
   FCheckCount := 0;
   {$ENDIF}
   GetMem(FData, FCapacity * PointerSize);
@@ -791,7 +791,7 @@ begin
     mm := (i1 div i2) * i2;
 end;
 
-{$IFNDEF PS_NOSMARTLIST}
+{$IFnDEF PS_NOSMARTLIST}
 procedure TPSList.Recreate;
 var
   NewData: PPointerList;
@@ -826,7 +826,7 @@ begin
   FData[FCount] := P; // Instead of SetItem
   Result := FCount;
   Inc(FCount);
-{$IFNDEF PS_NOSMARTLIST}
+{$IFnDEF PS_NOSMARTLIST}
   Inc(FCheckCount);
   if FCheckCount > FMaxCheckCount then Recreate;
 {$ENDIF}
@@ -847,7 +847,7 @@ begin
     FData^[FCount] := List^[L];
     Inc(FCount);
   end;
-{$IFNDEF PS_NOSMARTLIST}
+{$IFnDEF PS_NOSMARTLIST}
   Inc(FCheckCount);
   if FCheckCount > FMaxCheckCount then Recreate;
 {$ENDIF}
@@ -860,7 +860,7 @@ procedure TPSList.DeleteLast;
 begin
   if FCount = 0 then Exit;
   Dec(FCount);
-{$IFNDEF PS_NOSMARTLIST}
+{$IFnDEF PS_NOSMARTLIST}
     Inc(FCheckCount);
     if FCheckCount > FMaxCheckCount then Recreate;
 {$ENDIF}
@@ -878,7 +878,7 @@ begin
     {only move if we aren't deleting the last element}
     if Nr < FCount then
     Move(FData[Nr + 1], FData[Nr], (FCount - Nr) * PointerSize);
-{$IFNDEF PS_NOSMARTLIST}
+{$IFnDEF PS_NOSMARTLIST}
     Inc(FCheckCount);
     if FCheckCount > FMaxCheckCount then Recreate;
 {$ENDIF}
@@ -907,7 +907,7 @@ end;
 procedure TPSList.Clear;
 begin
   FCount := 0;
-{$IFNDEF PS_NOSMARTLIST}
+{$IFnDEF PS_NOSMARTLIST}
   Recreate;
 {$ENDIF}
 end;
