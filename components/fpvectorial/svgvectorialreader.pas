@@ -67,13 +67,15 @@ type
   { TSVGPathTokenizer }
 
   TSVGPathTokenizer = class
+  protected
+    Tokens: TSVGTokenList;
   public
     FPointSeparator, FCommaSeparator: TFormatSettings;
-    Tokens: TSVGTokenList;
     ExtraDebugStr: string;
     constructor Create;
-    Destructor Destroy; override;
+    destructor Destroy; override;
     procedure AddToken(AStr: string);
+    procedure ClearTokens;
     procedure TokenizePathString(AStr: string);
     procedure TokenizeFunctions(AStr: string);
     function DebugOutTokensAsString: string;
@@ -208,13 +210,9 @@ begin
 end;
 
 destructor TSVGPathTokenizer.Destroy;
-var
-  i: Integer;
 begin
-  for i:=Tokens.Count-1 downto 0 do
-    Tokens[i].Free;
+  ClearTokens;
   Tokens.Free;
-
   inherited Destroy;
 end;
 
@@ -276,6 +274,15 @@ begin
   end;
 
   Tokens.Add(lToken);
+end;
+
+procedure TSVGPathTokenizer.ClearTokens;
+var
+  i: Integer;
+begin
+  for i := Tokens.Count-1 downto 0 do
+    Tokens[i].Free;
+  Tokens.Clear;
 end;
 
 procedure TSVGPathTokenizer.TokenizePathString(AStr: string);
@@ -878,6 +885,13 @@ begin
     end;
 
     Result := Result + [spbfBrushColor, spbfBrushStyle];
+  end
+  else if AKey = 'fill-rule' then
+  begin
+    if AValue = 'evenodd' then
+      ADestEntity.WindingRule := vcmEvenOddRule else
+    if AValue = 'nonzero' then
+      ADestEntity.WindingRule  := vcmNonzeroWindingRule;  // to do: "inherit" missing here
   end
   else if AKey = 'fill-opacity' then
     ADestEntity.Brush.Color.Alpha := StringFloatZeroToOneToWord(AValue)
@@ -1947,7 +1961,7 @@ var
   lDebugStr: String;
   lTmpTokenType: TSVGTokenType;
 begin
-  FSVGPathTokenizer.Tokens.Clear;
+  FSVGPathTokenizer.ClearTokens;
   FSVGPathTokenizer.TokenizePathString(AStr);
   //lDebugStr := FSVGPathTokenizer.DebugOutTokensAsString();
   CurX := 0;
@@ -1981,7 +1995,7 @@ procedure TvSVGVectorialReader.ReadNextPathCommand(ACurTokenType: TSVGTokenType;
   var i: Integer; var CurX, CurY: Double; AData: TvVectorialPage;
   ADoc: TvVectorialDocument);
 var
-  X, Y, X2, Y2, X3, Y3, XQ, YQ, tmp: Double;
+  X, Y, X2, Y2, X3, Y3, XQ, YQ, Xnew, Ynew, cx, cy, phi, tmp: Double;
   LargeArcFlag, SweepFlag, LeftmostEllipse, ClockwiseArc: Boolean;
   lCurTokenType: TSVGTokenType;
   lDebugStr: String;
@@ -2225,29 +2239,68 @@ begin
   begin
     X2 := FSVGPathTokenizer.Tokens.Items[i+1].Value; // RX
     Y2 := FSVGPathTokenizer.Tokens.Items[i+2].Value; // RY
-    X3 := FSVGPathTokenizer.Tokens.Items[i+3].Value; // RotationX
-    X3 := X3 * Pi / 180; // degrees to radians conversion
+    phi := FSVGPathTokenizer.Tokens.Items[i+3].Value; // RotationX
+    phi := DegToRad(phi);  // degrees to radians conversion
     LargeArcFlag := Round(FSVGPathTokenizer.Tokens.Items[i+4].Value) = 1;
     SweepFlag := Round(FSVGPathTokenizer.Tokens.Items[i+5].Value) = 1;
     X := FSVGPathTokenizer.Tokens.Items[i+6].Value;  // X
     Y := FSVGPathTokenizer.Tokens.Items[i+7].Value;  // Y
 
-    // non-coordinate values
+    {
+    if lCurTokenType = sttRelativeEllipticArcTo then
+    begin
+      Xnew := CurX + X;
+      Ynew := CurY + Y;
+    end else
+    begin
+      Xnew := CurX;
+      Ynew := CurY;
+    end;
+
+    CalcEllipseCenter(CurX, CurY, Xnew, Ynew, X2, Y2, phi, LargeArcFlag, SweepFlag, cx, cy, tmp);
+    ConvertSVGCoordinatesToFPVCoordinates(AData, cx, cy, cx, cy);
+     }
+    // non-coordinate values (radii)
     ConvertSVGDeltaToFPVDelta(AData, X2, Y2, X2, Y2);
+    if X2 < 0 then X2 := -X2;
+    if Y2 < 0 then Y2 := -Y2;
 
     // Careful that absolute coordinates require using ConvertSVGCoordinatesToFPVCoordinates
     if lCurTokenType in [sttRelativeEllipticArcTo] then
-    begin
-      ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
-    end
+      ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y)
     else
-    begin
       ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
+
+    if lCurTokenType = sttRelativeEllipticArcTo then
+    begin
+      Xnew := CurX + X;
+      Ynew := CurY + Y;
+    end else
+    begin
+      Xnew := X;
+      Ynew := Y;
     end;
 
+    // in svg the y axis increases downward, in fpv upward. Therefore, angles
+    // change their sign!
+    phi := -phi;
+    SweepFlag := not SweepFlag;  // i.e. "clockwise" turns into "counter-clockwise"!
+
+    if CalcEllipseCenter(CurX, CurY, Xnew, Ynew, X2, Y2, phi, LargeArcFlag, SweepFlag, cx, cy, tmp) then
+      AData.AddEllipticalArcWithCenterToPath(X2*tmp, Y2*tmp, phi, Xnew, Ynew, cx, cy, SweepFlag)
+    else
+      // Use a straight segment in case of no solution existing for the ellipse center
+      AData.AddLineToPath(Xnew, Ynew);
+
+    CurX := Xnew;
+    CurY := Ynew;
+    {
     // Convert SVG flags to fpvectorial flags
     LeftmostEllipse := (LargeArcFlag and (not SweepFlag))
       or ((not LargeArcFlag) and SweepFlag);
+    if (Y > CurY) or ((Y = CurY) and (X > CurX)) then
+      LeftMostEllipse := not LeftMostEllipse;
+      // if Y = CurY then "LeftMost" is to be understood as "TopMost"
     ClockwiseArc := SweepFlag;
 
     if lCurTokenType = sttRelativeEllipticArcTo then
@@ -2262,6 +2315,7 @@ begin
       CurX := X;
       CurY := Y;
     end;
+     }
 
     Inc(i, 8);
   end
@@ -2278,7 +2332,7 @@ var
   X, Y: Double;
   FirstPtX, FirstPtY, CurX, CurY: Double;
 begin
-  FSVGPathTokenizer.Tokens.Clear;
+  FSVGPathTokenizer.ClearTokens;
   FSVGPathTokenizer.TokenizePathString(AStr);
   CurX := 0;
   CurY := 0;
@@ -3012,9 +3066,13 @@ begin
 end;
 
 destructor TvSVGVectorialReader.Destroy;
+var
+  i: Integer;
 begin
   FLayerStylesKeys.Free;
   FLayerStylesValues.Free;
+
+  for i:=FBrushDefs.Count-1 downto 0 do TObject(FBrushDefs[i]).Free;
   FBrushDefs.Free;
   FSVGPathTokenizer.Free;
 
