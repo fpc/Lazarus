@@ -3,7 +3,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-14 07:54+0100\n"
-"PO-Revision-Date: 2015-12-20 18:09+0100\n"
+"PO-Revision-Date: 2015-12-23 22:25+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -105,7 +105,7 @@ msgstr "Séries de fonctions"
 
 #: tachartstrconsts.rsinvalidlogbase
 msgid "Logarithm base must be > 0 and <> 1."
-msgstr ""
+msgstr "La base de logarithme doit être > 0 et <>1."
 
 #: tachartstrconsts.rsleastsquaresfitseries
 msgid "Least-squares fit series"
@@ -204,4 +204,3 @@ msgstr "Impossible de renommer les composants : %s"
 #: tachartstrconsts.tastoolseditortitle
 msgid "Edit tools"
 msgstr "Éditer les outils"
-
