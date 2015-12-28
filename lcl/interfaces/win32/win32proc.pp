@@ -868,11 +868,22 @@ begin
     StayOnTopWindowsInfo^.StayOnTopList := TFPList.Create;
     WindowInfo := GetWin32WindowInfo(AppHandle);
     WindowInfo^.StayOnTopList := StayOnTopWindowsInfo^.StayOnTopList;
+    // EnumWindow() suggests the order from top-most to bottom windows
+    // EnumThreadWindoes() doesn't suggest the order, but assuming the same.
+    // See RestoreStayOnTopFlags
     EnumThreadWindows(GetWindowThreadProcessId(AppHandle, nil),
       @EnumStayOnTopRemove, LPARAM(StayOnTopWindowsInfo));
     for I := 0 to WindowInfo^.StayOnTopList.Count - 1 do
-      SetWindowPos(HWND(WindowInfo^.StayOnTopList[I]), HWND_NOTOPMOST, 0, 0, 0, 0,
+    begin
+      // Starting with Windows 7, setting HWND_NOTOPMOST keeps the window
+      // on top of another active window. So currently, the code sends
+      // the window to the very bottom and then restores it as "_TOP"
+      // to prevent the overlapping
+      SetWindowPos(HWND(WindowInfo^.StayOnTopList[I]), HWND_BOTTOM, 0, 0, 0, 0,
         SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_DRAWFRAME);
+      SetWindowPos(HWND(WindowInfo^.StayOnTopList[I]), HWND_TOP, 0, 0, 0, 0,
+        SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_DRAWFRAME);
+    end;
     Dispose(StayOnTopWindowsInfo);
   end;
   inc(InRemoveStayOnTopFlags);
@@ -889,7 +900,10 @@ begin
     WindowInfo := GetWin32WindowInfo(AppHandle);
     if WindowInfo^.StayOnTopList <> nil then
     begin
-      for I := 0 to WindowInfo^.StayOnTopList.Count - 1 do
+      // the order of the list is assumed to be
+      // from top to bottom, thus the restoration of the list
+      // should be from bottom to top as well
+      for I := WindowInfo^.StayOnTopList.Count - 1 downto 0  do
         SetWindowPos(HWND(WindowInfo^.StayOnTopList.Items[I]),
           HWND_TOPMOST, 0, 0, 0, 0,
           SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_DRAWFRAME);
