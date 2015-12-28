@@ -1143,7 +1143,7 @@ begin
     begin
       W := {%H-}PGtkWidget(AForm.Handle);
       // do not raise assertion in case of invalid PGdkWindow
-      B := GTK_IS_WINDOW(W^.Window);
+      B := GDK_IS_WINDOW(W^.Window);
       if B then
         Flags := gdk_window_get_state(W^.Window);
       if B and (AForm.Parent = nil) and
@@ -1154,6 +1154,9 @@ begin
          (Flags and GDK_WINDOW_STATE_ICONIFIED = 0) then
       begin
         gdk_window_set_keep_above(W^.Window, False);
+        gdk_window_lower(W^.Window); // flush it to the bottom, some WMs keep it above
+        gdk_window_raise(W^.Window); // bring it back immediatly. But it should keep below the top app
+
         if not StayOnTopList.HasId(W) then
           StayOnTopList.Add(W, W);
       end;
@@ -1180,7 +1183,7 @@ begin
     begin
       W := {%H-}PGtkWidget(AForm.Handle);
       // do not raise assertion in case of invalid PGdkWindow
-      B := GTK_IS_WINDOW(W^.Window);
+      B := GDK_IS_WINDOW(W^.Window);
       if B then
         Flags := gdk_window_get_state(W^.Window);
       if B and (AForm.Parent = nil) and
