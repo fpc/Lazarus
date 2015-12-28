@@ -3,6 +3,7 @@
   <Package Version="4">
     <PathDelim Value="\"/>
     <Name Value="EditorMacroScript"/>
+    <Type Value="RunAndDesignTime"/>
     <Author Value="M Friebe"/>
     <CompilerOptions>
       <Version Value="11"/>
@@ -12,7 +13,6 @@
       </SearchPaths>
       <Other>
         <CustomOptions Value="$(IDEBuildOptions)"/>
-        <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
     <Description Value="IDE-Extension: Adds PascalScript to editor-macros. 
@@ -37,22 +37,21 @@ Extends the Editors macro recorder and player. Macros can be written in pascal s
       </Item3>
       <Item4>
         <Filename Value="emsselftest.pas"/>
-        <UnitName Value="emsselftest"/>
+        <UnitName Value="EMSSelfTest"/>
       </Item4>
       <Item5>
         <Filename Value="emsideoptions.pas"/>
-        <UnitName Value="emsideoptions"/>
+        <UnitName Value="EMSIdeOptions"/>
       </Item5>
       <Item6>
         <Filename Value="emsstrings.pas"/>
-        <UnitName Value="emsstrings"/>
+        <UnitName Value="EMSStrings"/>
       </Item6>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
-    <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="4">
       <Item1>
         <PackageName Value="synedit"/>

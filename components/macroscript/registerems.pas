@@ -5,8 +5,11 @@ unit RegisterEMS;
 interface
 
 uses
-  Classes, SysUtils, SrcEditorIntf, IDEOptionsIntf, EMScriptMacro, EMSSelfTest,
-  EMSIdeOptions, EMSStrings, Dialogs;
+  Classes, SysUtils, Dialogs, IDEOptionsIntf,
+  {$IFDEF PasScriptNotAvail}
+  SrcEditorIntf, EMSStrings,
+  {$ENDIF}
+  EMScriptMacro, EMSSelfTest, EMSIdeOptions;
 
 procedure Register;
 
@@ -14,16 +17,17 @@ implementation
 
 procedure Register;
 var
+  OptionsGroup: Integer;
+  {$IFDEF PasScriptNotAvail}
   conf: TEMSConfig;
   ok: Boolean;
-  OptionsGroup: Integer;
+  {$ENDIF}
 begin
   OptionsGroup := GetFreeIDEOptionsGroupIndex(GroupEditor);
   RegisterIDEOptionsGroup(OptionsGroup, TEMSConfig);
   RegisterIDEOptionsEditor(OptionsGroup, TEMSIdeOptionsFrame, 1);
 
-  if not EMSSupported then exit;
-
+  {$IFDEF PasScriptNotAvail}
   conf := GetEMSConf;
   try
     conf.Load;
@@ -79,6 +83,7 @@ begin
   conf.Save;
 
   EditorMacroPlayerClass := TEMSEditorMacro;
+  {$ENDIF}
 end;
 
 end.
