@@ -888,7 +888,7 @@ type
     procedure IgnoreProjectInfoFileOnDisk;
     function ReadProject(const NewProjectInfoFile: string;
                          GlobalMatrixOptions: TBuildMatrixOptions;
-                         LoadAllOptions: Boolean): TModalResult;
+                         LoadAllOptions: Boolean = True): TModalResult;
     function WriteProject(ProjectWriteFlags: TProjectWriteFlags;
                           const OverrideProjectInfoFile: string;
                           GlobalMatrixOptions: TBuildMatrixOptions): TModalResult;
