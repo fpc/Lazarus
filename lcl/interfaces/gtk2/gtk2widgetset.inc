@@ -1124,6 +1124,10 @@ const
   TGtk2TopForms: Array[Boolean] of TGtk2TempFormStyleSet = (fsAllNonSystemStayOnTop,
     fsAllStayOnTop);
 
+
+procedure gdk_window_restack(w, s: PGdkWindow; above: gboolean); cdecl; external gdklib;
+function gdk_screen_get_active_window(screen: PGdkScreen):PGdkWindow; cdecl; external gdklib;
+
 function TGtk2WidgetSet.AppRemoveStayOnTopFlags(const ASystemTopAlso: Boolean
   ): Boolean;
 var
@@ -1132,10 +1136,20 @@ var
   W: PGtkWidget;
   Flags: TGdkWindowState;
   B: Boolean;
+  act: PGdkWindow;
+  nact: PGdkWindow;
 begin
   Result := True;
   if StayOnTopList = nil then
     StayOnTopList := TMap.Create(TMapIdType(ituPtrSize), SizeOf(TGtkWidget));
+
+  // todo: all screens should be evaluated
+  // depending on the screen of a window
+  act:=gdk_screen_get_active_window(gdk_screen_get_default);
+  // act is typically returned for X11. other systems might
+  // not implement it.
+  nact:=act;
+
   for i := 0 to Screen.CustomFormZOrderCount - 1 do
   begin
     AForm := Screen.CustomFormsZOrdered[i];
@@ -1154,14 +1168,21 @@ begin
          (Flags and GDK_WINDOW_STATE_ICONIFIED = 0) then
       begin
         gdk_window_set_keep_above(W^.Window, False);
-        gdk_window_lower(W^.Window); // flush it to the bottom, some WMs keep it above
-        gdk_window_raise(W^.Window); // bring it back immediatly. But it should keep below the top app
-
+        if Assigned(nact) then
+        begin
+          gdk_window_restack(W^.Window, act, False);
+          nact:=W^.Window;
+        end
+        else begin
+          gdk_window_lower(W^.Window); // send to the bottom
+          gdk_window_raise(W^.Window); // restore back
+        end;
         if not StayOnTopList.HasId(W) then
           StayOnTopList.Add(W, W);
       end;
     end;
   end;
+  if Assigned(act) then g_object_unref(act);
 end;
 
 function TGtk2WidgetSet.AppRestoreStayOnTopFlags(const ASystemTopAlso: Boolean
