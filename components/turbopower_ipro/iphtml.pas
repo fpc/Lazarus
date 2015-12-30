@@ -2718,6 +2718,7 @@ const
   MaxElements = 1024*1024;
   ShyChar = #1; {character used to represent soft-hyphen in strings}
   NbspChar = #2; {character used to represent no-break space in strings}
+  NbspUtf8 = #194#160;  {utf8 code of no-break space character}
   WheelDelta = 8;
 
 const
@@ -3229,7 +3230,10 @@ begin {'Complete boolean eval' must be off}
       if not OnUTF8 and (Index1 >= 32) and (Index1 <= 255) then
         Result := Chr(Index1)
       else
+      begin
         Result := UnicodeToUTF8(Index1);
+        if Result = NbspUTF8 then Result := NbspChar;
+      end;
     end;
   end else
   begin
@@ -3316,12 +3320,25 @@ end;
 
 function NoBreakToSpace(const S: string): string;
 var
-  P : Integer;
+  P, n : Integer;
 begin
-  Result := S;
-  for P := length(Result) downto 1 do
-    if Result[P] = NbspChar then
-      Result[P] := ' ';
+  SetLength(Result, Length(S));
+  n := 0;
+  P := 1;
+  while P <= Length(S) do
+  begin
+    inc(n);
+    if S[P] = NbspChar then
+      Result[n] := ' '
+    else if (P < Length(S)) and (S[P] = NbspUtf8[1]) and (S[P+1] = NbspUtf8[2]) then
+    begin
+      Result[n] := ' ';
+      inc(P);
+    end else
+      Result[n] := S[P];
+    inc(P);
+  end;
+  SetLength(Result, n);
 end;
 
 procedure SetRawWordValue(Entry: PIpHtmlElement; const Value: string);
