@@ -4935,10 +4935,9 @@ end;
 procedure TMainIDE.ComponentPaletteClassSelected(Sender: TObject);
 begin
   // code below cant be handled correctly by integrated IDE
-  if
-    (IDETabMaster = nil) and
-    (Screen.CustomFormZOrderCount > 1)
-  and Assigned(Screen.CustomFormsZOrdered[1].Designer) then begin
+  if (IDETabMaster = nil) and (Screen.CustomFormZOrderCount > 1)
+  and Assigned(Screen.CustomFormsZOrdered[1].Designer) then
+  begin
     // previous active form was designer form
     ShowDesignerForm(Screen.CustomFormsZOrdered[1]);
     DoCallShowDesignerFormOfSourceHandler(lihtShowDesignerFormOfSource,
@@ -6764,28 +6763,19 @@ begin
     DoBuildProject(crCompile, []);
 end;
 
-procedure TMainIDE.DoCompilerOptionsAfterWrite(Sender: TObject; Restore: boolean
-  );
+procedure TMainIDE.DoCompilerOptionsAfterWrite(Sender: TObject; Restore: boolean);
 var
   AProject: TProject;
   aFilename: string;
 begin
   AProject:=(Sender as TProjectCompilerOptions).Project;
 
-  if not Restore then
-  begin
-    AProject.DefineTemplates.AllChanged;
-  end;
   if Restore then
-  begin
-    AProject.RestoreBuildModes;
-  end;
-
-  IncreaseCompilerParseStamp;
-  MainBuildBoss.SetBuildTargetProject1(false);
-
-  if not Restore then
-  begin
+    AProject.RestoreBuildModes
+  else begin
+    AProject.DefineTemplates.AllChanged;
+    IncreaseCompilerParseStamp;
+    MainBuildBoss.SetBuildTargetProject1(false);
     if AProject.UseAsDefault then
     begin
       // save as default

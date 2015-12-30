@@ -1041,7 +1041,6 @@ type
                                                     write SetAutoOpenDesignerFormsDisabled;
     property Bookmarks: TProjectBookmarkList read FBookmarks write FBookmarks;
     property BuildModes: TProjectBuildModes read FBuildModes;
-    property BuildModesBackup: TProjectBuildModes read FBuildModesBackup;
     property SkipCheckLCLInterfaces: boolean read FSkipCheckLCLInterfaces
                                              write SetSkipCheckLCLInterfaces;
     property CompilerOptions: TProjectCompilerOptions read GetCompilerOptions;
@@ -3403,7 +3402,7 @@ begin
   {$IFDEF VerboseIDEModified}
   debugln(['TProject.BackupBuildModes START=====================']);
   {$ENDIF}
-  BuildModesBackup.Assign(BuildModes,true);
+  FBuildModesBackup.Assign(BuildModes,true);
   {$IFDEF VerboseIDEModified}
   debugln(['TProject.BackupBuildModes END===================== Modified=',Modified]);
   {$ENDIF}
@@ -3411,13 +3410,16 @@ end;
 
 procedure TProject.RestoreBuildModes;
 begin
+  if FBuildModesBackup.Count = 0 then Exit;
   ActiveBuildMode:=nil;
-  BuildModes.Assign(BuildModesBackup,true);
+  BuildModes.Assign(FBuildModesBackup,true);
   if (FActiveBuildModeBackup>=0) and (FActiveBuildModeBackup<BuildModes.Count)
   then
     ActiveBuildMode:=BuildModes[FActiveBuildModeBackup]
   else
     ActiveBuildMode:=BuildModes[0];
+  // Must be cleared for the next time because BackupBuildModes may not be called.
+  FBuildModesBackup.Clear;
 end;
 
 function TProject.GetTitle: string;
@@ -7166,8 +7168,7 @@ begin
   SharedMatrixOptions.SaveToXMLConfig(FXMLConfig, Path+'BuildModes/SharedMatrixOptions/',@IsSharedMode);
 end;
 
-function TProjectBuildModes.GetLazBuildModes(Index: integer
-  ): TLazProjectBuildMode;
+function TProjectBuildModes.GetLazBuildModes(Index: integer): TLazProjectBuildMode;
 begin
   Result:=TLazProjectBuildMode(fItems[Index]);
 end;
