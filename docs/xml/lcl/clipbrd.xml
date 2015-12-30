@@ -758,19 +758,20 @@ The format CF_TEXT is handled by AsText and SetTextBuf. Use those functions inst
       </element>
       <!-- procedure Visibility: public -->
       <element name="TClipboard.SetAsHtml">
-        <short>Puts a HTML string on the clipboard.<short/>
+        <short>Puts a HTML string on the clipboard.</short>
         <descr>Puts a HTML string on the clipboard. On Windows it will automatically insert a
                ClipBoard Header.
                The procedure can also (optionally) set a provided plaintext representation
-               of the HTLM on the ClipBoard.<descr/>
+               of the HTLM on the ClipBoard.</descr>
         <errors/>
         <seealso/>
+      </element>
       <!-- argument Visibility: default -->
       <element name="TClipboard.SetAsHtml.HTML">
-        <short>The Html string that shall be put on the ClipBoard<short/>
+        <short>The Html string that shall be put on the ClipBoard</short>
       </element>
       <element name="TClipboard.SetAsHtml.PlainText">
-        <short>Optional plain text (string) representation of the HTML<short/>
+        <short>Optional plain text (string) representation of the HTML</short>
         <descr>The optioal string paramater PlainText is meant to be a plain text representation
                of the HTM string. The user is responsible for the contents of this variable.
                The value of PlainText can later be retrieved via the
@@ -780,10 +781,10 @@ The format CF_TEXT is handled by AsText and SetTextBuf. Use those functions inst
       </element>
       <!-- function Visibility: public -->
       <element name="TClipboard.GetAsHtml">
-        <short>Retrieves the HTML content of the clipboard (if available)<short/>
+        <short>Retrieves the HTML content of the clipboard (if available)</short>
         <descr>Retrieves the HTML content of the clipboard (if available).
                On Windows it will automatically remove the clipboard header that Windows inserts.
-               The resulting HTML string will be UTF-8 encoded.<descr/>
+               The resulting HTML string will be UTF-8 encoded.</descr>
         <errors/>
         <seealso/>
       </element>
