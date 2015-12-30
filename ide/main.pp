@@ -3643,10 +3643,9 @@ var
   Editable: Boolean;
   SelAvail: Boolean;
   SelEditable: Boolean;
-  SrcEditorActive, DsgEditorActive, StringFound, IdentFound: Boolean;
+  SrcEditorActive, DsgEditorActive, IdentFound, StringFound: Boolean;
   ActiveDesigner: TComponentEditorDesigner;
-  xAttr: TSynHighlighterAttributes;
-  xToken, CurWordAtCursor: string;
+  CurWordAtCursor: string;
 begin
   GetCurrentUnit(ASrcEdit, AnUnitInfo);
   if not UpdateEditorCommandsStamp.Changed(ASrcEdit, DisplayState) then
@@ -3659,18 +3658,16 @@ begin
   DsgEditorActive := DisplayState = dsForm;
   ActiveDesigner := GetActiveDesignerSkipMainBar;
 
-  StringFound := False;
-  IdentFound := False;
-  CurWordAtCursor := '';
   if ASrcEdit<>nil then
   begin
     CurWordAtCursor := ASrcEdit.GetWordAtCurrentCaret;
     //it is faster to get information from SynEdit than from CodeTools
-    if ASrcEdit.EditorComponent.GetHighlighterAttriAtRowCol(ASrcEdit.EditorComponent.CaretXY, xToken, xAttr) then
-    begin
-      StringFound := xAttr = ASrcEdit.EditorComponent.Highlighter.StringAttribute;
-      IdentFound := xAttr = ASrcEdit.EditorComponent.Highlighter.IdentifierAttribute;
-    end;
+    ASrcEdit.EditorComponent.CaretAtIdentOrString(ASrcEdit.EditorComponent.CaretXY, IdentFound, StringFound);
+  end
+  else begin
+    CurWordAtCursor := '';
+    IdentFound := False;
+    StringFound := False;
   end;
 
   if Assigned(ActiveDesigner) then
