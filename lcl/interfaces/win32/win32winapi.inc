@@ -2982,6 +2982,7 @@ function TWin32WidgetSet.SetComboMinDropDownSize(Handle: HWND; MinItemsWidth,
 begin
   Result:= ThemeServices.ThemesEnabled and
     boolean(Windows.SendMessage(Handle, CB_SETMINVISIBLE, MinItemCount, 0));
+  Result := Result and boolean(Windows.SendMessage(Handle, CB_SETDROPPEDWIDTH, MinItemsWidth, 0));
 end;
 
 {------------------------------------------------------------------------------
