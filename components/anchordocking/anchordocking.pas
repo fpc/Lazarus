@@ -517,6 +517,7 @@ type
     procedure MapTreeToControls(Tree: TAnchorDockLayoutTree);
     function RestoreLayout(Tree: TAnchorDockLayoutTree; Scale: boolean): boolean;
     procedure EnableAllAutoSizing;
+    procedure ResetSplitters;
     procedure ClearLayoutProperties(AControl: TControl; NewAlign: TAlign = alClient);
     procedure PopupMenuPopup(Sender: TObject);
     procedure ChangeLockButtonClick(Sender: TObject);
@@ -2090,6 +2091,15 @@ begin
     AddPopupMenuItem('OptionsMenuItem', adrsDockingOptions, @OptionsClick);
 end;
 
+procedure TAnchorDockMaster.ResetSplitters;
+var
+  I: Integer;
+begin
+  for I := 0 to ComponentCount-1 do
+    if Components[I] is TAnchorDockSplitter then
+      TAnchorDockSplitter(Components[I]).UpdateDockBounds;
+end;
+
 function TAnchorDockMaster.FullRestoreLayout(Tree: TAnchorDockLayoutTree;
   Scale: Boolean): Boolean;
 var
@@ -2134,6 +2144,7 @@ begin
     // commit (this can raise an exception, when it triggers events)
     EnableAllAutoSizing;
   end;
+  ResetSplitters; // reset splitters' DockBounds after EnableAllAutoSizing. fixes issue #18538
   {$IFDEF VerboseAnchorDockRestore}
   DebugWriteChildAnchors(Application.MainForm,true,false);
   {$ENDIF}
