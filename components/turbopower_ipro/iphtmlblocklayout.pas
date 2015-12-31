@@ -1480,7 +1480,8 @@ begin
     begin
       FIpHtml.Target.Brush.Color := Props.BGColor;
       FIpHtml.Target.FillRect(R);
-    end;
+    end else
+      FIpHtml.Target.Brush.Style := bsClear;
   end;
   Props.DelayCache:=False;
   inherited Render(Props);

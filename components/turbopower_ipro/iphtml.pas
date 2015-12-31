@@ -6335,6 +6335,7 @@ begin
             FixupPercentages(CurRow);
           CurRow := TIpHtmlNodeTR.Create(Parent);
           CurRow.ParseBaseProps(Self);
+          CurRow.BgColor := ColorFromString(FindAttribute(htmlAttrBGCOLOR));
           CurRow.Align := ParseAlignment;
           CurRow.VAlign := ParseVAlignment;
           CurRow.LoadAndApplyCSSProps;
@@ -6460,11 +6461,11 @@ begin
     Border := ParseInteger(htmlAttrBORDER, 0);
     CellSpacing := ParseInteger(htmlAttrCELLSPACING, 2);
     CellPadding := ParseInteger(htmlAttrCELLPADDING, 2);
+    BgColor := ColorFromString(FindAttribute(htmlAttrBGCOLOR));
     ParseBaseProps(Self);
     Summary := FindAttribute(htmlAttrSUMMARY);
     Frame := ParseFrameProp(Frame);
     Rules := ParseRules(Rules);
-    BgColor := ColorFromString(FindAttribute(htmlAttrBGCOLOR));
   end;
 
   repeat
@@ -9276,7 +9277,7 @@ begin
 
     case CurElem.ElementType of
     etWord :
-      begin
+      if CurElem.AnsiWord <> NAnchorChar then begin
         S := S + NoBreakToSpace(CurElem.AnsiWord);
         LFDone := False;
       end;
@@ -10113,10 +10114,14 @@ var
   aCanvas : TCanvas;
 begin
   aCanvas := Owner.Target;
+
+  Props.BGColor := BGColor;
   if (Props.BGColor <> -1) and PageRectToScreen(BorderRect, R) then begin
-    aCanvas.Brush.Color := Props.BGColor;
+    aCanvas.Brush.Color :=Props.BGColor;
     aCanvas.FillRect(R);
-  end;
+  end
+  else if (Props.BGColor = -1) then
+    aCanvas.Brush.Style := bsClear;
   aCanvas.Pen.Color := clBlack;
 
   Al := Props.VAlignment;
@@ -10155,11 +10160,8 @@ begin
                     end;
 
                     // set TR color, Render override them anyway if TD/TH have own settings
-                    if TrBgColor <> -1 then
-                      Props.BGColor := TrBgColor;
-
-                    if TrTextColor <> -1 then
-                      Props.FontColor := TrTextColor;
+                    Props.BGColor := TrBgColor;
+                    Props.FontColor := TrTextColor;
 
                     Props.VAlignment := Al;
                     Render(Props);
