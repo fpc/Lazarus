@@ -6640,8 +6640,8 @@ begin
     Editor.Parent:=Self;
   if FEditor=FStringEditor then
   begin
-    if FCol<Columns.Count then
-      FStringEditor.Alignment:=Columns[FCol].Alignment
+    if FCol-FFixedCols<Columns.Count then
+      FStringEditor.Alignment:=Columns[FCol-FFixedCols].Alignment
     else
       FStringEditor.Alignment:=taLeftJustify;
   end;
