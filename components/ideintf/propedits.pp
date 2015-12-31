@@ -2164,7 +2164,8 @@ begin
       Result:=C^.EditorClass
     else begin
       if (PropType^.Kind<>tkClass)
-      or (GetTypeData(PropType)^.ClassType.InheritsFrom(TPersistent)) then
+      or (GetTypeData(PropType)^.ClassType.InheritsFrom(TPersistent))
+      or (GetTypeData(PropType)^.PropCount > 0) then
         Result:=PropClassMap[PropType^.Kind]
       else
         Result:=nil;
