@@ -9613,7 +9613,10 @@ begin
     VK_END, VK_HOME:
       ;
     VK_ESCAPE:
-      FGrid.EditorHide;
+      begin
+        doGridKeyDown;
+        FGrid.EditorHide;
+      end;
     else
       doEditorKeyDown;
   end;
@@ -12233,7 +12236,10 @@ begin
     VK_END, VK_HOME:
       ;
     VK_ESCAPE:
-      FGrid.EditorHide;
+      begin
+        doGridKeyDown;
+        FGrid.EditorHide;
+      end;
     else
       doEditorKeyDown;
   end;
