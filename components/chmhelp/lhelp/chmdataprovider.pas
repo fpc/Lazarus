@@ -187,7 +187,9 @@ begin
   if Pos('ms-its:', NewURL) = 1 then begin
     if Pos('#', NewURL) = 0 then
       exit;
-    X := Pos('::', fNewURL);
+    X := Pos('::', NewURL);
+    if NewURL[X+2] = '/' then    // NewURL is complete and absolute --> nothing to do
+      exit;
     fNewURL := Copy(fNewURL, X+3, MaxInt);
   end;
 
@@ -230,6 +232,7 @@ var
 begin
   Result := TStringList.Create;
   Result.Delimiter := '/';
+  Result.StrictDelimiter := true;
   Result.DelimitedText := ADir;
 
   LastName := ExtractFileName(ADir);
