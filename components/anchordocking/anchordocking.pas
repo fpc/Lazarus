@@ -172,15 +172,21 @@ type
     FDockBounds: TRect;
     FDockParentClientSize: TSize;
     FDockRestoreBounds: TRect;
+    FPercentPosition: Single;
+
+    procedure UpdatePercentPosition;
   protected
     procedure SetResizeAnchor(const AValue: TAnchorKind); override;
     procedure PopupMenuPopup(Sender: TObject); virtual;
+  public
+    procedure MoveSplitter(Offset: integer); override;
   public
     constructor Create(TheOwner: TComponent); override;
     property DockBounds: TRect read FDockBounds write FDockBounds;
     property DockParentClientSize: TSize read FDockParentClientSize write FDockParentClientSize;
     procedure UpdateDockBounds;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer); override; // any normal movement sets the DockBounds
+    procedure SetBoundsPercentually;
     procedure SetBoundsKeepDockBounds(ALeft, ATop, AWidth, AHeight: integer); // movement for scaling keeps the DockBounds
     function SideAnchoredControlCount(Side: TAnchorKind): integer;
     function HasAnchoredControls: boolean;
@@ -2094,10 +2100,15 @@ end;
 procedure TAnchorDockMaster.ResetSplitters;
 var
   I: Integer;
+  S: TAnchorDockSplitter;
 begin
   for I := 0 to ComponentCount-1 do
     if Components[I] is TAnchorDockSplitter then
-      TAnchorDockSplitter(Components[I]).UpdateDockBounds;
+    begin
+      S := TAnchorDockSplitter(Components[I]);
+      S.UpdateDockBounds;
+      S.UpdatePercentPosition;
+    end;
 end;
 
 function TAnchorDockMaster.FullRestoreLayout(Tree: TAnchorDockLayoutTree;
@@ -4341,17 +4352,7 @@ begin
       if Child is TAnchorDockSplitter then begin
         Splitter:=TAnchorDockSplitter(Child);
         //debugln(['TAnchorDockHostSite.AlignControls ',Caption,' ',DbgSName(Splitter),' OldBounds=',dbgs(Splitter.BoundsRect),' BaseBounds=',dbgs(Splitter.DockBounds),' BaseParentSize=',dbgs(Splitter.DockParentClientSize),' ParentSize=',ClientWidth,'x',ClientHeight]);
-        if Splitter.ResizeAnchor in [akLeft,akRight] then begin
-          if Splitter.DockParentClientSize.cx>0 then
-            Splitter.SetBoundsKeepDockBounds(
-              (Splitter.DockBounds.Left*ClientWidth) div Splitter.DockParentClientSize.cx,
-              Splitter.Top,Splitter.Width,Splitter.Height);
-        end else begin
-          if Splitter.DockParentClientSize.cy>0 then
-            Splitter.SetBoundsKeepDockBounds(Splitter.Left,
-              (Splitter.DockBounds.Top*ClientHeight) div Splitter.DockParentClientSize.cy,
-              Splitter.Width,Splitter.Height);
-        end;
+        Splitter.SetBoundsPercentually;
         //debugln(['TAnchorDockHostSite.AlignControls ',Caption,' ',DbgSName(Child),' NewBounds=',dbgs(Child.BoundsRect)]);
       end;
     end;
@@ -6059,6 +6060,23 @@ begin
     FDockParentClientSize.cx:=0;
     FDockParentClientSize.cy:=0;
   end;
+  if FPercentPosition < 0 then
+    UpdatePercentPosition;
+end;
+
+procedure TAnchorDockSplitter.UpdatePercentPosition;
+var
+  BR: TRect;
+begin
+  BR := BoundsRect;
+  case ResizeAnchor of
+    akTop, akBottom:
+      if FDockParentClientSize.cy > 0 then
+        FPercentPosition := (BR.Top+BR.Bottom) / 2 / FDockParentClientSize.cy;
+  else
+    if FDockParentClientSize.cx > 0 then
+      FPercentPosition := (BR.Left+BR.Right) / 2 / FDockParentClientSize.cx;
+  end;
 end;
 
 procedure TAnchorDockSplitter.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
@@ -6075,6 +6093,37 @@ end;
 procedure TAnchorDockSplitter.SetBoundsKeepDockBounds(ALeft, ATop, AWidth, AHeight: integer);
 begin
   inherited SetBounds(ALeft,ATop,AWidth,AHeight);
+end;
+
+procedure TAnchorDockSplitter.SetBoundsPercentually;
+var
+  NewLeft, NewTop: Integer;
+begin
+  if ResizeAnchor in [akLeft,akRight] then
+  begin
+    if DockParentClientSize.cx> 0 then
+    begin
+      if (FPercentPosition > 0) or SameValue(FPercentPosition, 0) then
+        NewLeft := Round(FPercentPosition*Parent.ClientWidth)
+      else
+        NewLeft := (DockBounds.Left*Parent.ClientWidth) div DockParentClientSize.cx;
+      NewTop := Top;
+      SetBoundsKeepDockBounds(NewLeft,NewTop,Width,Height);
+    end;
+  end else
+  begin
+    if DockParentClientSize.cy> 0 then
+    begin
+      NewLeft := Left;
+      if (FPercentPosition > 0) or SameValue(FPercentPosition, 0) then
+        NewTop := Round(FPercentPosition*Parent.ClientHeight)
+      else
+        NewTop := (DockBounds.Top*Parent.ClientHeight) div DockParentClientSize.cy;
+      SetBoundsKeepDockBounds(NewLeft,NewTop,Width,Height);
+    end;
+  end;
+  if FPercentPosition < 0 then
+    UpdatePercentPosition;
 end;
 
 function TAnchorDockSplitter.SideAnchoredControlCount(Side: TAnchorKind): integer;
@@ -6143,6 +6192,13 @@ begin
   end;
 end;
 
+procedure TAnchorDockSplitter.MoveSplitter(Offset: integer);
+begin
+  FPercentPosition:=-1;
+  inherited MoveSplitter(Offset);
+  UpdatePercentPosition;
+end;
+
 constructor TAnchorDockSplitter.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -6152,6 +6208,7 @@ begin
   Constraints.MinWidth:=2;
   Constraints.MinHeight:=2;
   PopupMenu:=DockMaster.GetPopupMenu;
+  FPercentPosition:=-1;
 end;
 
 { TAnchorDockPageControl }
