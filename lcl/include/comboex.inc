@@ -1,4 +1,4 @@
-{%MainUnit comboex.pas}
+{%MainUnit ../comboex.pas}
 
 {*****************************************************************************
                      TCustomComboBoxEx, TCustomCheckComboBox
@@ -217,7 +217,7 @@ end;
 
 function TComboExItems.Insert(AIndex: Integer): TComboExItem;
 begin
-  Result:=Insert(AIndex);
+  Result := TComboExItem(inherited Insert(AIndex));
 end;
 
 procedure TComboExItems.Notify(Item: TCollectionItem; Action: TCollectionNotification);
