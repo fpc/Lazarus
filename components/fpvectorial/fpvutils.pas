@@ -254,7 +254,7 @@ begin
   EllipticalArcToBezier(Xc, Yc, R, R, startAngle, endAngle, P1, P2, P3, P4);
 end;
 
-{ This routine converts a Bezier to a Polygon and adds the points of this poligon
+{ This routine converts a Bezier to a Polygon and adds the points of this polygon
   to the end of the provided Points output variables }
 procedure AddBezierToPoints(P1, P2, P3, P4: T3DPoint; var Points: TPointsArray);
 var

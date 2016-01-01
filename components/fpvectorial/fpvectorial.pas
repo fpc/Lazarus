@@ -283,7 +283,7 @@ type
     st2DEllipticalArc);
 
   {@@
-    The coordinates in fpvectorial are given in millimiters and
+    The coordinates in fpvectorial are given in millimeters and
     the starting point is in the bottom-left corner of the document.
     The X grows to the right and the Y grows to the top.
   }
@@ -521,7 +521,8 @@ type
     procedure AssignBrush(ABrush: TvBrush);
     procedure DrawBrushGradient(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
       x1, y1, x2, y2: Integer;
-      ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0);
+      ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); overload;
+//    procedure DrawBrushGradient(ADest: TFPCustomCanvas; x1,y1,x2,y2: Integer); overload;
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = True); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
@@ -561,6 +562,9 @@ type
     FCurMoveSubPartIndex: Integer;
     FCurMoveSubPartSegment: TPathSegment;
     //
+  protected
+    FPolyPoints: TPointsArray;
+    FPolyStarts: TIntegerDynArray;
   public
     Len: Integer;
     Points: TPathSegment;   // Beginning of the double-linked list
@@ -3217,6 +3221,7 @@ var
   pts: TPointsArray;
   coordX, coordY, coord2X, coord2Y, coord3X, coord3Y, coord4X, coord4Y: Integer;
   i, n: Integer;
+  prev: TPoint;
 begin
   if not (Previous is T2DSegment) then
     raise Exception.Create('T2DBezierSegment must follow a T2DSegment.');
@@ -3238,13 +3243,21 @@ begin
     Make2DPoint(coord4X, coord4Y),
     pts);
 
+  if Length(pts) = 0 then
+    exit;
+
   n := Length(Points);
-  SetLength(Points, n + Length(pts) - 1);  // we don't need the start point --> -1
-  for i:=1 to High(pts) do     // begin at 1 to skip the start point
+  prev := Points[n-1];
+  SetLength(Points, n + Length(pts));
+  for i:=0 to High(pts) do
   begin
+    if (pts[i].X = prev.X) and (pts[i].Y = prev.Y) then   // skip subsequent coincident points
+      Continue;
     Points[n] := pts[i];
+    prev := pts[i];
     inc(n);
   end;
+  SetLength(Points, n);
 end;
 
 { T3DSegment }
@@ -3595,7 +3608,63 @@ begin
   Brush.Style := ABrush.Style;
   Brush.Color := ABrush.Color;
 end;
+                                (*
+{ Fills the entity with a gradient.
+  Assumes that the boundary is already in canvas units }
+procedure TvEntityWithPenAndBrush.DrawBrushGradient(ADest: TFPCustomCanvas;
+  x1, y1, x2, y2: Integer);
+var
+  lColor1, lColor2: TFPColor;
+  i, j: Integer;
+begin
+  if not (Brush.Kind in [bkVerticalGradient, bkHorizontalGradient]) then
+    Exit;
 
+  lColor1 := Brush.Gradient_colors[1];
+  lColor2 := Brush.Gradient_colors[0];
+  if Brush.Kind = bkVerticalGradient then
+  begin
+    for i := y1 to y2 do
+    begin
+      lPoints := GetLineIntersectionPoints(CanvasToCoordY(i), False);
+      if Length(lPoints) < 2 then Continue;
+      lColor := MixColors(lColor1, lColor2, i-y1, y2-y1);
+      ADest.Pen.FPColor := lColor;
+      ADest.Pen.Style := psSolid;
+      j := 0;
+      while j < Length(lPoints) do
+      begin
+        lCanvasPts[0] := CoordToCanvasX(lPoints[j]);
+        lCanvasPts[1] := CoordToCanvasX(lPoints[j+1]);
+        ADest.Line(lCanvasPts[0], i, lCanvasPts[1], i);
+        inc(j, 2);
+      end;
+    end;
+  end
+  else if Brush.Kind = bkHorizontalGradient then
+  begin
+    for i := x1 to x2 do
+    begin
+      lPoints := GetLineIntersectionPoints(CanvasToCoordX(i), True);
+      if Length(lPoints) < 2 then Continue;
+      lColor := MixColors(lColor1, lColor2, i-x1, x2-x1);
+      ADest.Pen.FPColor := lColor;
+      ADest.Pen.Style := psSolid;
+      j := 0;
+      while (j+1 < Length(lPoints)) do
+      begin
+        lCanvasPts[0] := CoordToCanvasY(lPoints[j]);
+        lCanvasPts[1] := CoordToCanvasY(lPoints[j+1]);
+        ADest.Line(i, lCanvasPts[0], i, lCanvasPts[1]);
+        inc(j , 2);
+      end;
+    end;
+  end;
+end;           *)
+
+{ Fills the entity's shape with a gradient.
+  Assumes that the boundary is in fpv units and provides parameters (ADestX,
+  ADestY, AMulX, AMulY) for conversion to canvas pixels. }
 procedure TvEntityWithPenAndBrush.DrawBrushGradient(ADest: TFPCustomCanvas;
   var ARenderInfo: TvRenderInfo; x1, y1, x2, y2: Integer;
   ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double);
@@ -4203,11 +4272,10 @@ end;
 procedure TPath.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
   ADestX, ADestY: Integer; AMulX, AMulY: Double; ADoDraw: Boolean);
 var
-  polygonPoints: TPointsArray;
-  polygonStart: TIntegerDynArray;
   i: Integer;
   j, n: Integer;
   x1, y1, x2, y2: Integer;
+  pts: TPointsArray;
   ACanvas: TCanvas absolute ADest;
   coordX, coordY: Integer;
   curSegment: TPathSegment;
@@ -4215,17 +4283,17 @@ var
 begin
   inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
 
-  ConvertPathToPolygons(self, ADestX, ADestY, AMulX, AMulY, polygonPoints, polygonStart);
+  ConvertPathToPolygons(self, ADestX, ADestY, AMulX, AMulY, FPolyPoints, FPolyStarts);
   x1 := MaxInt;
   y1 := maxInt;
   x2 := -MaxInt;
   y2 := -MaxInt;
-  for i := 0 to High(polygonPoints) do
+  for i := 0 to High(FPolyPoints) do
   begin
-    x1 := min(x1, polygonPoints[i].X);
-    y1 := min(y1, polygonPoints[i].Y);
-    x2 := max(x2, polygonPoints[i].X);
-    y2 := max(y2, polygonPoints[i].Y);
+    x1 := min(x1, FPolyPoints[i].X);
+    y1 := min(y1, FPolyPoints[i].Y);
+    x2 := max(x2, FPolyPoints[i].X);
+    y2 := max(y2, FPolyPoints[i].Y);
   end;
   CalcEntityCanvasMinMaxXY_With2Points(ARenderInfo, x1, y1, x2, y2);
 
@@ -4233,23 +4301,24 @@ begin
   begin
     // (1) draw background only
     ADest.Pen.Style := psClear;
-    if (Length(polygonPoints) > 2) then
+    if (Length(FPolyPoints) > 2) then
       case Brush.Kind of
         bkSimpleBrush:
           if Brush.Style <> bsClear then
           begin
             {$IFDEF USE_LCL_CANVAS}
-            for i := 0 to High(polygonStart) do
+            for i := 0 to High(FPolyStarts) do
             begin
-              j := polygonStart[i];
-              if i = High(polygonStart) then
-                n := Length(polygonPoints) - j
+              j := FPolyStarts[i];
+              if i = High(FPolyStarts) then
+                n := Length(FPolyPoints) - j
               else
-                n := polygonStart[i+1] - polygonStart[i] + 1;
+                n := FPolyStarts[i+1] - FPolyStarts[i] + 1;
             end;
-            ACanvas.Polygon(@polygonPoints[j], n, WindingRule = vcmNonZeroWindingRule);
+            if (FPolyPoints[0].X = FPolyPoints[n-1].X) and (FPolyPoints[0].Y = FPolyPoints[n-1].Y) then
+              ACanvas.Polygon(@FPolyPoints[j], n, WindingRule = vcmNonZeroWindingRule);
             {$ELSE}
-            ADest.Polygon(polygonPoints);
+            ADest.Polygon(FPolyPoints);
             {$ENDIF}
           end;
         else  // gradients
@@ -4291,13 +4360,14 @@ begin
           begin
             coordX := CoordToCanvasX(T2DSegment(curSegment.Previous).X, ADestX, AMulX);
             coordY := CoordToCanvasY(T2DSegment(curSegment.Previous).Y, ADestY, AMulY);
-            SetLength(PolygonPoints, 1);
-            PolygonPoints[0] := Point(coordX, coordY);
-            curSegment.AddToPoints(ADestX, ADestY, AMulX, AMulY, PolygonPoints);
-            ADest.PolyLine(PolygonPoints);
-            coordX := PolygonPoints[High(PolygonPoints)].X;
-            coordY := PolygonPoints[High(PolygonPoints)].Y;
-            ADest.MoveTo(coordX, coordY);
+            SetLength(pts, 1);
+            pts[0] := Point(coordX, coordY);
+            curSegment.AddToPoints(ADestX, ADestY, AMulX, AMulY, pts);
+            if Length(pts) > 0 then
+            begin
+              ADest.PolyLine(pts);
+              ADest.MoveTo(pts[High(pts)].X, pts[High(pts)].Y);
+            end;
           end;
       end;
     end;

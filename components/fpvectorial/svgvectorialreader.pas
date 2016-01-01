@@ -221,11 +221,12 @@ var
   lToken: TSVGToken;
   lStr: string;
 begin
-  lToken := TSVGToken.Create;
+//  lToken := TSVGToken.Create;
 
   lStr := Trim(AStr);
   if lStr = '' then Exit;
 
+  lToken := TSVGToken.Create;
   // Moves
   if lStr[1] = 'M' then lToken.TokenType := sttMoveTo
   else if lStr[1] = 'm' then lToken.TokenType := sttRelativeMoveTo
@@ -2001,6 +2002,7 @@ var
   lDebugStr: String;
   lToken5Before, lToken7Before: TSVGTokenType;
   lCorrectPreviousToken: Boolean;
+  lPrevRelative, lCurRelative: Boolean;
 begin
   lCurTokenType := ACurTokenType;
   // --------------
@@ -2043,7 +2045,8 @@ begin
     CurY := Y;
     AData.AddLineToPath(CurX, CurY);
 
-    Inc(i, 3);
+    Inc(i, 1);
+//    Inc(i, 3);
   end
   // --------------
   // Lines
@@ -2091,6 +2094,7 @@ begin
   else if lCurTokenType in [sttBezierTo, sttRelativeBezierTo,
     sttSmoothBezierTo, sttRelativeSmoothBezierTo] then
   begin
+    lPrevRelative := false;
     if lCurTokenType in [sttBezierTo, sttRelativeBezierTo] then
     begin
       X2 := FSVGPathTokenizer.Tokens.Items[i+1].Value;
@@ -2116,10 +2120,11 @@ begin
         lCorrectPreviousToken := lToken5Before in [sttSmoothBezierTo, sttRelativeSmoothBezierTo];
         lCorrectPreviousToken := lCorrectPreviousToken or
           (lToken7Before in [sttBezierTo, sttRelativeBezierTo]);
+        lPrevRelative := (lToken5Before = sttRelativeSmoothBezierTo) or (lToken7Before = sttRelativeBezierTo);
       end;
       if (i >= 7) and (lCorrectPreviousToken) then
       begin
-        if lCurTokenType = sttRelativeSmoothBezierTo then
+        if (lCurTokenType = sttRelativeSmoothBezierTo) or lPrevRelative then
         begin
           X2 := FSVGPathTokenizer.Tokens.Items[i-2].Value - FSVGPathTokenizer.Tokens.Items[i-4].Value;
           Y2 := FSVGPathTokenizer.Tokens.Items[i-1].Value - FSVGPathTokenizer.Tokens.Items[i-3].Value;
@@ -2138,17 +2143,32 @@ begin
     end;
 
     // Careful that absolute coordinates require using ConvertSVGCoordinatesToFPVCoordinates
-    if lCurTokenType in [sttRelativeBezierTo, sttRelativeSmoothBezierTo] then
+    lCurRelative := lCurTokenType in [sttRelativeBezierTo, sttRelativeSmoothBezierTo];
+    if lPrevRelative then
     begin
       ConvertSVGDeltaToFPVDelta(AData, X2, Y2, X2, Y2);
-      ConvertSVGDeltaToFPVDelta(AData, X3, Y3, X3, Y3);
-      ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
-    end
-    else
+      if lCurRelative then
+      begin
+        ConvertSVGDeltaToFPVDelta(AData, X3, Y3, X3, Y3);
+        ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
+      end else
+      begin
+        ConvertSVGCoordinatesToFPVCoordinates(AData, X3, Y3, X3, Y3);
+        ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
+      end;
+    end else
     begin
-      ConvertSVGCoordinatesToFPVCoordinates(AData, X2, Y2, X2, Y2);
-      ConvertSVGCoordinatesToFPVCoordinates(AData, X3, Y3, X3, Y3);
-      ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
+      if lCurRelative then
+      begin
+        ConvertSVGDeltaToFPVDelta(AData, X2, Y2, X2, Y2);
+        ConvertSVGDeltaToFPVDelta(AData, X3, Y3, X3, Y3);
+        ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
+      end else
+      begin
+        ConvertSVGCoordinatesToFPVCoordinates(AData, X2, Y2, X2, Y2);
+        ConvertSVGCoordinatesToFPVCoordinates(AData, X3, Y3, X3, Y3);
+        ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
+      end;
     end;
 
     // Covers the case where there is no valid first control point in smooth bezier
@@ -2177,14 +2197,16 @@ begin
     end
     else
     begin
-      AData.AddBezierToPath(X2, Y2, X3, Y3, X, Y);
+      if lPrevRelative then
+        AData.AddBezierToPath(X2 + CurX, Y2 + CurY, X3, Y3, X, Y) else
+        AData.AddBezierToPath(X2, Y2, X3, Y3, X, Y);
       CurX := X;
       CurY := Y;
     end;
 
     if lCurTokenType in [sttBezierTo, sttRelativeBezierTo] then
-      Inc(i, 7)
-    else Inc(i, 5);
+      Inc(i, 7) else
+      Inc(i, 5);
   end
   // --------------
   // Quadratic Bezier
@@ -3194,7 +3216,7 @@ begin
     AData.Height := ly2 - ly;
   end;
 
-  // Make sure the latest page size is syncronized with auto-detected
+  // Make sure the latest page size is synchronized with auto-detected
   // or ViewBox-only obtained size
   Page_Width := AData.Width;
   Page_Height := AData.Height;
