@@ -2403,7 +2403,7 @@ begin
   for i := 0 to ANode.Attributes.Length - 1 do
   begin
     lNodeName := ANode.Attributes.Item[i].NodeName;
-    if  lNodeName = 'points' then
+    if lNodeName = 'points' then
       lPointsStr := ANode.Attributes.Item[i].NodeValue;
   end;
 

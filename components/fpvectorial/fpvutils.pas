@@ -529,12 +529,12 @@ begin
   begin
     curSegment := TPathSegment(APath.Next);
 
+    if (i = 0) and (curSegment.SegmentType <> stMoveTo) then
+      raise Exception.Create('Path must start with a "MoveTo" command');
+
     case curSegment.SegmentType of
       stMoveTo:
         begin
-          if i <> 0 then
-            raise Exception.Create('Path must start with a "MoveTo" command');
-
           // Store current length of points array as polygon start index
           if numPolygons >= Length(PolygonStartIndexes) then
             SetLength(PolygonstartIndexes, Length(PolygonStartIndexes) + POINT_BUFFER);
