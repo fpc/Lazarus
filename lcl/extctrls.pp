@@ -373,7 +373,7 @@ type
     procedure AnchorSplitter(Kind: TAnchorKind; AControl: TControl);
     property ResizeControl: TControl read GetResizeControl write SetResizeControl;
     function GetOtherResizeControl: TControl;
-    procedure MoveSplitter(Offset: integer);
+    procedure MoveSplitter(Offset: integer); virtual;
     procedure SetSplitterPosition(NewPosition: integer);
     function GetSplitterPosition: integer;
   public
