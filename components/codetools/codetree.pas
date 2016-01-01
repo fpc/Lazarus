@@ -197,7 +197,9 @@ const
                          ctnInitialization,ctnFinalization];
   AllFindContextDescs = AllIdentifierDefinitions + AllCodeSections + AllClasses +
      [ctnProcedure];
-  AllPointContexts = AllClasses+AllSourceTypes+[ctnEnumerationType,ctnInterface,ctnImplementation,ctnTypeType,ctnUseUnitNamespace,ctnUseUnitClearName];
+  AllPointContexts = AllClasses+AllSourceTypes+
+    [ctnEnumerationType,ctnInterface,ctnImplementation,ctnTypeType,
+     ctnUseUnitNamespace,ctnUseUnitClearName,ctnOpenArrayType];
 
 
   // CodeTreeNodeSubDescriptors
