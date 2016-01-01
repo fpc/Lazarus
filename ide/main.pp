@@ -1586,13 +1586,7 @@ begin
     Application.Terminate;
     exit;
   end;
-  // Reading the active desktop here somehow solves issue #18538.
-  // The message window height does not change arbitrarily any more in a docked IDE.
-  // ToDo: Find out why it works and solve it properly.
-  // Message window gets a special treatment while it should not, see issue #17908.
-  if IDEDockMaster<>nil then
-    EnvironmentOptions.UseDesktop(EnvironmentOptions.ActiveDesktop);
-
+  DoShowMessagesView(false);           // reopen extra windows
   fUserInputSinceLastIdle:=true; // Idle work gets done initially before user action.
   MainIDEBar.ApplicationIsActivate:=true;
   IDECommandList.AddCustomUpdateEvent(@UpdateMainIDECommands);
