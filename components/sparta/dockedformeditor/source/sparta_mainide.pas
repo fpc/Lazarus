@@ -967,7 +967,7 @@ var
 {$ENDIF}
 begin
 {$IFNDEF USE_POPUP_PARENT_DESIGNER}
-  Form.ParentWindow := 0;
+  Form.Parent := nil;
   Application.ProcessMessages; // For TFrame - System Error. Code: 1400. Invalid window handle.
 {$ENDIF}
 
@@ -1507,7 +1507,7 @@ begin
     if LDesignForm <> nil then
     begin
 {$IFNDEF USE_POPUP_PARENT_DESIGNER}
-      LDesignForm.Form.Form.ParentWindow := FindModulePageControl(LWindow).Resizer.FResizerFrame.pClient.Handle;
+      LDesignForm.Form.Form.Parent := FindModulePageControl(LWindow).Resizer.FResizerFrame.pClient;
 {$ENDIF}
       PostMessage(LDesignForm.Form.Form.Handle, WM_BoundToDesignTabSheet, 0, 0);
     end;

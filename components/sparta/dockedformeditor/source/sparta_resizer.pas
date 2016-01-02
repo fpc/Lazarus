@@ -117,7 +117,7 @@ begin
     FDesignedForm.RealPopupParent := nil;
     FDesignedForm.RealPopupParent := FindFirstFormParent;
 {$ELSE}
-    FDesignedForm.Form.ParentWindow := FResizerFrame.pClient.Handle;
+    FDesignedForm.Form.Parent := FResizerFrame.pClient;
 {$ENDIF}
     // for big forms (bigger than screen resolution) we need to refresh Real* values
     DesignedForm.RealWidth := DesignedForm.Width;

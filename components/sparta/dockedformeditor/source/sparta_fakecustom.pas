@@ -986,7 +986,7 @@ begin
 {$IFDEF USE_POPUP_PARENT_DESIGNER}
   LCLIntf.ShowWindow(FOwner.Handle, SW_SHOW);
 {$ELSE}
-  if FOwner.ParentWindow = 0 then
+  if FOwner.Parent = nil then
     LCLIntf.ShowWindow(FOwner.Handle, SW_SHOW);
 {$ENDIF}
 end;
@@ -996,7 +996,7 @@ begin
 {$IFDEF USE_POPUP_PARENT_DESIGNER}
   LCLIntf.ShowWindow(FOwner.Handle, SW_HIDE);
 {$ELSE}
-  if FOwner.ParentWindow = 0 then
+  if FOwner.Parent = nil then
     LCLIntf.ShowWindow(FOwner.Handle, SW_HIDE);
 {$ENDIF}
 end;
