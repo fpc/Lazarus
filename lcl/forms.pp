@@ -57,7 +57,8 @@ type
     poScreenCenter,    // center form on screen (depends on DefaultMonitor)
     poDesktopCenter,   // center form on desktop (total of all screens)
     poMainFormCenter,  // center form on main form (depends on DefaultMonitor)
-    poOwnerFormCenter  // center form on owner form (depends on DefaultMonitor)
+    poOwnerFormCenter, // center form on owner form (depends on DefaultMonitor)
+    poWorkAreaCenter   // center form on working area (depends on DefaultMonitor)
     );
 
   TWindowState = (wsNormal, wsMinimized, wsMaximized, wsFullScreen);

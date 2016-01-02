@@ -162,15 +162,7 @@
 <!-- enumeration type Visibility: default -->
       <element name="TPosition">
         <short>Represents the Position and Size of a Form on Screen.</short>
-        <descr>
-          <p>poDesigned - The Form appears exactly as it is positioned and sized in the Form Designer</p>
-          <p>poDefault - The window manager decides how the form is to appear, in a default position and size</p>
-          <p>poDefaultPosOnly - keeps the Designed size, but position determined by windowmanager</p>
-          <p>poDefaultSizeOnly - keeps the Designed position, but size determined by windowmanager</p>
-          <p>poScreenCenter - Centers the form on screen</p>
-          <p>poDeskTopCenter - Centers the form on desktop</p>
-          <p>poMainFormCenter - Centers the Form on the Main Form</p>
-          <p>poOwnerFormCenter - Centers the Form on Owner form</p>
+        <descr><p>poDesigned - The Form appears exactly as it is positioned and sized in the Form Designer</p><p>poDefault - The window manager decides how the form is to appear, in a default position and size</p><p>poDefaultPosOnly - keeps the Designed size, but position determined by windowmanager</p><p>poDefaultSizeOnly - keeps the Designed position, but size determined by windowmanager</p><p>poScreenCenter - Centers the form on screen</p><p>poDeskTopCenter - Centers the form on desktop</p><p>poMainFormCenter - Centers the Form on the Main Form</p><p>poOwnerFormCenter - Centers the Form on Owner form</p><p>poWorkAreaCenter - Centers the Form on working area</p>
         </descr>
         <seealso/>
       </element>

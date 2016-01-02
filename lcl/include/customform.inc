@@ -1272,9 +1272,12 @@ var
       if Y < ABounds.Top then
         Y := ABounds.Top;
     end
-    else
+    else // poWorkAreaCenter, poScreenCenter
     begin
-      ABounds := Target.BoundsRect;
+      if Position = poWorkAreaCenter then
+        ABounds := Target.WorkareaRect
+      else
+        ABounds := Target.BoundsRect;
       X := (ABounds.Left + ABounds.Right - RealWidth) div 2;
       Y := (ABounds.Top + ABounds.Bottom - RealHeight) div 2;
     end;
@@ -1317,6 +1320,11 @@ begin
         X := (Screen.Width - RealWidth) div 2;
         Y := (Screen.Height - RealHeight) div 2;
       end;
+    poWorkAreaCenter:
+      begin
+        X := Screen.WorkAreaLeft + (Screen.WorkAreaWidth - RealWidth) div 2;
+        Y := Screen.WorkAreaTop + (Screen.WorkAreaHeight - RealHeight) div 2;
+      end;
     poMainFormCenter,
     poOwnerFormCenter:
       begin
@@ -1341,7 +1349,7 @@ begin
   // get current widgetset position
   if (p in [poDefault, poDefaultPosOnly]) and HandleAllocated then
     GetWindowRelativePosition(Handle,X,Y);
-  if (Position in [poScreenCenter, poMainFormCenter, poOwnerFormCenter]) then
+  if (Position in [poScreenCenter, poMainFormCenter, poOwnerFormCenter, poWorkAreaCenter]) then
     MoveToDefaultMonitor(X, Y);
   SetBounds(X, Y, Width, Height);
 end;
