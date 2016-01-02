@@ -468,7 +468,10 @@ procedure TDesignFormData.WndMethod(var TheMessage: TLMessage);
         Break;
       end;
   end;
-
+{$IFDEF USE_POPUP_PARENT_DESIGNER}
+var
+  LPageCtrl: TPageControl;
+{$ENDIF}
 begin
 {$IFDEF USE_POPUP_PARENT_DESIGNER}
   if isIdeDestroyed then
@@ -1514,7 +1517,7 @@ begin
 end;
 
 {$IFDEF USE_POPUP_PARENT_DESIGNER}
-class procedure TDesignerIDEBoss.OnBeforeClose(Sender: TObject);
+class procedure TSpartaMainIDE.OnBeforeClose(Sender: TObject);
 begin
   isIdeDestroyed := True;
 end;
