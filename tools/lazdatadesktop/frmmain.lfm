@@ -129,46 +129,11 @@ object MainForm: TMainForm
     Height = 418
     Top = 26
     Width = 458
-    ActivePage = TSAll
+    ActivePage = TSConnections
     Align = alClient
     Images = ILMain
-    TabIndex = 2
+    TabIndex = 0
     TabOrder = 1
-    object TSRecent: TTabSheet
-      Caption = 'Dictionaries'
-      ClientHeight = 380
-      ClientWidth = 450
-      ImageIndex = 19
-      object LVDicts: TListView
-        Left = 0
-        Height = 380
-        Top = 0
-        Width = 458
-        Align = alClient
-        Columns = <        
-          item
-            Caption = 'Name'
-            Width = 10
-          end        
-          item
-            Caption = 'Filename'
-            Width = 10
-          end        
-          item
-            Caption = 'Last used on'
-            Width = 617
-          end>
-        PopupMenu = PMDataDict
-        ReadOnly = True
-        RowSelect = True
-        SortColumn = 2
-        SortType = stText
-        TabOrder = 0
-        ViewStyle = vsReport
-        OnDblClick = OpenRecentDatadict
-        OnKeyUp = LVDictsKeyUp
-      end
-    end
     object TSConnections: TTabSheet
       Caption = 'Connections'
       ClientHeight = 380
@@ -178,7 +143,7 @@ object MainForm: TMainForm
         Left = 0
         Height = 380
         Top = 0
-        Width = 458
+        Width = 450
         Align = alClient
         Columns = <        
           item
@@ -205,6 +170,41 @@ object MainForm: TMainForm
         ViewStyle = vsReport
         OnDblClick = OpenRecentConnection
         OnKeyUp = LVConnectionsKeyUp
+      end
+    end
+    object TSRecent: TTabSheet
+      Caption = 'Dictionaries'
+      ClientHeight = 380
+      ClientWidth = 450
+      ImageIndex = 19
+      object LVDicts: TListView
+        Left = 0
+        Height = 380
+        Top = 0
+        Width = 450
+        Align = alClient
+        Columns = <        
+          item
+            Caption = 'Name'
+            Width = 10
+          end        
+          item
+            Caption = 'Filename'
+            Width = 10
+          end        
+          item
+            Caption = 'Last used on'
+            Width = 617
+          end>
+        PopupMenu = PMDataDict
+        ReadOnly = True
+        RowSelect = True
+        SortColumn = 2
+        SortType = stText
+        TabOrder = 0
+        ViewStyle = vsReport
+        OnDblClick = OpenRecentDatadict
+        OnKeyUp = LVDictsKeyUp
       end
     end
     object TSAll: TTabSheet
