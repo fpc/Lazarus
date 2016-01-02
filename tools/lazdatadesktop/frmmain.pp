@@ -226,6 +226,8 @@ type
     function GetConnectionName(out AName: String): Boolean;
     function GetCurrentConnection: TConnectionEditor;
     function GetCurrentEditor: TDataDictEditor;
+    function GetSelectedRecentConnection: TRecentConnection;
+    function GetSelectedRecentDataDict: TRecentDataDict;
     procedure NewConnection(EngineName : String);
     procedure NewConnection;
     procedure OpenConnection(RC: TRecentConnection);
@@ -270,7 +272,9 @@ type
     procedure ShowGenerateSQL;
     Property CurrentEditor : TDataDictEditor Read GetCurrentEditor;
     Property CurrentConnection : TConnectionEditor Read GetCurrentConnection;
-  end; 
+    Property SelectedRecentConnection : TRecentConnection Read GetSelectedRecentConnection;
+    Property SelectedRecentDataDict : TRecentDataDict Read GetSelectedRecentDataDict;
+  end;
 
 
 var
@@ -606,6 +610,49 @@ begin
     Result:=Nil;
 end;
 
+function TMainForm.GetSelectedRecentConnection: TRecentConnection;
+
+Var
+  TN : TTreeNode;
+  LI : TListItem;
+
+begin
+  Result:=Nil;
+  if FTreeIntf then
+     begin
+     TN:=TVAll.Selected;
+     if Assigned(TN) AND Assigned(TN.Data) AND TObject(TN.Data).InheritsFrom(TRecentConnection) then
+       Result:=TRecentConnection(TN.Data);
+     end
+  else
+    begin
+    LI:=LVConnections.Selected;
+    if (LI<>Nil) and (LI.Data<>Nil) then
+      Result:=TRecentConnection(LI.Data)
+    end;
+end;
+
+function TMainForm.GetSelectedRecentDataDict: TRecentDataDict;
+Var
+  TN : TTreeNode;
+  LI : TListItem;
+
+begin
+  Result:=Nil;
+  if FTreeIntf then
+     begin
+     TN:=TVAll.Selected;
+     if Assigned(TN) AND Assigned(TN.Data) AND TObject(TN.Data).InheritsFrom(TRecentDataDict) then
+       Result:=TRecentDataDict(TN.Data);
+     end
+  else
+    begin
+    LI:=LVDicts.Selected;
+    if (LI<>Nil) AND (LI.Data<>Nil) then
+      Result:=TRecentDataDict(LI.Data);
+    end;
+end;
+
 function TMainForm.GetCurrentConnection: TConnectionEditor;
 
 Var
@@ -936,13 +983,12 @@ Var
   R : TRecentConnection;
 
 begin
-  If (LVConnections.Selected<>Nil)
-     and (LVConnections.Selected.Data<>Nil) then
+  R:=SelectedRecentConnection;
+  If Assigned(R) then
     begin
-    R:=TRecentConnection(LVConnections.Selected.Data);
-    If (R<>Nil) then
-      FRecentConnections.Delete(R.Index);
-    ShowRecentConnections;
+    FRecentConnections.Delete(R.Index);
+    FindLI(LVConnections,R).Free;
+    FindTN(FNRecentConnections,R).Free;
     end;
 end;
 
@@ -1071,46 +1117,15 @@ begin
 end;
 
 procedure TMainForm.HaveRecentConnection(Sender: TObject);
-Var
-  TN : TTreeNode;
-  LI : TListItem;
-  doEnable: Boolean;
 
 begin
-  if FTreeIntf then
-     begin
-     TN:=TVAll.Selected;
-     doEnable:=Assigned(TN) AND Assigned(TN.Data) AND TObject(TN.Data).InheritsFrom(TRecentConnection)
-     end
-  else
-    begin
-    LI:=LVConnections.Selected;
-    doEnable:=(LI<>Nil) and (LI.Data<>Nil);
-    end;
-  (Sender as Taction).Enabled:=doEnable;
+  (Sender as Taction).Enabled:=Assigned(SelectedRecentConnection);
 end;
 
 procedure TMainForm.HaveRecentDataDict(Sender: TObject);
 
-Var
-  TN : TTreeNode;
-  LI : TListItem;
-  doEnable: Boolean;
-
 begin
-  if FTreeIntf then
-     begin
-     TN:=TVAll.Selected;
-     doEnable:=Assigned(TN)
-       AND Assigned(TN.Data)
-       AND TObject(TN.Data).InheritsFrom(TRecentDataDict)
-     end
-  else
-    begin
-    LI:=LVDicts.Selected;
-    doEnable:=(LI<>Nil) AND (LI.Data<>Nil);
-    end;
-  (Sender as Taction).Enabled:=doEnable;
+  (Sender as Taction).Enabled:=Assigned(SelectedRecentDataDict);
 end;
 
 procedure TMainForm.HaveTabs(Sender: TObject);
@@ -1542,12 +1557,14 @@ procedure TMainForm.DeleteRecentDataDict;
 
 Var
   D: TRecentDatadict;
+
 begin
-  If (LVDicts.Selected<>Nil)  and (LVDicts.Selected.Data<>Nil) then
+  D:=SelectedRecentDataDict;
+  If Assigned(D) then
    begin
-   D:=TRecentDatadict(LVDicts.Selected.Data);
    FRecentDicts.Delete(D.Index);
-   ShowRecentDictionaries;
+   FindLI(LVDicts,D).Free;
+   FindTN(FNRecentDictionaries,D).Free;
    end;
 end;
 
