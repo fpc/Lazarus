@@ -1895,7 +1895,7 @@ end;
 function TJITForms.IsJITForm(AComponent: TComponent): Boolean;
 begin
   Result:=(AComponent<>nil) and (AComponent is TCustomForm)
-      and (TCustomForm(AComponent).Parent=nil) and (IndexOf(AComponent)>=0);
+      and (IndexOf(AComponent)>=0);
 end;
 
 function TJITForms.GetItem(Index: integer): TCustomForm;
