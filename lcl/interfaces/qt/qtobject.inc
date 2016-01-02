@@ -1425,7 +1425,8 @@ begin
       if IsValidHintHandle(TObject(SavedHintHandlesList.Items[i])) then
       begin
         AWidget := TQtHintWindow(SavedHintHandlesList.Items[i]);
-        AWidget.NeedRestoreVisible := AWidget.getVisible;
+        AWidget.NeedRestoreVisible := AWidget.getVisible and
+          Assigned(AWidget.LCLObject) and AWidget.LCLObject.Visible;
         AWidget.Hide;
       end;
     end;
@@ -1448,7 +1449,8 @@ begin
       if IsValidHintHandle(TObject(SavedHintHandlesList.Items[i])) then
       begin
         AWidget := TQtHintWindow(SavedHintHandlesList.Items[i]);
-        if AWidget.NeedRestoreVisible then
+        if AWidget.NeedRestoreVisible and Assigned(AWidget.LCLObject) and
+          AWIdget.LCLObject.Visible then
         begin
           AWidget.NeedRestoreVisible := False;
           AWidget.Show;
