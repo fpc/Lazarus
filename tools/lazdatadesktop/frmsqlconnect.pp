@@ -79,7 +79,7 @@ implementation
 
 {$R *.lfm}
 
-uses fpddsqldb,strutils;
+uses fpdatadict, fpddsqldb ,strutils;
 
 function GetSQLDBConnectString(HostSupported : Boolean; Initial,ADriver : String; OnTest : TTestConnectionEvent = Nil): String;
 
@@ -197,6 +197,11 @@ begin
 end;
 
 procedure TSQLConnectionForm.SetString(Index: integer; const AValue: String);
+
+
+var
+  ADesc, AType: String;
+  ACap: TFPDDEngineCapabilities;
 begin
   Case Index of
     0 : EHostName.Text:=AValue;
@@ -207,7 +212,8 @@ begin
     5 :
       begin
       FDriver:=AValue;
-      Caption:= Format(sld_Connecttoadatabase,[AValue]);
+      if GetDictionaryEngineInfo(AValue,ADesc,AType,ACap) then
+        Caption:= Format(sld_Connecttoadatabase,[ADesc]);
       end;
   end;
 end;
