@@ -242,6 +242,8 @@ resourcestring
   //
   sld_Fromconnection       = 'From connection';
   //
+  sld_ConnectionType = 'Connection type';
+  sld_LegacyView = 'Legacy List View';
 
 implementation
 
