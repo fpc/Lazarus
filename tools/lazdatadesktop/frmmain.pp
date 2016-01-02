@@ -127,6 +127,7 @@ type
     ODDD: TOpenDialog;
     PCRecent: TPageControl;
     SDDD: TSaveDialog;
+    SRecent: TSplitter;
     TSAll: TTabSheet;
     TBAddIndex: TToolButton;
     TBCreateCode: TToolButton;
@@ -414,7 +415,9 @@ begin
   FN:=SysToUTF8(GetAppConfigFile(False));
   PSMain.IniFileName:=ChangeFileExt(FN,'.ini');
   FTreeIntf:=PSMain.ReadBoolean('TreeInterface',True);
-  // We need these 2 in all cases
+  if FTreeIntf then
+    PCRecent.Width:=PSMain.ReadInteger('TreeWidth',PCRecent.Width);
+// We need these 2 in all cases
   FNRecentConnections:=TVAll.Items.AddChild(Nil,sld_Connections);
   FNRecentConnections.ImageIndex:=16;
   FNRecentDictionaries:=TVAll.Items.AddChild(Nil,sld_Dictionaries);
@@ -446,7 +449,9 @@ begin
     begin
     PCDD:=PCItems;
     PCRecent.Align:=alLeft;
-    PCRecent.Width:=300;
+    //PCRecent.Width:=300;
+    SRecent.Align:=alLeft;
+    SRecent.Visible:=True;
     PCItems.Visible:=True;
     PCItems.Align:=alClient;
     end
@@ -454,6 +459,8 @@ begin
     begin
     PCItems.Align:=alRight;
     PCItems.Visible:=False;
+    SRecent.Align:=alRight;
+    SRecent.Visible:=False;
     PCRecent.Align:=alClient;
     PCDD:=PCRecent;
     end;
@@ -465,6 +472,8 @@ begin
   FreeAndNil(FRecentConnections);
   FreeAndNil(FRecentDicts);
   PSMain.WriteBoolean('TreeInterface',FTreeIntf);
+  if FTreeIntf then
+    PSMain.WriteInteger('TreeWidth',PCRecent.Width);
 end;
 
 procedure TMainForm.FormShow(Sender: TObject);

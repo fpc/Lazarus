@@ -128,7 +128,7 @@ object MainForm: TMainForm
     Left = 0
     Height = 418
     Top = 26
-    Width = 466
+    Width = 458
     ActivePage = TSAll
     Align = alClient
     Images = ILMain
@@ -137,7 +137,7 @@ object MainForm: TMainForm
     object TSRecent: TTabSheet
       Caption = 'Dictionaries'
       ClientHeight = 380
-      ClientWidth = 458
+      ClientWidth = 450
       ImageIndex = 19
       object LVDicts: TListView
         Left = 0
@@ -172,7 +172,7 @@ object MainForm: TMainForm
     object TSConnections: TTabSheet
       Caption = 'Connections'
       ClientHeight = 380
-      ClientWidth = 458
+      ClientWidth = 450
       ImageIndex = 16
       object LVConnections: TListView
         Left = 0
@@ -210,13 +210,13 @@ object MainForm: TMainForm
     object TSAll: TTabSheet
       Caption = 'Connections/Dictionaries'
       ClientHeight = 380
-      ClientWidth = 458
+      ClientWidth = 450
       ImageIndex = 17
       object TVAll: TTreeView
         Left = 0
         Height = 380
         Top = 0
-        Width = 458
+        Width = 450
         Align = alClient
         DefaultItemHeight = 16
         Images = ILMain
@@ -263,6 +263,14 @@ object MainForm: TMainForm
     Align = alRight
     Images = ILMain
     TabOrder = 3
+  end
+  object SRecent: TSplitter
+    Left = 458
+    Height = 418
+    Top = 26
+    Width = 8
+    Align = alRight
+    ResizeAnchor = akRight
   end
   object MainMenu1: TMainMenu
     Images = ILMain
