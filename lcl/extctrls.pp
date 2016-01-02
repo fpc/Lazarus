@@ -347,6 +347,8 @@ type
     procedure SetBeveled(const AValue: boolean);
     procedure SetMinSize(const AValue: integer);
   protected
+    procedure CMEnabledChanged(var Message: TLMEssage); message CM_ENABLEDCHANGED;
+
     class procedure WSRegisterClass; override;
     function AdaptAnchors(const a: TAnchors): TAnchors;
     function CheckNewSize(var NewSize: Integer): Boolean; virtual;
@@ -368,6 +370,7 @@ type
     procedure SetResizeControl(const AValue: TControl); virtual;
     procedure StartSplitterMove(const MouseXY: TPoint);
     procedure StopSplitterMove(const MouseXY: TPoint);
+    procedure UpdateCursor; virtual;
   public
     constructor Create(TheOwner: TComponent); override;
     procedure AnchorSplitter(Kind: TAnchorKind; AControl: TControl);
