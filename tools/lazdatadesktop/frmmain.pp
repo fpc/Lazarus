@@ -18,6 +18,10 @@
  *                                                                         *
  ***************************************************************************
 }
+{$IFDEF VER3_1_1}
+{$DEFINE HAVEMSSQLCONN}
+{$ENDIF}
+
 unit frmmain;
 
 {$mode objfpc}{$H+}
@@ -285,6 +289,8 @@ implementation
 
 {$R *.lfm}
 
+{$DEFINE HAVEMSSQLCONN}
+
 uses
   frmselectconnectiontype,
   // Data dictionary support for
@@ -301,7 +307,9 @@ uses
   {$endif}
   fpddsqlite3, // SQLite 3
   fpddodbc,    // Any ODBC supported
-  mssqlconn,
+  {$ifdef HAVEMSSQLCONN}
+  fpddmssql,
+  {$endif HAVEMSSQLCONN}
   frmimportdd,frmgeneratesql,fpddsqldb,frmSQLConnect,fpstdexports;
 
 { ---------------------------------------------------------------------
@@ -557,6 +565,9 @@ begin
 {$endif}
   RegisterSQLite3DDEngine;
   RegisterODBCDDengine;
+{$IFDEF HAVEMSSQLCONN}
+  RegisterMSSQLDDEngine;
+{$ENDIF}
 end;
 
 procedure TMainForm.RegisterConnectionCallBacks;
@@ -585,6 +596,9 @@ begin
     MaybeRegisterConnectionStringCallback('TSQLDBPOSTGRESQLDDEngine',@GetSQLConnectionDlg);
     MaybeRegisterConnectionStringCallback('TSQLDBFBDDEngine',@GetSQLConnectionDlg);
     MaybeRegisterConnectionStringCallback('TSQLDBSQLite3DDEngine',@GetSQLConnectionDlg);
+{$IFDEF HAVEMSSQLCONN}
+    MaybeRegisterConnectionStringCallback('TSQLDBMSSQLDDEngine',@GetSQLConnectionDlg);
+{$ENDIF}
   finally
     L.free;
   end;
