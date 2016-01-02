@@ -1227,6 +1227,8 @@ begin
 end;
 
 procedure TCustomForm.MoveToDefaultPosition;
+var
+  RealWidth, RealHeight: Integer;
 
   procedure MoveToDefaultMonitor(var X, Y: Integer);
   var
@@ -1236,7 +1238,7 @@ procedure TCustomForm.MoveToDefaultPosition;
     // delphi compatibility: if no main form then DefaultMonitor has no effect
     if Application.MainForm = nil then Exit;
     // find the monitor of the center of the form (the boundaries might be on another monitor)
-    Source := Screen.MonitorFromRect(Rect(X,Y,X+Width,Y+Height));
+    Source := Screen.MonitorFromRect(Rect(X,Y,X+RealWidth,Y+RealHeight));
     case DefaultMonitor of
       dmDesktop:
         Target := Source; // no need to move
@@ -1260,21 +1262,21 @@ procedure TCustomForm.MoveToDefaultPosition;
       Y := (Y - Source.Top) + ABounds.Top;
 
       // check that we are still in the desired monitor
-      if X + Width > ABounds.Right then
-        X := ABounds.Right - Width;
+      if X + RealWidth > ABounds.Right then
+        X := ABounds.Right - RealWidth;
       if X < ABounds.Left then
         X := ABounds.Left;
 
-      if Y + Height > ABounds.Bottom then
-        Y := ABounds.Bottom - Height;
+      if Y + RealHeight > ABounds.Bottom then
+        Y := ABounds.Bottom - RealHeight;
       if Y < ABounds.Top then
         Y := ABounds.Top;
     end
     else
     begin
       ABounds := Target.BoundsRect;
-      X := (ABounds.Left + ABounds.Right - Width) div 2;
-      Y := (ABounds.Top + ABounds.Bottom - Height) div 2;
+      X := (ABounds.Left + ABounds.Right - RealWidth) div 2;
+      Y := (ABounds.Top + ABounds.Bottom - RealHeight) div 2;
     end;
   end;
 
@@ -1282,6 +1284,7 @@ var
   X, Y: integer;
   p: TPosition;
   AForm: TCustomForm;
+  RealRect: TRect;
 begin
   if (Parent <> nil) or (ParentWindow <> 0) then exit;
 
@@ -1290,6 +1293,15 @@ begin
   // first make sure X and Y are assigned
   X := Left;
   Y := Top;
+  if HandleAllocated and (GetWindowRect(Handle, RealRect) <> 0) then
+  begin // success
+    RealWidth := RealRect.Right-RealRect.Left;
+    RealHeight := RealRect.Bottom-RealRect.Top;
+  end else
+  begin // error
+    RealWidth := Width;
+    RealHeight := Height;
+  end;
 
   p := Position;
   if (Position = poMainFormCenter) and (Application.Mainform=nil) then
@@ -1297,13 +1309,13 @@ begin
   case P of
     poDesktopCenter:
       begin
-        X := Screen.DesktopLeft + (Screen.DesktopWidth - Width) div 2;
-        Y := Screen.DesktopTop +(Screen.DesktopHeight - Height) div 2;
+        X := Screen.DesktopLeft + (Screen.DesktopWidth - RealWidth) div 2;
+        Y := Screen.DesktopTop +(Screen.DesktopHeight - RealHeight) div 2;
       end;
     poScreenCenter:
       begin
-        X := (Screen.Width - Width) div 2;
-        Y := (Screen.Height - Height) div 2;
+        X := (Screen.Width - RealWidth) div 2;
+        Y := (Screen.Height - RealHeight) div 2;
       end;
     poMainFormCenter,
     poOwnerFormCenter:
@@ -1316,12 +1328,12 @@ begin
         begin
           if FormStyle = fsMDIChild then
           begin
-            X := (AForm.ClientWidth - Width) div 2;
-            Y := (AForm.ClientHeight - Height) div 2;
+            X := (AForm.ClientWidth - RealWidth) div 2;
+            Y := (AForm.ClientHeight - RealHeight) div 2;
           end else
           begin
-            X := ((AForm.Width - Width) div 2) + AForm.Left;
-            Y := ((AForm.Height - Height) div 2) + AForm.Top;
+            X := ((AForm.Width - RealWidth) div 2) + AForm.Left;
+            Y := ((AForm.Height - RealHeight) div 2) + AForm.Top;
           end;
         end;
       end;
