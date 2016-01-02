@@ -6071,17 +6071,14 @@ begin
 end;
 
 procedure TAnchorDockSplitter.UpdatePercentPosition;
-var
-  BR: TRect;
 begin
-  BR := BoundsRect;
   case ResizeAnchor of
     akTop, akBottom:
       if FDockParentClientSize.cy > 0 then
-        FPercentPosition := (BR.Top+BR.Bottom) / 2 / FDockParentClientSize.cy;
+        FPercentPosition := Top / FDockParentClientSize.cy;
   else
     if FDockParentClientSize.cx > 0 then
-      FPercentPosition := (BR.Left+BR.Right) / 2 / FDockParentClientSize.cx;
+      FPercentPosition := Left / FDockParentClientSize.cx;
   end;
 end;
 
