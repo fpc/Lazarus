@@ -76,6 +76,9 @@ type
     ILMain: TImageList;
     LVConnections: TListView;
     LVDicts: TListView;
+    MenuItem10: TMenuItem;
+    PMIDeleteDataDictA: TMenuItem;
+    PMINewDataDictA: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
     MenuItem4: TMenuItem;
@@ -83,12 +86,16 @@ type
     MenuItem6: TMenuItem;
     MenuItem7: TMenuItem;
     MenuItem8: TMenuItem;
+    PMIOpenDataDictA: TMenuItem;
     MIListView: TMenuItem;
     MView: TMenuItem;
     MICreateCode: TMenuItem;
     PCItems: TPageControl;
+    PMIDeleteConnectionA: TMenuItem;
     PMINewConnection: TMenuItem;
+    PMINewConnectionA: TMenuItem;
     PMINewDataDict: TMenuItem;
+    PMIOpenConnectionA: TMenuItem;
     PMIOpenDataDict: TMenuItem;
     MIDeleteRecentConnection: TMenuItem;
     MIOpenRecentConnection: TMenuItem;
@@ -113,6 +120,7 @@ type
     MIDataDict: TMenuItem;
     PMRecentConnections: TPopupMenu;
     PMDataDict: TPopupMenu;
+    PMAll: TPopupMenu;
     PStatus: TPanel;
     PStatusText: TPanel;
     PBSTatus: TProgressBar;
@@ -197,6 +205,7 @@ type
     procedure OpenRecentDatadict(Sender: TObject);
     procedure LVDictsKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure MIDataDictClick(Sender: TObject);
+    procedure PMAllPopup(Sender: TObject);
     procedure SaveAsExecute(Sender: TObject);
     procedure TVAllDblClick(Sender: TObject);
   private
@@ -1062,15 +1071,46 @@ begin
 end;
 
 procedure TMainForm.HaveRecentConnection(Sender: TObject);
+Var
+  TN : TTreeNode;
+  LI : TListItem;
+  doEnable: Boolean;
+
 begin
-  (Sender as Taction).Enabled:=(LVConnections.Selected<>Nil)
-                                and (LVConnections.Selected.Data<>Nil);
+  if FTreeIntf then
+     begin
+     TN:=TVAll.Selected;
+     doEnable:=Assigned(TN) AND Assigned(TN.Data) AND TObject(TN.Data).InheritsFrom(TRecentConnection)
+     end
+  else
+    begin
+    LI:=LVConnections.Selected;
+    doEnable:=(LI<>Nil) and (LI.Data<>Nil);
+    end;
+  (Sender as Taction).Enabled:=doEnable;
 end;
 
 procedure TMainForm.HaveRecentDataDict(Sender: TObject);
+
+Var
+  TN : TTreeNode;
+  LI : TListItem;
+  doEnable: Boolean;
+
 begin
-  (Sender as Taction).Enabled:=(LVDicts.Selected<>Nil)
-                                and (LVDicts.Selected.Data<>Nil);
+  if FTreeIntf then
+     begin
+     TN:=TVAll.Selected;
+     doEnable:=Assigned(TN)
+       AND Assigned(TN.Data)
+       AND TObject(TN.Data).InheritsFrom(TRecentDataDict)
+     end
+  else
+    begin
+    LI:=LVDicts.Selected;
+    doEnable:=(LI<>Nil) AND (LI.Data<>Nil);
+    end;
+  (Sender as Taction).Enabled:=doEnable;
 end;
 
 procedure TMainForm.HaveTabs(Sender: TObject);
@@ -1080,7 +1120,10 @@ end;
 
 procedure TMainForm.HaveTab(Sender: TObject);
 begin
-  (Sender as TAction).Enabled:=(PCDD.PageCount>2);
+  if FTreeIntf then
+    (Sender as TAction).Enabled:=(PCDD.PageCount>0)
+  else
+    (Sender as TAction).Enabled:=(PCDD.PageCount>2);
 end;
 
 procedure TMainForm.HaveTables(Sender: TObject);
@@ -1513,6 +1556,32 @@ begin
   MIDataDict.Items[0].Clear;
   ShowImportRecentconnections;
   ShowDDImports;
+end;
+
+procedure TMainForm.PMAllPopup(Sender: TObject);
+
+Type
+  TOption = (oConnection,oDataDict);
+  TOptions = Set of TOption;
+
+Var
+  TN : TTreeNode;
+  S : TOptions;
+
+begin
+  TN:=TVAll.Selected;
+  S:=[];
+  if Assigned(TN) and Assigned(TN.Data) then
+    if TObject(TN.Data).InheritsFrom(TRecentConnection) then
+      S:=[oConnection]
+    else if TObject(TN.Data).InheritsFrom(TRecentDatadict) then
+      S:=[oDataDict];
+   PMINewConnectionA.Visible:=True;
+   PMIOpenConnectionA.Visible:=oConnection in S;
+   PMIDeleteConnectionA.Visible:=oConnection in S;
+   PMINewDataDictA.Visible:=True;
+   PMIOpenDataDictA.Visible:=oDataDict in S;
+   PMIDeleteDataDictA.Visible:=oDataDict in S;
 end;
 
 

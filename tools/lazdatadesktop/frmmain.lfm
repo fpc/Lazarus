@@ -129,10 +129,10 @@ object MainForm: TMainForm
     Height = 418
     Top = 26
     Width = 458
-    ActivePage = TSConnections
+    ActivePage = TSAll
     Align = alClient
     Images = ILMain
-    TabIndex = 0
+    TabIndex = 2
     TabOrder = 1
     object TSConnections: TTabSheet
       Caption = 'Connections'
@@ -220,6 +220,7 @@ object MainForm: TMainForm
         Align = alClient
         DefaultItemHeight = 16
         Images = ILMain
+        PopupMenu = PMAll
         TabOrder = 0
         OnDblClick = TVAllDblClick
       end
@@ -1717,7 +1718,7 @@ object MainForm: TMainForm
       Action = AOpenConnection
     end
     object PMINewConnection: TMenuItem
-      Caption = '&New connection'
+      Action = ANewConnection
     end
     object PMIDeleteConnection: TMenuItem
       Action = ADeleteConnection
@@ -1774,6 +1775,33 @@ object MainForm: TMainForm
     object MenuItem8: TMenuItem
       Action = ADeleteRecentDataDict
       OnClick = ADeleteRecentDataDictExecute
+    end
+  end
+  object PMAll: TPopupMenu
+    Images = ILMain
+    OnPopup = PMAllPopup
+    left = 152
+    top = 256
+    object PMIOpenConnectionA: TMenuItem
+      Action = AOpenConnection
+    end
+    object PMINewConnectionA: TMenuItem
+      Action = ANewConnection
+    end
+    object PMIDeleteConnectionA: TMenuItem
+      Action = ADeleteConnection
+    end
+    object MenuItem10: TMenuItem
+      Caption = '-'
+    end
+    object PMIOpenDataDictA: TMenuItem
+      Action = AOpenRecentDatadict
+    end
+    object PMINewDataDictA: TMenuItem
+      Action = ANew
+    end
+    object PMIDeleteDataDictA: TMenuItem
+      Action = ADeleteRecentDataDict
     end
   end
 end
