@@ -7032,6 +7032,8 @@ begin
   end else if Node.Desc<>ctnTypeDefinition then
     exit;
   Node:=Node.FirstChild;
+  if Node=nil then
+    Exit;
   Identifier:=@Src[Node.StartPos];
   if (Node=nil)
   or (not (Node.Desc in AllClasses))
