@@ -526,6 +526,11 @@ begin
   end;
   {$ENDIF}
 
+  case TheMessage.Msg of
+    LM_LBUTTONDOWN, LM_RBUTTONDOWN, LM_MBUTTONDOWN, LM_XBUTTONDOWN:
+      Form.Form.SetFocus; // set focus to form so that it receives key messages (Issue #29044)
+  end;
+
   FWndMethod(TheMessage);
 end;
 
