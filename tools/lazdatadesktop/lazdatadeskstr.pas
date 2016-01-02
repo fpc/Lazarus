@@ -113,6 +113,13 @@ resourcestring
   sld_TestConnection = 'Test connection';
   sld_SuccesConnecting = 'Connection established successfully!';
 
+  sld_FirstStart = 'First start of database desktop';
+  sql_NoConnectionsFound = 'No connections or data dictionaries were found.'#13#10+
+                           ' Start by creating a new connection or data dictionary';
+  sld_startnewdict = 'Start new dictionary';
+  sld_startnewconnection = 'Create new connection';
+  sld_startempty = 'Thanks, I know what to do';
+
   // Query panel
   SSQLFilters = 'SQL files|*.sql|All files|*.*';
   SRowsAffected = 'Query executed successfully: %d rows affected.';

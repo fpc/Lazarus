@@ -18,6 +18,14 @@
  *                                                                         *
  ***************************************************************************
 }
+
+{
+  Adding support for new connection types requires implementing a Data Dictionary for your connection type
+  see fcl-db/src/datadict for many implementations.
+  When done so, add the unit to the uses clause in the implementation, and register it in RegisterDDEngines
+}
+
+{ MS-SQL server connectop}
 {$IFDEF VER3_1_1}
 {$DEFINE HAVEMSSQLCONN}
 {$ENDIF}
@@ -501,6 +509,15 @@ end;
 procedure TMainForm.FormShow(Sender: TObject);
 begin
   CheckParams;
+  if (FRecentConnections.Count=0) and (FRecentDicts.Count=0) then
+    case QuestionDlg(sld_FirstStart,sql_NoConnectionsFound,mtInformation,[
+         mrOK,sld_startnewdict,
+         mrYes,sld_startnewconnection,
+         mrCancel,sld_startempty
+       ],0) of
+       mrYes : NewConnection;
+       mrOK  : NewDataDict;
+    end
 end;
 
 procedure TMainForm.CheckParams;
