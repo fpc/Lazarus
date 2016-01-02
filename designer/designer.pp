@@ -2008,7 +2008,7 @@ begin
   Exclude(FFLags, dfHasSized);
   SetCaptureControl(nil);
   DesignSender := GetDesignControl(Sender);
-  ParentForm := GetParentForm(DesignSender);
+  ParentForm := GetDesignerForm(DesignSender);
   //DebugLn(['TDesigner.MouseDownOnControl DesignSender=',dbgsName(DesignSender),' ParentForm=',dbgsName(ParentForm)]);
   if (ParentForm = nil) then exit;
   
@@ -2390,7 +2390,7 @@ begin
 
   // check if the message is for the designed form and there was a mouse down before
   DesignSender:=GetDesignControl(Sender);
-  SenderParentForm:=GetParentForm(DesignSender);
+  SenderParentForm:=GetDesignerForm(DesignSender);
   //DebugLn(['TDesigner.MouseUpOnControl DesignSender=',dbgsName(DesignSender),' SenderParentForm=',dbgsName(SenderParentForm),' ',TheMessage.XPos,',',TheMessage.YPos]);
   if (MouseDownComponent=nil) or (SenderParentForm=nil)
   or (SenderParentForm<>Form)
@@ -2562,7 +2562,7 @@ begin
 
   DesignSender := GetDesignControl(Sender);
   //DebugLn('TDesigner.MouseMoveOnControl Sender=',dbgsName(Sender),' ',dbgsName(DesignSender));
-  SenderParentForm := GetParentForm(DesignSender);
+  SenderParentForm := GetDesignerForm(DesignSender);
   if (SenderParentForm = nil) or (SenderParentForm <> Form) then Exit;
 
   OldMouseMovePos := LastMouseMovePos;

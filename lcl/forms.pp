@@ -1747,6 +1747,7 @@ var
   IsFormDesign: TIsFormDesignFunction = nil;
 
 function GetParentForm(Control: TControl; TopForm: Boolean = True): TCustomForm;
+function GetDesignerForm(Control: TControl): TCustomForm;
 function GetFirstParentForm(Control:TControl): TCustomForm;
 function ValidParentForm(Control: TControl; TopForm: Boolean = True): TCustomForm;
 function GetDesignerForm(APersistent: TPersistent): TCustomForm;
@@ -1936,6 +1937,20 @@ begin
     Result := TCustomForm(Control)
   else
     Result := nil;
+end;
+
+//------------------------------------------------------------------------------
+function GetDesignerForm(Control: TControl): TCustomForm;
+begin
+  // find the topmost parent form with designer
+
+  Result := nil;
+  while Control<>nil do
+  begin
+    if (Control is TCustomForm) and (TCustomForm(Control).Designer<>nil) then
+      Result := TCustomForm(Control);
+    Control := Control.Parent;
+  end;
 end;
 
 //------------------------------------------------------------------------------
