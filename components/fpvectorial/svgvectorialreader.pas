@@ -2935,6 +2935,13 @@ begin
     Result := Result * 10;
     DoProcessMM_End();
   end
+  else if UnitStr = 'in' then
+  begin
+    ValueStr := Copy(AStr, 1, Len-2);
+    Result := StrToFloat(ValueStr, FPointSeparator);
+    Result := Result * 25.4;
+    DoProcessMM_End();
+  end
   else if UnitStr = 'px' then
   begin
     ValueStr := Copy(AStr, 1, Len-2);
