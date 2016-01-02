@@ -713,10 +713,9 @@ end;
 
 procedure TMainIDEBar.Resizing(State: TWindowState);
 begin
-  if not (wcfClientRectNeedsUpdate in FWinControlFlags) then
-    case State of
-      wsMaximized, wsNormal: DoSetMainIDEHeight(State = wsMaximized);
-    end;
+  case State of
+    wsMaximized, wsNormal: DoSetMainIDEHeight(State = wsMaximized);
+  end;
 
   inherited Resizing(State);
 end;
