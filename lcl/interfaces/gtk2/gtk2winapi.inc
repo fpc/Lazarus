@@ -6140,7 +6140,7 @@ var
   R: TRect;
   P: TPoint;
 begin
-  Result := 0; //default
+  Result := 0; // error
   if Handle <> 0 then
   begin
     Widget := {%H-}PGtkWidget(Handle);
@@ -6154,12 +6154,19 @@ begin
       R := RectFromGdkRect(GRect);
       ARect := Bounds(P.X,P.Y,R.Right-R.Left,R.Bottom-R.Top);
       // writeln('Frame extents are: ',dbgs(R),' ARECT=',dbgs(AREct));
+      Result := 1; // success
       exit;
     end;
 
     ARect.TopLeft := GetWidgetOrigin(Widget);
-    ARect.BottomRight := Point(ARect.Left + Widget^.allocation.width,
-                    ARect.Top + Widget^.allocation.height);
+    if (ARect.Top <> -1) or (ARect.Left <> -1)
+    or (Widget^.allocation.width <> 1) or (Widget^.allocation.height <> 1) then
+    begin
+      ARect.BottomRight := Point(
+        ARect.Left + Widget^.allocation.width,
+        ARect.Top + Widget^.allocation.height);
+      Result := 1; // success
+    end;
   end;
 end;
 {------------------------------------------------------------------------------
