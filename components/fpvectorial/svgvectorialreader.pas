@@ -1888,6 +1888,9 @@ begin
   AData.AddLineToPath(vx2, vy2);
   lPath := AData.EndPath(True);
 
+  // Add default SVG pen/brush
+  lPath.Pen.Style := psClear;
+
   // Apply the layer style
   ApplyLayerStyles(lPath);
 
@@ -1931,7 +1934,7 @@ begin
   // Add default SVG pen/brush
   lPath.Pen.Style := psClear;
   lPath.Brush.Color := colBlack;
-  lPath.Brush.Style := bsSolid;
+  lPath.Brush.Style := bsClear;
   // Apply the layer style
   ApplyLayerStyles(lPath);
   // Add the pen/brush/name
@@ -2411,6 +2414,10 @@ begin
   ReadPointsFromString(lPointsStr, AData, ADoc, lIsPolygon);
   lPath := AData.EndPath(True);
   Result := lPath;
+
+  // Add default SVG pen/brush
+  lPath.Pen.Style := psClear;
+  lPath.Brush.Style := bsClear;
 
   // Apply the layer style
   ApplyLayerStyles(lPath);

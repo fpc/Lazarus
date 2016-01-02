@@ -4313,10 +4313,9 @@ begin
               if i = High(FPolyStarts) then
                 n := Length(FPolyPoints) - j
               else
-                n := FPolyStarts[i+1] - FPolyStarts[i] + 1;
-            end;
-            if (FPolyPoints[0].X = FPolyPoints[n-1].X) and (FPolyPoints[0].Y = FPolyPoints[n-1].Y) then
+                n := FPolyStarts[i+1] - FPolyStarts[i]; // + 1;
               ACanvas.Polygon(@FPolyPoints[j], n, WindingRule = vcmNonZeroWindingRule);
+            end;
             {$ELSE}
             ADest.Polygon(FPolyPoints);
             {$ENDIF}
