@@ -4101,6 +4101,7 @@ procedure TPascalParserTool.ReadTypeReference;
     TButton
     controls.TButton
     TGenericClass<TypeReference,TypeReference>
+    TGenericClass<TypeReference,TypeReference>.TNestedClass
 }
 var SavePos: TAtomPosition;
 begin
@@ -4122,6 +4123,11 @@ begin
   CurNode.LastChild := nil;
   ReadSpecialize(True);
   CurNode.EndPos := CurPos.EndPos;
+  while CurPos.Flag=cafPoint do begin
+    ReadNextAtom;
+    AtomIsIdentifierSaveE;
+    ReadNextAtom;
+  end;
 end;
 
 procedure TPascalParserTool.ReadClassInterfaceContent;
