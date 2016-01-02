@@ -35,7 +35,7 @@ begin
   Screen.AddHandlerFormAdded(TSpartaMainIDE.Screen_FormAdded);
   Screen.AddHandlerRemoveForm(TSpartaMainIDE.Screen_FormDel);
 {$IFDEF USE_POPUP_PARENT_DESIGNER}
-  TCustomForm(LazarusIDE.GetMainBar).AddHandlerOnBeforeDestruction(spartaIDE.OnBeforeClose);
+  TCustomForm(LazarusIDE.GetMainBar).AddHandlerOnBeforeDestruction(TSpartaMainIDE.OnBeforeClose);
 {$ENDIF}
   SourceEditorManagerIntf.RegisterChangeEvent(semWindowCreate, TSpartaMainIDE.WindowCreate);
   SourceEditorManagerIntf.RegisterChangeEvent(semWindowDestroy, TSpartaMainIDE.WindowDestroy);
