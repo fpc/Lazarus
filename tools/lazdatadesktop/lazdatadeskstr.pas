@@ -103,12 +103,15 @@ resourcestring
   sld_Selectaconnectiontype = 'Select a conection type';
 
   // Connect to a database form
-  sld_Connecttoadatabase = 'Connect to a database';
+  sld_Connecttoadatabase = 'Connect to a database of type %s';
   sld_Host           = 'Host';
   sld_Database       = 'Database';
   sld_Username       = 'Username';
   sld_Password       = 'Password';
   sld_Charset        = 'Charset';
+  sld_UnknownType    = 'Unknown type';
+  sld_TestConnection = 'Test connection';
+  sld_SuccesConnecting = 'Connection established successfully!';
 
   // Query panel
   SSQLFilters = 'SQL files|*.sql|All files|*.*';

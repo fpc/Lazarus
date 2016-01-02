@@ -223,6 +223,7 @@ type
     procedure DeleteRecentConnection;
     procedure DeleteRecentDataDict;
     procedure DoShowNewConnectionTypes(ParentMenu: TMenuItem);
+    procedure DoTestConnection(Sender: TObject; const ADriver: String; Params: TStrings);
     function GetConnectionName(out AName: String): Boolean;
     function GetCurrentConnection: TConnectionEditor;
     function GetCurrentEditor: TDataDictEditor;
@@ -817,6 +818,21 @@ begin
   MIImport.Enabled:=(MIImport.Count>0);
 end;
 
+procedure TMainForm.DoTestConnection(Sender: TObject;Const ADriver : String; Params: TStrings);
+
+Var
+  DDE : TFPDDEngine;
+
+
+begin
+  DDE:=CreateDictionaryEngine(ADriver,Self);
+  try
+    DDE.Connect(Params.CommaText);
+  finally
+    DDE.Free;
+  end;
+end;
+
 procedure TMainForm.StartStatus;
 begin
   PBStatus.Position:=0;
@@ -884,7 +900,7 @@ Var
 begin
   Last:=PSmain.StoredValue[Sender.ClassName];
   With (Sender as TSQLDBDDEngine) do
-    AConnection:=GetSQLDBConnectString(HostSupported,Last);
+    AConnection:=GetSQLDBConnectString(HostSupported,Last,ClassName,@DoTestConnection);
   If (AConnection<>'') then
     PSmain.StoredValue[Sender.ClassName]:=AConnection;
 end;

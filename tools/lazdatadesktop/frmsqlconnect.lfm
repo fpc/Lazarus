@@ -1,24 +1,24 @@
 object SQLConnectionForm: TSQLConnectionForm
   Left = 394
-  Height = 196
+  Height = 167
   Top = 397
-  Width = 470
+  Width = 576
   ActiveControl = EHostName
   AutoSize = True
   BorderIcons = [biSystemMenu]
   Caption = 'Connect to a database'
-  ClientHeight = 196
-  ClientWidth = 470
+  ClientHeight = 167
+  ClientWidth = 576
   Constraints.MinWidth = 470
   OnCreate = FormCreate
-  LCLVersion = '1.5'
+  LCLVersion = '1.7'
   object LEHostName: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = EHostName
     AnchorSideTop.Side = asrCenter
     Left = 6
     Height = 23
-    Top = 5
+    Top = 4
     Width = 122
     Alignment = taRightJustify
     AutoSize = False
@@ -36,7 +36,7 @@ object SQLConnectionForm: TSQLConnectionForm
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 23
-    Top = 32
+    Top = 28
     Width = 122
     Alignment = taRightJustify
     Anchors = [akTop, akLeft, akRight]
@@ -54,7 +54,7 @@ object SQLConnectionForm: TSQLConnectionForm
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 23
-    Top = 59
+    Top = 52
     Width = 122
     Alignment = taRightJustify
     Anchors = [akTop, akLeft, akRight]
@@ -72,7 +72,7 @@ object SQLConnectionForm: TSQLConnectionForm
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 23
-    Top = 86
+    Top = 76
     Width = 122
     Alignment = taRightJustify
     Anchors = [akTop, akLeft, akRight]
@@ -90,7 +90,7 @@ object SQLConnectionForm: TSQLConnectionForm
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 21
-    Top = 114
+    Top = 101
     Width = 122
     Alignment = taRightJustify
     Anchors = [akTop, akLeft, akRight]
@@ -104,12 +104,11 @@ object SQLConnectionForm: TSQLConnectionForm
     AnchorSideLeft.Control = LEHostName
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = Owner
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
+    AnchorSideRight.Control = BTest
     Left = 134
-    Height = 21
+    Height = 18
     Top = 6
-    Width = 330
+    Width = 294
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
@@ -121,12 +120,11 @@ object SQLConnectionForm: TSQLConnectionForm
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = EHostName
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
+    AnchorSideRight.Control = BTest
     Left = 134
-    Height = 21
-    Top = 33
-    Width = 330
+    Height = 18
+    Top = 30
+    Width = 294
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
@@ -138,12 +136,11 @@ object SQLConnectionForm: TSQLConnectionForm
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = EDatabaseName
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
+    AnchorSideRight.Control = BTest
     Left = 134
-    Height = 21
-    Top = 60
-    Width = 330
+    Height = 18
+    Top = 54
+    Width = 294
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
@@ -155,12 +152,11 @@ object SQLConnectionForm: TSQLConnectionForm
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = EUserName
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
+    AnchorSideRight.Control = BTest
     Left = 134
-    Height = 21
-    Top = 87
-    Width = 330
+    Height = 18
+    Top = 78
+    Width = 294
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
@@ -175,9 +171,9 @@ object SQLConnectionForm: TSQLConnectionForm
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 49
-    Top = 141
-    Width = 458
+    Height = 35
+    Top = 126
+    Width = 564
     Anchors = [akTop, akLeft, akRight]
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -195,17 +191,63 @@ object SQLConnectionForm: TSQLConnectionForm
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = EPassword
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
+    AnchorSideRight.Control = BTest
     AnchorSideBottom.Control = BPButtons
     Left = 134
-    Height = 21
-    Top = 114
-    Width = 330
+    Height = 18
+    Top = 102
+    Width = 294
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
     TabOrder = 5
+  end
+  object BTest: TBitBtn
+    Left = 434
+    Height = 30
+    Top = 4
+    Width = 136
+    Anchors = [akTop, akRight]
+    Caption = 'Test connection'
+    Enabled = False
+    Glyph.Data = {
+      36040000424D3604000000000000360000002800000010000000100000000100
+      2000000000000004000064000000640000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
+      00FF000000FF000000FF000000FF000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000080808FF525252FF5252
+      52FF5E5E5EFF545454FF4C4C4CFF181818FF0000000000000000000000000000
+      0000000000FF000000FF000000FF000000FF000000FF404040FF737373FF9595
+      95FF9D9D9DFF888888FF6A6A6AFF595959FF000000FF00000000000000000808
+      08FF525252FF525252FF5E5E5EFF545454FF4C4C4CFF1B1B1BFF5E5E5EFF6E6E
+      6EFF6D6D6DFF696969FF666666FF535353FF000000FF00000000000000FF7373
+      73FF7E7E7EFF959595FF9D9D9DFF888888FF6A6A6AFF595959FF000000FF8D8D
+      8DFF8D8D8DFF8A8A8AFF616161FF656565FF000000FF00000000000000FF7F7F
+      7FFF9E9E9EFF6E6E6EFF6D6D6DFF696969FF666666FF535353FF000000FFA8A8
+      A8FFAFAFAFFFA6A6A6FF858585FF565656FF000000FF00000000000000FFA7A7
+      A7FF777777FF8D8D8DFF8D8D8DFF88898AFF606363FF636768FF010506FF8A8D
+      8DFF828384FF8C8C8CFF939393FF6E6E6EFF000000FF00000000000000FF9999
+      99FFADADADFFA8A8A8FFADAFB0FFA0A9ABFF829499FF5F777CFF1F373CFF8B9D
+      A2FF858E90FF7F8081FF797979FF727272FF000000FF00000000000000FFB4B4
+      B4FFA3A3A3FF8B8C8CFF838B8DFF86A2A9FF8ABBC9FF81B9C7FF649CAAFF8ABB
+      C9FF86A2A9FF838B8DFF7D7E7EFF727272FF000000FF00000000000000FFB7B7
+      B7FF989898FF8F9192FF84979CFF82B3C1FFA6D9E6FFCFECF5FFCCEBF3FFA7DB
+      E9FF93C3D1FF94A6ABFF545657FF1D1D1DFF000000FF00000000000000FF9898
+      98FFB4B4B4FF929596FF879EA4FF8DC3D2FFCDE9F1FFF6FAFBFFF6FAFBFFCCE8
+      F0FF6DA4B4FF2F484FFF212627FF000000000000000000000000202020003737
+      37FF7D7D7DFF8F9293FF9DB4BAFF93C7D8FFCCE8EFFFF6FAFBFFF6FAFBFFCFEC
+      F4FF91DAEEFF7BD2EC0071C6E200000000000000000000000000000000000E0E
+      0E00222222FF16191AFF1A2E34FF598B9BFFA2D5E5FFD0EEF6FFD1EFF7FFAAE2
+      F2FF84D4EBFF7DD3EB006DB6DA00000000000000000000000000000000000000
+      0000000000007FFFFF0079D2E8007CD0E90084D4EDFF88D2E7FF88D2E7FF84D4
+      EDFF7CD0E90079D2E8007FFFFF00000000000000000000000000
+    }
+    OnClick = BTestClick
+    TabOrder = 6
   end
 end
