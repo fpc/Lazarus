@@ -140,6 +140,14 @@ resourcestring
   SHintExport = 'Export this data';
   SCreateCode = 'Create code';
   SHintCreateCode = 'Create pascal code for this data';
+  SExecutingSQLStatement = '%s : Executing SQL statement:';
+  SRecordsFetched = 'Records fetched: %d';
+  SSQLexecutedOK = '%s : Statement executed succesfully.';
+  SExecutionTime = 'Execution time: %s';
+  SSQLErrorCode = 'SQL Error code: %d';
+  SSQLStatus = 'SQL State: %s';
+  SErrorExecutingSQL = 'Error executing SQL statement:';
+  SReadyForSQL = 'Ready to execute SQL statements';
 
   // Main form
   SSaveData     = 'Save changes';

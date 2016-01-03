@@ -30,29 +30,32 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="7">
+    <RequiredPackages Count="8">
       <Item1>
-        <PackageName Value="lazdbexport"/>
+        <PackageName Value="FCL"/>
       </Item1>
       <Item2>
-        <PackageName Value="RunTimeTypeInfoControls"/>
+        <PackageName Value="lazdbexport"/>
       </Item2>
       <Item3>
-        <PackageName Value="lazdatadict"/>
+        <PackageName Value="RunTimeTypeInfoControls"/>
       </Item3>
       <Item4>
-        <PackageName Value="SynEdit"/>
+        <PackageName Value="lazdatadict"/>
       </Item4>
       <Item5>
-        <PackageName Value="SQLDBLaz"/>
+        <PackageName Value="SynEdit"/>
       </Item5>
       <Item6>
-        <PackageName Value="LCL"/>
+        <PackageName Value="SQLDBLaz"/>
       </Item6>
       <Item7>
+        <PackageName Value="LCL"/>
+      </Item7>
+      <Item8>
         <PackageName Value="DBFLaz"/>
         <MinVersion Minor="1" Release="1" Valid="True"/>
-      </Item7>
+      </Item8>
     </RequiredPackages>
     <Units Count="13">
       <Unit0>
@@ -101,27 +104,31 @@
         <IsPartOfProject Value="True"/>
       </Unit7>
       <Unit8>
-        <Filename Value="datapanel.pp"/>
+        <Filename Value="README.txt"/>
         <IsPartOfProject Value="True"/>
       </Unit8>
       <Unit9>
-        <Filename Value="querypanel.pp"/>
-        <IsPartOfProject Value="True"/>
-      </Unit9>
-      <Unit10>
-        <Filename Value="README.txt"/>
-        <IsPartOfProject Value="True"/>
-      </Unit10>
-      <Unit11>
         <Filename Value="frmselectconnectiontype.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="SelectConnectionTypeForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-      </Unit11>
-      <Unit12>
+      </Unit9>
+      <Unit10>
         <Filename Value="lazdatadeskstr.pas"/>
         <IsPartOfProject Value="True"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="fraquery.pp"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="QueryFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="fradata.pp"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="DataFrame"/>
+        <ResourceBaseClass Value="Frame"/>
       </Unit12>
     </Units>
   </ProjectOptions>
@@ -133,11 +140,6 @@
     <SearchPaths>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
-    <Parsing>
-      <SyntaxOptions>
-        <UseAnsiStrings Value="False"/>
-      </SyntaxOptions>
-    </Parsing>
     <Linking>
       <Options>
         <Win32>

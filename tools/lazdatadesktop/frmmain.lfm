@@ -221,8 +221,10 @@ object MainForm: TMainForm
         DefaultItemHeight = 16
         Images = ILMain
         PopupMenu = PMAll
+        ReadOnly = True
         TabOrder = 0
         OnDblClick = TVAllDblClick
+        Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
       end
     end
   end

@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, db, fpdatadict, controls, comctrls, stdctrls, extctrls,
-  graphics, imglist, lresources, RTTIGrids, querypanel, lazdatadeskstr;
+  graphics, imglist, lresources, RTTIGrids, fraquery, lazdatadeskstr;
 
 Type
 
@@ -42,10 +42,11 @@ Type
     FImgList : TImageList;
     FTSDisplay : TTabsheet;
     FTSQuery : TTabsheet;
-    FQueryPanel : TQueryPanel;
+    FQueryPanel : TQueryFrame;
     procedure AddPair(LV: TListView; Const AName, AValue: String);
     procedure ClearDisplay;
     procedure DoSelectNode(Sender: TObject);
+    procedure DoTabChange(Sender: TObject);
     function GetCurrentObjectType: TObjectType;
     function NewNode(TV: TTreeView; ParentNode: TTreeNode; ACaption: String;
       AImageIndex: Integer): TTreeNode;
@@ -105,7 +106,7 @@ Const
 
 implementation
 
-uses typinfo, datapanel, frmgeneratesql;
+uses typinfo, fradata, frmgeneratesql;
 
 { TConnectionEditor }
 
@@ -170,6 +171,7 @@ begin
   FPC.Parent:=Self;
   FPC.Name:='FPC';
   FPC.Align:=alClient;
+  FPC.OnChange:=@DoTabChange;
   // Display tab sheet
   FTSDisplay:=TTabsheet.Create(Self);
   FTSDisplay.Name:='FTSDisplay';
@@ -187,7 +189,7 @@ begin
   FDisplay.Align:=alClient;
   FDisplay.Caption:='';
   // Query panel
-  FQueryPanel:= TQueryPanel.Create(Self);
+  FQueryPanel:= TQueryFrame.Create(Self);
   FQueryPanel.Name:='FQueryPanel';
   FQueryPanel.Parent:=FTSQuery;
   FQueryPanel.Align:=alClient;
@@ -227,6 +229,7 @@ Var
   C : TControl;
 
 begin
+  C:=Nil;
   Result:=False;
   If FPC.ActivePage=FTSQuery then
     begin
@@ -234,8 +237,9 @@ begin
     end
   else  If FPC.ActivePage=FTSDisplay then
     begin
-    C:=FDisplay.Controls[0];
-    If Not (C is TDataPanel) then
+    if FDisplay.ControlCount>0 then
+      C:=FDisplay.Controls[0];
+    If Not (C is TDataFrame) then
       C:=Nil;
     Result:=Assigned(C);
     end;
@@ -291,15 +295,17 @@ Var
   C : TControl;
 
 begin
+  C:=Nil;
   If FPC.ActivePage=FTSQuery then
     begin
     FQueryPanel.CreateCode;
     end
   else If FPC.ActivePage=FTSDisplay then
     begin
-    C:=FDisplay.Controls[0];
-    If (C is TDataPanel) then
-      TDataPanel(C).CreateCode;
+    if FDisplay.ControlCount>0 then
+      C:=FDisplay.Controls[0];
+    If (C is TDataFrame) then
+      TDataFrame(C).CreateCode;
     end;
 end;
 
@@ -402,14 +408,20 @@ begin
   end;
 end;
 
+procedure TConnectionEditor.DoTabChange(Sender: TObject);
+begin
+  If FPC.ActivePage=FTSQuery then
+    FQueryPanel.ActivatePanel;
+end;
+
 procedure TConnectionEditor.ShowTableData(ATableName : String);
 
 Var
-  P : TDataPanel;
+  P : TDataFrame;
 
 begin
   ClearDisplay;
-  P:=TDataPanel.Create(Self);
+  P:=TDataFrame.Create(Self);
   P.TableName:=ATableName;
   P.Parent:=FDisplay;
   P.Align:=alClient;
