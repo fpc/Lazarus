@@ -784,15 +784,6 @@ begin
         else
         begin
           Screen.Forms[i].AddHandlerOnChangeBounds(GlobalOnChangeBounds);
-
-          // if POPUP_WINDOWS is defined then show all forms on main form
-          if (LazarusIDE.GetMainBar = Screen.Forms[i]) then
-            Continue;
-
-{$IFDEF POPUP_WINDOWS}
-          Screen.Forms[i].PopupMode := pmExplicit;
-          Screen.Forms[i].PopupParent := LazarusIDE.GetMainBar as TCustomForm;
-{$ENDIF}
         end;
       BoundInitialized := True;
     end;
@@ -805,14 +796,7 @@ begin
     else
     begin
       Form.AddHandlerOnChangeBounds(GlobalOnChangeBounds);
-{$IFDEF POPUP_WINDOWS}
-      Form.PopupMode := pmExplicit;
-{$ENDIF}
     end;
-
-{$IFDEF POPUP_WINDOWS}
-    Form.PopupParent := LazarusIDE.GetMainBar as TCustomForm;
-{$ENDIF}
 
     Forms.Add(Form);
   end;
