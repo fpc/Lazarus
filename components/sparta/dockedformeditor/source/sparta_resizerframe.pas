@@ -856,6 +856,7 @@ var
   LMsg: TLMKeyUp;
 begin
   LWndProc := FDesignedForm.Form.WindowProc;
+  FillChar(LMsg{%H-}, SizeOf(LMsg), 0);
   LMsg.msg := CN_KEYDOWN;
   LMsg.CharCode := Key;
   LWndProc(TLMessage(LMsg));
@@ -869,6 +870,7 @@ var
   LMsg: TLMKeyUp;
 begin
   LWndProc := FDesignedForm.Form.WindowProc;
+  FillChar(LMsg{%H-}, SizeOf(LMsg), 0);
   LMsg.msg := CN_KEYUP;
   LMsg.CharCode := Key;
   LWndProc(TLMessage(LMsg));
