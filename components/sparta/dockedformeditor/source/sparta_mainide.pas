@@ -164,6 +164,7 @@ type
 
   TSpartaMainIDE = class(TObject)
   public
+    class function GetCurrentResizer: TResizer;
     class procedure TryFreeFormData(Form: TCustomForm);
 
     class procedure Screen_FormAdded(Sender: TObject; Form: TCustomForm);
@@ -192,6 +193,9 @@ type
     class procedure OnShowMethod(const Name: String);
     class procedure OnDesignRefreshPropertyValues;
     class procedure OnMenuChanged;
+    class procedure DesignerSetFocus;
+    class procedure OnDesignMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
   end;
 
 var
@@ -529,11 +533,6 @@ begin
       end;
   end;
   {$ENDIF}
-
-  case TheMessage.Msg of
-    LM_LBUTTONDOWN, LM_RBUTTONDOWN, LM_MBUTTONDOWN, LM_XBUTTONDOWN:
-      Form.Form.SetFocus; // set focus to form so that it receives key messages (Issue #29044)
-  end;
 
   FWndMethod(TheMessage);
 end;
@@ -1121,6 +1120,15 @@ begin
   LDesignedForm.HideWindow;
 end;
 
+class procedure TSpartaMainIDE.DesignerSetFocus;
+var
+  LResizer: TResizer;
+begin
+  LResizer := GetCurrentResizer;
+  if LResizer<>nil then
+    LResizer.FResizerFrame.DesignerSetFocus;
+end;
+
 class procedure TSpartaMainIDE.EditorActivated(Sender: TObject);
 var
   LDesigner: TIDesigner;
@@ -1314,6 +1322,22 @@ begin
 
   if LastActiveSourceEditor = LSourceEditor then
     LastActiveSourceEditor := nil;
+end;
+
+class function TSpartaMainIDE.GetCurrentResizer: TResizer;
+var
+  LForm: TCustomForm;
+  LFormData: TDesignFormData;
+  LSourceWindow: TSourceEditorWindowInterface;
+  LPageCtrl: TModulePageControl;
+begin
+  Result := nil;
+  LForm := TCustomForm(GlobalDesignHook.LookupRoot);
+  LFormData := FindDesignFormData(LForm);
+  if LFormData=nil then Exit;
+  LSourceWindow := (LFormData as IDesignedForm).LastActiveSourceWindow;
+  LPageCtrl := FindModulePageControl(LSourceWindow);
+  Result := LPageCtrl.Resizer;
 end;
 
 class procedure TSpartaMainIDE.EditorCreate(Sender: TObject);
@@ -1525,22 +1549,19 @@ begin
   LWindowData.OnChangeBounds(Sender);
 end;
 
+class procedure TSpartaMainIDE.OnDesignMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  DesignerSetFocus;
+end;
+
 class procedure TSpartaMainIDE.OnMenuChanged;
 var
-  LForm: TCustomForm;
-  LFormData: TDesignFormData;
-  LSourceWindow: TSourceEditorWindowInterface;
-  LPageCtrl: TModulePageControl;
+  LResizer: TResizer;
 begin
-  if (GlobalDesignHook.LookupRoot is TCustomForm) then
-  begin
-    LForm := TCustomForm(GlobalDesignHook.LookupRoot);
-    LFormData := FindDesignFormData(LForm);
-    LSourceWindow := (LFormData as IDesignedForm).LastActiveSourceWindow;
-    LPageCtrl := FindModulePageControl(LSourceWindow);
-    if LPageCtrl.Resizer<>nil then
-      LPageCtrl.Resizer.FResizerFrame.OnMenuChanged;
-  end;
+  LResizer := GetCurrentResizer;
+  if LResizer<>nil then
+    LResizer.FResizerFrame.OnMenuChanged;
 end;
 
 {$IFDEF USE_POPUP_PARENT_DESIGNER}

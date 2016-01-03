@@ -17,8 +17,9 @@ unit sparta_ResizerFrame;
 interface
 
 uses
-  Classes, contnrs, SysUtils, FileUtil, Forms, Controls, ExtCtrls, StdCtrls, Graphics, LCLType,
-  lclintf, Menus, sparta_DesignedForm, Math, Types, FormEditingIntf, PropEdits;
+  Classes, contnrs, SysUtils, FileUtil, Forms, Controls, ExtCtrls, StdCtrls,
+  Graphics, LCLType, lclintf, Menus, LMessages, sparta_DesignedForm, Math,
+  Types, FormEditingIntf, PropEdits;
 
 type
 
@@ -52,7 +53,11 @@ type
     FHorizontalScrollPos: Integer;
     FDesignedForm: IDesignedForm;
     FBackground: IDesignedFormBackground;
+    FFakeFocusControl: TWinControl;
 
+    procedure FakeExitEnter(Sender: TObject);
+    procedure FakeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FakeKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure SetDesignedForm(const AValue: IDesignedForm);
   private
     { private declarations }
@@ -129,6 +134,7 @@ type
     procedure ShowSizeControls;
 
     procedure OnMenuChanged;
+    procedure DesignerSetFocus;
 
     property VerticalScrollPos: Integer read FVerticalScrollPos write FVerticalScrollPos;
     property HorizontalScrollPos: Integer read FHorizontalScrollPos write FHorizontalScrollPos;
@@ -217,17 +223,31 @@ begin
 end;
 
 procedure TResizerFrame.PanelPaint(Sender: TObject);
+var
+  LWidth, LHeight: Integer;
+  LOldColor: TColor;
+  LCanvas: TCanvas;
 begin
   if FNodePositioning then
     Exit;
-  if Sender = pR then
-    TileImage(iResizerLineImg, pR.Canvas, 0, 0, SIZER_LINE_WIDTH, Height)
-  else if Sender = pB then
-    TileImage(iResizerLineImg, pB.Canvas, 0, 0, Width, SIZER_LINE_WIDTH)
-  else if Sender = pL then
-    TileImage(iResizerLineImg, pL.Canvas, 0, 0, SIZER_LINE_WIDTH, Height)
-  else if Sender = pT then
-    TileImage(iResizerLineImg, pT.Canvas, 0, 0, Width, SIZER_LINE_WIDTH);
+  if (Sender = pR) or (Sender = pL) then
+  begin
+    LWidth := SIZER_LINE_WIDTH;
+    LHeight := Height;
+  end else
+  begin
+    LWidth := Width;
+    LHeight := SIZER_LINE_WIDTH;
+  end;
+  LCanvas := (Sender as TPanel).Canvas;
+  if FFakeFocusControl.Focused then
+  begin
+    LOldColor := LCanvas.Brush.Color;
+    LCanvas.Brush.Color := $FFEEDD;
+    LCanvas.FillRect(0, 0, LWidth, LHeight);
+    LCanvas.Brush.Color := LOldColor;
+  end;
+  TileImage(iResizerLineImg, LCanvas, 0, 0, LWidth, LHeight);
 end;
 
 procedure TResizerFrame.pBGPaint(Sender: TObject);
@@ -752,6 +772,11 @@ begin
   //Result := DesignedForm.Width - DesignedForm.RealWidth;
 end;
 
+procedure TResizerFrame.DesignerSetFocus;
+begin
+  FFakeFocusControl.SetFocus;
+end;
+
 function TResizerFrame.DesignedHeightToScroll: Integer;
 begin
   if DesignedForm = nil then
@@ -766,6 +791,14 @@ end;
 constructor TResizerFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+
+  FFakeFocusControl := TEdit.Create(Self);
+  FFakeFocusControl.Parent := Self;
+  FFakeFocusControl.Top := -100;
+  FFakeFocusControl.OnKeyDown := FakeKeyDown;
+  FFakeFocusControl.OnKeyUp := FakeKeyUp;
+  FFakeFocusControl.OnEnter := FakeExitEnter;
+  FFakeFocusControl.OnExit := FakeExitEnter;
 
   FNodes := TObjectList.Create(False);
   CreateNodes;
@@ -798,6 +831,40 @@ begin
   Application.RemoveOnIdleHandler(AppOnIdle);
   FNodes.Free;
   inherited Destroy;
+end;
+
+procedure TResizerFrame.FakeExitEnter(Sender: TObject);
+begin
+  pL.Repaint;
+  pT.Repaint;
+  pR.Repaint;
+  pB.Repaint;
+end;
+
+procedure TResizerFrame.FakeKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  LWndProc: TWndMethod;
+  LMsg: TLMKeyUp;
+begin
+  LWndProc := FDesignedForm.Form.WindowProc;
+  LMsg.msg := CN_KEYDOWN;
+  LMsg.CharCode := Key;
+  LWndProc(TLMessage(LMsg));
+  Key := 0;
+end;
+
+procedure TResizerFrame.FakeKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  LWndProc: TWndMethod;
+  LMsg: TLMKeyUp;
+begin
+  LWndProc := FDesignedForm.Form.WindowProc;
+  LMsg.msg := CN_KEYUP;
+  LMsg.CharCode := Key;
+  LWndProc(TLMessage(LMsg));
+  Key := 0;
 end;
 
 procedure TResizerFrame.PositionNodes(AroundControl: TWinControl);
