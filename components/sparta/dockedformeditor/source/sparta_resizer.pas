@@ -19,9 +19,6 @@ interface
 uses
   Classes, SysUtils, Controls, ExtCtrls, sparta_ResizerFrame, sparta_DesignedForm, Forms, Math, StdCtrls,
   LCLType, LazIDEIntf, Buttons, SpartaAPI, Dialogs,
-{$IFDEF USE_GENERICS_COLLECTIONS}
-  Generics.Defaults,
-{$ENDIF}
   FormEditingIntf;
 
 type
