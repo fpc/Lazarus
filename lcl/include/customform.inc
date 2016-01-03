@@ -712,23 +712,6 @@ begin
     end;
   end;
 
-  //DebugLn('Trace:WMSIZE in TCustomForm');
-  if (Message.SizeType and SIZE_SourceIsInterface) <> 0 then
-  begin
-    NewState := FWindowState;
-    case (Message.SizeType xor SIZE_SourceIsInterface) of
-      SIZE_RESTORED:
-        NewState := wsNormal;
-      SIZE_MINIMIZED:
-        NewState := wsMinimized;
-      SIZE_MAXIMIZED:
-        NewState := wsMaximized;
-      SIZE_FULLSCREEN:
-        NewState := wsFullScreen;
-    end;
-    Resizing(NewState);
-  end;
-
   inherited WMSize(Message);
 
   if (Message.SizeType and not SIZE_SourceIsInterface) = SIZE_RESTORED then
