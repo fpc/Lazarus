@@ -774,7 +774,8 @@ end;
 
 procedure TResizerFrame.DesignerSetFocus;
 begin
-  FFakeFocusControl.SetFocus;
+  if FFakeFocusControl.CanSetFocus then
+    FFakeFocusControl.SetFocus;
 end;
 
 function TResizerFrame.DesignedHeightToScroll: Integer;

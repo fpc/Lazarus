@@ -368,6 +368,8 @@ begin
 
   if Supports(FDesignedForm, IDesignedFormBackground) then
     (FDesignedForm as IDesignedFormBackground).RefreshValues;
+
+  FResizerFrame.DesignerSetFocus;
 end;
 
 procedure TResizer.NodePositioning(Sender: TObject; PositioningKind: TPositioningKind; PositioningCode: TPositioningCode);
