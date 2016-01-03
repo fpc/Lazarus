@@ -434,7 +434,6 @@ type
     procedure DoCodeExplorerOptionsAfterWrite(Sender: TObject; Restore: boolean);
     procedure DoProjectOptionsBeforeRead(Sender: TObject);
     procedure DoProjectOptionsAfterWrite(Sender: TObject; Restore: boolean);
-    procedure DoCompilerOptionsAfterWrite(Sender: TObject; Restore: boolean);
     procedure OnCompilerOptionsDialogTest(Sender: TObject);
     function DoTestCompilerSettings(TheCompilerOptions: TCompilerOptions): TModalResult;
     function OnCheckCompOptsAndMainSrcForNewUnit(CompOpts: TLazCompilerOptions): TModalResult;
@@ -4820,6 +4819,7 @@ end;
 procedure TMainIDE.DoProjectOptionsAfterWrite(Sender: TObject; Restore: boolean);
 var
   AProject: TProject;
+  aFilename: String;
 
   function GetTitle: String;
   begin
@@ -4905,8 +4905,12 @@ var
 begin
   //debugln(['TMainIDE.DoProjectOptionsAfterWrite ',DbgSName(Sender),' Restore=',Restore]);
   AProject:=(Sender as TProjectIDEOptions).Project;
-  if not Restore then
+  if Restore then
   begin
+    AProject.RestoreBuildModes;
+    AProject.RestoreSession;
+  end
+  else begin
     SetTitle;
     SetAutoCreateForms;
     // extend include path
@@ -4918,10 +4922,26 @@ begin
                          mtWarning, [mbOk]);
     end;
     UpdateCaption;
-  end;
-  if Restore then
-  begin
-    AProject.RestoreSession;
+    AProject.DefineTemplates.AllChanged;
+    IncreaseCompilerParseStamp;
+    MainBuildBoss.SetBuildTargetProject1(false);
+
+    if AProject.UseAsDefault then
+    begin
+      // save as default
+      aFilename:=AppendPathDelim(GetPrimaryConfigPath)+DefaultProjectOptionsFilename;
+      AProject.WriteProject([pwfSkipSeparateSessionInfo,pwfIgnoreModified],
+        aFilename,EnvironmentOptions.BuildMatrixOptions);
+    end;
+
+    Project1.UpdateAllSyntaxHighlighter;
+    SourceEditorManager.BeginGlobalUpdate;
+    try
+      UpdateHighlighters(True);
+      SourceEditorManager.ReloadEditorOptions;
+    finally
+      SourceEditorManager.EndGlobalUpdate;
+    end;
   end;
 end;
 
@@ -6045,7 +6065,6 @@ begin
   Result.OnChangeProjectInfoFile:=@OnProjectChangeInfoFile;
   Result.IDEOptions.OnBeforeRead:=@DoProjectOptionsBeforeRead;
   Result.IDEOptions.OnAfterWrite:=@DoProjectOptionsAfterWrite;
-  Result.OnCompilerOptionsAfterWrite := @DoCompilerOptionsAfterWrite;
 end;
 
 function TMainIDE.DoNewProject(ProjectDesc: TProjectDescriptor): TModalResult;
@@ -6754,38 +6773,6 @@ begin
     DoBuildFile(false)
   else
     DoBuildProject(crCompile, []);
-end;
-
-procedure TMainIDE.DoCompilerOptionsAfterWrite(Sender: TObject; Restore: boolean);
-var
-  AProject: TProject;
-  aFilename: string;
-begin
-  AProject:=(Sender as TProjectCompilerOptions).Project;
-
-  if Restore then
-    AProject.RestoreBuildModes
-  else begin
-    AProject.DefineTemplates.AllChanged;
-    IncreaseCompilerParseStamp;
-    MainBuildBoss.SetBuildTargetProject1(false);
-    if AProject.UseAsDefault then
-    begin
-      // save as default
-      aFilename:=AppendPathDelim(GetPrimaryConfigPath)+DefaultProjectOptionsFilename;
-      AProject.WriteProject([pwfSkipSeparateSessionInfo,pwfIgnoreModified],
-        aFilename,EnvironmentOptions.BuildMatrixOptions);
-    end;
-
-    Project1.UpdateAllSyntaxHighlighter;
-    SourceEditorManager.BeginGlobalUpdate;
-    try
-      UpdateHighlighters(True);
-      SourceEditorManager.ReloadEditorOptions;
-    finally
-      SourceEditorManager.EndGlobalUpdate;
-    end;
-  end;
 end;
 
 procedure TMainIDE.DoQuickCompile;
