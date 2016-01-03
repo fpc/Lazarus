@@ -104,6 +104,7 @@ type
     function HorizontalSizerLineLength: Integer;
 
     function GetBackgroundMargin(const AIndex: Integer): Integer;
+    function GetMenuHeight: Integer;
 
     procedure TryBoundDesignedForm;
   public
@@ -266,7 +267,7 @@ begin
   LCanvas := (Sender as TPanel).Canvas;
   LCanvas.Brush.Color := clMenuBar;
   MenuRect := (Sender as TPanel).ClientRect;
-  MenuRect.Bottom := MenuRect.Top + LCLIntf.GetSystemMetrics(SM_CYMENU);
+  MenuRect.Bottom := MenuRect.Top + GetMenuHeight;
   LCanvas.FillRect(MenuRect);
   LCanvas.Font.Color := clMenuText;
 
@@ -729,7 +730,22 @@ begin
     Result := FBackground.GetMargin(AIndex);
 
   if (AIndex = 1) and HasMainMenu then
-    Result := Result + LCLIntf.GetSystemMetrics(SM_CYMENU);
+    Result := Result + GetMenuHeight;
+end;
+
+function TResizerFrame.GetMenuHeight: Integer;
+begin
+  // some WS (Gtk2) return too big SM_CYMENU, just set it according to font height
+  // no problem, it is used only for the fake main menu
+
+  {$IFDEF LCLWin32}
+  Result := lclintf.GetSystemMetrics(SM_CYMENU);
+  {$ELSE}
+  if pBG.HandleAllocated then
+    Result := pBG.Canvas.TextHeight('Hg') * 4 div 3
+  else
+    Result := 20;
+  {$ENDIF}
 end;
 
 procedure TResizerFrame.TryBoundDesignedForm;
