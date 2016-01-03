@@ -375,20 +375,22 @@ begin
 end;
 
 function TRecreateToolBarStamps.Changed: Boolean;
+var
+  LProjectChangeStamp: Integer;
 begin
+  if LazarusIDE.ActiveProject <> nil then
+    LProjectChangeStamp := LazarusIDE.ActiveProject.ChangeStamp
+  else
+    LProjectChangeStamp := Low(LProjectChangeStamp);
   Result := not(
-        (LazarusIDE.ActiveProject <> nil)
-    and (FCurProjectChangeStamp = LazarusIDE.ActiveProject.ChangeStamp)
+        (FCurProjectChangeStamp = LProjectChangeStamp)
     and (FPackagesChangeStamp = PackageGraphInterface.ChangeStamp)
     and (FInternalChangeStamp = FLastInternalChangeStamp)
     );
 
   if not Result then Exit;
 
-  if LazarusIDE.ActiveProject <> nil then
-    FCurProjectChangeStamp := LazarusIDE.ActiveProject.ChangeStamp
-  else
-    FCurProjectChangeStamp := Low(FCurProjectChangeStamp);
+  FCurProjectChangeStamp := LProjectChangeStamp;
   FPackagesChangeStamp := PackageGraphInterface.ChangeStamp;
   FLastInternalChangeStamp := FInternalChangeStamp;
 end;
