@@ -50,7 +50,7 @@ begin
 
   GlobalDesignHook.AddHandlerShowMethod(TSpartaMainIDE.OnShowMethod);
   GlobalDesignHook.AddHandlerRefreshPropertyValues(TSpartaMainIDE.OnDesignRefreshPropertyValues);
-  GlobalDesignHook.AddHandlerMouseDown(TSpartaMainIDE.OnDesignMouseDown);
+  GlobalDesignHook.AddHandlerDesignerMouseDown(TSpartaMainIDE.OnDesignMouseDown);
 
   IDETabMaster := TDTXTabMaster.Create;
   IDEComponentsMaster := TDTXComponentsMaster.Create;
