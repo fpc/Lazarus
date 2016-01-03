@@ -2142,8 +2142,12 @@ begin
       ControlSelection.AssignPersistent(MouseDownComponent);
   end;
 
+  if PropertyEditorHook<>nil then
+    PropertyEditorHook.MouseDown(Sender, Button, Shift, p.X, p.Y);
+
   if not ControlSelection.OnlyVisualComponentsSelected and ShowComponentCaptions then
     Form.Invalidate;
+
   {$IFDEF VerboseDesigner}
   DebugLn('[TDesigner.MouseDownOnControl] END');
   {$ENDIF}
@@ -2527,6 +2531,10 @@ begin
   Exclude(FFlags,dfHasSized);
   MouseDownComponent:=nil;
   MouseDownSender:=nil;
+
+  if PropertyEditorHook<>nil then
+    PropertyEditorHook.MouseUp(Sender, Button, Shift, p.X, p.Y);
+
   {$IFDEF VerboseDesigner}
   DebugLn('[TDesigner.MouseUpOnControl] END');
   {$ENDIF}

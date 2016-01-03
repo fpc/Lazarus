@@ -1244,6 +1244,8 @@ type
     htGetAncestorInstProp,
     htAddClicked, // user selected a component class and clicked on a form to add a component
     htComponentRenamed,
+    htMouseDown,
+    htMouseUp,
     // persistent selection
     htBeforeAddPersistent,
     htPersistentAdded,
@@ -1332,6 +1334,10 @@ type
     procedure Unselect(const APersistent: TPersistent);
     function IsSelected(const APersistent: TPersistent): boolean;
     procedure SelectOnlyThis(const APersistent: TPersistent);
+    procedure MouseDown(Sender: TObject; Button: TMouseButton;
+                        Shift: TShiftState; X, Y: Integer);
+    procedure MouseUp(Sender: TObject; Button: TMouseButton;
+                        Shift: TShiftState; X, Y: Integer);
     // persistent objects
     function GetObject(const aName: ShortString): TPersistent;
     function GetObjectName(Instance: TPersistent): ShortString;
@@ -1412,6 +1418,14 @@ type
                      const OnGetAncestorInstProp: TPropHookGetAncestorInstProp);
     procedure RemoveHandlerGetAncestorInstProp(
                      const OnGetAncestorInstProp: TPropHookGetAncestorInstProp);
+    procedure AddHandlerMouseDown(
+                 const OnMouseDown: TMouseEvent);
+    procedure RemoveHandlerMouseDown(
+                 const OnMouseDown: TMouseEvent);
+    procedure AddHandlerMouseUp(
+                 const OnMouseUp: TMouseEvent);
+    procedure RemoveHandlerMouseUp(
+                 const OnMouseUp: TMouseEvent);
     // component create, delete, rename
     procedure AddHandlerComponentRenamed(
                            const OnComponentRenamed: TPropHookComponentRenamed);
@@ -6108,6 +6122,34 @@ begin
   end;
 end;
 
+procedure TPropertyEditorHook.MouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var
+  i: Integer;
+  Handler: TMouseEvent;
+begin
+  i := GetHandlerCount(htMouseDown);
+  while GetNextHandlerIndex(htMouseDown, i) do
+  begin
+    Handler := TMouseEvent(FHandlers[htMouseDown][i]);
+    Handler(Sender, Button,  Shift, X, Y);
+  end;
+end;
+
+procedure TPropertyEditorHook.MouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var
+  i: Integer;
+  Handler: TMouseEvent;
+begin
+  i := GetHandlerCount(htMouseUp);
+  while GetNextHandlerIndex(htMouseUp, i) do
+  begin
+    Handler := TMouseEvent(FHandlers[htMouseUp][i]);
+    Handler(Sender, Button,  Shift, X, Y);
+  end;
+end;
+
 procedure TPropertyEditorHook.Revert(Instance:TPersistent;
   PropInfo:PPropInfo);
 var
@@ -6499,10 +6541,33 @@ begin
   AddHandler(htModified,TMethod(OnModified));
 end;
 
+procedure TPropertyEditorHook.AddHandlerMouseDown(const OnMouseDown: TMouseEvent
+  );
+begin
+  AddHandler(htMouseDown,TMethod(OnMouseDown));
+end;
+
+procedure TPropertyEditorHook.AddHandlerMouseUp(const OnMouseUp: TMouseEvent);
+begin
+  AddHandler(htMouseUp,TMethod(OnMouseUp));
+end;
+
 procedure TPropertyEditorHook.RemoveHandlerModified(
   const OnModified: TPropHookModified);
 begin
   RemoveHandler(htModified,TMethod(OnModified));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerMouseDown(
+  const OnMouseDown: TMouseEvent);
+begin
+  RemoveHandler(htMouseDown,TMethod(OnMouseDown));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerMouseUp(const OnMouseUp: TMouseEvent
+  );
+begin
+  RemoveHandler(htMouseUp,TMethod(OnMouseUp));
 end;
 
 procedure TPropertyEditorHook.AddHandlerRevert(const OnRevert: TPropHookRevert);
