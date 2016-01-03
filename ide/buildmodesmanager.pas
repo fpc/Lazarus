@@ -43,7 +43,6 @@ type
   TBuildModesForm = class(TForm)
     btnCreateDefaultModes: TButton;
     BuildModesStringGrid: TStringGrid;
-    cbDebugReleaseProject: TCheckBox;
     ImageList1: TImageList;
     BuildModesPopupMenu: TPopupMenu;
     ButtonPanel1: TButtonPanel;
@@ -59,8 +58,6 @@ type
     procedure btnCreateDefaultModesClick(Sender: TObject);
     procedure BuildModesStringGridDrawCell(Sender: TObject;
       aCol, aRow: Integer; aRect: TRect; {%H-}aState: TGridDrawState);
-    procedure CancelButtonClick(Sender: TObject);
-    procedure cbDebugReleaseProjectClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure DiffSpeedButtonClick(Sender: TObject);
@@ -75,7 +72,6 @@ type
     procedure BuildModesStringGridValidateEntry(Sender: TObject;
       aCol, aRow: Integer; const OldValue: string; var NewValue: String);
     procedure FormShow(Sender: TObject);
-    procedure OKButtonClick(Sender: TObject);
   private
     fActiveBuildMode: TProjectBuildMode;
     fBuildModes: TProjectBuildModes;
@@ -500,10 +496,7 @@ begin
   ToolButtonMoveDown.Hint:=Format(lisMoveOnePositionDown, [Identifier]);
   ToolButtonDiff.Hint:=lisShowDifferencesBetweenModes;
   NoteLabel.Caption:='';
-  cbDebugReleaseProject.Caption:=lisCreateDebugAndReleaseModesNewProj;
-  //cbDebugReleaseProject.Hint:='Under Construction ...'; // Remove this when implemented.
-
-  btnCreateDefaultModes.Caption:=lisCreateNowForThisProject;
+  btnCreateDefaultModes.Caption:=lisCreateDebugAndReleaseModes;
   btnCreateDefaultModes.Hint:='';   // ToDo: Figure out a good hint.
   btnCreateDefaultModes.Visible := (fBuildModes.Find(DebugModeName)=Nil)
                                and (fBuildModes.Find(ReleaseModeName)=Nil);
@@ -559,21 +552,6 @@ begin
   i:=BuildModesStringGrid.Row-1;
   if (i<0) or (i>=fBuildModes.Count) then exit;
   Result:=fBuildModes[i];
-end;
-
-procedure TBuildModesForm.OKButtonClick(Sender: TObject);
-begin
-  ;
-end;
-
-procedure TBuildModesForm.CancelButtonClick(Sender: TObject);
-begin
-  ;
-end;
-
-procedure TBuildModesForm.cbDebugReleaseProjectClick(Sender: TObject);
-begin
-  //(Sender as TCheckBox).Checked := False;
 end;
 
 procedure TBuildModesForm.BuildModesStringGridDrawCell(Sender: TObject;

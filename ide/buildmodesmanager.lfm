@@ -12,36 +12,34 @@ object BuildModesForm: TBuildModesForm
   OnDestroy = FormDestroy
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '1.5'
+  LCLVersion = '1.7'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 29
-    Top = 319
+    Height = 32
+    Top = 316
     Width = 600
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
-    OKButton.OnClick = OKButtonClick
     HelpButton.Name = 'HelpButton'
     HelpButton.DefaultCaption = True
     CloseButton.Name = 'CloseButton'
     CloseButton.DefaultCaption = True
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
-    CancelButton.OnClick = CancelButtonClick
     TabOrder = 2
     ShowButtons = [pbOK, pbCancel, pbHelp]
     ShowBevel = False
   end
   object ToolBar1: TToolBar
-    AnchorSideLeft.Control = cbDebugReleaseProject
-    AnchorSideTop.Control = cbDebugReleaseProject
+    AnchorSideLeft.Control = btnCreateDefaultModes
+    AnchorSideTop.Control = btnCreateDefaultModes
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 28
-    Top = 37
+    Top = 39
     Width = 154
     Align = alNone
-    BorderSpacing.Top = 9
+    BorderSpacing.Top = 6
     ButtonHeight = 26
     ButtonWidth = 26
     Caption = 'ToolBar1'
@@ -106,8 +104,8 @@ object BuildModesForm: TBuildModesForm
     AnchorSideTop.Side = asrCenter
     Left = 166
     Height = 17
-    Top = 43
-    Width = 56
+    Top = 45
+    Width = 66
     BorderSpacing.Left = 6
     Caption = 'NoteLabel'
     Font.Color = clMaroon
@@ -120,8 +118,8 @@ object BuildModesForm: TBuildModesForm
     AnchorSideTop.Control = ToolBar1
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 244
-    Top = 71
+    Height = 242
+    Top = 73
     Width = 602
     Anchors = [akTop, akLeft, akRight, akBottom]
     AutoFillColumns = True
@@ -132,13 +130,13 @@ object BuildModesForm: TBuildModesForm
         ButtonStyle = cbsCheckboxColumn
         MaxSize = 50
         Title.Caption = 'Active'
-        Width = 199
+        Width = 200
       end    
       item
         ButtonStyle = cbsCheckboxColumn
         MaxSize = 50
         Title.Caption = 'InSession'
-        Width = 199
+        Width = 200
       end    
       item
         MaxSize = 500
@@ -154,42 +152,26 @@ object BuildModesForm: TBuildModesForm
     OnSelection = BuildModesStringGridSelection
     OnValidateEntry = BuildModesStringGridValidateEntry
     ColWidths = (
-      199
-      199
+      200
+      200
       200
     )
   end
-  object cbDebugReleaseProject: TCheckBox
+  object btnCreateDefaultModes: TButton
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 6
-    Height = 22
+    Height = 27
     Top = 6
-    Width = 310
-    BorderSpacing.Left = 6
-    BorderSpacing.Top = 6
-    Caption = 'Create Debug and Release modes for new projects'
-    OnClick = cbDebugReleaseProjectClick
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 3
-  end
-  object btnCreateDefaultModes: TButton
-    AnchorSideLeft.Control = cbDebugReleaseProject
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = cbDebugReleaseProject
-    AnchorSideTop.Side = asrCenter
-    Left = 322
-    Height = 29
-    Top = 3
-    Width = 162
+    Width = 183
     AutoSize = True
     BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
     Caption = 'Create now for this project'
     OnClick = btnCreateDefaultModesClick
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 4
+    TabOrder = 3
   end
   object BuildModesPopupMenu: TPopupMenu
     left = 168

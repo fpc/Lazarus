@@ -5817,8 +5817,7 @@ resourcestring
   lisMoveOnePositionDown = 'Move "%s" one position down';
   lisShowDifferencesBetweenModes = 'Show differences between modes ...';
   lisBuildMode = 'Build Mode: %s';
-  lisCreateDebugAndReleaseModesNewProj = 'Create Debug and Release modes for new projects';
-  lisCreateNowForThisProject = 'Create now for this project';
+  lisCreateDebugAndReleaseModes = 'Create Debug and Release modes';
   lisChangeBuildMode = 'Change build mode';
   lisWarningThisIsTheMainUnitTheNewMainUnitWillBePas = '%sWarning: This is '
     +'the main unit. The new main unit will be %s.pas.';
