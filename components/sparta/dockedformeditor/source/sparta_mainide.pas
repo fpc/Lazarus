@@ -20,7 +20,11 @@ uses
   Classes, SysUtils, SrcEditorIntf, LazIDEIntf, ComCtrls, Controls, Forms, IDEImagesIntf,
   Buttons, ExtCtrls, Graphics, IDEWindowIntf, 
   sparta_DesignedForm, sparta_resizer, PropEdits, PropEditUtils, FormEditingIntf, ComponentEditors, EditBtn,
+{$IFDEF USE_GENERICS_COLLECTIONS}
+  Generics.Collections, Generics.Defaults,
+{$ELSE}
   ghashmap, sparta_HashUtils, gvector,
+{$ENDIF}
   TypInfo, LCLIntf, LCLType, LMessages, sparta_FakeForm, sparta_FakeFrame, SpartaAPI;
 
 const
@@ -30,7 +34,11 @@ const
 type
   { TDesignFormData }
 
+{$IFDEF USE_GENERICS_COLLECTIONS}
+  TDesignFormData = class(TSingletonImplementation, IDesignedForm)
+{$ELSE}
   TDesignFormData = class(TComponent, IDesignedForm)
+{$ENDIF}
   private
     FWndMethod: TWndMethod;
 
@@ -38,14 +46,22 @@ type
     FLastScreenshot: TBitmap;
     FPopupParent: TSourceEditorWindowInterface;
     FHiding: boolean;
+{$IFDEF USE_GENERICS_COLLECTIONS}
+    FFormImages: TList<TImage>;
+{$ELSE}
     FFormImages: TList;
+{$ENDIF}
   protected
     procedure WndMethod(var TheMessage: TLMessage);
 
     procedure SetPopupParent(AVal: TSourceEditorWindowInterface);
     procedure DoAddForm;
   public
+{$IFDEF USE_GENERICS_COLLECTIONS}
+    class var AddFormEvents: TList<TNotifyEvent>;
+{$ELSE}
     class var AddFormEvents: TVector<TNotifyEvent>;
+{$ENDIF}
 
     class constructor Init;
     class destructor Finit;
@@ -91,7 +107,11 @@ type
   private
     FWndMethod: TWndMethod;
     FForm: TSourceEditorWindowInterface;
+{$IFDEF USE_GENERICS_COLLECTIONS}
+    FPageCtrlList: TDictionary<TSourceEditorInterface, TModulePageControl>;
+{$ELSE}
     FPageCtrlList: THashmap<TSourceEditorInterface, TModulePageControl, THash_TObject>;
+{$ENDIF}
     FLastTopParent: TControl;
 
     procedure SetActiveDesignFormData(const AValue: TDesignFormData);
@@ -167,7 +187,11 @@ type
 var
   Forms: Classes.TList; // normal forms
   dsgForms: Classes.TList; // design forms
+{$IFDEF USE_GENERICS_COLLECTIONS}
+  SourceEditorWindows: TObjectDictionary<TSourceEditorWindowInterface, TSourceEditorWindowData>;
+{$ELSE}
   SourceEditorWindows: THashmap<TSourceEditorWindowInterface, TSourceEditorWindowData, THash_TObject>;
+{$ENDIF}
 
   LastActiveSourceEditorWindow: TSourceEditorWindowInterface = nil;
   LastActiveSourceEditor: TSourceEditorInterface = nil;
@@ -234,9 +258,16 @@ end;
 function AbsoluteFindModulePageControl(ASrcEditor: TSourceEditorInterface): TModulePageControl;
 var
   LSEWD: TSourceEditorWindowData;
+{$IFNDEF USE_GENERICS_COLLECTIONS}
   LIterator: THashmap<TSourceEditorWindowInterface, TSourceEditorWindowData, THash_TObject>.TIterator;
+{$ENDIF}
 begin
   Result := nil;
+{$IFDEF USE_GENERICS_COLLECTIONS}
+  for LSEWD in SourceEditorWindows.Values do
+    if LSEWD.FPageCtrlList.ContainsKey(ASrcEditor) then
+      Exit(LSEWD.FPageCtrlList[ASrcEditor]);
+{$ELSE}
   LIterator := SourceEditorWindows.Iterator;
   if LIterator <> nil then
   try
@@ -248,6 +279,8 @@ begin
   finally
     LIterator.Free;
   end;
+{$ENDIF}
+
 end;
 
 function FindSourceEditorForDesigner(ADesigner: TIDesigner): TSourceEditorInterface;
@@ -288,8 +321,29 @@ procedure RefreshAllSourceWindowsModulePageControl;
 var
   LWindow: TSourceEditorWindowInterface;
   LPageCtrl: TModulePageControl;
+{$IFNDEF USE_GENERICS_COLLECTIONS}
   LIterator: THashmap<TSourceEditorWindowInterface, TSourceEditorWindowData, THash_TObject>.TIterator;
+{$ENDIF}
 begin
+{$IFDEF USE_GENERICS_COLLECTIONS}
+  for LWindow in SourceEditorWindows.Keys do
+  begin
+    LPageCtrl := FindModulePageControl(LWindow);
+
+    // for example LPageCtrl is nil when we clone module to new window
+    if (LPageCtrl = nil) or (csDestroying in LWindow.ComponentState) then
+      Continue;
+
+    if LWindow.ActiveEditor = nil then
+      LPageCtrl.HideDesignPage
+    else
+      if LWindow.ActiveEditor.GetDesigner(True) <> nil then
+        // TODO some check function: is displayed right form?
+        LPageCtrl.ShowDesignPage
+      else
+        LPageCtrl.HideDesignPage;
+  end;
+{$ELSE}
   LIterator := SourceEditorWindows.Iterator;
   if LIterator <> nil then
   try
@@ -314,6 +368,7 @@ begin
   finally
     LIterator.Free;
   end;
+{$ENDIF}
 end;
 
 // sometimes at some level of initialization form can not contain TIDesigner
@@ -337,13 +392,30 @@ function FindDesignFormData(AModulePageCtrl: TModulePageControl): TDesignFormDat
 var
   LSourceWindow: TSourceEditorWindowInterface;
   LSourceEditor: TSourceEditorInterface;
+{$IFNDEF USE_GENERICS_COLLECTIONS}
   LIterator: THashmap<TSourceEditorWindowInterface, TSourceEditorWindowData, THash_TObject>.TIterator;
+{$ENDIF}
 begin
   Result := nil;
 
   if AModulePageCtrl = nil then
     Exit;
 
+{$IFDEF USE_GENERICS_COLLECTIONS}
+  for LSourceWindow in SourceEditorWindows.Keys do
+  begin
+    if AModulePageCtrl.Owner = LSourceWindow then
+    begin
+      LSourceEditor := LSourceWindow.ActiveEditor;
+      if LSourceEditor = nil then
+        Exit;
+
+      Result := FindDesignFormData(LSourceEditor.GetDesigner(True));
+
+      Exit;
+    end;
+  end;
+{$ELSE}
   LIterator := SourceEditorWindows.Iterator;
   if LIterator <> nil then
   try
@@ -364,6 +436,7 @@ begin
   finally
     LIterator.Free;
   end;
+{$ENDIF}
 end;
 
 { TDesignFormData }
@@ -429,7 +502,11 @@ end;
 
 class constructor TDesignFormData.Init;
 begin
+{$IFDEF USE_GENERICS_COLLECTIONS}
+  AddFormEvents := TList<TNotifyEvent>.Create;
+{$ELSE}
   AddFormEvents := TVector<TNotifyEvent>.Create;
+{$ENDIF}
 end;
 
 class destructor TDesignFormData.Finit;
@@ -462,11 +539,21 @@ end;
 
 procedure TDesignFormData.DoAddForm;
 var
+{$IFDEF USE_GENERICS_COLLECTIONS}
+  ne: TNotifyEvent;
+{$ELSE}
   i: Integer;
+{$ENDIF}
 begin
+{$IFDEF USE_GENERICS_COLLECTIONS}
+  for ne in AddFormEvents do
+    ne(Self);
+{$ELSE}
   if AddFormEvents.Size > 0 then  // Arithmetic overflow without a test. Size = unsigned.
     for i := 0 to AddFormEvents.Size-1 do
       AddFormEvents[i](Self);
+{$ENDIF}
+
 end;
 
 constructor TDesignFormData.Create(AForm: TCustomForm);
@@ -479,7 +566,11 @@ begin
 
   if FForm.Form is TFakeForm then
   begin
+{$IFDEF USE_GENERICS_COLLECTIONS}
+    FFormImages := TList<TImage>.Create;
+{$ELSE}
     FFormImages := TList.Create;
+{$ENDIF}
     DoAddForm;
   end;
 end;
@@ -611,7 +702,11 @@ begin
   FWndMethod := AForm.WindowProc;
   AForm.WindowProc := WndMethod;
   FForm := AForm;
+{$IFDEF USE_GENERICS_COLLECTIONS}
+  FPageCtrlList := TDictionary<TSourceEditorInterface, TModulePageControl>.Create;
+{$ELSE}
   FPageCtrlList := THashmap<TSourceEditorInterface, TModulePageControl, THash_TObject>.Create;
+{$ENDIF}
 end;
 
 destructor TSourceEditorWindowData.Destroy;
@@ -632,13 +727,21 @@ end;
 
 procedure TSourceEditorWindowData.AddPageCtrl(ASrcEditor: TSourceEditorInterface; APage: TModulePageControl);
 begin
+{$IFDEF USE_GENERICS_COLLECTIONS}
+  FPageCtrlList.Add(ASrcEditor, APage);
+{$ELSE}
   FPageCtrlList.insert(ASrcEditor, APage);
+{$ENDIF}
   APage.Pages[1].OnChangeBounds:=OnChangeBounds;
 end;
 
 procedure TSourceEditorWindowData.RemovePageCtrl(ASrcEditor: TSourceEditorInterface);
 begin
+{$IFDEF USE_GENERICS_COLLECTIONS}
+  FPageCtrlList.Remove(ASrcEditor);
+{$ELSE}
   FPageCtrlList.Delete(ASrcEditor);
+{$ENDIF}
 end;
 
 { TDTXTabMaster }
@@ -812,8 +915,10 @@ var
   LSEWD: TSourceEditorWindowData;
   mpc: TModulePageControl;
   LFormData: TDesignFormData;
+{$IFNDEF USE_GENERICS_COLLECTIONS}
   LIterator: THashmap<TSourceEditorWindowInterface, TSourceEditorWindowData, THash_TObject>.TIterator;
   LIterator2: THashmap<TSourceEditorInterface, TModulePageControl, THash_TObject>.TIterator;
+{$ENDIF}
 begin
   Form.Parent := nil;
   Application.ProcessMessages; // For TFrame - System Error. Code: 1400. Invalid window handle.
@@ -821,6 +926,19 @@ begin
   LFormData := FindDesignFormData(Form);
   dsgForms.Remove(LFormData);
 
+{$IFDEF USE_GENERICS_COLLECTIONS}
+  for LSEWD in SourceEditorWindows.Values do
+  begin
+    if LSEWD.ActiveDesignFormData <> nil then
+      if LSEWD.ActiveDesignFormData.Form.Form = Form then
+        LSEWD.FActiveDesignFormData := nil; // important - we can't call OnChange tab, because tab don't exist anymore
+
+    for mpc in LSEWD.FPageCtrlList.Values do
+      if mpc.DesignFormData <> nil then
+         if mpc.DesignFormData.Form.Form = Form then
+            mpc.DesignFormData := nil;
+  end;
+{$ELSE}
   LIterator := SourceEditorWindows.Iterator;
   if LIterator <> nil then
   try
@@ -846,6 +964,7 @@ begin
   finally
     LIterator.Free;
   end;
+{$ENDIF}
 
   LFormData.Free;
 end;
@@ -870,7 +989,11 @@ begin
   if Sender.ClassNameIs('TSourceNotebook') then
   begin
     LSourceEditorWindow := Sender as TSourceEditorWindowInterface;
+{$IFDEF USE_GENERICS_COLLECTIONS}
+    SourceEditorWindows.Add(LSourceEditorWindow, TSourceEditorWindowData.Create(LSourceEditorWindow));
+{$ELSE}
     SourceEditorWindows.insert(LSourceEditorWindow, TSourceEditorWindowData.Create(LSourceEditorWindow));
+{$ENDIF}
   end;
 end;
 
@@ -882,8 +1005,12 @@ begin
   for p in dsgForms do
     if f.FForm.LastActiveSourceWindow = Sender then
       f.FForm.LastActiveSourceWindow := nil;
+{$IFDEF USE_GENERICS_COLLECTIONS}
+  SourceEditorWindows.Remove(Sender as TSourceEditorWindowInterface);
+{$ELSE}
   SourceEditorWindows[Sender as TSourceEditorWindowInterface].Free;
   SourceEditorWindows.Delete(Sender as TSourceEditorWindowInterface);
+{$ENDIF}
   if LastActiveSourceEditorWindow = Sender then
     LastActiveSourceEditorWindow := nil;
 end;
@@ -896,10 +1023,17 @@ var
 begin
   LWindow := Sender as TSourceEditorWindowInterface;
 
+{$IFDEF USE_GENERICS_COLLECTIONS}
+  if not SourceEditorWindows.TryGetValue(LWindow, LWindowData) or
+    (LWindowData.ActiveDesignFormData = nil)
+  then
+    Exit;
+{$ELSE}
   if not SourceEditorWindows.contains(LWindow) then
     Exit;
   if SourceEditorWindows.GetData(LWindow).ActiveDesignFormData = nil then
     Exit;
+{$ENDIF}
 
   LDesignedForm := LWindowData.ActiveDesignFormData as IDesignedForm;
   LDesignedForm.ShowWindow;
@@ -913,11 +1047,18 @@ var
 begin
   LWindow := Sender as TSourceEditorWindowInterface;
 
+{$IFDEF USE_GENERICS_COLLECTIONS}
+  if not SourceEditorWindows.TryGetValue(LWindow, LWindowData) or
+    (LWindowData.ActiveDesignFormData = nil)
+  then
+    Exit;
+{$ELSE}
   if not SourceEditorWindows.contains(LWindow) then
     Exit;
   LWindowData := SourceEditorWindows[LWindow];
   if LWindowData.ActiveDesignFormData = nil then
     Exit;
+{$ENDIF}
 
   LDesignedForm := LWindowData.ActiveDesignFormData as IDesignedForm;
   LDesignedForm.HideWindow;
@@ -936,7 +1077,9 @@ class procedure TSpartaMainIDE.EditorActivated(Sender: TObject);
 var
   LDesigner: TIDesigner;
   LSourceEditor: TSourceEditorInterface;
+{$IFNDEF USE_GENERICS_COLLECTIONS}
   LIterator: THashmap<TSourceEditorInterface, TModulePageControl, THash_TObject>.TIterator;
+{$ENDIF}
 
   function LastSourceEditorNotFound: boolean;
   var
@@ -946,6 +1089,24 @@ var
     if (LastActiveSourceEditorWindow = nil) or (LastActiveSourceEditor = nil) then
       Exit(False);
 
+{$IFDEF USE_GENERICS_COLLECTIONS}
+    for se in SourceEditorWindows[LastActiveSourceEditorWindow].FPageCtrlList.Keys do
+    begin
+      Result := True;
+      for i := 0 to LastActiveSourceEditorWindow.Count - 1 do
+        if se = LastActiveSourceEditorWindow.Items[i] then
+        begin
+          Result := False;
+          Break;
+        end;
+
+      if Result then
+      begin
+        LastActiveSourceEditor := se; // after moving code editor into other window, sometimes IDE switch to other tab :\ damn... this line prevent this.
+        Exit;
+      end;
+    end;
+{$ELSE}
     LIterator := SourceEditorWindows[LastActiveSourceEditorWindow].FPageCtrlList.Iterator;
     if LIterator <> nil then
     try
@@ -967,6 +1128,7 @@ var
     finally
       LIterator.Free;
     end;
+{$ENDIF}
 
     Result := False;
   end;
@@ -1166,9 +1328,13 @@ class procedure TSpartaMainIDE.TabChange(Sender: TObject);
 var
   LActiveSourceWindow: TSourceEditorWindowInterface;
   w: TSourceEditorWindowInterface;
+{$IFDEF USE_GENERICS_COLLECTIONS}
+  p: TPair<TSourceEditorInterface, TModulePageControl>;
+{$ELSE}
   p: THashmap<TSourceEditorInterface, TModulePageControl, THash_TObject>.TPair;
   LIterator: THashmap<TSourceEditorWindowInterface, TSourceEditorWindowData, THash_TObject>.TIterator;
   LIterator2: THashmap<TSourceEditorInterface, TModulePageControl, THash_TObject>.TIterator;
+{$ENDIF}
   LDesigner: TIDesigner;
   LFormData: TDesignFormData;
   LPageCtrl: TModulePageControl;
@@ -1187,6 +1353,34 @@ begin
     LDesigner := LActiveSourceWindow.ActiveEditor.GetDesigner(True);
     LFormData := FindDesignFormData(LDesigner);
 
+{$IFDEF USE_GENERICS_COLLECTIONS}
+    if (LFormData <> nil) and SourceEditorWindows.TryGetValue(LActiveSourceWindow, LSourceWndData) then
+    begin
+      case LPageCtrl.ActivePageIndex of
+        0:
+          begin
+            LSourceWndData.ActiveDesignFormData := nil;
+          end;
+        1:
+          begin
+            //  deactivate design tab in other page control :)
+            for w in SourceEditorWindows.Keys do
+              if w = LActiveSourceWindow then
+                Continue
+              else
+                for p in SourceEditorWindows[w].FPageCtrlList do
+                  if (p.Value.DesignFormData = LFormData) and (p.Value <> Sender) then
+                  begin
+                    IDETabMaster.ShowCode(p.Key);
+                  end;
+
+            LSourceWndData.ActiveDesignFormData := LFormData;
+            // to handle windows with different size
+            LPageCtrl.BoundToDesignTabSheet;
+          end;
+      end;
+    end;
+{$ELSE}
     if (LFormData <> nil) and SourceEditorWindows.contains(LActiveSourceWindow) then
     begin
       LSourceWndData := SourceEditorWindows[LActiveSourceWindow];
@@ -1230,14 +1424,23 @@ begin
           end;
       end;
     end;
+{$ENDIF}
   end;
 end;
 
 class procedure TSpartaMainIDE.GlobalOnChangeBounds(Sender: TObject);
 var
   sewd: TSourceEditorWindowData;
+{$IFNDEF USE_GENERICS_COLLECTIONS}
   LIterator: THashmap<TSourceEditorWindowInterface, TSourceEditorWindowData, THash_TObject>.TIterator;
+{$ENDIF}
 begin
+{$IFDEF USE_GENERICS_COLLECTIONS}
+  for sewd in SourceEditorWindows.Values do
+  begin
+    sewd.OnChangeBounds(Sender);
+  end;
+{$ELSE}
   LIterator := SourceEditorWindows.Iterator;
   if LIterator <> nil then
   try
@@ -1248,6 +1451,7 @@ begin
   finally
     LIterator.Free;
   end;
+{$ENDIF}
 end;
 
 class procedure TSpartaMainIDE.GlobalSNOnChangeBounds(Sender: TObject);
@@ -1260,9 +1464,14 @@ begin
   LWindow := Sender as TSourceEditorWindowInterface;
 
   // dock/undock event :)
+{$IFDEF USE_GENERICS_COLLECTIONS}
+  if not SourceEditorWindows.TryGetValue(LWindow, LWindowData) then
+    Exit;
+{$ELSE}
   if not SourceEditorWindows.contains(LWindow) then
     Exit;
   LWindowData := SourceEditorWindows[LWindow];
+{$ENDIF}
   if LWindowData.FLastTopParent <> LWindow.GetTopParent then
   begin
     LWindowData.FLastTopParent := LWindow.GetTopParent;
@@ -1304,7 +1513,9 @@ var
   LPageCtrl, p: TModulePageControl;
   w: TSourceEditorWindowInterface;
   e: TSourceEditorInterface;
+{$IFNDEF USE_GENERICS_COLLECTIONS}
   LIterator: THashmap<TSourceEditorWindowInterface, TSourceEditorWindowData, THash_TObject>.TIterator;
+{$ENDIF}
 begin
   LForm := FindDesignFormData(TCustomForm(Sender).Designer);
   if LForm = nil then
@@ -1321,6 +1532,18 @@ begin
   if AComponentPaletteClassSelected then
   begin
     // if form is already opened do nothing, if not then show form for active module.
+{$IFDEF USE_GENERICS_COLLECTIONS}
+    for w in SourceEditorWindows.Keys do
+    begin
+      e := w.ActiveEditor;
+      if (e = nil) or (e.GetDesigner(True) <> LForm.Form.Form.Designer) then
+        Continue;
+
+      p := FindModulePageControl(e);
+      if p.PageIndex = 1 then
+        Exit;
+    end;
+{$ELSE}
     LIterator := SourceEditorWindows.Iterator;
     if LIterator <> nil then
     try
@@ -1337,6 +1560,7 @@ begin
     finally
       LIterator.Free;
     end;
+{$ENDIF}
   end;
 
   IDETabMaster.ShowDesigner(SourceEditorManagerIntf.ActiveEditor);
@@ -1439,6 +1663,7 @@ begin
   end;
 end;
 
+{$IFNDEF USE_GENERICS_COLLECTIONS}
 class procedure FreeSourceEditorWindowsValues;
 var
   LIterator: THashmap<TSourceEditorWindowInterface, TSourceEditorWindowData, THash_TObject>.TIterator;
@@ -1453,14 +1678,21 @@ begin
     LIterator.Free;
   end;
 end;
+{$ENDIF}
 
 initialization
   dsgForms := Classes.TList.Create;
+{$IFDEF USE_GENERICS_COLLECTIONS}
+  SourceEditorWindows := TObjectDictionary<TSourceEditorWindowInterface, TSourceEditorWindowData>.Create([doOwnsValues]);
+{$ELSE}
   SourceEditorWindows := THashmap<TSourceEditorWindowInterface, TSourceEditorWindowData, THash_TObject>.Create();
+{$ENDIF}
   Forms := Classes.TList.Create;
 finalization
   Forms.Free;
+{$IFNDEF USE_GENERICS_COLLECTIONS}
   FreeSourceEditorWindowsValues;
+{$ENDIF}
   SourceEditorWindows.Free;
   FreeAndNil(dsgForms);
 end.

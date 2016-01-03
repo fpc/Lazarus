@@ -19,12 +19,19 @@ interface
 uses
   Classes, SysUtils, Forms, FormEditingIntf, Controls, TypInfo, LCLIntf,
   LCLType, sparta_DesignedForm, Math,
+{$IFDEF USE_GENERICS_COLLECTIONS}
+  Generics.Defaults,
+{$ENDIF}
   SrcEditorIntf;
 
 type
   { TDesignedFormImpl }
 
+{$IFDEF USE_GENERICS_COLLECTIONS}
+  TDesignedFormImpl = class(TSingletonImplementation, IDesignedRealFormHelper, IDesignedForm)
+{$ELSE}
   TDesignedFormImpl = class(TComponent, IDesignedRealFormHelper, IDesignedForm)
+{$ENDIF}
   private
     FOwner: TForm;
     FDesignedRealForm: IDesignedRealForm;
