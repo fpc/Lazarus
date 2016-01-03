@@ -255,10 +255,13 @@ begin
   begin
     TitleEdit.Text := Title;
     UseAppBundleCheckBox.Checked := UseAppBundle;
-    UseXPManifestCheckBox.Checked := TProjectXPManifest(ProjResources[TProjectXPManifest]).UseManifest;
-    DpiAwareCheckBox.Checked := TProjectXPManifest(ProjResources[TProjectXPManifest]).DpiAware;
-    ExecutionLevelComboBox.ItemIndex := Ord(TProjectXPManifest(ProjResources[TProjectXPManifest]).ExecutionLevel);
-    UIAccessCheckBox.Checked := TProjectXPManifest(ProjResources[TProjectXPManifest]).UIAccess;
+    with ProjResources.XPManifest do
+    begin
+      UseXPManifestCheckBox.Checked := UseManifest;
+      DpiAwareCheckBox.Checked := DpiAware;
+      ExecutionLevelComboBox.ItemIndex := Ord(ExecutionLevel);
+      UIAccessCheckBox.Checked := UIAccess;
+    end;
     DpiAwareCheckBox.Enabled := UseXPManifestCheckBox.Checked;
     ExecutionLevelLabel.Enabled := UseXPManifestCheckBox.Checked;
     ExecutionLevelComboBox.Enabled := UseXPManifestCheckBox.Checked;

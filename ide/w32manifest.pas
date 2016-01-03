@@ -152,6 +152,7 @@ end;
 constructor TProjectXPManifest.Create;
 begin
   inherited Create;
+  FIsDefaultOption := True;
   UseManifest := False;
   DpiAware := False;
   ExecutionLevel := xmelAsInvoker;
