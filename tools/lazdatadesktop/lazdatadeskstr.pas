@@ -141,6 +141,7 @@ resourcestring
   SCreateCode = 'Create code';
   SHintCreateCode = 'Create pascal code for this data';
   SExecutingSQLStatement = '%s : Executing SQL statement:';
+  SExecutingSQLStatementCount = '%s : Executing script SQL statement nr. %d:';
   SRecordsFetched = 'Records fetched: %d';
   SSQLexecutedOK = '%s : Statement executed succesfully.';
   SExecutionTime = 'Execution time: %s';
@@ -148,6 +149,18 @@ resourcestring
   SSQLStatus = 'SQL State: %s';
   SErrorExecutingSQL = 'Error executing SQL statement:';
   SReadyForSQL = 'Ready to execute SQL statements';
+  SErrInScript = 'Error in SQL script';
+  SErrInScriptChoice = 'An error occurred in the SQL script.'+slineBreak+
+                       'How would you like to continue ?';
+  SRetryStatement = 'Retry the statement';
+  SStopOnNextError = 'Continue, stop on the next error';
+  SStopNoError = 'Continue, ignore all errors';
+  SAbortScript = 'Abort the script';
+  SErrCommitNotSupported = 'COMMIT Not supported yet';
+  SErrUnknownDirective = 'Unknown directive: %s (args: %s)';
+  SScriptAborted = 'Script was aborted after %d statements';
+  SScriptCompleted = 'Executed %d statements from script';
+  SScriptErrorCount = '%d script statements resulted in errors';
 
   // Main form
   SSaveData     = 'Save changes';

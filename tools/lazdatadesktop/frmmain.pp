@@ -1745,10 +1745,9 @@ begin
   LI.SubItems.Add(DateTimeToStr(RC.LastUse));
   LI.SubItems.Add(RC.ConnectionString);
   LI.Data:=RC;
-
 end;
-procedure TMainForm.AddRecentConnectionTree(RC: TRecentConnection;
-  AssumeNew: Boolean);
+
+procedure TMainForm.AddRecentConnectionTree(RC: TRecentConnection; AssumeNew: Boolean);
 
 Var
   TN : TTreeNode;

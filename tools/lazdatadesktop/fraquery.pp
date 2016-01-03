@@ -6,16 +6,23 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, SynHighlighterSQL, SynEdit, LResources, Forms,
-  DB, LCLType, Controls, ComCtrls, StdCtrls, ActnList, Dialogs, ExtCtrls,
-  fpDatadict, fradata, lazdatadeskstr;
+  DB, LCLType, Controls, ComCtrls, StdCtrls, ActnList, Dialogs, ExtCtrls, Menus,
+  fpDatadict, fradata, lazdatadeskstr, sqlscript;
 
 type
+   TExecuteMode = (emSingle,emSelection,emScript,emSelectionScript);
+   TScriptMode = (smStopNextError,smStopNoErrors,smAbort);
+   TBusyMode = (bmIdle,bmSingle,bmScript);
 
   { TQueryFrame }
 
   TQueryFrame = class(TFrame)
     ACloseQuery: TAction;
     ACreateCode: TAction;
+    AExecuteSelectionScript: TAction;
+    AExecuteScript: TAction;
+    AExecuteSelection: TAction;
+    AExecuteSingle: TAction;
     AExport: TAction;
     ASaveSQL: TAction;
     ALoadSQL: TAction;
@@ -24,10 +31,15 @@ type
     AExecute: TAction;
     ALQuery: TActionList;
     ILQuery: TImageList;
+    MIExecuteSelectionScript: TMenuItem;
+    MIExecuteScript: TMenuItem;
+    MIExecuteSelection: TMenuItem;
+    MIExecuteSingle: TMenuItem;
     MResult: TMemo;
     ODSQL: TOpenDialog;
     PCResult: TPageControl;
     FMSQL: TSynEdit;
+    PMExecute: TPopupMenu;
     SDSQL: TSaveDialog;
     SQuery: TSplitter;
     SQLSyn: TSynSQLSyn;
@@ -46,10 +58,15 @@ type
     TSData: TTabSheet;
     ToolBar1: TToolBar;
     procedure AExecuteExecute(Sender: TObject);
+    procedure AExecuteScriptExecute(Sender: TObject);
+    procedure AExecuteSelectionExecute(Sender: TObject);
+    procedure AExecuteSelectionScriptExecute(Sender: TObject);
+    procedure AExecuteSingleExecute(Sender: TObject);
     procedure BExecClick(Sender: TObject);
     procedure CloseQueryClick(Sender: TObject);
     procedure HaveNextQuery(Sender: TObject);
     procedure HavePreviousQuery(Sender: TObject);
+    procedure HaveSQLSelection(Sender: TObject);
     procedure LoadQueryClick(Sender: TObject);
     procedure NextQueryClick(Sender: TObject);
     procedure OnMemoKey(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -64,11 +81,24 @@ type
     FEngine: TFPDDEngine;
     FQueryHistory : TStrings;
     FCurrentQuery : Integer;
-    FBusy : Boolean;
+    FBusy : TBusyMode;
     FData : TDataFrame;
+    FScript : TEventSQLScript;
+    FScriptMode : TScriptMode;
+    FErrorCount,
+    FStatementCount : Integer;
+    FAbortScript : Boolean;
     procedure ClearResults;
-    procedure DoExecuteQuery(Qry: String);
+    function CountStatements(const S: String): Integer;
+    function DetermineExecuteMode: TExecuteMode;
+    // Script events
+    procedure DoCommit(Sender: TObject);
+    procedure DoDirective(Sender: TObject; Directive, Argument: AnsiString;  var StopExecution: Boolean);
+    procedure DoSQLStatement(Sender: TObject; Statement: TStrings; var StopExecution: Boolean);
+    // Execute SQL
+    procedure DoExecuteQuery(Const Qry: String; ACount : Integer = 0);
     procedure LocalizeFrame;
+    function SelectionHint: Boolean;
     procedure SetTableNames;
   public
   Protected
@@ -78,7 +108,8 @@ type
   Public
     Constructor Create(AOwner : TComponent); override;
     Destructor Destroy; override;
-    procedure ExecuteQuery(Qry: String);
+    Function ExecuteQuery(Const Qry: String; ACount : Integer = 0) : Boolean;
+    procedure ExecuteScript(AScript: String);
     procedure SaveQuery(AFileName: String);
     procedure LoadQuery(AFileName: String);
     Function AddToHistory(Qry : String) : Integer;
@@ -93,7 +124,7 @@ type
     Property Engine : TFPDDEngine Read FEngine Write SetEngine;
     Property QueryHistory : TStrings Read FQueryHistory;
     Property CurrentQuery : Integer Read FCurrentQuery;
-    Property Busy : Boolean Read FBusy;
+    Property Busy : TBusyMode Read FBusy;
     { public declarations }
   end;
 
@@ -194,6 +225,13 @@ begin
   FData.ShowExtraButtons:=False;
   MResult.Lines.Clear;
   MResult.Append(SReadyForSQL);
+  FScript:=TEventSQLScript.Create(Self);
+  FScript.UseDefines:=True;
+  FScript.UseSetTerm:=True;
+  FScript.UseCommit:=True;
+  FScript.OnSQLStatement:=@DoSQLStatement;
+  FScript.OnDirective:=@DoDirective;
+  FScript.OnCommit:=@DoCommit;
 end;
 
 { ---------------------------------------------------------------------
@@ -221,16 +259,125 @@ begin
     CloseDataset;
 end;
 
+function TQueryFrame.CountStatements(Const S : String) : Integer;
+
+Var
+  I : integer;
+
+begin
+  Result:=1;
+  For I:=2 To Length(S) do
+    If S[I-1]=';' then
+      inc(Result);
+end;
+
+function TQueryFrame.DetermineExecuteMode: TExecuteMode;
+
+begin
+  if SelectionHint then
+    begin
+    Result:=emSelection;
+    if CountStatements(Trim(FMSQL.SelText))>1 then
+      Result:=emSelectionScript
+    end
+  else
+    begin
+    Result:=emSingle;
+    if (FMSQL.Lines.Count>300) then
+      Result:=emScript
+    else
+      if CountStatements(Trim(FMSQL.Lines.Text))>1 then
+        result:=emScript
+    end;
+end;
+
+procedure TQueryFrame.DoSQLStatement(Sender: TObject; Statement: TStrings;
+  var StopExecution: Boolean);
+
+Var
+  RetryStatement : Boolean;
+begin
+  Application.ProcessMessages;
+  StopExecution:=False;
+  RetryStatement:=False;
+  Inc(FStatementCount);
+  Repeat
+    If not ExecuteQuery(Statement.Text,FStatementCount) then
+      begin
+      If not RetryStatement then
+        Inc(FErrorCount);
+      if (FScriptMode=smStopNextError) then
+        Case QuestionDlg(SErrInScript,SErrInScriptChoice,mtWarning,[
+            mrYes,SStopOnNextError,
+            mrYesToAll,SStopNoError,
+            mrAbort,SAbortScript,
+            mrRetry,SRetryStatement
+          ],0) of
+          mrYesToAll : FScriptMode:=smStopNoErrors;
+          mrAbort : StopExecution:=True;
+          mrRetry : RetryStatement:=True;
+        else
+          FScriptMode:=smStopNextError;
+        end;
+      end;
+  until StopExecution or Not RetryStatement;
+  if FAbortScript then
+    StopExecution:=True;
+  Application.ProcessMessages;
+end;
+
+procedure TQueryFrame.DoCommit(Sender: TObject);
+begin
+  MResult.Append(SErrCommitNotSupported);
+end;
+
+procedure TQueryFrame.DoDirective(Sender: TObject; Directive, Argument: AnsiString; var StopExecution: Boolean);
+begin
+  MResult.Append(Format(SErrUnknownDirective,[Directive,Argument]));
+  StopExecution:=False;
+  // Not yet implemented
+end;
+
 procedure TQueryFrame.BExecClick(Sender : TObject);
 
 begin
-  ClearResults;
-  ExecuteQuery(FMSQL.Lines.Text);
+
 end;
 
 procedure TQueryFrame.AExecuteExecute(Sender: TObject);
-begin
 
+begin
+  ClearResults;
+  Case DetermineExecuteMode of
+    emSingle          : AExecuteSingle.Execute;
+    emSelection       : AExecuteSelection.Execute;
+    emScript          : AExecuteScript.Execute;
+    emSelectionScript : AExecuteSelectionScript.Execute;
+  end;
+end;
+
+procedure TQueryFrame.AExecuteScriptExecute(Sender: TObject);
+begin
+  ClearResults;
+  ExecuteScript(Trim(FMSQL.Lines.Text));
+end;
+
+procedure TQueryFrame.AExecuteSelectionExecute(Sender: TObject);
+begin
+  ClearResults;
+  ExecuteQuery(Trim(FMSQL.SelText));
+end;
+
+procedure TQueryFrame.AExecuteSelectionScriptExecute(Sender: TObject);
+begin
+  ClearResults;
+  ExecuteScript(Trim(FMSQL.SelText));
+end;
+
+procedure TQueryFrame.AExecuteSingleExecute(Sender: TObject);
+begin
+  ClearResults;
+  ExecuteQuery(Trim(FMSQL.Lines.Text));
 end;
 
 procedure TQueryFrame.CloseQueryClick(Sender : TObject);
@@ -242,7 +389,7 @@ end;
 procedure TQueryFrame.NotBusy(Sender : TObject);
 
 begin
-  (Sender as TAction).Enabled:=Not FBusy;
+  (Sender as TAction).Enabled:=FBusy=bmIdle;
 end;
 
 procedure TQueryFrame.DataShowing(Sender : TObject);
@@ -265,6 +412,21 @@ procedure TQueryFrame.HavePreviousQuery(Sender : TObject);
 
 begin
   (Sender as TAction).Enabled:=(FCurrentQuery>0);
+end;
+
+function TQueryFrame.SelectionHint: Boolean;
+
+Var
+  S : String;
+
+begin
+  S:=Trim(FMSQL.SelText);
+  Result:=WordCount(S,[#10,#13,#9,' '])>1;
+end;
+
+procedure TQueryFrame.HaveSQLSelection(Sender: TObject);
+begin
+  (Sender as TAction).Enabled:=SelectionHint;
 end;
 
 procedure TQueryFrame.NextQueryClick(Sender : TObject);
@@ -354,7 +516,7 @@ begin
   FMSQL.Lines.SaveToFile(AFileName);
 end;
 
-procedure TQueryFrame.DoExecuteQuery(Qry : String);
+procedure TQueryFrame.DoExecuteQuery(Const Qry : String; ACount : Integer = 0);
 
 Var
   DS : TDataset;
@@ -365,7 +527,10 @@ Var
 begin
   RowsAff:='';
   TS:=Now;
-  MResult.Append(Format(SExecutingSQLStatement,[DateTimeToStr(TS)]));
+  if ACount<>0 then
+    MResult.Append(Format(SExecutingSQLStatementCount,[DateTimeToStr(TS),ACount]))
+  else
+    MResult.Append(Format(SExecutingSQLStatement,[DateTimeToStr(TS)]));
   MResult.Append(Qry);
   If Not assigned(FEngine) then
     Raise Exception.Create(SErrNoEngine);
@@ -403,16 +568,22 @@ begin
   ACloseQuery.Update;
 end;
 
-procedure TQueryFrame.ExecuteQuery(Qry : String);
+
+function TQueryFrame.ExecuteQuery(Const Qry: String; ACount : Integer = 0): Boolean;
 
 Var
   Msg : String;
 
 begin
-  FBusy:=True;
+  Result:=False;
+  if ACount>0 then
+    FBusy:=bmScript
+  else
+    FBusy:=bmSingle;
   Try
     try
-      DoExecuteQuery(Qry);
+      DoExecuteQuery(Qry,ACount);
+      Result:=True;
     except
       on Ed : ESQLDatabaseError do
         begin
@@ -434,20 +605,49 @@ begin
       MResult.Append(Msg);
       end;
   Finally
-    FBusy:=False;
+    if ACount<=0 then
+      FBusy:=bmIdle;
   end;
 end;
 
+procedure TQueryFrame.ExecuteScript(AScript : String);
+
+begin
+  FStatementCount:=0;
+  FErrorCount:=0;
+  FScriptMode:=smStopNextError;
+
+  FBusy:=bmScript;
+  try
+    FScript.Script.Text:=AScript;
+    FScript.Execute;
+    If Fscript.Aborted then
+      MResult.Append(Format(SScriptAborted,[FStatementCount]))
+    else
+      MResult.Append(Format(SScriptCompleted,[FStatementCount]));
+    if FErrorCount>0 then
+      MResult.Append(Format(SScriptErrorCount ,[FErrorCount]));
+  finally
+    FBusy:=bmIdle;
+  end;
+end;
+
+
 procedure TQueryFrame.CloseDataset;
 begin
-  FBusy:=True;
-  Try
-    FData.Dataset.Close;
-    FData.Visible:=False;
-    ACloseQuery.Update;
-  Finally
-    FBusy:=False;
-  end;
+  if FBusy=bmScript then
+    FAbortScript:=True
+  else
+    begin
+    fBusy:=bmSingle;
+    Try
+      FData.Dataset.Close;
+      FData.Visible:=False;
+      ACloseQuery.Update;
+    Finally
+      FBusy:=bmIdle;
+    end;
+    end;
 end;
 
 procedure TQueryFrame.FreeDataset;

@@ -22,9 +22,11 @@ object QueryFrame: TQueryFrame
       Left = 1
       Top = 2
       Action = AExecute
+      DropdownMenu = PMExecute
+      Style = tbsDropDown
     end
     object TBSep1: TToolButton
-      Left = 47
+      Left = 59
       Height = 22
       Top = 2
       Width = 8
@@ -32,17 +34,17 @@ object QueryFrame: TQueryFrame
       Style = tbsSeparator
     end
     object TBPrevious: TToolButton
-      Left = 55
+      Left = 67
       Top = 2
       Action = APreviousQuery
     end
     object TBNext: TToolButton
-      Left = 78
+      Left = 90
       Top = 2
       Action = ANextQuery
     end
     object TBSep2: TToolButton
-      Left = 101
+      Left = 113
       Height = 22
       Top = 2
       Width = 8
@@ -50,22 +52,22 @@ object QueryFrame: TQueryFrame
       Style = tbsSeparator
     end
     object TBClose: TToolButton
-      Left = 24
+      Left = 36
       Top = 2
       Action = ACloseQuery
     end
     object TBLoadSQL: TToolButton
-      Left = 109
+      Left = 121
       Top = 2
       Action = ALoadSQL
     end
     object TBSaveSQL: TToolButton
-      Left = 132
+      Left = 144
       Top = 2
       Action = ASaveSQL
     end
     object TBSep3: TToolButton
-      Left = 155
+      Left = 167
       Height = 22
       Top = 2
       Width = 8
@@ -73,12 +75,12 @@ object QueryFrame: TQueryFrame
       Style = tbsSeparator
     end
     object ToolButton1: TToolButton
-      Left = 163
+      Left = 175
       Top = 2
       Action = AExport
     end
     object ToolButton2: TToolButton
-      Left = 186
+      Left = 198
       Top = 2
       Action = ACreateCode
     end
@@ -892,7 +894,7 @@ object QueryFrame: TQueryFrame
       Caption = 'Execute statement'
       Hint = 'Execute SQL statement(s)'
       ImageIndex = 0
-      OnExecute = BExecClick
+      OnExecute = AExecuteExecute
       OnUpdate = NotBusy
       ShortCut = 16453
     end
@@ -945,9 +947,27 @@ object QueryFrame: TQueryFrame
       OnExecute = CreateCodeClick
       OnUpdate = DataShowing
     end
+    object AExecuteSingle: TAction
+      Caption = 'Execute as statement'
+      OnExecute = AExecuteSingleExecute
+    end
+    object AExecuteSelection: TAction
+      Caption = 'Execute selection as statement'
+      OnExecute = AExecuteSelectionExecute
+      OnUpdate = HaveSQLSelection
+    end
+    object AExecuteScript: TAction
+      Caption = 'Execute as script'
+      OnExecute = AExecuteScriptExecute
+    end
+    object AExecuteSelectionScript: TAction
+      Caption = 'Execute selection as script'
+      OnExecute = AExecuteSelectionScriptExecute
+    end
   end
   object SQLSyn: TSynSQLSyn
     DefaultFilter = 'SQL Files (*.sql)|*.sql'
+    Enabled = False
     TableNameAttri.Foreground = 2779939
     SQLDialect = sqlInterbase6
     left = 200
@@ -963,5 +983,24 @@ object QueryFrame: TQueryFrame
     Options = [ofOverwritePrompt, ofPathMustExist, ofEnableSizing]
     left = 256
     top = 48
+  end
+  object PMExecute: TPopupMenu
+    Images = ILQuery
+    left = 88
+    top = 112
+    object MIExecuteSingle: TMenuItem
+      Action = AExecuteSingle
+      Caption = 'Execute as single SQL statement'
+    end
+    object MIExecuteSelection: TMenuItem
+      Action = AExecuteSelection
+      Caption = 'Execute Selection Only'
+    end
+    object MIExecuteScript: TMenuItem
+      Action = AExecuteScript
+    end
+    object MIExecuteSelectionScript: TMenuItem
+      Action = AExecuteSelectionScript
+    end
   end
 end
