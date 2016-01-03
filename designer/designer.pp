@@ -2143,7 +2143,7 @@ begin
   end;
 
   if PropertyEditorHook<>nil then
-    PropertyEditorHook.MouseDown(Sender, Button, Shift, p.X, p.Y);
+    PropertyEditorHook.DesignerMouseDown(Sender, Button, Shift, p.X, p.Y);
 
   if not ControlSelection.OnlyVisualComponentsSelected and ShowComponentCaptions then
     Form.Invalidate;
@@ -2533,7 +2533,7 @@ begin
   MouseDownSender:=nil;
 
   if PropertyEditorHook<>nil then
-    PropertyEditorHook.MouseUp(Sender, Button, Shift, p.X, p.Y);
+    PropertyEditorHook.DesignerMouseUp(Sender, Button, Shift, p.X, p.Y);
 
   {$IFDEF VerboseDesigner}
   DebugLn('[TDesigner.MouseUpOnControl] END');
