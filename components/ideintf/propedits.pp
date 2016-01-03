@@ -5140,9 +5140,9 @@ var
   Dlg: TForm;
   BtnPanel: TButtonPanel;
 begin
+  Dlg:=TForm.Create(Application);
   try
-    Dlg:=TForm.Create(nil);
-    Dlg.BorderStyle:=bsToolWindow;
+    Dlg.BorderIcons:=[biSystemMenu];
     Dlg.Caption:=oisSelectShortCut;
     Dlg.Position:=poScreenCenter;
     Dlg.Constraints.MinWidth:=350;
