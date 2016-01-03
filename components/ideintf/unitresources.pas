@@ -58,6 +58,7 @@ type
     class function GetClassNameFromStream(s: TStream; out IsInherited: Boolean): shortstring; override;
     class function CreateReader(s: TStream; var DestroyDriver: boolean): TReader; override;
     class function CreateWriter(s: TStream; var DestroyDriver: boolean): TWriter; override;
+    class function DefaultComponentClass: TComponentClass; override;
     class function FindComponentClass(aClassName: string): TComponentClass; override;
   end;
 
@@ -143,6 +144,11 @@ class function TCustomLFMUnitResourceFileFormat.CreateWriter(s: TStream;
   var DestroyDriver: boolean): TWriter;
 begin
   Result := CreateLRSWriter(s, DestroyDriver);
+end;
+
+class function TCustomLFMUnitResourceFileFormat.DefaultComponentClass: TComponentClass;
+begin
+  Result := FormEditingHook.StandardDesignerBaseClasses[DesignerBaseClassId_TForm];
 end;
 
 class function TCustomLFMUnitResourceFileFormat.FindComponentClass(
