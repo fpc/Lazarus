@@ -754,12 +754,6 @@ type
     procedure GotoNextSharedEditor(Backward: Boolean = False);
     procedure MoveEditorNextWindow(Backward: Boolean = False; Copy: Boolean = False);
     procedure CopyEditor(OldPageIndex, NewWindowIndex, NewPageIndex: integer; Focus: Boolean = False);
-    procedure ProcessParentCommand(Sender: TObject;
-       var Command: TSynEditorCommand; var {%H-}AChar: TUTF8Char; {%H-}Data: pointer;
-       var Handled: boolean);
-    procedure ParentCommandProcessed(Sender: TObject;
-       var Command: TSynEditorCommand; var {%H-}AChar: TUTF8Char; {%H-}Data: pointer;
-       var Handled: boolean);
 
     function GetActiveEditor: TSourceEditorInterface; override;
     procedure SetActiveEditor(const AValue: TSourceEditorInterface); override;
@@ -770,10 +764,6 @@ type
 
     procedure BeginAutoFocusLock;
     procedure EndAutoFocusLock;
-
-  public
-    procedure AddUpdateEditorPageCaptionHandler(AEvent: TNotifyEvent; const AsLast: Boolean = True); override;
-    procedure RemoveUpdateEditorPageCaptionHandler(AEvent: TNotifyEvent); override;
   protected
     procedure CloseTabClicked(Sender: TObject);
     procedure CloseClicked(Sender: TObject; CloseOthers: Boolean = False);
@@ -804,6 +794,16 @@ type
     procedure ReloadEditorOptions;
     procedure CheckFont;
 
+  public
+    procedure AddUpdateEditorPageCaptionHandler(AEvent: TNotifyEvent; const AsLast: Boolean = True); override;
+    procedure RemoveUpdateEditorPageCaptionHandler(AEvent: TNotifyEvent); override;
+
+    procedure ProcessParentCommand(Sender: TObject;
+       var Command: TSynEditorCommand; var {%H-}AChar: TUTF8Char; {%H-}Data: pointer;
+       var Handled: boolean);
+    procedure ParentCommandProcessed(Sender: TObject;
+       var Command: TSynEditorCommand; var {%H-}AChar: TUTF8Char; {%H-}Data: pointer;
+       var Handled: boolean);
   public
     constructor Create(AOwner: TComponent); override; overload;
     constructor Create(AOwner: TComponent; AWindowID: Integer); overload;

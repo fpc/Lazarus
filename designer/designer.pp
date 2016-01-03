@@ -47,7 +47,7 @@ uses
   IDEDialogs, PropEdits, PropEditUtils, ComponentEditors, MenuIntf, IDEImagesIntf,
   FormEditingIntf, ComponentReg, IDECommands, LazIDEIntf, ProjectIntf,
   // IDE
-  LazarusIDEStrConsts, EnvironmentOpts, EditorOptions,
+  LazarusIDEStrConsts, EnvironmentOpts, EditorOptions, SourceEditor,
   // Designer
   AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, TabOrderDlg, AnchorEditor, DesignerProcs,
   CustomFormEditor, AskCompNameDlg, ControlSelection, ChangeClassDialog;
@@ -2709,6 +2709,7 @@ var
   Handled: boolean;
   Current: TComponent;
   NewName: String;
+  UTF8Char: TUTF8Char;
 
   procedure Nudge(x, y: integer);
   begin
@@ -2742,6 +2743,19 @@ begin
   //DebugLn(['TDesigner.KEYDOWN Command=',dbgs(Command),' ',TheMessage.CharCode,' ',dbgs(Shift)]);
   DoProcessCommand(Self, Command, Handled);
   //DebugLn(['TDesigner.KeyDown Command=',Command,' Handled=',Handled,' TheMessage.CharCode=',TheMessage.CharCode]);
+
+  if not Handled and (SourceEditorManager.ActiveSourceWindow<>nil)
+  and (GetParentForm(SourceEditorManager.ActiveSourceWindow) = GetParentForm(Sender)) then
+  begin
+    // send special commands to current editor if they have same parent (designer is docked to the editor)
+    case Command of
+      ecNextEditor, ecPrevEditor,  ecNextEditorInHistory, ecPrevEditorInHistory:
+      begin
+        FillChar(UTF8Char{%H-}, SizeOf(UTF8Char), 0);
+        SourceEditorManager.ActiveSourceWindow.ProcessParentCommand(Self, Command, UTF8Char, nil, Handled);
+      end;
+    end;
+  end;
 
   if not Handled then
   begin
