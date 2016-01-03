@@ -747,7 +747,7 @@ class procedure TSpartaMainIDE.Screen_FormAdded(Sender: TObject; Form: TCustomFo
 var
   LSourceEditor: TSourceEditorInterface;
   LFormData: TDesignFormData;
-  i: Integer;
+  //i: Integer;
   LPageCtrl: TModulePageControl;
 begin
   if IsFormDesign(Form) then
@@ -776,6 +776,10 @@ begin
   end
   else
   begin
+    // ONDREJ: the following code marged with (on-del) seems to help with nothing
+    // but slows down loading forms and make them flicker.
+    // I therefore commented it out. Please revert if there'll be regressions.
+    {  // (on-del)
     if not BoundInitialized then
     begin
       for i := 0 to Screen.FormCount - 1 do
@@ -786,19 +790,20 @@ begin
           Screen.Forms[i].AddHandlerOnChangeBounds(GlobalOnChangeBounds);
         end;
       BoundInitialized := True;
-    end;
+    end;}
 
     if Form is TSourceEditorWindowInterface then
     begin
       Form.AddHandlerOnChangeBounds(GlobalSNOnChangeBounds);
-      Form.PopupMode := pmExplicit;
+      //Form.PopupMode := pmExplicit; // (on-del)
+      Forms.Add(Form); // (on-del)
     end
     else
     begin
-      Form.AddHandlerOnChangeBounds(GlobalOnChangeBounds);
+      //Form.AddHandlerOnChangeBounds(GlobalOnChangeBounds); // (on-del)
     end;
 
-    Forms.Add(Form);
+    //Forms.Add(Form); // (on-del)
   end;
 end;
 
