@@ -108,15 +108,8 @@ begin
   begin
     FDesignedForm.BeginUpdate;
     
-{$IFDEF USE_POPUP_PARENT_DESIGNER}
-    FDesignedForm.RealPopupMode := pmExplicit;
-    // for dock/undock
-    FDesignedForm.RealPopupParent := nil;
-    FDesignedForm.RealPopupParent := FindFirstFormParent;
-{$ELSE}
     FDesignedForm.Form.Parent := FResizerFrame.pClient;
     FDesignedForm.Form.BorderStyle := bsNone;
-{$ENDIF}
     // for big forms (bigger than screen resolution) we need to refresh Real* values
     DesignedForm.RealWidth := DesignedForm.Width;
     DesignedForm.RealHeight := DesignedForm.Height;

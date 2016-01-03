@@ -19,19 +19,12 @@ interface
 uses
   Classes, SysUtils, Forms, FormEditingIntf, Controls, TypInfo, LCLIntf,
   LCLType, sparta_DesignedForm, Math,
-{$IFDEF USE_GENERICS_COLLECTIONS}
-  Generics.Defaults,
-{$ENDIF}
   SrcEditorIntf;
 
 type
   { TDesignedFormImpl }
 
-{$IFDEF USE_GENERICS_COLLECTIONS}
-  TDesignedFormImpl = class(TSingletonImplementation, IDesignedRealFormHelper, IDesignedForm)
-{$ELSE}
   TDesignedFormImpl = class(TComponent, IDesignedRealFormHelper, IDesignedForm)
-{$ENDIF}
   private
     FOwner: TForm;
     FDesignedRealForm: IDesignedRealForm;
@@ -945,22 +938,14 @@ end;
 
 procedure TDesignedFormImpl.ShowWindow;
 begin
-{$IFDEF USE_POPUP_PARENT_DESIGNER}
-  LCLIntf.ShowWindow(FOwner.Handle, SW_SHOW);
-{$ELSE}
   if FOwner.Parent = nil then
     LCLIntf.ShowWindow(FOwner.Handle, SW_SHOW);
-{$ENDIF}
 end;
 
 procedure TDesignedFormImpl.HideWindow;
 begin
-{$IFDEF USE_POPUP_PARENT_DESIGNER}
-  LCLIntf.ShowWindow(FOwner.Handle, SW_HIDE);
-{$ELSE}
   if FOwner.Parent = nil then
     LCLIntf.ShowWindow(FOwner.Handle, SW_HIDE);
-{$ENDIF}
 end;
 
 function TDesignedFormImpl.QueryInterface(constref IID: TGUID; out Obj

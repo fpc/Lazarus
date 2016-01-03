@@ -282,10 +282,6 @@ begin
 end;
 
 procedure TResizerFrame.ClientChangeBounds(Sender: TObject);
-{$IFDEF USE_POPUP_PARENT_DESIGNER}
-var
-  p: TPoint;
-{$ENDIF}
 begin
   if (DesignedForm = nil) or FNodePositioning then
     Exit;
@@ -296,15 +292,8 @@ begin
 (*
   DesignedForm.BeginUpdate;
 
-{$IFDEF USE_POPUP_PARENT_DESIGNER}
-  p := Point(0, 0);
-  p := pClient.ClientToScreen(p);
-  DesignedForm.RealLeft   := p.x;
-  DesignedForm.RealTop   := p.y;
-{$ELSE}
   DesignedForm.RealLeft := 0;
   DesignedForm.RealTop := 0;
-{$ENDIF}
   DesignedForm.RealWidth  := pClient.Width;
   DesignedForm.RealHeight := pClient.Height;
   DesignedForm.EndUpdate;
