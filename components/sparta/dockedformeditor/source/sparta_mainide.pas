@@ -191,6 +191,7 @@ type
 
     class procedure OnShowMethod(const Name: String);
     class procedure OnDesignRefreshPropertyValues;
+    class procedure OnMenuChanged;
   end;
 
 var
@@ -505,6 +506,9 @@ begin
     if Form.Form is TFakeForm then
       RepaintFormImages;
   end;
+
+  if (TheMessage.msg = CM_MENUCHANGED) and (Form.Form is TFakeForm) then
+    TSpartaMainIDE.OnMenuChanged;
 
   // during docking, form position was in wrong place... we need to delay changing position :)
   if TheMessage.msg = WM_BoundToDesignTabSheet then
@@ -1519,6 +1523,24 @@ begin
   end;
 
   LWindowData.OnChangeBounds(Sender);
+end;
+
+class procedure TSpartaMainIDE.OnMenuChanged;
+var
+  LForm: TCustomForm;
+  LFormData: TDesignFormData;
+  LSourceWindow: TSourceEditorWindowInterface;
+  LPageCtrl: TModulePageControl;
+begin
+  if (GlobalDesignHook.LookupRoot is TCustomForm) then
+  begin
+    LForm := TCustomForm(GlobalDesignHook.LookupRoot);
+    LFormData := FindDesignFormData(LForm);
+    LSourceWindow := (LFormData as IDesignedForm).LastActiveSourceWindow;
+    LPageCtrl := FindModulePageControl(LSourceWindow);
+    if LPageCtrl.Resizer<>nil then
+      LPageCtrl.Resizer.FResizerFrame.OnMenuChanged;
+  end;
 end;
 
 {$IFDEF USE_POPUP_PARENT_DESIGNER}

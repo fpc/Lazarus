@@ -118,6 +118,7 @@ begin
     FDesignedForm.RealPopupParent := FindFirstFormParent;
 {$ELSE}
     FDesignedForm.Form.Parent := FResizerFrame.pClient;
+    FDesignedForm.Form.BorderStyle := bsNone;
 {$ENDIF}
     // for big forms (bigger than screen resolution) we need to refresh Real* values
     DesignedForm.RealWidth := DesignedForm.Width;

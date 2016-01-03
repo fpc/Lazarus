@@ -897,46 +897,8 @@ begin
 end;
 
 function TDesignedFormImpl.PositionDelta: TPoint;
-
-  procedure FormBorderDelta;
-  var
-    LTestCtrl: TWinControl;
-    LTestRec, LFormRect: TRect;
-    LForm: TCustomForm;
-  begin
-    LForm := GetForm;
-    LTestCtrl := TWinControl.Create(Self);
-    try
-      LTestCtrl.Parent := LForm;
-      LTestCtrl.Left := 0;
-      LTestCtrl.Top := 0;
-
-      GetWindowRect(LForm.Handle, LFormRect);
-      GetWindowRect(LTestCtrl.Handle, LTestRec);
-
-      Result.x := Result.x + Max(LTestRec.Left - LFormRect.Left, 0);
-      Result.y := Result.y + Max(LTestRec.Top  - LFormRect.Top,  0);
-    finally
-      LTestCtrl.free;
-    end;
-  end;
-
-  procedure MainMenuDelta;
-  var
-    LForm: TCustomForm;
-  begin
-    LForm := GetForm;
-    if LForm.Menu <> nil then
-      if LForm.Menu.Items.Count>0 then
-        Result.y := Result.y - LCLIntf.GetSystemMetrics(SM_CYMENU);
-  end;
-
 begin
   Result := Point(0, 0);
-  {$IFDEF WINDOWS}
-  FormBorderDelta;
-  MainMenuDelta;
-  {$ENDIF}
 end;
 
 procedure TDesignedFormImpl.SetOnChangeHackedBounds(const AValue: TNotifyEvent);
@@ -1016,23 +978,8 @@ begin
 end;
 
 function TDesignedFormImpl.GetLogicalClientRect(ALogicalClientRect: TRect): TRect;
-var
-  i: Integer;
 begin
   Result:=ALogicalClientRect;
-
-  Result.Right := Width;
-  if (FOwner.Menu <> nil) and (FOwner.Menu.Items.Count <> 0) then
-  begin
-    for i := 0 to FOwner.Menu.Items.Count - 1 do
-      if FOwner.Menu.Items[i].Visible then
-      begin
-        Result.Bottom:= Height - LCLIntf.GetSystemMetrics(SM_CYMENU);
-        Exit;
-      end;
-  end;
-
-  Result.Bottom:= Height;
 end;
 
 constructor TDesignedFormImpl.Create(AOwner: TForm);
