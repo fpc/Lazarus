@@ -94,7 +94,7 @@ end;
 procedure TCustomFloatSpinEdit.KeyPress(var Key: char);
 {Disallow any key that is not a digit, decimalseparator, + or -
  For ease of use translate any decimalpoint or comma to DecimalSeparator
- Tab and backSpace ofcourse should be passed onto inherited KeyPress
+ Tab, BackSpace, Cut, Paste, Copy, Undo of course should be passed onto inherited KeyPress
  If FDecimals = 0 (as in TSpinEdit), disallow decimalseparator also
  We could make it more sophisticated and only allow +/- at front,
  DecimalSeparator only if not already in text, but this way is Delphi compatible
@@ -102,7 +102,7 @@ procedure TCustomFloatSpinEdit.KeyPress(var Key: char);
 begin
   inherited KeyPress(Key);
   if (Key in ['.',',']) then Key := DefaultFormatSettings.Decimalseparator;
-  if not (Key in ['0'..'9', DefaultFormatSettings.DecimalSeparator,'+','-',#8,#9,^C,^X,^V]) then Key := #0;
+  if not (Key in ['0'..'9', DefaultFormatSettings.DecimalSeparator,'+','-',#8,#9,^C,^X,^V,^Z]) then Key := #0;
   if (Key = DefaultFormatSettings.DecimalSeparator) and (FDecimals = 0) then Key := #0;
 end;
 
