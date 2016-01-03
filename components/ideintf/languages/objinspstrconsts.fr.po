@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-05-14 21:06+0100\n"
+"PO-Revision-Date: 2015-12-30 17:15+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language: fr_FR\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Poedit 1.8.6\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -1306,7 +1306,7 @@ msgstr "Ajouter des images"
 
 #: objinspstrconsts.sccsiledtopendialogn
 msgid "New Image"
-msgstr ""
+msgstr "Nouvelle Image"
 
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
@@ -1314,7 +1314,7 @@ msgstr "Couleur de transparence :"
 
 #: objinspstrconsts.sccsiledtreplace
 msgid "&Replace ..."
-msgstr ""
+msgstr "&Remplacer..."
 
 #: objinspstrconsts.sccsiledtsave
 msgctxt "objinspstrconsts.sccsiledtsave"
@@ -1538,7 +1538,7 @@ msgstr "Ajouter comme unique"
 
 #: objinspstrconsts.s_confirm_clear
 msgid "Are you sure to clear image list?"
-msgstr ""
+msgstr "Étes-vous sûr de vouloir effacer la liste d'images ?"
 
 #: objinspstrconsts.s_splitimage
 msgid "Split image"
@@ -1583,4 +1583,3 @@ msgstr "Déplacer l'onglet vers la gauche"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Déplacer l'onglet vers la droite"
-

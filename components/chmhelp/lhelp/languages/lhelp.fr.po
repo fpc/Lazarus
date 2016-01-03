@@ -3,7 +3,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-12 15:04+0100\n"
-"PO-Revision-Date: 2015-12-19 15:48+0100\n"
+"PO-Revision-Date: 2015-12-27 13:19+0100\n"
 "Last-Translator: Yann Mérignac <yann.merignac@laposte.net>\n"
 "Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr "À propos"
 
 #: lhelpstrconsts.slhelp_about2
 msgid "&About ..."
-msgstr "À propos..."
+msgstr "&À propos..."
 
 #: lhelpstrconsts.slhelp_cannothandlethistypeofcontentforurl
 msgid "Cannot handle this type of content. \"%s\" for url:%s%s"
@@ -190,4 +190,3 @@ msgstr "    Utilisation : lhelp [[filename] [--context id] [--hide] [--ipcname l
 #: lhelpstrconsts.slhelp_view
 msgid "&View"
 msgstr "&Afficher"
-
