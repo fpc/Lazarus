@@ -825,6 +825,8 @@ begin
     PositionNodes(Self)
   else if FOldHasMainMenu then
     pBG.Invalidate;
+
+  FMenuChanged := False;
 end;
 
 destructor TResizerFrame.Destroy;
