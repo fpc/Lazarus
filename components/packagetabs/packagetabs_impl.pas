@@ -789,6 +789,7 @@ var
   xGroupTitle: string;
   xGroupType: TGroupType;
 begin
+  xActBtn := nil;
   FRecreateToolBar.FLastFiles.Clear;
   FWindow.IncUpdateLock;
   FWindow.DisableAlign;
