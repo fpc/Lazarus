@@ -30,9 +30,11 @@ unit BuildModesManager;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Dialogs, StdCtrls, Grids, Menus, ComCtrls,
-  ButtonPanel, LCLProc, IDEOptionsIntf, IDEDialogs, TransferMacros, Project,
-  CompOptsIntf, CompilerOptions, Compiler_ModeMatrix, BuildModeDiffDlg, LazarusIDEStrConsts;
+  Classes, SysUtils,
+  Forms, Controls, Dialogs, StdCtrls, Grids, Menus, ComCtrls, ButtonPanel, LCLProc,
+  IDEOptionsIntf, IDEDialogs, CompOptsIntf,
+  TransferMacros, Project, CompilerOptions, Compiler_ModeMatrix, BuildModeDiffDlg,
+  EnvironmentOpts, LazarusIDEStrConsts;
 
 type
 
@@ -108,10 +110,6 @@ procedure UpdateBuildModeCombo(aCombo: TComboBox);
 
 
 implementation
-
-const
-  DebugModeName = 'Debug';
-  ReleaseModeName = 'Release';
 
 {$R *.lfm}
 
@@ -233,32 +231,6 @@ end;
 procedure TBuildModesForm.btnCreateDefaultModesClick(Sender: TObject);
 var
   CurMode: TProjectBuildMode;
-
-  procedure AssignAndSetBooleans(aMode: TProjectBuildMode; IsDebug: Boolean);
-  begin
-    if CurMode<>nil then
-      aMode.Assign(CurMode);               // clone from currently selected mode
-    with aMode.CompilerOptions do
-    begin
-      // Smart linking
-      SmartLinkUnit:=not IsDebug;
-      LinkSmart:=not IsDebug;
-      // Checks
-      IOChecks:=IsDebug;
-      RangeChecks:=IsDebug;
-      OverflowChecks:=IsDebug;
-      StackChecks:=IsDebug;
-      IncludeAssertionCode:=IsDebug;
-      // Debug flags
-      GenerateDebugInfo:=IsDebug;
-      UseExternalDbgSyms:=IsDebug;
-      UseHeaptrc:=IsDebug;
-      TrashVariables:=IsDebug;
-    end;
-  end;
-
-var
-  NewMode: TProjectBuildMode;
   i: Integer;
 begin
   i:=BuildModesStringGrid.Row-1;
@@ -266,20 +238,8 @@ begin
     CurMode:=fBuildModes[i]
   else
     CurMode:=nil;
-
-  // Create Debug mode
-  NewMode:=fBuildModes.Add(DebugModeName);
-  AssignAndSetBooleans(NewMode, True);
-  NewMode.CompilerOptions.OptimizationLevel:=1;       // Optimization
-  NewMode.CompilerOptions.DebugInfoType:=dsDwarf2Set; // Debug
-  fActiveBuildMode:=NewMode;                          // activate Debug mode
-
-  // Create Release mode
-  NewMode:=fBuildModes.Add(ReleaseModeName);
-  AssignAndSetBooleans(NewMode, False);
-  NewMode.CompilerOptions.OptimizationLevel:=3;       // Optimization, slow, but safe, -O4 is dangerous
-  NewMode.CompilerOptions.DebugInfoType:=dsAuto;      // Debug
-
+  // Create Debug and Release modes, activate Debug mode
+  fActiveBuildMode:=fBuildModes.CreateExtraModes(CurMode);
   FillBuildModesGrid;               // show
   // select identifier
   BuildModesStringGrid.Col:=fModeNameCol;
@@ -540,9 +500,8 @@ begin
   ToolButtonMoveDown.Hint:=Format(lisMoveOnePositionDown, [Identifier]);
   ToolButtonDiff.Hint:=lisShowDifferencesBetweenModes;
   NoteLabel.Caption:='';
-  // ToDo: Save in Environment options and use for new projects.
   cbDebugReleaseProject.Caption:=lisCreateDebugAndReleaseModesNewProj;
-  cbDebugReleaseProject.Hint:='Under Construction ...'; // Remove this when implemented.
+  //cbDebugReleaseProject.Hint:='Under Construction ...'; // Remove this when implemented.
 
   btnCreateDefaultModes.Caption:=lisCreateNowForThisProject;
   btnCreateDefaultModes.Hint:='';   // ToDo: Figure out a good hint.
@@ -614,7 +573,7 @@ end;
 
 procedure TBuildModesForm.cbDebugReleaseProjectClick(Sender: TObject);
 begin
-  (Sender as TCheckBox).Checked := False;
+  //(Sender as TCheckBox).Checked := False;
 end;
 
 procedure TBuildModesForm.BuildModesStringGridDrawCell(Sender: TObject;

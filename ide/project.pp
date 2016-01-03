@@ -103,6 +103,9 @@ type
 
 const
   AllUnitCompDependencyTypes = [low(TUnitCompDependencyType)..high(TUnitCompDependencyType)];
+  // Names for extra buildmodes which may be created automatically.
+  DebugModeName = 'Debug';
+  ReleaseModeName = 'Release';
 
 type
 
@@ -543,8 +546,7 @@ type
     function CreateDiff(CompOpts: TBaseCompilerOptions;
                         Tool: TCompilerDiffTool = nil): boolean; override; // true if differ
     procedure InvalidateOptions;
-    procedure SetAlternativeCompile(const Command: string; ScanFPCMsgs: boolean
-      ); override;
+    procedure SetAlternativeCompile(const Command: string; ScanFPCMsgs: boolean); override;
   public
     property LazProject: TProject read FProject;
     property BuildMode: TProjectBuildMode read FBuildMode;
@@ -652,6 +654,7 @@ type
     function IsSessionMode(const ModeIdentifier: string): boolean;
     function IsSharedMode(const ModeIdentifier: string): boolean;
     procedure RenameMatrixMode(const OldName, NewName: string);
+    function CreateExtraModes(aCurMode: TProjectBuildMode): TProjectBuildMode;
     // load, save
     procedure LoadProjOptsFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure LoadSessionFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
@@ -6944,6 +6947,48 @@ procedure TProjectBuildModes.RenameMatrixMode(const OldName, NewName: string);
 begin
   SharedMatrixOptions.RenameMode(OldName,NewName);
   SessionMatrixOptions.RenameMode(OldName,NewName);
+end;
+
+function TProjectBuildModes.CreateExtraModes(aCurMode: TProjectBuildMode): TProjectBuildMode;
+// Create Debug and Release buildmodes. Return the created debug mode.
+// Params: aCurMode - existing mode to copy settings from.
+
+  procedure AssignAndSetBooleans(aMode: TProjectBuildMode; IsDebug: Boolean);
+  begin
+    if Assigned(aCurMode) then
+      aMode.Assign(aCurMode);              // clone from currently selected mode
+    with aMode.CompilerOptions do
+    begin
+      // Smart linking
+      SmartLinkUnit:=not IsDebug;
+      LinkSmart:=not IsDebug;
+      // Checks
+      IOChecks:=IsDebug;
+      RangeChecks:=IsDebug;
+      OverflowChecks:=IsDebug;
+      StackChecks:=IsDebug;
+      IncludeAssertionCode:=IsDebug;
+      // Debug flags
+      GenerateDebugInfo:=IsDebug;
+      UseExternalDbgSyms:=IsDebug;
+      UseHeaptrc:=IsDebug;
+      TrashVariables:=IsDebug;
+    end;
+  end;
+
+var
+  RelMode: TProjectBuildMode;
+begin
+  // Create Debug mode
+  Result:=Add(DebugModeName);
+  AssignAndSetBooleans(Result, True);
+  Result.CompilerOptions.OptimizationLevel:=1;        // Optimization
+  Result.CompilerOptions.DebugInfoType:=dsDwarf2Set;  // Debug
+  // Create Release mode
+  RelMode:=Add(ReleaseModeName);
+  AssignAndSetBooleans(RelMode, False);
+  RelMode.CompilerOptions.OptimizationLevel:=3;       // Optimization, slow, but safe, -O4 is dangerous
+  RelMode.CompilerOptions.DebugInfoType:=dsAuto;      // No Debug
 end;
 
 // Methods for LoadFromXMLConfig
