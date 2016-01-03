@@ -27,11 +27,7 @@ uses
 type
   { TDesignedFormImpl }
 
-{$IFDEF USE_GENERICS_COLLECTIONS}
-  TDesignedFormImpl = class(TSingletonImplementation, IDesignedRealFormHelper, IDesignedForm)
-{$ELSE}
   TDesignedFormImpl = class(TComponent, IDesignedRealFormHelper, IDesignedForm)
-{$ENDIF}
   private
     FOwner: TForm;
     FDesignedRealForm: IDesignedRealForm;

@@ -34,11 +34,7 @@ const
 type
   { TDesignFormData }
 
-{$IFDEF USE_GENERICS_COLLECTIONS}
-  TDesignFormData = class(TSingletonImplementation, IDesignedForm)
-{$ELSE}
   TDesignFormData = class(TComponent, IDesignedForm)
-{$ENDIF}
   private
     FWndMethod: TWndMethod;
 
