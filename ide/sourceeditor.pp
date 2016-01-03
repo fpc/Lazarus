@@ -727,6 +727,8 @@ type
 
     procedure NotebookMouseDown(Sender: TObject; Button: TMouseButton;
           {%H-}Shift: TShiftState; X,Y: Integer);
+    procedure NotebookMouseUp(Sender: TObject; Button: TMouseButton;
+          {%H-}Shift: TShiftState; X,Y: Integer);
     procedure NotebookDragDropEx(Sender, Source: TObject;
                                   OldIndex, NewIndex: Integer; CopyDrag: Boolean;
                                   var Done: Boolean);
@@ -6300,7 +6302,6 @@ Begin
     APage.Caption:='unit1';
     APage.Parent:=FNotebook;
     PageIndex := 0;   // Set it to the first page
-    PopupMenu := TabPopupMenu;
     if EditorOpts.ShowTabCloseButtons then
       Options:=Options+[nboShowCloseButtons]
     else
@@ -6315,6 +6316,7 @@ Begin
     OnChange := @NotebookPageChanged;
     OnCloseTabClicked  := @CloseTabClicked;
     OnMouseDown:=@NotebookMouseDown;
+    OnMouseUp:=@NotebookMouseUp;
     TabDragMode := dmAutomatic;
     OnTabDragOverEx  := @NotebookDragOverEx;
     OnTabDragDropEx  := @NotebookDragDropEx;
@@ -8366,6 +8368,26 @@ begin
     if TabIndex>=0 then
       CloseClicked(NoteBookPage[TabIndex],
                    (GetKeyState(VK_CONTROL) < 0) and EditorOpts.CtrlMiddleTabClickClosesOthers);
+  end else
+  if (Button = mbRight) then
+  begin
+    //select on right click
+    TabIndex:=FNotebook.TabIndexAtClientPos(Point(X,Y));
+    if TabIndex>=0 then
+      FNotebook.ActivePageIndex := TabIndex;
+  end;
+end;
+
+procedure TSourceNotebook.NotebookMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  TabIndex: Integer;
+begin
+  if (Button = mbRight) then
+  begin
+    TabIndex:=FNotebook.TabIndexAtClientPos(Point(X,Y));
+    if TabIndex>=0 then
+      TabPopUpMenu.PopUp;
   end;
 end;
 
