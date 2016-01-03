@@ -8859,10 +8859,11 @@ tools/lazdatadesktop/bitmaps/qrybtn_open.xpm svneol=native#text/plain
 tools/lazdatadesktop/bitmaps/qrybtn_previous.xpm svneol=native#text/plain
 tools/lazdatadesktop/bitmaps/qrybtn_save.xpm svneol=native#text/plain
 tools/lazdatadesktop/bitmaps/querypanel.txt svneol=native#text/plain
-tools/lazdatadesktop/conneditor.pp svneol=native#text/plain
 tools/lazdatadesktop/ddfiles.pp svneol=native#text/plain
 tools/lazdatadesktop/dicteditor.pp svneol=native#text/plain
 tools/lazdatadesktop/dicteditor.res -text
+tools/lazdatadesktop/fraconnection.lfm svneol=native#text/plain
+tools/lazdatadesktop/fraconnection.pp svneol=native#text/plain
 tools/lazdatadesktop/fradata.lfm svneol=native#text/plain
 tools/lazdatadesktop/fradata.pp svneol=native#text/plain
 tools/lazdatadesktop/fraquery.lfm svneol=native#text/plain

@@ -39,7 +39,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Dialogs, Menus, ActnList, StdActns,
   ComCtrls, IniPropStorage, LCLType, ExtCtrls, LCLProc, Translations,
-  dicteditor, conneditor, ddfiles, fpdatadict, lazdatadeskstr,
+  dicteditor, fraconnection, ddfiles, fpdatadict, lazdatadeskstr,
   FileUtil, LazFileUtils, LazUTF8;
 
 type
@@ -972,7 +972,7 @@ Var
 begin
   B:=Assigned(CurrentEditor) and (CurrentEditor.DataDictionary.Tables.Count>0);
   If not B then
-    B:=Assigned(CurrentConnection) and CurrentConnection.CanCreateSQL;
+    B:=Assigned(CurrentConnection) and CurrentConnection.Frame.CanCreateSQL;
   (Sender as TAction).Enabled:=B;
 end;
 
@@ -996,7 +996,7 @@ begin
     end
   else if Assigned(CurrentConnection) then
     begin
-    CurrentConnection.CreateCode;
+    CurrentConnection.Frame.CreateCode;
     end;
 end;
 
@@ -1014,7 +1014,7 @@ begin
     begin
     B:=Assigned(CurrentConnection);
     If B then
-      B:=CurrentConnection.CanCreateCode;
+      B:=CurrentConnection.Frame.CanCreateCode;
     end;
   (Sender as TAction).Enabled:=B;
 end;
@@ -1355,7 +1355,7 @@ Var
 
 begin
   CE:=CurrentConnection;
-  CE.DisConnect;
+  CE.Frame.DisConnect;
   Application.ReleaseComponent(CE);
   CE.Free;
   Result:=mrOK;
@@ -1430,7 +1430,7 @@ Var
 
 begin
   if Assigned(CurrentConnection) then
-    CurrentConnection.CreateSQL
+    CurrentConnection.Frame.CreateSQL
   else
     begin
     If CurrentEditor.CurrentTable<>Nil then
@@ -1808,8 +1808,8 @@ begin
   RC.Use;
   DDE:=CreateDictionaryEngine(RC.EngineName,Self);
   CDE:=NewConnectionEditor(RC.Name);
-  CDE.Engine:=DDE;
-  CDE.Connect(RC.ConnectionString);
+  CDE.Frame.Engine:=DDE;
+  CDE.Frame.Connect(RC.ConnectionString);
 end;
 
 procedure TMainForm.NewConnection(EngineName : String);
@@ -1832,8 +1832,8 @@ begin
   RC.EngineName:=EngineName;
   RC.Use;
   CDE:=NewConnectionEditor(Aname);
-  CDE.Engine:=DDE;
-  CDE.Connect(CS);
+  CDE.Frame.Engine:=DDE;
+  CDE.Frame.Connect(CS);
   ShowRecentConnections;
 end;
 
@@ -1843,7 +1843,7 @@ begin
   Result:=TConnectioneditor.Create(Self);
   Result.PageControl:=PCDD;
   Result.Parent:=PCDD;
-  Result.Description:=AName;
+  Result.Frame.Description:=AName;
   Result.ImageIndex:=18;
   PCDD.ActivePage:=Result;
 end;

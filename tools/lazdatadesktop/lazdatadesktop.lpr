@@ -9,8 +9,8 @@ uses
   Interfaces, // this includes the LCL widgetset
   Forms, frmmain, dicteditor, DBFLaz, frmimportdd,
   frmgeneratesql, SQLDBLaz, lazdatadict, RunTimeTypeInfoControls, frmSQLConnect,
-  ddfiles, conneditor, frmselectconnectiontype,
-  lazdatadeskstr, lazdbexport, fraquery, fradata;
+  ddfiles, frmselectconnectiontype,
+  lazdatadeskstr, lazdbexport, fraquery, fradata, fraconnection;
 
 {$R *.res}
 

@@ -100,34 +100,36 @@
         <IsPartOfProject Value="True"/>
       </Unit6>
       <Unit7>
-        <Filename Value="conneditor.pp"/>
+        <Filename Value="README.txt"/>
         <IsPartOfProject Value="True"/>
       </Unit7>
       <Unit8>
-        <Filename Value="README.txt"/>
-        <IsPartOfProject Value="True"/>
-      </Unit8>
-      <Unit9>
         <Filename Value="frmselectconnectiontype.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="SelectConnectionTypeForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-      </Unit9>
-      <Unit10>
+      </Unit8>
+      <Unit9>
         <Filename Value="lazdatadeskstr.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit10>
-      <Unit11>
+      </Unit9>
+      <Unit10>
         <Filename Value="fraquery.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="QueryFrame"/>
         <ResourceBaseClass Value="Frame"/>
-      </Unit11>
-      <Unit12>
+      </Unit10>
+      <Unit11>
         <Filename Value="fradata.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="DataFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="fraconnection.pp"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ConnectionFrame"/>
         <ResourceBaseClass Value="Frame"/>
       </Unit12>
     </Units>

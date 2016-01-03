@@ -1,55 +1,37 @@
-{
- ***************************************************************************
- *                                                                         *
- *   This source is free software; you can redistribute it and/or modify   *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This code is distributed in the hope that it will be useful, but      *
- *   WITHOUT ANY WARRANTY; without even the implied warranty of            *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU     *
- *   General Public License for more details.                              *
- *                                                                         *
- *   A copy of the GNU General Public License is available on the World    *
- *   Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also      *
- *   obtain it by writing to the Free Software Foundation,                 *
- *   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.        *
- *                                                                         *
- ***************************************************************************
-}
-unit conneditor;
+unit fraconnection;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, db, fpdatadict, controls, comctrls, stdctrls, extctrls,
-  graphics, imglist, lresources, RTTIGrids, fraquery, lazdatadeskstr;
+  fpdatadict, fraquery, Classes, SysUtils, FileUtil, LResources, Graphics, DB,
+  Forms, Controls, ComCtrls, ExtCtrls;
 
-Type
+type
 
-  { TConnectionEditor }
-  TConnectionEditor = Class(TTabSheet)
+  { TConnectionFrame }
+
+  TConnectionFrame = class(TFrame)
+    FTV: TTreeView;
+    FImgList: TImageList;
+    FSplit: TSplitter;
+    FPC: TPageControl;
+    FTSQuery: TTabSheet;
+    FTSDisplay: TTabSheet;
+    FDisplay: TPanel;
+    procedure DoSelectNode(Sender: TObject);
+    procedure DoTabChange(Sender: TObject);
   private
     FDescription: String;
     FEngine: TFPDDEngine;
-    FPC : TPageControl;
-    FDisplay: TPanel;
-    FSplit : TSplitter;
-    FTV: TTreeView;
-    FImgList : TImageList;
-    FTSDisplay : TTabsheet;
-    FTSQuery : TTabsheet;
     FQueryPanel : TQueryFrame;
+    { private declarations }
+    { public declarations }
     procedure AddPair(LV: TListView; Const AName, AValue: String);
     procedure ClearDisplay;
-    procedure DoSelectNode(Sender: TObject);
-    procedure DoTabChange(Sender: TObject);
     function GetCurrentObjectType: TObjectType;
-    function NewNode(TV: TTreeView; ParentNode: TTreeNode; ACaption: String;
-      AImageIndex: Integer): TTreeNode;
+    function NewNode(TV: TTreeView; ParentNode: TTreeNode; ACaption: String;       AImageIndex: Integer): TTreeNode;
     procedure SelectConnection;
     procedure SelectField(TableName, FieldName: String);
     procedure SelectFields(TableName: String);
@@ -59,11 +41,9 @@ Type
     procedure SetDescription(const AValue: String);
     procedure SetEngine(const AValue: TFPDDEngine);
     procedure ShowDatabase;
-    procedure ShowFields(ATableName: String; ATV: TTreeView;
-      ParentNode: TTreeNode);
+    procedure ShowFields(ATableName: String; ATV: TTreeView; ParentNode: TTreeNode);
     procedure ShowFields(ATableName: String; ALV: TListView);
-    procedure ShowIndexes(ATableName: String; ATV: TTreeView;
-      ParentNode: TTreeNode);
+    procedure ShowIndexes(ATableName: String; ATV: TTreeView; ParentNode: TTreeNode);
     procedure ShowIndexes(ATableName: String; ALV: TListView);
     procedure ShowTableData(ATableName: String);
     procedure ShowTables(ATV : TTreeView;ParentNode: TTreeNode; AddSubNodes : Boolean = False);
@@ -82,6 +62,17 @@ Type
     Property Description : String Read FDescription Write SetDescription;
   end;
 
+  { TConnectionEditor }
+
+  TConnectionEditor = Class(TTabSheet)
+  private
+    FFrame: TConnectionFrame;
+  Public
+    Constructor Create(AOwner : TComponent); override;
+    Destructor Destroy; override;
+    Property Frame : TConnectionFrame Read FFrame;
+  end;
+
 Const
   // Image Index for nodes. Relative to ImageOffset;
   iiConnection   = 0;
@@ -95,22 +86,32 @@ Const
   iiIndexFields  = 8;
   iiIndexOptions = 9;
   FimageOffset = 0;
-  
-{
-  // later ?
-  iiViews      = 5;
-  iiView       = 6;
-  iiProcedures = 7;
-  iiProcedure  = 8;
-}
 
 implementation
 
-uses typinfo, fradata, frmgeneratesql;
+{$r *.lfm}
 
-{ TConnectionEditor }
+uses typinfo, fradata, lazdatadeskstr, frmgeneratesql;
 
-procedure TConnectionEditor.SetEngine(const AValue: TFPDDEngine);
+  { TConnectionEditor }
+
+constructor TConnectionEditor.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FFrame:=TConnectionFrame.CReate(Self);
+  FFrame.Parent:=Self;
+  FFrame.Align:=alClient;
+end;
+
+destructor TConnectionEditor.Destroy;
+begin
+  FreeAndNil(FFrame);
+  inherited Destroy;
+end;
+
+{ TConnectionFrame }
+
+procedure TConnectionFrame.SetEngine(const AValue: TFPDDEngine);
 begin
   if FEngine=AValue then exit;
   If (FEngine<>Nil) then
@@ -126,7 +127,7 @@ begin
     FTSQuery.TabVisible:=False;
 end;
 
-constructor TConnectionEditor.Create(AOwner: TComponent);
+constructor TConnectionFrame.Create(AOwner: TComponent);
 
 Const
   ImageNames : Array[0..9] of string =
@@ -143,15 +144,9 @@ Var
 
 begin
   inherited Create(AOwner);
-  FTV:=TTreeView.Create(Self);
-  FTV.Name:='FTV';
-  FTV.Parent:=Self;
-  FTV.Align:=alLeft;
-  FTV.Width:=300;
-  FTV.OnSelectionChanged:=@DoSelectNode;
-  // Image list
-  FImgList:=TImageList.Create(Self);
-  For I:=0 to 8 do
+  FTSDisplay.Caption:=SSelectedObject;
+  FTSQuery.Caption:=SQuery;
+{  For I:=0 to 8 do
     begin
     P:=TPortableNetworkGraphic.Create;
     try
@@ -160,50 +155,22 @@ begin
     finally
       P.Free;
     end;
-    end;
-  FTV.Images:=FImgList;
-  // Splitter
-  FSplit:=TSplitter.Create(Self);
-  FSplit.Parent:=Self;
-  FSplit.Align:=alLeft;
-  // Page control
-  FPC:=TPageControl.Create(Self);
-  FPC.Parent:=Self;
-  FPC.Name:='FPC';
-  FPC.Align:=alClient;
-  FPC.OnChange:=@DoTabChange;
-  // Display tab sheet
-  FTSDisplay:=TTabsheet.Create(Self);
-  FTSDisplay.Name:='FTSDisplay';
-  FTSDisplay.parent:=FPC;
-  FTSDisplay.Caption:=SSelectedObject;
-  // Query tab sheet
-  FTSQuery:=TTabsheet.Create(Self);
-  FTSQuery.Name:='FTSQuery';
-  FTSQuery.parent:=FPC;
-  FTSQuery.Caption:=SQuery;
-  // Display panel
-  FDisplay:=TPanel.Create(Self);
-  FDisplay.Parent:=FTSDisplay;
-  FDisplay.Name:='FDisplay';
-  FDisplay.Align:=alClient;
-  FDisplay.Caption:='';
+    end;          }
   // Query panel
   FQueryPanel:= TQueryFrame.Create(Self);
   FQueryPanel.Name:='FQueryPanel';
   FQueryPanel.Parent:=FTSQuery;
   FQueryPanel.Align:=alClient;
-  ShowDatabase;
 end;
 
-destructor TConnectionEditor.Destroy;
+destructor TConnectionFrame.Destroy;
 begin
-  If Assigned(Fengine) then
+  If Assigned(FEngine) then
     FEngine.Disconnect;
   inherited Destroy;
 end;
 
-procedure TConnectionEditor.Notification(AComponent: TComponent;
+procedure TConnectionFrame.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
@@ -211,19 +178,19 @@ begin
     FEngine:=Nil;
 end;
 
-procedure TConnectionEditor.Connect(Connectstring : String);
+procedure TConnectionFrame.Connect(Connectstring : String);
 begin
   If FEngine.Connect(ConnectString) then
     ShowDatabase;
 end;
 
-procedure TConnectionEditor.DisConnect;
+procedure TConnectionFrame.DisConnect;
 begin
   If Assigned(FEngine) then
     FEngine.Disconnect;
 end;
 
-function TConnectionEditor.CanCreateCode: Boolean;
+function TConnectionFrame.CanCreateCode: Boolean;
 
 Var
   C : TControl;
@@ -245,12 +212,12 @@ begin
     end;
 end;
 
-function TConnectionEditor.CanCreateSQL: Boolean;
+function TConnectionFrame.CanCreateSQL: Boolean;
 begin
   Result:=(ObjectType in [otTable,otFields,otField,otTableData,otIndexDefs]);
 end;
 
-procedure TConnectionEditor.CreateSQL;
+procedure TConnectionFrame.CreateSQL;
 
 Var
   N,PN,PPN : TTreeNode;
@@ -289,7 +256,7 @@ begin
   end;
 end;
 
-procedure TConnectionEditor.CreateCode;
+procedure TConnectionFrame.CreateCode;
 
 Var
   C : TControl;
@@ -309,7 +276,7 @@ begin
     end;
 end;
 
-function TConnectionEditor.NewNode(TV : TTreeView;ParentNode: TTreeNode; ACaption: String; AImageIndex : Integer
+function TConnectionFrame.NewNode(TV : TTreeView;ParentNode: TTreeNode; ACaption: String; AImageIndex : Integer
   ): TTreeNode;
 begin
   Result:=TV.Items.AddChild(ParentNode,ACaption);
@@ -320,13 +287,13 @@ begin
     end;
 end;
 
-procedure TConnectionEditor.ShowDatabase;
+procedure TConnectionFrame.ShowDatabase;
 
 Var
   S : String;
   FConnNode : TTreeNode;
   TablesNode : TTreeNode;
-  
+
 begin
   FTV.Items.BeginUpdate;
   try
@@ -348,13 +315,13 @@ begin
   end;
 end;
 
-procedure TConnectionEditor.ShowTables(ATV : TTreeView;ParentNode : TTreeNode; AddSubNodes : Boolean = False);
+procedure TConnectionFrame.ShowTables(ATV : TTreeView;ParentNode : TTreeNode; AddSubNodes : Boolean = False);
 
 Var
   L : TStringList;
   I : Integer;
   N : TTreeNode;
-  
+
 begin
   L:=TStringList.Create;
   Try
@@ -377,7 +344,7 @@ begin
   end;
 end;
 
-procedure TConnectionEditor.DoSelectNode(Sender: TObject);
+procedure TConnectionFrame.DoSelectNode(Sender: TObject);
 
 Var
   N,PN,PPN : TTreeNode;
@@ -408,13 +375,13 @@ begin
   end;
 end;
 
-procedure TConnectionEditor.DoTabChange(Sender: TObject);
+procedure TConnectionFrame.DoTabChange(Sender: TObject);
 begin
   If FPC.ActivePage=FTSQuery then
     FQueryPanel.ActivatePanel;
 end;
 
-procedure TConnectionEditor.ShowTableData(ATableName : String);
+procedure TConnectionFrame.ShowTableData(ATableName : String);
 
 Var
   P : TDataFrame;
@@ -430,18 +397,18 @@ begin
 end;
 
 
-procedure TConnectionEditor.AddPair(LV : TListView; Const AName, AValue : String);
+procedure TConnectionFrame.AddPair(LV : TListView; Const AName, AValue : String);
 
 Var
   LI : TListItem;
-  
+
 begin
   LI:=LV.Items.Add;
   LI.Caption:=AName;
   LI.SubItems.Add(AValue);
 end;
 
-procedure TConnectionEditor.SelectConnection;
+procedure TConnectionFrame.SelectConnection;
 
 
 Var
@@ -486,7 +453,7 @@ begin
   end;
 end;
 
-procedure TConnectionEditor.ClearDisplay;
+procedure TConnectionFrame.ClearDisplay;
 
 begin
   With FDisplay do
@@ -494,7 +461,7 @@ begin
       Controls[ControlCount-1].Free;
 end;
 
-procedure TConnectionEditor.SelectTables;
+procedure TConnectionFrame.SelectTables;
 
 Var
   TV : TTreeView;
@@ -507,20 +474,20 @@ begin
   ShowTables(TV,Nil);
 end;
 
-procedure TConnectionEditor.SetDescription(const AValue: String);
+procedure TConnectionFrame.SetDescription(const AValue: String);
 begin
   if FDescription=AValue then exit;
   FDescription:=AValue;
   Caption:=AValue;
 end;
 
-procedure TConnectionEditor.SelectTable(TableName : String);
+procedure TConnectionFrame.SelectTable(TableName : String);
 
 Var
   TV : TTreeView;
   TN : TTreeNode;
   N : TTreeNode;
-  
+
 begin
   ClearDisplay;
   TV:=TTreeView.Create(Self);
@@ -534,7 +501,7 @@ begin
   TN.Expand(True);
 end;
 
-procedure TConnectionEditor.SelectIndexes(TableName : String);
+procedure TConnectionFrame.SelectIndexes(TableName : String);
 
 Var
   LV : TListView;
@@ -564,7 +531,7 @@ begin
   end;
 end;
 
-procedure TConnectionEditor.ShowIndexes(ATableName : String; ATV : TTreeView;ParentNode : TTreeNode);
+procedure TConnectionFrame.ShowIndexes(ATableName : String; ATV : TTreeView;ParentNode : TTreeNode);
 
 Var
   L : TStringList;
@@ -597,7 +564,7 @@ begin
   end;
 end;
 
-procedure TConnectionEditor.ShowIndexes(ATableName : String; ALV : TListView);
+procedure TConnectionFrame.ShowIndexes(ATableName : String; ALV : TListView);
 
 Var
   L : TStringList;
@@ -631,7 +598,7 @@ begin
   end;
 end;
 
-procedure TConnectionEditor.ShowFields(ATableName : String; ATV : TTreeView;ParentNode : TTreeNode);
+procedure TConnectionFrame.ShowFields(ATableName : String; ATV : TTreeView;ParentNode : TTreeNode);
 
 Var
   L : TStringList;
@@ -657,7 +624,7 @@ begin
   end;
 end;
 
-procedure TConnectionEditor.ShowFields(ATableName : String; ALV : TListView);
+procedure TConnectionFrame.ShowFields(ATableName : String; ALV : TListView);
 
 Var
   L : TStringList;
@@ -665,7 +632,7 @@ Var
   TD : TDDTableDef;
   FD : TDDFieldDef;
   LI : TListItem;
-  
+
 begin
   L:=TStringList.Create;
   Try
@@ -692,7 +659,7 @@ begin
   end;
 end;
 
-procedure TConnectionEditor.SelectFields(TableName : String);
+procedure TConnectionFrame.SelectFields(TableName : String);
 
 Var
   LV : TListView;
@@ -722,12 +689,12 @@ begin
   end;
 end;
 
-procedure TConnectionEditor.SelectField(TableName,FieldName : String);
+procedure TConnectionFrame.SelectField(TableName,FieldName : String);
 
 begin
 end;
 
-function TConnectionEditor.GetCurrentObjectType: TObjectType;
+function TConnectionFrame.GetCurrentObjectType: TObjectType;
 
 Var
   N : TTreeNode;
