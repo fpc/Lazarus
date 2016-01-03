@@ -385,7 +385,10 @@ begin
 
   if not Result then Exit;
 
-  FCurProjectChangeStamp := LazarusIDE.ActiveProject.ChangeStamp;
+  if LazarusIDE.ActiveProject <> nil then
+    FCurProjectChangeStamp := LazarusIDE.ActiveProject.ChangeStamp
+  else
+    FCurProjectChangeStamp := Low(FCurProjectChangeStamp);
   FPackagesChangeStamp := PackageGraphInterface.ChangeStamp;
   FLastInternalChangeStamp := FInternalChangeStamp;
 end;
