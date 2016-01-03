@@ -254,7 +254,7 @@ begin
   EllipticalArcToBezier(Xc, Yc, R, R, startAngle, endAngle, P1, P2, P3, P4);
 end;
 
-{ This routine converts a Bezier to a Polygon and adds the points of this poligon
+{ This routine converts a Bezier to a Polygon and adds the points of this polygon
   to the end of the provided Points output variables }
 procedure AddBezierToPoints(P1, P2, P3, P4: T3DPoint; var Points: TPointsArray);
 var
@@ -529,12 +529,12 @@ begin
   begin
     curSegment := TPathSegment(APath.Next);
 
+    if (i = 0) and (curSegment.SegmentType <> stMoveTo) then
+      raise Exception.Create('Path must start with a "MoveTo" command');
+
     case curSegment.SegmentType of
       stMoveTo:
         begin
-          if i <> 0 then
-            raise Exception.Create('Path must start with a "MoveTo" command');
-
           // Store current length of points array as polygon start index
           if numPolygons >= Length(PolygonStartIndexes) then
             SetLength(PolygonstartIndexes, Length(PolygonStartIndexes) + POINT_BUFFER);
