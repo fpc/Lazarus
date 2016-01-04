@@ -205,6 +205,7 @@ type
     class procedure ApplyChanges(const AProgressBar: TCustomProgressBar); override;
     class procedure SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer); override;
     class procedure SetStyle(const AProgressBar: TCustomProgressBar; const NewStyle: TProgressBarStyle); override;
+    class function GetConstraints(const AControl: TControl; const AConstraints: TObject): Boolean; override;
   end;
 
   { TWin32WSCustomUpDown }
@@ -706,6 +707,30 @@ begin
     SendMessage(AProgressBar.Handle, PBM_SETMARQUEE, Ord(NewStyle = pbstMarquee), DefMarqueeTime);
     if NewStyle = pbstNormal then
       SetPosition(AProgressBar, AProgressBar.Position);
+  end;
+end;
+
+class function TWin32WSProgressBar.GetConstraints(const AControl: TControl;
+  const AConstraints: TObject): Boolean;
+var
+  SizeConstraints: TSizeConstraints absolute AConstraints;
+  MinWidth, MinHeight, MaxWidth, MaxHeight: Integer;
+begin
+  Result := True;
+
+  if (AConstraints is TSizeConstraints) then
+  begin
+    MinWidth := 0;
+    MinHeight := 0;
+    MaxWidth := 0;
+    MaxHeight := 0;
+
+    // The ProgressBar needs a minimum Height of 10 when themed,
+    // as required by Windows, otherwise it's image is corrupted
+    if ThemeServices.ThemesEnabled then
+      MinHeight := 10;
+
+    SizeConstraints.SetInterfaceConstraints(MinWidth, MinHeight, MaxWidth, MaxHeight);
   end;
 end;
 

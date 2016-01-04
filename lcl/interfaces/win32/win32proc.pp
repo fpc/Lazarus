@@ -36,6 +36,10 @@ Type
       Msg: UInt; WParam: Windows.WParam; LParam: Windows.LParam;
       var MsgResult: Windows.LResult; var WinProcess: Boolean): Boolean;
 
+  TDrawItemHandlerProc = procedure (const AWinControl: TWinControl; Window: HWnd;
+      Msg: UInt; WParam: Windows.WParam; const DrawIS: TDrawItemStruct;
+      var ItemMsg: Integer; var DrawListItem: Boolean);
+
   PWin32WindowInfo = ^TWin32WindowInfo;
   TWin32WindowInfo = record
     Overlay: HWND;           // overlay, transparent window on top, used by designer
@@ -62,6 +66,7 @@ Type
     isChildEdit: boolean;     // is buddy edit of a control
     ThemedCustomDraw: boolean;// controls needs themed drawing in wm_notify/nm_customdraw
     IMEComposed: Boolean;
+    DrawItemHandler: TDrawItemHandlerProc;
     case integer of
       0: (spinValue: Double);
       1: (

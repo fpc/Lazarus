@@ -708,6 +708,16 @@ end;
 // LV code
 ////////////////////////////////////////////////////////////////////////////////
 
+procedure ListViewDrawItem(const AWinControl: TWinControl; Window: HWnd;
+  Msg: UInt; WParam: Windows.WParam; const DrawIS: TDrawItemStruct;
+  var ItemMsg: Integer; var DrawListItem: Boolean);
+begin
+  DrawListItem := (AWinControl <> nil) and (AWinControl is TListView) and
+      (TListView(AWinControl).ViewStyle = vsReport) and
+      (DrawIS.ctlType = ODT_LISTVIEW) and
+      (TListView(AWinControl).OwnerDraw);
+  ItemMsg := CN_DRAWITEM;
+end;
 
 class function TWin32WSCustomListView.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
@@ -738,6 +748,7 @@ begin
   FinishCreateWindow(AWinControl, Params, false);
   Params.WindowInfo^.ParentMsgHandler := @ListViewParentMsgHandler;
   Params.WindowInfo^.needParentPaint := false;
+  Params.WindowInfo^.DrawItemHandler := @ListViewDrawItem;
   Result := Params.Window;
   if TCustomListView(AWinControl).checkboxes
     then UpdateExStyle(result,lvs_ex_SubitemImages or lvs_Ex_Checkboxes,lvs_ex_SubitemImages or lvs_Ex_Checkboxes) else
