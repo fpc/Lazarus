@@ -9,16 +9,12 @@ msgstr ""
 "Language: lt\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%"
-"100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 1.5\n"
 
 #: reglazdaemon.sdaemonappdescr
-msgid ""
-"Daemon (service) application is a non-gui application that runs in the "
-"background."
-msgstr ""
-"Tarnyba – tai foniniu režimu veikianti programa, kuri neturi grafinės sąsajos."
+msgid "Daemon (service) application is a non-gui application that runs in the background."
+msgstr "Tarnyba – tai foniniu režimu veikianti programa, kuri neturi grafinės sąsajos."
 
 #: reglazdaemon.sdaemonappname
 msgid "Daemon (service) application"
@@ -47,5 +43,4 @@ msgstr "Tarnybos atvaizdis"
 #: reglazdaemon.sdaemonname
 msgid "Daemon Module"
 msgstr "Tarnybos modulis"
-
 

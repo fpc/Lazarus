@@ -516,10 +516,7 @@ procedure TCustomSplitter.SetResizeAnchor(const AValue: TAnchorKind);
 begin
   if FResizeAnchor = AValue then Exit;
   FResizeAnchor := AValue;
-  if ResizeAnchor in [akLeft, akRight] then
-    Cursor := crHSplit
-  else
-    Cursor := crVSplit;
+  UpdateCursor;
   if not (csLoading in ComponentState) then
   begin
     Align := alNone;
@@ -595,6 +592,18 @@ begin
       FSplitterWindow := 0;
     end;
   end;
+end;
+
+procedure TCustomSplitter.UpdateCursor;
+begin
+  if Enabled then
+  begin
+    if ResizeAnchor in [akLeft,akRight] then
+      Cursor := crHSplit
+    else
+      Cursor := crVSplit;
+  end else
+    Cursor := crDefault;
 end;
 
 procedure TCustomSplitter.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
@@ -773,10 +782,7 @@ begin
   try
     inherited SetAlign(Value);
 
-    if ResizeAnchor in [akLeft,akRight] then
-      Cursor := crHSplit
-    else
-      Cursor := crVSplit;
+    UpdateCursor;
 
     Anchors:=AdaptAnchors(Anchors);
 
@@ -834,6 +840,13 @@ begin
   Result := True;
   if Assigned(OnCanOffset) then
     OnCanOffset(Self, NewOffset, Result);
+end;
+
+procedure TCustomSplitter.CMEnabledChanged(var Message: TLMEssage);
+begin
+  inherited CMEnabledChanged(Message);
+
+  UpdateCursor;
 end;
 
 procedure TCustomSplitter.Paint;
@@ -969,10 +982,7 @@ begin
     Align := alNone;
     FResizeAnchor := Kind;
 
-    if ResizeAnchor in [akLeft,akRight] then
-      Cursor := crHSplit
-    else
-      Cursor := crVSplit;
+    UpdateCursor;
 
     case FResizeAnchor of
       akLeft:   AnchorSplitterSides(akLeft, akRight, akTop, akBottom);

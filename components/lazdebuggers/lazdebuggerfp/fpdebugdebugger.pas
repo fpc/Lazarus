@@ -525,6 +525,7 @@ begin
                 params := params + v;
               end;
             end;
+            AContext.Free;
           end;
         end;
       end;
@@ -878,6 +879,7 @@ begin
         begin
         ASrcFileName:=sym.FileName;
         ASrcFileLine:=sym.Line;
+        sym.ReleaseReference;
         end
       else
         begin
@@ -1339,6 +1341,7 @@ begin
   WatchValue.RemoveFreeNotification(@DoWatchFreed);
 
   EvaluateExpression(WatchValue, WatchValue.Expression, AVal, AType);
+  AType.Free;
 
   if (not FWatchAsyncQueued) and (FWatchEvalList.Count > 0) then
     begin
@@ -1749,7 +1752,8 @@ begin
     inherited DoState(OldState);
     if not (State in [dsPause, dsInternalPause]) then
       begin
-      FWatchEvalList.Clear;
+      if Assigned(FWatchEvalList) then
+        FWatchEvalList.Clear;
       FWatchAsyncQueued := False;
       end;
   finally

@@ -50,8 +50,7 @@ type
 implementation
 
 uses
-  JcfUnicode,
-  SourceToken, Tokens, FormatFlags, TokenUtils, ParseTreeNodeType;
+  JcfStringUtils, SourceToken, Tokens, FormatFlags, TokenUtils, ParseTreeNodeType;
 
 function CanBreakHere(const pt: TSourceToken): boolean;
 var
@@ -108,7 +107,7 @@ begin
 
         lcNew := TSourceToken.Create;
         lcNew.TokenType := ttReturn;
-        lcNew.SourceCode := WideLineBreak;
+        lcNew.SourceCode := NativeLineBreak;
         XPos  := 0;
 
         InsertTokenAfter(lcToken, lcNew);

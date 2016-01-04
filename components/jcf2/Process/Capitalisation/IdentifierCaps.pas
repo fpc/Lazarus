@@ -57,7 +57,6 @@ uses
   { delphi }
   {$IFNDEF FPC}Windows,{$ENDIF} SysUtils,
   { local }
-  JcfStringUtils,
   SourceToken, Tokens, ParseTreeNodeType,
   JcfSettings, FormatFlags, TokenUtils;
 
@@ -136,7 +135,7 @@ begin
   begin
     Result := True;
     if psMessage <> '' then
-      psMessage := psMessage + NativeLineBreak;
+      psMessage := psMessage + '.   ';
 
     psMessage := psMessage + 'Non-identifier caps: ';
 

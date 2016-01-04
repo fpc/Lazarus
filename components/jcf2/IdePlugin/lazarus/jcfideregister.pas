@@ -55,7 +55,7 @@ const
   FORMAT_CURRENT_NAME  = 'jcfCurrentEditorWindow';
   FORMAT_PROJECT_MENU_NAME  = 'jcfAllFilesinProject';
   FORMAT_OPEN_MENU_NAME     = 'jcfAllOpenWindows';
-  FORMAT_REG_SETTINGS_MENU_NAME = 'jcfRegistrySettings';
+  //FORMAT_REG_SETTINGS_MENU_NAME = 'jcfRegistrySettings';
   FORMAT_SETTINGS_MENU_NAME = 'jcfFormatSettings';
   FORMAT_ABOUT_MENU_NAME = 'jcfAbout';
   FORMAT_CATEGORY_IDECMD_NAME = 'jcfFormat';
@@ -68,7 +68,7 @@ resourcestring
   FORMAT_CURRENT_IDECMD  = 'Format code in current editor window';
   FORMAT_PROJECT_MENU  = '&All Files in Project';
   FORMAT_OPEN_MENU     = 'All &Open Windows';
-  FORMAT_REG_SETTINGS_MENU = '&Registry Settings';
+  //FORMAT_REG_SETTINGS_MENU = '&Registry Settings';
   FORMAT_SETTINGS_MENU = '&Format Settings';
   FORMAT_ABOUT_MENU = '&About';
   FORMAT_CATEGORY_IDECMD = 'JEDI Code Format';

@@ -1197,6 +1197,7 @@ type
     procedure EditingDone; override;
 
     { Exposed procs }
+    procedure AdjustInnerCellRect(var ARect: TRect);
     procedure AutoAdjustColumns;
     procedure BeginUpdate;
     function  CellRect(ACol, ARow: Integer): TRect;
@@ -3557,6 +3558,24 @@ begin
 end;
 
 procedure TCustomGrid.PrepareCanvas(aCol, aRow: Integer; aState: TGridDrawState);
+  function GetNotSelectedColor: TColor;
+  begin
+    Result := GetColumnColor(aCol, gdFixed in AState);
+    if (gdFixed in AState) and (gdHot in aState) then
+      Result := FFixedHotColor;
+    if not (gdFixed in AState) and (FAlternateColor<>Result) then  begin
+      if Result=Color then begin
+        // column color = grid Color, Allow override color
+        // 1. default color after fixed rows
+        // 2. always use absolute alternate color based in odd & even row
+        if (FAltColorStartNormal and Odd(ARow-FixedRows)) {(1)} or
+           (not FAltColorStartNormal and Odd(ARow)) {(2)} then
+            Result := FAlternateColor;
+      end;
+    end;
+    if (gdRowHighlight in aState) and not (gdFixed in AState) then
+      Result := ColorToRGB(Result) xor $1F1F1F
+  end;
 var
   AColor: TColor;
   CurrentTextStyle: TTextStyle;
@@ -3567,8 +3586,13 @@ begin
     Canvas.Pen.Mode := pmCopy;
     GetSelectedState(aState, IsSelected);
     if IsSelected then begin
-      if FEditorMode and (FEditor<>nil) then
+      if FEditorMode and (aCol = Self.Col)
+      and (((FEditor=FStringEditor) and (FStringEditor.BorderStyle=bsNone))
+         or (FEditor=FButtonStringEditor))
+      then
         Canvas.Brush.Color := FEditor.Color
+      else if FEditorMode and (aCol = Self.Col) and (FEditor=FPicklistEditor) then
+        Canvas.Brush.Color := GetNotSelectedColor
       else
         Canvas.Brush.Color := SelectedColor;
       SetCanvasFont(GetColumnFont(aCol, False));
@@ -3576,22 +3600,7 @@ begin
         Canvas.Font.Color := clHighlightText;
       FLastFont:=nil;
     end else begin
-      AColor := GetColumnColor(aCol, gdFixed in AState);
-      if (gdFixed in AState) and (gdHot in aState) then
-        aColor := FFixedHotColor;
-      if not (gdFixed in AState) and (FAlternateColor<>AColor) then  begin
-        if AColor=Color then begin
-          // column color = grid Color, Allow override color
-          // 1. default color after fixed rows
-          // 2. always use absolute alternate color based in odd & even row
-          if (FAltColorStartNormal and Odd(ARow-FixedRows)) {(1)} or
-             (not FAltColorStartNormal and Odd(ARow)) {(2)} then
-              AColor := FAlternateColor;
-        end;
-      end;
-      if (gdRowHighlight in aState) and not (gdFixed in AState) then
-        Canvas.Brush.Color := ColorToRGB(AColor) xor $1F1F1F
-      else Canvas.Brush.Color := AColor;
+      Canvas.Brush.Color := GetNotSelectedColor;
       SetCanvasFont(GetColumnFont(aCol, ((gdFixed in aState) and (aRow < FFixedRows))));
     end;
     CurrentTextStyle := DefaultTextStyle;
@@ -5112,6 +5121,13 @@ begin
     OnUserCheckboxBitmap(Self, aCol, aRow, CheckBoxView, Result);
 end;
 
+procedure TCustomGrid.AdjustInnerCellRect(var ARect: TRect);
+begin
+  if (GridLineWidth>0) then begin
+    if goHorzLine in Options then Dec(ARect.Bottom);
+    if goVertLine in Options then Dec(ARect.Right);
+  end;
+end;
 
 function TCustomGrid.GetColumns: TGridColumns;
 begin
@@ -6624,8 +6640,8 @@ begin
     Editor.Parent:=Self;
   if FEditor=FStringEditor then
   begin
-    if FCol<Columns.Count then
-      FStringEditor.Alignment:=Columns[FCol].Alignment
+    if FCol-FFixedCols<Columns.Count then
+      FStringEditor.Alignment:=Columns[FCol-FFixedCols].Alignment
     else
       FStringEditor.Alignment:=taLeftJustify;
   end;
@@ -7866,10 +7882,11 @@ begin
       CellR := Bounds(-FEditor.Width-100, -FEditor.Height-100, CellR.Right-CellR.Left, CellR.Bottom-CellR.Top);
 
     if FEditorOptions and EO_AUTOSIZE = EO_AUTOSIZE then begin
-      if (FEditor = FStringEditor) and (EditorBorderStyle = bsNone) then begin
+      if (FEditor = FStringEditor) and (EditorBorderStyle = bsNone) then
         CellR := TWSCustomGridClass(WidgetSetClass).
-          GetEditorBoundsFromCellRect(Canvas, CellR, GetColumnLayout(FCol, False));
-      end;
+          GetEditorBoundsFromCellRect(Canvas, CellR, GetColumnLayout(FCol, False))
+      else
+        AdjustInnerCellRect(CellR);
       FEditor.BoundsRect := CellR;
     end else begin
       Msg.LclMsg.msg:=GM_SETBOUNDS;
@@ -9596,7 +9613,10 @@ begin
     VK_END, VK_HOME:
       ;
     VK_ESCAPE:
-      FGrid.EditorHide;
+      begin
+        doGridKeyDown;
+        FGrid.EditorHide;
+      end;
     else
       doEditorKeyDown;
   end;
@@ -12089,12 +12109,14 @@ begin
 end;
 
 procedure TButtonCellEditor.msg_SetBounds(var Msg: TGridMessage);
+var
+  r: TRect;
 begin
-  with Msg.CellRect do begin
-    if Right-Left>DEFBUTTONWIDTH then
-      Left:=Right-DEFBUTTONWIDTH;
-    SetBounds(Left, Top, Right-Left, Bottom-Top);
-  End;
+  r := Msg.CellRect;
+  FGrid.AdjustInnerCellRect(r);
+  if r.Right-r.Left>DEFBUTTONWIDTH then
+    r.Left:=r.Right-DEFBUTTONWIDTH;
+  SetBounds(r.Left, r.Top, r.Right-r.Left, r.Bottom-r.Top);
 end;
 
 procedure TButtonCellEditor.msg_SetPos(var Msg: TGridMessage);
@@ -12214,7 +12236,10 @@ begin
     VK_END, VK_HOME:
       ;
     VK_ESCAPE:
-      FGrid.EditorHide;
+      begin
+        doGridKeyDown;
+        FGrid.EditorHide;
+      end;
     else
       doEditorKeyDown;
   end;
@@ -12396,9 +12421,12 @@ begin
 end;
 
 procedure TCompositeCellEditor.msg_SetBounds(var Msg: TGridMessage);
+var
+   r: TRect;
 begin
-  with Msg.CellRect do
-    SetBounds(Left, Top, Right-Left, Bottom-Top);
+  r := Msg.CellRect;
+  FGrid.AdjustInnerCellRect(r);
+  SetBounds(r.Left, r.Top, r.Right-r.Left, r.Bottom-r.Top);
 end;
 
 procedure TCompositeCellEditor.msg_SetMask(var Msg: TGridMessage);

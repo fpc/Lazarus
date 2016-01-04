@@ -57,7 +57,8 @@ type
     poScreenCenter,    // center form on screen (depends on DefaultMonitor)
     poDesktopCenter,   // center form on desktop (total of all screens)
     poMainFormCenter,  // center form on main form (depends on DefaultMonitor)
-    poOwnerFormCenter  // center form on owner form (depends on DefaultMonitor)
+    poOwnerFormCenter, // center form on owner form (depends on DefaultMonitor)
+    poWorkAreaCenter   // center form on working area (depends on DefaultMonitor)
     );
 
   TWindowState = (wsNormal, wsMinimized, wsMaximized, wsFullScreen);
@@ -388,9 +389,9 @@ type
   );
 
   TPopupMode = (
-    pmNone,     // default behavior - popup to mainform/taskbar window
-    pmAuto,     // popup to active form and same as pmNone if no active form
-    pmExplicit  // popup to PopupParent and same as pmNone if not exists
+    pmNone,     // modal: popup to mainform/taskbar window; non-modal: no window parent
+    pmAuto,     // modal & non-modal: popup to active form or if not available, to main form
+    pmExplicit  // modal & non-modal: popup to PopupParent or if not available, to main form
   );
 
   TCloseEvent = procedure(Sender: TObject; var CloseAction: TCloseAction) of object;
@@ -557,6 +558,7 @@ type
     procedure SetAutoScroll(Value: Boolean); override;
     procedure DoAddActionList(List: TCustomActionList);
     procedure DoRemoveActionList(List: TCustomActionList);
+    procedure ProcessResource;virtual;
   protected
     // drag and dock
     procedure BeginAutoDrag; override;
@@ -594,6 +596,7 @@ type
     function FormIsUpdating: boolean; override;
     function GetFormImage: TBitmap;
     function GetRolesForControl(AControl: TControl): TControlRolesForForm;
+    function GetRealPopupParent: TCustomForm;
     procedure Hide;
     procedure IntfDropFiles(const FileNames: array of String);
     procedure IntfHelp(AComponent: TComponent);
@@ -1744,6 +1747,7 @@ var
   IsFormDesign: TIsFormDesignFunction = nil;
 
 function GetParentForm(Control: TControl; TopForm: Boolean = True): TCustomForm;
+function GetDesignerForm(Control: TControl): TCustomForm;
 function GetFirstParentForm(Control:TControl): TCustomForm;
 function ValidParentForm(Control: TControl; TopForm: Boolean = True): TCustomForm;
 function GetDesignerForm(APersistent: TPersistent): TCustomForm;
@@ -1933,6 +1937,20 @@ begin
     Result := TCustomForm(Control)
   else
     Result := nil;
+end;
+
+//------------------------------------------------------------------------------
+function GetDesignerForm(Control: TControl): TCustomForm;
+begin
+  // find the topmost parent form with designer
+
+  Result := nil;
+  while Control<>nil do
+  begin
+    if (Control is TCustomForm) and (TCustomForm(Control).Designer<>nil) then
+      Result := TCustomForm(Control);
+    Control := Control.Parent;
+  end;
 end;
 
 //------------------------------------------------------------------------------

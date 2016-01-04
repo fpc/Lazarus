@@ -1319,9 +1319,17 @@ msgstr "Žádný"
 msgid "Add Images"
 msgstr "Přidat obrázky"
 
+#: objinspstrconsts.sccsiledtopendialogn
+msgid "New Image"
+msgstr ""
+
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
 msgstr "Průhledná barva:"
+
+#: objinspstrconsts.sccsiledtreplace
+msgid "&Replace ..."
+msgstr ""
 
 #: objinspstrconsts.sccsiledtsave
 msgctxt "objinspstrconsts.sccsiledtsave"
@@ -1542,6 +1550,10 @@ msgstr "Sejmout klávesu"
 #: objinspstrconsts.s_addassingle
 msgid "Add as single"
 msgstr "Přidat jako samostatný"
+
+#: objinspstrconsts.s_confirm_clear
+msgid "Are you sure to clear image list?"
+msgstr ""
 
 #: objinspstrconsts.s_splitimage
 msgid "Split image"

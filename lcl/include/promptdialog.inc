@@ -911,13 +911,33 @@ end;
 
 function QuestionDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
             Buttons: array of const; HelpCtx: Longint): TModalResult;
+
+  function GetNextCaption(var i: integer; out aCaption: string): boolean;
+  begin
+    aCaption:='';
+    if (i > High(Buttons)) then exit(false);
+    Result:=true;
+    case Buttons[i].VType of
+      vtString: aCaption := Buttons[i].VString^;
+      vtAnsiString: aCaption := AnsiString(Buttons[i].VAnsiString);
+      vtChar: aCaption := Buttons[i].VChar;
+      vtPChar: aCaption := Buttons[i].VPChar;
+      vtPWideChar: aCaption := Buttons[i].VPWideChar;
+      vtWideChar: aCaption := AnsiString(Buttons[i].VWideChar);
+      vtWidestring: aCaption := AnsiString(WideString(Buttons[i].VWideString));
+    else
+      Result:=false;
+    end;
+    if Result then
+      inc(i);
+  end;
+
 var
   DialogButtons: TDialogButtons;
   i: integer;
   CurBtnValue: TModalResult;
-  CurBtnCaption, CurOptions: String;
-  HasOptions: Boolean;
-  IsDefault, IsCancel: Boolean;
+  BtnCaption, s: String;
+  IsDefault, IsCancel, UseDefaultCaption: Boolean;
   NewButton: TDialogButton;
 begin
   DialogButtons := TDialogButtons.Create(TDialogButton);
@@ -934,95 +954,52 @@ begin
         CurBtnValue := Buttons[i].VInteger;
         inc(i);
 
-        // get button caption
-        CurBtnCaption := '';
-        if (i <= High(Buttons)) then
-        begin
-          case Buttons[i].VType of
-            vtString: CurBtnCaption := Buttons[i].VString^;
-            vtAnsiString: CurBtnCaption := AnsiString(Buttons[i].VAnsiString);
-            vtChar: CurBtnCaption := Buttons[i].VChar;
-            vtPChar: CurBtnCaption := Buttons[i].VPChar;
-            vtPWideChar: CurBtnCaption := Buttons[i].VPWideChar;
-            vtWideChar: CurBtnCaption := AnsiString(Buttons[i].VWideChar);
-            vtWidestring: CurBtnCaption := AnsiString(WideString(Buttons[i].VWideString));
-          else
-            dec(i); // prevent the following inc(i)
-          end;
-          inc(i);
-        end;
-
-        // get options
-        if (SysUtils.CompareText(CurBtnCaption,'isdefault')=0)
-        or (SysUtils.CompareText(CurBtnCaption,'iscancel')=0) then
-        begin
-          HasOptions := True;
-          CurOptions := CurBtnCaption;
-          CurBtnCaption := '';
-        end else
-        begin
-          CurOptions := '';
-          HasOptions := False;
-          if (i <= High(Buttons)) then
-          begin
-            HasOptions := True;
-            case Buttons[i].VType of
-              vtString: CurOptions := Buttons[i].VString^;
-              vtAnsiString: CurOptions := AnsiString(Buttons[i].VAnsiString);
-              vtChar: CurOptions := Buttons[i].VChar;
-              vtPChar: CurOptions := Buttons[i].VPChar;
-              vtPWideChar: CurOptions := Buttons[i].VPWideChar;
-              vtWideChar: CurOptions := AnsiString(Buttons[i].VWideChar);
-              vtWidestring: CurOptions := AnsiString(WideString(Buttons[i].VWideString));
-            else
-              HasOptions := False;
-              dec(i); // prevent the following inc(i)
-            end;
-            inc(i);
-          end;
-        end;
+        // get button caption and flags
+        BtnCaption := '';
+        UseDefaultCaption := true;
         IsDefault := False;
         IsCancel := False;
-        if HasOptions then
+        while GetNextCaption(i,s) do
         begin
-          if SysUtils.CompareText(CurOptions,'isdefault')=0 then
-          begin
+          if (SysUtils.CompareText(s,'isdefault')=0) then begin
             if DialogButtons.DefaultButton <> nil then
               raise Exception.Create('TQuestionDlg.CreateQuestionDlg only one button can be default');
-            IsDefault := True;
-          end else
-          if SysUtils.CompareText(CurOptions,'iscancel')=0 then
-          begin
+            IsDefault:=true;
+          end
+          else if (SysUtils.CompareText(s,'iscancel')=0) then begin
             if DialogButtons.CancelButton <> nil then
               raise Exception.Create('TQuestionDlg.CreateQuestionDlg only one button can be cancel');
-            IsCancel := True;
+            IsCancel:=true
+          end
+          else if UseDefaultCaption then begin
+            UseDefaultCaption:=false;
+            BtnCaption:=s;
           end else
-            raise Exception.Create('TQuestionDlg.CreateQuestionDlg option expected at '
-              +IntToStr(i)+' but "'+CurOptions+'" found.');
+            raise Exception.Create('TQuestionDlg.CreateQuestionDlg option expected at '+IntToStr(i)+', but found "'+s+'"');
         end;
 
-        if CurBtnCaption = '' then
+        if UseDefaultCaption then
         begin
           // find default caption
           case CurBtnValue of
-            mrOk       : CurBtnCaption := rsmbOk;
-            mrCancel   : CurBtnCaption := rsmbCancel;
-            mrYes      : CurBtnCaption := rsmbYes;
-            mrNo       : CurBtnCaption := rsmbNo;
-            mrAbort    : CurBtnCaption := rsmbAbort;
-            mrRetry    : CurBtnCaption := rsmbRetry;
-            mrIgnore   : CurBtnCaption := rsmbIgnore;
-            mrAll      : CurBtnCaption := rsmbAll;
-            mrYesToAll : CurBtnCaption := rsmbYesToAll;
-            mrNoToAll  : CurBtnCaption := rsmbNoToAll;
+            mrOk       : BtnCaption := rsmbOk;
+            mrCancel   : BtnCaption := rsmbCancel;
+            mrYes      : BtnCaption := rsmbYes;
+            mrNo       : BtnCaption := rsmbNo;
+            mrAbort    : BtnCaption := rsmbAbort;
+            mrRetry    : BtnCaption := rsmbRetry;
+            mrIgnore   : BtnCaption := rsmbIgnore;
+            mrAll      : BtnCaption := rsmbAll;
+            mrYesToAll : BtnCaption := rsmbYesToAll;
+            mrNoToAll  : BtnCaption := rsmbNoToAll;
           end;
         end;
-        if CurBtnCaption = '' then
+        if BtnCaption = '' then
           raise Exception.Create('TQuestionDlg.Create: missing Button caption '+dbgs(i-1));
         NewButton := DialogButtons.Add;
         with NewButton do
         begin
-          Caption := CurBtnCaption;
+          Caption := BtnCaption;
           ModalResult := CurBtnValue;
         end;
         if IsDefault then

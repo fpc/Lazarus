@@ -47,6 +47,7 @@ type
     BtnAdd: TButton;
     BtnClear: TButton;
     BtnDelete: TButton;
+    BtnReplace: TButton;
     BtnMoveUp: TButton;
     BtnMoveDown: TButton;
     BtnSave: TButton;
@@ -66,6 +67,7 @@ type
     procedure BtnAddClick(Sender: TObject);
     procedure BtnClearClick(Sender: TObject);
     procedure BtnDeleteClick(Sender: TObject);
+    procedure BtnReplaceClick(Sender: TObject);
     procedure BtnMoveUpClick(Sender: TObject);
     procedure btnSaveAllClick(Sender: TObject);
     procedure BtnSaveClick(Sender: TObject);
@@ -85,7 +87,7 @@ type
     procedure LoadFromImageList(AImageList: TImageList);
     procedure SaveToImageList;
 
-    procedure AddImageToList(const FileName: String);
+    procedure AddImageToList(const FileName: String; Insert : Boolean);
   end;
 
   //Editor call by Lazarus with 1 verbe only
@@ -192,6 +194,7 @@ begin
 
   BtnAdd.Caption := sccsILEdtAdd;
   BtnDelete.Caption := sccsILEdtDelete;
+  BtnReplace.Caption := sccsILEdtReplace;
   BtnClear.Caption := sccsILEdtClear;
   BtnMoveUp.Caption := sccsILEdtMoveUp;
   BtnMoveDown.Caption := sccsILEdtMoveDown;
@@ -229,13 +232,15 @@ procedure TImageListEditorDlg.BtnAddClick(Sender: TObject);
 var
   I: Integer;
 begin
+  OpenDialog.Title := sccsILEdtOpenDialog;
+  OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
   if OpenDialog.Execute then
   begin
     ImageList.BeginUpdate;
     TreeView.BeginUpdate;
     try
       for I := 0 to OpenDialog.Files.Count - 1 do
-        AddImageToList(TrimRight(OpenDialog.Files[I]));
+        AddImageToList(TrimRight(OpenDialog.Files[I]),False);
     finally
       TreeView.EndUpdate;
       ImageList.EndUpdate;
@@ -246,8 +251,14 @@ end;
 
 procedure TImageListEditorDlg.BtnClearClick(Sender: TObject);
 begin
-  ImageList.Clear;
-  TreeView.Items.Clear;
+  if TreeView.Items.Count=0 then exit;
+  if (IDEQuestionDialog(Caption,
+              s_Confirm_Clear, mtConfirmation,
+              [mrYes, mrNo]) = mrYes) then
+  begin
+    ImageList.Clear;
+    TreeView.Items.Clear;
+  end;
 end;
 
 procedure TImageListEditorDlg.BtnDeleteClick(Sender: TObject);
@@ -278,6 +289,41 @@ begin
     TreeView.Selected := Node;
   end;
   TreeView.SetFocus;
+end;
+
+procedure TImageListEditorDlg.BtnReplaceClick(Sender: TObject);
+var
+  S,N: Integer; Node: TTreeNode;
+begin
+  if Assigned(TreeView.Selected) then
+  begin
+    Node := TreeView.Selected;
+    OpenDialog.Title := sccsILEdtOpenDialogN;
+    OpenDialog.Options:=OpenDialog.Options-[ofAllowMultiSelect];
+    if OpenDialog.Execute then
+    begin
+      ImageList.BeginUpdate;
+      TreeView.BeginUpdate;
+      try
+        AddImageToList(TrimRight(OpenDialog.FileName),True);
+        S:=TreeView.Selected.ImageIndex-1;
+        ImageList.Delete(S);
+        TreeView.Selected.ImageIndex:=S+1;
+        TreeView.Selected.Delete;
+        for N := S to TreeView.Items.Count-1 do
+        begin
+          TreeView.Items[N].Text := IntToStr(N);
+          TreeView.Items[N].ImageIndex := N;
+          TreeView.Items[N].SelectedIndex := N;
+        end;
+        TreeView.Selected:=Node;
+      finally
+        TreeView.EndUpdate;
+        ImageList.EndUpdate;
+      end;
+      TreeView.SetFocus;
+    end;
+  end;
 end;
 
 procedure TImageListEditorDlg.BtnMoveUpClick(Sender: TObject);
@@ -514,7 +560,7 @@ begin
   FModified := True;
 end;
 
-procedure TImageListEditorDlg.AddImageToList(const FileName: String);
+procedure TImageListEditorDlg.AddImageToList(const FileName: String;Insert:boolean);
 var
   SrcBmp: TBitmap;
   Picture: TPicture;
@@ -557,7 +603,7 @@ begin
       end;
       //Ask the user if wants to split the source image
       if ((ImagesPerRow > 1) or (ImagesPerColumn > 1))
-        and (IDEQuestionDialog(Caption +' - '+ btnAdd.Caption,
+        and (IDEQuestionDialog(Caption,
               s_SuggestSplitImage, mtConfirmation,
               [mrNo, s_AddAsSingle, mrYes, s_SplitImage]) <> mrYes) then
       begin
@@ -576,8 +622,16 @@ begin
           P^.Adjustment := gaNone;
           P^.TransparentColor := clDefault;
 
-          I := ImageList.Add(P^.Bitmap, nil);
-          Node := TreeView.Items.AddObject(nil, IntToStr(I), P);
+          if Insert then
+          begin
+            I := TreeView.Selected.ImageIndex+1;
+            ImageList.Insert(I,P^.Bitmap, nil);
+            Node := TreeView.Items.InsertObjectBehind(TreeView.Selected, IntToStr(I), P);
+          end else
+          begin
+            I := ImageList.Add(P^.Bitmap, nil);
+            Node := TreeView.Items.AddObject(nil, IntToStr(I), P);
+          end;
           Node.ImageIndex := I;
           Node.SelectedIndex := I;
           TreeView.Selected := Node;

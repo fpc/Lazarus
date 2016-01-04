@@ -96,7 +96,7 @@ msgid "class node without parent node"
 msgstr "uzel třídy bez rodičovského uzlu"
 
 #: codetoolsstrconsts.ctsclassnotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "class %s%s%s not found"
 msgid "class \"%s\" not found"
 msgstr "třída %s%s%s nenalezena"
@@ -306,7 +306,6 @@ msgid "expected end., but %s found"
 msgstr "očekáván end., ale nalezeno %s"
 
 #: codetoolsstrconsts.ctsendofsourcenotfound
-#| msgid "End of source not found"
 msgid "End of source not found."
 msgstr "Nenalezen konec zdroje."
 
@@ -557,13 +556,13 @@ msgid "interface directory"
 msgstr "adresář rozhraní"
 
 #: codetoolsstrconsts.ctsinvalidclassname
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "invalid class name=%s%s%s"
 msgid "invalid class name=\"%s\""
 msgstr "neplatné jméno třídy=%s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidclassname2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "invalid class name %s%s%s"
 msgid "invalid class name \"%s\""
 msgstr "neplatné jméno třídy %s%s%s"
@@ -593,13 +592,13 @@ msgid "invalid type"
 msgstr "neplatný typ"
 
 #: codetoolsstrconsts.ctsinvalidvariablename
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "invalid variable name %s%s%s"
 msgid "invalid variable name \"%s\""
 msgstr "neplatné jméno proměnné %s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "invalid variable type %s%s%s"
 msgid "invalid variable type \"%s\""
 msgstr "neplatný typ proměnné %s%s%s"

@@ -370,7 +370,30 @@ begin
           TP_SPLITBUTTON,
           TP_SPLITBUTTONDROPDOWN:
             begin
-              if (Details.Part = TP_SPLITBUTTONDROPDOWN) and (AIndex = 1) then
+              Result.Widget := GetStyleWidget(lgsToolButton);
+              case Details.State of
+                TS_PRESSED, TS_CHECKED, TS_HOTCHECKED:
+                  Result.Shadow := GTK_SHADOW_IN;
+                TS_HOT:
+                  Result.Shadow := GTK_SHADOW_ETCHED_OUT;
+              else
+                Result.Shadow := GTK_SHADOW_NONE;
+              end;
+              if Details.Part = TP_SPLITBUTTONDROPDOWN then
+              begin
+                case Details.State of
+                  TS_DISABLED: Result.State := GTK_STATE_INSENSITIVE;
+                  //TS_HOT: Result.State := GTK_STATE_ACTIVE; // << painting bug in Laz+Gtk2
+                else
+                  Result.State := GTK_STATE_NORMAL;
+                end;
+              end else
+                Result.State := GtkButtonMap[Details.State];
+
+              Result.IsHot := Details.State in [TS_HOT, TS_HOTCHECKED];
+              if Result.Style = nil then
+                Result.Style := GetStyle(lgsToolButton);
+              if (Details.Part = TP_SPLITBUTTONDROPDOWN) then
               begin
                 Result.Detail := 'arrow';
                 Result.ArrowType := GTK_ARROW_DOWN;
@@ -380,20 +403,6 @@ begin
               end
               else
               begin
-                Result.Widget := GetStyleWidget(lgsToolButton);
-                if Result.Style = nil then
-                  Result.Style := GetStyle(lgsToolButton);
-                Result.State := GtkButtonMap[Details.State];
-                if Details.State in [TS_PRESSED, TS_CHECKED, TS_HOTCHECKED] then
-                  Result.Shadow := GTK_SHADOW_IN
-                else
-                if Details.State in [TS_HOT] then
-                  Result.Shadow := GTK_SHADOW_ETCHED_OUT
-                else
-                  Result.Shadow := GTK_SHADOW_NONE;
-
-                Result.IsHot := Details.State in [TS_HOT, TS_HOTCHECKED];
-
                 Result.Detail := 'button';
                 if Result.Shadow = GTK_SHADOW_NONE then
                   Result.Painter := gptNone
@@ -551,8 +560,6 @@ begin
   else
   begin
     Result := 1;
-    if (Details.Element = teToolBar) and (Details.Part = TP_SPLITBUTTONDROPDOWN) then
-      inc(Result); // + Arrow
   end;
 end;
 
@@ -560,24 +567,40 @@ function TGtk2ThemeServices.GetDetailSize(Details: TThemedElementDetails): TSize
 var
   AValue: TGValue;
 begin
-  if (Details.Element = teTreeView) and (Byte(Details.Part) in [TVP_GLYPH, TVP_HOTGLYPH]) then
-  begin
-    FillChar(AValue{%H-}, SizeOf(AValue), 0);
-    g_value_init(@AValue, G_TYPE_INT);
-    gtk_widget_style_get_property(GetStyleWidget(lgsTreeView), 'expander-size', @AValue);
-    Result := Size(AValue.data[0].v_int, AValue.data[0].v_int);
-  end else
-  if (Details.Element = teButton) and (Byte(Details.Part) in [BP_CHECKBOX, BP_RADIOBUTTON]) then
-  begin
-    FillChar(AValue{%H-}, SizeOf(AValue), 0);
-    g_value_init(@AValue, G_TYPE_INT);
-    if Details.Part = BP_CHECKBOX then
-      gtk_widget_style_get_property(GetStyleWidget(lgsCheckbox),'indicator-size', @AValue)
+  case Details.Element of
+    teTreeView:
+      if (Byte(Details.Part) in [TVP_GLYPH, TVP_HOTGLYPH]) then
+      begin
+        FillChar(AValue{%H-}, SizeOf(AValue), 0);
+        g_value_init(@AValue, G_TYPE_INT);
+        gtk_widget_style_get_property(GetStyleWidget(lgsTreeView), 'expander-size', @AValue);
+        Result := Size(AValue.data[0].v_int, AValue.data[0].v_int);
+      end else
+        Result := GetBaseDetailsSize(Details);
+    teButton:
+      if (Byte(Details.Part) in [BP_CHECKBOX, BP_RADIOBUTTON]) then
+      begin
+        FillChar(AValue{%H-}, SizeOf(AValue), 0);
+        g_value_init(@AValue, G_TYPE_INT);
+        if Details.Part = BP_CHECKBOX then
+          gtk_widget_style_get_property(GetStyleWidget(lgsCheckbox),'indicator-size', @AValue)
+        else
+          gtk_widget_style_get_property(GetStyleWidget(lgsRadioButton),'indicator-size', @AValue);
+        Result := Size(AValue.data[0].v_int, AValue.data[0].v_int);
+      end else
+        Result := GetBaseDetailsSize(Details);
+    {$IFDEF LINUX} // fix tbsButtonDrop arrow outside button bounds
+    teToolBar:
+      if (Details.Part = TP_DROPDOWNBUTTON) then
+      begin
+        Result.cy := -1;
+        Result.cx := 15;
+      end else
+        Result := GetBaseDetailsSize(Details);
+    {$ENDIF}
     else
-      gtk_widget_style_get_property(GetStyleWidget(lgsRadioButton),'indicator-size', @AValue);
-    Result := Size(AValue.data[0].v_int, AValue.data[0].v_int);
-  end else
-    Result := GetBaseDetailsSize(Details);
+      Result := GetBaseDetailsSize(Details);
+  end;
 end;
 
 function TGtk2ThemeServices.GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean;

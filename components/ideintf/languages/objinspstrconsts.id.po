@@ -1353,9 +1353,17 @@ msgstr "Tidak ada"
 msgid "Add Images"
 msgstr "Tambah Gambar"
 
+#: objinspstrconsts.sccsiledtopendialogn
+msgid "New Image"
+msgstr ""
+
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
 msgstr "Warna Transparan:"
+
+#: objinspstrconsts.sccsiledtreplace
+msgid "&Replace ..."
+msgstr ""
 
 #: objinspstrconsts.sccsiledtsave
 #, fuzzy
@@ -1588,6 +1596,10 @@ msgstr ""
 #: objinspstrconsts.s_addassingle
 msgid "Add as single"
 msgstr "Tambah sebagai single"
+
+#: objinspstrconsts.s_confirm_clear
+msgid "Are you sure to clear image list?"
+msgstr ""
 
 #: objinspstrconsts.s_splitimage
 msgid "Split image"

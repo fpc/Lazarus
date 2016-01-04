@@ -43,10 +43,6 @@ msgctxt "jcfideregister.format_project_menu"
 msgid "&All Files in Project"
 msgstr "プロジェクト内すべてのファイル(&A)"
 
-#: jcfideregister.format_reg_settings_menu
-msgid "&Registry Settings"
-msgstr "整形設定を保存する(&R)"
-
 #: jcfideregister.format_settings_menu
 msgid "&Format Settings"
 msgstr "整形設定(&F)"

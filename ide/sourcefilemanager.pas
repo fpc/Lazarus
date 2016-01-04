@@ -3601,7 +3601,7 @@ begin
 
       // read project info file
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.InitOpenedProjectFile B3');{$ENDIF}
-      Project1.ReadProject(AFilename,EnvironmentOptions.BuildMatrixOptions);
+      Project1.ReadProject(AFilename, EnvironmentOptions.BuildMatrixOptions, True);
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.InitOpenedProjectFile B4');{$ENDIF}
       Result:=CompleteLoadingProjectInfo;
     finally
@@ -3626,7 +3626,7 @@ begin
 
     // restore files
     while EditorInfoIndex < Project1.AllEditorsInfoCount do begin
-      // TProject.ReadProject sorts alle UnitEditorInfos
+      // TProject.ReadProject sorts all UnitEditorInfos
       AnEditorInfo := Project1.AllEditorsInfo[EditorInfoIndex];
       AnUnitInfo := AnEditorInfo.UnitInfo;
       if (not AnUnitInfo.Loaded) or (AnEditorInfo.PageIndex < 0) then begin

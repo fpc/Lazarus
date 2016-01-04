@@ -64,6 +64,7 @@ resourcestring
   rsLinear = 'Linear';
   rsLogarithmic = 'Logarithmic';
   rsUserDefined = 'User-defined';
+  rsInvalidLogBase = 'Logarithm base must be > 0 and <> 1.';
 
   // ChartUtils
   tasFailedSubcomponentRename = 'Failed to rename components: %s';

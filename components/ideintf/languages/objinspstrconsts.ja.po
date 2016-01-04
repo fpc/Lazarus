@@ -1317,9 +1317,17 @@ msgstr "そのまま"
 msgid "Add Images"
 msgstr "イメージを追加"
 
+#: objinspstrconsts.sccsiledtopendialogn
+msgid "New Image"
+msgstr ""
+
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
 msgstr "透明色"
+
+#: objinspstrconsts.sccsiledtreplace
+msgid "&Replace ..."
+msgstr ""
 
 #: objinspstrconsts.sccsiledtsave
 msgctxt "objinspstrconsts.sccsiledtsave"
@@ -1540,6 +1548,10 @@ msgstr "キーを掴む"
 #: objinspstrconsts.s_addassingle
 msgid "Add as single"
 msgstr "singleとして追加"
+
+#: objinspstrconsts.s_confirm_clear
+msgid "Are you sure to clear image list?"
+msgstr ""
 
 #: objinspstrconsts.s_splitimage
 msgid "Split image"

@@ -22,7 +22,7 @@ unit fpvutils;
 interface
 
 uses
-  Classes, SysUtils, Math,
+  Classes, SysUtils, Math, Types,
   {$ifdef USE_LCL_CANVAS}
   Graphics, LCLIntf, LCLType,
   {$endif}
@@ -31,7 +31,7 @@ uses
 
 type
   T10Strings = array[0..9] of shortstring;
-  TPointsArray = array of TPoint;
+//  TPointsArray = array of TPoint;
   TFPVUByteArray = array of Byte;
 
   TNumericalEquation = function (AParameter: Double): Double of object; // return the error
@@ -41,6 +41,7 @@ type
 // Color Conversion routines
 function FPColorToRGBHexString(AColor: TFPColor): string;
 function RGBToFPColor(AR, AG, AB: byte): TFPColor; inline;
+function MixColors(AColor1, AColor2: TFPColor; APos, AMax: Double): TFPColor;
 // Coordinate Conversion routines
 function CanvasCoordsToFPVectorial(AY: Integer; AHeight: Integer): Integer; inline;
 function CanvasTextPosToFPVectorial(AY: Integer; ACanvasHeight, ATextHeight: Integer): Integer;
@@ -60,6 +61,12 @@ function BezierEquation_GetLength(P1, P2, P3, P4: T3DPoint; AMaxT: Double = 1; A
 function BezierEquation_GetT_ForLength(P1, P2, P3, P4: T3DPoint; ALength: Double; ASteps: Integer = 30): Double;
 function BezierEquation_GetPointAndTangentForLength(P1, P2, P3, P4: T3DPoint;
   ADistance: Double; out AX, AY, ATangentAngle: Double; ASteps: Integer = 30): Boolean;
+function CalcEllipseCenter(x1,y1, x2,y2, rx,ry, phi: Double; fa, fs: Boolean;
+  out cx,cy, lambda: Double): Boolean;
+function CalcEllipsePointAngle(x,y, rx,ry, cx,cy, phi: Double): Double;
+procedure CalcEllipsePoint(angle, rx,ry, cx,cy, phi: Double; out x,y: Double);
+procedure ConvertPathToPolygons(APath: TPath; ADestX, ADestY: Integer; AMulX, AMulY: Double;
+  var PolygonPoints: TPointsArray; var PolygonStartIndexes: TIntegerDynArray);
 procedure ConvertPathToPoints(APath: TPath; ADestX, ADestY: Integer; AMulX, AMulY: Double; var Points: TPointsArray);
 function Rotate2DPoint(P, RotCenter: TPoint; alpha:double): TPoint;
 function Rotate3DPointInXY(P, RotCenter: T3DPoint; alpha:double): T3DPoint;
@@ -106,6 +113,14 @@ begin
   Result.Green := (AG shl 8) + AG;
   Result.Blue := (AB shl 8) + AB;
   Result.Alpha := $FFFF;
+end;
+
+function MixColors(AColor1, AColor2: TFPColor; APos, AMax: Double): TFPColor;
+begin
+  Result.Alpha := Round(AColor1.Alpha * APos / AMax + AColor2.Alpha * (AMax - APos) / AMax);
+  Result.Red := Round(AColor1.Red * APos / AMax + AColor2.Red * (AMax - APos) / AMax);
+  Result.Green := Round(AColor1.Green * APos / AMax + AColor2.Green * (AMax - APos) / AMax);
+  Result.Blue := Round(AColor1.Blue * APos / AMax + AColor2.Blue * (AMax - APos) / AMax);
 end;
 
 {@@ Converts the coordinate system from a TCanvas to FPVectorial
@@ -248,7 +263,7 @@ begin
   EllipticalArcToBezier(Xc, Yc, R, R, startAngle, endAngle, P1, P2, P3, P4);
 end;
 
-{ This routine converts a Bezier to a Polygon and adds the points of this poligon
+{ This routine converts a Bezier to a Polygon and adds the points of this polygon
   to the end of the provided Points output variables }
 procedure AddBezierToPoints(P1, P2, P3, P4: T3DPoint; var Points: TPointsArray);
 var
@@ -376,6 +391,197 @@ begin
   Result := True;
 end;
 
+// Calculate center of ellipse defined by two points on its perimeter, the
+// major and minor axes, and the "sweep" and "large-angle" flags.
+// Calculation follows the SVG implementation notes
+// see: http://www.w3.org/TR/SVG/implnote.html#ArcImplementationNotes
+// - (x1, y1) absolute coordinates of start point of arc
+// - (x2, y2) absolute coordinates of end point of arc
+// - rx, ry: radii of major and minor ellipse axes. Must be > 0. Use abs() if necessary.
+// - phi: rotation angle of ellipse
+// - fa: large arc flag (false = small arc, true = large arc)
+// - fs: sweep flag (false = counterclockwise, true = clockwise)
+// - cx, cy: Center coordinates of ellipse
+// - Function result is false if the center cannot be calculated
+function CalcEllipseCenter(x1,y1, x2,y2, rx,ry, phi: Double; fa, fs: Boolean;
+  out cx,cy, lambda: Double): Boolean;
+const
+  EPS = 1E-9;
+var
+  sinphi, cosphi: Extended;
+  x1p, x2p, y1p, y2p: Double;  // x1', x2', y1', y2'
+  cxp, cyp: Double;            // cx', cy'
+  m: Double;
+begin
+  Result := false;
+  if (rx = 0) or (ry = 0) then
+    exit;
+
+  rx := abs(rx);  // only positive radii!
+  ry := abs(ry);
+  SinCos(phi, sinphi, cosphi);
+
+  // (F.6.5.1) in above document
+  x1p := ( cosphi*(x1-x2) + sinphi*(y1-y2)) / 2;
+  y1p := (-sinphi*(x1-x2) + cosphi*(y1-y2)) / 2;
+
+  lambda := sqr(x1p/rx) + sqr(y1p/ry);
+  if lambda > 1 then
+  begin
+    // If the distance of the points is too large in relation to the ellipse
+    // size there is no solution. SVG Implemantation Notes request in this case
+    // that the ellipse is magnified so much that a solution exists.
+    lambda := sqrt(lambda);
+    rx := rx * lambda;
+    ry := ry * lambda;
+  end else
+    lambda := 1.0;
+
+  // (F.6.5.2)
+  m := (sqr(rx*ry) - sqr(rx*y1p) - sqr(ry*x1p)) / (sqr(rx*y1p) + sqr(ry*x1p));
+  if SameValue(m, 0.0, EPS) then
+    // Prevent a crash caused by a tiny negative sqrt argument due to rounding error.
+    m := 0
+  else if m < 0 then
+    exit;
+    // Exit if point distance is too large and return "false" - but this
+    // should no happen after having applied lambda!
+  m := sqrt(m);                  // Positive root for fa <> fs
+  if fa = fs then m := -m;       // Negative root for fa = fs.
+  cxp :=  m * rx / ry * y1p;
+  cyp := -m * ry / rx * x1p;
+
+  // (F.6.5.3)
+  cx := cosphi*cxp - sinphi*cyp + (x1 + x2) / 2;
+  cy := sinphi*cxp + cosphi*cyp + (y1 + y2) / 2;
+
+  // If the function gets here we have a valid ellipse center in cx,cy
+  Result := true;
+end;
+
+{ Calculates the arc angle (in radians) of the point (x,y) on the perimeter of
+  an ellipse with radii rx,ry and center cx,cy. phi is the rotation angle of
+  the ellipse major axis with the x axis.
+  The result is in the range 0 .. 2pi}
+function CalcEllipsePointAngle(x,y, rx,ry, cx,cy, phi: Double): Double;
+var
+  p: T3DPoint;
+begin
+  // Rotate ellipse back to align its major axis with the x axis
+  P := Rotate3dPointInXY(Make3dPoint(x-cx, y-cy, 0), Make3dPoint(0, 0, 0), phi);
+  // Correctly speaking, above line should use -phi, instead of phi. But
+  // Make3DPointInXY seems to define the angle in the opposite way.
+  Result := arctan2(P.Y, P.X);
+  if Result < 0 then Result := TWO_PI + Result;
+end;
+
+{ Calculates the x,y coordinates of a point on an ellipse defined by these
+  parameters:
+  - rx, ry: major and minor radius
+  - phi: rotation angle of the ellipse (angle between major axis and x axis)
+  - angle: angle from ellipse center between x axis and the point
+
+   parameterized:
+     x = Cx + RX*cos(t)*cos(phi) - RY*sin(t)*sin(phi)  [1]
+     y = Cy + RY*sin(t)*cos(phi) + RX*cos(t)*sin(phi)  [2]        }
+procedure CalcEllipsePoint(angle, rx,ry, cx,cy, phi: Double; out x,y: Double);
+var
+  P: T3dPoint;
+  cost, sint: Extended;
+  cosphi, sinphi: Extended;
+begin
+  SinCos(angle, sint, cost);
+  SinCos(phi, sinphi, cosphi);
+  x := cx + rx*cost*cosphi - ry*sint*sinphi;
+  y := cy + ry*sint*cosphi + rx*cost*sinphi;
+end;
+
+{ Converts a path to one or more polygons. The polygon vertices are returned
+  in "PolygonPoints"; they are given in canvas units (pixels).
+  Since the path can contain several polygons the start index of each polygon
+  is returned in "PolygonStartIndexes". }
+procedure ConvertPathToPolygons(APath: TPath;
+  ADestX, ADestY: Integer; AMulX, AMulY: Double;
+  var PolygonPoints: TPointsArray;
+  var PolygonStartIndexes: TIntegerDynArray);
+const
+  POINT_BUFFER = 100;
+var
+  i, j: Integer;
+  numPoints: Integer;
+  numPolygons: Integer;
+  coordX, coordY: Integer;
+  coordX2, coordY2, coordX3, coordY3, coordX4, coordY4: Integer;
+  // temporary point arrays
+  pts: array of TPoint;
+  pts3D: T3dPointsArray;
+  // Segments
+  curSegment: TPathSegment;
+  cur2DSegment: T2DSegment absolute curSegment;
+  cur2DBSegment: T2DBezierSegment absolute curSegment;
+  cur2DArcSegment: T2DEllipticalArcSegment absolute curSegment;
+begin
+  if (APath = nil) then
+  begin
+    SetLength(PolygonPoints, 0);
+    SetLength(PolygonStartIndexes, 0);
+    exit;
+  end;
+
+  SetLength(PolygonPoints, POINT_BUFFER);
+  SetLength(PolygonStartIndexes, POINT_BUFFER);
+  numPoints := 0;
+  numPolygons := 0;
+
+  APath.PrepareForSequentialReading;
+  for i := 0 to APath.Len - 1 do
+  begin
+    curSegment := TPathSegment(APath.Next);
+
+    if (i = 0) and (curSegment.SegmentType <> stMoveTo) then
+      raise Exception.Create('Path must start with a "MoveTo" command');
+
+    case curSegment.SegmentType of
+      stMoveTo:
+        begin
+          // Store current length of points array as polygon start index
+          if numPolygons >= Length(PolygonStartIndexes) then
+            SetLength(PolygonstartIndexes, Length(PolygonStartIndexes) + POINT_BUFFER);
+          PolygonStartIndexes[numPolygons] := numPoints;
+          inc(numPolygons);
+
+          // Store current point as first point of a new polygon
+          coordX := CoordToCanvasX(cur2DSegment.X, ADestX, AMulX);
+          coordY := CoordToCanvasY(cur2DSegment.Y, ADestY, AMulY);
+          if numPoints >= Length(PolygonPoints) then
+            SetLength(PolygonPoints, Length(PolygonPoints) + POINT_BUFFER);
+          PolygonPoints[numPoints] := Point(coordX, coordY);
+          inc(numPoints);
+        end;
+
+      st2DLine, st3DLine, st2DLineWithPen:
+        begin
+          // Add current point to current polygon
+          coordX := CoordToCanvasX(cur2DSegment.X, ADestX, AMulX);
+          coordY := CoordToCanvasY(cur2DSegment.Y, ADestY, AMulY);
+          if numPoints >= Length(PolygonPoints) then
+            SetLength(PolygonPoints, Length(PolygonPoints) + POINT_BUFFER);
+          PolygonPoints[numPoints] := Point(coordX, coordY);
+          inc(numPoints);
+        end;
+
+      st2DBezier, st3DBezier, st2DEllipticalArc:
+        begin
+          SetLength(PolygonPoints, numPoints);
+          curSegment.AddToPoints(ADestX, ADestY, AMulX, AMulY, PolygonPoints);
+          numPoints := Length(PolygonPoints);
+        end;
+    end;
+  end;
+  SetLength(PolygonPoints, numPoints);
+  SetLength(PolygonStartIndexes, numPolygons);
+end;
+
 procedure ConvertPathToPoints(APath: TPath; ADestX, ADestY: Integer; AMulX, AMulY: Double; var Points: TPointsArray);
 var
   i, LastPoint: Integer;
@@ -439,6 +645,8 @@ end;
 
 // Rotates a point P around RotCenter
 // alpha angle in radians
+// Be CAREFUL: the angle used here grows in clockwise direction. This is
+// against mathematical convention!
 function Rotate3DPointInXY(P, RotCenter: T3DPoint; alpha:double): T3DPoint;
 var
   sinus, cosinus : Extended;
@@ -508,14 +716,12 @@ function SolveNumericallyAngle(ANumericalEquation: TNumericalEquation;
 var
   lError, lErr1, lErr2, lErr3, lErr4: Double;
   lParam1, lParam2: Double;
-  lIterations: Integer;
   lCount: Integer;
 begin
   lErr1 := ANumericalEquation(0);
   lErr2 := ANumericalEquation(Pi/2);
   lErr3 := ANumericalEquation(Pi);
   lErr4 := ANumericalEquation(3*Pi/2);
-
   // Choose the place to start
   if (lErr1 < lErr2) and (lErr1 < lErr3) and (lErr1 < lErr4) then
   begin
@@ -527,7 +733,7 @@ begin
     lParam1 := 0;
     lParam2 := Pi;
   end
-  else if (lErr2 < lErr3) and (lErr2 < lErr4) then
+  else if (lErr2 < lErr3) and (lErr2 < lErr4) then      // wp: same as above!
   begin
     lParam1 := Pi/2;
     lParam2 := 3*Pi/2;
@@ -535,7 +741,7 @@ begin
   else
   begin
     lParam1 := Pi;
-    lParam2 := 2*Pi;
+    lParam2 := TWO_PI;
   end;
 
   // Iterate as many times necessary to get the best answer!

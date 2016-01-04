@@ -727,6 +727,8 @@ type
 
     procedure NotebookMouseDown(Sender: TObject; Button: TMouseButton;
           {%H-}Shift: TShiftState; X,Y: Integer);
+    procedure NotebookMouseUp(Sender: TObject; Button: TMouseButton;
+          {%H-}Shift: TShiftState; X,Y: Integer);
     procedure NotebookDragDropEx(Sender, Source: TObject;
                                   OldIndex, NewIndex: Integer; CopyDrag: Boolean;
                                   var Done: Boolean);
@@ -754,12 +756,6 @@ type
     procedure GotoNextSharedEditor(Backward: Boolean = False);
     procedure MoveEditorNextWindow(Backward: Boolean = False; Copy: Boolean = False);
     procedure CopyEditor(OldPageIndex, NewWindowIndex, NewPageIndex: integer; Focus: Boolean = False);
-    procedure ProcessParentCommand(Sender: TObject;
-       var Command: TSynEditorCommand; var {%H-}AChar: TUTF8Char; {%H-}Data: pointer;
-       var Handled: boolean);
-    procedure ParentCommandProcessed(Sender: TObject;
-       var Command: TSynEditorCommand; var {%H-}AChar: TUTF8Char; {%H-}Data: pointer;
-       var Handled: boolean);
 
     function GetActiveEditor: TSourceEditorInterface; override;
     procedure SetActiveEditor(const AValue: TSourceEditorInterface); override;
@@ -770,10 +766,6 @@ type
 
     procedure BeginAutoFocusLock;
     procedure EndAutoFocusLock;
-
-  public
-    procedure AddUpdateEditorPageCaptionHandler(AEvent: TNotifyEvent; const AsLast: Boolean = True); override;
-    procedure RemoveUpdateEditorPageCaptionHandler(AEvent: TNotifyEvent); override;
   protected
     procedure CloseTabClicked(Sender: TObject);
     procedure CloseClicked(Sender: TObject; CloseOthers: Boolean = False);
@@ -804,6 +796,16 @@ type
     procedure ReloadEditorOptions;
     procedure CheckFont;
 
+  public
+    procedure AddUpdateEditorPageCaptionHandler(AEvent: TNotifyEvent; const AsLast: Boolean = True); override;
+    procedure RemoveUpdateEditorPageCaptionHandler(AEvent: TNotifyEvent); override;
+
+    procedure ProcessParentCommand(Sender: TObject;
+       var Command: TSynEditorCommand; var {%H-}AChar: TUTF8Char; {%H-}Data: pointer;
+       var Handled: boolean);
+    procedure ParentCommandProcessed(Sender: TObject;
+       var Command: TSynEditorCommand; var {%H-}AChar: TUTF8Char; {%H-}Data: pointer;
+       var Handled: boolean);
   public
     constructor Create(AOwner: TComponent); override; overload;
     constructor Create(AOwner: TComponent; AWindowID: Integer); overload;
@@ -6300,7 +6302,6 @@ Begin
     APage.Caption:='unit1';
     APage.Parent:=FNotebook;
     PageIndex := 0;   // Set it to the first page
-    PopupMenu := TabPopupMenu;
     if EditorOpts.ShowTabCloseButtons then
       Options:=Options+[nboShowCloseButtons]
     else
@@ -6315,6 +6316,7 @@ Begin
     OnChange := @NotebookPageChanged;
     OnCloseTabClicked  := @CloseTabClicked;
     OnMouseDown:=@NotebookMouseDown;
+    OnMouseUp:=@NotebookMouseUp;
     TabDragMode := dmAutomatic;
     OnTabDragOverEx  := @NotebookDragOverEx;
     OnTabDragDropEx  := @NotebookDragDropEx;
@@ -8366,6 +8368,26 @@ begin
     if TabIndex>=0 then
       CloseClicked(NoteBookPage[TabIndex],
                    (GetKeyState(VK_CONTROL) < 0) and EditorOpts.CtrlMiddleTabClickClosesOthers);
+  end else
+  if (Button = mbRight) then
+  begin
+    //select on right click
+    TabIndex:=FNotebook.TabIndexAtClientPos(Point(X,Y));
+    if TabIndex>=0 then
+      FNotebook.ActivePageIndex := TabIndex;
+  end;
+end;
+
+procedure TSourceNotebook.NotebookMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  TabIndex: Integer;
+begin
+  if (Button = mbRight) then
+  begin
+    TabIndex:=FNotebook.TabIndexAtClientPos(Point(X,Y));
+    if TabIndex>=0 then
+      TabPopUpMenu.PopUp;
   end;
 end;
 

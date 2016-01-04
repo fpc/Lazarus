@@ -2039,6 +2039,11 @@ var
       Result:=(LastMouse.Window<>nil) and (LastMouse.Window=Event^.Window);
     end;
 
+    function LastClickInSameComponent: boolean;
+    begin
+      Result:=(LastMouse.Component<>nil) and (LastMouse.Component=AWinControl);
+    end;
+
     function LastClickAtSamePosition: boolean;
     begin
       Result:= (Abs(EventXY.X-LastMouse.WindowPoint.X)<=DblClickThreshold)
@@ -2053,6 +2058,7 @@ var
     function TestIfMultiClick: boolean;
     begin
       Result:=LastClickInSameGdkWindow
+          and LastClickInSameComponent
           and LastClickAtSamePosition
           and LastClickInTime;
     end;

@@ -25,8 +25,7 @@ msgstr "Převéct"
 #: tlazconverterform.caption
 msgctxt "TLAZCONVERTERFORM.CAPTION"
 msgid "Codepage LazConverter for PAS, LFM, LRS, LRT & INC files v0.0.6"
-msgstr ""
-"LazConverter kódové stránky pro PAS, LFM, LRS, LRT a INC soubory v0.0.6"
+msgstr "LazConverter kódové stránky pro PAS, LFM, LRS, LRT a INC soubory v0.0.6"
 
 #: tlazconverterform.label1.caption
 msgid "Path to your project:"
@@ -51,3 +50,4 @@ msgstr "Odebrat z konverze"
 #: tlazconverterform.selectdirectorydialog1.title
 msgid "Select Directory"
 msgstr "Vybrat složku"
+

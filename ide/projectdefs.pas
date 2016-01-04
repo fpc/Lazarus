@@ -1260,8 +1260,7 @@ begin
   Result := GetLocalizedName + LineEnding+LineEnding + lisApplicationProgramDescriptor;
 end;
 
-function TProjectApplicationDescriptor.InitProject(
-  AProject: TLazProject): TModalResult;
+function TProjectApplicationDescriptor.InitProject(AProject: TLazProject): TModalResult;
 var
   NewSource: String;
   MainFile: TLazProjectFile;

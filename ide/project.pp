@@ -103,6 +103,9 @@ type
 
 const
   AllUnitCompDependencyTypes = [low(TUnitCompDependencyType)..high(TUnitCompDependencyType)];
+  // Names for extra buildmodes which may be created automatically.
+  DebugModeName = 'Debug';
+  ReleaseModeName = 'Release';
 
 type
 
@@ -543,8 +546,7 @@ type
     function CreateDiff(CompOpts: TBaseCompilerOptions;
                         Tool: TCompilerDiffTool = nil): boolean; override; // true if differ
     procedure InvalidateOptions;
-    procedure SetAlternativeCompile(const Command: string; ScanFPCMsgs: boolean
-      ); override;
+    procedure SetAlternativeCompile(const Command: string; ScanFPCMsgs: boolean); override;
   public
     property LazProject: TProject read FProject;
     property BuildMode: TProjectBuildMode read FBuildMode;
@@ -650,10 +652,11 @@ type
     function IsSessionMode(const ModeIdentifier: string): boolean;
     function IsSharedMode(const ModeIdentifier: string): boolean;
     procedure RenameMatrixMode(const OldName, NewName: string);
+    function CreateExtraModes(aCurMode: TProjectBuildMode): TProjectBuildMode;
     // load, save
     procedure LoadProjOptsFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure LoadSessionFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-                                       LoadParts: boolean);
+                                       LoadAllOptions: boolean);
     procedure SaveProjOptsToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                                       SaveSession: boolean);
     procedure SaveSessionOptsToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
@@ -759,7 +762,7 @@ type
     FUseAsDefault: Boolean;
     // Variables used by ReadProject / WriteProject
     FXMLConfig: TXMLConfig;
-    FLoadParts: Boolean;
+    FLoadAllOptions: Boolean; // All options / just options used as default for new projects
     FFileVersion: Integer;
     FNewMainUnitID: LongInt;
     FProjectWriteFlags: TProjectWriteFlags;
@@ -884,10 +887,10 @@ type
     procedure IgnoreProjectInfoFileOnDisk;
     function ReadProject(const NewProjectInfoFile: string;
                          GlobalMatrixOptions: TBuildMatrixOptions;
-                         LoadParts: Boolean = False): TModalResult;
+                         LoadAllOptions: Boolean = True): TModalResult;
     function WriteProject(ProjectWriteFlags: TProjectWriteFlags;
                           const OverrideProjectInfoFile: string;
-                        GlobalMatrixOptions: TBuildMatrixOptions): TModalResult;
+                          GlobalMatrixOptions: TBuildMatrixOptions): TModalResult;
     procedure UpdateExecutableType; override;
     procedure BackupSession;
     procedure RestoreSession;
@@ -1037,7 +1040,6 @@ type
                                                     write SetAutoOpenDesignerFormsDisabled;
     property Bookmarks: TProjectBookmarkList read FBookmarks write FBookmarks;
     property BuildModes: TProjectBuildModes read FBuildModes;
-    property BuildModesBackup: TProjectBuildModes read FBuildModesBackup;
     property SkipCheckLCLInterfaces: boolean read FSkipCheckLCLInterfaces
                                              write SetSkipCheckLCLInterfaces;
     property CompilerOptions: TProjectCompilerOptions read GetCompilerOptions;
@@ -2847,7 +2849,6 @@ begin
   //   automatically fixes broken lpi files.
   FNewMainUnitID := FXMLConfig.GetValue(Path+'General/MainUnit/Value', 0);
   Title := FXMLConfig.GetValue(Path+'General/Title/Value', '');
-  UseAppBundle := FXMLConfig.GetValue(Path+'General/UseAppBundle/Value', True);
   AutoCreateForms := FXMLConfig.GetValue(Path+'General/AutoCreateForms/Value', true);
 
   // fpdoc
@@ -2866,9 +2867,6 @@ begin
          FXMLConfig.GetValue(Path+'i18n/OutDir/Value', ''),fPathDelimChanged);
   end;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject E reading comp sets');{$ENDIF}
-
-  // Resources
-  ProjResources.ReadFromProjectFile(FXMLConfig, Path);
 
   // load custom data
   LoadStringToStringTree(FXMLConfig,CustomData,Path+'CustomData/');
@@ -2905,7 +2903,7 @@ begin
   FFileVersion:=FXMLConfig.GetValue(Path+'Version/Value',0);
 
   // load MacroValues and compiler options
-  BuildModes.LoadSessionFromXMLConfig(FXMLConfig, Path, FLoadParts);
+  BuildModes.LoadSessionFromXMLConfig(FXMLConfig, Path, FLoadAllOptions);
 
   // load defines used for custom options
   LoadOtherDefines(Path);
@@ -2922,21 +2920,8 @@ var
   PIFile: String;
 begin
   Result:=mrOk;
-  if FLoadParts then begin
-    // read only parts of the lpi, keep other values
-    try
-      FXMLConfig := TCodeBufXMLConfig.CreateWithCache(Filename,true)
-    except
-      on E: Exception do begin
-        IDEMessageDialog(lisUnableToReadLpi,
-            Format(lisUnableToReadTheProjectInfoFile,[LineEnding,Filename])+LineEnding+E.Message,
-            mtError, [mbOk]);
-        Result:=mrCancel;
-        exit;
-      end;
-    end;
-  end
-  else begin
+  if FLoadAllOptions then
+  begin
     // read the whole lpi, clear any old values
     Clear;
     ProjectInfoFile:=Filename;
@@ -2966,6 +2951,20 @@ begin
     fLastReadLPIFilename:=PIFile;
     fLastReadLPIFileDate:=Now;
     FNewMainUnitID:=-1;
+  end
+  else begin
+    // read only parts of the lpi, keep other values
+    try
+      FXMLConfig := TCodeBufXMLConfig.CreateWithCache(Filename,true)
+    except
+      on E: Exception do begin
+        IDEMessageDialog(lisUnableToReadLpi,
+            Format(lisUnableToReadTheProjectInfoFile,[LineEnding,Filename])+LineEnding+E.Message,
+            mtError, [mbOk]);
+        Result:=mrCancel;
+        exit;
+      end;
+    end;
   end;
 
   try
@@ -2975,8 +2974,11 @@ begin
     fCurStorePathDelim:=StorePathDelim;
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject C reading values');{$ENDIF}
     FFileVersion:= FXMLConfig.GetValue(ProjOptionsPath+'Version/Value',0);
-    if not FLoadParts then
+    UseAppBundle := FXMLConfig.GetValue(ProjOptionsPath+'General/UseAppBundle/Value', True);
+    if FLoadAllOptions then
       LoadFromLPI;
+    // Resources
+    ProjResources.ReadFromProjectFile(FXMLConfig, ProjOptionsPath, FLoadAllOptions);
     // load MacroValues and compiler options
     ClearBuildModes;
     BuildModes.LoadProjOptsFromXMLConfig(FXMLConfig, ProjOptionsPath);
@@ -3027,13 +3029,13 @@ end;
 
 // Method ReadProject itself
 function TProject.ReadProject(const NewProjectInfoFile: string;
-  GlobalMatrixOptions: TBuildMatrixOptions; LoadParts: Boolean): TModalResult;
+  GlobalMatrixOptions: TBuildMatrixOptions; LoadAllOptions: Boolean): TModalResult;
 begin
   Result := mrCancel;
   BeginUpdate(true);
   try
     BuildModes.FGlobalMatrixOptions := GlobalMatrixOptions;
-    FLoadParts := LoadParts;
+    FLoadAllOptions := LoadAllOptions;
 
     // load project lpi file
     Result:=DoLoadLPI(NewProjectInfoFile);
@@ -3042,7 +3044,7 @@ begin
     // load session file (if available)
     if (SessionStorage in pssHasSeparateSession)
     and (CompareFilenames(ProjectInfoFile,ProjectSessionFile)<>0)
-    and not FLoadParts then
+    and FLoadAllOptions then
     begin
       Result:=DoLoadSession(ProjectSessionFile);
       if Result<>mrOK then Exit;
@@ -3189,7 +3191,8 @@ begin
   // save lpi to disk
   //debugln(['TProject.WriteProject ',DbgSName(FXMLConfig),' FCfgFilename=',FCfgFilename]);
   FXMLConfig.Flush;
-  Modified:=false;
+  if not (pwfIgnoreModified in FProjectWriteFlags) then
+    Modified:=false;
   if FSaveSessionInLPI then
     SessionModified:=false;
 end;
@@ -3304,8 +3307,12 @@ begin
     FSaveSessionInLPI:=(SessFilename='') or (CompareFilenames(SessFilename,CfgFilename)=0);
 
   // check if modified
-  if not (pwfIgnoreModified in ProjectWriteFlags) then
+  if pwfIgnoreModified in ProjectWriteFlags then
   begin
+    WriteLPI:=true;
+    WriteLPS:=true;
+  end
+  else begin
     WriteLPI:=SomeDataModified or (not FileExistsUTF8(CfgFilename));
     if (CompareFilenames(ProjectInfoFile,CfgFilename)=0) then
       // save to default lpi
@@ -3319,10 +3326,7 @@ begin
     end else begin
       WriteLPS:=WriteLPI or SomeSessionModified or (not FileExistsUTF8(SessFilename));
     end;
-    if (not WriteLPI) and (not WriteLPS) then exit(mrOk);
-  end else begin
-    WriteLPI:=true;
-    WriteLPS:=true;
+    if not (WriteLPI or WriteLPS) then exit(mrOk);
   end;
   //debugln(['TProject.WriteProject WriteLPI=',WriteLPI,' WriteLPS=',WriteLPS,' Modifed=',Modified,' SessionModified=',SessionModified]);
 
@@ -3395,7 +3399,7 @@ begin
   {$IFDEF VerboseIDEModified}
   debugln(['TProject.BackupBuildModes START=====================']);
   {$ENDIF}
-  BuildModesBackup.Assign(BuildModes,true);
+  FBuildModesBackup.Assign(BuildModes,true);
   {$IFDEF VerboseIDEModified}
   debugln(['TProject.BackupBuildModes END===================== Modified=',Modified]);
   {$ENDIF}
@@ -3403,8 +3407,9 @@ end;
 
 procedure TProject.RestoreBuildModes;
 begin
+  Assert(FBuildModesBackup.Count>0, 'TProject.RestoreBuildModes: FBuildModesBackup.Count=0');
   ActiveBuildMode:=nil;
-  BuildModes.Assign(BuildModesBackup,true);
+  BuildModes.Assign(FBuildModesBackup,true);
   if (FActiveBuildModeBackup>=0) and (FActiveBuildModeBackup<BuildModes.Count)
   then
     ActiveBuildMode:=BuildModes[FActiveBuildModeBackup]
@@ -3777,12 +3782,12 @@ end;
 
 function TProject.GetUseManifest: boolean;
 begin
-  Result:=TProjectXPManifest(ProjResources[TProjectXPManifest]).UseManifest;
+  Result:=ProjResources.XPManifest.UseManifest;
 end;
 
 procedure TProject.SetUseManifest(AValue: boolean);
 begin
-  TProjectXPManifest(ProjResources[TProjectXPManifest]).UseManifest:=AValue;
+  ProjResources.XPManifest.UseManifest:=AValue;
 end;
 
 function TProject.UnitCount:integer;
@@ -6923,6 +6928,48 @@ begin
   SessionMatrixOptions.RenameMode(OldName,NewName);
 end;
 
+function TProjectBuildModes.CreateExtraModes(aCurMode: TProjectBuildMode): TProjectBuildMode;
+// Create Debug and Release buildmodes. Return the created debug mode.
+// Params: aCurMode - existing mode to copy settings from.
+
+  procedure AssignAndSetBooleans(aMode: TProjectBuildMode; IsDebug: Boolean);
+  begin
+    if Assigned(aCurMode) then
+      aMode.Assign(aCurMode);              // clone from currently selected mode
+    with aMode.CompilerOptions do
+    begin
+      // Smart linking
+      SmartLinkUnit:=not IsDebug;
+      LinkSmart:=not IsDebug;
+      // Checks
+      IOChecks:=IsDebug;
+      RangeChecks:=IsDebug;
+      OverflowChecks:=IsDebug;
+      StackChecks:=IsDebug;
+      IncludeAssertionCode:=IsDebug;
+      // Debug flags
+      GenerateDebugInfo:=IsDebug;
+      UseExternalDbgSyms:=IsDebug;
+      UseHeaptrc:=IsDebug;
+      TrashVariables:=IsDebug;
+    end;
+  end;
+
+var
+  RelMode: TProjectBuildMode;
+begin
+  // Create Debug mode
+  Result:=Add(DebugModeName);
+  AssignAndSetBooleans(Result, True);
+  Result.CompilerOptions.OptimizationLevel:=1;        // Optimization
+  Result.CompilerOptions.DebugInfoType:=dsDwarf2Set;  // Debug
+  // Create Release mode
+  RelMode:=Add(ReleaseModeName);
+  AssignAndSetBooleans(RelMode, False);
+  RelMode.CompilerOptions.OptimizationLevel:=3;       // Optimization, slow, but safe, -O4 is dangerous
+  RelMode.CompilerOptions.DebugInfoType:=dsAuto;      // No Debug
+end;
+
 // Methods for LoadFromXMLConfig
 
 procedure TProjectBuildModes.AddMatrixMacro(const MacroName, MacroValue, ModeIdentifier: string;
@@ -7089,14 +7136,14 @@ begin
 end;
 
 procedure TProjectBuildModes.LoadSessionFromXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string; LoadParts: boolean);
+  const Path: string; LoadAllOptions: boolean);
 // Load for session
 var
   Cnt: Integer;
 begin
   FXMLConfig := XMLConfig;
 
-  if not LoadParts then
+  if LoadAllOptions then
     // load matrix options
     SessionMatrixOptions.LoadFromXMLConfig(FXMLConfig, Path+'BuildModes/SessionMatrixOptions/');
 
@@ -7107,7 +7154,7 @@ begin
     LoadAllMacroValues(Path+'MacroValues/', Cnt);
   end;
 
-  if not LoadParts then
+  if LoadAllOptions then
     // load what matrix options are enabled in session build modes
     LoadSessionEnabledNonSessionMatrixOptions(Path+'BuildModes/SessionEnabledMatrixOptions/');
 
@@ -7145,8 +7192,7 @@ begin
   SharedMatrixOptions.SaveToXMLConfig(FXMLConfig, Path+'BuildModes/SharedMatrixOptions/',@IsSharedMode);
 end;
 
-function TProjectBuildModes.GetLazBuildModes(Index: integer
-  ): TLazProjectBuildMode;
+function TProjectBuildModes.GetLazBuildModes(Index: integer): TLazProjectBuildMode;
 begin
   Result:=TLazProjectBuildMode(fItems[Index]);
 end;

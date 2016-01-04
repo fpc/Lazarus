@@ -473,9 +473,14 @@ type
   { TQtViewPort }
   
   TQtViewPort = class(TQtWidget)
+  private
+    {when our viewport is invisible then we must keep track of scrolling. issue #29239}
+    FInvisibleX: integer;
+    FInvisibleY: integer;
   public
     function CanPaintBackground: Boolean; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+    procedure InitializeWidget; override;
     procedure scroll(dx, dy: integer; ARect: PRect = nil); override;
     procedure stackUnder(AWidget: QWidgetH); override;
   end;
@@ -617,7 +622,6 @@ type
     LayoutWidget: QBoxLayoutH;
     FCWEventHook: QObject_hookH;
     FShowOnTaskBar: Boolean;
-    FPopupMode: TPopupMode;
     FPopupParent: QWidgetH;
     FMDIStateHook: QMdiSubWindow_hookH;
   protected
@@ -664,7 +668,7 @@ type
     procedure SlotActivateWindow(vActivate: Boolean); cdecl;
     procedure slotWindowStateChange; cdecl;
     procedure setShowInTaskBar(AValue: Boolean);
-    procedure setPopupParent(APopupMode: TPopupMode; NewParent: QWidgetH);
+    procedure setRealPopupParent(NewParent: QWidgetH);
     property Blocked: Boolean read FBlocked write FBlocked;
     property ShowOnTaskBar: Boolean read FShowOnTaskBar;
   public
@@ -6564,7 +6568,6 @@ begin
   QtFormBorderStyle := Ord(bsSizeable);
   QtFormStyle := Ord(fsNormal);
   FHasPaint := True;
-  FPopupMode := pmNone;
   FPopupParent := nil;
   MDIAreaHandle := nil;
   MDIChildArea := nil;
@@ -6706,42 +6709,8 @@ begin
 end;
 
 procedure TQtMainWindow.UpdateParent;
-var
-  NewParent: QWidgetH;
 begin
-  NewParent := nil;
-  case FPopupMode of
-    pmNone: ;// no popup parent
-    pmAuto:
-      // active form is parent
-      if Screen.ActiveForm <> nil then
-        NewParent := TQtWidget(Screen.ActiveForm.Handle).Widget;
-    pmExplicit:
-    begin
-      // parent is FPopupParent
-      if FPopupParent <> nil then
-        NewParent := FPopupParent
-      {$IFDEF HASX11}
-      else
-      begin
-        if not IsMainForm then
-        begin
-          NewParent := TQtMainWindow(Application.MainForm.Handle).Widget;
-          setWindowFlags(windowFlags or QtSheet);
-        end;
-      end;
-      {$ENDIF}
-    end;
-  end;
-  if (NewParent = nil) and (FPopupMode <> pmNone) and
-    not FShowOnTaskBar and not IsMainForm then
-      NewParent := TQtMainWindow(Application.MainForm.Handle).Widget;
-  {$IFDEF MSWINDOWS}
-  if (NewParent = nil) and (FPopupMode = pmNone) and
-    not FShowOnTaskBar and not IsMainForm then
-      NewParent := TQtMainWindow(Application.MainForm.Handle).Widget;
-  {$ENDIF}
-  ChangeParent(NewParent);
+  ChangeParent(FPopupParent);
 end;
 
 {------------------------------------------------------------------------------
@@ -7362,9 +7331,8 @@ begin
   {$ENDIF}
 end;
 
-procedure TQtMainWindow.setPopupParent(APopupMode: TPopupMode; NewParent: QWidgetH);
+procedure TQtMainWindow.setRealPopupParent(NewParent: QWidgetH);
 begin
-  FPopupMode := APopupMode;
   FPopupParent := NewParent;
   UpdateParent;
 end;
@@ -16085,6 +16053,18 @@ begin
       ' Event=', EventTypeToStr(Event),' inUpdate=',inUpdate);
   {$endif}
   case QEvent_type(Event) of
+    QEventShow,
+    QEventShowToParent:
+    begin
+      {Qt does not track scrolled offset of widget when it''s not visible.issue #29239}
+      if (FInvisibleX <> 0) or (FInvisibleY <> 0) then
+      begin
+        QWidget_scroll(Widget, FInvisibleX, FInvisibleY);
+        FInvisibleX := 0;
+        FInvisibleY := 0;
+      end;
+      Result := inherited EventFilter(Sender, Event);
+    end;
     QEventResize:
     begin
       // immediate update clientRect !
@@ -16167,9 +16147,21 @@ begin
   end;
 end;
 
+procedure TQtViewPort.InitializeWidget;
+begin
+  FInvisibleX := 0;
+  FInvisibleY := 0;
+  inherited InitializeWidget;
+end;
+
 procedure TQtViewPort.scroll(dx, dy: integer; ARect: PRect = nil);
 begin
-  inherited scroll(dx, dy, ARect);
+  if not getVisible then
+  begin
+    FInvisibleX += dx;
+    FInvisibleY += dy;
+  end else
+    inherited scroll(dx, dy, ARect);
   FScrollX := FScrollX + dx;
   FScrollY := FScrollY + dy;
 end;

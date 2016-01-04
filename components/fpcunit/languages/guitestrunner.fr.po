@@ -3,13 +3,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-16 07:54+0100\n"
-"PO-Revision-Date: 2015-04-16 07:54+0100\n"
+"PO-Revision-Date: 2015-12-18 09:52+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Poedit 1.8.6\n"
 
 #: guitestrunner.rsalltests
 msgid "All Tests"
@@ -134,10 +134,8 @@ msgid "C&ut"
 msgstr "Co&uper"
 
 #: guitestrunner.smiruntest
-#, fuzzy
-#| msgid "  &Run all selected (checked) tests"
 msgid "&Run all selected (checked) tests"
-msgstr "&Exécuter les tests choisis (cochés)"
+msgstr "&Exécuter tous les tests choisis (cochés)"
 
 #: guitestrunner.smishowfail
 msgid "Copy message to clipboard"

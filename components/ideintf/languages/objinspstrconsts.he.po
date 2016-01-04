@@ -1369,9 +1369,17 @@ msgstr "ללא"
 msgid "Add Images"
 msgstr "הוסף דמויות"
 
+#: objinspstrconsts.sccsiledtopendialogn
+msgid "New Image"
+msgstr ""
+
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
 msgstr "צבע שקוף:"
+
+#: objinspstrconsts.sccsiledtreplace
+msgid "&Replace ..."
+msgstr ""
 
 #: objinspstrconsts.sccsiledtsave
 #, fuzzy
@@ -1608,6 +1616,10 @@ msgstr "מקש גרירה"
 #: objinspstrconsts.s_addassingle
 msgid "Add as single"
 msgstr "הוסף כיחיד"
+
+#: objinspstrconsts.s_confirm_clear
+msgid "Are you sure to clear image list?"
+msgstr ""
 
 #: objinspstrconsts.s_splitimage
 msgid "Split image"

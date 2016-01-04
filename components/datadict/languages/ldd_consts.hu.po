@@ -210,3 +210,4 @@ msgstr "Figyelem! Nincs definíció az adatszótárban a mezőhöz: %s"
 #: ldd_consts.swrongselection
 msgid "Wrong selection count : %d"
 msgstr "Rossz a kijelölések száma: %d"
+

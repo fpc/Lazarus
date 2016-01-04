@@ -30,7 +30,7 @@
     <License Value="LGPL
 "/>
     <Version Minor="5"/>
-    <Files Count="39">
+    <Files Count="40">
       <Item1>
         <Filename Value="printersdlgs.pp"/>
         <HasRegisterProc Value="True"/>
@@ -101,105 +101,110 @@
         <Type Value="Include"/>
       </Item16>
       <Item17>
-        <Filename Value="unix\cupsprndialogs.inc"/>
-        <Type Value="Include"/>
+        <Filename Value="win32\winutilprn.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="WinUtilPrn"/>
       </Item17>
       <Item18>
-        <Filename Value="carbon\carbonprinters.inc"/>
+        <Filename Value="unix\cupsprndialogs.inc"/>
         <Type Value="Include"/>
       </Item18>
       <Item19>
-        <Filename Value="carbon\carbonprinters_h.inc"/>
+        <Filename Value="carbon\carbonprinters.inc"/>
         <Type Value="Include"/>
       </Item19>
       <Item20>
-        <Filename Value="carbon\carbonprndialogs.inc"/>
+        <Filename Value="carbon\carbonprinters_h.inc"/>
         <Type Value="Include"/>
       </Item20>
       <Item21>
+        <Filename Value="carbon\carbonprndialogs.inc"/>
+        <Type Value="Include"/>
+      </Item21>
+      <Item22>
         <Filename Value="carbon\carbonprinting.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonPrinting"/>
-      </Item21>
-      <Item22>
-        <Filename Value="cocoa\cocoaprinters.inc"/>
-        <Type Value="Include"/>
       </Item22>
       <Item23>
-        <Filename Value="cocoa\cocoaprinters_h.inc"/>
+        <Filename Value="cocoa\cocoaprinters.inc"/>
         <Type Value="Include"/>
       </Item23>
       <Item24>
-        <Filename Value="cocoa\cocoaprndialogs.inc"/>
+        <Filename Value="cocoa\cocoaprinters_h.inc"/>
         <Type Value="Include"/>
       </Item24>
       <Item25>
-        <Filename Value="qt\qtprndialogs.inc"/>
+        <Filename Value="cocoa\cocoaprndialogs.inc"/>
         <Type Value="Include"/>
       </Item25>
       <Item26>
-        <Filename Value="qt\qtprinters_h.inc"/>
+        <Filename Value="qt\qtprndialogs.inc"/>
         <Type Value="Include"/>
       </Item26>
       <Item27>
-        <Filename Value="qt\qtprinters.inc"/>
+        <Filename Value="qt\qtprinters_h.inc"/>
         <Type Value="Include"/>
       </Item27>
       <Item28>
-        <Filename Value="carbon\issues.xml"/>
-        <Type Value="Issues"/>
+        <Filename Value="qt\qtprinters.inc"/>
+        <Type Value="Include"/>
       </Item28>
       <Item29>
-        <Filename Value="unix\udlgpagesetup.lfm"/>
-        <Type Value="LFM"/>
+        <Filename Value="carbon\issues.xml"/>
+        <Type Value="Issues"/>
       </Item29>
       <Item30>
+        <Filename Value="unix\udlgpagesetup.lfm"/>
+        <Type Value="LFM"/>
+      </Item30>
+      <Item31>
         <Filename Value="unix\udlgpagesetup.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="udlgpagesetup"/>
-      </Item30>
-      <Item31>
-        <Filename Value="unix\framepagesetup.lfm"/>
-        <Type Value="LFM"/>
       </Item31>
       <Item32>
+        <Filename Value="unix\framepagesetup.lfm"/>
+        <Type Value="LFM"/>
+      </Item32>
+      <Item33>
         <Filename Value="unix\framepagesetup.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="framePageSetup"/>
-      </Item32>
-      <Item33>
-        <Filename Value="unix\frameprinterselector.lfm"/>
-        <Type Value="LFM"/>
       </Item33>
       <Item34>
+        <Filename Value="unix\frameprinterselector.lfm"/>
+        <Type Value="LFM"/>
+      </Item34>
+      <Item35>
         <Filename Value="unix\frameprinterselector.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="frameprinterselector"/>
-      </Item34>
-      <Item35>
+      </Item35>
+      <Item36>
         <Filename Value="unix\udlgprintersetup.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="udlgprintersetup"/>
-      </Item35>
-      <Item36>
+      </Item36>
+      <Item37>
         <Filename Value="unix\cupslcl.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="cupslcl"/>
-      </Item36>
-      <Item37>
+      </Item37>
+      <Item38>
         <Filename Value="carbon\ppdresolution.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="ppdresolution"/>
-      </Item37>
-      <Item38>
+      </Item38>
+      <Item39>
         <Filename Value="cocoa\cocoaprintcanvas.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="cocoaprintcanvas"/>
-      </Item38>
-      <Item39>
-        <Filename Value="printer4lazstrconst.pas"/>
-        <UnitName Value="printer4lazstrconst"/>
       </Item39>
+      <Item40>
+        <Filename Value="printer4lazstrconst.pas"/>
+        <UnitName Value="Printer4LazStrConst"/>
+      </Item40>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

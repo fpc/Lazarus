@@ -87,3 +87,4 @@ msgstr "Hochformat gedreht"
 #: printer4lazstrconst.p4lrsstart
 msgid "Start"
 msgstr "Start"
+

@@ -85,7 +85,7 @@ type
     destructor Destroy; override;
     class function GetGroupCaption: String; override;
     class function GetInstance: TAbstractIDEOptions; override;
-    procedure DoAfterWrite(Restore: boolean); override;
+    procedure DoAfterWrite({%H-}Restore: boolean); override;
 
     procedure Read;
     procedure ReadFromFile(const psFileName: string; const pbMustExist: boolean);

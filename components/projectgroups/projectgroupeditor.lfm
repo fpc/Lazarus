@@ -9,7 +9,7 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '1.5'
+  LCLVersion = '1.7'
   object TBProjectGroup: TToolBar
     Left = 0
     Height = 48
@@ -26,33 +26,33 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
       Action = AProjectGroupSave
     end
     object TBAdd: TToolButton
-      Left = 117
+      Left = 106
       Top = 2
       Action = AProjectGroupAddExisting
     end
     object TBNewTarget: TToolButton
-      Left = 37
+      Left = 34
       Top = 2
       Action = AProjectGroupAddNew
       Visible = False
     end
     object TBDelete: TToolButton
-      Left = 150
+      Left = 136
       Top = 2
       Action = AProjectGroupDelete
     end
     object TBCompile: TToolButton
-      Left = 208
+      Left = 189
       Top = 2
       Action = ATargetCompile
     end
     object TBCompileClean: TToolButton
-      Left = 268
+      Left = 241
       Top = 2
       Action = ATargetCompileClean
     end
     object ToolButton1: TToolButton
-      Left = 367
+      Left = 326
       Height = 46
       Top = 2
       Width = 10
@@ -60,37 +60,37 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
       Style = tbsSeparator
     end
     object TBTargetUp: TToolButton
-      Left = 435
+      Left = 390
       Top = 2
       Action = ATargetEarlier
     end
     object TBTargetLater: TToolButton
-      Left = 483
+      Left = 434
       Top = 2
       Action = ATargetLater
     end
     object TBMore: TToolButton
-      Left = 574
+      Left = 517
       Top = 2
       Caption = 'More...'
       DropdownMenu = PopupMenuMore
       Style = tbsDropDown
     end
     object TBActivate: TToolButton
-      Left = 377
+      Left = 336
       Top = 2
       Action = ATargetActivate
       Visible = False
     end
     object TBReload: TToolButton
-      Left = 523
+      Left = 471
       Top = 2
       Action = AProjectGroupReload
     end
   end
   object TVPG: TTreeView
     Left = 0
-    Height = 295
+    Height = 291
     Top = 48
     Width = 646
     Align = alClient
@@ -109,8 +109,8 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
   end
   object SBPG: TStatusBar
     Left = 0
-    Height = 15
-    Top = 343
+    Height = 19
+    Top = 339
     Width = 646
     Panels = <    
       item
@@ -1023,6 +1023,7 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
       Caption = 'Save As'
       ImageIndex = 21
       OnExecute = AProjectGroupSaveAsExecute
+      OnUpdate = AProjectGroupSaveAsUpdate
     end
     object AProjectGroupAddExisting: TAction
       Category = 'ProjectGroupActions'

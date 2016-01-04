@@ -219,8 +219,8 @@ var
 var
   cmdOpenProjectGroup,
   cmdSaveProjectGroup,
-  cmdCreateProjectGroup,
   cmdSaveProjectGroupAs,
+  cmdCreateProjectGroup,
 
   cmdTargetAdd,
   cmdTargetRemove,
@@ -491,6 +491,7 @@ begin
     Exit;
   FreeAndNil(FProjectGroup);
   FProjectGroup:=TIDEProjectGroup.Create(nil);
+  cmdSaveProjectGroupAs.Enabled:=true;
 
   // add current project
   AProject:=LazarusIDE.ActiveProject;
@@ -571,6 +572,7 @@ end;
 
 procedure TIDEProjectGroupManager.DoSaveAsClick(Sender: TObject);
 begin
+  if FProjectGroup=nil then exit;
   if GetNewFileName then
     SaveProjectGroup;
 end;
@@ -589,16 +591,15 @@ begin
   FProjectGroup.LoadFromFile(AOptions);
   if not (pgloSkipDialog in AOptions) then
     ShowProjectGroupEditor;
+  cmdSaveProjectGroupAs.Enabled:=true;
 end;
 
 procedure TIDEProjectGroupManager.SaveProjectGroup;
 begin
-  if Assigned(FProjectGroup) then
-  begin
-    if (FProjectGroup.FileName<>'') or GetNewFileName then begin
-      FProjectGroup.SaveToFile;
-      AddToRecentGroups(FProjectGroup.FileName);
-    end;
+  if not Assigned(FProjectGroup) then exit;
+  if (FProjectGroup.FileName<>'') or GetNewFileName then begin
+    FProjectGroup.SaveToFile;
+    AddToRecentGroups(FProjectGroup.FileName);
   end;
 end;
 

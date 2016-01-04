@@ -204,22 +204,25 @@ end;
 
 procedure TLazFindInFilesDialog.OKButtonClick(Sender : TObject);
 var
-  Dir: String;
+  Directories, Dir: String;
   p: Integer;
 begin
   if (WhereRadioGroup.ItemIndex=ItemIndDirectories) then
   begin
-    Dir:=GetResolvedDirectories;
+    Directories:=GetResolvedDirectories;
     p:=1;
-    Dir:=GetNextDirectoryInSearchPath(Dir,p);
-    if not DirectoryExistsUTF8(Dir) then
-    begin
-      IDEMessageDialog(lisEnvOptDlgDirectoryNotFound,
-                 Format(dlgSeachDirectoryNotFound,[Dir]),
-                 mtWarning, [mbOk]);
-      ModalResult:=mrNone;
-    end;
-  end
+    repeat
+      Dir:=GetNextDirectoryInSearchPath(Directories,p);
+      if (Dir<>'') and not DirectoryExistsUTF8(Dir) then
+      begin
+        IDEMessageDialog(lisEnvOptDlgDirectoryNotFound,
+                   Format(dlgSeachDirectoryNotFound,[Dir]),
+                   mtWarning, [mbOk]);
+        ModalResult:=mrNone;
+        Break;
+      end;
+    until Dir='';
+  end;
 end;
 
 procedure TLazFindInFilesDialog.ReplaceCheckBoxChange(Sender: TObject);

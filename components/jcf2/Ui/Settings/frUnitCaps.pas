@@ -45,9 +45,9 @@ type
     constructor Create(AOwner: TComponent); override;
 
     function GetTitle: String; override;
-    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
-    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
-    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings({%H-}AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings({%H-}AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
@@ -77,7 +77,6 @@ end;
 
 procedure TfrUnitNameCaps.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  inherited;
   with FormatSettings.UnitNameCaps do
   begin
     cbEnableAnyWords.Checked := Enabled;
@@ -88,7 +87,6 @@ end;
 
 procedure TfrUnitNameCaps.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  inherited;
   with FormatSettings.UnitNameCaps do
   begin
     Enabled := cbEnableAnyWords.Checked;

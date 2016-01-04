@@ -6136,10 +6136,10 @@ end;
 
 procedure TWinControl.ScrollBy_WS(DeltaX, DeltaY: Integer);
 begin
-  if HandleAllocated and IsWindowVisible(Handle) then
+  if HandleAllocated then
     TWSWinControlClass(WidgetSetClass).ScrollBy(Self, DeltaX, DeltaY)
   else
-    ScrollBy(DeltaX, DeltaY);
+    raise Exception.Create('TWinControl.ScrollBy_WS: Handle not allocated');
 end;
 
 procedure TWinControl.ScrollBy(DeltaX, DeltaY: Integer);

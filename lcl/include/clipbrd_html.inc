@@ -88,6 +88,50 @@ begin
     FEndTagPos := FParser.CurrentPos - Length(ActualTag) + 1;
 end;
 
+procedure MaybeInsertHtmlAndBodyTags(var HTML: String; out IsValid: Boolean);
+var
+  tagFinder: THTMLTagFinder;
+  HS, HE, BS, BE: Boolean;
+  pHS, pHE, pBS, pBE: Integer;
+begin
+  tagFinder := THTMLTagFinder.Create(HTML, 'BODY');
+  try
+    pBS := tagFinder.StartTagPos ;
+    pBE := tagFinder.EndTagPos;
+    BS := (pBS > -1);
+    BE := (pBE > -1);
+  finally
+    tagFinder.Free;
+  end;
+
+  tagFinder := THTMLTagFinder.Create(HTML, 'HTML');
+  try
+    pHS := tagFinder.StartTagPos;
+    pHE := tagFinder.EndTagPos;
+    HS := (pHS > -1);
+    HE := (pHE > -1);
+  finally
+    tagFinder.Free;
+  end;
+  IsValid := ((HS and HE) or (not HS and not HE)) and
+             ((BS and BE) or (not BS and not BE));
+
+  //Do not fix malformed HTML e.i. unmatched <html> or <body> tags
+  if not IsValid then
+    exit;
+  if not BS then
+  begin
+    if HS then
+    begin
+      Insert('<body>',HTML,pHS+1);
+      Insert('</body>',HTML,pHE+1+Length('<body>'));
+    end
+    else
+      HTML := '<body>' + HTML + '</body>';
+  end;
+  if not HS then HTML := '<html>' + HTML + '</html>';
+end;
+
 {$IFDEF WINDOWS}
 function InsertClipHeader(HTML: String): String;
 var
@@ -102,6 +146,7 @@ begin
   try
     fragStart := tagFinder.StartTagPos;
     fragEnd := tagFinder.EndTagPos;
+    //this should not happen, since we added them in SetAsHtml
     if (fragStart = -1) or (fragEnd = -1) then
       exit;
   finally

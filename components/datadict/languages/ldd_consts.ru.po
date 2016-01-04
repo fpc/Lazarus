@@ -170,7 +170,6 @@ msgid "Configuration"
 msgstr "Настройка"
 
 #: ldd_consts.smenuconfprojdatadict
-#| msgid "Set..."
 msgid "Set ..."
 msgstr "Назначить ..."
 

@@ -1230,7 +1230,7 @@ begin
       StartUpdating;
       try
         edField.Text := FTempText;
-        if edField.Lookup then
+        if edField.FieldKind = fkLookup then
         begin
           LookupKeyValues := Null;
           if edField.LookupCache then
@@ -3267,7 +3267,7 @@ begin
     aField := SelectedField;
     if aField<>nil then begin
       Result := IsValidChar(AField, Ch) and not aField.Calculated and
-        (aField.DataType<>ftAutoInc) and (not aField.Lookup) and not aField.IsBlob;
+        (aField.DataType<>ftAutoInc) and (aField.FieldKind<>fkLookup) and not aField.IsBlob;
     end;
   end;
 end;
@@ -3288,7 +3288,7 @@ begin
       result := not AField.CanModify;
 
       // if field is readonly, check if it's a lookup field
-      if result and AField.Lookup then begin
+      if result and (AField.FieldKind = fkLookup) then begin
         FieldList := TList.Create;
         try
           AField.DataSet.GetFieldList(FieldList, AField.KeyFields);
@@ -4023,7 +4023,7 @@ end;
 function TColumn.GetPickList: TStrings;
 begin
   Result := inherited GetPickList;
-  if (Field<>nil) and FField.Lookup then
+  if (Field<>nil) and (FField.FieldKind=fkLookup) then
   begin
     if FField.LookupCache then
       FField.LookupList.ValuesToStrings(Result)

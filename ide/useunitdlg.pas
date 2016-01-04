@@ -30,11 +30,11 @@ unit UseUnitDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, Buttons,
-  ButtonPanel, Dialogs, LCLProc, FileProcs, Graphics, LCLType,
-  SourceEditor, LazIDEIntf, IDEImagesIntf, LazarusIDEStrConsts, ProjectIntf,
-  Project, CodeCache, CodeToolManager, IdentCompletionTool, CodeTree,
-  ListFilterEdit, LinkScanner;
+  Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, Buttons, ButtonPanel,
+  Dialogs, LCLProc, FileProcs, Graphics, LCLType, SourceEditor, LazIDEIntf,
+  IDEImagesIntf, LazarusIDEStrConsts, ProjectIntf, IDEWindowIntf, Project,
+  CodeCache, CodeToolManager, IdentCompletionTool, CodeTree, ListFilterEdit,
+  LinkScanner, CodeToolsOptions;
 
 type
 
@@ -47,6 +47,7 @@ type
     UnitsListBox: TListBox;
     SectionRadioGroup: TRadioGroup;
     procedure AllUnitsCheckBoxChange(Sender: TObject);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure SectionRadioGroupClick(Sender: TObject);
@@ -146,13 +147,17 @@ end;
 procedure TUseUnitDialog.FormCreate(Sender: TObject);
 begin
   // Internationalization
+  IDEDialogLayoutList.ApplyLayout(Self,500,460);
   Caption := dlgUseUnitCaption;
   AllUnitsCheckBox.Caption := dlgShowAllUnits;
   SectionRadioGroup.Caption := dlgInsertSection;
   SectionRadioGroup.Items.Clear;
   SectionRadioGroup.Items.Add(dlgInsertInterface);
   SectionRadioGroup.Items.Add(dlgInsertImplementation);
-  SectionRadioGroup.ItemIndex:=0;
+  if CodeToolsOpts.UsesSectionPreferInterface then
+    SectionRadioGroup.ItemIndex:=0
+  else
+    SectionRadioGroup.ItemIndex:=1;
   ButtonPanel1.OKButton.Caption:=lisMenuOk;
   ButtonPanel1.CancelButton.Caption:=lisCancel;
   UnitImgInd := IDEImages.LoadImage(16, 'item_unit');
@@ -200,6 +205,14 @@ begin
   if Visible then
     FilterEdit.SetFocus;
   FilterEdit.InvalidateFilter;
+end;
+
+procedure TUseUnitDialog.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  CodeToolsOpts.UsesSectionPreferInterface:=SectionRadioGroup.ItemIndex=0;
+  IDEDialogLayoutList.SaveLayout(Self);
+  CodeToolsOpts.Save;
 end;
 
 procedure TUseUnitDialog.UnitsListBoxDblClick(Sender: TObject);

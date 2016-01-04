@@ -24,18 +24,6 @@ begin
   end;
 end;
 
-function GetCurrentDevModeA(out DM:PDeviceModeA): Boolean;
-var
-  PDev: TPrinterDevice;
-begin
-  Result := false;
-  if (Printer.Printers.Count > 0) then
-  begin
-    PDev := TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
-    DM := PDev.DevModeA;
-    Result := DM <> nil;
-  end;
-end;
 
 { TWinPrinter }
 
@@ -125,26 +113,19 @@ begin
   if (fLastHandleType=htNone) and (Printers.Count>0) then
   begin
     PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
-    if UseUnicode then
-      fDC:=CreateICW(
-        PWidechar(UTF8Decode(PDev.Driver)),
-        PWidechar(UTF8Decode(PDev.Device)),
-        PWidechar(UTF8Decode(PDev.Port)),
-        PDev.DevModeW)
-    else
-      fDC:=CreateIC(PChar(PDev.Driver),PChar(PDev.Device),
-             PChar(PDev.Port),PDev.DevModeA);
+    fDC:=CreateICW(
+      PWidechar(UTF8Decode(PDev.Driver)),
+      PWidechar(UTF8Decode(PDev.Device)),
+      PWidechar(UTF8Decode(PDev.Port)),
+      PDev.DevModeW);
+
     if fDC=0 then
     begin
-      if UseUnicode then
-        fDC:=CreateICW(
-          PWidechar('WINSPOOL'),
-          PWidechar(UTF8Decode(PDev.Device)),
-          PWidechar(UTF8Decode(PDev.Port)),
-          PDev.DevModeW)
-      else
-        fDC:=CreateIC(PChar('WINSPOOL'),PChar(PDev.Device),
-             PChar(PDev.Port),PDev.DevModeA);
+      fDC:=CreateICW(
+        PWidechar('WINSPOOL'),
+        PWidechar(UTF8Decode(PDev.Device)),
+        PWidechar(UTF8Decode(PDev.Port)),
+        PDev.DevModeW);
     end;
     if fDC=0 then
       raise EPrinter.Create(
@@ -170,31 +151,19 @@ begin
 
       //Device is only 32 chars long,
       //if the Printername or share is longer than 32 chars, this will return 0
-      if UseUnicode then
-        fDC := CreateDCW(nil, PWidechar(UTF8Decode(PDev.Name)), nil, PDev.DevModeW)
-      else
-        fDC := CreateDC(nil, PChar(PDev.Name), nil, PDev.DevModeA);
+      fDC := CreateDCW(nil, PWidechar(UTF8Decode(PDev.Name)), nil, PDev.DevModeW);
       if fDC=0 then
       begin
-        if UseUnicode then
-          fDC := CreateDCW(PWidechar('WINSPOOL'),PWidechar(UTF8Decode(PDev.Name)), nil, PDev.DevModeW)
-        else
-          fDC := CreateDC(PChar('WINSPOOL'),PChar(PDev.Name), nil, PDev.DevModeA);
+        fDC := CreateDCW(PWidechar('WINSPOOL'),PWidechar(UTF8Decode(PDev.Name)), nil, PDev.DevModeW);
       end;
       {Workaround (hack) for Lexmark 1020 JetPrinter (Mono)}
       if fDC=0 then
       begin
-        if UseUnicode then
-          fDC:=CreateDCW(nil,PWidechar(UTF8Decode(PDev.Driver)),nil, PDev.DevModeW)
-        else
-          fDC:=CreateDC(nil,PChar(PDev.Driver),nil, PDev.DevModeA);
+        fDC:=CreateDCW(nil,PWidechar(UTF8Decode(PDev.Driver)),nil, PDev.DevModeW);
       end;
       if fDC=0 then
       begin
-        if UseUnicode then
-          fDC:=CreateDCW(PWideChar('WINSPOOL'),PWideChar(UTF8Decode(PDev.Driver)),nil,PDev.DevModeW)
-        else
-          fDC:=CreateDC(pChar('WINSPOOL'),PChar(PDev.Driver),nil,PDev.DevModeA);
+        fDC:=CreateDCW(PWideChar('WINSPOOL'),PWideChar(UTF8Decode(PDev.Driver)),nil,PDev.DevModeW);
       end;
     except on E:Exception do
       raise EPrinter.Create(Format('CreateDC Exception:"%s" (Error:"%s", '+
@@ -253,20 +222,11 @@ begin
 
   // 1.	Determine the required size of the buffer from the device,
   //    and then allocate enough memory for it.
-  if UseUnicode then
-  begin
-    PDev.DevModeSize := DocumentPropertiesW(0, FPrinterHandle, Pwidechar(UTF8Decode(PDev.Name)),
-                        nil, nil, 0);
-    if PDev.DevModeSize>0 then
-      ReallocMem(Pdev.DevModeW, PDev.DevModeSize);
-  end
-  else
-  begin
-    PDev.DevModeSize := DocumentProperties(0, FPrinterHandle, pchar(PDev.Name),
-                        nil, nil, 0);
-    if PDev.DevModeSize>0 then
-      ReallocMem(Pdev.DevModeA, PDev.DevModeSize);
-  end;
+  PDev.DevModeSize := DocumentPropertiesW(0, FPrinterHandle, Pwidechar(UTF8Decode(PDev.Name)),
+                      nil, nil, 0);
+  if PDev.DevModeSize>0 then
+    ReallocMem(Pdev.DevModeW, PDev.DevModeSize);
+
   if PDev.DevModeSize<=0 then begin
     result := false;
     exit;
@@ -274,18 +234,11 @@ begin
   
   // 2.	Ask the device driver to initialize the DEVMODE buffer with
   //    the default settings.
-  if UseUnicode then
-    dwRet := DocumentPropertiesW(0, FPrinterHandle, PWideChar(UTF8Decode(Pdev.Name)),
-             PDev.DevModeW, nil, DM_OUT_BUFFER)
-  else
-    dwRet := DocumentProperties(0, FPrinterHandle, pchar(Pdev.Name),
-             PDev.DevModeA, nil, DM_OUT_BUFFER);
+  dwRet := DocumentPropertiesW(0, FPrinterHandle, PWideChar(UTF8Decode(Pdev.Name)),
+           PDev.DevModeW, nil, DM_OUT_BUFFER);
   result := (dwRet=IDOK);
   if not result then begin
-    if UseUnicode then
-      ReallocMem(PDev.DevmodeW, 0)
-    else
-      ReallocMem(PDev.DevmodeA, 0);
+    ReallocMem(PDev.DevmodeW, 0);
     exit;
   end;
   
@@ -390,10 +343,8 @@ const
   MAXBUFSIZE = 512;
 
 var
-  Needed, PrtCount: DWORD;
-  BoolRes: BOOL;
+  PrtCount: DWORD;
   IntRes: Integer;
-  PrintInfo2Buf: PByte;
   GetDefPrnFunc: function(buffer: LPTSTR; var bufSize: DWORD): BOOL; stdcall;
   SpoolerHandle: HINST;
   AName: widestring;
@@ -401,88 +352,36 @@ begin
   // retrieve default printer using ms blessed method, see
   // see: http://support.microsoft.com/default.aspx?scid=kb;en-us;246772
   Result := '';
-  if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
-  begin //No unicode printer function on Win9x platform
-    // Get PRINT_INFO_2 record size
-    SetLastError(0);
-    //if UseUnicode then
-    //  BoolRes := EnumPrintersW(PRINTER_ENUM_DEFAULT, nil, 2, nil, 0, @Needed, @PrtCount);
-    //else
-      BoolRes := EnumPrinters(PRINTER_ENUM_DEFAULT, nil, 2, nil, 0,  @Needed, @PrtCount);
-    if not BoolRes and
-      ((GetLastError <> ERROR_INSUFFICIENT_BUFFER) or (Needed = 0)) then
-      Exit;
-
-    // Get PRINT_INFO_2 record
-    GetMem(PrintInfo2Buf, Needed);
-    //if UseUnicode then
-    //  BoolRes := EnumPrintersW(PRINTER_ENUM_DEFAULT, nil, 2, PrintInfo2Buf,
-    //                            Needed, @Needed, @PrtCount);
-    //else
-      BoolRes := EnumPrinters(PRINTER_ENUM_DEFAULT, nil, 2, PrintInfo2Buf,
-                                Needed, @Needed, @PrtCount);
-    if not BoolRes then
-    begin
-      FreeMem(PrintInfo2Buf);
-      Exit;
-    end;
-
-    //if UseUnicode then
-    //  Result := UTF8Encode(widestring(PPRINTER_INFO_2W(PrintInfo2Buf)^.pPrinterName));
-    //else
-    begin
-      Result := PPRINTER_INFO_2A(PrintInfo2Buf)^.pPrinterName;
-      Result := AnsiToUTF8(Result);
-    end;
-    FreeMem(PrintInfo2Buf);
-  end
-  else
-  if Win32Platform=VER_PLATFORM_WIN32_NT then
+  if Win32MajorVersion >=5 then
   begin
-    if Win32MajorVersion >=5 then
+    // for Windows 2000 or later, use api GetDefaultPrinter
+    SpoolerHandle := LoadLibrary(LibWinSpool);
+    if SpoolerHandle = 0 then
+      Exit;
+    Pointer(GetDefPrnFunc) := GetProcAddress(SpoolerHandle, 'GetDefaultPrinterW');
+    if GetDefPrnFunc = nil then
     begin
-      // for Windows 2000 or later, use api GetDefaultPrinter
-      // TODO: needs to check WindowsUnicodeSupport
-      SpoolerHandle := LoadLibrary(LibWinSpool);
-      if SpoolerHandle = 0 then
-        Exit;
-      if UseUnicode then
-        Pointer(GetDefPrnFunc) := GetProcAddress(SpoolerHandle, 'GetDefaultPrinterW')
-      else
-        Pointer(GetDefPrnFunc) := GetProcAddress(SpoolerHandle, 'GetDefaultPrinterA');
-      if GetDefPrnFunc = nil then
-      begin
-        FreeLibrary(SpoolerHandle);
-        Exit;
-      end;
-      Boolres := GetDefPrnFunc(nil, PrtCount);
-      result := '';
-      if (prtcount>0) then begin
-        if UseUnicode then
-        begin
-          SetLength(AName, PrtCount-1); // this includes the #0 terminator
-          BoolRes := GetDefPrnFunc(@AName[1], prtCount);
-          result := UTF8Encode(AName);
-        end
-        else
-        begin
-          SetLength(Result, PrtCount); // make room for printer name
-          BoolRes := GetDefPrnFunc(pchar(Result), prtCount);
-          Result := AnsiToUTF8(Result);
-        end;
-      end;
       FreeLibrary(SpoolerHandle);
-    end else
-    begin
-      // for NT, use GetProfileString
-      SetLength(result, MAXBUFSIZE);
-      IntRes := GetProfileString('windows', 'device', ',,,', PChar(result),
-                                                                  MAXBUFSIZE);
-      if (IntRes>0) and (pos(',',Result)<>0) then
-        Result := AnsiToUTF8(copy(Result, 1, pos(',', Result)-1))
-      else
-        Result := ''
+      Exit;
     end;
+    GetDefPrnFunc(nil, PrtCount);
+    result := '';
+    if (prtcount>0) then begin
+      SetLength(AName, PrtCount-1); // this includes the #0 terminator
+      GetDefPrnFunc(@AName[1], prtCount);
+      result := UTF8Encode(AName);
+    end;
+    FreeLibrary(SpoolerHandle);
+  end else
+  begin
+    // for NT, use GetProfileString
+    SetLength(result, MAXBUFSIZE);
+    IntRes := GetProfileString('windows', 'device', ',,,', PChar(result),
+                                                                MAXBUFSIZE);
+    if (IntRes>0) and (pos(',',Result)<>0) then
+      Result := AnsiToUTF8(copy(Result, 1, pos(',', Result)-1))
+    else
+      Result := ''
   end;
 end;
 
@@ -500,7 +399,6 @@ var
   DefaultPrinter : string;
   PDev           : TPrinterDevice;
   TmpDevModeW     : PDeviceModeW;
-  TmpDevModeA     : PDeviceMode;
   PrtStr         : string;
   BoolRes: LCLType.BOOL;
   B: Boolean;
@@ -516,20 +414,14 @@ begin
 
   //Evaluate buffer size
   Needed := 0;
-  if UseUnicode then
-    EnumPrintersW(Flags, nil, Level, nil, 0, @Needed, @PrtCount)
-  else
-    EnumPrinters(Flags, nil, Level, nil, 0, @Needed, @PrtCount);
+  EnumPrintersW(Flags, nil, Level, nil, 0, @Needed, @PrtCount);
   if Needed <> 0 then
   begin
     GetMem(Buffer, Needed);
     Fillchar(Buffer^, Needed, 0);
     try
       //Enumerate Printers
-      if UseUnicode then
-        BoolRes := EnumPrintersW(Flags, nil, Level, Buffer, Needed, @Needed, @PrtCount)
-      else
-        BoolRes := EnumPrinters(Flags, nil, Level, Buffer, Needed, @Needed, @PrtCount);
+      BoolRes := EnumPrintersW(Flags, nil, Level, Buffer, Needed, @Needed, @PrtCount);
       if BoolRes then
       begin
         InfoPrt := Buffer;
@@ -538,22 +430,13 @@ begin
           if Level = 2 then
           begin
             PDev := TPrinterDevice.Create;
-            if UseUnicode then
-            begin
-              PDev.Name := UTF8Encode(widestring(PPRINTER_INFO_2W(InfoPrt)^.pPrinterName));
-              PDev.Driver := UTF8Encode(widestring(PPRINTER_INFO_2W(InfoPrt)^.pDriverName));
-              PDev.Port := UTF8Encode(widestring(PPRINTER_INFO_2W(InfoPrt)^.pPortName));
-              TmpDevModeW := PPRINTER_INFO_2W(InfoPrt)^.pDevMode;
-            end
-            else
-            begin
-              PDev.Name := PPRINTER_INFO_2A(InfoPrt)^.pPrinterName;
-              PDev.Driver := PPRINTER_INFO_2A(InfoPrt)^.pDriverName;
-              PDev.Port := PPRINTER_INFO_2A(InfoPrt)^.pPortName;
-              TmpDevModeA := PPRINTER_INFO_2(InfoPrt)^.pDevMode;
-            end;
+            PDev.Name := UTF8Encode(widestring(PPRINTER_INFO_2W(InfoPrt)^.pPrinterName));
+            PDev.Driver := UTF8Encode(widestring(PPRINTER_INFO_2W(InfoPrt)^.pDriverName));
+            PDev.Port := UTF8Encode(widestring(PPRINTER_INFO_2W(InfoPrt)^.pPortName));
+            TmpDevModeW := PPRINTER_INFO_2W(InfoPrt)^.pDevMode;
 
-            if (UseUnicode and (TmpDevModeW <> nil)) or (not UseUnicode and (TmpDevModeA <> nil)) then
+
+            if (TmpDevModeW <> nil) then
             begin
               // the devmode structure obtained this way have two problems
               // 1. It's not the full devmode, because it doesn't have
@@ -562,40 +445,20 @@ begin
               //    have not extra settings at all.
               //
               // PDev.DevMode:=PPRINTER_INFO_2(InfoPrt)^.PDevMode^;
-              if UseUnicode then
-              begin
-                PDev.Device := UTF8Encode(widestring(TmpDevModeW^.dmDeviceName));
-                PDev.DefaultPaperName := UTF8Encode(widestring(TmpDevModeW^.dmFormName));
-                PDev.DefaultPaper := TmpDevModeW^.dmPaperSize;
-                PDev.DefaultBin   := TmpDevModeW^.dmDefaultSource;
-              end
-              else
-              begin
-                {$IF FPC_FULLVERSION>20602}
-                PDev.Device := PChar(TmpDevModeA^.dmDeviceName);
-                {$ELSE}
-                PDev.Device := PChar(PByte(TmpDevModeA^.dmDeviceName));
-                {$ENDIF}
-                PDev.DefaultPaperName := StrPas(TmpDevModeA^.dmFormName);
-                PDev.DefaultPaper := TmpDevModeA^.dmPaperSize;
-                PDev.DefaultBin   := TmpDevModeA^.dmDefaultSource;
-              end;
+              PDev.Device := UTF8Encode(widestring(TmpDevModeW^.dmDeviceName));
+              PDev.DefaultPaperName := UTF8Encode(widestring(TmpDevModeW^.dmFormName));
+              PDev.DefaultPaper := TmpDevModeW^.dmPaperSize;
+              PDev.DefaultBin   := TmpDevModeW^.dmDefaultSource;
+
             end
             else begin
               PDev.Device:='';
               PDev.DefaultPaper:=0;
               PDev.DefaultBin  := 0
             end;
-            if UseUnicode then
-            begin
-              PrtStr := PDev.Name;
-              B := CompareText(PrtStr, DefaultPrinter)<>0
-            end
-            else
-            begin
-              PrtStr := AnsiToUTF8(PDev.Name);
-              B := AnsiCompareText(PrtStr,DefaultPrinter)<>0
-            end;
+            PrtStr := PDev.Name;
+            B := CompareText(PrtStr, DefaultPrinter)<>0;
+
             if B then
               Lst.AddObject(PrtStr,PDev)
             else
@@ -603,10 +466,7 @@ begin
               Lst.Insert(0,PrtStr);
               Lst.Objects[0]:=PDev;
             end;
-            if UseUnicode then
-              Inc(InfoPrt,SizeOf(_PRINTER_INFO_2W))
-            else
-              Inc(InfoPrt,SizeOf(_PRINTER_INFO_2A));
+            Inc(InfoPrt,SizeOf(_PRINTER_INFO_2W));
           end;
         end;
       end;
@@ -632,7 +492,6 @@ end;
 procedure TWinPrinter.DoEnumPapers(Lst: TStrings);
 var 
     BufferW  : PWideChar;
-    BufferA  : PChar;
     PaperN   : String;
     PaperC,i : Integer;
     Count    : Integer;
@@ -653,61 +512,37 @@ begin
 
     //Retreive the supported papers
     PaperC:=0;
-    if UseUnicode then
-      Count := DeviceCapabilitiesW(
-        PWidechar(UTF8Decode(Pdev.Name)),
-        PWidechar(UTF8Decode(PDev.Port)), DC_PAPERNAMES, nil, nil)
-    else
-      Count := DeviceCapabilities(PChar(Pdev.Name), PCHar(PDev.Port), DC_PAPERNAMES, nil, nil);
+    Count := DeviceCapabilitiesW(
+      PWidechar(UTF8Decode(Pdev.Name)),
+      PWidechar(UTF8Decode(PDev.Port)), DC_PAPERNAMES, nil, nil);
     if Count<=0 then
       raise EPrinter.CreateFmt('DoEnumPapers<DC_PAPERNAMES> error : %d, (%s)',
           [GetLastError,SysErrorMessage(GetLastError)]);
     try
-      if UseUnicode then
+      GetMem(BufferW,64*SizeOf(Widechar)*Count);
+      PaperC := DeviceCapabilitiesW(
+        PWidechar(UTF8Decode(Pdev.Name)),
+        PWidechar(UTF8Decode(PDev.Port)),
+        DC_PAPERNAMES,
+        BufferW,
+        nil);
+      for i:=0 to PaperC-1 do
       begin
-        GetMem(BufferW,64*SizeOf(Widechar)*Count);
-        PaperC := DeviceCapabilitiesW(
-          PWidechar(UTF8Decode(Pdev.Name)),
-          PWidechar(UTF8Decode(PDev.Port)),
-          DC_PAPERNAMES,
-          BufferW,
-          nil);
-        for i:=0 to PaperC-1 do
-        begin
-          PaperN:=UTF8Encode(Widestring(BufferW+i*64));
-          Lst.Add(PaperN);
-        end;
-      end
-      else
-      begin
-        GetMem(BufferA,64*Count);
-        PaperC:=DeviceCapabilities(PChar(Pdev.Name),PCHar(PDev.Port),
-            DC_PAPERNAMES,BufferA,nil);
-        for i:=0 to PaperC-1 do
-        begin
-          PaperN:=StrPas(BufferA+i*64);
-          Lst.Add(PaperN);
-        end;
+        PaperN:=UTF8Encode(Widestring(BufferW+i*64));
+        Lst.Add(PaperN);
       end;
     finally
-      if UseUnicode then
-        FreeMem(BufferW)
-      else
-        FreeMem(BufferA);
+      FreeMem(BufferW);
     end;
 
     //Retreive the code of papers
     FillChar(ArPapers,SizeOf(ArPapers),0);
-    if UseUnicode then
-      PaperC:=DeviceCapabilitiesW(
-        PWidechar(UTF8Decode(Pdev.Name)),
-        PWidechar(UTF8Decode(PDev.Port)),
-        DC_PAPERS,
-        PWidechar(@ArPapers[0]),
-        nil)
-    else
-      PaperC:=DeviceCapabilities(PChar(Pdev.Name),PChar(PDev.Port),
-            DC_PAPERS,PChar(@ArPapers[0]),nil);
+    PaperC:=DeviceCapabilitiesW(
+      PWidechar(UTF8Decode(Pdev.Name)),
+      PWidechar(UTF8Decode(PDev.Port)),
+      DC_PAPERS,
+      PWidechar(@ArPapers[0]),
+      nil);
     if PaperC<=0 then
       raise EPrinter.CreateFmt('DoEnumPapers<DC_PAPERS> error : %d, (%s)',
           [GetLastError,SysErrorMessage(GetLastError)])
@@ -723,7 +558,6 @@ function TWinPrinter.DoGetPaperName: string;
 var
   i    : Integer;
   dmW  : PDeviceModeW;
-  dmA  : PDeviceModeA;
   Paper: PtrInt;
   Lst  : TStrings;
 begin
@@ -731,11 +565,8 @@ begin
   Result:=inherited DoGetPaperName;
   Lst := PaperSize.SupportedPapers;
 
-  if UseUnicode and GetCurrentDevModeW(dmW) then
-    Paper := dmW^.dmPaperSize
-  else
-  if not UseUnicode and GetCurrentDevModeA(dmA) then
-    Paper := dmA^.dmPaperSize;
+  if GetCurrentDevModeW(dmW) then
+    Paper := dmW^.dmPaperSize;
 
   if Paper<>-1 then
   begin
@@ -752,10 +583,7 @@ begin
     // printer in Win 7. Once Printer properties dialog were 'navigated' (no
     // changes were needed) in ctrl panel/devices and printers/CutePDF printer
     // it started to work normally.
-    if UseUnicode then
-      result :=  UTF8Encode(Widestring(dmW^.dmFormName))
-    else
-      result := StrPas(dmA^.dmFormName);
+    result :=  UTF8Encode(Widestring(dmW^.dmFormName));
     i := Lst.IndexOf(result);
     if i<0 then
       result := lst[0];
@@ -790,27 +618,13 @@ end;
 procedure TWinPrinter.DoSetPaperName(aName: string);
 var i    : Integer;
     dmW  : PDeviceModeW;
-    dmA  : PDeviceModeA;
 begin
   inherited DoSetPaperName(aName);
-  if UseUnicode then
-  begin
-    if GetCurrentDevModeW(dmW) then begin
-      i:=PaperSize.SupportedPapers.IndexOf(aName);
-      if i<>-1 then begin
-        ClearDC;
-        dmW^.dmPaperSize := SHORT(ptrint(PaperSize.SupportedPapers.Objects[i]));
-      end;
-    end;
-  end
-  else
-  begin
-    if GetCurrentDevModeA(dmA) then begin
-      i:=PaperSize.SupportedPapers.IndexOf(aName);
-      if i<>-1 then begin
-        ClearDC;
-        dmA^.dmPaperSize := SHORT(ptrint(PaperSize.SupportedPapers.Objects[i]));
-      end;
+  if GetCurrentDevModeW(dmW) then begin
+    i:=PaperSize.SupportedPapers.IndexOf(aName);
+    if i<>-1 then begin
+      ClearDC;
+      dmW^.dmPaperSize := SHORT(ptrint(PaperSize.SupportedPapers.Objects[i]));
     end;
   end;
 end;
@@ -854,6 +668,10 @@ begin
 
       //Retreive the Width and Height of aName paper
       FillChar(ArSizes,SizeOf(ArSizes),0);
+
+      //ToDo: use DeviceCapabilitiesW with appropriate W-variant datastructures
+      //      In particular, I don't know if using PWideChar(@ArSizes[0]) is correct in that variant,
+      //      so for now leave it as is
       NSize:=DeviceCapabilities(PChar(Pdev.Name),PChar(PDev.Port),
             DC_PAPERSIZE,PChar(@ArSizes[0]),nil);
       i:=PaperSize.SupportedPapers.IndexOf(aName);
@@ -892,10 +710,7 @@ begin
        result := i
     else begin
       PDev := TPrinterDevice(Printers.Objects[i]);
-      if UseUnicode then
-        BoolRes := OpenPrinterW(PWideChar(UTF8Decode(PDev.Name)), @fPrinterHandle, nil)
-      else
-        BoolRes := OpenPrinter(PChar(PDev.Name), @fPrinterHandle, nil);
+      BoolRes := OpenPrinterW(PWideChar(UTF8Decode(PDev.Name)), @fPrinterHandle, nil);
       if not BoolRes then
       begin
         FprinterHandle := 0;
@@ -914,24 +729,12 @@ end;
 function TWinPrinter.DoGetCopies: Integer;
 var
   dmW: PDeviceModeW;
-  dmA: PDeviceMode;
   Boolres: Boolean;
 begin
-  if UseUnicode then
-  begin
-    Boolres := GetCurrentDevModeW(dmW);
-    if BoolRes then begin
-      if dmW^.dmCopies<>0 then
-        result := dmW^.dmCopies;
-    end;
-  end
-  else
-  begin
-    BoolRes := GetCurrentDevModeA(dmA);
-    if BoolRes then begin
-      if dmA^.dmCopies<>0 then
-        result := dmA^.dmCopies;
-    end;
+  Boolres := GetCurrentDevModeW(dmW);
+  if BoolRes then begin
+    if dmW^.dmCopies<>0 then
+      result := dmW^.dmCopies;
   end;
   if Not BoolRes then
     Result:=inherited DoGetCopies;
@@ -940,47 +743,23 @@ end;
 procedure TWinPrinter.DoSetCopies(aValue: Integer);
 var
   dmW: PDeviceModeW;
-  dmA: PDeviceModeA;
 begin
   inherited DoSetCopies(aValue);
-  if UseUnicode then
-  begin
-    if (AValue>0) and GetCurrentDevModeW(dmW) then begin
-      ClearDC;
-      dmW^.dmCopies := SHORT(aValue)
-    end;
-  end
-  else
-  begin
-    if (AValue>0) and GetCurrentDevModeA(dmA) then begin
-      ClearDC;
-      dmA^.dmCopies := SHORT(aValue)
-    end;
+  if (AValue>0) and GetCurrentDevModeW(dmW) then begin
+    ClearDC;
+    dmW^.dmCopies := SHORT(aValue)
   end;
 end;
 
 function TWinPrinter.DoGetOrientation: TPrinterOrientation;
 var
   dmW: PDeviceModeW;
-  dmA: PDeviceModeA;
 begin
   Result:=inherited DoGetOrientation;
-  if UseUnicode then
-  begin
-    if GetCurrentDevModeW(dmW) then begin
-      case dmW^.dmOrientation of
-        DMORIENT_PORTRAIT : result:=poPortrait;
-        DMORIENT_LANDSCAPE: result:=poLandscape;
-      end;
-    end;
-  end
-  else
-  begin
-    if GetCurrentDevModeA(dmA) then begin
-      case dmA^.dmOrientation of
-        DMORIENT_PORTRAIT : result:=poPortrait;
-        DMORIENT_LANDSCAPE: result:=poLandscape;
-      end;
+  if GetCurrentDevModeW(dmW) then begin
+    case dmW^.dmOrientation of
+      DMORIENT_PORTRAIT : result:=poPortrait;
+      DMORIENT_LANDSCAPE: result:=poLandscape;
     end;
   end;
 end;
@@ -988,22 +767,11 @@ end;
 procedure TWinPrinter.DoSetOrientation(aValue: TPrinterOrientation);
 var
   dmW: PDeviceModeW;
-  dmA: PDeviceModeA;
 begin
   inherited DoSetOrientation(aValue);
-  if UseUnicode then
-  begin
-    if GetCurrentDevModeW(dmW) then begin
-      ClearDC;
-      dmW^.dmOrientation := Win32Orientations[aValue];
-    end;
-  end
-  else
-  begin
-    if GetCurrentDevModeA(dmA) then begin
-      ClearDC;
-      dmA^.dmOrientation := Win32Orientations[aValue];
-    end;
+  if GetCurrentDevModeW(dmW) then begin
+    ClearDC;
+    dmW^.dmOrientation := Win32Orientations[aValue];
   end;
 end;
 
@@ -1013,9 +781,6 @@ var
   InfoPrt: Pointer;
 begin
   Result := ptLocal;
-  //On Win9X all printers are local
-  if Win32Platform <> VER_PLATFORM_WIN32_NT then Exit;
-  
   GetPrinter(fPrinterHandle, 4, nil, 0, @Size);
   GetMem(InfoPrt, Size);
   try
@@ -1041,36 +806,38 @@ begin
   GetPrinter(fPrinterHandle, 2, nil, 0, @Size);
   GetMem(InfoPrt,Size);
   try
-  if not GetPrinter(fPrinterHandle, 2, InfoPrt, Size, @Size)
-  then
-    raise EPrinter.CreateFmt('GetPrinterState failed : %s',
-        [SysErrorMessage(GetLastError)]);
+    //ToDo: use the Wide variant of GetPrinter and with the appropraite W-variant datastructures
 
-  Jobs := PPRINTER_INFO_2A(InfoPrt)^.cJobs;
-  Status := PPRINTER_INFO_2A(InfoPrt)^.Status;
-  case Status of
-    0: Result := psReady;
-    PRINTER_STATUS_PRINTING,
-    PRINTER_STATUS_PROCESSING,
-    PRINTER_STATUS_WARMING_UP,
-    PRINTER_STATUS_WAITING,
-    PRINTER_STATUS_IO_ACTIVE,
-    PRINTER_STATUS_PENDING_DELETION,
-    PRINTER_STATUS_INITIALIZING: Result := psPrinting;
-    PRINTER_STATUS_PAPER_JAM,
-    PRINTER_STATUS_PAPER_OUT,
-    PRINTER_STATUS_PAPER_PROBLEM,
-    PRINTER_STATUS_USER_INTERVENTION,
-    PRINTER_STATUS_NO_TONER,
-    PRINTER_STATUS_ERROR,
-    PRINTER_STATUS_DOOR_OPEN,
-    PRINTER_STATUS_PAGE_PUNT,
-    PRINTER_STATUS_OUT_OF_MEMORY,
-    PRINTER_STATUS_PAUSED: Result := psStopped;
-  end;
-   
-  if (Result = psReady) and (Jobs > 0) then
-    Result := psPrinting;
+    if not GetPrinter(fPrinterHandle, 2, InfoPrt, Size, @Size)
+    then
+      raise EPrinter.CreateFmt('GetPrinterState failed : %s',
+          [SysErrorMessage(GetLastError)]);
+
+    Jobs := PPRINTER_INFO_2A(InfoPrt)^.cJobs;
+    Status := PPRINTER_INFO_2A(InfoPrt)^.Status;
+    case Status of
+      0: Result := psReady;
+      PRINTER_STATUS_PRINTING,
+      PRINTER_STATUS_PROCESSING,
+      PRINTER_STATUS_WARMING_UP,
+      PRINTER_STATUS_WAITING,
+      PRINTER_STATUS_IO_ACTIVE,
+      PRINTER_STATUS_PENDING_DELETION,
+      PRINTER_STATUS_INITIALIZING: Result := psPrinting;
+      PRINTER_STATUS_PAPER_JAM,
+      PRINTER_STATUS_PAPER_OUT,
+      PRINTER_STATUS_PAPER_PROBLEM,
+      PRINTER_STATUS_USER_INTERVENTION,
+      PRINTER_STATUS_NO_TONER,
+      PRINTER_STATUS_ERROR,
+      PRINTER_STATUS_DOOR_OPEN,
+      PRINTER_STATUS_PAGE_PUNT,
+      PRINTER_STATUS_OUT_OF_MEMORY,
+      PRINTER_STATUS_PAUSED: Result := psStopped;
+    end;
+
+    if (Result = psReady) and (Jobs > 0) then
+      Result := psPrinting;
   finally
     FreeMem(InfoPrt);
   end;
@@ -1089,15 +856,11 @@ begin
   if (Printers.Count>0) then
   begin
     PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
-    if UseUnicode then
-      Count := DeviceCapabilitiesW(
-        PWidechar(UTF8Decode(Pdev.Name)),
-        PWidechar(UTF8Decode(PDev.Port)),
-        DC_COPIES,
-        nil,PDev.DevModeW)
-    else
-      Count := DeviceCapabilities(PChar(Pdev.Name),PCHar(PDev.Port),
-                                  DC_COPIES,nil,PDev.DevModeA);
+    Count := DeviceCapabilitiesW(
+      PWidechar(UTF8Decode(Pdev.Name)),
+      PWidechar(UTF8Decode(PDev.Port)),
+      DC_COPIES,
+      nil,PDev.DevModeW);
     Result := (Count>1);
   end
   else
@@ -1111,20 +874,12 @@ begin
   if Printers.Count>0 then
   begin
     PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
-    if UseUnicode then
-      DocumentPropertiesW(
-        Widgetset.AppHandle,
-        FPrinterHandle,
-        PWidechar(UTF8Decode(PDev.Name)),
-        Pdev.DevModeW, Pdev.DevModeW,
-        DM_OUT_BUFFER or DM_IN_BUFFER or DM_IN_PROMPT)
-    else
-      DocumentProperties(
-        Widgetset.AppHandle,
-        FPrinterHandle,
-        pchar(PDev.Name),
-        Pdev.DevModeA, Pdev.DevModeA,
-        DM_OUT_BUFFER or DM_IN_BUFFER or DM_IN_PROMPT);
+    DocumentPropertiesW(
+      Widgetset.AppHandle,
+      FPrinterHandle,
+      PWidechar(UTF8Decode(PDev.Name)),
+      Pdev.DevModeW, Pdev.DevModeW,
+      DM_OUT_BUFFER or DM_IN_BUFFER or DM_IN_PROMPT);
     //PrinterProperties(Widgetset.AppHandle,fPrinterHandle)
   end;
 end;
@@ -1132,7 +887,6 @@ end;
 procedure TWinPrinter.DoEnumBins(Lst : TStrings);
 var
     BufferW: PWideChar;
-    BufferA: PChar;
     BinN   : String;
     BinC,i : Integer;
     Count  : Integer;
@@ -1157,62 +911,38 @@ begin
 
     //Retreive the supported bins
     BinC:=0;
-    if UseUnicode then
-      Count := DeviceCapabilitiesW(
-        PWidechar(UTF8Decode(Pdev.Name)),
-        PWidechar(UTF8Decode(PDev.Port)), DC_BINNAMES, nil, nil)
-    else
-      Count := DeviceCapabilities(PChar(Pdev.Name), PCHar(PDev.Port), DC_BINNAMES, nil, nil);
+    Count := DeviceCapabilitiesW(
+      PWidechar(UTF8Decode(Pdev.Name)),
+      PWidechar(UTF8Decode(PDev.Port)), DC_BINNAMES, nil, nil);
     if Count<=0 then
       raise EPrinter.CreateFmt('DoEnumBins<DC_BINNAMES> error : %d, (%s)',
           [GetLastError,SysErrorMessage(GetLastError)]);
 
     try
-      if UseUnicode then
+      GetMem(BufferW,24*SizeOf(Widechar)*Count);
+      BinC := DeviceCapabilitiesW(
+        PWidechar(UTF8Decode(Pdev.Name)),
+        PWidechar(UTF8Decode(PDev.Port)),
+        DC_BINNAMES,
+        BufferW,
+        nil);
+      for i:=0 to BinC-1 do
       begin
-        GetMem(BufferW,24*SizeOf(Widechar)*Count);
-        BinC := DeviceCapabilitiesW(
-          PWidechar(UTF8Decode(Pdev.Name)),
-          PWidechar(UTF8Decode(PDev.Port)),
-          DC_BINNAMES,
-          BufferW,
-          nil);
-        for i:=0 to BinC-1 do
-        begin
-          BinN:=UTF8Encode(Widestring(BufferW+i*24));
-          Lst.Add(BinN);
+        BinN:=UTF8Encode(Widestring(BufferW+i*24));
+        Lst.Add(BinN);
         end;
-      end
-      else
-      begin
-        GetMem(BufferA,24*Count);
-        BinC:=DeviceCapabilities(PChar(Pdev.Name),PCHar(PDev.Port),
-            DC_BINNAMES,BufferA,nil);
-        for i:=0 to BinC-1 do
-        begin
-          BinN:=StrPas(BufferA+i*24);
-          Lst.Add(BinN);
-        end;
-      end;
     finally
-      if UseUnicode then
-        Freemem(BufferW)
-      else
-        FreeMem(BufferA);
+      Freemem(BufferW);
     end;
 
     //Retreive the code of bins
     FillChar(arBins,SizeOf(arBins),0);
-    if UseUnicode then
-      BinC:=DeviceCapabilitiesW(
-        PWidechar(UTF8Decode(Pdev.Name)),
-        PWidechar(UTF8Decode(PDev.Port)),
-        DC_BINS,
-        PWidechar(@ArBins[0]),
-        nil)
-    else
-      BinC:=DeviceCapabilities(PChar(Pdev.Name),PChar(PDev.Port),
-            DC_BINS,PChar(@ArBins[0]),nil);
+    BinC:=DeviceCapabilitiesW(
+      PWidechar(UTF8Decode(Pdev.Name)),
+      PWidechar(UTF8Decode(PDev.Port)),
+      DC_BINS,
+      PWidechar(@ArBins[0]),
+      nil);
     if BinC<=0 then
       raise EPrinter.CreateFmt('DoEnumBinss<DC_BINS> error : %d, (%s)',
           [GetLastError,SysErrorMessage(GetLastError)])
@@ -1244,47 +974,30 @@ function TWinPrinter.DoGetBinName: string;
 var
   i    : Integer;
   dmW: PDeviceModeW;
-  dmA: PDeviceModeA;
 begin
   Result:=inherited DoGetBinName;
-  if UseUnicode then
-  begin
-    if GetCurrentDevModeW(dmW) then
-      with SupportedBins do begin
-        i := IndexOfObject(TObject(ptrInt(dmW^.dmDefaultSource)));
-        if i>=0 then
-          result := Strings[i];
-      end;
-  end
-  else
-  begin
-    if GetCurrentDevModeA(dmA) then
-      with SupportedBins do begin
-        i := IndexOfObject(TObject(ptrInt(dmA^.dmDefaultSource)));
-        if i>=0 then
-          result := Strings[i];
-      end;
-  end;
+  if GetCurrentDevModeW(dmW) then
+    with SupportedBins do begin
+      i := IndexOfObject(TObject(ptrInt(dmW^.dmDefaultSource)));
+      if i>=0 then
+        result := Strings[i];
+    end;
 end;
 
 procedure TWinPrinter.DoSetBinName(aName: string);
 var
   i  : Integer;
   dmW: PDeviceModeW;
-  dmA: PDeviceModeA;
 begin
   with SupportedBins do begin
 
-    if (UseUnicode and (not GetCurrentDevModeW(dmW))) or ((not UseUnicode) and (not GetCurrentDevModeA(dmA))) then
+    if not GetCurrentDevModeW(dmW) then
       raise EPrinter.Create('DoSetBinName error : unable to get current DevMode');
 
     i := IndexOf(aName);
     if (i>=0) then begin
       ClearDC;
-      if UseUnicode then
-        dmW^.dmDefaultSource := SHORT(ptrint(Objects[i]))
-      else
-        dmA^.dmDefaultSource := SHORT(ptrint(Objects[i]));
+      dmW^.dmDefaultSource := SHORT(ptrint(Objects[i]));
     end else
       inherited DoSetBinName(aName); // handle uknown bin name
 
@@ -1293,7 +1006,7 @@ end;
 
 function PrinterEnumFontsProc(
   var ELogFont: LCLType.TEnumLogFontEx;
-  var Metric: LCLType.TNewTextMetricEx;
+  var {%H-}Metric: LCLType.TNewTextMetricEx;
   FontType: Longint;
   Data:LParam):Longint;  stdcall;
 var
@@ -1324,8 +1037,6 @@ end;
 
 initialization
   Printer:=TWinPrinter.Create;
-  {$IFnDef WinCE}
-  if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then UseUnicode := False;
-  {$ENDIF}
+
 
 {end.}

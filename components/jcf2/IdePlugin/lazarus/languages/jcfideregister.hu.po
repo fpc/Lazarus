@@ -43,10 +43,7 @@ msgctxt "jcfideregister.format_project_menu"
 msgid "&All Files in Project"
 msgstr "Minden fájl a projektben"
 
-#: jcfideregister.format_reg_settings_menu
-msgid "&Registry Settings"
-msgstr "Regisztrációs beállítások"
-
 #: jcfideregister.format_settings_menu
 msgid "&Format Settings"
 msgstr "Formázás beállításai"
+

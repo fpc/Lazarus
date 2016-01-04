@@ -659,6 +659,8 @@ type
     procedure ShowDesignerForm(AForm: TCustomForm);
     procedure DoViewAnchorEditor(State: TIWGetFormState = iwgfShowOnTop);
     procedure DoViewTabOrderEditor(State: TIWGetFormState = iwgfShowOnTop);
+    // ProcedureList
+    procedure DoViewProcedureList(State: TIWGetFormState = iwgfShowOnTop);
     // editor and environment options
     procedure LoadDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
     procedure SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
@@ -919,8 +921,7 @@ type
 
     // message view
     function GetSelectedCompilerMessage: TMessageLine; override;
-    function DoJumpToCompilerMessage(FocusEditor: boolean; Msg: TMessageLine = nil
-      ): boolean; override;
+    function DoJumpToCompilerMessage(FocusEditor: boolean; Msg: TMessageLine = nil): boolean; override;
     procedure DoJumpToNextCompilerMessage(aMinUrgency: TMessageLineUrgency; DirectionDown: boolean); override;
     procedure DoShowMessagesView(BringToFront: boolean = true); override;
 
@@ -1071,8 +1072,7 @@ begin
       except
       end;
     end;
-    if HelpLang<>'' then
-      TranslateResourceStrings(ProgramDirectory(true), HelpLang);
+    TranslateResourceStrings(ProgramDirectory(true), HelpLang);
 
     AHelp := TStringList.Create;
     AddHelp([lislazarusOptionsProjectFilename]);
@@ -1585,7 +1585,6 @@ begin
     Application.Terminate;
     exit;
   end;
-  DoShowMessagesView(false);           // reopen extra windows
   fUserInputSinceLastIdle:=true; // Idle work gets done initially before user action.
   MainIDEBar.ApplicationIsActivate:=true;
   IDECommandList.AddCustomUpdateEvent(@UpdateMainIDECommands);
@@ -2378,8 +2377,8 @@ begin
   //  nil,@CreateIDEWindow,'250','200','','');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwProjectInspector],
     nil,@CreateIDEWindow,'200','150','+300','+400');
-  IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwSearchResultsViewName],
-    nil,@CreateIDEWindow,'250','250','+70%','+300');
+  //IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwSearchResultsViewName],
+  //  nil,@CreateIDEWindow,'250','250','+70%','+300');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwAnchorEditor],
     nil,@CreateIDEWindow,'250','250','','');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwTabOrderEditor],
@@ -3005,7 +3004,7 @@ end;
 
 procedure TMainIDE.mnuSearchProcedureList(Sender: TObject);
 begin
-  ProcedureList.ExecuteProcedureList(Sender);
+  DoViewProcedureList;
 end;
 
 procedure TMainIDE.mnuSetFreeBookmark(Sender: TObject);
@@ -3515,7 +3514,7 @@ procedure TMainIDE.DoViewAnchorEditor(State: TIWGetFormState);
 begin
   if AnchorDesigner=nil then
     IDEWindowCreators.CreateForm(AnchorDesigner,TAnchorDesigner,
-       State=iwgfDisabled,LazarusIDE.OwningComponent)
+       State=iwgfDisabled, LazarusIDE.OwningComponent)
   else if State=iwgfDisabled then
     AnchorDesigner.DisableAlign;
   if State>=iwgfShow then
@@ -3526,11 +3525,22 @@ procedure TMainIDE.DoViewTabOrderEditor(State: TIWGetFormState);
 begin
   if TabOrderDialog=nil then
     IDEWindowCreators.CreateForm(TabOrderDialog,TTabOrderDialog,
-       State=iwgfDisabled,LazarusIDE.OwningComponent)
+       State=iwgfDisabled, LazarusIDE.OwningComponent)
   else if State=iwgfDisabled then
     TabOrderDialog.DisableAlign;
   if State>=iwgfShow then
     IDEWindowCreators.ShowForm(TabOrderDialog,State=iwgfShowOnTop);
+end;
+
+procedure TMainIDE.DoViewProcedureList(State: TIWGetFormState);
+begin
+  if ProcListView=nil then
+    IDEWindowCreators.CreateForm(ProcListView,TProcedureListForm,
+       State=iwgfDisabled, LazarusIDE.OwningComponent)
+  else if State=iwgfDisabled then
+    ProcListView.DisableAlign;
+  if State>=iwgfShow then
+    IDEWindowCreators.ShowForm(ProcListView, State=iwgfShowOnTop);
 end;
 
 procedure TMainIDE.SetToolStatus(const AValue: TIDEToolStatus);
@@ -3625,10 +3635,9 @@ var
   Editable: Boolean;
   SelAvail: Boolean;
   SelEditable: Boolean;
-  SrcEditorActive, DsgEditorActive, StringFound, IdentFound: Boolean;
+  SrcEditorActive, DsgEditorActive, IdentFound, StringFound: Boolean;
   ActiveDesigner: TComponentEditorDesigner;
-  xAttr: TSynHighlighterAttributes;
-  xToken, CurWordAtCursor: string;
+  CurWordAtCursor: string;
 begin
   GetCurrentUnit(ASrcEdit, AnUnitInfo);
   if not UpdateEditorCommandsStamp.Changed(ASrcEdit, DisplayState) then
@@ -3641,18 +3650,16 @@ begin
   DsgEditorActive := DisplayState = dsForm;
   ActiveDesigner := GetActiveDesignerSkipMainBar;
 
-  StringFound := False;
-  IdentFound := False;
-  CurWordAtCursor := '';
   if ASrcEdit<>nil then
   begin
     CurWordAtCursor := ASrcEdit.GetWordAtCurrentCaret;
     //it is faster to get information from SynEdit than from CodeTools
-    if ASrcEdit.EditorComponent.GetHighlighterAttriAtRowCol(ASrcEdit.EditorComponent.CaretXY, xToken, xAttr) then
-    begin
-      StringFound := xAttr = ASrcEdit.EditorComponent.Highlighter.StringAttribute;
-      IdentFound := xAttr = ASrcEdit.EditorComponent.Highlighter.IdentifierAttribute;
-    end;
+    ASrcEdit.EditorComponent.CaretAtIdentOrString(ASrcEdit.EditorComponent.CaretXY, IdentFound, StringFound);
+  end
+  else begin
+    CurWordAtCursor := '';
+    IdentFound := False;
+    StringFound := False;
   end;
 
   if Assigned(ActiveDesigner) then
@@ -4898,8 +4905,12 @@ var
 begin
   //debugln(['TMainIDE.DoProjectOptionsAfterWrite ',DbgSName(Sender),' Restore=',Restore]);
   AProject:=(Sender as TProjectIDEOptions).Project;
-  if not Restore then
+  if Restore then
   begin
+    AProject.RestoreBuildModes;
+    AProject.RestoreSession;
+  end
+  else begin
     SetTitle;
     SetAutoCreateForms;
     // extend include path
@@ -4912,18 +4923,9 @@ begin
     end;
     UpdateCaption;
     AProject.DefineTemplates.AllChanged;
-  end;
-  if Restore then
-  begin
-    AProject.RestoreBuildModes;
-    AProject.RestoreSession;
-  end;
+    IncreaseCompilerParseStamp;
+    MainBuildBoss.SetBuildTargetProject1(false);
 
-  IncreaseCompilerParseStamp;
-  MainBuildBoss.SetBuildTargetProject1(false);
-
-  if not Restore then
-  begin
     if AProject.UseAsDefault then
     begin
       // save as default
@@ -4946,10 +4948,9 @@ end;
 procedure TMainIDE.ComponentPaletteClassSelected(Sender: TObject);
 begin
   // code below cant be handled correctly by integrated IDE
-  if
-    (IDETabMaster = nil) and
-    (Screen.CustomFormZOrderCount > 1)
-  and Assigned(Screen.CustomFormsZOrdered[1].Designer) then begin
+  if (IDETabMaster = nil) and (Screen.CustomFormZOrderCount > 1)
+  and Assigned(Screen.CustomFormsZOrdered[1].Designer) then
+  begin
     // previous active form was designer form
     ShowDesignerForm(Screen.CustomFormsZOrdered[1]);
     DoCallShowDesignerFormOfSourceHandler(lihtShowDesignerFormOfSource,
@@ -5828,8 +5829,8 @@ begin
   end;
 end;
 
-procedure TMainIDE.CreateIDEWindow(Sender: TObject; aFormName: string; var
-  AForm: TCustomForm; DoDisableAutoSizing: boolean);
+procedure TMainIDE.CreateIDEWindow(Sender: TObject; aFormName: string;
+  var AForm: TCustomForm; DoDisableAutoSizing: boolean);
 
   function ItIs(Prefix: string): boolean;
   begin

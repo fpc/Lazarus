@@ -47,7 +47,7 @@ type
   TConverter = class(TObject)
   private
     { the strings for the in and out code }
-    fsInputCode, fsOutputCode: WideString;
+    fsInputCode, fsOutputCode: String;
     fsFileName: String;
 
     { classes to lex and parse the source }
@@ -93,8 +93,8 @@ type
 
     procedure CollectOutput(const pcRoot: TParseTreeNode);
 
-    property InputCode: WideString Read fsInputCode Write fsInputCode;
-    property OutputCode: WideString Read fsOutputCode Write fsOutputCode;
+    property InputCode: String Read fsInputCode Write fsInputCode;
+    property OutputCode: String Read fsOutputCode Write fsOutputCode;
     property FileName: String Read fsFileName Write fsFileName;
 
     property TokenCount: Integer Read fiTokenCount;
@@ -111,8 +111,7 @@ implementation
 
 uses
   AllProcesses, fShowParseTree, JcfRegistrySettings,
-  JcfSettings, JcfStringUtils, JcfUnicode,
-  ParseError, PreProcessorParseTree,
+  JcfSettings, JcfStringUtils, ParseError, PreProcessorParseTree,
   SourceToken, SourceTokenList, TreeWalker, VisitSetNesting, VisitSetXY;
 
 function StrInsert(const psSub, psMain: String; const piPos: Integer): String;
@@ -373,7 +372,7 @@ const
 var
   liRealInputStart, liRealInputEnd: Integer;
   liOutputStart, liOutputEnd: Integer;
-  lsNewOutput: WideString;
+  lsNewOutput: String;
 begin
   Assert(piStartIndex >= 0);
   Assert(piEndIndex >= piStartIndex);
@@ -384,13 +383,13 @@ begin
   liRealInputEnd   := piEndIndex;
 
   { get to the start of the line }
-  while (liRealInputStart > 1) and (not WideCharIsReturn(InputCode[liRealInputStart - 1])) do
+  while (liRealInputStart > 1) and (not CharIsReturn(InputCode[liRealInputStart - 1])) do
     Dec(liRealInputStart);
 
   { get to the start of the next line }
-  while (liRealInputEnd < Length(InputCode)) and (not WideCharIsReturn(InputCode[liRealInputEnd])) do
+  while (liRealInputEnd < Length(InputCode)) and (not CharIsReturn(InputCode[liRealInputEnd])) do
     Inc(liRealInputEnd);
-  while (liRealInputEnd < Length(InputCode)) and (WideCharIsReturn(InputCode[liRealInputEnd])) do
+  while (liRealInputEnd < Length(InputCode)) and (CharIsReturn(InputCode[liRealInputEnd])) do
     Inc(liRealInputEnd);
 
   { put markers into the input }
@@ -401,8 +400,8 @@ begin
 
   { locate the markers in the output,
     and replace before and after }
-  liOutputStart := Pos(WideString(FORMAT_START), fsOutputCode) + Length(FORMAT_START);
-  liOutputEnd   := Pos(WideString(FORMAT_END), fsOutputCode);
+  liOutputStart := Pos(FORMAT_START, fsOutputCode) + Length(FORMAT_START);
+  liOutputEnd   := Pos(FORMAT_END, fsOutputCode);
 
 
   { splice }

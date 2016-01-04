@@ -1370,9 +1370,17 @@ msgstr "无"
 msgid "Add Images"
 msgstr "添加图像"
 
+#: objinspstrconsts.sccsiledtopendialogn
+msgid "New Image"
+msgstr ""
+
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
 msgstr "透明的颜色"
+
+#: objinspstrconsts.sccsiledtreplace
+msgid "&Replace ..."
+msgstr ""
 
 #: objinspstrconsts.sccsiledtsave
 #, fuzzy
@@ -1608,6 +1616,10 @@ msgstr ""
 
 #: objinspstrconsts.s_addassingle
 msgid "Add as single"
+msgstr ""
+
+#: objinspstrconsts.s_confirm_clear
+msgid "Are you sure to clear image list?"
 msgstr ""
 
 #: objinspstrconsts.s_splitimage

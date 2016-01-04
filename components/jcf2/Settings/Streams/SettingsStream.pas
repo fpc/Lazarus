@@ -140,15 +140,15 @@ type
   TSettingsInputDummy = class(TSettingsInput)
   private
   public
-    function ExtractSection(const psSection: string): TSettingsInput; override;
-    function HasTag(const psTag: string): boolean; override;
+    function ExtractSection(const {%H-}psSection: string): TSettingsInput; override;
+    function HasTag(const {%H-}psTag: string): boolean; override;
 
-    function Read(const psTag: string): string; override;
-    function Read(const psTag, psDefault: string): string; override;
-    function Read(const psTag: string; const piDefault: integer): integer; override;
-    function Read(const psTag: string; const pfDefault: double): double; override;
-    function Read(const psTag: string; const pbDefault: boolean): boolean; override;
-    function Read(const psTag: string; const pcStrings: TStrings): boolean; override;
+    function Read(const {%H-}psTag: string): string; override;
+    function Read(const {%H-}psTag, psDefault: string): string; override;
+    function Read(const {%H-}psTag: string; const piDefault: integer): integer; override;
+    function Read(const {%H-}psTag: string; const pfDefault: double): double; override;
+    function Read(const {%H-}psTag: string; const pbDefault: boolean): boolean; override;
+    function Read(const {%H-}psTag: string; const {%H-}pcStrings: TStrings): boolean; override;
   end;
 
 implementation

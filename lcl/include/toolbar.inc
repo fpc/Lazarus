@@ -91,9 +91,11 @@ begin
   Height := 32;
   FButtonWidth := cDefButtonWidth;
   FButtonHeight := cDefButtonHeight;
-  Details := ThemeServices.GetElementDetails(ttbSplitButtonDropDownNormal);
   FDropDownWidth := cDropDownWidth;
+  Details := ThemeServices.GetElementDetails(ttbSplitButtonDropDownNormal);
   FThemeDropDownWidth := ThemeServices.GetDetailSize(Details).cx;
+  Details := ThemeServices.GetElementDetails(ttbDropDownButtonNormal);
+  FThemeButtonDropWidth := ThemeServices.GetDetailSize(Details).cx;
   FNewStyle := True;
   FWrapable := True;
   FButtons := TList.Create;
@@ -431,6 +433,14 @@ begin
     Result := FThemeDropDownWidth
   else
     Result := FDropDownWidth;
+end;
+
+function TToolBar.GetRealButtonDropWidth: Integer;
+begin
+  if FDropDownWidth < 0 then
+    Result := FThemeButtonDropWidth
+  else
+    Result := FDropDownWidth+FThemeButtonDropWidth-FThemeDropDownWidth;
 end;
 
 procedure TToolBar.Paint;

@@ -76,8 +76,8 @@ type
     class procedure SetAlphaBlend(const ACustomForm: TCustomForm; const AlphaBlend: Boolean; const Alpha: Byte); override;
     class procedure SetFormStyle(const ACustomForm: TCustomForm; const ANewFormStyle, {%H-}AOldFormStyle: TFormStyle); override;
 
-    class procedure SetPopupParent(const ACustomForm: TCustomForm;
-      const {%H-}APopupMode: TPopupMode; const APopupParent: TCustomForm); override;
+    class procedure SetRealPopupParent(const ACustomForm: TCustomForm;
+      const APopupParent: TCustomForm); override;
   end;
 
   { TCarbonWSForm }
@@ -338,10 +338,9 @@ begin
     Self, 'SetFormStyle', 'SetWindowGroup');
 end;
 
-class procedure TCarbonWSCustomForm.SetPopupParent(const ACustomForm:TCustomForm;
-  const APopupMode:TPopupMode;const APopupParent:TCustomForm);
+class procedure TCarbonWSCustomForm.SetRealPopupParent(
+  const ACustomForm: TCustomForm; const APopupParent: TCustomForm);
 begin
-  //todo: better "popup-parent" hanlding
   if Assigned(APopupParent) and (APopupParent.Handle<>0) then
   begin
     SetWindowGroup( TCarbonWindow(ACustomForm.Handle).Window, GetWindowGroupOfClass(kHelpWindowClass));

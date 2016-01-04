@@ -130,7 +130,7 @@ var
 begin
   if Component is TControl then
   begin
-    ParentForm := GetParentForm(TControl(Component));
+    ParentForm := GetDesignerForm(TControl(Component));
     Parent := TControl(Component).Parent;
     if (Parent = nil) or (ParentForm = nil) then
     begin
@@ -150,7 +150,7 @@ begin
     if Component.Owner is TWinControl then
     begin
       Parent:=TWinControl(Component.Owner);
-      ParentForm := GetParentForm(Parent);
+      ParentForm := GetDesignerForm(Parent);
       if (ParentForm<>nil) and (ParentForm<>Parent) then
       begin
         p:=Parent.ClientOrigin;
@@ -180,7 +180,7 @@ var
 begin
   if Component is TControl then
   begin
-    ParentForm := GetParentForm(TControl(Component));
+    ParentForm := GetDesignerForm(TControl(Component));
     if ParentForm = nil then
       Result := Point(0, 0)
     else
@@ -205,7 +205,7 @@ var
 begin
   if Component is TControl then
   begin
-    ParentForm := GetParentForm(TControl(Component));
+    ParentForm := GetDesignerForm(TControl(Component));
     Parent := TControl(Component).Parent;
     if (Parent = nil) or (ParentForm = nil) then
       Result := Point(0, 0)

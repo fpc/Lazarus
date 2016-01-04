@@ -1956,7 +1956,8 @@ type
   TToolButtonFlag =
   (
     tbfPressed,     // set while mouse is pressed on button
-    tbfArrowPressed // set while mouse is pressed on arrow button
+    tbfArrowPressed,// set while mouse is pressed on arrow button
+    tbfMouseInArrow // set while mouse is on arrow button
   );
   TToolButtonFlags = set of TToolButtonFlag;
 
@@ -1987,12 +1988,14 @@ type
     FMarked: Boolean;
     FMenuItem: TMenuItem;
     FMouseInControl: boolean;
+    FOnArrowClick: TNotifyEvent;
     FShowCaption: boolean;
     FStyle: TToolButtonStyle;
     FToolButtonFlags: TToolButtonFlags;
     FUpdateCount: Integer;
     FWrap: Boolean;
     FLastDropDownTick: QWord;
+    FLastDown: Boolean;
     procedure GetGroupBounds(var StartIndex, EndIndex: integer);
     function GetIndex: Integer;
     function GetTextSize: TSize;
@@ -2027,6 +2030,7 @@ type
     procedure AssignTo(Dest: TPersistent); override;
     procedure BeginUpdate; virtual;
     procedure EndUpdate; virtual;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseEnter; override;
@@ -2053,12 +2057,15 @@ type
     constructor Create(TheOwner: TComponent); override;
     function CheckMenuDropdown: Boolean; virtual;
     procedure Click; override;
+    procedure ArrowClick; virtual;
     procedure GetCurrentIcon(var ImageList: TCustomImageList;
-                             var TheIndex: integer); virtual;
+                             var TheIndex: integer;
+                             var TheEffect: TGraphicsDrawEffect); virtual;
     procedure GetPreferredSize(var PreferredWidth, PreferredHeight: integer;
                                Raw: boolean = false;
                                WithThemeSpace: boolean = true); override;
     property Index: Integer read GetIndex;
+    function PointInArrow(const X, Y: Integer): Boolean;
   published
     property Action;
     property AllowAllUp: Boolean read FAllowAllUp write FAllowAllUp default False;
@@ -2076,6 +2083,7 @@ type
     property Indeterminate: Boolean read FIndeterminate write SetIndeterminate default False;
     property Marked: Boolean read FMarked write SetMarked default False;
     property MenuItem: TMenuItem read FMenuItem write SetMenuItem;
+    property OnArrowClick: TNotifyEvent read FOnArrowClick write FOnArrowClick;
     property OnClick;
     property OnContextPopup;
     property OnDragDrop;
@@ -2139,6 +2147,7 @@ type
     FDisabledImages: TCustomImageList;
     FDropDownWidth: integer;
     FThemeDropDownWidth: integer;
+    FThemeButtonDropWidth: integer;
     FDropDownButton: TToolButton;
     FFlat: Boolean;
     FHotImageChangeLink: TChangeLink;
@@ -2218,6 +2227,7 @@ type
     procedure SetButtonSize(NewButtonWidth, NewButtonHeight: integer);
     function CanFocus: Boolean; override;
     function GetRealDropDownWidth: Integer;
+    function GetRealButtonDropWidth: Integer;
   public
     property ButtonCount: Integer read GetButtonCount;
     property Buttons[Index: Integer]: TToolButton read GetButton;

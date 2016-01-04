@@ -47,7 +47,7 @@ uses
   IDEDialogs, PropEdits, PropEditUtils, ComponentEditors, MenuIntf, IDEImagesIntf,
   FormEditingIntf, ComponentReg, IDECommands, LazIDEIntf, ProjectIntf,
   // IDE
-  LazarusIDEStrConsts, EnvironmentOpts, EditorOptions,
+  LazarusIDEStrConsts, EnvironmentOpts, EditorOptions, SourceEditor,
   // Designer
   AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, TabOrderDlg, AnchorEditor, DesignerProcs,
   CustomFormEditor, AskCompNameDlg, ControlSelection, ChangeClassDialog;
@@ -2008,7 +2008,7 @@ begin
   Exclude(FFLags, dfHasSized);
   SetCaptureControl(nil);
   DesignSender := GetDesignControl(Sender);
-  ParentForm := GetParentForm(DesignSender);
+  ParentForm := GetDesignerForm(DesignSender);
   //DebugLn(['TDesigner.MouseDownOnControl DesignSender=',dbgsName(DesignSender),' ParentForm=',dbgsName(ParentForm)]);
   if (ParentForm = nil) then exit;
   
@@ -2142,8 +2142,12 @@ begin
       ControlSelection.AssignPersistent(MouseDownComponent);
   end;
 
+  if PropertyEditorHook<>nil then
+    PropertyEditorHook.DesignerMouseDown(Sender, Button, Shift, p.X, p.Y);
+
   if not ControlSelection.OnlyVisualComponentsSelected and ShowComponentCaptions then
     Form.Invalidate;
+
   {$IFDEF VerboseDesigner}
   DebugLn('[TDesigner.MouseDownOnControl] END');
   {$ENDIF}
@@ -2390,7 +2394,7 @@ begin
 
   // check if the message is for the designed form and there was a mouse down before
   DesignSender:=GetDesignControl(Sender);
-  SenderParentForm:=GetParentForm(DesignSender);
+  SenderParentForm:=GetDesignerForm(DesignSender);
   //DebugLn(['TDesigner.MouseUpOnControl DesignSender=',dbgsName(DesignSender),' SenderParentForm=',dbgsName(SenderParentForm),' ',TheMessage.XPos,',',TheMessage.YPos]);
   if (MouseDownComponent=nil) or (SenderParentForm=nil)
   or (SenderParentForm<>Form)
@@ -2527,6 +2531,10 @@ begin
   Exclude(FFlags,dfHasSized);
   MouseDownComponent:=nil;
   MouseDownSender:=nil;
+
+  if PropertyEditorHook<>nil then
+    PropertyEditorHook.DesignerMouseUp(Sender, Button, Shift, p.X, p.Y);
+
   {$IFDEF VerboseDesigner}
   DebugLn('[TDesigner.MouseUpOnControl] END');
   {$ENDIF}
@@ -2562,7 +2570,7 @@ begin
 
   DesignSender := GetDesignControl(Sender);
   //DebugLn('TDesigner.MouseMoveOnControl Sender=',dbgsName(Sender),' ',dbgsName(DesignSender));
-  SenderParentForm := GetParentForm(DesignSender);
+  SenderParentForm := GetDesignerForm(DesignSender);
   if (SenderParentForm = nil) or (SenderParentForm <> Form) then Exit;
 
   OldMouseMovePos := LastMouseMovePos;
@@ -2701,6 +2709,7 @@ var
   Handled: boolean;
   Current: TComponent;
   NewName: String;
+  UTF8Char: TUTF8Char;
 
   procedure Nudge(x, y: integer);
   begin
@@ -2734,6 +2743,19 @@ begin
   //DebugLn(['TDesigner.KEYDOWN Command=',dbgs(Command),' ',TheMessage.CharCode,' ',dbgs(Shift)]);
   DoProcessCommand(Self, Command, Handled);
   //DebugLn(['TDesigner.KeyDown Command=',Command,' Handled=',Handled,' TheMessage.CharCode=',TheMessage.CharCode]);
+
+  if not Handled and (SourceEditorManager.ActiveSourceWindow<>nil)
+  and (GetParentForm(SourceEditorManager.ActiveSourceWindow) = GetParentForm(Sender)) then
+  begin
+    // send special commands to current editor if they have same parent (designer is docked to the editor)
+    case Command of
+      ecNextEditor, ecPrevEditor,  ecNextEditorInHistory, ecPrevEditorInHistory:
+      begin
+        FillChar(UTF8Char{%H-}, SizeOf(UTF8Char), 0);
+        SourceEditorManager.ActiveSourceWindow.ProcessParentCommand(Self, Command, UTF8Char, nil, Handled);
+      end;
+    end;
+  end;
 
   if not Handled then
   begin

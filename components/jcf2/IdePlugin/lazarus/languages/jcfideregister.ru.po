@@ -41,10 +41,6 @@ msgctxt "jcfideregister.format_project_menu"
 msgid "&All Files in Project"
 msgstr "Все файлы &проекта"
 
-#: jcfideregister.format_reg_settings_menu
-msgid "&Registry Settings"
-msgstr "Параметры &реестра"
-
 #: jcfideregister.format_settings_menu
 msgid "&Format Settings"
 msgstr "П&араметры форматирования"

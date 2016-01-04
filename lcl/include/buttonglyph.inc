@@ -88,9 +88,11 @@ procedure TButtonGlyph.GetImageIndexAndEffect(State: TButtonState;
   out AIndex: Integer; out AEffect: TGraphicsDrawEffect);
 var
   AStoredState: TButtonState;
+  AUseAutoEffects: Integer;
 begin
   AStoredState := bsUp;
   AEffect := gdeNormal;
+  AUseAutoEffects := ThemeServices.GetOption(toUseGlyphEffects);
   case State of
     bsDisabled:
       if NumGlyphs > 1 then
@@ -99,13 +101,17 @@ begin
         AEffect := gdeDisabled;
     bsDown:
       if NumGlyphs > 2 then
-        AStoredState := State;
+        AStoredState := State
+      else if AUseAutoEffects > 0 then
+        AEffect := gdeShadowed;
     bsExclusive:
       if NumGlyphs > 3 then
         AStoredState := State;
     bsHot:
       if NumGlyphs > 4 then
         AStoredState := State
+      else if AUseAutoEffects > 0 then
+        AEffect := gdeHighlighted;
   end;
   AIndex := FImageIndexes[AStoredState];
 end;

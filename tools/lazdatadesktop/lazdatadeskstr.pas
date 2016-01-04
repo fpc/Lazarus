@@ -103,12 +103,22 @@ resourcestring
   sld_Selectaconnectiontype = 'Select a conection type';
 
   // Connect to a database form
-  sld_Connecttoadatabase = 'Connect to a database';
+  sld_Connecttoadatabase = 'Connect to a database of type %s';
   sld_Host           = 'Host';
   sld_Database       = 'Database';
   sld_Username       = 'Username';
   sld_Password       = 'Password';
   sld_Charset        = 'Charset';
+  sld_UnknownType    = 'Unknown type';
+  sld_TestConnection = 'Test connection';
+  sld_SuccesConnecting = 'Connection established successfully!';
+
+  sld_FirstStart = 'First start of database desktop';
+  sql_NoConnectionsFound = 'No connections or data dictionaries were found.'#13#10+
+                           ' Start by creating a new connection or data dictionary';
+  sld_startnewdict = 'Start new dictionary';
+  sld_startnewconnection = 'Create new connection';
+  sld_startempty = 'Thanks, I know what to do';
 
   // Query panel
   SSQLFilters = 'SQL files|*.sql|All files|*.*';
@@ -130,6 +140,27 @@ resourcestring
   SHintExport = 'Export this data';
   SCreateCode = 'Create code';
   SHintCreateCode = 'Create pascal code for this data';
+  SExecutingSQLStatement = '%s : Executing SQL statement:';
+  SExecutingSQLStatementCount = '%s : Executing script SQL statement nr. %d:';
+  SRecordsFetched = 'Records fetched: %d';
+  SSQLexecutedOK = '%s : Statement executed succesfully.';
+  SExecutionTime = 'Execution time: %s';
+  SSQLErrorCode = 'SQL Error code: %d';
+  SSQLStatus = 'SQL State: %s';
+  SErrorExecutingSQL = 'Error executing SQL statement:';
+  SReadyForSQL = 'Ready to execute SQL statements';
+  SErrInScript = 'Error in SQL script';
+  SErrInScriptChoice = 'An error occurred in the SQL script.'+slineBreak+
+                       'How would you like to continue ?';
+  SRetryStatement = 'Retry the statement';
+  SStopOnNextError = 'Continue, stop on the next error';
+  SStopNoError = 'Continue, ignore all errors';
+  SAbortScript = 'Abort the script';
+  SErrCommitNotSupported = 'COMMIT Not supported yet';
+  SErrUnknownDirective = 'Unknown directive: %s (args: %s)';
+  SScriptAborted = 'Script was aborted after %d statements';
+  SScriptCompleted = 'Executed %d statements from script';
+  SScriptErrorCount = '%d script statements resulted in errors';
 
   // Main form
   SSaveData     = 'Save changes';
@@ -242,6 +273,8 @@ resourcestring
   //
   sld_Fromconnection       = 'From connection';
   //
+  sld_ConnectionType = 'Connection type';
+  sld_LegacyView = 'Legacy List View';
 
 implementation
 

@@ -291,8 +291,7 @@ uses
   { delphi }
   SysUtils, Forms,
   { local }
-  JcfStringUtils,
-  JcfUnicode;
+  JcfStringUtils;
 
 const
   UPDATE_INTERVAL = 512;
@@ -2631,7 +2630,7 @@ begin
   begin
     lc2 := fcTokenList.SolidToken(2);
     lbOldStyleCharEscape := (lc2 <> nil) and (Length(lc2.Sourcecode) = 1) and
-      not (WideCharIsAlpha(lc2.Sourcecode[1]));
+      not (CharIsAlpha(lc2.Sourcecode[1]));
   end
   else
     lc2 := nil;
@@ -5236,7 +5235,7 @@ end;
 procedure TBuildParseTree.RecogniseAsmFactor;
 var
   lcNext: TSourceToken;
-  lcLastChar: WideChar;
+  lcLastChar: Char;
 begin
   if fcTokenList.FirstSolidTokenType = ttNot then
     Recognise(ttNot);
@@ -5590,7 +5589,6 @@ begin
   Result := False;
   lc := fcTokenList.FirstSolidToken;
 
-
   if lc.TokenType in [ttProcedure, ttFunction] then
   begin
     lcNext := fcTokenList.SolidToken(2);
@@ -5620,7 +5618,7 @@ begin
         if fcTokenList.FirstTokenLength = 1 then
           Recognise(fcTokenList.FirstTokenType)
         else
-           raise TEParseError.Create('Unexpected token, expected single char after ^', fcTokenList.FirstSolidToken);
+          raise TEParseError.Create('Unexpected token, expected single char after ^', fcTokenList.FirstSolidToken);
       end;
       ttHash:
       begin

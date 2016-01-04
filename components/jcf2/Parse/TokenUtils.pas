@@ -176,7 +176,6 @@ uses
   {$IFNDEF FPC}Windows,{$ENDIF} SysUtils, 
   { local }
   JcfSettings,
-  JcfUnicode,
   JcfStringUtils,
   ParseTreeNodeType, Tokens, Nesting,
   AsmKeywords;
@@ -186,7 +185,7 @@ function NewReturn: TSourceToken;
 begin
   Result := TSourceToken.Create;
   Result.TokenType := ttReturn;
-  Result.SourceCode := WideLineBreak;
+  Result.SourceCode := NativeLineBreak;
 end;
 
 function NewSpace(const piLength: integer): TSourceToken;
@@ -195,7 +194,7 @@ begin
 
   Result := TSourceToken.Create;
   Result.TokenType := ttWhiteSpace;
-  Result.SourceCode := WideStringRepeat(WideSpace, piLength);
+  Result.SourceCode := StringOfChar(' ', piLength);
 end;
 
 procedure InsertTokenAfter(const pt, ptNew: TSourceToken);
@@ -552,7 +551,7 @@ begin
     exit;
 
   // otherwise, if it contains a return it's not single line 
-  if (Pos(WideString(WideLineBreak), pcToken.SourceCode) <= 0) then
+  if (Pos(NativeLineBreak, pcToken.SourceCode) <= 0) then
     exit;
 
   Result := True;

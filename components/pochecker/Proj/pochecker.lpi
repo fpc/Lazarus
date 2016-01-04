@@ -96,7 +96,6 @@
       <Unit3>
         <Filename Value="..\pocheckerconsts.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="pocheckerconsts"/>
       </Unit3>
       <Unit4>
         <Filename Value="..\pocheckermain.pp"/>
@@ -104,7 +103,6 @@
         <ComponentName Value="PoCheckerForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="pocheckermain"/>
       </Unit4>
       <Unit5>
         <Filename Value="..\graphstat.pp"/>

@@ -1319,9 +1319,17 @@ msgstr "Jiokios"
 msgid "Add Images"
 msgstr "Pridėti paveikslų"
 
+#: objinspstrconsts.sccsiledtopendialogn
+msgid "New Image"
+msgstr ""
+
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
 msgstr "Permatoma spalva:"
+
+#: objinspstrconsts.sccsiledtreplace
+msgid "&Replace ..."
+msgstr ""
 
 #: objinspstrconsts.sccsiledtsave
 msgctxt "objinspstrconsts.sccsiledtsave"
@@ -1542,6 +1550,10 @@ msgstr "Registruoti klavišą"
 #: objinspstrconsts.s_addassingle
 msgid "Add as single"
 msgstr "Pridėti vientisą"
+
+#: objinspstrconsts.s_confirm_clear
+msgid "Are you sure to clear image list?"
+msgstr ""
 
 #: objinspstrconsts.s_splitimage
 msgid "Split image"

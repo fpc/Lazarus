@@ -96,7 +96,7 @@ msgid "class node without parent node"
 msgstr "klasės mazgas neturi tėvinio mazgo"
 
 #: codetoolsstrconsts.ctsclassnotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "class %s%s%s not found"
 msgid "class \"%s\" not found"
 msgstr "klasė %s%s%s nerasta"
@@ -306,7 +306,6 @@ msgid "expected end., but %s found"
 msgstr "tikėtasi „end.“, tačiau aptikta %s"
 
 #: codetoolsstrconsts.ctsendofsourcenotfound
-#| msgid "End of source not found"
 msgid "End of source not found."
 msgstr "Nerasta pirminio kodo pabaiga."
 
@@ -497,6 +496,7 @@ msgid "If TargetOS<>win32 then"
 msgstr "Jei paskirties OS <> win32, tada"
 
 #: codetoolsstrconsts.ctsillegalcircleinusedunits
+#, fuzzy,badformat
 msgid "illegal circle using unit: %s"
 msgstr "neleistinas naudojamų modulių žiedas"
 
@@ -557,13 +557,13 @@ msgid "interface directory"
 msgstr "interfeiso aplankas"
 
 #: codetoolsstrconsts.ctsinvalidclassname
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "invalid class name=%s%s%s"
 msgid "invalid class name=\"%s\""
 msgstr "klaidingas klasės pavadinimas=%s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidclassname2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "invalid class name %s%s%s"
 msgid "invalid class name \"%s\""
 msgstr "klaidingas klasės pavadinimas %s%s%s"
@@ -593,13 +593,13 @@ msgid "invalid type"
 msgstr "klaidingas tipas"
 
 #: codetoolsstrconsts.ctsinvalidvariablename
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "invalid variable name %s%s%s"
 msgid "invalid variable name \"%s\""
 msgstr "kintamojo pavadinimas %s%s%s yra klaidingas"
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "invalid variable type %s%s%s"
 msgid "invalid variable type \"%s\""
 msgstr "kintamojo tipas %s%s%s yra klaidingas"

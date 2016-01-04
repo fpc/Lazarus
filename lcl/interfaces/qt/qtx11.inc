@@ -214,6 +214,25 @@ begin
   end;
 end;
 
+function SetTransientForHint(Widget: QWidgetH; ATransientWin: QWidgetH): boolean;
+var
+   Display: PDisplay;
+   AWin: LongWord;
+begin
+  Result := False;
+  if Widget = nil then
+    exit;
+  Display := QX11Info_display();
+
+  if Display = nil then
+    exit;
+  if ATransientWin <> nil then
+    AWin := QWidget_winID(ATransientWin)
+  else
+    AWin := 0;
+  Result := XSetTransientForHint(Display, QWidget_winId(Widget), AWin) = 1;
+end;
+
 procedure SetSkipX11Taskbar(Widget: QWidgetH; const ASkipTaskBar: Boolean);
 const
   _NET_WM_STATE_REMOVE = 0;

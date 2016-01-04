@@ -6,7 +6,7 @@ var
   Left, Top: Integer;
   ABounds, DialogRect: TRect;
 begin
-  // Btw, setting width and height of dialog doesnot reposition child controls :(
+  // Btw, setting width and height of dialog does not reposition child controls :(
   // So no way to set another height and width at least here
 
   if (GetParent(ADialogWnd) = Widgetset.AppHandle) then
@@ -27,7 +27,7 @@ begin
   SetWindowPos(ADialogWnd, HWND_TOP, Left, Top, 0, 0, SWP_NOSIZE);
 end;
 
-function PrintHookProc(hdlg: HWND; uiMsg: UINT; wParam: WPARAM; lParam: LPARAM): UINT_PTR; stdcall;
+function PrintHookProc(hdlg: HWND; uiMsg: UINT; {%H-}wParam: WPARAM; lParam: LPARAM): UINT_PTR; stdcall;
 var
   lpp: PtagPD;
 begin
@@ -35,16 +35,13 @@ begin
   begin
     lpp := PtagPD(lParam);
     if (lParam<>0) and (lpp^.lCustData<>0) then
-      if UseUnicode then
-        SetWindowTextW(hdlg, pwidechar(lpp^.lCustData))
-      else
-        SetWindowText(hdlg,pChar(lpp^.lCustData));
+      SetWindowTextW(hdlg, pwidechar(lpp^.lCustData));
     Reposition(hdlg);
   end;
   Result := 0;
 end;
 
-function PageSetupHookProc(hdlg: HWND; uiMsg: UINT; wParam: WPARAM; lParam: LPARAM): PtrUInt; stdcall;
+function PageSetupHookProc(hdlg: HWND; uiMsg: UINT; {%H-}wParam: WPARAM; lParam: LPARAM): PtrUInt; stdcall;
 var
  lpp : PtagPSD;
 begin
@@ -52,10 +49,7 @@ begin
   begin
     lpp := PtagPSD(lParam);
     if (lParam<>0) and (lpp^.lCustData<>0) then
-      if UseUnicode then
-        SetWindowTextW(hdlg, pwidechar(lpp^.lCustData))
-      else
-        SetWindowText(hdlg,pChar(lpp^.lCustData));
+      SetWindowTextW(hdlg, pwidechar(lpp^.lCustData));
     Reposition(hdlg);
   end;
   Result := 0;
@@ -81,8 +75,6 @@ var
   DevNames   : PDevNames;
   DevModeW   : PDeviceModeW;
   StW        : PWidechar;
-  DevModeA   : PDeviceMode;
-  StA        : PChar;
   BoolRes: BOOL;
 begin
   Result := False;
@@ -97,10 +89,7 @@ begin
       lpfnPageSetupHook := @PageSetupHookProc;
       if Title<>'' then
       begin
-        if UseUnicode then
-          lCustData := LPARAM(pWideChar(UTF8Decode(Title)))
-        else
-          lCustData := LPARAM(pChar(Utf8ToAnsi(Title)))
+        lCustData := LPARAM(pWideChar(UTF8Decode(Title)));
       end
       else
         lCustData := 0;
@@ -111,40 +100,23 @@ begin
       // Pdev.DevMode has the required size, just copy to the global memory
       DeviceMode := GLobalAlloc(GHND, PDev.DevModeSize);
       try
-        if UseUnicode then
-          DevModeW := PDeviceModeW(GlobalLock(DeviceMode))
-        else
-          DevModeA := PDeviceModeA(GlobalLock(DeviceMode));
+        DevModeW := PDeviceModeW(GlobalLock(DeviceMode));
         try
-          if UseUnicode then
-            CopyMemory(DevModeW, PDev.DevModeW, Pdev.DevModeSize)
-          else
-            CopyMemory(DevModeA, PDev.DevModeA, Pdev.DevModeSize);
+          CopyMemory(DevModeW, PDev.DevModeW, Pdev.DevModeSize);
         finally
           GlobalUnlock(DeviceMode);
         end;
         hDevMode := DeviceMode;
-        if UseUnicode then
-          BoolRes := PageSetupDlgW(@Lpp)
-        else
-          BoolRes := PageSetupDlg(@Lpp);
+        BoolRes := PageSetupDlgW(@Lpp);
         if BoolRes then
         begin
-          if UseUnicode then StW := '' else StA := '';
+          StW := '';
           if Lpp.HdevNames <> 0 then
           begin
             DevNames := PDevNames(GlobalLock(lpp.hDevNames));
             try
-              if UseUnicode then
-              begin
-                StW := PWidechar(DEVNames) + DevNames^.wDeviceOffset;
-                Printer.SetPrinter(UTF8Encode(widestring(StW)));
-              end
-              else
-              begin
-                StA := PChar(DevNames) + DevNames^.wDeviceOffset;
-                Printer.SetPrinter(StA);
-              end
+              StW := PWidechar(DEVNames) + DevNames^.wDeviceOffset;
+              Printer.SetPrinter(UTF8Encode(widestring(StW)));
             finally
               GlobalUnlock(lpp.hDevNames);
               GlobalFree(lpp.hDevNames);
@@ -160,17 +132,11 @@ begin
 
           if lpp.hDevMode <> 0 then
           begin
-            if UseUnicode then
-              DevModeW := PDeviceModeW(GlobalLock(lpp.hDevMode))
-            else
-              DevModeA := PDeviceModeA(GlobalLock(lpp.hDevMode));
+            DevModeW := PDeviceModeW(GlobalLock(lpp.hDevMode));
             try
               //Set the properties for the selected printer
               PDev := TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
-              if UseUnicode then
-                CopyMemory(PDev.DevModeW, DevModeW, PDev.DevModeSize)
-              else
-                CopyMemory(PDev.DevModeA, DevModeA, PDev.DevModeSize);
+              CopyMemory(PDev.DevModeW, DevModeW, PDev.DevModeSize);
             finally
               GlobalUnlock(lpp.hDevMode);
            end;
@@ -194,8 +160,6 @@ var
   DevNames   : PDevNames;
   DevModeW   : PDeviceModeW;
   StW        : PWidechar;
-  DevModeA   : PDeviceMode;
-  StA        : PChar;
   BoolRes: BOOL;
 begin
   Result:=False;
@@ -209,10 +173,7 @@ begin
       hInstance := System.HInstance;
       lpfnSetupHook := @PrintHookProc;
       if Title<>'' then
-        if UseUnicode then
-          lCustData := LPARAM(pWideChar(UTF8Decode(Title)))
-        else
-          lCustData := LPARAM(pChar(Utf8ToAnsi(Title)))
+        lCustData := LPARAM(pWideChar(UTF8Decode(Title)))
       else
         lCustData := 0;
       Flags := PD_PRINTSETUP or PD_RETURNDC or PD_ENABLESETUPHOOK;
@@ -221,41 +182,24 @@ begin
       // Pdev.DevMode has the required size, just copy to the global memory
       DeviceMode := GlobalAlloc(GHND, PDev.DevModeSize);
       try
-        if UseUnicode then
-          DevModeW := PDeviceModeW(GlobalLock(DeviceMode))
-        else
-          DevModeA := PDeviceModeA(GlobalLock(DeviceMode));
+        DevModeW := PDeviceModeW(GlobalLock(DeviceMode));
         try
-          if useUnicode then
-            CopyMemory(DevModeW, Pdev.DevModeW, Pdev.DevModeSize)
-          else
-            CopyMemory(DevModeA, Pdev.DevModeA, Pdev.DevModeSize);
+          CopyMemory(DevModeW, Pdev.DevModeW, Pdev.DevModeSize);
         finally
           GlobalUnlock(DeviceMode);
         end;
         hDevMode := DeviceMode;
-        if UseUnicode then
-          BoolRes := PrintDlgW(@lpp)
-        else
-          BoolRes := PrintDlg(@lpp);
+        BoolRes := PrintDlgW(@lpp);
         if BoolRes then
         begin
-          if UseUnicode then StW := '' else StA := '';
+          StW := '';
           //Change Selected printer
           if lpp.hDevNames <> 0 then
           begin
             DevNames := PDevNames(GlobalLock(lpp.hDevNames));
             try
-              if UseUnicode then
-              begin
-                StW := PWidechar(DevNames) + DevNames^.wDeviceOffset;
-                Printer.SetPrinter(UTF8Encode(widestring(StW)));
-              end
-              else
-              begin
-                StA := PChar(DevNames) + DevNames^.wDeviceOffset;
-                Printer.SetPrinter(StA);
-              end;
+              StW := PWidechar(DevNames) + DevNames^.wDeviceOffset;
+              Printer.SetPrinter(UTF8Encode(widestring(StW)));
             finally
               GlobalUnlock(lpp.hDevNames);
               GlobalFree(lpp.hDevNames);
@@ -266,17 +210,11 @@ begin
 
           if lpp.hDevMode <> 0 then
           begin
-            if UseUnicode then
-              DevModeW := PDeviceModeW(GlobalLock(lpp.hDevMode))
-            else
-              DevModeA := PDeviceMode(GlobalLock(lpp.hDevMode));
+            DevModeW := PDeviceModeW(GlobalLock(lpp.hDevMode));
             try
               //Set the properties for the selected printer
               PDev := TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
-              if UseUnicode then
-                CopyMemory(PDev.DevModeW, DevModeW, PDev.DevModeSize)
-              else
-                CopyMemory(PDev.DevModeA, DevModeA, PDev.DevModeSize);
+              CopyMemory(PDev.DevModeW, DevModeW, PDev.DevModeSize);
               TWinPrinter(Printer).Handle := hDC;
             finally
               GlobalUnlock(lpp.hDevMode);
@@ -301,8 +239,6 @@ var
   DevNames   : PDevNames;
   DevModeW   : PDeviceModeW;
   StW        : PWidechar;
-  DevModeA   : PDeviceModeA;
-  StA        : PChar;
   BoolRes: BOOL;
   Index: Integer;
 begin
@@ -319,10 +255,7 @@ begin
       lpfnSetupHook := @PrintHookProc;
       if Title<>'' then
       begin
-        if UseUnicode then
-          lCustData := LPARAM(pWideChar(UTF8Decode(Title)))
-        else
-          lCustData := LPARAM(pChar(Utf8ToAnsi(Title)));
+        lCustData := LPARAM(pWideChar(UTF8Decode(Title)));
       end
       else
         lCustData := 0;
@@ -349,15 +282,9 @@ begin
       // Pdev.DevMode has the required size, just copy to the global memory
       DeviceMode := GlobalAlloc(GHND, PDEV.DevModeSize);
       try
-        if UseUnicode then
-          DevModeW := PDeviceModeW(GlobalLock(DeviceMode))
-        else
-          DevModeA := PDeviceModeA(GlobalLock(DeviceMode));
+        DevModeW := PDeviceModeW(GlobalLock(DeviceMode));
         try
-          if UseUnicode then
-            CopyMemory(DevModeW, PDev.DevModeW, PDev.DevModeSize)
-          else
-            CopyMemory(DevModeA, PDev.DevModeA, PDev.DevModeSize);
+          CopyMemory(DevModeW, PDev.DevModeW, PDev.DevModeSize);
         finally
           GlobalUnlock(DeviceMode);
         end;
@@ -368,32 +295,18 @@ begin
         nToPage := Word(ToPage);
         nMinPage := Word(MinPage);
         nMaxPage := Word(MaxPage);
-        if UseUnicode then
-          DevModeW^.dmCopies := nCopies
-        else
-          DevModeA^.dmCopies := nCopies;
-        if UseUnicode then
-          BoolRes := PrintDlgW(@lpp)
-        else
-          BoolRes := PrintDlg(@lpp);
+        DevModeW^.dmCopies := nCopies;
+        BoolRes := PrintDlgW(@lpp);
         if BoolRes then
         begin
-          if UseUnicode then StW := '' else StA:='';
+          StW := '';
           //Change Selected printer
           if lpp.hDevNames <> 0 then
           begin
             DevNames := PDevNames(GlobalLock(lpp.hDevNames));
             try
-              if UseUnicode then
-              begin
-                StW := PWidechar(DevNames) + DevNames^.wDeviceOffset;
-                Printer.SetPrinter(UTF8Encode(widestring(stW)));
-              end
-              else
-              begin
-                StA := PChar(DevNames) + DevNames^.wDeviceOffset;
-                Printer.SetPrinter(StA);
-              end;
+              StW := PWidechar(DevNames) + DevNames^.wDeviceOffset;
+              Printer.SetPrinter(UTF8Encode(widestring(stW)));
             finally
               GlobalUnlock(lpp.hDevNames);
               GlobalFree(lpp.hDevNames);
@@ -406,43 +319,24 @@ begin
           // support extended device modes
           PDev:=TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
 
-          if (lpp.hDevMode<>0) and ( (UseUnicode and (Pdev.DevModeW<>nil)) or
-             ((not UseUnicode) and (Pdev.DevModeA<>nil)))then
+          if (lpp.hDevMode<>0) and (Pdev.DevModeW<>nil) then
 
           begin
-            if UseUnicode then
-              DevModeW := PDeviceModeW(GlobalLock(lpp.hDevMode))
-            else
-              DevModeA := PDeviceModeA(GlobalLock(lpp.hDevMode));
+            DevModeW := PDeviceModeW(GlobalLock(lpp.hDevMode));
             try
-              if UseUnicode then
-                CopyMemory(PDev.DevModeW,DevModeW,PDev.DevModeSize)
-              else
-                CopyMemory(PDev.DevModeA,DevModeA,PDev.DevModeSize);
-              if UseUnicode then
-                Index := Printer.PaperSize.SupportedPapers.IndexOfObject(TObject(ptrint(DevModeW^.dmPaperSize)))
-              else
-                Index := Printer.PaperSize.SupportedPapers.IndexOfObject(TObject(ptrint(DevModeA^.dmPaperSize)));
+              CopyMemory(PDev.DevModeW,DevModeW,PDev.DevModeSize);
+              Index := Printer.PaperSize.SupportedPapers.IndexOfObject(TObject(ptrint(DevModeW^.dmPaperSize)));
               if Index <> -1 then
               begin
-                if UseUnicode then
-                  PDev.DevModeW^.dmPaperSize := DevModeW^.dmPaperSize
-                else
-                  PDev.DevModeA^.dmPaperSize := DevModeA^.dmPaperSize
+                PDev.DevModeW^.dmPaperSize := DevModeW^.dmPaperSize;
               end
               else
               begin
-                if Useunicode then
-                  PDev.DevModeW^.dmPaperSize := PDev.DefaultPaper
-                else
-                  PDev.DevModeA^.dmPaperSize := PDev.DefaultPaper
+                PDev.DevModeW^.dmPaperSize := PDev.DefaultPaper;
               end;
               if nCopies=1 then
               begin
-                if UseUnicode then
-                  Copies := DevModeW^.dmCopies
-                else
-                  Copies := DevModeA^.dmCopies
+                Copies := DevModeW^.dmCopies;
               end
               else
                 Copies := nCopies;

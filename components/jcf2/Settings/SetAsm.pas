@@ -70,7 +70,7 @@ uses
 const
   REG_CAPS = 'Caps';
   REG_BREAKS_AFTER_LABEL = 'BreaksAfterLabel';
-  REG_INDENT_LEVEL = 'Indent_';
+  //REG_INDENT_LEVEL = 'Indent_';
   REG_BREAKS_AFTER_LABEL_ENABLED = 'BreaksAfterLabelEnabled';
 
   REG_STATEMENT_INDENT_ENABLED = 'StatementIndentEnabled';

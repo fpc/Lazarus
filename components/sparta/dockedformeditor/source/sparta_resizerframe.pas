@@ -17,8 +17,9 @@ unit sparta_ResizerFrame;
 interface
 
 uses
-  Classes, contnrs, SysUtils, FileUtil, Forms, Controls, ExtCtrls, StdCtrls, Graphics, LCLType,
-  lclintf, sparta_DesignedForm, Math, FormEditingIntf, PropEdits;
+  Classes, contnrs, SysUtils, FileUtil, Forms, Controls, ExtCtrls, StdCtrls,
+  Graphics, LCLType, lclintf, Menus, LMessages, sparta_DesignedForm, Math,
+  Types, FormEditingIntf, PropEdits;
 
 type
 
@@ -39,6 +40,7 @@ type
     pMarginT: TPanel;
     pR: TPanel;
     pT: TPanel;
+    procedure pBGPaint(Sender: TObject);
     procedure sbVerticalScroll(Sender: TObject; ScrollCode: TScrollCode;
       var ScrollPos: Integer);
     procedure sbHorizontalScroll(Sender: TObject; ScrollCode: TScrollCode;
@@ -51,7 +53,11 @@ type
     FHorizontalScrollPos: Integer;
     FDesignedForm: IDesignedForm;
     FBackground: IDesignedFormBackground;
+    FFakeFocusControl: TWinControl;
 
+    procedure FakeExitEnter(Sender: TObject);
+    procedure FakeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FakeKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure SetDesignedForm(const AValue: IDesignedForm);
   private
     { private declarations }
@@ -66,6 +72,11 @@ type
     FMaxWidth, FMaxHeight: Integer;
     FActivePropertyGridItemIndex: Integer;
     FLastClientWidth, FLastClientHeight: Integer;
+    FOldHasMainMenu: Boolean;
+    FMenuChanged: Boolean;
+
+    function HasMainMenu: Boolean;
+    procedure AppOnIdle(Sender: TObject; var Done: Boolean);
 
     procedure PanelPaint(Sender: TObject);
     procedure BGChangeBounds(Sender: TObject);
@@ -93,6 +104,7 @@ type
     function HorizontalSizerLineLength: Integer;
 
     function GetBackgroundMargin(const AIndex: Integer): Integer;
+    function GetMenuHeight: Integer;
 
     procedure TryBoundDesignedForm;
   public
@@ -121,6 +133,9 @@ type
     procedure HideSizeControls;
     procedure ShowSizeRects;
     procedure ShowSizeControls;
+
+    procedure OnMenuChanged;
+    procedure DesignerSetFocus;
 
     property VerticalScrollPos: Integer read FVerticalScrollPos write FVerticalScrollPos;
     property HorizontalScrollPos: Integer read FHorizontalScrollPos write FHorizontalScrollPos;
@@ -209,24 +224,65 @@ begin
 end;
 
 procedure TResizerFrame.PanelPaint(Sender: TObject);
+var
+  LWidth, LHeight: Integer;
+  LOldColor: TColor;
+  LCanvas: TCanvas;
 begin
   if FNodePositioning then
     Exit;
-  if Sender = pR then
-    TileImage(iResizerLineImg, pR.Canvas, 0, 0, SIZER_LINE_WIDTH, Height)
-  else if Sender = pB then
-    TileImage(iResizerLineImg, pB.Canvas, 0, 0, Width, SIZER_LINE_WIDTH)
-  else if Sender = pL then
-    TileImage(iResizerLineImg, pL.Canvas, 0, 0, SIZER_LINE_WIDTH, Height)
-  else if Sender = pT then
-    TileImage(iResizerLineImg, pT.Canvas, 0, 0, Width, SIZER_LINE_WIDTH);
+  if (Sender = pR) or (Sender = pL) then
+  begin
+    LWidth := SIZER_LINE_WIDTH;
+    LHeight := Height;
+  end else
+  begin
+    LWidth := Width;
+    LHeight := SIZER_LINE_WIDTH;
+  end;
+  LCanvas := (Sender as TPanel).Canvas;
+  if FFakeFocusControl.Focused then
+  begin
+    LOldColor := LCanvas.Brush.Color;
+    LCanvas.Brush.Color := $FFEEDD;
+    LCanvas.FillRect(0, 0, LWidth, LHeight);
+    LCanvas.Brush.Color := LOldColor;
+  end;
+  TileImage(iResizerLineImg, LCanvas, 0, 0, LWidth, LHeight);
+end;
+
+procedure TResizerFrame.pBGPaint(Sender: TObject);
+var
+  MenuRect: Types.TRect;
+  Menu: TMainMenu;
+  X, Y, I: Integer;
+  LCanvas: TCanvas;
+begin
+  //fake paint menu
+
+  if not HasMainMenu then
+    Exit;
+  Menu := FDesignedForm.Form.Menu;
+
+  LCanvas := (Sender as TPanel).Canvas;
+  LCanvas.Brush.Color := clMenuBar;
+  MenuRect := (Sender as TPanel).ClientRect;
+  MenuRect.Bottom := MenuRect.Top + GetMenuHeight;
+  LCanvas.FillRect(MenuRect);
+  LCanvas.Font.Color := clMenuText;
+
+  X := 5;
+  Y := (MenuRect.Top+MenuRect.Bottom-LCanvas.TextHeight('Hg')) div 2;
+  for I := 0 to Menu.Items.Count-1 do
+    if Menu.Items[I].Visible then
+    begin
+      LCanvas.TextOut(X, Y, Menu.Items[I].Caption);
+      Inc(X, LCanvas.TextWidth(Menu.Items[I].Caption) + 10);
+    end;
+  LCanvas.Brush.Color := clNone;
 end;
 
 procedure TResizerFrame.ClientChangeBounds(Sender: TObject);
-{$IFDEF USE_POPUP_PARENT_DESIGNER}
-var
-  p: TPoint;
-{$ENDIF}
 begin
   if (DesignedForm = nil) or FNodePositioning then
     Exit;
@@ -237,15 +293,8 @@ begin
 (*
   DesignedForm.BeginUpdate;
 
-{$IFDEF USE_POPUP_PARENT_DESIGNER}
-  p := Point(0, 0);
-  p := pClient.ClientToScreen(p);
-  DesignedForm.RealLeft   := p.x;
-  DesignedForm.RealTop   := p.y;
-{$ELSE}
   DesignedForm.RealLeft := 0;
   DesignedForm.RealTop := 0;
-{$ENDIF}
   DesignedForm.RealWidth  := pClient.Width;
   DesignedForm.RealHeight := pClient.Height;
   DesignedForm.EndUpdate;
@@ -467,7 +516,9 @@ begin
         Exit;
 
       HideSizeControls;
-
+      UpdateWindow(pBG.Handle);
+      UpdateWindow(Self.Handle);
+      UpdateWindow(Self.Parent.Handle);
       with Self do
       begin //resize
         frmPoint := Self.ScreenToClient(Mouse.CursorPos);
@@ -583,11 +634,29 @@ begin
   end;
 end;
 
+procedure TResizerFrame.OnMenuChanged;
+begin
+  FMenuChanged := True;
+end;
+
 function TResizerFrame.GetRightMargin: Integer;
 begin
   if not FNodePositioning then
     FLastRightMarign := Width - (pR.Left + pR.Width);
   Result := FLastRightMarign;
+end;
+
+function TResizerFrame.HasMainMenu: Boolean;
+var
+  I: Integer;
+begin
+  Result := False;
+  if  (FDesignedForm<>nil) and (FDesignedForm.Form.Menu<>nil)
+  and (FDesignedForm.Form.Menu.Items.Count>0)
+  then
+    for I := 0 to FDesignedForm.Form.Menu.Items.Count-1 do
+      if FDesignedForm.Form.Menu.Items[I].Visible then
+        Exit(True);
 end;
 
 function TResizerFrame.GetBottomMargin: Integer;
@@ -661,6 +730,24 @@ begin
     Result := 0
   else
     Result := FBackground.GetMargin(AIndex);
+
+  if (AIndex = 1) and HasMainMenu then
+    Result := Result + GetMenuHeight;
+end;
+
+function TResizerFrame.GetMenuHeight: Integer;
+begin
+  // some WS (Gtk2) return too big SM_CYMENU, just set it according to font height
+  // no problem, it is used only for the fake main menu
+
+  {$IFDEF LCLWin32}
+  Result := lclintf.GetSystemMetrics(SM_CYMENU);
+  {$ELSE}
+  if pBG.HandleAllocated then
+    Result := pBG.Canvas.TextHeight('Hg') * 4 div 3
+  else
+    Result := 20;
+  {$ENDIF}
 end;
 
 procedure TResizerFrame.TryBoundDesignedForm;
@@ -692,6 +779,12 @@ begin
   //Result := DesignedForm.Width - DesignedForm.RealWidth;
 end;
 
+procedure TResizerFrame.DesignerSetFocus;
+begin
+  if FFakeFocusControl.CanSetFocus then
+    FFakeFocusControl.SetFocus;
+end;
+
 function TResizerFrame.DesignedHeightToScroll: Integer;
 begin
   if DesignedForm = nil then
@@ -707,6 +800,14 @@ constructor TResizerFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
 
+  FFakeFocusControl := TEdit.Create(Self);
+  FFakeFocusControl.Parent := Self;
+  FFakeFocusControl.Top := -100;
+  FFakeFocusControl.OnKeyDown := FakeKeyDown;
+  FFakeFocusControl.OnKeyUp := FakeKeyUp;
+  FFakeFocusControl.OnEnter := FakeExitEnter;
+  FFakeFocusControl.OnExit := FakeExitEnter;
+
   FNodes := TObjectList.Create(False);
   CreateNodes;
 
@@ -718,12 +819,64 @@ begin
   pClient.OnChangeBounds := ClientChangeBounds;
   pBG.OnChangeBounds     := BGChangeBounds;
   PositionNodes(Self);
+
+  Application.AddOnIdleHandler(AppOnIdle);
+end;
+
+procedure TResizerFrame.AppOnIdle(Sender: TObject; var Done: Boolean);
+begin
+  if not FMenuChanged then
+    Exit;
+
+  if FOldHasMainMenu <> HasMainMenu then
+    PositionNodes(Self)
+  else if FOldHasMainMenu then
+    pBG.Invalidate;
+
+  FMenuChanged := False;
 end;
 
 destructor TResizerFrame.Destroy;
 begin
+  Application.RemoveOnIdleHandler(AppOnIdle);
   FNodes.Free;
   inherited Destroy;
+end;
+
+procedure TResizerFrame.FakeExitEnter(Sender: TObject);
+begin
+  pL.Repaint;
+  pT.Repaint;
+  pR.Repaint;
+  pB.Repaint;
+end;
+
+procedure TResizerFrame.FakeKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  LWndProc: TWndMethod;
+  LMsg: TLMKeyUp;
+begin
+  LWndProc := FDesignedForm.Form.WindowProc;
+  FillChar(LMsg{%H-}, SizeOf(LMsg), 0);
+  LMsg.msg := CN_KEYDOWN;
+  LMsg.CharCode := Key;
+  LWndProc(TLMessage(LMsg));
+  Key := 0;
+end;
+
+procedure TResizerFrame.FakeKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  LWndProc: TWndMethod;
+  LMsg: TLMKeyUp;
+begin
+  LWndProc := FDesignedForm.Form.WindowProc;
+  FillChar(LMsg{%H-}, SizeOf(LMsg), 0);
+  LMsg.msg := CN_KEYUP;
+  LMsg.CharCode := Key;
+  LWndProc(TLMessage(LMsg));
+  Key := 0;
 end;
 
 procedure TResizerFrame.PositionNodes(AroundControl: TWinControl);
@@ -737,34 +890,36 @@ begin
   // positions of bars
   if not FNodePositioning then
   begin
-  pL.Left := -FHorizontalScrollPos;
-  pR.Left := FDesignedForm.Width - FHorizontalScrollPos + pL.Width + BgRightMargin + BgLeftMargin;
-  pT.Top := -FVerticalScrollPos;
-  pB.Top := FDesignedForm.Height - FVerticalScrollPos + pT.Height + BgBottomMargin + BgTopMargin;
+    pL.Left := -FHorizontalScrollPos;
+    pR.Left := FDesignedForm.Width - FHorizontalScrollPos + pL.Width + BgRightMargin + BgLeftMargin;
+    pT.Top := -FVerticalScrollPos;
+    pB.Top := FDesignedForm.Height - FVerticalScrollPos + pT.Height + BgBottomMargin + BgTopMargin;
 
-  // width and height
-  pL.Top:=0;
-  pL.Height := FDesignedForm.Height + 2*SIZER_RECT_SIZE + BgTopMargin + BgBottomMargin;
-  pR.Top:=0;
-  pR.Height := FDesignedForm.Height + 2*SIZER_RECT_SIZE + BgTopMargin + BgBottomMargin;
-  pT.Left:=0;
-  pT.Width := FDesignedForm.Width + 2*SIZER_RECT_SIZE + BgLeftMargin + BgRightMargin;
-  pB.Left:=0;
-  pB.Width := FDesignedForm.Width + 2*SIZER_RECT_SIZE + BgLeftMargin + BgRightMargin;
+    // width and height
+    pL.Top:=0;
+    pL.Height := FDesignedForm.Height + 2*SIZER_RECT_SIZE + BgTopMargin + BgBottomMargin;
+    pR.Top:=0;
+    pR.Height := FDesignedForm.Height + 2*SIZER_RECT_SIZE + BgTopMargin + BgBottomMargin;
+    pT.Left:=0;
+    pT.Width := FDesignedForm.Width + 2*SIZER_RECT_SIZE + BgLeftMargin + BgRightMargin;
+    pB.Left:=0;
+    pB.Width := FDesignedForm.Width + 2*SIZER_RECT_SIZE + BgLeftMargin + BgRightMargin;
 
-  // client
-  if pBG.Left + BgLeftMargin <= 0 then
-    pClient.Left := -(pBG.Left) - (FHorizontalScrollPos - SIZER_RECT_SIZE)
-  else
-    pClient.Left := pBG.Left + BgLeftMargin;
-  if pBG.Top + BgTopMargin <= 0 then
-    pClient.Top := -(pBG.Top) - (FVerticalScrollPos - SIZER_RECT_SIZE)
-  else
-    pClient.Top := pBG.Top + BgTopMargin;
+    // client
+    if pBG.Left + BgLeftMargin <= 0 then
+      pClient.Left := -(pBG.Left) - (FHorizontalScrollPos - SIZER_RECT_SIZE)
+    else
+      pClient.Left := pBG.Left + BgLeftMargin;
+    if pBG.Top + BgTopMargin <= 0 then
+      pClient.Top := -(pBG.Top) - (FVerticalScrollPos - SIZER_RECT_SIZE)
+    else
+      pClient.Top := pBG.Top + BgTopMargin;
 
-  pClient.Height := Height - pClient.Top - Max(Height - (pB.Top - BgBottomMargin), 0);
-  pClient.Width := Width - pClient.Left - Max(Width - (pR.Left - BgRightMargin), 0);
+    pClient.Height := Height - pClient.Top - Max(Height - (pB.Top - BgBottomMargin), 0);
+    pClient.Width := Width - pClient.Left - Max(Width - (pR.Left - BgRightMargin), 0);
   end;
+
+  FOldHasMainMenu := HasMainMenu;
 
   for Node := 0 to 7 do
   begin

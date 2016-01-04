@@ -50,9 +50,9 @@ type
     procedure CheckEnabled(const pcToken: TObject); virtual;
 
     // every token is inspected, even when the visitor is disabled
-    procedure InspectSourceToken(const pcToken: TObject); virtual;
+    procedure InspectSourceToken(const {%H-}pcToken: TObject); virtual;
     // this is only called when the processor is enabled
-    function EnabledVisitSourceToken(const pcToken: TObject): Boolean; virtual;
+    function EnabledVisitSourceToken(const {%H-}pcToken: TObject): Boolean; virtual;
 
   public
     constructor Create; override;

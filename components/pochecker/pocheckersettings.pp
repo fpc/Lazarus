@@ -164,9 +164,11 @@ const
   pTestTypes = 'TestTypes/';
   pTestOptions = 'TestOptions/';
   pWindowsGeometry = 'General/WindowsGeometry/';
-  pExternalEditor = 'ExternalEditor/';
   pMasterPoFiles = 'MasterPoFiles/';
   pMasterPoSelection = 'MasterPoSelection/';
+  {$IFDEF POCHECKERSTANDALONE}
+  pExternalEditor = 'ExternalEditor/';
+  {$ENDIF}
 
 var
   DefaultRect: TRect;

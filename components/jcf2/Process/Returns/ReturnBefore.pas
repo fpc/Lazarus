@@ -141,7 +141,7 @@ begin
 end;
 
 
-function NeedsBlankLine(const pt, ptNext: TSourceToken): boolean;
+function NeedsBlankLine(const pt: TSourceToken): boolean;
 var
   lcNext: TSourceToken;
 begin
@@ -428,7 +428,7 @@ begin
 
   liReturnsNeeded := 0;
 
-  if NeedsBlankLine(lcSourceToken, lcNext) then
+  if NeedsBlankLine(lcSourceToken) then
     liReturnsNeeded := 2
   else if NeedsReturn(lcSourceToken, lcNext) then
     liReturnsNeeded := 1;

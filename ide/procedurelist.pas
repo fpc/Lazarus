@@ -36,19 +36,25 @@ unit ProcedureList;
 {$mode objfpc}{$H+}
 
 interface
+
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  ExtCtrls, StdCtrls,
-  CodeTree, CodeToolManager, CodeCache,
-  IDEImagesIntf;
+  // FCL, LCL
+  Classes, SysUtils,
+  Forms, Controls, Graphics, Dialogs, ComCtrls, ExtCtrls, StdCtrls, LCLType, Clipbrd,
+  // Codetools
+  CodeTree, CodeToolManager, CodeCache, PascalParserTool, KeywordFuncLists, FileProcs,
+  // IdeIntf
+  IDEImagesIntf, SrcEditorIntf, IDEWindowIntf, LazIDEIntf, IDECommands,
+  ListViewFilterEdit,
+  // IDE
+  IDEOptionDefs, LazarusIDEStrConsts;
 
 type
   { TProcedureListForm }
   TProcedureListForm = class(TForm)
     cbObjects: TComboBox;
-    edMethods: TEdit;
+    FilterMethods: TListViewFilterEdit;
     lblObjects: TLabel;
-    lblSearch: TLabel;
     LV: TListView;
     pnlHeader: TPanel;
     StatusBar: TStatusBar;
@@ -58,16 +64,11 @@ type
     ToolButton2: TToolButton;
     tbJumpTo: TToolButton;
     ToolButton4: TToolButton;
-    tbFilterAny: TToolButton;
-    tbFilterStart: TToolButton;
-    ToolButton7: TToolButton;
     tbChangeFont: TToolButton;
     ToolButton9: TToolButton;
     procedure cbObjectsChange(Sender: TObject);
-    procedure edMethodsChange(Sender: TObject);
-    procedure edMethodsKeyDown(Sender: TObject; var Key: Word;
-      {%H-}Shift: TShiftState);
     procedure edMethodsKeyPress(Sender: TObject; var Key: char);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: char);
     procedure FormResize(Sender: TObject);
@@ -86,11 +87,10 @@ type
     { Move editors focus to selected method. }
     procedure JumpToSelection;
     { Populates Listview based on selected Class and user entered filter. }
+    procedure AddToListView(pCodeTool: TCodeTool; pNode: TCodeTreeNode);
     procedure PopulateListview;
     { Populates only tho cbObjects combo with available classes. }
     procedure PopulateObjectsCombo;
-    procedure AddToListView(pCodeTool: TCodeTool; pNode: TCodeTreeNode);
-    function  PassFilter(pSearchAll: boolean; pProcName, pSearchStr: string; pCodeTool: TCodeTool; pNode: TCodeTreeNode): boolean;
   public
     property MainFilename: string read FMainFilename;
     property Caret: TCodeXYPosition read FCaret;
@@ -98,24 +98,12 @@ type
   end; 
 
 
-
-procedure ExecuteProcedureList(Sender: TObject);
+var
+  ProcListView: TProcedureListForm = nil;
 
 implementation
 
 {$R *.lfm}
-
-uses
-  SrcEditorIntf
-  ,PascalParserTool
-  ,KeywordFuncLists
-  ,LCLType
-  ,LazIDEIntf
-  ,IDECommands
-  ,Clipbrd
-  ,LazarusIDEStrConsts
-  ;
-
 
 const
   cAbout =
@@ -123,102 +111,56 @@ const
     'Author: Graeme Geldenhuys  (graemeg@gmail.com)' + #10 +
     'Inspired by: GExperts  (www.gexperts.org)';
 
-
-{ This is where it all starts. Gets called from Lazarus. }
-procedure ExecuteProcedureList(Sender: TObject);
-var
-  frm: TProcedureListForm;
-begin
-  Assert(Sender<>nil);  // removes compiler warning
-  
-  frm := TProcedureListForm.Create(nil);
-  try
-    frm.ShowModal;
-    if frm.ModalResult = mrOK then  // we need to jump
-    begin
-      LazarusIDE.DoOpenFileAndJumpToPos(frm.Caret.Code.Filename,
-          Point(frm.Caret.X, frm.Caret.Y), frm.NewTopLine, -1,-1,
-          [ofRegularFile,ofUseCache]);
-    end;
-  finally
-    frm.Free;
-  end;
-end;
-
-
-{ Check, if the given string starts with this substring. Check ignores case. }
-function StrStartsWith(sStr, sSubstr: String): Boolean;
-begin
-  sStr := AnsiUpperCase(sStr);
-  sSubstr := AnsiUpperCase(sSubstr);
-
-  Result := Pos(sSubstr, sStr) = 1;
-end;
-
-
-function StrContains(const SubStr, Str: string; CaseSensitive: Boolean): Boolean;
-begin
-  if CaseSensitive then
-    Result := Pos(SubStr, Str) > 0
-  else
-    Result := Pos(AnsiUpperCase(SubStr), AnsiUpperCase(Str)) > 0;
-end;
-
-
-function FilterFits(const SubStr, Str: string): boolean;
-var
-  Src: PChar;
-  PFilter: PChar;
-  c: Char;
-  i: Integer;
-begin
-  Result := SubStr='';
-  if not Result then
-  begin
-    Src := PChar(Str);
-    PFilter := PChar(SubStr);
-    repeat
-      c := Src^;
-      if c <> #0 then
-      begin
-        if UpChars[Src^] = UpChars[PFilter^] then
-        begin
-          i := 1;
-          while (UpChars[Src[i]] = UpChars[PFilter[i]]) and (PFilter[i] <> #0) do
-            inc(i);
-          if PFilter[i] = #0 then
-          begin
-            exit(true);
-          end;
-        end;
-      end
-      else
-        exit(false);
-      inc(Src);
-    until false;
-  end;
-end;
-
+// ToDo: set a callback notification for source editor page change.
 
 { TProcedureListForm }
+
+procedure TProcedureListForm.FormCreate(Sender: TObject);
+begin
+  Name:=NonModalIDEWindowNames[nmiwProcedureList];
+  SetupGUI;
+  // Very weird: populating Combobox here shows only unique entries, no duplicates.
+  // Calling the same method in FormShow shows duplicates. Makes no sense ...
+  //PopulateObjectsCombo;
+end;
+
+procedure TProcedureListForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  if Assigned(Parent) then
+  begin
+    // Using a dock manager...
+    CloseAction := caNone;
+    // Copied from TComponentListForm.FormClose
+    if Assigned(HostDockSite) and (HostDockSite.DockClientCount <= 1)
+      and (HostDockSite is TCustomForm) and (HostDockSite.Parent = nil) then
+    begin
+      TCustomForm(HostDockSite).Close;
+    end;
+  end;
+end;
+
+procedure TProcedureListForm.FormShow(Sender: TObject);
+begin
+  if Assigned(SourceEditorManagerIntf.ActiveEditor) then
+    FMainFilename := SourceEditorManagerIntf.ActiveEditor.Filename
+  else
+    FMainFilename := '';
+  Caption := lisPListProcedureList + ' - ' + ExtractFileName(FMainFilename);
+  PopulateObjectsCombo;
+  PopulateListView;
+  StatusBar.Panels[0].Text := self.MainFilename;
+  FilterMethods.SetFocus;  // ActiveControl gets lost sometimes.
+end;
 
 procedure TProcedureListForm.FormResize(Sender: TObject);
 begin
   StatusBar.Panels[0].Width := self.ClientWidth - 105;
 end;
 
-
-procedure TProcedureListForm.FormShow(Sender: TObject);
-begin
-  edMethods.SetFocus;
-end;
-
-
 procedure TProcedureListForm.LVDblClick(Sender: TObject);
 begin
   JumpToSelection;
 end;
-
 
 procedure TProcedureListForm.LVSelectItem(Sender: TObject; Item: TListItem;
   Selected: Boolean);
@@ -231,7 +173,6 @@ begin
     StatusBar.Panels[0].Text := Item.SubItems[4];
 end;
 
-
 procedure TProcedureListForm.tbAboutClick(Sender: TObject);
 begin
   ShowMessage(cAbout);
@@ -242,13 +183,11 @@ begin
 
 end;
 
-
 procedure TProcedureListForm.tbCopyClick(Sender: TObject);
 begin
   if Assigned(LV.Selected) then
     Clipboard.AsText := LV.Selected.SubItems[0];
 end;
-
 
 procedure TProcedureListForm.SetupGUI;
 begin
@@ -256,13 +195,9 @@ begin
   self.Position       := poScreenCenter;
 
   // assign resource strings to Captions and Hints
-  self.Caption          := lisPListProcedureList;
   lblObjects.Caption    := lisPListObjects;
-  lblSearch.Caption     := lisMenuSearch;
   tbAbout.Hint          := lisMenuTemplateAbout;
   tbJumpTo.Hint         := lisPListJumpToSelection;
-  tbFilterAny.Hint      := lisPListFilterAny;
-  tbFilterStart.Hint    := lisPListFilterStart;
   tbChangeFont.Hint     := lisPListChangeFont;
   tbCopy.Hint           := lisPListCopyMethodToClipboard;
   LV.Column[1].Caption  := lisProcedure;
@@ -275,8 +210,6 @@ begin
   tbChangeFont.ImageIndex  := IDEImages.LoadImage(16, 'item_font');
   tbAbout.ImageIndex       := IDEImages.LoadImage(16, 'menu_information');
   tbJumpTo.ImageIndex      := IDEImages.LoadImage(16, 'menu_goto_line');
-  tbFilterAny.ImageIndex   := IDEImages.LoadImage(16, 'item_filter');
-  tbFilterStart.ImageIndex := IDEImages.LoadImage(16, 'item_filter');
 
   LV.Column[0].Width  := 20;
   LV.Column[1].Width  := 300;
@@ -289,13 +222,10 @@ begin
   LV.SortType         := stText;
   LV.HideSelection    := False;
   
-  LV.Items.Clear;
-
   cbObjects.Style     := csDropDownList;
   cbObjects.Sorted    := True;
   cbObjects.DropDownCount := 8;
 end;
-
 
 procedure TProcedureListForm.JumpToSelection;
 var
@@ -324,10 +254,46 @@ begin
   if not ACodeTool.CleanPosToCaretAndTopLine(lStartPos, FCaret, FNewTopLine) then
     Exit; //==>
 
-  { This should close the form }
-  self.ModalResult := mrOK;
+  LazarusIDE.DoOpenFileAndJumpToPos(Caret.Code.Filename, Point(Caret.X, Caret.Y),
+                                    NewTopLine, -1,-1, [ofRegularFile,ofUseCache]);
+  Close;
 end;
 
+procedure TProcedureListForm.AddToListView(pCodeTool: TCodeTool; pNode: TCodeTreeNode);
+var
+  Data: TStringArray;
+  lNodeText: string;
+  lCaret: TCodeXYPosition;
+begin
+  SetLength(Data, 6);    // Data[0] remains empty
+
+  { procedure name }
+  Data[1] := pCodeTool.ExtractProcHead(pNode,
+      [phpWithoutParamList, phpWithoutBrackets, phpWithoutSemicolon]);
+
+  { type }
+  lNodeText := pCodeTool.ExtractProcHead(pNode,
+      [phpWithStart, phpWithoutParamList, phpWithoutBrackets, phpWithoutSemicolon]);
+  if Pos('procedure', lNodeText) > 0 then
+    Data[2] := 'Procedure'
+  else
+    Data[2] := 'Function';
+
+  { line number }
+  if pCodeTool.CleanPosToCaret(pNode.StartPos, lCaret) then
+    Data[3] := IntToStr(lCaret.Y);
+
+  { start pos - used by JumpToSelected() }
+  Data[4] := IntToStr(pNode.StartPos);
+
+  { full procedure name used in statusbar }
+  Data[5] := pCodeTool.ExtractProcHead(pNode,
+                  [phpWithStart,phpWithVarModifiers,
+                   phpWithParameterNames,phpWithDefaultValues,phpWithResultType,
+                   phpWithOfObject,phpWithCallingSpecs,phpWithProcModifiers]);
+
+  FilterMethods.Items.Add(Data);
+end;
 
 procedure TProcedureListForm.PopulateListview;
 var
@@ -336,9 +302,8 @@ var
   lCodeTool: TCodeTool;
   lNode: TCodeTreeNode;
 begin
-  LV.BeginUpdate;
   try
-    LV.Items.Clear;
+    FilterMethods.Items.Clear;
     { get active source editor }
     lSrcEditor := SourceEditorManagerIntf.ActiveEditor;
     if lSrcEditor = nil then
@@ -349,9 +314,7 @@ begin
     CodeToolBoss.Explore(lCodeBuffer,lCodeTool,False);
 
     { copy the tree }
-    if (lCodeTool = nil)
-        or (lCodeTool.Tree = nil)
-        or (lCodeTool.Tree.Root = nil) then
+    if (lCodeTool = nil) or (lCodeTool.Tree = nil) or (lCodeTool.Tree.Root = nil) then
       Exit; //==>
 
     if Assigned(lCodeTool.Tree) then
@@ -359,32 +322,27 @@ begin
       { Find the starting point }
       lNode := lCodeTool.FindImplementationNode;
       if lNode = nil then
-      begin
         { fall back - guess we are working with a program unit }
         lNode := lCodeTool.Tree.Root;
-      end;
 
       { populate the listview here }
       lNode := lNode.FirstChild;
       while lNode <> nil do
       begin
         if lNode.Desc = ctnProcedure then
-        begin
           AddToListView(lCodeTool, lNode);
-        end;
         lNode := lNode.NextBrother;
       end;
     end;  { if }
   finally
+    FilterMethods.InvalidateFilter;
     if LV.Items.Count > 0 then
     begin
       LV.Selected := LV.Items[0];
       LV.ItemFocused := LV.Items[0];
     end;
-    LV.EndUpdate;
   end;
 end;
-
 
 procedure TProcedureListForm.PopulateObjectsCombo;
 var
@@ -411,26 +369,27 @@ begin
       Exit; //==>
 
     { copy the tree }
-    if Assigned(lCodeTool.Tree) then
+    { Find the starting point }
+    lNode := lCodeTool.FindImplementationNode;
+    if lNode = nil then
     begin
-      { Find the starting point }
-      lNode := lCodeTool.FindImplementationNode;
-      if lNode = nil then
+      { fall back - guess we are working with a program unit }
+      lNode := lCodeTool.Tree.Root;
+    end;
+    { populate the Combobox here! }
+    lNode := lNode.FirstChild;
+    while lNode <> nil do
+    begin
+      if lNode.Desc = ctnProcedure then
       begin
-        { fall back - guess we are working with a program unit }
-        lNode := lCodeTool.Tree.Root;
-      end;
-      { populate the Combobox here! }
-      lNode := lNode.FirstChild;
-      while lNode <> nil do
-      begin
-        if lNode.Desc = ctnProcedure then
+        lNodeText := lCodeTool.ExtractClassNameOfProcNode(lNode);
+        if lNodeText <> '' then
         begin
-          lNodeText := lCodeTool.ExtractClassNameOfProcNode(lNode);
+          DebugLn(['TProcedureListForm.PopulateObjectsCombo: Adding "', lNodeText, '" to combobox items.']);
           cbObjects.Items.Add(lNodeText);
         end;
-        lNode := lNode.NextBrother;
       end;
+      lNode := lNode.NextBrother;
     end;
     cbObjects.Sorted := true;
     cbObjects.Sorted := false;
@@ -443,183 +402,35 @@ begin
   end;
 end;
 
-
-procedure TProcedureListForm.AddToListView(pCodeTool: TCodeTool; pNode: TCodeTreeNode);
-var
-  lItem: TListItem;
-  lNodeText: string;
-  lType: string;
-  lCaret: TCodeXYPosition;
-  FSearchAll: boolean;
-begin
-  FSearchAll := cbObjects.Text = lisPListAll;
-  lNodeText := pCodeTool.ExtractProcHead(pNode,
-      [phpWithoutClassKeyword, phpWithoutParamList, phpWithoutBrackets,
-       phpWithoutSemicolon, phpWithoutClassName]);
-
-  { Must we add this pNode or not? }
-  if not PassFilter(FSearchAll, lNodeText, edMethods.Text, pCodeTool, pNode) then
-    Exit; //==>
-    
-  { Add new list item }
-  lItem := LV.Items.Add;
-
-  { procedure name }
-  lNodeText := pCodeTool.ExtractProcHead(pNode,
-      [phpWithoutParamList, phpWithoutBrackets, phpWithoutSemicolon]);
-  lItem.SubItems.Add(lNodeText);
-
-  { type }
-  lNodeText := pCodeTool.ExtractProcHead(pNode,
-      [phpWithStart, phpWithoutParamList, phpWithoutBrackets, phpWithoutSemicolon]);
-  if Pos('procedure', lNodeText) > 0 then
-    lType := 'Procedure'
-  else
-    lType := 'Function';
-  lItem.SubItems.Add(lType);
-  
-  { line number }
-  if pCodeTool.CleanPosToCaret(pNode.StartPos, lCaret) then
-    lItem.SubItems.Add(IntToStr(lCaret.Y));
-    
-  { start pos - used by JumpToSelected() }
-  lItem.SubItems.Add(IntToStr(pNode.StartPos));
-  
-  { full procedure name used in statusbar }
-  lNodeText := pCodeTool.ExtractProcHead(pNode,
-                  [phpWithStart,phpWithVarModifiers,
-                   phpWithParameterNames,phpWithDefaultValues,phpWithResultType,
-                   phpWithOfObject,phpWithCallingSpecs,phpWithProcModifiers]);
-  lItem.SubItems.Add(lNodeText);
-end;
-
-
-{ Do we pass all the filter tests to continue? }
-function TProcedureListForm.PassFilter(pSearchAll: boolean;
-  pProcName, pSearchStr: string; pCodeTool: TCodeTool; pNode: TCodeTreeNode
-  ): boolean;
-var
-  lClass: string;
-  
-  function ClassMatches: boolean;
-  begin
-    { lets filter by class selection. }
-    lClass := pCodeTool.ExtractClassNameOfProcNode(pNode);
-    if cbObjects.Text = lisPListNone then
-      Result := lClass = ''
-    else
-      Result := lClass = cbObjects.Text;
-
-  end;
-  
-begin
-  Result := False;
-  if (Length(pSearchStr) = 0) then    // seach string is empty
-  begin
-    if pSearchAll then
-      Result := True
-    else
-      Result := ClassMatches;
-  end
-  else if not pSearchAll and tbFilterStart.Down
-  and SameText(pSearchStr, Copy(pProcName, 1, Length(pSearchStr))) then
-    Result := True
-  else if not pSearchAll and tbFilterAny.Down and ClassMatches
-  and FilterFits(pSearchStr, pProcName) then
-    Result := True
-  else if pSearchAll and FilterFits(pSearchStr, pProcName) then
-    Result := True;
-end;
-
-
 procedure TProcedureListForm.FormKeyPress(Sender: TObject; var Key: char);
 begin
   if Key = #27 then   // Escape key
   begin
-    self.ModalResult := mrCancel;
+    Close;
   end;
 end;
 
-
-procedure TProcedureListForm.FormCreate(Sender: TObject);
+procedure TProcedureListForm.cbObjectsChange(Sender: TObject);
 begin
-  if SourceEditorManagerIntf.ActiveEditor = nil then
-  begin
-    //SetupGUI makes the dialog look as it should, and is clears the listview
-    //thus preventing a crash when clicking on the LV
-    SetupGUI;
-    Exit; //==>
-  end;
-
-  FMainFilename := SourceEditorManagerIntf.ActiveEditor.Filename;
-  Caption := Caption + ExtractFileName(FMainFilename);
-  SetupGUI;
-  PopulateObjectsCombo;
-  PopulateListView;
-  StatusBar.Panels[0].Text := self.MainFilename;
+  // ToDo: populate based on the selected item
+  PopulateListview;
 end;
-
 
 procedure TProcedureListForm.edMethodsKeyPress(Sender: TObject; var Key: char);
 begin
   case Key of
     #13:
       begin
-        JumpToSelection;
         Key := #0;
+        JumpToSelection;
       end;
     #27:
       begin
-        self.ModalResult := mrCancel;
         Key := #0;
+        Close;
       end;
-  end;
-end;
-
-
-procedure TProcedureListForm.edMethodsChange(Sender: TObject);
-begin
-  PopulateListview;
-end;
-
-
-procedure TProcedureListForm.cbObjectsChange(Sender: TObject);
-begin
-  PopulateListview;
-end;
-
-
-procedure TProcedureListForm.edMethodsKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  if LV.Items.Count = 0 then
-    Exit;
-
-  if Key = VK_Down then
-  begin
-    if (LV.Items.IndexOf(LV.ItemFocused) + 1) < LV.Items.Count then
-      LV.ItemFocused := LV.Items[(LV.Items.IndexOf(LV.ItemFocused) + 1)];
-  end
-  else if Key = VK_Up then
-  begin
-    if (LV.Items.IndexOf(LV.ItemFocused) - 1) >= 0 then
-      LV.ItemFocused := LV.Items[(LV.Items.IndexOf(LV.ItemFocused) - 1)];
-  end
-  else if Key = VK_Home then
-  begin
-    LV.ItemFocused := LV.Items[0];
-  end
-  else if Key = VK_End then
-  begin
-    LV.ItemFocused := LV.Items[LV.Items.Count - 1];
-  end;
-
-  if LV.ItemFocused<>nil then
-  begin
-    LV.Selected := LV.ItemFocused;
-    if Assigned(LV.Selected) then
-      LV.Selected.MakeVisible(True);
   end;
 end;
 
 end.
+

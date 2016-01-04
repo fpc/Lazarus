@@ -164,7 +164,7 @@ const
 
   REG_NUM_RETURNS_AFTER_FINAL_END = 'NumReturnsAfterFinalEnd';
 
-  REG_ALIGN_ASSIGN = 'AlignAssign';
+  //REG_ALIGN_ASSIGN = 'AlignAssign';
 
   REG_REMOVE_BAD_RETURNS = 'RemoveBadReturns';
   REG_ADD_GOOD_RETURNS   = 'AddGoodReturns';

@@ -2780,7 +2780,21 @@ You can define your own captions and return values of this function.
 For each TModalResult a button is created. <br/>
 To set a custom caption, add a string after a button. You can use the special string parameters 'isdefault' and 'iscancel' to setup the default and cancel buttons.
 </p><p>The default TModalResults defined in controls.pp (mrNone..mrLast) don't need a caption. The default captions will be used.
-</p>
+</p><p>You can mark one default button using the 'IsDefault' option. When the user presses 'Return' this button is triggered.
+</p><p>Some widgetsets provide an Escape key and/or a close button. This results in mrCancel even if it is not in the given button list. Use the 'IsCancel' option to redirect it to a button of your choice. You can combine 'IsDefault' and 'IsCancel'.
+</p><pre>case QuestionDlg('COPYING',
+                   'Abort?',
+                   mtConfirmation,
+                   [mrNo, '&amp;No','IsDefault',
+                   mrYes,'&amp;Yes'],0) 
+of
+   mrYes : ShowMessage('You clicked Yes');
+   mrNo : ShowMessage('You clicked No');
+else
+  // mrCancel
+  ShowMessage('You cancelled the dialog.');
+end;
+</pre>
         </descr>
         <errors/>
         <seealso>

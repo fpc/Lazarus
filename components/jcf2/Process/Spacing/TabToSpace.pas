@@ -65,12 +65,9 @@ begin
 end;
 
 function TTabToSpace.EnabledVisitSourceToken(const pcNode: TObject): Boolean;
-const
-  // this is needed in Delphi 2007
-  TabChar: WideChar = WideChar(NativeTab);
 var
   lcSourceToken, lcNextToken: TSourceToken;
-  ls: WideString;
+  ls: String;
 begin
   Result := False;
   lcSourceToken := TSourceToken(pcNode);
@@ -94,7 +91,7 @@ begin
     end;
   end;
 
-  ls := WideStringReplace(ls, TabChar, fsSpaces, [rfReplaceAll]);
+  ls := StringReplace(ls, NativeTab, fsSpaces, [rfReplaceAll]);
   lcSourceToken.SourceCode := ls;
 end;
 

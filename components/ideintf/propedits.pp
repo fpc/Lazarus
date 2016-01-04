@@ -30,7 +30,7 @@ uses
   FileUtil, FileCtrl, ObjInspStrConsts, PropEditUtils, Themes,
   // Forms with .lfm files
   FrmSelectProps, StringsPropEditDlg, KeyValPropEditDlg, CollectionPropEditForm,
-  FileFilterPropEditor;
+  FileFilterPropEditor, IDEWindowIntf;
 
 const
   MaxIdentLength: Byte = 63;
@@ -1182,7 +1182,7 @@ type
                       InstanceMethod:ShortString; TypeData:PTypeData) of object;
   // components
   TPropHookGetComponent = function(const ComponentPath: String):TComponent of object;
-  TPropHookGetComponentName = function(AComponent: TComponent):ShortString of object;
+  TPropHookGetComponentName = function(AComponent: TComponent):String of object;
   TPropHookGetComponentNames = procedure(TypeData: PTypeData;
                                          Proc: TGetStrProc) of object;
   TPropHookGetRootClassName = function:ShortString of object;
@@ -1263,6 +1263,9 @@ type
     htRefreshPropertyValues,
     // dependencies
     htAddDependency,
+    // designer
+    htDesignerMouseDown,
+    htDesignerMouseUp,
     // other
     htGetCheckboxForBoolean
     );
@@ -1309,7 +1312,7 @@ type
                         InstanceMethod: ShortString;  TypeData: PTypeData);
     // components
     function GetComponent(const ComponentPath: string): TComponent;
-    function GetComponentName(AComponent: TComponent): ShortString;
+    function GetComponentName(AComponent: TComponent): String;
     procedure GetComponentNames(TypeData: PTypeData; const Proc: TGetStrProc);
     function GetRootClassName: ShortString;
     function GetAncestorInstance(const InstProp: TInstProp;
@@ -1332,6 +1335,10 @@ type
     procedure Unselect(const APersistent: TPersistent);
     function IsSelected(const APersistent: TPersistent): boolean;
     procedure SelectOnlyThis(const APersistent: TPersistent);
+    procedure DesignerMouseDown(Sender: TObject; Button: TMouseButton;
+                        Shift: TShiftState; X, Y: Integer);
+    procedure DesignerMouseUp(Sender: TObject; Button: TMouseButton;
+                        Shift: TShiftState; X, Y: Integer);
     // persistent objects
     function GetObject(const aName: ShortString): TPersistent;
     function GetObjectName(Instance: TPersistent): ShortString;
@@ -1412,6 +1419,14 @@ type
                      const OnGetAncestorInstProp: TPropHookGetAncestorInstProp);
     procedure RemoveHandlerGetAncestorInstProp(
                      const OnGetAncestorInstProp: TPropHookGetAncestorInstProp);
+    procedure AddHandlerDesignerMouseDown(
+                 const OnMouseDown: TMouseEvent);
+    procedure RemoveHandlerDesignerMouseDown(
+                 const OnMouseDown: TMouseEvent);
+    procedure AddHandlerDesignerMouseUp(
+                 const OnMouseUp: TMouseEvent);
+    procedure RemoveHandlerDesignerMouseUp(
+                 const OnMouseUp: TMouseEvent);
     // component create, delete, rename
     procedure AddHandlerComponentRenamed(
                            const OnComponentRenamed: TPropHookComponentRenamed);
@@ -4161,6 +4176,7 @@ begin
   if CollectionForm = nil then
     CollectionForm := TCollectionPropertyEditorForm.Create(Application);
   CollectionForm.SetCollection(ACollection, OwnerPersistent, PropName);
+  SetPopupModeParentForPropertyEditor(CollectionForm);
   CollectionForm.EnsureVisible;
   Result:=CollectionForm;
 end;
@@ -4352,7 +4368,7 @@ class function TMethodPropertyEditor.GetDefaultMethodName(Root,
   PropName: shortstring): shortstring;
 // returns the default name for a new method
 var I: Integer;
-  Postfix: String;
+  Postfix: shortstring;
 begin
   Result:='';
   if Root=nil then exit;
@@ -5124,9 +5140,9 @@ var
   Dlg: TForm;
   BtnPanel: TButtonPanel;
 begin
+  Dlg:=TForm.Create(Application);
   try
-    Dlg:=TForm.Create(nil);
-    Dlg.BorderStyle:=bsToolWindow;
+    Dlg.BorderIcons:=[biSystemMenu];
     Dlg.Caption:=oisSelectShortCut;
     Dlg.Position:=poScreenCenter;
     Dlg.Constraints.MinWidth:=350;
@@ -5710,8 +5726,7 @@ begin
   end;
 end;
 
-function TPropertyEditorHook.GetComponent(const ComponentPath: string
-  ): TComponent;
+function TPropertyEditorHook.GetComponent(const ComponentPath: string): TComponent;
 var
   i: Integer;
 begin
@@ -5727,10 +5742,10 @@ begin
     Result := TComponent(LookupRoot).FindComponent(ComponentPath);
 end;
 
-function TPropertyEditorHook.GetComponentName(AComponent: TComponent
-  ): ShortString;
+function TPropertyEditorHook.GetComponentName(AComponent: TComponent): String;
 var
   i: Integer;
+  CompName, ParentName: String;
   Handler: TPropHookGetComponentName;
 begin
   Result := '';
@@ -5742,10 +5757,24 @@ begin
     Handler := TPropHookGetComponentName(FHandlers[htGetComponentName][i]);
     Result := Handler(AComponent);
   end;
-  if Result = '' then begin
-    Result := AComponent.Name;
+  if Result = '' then
+  begin
+    CompName := AComponent.Name;
     if (AComponent.Owner<>LookupRoot) and (AComponent.Owner<>nil) then
-      Result:=AComponent.Owner.Name+'.'+Result;
+      ParentName := AComponent.Owner.Name;
+    if CompName='' then
+      DebugLn('TPropertyEditorHook.GetComponentName: AComponent.Name is empty, '+
+              'AComponent.Owner.Name="' + ParentName+'".');
+    if ParentName='' then
+      DebugLn('TPropertyEditorHook.GetComponentName: AComponent.Owner.Name is empty.');
+
+    Result := CompName;
+    if ParentName<>'' then
+    begin
+      Result := ParentName;
+      if CompName<>'' then
+        Result := Result+'.'+CompName;
+    end;
   end;
 end;
 
@@ -6091,6 +6120,34 @@ begin
     AForm := GetDesignerForm(FLookupRoot);
     if Assigned(AForm) and Assigned(AForm.Designer) then
       AForm.Designer.Modified;
+  end;
+end;
+
+procedure TPropertyEditorHook.DesignerMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  i: Integer;
+  Handler: TMouseEvent;
+begin
+  i := GetHandlerCount(htDesignerMouseDown);
+  while GetNextHandlerIndex(htDesignerMouseDown, i) do
+  begin
+    Handler := TMouseEvent(FHandlers[htDesignerMouseDown][i]);
+    Handler(Sender, Button,  Shift, X, Y);
+  end;
+end;
+
+procedure TPropertyEditorHook.DesignerMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  i: Integer;
+  Handler: TMouseEvent;
+begin
+  i := GetHandlerCount(htDesignerMouseUp);
+  while GetNextHandlerIndex(htDesignerMouseUp, i) do
+  begin
+    Handler := TMouseEvent(FHandlers[htDesignerMouseUp][i]);
+    Handler(Sender, Button,  Shift, X, Y);
   end;
 end;
 
@@ -6485,10 +6542,34 @@ begin
   AddHandler(htModified,TMethod(OnModified));
 end;
 
+procedure TPropertyEditorHook.AddHandlerDesignerMouseDown(
+  const OnMouseDown: TMouseEvent);
+begin
+  AddHandler(htDesignerMouseDown,TMethod(OnMouseDown));
+end;
+
+procedure TPropertyEditorHook.AddHandlerDesignerMouseUp(
+  const OnMouseUp: TMouseEvent);
+begin
+  AddHandler(htDesignerMouseUp,TMethod(OnMouseUp));
+end;
+
 procedure TPropertyEditorHook.RemoveHandlerModified(
   const OnModified: TPropHookModified);
 begin
   RemoveHandler(htModified,TMethod(OnModified));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerDesignerMouseDown(
+  const OnMouseDown: TMouseEvent);
+begin
+  RemoveHandler(htDesignerMouseDown,TMethod(OnMouseDown));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerDesignerMouseUp(
+  const OnMouseUp: TMouseEvent);
+begin
+  RemoveHandler(htDesignerMouseUp,TMethod(OnMouseUp));
 end;
 
 procedure TPropertyEditorHook.AddHandlerRevert(const OnRevert: TPropHookRevert);

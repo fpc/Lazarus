@@ -250,7 +250,7 @@ procedure TCustomComboBox.AdjustDropDown;
 var
   Count, MinItemsWidth, MinItemsHeight: Integer;
 begin
-  if (not HandleAllocated) or (not DroppedDown) then exit;
+  if (not HandleAllocated) then exit;
   Count := Items.Count;
   if Count > DropDownCount then Count := DropDownCount;
   if Count < 1 then Count := 1;

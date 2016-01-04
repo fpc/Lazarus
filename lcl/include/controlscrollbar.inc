@@ -73,6 +73,7 @@ begin
   PrevPosition := FPosition;
   // position has to be set before FControl.ScrollBy !!!
   FPosition := Value;
+
   // scroll logical client area of FControl
   if Kind = sbVertical then
     FControl.ScrollBy(0, PrevPosition - FPosition)

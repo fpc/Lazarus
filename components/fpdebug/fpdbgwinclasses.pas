@@ -498,7 +498,6 @@ begin
   begin
     if not FThreadMap.HasId(AThread.ID) then begin
       AThread.Free;
-      exit(false);
     end else begin
       AThread.NextIsSingleStep:=SingleStep;
       if SingleStep or assigned(FCurrentBreakpoint) then

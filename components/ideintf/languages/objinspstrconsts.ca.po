@@ -1349,9 +1349,17 @@ msgstr "Cap"
 msgid "Add Images"
 msgstr "Afegeix imatges"
 
+#: objinspstrconsts.sccsiledtopendialogn
+msgid "New Image"
+msgstr ""
+
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
 msgstr "Color Transparent:"
+
+#: objinspstrconsts.sccsiledtreplace
+msgid "&Replace ..."
+msgstr ""
 
 #: objinspstrconsts.sccsiledtsave
 #, fuzzy
@@ -1577,6 +1585,10 @@ msgstr ""
 
 #: objinspstrconsts.s_addassingle
 msgid "Add as single"
+msgstr ""
+
+#: objinspstrconsts.s_confirm_clear
+msgid "Are you sure to clear image list?"
 msgstr ""
 
 #: objinspstrconsts.s_splitimage

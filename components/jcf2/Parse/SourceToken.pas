@@ -41,7 +41,7 @@ type
   TSourceToken = class(TParseTreeNode)
   private
     { property implementation }
-    fsSourceCode: WideString;
+    fsSourceCode: String;
     feTokenType: TTokenType;
     feWordType: TWordType;
     feCommentStyle: TCommentStyle;
@@ -52,7 +52,7 @@ type
     fbPreprocessedOut: boolean;
 
     fePreprocessorSymbol: TPreProcessorSymbolType;
-    fsPreProcessorText: WideString;
+    fsPreProcessorText: String;
 
   protected
   public
@@ -66,7 +66,7 @@ type
 
     function HasChildNode(const peTokens: TTokenTypeSet): boolean; override;
     function HasChildNode(const peTokens: TTokenTypeSet;
-      const piMaxDepth: integer): boolean; override;
+      const {%H-}piMaxDepth: integer): boolean; override;
 
     function SolidChildCount: integer; override;
     function FirstSolidLeaf: TParseTreeNode; override;
@@ -85,7 +85,7 @@ type
     property TokenType: TTokenType Read feTokenType Write feTokenType;
     property WordType: TWordType Read feWordType Write feWordType;
 
-    property SourceCode: WideString Read fsSourceCode Write fsSourceCode;
+    property SourceCode: String Read fsSourceCode Write fsSourceCode;
     property CommentStyle: TCommentStyle Read feCommentStyle Write feCommentStyle;
 
     property FileName: string read fsFileName write fsFileName;
@@ -95,7 +95,7 @@ type
       Read fiSolidTokenOnLineIndex Write fiSolidTokenOnLineIndex;
 
     property PreprocessorSymbol: TPreProcessorSymbolType Read fePreprocessorSymbol;
-    property PreProcessorText: WideString Read fsPreProcessorText;
+    property PreProcessorText: String Read fsPreProcessorText;
 
     property PreprocessedOut: boolean Read fbPreprocessedOut Write fbPreprocessedOut;
   end;
@@ -265,7 +265,7 @@ begin
   while (lcLineToken <> nil) and (lcLineToken.TokenType <> ttReturn) do
   begin
     Result := Result + lcLineToken.SourceCode;
-    lcLineToken :=  lcLineToken.NextToken;
+    lcLineToken := lcLineToken.NextToken;
   end;
 end;
 

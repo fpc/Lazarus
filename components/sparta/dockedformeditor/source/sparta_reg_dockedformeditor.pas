@@ -34,9 +34,6 @@ begin
 
   Screen.AddHandlerFormAdded(TSpartaMainIDE.Screen_FormAdded);
   Screen.AddHandlerRemoveForm(TSpartaMainIDE.Screen_FormDel);
-{$IFDEF USE_POPUP_PARENT_DESIGNER}
-  TCustomForm(LazarusIDE.GetMainBar).AddHandlerOnBeforeDestruction(spartaIDE.OnBeforeClose);
-{$ENDIF}
   SourceEditorManagerIntf.RegisterChangeEvent(semWindowCreate, TSpartaMainIDE.WindowCreate);
   SourceEditorManagerIntf.RegisterChangeEvent(semWindowDestroy, TSpartaMainIDE.WindowDestroy);
   SourceEditorManagerIntf.RegisterChangeEvent(semWindowShow, TSpartaMainIDE.WindowShow);
@@ -50,6 +47,7 @@ begin
 
   GlobalDesignHook.AddHandlerShowMethod(TSpartaMainIDE.OnShowMethod);
   GlobalDesignHook.AddHandlerRefreshPropertyValues(TSpartaMainIDE.OnDesignRefreshPropertyValues);
+  GlobalDesignHook.AddHandlerDesignerMouseDown(TSpartaMainIDE.OnDesignMouseDown);
 
   IDETabMaster := TDTXTabMaster.Create;
   IDEComponentsMaster := TDTXComponentsMaster.Create;

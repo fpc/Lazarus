@@ -265,14 +265,17 @@ begin
   {$endif WinCE}
 end;
 
-{$IFDEF MSWindows}
+{$IFDEF Windows}
 // for all Windows supporting 8bit codepages (e.g. not WinCE)
-function WinCPToUTF8(const s: string): string;
+function WinCPToUTF8(const s: string): string; {$ifdef WinCe}inline;{$endif}
 // result has codepage CP_ACP
 var
   UTF16WordCnt: SizeInt;
   UTF16Str: UnicodeString;
 begin
+  {$ifdef WinCE}
+  Result := SysToUtf8(s);
+  {$else}
   Result:=s;
   if IsASCII(Result) then begin
     {$ifdef FPC_HAS_CPSTRING}
@@ -293,14 +296,18 @@ begin
     SetCodePage(RawByteString(Result), CP_ACP, False);
     {$endif}
   end;
+  {$endif}
 end;
 
-function UTF8ToWinCP(const s: string): string;
+function UTF8ToWinCP(const s: string): string; {$ifdef WinCe}inline;{$endif}
 // result has codepage CP_ACP
 var
   src: UnicodeString;
   len: LongInt;
 begin
+  {$ifdef WinCE}
+  Result := Utf8ToSys(s);
+  {$else}
   Result:=s;
   if IsASCII(Result) then begin
     {$ifdef FPC_HAS_CPSTRING}
@@ -321,6 +328,7 @@ begin
     SetCodePage(RawByteString(Result), CP_ACP, False);
     {$endif}
   end;
+  {$endif}
 end;
 {$ENDIF}
 

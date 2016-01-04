@@ -197,7 +197,7 @@ begin
   ClientW:=VertScrollBar.ClientSizeWithoutBar;
   ClientH:=HorzScrollBar.ClientSizeWithoutBar;
   {$IFDEF VerboseScrollingWinControl}
-  debugln(['TScrollingWinControl.ComputeScrollbars ',DbgSName(Self),' Bounds=',dbgs(BoundsRect),' ClientRect=',dbgs(ClientRect),' ClientRectNoScrollBars=',ClientW,'x',ClientH,' Needed=',NeededClientW,'x',NeededClientH]);
+  debugln(['TScrollingWinControl.ComputeScrollbars ',DbgSName(Self),' Bounds=',dbgs(BoundsRect),' ClientRect=',dbgs(ClientRect),' ClientRectNoScrollBars=',ClientW,'x',ClientH]);
   {$ENDIF}
 
   if VertScrollBar.Range > ClientH then

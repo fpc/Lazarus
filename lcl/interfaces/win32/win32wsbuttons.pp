@@ -419,8 +419,8 @@ begin
       ButtonImageList.margin.top := 5;
       ButtonImageList.margin.bottom := 5;
       ButtonImageList.uAlign := BUTTON_IMAGELIST_ALIGN_CENTER;
-      // if themes are not enabled then we need to fill only one state bitmap, else
-      // fill all bitmas
+      // if themes are enabled then we need to fill all state bitmaps,
+      // else fill only current state bitmap
       if ThemeServices.ThemesEnabled then
       begin
         for I := 1 to 6 do

@@ -143,3 +143,4 @@ msgstr "Nessuna bevenda selezionata."
 msgctxt "TMAINFORM.RGDRINKS.CAPTION"
 msgid "Please select a drink"
 msgstr "Prego, selezionare una bevanda"
+

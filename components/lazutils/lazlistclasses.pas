@@ -174,7 +174,7 @@ type
     function GetCount: Integer; inline;
   protected
     function GrowCapacity(ARequired: Integer): Integer;
-    function ShrinkCapacity(ARequired: Integer): Integer;
+    function ShrinkCapacity({%H-}ARequired: Integer): Integer;
 
     procedure SetCapacityEx(AValue, AnInsertPos, AnInsertSize: Integer);
     procedure InsertRowsEx(AIndex, ACount: Integer; AGrowProc: TLazStorageMemGrowProc);
@@ -232,7 +232,7 @@ type
   generic TLazFixedRoundBufferListMemBase<TPItemT, TSizeT> = object(specialize TLazRoundBufferListMemBase<TPItemT, TSizeT>)
   protected
     function GrowCapacity(ARequired: Integer): Integer;
-    function ShrinkCapacity(ARequired: Integer): Integer;
+    function ShrinkCapacity({%H-}ARequired: Integer): Integer;
     property Mem: TLazListClassesInternalMem read FMem;
   public
     procedure Create(AItemSize: TSizeT; ACapacity: Integer);

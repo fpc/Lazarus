@@ -88,7 +88,8 @@ type
     nmiwCodeBrowser,
     nmiwIssueBrowser,
     nmiwJumpHistory,
-    nmiwComponentList
+    nmiwComponentList,
+    nmiwProcedureList
     );
 
 const
@@ -124,7 +125,8 @@ const
     'CodeBrowser',
     'IssueBrowser',
     'JumpHistory',
-    'ComponentList'
+    'ComponentList',
+    'ProcedureList'
    );
 
 type

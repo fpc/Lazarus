@@ -1372,6 +1372,8 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.DoConstraintsChange(Sender : TObject);
 begin
+  Width:=Constraints.MinMaxWidth(Width);
+  Height:=Constraints.MinMaxHeight(Height);
   AdjustSize;
 end;
 
@@ -2031,7 +2033,7 @@ begin
   if (csDesigning in ComponentState) then
   begin
     // redirect messages to designer
-    Form := GetParentForm(Self);
+    Form := GetDesignerForm(Self);
     //debugln(['TControl.WndProc ',dbgsname(Self)]);
     if Assigned(Form) and Assigned(Form.Designer) and Form.Designer.IsDesignMsg(Self, TheMessage) then
       Exit;

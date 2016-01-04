@@ -53,6 +53,7 @@ type
     HelpButton: TBitBtn;
     BtnPanel: TPanel;
     CloseButton: TBitBtn;
+    LabelNoPreview: TLabel;
     RegExprErrorLabel: TLabel;
     NewEncodingComboBox: TComboBox;
     FileFilterCombobox: TComboBox;
@@ -351,17 +352,20 @@ var
   Encoding: String;
   li: TListItem;
   HasFiles: Boolean;
+  IsDone: Boolean;
 begin
   Screen.Cursor:=crHourGlass;
   try
     HasFiles:=GetFiles;
     PreviewListView.Items.Clear;
-    if HasFiles and (FFiles.Tree.Count=0) then begin
-      li:=PreviewListView.Items.Add;
-      li.Caption:=lisFilesHaveRightEncoding;
-      ApplyButton.Enabled:=False;
-      exit;
-    end;
+
+    IsDone:=HasFiles and (FFiles.Tree.Count=0);
+    PreviewGroupBox.Visible:=not IsDone;
+    LabelNoPreview.Visible:=IsDone;
+    LabelNoPreview.Caption:=lisFilesHaveRightEncoding;
+    ApplyButton.Enabled:=not IsDone;
+    if IsDone then exit;
+
     PreviewListView.BeginUpdate;
     Node:=FFiles.Tree.FindLowest;
     while Node<>nil do begin

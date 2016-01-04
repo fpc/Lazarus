@@ -16,9 +16,6 @@ uses
 {$ifend}
 {$if defined(cpusparc) }  {$DEFINE PasScriptNotAvail } {$ifend}
 
-const
-  EMSSupported = {$IFDEF PasScriptNotAvail} False {$ELSE} True {$ENDIF} ;
-
 type
 
   { TEMSEditorMacro }

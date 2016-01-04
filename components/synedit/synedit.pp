@@ -974,6 +974,7 @@ type
     function GetHighlighterAttriAtRowColEx(XY: TPoint; out Token: string;
       out TokenType, Start: Integer;
       out Attri: TSynHighlighterAttributes): boolean;                           //L505
+    procedure CaretAtIdentOrString(XY: TPoint; out AtIdent, NearString: Boolean);
     procedure GetWordBoundsAtRowCol(const XY: TPoint; out StartX, EndX: integer);
     function GetWordAtRowCol(XY: TPoint): string;
     function NextTokenPos: TPoint; virtual; deprecated; // use next word pos instead
@@ -8830,8 +8831,7 @@ begin
         if (PosX >= Start) and (PosX < Start + Length(Token)) then begin
           Attri := Highlighter.GetTokenAttribute;
           TokenType := Highlighter.GetTokenKind;
-          Result := TRUE;
-          exit;
+          exit(True);
         end;
         Highlighter.Next;
       end;
@@ -8840,7 +8840,53 @@ begin
   Token := '';
   Attri := nil;
   TokenType := -1;
-  Result := FALSE;
+  Result := False;
+end;
+
+procedure TCustomSynEdit.CaretAtIdentOrString(XY: TPoint; out AtIdent, NearString: Boolean);
+// This is optimized to check if cursor is on identifier or string.
+var
+  PosX, PosY: integer;
+  Line, Token: string;
+  Start: Integer;
+  Attri, PrevAttri: TSynHighlighterAttributes;
+begin
+  PosY := XY.Y -1;
+  PrevAttri := nil;
+  AtIdent := False;
+  NearString := False;
+  //DebugLn('');
+  //DebugLn('TCustomSynEdit.CaretAtIdentOrString: Enter');
+  if Assigned(Highlighter) and (PosY >= 0) and (PosY < FTheLinesView.Count) then
+  begin
+    Line := FTheLinesView[PosY];
+    fHighlighter.CurrentLines := FTheLinesView;
+    Highlighter.StartAtLineIndex(PosY);
+    PosX := XY.X;
+    //DebugLn([' TCustomSynEdit.CaretAtIdentOrString: Line="', Line, '", PosX=', PosX, ', PosY=', PosY]);
+    if (PosX > 0) and (PosX <= Length(Line)) then
+    begin
+      while not Highlighter.GetEol do
+      begin
+        Start := Highlighter.GetTokenPos + 1;
+        Token := Highlighter.GetToken;
+        //TokenType := Highlighter.GetTokenKind;
+        Attri := Highlighter.GetTokenAttribute;
+        //DebugLn(['  TCustomSynEdit.CaretAtIdentOrString: Start=', Start, ', Token=', Token]);
+        if (PosX >= Start) and (PosX < Start + Length(Token)) then
+        begin
+          AtIdent := Attri = Highlighter.IdentifierAttribute;
+          NearString := (Attri = Highlighter.StringAttribute)
+                 or (PrevAttri = Highlighter.StringAttribute); // If cursor is on end-quote.
+          //DebugLn(['   TCustomSynEdit.CaretAtIdentOrString: Success! Attri=', Attri,
+          //         ', AtIdent=', AtIdent, ', AtString=', AtString]);
+          exit;
+        end;
+        PrevAttri := Attri;
+        Highlighter.Next;
+      end;
+    end;
+  end;
 end;
 
 function TCustomSynEdit.IdentChars: TSynIdentChars;

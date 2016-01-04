@@ -137,7 +137,7 @@ type
     procedure StartIDE; virtual; abstract;
     destructor Destroy; override;
     procedure CreateOftenUsedForms; virtual; abstract;
-    function GetMainBar: TComponent; override;
+    function GetMainBar: TForm; override;
     procedure SetRecentProjectFilesMenu;
     procedure SetRecentFilesMenu;
     function BeginCodeTool(var ActiveSrcEdit: TSourceEditor;
@@ -705,7 +705,7 @@ begin
   ActiveUnitInfo:=AnUnitInfo;
 end;
 
-function TMainIDEBase.GetMainBar: TComponent;
+function TMainIDEBase.GetMainBar: TForm;
 begin
   Result:=MainIDEBar;
 end;
@@ -817,19 +817,9 @@ begin
   AFilename:=AppendPathDelim(GetPrimaryConfigPath)+DefaultProjectOptionsFilename;
   if not FileExistsUTF8(AFilename) then
     CopySecondaryConfigFile(DefaultProjectOptionsFilename);
-  if FileExistsUTF8(AFilename) then begin
-    if AProject.ReadProject(AFilename,nil,True)<>mrOk then
+  if FileExistsUTF8(AFilename) then
+    if AProject.ReadProject(AFilename,nil,False)<>mrOk then
       DebugLn(['TMainIDEBase.DoLoadDefaultCompilerOptions failed']);
-  end else begin
-    // old way (<0.9.31)
-    // load default compiler options if exists
-    AFilename:=AppendPathDelim(GetPrimaryConfigPath)+DefaultProjectCompilerOptionsFilename;
-    if not FileExistsUTF8(AFilename) then
-      CopySecondaryConfigFile(DefaultProjectCompilerOptionsFilename);
-    if not FileExistsUTF8(AFilename) then exit;
-    if AProject.CompilerOptions.LoadFromFile(AFilename)<>mrOk then
-      DebugLn(['TMainIDEBase.DoLoadDefaultCompilerOptions failed']);
-  end;
 
   // change target file name
   AFilename:=ExtractFileName(AProject.CompilerOptions.TargetFilename);
