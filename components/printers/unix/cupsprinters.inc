@@ -763,7 +763,7 @@ begin
   
   Reponse:=GetCupsRequest;
   if not Assigned(Reponse) then begin
-    DebugLn(['TCUPSPrinter.GetEnumAttributeString no Reponse']);
+    DebugLn(['TCUPSPrinter.GetEnumAttributeString no Response']);
   end else begin
     try
       Attribute:=ippFindAttribute(Reponse,aName, IPP_TAG_ZERO);
