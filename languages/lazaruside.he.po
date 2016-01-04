@@ -4769,7 +4769,7 @@ msgstr ""
 #: lazarusidestrconsts.lisanerroroccuredatlaststartupwhileloadingloadthispro
 #, fuzzy
 #| msgid "An error occured at last startup while loading %s!%s%sLoad this project again?"
-msgid "An error occured at last startup while loading %s!%sLoad this project again?"
+msgid "An error occurred at last startup while loading %s!%sLoad this project again?"
 msgstr "ארעה שגיאה באיתחול האחרון בזמן טעינת s!%s%s%. האם לטעון את הפרוייקט שוב?"
 
 #: lazarusidestrconsts.lisapplicationclassname
@@ -5623,7 +5623,7 @@ msgid "Wrong indentation"
 msgstr "הזחה שגויה"
 
 #: lazarusidestrconsts.liscfeanexceptionoccuredduringdeletionof
-msgid "An exception occured during deletion of%s\"%s:%s\"%s%s"
+msgid "An exception occurred during deletion of%s\"%s:%s\"%s%s"
 msgstr "קרתה חריגה בזמן הסרת %s\"%s:%s\"%s%s"
 
 #: lazarusidestrconsts.liscfecancelloadingthisresource
@@ -16576,7 +16576,7 @@ msgstr "התלות %s%s%s לא נמצאה. בחר חבילה קיימת."
 #, fuzzy,badformat
 #| msgid "The Maximum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgctxt "lazarusidestrconsts.lisprojaddthemaximumversionisinvalid"
-msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
+msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "הגרסה המרבית s%s%s% שגויה. השתמש בצורה build.major.release לדוגמה: 1.0.20.10"
 
 #: lazarusidestrconsts.lisprojaddthemaximumversionislowerthantheminimimversion
@@ -16588,7 +16588,7 @@ msgstr "הגרסה המקסימאלית נמוכה מהגרסה המינימאל
 #, fuzzy,badformat
 #| msgid "The Minimum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgctxt "lazarusidestrconsts.lisprojaddtheminimumversionisinvalid"
-msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
+msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "הגרסה המינימלית s%s%s% שגויה. השתמש בצורה build.major.release לדוגמה: 1.0.20.10"
 
 #: lazarusidestrconsts.lisprojaddthepackagenameisinvalidplasechooseanexistingpackag

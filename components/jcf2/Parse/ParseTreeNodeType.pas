@@ -230,7 +230,7 @@ begin
     nInterfaceSection:
       Result := 'Interface section';
     nImplementationSection:
-      Result := 'Implmentation section';
+      Result := 'Implementation section';
     nBlock:
       Result := 'Block';
     nStatementList:

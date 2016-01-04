@@ -4662,7 +4662,7 @@ msgstr ""
 #: lazarusidestrconsts.lisanerroroccuredatlaststartupwhileloadingloadthispro
 #, fuzzy,badformat
 #| msgid "An error occured at last startup while loading %s!%s%sLoad this project again?"
-msgid "An error occured at last startup while loading %s!%sLoad this project again?"
+msgid "An error occurred at last startup while loading %s!%sLoad this project again?"
 msgstr "Va ocorrer un error durant l'ultima execució mentre s'hi carregava %s!%s%sCarregar aquest projecte de nou?"
 
 #: lazarusidestrconsts.lisapplicationclassname
@@ -5478,7 +5478,7 @@ msgid "Wrong indentation"
 msgstr ""
 
 #: lazarusidestrconsts.liscfeanexceptionoccuredduringdeletionof
-msgid "An exception occured during deletion of%s\"%s:%s\"%s%s"
+msgid "An exception occurred during deletion of%s\"%s:%s\"%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.liscfecancelloadingthisresource
@@ -16093,7 +16093,7 @@ msgstr "No s'ha trobat la dependència %s%s%s.%sSi us plau, escolliu un paquet q
 #, fuzzy,badformat
 #| msgid "The Maximum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgctxt "lazarusidestrconsts.lisprojaddthemaximumversionisinvalid"
-msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
+msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "La versió màxima %s%s%s no és vàlida.%sSi us plau, utilitzeu el format major.menor.llançament.muntatje%sPer exemple: 1.0.20.10"
 
 #: lazarusidestrconsts.lisprojaddthemaximumversionislowerthantheminimimversion
@@ -16105,7 +16105,7 @@ msgstr "La versió màxima és menor que la versió mínima"
 #, fuzzy,badformat
 #| msgid "The Minimum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgctxt "lazarusidestrconsts.lisprojaddtheminimumversionisinvalid"
-msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
+msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "La versió mínima %s%s%s no és vàlida.%sSi us plau, utilitzeu el format major.menor.llançament.muntatje%sPer exemple: 1.0.20.10"
 
 #: lazarusidestrconsts.lisprojaddthepackagenameisinvalidplasechooseanexistingpackag

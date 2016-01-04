@@ -4475,7 +4475,7 @@ msgid "Anchor top side to top side of sibling. Use BorderSpacing to set a distan
 msgstr "Ukotvit horní okraj k hornímu okraji sourozence. Použijte BorderSpacing pro nastavení vzdálenosti. BorderSpacing sourozence je ignorováno."
 
 #: lazarusidestrconsts.lisanerroroccuredatlaststartupwhileloadingloadthispro
-msgid "An error occured at last startup while loading %s!%sLoad this project again?"
+msgid "An error occurred at last startup while loading %s!%sLoad this project again?"
 msgstr "Při posledním startu došlo k chybě při načítání %s!%sNačíst znovu tento projekt?"
 
 #: lazarusidestrconsts.lisapplicationclassname
@@ -5279,7 +5279,7 @@ msgid "Wrong indentation"
 msgstr "Nesprávné odsazení"
 
 #: lazarusidestrconsts.liscfeanexceptionoccuredduringdeletionof
-msgid "An exception occured during deletion of%s\"%s:%s\"%s%s"
+msgid "An exception occurred during deletion of%s\"%s:%s\"%s%s"
 msgstr "Došlo k výjimce během mazání%s\"%s:%s\"%s%s"
 
 #: lazarusidestrconsts.liscfecancelloadingthisresource
@@ -15518,7 +15518,7 @@ msgstr "Závislost \"%s\" nebyla nalezena.%sProsím zvolte existující balíče
 
 #: lazarusidestrconsts.lisprojaddthemaximumversionisinvalid
 msgctxt "lazarusidestrconsts.lisprojaddthemaximumversionisinvalid"
-msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
+msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "Maximální verze \"%s\" je neplatná.%sProsím použijte formát hlavní.vedlejší.vydání.sestavení%sNapříklad: 1.0.20.10"
 
 #: lazarusidestrconsts.lisprojaddthemaximumversionislowerthantheminimimversion
@@ -15528,7 +15528,7 @@ msgstr "Maximální verze je menší než Minimální verze."
 
 #: lazarusidestrconsts.lisprojaddtheminimumversionisinvalid
 msgctxt "lazarusidestrconsts.lisprojaddtheminimumversionisinvalid"
-msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
+msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "Nejmenší verze \"%s\" je neplatná.%sProsím použijte formát hlavní.vedlejší.vydání.sestavení%sNapříklad: 1.0.20.10"
 
 #: lazarusidestrconsts.lisprojaddthepackagenameisinvalidplasechooseanexistingpackag

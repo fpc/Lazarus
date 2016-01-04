@@ -247,7 +247,7 @@ resourcestring
   lisKMPublishProject = 'Publish project';
   lisOpenTheFileAsNormalSource = 'Open the file as normal source';
   lisOpenAsXmlFile = 'Open as XML file';
-  lisAnErrorOccuredAtLastStartupWhileLoadingLoadThisPro = 'An error occured '
+  lisAnErrorOccuredAtLastStartupWhileLoadingLoadThisPro = 'An error occurred '
     +'at last startup while loading %s!'
     +'%sLoad this project again?';
   lisOpenProjectAgain = 'Open project again';
@@ -3847,10 +3847,10 @@ resourcestring
   lisProjAddInvalidVersion = 'Invalid version';
   lisProjAddTheMinimumVersionIsInvalid = 'The Minimum Version "%s" is invalid.'
     +'%sPlease use the format major.minor.release.build'
-    +'%sFor exmaple: 1.0.20.10';
+    +'%sFor example: 1.0.20.10';
   lisProjAddTheMaximumVersionIsInvalid = 'The Maximum Version "%s" is invalid.'
     +'%sPlease use the format major.minor.release.build'
-    +'%sFor exmaple: 1.0.20.10';
+    +'%sFor example: 1.0.20.10';
   lisProjAddInvalidPascalUnitName = 'Invalid Pascal unit name';
   lisProjAddTheUnitNameIsNotAValidPascalIdentifier = 'The unit name "%s" is '
     +'not a valid Pascal identifier.';
@@ -5921,7 +5921,7 @@ resourcestring
     +'Lazarus package files (.lpk). Do not build.';
 
   // Custom form editor
-  lisCFEAnExceptionOccuredDuringDeletionOf = 'An exception occured during '
+  lisCFEAnExceptionOccuredDuringDeletionOf = 'An exception occurred during '
     +'deletion of%s"%s:%s"%s%s';
   lisCFETCustomFormEditorDeleteComponentWhereIsTheTCustomN = 'TCustomFormEditor'
     +'.DeleteComponent  Where is the TCustomNonFormDesignerForm? %s';

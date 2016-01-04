@@ -4580,7 +4580,7 @@ msgstr "Ancorar lado de cima ao lado de cima do irmão. Usar \"Espaço da borda\
 #: lazarusidestrconsts.lisanerroroccuredatlaststartupwhileloadingloadthispro
 #, fuzzy,badformat
 #| msgid "An error occured at last startup while loading %s!%s%sLoad this project again?"
-msgid "An error occured at last startup while loading %s!%sLoad this project again?"
+msgid "An error occurred at last startup while loading %s!%sLoad this project again?"
 msgstr "Ocorreu um erro na última inicialização carregando %s!%s%sCarregar este projeto novamente?"
 
 #: lazarusidestrconsts.lisapplicationclassname
@@ -5396,7 +5396,7 @@ msgid "Wrong indentation"
 msgstr "Recuo incorreto"
 
 #: lazarusidestrconsts.liscfeanexceptionoccuredduringdeletionof
-msgid "An exception occured during deletion of%s\"%s:%s\"%s%s"
+msgid "An exception occurred during deletion of%s\"%s:%s\"%s%s"
 msgstr "Uma exceção ocorreu durante exclusão de %s\"%s%s\"%s%s"
 
 #: lazarusidestrconsts.liscfecancelloadingthisresource
@@ -15861,7 +15861,7 @@ msgstr "A dependência %s%s%s não foi encontrada.%sFavor escolher um pacote exi
 #, fuzzy,badformat
 #| msgid "The Maximum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgctxt "lazarusidestrconsts.lisprojaddthemaximumversionisinvalid"
-msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
+msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "A Versão Máxima %s%s%s é inválida.%sFavor usar o formato maior.menor.lançamento.construção%sPor exemplo: 1.0.20.10"
 
 #: lazarusidestrconsts.lisprojaddthemaximumversionislowerthantheminimimversion
@@ -15873,7 +15873,7 @@ msgstr "A Versão Máxima é menor que a Versão Mínima."
 #, fuzzy,badformat
 #| msgid "The Minimum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgctxt "lazarusidestrconsts.lisprojaddtheminimumversionisinvalid"
-msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
+msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "A Versão Mínima %s%s%s é inválida.%sFavor usar o formato maior.menor.lançamento.construção%sPor exemplo: 1.0.20.10"
 
 #: lazarusidestrconsts.lisprojaddthepackagenameisinvalidplasechooseanexistingpackag

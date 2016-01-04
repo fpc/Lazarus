@@ -4739,7 +4739,7 @@ msgid "Anchor top side to top side of sibling. Use BorderSpacing to set a distan
 msgstr ""
 
 #: lazarusidestrconsts.lisanerroroccuredatlaststartupwhileloadingloadthispro
-msgid "An error occured at last startup while loading %s!%sLoad this project again?"
+msgid "An error occurred at last startup while loading %s!%sLoad this project again?"
 msgstr ""
 
 #: lazarusidestrconsts.lisapplicationclassname
@@ -5558,7 +5558,7 @@ msgid "Wrong indentation"
 msgstr "Błędne wcięcia"
 
 #: lazarusidestrconsts.liscfeanexceptionoccuredduringdeletionof
-msgid "An exception occured during deletion of%s\"%s:%s\"%s%s"
+msgid "An exception occurred during deletion of%s\"%s:%s\"%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.liscfecancelloadingthisresource
@@ -16221,7 +16221,7 @@ msgstr "Nie znalazłem zależności %s%s%s.%sWybierz istniejący pakiet."
 #, fuzzy,badformat
 #| msgid "The Maximum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgctxt "lazarusidestrconsts.lisprojaddthemaximumversionisinvalid"
-msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
+msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "Maksymalny numer wersji %s%s%s jest nieprawidłowy.%sUżyj formatu: major.minor.release.build%sNp.: 1.0.20.10"
 
 #: lazarusidestrconsts.lisprojaddthemaximumversionislowerthantheminimimversion
@@ -16233,7 +16233,7 @@ msgstr "Maksymalny numer wersji jest mniejszy niż minimalny."
 #, fuzzy,badformat
 #| msgid "The Minimum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgctxt "lazarusidestrconsts.lisprojaddtheminimumversionisinvalid"
-msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
+msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "Minimalny numer wersji %s%s%s jest nieprawidłowy.%sUżyj formatu: major.minor.release.build%sNp.: 1.0.20.10"
 
 #: lazarusidestrconsts.lisprojaddthepackagenameisinvalidplasechooseanexistingpackag
