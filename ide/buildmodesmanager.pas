@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils,
   Forms, Controls, Dialogs, StdCtrls, Grids, Menus, ComCtrls, ButtonPanel, LCLProc,
-  IDEOptionsIntf, IDEDialogs, CompOptsIntf,
+  IDEOptionsIntf, IDEDialogs,
   TransferMacros, Project, CompilerOptions, Compiler_ModeMatrix, BuildModeDiffDlg,
   EnvironmentOpts, LazarusIDEStrConsts;
 
