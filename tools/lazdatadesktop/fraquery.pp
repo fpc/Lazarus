@@ -556,6 +556,7 @@ begin
       end;
     TSData.TabVisible:=true;
     PCResult.ActivePage:=TSData;
+    FData.Visible:=True;
     DS.Open;
     TE:=Now;
     RowsAff:=Format(SRecordsFetched,[DS.RecordCount]);
