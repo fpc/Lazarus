@@ -6047,6 +6047,9 @@ begin
   akRight: Anchors:=AnchorAlign[alRight];
   akBottom: Anchors:=AnchorAlign[alBottom];
   end;
+
+  UpdatePercentPosition;
+
   //debugln(['TAnchorDockSplitter.SetResizeAnchor ',DbgSName(Self),' ResizeAnchor=',dbgs(ResizeAnchor),' Align=',dbgs(Align),' Anchors=',dbgs(Anchors)]);
 end;
 
@@ -6074,10 +6077,14 @@ begin
   case ResizeAnchor of
     akTop, akBottom:
       if FDockParentClientSize.cy > 0 then
-        FPercentPosition := Top / FDockParentClientSize.cy;
+        FPercentPosition := Top / FDockParentClientSize.cy
+      else
+        FPercentPosition := -1;
   else
     if FDockParentClientSize.cx > 0 then
-      FPercentPosition := Left / FDockParentClientSize.cx;
+      FPercentPosition := Left / FDockParentClientSize.cx
+    else
+      FPercentPosition := -1;
   end;
 end;
 
