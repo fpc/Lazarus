@@ -516,7 +516,9 @@ begin
         Exit;
 
       HideSizeControls;
-
+      UpdateWindow(pBG.Handle);
+      UpdateWindow(Self.Handle);
+      UpdateWindow(Self.Parent.Handle);
       with Self do
       begin //resize
         frmPoint := Self.ScreenToClient(Mouse.CursorPos);
