@@ -40,6 +40,8 @@ Type
       Msg: UInt; WParam: Windows.WParam; const DrawIS: TDrawItemStruct;
       var ItemMsg: Integer; var DrawListItem: Boolean);
 
+  TGetClientOffsetProc = procedure (const AWinControl: TWinControl; var Rect: TRect);
+
   PWin32WindowInfo = ^TWin32WindowInfo;
   TWin32WindowInfo = record
     Overlay: HWND;           // overlay, transparent window on top, used by designer
@@ -67,6 +69,7 @@ Type
     ThemedCustomDraw: boolean;// controls needs themed drawing in wm_notify/nm_customdraw
     IMEComposed: Boolean;
     DrawItemHandler: TDrawItemHandlerProc;
+    ClientOffsetProc: TGetClientOffsetProc;   // used by GetLCLClientBoundsOffset
     case integer of
       0: (spinValue: Double);
       1: (
@@ -171,7 +174,7 @@ var
 implementation
 
 uses
-  LCLStrConsts, Dialogs, StdCtrls, ExtCtrls, ComCtrls,
+  LCLStrConsts, Dialogs, StdCtrls, ExtCtrls,
   LCLIntf; //remove this unit when GetWindowSize is moved to TWSWinControl
 
 {$IFOPT C-}
@@ -678,6 +681,7 @@ var
   Handle: HWND;
   TheWinControl: TWinControl absolute Sender;
   ARect: TRect;
+  Win32Info: PWin32WindowInfo;
 begin
   Result := False;
   if not (Sender is TWinControl) then exit;
@@ -725,14 +729,10 @@ begin
     ORect.Right := -2;
     ORect.Bottom := -2;
   end else
-  if TheWinControl is TCustomTabControl then
   begin
-    // Can't use complete client rect in win32 interface, top part contains the tabs
-    Windows.GetClientRect(Handle, @ARect);
-    ORect := ARect;
-    Windows.SendMessage(Handle, TCM_AdjustRect, 0, LPARAM(@ORect));
-    Dec(ORect.Right, ARect.Right);
-    Dec(ORect.Bottom, ARect.Bottom);
+    Win32Info:=GetWin32WindowInfo(Handle);
+    if Assigned(Win32Info^.ClientOffsetProc) then
+      Win32Info^.ClientOffsetProc(TheWinControl, ORect);
   end;
 {
   if (GetWindowLong(Handle, GWL_EXSTYLE) and WS_EX_CLIENTEDGE) <> 0 then

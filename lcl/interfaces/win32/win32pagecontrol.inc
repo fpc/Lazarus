@@ -266,6 +266,19 @@ begin
   end;
 end;
 
+procedure TabControlClientOffset(const AWinControl: TWinControl;
+  var ORect: Rect);
+var
+  ARect: TRect;
+begin
+  // Can't use complete client rect in win32 interface, top part contains the tabs
+  Windows.GetClientRect(AWinControl.Handle, @ARect);
+  ORect := ARect;
+  Windows.SendMessage(AWinControl.Handle, TCM_AdjustRect, 0, LPARAM(@ORect));
+  Dec(ORect.Right, ARect.Right);
+  Dec(ORect.Bottom, ARect.Bottom);
+end;
+
 class function TWin32WSCustomTabControl.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 const
@@ -306,6 +319,7 @@ begin
     // to improve speed and possible paint anomalities
     Params.WindowInfo^.ParentMsgHandler := @TabControlParentMsgHandler;
     Params.WindowInfo^.needParentPaint := false;
+    Params.WindowInfo^.ClientOffsetProc := @TabControlClientOffset;
   end;
 end;
 
