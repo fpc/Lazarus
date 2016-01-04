@@ -100,6 +100,7 @@ type
     // debug symbols
     FPathNumber: Integer;
     function ReadSVGColor(AValue: string): TFPColor;
+    function ReadSVGGradientColorStyle(AValue: STring): TFPColor;
     function ReadSVGStyle(AValue: string; ADestEntity: TvEntityWithPen; ADestStyle: TvStyle = nil; AUseFillAsPen: Boolean = False): TvSetPenBrushAndFontElements;
     function ReadSVGStyleToStyleLists(AValue: string; AStyleKeys, AStyleValues: TStringList): TvSetPenBrushAndFontElements;
     function ReadSVGPenStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPen): TvSetPenBrushAndFontElements;
@@ -720,6 +721,37 @@ begin
   end;
 end;
 
+// style="stop-color:rgb(255,255,10);stop-opacity:1.0"
+function TvSVGVectorialReader.ReadSVGGradientColorStyle(AValue: String): TFPColor;
+var
+  lStr, lStyleKeyStr, lStyleValueStr: String;
+  lStrings: TStringList;
+  i: Integer;
+  p: Integer;
+begin
+  Result := colBlack;
+  if AValue = '' then Exit;
+  lStrings := TStringList.Create;
+  try
+    lStrings.Delimiter := ';';
+    lStrings.StrictDelimiter := True;
+    lStrings.DelimitedText := LowerCase(AValue);
+    for i := 0 to lStrings.Count-1 do
+    begin
+      lStr := lStrings.Strings[i];
+      p := Pos(':', lStr);
+      lStyleKeyStr := Trim(Copy(lStr, 1, p-1));
+      lStyleValueStr := Trim(Copy(lStr, p+1, MaxInt));
+      if lStyleKeyStr = 'stop-color' then
+        Result := ReadSVGColor(lStyleValueStr)
+      else if lStyleKeyStr = 'stop-opacity' then
+        Result.Alpha := Round(StrToFloat(lStyleValueStr, FPointSeparator)*$FFFF);
+    end;
+  finally
+    lStrings.Free;
+  end;
+end;
+
 // style="fill:none;stroke:black;stroke-width:3"
 function TvSVGVectorialReader.ReadSVGStyle(AValue: string;
   ADestEntity: TvEntityWithPen; ADestStyle: TvStyle = nil;
@@ -901,7 +933,7 @@ begin
   begin
     Len := Length(ADestEntity.Brush.Gradient_colors);
     SetLength(ADestEntity.Brush.Gradient_colors, Len+1);
-    ADestEntity.Brush.Gradient_colors[Len] := ReadSVGColor(AValue);
+    ADestEntity.Brush.Gradient_colors[Len].Color := ReadSVGColor(AValue);
   end;
 end;
 
@@ -1198,11 +1230,11 @@ var
   lPreviousLayer: TvEntityWithSubEntities;
   lAttrName, lAttrValue, lNodeName: DOMString;
   lLayerName: String;
-  i: Integer;
+  i, len: Integer;
   lCurNode, lCurSubNode: TDOMNode;
   lBrushEntity: TvEntityWithPenAndBrush;
   lCurEntity: TvEntity;
-  lOffset: Double;
+  lGradientColor: TvGradientColor;
   x1, x2, y1, y2: string;
 begin
   lCurNode := ANode.FirstChild;
@@ -1290,8 +1322,12 @@ begin
           else if lAttrName = 'y2' then
             y2 := lAttrValue;
         end;
-        if x2 = x1 then lBrushEntity.Brush.Kind := bkVerticalGradient
-        else lBrushEntity.Brush.Kind := bkHorizontalGradient;
+        if x2 = x1 then
+          lBrushEntity.Brush.Kind := bkVerticalGradient
+        else if y2=y1 then
+          lBrushEntity.Brush.Kind := bkHorizontalGradient
+        else
+          lBrushEntity.Brush.Kind := bkOtherLinearGradient;
 
         // <stop offset="0%" style="stop-color:rgb(255,255,0);stop-opacity:1" />
         // <stop offset="100%" style="stop-color:rgb(255,0,0);stop-opacity:1" />
@@ -1299,19 +1335,22 @@ begin
         while Assigned(lCurSubNode) do
         begin
           lNodeName := LowerCase(lCurSubNode.NodeName);
-
-          for i := 0 to lCurSubNode.Attributes.Length - 1 do
-          begin
-            lAttrName := lCurSubNode.Attributes.Item[i].NodeName;
-            lAttrValue := lCurSubNode.Attributes.Item[i].NodeValue;
-            if lAttrName = 'offset' then
+          if lNodeName = 'stop' then begin
+            for i := 0 to lCurSubNode.Attributes.Length - 1 do
             begin
-              lOffset := StringWithUnitToFloat(lAttrValue);
-            end
-            else if lAttrName = 'style' then
-              ReadSVGStyle(lAttrValue, lBrushEntity);
+              lAttrName := lCurSubNode.Attributes.Item[i].NodeName;
+              lAttrValue := lCurSubNode.Attributes.Item[i].NodeValue;
+              if lAttrName = 'offset' then
+                lGradientColor.Position := StringWithUnitToFloat(lAttrValue)
+              else if lAttrName = 'style' then
+                lGradientColor.Color := ReadSVGGradientColorStyle(lAttrValue)
+              else if lAttrName = 'stop-color' then
+                lGradientColor.Color := ReadSVGColor(lAttrValue);
+            end;
+            len := Length(lBrushEntity.Brush.Gradient_colors);
+            SetLength(lBrushEntity.Brush.Gradient_colors, Len+1);
+            lBrushEntity.Brush.Gradient_colors[len] := lGradientColor;
           end;
-
           lCurSubNode := lCurSubNode.NextSibling;
         end;
 

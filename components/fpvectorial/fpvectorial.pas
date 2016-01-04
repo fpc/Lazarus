@@ -123,8 +123,15 @@ type
   end;
   PvPen = ^TvPen;
 
-  TvBrushKind = (bkSimpleBrush, bkHorizontalGradient, bkVerticalGradient, vkOtherLinearGradient, bkRadialGradient);
+  TvBrushKind = (bkSimpleBrush, bkHorizontalGradient, bkVerticalGradient, bkOtherLinearGradient, bkRadialGradient);
   TvCoordinateUnit = (vcuDocumentUnit, vcuPercentage);
+
+  TvGradientColor = record
+    Color: TFPColor;
+    Position: Double;
+  end;
+
+  TvGradientColors = array of TvGradientColor;
 
   TvBrush = record
     Color: TFPColor;
@@ -133,7 +140,7 @@ type
     // Gradient filling support
     Gradient_cx, Gradient_cy, Gradient_r, Gradient_fx, Gradient_fy: Double;
     Gradient_cx_Unit, Gradient_cy_Unit, Gradient_r_Unit, Gradient_fx_Unit, Gradient_fy_Unit: TvCoordinateUnit;
-    Gradient_colors: array of TFPColor;
+    Gradient_colors: TvGradientColors;
   end;
   PvBrush = ^TvBrush;
 
@@ -3633,29 +3640,83 @@ procedure TvEntityWithPenAndBrush.DrawPolygonBrushGradient(ADest: TFPCustomCanva
 var
   lPoints: TPointsArray;
   lColor, lColor1, lColor2: TFPColor;
-  i, j: Integer;
+  i, j, c: Integer;
+  i1, i2: Integer;
+  p, p1, p2: Double;
 begin
   if not (Brush.Kind in [bkVerticalGradient, bkHorizontalGradient]) then
     Exit;
 
-  lColor1 := Brush.Gradient_colors[1];
-  lColor2 := Brush.Gradient_colors[0];
-  ADest.Pen.Style := psSolid;
-  if Brush.Kind = bkVerticalGradient then   // horizontal (!) lines have same color
+  if Length(Brush.Gradient_colors) = 1 then
   begin
-    for i := y1 to y2 do
+    lColor1 := Brush.Gradient_colors[0].Color;
+    lColor2 := Brush.Gradient_colors[0].Color;
+    c := 0;
+  end else
+  begin
+    c := 0;
+    lColor1 := Brush.Gradient_colors[0].Color;
+    lColor2 := Brush.Gradient_colors[1].Color;
+    p1 := Brush.Gradient_colors[0].Position;
+    p2 := Brush.Gradient_colors[1].Position;
+  end;
+
+  case Brush.Kind of
+    bkVerticalGradient:
+      begin // horizontal (!) lines have same color
+        i1 := y1;
+        i2 := y2;
+      end;
+    bkHorizontalGradient:
+      begin  // vertical lines have same color
+        i1 := x1;
+        i2 := x2;
+      end;
+  end;
+
+  ADest.Pen.Style := psSolid;
+  for i := i1 to i2 do
+  begin
+    lPoints := GetLinePolygonIntersectionPoints(i, APolyPoints,
+      Brush.Kind = bkHorizontalGradient);
+    if Length(lPoints) < 2 then Continue;
+    p := (i-i1) / (i2-i1) * 100.0;  // p = "percent"
+    // Use first color below first position
+    if p < Brush.Gradient_colors[0].Position then
+      lColor := Brush.Gradient_colors[0].Color
+    else
+    // Use last color above last position
+    if p > Brush.Gradient_colors[High(Brush.Gradient_colors)].Position then
+      lColor := Brush.Gradient_colors[High(Brush.Gradient_colors)].Color
+    else
+    if (c < High(Brush.Gradient_colors)) then
     begin
-      lPoints := GetLinePolygonIntersectionPoints(i, APolyPoints, False);
-      if Length(lPoints) < 2 then Continue;
-      lColor := MixColors(lColor1, lColor2, i-y1, y2-y1);
-      ADest.Pen.FPColor := lColor;
-      j := 0;
-      while j < High(lPoints) do
+      // Use current color pair if percentage is below next position
+      if (p < Brush.Gradient_colors[c+1].Position) then
+        lColor := MixColors(lColor2, lColor1, p-p1, p2-p1)
+      else
+      // Next next color pair if percentage is above next position
       begin
-        ADest.Line(lPoints[j].X, i, lPoints[j+1].X, i);
-        inc(j, 2);
+        inc(c);
+        p1 := p2;
+        p2 := Brush.Gradient_colors[c+1].Position;
+        lColor1 := lColor2;
+        lColor2 := Brush.Gradient_colors[c+1].Color;
+        lColor := MixColors(lColor2, lColor1, p-p1, p2-p1);
       end;
     end;
+    ADest.Pen.FPColor := lColor;
+    j := 0;
+    while j < High(lPoints) do
+    begin
+      case Brush.Kind of
+        bkVerticalGradient  : ADest.Line(lPoints[j].X, i, lPoints[j+1].X, i);
+        bkHorizontalGradient: ADest.Line(i, lPoints[j].Y, i, lPoints[j+1].Y);
+      end;
+      inc(j, 2);
+    end;
+  end;
+  {
   end
   else if Brush.Kind = bkHorizontalGradient then    // vertical (!) lines have same color
   begin
@@ -3663,7 +3724,7 @@ begin
     begin
       lPoints := GetLinePolygonIntersectionPoints(i, APolyPoints, True);
       if Length(lPoints) < 2 then Continue;
-      lColor := MixColors(lColor1, lColor2, i-x1, x2-x1);
+      lColor := MixColors(lColor2, lColor1, i-x1, x2-x1);
       ADest.Pen.FPColor := lColor;
       j := 0;
       while (j < High(lPoints)) do
@@ -3673,6 +3734,7 @@ begin
       end;
     end;
   end;
+  }
 end;
 
 { Fills the entity's shape with a gradient.
@@ -3711,8 +3773,8 @@ begin
   if not (Brush.Kind in [bkVerticalGradient, bkHorizontalGradient]) then
     Exit;
 
-  lColor1 := Brush.Gradient_colors[1];
-  lColor2 := Brush.Gradient_colors[0];
+  lColor1 := Brush.Gradient_colors[1].Color;
+  lColor2 := Brush.Gradient_colors[0].Color;
   if Brush.Kind = bkVerticalGradient then
   begin
     for i := y1 to y2 do
@@ -4239,7 +4301,7 @@ begin
       if ((APoints[j].Y <= ACoord) and (ACoord < APoints[j+1].Y)) or
          ((APoints[j+1].Y <= ACoord) and (ACoord < APoints[j].Y)) then
       begin
-        dy := APoints[j].Y - APoints[j].Y;     // can't be zero here
+        dy := APoints[j+1].Y - APoints[j].Y;     // can't be zero here
         dx := APoints[j+1].X - APoints[j].X;
         xval := APoints[j].X + (ACoord - APoints[j].Y) * dx / dy;
         list.Add(pointer(PtrInt(round(xval))));
