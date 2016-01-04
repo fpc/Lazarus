@@ -457,7 +457,10 @@ type
     function  GetHeight(ADest: TFPCustomCanvas): Double;
     function  GetWidth(ADest: TFPCustomCanvas): Double;
     {@@ ASubpart is only valid if this routine returns vfrSubpartFound }
-    function GetLineIntersectionPoints(ACoord: Double; ACoordIsX: Boolean): TDoubleDynArray; virtual; // get all points where the entity inner area crosses a line
+    function GetLineIntersectionPoints(ACoord: Double;
+      ACoordIsX: Boolean): TDoubleDynArray; virtual; // get all points where the entity inner area crosses a line
+    function GetLinePolygonIntersectionPoints(ACoord: Integer;
+      const APoints: TPointsArray; ACoordIsX: Boolean): TPointsArray; virtual;
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal; ASnapFlexibility: Integer = 5): TvFindEntityResult; virtual;
     procedure Move(ADeltaX, ADeltaY: Double); virtual;
     procedure MoveSubpart(ADeltaX, ADeltaY: Double; ASubpart: Cardinal); virtual;
@@ -521,8 +524,9 @@ type
     procedure AssignBrush(ABrush: TvBrush);
     procedure DrawBrushGradient(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
       x1, y1, x2, y2: Integer;
-      ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); overload;
-//    procedure DrawBrushGradient(ADest: TFPCustomCanvas; x1,y1,x2,y2: Integer); overload;
+      ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); virtual;
+    procedure DrawPolygonBrushGradient(ADest: TFPCustomCanvas;
+      const APolyPoints: TPointsArray; x1, y1, x2, y2: Integer);
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = True); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
@@ -588,6 +592,8 @@ type
     procedure AppendEllipticalArc(ARadX, ARadY, AXAxisRotation, ADestX, ADestY: Double; ALeftmostEllipse, AClockwiseArcFlag: Boolean); // See http://www.w3.org/TR/SVG/paths.html#PathDataEllipticalArcCommands
     procedure AppendEllipticalArcWithCenter(ARadX, ARadY, AXAxisRotation, ADestX, ADestY, ACenterX, ACenterY: Double; AClockwiseArcFlag: Boolean); // See http://www.w3.org/TR/SVG/paths.html#PathDataEllipticalArcCommands
     function GetLineIntersectionPoints(ACoord: Double; ACoordIsX: Boolean): TDoubleDynArray; override;
+    function GetLinePolygonIntersectionPoints(ACoord: Integer;
+      const APoints: TPointsArray; ACoordIsX: Boolean): TPointsArray; override;
     procedure Move(ADeltaX, ADeltaY: Double); override;
     procedure MoveSubpart(ADeltaX, ADeltaY: Double; ASubpart: Cardinal); override;
     function  MoveToSubpart(ASubpart: Cardinal): TPathSegment;
@@ -3414,7 +3420,17 @@ begin
   Result := Abs(ALeft - ARight);
 end;
 
-function TvEntity.GetLineIntersectionPoints(ACoord: Double; ACoordIsX: Boolean): TDoubleDynArray;
+function TvEntity.GetLineIntersectionPoints(ACoord: Double;
+  ACoordIsX: Boolean): TDoubleDynArray;
+begin
+  SetLength(Result, 0);
+end;
+
+{ calculates the intersection points of a line at the specified coordinate with
+  the entity's boundary. This overload uses the boundary in canvas units,
+  specified by the points array APoints. }
+function TvEntity.GetLinePolygonIntersectionPoints(ACoord: Integer;
+  const APoints: TPointsArray; ACoordIsX: Boolean): TPointsArray;
 begin
   SetLength(Result, 0);
 end;
@@ -3608,13 +3624,15 @@ begin
   Brush.Style := ABrush.Style;
   Brush.Color := ABrush.Color;
 end;
-                                (*
+
 { Fills the entity with a gradient.
-  Assumes that the boundary is already in canvas units }
-procedure TvEntityWithPenAndBrush.DrawBrushGradient(ADest: TFPCustomCanvas;
-  x1, y1, x2, y2: Integer);
+  Assumes that the boundary is already in canvas units and is specified by
+  polygon APolyPoints. }
+procedure TvEntityWithPenAndBrush.DrawPolygonBrushGradient(ADest: TFPCustomCanvas;
+  const APolyPoints: TPointsArray; x1, y1, x2, y2: Integer);
 var
-  lColor1, lColor2: TFPColor;
+  lPoints: TPointsArray;
+  lColor, lColor1, lColor2: TFPColor;
   i, j: Integer;
 begin
   if not (Brush.Kind in [bkVerticalGradient, bkHorizontalGradient]) then
@@ -3622,45 +3640,40 @@ begin
 
   lColor1 := Brush.Gradient_colors[1];
   lColor2 := Brush.Gradient_colors[0];
-  if Brush.Kind = bkVerticalGradient then
+  ADest.Pen.Style := psSolid;
+  if Brush.Kind = bkVerticalGradient then   // horizontal (!) lines have same color
   begin
     for i := y1 to y2 do
     begin
-      lPoints := GetLineIntersectionPoints(CanvasToCoordY(i), False);
+      lPoints := GetLinePolygonIntersectionPoints(i, APolyPoints, False);
       if Length(lPoints) < 2 then Continue;
       lColor := MixColors(lColor1, lColor2, i-y1, y2-y1);
       ADest.Pen.FPColor := lColor;
-      ADest.Pen.Style := psSolid;
       j := 0;
-      while j < Length(lPoints) do
+      while j < High(lPoints) do
       begin
-        lCanvasPts[0] := CoordToCanvasX(lPoints[j]);
-        lCanvasPts[1] := CoordToCanvasX(lPoints[j+1]);
-        ADest.Line(lCanvasPts[0], i, lCanvasPts[1], i);
+        ADest.Line(lPoints[j].X, i, lPoints[j+1].X, i);
         inc(j, 2);
       end;
     end;
   end
-  else if Brush.Kind = bkHorizontalGradient then
+  else if Brush.Kind = bkHorizontalGradient then    // vertical (!) lines have same color
   begin
     for i := x1 to x2 do
     begin
-      lPoints := GetLineIntersectionPoints(CanvasToCoordX(i), True);
+      lPoints := GetLinePolygonIntersectionPoints(i, APolyPoints, True);
       if Length(lPoints) < 2 then Continue;
       lColor := MixColors(lColor1, lColor2, i-x1, x2-x1);
       ADest.Pen.FPColor := lColor;
-      ADest.Pen.Style := psSolid;
       j := 0;
-      while (j+1 < Length(lPoints)) do
+      while (j < High(lPoints)) do
       begin
-        lCanvasPts[0] := CoordToCanvasY(lPoints[j]);
-        lCanvasPts[1] := CoordToCanvasY(lPoints[j+1]);
-        ADest.Line(i, lCanvasPts[0], i, lCanvasPts[1]);
+        ADest.Line(i, lPoints[j].Y, i, lPoints[j+1].Y);
         inc(j , 2);
       end;
     end;
   end;
-end;           *)
+end;
 
 { Fills the entity's shape with a gradient.
   Assumes that the boundary is in fpv units and provides parameters (ADestX,
@@ -3687,14 +3700,6 @@ procedure TvEntityWithPenAndBrush.DrawBrushGradient(ADest: TFPCustomCanvas;
   function CanvasToCoordX(ACanvas: Integer): Double;
   begin
     Result := (ACanvas - ADestX) / AmulX;
-  end;
-
-  function MixColors(AColor1, AColor2: TFPColor; APos, AMax: Double): TFPColor;
-  begin
-    Result.Alpha := Round(AColor1.Alpha * APos / AMax + AColor2.Alpha * (AMax - APos) / AMax);
-    Result.Red := Round(AColor1.Red * APos / AMax + AColor2.Red * (AMax - APos) / AMax);
-    Result.Green := Round(AColor1.Green * APos / AMax + AColor2.Green * (AMax - APos) / AMax);
-    Result.Blue := Round(AColor1.Blue * APos / AMax + AColor2.Blue * (AMax - APos) / AMax);
   end;
 
 var
@@ -4198,6 +4203,61 @@ begin
   end;
 end;
 
+function CompareInt(P1, P2: Pointer): Integer;
+var
+  i1, i2: PtrInt;
+begin
+  i1 := PtrInt(P1);
+  i2 := PtrInt(P2);
+  Result := CompareValue(i1, i2);
+end;
+
+function TPath.GetLinePolygonIntersectionPoints(ACoord: Integer;
+  const APoints: TPointsArray; ACoordIsX: Boolean): TPointsArray;
+var
+  j, dx, dy: Integer;
+  xval, yval: Double;
+  list: TFPList;
+begin
+  list := TFPList.Create;
+  if ACoordIsX then
+    for j:=0 to High(APoints) - 1 do
+    begin
+      if ((APoints[j].X <= ACoord) and (ACoord < APoints[j+1].X)) or
+         ((APoints[j+1].X <= ACoord) and (ACoord < APoints[j].X)) then
+      begin
+        dx := APoints[j+1].X - APoints[j].X;   // can't be zero here
+        dy := APoints[j+1].Y - APoints[j].Y;
+        yval := APoints[j].Y + (ACoord - APoints[j].X) * dy / dx;
+        list.Add(pointer(PtrInt(round(yval))));
+      end {else
+      if ((APoints[j].X = ACoord) and (ACoord = APoints[j+1].X)) then
+        list.Add(pointer(PtrInt(APoints[j].Y)));}
+    end
+  else
+    for j:=0 to High(APoints) - 1 do
+      if ((APoints[j].Y <= ACoord) and (ACoord < APoints[j+1].Y)) or
+         ((APoints[j+1].Y <= ACoord) and (ACoord < APoints[j].Y)) then
+      begin
+        dy := APoints[j].Y - APoints[j].Y;     // can't be zero here
+        dx := APoints[j+1].X - APoints[j].X;
+        xval := APoints[j].X + (ACoord - APoints[j].Y) * dx / dy;
+        list.Add(pointer(PtrInt(round(xval))));
+      end {else
+      if ((APoints[j].Y = ACoord) and (ACoord = APoints[j+1].Y)) then
+        list.Add(pointer(PtrInt(APoints[j].X)))};
+  // Sort intersection coordinates in ascending order
+  list.Sort(@CompareInt);
+  SetLength(Result, list.Count);
+  if ACoordIsX then
+    for j:=0 to list.Count-1 do
+      Result[j] := Point(ACoord, PtrInt(list[j]))
+  else
+    for j:=0 to list.Count-1 do
+      Result[j] := Point(PtrInt(list[j]), ACoord);
+  list.Free;
+end;
+
 { Only correct for straight segments. This must have been checked before! }
 function TPath.GetLineIntersectionPoints(ACoord: Double;
   ACoordIsX: Boolean): TDoubleDynArray;
@@ -4321,7 +4381,7 @@ begin
             {$ENDIF}
           end;
         else  // gradients
-          DrawBrushGradient(ADest, ARenderInfo, x1, y1, x2, y2, ADestX, ADestY, AMulX, AMulY);
+          DrawPolygonBrushGradient(ADest, FPolyPoints, x1, y1, x2, y2);
           // to do: multiple polygons!
       end;
 
