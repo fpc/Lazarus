@@ -141,9 +141,6 @@ type
     property HorizontalScrollPos: Integer read FHorizontalScrollPos write FHorizontalScrollPos;
   end;
 
-resourcestring
-  SArgumentOutOfRange = 'Argument out of range';
-
 implementation
 
 {$R *.lfm}
