@@ -293,7 +293,6 @@ msgid "- expected"
 msgstr "- tikėtasi"
 
 #: ipconst.shtmldefbrowsecaption
-#| msgid "Browse..."
 msgid "Browse ..."
 msgstr "Naršyti…"
 
@@ -442,6 +441,7 @@ msgid "Thread %d terminating (Hop number = %d)"
 msgstr "Gija %d baigia darbą (Hop numeris = %d)"
 
 #: ipconst.sicmptracecomplete
+#, fuzzy,badformat
 msgid "Trace complete (%s), %d hops"
 msgstr "Sekimas baigtas (%s), %s Hop'sų"
 

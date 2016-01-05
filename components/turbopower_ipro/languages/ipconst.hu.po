@@ -2561,3 +2561,4 @@ msgstr ""
 #: ipconst.swsa_qos_traffic_ctrl_error
 msgid "Problem with some part of the flowspec"
 msgstr "Probléma van az adatfolyam-leírás egy részével"
+

@@ -294,7 +294,6 @@ msgid "- expected"
 msgstr "- erwartet"
 
 #: ipconst.shtmldefbrowsecaption
-#| msgid "Browse..."
 msgid "Browse ..."
 msgstr "Durchsuchen ..."
 
@@ -435,10 +434,12 @@ msgid "Pinging %s with %d bytes data"
 msgstr "Pinge %s mit %d Byte Daten"
 
 #: ipconst.sicmpthreadexecute
+#, fuzzy,badformat
 msgid "Thread %d executing (Hop number = %d)"
 msgstr "Thread %s wird ausgefühlt (Hop-Nummer ist %d)"
 
 #: ipconst.sicmpthreadterminate
+#, fuzzy,badformat
 msgid "Thread %d terminating (Hop number = %d)"
 msgstr "Thread %s wird beendet (Hop-Nummer ist %d)"
 
@@ -547,6 +548,7 @@ msgid "Unknown status"
 msgstr "Unbekannter Status"
 
 #: ipconst.slesszero
+#, fuzzy,badformat
 msgid "%s: new col count %d is less than zero"
 msgstr "%s: Die neue Spaltenzählung %s ist kleiner als Null"
 
@@ -1249,6 +1251,7 @@ msgid "When origin is soFromEnd, Offset must be <= 0"
 msgstr "Bei einem Ursprung von soFromEnd muß der Offset <= 0 sein"
 
 #: ipconst.spngbadbitdepth
+#, fuzzy,badformat
 msgid "Unsupported Bit Depth of %d"
 msgstr "Nicht unterstützte Bit-Tiefe von %s"
 
@@ -1257,6 +1260,7 @@ msgid "Unrecognized Chunk Type: %s"
 msgstr "Unerkannter Chunk-Typ: %s"
 
 #: ipconst.spngbadcolortype
+#, fuzzy,badformat
 msgid "Unrecognized color type of %d"
 msgstr "Unerkannter Farbtyp von %s"
 
@@ -1297,6 +1301,7 @@ msgid "PNG Chunk: %s  Length: %d"
 msgstr "PNG-Chunk: %s Länge: %d"
 
 #: ipconst.spngcolortype
+#, fuzzy,badformat
 msgid "Color Type: %d"
 msgstr "Farbtyp: %s"
 
@@ -1317,6 +1322,7 @@ msgid "**** ERROR ****"
 msgstr "**** FEHLER ****"
 
 #: ipconst.spngfilterchange
+#, fuzzy,badformat
 msgid "Filter changed on Row %d to %x"
 msgstr "Filter in Zeile %s auf %x geändert"
 
@@ -1345,6 +1351,7 @@ msgid "IHDR chunk is short."
 msgstr "IHDR-Chunk ist kurz."
 
 #: ipconst.spngimagesize
+#, fuzzy,badformat
 msgid "Image size is %dx%d pixels"
 msgstr "Bildgröße ist %sx%d Pixel"
 
@@ -1373,6 +1380,7 @@ msgid "PNG Clipboard support is not supported."
 msgstr "PNG-Zwischenablage nicht unterstützt."
 
 #: ipconst.spngpaletteentry
+#, fuzzy,badformat
 msgid "Palette Entry %d - Red: %d   Green: %d   Blue: %d"
 msgstr "Paletteneintrag %d - Rot: %s, Grün: %d, Blau: %d"
 
@@ -1715,6 +1723,7 @@ msgid "Renamed disk file to "
 msgstr "Benenne Datei um in"
 
 #: ipconst.srowcoloor
+#, fuzzy,badformat
 msgid "%s: either row %d or col %d is out of range"
 msgstr "%s: Entweder Zeile %s oder Spalte %s überschreitet den Bereich"
 

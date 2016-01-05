@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-01-03 12:09+0100\n"
+"PO-Revision-Date: 2016-01-03 20:32+0100\n"
 "Last-Translator: Alcatiz <alcatiz@redaction-developpez.com>\n"
 "Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language: fr_FR\n"
@@ -83,8 +83,7 @@ msgstr "Réalisation : (%s) - %s octets reçus"
 
 #: ipconst.httpsizemismatch
 msgid "Download: (%s), Size Mismatch expecting %s , got %s"
-msgstr ""
-"Téléchargement : (%s) - Différence de taille : attendu = %s ; obtenu = %s"
+msgstr "Téléchargement : (%s) - Différence de taille : attendu = %s ; obtenu = %s"
 
 #: ipconst.providerunknownformat
 msgid "Don't know how to handle %s"
@@ -104,7 +103,7 @@ msgstr "Erreur Win32 en chargeant le pointeur '%s' : %s"
 
 #: ipconst.sactiveerr
 msgid "Cannot set property on an active socket"
-msgstr "Impossible d'assigner une propriété sur le socket actif"
+msgstr "Impossible d'assigner une propriété à un socket actif"
 
 #: ipconst.sattemptingtoread
 msgid "Attempting to read "
@@ -463,8 +462,7 @@ msgstr "\"TIpTerminalArray.GetItemPtr\" : taille d'élément incorrect"
 
 #: ipconst.sinvscrollrow
 msgid "TIpTerminalBuffer.SetScrollRegion: invalid row number(s)"
-msgstr ""
-"\"TIpTerminalBuffer.SetScrollRegion\" : numéro(s) de rangée(s) incorrect(s)"
+msgstr "\"TIpTerminalBuffer.SetScrollRegion\" : numéro(s) de rangée(s) incorrect(s)"
 
 #: ipconst.sipicmp_bad_destination
 msgid "Bad destination"
@@ -508,7 +506,7 @@ msgstr "Erreur matérielle"
 
 #: ipconst.sipicmp_no_resources
 msgid "Destination does not have resources to complete"
-msgstr "La destination n'a pas de ressources pour achever le processus"
+msgstr "La destination n'a pas de ressources pour achever l'opération"
 
 #: ipconst.sipicmp_option_too_big
 msgid "Option too large"
@@ -548,7 +546,7 @@ msgstr "Statut inconnu"
 
 #: ipconst.slesszero
 msgid "%s: new col count %d is less than zero"
-msgstr "%s : le nouveau compteur col %d est inférieur à  zéro"
+msgstr "%s : le nouveau compteur col %d est inférieur à zéro"
 
 #: ipconst.slinelengtherr
 msgid "Invalid line length for encoded text"
@@ -948,13 +946,11 @@ msgstr "Vous devez spécifier un nom de fichier pour \"TIpMemMapStream\""
 
 #: ipconst.smemmapmustbeclosed
 msgid "The %s method requires the TIpMemMapStream instance to be closed"
-msgstr ""
-"La méthode %s requiert que l'instance de \"TIpMemMapStream\" soit fermée"
+msgstr "La méthode %s requiert que l'instance de \"TIpMemMapStream\" soit fermée"
 
 #: ipconst.smemmapmustbeopen
 msgid "The %s method requires the TIpMemMapStream instance to be opened"
-msgstr ""
-"La méthode %s requiert que l'instance de \"TIpMemMapStream\" soit ouverte"
+msgstr "La méthode %s requiert que l'instance de \"TIpMemMapStream\" soit ouverte"
 
 #: ipconst.snntpcmdarticle
 msgid "ARTICLE"
@@ -1061,7 +1057,7 @@ msgstr "XOVER"
 
 #: ipconst.snoboundary
 msgid "No Mime boundary"
-msgstr "Pas de type MIME correct associé"
+msgstr "Pas de type MIME associé"
 
 #: ipconst.snomemorystreamerr
 msgid "No Memory Stream assigned"
@@ -1089,13 +1085,11 @@ msgstr "Flux non assigné"
 
 #: ipconst.snotenoughdata
 msgid "Not enough data in queue (%s bytes) to satisfy read request (%s bytes)"
-msgstr ""
-"Pas assez de données dans la queue (%s octets) pour satisfaire la demande "
-"de lecture (%s octets)"
+msgstr "Pas assez de données dans la queue (%s octets) pour satisfaire la demande de lecture (%s octets)"
 
 #: ipconst.snotimererr
 msgid "Not enough system timers available"
-msgstr "Pas assez de temporisations système disponibles"
+msgstr "Pas assez de timers système disponibles"
 
 #: ipconst.snowinsock2err
 msgid "%s requires WinSock 2, and this system only has WinSock 1"
@@ -1238,7 +1232,7 @@ msgstr "Aucune tâche"
 #: ipconst.sntpostto
 msgctxt "ipconst.sntpostto"
 msgid "Posting article"
-msgstr "Envoi en cours  de l'article"
+msgstr "Envoi en cours de l'article"
 
 #: ipconst.sntselectgroup
 msgid "Selecting Group"
@@ -1402,19 +1396,15 @@ msgstr "Couleur de transparence : %x"
 
 #: ipconst.spngtruncatedcrc
 msgid "CRC Code is truncated"
-msgstr "Le CRC  est tronqué"
+msgstr "Le CRC est tronqué"
 
 #: ipconst.spngtruncateddata
 msgid "Chunk data is truncated"
 msgstr "Données du bloc tronquées"
 
 #: ipconst.spngunsupportedfeature
-msgid ""
-"A %s chunk was found in the PNG File. This feature is not supported in this "
-"version of the PNG decoder"
-msgstr ""
-"Un bloc %s a été trouvé dans le fichier PNG. Cette option n'est pas "
-"supportée dans cette version du décodeur PNG"
+msgid "A %s chunk was found in the PNG File. This feature is not supported in this version of the PNG decoder"
+msgstr "Un bloc %s a été trouvé dans le fichier PNG. Cette option n'est pas supportée dans cette version du décodeur PNG"
 
 #: ipconst.spngwarningconstant
 msgid "**** WARNING ****"
@@ -1729,12 +1719,8 @@ msgid "%s: row number is out of range"
 msgstr "%s : le numéro de rangée est hors limites"
 
 #: ipconst.srowrowoor
-msgid ""
-"TIpTerminalArray.ScrollRows: either start row %d or end row %d is out of "
-"range"
-msgstr ""
-"\"TIpTerminalArray.ScrollRows\" : débordement de valeur de rangée de début "
-"%d ou de fin %d"
+msgid "TIpTerminalArray.ScrollRows: either start row %d or end row %d is out of range"
+msgstr "\"TIpTerminalArray.ScrollRows\" : débordement de valeur de rangée de début %d ou de fin %d"
 
 #: ipconst.sseekingdiskfileto
 msgid "Seeking disk file to "
@@ -1954,7 +1940,7 @@ msgstr "Code de réponse inconnu"
 
 #: ipconst.ssockserr
 msgid "SOCKS request refused - %d"
-msgstr "SOCKS requête refusée - %d"
+msgstr "Requête SOCKS refusée - %d"
 
 #: ipconst.sssauthlogin
 msgid "Requesting authentication"
@@ -2035,11 +2021,11 @@ msgstr "Erreur de taille de bloc"
 
 #: ipconst.ssslbufferoverflow
 msgid "Buffer overflow error."
-msgstr "Erreur de débordement de tampon."
+msgstr "Erreur de débordement de buffer."
 
 #: ipconst.ssslbuffersizemissmatch
 msgid "Buffer size miss-match."
-msgstr "Non correspondance de taille de mémoire tampon."
+msgstr "Non correspondance de taille de buffer."
 
 #: ipconst.ssslclosenotify
 msgid "Server sent close notify."
@@ -2167,7 +2153,7 @@ msgstr "Encodage public non supporté."
 
 #: ipconst.sssmailfrom
 msgid "Sending sender's info"
-msgstr "Envoi des informations de l'expéditeur"
+msgstr "Envoi en cours des informations de l'expéditeur"
 
 #: ipconst.sssnoop
 msgctxt "ipconst.sssnoop"
@@ -2290,7 +2276,7 @@ msgstr "Permission refusée"
 
 #: ipconst.swsaeaddrinuse
 msgid "Address already in use"
-msgstr "Adresse déjà  utilisée"
+msgstr "Adresse déjà utilisée"
 
 #: ipconst.swsaeaddrnotavail
 msgid "Cannot assign requested address"
@@ -2302,7 +2288,7 @@ msgstr "Famille d'adresses non prise en charge par la famille de protocole"
 
 #: ipconst.swsaealready
 msgid "Operation already in progress"
-msgstr "Opération déjà  en cours"
+msgstr "Opération déjà en cours"
 
 #: ipconst.swsaebadf
 msgid "Bad file descriptor"
@@ -2370,7 +2356,7 @@ msgstr "Numéro de version incorrect du fournisseur de services"
 
 #: ipconst.swsaeisconn
 msgid "Socket is already connected"
-msgstr "La socket est déjà connecté"
+msgstr "Le socket est déjà connecté"
 
 #: ipconst.swsaeloop
 msgid "Too many levels of symbolic links"
@@ -2540,8 +2526,7 @@ msgstr "Erreur due au manque de ressources"
 
 #: ipconst.swsa_qos_bad_object
 msgid "Problem filterspec or provider specific buffer"
-msgstr ""
-"Problème de \"filterspec\" ou de zone tampon spécifique au fournisseur"
+msgstr "Problème de \"filterspec\" ou de buffer spécifique au fournisseur"
 
 #: ipconst.swsa_qos_bad_style
 msgid "Unknown or conflicting style"
@@ -2553,7 +2538,7 @@ msgstr "Erreur générale"
 
 #: ipconst.swsa_qos_no_receivers
 msgid "There are no receivers"
-msgstr "Il n'y a pas de receveurs"
+msgstr "Il n'y a pas de destinataires"
 
 #: ipconst.swsa_qos_no_senders
 msgid "There are no senders"
@@ -2578,3 +2563,4 @@ msgstr "Réception d'au moins une liste de routeurs du chemin des données"
 #: ipconst.swsa_qos_traffic_ctrl_error
 msgid "Problem with some part of the flowspec"
 msgstr "Problème avec une partie du flot de données"
+
