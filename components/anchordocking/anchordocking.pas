@@ -1980,7 +1980,6 @@ var
             Site.Pages.Pages.Add(aPageName);
           aPage:=Site.Pages.Page[j];
           inc(j);
-          aPage.Caption:=aPageName;
           AControl:=Restore(Node[i],aPage);
           if AControl=nil then continue;
           AControl.Align:=alClient;
