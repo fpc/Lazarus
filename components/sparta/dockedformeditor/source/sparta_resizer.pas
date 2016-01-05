@@ -293,7 +293,8 @@ end;
 
 destructor TResizer.Destroy;
 begin
-  FMainDTU := nil;
+  Pointer(FDesignedForm) := nil;
+  Pointer(FMainDTU) := nil; // released by owner
   FEDTU.Free;
   inherited Destroy;
 end;

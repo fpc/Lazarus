@@ -838,6 +838,8 @@ end;
 
 destructor TResizerFrame.Destroy;
 begin
+  Pointer(FDesignedForm) := nil;
+  Pointer(FBackground) := nil;
   Application.RemoveOnIdleHandler(AppOnIdle);
   FNodes.Free;
   inherited Destroy;

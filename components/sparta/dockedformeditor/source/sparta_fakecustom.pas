@@ -91,6 +91,7 @@ type
     property RealFormStyle: TFormStyle read GetRealFormStyle write SetRealFormStyle;
 
     constructor Create(AOwner: TForm); virtual;
+    destructor Destroy; override;
 
     procedure BeginUpdate; virtual;
     procedure EndUpdate(AModified: Boolean = False); virtual;
@@ -715,7 +716,7 @@ begin
   // references back to nil by IDesignedForm to FDesignedForm
   inherited Destroy;
   if Assigned(FDesignedForm) then
-    FDesignedForm.Free;
+    FreeAndNil(FDesignedForm);
 end;
 
 procedure TFakeCustomForm.SetRealBorderStyle(AVal: TFormBorderStyle);
@@ -974,6 +975,12 @@ constructor TDesignedFormImpl.Create(AOwner: TForm);
 begin
   FOwner := AOwner;
   FDesignedRealForm := FOwner as IDesignedRealForm;
+end;
+
+destructor TDesignedFormImpl.Destroy;
+begin
+  Pointer(FDesignedRealForm) := nil;
+  inherited Destroy;
 end;
 
 end.
