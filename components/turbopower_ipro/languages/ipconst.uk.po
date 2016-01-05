@@ -294,7 +294,6 @@ msgid "- expected"
 msgstr "- очікується"
 
 #: ipconst.shtmldefbrowsecaption
-#| msgid "Browse..."
 msgid "Browse ..."
 msgstr "Огляд ..."
 
@@ -1253,6 +1252,7 @@ msgid "Unsupported Bit Depth of %d"
 msgstr "Непідтримувана бітова глибина %d"
 
 #: ipconst.spngbadchunktype
+#, fuzzy,badformat
 msgid "Unrecognized Chunk Type: %s"
 msgstr "Неопізнаний тип послідовності %d"
 

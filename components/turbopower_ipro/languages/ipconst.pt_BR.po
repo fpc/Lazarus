@@ -18,6 +18,7 @@ msgid "Checking Freshness (%s)"
 msgstr "Verificando Novidade (%s)"
 
 #: ipconst.cachedirnotexist
+#, fuzzy,badformat
 msgid "Cache directory %s does not exist."
 msgstr "Diretório \"Cache\" não existe."
 
@@ -291,7 +292,6 @@ msgid "- expected"
 msgstr "- esperado"
 
 #: ipconst.shtmldefbrowsecaption
-#| msgid "Browse..."
 msgid "Browse ..."
 msgstr "Navegar ..."
 
