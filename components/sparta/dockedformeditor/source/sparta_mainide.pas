@@ -587,6 +587,7 @@ begin
   FLastScreenshot.Free;
 
   inherited Destroy;
+  Pointer(FForm) := nil;
 end;
 
 { TModulePageControl }
@@ -598,7 +599,7 @@ begin
     // (when we restart IDE some error can be raised )
     if Assigned(FResizer) then
     begin
-      if FResizer.DesignedForm = AValue as IDesignedForm then
+      if (AValue <> nil) and (FResizer.DesignedForm = AValue as IDesignedForm) then
         Exit;
     end
     else

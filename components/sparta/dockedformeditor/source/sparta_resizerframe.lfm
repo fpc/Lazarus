@@ -8,8 +8,6 @@ object ResizerFrame: TResizerFrame
   Color = clDefault
   ParentColor = False
   TabOrder = 0
-  DesignLeft = 356
-  DesignTop = 23
   object pR: TPanel
     AnchorSideTop.Control = Owner
     Cursor = crSizeWE
