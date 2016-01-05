@@ -19,7 +19,7 @@ interface
 uses
   Classes, SysUtils, Controls, ExtCtrls, sparta_ResizerFrame, sparta_DesignedForm, Forms, Math, StdCtrls,
   LCLType, LazIDEIntf, Buttons, SpartaAPI, Dialogs,
-  FormEditingIntf;
+  FormEditingIntf, sparta_strconsts;
 
 type
 

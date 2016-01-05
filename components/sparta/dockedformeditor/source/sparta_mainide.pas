@@ -25,7 +25,7 @@ uses
 {$ELSE}
   ghashmap, sparta_HashUtils, gvector,
 {$ENDIF}
-  TypInfo, LCLIntf, LCLType, LMessages, sparta_FakeForm, sparta_FakeFrame, SpartaAPI;
+  TypInfo, LCLIntf, LCLType, LMessages, sparta_FakeForm, sparta_FakeFrame, SpartaAPI, sparta_strconsts;
 
 const
   WM_SETNOFRAME = WM_USER;
@@ -1300,12 +1300,12 @@ var
 
     LNewTabSheet := TTabSheet.Create(Result);
     LNewTabSheet.PageControl := Result;
-    LNewTabSheet.Caption := 'Code';
+    LNewTabSheet.Caption := SCode;
     LSourceEditor.EditorControl.Parent := LNewTabSheet;  // ! SynEdit :)
 
     LNewTabSheet := TTabSheet.Create(Result);
     LNewTabSheet.PageControl := Result;
-    LNewTabSheet.Caption := 'Designer';
+    LNewTabSheet.Caption := SDesigner;
 
     Result.OnChange := TabChange;
 

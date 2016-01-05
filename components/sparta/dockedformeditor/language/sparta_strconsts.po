@@ -1,0 +1,17 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: sparta_strconsts.sargumentoutofrange
+msgid "Argument out of range"
+msgstr ""
+
+#: sparta_strconsts.scode
+msgctxt "sparta_strconsts.scode"
+msgid "Code"
+msgstr ""
+
+#: sparta_strconsts.sdesigner
+msgctxt "sparta_strconsts.sdesigner"
+msgid "Designer"
+msgstr ""
+
