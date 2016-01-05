@@ -7291,9 +7291,9 @@ msgstr ", CPU: %s"
 msgid "Create a project first!"
 msgstr "Vytvořte nejdříve projekt!"
 
-#: lazarusidestrconsts.liscreatedebugandreleasemodesnewproj
-msgid "Create Debug and Release modes for new projects"
-msgstr "Vytvořit režim Ladění nebo Uvolnění pro nové projekty"
+#: lazarusidestrconsts.liscreatedebugandreleasemodes
+msgid "Create Debug and Release modes"
+msgstr ""
 
 #: lazarusidestrconsts.liscreatedirectory
 msgid "Create directory?"
@@ -7330,10 +7330,6 @@ msgstr "(Vytvořit nový balíček)"
 #: lazarusidestrconsts.liscreatenewpackagecomponent
 msgid "Create new package component"
 msgstr "(Vytvořit novou komponentu balíčku)"
-
-#: lazarusidestrconsts.liscreatenowforthisproject
-msgid "Create now for this project"
-msgstr "Vytvořit nyní pro tento projekt"
 
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"

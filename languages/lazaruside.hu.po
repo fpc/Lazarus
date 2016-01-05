@@ -7285,9 +7285,9 @@ msgstr ", CPU: %s"
 msgid "Create a project first!"
 msgstr "Először hozzon létre projektet!"
 
-#: lazarusidestrconsts.liscreatedebugandreleasemodesnewproj
-msgid "Create Debug and Release modes for new projects"
-msgstr "Hibakereső és kiadási módok létrehozása új projektekhez"
+#: lazarusidestrconsts.liscreatedebugandreleasemodes
+msgid "Create Debug and Release modes"
+msgstr ""
 
 #: lazarusidestrconsts.liscreatedirectory
 msgid "Create directory?"
@@ -7324,10 +7324,6 @@ msgstr "(Új csomag létrehozása)"
 #: lazarusidestrconsts.liscreatenewpackagecomponent
 msgid "Create new package component"
 msgstr "Új csomag-komponens létrehozása"
-
-#: lazarusidestrconsts.liscreatenowforthisproject
-msgid "Create now for this project"
-msgstr "Létrehozás e projekthez most"
 
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"

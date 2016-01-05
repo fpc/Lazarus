@@ -7333,8 +7333,8 @@ msgstr ", CPU: %s"
 msgid "Create a project first!"
 msgstr "Crea prima un progetto!"
 
-#: lazarusidestrconsts.liscreatedebugandreleasemodesnewproj
-msgid "Create Debug and Release modes for new projects"
+#: lazarusidestrconsts.liscreatedebugandreleasemodes
+msgid "Create Debug and Release modes"
 msgstr ""
 
 #: lazarusidestrconsts.liscreatedirectory
@@ -7372,10 +7372,6 @@ msgstr "(Crea un nuovo pacchetto)"
 #: lazarusidestrconsts.liscreatenewpackagecomponent
 msgid "Create new package component"
 msgstr "Crea un nuovo pacchetto componente"
-
-#: lazarusidestrconsts.liscreatenowforthisproject
-msgid "Create now for this project"
-msgstr ""
 
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
