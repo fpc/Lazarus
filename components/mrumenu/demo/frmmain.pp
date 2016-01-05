@@ -17,6 +17,7 @@ Type
   { TForm1 }
 
   TForm1 = class(TForm)
+    ImageList1: TImageList;
     MainMenu1: TMainMenu;
     MIRecent: TMenuItem;
     MenuItem2: TMenuItem;
@@ -26,10 +27,12 @@ Type
     MIOpen: TMenuItem;
     MINew: TMenuItem;
     MFile: TMenuItem;
-    MRUMenuManager1: TMRUMenuManager;
     ODFile: TOpenDialog;
     PCFiles: TPageControl;
+    PopupMenu1: TPopupMenu;
     SDFile: TSaveDialog;
+    ToolBar1: TToolBar;
+    ToolButton1: TToolButton;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure MINewClick(Sender: TObject);
@@ -38,7 +41,9 @@ Type
     procedure MISaveClick(Sender: TObject);
     procedure MRUMenuManager1RecentFile(Sender: TObject; const AFileName: String
       );
+    procedure ToolButton1Click(Sender: TObject);
   private
+    MRUMenuManager1: TMRUMenuManager;
     function CurrentFileName: string;
     procedure OpenFile(AFileName: String);
     procedure SaveFile(const AFileName: String);
@@ -76,6 +81,12 @@ procedure TForm1.MRUMenuManager1RecentFile(Sender: TObject;
   const AFileName: String);
 begin
   OpenFile(AFileName);
+end;
+
+procedure TForm1.ToolButton1Click(Sender: TObject);
+begin
+  If ODFIle.Execute then
+    OpenFile(ODFile.FileName);
 end;
 
 procedure TForm1.SaveFile(Const AFileName : String);
@@ -120,12 +131,22 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  MRUMenuManager1.LoadRecentFilesFromIni;
+  MRUMenuManager1 := TMRUMenuManager.Create(self);
+  with MRUMenuManager1 do begin
+    maxRecent := 5;
+    IniFileName := ChangeFileExt(ParamStr(0), '.ini');
+    MenuItem := MIRecent;
+    PopupMenu := PopupMenu1;
+    MaxItemLength := 80;
+    MenuCaptionMask := '(%d) %s';
+    OnRecentFile := @MRUMenuManager1RecentFile;
+//    LoadRecentFilesFromIni;
+  end;
 end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
 begin
-  MRUMenuManager1.SaveRecentFilesToIni;
+//  MRUMenuManager1.SaveRecentFilesToIni;
 end;
 
 

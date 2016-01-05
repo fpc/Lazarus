@@ -1,6 +1,7 @@
 { MRU (Most Recent Used) menu item manager
 
   Copyright (C) 2011 Michael Van Canneyt (michael@freepascal.org)
+                     Modifications by Werner Pamler
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Library General Public License as published by
@@ -58,12 +59,20 @@ Type
     FOnRecent: TOnRecentFileEvent;
     FRecent : TStrings;
     FMaxRecent : Integer;
+    FMenuCaptionMask : string;
     FMIRecent : TMenuItem;
+    FPMRecent : TPopupMenu;
+    FMaxItemLength : integer;
+    procedure SetIniFileName(const AValue:string);
+    procedure SetIniSection(const AValue:string);
+    procedure SetMaxItemLength(const AValue:integer);
+    procedure SetMenuCaptionMask(const AValue:string);
     procedure SetMIRecent(const AValue: TMenuItem);
+    procedure SetPMRecent(const AValue: TPopupMenu);
     procedure SetRecent(const AValue: TStrings);
   protected
     // Overrides.
-    procedure loaded; override;
+    procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     // Return default name and section if either is empty.
     procedure GetFileNameAndSection(Var AFileName,ASection : String); virtual;
@@ -82,6 +91,7 @@ Type
     Constructor Create(AOwner : TComponent);override;
     Destructor Destroy; override;
     // Load files from ini file AFileName in section ASection. Calls ShowRecentFiles
+    // Need for explicit call only when IniFileName='' and IniSection='' and class created at run-time
     procedure LoadRecentFilesFromIni(const AFileName: string=''; const ASection: String='');
     // Saves files to ini file AFileName in section ASection.
     procedure SaveRecentFilesToIni(const AFileName: string=''; const ASection: String='');
@@ -97,10 +107,16 @@ Type
     Property MaxRecent : Integer Read FMaxRecent write FMaxRecent;
     // Menu item to create a submenu under. Existing items will be removed.
     Property MenuItem : TMenuItem Read FMIRecent Write SetMIRecent;
+    // Popupmenu attached to a toolbar button. Existing items will be removed.
+    Property PopupMenu : TPopupMenu Read FPMRecent Write SetPMRecent;
     // Default ini filename.
-    Property IniFileName : String Read FIniFileName Write FIniFileName;
+    Property IniFileName : String Read FIniFileName Write SetIniFileName;
     // Default ini section.
-    Property IniSection : String Read FIniSection Write FIniSection;
+    Property IniSection : String Read FIniSection Write SetIniSection;
+    // Maximum length of recent menu item
+    Property MaxItemLength : integer Read FMaxItemLength Write SetMaxItemLength default 80;
+    // Format mask for MenuCaption: first placeholder must be %d, second %s, e.g. '%d - %s'
+    Property MenuCaptionMask : string read FMenuCaptionMask Write SetMenuCaptionMask;
     // Recent items. If adding manually to the list, ShowRecentFiles must be called manually.
     Property Recent : TStrings Read FRecent Write SetRecent;
     // Called when the user clicks an recent meu item.
@@ -120,6 +136,70 @@ implementation
 Resourcestring
   SErrFailedToCreateDir = 'Failed to create directory "%s"';
 
+const
+  DEFAULT_MASK = '%d.  %s';
+
+function MinimizeFileName(const AFileName:string; AMaxLen:integer) : string;
+
+  procedure SplitPath(const APath:String; Parts: TStrings);
+  { Splits the provided path into constituent folder names }
+  var
+    i, j : Integer;
+  begin
+    if APath = '' then exit;
+    if not Assigned(Parts) then exit;
+
+    i := Length(APath);
+    j := i;
+    while (i >= 1) do begin
+      if APath[i] = DirectorySeparator then begin
+        Parts.Insert(0, copy(APath, i+1, j-i));
+        j := i;
+      end;
+      dec(i);
+    end;
+    Parts.Insert(0, copy(APath, 1, j));
+  end;
+
+  function AddStringsFromTo(AList:TStrings; FromIndex,ToIndex:integer) : string;
+  var
+    i : integer;
+  begin
+    result := '';
+    for i:=FromIndex to ToIndex do
+      result := result + AList[i];
+  end;
+
+var
+  Parts : TStringList;
+  i : integer;
+  tmp : string;
+begin
+  result := AFileName;
+  if Length(AFileName) > AMaxLen then begin
+    Parts := TStringList.Create;
+    try
+      SplitPath(AFileName, Parts);
+      i := Parts.Count div 2;
+      while (i < Parts.Count) do begin
+        tmp := Format('%s...%s%s', [
+          AddStringsFromTo(Parts, 0, i-1),
+          DirectorySeparator,
+          AddStringsFromTo(Parts, i+1, Parts.Count-1)
+        ]);
+        if Length(tmp) < AMaxLen then begin
+          result := tmp;
+          exit;
+        end else
+          Parts.Delete(i);
+        i := Parts.Count div 2;
+      end;
+      result := ExtractFileName(AFileName);
+    finally
+      Parts.Free;
+    end;
+  end;
+end;
 
 procedure TMRUMenuManager.AddToRecent(AFileName : String);
 
@@ -155,8 +235,19 @@ end;
 
 function TMRUMenuManager.CreateMenuCaption(AIndex: Integer;
   const AFileName: String): String;
+var
+  fn : string;
+  mask : string;
 begin
-  Result:=Format('%d.  %s',[AIndex+1,AFileName]);
+  if FMaxItemLength > 0 then
+    fn := MinimizeFileName(AFileName, FMaxItemLength)
+  else
+    fn := AFileName;
+  if FMenuCaptionMask = '' then
+    mask := DEFAULT_MASK
+  else
+    mask := FMenuCaptionMask;
+  Result:=Format(mask, [AIndex+1,fn]);
 end;
 
 procedure TMRUMenuManager.ShowRecentFiles;
@@ -166,17 +257,28 @@ Var
   M : TRecentMenuItem;
 
 begin
-  if Not Assigned(FMIRecent) then
-    Exit;
-  FMIRecent.clear;
-  For I:=0 to FRecent.Count-1 do
+  if Assigned(FMIRecent) then begin
+    FMIRecent.clear;
+    For I:=0 to FRecent.Count-1 do
     begin
-    M:=CreateMenuItem(Self.Owner);
-    M.Caption:=CreateMenuCaption(I,FRecent[i]);
-    M.FFileName:=FRecent[i];
-    M.OnClick:=@DoOnRecentClick;
-    FMIRecent.Add(M);
+      M:=CreateMenuItem(Self.Owner);
+      M.Caption:=CreateMenuCaption(I,FRecent[i]);
+      M.FFileName:=FRecent[i];
+      M.OnClick:=@DoOnRecentClick;
+      FMIRecent.Add(M);
     end;
+  end;
+  if Assigned(FPMRecent) then begin
+    FPMRecent.Items.Clear;
+    for i:=0 to FRecent.Count-1 do
+    begin
+      M := CreateMenuItem(Self.Owner);
+      M.Caption := CreateMenuCaption(I, Recent[i]);
+      M.FFileName := FRecent[i];
+      M.OnClick := @DoOnRecentClick;
+      FPMRecent.Items.Add(M);
+    end;
+  end;
 end;
 
 procedure TMRUMenuManager.LoadFromIni(Ini : TCustomIniFile; ASection : String);
@@ -269,6 +371,38 @@ begin
   end;
 end;
 
+procedure TMRUMenuManager.SetIniFileName(const AValue:string);
+begin
+  if AValue <> FIniFileName then begin
+    FIniFileName := AValue;
+    LoadRecentFilesFromIni(FIniFileName, FIniSection);
+  end;
+end;
+
+procedure TMRUMenuManager.SetIniSection(const AValue:string);
+begin
+  if AValue <> FIniSection then begin
+    FIniSection := AValue;
+    LoadRecentFilesFromini(FIniFileName, FIniSection);
+  end;
+end;
+
+procedure TMRUMenuManager.SetMaxItemLength(const AValue:integer);
+begin
+  if FMaxItemLength <> AValue then begin
+    FMaxItemLength := AValue;
+    ShowRecentFiles;
+  end;
+end;
+
+procedure TMRUMenuManager.SetMenuCaptionMask(const AValue:string);
+begin
+  if FMenuCaptionMask <> AValue then begin
+    FMenuCaptionMask := AValue;
+    ShowRecentFiles;
+  end;
+end;
+
 procedure TMRUMenuManager.SetMIRecent(const AValue: TMenuItem);
 begin
   if FMIRecent=AValue then exit;
@@ -277,6 +411,17 @@ begin
   FMIRecent:=AValue;
   If Assigned(FMIRecent) then
     FMIRecent.FreeNotification(Self);
+  ShowRecentFiles;
+end;
+
+procedure TMRUMenuManager.SetPMRecent(const AValue: TPopupMenu);
+begin
+  if FPMRecent=AValue then exit;
+  if Assigned(FPMRecent) then
+    FPMRecent.RemoveFreeNotification(self);
+  FPMRecent := AValue;
+  if Assigned(FPMRecent) then
+    FPMRecent.FreeNotification(self);
   ShowRecentFiles;
 end;
 
@@ -290,19 +435,21 @@ end;
 procedure TMRUMenuManager.loaded;
 begin
   inherited loaded;
-  if (FRecent.Count>0) and assigned(FMIRecent) then
-    ShowRecentFiles;
+  if (FRecent.Count>0) and (assigned(FMIRecent) or assigned(FPMRecent))then
+    LoadRecentFilesFromIni(FIniFileName, FIniSection);
 end;
-
 
 constructor TMRUMenuManager.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FRecent:=TStringList.Create;
+  FMaxItemLength := 80;
+  FMenuCaptionMask := DEFAULT_MASK;
 end;
 
 destructor TMRUMenuManager.Destroy;
 begin
+  SaveRecentFilesToIni(FIniFileName, FIniSection);
   FreeAndNil(FRecent);
   inherited Destroy;
 end;
@@ -311,15 +458,20 @@ procedure TMRUMenuManager.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation=opRemove) and (AComponent=FMIrecent) then
+  if (Operation = opRemove) then begin
+    if AComponent = FMIRecent then FMIRecent := nil;
+    if AComponent = FPMRecent then FPMRecent := nil;
+  end;
+  { original code - I think this is not correct:
+  inherited Notification(AComponent, Operation);
+  if (Operation=opRemove) and ((AComponent=FMIRecent) or (AComponent=FPMRecent)) then
      exit;
+  }
 end;
 
 procedure TMRUMenuManager.DoOnRecentClick(Sender: TObject);
-
 Var
   FN : String;
-
 begin
   With (Sender as TRecentMenuItem) do
     FN:=FileName;

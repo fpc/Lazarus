@@ -29,24 +29,26 @@
         <LaunchingApplication PathPlusParams="/usr/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="3">
+    <RequiredPackages Count="2">
       <Item1>
-        <PackageName Value="lazmrumenu"/>
-      </Item1>
-      <Item2>
         <PackageName Value="LCLBase"/>
         <MinVersion Valid="True"/>
-      </Item2>
-      <Item3>
+      </Item1>
+      <Item2>
         <PackageName Value="LCL"/>
-      </Item3>
+      </Item2>
     </RequiredPackages>
-    <Units Count="7">
+    <Units Count="19">
       <Unit0>
         <Filename Value="mrudemo.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="mrudemo"/>
-        <UsageCount Value="22"/>
+        <EditorIndex Value="4"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="14"/>
+        <UsageCount Value="26"/>
+        <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="frmmain.pp"/>
@@ -56,9 +58,9 @@
         <UnitName Value="frmmain"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="124"/>
-        <CursorPos X="44" Y="138"/>
-        <UsageCount Value="22"/>
+        <TopLine Value="127"/>
+        <CursorPos X="39" Y="133"/>
+        <UsageCount Value="26"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
@@ -66,31 +68,27 @@
         <Filename Value="../mrumanager.pp"/>
         <UnitName Value="mrumanager"/>
         <IsVisibleTab Value="True"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="14"/>
-        <UsageCount Value="11"/>
+        <TopLine Value="53"/>
+        <CursorPos X="1" Y="93"/>
+        <UsageCount Value="12"/>
         <Loaded Value="True"/>
       </Unit2>
       <Unit3>
         <Filename Value="../regmru.lrs"/>
-        <EditorIndex Value="4"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="17" Y="1"/>
         <UsageCount Value="11"/>
-        <Loaded Value="True"/>
       </Unit3>
       <Unit4>
         <Filename Value="../reglazmru.pp"/>
         <UnitName Value="reglazmru"/>
-        <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="44" Y="8"/>
         <UsageCount Value="11"/>
-        <Loaded Value="True"/>
       </Unit4>
       <Unit5>
         <Filename Value="/data/wisa/projects/fpcpackages/wisawebdb/menueditor/demo/frmmain.pp"/>
@@ -103,92 +101,253 @@
       <Unit6>
         <Filename Value="/data/wisa/projects/fpcpackages/wisawebdb/menueditor/mrumanager.pp"/>
         <UnitName Value="mrumanager"/>
-        <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
         <TopLine Value="85"/>
         <CursorPos X="1" Y="113"/>
         <UsageCount Value="11"/>
-        <Loaded Value="True"/>
       </Unit6>
+      <Unit7>
+        <Filename Value="../../../../lazarus/lcl/include/control.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="3200"/>
+        <CursorPos X="53" Y="3216"/>
+        <UsageCount Value="10"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="../../../../lazarus/lcl/filectrl.pp"/>
+        <UnitName Value="FileCtrl"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="215"/>
+        <CursorPos X="17" Y="240"/>
+        <UsageCount Value="11"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="../../../../lazarus/lcl/menus.pp"/>
+        <UnitName Value="Menus"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="106"/>
+        <CursorPos X="34" Y="38"/>
+        <UsageCount Value="11"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="../../../../lazarus/lcl/graphics.pp"/>
+        <UnitName Value="Graphics"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="11"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="../../../../lazarus/fpc/2.5.1/source/rtl/objpas/sysutils/sysutilh.inc"/>
+        <EditorIndex Value="1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="234"/>
+        <CursorPos X="47" Y="237"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="../../../../lazarus/fpc/2.5.1/source/rtl/win32/system.pp"/>
+        <UnitName Value="System"/>
+        <EditorIndex Value="2"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="23"/>
+        <CursorPos X="2" Y="41"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="../../../../lazarus/fpc/2.5.1/source/packages/fcl-fpcunit/src/digesttestreport.pp"/>
+        <UnitName Value="DigestTestReport"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="142"/>
+        <CursorPos X="10" Y="157"/>
+        <UsageCount Value="11"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="../../../../lazarus/fpc/2.5.1/source/rtl/netware/nwnit.pp"/>
+        <UnitName Value="nwnit"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="850"/>
+        <CursorPos X="12" Y="865"/>
+        <UsageCount Value="11"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="../../../../lazarus/fpc/2.5.1/source/rtl/netware/nwserv.pp"/>
+        <UnitName Value="nwserv"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="2093"/>
+        <CursorPos X="12" Y="2108"/>
+        <UsageCount Value="11"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="../../../../lazarus/fpc/2.5.1/source/rtl/objpas/sysutils/sysstrh.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="116"/>
+        <CursorPos X="10" Y="131"/>
+        <UsageCount Value="10"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="../../../../lazarus/fpc/2.5.1/source/rtl/objpas/sysutils/sysstr.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="904"/>
+        <CursorPos X="30" Y="904"/>
+        <UsageCount Value="10"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="../lazmrumenu.pas"/>
+        <UnitName Value="lazmrumenu"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="10"/>
+      </Unit18>
     </Units>
-    <JumpHistory Count="16" HistoryIndex="15">
+    <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="frmmain.pp"/>
-        <Caret Line="84" Column="37" TopLine="68"/>
+        <Filename Value="../mrumanager.pp"/>
+        <Caret Line="100" Column="24" TopLine="73"/>
       </Position1>
       <Position2>
-        <Filename Value="frmmain.pp"/>
-        <Caret Line="94" Column="21" TopLine="76"/>
+        <Filename Value="../mrumanager.pp"/>
+        <Caret Line="253" Column="3" TopLine="246"/>
       </Position2>
       <Position3>
-        <Filename Value="frmmain.pp"/>
-        <Caret Line="103" Column="21" TopLine="86"/>
+        <Filename Value="../mrumanager.pp"/>
+        <Caret Line="98" Column="15" TopLine="85"/>
       </Position3>
       <Position4>
-        <Filename Value="frmmain.pp"/>
-        <Caret Line="93" Column="10" TopLine="85"/>
+        <Filename Value="../mrumanager.pp"/>
+        <Caret Line="204" Column="3" TopLine="197"/>
       </Position4>
       <Position5>
-        <Filename Value="frmmain.pp"/>
-        <Caret Line="115" Column="41" TopLine="111"/>
+        <Filename Value="../mrumanager.pp"/>
+        <Caret Line="91" Column="15" TopLine="83"/>
       </Position5>
       <Position6>
-        <Filename Value="frmmain.pp"/>
-        <Caret Line="128" Column="36" TopLine="122"/>
+        <Filename Value="../mrumanager.pp"/>
+        <Caret Line="314" Column="3" TopLine="307"/>
       </Position6>
       <Position7>
-        <Filename Value="frmmain.pp"/>
-        <Caret Line="148" Column="21" TopLine="124"/>
+        <Filename Value="../mrumanager.pp"/>
+        <Caret Line="86" Column="27" TopLine="79"/>
       </Position7>
       <Position8>
-        <Filename Value="/data/wisa/projects/fpcpackages/wisawebdb/menueditor/mrumanager.pp"/>
-        <Caret Line="101" Column="1" TopLine="84"/>
+        <Filename Value="../mrumanager.pp"/>
+        <Caret Line="229" Column="3" TopLine="229"/>
       </Position8>
       <Position9>
-        <Filename Value="/data/wisa/projects/fpcpackages/wisawebdb/menueditor/mrumanager.pp"/>
-        <Caret Line="102" Column="1" TopLine="84"/>
+        <Filename Value="../mrumanager.pp"/>
+        <Caret Line="76" Column="1" TopLine="76"/>
       </Position9>
       <Position10>
-        <Filename Value="/data/wisa/projects/fpcpackages/wisawebdb/menueditor/mrumanager.pp"/>
-        <Caret Line="103" Column="1" TopLine="84"/>
+        <Filename Value="../mrumanager.pp"/>
+        <Caret Line="243" Column="25" TopLine="223"/>
       </Position10>
       <Position11>
-        <Filename Value="/data/wisa/projects/fpcpackages/wisawebdb/menueditor/mrumanager.pp"/>
-        <Caret Line="105" Column="1" TopLine="84"/>
+        <Filename Value="../mrumanager.pp"/>
+        <Caret Line="88" Column="14" TopLine="71"/>
       </Position11>
       <Position12>
-        <Filename Value="/data/wisa/projects/fpcpackages/wisawebdb/menueditor/mrumanager.pp"/>
-        <Caret Line="106" Column="1" TopLine="84"/>
+        <Filename Value="../mrumanager.pp"/>
+        <Caret Line="428" Column="36" TopLine="423"/>
       </Position12>
       <Position13>
         <Filename Value="../mrumanager.pp"/>
-        <Caret Line="69" Column="19" TopLine="54"/>
+        <Caret Line="115" Column="99" TopLine="86"/>
       </Position13>
       <Position14>
         <Filename Value="../mrumanager.pp"/>
-        <Caret Line="283" Column="27" TopLine="279"/>
+        <Caret Line="114" Column="12" TopLine="100"/>
       </Position14>
       <Position15>
-        <Filename Value="../mrumanager.pp"/>
-        <Caret Line="72" Column="89" TopLine="65"/>
+        <Filename Value="frmmain.pp"/>
+        <Caret Line="48" Column="19" TopLine="25"/>
       </Position15>
       <Position16>
         <Filename Value="frmmain.pp"/>
-        <Caret Line="138" Column="44" TopLine="124"/>
+        <Caret Line="161" Column="3" TopLine="133"/>
       </Position16>
+      <Position17>
+        <Filename Value="frmmain.pp"/>
+        <Caret Line="49" Column="15" TopLine="33"/>
+      </Position17>
+      <Position18>
+        <Filename Value="frmmain.pp"/>
+        <Caret Line="99" Column="17" TopLine="92"/>
+      </Position18>
+      <Position19>
+        <Filename Value="../mrumanager.pp"/>
+        <Caret Line="88" Column="22" TopLine="85"/>
+      </Position19>
+      <Position20>
+        <Filename Value="../mrumanager.pp"/>
+        <Caret Line="425" Column="3" TopLine="423"/>
+      </Position20>
+      <Position21>
+        <Filename Value="../mrumanager.pp"/>
+        <Caret Line="89" Column="17" TopLine="73"/>
+      </Position21>
+      <Position22>
+        <Filename Value="../mrumanager.pp"/>
+        <Caret Line="433" Column="51" TopLine="427"/>
+      </Position22>
+      <Position23>
+        <Filename Value="../mrumanager.pp"/>
+        <Caret Line="89" Column="16" TopLine="74"/>
+      </Position23>
+      <Position24>
+        <Filename Value="../mrumanager.pp"/>
+        <Caret Line="362" Column="76" TopLine="362"/>
+      </Position24>
+      <Position25>
+        <Filename Value="../mrumanager.pp"/>
+        <Caret Line="67" Column="42" TopLine="63"/>
+      </Position25>
+      <Position26>
+        <Filename Value="../mrumanager.pp"/>
+        <Caret Line="312" Column="21" TopLine="298"/>
+      </Position26>
+      <Position27>
+        <Filename Value="../mrumanager.pp"/>
+        <Caret Line="93" Column="15" TopLine="78"/>
+      </Position27>
+      <Position28>
+        <Filename Value="../mrumanager.pp"/>
+        <Caret Line="319" Column="3" TopLine="312"/>
+      </Position28>
+      <Position29>
+        <Filename Value="../mrumanager.pp"/>
+        <Caret Line="66" Column="15" TopLine="63"/>
+      </Position29>
+      <Position30>
+        <Filename Value="../mrumanager.pp"/>
+        <Caret Line="437" Column="1" TopLine="414"/>
+      </Position30>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="10"/>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
+      <OtherUnitFiles Value=".."/>
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>
         <UseAnsiStrings Value="False"/>
       </SyntaxOptions>
     </Parsing>
+    <Linking>
+      <Debugging>
+        <GenerateDebugInfo Value="True"/>
+        <DebugInfoType Value="dsAuto"/>
+        <StripSymbols Value="True"/>
+      </Debugging>
+    </Linking>
     <Other>
+      <CompilerMessages>
+        <UseMsgFile Value="True"/>
+      </CompilerMessages>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
