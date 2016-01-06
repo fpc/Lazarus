@@ -73,6 +73,7 @@ type
     FTemplatesSaved: boolean;
     FTotalMenuItemsCount: integer;
     FVariableGlyphsInMenuBar: boolean;
+    FUpdateCount: integer;
     function GetItemCounts(out aCaptionedItemCount, aShortcutItemCount,
                            anIconCount, anAccelCount: integer): integer;
     function GetPopupAssignmentCount: integer;
@@ -94,6 +95,8 @@ type
     procedure UpdateShortcutList(includeAccelerators: boolean=False);
     procedure UpdateStatistics;
     procedure UpdateTemplatesCount;
+    procedure BeginUpdate;
+    procedure EndUpdate;
     property AcceleratorMenuItemsCount: integer read FAcceleratorMenuItemsCount;
     property EditedMenu: TMenu read FEditedMenu;
     property SavedTemplatesCount: integer read FSavedTemplatesCount;
@@ -203,6 +206,9 @@ var
   isTMenu: boolean;
   persist: TPersistent;
 begin
+  if FUpdateCount > 0 then
+    Exit; // This event will be executed after all updates, look at EndUpdate
+
   persist:=GetSelectedMenuComponent(ASelection, isTMenu, selCount);
   if (persist <> nil) then
     begin
@@ -569,6 +575,20 @@ begin
     Exit;
   end
   else FSavedTemplatesCount:=GetSavedTemplatesCount;
+end;
+
+procedure TMenuDesigner.BeginUpdate;
+begin
+  Inc(FUpdateCount);
+end;
+
+procedure TMenuDesigner.EndUpdate;
+begin
+  if FUpdateCount<=0 then
+    RaiseGDBException('');
+  Dec(FUpdateCount);
+  if FUpdateCount = 0 then
+    OnDesignerSetSelection(FormEditingHook.GetCurrentObjectInspector.Selection);
 end;
 
 { TMainMenuComponentEditor}

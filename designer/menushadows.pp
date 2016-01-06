@@ -5017,41 +5017,47 @@ var
   box: TShadowBox;
   ownsIt: TComponent;
 begin
-  mi:=anExistingSI.RealItem;
-  if (mi.Count > 0) then
-    DeleteShadowAndItemAndChildren(anExistingSI)
-  else begin
-    HideFakes;
-    if (mi = FSelectedMenuItem) then
-      FSelectedMenuItem:=nil;
-    nearestMI:=GetNextNonSepItem(mi);
-    if (nearestMI = nil) then
-      nearestMI:=GetPreviousNonSepItem(mi);
-    if (nearestMI = nil) then
-      nearestMI:=mi.Parent;
-    box:=anExistingSI.ParentBox;
-    box.ParentMenuItem.Remove(mi);
-    ownsIt:=mi.Owner;
-    if (ownsIt <> nil) then
-      ownsIt.RemoveComponent(mi);
-    anExistingSI.RealItem:=nil;
-    box.ShadowList.Remove(anExistingSI);
-    anExistingSI.Parent:=nil;
-    box.RemoveComponent(anExistingSI);
-    FreeAndNil(anExistingSI);
-    FEditorDesigner.PropertyEditorHook.PersistentDeleting(TPersistent(mi));
-    FreeAndNil(mi);
-    FEditorDesigner.Modified;
+  MenuDesigner.BeginUpdate;
+  try
+    mi:=anExistingSI.RealItem;
+    if (mi.Count > 0) then
+      DeleteShadowAndItemAndChildren(anExistingSI)
+    else begin
+      HideFakes;
+      if (mi = FSelectedMenuItem) then
+        FSelectedMenuItem:=nil;
+      nearestMI:=GetNextNonSepItem(mi);
+      if (nearestMI = nil) then
+        nearestMI:=GetPreviousNonSepItem(mi);
+      if (nearestMI = nil) then
+        nearestMI:=mi.Parent;
+      box:=anExistingSI.ParentBox;
+      box.ParentMenuItem.Remove(mi);
+      ownsIt:=mi.Owner;
+      if (ownsIt <> nil) then
+        ownsIt.RemoveComponent(mi);
+      anExistingSI.RealItem:=nil;
+      box.ShadowList.Remove(anExistingSI);
+      anExistingSI.Parent:=nil;
+      box.RemoveComponent(anExistingSI);
+      FreeAndNil(anExistingSI);
+      FEditorDesigner.PropertyEditorHook.PersistentDeleting(TPersistent(mi));
+      FreeAndNil(mi);
+      FEditorDesigner.PropertyEditorHook.PersistentDeleted;
+      FEditorDesigner.Modified;
 
-    if (box.ShadowCount = 0) then begin
-      FBoxList.Remove(box);
-      box.Parent:=nil;
-      RemoveComponent(box);
-      FreeAndNil(box);
+      if (box.ShadowCount = 0) then begin
+        FBoxList.Remove(box);
+        box.Parent:=nil;
+        RemoveComponent(box);
+        FreeAndNil(box);
+      end;
+      UpdateBoxLocationsAndSizes;
+      SetSelectedMenuItem(nearestMI, False, True);
+      MenuDesigner.UpdateStatistics;
     end;
-    UpdateBoxLocationsAndSizes;
-    SetSelectedMenuItem(nearestMI, False, True);
-    MenuDesigner.UpdateStatistics;
+  finally
+    MenuDesigner.EndUpdate;
   end;
 end;
 
