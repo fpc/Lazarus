@@ -138,6 +138,16 @@ end;
 Procedure Register;
 
 begin
+  RegisterStdFormats;
+{  RegisterFixedExportFormat;
+  RegisterSQLExportFormat;
+  RegisterSimpleXMLExportFormat;
+  RegisterSimpleJSONExportFormat;
+  RegisterDBFExportFormat;
+  RegisterTexExportFormat;
+  RegisterRTFExportFormat;
+  Register}
+
   RegisterComponents('Data Export',[TCSVExporter,
                                     TFixedLengthExporter,
                                     TSQLExporter,
