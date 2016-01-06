@@ -4105,6 +4105,7 @@ components/tachart/icons/tuserdefinedchartsource.png -text svneol=unset#images/p
 components/tachart/languages/tachartstrconsts.de.po svneol=native#text/plain
 components/tachart/languages/tachartstrconsts.fi.po svneol=native#text/plain
 components/tachart/languages/tachartstrconsts.fr.po svneol=native#text/plain
+components/tachart/languages/tachartstrconsts.hu.po svneol=native#text/plain
 components/tachart/languages/tachartstrconsts.po svneol=native#text/plain
 components/tachart/languages/tachartstrconsts.ru.po svneol=native#text/plain
 components/tachart/languages/tachartstrconsts.se.po svneol=native#text/plain
