@@ -1273,7 +1273,7 @@ var
   LPageCtrl: TModulePageControl;
 begin
   Result := nil;
-  LForm := TCustomForm(GlobalDesignHook.LookupRoot);
+  LForm := FormEditingHook.GetDesignerForm(GlobalDesignHook.LookupRoot);
   LFormData := FindDesignFormData(LForm);
   if LFormData=nil then Exit;
   LSourceWindow := (LFormData as IDesignedForm).LastActiveSourceWindow;
