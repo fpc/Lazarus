@@ -4331,7 +4331,7 @@ begin
   // find class helper functions
   SearchInHelpersInTheEnd := False;
   if (fdfSearchInHelpers in Flags)
-    and (ContextNode.Desc in [ctnClass,ctnRecordType,ctnTypeType,ctnObjCClass,ctnEnumerationType,ctnOpenArrayType])
+    and (ContextNode.Desc in [ctnClass,ctnRecordType,ctnTypeType,ctnObjCClass,ctnEnumerationType,ctnRangedArrayType,ctnOpenArrayType])
     and (ContextNode.Parent<>nil) and (ContextNode.Parent.Desc = ctnTypeDefinition)
   then begin
     if (fdfSearchInHelpersInTheEnd in Flags) then
