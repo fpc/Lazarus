@@ -84,6 +84,8 @@ type
     // List for Component inheritence view
     FClassList: TStringList;
     FKeepSelected: Boolean;
+    FFixedSelection: Boolean;
+    FPriorSelection: TTreeNode;
     procedure ClearSelection;
     procedure SelectionWasChanged;
     procedure ComponentWasAdded({%H-}ALookupRoot, {%H-}AComponent: TComponent;
@@ -200,6 +202,8 @@ end;
 
 procedure TComponentListForm.SelectionWasChanged;
 begin
+  if FFixedSelection then
+    Exit;
   // ToDo: Select the component in active treeview.
   if ListTree.IsVisible then
     SelectTreeComp(ListTree)
@@ -372,6 +376,9 @@ end;
 
 procedure TComponentListForm.TreeFilterEdAfterFilter(Sender: TObject);
 begin
+  if TreeFilterEd.Text = '' then
+    TreeFilterEd.FilteredTreeview.Selected := FPriorSelection;
+  FPriorSelection := nil;
   UpdateButtonState;
 end;
 
@@ -386,10 +393,15 @@ procedure TComponentListForm.ComponentsChange(Sender: TObject; Node: TTreeNode);
 var
   AComponent: TRegisteredComponent;
 begin
-  AComponent:=GetSelectedComponent;
-  if AComponent<>nil then
+  FFixedSelection := True;
+  try
+    AComponent:=GetSelectedComponent;
+    // Allow the selected component to be cleared
     IDEComponentPalette.SetSelectedComp(AComponent, ssShift in GetKeyShiftState);
-  UpdateButtonState;
+    UpdateButtonState;
+  finally
+    FFixedSelection := False;
+  end;
 end;
 
 procedure TComponentListForm.TreeKeyPress(Sender: TObject; var Key: char);
@@ -409,6 +421,7 @@ begin
     1: TreeFilterEd.FilteredTreeview := PalletteTree;
     2: TreeFilterEd.FilteredTreeview := InheritanceTree;
   end;
+  FPriorSelection := TreeFilterEd.FilteredTreeview.Selected;
   TreeFilterEd.InvalidateFilter;
   PrevPageIndex := PageControl.PageIndex;
 end;
