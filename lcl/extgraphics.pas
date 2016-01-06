@@ -56,7 +56,7 @@ procedure PaintQuadrangle(Canvas: TCanvas; const PaintRect: TRect;
 procedure PaintRightTriangle(Canvas: TCanvas; const PaintRect: TRect;
   RadAngle :Extended=0.0);
 procedure PaintSwastika(Canvas: TCanvas; const PaintRect: TRect;
-  RadAngle :Extended=0.0);
+  RadAngle :Extended=0.0; ClockWise: Boolean = true);
 procedure PaintTriangle(Canvas: TCanvas; const PaintRect: TRect;
   RadAngle :Extended=0.0);
 procedure PaintTriangular(Canvas: TCanvas; const PaintRect: TRect;
@@ -583,8 +583,10 @@ begin
 end;
 
 
-procedure InitSwastika(var P:array of TPoint;const R: TRect;var NumPts:Integer);
+procedure InitSwastika(var P:array of TPoint;const R: TRect;var NumPts:Integer; CW: Boolean = true);
 var x1,x2,y1,y2:Integer;
+  t: TPoint;
+  i: integer;
 begin
   x1:=(R.Right-R.Left) div 5;
   y1:=(R.Bottom-R.Top) div 5;
@@ -601,6 +603,19 @@ begin
   P[16].x:=P[15].x;P[16].y:=R.Bottom-y1;P[17].x:=R.Left+x2;P[17].y:=P[16].y;
   P[18].x:=P[17].x;P[18].y:=R.Bottom-y2;P[19].x:=R.Left;P[19].y:=P[18].y;
   NumPts:=20;
+  if not CW then
+    for i:=0 to NumPts -1 do
+      p[i].x:=R.Right - (p[i].x - R.left);
+end;
+
+procedure InitSwastikaCW(var P:array of TPoint;const R: TRect;var NumPts:Integer);
+begin
+  InitSwastika(P, R, NumPts, true);
+end;
+
+procedure InitSwastikaCCW(var P:array of TPoint;const R: TRect;var NumPts:Integer);
+begin
+  InitSwastika(P, R, NumPts, false);
 end;
 
 procedure InitTriangle(var P:array of TPoint; const R: TRect;
@@ -719,9 +734,12 @@ begin
   InitPolygon(Canvas,PaintRect,RadAngle,@InitRightTriangle);
 end;
 
-procedure PaintSwastika(Canvas: TCanvas; const PaintRect: TRect;RadAngle :Extended=0.0);
+procedure PaintSwastika(Canvas: TCanvas; const PaintRect: TRect;RadAngle :Extended=0.0; ClockWise: Boolean = true);
 begin
-  InitPolygon(Canvas,PaintRect,RadAngle,@InitSwastika);
+  if ClockWise then
+    InitPolygon(Canvas,PaintRect,RadAngle,@InitSwastikaCW)
+  else
+    InitPolygon(Canvas,PaintRect,RadAngle,@InitSwastikaCCW);
 end;
 
 procedure PaintTriangle(Canvas: TCanvas; const PaintRect: TRect;RadAngle :Extended=0.0);
