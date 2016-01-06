@@ -2174,7 +2174,7 @@ msgstr "Gyorsbillentyű hiba"
 
 #: lazarusidestrconsts.dlgkeywordpolicy
 msgid "Keyword policy"
-msgstr "Gyorsbillentyű módszer"
+msgstr "Kulcsszavak írásmódja"
 
 #: lazarusidestrconsts.dlglabelgoto
 msgid "Allow LABEL and GOTO"
@@ -6193,7 +6193,7 @@ msgstr "Csomópont mozgatása egy szinttel feljebb"
 
 #: lazarusidestrconsts.liscodetoolsdefsmovenodeup
 msgid "Move node up"
-msgstr "Csomópont mozgatása feljfelé"
+msgstr "Csomópont mozgatása felfelé"
 
 #: lazarusidestrconsts.liscodetoolsdefsname
 msgctxt "lazarusidestrconsts.liscodetoolsdefsname"
@@ -7108,11 +7108,11 @@ msgstr "Üzenetek"
 
 #: lazarusidestrconsts.liscoolbarmoveselecteddown
 msgid "Move selected toolbar item down"
-msgstr "A kijelöl eszköztárelem mozgatása lefelé"
+msgstr "A kijelölt eszköztárelem mozgatása lefelé"
 
 #: lazarusidestrconsts.liscoolbarmoveselectedup
 msgid "Move selected toolbar item up"
-msgstr "A kijelöl eszköztárelem mozgatása felfelé"
+msgstr "A kijelölt eszköztárelem mozgatása felfelé"
 
 #: lazarusidestrconsts.liscoolbaroptions
 msgid "IDE CoolBar"
@@ -7290,7 +7290,7 @@ msgstr "Először hozzon létre projektet!"
 
 #: lazarusidestrconsts.liscreatedebugandreleasemodes
 msgid "Create Debug and Release modes"
-msgstr ""
+msgstr "Hibakereső és kiadási módok létrehozása"
 
 #: lazarusidestrconsts.liscreatedirectory
 msgid "Create directory?"
@@ -9878,7 +9878,7 @@ msgstr "E kivétel típus figyelmen kívül hagyása"
 
 #: lazarusidestrconsts.lisignoreuseasancestor
 msgid "Ignore, use %s as ancestor"
-msgstr ""
+msgstr "Kihagyás, %s használata ősként"
 
 #: lazarusidestrconsts.lisimitateindentationofcurrentunitprojectorpackage
 msgid "Imitate indentation of current unit, project or package"
@@ -12578,11 +12578,11 @@ msgstr "hiányzó makró név"
 
 #: lazarusidestrconsts.lismmmoveselecteditemdown
 msgid "Move selected item down"
-msgstr "Kijelölt elem mozgatása le"
+msgstr "Kijelölt elem mozgatása lefelé"
 
 #: lazarusidestrconsts.lismmmoveselecteditemup
 msgid "Move selected item up"
-msgstr "Kjelölt elem mozgatása fel"
+msgstr "Kijelölt elem mozgatása felfelé"
 
 #: lazarusidestrconsts.lismmnewtarget
 msgid "New Target"
@@ -12684,7 +12684,7 @@ msgstr "&Módosítás"
 #: lazarusidestrconsts.lismore
 msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
-msgstr "Tovább"
+msgstr "Továbbiak"
 
 #: lazarusidestrconsts.lismoresub
 msgctxt "lazarusidestrconsts.lismoresub"
@@ -13443,11 +13443,11 @@ msgstr "Érvénytelen útvonalak törlése"
 
 #: lazarusidestrconsts.lispatheditmovepathdown
 msgid "Move path down (Ctrl+Down)"
-msgstr "Útvonal mozgatása le"
+msgstr "Útvonal mozgatása lefelé"
 
 #: lazarusidestrconsts.lispatheditmovepathup
 msgid "Move path up (Ctrl+Up)"
-msgstr "Útvonal mozgatása fel"
+msgstr "Útvonal mozgatása felfelé"
 
 #: lazarusidestrconsts.lispatheditoraddhint
 msgid "Add new path to the list"
@@ -13594,11 +13594,11 @@ msgstr "Módosítva: %s"
 
 #: lazarusidestrconsts.lispckeditmovedependencydown
 msgid "Move dependency down"
-msgstr "Függőség lefelé mozgatása"
+msgstr "Függőség mozgatása lefelé"
 
 #: lazarusidestrconsts.lispckeditmovedependencyup
 msgid "Move dependency up"
-msgstr "Függőség felfelé mozgatása"
+msgstr "Függőség mozgatása felfelé"
 
 #: lazarusidestrconsts.lispckeditpackage
 msgid "Package %s"
@@ -19206,7 +19206,7 @@ msgstr "Sor kijelölési mód"
 
 #: lazarusidestrconsts.srkmeclinestart
 msgid "Move cursor to line start"
-msgstr "Kurzor mozgatása a  sor elejére"
+msgstr "Kurzor mozgatása a sor elejére"
 
 #: lazarusidestrconsts.srkmeclinetextstart
 msgid "Move cursor to text start in line"
@@ -19770,7 +19770,7 @@ msgstr "Dokumentációszerkesztő megjelenítése"
 #: lazarusidestrconsts.srkmectoggleidespeedbtns
 msgctxt "lazarusidestrconsts.srkmectoggleidespeedbtns"
 msgid "View IDE speed buttons"
-msgstr "IDE gyorsbillentyűk megjelenítése"
+msgstr "IDE gyorsgombok megjelenítése"
 
 #: lazarusidestrconsts.srkmectogglelocals
 msgid "View local variables"
