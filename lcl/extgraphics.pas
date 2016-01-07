@@ -55,8 +55,6 @@ procedure PaintQuadrangle(Canvas: TCanvas; const PaintRect: TRect;
   RadAngle :Extended=0.0);
 procedure PaintRightTriangle(Canvas: TCanvas; const PaintRect: TRect;
   RadAngle :Extended=0.0);
-procedure PaintSwastika(Canvas: TCanvas; const PaintRect: TRect;
-  RadAngle :Extended=0.0; ClockWise: Boolean = true; LineWidth: Single = 0.20);
 procedure PaintTriangle(Canvas: TCanvas; const PaintRect: TRect;
   RadAngle :Extended=0.0);
 procedure PaintTriangular(Canvas: TCanvas; const PaintRect: TRect;
@@ -582,50 +580,6 @@ begin
   NumPts:=3;
 end;
 
-
-procedure InitSwastika(var P:array of TPoint;const R: TRect;var NumPts:Integer;
-  CW: Boolean = true; LineWidth: Single = 0.20);
-var x1,y1:Integer;
-  t: TPoint;
-  i: integer;
-  h2,w2: Single;
-  il,ir: Integer; // inner left, right
-  it,ib: Integer; // inner top, bottom
-begin
-  h2:=(R.Right-R.Left) / 2;
-  w2:=(R.Bottom-R.Top) / 2;
-  x1:=round((R.Right-R.Left) * LineWidth);
-  y1:=round((R.Bottom-R.Top) * LineWidth);
-  il:=R.Left+round(w2-x1/2);
-  ir:=R.Left+round(w2+x1/2);
-  it:=R.Top+round(h2-y1/2);
-  ib:=R.Top+round(h2+y1/2);
-  P[0].x:=R.Left;      P[0].y:=R.Top;
-  P[1].x:=R.Left+x1;   P[1].y:=R.Top;
-  P[2].x:=P[1].x;      P[2].y:=it;
-  P[3].x:=il;          P[3].y:=P[2].y;
-  P[4].x:=P[3].x;      P[4].y:=R.Top;
-  P[5].x:=R.Right;     P[5].y:=P[4].y;
-  P[6].x:=P[5].x;      P[6].y:=R.Top+y1;
-  P[7].x:=ir;          P[7].y:=P[6].y;
-  P[8].x:=P[7].x;      P[8].y:=p[2].y;
-  P[9].x:=R.Right;     P[9].y:=P[8].y;
-  P[10].x:=P[9].x;     P[10].y:=R.Bottom;
-  P[11].x:=R.Right-x1; P[11].y:=P[10].y;
-  P[12].x:=P[11].x;    P[12].y:=ib;
-  P[13].x:=P[7].x;     P[13].y:=P[12].y;
-  P[14].x:=P[13].x;    P[14].y:=R.Bottom;
-  P[15].x:=R.Left;     P[15].y:=P[14].y;
-  P[16].x:=P[15].x;    P[16].y:=R.Bottom-y1;
-  P[17].x:=il;         P[17].y:=P[16].y;
-  P[18].x:=P[17].x;    P[18].y:=ib;
-  P[19].x:=R.Left;     P[19].y:=P[18].y;
-  NumPts:=20;
-  if not CW then
-    for i:=0 to NumPts -1 do
-      p[i].x:=R.Right - (p[i].x - R.left);
-end;
-
 procedure InitTriangle(var P:array of TPoint; const R: TRect;
   var NumPts:Integer);
 begin
@@ -740,23 +694,6 @@ end;
 procedure PaintRightTriangle(Canvas: TCanvas; const PaintRect: TRect;RadAngle :Extended=0.0);
 begin
   InitPolygon(Canvas,PaintRect,RadAngle,@InitRightTriangle);
-end;
-
-procedure PaintSwastika(Canvas: TCanvas; const PaintRect: TRect;RadAngle :Extended=0.0; ClockWise: Boolean = true; LineWidth: Single = 0.20);
-var
-  PR, vPR: TRect;
-  P: array[0..35] of TPoint;
-  CountPts, hv, wv: Integer;
-  cntPoint: TPoint;
-begin
-  PR := PaintRect;
-  cntPoint := CenterPoint(PR);
-  PolycSetHalfWidthAndHeight(PR, hv, wv, RadAngle);
-  PolycNewPaintRect(vPR, cntPoint, wv, hv);
-
-  InitSwastika(P, PaintRect, CountPts, ClockWise, LineWidth);
-
-  PaintPolycon(Canvas, PR, RadAngle, P, CountPts, cntPoint);
 end;
 
 procedure PaintTriangle(Canvas: TCanvas; const PaintRect: TRect;RadAngle :Extended=0.0);
