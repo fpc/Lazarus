@@ -30,6 +30,7 @@ type
 
   TResizerFrame = class(TFrame)
     iResizerLineImg: TImage;
+    pFakeMenu: TPanel;
     pBG: TPanel;
     pB: TPanel;
     pClient: TPanel;
@@ -40,7 +41,7 @@ type
     pMarginT: TPanel;
     pR: TPanel;
     pT: TPanel;
-    procedure pBGPaint(Sender: TObject);
+    procedure pFakeMenuPaint(Sender: TObject);
     procedure sbVerticalScroll(Sender: TObject; ScrollCode: TScrollCode;
       var ScrollPos: Integer);
     procedure sbHorizontalScroll(Sender: TObject; ScrollCode: TScrollCode;
@@ -248,7 +249,7 @@ begin
   TileImage(iResizerLineImg, LCanvas, 0, 0, LWidth, LHeight);
 end;
 
-procedure TResizerFrame.pBGPaint(Sender: TObject);
+procedure TResizerFrame.pFakeMenuPaint(Sender: TObject);
 var
   MenuRect: Types.TRect;
   Menu: TMainMenu;
@@ -257,14 +258,15 @@ var
 begin
   //fake paint menu
 
-  if not HasMainMenu then
-    Exit;
+  // pFakeMenu is visible only when HasMainMenu is true
+  //if not HasMainMenu then
+  //  Exit;
+
   Menu := FDesignedForm.Form.Menu;
 
-  LCanvas := (Sender as TPanel).Canvas;
+  MenuRect := pFakeMenu.ClientRect;
+  LCanvas := pFakeMenu.Canvas;
   LCanvas.Brush.Color := clMenuBar;
-  MenuRect := (Sender as TPanel).ClientRect;
-  MenuRect.Bottom := MenuRect.Top + GetMenuHeight;
   LCanvas.FillRect(MenuRect);
   LCanvas.Font.Color := clMenuText;
 
@@ -765,6 +767,16 @@ begin
   pClient.SendToBack; // <--- this is a must.
   {$ENDIF}
   pClient.BringToFront;
+
+  pFakeMenu.Visible := HasMainMenu;
+  if pFakeMenu.Visible then
+  begin
+    pFakeMenu.Height := GetMenuHeight;
+    pFakeMenu.BorderSpacing.Left := BgLeftMargin;
+    pFakeMenu.BorderSpacing.Top := BgTopMargin - pFakeMenu.Height;
+    pFakeMenu.BorderSpacing.Right := BgRightMargin;
+    pFakeMenu.BringToFront;
+  end;
 end;
 
 function TResizerFrame.DesignedWidthToScroll: Integer;
