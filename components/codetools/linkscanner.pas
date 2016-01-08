@@ -1045,7 +1045,7 @@ function TDirectiveSequenceItem.FindValue(const ACleanPos: integer; out
     I, Max, Min: Integer;
     ResIndex, ResCleanPos: integer;
   begin
-    Max := High(FItems);
+    Max := FLastItem;
     Min := 0;
     ResIndex := -1;
     ResCleanPos := -1;
