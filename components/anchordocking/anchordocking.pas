@@ -169,6 +169,7 @@ type
 
   TAnchorDockSplitter = class(TCustomSplitter)
   private
+    FCustomWidth: Boolean;
     FDockBounds: TRect;
     FDockParentClientSize: TSize;
     FDockRestoreBounds: TRect;
@@ -178,6 +179,7 @@ type
   protected
     procedure SetResizeAnchor(const AValue: TAnchorKind); override;
     procedure PopupMenuPopup(Sender: TObject); virtual;
+    procedure Paint; override;
   public
     procedure MoveSplitter(Offset: integer); override;
   public
@@ -193,6 +195,7 @@ type
     procedure SaveLayout(LayoutNode: TAnchorDockLayoutTreeNode);
     function HasOnlyOneSibling(Side: TAnchorKind; MinPos, MaxPos: integer): TControl;
     property DockRestoreBounds: TRect read FDockRestoreBounds write FDockRestoreBounds;
+    property CustomWidth: Boolean read FCustomWidth write FCustomWidth;
   end;
   TAnchorDockSplitterClass = class of TAnchorDockSplitter;
 
@@ -2187,10 +2190,13 @@ begin
   for i:=0 to ComponentCount-1 do begin
     Splitter:=TAnchorDockSplitter(Components[i]);
     if not (Splitter is TAnchorDockSplitter) then continue;
-    if Splitter.ResizeAnchor in [akLeft,akRight] then
-      Splitter.Width:=SplitterWidth
-    else
-      Splitter.Height:=SplitterWidth;
+    if not Splitter.CustomWidth then
+    begin
+      if Splitter.ResizeAnchor in [akLeft,akRight] then
+        Splitter.Width:=SplitterWidth
+      else
+        Splitter.Height:=SplitterWidth;
+    end;
   end;
   OptionsChanged;
 end;
@@ -6041,6 +6047,9 @@ begin
   akRight: Anchors:=AnchorAlign[alRight];
   akBottom: Anchors:=AnchorAlign[alBottom];
   end;
+
+  UpdatePercentPosition;
+
   //debugln(['TAnchorDockSplitter.SetResizeAnchor ',DbgSName(Self),' ResizeAnchor=',dbgs(ResizeAnchor),' Align=',dbgs(Align),' Anchors=',dbgs(Anchors)]);
 end;
 
@@ -6068,10 +6077,14 @@ begin
   case ResizeAnchor of
     akTop, akBottom:
       if FDockParentClientSize.cy > 0 then
-        FPercentPosition := Top / FDockParentClientSize.cy;
+        FPercentPosition := Top / FDockParentClientSize.cy
+      else
+        FPercentPosition := -1;
   else
     if FDockParentClientSize.cx > 0 then
-      FPercentPosition := Left / FDockParentClientSize.cx;
+      FPercentPosition := Left / FDockParentClientSize.cx
+    else
+      FPercentPosition := -1;
   end;
 end;
 
@@ -6193,6 +6206,17 @@ begin
   FPercentPosition:=-1;
   inherited MoveSplitter(Offset);
   UpdatePercentPosition;
+end;
+
+procedure TAnchorDockSplitter.Paint;
+begin
+  if Enabled then
+    inherited Paint
+  else
+  begin
+    Canvas.Brush.Color := clDefault;
+    Canvas.FillRect(ClientRect);
+  end;
 end;
 
 constructor TAnchorDockSplitter.Create(TheOwner: TComponent);

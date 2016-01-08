@@ -1331,7 +1331,7 @@ begin
   // check parent
   if (NodeType=adltnNone) and (Parent<>nil) then
     raise EAnchorDockLayoutError.Create('invalid parent, root node');
-  if (NodeType=adltnCustomSite) and (Parent.NodeType<>adltnNone) then
+  if (NodeType=adltnCustomSite) and (Parent<>nil) and (Parent.NodeType<>adltnNone) then
     raise EAnchorDockLayoutError.Create('invalid parent, custom sites parent must be nil');
   if (Parent<>nil) and IsSplitter and (Parent.NodeType<>adltnLayout) then
     raise EAnchorDockLayoutError.Create('invalid parent, splitter needs parent layout');
