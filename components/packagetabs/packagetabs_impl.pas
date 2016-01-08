@@ -375,17 +375,22 @@ begin
 end;
 
 function TRecreateToolBarStamps.Changed: Boolean;
+var
+  LProjectChangeStamp: Integer;
 begin
+  if LazarusIDE.ActiveProject <> nil then
+    LProjectChangeStamp := LazarusIDE.ActiveProject.ChangeStamp
+  else
+    LProjectChangeStamp := Low(LProjectChangeStamp);
   Result := not(
-        (LazarusIDE.ActiveProject <> nil)
-    and (FCurProjectChangeStamp = LazarusIDE.ActiveProject.ChangeStamp)
+        (FCurProjectChangeStamp = LProjectChangeStamp)
     and (FPackagesChangeStamp = PackageGraphInterface.ChangeStamp)
     and (FInternalChangeStamp = FLastInternalChangeStamp)
     );
 
   if not Result then Exit;
 
-  FCurProjectChangeStamp := LazarusIDE.ActiveProject.ChangeStamp;
+  FCurProjectChangeStamp := LProjectChangeStamp;
   FPackagesChangeStamp := PackageGraphInterface.ChangeStamp;
   FLastInternalChangeStamp := FInternalChangeStamp;
 end;
@@ -786,6 +791,7 @@ var
   xGroupTitle: string;
   xGroupType: TGroupType;
 begin
+  xActBtn := nil;
   FRecreateToolBar.FLastFiles.Clear;
   FWindow.IncUpdateLock;
   FWindow.DisableAlign;
