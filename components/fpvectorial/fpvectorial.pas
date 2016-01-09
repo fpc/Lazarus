@@ -113,6 +113,22 @@ type
   TvVectorialDocument = class;
   TvEmbeddedVectorialDoc = class;
 
+  { Coordinates }
+
+  T2DPoint = record
+    X, Y: Double;
+  end;
+  P2DPoint = ^T2DPoint;
+
+  T3DPoint = record
+    X, Y, Z: Double;
+  end;
+  P3DPoint = ^T3DPoint;
+
+  T2DPointsArray = array of T2DPoint;
+  T3DPointsArray = array of T3DPoint;
+  TPointsArray = array of TPoint;
+
   { Pen, Brush and Font }
 
   TvPen = record
@@ -123,12 +139,16 @@ type
   end;
   PvPen = ^TvPen;
 
-  TvBrushKind = (bkSimpleBrush, bkHorizontalGradient, bkVerticalGradient, bkOtherLinearGradient, bkRadialGradient);
+  TvBrushKind = (bkSimpleBrush, bkHorizontalGradient, bkVerticalGradient,
+    bkOtherLinearGradient, bkRadialGradient);
   TvCoordinateUnit = (vcuDocumentUnit, vcuPercentage);
+
+  TvGradientFlag = (gfRelStartX, gfRelStartY, gfRelEndX, gfRelEndY, gfRelToUserSpace);
+  TvGradientFlags = set of TvGradientFlag;
 
   TvGradientColor = record
     Color: TFPColor;
-    Position: Double;
+    Position: Double;   // 0 ... 1
   end;
 
   TvGradientColors = array of TvGradientColor;
@@ -138,6 +158,9 @@ type
     Style: TFPBrushStyle;
     Kind: TvBrushKind;
     // Gradient filling support
+    Gradient_start: T2DPoint; // Start/end point of gradient, in pixels by default,
+    Gradient_end: T2DPoint;   // but if gfRel* in flags relative to entity boundary or user space
+    Gradient_flags: TvGradientFlags;
     Gradient_cx, Gradient_cy, Gradient_r, Gradient_fx, Gradient_fy: Double;
     Gradient_cx_Unit, Gradient_cy_Unit, Gradient_r_Unit, Gradient_fx_Unit, Gradient_fy_Unit: TvCoordinateUnit;
     Gradient_colors: TvGradientColors;
@@ -273,16 +296,7 @@ type
     function GetListLevelStyle(AIndex: Integer): TvListLevelStyle;
   end;
 
-  { Coordinates and polyline segments }
-
-  T3DPoint = record
-    X, Y, Z: Double;
-  end;
-
-  P3DPoint = ^T3DPoint;
-
-  T3DPointsArray = array of T3DPoint;
-  TPointsArray = array of TPoint;
+  { Polyline segments }
 
   TSegmentType = (
     st2DLine, st2DLineWithPen, st2DBezier,
@@ -426,7 +440,7 @@ type
     Selected: Boolean;
     ForceRenderBlock: Boolean; // Blocks are usually invisible, but when rendering an insert, their drawing can be forced
     // Fields which are output from the rendering process
-    EntityCanvasMinXY, EntityCanvasMaxXY: TPoint; // The size utilized in the canvas to draw this entity
+    EntityCanvasMinXY, EntityCanvasMaxXY: TPoint; // The size utilized in the canvas to draw this entity, in pixels
   end;
 
   TvEntityFeatures = record
@@ -466,8 +480,8 @@ type
     {@@ ASubpart is only valid if this routine returns vfrSubpartFound }
     function GetLineIntersectionPoints(ACoord: Double;
       ACoordIsX: Boolean): TDoubleDynArray; virtual; // get all points where the entity inner area crosses a line
-    function GetLinePolygonIntersectionPoints(ACoord: Integer;
-      const APoints: TPointsArray; ACoordIsX: Boolean): TPointsArray; virtual;
+    function GetLinePolygonIntersectionPoints(ACoord: Double;
+      const APoints: T2DPointsArray; ACoordIsX: BOolean): T2DPointsArray; virtual;
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal; ASnapFlexibility: Integer = 5): TvFindEntityResult; virtual;
     procedure Move(ADeltaX, ADeltaY: Double); virtual;
     procedure MoveSubpart(ADeltaX, ADeltaY: Double; ASubpart: Cardinal); virtual;
@@ -520,6 +534,9 @@ type
   TvClipMode = (vcmNonzeroWindingRule, vcmEvenOddRule);
 
   TvEntityWithPenAndBrush = class(TvEntityWithPen)
+  protected
+    procedure DrawPolygonBrushGradient(ADest: TFPCustomCanvas; const APoints:
+      TPointsArray; ARect: TRect; AGradientStart, AGradientEnd: T2DPoint);
   public
     {@@ The global Brush for the entire entity. In the case of paths, individual
         elements might be able to override this setting. }
@@ -532,8 +549,6 @@ type
     procedure DrawBrushGradient(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
       x1, y1, x2, y2: Integer;
       ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); virtual;
-    procedure DrawPolygonBrushGradient(ADest: TFPCustomCanvas;
-      const APolyPoints: TPointsArray; x1, y1, x2, y2: Integer);
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = True); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
@@ -599,8 +614,8 @@ type
     procedure AppendEllipticalArc(ARadX, ARadY, AXAxisRotation, ADestX, ADestY: Double; ALeftmostEllipse, AClockwiseArcFlag: Boolean); // See http://www.w3.org/TR/SVG/paths.html#PathDataEllipticalArcCommands
     procedure AppendEllipticalArcWithCenter(ARadX, ARadY, AXAxisRotation, ADestX, ADestY, ACenterX, ACenterY: Double; AClockwiseArcFlag: Boolean); // See http://www.w3.org/TR/SVG/paths.html#PathDataEllipticalArcCommands
     function GetLineIntersectionPoints(ACoord: Double; ACoordIsX: Boolean): TDoubleDynArray; override;
-    function GetLinePolygonIntersectionPoints(ACoord: Integer;
-      const APoints: TPointsArray; ACoordIsX: Boolean): TPointsArray; override;
+    function GetLinePolygonIntersectionPoints(ACoord: Double;
+      const APoints: T2DPointsArray; ACoordIsX: Boolean): T2DPointsArray; override;
     procedure Move(ADeltaX, ADeltaY: Double); override;
     procedure MoveSubpart(ADeltaX, ADeltaY: Double; ASubpart: Cardinal); override;
     function  MoveToSubpart(ASubpart: Cardinal): TPathSegment;
@@ -1629,7 +1644,7 @@ procedure RegisterVectorialReader(
 procedure RegisterVectorialWriter(
   AWriterClass: TvVectorialWriterClass;
   AFormat: TvVectorialFormat);
-function Make2DPoint(AX, AY: Double): T3DPoint;
+//function Make2DPoint(AX, AY: Double): T3DPoint;
 function Dimension(AValue : Double; AUnits : TvUnits) : TvDimension;
 function ConvertDimensionToMM(ADimension: TvDimension; ATotalSize: Double): Double;
 
@@ -1726,13 +1741,14 @@ begin
   end;
 end;
 
+{
 function Make2DPoint(AX, AY: Double): T3DPoint;
 begin
   Result.X := AX;
   Result.Y := AY;
   Result.Z := 0;
 end;
-
+ }
 function Dimension(AValue: Double; AUnits: TvUnits): TvDimension;
 begin
   Result.Value := AValue;
@@ -3087,6 +3103,7 @@ begin
     Result := True;
     APoint.X := T2DSegment(Previous).X;
     APoint.Y := T2DSegment(Previous).Y;
+    APoint.Z := 0;
     Exit;
   end;
 end;
@@ -3194,8 +3211,8 @@ var
 begin
   Result := 0;
   if not GetStartPoint(lStartPoint) then Exit;
-  Result := BezierEquation_GetLength(lStartPoint, Make2DPoint(X2, Y2),
-    Make2DPoint(X3, Y3), Make2DPoint(X, Y));
+  Result := BezierEquation_GetLength(lStartPoint, Make3DPoint(X2, Y2, 0),
+    Make3DPoint(X3, Y3, 0), Make3DPoint(X, Y, 0), 0);
 end;
 
 function T2DBezierSegment.GetPointAndTangentForDistance(ADistance: Double; out
@@ -3206,8 +3223,8 @@ begin
   Result:=inherited GetPointAndTangentForDistance(ADistance, AX, AY,
     ATangentAngle);
   if not GetStartPoint(lStartPoint) then Exit;
-  Result := BezierEquation_GetPointAndTangentForLength(lStartPoint, Make2DPoint(X2, Y2),
-    Make2DPoint(X3, Y3), Make2DPoint(X, Y), ADistance, AX, AY, ATangentAngle);
+  Result := BezierEquation_GetPointAndTangentForLength(lStartPoint, Make3DPoint(X2, Y2, 0),
+    Make3DPoint(X3, Y3, 0), Make3DPoint(X, Y, 0), ADistance, AX, AY, ATangentAngle);
 end;
 
 procedure T2DBezierSegment.Move(ADeltaX, ADeltaY: Double);
@@ -3250,10 +3267,10 @@ begin
 
   SetLength(pts, 0);
   AddBezierToPoints(
-    Make2DPoint(coordX, coordY),
-    Make2DPoint(coord2X, coord2Y),
-    Make2DPoint(coord3X, coord3Y),
-    Make2DPoint(coord4X, coord4Y),
+    Make3DPoint(coordX, coordY, 0),
+    Make3DPoint(coord2X, coord2Y, 0),
+    Make3DPoint(coord3X, coord3Y, 0),
+    Make3DPoint(coord4X, coord4Y, 0),
     pts);
 
   if Length(pts) = 0 then
@@ -3436,8 +3453,8 @@ end;
 { calculates the intersection points of a line at the specified coordinate with
   the entity's boundary. This overload uses the boundary in canvas units,
   specified by the points array APoints. }
-function TvEntity.GetLinePolygonIntersectionPoints(ACoord: Integer;
-  const APoints: TPointsArray; ACoordIsX: Boolean): TPointsArray;
+function TvEntity.GetLinePolygonIntersectionPoints(ACoord: Double;
+  const APoints: T2DPointsArray; ACoordIsX: Boolean): T2DPointsArray;
 begin
   SetLength(Result, 0);
 end;
@@ -3634,107 +3651,161 @@ end;
 
 { Fills the entity with a gradient.
   Assumes that the boundary is already in canvas units and is specified by
-  polygon APolyPoints. }
+  polygon APoints. }
 procedure TvEntityWithPenAndBrush.DrawPolygonBrushGradient(ADest: TFPCustomCanvas;
-  const APolyPoints: TPointsArray; x1, y1, x2, y2: Integer);
+  const APoints: TPointsArray; ARect: TRect; AGradientStart, AGradientEnd: T2dPoint);
 var
-  lPoints: TPointsArray;
-  lColor, lColor1, lColor2: TFPColor;
-  i, j, c: Integer;
-  i1, i2: Integer;
-  p, p1, p2: Double;
+  lPoints, pts: T2DPointsArray;
+  i, j: Integer;
+  pf: Double;          // fraction of path travelled along gradient vector
+  px, py: Double;
+  phi, sinphi, cosphi: Double;
+  coord, coord1, coord2, dcoord: Double;
+  coordIsX: Boolean;
+  p1, p2: T2dPoint;
+  gv: T2dPoint;        // gradient vector
+  gvlen: Double;       // length of gradient vector
+  gstart: Double;      // Gradient start point (1-dim)
+  dir: Integer;
 begin
-  if not (Brush.Kind in [bkVerticalGradient, bkHorizontalGradient]) then
+  if not (Brush.Kind in [bkVerticalGradient, bkHorizontalGradient, bkOtherLinearGradient]) then
     Exit;
 
-  if Length(Brush.Gradient_colors) = 1 then
-  begin
-    lColor1 := Brush.Gradient_colors[0].Color;
-    lColor2 := Brush.Gradient_colors[0].Color;
-    c := 0;
-  end else
-  begin
-    c := 0;
-    lColor1 := Brush.Gradient_colors[0].Color;
-    lColor2 := Brush.Gradient_colors[1].Color;
-    p1 := Brush.Gradient_colors[0].Position;
-    p2 := Brush.Gradient_colors[1].Position;
-  end;
+  // Direction of gradient vector. The gradient vector begins at color position 0%
+  // and ends at 100%.
+  gv := Make2dPoint(AGradientEnd.X-AGradientStart.X, AGradientEnd.Y-AGradientStart.Y);
+  gvlen := sqrt(sqr(gv.x) + sqr(gv.y));
+  if gvlen = 0 then
+    exit;
 
+  // Find boundary points where the gradient starts and ends. The gradient is
+  // always travered from 0% to 100% color fractions.
+  p1 := Make2dPoint(
+    IfThen(AGradientEnd.x > AGradientStart.x, ARect.Left, ARect.Right),
+    IfThen(AGradientEnd.Y > AGradientStart.y, ARect.Top, ARect.Bottom)
+  );
+  p2 := Make2dPoint(
+    IfThen(AGradientEnd.x > AGradientStart.x, ARect.Right, ARect.Left),
+    IfThen(AGradientEnd.Y > AGradientStart.y, ARect.Bottom, ARect.Top)
+  );
+
+  // Prepare parameters and polygon points
+  ADest.Pen.Style := psSolid;
+  ADest.Pen.Width := 1;
+
+  SetLength(pts, Length(APoints));
   case Brush.Kind of
     bkVerticalGradient:
-      begin // horizontal (!) lines have same color
-        i1 := y1;
-        i2 := y2;
+      begin // Run vertically, horizontal lines have same color
+        coord1 := p1.y;
+        coord2 := p2.y;
+        dcoord := IfThen(AGradientEnd.Y > AGradientStart.Y, 1.0, -1.0);
+        gstart := coord1;
+        dir := round(dcoord);
+        for i := 0 to High(APoints) do
+          pts[i] := Make2DPoint(APoints[i].X, APoints[i].Y);
+        coordIsX := false;
+        gstart := coord1;
       end;
     bkHorizontalGradient:
-      begin  // vertical lines have same color
-        i1 := x1;
-        i2 := x2;
+      begin  // Run horizontally, vertical lines have same color
+        coord1 := p1.x;
+        coord2 := p2.x;
+        dcoord := IfThen(AGradientEnd.X > AGradientStart.X, 1.0, -1.0);
+        gstart := coord1;
+        dir := round(dcoord);
+        for i := 0 to High(APoints) do
+          pts[i] := Make2DPoint(APoints[i].X, APoints[i].Y);
+        coordIsX := true;
+      end;
+    bkOtherLinearGradient:
+      begin  // Run along gradient vector, lines perpendicular to gradient vector
+        phi := arctan2(gv.y, gv.x);
+        Sincos(phi, sinphi, cosphi);
+        coordIsX := (abs(sinphi) <= sin(pi/4));
+        if not coordIsX then begin
+          phi := -(pi/2 - phi);
+          Sincos(phi, sinphi, cosphi);
+        end;
+        // p1 is the boundary point around which the shape is rotated in order to
+        // to get the gradient vector in horizontal or vertical direction for
+        // easier finding of intersection points.
+        // Projection of vector from GradientStart to p1 onto gradient vector
+        coord1 := (((p1.x - AGradientStart.X)*gv.x) + (p1.y - AGradientStart.Y)*gv.y) / gvlen;
+        // dto for p2.
+        coord2 := (((p2.x - AGradientStart.X)*gv.x) + (p2.y - AGradientStart.Y)*gv.Y) / gvlen;
+//        dcoord := 1.0 / abs(cosphi);
+//        dcoord := abs(cosphi);
+        dcoord := 1.0;
+        gstart := -coord1;
+        dir := +1;
+        // Rotate polygon point such that gradient axis is parallel to x axis
+        // (if angle < 45°) or y axis (if angle > 45°)
+        // Rotation center is the projection of the corner of the bounding box
+        // onto the gradient vector
+        p1 := Make2dPoint(
+          AGradientStart.X + coord1 * gv.x / gvlen,
+          AGradientStart.Y + coord1 * gv.y / gvlen
+        );
+        for j := 0 to High(APoints) do
+        begin
+          px := APoints[j].X - p1.x;
+          py := APoints[j].Y - p1.y;
+          pts[j] := Make2DPoint(px*cosPhi + py*sinPhi, -px*sinPhi + py*cosPhi);
+        end;
+        // Begin painting at corner
+        coord2 := coord2 - coord1;
+        coord1 := 0;
+        ADest.Pen.Width := 2;  // make sure that there are no gaps due to rounding errors
       end;
   end;
 
-  ADest.Pen.Style := psSolid;
-  for i := i1 to i2 do
+  // Draw gradient
+  coord := coord1;
+  while ((dcoord > 0) and (coord <= coord2)) or (dcoord < 0) and (coord >= coord2) do
   begin
-    lPoints := GetLinePolygonIntersectionPoints(i, APolyPoints,
-      Brush.Kind = bkHorizontalGradient);
-    if Length(lPoints) < 2 then Continue;
-    p := (i-i1) / (i2-i1) * 100.0;  // p = "percent"
-    // Use first color below first position
-    if p < Brush.Gradient_colors[0].Position then
-      lColor := Brush.Gradient_colors[0].Color
-    else
-    // Use last color above last position
-    if p > Brush.Gradient_colors[High(Brush.Gradient_colors)].Position then
-      lColor := Brush.Gradient_colors[High(Brush.Gradient_colors)].Color
-    else
-    if (c < High(Brush.Gradient_colors)) then
-    begin
-      // Use current color pair if percentage is below next position
-      if (p < Brush.Gradient_colors[c+1].Position) then
-        lColor := MixColors(lColor2, lColor1, p-p1, p2-p1)
-      else
-      // Next next color pair if percentage is above next position
-      begin
-        inc(c);
-        p1 := p2;
-        p2 := Brush.Gradient_colors[c+1].Position;
-        lColor1 := lColor2;
-        lColor2 := Brush.Gradient_colors[c+1].Color;
-        lColor := MixColors(lColor2, lColor1, p-p1, p2-p1);
-      end;
+    // Find intersection points of gradient line (normal to gradient vector)
+    // with polygon
+    lPoints := GetLinePolygonIntersectionPoints(coord, pts, coordIsX);
+    if Length(lPoints) < 2 then begin
+      coord := coord + dcoord;
+      Continue;
     end;
-    ADest.Pen.FPColor := lColor;
+
+    // Prepare intersection points for painting
+    case Brush.Kind of
+      bkVerticalGradient:
+        // Add loop variable as mssing y coordinate of intersection points
+        for j := 0 to High(lPoints) do lPoints[j].Y := coord;
+      bkHorizontalGradient:
+        // Add loop variable as mssing x coordinate of intersection points
+        for j := 0 to High(lPoints) do lPoints[j].X := coord;
+      bkOtherLinearGradient:
+        // Rotate back
+        for j := 0 to High(lPoints) do
+          lPoints[j] := Make2DPoint(
+            lPoints[j].X * cosPhi - lPoints[j].Y * sinPhi + p1.x,
+            lPoints[j].X * sinPhi + lPoints[j].Y * cosPhi + p1.y
+          );
+    end;
+
+//    WriteLn(Format('%.3f'#9'%.3f'#9'%.3f'#9'%.3f'#9'%.3f', [coord, lPoints[0].x, lPoints[0].Y, lPoints[1].x, lPoints[1].y]));
+
+     // Determine color from fraction (pf) of path travelled along gradient vector
+    pf := (coord - gstart) * dir / gvlen;
+    ADest.Pen.FPColor := GradientColor(Brush.Gradient_colors, pf);
+
+    // Draw gradient lines between intersection points
     j := 0;
     while j < High(lPoints) do
     begin
-      case Brush.Kind of
-        bkVerticalGradient  : ADest.Line(lPoints[j].X, i, lPoints[j+1].X, i);
-        bkHorizontalGradient: ADest.Line(i, lPoints[j].Y, i, lPoints[j+1].Y);
-      end;
+      ADest.Line(round(lPoints[j].X), round(lPoints[j].Y), round(lPoints[j+1].X), round(lPoints[j+1].Y));
       inc(j, 2);
     end;
+
+    // Proceed to next line
+    coord := coord + dcoord;
   end;
-  {
-  end
-  else if Brush.Kind = bkHorizontalGradient then    // vertical (!) lines have same color
-  begin
-    for i := x1 to x2 do
-    begin
-      lPoints := GetLinePolygonIntersectionPoints(i, APolyPoints, True);
-      if Length(lPoints) < 2 then Continue;
-      lColor := MixColors(lColor2, lColor1, i-x1, x2-x1);
-      ADest.Pen.FPColor := lColor;
-      j := 0;
-      while (j < High(lPoints)) do
-      begin
-        ADest.Line(i, lPoints[j].Y, i, lPoints[j+1].Y);
-        inc(j , 2);
-      end;
-    end;
-  end;
-  }
 end;
 
 { Fills the entity's shape with a gradient.
@@ -4265,24 +4336,29 @@ begin
   end;
 end;
 
-function CompareInt(P1, P2: Pointer): Integer;
+function CompareDbl(P1, P2: Pointer): Integer;
 var
-  i1, i2: PtrInt;
+  val1, val2: ^Double;
 begin
-  i1 := PtrInt(P1);
-  i2 := PtrInt(P2);
-  Result := CompareValue(i1, i2);
+  val1 := P1;
+  val2 := P2;
+  Result := CompareValue(val1^, val2^);
 end;
 
-function TPath.GetLinePolygonIntersectionPoints(ACoord: Integer;
-  const APoints: TPointsArray; ACoordIsX: Boolean): TPointsArray;
+function TPath.GetLinePolygonIntersectionPoints(ACoord: Double;
+  const APoints: T2DPointsArray; ACoordIsX: Boolean): T2DPointsArray;
+const
+  EPS = 1e-9;
 var
-  j, dx, dy: Integer;
+  j: Integer;
+  dx, dy: Double;
   xval, yval: Double;
+  val: ^Double;
   list: TFPList;
 begin
   list := TFPList.Create;
   if ACoordIsX then
+  begin
     for j:=0 to High(APoints) - 1 do
     begin
       if ((APoints[j].X <= ACoord) and (ACoord < APoints[j+1].X)) or
@@ -4290,33 +4366,41 @@ begin
       begin
         dx := APoints[j+1].X - APoints[j].X;   // can't be zero here
         dy := APoints[j+1].Y - APoints[j].Y;
-        yval := APoints[j].Y + (ACoord - APoints[j].X) * dy / dx;
-        list.Add(pointer(PtrInt(round(yval))));
-      end {else
-      if ((APoints[j].X = ACoord) and (ACoord = APoints[j+1].X)) then
-        list.Add(pointer(PtrInt(APoints[j].Y)));}
-    end
-  else
+        New(val);
+        val^ := APoints[j].Y + (ACoord - APoints[j].X) * dy / dx;
+        list.Add(val);
+      end;
+    end;
+  end else
+  begin
     for j:=0 to High(APoints) - 1 do
       if ((APoints[j].Y <= ACoord) and (ACoord < APoints[j+1].Y)) or
          ((APoints[j+1].Y <= ACoord) and (ACoord < APoints[j].Y)) then
       begin
         dy := APoints[j+1].Y - APoints[j].Y;     // can't be zero here
         dx := APoints[j+1].X - APoints[j].X;
-        xval := APoints[j].X + (ACoord - APoints[j].Y) * dx / dy;
-        list.Add(pointer(PtrInt(round(xval))));
-      end {else
-      if ((APoints[j].Y = ACoord) and (ACoord = APoints[j+1].Y)) then
-        list.Add(pointer(PtrInt(APoints[j].X)))};
+        New(val);
+        val^ := APoints[j].X + (ACoord - APoints[j].Y) * dx / dy;
+        list.Add(val);
+      end;
+  end;
+
   // Sort intersection coordinates in ascending order
-  list.Sort(@CompareInt);
+  list.Sort(@CompareDbl);
   SetLength(Result, list.Count);
   if ACoordIsX then
     for j:=0 to list.Count-1 do
-      Result[j] := Point(ACoord, PtrInt(list[j]))
+      Result[j] := Make2DPoint(ACoord, Double(list[j]^))
   else
     for j:=0 to list.Count-1 do
-      Result[j] := Point(PtrInt(list[j]), ACoord);
+      Result[j] := Make2DPoint(Double(list[j]^), ACoord);
+
+  // Clean-up
+  for j:=list.Count-1 downto 0 do
+  begin
+    val := List[j];
+    Dispose(val);
+  end;
   list.Free;
 end;
 
@@ -4343,12 +4427,12 @@ begin
       begin
         seg2D := T2DSegment(seg);
         if p.X < seg2D.X then begin
-          p1 := Make2DPoint(p.X, p.Y);
-          p2 := Make2DPoint(seg2D.X, seg2D.Y);
+          p1 := Make3DPoint(p.X, p.Y, 0);
+          p2 := Make3DPoint(seg2D.X, seg2D.Y, 0);
         end else
         begin
-          p1 := Make2DPoint(seg2D.X, seg2D.Y);
-          p2 := Make2DPoint(p.X, p.Y);
+          p1 := Make3DPoint(seg2D.X, seg2D.Y, 0);
+          p2 := Make3DPoint(p.X, p.Y, 0);
         end;
         if (p1.X < ACoord) and (ACoord <= p2.X) then
         begin
@@ -4370,12 +4454,12 @@ begin
         seg2D := T2DSegment(seg);
         if p.Y < seg2D.Y then
         begin
-          p1 := Make2DPoint(p.X, p.Y);
-          p2 := Make2DPoint(seg2D.X, seg2D.Y);
+          p1 := Make3DPoint(p.X, p.Y, 0);
+          p2 := Make3DPoint(seg2D.X, seg2D.Y, 0);
         end else
         begin
-          p1 := Make2DPoint(seg2D.X, seg2D.Y);
-          p2 := Make2DPoint(p.X, p.Y);
+          p1 := Make3DPoint(seg2D.X, seg2D.Y, 0);
+          p2 := Make3DPoint(p.X, p.Y, 0);
         end;
         if (p1.Y < ACoord) and (ACoord <= p2.Y) then
         begin
@@ -4402,6 +4486,8 @@ var
   coordX, coordY: Integer;
   curSegment: TPathSegment;
   cur2DSegment: T2DSegment absolute curSegment;
+  lRect: TRect;
+  gv1, gv2: T2DPoint;
 begin
   inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
 
@@ -4443,7 +4529,42 @@ begin
             {$ENDIF}
           end;
         else  // gradients
-          DrawPolygonBrushGradient(ADest, FPolyPoints, x1, y1, x2, y2);
+          // Boundary rect of shape filled with a gradient
+          lRect := Rect(x1, y1, x2, y2);
+          // calculate gradient vector
+          gv1 := Make2DPoint(Brush.Gradient_start.X, Brush.Gradient_start.Y);
+          gv2 := Make2DPoint(Brush.Gradient_end.X, Brush.Gradient_end.Y);
+          if (gfRelToUserSpace in Brush.Gradient_flags) then
+          begin
+            if (gfRelStartX in Brush.Gradient_flags) then
+              gv1.X := gv1.X * FPage.Width;
+            if (gfRelStartY in Brush.Gradient_flags) then
+              gv1.Y := gv1.Y * FPage.Height;
+            if (gfRelEndX in Brush.Gradient_flags) then
+              gv2.X := gv2.X * FPage.Width;
+            if (gfRelEndY in Brush.Gradient_flags) then
+              gv2.Y := gv2.Y * FPage.Height;
+            gv1.X := CoordToCanvasX(gv1.X, ADestX, AMulX);
+            gv1.Y := CoordToCanvasY(gv1.Y, ADestY, AMulY);
+            gv2.X := CoordToCanvasX(gv2.X, ADestX, AMulX);
+            gv2.Y := CoordToCanvasY(gv2.Y, ADestY, AMulY);
+          end else
+          begin
+            if (gfRelStartX in Brush.Gradient_flags) then
+              gv1.X := x1 + gv1.X * (x2 - x1) else
+              gv1.X := CoordToCanvasX(gv1.X, ADestX, AMulX);
+            if (gfRelStartY in Brush.Gradient_flags) then
+              gv1.Y := y1 + gv1.Y * (y2 - y1) else
+              gv1.Y := CoordToCanvasY(gv1.Y, ADestY, AMulY);
+            if (gfRelEndX in Brush.Gradient_flags) then
+              gv2.X := x1 + gv2.X * (x2 - x1) else
+              gv2.X := CoordToCanvasX(gv2.X, ADestX, AMulX);
+            if (gfRelEndY in Brush.Gradient_flags) then
+              gv2.Y := y1 + gv2.Y * (y2 - y1) else
+              gv2.Y := CoordToCanvasY(gv2.Y, ADestY, AMulY);
+          end;
+          // Draw the gradient
+          DrawPolygonBrushGradient(ADest, FPolyPoints, lRect, gv1, gv2);
           // to do: multiple polygons!
       end;
 

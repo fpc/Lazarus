@@ -137,6 +137,7 @@ type
     function  StringWithUnitToFloat(AStr: string; ACoordKind: TSVGCoordinateKind = sckUnknown;
       ADefaultUnit: TSVGUnit = suPX; ATargetUnit: TSVGUnit = suPX): Double;
     function  StringFloatZeroToOneToWord(AStr: string): Word;
+    function  StringWithPercentToFloat(AStr: String): Double;
 
     procedure ConvertSVGCoordinatesToFPVCoordinates(
       const AData: TvVectorialPage;
@@ -1235,7 +1236,7 @@ var
   lBrushEntity: TvEntityWithPenAndBrush;
   lCurEntity: TvEntity;
   lGradientColor: TvGradientColor;
-  x1, x2, y1, y2: string;
+  x1, y1, x2, y2: Double;
 begin
   lCurNode := ANode.FirstChild;
   while Assigned(lCurNode) do
@@ -1307,24 +1308,76 @@ begin
         lBrushEntity := TvEntityWithPenAndBrush.Create(nil);
 
         // <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
+        x1 := 0;
+        x2 := 0;
+        y1 := 0;
+        y2 := 0;
         for i := 0 to lCurNode.Attributes.Length - 1 do
         begin
-          lAttrName := lCurNode.Attributes.Item[i].NodeName;
-          lAttrValue := lCurNode.Attributes.Item[i].NodeValue;
+          lAttrName := lowercase(lCurNode.Attributes.Item[i].NodeName);
+          lAttrValue := lowercase(lCurNode.Attributes.Item[i].NodeValue);
           if lAttrName = 'id' then
             lBrushEntity.Name := lAttrValue
-          else if lAttrName = 'x1' then
-            x1 := lAttrValue
-          else if lAttrName = 'x2' then
-            x2 := lAttrValue
-          else if lAttrName = 'y1' then
-            y1 := lAttrValue
-          else if lAttrName = 'y2' then
-            y2 := lAttrValue;
+          else
+          if lAttrName = 'x1' then
+          begin
+            if lAttrValue[Length(lAttrValue)] = '%' then
+              Include(lBrushEntity.Brush.Gradient_flags, gfRelStartX);
+            x1 := StringWithPercentToFloat(lAttrValue);
+          end else
+          if lAttrName = 'x2' then
+          begin
+            if lAttrValue[Length(lAttrValue)] = '%' then
+              Include(lBrushEntity.Brush.Gradient_flags, gfRelEndX);
+            x2 := StringWithPercentToFloat(lAttrValue);
+          end else
+          if lAttrName = 'y1' then
+          begin
+            if lAttrValue[Length(lAttrValue)] = '%' then
+              Include(lBrushEntity.Brush.Gradient_flags, gfRelStartY);
+            y1 := StringWithPercentToFloat(lAttrValue);
+          end else
+          if lAttrName = 'y2' then
+          begin
+            if lAttrValue[Length(lAttrValue)] = '%' then
+              Include(lBrushEntity.Brush.Gradient_flags, gfRelEndY);
+            y2 := StringWithPercentToFloat(lAttrValue);
+          end else
+          if lAttrName = 'gradientunits' then
+          begin
+            if lAttrValue = 'userspaceonuse' then
+              Include(lBrushEntity.Brush.Gradient_flags, gfRelToUserSpace)
+            else if lAttrValue = 'objectboundingbox' then
+              Exclude(lBrushEntity.Brush.Gradient_flags, gfRelToUserSpace);
+          end;
         end;
-        if x2 = x1 then
+        lBrushEntity.Brush.Gradient_start.X := x1;
+        lBrushEntity.Brush.Gradient_end.X := x2;
+        lBrushEntity.Brush.Gradient_start.Y := y1;
+        lBrushEntity.Brush.Gradient_end.Y := y2;
+        ConvertSVGCoordinatesToFPVCoordinates(AData, x1, y1, x1, y1);
+        ConvertSVGCoordinatesToFPVCoordinates(AData, x2, y2, x2, y2);
+        if not (gfRelStartX in lBrushEntity.Brush.Gradient_flags) then
+          lBrushEntity.Brush.Gradient_start.X := x1;
+        if not (gfRelEndX in lBrushEntity.Brush.Gradient_flags) then
+          lBrushEntity.Brush.Gradient_end.X := x2;
+        if not (gfRelStartY in lBrushEntity.Brush.Gradient_flags) then
+          lBrushEntity.Brush.Gradient_start.Y := y1;
+        if not (gfRelEndY in lBrushEntity.Brush.Gradient_flags) then
+          lBrushEntity.Brush.Gradient_end.Y := y2;
+        if (lBrushEntity.Brush.Gradient_start.X = 0) and
+           (lBrushEntity.Brush.Gradient_start.Y = 0) and
+           (lBrushEntity.Brush.Gradient_end.X = 0) and
+           (lBrushEntity.Brush.Gradient_end.Y = 0) then
+        begin
+          lBrushEntity.Brush.Gradient_start.X := 0.0;
+          lBrushEntity.Brush.Gradient_start.Y := 0.0;
+          lBrushEntity.Brush.Gradient_end.X := 1.0;
+          lBrushEntity.Brush.Gradient_end.Y := 1.0;
+        end;
+        if lBrushEntity.Brush.Gradient_start.X = lBrushEntity.Brush.Gradient_end.X then
           lBrushEntity.Brush.Kind := bkVerticalGradient
-        else if y2=y1 then
+        else if lBrushEntity.Brush.Gradient_start.Y = lBrushEntity.Brush.Gradient_end.Y then
           lBrushEntity.Brush.Kind := bkHorizontalGradient
         else
           lBrushEntity.Brush.Kind := bkOtherLinearGradient;
@@ -1341,7 +1394,8 @@ begin
               lAttrName := lCurSubNode.Attributes.Item[i].NodeName;
               lAttrValue := lCurSubNode.Attributes.Item[i].NodeValue;
               if lAttrName = 'offset' then
-                lGradientColor.Position := StringWithUnitToFloat(lAttrValue)
+                lGradientColor.Position := StringWithPercentToFloat(lAttrValue)
+                // use as fraction 0..1
               else if lAttrName = 'style' then
                 lGradientColor.Color := ReadSVGGradientColorStyle(lAttrValue)
               else if lAttrName = 'stop-color' then
@@ -3025,6 +3079,19 @@ end;
 function TvSVGVectorialReader.StringFloatZeroToOneToWord(AStr: string): Word;
 begin
   Result := Round(StrToFloat(AStr, FPointSeparator) * $FFFF);
+end;
+
+{@@ Converts a number string to a floating-point number. If the string has a
+    % character at its end then it is removed, and the numerical value is
+    divided by 100. }
+function TvSVGVectorialReader.StringWithPercentToFloat(AStr: String): Double;
+begin
+  if AStr[Length(AStr)] = '%' then
+  begin
+    Delete(AStr, Length(AStr), 1);
+    Result := 0.01 * StrToFloat(trim(AStr), FPointSeparator);
+  end else
+    Result := StrToFloat(AStr, FPointSeparator);
 end;
 
 procedure TvSVGVectorialReader.ConvertSVGCoordinatesToFPVCoordinates(
