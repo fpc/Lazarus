@@ -18,7 +18,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, LazFileUtils, Controls, Forms, AvgLvlTree,
   NewItemIntf, ProjPackIntf, CompOptsIntf, ObjInspStrConsts, LazFileCache,
-  LazMethodList;
+  LazMethodList, ImgList, Graphics;
 
 const
   FileDescGroupName = 'File';
@@ -585,6 +585,9 @@ const
     );
 
 
+function LoadProjectIconIntoImages(const ProjFile: string;
+  const Images: TCustomImageList; const Index: TStrings): Integer;
+
 function ProjectFlagsToStr(Flags: TProjectFlags): string;
 function StrToProjectSessionStorage(const s: string): TProjectSessionStorage;
 function CompilationExecutableTypeNameToType(const s: string
@@ -692,6 +695,44 @@ end;
 function ProjectDescriptorEmptyProject: TProjectDescriptor;
 begin
   Result:=ProjectDescriptors.FindByName(ProjDescNameEmpty);
+end;
+
+function LoadProjectIconIntoImages(const ProjFile: string;
+  const Images: TCustomImageList; const Index: TStrings): Integer;
+var
+  xIconFile: RawByteString;
+  xIcon: TIcon;
+  I: Integer;
+begin
+  //ToDo: better index
+
+  I := Index.IndexOf(ProjFile);
+  if I >= 0 then
+    Exit(NativeInt(Index.Objects[I]));
+
+  Result := -1;
+  xIconFile := ChangeFileExt(ProjFile, '.ico');
+  if FileExists(xIconFile) then
+  begin
+    xIcon := TIcon.Create;
+    try
+      xIcon.LoadFromFile(xIconFile);
+      for I := 0 to xIcon.Count-1 do
+      begin
+        xIcon.Current := I;
+        if (xIcon.Width = Images.Width)
+        and(xIcon.Height = Images.Height) then
+        begin
+          Result := Images.AddIcon(xIcon);
+          Break;
+        end;
+      end;
+    finally
+      xIcon.Free;
+    end;
+  end;
+
+  Index.AddObject(ProjFile, TObject(Result));
 end;
 
 function ProjectFlagsToStr(Flags: TProjectFlags): string;
