@@ -258,15 +258,17 @@ var
 begin
   //fake paint menu
 
-  if not HasMainMenu then
-    Exit;
-
-  Menu := FDesignedForm.Form.Menu;
-
   MenuRect := pFakeMenu.ClientRect;
   LCanvas := pFakeMenu.Canvas;
   LCanvas.Brush.Color := clMenuBar;
   LCanvas.FillRect(MenuRect);
+
+  // pFakeMenu is visible only when HasMainMenu is true
+  // but FDesignedForm can be nil if the designer is painted before it has been assigned
+  if not HasMainMenu then
+    Exit;
+
+  Menu := FDesignedForm.Form.Menu;
   LCanvas.Font.Color := clMenuText;
 
   X := 5;
@@ -277,7 +279,6 @@ begin
       LCanvas.TextOut(X, Y, Menu.Items[I].Caption);
       Inc(X, LCanvas.TextWidth(Menu.Items[I].Caption) + 10);
     end;
-  LCanvas.Brush.Color := clNone;
 end;
 
 procedure TResizerFrame.ClientChangeBounds(Sender: TObject);
