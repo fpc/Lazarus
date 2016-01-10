@@ -167,7 +167,20 @@ object ResizerFrame: TResizerFrame
     Color = clNone
     ParentColor = False
     TabOrder = 4
-    OnPaint = pBGPaint
+    object pFakeMenu: TPanel
+      AnchorSideLeft.Control = pBG
+      AnchorSideTop.Control = pBG
+      AnchorSideRight.Control = pBG
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 50
+      Top = 0
+      Width = 287
+      Anchors = [akTop, akLeft, akRight]
+      BevelOuter = bvNone
+      TabOrder = 0
+      OnPaint = pFakeMenuPaint
+    end
   end
   object pClient: TPanel
     AnchorSideLeft.Control = pL
